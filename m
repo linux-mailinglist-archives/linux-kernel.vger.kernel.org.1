@@ -2,204 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300D32D81F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD602D81F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:24:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406833AbgLKWXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 17:23:48 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20130 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389930AbgLKWXX (ORCPT
+        id S2406826AbgLKWXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 17:23:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391236AbgLKWX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 17:23:23 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BBMEYsQ186323;
-        Fri, 11 Dec 2020 17:22:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=CvZ6ed3lQl/BG9srwuIEWAY0PIXHO1HWpFDNCxW9pag=;
- b=O1A4+xcyVxSnAEQKiPSe2hlzYeImTzZV3Jin+Qk45dU1NkxeRaECMnXVp0YKXkhqYscY
- M5wJyJSZ1p9ixi9dyWmhmFRmxyZpnJ6xXjbZzcxB9kyJeWl1+acwVBT28fYd+SpN7IE+
- oYiHIZTSAyEI51hCo/ir/lrC5ENNF5hHntacxeef58l3ulZUWU+dNzi+QGUPCji04O9M
- tPaBea4vIIWKalw93NTWFc8QfGT2VT2hnPgszhwSmW6YabLFvCMzj1wIEczGj1gizH78
- Dxa6NJlTZabuTWWnaR1mBOJamt1LvKL7SUkcn1uXpXBcqvLsetH0WfZB2cwNQ43tJbhx ZQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35chcrg51m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Dec 2020 17:22:27 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BBMGK99191066;
-        Fri, 11 Dec 2020 17:22:26 -0500
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35chcrg51e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Dec 2020 17:22:26 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BBMCSqr021964;
-        Fri, 11 Dec 2020 22:22:25 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma02dal.us.ibm.com with ESMTP id 3581uaqkf7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Dec 2020 22:22:25 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BBMMOtp24576384
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Dec 2020 22:22:24 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 11CEEC605A;
-        Fri, 11 Dec 2020 22:22:24 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 64776C6057;
-        Fri, 11 Dec 2020 22:22:22 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com.com (unknown [9.85.193.150])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 11 Dec 2020 22:22:22 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     stable@vger.kernel.org, gregkh@linuxfoundation.org,
-        sashal@kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
-        kwankhede@nvidia.com, pbonzini@redhat.com,
-        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com,
-        Tony Krowiak <akrowiak@linux.ibm.com>
-Subject: [PATCH v2 2/2] s390/vfio-ap: reverse group notifier actions when KVM pointer invalidated
-Date:   Fri, 11 Dec 2020 17:22:11 -0500
-Message-Id: <20201211222211.20869-3-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20201211222211.20869-1-akrowiak@linux.ibm.com>
-References: <20201211222211.20869-1-akrowiak@linux.ibm.com>
+        Fri, 11 Dec 2020 17:23:29 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3A4C0613CF;
+        Fri, 11 Dec 2020 14:22:49 -0800 (PST)
+Date:   Fri, 11 Dec 2020 22:22:46 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607725366;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NGZrdxckk0CcnTGimSJiWXfqdPSodDoQdFA1WLG1ac0=;
+        b=CmtGy4XkB1+Y4W7El/ccpze72z3xjrnjk488km8HKT1Jh9vQjI5xFTg6FAY28pPAFtsfp2
+        OFFeLzBIsh+NeLK/c5V5e8TTtlW2bBg6PdfqCqlO+zlXEhHI7aUSn7Q/bS4+YZSDJPg73f
+        9WF9EaNep9Jo3B3BIBM4uCI8XdWvAYdgU+SHFjam78gCUPucRpTZeTEdCXkyCJ7lxB9Tad
+        77au6PTGbap/itoBo34h4OZTeBj43uWc+j4Tom42wPqINwbH4j10DjW0HHbVQh1uyRzyh3
+        TE7YkEoXPjgMABp3ogVWowIuLCbtUVHBsRNUwW11TLPR3y2O+yzh+f6Y8H6obQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607725366;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NGZrdxckk0CcnTGimSJiWXfqdPSodDoQdFA1WLG1ac0=;
+        b=OVAlVI5VY7+pZPoxPNHK6fCibvb1s9DkBMi6cC3/qedslKxzeEYV6nJwqf5+/Y3k7vw6jO
+        H76/vVd7jG6zPcAA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] tick/sched: Make jiffies update quick check more robust
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <87czzpc02w.fsf@nanos.tec.linutronix.de>
+References: <87czzpc02w.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-11_09:2020-12-11,2020-12-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- malwarescore=0 bulkscore=0 priorityscore=1501 mlxscore=0
- lowpriorityscore=0 suspectscore=3 phishscore=0 clxscore=1015
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012110145
+Message-ID: <160772536603.3364.16160339487217714301.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vfio_ap device driver registers a group notifier with VFIO when the
-file descriptor for a VFIO mediated device for a KVM guest is opened to
-receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
-event). When the KVM pointer is set, the vfio_ap driver takes the
-following actions:
-1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
-   of the mediated device.
-2. Calls the kvm_get_kvm() function to increment its reference counter.
-3. Sets the function pointer to the function that handles interception of
-   the instruction that enables/disables interrupt processing.
+The following commit has been merged into the timers/core branch of tip:
 
-When the notifier is called to make notification that the KVM pointer has
-been set to NULL, the driver should reverse the actions taken when the
-KVM pointer was set as well as unplugging the AP devices passed through
-to the KVM guest.
+Commit-ID:     aa3b66f401b372598b29421bab4d17b631b92407
+Gitweb:        https://git.kernel.org/tip/aa3b66f401b372598b29421bab4d17b631b92407
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Fri, 04 Dec 2020 11:55:19 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 11 Dec 2020 23:19:10 +01:00
 
-Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+tick/sched: Make jiffies update quick check more robust
+
+The quick check in tick_do_update_jiffies64() whether jiffies need to be
+updated is not really correct under all circumstances and on all
+architectures, especially not on 32bit systems.
+
+The quick check does:
+
+    if (now < READ_ONCE(tick_next_period))
+    	return;
+
+and the counterpart in the update is:
+
+    WRITE_ONCE(tick_next_period, next_update_time);
+
+This has two problems:
+
+  1) On weakly ordered architectures there is no guarantee that the stores
+     before the WRITE_ONCE() are visible which means that other CPUs can
+     operate on a stale jiffies value.
+
+  2) On 32bit the store of tick_next_period which is an u64 is split into
+     two 32bit stores. If the first 32bit store advances tick_next_period
+     far out and the second 32bit store is delayed (virt, NMI ...) then
+     jiffies will become stale until the second 32bit store happens.
+
+Address this by seperating the handling for 32bit and 64bit.
+
+On 64bit problem #1 is addressed by replacing READ_ONCE() / WRITE_ONCE()
+with smp_load_acquire() / smp_store_release().
+
+On 32bit problem #2 is addressed by protecting the quick check with the
+jiffies sequence counter. The load and stores can be plain because the
+sequence count mechanics provides the required barriers already.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Link: https://lore.kernel.org/r/87czzpc02w.fsf@nanos.tec.linutronix.de
+
 ---
- drivers/s390/crypto/vfio_ap_ops.c | 40 ++++++++++++++++++-------------
- 1 file changed, 24 insertions(+), 16 deletions(-)
+ kernel/time/tick-sched.c | 74 ++++++++++++++++++++++++---------------
+ 1 file changed, 47 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index c854d7ab2079..1c3c2a0898b9 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -1033,8 +1033,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index cc7cba2..a9e6893 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -57,36 +57,42 @@ static ktime_t last_jiffies_update;
+ static void tick_do_update_jiffies64(ktime_t now)
  {
- 	struct ap_matrix_mdev *m;
+ 	unsigned long ticks = 1;
+-	ktime_t delta;
++	ktime_t delta, nextp;
  
--	mutex_lock(&matrix_dev->lock);
--
- 	list_for_each_entry(m, &matrix_dev->mdev_list, node) {
- 		if ((m != matrix_mdev) && (m->kvm == kvm)) {
- 			mutex_unlock(&matrix_dev->lock);
-@@ -1045,7 +1043,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
- 	matrix_mdev->kvm = kvm;
- 	kvm_get_kvm(kvm);
- 	kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
--	mutex_unlock(&matrix_dev->lock);
+ 	/*
+-	 * Do a quick check without holding jiffies_lock. The READ_ONCE()
++	 * 64bit can do a quick check without holding jiffies lock and
++	 * without looking at the sequence count. The smp_load_acquire()
+ 	 * pairs with the update done later in this function.
+ 	 *
+-	 * This is also an intentional data race which is even safe on
+-	 * 32bit in theory. If there is a concurrent update then the check
+-	 * might give a random answer. It does not matter because if it
+-	 * returns then the concurrent update is already taking care, if it
+-	 * falls through then it will pointlessly contend on jiffies_lock.
+-	 *
+-	 * Though there is one nasty case on 32bit due to store tearing of
+-	 * the 64bit value. If the first 32bit store makes the quick check
+-	 * return on all other CPUs and the writing CPU context gets
+-	 * delayed to complete the second store (scheduled out on virt)
+-	 * then jiffies can become stale for up to ~2^32 nanoseconds
+-	 * without noticing. After that point all CPUs will wait for
+-	 * jiffies lock.
+-	 *
+-	 * OTOH, this is not any different than the situation with NOHZ=off
+-	 * where one CPU is responsible for updating jiffies and
+-	 * timekeeping. If that CPU goes out for lunch then all other CPUs
+-	 * will operate on stale jiffies until it decides to come back.
++	 * 32bit cannot do that because the store of tick_next_period
++	 * consists of two 32bit stores and the first store could move it
++	 * to a random point in the future.
+ 	 */
+-	if (ktime_before(now, READ_ONCE(tick_next_period)))
+-		return;
++	if (IS_ENABLED(CONFIG_64BIT)) {
++		if (ktime_before(now, smp_load_acquire(&tick_next_period)))
++			return;
++	} else {
++		unsigned int seq;
  
- 	return 0;
- }
-@@ -1079,35 +1076,49 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
- 	return NOTIFY_DONE;
- }
- 
-+static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
-+{
-+	kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-+	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-+	vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-+	kvm_put_kvm(matrix_mdev->kvm);
-+	matrix_mdev->kvm = NULL;
-+}
+-	/* Reevaluate with jiffies_lock held */
++		/*
++		 * Avoid contention on jiffies_lock and protect the quick
++		 * check with the sequence count.
++		 */
++		do {
++			seq = read_seqcount_begin(&jiffies_seq);
++			nextp = tick_next_period;
++		} while (read_seqcount_retry(&jiffies_seq, seq));
 +
- static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
- 				       unsigned long action, void *data)
- {
--	int ret;
-+	int ret, notify_rc = NOTIFY_DONE;
- 	struct ap_matrix_mdev *matrix_mdev;
++		if (ktime_before(now, nextp))
++			return;
++	}
++
++	/* Quick check failed, i.e. update is required. */
+ 	raw_spin_lock(&jiffies_lock);
++	/*
++	 * Reevaluate with the lock held. Another CPU might have done the
++	 * update already.
++	 */
+ 	if (ktime_before(now, tick_next_period)) {
+ 		raw_spin_unlock(&jiffies_lock);
+ 		return;
+@@ -112,11 +118,25 @@ static void tick_do_update_jiffies64(ktime_t now)
+ 	jiffies_64 += ticks;
  
- 	if (action != VFIO_GROUP_NOTIFY_SET_KVM)
- 		return NOTIFY_OK;
+ 	/*
+-	 * Keep the tick_next_period variable up to date.  WRITE_ONCE()
+-	 * pairs with the READ_ONCE() in the lockless quick check above.
++	 * Keep the tick_next_period variable up to date.
+ 	 */
+-	WRITE_ONCE(tick_next_period,
+-		   ktime_add_ns(last_jiffies_update, TICK_NSEC));
++	nextp = ktime_add_ns(last_jiffies_update, TICK_NSEC);
++
++	if (IS_ENABLED(CONFIG_64BIT)) {
++		/*
++		 * Pairs with smp_load_acquire() in the lockless quick
++		 * check above and ensures that the update to jiffies_64 is
++		 * not reordered vs. the store to tick_next_period, neither
++		 * by the compiler nor by the CPU.
++		 */
++		smp_store_release(&tick_next_period, nextp);
++	} else {
++		/*
++		 * A plain store is good enough on 32bit as the quick check
++		 * above is protected by the sequence count.
++		 */
++		tick_next_period = nextp;
++	}
  
- 	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
-+	mutex_lock(&matrix_dev->lock);
- 
- 	if (!data) {
--		matrix_mdev->kvm = NULL;
--		return NOTIFY_OK;
-+		if (matrix_mdev->kvm)
-+			vfio_ap_mdev_unset_kvm(matrix_mdev);
-+		notify_rc = NOTIFY_OK;
-+		goto notify_done;
- 	}
- 
- 	ret = vfio_ap_mdev_set_kvm(matrix_mdev, data);
- 	if (ret)
--		return NOTIFY_DONE;
-+		goto notify_done;
- 
- 	/* If there is no CRYCB pointer, then we can't copy the masks */
- 	if (!matrix_mdev->kvm->arch.crypto.crycbd)
--		return NOTIFY_DONE;
-+		goto notify_done;
- 
- 	kvm_arch_crypto_set_masks(matrix_mdev->kvm, matrix_mdev->matrix.apm,
- 				  matrix_mdev->matrix.aqm,
- 				  matrix_mdev->matrix.adm);
- 
--	return NOTIFY_OK;
-+notify_done:
-+	mutex_unlock(&matrix_dev->lock);
-+	return notify_rc;
- }
- 
- static struct vfio_ap_queue *vfio_ap_find_queue(int apqn)
-@@ -1234,13 +1245,10 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
- 	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
- 
- 	mutex_lock(&matrix_dev->lock);
--	if (matrix_mdev->kvm) {
--		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
--		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
--		vfio_ap_mdev_reset_queues(mdev);
--		kvm_put_kvm(matrix_mdev->kvm);
--		matrix_mdev->kvm = NULL;
--	}
-+	if (matrix_mdev->kvm)
-+		vfio_ap_mdev_unset_kvm(matrix_mdev);
-+	else
-+		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
- 	mutex_unlock(&matrix_dev->lock);
- 
- 	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
--- 
-2.21.1
-
+ 	/*
+ 	 * Release the sequence count. calc_global_load() below is not
