@@ -2,159 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98ABD2D6D72
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 127BB2D6D57
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:24:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389806AbgLKBYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:24:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394781AbgLKBV7 (ORCPT
+        id S2394862AbgLKBWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:22:35 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:52300 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394785AbgLKBWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:21:59 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2956C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:21:18 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id 125so558118pgf.10
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:21:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=pfg1nfMsIxARt4cwJhUSe5jtXr5SrSeoRAuxALV7fQQ=;
-        b=NNYsZSDZGrBuMC0K/HpZkM3vu59Oj3VjPBXGQd0fc7yf+4fWn2sxER2+M3U1MRl0RE
-         8PDdKapc1s31lYi+cjafM+0mK2GZ5GByBsoFUvSKlTKU+UUZPZ0cHVr54Q3D/T3Iae+Z
-         Uk53MAYJuYELYIYyJeY773zQNxsXWsTzXzN4c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=pfg1nfMsIxARt4cwJhUSe5jtXr5SrSeoRAuxALV7fQQ=;
-        b=S141KtPl2eCtIqWLZS1IRw8ETlJ4wr9zc9nC3fyoHdzyTLVb3NRz0LAKQAltDYbAC5
-         AWVO6aTJJSLk8keUPR9AyZYr/Cg14IuclYw1TxnHbk4CYALulCtmJD9DkP+5geootW+1
-         F4VcHaMoHo451yEm9oCaS1tK/UxrWQKUinQgvGZu3HB0j+btg7dFcBnODOwMRcT/lg7d
-         uj8It+2wweFJIXcPTwF4yiWfeIbmN2/kVzKUyJZXBPpmEMkXpH3fzJD9VZWIbg4RKF8n
-         pweGbBM199AjBN8l65k78KyVwvkkpOK++Zn9roiu3869QosZYG5IpyL9mBMCUcoQCN1T
-         ZXkA==
-X-Gm-Message-State: AOAM531iCdc0t1QbIuN06F3pVzQ18fkhUk5cnNgsssA58ohKkKlXLVkE
-        sorkV9IWQMYsHTzc9xohA7dKDA==
-X-Google-Smtp-Source: ABdhPJxlHxsj/7g9NiPVSrAWsGu/6WNe9PqKSzLrBe0ctu2F0WDHqXUsou4UhuaK5E8pSAl29l8qEQ==
-X-Received: by 2002:a63:f443:: with SMTP id p3mr9174462pgk.40.1607649678434;
-        Thu, 10 Dec 2020 17:21:18 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id h8sm7668604pfk.71.2020.12.10.17.21.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 17:21:17 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 10 Dec 2020 20:22:02 -0500
+Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 758CC20B717A;
+        Thu, 10 Dec 2020 17:21:20 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 758CC20B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607649680;
+        bh=jfK5YmIyW154f+fv5mC5+SCaJnTqVnwKm0qw/+vjB0c=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=elP+kCH/rc8kKu5ch4X0uDpuVIXJDoWYh0KgL07kH74COhUgCRXZruk3SaV93cWux
+         lNMctOt3XoKtnEuWBOlBIrIVFQ8uuoRDFfDB4cbL53Hkkw/lwKAQlMMTqrVquLT13T
+         cZm/yliRB45EoGbc/LAu9imeCDScSsNA4K0QPCc4=
+Subject: Re: [PATCH v7 2/8] IMA: add support to measure buffer data hash
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
+        jmorris@namei.org, nramas@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20201209194212.5131-1-tusharsu@linux.microsoft.com>
+ <20201209194212.5131-3-tusharsu@linux.microsoft.com>
+ <20201210223854.GG489768@sequoia>
+From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Message-ID: <09d42e5e-09bf-af6e-cc45-c2f9bc8b39de@linux.microsoft.com>
+Date:   Thu, 10 Dec 2020 17:21:19 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAD=FV=VD78fmSRciFf38AbZG=EFPzDiT_e7QkEC08zA9iL1vTw@mail.gmail.com>
-References: <20201203074459.13078-1-rojay@codeaurora.org> <CAD=FV=XKyXnjsM4iS-ydRWBnmYMojPOaYAdYhOkxkPTCQf0RLQ@mail.gmail.com> <160757022002.1580929.8656750350166301192@swboyd.mtv.corp.google.com> <CAD=FV=WtU3cnRe6pDKFMA9_0cnQFtSOyohY_bJwZObK+KrbhVQ@mail.gmail.com> <160764107797.1580929.14768824290834396298@swboyd.mtv.corp.google.com> <CAD=FV=WuQjKC6GHy8d2nuqS-fgsUfxYrJosg3eyC9JU1FPCcjw@mail.gmail.com> <160764316821.1580929.18177257779550490986@swboyd.mtv.corp.google.com> <CAD=FV=WvG085orLqnvg9WUobL7iyxwgoxh-8RvOaRdi9rLeDUg@mail.gmail.com> <160764785500.1580929.4255309510717807485@swboyd.mtv.corp.google.com> <CAD=FV=VD78fmSRciFf38AbZG=EFPzDiT_e7QkEC08zA9iL1vTw@mail.gmail.com>
-Subject: Re: [PATCH] spi: spi-geni-qcom: Fix NULL pointer access in geni_spi_isr
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        msavaliy@qti.qualcomm.com
-To:     Doug Anderson <dianders@chromium.org>
-Date:   Thu, 10 Dec 2020 17:21:16 -0800
-Message-ID: <160764967649.1580929.3992720095789306793@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20201210223854.GG489768@sequoia>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2020-12-10 17:04:06)
-> On Thu, Dec 10, 2020 at 4:51 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > I'm worried about the buffer disappearing if spi core calls handle_err()
-> > but the geni_spi_isr() handler runs both an rx and a cancel/abort
-> > routine. That doesn't seem to be the case though so it looks all fine.
->=20
-> It would be pretty racy if that was the case.  Until it calls
-> handle_timeout() we're still free to write to that buffer, right?
 
-Right I don't see any badness here.
 
->=20
->=20
-> > > If we want to try to do better, we can do timeout handling ourselves.
-> > > The SPI core allows for that.
-> > >
-> > >
-> > > > So why don't we check for cur_xfer being NULL in the rx/tx handling
-> > > > paths too and bail out there? Does the FIFO need to be cleared out =
-in
-> > > > such a situation that spi core thinks a timeout happened but there'=
-s RX
-> > > > data according to m_irq? Do we need to read it all and throw it awa=
-y? Or
-> > > > does the abort/cancel clear out the RX fifo?
-> > >
-> > > I don't know for sure, but IMO it's safest to read anything that's in
-> > > the FIFO.  It's also important to adjust the watermark in the TX case.
-> > > The suggestions I provided in my original reply (#2 and #3) handle
-> > > this and are plenty simple.
-> > >
-> > > As per my original reply, though, anything we do in the ISR doesn't
-> > > replace the changes we need to make to handle_fifo_timeout().  It is
-> > > very important that when handle_fifo_timeout() finishes that no future
-> > > interrupts for old transfers will fire.
-> > >
-> >
-> > Alright. With a proper diagram in the commit text I think doing all of
-> > the points, 1 through 3, would be good and required to leave the
-> > hardware in a sane state for all the scenarios. Why do we need to call
-> > synchronize_irq() at the start and end of handle_fifo_timeout() though?
-> > Presumably having it at the start would make sure the long delayed irq
-> > runs and handles any rx/tx by throwing it away. Sounds great, but having
-> > it at the end leaves me confused. We want to make sure the cancel really
-> > went through?  Don't we know that because the completion variable for
-> > cancel succeeded?
->=20
-> I want it to handle the case where the "abort" command timed out!  :-)
->  If the "abort" command timed out then it's still pending and we could
-> get an interrupt for it at some future point in time.
+On 2020-12-10 2:38 p.m., Tyler Hicks wrote:
+> On 2020-12-09 11:42:06, Tushar Sugandhi wrote:
+>> The original IMA buffer data measurement sizes were small (e.g. boot
+>> command line), but the new buffer data measurement use cases have data
+>> sizes that are a lot larger.  Just as IMA measures the file data hash,
+>> not the file data, IMA should similarly support the option for measuring
+>> the hash of the buffer data.
+>>
+>> Measuring in-memory buffer-data/buffer-data-hash is different than
+>> measuring file-data/file-data-hash. For the file, IMA stores the
+>> measurements in both measurement log and the file's extended attribute -
+>> which can later be used for appraisal as well. For buffer, the
+>> measurements are only stored in the IMA log, since the buffer has no
+>> extended attributes associated with it.
+>>
+>> Introduce a boolean parameter measure_buf_hash to support measuring
+>> hash of a buffer, which would be much smaller, instead of the buffer
+>> itself.
+>>
+>> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+>> ---
+>>   security/integrity/ima/ima.h                 |  3 +-
+>>   security/integrity/ima/ima_appraise.c        |  2 +-
+>>   security/integrity/ima/ima_asymmetric_keys.c |  2 +-
+>>   security/integrity/ima/ima_main.c            | 36 +++++++++++++++++---
+>>   security/integrity/ima/ima_queue_keys.c      |  3 +-
+>>   5 files changed, 38 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+>> index e5622ce8cbb1..fa3044a7539f 100644
+>> --- a/security/integrity/ima/ima.h
+>> +++ b/security/integrity/ima/ima.h
+>> @@ -268,7 +268,8 @@ void ima_store_measurement(struct integrity_iint_cache *iint, struct file *file,
+>>   			   struct ima_template_desc *template_desc);
+>>   void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+>>   				const char *eventname, enum ima_hooks func,
+>> -				int pcr, const char *func_data);
+>> +				int pcr, const char *func_data,
+>> +				bool measure_buf_hash);
+>>   void ima_audit_measurement(struct integrity_iint_cache *iint,
+>>   			   const unsigned char *filename);
+>>   int ima_alloc_init_template(struct ima_event_data *event_data,
+>> diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
+>> index 8361941ee0a1..46ffa38bab12 100644
+>> --- a/security/integrity/ima/ima_appraise.c
+>> +++ b/security/integrity/ima/ima_appraise.c
+>> @@ -352,7 +352,7 @@ int ima_check_blacklist(struct integrity_iint_cache *iint,
+>>   		if ((rc == -EPERM) && (iint->flags & IMA_MEASURE))
+>>   			process_buffer_measurement(NULL, digest, digestsize,
+>>   						   "blacklisted-hash", NONE,
+>> -						   pcr, NULL);
+>> +						   pcr, NULL, false);
+>>   	}
+>>   
+>>   	return rc;
+>> diff --git a/security/integrity/ima/ima_asymmetric_keys.c b/security/integrity/ima/ima_asymmetric_keys.c
+>> index 1c68c500c26f..a74095793936 100644
+>> --- a/security/integrity/ima/ima_asymmetric_keys.c
+>> +++ b/security/integrity/ima/ima_asymmetric_keys.c
+>> @@ -60,5 +60,5 @@ void ima_post_key_create_or_update(struct key *keyring, struct key *key,
+>>   	 */
+>>   	process_buffer_measurement(NULL, payload, payload_len,
+>>   				   keyring->description, KEY_CHECK, 0,
+>> -				   keyring->description);
+>> +				   keyring->description, false);
+>>   }
+>> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+>> index e76ef4bfd0f4..03aad13e9e70 100644
+>> --- a/security/integrity/ima/ima_main.c
+>> +++ b/security/integrity/ima/ima_main.c
+>> @@ -779,7 +779,7 @@ int ima_post_load_data(char *buf, loff_t size,
+>>   }
+>>   
+>>   /*
+>> - * process_buffer_measurement - Measure the buffer to ima log.
+>> + * process_buffer_measurement - Measure the buffer or the buffer data hash
+>>    * @inode: inode associated with the object being measured (NULL for KEY_CHECK)
+>>    * @buf: pointer to the buffer that needs to be added to the log.
+>>    * @size: size of buffer(in bytes).
+>> @@ -787,12 +787,23 @@ int ima_post_load_data(char *buf, loff_t size,
+>>    * @func: IMA hook
+>>    * @pcr: pcr to extend the measurement
+>>    * @func_data: private data specific to @func, can be NULL.
+>> + * @measure_buf_hash: measure buffer hash
+>>    *
+>> - * Based on policy, the buffer is measured into the ima log.
+>> + * Measure the buffer into the IMA log, and extend the @pcr.
+>> + *
+>> + * Determine what buffers are allowed to be measured, based on the policy rules
+>> + * and the IMA hook passed using @func.
+>> + *
+>> + * Use @func_data, if provided, to match against the measurement policy rule
+>> + * data for @func.
+>> + *
+>> + * If @measure_buf_hash is set to true - measure hash of the buffer data,
+>> + * else measure the buffer data itself.
+>>    */
+>>   void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+>>   				const char *eventname, enum ima_hooks func,
+>> -				int pcr, const char *func_data)
+>> +				int pcr, const char *func_data,
+>> +				bool measure_buf_hash)
+>>   {
+>>   	int ret = 0;
+>>   	const char *audit_cause = "ENOMEM";
+>> @@ -807,6 +818,8 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+>>   		struct ima_digest_data hdr;
+>>   		char digest[IMA_MAX_DIGEST_SIZE];
+>>   	} hash = {};
+>> +	char buf_hash[IMA_MAX_DIGEST_SIZE];
+>> +	int buf_hash_len = hash_digest_size[ima_hash_algo];
+>>   	int violation = 0;
+>>   	int action = 0;
+>>   	u32 secid;
+>> @@ -849,6 +862,20 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+>>   		goto out;
+>>   	}
+>>   
+>> +	if (measure_buf_hash) {
+>> +		memcpy(buf_hash, hash.hdr.digest, buf_hash_len);
+>> +
+>> +		ret = ima_calc_buffer_hash(buf_hash, buf_hash_len,
+>> +					   iint.ima_hash);
+>> +		if (ret < 0) {
+>> +			audit_cause = "measure_buf_hash_error";
+>> +			goto out;
+>> +		}
+>> +
+>> +		event_data.buf = buf_hash;
+>> +		event_data.buf_len = buf_hash_len;
+>> +	}
+>> +
+>>   	ret = ima_alloc_init_template(&event_data, &entry, template);
+>>   	if (ret < 0) {
+>>   		audit_cause = "alloc_entry";
+> 
+> A few more lines below, not present in this context, is a call to
+> ima_store_template() with buf as the fourth parameter passed in. That
+> parameter eventually makes its way to integrity_audit_message() and ends
+> up as part of an audit message as the value of the "name=" field. This
+> is usually a filename, the name of a key, or a kexec cmdline. In the
+> case of measuring SELinux policy, do we want the entire buf to be
+> included in the audit message?
+> 
+> Tyler
+> 
+Great catch.
+We obviously don't want to include the entire buf in the audit message,
+especially when the measure_buf_hash is set to true. (the buffer being
+measured is expected to be large in that case)
 
-Sure but who cares? We set a completion variable if abort comes in
-later. We'll put a message in the log indicating that it "Failed" but
-otherwise handle_fifo_timeout() can't return an error so we have to give
-up eventually.
+How about the following? Does it look ok to you? Mimi?
 
->=20
->=20
-> > I guess I'm not convinced that the hardware is so bad that it cancels
-> > and aborts the sequencer, raises an irq for that, and then raises an irq
-> > for the earlier rx/tx that the sequencer canceled out. Is that
-> > happening? It's called a sequencer because presumably it runs a sequence
-> > of operations like tx, rx, cs change, cancel, and abort. Hopefully it
-> > doesn't run them out of order. If they run at the same time it's fine,
-> > the irq handler will see all of them and throw away reads, etc.
->=20
-> Maybe answered by me explaining that I'm worried about the case where
-> "abort" times out (and thus the "done" from the abort is still
-> pending).
->=20
-> NOTE: I will also assert that if we send the "abort" then it seems
-> like it has a high likelihood of timing out.  Why do I say that?  In
-> order to even get to sending the "abort", it means:
->=20
-> a) The original transfer timed out
->=20
-> b) The "cancel" timed out.  As you can see, if the "cancel" doesn't
-> time out we don't even send the "abort"
->=20
-> ...so two things timed out, one of which we _just_ sent.  The "abort"
-> feels like a last ditch effort.  Might as well try it, but things were
-> in pretty sorry shape to start with by the time we tried it.
->=20
+if (measure_buf_hash)
+     ret = ima_store_template(entry, violation, NULL, buf_hash, pcr);
+else
+     ret = ima_store_template(entry, violation, NULL, buf, pcr);
 
-Yeah and so if it comes way later because it timed out then what's the
-point of calling synchronize_irq() again? To make the completion
-variable set when it won't be tested again until it is reinitialized?
+~Tushar
