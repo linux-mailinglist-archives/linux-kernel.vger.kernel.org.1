@@ -2,204 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D72B2D7CBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 786FD2D7CBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:25:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395134AbgLKRVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:21:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391389AbgLKRVQ (ORCPT
+        id S2394706AbgLKRYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:24:10 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:54984 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394392AbgLKRXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:21:16 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB36FC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:20:35 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id r17so9452100ilo.11
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:20:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WWWdoWGKC/NZ45HHis8WzaQgs1zCgXnZjIEifJXxKnA=;
-        b=DsLoj3Ygm22lIJhP2xfmRqAgb/DEn58TMntVqyTN0WqzeixvgB8bpM/OQcmwANaIR+
-         YTTkVXPdmRAHtbLILbfU1fwaKub2gaiO33NnjXJjSHepCGtl//R+vwtj8sxOy3ub8ey8
-         6SnFw6cv1X1+cd5Jn3Y693K1xw3NsvjZuNNp1DdC+AHquG3OPajhmxnQ+3LOzrFB/NYN
-         pLzl2MDKr26Oc1v1ykuKpgiDrQaAefYnRuiyNODzTLRKdCbPLMhJWk0+26VWGQKJbTo/
-         0rKEcsGIS80Xwn19XFt9jk9nu5XV5diLqhWPHO69hs/gYI+OP1TJ8G7IlVsyExVNwMm5
-         6tPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WWWdoWGKC/NZ45HHis8WzaQgs1zCgXnZjIEifJXxKnA=;
-        b=skY2vDMs+Ft6F2ZWOCKlHh3y+1SlwK2SUXch/4akaRtm5LURwmV0p3YHYjVIlF72Ry
-         YaRYWsyvYkGO9lpVDIUd92kqzHU0HbT4qOFx8dQzhfvGwrOxgtBwJfvw9HafoABwnTlB
-         8+frsuw/bq6BUtoxnraBSVBFpLBqwho7q3ZknyayGR8qk1DiaEjPrrSFSBbiYgq19vc/
-         JV2W/ib1fnYQ8Te3oNVpS5zH+mqmpdPamxAjYfX19cBa7v6gYXaBCy/aNdKC6A/cgtb8
-         o+3WbNUuAcc2gJZNEHeqSSNXT29TucOK82NDiiOWwK/YADUfZ/O7XJ48m3HtgicGBL5A
-         lcpQ==
-X-Gm-Message-State: AOAM5309cmbmy/P/+d2Hboh3RoqytdKcZEjuUrxqcd7R0VqIczNQ4W1z
-        naLYQy03Ta6b23wuCAiO6aQHvxMXyHyqESWfJUs=
-X-Google-Smtp-Source: ABdhPJzBpbCWqJwDONY394CwDBDL7awHME0oue8sp77JPLDhEagHA1hiSYI48TYdToOlAIEwe/vVjii7q2sQ7MeukVI=
-X-Received: by 2002:a92:418d:: with SMTP id o135mr17719189ila.213.1607707235064;
- Fri, 11 Dec 2020 09:20:35 -0800 (PST)
+        Fri, 11 Dec 2020 12:23:36 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BBHK4pb190820;
+        Fri, 11 Dec 2020 17:22:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=YewCcW7n5E9Q1cap81Gm1FCsiBG7HcHcaDDLPsG/k2s=;
+ b=AZfkEdWH7npUi56wy2DPWxOB+OCkup3YJKtY4zkUeDJUpInDfI6gLsu05MegPnuNK0iE
+ spr4siTjIAvsHnWdnD/aqrMiOHxwElrFZ3ViScDvwSxNUyIzt37YajuSyWxYeaZpeW0J
+ zKgixB2zLSr3D85AgRjF1wNII3ikkKuiIHXGGv/jc6d+jRpQc03SHh5RGU/WwS83SEVr
+ BNcHEmf16CgkMlsawQkMmgoMueAgzHBN+Pvd8Cd3/W2xBZPMCQQ6vUqAt+A0fmbTmo1o
+ zs2+dmPWYMhbvur8ckziNQjN6FGHkxaS/LMW3TFDYRaPy4UXnXIuJg/A2t9ZUUo0aXVf GA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 3581mrbprt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Dec 2020 17:22:31 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BBHFtvA123828;
+        Fri, 11 Dec 2020 17:20:31 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 358m549b13-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Dec 2020 17:20:31 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BBHKS5g024598;
+        Fri, 11 Dec 2020 17:20:29 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 11 Dec 2020 09:20:28 -0800
+To:     John Garry <john.garry@huawei.com>
+Cc:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <lenb@kernel.org>, <rjw@rjwysocki.net>,
+        <gregkh@linuxfoundation.org>, <tglx@linutronix.de>,
+        <maz@kernel.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <linux-acpi@vger.kernel.org>, <dwagner@suse.de>
+Subject: Re: [PATCH v5 5/5] scsi: hisi_sas: Expose HW queues for v2 hw
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1k0tontu8.fsf@ca-mkp.ca.oracle.com>
+References: <1606905417-183214-1-git-send-email-john.garry@huawei.com>
+        <1606905417-183214-6-git-send-email-john.garry@huawei.com>
+        <7a30086c-8a23-2272-fac9-a66ca92ae2f8@huawei.com>
+Date:   Fri, 11 Dec 2020 12:20:25 -0500
+In-Reply-To: <7a30086c-8a23-2272-fac9-a66ca92ae2f8@huawei.com> (John Garry's
+        message of "Fri, 11 Dec 2020 16:56:22 +0000")
 MIME-Version: 1.0
-References: <20201211085039.GA7619@ubuntu>
-In-Reply-To: <20201211085039.GA7619@ubuntu>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Fri, 11 Dec 2020 09:20:23 -0800
-Message-ID: <CAAH8bW8piLSCYLKjVXYV45cJeHApFX3Z3G=Zx-nap3yCA1=DDg@mail.gmail.com>
-Subject: Re: [PATCH] lib/find_bit_bench: fix the unmatched iterations cnt
-To:     Levi Yun <ppbuk5246@gmail.com>
-Cc:     dushistov@mail.ru, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        richard.weiyang@linux.alibaba.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        joseph.qi@linux.alibaba.com, skalluru@marvell.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9832 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=1
+ bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=703
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012110116
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9832 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 mlxlogscore=715
+ clxscore=1011 malwarescore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012110116
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 12:50 AM Levi Yun <ppbuk5246@gmail.com> wrote:
->
-> We should have same iteration count when we walk the same bitmap
-> regardless of using find_next_bit or find_last_b
 
-I think it's not that important, because the difference is not measurable.
-But if this part raises questions, I have nothing against aligning numbers.
+John,
 
-> When we run the find_bit_benchmark.ko, we sometime get
-> unmatched iterations count below:
->
->              Start testing find_bit() with random-filled bitmap
-> [+...] find_next_bit:                  875085 ns, 163755 iterations <
-> [+...] find_next_zero_bit:             865319 ns, 163926 iterations
-> [+...] find_last_bit:                  611807 ns, 163756 iterations <
-> [+...] find_first_bit:                1601016 ns,  16335 iterations
-> [+...] find_next_and_bit:              400645 ns,  74040 iterations
-> [+...]
->               Start testing find_bit() with sparse bitmap
-> [+...] find_next_bit:                    9942 ns,    654 iterations
-> [+...] find_next_zero_bit:            1678445 ns, 327027 iterations
-> [+...] find_last_bit:                    7131 ns,    654 iterations
-> [+...] find_first_bit:                 551383 ns,    654 iterations
-> [+...] find_next_and_bit:                3027 ns,      1 iterations
->
-> Normally, this is happen when the last bit of bitmap was set.
+> Is there some way in this patch can be merged for 5.11 via the SCSI
+> tree? It has a dependency on the earlier patches in the series, now 
+> picked up via irqchip tree. I've seen multiple rounds of SCSI pull
+> requests before, but not sure when we have that or if the tree is 
+> rebased for those.
 
-Can you please confirm that for bitmap 0001,
-test_find_{first,next,next_and}_bit reports cnt == 0, and
-test_find_last_bit() reports 1?
+I'll do a postmerge branch for a few things, including your patch and
+the megaraid patch.
 
-> This patch fix the unmatched iterations count between
-> test_find_next_bit and test_find_last_bit.
->
-> Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
-> ---
->  lib/find_bit_benchmark.c | 30 ++++++++++++++++--------------
->  1 file changed, 16 insertions(+), 14 deletions(-)
->
-> diff --git a/lib/find_bit_benchmark.c b/lib/find_bit_benchmark.c
-> index 5637c5711db9..766e0487852b 100644
-> --- a/lib/find_bit_benchmark.c
-> +++ b/lib/find_bit_benchmark.c
-> @@ -35,14 +35,14 @@ static DECLARE_BITMAP(bitmap2, BITMAP_LEN) __initdata;
->   */
->  static int __init test_find_first_bit(void *bitmap, unsigned long len)
->  {
-> -       unsigned long i, cnt;
-> +       unsigned long i = 0, cnt = 0;
->         ktime_t time;
->
->         time = ktime_get();
-> -       for (cnt = i = 0; i < len; cnt++) {
-> +       do {
->                 i = find_first_bit(bitmap, len);
->                 __clear_bit(i, bitmap);
-> -       }
-> +       } while (i++ < len && ++cnt);
-
-What for this check against ++cnt? I doubt that the counter can overflow.
-
->         time = ktime_get() - time;
->         pr_err("find_first_bit:     %18llu ns, %6ld\n", time, cnt);
->
-> @@ -51,12 +51,13 @@ static int __init test_find_first_bit(void *bitmap, unsigned long len)
->
->  static int __init test_find_next_bit(const void *bitmap, unsigned long len)
->  {
-> -       unsigned long i, cnt;
-> +       unsigned long i = 0, cnt = 0;
->         ktime_t time;
->
->         time = ktime_get();
-> -       for (cnt = i = 0; i < BITMAP_LEN; cnt++)
-> -               i = find_next_bit(bitmap, BITMAP_LEN, i) + 1;
-> +       do {
-> +               i = find_next_bit(bitmap, BITMAP_LEN, i);
-> +       } while (i++ < BITMAP_LEN && ++cnt);
->         time = ktime_get() - time;
->         pr_err("find_next_bit:      %18llu ns, %6ld iterations\n", time, cnt);
->
-> @@ -65,12 +66,13 @@ static int __init test_find_next_bit(const void *bitmap, unsigned long len)
->
->  static int __init test_find_next_zero_bit(const void *bitmap, unsigned long len)
->  {
-> -       unsigned long i, cnt;
-> +       unsigned long i = 0, cnt = 0;
->         ktime_t time;
->
->         time = ktime_get();
-> -       for (cnt = i = 0; i < BITMAP_LEN; cnt++)
-> -               i = find_next_zero_bit(bitmap, len, i) + 1;
-> +       do {
-> +               i = find_next_zero_bit(bitmap, len, i);
-> +       } while (i++ < BITMAP_LEN && ++cnt);
->         time = ktime_get() - time;
->         pr_err("find_next_zero_bit: %18llu ns, %6ld iterations\n", time, cnt);
->
-> @@ -84,12 +86,11 @@ static int __init test_find_last_bit(const void *bitmap, unsigned long len)
->
->         time = ktime_get();
->         do {
-> -               cnt++;
->                 l = find_last_bit(bitmap, len);
->                 if (l >= len)
->                         break;
->                 len = l;
-> -       } while (len);
-> +       } while (len >= 0 && ++cnt);
-
-Why this?
-
->         time = ktime_get() - time;
->         pr_err("find_last_bit:      %18llu ns, %6ld iterations\n", time, cnt);
->
-> @@ -99,12 +100,13 @@ static int __init test_find_last_bit(const void *bitmap, unsigned long len)
->  static int __init test_find_next_and_bit(const void *bitmap,
->                 const void *bitmap2, unsigned long len)
->  {
-> -       unsigned long i, cnt;
-> +       unsigned long i = 0, cnt = 0;
->         ktime_t time;
->
->         time = ktime_get();
-> -       for (cnt = i = 0; i < BITMAP_LEN; cnt++)
-> -               i = find_next_and_bit(bitmap, bitmap2, BITMAP_LEN, i + 1);
-> +       do {
-> +               i = find_next_and_bit(bitmap, bitmap2, BITMAP_LEN, i);
-> +       } while (i++ < BITMAP_LEN && ++cnt);
-
-Do you experience the same problem with find_next_and_bit() as well?
-
->         time = ktime_get() - time;
->         pr_err("find_next_and_bit:  %18llu ns, %6ld iterations\n", time, cnt);
->
-> --
-> 2.27.0
+-- 
+Martin K. Petersen	Oracle Linux Engineering
