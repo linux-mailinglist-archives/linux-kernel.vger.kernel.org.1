@@ -2,84 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8917B2D7D7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A742D7D85
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 19:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436840AbgLKRzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:55:43 -0500
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:62279 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392649AbgLKRyu (ORCPT
+        id S2404189AbgLKR6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:58:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392619AbgLKR6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:54:50 -0500
+        Fri, 11 Dec 2020 12:58:13 -0500
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF73CC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:57:32 -0800 (PST)
+Received: by mail-vs1-xe2b.google.com with SMTP id x4so5234853vsp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:57:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1607709291; x=1639245291;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=Jy3a9xryuHxWtnoO0PrKsoHstLAQUkeKOQZ9HySDrMs=;
-  b=uFP9n2w75jgbSNGrPoPdW+Vffv0jMzMtA+zQRsYiKiMNmt0t97ik1bGM
-   eyRFa0lnQ1dVFDl0ZGHbXUsfEIYa8RVCbaQPC0RSAJvDynqTD8WhPFyLd
-   sEUfw6bGVjsoadsbcKgeddVpg4/FxOie+jrEL6/vnq1bFAUpFRqgEnBas
-   U=;
-X-IronPort-AV: E=Sophos;i="5.78,412,1599523200"; 
-   d="scan'208";a="103547801"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-42f764a0.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 11 Dec 2020 17:54:04 +0000
-Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-42f764a0.us-east-1.amazon.com (Postfix) with ESMTPS id C5E50B1453;
-        Fri, 11 Dec 2020 17:54:01 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.53) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 11 Dec 2020 17:53:41 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Eric Dumazet <edumazet@google.com>
-CC:     SeongJae Park <sjpark@amazon.com>,
-        David Miller <davem@davemloft.net>,
-        SeongJae Park <sjpark@amazon.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Alexey Kuznetsov" <kuznet@ms2.inr.ac.ru>,
-        Florian Westphal <fw@strlen.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        netdev <netdev@vger.kernel.org>, <rcu@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] net/ipv4/inet_fragment: Batch fqdir destroy works
-Date:   Fri, 11 Dec 2020 18:53:26 +0100
-Message-ID: <20201211175326.1705-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CANn89iKGU6_OusKfXeoT0hQN2kto2RF_RpL3GNBeB54iqvqvXw@mail.gmail.com>
+        d=platinasystems-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4bksxVXyraVeH/vaukciGlNCembplpca28pml2zwvZo=;
+        b=fOEanG0Sqt1amxqrOs795KMLdoMfZhTniz2AFwOzAmU1PZIPBxfG+oOrFOtGmEmUtx
+         SaUeF47rGnO0/gITECyEVdU7oLXOvUBu/Xyk03x+VsNeSvI/6GclCYg29MPUFjHhVfao
+         Mq72T0F3ZbIHN5NUBNxNQwDKA/ZQ64+8ENJd90SHNDE4l2UPhbur5HIWCFqkhOwQ7EZR
+         ApkpWfd8GQiLl+mIxMyFhYNjMk9mIGDydvOttxtqA7DpARxHGplGCwjSTLFRwS6JVe97
+         HBlWJ6IbZz9QxF9FRRQy8nfXP6PMIHMuZFxHh9XGmQ9ZQmq0cs8VVu1dklOwvrKiyqe8
+         Z6ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4bksxVXyraVeH/vaukciGlNCembplpca28pml2zwvZo=;
+        b=umMcmxqJsFH7e6Bj0YmLTQDjAJ+ZLdu3VNv3rR3jjn4V67EzO5D+9cZcfzy9QfsB24
+         RfNnDvk0kff7Jl5kRypFLxzs65dSmZQYc0GkurKikEZWQW9IHLlb5ussQFpBYoFoNbNB
+         +MpI8L+BBjQAHA7WHNAlhU1dC2LgW5eARaZ7NBIsMpLbOQCBfgZiOY4rYvyt4nhLKNia
+         fvKImYqPv2h0509wUD5YGQWtY8Ww8711cKWrZDgDzZSZ7Sg3KurZ+wVXddAnm6cRRkz2
+         rAVO/DKYoGicrz0JRkl0Kf6+KuH+PJgt89Bryg/vnQoWszVWCMNfFKv19s7GgkTbHuIQ
+         KqLQ==
+X-Gm-Message-State: AOAM533I+O63pBy6j5uDznAK8BVUUEAeOptJiL1IYsnyNRUTU8/K5S3x
+        hR2lHiOiB27sJaV9UY/GQAt0wtqrTUEVoTpzukxL5g==
+X-Google-Smtp-Source: ABdhPJwMzgUn+aN0NxiG+GDU7esXEln4BCbZDifylqi+ZCM4VujfEE3iZxBltx22ScTz9ndq9JSAZFhlA3LB9SQdzQ4=
+X-Received: by 2002:a05:6102:66a:: with SMTP id z10mr14819634vsf.53.1607709451615;
+ Fri, 11 Dec 2020 09:57:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.53]
-X-ClientProxiedBy: EX13D48UWA001.ant.amazon.com (10.43.163.52) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+References: <20201111113255.28710-1-biwen.li@oss.nxp.com> <20201202151033.GC874@kunai>
+ <CABP=6zZcmsFUVwUaAH7f2-RqFHz71GLDnSfLreUo5GA3Y58HYA@mail.gmail.com>
+ <20201209170948.GA2249@kunai> <CABP=6zbKxu7ruGRi59k8+JbX5UB9jfP=C76-Pd4Q39Mc0yOTrA@mail.gmail.com>
+ <DB6PR0401MB2438F3FF50B601295BBE7F378FCB0@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+In-Reply-To: <DB6PR0401MB2438F3FF50B601295BBE7F378FCB0@DB6PR0401MB2438.eurprd04.prod.outlook.com>
+From:   Kevin Herbert <kph@platinasystems.com>
+Date:   Fri, 11 Dec 2020 09:57:19 -0800
+Message-ID: <CABP=6zahhQSXwG2MzR+ry9h8MCRqjyS=ysdvF1UYuejZd-0RkQ@mail.gmail.com>
+Subject: Re: [EXT] Re: [v10] i2c: imx: support slave mode for imx I2C driver
+To:     Biwen Li <biwen.li@nxp.com>
+Cc:     Wolfram Sang <wsa@the-dreams.de>,
+        "Biwen Li (OSS)" <biwen.li@oss.nxp.com>,
+        Leo Li <leoyang.li@nxp.com>,
+        "linux@rempel-privat.de" <linux@rempel-privat.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jiafei Pan <jiafei.pan@nxp.com>,
+        Xiaobo Xie <xiaobo.xie@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 15:36:53 +0100 Eric Dumazet <edumazet@google.com> wrote:
+Thanks for the tip. I attempted to see if the register was implemented
+on the i.mx6, and it doesn't appear to be. I'll reach out to my FAE. I
+found the datasheet and the register definitely isn't documented
+there.
 
-> On Fri, Dec 11, 2020 at 12:24 PM SeongJae Park <sjpark@amazon.com> wrote:
-> >
-> > From: SeongJae Park <sjpark@amazon.de>
-> >
-> > On a few of our systems, I found frequent 'unshare(CLONE_NEWNET)' calls
-> > make the number of active slab objects including 'sock_inode_cache' type
-> > rapidly and continuously increase.  As a result, memory pressure occurs.
-> >
-> 
-> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > ---
-> >
-> 
-> Reviewed-by: Eric Dumazet <edumazet@google.com>
-> 
-> Jakub or David might change the patch title, no need to resend.
-> 
-> Thanks for this nice improvement.
-
-My very best pleasure!  Thank you always for your nice advices and reviews!
-
+I was thinking of a patch that would keep track of state, and
+synthesize the I2C_SLAVE_STOP on the next interrupt if it was a new
+transaction. Does this seem too hacky to you? What are your thoughts?
 
 Thanks,
-SeongJae Park
+Kevin
+
+Thanks,
+Kevin
+
+
+On Wed, Dec 9, 2020 at 6:16 PM Biwen Li <biwen.li@nxp.com> wrote:
+>
+> Hi Kevin,
+>
+>
+>
+> After enabling idle interrupts, the i2c register will generate an idle in=
+terrupts(whatever read or write) when i2c bus enter idle status. Then get I=
+2C_SLAVE_STOP event.
+>
+> But don=E2=80=99t have the IBIC register(Maybe it=E2=80=99s a hidden regi=
+ster) in imx. You can query about the AE of imx about this.
+>
+> static void i2c_imx_enable_bus_idle(struct imx_i2c_struct *i2c_imx)
+>
+> {
+>
+>         if (is_vf610_i2c(i2c_imx)) {
+>
+>                 unsigned int temp;
+>
+>
+>
+>                 temp =3D imx_i2c_read_reg(i2c_imx, IMX_I2C_IBIC);
+>
+>                 temp |=3D IBIC_BIIE;
+>
+>                 imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_IBIC);
+>
+>         }
+>
+> }
+>
+>
+>
+> Best Regards,
+>
+> Biwen Li
+>
+> From: Kevin Herbert <kph@platinasystems.com>
+> Sent: 2020=E5=B9=B412=E6=9C=8810=E6=97=A5 1:18
+> To: Wolfram Sang <wsa@the-dreams.de>; Kevin Herbert <kph@platinasystems.c=
+om>; Biwen Li (OSS) <biwen.li@oss.nxp.com>; Leo Li <leoyang.li@nxp.com>; li=
+nux@rempel-privat.de; kernel@pengutronix.de; shawnguo@kernel.org; s.hauer@p=
+engutronix.de; festevam@gmail.com; Aisheng Dong <aisheng.dong@nxp.com>; Cla=
+rk Wang <xiaoning.wang@nxp.com>; o.rempel@pengutronix.de; linux-i2c@vger.ke=
+rnel.org; linux-kernel@vger.kernel.org; Jiafei Pan <jiafei.pan@nxp.com>; Xi=
+aobo Xie <xiaobo.xie@nxp.com>; linux-arm-kernel@lists.infradead.org; Biwen =
+Li <biwen.li@nxp.com>
+> Subject: [EXT] Re: [v10] i2c: imx: support slave mode for imx I2C driver
+>
+>
+>
+> Caution: EXT Email
+>
+> Even on an operation like writing a byte, I get I2C_SLAVE_WRITE_REQUESTED=
+ followed by I2C_SLAVE_WRITE_RECEIVED, but no I2C_SLAVE_STOP. If I do a I2C=
+ write of multiple bytes, I get I2c_SLAVE_WRITE_REQUESTED followed by multi=
+ple I2C_SLAVE_WRITE_RECEIVED.
+>
+>
+>
+> Kevin
+>
+>
+>
+> On Wed, Dec 9, 2020 at 9:10 AM Wolfram Sang <wsa@the-dreams.de> wrote:
+>
+> On Wed, Dec 09, 2020 at 09:03:50AM -0800, Kevin Herbert wrote:
+> > What is the protocol for the I2C_SLAVE_STOP event? I am working on my o=
+wn
+> > backend, and I've only tried it with this i.mx driver, and I do not rec=
+eive
+> > I2C_SLAVE_STOP at the end of every I2C transaction. It was my expectati=
+on
+> > I'd receive this event at the end of every frame. In my testing, I've n=
+ever
+> > received this event at all.
+> >
+> > Where are the I2C registers on the i.mx documented? My board is an i.mx=
+6sx.
+>
+> Hmm, from a glimpse, it looks the STOP event is only sent after a write
+> and not after a read? Does this match your findings?
