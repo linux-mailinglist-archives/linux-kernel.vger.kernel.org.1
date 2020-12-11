@@ -2,89 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44692D6C78
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 182A02D6C74
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394201AbgLKAYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 19:24:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50436 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2393528AbgLKAX1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 19:23:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607646120;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lpTMTphjO/oim15KCL6ORgEfW4SV00cbVBa5mHFRiDU=;
-        b=D4u+dhC4hHdolop548Uk/YW+k18QI5vRAA9xQSbnt4mugtHx9kralbYbuKmOKVD1pKzmzh
-        k5WowXnEe0/DpTbLctZHDSS0+DaNLzHtWCh2H/QL69jiuZd98Ktr4LFc07gN7qoPKyCsMp
-        bnZFHZ2QH0V5LAlaWo1FS1+6krlpDJE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-101-uDwf87uhMc2z3YFWa96RGA-1; Thu, 10 Dec 2020 19:21:58 -0500
-X-MC-Unique: uDwf87uhMc2z3YFWa96RGA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A313E801817;
-        Fri, 11 Dec 2020 00:21:56 +0000 (UTC)
-Received: from T590 (ovpn-12-100.pek2.redhat.com [10.72.12.100])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0C6636F984;
-        Fri, 11 Dec 2020 00:21:48 +0000 (UTC)
-Date:   Fri, 11 Dec 2020 08:21:43 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hch@lst.de, hare@suse.de,
-        ppvk@codeaurora.org, bvanassche@acm.org, kashyap.desai@broadcom.com
-Subject: Re: [RFC PATCH] blk-mq: Clean up references when freeing rqs
-Message-ID: <20201211002143.GA1495739@T590>
-References: <1606827738-238646-1-git-send-email-john.garry@huawei.com>
- <20201202033134.GD494805@T590>
- <aaf77015-3039-6b04-3417-d376e3467444@huawei.com>
- <20201203005505.GB540033@T590>
- <fa222311-2184-0041-61ab-b3d70fb92585@huawei.com>
- <7beb86a2-5c4b-bdc0-9fce-1b583548c6d0@huawei.com>
- <20201209010102.GA1217988@T590>
- <13327a68-6f86-96da-0c5f-5fa0be326d6f@huawei.com>
- <20201210020745.GA1363446@T590>
- <d8500ca2-1f26-7d28-6baa-237284df0a5c@huawei.com>
+        id S2394043AbgLKAWs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Dec 2020 19:22:48 -0500
+Received: from mga17.intel.com ([192.55.52.151]:2863 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391159AbgLKAWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 19:22:31 -0500
+IronPort-SDR: rwQQgvZ3JyJ7QJxsk27fEkLXeGUKwJPe/f+UX6/u5/+p5bd0xPnoDXgt8oVQ6O3S4b7tsOlb9Y
+ yqmFbs7znSbg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="154164057"
+X-IronPort-AV: E=Sophos;i="5.78,409,1599548400"; 
+   d="scan'208";a="154164057"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 16:21:51 -0800
+IronPort-SDR: Mk2LrQBVgW6Am6V4nV3BxGB2HpkD2RKwlqkRU5mGWXaD2MCIn2PeqXu7KU7tpXas8gFjrKtNvM
+ XrneG3exx3HA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,409,1599548400"; 
+   d="scan'208";a="370020062"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by fmsmga004.fm.intel.com with ESMTP; 10 Dec 2020 16:21:51 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 10 Dec 2020 16:21:50 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 10 Dec 2020 16:21:50 -0800
+Received: from orsmsx611.amr.corp.intel.com ([10.22.229.24]) by
+ ORSMSX611.amr.corp.intel.com ([10.22.229.24]) with mapi id 15.01.1713.004;
+ Thu, 10 Dec 2020 16:21:50 -0800
+From:   "Yu, Fenghua" <fenghua.yu@intel.com>
+To:     Shuah Khan <shuah@kernel.org>, "Luck, Tony" <tony.luck@intel.com>,
+        "Chatre, Reinette" <reinette.chatre@intel.com>,
+        David Binderman <dcb314@hotmail.com>,
+        Babu Moger <babu.moger@amd.com>,
+        James Morse <james.morse@arm.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4 00/17] Miscellaneous fixes for resctrl selftests
+Thread-Topic: [PATCH v4 00/17] Miscellaneous fixes for resctrl selftests
+Thread-Index: AQHWx1ZB/LSLr25VRUKkynjk//Nfh6nxGCYw
+Date:   Fri, 11 Dec 2020 00:21:50 +0000
+Message-ID: <684fad105f4143d4874645eddaffdbc3@intel.com>
+References: <20201130202010.178373-1-fenghua.yu@intel.com>
+In-Reply-To: <20201130202010.178373-1-fenghua.yu@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d8500ca2-1f26-7d28-6baa-237284df0a5c@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 10:44:54AM +0000, John Garry wrote:
-> Hi Ming,
+Hi, Shuah,
+
+> This patch set has several miscellaneous fixes to resctrl selftest tool that are
+> easily visible to user. V1 had fixes to CAT test and CMT test but they were
+> dropped in V2 because having them here made the patchset humongous. So,
+> changes to CAT test and CMT test will be posted in another patchset.
 > 
-> On 10/12/2020 02:07, Ming Lei wrote:
-> > > Apart from this, my concern is that we come with for a solution, but it's a
-> > > complicated solution and may not be accepted as this issue is not seen as a
-> > > problem in practice.
-> > If that is the case, I'd suggest to consider the solution in the
-> > following link:
-> > 
-> > https://lore.kernel.org/linux-block/20200820180335.3109216-1-ming.lei@redhat.com/
-> > 
-> > At least, the idea is simple, which can be extended to support allocate driver tags
-> > request pool dynamically.
-> 
-> As I see with your approach, we may still iterate a stale request, but it
-> just has not been freed, so just no use-after-free BUG, right? Rather it is
-> cached until all references dropped. It may be best solution.
+> Change Log:
+> v4:
+> - Address various comments from Shuah Khan:
+>   1. Combine a few patches e.g. a couple of fixing typos patches into one
+>      and a couple of unmounting patches into one etc.
+>   2. Add config file.
+>   3. Remove "Fixes" tags.
+>   4. Change strcmp() to strncmp().
+>   5. Move the global variable fixing patch to the patch 1 so that the
+>      compilation issue is fixed first.
 
-The approach just need to read the stale request pointer, and won't
-access any field of that request, so no UAF. Yeah, the stale request
-won't be freed until when the reference from request pool is dropped.
+Any comment on this series?
 
+Thank you very much for your review!
 
-
-Thanks,
-Ming
-
+-Fenghua
