@@ -2,117 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336632D8021
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA1A2D801B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403778AbgLKUnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 15:43:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45648 "EHLO
+        id S2389772AbgLKUmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 15:42:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389233AbgLKUmP (ORCPT
+        with ESMTP id S1731017AbgLKUly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 15:42:15 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C3CC061793
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:41:35 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id g20so14169578ejb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:41:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E6ZVINXPsdzUvTi8y4F5dCQAcZ1z+AuX7onsYghdXXU=;
-        b=QWWiLxi3n5qfdFyONIr2q2ssLsNW2+Y/Fm1gJOa6KJ7O8TwqDxIC5alcqwk19dNRU1
-         PR3OJwLyy5Jl5QhBlZHCjStP2IOafpHAz3NLC8JC9kPe7FpNLPfNUCDlYPIiXTISHk/6
-         RVXF0IoaSYhxySEwGA8a9hR7gkHaIBXb5cajEi8huBPeKDeLIjiPB/lPsn4vYoO8833X
-         2fTjd4tRTNVBdPAItaDY7n8FmYGNK1mCyevS45WNvav8qR0fI5a8Hirkg3gHPlFy6puK
-         X3++oIucgL1it8TgHK8uRisl6iSIAIBh+gx/ewyDkrAbZwOt91TUqQd+wmIvPOxitsXT
-         FX7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E6ZVINXPsdzUvTi8y4F5dCQAcZ1z+AuX7onsYghdXXU=;
-        b=qSLwvtkj2KPMsBfc3Q/QXjwj2Uqw+q+xFc5Zi9z6pvHuhBQUNR7CfqhUMNUp6ytEEV
-         jp/k0S9kp4YznAT4636wIpY6+IkQ/AZ0Quo7YMlqHYBboUFmUjXuT4Y1pGnSovHfLxjP
-         W+3EXyYvViZpIlgl4DVk7BrsWn7wuKpDQ+ytha77hYQ9JOM8ERt26DR8FY51TfJMvoSZ
-         waTZ2lHCc4pbOJDbVzOrVDRgaSSq70+P/IqRDOeogN5gq05OsC2qC9YFvYe1dBEkEddN
-         KUhpkTHV/McKTbcJpbJR/ECdmiUm53UQhodLjY+PH9Is5hikUg7jCZU5L2lNoChxqYoF
-         V3YA==
-X-Gm-Message-State: AOAM532nF1kTBvDjS0b6fWu5gZ2HgieXzqnK/8WWc1AYM1f8kvGhTr57
-        tUVVLrCLYJ7PgGzBdS5wmsWKRQvAOHOiboYVEEji3Q==
-X-Google-Smtp-Source: ABdhPJwhZ3hcnDKpQaKtFRHwNLn5KQ58koBxmqgOXsc76EHMbiiKHOf39MDRAkuqekpT9xaF9RD78X1VcWZej0Q1Mww=
-X-Received: by 2002:a17:906:5213:: with SMTP id g19mr8813843ejm.383.1607719293747;
- Fri, 11 Dec 2020 12:41:33 -0800 (PST)
+        Fri, 11 Dec 2020 15:41:54 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3904C0613D3;
+        Fri, 11 Dec 2020 12:41:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=6knrEQCXntsvK6+oBQBU88owhBmoCN500ay3MRFs9Ko=; b=y1oaq5OFwNRVrMS/k4g5kzuHXy
+        XpXuBMOlEXrB0j4TWDl24eUR8m4kug6Kiy580Qu8rbWpQwIk5iQQIll4YBdDLhqML7hcuyEB+7Njs
+        RTwbANKlIwijDuQsV8xGsMaWzyDfSvkDag8oSG7cwrv+mD6ONsJ5NIrItOSlen6bxc31jYj8lPok7
+        JGJHSadg1rVZjm1bZ0ZSZpTS+VZuLOwZxuAlhjcCJ5iQkI67NLior/6QUz7pL/4SkmEUPZtCxRUpJ
+        WfwPoO177OuqB+DpYFbNnNrLgg+I+I2cfDIi55Y8GImfnaKVjvhtvHUHJOqDu0/vdaOwSacYmFTJc
+        b68get1g==;
+Received: from [2601:1c0:6280:3f0::1494]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1knpDz-0002w9-G5; Fri, 11 Dec 2020 20:41:11 +0000
+Subject: Re: [PATCH -next] platform: surface: fix non-PM_SLEEP build warnings
+To:     Maximilian Luz <luzmaximilian@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        platform-driver-x86@vger.kernel.org
+References: <20201211190335.16501-1-rdunlap@infradead.org>
+ <3705938f-6f82-88ef-455b-e0f7459989e3@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c9e708d4-f4c5-01e2-d003-7f5d92a533e9@infradead.org>
+Date:   Fri, 11 Dec 2020 12:41:07 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201211202140.396852-1-pasha.tatashin@soleen.com>
- <20201211202140.396852-6-pasha.tatashin@soleen.com> <20201211202354.GA2225686@ziepe.ca>
-In-Reply-To: <20201211202354.GA2225686@ziepe.ca>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Fri, 11 Dec 2020 15:40:57 -0500
-Message-ID: <CA+CK2bDPR8vH+H6cqBn=RTXRCp5kv3ExNPD8DHB09vVWLc3YmA@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] mm/gup: migrate pinned pages out of movable zone
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3705938f-6f82-88ef-455b-e0f7459989e3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 3:23 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Fri, Dec 11, 2020 at 03:21:39PM -0500, Pavel Tatashin wrote:
-> > @@ -1593,7 +1592,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
-> >                               }
-> >
-> >                               if (!isolate_lru_page(head)) {
-> > -                                     list_add_tail(&head->lru, &cma_page_list);
-> > +                                     list_add_tail(&head->lru, &movable_page_list);
-> >                                       mod_node_page_state(page_pgdat(head),
-> >                                                           NR_ISOLATED_ANON +
-> >                                                           page_is_file_lru(head),
-> > @@ -1605,7 +1604,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
-> >               i += step;
-> >       }
-> >
-> > -     if (!list_empty(&cma_page_list)) {
-> > +     if (!list_empty(&movable_page_list)) {
->
-> You didn't answer my earlier question, is it OK that ZONE_MOVABLE
-> pages leak out here if ioslate_lru_page() fails but the
-> moval_page_list is empty?
->
-> I think the answer is no, right?
-In my opinion it is OK. We are doing our best to not pin movable
-pages, but if isolate_lru_page() fails because pages are currently
-locked by someone else, we will end up long-term pinning them.
-See comment in this patch:
-+        * 1. Pinned pages: (long-term) pinning of movable pages is avoided
-+        *    when pages are pinned and faulted, but it is still possible that
-+        *    address space already has pages in ZONE_MOVABLE at the time when
-+        *    pages are pinned (i.e. user has touches that memory before
-+        *    pinning). In such case we try to migrate them to a different zone,
-+        *    but if migration fails the pages can still end-up pinned in
-+        *    ZONE_MOVABLE. In such case, memory offlining might retry a long
-+        *    time and will only succeed once user application unpins pages.
+On 12/11/20 12:23 PM, Maximilian Luz wrote:
+> On 12/11/20 8:03 PM, Randy Dunlap wrote:
+>> Fix build warnings when CONFIG_PM_SLEEP is not enabled and these
+>> functions are not used:
+>>
+>> ../drivers/platform/surface/surface_gpe.c:189:12: warning: ‘surface_gpe_resume’ defined but not used [-Wunused-function]
+>>   static int surface_gpe_resume(struct device *dev)
+>>              ^~~~~~~~~~~~~~~~~~
+>> ../drivers/platform/surface/surface_gpe.c:184:12: warning: ‘surface_gpe_suspend’ defined but not used [-Wunused-function]
+>>   static int surface_gpe_suspend(struct device *dev)
+>>              ^~~~~~~~~~~~~~~~~~~
+>>
+>> Fixes: 274335f1c557 ("platform/surface: Add Driver to set up lid GPEs on MS Surface device")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Maximilian Luz <luzmaximilian@gmail.com>
+>> Cc: Hans de Goede <hdegoede@redhat.com>
+>> Cc: platform-driver-x86@vger.kernel.org
+>> ---
+>>   drivers/platform/surface/surface_gpe.c |    2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> --- linux-next-20201210.orig/drivers/platform/surface/surface_gpe.c
+>> +++ linux-next-20201210/drivers/platform/surface/surface_gpe.c
+>> @@ -181,6 +181,7 @@ static int surface_lid_enable_wakeup(str
+>>       return 0;
+>>   }
+>>   +#ifdef CONFIG_PM_SLEEP
+>>   static int surface_gpe_suspend(struct device *dev)
+>>   {
+>>       return surface_lid_enable_wakeup(dev, true);
+>> @@ -190,6 +191,7 @@ static int surface_gpe_resume(struct dev
+>>   {
+>>       return surface_lid_enable_wakeup(dev, false);
+>>   }
+>> +#endif
+>>     static SIMPLE_DEV_PM_OPS(surface_gpe_pm, surface_gpe_suspend, surface_gpe_resume);
+>>  
+> 
+> Right, thanks.
+> 
+> I assume this covers all instances of this warning in platform/surface?
+> Otherwise, a "platform: surface: gpe: ..." subject would make more sense.
 
+It should cover all of surface/. It was an allmodconfig and then I disabled
+CONFIG_PM and CONFIG_PM_SLEEP etc.
 
->
-> Jason
+As for prefixes, how many levels do we want to use?
+(that's mostly rhetorical, although I would read answers :)
+
+> As for the rest:
+> 
+> Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
+
+thanks.
+-- 
+~Randy
+
