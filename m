@@ -2,147 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFE92D7476
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 173CA2D7477
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:06:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393641AbgLKLC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 06:02:57 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29542 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389198AbgLKLCz (ORCPT
+        id S2394333AbgLKLEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 06:04:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389234AbgLKLEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 06:02:55 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BBB1uHl044220;
-        Fri, 11 Dec 2020 06:02:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=2UWdtsIqmeTCpDTpXt5VueVpDBTzEi7aN1IYg6RDpdA=;
- b=ZOKHrGBDbNvIl0Sa1klVruC7a0MCf9kjMh++99ZBZ5L5XfT6V3K4F2QSU+nWWSMlDSr7
- ZWIyZjtshjuWtdXdbU+j+nXCq03eGQyfA2y0Ur10nKSEiPduD4td3TP1peYZEUUT9CkX
- DCD9B41g4oOcUxO4gMj8HEM9HCZBZga0esQirtU6fswHlUpOfe999SQmQu+qxREC71mG
- GbUIs9KjI5pjCBWGT+2t93Vm+clsjvkOZyHz73TgaWASR378gdV6yonj6br6G7dWZs3l
- c8ys5y5sYEVhuL3sfOFxES0xQGCIi7qiRcONlCIki/iolfTSsk6TRZmvmd8Ucks/9ifH Lw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35c6ka9mhx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Dec 2020 06:02:12 -0500
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BBB2ALL045416;
-        Fri, 11 Dec 2020 06:02:10 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35c6ka9mbx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Dec 2020 06:02:10 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BBAvTb2000783;
-        Fri, 11 Dec 2020 11:01:59 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 3581u86wx6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Dec 2020 11:01:59 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BBB1vvD29950354
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Dec 2020 11:01:57 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E07B4A4062;
-        Fri, 11 Dec 2020 11:01:56 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4EE6DA4054;
-        Fri, 11 Dec 2020 11:01:55 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.117.114])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 11 Dec 2020 11:01:55 +0000 (GMT)
-Message-ID: <659c09673affe9637a5d1391c12af3aa710ba78a.camel@linux.ibm.com>
-Subject: Re: [PATCH AUTOSEL 5.7 03/30] ima: extend boot_aggregate with
- kernel measurements
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Maurizio Drocco <maurizio.drocco@ibm.com>,
-        Bruno Meneguele <bmeneg@redhat.com>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Date:   Fri, 11 Dec 2020 06:01:54 -0500
-In-Reply-To: <20201211031008.GN489768@sequoia>
-References: <20200708154116.3199728-1-sashal@kernel.org>
-         <20200708154116.3199728-3-sashal@kernel.org>
-         <1594224793.23056.251.camel@linux.ibm.com>
-         <20200709012735.GX2722994@sasha-vm>
-         <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
-         <20201211031008.GN489768@sequoia>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-11_01:2020-12-09,2020-12-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- clxscore=1031 impostorscore=0 bulkscore=0 priorityscore=1501
- lowpriorityscore=0 spamscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012110066
+        Fri, 11 Dec 2020 06:04:04 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D71C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 03:03:24 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kngCk-00011a-N7; Fri, 11 Dec 2020 12:03:18 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kngCk-0004S2-AH; Fri, 11 Dec 2020 12:03:18 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH v2] net: dsa: qca: ar9331: fix sleeping function called from invalid context bug
+Date:   Fri, 11 Dec 2020 12:03:17 +0100
+Message-Id: <20201211110317.17061-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-12-10 at 21:10 -0600, Tyler Hicks wrote:
-> On 2020-11-29 08:17:38, Mimi Zohar wrote:
-> > Hi Sasha,
-> > 
-> > On Wed, 2020-07-08 at 21:27 -0400, Sasha Levin wrote:
-> > > On Wed, Jul 08, 2020 at 12:13:13PM -0400, Mimi Zohar wrote:
-> > > >Hi Sasha,
-> > > >
-> > > >On Wed, 2020-07-08 at 11:40 -0400, Sasha Levin wrote:
-> > > >> From: Maurizio Drocco <maurizio.drocco@ibm.com>
-> > > >>
-> > > >> [ Upstream commit 20c59ce010f84300f6c655d32db2610d3433f85c ]
-> > > >>
-> > > >> Registers 8-9 are used to store measurements of the kernel and its
-> > > >> command line (e.g., grub2 bootloader with tpm module enabled). IMA
-> > > >> should include them in the boot aggregate. Registers 8-9 should be
-> > > >> only included in non-SHA1 digests to avoid ambiguity.
-> > > >
-> > > >Prior to Linux 5.8, the SHA1 template data hashes were padded before
-> > > >being extended into the TPM.  Support for calculating and extending
-> > > >the per TPM bank template data digests is only being upstreamed in
-> > > >Linux 5.8.
-> > > >
-> > > >How will attestation servers know whether to include PCRs 8 & 9 in the
-> > > >the boot_aggregate calculation?  Now, there is a direct relationship
-> > > >between the template data SHA1 padded digest not including PCRs 8 & 9,
-> > > >and the new per TPM bank template data digest including them.
-> > > 
-> > > Got it, I'll drop it then, thank you!
-> > 
-> > After re-thinking this over, I realized that the attestation server can
-> > verify the "boot_aggregate" based on the quoted PCRs without knowing
-> > whether padded SHA1 hashes or per TPM bank hash values were extended
-> > into the TPM[1], but non-SHA1 boot aggregate values [2] should always
-> > include PCRs 8 & 9.
-> 
-> I'm still not clear on how an attestation server would know to include
-> PCRs 8 and 9 after this change came through a stable kernel update. It
-> doesn't seem like something appropriate for stable since it requires
-> code changes to attestation servers to handle the change.
-> 
-> I know this has already been released in some stable releases, so I'm
-> too late, but perhaps I'm missing something.
+With lockdep enabled, we will get following warning:
 
-The point of adding PCRs 8 & 9 only to non-SHA1 boot_aggregate values
-was to avoid affecting existing attestation servers.  The intention was
-when attestation servers added support for the non-sha1 boot_aggregate
-values, they'd also include PCRs 8 & 9.  The existing SHA1
-boot_aggregate value remains PCRs 0 - 7.
+ ar9331_switch ethernet.1:10 lan0 (uninitialized): PHY [!ahb!ethernet@1a000000!mdio!switch@10:00] driver [Qualcomm Atheros AR9331 built-in PHY] (irq=13)
+ BUG: sleeping function called from invalid context at kernel/locking/mutex.c:935
+ in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 18, name: kworker/0:1
+ INFO: lockdep is turned off.
+ irq event stamp: 602
+ hardirqs last  enabled at (601): [<8073fde0>] _raw_spin_unlock_irq+0x3c/0x80
+ hardirqs last disabled at (602): [<8073a4f4>] __schedule+0x184/0x800
+ softirqs last  enabled at (0): [<80080f60>] copy_process+0x578/0x14c8
+ softirqs last disabled at (0): [<00000000>] 0x0
+ CPU: 0 PID: 18 Comm: kworker/0:1 Not tainted 5.10.0-rc3-ar9331-00734-g7d644991df0c #31
+ Workqueue: events deferred_probe_work_func
+ Stack : 80980000 80980000 8089ef70 80890000 804b5414 80980000 00000002 80b53728
+         00000000 800d1268 804b5414 ffffffde 00000017 800afe08 81943860 0f5bfc32
+         00000000 00000000 8089ef70 819436c0 ffffffea 00000000 00000000 00000000
+         8194390c 808e353c 0000000f 66657272 80980000 00000000 00000000 80890000
+         804b5414 80980000 00000002 80b53728 00000000 00000000 00000000 80d40000
+         ...
+ Call Trace:
+ [<80069ce0>] show_stack+0x9c/0x140
+ [<800afe08>] ___might_sleep+0x220/0x244
+ [<8073bfb0>] __mutex_lock+0x70/0x374
+ [<8073c2e0>] mutex_lock_nested+0x2c/0x38
+ [<804b5414>] regmap_update_bits_base+0x38/0x8c
+ [<804ee584>] regmap_update_bits+0x1c/0x28
+ [<804ee714>] ar9331_sw_unmask_irq+0x34/0x60
+ [<800d91f0>] unmask_irq+0x48/0x70
+ [<800d93d4>] irq_startup+0x114/0x11c
+ [<800d65b4>] __setup_irq+0x4f4/0x6d0
+ [<800d68a0>] request_threaded_irq+0x110/0x190
+ [<804e3ef0>] phy_request_interrupt+0x4c/0xe4
+ [<804df508>] phylink_bringup_phy+0x2c0/0x37c
+ [<804df7bc>] phylink_of_phy_connect+0x118/0x130
+ [<806c1a64>] dsa_slave_create+0x3d0/0x578
+ [<806bc4ec>] dsa_register_switch+0x934/0xa20
+ [<804eef98>] ar9331_sw_probe+0x34c/0x364
+ [<804eb48c>] mdio_probe+0x44/0x70
+ [<8049e3b4>] really_probe+0x30c/0x4f4
+ [<8049ea10>] driver_probe_device+0x264/0x26c
+ [<8049bc10>] bus_for_each_drv+0xb4/0xd8
+ [<8049e684>] __device_attach+0xe8/0x18c
+ [<8049ce58>] bus_probe_device+0x48/0xc4
+ [<8049db70>] deferred_probe_work_func+0xdc/0xf8
+ [<8009ff64>] process_one_work+0x2e4/0x4a0
+ [<800a0770>] worker_thread+0x2a8/0x354
+ [<800a774c>] kthread+0x16c/0x174
+ [<8006306c>] ret_from_kernel_thread+0x14/0x1c
 
-To prevent this or something similar from happening again, what should
-have been the proper way of including PCRs 8 & 9?
+ ar9331_switch ethernet.1:10 lan1 (uninitialized): PHY [!ahb!ethernet@1a000000!mdio!switch@10:02] driver [Qualcomm Atheros AR9331 built-in PHY] (irq=13)
+ DSA: tree 0 setup
 
-thanks,
+To fix it, it is better to move access to MDIO register to the .irq_bus_sync_unlock
+call back.
 
-Mimi
+Fixes: ec6698c272de ("net: dsa: add support for Atheros AR9331 built-in switch")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+changes v2:
+- fix comment on error
+
+ drivers/net/dsa/qca/ar9331.c | 33 ++++++++++++++++++++++++---------
+ 1 file changed, 24 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
+index e24a99031b80..4d49c5f2b790 100644
+--- a/drivers/net/dsa/qca/ar9331.c
++++ b/drivers/net/dsa/qca/ar9331.c
+@@ -159,6 +159,8 @@ struct ar9331_sw_priv {
+ 	struct dsa_switch ds;
+ 	struct dsa_switch_ops ops;
+ 	struct irq_domain *irqdomain;
++	u32 irq_mask;
++	struct mutex lock_irq;
+ 	struct mii_bus *mbus; /* mdio master */
+ 	struct mii_bus *sbus; /* mdio slave */
+ 	struct regmap *regmap;
+@@ -520,32 +522,44 @@ static irqreturn_t ar9331_sw_irq(int irq, void *data)
+ static void ar9331_sw_mask_irq(struct irq_data *d)
+ {
+ 	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
+-	struct regmap *regmap = priv->regmap;
+-	int ret;
+ 
+-	ret = regmap_update_bits(regmap, AR9331_SW_REG_GINT_MASK,
+-				 AR9331_SW_GINT_PHY_INT, 0);
+-	if (ret)
+-		dev_err(priv->dev, "could not mask IRQ\n");
++	priv->irq_mask = 0;
+ }
+ 
+ static void ar9331_sw_unmask_irq(struct irq_data *d)
++{
++	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
++
++	priv->irq_mask = AR9331_SW_GINT_PHY_INT;
++}
++
++static void ar9331_sw_irq_bus_lock(struct irq_data *d)
++{
++	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
++
++	mutex_lock(&priv->lock_irq);
++}
++
++static void ar9331_sw_irq_bus_sync_unlock(struct irq_data *d)
+ {
+ 	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
+ 	struct regmap *regmap = priv->regmap;
+ 	int ret;
+ 
+ 	ret = regmap_update_bits(regmap, AR9331_SW_REG_GINT_MASK,
+-				 AR9331_SW_GINT_PHY_INT,
+-				 AR9331_SW_GINT_PHY_INT);
++				 AR9331_SW_GINT_PHY_INT, priv->irq_mask);
+ 	if (ret)
+-		dev_err(priv->dev, "could not unmask IRQ\n");
++		dev_err(priv->dev, "failed to change IRQ mask\n");
++
++	mutex_unlock(&priv->lock_irq);
+ }
+ 
+ static struct irq_chip ar9331_sw_irq_chip = {
+ 	.name = AR9331_SW_NAME,
+ 	.irq_mask = ar9331_sw_mask_irq,
+ 	.irq_unmask = ar9331_sw_unmask_irq,
++	.irq_bus_lock = ar9331_sw_irq_bus_lock,
++	.irq_bus_sync_unlock = ar9331_sw_irq_bus_sync_unlock,
+ };
+ 
+ static int ar9331_sw_irq_map(struct irq_domain *domain, unsigned int irq,
+@@ -584,6 +598,7 @@ static int ar9331_sw_irq_init(struct ar9331_sw_priv *priv)
+ 		return irq ? irq : -EINVAL;
+ 	}
+ 
++	mutex_init(&priv->lock_irq);
+ 	ret = devm_request_threaded_irq(dev, irq, NULL, ar9331_sw_irq,
+ 					IRQF_ONESHOT, AR9331_SW_NAME, priv);
+ 	if (ret) {
+-- 
+2.29.2
 
