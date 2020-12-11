@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D132D77A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A118D2D779F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405951AbgLKOSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 09:18:46 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:13927 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392467AbgLKORr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:17:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1607696095;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
-        Subject:Sender;
-        bh=BeWQGq5OH45QSmctQUr/hmfG243Im2dTgq5QSkZowP4=;
-        b=rQphjxf9Kci7gq2g6WL9AW3VEk8Ldj3eIvZkjHZ5BxKatBo9kCwmmc4XgSLnaKwCst
-        ocj/9wK9L0HfcOtBkwKAB/RozERKajPO/L63k1LZRkEdNRV1ls4uNon0/I70kxF2iQ7A
-        dNX+EJdcnb7P3RLpQrI++oZS/Lc9Uxv+M09SKn30HjnGSYQomxzqSBzgkB4Hol7Kjqr/
-        VSO4olqeUpOx/qeoK/VsCz9pp1JBvp7eVYT1fgYraMhahsITYv2GJkQ0aIydEzdf9cBd
-        as+MA8/dE3aSQ8hqQf8kSXsZPDRAOJmYvVhhraYtMUo2A88P1kV/GSLbN73G2v7KqPl+
-        gZ7g==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNzyCzy1Sfr67uExK884EC0GFGHev6G4xuq1eJ0Y="
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-        by smtp.strato.de (RZmta 47.7.1 DYNA|AUTH)
-        with ESMTPSA id L0a6acwBBEEX0rx
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Fri, 11 Dec 2020 15:14:33 +0100 (CET)
-Message-ID: <00235d6da9beddd365217aeb8add986c615762bc.camel@chronox.de>
-Subject: Re: [PATCH v4 5/5] crypto: hisilicon/hpre - add 'CURVE25519'
- algorithm
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Meng Yu <yumeng18@huawei.com>, herbert@gondor.apana.org.au,
-        davem@davemloft.net
-Cc:     linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
-        wangzhou1@hisilicon.com, linux-kernel@vger.kernel.org
-Date:   Fri, 11 Dec 2020 15:14:33 +0100
-In-Reply-To: <1607668234-46130-6-git-send-email-yumeng18@huawei.com>
-References: <1607668234-46130-1-git-send-email-yumeng18@huawei.com>
-         <1607668234-46130-6-git-send-email-yumeng18@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        id S2405857AbgLKORp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 09:17:45 -0500
+Received: from mga14.intel.com ([192.55.52.115]:41044 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392467AbgLKORN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 09:17:13 -0500
+IronPort-SDR: qq/4De6eCPqwrVfx8GPQkXuCpgpSzD4tLD8havXGCnDnj7wMURw3K3f7DdV49vgx+NaOlFE5fp
+ qIDKEyHzwWHA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="173669261"
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="173669261"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 06:15:24 -0800
+IronPort-SDR: ENbV8zVbC8ATmpe21dWVwIvKWHRJBscF/ML/5oqXEI44K2+fV5ZbuEzVPNkCnbxdh7SaJM4iNZ
+ a2R3zwhMf6mw==
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="322078624"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 06:15:22 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1knjDc-00Dfqf-PO; Fri, 11 Dec 2020 16:16:24 +0200
+Date:   Fri, 11 Dec 2020 16:16:24 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Stultz <john.stultz@linaro.org>
+Subject: Re: [PATCH 2/2] usb: dwc3: drd: Avoid error when extcon is missing
+Message-ID: <20201211141624.GQ4077@smile.fi.intel.com>
+References: <20201210203318.6914-1-semen.protsenko@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210203318.6914-1-semen.protsenko@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, den 11.12.2020, 14:30 +0800 schrieb Meng Yu:
->   
-> +/* curve25519 */
-> +static u64 curve25519_g_x[] = { 0x0000000000000009, 0x0000000000000000,
-> +                               0x0000000000000000, 0x0000000000000000 };
-> +static u64 curve25519_p[] = { 0xffffffffffffffed, 0xffffffffffffffff,
-> +                               0xffffffffffffffff, 0x7fffffffffffffff };
-> +static u64 curve25519_a[] = { 0x000000000001DB41, 0x0000000000000000,
-> +                               0x0000000000000000, 0x0000000000000000 };
-> +static const struct ecc_curve ecc_25519 = {
-> +       .name = "curve25519",
-> +       .g = {
-> +               .x = curve25519_g_x,
-> +               .ndigits = 4,
-> +       },
-> +       .p = curve25519_p,
-> +       .a = curve25519_a,
-> +};
+On Thu, Dec 10, 2020 at 10:33:18PM +0200, Sam Protsenko wrote:
+> If "port" node is missing in PHY controller node, dwc3_get_extcon()
+> isn't able to find extcon device. This is perfectly fine in case when
+> "usb-role-switch" or OTG is used, but next misleading error message is
+> printed in that case, from of_graph_get_remote_node():
+> 
+>     OF: graph: no port node found in /phy@1234abcd
+> 
+> Avoid printing that message by checking if port node exists in PHY node
+> before calling of_graph_get_remote_node().
 
-With this definition, I am not sure whether ecc_is_pubkey_valid_partial would
-work correctly. At least it *seems* that there would be a NULL-pointer
-dereference in vli_add with the undefined .b value. Did you test and can you
-confirm?
+By some reason you have two separate messages (missed --thread when run `git
+format-patch ...`?).
 
-Thanks
-Stephan
+In any case I think it should be dropped or reworked and resent since patch 1/2
+got comments.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
