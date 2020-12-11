@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991852D6E63
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 370EE2D6E65
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395026AbgLKDNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 22:13:10 -0500
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:41028 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389864AbgLKDMu (ORCPT
+        id S2405112AbgLKDOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 22:14:01 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:48614 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395034AbgLKDN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 22:12:50 -0500
-Received: by mail-oo1-f65.google.com with SMTP id q6so1021228ooo.8;
-        Thu, 10 Dec 2020 19:12:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=20FUrkWgYAPacYXxuWXY+xSuM7UzPwHMJmdN/diicTY=;
-        b=AGNFSUdDPq9/57f9mlK/N+NsHz3h8CYkH1WiBVo7JEzWScDSBLw+VL/ls6ZP7D81WK
-         /+HnmCvcTo9tJquaSqXe8lyhWS25rYy50gmX9TsJ0WiUhbGlFNFGPwk5fNrJ25R8AR9F
-         Ck6oxh/S/YPSdWhuPQbgVXZsKHI88/YvaEAwtuZ+3YFvePG8jUqyBO6ZWazTe72v6qsU
-         1uv9fkvhTqgNRGUb5ZY88nijAtfXNV48msEWGroUWBULcdYoCsmBf91h2o9+Ncz8chyZ
-         OAgKxXvyA6AztpAmtML+deSRgFHHM5vczS2a5wX9vWRR0+MARDKYYf+p7iqZjWGJDCO8
-         rb6A==
-X-Gm-Message-State: AOAM533xlnLqMjpzVCjigYFnoLtBzGgE9Il1jbEwlzKV5+lHMGUhdAp4
-        B07GxQkPlmTShPaqb4abdQ==
-X-Google-Smtp-Source: ABdhPJwohjal/Q+JcqCNbtBwiT+Ur1QE8QEtsOSmxZ6JD0zWUlTAcOoTlEyI60ZGWGKBfLTL5wWqQA==
-X-Received: by 2002:a4a:bc8d:: with SMTP id m13mr8457514oop.63.1607656329889;
-        Thu, 10 Dec 2020 19:12:09 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o63sm1500679ooa.10.2020.12.10.19.12.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 19:12:08 -0800 (PST)
-Received: (nullmailer pid 3555218 invoked by uid 1000);
-        Fri, 11 Dec 2020 03:12:07 -0000
-Date:   Thu, 10 Dec 2020 21:12:07 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-sunxi@googlegroups.com, Jonathan Corbet <corbet@lwn.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        kevin.lhopital@hotmail.com, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Deng <yong.deng@magewell.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: Re: [PATCH v2 16/19] dt-bindings: media: Add A83T MIPI CSI-2
- bindings documentation
-Message-ID: <20201211031207.GA3555125@robh.at.kernel.org>
-References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
- <20201128142839.517949-17-paul.kocialkowski@bootlin.com>
+        Thu, 10 Dec 2020 22:13:29 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BB39WlL059885;
+        Fri, 11 Dec 2020 03:12:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=HRb984SQuzZAL6sFmQ/JEAwKN5b9oAgH5R6M9KaqRdY=;
+ b=IEOIHaCiClQhDHwnI79DMwSBthhhMlevs2kozDL8RXaZ3E82QNuJcXM4voXxVl1OPKoU
+ En8D612sgCvWLJb67b0zYoD5rlFD4kwX75FBrXzNlBxwKhDI6SVC5a6jGmrQyeSXXn7T
+ +4OGDRmkJhfd4RiWazkAPNUH3mGYSwRrQLMDCelA7Mt7mfJSrdXjBKMp+dENjQIqhVQm
+ 7QJxd+0xSO4NMr8YtjoXoiYWxOeqVwKRzTC/wRhM9EPDFwWRhyoeZUF7SYcmhyxNTqpZ
+ XtnDuLpr1mhJvudPUQr2OU/R5ndcbqw/IbZJOZMBlE7h7QYgkmZWq/lxy5XNdVTkcVS2 1Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 357yqc8kqt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Dec 2020 03:12:19 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BB3AmFQ128600;
+        Fri, 11 Dec 2020 03:12:19 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 358kyxbt1d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Dec 2020 03:12:19 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BB3CI7X015797;
+        Fri, 11 Dec 2020 03:12:18 GMT
+Received: from [10.159.144.152] (/10.159.144.152)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 10 Dec 2020 19:12:17 -0800
+Subject: Re: [PATCH 1/1] ktest.pl: Fix incorrect reboot for grub2bls
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>
+References: <20201121021243.1532477-1-libo.chen@oracle.com>
+ <20201130013256.oryyz4wxd356n74o@gabell>
+ <20201130222514.0949e3cc@oasis.local.home>
+ <37123326-8e04-dce4-502a-410c3e979974@oracle.com>
+ <20201210194504.3d9fb132@oasis.local.home>
+From:   Libo Chen <libo.chen@oracle.com>
+Message-ID: <53632126-7902-6f51-efc2-f6e3604bb706@oracle.com>
+Date:   Thu, 10 Dec 2020 19:12:17 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201128142839.517949-17-paul.kocialkowski@bootlin.com>
+In-Reply-To: <20201210194504.3d9fb132@oasis.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012110018
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9831 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ clxscore=1015 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012110018
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 28 Nov 2020 15:28:36 +0100, Paul Kocialkowski wrote:
-> This introduces YAML bindings documentation for the A83T MIPI CSI-2
-> controller.
-> 
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> ---
->  .../media/allwinner,sun8i-a83t-mipi-csi2.yaml | 147 ++++++++++++++++++
->  1 file changed, 147 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/allwinner,sun8i-a83t-mipi-csi2.yaml
-> 
+On 12/10/20 4:45 PM, Steven Rostedt wrote:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> On Thu, 10 Dec 2020 15:09:46 -0800
+> Libo Chen <libo.chen@oracle.com> wrote:
+>
+>
+>> Hi Steven,
+>>
+>>
+>> Just wanna check in and check on the status of it.
+> I have it applied in my local repo (even in my for-next, which I forgot
+> to push :-p)
+>
+> I've been testing it on all my build machines along with my own patches.
+>
+> Anyway, it's in my queue (with two of my own patches) that I was
+> thinking of pushing to Linus during the next merge window. But I can
+> send your patch now, and see if he's willing to take it.
+>
+> Thanks for pinging me.
+>
+> -- Steve
+
+Thanks Steven! It looks like Linus has taken it.
+
+
+Libo
+
