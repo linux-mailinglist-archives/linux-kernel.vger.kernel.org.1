@@ -2,91 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881012D74B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 325D62D74BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394869AbgLKLcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 06:32:10 -0500
-Received: from foss.arm.com ([217.140.110.172]:51326 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394860AbgLKLbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 06:31:32 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8BECA31B;
-        Fri, 11 Dec 2020 03:30:46 -0800 (PST)
-Received: from [192.168.178.2] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 663F93F68F;
-        Fri, 11 Dec 2020 03:30:43 -0800 (PST)
-Subject: Re: [PATCH] fair/util_est: Separate util_est_dequeue() for
- cfs_rq_util_change
-To:     Xuewen Yan <xuewen.yan94@gmail.com>, patrick.bellasi@arm.com,
-        vincent.guittot@linaro.org, peterz@infradead.org
-Cc:     mingo@redhat.com, juri.lelli@redhat.com, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        linux-kernel@vger.kernel.org, Xuewen.Yan@unisoc.com,
-        xuewyan@foxmail.com
-References: <1607510656-22990-1-git-send-email-xuewen.yan@unisoc.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <2edefcc7-ccea-5665-728e-5b86ac413629@arm.com>
-Date:   Fri, 11 Dec 2020 12:30:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2391863AbgLKLde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 06:33:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730988AbgLKLdE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 06:33:04 -0500
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC3DC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 03:32:23 -0800 (PST)
+Received: by mail-ua1-x944.google.com with SMTP id g3so2736793uae.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 03:32:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wwm6zOPoi4PewnHX/M0FVc7OW+eK52gkrmZ20s+gfBE=;
+        b=P6OPuNxuh7Y9Adq5IAJX/xZdCKd6WMCawiODgutJhjY0gqq7e3tIbqTu/85cUYDUBE
+         2e/CCdqZKdfhT68lKLcB6JJXwqe6a/wxeuZE8YO0RJlCANT1n63VE1XCvC21hB8FNQS6
+         S2crh8TI2FJqfk+LVzCFRp59t3gEqDKbxtOADDdaJ6S0rsDsxCRDEQEEB98wsdVtVtb1
+         gy+PbB0ugNor4McB4Ct+dw1gzJPaCyYLlNpggPRojBI6EJOl7+U0JWm0i02PphR6/jOm
+         sZQKH9QH5RU8kdb3FJVcUECdEILkS+K+dAKxjGD6pYieoXG+A4XlQBsgG/kAMjHrWYfu
+         hJPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wwm6zOPoi4PewnHX/M0FVc7OW+eK52gkrmZ20s+gfBE=;
+        b=T0jxRWJrDPpcJdTv5dDtKthUj7B4TITNCW1/Pa30YDZF7vw6WfANMxgKr2z8jCYJ2r
+         t2wjARLmiAkDSSZxKO6xuaIs87Nc//bhoSd+gCz+qsNv5KanYcskHkeLh1IqFbu68q+j
+         tBq66ggSlOpoIbOYfi0FAaAIYa8Fi+WelNZaMke6LjtkmqG6fOxTJLYSkTxaxDYPP3jX
+         z/+Vj5PRNFqziAgcD5v61p1HrHDoWoiYmxMFsg8b7N1GNMT90xZ31HmWnnxYCiKRP4Ec
+         3hsy7hkWxddNTUVeBhqnv+LJ0HaVhhlAInD9gvkhweeQs04dsMjQvc88AK3fcbfqaud9
+         1dlQ==
+X-Gm-Message-State: AOAM532eXrghfUEmUCkxFMbWTOG+a272x6M6EU/vTuh63O+spT7JqYoT
+        0Ltr1Yjf7g3+081yxBtVALelAN0r6aA6BqvcwvK8sg==
+X-Google-Smtp-Source: ABdhPJwnLi9jMx8j/Wk3Mof4cYvt7HL/nrsmliwVtsTjliJ24hlkf4pGj4x7nGo+BEHDV0xG7GZ88oLhscUiIr8D4Bg=
+X-Received: by 2002:ab0:4597:: with SMTP id u23mr12513632uau.100.1607686342736;
+ Fri, 11 Dec 2020 03:32:22 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1607510656-22990-1-git-send-email-xuewen.yan@unisoc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201207115753.21728-1-bbudiredla@marvell.com> <20201207115753.21728-2-bbudiredla@marvell.com>
+In-Reply-To: <20201207115753.21728-2-bbudiredla@marvell.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 11 Dec 2020 12:31:46 +0100
+Message-ID: <CAPDyKFqQwvG6vkwqPZutXjdV0hVrKp3MiqRRMZZ4C8Zr2Of9rg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mmc: Support kmsg dumper based on pstore/blk
+To:     Bhaskara Budiredla <bbudiredla@marvell.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yan,
++ Christoph
 
-On 09/12/2020 11:44, Xuewen Yan wrote:
-> when a task dequeued, it will update it's util, and cfs_rq_util_change
-> would check rq's util, if the cfs_rq->avg.util_est.enqueued is bigger
-> than  cfs_rq->avg.util_avg, but because the cfs_rq->avg.util_est.enqueued
-> didn't be decreased, this would cause bigger cfs_rq_util by mistake,
-> as a result, cfs_rq_util_change may change freq unreasonablely.
-> 
-> separate the util_est_dequeue() into util_est_dequeue() and
-> util_est_update(), and dequeue the _task_util_est(p) before update util.
+On Mon, 7 Dec 2020 at 12:58, Bhaskara Budiredla <bbudiredla@marvell.com> wrote:
+>
+> This patch introduces to mmcpstore. The functioning of mmcpstore
+> is similar to mtdpstore. mmcpstore works on FTL based flash devices
+> whereas mtdpstore works on raw flash devices. When the system crashes,
+> mmcpstore stores the kmsg panic and oops logs to a user specified
+> MMC device.
+>
+> It collects the details about the host MMC device through pstore/blk
+> "blkdev" parameter. The user can specify the MMC device in many ways
+> by checking in Documentation/admin-guide/pstore-blk.rst.
+>
+> The individual mmc host drivers have to define suitable polling and
+> cleanup subroutines to write kmsg panic/oops logs through mmcpstore.
+> These new host operations are needed as pstore panic write runs with
+> interrupts disabled.
 
-The issue is that sugov_update_[shared\|single] -> sugov_get_util() ->
-cpu_util_cfs() operates on an old  cfs_rq->avg.util_est.enqueued value?
-
-cpu_util_cfs()
-
-    if (sched_feat(UTIL_EST))
-        util = max_t(util, READ_ONCE(rq->cfs.avg.util_est.enqueued))
-                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-dequeue_task_fair() (w/ your patch, moving (1) before (2))
-
-    /* (1) update cfs_rq->avg.util_est.enqueued */
-    util_est_dequeue()
-
-    /* (2) potential p->se.avg.util_avg update */
-    /* 2 for loops */
-    for_each_sched_entity()
-
-        /* this can only lead to a freq change for a root cfs_rq */
-        (dequeue_entity() ->) update_load_avg() -> cfs_rq_util_change()
-         -> cpufreq_update_util() ->...-> sugov_update_[shared\|single]
-
-    /* (3) potential update p->se.avg.util_est */
-    util_est_update()
-
-
-We do need (3) after (2) because of:
-
-util_est_update()
-    ...
-    ue.enqueued = (task_util(p) | UTIL_AVG_UNCHANGED); task_util
-    ...           ^^^^^^^^^^^^^
-                  p->se.avg.util_avg
-
-
-Did I get this right?
+Apologies for the delay. I have tried to give this some more thinking,
+more comments below.
 
 [...]
+
+> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+> index d42037f0f10d..7682b267f1d5 100644
+> --- a/drivers/mmc/core/core.c
+> +++ b/drivers/mmc/core/core.c
+> @@ -569,6 +569,30 @@ int mmc_cqe_recovery(struct mmc_host *host)
+>  }
+>  EXPORT_SYMBOL(mmc_cqe_recovery);
+>
+> +#if IS_ENABLED(CONFIG_MMC_PSTORE)
+> +/**
+> + *     mmc_wait_for_pstore_req - initiate a blocking mmc request
+> + *     @host: MMC host to start command
+> + *     @mrq: MMC request to start
+> + *
+> + *     Start a blocking MMC request for a host and wait for the request
+> + *     to complete that is based on polling and timeout.
+> + */
+> +void mmc_wait_for_pstore_req(struct mmc_host *host, struct mmc_request *mrq)
+> +{
+> +       unsigned int timeout;
+> +
+> +       host->ops->req_cleanup_pending(host);
+
+So, the host driver should through this callback, be able to terminate
+any ongoing requests/commands - and also try to make sure that the
+(e)MMC/SD card remains in the data transfer state. Moreover, no locks
+and no IRQs must be used to manage this, right?
+
+Have you really tried if this works for real?
+
+> +       mmc_start_request(host, mrq);
+
+This looks like the wrong approach to me, as it will try to re-use the
+regular request based path, where the host driver is allowed to use
+locks, IRQs, DMAs, etc, etc.
+
+I would suggest inventing a new separate request path and a new host
+ops, to deal with these kinds of requests.
+
+In this way, the below part with host->ops->req_completion_poll, can
+probably be removed. Instead we may just wait for the request to
+return from the new request path.
+
+> +
+> +       if (mrq->data) {
+> +               timeout = mrq->data->timeout_ns / NSEC_PER_MSEC;
+> +               host->ops->req_completion_poll(host, timeout);
+> +       }
+> +}
+> +EXPORT_SYMBOL(mmc_wait_for_pstore_req);
+> +#endif
+> +
+>  /**
+>   *     mmc_is_req_done - Determine if a 'cap_cmd_during_tfr' request is done
+>   *     @host: MMC host
+> diff --git a/drivers/mmc/core/mmcpstore.c b/drivers/mmc/core/mmcpstore.c
+> new file mode 100644
+> index 000000000000..1113eae0756c
+> --- /dev/null
+> +++ b/drivers/mmc/core/mmcpstore.c
+> @@ -0,0 +1,302 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * MMC pstore support based on pstore/blk
+> + *
+> + * Copyright (c) 2020 Marvell.
+> + * Author: Bhaskara Budiredla <bbudiredla@marvell.com>
+> + */
+> +
+> +#define pr_fmt(fmt) "mmcpstore: " fmt
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/pstore_blk.h>
+> +#include <linux/blkdev.h>
+> +#include <linux/mount.h>
+> +#include <linux/slab.h>
+> +#include <linux/mmc/mmc.h>
+> +#include <linux/mmc/host.h>
+> +#include <linux/mmc/card.h>
+> +#include <linux/scatterlist.h>
+> +#include "block.h"
+> +#include "card.h"
+> +#include "core.h"
+> +
+> +static struct mmcpstore_context {
+> +       char dev_name[BDEVNAME_SIZE];
+> +       int partno;
+> +       sector_t start_sect;
+> +       sector_t size;
+> +       struct pstore_device_info dev;
+> +       struct pstore_blk_config conf;
+> +       struct pstore_blk_info info;
+> +
+> +       char *sub;
+> +       struct mmc_card *card;
+> +       struct mmc_request *mrq;
+> +} oops_cxt;
+> +
+> +static void mmc_prep_req(struct mmc_request *mrq,
+> +               unsigned int sect_offset, unsigned int nsects,
+> +               struct scatterlist *sg, u32 opcode, unsigned int flags)
+> +{
+> +       mrq->cmd->opcode = opcode;
+> +       mrq->cmd->arg = sect_offset;
+> +       mrq->cmd->flags = MMC_RSP_R1 | MMC_CMD_ADTC;
+> +
+> +       if (nsects == 1) {
+> +               mrq->stop = NULL;
+> +       } else {
+> +               mrq->stop->opcode = MMC_STOP_TRANSMISSION;
+> +               mrq->stop->arg = 0;
+> +               mrq->stop->flags = MMC_RSP_R1B | MMC_CMD_AC;
+> +       }
+> +
+> +       mrq->data->blksz = SECTOR_SIZE;
+> +       mrq->data->blocks = nsects;
+> +       mrq->data->flags = flags;
+> +       mrq->data->sg = sg;
+> +       mrq->data->sg_len = 1;
+> +}
+> +
+> +static int mmcpstore_rdwr_req(const char *buf, unsigned int nsects,
+> +                       unsigned int sect_offset, unsigned int flags)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +       struct mmc_request *mrq = cxt->mrq;
+> +       struct mmc_card *card = cxt->card;
+> +       struct mmc_host *host = card->host;
+> +       struct scatterlist sg;
+> +       u32 opcode;
+> +
+> +       if (flags == MMC_DATA_READ)
+> +               opcode  = (nsects > 1) ?
+> +                       MMC_READ_MULTIPLE_BLOCK : MMC_READ_SINGLE_BLOCK;
+> +       else
+> +               opcode = (nsects > 1) ?
+> +                       MMC_WRITE_MULTIPLE_BLOCK : MMC_WRITE_BLOCK;
+> +
+> +       mmc_prep_req(mrq, sect_offset, nsects, &sg, opcode, flags);
+> +       sg_init_one(&sg, buf, (nsects << SECTOR_SHIFT));
+> +       mmc_set_data_timeout(mrq->data, cxt->card);
+> +
+> +       mmc_claim_host(host);
+> +       mmc_wait_for_req(host, mrq);
+> +       mdelay(mrq->data->timeout_ns / NSEC_PER_MSEC);
+> +       mmc_release_host(host);
+> +
+> +       if (mrq->cmd->error) {
+> +               pr_err("Cmd error: %d\n", mrq->cmd->error);
+> +               return mrq->cmd->error;
+> +       }
+> +       if (mrq->data->error) {
+> +               pr_err("Data error: %d\n", mrq->data->error);
+> +               return mrq->data->error;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static ssize_t mmcpstore_write(const char *buf, size_t size, loff_t off)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +       int ret;
+> +
+> +       ret = mmcpstore_rdwr_req(buf, (size >> SECTOR_SHIFT),
+> +               cxt->start_sect + (off >> SECTOR_SHIFT), MMC_DATA_WRITE);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return size;
+> +}
+> +
+> +static ssize_t mmcpstore_read(char *buf, size_t size, loff_t off)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +       unsigned int sect_off = cxt->start_sect  + (off >> SECTOR_SHIFT);
+> +       unsigned long sects = (cxt->conf.kmsg_size >> SECTOR_SHIFT);
+> +       int ret;
+> +
+> +       if (unlikely(!buf || !size))
+> +               return -EINVAL;
+> +
+> +       ret = mmcpstore_rdwr_req(cxt->sub, sects, sect_off, MMC_DATA_READ);
+> +       if (ret)
+> +               return ret;
+> +       memcpy(buf, cxt->sub, size);
+> +
+> +       return size;
+> +}
+
+It looks like the above I/O read/write interface for pstore is
+intended to be used when the platform is up and running and not during
+a panic, correct?
+
+If so, I don't get why it can't use the regular block interface, as
+any other file system does, for example?
+
+> +
+> +static void mmcpstore_panic_write_req(const char *buf,
+> +               unsigned int nsects, unsigned int sect_offset)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +       struct mmc_request *mrq = cxt->mrq;
+> +       struct mmc_card *card = cxt->card;
+> +       struct mmc_host *host = card->host;
+> +       struct scatterlist sg;
+> +       u32 opcode;
+> +
+> +       opcode = (nsects > 1) ? MMC_WRITE_MULTIPLE_BLOCK : MMC_WRITE_BLOCK;
+> +       mmc_prep_req(mrq, sect_offset, nsects, &sg, opcode, MMC_DATA_WRITE);
+> +       sg_init_one(&sg, buf, (nsects << SECTOR_SHIFT));
+> +       mmc_set_data_timeout(mrq->data, cxt->card);
+> +
+> +       mmc_claim_host(host);
+
+So, this will use several locks, which may be a problem, right?
+
+Moreover, if there is an ongoing I/O request (or any other active
+command/request for that matter), then the host is already claimed by
+the mmc core. Normally, we would then wait for that request to be
+completed, to trigger the release of the host and then allow us to
+claim it here.
+
+However, because of the kernel panic, I assume it's quite likely that
+any ongoing request will not be completed at all, as IRQs may not
+work, for example.
+
+In other words, we may be hanging here forever waiting to claim the
+host. Unless we are lucky, because of no ongoing request, although we
+would still have to succeed walking through all the locking, etc, in
+mmc_claim_host().
+
+Do note, as part of the mmc_claim_host() we may also runtime resume
+the host, if it was runtime suspended (which is quite likely). To
+runtime resume a host via runtime PM, we may end up ungating device
+clocks, power on corresponding PM domains, run a so called re-tuning
+sequence to restore communication with the card, etc, etc. The point
+is, all these things must also be possible to do, without locks and by
+using a polling based "mode"...
+
+> +       mmc_wait_for_pstore_req(host, mrq);
+
+Okay, so let's assume that we are lucky and succeed to claim and
+runtime resume the host above.
+
+Then we also need to runtime resume the card, as it may be runtime
+suspended. In the "worst case", runtime resuming the card means a
+complete re-initialization of it, covering a series of commands and
+turning on regulators, for example.
+
+> +       mmc_release_host(card->host);
+> +}
+> +
+> +static ssize_t mmcpstore_panic_write(const char *buf, size_t size, loff_t off)
+> +{
+> +       struct mmcpstore_context *cxt = &oops_cxt;
+> +
+> +       mmcpstore_panic_write_req(buf, (size >> SECTOR_SHIFT),
+> +                       cxt->start_sect + (off >> SECTOR_SHIFT));
+> +       return size;
+> +}
+
+[...]
+
+Having said the above, I am not entirely convinced that it makes sense
+to support this, at all.
+
+Not only, will the support be highly fragile from the mmc core point
+of view, but there is also a significant complexity for an mmc host
+driver to support this (at least in general).
+
+Kind regards
+Uffe
