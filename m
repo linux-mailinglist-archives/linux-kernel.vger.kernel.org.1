@@ -2,111 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F752D7381
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 146AA2D7388
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405841AbgLKKJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 05:09:06 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:33682 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404466AbgLKKIc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:08:32 -0500
-Date:   Fri, 11 Dec 2020 10:07:49 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607681269;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zgWIeUjDirbK7CfN+ce6H+G6T1lvsKAgUmlLoTiXEyw=;
-        b=EgwL860SrOC9S90Vz7CEf0toSb7Np9RAk3H0zUE2hUPnsRnOxMvC3Xozrsdz9eTjHGm37v
-        PIBsTrwl5ArsFCQiqvd/wZW6L5NDX7M7giC6Xl07e/lOJGb5kho1Ay5/R8fLYhRslO8O8p
-        NXyMA1+B6T8+Gy+Zd32hn/WWntWwUQwzVAKLb54Wn2rZVitK/UZBi4s0H2GI6unGPNUt5F
-        03ZjKq93lxnNx7jjL1PYQFyVM0E+m52dgpPzJ4vTjJVrI99WQczMEysiIuCoKJ3E8vuwPj
-        KKkdhhRJrEGJMieJI81fBgQW/BmLRNpwNAwxP1lP19hUCU5ZvSiTjTcImjD76Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607681269;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zgWIeUjDirbK7CfN+ce6H+G6T1lvsKAgUmlLoTiXEyw=;
-        b=j7jG+iRXbRY6pbduwsSZ2EEWNk8X6Ndiq6lG8v45BcytN52TGRzVmGe0yPYL+CsPIlFgkV
-        3uxQZyNPI+eIFmBQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] rtc: mc146818: Reduce spinlock section in
- mc146818_set_time()
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20201206220541.709243630@linutronix.de>
-References: <20201206220541.709243630@linutronix.de>
+        id S2393998AbgLKKLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 05:11:11 -0500
+Received: from mga09.intel.com ([134.134.136.24]:38995 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393689AbgLKKLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 05:11:02 -0500
+IronPort-SDR: lC/Twk6jsd6uyfdUAxZFzCrvu9irn6tRyZij0RGm57WLXb+h0I5+TJQgXURigAWACh2O7PWu3u
+ Ayy3T4fjDkPA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="174554188"
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="174554188"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 02:10:06 -0800
+IronPort-SDR: l/la0T4mfSKmSbr4OoAFGFqN9BVrNvpOvUawXVGGVPwjxCLOjV28FtKuV9e4wJjRtI01siJqGj
+ QWGBCwsznvDA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="349360476"
+Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 11 Dec 2020 02:10:05 -0800
+Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1knfNE-0000pd-HY; Fri, 11 Dec 2020 10:10:04 +0000
+Date:   Fri, 11 Dec 2020 18:09:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/apic] BUILD SUCCESS
+ 058df195c23403f91acc028e39ca2ad599d0af52
+Message-ID: <5fd34555.7OzoM+4ddJ+NHDcc%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Message-ID: <160768126908.3364.12858314652099528256.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/apic
+branch HEAD: 058df195c23403f91acc028e39ca2ad599d0af52  x86/ioapic: Cleanup the timer_works() irqflags mess
 
-Commit-ID:     dcf257e92622ba0e25fdc4b6699683e7ae67e2a1
-Gitweb:        https://git.kernel.org/tip/dcf257e92622ba0e25fdc4b6699683e7ae67e2a1
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sun, 06 Dec 2020 22:46:15 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 11 Dec 2020 10:40:52 +01:00
+elapsed time: 724m
 
-rtc: mc146818: Reduce spinlock section in mc146818_set_time()
+configs tested: 194
+configs skipped: 2
 
-No need to hold the lock and disable interrupts for doing math.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20201206220541.709243630@linutronix.de
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                       omap2plus_defconfig
+mips                         db1xxx_defconfig
+powerpc                      cm5200_defconfig
+mips                        maltaup_defconfig
+powerpc                     skiroot_defconfig
+mips                         bigsur_defconfig
+powerpc                 canyonlands_defconfig
+mips                           ci20_defconfig
+m68k                                defconfig
+xtensa                  nommu_kc705_defconfig
+arc                         haps_hs_defconfig
+sh                             shx3_defconfig
+arm                          ixp4xx_defconfig
+arm                          simpad_defconfig
+arc                        vdk_hs38_defconfig
+sh                           sh2007_defconfig
+powerpc                     tqm8560_defconfig
+arm                           viper_defconfig
+arm                          collie_defconfig
+riscv                            allyesconfig
+sh                 kfr2r09-romimage_defconfig
+um                             i386_defconfig
+arc                            hsdk_defconfig
+mips                    maltaup_xpa_defconfig
+arm                          ep93xx_defconfig
+arm                            zeus_defconfig
+sh                           se7343_defconfig
+sh                            migor_defconfig
+mips                        vocore2_defconfig
+arm                         orion5x_defconfig
+powerpc                 mpc836x_mds_defconfig
+xtensa                    xip_kc705_defconfig
+sh                          kfr2r09_defconfig
+sparc                            alldefconfig
+mips                        bcm47xx_defconfig
+microblaze                      mmu_defconfig
+arc                          axs103_defconfig
+arm                     eseries_pxa_defconfig
+arm                      tct_hammer_defconfig
+powerpc                    mvme5100_defconfig
+powerpc                      acadia_defconfig
+arm                          imote2_defconfig
+mips                malta_kvm_guest_defconfig
+sh                          sdk7780_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                         lubbock_defconfig
+arm                          tango4_defconfig
+mips                           gcw0_defconfig
+sparc                            allyesconfig
+powerpc                     asp8347_defconfig
+powerpc                         ps3_defconfig
+sh                           se7705_defconfig
+sh                        sh7763rdp_defconfig
+sparc64                          alldefconfig
+h8300                               defconfig
+sh                          rsk7201_defconfig
+mips                            ar7_defconfig
+mips                     loongson1c_defconfig
+powerpc                  storcenter_defconfig
+arm                      footbridge_defconfig
+arm                          iop32x_defconfig
+mips                           rs90_defconfig
+openrisc                    or1ksim_defconfig
+mips                        bcm63xx_defconfig
+arm                         shannon_defconfig
+c6x                                 defconfig
+m68k                       m5249evb_defconfig
+arm                           stm32_defconfig
+arm                           h5000_defconfig
+alpha                            alldefconfig
+sh                         microdev_defconfig
+arm                           u8500_defconfig
+powerpc                        icon_defconfig
+m68k                             alldefconfig
+sh                          r7785rp_defconfig
+sh                   secureedge5410_defconfig
+ia64                          tiger_defconfig
+arm                        mini2440_defconfig
+sh                              ul2_defconfig
+mips                             allyesconfig
+mips                          rb532_defconfig
+sh                          urquell_defconfig
+sh                          sdk7786_defconfig
+powerpc                      ppc64e_defconfig
+arm                         palmz72_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                               j2_defconfig
+arm                       versatile_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                               alldefconfig
+m68k                          amiga_defconfig
+powerpc                      ppc40x_defconfig
+powerpc                       ebony_defconfig
+arm                         s5pv210_defconfig
+powerpc                      makalu_defconfig
+mips                          rm200_defconfig
+arm                             mxs_defconfig
+riscv                            alldefconfig
+powerpc                      arches_defconfig
+m68k                        m5272c3_defconfig
+powerpc                 mpc837x_rdb_defconfig
+mips                           ip27_defconfig
+arm                          gemini_defconfig
+arm                      pxa255-idp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201209
+i386                 randconfig-a005-20201209
+i386                 randconfig-a001-20201209
+i386                 randconfig-a002-20201209
+i386                 randconfig-a006-20201209
+i386                 randconfig-a003-20201209
+i386                 randconfig-a001-20201210
+i386                 randconfig-a004-20201210
+i386                 randconfig-a003-20201210
+i386                 randconfig-a002-20201210
+i386                 randconfig-a005-20201210
+i386                 randconfig-a006-20201210
+x86_64               randconfig-a016-20201209
+x86_64               randconfig-a012-20201209
+x86_64               randconfig-a013-20201209
+x86_64               randconfig-a014-20201209
+x86_64               randconfig-a015-20201209
+x86_64               randconfig-a011-20201209
+x86_64               randconfig-a016-20201210
+x86_64               randconfig-a012-20201210
+x86_64               randconfig-a013-20201210
+x86_64               randconfig-a015-20201210
+x86_64               randconfig-a014-20201210
+x86_64               randconfig-a011-20201210
+i386                 randconfig-a013-20201209
+i386                 randconfig-a014-20201209
+i386                 randconfig-a011-20201209
+i386                 randconfig-a015-20201209
+i386                 randconfig-a012-20201209
+i386                 randconfig-a016-20201209
+i386                 randconfig-a014-20201210
+i386                 randconfig-a013-20201210
+i386                 randconfig-a012-20201210
+i386                 randconfig-a011-20201210
+i386                 randconfig-a016-20201210
+i386                 randconfig-a015-20201210
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20201209
+x86_64               randconfig-a006-20201209
+x86_64               randconfig-a005-20201209
+x86_64               randconfig-a001-20201209
+x86_64               randconfig-a002-20201209
+x86_64               randconfig-a003-20201209
 
 ---
- drivers/rtc/rtc-mc146818-lib.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/rtc/rtc-mc146818-lib.c b/drivers/rtc/rtc-mc146818-lib.c
-index 98048bb..972a5b9 100644
---- a/drivers/rtc/rtc-mc146818-lib.c
-+++ b/drivers/rtc/rtc-mc146818-lib.c
-@@ -135,7 +135,6 @@ int mc146818_set_time(struct rtc_time *time)
- 	if (yrs > 255)	/* They are unsigned */
- 		return -EINVAL;
- 
--	spin_lock_irqsave(&rtc_lock, flags);
- #ifdef CONFIG_MACH_DECSTATION
- 	real_yrs = yrs;
- 	leap_yr = ((!((yrs + 1900) % 4) && ((yrs + 1900) % 100)) ||
-@@ -164,10 +163,8 @@ int mc146818_set_time(struct rtc_time *time)
- 	/* These limits and adjustments are independent of
- 	 * whether the chip is in binary mode or not.
- 	 */
--	if (yrs > 169) {
--		spin_unlock_irqrestore(&rtc_lock, flags);
-+	if (yrs > 169)
- 		return -EINVAL;
--	}
- 
- 	if (yrs >= 100)
- 		yrs -= 100;
-@@ -183,6 +180,7 @@ int mc146818_set_time(struct rtc_time *time)
- 		century = bin2bcd(century);
- 	}
- 
-+	spin_lock_irqsave(&rtc_lock, flags);
- 	save_control = CMOS_READ(RTC_CONTROL);
- 	CMOS_WRITE((save_control|RTC_SET), RTC_CONTROL);
- 	save_freq_select = CMOS_READ(RTC_FREQ_SELECT);
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
