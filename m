@@ -2,153 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C522D6DCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0461A2D6DDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 03:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394953AbgLKB4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:56:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41910 "EHLO
+        id S2389680AbgLKB70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:59:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391239AbgLKB4F (ORCPT
+        with ESMTP id S2389173AbgLKB7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:56:05 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613CDC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:55:25 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id p6so3803612plo.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:55:25 -0800 (PST)
+        Thu, 10 Dec 2020 20:59:09 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97619C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:58:29 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id x20so5341143pfm.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:58:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=luVzHjwrVb0RaJq5Uh65n6skCC7p9OMiArCM0mPgdkM=;
-        b=ML9QG1vU7L4oiXWmFVohfhtCuoxC2/7X83dJ2wknZhwXoPeS69iqmDBv4wozPFOYMo
-         nGwN/y15nRURe06hz/ZLfFDkJh4bxeD/HrGH1c6KRKpqxHznfGK6Mkggeyaeq7C9VQQ3
-         bGPvK1OF6YPetx5e9v9siqga7GSR67M2sjK+KxpyMYFEeQc2qUa8rlrspWHPbmGdDXFs
-         FAvTncsTkiaBjn004Ge/ubpI1mb8yJ6F8Utl0XKoxrSsMwPwoPSMWkBgZrr7neRYyC/k
-         yewFTxXdU5qGGO4JiI+9N/QruUluX4rjeXcUHnmpEL1r9+OLjMevMihPfkHmotZiBFus
-         jW0g==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=X3AoiKidQ6crGHD5wFDjzqhurb9cqFSlsgkfzt0x/6g=;
+        b=rbpEnMrvqzGoVBNEIxdvmt42OVp8gS2HseDuthH7KFwBY5/+swso8bllcGKBG5An1L
+         TUglQYQE+3XhjiQuyEFRwqrPUOujWVnEclYdpKlUp7pCuhIiFjeoYVg0XvsstAkgxC2t
+         XrAVUToqYXxT+Ee0H0V50oxqPrfEDXVPSt/FXpese/7yWEuSvWHUJaMILffHwRKiy/e7
+         KTaLsUDvU1rlfk6Z8Yd+82HK7spF6UWrh1Tp+GsQs8DkLR6z6+kM2m6NZpps5xetM06W
+         kqzG4Jj+a5dteYxsTf6kTNEWwJJimL1bpOrMuJrlK6BE46MpknEqHgHyOuuBqwwbwHwR
+         iRXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=luVzHjwrVb0RaJq5Uh65n6skCC7p9OMiArCM0mPgdkM=;
-        b=VdS5bIULsR+4mPmIRzUIBmoU1OgLjvKUlP3nZxNUmn4smZv7jD+fRogF5uxif/APcv
-         X5LiMIL9BO3JezAzkVP85t9e1iSqFLD6Nc6uYlVNiYfB3zH7P069kN5X/PrghTFMM0tL
-         fjhqqAse35ybgUgBw1UfKseteI91GgjyqjzpTt7VAsMGVHSLPOys2QktT6B+YD7K6drH
-         24R9wGbA++MOEeurKbaGIDLiTXvMbl3/Y/7R/PoZ0jt0Igl6HXTytW3Ou1TbBu+Nhct4
-         kUKL2TJ7/XqzocMSfcBUMQCiGgcCKOpp5kZlE+AcutIpMvI0ZnOq0Kup2yfqoj0bNhTZ
-         dhMg==
-X-Gm-Message-State: AOAM531PqQ4TRCPzXkLulT5zxTKguzfAONBin/MfN61g9WalHCHxdFv9
-        uOlR6YxJgfLf0Dp0UCsvZygPC6nMdf6mLJ9N
-X-Google-Smtp-Source: ABdhPJwXnEk0V0IcjX6ye8t6BccBKFZFi9BAljK+NJr03V/zUFLWswriUIqU3kqvyjsSKs3s/YWSPw==
-X-Received: by 2002:a17:902:9307:b029:d9:d097:fd6c with SMTP id bc7-20020a1709029307b02900d9d097fd6cmr8843219plb.10.1607651724635;
-        Thu, 10 Dec 2020 17:55:24 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id a26sm7630727pgd.64.2020.12.10.17.55.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 17:55:23 -0800 (PST)
-Date:   Thu, 10 Dec 2020 17:55:23 -0800 (PST)
-X-Google-Original-Date: Thu, 10 Dec 2020 17:55:22 PST (-0800)
-Subject:     Re: [PATCH v3 1/2] dt-bindings: riscv: Update l2 cache DT documentation to add support for SiFive FU740
-In-Reply-To: <1607596083-81480-2-git-send-email-yash.shah@sifive.com>
-CC:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org, bp@suse.de, anup@brainfault.org,
-        Jonathan.Cameron@huawei.com, wsa@kernel.org, sam@ravnborg.org,
-        aou@eecs.berkeley.edu, Paul Walmsley <paul.walmsley@sifive.com>,
-        robh+dt@kernel.org, sagar.kadam@sifive.com,
-        sachin.ghadi@sifive.com, yash.shah@sifive.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     yash.shah@sifive.com
-Message-ID: <mhng-c5b27f57-f267-485d-a497-631b31a88c6f@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=X3AoiKidQ6crGHD5wFDjzqhurb9cqFSlsgkfzt0x/6g=;
+        b=F51Kjq9s+8UKzESizw80AKa0MeZLPSuEQOVakHyZt7jvz3jY/4ndHh8Pa2+T31FPTW
+         VtCTGOwwuMutByDen8dwbWb2OWaGThf6Kpo+Kpa9LPunJ2glRUHSWdEZhPv7t6lP3M9a
+         yuue1xH+OLUl/ZVcW2OVriCxI+qLHTYc1lCC8iq7jKXFaA5RJ6Y+auyjsB02yFf4tv4w
+         8+h8gwWpSDypZXsBJLrs0KRHsrHOJSgrWO0j96haWXfM/96pYB6I05FEFxd1AKH9S6Fq
+         JeQZaUDfnUY61nQCLyMKRE5pr7kz85WwZqcPi7xj+0A1EEhil6YTkMSEJHr4Fo585Cgr
+         We4w==
+X-Gm-Message-State: AOAM531nxa48Drvg/7z0UjUSh0aGGjEyVekyUk8Hy5UC4fuXUx9rPoaP
+        niFFsQWai0ZpDOAfQ5L5l9rxvWfRK5y7
+X-Google-Smtp-Source: ABdhPJybdXTxqR8G4ayNenBgynQQS10dU1MLFcc27pOkmymWS6fT/KQpiZH311OrIaDRhnBkIpfxy4Ssx2Av
+Sender: "brianvv via sendgmr" <brianvv@brianvv.c.googlers.com>
+X-Received: from brianvv.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:348])
+ (user=brianvv job=sendgmr) by 2002:a17:902:e904:b029:db:c0d6:5823 with SMTP
+ id k4-20020a170902e904b02900dbc0d65823mr8660082pld.11.1607651909009; Thu, 10
+ Dec 2020 17:58:29 -0800 (PST)
+Date:   Fri, 11 Dec 2020 01:58:19 +0000
+Message-Id: <20201211015823.1079574-1-brianvv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH net-next 0/4] net: avoid indirect calls in dst functions
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 02:28:02 PST (-0800), yash.shah@sifive.com wrote:
-> The L2 cache controller in SiFive FU740 has 4 ECC interrupt sources as
-> compared to 3 in FU540. Update the DT documentation accordingly with
-> "compatible" and "interrupt" property changes.
+From: brianvv <brianvv@google.com>
 
-This generally looks good to me, but I'd prefer to get an ack from the DT folks
-as I do frequently miss stuff in the bindings.
+Use of the indirect call wrappers in some dst related functions for the
+ipv6/ipv4 case. This is a small improvent for CONFIG_RETPOLINE=y
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+brianvv (4):
+  net: use indirect call helpers for dst_input
+  net: use indirect call helpers for dst_output
+  net: use indirect call helpers for dst_mtu
+  net: indirect call helpers for ipv4/ipv6 dst_check functions
 
->
-> Signed-off-by: Yash Shah <yash.shah@sifive.com>
-> ---
->  .../devicetree/bindings/riscv/sifive-l2-cache.yaml | 34 +++++++++++++++++++---
->  1 file changed, 30 insertions(+), 4 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
-> index efc0198..6a576dc 100644
-> --- a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
-> @@ -27,6 +27,7 @@ select:
->        items:
->          - enum:
->              - sifive,fu540-c000-ccache
-> +            - sifive,fu740-c000-ccache
->
->    required:
->      - compatible
-> @@ -34,7 +35,9 @@ select:
->  properties:
->    compatible:
->      items:
-> -      - const: sifive,fu540-c000-ccache
-> +      - enum:
-> +          - sifive,fu540-c000-ccache
-> +          - sifive,fu740-c000-ccache
->        - const: cache
->
->    cache-block-size:
-> @@ -52,10 +55,13 @@ properties:
->    cache-unified: true
->
->    interrupts:
-> -    description: |
-> -      Must contain entries for DirError, DataError and DataFail signals.
->      minItems: 3
-> -    maxItems: 3
-> +    maxItems: 4
-> +    items:
-> +      - description: DirError interrupt
-> +      - description: DataError interrupt
-> +      - description: DataFail interrupt
-> +      - description: DirFail interrupt
->
->    reg:
->      maxItems: 1
-> @@ -67,6 +73,26 @@ properties:
->        The reference to the reserved-memory for the L2 Loosely Integrated Memory region.
->        The reserved memory node should be defined as per the bindings in reserved-memory.txt.
->
-> +if:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        const: sifive,fu540-c000-ccache
-> +
-> +then:
-> +  properties:
-> +    interrupts:
-> +      description: |
-> +        Must contain entries for DirError, DataError and DataFail signals.
-> +      maxItems: 3
-> +
-> +else:
-> +  properties:
-> +    interrupts:
-> +      description: |
-> +        Must contain entries for DirError, DataError, DataFail, DirFail signals.
-> +      minItems: 4
-> +
->  additionalProperties: false
->
->  required:
+ include/net/dst.h   | 25 +++++++++++++++++++++----
+ net/core/sock.c     | 12 ++++++++++--
+ net/ipv4/route.c    | 12 ++++++++----
+ net/ipv4/tcp_ipv4.c |  5 ++++-
+ net/ipv6/route.c    | 12 ++++++++----
+ net/ipv6/tcp_ipv6.c |  5 ++++-
+ 6 files changed, 55 insertions(+), 16 deletions(-)
+
+-- 
+2.29.2.576.ga3fc446d84-goog
+
