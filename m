@@ -2,217 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4955E2D7F8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:42:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B38C2D7F90
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:42:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393998AbgLKTlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 14:41:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36076 "EHLO
+        id S2394149AbgLKTlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 14:41:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393808AbgLKTkJ (ORCPT
+        with ESMTP id S2394065AbgLKTlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 14:40:09 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D95C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 11:39:29 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id x13so2067421oic.5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 11:39:29 -0800 (PST)
+        Fri, 11 Dec 2020 14:41:15 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C508C061793
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 11:40:35 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id z16so5408506vsp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 11:40:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=s+awO2pr5ClNOCamyu789YlXSRozxdskX216w6cl2f8=;
-        b=OvDJplID/dYzRWRamwAVmHKXJiH7h7PuuYrp23AFNRL34x6i3YU2r+Wb/mZGIYpxoa
-         2tYYlHM/TmjusEYzJy5hMT4oI7Ra8iLYw980lepj+jLvYjMY3D/eEuT1wkF1aXcoma7z
-         gz4bANTGz1SALkF11S4YzZJPpAWHky2LiHNuQ=
+        bh=1nS5LJe0V9gmSV6AI/CjiJWRU085g+HSabHeZYnNbME=;
+        b=qsqg3dEZdz6yTY0b8lWmwlvvFlCl6x/6RcbpcNM5RjlQi43vCEWHYEvpvNFMgtwSJf
+         92LLLXxQ2DMnh4n9P483SaIxEmprkCDc/K+JgapPX/ZZKy6aK5r4eyyfdBCtEQJhwn4x
+         ouvYwbD1s6MDLHCs5KHgP2Xw3/OELzfJnu8FvoDrq3GDDw87fJYBXVbaSaOYc+0Nu1UD
+         fiQbuk0q8gz7/5IDoWj0ON2iPNs+pAeF9Qty6DbvjfFV/8Wzmt8DsLQLeqTz1ozLVtyQ
+         R0+WXz2Fbj8SqfTG7PiaJGfy0Ipx3UtxFa3GxMJFuDwuXo9nyWaQPdc+rxYInzhIXbQ8
+         nCbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=s+awO2pr5ClNOCamyu789YlXSRozxdskX216w6cl2f8=;
-        b=Iscw20P1mQmb74YAk2yw3YvgA2DFRrvs0rfBq+iXBoREhuSnUbpm67CnLWR/ivyeO+
-         bmgqiZ20OuanhCdYuAXhp1ongDFeq3V4saDrHfx3kPtJ8jLUonj309Ip9dshSlTQrFl5
-         EpX13EYi2loi9khiVzkt/bjW8+vvJYTGWU7aWZAFHBCkVOn9WHNP6huOpKOwqnBMTfBM
-         H4dPT55Hiwhvf7pCKJjdDn90OU/a+5Yyqr3DIWjWdr9Ff/J5mBqrFGtozRnMeRX/OOEh
-         NUiVK6jJ4vAHheEi9ZbDjidzYle3gJI3GKC3fqqvmSUz7d4FIO3G+DUYkMwNDYxp0+TL
-         zGeg==
-X-Gm-Message-State: AOAM532YxAMLaqjJHjXvwhl+eIyNO7ZnHcvorbMBkTFqakAhMFx7GjgS
-        Hutmr3zo7jgudAQa4Dey2ot6j0IEK6MusIw5duA4Yg==
-X-Google-Smtp-Source: ABdhPJx6UGUfdeWodzKFL8AUOZe212yOefuiLcRZ8MxKzIdIKTheoFzCGHQ0qFdoiOS1V9jAVyyTpF5t5mzHbTEiGas=
-X-Received: by 2002:aca:54d8:: with SMTP id i207mr10359071oib.101.1607715568446;
- Fri, 11 Dec 2020 11:39:28 -0800 (PST)
+        bh=1nS5LJe0V9gmSV6AI/CjiJWRU085g+HSabHeZYnNbME=;
+        b=ndBYzWbfsh9MLRqh0CGEmogiuOsUHghczKiGsXeCTKAWi7G9eEJEu8HccXIeSwZ9b7
+         LoOcd3PDhnX+2JwycZXlmlkxhklxxJWMIUoZC5mBlov6EJj0Uo82YLVzAx0Fas0AnIBs
+         DPxrztT6pezLZnFqS9hf/1s5zrrfIs8rMl3f8NoAn5XePNzseq2aXesIDlwQc8PWX1lu
+         8zRYwcQn0zmADEFWEMGh0l/Ppo4tw5LQpQ/LSJbP3iU97Kg2NJ4Cbt7hm3CVB7VmXUP4
+         +1IrK7NFW8dzS1uVmaeU+dcmBZfxwZlGs9m1oBvJuSGdg+hJMvuXobxF74nCMH37ijR1
+         0+gg==
+X-Gm-Message-State: AOAM533rY3cDWGA1alVTSm6OttXxdK4JztBWDis8ggGqswuKaFfB98YD
+        2JqZm2kDFu9x2bBhqqqYJUUohvopntpBa1AzA2TEbA==
+X-Google-Smtp-Source: ABdhPJwTNai3fHjKtb9PFnSMalWQiVwNiqLsoEASGl1SfmNeaqyA+50KfMn1XqggqOylimJDfCS3u1qZ+Mz6kJGjBMs=
+X-Received: by 2002:a67:80c8:: with SMTP id b191mr15432571vsd.36.1607715634310;
+ Fri, 11 Dec 2020 11:40:34 -0800 (PST)
 MIME-Version: 1.0
-References: <1606722505-16194-1-git-send-email-wendy.liang@xilinx.com> <CADnq5_NZrqkouXCFKWc2wv483nc=x4cXXjFCqcEmkUYZpNeMUQ@mail.gmail.com>
-In-Reply-To: <CADnq5_NZrqkouXCFKWc2wv483nc=x4cXXjFCqcEmkUYZpNeMUQ@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Fri, 11 Dec 2020 20:39:17 +0100
-Message-ID: <CAKMK7uFjwmm9W3RFVdQ=EOqHvWeD5ZPA7zP86O_sxxBv3n4jjw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/9] Xilinx AI engine kernel driver
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Wendy Liang <wendy.liang@xilinx.com>, tejas.patel@xilinx.com,
-        ravi.patel@xilinx.com, rajan.vaja@xilinx.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Rob Herring <robh+dt@kernel.org>, manish.narani@xilinx.com,
+References: <20201211184633.3213045-1-samitolvanen@google.com>
+ <20201211184633.3213045-7-samitolvanen@google.com> <202012111131.E41AFFCDB@keescook>
+In-Reply-To: <202012111131.E41AFFCDB@keescook>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Fri, 11 Dec 2020 11:40:23 -0800
+Message-ID: <CABCJKueCJhwRL1T1k6EYpUy_-Rj85K98iz5FO6K+dZLY25z8_Q@mail.gmail.com>
+Subject: Re: [PATCH v9 06/16] kbuild: lto: add a default list of used symbols
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Christian Koenig <christian.koenig@amd.com>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>
+        PCI <linux-pci@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all
-
-On Fri, Dec 11, 2020 at 8:03 PM Alex Deucher <alexdeucher@gmail.com> wrote:
+On Fri, Dec 11, 2020 at 11:32 AM Kees Cook <keescook@chromium.org> wrote:
 >
-> On Mon, Nov 30, 2020 at 3:25 AM Wendy Liang <wendy.liang@xilinx.com> wrote:
+> On Fri, Dec 11, 2020 at 10:46:23AM -0800, Sami Tolvanen wrote:
+> > With CONFIG_LTO_CLANG, LLVM bitcode has not yet been compiled into a
+> > binary when the .mod files are generated, which means they don't yet
+> > contain references to certain symbols that will be present in the final
+> > binaries. This includes intrinsic functions, such as memcpy, memmove,
+> > and memset [1], and stack protector symbols [2]. This change adds a
+> > default symbol list to use with CONFIG_TRIM_UNUSED_KSYMS when Clang's
+> > LTO is used.
 > >
-> > AI engine is the acceleration engine provided by Xilinx. These engines
-> > provide high compute density for vector-based algorithms, and flexible
-> > custom compute and data movement. It has core tiles for compute and
-> > shim tiles to interface the FPGA fabric.
+> > [1] https://llvm.org/docs/LangRef.html#standard-c-c-library-intrinsics
+> > [2] https://llvm.org/docs/LangRef.html#llvm-stackprotector-intrinsic
 > >
-> > You can check the AI engine architecture document for more hardware details:
-> > https://www.xilinx.com/support/documentation/architecture-manuals/am009-versal-ai-engine.pdf
-> >
-> > This patch series adds a Linux kernel driver to manage the Xilinx AI
-> > engine array device and AI engine partitions (groups of AI engine tiles
-> > dedicated to an application).
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 >
-> Hi Wendy,
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 >
-> I think it would be good to provide an overview of how your stack
-> works in general.  That would give reviewers a better handle on how
-> all of this fits together.  I'd suggest including an overview in the
-> cover letter and also in the commit message and/or as a comment in the
-> code in one of the patches.  I'm not really an expert when it comes to
-> FPGAs, but this basically looks like a pretty low level interface to
-> set up the data fabric for a kernel that will run on the soft logic or
-> maybe the microcontroller on the board.  It doesn't have to be super
-> detailed, just a nice flow for how you might use this.  E.g.,
->
-> Userspace uses ioctls X, Y, Z to configure the data fabric for the
-> FPGA kernel.  The kernels can run on... .  DMA access to system memory
-> for data sets can be allocated using ioctl A.  DMA access is limited
-> by... . The user can then load the FPGA kernel on to one of the
-> engines using ioctl B and finally they can kick off the whole thing
-> using ioctl C.  FPGA kernels are compiled using YYY toolchain and use
-> use the following runtime (link to runtime) to configure the data
-> fabric using ioctls X, Y, Z.
-
-At least for drm drivers we ideally have that as a .rst file in
-Documentation/. With that you can even do full svg graphs, or just dot
-graphs, of the overall stack if you really want to go overboard :-)
-
-> It would also be good to go over the security implications of the
-> design.  E.g., can the FPGA kernel(s) access the DMA engine directly,
-> or is it limited to just the DMA regions set up by the ioctls?  Also,
-> does the hardware and software design allow for multiple users?  If
-> so, how does that work?
-
-I've also seen indications that there's some on-chip or on-card
-memory. How that's planned to be used and whether we want to manage
-this (maybe even with something like ttm) would be good to understand.
-
-All excellent questions from Alex, just figured I add some more.
-
-Cheers, Daniel
-
-> Thanks,
->
-> Alex
->
->
+> > ---
+> >  init/Kconfig                | 1 +
+> >  scripts/lto-used-symbollist | 5 +++++
+> >  2 files changed, 6 insertions(+)
+> >  create mode 100644 scripts/lto-used-symbollist
 > >
-> > v3:
-> > * unlock AIE dev mutex after failed to gain the partition lock in
-> >   errors handing
-> > * replace pointer with __u64 and enum with __u32 in ioctl
-> >
-> > v2:
-> > * Fix dtschema check errors
-> > * Fix test bot warning on interrupt implementation. Removed set but
-> >   unused  varaible.
-> > * Fix compilation unused function warning of firmware change in case
-> >   ZynqMP firmware is not configured
-> > * There are other warning on ZynqMP firmware reported from testbot
-> >   which is not introduced by this patch set.
-> >   "[PATCH] firmware: xlnx-zynqmp: fix compilation warning" is submitted
-> >   for those fixes.
-> >
-> >
-> > Izhar Ameer Shaikh (1):
-> >   firmware: xilinx: Add IOCTL support for AIE ISR Clear
-> >
-> > Nishad Saraf (2):
-> >   misc: xilinx-ai-engine: Add support to request device management
-> >     services
-> >   misc: xilinx-ai-engine: Add support for servicing error interrupts
-> >
-> > Wendy Liang (6):
-> >   dt-binding: soc: xilinx: ai-engine: Add AI engine binding
-> >   misc: Add Xilinx AI engine device driver
-> >   misc: xilinx-ai-engine: Implement AI engine cleanup sequence
-> >   misc: xilinx-ai-engine: expose AI engine tile memories to userspace
-> >   misc: xilinx-ai-engine: add setting shim dma bd operation
-> >   misc: xilinx-ai-engine: add request and release tiles
-> >
-> >  .../bindings/soc/xilinx/xlnx,ai-engine.yaml        | 126 ++++
-> >  MAINTAINERS                                        |   8 +
-> >  drivers/firmware/xilinx/zynqmp.c                   |  14 +
-> >  drivers/misc/Kconfig                               |  12 +
-> >  drivers/misc/Makefile                              |   1 +
-> >  drivers/misc/xilinx-ai-engine/Makefile             |  16 +
-> >  drivers/misc/xilinx-ai-engine/ai-engine-aie.c      | 608 +++++++++++++++++++
-> >  drivers/misc/xilinx-ai-engine/ai-engine-clock.c    | 245 ++++++++
-> >  drivers/misc/xilinx-ai-engine/ai-engine-dev.c      | 496 ++++++++++++++++
-> >  drivers/misc/xilinx-ai-engine/ai-engine-dma.c      | 481 +++++++++++++++
-> >  drivers/misc/xilinx-ai-engine/ai-engine-internal.h | 519 ++++++++++++++++
-> >  .../misc/xilinx-ai-engine/ai-engine-interrupt.c    | 659 +++++++++++++++++++++
-> >  drivers/misc/xilinx-ai-engine/ai-engine-mem.c      | 275 +++++++++
-> >  drivers/misc/xilinx-ai-engine/ai-engine-part.c     | 635 ++++++++++++++++++++
-> >  drivers/misc/xilinx-ai-engine/ai-engine-res.c      | 219 +++++++
-> >  drivers/misc/xilinx-ai-engine/ai-engine-reset.c    | 159 +++++
-> >  include/linux/firmware/xlnx-zynqmp.h               |   8 +
-> >  include/uapi/linux/xlnx-ai-engine.h                | 238 ++++++++
-> >  18 files changed, 4719 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml
-> >  create mode 100644 drivers/misc/xilinx-ai-engine/Makefile
-> >  create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-aie.c
-> >  create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-clock.c
-> >  create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-dev.c
-> >  create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-dma.c
-> >  create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-internal.h
-> >  create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-interrupt.c
-> >  create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-mem.c
-> >  create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-part.c
-> >  create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-res.c
-> >  create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-reset.c
-> >  create mode 100644 include/uapi/linux/xlnx-ai-engine.h
-> >
+> > diff --git a/init/Kconfig b/init/Kconfig
+> > index 0872a5a2e759..e88c919c1bf1 100644
+> > --- a/init/Kconfig
+> > +++ b/init/Kconfig
+> > @@ -2297,6 +2297,7 @@ config TRIM_UNUSED_KSYMS
+> >  config UNUSED_KSYMS_WHITELIST
+> >       string "Whitelist of symbols to keep in ksymtab"
+> >       depends on TRIM_UNUSED_KSYMS
+> > +     default "scripts/lto-used-symbollist" if LTO_CLANG
+> >       help
+> >         By default, all unused exported symbols will be un-exported from the
+> >         build when TRIM_UNUSED_KSYMS is selected.
+> > diff --git a/scripts/lto-used-symbollist b/scripts/lto-used-symbollist
+> > new file mode 100644
+> > index 000000000000..38e7bb9ebaae
+> > --- /dev/null
+> > +++ b/scripts/lto-used-symbollist
+> > @@ -0,0 +1,5 @@
+> > +memcpy
+> > +memmove
+> > +memset
+> > +__stack_chk_fail
+> > +__stack_chk_guard
 > > --
-> > 2.7.4
+> > 2.29.2.576.ga3fc446d84-goog
 > >
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>
+> bikeshed: Should this filename use some kind of extension, like
+> lto-user-symbols.txt or .list, to make it more human-friendly?
 
+Sure, I can rename this in the next version. Does anyone have strong
+opinions about the name and/or extension?
 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Sami
