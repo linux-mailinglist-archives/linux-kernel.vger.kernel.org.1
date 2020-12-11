@@ -2,140 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7762D8017
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 336632D8021
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388644AbgLKUla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 15:41:30 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:59342 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731017AbgLKUky (ORCPT
+        id S2403778AbgLKUnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 15:43:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389233AbgLKUmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 15:40:54 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BBKddHG009641;
-        Fri, 11 Dec 2020 20:39:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=VJbiclNNRWf5xTx/cOG6L27Mu0uBf4+urMq60QMEkZQ=;
- b=EhOUs7gvrNa7q1zY28PdvyObjpDx8qFhEnpy2F605x0pZuZtUv+42KWiJtC6ZMKWv9a0
- Xr/nOmQpZQvZo/sWi0tgNYeJeIwcpPDwvyD6wOafFilC3nMaiNCdxiEiNV6wQLxIo0X9
- BbU4u9pMbDM384jdixZPCf49MBVF8gdHprFGbWSBLjeDpGVtry/JLgse83r1szQHNSkb
- Ve3zB63J1/Il4cbGcfsH4IwrFraBJl2TqYJa7NpQxumNKExcPVBkv7pIOd30PpP2Zlxa
- yeaQeoR+7n2TxaZozPONQTWyz3NZa5ELk2J30zFH4YLj+O2RhSiCgP45pdrPxQwzedTl NA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 357yqccqcn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Dec 2020 20:39:39 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BBKFt9q027268;
-        Fri, 11 Dec 2020 20:37:39 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 358m54hysd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Dec 2020 20:37:38 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BBKbZ4E006505;
-        Fri, 11 Dec 2020 20:37:36 GMT
-Received: from char.us.oracle.com (/10.152.32.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 11 Dec 2020 12:37:35 -0800
-Received: by char.us.oracle.com (Postfix, from userid 1000)
-        id 309196A0121; Fri, 11 Dec 2020 15:39:38 -0500 (EST)
-Date:   Fri, 11 Dec 2020 15:39:38 -0500
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Jianxiong Gao <jxgao@google.com>
-Cc:     kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH] [PATCH] Keep offset when mapping data via SWIOTLB.
-Message-ID: <20201211203938.GA16598@char.us.oracle.com>
-References: <20201207214204.1839028-1-jxgao@google.com>
+        Fri, 11 Dec 2020 15:42:15 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C3CC061793
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:41:35 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id g20so14169578ejb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:41:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E6ZVINXPsdzUvTi8y4F5dCQAcZ1z+AuX7onsYghdXXU=;
+        b=QWWiLxi3n5qfdFyONIr2q2ssLsNW2+Y/Fm1gJOa6KJ7O8TwqDxIC5alcqwk19dNRU1
+         PR3OJwLyy5Jl5QhBlZHCjStP2IOafpHAz3NLC8JC9kPe7FpNLPfNUCDlYPIiXTISHk/6
+         RVXF0IoaSYhxySEwGA8a9hR7gkHaIBXb5cajEi8huBPeKDeLIjiPB/lPsn4vYoO8833X
+         2fTjd4tRTNVBdPAItaDY7n8FmYGNK1mCyevS45WNvav8qR0fI5a8Hirkg3gHPlFy6puK
+         X3++oIucgL1it8TgHK8uRisl6iSIAIBh+gx/ewyDkrAbZwOt91TUqQd+wmIvPOxitsXT
+         FX7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E6ZVINXPsdzUvTi8y4F5dCQAcZ1z+AuX7onsYghdXXU=;
+        b=qSLwvtkj2KPMsBfc3Q/QXjwj2Uqw+q+xFc5Zi9z6pvHuhBQUNR7CfqhUMNUp6ytEEV
+         jp/k0S9kp4YznAT4636wIpY6+IkQ/AZ0Quo7YMlqHYBboUFmUjXuT4Y1pGnSovHfLxjP
+         W+3EXyYvViZpIlgl4DVk7BrsWn7wuKpDQ+ytha77hYQ9JOM8ERt26DR8FY51TfJMvoSZ
+         waTZ2lHCc4pbOJDbVzOrVDRgaSSq70+P/IqRDOeogN5gq05OsC2qC9YFvYe1dBEkEddN
+         KUhpkTHV/McKTbcJpbJR/ECdmiUm53UQhodLjY+PH9Is5hikUg7jCZU5L2lNoChxqYoF
+         V3YA==
+X-Gm-Message-State: AOAM532nF1kTBvDjS0b6fWu5gZ2HgieXzqnK/8WWc1AYM1f8kvGhTr57
+        tUVVLrCLYJ7PgGzBdS5wmsWKRQvAOHOiboYVEEji3Q==
+X-Google-Smtp-Source: ABdhPJwhZ3hcnDKpQaKtFRHwNLn5KQ58koBxmqgOXsc76EHMbiiKHOf39MDRAkuqekpT9xaF9RD78X1VcWZej0Q1Mww=
+X-Received: by 2002:a17:906:5213:: with SMTP id g19mr8813843ejm.383.1607719293747;
+ Fri, 11 Dec 2020 12:41:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207214204.1839028-1-jxgao@google.com>
-User-Agent: Mutt/1.9.1 (2017-09-22)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9832 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
- bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012110135
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9832 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- clxscore=1015 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
- spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012110136
+References: <20201211202140.396852-1-pasha.tatashin@soleen.com>
+ <20201211202140.396852-6-pasha.tatashin@soleen.com> <20201211202354.GA2225686@ziepe.ca>
+In-Reply-To: <20201211202354.GA2225686@ziepe.ca>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 11 Dec 2020 15:40:57 -0500
+Message-ID: <CA+CK2bDPR8vH+H6cqBn=RTXRCp5kv3ExNPD8DHB09vVWLc3YmA@mail.gmail.com>
+Subject: Re: [PATCH v3 5/6] mm/gup: migrate pinned pages out of movable zone
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 01:42:04PM -0800, Jianxiong Gao wrote:
-> NVMe driver and other applications depend on the data offset
-> to operate correctly. Currently when unaligned data is mapped via
-> SWIOTLB, the data is mapped as slab aligned with the SWIOTLB. When
-> booting with --swiotlb=force option and using NVMe as interface,
-> running mkfs.xfs on Rhel fails because of the unalignment issue.
-> This patch makes sure the mapped data preserves
-> its offset of the orginal address. Tested on latest kernel that
-> this patch fixes the issue.
-> 
-> Signed-off-by: Jianxiong Gao <jxgao@google.com>
-> Acked-by: David Rientjes <rientjes@google.com>
+On Fri, Dec 11, 2020 at 3:23 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Fri, Dec 11, 2020 at 03:21:39PM -0500, Pavel Tatashin wrote:
+> > @@ -1593,7 +1592,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+> >                               }
+> >
+> >                               if (!isolate_lru_page(head)) {
+> > -                                     list_add_tail(&head->lru, &cma_page_list);
+> > +                                     list_add_tail(&head->lru, &movable_page_list);
+> >                                       mod_node_page_state(page_pgdat(head),
+> >                                                           NR_ISOLATED_ANON +
+> >                                                           page_is_file_lru(head),
+> > @@ -1605,7 +1604,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+> >               i += step;
+> >       }
+> >
+> > -     if (!list_empty(&cma_page_list)) {
+> > +     if (!list_empty(&movable_page_list)) {
+>
+> You didn't answer my earlier question, is it OK that ZONE_MOVABLE
+> pages leak out here if ioslate_lru_page() fails but the
+> moval_page_list is empty?
+>
+> I think the answer is no, right?
+In my opinion it is OK. We are doing our best to not pin movable
+pages, but if isolate_lru_page() fails because pages are currently
+locked by someone else, we will end up long-term pinning them.
+See comment in this patch:
++        * 1. Pinned pages: (long-term) pinning of movable pages is avoided
++        *    when pages are pinned and faulted, but it is still possible that
++        *    address space already has pages in ZONE_MOVABLE at the time when
++        *    pages are pinned (i.e. user has touches that memory before
++        *    pinning). In such case we try to migrate them to a different zone,
++        *    but if migration fails the pages can still end-up pinned in
++        *    ZONE_MOVABLE. In such case, memory offlining might retry a long
++        *    time and will only succeed once user application unpins pages.
 
-This breaks DHCP with upstream kernel (applied this on top v5.10-rc7)
-and used swiotlb=262144,force and now the dhclient is not working:
 
-[  119.300502] bnxt_en 0000:3b:00.0 eno2np0: NIC Link is Up, 25000 Mbps full duplex, Flow control: ON - receive & transmit
-[  119.437573] bnxt_en 0000:3b:00.0 eno2np0: FEC autoneg off encoding: None
-[   90.064220] dracut-initqueue[1477]: Warning: dhcp for interface eno2np0 failed
-[  101.155295] dracut-initqueue[1477]: Warning: dhcp for interfa[  142.361359] bnxt_en 0000:3b:00.1 eno3np1: NIC Link is Up, 25000 Mbps full duplex, Flow control: ON - receive & transmit
-ce eno2np0 faile[  142.501860] bnxt_en 0000:3b:00.1 eno3np1: FEC autoneg off encoding: None
-d
-[  113.054108] dracut-initqueue[1477]: Warning: dhcp for interface eno3np1 failed
-[  123.867108] dracut-initqueue[1477]: Warning: dhcp for interface eno3np1 failed
-[  251.888002] dracut-initqueue[1477]: Warning: dracut-initqueue timeout - starting timeout scripts
-
-Dropping from linux-next.
-
-> ---
->  kernel/dma/swiotlb.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index 781b9dca197c..56a35e71b3fd 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -483,6 +483,12 @@ phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
->  	max_slots = mask + 1
->  		    ? ALIGN(mask + 1, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT
->  		    : 1UL << (BITS_PER_LONG - IO_TLB_SHIFT);
-> + 
-> +	/*
-> +	 * We need to keep the offset when mapping, so adding the offset
-> +	 * to the total set we need to allocate in SWIOTLB
-> +	 */
-> +	alloc_size += offset_in_page(orig_addr);
->  
->  	/*
->  	 * For mappings greater than or equal to a page, we limit the stride
-> @@ -567,6 +573,11 @@ phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t orig_addr,
->  	 */
->  	for (i = 0; i < nslots; i++)
->  		io_tlb_orig_addr[index+i] = orig_addr + (i << IO_TLB_SHIFT);
-> +	/*
-> +	 * When keeping the offset of the original data, we need to advance
-> +	 * the tlb_addr by the offset of orig_addr.
-> +	 */
-> +	tlb_addr += orig_addr & (PAGE_SIZE - 1);
->  	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
->  	    (dir == DMA_TO_DEVICE || dir == DMA_BIDIRECTIONAL))
->  		swiotlb_bounce(orig_addr, tlb_addr, mapping_size, DMA_TO_DEVICE);
-> -- 
-> 2.27.0
-> 
-> 
+>
+> Jason
