@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 960872D78E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1812D787A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437736AbgLKPOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:14:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39904 "EHLO mail.kernel.org"
+        id S2406529AbgLKPAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:00:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406549AbgLKPO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:14:27 -0500
-Date:   Fri, 11 Dec 2020 19:48:41 +0530
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607696329;
-        bh=AaWAHxLcS4HDS5ZqYcRul/fH6LvUc3a2LNed66cZd5I=;
+        id S2436889AbgLKPAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 10:00:22 -0500
+Date:   Fri, 11 Dec 2020 15:22:59 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607696511;
+        bh=2HIAIQhlG/wT9bumBESnx8SU4yR2bS8TgfIjeo4UklU=;
         h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=al9AwndRpsjir4HzS7G5z8/froC/N0nBPqiDCd0gqHQq/W4OiLEKWj7wIbGlBHvib
-         DjeIDWs1Nv04gROQFTR0XOY2dpn6P2AacCA7Ad4UKUdp/0CNyM6PPxncf6+lCDGPgN
-         T4sj7PcnEKMB7GKXMMudgSx378l6AZT/vSx8EkFQhQt/MK4p3lvp7m5hySv/rTU31k
-         roLRk6FIbzUxso8sga0NsBz7Gd2X+HG4hpobTK80FyQgWA1G3RMiHPppSBrAkECAnP
-         4SyXSArKU/g7ie1IAbnzg70eADoI/vbR/qrXkoRvOiRUyF0c+tTkdef5usoHLg5aBr
-         +cWEXtJlwqZqA==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Parth Y Shah <sparth1292@gmail.com>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        dan.j.williams@intel.com, linux-arm-msm@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dmaengine: bam_dma: fix return of bam_dma_irq()
-Message-ID: <20201211141841.GX8403@vkoul-mobl>
-References: <1607322820-7450-1-git-send-email-sparth1292@gmail.com>
+        b=Ty0K3IGKorNWL/6CRErqkSmbWYR8KYJuS6SYgNy5pG4In1Y3VRmWIqlRtugJ5S2Xn
+         OBKxwu+3KTfMTpSEysDgfcBssSPtgWFF5nkVmTX1ivlLnH87lTPL4DHbrkJrluGCuZ
+         UZpv1KECyk/GRF9fpoZR+F1UmkEA79+1TJ1GcJ1E=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 5.9 00/75] 5.9.14-rc1 review
+Message-ID: <X9OAwzb3cbkg2OBj@kroah.com>
+References: <20201210142606.074509102@linuxfoundation.org>
+ <CA+G9fYv-gar22WM8sdTSTmnda8+4ysyR2Lbdk0vFBwk2Hp2qGg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1607322820-7450-1-git-send-email-sparth1292@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYv-gar22WM8sdTSTmnda8+4ysyR2Lbdk0vFBwk2Hp2qGg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07-12-20, 12:03, Parth Y Shah wrote:
-> While performing suspend/resume, we were getting below kernel crash.
+On Fri, Dec 11, 2020 at 11:01:31AM +0530, Naresh Kamboju wrote:
+> On Thu, 10 Dec 2020 at 20:08, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.9.14 release.
+> > There are 75 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Sat, 12 Dec 2020 14:25:47 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.14-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.9.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> [   54.541672] [FTS][Info]gesture suspend...
-> [   54.605256] [FTS][Error][GESTURE]Enter into gesture(suspend) failed!
-> [   54.605256]
-> [   58.345850] irq event 10: bogus return value fffffff3
-> ......
+> Results from Linaro’s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
 > 
-> [   58.345966] [<ffff0000080830f0>] el1_irq+0xb0/0x124
-> [   58.345971] [<ffff000008085360>] arch_cpu_idle+0x10/0x18
-> [   58.345975] [<ffff0000081077f4>] do_idle+0x1ac/0x1e0
-> [   58.345979] [<ffff0000081079c8>] cpu_startup_entry+0x20/0x28
-> [   58.345983] [<ffff000008a80ed0>] rest_init+0xd0/0xdc
-> [   58.345988] [<ffff0000091c0b48>] start_kernel+0x390/0x3a4
-> [   58.345990] handlers:
-> [   58.345994] [<ffff0000085120d0>] bam_dma_irq
-> 
-> The reason for the crash we found is, bam_dma_irq() was returning
-> negative value when the device resumes in some conditions.
-> 
-> In addition, the irq handler should have one of the below return values.
-> 
-> IRQ_NONE            interrupt was not from this device or was not handled
-> IRQ_HANDLED         interrupt was handled by this device
-> IRQ_WAKE_THREAD     handler requests to wake the handler thread
-> 
-> Therefore, to resolve this crash, we have changed the return value to
-> IRQ_NONE.
+> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Applied, thanks
+Thanks for testing them all and letting me know.
 
--- 
-~Vinod
+greg k-h
