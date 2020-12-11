@@ -2,90 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C795F2D7F3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD232D7F41
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:17:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732563AbgLKTPG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Dec 2020 14:15:06 -0500
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:44835 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732905AbgLKTOl (ORCPT
+        id S2392649AbgLKTQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 14:16:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389157AbgLKTQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 14:14:41 -0500
-X-Originating-IP: 109.220.208.103
-Received: from xps13 (lfbn-tou-1-1617-103.w109-220.abo.wanadoo.fr [109.220.208.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 111C220002;
-        Fri, 11 Dec 2020 19:13:56 +0000 (UTC)
-Date:   Fri, 11 Dec 2020 20:13:56 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] mtd: Changes for 5.10 final
-Message-ID: <20201211201356.62c54b3f@xps13>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 11 Dec 2020 14:16:07 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692FDC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 11:15:27 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id iq13so2661244pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 11:15:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zZ6u/dgwrNzUyp4/iz48nhaBhU4okUzFL8r3cjiaumE=;
+        b=XBAN1oa9ls86gvI7Rrnt5AyC5R+ixC3nwLXb55s22TP88HhK2MLDugo2jIX42wIqaj
+         W58fWoEwyCmXY8A+s8wJH5GGrYkrba1Wmy2iLyw86qIkCYwxwgVDJgII9ekjxgyfb683
+         EtZHogzterQzh21PmL5ZhdmvU3Wr3A6O9vlwL2EUSOLEm7qhJayiPqnIKX8yyUf6PKi8
+         UPO+6ovJOsVfOah/BJF1bDoCkbKdOHvQM0aRi3a/Gt/T5X6HMg0N0yrO5C5b/mYA8eNY
+         o5GCk/a4Vcz/VH3Lj6BC6//DmX4EiOizRtYHgvuPmyG4Z8zL9bQrBoNP9Kw6AHDKqdwB
+         Qt0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zZ6u/dgwrNzUyp4/iz48nhaBhU4okUzFL8r3cjiaumE=;
+        b=CN5Sxp7NF2Ah0Pqq0lAWJ3ylbYyzqgkjf6tpwn38I/2qJpMZiF6cDWCAppITlEZS+z
+         1a7WYZiI9ctu8lyAV30aydvHuzJac6yCLd/xFXVN+vI6OYBsI2CF+lmhGRzkhgB7cGJP
+         mmkwATFm3JmGQZnrCDj/80NQ+3F3lLpUZ+Ct+z4pVo/9S85InrRi5SIViUQJGsydATZg
+         N/3aFrtD+ngl2vP9yfN1x6dxsrchBvw/QYRhpFzIATswKIazGdgvmoSDRsfS0QRvnf5z
+         8jiX4cqeV4Or6KaJsj6h/dTBo8WstQH9mJmGL9oGX2YOAIMV1yHPfd7cwKmjqtg4QHCk
+         VX3Q==
+X-Gm-Message-State: AOAM530MN2ckR+UaM3JaVT44dRu3mtG4NMLU+mSZSWltLUeovPv18LLT
+        tn5te5CNRmQM6dh8jiYlXzTYYEHL3xn60fdODmVZfQ==
+X-Google-Smtp-Source: ABdhPJxfGbwUWvnNecik9NvVjAjwv6pq8F6vjTDTDjud31aSBqFrqzPOKMefvdnPzQRn01QbSIG6u82+0fz7gCjcAlY=
+X-Received: by 2002:a17:902:26a:b029:da:af47:77c7 with SMTP id
+ 97-20020a170902026ab02900daaf4777c7mr12440421plc.10.1607714126633; Fri, 11
+ Dec 2020 11:15:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20201211102437.3929348-1-anders.roxell@linaro.org>
+In-Reply-To: <20201211102437.3929348-1-anders.roxell@linaro.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 11 Dec 2020 11:15:15 -0800
+Message-ID: <CAKwvOdmD+n_aoVNZnKhkfsd+1p+9N6nnH76ngdkUO3Bo9n1T4A@mail.gmail.com>
+Subject: Re: [PATCH v2] mips: lib: uncached: fix non-standard usage of
+ variable 'sp'
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On Fri, Dec 11, 2020 at 2:24 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+>
+> When building mips tinyconfig with clang the following warning show up:
+>
+> arch/mips/lib/uncached.c:45:6: warning: variable 'sp' is uninitialized when used here [-Wuninitialized]
+>         if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
+>             ^~
+> arch/mips/lib/uncached.c:40:18: note: initialize the variable 'sp' to silence this warning
+>         register long sp __asm__("$sp");
+>                         ^
+>                          = 0
+> 1 warning generated.
+>
+> Rework to make an explicit inline move, instead of the non-standard use
+> of specifying registers for local variables. This is what's written
+> from the gcc-10 manual [1] about specifying registers for local
+> variables:
+>
+> "6.47.5.2 Specifying Registers for Local Variables
+> .................................................
+> [...]
+>
+> "The only supported use for this feature is to specify registers for
+> input and output operands when calling Extended 'asm' (*note Extended
+> Asm::).  [...]".
+>
+> [1] https://docs.w3cub.com/gcc~10/local-register-variables
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 
-This is the last fixes MTD PR for 5.10 final.
+Link: https://github.com/ClangBuiltLinux/linux/issues/606
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
+> ---
+>  arch/mips/lib/uncached.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/mips/lib/uncached.c b/arch/mips/lib/uncached.c
+> index 09d5deea747f..f80a67c092b6 100644
+> --- a/arch/mips/lib/uncached.c
+> +++ b/arch/mips/lib/uncached.c
+> @@ -37,10 +37,12 @@
+>   */
+>  unsigned long run_uncached(void *func)
+>  {
+> -       register long sp __asm__("$sp");
+>         register long ret __asm__("$2");
+>         long lfunc = (long)func, ufunc;
+>         long usp;
+> +       long sp;
+> +
+> +       __asm__("move %0, $sp" : "=r" (sp));
+>
+>         if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
+>                 usp = CKSEG1ADDR(sp);
+> --
+> 2.29.2
+>
+
+
+-- 
 Thanks,
-Miquèl
-
-The following changes since commit b65054597872ce3aefbc6a666385eabdf9e288da:
-
-  Linux 5.10-rc6 (2020-11-29 15:50:50 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/fixes-for-5.10-rc8
-
-for you to fetch changes up to 33d974e76e21e9da8a36b14d2dce6394c36c3e30:
-
-  mtd: rawnand: xway: Do not force a particular software ECC engine (2020-12-11 20:10:02 +0100)
-
-----------------------------------------------------------------
-Raw NAND:
-* Second fixes series initiated because of a rework of the ECC engine
-  subsystem. The location of the DT parsing logic got moved, breaking
-  several drivers which in fact were not doing the ECC engine
-  initialization at the right place. These drivers have been fixed by
-  enforcing a particular ECC engine type and algorithm, software
-  Hamming, while the algorithm may be overwritten by a DT
-  property. This merge request fixes this in the xway, socrates,
-  plat_nand, pasemi, orion, mpc5121, gpio, au1550 and ams-delta
-  controller drivers.
-
-----------------------------------------------------------------
-Miquel Raynal (9):
-      mtd: rawnand: ams-delta: Do not force a particular software ECC engine
-      mtd: rawnand: au1550: Do not force a particular software ECC engine
-      mtd: rawnand: gpio: Do not force a particular software ECC engine
-      mtd: rawnand: mpc5121: Do not force a particular software ECC engine
-      mtd: rawnand: orion: Do not force a particular software ECC engine
-      mtd: rawnand: pasemi: Do not force a particular software ECC engine
-      mtd: rawnand: plat_nand: Do not force a particular software ECC engine
-      mtd: rawnand: socrates: Do not force a particular software ECC engine
-      mtd: rawnand: xway: Do not force a particular software ECC engine
-
- drivers/mtd/nand/raw/ams-delta.c     | 4 +++-
- drivers/mtd/nand/raw/au1550nd.c      | 4 +++-
- drivers/mtd/nand/raw/gpio.c          | 4 +++-
- drivers/mtd/nand/raw/mpc5121_nfc.c   | 4 +++-
- drivers/mtd/nand/raw/orion_nand.c    | 4 +++-
- drivers/mtd/nand/raw/pasemi_nand.c   | 4 +++-
- drivers/mtd/nand/raw/plat_nand.c     | 4 +++-
- drivers/mtd/nand/raw/socrates_nand.c | 4 +++-
- drivers/mtd/nand/raw/xway_nand.c     | 4 +++-
- 9 files changed, 27 insertions(+), 9 deletions(-)
+~Nick Desaulniers
