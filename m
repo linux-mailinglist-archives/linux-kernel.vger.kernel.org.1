@@ -2,178 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9B82D827C
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6432D828A
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436966AbgLKW57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 17:57:59 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:38364 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407062AbgLKW5d (ORCPT
+        id S2404957AbgLKXCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 18:02:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394121AbgLKXBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 17:57:33 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607727400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RMdJ5cNpvG94MqmN/2d6QVEWUP/YrLyBgV8MUkzsNlA=;
-        b=0WcDMUhLUE5DmQJjljMHI2zWwird6I5Vzppg/zn6AZ6e1OM3STU+JeGE05b5oqLFOvFfmh
-        CDXWZX+LKXvz41MQk+jw0mabsf/xLxFNSlsc7D+IqZgppXn+tyA6NewoUrmvCeXtmt2AST
-        EViRmHdbhCgpLeje9DpFYTQlqeoEtc+eq14ZwN+Y4G4vhAzpgACbffqabmLR4OWIgQ5TkH
-        0732UhUwEAjs3Gs9iSFScNlfSc9uVrpQKD7eElRAgICAQIyVgSIk6IrtHhKDjUooShlbLw
-        6lnH9jzEFDJiTz3F4zTjotppmf5h8vHSXnbS356QRRnsZMAn1kegUSilRX0RVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607727400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RMdJ5cNpvG94MqmN/2d6QVEWUP/YrLyBgV8MUkzsNlA=;
-        b=ljcajSXupjVbHPbFKhUP57PPTY2aSW+D5nnua5xYh57kSUlRXkx3yzKeC3jH07q5vSS64l
-        BGsVaGm3g05BhRAQ==
-To:     Andrew Cooper <andrew.cooper3@citrix.com>,
-        boris.ostrovsky@oracle.com,
-        =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-pci@vger.kernel.org,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-Subject: Re: [patch 27/30] xen/events: Only force affinity mask for percpu interrupts
-In-Reply-To: <edbedd7a-4463-d934-73c9-fa046c19cf6d@citrix.com>
-References: <20201210192536.118432146@linutronix.de> <20201210194045.250321315@linutronix.de> <7f7af60f-567f-cdef-f8db-8062a44758ce@oracle.com> <2164a0ce-0e0d-c7dc-ac97-87c8f384ad82@suse.com> <871rfwiknd.fsf@nanos.tec.linutronix.de> <9806692f-24a3-4b6f-ae55-86bd66481271@oracle.com> <877dpoghio.fsf@nanos.tec.linutronix.de> <edbedd7a-4463-d934-73c9-fa046c19cf6d@citrix.com>
-Date:   Fri, 11 Dec 2020 23:56:40 +0100
-Message-ID: <87y2i4eytz.fsf@nanos.tec.linutronix.de>
+        Fri, 11 Dec 2020 18:01:51 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1496C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:01:10 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id qw4so14499966ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:01:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GFKYVdHrtwiwhpkA9Do2VXDD8m9+meK8R9Kfm6AFeIA=;
+        b=G2L4nkG+2a86HWG47Xy/ZeS/JPagQ4S1iIDkdkmNZpGdbylfdMtdumDUhfYLrN36a6
+         r9FcBfGlLA7oNgYPSWV1452G0gLBfHfX9R/E5/r9UdnLW8lnvQ9LqoFZS0YtcXAwMTIX
+         gW/an9znixcgNfMIT+JAL8lkvMRONvK7hFpqDrxZFOfOTLhQoEt41+mGqIIqueIZOVkf
+         +2Emj+V3RHlGGQ8M73ZLp4PsvMdlvnmx8o3rxEp/h/EkVuvAKo1vK/N/tIALBi1PsdR/
+         0Oc78b1RKA5d6ZjtGsNlOeTt8MfSltcvsCZvL9Ufh4LISbNNGeOZBvy/dNtQL1IyQsJe
+         4oaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GFKYVdHrtwiwhpkA9Do2VXDD8m9+meK8R9Kfm6AFeIA=;
+        b=CiXYWFXeLG3IdfCpz2rI/dkj4oaaW3z9lD6BvVAMXgr/v+aXW0GculKNqTnR/3okB2
+         wpg2oyMJo+qG/sza7spp+3E6o2ZwBKkYsm441GSwsrR3s7DKT3rsfDDcAmLhJ8gsSh/G
+         oNq0imx1o3NLU5UWbYLCcX/Wsnrn4vZDXGYNd3S1nu5cPG5uBOMEhZ9pgfkswmKvcyFf
+         mApe8EKZke+W5iTmaR7x9an+nTH1YET49k3J1zUiC/GGm68UaL46mHci4FY3EaxfEhXh
+         GUzaPGDEpNEea3kjLP5fYGhSYucIa0ojXTPRzn5ZAw5zzASr6y/Z0nZ4p8jMQN8Q7cOz
+         7G6g==
+X-Gm-Message-State: AOAM532bisBGzM+XUWRmm7TQYk8eDMCNksQtoHnfcwhUeJmJHWmn7LuI
+        pfykpUh1B6oPzoaDlR/8NWtBXQPUIkub4MCaUlJjcw==
+X-Google-Smtp-Source: ABdhPJyqbqsuDfUDja0QJ+RweV4KYLSy8rVso6oP4CDyyGfCYOb553/fgMxzadNtHa9ok0zws+8ygrJLM02XhpZm984=
+X-Received: by 2002:a17:906:fb9b:: with SMTP id lr27mr13275461ejb.175.1607727669571;
+ Fri, 11 Dec 2020 15:01:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <CA+CK2bCc9gk3Yy+ueaZVJs90MFE3fqukLsdb5R2kTUH4tWRbkA@mail.gmail.com>
+ <447A41F3-EB94-4DA4-8B98-038B127774A5@redhat.com>
+In-Reply-To: <447A41F3-EB94-4DA4-8B98-038B127774A5@redhat.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 11 Dec 2020 18:00:33 -0500
+Message-ID: <CA+CK2bAok_0Q+AovxVYqtsObVbbxr+ZZcTgP76uxEvDy-uJWsQ@mail.gmail.com>
+Subject: Re: [PATCH v3 5/6] mm/gup: migrate pinned pages out of movable zone
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew,
+> I guess revert what we did (unpin) and return an error. The interesting question is what can make migration/isolation fail
 
-On Fri, Dec 11 2020 at 22:21, Andrew Cooper wrote:
-> On 11/12/2020 21:27, Thomas Gleixner wrote:
->> It's not any different from the hardware example at least not as far as
->> I understood the code.
+OK. I will make the necessary changes. Let's handle errors properly.
+Whatever the cause for the error, we will know it when it happens, and
+when error is returned. I think I will add a 10-time retry instead of
+the infinite retry that we currently have. The 10-times retry we
+currently have during the hot-remove path.
+
 >
-> Xen's event channels do have a couple of quirks.
-
-Why am I not surprised?
-
-> Binding an event channel always results in one spurious event being
-> delivered.=C2=A0 This is to cover notifications which can get lost during=
- the
-> bidirectional setup, or re-setups in certain configurations.
+> a) out of memory: smells like a zone setup issue. Failures are acceptable I guess.
 >
-> Binding an interdomain or pirq event channel always defaults to vCPU0.=C2=
-=A0
-> There is no way to atomically set the affinity while binding.=C2=A0 I bel=
-ieve
-> the API predates SMP guest support in Xen, and noone has fixed it up
-> since.
-
-That's fine. I'm not changing that.
-
-What I'm changing is the unwanted and unnecessary overwriting of the
-actual affinity mask.
-
-We have a similar issue on real hardware where we can only target _one_
-CPU and not all CPUs in the affinity mask. So we still can preserve the
-(user) requested mask and just affine it to one CPU which is reflected
-in the effective affinity mask. This the right thing to do for two
-reasons:
-
-   1) It allows proper interrupt distribution
-
-   2) It does not break (user) requested affinity when the effective
-      target CPU goes offline and the affinity mask still contains
-      online CPUs. If you overwrite it you lost track of the requested
-      broader mask.
-
-> As a consequence, the guest will observe the event raised on vCPU0 as
-> part of setting up the event, even if it attempts to set a different
-> affinity immediately afterwards.=C2=A0 A little bit of care needs to be t=
-aken
-> when binding an event channel on vCPUs other than 0, to ensure that the
-> callback is safe with respect to any remaining state needing
-> initialisation.
-
-That's preserved for all non percpu interrupts. The percpu variant of
-VIRQ and IPIs did binding to vCPU !=3D 0 already before this change.
-
-> Beyond this, there is nothing magic I'm aware of.
+> b) short term pinnings: process dying - not relevant I guess. Other cases? (Fork?)
 >
-> We have seen soft lockups before in certain scenarios, simply due to the
-> quantity of events hitting vCPU0 before irqbalance gets around to
-> spreading the load.=C2=A0 This is why there is an attempt to round-robin =
-the
-> userspace event channel affinities by default, but I still don't see why
-> this would need custom affinity logic itself.
-
-Just the previous attempt makes no sense for the reasons I outlined in
-the changelog. So now with this new spreading mechanics you get the
-distribution for all cases:
-
-  1) Post setup using and respecting the default affinity mask which can
-     be set as a kernel commandline parameter.
-
-  2) Runtime (user) requested affinity change with a mask which contains
-     more than one vCPU. The previous logic always chose the first one
-     in the mask.
-
-     So assume userspace affines 4 irqs to a CPU 0-3 and 4 irqs to CPU
-     4-7 then 4 irqs end up on CPU0 and 4 on CPU4
-
-     The new algorithm which is similar to what we have on x86 (minus
-     the vector space limitation) picks the CPU which has the least
-     number of channels affine to it at that moment. If e.g. all 8 CPUs
-     have the same number of vectors before that change then in the
-     example above the first 4 are spread to CPU0-3 and the second 4 to
-     CPU4-7
-
-Thanks,
-
-        tglx
-=20=20=20
+> c) ?
+>
+> Once we clarified that, we actually know how likely it will be to return an error (and making vfio pinnings fail etc).
