@@ -2,68 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598902D7253
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0404A2D724F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405578AbgLKIyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:54:21 -0500
-Received: from smtp25.cstnet.cn ([159.226.251.25]:48864 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2403991AbgLKIxT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:53:19 -0500
-Received: from localhost.localdomain (unknown [124.16.141.241])
-        by APP-05 (Coremail) with SMTP id zQCowAD39Hg+M9NfCkMDAA--.10772S2;
-        Fri, 11 Dec 2020 16:52:15 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     pantelis.antoniou@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] net: ethernet: fs-enet: remove casting dma_alloc_coherent
-Date:   Fri, 11 Dec 2020 08:52:12 +0000
-Message-Id: <20201211085212.85457-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: zQCowAD39Hg+M9NfCkMDAA--.10772S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xw15CFWrWFyUJry5KrWfZrb_yoWfZwc_ur
-        srZFn7Ww4UJryFyw48KrW3Zr929FZ0va1rZF1vgayaqr9Fvrn5W34UZr1fXF13ur48uFZ8
-        Zwnxtry3A345KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv67AKxVW8Jr0_Cr
-        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFyl42xK
-        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUxb4SUUUUU
-X-Originating-IP: [124.16.141.241]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBgkHA10Te1Xx+wAAsh
+        id S2403920AbgLKIxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:53:32 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9163 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392926AbgLKIwp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 03:52:45 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CskzM55c4z15bZQ;
+        Fri, 11 Dec 2020 16:51:27 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 11 Dec 2020 16:51:53 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <colyli@suse.de>, <kent.overstreet@gmail.com>,
+        <linux-bcache@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] md/bcache: convert comma to semicolon
+Date:   Fri, 11 Dec 2020 16:52:22 +0800
+Message-ID: <20201211085222.2762-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove casting the values returned by dma_alloc_coherent.
+Replace a comma between expression statements by a semicolon.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/net/ethernet/freescale/fs_enet/mac-fec.c | 2 +-
+ drivers/md/bcache/sysfs.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/fs_enet/mac-fec.c b/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
-index 99fe2c210d0f..3ae345676e50 100644
---- a/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
-+++ b/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
-@@ -131,7 +131,7 @@ static int allocate_bd(struct net_device *dev)
- 	struct fs_enet_private *fep = netdev_priv(dev);
- 	const struct fs_platform_info *fpi = fep->fpi;
- 
--	fep->ring_base = (void __force __iomem *)dma_alloc_coherent(fep->dev,
-+	fep->ring_base = dma_alloc_coherent(fep->dev,
- 					    (fpi->tx_ring + fpi->rx_ring) *
- 					    sizeof(cbd_t), &fep->ring_mem_addr,
- 					    GFP_KERNEL);
+diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
+index 554e3afc9b68..00a520c03f41 100644
+--- a/drivers/md/bcache/sysfs.c
++++ b/drivers/md/bcache/sysfs.c
+@@ -404,7 +404,7 @@ STORE(__cached_dev)
+ 		if (!env)
+ 			return -ENOMEM;
+ 		add_uevent_var(env, "DRIVER=bcache");
+-		add_uevent_var(env, "CACHED_UUID=%pU", dc->sb.uuid),
++		add_uevent_var(env, "CACHED_UUID=%pU", dc->sb.uuid);
+ 		add_uevent_var(env, "CACHED_LABEL=%s", buf);
+ 		kobject_uevent_env(&disk_to_dev(dc->disk.disk)->kobj,
+ 				   KOBJ_CHANGE,
 -- 
-2.17.1
+2.22.0
 
