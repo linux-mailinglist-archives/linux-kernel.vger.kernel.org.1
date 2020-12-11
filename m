@@ -2,60 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 006122D7278
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E852D7291
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437323AbgLKJBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 04:01:38 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9873 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389430AbgLKJBP (ORCPT
+        id S2437176AbgLKJD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 04:03:29 -0500
+Received: from outbound-smtp44.blacknight.com ([46.22.136.52]:45763 "EHLO
+        outbound-smtp44.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2437179AbgLKJDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 04:01:15 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Csl9D5Xr2z7Cf0;
-        Fri, 11 Dec 2020 17:00:00 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 11 Dec 2020 17:00:26 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
-CC:     <richard@nod.at>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] mtd: nand: raw: convert comma to semicolon
-Date:   Fri, 11 Dec 2020 17:00:55 +0800
-Message-ID: <20201211090055.3250-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Fri, 11 Dec 2020 04:03:22 -0500
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp44.blacknight.com (Postfix) with ESMTPS id 0D8C3F842B
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 09:02:30 +0000 (GMT)
+Received: (qmail 24518 invoked from network); 11 Dec 2020 09:02:29 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Dec 2020 09:02:29 -0000
+Date:   Fri, 11 Dec 2020 09:02:28 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Peter Ziljstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux-ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 3/4] sched/fair: Do not replace recent_used_cpu with the
+ new target
+Message-ID: <20201211090228.GU3371@techsingularity.net>
+References: <20201208153501.1467-1-mgorman@techsingularity.net>
+ <20201211062542.3082-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201211062542.3082-1-hdanton@sina.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace a comma between expression statements by a semicolon.
+On Fri, Dec 11, 2020 at 02:25:42PM +0800, Hillf Danton wrote:
+> On Tue,  8 Dec 2020 15:35:00 +0000 Mel Gorman wrote:
+> > @@ -6277,17 +6277,13 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+> >  
+> >  	/* Check a recently used CPU as a potential idle candidate: */
+> >  	recent_used_cpu = p->recent_used_cpu;
+> > +	p->recent_used_cpu = prev;
+> >  	if (recent_used_cpu != prev &&
+> >  	    recent_used_cpu != target &&
+> >  	    cpus_share_cache(recent_used_cpu, target) &&
+> >  	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)) &&
+> >  	    cpumask_test_cpu(p->recent_used_cpu, p->cpus_ptr) &&
+> 
+> Typo? Fix it in spin if so.
+> 
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/mtd/nand/raw/mxc_nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+What typo?
 
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index 684c51e5e60d..aa61b64a8abd 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -1787,7 +1787,7 @@ static int mxcnd_probe(struct platform_device *pdev)
- 	this->legacy.chip_delay = 5;
- 
- 	nand_set_controller_data(this, host);
--	nand_set_flash_node(this, pdev->dev.of_node),
-+	nand_set_flash_node(this, pdev->dev.of_node);
- 	this->legacy.dev_ready = mxc_nand_dev_ready;
- 	this->legacy.cmdfunc = mxc_nand_command;
- 	this->legacy.read_byte = mxc_nand_read_byte;
+> >  	    asym_fits_capacity(task_util, recent_used_cpu)) {
+> > -		/*
+> > -		 * Replace recent_used_cpu with prev as it is a potential
+> > -		 * candidate for the next wake:
+> > -		 */
+> > -		p->recent_used_cpu = prev;
+> >  		return recent_used_cpu;
+> 
+> I prefer to update the recent CPU after llc check.
+> 
+
+That would prevent recent_used_cpu leaving the LLC the task first
+started on.
+
 -- 
-2.22.0
-
+Mel Gorman
+SUSE Labs
