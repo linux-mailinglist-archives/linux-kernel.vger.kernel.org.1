@@ -2,70 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A40C2D70AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:13:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 398D12D7084
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:04:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436737AbgLKHMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 02:12:43 -0500
-Received: from m12-14.163.com ([220.181.12.14]:39588 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390203AbgLKHLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 02:11:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=7k57n
-        zgxTmg63EGVLxW5mIM+m/V9eJh8YrG1t/tkZPE=; b=EsK2GrZRn+2W2n3hVfaWx
-        antpcA0kmBCxjlo6ujDd5h2YXMvWqFX6ELDLu0PQ5UVb6QUHKu6tnsftwQWBnfTM
-        JkYxYm9H8UAPNCUuRRn2vPXMkivdgaQFiJu6A+N2IJxmQ00ywN8qcRVpHYM8ABLv
-        1VDTttgmPIw21WyozE+MYw=
-Received: from localhost (unknown [223.104.64.138])
-        by smtp10 (Coremail) with SMTP id DsCowAC3gLaAD9NfCoNjaQ--.26709S2;
-        Fri, 11 Dec 2020 14:19:45 +0800 (CST)
-Date:   Fri, 11 Dec 2020 14:19:44 +0800
-From:   Hui Su <sh_def@163.com>
-To:     adobriyan@gmail.com, ebiederm@xmission.com,
-        akpm@linux-foundation.org, sh_def@163.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH] fs/proc: make pde_get() return nothing
-Message-ID: <20201211061944.GA2387571@rlk>
+        id S1730637AbgLKHDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 02:03:33 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9509 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728013AbgLKHCz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 02:02:55 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CshXf1LvBzhq7C;
+        Fri, 11 Dec 2020 15:01:38 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 11 Dec 2020 15:02:08 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
+        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
+        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
+        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/hisilicon: Add the CONFIG_PM_SLEEP
+Date:   Fri, 11 Dec 2020 15:02:20 +0800
+Message-ID: <1607670140-37943-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID: DsCowAC3gLaAD9NfCoNjaQ--.26709S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XFyftFy8Ary8Cry5JF4rGrg_yoWfGFg_Cr
-        92vF18Gr4rKryrtw4jkr1S9ryrXw4rKas5WF4fta97J398JFZ0yrZrGr97Zr97WrWrtF15
-        Cw1vvFnIqr4xujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUbIJm5UUUUU==
-X-Originating-IP: [223.104.64.138]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbitwH3X1aEGw1QPAAAs2
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-we don't need pde_get()'s return value, so make
-pde_get() return nothing
+add the CONFIG_PM_SLEEP to isolate the function of resume and suspend.
 
-Signed-off-by: Hui Su <sh_def@163.com>
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 ---
- fs/proc/internal.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/proc/internal.h b/fs/proc/internal.h
-index 917cc85e3466..0abbd93a4a08 100644
---- a/fs/proc/internal.h
-+++ b/fs/proc/internal.h
-@@ -190,10 +190,9 @@ struct dentry *proc_lookup_de(struct inode *, struct dentry *, struct proc_dir_e
- extern int proc_readdir(struct file *, struct dir_context *);
- int proc_readdir_de(struct file *, struct dir_context *, struct proc_dir_entry *);
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+index 7e91ef1..faa664d 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+@@ -65,6 +65,7 @@ static const struct drm_driver hibmc_driver = {
+ 	.irq_handler		= hibmc_drm_interrupt,
+ };
  
--static inline struct proc_dir_entry *pde_get(struct proc_dir_entry *pde)
-+static inline void pde_get(struct proc_dir_entry *pde)
++#ifdef CONFIG_PM_SLEEP
+ static int __maybe_unused hibmc_pm_suspend(struct device *dev)
  {
- 	refcount_inc(&pde->refcnt);
--	return pde;
- }
- extern void pde_put(struct proc_dir_entry *);
+ 	struct drm_device *drm_dev = dev_get_drvdata(dev);
+@@ -78,6 +79,7 @@ static int  __maybe_unused hibmc_pm_resume(struct device *dev)
  
+ 	return drm_mode_config_helper_resume(drm_dev);
+ }
++#endif
+ 
+ static const struct dev_pm_ops hibmc_pm_ops = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(hibmc_pm_suspend,
 -- 
-2.29.2
-
+2.7.4
 
