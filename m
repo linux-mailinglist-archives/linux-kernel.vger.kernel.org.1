@@ -2,134 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4942D766B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AD12D766E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406111AbgLKNTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 08:19:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406097AbgLKNSj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 08:18:39 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950D7C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:17:58 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id r14so9007406wrn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:17:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pTsb6QBizLruQ4SvEPGcUMH+feyQGOx2SNhiTZ6A7sk=;
-        b=BzU7C30N+YcYwkp2ex51D28fxZp48WXRt3da/89karVc7nkPSQhS8XlV/xSa4Fez4e
-         4eu4B9UkufaXX/oOfYsACQi4bB6874NUMWJu8PFGXjGBtp9hTn13U0Yh3n2hAfXMJDyG
-         ZSEyAuJptY3InH5ff3BJ1OqS9iVmbDkVyuw4VxJs/PQg/LVRK4kFVRcIWv2jykzy3YCK
-         5ZoW8oBLsOVZKgU15idzMl1WXoZdqosYOY7ZhQJbVE0oOxN2Pcgtg/Xg1yPChXXZFbgy
-         07LZxXMRdpbjb+ufmcPFdZ/obsyEwOnonOFY5GZ9ZO11Kiw8x8luQ0PXSBBW1lAi9APT
-         HTaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pTsb6QBizLruQ4SvEPGcUMH+feyQGOx2SNhiTZ6A7sk=;
-        b=ksB1KneclNMxc/CyaxsOb5vBu9TSyeGBBdEal0q9V8stHcdasnpwHbq2bxr1NyoB3e
-         jmd8yDYuktg9+J+pODjuaJ4LCtwTWJ3/NCBA2PUQT3nDj5jrYMBZZ/ibMEo8jNfSdED7
-         g8RnuEEbiKQmVXIwG6lAWeWD383eP8w8vqBriKpBSEA9M+isE37iAZp9cbuNJxriVXBW
-         7RC8pomkJFvMceqP2R9qb5gw7EePlzAJ6io4Yf6cWTFFzbfPzoCxGNlVkDgG1FnrI6Eb
-         OO2Mz1dPq1PeVURoJo7VubGW3BJyUojKolwobYbyGSYLao6GSKOdvAghnliT9oDxNfyi
-         GZ/w==
-X-Gm-Message-State: AOAM53299tCdtUteMUPoAgC72kzBMBdZMQuiiZZuhyjZeIWqNMLBcK8F
-        GC9F0spkTmNJVaw0bfODkUEWng==
-X-Google-Smtp-Source: ABdhPJwZSQdwUi/HyQh/NNTpkHJs9H+AQNSI8zWb+io8+EqtMHVKyqk1cgo2bflY2HyA/k9j6o+A9g==
-X-Received: by 2002:adf:f101:: with SMTP id r1mr1891369wro.112.1607692677022;
-        Fri, 11 Dec 2020 05:17:57 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:fc92:290c:960a:52ef? ([2a01:e34:ed2f:f020:fc92:290c:960a:52ef])
-        by smtp.googlemail.com with ESMTPSA id e16sm16318909wra.94.2020.12.11.05.17.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Dec 2020 05:17:56 -0800 (PST)
-Subject: Re: [PATCH] thermal/core: Make 'forced_passive' as obsolete candidate
-To:     rui.zhang@intel.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        amitk@kernel.org, Matthew Garrett <mjg59@srcf.ucam.org>
-References: <20201208153046.297456-1-daniel.lezcano@linaro.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <cc2085ca-ada9-d616-eed5-3496889da3bb@linaro.org>
-Date:   Fri, 11 Dec 2020 14:17:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2406116AbgLKNTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 08:19:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404425AbgLKNS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 08:18:58 -0500
+Date:   Fri, 11 Dec 2020 13:18:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607692697;
+        bh=2E127mU5eJ6ue3tzTmMDUSWHAoCzUtkbINjTlopsJIA=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PA8BFLEUlLmq/basaIXKyyzg6K1lX9Eygrt9+Kdw6TmDi7YEYc92Zl5c+Tag37uQZ
+         l97JGYpnkd1BbYjzdB0RTno6/PTh6r+AZKiY0Vg7Ae1pcsKQX09d1aYDGIg8h9HnBw
+         RdvCvH+Jp+1Wg8Ee5T9sDAzSN1VLrvsEWkhWyXj/PzBplt2/zOnRoejD1g4tj2/HFo
+         Jo/eAUwu+GMTyQ4GEnoiUiBM21pdVD1i/YWZG7EaQK2FbvzI9KDD50ImnKewK4fUQ/
+         Z0IoDweyxZZohS4++spkMSy+eEM4mSgQchrSzDxLlpG0ZbTLBJbrKhGW/6t2Bsfa0s
+         SBHkOgeAcG7/w==
+From:   Mark Brown <broonie@kernel.org>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
+        Maxime Ripard <maxime.ripard@bootlin.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andreas Kemnade <andreas@kemnade.info>
+Subject: Re: [PATCH] spi: dt-bindings: clarify CS behavior for spi-cs-high
+ and gpio descriptors
+Message-ID: <20201211131810.GB4929@sirena.org.uk>
+Mail-Followup-To: Sven Van Asbroeck <thesven73@gmail.com>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-spi <linux-spi@vger.kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
+        kernel@pyra-handheld.com, Maxime Ripard <maxime.ripard@bootlin.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andreas Kemnade <andreas@kemnade.info>
+References: <3bed61807fff6268789e7d411412fbc5cd6ffe2a.1607507863.git.hns@goldelico.com>
+ <CAGngYiVKHoXPGxmScCnb-R6xoo9GNw5pG8V8Cpyk3meoJbskiw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201208153046.297456-1-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="TRYliJ5NKNqkz5bu"
+Content-Disposition: inline
+In-Reply-To: <CAGngYiVKHoXPGxmScCnb-R6xoo9GNw5pG8V8Cpyk3meoJbskiw@mail.gmail.com>
+X-Cookie: Nostalgia isn't what it used to be.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/12/2020 16:30, Daniel Lezcano wrote:
-> The passive file in sysfs forces the usage of a passive trip point set
-> by the userspace when a broken BIOS does not provide the mitigation
-> temperature for such thermal zone. The hardware evolved a lot since
-> 2008 as a good thermal management is no longer an option.
-> 
-> Linux on the other side also provides now a way to load fixed ACPI
-> table via the option ACPI_TABLE_UPGRADE, so additionnal trip point
-> could be added there.
-> 
-> Set the option obsolete and plan to remove it, so the corresponding
-> code can be removed from the core code and allow more cleanups the
-> thermal framework deserves.
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
 
-Is there any concern about this change ?
+--TRYliJ5NKNqkz5bu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->  Documentation/ABI/obsolete/sysfs-thermal-passive | 13 +++++++++++++
->  drivers/thermal/thermal_sysfs.c                  |  2 ++
->  2 files changed, 15 insertions(+)
->  create mode 100644 Documentation/ABI/obsolete/sysfs-thermal-passive
-> 
-> diff --git a/Documentation/ABI/obsolete/sysfs-thermal-passive b/Documentation/ABI/obsolete/sysfs-thermal-passive
-> new file mode 100644
-> index 000000000000..2510724cc165
-> --- /dev/null
-> +++ b/Documentation/ABI/obsolete/sysfs-thermal-passive
-> @@ -0,0 +1,13 @@
-> +What:		/sys/class/thermal/thermal_zone*/passive
-> +Date:		December 2008
-> +KernelVersion:	2.6.28
-> +Contact:	Daniel Lezcano <daniel.lezcano@linaro.org>
-> +Description:
-> +
-> +  The passive file in sysfs forces the usage of a passive trip point
-> +  set by the userspace when a broken BIOS does not provide the
-> +  mitigation temperature for such thermal zone. However, the Linux
-> +  kernel evolved a lot since 2008 as well as the hardware and it is
-> +  able to manage correctly the thermal envelope. It does also provide
-> +  a way to load fixed ACPI table via the option ACPI_TABLE_UPGRADE, so
-> +  additionnal trip point could be added there.
-> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-> index 0866e949339b..578099b520b1 100644
-> --- a/drivers/thermal/thermal_sysfs.c
-> +++ b/drivers/thermal/thermal_sysfs.c
-> @@ -232,6 +232,8 @@ passive_store(struct device *dev, struct device_attribute *attr,
->  	if (state && state < 1000)
->  		return -EINVAL;
->  
-> +	pr_warn("%s: Consider the 'passive' option obsolete\n", tz->type);
-> +
->  	if (state && !tz->forced_passive) {
->  		if (!tz->passive_delay)
->  			tz->passive_delay = 1000;
-> 
+On Wed, Dec 09, 2020 at 12:36:40PM -0500, Sven Van Asbroeck wrote:
+> On Wed, Dec 9, 2020 at 4:57 AM H. Nikolaus Schaller <hns@goldelico.com> wrote:
 
+> > +      device node     | cs-gpio       | CS pin state active | Note
+> > +      ================+===============+=====================+=====
+> > +      spi-cs-high     | -             | H                   |
+> > +      -               | -             | L                   |
+> > +      spi-cs-high     | ACTIVE_HIGH   | H                   |
+> > +      -               | ACTIVE_HIGH   | L                   | 1
+> > +      spi-cs-high     | ACTIVE_LOW    | H                   | 2
+> > +      -               | ACTIVE_LOW    | L                   |
+> > +
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> Doesn't this table simply say:
+> - specify   'spi-cs-high' for an active-high chip select
+> - leave out 'spi-cs-high' for an active-low  chip select
+> - the gpio active high/active low consumer flags are ignored
+> ?
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+It seems to, yes.
+
+> If so, then I would simply document it that way.
+> Simple is beautiful.
+
+Yeah, it'd definitely be easier to read and clearer what people should
+actually do.  As Linus said it'd also be a good idea to explicitly say
+that this is not great design or particularly intentional since it could
+be pretty confusing for someone trying to understand why the bindings
+are the way they are.
+
+I'm going to apply this anyway to make sure we get this documentated but
+some incremental improvements along these lines would be good.
+
+--TRYliJ5NKNqkz5bu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/TcZEACgkQJNaLcl1U
+h9AhFggAgIvhGZX6g4DZGo69/v8qSfuNZJ8ZCbQTMs4G0PR/lhIG26joAjbftMvK
+zcxjD6svtCScdLgl3ES3AnmZYqUIy10wH6SGPd9XkpYwNRTHaGrLYsK59k//Luaq
+Qh3j7FtB42unAmTVI1rVA2KJac2FkvvNuBxNN8g75+95DXbtnvAkxbYTtFE0zit0
+q4jh58H0Zh24LpUhoZKZ2w6/Ra1XaqY1vkh0ys7tMTkShhs1LgSY8OzjDiZ36O1c
+JIlz5Fwn1uEkJhxwErccG3NYAdxOqiajOWZDM56ky4T1420W+MTwpux/YXfRWQTW
+X/ZvM2NIHyPr5ZnEfrYTVqp+uUKAqw==
+=bTcQ
+-----END PGP SIGNATURE-----
+
+--TRYliJ5NKNqkz5bu--
