@@ -2,84 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455EB2D6E60
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991852D6E63
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 04:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405142AbgLKDLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 22:11:47 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:46630 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405134AbgLKDLb (ORCPT
+        id S2395026AbgLKDNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 22:13:10 -0500
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:41028 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389864AbgLKDMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 22:11:31 -0500
-Received: by mail-oi1-f196.google.com with SMTP id k2so8274294oic.13;
-        Thu, 10 Dec 2020 19:11:16 -0800 (PST)
+        Thu, 10 Dec 2020 22:12:50 -0500
+Received: by mail-oo1-f65.google.com with SMTP id q6so1021228ooo.8;
+        Thu, 10 Dec 2020 19:12:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Tu067TpaB9PCMyvvrsvX5fcmi9Ir5wjw+1Sw+k4PlDM=;
-        b=lwwqZ7MNcc+yCtTk4E5hsfVEtF/1BP8N+oacDDNtnsmO95cRGoddSXHpjDXKHuuaux
-         7l2GDvUIstvqNmAVNT0QCurG4mSBFbTlm7LuaGVQaRrz/FEl8QOk1yHPl8uSiWdkI6UE
-         kqqBfQtawY2dwiqA3bd+AyEDBf8mBla4puP339CN7ZR/u+sVxqq2PHs6RjGn3HdM2BWl
-         iopEeAYtvd2eSTrpzQsNLgwizGlw8Oz5WsMmCJCVDcqRIHDPQGDOHEVOn+ZaBTpgB9/r
-         iSLcQpHel+VwYmObNJ7fKo7358lpcQ5THIArLCIcyIxsgE7KYi8KTxuNYYtTyIahZYng
-         +EUw==
-X-Gm-Message-State: AOAM531NWlp8YE1i6ABieOxHX02+lfV/wUfNfTUMAwe6dzwR4M+Mug02
-        xCCYrjuPlJCYOAE9ZSSr5w==
-X-Google-Smtp-Source: ABdhPJz404yyWZCLnZ4Y4Y4ugQeU+Af7ANyg/ZU7p0kKnrLfiv+qFcECo4jhUAQPk7gqzbgT8JDXyA==
-X-Received: by 2002:aca:470e:: with SMTP id u14mr7602980oia.172.1607656250804;
-        Thu, 10 Dec 2020 19:10:50 -0800 (PST)
+        bh=20FUrkWgYAPacYXxuWXY+xSuM7UzPwHMJmdN/diicTY=;
+        b=AGNFSUdDPq9/57f9mlK/N+NsHz3h8CYkH1WiBVo7JEzWScDSBLw+VL/ls6ZP7D81WK
+         /+HnmCvcTo9tJquaSqXe8lyhWS25rYy50gmX9TsJ0WiUhbGlFNFGPwk5fNrJ25R8AR9F
+         Ck6oxh/S/YPSdWhuPQbgVXZsKHI88/YvaEAwtuZ+3YFvePG8jUqyBO6ZWazTe72v6qsU
+         1uv9fkvhTqgNRGUb5ZY88nijAtfXNV48msEWGroUWBULcdYoCsmBf91h2o9+Ncz8chyZ
+         OAgKxXvyA6AztpAmtML+deSRgFHHM5vczS2a5wX9vWRR0+MARDKYYf+p7iqZjWGJDCO8
+         rb6A==
+X-Gm-Message-State: AOAM533xlnLqMjpzVCjigYFnoLtBzGgE9Il1jbEwlzKV5+lHMGUhdAp4
+        B07GxQkPlmTShPaqb4abdQ==
+X-Google-Smtp-Source: ABdhPJwohjal/Q+JcqCNbtBwiT+Ur1QE8QEtsOSmxZ6JD0zWUlTAcOoTlEyI60ZGWGKBfLTL5wWqQA==
+X-Received: by 2002:a4a:bc8d:: with SMTP id m13mr8457514oop.63.1607656329889;
+        Thu, 10 Dec 2020 19:12:09 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 109sm1565698otj.12.2020.12.10.19.10.49
+        by smtp.gmail.com with ESMTPSA id o63sm1500679ooa.10.2020.12.10.19.12.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 19:10:49 -0800 (PST)
-Received: (nullmailer pid 3553226 invoked by uid 1000);
-        Fri, 11 Dec 2020 03:10:48 -0000
-Date:   Thu, 10 Dec 2020 21:10:48 -0600
+        Thu, 10 Dec 2020 19:12:08 -0800 (PST)
+Received: (nullmailer pid 3555218 invoked by uid 1000);
+        Fri, 11 Dec 2020 03:12:07 -0000
+Date:   Thu, 10 Dec 2020 21:12:07 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        richard@nod.at, vigneshr@ti.com, bjorn.andersson@linaro.org,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] Add support for Qcom SMEM based NAND parser
-Message-ID: <20201211031048.GA3552046@robh.at.kernel.org>
-References: <20201119071308.9292-1-manivannan.sadhasivam@linaro.org>
- <20201210040942.GD6466@thinkpad>
- <20201210222447.63f5dbcf@xps13>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Helen Koike <helen.koike@collabora.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-sunxi@googlegroups.com, Jonathan Corbet <corbet@lwn.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        kevin.lhopital@hotmail.com, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: Re: [PATCH v2 16/19] dt-bindings: media: Add A83T MIPI CSI-2
+ bindings documentation
+Message-ID: <20201211031207.GA3555125@robh.at.kernel.org>
+References: <20201128142839.517949-1-paul.kocialkowski@bootlin.com>
+ <20201128142839.517949-17-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201210222447.63f5dbcf@xps13>
+In-Reply-To: <20201128142839.517949-17-paul.kocialkowski@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 10:24:47PM +0100, Miquel Raynal wrote:
-> Hi Manivannan,
+On Sat, 28 Nov 2020 15:28:36 +0100, Paul Kocialkowski wrote:
+> This introduces YAML bindings documentation for the A83T MIPI CSI-2
+> controller.
 > 
-> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Thu,
-> 10 Dec 2020 09:39:42 +0530:
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> ---
+>  .../media/allwinner,sun8i-a83t-mipi-csi2.yaml | 147 ++++++++++++++++++
+>  1 file changed, 147 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/allwinner,sun8i-a83t-mipi-csi2.yaml
 > 
-> > Hi,
-> > 
-> > On Thu, Nov 19, 2020 at 12:43:04PM +0530, Manivannan Sadhasivam wrote:
-> > > Hello,
-> > > 
-> > > This series adds support for parsing the partitions defined in Shared
-> > > Memory (SMEM) of the Qualcomm platforms supporting NAND interface.
-> > > Current parser only supports V3 and V4 of the partition tables.
-> > > 
-> > > This series has been tested on SDX55 MTP board which has an onboard NAND
-> > > device.
-> > >   
-> > 
-> > Any update on this series?
-> 
-> Patches lgtm, I think Rob's Ack is still missing, let's wait for his
-> review.
 
-Perhaps answer my reply on Dec 7.
-
-Rob
+Reviewed-by: Rob Herring <robh@kernel.org>
