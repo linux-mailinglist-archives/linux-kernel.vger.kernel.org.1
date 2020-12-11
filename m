@@ -2,88 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAAC82D71E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:38:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA722D71D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405548AbgLKIfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:35:48 -0500
-Received: from mga18.intel.com ([134.134.136.126]:51781 "EHLO mga18.intel.com"
+        id S2403911AbgLKIei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:34:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404032AbgLKIfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:35:06 -0500
-IronPort-SDR: EHSe+FZHmLUjP8GSvTKne53i/yx7961yx1IYeEwNVsfJdsNRIYvUuvTbMpSTevVg1Cv3FOT3hc
- d2amAz+BatEw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="162155225"
-X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
-   d="scan'208";a="162155225"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 00:33:18 -0800
-IronPort-SDR: azO873SVSmNgTMKSAOmIanDhqmBW66vL+2M1QiwJqXjIoQxv2UQ/Ouu+RbAJ19QBHTGoKOoRgm
- GsUhCkNP3rMg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,410,1599548400"; 
-   d="scan'208";a="440614488"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 11 Dec 2020 00:33:15 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 11 Dec 2020 10:33:15 +0200
-Date:   Fri, 11 Dec 2020 10:33:15 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     linux-usb@vger.kernel.org, gregkh@linuxfoundation.org,
-        bleung@chromium.org, open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] usb: typec: Add class for plug alt mode device
-Message-ID: <20201211083315.GE1594451@kuha.fi.intel.com>
-References: <20201210211653.879044-1-pmalani@chromium.org>
+        id S2391068AbgLKIeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 03:34:19 -0500
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: [PATCH RFC v2] docs: experimental: build PDF with rst2pdf
+Date:   Fri, 11 Dec 2020 09:33:32 +0100
+Message-Id: <b73c93c6946ab324443608fac62333b7e327a7e4.1607675494.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201210172938.3b3086b6@coco.lan>
+References: <20201210172938.3b3086b6@coco.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210211653.879044-1-pmalani@chromium.org>
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 01:16:54PM -0800, Prashant Malani wrote:
-> Add the Type C class for plug alternate mode devices which are being
-> registered by the Type C connector class. This ensures that udev events
-> get generated when the plug alt modes are registered.
-> 
-> Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Add an experimental PDF builder using rst2pdf
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
 
-> ---
-> 
-> Changes in v2:
-> - Changed code to set the class member instead of bus.
-> - Removed the alteration to typec_bus.rst since it's not longer
->   required.
-> - Updated the commit message and subject to reflect the change in code.
-> 
-> v1: https://lore.kernel.org/linux-usb/20201203030846.51669-1-pmalani@chromium.org/
-> 
->  drivers/usb/typec/class.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-> index 35eec707cb51..29d05b45cc9d 100644
-> --- a/drivers/usb/typec/class.c
-> +++ b/drivers/usb/typec/class.c
-> @@ -482,6 +482,10 @@ typec_register_altmode(struct device *parent,
->  	if (is_typec_partner(parent))
->  		alt->adev.dev.bus = &typec_bus;
->  
-> +	/* Plug alt modes need a class to generate udev events. */
-> +	if (is_typec_plug(parent))
-> +		alt->adev.dev.class = typec_class;
-> +
->  	ret = device_register(&alt->adev.dev);
->  	if (ret) {
->  		dev_err(parent, "failed to register alternate mode (%d)\n",
-> -- 
-> 2.29.2.576.ga3fc446d84-goog
+Please notice that 18 documents (of a total of 71) won't build with 
+rst2pdf. There's an opened issue about that at:
 
-thanks,
+    https://github.com/rst2pdf/rst2pdf/issues/958
 
+v2: usage of SPHINXDIRS was fixed.
+
+
+ Documentation/Makefile                     |  5 +++++
+ Documentation/conf.py                      | 21 +++++++++++++++------
+ Documentation/sphinx/load_config.py        | 12 ++++++++++++
+ Documentation/userspace-api/media/Makefile |  1 +
+ Makefile                                   |  4 ++--
+ 5 files changed, 35 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/Makefile b/Documentation/Makefile
+index 61a7310b49e0..c3c8fb10f94e 100644
+--- a/Documentation/Makefile
++++ b/Documentation/Makefile
+@@ -115,6 +115,10 @@ pdfdocs: latexdocs
+ 
+ endif # HAVE_PDFLATEX
+ 
++rst2pdf:
++	@$(srctree)/scripts/sphinx-pre-install --version-check
++	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,pdf,$(var),pdf,$(var)))
++
+ epubdocs:
+ 	@$(srctree)/scripts/sphinx-pre-install --version-check
+ 	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,epub,$(var),epub,$(var)))
+@@ -140,6 +144,7 @@ dochelp:
+ 	@echo  '  htmldocs        - HTML'
+ 	@echo  '  latexdocs       - LaTeX'
+ 	@echo  '  pdfdocs         - PDF'
++	@echo  '  rst2pdf         - PDF, using experimental rst2pdf support'
+ 	@echo  '  epubdocs        - EPUB'
+ 	@echo  '  xmldocs         - XML'
+ 	@echo  '  linkcheckdocs   - check for broken external links'
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 66e121df59cd..6f2788aac81e 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -123,6 +123,12 @@ if (major == 1 and minor > 3) or (major > 1):
+ else:
+     extensions.append("sphinx.ext.pngmath")
+ 
++# Enable experimental rst2pdf, if available
++try:
++    extensions.append("rst2pdf.pdfbuilder")
++except:
++    sys.stderr.write('rst2pdf extension not available.\n')
++
+ # Add any paths that contain templates here, relative to this directory.
+ templates_path = ['_templates']
+ 
+@@ -614,12 +620,15 @@ epub_exclude_files = ['search.html']
+ #
+ # See the Sphinx chapter of https://ralsina.me/static/manual.pdf
+ #
+-# FIXME: Do not add the index file here; the result will be too big. Adding
+-# multiple PDF files here actually tries to get the cross-referencing right
+-# *between* PDF files.
+-pdf_documents = [
+-    ('kernel-documentation', u'Kernel', u'Kernel', u'J. Random Bozo'),
+-]
++
++# Add all LaTeX files to PDF documents as well
++pdf_documents = []
++for l in latex_documents:
++    doc = l[0]
++    fn = l[1].replace(".tex", "")
++    name = l[2]
++    authors = l[3]
++    pdf_documents.append((doc, fn, name, authors))
+ 
+ # kernel-doc extension configuration for running Sphinx directly (e.g. by Read
+ # the Docs). In a normal build, these are supplied from the Makefile via command
+diff --git a/Documentation/sphinx/load_config.py b/Documentation/sphinx/load_config.py
+index eeb394b39e2c..8266afd438aa 100644
+--- a/Documentation/sphinx/load_config.py
++++ b/Documentation/sphinx/load_config.py
+@@ -43,6 +43,18 @@ def loadConfig(namespace):
+ 
+             namespace['latex_documents'] = new_latex_docs
+ 
++            new_pdf_docs = []
++            pdf_documents = namespace['pdf_documents']
++
++            for l in pdf_documents:
++                if l[0].find(dir + '/') == 0:
++                    has = True
++                    fn = l[0][len(dir) + 1:]
++                    new_pdf_docs.append((fn, l[1], l[2], l[3]))
++                    break
++
++            namespace['pdf_documents'] = new_pdf_docs
++
+         # If there is an extra conf.py file, load it
+         if os.path.isfile(config_file):
+             sys.stdout.write("load additional sphinx-config: %s\n" % config_file)
+diff --git a/Documentation/userspace-api/media/Makefile b/Documentation/userspace-api/media/Makefile
+index 81a4a1a53bce..8c6b3ac4ecb0 100644
+--- a/Documentation/userspace-api/media/Makefile
++++ b/Documentation/userspace-api/media/Makefile
+@@ -59,6 +59,7 @@ all: $(IMGDOT) $(BUILDDIR) ${TARGETS}
+ html: all
+ epub: all
+ xml: all
++pdf: all
+ latex: $(IMGPDF) all
+ linkcheck:
+ 
+diff --git a/Makefile b/Makefile
+index 43ecedeb3f02..db4043578eec 100644
+--- a/Makefile
++++ b/Makefile
+@@ -264,7 +264,7 @@ no-dot-config-targets := $(clean-targets) \
+ 			 cscope gtags TAGS tags help% %docs check% coccicheck \
+ 			 $(version_h) headers headers_% archheaders archscripts \
+ 			 %asm-generic kernelversion %src-pkg dt_binding_check \
+-			 outputmakefile
++			 outputmakefile rst2pdf
+ no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease
+ single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
+ 
+@@ -1654,7 +1654,7 @@ $(help-board-dirs): help-%:
+ 
+ # Documentation targets
+ # ---------------------------------------------------------------------------
+-DOC_TARGETS := xmldocs latexdocs pdfdocs htmldocs epubdocs cleandocs \
++DOC_TARGETS := xmldocs latexdocs pdfdocs rst2pdf htmldocs epubdocs cleandocs \
+ 	       linkcheckdocs dochelp refcheckdocs
+ PHONY += $(DOC_TARGETS)
+ $(DOC_TARGETS):
 -- 
-heikki
+2.29.2
+
+
