@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073F62D7EF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6F32D7EFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733306AbgLKS7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 13:59:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732084AbgLKS7L (ORCPT
+        id S2388973AbgLKTBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 14:01:30 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:43865 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732084AbgLKTBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 13:59:11 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07A9C0613CF;
-        Fri, 11 Dec 2020 10:58:31 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id c79so7550017pfc.2;
-        Fri, 11 Dec 2020 10:58:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=320RebTR8RNqiiBYn8ZtKuZFxrkRlPQWBrl9GpDvUvM=;
-        b=LKJt41PIAvjRtKddIbd2BmReM4x7NmVbbEQ2eAMRf7f07yw0fYlUf1748jdc/SAVAK
-         TpXdkvk8yekQjxPzQJnkVouWqv0c+ChuAA41eeLgyoiiFWLjOv+n3d9FTQjjAKUW6uvH
-         0X/ZMuckLfEjo3m+X6S3H8/wDjSYAy8y5YbR3ifxdAkW24iQHeCUL8A3JAQHzcbNgvtm
-         S5al5sx0D1BNPeNDozCOOCno+ltgZBlUw6HiRpdQfTQl1gjSOLpU/kYp7Zi8YU6+Qucv
-         ipwAvtyusSgjihMaEcMB9LZVQnAJEbpj1iAThLWROg1hXGlQNwExfsH14KRRLCES3CG1
-         GCVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=320RebTR8RNqiiBYn8ZtKuZFxrkRlPQWBrl9GpDvUvM=;
-        b=tDLbHv4a59nYtF2MHioqm5rn6f4xsf8RU4X6fmScmCs0AtHQS9Mqnx+wMmcqLGWlR3
-         wlzSaHw3Z6Spxqh1e2StEIMWOkKly3jXcNLuPeSDVJ6Ko6t2tQjo3hmP/CjfDVonFyE/
-         3s4QIBVhjKzOaiZy31yISWai1cQwVnTW1FHIlk1HgxTIRnLQTUNuvLm8/qP6yUNkUUca
-         1qQ7L9h6Fyre88GlmsgFcPi8972HIZH9w1c1tr8UlkxzZyyR+4TpNAPGUPZyjEA0IYXQ
-         EoLf31Kv+P8fOm53LjRtLnj1kSTwmUDuVoiXhBjlB6LcAT8zjUHzQQfUsDeME2KCyS9X
-         fxnQ==
-X-Gm-Message-State: AOAM5310IK2fr7SgbLitl2KoV4uiUhMhcqUGSROv9OIbqFOksz4clsLl
-        jQZZdjyESVAvq/oByUQaOzBUg+R8Lt5xse+Fxfk=
-X-Google-Smtp-Source: ABdhPJzCwaH9RtljsVUgVllZ8IxAE73P9W7PrK5XYEhFoEd6uPSxaOLS8UXO/eps772X8J4EBsfcIjtMm5H0Z3jQYws=
-X-Received: by 2002:a63:c04b:: with SMTP id z11mr12389891pgi.74.1607713111220;
- Fri, 11 Dec 2020 10:58:31 -0800 (PST)
-MIME-Version: 1.0
-References: <1607659581-15764-1-git-send-email-lennychen@tencent.com>
-In-Reply-To: <1607659581-15764-1-git-send-email-lennychen@tencent.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 11 Dec 2020 20:58:15 +0200
-Message-ID: <CAHp75VdmC2QyVYz_QcbgpdMwkJ5VndUwp=rmk=b0KSZcwZrqkg@mail.gmail.com>
-Subject: Re: [PATCH] driver: pinctrl: fix unused variable warning
-To:     chenlei0x@gmail.com
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lei Chen <lennychen@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 11 Dec 2020 14:01:18 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607713259; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=o9PcRpZB4zI+OtTPqPohwWOpugPzrjk8iU/0SqPU0Qs=; b=RPRzp7LREb+J+3Yci6/QOE92eRH6+ZJMLUr5dfFxvrAVjheKKkldSwRfvtPh1sgm+90SmRzf
+ PoR9urMRsHfnyzOZl4fXY/rb462shkFKsTUNOtDsRdwD8b4CPt6xc79VEq6Z8l4zRCtNq7h7
+ IuW0BU5SEqM/CXP5eQP8ECNABeM=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fd3c1c853d7c5ba602f53d2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Dec 2020 19:00:24
+ GMT
+Sender: pillair=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 03D73C433CA; Fri, 11 Dec 2020 19:00:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from pillair-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1521EC433C6;
+        Fri, 11 Dec 2020 19:00:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1521EC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
+From:   Rakesh Pillai <pillair@codeaurora.org>
+To:     ath10k@lists.infradead.org
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        briannorris@chromium.org, dianders@chromium.org,
+        kuabhs@chromium.org, youghand@codeaurora.org,
+        Rakesh Pillai <pillair@codeaurora.org>
+Subject: [PATCH] ath10k: Fix error handling in case of CE pipe init failure
+Date:   Sat, 12 Dec 2020 00:30:10 +0530
+Message-Id: <1607713210-18320-1-git-send-email-pillair@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 1:46 PM <chenlei0x@gmail.com> wrote:
->
-> From: Lei Chen <lennychen@tencent.com>
->
-> In pinctrl_pins_show, range, gpio_num and chip variables are not used if
-> CONFIG_GPIOLIB is not defined. Use this macro to wrap them.
->
+Currently if the copy engine pipe init fails for snoc based
+chipsets, the rri is not freed.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git/commit/drivers/pinctrl/core.c?h=for-next&id=b507cb92477ad85902783a183c5ce01d16296687
+Fix this error handling for copy engine pipe init
+failure.
 
-Rule of thumb: base your patches on the latest subsystem tree snapshot.
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
 
+Fixes: 4945af5b264f ("ath10k: enable SRRI/DRRI support on ddr for WCN3990")
+Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath10k/snoc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index fd41f25..daae470 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -1045,12 +1045,13 @@ static int ath10k_snoc_hif_power_up(struct ath10k *ar,
+ 	ret = ath10k_snoc_init_pipes(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to initialize CE: %d\n", ret);
+-		goto err_wlan_enable;
++		goto err_free_rri;
+ 	}
+ 
+ 	return 0;
+ 
+-err_wlan_enable:
++err_free_rri:
++	ath10k_ce_free_rri(ar);
+ 	ath10k_snoc_wlan_disable(ar);
+ 
+ 	return ret;
 -- 
-With Best Regards,
-Andy Shevchenko
+2.7.4
+
