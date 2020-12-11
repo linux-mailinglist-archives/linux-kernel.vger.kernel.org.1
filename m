@@ -2,123 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D052D80E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:20:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C8D2D8109
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393269AbgLKVRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 16:17:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727234AbgLKVQT (ORCPT
+        id S2405674AbgLKVSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 16:18:51 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:7528 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390563AbgLKVQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:16:19 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7A0C0613D3;
-        Fri, 11 Dec 2020 13:15:39 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id t6so5228607plq.1;
-        Fri, 11 Dec 2020 13:15:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZAqTN7N4s0ZVaTdEPOvyAv38va5XxW6WW67wTQBqGtA=;
-        b=fh8vsjetqBmGgt2HnPCppc+aTWU9zdYuewDF62lfABoiTULIOgkY7VcNDHtzOc+yPu
-         X0+TbboHlf1+YHJu26LbOsmZoKwLD1Jdmo0lAwe1mvggIuxHgO2gB5IuzVg0D9OGtoJk
-         299rjy1oz5tCux8CmbrEQe7EkVd4bpUgmyUrepKTw+D3tZo/LDpvD0Tb0ZPh1Um7BM2W
-         XL3WJl0o4axyesDjSDopkI+l6UK9bZWpCmA+L2Poo3lde3ty4aNXu9IYgrujxcq7Nd65
-         P7hluddTs9WxONybduqmdr/93uvpDsEhyh7tzNBg6eJTydOyajsAJIDtgQeXiI5hC8vO
-         xLug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZAqTN7N4s0ZVaTdEPOvyAv38va5XxW6WW67wTQBqGtA=;
-        b=c331EQZ20PMkZYROoVepXVyxmOjU66gwTPa3bkQ8LZiTUOg9EyZKUwiq1BWdRLC7P8
-         cedC9tKxMxRUU0+9k/nNUmHo4j9eKqNBZ/tCUg0eKaH5uPU6kdSskAe3WqB44kGqKf3v
-         9+aXthHqfYMgKgL1DKbd0KYSQG+ljjqt/DmyoeomtqlbC0thXzjQP9Aba/z+4EZyRvNz
-         fn8YopsnurPm3RAVTVznnhTab2h3TMpY8wxlX7NtRrq+EKata8zz2Kg/j62jANPRowDT
-         NuVMNE0/gniFfQfrwFgfhWAmyHD57e1xIGeaROzxkO01UhJOPcFcThqxrbo1jXLWfY+l
-         /PSQ==
-X-Gm-Message-State: AOAM532qxEYzIUzEp9noda0P+EQ4z8jeRWoURV+ENs/njolPQavopcrQ
-        FuBuN5naBhih32nZ0Y51JRiPeEnAxroMe00PUbc=
-X-Google-Smtp-Source: ABdhPJzmmKzahJ/XvSBVJsfd4c4acl75rWY0X7yiaQtx6soKBC6UxakhXag9pzCfAtRhiQk+Ji8Qn7i52iMN8ndGB9Y=
-X-Received: by 2002:a17:902:e98c:b029:da:cb88:f11d with SMTP id
- f12-20020a170902e98cb02900dacb88f11dmr12535178plb.17.1607721339002; Fri, 11
- Dec 2020 13:15:39 -0800 (PST)
+        Fri, 11 Dec 2020 16:16:51 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fd3e19a0000>; Fri, 11 Dec 2020 13:16:10 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 11 Dec
+ 2020 21:16:06 +0000
+Received: from skomatineni-linux.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Fri, 11 Dec 2020 21:16:06 +0000
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <broonie@kernel.org>, <robh+dt@kernel.org>, <lukas@wunner.de>
+CC:     <skomatineni@nvidia.com>, <bbrezillon@kernel.org>,
+        <p.yadav@ti.com>, <tudor.ambarus@microchip.com>,
+        <linux-spi@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH v3 0/9] Add Tegra Quad SPI driver
+Date:   Fri, 11 Dec 2020 13:15:54 -0800
+Message-ID: <1607721363-8879-1-git-send-email-skomatineni@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-References: <20201211042625.129255-1-drew@beagleboard.org>
-In-Reply-To: <20201211042625.129255-1-drew@beagleboard.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 11 Dec 2020 23:15:21 +0200
-Message-ID: <CAHp75VcAbdrSnb_ag9Rc0tny3Vtqjs1if+ahk7U36V2eaKMpSw@mail.gmail.com>
-Subject: Re: [RFC PATCH] pinctrl: add helper to expose pinctrl state in debugfs
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pantelis Antoniou <panto@antoniou-consulting.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607721370; bh=AOxHAQ0PR5eFzlhWQAdtwTvwlFeD7C1CGjXlEdHoVJA=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
+         MIME-Version:Content-Type;
+        b=AODVEh1nc+ZUWML7TfijaCbi3fYcBEaE+0HMyIBPkXJVvt4s42G9xgYlGb9PLEhqP
+         kEJu+03z3/q9bnmOdYULSwXbJfxFRpv9oDiWsHw4YosT58beqJYJ/Cgz//LIsCgoey
+         OjczNRyGGA4uuijKa4T5WuhgoxD/3jltVzikLOzakO0M17bAw2uTBzI32Ly7heL7FD
+         4b9DQgNYU3oKJ7L0Z71SKcz957dZyXqVCMuabxAvZSHCyKIXurWL1S4Axj5nF7tGvb
+         iq5LJeuhJGRVk2WbDGxPTqYGzQZN44zAUj/HZLbSVZ5SZ0MO8sa+il8KMN5e6wewLd
+         6XMuaMHrrR+TQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 1:54 PM Drew Fustini <drew@beagleboard.org> wrote:
->
-> BeagleBoard.org [0] currently uses an out-of-tree driver called
-> bone-pinmux-helper [1] developed by Pantelis Antoniou [2] back in 2013.
+This series adds Tegra210, Tegra186, and Tegra194 Quad SPI driver and
+enables Quad SPI on Jetson Nano and Jetson Xavier NX.
 
-And it looks like it's still using APIs from 2013.
-Needs quite a clean up.
+QSPI controller is available on Tegra210, Tegra186 and Tegra194.
 
-> The driver assists users of our BeagleBone and PocketBeagle boards in
-> rapid prototyping by allowing them to change at run-time between defined
-> set of pinctrl states [3] for each pin on the expansion connectors [4].
-> This is achieved by exposing a 'state' file in sysfs for each pin which
-> is used by our 'config-pin' utility [5].
->
-> Our goal is to eliminate all out-of-tree drivers for BeagleBoard.org
-> boards and thus I have been working to replace bone-pinmux-helper with a
-> new driver that could be acceptable upstream. My understanding is that
-> debugfs, unlike sysfs, could be the appropriate mechanism to expose such
-> functionality.
+Tegra186 and Tegra194 has additional feature of combined sequence mode
+where command, address and data can all be transferred in a single transfer.
 
-Yeah, for debugfs we don't require too much and esp. there is no
-requirement to keep backward compatibility thru interface.
-I.o.w. it's *not* an ABI.
+Combined sequence mode is useful with DMA mode transfer.
 
-...
+This series does not have combined sequence mode feature as Tegra186/Tegra194
+GPCDMA driver is not upstreamed yet.
 
-> I used the compatible string "pinctrl,state-helper" but would appreciate
-> advice on how to best name this. Should I create a new vendor prefix?
+This series includes
+- dt-binding document
+- QSPI driver for Tegra210/Tegra186/Tegra194
+- Enables QSPI on Jetson Nano and Jetson Xavier NX.
 
-Since it's BB specific, it should have file name and compatible string
-accordingly.
-But I'm wondering, why it requires this kind of thing and can't be
-simply always part of the kernel based on configuration option?
+Delta between patch versions:
+[v3]:	v2 has some mixed patches sent out accidentally.
+	v3 sends proper patches with fixes mentioned in v2.
+[v2]:	below v1 feedback
+	- Added SPI_MASTER_USES_HW_DUMMY_CYCLES flag for controllers supporting
+	  hardware dummy cycles and skips dummy bytes transfer from software for
+	  these controllers.
+	- Updated dt-binding doc with tx/rx tap delay properties.
+	- Added qspi_out clock to dt-binding doc which will be used later with
+	  ddr mode support.
+	- All other v1 feedback on some cleanup.
 
-> The P9_14_pinmux entry would cause pinctrl-state-helper to be probed.
-> The driver would create the corresponding pinctrl state file in debugfs
-> for the pin.  Here is an example of how the state can be read and
-> written from userspace:
->
-> root@beaglebone:~# cat /sys/kernel/debug/ocp\:P9_14_pinmux/state
-> default
-> root@beaglebone:~# echo pwm > /sys/kernel/debug/ocp\:P9_14_pinmux/state
-> root@beaglebone:~# cat /sys/kernel/debug/ocp\:P9_14_pinmux/state
-> pwm
 
-Shouldn't it be rather a part of a certain pin control folder:
-debug/pinctrl/.../mux/...
-?
 
-> I would very much appreciate feedback on both this general concept, and
-> also specific areas in which the code should be changed to be acceptable
-> upstream.
+Sowjanya Komatineni (9):
+  dt-bindings: clock: tegra: Add clock ID TEGRA210_CLK_QSPI_PM
+  dt-bindings: spi: Add Tegra Quad SPI device tree binding
+  MAINTAINERS: Add Tegra Quad SPI driver section
+  spi: tegra210-quad: Add support for Tegra210 QSPI controller
+  spi: spi-mem: Allow masters to transfer dummy cycles directly by
+    hardware
+  spi: tegra210-quad: Add support for hardware dummy cycles
+  arm64: tegra: Enable QSPI on Jetson Nano
+  arm64: tegra: Add QSPI nodes on Tegra194
+  arm64: tegra: Enable QSPI on Jetson Xavier NX
 
-I will give time for more discussion about concepts and so, because
-code (as stated above) is quite old and requires a lot of cleaning up.
+ .../bindings/spi/nvidia,tegra210-quad.yaml         |  130 ++
+ MAINTAINERS                                        |    8 +
+ .../dts/nvidia/tegra194-p3509-0000+p3668-0000.dts  |   12 +
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi           |   24 +
+ arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts |   12 +
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi           |    5 +-
+ drivers/spi/Kconfig                                |    9 +
+ drivers/spi/Makefile                               |    1 +
+ drivers/spi/spi-mem.c                              |   18 +-
+ drivers/spi/spi-tegra210-quad.c                    | 1407 ++++++++++++++++++++
+ include/dt-bindings/clock/tegra210-car.h           |    2 +-
+ include/linux/spi/spi.h                            |    8 +
+ 12 files changed, 1626 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+ create mode 100644 drivers/spi/spi-tegra210-quad.c
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.7.4
+
