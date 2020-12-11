@@ -2,66 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692172D79EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 023852D79F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393022AbgLKPw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:52:27 -0500
-Received: from sandeen.net ([63.231.237.45]:37336 "EHLO sandeen.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393387AbgLKPwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:52:01 -0500
-Received: from liberator.sandeen.net (liberator.sandeen.net [10.0.0.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by sandeen.net (Postfix) with ESMTPSA id 88AB41171F;
-        Fri, 11 Dec 2020 09:50:31 -0600 (CST)
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>,
-        linux-xfs@vger.kernel.org, darrick.wong@oracle.com,
-        linux-kernel@vger.kernel.org
-References: <20201211084112.1931-1-zhengyongjun3@huawei.com>
-From:   Eric Sandeen <sandeen@sandeen.net>
-Subject: Re: [PATCH -next] fs/xfs: convert comma to semicolon
-Message-ID: <fd372b27-983d-00ff-5218-4082fe2f08df@sandeen.net>
-Date:   Fri, 11 Dec 2020 09:51:15 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
+        id S2393614AbgLKPwo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Dec 2020 10:52:44 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:41969 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388637AbgLKPwe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 10:52:34 -0500
+Received: by mail-wr1-f66.google.com with SMTP id a12so9502291wrv.8;
+        Fri, 11 Dec 2020 07:52:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=J7fcE0FENj78WD0WD0FAW2QvhAhKSbHLyC4gTCtkJlw=;
+        b=Dnv0/f0W92D/tj1hHIMIlhCVF5erZIEWcz2BDHVkwc6FgcJhejKsI1dYYSvNNMA6TR
+         UN0RWihNcxItvlA5Iqfm2ar2yShM3RMbK/JMGk6gImEm5N4Hwj1WrBnHqEX+RpIbNFLc
+         IXmcDaOhFzga5VRfYX+mVhgXRPvk/qoSE/5OAekMqDHk0dx50lU/xvjLDU8D+LoyR7En
+         VBZswG7Q8WPd7r2k334SfXCaSmIxM8JF/mQWPRy08cimjchRTH/rv2J9pxFkzAGzdRtT
+         wFPZetq2b81dfMZIEMaVKLgtOTB78XWD37fTnWhPKWjzpzOf7PA4wxcMXxGydjlt9XSi
+         +KwA==
+X-Gm-Message-State: AOAM533b1MeAVzeZ4faYynEsTdmriql1g5M/AFBjXfpJDMAfVKoV5dlM
+        vFiKNRcaaDXFMMd6P/JV3Bk=
+X-Google-Smtp-Source: ABdhPJz7D8U+j4gEfci2HdyqdoNrhC+P/LecmgdYR4fAygHIEvJvMXFU+xo1bWvYdsuq5i6Z4xJvgQ==
+X-Received: by 2002:adf:f94b:: with SMTP id q11mr14872438wrr.351.1607701910528;
+        Fri, 11 Dec 2020 07:51:50 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id h2sm15998667wme.45.2020.12.11.07.51.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 07:51:49 -0800 (PST)
+Date:   Fri, 11 Dec 2020 16:51:47 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Iskren Chernev <iskren.chernev@gmail.com>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-rtc@vger.kernel.org,
+        Matheus Castello <matheus@castello.eng.br>,
+        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
+        Angus Ainslie <angus@akkea.ca>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [RFC 18/18] power: supply: max17040: Do not enforce (incorrect)
+ interrupt trigger type
+Message-ID: <20201211155147.GA9732@kozik-lap>
+References: <20201210212534.216197-1-krzk@kernel.org>
+ <20201210212534.216197-18-krzk@kernel.org>
+ <20201211074755.GA4346@kozik-lap>
+ <6f1cd4f0-21a7-ed8c-aafa-ba217c05ea5f@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201211084112.1931-1-zhengyongjun3@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <6f1cd4f0-21a7-ed8c-aafa-ba217c05ea5f@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/20 2:41 AM, Zheng Yongjun wrote:
-> Replace a comma between expression statements by a semicolon.
+On Fri, Dec 11, 2020 at 05:44:26PM +0200, Iskren Chernev wrote:
 > 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-
-hah, that's an old one.  Harmless though, AFAICT.
-
-this fixes 91cca5df9bc8 ("[XFS] implement generic xfs_btree_delete/delrec")
-if we dare add that tag ;)
-
-Reviewed-by: Eric Sandeen <sandeen@redhat.com>
-
-> ---
->  fs/xfs/libxfs/xfs_btree.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On 12/11/20 9:47 AM, Krzysztof Kozlowski wrote:
+> > On Thu, Dec 10, 2020 at 10:25:34PM +0100, Krzysztof Kozlowski wrote:
+> >> Interrupt line can be configured on different hardware in different way,
+> >> even inverted.  Therefore driver should not enforce specific trigger
+> >> type - edge falling - but instead rely on Devicetree to configure it.
+> >>
+> >> The Maxim 14577/77836 datasheets describe the interrupt line as active
+> >> low with a requirement of acknowledge from the CPU therefore the edge
+> >> falling is not correct.
+> >>
+> >> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> >>
+> >> ---
+> >>
+> >> This patch should wait till DTS changes are merged, as it relies on
+> >> proper Devicetree.
+> >> ---
+> >> .../devicetree/bindings/power/supply/max17040_battery.txt       | 2 +-
+> >> drivers/power/supply/max17040_battery.c                         | 2 +-
+> >>  2 files changed, 2 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git
+> a/Documentation/devicetree/bindings/power/supply/max17040_battery.txt
+> b/Documentation/devicetree/bindings/power/supply/max17040_battery.txt
+> >> index c802f664b508..194eb9fe574d 100644
+> >> --- a/Documentation/devicetree/bindings/power/supply/max17040_battery.txt
+> >> +++ b/Documentation/devicetree/bindings/power/supply/max17040_battery.txt
+> >> @@ -39,7 +39,7 @@ Example:
+> >>          reg = <0x36>;
+> >>          maxim,alert-low-soc-level = <10>;
+> >>          interrupt-parent = <&gpio7>;
+> >> -        interrupts = <2 IRQ_TYPE_EDGE_FALLING>;
+> >> +        interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
+> >>          wakeup-source;
+> >>      };
+> >>
+> >> diff --git a/drivers/power/supply/max17040_battery.c
+> b/drivers/power/supply/max17040_battery.c
+> >> index d956c67d5155..f737de0470de 100644
+> >> --- a/drivers/power/supply/max17040_battery.c
+> >> +++ b/drivers/power/supply/max17040_battery.c
+> >> @@ -367,7 +367,7 @@ static int max17040_enable_alert_irq(struct
+> max17040_chip *chip)
+> >>
+> >>      flags = IRQF_TRIGGER_FALLING | IRQF_ONESHOT;
+> >
+> > This has to be removed. I will fix it in v2.
+> >
+> > Best regards,
+> > Krzysztof
 > 
-> diff --git a/fs/xfs/libxfs/xfs_btree.c b/fs/xfs/libxfs/xfs_btree.c
-> index 2d25bab68764..51dbff9b0908 100644
-> --- a/fs/xfs/libxfs/xfs_btree.c
-> +++ b/fs/xfs/libxfs/xfs_btree.c
-> @@ -4070,7 +4070,7 @@ xfs_btree_delrec(
->  	 * surviving block, and log it.
->  	 */
->  	xfs_btree_set_numrecs(left, lrecs + rrecs);
-> -	xfs_btree_get_sibling(cur, right, &cptr, XFS_BB_RIGHTSIB),
-> +	xfs_btree_get_sibling(cur, right, &cptr, XFS_BB_RIGHTSIB);
->  	xfs_btree_set_sibling(cur, left, &cptr, XFS_BB_RIGHTSIB);
->  	xfs_btree_log_block(cur, lbp, XFS_BB_NUMRECS | XFS_BB_RIGHTSIB);
->  
+> I removed the IRQF_TRIGGER_FALLING, tweaked the DT as per the DT patch, and
+> it worked on the samsung klte.
 > 
+> I don't understand how the DT irq flag ends up being used by the kernel. It
+> is never explicitly read from DT or passed to interrupt API, only i2c->irq,
+> which is a pure int.
+
+The core __setup_irq() calls irqd_get_trigger_type() on IRQ data
+matching the IRQ.
+
+Best regards,
+Krzysztof
