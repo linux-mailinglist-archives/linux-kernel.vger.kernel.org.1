@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182A02D6C74
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B81542D6C7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394043AbgLKAWs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Dec 2020 19:22:48 -0500
-Received: from mga17.intel.com ([192.55.52.151]:2863 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391159AbgLKAWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 19:22:31 -0500
-IronPort-SDR: rwQQgvZ3JyJ7QJxsk27fEkLXeGUKwJPe/f+UX6/u5/+p5bd0xPnoDXgt8oVQ6O3S4b7tsOlb9Y
- yqmFbs7znSbg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="154164057"
-X-IronPort-AV: E=Sophos;i="5.78,409,1599548400"; 
-   d="scan'208";a="154164057"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 16:21:51 -0800
-IronPort-SDR: Mk2LrQBVgW6Am6V4nV3BxGB2HpkD2RKwlqkRU5mGWXaD2MCIn2PeqXu7KU7tpXas8gFjrKtNvM
- XrneG3exx3HA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,409,1599548400"; 
-   d="scan'208";a="370020062"
-Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
-  by fmsmga004.fm.intel.com with ESMTP; 10 Dec 2020 16:21:51 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 10 Dec 2020 16:21:50 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 10 Dec 2020 16:21:50 -0800
-Received: from orsmsx611.amr.corp.intel.com ([10.22.229.24]) by
- ORSMSX611.amr.corp.intel.com ([10.22.229.24]) with mapi id 15.01.1713.004;
- Thu, 10 Dec 2020 16:21:50 -0800
-From:   "Yu, Fenghua" <fenghua.yu@intel.com>
-To:     Shuah Khan <shuah@kernel.org>, "Luck, Tony" <tony.luck@intel.com>,
-        "Chatre, Reinette" <reinette.chatre@intel.com>,
-        David Binderman <dcb314@hotmail.com>,
-        Babu Moger <babu.moger@amd.com>,
-        James Morse <james.morse@arm.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 00/17] Miscellaneous fixes for resctrl selftests
-Thread-Topic: [PATCH v4 00/17] Miscellaneous fixes for resctrl selftests
-Thread-Index: AQHWx1ZB/LSLr25VRUKkynjk//Nfh6nxGCYw
-Date:   Fri, 11 Dec 2020 00:21:50 +0000
-Message-ID: <684fad105f4143d4874645eddaffdbc3@intel.com>
-References: <20201130202010.178373-1-fenghua.yu@intel.com>
-In-Reply-To: <20201130202010.178373-1-fenghua.yu@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.22.254.132]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S2394560AbgLKAZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 19:25:14 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:59326 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394203AbgLKAYj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 19:24:39 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607646237;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MxfQM41I/JHdGAPtOE62NQwgsz+Gd67FL7vEU7noGAA=;
+        b=iltMriflmw6FTepVzYVvASUEAksTy7vG05SxeLUloFB0XzALVdnZr3jJl+AVxFKpCKwDrx
+        qPCNy39LNXYnQ1gQs+uznySPwANnswB51Embe9SD+YD3acJmJZvZpI1b4CnDIwwvTD+EZ6
+        i2YDR+CNaPROvpGFazuEFwIQBBmdK9zjfrRIklaILPvQ4mv5xgaDqqR6l/UxHrHzfzY7cy
+        Y74ivoriPtOkUITpFbXOpnjF8re1FSVQV8LvE1RT1wTaIM5BYCAPbBPYwaIYajIpzjFM/b
+        2EyFQ5BBT1NQTlouBsrRIjhAs2m0jr1/Et/l8azl7U3N3lzam6dlMrvHxITucg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607646237;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MxfQM41I/JHdGAPtOE62NQwgsz+Gd67FL7vEU7noGAA=;
+        b=QqiI+bsh1hGvP6fDMEc8TrQ+8uZnQJdkK9bX6mjWgWCxtjRnAYMIK640bGWVlOx7QIcBem
+        XiL7HqfqrutrB4Cg==
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [patch 4/8] rtc: core: Make the sync offset default more realistic
+In-Reply-To: <20201210235908.GA1781038@piout.net>
+References: <20201206214613.444124194@linutronix.de> <20201206220541.960333166@linutronix.de> <20201210235908.GA1781038@piout.net>
+Date:   Fri, 11 Dec 2020 01:23:57 +0100
+Message-ID: <87czzhi40y.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Shuah,
+Alexandre,
 
-> This patch set has several miscellaneous fixes to resctrl selftest tool that are
-> easily visible to user. V1 had fixes to CAT test and CMT test but they were
-> dropped in V2 because having them here made the patchset humongous. So,
-> changes to CAT test and CMT test will be posted in another patchset.
-> 
-> Change Log:
-> v4:
-> - Address various comments from Shuah Khan:
->   1. Combine a few patches e.g. a couple of fixing typos patches into one
->      and a couple of unmounting patches into one etc.
->   2. Add config file.
->   3. Remove "Fixes" tags.
->   4. Change strcmp() to strncmp().
->   5. Move the global variable fixing patch to the patch 1 so that the
->      compilation issue is fixed first.
+On Fri, Dec 11 2020 at 00:59, Alexandre Belloni wrote:
+> On 06/12/2020 22:46:17+0100, Thomas Gleixner wrote:
+>>  	/* Drivers can revise this default after allocating the device. */
+>> -	rtc->set_offset_nsec =  NSEC_PER_SEC / 2;
+>> +	rtc->set_offset_nsec =  10 * NSEC_PER_MSEC;
+>
+> I did retest, on a slow 100kHz i2c bus, with a fairly inconvenient RTC,
+> The maximum offset to set the RTC was 4845533ns so I'd say 10ms is too
+> large. Should we make that 5ms ?
 
-Any comment on this series?
+Sure. As I said I pulled the 10 out of thin air.
 
-Thank you very much for your review!
+> Apart from that, on the series, you can add my
+> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
--Fenghua
+I'll amend the s/10/5/ throughout the series while queueing the whole
+pile in the timers/core branch unless you want it to be handled
+differently.
+
+Thanks,
+
+        tglx
