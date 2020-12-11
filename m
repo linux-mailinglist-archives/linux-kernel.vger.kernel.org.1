@@ -2,137 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C72C2D702D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 826D72D7030
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:30:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436512AbgLKG1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 01:27:00 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:35956 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390439AbgLKG0h (ORCPT
+        id S2395502AbgLKG2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 01:28:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395494AbgLKG21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 01:26:37 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BB6P8Wg004878;
-        Thu, 10 Dec 2020 22:25:52 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0220;
- bh=evAYFG9kHFC9v1umCoYWYwPgpQzenxuYrwG7jG0dTcg=;
- b=d/YP/LIEcp1iyxN5WSbBCbk1suze/J0W0GZLYTqXpjLm7hvSCWLoQ0ZOEkmlAfcN7YRM
- Cq43Yn7Gd0k9kKYexR177xcBCUkuc6MPo1+ovIc/VKQBfNq+G5P1bVgnr6NWcXGDOlk7
- KVcgL7cahOfyIbPzvk+uiKfTpJ66zMxdzWOwD6Eo8Johl8x8Zi8pRl2a/syhFmHhzGxL
- I3dm9g8IIcAL3FRGQIrQpitGkNSH4ZNEKzdcmT3kNH6kXxTW2J4HaYslnIRIAkydG5Ne
- MKtp6doxjcKducOo/+CLdqC3ULjJMT593FsyHCjdiF1G3cZwUmY29iX04oeIah8Z9YJ2 /Q== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 358akrhyvs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 22:25:52 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 10 Dec
- 2020 22:25:50 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 10 Dec
- 2020 22:25:49 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 10 Dec 2020 22:25:49 -0800
-Received: from hyd1584.marvell.com (unknown [10.29.37.82])
-        by maili.marvell.com (Postfix) with ESMTP id 69C163F703F;
-        Thu, 10 Dec 2020 22:25:46 -0800 (PST)
-From:   George Cherian <george.cherian@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
-        <lcherian@marvell.com>, <gakula@marvell.com>,
-        <george.cherian@marvell.com>, <willemdebruijn.kernel@gmail.com>,
-        <saeed@kernel.org>, <jiri@resnulli.us>
-Subject: [PATCH 3/3] docs: octeontx2: Add Documentation for NPA health reporters
-Date:   Fri, 11 Dec 2020 11:55:26 +0530
-Message-ID: <20201211062526.2302643-4-george.cherian@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201211062526.2302643-1-george.cherian@marvell.com>
-References: <20201211062526.2302643-1-george.cherian@marvell.com>
+        Fri, 11 Dec 2020 01:28:27 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4101EC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 22:27:47 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id b5so317277pjk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 22:27:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+NZCqNrXpIQOHB+clR8WgE5i45yw+bOFU7a6qyf9U0g=;
+        b=Yj8ERgL7ftmm8JcEBoewVHYgPQQHMrBW7T9cqPbsOUJqWlStcwMOoWjOCDBpo/gH2b
+         MNnMTibwIfcFnNGUH1IT66nG6hveH887dJ43icRzCcrqSHs+fmX2ORvCQcdaJWzVCNlM
+         yOleujohBJZUz/3XayBixb1wwaOeMS3xu7ZaQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+NZCqNrXpIQOHB+clR8WgE5i45yw+bOFU7a6qyf9U0g=;
+        b=S1vPzKFt1Vk7APnaGxj9pSZ4p2IoEMf63TOvUO2JXam4mA75k9ysXh+Vq77i/ZMhU+
+         eD+wsr7DRJqJxDLyR7TAThuD2OQlEoe+ExxSzJEwDF079lsEbDIegiwzv9w4f+rpNtRc
+         Lqi8rV7TGgA2rRBHlAklm3muOgMeP/hdHj2J7DrG7476lbl/2WvlRfmqj09Ph/mnfg7j
+         Z/5yekR39XnQgBHVUxwkCxhBvWEfbYBq9U+s/hcRf26Y70UtHxKP6z+kjgxCiuP6pMCv
+         BcVxF4lztcdcYIipEr9GlfHHumRy7Qvdelj+qjFlYk8yhRvqNDA27VVxHFoqayxFS9Qe
+         vpgg==
+X-Gm-Message-State: AOAM5336oCf8gSLb/W9oc5s7bl57mTI4Biwcwm1h2Mh7AFGz2YfS2uH+
+        HuAc1J5VlbCPDYgprNBo172fkjCIWh3Q6LJfSS3jfg==
+X-Google-Smtp-Source: ABdhPJw9a6EUufsiEyEhuZXX3ZGfuxO+oyyeGpF2rgFDPWlkOqpOTbp+QOOQKOzUTUbZHQMB5Q518KWuPZaf2zD/J8o=
+X-Received: by 2002:a17:902:a502:b029:da:f580:bc35 with SMTP id
+ s2-20020a170902a502b02900daf580bc35mr9802625plq.60.1607668066723; Thu, 10 Dec
+ 2020 22:27:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-11_01:2020-12-09,2020-12-11 signatures=0
+References: <20201210104747.3416781-1-ikjn@chromium.org> <20201210184700.v2.3.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
+ <X9H/ZVpHf2Owd6rj@kroah.com>
+In-Reply-To: <X9H/ZVpHf2Owd6rj@kroah.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Fri, 11 Dec 2020 14:27:35 +0800
+Message-ID: <CAATdQgCZjzoiiReoL-0X5VgWXcEzPsg5B_=SBFFD7dp1Gmvgog@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] usb: xhci-mtk: fix unreleased bandwidth data
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, linux-usb@vger.kernel.org,
+        Zhanyong Wang <zhanyong.wang@mediatek.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Documentation for devlink health reporters for NPA block.
+On Thu, Dec 10, 2020 at 6:57 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Dec 10, 2020 at 06:47:47PM +0800, Ikjoon Jang wrote:
+> > xhci-mtk has hooks on add_endpoint() and drop_endpoint() from xhci
+> > to handle its own sw bandwidth managements and stores bandwidth data
+> > into internal table every time add_endpoint() is called,
+> > so when bandwidth allocation fails at one endpoint, all earlier
+> > allocation from the same interface could still remain at the table.
+> >
+> > This patch adds two more hooks from check_bandwidth() and
+> > reset_bandwidth(), and make mtk-xhci to releases all failed endpoints
+> > from reset_bandwidth().
+> >
+> > Fixes: 0cbd4b34cda9 ("xhci: mediatek: support MTK xHCI host controller")
+> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+>
+> Shouldn't this be the first patch in the series?  You don't want a fix
+> to be dependent on code style changes, otherwise it is really really
+> hard to backport it to older kernels that might need this fix, right?
 
-Signed-off-by: George Cherian <george.cherian@marvell.com>
----
- .../ethernet/marvell/octeontx2.rst            | 50 +++++++++++++++++++
- 1 file changed, 50 insertions(+)
+yes, you're right.
 
-diff --git a/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst b/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
-index 88f508338c5f..d3fcf536d14e 100644
---- a/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
-+++ b/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
-@@ -12,6 +12,7 @@ Contents
- - `Overview`_
- - `Drivers`_
- - `Basic packet flow`_
-+- `Devlink health reporters`_
- 
- Overview
- ========
-@@ -157,3 +158,52 @@ Egress
- 3. The SQ descriptor ring is maintained in buffers allocated from SQ mapped pool of NPA block LF.
- 4. NIX block transmits the pkt on the designated channel.
- 5. NPC MCAM entries can be installed to divert pkt onto a different channel.
-+
-+Devlink health reporters
-+========================
-+
-+NPA Reporters
-+-------------
-+The NPA reporters are responsible for reporting and recovering the following group of errors
-+1. GENERAL events
-+   - Error due to operation of unmapped PF.
-+   - Error due to disabled alloc/free for other HW blocks (NIX, SSO, TIM, DPI and AURA).
-+2. ERROR events
-+   - Fault due to NPA_AQ_INST_S read or NPA_AQ_RES_S write.
-+   - AQ Doorbell Error.
-+3. RAS events
-+   - RAS Error Reporting for NPA_AQ_INST_S/NPA_AQ_RES_S.
-+4. RVU events
-+   - Error due to unmapped slot.
-+
-+Sample Output
-+-------------
-+~# devlink health
-+pci/0002:01:00.0:
-+  reporter hw_npa_intr
-+      state healthy error 2872 recover 2872 last_dump_date 2020-12-10 last_dump_time 09:39:09 grace_period 0 auto_recover true auto_dump true
-+  reporter hw_npa_gen
-+      state healthy error 2872 recover 2872 last_dump_date 2020-12-11 last_dump_time 04:43:04 grace_period 0 auto_recover true auto_dump true
-+  reporter hw_npa_err
-+      state healthy error 2871 recover 2871 last_dump_date 2020-12-10 last_dump_time 09:39:17 grace_period 0 auto_recover true auto_dump true
-+   reporter hw_npa_ras
-+      state healthy error 0 recover 0 last_dump_date 2020-12-10 last_dump_time 09:32:40 grace_period 0 auto_recover true auto_dump true
-+
-+Each reporter dumps the
-+ - Error Type
-+ - Error Register value
-+ - Reason in words
-+
-+For eg:
-+~# devlink health dump show  pci/0002:01:00.0 reporter hw_npa_gen
-+ NPA_AF_GENERAL:
-+         NPA General Interrupt Reg : 1
-+         NIX0: free disabled RX
-+~# devlink health dump show  pci/0002:01:00.0 reporter hw_npa_intr
-+ NPA_AF_RVU:
-+         NPA RVU Interrupt Reg : 1
-+         Unmap Slot Error
-+~# devlink health dump show  pci/0002:01:00.0 reporter hw_npa_err
-+ NPA_AF_ERR:
-+        NPA Error Interrupt Reg : 4096
-+        AQ Doorbell Error
--- 
-2.25.1
+This patchset also requires
+"4b0f7a77fb3c usb: xhci-mtk: supports bandwidth scheduling with multi-TT",
+which doesn't have a Fixes tag.
 
+I think I can change Fixes to point to that commit (4b0f7a77fb3c),
+as this unreleased bandwidth data is much more impactful to
+TT bandwidth.
+
+Thanks!
+
+>
+> Can you re-order these patches please?
+>
+> thanks,
+>
+> greg k-h
