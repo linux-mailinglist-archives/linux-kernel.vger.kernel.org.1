@@ -2,181 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBE02D756E
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8AC2D756D
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395470AbgLKMQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2395505AbgLKMQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 11 Dec 2020 07:16:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727822AbgLKMPw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 07:15:52 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244E6C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 04:15:12 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id e25so8386191wme.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 04:15:12 -0800 (PST)
+Received: from mail-bn8nam11on2077.outbound.protection.outlook.com ([40.107.236.77]:18562
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390915AbgLKMQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 07:16:11 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bwcb/4tgrWR3c91j4qHVs3K7jU0+MJT5Zxpp7AY+u3swMXnEgBCGhg4ydbX4FTL5bmQGqKrxoMk505dtAdzoELTFCvQ8FTmhOjbcHJO4qyPURgTpykwXE2aE5m1J2CZe/ylUg9HF7EsDX2JWjoheE+njzQJXwuvLEegxbOcTuiU9WUwTy75N5nPWYESRTlG1dTShF8NtHj62P7qXWT9RKyev3QRAkas5GWB6L9nBBOSqdSV9SOkUayZtEKjZlK72x/sQ197h9i/2uxPLwGsELNM1AxCke7xyerJs/SzfltHpAMs7y9URf+Nu2huj9xHMvTAiq7Q4yPTOhktxPoSR1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xBUltC8qdaAMRFN8nAlrHme0pLoWsGDXkkWOIiOTNAE=;
+ b=kbIH10HTRKMvdizaoVNHagpzWik0IPY9QHMrv9uFPCdhUn/4Ien74NkH/8C3yYYoFH/6fcFSYu5pkwX21FmO2rlRpzQJ1MaZnnDPvgm+XKouMaUPXVLjQ0KIU1WdOndujvqH1QCQNdaZ9LAis7LX8c9bgDV/aNA0GlJIs49FgwNqrhp2X/gZ2rhE2aHmH20ZSNHG3QkRT9v8SvVH4djZ9NOoZqCXzQbJVI3iK037jLlbBlQjS/wzgn1ASf8HYmeP7q7r8FKOeFs2LLSl4CJHIj6rcX3xc0SCgiH2dWpsp8MQnFmJZOXw6d8RZ4Szyazn3pH+AohN08KLe60vFEF43g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qSQYi3dLtVwnUE7Pl/TP3BDVgqP8TWHMbxJBiJCII0E=;
-        b=Dx5LivaHRPPR2HXGN6NhnuCdmBQJvKcZWNlLrTLzZFJwcB6RzJfmUfHHX4C4GRDH+l
-         Fcl2VrSCqpI3weTIOmxR4ST1Ab+nn2xscu6tLq74x6PXQBQG65J05JwnSJmobYeE9qJM
-         dVtzrRd4Izqw/X9RQc7u7y0Gf07xW1suebY6PqHPbvgQpw/9xyyNskglhVAb3CQtCOJJ
-         yvkfzspi1t+d/nNAM30Lby/YgWlVGRWwtFu2aJkl7Qkl4q0eInKA1+hgGxL3Zq2Yij0n
-         ylb9TP1E0wB3Gi46R4nOboIrRT4ILrik9FL+7bvCj7CtuSdXcbyObivBqO36KuGP9+qn
-         d1Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qSQYi3dLtVwnUE7Pl/TP3BDVgqP8TWHMbxJBiJCII0E=;
-        b=FHbYCXrIE+m4LCeCiv56xEUQrlBz/cCPRWIm9er/jEML4VDBHg9EWzNUEZoRN9mCtW
-         5mfXJ1Z+/1+oIdfjy5pwnLlrLcDW+mCEl/Yw4BgxAuk9yzelkUGyt0rZXi4jZ3/QKMjk
-         Wrz2MQjmf/8eXCPOEvBrrGR6eQlIRlUvUVYznRfebPPeQ2d1aoXbJFpFvN7ZPqdhD7f6
-         l4sDQNZt6tEUk4i7mEwRqw1M4uFw9iYFQaB5efRmc4WBMqJhYdnwwzaEGspdJlrWtZnx
-         ExzlDrSEoe9Ek03wHUhwbhF3qYoGLRl9/uHUBXbJEb4lp/DqWOjGGNfW667PqPLFrFXn
-         P55A==
-X-Gm-Message-State: AOAM532qHc8HEWqpKh7L9AOl3BbKvS+YHUb2Y0Yh5DyikAWHwFIYRlJS
-        /NfnYgsWLAf4f3e3KrxUjrb4OQ==
-X-Google-Smtp-Source: ABdhPJzOVm94SMfkeQ9hfL9CF7fkbPYJoEd7mWVHor1srR0OHVa66W4FFAeAs+pfP5iEXHtZs3DlKw==
-X-Received: by 2002:a7b:cc12:: with SMTP id f18mr13429738wmh.110.1607688910750;
-        Fri, 11 Dec 2020 04:15:10 -0800 (PST)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id s63sm16668115wms.18.2020.12.11.04.15.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 04:15:10 -0800 (PST)
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jon Nettleton <jon@solid-run.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        patches@linaro.org
-Subject: [RFC HACK PATCH] PCI: dwc: layerscape: Hack around enumeration problems with Honeycomb LX2K
-Date:   Fri, 11 Dec 2020 12:15:07 +0000
-Message-Id: <20201211121507.28166-1-daniel.thompson@linaro.org>
-X-Mailer: git-send-email 2.29.2
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xBUltC8qdaAMRFN8nAlrHme0pLoWsGDXkkWOIiOTNAE=;
+ b=FBi1eMblY1JxcFrDVt11pV3GtQ4SA9w4e86XFSFvFf+PFrNO2mqScY0ppRt4b/MM7exjRDkvi5RX6ctycXhXZwtMHRJMZpbVW7CEVOwe20obGtzbKxLi3ZlzGQbQo82exKFK8GVIxxsvMvWHcRqVk2IUHI2DFH0PyLbcG6p36js=
+Received: from BY5PR02MB6916.namprd02.prod.outlook.com (2603:10b6:a03:234::18)
+ by SJ0PR02MB7247.namprd02.prod.outlook.com (2603:10b6:a03:29b::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Fri, 11 Dec
+ 2020 12:15:16 +0000
+Received: from BY5PR02MB6916.namprd02.prod.outlook.com
+ ([fe80::309b:7e5a:bf9b:1ef4]) by BY5PR02MB6916.namprd02.prod.outlook.com
+ ([fe80::309b:7e5a:bf9b:1ef4%6]) with mapi id 15.20.3654.019; Fri, 11 Dec 2020
+ 12:15:16 +0000
+From:   Anand Ashok Dumbre <ANANDASH@xilinx.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+CC:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michals@xilinx.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: RE: [PATH v3 0/3] iio: adc: xilinx: use even more devres
+Thread-Topic: [PATH v3 0/3] iio: adc: xilinx: use even more devres
+Thread-Index: AQHWx1Zf70/YCanXOUOBVqqdgaT4Wanx09Qg
+Date:   Fri, 11 Dec 2020 12:15:15 +0000
+Message-ID: <BY5PR02MB6916FD4844C5471C635DAD1AA9CA0@BY5PR02MB6916.namprd02.prod.outlook.com>
+References: <20201130142759.28216-1-brgl@bgdev.pl>
+ <20201130202110.62e7f989@archlinux>
+In-Reply-To: <20201130202110.62e7f989@archlinux>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [149.199.80.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: d940e899-b65c-47a8-6f37-08d89dce6b3a
+x-ms-traffictypediagnostic: SJ0PR02MB7247:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR02MB72471A01A9EC7179F8E805DCA9CA0@SJ0PR02MB7247.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oKjTqTISBCkEKaZlxzYCdBh0iPiTnneUMGniEeI4DVojTNx/cRu7AgrUcBNRC/uP1BeTwxlaii2MFyC4Qfv9qiS1YSmut2H5f+ywxIGWwnQfpMBKbAsQES2/+hWaRkKKYp8bXMwRNggkJ0PtDYerHBoHG6PvNjL8MLyU5oRbRCoumCC7P7T9Mcq9OYYSstTyaVQTGUlgoWkcSQ/DtcL9R3+08sW3y14rbmhPM2EtVDAKdCCzuo676ubsAegdIvkTSsfnyxdCy0+YvtCxv9wxn8FUGAGUO37UQlHC6AAnLQlQMwxWi4axYfIvTo/6ovti
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR02MB6916.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(5660300002)(66556008)(66446008)(64756008)(8676002)(33656002)(76116006)(66476007)(8936002)(66946007)(52536014)(26005)(55016002)(71200400001)(110136005)(2906002)(83380400001)(186003)(54906003)(508600001)(4326008)(7696005)(9686003)(86362001)(6506007)(53546011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?jdA3ZuRCJRk/ZsOFlbZX+pEuaR7WHs8I0QqyZTSUEPQI6zITjjK1UkUMZrdD?=
+ =?us-ascii?Q?vquEMFeOcebxnXAyFYIx9taqij4k9Wyfq84+wcgwYfoa9FXP9gAJ18w0HY/V?=
+ =?us-ascii?Q?xVwwK/zxPos4z+BcwWhO3JJHfxDLZKyrEPA3zccmL5gXQhjyVrAp0o5xr6pK?=
+ =?us-ascii?Q?yFl1MiMRdqXwMcvV96APYCcK0f7aOJSA+/ia1Q35KN2g+aZ/Uf6KHMHfJxyc?=
+ =?us-ascii?Q?QBV8MDI+apjsTzBDQ2fhGM9zJpHQAknlihqzUHjPZ7r2/JodfYgzakcNoKiA?=
+ =?us-ascii?Q?4bn+4tSwLLt25G56AS2MUwpNbiLLg+O0ZfW10XWy3fapeqWAvjGKnPkIXpGs?=
+ =?us-ascii?Q?9canBdk0qAsQ5J6Hbdi12ZvOrlYNhIjLetm/i22nSUTtQ7UDjYV+lpW/wcbH?=
+ =?us-ascii?Q?2TUgKWIH4wg1p25p6kKlk6xc3mCTWN/ZswuU1+kqExPhNHNGybVqS4irBl1h?=
+ =?us-ascii?Q?QptQaCrVPxavKLF1F5MGpnGDZe86UkLWLF0WY9Qjo99vmaUbc/LNPjjfz4HP?=
+ =?us-ascii?Q?qO7sfT2fPmf19aozuSS9DThxCL/MIGvn/OiAlnu8wveDImTOHnrTa15VoJK/?=
+ =?us-ascii?Q?OUnKObLdtpapJXcHScoVYqdiFp43JbPmLqGVf9sgQmF2Xws9QxP0ibgseHOM?=
+ =?us-ascii?Q?tNWcyzdoFsbfd2+M7YEsUjUaETLObZu53i+v8zM4q0kNm04N7q172Ucl68Yx?=
+ =?us-ascii?Q?YY+9jc5+LCZoROjTJN//aFYPiVNhJjR1P/ACEKawKqdDZfkwfK0LCkKW4iJ6?=
+ =?us-ascii?Q?TJI0z6MUbOJf1P/jRSD2uGrYoDXdJoz4DCMf9EQRV5Z6sT/p8zo7gPA18YPN?=
+ =?us-ascii?Q?Dj2aWL/rw9sOlJ9lAtc2MbOTP2LXCV9FvybUNUaOUcV7XU7S3eefVlbK0XXN?=
+ =?us-ascii?Q?OfSgyqcUz8nI5NrAcfERN0dtEsVm+I24KvDeDIC63bR7z0sAVcqrH7CGvLI3?=
+ =?us-ascii?Q?UZ6Y1CkK/NgmcJU7WYU59O/uGsOMj7+xNCmnBJg9yrI=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR02MB6916.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d940e899-b65c-47a8-6f37-08d89dce6b3a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2020 12:15:15.9137
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PmSVX7zEBhbcQT7FBOaSkGk/qqTMNjnV+vmLrw/zHkOyXCqgqK2rXJzouCp0L6aY3O+fMVNp7nfETzRpinSEUA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7247
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have been chasing down a problem enumerating an NVMe drive on a
-Honeycomb LX2K (NXP LX2160A). Specifically the drive can only enumerate
-successfully if the we are emitting lots of console messages via a UART.
-If the system is booted with `quiet` set then enumeration fails.
+> -----Original Message-----
+> From: Jonathan Cameron <jic23@kernel.org>
+> Sent: Monday 30 November 2020 8:21 PM
+> To: Bartosz Golaszewski <brgl@bgdev.pl>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>; Peter Meerwald-Stadler
+> <pmeerw@pmeerw.net>; Michal Simek <michals@xilinx.com>; linux-
+> iio@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
+> kernel@vger.kernel.org; Bartosz Golaszewski
+> <bgolaszewski@baylibre.com>; Anand Ashok Dumbre
+> <ANANDASH@xilinx.com>
+> Subject: Re: [PATH v3 0/3] iio: adc: xilinx: use even more devres
+>=20
+> On Mon, 30 Nov 2020 15:27:56 +0100
+> Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>=20
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > This is a follow-up to commit 750628c79bb1 ("iio: adc: xilinx-xadc:
+> > use devm_krealloc()"). I noticed we can use even more devres helpers
+> > and entirely drop the remove() callback.
+> >
+> > v1 -> v2:
+> > - squash three patches adding more devres calls into one for easier
+> > review
+> > - don't insist on the 80 characters limit
+> > - add a new helper: devm_krealloc_array() and use it
+> >
+> > v2 -> v3:
+> > - drop the devm_krealloc_array() helper
+> >
+> > Bartosz Golaszewski (3):
+> >   iio: adc: xilinx: use helper variable for &pdev->dev
+> >   iio: adc: xilinx: use devm_krealloc() instead of kfree() + kcalloc()
+> >   iio: adc: xilinx: use more devres helpers and remove remove()
+> >
+> >  drivers/iio/adc/xilinx-xadc-core.c | 157
+> > ++++++++++++++---------------
+> >  1 file changed, 74 insertions(+), 83 deletions(-)
+> >
+>=20
+> Series looks good to me but would like to leave it a little longer to let=
+ others
+> take a look at it. That will probably mean it falls into next cycle now.
+>=20
+> +CC Anand who is looking at another series touching this driver and
+> +might
+> give this one a spin as well.
+>=20
+> Thanks,
+>=20
+> Jonathan
 
-I guessed this would be due to the timing impact of printk-to-UART and
-tried to find out where a delay could be added to provoke a successful
-enumeration.
+Hi Jonathan, Bartosz,
 
-This patch contains the results. The delay length (1ms) was selected by
-binary searching downwards until the delay was not effective for these
-devices (Honeycomb LX2K and a Western Digital WD Blue SN550).
+I have tested and reviewed the patch and everything looks good.
+I have another patch series on the same files that might cause conflicts.
 
-I have also included the workaround twice (conditionally compiled). The
-first change is the *latest* possible code path that we can deploy a
-delay whilst the second is the earliest place I could find.
+Reviewed-by: Anand Ashok Dumbre <anandash@xilinx.com>
+Tested-by: Anand Ashok Dumbre <anandash@xilinx.com>
 
-The summary is that the critical window were we are currently relying on
-a call to the console UART code can "mend" the driver runs from calling
-dw_pcie_setup_rc() in host init to just before we read the state in the
-link up callback.
-
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
----
-
-Notes:
-    This patch is RFC (and HACK) because I don't have much clue *why* this
-    patch works... merely that this is the smallest possible change I need
-    to replicate the current accidental printk() workaround.  Perhaps one
-    could argue that RFC here stands for request-for-clue.  All my
-    observations and changes here are empirical and I don't know how best to
-    turn them into something that is not a hack!
-    
-    BTW I noticed many other pcie-designware drivers take advantage
-    of a function called dw_pcie_wait_for_link() in their init paths...
-    but my naive attempts to add it to the layerscape driver results
-    in non-booting systems so I haven't embarrassed myself by including
-    that in the patch!
-
- drivers/pci/controller/dwc/pci-layerscape.c | 35 +++++++++++++++++++++
- 1 file changed, 35 insertions(+)
-
-diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-index f24f79a70d9a..c354904b90ef 100644
---- a/drivers/pci/controller/dwc/pci-layerscape.c
-+++ b/drivers/pci/controller/dwc/pci-layerscape.c
-@@ -22,6 +22,8 @@
-
- #include "pcie-designware.h"
-
-+#define WORKAROUND_LATEST_POSSIBLE
-+
- /* PEX1/2 Misc Ports Status Register */
- #define SCFG_PEXMSCPORTSR(pex_idx)	(0x94 + (pex_idx) * 4)
- #define LTSSM_STATE_SHIFT	20
-@@ -113,10 +115,31 @@ static int ls_pcie_link_up(struct dw_pcie *pci)
- 	struct ls_pcie *pcie = to_ls_pcie(pci);
- 	u32 state;
-
-+	/*
-+	 * Strictly speaking *this* (before the ioread32) is the latest
-+	 * point a simple delay can be effective. If we move the delay
-+	 * after the ioread32 then the NVMe does not enumerate.
-+	 *
-+	 * However this function appears to be frequently called so an
-+	 * unconditional delay here causes noticeable delay at boot
-+	 * time. Hence we implement the workaround by retrying the read
-+	 * after a short delay if we think we might need to return false.
-+	 */
-+
- 	state = (ioread32(pcie->lut + pcie->drvdata->lut_dbg) >>
- 		 pcie->drvdata->ltssm_shift) &
- 		 LTSSM_STATE_MASK;
-
-+#ifdef WORKAROUND_LATEST_POSSIBLE
-+	if (state < LTSSM_PCIE_L0) {
-+		/* see comment above */
-+		mdelay(1);
-+		state = (ioread32(pcie->lut + pcie->drvdata->lut_dbg) >>
-+			 pcie->drvdata->ltssm_shift) &
-+			 LTSSM_STATE_MASK;
-+	}
-+#endif
-+
- 	if (state < LTSSM_PCIE_L0)
- 		return 0;
-
-@@ -152,6 +175,18 @@ static int ls_pcie_host_init(struct pcie_port *pp)
-
- 	dw_pcie_setup_rc(pp);
-
-+#ifdef WORKAROUND_EARLIEST_POSSIBLE
-+	/*
-+	 * This is the earliest point the delay is effective.
-+	 * If we move it before dw_pcie_setup_rc() then the
-+	 * NVMe does not enumerate.
-+	 *
-+	 * 500us is too short to reliably work around the issue
-+	 * hence adopting 1000us here.
-+	 */
-+	mdelay(1);
-+#endif
-+
- 	return 0;
- }
-
-
-base-commit: 0477e92881850d44910a7e94fc2c46f96faa131f
---
-2.29.2
-
+Thanks,
+Anand
