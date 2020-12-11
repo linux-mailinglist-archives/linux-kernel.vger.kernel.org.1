@@ -2,80 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5392D7F86
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:41:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6CD2D7F89
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393778AbgLKTkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 14:40:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393573AbgLKTjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 14:39:51 -0500
-Date:   Fri, 11 Dec 2020 11:39:09 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1607715550;
-        bh=U5rxTv/oE3jx6HklcCmBGmro94C4bmSbpwe8ZVtbESs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tGaPNds9nNLIuZR3ejOz+yBohOgC7o2Q5h0m/NYNa9zd3uyUnGP/IP4+kW9R5Klpf
-         ww7M2K+hdZO6jYV7elyNeRzaTtP4WsT6sCZElRWWE9lkbWbLyEygFlEho9rV2A3BLV
-         362MqgQHWa/jgbGJVMKxfO/qT9+2CbZ95+dC4qCQ=
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
-        "qiang.zhang@windriver.com" <qiang.zhang@windriver.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "aryabinin@virtuozzo.com" <aryabinin@virtuozzo.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "andreyknvl@google.com" <andreyknvl@google.com>,
-        "qcai@redhat.com" <qcai@redhat.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        walter-zh.wu@mediatek.com
-Subject: Re: [PATCH] kasan: fix slab double free when cpu-hotplug
-Message-Id: <20201211113909.230e68fcb66193aa71661ddd@linux-foundation.org>
-In-Reply-To: <X9N3i+EwydXFc4HW@chrisdown.name>
-References: <20201204102206.20237-1-qiang.zhang@windriver.com>
-        <1607083295.22062.15.camel@mtksdccf07>
-        <20201204172521.ed9f77164ff9f9fc91f35ee0@linux-foundation.org>
-        <1607185035.22062.42.camel@mtksdccf07>
-        <20201205170914.e380173074b2deded2ade3d3@linux-foundation.org>
-        <X9N3i+EwydXFc4HW@chrisdown.name>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S2393916AbgLKTkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 14:40:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393614AbgLKTj5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 14:39:57 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7295BC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 11:39:17 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id c12so7338152pgm.4
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 11:39:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QIo3bVfXx+Lw6yjMPp9SCxURrwOhgHYFY1xv/a61tbE=;
+        b=EE79xVzCQ878gaWv70KGbugsUsEVTVKRvTDVaxUCXctFF4VuLtHqWGm7O6JTdNX8aA
+         ZUj064dim+/Wo4zvDThfieGnLPm9Ywj2XT/QL9UVcnjgFWFjfgYaAhLsr4RNTdKtHHVI
+         4mlilYnavzNrhDGan8smtOwpweHr7t1gqxPOc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QIo3bVfXx+Lw6yjMPp9SCxURrwOhgHYFY1xv/a61tbE=;
+        b=p8TFg+AEwdzc/qATcQnxcq00KFFXqPHj8d9mswgcrC7h5dNIhlHPkIuKIZTv77HfS4
+         Xp8puD7crVsoXAqRWNLrh4YGmNNc8uq+fv6jXuqkQeZhA+pOqjyzdBH5YsAcqq/3u+Gv
+         5sYZppYxp/BBoYydUQ7CqdXME7HKJLV83cLjT8jDwwswEAw1yLtkSxv2pSxyjz+3w/15
+         EXYEgJjEaSGUnItipjaSvdSeVrwAe1toGTVf3a8F6Zykx375qmcDkRYjw2jYsr7rPf6D
+         v7VkcyisdNp0df84TP54Z7BDvyjQx2HbiQH4MXIq0R5QTpusHXQL1N3bASS9X3JEql4N
+         /+ew==
+X-Gm-Message-State: AOAM532SgHVK6gzUTDosA2J4vFFp6R7KF3V0oZPzPotAMNfiueWk8TDM
+        cswXkiNDiPWLHhGii/J3ADuCG+zJBeKHyg==
+X-Google-Smtp-Source: ABdhPJyXXcdsdOi+abTcXE1bh4agGGO9zoA56tTZLE0YkcYA83KnSclETRXTn0Xpes2srW5EBHYjXQ==
+X-Received: by 2002:aa7:9312:0:b029:19d:fa90:3f42 with SMTP id 18-20020aa793120000b029019dfa903f42mr2634148pfj.18.1607715557089;
+        Fri, 11 Dec 2020 11:39:17 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t127sm11513482pfd.68.2020.12.11.11.39.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 11:39:16 -0800 (PST)
+Date:   Fri, 11 Dec 2020 11:39:15 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Adam Zabrocki <pi3@pi3.com.pl>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Solar Designer <solar@openwall.com>
+Subject: Re: [PATCH] x86/kprobes: Fix optprobe to detect padding int3
+ correctly
+Message-ID: <202012111139.948F2ECF1@keescook>
+References: <160767025681.3880685.16021570341428835411.stgit@devnote2>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <160767025681.3880685.16021570341428835411.stgit@devnote2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 13:43:39 +0000 Chris Down <chris@chrisdown.name> wrote:
-
-> Hi folks,
+On Fri, Dec 11, 2020 at 04:04:17PM +0900, Masami Hiramatsu wrote:
+> Fix optprobe to detect padding int3 correctly.
 > 
-> Andrew Morton writes:
-> >@@ -188,6 +190,10 @@ void quarantine_put(struct kasan_free_me
-> > 	local_irq_save(flags);
-> >
-> > 	q = this_cpu_ptr(&cpu_quarantine);
-> >+	if (q->offline) {
-> >+		local_irq_restore(flags);
-> >+		return;
-> >+	}
-> > 	qlist_put(q, &info->quarantine_link, cache->size);
-> > 	if (unlikely(q->bytes > QUARANTINE_PERCPU_SIZE)) {
-> > 		qlist_move_all(q, &temp);
+> Since commit 7705dc855797 ("x86/vmlinux: Use INT3 instead of NOP
+> for linker fill bytes") changed the padding bytes between functions
+> from nop to int3, when optprobe decodes a target function it finds
+> int3 and gives up the jump optimization.
 > 
-> I'm afraid as well as the issues already identified, this also fails, because 
-> `quarantine_put` now returns a bool after "kasan: sanitize objects when 
-> metadata doesn't fit":
+> Instead of giving up any int3 detection, this checks whether the
+> rest of bytes to the end of the function are int3 or not. If all
+> of those are int3, those come from the linker. In that case,
+> optprobe continues jump optimization.
 > 
->      mm/kasan/quarantine.c: In function ‘quarantine_put’:
->      mm/kasan/quarantine.c:198:3: error: ‘return’ with no value, in function returning non-void [-Werror=return-type]
->        198 |   return;
->            |   ^~~~~~
->      mm/kasan/quarantine.c:171:6: note: declared here
->        171 | bool quarantine_put(struct kmem_cache *cache, void *object)
+> Fixes: 7705dc855797 ("x86/vmlinux: Use INT3 instead of NOP for linker fill bytes")
+> Cc: stable@vger.kernel.org
+> Reported-by: Adam Zabrocki <pi3@pi3.com.pl>
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-Yup, thanks.  I think I have this all fixed now, using the old
-apply-one-patch-compile-everything-repeat approach.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
+-- 
+Kees Cook
