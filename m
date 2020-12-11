@@ -2,273 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFF42D7335
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FDE2D7340
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437508AbgLKJzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 04:55:45 -0500
-Received: from mga01.intel.com ([192.55.52.88]:29168 "EHLO mga01.intel.com"
+        id S2394087AbgLKKBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 05:01:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404840AbgLKJzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 04:55:08 -0500
-IronPort-SDR: wIo9AojRuqoUiRNs7KOzp09jCzx/ZsrAkiJVs1C/5xoIyNNGyySDPWhK2HyLN4qqaxXH7SICDS
- T4/vLsO2nLOg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="192746911"
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="192746911"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 01:54:23 -0800
-IronPort-SDR: /ufv3vGNGQifQf4WI2wmyr1gYEo9JLcct/eEa85fh974wAfL2ugGQDoLz9o6bLFhFYPLXeOH+B
- J5isAR9V2pBA==
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="333982962"
-Received: from dkreft-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.158.206])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 01:54:06 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        id S2390706AbgLKKBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 05:01:14 -0500
+Date:   Fri, 11 Dec 2020 10:00:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607680833;
+        bh=jFOIRQmF8QhbnoVrQUBYI2SL8ohUqFFx7/jNj606aGc=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ECLlIotuaiZ4dGQjFw7VRauGeaiinR7H+nU6z0KrbpH1BBQDSMsprwcVPGqVVOamg
+         u4DsAn+WXLS9N+hU83gF+q1RfVfyweBneFjKxqmfy6tP4joYToNhGHGTCE8PfY7SfA
+         K0DZMBdeg+zFD0qsN+SZHHcvWrdNWvJvyN/EnHS2vv2VaYAQpr1dhYRbi2S14pEO3K
+         NeFVSKA3vqhKAHMi0tIxXWJfvQa8Fjtk7k0NFgW7MQDdjlFGdWnOXFqsVby0Ku7bM7
+         vYeonkGRRqXtleLB61ma3hN2rFcUoHcmfzCpLO625rb++tNZ6UFaSNjhjUijxxJcPd
+         Tp1P2H6BQwIrg==
+From:   Will Deacon <will@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Yanan Wang <wangyanan55@huawei.com>, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-pci@vger.kernel.org,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [patch 14/30] drm/i915/pmu: Replace open coded kstat_irqs() copy
-In-Reply-To: <20201210194043.957046529@linutronix.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20201210192536.118432146@linutronix.de> <20201210194043.957046529@linutronix.de>
-Date:   Fri, 11 Dec 2020 11:54:03 +0200
-Message-ID: <87wnxo7jno.fsf@intel.com>
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
+        zhukeqian1@huawei.com, yuzenghui@huawei.com,
+        jiangkunkun@huawei.com, wangjingyi11@huawei.com,
+        lushenming@huawei.com
+Subject: Re: [RFC PATCH] KVM: arm64: Add prejudgement for relaxing
+ permissions only case in stage2 translation fault handler
+Message-ID: <20201211100026.GA11352@willie-the-truck>
+References: <20201211080115.21460-1-wangyanan55@huawei.com>
+ <20201211080115.21460-2-wangyanan55@huawei.com>
+ <8d006755e5afce7e49b03993316c4fcc@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8d006755e5afce7e49b03993316c4fcc@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020, Thomas Gleixner <tglx@linutronix.de> wrote:
-> Driver code has no business with the internals of the irq descriptor.
->
-> Aside of that the count is per interrupt line and therefore takes
-> interrupts from other devices into account which share the interrupt line
-> and are not handled by the graphics driver.
->
-> Replace it with a pmu private count which only counts interrupts which
-> originate from the graphics card.
->
-> To avoid atomics or heuristics of some sort make the counter field
-> 'unsigned long'. That limits the count to 4e9 on 32bit which is a lot and
-> postprocessing can easily deal with the occasional wraparound.
+On Fri, Dec 11, 2020 at 09:49:28AM +0000, Marc Zyngier wrote:
+> On 2020-12-11 08:01, Yanan Wang wrote:
+> > @@ -461,25 +462,56 @@ static int stage2_map_set_prot_attr(enum
+> > kvm_pgtable_prot prot,
+> >  	return 0;
+> >  }
+> > 
+> > +static bool stage2_set_valid_leaf_pte_pre(u64 addr, u32 level,
+> > +					  kvm_pte_t *ptep, kvm_pte_t new,
+> > +					  struct stage2_map_data *data)
+> > +{
+> > +	kvm_pte_t old = *ptep, old_attr, new_attr;
+> > +
+> > +	if ((old ^ new) & (~KVM_PTE_LEAF_ATTR_PERMS))
+> > +		return false;
+> > +
+> > +	/*
+> > +	 * Skip updating if we are trying to recreate exactly the same mapping
+> > +	 * or to reduce the access permissions only. And update the valid leaf
+> > +	 * PTE without break-before-make if we are trying to add more access
+> > +	 * permissions only.
+> > +	 */
+> > +	old_attr = (old & KVM_PTE_LEAF_ATTR_PERMS) ^
+> > KVM_PTE_LEAF_ATTR_HI_S2_XN;
+> > +	new_attr = (new & KVM_PTE_LEAF_ATTR_PERMS) ^
+> > KVM_PTE_LEAF_ATTR_HI_S2_XN;
+> > +	if (new_attr <= old_attr)
+> > +		return true;
+> > +
+> > +	WRITE_ONCE(*ptep, new);
+> > +	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, data->mmu, addr, level);
+> 
+> I think what bothers me the most here is that we are turning a mapping into
+> a permission update, which makes the code really hard to read, and mixes
+> two things that were so far separate.
+> 
+> I wonder whether we should instead abort the update and simply take the
+> fault
+> again, if we ever need to do it.
 
-I'll let Tvrtko and Chris review the substance here, but assuming they
-don't object,
+That's a nice idea. If we could enforce that we don't alter permissions on
+the map path, and instead just return e.g. -EAGAIN then that would be a
+very neat solution and would cement the permission vs translation fault
+division.
 
-Acked-by: Jani Nikula <jani.nikula@intel.com>
-
-for merging via whichever tree makes most sense.
-
->
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-> Cc: Jani Nikula <jani.nikula@linux.intel.com>
-> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: intel-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> ---
->  drivers/gpu/drm/i915/i915_irq.c |   34 ++++++++++++++++++++++++++++++++++
->  drivers/gpu/drm/i915/i915_pmu.c |   18 +-----------------
->  drivers/gpu/drm/i915/i915_pmu.h |    8 ++++++++
->  3 files changed, 43 insertions(+), 17 deletions(-)
->
-> --- a/drivers/gpu/drm/i915/i915_irq.c
-> +++ b/drivers/gpu/drm/i915/i915_irq.c
-> @@ -60,6 +60,24 @@
->   * and related files, but that will be described in separate chapters.
->   */
->  
-> +/*
-> + * Interrupt statistic for PMU. Increments the counter only if the
-> + * interrupt originated from the the GPU so interrupts from a device which
-> + * shares the interrupt line are not accounted.
-> + */
-> +static inline void pmu_irq_stats(struct drm_i915_private *priv,
-> +				 irqreturn_t res)
-> +{
-> +	if (unlikely(res != IRQ_HANDLED))
-> +		return;
-> +
-> +	/*
-> +	 * A clever compiler translates that into INC. A not so clever one
-> +	 * should at least prevent store tearing.
-> +	 */
-> +	WRITE_ONCE(priv->pmu.irq_count, priv->pmu.irq_count + 1);
-> +}
-> +
->  typedef bool (*long_pulse_detect_func)(enum hpd_pin pin, u32 val);
->  
->  static const u32 hpd_ilk[HPD_NUM_PINS] = {
-> @@ -1599,6 +1617,8 @@ static irqreturn_t valleyview_irq_handle
->  		valleyview_pipestat_irq_handler(dev_priv, pipe_stats);
->  	} while (0);
->  
-> +	pmu_irq_stats(dev_priv, ret);
-> +
->  	enable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
->  
->  	return ret;
-> @@ -1676,6 +1696,8 @@ static irqreturn_t cherryview_irq_handle
->  		valleyview_pipestat_irq_handler(dev_priv, pipe_stats);
->  	} while (0);
->  
-> +	pmu_irq_stats(dev_priv, ret);
-> +
->  	enable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
->  
->  	return ret;
-> @@ -2103,6 +2125,8 @@ static irqreturn_t ilk_irq_handler(int i
->  	if (sde_ier)
->  		raw_reg_write(regs, SDEIER, sde_ier);
->  
-> +	pmu_irq_stats(i915, ret);
-> +
->  	/* IRQs are synced during runtime_suspend, we don't require a wakeref */
->  	enable_rpm_wakeref_asserts(&i915->runtime_pm);
->  
-> @@ -2419,6 +2443,8 @@ static irqreturn_t gen8_irq_handler(int
->  
->  	gen8_master_intr_enable(regs);
->  
-> +	pmu_irq_stats(dev_priv, IRQ_HANDLED);
-> +
->  	return IRQ_HANDLED;
->  }
->  
-> @@ -2514,6 +2540,8 @@ static __always_inline irqreturn_t
->  
->  	gen11_gu_misc_irq_handler(gt, gu_misc_iir);
->  
-> +	pmu_irq_stats(i915, IRQ_HANDLED);
-> +
->  	return IRQ_HANDLED;
->  }
->  
-> @@ -3688,6 +3716,8 @@ static irqreturn_t i8xx_irq_handler(int
->  		i8xx_pipestat_irq_handler(dev_priv, iir, pipe_stats);
->  	} while (0);
->  
-> +	pmu_irq_stats(dev_priv, ret);
-> +
->  	enable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
->  
->  	return ret;
-> @@ -3796,6 +3826,8 @@ static irqreturn_t i915_irq_handler(int
->  		i915_pipestat_irq_handler(dev_priv, iir, pipe_stats);
->  	} while (0);
->  
-> +	pmu_irq_stats(dev_priv, ret);
-> +
->  	enable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
->  
->  	return ret;
-> @@ -3941,6 +3973,8 @@ static irqreturn_t i965_irq_handler(int
->  		i965_pipestat_irq_handler(dev_priv, iir, pipe_stats);
->  	} while (0);
->  
-> +	pmu_irq_stats(dev_priv, IRQ_HANDLED);
-> +
->  	enable_rpm_wakeref_asserts(&dev_priv->runtime_pm);
->  
->  	return ret;
-> --- a/drivers/gpu/drm/i915/i915_pmu.c
-> +++ b/drivers/gpu/drm/i915/i915_pmu.c
-> @@ -423,22 +423,6 @@ static enum hrtimer_restart i915_sample(
->  	return HRTIMER_RESTART;
->  }
->  
-> -static u64 count_interrupts(struct drm_i915_private *i915)
-> -{
-> -	/* open-coded kstat_irqs() */
-> -	struct irq_desc *desc = irq_to_desc(i915->drm.pdev->irq);
-> -	u64 sum = 0;
-> -	int cpu;
-> -
-> -	if (!desc || !desc->kstat_irqs)
-> -		return 0;
-> -
-> -	for_each_possible_cpu(cpu)
-> -		sum += *per_cpu_ptr(desc->kstat_irqs, cpu);
-> -
-> -	return sum;
-> -}
-> -
->  static void i915_pmu_event_destroy(struct perf_event *event)
->  {
->  	struct drm_i915_private *i915 =
-> @@ -581,7 +565,7 @@ static u64 __i915_pmu_event_read(struct
->  				   USEC_PER_SEC /* to MHz */);
->  			break;
->  		case I915_PMU_INTERRUPTS:
-> -			val = count_interrupts(i915);
-> +			val = READ_ONCE(pmu->irq_count);
->  			break;
->  		case I915_PMU_RC6_RESIDENCY:
->  			val = get_rc6(&i915->gt);
-> --- a/drivers/gpu/drm/i915/i915_pmu.h
-> +++ b/drivers/gpu/drm/i915/i915_pmu.h
-> @@ -108,6 +108,14 @@ struct i915_pmu {
->  	 */
->  	ktime_t sleep_last;
->  	/**
-> +	 * @irq_count: Number of interrupts
-> +	 *
-> +	 * Intentionally unsigned long to avoid atomics or heuristics on 32bit.
-> +	 * 4e9 interrupts are a lot and postprocessing can really deal with an
-> +	 * occasional wraparound easily. It's 32bit after all.
-> +	 */
-> +	unsigned long irq_count;
-> +	/**
->  	 * @events_attr_group: Device events attribute group.
->  	 */
->  	struct attribute_group events_attr_group;
->
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Will
