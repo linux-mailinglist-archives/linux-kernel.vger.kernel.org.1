@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB07B2D7A8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EF52D7A91
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:11:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393029AbgLKQI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 11:08:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35452 "EHLO mail.kernel.org"
+        id S2389303AbgLKQKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 11:10:33 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:25199 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728560AbgLKQIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 11:08:22 -0500
-Date:   Fri, 11 Dec 2020 17:08:50 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607702861;
-        bh=1WeVfIHrj5CTqkyBJR1jYYf3odkPTbkUW4EIu+xgpu0=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hXu+o2p+c8Es89OJnWhGUnKBiLsLTFQzOl3PfdcDZONEdP80JF/OVtrJND5j8ceSX
-         90pfMqiaSc3d2qLadRHSx0MjHLEnaczDufoEL6s4sAK7W+WYXOLPzHq7AMoaujp+4F
-         9A18/0pUy+yNs4fmjTX5ap5SeDmwpe+Og4K78OsY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Mychaela Falconia <mychaela.falconia@gmail.com>,
-        Maarten Brock <m.brock@vanmierlo.com>,
-        Johan Hovold <johan@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] tty: add flag to suppress ready signalling on open
-Message-ID: <X9OZklRPquV8wE+E@kroah.com>
-References: <20201202113942.27024-1-johan@kernel.org>
- <X9Dficb8sQGRut+S@kroah.com>
- <CA+uuBqYTzXCHGY8QnP+OQ5nRNAbqx2rMNzLM7OKLM1_4AzzinQ@mail.gmail.com>
- <6b81cca21561305b55ba8f019b78da28@vanmierlo.com>
- <X9H9i98E1Gro+mDP@kroah.com>
- <3fc3097ce1d35ce1e45fa5a3c7173666@vanmierlo.com>
- <X9IcKoofq+2iGZn7@kroah.com>
- <CA+uuBqaNcKadyLRyufm+6HUHXcs7o0rtgw84BrHc7Jq9PauV8Q@mail.gmail.com>
- <54f40116-9a11-8daa-d3cd-5557cc60a4ef@kernel.org>
+        id S2404259AbgLKQJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 11:09:56 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CswhV34YMz4y;
+        Fri, 11 Dec 2020 17:09:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1607702954; bh=JA0EdqTBGYeoKbAC0O4t5RZsbxp09DvSH5E83admmgo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FB+54ThX+KIVulK3J+dtBnWEhUPjaXdPSuk1c/MkLuQDlQr2D7Sd0LGWJU2JnVlUA
+         1Rsxkbrd9ekWRbnEonutMh0b6M2YIOr6vdXuCf4/NT9SGyB/aFay3PCnBnrh5/j8BB
+         vi4a0l7G2k1/97LeteE3vfB467CvVvg6q+C54mFUg3UFp6w3XAQUNIxeQCJDcm0EW4
+         gVCMNC85wwuH/rfFDmSxrTtd4NNv1azHyCqWAaBTvMRvTAKMxkBbsbq8KEhQK0wMz1
+         JhtE/7xjG23Lw4OsVTLDXUzZ3mDLvg1TLqIrwA1zXTI5hY28gK3v15YfTeseLlM5HY
+         pviz4QCIjaN5g==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Fri, 11 Dec 2020 17:09:17 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Johnny Chuang <johnny.chuang.emc@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v8 2/4] input: elants: support old touch report
+ format
+Message-ID: <20201211160917.GA23095@qmqm.qmqm.pl>
+References: <cover.1607669375.git.mirq-linux@rere.qmqm.pl>
+ <a5c0b6b300fadf9425781285351b46c6dbb4f618.1607669375.git.mirq-linux@rere.qmqm.pl>
+ <X9Mf5G6yvIEAoh2C@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-In-Reply-To: <54f40116-9a11-8daa-d3cd-5557cc60a4ef@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <X9Mf5G6yvIEAoh2C@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 09:46:54AM +0100, Jiri Slaby wrote:
-> On 10. 12. 20, 19:59, Mychaela Falconia wrote:
-> > > O_DIRECT is an interesting hack, has anyone seen if it violates the
-> > > posix rules for us to use it on a character device like this?
-> > 
-> > According to open(2) Linux man page, O_DIRECT does not come from POSIX
-> > at all, instead it is specific to Linux, FreeBSD and SGI IRIX.  Thus
-> > it seems like there aren't any POSIX rules to be violated here.
-> > 
-> > If we go with O_DIRECT, what semantics are we going to implement?
-> > There are 3 possibilities that come to mind most readily:
-> > 
-> > 1) O_DIRECT applies only to the open call in which this flag is set,
-> > and suppresses DTR/RTS assertion on that open.  If someone needs to do
-> > multiple opens with DTR/RTS suppression being required every time,
-> > then they need to include O_DIRECT every time.
-> > 
-> > 2) O_DIRECT applies not only immediately, but also sets a latched flag
-> > whereby all subsequent opens continue to suppress auto-assertion
-> > without requiring O_DIRECT every time.  This approach by itself runs
-> > counter to the generic Unix way of doing things, but it may be OK if
-> > there is also some ioctl to explicitly set or clear the latched flag.
-> > 
-> > 3) O_DIRECT applies only to the open call in which it is set, no
-> > built-in latching, but there is also some ioctl to control a flag
-> > enabling or disabling DTR/RTS auto-assertion on subsequent opens.
-> 
-> 3) -- to allow standard tools to work on the device after the quirk is set
-> up once.
+On Thu, Dec 10, 2020 at 11:29:40PM -0800, Dmitry Torokhov wrote:
+> Hi Micha³,
+> On Fri, Dec 11, 2020 at 07:53:56AM +0100, Micha³ Miros³aw wrote:
+> > @@ -998,17 +1011,18 @@ static irqreturn_t elants_i2c_irq(int irq, void *_dev)
+> >  			}
+> >  
+> >  			report_len = ts->buf[FW_HDR_LENGTH] / report_count;
+> > -			if (report_len != PACKET_SIZE) {
+> > +			if (report_len != PACKET_SIZE &&
+> > +			    report_len != PACKET_SIZE_OLD) {
+> >  				dev_err(&client->dev,
+> > -					"mismatching report length: %*ph\n",
+> > +					"unsupported report length: %*ph\n",
+> >  					HEADER_SIZE, ts->buf);
+> Do I understand this correctly that the old packets are only observed on
+> EKTF3624? If so can we expand the check so that we only accept packets
+> with "old" size when we know we are dealing with this device?
 
-I'm lost, what do you mean here?
+We only have EKTF3624 and can't be sure there are no other chips needing this.
 
-thanks,
-
-greg k-h
+Best Regards
+Micha³ Miros³aw
