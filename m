@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546DD2D6FF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85DFE2D6FFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395451AbgLKGGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 01:06:35 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:41832 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391588AbgLKGGQ (ORCPT
+        id S2395454AbgLKGJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 01:09:47 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9592 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390573AbgLKGJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 01:06:16 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BB64cbx039923;
-        Fri, 11 Dec 2020 00:04:38 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607666678;
-        bh=wSqjmbU0YYGEkg93VVUH28s8uW6BoEtX08kYM08bGPo=;
-        h=From:To:CC:Subject:Date;
-        b=fPgU5gOnLC1M3lsMAIClh7KPtDTIZU9PFV36de1+wxiXDYfWRkhtdD2WB1gZO7Dof
-         rp7ZEjWgKnJh9I3CPHoyxTPKqI4HF7iaku+R0985x47wvZkuxUggXFHpSCrO0gG1xb
-         6X/W4c48RxSTR6aR3Eo/xPG+YxT2mtA6DTnJPQY4=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BB64c1q078685
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Dec 2020 00:04:38 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 11
- Dec 2020 00:04:37 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 11 Dec 2020 00:04:38 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BB64Xoh116260;
-        Fri, 11 Dec 2020 00:04:34 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Roger Quadros <rogerq@ti.com>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4] dt-bindings: usb: Add new compatible string for AM64 SoC
-Date:   Fri, 11 Dec 2020 11:34:29 +0530
-Message-ID: <20201211060429.20027-1-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 11 Dec 2020 01:09:25 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CsgLl6zK3zM2wt;
+        Fri, 11 Dec 2020 14:07:59 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 11 Dec
+ 2020 14:08:37 +0800
+Subject: Re: [PATCH RFC] f2fs: compress: add compress_flag in struct
+ f2fs_comp_option
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20201210092020.66245-1-yuchao0@huawei.com>
+ <X9JZn2ELSZISEQpU@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <bfe87060-7e47-a9c8-897f-17352d0fc623@huawei.com>
+Date:   Fri, 11 Dec 2020 14:08:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <X9JZn2ELSZISEQpU@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible string in j721e-usb binding file as the same USB subsystem
-is present in AM64.
+On 2020/12/11 1:23, Jaegeuk Kim wrote:
+> On 12/10, Chao Yu wrote:
+>> Add a extra field compress_flag to get/set more compress option from/to
+>> compressed inode.
+>>
+>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>> ---
+>>
+>> Daeho, Jaegeuk,
+>>
+>> Could you please check whether we could add this new field to struct
+>> f2fs_comp_option? so we can expand to allow user to query/config more
+>> options of compressed inode via new ioctl.
+>>
+>> It needs to consider before original patches goes to merge window, let
+>> me know you have other concerns.
+> 
+> Chao, I think it'd hard to add this at time point, unless there's critical
+> info that we need to set very urgently.
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
+Oops, so it needs extra ioctl interface to get/set newly added chksum and
+compress_level configs...
 
-Changes since v3:
-- used enum instead of anyOf.
+Thanks,
 
-Changes since v2:
-- added changes done over the versions.
-
-Changes since v1:
-- replaced the '\t' at the beginning of the lines with spaces as it was
-  causing the dt_binding_check to fail.
-
- Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-index 388245b91a55..1a5c7bbb40d1 100644
---- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-+++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-@@ -11,8 +11,9 @@ maintainers:
- 
- properties:
-   compatible:
--    items:
--      - const: ti,j721e-usb
-+    enum:
-+      - ti,j721e-usb
-+      - ti,am64-usb
- 
-   reg:
-     description: module registers
--- 
-2.17.1
-
+> 
+>>
+>>   fs/f2fs/file.c            | 1 +
+>>   include/uapi/linux/f2fs.h | 1 +
+>>   2 files changed, 2 insertions(+)
+>>
+>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>> index 16ea10f2bcf5..fbf06311c88d 100644
+>> --- a/fs/f2fs/file.c
+>> +++ b/fs/f2fs/file.c
+>> @@ -3965,6 +3965,7 @@ static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
+>>   
+>>   	option.algorithm = F2FS_I(inode)->i_compress_algorithm;
+>>   	option.log_cluster_size = F2FS_I(inode)->i_log_cluster_size;
+>> +	option.compress_flag = F2FS_I(inode)->i_compress_flag;
+>>   
+>>   	inode_unlock_shared(inode);
+>>   
+>> diff --git a/include/uapi/linux/f2fs.h b/include/uapi/linux/f2fs.h
+>> index 352a822d4370..2b9c4c99ceee 100644
+>> --- a/include/uapi/linux/f2fs.h
+>> +++ b/include/uapi/linux/f2fs.h
+>> @@ -93,6 +93,7 @@ struct f2fs_sectrim_range {
+>>   struct f2fs_comp_option {
+>>   	__u8 algorithm;
+>>   	__u8 log_cluster_size;
+>> +	__u16 compress_flag;
+>>   };
+>>   
+>>   #endif /* _UAPI_LINUX_F2FS_H */
+>> -- 
+>> 2.29.2
+> .
+> 
