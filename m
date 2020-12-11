@@ -2,63 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461902D7CF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:35:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 314032D7CFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405405AbgLKRcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:32:25 -0500
-Received: from foss.arm.com ([217.140.110.172]:42228 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405183AbgLKRcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:32:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4E481FB;
-        Fri, 11 Dec 2020 09:31:19 -0800 (PST)
-Received: from bogus (unknown [10.57.54.168])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DAF373F718;
-        Fri, 11 Dec 2020 09:31:16 -0800 (PST)
-Date:   Fri, 11 Dec 2020 17:31:14 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/5] firmware: smccc: Introduce SMCCC TRNG framework
-Message-ID: <20201211173113.kosawwanjjjoka4u@bogus>
-References: <20201211160005.187336-1-andre.przywara@arm.com>
- <20201211160005.187336-3-andre.przywara@arm.com>
+        id S2395313AbgLKRep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:34:45 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2252 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726682AbgLKRec (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 12:34:32 -0500
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CsyWc5rDdz67NCh;
+        Sat, 12 Dec 2020 01:31:40 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 11 Dec 2020 18:33:50 +0100
+Received: from [10.47.11.239] (10.47.11.239) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 11 Dec
+ 2020 17:33:48 +0000
+Subject: Re: [PATCH v5 5/5] scsi: hisi_sas: Expose HW queues for v2 hw
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     <jejb@linux.ibm.com>, <lenb@kernel.org>, <rjw@rjwysocki.net>,
+        <gregkh@linuxfoundation.org>, <tglx@linutronix.de>,
+        <maz@kernel.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <linux-acpi@vger.kernel.org>, <dwagner@suse.de>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>
+References: <1606905417-183214-1-git-send-email-john.garry@huawei.com>
+ <1606905417-183214-6-git-send-email-john.garry@huawei.com>
+ <7a30086c-8a23-2272-fac9-a66ca92ae2f8@huawei.com>
+ <yq1k0tontu8.fsf@ca-mkp.ca.oracle.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <9a1e5af4-e9b4-efe8-fd17-a8cb58da75ad@huawei.com>
+Date:   Fri, 11 Dec 2020 17:33:11 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211160005.187336-3-andre.przywara@arm.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <yq1k0tontu8.fsf@ca-mkp.ca.oracle.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.11.239]
+X-ClientProxiedBy: lhreml722-chm.china.huawei.com (10.201.108.73) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 04:00:02PM +0000, Andre Przywara wrote:
-> The ARM DEN0098 document describe an SMCCC based firmware service to
-> deliver hardware generated random numbers. Its existence is advertised
-> according to the SMCCC v1.1 specification.
-> 
-> Add a (dummy) call to probe functions implemented in each architecture
-> (ARM and arm64), to determine the existence of this interface.
-> For now this return false, but this will be overwritten by each
-> architecture's support patch.
-> 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+On 11/12/2020 17:20, Martin K. Petersen wrote:
+>> Is there some way in this patch can be merged for 5.11 via the SCSI
+>> tree? It has a dependency on the earlier patches in the series, now
+>> picked up via irqchip tree. I've seen multiple rounds of SCSI pull
+>> requests before, but not sure when we have that or if the tree is
+>> rebased for those.
+> I'll do a postmerge branch for a few things, including your patch and
+> the megaraid patch.
 
-Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+Great, thanks.
 
--- 
-Regards,
-Sudeep
+By a strange coincidence both those patches are doing the same thing.
+
+John
