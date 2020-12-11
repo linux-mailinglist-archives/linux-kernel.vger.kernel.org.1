@@ -2,194 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EEF82D82F1
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 538482D82FA
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407117AbgLKXwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 18:52:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728288AbgLKXwR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 18:52:17 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB628C0613CF;
-        Fri, 11 Dec 2020 15:51:36 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id k2so11828498oic.13;
-        Fri, 11 Dec 2020 15:51:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tA1fqnnr3vajfoGbWMUpasOa0HqMdTDCvorB/43zAo8=;
-        b=oILKR204NyeBZpE1Btl2YFOguZlAbDaa/u5OahBeLPdAUFuldy02IYyvcYAjYdVTUd
-         0wIVk4BM4jrPr/6ws1nl+HXOxvuCqktTkYhrAf1DIVnFpLs6I3Oj/8GiEYDhtNINGeLw
-         haf2CoDJzQGSoUAo6AVP40xEUE07OkRuJoBCOt2OUcAGOshLY45r7A1IoYJqkjVLldW6
-         TljmTd0iaOEx/YmmbBD6aj6yPB+DodeB1ecgk/NYd+Q6WfhmMxUzfdxTZskAdM8Ro/78
-         fgiq5vLL3heVXpLj48d3d7I1HeTCtW2C7u2j64fSMqs3KR5DZodpBOlaektWTwmudIx7
-         s0Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=tA1fqnnr3vajfoGbWMUpasOa0HqMdTDCvorB/43zAo8=;
-        b=aDAwb9ij/swhHm0eQsy1lWchZTbedPL15+FQmQYyAo22pRtEONXbV/Lm/8CLpCqdaI
-         +M6Mmj9t0eIWMJN92rBMxt1/vD0zIX2fnJk+PPgdpOeXC/8bMs3yIKmCMXdGyhdTZkxd
-         sVzb0AW05M216crFcBvpUW1MIWHMBNzojMqcVLLF2uWud1SqWYxkt+jEi1HlIanubJqR
-         hMgPYvSVAFlpX85cM9z/0qQRVU9RhSKcDxAenN2vaaQ9ct9LUh+C/5/j8ZGA61RJWmUY
-         HU53vzlx2HF3RL0bbfoISHtCNHl2/CtK77EFBZ3XKPlZCU6XgKQZ1ONQVcuhg3hjYkYc
-         AVHw==
-X-Gm-Message-State: AOAM533bnZv1/WJOXfSbEL4eu9NOmHKxL06Ya5Jf4NLCEuDXg5yS9XYl
-        QMjX6Beov3erf85kJtMZW+B7OmD663c=
-X-Google-Smtp-Source: ABdhPJwgckDEO5BSY8l79JMx1g0jg0nMZUwO4pfhmOXoHtg8Tq9icOAu+uMM1dAmzW3CN3c0JGREcw==
-X-Received: by 2002:aca:c388:: with SMTP id t130mr11116951oif.36.1607730696037;
-        Fri, 11 Dec 2020 15:51:36 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w6sm2300155otm.54.2020.12.11.15.51.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Dec 2020 15:51:35 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH linux hwmon-next v5 3/3] dt-bindings: (hwmon/sbtsi_tmep)
- Add SB-TSI hwmon driver bindings
-To:     Kun Yi <kunyi@google.com>, jdelvare@suse.com, robh+dt@kernel.org,
-        mark.rutland@arm.com, supreeth.venkatesh@amd.com
-Cc:     openbmc@lists.ozlabs.org, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201211215427.3281681-1-kunyi@google.com>
- <20201211215427.3281681-4-kunyi@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <116ca29a-8270-9b03-520e-bc3ffcf43552@roeck-us.net>
-Date:   Fri, 11 Dec 2020 15:51:33 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2407220AbgLKXzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 18:55:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404293AbgLKXzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 18:55:21 -0500
+Date:   Sat, 12 Dec 2020 00:54:35 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607730881;
+        bh=SCz8bzPsELDUq0lGSB7IHwi2nUf6eCFNm8SUjmyOLOI=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZEHV91Um2wvOW33SMCUsi/9yIfdGDU2ugjj4kQyE0l1pnHF7WaR1ez/vGMvlRgJ5U
+         LPn2ZHoZoSy951pnGE/4G9Rm6bCvVm/ebLXFcxHfWdjVjW/8/xG1hLQyNwWY5Ij0Da
+         TIlEnlVIK7bsecL32JA/kUUv7nr1+8vehp6qPReUnWkSio5fgBAWHvGCRvp/WbKY61
+         viCkMcHkeJvxHU7i2XIuZoqhOXJTLNYu7LoSMxKaXk22mOnN9lnijwJ0cW7h/WC9zo
+         J4kg+jZVQQ2NeeODD88csRTTjIc+u3JzP/c2ORoBKaXEJrJuEN4Vaf6vNLD00mbuzR
+         TE5gTw5Hm1rRA==
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH RFC v2] docs: experimental: build PDF with rst2pdf
+Message-ID: <20201212005435.0e1a0871@coco.lan>
+In-Reply-To: <20201211134859.5ab8e0c2@lwn.net>
+References: <20201210172938.3b3086b6@coco.lan>
+        <b73c93c6946ab324443608fac62333b7e327a7e4.1607675494.git.mchehab+huawei@kernel.org>
+        <20201211134859.5ab8e0c2@lwn.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201211215427.3281681-4-kunyi@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/20 1:54 PM, Kun Yi wrote:
-> Document device tree bindings for AMD SB-TSI emulated temperature
-> sensor.
+Em Fri, 11 Dec 2020 13:48:59 -0700
+Jonathan Corbet <corbet@lwn.net> escreveu:
+
+> On Fri, 11 Dec 2020 09:33:32 +0100
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 > 
-> Signed-off-by: Kun Yi <kunyi@google.com>
-
-Any reason for dropping Rob's Reviewed-by: tag ?
-
-Guenter
-
-> ---
->  .../devicetree/bindings/hwmon/amd,sbtsi.yaml  | 54 +++++++++++++++++++
->  1 file changed, 54 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml
+> > Add an experimental PDF builder using rst2pdf
+> > 
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> > 
+> > Please notice that 18 documents (of a total of 71) won't build with 
+> > rst2pdf. There's an opened issue about that at:
+> > 
+> >     https://github.com/rst2pdf/rst2pdf/issues/958
+> > 
+> > v2: usage of SPHINXDIRS was fixed.
+> > 
+> > 
+> >  Documentation/Makefile                     |  5 +++++
+> >  Documentation/conf.py                      | 21 +++++++++++++++------
+> >  Documentation/sphinx/load_config.py        | 12 ++++++++++++
+> >  Documentation/userspace-api/media/Makefile |  1 +
+> >  Makefile                                   |  4 ++--
+> >  5 files changed, 35 insertions(+), 8 deletions(-)  
 > 
-> diff --git a/Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml b/Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml
-> new file mode 100644
-> index 000000000000..446b09f1ce94
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml
-> @@ -0,0 +1,54 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/hwmon/amd,sbtsi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: >
-> +  Sideband interface Temperature Sensor Interface (SB-TSI) compliant
-> +  AMD SoC temperature device
-> +
-> +maintainers:
-> +  - Kun Yi <kunyi@google.com>
-> +  - Supreeth Venkatesh <supreeth.venkatesh@amd.com>
-> +
-> +description: |
-> +  SB Temperature Sensor Interface (SB-TSI) is an SMBus compatible
-> +  interface that reports AMD SoC's Ttcl (normalized temperature),
-> +  and resembles a typical 8-pin remote temperature sensor's I2C interface
-> +  to BMC. The emulated thermal sensor can report temperatures in increments
-> +  of 0.125 degrees, ranging from 0 to 255.875.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - amd,sbtsi
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description: |
-> +      I2C bus address of the device as specified in Section 6.3.1 of the
-> +      SoC register reference. The SB-TSI address is normally 98h for socket
-> +      0 and 90h for socket 1, but it could vary based on hardware address
-> +      select pins.
-> +      \[open source SoC register reference\]
-> +        https://www.amd.com/system/files/TechDocs/56255_OSRR.pdf
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c0 {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        sbtsi@4c {
-> +                compatible = "amd,sbtsi";
-> +                reg = <0x4c>;
-> +        };
-> +    };
-> +...
+> So I would dearly love to have rst2pdf working.
 > 
+> I applied this, then tried to see what would happen if I ran a build
+> without having rst2pdf installed:
+> 
+> > 1108 meer kernel: make htmldocs
+> >   SPHINX  htmldocs --> file:///stuff/k/git/kernel/Documentation/output
+> > make[2]: Nothing to be done for 'html'.
+> > WARNING: The kernel documentation build process
+> >         support for Sphinx v3.0 and above is brand new. Be prepared for
+> >         possible issues in the generated output.
+> >         enabling CJK for LaTeX builder
+> > 
+> > Extension error:
+> > Could not import extension rst2pdf.pdfbuilder (exception: No module named 'rst2pdf')
+> > make[1]: *** [Documentation/Makefile:91: htmldocs] Error 2
+> > make: *** [Makefile:1663: htmldocs] Error 2  
+> 
+> Methinks it's perhaps not quite ready for linux-next yet :)
 
+Well, I haven't test this.
+
+I'm not an usual python programmer, so, don't know much about its 
+specifics... Yet, I would be expecting that something like this:
+
+	try:
+	    extensions.append("rst2pdf.pdfbuilder")
+	except:
+	    sys.stderr.write('rst2pdf extension not available.\n')
+	
+
+Would avoid it to crash, if the extension is not available.
+Silly me :-)
+
+Still, I suspect that it should not be hard to modify the above to
+avoid the crash. 
+
+I shouldn't be doing much development those days, as I'm taking
+some vacations, after sending media stuff for 5.11. 
+
+So, if you have a better idea about how to optionally probe an
+extension, feel free to modify my patch.
+
+
+> With rst2pdf installed I get a bunch of zero-length files, as promised.
+> Pretty much none of the larger "books" make it through.  
+
+Yeah. I guess one of the issues is with tables that don't fit into
+a single page.
+
+Yet, devicetree book is empty. That sounds really weird, as there are
+few files on it, and I didn't see anything uncommon on the rst files.
+
+> It's a start,
+> though.  I'll happily apply this as a step forward once it doesn't break
+> the docs build if rst2pdf is missing.
+
+Sounds like a plan.
+
+Thanks,
+Mauro
