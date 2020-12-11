@@ -2,126 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23312D70FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D0E2D70FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390967AbgLKHeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 02:34:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728847AbgLKHeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 02:34:04 -0500
-Date:   Fri, 11 Dec 2020 08:33:17 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607672002;
-        bh=C8A7lKlaEcMlasQ5K4ENi5tH/KgPVDYUVtTHnQ2KQVU=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H75eimhCTbJ3XrWyiOpWwcwsF+mJaCaFtfGTDRWlZOxjiv6PffoLY7KPChDRhTq6j
-         5ZSzDTVAwCx3g72CRIDqZGZBLjSBfgxpQ7jVKYSHl6807hk+HEmxfZ1ta69gC1Gb1w
-         irY1GKujRkTsguvXg5I4gqaJefoOAN1y9naCsmPI=
-From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-Cc:     'Rob Herring' <robh+dt@kernel.org>,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
-Message-ID: <X9MgvZ7bWX7HMNir@kroah.com>
-References: <20201210170443.GA17304@dincontrollerdev>
- <X9Jw+srprdT8tquZ@kroah.com>
- <20201210194625.GA17516@dincontrollerdev>
- <X9MIwqJBG69M5uHq@kroah.com>
- <20201211060943.GA1065@dincontrollerdev>
- <X9MPuX1x4MezwkEj@kroah.com>
- <20201211063752.GB1065@dincontrollerdev>
+        id S2405427AbgLKHeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 02:34:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728847AbgLKHe0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 02:34:26 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A62C0613CF;
+        Thu, 10 Dec 2020 23:33:46 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id 2so7886228ilg.9;
+        Thu, 10 Dec 2020 23:33:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v5HpxdPWwk62UINvDZk+rcjGzodsUyDT59+6kcdYqLY=;
+        b=UuSx1zwxSFyQ3GOKZPndz1Tc7V8nFIvuFUBR8XbCXonEXa/XEZK873OgDWO1WKAxQk
+         xcg3++SlORlx+0DWHNTCHFq7Zuo11PQaeHDOZTYDn22vZ19NluY2W2a2Fbc5MU99I/pJ
+         nM4pak6ZupQAvqGpu9xvLkaJqRUeKvpnOG6r6JS3lhf26yhelnGnVSmwUOjZ/pT3mZb3
+         pMypx52dKsij5h0z0Dc+dVnx67o8UjCJgjNnnMfS5xy5CeK+9oeThog2DL0PUNXAjOzf
+         6VsG2mXexTC0hH+p9cdUbtr0/oGltOyvtPfvG1kTEpXIOG8SFRiO6oMCvDGWMw5eDLtq
+         d9bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v5HpxdPWwk62UINvDZk+rcjGzodsUyDT59+6kcdYqLY=;
+        b=tILw+FABgeNyXQ/CHRBaXd4TBM+yEoi0Hyz3hRU1IDmkK4YJzDoK+gPcgqUI6DyO2I
+         UONREtOeqwftSzP8t8+j+yB0GQ4etr34gBBeQ7+wZAOzYEjHUvN7iJpFKThoVY4wJlsp
+         14j/h7avmMcOdoFeMaBYhZIXho+GXAU1s2k9rH5aFRm3PS4Qt11IHFDkUuoaHKKvf/Xc
+         Blh7Daek9sDjlxK8eo7qwKTgWpovJxfIminQx2kXKaVnbrku9HcFiAh0g7n2MNppOI/z
+         w9nouI0fyGMjFRGwiqNSJKSjqizPcEYaV8n9JYyIUr2tHUkil2hks+1ESAxjy4h4hU/y
+         nbFw==
+X-Gm-Message-State: AOAM532HFpuRNBH9aV08Xgk8qvhf0QH8vMn1B5T1vThgkF6wo7ZS5DQ2
+        gxrv/uUNf3CkXa1ozgHFoEeHsJiS33qnlC0QeL8=
+X-Google-Smtp-Source: ABdhPJw7MbJqRtZnDVadtFjF/7vY4pbLtnDux/WDt8xuFRiA2d0CeZYC+4LK6GKUgZn1jy6fENahVXkzfUGmG9BDxx8=
+X-Received: by 2002:a92:c112:: with SMTP id p18mr14707710ile.89.1607672025843;
+ Thu, 10 Dec 2020 23:33:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201211063752.GB1065@dincontrollerdev>
+References: <20201211041954.79543-1-songmuchun@bytedance.com> <20201211041954.79543-2-songmuchun@bytedance.com>
+In-Reply-To: <20201211041954.79543-2-songmuchun@bytedance.com>
+From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Date:   Fri, 11 Dec 2020 08:33:34 +0100
+Message-ID: <CAM9Jb+gc-xqPNP0jsuRV5xczBh31rM=cgL46SxxAYSohe8RvwQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/7] mm: memcontrol: fix NR_ANON_THPS accounting in
+ charge moving
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, adobriyan@gmail.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, vdavydov.dev@gmail.com,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>, guro@fb.com,
+        Sami Tolvanen <samitolvanen@google.com>, feng.tang@intel.com,
+        neilb@suse.de, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        cgroups@vger.kernel.org, Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 06:37:52AM +0000, József Horváth wrote:
-> On Fri, Dec 11, 2020 at 07:20:41AM +0100, 'Greg Kroah-Hartman' wrote:
-> > On Fri, Dec 11, 2020 at 06:09:43AM +0000, József Horváth wrote:
-> > > On Fri, Dec 11, 2020 at 06:50:58AM +0100, 'Greg Kroah-Hartman' wrote:
-> > > > On Thu, Dec 10, 2020 at 07:46:25PM +0000, József Horváth wrote:
-> > > > > On Thu, Dec 10, 2020 at 08:03:22PM +0100, 'Greg Kroah-Hartman' wrote:
-> > > > > > On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
-> > > > > > > This is a serial port driver for
-> > > > > > > Silicon Labs Si4455 Sub-GHz transciver.
-> > > > > > > +
-> > > > > > > +#define BASE_TTYIOC_PRIVATE		0xA0
-> > > > > > > +/* Set EZConfig.
-> > > > > > > + * After this ioctl call, the driver restarts the si4455,
-> > > > > > > + * then apply the new configuration and patch.
-> > > > > > > + */
-> > > > > > > +#define SI4455_IOC_SEZC		_IOW('T', \
-> > > > > > > +				     BASE_TTYIOC_PRIVATE + 0x01, \
-> > > > > > > +				     struct si4455_iocbuff)
-> > > > > > 
-> > > > > > Why does a serial driver have private ioctls?  Please no, don't do that.
-> > > > > 
-> > > > > I checked the ioctl.h and serial_core.h, but I not found any similar definition, like BASE_VIDIOC_PRIVATE in videodev2.h.
-> > > > > In this case the name of macro BASE_TTYIOC_PRIVATE means the base value of special ioctl commands owned by this driver.
-> > > > 
-> > > > My point is, a serial driver should NOT have any custom ioctls.
-> > > > 
-> > > > > I can change it to BASE_TTYIOC or SI4455_IOC_BASE
-> > > > > 
-> > > > > > Implement the basic serial driver first, and then we can talk about
-> > > > > > "custom" configurations and the like, using the correct apis.
-> > > > > 
-> > > > > Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
-> > > > > The cofiguration for interface is provided by user for application.
-> > > > 
-> > > > That is what a device tree is for, to configure the device to have the
-> > > > correct system configuration, why can't that be the same here?
-> > > > 
-> > > > > It contains the base frequency, channel spacing, modulation, and a lot
-> > > > > of more stuff, and generated by Silicon Labs Wireless Development
-> > > > > Suite.
-> > > > > The generated configuration is in a non public(compressed,
-> > > > > encrypted...who knows) format, so without this the driver can't
-> > > > > provide configuration parameters to Si4455.
-> > > > 
-> > > > So we have to take a "custom" userspace blob and send it to the device
-> > > > to configure it properly?  Like Jiri said, sounds like firmware, so just
-> > > > use that interface instead.
-> > > 
-> > > I checked Jiri's suggestion, and it is a good solution to replace SI4455_IOC_SEZC(configuration) and SI4455_IOC_SEZP(firmware patch).
-> > > I can move SI4455_IOC_SSIZ(package size) to device tree property.
-> > > 
-> > > Maybe you have good suggestion for the following:
-> > > SI4455_IOC_STXC -> Radio transmit channel index. It is a real use case to control this parameter by user at runtime.
-> > > SI4455_IOC_SRXC -> Radio receive channel index. It is a real use case to control this parameter by user at runtime.
-> > 
-> > These are not serial port things, why would a serial port care about
-> > these?
-> 
-> You are right, these are not regular serial port things, but this device is not a regular uart, it is a sub-GHz transciever, digital radio.
-> This driver tries to represent it as a serial port to user.
+> The unit of NR_ANON_THPS is HPAGE_PMD_NR already. So it should inc/dec
+> by one rather than nr_pages.
+>
+> Fixes: 468c398233da ("mm: memcontrol: switch to native NR_ANON_THPS counter")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Reviewed-by: Roman Gushchin <guro@fb.com>
+> ---
+>  mm/memcontrol.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index b80328f52fb4..8818bf64d6fe 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5653,10 +5653,8 @@ static int mem_cgroup_move_account(struct page *page,
+>                         __mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
+>                         __mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
+>                         if (PageTransHuge(page)) {
+> -                               __mod_lruvec_state(from_vec, NR_ANON_THPS,
+> -                                                  -nr_pages);
+> -                               __mod_lruvec_state(to_vec, NR_ANON_THPS,
+> -                                                  nr_pages);
+> +                               __dec_lruvec_state(from_vec, NR_ANON_THPS);
+> +                               __inc_lruvec_state(to_vec, NR_ANON_THPS);
+>                         }
+>
+>                 }
 
-Is that the correct representation to be using here?  Why not act like a
-proper radio device instead?  That way you get to use the normal kernel
-apis for radio devices.
-
-> > > SI4455_IOC_GRSSI -> Last measured RSSI, when packet received. This is a useful information.
-> > > (Currently I'm the only one user, and I need this :) )
-> > 
-> > What is "RSSI"?
-> > 
-> > And why not debugfs if it's only debugging stuff?
-> 
-> Received signal strength indication, and not only debugging. It is an information for the end user.
-
-How do other radio devices (like wifi controllers) export this
-information to userspace?  Don't create custom apis for only a single
-device when the goal of a kernel is to make hardware interfaces all work
-the same as far as userspace is concerned.
-
-thanks,
-
-greg k-h
+Acked-by: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
