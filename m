@@ -2,256 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 871052D81B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD4B2D81C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406433AbgLKWOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 17:14:43 -0500
-Received: from mga18.intel.com ([134.134.136.126]:40466 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406711AbgLKWOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 17:14:06 -0500
-IronPort-SDR: x+BbSPCBoolouRiEJa7Rv7KTNxZewZgqKTtQRcFja1d6iNmq1nyCVoZkU5DxqK5nZ11UnWh3+9
- r1+I3fHY+GwQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9832"; a="162260653"
-X-IronPort-AV: E=Sophos;i="5.78,412,1599548400"; 
-   d="scan'208";a="162260653"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 14:13:19 -0800
-IronPort-SDR: 3fAIz24wcOtlMMOJE1WtnK+lNgnFIWFyGEEuHmwVTlzPUjqp+2APyMIaVhBFlekYkywBypj/j+
- xs45Bdc8iWgw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,412,1599548400"; 
-   d="scan'208";a="365656640"
-Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 11 Dec 2020 14:13:18 -0800
-Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1knqf7-00017K-A7; Fri, 11 Dec 2020 22:13:17 +0000
-Date:   Sat, 12 Dec 2020 06:12:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/core] BUILD SUCCESS
- 76e87d96b30b5fee91b381fbc444a3eabcd9469a
-Message-ID: <5fd3eecb.jyDrbrkXBP9pP0h7%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2406754AbgLKWPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 17:15:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406726AbgLKWO4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 17:14:56 -0500
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F002EC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:14:15 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id s23so3364394uaq.10
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:14:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B+v8QnAZfVmqdM00Egj83ptDN3hTPJz74BI1U+QyDFM=;
+        b=g7q7BwyabpGEt1cdczJmqxzv2S6iTyT9mkFah7BKR4FKU5Dr3lxJHEJC0Rr50ihcQE
+         x1mkixFbjWFPbE0IiX/M08n2k7Qd6Hc7d6scCrDuqsa0QM/mQUpTbrYJPT9xoIGnPfRQ
+         ULTkk4v6bW1+d6xwlNbplePkS2/QY4dSfBP1s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B+v8QnAZfVmqdM00Egj83ptDN3hTPJz74BI1U+QyDFM=;
+        b=clYKXhdrdbV0Dql15VvZ/mcImzu/r3UYsn6M/NLYyyUNy3b25uMeIj5MHs9stTZp8u
+         pTEP0+d1ZqU4RTweq4mL21CPYge5XiwY21bERj6KS+ejvK1Fz8ozsMqjdS9Az6bhVBHx
+         oupv3CWsNvfc/l4z8XyTDHVO+moiUJ4zW8uLht5A7k+DC0eyar7Bv0ze2yQi0er7/9cn
+         bhdjXtF+gCZS95dYftKiUjM59hGZWQ/m/eUlyise75UA+ex/XIgD7LzDLZgXfiWehpKV
+         O/Zm/5UydIZBPnmZANJZNMQbNRcg4/3XMc8RfAbqpDKJG8enD+fQn97rAj0OpCCupm0T
+         o4qQ==
+X-Gm-Message-State: AOAM531v2v+ubpb2UiAab9uqkHVW3oeG+QrytpvAzrQPubWL9KZB0m/r
+        sbjKbPAWqrBprT1pjIcFaCrJ80vHOjTA/g==
+X-Google-Smtp-Source: ABdhPJwQt2Lb5ArljxG7zhn/4S3hh3pc4mFQVwgGsuFi56gONdBVmDBfUiB/UR71HY4CdwerLa0Xng==
+X-Received: by 2002:ab0:4597:: with SMTP id u23mr15427064uau.100.1607724854778;
+        Fri, 11 Dec 2020 14:14:14 -0800 (PST)
+Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
+        by smtp.gmail.com with ESMTPSA id y198sm1087874vsy.9.2020.12.11.14.14.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Dec 2020 14:14:13 -0800 (PST)
+Received: by mail-ua1-f42.google.com with SMTP id f16so3356794uav.12
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:14:13 -0800 (PST)
+X-Received: by 2002:ab0:6285:: with SMTP id z5mr14895918uao.0.1607724852718;
+ Fri, 11 Dec 2020 14:14:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201124094636.v2.1.I2702919afc253e2a451bebc3b701b462b2d22344@changeid>
+ <20201124094636.v2.3.I771b6594b2a4d5b7fe7e12a991a6640f46386e8d@changeid>
+ <d6c5dba9-bcc7-fac9-dd41-c989509c822b@codeaurora.org> <CAD=FV=UOSkHQMcSV8Zq5qPfBoUu5xYzfNZqUPmymvD7PXUAN4w@mail.gmail.com>
+ <b84d5bb4-e413-ad20-a19a-c7420abd5d5d@codeaurora.org> <CAD=FV=UXo3RPuVSYwOrHJMxF38K-ynoaPv4ZVQ6N2ok_zcoOFw@mail.gmail.com>
+ <5f24ec87-6d91-dfd9-0f4f-6687f37c60ac@codeaurora.org> <CAD=FV=Wm_q60w34LmbtC88BkfS0aKp_a=AjnuYFL=g-DX_-=yQ@mail.gmail.com>
+ <92c61a18-0a1d-099e-4a11-b33a052b4ec2@codeaurora.org>
+In-Reply-To: <92c61a18-0a1d-099e-4a11-b33a052b4ec2@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 11 Dec 2020 14:14:01 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=XvWFd84OxHmYgO8McV-ixe+ucMxhOdAWzHu4nLnnCtbQ@mail.gmail.com>
+Message-ID: <CAD=FV=XvWFd84OxHmYgO8McV-ixe+ucMxhOdAWzHu4nLnnCtbQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] pinctrl: qcom: Clear possible pending irq when
+ remuxing GPIOs
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  timers/core
-branch HEAD: 76e87d96b30b5fee91b381fbc444a3eabcd9469a  ntp: Consolidate the RTC update implementation
+Hi,
 
-elapsed time: 724m
+On Thu, Dec 10, 2020 at 11:07 PM Maulik Shah <mkshah@codeaurora.org> wrote:
+>
+> I have slightly modified your test case (see at
+> https://crrev.com/c/2584729) which is as per what i used in my testing.
+>
+> Here is what i am doing, setting GPIO to a fixed function (function 2 here)
+> Note that function 0 is the GPIO (interrupt mode).
+>
+> 1) Pull up the GPIO in function 2
+> 2) Pull down the GPIO in function 2
+>
+> Repeat above steps, and you will see fake interrupt every time pull down/up.
+> This proves that if you mux away from GPIO then still PDC sees the line
+> and can latch the interrupt at GIC.
 
-configs tested: 194
-configs skipped: 2
+Ah, super useful example!  Thanks!  Yes, I can replicate your results.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+...but this seems to contradict my other test.  Ah, dang, I think I
+see the problem with my original test.  The important difference is
+that in your test you used the alternate function "mi2s_2" and in mine
+I used "qspi_data".  When I selected "qspi_data" it must have been
+actively driving the pin and _that's_ why I couldn't affect it.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 linkstation_defconfig
-sh                         apsh4a3a_defconfig
-arm                           omap1_defconfig
-powerpc                     mpc512x_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-openrisc                            defconfig
-arm                            pleb_defconfig
-arm                          collie_defconfig
-arm                           sunxi_defconfig
-ia64                             allyesconfig
-parisc                generic-32bit_defconfig
-m68k                       m5275evb_defconfig
-arm                          exynos_defconfig
-arm                      integrator_defconfig
-sh                           se7343_defconfig
-arm                            zeus_defconfig
-sh                            migor_defconfig
-mips                        vocore2_defconfig
-arm                         orion5x_defconfig
-powerpc                 mpc836x_mds_defconfig
-arm                          gemini_defconfig
-sh                          rsk7269_defconfig
-sh                        apsh4ad0a_defconfig
-m68k                        m5272c3_defconfig
-mips                   sb1250_swarm_defconfig
-xtensa                    xip_kc705_defconfig
-sh                          kfr2r09_defconfig
-sparc                            alldefconfig
-mips                        bcm47xx_defconfig
-microblaze                      mmu_defconfig
-arc                          axs103_defconfig
-arm                       aspeed_g4_defconfig
-arc                         haps_hs_defconfig
-powerpc                        warp_defconfig
-arm                     eseries_pxa_defconfig
-arm                      tct_hammer_defconfig
-powerpc                    mvme5100_defconfig
-powerpc                      acadia_defconfig
-sh                             shx3_defconfig
-arm                          imote2_defconfig
-mips                malta_kvm_guest_defconfig
-sh                          sdk7780_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                         lubbock_defconfig
-arm                          tango4_defconfig
-mips                            ar7_defconfig
-mips                     loongson1c_defconfig
-powerpc                  storcenter_defconfig
-arm                      footbridge_defconfig
-arm                          iop32x_defconfig
-riscv                    nommu_virt_defconfig
-powerpc                      chrp32_defconfig
-mips                           gcw0_defconfig
-i386                             allyesconfig
-m68k                       bvme6000_defconfig
-powerpc                   currituck_defconfig
-mips                      loongson3_defconfig
-arc                            hsdk_defconfig
-mips                           rs90_defconfig
-openrisc                    or1ksim_defconfig
-mips                        bcm63xx_defconfig
-nds32                               defconfig
-parisc                           alldefconfig
-ia64                                defconfig
-powerpc                    klondike_defconfig
-arm                         assabet_defconfig
-alpha                            alldefconfig
-sh                         microdev_defconfig
-arm                           u8500_defconfig
-powerpc                        icon_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                           xway_defconfig
-powerpc                      cm5200_defconfig
-mips                      pistachio_defconfig
-mips                      maltaaprp_defconfig
-powerpc                 mpc834x_itx_defconfig
-m68k                             alldefconfig
-powerpc64                           defconfig
-powerpc                     rainier_defconfig
-arm                          badge4_defconfig
-sh                             sh03_defconfig
-arm                        keystone_defconfig
-ia64                            zx1_defconfig
-m68k                          multi_defconfig
-sh                          lboxre2_defconfig
-sh                          urquell_defconfig
-sh                          sdk7786_defconfig
-powerpc                      ppc64e_defconfig
-arm                         palmz72_defconfig
-sh                  sh7785lcr_32bit_defconfig
-xtensa                         virt_defconfig
-xtensa                generic_kc705_defconfig
-sparc                            allyesconfig
-powerpc                          g5_defconfig
-arm                         shannon_defconfig
-sh                               j2_defconfig
-m68k                       m5249evb_defconfig
-arm                       versatile_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                      pasemi_defconfig
-mips                     cu1000-neo_defconfig
-xtensa                    smp_lx200_defconfig
-sh                           se7619_defconfig
-sh                               alldefconfig
-m68k                          amiga_defconfig
-powerpc                      ppc40x_defconfig
-arm                         mv78xx0_defconfig
-arm                          simpad_defconfig
-mips                          rm200_defconfig
-arm                             mxs_defconfig
-riscv                            alldefconfig
-powerpc                      arches_defconfig
-powerpc                 mpc837x_rdb_defconfig
-ia64                             allmodconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-i386                 randconfig-a001-20201210
-i386                 randconfig-a004-20201210
-i386                 randconfig-a003-20201210
-i386                 randconfig-a002-20201210
-i386                 randconfig-a005-20201210
-i386                 randconfig-a006-20201210
-i386                 randconfig-a004-20201209
-i386                 randconfig-a005-20201209
-i386                 randconfig-a001-20201209
-i386                 randconfig-a002-20201209
-i386                 randconfig-a006-20201209
-i386                 randconfig-a003-20201209
-x86_64               randconfig-a016-20201209
-x86_64               randconfig-a012-20201209
-x86_64               randconfig-a013-20201209
-x86_64               randconfig-a014-20201209
-x86_64               randconfig-a015-20201209
-x86_64               randconfig-a011-20201209
-i386                 randconfig-a013-20201209
-i386                 randconfig-a014-20201209
-i386                 randconfig-a011-20201209
-i386                 randconfig-a015-20201209
-i386                 randconfig-a012-20201209
-i386                 randconfig-a016-20201209
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+When I change my test to use "mi2s_2" then my toggles via "wp enable"
+and "wp disable" cause phantom interrupts.  That confirms what you're
+saying: the PDC _can_ see the twiddles even when muxed away.
+Presumably the active driving my "qspi_data" is also what caused my
+phantom glitches.
 
-clang tested configs:
-x86_64               randconfig-a004-20201209
-x86_64               randconfig-a006-20201209
-x86_64               randconfig-a005-20201209
-x86_64               randconfig-a001-20201209
-x86_64               randconfig-a002-20201209
-x86_64               randconfig-a003-20201209
-x86_64               randconfig-a003-20201210
-x86_64               randconfig-a006-20201210
-x86_64               randconfig-a002-20201210
-x86_64               randconfig-a005-20201210
-x86_64               randconfig-a004-20201210
-x86_64               randconfig-a001-20201210
+So, as you said, that means my mental model is totally wrong here.
+Wow, if I had known that earlier I would have saved a lot of time.
+That'll learn me...
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+OK, v4 being posted and you can see if that handles all the cases?
+
+-Doug
