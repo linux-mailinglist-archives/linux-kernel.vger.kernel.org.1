@@ -2,136 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C722D7D3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E912D7D49
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405691AbgLKRrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:47:55 -0500
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:59906 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405633AbgLKRrS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:47:18 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id A4A201280195;
-        Fri, 11 Dec 2020 09:46:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1607708796;
-        bh=eES7dkAWAETGlrB/U5ZcYdxiZYF5ERyWxz5zpk5XS54=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=aSCTaU08AIo2KulFz0YKW5uDbOoeqsKWNO8rT5OQkooKfvQgZoFprGW9Hij4XfqTn
-         U6PBJKECnnVooKjlRbbwv/O+OMIQxkgFYOrYx4KGngF+2bMuaHYc7bQbSrXlhucPGg
-         1E0wiTJzYVG7ZyXVanYziUzjN9e8C++KrjAVm4iI=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id wC4SYAMM1k4E; Fri, 11 Dec 2020 09:46:36 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 114BA1280193;
-        Fri, 11 Dec 2020 09:46:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1607708796;
-        bh=eES7dkAWAETGlrB/U5ZcYdxiZYF5ERyWxz5zpk5XS54=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=aSCTaU08AIo2KulFz0YKW5uDbOoeqsKWNO8rT5OQkooKfvQgZoFprGW9Hij4XfqTn
-         U6PBJKECnnVooKjlRbbwv/O+OMIQxkgFYOrYx4KGngF+2bMuaHYc7bQbSrXlhucPGg
-         1E0wiTJzYVG7ZyXVanYziUzjN9e8C++KrjAVm4iI=
-Message-ID: <76710d8ec58c440ed7a7b446696b8659f694d0db.camel@HansenPartnership.com>
-Subject: Re: [PATCH AUTOSEL 5.7 03/30] ima: extend boot_aggregate with
- kernel measurements
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Maurizio Drocco <maurizio.drocco@ibm.com>,
-        Bruno Meneguele <bmeneg@redhat.com>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Date:   Fri, 11 Dec 2020 09:46:35 -0800
-In-Reply-To: <659c09673affe9637a5d1391c12af3aa710ba78a.camel@linux.ibm.com>
-References: <20200708154116.3199728-1-sashal@kernel.org>
-         <20200708154116.3199728-3-sashal@kernel.org>
-         <1594224793.23056.251.camel@linux.ibm.com>
-         <20200709012735.GX2722994@sasha-vm>
-         <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
-         <20201211031008.GN489768@sequoia>
-         <659c09673affe9637a5d1391c12af3aa710ba78a.camel@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S2436551AbgLKRvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:51:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436544AbgLKRu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 12:50:56 -0500
+From:   Mark Brown <broonie@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Sameer Pujar <spujar@nvidia.com>, robh+dt@kernel.org,
+        thierry.reding@gmail.com
+Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sharadg@nvidia.com,
+        jonathanh@nvidia.com, alsa-devel@alsa-project.org
+In-Reply-To: <1607006202-4078-1-git-send-email-spujar@nvidia.com>
+References: <1607006202-4078-1-git-send-email-spujar@nvidia.com>
+Subject: Re: [RESEND PATCH 0/2] Convert Tegra HDA doc to json-schema
+Message-Id: <160770898108.26354.183397284224263445.b4-ty@kernel.org>
+Date:   Fri, 11 Dec 2020 17:49:41 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-11 at 06:01 -0500, Mimi Zohar wrote:
-> On Thu, 2020-12-10 at 21:10 -0600, Tyler Hicks wrote:
-> > On 2020-11-29 08:17:38, Mimi Zohar wrote:
-> > > Hi Sasha,
-> > > 
-> > > On Wed, 2020-07-08 at 21:27 -0400, Sasha Levin wrote:
-> > > > On Wed, Jul 08, 2020 at 12:13:13PM -0400, Mimi Zohar wrote:
-> > > > > Hi Sasha,
-> > > > > 
-> > > > > On Wed, 2020-07-08 at 11:40 -0400, Sasha Levin wrote:
-> > > > > > From: Maurizio Drocco <maurizio.drocco@ibm.com>
-> > > > > > 
-> > > > > > [ Upstream commit 20c59ce010f84300f6c655d32db2610d3433f85c
-> > > > > > ]
-> > > > > > 
-> > > > > > Registers 8-9 are used to store measurements of the kernel
-> > > > > > and its command line (e.g., grub2 bootloader with tpm
-> > > > > > module enabled). IMA should include them in the boot
-> > > > > > aggregate. Registers 8-9 should be only included in non-
-> > > > > > SHA1 digests to avoid ambiguity.
-> > > > > 
-> > > > > Prior to Linux 5.8, the SHA1 template data hashes were padded
-> > > > > before being extended into the TPM.  Support for calculating
-> > > > > and extending the per TPM bank template data digests is only
-> > > > > being upstreamed in Linux 5.8.
-> > > > > 
-> > > > > How will attestation servers know whether to include PCRs 8 &
-> > > > > 9 in the the boot_aggregate calculation?  Now, there is a
-> > > > > direct relationship between the template data SHA1 padded
-> > > > > digest not including PCRs 8 & 9, and the new per TPM bank
-> > > > > template data digest including them.
-> > > > 
-> > > > Got it, I'll drop it then, thank you!
-> > > 
-> > > After re-thinking this over, I realized that the attestation
-> > > server can verify the "boot_aggregate" based on the quoted PCRs
-> > > without knowing whether padded SHA1 hashes or per TPM bank hash
-> > > values were extended into the TPM[1], but non-SHA1 boot aggregate
-> > > values [2] should always include PCRs 8 & 9.
-> > 
-> > I'm still not clear on how an attestation server would know to
-> > include PCRs 8 and 9 after this change came through a stable kernel
-> > update. It doesn't seem like something appropriate for stable since
-> > it requires code changes to attestation servers to handle the
-> > change.
-> > 
-> > I know this has already been released in some stable releases, so
-> > I'm too late, but perhaps I'm missing something.
+On Thu, 3 Dec 2020 20:06:40 +0530, Sameer Pujar wrote:
+> Convert Tegra HDA doc to YAML format. Ran binding validation checks to
+> ensure there are no warnings/errors for HDA.
 > 
-> The point of adding PCRs 8 & 9 only to non-SHA1 boot_aggregate values
-> was to avoid affecting existing attestation servers.  The intention
-> was when attestation servers added support for the non-sha1
-> boot_aggregate values, they'd also include PCRs 8 & 9.  The existing
-> SHA1 boot_aggregate value remains PCRs 0 - 7.
+> Patch "arm64: tegra: Fix Tegra194 HDA {clock,reset}-names ordering" is
+> already merged and hence not included here.
 > 
-> To prevent this or something similar from happening again, what
-> should have been the proper way of including PCRs 8 & 9?
+> Sameer Pujar (2):
+>   dt-bindings: tegra: Convert HDA doc to json-schema
+>   dt-bindings: tegra: Add missing HDA properties
+> 
+> [...]
 
-Just to be pragmatic: this is going to happen again.  Shim is already
-measuring the Mok variables through PCR 14, so if we want an accurate
-boot aggregate, we're going to have to include PCR 14 as well (or
-persuade shim to measure through a PCR we're already including, which
-isn't impossible since I think shim should be measuring the Mok
-variables using the EV_EFI_VARIABLE_DRIVER_CONFIG event and, since it
-affects secure boot policy, that does argue it should be measured
-through PCR 7).
+Applied to
 
-James
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
 
+[1/2] dt-bindings: tegra: Convert HDA doc to json-schema
+      commit: 2d8f8955fe02c1f5d41c283f48d8c6a2a02ae17f
+[2/2] dt-bindings: tegra: Add missing HDA properties
+      commit: 3759d5edc07598d55124d87bd292a95f79f47997
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
