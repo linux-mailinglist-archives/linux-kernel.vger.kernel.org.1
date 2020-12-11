@@ -2,191 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286E82D72BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBAC62D72C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437395AbgLKJT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 04:19:58 -0500
-Received: from bmail1.ministro.hu ([5.249.150.236]:45148 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404401AbgLKJTj (ORCPT
+        id S2405599AbgLKJYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 04:24:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404401AbgLKJYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 04:19:39 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id 4A52C123B20;
-        Fri, 11 Dec 2020 10:18:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607678336;
-        bh=jfch30BQOQ1n9/oxdKmbDk77amXZ1U44IbP8Ff7D7xY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qFVsBPkRcPpdjPsKgQUpXfzWVJSjZvVuPXH9Pfexf8OCMAO2Wfzhvgh2tUXBHcF3H
-         pkFeosb8znB/XKrS/uJko0vIs3n4GyVjce3aAu7tOqRHDu72zJy7SdJyTRvplwkcaw
-         Fw8L9zlBlxM0uGIS2OIfr6XmSfqTuMXPgv6r/mt2mqRgIQrmPEO078aX6GZW37QMCo
-         jdpxlQu7v+wkt+bfESgJKPC+lpfxKbFGnkgdH8ptG/iLWkSbcE94VrX1T1VcUu6dT/
-         NAaij3euojmOGnyVXgGLvu/5paCqqUggk/NPiLaiUkXdHClAw3TDrhXD1mVN5iVx81
-         EHihuZ3bAcv8Q==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id msiF0j-DlpGx; Fri, 11 Dec 2020 10:18:26 +0100 (CET)
-Received: from dincontrollerdev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id EAE0E123B1E;
-        Fri, 11 Dec 2020 10:18:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607678306;
-        bh=jfch30BQOQ1n9/oxdKmbDk77amXZ1U44IbP8Ff7D7xY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sG/E4GO0klRvlkpPeSIslfa1nsJSH3kU+Rp9s0EY9NLPFZEyJnlSYY/OUu94KQ23F
-         K8po7a9OD+Ls1pctwCCi/kmnKmF0eBym5geCh3z/HWyTwnevPDwj8M0SBylx82JgXq
-         dcHT/mXDMIirew6GGSLfJcPlXYkOSiwoemwQ02qN2Mv5/+UhGgU+msn7oNEkkISDmF
-         bRTzxgdDff+F2agbuoEcD2YPEa2F8JfMlutBkIOZr+r7cflaMxd84+3YUE2QEdDVUe
-         yoF2JcvVVGhzDY5p+EVaQ0jA9Ou3qBD7Lg0k6OdRBfJmM5n8R9q+SVbsTl2nd7limM
-         LspwBbaxWTXVQ==
-Date:   Fri, 11 Dec 2020 09:18:24 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-Cc:     'Rob Herring' <robh+dt@kernel.org>,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
-Message-ID: <20201211091823.GD1065@dincontrollerdev>
-References: <20201210170443.GA17304@dincontrollerdev>
- <X9Jw+srprdT8tquZ@kroah.com>
- <20201210194625.GA17516@dincontrollerdev>
- <X9MIwqJBG69M5uHq@kroah.com>
- <20201211060943.GA1065@dincontrollerdev>
- <X9MPuX1x4MezwkEj@kroah.com>
- <20201211063752.GB1065@dincontrollerdev>
- <X9MgvZ7bWX7HMNir@kroah.com>
- <20201211081634.GC1065@dincontrollerdev>
- <X9MxM+aEKIAHqd4G@kroah.com>
+        Fri, 11 Dec 2020 04:24:12 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD096C0613CF;
+        Fri, 11 Dec 2020 01:23:31 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607678610;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/64yfk/f7iWtTjLUC4NhqoHGM4ucIwe7KEQDNM7rmxQ=;
+        b=BFXK24VpgfEg9bCn3Yd+M/huO0MTAeHWg5wAr6dEpsgJVi2Ot7fxcxVs51AYQTlOvH6ld4
+        XwS3uK8FTXl8ZIHvdtBOmIwWNF1iT+WwiRZeIO6QHKc+nBLE1HXeIW/4GNAWj4ehrtz5l4
+        WVuRJPm/Tkj80uqJkrceCbcQFGvx/1wfbeDm02Zei738yVkYhNePs7Sfc+M/X4nYl5oBOF
+        GaJL3LBmujpZ14IDewiy88Bacf8AbHeROrd3tgkXSeaqtzHIsRdxyFXDiHwAuyx4u24cWD
+        6YG9jcGjYJMLEKpGhh+XrIdIAwb72qAcnGCdFF93gJxf3FzH0uL+gDZnUbvaNg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607678610;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/64yfk/f7iWtTjLUC4NhqoHGM4ucIwe7KEQDNM7rmxQ=;
+        b=+aEWTKLPXJldoSe6edlC3FByXn5fdyrTXTK/3FgBy4hs32EwD4wB0A4O5GMzkH6FxD6fIZ
+        ilFI6ge3FVTI6YCw==
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [patch 8/8] ntp: Consolidate the RTC update implementation
+In-Reply-To: <20201207210505.GM5487@ziepe.ca>
+References: <20201206214613.444124194@linutronix.de> <20201206220542.355743355@linutronix.de> <20201207210505.GM5487@ziepe.ca>
+Date:   Fri, 11 Dec 2020 10:23:29 +0100
+Message-ID: <877dpoitm6.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <X9MxM+aEKIAHqd4G@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 09:43:31AM +0100, 'Greg Kroah-Hartman' wrote:
-> On Fri, Dec 11, 2020 at 08:16:34AM +0000, József Horváth wrote:
-> > On Fri, Dec 11, 2020 at 08:33:17AM +0100, 'Greg Kroah-Hartman' wrote:
-> > > On Fri, Dec 11, 2020 at 06:37:52AM +0000, József Horváth wrote:
-> > > > On Fri, Dec 11, 2020 at 07:20:41AM +0100, 'Greg Kroah-Hartman' wrote:
-> > > > > On Fri, Dec 11, 2020 at 06:09:43AM +0000, József Horváth wrote:
-> > > > > > On Fri, Dec 11, 2020 at 06:50:58AM +0100, 'Greg Kroah-Hartman' wrote:
-> > > > > > > On Thu, Dec 10, 2020 at 07:46:25PM +0000, József Horváth wrote:
-> > > > > > > > On Thu, Dec 10, 2020 at 08:03:22PM +0100, 'Greg Kroah-Hartman' wrote:
-> > > > > > > > > On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
-> > > > > > > > > > This is a serial port driver for
-> > > > > > > > > > Silicon Labs Si4455 Sub-GHz transciver.
-> > > > > > > > > > +
-> > > > > > > > > > +#define BASE_TTYIOC_PRIVATE		0xA0
-> > > > > > > > > > +/* Set EZConfig.
-> > > > > > > > > > + * After this ioctl call, the driver restarts the si4455,
-> > > > > > > > > > + * then apply the new configuration and patch.
-> > > > > > > > > > + */
-> > > > > > > > > > +#define SI4455_IOC_SEZC		_IOW('T', \
-> > > > > > > > > > +				     BASE_TTYIOC_PRIVATE + 0x01, \
-> > > > > > > > > > +				     struct si4455_iocbuff)
-> > > > > > > > > 
-> > > > > > > > > Why does a serial driver have private ioctls?  Please no, don't do that.
-> > > > > > > > 
-> > > > > > > > I checked the ioctl.h and serial_core.h, but I not found any similar definition, like BASE_VIDIOC_PRIVATE in videodev2.h.
-> > > > > > > > In this case the name of macro BASE_TTYIOC_PRIVATE means the base value of special ioctl commands owned by this driver.
-> > > > > > > 
-> > > > > > > My point is, a serial driver should NOT have any custom ioctls.
-> > > > > > > 
-> > > > > > > > I can change it to BASE_TTYIOC or SI4455_IOC_BASE
-> > > > > > > > 
-> > > > > > > > > Implement the basic serial driver first, and then we can talk about
-> > > > > > > > > "custom" configurations and the like, using the correct apis.
-> > > > > > > > 
-> > > > > > > > Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
-> > > > > > > > The cofiguration for interface is provided by user for application.
-> > > > > > > 
-> > > > > > > That is what a device tree is for, to configure the device to have the
-> > > > > > > correct system configuration, why can't that be the same here?
-> > > > > > > 
-> > > > > > > > It contains the base frequency, channel spacing, modulation, and a lot
-> > > > > > > > of more stuff, and generated by Silicon Labs Wireless Development
-> > > > > > > > Suite.
-> > > > > > > > The generated configuration is in a non public(compressed,
-> > > > > > > > encrypted...who knows) format, so without this the driver can't
-> > > > > > > > provide configuration parameters to Si4455.
-> > > > > > > 
-> > > > > > > So we have to take a "custom" userspace blob and send it to the device
-> > > > > > > to configure it properly?  Like Jiri said, sounds like firmware, so just
-> > > > > > > use that interface instead.
-> > > > > > 
-> > > > > > I checked Jiri's suggestion, and it is a good solution to replace SI4455_IOC_SEZC(configuration) and SI4455_IOC_SEZP(firmware patch).
-> > > > > > I can move SI4455_IOC_SSIZ(package size) to device tree property.
-> > > > > > 
-> > > > > > Maybe you have good suggestion for the following:
-> > > > > > SI4455_IOC_STXC -> Radio transmit channel index. It is a real use case to control this parameter by user at runtime.
-> > > > > > SI4455_IOC_SRXC -> Radio receive channel index. It is a real use case to control this parameter by user at runtime.
-> > > > > 
-> > > > > These are not serial port things, why would a serial port care about
-> > > > > these?
-> > > > 
-> > > > You are right, these are not regular serial port things, but this device is not a regular uart, it is a sub-GHz transciever, digital radio.
-> > > > This driver tries to represent it as a serial port to user.
-> > > 
-> > > Is that the correct representation to be using here?  Why not act like a
-> > > proper radio device instead?  That way you get to use the normal kernel
-> > > apis for radio devices.
-> > 
-> > In my mind it is absolute a serial device by the application.
-> 
-> What is the application?  Traditionally serial ports don't need radio signals :)
+On Mon, Dec 07 2020 at 17:05, Jason Gunthorpe wrote:
+> On Sun, Dec 06, 2020 at 10:46:21PM +0100, Thomas Gleixner wrote:
+>>  static void sync_hw_clock(struct work_struct *work)
+>>  {
+>> +	static unsigned long offset_nsec = NSEC_PER_SEC / 2;
+>
+> A comment here explaining this is the default: because the platform is
+> assumed to use CMOS, and by the way, this whole thing is obsolete
+> don't use it, seems appropriate..
 
-The application is connecting newly developed sensors(with only rf interface) and legacy sensors(with regular serial communication over rs-485 with modbus) keeping the legacy user software.
+Will add something like that.
 
-User sw [Java]
-	<-> /dev/ttyXXX
-		<-> si4455[driver]
-			<-> si4455[hardware]
-				<---air---> new device[si4455+ARM Cortex-M0] 1
-					+-> new device[si4455+ARM Cortex-M0] 2
-					+-> new device[si4455+ARM Cortex-M0] n
-					+-> gateway[si4455+ARM Cortex-M0]<---RS485--> Legacy device 1
-										  +-> Legacy device 2
-										  +-> Legacy device n
+> The time split is clearer if you think of it from a bus/datasheet
+> perspective, less clear if you try to measure the system directly, eg
+> from an alarm. But, I think this  has a better chance of some rtclib
+> driver authors to fill in the datasheet value at least.
 
-I think this driver could be a good solution in a lot off applications where the user wants to change from wired to wireless with this(Si4455) device, without changing the user sw.
-Using sub GHz transport is better because the band below GHz is less loaded than Wifi or bluetooth.
+That's the hope. You know hope dies last...
 
-Thanks to suggestions, I can remove unnecessary ioctl calls as well. This way, it remains fully compatible with user software and does not need to be hacked.
+Thanks,
 
-> 
-> > > > > > SI4455_IOC_GRSSI -> Last measured RSSI, when packet received. This is a useful information.
-> > > > > > (Currently I'm the only one user, and I need this :) )
-> > > > > 
-> > > > > What is "RSSI"?
-> > > > > 
-> > > > > And why not debugfs if it's only debugging stuff?
-> > > > 
-> > > > Received signal strength indication, and not only debugging. It is an information for the end user.
-> > > 
-> > > How do other radio devices (like wifi controllers) export this
-> > > information to userspace?  Don't create custom apis for only a single
-> > > device when the goal of a kernel is to make hardware interfaces all work
-> > > the same as far as userspace is concerned.
-> > 
-> > I move the package size, tx/rx channel properties to dt as device
-> > parameter, and the user could control these properties in sysfs and
-> > get rssi too. Finally I can remove all custom ioctl commands.
-> > What do you think?
-> 
-> I do not know, sorry, please try it and see.
-> 
-> thanks,
-> 
-> greg k-h
-
-Üdvözlettel / Best regards:
-József Horváth
+        tglx
 
