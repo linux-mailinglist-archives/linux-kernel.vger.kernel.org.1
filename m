@@ -2,120 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AD12D766E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:20:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6323F2D7674
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406116AbgLKNTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 08:19:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404425AbgLKNS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 08:18:58 -0500
-Date:   Fri, 11 Dec 2020 13:18:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607692697;
-        bh=2E127mU5eJ6ue3tzTmMDUSWHAoCzUtkbINjTlopsJIA=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PA8BFLEUlLmq/basaIXKyyzg6K1lX9Eygrt9+Kdw6TmDi7YEYc92Zl5c+Tag37uQZ
-         l97JGYpnkd1BbYjzdB0RTno6/PTh6r+AZKiY0Vg7Ae1pcsKQX09d1aYDGIg8h9HnBw
-         RdvCvH+Jp+1Wg8Ee5T9sDAzSN1VLrvsEWkhWyXj/PzBplt2/zOnRoejD1g4tj2/HFo
-         Jo/eAUwu+GMTyQ4GEnoiUiBM21pdVD1i/YWZG7EaQK2FbvzI9KDD50ImnKewK4fUQ/
-         Z0IoDweyxZZohS4++spkMSy+eEM4mSgQchrSzDxLlpG0ZbTLBJbrKhGW/6t2Bsfa0s
-         SBHkOgeAcG7/w==
-From:   Mark Brown <broonie@kernel.org>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-gpio@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andreas Kemnade <andreas@kemnade.info>
-Subject: Re: [PATCH] spi: dt-bindings: clarify CS behavior for spi-cs-high
- and gpio descriptors
-Message-ID: <20201211131810.GB4929@sirena.org.uk>
-Mail-Followup-To: Sven Van Asbroeck <thesven73@gmail.com>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-spi <linux-spi@vger.kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel <letux-kernel@openphoenux.org>,
-        kernel@pyra-handheld.com, Maxime Ripard <maxime.ripard@bootlin.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andreas Kemnade <andreas@kemnade.info>
-References: <3bed61807fff6268789e7d411412fbc5cd6ffe2a.1607507863.git.hns@goldelico.com>
- <CAGngYiVKHoXPGxmScCnb-R6xoo9GNw5pG8V8Cpyk3meoJbskiw@mail.gmail.com>
+        id S2406118AbgLKNVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 08:21:18 -0500
+Received: from [157.25.102.26] ([157.25.102.26]:43814 "EHLO orcam.me.uk"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2404182AbgLKNVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 08:21:02 -0500
+Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
+        by orcam.me.uk (Postfix) with ESMTPS id 3E6062BE0F2;
+        Fri, 11 Dec 2020 13:20:14 +0000 (GMT)
+Date:   Fri, 11 Dec 2020 13:20:09 +0000 (GMT)
+From:   "Maciej W. Rozycki" <macro@linux-mips.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: RFC: arch: shall we have generic readl_be()/writel_be()/... or
+ in_be32()/out_be32() ?
+In-Reply-To: <20201209202024.GA1355417@rowland.harvard.edu>
+Message-ID: <alpine.LFD.2.21.2012111250320.2104409@eddie.linux-mips.org>
+References: <da9cb964-18a7-bff1-1249-b0df24daa05e@metux.net> <20201209202024.GA1355417@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="TRYliJ5NKNqkz5bu"
-Content-Disposition: inline
-In-Reply-To: <CAGngYiVKHoXPGxmScCnb-R6xoo9GNw5pG8V8Cpyk3meoJbskiw@mail.gmail.com>
-X-Cookie: Nostalgia isn't what it used to be.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 9 Dec 2020, Alan Stern wrote:
 
---TRYliJ5NKNqkz5bu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> > I believe we should have generic functions, that all archs implement
+> > (possibly doing automatic conversion, if necessary), which are used
+> > by everybody else.
+> > 
+> > What's your oppionion on that ?
+> 
+> It certainly seems reasonable.  Another possibility, less stringent, is 
+> to require that definitions exist on all architectures that can have 
+> big-endian MMIO (or port-based IO).  For example, any architecture 
+> which might select CONFIG_EHCI_BIG_ENDIAN_MMIO, as used in ehci.h.
 
-On Wed, Dec 09, 2020 at 12:36:40PM -0500, Sven Van Asbroeck wrote:
-> On Wed, Dec 9, 2020 at 4:57 AM H. Nikolaus Schaller <hns@goldelico.com> wrote:
+ Lane swapping is a complex matter where there is an endianness mismatch 
+between buses.  A bus bridge may implement the byte lane match policy or 
+the bit lane match policy, or even both to choose from, perhaps on a 
+case-by-case basis for individual accesses (e.g. with a pair of address 
+windows decoded to the other bus according to a different policy each; I 
+actually have such a system).
 
-> > +      device node     | cs-gpio       | CS pin state active | Note
-> > +      ================+===============+=====================+=====
-> > +      spi-cs-high     | -             | H                   |
-> > +      -               | -             | L                   |
-> > +      spi-cs-high     | ACTIVE_HIGH   | H                   |
-> > +      -               | ACTIVE_HIGH   | L                   | 1
-> > +      spi-cs-high     | ACTIVE_LOW    | H                   | 2
-> > +      -               | ACTIVE_LOW    | L                   |
-> > +
+ Consequently not only data transferred may have to be transformed, but so 
+may have the address used.  Also the transformation will be different 
+depending on whether data accessed is to be interpreted numerically (where 
+the bit lane match policy is more suitable) such as with CSR access, or as 
+a byte stream (where the byte lane match policy is) such as with PIO data 
+moves.
 
-> Doesn't this table simply say:
-> - specify   'spi-cs-high' for an active-high chip select
-> - leave out 'spi-cs-high' for an active-low  chip select
-> - the gpio active high/active low consumer flags are ignored
-> ?
+ See arch/mips/include/asm/io.h and arch/mips/include/asm/*/mangle-port.h 
+for an example where we take care of different cases.
 
-It seems to, yes.
+ Building infrastructure for doing this all in a generic manner would I 
+think be a good idea, but then a major effort as well, and you'd have to 
+coordinate it with all the arch maintainers.
 
-> If so, then I would simply document it that way.
-> Simple is beautiful.
-
-Yeah, it'd definitely be easier to read and clearer what people should
-actually do.  As Linus said it'd also be a good idea to explicitly say
-that this is not great design or particularly intentional since it could
-be pretty confusing for someone trying to understand why the bindings
-are the way they are.
-
-I'm going to apply this anyway to make sure we get this documentated but
-some incremental improvements along these lines would be good.
-
---TRYliJ5NKNqkz5bu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/TcZEACgkQJNaLcl1U
-h9AhFggAgIvhGZX6g4DZGo69/v8qSfuNZJ8ZCbQTMs4G0PR/lhIG26joAjbftMvK
-zcxjD6svtCScdLgl3ES3AnmZYqUIy10wH6SGPd9XkpYwNRTHaGrLYsK59k//Luaq
-Qh3j7FtB42unAmTVI1rVA2KJac2FkvvNuBxNN8g75+95DXbtnvAkxbYTtFE0zit0
-q4jh58H0Zh24LpUhoZKZ2w6/Ra1XaqY1vkh0ys7tMTkShhs1LgSY8OzjDiZ36O1c
-JIlz5Fwn1uEkJhxwErccG3NYAdxOqiajOWZDM56ky4T1420W+MTwpux/YXfRWQTW
-X/ZvM2NIHyPr5ZnEfrYTVqp+uUKAqw==
-=bTcQ
------END PGP SIGNATURE-----
-
---TRYliJ5NKNqkz5bu--
+  Maciej
