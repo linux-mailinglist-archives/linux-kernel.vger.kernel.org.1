@@ -2,75 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1ED62D7BB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B072D7BCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730360AbgLKQ5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 11:57:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39466 "EHLO mx2.suse.de"
+        id S1732869AbgLKQ7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 11:59:04 -0500
+Received: from mga04.intel.com ([192.55.52.120]:12577 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729257AbgLKQ4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 11:56:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4547BB066;
-        Fri, 11 Dec 2020 16:56:09 +0000 (UTC)
-Subject: Re: [PATCH 0/3] block: blk_interposer - Block Layer Interposer
-To:     Jens Axboe <axboe@kernel.dk>, Mike Snitzer <snitzer@redhat.com>,
-        Sergei Shtepa <sergei.shtepa@veeam.com>, hch@lst.de
-Cc:     "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
-        "koct9i@gmail.com" <koct9i@gmail.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "steve@sk2.org" <steve@sk2.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Pavel Tide <Pavel.TIde@veeam.com>, dm-devel@redhat.com
-References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
- <20201209135148.GA32720@redhat.com> <20201210145814.GA31521@veeam.com>
- <20201210163222.GB10239@redhat.com> <20201211163049.GC16168@redhat.com>
- <1ee7652e-b77f-6fa4-634c-ff6639037321@kernel.dk>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <208edf35-ecdc-2d73-4c48-0424943a78c0@suse.de>
-Date:   Fri, 11 Dec 2020 17:56:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1731237AbgLKQ6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 11:58:08 -0500
+IronPort-SDR: yojei51635MzC4VMpnzNoI0WjjU8wHhJOC97cOLLq3NlSa3G9aTkUrC31DhCq/O+/2dTX0l52Z
+ kCpI2WDK6uAg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9832"; a="171896334"
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="171896334"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 08:56:18 -0800
+IronPort-SDR: jhUNGyw/A2QaJXoGHWr2U10B/0JdxbtNLtfRq9Pvnc+Zzfir4kYk8ksp+y3ps8vLwhuF0Beuic
+ xz9YRDaFYYiA==
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
+   d="scan'208";a="334177371"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 08:56:16 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 3818420473; Fri, 11 Dec 2020 18:56:14 +0200 (EET)
+Date:   Fri, 11 Dec 2020 18:56:14 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Subject: Re: drivers/media/pci/intel/ipu3/ipu3-cio2.c:163:56: warning:
+ implicit conversion from 'unsigned long' to 'u16' (aka 'unsigned short')
+ changes value from 131072 to 0
+Message-ID: <20201211165614.GC26370@paasikivi.fi.intel.com>
+References: <202011211600.bZyprrVg-lkp@intel.com>
+ <20201123104018.GX4077@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1ee7652e-b77f-6fa4-634c-ff6639037321@kernel.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201123104018.GX4077@smile.fi.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/20 5:33 PM, Jens Axboe wrote:
-> On 12/11/20 9:30 AM, Mike Snitzer wrote:
->> While I still think there needs to be a proper _upstream_ consumer of
->> blk_interposer as a condition of it going in.. I'll let others make the
->> call.
-> 
-> That's an unequivocal rule.
-> 
->> As such, I'll defer to Jens, Christoph and others on whether your
->> minimalist blk_interposer hook is acceptable in the near-term.
-> 
-> I don't think so, we don't do short term bandaids just to plan on
-> ripping that out when the real functionality is there. IMHO, the dm
-> approach is the way to go - it provides exactly the functionality that
-> is needed in an appropriate way, instead of hacking some "interposer"
-> into the core block layer.
-> 
-Which is my plan, too.
+Hi Andy,
 
-I'll be working with the Veeam folks to present a joint patchset 
-(including the DM bits) for the next round.
+On Mon, Nov 23, 2020 at 12:40:18PM +0200, Andy Shevchenko wrote:
+> On Sat, Nov 21, 2020 at 04:23:05PM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   27bba9c532a8d21050b94224ffd310ad0058c353
+> > commit: 7b285f41f7376dc37e7fad1e803995fd39f42848 media: ipu3-cio2: Introduce CIO2_LOP_ENTRIES constant
+> > date:   2 months ago
+> > config: arm64-randconfig-r031-20201121 (attached as .config)
+> > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project bec968cbb367dd03439c89c1d4ef968ef662d7c0)
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # install arm64 cross compiling tool for clang build
+> >         # apt-get install binutils-aarch64-linux-gnu
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7b285f41f7376dc37e7fad1e803995fd39f42848
+> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> >         git fetch --no-tags linus master
+> >         git checkout 7b285f41f7376dc37e7fad1e803995fd39f42848
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64 
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > All warnings (new ones prefixed by >>):
+> > 
+> > >> drivers/media/pci/intel/ipu3/ipu3-cio2.c:163:56: warning: implicit conversion from 'unsigned long' to 'u16' (aka 'unsigned short') changes value from 131072 to 0 [-Wconstant-conversion]
+> >            entry[1].second_entry.num_of_pages = CIO2_LOP_ENTRIES * CIO2_MAX_LOPS;
+> >                                               ~ ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+> >    1 warning generated.
+> 
+> Okay, now we have an interesting case. The IP is quite unlikely be used on
+> ARM64, but my patches made the clear picture about use of PAGE_SIZE here.
+> 
+> So, I see at least the following options to mitigate the above, i.e.:
+>  1/ reduce driver scope to X86
+>  2/ fix the variables to be wider type to be able to hold PAGE_SIZE > 4k
+>  3/ switch to custom PAGE_SIZE / _SHIFT / _MASK and accompanying macros
+> 
+> And I still consider 3/ is silly move because as we see the driver was
+> never assumed to work with big page sizes (besides unsigned short type
+> here, PAGE_SHIFT and PAGE_MASK in the original code was as is and on ARM64
+> they compiled to 0 values w/o warnings, effectively make the driver
+> improperly functioning anyway).
 
-Cheers,
+Apologies for the late answer.
 
-Hannes
+I think I'd favour the first option. It's not really useful to be able to
+compile this elsewhere; as such the driver doesn't do anything special that
+would make it prone to breakage through changes elsewhere.
+
+Would you like to send a patch? :-)
+
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+Kind regards,
+
+Sakari Ailus
