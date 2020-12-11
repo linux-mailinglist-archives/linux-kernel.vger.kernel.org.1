@@ -2,88 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F44F2D768E
+	by mail.lfdr.de (Postfix) with ESMTP id DBF522D768F
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:29:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405696AbgLKN2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 08:28:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
+        id S2436805AbgLKN2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 08:28:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393478AbgLKN1k (ORCPT
+        with ESMTP id S2393599AbgLKN1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 08:27:40 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32FAC0613D6;
-        Fri, 11 Dec 2020 05:26:59 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id w18so4744647vsk.12;
-        Fri, 11 Dec 2020 05:26:59 -0800 (PST)
+        Fri, 11 Dec 2020 08:27:47 -0500
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BDEC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:27:06 -0800 (PST)
+Received: by mail-vk1-xa44.google.com with SMTP id t16so2057556vkl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:27:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=1/RspAKjZgyPjqvePnfLw/JLs7QZEV6y3qM4NdpChZ8=;
-        b=WqK4tQVyHKPUX2vS1/6FjQxh3lZUX+ammHgyCkeObQqzs74XsIxyvcMgrtCPiUbhM7
-         ZYixP4rVFjL7xNKHYpp8IKrxJW7QtwxCRI8IUuXwPlxqiAzjalM+6s4mwyhD4stcG6oy
-         N5ZkTqIAyqX1Wby2/WD01NvuI7xCQVWVaBZ4LP+2dDh5AizDM4+VElLHTN/TEDi14oOt
-         bLXtZQ5VLyWmgHRZLp9gE330Y/Z6TPUpXgUmgxTmt88+hlgVbHtjNGHDPX0J5bjEm1L6
-         YLjYWUlMG0c7OFCcPsWV8fnD0/4ycAMQ0mP7PmgW5j6fERHrQKsxjjvqBA+hrQgNY1y4
-         R60Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Pj/iTP2OUYJfo2oOEAqIyIwYl9JlGtTjF8TCkgXFByk=;
+        b=DbUUj3/ikACiYSNE0yN0EJay2QcdyOY+LPohBtrPSnhzaus1fKRb/XBVVhp52mo48P
+         iMaQFDZ9T2xvxJT8RedlUE53ScpPCOBuIE6XdLcn+2s0tyOlgl52NE2KSqPsbARw/URB
+         zALOUDi4zA56jdKB5sG9V1W5+PRAJFvI3lT7mOaQ6/2NjxWfeYqvbwDxZuczPpW4lcsE
+         McTT9hyCh7zs9/tdMXkZZvKCUmg6tlXW616adnfFqnVoe+9zQjX1a5tQj+QMO1pM4C69
+         y9BFmf4DC8sRAZriwtjLjltxywsSSbspRt+oaJzTIz8spPbuDD9LfEDMRqEJlhQMpzLH
+         2mgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=1/RspAKjZgyPjqvePnfLw/JLs7QZEV6y3qM4NdpChZ8=;
-        b=H4Pm6eLLqy4SF1rVGDh0ognC5MxB+/VOtpES2TLkbFRt56GoTmBn3Q3w1EVIadREr3
-         k59SgEnmPAUmr4Fsa9aZFlUH/dikAMpVmKviEMDtpriEnDmlqteFjFUTg2SVV7z4wRcg
-         tybBKgchT2KDK6b6xNFeyeQfGHWIWVPD9qTutF+3qQwXUl+e+m3/y8Jul9o0q/VfDeWj
-         c2VRnCb1ujzgSL3yrGBvThsnX4Yqhs+B+qfFAaY7HkrRRr8PXZuiNh49tp5DmIqmlott
-         HRAUYII0SrHKhQIjQ88XusOH0LWfcKJw4t7SM3pl9vXmHAPG1ZZiiZFjAbpc5o2S1TsA
-         sTZA==
-X-Gm-Message-State: AOAM531AgmBI04e9IRJ1dSpk9X0OjFJusJKmYDzXvTZNj7YubWCdkEnh
-        /Uue7azW8rATGuQbKUUdEPHrmRJk4q/i8jRyIQIuh3rxAMM=
-X-Google-Smtp-Source: ABdhPJwG/LTrHfT2E3+VpuHwgiyea0jypRuNZsUmI2noUo2EC6Jjo9106ePLKYBEIJh1Q2Lfrfrik5hiZtp17Y74Wi0=
-X-Received: by 2002:a67:d319:: with SMTP id a25mr12316519vsj.57.1607693218640;
- Fri, 11 Dec 2020 05:26:58 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Pj/iTP2OUYJfo2oOEAqIyIwYl9JlGtTjF8TCkgXFByk=;
+        b=G4Rq8pynypjItQMPJIzjKlf3iGtPW30whv7XlSziSyTL7rcAVopdhKCgNJcBzTPK9s
+         ZGMERbNZC357vTgIuLcUx9yFK4bwhr8OKJZbuFUoFs2FhkDVv2zymIseEvnA2P51Xfqc
+         XeWSn9kf5AuxKWNitr/iisXeo+FvR2crdgEJ7J05BSWn2lh8oI8RQ+QSJ/8nuPPXUXhm
+         xvFpLQGB5blAXDvs4aRrhJQ00eThw0UGvUwdeJHYzfDeWJrTZ4eM/tnTF2h1Olo6ddan
+         bSmiRh5se6xlcJWOSuO1Ew2JM0zerMqa/NpoWSSaWGbNG8HlwLi0cgLIo8MNdpo1MFoq
+         ECFA==
+X-Gm-Message-State: AOAM532jMV0lnEYXD4JhY/elduFaBaf0ygSeC7YW7SapgIr+D/KtiaMg
+        ALr0z+ENnt37kKz5MmewuAz+nrWdb33hd2/3iojitw==
+X-Google-Smtp-Source: ABdhPJxLq5lvK8WQVNWQXgpktS6VQnJPaHvIn92OkeOMsGtUnP4FJM0r/ZrffRMARKBhjy3mLy+Cc0ff03VGEF0PhFE=
+X-Received: by 2002:a1f:d286:: with SMTP id j128mr13606820vkg.8.1607693226138;
+ Fri, 11 Dec 2020 05:27:06 -0800 (PST)
 MIME-Version: 1.0
-References: <3bed61807fff6268789e7d411412fbc5cd6ffe2a.1607507863.git.hns@goldelico.com>
- <CAGngYiVKHoXPGxmScCnb-R6xoo9GNw5pG8V8Cpyk3meoJbskiw@mail.gmail.com> <20201211131810.GB4929@sirena.org.uk>
-In-Reply-To: <20201211131810.GB4929@sirena.org.uk>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Fri, 11 Dec 2020 08:26:46 -0500
-Message-ID: <CAGngYiXOkbQNgPcw9dk33VJiTe4jEjBUEC83vwVds+2Gd_O5Hg@mail.gmail.com>
-Subject: Re: [PATCH] spi: dt-bindings: clarify CS behavior for spi-cs-high and
- gpio descriptors
-To:     Sven Van Asbroeck <thesven73@gmail.com>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
+References: <20201210202944.6747-1-semen.protsenko@linaro.org> <f18dea6e-5806-370c-0d83-e56f3dc118b4@gmail.com>
+In-Reply-To: <f18dea6e-5806-370c-0d83-e56f3dc118b4@gmail.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Fri, 11 Dec 2020 15:26:54 +0200
+Message-ID: <CAPLW+4nLi2236-EL0d=X9bzv11LiBJd2c5NY5aY4qZHL3rUCgw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] of: property: Get rid of code duplication in port getting
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-gpio@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andreas Kemnade <andreas@kemnade.info>
+        Frank Rowand <frowand.list@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 8:18 AM Mark Brown <broonie@kernel.org> wrote:
+Hi,
+
+On Thu, 10 Dec 2020 at 22:59, Dmitry Osipenko <digetx@gmail.com> wrote:
 >
-> Yeah, it'd definitely be easier to read and clearer what people should
-> actually do.
+> 10.12.2020 23:29, Sam Protsenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > Both of_graph_is_present() and of_graph_get_next_endpoint() functions
+> > share common piece of code for obtaining the graph port. Extract it int=
+o
+> > separate static function to get rid of code duplication and avoid
+> > possible coding errors in future.
+> >
+> > Fixes: 4ec0a44ba8d7 ("of_graph: add of_graph_is_present()")
+>
+> The "fixes" tag should be used only for bug-fixes and there is no bug
+> fixed in this patch.
+>
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >  drivers/of/property.c | 34 ++++++++++++++++++++--------------
+> >  1 file changed, 20 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > index 408a7b5f06a9..da111fcf37ac 100644
+> > --- a/drivers/of/property.c
+> > +++ b/drivers/of/property.c
+> > @@ -30,13 +30,13 @@
+> >  #include "of_private.h"
+> >
+> >  /**
+> > - * of_graph_is_present() - check graph's presence
+> > + * of_graph_get_port - find the "port" node in a given node
+> >   * @node: pointer to device_node containing graph port
+> >   *
+> > - * Return: True if @node has a port or ports (with a port) sub-node,
+> > - * false otherwise.
+> > + * Return: A 'port' node pointer with refcount incremented if found or=
+ NULL
+> > + * otherwise. The caller has to use of_node_put() on it when done.
+> >   */
+> > -bool of_graph_is_present(const struct device_node *node)
+> > +static struct device_node *of_graph_get_port(const struct device_node =
+*node)
+> >  {
+> >       struct device_node *ports, *port;
+> >
+> > @@ -46,8 +46,22 @@ bool of_graph_is_present(const struct device_node *n=
+ode)
+> >
+> >       port =3D of_get_child_by_name(node, "port");
+> >       of_node_put(ports);
+> > -     of_node_put(port);
+> >
+> > +     return port;
+> > +}
+> > +
+> > +/**
+> > + * of_graph_is_present() - check graph's presence
+> > + * @node: pointer to device_node containing graph port
+> > + *
+> > + * Return: True if @node has a port or ports (with a port) sub-node,
+> > + * false otherwise.
+> > + */
+> > +bool of_graph_is_present(const struct device_node *node)
+> > +{
+> > +     struct device_node *port =3D of_graph_get_port(node);
+> > +
+> > +     of_node_put(port);
+> >       return !!port;
+> >  }
+> >  EXPORT_SYMBOL(of_graph_is_present);
+> > @@ -631,15 +645,7 @@ struct device_node *of_graph_get_next_endpoint(con=
+st struct device_node *parent,
+> >        * parent port node.
+> >        */
+> >       if (!prev) {
+> > -             struct device_node *node;
+> > -
+> > -             node =3D of_get_child_by_name(parent, "ports");
+> > -             if (node)
+> > -                     parent =3D node;
+> > -
+> > -             port =3D of_get_child_by_name(parent, "port");
+> > -             of_node_put(node);
+> > -
+> > +             port =3D of_graph_get_port(parent);
+> >               if (!port) {
+> >                       pr_err("graph: no port node found in %pOF\n", par=
+ent);
+> >                       return NULL;
+> >
+>
+> This repeats the problem which was made once before:
+>
 
-I think it would be beneficial if this consisted of two very clearly
-separated parts:
+You are right. Inlining is probably the best solution here. Let's drop
+this patch and keep everything as is. Thanks for catching this!
 
-1. the actual recommended binding - so people writing new
-devicetrees know what to do
-
-2. the legacy bindings which "also work", which is important
-to know when working with legacy devicetrees
-
-At least, that's what I would want if I put myself in a user's
-shoes.
+> https://lore.kernel.org/patchwork/patch/1266028/#1461493
