@@ -2,104 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E472D7B26
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73FC02D7B2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:44:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388775AbgLKQlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 11:41:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
+        id S2389338AbgLKQnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 11:43:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388177AbgLKQkQ (ORCPT
+        with ESMTP id S2389066AbgLKQm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 11:40:16 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D65AC0613CF;
-        Fri, 11 Dec 2020 08:39:36 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id a9so14191381lfh.2;
-        Fri, 11 Dec 2020 08:39:36 -0800 (PST)
+        Fri, 11 Dec 2020 11:42:28 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9360FC0613CF;
+        Fri, 11 Dec 2020 08:41:48 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id n7so7499160pgg.2;
+        Fri, 11 Dec 2020 08:41:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kURQvp2iR25Ml68svxNRaJXyZL2nIIJj6++uLzdZFw4=;
-        b=OHTN15aZO/HK+cZ1ZKO+3ijcqOXXNGyGgV9whlB1ch1qnjX2UOEXOfxxmxnTtjA5YE
-         vzS8i3DMrCWb8UqEpTQPXZcNLganJlrIlkPLSJM/YcruRJjFkiJFGk8kxEY2xm/gO6hZ
-         sVD1FL6NcZir725vDVYo5uWwumKGXRfWfyTzfE8VPc5G26Zlf2+Lxel6AAVMH8i/IE53
-         MIcNVL89L4Zdq5SOQTY6r5cCHNLVoX9y0tWY7wu8B2PcDV6qk/zuwS/j/0eH3UBfWtQ0
-         LMFun0z11cBEkh4lLXIcsTwkO0OqPuk3Fkd5rjVmAevY1VdnXEp597wQVsYev+bMq3fE
-         Cvrg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=56syKNuOJ90gHZSy+DseY7QqbtNVXxsXzReMPurvgco=;
+        b=nvCFTmQz3OwUdgoGK0ko6g6K3bNYPz4aC4e1cPt04OJBjcCgw+43hqSGV2drGLVlXD
+         KbMJfgtkIIoA/4PSZZPztt8valYndCn+NRc1rMw6emKQ7c0EPdTIat2espvMgXnmugkZ
+         4GNK7q+vMpUKJD2PkPRNPDp2MtLv+QzjgVbL22X5Dk5QzptBxsyhkhodwtN8HmPtYGvW
+         /CBWK6+zAtpmrrWxzPNFUr3PWGzZhy+v0CjAaIStMYDhOizwulJyq7VscJmWk4C7MmKV
+         q+QbQSysmg6AOtvpLO1TXwvE8OEjx69/XNyQVVP/SgDHGcvNl6X/7td/Nsi5Gyay/jXk
+         enKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=kURQvp2iR25Ml68svxNRaJXyZL2nIIJj6++uLzdZFw4=;
-        b=a5O+2Ylp52IdC1jqJ6wN3r5dYfFQcC55vZN0ZHMk97OZc2OXj4WcGkLsJPTK/ItAgL
-         TbCQiUzLe9Mew+NYCD1SvLmqDg+cDCxE7K9JClp/3+gNrGfa/Ncj1qSidVdz4uOJfAzZ
-         mcxQQYEoFUjRdolrYZTNniIRXm8qQPL8pS6m5Kr8GvvOfYE2e4nSN6fRytT22hWRTLL1
-         9zQNOEzUGDelh3svioXJoLxKndGJ5JUbWFdApbSRf8r9tHbP6rI4KkE/D7Kdh6eNK9nw
-         9N2m3xYnEVCbN4L7ic6yJEYfcq+gRx0j161t+GwPbZ94Z7XZ5bHTOz/4/V20Joi9vb5Z
-         rw0Q==
-X-Gm-Message-State: AOAM53102BxdjDSGQ2Me79/Hc7z8panC8SLmcU32d3cSzAWdjezRG9f4
-        eMDw+xWZQKs39EZ8GPEZvYuoD9vGgdI=
-X-Google-Smtp-Source: ABdhPJy8fHoK8/T/0Xdf4x4m5KVAAy4SVzTT+IkyME39dnJOXLdY3G2uVph6MUVObpexnujUYhBLvQ==
-X-Received: by 2002:ac2:5cba:: with SMTP id e26mr4687363lfq.4.1607704774462;
-        Fri, 11 Dec 2020 08:39:34 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-205.dynamic.spd-mgts.ru. [109.252.193.205])
-        by smtp.googlemail.com with ESMTPSA id k11sm703143lji.95.2020.12.11.08.39.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Dec 2020 08:39:33 -0800 (PST)
-Subject: Re: [PATCH RESEND v8 2/4] input: elants: support old touch report
- format
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Johnny Chuang <johnny.chuang.emc@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1607669375.git.mirq-linux@rere.qmqm.pl>
- <a5c0b6b300fadf9425781285351b46c6dbb4f618.1607669375.git.mirq-linux@rere.qmqm.pl>
- <X9Mf5G6yvIEAoh2C@google.com> <20201211160917.GA23095@qmqm.qmqm.pl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <3d872d19-a0b2-ed83-4b08-5c9a4755c2fe@gmail.com>
-Date:   Fri, 11 Dec 2020 19:39:33 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        bh=56syKNuOJ90gHZSy+DseY7QqbtNVXxsXzReMPurvgco=;
+        b=LAqb5KnRyn8O8g/7XIM+e0MQoxeUSdO2Gk09FVrzAkb3Orrl2qmfWUzcwguw+4yJdo
+         OgxgYXx6ur9QwNrIRT/aDV2S9jfHGLW/u09OMlJc3iJIUKQlB4ehigCsIj9/BquySKbS
+         ZXLJNOloH8vvokrzQNo3EY9l1ieE0yEJrNHiYBxfyBN1e9ODWcosn2e4KQvdTku0nbOz
+         c0feJomkJS7XPJx5DPE2KZDO/wSZcrjYDPLLOYB+D5Q5unBAIqeaEL/yRStZ+N0Ozea4
+         zg08u4xBx8XnKyt0r1iy+Q6V10XlAhGB0eV5jzGVkZp+C+Amm3AWQBf6bRndkSxJyzob
+         URdQ==
+X-Gm-Message-State: AOAM5334gq4ewhwX8YCTOqyQ+cAaoOILxeo5Hd47mFe8hgp6EUOmvcP1
+        2vNh68duZbNgQU3pCq4z/M0=
+X-Google-Smtp-Source: ABdhPJwYZsHve+cDy/trtVG6Ug9cEkP0hyWJehscUiGZ7dT+lalXVKBp/xyjBk/tJTpWgognV5O88Q==
+X-Received: by 2002:a63:3247:: with SMTP id y68mr12668991pgy.10.1607704907988;
+        Fri, 11 Dec 2020 08:41:47 -0800 (PST)
+Received: from localhost.localdomain ([27.255.173.238])
+        by smtp.googlemail.com with ESMTPSA id bg20sm10383183pjb.6.2020.12.11.08.41.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 08:41:47 -0800 (PST)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     bjorn@helgaas.com, linux-pci@vger.kernel.org,
+        Damien.LeMoal@wdc.com, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Puranjay Mohan <puranjay12@gmail.com>
+Subject: [PATCH] drivers: block: skd: remove skd_pci_info()
+Date:   Fri, 11 Dec 2020 22:11:37 +0530
+Message-Id: <20201211164137.8605-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20201211160917.GA23095@qmqm.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.12.2020 19:09, Michał Mirosław пишет:
-> On Thu, Dec 10, 2020 at 11:29:40PM -0800, Dmitry Torokhov wrote:
->> Hi Michał,
->> On Fri, Dec 11, 2020 at 07:53:56AM +0100, Michał Mirosław wrote:
->>> @@ -998,17 +1011,18 @@ static irqreturn_t elants_i2c_irq(int irq, void *_dev)
->>>  			}
->>>  
->>>  			report_len = ts->buf[FW_HDR_LENGTH] / report_count;
->>> -			if (report_len != PACKET_SIZE) {
->>> +			if (report_len != PACKET_SIZE &&
->>> +			    report_len != PACKET_SIZE_OLD) {
->>>  				dev_err(&client->dev,
->>> -					"mismatching report length: %*ph\n",
->>> +					"unsupported report length: %*ph\n",
->>>  					HEADER_SIZE, ts->buf);
->> Do I understand this correctly that the old packets are only observed on
->> EKTF3624? If so can we expand the check so that we only accept packets
->> with "old" size when we know we are dealing with this device?
-> 
-> We only have EKTF3624 and can't be sure there are no other chips needing this.
+PCI core calls __pcie_print_link_status() for every device, it prints
+both the link width and the link speed. skd_pci_info() does the same
+thing again, hence it can be removed.
 
-In practice this older packet format should be seen only on 3624, but
-nevertheless we could make it more explicit by adding the extra chip_id
-checks.
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+---
+ drivers/block/skd_main.c | 31 -------------------------------
+ 1 file changed, 31 deletions(-)
 
-It won't be difficult to change it in the future if will be needed.
+diff --git a/drivers/block/skd_main.c b/drivers/block/skd_main.c
+index a962b4551bed..da7aac5335d9 100644
+--- a/drivers/block/skd_main.c
++++ b/drivers/block/skd_main.c
+@@ -3134,40 +3134,11 @@ static const struct pci_device_id skd_pci_tbl[] = {
+ 
+ MODULE_DEVICE_TABLE(pci, skd_pci_tbl);
+ 
+-static char *skd_pci_info(struct skd_device *skdev, char *str)
+-{
+-	int pcie_reg;
+-
+-	strcpy(str, "PCIe (");
+-	pcie_reg = pci_find_capability(skdev->pdev, PCI_CAP_ID_EXP);
+-
+-	if (pcie_reg) {
+-
+-		char lwstr[6];
+-		uint16_t pcie_lstat, lspeed, lwidth;
+-
+-		pcie_reg += 0x12;
+-		pci_read_config_word(skdev->pdev, pcie_reg, &pcie_lstat);
+-		lspeed = pcie_lstat & (0xF);
+-		lwidth = (pcie_lstat & 0x3F0) >> 4;
+-
+-		if (lspeed == 1)
+-			strcat(str, "2.5GT/s ");
+-		else if (lspeed == 2)
+-			strcat(str, "5.0GT/s ");
+-		else
+-			strcat(str, "<unknown> ");
+-		snprintf(lwstr, sizeof(lwstr), "%dX)", lwidth);
+-		strcat(str, lwstr);
+-	}
+-	return str;
+-}
+ 
+ static int skd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ {
+ 	int i;
+ 	int rc = 0;
+-	char pci_str[32];
+ 	struct skd_device *skdev;
+ 
+ 	dev_dbg(&pdev->dev, "vendor=%04X device=%04x\n", pdev->vendor,
+@@ -3201,8 +3172,6 @@ static int skd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		goto err_out_regions;
+ 	}
+ 
+-	skd_pci_info(skdev, pci_str);
+-	dev_info(&pdev->dev, "%s 64bit\n", pci_str);
+ 
+ 	pci_set_master(pdev);
+ 	rc = pci_enable_pcie_error_reporting(pdev);
+-- 
+2.27.0
 
-I think the main point that Dmitry Torokhov conveys here is that we
-should minimize the possible impact on the current EKT3500 code since we
-don't have definitive answers regarding the firmware differences among
-the hardware variants.
