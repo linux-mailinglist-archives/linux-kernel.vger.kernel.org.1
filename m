@@ -2,231 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181D42D8023
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2403F2D8026
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:46:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404010AbgLKUno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 15:43:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726648AbgLKUm6 (ORCPT
+        id S2404189AbgLKUpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 15:45:04 -0500
+Received: from outbound-smtp14.blacknight.com ([46.22.139.231]:35967 "EHLO
+        outbound-smtp14.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390252AbgLKUoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 15:42:58 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C6FC0613CF;
-        Fri, 11 Dec 2020 12:42:18 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id a11so2583523wrr.13;
-        Fri, 11 Dec 2020 12:42:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r3VRngt9K4ZtslP1jN8Q2ri8EtjrwqmDuse2f8eMq7I=;
-        b=Ae2CQLV3STiRi/b8cmUurvVkFdF4xIv/n4qlPiJXSh1oiUyB68y9PJEBvJc0I+z3pG
-         LYEsUlEiqfMZrrwr+xCVKA+j/fLvDxuT9Eul6SUjHNwv+FvfNrwsyv9LAfPjq3NQ5zth
-         El/X0oU7XmQrCaPIN4AQwaOmwbtEYc6FPcDGNjyDD9uxwQ3LDzPPFh43njk8bmBPMTgg
-         YntzBaueDqiW4HC+PudTlBqrpaXoneZGTp5K7qCfpWTcP7cl8EAHe2U9fDzcDYnxv1KQ
-         qxn3KqIvCV0QeaRwqgqpR3RW8voCBskTgZTOPn497P1vTpRALRCbT/lff6wLwJrmvdhX
-         tvIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r3VRngt9K4ZtslP1jN8Q2ri8EtjrwqmDuse2f8eMq7I=;
-        b=WR/TBx1sIxY7O5fTY/GJAYcjsJPdz9HgIpEwhkOVdmk2DZLtWkqrlLSRU6Z/rNTgOv
-         8x/XGlBp0Otgwpmzs3c28XdWZ+qUcVmAPERFmvL1X2IoMGIlyvIdMcXTGA2CGdOnRFRn
-         /lTbUVsVX48hX6ZtqOYJBiFPrhfaV1rIWj2C32OhDCTvzw8aXYKs7qTlTmrc8mMzyZ8a
-         KWzsYjLx29qPNSpKm2LETZtKboCZdutxOVXdUIFPPG2EkcdO47SBSewUYPm/G9OT8g1w
-         UBJf1uJwuSAPk0k/pQmyhiZLGrg7aRxdyPJ0WAbHWtr0uNo0sjPc+gsebiygMpWbbAJ/
-         nSgQ==
-X-Gm-Message-State: AOAM533TgAX1AvoKyhyo8VctrDyLmDeVNa3bhRiOxNPJAK4wpnr8CsS7
-        mSlg0cGWRmOAvBt1JHAgDSg/8bdCIvg5NA==
-X-Google-Smtp-Source: ABdhPJzXV3ZlVH74DV5cLi5CQrkUzDIwxT4bTuzv0OPU9LEX/WHTZgnaj+stjwRgMpNVTN8L4AocaA==
-X-Received: by 2002:adf:fd0c:: with SMTP id e12mr14234726wrr.61.1607719336792;
-        Fri, 11 Dec 2020 12:42:16 -0800 (PST)
-Received: from localhost ([41.45.127.175])
-        by smtp.gmail.com with ESMTPSA id v1sm1484687wre.62.2020.12.11.12.42.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 12:42:16 -0800 (PST)
-From:   Abanoub Sameh <abanoubsameh8@gmail.com>
-X-Google-Original-From: Abanoub Sameh <abanoubsameh@protonmail.com>
-To:     pavel@ucw.cz
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abanoub Sameh <abanoubsameh@protonmail.com>
-Subject: [PATCH] leds: led-core: Get rid of enum led_brightness
-Date:   Fri, 11 Dec 2020 22:42:08 +0200
-Message-Id: <20201211204208.179981-1-abanoubsameh@protonmail.com>
-X-Mailer: git-send-email 2.28.0.rc0
+        Fri, 11 Dec 2020 15:44:32 -0500
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp14.blacknight.com (Postfix) with ESMTPS id 73FA51C3EEB
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 20:43:39 +0000 (GMT)
+Received: (qmail 16433 invoked from network); 11 Dec 2020 20:43:39 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Dec 2020 20:43:39 -0000
+Date:   Fri, 11 Dec 2020 20:43:37 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        valentin.schneider@arm.com, qais.yousef@arm.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
+        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
+Subject: Re: [RFC PATCH v7] sched/fair: select idle cpu from idle cpumask for
+ task wakeup
+Message-ID: <20201211204337.GX3371@techsingularity.net>
+References: <20201209062404.175565-1-aubrey.li@linux.intel.com>
+ <20201209143510.GO3371@techsingularity.net>
+ <3802e27a-56ed-9495-21b9-7c4277065155@linux.intel.com>
+ <20201210113441.GS3371@techsingularity.net>
+ <31308700-aa28-b1f7-398e-ee76772b6b87@linux.intel.com>
+ <20201210125833.GT3371@techsingularity.net>
+ <20201211174442.GU3040@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201211174442.GU3040@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This gets rid of enum led_brightness in the main led files,
-because it is deprecated, and an unsigned int can be used instead.
+On Fri, Dec 11, 2020 at 06:44:42PM +0100, Peter Zijlstra wrote:
+> On Thu, Dec 10, 2020 at 12:58:33PM +0000, Mel Gorman wrote:
+> > The prequisite patch to make that approach work was rejected though
+> > as on its own, it's not very helpful and Vincent didn't like that the
+> > load_balance_mask was abused to make it effective.
+> 
+> So last time I poked at all this, I found that using more masks was a
+> performance issue as well due to added cache misses.
+> 
+> Anyway, I finally found some time to look at all this, and while reading
+> over the whole SiS crud to refresh the brain came up with the below...
+> 
+> It's still naf, but at least it gets rid of a bunch of duplicate
+> scanning and LoC decreases, so it should be awesome. Ofcourse, as
+> always, benchmarks will totally ruin everything, we'll see, I started
+> some.
+> 
+> It goes on top of Mel's first two patches (which is about as far as I
+> got)...
+> 
 
-We can get rid of led_brightness completely and
-patches can also be supplied for the other drivers' files.
+It's not free of bugs but it's interesting! The positive aspects are that
+it does a single scan, inits select_idle_mask once and caches an idle
+candidate when searching for an idle core but in a far cleaner fashion
+than what I did.
 
-Signed-off-by: Abanoub Sameh <abanoubsameh@protonmail.com>
----
- drivers/leds/led-class.c |  3 +--
- drivers/leds/led-core.c  | 20 +++++++-------------
- drivers/leds/leds.h      |  6 ++----
- include/linux/leds.h     | 12 +++++-------
- 4 files changed, 15 insertions(+), 26 deletions(-)
+One bug is in __select_idle_core() though. It's scanning the SMT mask,
+not select_idle_mask so it can return an idle candidate that is not in
+p->cpus_ptr.
 
-diff --git a/drivers/leds/led-class.c b/drivers/leds/led-class.c
-index 131ca83f5fb3..2e495ff67856 100644
---- a/drivers/leds/led-class.c
-+++ b/drivers/leds/led-class.c
-@@ -145,8 +145,7 @@ static void led_remove_brightness_hw_changed(struct led_classdev *led_cdev)
- 	device_remove_file(led_cdev->dev, &dev_attr_brightness_hw_changed);
- }
- 
--void led_classdev_notify_brightness_hw_changed(struct led_classdev *led_cdev,
--					       enum led_brightness brightness)
-+void led_classdev_notify_brightness_hw_changed(struct led_classdev *led_cdev, unsigned int brightness)
- {
- 	if (WARN_ON(!led_cdev->brightness_hw_changed_kn))
- 		return;
-diff --git a/drivers/leds/led-core.c b/drivers/leds/led-core.c
-index c4e780bdb385..8eb8054ef9c6 100644
---- a/drivers/leds/led-core.c
-+++ b/drivers/leds/led-core.c
-@@ -39,8 +39,7 @@ const char * const led_colors[LED_COLOR_ID_MAX] = {
- };
- EXPORT_SYMBOL_GPL(led_colors);
- 
--static int __led_set_brightness(struct led_classdev *led_cdev,
--				enum led_brightness value)
-+static int __led_set_brightness(struct led_classdev *led_cdev, unsigned int value)
- {
- 	if (!led_cdev->brightness_set)
- 		return -ENOTSUPP;
-@@ -50,8 +49,7 @@ static int __led_set_brightness(struct led_classdev *led_cdev,
- 	return 0;
- }
- 
--static int __led_set_brightness_blocking(struct led_classdev *led_cdev,
--					 enum led_brightness value)
-+static int __led_set_brightness_blocking(struct led_classdev *led_cdev, unsigned int value)
- {
- 	if (!led_cdev->brightness_set_blocking)
- 		return -ENOTSUPP;
-@@ -240,8 +238,7 @@ void led_stop_software_blink(struct led_classdev *led_cdev)
- }
- EXPORT_SYMBOL_GPL(led_stop_software_blink);
- 
--void led_set_brightness(struct led_classdev *led_cdev,
--			enum led_brightness brightness)
-+void led_set_brightness(struct led_classdev *led_cdev, unsigned int brightness)
- {
- 	/*
- 	 * If software blink is active, delay brightness setting
-@@ -253,7 +250,7 @@ void led_set_brightness(struct led_classdev *led_cdev,
- 		 * work queue task to avoid problems in case we are called
- 		 * from hard irq context.
- 		 */
--		if (brightness == LED_OFF) {
-+		if (!brightness) {
- 			set_bit(LED_BLINK_DISABLE, &led_cdev->work_flags);
- 			schedule_work(&led_cdev->set_brightness_work);
- 		} else {
-@@ -268,8 +265,7 @@ void led_set_brightness(struct led_classdev *led_cdev,
- }
- EXPORT_SYMBOL_GPL(led_set_brightness);
- 
--void led_set_brightness_nopm(struct led_classdev *led_cdev,
--			      enum led_brightness value)
-+void led_set_brightness_nopm(struct led_classdev *led_cdev, unsigned int value)
- {
- 	/* Use brightness_set op if available, it is guaranteed not to sleep */
- 	if (!__led_set_brightness(led_cdev, value))
-@@ -281,8 +277,7 @@ void led_set_brightness_nopm(struct led_classdev *led_cdev,
- }
- EXPORT_SYMBOL_GPL(led_set_brightness_nopm);
- 
--void led_set_brightness_nosleep(struct led_classdev *led_cdev,
--				enum led_brightness value)
-+void led_set_brightness_nosleep(struct led_classdev *led_cdev, unsigned int value)
- {
- 	led_cdev->brightness = min(value, led_cdev->max_brightness);
- 
-@@ -293,8 +288,7 @@ void led_set_brightness_nosleep(struct led_classdev *led_cdev,
- }
- EXPORT_SYMBOL_GPL(led_set_brightness_nosleep);
- 
--int led_set_brightness_sync(struct led_classdev *led_cdev,
--			    enum led_brightness value)
-+int led_set_brightness_sync(struct led_classdev *led_cdev, unsigned int value)
- {
- 	if (led_cdev->blink_delay_on || led_cdev->blink_delay_off)
- 		return -EBUSY;
-diff --git a/drivers/leds/leds.h b/drivers/leds/leds.h
-index 2d9eb48bbed9..345062ccabda 100644
---- a/drivers/leds/leds.h
-+++ b/drivers/leds/leds.h
-@@ -19,10 +19,8 @@ static inline int led_get_brightness(struct led_classdev *led_cdev)
- 
- void led_init_core(struct led_classdev *led_cdev);
- void led_stop_software_blink(struct led_classdev *led_cdev);
--void led_set_brightness_nopm(struct led_classdev *led_cdev,
--				enum led_brightness value);
--void led_set_brightness_nosleep(struct led_classdev *led_cdev,
--				enum led_brightness value);
-+void led_set_brightness_nopm(struct led_classdev *led_cdev, unsigned int value);
-+void led_set_brightness_nosleep(struct led_classdev *led_cdev, unsigned int value);
- ssize_t led_trigger_read(struct file *filp, struct kobject *kobj,
- 			struct bin_attribute *attr, char *buf,
- 			loff_t pos, size_t count);
-diff --git a/include/linux/leds.h b/include/linux/leds.h
-index 6a8d6409c993..329fd914cf24 100644
---- a/include/linux/leds.h
-+++ b/include/linux/leds.h
-@@ -63,8 +63,8 @@ struct led_hw_trigger_type {
- 
- struct led_classdev {
- 	const char		*name;
--	enum led_brightness	 brightness;
--	enum led_brightness	 max_brightness;
-+	unsigned int brightness;
-+	unsigned int max_brightness;
- 	int			 flags;
- 
- 	/* Lower 16 bits reflect status */
-@@ -253,8 +253,7 @@ void led_blink_set_oneshot(struct led_classdev *led_cdev,
-  * software blink timer that implements blinking when the
-  * hardware doesn't. This function is guaranteed not to sleep.
-  */
--void led_set_brightness(struct led_classdev *led_cdev,
--			enum led_brightness brightness);
-+void led_set_brightness(struct led_classdev *led_cdev, unsigned int brightness);
- 
- /**
-  * led_set_brightness_sync - set LED brightness synchronously
-@@ -267,8 +266,7 @@ void led_set_brightness(struct led_classdev *led_cdev,
-  *
-  * Returns: 0 on success or negative error value on failure
-  */
--int led_set_brightness_sync(struct led_classdev *led_cdev,
--			    enum led_brightness value);
-+int led_set_brightness_sync(struct led_classdev *led_cdev, unsigned int value);
- 
- /**
-  * led_update_brightness - update LED brightness
-@@ -565,7 +563,7 @@ static inline void ledtrig_cpu(enum cpu_led_event evt)
- 
- #ifdef CONFIG_LEDS_BRIGHTNESS_HW_CHANGED
- void led_classdev_notify_brightness_hw_changed(
--	struct led_classdev *led_cdev, enum led_brightness brightness);
-+	struct led_classdev *led_cdev, unsigned int brightness);
- #else
- static inline void led_classdev_notify_brightness_hw_changed(
- 	struct led_classdev *led_cdev, enum led_brightness brightness) { }
+I queued tests anyway to see what it looks like.
 
-base-commit: 33dc9614dc208291d0c4bcdeb5d30d481dcd2c4c
+There are some other potential caveats.
+
+This is a single pass so when test_idle_cores() is true, __select_idle_core
+is used to to check all the siblings even if the core is not idle. That
+could have been cut short if __select_idle_core checked *idle_cpu ==
+1 and terminated the SMT scan if an idle candidate had already been found.
+
+Second downside is related. If test_idle_cpus() was true but no idle
+CPU is found then __select_idle_core has been called enough to scan
+the entire domain. In this corner case, the new code does *more* work
+because the old code would have failed select_idle_core() quickly and
+then select_idle_cpu() would be throttled by SIS_PROP. I think this will
+only be noticable in the heavily overloaded case but if the corner case
+hits enough then the new code will be slower than the old code for the
+over-saturated case (i.e. hackbench with lots of groups).
+
+The third potential downside is that the SMT sibling is not guaranteed to
+be checked due to SIS_PROP throttling but in the old code, that would have
+been checked by select_idle_smt(). That might result in premature stacking
+of runnable tasks on the same CPU. Similarly, as __select_idle_core may
+find multiple idle candidates, it will not pick the targets SMT sibling
+if it is idle like select_idle_smt would have.
+
+That said, I am skeptical that select_idle_smt() matters all that often.
+If select_idle_cpu() has been throttled heavily then the machine is
+either over-saturated or was over-saturated in the very recent pass. In
+that situation, the chances of the SMT siblings being free is slim.
+
+Each of the downsides could potentially addressed with this untested
+mess
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 637f610c7059..260592d143d8 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6061,7 +6061,7 @@ void __update_idle_core(struct rq *rq)
+ 	rcu_read_unlock();
+ }
+ 
+-static int __select_idle_core(int core, struct cpumask *cpus, int *idle_cpu)
++static int __select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
+ {
+ 	bool idle = true;
+ 	int cpu;
+@@ -6070,9 +6070,11 @@ static int __select_idle_core(int core, struct cpumask *cpus, int *idle_cpu)
+ 		schedstat_inc(this_rq()->sis_scanned);
+ 		if (!available_idle_cpu(cpu)) {
+ 			idle = false;
+-			continue;
++			if (*idle_cpu == -1)
++				continue;
++			break;
+ 		}
+-		if (idle_cpu)
++		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, p->cpus_ptr))
+ 			*idle_cpu = cpu;
+ 	}
+ 
+@@ -6094,7 +6096,7 @@ static inline bool test_idle_cores(int cpu, bool def)
+ 	return def;
+ }
+ 
+-static inline int __select_idle_core(int core, struct cpumask *cpus, int *idle_cpu)
++static inline int __select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
+ {
+ 	return -1;
+ }
+@@ -6142,7 +6144,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ 
+ 	for_each_cpu_wrap(cpu, cpus, target) {
+ 		if (smt) {
+-			i = __select_idle_core(cpu, cpus, &idle_cpu);
++			i = __select_idle_core(p, cpu, cpus, &idle_cpu);
+ 			if ((unsigned)i < nr_cpumask_bits)
+ 				return i;
+ 
+
 -- 
-2.28.0.rc0
-
+Mel Gorman
+SUSE Labs
