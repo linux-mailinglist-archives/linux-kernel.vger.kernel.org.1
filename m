@@ -2,163 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C8B2D7AFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:33:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D42632D7B08
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406765AbgLKQcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 11:32:50 -0500
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:45874 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2395361AbgLKQcI (ORCPT
+        id S1732084AbgLKQeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 11:34:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726880AbgLKQeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 11:32:08 -0500
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id CDD8D822F5;
-        Fri, 11 Dec 2020 19:31:18 +0300 (MSK)
+        Fri, 11 Dec 2020 11:34:36 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F870C0613D6;
+        Fri, 11 Dec 2020 08:33:56 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id x24so1627720pgf.0;
+        Fri, 11 Dec 2020 08:33:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1607704278;
-        bh=A8AVjziyGS9mvqPp+KoDokVlgdokqfXgWn3YrrPSS3E=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=Prq+kumYRKebBLRY61bLbcEznawpNKYk5DRV0dMef2+dZrwCZc3k0TNElbmosHkNs
-         fT4y9O9rU8ZI94+8Cxvs+liwhhT3FHXjcOCWnrOA9TDkaHCnz2rYf+0hgetHrEeLwG
-         pgu0qjvDtQ4+/6o2ouaznqff2jIi4keYMd8xi8eE=
-Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 11 Dec 2020 19:31:18 +0300
-Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
- by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
- id 15.01.1847.003; Fri, 11 Dec 2020 19:31:18 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pali@kernel.org" <pali@kernel.org>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        "aaptel@suse.com" <aaptel@suse.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "joe@perches.com" <joe@perches.com>,
-        "mark@harmstone.com" <mark@harmstone.com>,
-        "nborisov@suse.com" <nborisov@suse.com>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        "anton@tuxera.com" <anton@tuxera.com>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "hch@lst.de" <hch@lst.de>
-Subject: RE: [PATCH v14 04/10] fs/ntfs3: Add file operations and
- implementation
-Thread-Topic: [PATCH v14 04/10] fs/ntfs3: Add file operations and
- implementation
-Thread-Index: AQHWylTc0sqKo6zsN0SFUheHXUqDgannEzcAgAsNYqA=
-Date:   Fri, 11 Dec 2020 16:31:18 +0000
-Message-ID: <229c4a26f2834f8dabf566823936d3e4@paragon-software.com>
-References: <20201204154600.1546096-1-almaz.alexandrovich@paragon-software.com>
- <20201204154600.1546096-5-almaz.alexandrovich@paragon-software.com>
- <X8qC3NaNv1kmCO4c@sol.localdomain>
-In-Reply-To: <X8qC3NaNv1kmCO4c@sol.localdomain>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.30.8.36]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=c0JzkxeKvUmVjLZtQ0iR3bcMUriEJk5xZfAPGPcmCCI=;
+        b=fev7I9AaJjVecCNtHNukGw+QuBh9liNP6thUeLOQN87XrdYMRktJZfH6GgfnQGxfzs
+         hEXZPcLZfGT4hpwDhtSEoRyQmmzz4JmCQksfcJncda0no0iMcW8u5ojypUVDMGWrj5MZ
+         W2vXd7pWXOEXbYE/gyhyGrIL7NkujVrj9TO3ITjCAAhMMZeu9dOOaS9Q0/7YP/vzKHFb
+         yt6SJw6X6SjypgcgU/g+hyRuzsfXZh/G1uF3WiGcAUDhOqeXAq3xaQsbQboHRmTpTwOV
+         sYoR5yTK1bWvBy3hpvpIS6vyCOpp+EFLFg/NTJ8DWJR/R9mBL58IoT3D0BPcEIdYvKco
+         pv6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=c0JzkxeKvUmVjLZtQ0iR3bcMUriEJk5xZfAPGPcmCCI=;
+        b=l1+UqfyVdzZwUkW+pQ/XDXB5MP4OpVoIgWGcXDh+5AFb4hkZzqAAh+ckQ4++rqXuUO
+         JqUKyOQSMzHZ/BBEVS7xAPzuAnMw7VGu+OcLXknINF5IlXMfvvCqxg/JfcW15JGlUe3I
+         oJQsMQvQIKbqc+6a9jXitwRDyPVZczSreq3UvoyOuD/iRj9ZFlvSIe3I4696Tmfh6nAR
+         71kw68CF+9lgwKOraPKsIO0lGyEjHJJ91XDXALf1jT7S3CicGpqFhd6+l8hbYijQi14I
+         pBrRMbsOXEbjSDr125sehuDq5flbCjRxh/SxTtVOY7Jg7KJD8EMuKwTkZ02cPRRh+3PG
+         JOIw==
+X-Gm-Message-State: AOAM5308tng7eBexgedzfUbt0N/PBeLHCMYo7n6SvJcjg/Hfn4beWInj
+        hPAfTBchTQeS2+6SeoVXzOfKNWicjBc=
+X-Google-Smtp-Source: ABdhPJwIXCi8EGTeuGsQAJ30tZvUDw+hZUQjmHRTJU5QYOYvJHMUQlaDlpmcNitlwWis4hO+dsg6cg==
+X-Received: by 2002:a63:643:: with SMTP id 64mr7983571pgg.422.1607704435939;
+        Fri, 11 Dec 2020 08:33:55 -0800 (PST)
+Received: from localhost.localdomain (1-171-10-206.dynamic-ip.hinet.net. [1.171.10.206])
+        by smtp.gmail.com with ESMTPSA id gm18sm7987947pjb.55.2020.12.11.08.33.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 11 Dec 2020 08:33:54 -0800 (PST)
+From:   cy_huang <u0084500@gmail.com>
+To:     lee.jones@linaro.org, robh+dt@kernel.org
+Cc:     cy_huang@richtek.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v4 1/3] mfd: rt4831: Adds support for Richtek RT4831 MFD core
+Date:   Sat, 12 Dec 2020 00:33:42 +0800
+Message-Id: <1607704424-16223-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@kernel.org>
-Sent: Friday, December 4, 2020 9:42 PM
-> To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> Cc: linux-fsdevel@vger.kernel.org; viro@zeniv.linux.org.uk; linux-kernel@=
-vger.kernel.org; pali@kernel.org; dsterba@suse.cz;
-> aaptel@suse.com; willy@infradead.org; rdunlap@infradead.org; joe@perches.=
-com; mark@harmstone.com; nborisov@suse.com;
-> linux-ntfs-dev@lists.sourceforge.net; anton@tuxera.com; dan.carpenter@ora=
-cle.com; hch@lst.de
-> Subject: Re: [PATCH v14 04/10] fs/ntfs3: Add file operations and implemen=
-tation
->=20
-> On Fri, Dec 04, 2020 at 06:45:54PM +0300, Konstantin Komarov wrote:
-> > +/* external compression lzx/xpress */
-> > +static int decompress_lzx_xpress(struct ntfs_sb_info *sbi, const char =
-*cmpr,
-> > +				 size_t cmpr_size, void *unc, size_t unc_size,
-> > +				 u32 frame_size)
-> > +{
-> > +	int err;
-> > +	void *ctx;
-> > +
-> > +	if (cmpr_size =3D=3D unc_size) {
-> > +		/* frame not compressed */
-> > +		memcpy(unc, cmpr, unc_size);
-> > +		return 0;
-> > +	}
-> > +
-> > +	err =3D 0;
-> > +	ctx =3D NULL;
-> > +	spin_lock(&sbi->compress.lock);
-> > +	if (frame_size =3D=3D 0x8000) {
-> > +		/* LZX: frame compressed */
-> > +		if (!sbi->compress.lzx) {
-> > +			/* Lazy initialize lzx decompress context */
-> > +			spin_unlock(&sbi->compress.lock);
-> > +			ctx =3D lzx_allocate_decompressor(0x8000);
-> > +			if (!ctx)
-> > +				return -ENOMEM;
-> > +			if (IS_ERR(ctx)) {
-> > +				/* should never failed */
-> > +				err =3D PTR_ERR(ctx);
-> > +				goto out;
-> > +			}
-> > +
-> > +			spin_lock(&sbi->compress.lock);
-> > +			if (!sbi->compress.lzx) {
-> > +				sbi->compress.lzx =3D ctx;
-> > +				ctx =3D NULL;
-> > +			}
-> > +		}
-> > +
-> > +		if (lzx_decompress(sbi->compress.lzx, cmpr, cmpr_size, unc,
-> > +				   unc_size)) {
-> > +			err =3D -EINVAL;
-> > +		}
-> > +	} else {
-> > +		/* XPRESS: frame compressed */
-> > +		if (!sbi->compress.xpress) {
-> > +			/* Lazy initialize xpress decompress context */
-> > +			spin_unlock(&sbi->compress.lock);
-> > +			ctx =3D xpress_allocate_decompressor();
-> > +			if (!ctx)
-> > +				return -ENOMEM;
-> > +
-> > +			spin_lock(&sbi->compress.lock);
-> > +			if (!sbi->compress.xpress) {
-> > +				sbi->compress.xpress =3D ctx;
-> > +				ctx =3D NULL;
-> > +			}
-> > +		}
-> > +
-> > +		if (xpress_decompress(sbi->compress.xpress, cmpr, cmpr_size,
-> > +				      unc, unc_size)) {
-> > +			err =3D -EINVAL;
-> > +		}
-> > +	}
-> > +	spin_unlock(&sbi->compress.lock);
-> > +out:
-> > +	ntfs_free(ctx);
-> > +	return err;
-> > +}
->=20
-> Decompression is a somewhat heavyweight operation.  Not the type of thing=
- that
-> should be done while holding a spin lock.
->=20
-> - Eric
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-Hi Eric! We plan to swap spinlock to mutex in the next version.
+This adds support Richtek RT4831 MFD core. It includes four channel WLED driver
+and Display Bias Voltage outputs.
 
-Best regards!
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+since v2
+- Refine Kconfig descriptions.
+- Add copyright.
+- Refine error logs in probe.
+- Refine comment lines in remove and shutdown.
+---
+ drivers/mfd/Kconfig       |  10 ++++
+ drivers/mfd/Makefile      |   1 +
+ drivers/mfd/rt4831-core.c | 124 ++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 135 insertions(+)
+ create mode 100644 drivers/mfd/rt4831-core.c
+
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 8b99a13..dfb2640 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -1088,6 +1088,16 @@ config MFD_RDC321X
+ 	  southbridge which provides access to GPIOs and Watchdog using the
+ 	  southbridge PCI device configuration space.
+ 
++config MFD_RT4831
++	tristate "Richtek RT4831 four channel WLED and Display Bias Voltage"
++	depends on I2C
++	select MFD_CORE
++	select REGMAP_I2C
++	help
++	  This enables support for the Richtek RT4831 that includes 4 channel
++	  WLED driving and Display Bias Voltage. It's commonly used to provide
++	  power to the LCD display and LCD backlight.
++
+ config MFD_RT5033
+ 	tristate "Richtek RT5033 Power Management IC"
+ 	depends on I2C
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index 1780019..4108141 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -235,6 +235,7 @@ obj-$(CONFIG_MFD_MENF21BMC)	+= menf21bmc.o
+ obj-$(CONFIG_MFD_HI6421_PMIC)	+= hi6421-pmic-core.o
+ obj-$(CONFIG_MFD_HI655X_PMIC)   += hi655x-pmic.o
+ obj-$(CONFIG_MFD_DLN2)		+= dln2.o
++obj-$(CONFIG_MFD_RT4831)	+= rt4831-core.o
+ obj-$(CONFIG_MFD_RT5033)	+= rt5033.o
+ obj-$(CONFIG_MFD_SKY81452)	+= sky81452.o
+ 
+diff --git a/drivers/mfd/rt4831-core.c b/drivers/mfd/rt4831-core.c
+new file mode 100644
+index 00000000..f837c06
+--- /dev/null
++++ b/drivers/mfd/rt4831-core.c
+@@ -0,0 +1,124 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (c) 2020 Richtek Technology Corp.
++ *
++ * Author: ChiYuan Huang <cy_huang@richtek.com>
++ */
++
++#include <linux/gpio/consumer.h>
++#include <linux/i2c.h>
++#include <linux/kernel.h>
++#include <linux/mfd/core.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++
++#define RT4831_REG_REVISION	0x01
++#define RT4831_REG_ENABLE	0x08
++#define RT4831_REG_I2CPROT	0x15
++
++#define RICHTEK_VID		0x03
++#define RT4831_VID_MASK		GENMASK(1, 0)
++#define RT4831_RESET_MASK	BIT(7)
++#define RT4831_I2CSAFETMR_MASK	BIT(0)
++
++static const struct mfd_cell rt4831_subdevs[] = {
++	OF_MFD_CELL("rt4831-backlight", NULL, NULL, 0, 0, "richtek,rt4831-backlight"),
++	MFD_CELL_NAME("rt4831-regulator")
++};
++
++static bool rt4831_is_accessible_reg(struct device *dev, unsigned int reg)
++{
++	if (reg >= RT4831_REG_REVISION && reg <= RT4831_REG_I2CPROT)
++		return true;
++	return false;
++}
++
++static const struct regmap_config rt4831_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.max_register = RT4831_REG_I2CPROT,
++
++	.readable_reg = rt4831_is_accessible_reg,
++	.writeable_reg = rt4831_is_accessible_reg,
++};
++
++static int rt4831_probe(struct i2c_client *client)
++{
++	struct gpio_desc *enable;
++	struct regmap *regmap;
++	unsigned int val;
++	int ret;
++
++	enable = devm_gpiod_get_optional(&client->dev, "enable", GPIOD_OUT_HIGH);
++	if (IS_ERR(enable)) {
++		dev_err(&client->dev, "Failed to get 'enable' GPIO\n");
++		return PTR_ERR(enable);
++	}
++
++	regmap = devm_regmap_init_i2c(client, &rt4831_regmap_config);
++	if (IS_ERR(regmap)) {
++		dev_err(&client->dev, "Failed to initialize regmap\n");
++		return PTR_ERR(regmap);
++	}
++
++	ret = regmap_read(regmap, RT4831_REG_REVISION, &val);
++	if (ret) {
++		dev_err(&client->dev, "Failed to get H/W revision\n");
++		return ret;
++	}
++
++	if ((val & RT4831_VID_MASK) != RICHTEK_VID) {
++		dev_err(&client->dev, "VID not matched, val = 0x%02x\n", val);
++		return -ENODEV;
++	}
++
++	/*
++	 * Used to prevent the abnormal shutdown.
++	 * If SCL/SDA both keep low for one second to reset HW.
++	 */
++	ret = regmap_update_bits(regmap, RT4831_REG_I2CPROT, RT4831_I2CSAFETMR_MASK,
++				 RT4831_I2CSAFETMR_MASK);
++	if (ret) {
++		dev_err(&client->dev, "Failed to enable I2C safety timer\n");
++		return ret;
++	}
++
++	return devm_mfd_add_devices(&client->dev, PLATFORM_DEVID_AUTO, rt4831_subdevs,
++				    ARRAY_SIZE(rt4831_subdevs), NULL, 0, NULL);
++}
++
++static int rt4831_remove(struct i2c_client *client)
++{
++	struct regmap *regmap = dev_get_regmap(&client->dev, NULL);
++
++	/* Disable WLED and DSV outputs */
++	return regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_RESET_MASK, RT4831_RESET_MASK);
++}
++
++static void rt4831_shutdown(struct i2c_client *client)
++{
++	struct regmap *regmap = dev_get_regmap(&client->dev, NULL);
++
++	/* Disable WLED and DSV outputs */
++	regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_RESET_MASK, RT4831_RESET_MASK);
++}
++
++static const struct of_device_id __maybe_unused rt4831_of_match[] = {
++	{ .compatible = "richtek,rt4831", },
++	{}
++};
++MODULE_DEVICE_TABLE(of, rt4831_of_match);
++
++static struct i2c_driver rt4831_driver = {
++	.driver = {
++		.name = "rt4831",
++		.of_match_table = of_match_ptr(rt4831_of_match),
++	},
++	.probe_new = rt4831_probe,
++	.remove = rt4831_remove,
++	.shutdown = rt4831_shutdown,
++};
++module_i2c_driver(rt4831_driver);
++
++MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
++MODULE_LICENSE("GPL v2");
+-- 
+2.7.4
+
