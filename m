@@ -2,142 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CB92D79FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BB52D7A19
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393771AbgLKPxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:53:45 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:35493 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393642AbgLKPwx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:52:53 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201211155201euoutp01e2f09975acddbcba6fcae7865c3fdb58~PtGFDtbSi2682726827euoutp01L
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:52:01 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201211155201euoutp01e2f09975acddbcba6fcae7865c3fdb58~PtGFDtbSi2682726827euoutp01L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1607701921;
-        bh=qIOre0fXzgtPLvPj7pcwH15q8Yq5hBleL3gtOIoZ9CE=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=BDXlHAsYCj5Ou/91WAKJwv3AJNl6KVub4W5vAcuaz46VFJ0LSIkeYyvenXIkuiI0O
-         dDxQetI6MzpTeS/A5IHXIP5ZEKJYaAkOMkc5qyscRzdYACZf76HJmf+H44Ltha3AGX
-         E0Dhu0eos6Aa/Ks2sorVSnvZCppr+fextQlaes9c=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201211155156eucas1p2158cebcab0667155af6b4b3976b68039~PtGAPZz7c3214532145eucas1p2y;
-        Fri, 11 Dec 2020 15:51:56 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 9C.93.27958.C9593DF5; Fri, 11
-        Dec 2020 15:51:56 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201211155156eucas1p2345b94e1cc5674a5e9fbe79088654951~PtF-ujBvs3004130041eucas1p2q;
-        Fri, 11 Dec 2020 15:51:56 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201211155156eusmtrp161fef23c2ab2c860f77fb12d5e3dedc6~PtF-tzDV02434924349eusmtrp1T;
-        Fri, 11 Dec 2020 15:51:56 +0000 (GMT)
-X-AuditID: cbfec7f2-f15ff70000006d36-bf-5fd3959cbcc0
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 55.CA.16282.B9593DF5; Fri, 11
-        Dec 2020 15:51:56 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201211155155eusmtip139d4124f2768064a3287af8b18c04d1b~PtF-KgYBM0815508155eusmtip18;
-        Fri, 11 Dec 2020 15:51:55 +0000 (GMT)
-Subject: Re: [PATCH 5/9] ARM: dts: exynos: correct PMIC interrupt trigger
- level on Arndale Octa
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sylwester Nawrocki <snawrocki@kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <2a374b33-4292-c765-8f92-d72b5d5fcac7@samsung.com>
-Date:   Fri, 11 Dec 2020 16:51:55 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.5.1
+        id S2394047AbgLKP5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:57:15 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:43426 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390243AbgLKP4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 10:56:39 -0500
+Received: from zn.tnic (p200300ec2f1243001aca9a018be89b1b.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:4300:1aca:9a01:8be8:9b1b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F10EB1EC0283;
+        Fri, 11 Dec 2020 16:55:57 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607702158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:references;
+        bh=Wk20W9o+oBR4Y7j7QLiN431q4nnn5/lI7oRCb6pYJn4=;
+        b=YhYEOW6Bq666YL1g0gQ0mXuIVu34aNve69ajIv0OTQO/Se3LJxDd7tjmRKXHT8ROuS8YpY
+        73E9UWDuBXllCYiLWMDRhuloygunuNdCc8THxUlry8HTCr4zLNAHi3I1zThhuHG2ifL3P9
+        VYf+pkGbaWo3jlVr0PQdCpkcDEm+Y0c=
+Date:   Fri, 11 Dec 2020 16:55:53 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Chiawen Huang <chiawen.huang@amd.com>
+Cc:     Tony Cheng <Tony.Cheng@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: 8353d30e747f ("drm/amd/display: disable stream if pixel clock
+ changed with link active")
+Message-ID: <20201211155553.GC25974@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20201210212903.216728-5-krzk@kernel.org>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLKsWRmVeSWpSXmKPExsWy7djPc7pzpl6ON3i/WsVi44z1rBbXvzxn
-        tZh/5ByrxfnzG9gt7n89ymix6fE1VovLu+awWcw4v4/JonXvEXaL9qcvmR24PDat6mTzuHNt
-        D5vH5iX1Hn1bVjF6fN4kF8AaxWWTkpqTWZZapG+XwJWxbc0btoJ+zorZl88zNjAeY+9i5OSQ
-        EDCRuDL7D1MXIxeHkMAKRolDk48wQzhfGCWmnlnBDuF8ZpRounKMFabl1Ox7jCC2kMByRonJ
-        b6sgij4ySiydsxssISyQKNHR28EIkhARuMIkcWRnLxtIgllAV2L6uzfMIDabgKFE19susDiv
-        gJ3E1c7bYBtYBFQlln7YzQRiiwokSazv+gFVIyhxcuYTFhCbU8BMomnZc1aImfIS29/OYYaw
-        xSVuPZkP9pCEwAcOiTXXvzJCnO0i8efWBShbWOLV8S3QEJCROD25hwWioZlR4uG5tewQTg+j
-        xOWmGVAd1hJ3zv0COoMDaIWmxPpd+hBhR4mdRx4wgoQlBPgkbrwVhDiCT2LStunMEGFeiY42
-        IYhqNYlZx9fBrT144RLzBEalWUhem4XknVlI3pmFsHcBI8sqRvHU0uLc9NRiw7zUcr3ixNzi
-        0rx0veT83E2MwBR1+t/xTzsY5776qHeIkYmD8RCjBAezkgjv7/rL8UK8KYmVValF+fFFpTmp
-        xYcYpTlYlMR5V81eEy8kkJ5YkpqdmlqQWgSTZeLglGpgsm7JivqvvOK3qOPlf69+rSi/vvbO
-        qwjzeZWVkT5nqyOWxwTeT7cwCOmPiODXK75oxMqfyitm7cB8Vz6uxT1no8j1zJBdN3v/7g6b
-        F2U+8/zRdAF7p8/X5ubvOhQYrp2SojCltoEl8GlV9+TCKYkpeZrqE1O8N281WvH3Zkun5exL
-        U3mzF8lNndl8/jvPpg+CEbGPtLiyby6sfam/xvXs3BKxaQ8n/K+9vuPMo23ZXFPOh6zfFGC5
-        csUD+0v/tmximzLtLMO+yYl+X1mjktmlgtSFjp04sZbjQYON4knbO6Hllx6X1bNM07yWyGe2
-        47pMv4xoGbPalVeFm0w3aW7+umTqfcc1STEct90E7N9MVWIpzkg01GIuKk4EAFPV4ITAAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPIsWRmVeSWpSXmKPExsVy+t/xu7pzpl6ON1jezmSxccZ6VovrX56z
-        Wsw/co7V4vz5DewW978eZbTY9Pgaq8XlXXPYLGac38dk0br3CLtF+9OXzA5cHptWdbJ53Lm2
-        h81j85J6j74tqxg9Pm+SC2CN0rMpyi8tSVXIyC8usVWKNrQw0jO0tNAzMrHUMzQ2j7UyMlXS
-        t7NJSc3JLEst0rdL0MvYtuYNW0E/Z8Xsy+cZGxiPsXcxcnJICJhInJp9j7GLkYtDSGApo8SX
-        FRegEjISJ6c1sELYwhJ/rnWxQRS9Z5TY3POIBSQhLJAo0dHbAdYtInCFSaL10hVGkASzgK7E
-        9HdvmCE6tjJKLH19lAkkwSZgKNH1FmQUJwevgJ3E1c7bYCtYBFQlln7YDVTDwSEqkCRx9rQg
-        RImgxMmZT8CWcQqYSTQte84KMd9MYt7mh8wQtrzE9rdzoGxxiVtP5jNNYBSahaR9FpKWWUha
-        ZiFpWcDIsopRJLW0ODc9t9hIrzgxt7g0L10vOT93EyMwJrcd+7llB+PKVx/1DjEycTAeYpTg
-        YFYS4f1dfzleiDclsbIqtSg/vqg0J7X4EKMp0DsTmaVEk/OBSSGvJN7QzMDU0MTM0sDU0sxY
-        SZzX5MiaeCGB9MSS1OzU1ILUIpg+Jg5OqQamlBMuP0/X2fcFHV1010H8XbG5SXV7D1vHkcvb
-        l74NCyhynJH4p9fG+M6dqRv09EKnaFb7NHrJnF4ukD3lIlt3dopTYIj7OtuFPtF9961nz2E2
-        OCmmnLZ4R5I7Y84168Mhago+T5MurJ/bYfb8t6WKXihPiIfbCz5PoZg5fzPv3dEsD94QeDCh
-        Y9V/IyYj7p7NVSFtF0P+reuudtGzuTKTS/lMzr98JSkXIc+gv4xnH2Zftdh+Iy2Tce3pmjsH
-        A9k7Hx5a3zVj3typ3YcaU09OrLrYevHWGtbtJ8zzpuWW3+CRLVAumVpp9O7VCdd0zYgPZ07O
-        uMhnk9Vev1P4dnVPXdOSq09lX3ydE+2cXKXEUpyRaKjFXFScCAA3zV6CUgMAAA==
-X-CMS-MailID: 20201211155156eucas1p2345b94e1cc5674a5e9fbe79088654951
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201210212928eucas1p2c1ebf42843e8358273846957aa860ade
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201210212928eucas1p2c1ebf42843e8358273846957aa860ade
-References: <20201210212903.216728-1-krzk@kernel.org>
-        <CGME20201210212928eucas1p2c1ebf42843e8358273846957aa860ade@eucas1p2.samsung.com>
-        <20201210212903.216728-5-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.12.2020 22:28, Krzysztof Kozlowski wrote:
-> The Samsung PMIC datasheets describe the interrupt line as active low
-> with a requirement of acknowledge from the CPU.  The falling edge
-> interrupt will mostly work but it's not correct.
->
-> Fixes: 1fed2252713e ("ARM: dts: fix pinctrl for s2mps11-irq on exynos5420-arndale-octa")
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->   arch/arm/boot/dts/exynos5420-arndale-octa.dts | 2 +-
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm/boot/dts/exynos5420-arndale-octa.dts b/arch/arm/boot/dts/exynos5420-arndale-octa.dts
-> index bf457d0c02eb..1aad4859c5f1 100644
-> --- a/arch/arm/boot/dts/exynos5420-arndale-octa.dts
-> +++ b/arch/arm/boot/dts/exynos5420-arndale-octa.dts
-> @@ -349,7 +349,7 @@ pmic@66 {
->   		reg = <0x66>;
->   
->   		interrupt-parent = <&gpx3>;
-> -		interrupts = <2 IRQ_TYPE_EDGE_FALLING>;
-> +		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
->   		pinctrl-names = "default";
->   		pinctrl-0 = <&s2mps11_irq>;
->   
+Hi,
 
-Best regards
+patch in $Subject breaks booting on a laptop here, GPU details are
+below. The machine stops booting right when it attempts to switch modes
+during boot, to a higher mode than the default VGA one. Machine doesn't
+ping and is otherwise unresponsive so that a hard reset is the only
+thing that helps.
+
+Reverting that patch ontop of -rc7 fixes it and the machine boots just fine.
+
+Thx.
+
+[    1.628086] ata1.00: supports DRM functions and may not be fully accessible
+[    1.632050] ata1.00: supports DRM functions and may not be fully accessible
+[    1.895818] [drm] amdgpu kernel modesetting enabled.
+[    1.897628] [drm] initializing kernel modesetting (CARRIZO 0x1002:0x9874 0x103C:0x807E 0xC4).
+[    1.898256] [drm] register mmio base: 0xD0C00000
+[    1.898422] [drm] register mmio size: 262144
+[    1.898583] [drm] add ip block number 0 <vi_common>
+[    1.898759] [drm] add ip block number 1 <gmc_v8_0>
+[    1.898931] [drm] add ip block number 2 <cz_ih>
+[    1.899082] [drm] add ip block number 3 <gfx_v8_0>
+[    1.899241] [drm] add ip block number 4 <sdma_v3_0>
+[    1.899439] [drm] add ip block number 5 <powerplay>
+[    1.899573] [drm] add ip block number 6 <dm>
+[    1.899693] [drm] add ip block number 7 <uvd_v6_0>
+[    1.899827] [drm] add ip block number 8 <vce_v3_0>
+[    1.911458] [drm] BIOS signature incorrect 5b 7
+[    1.912551] [drm] UVD is enabled in physical mode
+[    1.912707] [drm] VCE enabled in physical mode
+[    1.912921] [drm] vm size is 64 GB, 2 levels, block size is 10-bit, fragment size is 9-bit
+[    1.913837] [drm] Detected VRAM RAM=512M, BAR=512M
+[    1.913998] [drm] RAM width 128bits UNKNOWN
+[    1.915149] [drm] amdgpu: 512M of VRAM memory ready
+[    1.915306] [drm] amdgpu: 3072M of GTT memory ready.
+[    1.915468] [drm] GART: num cpu pages 262144, num gpu pages 262144
+[    1.916139] [drm] PCIE GART of 1024M enabled (table at 0x000000F400900000).
+[    1.918733] [drm] Found UVD firmware Version: 1.91 Family ID: 11
+[    1.918950] [drm] UVD ENC is disabled
+[    1.919680] [drm] Found VCE firmware Version: 52.4 Binary ID: 3
+[    1.925963] [drm] DM_PPLIB: values for Engine clock
+[    1.926106] [drm] DM_PPLIB:   300000
+[    1.926205] [drm] DM_PPLIB:   360000
+[    1.926304] [drm] DM_PPLIB:   423530
+[    1.926404] [drm] DM_PPLIB:   514290
+[    1.926516] [drm] DM_PPLIB:   626090
+[    1.926629] [drm] DM_PPLIB:   720000
+[    1.926743] [drm] DM_PPLIB: Validation clocks:
+[    1.926952] [drm] DM_PPLIB:    engine_max_clock: 72000
+[    1.927117] [drm] DM_PPLIB:    memory_max_clock: 80000
+[    1.927281] [drm] DM_PPLIB:    level           : 8
+[    1.927435] [drm] DM_PPLIB: values for Display clock
+[    1.927594] [drm] DM_PPLIB:   300000
+[    1.927708] [drm] DM_PPLIB:   400000
+[    1.927822] [drm] DM_PPLIB:   496560
+[    1.927936] [drm] DM_PPLIB:   626090
+[    1.928048] [drm] DM_PPLIB:   685720
+[    1.928161] [drm] DM_PPLIB:   757900
+[    1.928275] [drm] DM_PPLIB: Validation clocks:
+[    1.928419] [drm] DM_PPLIB:    engine_max_clock: 72000
+[    1.928584] [drm] DM_PPLIB:    memory_max_clock: 80000
+[    1.928748] [drm] DM_PPLIB:    level           : 8
+[    1.928901] [drm] DM_PPLIB: values for Memory clock
+[    1.929058] [drm] DM_PPLIB:   333000
+[    1.929172] [drm] DM_PPLIB:   800000
+[    1.929403] [drm] DM_PPLIB: Validation clocks:
+[    1.929549] [drm] DM_PPLIB:    engine_max_clock: 72000
+[    1.929716] [drm] DM_PPLIB:    memory_max_clock: 80000
+[    1.929919] [drm] DM_PPLIB:    level           : 8
+[    1.930148] [drm] Display Core initialized with v3.2.104!
+[    2.003938] [drm] UVD initialized successfully.
+[    2.204023] [drm] VCE initialized successfully.
+[    2.206228] [drm] fb mappable at 0xA0EE4000
+[    2.206375] [drm] vram apper at 0xA0000000
+[    2.206514] [drm] size 14745600
+[    2.206654] [drm] fb depth is 24
+[    2.206760] [drm]    pitch is 10240
+[    2.207123] fbcon: amdgpudrmfb (fb0) is primary device
+[    2.301263] amdgpu 0000:00:01.0: [drm] fb0: amdgpudrmfb frame buffer device
+[    2.320735] [drm] Initialized amdgpu 3.40.0 20150101 for 0000:00:01.0 on minor 0
+
+
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
