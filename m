@@ -2,67 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33762D6CCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8EF82D6CBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394706AbgLKA6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 19:58:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394682AbgLKA60 (ORCPT
+        id S2394611AbgLKAr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 19:47:26 -0500
+Received: from mo-csw1514.securemx.jp ([210.130.202.153]:40648 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394575AbgLKAqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 19:58:26 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2C9C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:57:46 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id d2so5879044pfq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:57:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MTuxwf9KusT/ntlnVCF0gMBlWlskbWARxkaUDrHOkdo=;
-        b=ra/WyZQoH+AGVlTrKDauhvPdiS00/pxJvs9pj4d37efoZQNZVc+YC1W+GtSV7wDQMv
-         3Mvpwy7tvnA3/aqi6p8jyeGn0RiTWUQzE26nqhAEyR6TfToOa6tfqR/WnOi+SIx2rSjl
-         /Ps0Va+qa275/zgoJ4ATYKXWrjKpbYdpMxcm7iLqoC+1WKuYLh4B3j95Cz1dvR3hEXEw
-         AqPD+8q9+w7dwHS9riwHOjGYOsr05T3IFKZkynpELZtrlObf0jCMlMw/2M4ICCJQGYxr
-         d5hGfjj7Q2LHqEf0FebkxA0WQ+JAXOeSrNEh8ZScYqFJn8LIUmGoyRRvZHSe6LWnB/dn
-         EVnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MTuxwf9KusT/ntlnVCF0gMBlWlskbWARxkaUDrHOkdo=;
-        b=hbzKrVJlSiv0X2PBkuwUsi+uHGbk1ix3f97csxbEs9zG4BuQcrlfkQh344e7tQL6Ht
-         diShJ2MD7T0LAAed+qkW2ABo4NZGlkGuFBro3xF7qMPoI8GqjNXw5XvtV6nmq9QRK6Na
-         ExswiXcmIh/mXA6Iewy/IEtcSF7Nwyzzv8LxZtn13bglvuAS30dCexSMLT1SVgliSUar
-         drKoc85AyU3AhE+OfJtJ3FvuGt+e+0R7CEdlQrh17nmap2QMCR31guU5sXdCHskaFnPf
-         /wVBTj9iJvSQ+QtqQ0QkKzF7cyd8tVjhIpHdNMJhCSwftKSVoPB5V7NktZEPz+8fhZFl
-         IVmw==
-X-Gm-Message-State: AOAM533ziKKjsRG75qHtnUxgZbtj96Z551QMngg1yfGWYta8ue13F5Ej
-        558d+8L1CodIRVEBjh7Rj3B0SUeKwWzH/Myt
-X-Google-Smtp-Source: ABdhPJzfz9YK0z5xQjgX+uIRBOh+PmftuTdjF5WTgFEIpGyktmdOqbLubqsI53pFf5YA0q7+42Rq2g==
-X-Received: by 2002:a65:518a:: with SMTP id h10mr9153953pgq.340.1607648265788;
-        Thu, 10 Dec 2020 16:57:45 -0800 (PST)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id x6sm6829532pgr.20.2020.12.10.16.57.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 16:57:45 -0800 (PST)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     linux-serial@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Amlogic Meson
-        SoC support),
-        linux-amlogic@lists.infradead.org (open list:ARM/Amlogic Meson SoC
-        support)
-Subject: [PATCH] tty: serial: meson: enable console as module
-Date:   Thu, 10 Dec 2020 16:57:44 -0800
-Message-Id: <20201211005744.12855-1-khilman@baylibre.com>
+        Thu, 10 Dec 2020 19:46:12 -0500
+Received: by mo-csw.securemx.jp (mx-mo-csw1514) id 0BB0hUaa025283; Fri, 11 Dec 2020 09:43:30 +0900
+X-Iguazu-Qid: 34trFI5eCgE29BTwGI
+X-Iguazu-QSIG: v=2; s=0; t=1607647410; q=34trFI5eCgE29BTwGI; m=wTL7SZWr6fhQQkLpghlrUj5qJit10vHQyCjhaHyUZeo=
+Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
+        by relay.securemx.jp (mx-mr1512) id 0BB0hT76018316;
+        Fri, 11 Dec 2020 09:43:29 +0900
+Received: from enc02.toshiba.co.jp ([61.202.160.51])
+        by imx12.toshiba.co.jp  with ESMTP id 0BB0hTuG025293;
+        Fri, 11 Dec 2020 09:43:29 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 0BB0hSNQ023191;
+        Fri, 11 Dec 2020 09:43:29 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH v4 0/4] gpio: visconti: Add Toshiba Visconti GPIO support
+Date:   Fri, 11 Dec 2020 18:41:34 +0900
+X-TSB-HOP: ON
+Message-Id: <20201211094138.2863677-1-nobuhiro1.iwamatsu@toshiba.co.jp>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -70,67 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable serial driver to be built as a module.  To do so, init the
-console support on driver/module load instead of using
-console_initcall().
+Hi,
 
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
----
-Yes, I'm well aware that having the serial console as a module makes
-devices hard to debug, so I'm not changing any default behavior.  The
-goal is just to enable building as a module for environments where
-serial debug is not available or needed.
+This series is the GPIO driver for Toshiba's ARM SoC, Visconti[0].
+This provides DT binding documentation, device driver, MAINTAINER files, and updates to DT files.
 
- drivers/tty/serial/Kconfig      | 2 +-
- drivers/tty/serial/meson_uart.c | 8 +++++++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
+Best regards,
+  Nobuhiro
 
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 1044fc387691..c3fa78e63357 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -206,7 +206,7 @@ config SERIAL_MESON
- 
- config SERIAL_MESON_CONSOLE
- 	bool "Support for console on meson"
--	depends on SERIAL_MESON=y
-+	depends on SERIAL_MESON
- 	select SERIAL_CORE_CONSOLE
- 	select SERIAL_EARLYCON
- 	help
-diff --git a/drivers/tty/serial/meson_uart.c b/drivers/tty/serial/meson_uart.c
-index d2c08b760f83..69eeef9edfa5 100644
---- a/drivers/tty/serial/meson_uart.c
-+++ b/drivers/tty/serial/meson_uart.c
-@@ -604,7 +604,6 @@ static int __init meson_serial_console_init(void)
- 	register_console(&meson_serial_console);
- 	return 0;
- }
--console_initcall(meson_serial_console_init);
- 
- static void meson_serial_early_console_write(struct console *co,
- 					     const char *s,
-@@ -634,6 +633,9 @@ OF_EARLYCON_DECLARE(meson, "amlogic,meson-ao-uart",
- 
- #define MESON_SERIAL_CONSOLE	(&meson_serial_console)
- #else
-+static int __init meson_serial_console_init(void) {
-+	return 0;
-+}
- #define MESON_SERIAL_CONSOLE	NULL
- #endif
- 
-@@ -824,6 +826,10 @@ static int __init meson_uart_init(void)
- {
- 	int ret;
- 
-+	ret = meson_serial_console_init();
-+	if (ret)
-+		return ret;
-+	
- 	ret = uart_register_driver(&meson_uart_driver);
- 	if (ret)
- 		return ret;
+[0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
+
+dt-bindings: gpio: Add bindings for Toshiba Visconti GPIO Controller:
+  v3 -> v4: Add Reviewed-by tag.
+  v2 -> v3: Fix dtschema/dtc warnings.
+    dtschema/dtc warnings/errors:
+      Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.example.dt.yaml: gpio@28020000: interrupts: [[0, 24, 4], [0, 25, 4], [0, 26, 4], [0, 27, 4], [0, 28, 4], [0, 29, 4], [0, 30, 4], [0, 31, 4], [0, 32, 4], [0, 33, 4], [0, 34, 4], [0, 35, 4], [0, 36, 4], [0, 37, 4], [0, 38, 4], [0, 39, 4]] is too short
+	From schema: Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
+  v1 -> v2: Fix typo.
+
+gpio: visoconti: Add Toshiba Visconti GPIO support:
+  v3 -> v4: Drop VISCONTI_GPIO_NR.
+            Fix return code of platform_irq_count.
+            Fix coprytight header.
+            Add Reviewed-by tag.
+  v2 -> v3: Add select GPIO_GENERIC
+            Use genric MMIO GPIO library
+            Use bgpio_init() as initialized the generic helpers.
+            Use irqchip template instead of gpiochip_irqchip_add().
+  v1 -> v2: No update
+
+MAINTAINERS: Add entries for Toshiba Visconti GPIO controller:
+  v3 -> v4: No update
+  v2 -> v3: No update
+  v1 -> v2: No update
+
+arm: dts: visconti: Add DT support for Toshiba Visconti5 GPIO driver:
+  v3 -> v4: Add Reviewed-by tag.
+  v2 -> v3: Fix compatible string.
+  v1 -> v2: No update
+
+Nobuhiro Iwamatsu (4):
+  dt-bindings: gpio: Add bindings for Toshiba Visconti GPIO Controller
+  gpio: visconti: Add Toshiba Visconti GPIO support
+  MAINTAINERS: Add entries for Toshiba Visconti GPIO controller
+  arm: dts: visconti: Add DT support for Toshiba Visconti5 GPIO driver
+
+ .../bindings/gpio/toshiba,gpio-visconti.yaml  |  85 +++++++
+ MAINTAINERS                                   |   2 +
+ .../boot/dts/toshiba/tmpv7708-rm-mbrc.dts     |   4 +
+ arch/arm64/boot/dts/toshiba/tmpv7708.dtsi     |  27 ++
+ drivers/gpio/Kconfig                          |   9 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-visconti.c                  | 230 ++++++++++++++++++
+ drivers/pinctrl/visconti/pinctrl-common.c     |  23 ++
+ 8 files changed, 381 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
+ create mode 100644 drivers/gpio/gpio-visconti.c
+
 -- 
 2.29.2
 
