@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7C82D8073
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E8B2D807A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392980AbgLKVIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 16:08:18 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5362 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394954AbgLKVHp (ORCPT
+        id S2392983AbgLKVJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 16:09:18 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:37572 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391366AbgLKVIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:07:45 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fd3df780000>; Fri, 11 Dec 2020 13:07:04 -0800
-Received: from [10.2.60.59] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 11 Dec
- 2020 21:07:03 +0000
-Subject: Re: [PATCH v2 2/9] dt-bindings: spi: Add Tegra Quad SPI device tree
- binding
-To:     Rob Herring <robh@kernel.org>
-CC:     <jonathanh@nvidia.com>, <broonie@kernel.org>,
-        <thierry.reding@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <lukas@wunner.de>, <robh+dt@kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <1607706088-1437-1-git-send-email-skomatineni@nvidia.com>
- <1607706088-1437-4-git-send-email-skomatineni@nvidia.com>
- <20201211205614.GA905591@robh.at.kernel.org>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <2c0501b1-71c9-e0d8-96e7-67e59f01b985@nvidia.com>
-Date:   Fri, 11 Dec 2020 13:07:02 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 11 Dec 2020 16:08:51 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607720888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HhSZk3JoDjyQOLMPOFgRgzwUyrTACu0UGSGM/7NvY6I=;
+        b=ODjND6hv3nPITeDJOTxlIhVMHSqc6z+V97F+ULhmNWUDUg4MeWWcc8/RjfBSpJ+3E7KGvI
+        7u3oIQ1T0blXK7tiZjRPA+EmHIW9gpYRAbWAbVY6gfKBefi2hgLwHuva9Pr5DzcIfb4zGY
+        SuyetRvP8eIvO7dEK0SnW5NkAhYPqinzrr4Dc4PuL6rLfSElkjk6Dm5HgGKkZSl8lMyVVb
+        GCj6eMo+nj1M3TWtminM7NXFXEDFn7q5iOiTlBNVs+z2wkgYrK9LnDALIH7BFq1ID6L7rE
+        ud/rYvRghXbFi0znwvlxBBbwl+qtg9iLqpnrT1m9/JCtlXDnnHPHRcYj9dijAA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607720888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HhSZk3JoDjyQOLMPOFgRgzwUyrTACu0UGSGM/7NvY6I=;
+        b=jd0RTQztrN1EtCKge/4M0pzHQ/MU02TRkL1ocrE3lvW4v9ht90/z6O6t5eEalNoD9uJ0/m
+        DmETqLTaJjhHPNAQ==
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list\:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "open list\:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org
+Subject: Re: [patch 03/30] genirq: Move irq_set_lockdep_class() to core
+In-Reply-To: <CAHp75Vc-2OjE2uwvNRiyLMQ8GSN3P7SehKD-yf229_7ocaktiw@mail.gmail.com>
+References: <20201210192536.118432146@linutronix.de> <20201210194042.860029489@linutronix.de> <CAHp75Vc-2OjE2uwvNRiyLMQ8GSN3P7SehKD-yf229_7ocaktiw@mail.gmail.com>
+Date:   Fri, 11 Dec 2020 22:08:07 +0100
+Message-ID: <87h7osgifc.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20201211205614.GA905591@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607720824; bh=1T0NKV2aHT1IdfpsOWuGOCXfqnCjjpLWvkONzNsmaXA=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=Fl/lpUzuqzqjMIejv6mxyjCHm3FzZuDQ1+2K9QyosSPzxgy9ewWKQfCjZoOzfTN+P
-         Sppm06FbD5WDkjd2bHVe/6UItMVS7iPFhgo5fuAMkPJSj9ZyQGZwZxanfateeU7t+b
-         Dv2BmsXMXnKOI1si6my9B7Q8DjHaVqyD7WMMon6g4fRaXx5iJv1+rVRUIeKPcKxm1T
-         aukIzQQvlgV3WYVeUgCEXVKGpw7GyCEti2SvOWpeMjaupi+PFVuviPIbJRN0CE7KRq
-         E8cNuYaKYtMm52oH3RXcV2o3z0DLuZy53lw7fcIDO/YivPb9dVN/+8biwpMF9xsher
-         w8EZ+Wtp93srA==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry rob, mixed patches went out accidentally.
+On Fri, Dec 11 2020 at 19:53, Andy Shevchenko wrote:
 
-Will resend v2
+> On Thu, Dec 10, 2020 at 10:14 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>>
+>> irq_set_lockdep_class() is used from modules and requires irq_to_desc() to
+>> be exported. Move it into the core code which lifts another requirement for
+>> the export.
+>
+> ...
+>
+>> +       if (IS_ENABLED(CONFIG_LOCKDEP))
+>> +               __irq_set_lockdep_class(irq, lock_class, request_class);
 
-On 12/11/20 12:56 PM, Rob Herring wrote:
-> On Fri, 11 Dec 2020 09:01:20 -0800, Sowjanya Komatineni wrote:
->> This patch adds YAML based device tree binding document for Tegra
->> Quad SPI driver.
->>
->> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
->> ---
->>   .../bindings/spi/nvidia,tegra210-quad.yaml         | 130 +++++++++++++++++++++
->>   1 file changed, 130 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
->>
->
-> My bot found errors running 'make dt_binding_check' on your patch:
->
-> yamllint warnings/errors:
->
-> dtschema/dtc warnings/errors:
-> Error: Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.example.dts:29.38-39 syntax error
-> FATAL ERROR: Unable to parse input tree
-> make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.example.dt.yaml] Error 1
-> make[1]: *** Waiting for unfinished jobs....
-> make: *** [Makefile:1364: dt_binding_check] Error 2
->
->
-> See https://patchwork.ozlabs.org/patch/1415094
->
-> The base for the patch is generally the last rc1. Any dependencies
-> should be noted.
->
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->
-> pip3 install dtschema --upgrade
->
-> Please check and re-submit.
->
+You are right. Let me fix that.
