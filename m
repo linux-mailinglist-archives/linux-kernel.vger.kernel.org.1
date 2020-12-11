@@ -2,113 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E052D7798
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:18:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 349B52D779E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405920AbgLKOQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 09:16:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405899AbgLKOPj (ORCPT
+        id S2390593AbgLKOQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 09:16:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43794 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405926AbgLKOQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:15:39 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8476FC0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:14:59 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id p21so1871527pjv.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:14:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5f1oHmcol2mHx6bC5gFH8ezh95GR9pifCliLgoZXiHI=;
-        b=Bzgx3oPWqgw2n1k0AK1q+w30PZWgSi1dqKV5jw4NTUlxXSt/Em/bVVrqnzOIlv2DBr
-         fjVuO3tsgvvmQZXK8pbVfZGMi5nU1uZGf1M1er6k2a0orAK6Q5bUSNTN7OkFM7LX8abp
-         qcAPpTeDQaBnKIIg7RisfNNKMSBGR05hlFYUQeX4Lrrzo7olSSxraRJiRhPjAlTwwle6
-         GkPMDER0cf/tv5691W+YJs5CjQVWbTBgYzNJTYFqgH0KFlQro1pPQAw1eB47CptCcgsn
-         5zvRtWb/qbSs9IZWA4zUdMkPOK9ReXwzcO6X9zb51a0t10AV6YQYrW+R5nCR/WVstc2O
-         ixuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5f1oHmcol2mHx6bC5gFH8ezh95GR9pifCliLgoZXiHI=;
-        b=t3Bz/4mpgwSC7jLCuKXuIycOnk8RQhVHVLn7ajGuXvjHX9BJ24JkSQvhJWLarN0jul
-         UuSlZJgo/vYbsS8b6r/WJhxMUf3B/nAO4IA1kA3nNuBFxN3H3BwbJOUyY+5wr1pLEXCU
-         zCqLBvrQGIfBCbSo8lF9yS8Ndt7AGQ7sHHEfEIIocomx0kSc8BCt0gOwbdlnP9BlRM0L
-         gOFazSt7Vypgsxqt5SByerciuJYGZwgaG7Gs87R4s9eV4UX8OKzFvmUOLfW706pFih9D
-         7c6QLTZ2NMoXH1Awgq+EltMlFSUqFB3OBJGiSkmPnabFl8bzhVH2/gNGvzTCpK0Mmcjw
-         dUkg==
-X-Gm-Message-State: AOAM532/doMGPWNGLI7jsJtih+GsDIKLBBBYtr8McjkInRfk8vsd4AUv
-        e6GXSPqIwqoFL32OOzScDNNXCyxINR+6MZLfKtoF5w==
-X-Google-Smtp-Source: ABdhPJzFtHnSD7yguh0R/UPqyIWabyj8rwu4adQbmM5SUJFG7UlQpVcwg63WOndZqN2uDqjudVC4YaWLzSNwdIGIi84=
-X-Received: by 2002:a17:902:bb92:b029:d9:e9bf:b775 with SMTP id
- m18-20020a170902bb92b02900d9e9bfb775mr11319858pls.24.1607696099031; Fri, 11
- Dec 2020 06:14:59 -0800 (PST)
+        Fri, 11 Dec 2020 09:16:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607696087;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qKvxuuhvHVvh0V5S7TpPuQeAITPbX3w3Fo6XsWdrtcw=;
+        b=WkoW1OgQ36psBr0zeFhkSyQDsUdRR67gkOoVa0bX9zB9ENWJfv8O1YDhYh3oWnmBbbcYPK
+        mnXoMh5jfhwJBbaUGa87Ex3muph7GxwYXqO4tfuak6SABxD/NnnygEC63yZxlxKG9s/77m
+        /LvwugKdViJ1mthMkcRTDkmmWJwYAkU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-60-KR9Iu5P_PrWoRMwPFJaeiw-1; Fri, 11 Dec 2020 09:14:42 -0500
+X-MC-Unique: KR9Iu5P_PrWoRMwPFJaeiw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2D9C3CE651;
+        Fri, 11 Dec 2020 14:14:40 +0000 (UTC)
+Received: from gondolin (ovpn-112-240.ams2.redhat.com [10.36.112.240])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 73C0319C78;
+        Fri, 11 Dec 2020 14:14:34 +0000 (UTC)
+Date:   Fri, 11 Dec 2020 15:14:31 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Matthew Rosato <mjrosato@linux.ibm.com>,
+        alex.williamson@redhat.com, pmorel@linux.ibm.com,
+        borntraeger@de.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        gerald.schaefer@linux.ibm.com, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC 0/4] vfio-pci/zdev: Fixing s390 vfio-pci ISM support
+Message-ID: <20201211151431.75a4a3f4.cohuck@redhat.com>
+In-Reply-To: <7bce88b2-8c7d-c0f4-89a0-b1e8f511ad0b@linux.ibm.com>
+References: <1607545670-1557-1-git-send-email-mjrosato@linux.ibm.com>
+        <20201210133306.70d1a556.cohuck@redhat.com>
+        <ce9d4ef2-2629-59b7-99ed-4c8212cb004f@linux.ibm.com>
+        <7bce88b2-8c7d-c0f4-89a0-b1e8f511ad0b@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-References: <20201211041954.79543-1-songmuchun@bytedance.com>
- <20201211041954.79543-4-songmuchun@bytedance.com> <20201211135737.GA2443@casper.infradead.org>
-In-Reply-To: <20201211135737.GA2443@casper.infradead.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 11 Dec 2020 22:14:22 +0800
-Message-ID: <CAMZfGtVYkkoQc+VsMPj-_FWAZmQOhme4QD0vJ9cDZNMsTg2jPw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v4 3/7] mm: memcontrol: convert
- NR_FILE_THPS account to pages
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Feng Tang <feng.tang@intel.com>, Neil Brown <neilb@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 9:57 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Fri, Dec 11, 2020 at 12:19:50PM +0800, Muchun Song wrote:
-> > +++ b/mm/filemap.c
-> > @@ -207,7 +207,7 @@ static void unaccount_page_cache_page(struct address_space *mapping,
-> >               if (PageTransHuge(page))
-> >                       __dec_lruvec_page_state(page, NR_SHMEM_THPS);
-> >       } else if (PageTransHuge(page)) {
-> > -             __dec_lruvec_page_state(page, NR_FILE_THPS);
-> > +             __mod_lruvec_page_state(page, NR_FILE_THPS, -HPAGE_PMD_NR);
->
-> +               __mod_lruvec_page_state(page, NR_FILE_THPS, -nr);
+On Thu, 10 Dec 2020 17:14:24 +0100
+Niklas Schnelle <schnelle@linux.ibm.com> wrote:
 
-Thank you.
+> On 12/10/20 4:51 PM, Matthew Rosato wrote:
+> > On 12/10/20 7:33 AM, Cornelia Huck wrote: =20
+> >> On Wed,=C2=A0 9 Dec 2020 15:27:46 -0500
+> >> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+> >> =20
+> >>> Today, ISM devices are completely disallowed for vfio-pci passthrough=
+ as
+> >>> QEMU will reject the device due to an (inappropriate) MSI-X check.
+> >>> However, in an effort to enable ISM device passthrough, I realized th=
+at the
+> >>> manner in which ISM performs block write operations is highly incompa=
+tible
+> >>> with the way that QEMU s390 PCI instruction interception and
+> >>> vfio_pci_bar_rw break up I/O operations into 8B and 4B operations -- =
+ISM
+> >>> devices have particular requirements in regards to the alignment, siz=
+e and
+> >>> order of writes performed.=C2=A0 Furthermore, they require that legac=
+y/non-MIO
+> >>> s390 PCI instructions are used, which is also not guaranteed when the=
+ I/O
+> >>> is passed through the typical userspace channels. =20
+> >>
+> >> The part about the non-MIO instructions confuses me. How can MIO
+> >> instructions be generated with the current code, and why does changing=
+ =20
+> >=20
+> > So to be clear, they are not being generated at all in the guest as the=
+ necessary facility is reported as unavailable.
+> >=20
+> > Let's talk about Linux in LPAR / the host kernel:=C2=A0 When hardware t=
+hat supports MIO instructions is available, all userspace I/O traffic is go=
+ing to be routed through the MIO variants of the s390 PCI instructions.=C2=
+=A0 This is working well for other device types, but does not work for ISM =
+which does not support these variants.=C2=A0 However, the ISM driver also d=
+oes not invoke the userspace I/O routines for the kernel, it invokes the s3=
+90 PCI layer directly, which in turn ensures the proper PCI instructions ar=
+e used -- This approach falls apart when the guest ISM driver invokes those=
+ routines in the guest -- we (qemu) pass those non-MIO instructions from th=
+e guest as memory operations through vfio-pci, traversing through the vfio =
+I/O layer in the guest (vfio_pci_bar_rw and friends), where we then arrive =
+in the host s390 PCI layer -- where the MIO variant is used because the fac=
+ility is available. =20
+>=20
+> Slight clarification since I think the word "userspace" is a bit overload=
+ed as
+> KVM folks often use it to talk about the guest even when that calls throu=
+gh vfio.
+> Application userspace (i.e. things like DPDK) can use PCI MIO Load/Stores
+> directly on mmap()ed/ioremap()ed memory these don't go through the Kernel=
+ at
+> all.
+> QEMU while also in userspace on the other hand goes through the vfio_bar_=
+rw()
+> region which uses the common code _Kernel_ ioread()/iowrite() API. This K=
+ernel
+> ioread()/iowrite() API uses PCI MIO Load/Stores by default on machines th=
+at
+> support them (z15 currently).  The ISM driver, knowing that its device do=
+es not
+> support MIO, goes around this API and directly calls zpci_store()/zpci_lo=
+ad().
 
->
-> > +++ b/mm/huge_memory.c
-> > @@ -2748,7 +2748,8 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
-> >                       if (PageSwapBacked(head))
-> >                               __dec_lruvec_page_state(head, NR_SHMEM_THPS);
-> >                       else
-> > -                             __dec_lruvec_page_state(head, NR_FILE_THPS);
-> > +                             __mod_lruvec_page_state(head, NR_FILE_THPS,
-> > +                                                     -HPAGE_PMD_NR);
->
-> +                               __mod_lruvec_page_state(head, NR_FILE_THPS,
-> +                                               -thp_nr_pages(head));
->
+Ok, thanks for the explanation.
 
-Thanks.
+>=20
+>=20
+> >=20
+> > Per conversations with Niklas (on CC), it's not trivial to decide by th=
+e time we reach the s390 PCI I/O layer to switch gears and use the non-MIO =
+instruction set. =20
+>=20
+> Yes, we have some ideas about dynamically switching to legacy PCI stores =
+in
+> ioread()/iowrite() for devices that are set up for it but since that only=
+ gets
+> an ioremap()ed address, a value and a size it would evolve such nasty thi=
+ngs as
+> looking at this virtual address to determine if it includes a ZPCI_ADDR()
+> cookie that we use to get to the function handle needed for the legacy PCI
+> Load/Stores, while MIO PCI Load/Stores directly work on virtual addresses.
+>=20
+> Now purely for the Kernel API we think this could work since that always
+> allocates between VMALLOC_START and VMALLOC_END and we control where we p=
+ut the
+> ZPCI_ADDR() cookie but I'm very hesitant to add something like that.
+>=20
+> As for application userspace (DPDK) we do have a syscall
+> (arch/s390/pci/pci_mmio.c) API that had a similar problem but we could ma=
+ke use
+> of the fact that our Architecture is pretty nifty with address spaces and=
+ just
+> execute the MIO PCI Load/Store in the syscall _as if_ by the calling user=
+space
+> application.
 
--- 
-Yours,
-Muchun
+Is ISM (currently) the only device that needs to use the non-MIO
+instructions, or are there others as well? Is there any characteristic
+that a meta driver like vfio could discover, or is it a device quirk
+you just need to know about?
+
