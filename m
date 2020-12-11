@@ -2,120 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DF32D6FDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 06:53:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 714D32D6FE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 06:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395286AbgLKFwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 00:52:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388912AbgLKFvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 00:51:44 -0500
-Date:   Fri, 11 Dec 2020 06:50:58 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607665863;
-        bh=cp6+pYtXaACthxB1XxfyhkIFCLqavljHyzRg1qjaSoY=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kE5bqkU5UDmezhRr0m/f7HYr4Ms9XJCb/ILK3RBEq5hswZ7Uwh37F//LFY+ieEtw2
-         hgEVJsMXdzWWC/azR1PRcJHuezRx5hJeqJOFSbJjEhfnh2bwfncQ/Mgws8cr1x9Kra
-         lZ1LjpV45i3H1c2ESgp3wkibYqWxeCk0CwqudIrg=
-From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-Cc:     'Rob Herring' <robh+dt@kernel.org>,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
-Message-ID: <X9MIwqJBG69M5uHq@kroah.com>
-References: <20201210170443.GA17304@dincontrollerdev>
- <X9Jw+srprdT8tquZ@kroah.com>
- <20201210194625.GA17516@dincontrollerdev>
+        id S2395295AbgLKF45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 00:56:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387579AbgLKF4n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 00:56:43 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E2CC0613CF;
+        Thu, 10 Dec 2020 21:56:03 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id h7so1326515pjk.1;
+        Thu, 10 Dec 2020 21:56:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JP+OlX4QCRKEvekK9QO03D9Ia1suW4TL/USrqq3OnmI=;
+        b=Q7+jBqXm/JKkZ27XFHty5hs101AHm3MV59rDcadmeAsPu+L/DsL4xkoqsy0Q+PcnCg
+         iUxJLkKe2bbDxYx6fnpJebzKSWSTKxEAL5cFCyW2nw00rBFF2Br73gZNy8zQR5rDpkXZ
+         QdK0bFJ8qg6tSash6VAxDHjZsFyumrSxW/ReIDOKpAxkqrrhPNaERPHVXLwBV6IkeiIs
+         PZhOSw7Z7NeW3P+EDY8JU1uFQvxB8dHKVnK3ZW2wwbNibxHgwWwKkkOXryHrbnvl2Lo2
+         yNjOnNxom4kyuWz8oZq1VjJ2xI0sv7vlCNz8tVle8njlMlqT8+ZwPkeEVzDFLQ8Xkj36
+         1+VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JP+OlX4QCRKEvekK9QO03D9Ia1suW4TL/USrqq3OnmI=;
+        b=FGupSoW5amVvwyKjq2CcqNGnJKXvHT5BGiZ51Sr9p5oag59LHkud0036kngc32JJx7
+         hRte+Fi9sDpQkPDwO8XBwlQllqIegPYHDjSwZB9yLuhTRH+iK+LBHGN94NO8Xjq4n4Np
+         a1s4PwlEU9Yp67atYtwe8mErQ/9gCkgCq1E728USdqsw9Ijr5TDWPA7+umB/F69+ZY9j
+         zFBy2cRXexZo0l3qSu7A2xb8HE5GtGdkDql868RrMhXQ1oLrx832r58LH2N5+2S516Rp
+         83FGXkOgpTjpOysBsfernAmkl4GtaMR3hTxYtnovMmPypl91mCFQp9eBaQBUKt6vCPxz
+         HCwg==
+X-Gm-Message-State: AOAM531heI/MVVTH08D/WX7NAqgJsfjynpf27RKXnrUzbNYxbeO9bFqM
+        xXAlhlyUEa8swtJCpKYu1LY=
+X-Google-Smtp-Source: ABdhPJxdvHjyW1S6IJu4lKEm4wCrkvW18Is9Q5lv7Ud1JBPw7HJsExv0RfZ2fXsCJaCXIvmLK6wIrQ==
+X-Received: by 2002:a17:90b:33d1:: with SMTP id lk17mr11864501pjb.174.1607666162740;
+        Thu, 10 Dec 2020 21:56:02 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id u12sm8079376pfn.88.2020.12.10.21.56.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 21:56:01 -0800 (PST)
+Date:   Thu, 10 Dec 2020 21:55:58 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        michael.hennerich@analog.com
+Subject: Re: [PATCH v2] input: touchscreen: ad7877: Use new structure for SPI
+ transfer delays
+Message-ID: <X9MJ7gu67h/rcCfP@google.com>
+References: <20200227130619.28142-1-sergiu.cuciurean@analog.com>
+ <20200228104508.15564-1-sergiu.cuciurean@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201210194625.GA17516@dincontrollerdev>
+In-Reply-To: <20200228104508.15564-1-sergiu.cuciurean@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 07:46:25PM +0000, József Horváth wrote:
-> On Thu, Dec 10, 2020 at 08:03:22PM +0100, 'Greg Kroah-Hartman' wrote:
-> > On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
-> > > This is a serial port driver for
-> > > Silicon Labs Si4455 Sub-GHz transciver.
-> > > 
-> > > Signed-off-by: József Horváth <info@ministro.hu>
-> > > ---
-> > >  .../bindings/serial/silabs,si4455.yaml        |   53 +
-> > >  MAINTAINERS                                   |    7 +
-> > >  drivers/tty/serial/Kconfig                    |    8 +
-> > >  drivers/tty/serial/Makefile                   |    1 +
-> > >  drivers/tty/serial/si4455.c                   | 1235 +++++++++++++++++
-> > >  drivers/tty/serial/si4455_api.h               |   56 +
-> > 
-> > First thing, a single .c file should not need a .h file.
-> > 
-> > But then I looked at the .h file and see:
-> > 
-> > > --- /dev/null
-> > > +++ b/drivers/tty/serial/si4455_api.h
-> > > @@ -0,0 +1,56 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0
-> > > + *
-> > > + * Copyright (C) 2020 József Horváth <info@ministro.hu>
-> > > + *
-> > > + */
-> > > +#ifndef SI4455_API_H_
-> > > +#define SI4455_API_H_
-> > > +
-> > > +struct si4455_iocbuff {
-> > > +	uint32_t length;
-> > > +	uint8_t	data[4096];
-> > 
-> > If you do have an ioctl, use proper data types.  These are not the
-> > correct ones (hint, __u32 and __u8).
-> > 
-> > > +};
-> > > +
-> > > +#define BASE_TTYIOC_PRIVATE		0xA0
-> > > +/* Set EZConfig.
-> > > + * After this ioctl call, the driver restarts the si4455,
-> > > + * then apply the new configuration and patch.
-> > > + */
-> > > +#define SI4455_IOC_SEZC		_IOW('T', \
-> > > +				     BASE_TTYIOC_PRIVATE + 0x01, \
-> > > +				     struct si4455_iocbuff)
-> > 
-> > Why does a serial driver have private ioctls?  Please no, don't do that.
+On Fri, Feb 28, 2020 at 12:45:08PM +0200, Sergiu Cuciurean wrote:
+> In a recent change to the SPI subsystem [1], a new `delay` struct was added
+> to replace the `delay_usecs`. This change replaces the current
+> `delay_usecs` with `delay` for this driver.
 > 
-> I checked the ioctl.h and serial_core.h, but I not found any similar definition, like BASE_VIDIOC_PRIVATE in videodev2.h.
-> In this case the name of macro BASE_TTYIOC_PRIVATE means the base value of special ioctl commands owned by this driver.
-
-My point is, a serial driver should NOT have any custom ioctls.
-
-> I can change it to BASE_TTYIOC or SI4455_IOC_BASE
+> The `spi_transfer_delay_exec()` function [in the SPI framework] makes sure
+> that both `delay_usecs` & `delay` are used (in this order to preserve
+> backwards compatibility).
 > 
-> > Implement the basic serial driver first, and then we can talk about
-> > "custom" configurations and the like, using the correct apis.
+> [1] commit bebcfd272df6 ("spi: introduce `delay` field for
+> `spi_transfer` + spi_transfer_delay_exec()")
 > 
-> Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
-> The cofiguration for interface is provided by user for application.
+> Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
 
-That is what a device tree is for, to configure the device to have the
-correct system configuration, why can't that be the same here?
+Applied, thank you.
 
-> It contains the base frequency, channel spacing, modulation, and a lot
-> of more stuff, and generated by Silicon Labs Wireless Development
-> Suite.
-> The generated configuration is in a non public(compressed,
-> encrypted...who knows) format, so without this the driver can't
-> provide configuration parameters to Si4455.
-
-So we have to take a "custom" userspace blob and send it to the device
-to configure it properly?  Like Jiri said, sounds like firmware, so just
-use that interface instead.
-
-thanks,
-
-greg k-h
+-- 
+Dmitry
