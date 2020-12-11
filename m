@@ -2,144 +2,447 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE602D829F
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B00A92D82A6
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437138AbgLKXLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 18:11:19 -0500
-Received: from mail-db8eur05on2137.outbound.protection.outlook.com ([40.107.20.137]:39008
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2403763AbgLKXLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 18:11:02 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S2TZbM0e238kcG7TTJHmKFvg6krhwAbIbRieaB6UnyvOM0WhIphNk8CaIf7NN2byGGArBjHIYZ1+9qFIqK9URkJ/IT5BgsMId05ducoNuit+gq3qkifmJvqIXeNiqONnGLE9mxcqtV1aj9aCn/9EGqP2Rj7LVG/R/DZfOfXnFh5PGteJaU1okq+BOeaSIawk8eNs35qgPUfiORNkTXTVzQa0MM3+80ztSIlplwz+gtD6RXRuTD5UN9UFPfW2FFVlROfIIJGxyJp3A2FOFkyviYqwyZSTgz5gY5FLaHh2n6MtlqY8J8p8McQ2H0/Z1hmg0GpVRgag6WgpK6vpTkarfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+O4WtPhDMctkJXG8rs8q+JzJa7xuRMlH0NaZMYU2Acc=;
- b=fnmQGQXUSupNvgfXvAghawSh0uVDDeErQRfSEvSlEQ25CjC8NhOD+yoxWjGiTNetcyU+RFa6b5ZUb6zEw7HrK2Iop6lddZloJ8h+2KsR132GEB8n2l1VIF0FC2O6dV20ba9QHr8BRR+YXVrnwd/xlI7yQ9kFHsuu8e8tPnEJ8z+BShPb6zywWTjTQdyiaIrN+hCfxkpsaXiYoXJRAPK9fXiMTvBO1NLv0NyOc7YP2+QZPv9c3efT++QnWrxYGaiJVB542R5I1g/RbvGqEUXXu7kUcyOqAK1Fb9zIkrmOqL30ikyllhZiOOnM3maSzf1ZbApNLMd7Kt0eSK12AHGqig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
- dkim=pass header.d=prevas.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+O4WtPhDMctkJXG8rs8q+JzJa7xuRMlH0NaZMYU2Acc=;
- b=Ce2qsk2ECmxjBUOT/kQH7HwsTMtvtnnloOzYOHtjHFZfLurRXPvRKpyGlhRd5072vgucDwX1CQY8+VDUu9qpb3hBcyzOmBQwbvsnqbr/NGcoS5J9hvM/PwnO4/1YNIjD3uWhydr8Hi5KXMqJgVGi/lLXG9AniEBRbnp+oqQe/AU=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=prevas.dk;
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
- by AM9PR10MB4135.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1f7::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.13; Fri, 11 Dec
- 2020 23:10:12 +0000
-Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::9068:c899:48f:a8e3]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::9068:c899:48f:a8e3%6]) with mapi id 15.20.3632.026; Fri, 11 Dec 2020
- 23:10:12 +0000
-Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: add reset-source property
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Qiang Zhao <qiang.zhao@nxp.com>,
-        Bruno Thomsen <bruno.thomsen@gmail.com>
-References: <20201204092752.GE74177@piout.net>
- <20201211215611.24392-1-rasmus.villemoes@prevas.dk>
- <20201211215611.24392-2-rasmus.villemoes@prevas.dk>
- <CAL_JsqJ-5gwycTRQCdX=ZsefEJ=F1GyTjjDW6QB1PBynibFzLg@mail.gmail.com>
-From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Message-ID: <b3c05d29-3ed6-d5f5-d1dd-0ddec1f89276@prevas.dk>
-Date:   Sat, 12 Dec 2020 00:10:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <CAL_JsqJ-5gwycTRQCdX=ZsefEJ=F1GyTjjDW6QB1PBynibFzLg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [5.186.115.188]
-X-ClientProxiedBy: AM5PR0502CA0015.eurprd05.prod.outlook.com
- (2603:10a6:203:91::25) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:3f::10)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.149] (5.186.115.188) by AM5PR0502CA0015.eurprd05.prod.outlook.com (2603:10a6:203:91::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Fri, 11 Dec 2020 23:10:12 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 377c082a-d4bf-406d-f743-08d89e29e9d7
-X-MS-TrafficTypeDiagnostic: AM9PR10MB4135:
-X-Microsoft-Antispam-PRVS: <AM9PR10MB413513795E1D030653C5666393CA0@AM9PR10MB4135.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1QWOQITLnRAVyy/tEdYV6HLJRqlEXohvAA82cbQfP6Z9dSFCBuUbHrr5kjI885/ytxVnsweurTEgQn71LzlXK5agXeKrWiLZObATs+aOTGG16DUzyK1B1YfX5ZZaic/GW3p3MFGhGHVP9ORwCyuSTksrOzICCFx3Dsb1zfthjUj0/qlr7WCW1UYjzjAC2AocsJn5N4VLwDPYYXK45so55uCHGnvYNnbBeTb2fCpQF+fQe+z0E8ki+PAVBiP29E13npdDwvDNwYwk8fEfs+OfelLHuMeazXySi4KV2gXSn8Va+KVSSJLFiJrdzymHLlHRbPe6zVrB5D6nIE9/bCmZxpCyIpqnpspIDFcjslA3XHbPDJc8r98v9sLoJwi3X6l4VXWBqPeKROyN3F/7PQhthpsNIzBhMCZLeGHxZdrKDOw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(396003)(136003)(376002)(366004)(39840400004)(16526019)(53546011)(16576012)(36756003)(54906003)(316002)(4326008)(2616005)(44832011)(956004)(66946007)(8976002)(66556008)(26005)(6486002)(66476007)(5660300002)(2906002)(8936002)(31696002)(31686004)(8676002)(478600001)(86362001)(52116002)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZFRON01CcENSbjduM0cycXVvZlQ5N09ERFZGbzBzWjc1QkRlWkxlS0w4MXFk?=
- =?utf-8?B?MWs0THRRWXlDT0hJUmdKYlNmZWhkdnFwUVFCVnhOaEQ2SHZ3Vi9lbDlkV1gz?=
- =?utf-8?B?TU52alhOTUpvdllSbEtzZ0xUeCtibGhGbXE3Q200OUptNGtrdGRuWFV0Q3hn?=
- =?utf-8?B?dmErZDMwSnBMUDRGVkdTR3gzakhtaWFKMVR3a2laZW90cGxObldVMWo3RlVo?=
- =?utf-8?B?Y0FGcUhscC90WmU5MzVKa0QraU1KTWNyOXd1c0lKWlc4bDdpdHhpWHVVTE5J?=
- =?utf-8?B?WVJHSmYwa2xvdzRLc0hSMzJkSmFPTHIrREh5QnRjeklJVDV0eTZsQkRGaHVS?=
- =?utf-8?B?WU93ZGdDV1B2SXZIYmViL1NRbS9xOUdqUG02dEdwMSsrc2grelpYRlB2Z21q?=
- =?utf-8?B?aVhyMnVIWHJ5TkM5R2JTeW94N000cnZnUjhqTU5DRExxc0srd1JRaFJRTWdF?=
- =?utf-8?B?ZmUyd0F3eUd5L0o3VGFyVkNaYm96TzA5R1RzWkdGSGg0aDEwYi9FUWFMbWFv?=
- =?utf-8?B?aVF4YkE5bEhiZlBFMG82WnFVRjZLejlEV3pKRUx6cWJLSDlIZjNWdVh1WFBx?=
- =?utf-8?B?ck4xeXF2dlV1QldnVnpINjRGT3pFMGtpS3Bpc1NDTTF6ZEcxdWVrNnp3bTZx?=
- =?utf-8?B?b3h5SE1qRVQ3NTBIcXdwME1WS1RqZVo0U1RkR0pXWkdRQ3hnOTR1WEVleCt0?=
- =?utf-8?B?YkpSQ2ptNlltYTlER25XdG1ldzhMbkk2bkRoVG5ZcXlzZ01TYU00RW5jK1VV?=
- =?utf-8?B?ZnFCTDVmSEs1TUVxditYSzRFSlR3Vk9WcllYRDQ2eFRtZSs4MlM3Ull4Ly9B?=
- =?utf-8?B?em52aVhlRnlMeDRsYURIQ3d3SEg5ejM2NzNpdkNjZDFDcE84MndWeDZZNlRw?=
- =?utf-8?B?ZHNUVVYxTHM4SGF1WEdZV2RLQVcwWFNMeFViaWFPU09LSVgyd3h5Y3hiNURL?=
- =?utf-8?B?Y1puODJJa0s2N1RYMGM2V1Y4TWhFVkd0Qzl0TmhNL0YxdnBDN3pzTlRIRFNV?=
- =?utf-8?B?dzV4ZVZjaHJBUFpXMHVId3FXN0dnbnFudGxwUHlhWmZ2OEc3aWMxenExbGFu?=
- =?utf-8?B?SUlwOEJLTjVtWTd6K1ROVDYvbFVhaXZZbzNuU0d1cWJIZll6NUFkNVF6T0dR?=
- =?utf-8?B?S2oxVFM1b0h4T09LVmM2Q042QnQ0bUc5S1d6S2o5cjFBYlY3ODFKeUE5UHRx?=
- =?utf-8?B?V0hJeGlDQkxRSXhGOG9pdXNFeGhDcmV0TCtmeVBjMzZBZkliSGZIN09SanJt?=
- =?utf-8?B?eWYybWRpalU0aEdzY1hvRGhjaXhNa1BZUVB6OW9jNE9XcGR6Sys0NVhEMFl3?=
- =?utf-8?Q?OVf6aVy2KnY8B0Wk1MKd5tep4gCpfu5j9E?=
-X-OriginatorOrg: prevas.dk
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2020 23:10:12.5848
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
-X-MS-Exchange-CrossTenant-Network-Message-Id: 377c082a-d4bf-406d-f743-08d89e29e9d7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +KnbMUnTHCMZRompVyS+NwGbia1DdZutQlFvVZJ48949xwbctsha+LLHoXrsyExjeQC4d2oLCVm+4bBMwRSwjXIR32gdZ41M4u5dBlTwXow=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR10MB4135
+        id S2437194AbgLKXQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 18:16:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437197AbgLKXQP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 18:16:15 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E22C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:15:30 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id e68so3211292yba.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:15:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=igdv8IswtQkKArw/2ciBxWk2FSHleryUpnQtKzfeLIk=;
+        b=EteiOlHZOuRkjQ2UxCWAHMcd3hss7Wx0Ax4vnghL31jDhKl8n1xyGTr7v4J/zjM2D2
+         +QCwPm/hkvjLlCVFLzlYl+g0dARqa8C39OcoPZwTqouICYtEIPI5Yak4CSt1lD1ykugy
+         HMVILYVtWDn6yRxSNdC9jEwrz/neEdsbAdzeJtYfAdeS3mhXFfk1WvfBmlYRBP6tsOQ1
+         yxSHQPQjVylH7+fPMIcNEBvSPq2F46X3vnMz88b1zXvRC0ryowAZJvJPHiMOymaGx4IP
+         TM18/OGJDyA9+1POUwONDBFwEWdmSiwlUQ8yeM9uE27ngBWEABy6XHmQ9q49Qf6GyhAW
+         nJ4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=igdv8IswtQkKArw/2ciBxWk2FSHleryUpnQtKzfeLIk=;
+        b=GSO6uzhIhVRNUA+LMB77Hwz7nUJOGcnr7q88Gt5gig8+jtT18ydau1uT33frM4uHqF
+         iZK8kFGb7S6LcxacJbJDtegRKMfoelurrQhN06aoh8GUectq8PKwIyIjzrCD4eJt+VYA
+         dU7e/BP0SVo80i7SzQ0edj8xP8NRlPWgKG3TyUmBCR34Ak+619r7pa/H1KLh+fk8KdB6
+         fbh5uuRT1ud3jAlVwR14LBvBr1IMPr4ZIvGIiBypgDbY8DL9n8XkRX8sH7KhzRiTWmff
+         tLgzsYZzQOtuPZ+WmwBeYo56rFhXzSAPS/DDcVR+JoGF/BrFw36qeexjJ5hVm3yJ9EKA
+         bo7Q==
+X-Gm-Message-State: AOAM531rTXRqC6QarVH6mEwIt5Q6oPqqHOLC2mO5LDEtJxBqu8IB6djN
+        xuu2EGAYLgmuUjcz8+cES2fSMsmpI+KIdQ==
+X-Google-Smtp-Source: ABdhPJw1i1YPotUMgJs6k9qQQStC9Wh3yPvvotDrYm/uGtWYaHKL6lwaV3jL9Q7WmV/pqSfaS9jteo+sMDxLaw==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
+ (user=dlatypov job=sendgmr) by 2002:a25:d10f:: with SMTP id
+ i15mr23011818ybg.244.1607728529338; Fri, 11 Dec 2020 15:15:29 -0800 (PST)
+Date:   Fri, 11 Dec 2020 15:15:18 -0800
+Message-Id: <20201211231520.1654036-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
+Subject: [PATCH v2 1/3] kunit: tool: surface and address more typing issues
+From:   Daniel Latypov <dlatypov@google.com>
+To:     davidgow@google.com
+Cc:     brendanhiggins@google.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/2020 23.30, Rob Herring wrote:
-> On Fri, Dec 11, 2020 at 3:56 PM Rasmus Villemoes
-> <rasmus.villemoes@prevas.dk> wrote:
->>
->> Some RTCs, e.g. the pcf2127, can be used as a hardware watchdog. But
->> if the reset pin is not actually wired up, the driver exposes a
->> watchdog device that doesn't actually work.
->>
->> Provide a standard binding that can be used to indicate that a given
->> RTC can perform a reset of the machine, similar to wakeup-source.
-> 
-> Why not use the watchdog 'timeout-sec' property?
+The authors of this tool were more familiar with a different
+type-checker, https://github.com/google/pytype.
 
-Wouldn't that be overloading that property? AFAIU, that is used to ask
-the kernel to program an initial timeout value into the watchdog device.
-But what if one doesn't want to start the watchdog device at kernel
-boot, but just indicate that the RTC has that capability?
+That's open source, but mypy seems more prevalent (and runs faster).
+And unlike pytype, mypy doesn't try to infer types so it doesn't check
+unanotated functions.
 
-It's quite possible that if it can act as a watchdog device (and
-has-watchdog was also suggested), one would also want timeout-sec and
-other watchdog bindings to apply. But that can be added later, by those
-who actually want that.
+So annotate ~all functions in kunit tool to increase type-checking
+coverage.
+Note: per https://www.python.org/dev/peps/pep-0484/, `__init__()` should
+be annotated as `-> None`.
 
-For now, I'd really like to get my board booting again (or rather, not
-get reset by the real watchdog just because the pcf2127 driver now
-exposes something as /dev/wathdog0, pushing the real one to
-/dev/wathcdog1 which doesn't get pinged from userspace).
+Doing so makes mypy discover a number of new violations.
+Exclude main() since we reuse `request` for the different types of
+requests, which mypy isn't happy about.
 
-Rasmus
+This commit fixes all but one error, where `TestSuite.status` might be
+None.
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+Reviewed-by: David Gow <davidgow@google.com>
+---
+ tools/testing/kunit/kunit.py        | 14 ++++-----
+ tools/testing/kunit/kunit_config.py |  7 +++--
+ tools/testing/kunit/kunit_json.py   |  2 +-
+ tools/testing/kunit/kunit_kernel.py | 37 ++++++++++++-----------
+ tools/testing/kunit/kunit_parser.py | 46 ++++++++++++++---------------
+ 5 files changed, 54 insertions(+), 52 deletions(-)
+
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index d4f7846d0745..08951a114654 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -43,9 +43,9 @@ class KunitStatus(Enum):
+ 	BUILD_FAILURE = auto()
+ 	TEST_FAILURE = auto()
+ 
+-def get_kernel_root_path():
+-	parts = sys.argv[0] if not __file__ else __file__
+-	parts = os.path.realpath(parts).split('tools/testing/kunit')
++def get_kernel_root_path() -> str:
++	path = sys.argv[0] if not __file__ else __file__
++	parts = os.path.realpath(path).split('tools/testing/kunit')
+ 	if len(parts) != 2:
+ 		sys.exit(1)
+ 	return parts[0]
+@@ -171,7 +171,7 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
+ 				exec_result.elapsed_time))
+ 	return parse_result
+ 
+-def add_common_opts(parser):
++def add_common_opts(parser) -> None:
+ 	parser.add_argument('--build_dir',
+ 			    help='As in the make command, it specifies the build '
+ 			    'directory.',
+@@ -183,13 +183,13 @@ def add_common_opts(parser):
+ 			    help='Run all KUnit tests through allyesconfig',
+ 			    action='store_true')
+ 
+-def add_build_opts(parser):
++def add_build_opts(parser) -> None:
+ 	parser.add_argument('--jobs',
+ 			    help='As in the make command, "Specifies  the number of '
+ 			    'jobs (commands) to run simultaneously."',
+ 			    type=int, default=8, metavar='jobs')
+ 
+-def add_exec_opts(parser):
++def add_exec_opts(parser) -> None:
+ 	parser.add_argument('--timeout',
+ 			    help='maximum number of seconds to allow for all tests '
+ 			    'to run. This does not include time taken to build the '
+@@ -198,7 +198,7 @@ def add_exec_opts(parser):
+ 			    default=300,
+ 			    metavar='timeout')
+ 
+-def add_parse_opts(parser):
++def add_parse_opts(parser) -> None:
+ 	parser.add_argument('--raw_output', help='don\'t format output from kernel',
+ 			    action='store_true')
+ 	parser.add_argument('--json',
+diff --git a/tools/testing/kunit/kunit_config.py b/tools/testing/kunit/kunit_config.py
+index 02ffc3a3e5dc..bdd60230764b 100644
+--- a/tools/testing/kunit/kunit_config.py
++++ b/tools/testing/kunit/kunit_config.py
+@@ -8,6 +8,7 @@
+ 
+ import collections
+ import re
++from typing import List, Set
+ 
+ CONFIG_IS_NOT_SET_PATTERN = r'^# CONFIG_(\w+) is not set$'
+ CONFIG_PATTERN = r'^CONFIG_(\w+)=(\S+|".*")$'
+@@ -30,10 +31,10 @@ class KconfigParseError(Exception):
+ class Kconfig(object):
+ 	"""Represents defconfig or .config specified using the Kconfig language."""
+ 
+-	def __init__(self):
+-		self._entries = []
++	def __init__(self) -> None:
++		self._entries = []  # type: List[KconfigEntry]
+ 
+-	def entries(self):
++	def entries(self) -> Set[KconfigEntry]:
+ 		return set(self._entries)
+ 
+ 	def add_entry(self, entry: KconfigEntry) -> None:
+diff --git a/tools/testing/kunit/kunit_json.py b/tools/testing/kunit/kunit_json.py
+index 624b31b2dbd6..f5cca5c38cac 100644
+--- a/tools/testing/kunit/kunit_json.py
++++ b/tools/testing/kunit/kunit_json.py
+@@ -13,7 +13,7 @@ import kunit_parser
+ 
+ from kunit_parser import TestStatus
+ 
+-def get_json_result(test_result, def_config, build_dir, json_path):
++def get_json_result(test_result, def_config, build_dir, json_path) -> str:
+ 	sub_groups = []
+ 
+ 	# Each test suite is mapped to a KernelCI sub_group
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index 2e3cc0fac726..bda7c4fd4d3e 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -11,6 +11,7 @@ import subprocess
+ import os
+ import shutil
+ import signal
++from typing import Iterator
+ 
+ from contextlib import ExitStack
+ 
+@@ -34,7 +35,7 @@ class BuildError(Exception):
+ class LinuxSourceTreeOperations(object):
+ 	"""An abstraction over command line operations performed on a source tree."""
+ 
+-	def make_mrproper(self):
++	def make_mrproper(self) -> None:
+ 		try:
+ 			subprocess.check_output(['make', 'mrproper'], stderr=subprocess.STDOUT)
+ 		except OSError as e:
+@@ -42,7 +43,7 @@ class LinuxSourceTreeOperations(object):
+ 		except subprocess.CalledProcessError as e:
+ 			raise ConfigError(e.output.decode())
+ 
+-	def make_olddefconfig(self, build_dir, make_options):
++	def make_olddefconfig(self, build_dir, make_options) -> None:
+ 		command = ['make', 'ARCH=um', 'olddefconfig']
+ 		if make_options:
+ 			command.extend(make_options)
+@@ -55,7 +56,7 @@ class LinuxSourceTreeOperations(object):
+ 		except subprocess.CalledProcessError as e:
+ 			raise ConfigError(e.output.decode())
+ 
+-	def make_allyesconfig(self, build_dir, make_options):
++	def make_allyesconfig(self, build_dir, make_options) -> None:
+ 		kunit_parser.print_with_timestamp(
+ 			'Enabling all CONFIGs for UML...')
+ 		command = ['make', 'ARCH=um', 'allyesconfig']
+@@ -77,7 +78,7 @@ class LinuxSourceTreeOperations(object):
+ 		kunit_parser.print_with_timestamp(
+ 			'Starting Kernel with all configs takes a few minutes...')
+ 
+-	def make(self, jobs, build_dir, make_options):
++	def make(self, jobs, build_dir, make_options) -> None:
+ 		command = ['make', 'ARCH=um', '--jobs=' + str(jobs)]
+ 		if make_options:
+ 			command.extend(make_options)
+@@ -95,7 +96,7 @@ class LinuxSourceTreeOperations(object):
+ 		if stderr:  # likely only due to build warnings
+ 			print(stderr.decode())
+ 
+-	def linux_bin(self, params, timeout, build_dir):
++	def linux_bin(self, params, timeout, build_dir) -> None:
+ 		"""Runs the Linux UML binary. Must be named 'linux'."""
+ 		linux_bin = './linux'
+ 		if build_dir:
+@@ -107,19 +108,19 @@ class LinuxSourceTreeOperations(object):
+ 						   stderr=subprocess.STDOUT)
+ 			process.wait(timeout)
+ 
+-def get_kconfig_path(build_dir):
++def get_kconfig_path(build_dir) -> str:
+ 	kconfig_path = KCONFIG_PATH
+ 	if build_dir:
+ 		kconfig_path = os.path.join(build_dir, KCONFIG_PATH)
+ 	return kconfig_path
+ 
+-def get_kunitconfig_path(build_dir):
++def get_kunitconfig_path(build_dir) -> str:
+ 	kunitconfig_path = KUNITCONFIG_PATH
+ 	if build_dir:
+ 		kunitconfig_path = os.path.join(build_dir, KUNITCONFIG_PATH)
+ 	return kunitconfig_path
+ 
+-def get_outfile_path(build_dir):
++def get_outfile_path(build_dir) -> str:
+ 	outfile_path = OUTFILE_PATH
+ 	if build_dir:
+ 		outfile_path = os.path.join(build_dir, OUTFILE_PATH)
+@@ -128,11 +129,11 @@ def get_outfile_path(build_dir):
+ class LinuxSourceTree(object):
+ 	"""Represents a Linux kernel source tree with KUnit tests."""
+ 
+-	def __init__(self):
++	def __init__(self) -> None:
+ 		self._ops = LinuxSourceTreeOperations()
+ 		signal.signal(signal.SIGINT, self.signal_handler)
+ 
+-	def clean(self):
++	def clean(self) -> bool:
+ 		try:
+ 			self._ops.make_mrproper()
+ 		except ConfigError as e:
+@@ -140,17 +141,17 @@ class LinuxSourceTree(object):
+ 			return False
+ 		return True
+ 
+-	def create_kunitconfig(self, build_dir, defconfig=DEFAULT_KUNITCONFIG_PATH):
++	def create_kunitconfig(self, build_dir, defconfig=DEFAULT_KUNITCONFIG_PATH) -> None:
+ 		kunitconfig_path = get_kunitconfig_path(build_dir)
+ 		if not os.path.exists(kunitconfig_path):
+ 			shutil.copyfile(defconfig, kunitconfig_path)
+ 
+-	def read_kunitconfig(self, build_dir):
++	def read_kunitconfig(self, build_dir) -> None:
+ 		kunitconfig_path = get_kunitconfig_path(build_dir)
+ 		self._kconfig = kunit_config.Kconfig()
+ 		self._kconfig.read_from_file(kunitconfig_path)
+ 
+-	def validate_config(self, build_dir):
++	def validate_config(self, build_dir) -> bool:
+ 		kconfig_path = get_kconfig_path(build_dir)
+ 		validated_kconfig = kunit_config.Kconfig()
+ 		validated_kconfig.read_from_file(kconfig_path)
+@@ -164,7 +165,7 @@ class LinuxSourceTree(object):
+ 			return False
+ 		return True
+ 
+-	def build_config(self, build_dir, make_options):
++	def build_config(self, build_dir, make_options) -> bool:
+ 		kconfig_path = get_kconfig_path(build_dir)
+ 		if build_dir and not os.path.exists(build_dir):
+ 			os.mkdir(build_dir)
+@@ -176,7 +177,7 @@ class LinuxSourceTree(object):
+ 			return False
+ 		return self.validate_config(build_dir)
+ 
+-	def build_reconfig(self, build_dir, make_options):
++	def build_reconfig(self, build_dir, make_options) -> bool:
+ 		"""Creates a new .config if it is not a subset of the .kunitconfig."""
+ 		kconfig_path = get_kconfig_path(build_dir)
+ 		if os.path.exists(kconfig_path):
+@@ -192,7 +193,7 @@ class LinuxSourceTree(object):
+ 			print('Generating .config ...')
+ 			return self.build_config(build_dir, make_options)
+ 
+-	def build_um_kernel(self, alltests, jobs, build_dir, make_options):
++	def build_um_kernel(self, alltests, jobs, build_dir, make_options) -> bool:
+ 		try:
+ 			if alltests:
+ 				self._ops.make_allyesconfig(build_dir, make_options)
+@@ -203,7 +204,7 @@ class LinuxSourceTree(object):
+ 			return False
+ 		return self.validate_config(build_dir)
+ 
+-	def run_kernel(self, args=[], build_dir='', timeout=None):
++	def run_kernel(self, args=[], build_dir='', timeout=None) -> Iterator[str]:
+ 		args.extend(['mem=1G'])
+ 		self._ops.linux_bin(args, timeout, build_dir)
+ 		outfile = get_outfile_path(build_dir)
+@@ -212,6 +213,6 @@ class LinuxSourceTree(object):
+ 			for line in file:
+ 				yield line
+ 
+-	def signal_handler(self, sig, frame):
++	def signal_handler(self, sig, frame) -> None:
+ 		logging.error('Build interruption occurred. Cleaning console.')
+ 		subprocess.call(['stty', 'sane'])
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index bbfe1b4e4c1c..24954bbc9baf 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -12,32 +12,32 @@ from collections import namedtuple
+ from datetime import datetime
+ from enum import Enum, auto
+ from functools import reduce
+-from typing import List, Optional, Tuple
++from typing import Iterator, List, Optional, Tuple
+ 
+ TestResult = namedtuple('TestResult', ['status','suites','log'])
+ 
+ class TestSuite(object):
+-	def __init__(self):
+-		self.status = None
+-		self.name = None
+-		self.cases = []
++	def __init__(self) -> None:
++		self.status = None  # type: Optional[TestStatus]
++		self.name = ''
++		self.cases = []  # type: List[TestCase]
+ 
+-	def __str__(self):
+-		return 'TestSuite(' + self.status + ',' + self.name + ',' + str(self.cases) + ')'
++	def __str__(self) -> str:
++		return 'TestSuite(' + str(self.status) + ',' + self.name + ',' + str(self.cases) + ')'
+ 
+-	def __repr__(self):
++	def __repr__(self) -> str:
+ 		return str(self)
+ 
+ class TestCase(object):
+-	def __init__(self):
+-		self.status = None
++	def __init__(self) -> None:
++		self.status = None  # type: Optional[TestStatus]
+ 		self.name = ''
+-		self.log = []
++		self.log = []  # type: List[str]
+ 
+-	def __str__(self):
+-		return 'TestCase(' + self.status + ',' + self.name + ',' + str(self.log) + ')'
++	def __str__(self) -> str:
++		return 'TestCase(' + str(self.status) + ',' + self.name + ',' + str(self.log) + ')'
+ 
+-	def __repr__(self):
++	def __repr__(self) -> str:
+ 		return str(self)
+ 
+ class TestStatus(Enum):
+@@ -51,7 +51,7 @@ kunit_start_re = re.compile(r'TAP version [0-9]+$')
+ kunit_end_re = re.compile('(List of all partitions:|'
+ 			  'Kernel panic - not syncing: VFS:)')
+ 
+-def isolate_kunit_output(kernel_output):
++def isolate_kunit_output(kernel_output) -> Iterator[str]:
+ 	started = False
+ 	for line in kernel_output:
+ 		line = line.rstrip()  # line always has a trailing \n
+@@ -64,7 +64,7 @@ def isolate_kunit_output(kernel_output):
+ 		elif started:
+ 			yield line[prefix_len:] if prefix_len > 0 else line
+ 
+-def raw_output(kernel_output):
++def raw_output(kernel_output) -> None:
+ 	for line in kernel_output:
+ 		print(line.rstrip())
+ 
+@@ -72,26 +72,26 @@ DIVIDER = '=' * 60
+ 
+ RESET = '\033[0;0m'
+ 
+-def red(text):
++def red(text) -> str:
+ 	return '\033[1;31m' + text + RESET
+ 
+-def yellow(text):
++def yellow(text) -> str:
+ 	return '\033[1;33m' + text + RESET
+ 
+-def green(text):
++def green(text) -> str:
+ 	return '\033[1;32m' + text + RESET
+ 
+-def print_with_timestamp(message):
++def print_with_timestamp(message) -> None:
+ 	print('[%s] %s' % (datetime.now().strftime('%H:%M:%S'), message))
+ 
+-def format_suite_divider(message):
++def format_suite_divider(message) -> str:
+ 	return '======== ' + message + ' ========'
+ 
+-def print_suite_divider(message):
++def print_suite_divider(message) -> None:
+ 	print_with_timestamp(DIVIDER)
+ 	print_with_timestamp(format_suite_divider(message))
+ 
+-def print_log(log):
++def print_log(log) -> None:
+ 	for m in log:
+ 		print_with_timestamp(m)
+ 
+
+base-commit: 7f376f1917d7461e05b648983e8d2aea9d0712b2
+-- 
+2.29.2.684.gfbc64c5ab5-goog
+
