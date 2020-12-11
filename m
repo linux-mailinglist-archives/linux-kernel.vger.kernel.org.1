@@ -2,148 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFF42D8008
+	by mail.lfdr.de (Postfix) with ESMTP id B92EA2D8009
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389656AbgLKU3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 15:29:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43510 "EHLO
+        id S2391777AbgLKU3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 15:29:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390159AbgLKU23 (ORCPT
+        with ESMTP id S2391336AbgLKU2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 15:28:29 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB32C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:27:43 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id b9so7432760qtr.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:27:43 -0800 (PST)
+        Fri, 11 Dec 2020 15:28:55 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3394C061793
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:28:14 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id f11so12419499ljn.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 12:28:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qxQRcgZ57qjzJh7BvMLhV37MMlxNs43EUrF1vU/yGZU=;
-        b=nrurt71go8dURqiLI/e2i4djK7ea0xPI4EmUSTnhhQsdi3clEfJKra77IRz0wg6yUN
-         UmZtUcmexvGmbBIP1vU/F64/PR7ayXLawLHrEL6no6KluITNweWUcdErlUnFrRNclvhX
-         uFX/HT5Ss1pq0WRbDc1RpzOA5nz8nPSlMIgrB/+NaoNbykJlJC+o20NZXmSipI2VuXUq
-         FyLnQtqBJV4O0FddEE8D4/V2DuR/HdtsJ8CdoObOksUnlWN/cCPken9kLV9lPU6NJPGH
-         X82kStUmE6BZaZS+RT8NUmyI/5UiNHV7lAQv0OjtNucRhilbptk0SyAW32lH5Ukwibw9
-         xXWw==
+        bh=Ov6E9ovGP4O2PjufZFcQsFjtRg7X8nEmJMclI/QMkDc=;
+        b=VfeB05TnKzT8k7qG5j2JTqEgnpHRx5eZuwRx+iOAq1g+qyYfZiMWKMjO8Llh9nqFzr
+         oBwQa/TyPS7dFNb+g5BnVbBGnIjcGbutrSaIksGWvSLTWa/qN0ExWBDcxWasRBDUAhzK
+         4HHKzvyL2den97oJb15WqZGhvdblNNDCNJRLU6ughgfsxVSUdgQPuf/pTY/Nuo0ZAoo+
+         FsUQRvVTpLHZ/4Mfq1mK+FudM2gmfdv4uUBi1F5zhCw0pxC8AAQ3SUBmumOkQWGc39Dr
+         rn00dPvBmIs6+JE58NWHwjSrID3zEcVVOV1fPyqFi3ijl3q4zYn9ZCk+R6M1De4MbcAw
+         cMfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qxQRcgZ57qjzJh7BvMLhV37MMlxNs43EUrF1vU/yGZU=;
-        b=hPIztM5XGjGWb6/qbHvwJZ3ooI48XkSh/3Q9uXJzZaYNe6gF3cIPO/o33/hRis+IB3
-         Z8Fu7BaOiOUCdOUVe3SyjF6/KET69s4LcQMHHBlGEHLfuo4zqDxkHV+o+BuSkzOPmLLR
-         XDWlsBWP55HoHJ3w7dqCQV6tYnwaozOf2cCW8ZaK2tw09jM2ghT3ZUBFe9ul4jc/iMGd
-         r4vO1sALwjf40ddB3Rn5pNZmUFh2EK+IgjWV40q0ygNKVnUHQSYKdIJFLcbOA+nom7aA
-         /jM3s0gG3qm343v7gtYkE0XmatPb/+/jNrtblAJc+bpa6ct52xfemxTDslG81PEOGxFa
-         OIdg==
-X-Gm-Message-State: AOAM532YjfKoTyyOqUj/4//EUy31xtjZ4jjpE6Wiz70cxMdnaCWRb8yK
-        PKhlDszM5IozjwK7oAxh/Hb332nUxxg9r/QVgmppmpyvN3s/k77J
-X-Google-Smtp-Source: ABdhPJwKhJkjDBa/HBYQWBJavEqlSMqWfgTRJzP4rY1FNqLCK7OjrhsPb+JhGumknOwKFJu6fFFVYNlks6t97T4fAYU=
-X-Received: by 2002:ac8:5802:: with SMTP id g2mr17284210qtg.383.1607718462773;
- Fri, 11 Dec 2020 12:27:42 -0800 (PST)
+        bh=Ov6E9ovGP4O2PjufZFcQsFjtRg7X8nEmJMclI/QMkDc=;
+        b=Y7t4IihI84bx5Gr+sN8qWZd7OfHn7v3kYT57fsM/t98fEWxreUm8CnTESNEPn/Mpax
+         N/pEO0JsDLfzm09hSt2jlbPUSczvL5GGG5I8rxP5VNWFU/UXBgZ6P+EjmG4eJ4C3hh67
+         3bfpvPo/x5TJUYuz44HPOa7Mmot/JmHS583F00szWayWjuQMZCl5DOLp+7+qC92UXs8E
+         3Olm7qfT9unsMGYj/h2msGNmxtDHNZfizZclclAjV8jNL30uKMjxCweAssyozN9MCn0I
+         pQ1ts39G5eQLGcmgi8c5OLeIyO/lex9/k+kwHHlNEZdRKB/1yShZgsSBufsqnlLjBXx4
+         ud6w==
+X-Gm-Message-State: AOAM531LLvrVr7424fCn3vYk/7+3U7LphPt9FtddvCRqMHBAQ0389J1Y
+        2fpw2sKyVQB2Lxi6nc9JrcvsSN8jV1h6aED3tXpLqA==
+X-Google-Smtp-Source: ABdhPJxcuGYuisWlCbDZQh90EUiAHflOU1xqg19jqrMoNWSdbkTHnumBHqFUPRv874mad6N7AIog1ZC/9FS0ZE36ARI=
+X-Received: by 2002:a2e:593:: with SMTP id 141mr5908685ljf.86.1607718493088;
+ Fri, 11 Dec 2020 12:28:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20201203221005.2813159-1-adelg@google.com> <CAKwvOdk6=TgL+f2-WvE7tsK0rN1XQ+NdXmeJfDkLsa8xPmgipA@mail.gmail.com>
- <CAEHm+vHtMQtMThgE_BwpiBS5v0a61L_TW9vgKLaFTtcgg9HSgA@mail.gmail.com> <e78c3b86-78ab-2b2e-d8be-e9118d7d2392@linuxfoundation.org>
-In-Reply-To: <e78c3b86-78ab-2b2e-d8be-e9118d7d2392@linuxfoundation.org>
-From:   Andrew Delgadillo <adelg@google.com>
-Date:   Fri, 11 Dec 2020 12:27:31 -0800
-Message-ID: <CAEHm+vHXeuo6cPKOyCgCqLA1a8O8g9wgKVMi+4ifLN__BPVQbA@mail.gmail.com>
-Subject: Re: [PATCH] selftests: propagate CC to selftest submakes
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20201124053943.1684874-1-surenb@google.com> <20201124053943.1684874-2-surenb@google.com>
+ <20201125231322.GF1484898@google.com>
+In-Reply-To: <20201125231322.GF1484898@google.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 11 Dec 2020 21:27:46 +0100
+Message-ID: <CAG48ez0UKYCdgyW91SmOcT52vbLFz9RjLpaucWpj6bTrgQCwnA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm/madvise: allow process_madvise operations on
+ entire memory range
+To:     Minchan Kim <minchan@kernel.org>, Christoph Hellwig <hch@lst.de>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 4:31 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
->
-> On 12/10/20 5:10 PM, Andrew Delgadillo wrote:
-> > On Thu, Dec 10, 2020 at 3:08 PM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> >>
-> >> On Thu, Dec 3, 2020 at 2:10 PM Andrew Delgadillo <adelg@google.com> wrote:
-> >>>
-> >>> lib.mk defaults to gcc when CC is not set. When building selftests
-> >>> as part of a kernel compilation, MAKEFLAGS is cleared to allow implicit
-> >>> build rules to be used. This has the side-effect of clearing the CC
-> >>> variable, which will cause selftests to be built with gcc regardless of
-> >>> if we are using gcc or clang. To remedy this, propagate the CC variable
-> >>> when clearing makeflags to ensure the correct compiler is used.
-> >>>
-> >>> Signed-off-by: Andrew Delgadillo <adelg@google.com>
-> >>
-> >> Hi Andrew, thanks for the patch. Can you walk me through how to build
-> >> the selftests?
-> >>
-> >> Documentation/dev-tools/kselftest.rst says:
-> >> $ make -C tools/testing/selftests
-> >>
-> >> And if I do:
-> >> $ make CC=clang defconfig
-> >> $ make CC=clang -C tools/testing/selftests -j
-> >>
-> >> I observe a spew of errors.  If I apply your patch and rerun the
-> >> above, I see what looks like the same spew of errors.  Am I "holding
-> >> it wrong" or could the docs use a refresh?
-> >>
-> >
-> > Hi Nick, sure thing!
-> >
-> > I also see a slew of errors when building with make -C
-> > tools/testing/selftests. However, that is not the problem I am trying
-> > to solve. I believe we are seeing errors building that way because it
-> > is missing some make variables that are normally set up when building
-> > from the kernel's top level makefile.
-> >
->
-> Both options are supported and should work.
->
-> make -C tools/testing/selftests
-> make kselftest
->
-> That being said, I use gcc. Can you send the errors you are seeing?
-> It is possible, a few tests aren't building and need to be fixed
-> for clang and gcc.
-Most of the errors I saw, I was able to fix by installing the correct
-packages to get some missing headers, so in those cases nothing is
-broken about the tests. However, after that the errors still remaining
-look like so (I've done my best to deduplicate similar errors):
++CC Christoph Hellwig for opinions on compat
 
-clone3_cap_checkpoint_restore.c: In function 'clone3_cap_checkpoint_restore':
-clone3_cap_checkpoint_restore.c:148:9: error: expected expression
-before 'return'
-   XFAIL(return, "Skipping all tests as non-root\n");
-         ^
-make[3]: *** [../lib.mk:139:
-/usr/local/google/home/adelg/projects/upstream/tools/testing/selftests/clone3/clone3_cap_checkpoint_restore]
-Error 1
-
-memfd_test.c: In function 'test_seal_future_write':
-memfd_test.c:783:27: error: 'F_SEAL_FUTURE_WRITE' undeclared (first
-use in this function)
-  mfd_assert_add_seals(fd, F_SEAL_FUTURE_WRITE);
-                           ^
-memfd_test.c:783:27: note: each undeclared identifier is reported only
-once for each function it appears in
-
-/usr/local/***/lib/../lib64/librt.so: undefined reference to
-`pthread_attr_setstacksize@GLIBC_2.2.5'
-collect2: error: ld returned 1 exit status
-
-There are also bpf selftest errors, but I know for a fact those are
-just an artifact of me not having llvm-readelf and other binaries in
-my PATH as I've compiled those successfully before.
+On Thu, Nov 26, 2020 at 12:22 AM Minchan Kim <minchan@kernel.org> wrote:
+> On Mon, Nov 23, 2020 at 09:39:42PM -0800, Suren Baghdasaryan wrote:
+> > process_madvise requires a vector of address ranges to be provided for
+> > its operations. When an advice should be applied to the entire process,
+> > the caller process has to obtain the list of VMAs of the target process
+> > by reading the /proc/pid/maps or some other way. The cost of this
+> > operation grows linearly with increasing number of VMAs in the target
+> > process. Even constructing the input vector can be non-trivial when
+> > target process has several thousands of VMAs and the syscall is being
+> > issued during high memory pressure period when new allocations for such
+> > a vector would only worsen the situation.
+> > In the case when advice is being applied to the entire memory space of
+> > the target process, this creates an extra overhead.
+> > Add PMADV_FLAG_RANGE flag for process_madvise enabling the caller to
+> > advise a memory range of the target process. For now, to keep it simple,
+> > only the entire process memory range is supported, vec and vlen inputs
+> > in this mode are ignored and can be NULL and 0.
+> > Instead of returning the number of bytes that advice was successfully
+> > applied to, the syscall in this mode returns 0 on success. This is due
+> > to the fact that the number of bytes would not be useful for the caller
+> > that does not know the amount of memory the call is supposed to affect.
+> > Besides, the ssize_t return type can be too small to hold the number of
+> > bytes affected when the operation is applied to a large memory range.
 >
-> thanks,
-> -- Shuah
+> Can we just use one element in iovec to indicate entire address rather
+> than using up the reserved flags?
 >
+>         struct iovec {
+>                 .iov_base = NULL,
+>                 .iov_len = (~(size_t)0),
+>         };
+
+In addition to Suren's objections, I think it's also worth considering
+how this looks in terms of compat API. If a compat process does
+process_madvise() on another compat process, it would be specifying
+the maximum 32-bit number, rather than the maximum 64-bit number, so
+you'd need special code to catch that case, which would be ugly.
+
+And when a compat process uses this API on a non-compat process, it
+semantically gets really weird: The actual address range covered would
+be larger than the address range specified.
+
+And if we want different access checks for the two flavors in the
+future, gating that different behavior on special values in the iovec
+would feel too magical to me.
+
+And the length value SIZE_MAX doesn't really make sense anyway because
+the length of the whole address space would be SIZE_MAX+1, which you
+can't express.
+
+So I'm in favor of a new flag, and strongly against using SIZE_MAX as
+a magic number here.
