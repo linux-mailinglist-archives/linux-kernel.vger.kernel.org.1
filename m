@@ -2,192 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173CA2D7477
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E23372D747D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394333AbgLKLEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 06:04:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41190 "EHLO
+        id S2389766AbgLKLHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 06:07:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389234AbgLKLEE (ORCPT
+        with ESMTP id S1727637AbgLKLGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 06:04:04 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D71C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 03:03:24 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kngCk-00011a-N7; Fri, 11 Dec 2020 12:03:18 +0100
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kngCk-0004S2-AH; Fri, 11 Dec 2020 12:03:18 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: [PATCH v2] net: dsa: qca: ar9331: fix sleeping function called from invalid context bug
-Date:   Fri, 11 Dec 2020 12:03:17 +0100
-Message-Id: <20201211110317.17061-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
+        Fri, 11 Dec 2020 06:06:39 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4F8C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 03:05:59 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id s2so4412330plr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 03:05:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dZIcwioXHWW3JNXPwlkLYhTvg1RuyWuebcJZCuVrs6E=;
+        b=mKABuCPKd1JzpkxUpTNwdTIDOVL5ItEy45+YU7piyW7/FDh/MQT5z1cA+Vpkis/dA3
+         Q4jOee+UxpvLx7fenyY8P4RpRm+b+ZmiDcDqIU5A5dtYdotozARYVEzKEHGIsQmtgxCA
+         ur5oK3vI0i6aDNgVLfoVOgLbdA8638qBmY5g2r3UWkFNLZ5Oj1NFC1GBTyvH1oGvetl9
+         Z4DLSxXSpegoLKm8ZnYBPNPnkzWnhHkuBQWYZGUiO9AG76TqB0Z9hlff0arbppYHCCE3
+         z1W1cTZ+u6UoYmAWeg5wnEFQuAzRexf8mEG8WNX5bRZdN1r+EeLZQZcoWx82mgXu8KKi
+         ONmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dZIcwioXHWW3JNXPwlkLYhTvg1RuyWuebcJZCuVrs6E=;
+        b=F+IJyxgRlbXGrL50RP3Cjz39uBnGUUeUOcF2fbDHS2Hjc8+D4dKCL5RXPOTJoyWgWp
+         1mSw79f9ElgH4M2lwdxyOsBn8UdjsKrEAUW3oRtrXKM7lwJ+PFK81GAxw0zpJMF5HBKO
+         iXfsB0BnWi0bsTXCd9CvGQbT6cSH9OysN/xqM3ueHbEofb4A3iOf9y0DJmWXyk228FiD
+         Y0AAamAh1j/ySpMNlJ0WwQINdqpjleHETJ4L7LpT6v3QfaHVk2TxwX38/8Oe/uZBZwZ2
+         cywddnmtZIvXigTMTyM/ix4oG8ZFWqG7JjGlIvGz7QzsGT5K68Wr5kT/srBA6S0HLXHZ
+         Jd4w==
+X-Gm-Message-State: AOAM530XYQiVdPsGnnCCVcJqvxdPVx7+pT/2mgRIjlLE71jTtgCORsZP
+        II3L9Ro87XON3eA1tczazh8E2A==
+X-Google-Smtp-Source: ABdhPJys0+doBaPiq4gQvhWxl+e969zxyvAhWVYQG14+fORCmHboJs10j5b4GXTHY28/CV+lbo4Psg==
+X-Received: by 2002:a17:902:9f8b:b029:da:726d:3f17 with SMTP id g11-20020a1709029f8bb02900da726d3f17mr10431206plq.35.1607684759065;
+        Fri, 11 Dec 2020 03:05:59 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id g16sm9286390pfb.201.2020.12.11.03.05.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 11 Dec 2020 03:05:57 -0800 (PST)
+Date:   Fri, 11 Dec 2020 16:35:55 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: topology: Cleanup init_amu_fie() a bit
+Message-ID: <20201211110555.ht3stotrpbkkdxju@vireshk-i7>
+References: <5594c7d6756a47b473ceb6f48cc217458db32ab0.1607584435.git.viresh.kumar@linaro.org>
+ <20201210103815.GA3313@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210103815.GA3313@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With lockdep enabled, we will get following warning:
+On 10-12-20, 10:38, Ionela Voinescu wrote:
+> Basically, that's functions purpose is only to make sure that invariance
+> at the level of the policy is consistent: either all CPUs in a policy
+> support counters and counters will be used for the scale factor, or
+> either none or only some support counters and therefore the default
+> cpufreq implementation will be used (arch_set_freq_scale()) for all CPUs
+> in a policy.
 
- ar9331_switch ethernet.1:10 lan0 (uninitialized): PHY [!ahb!ethernet@1a000000!mdio!switch@10:00] driver [Qualcomm Atheros AR9331 built-in PHY] (irq=13)
- BUG: sleeping function called from invalid context at kernel/locking/mutex.c:935
- in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 18, name: kworker/0:1
- INFO: lockdep is turned off.
- irq event stamp: 602
- hardirqs last  enabled at (601): [<8073fde0>] _raw_spin_unlock_irq+0x3c/0x80
- hardirqs last disabled at (602): [<8073a4f4>] __schedule+0x184/0x800
- softirqs last  enabled at (0): [<80080f60>] copy_process+0x578/0x14c8
- softirqs last disabled at (0): [<00000000>] 0x0
- CPU: 0 PID: 18 Comm: kworker/0:1 Not tainted 5.10.0-rc3-ar9331-00734-g7d644991df0c #31
- Workqueue: events deferred_probe_work_func
- Stack : 80980000 80980000 8089ef70 80890000 804b5414 80980000 00000002 80b53728
-         00000000 800d1268 804b5414 ffffffde 00000017 800afe08 81943860 0f5bfc32
-         00000000 00000000 8089ef70 819436c0 ffffffea 00000000 00000000 00000000
-         8194390c 808e353c 0000000f 66657272 80980000 00000000 00000000 80890000
-         804b5414 80980000 00000002 80b53728 00000000 00000000 00000000 80d40000
-         ...
- Call Trace:
- [<80069ce0>] show_stack+0x9c/0x140
- [<800afe08>] ___might_sleep+0x220/0x244
- [<8073bfb0>] __mutex_lock+0x70/0x374
- [<8073c2e0>] mutex_lock_nested+0x2c/0x38
- [<804b5414>] regmap_update_bits_base+0x38/0x8c
- [<804ee584>] regmap_update_bits+0x1c/0x28
- [<804ee714>] ar9331_sw_unmask_irq+0x34/0x60
- [<800d91f0>] unmask_irq+0x48/0x70
- [<800d93d4>] irq_startup+0x114/0x11c
- [<800d65b4>] __setup_irq+0x4f4/0x6d0
- [<800d68a0>] request_threaded_irq+0x110/0x190
- [<804e3ef0>] phy_request_interrupt+0x4c/0xe4
- [<804df508>] phylink_bringup_phy+0x2c0/0x37c
- [<804df7bc>] phylink_of_phy_connect+0x118/0x130
- [<806c1a64>] dsa_slave_create+0x3d0/0x578
- [<806bc4ec>] dsa_register_switch+0x934/0xa20
- [<804eef98>] ar9331_sw_probe+0x34c/0x364
- [<804eb48c>] mdio_probe+0x44/0x70
- [<8049e3b4>] really_probe+0x30c/0x4f4
- [<8049ea10>] driver_probe_device+0x264/0x26c
- [<8049bc10>] bus_for_each_drv+0xb4/0xd8
- [<8049e684>] __device_attach+0xe8/0x18c
- [<8049ce58>] bus_probe_device+0x48/0xc4
- [<8049db70>] deferred_probe_work_func+0xdc/0xf8
- [<8009ff64>] process_one_work+0x2e4/0x4a0
- [<800a0770>] worker_thread+0x2a8/0x354
- [<800a774c>] kthread+0x16c/0x174
- [<8006306c>] ret_from_kernel_thread+0x14/0x1c
+Why is it important to have this thing at policy level ? If we are
+okay with only one policy having AMUs and not the other one, then what
+about only some CPUs of both the policies having it. Does it break
+anything ?
 
- ar9331_switch ethernet.1:10 lan1 (uninitialized): PHY [!ahb!ethernet@1a000000!mdio!switch@10:02] driver [Qualcomm Atheros AR9331 built-in PHY] (irq=13)
- DSA: tree 0 setup
-
-To fix it, it is better to move access to MDIO register to the .irq_bus_sync_unlock
-call back.
-
-Fixes: ec6698c272de ("net: dsa: add support for Atheros AR9331 built-in switch")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
-changes v2:
-- fix comment on error
-
- drivers/net/dsa/qca/ar9331.c | 33 ++++++++++++++++++++++++---------
- 1 file changed, 24 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
-index e24a99031b80..4d49c5f2b790 100644
---- a/drivers/net/dsa/qca/ar9331.c
-+++ b/drivers/net/dsa/qca/ar9331.c
-@@ -159,6 +159,8 @@ struct ar9331_sw_priv {
- 	struct dsa_switch ds;
- 	struct dsa_switch_ops ops;
- 	struct irq_domain *irqdomain;
-+	u32 irq_mask;
-+	struct mutex lock_irq;
- 	struct mii_bus *mbus; /* mdio master */
- 	struct mii_bus *sbus; /* mdio slave */
- 	struct regmap *regmap;
-@@ -520,32 +522,44 @@ static irqreturn_t ar9331_sw_irq(int irq, void *data)
- static void ar9331_sw_mask_irq(struct irq_data *d)
- {
- 	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
--	struct regmap *regmap = priv->regmap;
--	int ret;
- 
--	ret = regmap_update_bits(regmap, AR9331_SW_REG_GINT_MASK,
--				 AR9331_SW_GINT_PHY_INT, 0);
--	if (ret)
--		dev_err(priv->dev, "could not mask IRQ\n");
-+	priv->irq_mask = 0;
- }
- 
- static void ar9331_sw_unmask_irq(struct irq_data *d)
-+{
-+	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
-+
-+	priv->irq_mask = AR9331_SW_GINT_PHY_INT;
-+}
-+
-+static void ar9331_sw_irq_bus_lock(struct irq_data *d)
-+{
-+	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
-+
-+	mutex_lock(&priv->lock_irq);
-+}
-+
-+static void ar9331_sw_irq_bus_sync_unlock(struct irq_data *d)
- {
- 	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
- 	struct regmap *regmap = priv->regmap;
- 	int ret;
- 
- 	ret = regmap_update_bits(regmap, AR9331_SW_REG_GINT_MASK,
--				 AR9331_SW_GINT_PHY_INT,
--				 AR9331_SW_GINT_PHY_INT);
-+				 AR9331_SW_GINT_PHY_INT, priv->irq_mask);
- 	if (ret)
--		dev_err(priv->dev, "could not unmask IRQ\n");
-+		dev_err(priv->dev, "failed to change IRQ mask\n");
-+
-+	mutex_unlock(&priv->lock_irq);
- }
- 
- static struct irq_chip ar9331_sw_irq_chip = {
- 	.name = AR9331_SW_NAME,
- 	.irq_mask = ar9331_sw_mask_irq,
- 	.irq_unmask = ar9331_sw_unmask_irq,
-+	.irq_bus_lock = ar9331_sw_irq_bus_lock,
-+	.irq_bus_sync_unlock = ar9331_sw_irq_bus_sync_unlock,
- };
- 
- static int ar9331_sw_irq_map(struct irq_domain *domain, unsigned int irq,
-@@ -584,6 +598,7 @@ static int ar9331_sw_irq_init(struct ar9331_sw_priv *priv)
- 		return irq ? irq : -EINVAL;
- 	}
- 
-+	mutex_init(&priv->lock_irq);
- 	ret = devm_request_threaded_irq(dev, irq, NULL, ar9331_sw_irq,
- 					IRQF_ONESHOT, AR9331_SW_NAME, priv);
- 	if (ret) {
 -- 
-2.29.2
-
+viresh
