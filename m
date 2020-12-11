@@ -2,256 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146AA2D7388
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:11:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 584AF2D739D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393998AbgLKKLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 05:11:11 -0500
-Received: from mga09.intel.com ([134.134.136.24]:38995 "EHLO mga09.intel.com"
+        id S2393276AbgLKKLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 05:11:54 -0500
+Received: from mga04.intel.com ([192.55.52.120]:25115 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393689AbgLKKLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:11:02 -0500
-IronPort-SDR: lC/Twk6jsd6uyfdUAxZFzCrvu9irn6tRyZij0RGm57WLXb+h0I5+TJQgXURigAWACh2O7PWu3u
- Ayy3T4fjDkPA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="174554188"
+        id S2389094AbgLKKL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 05:11:27 -0500
+IronPort-SDR: mXJdiqE18RTlPvPyN+jMpjPqIpBYVQgvvIcrLj88ROyc7TdkoD84NLIn07hO9Yl6ZDIgYQjmun
+ +lyUGWHaEM/w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="171845135"
 X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="174554188"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 02:10:06 -0800
-IronPort-SDR: l/la0T4mfSKmSbr4OoAFGFqN9BVrNvpOvUawXVGGVPwjxCLOjV28FtKuV9e4wJjRtI01siJqGj
- QWGBCwsznvDA==
+   d="scan'208";a="171845135"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 02:09:42 -0800
+IronPort-SDR: 1lPGU/+yZedtJ4rAR+753scyFR+NhlvPw02xOi+HdAvKHZATcWiPI6r+6olWZ+Ni3v2niY/pfB
+ zUFp4GKdOBkQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="349360476"
-Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 11 Dec 2020 02:10:05 -0800
-Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1knfNE-0000pd-HY; Fri, 11 Dec 2020 10:10:04 +0000
-Date:   Fri, 11 Dec 2020 18:09:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/apic] BUILD SUCCESS
- 058df195c23403f91acc028e39ca2ad599d0af52
-Message-ID: <5fd34555.7OzoM+4ddJ+NHDcc%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="440813553"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 11 Dec 2020 02:09:39 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 11 Dec 2020 12:09:39 +0200
+Date:   Fri, 11 Dec 2020 12:09:39 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Xiaohui Zhang <ruc_zhangxiaohui@163.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] tcpm: Fix possible buffer overflows in tcpm_queue_vdm
+Message-ID: <20201211100939.GJ1594451@kuha.fi.intel.com>
+References: <20201209030716.3764-1-ruc_zhangxiaohui@163.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20201209030716.3764-1-ruc_zhangxiaohui@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/apic
-branch HEAD: 058df195c23403f91acc028e39ca2ad599d0af52  x86/ioapic: Cleanup the timer_works() irqflags mess
+Hi,
 
-elapsed time: 724m
+On Wed, Dec 09, 2020 at 11:07:16AM +0800, Xiaohui Zhang wrote:
+> From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+> 
+> tcpm_queue_vdm() calls memcpy() without checking the destination
+> size may trigger a buffer overflower.
 
-configs tested: 194
-configs skipped: 2
+Thanks for the patch, but I didn't actually see any place where that
+could happen. I think the idea is that the callers make sure the count
+does not exceed VDO_MAX_SIZE before calling the function.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 55535c4f6..fcd331f33 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -1045,7 +1045,7 @@ static void tcpm_queue_vdm(struct tcpm_port *port, const u32 header,
+>  
+>  	port->vdo_count = cnt + 1;
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                       omap2plus_defconfig
-mips                         db1xxx_defconfig
-powerpc                      cm5200_defconfig
-mips                        maltaup_defconfig
-powerpc                     skiroot_defconfig
-mips                         bigsur_defconfig
-powerpc                 canyonlands_defconfig
-mips                           ci20_defconfig
-m68k                                defconfig
-xtensa                  nommu_kc705_defconfig
-arc                         haps_hs_defconfig
-sh                             shx3_defconfig
-arm                          ixp4xx_defconfig
-arm                          simpad_defconfig
-arc                        vdk_hs38_defconfig
-sh                           sh2007_defconfig
-powerpc                     tqm8560_defconfig
-arm                           viper_defconfig
-arm                          collie_defconfig
-riscv                            allyesconfig
-sh                 kfr2r09-romimage_defconfig
-um                             i386_defconfig
-arc                            hsdk_defconfig
-mips                    maltaup_xpa_defconfig
-arm                          ep93xx_defconfig
-arm                            zeus_defconfig
-sh                           se7343_defconfig
-sh                            migor_defconfig
-mips                        vocore2_defconfig
-arm                         orion5x_defconfig
-powerpc                 mpc836x_mds_defconfig
-xtensa                    xip_kc705_defconfig
-sh                          kfr2r09_defconfig
-sparc                            alldefconfig
-mips                        bcm47xx_defconfig
-microblaze                      mmu_defconfig
-arc                          axs103_defconfig
-arm                     eseries_pxa_defconfig
-arm                      tct_hammer_defconfig
-powerpc                    mvme5100_defconfig
-powerpc                      acadia_defconfig
-arm                          imote2_defconfig
-mips                malta_kvm_guest_defconfig
-sh                          sdk7780_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                         lubbock_defconfig
-arm                          tango4_defconfig
-mips                           gcw0_defconfig
-sparc                            allyesconfig
-powerpc                     asp8347_defconfig
-powerpc                         ps3_defconfig
-sh                           se7705_defconfig
-sh                        sh7763rdp_defconfig
-sparc64                          alldefconfig
-h8300                               defconfig
-sh                          rsk7201_defconfig
-mips                            ar7_defconfig
-mips                     loongson1c_defconfig
-powerpc                  storcenter_defconfig
-arm                      footbridge_defconfig
-arm                          iop32x_defconfig
-mips                           rs90_defconfig
-openrisc                    or1ksim_defconfig
-mips                        bcm63xx_defconfig
-arm                         shannon_defconfig
-c6x                                 defconfig
-m68k                       m5249evb_defconfig
-arm                           stm32_defconfig
-arm                           h5000_defconfig
-alpha                            alldefconfig
-sh                         microdev_defconfig
-arm                           u8500_defconfig
-powerpc                        icon_defconfig
-m68k                             alldefconfig
-sh                          r7785rp_defconfig
-sh                   secureedge5410_defconfig
-ia64                          tiger_defconfig
-arm                        mini2440_defconfig
-sh                              ul2_defconfig
-mips                             allyesconfig
-mips                          rb532_defconfig
-sh                          urquell_defconfig
-sh                          sdk7786_defconfig
-powerpc                      ppc64e_defconfig
-arm                         palmz72_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                               j2_defconfig
-arm                       versatile_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                 mpc834x_itx_defconfig
-sh                               alldefconfig
-m68k                          amiga_defconfig
-powerpc                      ppc40x_defconfig
-powerpc                       ebony_defconfig
-arm                         s5pv210_defconfig
-powerpc                      makalu_defconfig
-mips                          rm200_defconfig
-arm                             mxs_defconfig
-riscv                            alldefconfig
-powerpc                      arches_defconfig
-m68k                        m5272c3_defconfig
-powerpc                 mpc837x_rdb_defconfig
-mips                           ip27_defconfig
-arm                          gemini_defconfig
-arm                      pxa255-idp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201209
-i386                 randconfig-a005-20201209
-i386                 randconfig-a001-20201209
-i386                 randconfig-a002-20201209
-i386                 randconfig-a006-20201209
-i386                 randconfig-a003-20201209
-i386                 randconfig-a001-20201210
-i386                 randconfig-a004-20201210
-i386                 randconfig-a003-20201210
-i386                 randconfig-a002-20201210
-i386                 randconfig-a005-20201210
-i386                 randconfig-a006-20201210
-x86_64               randconfig-a016-20201209
-x86_64               randconfig-a012-20201209
-x86_64               randconfig-a013-20201209
-x86_64               randconfig-a014-20201209
-x86_64               randconfig-a015-20201209
-x86_64               randconfig-a011-20201209
-x86_64               randconfig-a016-20201210
-x86_64               randconfig-a012-20201210
-x86_64               randconfig-a013-20201210
-x86_64               randconfig-a015-20201210
-x86_64               randconfig-a014-20201210
-x86_64               randconfig-a011-20201210
-i386                 randconfig-a013-20201209
-i386                 randconfig-a014-20201209
-i386                 randconfig-a011-20201209
-i386                 randconfig-a015-20201209
-i386                 randconfig-a012-20201209
-i386                 randconfig-a016-20201209
-i386                 randconfig-a014-20201210
-i386                 randconfig-a013-20201210
-i386                 randconfig-a012-20201210
-i386                 randconfig-a011-20201210
-i386                 randconfig-a016-20201210
-i386                 randconfig-a015-20201210
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+That should have been fixed as well, no?
 
-clang tested configs:
-x86_64               randconfig-a004-20201209
-x86_64               randconfig-a006-20201209
-x86_64               randconfig-a005-20201209
-x86_64               randconfig-a001-20201209
-x86_64               randconfig-a002-20201209
-x86_64               randconfig-a003-20201209
+>  	port->vdo_data[0] = header;
+> -	memcpy(&port->vdo_data[1], data, sizeof(u32) * cnt);
+> +	memcpy(&port->vdo_data[1], data, min_t(int, sizeof(u32) * cnt, VDO_MAX_SIZE - 1));
+>  	/* Set ready, vdm state machine will actually send */
+>  	port->vdm_retries = 0;
+>  	port->vdm_state = VDM_STATE_READY;
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Unless I'm missing something, I don't think this patch is needed.
+
+thanks,
+
+-- 
+heikki
