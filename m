@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A662D7F2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C27F2D7F32
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 20:10:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403782AbgLKTGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 14:06:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733161AbgLKTGp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 14:06:45 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D512C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 11:06:05 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id t4so10064575wrr.12
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 11:06:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=fpPPTe1BQ4FWmxzhApqvIpf5cdvBk6k3Kx2tkhrQqYk=;
-        b=znhCohWhGtvDiWVsybr8Pd8ygtlGPgI0TAkqeYHwam3x8bcHEsmf7MfbVhRg6V5AIh
-         mPdtUG702qAKTX4JOiS47R9Es8sjd9ecW9EMAdBAFzfztalM/flT2dJ2Zq9FLB8RFRUQ
-         yzNJsp8WXxb7b75O1Re5F+Z1v1SZQveAO/OWA2dT+SFwQ0IoXkrvLSjboY/UPlXKrBLe
-         h4t2R3ZecrpvLxh0qgx/2EgbGktbKXQPb2bYh5uaPLkxj5FWKMja5DJ/0U8PhRrbTGzd
-         MMQ8XQi5MQCt/acJq7ym5ndp1+Orl2iJqndfg05ZjqIa7uuNYO+uXIb4ln1hh35gg7Er
-         m4Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=fpPPTe1BQ4FWmxzhApqvIpf5cdvBk6k3Kx2tkhrQqYk=;
-        b=oVFBKfrftdVNzQZ4U9WnGRZ5gh09iVlNR53aIRRJE4rI7f1rTBzGaUajOs4WRjnikS
-         jAveMp9EtlBa0oePu3SyxwsfRsQoBb6swQzwiWdIKvmPmdzmnEJpSgRE6MvChotYgSGt
-         xNvpVIxLD4L7Y3rLnaICRN3WFxzdHteGgJFPZmd5FcndE/7RqqhAxWEzTMVOf7DeLpKV
-         i+xj19tu45QFNxJgnVUHrNd5UFAv2f8QLCRQ6tesV8ibL83/uzVX/Go6By70et1VSbHd
-         XBgVn+JN26JV6/CBsYk4VcX15ntLOZ1pYmSveowbPuZD0AXqHlDppoBpRLEJQpiZdnm0
-         yfqw==
-X-Gm-Message-State: AOAM532Gy4271JN3XZDGxNaj/WpJJ5QtEGq3jgiqFrH2fNV2ag4aZI5o
-        MMrPO1nKWYMFCwuv2/mCJMQNow==
-X-Google-Smtp-Source: ABdhPJzrLKRJuKz6cmy+IlNBBNLpdXXMdAzHfGQGJJ0Se7kTtOYYHiKc5EuHAyQoRdk1GYaNM3didg==
-X-Received: by 2002:adf:fa05:: with SMTP id m5mr15759389wrr.26.1607713564256;
-        Fri, 11 Dec 2020 11:06:04 -0800 (PST)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id q4sm15673046wmc.2.2020.12.11.11.06.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 11:06:03 -0800 (PST)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-Subject: Re: [PATCH v4 02/10] arm64: dts: amlogic: meson-g12: Set FL-adj property value
-In-Reply-To: <20201210091756.18057-3-Sergey.Semin@baikalelectronics.ru>
-References: <20201210091756.18057-1-Sergey.Semin@baikalelectronics.ru> <20201210091756.18057-3-Sergey.Semin@baikalelectronics.ru>
-Date:   Fri, 11 Dec 2020 11:06:00 -0800
-Message-ID: <7hpn3g9n8n.fsf@baylibre.com>
+        id S2392202AbgLKTIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 14:08:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728041AbgLKTH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 14:07:58 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E311B2405C;
+        Fri, 11 Dec 2020 19:07:17 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1knnl5-000XiK-Iz; Fri, 11 Dec 2020 19:07:15 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 11 Dec 2020 19:07:15 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>, Qian Cai <qcai@redhat.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2 16/17] driver core: Refactor fw_devlink feature
+In-Reply-To: <CAGETcx_hPVv1iTt6q3gLmBN=q+_O6vTwxeS5Nj55Smm3FNk24Q@mail.gmail.com>
+References: <20201121020232.908850-1-saravanak@google.com>
+ <20201121020232.908850-17-saravanak@google.com>
+ <02e7047071f0b54b046ac472adeeb3fafabc643c.camel@redhat.com>
+ <788ee1c7-0ea2-33ec-658e-50707f7515a6@arm.com>
+ <CAGETcx-MsNyWWT=s1H6hDK+=QvibBLQrT9rM51y5bkomV_+G6g@mail.gmail.com>
+ <813b3fbd80ad4dfee7ff8517d4829a1f@kernel.org>
+ <CAGETcx_hPVv1iTt6q3gLmBN=q+_O6vTwxeS5Nj55Smm3FNk24Q@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <caf7719771210fb91565d105bd9c7e4b@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: saravanak@google.com, robin.murphy@arm.com, qcai@redhat.com, rjw@rjwysocki.net, rafael@kernel.org, lenb@kernel.org, gregkh@linuxfoundation.org, ardb@kernel.org, robh+dt@kernel.org, frowand.list@gmail.com, tglx@linutronix.de, devicetree@vger.kernel.org, grygorii.strashko@ti.com, sfr@canb.auug.org.au, linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, tomi.valkeinen@ti.com, laurent.pinchart@ideasonboard.com, kernel-team@android.com, linux-next@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Serge Semin <Sergey.Semin@baikalelectronics.ru> writes:
+On 2020-12-11 18:20, Saravana Kannan wrote:
 
-> In accordance with the DWC USB3 bindings the property is supposed to have
-> uint32 type. It's erroneous from the DT schema and driver points of view
-> to declare it as boolean. As Neil suggested set it to 0x20 so not break
-> the platform and to make the dtbs checker happy.
->
-> Link: https://lore.kernel.org/linux-usb/20201010224121.12672-16-Sergey.Semin@baikalelectronics.ru/
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Lol, my only contribution to the patch will be the commit text. I'll
+> send them with reported-by, suggested-by and tested-by if no one less
+> beats me to it.
 
-Queuing for fixes after adding:
+Teamwork!
 
-Fixes: 9baf7d6be730 ("arm64: dts: meson: g12a: Add G12A USB nodes")
-
-Thanks,
-
-Kevin
+         M.
+-- 
+Jazz is not dead. It just smells funny...
