@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5606B2D7878
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2CF2D786C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437457AbgLKPAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:00:40 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:35644 "EHLO
+        id S2406499AbgLKPAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:00:02 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:35694 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406438AbgLKO7d (ORCPT
+        with ESMTP id S2406442AbgLKO7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:59:33 -0500
-Date:   Fri, 11 Dec 2020 14:58:43 -0000
+        Fri, 11 Dec 2020 09:59:38 -0500
+Date:   Fri, 11 Dec 2020 14:58:44 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607698724;
+        s=2020; t=1607698725;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=d2tbW1CPJfyQkgR+kEkqrtKqo+yF+OU7x1Tkz7QCIkA=;
-        b=wGFZIaqP4Jm2iMf4p405Jq1MmhVbjLfKaGnYB3JDhFPC1UWKJmqh/6m/TL9eimDs8rWIg0
-        q4A3FdltaoJtv+mW1KSwK2iBPaTyYVnMPgPNOw6dsGUDopD7KhiqU/iPS+S22dlp4X2rnG
-        WcWsMloz5Gbfv0XWSFvZtJuc2Dhc1gNp/pl4x/3FS9KCS4FGuMPqvaBm1HLRmlfnGjcpRY
-        T3hTBvSkvZ/8sjYLUNilxU+iKBrzRwH7zCjABqhYqnnlpeXVybbqrP4mI3MBrayBMljvbE
-        y9fxhJtaVX4n8+dbX01t+hDT5Rx6aiy2200M9B1xz3bXZAlF8BGW9w0JcIpeWA==
+        bh=o6IoD4Z7pt5xQHYFTBTb9gwO0p5nbB8Ry33Aud2UnSc=;
+        b=dV2E14RX3KEp1lwcXjFCFHvLIJ7KnIlkDRHzQhcl5umdsivdaao1CEcAyTkPZh4/b2yAmP
+        fLiKWKP/1pYkxuRFq0DRRnY5cQJq3O8Mob75atdSsViY+iUIr0clgR7Xs/Eymx4nb5JAwo
+        9HeB+HlPDk2COPoUTF9qO8vFDZ2Cb86JbRayMAhP8toBKKjZOpa+xdt4RIkeysVNm+tA6d
+        6zXcLZNTDdVHb9N92HswOKNEqJzU+76trMkzzFYk3Ox/9dxMZm9NcrNnG/di8puRumRbMm
+        0alz43TEtq1HyQNWPUOs2HA6UpU1XO4MPkSa9VY3+kJlDnv+WtEVUfImBiYfgQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607698724;
+        s=2020e; t=1607698725;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=d2tbW1CPJfyQkgR+kEkqrtKqo+yF+OU7x1Tkz7QCIkA=;
-        b=FMKoAFqsyacCdIepde2DVKzXhs1+lhWNYO+PA3eRCib9jtihfTkg5nMWa6NzdPkmDqQTdh
-        XmR6f3OQ/T4ngCAw==
-From:   "irqchip-bot for Valentin Schneider" <tip-bot2@linutronix.de>
+        bh=o6IoD4Z7pt5xQHYFTBTb9gwO0p5nbB8Ry33Aud2UnSc=;
+        b=V+0qodCTACkcN5JxhHVxxlU7qfGd2UqcMW+mSqDFuAVKd4w2LgxSLF0wc4v8YldCh1bnyo
+        Y8ShxWTFjdeaiLAw==
+From:   "irqchip-bot for Gregory CLEMENT" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/hip04: Make IPIs use
- handle_percpu_devid_irq()
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <20201109094121.29975-5-valentin.schneider@arm.com>
-References: <20201109094121.29975-5-valentin.schneider@arm.com>
+Subject: [irqchip: irq/irqchip-next] irqchip/ocelot: Add support for Serval platforms
+Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        tglx@linutronix.de
+In-Reply-To: <20201125103206.136498-6-gregory.clement@bootlin.com>
+References: <20201125103206.136498-6-gregory.clement@bootlin.com>
 MIME-Version: 1.0
-Message-ID: <160769872362.3364.18286586109832582708.tip-bot2@tip-bot2>
+Message-ID: <160769872456.3364.1708320596924363860.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,39 +60,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     a2e042e13ff322ad523a2f131dd6e03e8bc05053
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/a2e042e13ff322ad523a2f131dd6e03e8bc05053
-Author:        Valentin Schneider <valentin.schneider@arm.com>
-AuthorDate:    Mon, 09 Nov 2020 09:41:20 
+Commit-ID:     7efdfbd15a21788de8c0743590e777f151a3031b
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/7efdfbd15a21788de8c0743590e777f151a3031b
+Author:        Gregory CLEMENT <gregory.clement@bootlin.com>
+AuthorDate:    Wed, 25 Nov 2020 11:32:05 +01:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Fri, 11 Dec 2020 14:47:50 
+CommitterDate: Fri, 11 Dec 2020 14:47:49 
 
-irqchip/hip04: Make IPIs use handle_percpu_devid_irq()
+irqchip/ocelot: Add support for Serval platforms
 
-As done for the Arm GIC irqchips, move IPIs to handle_percpu_devid_irq() as
-handle_percpu_devid_fasteoi_ipi() isn't actually required.
+This patch extends irqchip driver for ocelot to be used with an other
+vcoreiii base platform: Serval.
 
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Based on a larger patch from Lars Povlsen <lars.povlsen@microchip.com>
+
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20201109094121.29975-5-valentin.schneider@arm.com
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20201125103206.136498-6-gregory.clement@bootlin.com
 ---
- drivers/irqchip/irq-hip04.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/irqchip/irq-mscc-ocelot.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/drivers/irqchip/irq-hip04.c b/drivers/irqchip/irq-hip04.c
-index 9b73dcf..a6ed877 100644
---- a/drivers/irqchip/irq-hip04.c
-+++ b/drivers/irqchip/irq-hip04.c
-@@ -296,11 +296,7 @@ static void hip04_irq_cpu_init(struct hip04_irq_data *intc)
- static int hip04_irq_domain_map(struct irq_domain *d, unsigned int irq,
- 				irq_hw_number_t hw)
+diff --git a/drivers/irqchip/irq-mscc-ocelot.c b/drivers/irqchip/irq-mscc-ocelot.c
+index 496f955..da5a0ad 100644
+--- a/drivers/irqchip/irq-mscc-ocelot.c
++++ b/drivers/irqchip/irq-mscc-ocelot.c
+@@ -41,6 +41,17 @@ static struct chip_props ocelot_props = {
+ 	.n_irq			= 24,
+ };
+ 
++static struct chip_props serval_props = {
++	.flags			= FLAGS_HAS_TRIGGER,
++	.reg_off_sticky		= 0xc,
++	.reg_off_ena		= 0x14,
++	.reg_off_ena_clr	= 0x18,
++	.reg_off_ena_set	= 0x1c,
++	.reg_off_ident		= 0x20,
++	.reg_off_trigger	= 0x4,
++	.n_irq			= 24,
++};
++
+ static struct chip_props luton_props = {
+ 	.flags			= FLAGS_NEED_INIT_ENABLE,
+ 	.reg_off_sticky		= 0,
+@@ -171,6 +182,14 @@ static int __init ocelot_irq_init(struct device_node *node,
+ 
+ IRQCHIP_DECLARE(ocelot_icpu, "mscc,ocelot-icpu-intr", ocelot_irq_init);
+ 
++static int __init serval_irq_init(struct device_node *node,
++				  struct device_node *parent)
++{
++	return vcoreiii_irq_init(node, parent, &serval_props);
++}
++
++IRQCHIP_DECLARE(serval_icpu, "mscc,serval-icpu-intr", serval_irq_init);
++
+ static int __init luton_irq_init(struct device_node *node,
+ 				 struct device_node *parent)
  {
--	if (hw < 16) {
--		irq_set_percpu_devid(irq);
--		irq_set_chip_and_handler(irq, &hip04_irq_chip,
--					 handle_percpu_devid_fasteoi_ipi);
--	} else if (hw < 32) {
-+	if (hw < 32) {
- 		irq_set_percpu_devid(irq);
- 		irq_set_chip_and_handler(irq, &hip04_irq_chip,
- 					 handle_percpu_devid_irq);
