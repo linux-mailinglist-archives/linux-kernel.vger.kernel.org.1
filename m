@@ -2,99 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5412B2D6E27
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 03:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643E72D6E2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 03:40:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391817AbgLKCce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 21:32:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391165AbgLKCcY (ORCPT
+        id S2391881AbgLKCjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 21:39:33 -0500
+Received: from emcscan.emc.com.tw ([192.72.220.5]:14789 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391165AbgLKCjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 21:32:24 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E1DC0613CF;
-        Thu, 10 Dec 2020 18:31:43 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id z11so7162807qkj.7;
-        Thu, 10 Dec 2020 18:31:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EeBE0q+ErDzzvoGT97HzZPFWnthYhh5V7M5ilZcCsbk=;
-        b=Du/BFUZWIiV9QL9SLfwiNk/AcgiLYD23ezmHJCJ2GK/qX553KoC+/Uf6EzhR1Yqw0G
-         wvR0KUDHEqgi1rekJ53m3hKY7xXF+lw9BVwPMc+4XMhWAwQ8vkrpEv5HVbXaMD2Qesd2
-         G6CHOSmyP19f2EuKLase/8kzypAqf8cS6i9akAMQXHkVXk8HkfEkk6vd+31133nYPgG9
-         B7PHwPENAnkxJBUfH2v/xnOsZ1Ya+EfZTgPGtlEydZSe+xamKxhX8aZ4PSrvIhT6No/t
-         74lkI/yVPEd+SocUw3GUgomgNBL69lZyvmIPV+/RwGfYE2Bl4yTg4Bz8xNVEmgyJwwQB
-         brew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EeBE0q+ErDzzvoGT97HzZPFWnthYhh5V7M5ilZcCsbk=;
-        b=RPwyW8PR991ggeakceYmaiesfsI1XzOOcTcqiVSPAYcTQsVtsGEdYcQfIjmXRJIy8v
-         GQSi8LrIT/Cj02QirUd6QQkldsAdpP3Bg6ezcWm/I/v4m85ESLUVYkJVslZjgGDMKzRN
-         Hx8CL3+/PAyCBIMg2zPOjSjDb0qbSTqko5Au4NqDqBsey51qKS+uECQaOrqk9W5nKxd/
-         3vc899491PJVKkijJyWOBt9qmIXfuXbczC8T5ZKOrALp0aPBGsz7H+R+dmiNd6C3OIML
-         dLVe3R5v0OdNLE3Wo1/KRYRkILTpSrNOXo4Uv+px3swNjZWB9B7iqRmrAtRh81qx8TWf
-         si+Q==
-X-Gm-Message-State: AOAM5323jnt87HzQpDj8miycYD/qs+dU46YDpHU680tI4pzDN2K+jpoj
-        ya4Yl4aZunhgEDm3fbkLMTvcPvx22etdV+BVvVVNW5bUKCtwng==
-X-Google-Smtp-Source: ABdhPJxM9PzPaAMuDWF/f7hOuuVq3yPBdtl+Y6lFsJ2A+LYREf34G/MGnb3UMg/S0vlPucFwIc5OTk+Reg4tW708LYw=
-X-Received: by 2002:a37:a7d1:: with SMTP id q200mr12770176qke.283.1607653903024;
- Thu, 10 Dec 2020 18:31:43 -0800 (PST)
+        Thu, 10 Dec 2020 21:39:07 -0500
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="38544289"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 11 Dec 2020 10:38:25 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(2869:0:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Fri, 11 Dec 2020 10:38:24 +0800 (CST)
+Received: from 192.168.33.11
+        by webmail.emc.com.tw with Mail2000 ESMTP Server V7.00(106420:1:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Fri, 11 Dec 2020 10:38:22 +0800 (CST)
+From:   "jingle" <jingle.wu@emc.com.tw>
+To:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        <phoenix@emc.com.tw>, <josh.chen@emc.com.tw>,
+        <dave.wang@emc.com.tw>
+References: <20201207090751.9076-1-jingle.wu@emc.com.tw> <X9G8xUk/QvcxsNWi@google.com>
+In-Reply-To: <X9G8xUk/QvcxsNWi@google.com>
+Subject: RE: [PATCH 1/2] Input: elan_i2c - Add new trackpoint report type 0x5F.
+Date:   Fri, 11 Dec 2020 10:38:22 +0800
+Message-ID: <004b01d6cf66$b1a8c590$14fa50b0$@emc.com.tw>
 MIME-Version: 1.0
-References: <20201210160357.27779-1-georgi.djakov@linaro.org>
-In-Reply-To: <20201210160357.27779-1-georgi.djakov@linaro.org>
-From:   Joonsoo Kim <js1304@gmail.com>
-Date:   Fri, 11 Dec 2020 11:31:32 +0900
-Message-ID: <CAAmzW4My=Abdv+GAe-nOdM0kbFFc28oQBxAM-hWfDLpj1AocdA@mail.gmail.com>
-Subject: Re: [PATCH v3] mm/page_owner: Record timestamp and pid
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Vlastimil Babka <vbabka@suse.cz>, corbet@lwn.net,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        lmark@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AQJnCFa5POgkA0Msoaon23+TYxT29AGcL9WIqMPaTJA=
+Content-Language: zh-tw
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcMDYwMTFcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy1lZjJlZjI0ZS0zYjU5LTExZWItYjhhNy1mMDc5NTk2OWU3NWVcYW1lLXRlc3RcZWYyZWYyNTAtM2I1OS0xMWViLWI4YTctZjA3OTU5NjllNzVlYm9keS50eHQiIHN6PSIyOTY1IiB0PSIxMzI1MjEyNzkwMjYwNDc1MzUiIGg9InhhdkI0WEp6QWF6V2lEc2xuY3oyZy80VDRGST0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020=EB=85=84 12=EC=9B=94 11=EC=9D=BC (=EA=B8=88) =EC=98=A4=EC=A0=84 1:04, =
-Georgi Djakov <georgi.djakov@linaro.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
-=B1:
->
-> From: Liam Mark <lmark@codeaurora.org>
->
-> Collect the time for each allocation recorded in page owner so that
-> allocation "surges" can be measured.
->
-> Record the pid for each allocation recorded in page owner so that the
-> source of allocation "surges" can be better identified.
->
-> The above is very useful when doing memory analysis.  On a crash for
-> example, we can get this information from kdump (or ramdump) and parse it
-> to figure out memory allocation problems.
->
-> Please note that on x86_64 this increases the size of struct page_owner
-> from 16 bytes to 32.
->
-> Vlastimil: it's not a functionality intended for production, so unless
-> somebody says they need to enable page_owner for debugging and this
-> increase prevents them from fitting into available memory, let's not
-> complicate things with making this optional.
->
-> Signed-off-by: Liam Mark <lmark@codeaurora.org>
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Jonathan Corbet <corbet@lwn.net>
+HI Dmitry:
 
-Acked-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+I would prefer if we validated report length versus the packet type before
+accepting it.
 
-This is useful. Our company already has an in-house patch to store
-pid since a few years ago.
+-> If the tracking point report is 0x5F, the report length is 7, but the
+touchpad report length is 32.
+-> So, report length will be different with this module.
+
+THANKS
+JINGLE
+
+
+-----Original Message-----
+From: Dmitry Torokhov [mailto:dmitry.torokhov@gmail.com] 
+Sent: Thursday, December 10, 2020 2:14 PM
+To: jingle.wu
+Cc: linux-kernel@vger.kernel.org; linux-input@vger.kernel.org;
+phoenix@emc.com.tw; josh.chen@emc.com.tw; dave.wang@emc.com.tw
+Subject: Re: [PATCH 1/2] Input: elan_i2c - Add new trackpoint report type
+0x5F.
+
+Hi Jingle,
+
+On Mon, Dec 07, 2020 at 05:07:51PM +0800, jingle.wu wrote:
+> The 0x5F is new trackpoint report type of some module.
+> 
+> Signed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
+> ---
+>  drivers/input/mouse/elan_i2c_core.c  | 2 ++  
+> drivers/input/mouse/elan_i2c_smbus.c | 3 ++-
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/input/mouse/elan_i2c_core.c 
+> b/drivers/input/mouse/elan_i2c_core.c
+> index 61ed3f5ca219..8f0c4663167c 100644
+> --- a/drivers/input/mouse/elan_i2c_core.c
+> +++ b/drivers/input/mouse/elan_i2c_core.c
+> @@ -52,6 +52,7 @@
+>  #define ETP_REPORT_ID		0x5D
+>  #define ETP_REPORT_ID2		0x60	/* High precision report */
+>  #define ETP_TP_REPORT_ID	0x5E
+> +#define ETP_TP_REPORT_ID2	0x5F
+>  #define ETP_REPORT_ID_OFFSET	2
+>  #define ETP_TOUCH_INFO_OFFSET	3
+>  #define ETP_FINGER_DATA_OFFSET	4
+
+I think we might need to move this into elan_i2c.h so that we can reference
+it from elan_i2c_smbus.c.
+
+> @@ -1076,6 +1077,7 @@ static irqreturn_t elan_isr(int irq, void *dev_id)
+>  		elan_report_absolute(data, report, true);
+>  		break;
+>  	case ETP_TP_REPORT_ID:
+> +	case ETP_TP_REPORT_ID2:
+>  		elan_report_trackpoint(data, report);
+>  		break;
+>  	default:
+> diff --git a/drivers/input/mouse/elan_i2c_smbus.c 
+> b/drivers/input/mouse/elan_i2c_smbus.c
+> index 1820f1cfc1dc..1226d47ec3cf 100644
+> --- a/drivers/input/mouse/elan_i2c_smbus.c
+> +++ b/drivers/input/mouse/elan_i2c_smbus.c
+> @@ -45,6 +45,7 @@
+>  #define ETP_SMBUS_CALIBRATE_QUERY	0xC5
+>  
+>  #define ETP_SMBUS_REPORT_LEN		32
+> +#define ETP_SMBUS_REPORT_LEN2		7
+>  #define ETP_SMBUS_REPORT_OFFSET		2
+>  #define ETP_SMBUS_HELLOPACKET_LEN	5
+>  #define ETP_SMBUS_IAP_PASSWORD		0x1234
+> @@ -497,7 +498,7 @@ static int elan_smbus_get_report(struct i2c_client
+*client,
+>  		return len;
+>  	}
+>  
+> -	if (len != ETP_SMBUS_REPORT_LEN) {
+> +	if ((len != ETP_SMBUS_REPORT_LEN) && (len != ETP_SMBUS_REPORT_LEN2))
+
+> +{
+
+I would prefer if we validated report length versus the packet type before
+accepting it.
+
+>  		dev_err(&client->dev,
+>  			"wrong report length (%d vs %d expected)\n",
+>  			len, ETP_SMBUS_REPORT_LEN);
+> --
+> 2.17.1
+> 
 
 Thanks.
+
+-- 
+Dmitry
+
