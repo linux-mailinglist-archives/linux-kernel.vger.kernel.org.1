@@ -2,270 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B362D71A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 264682D71AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436891AbgLKIYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:24:36 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:39862 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436846AbgLKIXm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:23:42 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201211082248euoutp01223b0ffab667998e16dd12475dea9633~Pm93IjYgv2667426674euoutp01Z;
-        Fri, 11 Dec 2020 08:22:48 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201211082248euoutp01223b0ffab667998e16dd12475dea9633~Pm93IjYgv2667426674euoutp01Z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1607674968;
-        bh=EPWpPxaL1kgGyP4y1rAeD68RhW99/C5QTk2XWnaps1g=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=BFcvi7Sntxic0Qz/yiSYIPzrCMJj80D0pRsJa35lcsVuwX6w/uR/2lAnQiJ3Q5M+Y
-         huuFjjD52OiSdOWrpyG3KoW6hKlLysiZJmWlWaJtUCLizWE52E5tDqe/jImvOaAcG9
-         570Hczk8jN+jlagxXl3mQHVj2BitBELQJBcieEtQ=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201211082248eucas1p22f70923933f5ab50cc44ebf033385af0~Pm92j1pHn2458824588eucas1p2Y;
-        Fri, 11 Dec 2020 08:22:48 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 72.48.27958.85C23DF5; Fri, 11
-        Dec 2020 08:22:48 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201211082247eucas1p2bcbb136330cf83031d697b08dafa89b0~Pm92EC00a1636416364eucas1p22;
-        Fri, 11 Dec 2020 08:22:47 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201211082247eusmtrp22baf72f4d261456b2730397a38aca3b9~Pm92Cvw9Z2764927649eusmtrp2V;
-        Fri, 11 Dec 2020 08:22:47 +0000 (GMT)
-X-AuditID: cbfec7f2-f15ff70000006d36-55-5fd32c585127
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 1E.15.16282.75C23DF5; Fri, 11
-        Dec 2020 08:22:47 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201211082245eusmtip132375ffa3fbef40063d97e5055ac2005~Pm90JJ9H22215522155eusmtip1j;
-        Fri, 11 Dec 2020 08:22:45 +0000 (GMT)
-Subject: Re: [PATCH] Input: cyapa - do not call input_device_enabled from
- power mode handler
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-tegra@vger.kernel.org, patches@opensource.cirrus.com,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Sylvain Lemieux <slemieux.tyco@gmail.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Barry Song <baohua@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Nick Dyer <nick@shmanahar.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ferruh Yigit <fery@cypress.com>,
-        Sangwon Jee <jeesw@melfas.com>,
-        Peter Hutterer <peter.hutterer@redhat.com>,
-        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
-        kernel@collabora.com,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <fa0e07b1-dee7-9b44-897d-66095f2eab90@samsung.com>
-Date:   Fri, 11 Dec 2020 09:22:44 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.5.1
+        id S2436867AbgLKIYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:24:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436843AbgLKIXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 03:23:38 -0500
+Date:   Fri, 11 Dec 2020 09:22:53 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607674977;
+        bh=cEG2dsj6Lc6hGoLQ5vnXHriRwLps+wvQMuWoBGz3oZY=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dZ0T/585KVykK2BUWWeG+N6Tr1DG3CJKUYjAs5HVaCvebo6n7ZHc0cSoBucF7nWmp
+         AudiBgBvkQ9wWOvIZSMSyPsODkSsZdAxtmJJWDSvdB0TjWcZQnabz2yF4Cmd5Qh5Nz
+         rY0LiDByWBSJQfU42ph8bLcH/CywUnNIZD0saO5U=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
+Cc:     Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, christian.koenig@amd.com
+Subject: Re: [PATCH 03/22] keembay-ipc: Add Keem Bay IPC module
+Message-ID: <X9MsXRDcdoftq8ZC@kroah.com>
+References: <20201201223511.65542-1-mgross@linux.intel.com>
+ <20201201223511.65542-4-mgross@linux.intel.com>
+ <X8cyA1qKCwrayEOp@kroah.com>
+ <bcf8bad08a5f586093a151126aba2127eee44c02.camel@linux.intel.com>
+ <X8/YceIsM/Akt/E/@kroah.com>
+ <a5a13b6b399745f1f8b369334b0e626ee16d532a.camel@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <X9MbMja+TEfbKkmJ@google.com>
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Ta1CUZRTHe/a97AItvVyMB6Vy1miEuE41nUQR1KF36oPpVBPOKG36CkyA
-        uCuoUalA4i4yXOTmLgjYBrVExELALhvEQjINDtDCBhhQCCYRLCGMCITE7kLx7XfO+Z/nnP+Z
-        eQSE80N6qyA67gwniRPHiGh7sv7WYpfvez69EQED9ykoHxshoaawmoJxQwYBbTcnELTPtpEw
-        ajoIUx0FPFC27YaiP6oQpN2VUfB7spoHqYqbJNR2XaVAnaclIXPsLwJ0q1MEdHd/ywfVtRIK
-        vmiuJEE7Ok1DRXMmAs3YLxTcaDeTIF/6ioDBBw8p6NUV0TCX0Y6gsLuZB7J5BQ1ZbbV8MF5P
-        J2BupoWChu9beFCpnyBgWXeLD7c7jRSsNGhImKhzgxyDBBZ1N0hYXUohQrzYSVMo2zisQuzl
-        5GhWqxjms3/PHmOXf0CsRi2j2VrVBbapdI7HLhTeRqxqykCxj8tySTYjxUyzNeZGHltQtIrY
-        zJWAt54+Yr/7BBcTnchJ/IPft4+qkHfS8Tne5+5p0vgXkX6HHNkJMPMy1sru0RZ2Zr5EuD/9
-        HTmyX+N5hBdalklbMIfwbGfamkpg7Vgs59nyFQjfb9oIZhHunJdRlqdcmGO4rK+ftLAr448b
-        lEvIIiKYKQfc0jzCtxRoJhDLp+XW2UImGA/2FVrzJOOJS7X5hIW3MB/gavmjdY0T/un6uPVR
-        O8YbL7SqrUwwz+GU75SEjd3wnfES60aYueqA9R1mymb0ANaXqvk2dsGTHXXr7IFXtRsNKQiP
-        dlXx17sR7k0uRDZVEB7qWrIegGC8cLXO35YOxUOVGsp2F0c8MO1kW8IR59QXELa0EF+57GxT
-        v4AVHd/8N7a1x0hkIZFikzXFJjuKTXYU/88tRaQauXEJ0thIThoYx531k4pjpQlxkX7HT8Vq
-        0NrX6Hzc8aARFU/O+hkQT4AMCAsIkavwGdIY4Sw8IT7/ESc5FSFJiOGkBrRNQIrchGrl1xHO
-        TKT4DPchx8Vzko0qT2C39SIv97D5bmyM91FBnV5SFda9X2X++c1+n5CavpHwZ5v33gkOvVDn
-        MnKEC2nTFmfkPnUetTY86Z7VkHhQudfrUJCLp/GzOmV+j0mQ8eI+utih4HPfmaBB/0NziR6/
-        nkseSl/kQ5LHdhM/CuSer1TAteEudJZIn3nV6xNR6tv00KWECbHkz+d3qU6HmwJ2Xjr9T/2e
-        dz8OWSljdmUnPXI8PFCbTYuwap/n+JjypOLHeLsnjO4p3cbQlyA8LybMW+aeEFmbGPT6UY9e
-        X9dPDalOupXf8pLa83t8jofsvOJvf9J5akSoFfRklwvY17bYvaGvjN2TzzTFGbc79m/bYQor
-        2S90Ui6LSGmUONCbkEjF/wJuvZSbiQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0xTVxzHd+6jvahkl4fjhG1IrlkcRAvl5Q+DKMvmbljmiHNuwU2seAPI
-        07YsYsxswKiUERAZj0J4KGgsc2qLg/J0hagEhIWXY1sN77DyWkVGCgNGwSX898k538/3/E7y
-        Y0jHqyJXJiZBKcgTZHGcaAvVvvLEtOfL3T0R3pV/usGtkRcUPCi4R8OoMZOElhsTCFotLRQM
-        9X0GU0/yCShqCYLi8bsIrgyn0zCYqiXgkuYGBfrO72nQ/mCgIGtkkoS61SkSurrui6HieikN
-        lU1VFBiGpkVwuykLgW6kn4aS1hkK1It3SBh4+Q8NPXXFIpjLbEVQ0NVEQPorjQiyW/Ri6C7M
-        IGFutpmGmsZmAqoaJkhYqnssho72bhqWa3QUTFS7QI5RDta6EgpWF9PIgx68uS+ErzVVIP5y
-        agxv0JjE/N+WE/zSI8TrtOkiXl9xka8vmyP4hYIOxFdMGWl+pTyX4jPTZkT8g5lags8vXkV8
-        1rJ32FvhkiB5YrJScI9OVCj3c8el4CORBoLExy9QIvXd+80+H3/OKzjotBAX860g9wo+KYm+
-        rW4XJeV4nhvTXRGrUMNONWIYzPph6y1CjbYwjmwlwrn6AVKN7NbO38FteSp6g53wv/1q0UZo
-        FmFzzQJhu3BiT+Dy3ueUjZ1ZL1xTtIhsIZJ9uRXrr02+ru0n8Yq+c71WxEqxetpWZcfYs8F4
-        oLdAbGOKfQ+XGfJI20jb2VP4WbvDRsQBtxWOrj9gx3rihV+060yyAbhEP0Ru8A6c9rDoNbvg
-        30dLiWzkqNmkazYpmk2KZpNShigtchaSFfFR8QofiUIWr0hOiJJEJsbr0NpK/vzYWl2L7pgt
-        EiMiGGREmCE5Z/t3qe4IR/vTspTzgjwxQp4cJyiMyH/tO9dI1+2RiWs7naCMkAZ4+0v9AgK9
-        /QMDfDkXe7/WHyMc2SiZUogVhCRB/r9HMHauKiIo9dxfR76YdL/YmPPr+7PPlz5oI3NLfxKH
-        unsd2GkxhXIvUp55pOTPHBKb5o9rXXJHxqeaw6q3NkaW/8aEDj7S/qE2DmwbHsvv9QvL6/Uw
-        fHThzAXzYd8aw+Vt8pPhboTFOjYQq/180nSoe/xr5XUf+3sOPd1lGvH0sVN3G/Y9zSCeyjjL
-        KEd/qj//YZZxrzUnq+WY69vKuMbqs28erh8ci7o5bFb0XVquD+LGVwsr5ZqKKoNv+GyO73CB
-        g+vRoxlT7BvzM/W7g5M/bl3u2BHLueMxj/kDnWSf+TvzK+eHZ7/65Iyqzm5aV++0/+AeryQm
-        W9JWFWI94naVDk1Q3Q/ZpWI4ShEtk3qScoXsP1vWUG0bBAAA
-X-CMS-MailID: 20201211082247eucas1p2bcbb136330cf83031d697b08dafa89b0
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201207133237eucas1p26f8484944760a14e51dc7353ed33cd28
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201207133237eucas1p26f8484944760a14e51dc7353ed33cd28
-References: <2336e15d-ff4b-bbb6-c701-dbf3aa110fcd@redhat.com>
-        <20200608112211.12125-1-andrzej.p@collabora.com>
-        <20200608112211.12125-3-andrzej.p@collabora.com>
-        <CGME20201207133237eucas1p26f8484944760a14e51dc7353ed33cd28@eucas1p2.samsung.com>
-        <27ce1176-6318-45aa-4e22-3dec9f3df15d@samsung.com>
-        <9c784a23-eade-eacd-3e67-d344a5758b83@collabora.com>
-        <ad093ba3-7b17-18f3-6bb5-d8133c3da89a@samsung.com>
-        <X9BwtHs9XriwR8gL@google.com> <X9MbMja+TEfbKkmJ@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a5a13b6b399745f1f8b369334b0e626ee16d532a.camel@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 10, 2020 at 06:38:24PM +0000, Daniele Alessandrelli wrote:
+> On Tue, 2020-12-08 at 20:48 +0100, Greg KH wrote:
+> > On Tue, Dec 08, 2020 at 06:59:09PM +0000, Daniele Alessandrelli wrote:
+> > > Hi Greg,
+> > > 
+> > > Thanks for your feedback.
+> > > 
+> > > On Wed, 2020-12-02 at 07:19 +0100, Greg KH wrote:
+> > > > On Tue, Dec 01, 2020 at 02:34:52PM -0800, mgross@linux.intel.com wrote:
+> > > > > From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> > > > > 
+> > > > > On the Intel Movidius SoC code named Keem Bay, communication between the
+> > > > > Computing Sub-System (CSS), i.e., the CPU, and the Multimedia Sub-System
+> > > > > (MSS), i.e., the VPU is enabled by the Keem Bay Inter-Processor
+> > > > > Communication (IPC) mechanism.
+> > > > > 
+> > > > > Add the driver for using Keem Bay IPC from within the Linux Kernel.
+> > > > > 
+> > > > > Keem Bay IPC uses the following terminology:
+> > > > > 
+> > > > > - Node:    A processing entity that can use the IPC to communicate;
+> > > > > 	   currently, we just have two nodes, CPU (CSS) and VPU (MSS).
+> > > > > 
+> > > > > - Link:    Two nodes that can communicate over IPC form an IPC link
+> > > > > 	   (currently, we just have one link, the one between the CPU
+> > > > > 	   and VPU).
+> > > > > 
+> > > > > - Channel: An IPC link can provide multiple IPC channels. IPC channels
+> > > > > 	   allow communication multiplexing, i.e., the same IPC link can
+> > > > > 	   be used by different applications for different
+> > > > > 	   communications. Each channel is identified by a channel ID,
+> > > > > 	   which must be unique within a single IPC link. Channels are
+> > > > > 	   divided in two categories, High-Speed (HS) channels and
+> > > > > 	   General-Purpose (GP) channels. HS channels have higher
+> > > > > 	   priority over GP channels.
+> > > > > 
+> > > > > Keem Bay IPC mechanism is based on shared memory and hardware FIFOs.
+> > > > > Both the CPU and the VPU have their own hardware FIFO. When the CPU
+> > > > > wants to send an IPC message to the VPU, it writes to the VPU FIFO (MSS
+> > > > > FIFO); similarly, when MSS wants to send an IPC message to the CPU, it
+> > > > > writes to the CPU FIFO (CSS FIFO).
+> > > > > 
+> > > > > A FIFO entry is simply a pointer to an IPC buffer (aka IPC header)
+> > > > > stored in a portion of memory shared between the CPU and the VPU.
+> > > > > Specifically, the FIFO entry contains the (VPU) physical address of the
+> > > > > IPC buffer being transferred.
+> > > > > 
+> > > > > In turn, the IPC buffer contains the (VPU) physical address of the
+> > > > > payload (which must be located in shared memory too) as well as other
+> > > > > information (payload size, IPC channel ID, etc.).
+> > > > > 
+> > > > > Each IPC node instantiates a pool of IPC buffers from its own IPC buffer
+> > > > > memory region. When instantiated, IPC buffers are marked as free. When
+> > > > > the node needs to send an IPC message, it gets the first free buffer it
+> > > > > finds (from its own pool), marks it as allocated (used), and puts its
+> > > > > physical address into the IPC FIFO of the destination node. The
+> > > > > destination node (which is notified by an interrupt when there are
+> > > > > entries pending in its FIFO) extract the physical address from the FIFO
+> > > > > and process the IPC buffer, marking it as free once done (so that the
+> > > > > sender can reuse the buffer).
+> > > > 
+> > > > Any reason you can't use the dmabuf interface for these memory buffers
+> > > > you are creating and having to manage "by hand"?  I thought that was
+> > > > what the kernel was wanting to unify on such that individual
+> > > > drivers/subsystems didn't have to do this on their own.
+> > > 
+> > > My understanding is that the dmabuf interface is used to share DMA
+> > > buffers across different drivers, while these buffers are used only
+> > > internally to the IPC driver (and exchanged only with the VPU
+> > > firmware). They basically are packet headers that are sent to the VPU.
+> > 
+> > There's no reason you couldn't use these to share your buffers
+> > "internally" as well, because you have the same lifetime rules and
+> > accounting and all other sorts of things you have to handle, right?  Why
+> > rewrite something like this when you should take advantage of common
+> > code instead?
+> 
+> I looked at dma-buf again, but I'm still failing to see how we can use
+> it in this driver :/
+> 
+> The problem I'm not able to solve is exactly how to match the lifetime
+> of this IPC packets (IPC buffers is probably a misleading name, my bad
+> for using it in the code) with the dma-buf lifetime rules.
+> 
+> Basically, these IPC packets are cache-aligned (64 bytes) and have the
+> following fixed structure:
+>  
+>    struct kmb_ipc_buf {
+>           u32 data_addr;
+>           u32 data_size;
+>           u16 channel;
+>           u8  src_node;
+>           u8  dst_node;
+>           u8  status;
+>    } __packed __aligned(KMB_IPC_ALIGNMENT);
 
-On 11.12.2020 08:09, Dmitry Torokhov wrote:
-> Input device's user counter is supposed to be accessed only while holding
-> input->mutex.  Commit d69f0a43c677 ("Input: use input_device_enabled()")
-> recently switched cyapa to using the dedicated API and it uncovered the
-> fact that cyapa driver violated this constraint.
->
-> This patch removes checks whether the input device is open when clearing
-> device queues when changing device's power mode as there is no harm in
-> sending input events through closed input device - the events will simply
-> be dropped by the input core.
->
-> Note that there are more places in cyapa driver that call
-> input_device_enabled() without holding input->mutex, those are left
-> unfixed for now.
->
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> ---
->
-> Marek, could you please try this one?
+If that is shared out of the kernel, please use the proper data types
+for it.
 
-The warning is still there:
+And it isn't properly padded out?  That feels like a hardware design
+mistake somewhere, anyway...
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 1787 at drivers/input/input.c:2230 
-input_device_enabled+0x68/0x6c
-Modules linked in: cmac bnep mwifiex_sdio mwifiex sha256_generic 
-libsha256 sha256_arm btmrvl_sdio btmrvl cfg80211 bluetooth s5p_mfc 
-exynos_gsc v4l2_mem2mem videob
-CPU: 1 PID: 1787 Comm: rtcwake Not tainted 
-5.10.0-rc7-next-20201210-00001-g70a81f43fddf #2204
-Hardware name: Samsung Exynos (Flattened Device Tree)
-[<c0111a58>] (unwind_backtrace) from [<c010d390>] (show_stack+0x10/0x14)
-[<c010d390>] (show_stack) from [<c0b3503c>] (dump_stack+0xb4/0xd4)
-[<c0b3503c>] (dump_stack) from [<c0127428>] (__warn+0xd8/0x11c)
-[<c0127428>] (__warn) from [<c012751c>] (warn_slowpath_fmt+0xb0/0xb8)
-[<c012751c>] (warn_slowpath_fmt) from [<c07fbccc>] 
-(input_device_enabled+0x68/0x6c)
-[<c07fbccc>] (input_device_enabled) from [<c080a204>] 
-(cyapa_reinitialize+0x4c/0x154)
-[<c080a204>] (cyapa_reinitialize) from [<c080a354>] (cyapa_resume+0x48/0x98)
-[<c080a354>] (cyapa_resume) from [<c06b0230>] (dpm_run_callback+0xb0/0x3c8)
-[<c06b0230>] (dpm_run_callback) from [<c06b0604>] (device_resume+0xbc/0x260)
-[<c06b0604>] (device_resume) from [<c06b29e4>] (dpm_resume+0x14c/0x51c)
-[<c06b29e4>] (dpm_resume) from [<c06b35b8>] (dpm_resume_end+0xc/0x18)
-[<c06b35b8>] (dpm_resume_end) from [<c01a1270>] 
-(suspend_devices_and_enter+0x1b4/0xbd4)
-[<c01a1270>] (suspend_devices_and_enter) from [<c01a1fa4>] 
-(pm_suspend+0x314/0x42c)
-[<c01a1fa4>] (pm_suspend) from [<c019fe90>] (state_store+0x6c/0xc8)
-[<c019fe90>] (state_store) from [<c0388438>] (kernfs_fop_write+0x10c/0x228)
-[<c0388438>] (kernfs_fop_write) from [<c02dc3e8>] (vfs_write+0xc8/0x530)
-[<c02dc3e8>] (vfs_write) from [<c02dc98c>] (ksys_write+0x60/0xd8)
-[<c02dc98c>] (ksys_write) from [<c0100060>] (ret_fast_syscall+0x0/0x2c)
-Exception stack(0xc3923fa8 to 0xc3923ff0)
-irq event stamp: 54139
-hardirqs last  enabled at (54147): [<c01a5f20>] vprintk_emit+0x2b8/0x308
-hardirqs last disabled at (54154): [<c01a5ee4>] vprintk_emit+0x27c/0x308
-softirqs last  enabled at (50722): [<c01017a8>] __do_softirq+0x528/0x684
-softirqs last disabled at (50671): [<c0130ac8>] irq_exit+0x1ec/0x1f8
----[ end trace 1fbefe3f239ae597 ]---
+> Now, let's ignore the first 5 fields and focus on the last one that
+> controls the lifetime of the packet. The status field can be either
+> FREE or ALLOCATED (perhaps should be renamed to IN_USE).
+>  
+> Basically, during probe, the driver allocates an array (pool) of these
+> packets from its 'local' reserved memory region. This is done using
+> dma_alloc_coherent(). This array remains allocated until remove() is
+> called.
+>  
+> At run-time, every time the driver sends a message to the VPU, the
+> following happens:
+> 
+>    1. The IPC driver loops through the array of 'local' packets to find
+>       the first one marked as FREE
+>    2. The IPC driver marks the packet as IN_USE and shares it with the VPU
+>       by putting its physical address into the VPU HW FIFO.
+>    3. The VPU Firmware processes the packet and, when done with it, it
+>       marks it as FREE again so that the IPC driver can use it again.
 
->   drivers/input/mouse/cyapa_gen3.c |    5 +----
->   drivers/input/mouse/cyapa_gen5.c |    3 +--
->   2 files changed, 2 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/input/mouse/cyapa_gen3.c b/drivers/input/mouse/cyapa_gen3.c
-> index a97f4acb6452..4a9022faf945 100644
-> --- a/drivers/input/mouse/cyapa_gen3.c
-> +++ b/drivers/input/mouse/cyapa_gen3.c
-> @@ -907,7 +907,6 @@ static u16 cyapa_get_wait_time_for_pwr_cmd(u8 pwr_mode)
->   static int cyapa_gen3_set_power_mode(struct cyapa *cyapa, u8 power_mode,
->   		u16 always_unused, enum cyapa_pm_stage pm_stage)
->   {
-> -	struct input_dev *input = cyapa->input;
->   	u8 power;
->   	int tries;
->   	int sleep_time;
-> @@ -953,7 +952,6 @@ static int cyapa_gen3_set_power_mode(struct cyapa *cyapa, u8 power_mode,
->   	 * depending on the command's content.
->   	 */
->   	if (cyapa->operational &&
-> -	    input && input_device_enabled(input) &&
->   	    (pm_stage == CYAPA_PM_RUNTIME_SUSPEND ||
->   	     pm_stage == CYAPA_PM_RUNTIME_RESUME)) {
->   		/* Try to polling in 120Hz, read may fail, just ignore it. */
-> @@ -1223,8 +1221,7 @@ static int cyapa_gen3_try_poll_handler(struct cyapa *cyapa)
->   	    (data.finger_btn & OP_DATA_VALID) != OP_DATA_VALID)
->   		return -EINVAL;
->   
-> -	return cyapa_gen3_event_process(cyapa, &data);
-> -
-> +	return cyapa->input ? cyapa_gen3_event_process(cyapa, &data) : 0;
->   }
->   
->   static int cyapa_gen3_initialize(struct cyapa *cyapa) { return 0; }
-> diff --git a/drivers/input/mouse/cyapa_gen5.c b/drivers/input/mouse/cyapa_gen5.c
-> index abf42f77b4c5..afc5aa4dcf47 100644
-> --- a/drivers/input/mouse/cyapa_gen5.c
-> +++ b/drivers/input/mouse/cyapa_gen5.c
-> @@ -518,8 +518,7 @@ int cyapa_empty_pip_output_data(struct cyapa *cyapa,
->   			*len = length;
->   			/* Response found, success. */
->   			return 0;
-> -		} else if (cyapa->operational &&
-> -			   input && input_device_enabled(input) &&
-> +		} else if (cyapa->operational && input &&
->   			   (pm_stage == CYAPA_PM_RUNTIME_RESUME ||
->   			    pm_stage == CYAPA_PM_RUNTIME_SUSPEND)) {
->   			/* Parse the data and report it if it's valid. */
->
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+How does the firmware "mark it as free"?
 
+> Please note that the IPC driver is not notified by the VPU when the
+> packet is marked as free (there is no IRQ or other async mechanism to
+> do that). The driver will simply find the message free the next time it
+> loops over the message pool again (i.e., when it is trying to send a
+> new message).
+>  
+> Given that the free operation is silently done by the VPU, I'm failing
+> to see how I can use dmabuf (or gen_pool or dma_pool). Is there
+> anything that I'm missing?
+
+So maybe this isn't set up to use the dma buffers, but it still feels
+really odd.  I recommend getting a review by the dmabuf authors before
+declaring that you really should be rolling your own buffer management
+logic here, as you can see that it feels like you are doing much the
+same thing, sharing memory outside of the kernel to something else.
+
+thanks,
+
+greg k-h
