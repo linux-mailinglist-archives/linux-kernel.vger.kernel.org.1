@@ -2,84 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2030C2D6D31
+	by mail.lfdr.de (Postfix) with ESMTP id 8C93D2D6D32
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404512AbgLKBTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:19:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404495AbgLKBTN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:19:13 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4103C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:17:34 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id 186so7032188qkj.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:17:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JHA1SclwwNflc1fMREqK5MdJqK9jjD1N+6vraV7m6o8=;
-        b=JukTSVza+dhKaOGY0Riuy1AeE4K29MqyTB0kpsTnWcIvTb7y0NLrf/+fMWi8nagH/N
-         Uf06kBkKtOQRCd5X3PYJ1pxq3MOolofLSpKwqgknsxRP0QGLH6cJSU/+TjNanTsvItep
-         nGTYn76RwblxaSUV95Bm4ZXospXaAI7sD6Vg0sZqm3q4T+AxH/AeMmjEgmRIGNF9AhHw
-         cRu32e7P1gGzQFM7LfgAH5KDG3I7IKNjKzqBpQnn3eQRlUDnQWYCyDE8rGNr48LkDe61
-         r3HM7sSlbUKfCiHTSEI+vDjPzIDPo3TAJC2UsXVLkWnDVqobOk7gGIYRyIKGVh051Fxn
-         ZcBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JHA1SclwwNflc1fMREqK5MdJqK9jjD1N+6vraV7m6o8=;
-        b=NMNoupFhbuFArZ/iI4nhBrzRFvK1QVPPBh06/8GTN4pg4nhuSfFqioKQ6TgHxoi/Ge
-         My+DthYrdTfEXKjTfD61BaO5WRg6Z/N+fVSDooz5q2Nns5hRjDqBHk2b49a6v8thDwf0
-         /1guM2n5Odq97m9uvyPLkCXmwuCFwfd7PJNtqyhCuBX+XK+VypqHTkvyo0c4Hb9hzCmt
-         xkiuHLaKB3Osd6X8T3o26/bf2JuQ9TuGefcakoJ+kPXrEG52UrObt9oS1BRcm/v4N5pm
-         jlV9g+XYcvlGBsnk9EI3nh7vc4A2oXMrHr216uxjdpnrIQAfmiJAlpNZYjcGtbsj+eLH
-         82QQ==
-X-Gm-Message-State: AOAM533aXnFOWPEUDgiHTXcdJBEo6uKHtO3fM10xq7sOKQ7eUe5+T9Cn
-        wz6TKyWQG83pt2IlkPeU3FL7Ez3wvWvHXfgcelE=
-X-Google-Smtp-Source: ABdhPJz0NbWA5ixjUmeoJ+V6ZkZQhFCIoBmihIRYU44UowbtdmtRSdHyokna7qrWukLxHu6pDZSgeXKN7NvzOJNfL0Q=
-X-Received: by 2002:ae9:c013:: with SMTP id u19mr11921227qkk.59.1607649454106;
- Thu, 10 Dec 2020 17:17:34 -0800 (PST)
+        id S2404716AbgLKBT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:19:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404583AbgLKBTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 20:19:48 -0500
+Date:   Thu, 10 Dec 2020 17:19:07 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607649547;
+        bh=3W2W+rGIeNaXbjG1HP2s6JLeC/WjEnIZHx99yIMnGxA=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=eFBlm2QilwBLfidOTSf9nn5IOkFe9eBzVFRC9CwL3sMEoaQiCNEuU9C73V5MaHaa9
+         TXB5SR7Ax3mGhdRLNzF62m619jpVH20mROtOICVErLbWBz5EctUV7hCkNRKUfML9Wi
+         YYHC3lnR+Cd/zMHPmyUq0+UeFuWoMSOrH9huurL4mGnmQ44HkSKWwCYnlTneK9NfVD
+         hSj1NXX8nsGM2c0qHjJwgz2yw7VgNGT1SMpi1mn91zxlutTTEsxrDhV/zGqLmVuP8f
+         nyb2sKM1y8wxe6GhZ46iwvxDfj9P6tzV/wjdyYtlVFIIUaGkYU53NbkDfvepf5DY5M
+         INKx3jGRMp9TQ==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH RFC v2 sl-b] Export return addresses etc. for better
+ diagnostics
+Message-ID: <20201211011907.GA16110@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201205004022.GA31166@paulmck-ThinkPad-P72>
+ <20201209011124.GA31164@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-References: <20201210183729.1261524-1-alex.popov@linux.com>
-In-Reply-To: <20201210183729.1261524-1-alex.popov@linux.com>
-From:   Joonsoo Kim <js1304@gmail.com>
-Date:   Fri, 11 Dec 2020 10:17:23 +0900
-Message-ID: <CAAmzW4PbivLRBMDR1HykzpFS_ekF4Z-pkAm3n_a5En-TArZuPQ@mail.gmail.com>
-Subject: Re: [PATCH] mm/slab: Perform init_on_free earlier
-To:     Alexander Popov <alex.popov@linux.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        notify@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209011124.GA31164@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020=EB=85=84 12=EC=9B=94 11=EC=9D=BC (=EA=B8=88) =EC=98=A4=EC=A0=84 3:37, =
-Alexander Popov <alex.popov@linux.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1=
-:
->
-> Currently in CONFIG_SLAB init_on_free happens too late, and heap
-> objects go to the heap quarantine not being erased.
->
-> Lets move init_on_free clearing before calling kasan_slab_free().
-> In that case heap quarantine will store erased objects, similarly
-> to CONFIG_SLUB=3Dy behavior.
->
-> Signed-off-by: Alexander Popov <alex.popov@linux.com>
-> Reviewed-by: Alexander Potapenko <glider@google.com>
+Hello!
 
-Acked-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+This is v3 of the series the improves diagnostics by providing access
+to additional information including the return addresses, slab names,
+offsets, and sizes collected by the sl*b allocators and by vmalloc().
+If the allocator is not configured to collect this information, the
+diagnostics fall back to a reasonable approximation of their earlier
+state.
+
+One use case is the queue_rcu_work() function, which might be used
+by any number of kernel subsystems.  If the caller does back-to-back
+invocations of queue_rcu_work(), this constitutes a double-free bug,
+and (if so configured) the debug-objects system will flag this, printing
+the callback function.  In most cases, printing this function suffices.
+However, for double-free bugs involving queue_rcu_work(), the RCU callback
+function will always be rcu_work_rcufn(), which provides almost no help to
+the poor person trying to find this double-free bug.  The return address
+from the allocator of the memory containing the rcu_work structure can
+provide an additional valuable clue.
+
+Another use case is the percpu_ref_switch_to_atomic_rcu() function,
+which detects percpu_ref reference-count underflow.  Unfortunately,
+the only data that this function has access to doesn't have much in the
+way of identifying characteristics.  Yes, it might be possible to gain
+more information from a crash dump, but it is more convenient for the
+needed hints to be in the console log.
+
+Unfortunately, printing the return address in this case is of little help
+because this object is allocated from percpu_ref_init(), regardless of
+what part of the kernel is responsible for the reference-count underflow
+(though perhaps the slab and offsets might help in some cases).  However,
+CONFIG_STACKTRACE=y kernels (such as those enabling ftrace) using slub
+with debugging enabled also collect stack traces.  This series therefore
+also provides a way of extracting these stack traces to provide additional
+information to those debugging percpu_ref reference-count underflows.
+
+The patches are as follows:
+
+1.	Add mem_dump_obj() to print source of memory block.
+
+2.	Make mem_dump_obj() handle NULL and zero-sized pointers.
+
+3.	Make mem_dump_obj() handle vmalloc() memory.
+
+4.	Make mem_obj_dump() vmalloc() dumps include start and length.
+
+5.	Make call_rcu() print mem_dump_obj() info for double-freed
+	callback.
+
+6.	percpu_ref: Dump mem_dump_obj() info upon reference-count
+	underflow.
+
+Changes since v2:
+
+o	Apply more feedback from Joonsoo Kim on naming and code structure.
+
+o	Based on discussions with Vlastimil Babka, added code to print
+	offsets and sizes where available.  This can help identify which
+	structure is involved.
+
+Changes since v1:
+
+o	Apply feedback from Joonsoo Kim, mostly around naming and
+	code structure.
+
+o	Apply fix suggested by Stephen Rothwell for a bug that was
+	also located by kbuild test robot.
+
+o	Add support for vmalloc().
+
+o	Add support for special pointers.
+
+o	Additional rework simplifying use of mem_dump_obj(), which
+	simplifies both the RCU and the percpu_ref uses.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ include/linux/mm.h      |    2 +
+ include/linux/slab.h    |    2 +
+ include/linux/vmalloc.h |    6 +++
+ kernel/rcu/tree.c       |    7 +++-
+ lib/percpu-refcount.c   |   12 +++++--
+ mm/slab.c               |   20 ++++++++++++
+ mm/slab.h               |   12 +++++++
+ mm/slab_common.c        |   74 ++++++++++++++++++++++++++++++++++++++++++++++++
+ mm/slob.c               |    6 +++
+ mm/slub.c               |   36 +++++++++++++++++++++++
+ mm/util.c               |   45 ++++++++++++++++++++++++-----
+ mm/vmalloc.c            |   15 +++++++++
+ 12 files changed, 224 insertions(+), 13 deletions(-)
