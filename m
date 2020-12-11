@@ -2,114 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1952D7700
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 137B22D773C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393884AbgLKNyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 08:54:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39164 "EHLO
+        id S2392066AbgLKN7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 08:59:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727513AbgLKNy1 (ORCPT
+        with ESMTP id S1731660AbgLKN6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 08:54:27 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEF5C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:53:47 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id z11so8406532qkj.7
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:53:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=am+2yk9rlqtbVhZwrF/QYG0TW4go4+v58RaDE0YJVkg=;
-        b=sjiP97iCb6jEqk6pJZ3bNHdcNGmg/71IMWS9q4+NTagiACQCiHxHikgrxKMxKBHUhC
-         sV6bN4wVP2WDjLSNk9zKtsoGacAjiZ0mSjtvtwpQyM9+rDgEKIpZCckS7BiQSyBfvkS8
-         U9AKLvJr4jVOcuhwkZrWcZH7Rf28UJWFv4UdYT/tuvlR2qV4vDhmnnTKgX99RQrjAO9Y
-         6rfoPEy1zuxvJ/YHMs0dANUbT2B2Va7pO1k18Mp8QG6jzkmDBY9r1X1YbCL93hX8ZFaU
-         MnBISumAB6jg2oU/yTFzEELFnh3Uh/4qimiPRR6Dunf2OcZJsnPZ6IV3qdFQhJ0RzDHL
-         O+fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=am+2yk9rlqtbVhZwrF/QYG0TW4go4+v58RaDE0YJVkg=;
-        b=aXECytg7hEg3dhTJkfr0aXFk9kRa840CdgflkzAl5a8UvmBpwTsW7WkVXohyVsunu8
-         r8J9cIvQAqVcehQCItLt/goUw2LlNhxOoIgns8tixd3K0nzuDZLQsGF6TQWhsAEjpO4o
-         i9Bd0pcfz39nIKoXy5ERsH8Rsh6m1sBs8bh9Gjajv+lVdP+N5p34yccA7DOTyjHv+swy
-         ogjI+djzZh/pD9eu0bUFRS/CCQB0bhGOTVpywO6GKTY9wG7thVS5flk6l5Y/IHFbagjU
-         MiSnTAbdNqPlsoSS523U805XM/GFGi96d7WJVlX46yYORJxx1ChdfiKZZeh4IVZdhvPb
-         qIUw==
-X-Gm-Message-State: AOAM533RZ1bOhe2FvN/X51fI5co0qWh1gmUdOp4WZ3BQL6zmUT0J1toS
-        sAD7lcVoilWg2wk6Jd+l551pEIL+Qr7r9tOYGoZN0Q==
-X-Google-Smtp-Source: ABdhPJyYWBakyT3hEXmuJsjvfwnz/oJCdb47wQHHewrJcLM78CiAQFbOrOyMziUWC7me0hhSdrQwgJD2iEBZ93bw08w=
-X-Received: by 2002:a37:2cc4:: with SMTP id s187mr15797755qkh.385.1607694826325;
- Fri, 11 Dec 2020 05:53:46 -0800 (PST)
+        Fri, 11 Dec 2020 08:58:41 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A0BC0613D3;
+        Fri, 11 Dec 2020 05:58:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZihKsA22Et28L+VhHdtqUTD2BoH0RLZyZlt+xMMF8Ow=; b=IyKYrwls3wfp56Z7qFPwr0ue7Z
+        Yprw6UCRdnGLdbOf1Sn2AaFRFwqr2StRLqZvlkEvVobIqWznxgPXiEHRDI3mGGeTILifiKRRq1MN6
+        3PSkhZ8HzT9DmE5G6vbGrDHNEYKFYSHkD3szMs/kc0gBWk+BSWcJ14PJgSMisrDtxJ4kUR0GKCMJM
+        M7qus/u6xx6J2pqCeasF54kAGlcrhWrYvQiUpoG7e5ZDP1Br6TDVaY9+Gpr8hO/A1VWTpVjPAx3pg
+        pT/kxGOx4WV03ILPeHx+lt9XtjjII1g2ZKRTWebPTNtmlM0Jfj2fT85MbiH7YPAblbb7Nrd6bBFyn
+        oRjQO0sQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1knivS-0003uy-0i; Fri, 11 Dec 2020 13:57:38 +0000
+Date:   Fri, 11 Dec 2020 13:57:37 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
+        akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, hughd@google.com, shakeelb@google.com,
+        guro@fb.com, samitolvanen@google.com, feng.tang@intel.com,
+        neilb@suse.de, iamjoonsoo.kim@lge.com, rdunlap@infradead.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v4 3/7] mm: memcontrol: convert NR_FILE_THPS account to
+ pages
+Message-ID: <20201211135737.GA2443@casper.infradead.org>
+References: <20201211041954.79543-1-songmuchun@bytedance.com>
+ <20201211041954.79543-4-songmuchun@bytedance.com>
 MIME-Version: 1.0
-References: <20201204171626.10935-1-mw@semihalf.com> <CAPDyKFooRuitBjVr7FoMbty3rmM3eOsLKqwF5=ZQ=Aj6r29h+A@mail.gmail.com>
-In-Reply-To: <CAPDyKFooRuitBjVr7FoMbty3rmM3eOsLKqwF5=ZQ=Aj6r29h+A@mail.gmail.com>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Fri, 11 Dec 2020 14:53:35 +0100
-Message-ID: <CAPv3WKevssDOq72xF+ciLdCGC5EZNpnSCb4Sw3PiEfnqb-ZG5Q@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] sdhci-xenon ACPI support
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Ziji Hu <huziji@marvell.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Tomasz Nowicki <tn@semihalf.com>,
-        Ard Biesheuvel <ard.biesheuvel@arm.com>,
-        Kostya Porotchkin <kostap@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211041954.79543-4-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pt., 11 gru 2020 o 14:47 Ulf Hansson <ulf.hansson@linaro.org> napisa=C5=82(=
-a):
->
-> On Fri, 4 Dec 2020 at 18:17, Marcin Wojtas <mw@semihalf.com> wrote:
-> >
-> > Hi,
-> >
-> > The fourth version of the sdhci-xenon ACPI support
-> > addresses a comment regarding clk handling in xenon_runtime_resume.
-> >
-> > The MacchiatoBin firmware for testing can be obtained from:
-> > https://drive.google.com/file/d/1Y8BhyaCrksQgT_GPfpqqiYHpQ41kP8Kp
-> >
-> > Changelog:
-> > v3->v4
-> >   * [3/4] Call clk_prepare_enable unconditionally in xenon_runtime_resu=
-me.
-> >   * Add Adrian's Acked-by to all patches.
-> >
-> > v2->v3
-> >   * [3/4] Call clk_disable_unprepare unconditionally.
-> >   * Add Adrian's Acked-by to all patches.
-> >
-> > v1->v2
-> >   * Split single commit to 4
-> >   * Use device_match_data and dedicated ACPI ID's per controller
-> >     variant
-> >
-> > Marcin Wojtas (4):
-> >   mmc: sdhci-xenon: use match data for controllers variants
-> >   mmc: sdhci-xenon: switch to device_* API
-> >   mmc: sdhci-xenon: use clk only with DT
-> >   mmc: sdhci-xenon: introduce ACPI support
-> >
-> >  drivers/mmc/host/sdhci-xenon.h     | 12 ++-
-> >  drivers/mmc/host/sdhci-xenon-phy.c | 40 +++++----
-> >  drivers/mmc/host/sdhci-xenon.c     | 91 +++++++++++++-------
-> >  3 files changed, 91 insertions(+), 52 deletions(-)
-> >
->
-> Applied for next, thanks!
->
+On Fri, Dec 11, 2020 at 12:19:50PM +0800, Muchun Song wrote:
+> +++ b/mm/filemap.c
+> @@ -207,7 +207,7 @@ static void unaccount_page_cache_page(struct address_space *mapping,
+>  		if (PageTransHuge(page))
+>  			__dec_lruvec_page_state(page, NR_SHMEM_THPS);
+>  	} else if (PageTransHuge(page)) {
+> -		__dec_lruvec_page_state(page, NR_FILE_THPS);
+> +		__mod_lruvec_page_state(page, NR_FILE_THPS, -HPAGE_PMD_NR);
 
-Thanks a lot!
++               __mod_lruvec_page_state(page, NR_FILE_THPS, -nr);
 
-Best regards,
-Marcin
+> +++ b/mm/huge_memory.c
+> @@ -2748,7 +2748,8 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  			if (PageSwapBacked(head))
+>  				__dec_lruvec_page_state(head, NR_SHMEM_THPS);
+>  			else
+> -				__dec_lruvec_page_state(head, NR_FILE_THPS);
+> +				__mod_lruvec_page_state(head, NR_FILE_THPS,
+> +							-HPAGE_PMD_NR);
+
++                               __mod_lruvec_page_state(head, NR_FILE_THPS,
++                                               -thp_nr_pages(head));
+
