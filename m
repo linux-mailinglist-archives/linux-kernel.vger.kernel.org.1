@@ -2,119 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78F62D7328
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 211902D7329
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 10:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405669AbgLKJyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 04:54:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404866AbgLKJxy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 04:53:54 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C467CC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 01:53:13 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1knf6o-00012u-QY; Fri, 11 Dec 2020 10:53:06 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1knf6n-0000Xa-9i; Fri, 11 Dec 2020 10:53:05 +0100
-Date:   Fri, 11 Dec 2020 10:53:05 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
-        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
-        sean@mess.org, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] pwm: bcm2835: Support apply function for atomic
- configuration
-Message-ID: <20201211095305.vsin3mkrytylqm47@pengutronix.de>
-References: <1607464905-16630-1-git-send-email-LinoSanfilippo@gmx.de>
- <20201210114330.6pgtome3aq3hj55t@pengutronix.de>
- <trinity-8db15ca3-e42e-497d-8718-b4928fa76a3c-1607678915350@3c-app-gmx-bs43>
+        id S2405729AbgLKJyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 04:54:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404840AbgLKJyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 04:54:25 -0500
+Date:   Fri, 11 Dec 2020 09:53:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607680424;
+        bh=QsIVnJ8CGRl70yVewj8Ed9nYo9b0SK7ijo6uVqyomD0=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S6841Py29DfCupVk+JTMy1wYlPbw+kneOmgnZxgAehUaZQzhYedmBD300AxCeSe3h
+         lm4Jb9lK2IX2eEhGWL7Nrf9uiZ846OTXTxtIbb/+QqL5R6BKnJwlb+renKMjJpmbfl
+         SdLiw5v75hCqBsBxQbqbyi8R8G9SMTNaYuisHYpJsFaQvXH24Jl/4/q6WzlVWcOtsZ
+         f76YdRRa/Y3zj643s3F3uFjZ0GBwEnUjRBdMgFJnHSGHyGQlQ3PgGPZiczArzszw6a
+         7hVBb3hlHPVgcBSwFeWcmxL5wKTkGa8sn6wINCyzfExJ+xhkad8DyaLoMamrD//Deu
+         d84P2IgaFzYXg==
+From:   Will Deacon <will@kernel.org>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
+        zhukeqian1@huawei.com, yuzenghui@huawei.com,
+        jiangkunkun@huawei.com, wangjingyi11@huawei.com,
+        lushenming@huawei.com
+Subject: Re: [RFC PATCH] KVM: arm64: Add prejudgement for relaxing
+ permissions only case in stage2 translation fault handler
+Message-ID: <20201211095337.GA11280@willie-the-truck>
+References: <20201211080115.21460-1-wangyanan55@huawei.com>
+ <20201211080115.21460-2-wangyanan55@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yawg4bsslfkpxhbx"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <trinity-8db15ca3-e42e-497d-8718-b4928fa76a3c-1607678915350@3c-app-gmx-bs43>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201211080115.21460-2-wangyanan55@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Yanan,
 
---yawg4bsslfkpxhbx
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Dec 11, 2020 at 04:01:15PM +0800, Yanan Wang wrote:
+> In dirty-logging, or dirty-logging-stopped time, even normal running
+> time of a guest configed with huge mappings and numbers of vCPUs,
+> translation faults by different vCPUs on the same GPA could occur
+> successively almost at the same time. There are two reasons for it.
+> 
+> (1) If there are some vCPUs accessing the same GPA at the same time
+> and the leaf PTE is not set yet, then they will all cause translation
+> faults and the first vCPU holding mmu_lock will set valid leaf PTE,
+> and the others will later choose to update the leaf PTE or not.
+> 
+> (2) When changing a leaf entry or a table entry with break-before-make,
+> if there are some vCPUs accessing the same GPA just catch the moment
+> when the target PTE is set invalid in a BBM procedure coincidentally,
+> they will all cause translation faults and will later choose to update
+> the leaf PTE or not.
+> 
+> The worst case can be like this: some vCPUs cause translation faults
+> on the same GPA with different prots, they will fight each other by
+> changing back access permissions of the PTE with break-before-make.
+> And the BBM-invalid moment might trigger more unnecessary translation
+> faults. As a result, some useless small loops will occur, which could
+> lead to vCPU stuck.
+> 
+> To avoid unnecessary update and small loops, add prejudgement in the
+> translation fault handler: Skip updating the valid leaf PTE if we are
+> trying to recreate exactly the same mapping or to reduce access
+> permissions only(such as RW-->RO). And update the valid leaf PTE without
+> break-before-make if we are trying to add more permissions only.
+> 
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> ---
+>  arch/arm64/kvm/hyp/pgtable.c | 73 +++++++++++++++++++++++++-----------
+>  1 file changed, 52 insertions(+), 21 deletions(-)
 
-On Fri, Dec 11, 2020 at 10:28:35AM +0100, Lino Sanfilippo wrote:
-> Hi Uwe,
->=20
-> > Gesendet: Donnerstag, 10. Dezember 2020 um 12:43 Uhr
-> > Von: "Uwe Kleine-K=F6nig" <u.kleine-koenig@pengutronix.de>
-> > An: "Lino Sanfilippo" <LinoSanfilippo@gmx.de>
-> > Cc: thierry.reding@gmail.com, lee.jones@linaro.org, nsaenzjulienne@suse=
-=2Ede, f.fainelli@gmail.com, rjui@broadcom.com, sean@mess.org, sbranden@bro=
-adcom.com, bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org=
-, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.or=
-g, linux-kernel@vger.kernel.org
-> > Betreff: Re: [PATCH v3] pwm: bcm2835: Support apply function for atomic=
- configuration
->=20
-> >=20
-> > Side note: I'm a bit surprised about the output of
-> >=20
-> > 	b4 diff 1607464905-16630-1-git-send-email-LinoSanfilippo@gmx.de
-> >=20
-> > This is probably due to the fact that compared to v3 you also rebased.
-> > Still the diff is quite big.
->=20
-> You are right, I made a rebase before I created the last patch, sorry for=
- the confusion this caused.
-> Anyway, thanks for the review(s)!
+Cheers for this. Given that this patch is solving a few different problems,
+do you think you could split it up please? That would certainly make it much
+easier to review, as there's quite a lot going on here. A chunk of the
+changes seem to be the diff I posted previously:
 
-You did everything good enough. (To further improve, you could use
-git-format-patch's --base option and mention a rebase in the series'
-changelog; note this is quite high level critic.)
+https://lore.kernel.org/r/20201201141632.GC26973@willie-the-truck
 
-This was more me wondering the output is not easier to use. (And note I
-also showed the wrong commandline, but that doesn't resolve the issue.
-The right command is:
+so maybe that could be its own patch?
 
-	b4 diff 1607546905-20549-1-git-send-email-LinoSanfilippo@gmx.de
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index 23a01dfcb27a..f8b3248cef1c 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -45,6 +45,8 @@
+>  
+>  #define KVM_PTE_LEAF_ATTR_HI_S2_XN	BIT(54)
+>  
+> +#define KVM_PTE_LEAF_ATTR_PERMS	(GENMASK(7, 6) | BIT(54))
 
-=2E)
+You only use this on the S2 path, so how about:
 
-Best regards
-Uwe
+#define KVM_PTE_LEAF_ATTR_S2_PERMS	KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R | \
+					KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W | \
+					KVM_PTE_LEAF_ATTR_HI_S2_XN
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+or something like that?
 
---yawg4bsslfkpxhbx
-Content-Type: application/pgp-signature; name="signature.asc"
+>  struct kvm_pgtable_walk_data {
+>  	struct kvm_pgtable		*pgt;
+>  	struct kvm_pgtable_walker	*walker;
+> @@ -170,10 +172,9 @@ static void kvm_set_table_pte(kvm_pte_t *ptep, kvm_pte_t *childp)
+>  	smp_store_release(ptep, pte);
+>  }
+>  
+> -static bool kvm_set_valid_leaf_pte(kvm_pte_t *ptep, u64 pa, kvm_pte_t attr,
+> -				   u32 level)
+> +static kvm_pte_t kvm_init_valid_leaf_pte(u64 pa, kvm_pte_t attr, u32 level)
+>  {
+> -	kvm_pte_t old = *ptep, pte = kvm_phys_to_pte(pa);
+> +	kvm_pte_t pte = kvm_phys_to_pte(pa);
+>  	u64 type = (level == KVM_PGTABLE_MAX_LEVELS - 1) ? KVM_PTE_TYPE_PAGE :
+>  							   KVM_PTE_TYPE_BLOCK;
+>  
+> @@ -181,12 +182,7 @@ static bool kvm_set_valid_leaf_pte(kvm_pte_t *ptep, u64 pa, kvm_pte_t attr,
+>  	pte |= FIELD_PREP(KVM_PTE_TYPE, type);
+>  	pte |= KVM_PTE_VALID;
+>  
+> -	/* Tolerate KVM recreating the exact same mapping. */
+> -	if (kvm_pte_valid(old))
+> -		return old == pte;
+> -
+> -	smp_store_release(ptep, pte);
+> -	return true;
+> +	return pte;
+>  }
+>  
+>  static int kvm_pgtable_visitor_cb(struct kvm_pgtable_walk_data *data, u64 addr,
+> @@ -341,12 +337,17 @@ static int hyp_map_set_prot_attr(enum kvm_pgtable_prot prot,
+>  static bool hyp_map_walker_try_leaf(u64 addr, u64 end, u32 level,
+>  				    kvm_pte_t *ptep, struct hyp_map_data *data)
+>  {
+> +	kvm_pte_t new, old = *ptep;
+>  	u64 granule = kvm_granule_size(level), phys = data->phys;
+>  
+>  	if (!kvm_block_mapping_supported(addr, end, phys, level))
+>  		return false;
+>  
+> -	WARN_ON(!kvm_set_valid_leaf_pte(ptep, phys, data->attr, level));
+> +	/* Tolerate KVM recreating the exact same mapping. */
+> +	new = kvm_init_valid_leaf_pte(phys, data->attr, level);
+> +	if (old != new && !WARN_ON(kvm_pte_valid(old)))
+> +		smp_store_release(ptep, new);
+> +
+>  	data->phys += granule;
+>  	return true;
+>  }
+> @@ -461,25 +462,56 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
+>  	return 0;
+>  }
+>  
+> +static bool stage2_set_valid_leaf_pte_pre(u64 addr, u32 level,
+> +					  kvm_pte_t *ptep, kvm_pte_t new,
+> +					  struct stage2_map_data *data)
+> +{
+> +	kvm_pte_t old = *ptep, old_attr, new_attr;
+> +
+> +	if ((old ^ new) & (~KVM_PTE_LEAF_ATTR_PERMS))
+> +		return false;
+> +
+> +	/*
+> +	 * Skip updating if we are trying to recreate exactly the same mapping
+> +	 * or to reduce the access permissions only. And update the valid leaf
+> +	 * PTE without break-before-make if we are trying to add more access
+> +	 * permissions only.
+> +	 */
+> +	old_attr = (old & KVM_PTE_LEAF_ATTR_PERMS) ^ KVM_PTE_LEAF_ATTR_HI_S2_XN;
+> +	new_attr = (new & KVM_PTE_LEAF_ATTR_PERMS) ^ KVM_PTE_LEAF_ATTR_HI_S2_XN;
+> +	if (new_attr <= old_attr)
+> +		return true;
 
------BEGIN PGP SIGNATURE-----
+I think this is a significant change in behaviour for
+kvm_pgtable_stage2_map() and I worry that it could catch somebody out in the
+future. Please can you update the kerneldoc in kvm_pgtable.h with a note
+about this?
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/TQX0ACgkQwfwUeK3K
-7Aka/Af8CjQ2WfsAEJfbFBaqoTFA4yvsqB8cByYbEadvOmSj1RJM8akVF57xwDeo
-IszM8P8uATRyClekzicdewDrd91KmqCfweRjawMY6NiSU1h0ckrP00+PPAkTC9H5
-WhV2BtRbQxqgbX4s+BQVDeK+djYvn16QW78Ulm4YGz72N8+G+ISPGqEMhpaa05DT
-LZywtiuhVEf3DhmD+9xgvSvQ7uZ0GAm2sibmZid5Img5/G1uw51jmjcThsOyNneu
-15U2VRfcNN6GmX2HYMVYgZXjcXSLqVcXvYf0UotCjMdEPGCc/7lV/dT6//BE1QXR
-kBcpBNLdunxUM5hcfotGYvstbKWsGA==
-=rHZV
------END PGP SIGNATURE-----
-
---yawg4bsslfkpxhbx--
+Will
