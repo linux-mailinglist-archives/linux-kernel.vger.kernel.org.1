@@ -2,135 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27BE2D7804
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 531CB2D782E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 15:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394897AbgLKOg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 09:36:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39353 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389397AbgLKOgl (ORCPT
+        id S2406378AbgLKOqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 09:46:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406203AbgLKOqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 09:36:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607697314;
+        Fri, 11 Dec 2020 09:46:05 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE0AC061794
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:45:25 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607697924;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OJMP31tePBJjjh6Q77mzSRtZF5z0111CoyEfOWh0hbo=;
-        b=QD2bUKnE4V1q4WpzeYbUlozog0WvZPKdU/FxmZcEG58Gwo5uCa+PFPoL+Guevhwz9FsQ2U
-        fRbb+NciMsn5AzAX7/G6T+D+MDiQOtA75HQqz04vU/XuR7WU1lrAhCuAP7dM6FiK4ILGbn
-        DXwqFVMW85fwxCwWBQ4ES32A3Rtnzck=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-311-5b1P3Kg2PIGV1v3YQoie7A-1; Fri, 11 Dec 2020 09:35:12 -0500
-X-MC-Unique: 5b1P3Kg2PIGV1v3YQoie7A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 833FA107ACFE;
-        Fri, 11 Dec 2020 14:35:10 +0000 (UTC)
-Received: from gondolin (ovpn-112-240.ams2.redhat.com [10.36.112.240])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2C0F360BF1;
-        Fri, 11 Dec 2020 14:35:04 +0000 (UTC)
-Date:   Fri, 11 Dec 2020 15:35:01 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Matthew Rosato <mjrosato@linux.ibm.com>
-Cc:     alex.williamson@redhat.com, schnelle@linux.ibm.com,
-        pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 0/4] vfio-pci/zdev: Fixing s390 vfio-pci ISM support
-Message-ID: <20201211153501.7767a603.cohuck@redhat.com>
-In-Reply-To: <ce9d4ef2-2629-59b7-99ed-4c8212cb004f@linux.ibm.com>
-References: <1607545670-1557-1-git-send-email-mjrosato@linux.ibm.com>
-        <20201210133306.70d1a556.cohuck@redhat.com>
-        <ce9d4ef2-2629-59b7-99ed-4c8212cb004f@linux.ibm.com>
-Organization: Red Hat GmbH
+        bh=FzGg7LxXohhH6b7FeHSZ2e3oXZj5TWyywquXxDIeY1M=;
+        b=TcScHttli3W8taGeoA9zHAznrk9LTMO/StHtuW9xPLA6X5biRfbRQHd/r9EC0Or9jcb5ST
+        fOhEdJraSi/swR/c5QB92LfshAUqmFDaCc7CK2EvwqhDIcTRml3UIDVTZGhtj1l62Vzyn2
+        yAKXvwcrAc2hZ9+Jkv96oDriHTaACGRr0pyR13nREqbTgwM7vKua9BdopKyHCx9HAsc7V+
+        ucDVRy1Fx2dR3D5TjDSdXPm/SAcAKeeSSAHleBpaBF7SIIVAmD1gD6glE7MCcSYXzquqXe
+        xG2t4GgTvo9SjAE+lLzbu75JkiVyjdelevYX3H6rP7YdC/RP/L8XUEU9/tvvHw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607697924;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FzGg7LxXohhH6b7FeHSZ2e3oXZj5TWyywquXxDIeY1M=;
+        b=dtMYNoRh0UbMelk024uyoT9VJhAxI0jFDX7q98J8NU9Vxlch875rtb9WdTzXX0SYGOMA2j
+        jqQx34zxwq3IOfBg==
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Marco Elver <elver@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: Re: timers: Move clearing of base::timer_running under base::lock
+In-Reply-To: <20201208085049.vnhudd6qwcsbdepl@linutronix.de>
+References: <87lfea7gw8.fsf@nanos.tec.linutronix.de> <20201207130753.kpxf2ydroccjzrge@linutronix.de> <87a6up7kpt.fsf@nanos.tec.linutronix.de> <20201207152533.rybefuzd57kxxv57@linutronix.de> <20201207160648.GF2657@paulmck-ThinkPad-P72> <20201208085049.vnhudd6qwcsbdepl@linutronix.de>
+Date:   Fri, 11 Dec 2020 15:36:27 +0100
+Message-ID: <87sg8ch0k4.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 10:51:23 -0500
-Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+On Tue, Dec 08 2020 at 09:50, Sebastian Andrzej Siewior wrote:
+> On 2020-12-07 08:06:48 [-0800], Paul E. McKenney wrote:
+>> > Yes, but it triggers frequently. Like `rcuc' is somehow is aligned with
+>> > the timeout.
+>> 
+>> Given that a lot of RCU processing is event-driven based on timers,
+>> and given that the scheduling-clock interrupts are synchronized for
+>> energy-efficiency reasons on many configs, maybe this alignment is
+>> expected behavior?
+>
+> No, it is the fact that rcu_preempt has a higher priority than
+> ksoftirqd. So immediately after the wakeup (of rcu_preempt) there is a
+> context switch and expire_timers() has this:
+>
+> |   raw_spin_unlock_irq(&base->lock);
+> |   call_timer_fn(timer, fn, baseclk);
+> |   raw_spin_lock_irq(&base->lock);
+> |   base->running_timer = NULL;
+> |   timer_sync_wait_running(base);
+>
+> So ->running_timer isn't reset and try_to_del_timer_sync() (that
+> del_timer_sync() from schedule_timeout()) returns -1 and then the corner
+> case is handled where `expiry_lock' is acquired. So everything goes as
+> expected.
 
-> On 12/10/20 7:33 AM, Cornelia Huck wrote:
-> > On Wed,  9 Dec 2020 15:27:46 -0500
-> > Matthew Rosato <mjrosato@linux.ibm.com> wrote:
-> >   
-> >> Today, ISM devices are completely disallowed for vfio-pci passthrough as
-> >> QEMU will reject the device due to an (inappropriate) MSI-X check.
-> >> However, in an effort to enable ISM device passthrough, I realized that the
-> >> manner in which ISM performs block write operations is highly incompatible
-> >> with the way that QEMU s390 PCI instruction interception and
-> >> vfio_pci_bar_rw break up I/O operations into 8B and 4B operations -- ISM
-> >> devices have particular requirements in regards to the alignment, size and
-> >> order of writes performed.  Furthermore, they require that legacy/non-MIO
-> >> s390 PCI instructions are used, which is also not guaranteed when the I/O
-> >> is passed through the typical userspace channels.  
-> > 
-> > The part about the non-MIO instructions confuses me. How can MIO
-> > instructions be generated with the current code, and why does changing  
-> 
-> So to be clear, they are not being generated at all in the guest as the 
-> necessary facility is reported as unavailable.
-> 
-> Let's talk about Linux in LPAR / the host kernel:  When hardware that 
-> supports MIO instructions is available, all userspace I/O traffic is 
-> going to be routed through the MIO variants of the s390 PCI 
-> instructions.  This is working well for other device types, but does not 
-> work for ISM which does not support these variants.  However, the ISM 
-> driver also does not invoke the userspace I/O routines for the kernel, 
-> it invokes the s390 PCI layer directly, which in turn ensures the proper 
-> PCI instructions are used -- This approach falls apart when the guest 
-> ISM driver invokes those routines in the guest -- we (qemu) pass those 
-> non-MIO instructions from the guest as memory operations through 
-> vfio-pci, traversing through the vfio I/O layer in the guest 
-> (vfio_pci_bar_rw and friends), where we then arrive in the host s390 PCI 
-> layer -- where the MIO variant is used because the facility is available.
-> 
-> Per conversations with Niklas (on CC), it's not trivial to decide by the 
-> time we reach the s390 PCI I/O layer to switch gears and use the non-MIO 
-> instruction set.
-> 
-> > the write pattern help?  
-> 
-> The write pattern is a separate issue from non-MIO instruction 
-> requirements...  Certain address spaces require specific instructions to 
-> be used (so, no substituting PCISTG for PCISTB - that happens too by 
-> default for any writes coming into the host s390 PCI layer that are 
-> <=8B, and they all are when the PCISTB is broken up into 8B memory 
-> operations that travel through vfio_pci_bar_rw, which further breaks 
-> those up into 4B operations).  There's also a requirement for some 
-> writes that the data, if broken up, be written in a certain order in 
-> order to properly trigger events. :(  The ability to pass the entire 
-> PCISTB payload vs breaking it into 8B chunks is also significantly faster.
+Well, but even without that change you have the same situation:
 
-Let me summarize this to make sure I understand this new region
-correctly:
+      timer_fn()
+        wakeup()
+          -->preemption
+                        del_timer_sync()
+                          if (running)
+                             wait_for_running()
+                               lock(expiry)
 
-- some devices may have relaxed alignment/length requirements for
-  pcistb (and friends?)
-- some devices may actually require writes to be done in a large chunk
-  instead of being broken up (is that a strict subset of the devices
-  above?)
-- some devices do not support the new MIO instructions (is that a
-  subset of the relaxed alignment devices? I'm not familiar with the
-  MIO instructions)
+     running = NULL
+     sync_wait_running()
+       unlock(expiry)
+         wakeup_lock()
+          -->preemption
+                             ...
 
-The patchsets introduce a new region that (a) is used by QEMU to submit
-writes in one go, and (b) makes sure to call into the non-MIO
-instructions directly; it's basically killing two birds with one stone
-for ISM devices. Are these two requirements (large writes and non-MIO)
-always going hand-in-hand, or is ISM just an odd device?
+    lock(base)
+     
+So the change at hand does not make things worse, right?
 
-If there's an expectation that the new region will always use the
-non-MIO instructions (in addition to the changed write handling), it
-should be noted in the description for the region as well.
+Thanks,
 
+        tglx
