@@ -2,107 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB632D706F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E89382D7074
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:58:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436587AbgLKGyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 01:54:43 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:29226 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436553AbgLKGyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 01:54:35 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CshMk03d5z5m;
-        Fri, 11 Dec 2020 07:53:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1607669634; bh=nLwavT2NA5+jIA2IuW6zD/l5oswZ/ngNahOWEbWGrOQ=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=X/yNYtguzcKvSFixjEv3sNVBHkr+D6rP4YN8vnLYYSH+UZwJuAlzT0Y1lNXELmyCT
-         BRaCz6rRphFCseZveDgR8lnyBfSRJ0aT9kpXgyqAXPalR3ELThThs4Fza/dwaDMULq
-         m4IhRAu3ymalNkpvCKNVrbB0NS+bMJfGDpwZv5MshP/2ouEvEweKHEfUrmUbX7xtow
-         9yQ5jbGlq3ukFDe3fsT+8YvgXIPQmySdAFYOvm/wXh7f7zCPs/Ivf4TmUAMpjFjfeN
-         TYpAE2L4DEef31rr8kg9jkIIXS/2wrBHeav780kkdqbT1uS5k9hU0/NKPE0y6hFTVT
-         SmZpRvuyxN8Sg==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Fri, 11 Dec 2020 07:53:57 +0100
-Message-Id: <b0120b1dc884591364834da7b8c16e576a1d7226.1607669375.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1607669375.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1607669375.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH RESEND v8 4/4] input: elants: support 0x66 reply opcode for
- reporting touches
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Johnny Chuang <johnny.chuang.emc@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S2436620AbgLKG4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 01:56:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436526AbgLKGz0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 01:55:26 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF04AC0613CF;
+        Thu, 10 Dec 2020 22:54:43 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id b5so1856433pjl.0;
+        Thu, 10 Dec 2020 22:54:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Mk4Hj8uoE9+HWH4PG/7i9Q6Ep1F6cn02av09P/LOR0s=;
+        b=nXCH68tTVbWmkoZR00lDYsABPJrG2BJyk2ZEZkimMS2klUiKQUCyVL2+xnAkFPZnIO
+         l7v8XavwRF796V/6MB15o7d3GvklUtzLO84pdy3PDgyM2xVreukl0WHpjEkaBKdETpjb
+         vYFSCK+dFqnyF+b5WcUo7rfd4rsTZHIrGOaq+UZGl83yUHXlZWH55C+XOdvpmhKnaDbf
+         vxX4PiC5D8QB8+sivbP/x+WNInAz5N3rCSg48dS+eU8ZzShYz0zC4biqViYQWUrcyhDN
+         y1cCKXTu6p4TPpUklPc+DOJlzBsBwkD7MWU3UdVqLAtgRmDZwUBPj1loKWI9cYUQpPtF
+         Kr7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Mk4Hj8uoE9+HWH4PG/7i9Q6Ep1F6cn02av09P/LOR0s=;
+        b=NnPmvl5yWcmloqYsmBFyJEBugrvyic/qMEHu+zXGGqGj5/gzyJzHqy1ZetcNBZ5JyH
+         SioNz3laekUbzcsS6ltaJ7Sg1ZaVkLShkwij3RFUlz8e7QaFddJRBErxg+kS9ce6oDt1
+         RYx0B3npcZDJNbm4lY6WYTQsO/5euEfhK5/8m7QWureMElkf/lUfwYyVzXyExqiG3znU
+         fzZ3yVLa4TET1jdC9GGwLOmpozbB5jDJC3UfQaR4RJYDwX9y2qegJYL59dsnB4Uiao57
+         BaaaVhyi3zr6PzZBslKQhReMNGSFSboZsOYiSdOAmDhyNiw3sWRqA3fEKHRqLWoLqqPH
+         AG6Q==
+X-Gm-Message-State: AOAM533nJsIbmf9QXni3Afw1cfhs4tsl/FVlFsAObTtek/+zzOQbcVFS
+        Uq6PeaUwVpqjB5QXiJLdKxWY2IcgRCpDgA==
+X-Google-Smtp-Source: ABdhPJxelgrbtUldeg1djEvtvOmdwrvVCwPhzPmUSMA9ZFTzjXEC/PCjN42L3L1AXMYnJJEEeA/1tA==
+X-Received: by 2002:a17:902:9307:b029:d9:d097:fd6c with SMTP id bc7-20020a1709029307b02900d9d097fd6cmr9733889plb.10.1607669683454;
+        Thu, 10 Dec 2020 22:54:43 -0800 (PST)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id h36sm8890067pgb.28.2020.12.10.22.54.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Dec 2020 22:54:42 -0800 (PST)
+From:   chenlei0x@gmail.com
+X-Google-Original-From: lennychen@tencent.com
+To:     chenlei0x@gmail.com, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Lei Chen <lennychen@tencent.com>
+Subject: [PATCH] fs: ext4: remove unnecessary wbc parameter from ext4_bio_write_page
+Date:   Fri, 11 Dec 2020 14:54:24 +0800
+Message-Id: <1607669664-25656-1-git-send-email-lennychen@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Lei Chen <lennychen@tencent.com>
 
-eKTF3624 touchscreen firmware uses two variants of the reply opcodes for
-reporting touch events: one is 0x63 (used by older firmware) and other is
-0x66 (used by newer firmware). The 0x66 variant is equal to 0x63 of
-eKTH3500, while 0x63 needs small adjustment of the touch pressure value.
+ext4_bio_write_page does not need wbc parameter, since its parameter
+io contains the io_wbc field. The io::io_wbc is initialized by
+ext4_io_submit_init which is called in ext4_writepages and
+ext4_writepage functions prior to ext4_bio_write_page.
+Therefor, when ext4_bio_write_page is called, wbc info
+has already been included in io parameter.
 
-Nexus 7 tablet device has eKTF3624 touchscreen and it uses 0x66 opcode for
-reporting touch events, let's support it now. Other devices, eg. ASUS TF300T,
-use 0x63.
-
-Note: CMD_HEADER_REK is used for replying to calibration requests, it has
-the same 0x66 opcode number which eKTF3624 uses for reporting touches.
-The calibration replies are handled separately from the the rest of the
-commands in the driver by entering into ELAN_WAIT_RECALIBRATION state
-and thus this change shouldn't change the old behavior.
-
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Signed-off-by: Lei Chen <lennychen@tencent.com>
 ---
- drivers/input/touchscreen/elants_i2c.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ fs/ext4/ext4.h    | 1 -
+ fs/ext4/inode.c   | 4 ++--
+ fs/ext4/page-io.c | 2 +-
+ 3 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
-index c24d8cdc4251..1cbda6f20d07 100644
---- a/drivers/input/touchscreen/elants_i2c.c
-+++ b/drivers/input/touchscreen/elants_i2c.c
-@@ -61,6 +61,15 @@
- #define QUEUE_HEADER_NORMAL	0X63
- #define QUEUE_HEADER_WAIT	0x64
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index cd95965..1385898 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3638,7 +3638,6 @@ extern void ext4_io_submit_init(struct ext4_io_submit *io,
+ extern int ext4_bio_write_page(struct ext4_io_submit *io,
+ 			       struct page *page,
+ 			       int len,
+-			       struct writeback_control *wbc,
+ 			       bool keep_towrite);
+ extern struct ext4_io_end_vec *ext4_alloc_io_end_vec(ext4_io_end_t *io_end);
+ extern struct ext4_io_end_vec *ext4_last_io_end_vec(ext4_io_end_t *io_end);
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index b147c2e..7360e7a 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -2055,7 +2055,7 @@ static int ext4_writepage(struct page *page,
+ 		unlock_page(page);
+ 		return -ENOMEM;
+ 	}
+-	ret = ext4_bio_write_page(&io_submit, page, len, wbc, keep_towrite);
++	ret = ext4_bio_write_page(&io_submit, page, len, keep_towrite);
+ 	ext4_io_submit(&io_submit);
+ 	/* Drop io_end reference we got from init */
+ 	ext4_put_io_end_defer(io_submit.io_end);
+@@ -2089,7 +2089,7 @@ static int mpage_submit_page(struct mpage_da_data *mpd, struct page *page)
+ 		len = size & ~PAGE_MASK;
+ 	else
+ 		len = PAGE_SIZE;
+-	err = ext4_bio_write_page(&mpd->io_submit, page, len, mpd->wbc, false);
++	err = ext4_bio_write_page(&mpd->io_submit, page, len, false);
+ 	if (!err)
+ 		mpd->wbc->nr_to_write--;
+ 	mpd->first_page++;
+diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
+index cb135a9..03a44a0 100644
+--- a/fs/ext4/page-io.c
++++ b/fs/ext4/page-io.c
+@@ -435,7 +435,6 @@ static void io_submit_add_bh(struct ext4_io_submit *io,
+ int ext4_bio_write_page(struct ext4_io_submit *io,
+ 			struct page *page,
+ 			int len,
+-			struct writeback_control *wbc,
+ 			bool keep_towrite)
+ {
+ 	struct page *bounce_page = NULL;
+@@ -445,6 +444,7 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
+ 	int ret = 0;
+ 	int nr_submitted = 0;
+ 	int nr_to_submit = 0;
++	struct writeback_control *wbc = io->io_wbc;
  
-+/*
-+ * Depending on firmware version, eKTF3624 touchscreens may utilize one of
-+ * these opcodes for the touch events: 0x63 and 0x66. The 0x63 is used by
-+ * older firmware version and differs from 0x66 such that touch pressure
-+ * value needs to be adjusted. The 0x66 opcode of newer firmware is equal
-+ * to 0x63 of eKTH3500.
-+ */
-+#define QUEUE_HEADER_NORMAL2	0x66
-+
- /* Command header definition */
- #define CMD_HEADER_WRITE	0x54
- #define CMD_HEADER_READ		0x53
-@@ -1052,7 +1061,6 @@ static irqreturn_t elants_i2c_irq(int irq, void *_dev)
- 		switch (ts->buf[FW_HDR_TYPE]) {
- 		case CMD_HEADER_HELLO:
- 		case CMD_HEADER_RESP:
--		case CMD_HEADER_REK:
- 			break;
- 
- 		case QUEUE_HEADER_WAIT:
-@@ -1072,6 +1080,7 @@ static irqreturn_t elants_i2c_irq(int irq, void *_dev)
- 			break;
- 
- 		case QUEUE_HEADER_NORMAL:
-+		case QUEUE_HEADER_NORMAL2:
- 			report_count = ts->buf[FW_HDR_COUNT];
- 			if (report_count == 0 || report_count > 3) {
- 				dev_err(&client->dev,
+ 	BUG_ON(!PageLocked(page));
+ 	BUG_ON(PageWriteback(page));
 -- 
-2.20.1
+1.8.3.1
 
