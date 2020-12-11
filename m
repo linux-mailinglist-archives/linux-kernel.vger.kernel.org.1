@@ -2,76 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655F72D6D98
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:33:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 219F22D6D9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388504AbgLKBbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:31:55 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:53526 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389797AbgLKBbG (ORCPT
+        id S2389638AbgLKBc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:32:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389890AbgLKBbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:31:06 -0500
-Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7FF0F20B717B;
-        Thu, 10 Dec 2020 17:30:25 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7FF0F20B717B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607650226;
-        bh=22gUqI4ITgUIK0xRDfvH6Jh/NoT35bN2te63MEKRp2w=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=PguH9qx1sLqdQS/KVhu7igFG+lvm/KeC8k1oreR+pGemthTL7xrPSRJkxgjAvc0mM
-         TecdjRjNxCmjVClAtFJXta4Hgne37gXtMNZ2IuH0aCB/9KZr5eai2QIauMcli5QYSr
-         PfJHz+sL08ZlncLyDps3V0q+XAsqSeWq0kGWBGag=
-Subject: Re: [PATCH v7 7/8] IMA: define a builtin critical data measurement
- policy
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
-        jmorris@namei.org, nramas@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20201209194212.5131-1-tusharsu@linux.microsoft.com>
- <20201209194212.5131-8-tusharsu@linux.microsoft.com>
- <20201210232214.GL489768@sequoia>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <f8952107-94a8-5eab-d778-f7317ad6772f@linux.microsoft.com>
-Date:   Thu, 10 Dec 2020 17:30:25 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 10 Dec 2020 20:31:43 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE565C0613D6;
+        Thu, 10 Dec 2020 17:31:03 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1knXGn-000SL0-2o; Fri, 11 Dec 2020 01:30:53 +0000
+Date:   Fri, 11 Dec 2020 01:30:53 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 01/29] iov_iter: Switch to using a table of operations
+Message-ID: <20201211013053.GA107834@ZenIV.linux.org.uk>
+References: <160596800145.154728.7192318545120181269.stgit@warthog.procyon.org.uk>
+ <160596801020.154728.15935034745159191564.stgit@warthog.procyon.org.uk>
+ <CAHk-=wjttbQzVUR-jSW-Q42iOUJtu4zCxYe9HO3ovLGOQ_3jSA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201210232214.GL489768@sequoia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjttbQzVUR-jSW-Q42iOUJtu4zCxYe9HO3ovLGOQ_3jSA@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020-12-10 3:22 p.m., Tyler Hicks wrote:
-> On 2020-12-09 11:42:11, Tushar Sugandhi wrote:
->> From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->>
->> Define a new critical data builtin policy to allow measuring
->> early kernel integrity critical data before a custom IMA policy
->> is loaded.
->>
->> Add critical data to built-in IMA rules if the kernel command line
->> contains "ima_policy=critical_data".
->>
->> Update the documentation on kernel parameters to document
->> the new critical data builtin policy.
->>
->> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+On Sat, Nov 21, 2020 at 10:21:17AM -0800, Linus Torvalds wrote:
+> So I think conceptually this is the right thing to do, but I have a
+> couple of worries:
 > 
-> Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> 
-> Tyler
-> 
-Thanks for the review.
+>  - do we really need all those different versions? I'm thinking
+> "iter_full" versions in particular. They I think the iter_full version
+> could just be wrappers that call the regular iter thing and verify the
+> end result is full (and revert if not). No?
 
-~Tushar
+Umm...  Not sure - iov_iter_revert() is not exactly light.  OTOH, it's
+on a slow path...  Other variants:
+	* save local copy, run of normal variant on iter, then copy
+the saved back on failure
+	* make a local copy, run the normal variant in _that_, then
+copy it back on success.
+
+Note that the entire thing is 5 words, and we end up reading all of
+them anyway, so I wouldn't bet which variant ends up being faster -
+that would need testing to compare.
+
+I would certainly like to get rid of the duplication there, especially
+if we are going to add copy_to_iter_full() and friends (there are
+use cases for those).
+
+>  - I worry a bit about the indirect call overhead and spectre v2.
+> 
+>    So yeah, it would be good to have benchmarks to make sure this
+> doesn't regress for some simple case.
+> 
+> Other than those things, my initial reaction is "this does seem cleaner".
+
+It does seem cleaner, all right, but that stuff is on fairly hot paths.
+And I didn't want to mix the overhead of indirect calls into the picture,
+so it turned into cascades of ifs with rather vile macros to keep the
+size down.
+
+It looks like the cost of indirects is noticable.  OTOH, there are
+other iov_iter patches floating around, hopefully getting better
+code generation.  Let's see how much do those give and if they win
+considerably more than those several percents, revisit this series.
