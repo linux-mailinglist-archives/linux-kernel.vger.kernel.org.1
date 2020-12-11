@@ -2,100 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 256402D8220
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 637A32D8224
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:33:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406948AbgLKWbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 17:31:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406921AbgLKWbN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 17:31:13 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C547EC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:30:32 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id r127so9458427yba.10
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:30:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DP4u3vyOK1sWRkeFBHWzyC0Qo+Tg4a0hdWg9PLXt3LI=;
-        b=dQ+wUD6qOEbwif75TWsTM+enWTSOPm3SNDSssvHnd0zoAJo1h7QfGOOoD9syKnkLVl
-         C27SrGgxPVqok7to50/jRSkqMmigLyVJ20yuhqtreHsjd9pPRkV7fJG3ksl1tlEBU0qv
-         72q2WYPDiMk3NFLxaHWu0hykAN8QuyjAWDOVTrTGBZa27IZf4OWtQOFJpkaGcqmTkpum
-         u+COznp6nvTukB//0hKmDAim1qAaV7Lr7QpNlnZXCjXm54type681d1kg/EjrrGwXUea
-         ZxxlI/o2703XOzBWDWdewwdgCimXj/sCvoilcoN/rQp7Nrb0SYX6WNuQO+8BGsQeCbv7
-         yXsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DP4u3vyOK1sWRkeFBHWzyC0Qo+Tg4a0hdWg9PLXt3LI=;
-        b=e6Nn7hIZsqGcTdJZKrFly+9sHQwi4r4UsfsuITFhfbIvUNdPcMRInuAruuRAGymVll
-         ksf4lcMDh571R6FqkkIGRts9qYxCPOvtA/2txtPp7toWSJOsA3DK4o3EcYrD3sXSNM8/
-         Nbzjz97iXCRIb0zMJHcwr5zGkvYmDcHxufnuoOqh74lxaYiW3Tnof6W5LZbKxU6MBQzm
-         HHaa7IYr7N8SpeQJbVJ0mz/G219O6soluIIFnHBMtCKZnOHSOmbEImckACHgqPzgKZxC
-         v8tXZMqUrDgMmj3xrTu6Y6AsOXxjEZ8FtMxlKVlawXEvUa6C3AxmkjdlS1NSJqbAwDtn
-         udZA==
-X-Gm-Message-State: AOAM531c1gX6h1zvAo+CvFQVEvYblRTN4khsZ2x5VCl1RWRizSpLNpef
-        0F+L8nGvzOrhEJjC2MAiFILGw166aMOYAiskxsGIdg==
-X-Google-Smtp-Source: ABdhPJwi1KxiLbsYZDLOGSqH5Ut1oteRY1ce66tvlhetU1GnU1dasj0j9yrAzoEUGAb6ZstqFJ/R8Ja8XFgNVbOXVFA=
-X-Received: by 2002:a5b:b49:: with SMTP id b9mr20504737ybr.310.1607725831810;
- Fri, 11 Dec 2020 14:30:31 -0800 (PST)
+        id S2406941AbgLKWb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 17:31:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406945AbgLKWbQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 17:31:16 -0500
+X-Gm-Message-State: AOAM530Fmg2hl1SK2LafF/VfrGjBw1/n/hd/x1GRCxhkposqmOhLYux6
+        zHnQaYe/SkETaDR9Nzk46qC959U31M8Mx3U9Yw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607725835;
+        bh=vABCQ49+H11qfsvOTnMeJeo4wvfBhFrM6yVRi3sB2P0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ty6zAIt4pIc6eCMnsd/2KCrtJ1I5IdiSFLqc3A8hcdAS03+v/NfUiKgqj7e19t1uc
+         2sKee8OOiCfXjnNAsbUAkdzq5ctBMV5V+7zOi0iHzy350FHDwDRXHHVsCdoV49KE0R
+         LX63/HrvC2Jkv1B7eawiUCruxjIrgECYgXjtyU2E+5Xk+TqHMz1pI9vWT1Yrk0AZM7
+         yWAL2OBzNjEfo//qdtihjNERNOANpP+fdD+nwgW/nztkajrw3KDegdMMd8VhLwQrMM
+         f/SHn/5zg+B8cIDcUxaifa3bB+scKf2CEx6p52Ys1oJD95fCj2Nib262y6PndC9xSq
+         +Kt/iLLT22JIA==
+X-Google-Smtp-Source: ABdhPJxELQnby/nWlpOfdvoddoRioe1RHsOXyu+dXsBt3rWuZU/yUvpL8oeessk+qqJqDe9uAXhB6SMNnfhc09IPiyk=
+X-Received: by 2002:a17:906:ae43:: with SMTP id lf3mr12047822ejb.130.1607725833682;
+ Fri, 11 Dec 2020 14:30:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20201121020232.908850-1-saravanak@google.com> <20201121020232.908850-17-saravanak@google.com>
- <02e7047071f0b54b046ac472adeeb3fafabc643c.camel@redhat.com>
- <788ee1c7-0ea2-33ec-658e-50707f7515a6@arm.com> <CAGETcx-MsNyWWT=s1H6hDK+=QvibBLQrT9rM51y5bkomV_+G6g@mail.gmail.com>
- <813b3fbd80ad4dfee7ff8517d4829a1f@kernel.org> <CAGETcx_hPVv1iTt6q3gLmBN=q+_O6vTwxeS5Nj55Smm3FNk24Q@mail.gmail.com>
- <caf7719771210fb91565d105bd9c7e4b@kernel.org>
-In-Reply-To: <caf7719771210fb91565d105bd9c7e4b@kernel.org>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 11 Dec 2020 14:29:55 -0800
-Message-ID: <CAGETcx8Fjr-0S5kjUxYytncgQ9ZtMoeey_P680R6RPFk7-haZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 16/17] driver core: Refactor fw_devlink feature
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>, Qian Cai <qcai@redhat.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20201204092752.GE74177@piout.net> <20201211215611.24392-1-rasmus.villemoes@prevas.dk>
+ <20201211215611.24392-2-rasmus.villemoes@prevas.dk>
+In-Reply-To: <20201211215611.24392-2-rasmus.villemoes@prevas.dk>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 11 Dec 2020 16:30:22 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJ-5gwycTRQCdX=ZsefEJ=F1GyTjjDW6QB1PBynibFzLg@mail.gmail.com>
+Message-ID: <CAL_JsqJ-5gwycTRQCdX=ZsefEJ=F1GyTjjDW6QB1PBynibFzLg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: add reset-source property
+To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc:     "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Qiang Zhao <qiang.zhao@nxp.com>,
+        Bruno Thomsen <bruno.thomsen@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 11:07 AM Marc Zyngier <maz@kernel.org> wrote:
+On Fri, Dec 11, 2020 at 3:56 PM Rasmus Villemoes
+<rasmus.villemoes@prevas.dk> wrote:
 >
-> On 2020-12-11 18:20, Saravana Kannan wrote:
+> Some RTCs, e.g. the pcf2127, can be used as a hardware watchdog. But
+> if the reset pin is not actually wired up, the driver exposes a
+> watchdog device that doesn't actually work.
 >
-> > Lol, my only contribution to the patch will be the commit text. I'll
-> > send them with reported-by, suggested-by and tested-by if no one less
-> > beats me to it.
->
-> Teamwork!
->
->          M.
+> Provide a standard binding that can be used to indicate that a given
+> RTC can perform a reset of the machine, similar to wakeup-source.
 
-Forgot to CC most of the folks/lists here, but patch has been sent.
+Why not use the watchdog 'timeout-sec' property?
 
-https://lore.kernel.org/lkml/20201211202629.2164655-1-saravanak@google.com/
+Please send DT patches to the DT list.
 
--Saravana
+>
+> Suggested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+> ---
+>  Documentation/devicetree/bindings/rtc/rtc.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/rtc/rtc.yaml b/Documentation/devicetree/bindings/rtc/rtc.yaml
+> index ee237b2ed66a..b5e24dc24b0b 100644
+> --- a/Documentation/devicetree/bindings/rtc/rtc.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/rtc.yaml
+> @@ -47,4 +47,9 @@ properties:
+>      description:
+>        Enables wake up of host system on alarm.
+>
+> +  reset-source:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      The RTC is able to reset the machine.
+> +
+>  ...
+> --
+> 2.23.0
+>
