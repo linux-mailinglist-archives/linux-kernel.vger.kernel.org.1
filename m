@@ -2,156 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE682D6DB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0802D6DD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:57:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390640AbgLKBpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:45:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47188 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390028AbgLKBpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:45:10 -0500
-Date:   Fri, 11 Dec 2020 10:44:24 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607651069;
-        bh=Ajksm1kJ6PClgxq9ucUQckZNGNZpfv16/uxGN3OJN0k=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oJvhjmNZRRifIqD9fjjbxxEs/2a4QSNAQjO+T4ilPokWu3xMnp+yaqlxTWtrkEvDY
-         GblZ6G5Ierm2/I8/Mq6wCORynwUa5GiUr9HoocTwsiqvHC7N7mQvdeZo0+QeX1AbNm
-         /fr2tkoCep2aE0nCM4m6LaUa8norM8ZfS9WfkXfPwVZ5iEHgRfMVL5EiXkxe3GqZoC
-         J0+cDHdl1q7EJY3AfPgUVedLnZ+tq7K3gtGkXqptRchCwl8eXRnt2q2uSHZS0rWxDq
-         zhOyn/qi6OBzpJct1ojY9YEPBu3kWefqDiDuVo4FJ86moWMf3mXUEK1c6cENbURUvg
-         IMcbnBTsr9BoQ==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Adam Zabrocki <pi3@pi3.com.pl>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Solar Designer <solar@openwall.com>
-Subject: Re: KRETPROBES are broken since kernel 5.8
-Message-Id: <20201211104424.e9e422f8be00e12b5d90260c@kernel.org>
-In-Reply-To: <20201210171430.GA20584@pi3.com.pl>
-References: <20201209215001.GA8593@pi3.com.pl>
-        <20201210102507.6bd47a08191852b9f8b5e3f0@kernel.org>
-        <20201210071742.GA14484@pi3.com.pl>
-        <20201210220937.5232571bf5b03237e7018012@kernel.org>
-        <20201210171430.GA20584@pi3.com.pl>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S2391419AbgLKB4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:56:13 -0500
+Received: from mail-db8eur05on2075.outbound.protection.outlook.com ([40.107.20.75]:40512
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390071AbgLKBzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 20:55:33 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JD9ZzO6v44ghGZEr8JLZkOlf5t0C8kwUR0BdpLizjy7diizmDlHV61j6D/lffSPzSBOtcJ/6iVQqgCHP1gB7VN4aWxUuj8XUfIdI2aTOWlAmQwuff44k/Q9Badr5kYE5zvEvJ0p1oZGAuNFLw8OQCBsrprAxAgPMGOrdO/kIlhr+5VepgdrCJqKShwyL5WMK2OYgCwI04JgbjclM+IuiJ/T54JoKhyJEot17T2fwZjoyZtKuYqSI07vWUt4XSbUiDjcaFU+rW/pBe9azBQy9p31PpTCGVonlwjslnNGPl+wVtKVDHklW0B0wC5cV8sUulIeTzxTQZt2wyJsuBZnicA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o8QbsVSQpwTDeCI0oMdCzNpmCAjkpWMRnEA4qKBwYgk=;
+ b=Jw1CA80L+AJ5dswBRjnAvaBixZb1LnbRnrOeJ5bq6FGvQIENYQoJupOYdjOiEy2boMfr910SzHsEWsPtAGBg0Luv/1cjcLkv1+0KcuMwaKr9/W+L8Fu0vb5lk2yUSh3F4CYR2aZwuK2IOjzK99ZzhtKb/6FG9uN3qv2IkrPS/vuiv25FZdEqCOcrcb8QWWnHOe4DWz5OC4WHUSqwx+u+fyLSPPSrewIJNB1iF2TETsqJRsxbQVL9Hhv4Cy2/jNdwk98ANX/i7g5bmz6HRVs+LMLKAWKAXLTNSNxWyu/DHdBPmHJ5y3XsaEqmr0YqgHUExoClOQrbqz46JEthO2vz+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o8QbsVSQpwTDeCI0oMdCzNpmCAjkpWMRnEA4qKBwYgk=;
+ b=DeahoOAIXe5FFdtfzjaRMbhQod0eZJ3Hr+YVNtuMCLQrT+by+kQDyA34Ebz+ASJTi23INu4+sJpTwrPJezUIbUMUEZkthmhsG5gXtEg/iG6s5Y3ymrOxPLx67tzE3njFR/NXMaEb/JpfAJxVv4j6f/ZHLckm0CnRMY7SOdxT9c4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+ by VI1PR0402MB3952.eurprd04.prod.outlook.com (2603:10a6:803:1c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Fri, 11 Dec
+ 2020 01:54:42 +0000
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::dcb7:6117:3def:2685]) by VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::dcb7:6117:3def:2685%7]) with mapi id 15.20.3632.023; Fri, 11 Dec 2020
+ 01:54:41 +0000
+From:   Liu Ying <victor.liu@nxp.com>
+To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org,
+        a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, airlied@linux.ie, daniel@ffwll.ch,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, agx@sigxcpu.org,
+        robert.chiras@nxp.com, martin.kepplinger@puri.sm
+Subject: [PATCH v3 0/5] phy: phy-fsl-imx8-mipi-dphy: Add i.MX8qxp LVDS PHY mode support
+Date:   Fri, 11 Dec 2020 09:46:17 +0800
+Message-Id: <1607651182-12307-1-git-send-email-victor.liu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2P153CA0042.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::11)
+ To VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2P153CA0042.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3676.5 via Frontend Transport; Fri, 11 Dec 2020 01:54:35 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 9190fcdc-9e45-487b-ac04-08d89d77b9d5
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3952:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB395220BF8A5188894CB4553298CA0@VI1PR0402MB3952.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OFSy1tfbktiVBP2M2FZr2/eeKzk8YUIY0LNUPOGG4AISM/GKPeg6pqnml5iMgX0p2LmwWx7hjitoVd+UUYP7THyWlFjc/C8DDyLC0ZesPB4vvwYcuN+eDKIQddUxfb9dFaumE+aVVgUnbo31/HH75+w+v/eXOfBDUoplAxY3mq3/btaK78gnytDgm3fMLl9pn9b3w27v02woTeDCpXuiFqWrk7MN+H/kjiEoJ+Q/n+5pO36MHgW/DBT6HmEcPsx8dOmOpzm/mf87VIwaw5muYkcoB5alCrXGMjV4OxMyybThlfhlUERas5eLCGeZzaNcZKV8Udd6U6+vvFvrDcXDEyutqYO4QMkMyiwrqEu6s64zUKSKG70vaRrbLdTm7xez
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(39860400002)(346002)(366004)(52116002)(316002)(956004)(69590400008)(2616005)(5660300002)(66556008)(4326008)(66476007)(2906002)(66946007)(6512007)(7416002)(8676002)(16526019)(26005)(186003)(8936002)(6486002)(36756003)(478600001)(86362001)(6666004)(6506007)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?J3mGief3m79kPwuuMy4NNmWnA/Ow6z0vaHLn9fwPbZ9POOi+VyZo0CufyNOC?=
+ =?us-ascii?Q?vec/E8kn4QThVBAw1cvgXPwfrRhlYd/ctjaXpCYtAFmf55rdYR6NN/U6qXV0?=
+ =?us-ascii?Q?acdiwpIIt9RzdCQvJz1/JHx6UNSaOqgf/uX0Wx2ExuPC6VEK2scycYAvLbO3?=
+ =?us-ascii?Q?rNhgbgfsXCL7j6pRsD4HYSISxm8vlLsYlNyaTcTCVHosiKc8dS3AmJxFMLkT?=
+ =?us-ascii?Q?sAdSuZikqrrfnkHHbCAUYAVxALZB6Ys7ELu+45ftaI7XZ1glFw3kt8oVNSeb?=
+ =?us-ascii?Q?eZ0XQ3iolwO3PYr9DF5Y6NnZfU3j2xP8t7HKXa+Ab+TrV2zKs+8c62BnYQNf?=
+ =?us-ascii?Q?tPOEDunvvLDil9XDY5fWuTb4Nm7zR+hXK7CawRRPKl+K30qdmp3yDgCdWory?=
+ =?us-ascii?Q?RCs2vq4FmS0j1DUYlZeCHgeD8+Jv54Dbwsr5nxsN+sPEgLxmr5LZqQnEhZXK?=
+ =?us-ascii?Q?qk41KeYqyJsNxqglM6Hf8zF8415RbHMNUMLQ00fXKz8FbIaEyHSrUph00pnz?=
+ =?us-ascii?Q?PaanrwQgJ34MJgvbJBZvqKKhZaOmJHrwZ1tItEeyv5BPzB9y5rMLv4f+Qcov?=
+ =?us-ascii?Q?/6T0njSUqbmR5yNxCFZAueLoa+fmVg4cml4NQ5tuUWh3eM2M4VqEXrHJDKJ6?=
+ =?us-ascii?Q?jStFPnpxCJ0a2IFHn+eq6qGcNvL/SvX0s89NyxTZ2efJObY4TJUyjqsd95g7?=
+ =?us-ascii?Q?rZzxLNUZcMDC+PgLVuX45X6MxTAsoHRS4myM5t9qhgytaDkbc+DGbkd0JQXx?=
+ =?us-ascii?Q?LUyhoznuoir00in3oOeMin1TQfdx6SIKzc6y3sJaYtoGplTLquop8/t3cCJ5?=
+ =?us-ascii?Q?TNHUvpwQE4KfWKtrU5fq2Q9SR7buI0MAPz94ag/wJLJklNmpVbDlYmSNhfMe?=
+ =?us-ascii?Q?+PAub9O3NigTDMjlCc/6Qr8VdeAej+F8iN3XrfQx2ISRAhqsG+lqrqhZFBUt?=
+ =?us-ascii?Q?p0fWcOoeGoziJ5UqZNEQoJwYIAvytN2ve4sIe2vLn6zTBXvsyenVd4DomXYP?=
+ =?us-ascii?Q?67w/?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2020 01:54:41.5653
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9190fcdc-9e45-487b-ac04-08d89d77b9d5
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eFbjMN4vuar18vQ1xwpfOsShUvd2FiG8Igo8VmdiRB9hcDcyriu4S6+BfAsYxzxaqmCxNkOsj5zHF950e00ThQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3952
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 18:14:30 +0100
-Adam Zabrocki <pi3@pi3.com.pl> wrote:
+Hi,
 
-> Hi,
-> 
-> > > However, there might be another issue which I wanted to brought / discuss - 
-> > > problem with optimizer. Until kernel 5.9 KRETPROBE on e.g. 
-> > > 'ftrace_enable_sysctl' function was correctly optimized without any problems. 
-> > 
-> > Did you check it on other functions? Did you see it only on the "ftrace_enable_sysctl"?
-> > 
-> 
-> Yes, I see it in most of the functions with padding.
+This series adds i.MX8qxp LVDS PHY mode support for the Mixel PHY in the
+Freescale i.MX8qxp SoC.
 
-Thanks for the confirmation.
+The Mixel PHY is MIPI DPHY + LVDS PHY combo, which can works in either
+MIPI DPHY mode or LVDS PHY mode.  The PHY mode is controlled by i.MX8qxp
+SCU firmware.  The PHY driver would call a SCU function to configure the
+mode.
 
-> 
-> > > Since 5.9 it can't be optimized anynmore. I didn't see any changes in the 
-> > > sources regarding the optimizer, neither function itself.
-> > > When I looked at the generated vmlinux binary, I can see that GCC generated 
-> > > padding at the end of this function using INT3 opcode:
-> > > 
-> > > ...
-> > > ffffffff8130528b:       41 bd f0 ff ff ff       mov    $0xfffffff0,%r13d
-> > > ffffffff81305291:       e9 fe fe ff ff          jmpq   ffffffff81305194 <ftrace_enable_sysctl+0x114>
-> > > ffffffff81305296:       cc                      int3
-> > > ffffffff81305297:       cc                      int3
-> > > ffffffff81305298:       cc                      int3
-> > > ffffffff81305299:       cc                      int3
-> > > ffffffff8130529a:       cc                      int3
-> > > ffffffff8130529b:       cc                      int3
-> > > ffffffff8130529c:       cc                      int3
-> > > ffffffff8130529d:       cc                      int3
-> > > ffffffff8130529e:       cc                      int3
-> > > ffffffff8130529f:       cc                      int3
-> > 
-> > So these int3 is generated by GCC for padding, right?
-> > 
-> 
-> I've just browsed a few commits and I've found that one:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7705dc8557973d8ad8f10840f61d8ec805695e9e
-> 
-> It looks like INT3 is now a default padding used by linker.
+The PHY driver is already supporting the Mixel MIPI DPHY in i.MX8mq SoC,
+where it appears to be a single MIPI DPHY.
 
-Thanks for the information! OK, I will add Fixed: tag and backport it.
 
-> 
-> > > However, that's not the case here. INT3_INSN_OPCODE is placed at the end of 
-> > > the function as padding (and protect from NOP-padding problems).
-> > > 
-> > > I wonder, if optimizer should take this special case into account? Is it worth 
-> > > to still optimize such functions when they are padded with INT3?
-> > 
-> > Indeed. I expected int3 is used from other subsystems (e.g. kgdb) and,
-> > in that case the optimization can confuse them.
-> 
-> Right. The same can happen when text section is being actively modified. 
-> However, this case could be covered by running the optimizer logic under 
-> text_mutex.
+Patch 1/5 sets PHY mode in the Northwest Logic MIPI DSI host controller
+bridge driver, since i.MX8qxp SoC embeds this controller IP to support
+MIPI DSI displays together with the Mixel PHY.
 
-No, this check is needed because of the instruction decoding. Usually,
-the int3 will be put a the first byte of the existing instruction whose
-length is usually 1-6 bytes. If the instruction's opcode is overwritten
-by the int3, kprobes can not get the original opcode and this means it 
-can not get the original length of the instruction.
-To optimize the probe, kprobes have to ensure the other jump instruction
-doesn't jump into the instructions which will be overwritten by optimized
-jump instruction. This is why the can_optimize() decodes all instructions
-in the function (note that ksyms has no information of padding bytes, it
-returns the function size with the padding bytes.)
-Thus, when the kprobes detects the int3 in the function, it gives up the
-decoding and optimizing.
+Patch 2/5 allows LVDS PHYs to be configured through the generic PHY functions
+and through a custom structure added to the generic PHY configuration union.
 
-> 
-> > But if the gcc uses int3 to pad the room between functions, it should be
-> > reconsidered. 
-> > 
-> 
-> Looks like it's a default behavior now.
+Patch 3/5 converts mixel,mipi-dsi-phy plain text dt binding to json-schema.
 
-OK, let me fix that. If the int3 is only used for the padding between functions,
-those int3 should continue to the end of the function. So kprobes can distinguish
-the int3 comes from other subsystems or linker.
+Patch 4/5 adds dt binding support for the Mixel combo PHY in i.MX8qxp SoC.
 
-Thank you,
+Patch 5/5 adds the i.MX8qxp LVDS PHY mode support in the Mixel PHY driver.
 
-> 
-> > Thank you,
-> >
-> > > If it is OK, we should backport those to stable tree.
-> > 
-> > Agreed.
-> 
-> It is also important to make sure that distro kernels would pick-up such 
-> backported fix.
-> 
-> Thanks,
-> Adam
-> 
-> -- 
-> pi3 (pi3ki31ny) - pi3 (at) itsec pl
-> http://pi3.com.pl
-> 
 
+Welcome comments, thanks.
+
+v2->v3:
+* Improve readability of mixel_dphy_set_mode() in the Mixel PHY driver. (Guido)
+* Improve the 'clock-names' property in the PHY dt binding.
+
+v1->v2:
+* Convert mixel,mipi-dsi-phy plain text dt binding to json-schema. (Guido)
+* Print invalid PHY mode in dmesg from the Mixel PHY driver. (Guido)
+* Add Guido's R-b tag on the patch for the nwl-dsi drm bridge driver.
+
+Liu Ying (5):
+  drm/bridge: nwl-dsi: Set PHY mode in nwl_dsi_enable()
+  phy: Add LVDS configuration options
+  dt-bindings: phy: Convert mixel,mipi-dsi-phy to json-schema
+  dt-bindings: phy: mixel: mipi-dsi-phy: Add Mixel combo PHY support for
+    i.MX8qxp
+  phy: freescale: phy-fsl-imx8-mipi-dphy: Add i.MX8qxp LVDS PHY mode
+    support
+
+ .../devicetree/bindings/phy/mixel,mipi-dsi-phy.txt |  29 ---
+ .../bindings/phy/mixel,mipi-dsi-phy.yaml           | 107 ++++++++
+ drivers/gpu/drm/bridge/nwl-dsi.c                   |   6 +
+ drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c     | 269 ++++++++++++++++++++-
+ include/linux/phy/phy-lvds.h                       |  48 ++++
+ include/linux/phy/phy.h                            |   4 +
+ 6 files changed, 423 insertions(+), 40 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml
+ create mode 100644 include/linux/phy/phy-lvds.h
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.7.4
+
