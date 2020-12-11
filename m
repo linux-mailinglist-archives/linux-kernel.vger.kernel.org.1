@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F9C2D6DA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CBF02D6DB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390394AbgLKBkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:40:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390336AbgLKBkV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:40:21 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E16C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:39:41 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id c12so5574480pgm.4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:39:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=H3bNyqjYE3P3FE+pJdfbGUHM/wRVgfwC3WmKBMLEr7M=;
-        b=dEgyJPXv0kmdJSrcSv+bLlHu62vF3ra95gSKtR8K44I6/dpazQExwhUkTuKh1Hmru3
-         dfprGYiB08/idrTanAYAC5/AZjQgID2vscE07va0W1FWTcSRxybjyvdZhWob7e2BVT3p
-         IhtpwI3muN6WlQz1pNmKtGJQdIYD1Z/zYB36Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=H3bNyqjYE3P3FE+pJdfbGUHM/wRVgfwC3WmKBMLEr7M=;
-        b=Mb+00qoMmN2sV/ck8ad6xtcKd3Usr+IphxwbIjejq1iPO0sGt3CtPNq8ubb716eHG1
-         KZogScFewbCPJZDfzwEjis+/xo3HUSA/UknH5tAs3r41ZI0muY6kLg3HF3JeOtO7TQhy
-         1P+2hJ1qxeZ9gzZmj8N4IK4xcAppWXaKsm4+CD+zNOg8ix2/ALr4QQvCSEA/G+V/iAyO
-         efn5+mNxASYrhtNZiIjc2dXIfuz5UMDlnh/yhrPRcs1EIvn+QrI7kAbnvBUtrLOAZAPR
-         L7LOVp1/CpkH3YYe4Ea0b9YE6wLb5xx0DAIAi82jSzSYAytXk65HdHWj/crYPTCQHGgt
-         Peng==
-X-Gm-Message-State: AOAM533OFNH9GdiTH0Wq/paJ8ekErvxtqtvG60Tdjiv9nny2XhErIEcS
-        uUD+X10Ym79yAjVK6x2mwd1hew==
-X-Google-Smtp-Source: ABdhPJwS2eEsNkdSg9gzpVa3oDaAxMF5jsW+xoVUW5TxVlsMAiakjkBodXM2xbhz+QHjt9vWSMi7Hw==
-X-Received: by 2002:a17:90a:fa0c:: with SMTP id cm12mr10705104pjb.87.1607650780522;
-        Thu, 10 Dec 2020 17:39:40 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id s189sm7542837pfb.60.2020.12.10.17.39.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 17:39:40 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S2390030AbgLKBli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:41:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390557AbgLKBlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 20:41:15 -0500
+Date:   Fri, 11 Dec 2020 02:40:31 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607650834;
+        bh=Pi8JYKpDMe2dYTrk3VK79ij+Nm186HVdVz+CuU1p+y8=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vBCRt8YSazpURt+11Y8ThFZ4URuDBGT/OphWGDuqDfQwJGVhZUiGND+Jn74OE9iP5
+         JT1Utxhxe2rVmdlot1phYslWSXGqe9xe8LuFlYIqsdDTB8bOgdXpaUN2IF8S+6i99A
+         v+7sJ97KIdB8Hi9MeUZzvZHOF2vP3ZCnAfUExR1lvXp955PWunZ+GppoS1C0VY/2Ab
+         jfRNi36y34duLY1JXcS8U6O7LVrFeIaTs2mIXPoT1PN5PG2pRNaP75x5Lx3pgpZLlE
+         MY9j2xNkO5X8yxHNZKMoNIFX0gtLRgcIaLCPgogIZ8QyqjOKADMICTndMxLPcknTza
+         zldBqZOFy2HhA==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: NOHZ tick-stop error: Non-RCU local softirq work is pending
+Message-ID: <20201211014031.GB580714@lothringen>
+References: <20201118175218.GA16039@paulmck-ThinkPad-P72>
+ <20201210145637.GA164661@lothringen>
+ <20201210211756.GZ2657@paulmck-ThinkPad-P72>
+ <20201211001515.GA580714@lothringen>
+ <20201211004638.GB2657@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAD=FV=Xgw+33pCycHyaMPsk64Qs+oh8e-RtJaM1yn0F27qZRVQ@mail.gmail.com>
-References: <20201203074459.13078-1-rojay@codeaurora.org> <CAD=FV=WtU3cnRe6pDKFMA9_0cnQFtSOyohY_bJwZObK+KrbhVQ@mail.gmail.com> <160764107797.1580929.14768824290834396298@swboyd.mtv.corp.google.com> <CAD=FV=WuQjKC6GHy8d2nuqS-fgsUfxYrJosg3eyC9JU1FPCcjw@mail.gmail.com> <160764316821.1580929.18177257779550490986@swboyd.mtv.corp.google.com> <CAD=FV=WvG085orLqnvg9WUobL7iyxwgoxh-8RvOaRdi9rLeDUg@mail.gmail.com> <160764785500.1580929.4255309510717807485@swboyd.mtv.corp.google.com> <CAD=FV=VD78fmSRciFf38AbZG=EFPzDiT_e7QkEC08zA9iL1vTw@mail.gmail.com> <160764967649.1580929.3992720095789306793@swboyd.mtv.corp.google.com> <CAD=FV=Xgw+33pCycHyaMPsk64Qs+oh8e-RtJaM1yn0F27qZRVQ@mail.gmail.com>
-Subject: Re: [PATCH] spi: spi-geni-qcom: Fix NULL pointer access in geni_spi_isr
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        msavaliy@qti.qualcomm.com
-To:     Doug Anderson <dianders@chromium.org>
-Date:   Thu, 10 Dec 2020 17:39:38 -0800
-Message-ID: <160765077856.1580929.643282739071441296@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211004638.GB2657@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2020-12-10 17:30:17)
-> On Thu, Dec 10, 2020 at 5:21 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > Yeah and so if it comes way later because it timed out then what's the
-> > point of calling synchronize_irq() again? To make the completion
-> > variable set when it won't be tested again until it is reinitialized?
->=20
-> Presumably the idea is to try to recover to a somewhat usable state
-> again?  We're not rebooting the machine so, even though this transfer
-> failed, we will undoubtedly do another transfer later.  If that
-> "abort" interrupt comes way later while we're setting up the next
-> transfer we'll really confuse ourselves.
+On Thu, Dec 10, 2020 at 04:46:38PM -0800, Paul E. McKenney wrote:
+> > diff --git a/kernel/softirq.c b/kernel/softirq.c
+> > index 09229ad82209..7d558cb7a037 100644
+> > --- a/kernel/softirq.c
+> > +++ b/kernel/softirq.c
+> > @@ -650,7 +650,9 @@ static void run_ksoftirqd(unsigned int cpu)
+> >  		 * We can safely run softirq on inline stack, as we are not deep
+> >  		 * in the task stack here.
+> >  		 */
+> > -		__do_softirq();
+> > +		do {
+> > +			__do_softirq();
+> > +		} while (kthread_should_park() && local_softirq_pending());
+> >  		local_irq_enable();
+> >  		cond_resched();
+> >  		return;
+> 
+> Huh.  I guess that self-propagating timers, RCU callbacks, and the
+> like are non-problems because they cannot retrigger while interrupts
+> are disabled?  But can these things reappear just after the
+> local_irq_enable()?
 
-The interrupt handler just sets a completion variable. What does that
-confuse?
+Exactly, unless those things have been disabled in CPU hotplug callbacks
+before smpboot_park_threads() (and we are not too deep in CPU hotplug at that
+stage, cpu_online() is still true), they should be able to raise again
+the softirqs. Yeah I'm pretty sure the above won't be enough.
 
->=20
-> I guess you could go the route of adding a synchronize_irq() at the
-> start of the next transfer, but I'd rather add the overhead in the
-> exceptional case (the timeout) than the normal case.  In the normal
-> case we don't need to worry about random IRQs from the past transfer
-> suddenly showing up.
->=20
+> In the case of RCU, softirq would need to run on this CPU, which it won't,
+> so we are good in that case.  (Any stranded callbacks will be requeued
+> onto some other CPU later in the CPU-hotplug offline processing.)
 
-How does adding synchronize_irq() at the end guarantee that the abort is
-cleared out of the hardware though? It seems to assume that the abort is
-pending at the GIC when it could still be running through the hardware
-and not executed yet. It seems like a synchronize_irq() for that is
-wishful thinking that the irq is merely pending even though it timed
-out and possibly never ran. Maybe it's stuck in a write buffer in the
-CPU?
+Ah that's good, so at least we shouldn't worry about pending RCU softirqs
+after ksoftirqd has parked. But I also see at least SCHED_SOFTIRQ and
+TIMER_SOFTIRQ in your list.
+
+Perhaps we should have some flush_softirq() somewhere late in cpu hotplug,
+assuming this is actually necessary and none of these will requeue themselves...
+
+Thanks.
+
+> 
+> 							Thanx, Paul
+> 
+> > Thanks!
