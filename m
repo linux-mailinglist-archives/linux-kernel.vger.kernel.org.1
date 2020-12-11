@@ -2,124 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F792D78C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:06:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DF32D7888
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:02:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406555AbgLKPFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:05:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406550AbgLKPFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:05:13 -0500
-Date:   Fri, 11 Dec 2020 15:53:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607698418;
-        bh=YDIuYljoqc26LKVO8C90Z3OhvO6XmgA1mBkLcV52L4Q=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qljz9ZohTXrHZVCSw1s45CrDnlZypeDo9DfenGPcLEiFwfqht65ynHuajG83iUgaU
-         TPSD5vDcXoeG++i9FeAhXWxfFVDqn5nJ/PyoBlUelG2ajvDV3ddzd/8pNltA36km+E
-         1AykQYoCmwIiRyDl/85cKtsWNiU9woYECYqcQB0puf5UiHVZfrUvRoswpWfUjicBWM
-         IIwlAFsju2vVYm50dbDV0144PR3pegCsZva3rFVueT2SmJLShU+9fHCArTgnqsuwK/
-         zod8sOxKaMDAlMpLBWQg31Io9h65gRykfArODM26+THmMK9ryZqm4mZ4YsjSnGlRY0
-         8ECDW9o12Y4gA==
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Linhua Xu <linhua.xu@unisoc.com>
-Subject: Re: [PATCH] i2c: sprd: use a specific timeout to avoid system hang
- up issue
-Message-ID: <20201211145335.GC1990@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Linhua Xu <linhua.xu@unisoc.com>
-References: <20201211102248.1018374-1-zhang.lyra@gmail.com>
+        id S2437292AbgLKPAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:00:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406206AbgLKO7c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 09:59:32 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53351C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 06:58:44 -0800 (PST)
+Date:   Fri, 11 Dec 2020 14:58:41 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607698722;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R8vexeLzZ9kwzO3Dkv3CQ3ERMRnwCF3VU/RRbRJRE2w=;
+        b=uHUPSn7FEIY4DIJK/QKgt010CzL25clr1vj3QoOwnRqLAgQpyqIDa7T5Oop4jJcI/q6XyW
+        2tOpC4fW/J8hqPEu5/s/BIgyZb4yH8SiPLqgo5BKJZMeeskvKVx9vrCoFl3s3908JZ4XsE
+        yDV13hvt8RaR7UDEgoTI+9YvxG9vrbRYYBGbX2S/LZGgZzxOAuDPV7vLmZI2vSSs2zR0vw
+        HHyKnqmQ0oEUoEnGmXKVL1sNo4x+CsEFI8CKNwLjtaRpfGhOtqeGfWrF/jXfxdO24vSuo3
+        SR9lGMBeg6Q6/AKaupZk/YETO0HsH1LDP5bOSUUOlRGjGl5oHfpLU+pRehdcRA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607698722;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R8vexeLzZ9kwzO3Dkv3CQ3ERMRnwCF3VU/RRbRJRE2w=;
+        b=V9dmjhy/0m8XlaVpUh9sWYLRvdrD8M3m59S5RadnneCjf0UwNiWKqDmwnGWtVKl3XXtVr4
+        Jxgs410AKsk4IVBw==
+From:   "irqchip-bot for John Garry" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] driver core: platform: Add
+ devm_platform_get_irqs_affinity()
+Cc:     John Garry <john.garry@huawei.com>, Marc Zyngier <maz@kernel.org>,
+        tglx@linutronix.de
+In-Reply-To: <1606905417-183214-5-git-send-email-john.garry@huawei.com>
+References: <1606905417-183214-5-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="KN5l+BnMqAQyZLvT"
-Content-Disposition: inline
-In-Reply-To: <20201211102248.1018374-1-zhang.lyra@gmail.com>
+Message-ID: <160769872184.3364.16177033620349431031.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
---KN5l+BnMqAQyZLvT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     e15f2fa959f2cce8a05e8e3a596e75d068cd42c5
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/e15f2fa959f2cce8a05e8e3a596e75d068cd42c5
+Author:        John Garry <john.garry@huawei.com>
+AuthorDate:    Wed, 02 Dec 2020 18:36:56 +08:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Fri, 11 Dec 2020 14:47:51 
 
-Hi,
+driver core: platform: Add devm_platform_get_irqs_affinity()
 
-thanks for your patch!
+Drivers for multi-queue platform devices may also want managed interrupts
+for handling HW queue completion interrupts, so add support.
 
-> If the i2c device SCL bus being pulled up due to some exception before
-> message transfer done, the system cannot receive the completing interrupt
-> signal any more, it would not exit waiting loop until MAX_SCHEDULE_TIMEOUT
-> jiffies eclipse, that would make the system seemed hang up. To avoid that
-> happen, this patch adds a specific timeout for message transfer.
+The function accepts an affinity descriptor pointer, which covers all IRQs
+expected for the device.
 
-Yes.
+The function is devm class as the only current in-tree user will also use
+devm method for requesting the interrupts; as such, the function is made
+as devm as it can ensure ordering of freeing the irq and disposing of the
+mapping.
 
-> Fixes: 8b9ec0719834 ("i2c: Add Spreadtrum I2C controller driver")
-> Original-by: Linhua Xu <linhua.xu@unisoc.com>
+Signed-off-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Acked-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/1606905417-183214-5-git-send-email-john.garry@huawei.com
+---
+ drivers/base/platform.c         | 121 +++++++++++++++++++++++++++++++-
+ include/linux/platform_device.h |   6 ++-
+ 2 files changed, 127 insertions(+)
 
-I can't find this tag documented. Maybe "Co-developed by"? Or just
-"Signed-off-by"?
-
-> +	unsigned long timeout =3D msecs_to_jiffies(I2C_XFER_TIMEOUT);
-> =20
->  	i2c_dev->msg =3D msg;
->  	i2c_dev->buf =3D msg->buf;
-> @@ -273,7 +276,9 @@ static int sprd_i2c_handle_msg(struct i2c_adapter *i2=
-c_adap,
-> =20
->  	sprd_i2c_opt_start(i2c_dev);
-> =20
-> -	wait_for_completion(&i2c_dev->complete);
-> +	timeout =3D wait_for_completion_timeout(&i2c_dev->complete, timeout);
-> +	if (!timeout)
-> +		return -EIO;
-
-Basically OK, but readability can be improved. Because it reads "if not
-timeout, then return error". But it IS a timeout :) What about this:
-
-	time_left =3D wait_for_completion_timeout(&i2c_dev->complete,
-						msecs_to_jiffies(I2C_XFER_TIMEOUT));
-	if (!time_left)
-		...
-
-and the rest adjusted accordingly. What do you think?
-
-Kind regards,
-
-   Wolfram
-
-
---KN5l+BnMqAQyZLvT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/Th+8ACgkQFA3kzBSg
-KbYbpA/+J22ESmz7QHBJjTsElLQIbQEx4RDg4L/yLMyZxkTNM2rqQOgoKCknZRWU
-PI0YRUKMp4RWDicqIp11+2nLHH/YZ5BWDPD0zg0B2m0x9JIbIvWEMewxP0K8E/OF
-QtlHvpwmUdKnJaLATlqVWTnAZpQ73qfQ6gCQqs2MHcIGhWKYM3gm6zHGudkttmqH
-NMPdbndg//ykaqO62F/lSY4SVhS+sZDzJbiYefMcsz88u2mXdtdaiGt7VWb89WLn
-RTA1jwFoYs69F13cbl3t6TaNjs+0ul5bOiAfh5qx41/sHIyFhKYVd6SLqrD2d4yU
-5mI3i2xNrir6twxyqSQv7EB/vSHyIY/AC9tkDsiL4gQStagWG2aJTUIkhn66ghQV
-xMbpUK7iUy1ddUxAGjCXvm0eTGrFu3rSsTicmI5H2a8nmCljAQ+Y1plSmTGQX/QY
-4+FZZv6lU6Ur8bXPTCFCwKG/1MQNXmmYU+W2ta87Lt9I4dTVJuAP/VJolI4j3ve1
-X47xlHlOi5MI4ix8iS1L4SGbEFOmo9LnmHvsL1lZ7rpO5nthLSKPyr/X94dyrTrs
-V8HuKhfc915ClP4VRRofSQrKdJGMK7LVaq3wQw0+5G5sWAGhLqwqCX94JUmf/MV4
-yiRFXIZMjKMZHlGZubn/rIIzRF3CB+5HjSeTXDul3HezHEGwbJk=
-=YT9Y
------END PGP SIGNATURE-----
-
---KN5l+BnMqAQyZLvT--
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 88aef93..ea8add1 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -15,6 +15,8 @@
+ #include <linux/of_irq.h>
+ #include <linux/module.h>
+ #include <linux/init.h>
++#include <linux/interrupt.h>
++#include <linux/ioport.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/memblock.h>
+ #include <linux/err.h>
+@@ -289,6 +291,125 @@ int platform_irq_count(struct platform_device *dev)
+ }
+ EXPORT_SYMBOL_GPL(platform_irq_count);
+ 
++struct irq_affinity_devres {
++	unsigned int count;
++	unsigned int irq[];
++};
++
++static void platform_disable_acpi_irq(struct platform_device *pdev, int index)
++{
++	struct resource *r;
++
++	r = platform_get_resource(pdev, IORESOURCE_IRQ, index);
++	if (r)
++		irqresource_disabled(r, 0);
++}
++
++static void devm_platform_get_irqs_affinity_release(struct device *dev,
++						    void *res)
++{
++	struct irq_affinity_devres *ptr = res;
++	int i;
++
++	for (i = 0; i < ptr->count; i++) {
++		irq_dispose_mapping(ptr->irq[i]);
++
++		if (has_acpi_companion(dev))
++			platform_disable_acpi_irq(to_platform_device(dev), i);
++	}
++}
++
++/**
++ * devm_platform_get_irqs_affinity - devm method to get a set of IRQs for a
++ *				device using an interrupt affinity descriptor
++ * @dev: platform device pointer
++ * @affd: affinity descriptor
++ * @minvec: minimum count of interrupt vectors
++ * @maxvec: maximum count of interrupt vectors
++ * @irqs: pointer holder for IRQ numbers
++ *
++ * Gets a set of IRQs for a platform device, and updates IRQ afffinty according
++ * to the passed affinity descriptor
++ *
++ * Return: Number of vectors on success, negative error number on failure.
++ */
++int devm_platform_get_irqs_affinity(struct platform_device *dev,
++				    struct irq_affinity *affd,
++				    unsigned int minvec,
++				    unsigned int maxvec,
++				    int **irqs)
++{
++	struct irq_affinity_devres *ptr;
++	struct irq_affinity_desc *desc;
++	size_t size;
++	int i, ret, nvec;
++
++	if (!affd)
++		return -EPERM;
++
++	if (maxvec < minvec)
++		return -ERANGE;
++
++	nvec = platform_irq_count(dev);
++
++	if (nvec < minvec)
++		return -ENOSPC;
++
++	nvec = irq_calc_affinity_vectors(minvec, nvec, affd);
++	if (nvec < minvec)
++		return -ENOSPC;
++
++	if (nvec > maxvec)
++		nvec = maxvec;
++
++	size = sizeof(*ptr) + sizeof(unsigned int) * nvec;
++	ptr = devres_alloc(devm_platform_get_irqs_affinity_release, size,
++			   GFP_KERNEL);
++	if (!ptr)
++		return -ENOMEM;
++
++	ptr->count = nvec;
++
++	for (i = 0; i < nvec; i++) {
++		int irq = platform_get_irq(dev, i);
++		if (irq < 0) {
++			ret = irq;
++			goto err_free_devres;
++		}
++		ptr->irq[i] = irq;
++	}
++
++	desc = irq_create_affinity_masks(nvec, affd);
++	if (!desc) {
++		ret = -ENOMEM;
++		goto err_free_devres;
++	}
++
++	for (i = 0; i < nvec; i++) {
++		ret = irq_update_affinity_desc(ptr->irq[i], &desc[i]);
++		if (ret) {
++			dev_err(&dev->dev, "failed to update irq%d affinity descriptor (%d)\n",
++				ptr->irq[i], ret);
++			goto err_free_desc;
++		}
++	}
++
++	devres_add(&dev->dev, ptr);
++
++	kfree(desc);
++
++	*irqs = ptr->irq;
++
++	return nvec;
++
++err_free_desc:
++	kfree(desc);
++err_free_devres:
++	devres_free(ptr);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(devm_platform_get_irqs_affinity);
++
+ /**
+  * platform_get_resource_byname - get a resource for a device by name
+  * @dev: platform device
+diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
+index 77a2aad..4d75633 100644
+--- a/include/linux/platform_device.h
++++ b/include/linux/platform_device.h
+@@ -15,6 +15,7 @@
+ #define PLATFORM_DEVID_NONE	(-1)
+ #define PLATFORM_DEVID_AUTO	(-2)
+ 
++struct irq_affinity;
+ struct mfd_cell;
+ struct property_entry;
+ struct platform_device_id;
+@@ -70,6 +71,11 @@ devm_platform_ioremap_resource_byname(struct platform_device *pdev,
+ extern int platform_get_irq(struct platform_device *, unsigned int);
+ extern int platform_get_irq_optional(struct platform_device *, unsigned int);
+ extern int platform_irq_count(struct platform_device *);
++extern int devm_platform_get_irqs_affinity(struct platform_device *dev,
++					   struct irq_affinity *affd,
++					   unsigned int minvec,
++					   unsigned int maxvec,
++					   int **irqs);
+ extern struct resource *platform_get_resource_byname(struct platform_device *,
+ 						     unsigned int,
+ 						     const char *);
