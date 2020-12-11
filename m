@@ -2,115 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CB52D6D18
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 660912D6D1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394514AbgLKBMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:12:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388019AbgLKBLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:11:49 -0500
-X-Gm-Message-State: AOAM531KVg6HGKP1tW4GWz6fAh94SCxnIffBOkxndRxn9GQY6R8ilN+6
-        nB0mcjHQSN66RfBuPZbAjDvdq+RwC8KN1EC2hJ1ehg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607649068;
-        bh=dAcBURZEJNez6Uk/ZZK9Cg+yi5MqljnzqZbmRnh7ezo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=n13ek404jsm1IEYttjLpJ6sobRP+dNeooI7cSS6Y077ssx/4YZNxG5aQsZhQBh4Sk
-         K39SOBWZwWVnP7FAMZ13Hz/w4ydoNuvrLzpG5XRiBK3Iz83NPZTMJZc+PNPvYcGJdc
-         z06hmdYMK4mX8g5qtAj6nO3bMzRzAQwW5qgMATRYk1MlVMrDVqMhNFoJU/NaRqFK6U
-         +iC1DMazE+fAj7BLNnLo8RXMbjnnQNiI0h66fTnmBhxs7azL31RM/sYQQcjTGYRiWM
-         aQmo0siwUuIMW9sZ+a7S7fn9RAr/E53vYZ7rIhRMVMDUeO3+qqiOgxvbJmm+CZneMW
-         3ygYg2pfTomqA==
-X-Google-Smtp-Source: ABdhPJxWJqJ7tVadfBvzh8vfSzhT5Ybzv4bEbMb0o6k7sCWgTk3XOc2rB4HsoPsz7pXrFMY85LqzxjqHA2TKWuDsy38=
-X-Received: by 2002:adf:e64b:: with SMTP id b11mr10905473wrn.257.1607649066305;
- Thu, 10 Dec 2020 17:11:06 -0800 (PST)
+        id S2394525AbgLKBM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:12:26 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:58660 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390314AbgLKBMX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 20:12:23 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607649117; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=cttgESEWFCsZorIB9/3597MAjlCoUbt49Ntrs4a/FsM=;
+ b=hWPuVMjCLQWAYx0PXKcxGQ9OM51NfOZviTkY1KHzPIRAGHyMfA+fPoS1fmCXAxTuNupx+pp0
+ dvQVkH8jP4rAWG1+3nWkGLSKWcYbAbIIxrKC+5MxGqSjm3WeB74tWlZyqrMJUFs8uY22nuzO
+ tmjcrNwHfX/+c37WCIRmVsUYSbM=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fd2c75df81e894c552807c9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Dec 2020 01:11:57
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A61F5C43466; Fri, 11 Dec 2020 01:11:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A2989C433C6;
+        Fri, 11 Dec 2020 01:11:55 +0000 (UTC)
 MIME-Version: 1.0
-References: <20201210174814.1122585-1-michael.roth@amd.com>
- <CALCETrXo+2LjUt_ObxV+6u6719gTVaMR4-KCrgsjQVRe=xPo+g@mail.gmail.com>
- <160763562772.1125101.13951354991725886671@vm0> <CALCETrV2-WwV+uz99r2RCJx6OADzwxaLxPUVW22wjHoAAN5cSQ@mail.gmail.com>
- <160764771044.1223913.9946447556531152629@vm0>
-In-Reply-To: <160764771044.1223913.9946447556531152629@vm0>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 10 Dec 2020 17:10:53 -0800
-X-Gmail-Original-Message-ID: <CALCETrVuCZ5itAN3Ns3D04qR1Z_eJiA9=UvyM95zLE076X=JEA@mail.gmail.com>
-Message-ID: <CALCETrVuCZ5itAN3Ns3D04qR1Z_eJiA9=UvyM95zLE076X=JEA@mail.gmail.com>
-Subject: Re: [PATCH] KVM: SVM: use vmsave/vmload for saving/restoring
- additional host state
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 11 Dec 2020 09:11:55 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] scsi: ufs: Clean up ufshcd_exit_clk_scaling/gating()
+In-Reply-To: <f12d2c516d2a038bcc27677d9b982c52d19d5027.camel@gmail.com>
+References: <1607520942-22254-1-git-send-email-cang@codeaurora.org>
+ <1607520942-22254-3-git-send-email-cang@codeaurora.org>
+ <f12d2c516d2a038bcc27677d9b982c52d19d5027.camel@gmail.com>
+Message-ID: <cb2a78e46f7f5f57e0bcdb69e11e8e5c@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Dec 10, 2020, at 4:48 PM, Michael Roth <michael.roth@amd.com> wrote:
->
+On 2020-12-11 02:03, Bean Huo wrote:
+> On Wed, 2020-12-09 at 05:35 -0800, Can Guo wrote:
+>> ufshcd_hba_exit() is always called after ufshcd_exit_clk_scaling()
+>> and
+>> ufshcd_exit_clk_gating(), so move ufshcd_exit_clk_scaling/gating() to
+>> ufshcd_hba_exit().
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index 12266bd..41a12d6 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -1846,11 +1846,14 @@ static void ufshcd_init_clk_scaling(struct
+>> ufs_hba *hba)
+>>         snprintf(wq_name, sizeof(wq_name), "ufs_clkscaling_%d",
+>>                  hba->host->host_no);
+>>         hba->clk_scaling.workq =
+>> create_singlethread_workqueue(wq_name);
+>> +
+>> +       hba->clk_scaling.is_initialized = true;
+>>  }
+>> 
+>>  static void ufshcd_exit_clk_scaling(struct ufs_hba *hba)
+>>  {
+>> -       if (!ufshcd_is_clkscaling_supported(hba))
+>> +       if (!ufshcd_is_clkscaling_supported(hba) ||
+>> +           !hba->clk_scaling.is_initialized)
+>>                 return;
+>> 
+>>         if (hba->devfreq)
+>> @@ -1894,12 +1897,16 @@ static void ufshcd_init_clk_gating(struct
+>> ufs_hba *hba)
+>>         hba->clk_gating.enable_attr.attr.mode = 0644;
+>>         if (device_create_file(hba->dev, &hba-
+>> >clk_gating.enable_attr))
+>>                 dev_err(hba->dev, "Failed to create sysfs for
+>> clkgate_enable\n");
+>> +
+>> +       hba->clk_gating.is_initialized = true;
+>>  }
+> 
+> you don't need these two is_initialized at all. they are only be false
+> when scaling/gating is not supported??
+> 
+> Bean
 
->> I think there are two reasonable ways to do this:
->>
->> 1. VMLOAD before STGI.  This is obviously correct, and it's quite simple=
-.
->
-> For the testing I ended up putting it immediately after __svm_vcpu_run()
-> since that's where we restored GS base previously. Does that seem okay or=
- did
-> you have another place in mind?
+In the case of scaling/gating are supported, the flags are used in
+ufshcd_exit_clk_scaling/gating() - when ufshcd_hba_exit() calls
+ufshcd_exit_clk_scaling/gating(), the two funcs need to make sure
+they really have something to remove, otherwise NULL pointer issues.
 
-Looks okay.  If we get an NMI or MCE with the wrong MSR_GS_BASE, then
-we are toast, at least on Zen 2 and earlier.  But that spot has GI =3D=3D
-0, so this won't happen.
-
->
->>
->> 2. Save cpu_kernelmode_gs_base(cpu) before VM entry, and restore that
->> value to MSR_GS_BASE using code like this (or its asm equivalent)
->> before STGI:
->>
->> if (static_cpu_has(X86_FEATURE_FSGSBASE))
->>  wrgsbase(base);
->> else
->>  wrmsr...
->>
->> and then VMLOAD in the vcpu_put() path.
->>
->> I can't think of any reason to use loadsegment(), load_gs_index(), or
->> savesegment() at all, nor can I think of any reason to touch
->> MSR_KERNEL_GS_BASE or MSR_FS_BASE.
->
-> I'm sort of lumping MSR_GS_BASE restoration in with everything else since=
- I
-> don't fully understand what the original was code doing either and was co=
-ntent
-> to leave it be if we couldn't use VMLOAD to handle it without a performan=
-ce
-> regression, but since it looks like we can use VMLOAD here instead I agre=
-e
-> we should just drop it all.
-
-The original code is entirely bogus. Don=E2=80=99t try to hard to understan=
-d
-how it=E2=80=99s correct =E2=80=94 I=E2=80=99m pretty sure it=E2=80=99s not=
-. In fact, I was planning
-to write a patch a lot like yours, but I don=E2=80=99t have an SVM-capable =
-CPU
-to test on.  In general, I suspect that you could delete all these
-fields from the structs, see what fails to compile, and fix it pretty
-easily.
-
-MSR_GS_BASE is kernel state. (On 32-bit, fs and maybe gs are kernel
-state.). Everything else is host *user* state and isn=E2=80=99t touched by
-normal kernel code.
+Can Guo.
