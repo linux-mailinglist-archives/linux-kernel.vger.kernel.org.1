@@ -2,301 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570172D6D27
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FC02D6D30
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394730AbgLKBPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:15:38 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:51422 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394542AbgLKBPX (ORCPT
+        id S2404480AbgLKBTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:19:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404468AbgLKBTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:15:23 -0500
-Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 12A8C20B717A;
-        Thu, 10 Dec 2020 17:14:40 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 12A8C20B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607649280;
-        bh=4R9OG2feuYIo3nqEi8NREDsDSFYwJsGy2XGz3Yt2nvM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=sTiDW/PuMI3aO/Q82gYQ+B7iQxlhtVwdnoZnEwB/NkxflgskVkpQcqoQF15r3ErRC
-         c+ptSlJOXzoFEPktltGggMW0t/Pt5fpVDb5glK+GVQR9diMOAgGAvnZYa5O9ccYu5E
-         XpZbtwXCNZNErQQLHOADIjMEjPOoSB4AWVHfMLwE=
-Subject: Re: [PATCH v7 1/8] IMA: generalize keyring specific measurement
- constructs
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
-        jmorris@namei.org, nramas@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20201209194212.5131-1-tusharsu@linux.microsoft.com>
- <20201209194212.5131-2-tusharsu@linux.microsoft.com>
- <20201210221417.GF489768@sequoia>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <51908b87-ae39-790e-62c7-d63c4a85b774@linux.microsoft.com>
-Date:   Thu, 10 Dec 2020 17:14:39 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 10 Dec 2020 20:19:03 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82FDC08C5C4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:17:16 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id z20so5364376qtq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:17:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2n25eVeYwJwJEQSpBnUbsA/VYusbzI2FjI83kAbMkUM=;
+        b=OoidibmzJM8FY+fLVy5oGNIhE+hZQvybpZraGbmZGbLTYsX+lK5IBoySlrDDMdzTXV
+         XJjICjohp12ZWQt4DbTgStQYqNYDpL5qpthTob4AT1pFXGgdalG8qBXSD9hV9923BspI
+         Qmm4cct6as6nyyQD5gBjGXRTQEGsDS+a0bsmTOV/52EcbgooOETiSvoaJkdL2bklur+y
+         2755FgXlRXBMnioLw+WVy/h/vC8XeWZzj6ng9+5GHh+wKAMu5oCVlSgNCK0AMFhs4Cs0
+         OfkKejJ7/EQJuum+nIU5MjSwUOaCxf+9nCtD+O+wx+yHXBN9piQ26swMloQgPpVLevcV
+         dmiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2n25eVeYwJwJEQSpBnUbsA/VYusbzI2FjI83kAbMkUM=;
+        b=BzVzcBQ5eQyfAX6kYeHXe/8Z30mrT6ceAYffE6Gs1M89E5aDHHQy+ofDz/XHCm0bIp
+         qja57lBrSBvtAZePJycu2eZE4PQ4Qzr6rzsF0Ozpf7FqNIaOamQN24wbSTGDu3kSazaM
+         rtt2RxIoDKLt72//FrCtb28lby40r/UvN/iwI9Mu2PaLvFF0uKpFD8Cw6PlhdLNwWCjb
+         rFRk92F3UyhhU44Fq3vLtjI+6iqiTE1/2LLRlyeUFFYoLsbncBVXcVWO4TWVgH1qYaJE
+         32ym8uUyRhotls9px9XBlNO85wEETspUdQAG4lCBCawwgxVybRlz2C6ijtsxFj7gBPh/
+         OYCw==
+X-Gm-Message-State: AOAM532of9pko2XnwXhjWebrAtpbNIgR3N1lsGcIxW0a0l/wZgKHWfE/
+        7u1/dVJwtjpQQh80BFRYEmzvWIVwsjHzn184FLQ=
+X-Google-Smtp-Source: ABdhPJwKxmvuVC716F8eCTuGBPdQQHJBDcAFCAVQxZMSphn8ehOHVaQEpEZFFtr33WIPaT39hFpJAoHX5vS2OS1yHtk=
+X-Received: by 2002:ac8:6e81:: with SMTP id c1mr12501578qtv.36.1607649436049;
+ Thu, 10 Dec 2020 17:17:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201210221417.GF489768@sequoia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201210160020.21562-1-vbabka@suse.cz>
+In-Reply-To: <20201210160020.21562-1-vbabka@suse.cz>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Fri, 11 Dec 2020 10:17:05 +0900
+Message-ID: <CAAmzW4M0qS7XBQ1L+iWLWoLh2R30EeLaPy=5Ncw-Uz17bdKukg@mail.gmail.com>
+Subject: Re: [PATCH] mm, slab, slub: clear the slab_cache field when freeing page
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+2020=EB=85=84 12=EC=9B=94 11=EC=9D=BC (=EA=B8=88) =EC=98=A4=EC=A0=84 1:00, =
+Vlastimil Babka <vbabka@suse.cz>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> The page allocator expects that page->mapping is NULL for a page being fr=
+eed.
+> SLAB and SLUB use the slab_cache field which is in union with mapping, bu=
+t
+> before freeing the page, the field is referenced with the "mapping" name =
+when
+> set to NULL.
+>
+> It's IMHO more correct (albeit functionally the same) to use the slab_cac=
+he
+> name as that's the field we use in SL*B, and document why we clear it in =
+a
+> comment (we don't clear fields such as s_mem or freelist, as page allocat=
+or
+> doesn't care about those). While using the 'mapping' name would automagic=
+ally
+> keep the code correct if the unions in struct page changed, such changes =
+should
+> be done consciously and needed changes evaluated - the comment should hel=
+p with
+> that.
+>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-
-On 2020-12-10 2:14 p.m., Tyler Hicks wrote:
-> On 2020-12-09 11:42:05, Tushar Sugandhi wrote:
->> IMA functions such as ima_match_keyring(), process_buffer_measurement(),
->> ima_match_policy() etc. handle data specific to keyrings. Currently,
->> these constructs are not generic to handle any func specific data.
->> This makes it harder to extend them without code duplication.
->>
->> Refactor the keyring specific measurement constructs to be generic and
->> reusable in other measurement scenarios.
->>
->> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
-> 
-> I've got a few code cleanup suggestions to ima_match_rule_data() below
-> but the current patch is fine:
-> 
-> Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> 
->> ---
->>   security/integrity/ima/ima.h        |  6 ++--
->>   security/integrity/ima/ima_api.c    |  6 ++--
->>   security/integrity/ima/ima_main.c   |  6 ++--
->>   security/integrity/ima/ima_policy.c | 49 ++++++++++++++++++-----------
->>   4 files changed, 40 insertions(+), 27 deletions(-)
->>
->> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
->> index 8e8b1e3cb847..e5622ce8cbb1 100644
->> --- a/security/integrity/ima/ima.h
->> +++ b/security/integrity/ima/ima.h
->> @@ -256,7 +256,7 @@ static inline void ima_process_queued_keys(void) {}
->>   int ima_get_action(struct inode *inode, const struct cred *cred, u32 secid,
->>   		   int mask, enum ima_hooks func, int *pcr,
->>   		   struct ima_template_desc **template_desc,
->> -		   const char *keyring);
->> +		   const char *func_data);
->>   int ima_must_measure(struct inode *inode, int mask, enum ima_hooks func);
->>   int ima_collect_measurement(struct integrity_iint_cache *iint,
->>   			    struct file *file, void *buf, loff_t size,
->> @@ -268,7 +268,7 @@ void ima_store_measurement(struct integrity_iint_cache *iint, struct file *file,
->>   			   struct ima_template_desc *template_desc);
->>   void process_buffer_measurement(struct inode *inode, const void *buf, int size,
->>   				const char *eventname, enum ima_hooks func,
->> -				int pcr, const char *keyring);
->> +				int pcr, const char *func_data);
->>   void ima_audit_measurement(struct integrity_iint_cache *iint,
->>   			   const unsigned char *filename);
->>   int ima_alloc_init_template(struct ima_event_data *event_data,
->> @@ -284,7 +284,7 @@ const char *ima_d_path(const struct path *path, char **pathbuf, char *filename);
->>   int ima_match_policy(struct inode *inode, const struct cred *cred, u32 secid,
->>   		     enum ima_hooks func, int mask, int flags, int *pcr,
->>   		     struct ima_template_desc **template_desc,
->> -		     const char *keyring);
->> +		     const char *func_data);
->>   void ima_init_policy(void);
->>   void ima_update_policy(void);
->>   void ima_update_policy_flag(void);
->> diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
->> index 4f39fb93f278..af218babd198 100644
->> --- a/security/integrity/ima/ima_api.c
->> +++ b/security/integrity/ima/ima_api.c
->> @@ -170,7 +170,7 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
->>    * @func: caller identifier
->>    * @pcr: pointer filled in if matched measure policy sets pcr=
->>    * @template_desc: pointer filled in if matched measure policy sets template=
->> - * @keyring: keyring name used to determine the action
->> + * @func_data: private data specific to @func, can be NULL.
->>    *
->>    * The policy is defined in terms of keypairs:
->>    *		subj=, obj=, type=, func=, mask=, fsmagic=
->> @@ -186,14 +186,14 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
->>   int ima_get_action(struct inode *inode, const struct cred *cred, u32 secid,
->>   		   int mask, enum ima_hooks func, int *pcr,
->>   		   struct ima_template_desc **template_desc,
->> -		   const char *keyring)
->> +		   const char *func_data)
->>   {
->>   	int flags = IMA_MEASURE | IMA_AUDIT | IMA_APPRAISE | IMA_HASH;
->>   
->>   	flags &= ima_policy_flag;
->>   
->>   	return ima_match_policy(inode, cred, secid, func, mask, flags, pcr,
->> -				template_desc, keyring);
->> +				template_desc, func_data);
->>   }
->>   
->>   /*
->> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
->> index 68956e884403..e76ef4bfd0f4 100644
->> --- a/security/integrity/ima/ima_main.c
->> +++ b/security/integrity/ima/ima_main.c
->> @@ -786,13 +786,13 @@ int ima_post_load_data(char *buf, loff_t size,
->>    * @eventname: event name to be used for the buffer entry.
->>    * @func: IMA hook
->>    * @pcr: pcr to extend the measurement
->> - * @keyring: keyring name to determine the action to be performed
->> + * @func_data: private data specific to @func, can be NULL.
->>    *
->>    * Based on policy, the buffer is measured into the ima log.
->>    */
->>   void process_buffer_measurement(struct inode *inode, const void *buf, int size,
->>   				const char *eventname, enum ima_hooks func,
->> -				int pcr, const char *keyring)
->> +				int pcr, const char *func_data)
->>   {
->>   	int ret = 0;
->>   	const char *audit_cause = "ENOMEM";
->> @@ -831,7 +831,7 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
->>   	if (func) {
->>   		security_task_getsecid(current, &secid);
->>   		action = ima_get_action(inode, current_cred(), secid, 0, func,
->> -					&pcr, &template, keyring);
->> +					&pcr, &template, func_data);
->>   		if (!(action & IMA_MEASURE))
->>   			return;
->>   	}
->> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
->> index 823a0c1379cb..25419c7ff50b 100644
->> --- a/security/integrity/ima/ima_policy.c
->> +++ b/security/integrity/ima/ima_policy.c
->> @@ -453,30 +453,44 @@ int ima_lsm_policy_change(struct notifier_block *nb, unsigned long event,
->>   }
->>   
->>   /**
->> - * ima_match_keyring - determine whether the keyring matches the measure rule
->> - * @rule: a pointer to a rule
->> - * @keyring: name of the keyring to match against the measure rule
->> + * ima_match_rule_data - determine whether the given func_data matches
->> + *			 the measure rule data
->> + * @rule: IMA policy rule
->> + * @func_data: data to match against the measure rule data
->>    * @cred: a pointer to a credentials structure for user validation
->>    *
->> - * Returns true if keyring matches one in the rule, false otherwise.
->> + * Returns true if func_data matches one in the rule, false otherwise.
->>    */
->> -static bool ima_match_keyring(struct ima_rule_entry *rule,
->> -			      const char *keyring, const struct cred *cred)
->> +static bool ima_match_rule_data(struct ima_rule_entry *rule,
->> +				const char *func_data,
->> +				const struct cred *cred)
->>   {
->> +	const struct ima_rule_opt_list *opt_list = NULL;
->>   	bool matched = false;
->>   	size_t i;
->>   
->>   	if ((rule->flags & IMA_UID) && !rule->uid_op(cred->uid, rule->uid))
->>   		return false;
->>   
->> -	if (!rule->keyrings)
->> -		return true;
->> +	switch (rule->func) {
->> +	case KEY_CHECK:
->> +		if (!rule->keyrings)
->> +			return true;
->> +		else
->> +			opt_list = rule->keyrings;
-> 
-> You return if rule->keyrings is NULL so drop this else and simply make
-> the opt_list assignment.
-> 
-Will do.
->> +		break;
->> +	default:
->> +		break;
-> 
-> I would like to see the 'return false;' happen immediately here instead
-> of waiting for the opt_list check below.
-Will do.
-> 
->> +	}
->>   
->> -	if (!keyring)
->> +	if (!func_data)
->> +		return false;
->> +
->> +	if (!opt_list)
->>   		return false;
-> 
-> If you return false in the 'default:' case above, you can just remove this
-> entire conditional because you'll be assigning opt_list in all of the
-> valid cases of the switch statement.
-> 
-Yup. Agreed. Will do.
-~Tushar
-> Tyler
-> 
->>   
->> -	for (i = 0; i < rule->keyrings->count; i++) {
->> -		if (!strcmp(rule->keyrings->items[i], keyring)) {
->> +	for (i = 0; i < opt_list->count; i++) {
->> +		if (!strcmp(opt_list->items[i], func_data)) {
->>   			matched = true;
->>   			break;
->>   		}
->> @@ -493,20 +507,20 @@ static bool ima_match_keyring(struct ima_rule_entry *rule,
->>    * @secid: the secid of the task to be validated
->>    * @func: LIM hook identifier
->>    * @mask: requested action (MAY_READ | MAY_WRITE | MAY_APPEND | MAY_EXEC)
->> - * @keyring: keyring name to check in policy for KEY_CHECK func
->> + * @func_data: private data specific to @func, can be NULL.
->>    *
->>    * Returns true on rule match, false on failure.
->>    */
->>   static bool ima_match_rules(struct ima_rule_entry *rule, struct inode *inode,
->>   			    const struct cred *cred, u32 secid,
->>   			    enum ima_hooks func, int mask,
->> -			    const char *keyring)
->> +			    const char *func_data)
->>   {
->>   	int i;
->>   
->>   	if (func == KEY_CHECK) {
->>   		return (rule->flags & IMA_FUNC) && (rule->func == func) &&
->> -		       ima_match_keyring(rule, keyring, cred);
->> +			ima_match_rule_data(rule, func_data, cred);
->>   	}
->>   	if ((rule->flags & IMA_FUNC) &&
->>   	    (rule->func != func && func != POST_SETATTR))
->> @@ -610,8 +624,7 @@ static int get_subaction(struct ima_rule_entry *rule, enum ima_hooks func)
->>    * @mask: requested action (MAY_READ | MAY_WRITE | MAY_APPEND | MAY_EXEC)
->>    * @pcr: set the pcr to extend
->>    * @template_desc: the template that should be used for this rule
->> - * @keyring: the keyring name, if given, to be used to check in the policy.
->> - *           keyring can be NULL if func is anything other than KEY_CHECK.
->> + * @func_data: private data specific to @func, can be NULL.
->>    *
->>    * Measure decision based on func/mask/fsmagic and LSM(subj/obj/type)
->>    * conditions.
->> @@ -623,7 +636,7 @@ static int get_subaction(struct ima_rule_entry *rule, enum ima_hooks func)
->>   int ima_match_policy(struct inode *inode, const struct cred *cred, u32 secid,
->>   		     enum ima_hooks func, int mask, int flags, int *pcr,
->>   		     struct ima_template_desc **template_desc,
->> -		     const char *keyring)
->> +		     const char *func_data)
->>   {
->>   	struct ima_rule_entry *entry;
->>   	int action = 0, actmask = flags | (flags << 1);
->> @@ -638,7 +651,7 @@ int ima_match_policy(struct inode *inode, const struct cred *cred, u32 secid,
->>   			continue;
->>   
->>   		if (!ima_match_rules(entry, inode, cred, secid, func, mask,
->> -				     keyring))
->> +				     func_data))
->>   			continue;
->>   
->>   		action |= entry->flags & IMA_ACTION_FLAGS;
->> -- 
->> 2.17.1
->>
+Acked-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
