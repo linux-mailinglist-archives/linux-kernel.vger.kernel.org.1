@@ -2,62 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BEC02D70B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:15:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D4F2D70B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436764AbgLKHO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 02:14:26 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:60855 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390203AbgLKHON (ORCPT
+        id S2436767AbgLKHQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 02:16:04 -0500
+Received: from emcscan.emc.com.tw ([192.72.220.5]:42626 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390410AbgLKHQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 02:14:13 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UID7YA0_1607670809;
-Received: from 30.21.164.54(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UID7YA0_1607670809)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 11 Dec 2020 15:13:29 +0800
-Subject: Re: [PATCH 2/2] blk-iocost: Use alloc_percpu_gfp() to simplify the
- code
-To:     Tejun Heo <tj@kernel.org>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1ba7a38d5a6186b1e71432ef424c23ba1904a365.1607591591.git.baolin.wang@linux.alibaba.com>
- <aa518c5b5c7185e660a1c8515c10d9513fe92132.1607591591.git.baolin.wang@linux.alibaba.com>
- <X9Iv/MlqQI00wZRn@mtj.duckdns.org>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <33480f8a-89a3-3ed9-6fd0-95b2944ccbdd@linux.alibaba.com>
-Date:   Fri, 11 Dec 2020 15:13:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
-MIME-Version: 1.0
-In-Reply-To: <X9Iv/MlqQI00wZRn@mtj.duckdns.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+        Fri, 11 Dec 2020 02:16:01 -0500
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="38549200"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 11 Dec 2020 15:14:55 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(162257:0:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Fri, 11 Dec 2020 15:14:53 +0800 (CST)
+Received: from 49.216.248.217
+        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(106412:0:AUTH_LOGIN)
+        (envelope-from <jingle.wu@emc.com.tw>); Fri, 11 Dec 2020 15:14:51 +0800 (CST)
+From:   "jingle.wu" <jingle.wu@emc.com.tw>
+To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com
+Cc:     phoenix@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw,
+        "jingle.wu" <jingle.wu@emc.com.tw>
+Subject: [PATCH 1/2] Input: elan_i2c - Add new trackpoint report type 0x5F.
+Date:   Fri, 11 Dec 2020 15:15:11 +0800
+Message-Id: <20201211071511.32349-1-jingle.wu@emc.com.tw>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tejun,
+The 0x5F is new trackpoint report type of some module.
 
-> Hello,
-> 
-> On Thu, Dec 10, 2020 at 06:56:45PM +0800, Baolin Wang wrote:
->> Use alloc_percpu_gfp() with __GFP_ZERO flag, which can remove
->> some explicit initialization code.
-> 
-> __GFP_ZERO is implicit for percpu allocations and local[64]_t's initial
-> states aren't guaranteed to be all zeros on different archs.
+Signed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
+---
+ drivers/input/mouse/elan_i2c.h       | 6 ++++++
+ drivers/input/mouse/elan_i2c_core.c  | 5 +----
+ drivers/input/mouse/elan_i2c_smbus.c | 8 ++++++--
+ 3 files changed, 13 insertions(+), 6 deletions(-)
 
-Thanks for teaching me this, at least I did not get this from the 
-local_ops Documentation before. Just out of curiosity, these local[64]_t 
-variables are also allocated from budy allocator ultimately, why they 
-can not be initialized to zeros on some ARCHs with __GFP_ZERO? Could you 
-elaborate on about this restriction? Thanks.
+diff --git a/drivers/input/mouse/elan_i2c.h b/drivers/input/mouse/elan_i2c.h
+index 36e3cd908671..d5f9cd76eefb 100644
+--- a/drivers/input/mouse/elan_i2c.h
++++ b/drivers/input/mouse/elan_i2c.h
+@@ -28,6 +28,12 @@
+ 
+ #define ETP_FEATURE_REPORT_MK	BIT(0)
+ 
++#define ETP_REPORT_ID		0x5D
++#define ETP_REPORT_ID2		0x60	/* High precision report */
++#define ETP_TP_REPORT_ID	0x5E
++#define ETP_TP_REPORT_ID2	0x5F
++#define ETP_REPORT_ID_OFFSET	2
++
+ /* IAP Firmware handling */
+ #define ETP_PRODUCT_ID_FORMAT_STRING	"%d.0"
+ #define ETP_FW_NAME		"elan_i2c_" ETP_PRODUCT_ID_FORMAT_STRING ".bin"
+diff --git a/drivers/input/mouse/elan_i2c_core.c b/drivers/input/mouse/elan_i2c_core.c
+index 61ed3f5ca219..0f46e2f6c9e8 100644
+--- a/drivers/input/mouse/elan_i2c_core.c
++++ b/drivers/input/mouse/elan_i2c_core.c
+@@ -49,10 +49,6 @@
+ 
+ #define ETP_MAX_FINGERS		5
+ #define ETP_FINGER_DATA_LEN	5
+-#define ETP_REPORT_ID		0x5D
+-#define ETP_REPORT_ID2		0x60	/* High precision report */
+-#define ETP_TP_REPORT_ID	0x5E
+-#define ETP_REPORT_ID_OFFSET	2
+ #define ETP_TOUCH_INFO_OFFSET	3
+ #define ETP_FINGER_DATA_OFFSET	4
+ #define ETP_HOVER_INFO_OFFSET	30
+@@ -1076,6 +1072,7 @@ static irqreturn_t elan_isr(int irq, void *dev_id)
+ 		elan_report_absolute(data, report, true);
+ 		break;
+ 	case ETP_TP_REPORT_ID:
++	case ETP_TP_REPORT_ID2:
+ 		elan_report_trackpoint(data, report);
+ 		break;
+ 	default:
+diff --git a/drivers/input/mouse/elan_i2c_smbus.c b/drivers/input/mouse/elan_i2c_smbus.c
+index 1820f1cfc1dc..6dc148b9d959 100644
+--- a/drivers/input/mouse/elan_i2c_smbus.c
++++ b/drivers/input/mouse/elan_i2c_smbus.c
+@@ -45,6 +45,7 @@
+ #define ETP_SMBUS_CALIBRATE_QUERY	0xC5
+ 
+ #define ETP_SMBUS_REPORT_LEN		32
++#define ETP_SMBUS_REPORT_LEN2		7
+ #define ETP_SMBUS_REPORT_OFFSET		2
+ #define ETP_SMBUS_HELLOPACKET_LEN	5
+ #define ETP_SMBUS_IAP_PASSWORD		0x1234
+@@ -497,10 +498,13 @@ static int elan_smbus_get_report(struct i2c_client *client,
+ 		return len;
+ 	}
+ 
+-	if (len != ETP_SMBUS_REPORT_LEN) {
++	if (report[ETP_REPORT_ID_OFFSET] == ETP_TP_REPORT_ID2)
++		report_len = ETP_SMBUS_REPORT_LEN2;
++
++	if (len != report_len) {
+ 		dev_err(&client->dev,
+ 			"wrong report length (%d vs %d expected)\n",
+-			len, ETP_SMBUS_REPORT_LEN);
++			len, report_len);
+ 		return -EIO;
+ 	}
+ 
+-- 
+2.17.1
 
-By the way, seems the kyber-iosched has the same issue, since the 
-'struct kyber_cpu_latency' also contains an atomic_t variable.
-
-	kqd->cpu_latency = alloc_percpu_gfp(struct kyber_cpu_latency,
-					    GFP_KERNEL | __GFP_ZERO);
-	if (!kqd->cpu_latency)
-		goto err_kqd;
