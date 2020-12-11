@@ -2,84 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23372D747D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C32762D7482
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389766AbgLKLHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 06:07:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727637AbgLKLGj (ORCPT
+        id S2389771AbgLKLOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 06:14:32 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:45724 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727637AbgLKLNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 06:06:39 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4F8C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 03:05:59 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id s2so4412330plr.9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 03:05:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dZIcwioXHWW3JNXPwlkLYhTvg1RuyWuebcJZCuVrs6E=;
-        b=mKABuCPKd1JzpkxUpTNwdTIDOVL5ItEy45+YU7piyW7/FDh/MQT5z1cA+Vpkis/dA3
-         Q4jOee+UxpvLx7fenyY8P4RpRm+b+ZmiDcDqIU5A5dtYdotozARYVEzKEHGIsQmtgxCA
-         ur5oK3vI0i6aDNgVLfoVOgLbdA8638qBmY5g2r3UWkFNLZ5Oj1NFC1GBTyvH1oGvetl9
-         Z4DLSxXSpegoLKm8ZnYBPNPnkzWnhHkuBQWYZGUiO9AG76TqB0Z9hlff0arbppYHCCE3
-         z1W1cTZ+u6UoYmAWeg5wnEFQuAzRexf8mEG8WNX5bRZdN1r+EeLZQZcoWx82mgXu8KKi
-         ONmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dZIcwioXHWW3JNXPwlkLYhTvg1RuyWuebcJZCuVrs6E=;
-        b=F+IJyxgRlbXGrL50RP3Cjz39uBnGUUeUOcF2fbDHS2Hjc8+D4dKCL5RXPOTJoyWgWp
-         1mSw79f9ElgH4M2lwdxyOsBn8UdjsKrEAUW3oRtrXKM7lwJ+PFK81GAxw0zpJMF5HBKO
-         iXfsB0BnWi0bsTXCd9CvGQbT6cSH9OysN/xqM3ueHbEofb4A3iOf9y0DJmWXyk228FiD
-         Y0AAamAh1j/ySpMNlJ0WwQINdqpjleHETJ4L7LpT6v3QfaHVk2TxwX38/8Oe/uZBZwZ2
-         cywddnmtZIvXigTMTyM/ix4oG8ZFWqG7JjGlIvGz7QzsGT5K68Wr5kT/srBA6S0HLXHZ
-         Jd4w==
-X-Gm-Message-State: AOAM530XYQiVdPsGnnCCVcJqvxdPVx7+pT/2mgRIjlLE71jTtgCORsZP
-        II3L9Ro87XON3eA1tczazh8E2A==
-X-Google-Smtp-Source: ABdhPJys0+doBaPiq4gQvhWxl+e969zxyvAhWVYQG14+fORCmHboJs10j5b4GXTHY28/CV+lbo4Psg==
-X-Received: by 2002:a17:902:9f8b:b029:da:726d:3f17 with SMTP id g11-20020a1709029f8bb02900da726d3f17mr10431206plq.35.1607684759065;
-        Fri, 11 Dec 2020 03:05:59 -0800 (PST)
-Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id g16sm9286390pfb.201.2020.12.11.03.05.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 11 Dec 2020 03:05:57 -0800 (PST)
-Date:   Fri, 11 Dec 2020 16:35:55 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: topology: Cleanup init_amu_fie() a bit
-Message-ID: <20201211110555.ht3stotrpbkkdxju@vireshk-i7>
-References: <5594c7d6756a47b473ceb6f48cc217458db32ab0.1607584435.git.viresh.kumar@linaro.org>
- <20201210103815.GA3313@arm.com>
+        Fri, 11 Dec 2020 06:13:54 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607685210; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=PBY8aqnlVgCM7hbrorF7TMQ4B0ULW8YavEYCyNWzl3k=;
+ b=OKnFUNmVPW2kg3j3FQYyGJSJCmY/h4mD6f3fA7osOxpJbtQ1ARwN2sPjosX97s7NQlQfWzuz
+ 1GqEs4WkE0j4qq8zthOO6HV2JU1yCuH1vE0egHQW9FqUiAa7n6xGz5aEZYncYBYaLtYZPO9x
+ 2XqHCKr/ayRNmbbcXbEBgIkw2PA=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5fd3543f35a25d1b16a4ec42 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 11 Dec 2020 11:13:03
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 618B4C43464; Fri, 11 Dec 2020 11:13:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 86718C433CA;
+        Fri, 11 Dec 2020 11:13:01 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210103815.GA3313@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 11 Dec 2020 19:13:01 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] scsi: ufs: Protect some contexts from unexpected
+ clock scaling
+In-Reply-To: <48363aee8a746a43440f86f620d9d2e0@codeaurora.org>
+References: <1607520942-22254-1-git-send-email-cang@codeaurora.org>
+ <1607520942-22254-2-git-send-email-cang@codeaurora.org>
+ <a2338ef6da3d4ed4093547ba87e13e94d8dd2a45.camel@gmail.com>
+ <48363aee8a746a43440f86f620d9d2e0@codeaurora.org>
+Message-ID: <cecf35ca445e175aacb1c2942a74951e@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-12-20, 10:38, Ionela Voinescu wrote:
-> Basically, that's functions purpose is only to make sure that invariance
-> at the level of the policy is consistent: either all CPUs in a policy
-> support counters and counters will be used for the scale factor, or
-> either none or only some support counters and therefore the default
-> cpufreq implementation will be used (arch_set_freq_scale()) for all CPUs
-> in a policy.
+On 2020-12-11 09:36, Can Guo wrote:
+> On 2020-12-11 01:34, Bean Huo wrote:
+>> Hi Can
+>> 
+>> On Wed, 2020-12-09 at 05:35 -0800, Can Guo wrote:
+>>> 
+>>> 
+>>> @@ -1160,6 +1166,7 @@ static void
+>>> ufshcd_clock_scaling_unprepare(struct ufs_hba *hba)
+>>>  {
+>>>  	up_write(&hba->clk_scaling_lock);
+>>>  	ufshcd_scsi_unblock_requests(hba);
+>>> +	ufshcd_release(hba);
+>>>  }
+>>> 
+>>>  /**
+>>> @@ -1175,12 +1182,9 @@ static int ufshcd_devfreq_scale(struct ufs_hba
+>>> *hba, bool scale_up)
+>>>  {
+>>>  	int ret = 0;
+>>> 
+>>> -	/* let's not get into low power until clock scaling is
+>>> completed */
+>>> -	ufshcd_hold(hba, false);
+>>> -
+>>>  	ret = ufshcd_clock_scaling_prepare(hba);
+>>>  	if (ret)
+>>> -		goto out;
+>>> +		return ret;
+>>> 
+>>>  	/* scale down the gear before scaling down clocks */
+>>>  	if (!scale_up) {
+>>> @@ -1212,8 +1216,6 @@ static int ufshcd_devfreq_scale(struct ufs_hba
+>>> *hba, bool scale_up)
+>>> 
+>>>  out_unprepare:
+>>>  	ufshcd_clock_scaling_unprepare(hba);
+>>> -out:
+>>> -	ufshcd_release(hba);
+>>>  	return ret;
+>>>  }
+>> 
+>> I didn't understand why moving ufshcd_hold/ufshcd_release into
+>> ufshcd_clock_scaling_prepare()/ufshcd_clock_scaling_unprepare().
+>> 
+>> 
+>>> 
+>>> @@ -1294,15 +1296,8 @@ static int ufshcd_devfreq_target(struct device
+>>> *dev,
+>>>  	}
+>>>  	spin_unlock_irqrestore(hba->host->host_lock, irq_flags);
+>>> 
+>>> -	pm_runtime_get_noresume(hba->dev);
+>>> -	if (!pm_runtime_active(hba->dev)) {
+>>> -		pm_runtime_put_noidle(hba->dev);
+>>> -		ret = -EAGAIN;
+>>> -		goto out;
+>>> -	}
+>>>  	start = ktime_get();
+>>>  	ret = ufshcd_devfreq_scale(hba, scale_up);
+>>> -	pm_runtime_put(hba->dev);
+>>> 
+>> 
+>> which branch are you working on?  I didn't see this part codes in the
+>> branch 5.11/scsi-queue and 5.11/scsi-staging.
+>> 
+>> Bean
+> 
+> As I mentioned in my cover-letter, this is based on 5.11/scsi-fixes.
+> These codes came from one of my earlier changes, but since this change
+> can cover the old change's functionality, so I removed the codes.
+> 
+> Can Guo.
 
-Why is it important to have this thing at policy level ? If we are
-okay with only one policy having AMUs and not the other one, then what
-about only some CPUs of both the policies having it. Does it break
-anything ?
+Hi Bean,
 
--- 
-viresh
+Sorry for the typo, it is branch 5.10/scsi-fixes.
+
+Thanks,
+
+Can Guo.
