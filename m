@@ -2,153 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024A92D74D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 625A72D74D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394941AbgLKLjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 06:39:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23313 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391880AbgLKLjK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 06:39:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607686664;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RqIjgNGP8EpRseSxFoBnqE8y63I178BwzCy3MXCM4mw=;
-        b=dGzEMqk0j9e/Z6L3lTiQxCZYMmZaaKmobd7quwyWEoyYFLA5NA0gMxKTtIQ/Nydbghp7/v
-        bqY8qTonJPMGK7m+KoEQe5TX0j0tHonmuuNBSXTJp9GxMvHqw7EQK633tgnAMa30JrpPNr
-        KD2W3OzA7oIMf/hGphGKQBcqcnCkHPs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-91-uYx1psuZPVahtzYjTJGM0w-1; Fri, 11 Dec 2020 06:37:40 -0500
-X-MC-Unique: uYx1psuZPVahtzYjTJGM0w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 282FC190A7A4;
-        Fri, 11 Dec 2020 11:37:38 +0000 (UTC)
-Received: from gondolin (ovpn-112-240.ams2.redhat.com [10.36.112.240])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 851305D705;
-        Fri, 11 Dec 2020 11:37:32 +0000 (UTC)
-Date:   Fri, 11 Dec 2020 12:37:29 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Matthew Rosato <mjrosato@linux.ibm.com>
-Cc:     alex.williamson@redhat.com, schnelle@linux.ibm.com,
-        pmorel@linux.ibm.com, borntraeger@de.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 1/4] s390/pci: track alignment/length strictness for
- zpci_dev
-Message-ID: <20201211123729.37647fa0.cohuck@redhat.com>
-In-Reply-To: <15132f7f-cad7-d663-a8b9-90f417e85c81@linux.ibm.com>
-References: <1607545670-1557-1-git-send-email-mjrosato@linux.ibm.com>
-        <1607545670-1557-2-git-send-email-mjrosato@linux.ibm.com>
-        <20201210113318.136636e2.cohuck@redhat.com>
-        <15132f7f-cad7-d663-a8b9-90f417e85c81@linux.ibm.com>
-Organization: Red Hat GmbH
+        id S2405095AbgLKLku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 06:40:50 -0500
+Received: from foss.arm.com ([217.140.110.172]:51768 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730413AbgLKLkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 06:40:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B97031B;
+        Fri, 11 Dec 2020 03:39:29 -0800 (PST)
+Received: from e120877-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 09F9D3F68F;
+        Fri, 11 Dec 2020 03:39:26 -0800 (PST)
+Date:   Fri, 11 Dec 2020 11:39:21 +0000
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, Qian Cai <cai@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, bigeasy@linutronix.de, qais.yousef@arm.com,
+        swood@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, tj@kernel.org, ouwen210@hotmail.com
+Subject: Re: [PATCH 2/2] workqueue: Fix affinity of kworkers attached during
+ late hotplug
+Message-ID: <20201211113920.GA75974@e120877-lin.cambridge.arm.com>
+References: <20201210163830.21514-1-valentin.schneider@arm.com>
+ <20201210163830.21514-3-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210163830.21514-3-valentin.schneider@arm.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 10:26:22 -0500
-Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+Hi Valentin,
 
-> On 12/10/20 5:33 AM, Cornelia Huck wrote:
-> > On Wed,  9 Dec 2020 15:27:47 -0500
-> > Matthew Rosato <mjrosato@linux.ibm.com> wrote:
-> >   
-> >> Some zpci device types (e.g., ISM) follow different rules for length
-> >> and alignment of pci instructions.  Recognize this and keep track of
-> >> it in the zpci_dev.
-> >>
-> >> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
-> >> Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> >> Reviewed-by: Pierre Morel <pmorel@linux.ibm.com>
-> >> ---
-> >>   arch/s390/include/asm/pci.h     | 3 ++-
-> >>   arch/s390/include/asm/pci_clp.h | 4 +++-
-> >>   arch/s390/pci/pci_clp.c         | 1 +
-> >>   3 files changed, 6 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/arch/s390/include/asm/pci.h b/arch/s390/include/asm/pci.h
-> >> index 2126289..f16ffba 100644
-> >> --- a/arch/s390/include/asm/pci.h
-> >> +++ b/arch/s390/include/asm/pci.h
-> >> @@ -133,7 +133,8 @@ struct zpci_dev {
-> >>   	u8		has_hp_slot	: 1;
-> >>   	u8		is_physfn	: 1;
-> >>   	u8		util_str_avail	: 1;
-> >> -	u8		reserved	: 4;
-> >> +	u8		relaxed_align	: 1;
-> >> +	u8		reserved	: 3;
-> >>   	unsigned int	devfn;		/* DEVFN part of the RID*/
-> >>   
-> >>   	struct mutex lock;
-> >> diff --git a/arch/s390/include/asm/pci_clp.h b/arch/s390/include/asm/pci_clp.h
-> >> index 1f4b666..9fb7cbf 100644
-> >> --- a/arch/s390/include/asm/pci_clp.h
-> >> +++ b/arch/s390/include/asm/pci_clp.h
-> >> @@ -150,7 +150,9 @@ struct clp_rsp_query_pci_grp {
-> >>   	u16			:  4;
-> >>   	u16 noi			: 12;	/* number of interrupts */
-> >>   	u8 version;
-> >> -	u8			:  6;
-> >> +	u8			:  4;
-> >> +	u8 relaxed_align	:  1;	/* Relax length and alignment rules */
-> >> +	u8			:  1;
-> >>   	u8 frame		:  1;
-> >>   	u8 refresh		:  1;	/* TLB refresh mode */
-> >>   	u16 reserved2;
-> >> diff --git a/arch/s390/pci/pci_clp.c b/arch/s390/pci/pci_clp.c
-> >> index 153720d..630f8fc 100644
-> >> --- a/arch/s390/pci/pci_clp.c
-> >> +++ b/arch/s390/pci/pci_clp.c
-> >> @@ -103,6 +103,7 @@ static void clp_store_query_pci_fngrp(struct zpci_dev *zdev,
-> >>   	zdev->max_msi = response->noi;
-> >>   	zdev->fmb_update = response->mui;
-> >>   	zdev->version = response->version;
-> >> +	zdev->relaxed_align = response->relaxed_align;
-> >>   
-> >>   	switch (response->version) {
-> >>   	case 1:  
-> > 
-> > Hm, what does that 'relaxed alignment' imply? Is that something that
-> > can apply to emulated devices as well?
-> >   
-> The relaxed alignment simply loosens the rules on the PCISTB instruction 
-> so that it doesn't have to be on particular boundaries / have a minimum 
-> length restriction, these effectively allow ISM devices to use PCISTB 
-> instead of PCISTG for just about everything.  If you have a look at the 
-> patch "s390x/pci: Handle devices that support relaxed alignment" from 
-> the linked qemu set, you can get an idea of what the bit changes via the 
-> way qemu has to be more permissive of what the guest provides for PCISTB.
-
-Ok, so it is basically a characteristic of a specific device that
-changes the rules of what pcistb will accept.
-
+On Thu, Dec 10, 2020 at 04:38:30PM +0000, Valentin Schneider wrote:
+> Per-CPU kworkers forcefully migrated away by hotplug via
+> workqueue_offline_cpu() can end up spawning more kworkers via
 > 
-> Re: emulated devices...  The S390 PCI I/O layer in the guest is always 
-> issuing strict? aligned I/O for PCISTB, and if it decided to later 
-> change that behavior it would need to look at this CLP bit to decide 
-> whether that would be a valid operation for a given PCI function anyway. 
->   This bit will remain off in the CLP response we give for emulated 
-> devices, ensuring that should such a change occur in the guest s390 PCI 
-> I/O layer, we'd just continue getting strictly-aligned PCISTB.
+>   manage_workers() -> maybe_create_worker()
+> 
+> Workers created at this point will be bound using
+> 
+>   pool->attrs->cpumask
+> 
+> which in this case is wrong, as the hotplug state machine already migrated
+> all pinned kworkers away from this CPU. This ends up triggering the BUG_ON
+> condition is sched_cpu_dying() (i.e. there's a kworker enqueued on the
+> dying rq).
+> 
+> Special-case workers being attached to DISASSOCIATED pools and bind them to
+> cpu_active_mask, mimicking them being present when workqueue_offline_cpu()
+> was invoked.
+> 
+> Link: https://lore.kernel.org/r/ff62e3ee994efb3620177bf7b19fab16f4866845.camel@redhat.com
+> Fixes: 06249738a41a ("workqueue: Manually break affinity on hotplug")
 
-My question was more whether that was a feature that might make sense
-to emulate on the hypervisor side for fully emulated devices. I'd like
-to leave the door open for emulated devices to advertise this and make
-it possible for guests using those devices to use pcistb with the
-relaxed rules, if it makes sense.
+Isn't the problem introduced by 1cf12e0 ("sched/hotplug: Consolidate
+task migration on CPU unplug") ?
 
-I guess we can easily retrofit this if we come up with a use case for it.
+Previously we had:
 
+ AP_WORKQUEUE_ONLINE -> set POOL_DISASSOCIATED
+   ...
+ TEARDOWN_CPU -> clear CPU in cpu_online_mask
+   |
+   |-AP_SCHED_STARTING -> migrate_tasks()
+   |
+  AP_OFFLINE
+
+worker_attach_to_pool(), is "protected" by the cpu_online_mask in
+set_cpus_allowed_ptr(). IIUC, now, the tasks being migrated before the
+cpu_online_mask is actually flipped, there's a window, between
+CPUHP_AP_SCHED_WAIT_EMPTY and CPUHP_TEARDOWN_CPU where a kworker can wake-up
+a new one, for the hotunplugged pool that wouldn't be caught by the
+hotunplug migration.
+
+> Reported-by: Qian Cai <cai@redhat.com>
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+>  kernel/workqueue.c | 24 +++++++++++++++++-------
+>  1 file changed, 17 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index 9880b6c0e272..fb1418edf85c 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -1848,19 +1848,29 @@ static void worker_attach_to_pool(struct worker *worker,
+>  {
+>  	mutex_lock(&wq_pool_attach_mutex);
+>  
+> -	/*
+> -	 * set_cpus_allowed_ptr() will fail if the cpumask doesn't have any
+> -	 * online CPUs.  It'll be re-applied when any of the CPUs come up.
+> -	 */
+> -	set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
+> -
+>  	/*
+>  	 * The wq_pool_attach_mutex ensures %POOL_DISASSOCIATED remains
+>  	 * stable across this function.  See the comments above the flag
+>  	 * definition for details.
+> +	 *
+> +	 * Worker might get attached to a pool *after* workqueue_offline_cpu()
+> +	 * was run - e.g. created by manage_workers() from a kworker which was
+> +	 * forcefully moved away by hotplug. Kworkers created from this point on
+> +	 * need to have their affinity changed as if they were present during
+> +	 * workqueue_offline_cpu().
+> +	 *
+> +	 * This will be resolved in rebind_workers().
+>  	 */
+> -	if (pool->flags & POOL_DISASSOCIATED)
+> +	if (pool->flags & POOL_DISASSOCIATED) {
+>  		worker->flags |= WORKER_UNBOUND;
+> +		set_cpus_allowed_ptr(worker->task, cpu_active_mask);
+> +	} else {
+> +		/*
+> +		 * set_cpus_allowed_ptr() will fail if the cpumask doesn't have any
+> +		 * online CPUs. It'll be re-applied when any of the CPUs come up.
+> +		 */
+
+Does this comment still stand ? IIUC, we should always be in the
+POOL_DISASSOCIATED case if the CPU from cpumask is offline. Unless a
+pool->attrs->cpumask can have several CPUs. In that case maybe we should check
+for the cpu_active_mask here too ?
+
+-- 
+Vincent
+
+> +		set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
+> +	}
+>  
+>  	list_add_tail(&worker->node, &pool->workers);
+>  	worker->pool = pool;
+> -- 
+> 2.27.0
+> 
