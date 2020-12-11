@@ -2,68 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F9B2D76B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:40:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DE62D76B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 14:40:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390642AbgLKNhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 08:37:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387808AbgLKNhe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 08:37:34 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4014C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 05:36:53 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by baptiste.telenet-ops.be with bizsmtp
-        id 31cs2400K4C55Sk011csMz; Fri, 11 Dec 2020 14:36:52 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1knibM-009i8V-9G; Fri, 11 Dec 2020 14:36:52 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1knibL-00CSgv-HC; Fri, 11 Dec 2020 14:36:51 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] Input: adc-keys - drop bogus __refdata annotation
-Date:   Fri, 11 Dec 2020 14:36:50 +0100
-Message-Id: <20201211133650.2970182-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S2390834AbgLKNig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 08:38:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733208AbgLKNho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 08:37:44 -0500
+Date:   Fri, 11 Dec 2020 19:06:59 +0530
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607693823;
+        bh=awziwZMQnKm3HUEwINQikBW2m8m7Wd6pkNVMAa6kxOs=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kg4Y00OHMOZqZBgM6UghxN8p6L1jIzrv801aC3G8O5AIjBeBL6tA/VWy4wVk/3ELn
+         p6v5CFj4jpqRjm3wYgi+H6id5sX5tOckCZlXy5SiGxhKmMLyiYwWD7PfoEQGyIz3wV
+         4o8ZRtLseEWDhPoQI9hUR82utZTWynFZiGVOQHMCgx1bnwBO3AF0y9Zk8Fj3POZqBE
+         kCNMMyNXsxRSrwgFsPL7juvdg1zdzKNl3HtuGd7FjPr7st1fuJ0FjGbWm0kwPRjhpm
+         KbU+gJPE4E4cYiKCqEuRB7m80GRYTKZCcSAnJ1VgVLb44m2auzvfqfnvV/jk/NDhyx
+         qveoFFzgPC0nw==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Jonathan McDowell <noodles@earth.li>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: qcom: Fix ADM driver kerneldoc markup
+Message-ID: <20201211133659.GU8403@vkoul-mobl>
+References: <20201126184602.GA1008@earth.li>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126184602.GA1008@earth.li>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the ADC ladder input driver does not have any code or data located in
-initmem, there is no need to annotate the adc_keys_driver structure with
-__refdata.  Drop the annotation, to avoid suppressing future section
-warnings.
+On 26-11-20, 18:46, Jonathan McDowell wrote:
+> Update the kerneldoc function headers to fix build warnings:
+> 
+> drivers/dma/qcom/qcom_adm.c:180: warning: Function parameter or member 'chan' not described in 'adm_free_chan'
+> drivers/dma/qcom/qcom_adm.c:190: warning: Function parameter or member 'burst' not described in 'adm_get_blksize'
+> drivers/dma/qcom/qcom_adm.c:466: warning: Function parameter or member 'chan' not described in 'adm_terminate_all'
+> drivers/dma/qcom/qcom_adm.c:466: warning: Excess function parameter 'achan' description in 'adm_terminate_all'
+> drivers/dma/qcom/qcom_adm.c:503: warning: Function parameter or member 'achan' not described in 'adm_start_dma'
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/input/keyboard/adc-keys.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied, thanks
 
-diff --git a/drivers/input/keyboard/adc-keys.c b/drivers/input/keyboard/adc-keys.c
-index 6d5be48d1b3d7988..bf72ab8df817756f 100644
---- a/drivers/input/keyboard/adc-keys.c
-+++ b/drivers/input/keyboard/adc-keys.c
-@@ -193,7 +193,7 @@ static const struct of_device_id adc_keys_of_match[] = {
- MODULE_DEVICE_TABLE(of, adc_keys_of_match);
- #endif
- 
--static struct platform_driver __refdata adc_keys_driver = {
-+static struct platform_driver adc_keys_driver = {
- 	.driver = {
- 		.name = "adc_keys",
- 		.of_match_table = of_match_ptr(adc_keys_of_match),
 -- 
-2.25.1
-
+~Vinod
