@@ -2,104 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963EE2D8268
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B722D8272
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 23:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436935AbgLKWwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 17:52:40 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:35963 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436883AbgLKWvv (ORCPT
+        id S2407060AbgLKWyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 17:54:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394011AbgLKWyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 17:51:51 -0500
-Received: by mail-oi1-f194.google.com with SMTP id 9so4563436oiq.3;
-        Fri, 11 Dec 2020 14:51:36 -0800 (PST)
+        Fri, 11 Dec 2020 17:54:40 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4655CC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:54:00 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id g185so10012206wmf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:54:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kHtjDDH7GvTHo4bSQkbyfDs6WmHuTRZuUmLBj4I09mM=;
+        b=ZOYpIIJhdkjIiQrCDklbAJoCGhqr2KCzTSQCU7kEVzQ2UEt0EEFBiz6tWBA4FGQQxV
+         zjLKwy1NJpfNzHOQ9525bmhx6NUFRRLkgJBxTvN9eOVo2OJ/5a7mvmpstAVjteuGu2TT
+         MKbbWwhIWHog9cQIiXzuei0HHyPDdARN994uPx0h4nQKujNwwlqM28TD7I4wbqC+pQPe
+         J3YFcJimPtUDOzfug20srnJ0J7LWGyqxGtOv9VUFOwQ5bs04TalKW4xynLxZjwuC2MiK
+         1L2HFvrimunl74Eo77FPdWNYpZo8phU+MlexnX4QMczOi0Gaym3eS5gnfvHCEo4BTJWt
+         C5yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=h7zhj3Eq/PeLm/regPaAoJk6bDhExNvRnLL3xHOt2JE=;
-        b=shKAtDuYzVzg1CNTqzvx7kKFYZMwD1wdkcqnOvcQG11GbdvXjbimYoNjuLHsjW2CeO
-         CAlgVvkW2Q77Ho3oiTLpOu/hGdls8u1UwEqw4t6FyY1DGQ8iqecbyt95z/dUkCeVHN0b
-         ryc/gCjEaL+XEsS+GB9kW9F5rBY4Mp1bIEmFuHwx1BNJun+I05hn1GYTQixxr8LBTrLe
-         3hewt7K/LduvFp8y+Cd+p4YV3lfjsBJbj63jtIYXOh5bv6DPxPb1OLfmNCxq96D3lz2y
-         8rBnNbO9KzO3c1yQ30gR34nn/kA1w9rqNpwdQy6mg13thZUNAZh9MeM7R7tgHkz/X3eg
-         eGeg==
-X-Gm-Message-State: AOAM532Bm06MHKv0cUuNQ0xnm5xAP87r9ABDwX0mbUEIhdvnpIE2uBka
-        RZC/EE3DSh8uN0QAIFoHhQ==
-X-Google-Smtp-Source: ABdhPJwDiOuBEqQDA5B+u90cdec7hl8WIumo6jw3kCYx5wAB1axlc4l+h2GK7j0hJsnP9QFfsq953A==
-X-Received: by 2002:aca:b145:: with SMTP id a66mr11169400oif.92.1607727070606;
-        Fri, 11 Dec 2020 14:51:10 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t72sm2146217oie.47.2020.12.11.14.51.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 14:51:09 -0800 (PST)
-Received: (nullmailer pid 1106930 invoked by uid 1000);
-        Fri, 11 Dec 2020 22:51:08 -0000
-Date:   Fri, 11 Dec 2020 16:51:08 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-Cc:     linux-kernel@vger.kernel.org,
-        'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        'Rob Herring' <robh+dt@kernel.org>
-Subject: Re: [PATCH v3] Serial: silabs si4455 serial driver
-Message-ID: <20201211225108.GA1106590@robh.at.kernel.org>
-References: <20201211193124.GA26514@dincontrollerdev>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kHtjDDH7GvTHo4bSQkbyfDs6WmHuTRZuUmLBj4I09mM=;
+        b=AHUI/pPUkSicXfJr0qKZUqq6CdsyyF5+UwNj+XzJe9nSf1skA0PTNbO4MXmqydZye0
+         8pUreI3Sxsil6rjP1iieAv66g2ZED60Kvm+Imeh/dOE0sbOMZxZp2J++M4Otz4VzUwht
+         XEYIftWRNWis55xQYJs094+NAYkO/DtLDhzKlGjRv7A/yXMO0vLrfeXURcQ6v9xDM60o
+         Bj2VmwRmKszH0oKN02XGn1GaQip/2Fw4knkeJ+bOlKwgqoaNucReFnXU35QjqHidsOFI
+         shin3D8OJXgJApQRDLF6tzaEFthwTlBcUgFN7TX7Ak7JKZBMzCPo9n/TnX0MR/PYPmYc
+         WlgQ==
+X-Gm-Message-State: AOAM531OnQId9LyuTD4ugBa0jjoSlZt9I/GSAFmih0TFmlwixbqoq0Wx
+        l87/xj7j8xk/0zaJHm30feADXq/5SXJVr8gt4oKOmQ==
+X-Google-Smtp-Source: ABdhPJzmfhavlPB8w3bW91z4SUiuhRHo2kLdkst0HwLbm60FEwGaRoPhGOycsEHCfnGNhZfEe8bGK3l2A3oqsr+8a6k=
+X-Received: by 2002:a1c:40c:: with SMTP id 12mr15508379wme.40.1607727238734;
+ Fri, 11 Dec 2020 14:53:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201211193124.GA26514@dincontrollerdev>
+References: <160765171921.6905.7897898635812579754.stgit@localhost.localdomain>
+ <CANn89iJ5HnJYv6eWb1jm6rK173DFkp2GRnfvi9vnYwXZPzE4LQ@mail.gmail.com>
+ <CAKgT0Uf_q=FgMHd9_wq5Bx8rCC-kS0Qz563rE9dL2hpQ6Evppg@mail.gmail.com>
+ <CANn89iJUT6aWm75ZpU_Ggmuqbb+cbLSGj0Bxysu9_wXRgNS8MQ@mail.gmail.com>
+ <CAKgT0Uecuh3mcGRpDAZzzbnQtOusc++H4SXAv2Scd297Ha5AYQ@mail.gmail.com>
+ <CANn89iKfqKpXgCv_Z4iSt5RpjxYUvkYSoZKF3FZs+Jgev3aDgw@mail.gmail.com> <CAKgT0Uc6gVOL5VWpsD54WiAvop9WQEudNsJNh9=Fr9PunJevWw@mail.gmail.com>
+In-Reply-To: <CAKgT0Uc6gVOL5VWpsD54WiAvop9WQEudNsJNh9=Fr9PunJevWw@mail.gmail.com>
+From:   Yuchung Cheng <ycheng@google.com>
+Date:   Fri, 11 Dec 2020 14:53:21 -0800
+Message-ID: <CAK6E8=cbxpKH1hoeV5MuO_DdrbMSPvo+97UM3FT57-4Y7PuTiA@mail.gmail.com>
+Subject: Re: [net PATCH] tcp: Mark fastopen SYN packet as lost when receiving ICMP_TOOBIG/ICMP_FRAG_NEEDED
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        kernel-team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 19:31:27 +0000, József Horváth wrote:
-> This is a serial port driver for
->  Silicon Labs Si4455 Sub-GHz transciver.
-> 
-> The goal of this driver is to removing wires
->  between central(linux) device and remote serial devices/sensors,
->  but keeping the original user software.
->  It represents regular serial interface for the user space.
-> 
-> Datasheet: https://www.silabs.com/documents/public/data-sheets/Si4455.pdf
-> 
-> Signed-off-by: József Horváth <info@ministro.hu>
-> ---
->  .../staging/serial/silabs,si4455.yaml         |   98 ++
->  MAINTAINERS                                   |    7 +
->  drivers/tty/serial/Kconfig                    |    8 +
->  drivers/tty/serial/Makefile                   |    1 +
->  drivers/tty/serial/si4455.c                   | 1328 +++++++++++++++++
->  5 files changed, 1442 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/staging/serial/silabs,si4455.yaml
->  create mode 100644 drivers/tty/serial/si4455.c
-> 
+On Fri, Dec 11, 2020 at 1:51 PM Alexander Duyck
+<alexander.duyck@gmail.com> wrote:
+>
+> On Fri, Dec 11, 2020 at 11:18 AM Eric Dumazet <edumazet@google.com> wrote:
+> >
+> > On Fri, Dec 11, 2020 at 6:15 PM Alexander Duyck
+> > <alexander.duyck@gmail.com> wrote:
+> > >
+> > > On Fri, Dec 11, 2020 at 8:22 AM Eric Dumazet <edumazet@google.com> wrote:
+> > > >
+> > > > On Fri, Dec 11, 2020 at 5:03 PM Alexander Duyck
+> > > > <alexander.duyck@gmail.com> wrote:
+> > > >
+> > > > > That's fine. I can target this for net-next. I had just selected net
+> > > > > since I had considered it a fix, but I suppose it could be considered
+> > > > > a behavioral change.
+> > > >
+> > > > We are very late in the 5.10 cycle, and we never handled ICMP in this
+> > > > state, so net-next is definitely better.
+> > > >
+> > > > Note that RFC 7413 states in 4.1.3 :
+> > > >
+> > > >  The client MUST cache cookies from servers for later Fast Open
+> > > >    connections.  For a multihomed client, the cookies are dependent on
+> > > >    the client and server IP addresses.  Hence, the client should cache
+> > > >    at most one (most recently received) cookie per client and server IP
+> > > >    address pair.
+> > > >
+> > > >    When caching cookies, we recommend that the client also cache the
+> > > >    Maximum Segment Size (MSS) advertised by the server.  The client can
+> > > >    cache the MSS advertised by the server in order to determine the
+> > > >    maximum amount of data that the client can fit in the SYN packet in
+> > > >    subsequent TFO connections.  Caching the server MSS is useful
+> > > >    because, with Fast Open, a client sends data in the SYN packet before
+> > > >    the server announces its MSS in the SYN-ACK packet.  If the client
+> > > >    sends more data in the SYN packet than the server will accept, this
+> > > >    will likely require the client to retransmit some or all of the data.
+> > > >    Hence, caching the server MSS can enhance performance.
+> > > >
+> > > >    Without a cached server MSS, the amount of data in the SYN packet is
+> > > >    limited to the default MSS of 536 bytes for IPv4 [RFC1122] and 1220
+> > > >    bytes for IPv6 [RFC2460].  Even if the client complies with this
+> > > >    limit when sending the SYN, it is known that an IPv4 receiver
+> > > >    advertising an MSS less than 536 bytes can receive a segment larger
+> > > >    than it is expecting.
+> > > >
+> > > >    If the cached MSS is larger than the typical size (1460 bytes for
+> > > >    IPv4 or 1440 bytes for IPv6), then the excess data in the SYN packet
+> > > >    may cause problems that offset the performance benefit of Fast Open.
+> > > >    For example, the unusually large SYN may trigger IP fragmentation and
+> > > >    may confuse firewalls or middleboxes, causing SYN retransmission and
+> > > >    other side effects.  Therefore, the client MAY limit the cached MSS
+> > > >    to 1460 bytes for IPv4 or 1440 for IPv6.
+> > > >
+> > > >
+> > > > Relying on ICMP is fragile, since they can be filtered in some way.
+> > >
+> > > In this case I am not relying on the ICMP, but thought that since I
+> > > have it I should make use of it. WIthout the ICMP we would still just
+> > > be waiting on the retransmit timer.
+> > >
+> > > The problem case has a v6-in-v6 tunnel between the client and the
+> > > endpoint so both ends assume an MTU 1500 and advertise a 1440 MSS
+> > > which works fine until they actually go to send a large packet between
+> > > the two. At that point the tunnel is triggering an ICMP_TOOBIG and the
+> > > endpoint is stalling since the MSS is dropped to 1400, but the SYN and
+> > > data payload were already smaller than that so no retransmits are
+> > > being triggered. This results in TFO being 1s slower than non-TFO
+> > > because of the failure to trigger the retransmit for the frame that
+> > > violated the PMTU. The patch is meant to get the two back into
+> > > comparable times.
+> >
+> > Okay... Have you studied why tcp_v4_mtu_reduced() (and IPv6 equivalent)
+> > code does not yet handle the retransmit in TCP_SYN_SENT state ?
+>
+> The problem lies in tcp_simple_retransmit(). Specifically the loop at
+> the start of the function goes to check the retransmit queue to see if
+> there are any packets larger than MSS and finds none since we don't
+> place the SYN w/ data in there and instead have a separate SYN and
+> data packet.
+>
+> I'm debating if I should take an alternative approach and modify the
+> loop at the start of tcp_simple_transmit to add a check for a SYN
+> packet, tp->syn_data being set, and then comparing the next frame
+> length + MAX_TCP_HEADER_OPTIONS versus mss.
+Thanks for bringing up this tricky issue. The root cause seems to be
+the special arrangement of storing SYN-data as one-(pure)-SYN and one
+non-SYN data segment. Given tcp_simple_transmit probably is not called
+frequently, your alternative approach sounds more appealing to me.
 
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-./Documentation/devicetree/bindings/staging/serial/silabs,si4455.yaml: $id: relative path/filename doesn't match actual path or filename
-	expected: http://devicetree.org/schemas/staging/serial/silabs,si4455.yaml#
-
-
-See https://patchwork.ozlabs.org/patch/1415258
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Replacing that strange syn|data arrangement for TFO has been on my
+wish list for a long time... Ideally it's better to just store the
+SYN+data and just carve out the SYN for retransmit.
