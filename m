@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E922D74C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9C42D74C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394926AbgLKLd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 06:33:56 -0500
-Received: from mga06.intel.com ([134.134.136.31]:52740 "EHLO mga06.intel.com"
+        id S2395001AbgLKLfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 06:35:33 -0500
+Received: from mga06.intel.com ([134.134.136.31]:52789 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391060AbgLKLdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 06:33:49 -0500
-IronPort-SDR: MI4V0kcGBonKH93xbf53zoSbesfDet9EXFVyleeSSKofQnS34Aa4LPZ3LEe2BEjMD8Z5/9lUC+
- Nme4D72B+/ww==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="236012440"
+        id S2394998AbgLKLfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 06:35:10 -0500
+IronPort-SDR: J6q7751Fhcqnej8L7JAFITOQYPFPfOMDB1hi0QDca+56VG/uoQE42M9ZG7V4t9SZey0IQJ9MtM
+ 2+5EQvvwm2cA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="236012534"
 X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="236012440"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 03:33:06 -0800
-IronPort-SDR: RMW2Ki7emK7l8an+qXvRupYs81QsytOeYL+kwKXoe+tyPTgdInZAjLEK/FfJGkLulkLN7+I4yr
- kxS+GKoUI/TA==
+   d="scan'208";a="236012534"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 03:34:29 -0800
+IronPort-SDR: SlxhapbMNATFEgNXKGs9nytoRKII3awJayb2e9j/2KqLtJlukhlrp2gIe4zfyRrACTcz2o2B3C
+ zkBp+v/WmBCA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="379659955"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by FMSMGA003.fm.intel.com with ESMTP; 11 Dec 2020 03:33:06 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+   d="scan'208";a="371577260"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by fmsmga004.fm.intel.com with ESMTP; 11 Dec 2020 03:34:28 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 11 Dec 2020 03:33:06 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ 15.1.1713.5; Fri, 11 Dec 2020 03:34:28 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Fri, 11 Dec 2020 03:33:06 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ via Frontend Transport; Fri, 11 Dec 2020 03:34:28 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.109)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Fri, 11 Dec 2020 03:33:05 -0800
+ 15.1.1713.5; Fri, 11 Dec 2020 03:34:28 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hy243l54/fOR6aLY7diBVIbEiDeuHNblYQmX8Yxk1UAzsJ7Qe+8O4mFuK2Li8f8xIRE4D73pPOeXKRjXtsWDopjFinyZ4vQsfQon1te1TgrhHDPidwixRN8XsLCSHFcUn6ayYGSZLZBqECbPvw4M5STPmqj4QtuVHnKKxDfkCD7RXdpmjW4N0PTzk/p8gik2pO/zNtHYIfiOwBAYI0kqli/7k+xapLl1y5iWcinjfbzmsh6G/OYiigsPhiLW6PdPIAPNsDQspffsjI8y364xCwunri4kWEcb8TK2+Kb0BUbl+GeT5E7x8Dqvh2dKONA5BHo9AqmRVpBrejc8way0ng==
+ b=hyyz1/9ko5f5M1cJJE16J7aqwTc74tUM3jb/GWxiMEpyrHjrTo1eXm7kOrqg741SAlwJcEbiZhG5gA7V8lZXwK0JaAIwthyy6DssalQ2x9Onq0KzDFNPlotM+8tmu0hczXd1s5GkySg/hvXGoRtN8FxoohsmNHBAiNqo7B/7N0l1sE0F8vyiaThDfew2EC13+kyOByKCnWbyPuqEMX8fJeUc8w6/Boq7hqpSZB9Y6BOnZr7Ou4AlAr1aA0CWcGXfgsyQpbOmoxMiQLbCvNtIf0FzovU3psm3c4ToMsbo9tsVRBit9L9rywv+r2rEcJlk9+NtEAlipb9S7EQDoVWE7w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r27SalNXtKVNRwiv/D/8S1Ghvfbz+NQZEPhIAoo728s=;
- b=Q0nM17Yq37sxBNrzb6mkuuW7jK1LUpidqu8x+oAo1VQTUNJJxj7A/VOri5xSQb7NKV+T1sEjjFvCsRZETk6gjRBcRVs3W8li+yhCi4QOnnFmYtLTMUb6W1Foq0Jh6VgBVBKnHAnMDuG1xDdK5foJtJ8lLCcSP2w41SA6H49ERW3/Ii/lCPP2Pjm4/un9j1wpvPhC0q3VcsR8cGwOVq+dO3IK8NgPjA4J3mJyyqoKzkQJ0bnxZoo6e9eZLKMnDDM11QjeaXRba7yesCNSsOGSBKuHTSr3wDfubEFkYOfzT4qKG3i04i0N3iLxexTPUFGYOliS4wX55eWxhoqXz9LMvg==
+ bh=NHK+bp5XPU3zCYC0srNmd9CUeHaXIH41oozIr9wc45E=;
+ b=ZvS0VIrfPjxAiz8eeoNrInHZYKVdatDoHzwgClTkTdYlU+t0NDYi5sRuPwtkqgE63B0I1hvh4pMjWleK67rJUURmjU5mnB51/vx0C1VfzLSDeCQ37upybSQ/ok5UKy7+bKa98Oy7C9W+7rASo1s/beNiAwFqwy8xYvsYNmqn4MSYN4yS3XE2E8dMY3dmQtcmwieGBPyr3+gdGCnmSzDvIVRjb6RbHqH7c4W+BAe/ERNug5aypMgnyZ4DdeneRP1t6bJhFrYmaXUOMQ3DhwVgb6tJwuyF7rjd8Hm4uFe3USesdWSGxa3vVzK6t5yDQf1uEpJkxPn8BuaNLi1dwnJ/Ww==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
  s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r27SalNXtKVNRwiv/D/8S1Ghvfbz+NQZEPhIAoo728s=;
- b=YbXPegtxZYGiHWGpL3FThm8Be+HDzTMrd9ESGfjAwBGSx/1U12d3secAkMKZOEoeiKrJdzyAL85Xn9YK6/v2robOo1Fw7aBKB6mvZDwgfBH5hRydJPuDNkrbNoqioe6cE+fZiAdQ8USrNNlwZJJAOyB8sYdOu3bpJ7N9hfheyEw=
+ bh=NHK+bp5XPU3zCYC0srNmd9CUeHaXIH41oozIr9wc45E=;
+ b=JXynBqHtttQbSaX0lfUohHNuKoBvbRJTzLEc17nApr+vLGPOxGh490DKqORd1WmqisIIaXwrw7xnE3hREjatbFzTbkrnu1dn2EKxXQKUdfTa4NHS8L4CC5fkvaDYLjV8LDLJHf0xY8oX9PgtCirZJMLYEWPPLV1w8Ea2gysLEOs=
 Received: from BYAPR11MB3783.namprd11.prod.outlook.com (2603:10b6:a03:f5::12)
- by BYAPR11MB3045.namprd11.prod.outlook.com (2603:10b6:a03:88::33) with
+ by BYAPR11MB2950.namprd11.prod.outlook.com (2603:10b6:a03:8f::29) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Fri, 11 Dec
- 2020 11:33:02 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.23; Fri, 11 Dec
+ 2020 11:34:26 +0000
 Received: from BYAPR11MB3783.namprd11.prod.outlook.com
  ([fe80::2c85:a097:7a95:4387]) by BYAPR11MB3783.namprd11.prod.outlook.com
  ([fe80::2c85:a097:7a95:4387%5]) with mapi id 15.20.3654.015; Fri, 11 Dec 2020
- 11:33:02 +0000
+ 11:34:26 +0000
 From:   "Kelly, Seamus" <seamus.kelly@intel.com>
 To:     Joe Perches <joe@perches.com>,
         "mgross@linux.intel.com" <mgross@linux.intel.com>,
@@ -76,18 +76,16 @@ To:     Joe Perches <joe@perches.com>,
         "peng.fan@nxp.com" <peng.fan@nxp.com>,
         "robh+dt@kernel.org" <robh+dt@kernel.org>,
         "shawnguo@kernel.org" <shawnguo@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Ryan Carnaghi <ryan.r.carnaghi@intel.com>
-Subject: RE: [PATCH 16/22] xlink-ipc: Add xlink ipc driver
-Thread-Topic: [PATCH 16/22] xlink-ipc: Add xlink ipc driver
-Thread-Index: AQHWyDJBAHRzyzcAgEmZdZQ/FXOFKKnq8huAgAbgG5A=
-Date:   Fri, 11 Dec 2020 11:33:02 +0000
-Message-ID: <BYAPR11MB37839DDCA13DC55E594F5D108ACA0@BYAPR11MB3783.namprd11.prod.outlook.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 21/22] xlink-core: add async channel and events
+Thread-Topic: [PATCH 21/22] xlink-core: add async channel and events
+Thread-Index: AQHWyDJFetb15Z+o8EW1hshAcoVksKnq+GuAgAbZ9OA=
+Date:   Fri, 11 Dec 2020 11:34:26 +0000
+Message-ID: <BYAPR11MB3783776629BEAB3C3292D9B18ACA0@BYAPR11MB3783.namprd11.prod.outlook.com>
 References: <20201201223511.65542-1-mgross@linux.intel.com>
-         <20201201223511.65542-17-mgross@linux.intel.com>
- <d33f6b90d50feb6c05bd45ffdedf3fb6d5ceb5ee.camel@perches.com>
-In-Reply-To: <d33f6b90d50feb6c05bd45ffdedf3fb6d5ceb5ee.camel@perches.com>
+         <20201201223511.65542-22-mgross@linux.intel.com>
+ <b23bffa8810b3f80bf4cbc8b654f3d73a3b6a2ce.camel@perches.com>
+In-Reply-To: <b23bffa8810b3f80bf4cbc8b654f3d73a3b6a2ce.camel@perches.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -99,44 +97,45 @@ authentication-results: perches.com; dkim=none (message not signed)
  header.d=none;perches.com; dmarc=none action=none header.from=intel.com;
 x-originating-ip: [89.125.2.213]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3fbabe34-74ef-4575-a4aa-08d89dc8853a
-x-ms-traffictypediagnostic: BYAPR11MB3045:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB3045514CF2B5B11B401C28C58ACA0@BYAPR11MB3045.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-office365-filtering-correlation-id: f420d74b-7dfe-411a-7a95-08d89dc8b752
+x-ms-traffictypediagnostic: BYAPR11MB2950:
+x-microsoft-antispam-prvs: <BYAPR11MB29509E9CEE80EAB3ECA873FA8ACA0@BYAPR11MB2950.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: q7VmRYyq+//a0itNTEx9+WxLwCYhwWGALb/ivZQkjBvJmTJoPlpEs4Z12lkn4dZQJ1vP28x4BciyzmZG5a/I+ISbjFBi5rGoLTrtMNgR+gotEdoeq/whIAkJWA7OfOrfJl1CmNIlFngd7EGYBxiiEJLPMWl7IVKVmF/9mElAEFiXIadR9V4j8jNb4wesF3w+icLoFEkurdb3osuZ/b+WI8UoM1thcSZ9nsSgPORwopz4vWGJdq4uCwRVcb8dYZCtHUMdkJ5+Y5w3FAdb9AoA7plWXSpx5jKqIC8OvPNjtsZ9Ptox6bLlOcUj6qncLtHva8uU7BlG03SYe3gkCMLuEl/4ryo2q7pAmKOEpoRO9IxAsYfnuJaO9EvclEAARBTx
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3783.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(366004)(376002)(8936002)(6506007)(2906002)(9686003)(64756008)(66946007)(7696005)(71200400001)(54906003)(5660300002)(508600001)(76116006)(66556008)(86362001)(66446008)(52536014)(33656002)(186003)(53546011)(26005)(921005)(7416002)(4326008)(66476007)(110136005)(8676002)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?2cq256szXK5gF1L7G35gbFosFMzE1CbDQ/v3wLJpG9jZMCSjq4zOAboBrDYU?=
- =?us-ascii?Q?+T0H7B3nGiXElg1xUgRe/oIaW4OEH/2PgUDFZdHuVNiw5yjiA+7jmlXXmarP?=
- =?us-ascii?Q?MultdTq48hwtrXeeuzoxfvFPqAUWsZNgBuXRGIvzRBNozy9RFgpEDYK29Z0A?=
- =?us-ascii?Q?cP3NKMVSkOS6TIhnB0Fuay5eLo/JAifb/iogM6wH3fxHLmk6GLn4ERF7p7Fo?=
- =?us-ascii?Q?hBdgBJOVJtVER0dgmYKkJoyJ7XN4BaX7TQg9fAmLzMf7tOkyZ935LXbltbrq?=
- =?us-ascii?Q?SiinCXOFXmlJ9UK+6VQwsEsB6Kt5Y8WMsWjpgTu82eBOeYpseP/8Y53MRJ3K?=
- =?us-ascii?Q?crRgIt/ah5FYgtbUq8wyEu5ENkNAitjMuZMcJbkyHC4w5jsjDy7uaHvNiTej?=
- =?us-ascii?Q?JiH6Qeb6b+J7qJbdO8rMZs+BlWQajymjxXr28N2xPnBeXq5NcWRqeLIMz7sZ?=
- =?us-ascii?Q?Guk4u84Qb3olNaJOp7zGKwpZjJFnJqWs+TOy98BlbPg11jWfpHFBYZjKpaKg?=
- =?us-ascii?Q?I1myKqNhKwYgGVGXgIv2GMhGpGx4zL3IbuhsmlwH4hSe5MblWkcR+N/r/K48?=
- =?us-ascii?Q?VzuYTDXDwC5rY9PDtZxSFBaRGARyWRVbhrJ5Es44lXGQCQBdwo4GfFw5zDAq?=
- =?us-ascii?Q?/OUjbtxX53j+nqAfOS72wmJx06oaFB+ELSATe0et1v0iGUwiDcFS/kOxzhnE?=
- =?us-ascii?Q?kE+GczP+se4weBbiLOppFqqeGDPOrrQ8RFaAg7vAwRTPCjRJaFz9jnz2KX84?=
- =?us-ascii?Q?m20YpJByPOjy3XCml8nAlEFn/wjOK3mwkiKsIQS0Y+Lqozdtq+Cpaw92HiZ4?=
- =?us-ascii?Q?kPBPX5jtcCfwL0Yb1O36uGNFWpjvDlPUbQUjHSgNLyqTNMZ65JtreiaWb2nx?=
- =?us-ascii?Q?4VGV9CAaZe+Y2i0wFhkKA2Z6h5Z26prTQWbN+n78Ad/gYB5vqokYIBnyRW9u?=
- =?us-ascii?Q?8IgMIJChLwmIjUZThyTGMnSS+zWMZlqfCgxiNjqqzKs=3D?=
-Content-Type: text/plain; charset="us-ascii"
+x-microsoft-antispam-message-info: /9BFPM9INd95T5x7EbUBu5Wc8FVIBZ9G1/MzXLzGAp6IdkWBR7psIIgDmf3OMmcyN/tAouyJl55mFbdHY1GtkBDxxRcn/UIjrOrnrYDUqtpCsZngoGvWyavJ89R3pOSPVCkx1M5a424q48oyKh5eGDfIK1pDEZYnBqVlh5G5yTcfyrXDpI70WYlq85SWp7LWcz/R6Dt+T2VCHiFprtbHHrYDg6sn2nQTYMFsJjLKdafjXavGnvbl7htVhS0agQeawGjDXJ3gnVaxMhVFOgSa2HbQypCxYVhva0TeLdMGwE9Wqr74EMsYco1lv3ExKywKf6qEuszdLvTBtG6sI8hyA4+vugCAJYb0rD7DeeRZnZSKIG+DalYpHF1f2Wm2J+aq
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3783.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(508600001)(110136005)(9686003)(7416002)(53546011)(5660300002)(52536014)(4326008)(186003)(86362001)(33656002)(71200400001)(64756008)(7696005)(66446008)(66946007)(2906002)(8676002)(55016002)(8936002)(6506007)(26005)(66556008)(921005)(66476007)(76116006)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?Etjg68yHyI5kHZgpU2SYIyShAEMpeaFTqgmxpqQNKvk0Vn3goeFLm97FKo?=
+ =?iso-8859-1?Q?SEeKi1xwopKfCZojSSOxX96Zhu5db01xRzxhSizfXiUFNyVCfEYumGJRhQ?=
+ =?iso-8859-1?Q?Ko2yNsZAZ19MgXsO9yAKSALliRs9CM5OZz53Efn6QOAO1Ay+r+dmnFlSpo?=
+ =?iso-8859-1?Q?+F8hx9Cd2r/rAyIxfe1yRau/zI7E1SFT5CXlnH5zzUqGjtl5pSPb5nKQMT?=
+ =?iso-8859-1?Q?NwMFWd6V8CYUR/9+BkC4PnkHyrrjhAXJa/5gk0pkvrWMz4JdD8xkODsf8Z?=
+ =?iso-8859-1?Q?fJvCZUzPn8i/PPnyfP6NCqcf/J791T02Y6zzktU64cYizoeKQB4OgkjYYV?=
+ =?iso-8859-1?Q?vwneO0KGlIrgrRa9voPVS0PVqAg6PHp8FZu8Jzq/H96XQxegRnqlvig5ip?=
+ =?iso-8859-1?Q?ZcmjtJV+OybXj6Dz+MOjdfjoUJK9trAYhWBFBsrT5fVq+PHXOjSJluPRaH?=
+ =?iso-8859-1?Q?nInMY1rfrJe5JMkYZg5MvE4QRFRvELK6KO1wDvUsxbnW8uyWe/J50NQOg1?=
+ =?iso-8859-1?Q?Yd5eplW56+I6XHgDGJVIG8/MZNUEr6qZme77WL2RfGBFFZuFrN1nsQBxpG?=
+ =?iso-8859-1?Q?WuBTS0jbtzpZszkO4GYeseZlMKdUWV1lU7kGXSAt3uoCPHbvAc7s2mQv7U?=
+ =?iso-8859-1?Q?6BdGkXuEmwsx2TitrfHdW5StwTEag9Cvci2CP9Xq2l444vxXuBRd9DRsOh?=
+ =?iso-8859-1?Q?0kBctZKwK337DTv+bcU+Lp17wZSEpXDYrxqjCB5lBVzy4GxP307xJ0Ao1+?=
+ =?iso-8859-1?Q?3t86643JnRB30eeXX8hJv2wHhpfslZOCc1VVNt6nWdJBcgSdpmUcATI7k5?=
+ =?iso-8859-1?Q?lmuY2NXu/7iqOoK46QM5S4KhdPadWY178aqeO4Ow0WCr5te3npqCwVybVt?=
+ =?iso-8859-1?Q?RALZGeu9/LW/oRTB3+jlV7IB/GjN9X6XqUuDhQKjAC3xrRtma4a42Ruabc?=
+ =?iso-8859-1?Q?DgAg7MiGh9M1aZJf2HDgT5iNk0zSHwsZd/gm2UaCeKipP38u9Hv6YYh6hY?=
+ =?iso-8859-1?Q?wXf3VvD7uWwQuwrak=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3783.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3fbabe34-74ef-4575-a4aa-08d89dc8853a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2020 11:33:02.5199
+X-MS-Exchange-CrossTenant-Network-Message-Id: f420d74b-7dfe-411a-7a95-08d89dc8b752
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2020 11:34:26.6671
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jrcMit2HeEydqTv+beBI/PGt5zC5AyLKybrpdlShhId6mZfGFWYc3M9fwipIT5XrZXNleIP76yorhWRJsOaSmg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3045
+X-MS-Exchange-CrossTenant-userprincipalname: BbvWDzcPax3V/nzjhTC+RFQ554tC45X2y8jw6lTX/mvB5bDh+3vagndcCX+u3BViugqriH6q5VXluHemHSGwrw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2950
 X-OriginatorOrg: intel.com
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -144,75 +143,135 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+
+-----Original Message-----
 From: Joe Perches <joe@perches.com> =
 
-Sent: Monday, December 7, 2020 2:33 AM
+Sent: Monday, December 7, 2020 2:55 AM
 To: mgross@linux.intel.com; markgross@kernel.org; arnd@arndb.de; bp@suse.de=
 ; damien.lemoal@wdc.com; dragan.cvetic@xilinx.com; gregkh@linuxfoundation.o=
 rg; corbet@lwn.net; leonard.crestez@nxp.com; palmerdabbelt@google.com; paul=
 .walmsley@sifive.com; peng.fan@nxp.com; robh+dt@kernel.org; shawnguo@kernel=
 .org
-Cc: linux-kernel@vger.kernel.org; Kelly, Seamus <seamus.kelly@intel.com>; l=
-inux-doc@vger.kernel.org; Ryan Carnaghi <ryan.r.carnaghi@intel.com>
-Subject: Re: [PATCH 16/22] xlink-ipc: Add xlink ipc driver
+Cc: linux-kernel@vger.kernel.org; Kelly, Seamus <seamus.kelly@intel.com>
+Subject: Re: [PATCH 21/22] xlink-core: add async channel and events
 
 On Tue, 2020-12-01 at 14:35 -0800, mgross@linux.intel.com wrote:
-> From: Seamus Kelly <seamus.kelly@intel.com>
-> =
-
-> Add xLink driver, which interfaces the xLink Core driver with the Keem =
-
-> Bay VPU IPC driver, thus enabling xLink to control and communicate =
-
-> with the VPU IP present on the Intel Keem Bay SoC.
-
-Trivial style comments:
-
-> diff --git a/drivers/misc/xlink-ipc/xlink-ipc.c =
-
-> b/drivers/misc/xlink-ipc/xlink-ipc.c
-
+> Enable asynchronous channel and event communication.
 []
+> diff --git a/drivers/misc/xlink-core/xlink-core.c =
 
-> +/*
-> + * xlink_reserved_memory_init() - Initialize reserved memory for the dev=
-ice.
-> + *
-> + * @xlink_dev:	[in] The xlink ipc device the reserved memory is allocate=
-d to.
-> + *
-> + * Return: 0 on success, negative error code otherwise.
-> + */
-> +static int xlink_reserved_memory_init(struct xlink_ipc_dev =
-
-> +*xlink_dev) {
-> +	struct device *dev =3D &xlink_dev->pdev->dev;
+> b/drivers/misc/xlink-core/xlink-core.c
+[]
 > +
-> +	xlink_dev->local_xlink_mem.dev =3D init_xlink_reserved_mem_dev(dev,
-> +								     "xlink_local_reserved",
-> +								     LOCAL_XLINK_IPC_BUFFER_IDX);
-> +	if (!xlink_dev->local_xlink_mem.dev)
-> +		return -ENOMEM;
+> +// sysfs attribute functions
+> +
+> +static ssize_t event0_show(struct device *dev, struct =
 
-This sort of code, with a repeated struct dereference, generally reads bett=
-er using a temporary and is also less prone to typo use.
+> +device_attribute *attr, char *buf) {
+> +	struct keembay_xlink_dev *xlink_dev =3D dev_get_drvdata(dev);
+> +	struct xlink_attr *a =3D &xlink_dev->eventx[0];
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "0x%x 0x%lx\n", a->sw_dev_id, =
 
-	struct device *dev =3D &xlink_dev->pdev->dev;
-	struct xlink_buf_mem *lxm =3D &xlink_dev->local_xlink_mem;
+> +a->value); }
+> +
+> +static ssize_t event1_show(struct device *dev, struct =
 
-	lxm->dev =3D init_xlink_reserved_mem_dev(dev, "xlink_local_reserved",
-					       LOCAL_XLINK_IPC_BUFFER_IDX);
-	if (!lxm->dev)
-		return -ENOMEM;
+> +device_attribute *attr, char *buf) {
+> +	struct keembay_xlink_dev *xlink_dev =3D dev_get_drvdata(dev);
+> +	struct xlink_attr *a =3D &xlink_dev->eventx[1];
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "0x%x 0x%lx\n", a->sw_dev_id, =
 
-> +	xlink_dev->local_xlink_mem.size =3D get_xlink_reserved_mem_size(dev,
-> +								      LOCAL_XLINK_IPC_BUFFER_IDX);
+> +a->value); }
+> +
+> +static ssize_t event2_show(struct device *dev, struct =
 
-	lxm->size =3D get_xlink_reserved_mem_size(dev, LOCAL_XLINK_IPC_BUFFER_IDX);
+> +device_attribute *attr, char *buf) {
+> +	struct keembay_xlink_dev *xlink_dev =3D dev_get_drvdata(dev);
+> +	struct xlink_attr *a =3D &xlink_dev->eventx[2];
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "0x%x 0x%lx\n", a->sw_dev_id, =
+
+> +a->value); }
+> +
+> +static ssize_t event3_show(struct device *dev, struct =
+
+> +device_attribute *attr, char *buf) {
+> +	struct keembay_xlink_dev *xlink_dev =3D dev_get_drvdata(dev);
+> +	struct xlink_attr *a =3D &xlink_dev->eventx[3];
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "0x%x 0x%lx\n", a->sw_dev_id, =
+
+> +a->value); }
+
+These could use the sysfs_emit function and not scnprintf and as well could=
+ use a single shared function with an index.
+
+Something like:
+
+static ssize_t eventx_show(struct device *dev, struct device_attr *attr, in=
+t index, char *buf) {
+	struct keembay_xlink_dev *xlink_dev =3D dev_get_drvdata(dev);
+	struct xlink_attr *a =3D &xlink_dev->eventx[index];
+
+	return sysfs_emit(buf, "0x%x 0x%lx\n", a->sw_dev_id, a->value); }
+
+static ssize_t event0_show(struct device *dev, struct device_attribute *att=
+r, char *buf) {
+	return eventx_show(dev, attr, 0, buf);
+}
 
 etc...
+[Kelly, Seamus]  Thank you!  will do.
 
-[Kelly, Seamus] Thank you!  will do.
+> @@ -270,19 +353,23 @@ static long xlink_ioctl(struct file *file, unsigned=
+ int cmd, unsigned long arg)
+> =A0	struct xlinkconnect		con	=3D {0};
+> =A0	struct xlinkrelease		rel	=3D {0};
+> =A0	struct xlinkstartvpu		startvpu =3D {0};
+> +	struct xlinkcallback		cb	=3D {0};
+> =A0	struct xlinkgetdevicename	devn	=3D {0};
+> =A0	struct xlinkgetdevicelist	devl	=3D {0};
+> =A0	struct xlinkgetdevicestatus	devs	=3D {0};
+> =A0	struct xlinkbootdevice		boot	=3D {0};
+> =A0	struct xlinkresetdevice		res	=3D {0};
+> =A0	struct xlinkdevmode		devm	=3D {0};
+> +	struct xlinkregdevevent		regdevevent =3D {0};
+
+Perhaps significantly less stack would be used if these declarations were m=
+oved into the case blocks where used.  Less initialization would be done pe=
+r ioctl too.
+
+[Kelly, Seamus]  This has changed significantly In next patch and I take yo=
+ur comments ( on next patch also ) Thanks
+
+> @@ -318,6 +405,30 @@ static long xlink_ioctl(struct file *file, unsigned =
+int cmd, unsigned long arg)
+> =A0		if (copy_to_user((void __user *)op.return_code, (void *)&rc, sizeof(=
+rc)))
+> =A0			return -EFAULT;
+> =A0		break;
+> +	case XL_DATA_READY_CALLBACK:
+> +		if (copy_from_user(&cb, (void __user *)arg,
+> +				   sizeof(struct xlinkcallback)))
+> +			return -EFAULT;
+> +		if (copy_from_user(&devh, (void __user *)cb.handle,
+> +				   sizeof(struct xlink_handle)))
+> +			return -EFAULT;
+> +		CHANNEL_SET_USER_BIT(cb.chan); // set MSbit for user space call
+> +		rc =3D xlink_data_available_event(&devh, cb.chan, cb.callback);
+> +		if (copy_to_user((void __user *)cb.return_code, (void *)&rc, sizeof(rc=
+)))
+> +			return -EFAULT;
+> +		break;
+
+	case XL_DATA_READY_CALLBACK: {
+		struct xlinkcallback cb	=3D {};
+		etc...
+		break;
+	}
 
 
 
