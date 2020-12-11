@@ -2,147 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B532D704F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7C92D7049
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 07:41:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395560AbgLKGjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 01:39:15 -0500
-Received: from bmail1.ministro.hu ([5.249.150.236]:40666 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389075AbgLKGjG (ORCPT
+        id S2395540AbgLKGjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 01:39:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389193AbgLKGiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 01:39:06 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id 44C51123B18;
-        Fri, 11 Dec 2020 07:38:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607668704;
-        bh=ugkcwpsp8hU79DcK5AY9md1R6//9xinfQewzn4Q8jzI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p6hZeKgX2tuj5Ea4LNct2Mmy9dnCcG4FF0HAHspcVrp+tRX6xLvRIqamJTljQZg7T
-         X30Kdu9ObP6Jlr+F61Cxe1lJX2jt0AenXZ5ubJq9UDoaLUgPCXP4CS3pZ5oofXsNbD
-         fYv21Y0X0qNijCF6gIZSEjXlNQeVai3y3Az6qJnadNimCRqiq/EEC4R4RAJrdWd1NH
-         SHcu1Y+1G2PbE4xnFEck26qLx5dRl4zlnzrlm92o3OqPXcjsEwm3lIhoSlZBnTbei9
-         sROqoQyRkQpub1jcb+QEQTYjx1AOrfSLZ5t01FmrkupJ/+ffUkh/8xKSQSfIhUcyot
-         S3OuNQ0/FWgIQ==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Y3PUCZX0RggV; Fri, 11 Dec 2020 07:37:55 +0100 (CET)
-Received: from dincontrollerdev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id D890C123B16;
-        Fri, 11 Dec 2020 07:37:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607668675;
-        bh=ugkcwpsp8hU79DcK5AY9md1R6//9xinfQewzn4Q8jzI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=v6BS2qVvBohPiHfw6I3DUYpNU+2rFywI7q4EyfuEleJoA5BNxC5nO1IVx29veILe3
-         s5igpTUYgQkl6TM7EczT0o+vQ1FFOYrWGm0Gstcg3l8HRN3y2Y/91/Bq58SGUaib7A
-         invJv1mZ8LDDshjyUGR9Vtp4Qysg2WU3O9h86bNbOYvrZeBw2uwnULiajVoH4eiMpB
-         I7M8Or/jb0VQYhaCKZSpW1BANkJ6XfZD2ADTWjgndd1UsQV/CbOKDD1U4nHOWR6f+d
-         sUUWWU8Al78/HQjt51EQKMqnN1XIbgckX7IPh1aqJmLIZHc+aaYCFf6j1MBDgAZ7Jv
-         3h4uZvGEKf5CA==
-Date:   Fri, 11 Dec 2020 06:37:52 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-Cc:     'Rob Herring' <robh+dt@kernel.org>,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Serial: silabs si4455 serial driver
-Message-ID: <20201211063752.GB1065@dincontrollerdev>
-References: <20201210170443.GA17304@dincontrollerdev>
- <X9Jw+srprdT8tquZ@kroah.com>
- <20201210194625.GA17516@dincontrollerdev>
- <X9MIwqJBG69M5uHq@kroah.com>
- <20201211060943.GA1065@dincontrollerdev>
- <X9MPuX1x4MezwkEj@kroah.com>
+        Fri, 11 Dec 2020 01:38:46 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E727FC0613CF;
+        Thu, 10 Dec 2020 22:38:05 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id r4so4101077pls.11;
+        Thu, 10 Dec 2020 22:38:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IJn2NRnZ0htSfMKlDgbHkXiJqMLXOt5jVJuVSPBUT64=;
+        b=eQbli3ygPRwDfXaOXZF67v4aJtTRF30JLr9F9Tl2mSghOY78nJiO3ibIk+MntnFAzE
+         J5YHAhRCWjJ2zXa977npJbCRK7zZoOT+BDu5+a/bp8bgCRfCEqOERdKQCbe4CmXUgdSJ
+         x3cF3fUJzzg2BO7vuuKIDsLj+frRO787CX+4jkowDnk8ZVq68zyXFhcXNL9hGmad/BBK
+         mB5UpgnU2+mceImJ/LfxXT8tMtJBQRZh9mFhrUTJVL1YlnHeER2rBTh6K1Ve4t+Hcg5L
+         LExlUg24xLsPLyMd+qvbyh8YTEu+9eZ5ACZiavTpxPMxONQelDmgbaI00kmBWjtUegWz
+         f1fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IJn2NRnZ0htSfMKlDgbHkXiJqMLXOt5jVJuVSPBUT64=;
+        b=raEVOzTzNIC72PUYwLznip1X2S4qcvd2AFXm3EDQkjJN+fYvWZGZRX1aJmkcqbEj7X
+         9J9IJMopyREnkXyS6RmYmfN5cMFfPpPeTzS1Aigc30piiIpizEMfkBqqHBfUNNTGXCjm
+         Qfd3w4oWISQ93XhKDENispLOpFzT56q7DPzxyg4gw/QXt232yZpA5AwfP47QIqugtwSm
+         uIfkxekuudm5dExkzBYT+7q8efdzCg4siYMrd37/xxNXM2yi7Lum9pBpyLWs5O2moCyQ
+         4QbLj9t4F4XovOGqETwyUYx+G4Z29vERds1atdiyLe+yf00DQQkIJ+zQJcR0gNm66kFM
+         k6SA==
+X-Gm-Message-State: AOAM531Ymhb36cWtDuXe9BrjUvxq0PLWrPIfm8UHYVR9ujDUEBi8+bVk
+        32aOOZhlv3QAEavujm0ccH4=
+X-Google-Smtp-Source: ABdhPJwX0IF28Epz+bShVNIN0dR8vBODX1Qk2ntn+46/Bq3+55EkW9s1+ZwwPJenWRsAUPe/RyCgng==
+X-Received: by 2002:a17:902:6b4a:b029:d8:d13d:14f with SMTP id g10-20020a1709026b4ab02900d8d13d014fmr9659742plt.24.1607668685371;
+        Thu, 10 Dec 2020 22:38:05 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id y23sm9104582pfc.178.2020.12.10.22.38.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 22:38:04 -0800 (PST)
+Date:   Thu, 10 Dec 2020 22:38:02 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] input/rmi4: simplify the return expression of
+ rmi_driver_of_probe()
+Message-ID: <X9MTyoZTLISShiMh@google.com>
+References: <20201210140024.1665-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <X9MPuX1x4MezwkEj@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201210140024.1665-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 07:20:41AM +0100, 'Greg Kroah-Hartman' wrote:
-> On Fri, Dec 11, 2020 at 06:09:43AM +0000, József Horváth wrote:
-> > On Fri, Dec 11, 2020 at 06:50:58AM +0100, 'Greg Kroah-Hartman' wrote:
-> > > On Thu, Dec 10, 2020 at 07:46:25PM +0000, József Horváth wrote:
-> > > > On Thu, Dec 10, 2020 at 08:03:22PM +0100, 'Greg Kroah-Hartman' wrote:
-> > > > > On Thu, Dec 10, 2020 at 05:04:46PM +0000, József Horváth wrote:
-> > > > > > This is a serial port driver for
-> > > > > > Silicon Labs Si4455 Sub-GHz transciver.
-> > > > > > +
-> > > > > > +#define BASE_TTYIOC_PRIVATE		0xA0
-> > > > > > +/* Set EZConfig.
-> > > > > > + * After this ioctl call, the driver restarts the si4455,
-> > > > > > + * then apply the new configuration and patch.
-> > > > > > + */
-> > > > > > +#define SI4455_IOC_SEZC		_IOW('T', \
-> > > > > > +				     BASE_TTYIOC_PRIVATE + 0x01, \
-> > > > > > +				     struct si4455_iocbuff)
-> > > > > 
-> > > > > Why does a serial driver have private ioctls?  Please no, don't do that.
-> > > > 
-> > > > I checked the ioctl.h and serial_core.h, but I not found any similar definition, like BASE_VIDIOC_PRIVATE in videodev2.h.
-> > > > In this case the name of macro BASE_TTYIOC_PRIVATE means the base value of special ioctl commands owned by this driver.
-> > > 
-> > > My point is, a serial driver should NOT have any custom ioctls.
-> > > 
-> > > > I can change it to BASE_TTYIOC or SI4455_IOC_BASE
-> > > > 
-> > > > > Implement the basic serial driver first, and then we can talk about
-> > > > > "custom" configurations and the like, using the correct apis.
-> > > > 
-> > > > Without the SI4455_IOC_SEZC call, the driver can't configure the Si4455 and not working at all.
-> > > > The cofiguration for interface is provided by user for application.
-> > > 
-> > > That is what a device tree is for, to configure the device to have the
-> > > correct system configuration, why can't that be the same here?
-> > > 
-> > > > It contains the base frequency, channel spacing, modulation, and a lot
-> > > > of more stuff, and generated by Silicon Labs Wireless Development
-> > > > Suite.
-> > > > The generated configuration is in a non public(compressed,
-> > > > encrypted...who knows) format, so without this the driver can't
-> > > > provide configuration parameters to Si4455.
-> > > 
-> > > So we have to take a "custom" userspace blob and send it to the device
-> > > to configure it properly?  Like Jiri said, sounds like firmware, so just
-> > > use that interface instead.
-> > 
-> > I checked Jiri's suggestion, and it is a good solution to replace SI4455_IOC_SEZC(configuration) and SI4455_IOC_SEZP(firmware patch).
-> > I can move SI4455_IOC_SSIZ(package size) to device tree property.
-> > 
-> > Maybe you have good suggestion for the following:
-> > SI4455_IOC_STXC -> Radio transmit channel index. It is a real use case to control this parameter by user at runtime.
-> > SI4455_IOC_SRXC -> Radio receive channel index. It is a real use case to control this parameter by user at runtime.
+On Thu, Dec 10, 2020 at 10:00:24PM +0800, Zheng Yongjun wrote:
+> Simplify the return expression.
 > 
-> These are not serial port things, why would a serial port care about
-> these?
-
-You are right, these are not regular serial port things, but this device is not a regular uart, it is a sub-GHz transciever, digital radio.
-This driver tries to represent it as a serial port to user.
-
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  drivers/input/rmi4/rmi_driver.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
 > 
-> > SI4455_IOC_GRSSI -> Last measured RSSI, when packet received. This is a useful information.
-> > (Currently I'm the only one user, and I need this :) )
-> 
-> What is "RSSI"?
-> 
-> And why not debugfs if it's only debugging stuff?
+> diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_driver.c
+> index 258d5fe3d395..eec5d926da25 100644
+> --- a/drivers/input/rmi4/rmi_driver.c
+> +++ b/drivers/input/rmi4/rmi_driver.c
+> @@ -991,14 +991,8 @@ static int rmi_driver_remove(struct device *dev)
+>  static int rmi_driver_of_probe(struct device *dev,
+>  				struct rmi_device_platform_data *pdata)
+>  {
+> -	int retval;
+> -
+> -	retval = rmi_of_property_read_u32(dev, &pdata->reset_delay_ms,
+> +	return rmi_of_property_read_u32(dev, &pdata->reset_delay_ms,
+>  					"syna,reset-delay-ms", 1);
+> -	if (retval)
+> -		return retval;
+> -
+> -	return 0;
 
-Received signal strength indication, and not only debugging. It is an information for the end user.
+The idea of this function is to potentially handle several device
+properties, so I would prefer leaving it as is.
 
-> 
-> thanks,
-> 
-> greg k-h
+Thanks.
 
-Üdvözlettel / Best regards:
-József Horváth
-
-
+-- 
+Dmitry
