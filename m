@@ -2,99 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFD82D6C7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 185C62D6C97
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 01:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394411AbgLKA0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 19:26:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394216AbgLKA00 (ORCPT
+        id S2394353AbgLKA3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 19:29:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57769 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2393615AbgLKA3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 19:26:26 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146C2C06179C
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 16:25:46 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 10 Dec 2020 19:29:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607646461;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=smSusb6V6UpqcgwJnIn5HTzBcj5wuKKaCTquGzVm8wA=;
+        b=Ghc/KzfXKWaeartQ2tlocNw4Pxqm4jg2tYN6P0hRjWUtoGUvQE3OJgOxiqX8cybBruaE35
+        4BS+mOv6+Ca4oTqMylKcEJLAn+CLsb0MjmTUH/Bf3vilLC5n78vYa/L04NWR34/mq9czCv
+        NboWcHS0x+WRiEo5CoAZFWheAkGeY4o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-545-01-RlXyYP0eRgWNEySdgJA-1; Thu, 10 Dec 2020 19:27:37 -0500
+X-MC-Unique: 01-RlXyYP0eRgWNEySdgJA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CsWlr0wxBz9sWS;
-        Fri, 11 Dec 2020 11:25:44 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1607646344;
-        bh=bA6byRMs/pHhq0Ws6E/d+hPLWhoTPF322rZCJWUyQQU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oEwtVY8TaUu7sKeObDfG3kDVUPFIBmyr3Ugu3jskOjQ9DovBonYOKBu7EuHncb2GV
-         BDeq9S4H5NqougsLzzGDCvIPK1hUHT51XDh+CC+EE1thfzCKdtx4JXL712hhgjy7xi
-         UsS9BalRpo1DFWF2/iDmD4vHivCmhWAA12qxfZLkiL93RyKAVDrocf7GKNwI6Bx5vG
-         m6LM8HD4WtNZPca939GUGOXhm4jADrfXOdf6BByYpEzT/OGg+VktN4LiW0N5S/wGhb
-         j7apSe3q7kF5toqPEj+f8xK7Rtn8JMo21609Nh/L09XtuDv0UJQWXADFxPVebaEGgQ
-         FPoQefKCrrcwg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     christophe.leroy@csgroup.eu, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.10-6 tag
-Date:   Fri, 11 Dec 2020 11:25:43 +1100
-Message-ID: <878sa5rxx4.fsf@mpe.ellerman.id.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 70D00180A086;
+        Fri, 11 Dec 2020 00:27:34 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-7.gru2.redhat.com [10.97.112.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DB44A100239F;
+        Fri, 11 Dec 2020 00:27:32 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id BFCF94172EDF; Thu, 10 Dec 2020 21:27:03 -0300 (-03)
+Date:   Thu, 10 Dec 2020 21:27:03 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+Message-ID: <20201211002703.GA47016@fuller.cnet>
+References: <20201203171118.372391-2-mlevitsk@redhat.com>
+ <20201207232920.GD27492@fuller.cnet>
+ <05aaabedd4aac7d3bce81d338988108885a19d29.camel@redhat.com>
+ <87sg8g2sn4.fsf@nanos.tec.linutronix.de>
+ <20201208181107.GA31442@fuller.cnet>
+ <875z5c2db8.fsf@nanos.tec.linutronix.de>
+ <20201209163434.GA22851@fuller.cnet>
+ <87r1nyzogg.fsf@nanos.tec.linutronix.de>
+ <20201210152618.GB23951@fuller.cnet>
+ <87zh2lib8l.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zh2lib8l.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On Thu, Dec 10, 2020 at 10:48:10PM +0100, Thomas Gleixner wrote:
+> On Thu, Dec 10 2020 at 12:26, Marcelo Tosatti wrote:
+> > On Wed, Dec 09, 2020 at 09:58:23PM +0100, Thomas Gleixner wrote:
+> >> Marcelo,
+> >> 
+> >> On Wed, Dec 09 2020 at 13:34, Marcelo Tosatti wrote:
+> >> > On Tue, Dec 08, 2020 at 10:33:15PM +0100, Thomas Gleixner wrote:
+> >> >> On Tue, Dec 08 2020 at 15:11, Marcelo Tosatti wrote:
+> >> >> > max_cycles overflow. Sent a message to Maxim describing it.
+> >> >> 
+> >> >> Truly helpful. Why the hell did you not talk to me when you ran into
+> >> >> that the first time?
+> >> >
+> >> > Because 
+> >> >
+> >> > 1) Users wanted CLOCK_BOOTTIME to stop counting while the VM 
+> >> > is paused (so we wanted to stop guest clock when VM is paused anyway).
+> >> 
+> >> How is that supposed to work w/o the guest kernels help if you have to
+> >> keep clock realtime up to date? 
+> >
+> > Upon VM resume, we notify NTP daemon in the guest to sync realtime
+> > clock.
+> 
+> Brilliant. What happens if there is no NTP daemon? What happens if the
+> NTP daemon is not part of the virt orchestration magic and cannot be
+> notified, then it will notice the time jump after the next update
+> interval.
+> 
+> What about correctness?
+> 
+> ALL CLOCK_* stop and resume when the VM is resumed at the point where
+> they stopped.
+> 
+> So up to the point where NTP catches up and corrects clock realtime and
+> TAI other processes can observe that time jumped in the outside world,
+> e.g. via a network packet or whatever, but there is no reason why time
+> should have jumped outside vs. the local one.
+> 
+> You really all live in a seperate universe creating your own rules how
+> things which other people work hard on to get it correct can be screwed
+> over.
 
-Hi Linus,
+	1. T = read timestamp.
+	2. migrate (VM stops for a certain period).
+	3. use timestamp T.
 
-Please pull one final powerpc fix for 5.10:
+> Of course this all is nowhere documented in detail. At least a quick
+> search with about 10 different keyword combinations revealed absolutely
+> nothing.
+> 
+> This features first, correctness later frenzy is insane and it better
+> stops now before you pile even more crap on the existing steaming pile
+> of insanities.
 
-The following changes since commit a1ee28117077c3bf24e5ab6324c835eaab629c45:
+Sure.
 
-  powerpc/64s/powernv: Fix memory corruption when saving SLB entries on MCE (2020-12-02 23:16:40 +1100)
-
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.10-6
-
-for you to fetch changes up to 5eedf9fe8db23313df104576845cec5f481b9b60:
-
-  powerpc/mm: Fix KUAP warning by providing copy_from_kernel_nofault_allowed() (2020-12-08 10:22:09 +1100)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.10 #6
-
-One commit to implement copy_from_kernel_nofault_allowed(), otherwise
-copy_from_kernel_nofault() can trigger warnings when accessing bad addresses in
-some configurations.
-
-Thanks to:
-  Christophe Leroy, Qian Cai.
-
-- ------------------------------------------------------------------
-Christophe Leroy (1):
-      powerpc/mm: Fix KUAP warning by providing copy_from_kernel_nofault_allowed()
-
-
- arch/powerpc/mm/Makefile  | 2 +-
- arch/powerpc/mm/maccess.c | 9 +++++++++
- 2 files changed, 10 insertions(+), 1 deletion(-)
- create mode 100644 arch/powerpc/mm/maccess.c
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAl/SvGcACgkQUevqPMjh
-pYAecRAAhM0j56uNwH4P+Mu/PJ3PXjuoLjZGSA1HAOyBOamJsTvShW3R3w+bq+0A
-nKo1I7qkrCBmvTcKWc/XqRQom3I+bP/DbtHdXx0IEW8qooBRDIRRqEXCTXPOLxnh
-lESPuixsTofm+HBNpg/gY4/VXphVM3+0gLp05YQ0SdeWedPmiEzyYF7IKPrYiuzq
-7yOqu2wqUQ9BewWIWllDy+z5bNDnww7f2VIudTfEmg0AACriXfRvRSFk5y78OBtk
-fMzO1q8FLdWXTpWOVJfDFRpwPMMSjRK8DJblROoPjidXg57Lj998DP4R0WZQmiqO
-OKIa2AGBm9ZZCYArFhTA4X4ObmKIZKIox1th4WOAljBeByVFX8m+FbW/ChET1CSE
-KGmr1djFuEMljlCPPMUSgAns/LAYr+BfL+XRyix3I8vgF9lWjR2G0K1z8LEmXSEF
-0MzJ/loxYSdRd89pGSuinPS8VNBObcRFTfqVqGC0LpI2PeSpawjRUbl3AOTkISFs
-zwdWcJWwj/XME6yjcFhic3CuUvw74v/ZGHTpbsvov0eR2ki0D5zKq9GqGHVkMP+m
-5Db7i5rLGsM5zy7M2OloPVL+C193cbrrMrk7ndv3HS6ojPErHukwQ1SoQJrrGAKN
-8KDfJlQB8ofjpux3jS9JoDkXqQd7zjdX63Ob9nTyjIYn0V+TEyY=
-=g55c
------END PGP SIGNATURE-----
