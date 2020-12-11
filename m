@@ -2,163 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC972D718D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 550812D71B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405520AbgLKITl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 03:19:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405451AbgLKITE (ORCPT
+        id S2436883AbgLKIY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:24:28 -0500
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:53687 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436842AbgLKIXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 03:19:04 -0500
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BACCC0613CF;
-        Fri, 11 Dec 2020 00:18:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Q/1c6zPVM2kb71FCgSBD6/BH9IEEPXCHItl80hWLcm0=; b=u/yNH50V0yU1iD8Syex+KFHGGA
-        y0LTrZM6Bv1aX/OLuM9ZrAIceytMk7Qy8++YBOjHUyCjZO8/AOU2vmdSzYDuI/XbTKaU1R9StBqiw
-        Y1k9eMua+bF4q40NniX6vk3DKVDCZLzGboS+52kpRzqFljtyzD59mcsjRm69LUOcHa6thJceOcqq0
-        XioQ2+Awe9qJypEOhbqQBW6OOSAriepEoy/WCLjBAOKhRqhV/HorrsQHP9hbTenfflOxgxRSqi6Yu
-        GcA+bh+KyJk5c4v0w91QmIbSpqLybY+aV+gRsHgC8DzRvLzWSv1LlIUv+dWqko9BhzgqFR+cYKTNS
-        ch7+3Yqw==;
-Received: from 83-245-197-237.elisa-laajakaista.fi ([83.245.197.237] helo=kapsi.fi)
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <jarkko.sakkinen@iki.fi>)
-        id 1kndcl-0006qP-07; Fri, 11 Dec 2020 10:17:59 +0200
-Date:   Fri, 11 Dec 2020 10:17:57 +0200
-From:   Jarkko Sakkinen <jarkko.sakkinen@iki.fi>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Petko Manolov <petkan@mip-labs.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org,
-        YueHaibing <yuehaibing@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jann Horn <jannh@google.com>, linux-crypto@vger.kernel.org,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Ben Boeckel <mathstuf@gmail.com>, keyrings@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        linux-security-module@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        Tom Rix <trix@redhat.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Denis Efremov <efremov@linux.com>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: Re: [PATCH 00/18] keys: Miscellaneous fixes
-Message-ID: <20201211081757.GA3789@kapsi.fi>
-References: <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
+        Fri, 11 Dec 2020 03:23:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1607675017; x=1639211017;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=+1ORPUHdspsm9h53fFYu3DqNR/hyW+duN+x5ggEWKRU=;
+  b=bG2+nlW+j/FkmD713dV/aRI893d/7rEl27//i+g0MdnK+eNo/gsCWPvW
+   b43o641cQDgs5G+0d5rAN+GDuxKc+XH1+q3TkoHbAp+6A1qWYNFVJ9Vmy
+   ylSOudmGyj5V7/QcZa/r55Dp1L69lcBbnKNB69RgH+2JX691cJgAggP/a
+   o=;
+X-IronPort-AV: E=Sophos;i="5.78,410,1599523200"; 
+   d="scan'208";a="71918939"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 11 Dec 2020 08:22:46 +0000
+Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (Postfix) with ESMTPS id 0AA0EA1BBA;
+        Fri, 11 Dec 2020 08:20:54 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.144) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 11 Dec 2020 08:20:48 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <davem@davemloft.net>
+CC:     SeongJae Park <sjpark@amazon.de>, <kuba@kernel.org>,
+        <kuznet@ms2.inr.ac.ru>, <edumazet@google.com>, <fw@strlen.de>,
+        <paulmck@kernel.org>, <netdev@vger.kernel.org>,
+        <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/1] net: Reduce rcu_barrier() contentions from 'unshare(CLONE_NEWNET)'
+Date:   Fri, 11 Dec 2020 09:20:31 +0100
+Message-ID: <20201211082032.26965-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
-X-SA-Exim-Connect-IP: 83.245.197.237
-X-SA-Exim-Mail-From: jarkko.sakkinen@iki.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.144]
+X-ClientProxiedBy: EX13D47UWC004.ant.amazon.com (10.43.162.74) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 12:14:24PM +0000, David Howells wrote:
-> 
-> Hi Jarkko,
-> 
-> I've extended my collection of minor keyrings fixes for the next merge
-> window.  Anything else I should add (or anything I should drop)?
+From: SeongJae Park <sjpark@amazon.de>
 
-Looks good to me. I dropped the keys fixes that I had previously in
-my tree that I saw in yours.
+On a few of our systems, I found frequent 'unshare(CLONE_NEWNET)' calls
+make the number of active slab objects including 'sock_inode_cache' type
+rapidly and continuously increase.  As a result, memory pressure occurs.
+
+In more detail, I made an artificial reproducer that resembles the
+workload that we found the problem and reproduce the problem faster.  It
+merely repeats 'unshare(CLONE_NEWNET)' 50,000 times in a loop.  It takes
+about 2 minutes.  On 40 CPU cores, 70GB DRAM machine, the available
+memory continuously reduced in a fast speed (about 120MB per second,
+15GB in total within the 2 minutes).  Note that the issue don't
+reproduce on every machine.  On my 6 CPU cores machine, the problem
+didn't reproduce.
+
+'cleanup_net()' and 'fqdir_work_fn()' are functions that deallocate the
+relevant memory objects.  They are asynchronously invoked by the work
+queues and internally use 'rcu_barrier()' to ensure safe destructions.
+'cleanup_net()' works in a batched maneer in a single thread worker,
+while 'fqdir_work_fn()' works for each 'fqdir_exit()' call in the
+'system_wq'.
+
+Therefore, 'fqdir_work_fn()' called frequently under the workload and
+made the contention for 'rcu_barrier()' high.  In more detail, the
+global mutex, 'rcu_state.barrier_mutex' became the bottleneck.
+
+I tried making 'rcu_barrier()' and subsequent lightweight works in
+'fqdir_work_fn()' to be processed by a dedicated singlethread worker in
+batch and confirmed it works.  After the change, No continuous memory
+reduction but some fluctuation observed.  Nevertheless, the available
+memory reduction was only up to about 400MB.  The following patch is for
+the change.  I think this is the right solution for point fix of this
+issue, but someone might blame different parts.
+
+1. User: Frequent 'unshare()' calls
+From some point of view, such frequent 'unshare()' calls might seem only
+insane.
+
+2. Global mutex in 'rcu_barrier()'
+Because of the global mutex, 'rcu_barrier()' callers could wait long
+even after the callbacks started before the call finished.  Therefore,
+similar issues could happen in another 'rcu_barrier()' usages.  Maybe we
+can use some wait queue like mechanism to notify the waiters when the
+desired time came.
+
+I personally believe applying the point fix for now and making
+'rcu_barrier()' improvement in longterm make sense.  If I'm missing
+something or you have different opinion, please feel free to let me
+know.
 
 
-/Jarkko
+Patch History
+-------------
 
-> 
-> The patches can be found on the following branch:
-> 
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=keys-fixes
-> 
-> David
-> ---
-> Alex Shi (2):
->       PKCS#7: drop function from kernel-doc pkcs7_validate_trust_one
->       certs/blacklist: fix kernel doc interface issue
-> 
-> Alexander A. Klimov (1):
->       encrypted-keys: Replace HTTP links with HTTPS ones
-> 
-> David Howells (1):
->       certs: Fix blacklist flag type confusion
-> 
-> Denis Efremov (1):
->       security/keys: use kvfree_sensitive()
-> 
-> Gabriel Krisman Bertazi (1):
->       watch_queue: Drop references to /dev/watch_queue
-> 
-> Gustavo A. R. Silva (1):
->       security: keys: Fix fall-through warnings for Clang
-> 
-> Jann Horn (1):
->       keys: Remove outdated __user annotations
-> 
-> Krzysztof Kozlowski (1):
->       KEYS: asymmetric: Fix kerneldoc
-> 
-> Mickaël Salaün (3):
->       certs: Fix blacklisted hexadecimal hash string check
->       PKCS#7: Fix missing include
->       certs: Replace K{U,G}IDT_INIT() with GLOBAL_ROOT_{U,G}ID
-> 
-> Randy Dunlap (2):
->       security: keys: delete repeated words in comments
->       crypto: asymmetric_keys: fix some comments in pkcs7_parser.h
-> 
-> Tianjia Zhang (1):
->       crypto: public_key: Remove redundant header file from public_key.h
-> 
-> Tom Rix (2):
->       KEYS: remove redundant memset
->       keys: remove trailing semicolon in macro definition
-> 
-> YueHaibing (1):
->       crypto: pkcs7: Use match_string() helper to simplify the code
-> 
-> 
->  Documentation/security/keys/core.rst     |  4 ++--
->  certs/blacklist.c                        | 10 +++++-----
->  certs/system_keyring.c                   |  5 +++--
->  crypto/asymmetric_keys/asymmetric_type.c |  6 ++++--
->  crypto/asymmetric_keys/pkcs7_parser.h    |  5 ++---
->  crypto/asymmetric_keys/pkcs7_trust.c     |  2 +-
->  crypto/asymmetric_keys/pkcs7_verify.c    |  9 ++++-----
->  include/crypto/public_key.h              |  1 -
->  include/keys/encrypted-type.h            |  2 +-
->  include/linux/key.h                      |  5 +++--
->  include/linux/verification.h             |  2 ++
->  samples/Kconfig                          |  2 +-
->  samples/watch_queue/watch_test.c         |  2 +-
->  security/integrity/ima/ima_mok.c         |  3 +--
->  security/keys/Kconfig                    |  8 ++++----
->  security/keys/big_key.c                  |  9 +++------
->  security/keys/key.c                      |  2 ++
->  security/keys/keyctl.c                   |  2 +-
->  security/keys/keyctl_pkey.c              |  2 --
->  security/keys/keyring.c                  | 10 +++++-----
->  20 files changed, 45 insertions(+), 46 deletions(-)
-> 
-> 
-> 
+Changes from v2
+(https://lore.kernel.org/lkml/20201210080844.23741-1-sjpark@amazon.com/)
+- Add numbers after the patch (Eric Dumazet)
+- Make only 'rcu_barrier()' and subsequent lightweight works serialized
+  (Eric Dumazet)
+
+Changes from v1
+(https://lore.kernel.org/netdev/20201208094529.23266-1-sjpark@amazon.com/)
+- Keep xmas tree variable ordering (Jakub Kicinski)
+- Add more numbers (Eric Dumazet)
+- Use 'llist_for_each_entry_safe()' (Eric Dumazet)
+
+
+SeongJae Park (1):
+  net/ipv4/inet_fragment: Batch fqdir destroy works
+
+ include/net/inet_frag.h  |  1 +
+ net/ipv4/inet_fragment.c | 45 +++++++++++++++++++++++++++++++++-------
+ 2 files changed, 39 insertions(+), 7 deletions(-)
+
+-- 
+2.17.1
+
