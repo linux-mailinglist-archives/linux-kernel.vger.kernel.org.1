@@ -2,83 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1622D7BFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D67CE2D7C1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 18:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404769AbgLKRCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 12:02:35 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2203 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392701AbgLKRC0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:02:26 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fd3a5f20001>; Fri, 11 Dec 2020 09:01:38 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 11 Dec
- 2020 17:01:38 +0000
-Received: from skomatineni-linux.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Fri, 11 Dec 2020 17:01:38 +0000
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <broonie@kernel.org>, <robh+dt@kernel.org>, <lukas@wunner.de>
-CC:     <skomatineni@nvidia.com>, <linux-spi@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-Subject: [PATCH v2 9/9] arm64: tegra: Enable QSPI on Jetson Xavier NX
-Date:   Fri, 11 Dec 2020 09:01:28 -0800
-Message-ID: <1607706088-1437-12-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607706088-1437-1-git-send-email-skomatineni@nvidia.com>
-References: <1607706088-1437-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
+        id S2405123AbgLKREP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 12:04:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732975AbgLKRDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 12:03:22 -0500
+X-Gm-Message-State: AOAM53178bA+nCbFcIII+02iSM8zYFOh9cBF2vy7h/n1oiublmNnnqJ1
+        N0w6MQfQ1uweOfSkJ2FvB30Xq7t02ea1SautGw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607706161;
+        bh=y0iNFo76mlQYUJFryBQiNquPjuWXnGlz2WqZxVAwjgA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=I4hM40l0M6OrHcn/orBRf8m08bD+W2kUjwQDYMu2dfdLEI5iOFFPUSLVVTyk7i9l8
+         zi6unOryox1CdcqSQHhktMrMxrprrvFLvpkdIkZKWmO44Yk49kK856rd/aZyqPk6WV
+         Ej1iZelReO+bLICKMFqermLcYO7n5eylnLFq6UQvrp5duCI4T4Yz5RWyJNop/+x8Rs
+         tSnN/SFuJ/xQNQozCxzxsYgJpLgKh1e43SeLFKhXtWliuRJeEA6BXZdm1Ku9qTp6sp
+         YSMgwg6VFuqW3VvnBeLRmxTEdozphBKjSN+ob5R7uRT8uNGMOpL88SzHDldObBhtA5
+         F34QuRR9E4EKQ==
+X-Google-Smtp-Source: ABdhPJyiSYcSmzFPaA/db9tWHgk0Qa+ICGHcDsV0onNX7+M7lISTBoLrAApqTz2kNjv3+vBzN8809rcghpehq3UG8oI=
+X-Received: by 2002:a17:906:ae43:: with SMTP id lf3mr10982133ejb.130.1607706159765;
+ Fri, 11 Dec 2020 09:02:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1607706098; bh=fYE2T8fmJsPLDmks8zJZ++XGgYTpkfOpRR13aXBCmGY=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:X-NVConfidentiality:MIME-Version:Content-Type;
-        b=TMkrJ1SHGFBOJW1U3hdc6oloIRFm/cFuvKdtFgdAikZaJMGv/vD7Z0u4V4uy7UFZ3
-         7ZzRAe0GHffJs4Co3GnfpSgADq504ZJ4Nhwz0bVEQJrAhvuX3Waqjm5p3AUnCLQFoF
-         Zf7CQepjrAxldkI9dDNh7cnupa6y0SzdoVH/EgCk+WzZpLFftI9/7kbJAZWuIHElIX
-         MVw7HnadjU/lm8/aQq68/OHyCl2dqQpU79WsZNP7dFsjDX5wzqa0cE4MnHoRDpaznX
-         dY8I6xecpZ+s4KlroxcRv/zRGjytIiufGEqpUPi0d/tZuBNABqNAkR/be8SWoCRMDs
-         by+CC8pVvkBhQ==
+References: <20201211144236.3825-1-nadeem@cadence.com> <20201211144236.3825-2-nadeem@cadence.com>
+In-Reply-To: <20201211144236.3825-2-nadeem@cadence.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 11 Dec 2020 11:02:26 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLTz2k03gzrjDqi2d1NHQV+3pXxg6OqwcJ17CmfGYMf-A@mail.gmail.com>
+Message-ID: <CAL_JsqLTz2k03gzrjDqi2d1NHQV+3pXxg6OqwcJ17CmfGYMf-A@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: pci: Retrain Link to work around Gen2
+ training defect.
+To:     Nadeem Athani <nadeem@cadence.com>
+Cc:     Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        devicetree@vger.kernel.org, Milind Parab <mparab@cadence.com>,
+        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        pthombar@cadence.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enables QSPI on Jetson Xavier NX.
+On Fri, Dec 11, 2020 at 9:03 AM Nadeem Athani <nadeem@cadence.com> wrote:
+>
+> Cadence controller will not initiate autonomous speed change if strapped as
+> Gen2. The Retrain Link bit is set as quirk to enable this speed change.
+> Adding a quirk flag based on a new compatible string.
+>
+> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
+> ---
+>  Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml b/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+> index 293b8ec318bc..204d78f9efe3 100644
+> --- a/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+> +++ b/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+> @@ -15,7 +15,9 @@ allOf:
+>
+>  properties:
+>    compatible:
+> -    const: cdns,cdns-pcie-host
+> +    enum:
+> +        - cdns,cdns-pcie-host
+> +        - cdns,cdns-pcie-host-quirk-retrain
 
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
----
- .../arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dts | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+So, we'll just keep adding quirk strings on to the compatible? I don't
+think so. Compatible strings should map to a specific
+implementation/platform and quirks can then be implied from them. This
+is the only way we can implement quirks in the OS without firmware
+(DT) changes.
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dts b/arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dts
-index 7f97b34..f1053e7 100644
---- a/arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dts
-@@ -100,6 +100,18 @@
- 			phy-names = "usb2-1", "usb2-2", "usb3-2";
- 		};
- 
-+		spi@3270000 {
-+			status = "okay";
-+
-+			flash@0 {
-+				compatible = "spi-nor";
-+				reg = <0>;
-+				spi-max-frequency = <102000000>;
-+				spi-tx-bus-width = <4>;
-+				spi-rx-bus-width = <4>;
-+			};
-+		};
-+
- 		pwm@32d0000 {
- 			status = "okay";
- 		};
--- 
-2.7.4
-
+Rob
