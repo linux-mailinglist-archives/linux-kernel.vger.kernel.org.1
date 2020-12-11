@@ -2,75 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894292D7428
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:48:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A70902D742E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393160AbgLKKr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 05:47:27 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:42496 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728980AbgLKKrK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:47:10 -0500
-Received: by mail-lj1-f195.google.com with SMTP id y22so10330435ljn.9;
-        Fri, 11 Dec 2020 02:46:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dRa8+8T0/doCyxO8jlNrqWF9bR8w4xPSvOc8mqFfidI=;
-        b=GkRjOyByop67mPZU4KBxErD+xT3KiaTuGG7uCIK0ryjWFi9hPqCQ7Pvh9tNv9lP1Bw
-         nMFUqpKle557p+AUjs0HNXh4kDwuRwJj5R+XSRj0P56znTQpZggEMKAhdZ99eIKzqSpF
-         copzuAbs7km5xmG1yiZMAef4WKdOfE67qZr/9UphfJoHGtBhNdeRjZM6Hk8g9lmmovnl
-         qS0aWH+v0hRjeinpFQKgvRUh8C0an8C8HEhKI0ZYyHuUrltpzJkmL/Gpvj6h8NSs8Mss
-         W/EeL8M0bTLxGJk3Q+B/2PTZhaO7tMY6pFeiD3GLNc+xpjjUZKzpGZyU/ynAYBuvHzR5
-         p45A==
-X-Gm-Message-State: AOAM532oXhB2COuR9g+txsdXjI7bHtGJo1MljXivmGQTL+DkPJq/Ebn4
-        HBg6KBWBBaUBPinfqIV7rqM=
-X-Google-Smtp-Source: ABdhPJx0eK75XvUevDCsmqYfr+BPwS23tljwjADb07jfuaNvnTNuvi5wcgR9UGvhacHo3upAiIqEgw==
-X-Received: by 2002:a05:651c:1199:: with SMTP id w25mr4642238ljo.165.1607683588903;
-        Fri, 11 Dec 2020 02:46:28 -0800 (PST)
-Received: from xi.terra (c-d2ade455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.173.210])
-        by smtp.gmail.com with ESMTPSA id o8sm841166lft.101.2020.12.11.02.46.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 02:46:28 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1knfwR-0000u7-Eq; Fri, 11 Dec 2020 11:46:27 +0100
-Date:   Fri, 11 Dec 2020 11:46:27 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Maarten Brock <m.brock@vanmierlo.com>,
-        Mychaela Falconia <mychaela.falconia@gmail.com>,
-        Johan Hovold <johan@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Mychaela N . Falconia" <falcon@freecalypso.org>,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] tty: add flag to suppress ready signalling on open
-Message-ID: <X9NOAypxyiS5M3Ze@localhost>
-References: <20201202113942.27024-1-johan@kernel.org>
- <X9Dficb8sQGRut+S@kroah.com>
- <CA+uuBqYTzXCHGY8QnP+OQ5nRNAbqx2rMNzLM7OKLM1_4AzzinQ@mail.gmail.com>
- <6b81cca21561305b55ba8f019b78da28@vanmierlo.com>
- <X9H9i98E1Gro+mDP@kroah.com>
- <3fc3097ce1d35ce1e45fa5a3c7173666@vanmierlo.com>
- <X9IcKoofq+2iGZn7@kroah.com>
+        id S2393473AbgLKKsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 05:48:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53442 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393198AbgLKKr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 05:47:56 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 41EAFAC10;
+        Fri, 11 Dec 2020 10:47:14 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 8B6C21E1352; Fri, 11 Dec 2020 11:47:13 +0100 (CET)
+Date:   Fri, 11 Dec 2020 11:47:13 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next fsnotify mod breaks tail -f
+Message-ID: <20201211104713.GA15413@quack2.suse.cz>
+References: <alpine.LSU.2.11.2012101507080.1100@eggly.anvils>
+ <CAOQ4uxj6Vvwj84KL4MaECzw1jV+i_Frm6cuqkrk8fT3a4M=FEw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X9IcKoofq+2iGZn7@kroah.com>
+In-Reply-To: <CAOQ4uxj6Vvwj84KL4MaECzw1jV+i_Frm6cuqkrk8fT3a4M=FEw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 02:01:30PM +0100, Greg Kroah-Hartman wrote:
-> O_DIRECT is an interesting hack, has anyone seen if it violates the
-> posix rules for us to use it on a character device like this?
+On Fri 11-12-20 10:42:16, Amir Goldstein wrote:
+> On Fri, Dec 11, 2020 at 1:45 AM Hugh Dickins <hughd@google.com> wrote:
+> >
+> > Hi Jan, Amir,
+> >
+> > There's something wrong with linux-next commit ca7fbf0d29ab
+> > ("fsnotify: fix events reported to watching parent and child").
+> >
+> > If I revert that commit, no problem;
+> > but here's a one-line script "tailed":
+> >
+> > for i in 1 2 3 4 5; do date; sleep 1; done &
+> >
+> > Then if I run that (same result doing ./tailed after chmod a+x):
+> >
+> > sh tailed >log; tail -f log
+> >
+> > the "tail -f log" behaves in one of three ways:
+> >
+> > 1) On a console, before graphical screen, no problem,
+> >    it shows the five lines coming from "date" as you would expect.
+> > 2) From xterm or another tty, shows just the first line from date,
+> >    but after I wait and Ctrl-C out, "cat log" shows all five lines.
+> > 3) From xterm or another tty, doesn't even show that first line.
+> >
+> > The before/after graphical screen thing seems particularly weird:
+> > I expect you'll end up with a simpler explanation for what's
+> > causing that difference.
+> >
+> > tailed and log are on ext4, if that's relevant;
+> > ah, I just tried on tmpfs, and saw no problem there.
+> 
+> Nice riddle Hugh :)
+> Thanks for this early testing!
+> 
+> I was able to reproduce this.
+> The outcome does not depend on the type of terminal or filesystem
+> it depends on the existence of a watch on the parent dir of the log file.
+> Running ' inotifywait -m . &' will stop tail from getting notifications:
+> 
+> echo > log
+> tail -f log &
+> sleep 1
+> echo "can you see this?" >> log
+> inotifywait -m . &
+> sleep 1
+> echo "how about this?" >> log
+> kill $(jobs -p)
+> 
+> I suppose with a graphical screen you have systemd or other services
+> in the system watching the logs/home dir in your test env.
+> 
+> Attached fix patch. I suppose Jan will want to sqhash it.
+> 
+> We missed a subtle logic change in the switch from inode/child marks
+> to parent/inode marks terminology.
+> 
+> Before the change (!inode_mark && child_mark) meant that name
+> was not NULL and should be discarded (which the old code did).
+> After the change (!parent_mark && inode_mark) is not enough to
+> determine if name should be discarded (it should be discarded only
+> for "events on child"), so another check is needed.
 
-Jiri only mentioned O_DIRECT as an example of a flag which we might be
-able to repurpose/abuse for this. O_DIRECT is linux-specific, not in
-POSIX, so we'd still end up with a Linux-specific interface if we were
-to take this route.
+Thanks for testing Hugh and for a quick fix Amir! I've folded it into the
+original buggy commit.
 
-Johan
+								Honza
+
+> 
+> Thanks,
+> Amir.
+
+> From c7ea57c66c8c9f9607928bf7c55fc409eecc3e57 Mon Sep 17 00:00:00 2001
+> From: Amir Goldstein <amir73il@gmail.com>
+> Date: Fri, 11 Dec 2020 10:19:36 +0200
+> Subject: [PATCH] fsnotify: fix for fix events reported to watching parent and
+>  child
+> 
+> The child watch is expecting an event without file name and without
+> the ON_CHILD flag.
+> 
+> Reported-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+> ---
+>  fs/notify/fsnotify.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
+> index a0da9e766992..30d422b8c0fc 100644
+> --- a/fs/notify/fsnotify.c
+> +++ b/fs/notify/fsnotify.c
+> @@ -291,13 +291,18 @@ static int fsnotify_handle_event(struct fsnotify_group *group, __u32 mask,
+>  		}
+>  		if (!inode_mark)
+>  			return 0;
+> +	}
+>  
+> +	if (mask & FS_EVENT_ON_CHILD) {
+>  		/*
+>  		 * Some events can be sent on both parent dir and child marks
+>  		 * (e.g. FS_ATTRIB).  If both parent dir and child are
+>  		 * watching, report the event once to parent dir with name (if
+>  		 * interested) and once to child without name (if interested).
+> +		 * The child watcher is expecting an event without a file name
+> +		 * and without the FS_EVENT_ON_CHILD flag.
+>  		 */
+> +		mask &= ~FS_EVENT_ON_CHILD;
+>  		dir = NULL;
+>  		name = NULL;
+>  	}
+> -- 
+> 2.25.1
+> 
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
