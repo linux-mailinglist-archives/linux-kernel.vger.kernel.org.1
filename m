@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7D32D7E22
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 19:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43752D7E27
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 19:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394805AbgLKSdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 13:33:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390795AbgLKSck (ORCPT
+        id S2388371AbgLKSdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 13:33:54 -0500
+Received: from smtp-bc09.mail.infomaniak.ch ([45.157.188.9]:39011 "EHLO
+        smtp-bc09.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2394744AbgLKSd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 13:32:40 -0500
-Received: from mail.nic.cz (lists.nic.cz [IPv6:2001:1488:800:400::400])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A608EC0613CF;
-        Fri, 11 Dec 2020 10:32:00 -0800 (PST)
-Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id 125D71420AC;
-        Fri, 11 Dec 2020 19:31:58 +0100 (CET)
-Date:   Fri, 11 Dec 2020 19:31:52 +0100
-From:   Marek Behun <marek.behun@nic.cz>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     Abanoub Sameh <abanoubsameh8@gmail.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Abanoub Sameh <abanoubsameh@protonmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] leds: led-core: Get rid of enum led_brightness
-Message-ID: <20201211193152.7a6e0fbb@nic.cz>
-In-Reply-To: <2ae41868b2604a489927b5903529afb4@AcuMS.aculab.com>
-References: <20201211014840.1554095-1-abanoubsameh@protonmail.com>
-        <20201211135628.1fe1af79@nic.cz>
-        <2ae41868b2604a489927b5903529afb4@AcuMS.aculab.com>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 11 Dec 2020 13:33:27 -0500
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Cszsp6KkXzlh8TL;
+        Fri, 11 Dec 2020 19:32:30 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Cszsm6CK0zlh8TF;
+        Fri, 11 Dec 2020 19:32:28 +0100 (CET)
+Subject: Re: [PATCH v1 4/9] certs: Check that builtin blacklist hashes are
+ valid
+To:     David Howells <dhowells@redhat.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+References: <20201120180426.922572-5-mic@digikod.net>
+ <20201120180426.922572-1-mic@digikod.net>
+ <1221725.1607515111@warthog.procyon.org.uk>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <492d0fe7-826a-ac8f-bc41-29718ab3bb60@digikod.net>
+Date:   Fri, 11 Dec 2020 19:32:28 +0100
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+In-Reply-To: <1221725.1607515111@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 14:08:43 +0000
-David Laight <David.Laight@ACULAB.COM> wrote:
+
+On 09/12/2020 12:58, David Howells wrote:
+> Mickaël Salaün <mic@digikod.net> wrote:
+> 
+>> +      cmd_check_blacklist_hashes = $(AWK) -f scripts/check-blacklist-hashes.awk $(2); touch $@
+> 
+> The script name needs prefixing with $(srctree)/ so that it can be used with
+> alternative build directories.
+
+Right
 
 > 
-> More than 8 bits would be good.
-> While not really relevant for actual 'brightness' it allows
-> for 'strange' things be encoded in the brightness field.
->
-> For instance we have some hardware that has RGB leds on it.
-> They are a single device so it really needs a colour property.
-> But it is more complex than that, between the driver and LED
-> there is an FPGA - so it can modulate the LED output in many ways.
-> As well as using PWM to change the brightness and (eg) 1/2HZ flashing
-> it is possible to alternate between red and green to get a reasonable
-> orange (works better than driving both at the same time!).
+> Note that doesn't apply to scripts/extract-cert in the same makefile as that's
+> a built program and is to be found in the build dir, not the sources.
+> 
+> Btw, I'm pulling some of your cleanups/fixes into my fixes branch.
 
-Please don't do that. Don't misuse brightness for other settings.
-Instead try to implement the settings in other sysfs files, maybe even
-make it generic. Document the new sysfs ABI. But to not encode
-non-brightness properties into brightness.
+OK, thanks. I'll send a new patch series rebased on your branch.
 
-For you multicolor example there is multicolor LED framework now in
-kernel.
-
-Marek
+> 
+> David
+> 
