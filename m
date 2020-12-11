@@ -2,180 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30E42D82DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A122D82E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 00:52:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437447AbgLKXrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 18:47:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37198 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407148AbgLKXrE (ORCPT
+        id S2407239AbgLKXuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 18:50:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407240AbgLKXus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 18:47:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607730337;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Dm7TgIiCb5vjxZIuyXShA11/EyqdaLIEBozh5F2rbEw=;
-        b=NStlZGWJKtAOhMdvrNwAD+IOUmHrJO75kWxC5Nl7kLf8Ssya/PCfOOT2x9ux+nB0YyEWvq
-        Upg8gOZXYuzcVGXT4rUKlsqA/yr0ul/jWxMMP17dO+5RORz7DKZacn3j6hX51rjBhtUFEZ
-        NXfvDB6mRjO9t04430+r8x2iqTm24sY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-125-yrZqIfEUNB2wSToaD4GpKg-1; Fri, 11 Dec 2020 18:45:35 -0500
-X-MC-Unique: yrZqIfEUNB2wSToaD4GpKg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88A80107ACE3;
-        Fri, 11 Dec 2020 23:45:33 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B64095D737;
-        Fri, 11 Dec 2020 23:45:32 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     seanjc@google.com,
-        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
-        stable@nongnu.org
-Subject: [PATCH v3] KVM: mmu: Fix SPTE encoding of MMIO generation upper half
-Date:   Fri, 11 Dec 2020 18:45:32 -0500
-Message-Id: <20201211234532.686593-1-pbonzini@redhat.com>
+        Fri, 11 Dec 2020 18:50:48 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBDDC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:50:07 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id 1so10248640qka.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 15:50:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HrpGpeVouHWBAWlwrnZQ4b3o3PuUhfDT7U1jbXkeBu0=;
+        b=GkXTizU3ycac1nelpZF2sNwUDnkJz+uMtcieEL8oScb/rVsKe9rafWpqBC7NOxOPn4
+         f4bbSpVGMC2pK+wSiXWHy3ydET3zlc7CsmT9WXsaxYTWGKWOtBmsJiFY/4s86W0SDS59
+         GeEuQdfKrA3twfw40/pfwcJR/neFN5aGRZVppTKKoxZnCxMua4Lnd9mCkqyQkNQJH6B3
+         TxNb3EcXzodCmFq8AmRiIXZTgOncSfUI0GsMML3F+KF90CPFhhY5+rMKX31FpbnHyNry
+         9AKN/hy8qVJY4/JcrIbXDI+BvczTI11Evh7DMHoe7XtKHBa9J9HFBgZqVdipReMAWcaJ
+         CQnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HrpGpeVouHWBAWlwrnZQ4b3o3PuUhfDT7U1jbXkeBu0=;
+        b=XP7u8Zd8r5SdKtrQPb29IYwB85Cy72pFhdnqek7s3XRfQjzSDBEBTkUaMXbNa9X9KN
+         75auNJ4++eTIgVAXvPIp57a7DCDhr3Ip7ejJlvYZU3u7Nls96+7Fdm82t4tFaNkB32f2
+         E1k32THB99PzuTMDY0SsHXjnitOrfXAhbhd/qxcy0mQpWU11d8C7S6hcImX5tuG08IIg
+         RvhB6tInpKrjTFj4KYFHg5Wl+DR8Do7n+UClZX3RUZV7uszP1R5DcvwukpmaALaRKv0k
+         jKMr5BrFvSNKdDp36rvceruTq8Fou8wZvc92ILVD0O9ka0/GULDIWiIAnkK7WhQnOBjh
+         7ajw==
+X-Gm-Message-State: AOAM532xju9UDI0nobROizTx0NuUWtcBKr/YGer3+Hu5S3DXhHfAAWMA
+        1I3gBE0H+c597ixDZRyz7rbnQg==
+X-Google-Smtp-Source: ABdhPJwRik/cgYcUX4O4YYOW6YknrDcIWCPIuQc0ZZLz/iLsSfNxZJmy3774/8jUzLnYsn9Z5QZpag==
+X-Received: by 2002:a37:c92:: with SMTP id 140mr18588142qkm.152.1607730607157;
+        Fri, 11 Dec 2020 15:50:07 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id v204sm8719490qka.4.2020.12.11.15.50.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 15:50:06 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1knsAn-009OHS-Jq; Fri, 11 Dec 2020 19:50:05 -0400
+Date:   Fri, 11 Dec 2020 19:50:05 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v3 5/6] mm/gup: migrate pinned pages out of movable zone
+Message-ID: <20201211235005.GE5487@ziepe.ca>
+References: <CA+CK2bCc9gk3Yy+ueaZVJs90MFE3fqukLsdb5R2kTUH4tWRbkA@mail.gmail.com>
+ <447A41F3-EB94-4DA4-8B98-038B127774A5@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <447A41F3-EB94-4DA4-8B98-038B127774A5@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+On Fri, Dec 11, 2020 at 10:53:00PM +0100, David Hildenbrand wrote:
 
-Commit cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
-cleaned up the computation of MMIO generation SPTE masks, however it
-introduced a bug how the upper part was encoded:
-SPTE bits 52-61 were supposed to contain bits 10-19 of the current
-generation number, however a missing shift encoded bits 1-10 there instead
-(mostly duplicating the lower part of the encoded generation number that
-then consisted of bits 1-9).
+> > When check_and_migrate_movable_pages() is called, the pages are
+> > already pinned. If some of those pages are in movable zone, and we
+> > fail to migrate or isolate them what should we do: proceed, and
+> > keep it as exception of when movable zone can actually have pinned
+> > pages or unpin all pages in the array, and return an error, or
+> > unpin only pages in movable zone, and return an error?
+> 
+> I guess revert what we did (unpin) and return an error. The
+> interesting question is what can make migration/isolation fail
+> 
+> a) out of memory: smells like a zone setup issue. Failures are acceptable I guess.
 
-In the meantime, the upper part was shrunk by one bit and moved by
-subsequent commits to become an upper half of the encoded generation number
-(bits 9-17 of bits 0-17 encoded in a SPTE).
+Out of memory is reasonable..
+ 
+> b) short term pinnings: process dying - not relevant I guess. Other cases? (Fork?)
 
-In addition to the above, commit 56871d444bc4 ("KVM: x86: fix overlap between SPTE_MMIO_MASK and generation")
-has changed the SPTE bit range assigned to encode the generation number and
-the total number of bits encoded but did not update them in the comment
-attached to their defines, nor in the KVM MMU doc.
-Let's do it here, too, since it is too trivial thing to warrant a separate
-commit.
+Concurrent with non-longterm GUP users are less reasonable, fork is
+not reasonable, etc..
 
-Fixes: cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
-Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-Message-Id: <156700708db2a5296c5ed7a8b9ac71f1e9765c85.1607129096.git.maciej.szmigiero@oracle.com>
-Cc: stable@nongnu.org
-[Reorganize macros so that everything is computed from the bit ranges. - Paolo]
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
-	Compared to v2 by Maciej, I chose to keep GEN_MASK's argument calculated,
-	but assert on the number of bits in the low and high parts.  This is
-	because any change on those numbers will have to be reflected in the
-	comment, and essentially we're asserting that the comment is up-to-date.
+Racing with another GUP in another thread is also not reasonable, so
+failing to isolate can't be a failure
 
- Documentation/virt/kvm/mmu.rst |  2 +-
- arch/x86/kvm/mmu/spte.c        |  4 ++--
- arch/x86/kvm/mmu/spte.h        | 25 ++++++++++++++++++-------
- 3 files changed, 21 insertions(+), 10 deletions(-)
-
-diff --git a/Documentation/virt/kvm/mmu.rst b/Documentation/virt/kvm/mmu.rst
-index 1c030dbac7c4..5bfe28b0728e 100644
---- a/Documentation/virt/kvm/mmu.rst
-+++ b/Documentation/virt/kvm/mmu.rst
-@@ -455,7 +455,7 @@ If the generation number of the spte does not equal the global generation
- number, it will ignore the cached MMIO information and handle the page
- fault through the slow path.
- 
--Since only 19 bits are used to store generation-number on mmio spte, all
-+Since only 18 bits are used to store generation-number on mmio spte, all
- pages are zapped when there is an overflow.
- 
- Unfortunately, a single memory access might access kvm_memslots(kvm) multiple
-diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-index fcac2cac78fe..c51ad544f25b 100644
---- a/arch/x86/kvm/mmu/spte.c
-+++ b/arch/x86/kvm/mmu/spte.c
-@@ -40,8 +40,8 @@ static u64 generation_mmio_spte_mask(u64 gen)
- 	WARN_ON(gen & ~MMIO_SPTE_GEN_MASK);
- 	BUILD_BUG_ON((MMIO_SPTE_GEN_HIGH_MASK | MMIO_SPTE_GEN_LOW_MASK) & SPTE_SPECIAL_MASK);
- 
--	mask = (gen << MMIO_SPTE_GEN_LOW_START) & MMIO_SPTE_GEN_LOW_MASK;
--	mask |= (gen << MMIO_SPTE_GEN_HIGH_START) & MMIO_SPTE_GEN_HIGH_MASK;
-+	mask = (gen << MMIO_SPTE_GEN_LOW_SHIFT) & MMIO_SPTE_GEN_LOW_MASK;
-+	mask |= (gen << MMIO_SPTE_GEN_HIGH_SHIFT) & MMIO_SPTE_GEN_HIGH_MASK;
- 	return mask;
- }
- 
-diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-index 5c75a451c000..2b3a30bd38b0 100644
---- a/arch/x86/kvm/mmu/spte.h
-+++ b/arch/x86/kvm/mmu/spte.h
-@@ -56,11 +56,11 @@
- #define SPTE_MMU_WRITEABLE	(1ULL << (PT_FIRST_AVAIL_BITS_SHIFT + 1))
- 
- /*
-- * Due to limited space in PTEs, the MMIO generation is a 19 bit subset of
-+ * Due to limited space in PTEs, the MMIO generation is a 18 bit subset of
-  * the memslots generation and is derived as follows:
-  *
-  * Bits 0-8 of the MMIO generation are propagated to spte bits 3-11
-- * Bits 9-18 of the MMIO generation are propagated to spte bits 52-61
-+ * Bits 9-17 of the MMIO generation are propagated to spte bits 54-62
-  *
-  * The KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS flag is intentionally not included in
-  * the MMIO generation number, as doing so would require stealing a bit from
-@@ -69,18 +69,29 @@
-  * requires a full MMU zap).  The flag is instead explicitly queried when
-  * checking for MMIO spte cache hits.
-  */
--#define MMIO_SPTE_GEN_MASK		GENMASK_ULL(17, 0)
- 
- #define MMIO_SPTE_GEN_LOW_START		3
- #define MMIO_SPTE_GEN_LOW_END		11
--#define MMIO_SPTE_GEN_LOW_MASK		GENMASK_ULL(MMIO_SPTE_GEN_LOW_END, \
--						    MMIO_SPTE_GEN_LOW_START)
- 
- #define MMIO_SPTE_GEN_HIGH_START	PT64_SECOND_AVAIL_BITS_SHIFT
- #define MMIO_SPTE_GEN_HIGH_END		62
-+
-+#define MMIO_SPTE_GEN_LOW_MASK		GENMASK_ULL(MMIO_SPTE_GEN_LOW_END, \
-+						    MMIO_SPTE_GEN_LOW_START)
- #define MMIO_SPTE_GEN_HIGH_MASK		GENMASK_ULL(MMIO_SPTE_GEN_HIGH_END, \
- 						    MMIO_SPTE_GEN_HIGH_START)
- 
-+#define MMIO_SPTE_GEN_LOW_BITS		(MMIO_SPTE_GEN_LOW_END - MMIO_SPTE_GEN_LOW_START + 1)
-+#define MMIO_SPTE_GEN_HIGH_BITS		(MMIO_SPTE_GEN_HIGH_END - MMIO_SPTE_GEN_HIGH_START + 1)
-+
-+/* remember to adjust the comment above as well if you change these */
-+static_assert(MMIO_SPTE_GEN_LOW_BITS == 9 && MMIO_SPTE_GEN_HIGH_BITS == 9);
-+
-+#define MMIO_SPTE_GEN_LOW_SHIFT		(MMIO_SPTE_GEN_LOW_START - 0)
-+#define MMIO_SPTE_GEN_HIGH_SHIFT	(MMIO_SPTE_GEN_HIGH_START - MMIO_SPTE_GEN_LOW_BITS)
-+
-+#define MMIO_SPTE_GEN_MASK		GENMASK_ULL(MMIO_SPTE_GEN_LOW_BITS + MMIO_SPTE_GEN_HIGH_BITS - 1, 0)
-+
- extern u64 __read_mostly shadow_nx_mask;
- extern u64 __read_mostly shadow_x_mask; /* mutual exclusive with nx_mask */
- extern u64 __read_mostly shadow_user_mask;
-@@ -228,8 +239,8 @@ static inline u64 get_mmio_spte_generation(u64 spte)
- {
- 	u64 gen;
- 
--	gen = (spte & MMIO_SPTE_GEN_LOW_MASK) >> MMIO_SPTE_GEN_LOW_START;
--	gen |= (spte & MMIO_SPTE_GEN_HIGH_MASK) >> MMIO_SPTE_GEN_HIGH_START;
-+	gen = (spte & MMIO_SPTE_GEN_LOW_MASK) >> MMIO_SPTE_GEN_LOW_SHIFT;
-+	gen |= (spte & MMIO_SPTE_GEN_HIGH_MASK) >> MMIO_SPTE_GEN_HIGH_SHIFT;
- 	return gen;
- }
- 
--- 
-2.26.2
-
+Jasnon
