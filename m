@@ -2,154 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70902D742E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B542D743A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 11:53:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393473AbgLKKsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 05:48:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53442 "EHLO mx2.suse.de"
+        id S2393576AbgLKKwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 05:52:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393198AbgLKKr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:47:56 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 41EAFAC10;
-        Fri, 11 Dec 2020 10:47:14 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8B6C21E1352; Fri, 11 Dec 2020 11:47:13 +0100 (CET)
-Date:   Fri, 11 Dec 2020 11:47:13 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next fsnotify mod breaks tail -f
-Message-ID: <20201211104713.GA15413@quack2.suse.cz>
-References: <alpine.LSU.2.11.2012101507080.1100@eggly.anvils>
- <CAOQ4uxj6Vvwj84KL4MaECzw1jV+i_Frm6cuqkrk8fT3a4M=FEw@mail.gmail.com>
+        id S2393447AbgLKKvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 05:51:45 -0500
+Date:   Fri, 11 Dec 2020 12:51:00 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607683864;
+        bh=pHizgzZaAV2YvZFffI4jhiS94/hBYDoDgYLKPSsbO7E=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N7fL81o7iLrGo/MSpnnlOay13hmMLN/ScnO/GyjHY0DqLuhAy1keHHIF0H4c4YP3G
+         E5iJEzic88FTq8WFq4bbTEjGHODVWw7obzIyu9nj6kMvEP+CZ0K2RgWb7hHtzEL3N2
+         vWsrJBMPyyisKy7LaljejcCzdf3VVSReM6zmnOaORunugBoeX5E3MGBwf2j+AOV9hl
+         /OUQAAgkxrkNm3VSICWljXNQ9V6HPztMSxqfAVTX+NJohy3rzL58NS2PBHWPCaloKA
+         qgfsCniLg5PePeegbPMBhUSM/OX5hR/UkHJdSaGktK8SJrthAjUknqcw5nFGtLXfB1
+         BN1vwSp7HgDlg==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     linux-integrity@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [Regression] Can only do S3 once after "tpm: take TPM chip power
+ gating out of tpm_transmit()"
+Message-ID: <20201211105100.GE12091@kernel.org>
+References: <7E60C7F0-85C6-4A9A-B905-904D37A5E67B@canonical.com>
+ <20201208101746.GA45313@kernel.org>
+ <C9737DC9-6484-4497-83F4-494DBFD90D9C@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOQ4uxj6Vvwj84KL4MaECzw1jV+i_Frm6cuqkrk8fT3a4M=FEw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <C9737DC9-6484-4497-83F4-494DBFD90D9C@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 11-12-20 10:42:16, Amir Goldstein wrote:
-> On Fri, Dec 11, 2020 at 1:45 AM Hugh Dickins <hughd@google.com> wrote:
-> >
-> > Hi Jan, Amir,
-> >
-> > There's something wrong with linux-next commit ca7fbf0d29ab
-> > ("fsnotify: fix events reported to watching parent and child").
-> >
-> > If I revert that commit, no problem;
-> > but here's a one-line script "tailed":
-> >
-> > for i in 1 2 3 4 5; do date; sleep 1; done &
-> >
-> > Then if I run that (same result doing ./tailed after chmod a+x):
-> >
-> > sh tailed >log; tail -f log
-> >
-> > the "tail -f log" behaves in one of three ways:
-> >
-> > 1) On a console, before graphical screen, no problem,
-> >    it shows the five lines coming from "date" as you would expect.
-> > 2) From xterm or another tty, shows just the first line from date,
-> >    but after I wait and Ctrl-C out, "cat log" shows all five lines.
-> > 3) From xterm or another tty, doesn't even show that first line.
-> >
-> > The before/after graphical screen thing seems particularly weird:
-> > I expect you'll end up with a simpler explanation for what's
-> > causing that difference.
-> >
-> > tailed and log are on ext4, if that's relevant;
-> > ah, I just tried on tmpfs, and saw no problem there.
+On Thu, Dec 10, 2020 at 12:23:57PM +0800, Kai-Heng Feng wrote:
 > 
-> Nice riddle Hugh :)
-> Thanks for this early testing!
 > 
-> I was able to reproduce this.
-> The outcome does not depend on the type of terminal or filesystem
-> it depends on the existence of a watch on the parent dir of the log file.
-> Running ' inotifywait -m . &' will stop tail from getting notifications:
+> > On Dec 8, 2020, at 18:17, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > 
+> > On Mon, Dec 07, 2020 at 12:42:53PM +0800, Kai-Heng Feng wrote:
+> >> Hi Jarkko,
+> >> 
+> >> A user report that the system can only do S3 once. Subsequent S3 fails after commit a3fbfae82b4c ("tpm: take TPM chip power gating out of tpm_transmit()").
+> >> 
+> >> Dmesg with the issue, collected under 5.10-rc2:
+> >> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1891502/comments/14
+> >> 
+> >> Dmesg without the issue, collected under 5.0.0-rc8:
+> >> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1891502/comments/16
+> >> 
+> >> Full bug report here:
+> >> https://bugs.launchpad.net/bugs/1891502
+> >> 
+> >> Kai-Heng
+> > 
+> > Relevant part:
+> > 
+> > 
+> > [80601.620149] tpm tpm0: Error (28) sending savestate before suspend
+> > [80601.620165] PM: __pnp_bus_suspend(): tpm_pm_suspend+0x0/0x90 returns 28
+> > [80601.620172] PM: dpm_run_callback(): pnp_bus_suspend+0x0/0x20 returns 28
+> > [80601.620178] PM: Device 00:01 failed to suspend: error 28
+> > 
+> > Looking at this there are two issues:
+> > 
+> > A. TPM_ORD_SAVESTATE command failing, this a new regression.
+> > B. When tpm_pm_suspend() fails, it should not fail the whole suspend
+> >   procedure. And it returns the TPM error code back to the upper
+> >   layers when it does so, which makes no sense. This is an old
+> >   issue revealed by A.
+> > 
+> > Let's look at tpm_pm_suspend():
+> > 
+> > /*
+> > * We are about to suspend. Save the TPM state
+> > * so that it can be restored.
+> > */
+> > int tpm_pm_suspend(struct device *dev)
+> > {
+> > 	struct tpm_chip *chip = dev_get_drvdata(dev);
+> > 	int rc = 0;
+> > 
+> > 	if (!chip)
+> > 		return -ENODEV;
+> > 
+> > 	if (chip->flags & TPM_CHIP_FLAG_ALWAYS_POWERED)
+> > 		goto suspended;
+> > 
+> > 	if ((chip->flags & TPM_CHIP_FLAG_FIRMWARE_POWER_MANAGED) &&
+> > 	    !pm_suspend_via_firmware())
+> > 		goto suspended;
+> > 
+> > 	if (!tpm_chip_start(chip)) {
+> > 		if (chip->flags & TPM_CHIP_FLAG_TPM2)
+> > 			tpm2_shutdown(chip, TPM2_SU_STATE);
+> > 		else
+> > 			rc = tpm1_pm_suspend(chip, tpm_suspend_pcr);
+> > 
+> > 		tpm_chip_stop(chip);
+> > 	}
+> > 
+> > suspended:
+> > 	return rc;
+> > }
+> > EXPORT_SYMBOL_GPL(tpm_pm_suspend);
+> > 
+> > I would modify this into:
+> > 
+> > /*
+> > * We are about to suspend. Save the TPM state
+> > * so that it can be restored.
+> > */
+> > int tpm_pm_suspend(struct device *dev)
+> > {
+> > 	struct tpm_chip *chip = dev_get_drvdata(dev);
+> > 	int rc = 0;
+> > 
+> > 	if (!chip)
+> > 		return -ENODEV;
+> > 
+> > 	if (chip->flags & TPM_CHIP_FLAG_ALWAYS_POWERED)
+> > 		goto suspended;
+> > 
+> > 	if ((chip->flags & TPM_CHIP_FLAG_FIRMWARE_POWER_MANAGED) &&
+> > 	    !pm_suspend_via_firmware())
+> > 		goto suspended;
+> > 
+> > 	if (!tpm_chip_start(chip)) {
+> > 		if (chip->flags & TPM_CHIP_FLAG_TPM2)
+> > 			tpm2_shutdown(chip, TPM2_SU_STATE);
+> > 		else
+> > 			tpm1_pm_suspend(chip, tpm_suspend_pcr);
+> > 
+> > 		tpm_chip_stop(chip);
+> > 	}
+> > 
+> > suspended:
+> > 	return rc;
+> > }
+> > EXPORT_SYMBOL_GPL(tpm_pm_suspend);
+> > 
+> > I.e. it's a good idea to put something into klog but that should not
+> > fail the whole suspend procedure. TPM is essentially opt-in feature.
+> > 
+> > Of course issue A needs to be also sorted out but would this work as
+> > a quick initial fix? I can queue a patch for this. Is it possible to
+> > try out this fix for if I drop a patch?
 > 
-> echo > log
-> tail -f log &
-> sleep 1
-> echo "can you see this?" >> log
-> inotifywait -m . &
-> sleep 1
-> echo "how about this?" >> log
-> kill $(jobs -p)
+> Yes, possible test result from affected user.
 > 
-> I suppose with a graphical screen you have systemd or other services
-> in the system watching the logs/home dir in your test env.
+> I had to cut those code and do a diff side by side to find what changed.
+> Hopefully next time I can get one from `git diff`...
 > 
-> Attached fix patch. I suppose Jan will want to sqhash it.
-> 
-> We missed a subtle logic change in the switch from inode/child marks
-> to parent/inode marks terminology.
-> 
-> Before the change (!inode_mark && child_mark) meant that name
-> was not NULL and should be discarded (which the old code did).
-> After the change (!parent_mark && inode_mark) is not enough to
-> determine if name should be discarded (it should be discarded only
-> for "events on child"), so another check is needed.
+> Kai-Heng
 
-Thanks for testing Hugh and for a quick fix Amir! I've folded it into the
-original buggy commit.
+Yes you can. Sorry about that.
 
-								Honza
-
-> 
-> Thanks,
-> Amir.
-
-> From c7ea57c66c8c9f9607928bf7c55fc409eecc3e57 Mon Sep 17 00:00:00 2001
-> From: Amir Goldstein <amir73il@gmail.com>
-> Date: Fri, 11 Dec 2020 10:19:36 +0200
-> Subject: [PATCH] fsnotify: fix for fix events reported to watching parent and
->  child
-> 
-> The child watch is expecting an event without file name and without
-> the ON_CHILD flag.
-> 
-> Reported-by: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> ---
->  fs/notify/fsnotify.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
-> index a0da9e766992..30d422b8c0fc 100644
-> --- a/fs/notify/fsnotify.c
-> +++ b/fs/notify/fsnotify.c
-> @@ -291,13 +291,18 @@ static int fsnotify_handle_event(struct fsnotify_group *group, __u32 mask,
->  		}
->  		if (!inode_mark)
->  			return 0;
-> +	}
->  
-> +	if (mask & FS_EVENT_ON_CHILD) {
->  		/*
->  		 * Some events can be sent on both parent dir and child marks
->  		 * (e.g. FS_ATTRIB).  If both parent dir and child are
->  		 * watching, report the event once to parent dir with name (if
->  		 * interested) and once to child without name (if interested).
-> +		 * The child watcher is expecting an event without a file name
-> +		 * and without the FS_EVENT_ON_CHILD flag.
->  		 */
-> +		mask &= ~FS_EVENT_ON_CHILD;
->  		dir = NULL;
->  		name = NULL;
->  	}
-> -- 
-> 2.25.1
-> 
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+/Jarkko
