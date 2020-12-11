@@ -2,235 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8FC2D7108
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FA92D7137
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 09:10:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391587AbgLKHoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 02:44:46 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:25095 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388543AbgLKHoZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 02:44:25 -0500
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201211074340epoutp0252bf4ac92f71b1e32b7a8ff44b914819~PmbsCIpoz0773507735epoutp02B
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 07:43:40 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201211074340epoutp0252bf4ac92f71b1e32b7a8ff44b914819~PmbsCIpoz0773507735epoutp02B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1607672620;
-        bh=G2N39l3fVZYX0q/DnFoGPUJPUawid4RL234JBKugQks=;
-        h=To:Cc:From:Subject:Date:References:From;
-        b=Cov1WxPtHZDdcNcfg0kSUbxJttNmB7tEffMPJI2qcoT7u98VMCMyJxqy4+ghUdqkz
-         rND4zN1C5fuq+cnMrKmm5roaca4e2DBWkNy1jg1YeftNof4zVw/wN/OPeZI/yVU0Y9
-         NCM75GAdZLOnrMNf2g3VWRkXZX4g/a4b4PUeKKK8=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201211074339epcas1p1e9512eacb7f216019127f583fae97fd3~PmbrJppib2652826528epcas1p1m;
-        Fri, 11 Dec 2020 07:43:39 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.157]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4CsjT34KTKz4x9Q1; Fri, 11 Dec
-        2020 07:43:35 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        9F.AC.10463.52323DF5; Fri, 11 Dec 2020 16:43:33 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201211074332epcas1p27c7057fae84f6b6535a7bc4e89737c20~Pmbk7tL9E1787317873epcas1p2r;
-        Fri, 11 Dec 2020 07:43:32 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201211074332epsmtrp26881c68cb6ac389c53a8dbeb925c17de~Pmbk4A5kl2971629716epsmtrp2B;
-        Fri, 11 Dec 2020 07:43:32 +0000 (GMT)
-X-AuditID: b6c32a38-f11ff700000028df-a8-5fd3232574fa
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        3E.37.08745.42323DF5; Fri, 11 Dec 2020 16:43:32 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201211074329epsmtip2af86aaabc4bef33c1067d94e0b2463db~PmbiKnM4m1700517005epsmtip2i;
-        Fri, 11 Dec 2020 07:43:29 +0000 (GMT)
-To:     "Rafael J. Wysocki <rjw@rjwysocki.net>" <rjw@rjwysocki.net>
-Cc:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        id S2391964AbgLKIIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 03:08:30 -0500
+Received: from smtp.h3c.com ([60.191.123.50]:47544 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387443AbgLKIIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 03:08:06 -0500
+Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
+        by h3cspam02-ex.h3c.com with ESMTP id 0BB6A2V6076745
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 14:10:02 +0800 (GMT-8)
+        (envelope-from gao.yanB@h3c.com)
+Received: from DAG2EX01-BASE.srv.huawei-3com.com ([10.8.0.64])
+        by h3cspam02-ex.h3c.com with ESMTP id 0BB697wM073602;
+        Fri, 11 Dec 2020 14:09:07 +0800 (GMT-8)
+        (envelope-from gao.yanB@h3c.com)
+Received: from DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71) by
+ DAG2EX01-BASE.srv.huawei-3com.com (10.8.0.64) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 11 Dec 2020 14:09:09 +0800
+Received: from DAG2EX08-IDC.srv.huawei-3com.com ([fe80::81d1:43f5:5563:4c58])
+ by DAG2EX08-IDC.srv.huawei-3com.com ([fe80::81d1:43f5:5563:4c58%10]) with
+ mapi id 15.01.2106.002; Fri, 11 Dec 2020 14:09:09 +0800
+From:   Gaoyan <gao.yanB@h3c.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "jirislaby@kernel.org" <jirislaby@kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Chanwoo Choi (samsung.com)" <cw00.choi@samsung.com>,
-        "Chanwoo Choi (chanwoo@kernel.org)" <chanwoo@kernel.org>,
-        =?UTF-8?B?7ZWo66qF7KO8?= <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Subject: [GIT PULL] devfreq next for v5.11
-Organization: Samsung Electronics
-Message-ID: <56c09abc-da54-5e53-3313-3185fb84bb71@samsung.com>
-Date:   Fri, 11 Dec 2020 16:58:15 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
-MIME-Version: 1.0
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCJsWRmVeSWpSXmKPExsWy7bCmnq6q8uV4g307rC0m3rjCYnH9y3NW
-        i7NNb9gtLu+aw2bxufcIo8XtxhVsFmdOX2J1YPfYtKqTzWPL1XYWj74tqxg9Pm+SC2CJyrbJ
-        SE1MSS1SSM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvMAbpASaEsMacU
-        KBSQWFyspG9nU5RfWpKqkJFfXGKrlFqQklNgWaBXnJhbXJqXrpecn2tlaGBgZApUmJCd0Xrq
-        FVvBbN2KmTM7GBsYW5W7GDk5JARMJFo/T2HsYuTiEBLYwSjxu38eG4TziVHi3fK3rBDOZ0aJ
-        L9Mus8K0PHg/H6plF6PEqyPz2SGc94wSi09+YOpi5OAQEbCX6PiQCRJnFrjAJHFxUxtYN5uA
-        lsT+FzfYQGxhIPv91v/sIDa/gKLE1R+PGUFsXgE7if3dfUwgNouAqkTr60ssILaoQJjEyW0t
-        UDWCEidnPgGLMwuIS9x6Mp8JwpaX2P52DjPIYgmBn+wSe7ZNZIc420XixJkXUC8IS7w6vgUq
-        LiXx+d1eNgi7WmLlySNsEM0djBJb9l+AajCW2L90MthnzAKaEut36UOEFSV2/p7LCLGYT+Ld
-        1x5WkBIJAV6JjjYhiBJlicsP7jJB2JISi9s7oVZ5SJxavJ5pAqPiLCTvzELyziwk78xCWLyA
-        kWUVo1hqQXFuemqxYYEJcnRvYgQnTy2LHYxz337QO8TIxMF4iFGCg1lJhFeW5VK8EG9KYmVV
-        alF+fFFpTmrxIUZTYABPZJYSTc4Hpu+8knhDUyNjY2MLE0MzU0NDJXHeP9od8UIC6Yklqdmp
-        qQWpRTB9TBycUg1MptVW01NzFX71ZU7gyOhv9r2rHNc+6YaFfHpy2lZb7zs+7SaTPnvPEWNk
-        eF+wQvlp6VQp9u9zX8i++jd/WcYt0+03uNsYnxgsWxEnWZr6y9MoOlLwcMT0Sa/jHxi+2zq3
-        8NHp5qSDEmbvDJ+s/hXMFb39zrGYiaJxW37miWuEb/vd4Z8+j/9VVsCspfWRB3WMFlRyHJiY
-        VH5xpf2/baqTUz8nBrE6sYQEKK05NePP01J17t63G1dLGnBPbuxIeuojPK9cy9J5xZWmO9Un
-        VZssraddKM2975x3OcuaZb15xQ2lry/UL6yf/VzWaKuyi4D45veP1py5XXxVftk3je/N2V5H
-        RCuc+Kdw79XiYXygxFKckWioxVxUnAgAqRdCeycEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKLMWRmVeSWpSXmKPExsWy7bCSvK6K8uV4g6MnNCwm3rjCYnH9y3NW
-        i7NNb9gtLu+aw2bxufcIo8XtxhVsFmdOX2J1YPfYtKqTzWPL1XYWj74tqxg9Pm+SC2CJ4rJJ
-        Sc3JLEst0rdL4MpoPfWKrWC2bsXMmR2MDYytyl2MnBwSAiYSD97PZ+xi5OIQEtjBKLG08xg7
-        REJSYtrFo8xdjBxAtrDE4cPFEDVvGSWmHJrFDhIXEbCX6PiQCRJnFrjEJLHxzA2wXjYBLYn9
-        L26wgdjCQPb7rf/B4vwCihJXfzxmBLF5Bewk9nf3MYHYLAKqEq2vL7GA2KICYRI7lzxmgqgR
-        lDg58wlYnFlAXeLPvEvMELa4xK0n85kgbHmJ7W/nME9gFJyFpGUWkpZZSFpmIWlZwMiyilEy
-        taA4Nz232LDAKC+1XK84Mbe4NC9dLzk/dxMjOCa0tHYw7ln1Qe8QIxMH4yFGCQ5mJRFeWZZL
-        8UK8KYmVValF+fFFpTmpxYcYpTlYlMR5L3SdjBcSSE8sSc1OTS1ILYLJMnFwSjUwWR089Tgu
-        pN64LkqD6zz703UfDlzr+OyRrH5Ee8+vsuyXbOwzxLWU1yo7+RXsVrd+/TrYtfNfWEe/g/Xb
-        mJ6kZo5VTvOXTNYu/zL3mZSIudC9z3fzDu5e+5ilo03t+CPG5MzjUX2HeLTmsp8Wn/HR1ZYr
-        5JzPtrt5r+KaHhSkzPkg7BV7QMIw4sD8fr7wueLKETsPrbu5JLyz+Pzfkz/2TmLtu1x8/2mr
-        3OXd3Q/XXrLTmfbNwcX4q0vBO1nJymddyzTyxI4budd8X+gjfvW+cLKt9/elW2RWc/s/splT
-        rC7L/0u/eMmTx/EP3237kTp1iujRJFU/iyVK3jMavH8wPDi00a+Wv6Nn6urVm3TslViKMxIN
-        tZiLihMByjYasvgCAAA=
-X-CMS-MailID: 20201211074332epcas1p27c7057fae84f6b6535a7bc4e89737c20
-X-Msg-Generator: CA
+        Tianxianting <tian.xianting@h3c.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIFt2Ml0gdHR5OiBQcm90ZWN0IGRpc2NfZGF0YSBp?=
+ =?utf-8?B?biBuX3R0eV9jbG9zZSBhbmQgbl90dHlfZmx1c2hfYnVmZmVy?=
+Thread-Topic: [PATCH] [v2] tty: Protect disc_data in n_tty_close and
+ n_tty_flush_buffer
+Thread-Index: AQHWzp15rcbAW2mlAUelugKRa08EAKnvVhAAgAHvFMA=
+Date:   Fri, 11 Dec 2020 06:09:09 +0000
+Message-ID: <b47fb47ba70d42978c73436370ae44bb@h3c.com>
+References: <20201210022507.30729-1-gao.yanB@h3c.com>
+ <X9G+bJSGQc6QIxLR@kroah.com>
+In-Reply-To: <X9G+bJSGQc6QIxLR@kroah.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.161.27]
+x-sender-location: DAG2
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201211074332epcas1p27c7057fae84f6b6535a7bc4e89737c20
-References: <CGME20201211074332epcas1p27c7057fae84f6b6535a7bc4e89737c20@epcas1p2.samsung.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 0BB697wM073602
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Rafael,
-
-This is devfreq-next pull request for v5.11-rc1. I add detailed description of
-this pull request on the following tag. Please pull devfreq with following updates.
-- tag name : devfreq-next-for-5.11
-
-Best Regards,
-Chanwoo Choi
-
-
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
-
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git tags/devfreq-next-for-5.11
-
-for you to fetch changes up to 6a575e84f11e15078629f0d16bff2bc354a6bfc0:
-
-  PM / devfreq: tegra30: Separate configurations per-SoC generation (2020-12-07 10:25:51 +0900)
-
-----------------------------------------------------------------
-
-Update devfreq for 5.11
-
-Detailed description for this pull request:
-
-1. Update devfreq core
-- Add new devfreq_frequency tracepoint to show the frequency change
-information.
-
-- Add governor feature flag. The devfreq governor is able to
-have the specific flag in order to contain the non-common feature.
-For example, if governor contains the 'immutable' feature, don't allow
-user to change the governor via sysfs.
-
-- Add governor sysfs attribute flag for each sysfs file. Prior to that
-devfreq subsystem show the all sysfs files regardless of governor type.
-But, some sysfs fils are not supported on the specific devfreq governor.
-In order to show the only supported sysfs files according to the governor,
-clarify the access permission of sysfs attributes according to governor.
-When adding the devfreq governor, can specify the available attribute
-information by using DEVFREQ_GOV_ATTR_* constant variable. The user can
-read or write the sysfs attributes in accordance to the specified attributes.
-
-- Clean-up the code to remove the duplicate code for the devfreq tracepoint
-and to remove redundant governor_name field from struct devfreq
-
-2. Update exynos-bus.c devfreq driver
-- Add interconnect API support for the Samsung Exynos Bus Frequency driver
-of exynos-bus.c. Complementing the devfreq driver with an interconnect
-functionality allows to ensure the QoS requirements of devices accessing
-the system memory (e.g. video processing devices) are fulfilled
-and allows to avoid issues like the DMA underrun.
-
-3. Update tegra devfreq driver
-- Add interconnect support and OPP interface for tegra30-devfreq.c.
-Also, it is to guarantee the QoS requirement of some devices like
-display controller.
-
-- Move tegra20-devfreq.c from drivers/devfreq/ into driver/memory/tegra/
-in order to use the more proper monitoring feature such as EMC_STAT
-which is based in driver/memory/tegra/.
-
-- Separate the configuration information for different SoC on
-tegra30-devfrqe.c. The tegra30-devfreq.c had been supported both
-tegra30-actmon and tegra124-actmon devices. In order to use
-the more correct configuration data, separate them.
-
-- Use dev_err_probe() to handle the deferred probe error on tegra30-devfreq.c.
-
-4. Pull the request of 'Tegra SoC and clock controller changes for v5.11'
-sent by Krzysztof Kozlowski <krzk@kernel.org> in order to prevent the
-build error.
-
-----------------------------------------------------------------
-Chanwoo Choi (6):
-      trace: events: devfreq: Use fixed indentation size to improve readability
-      PM / devfreq: Unify frequency change to devfreq_update_target func
-      PM / devfreq: Add governor feature flag
-      PM / devfreq: Add governor attribute flag for specifc sysfs nodes
-      PM / devfreq: Remove redundant governor_name from struct devfreq
-      Merge tag 'tegra-soc-clk-drivers-5.11' of https://git.kernel.org/.../krzk/linux-mem-ctrl into devfreq-next
-
-Dmitry Osipenko (9):
-      PM / devfreq: tegra20: Silence deferred probe error
-      PM / devfreq: tegra20: Relax Kconfig dependency
-      PM / devfreq: tegra30: Silence deferred probe error
-      clk: tegra: Export Tegra20 EMC kernel symbols
-      soc/tegra: fuse: Export tegra_read_ram_code()
-      soc/tegra: fuse: Add stub for tegra_sku_info
-      PM / devfreq: tegra20: Deprecate in a favor of emc-stat based driver
-      PM / devfreq: tegra30: Support interconnect and OPPs from device-tree
-      PM / devfreq: tegra30: Separate configurations per-SoC generation
-
-Matthias Kaehlcke (1):
-      PM / devfreq: Add tracepoint for frequency changes
-
-Sylwester Nawrocki (2):
-      dt-bindings: devfreq: Add documentation for the interconnect properties
-      PM / devfreq: exynos-bus: Add registration of interconnect child device
-
- Documentation/ABI/testing/sysfs-class-devfreq      |  54 +++--
- .../devicetree/bindings/devfreq/exynos-bus.txt     |  71 +++++-
- MAINTAINERS                                        |   1 -
- drivers/clk/tegra/clk-tegra20-emc.c                |   3 +
- drivers/devfreq/Kconfig                            |  10 -
- drivers/devfreq/Makefile                           |   1 -
- drivers/devfreq/devfreq.c                          | 242 ++++++++++++++-------
- drivers/devfreq/exynos-bus.c                       |  17 ++
- drivers/devfreq/governor.h                         |  33 ++-
- drivers/devfreq/governor_passive.c                 |  44 +---
- drivers/devfreq/governor_simpleondemand.c          |   2 +
- drivers/devfreq/tegra20-devfreq.c                  | 212 ------------------
- drivers/devfreq/tegra30-devfreq.c                  | 159 ++++++++------
- drivers/soc/tegra/fuse/tegra-apbmisc.c             |   2 +
- include/linux/devfreq.h                            |   4 -
- include/soc/tegra/fuse.h                           |   4 +
- include/trace/events/devfreq.h                     |  30 ++-
- 17 files changed, 456 insertions(+), 433 deletions(-)
- delete mode 100644 drivers/devfreq/tegra20-devfreq.c
-
+SGkgR3JlZyBLSO+8mg0KCUkgdHJ5IHRvIHJlcHJvZHVjZSB0aGlzIHByb2JsZW0gaW4gdGVzdGlu
+ZywgYnV0IGl0IGlzIGRpZmZpY3VsdCB0byBoYXBwZW4gYWdhaW4uIEl0IGlzIGhhcmQgdG8gZ3Jh
+c3AgdGhlIHRpbWluZw0KdGhhdCBuX3R0eV9mbHVzaF9idWZmZXIgYWNjZXNzZXMgdGhlIGRpc2Nf
+ZGF0YSB3aGljaCB3YXMganVzdCBzZXQgdG8gTlVMTCBieSBuX3R0eV9jbG9zZS4NCg0KVGhhbmtz
+DQpHYW8gWWFuDQoNCi0tLS0t6YKu5Lu25Y6f5Lu2LS0tLS0NCuWPkeS7tuS6ujogR3JlZyBLSCBb
+bWFpbHRvOmdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnXSANCuWPkemAgeaXtumXtDogMjAyMOW5
+tDEy5pyIMTDml6UgMTQ6MjINCuaUtuS7tuS6ujogZ2FveWFuIChSRCkgPGdhby55YW5CQGgzYy5j
+b20+DQrmioTpgIE6IGppcmlzbGFieUBrZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJu
+ZWwub3JnOyB0aWFueGlhbnRpbmcgKFJEKSA8dGlhbi54aWFudGluZ0BoM2MuY29tPg0K5Li76aKY
+OiBSZTogW1BBVENIXSBbdjJdIHR0eTogUHJvdGVjdCBkaXNjX2RhdGEgaW4gbl90dHlfY2xvc2Ug
+YW5kIG5fdHR5X2ZsdXNoX2J1ZmZlcg0KDQpPbiBUaHUsIERlYyAxMCwgMjAyMCBhdCAxMDoyNTow
+N0FNICswODAwLCBZYW4uR2FvIHdyb3RlOg0KPiBuX3R0eV9mbHVzaF9idWZmZXIgY2FuIGhhcHBl
+biBpbiBwYXJhbGxlbCB3aXRoIG5fdHR5X2Nsb3NlIHRoYXQgdGhlDQo+IHR0eS0+ZGlzY19kYXRh
+IHdpbGwgYmUgc2V0IHRvIE5VTEwuIG5fdHR5X2ZsdXNoX2J1ZmZlciBhY2Nlc3NlcyANCj4gdHR5
+LT5kaXNjX2RhdGEsIHNvIHdlIG11c3QgcHJldmVudCBuX3R0eV9jbG9zZSBjbGVhciB0dHktPmRp
+c2NfZGF0YQ0KPiB3aGlsZSBuX3R0eV9mbHVzaF9idWZmZXIgIGhhcyBhIG5vbi1OVUxMIHZpZXcg
+b2YgdHR5LT5kaXNjX2RhdGEuDQo+IA0KPiBTbyB3ZSBuZWVkIHRvIG1ha2Ugc3VyZSB0aGF0IGFj
+Y2Vzc2VzIHRvIGRpc2NfZGF0YSBhcmUgYXRvbWljIHVzaW5nDQo+IHR0eS0+dGVybWlvc19yd3Nl
+bS4NCj4gDQo+IFRoZXJlIGlzIGFuIGV4YW1wbGUgSSBtZWV0Og0KPiBXaGVuIG5fdHR5X2ZsdXNo
+X2J1ZmZlciBhY2Nlc3NlcyB0dHkgc3RydWN0LCB0aGUgZGlzY19kYXRhIGlzIHJpZ2h0Lg0KPiBI
+b3dldmVyLCB0aGVuIHJlc2V0X2J1ZmZlcl9mbGFncyBhY2Nlc3NlcyB0dHktPmRpc2NfZGF0YSwg
+ZGlzY19kYXRhIA0KPiBiZWNvbWUgTlVMTCwgU28ga2VybmVsIGNyYXNoIHdoZW4gYWNjZXNzZXMg
+dHR5LT5kaXNjX2RhdGEtPnJlYWxfdGFpbC4NCj4gSSBndWVzcyB0aGVyZSBjb3VsZCBiZSBhbm90
+aGVyIHRocmVhZCBjaGFuZ2UgdHR5LT5kaXNjX2RhdGEgdG8gTlVMTCwgDQo+IGFuZCBkdXJpbmcg
+Tl9UVFkgbGluZSBkaXNjaXBsaW5lLCBuX3R0eV9jbG9zZSB3aWxsIHNldCB0dHktPmRpc2NfZGF0
+YSANCj4gdG8gYmUgTlVMTC4gU28gdXNlIHR0eS0+dGVybWlvc19yd3NlbSB0byBwcm90ZWN0IGRp
+c2NfZGF0YSBiZXR3ZWVuIA0KPiBjbG9zZSBhbmQgZmx1c2hfYnVmZmVyLg0KPiANCj4gSVA6IHJl
+c2V0X2J1ZmZlcl9mbGFncysweDkvMHhmMA0KPiBQR0QgMCBQNEQgMA0KPiBPb3BzOiAwMDAyIFsj
+MV0gU01QDQo+IENQVTogMjMgUElEOiAyMDg3NjI2IENvbW06IChhZ2V0dHkpIEtkdW1wOiBsb2Fk
+ZWQgVGFpbnRlZDogRyBIYXJkd2FyZSANCj4gbmFtZTogVU5JU0lOU0lHSFQgWDMwMzZQLUczL1NU
+MDFNMkM3UywgQklPUyAyLjAwLjEzIDAxLzExLzIwMTkNCj4gdGFzazogZmZmZjljNGU5ZGE3MWU4
+MCB0YXNrLnN0YWNrOiBmZmZmYjMwY2ZlODk4MDAwDQo+IFJJUDogMDAxMDpyZXNldF9idWZmZXJf
+ZmxhZ3MrMHg5LzB4ZjANCj4gUlNQOiAwMDE4OmZmZmZiMzBjZmU4OWJjYTggRUZMQUdTOiAwMDAx
+MDI0Ng0KPiBSQVg6IGZmZmY5YzRlOWRhNzFlODAgUkJYOiBmZmZmOWMzNjhkMWJhYzAwIFJDWDog
+MDAwMDAwMDAwMDAwMDAwMA0KPiBSRFg6IDAwMDAwMDAwMDAwMDAwMDAgUlNJOiBmZmZmOWM0ZWEx
+N2I1MGYwIFJESTogMDAwMDAwMDAwMDAwMDAwMA0KPiBSQlA6IGZmZmZiMzBjZmU4OWJjYzggUjA4
+OiAwMDAwMDAwMDAwMDAwMTAwIFIwOTogMDAwMDAwMDAwMDAwMDAwMQ0KPiBSMTA6IDAwMDAwMDAw
+MDAwMDAwMDEgUjExOiAwMDAwMDAwMDAwMDAwMDAwIFIxMjogZmZmZjljMzY4ZDFiYWNjMA0KPiBS
+MTM6IGZmZmY5YzIwY2ZkMTg0MjggUjE0OiBmZmZmOWM0ZWExN2I1MGYwIFIxNTogZmZmZjljMzY4
+ZDFiYWMwMA0KPiBGUzogIDAwMDA3ZjlmYmJlOTc5NDAoMDAwMCkgR1M6ZmZmZjljMzc1Yzc0MDAw
+MCgwMDAwKQ0KPiBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQo+IENTOiAgMDAxMCBEUzogMDAwMCBF
+UzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMNCj4gQ1IyOiAwMDAwMDAwMDAwMDAyMjYwIENS
+MzogMDAwMDAwMmY3MjIzMzAwMyBDUjQ6IDAwMDAwMDAwMDA3NjA2ZTANCj4gRFIwOiAwMDAwMDAw
+MDAwMDAwMDAwIERSMTogMDAwMDAwMDAwMDAwMDAwMCBEUjI6IDAwMDAwMDAwMDAwMDAwMDANCj4g
+RFIzOiAwMDAwMDAwMDAwMDAwMDAwIERSNjogMDAwMDAwMDBmZmZlMGZmMCBEUjc6IDAwMDAwMDAw
+MDAwMDA0MDANCj4gUEtSVTogNTU1NTU1NTQNCj4gQ2FsbCBUcmFjZToNCj4gPyBuX3R0eV9mbHVz
+aF9idWZmZXIrMHgyYS8weDYwDQo+IHR0eV9idWZmZXJfZmx1c2grMHg3Ni8weDkwDQo+IHR0eV9s
+ZGlzY19mbHVzaCsweDIyLzB4NDANCj4gdnRfaW9jdGwrMHg1YTcvMHgxMGIwDQo+ID8gbl90dHlf
+aW9jdGxfaGVscGVyKzB4MjcvMHgxMTANCj4gdHR5X2lvY3RsKzB4ZWYvMHg4YzANCj4gZG9fdmZz
+X2lvY3RsKzB4YTcvMHg1ZTANCj4gPyBfX2F1ZGl0X3N5c2NhbGxfZW50cnkrMHhhZi8weDEwMA0K
+PiA/IHN5c2NhbGxfdHJhY2VfZW50ZXIrMHgxZDAvMHgyYjANCj4gU3lTX2lvY3RsKzB4NzkvMHg5
+MA0KPiBkb19zeXNjYWxsXzY0KzB4NmMvMHgxYjANCj4gZW50cnlfU1lTQ0FMTDY0X3Nsb3dfcGF0
+aCsweDI1LzB4MjUNCj4gDQo+IG5fdHR5X2ZsdXNoX2J1ZmZlcgkJCS0tLT50dHktPmRpc2NfZGF0
+YSBpcyBPSw0KPiAJLT5yZXNldF9idWZmZXJfZmxhZ3MJCSAtLT50dHktPmRpc2NfZGF0YSBpcyBO
+VUxMDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBZYW4uR2FvIDxnYW8ueWFuQkBoM2MuY29tPg0KPiBS
+ZXZpZXdlZC1ieTogWGlhbnRpbmcgVGlhbiA8dGlhbi54aWFudGluZ0BoM2MuY29tPg0KPiAtLS0N
+Cj4gIGRyaXZlcnMvdHR5L25fdHR5LmMgfCAyICsrDQo+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNl
+cnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy90dHkvbl90dHkuYyBiL2RyaXZl
+cnMvdHR5L25fdHR5LmMgaW5kZXggDQo+IDdlNWUzNjMxNS4uZTc4MTI0Y2UxIDEwMDY0NA0KPiAt
+LS0gYS9kcml2ZXJzL3R0eS9uX3R0eS5jDQo+ICsrKyBiL2RyaXZlcnMvdHR5L25fdHR5LmMNCj4g
+QEAgLTE4OTIsOCArMTg5MiwxMCBAQCBzdGF0aWMgdm9pZCBuX3R0eV9jbG9zZShzdHJ1Y3QgdHR5
+X3N0cnVjdCAqdHR5KQ0KPiAgCWlmICh0dHktPmxpbmspDQo+ICAJCW5fdHR5X3BhY2tldF9tb2Rl
+X2ZsdXNoKHR0eSk7DQo+ICANCj4gKwlkb3duX3dyaXRlKCZ0dHktPnRlcm1pb3NfcndzZW0pOw0K
+PiAgCXZmcmVlKGxkYXRhKTsNCj4gIAl0dHktPmRpc2NfZGF0YSA9IE5VTEw7DQo+ICsJdXBfd3Jp
+dGUoJnR0eS0+dGVybWlvc19yd3NlbSk7DQo+ICB9DQo+ICANCj4gIC8qKg0KDQpTbyBkb2VzIHRo
+aXMgc29sdmUgeW91ciBwcm9ibGVtIGluIHRlc3Rpbmc/ICBEbyB5b3UgaGF2ZSBhIHJlcHJvZHVj
+ZXIgZm9yIHRoaXMgcHJvYmxlbT8NCg0KdGhhbmtzLA0KDQpncmVnIGstaA0K
