@@ -2,289 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B99702D6D10
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B182D6CD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 02:06:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394507AbgLKBHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Dec 2020 20:07:15 -0500
-Received: from mga14.intel.com ([192.55.52.115]:12004 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394390AbgLKBGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Dec 2020 20:06:12 -0500
-IronPort-SDR: +jLBC9kj+338ThjLFqpWFcDfTC6uB33QhYdyCj8zxznJrnzk0piJ4UV/vRVBey+qGlU9MaserZ
- Mb/PK+bom/PA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="173596156"
-X-IronPort-AV: E=Sophos;i="5.78,409,1599548400"; 
-   d="scan'208";a="173596156"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 17:05:01 -0800
-IronPort-SDR: usIHpIEp1LFBvZjjlu5X1jO0eqcaDfyFH+i3rrIGknNxiWDqxOSqmIzDl1kzZQzPns5wWIN7j8
- J+DPZxB6F/Pg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,409,1599548400"; 
-   d="scan'208";a="320965878"
-Received: from jsia-hp-z620-workstation.png.intel.com ([10.221.118.135])
-  by fmsmga007.fm.intel.com with ESMTP; 10 Dec 2020 17:04:59 -0800
-From:   Sia Jee Heng <jee.heng.sia@intel.com>
-To:     vkoul@kernel.org, Eugeniy.Paltsev@synopsys.com, robh+dt@kernel.org
-Cc:     andriy.shevchenko@linux.intel.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v6 16/16] dmaengine: dw-axi-dmac: Virtually split the linked-list
-Date:   Fri, 11 Dec 2020 08:46:42 +0800
-Message-Id: <20201211004642.25393-17-jee.heng.sia@intel.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201211004642.25393-1-jee.heng.sia@intel.com>
-References: <20201211004642.25393-1-jee.heng.sia@intel.com>
+        id S2389228AbgLKBEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Dec 2020 20:04:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729922AbgLKBDz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Dec 2020 20:03:55 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8202CC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:03:14 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id cw27so7604333edb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 17:03:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=JqZruslsHjpa4eJlIAlthpxG4wQdLwUtXP9Ew+6KXH0=;
+        b=Lw19MdtvQu2zmLAzMsJvesNgy6J7GAP53BleHH76EKDjvmE+azlg8AaN+C5ySc3vS5
+         uLfBASKzMDthhSUvd3nE6oMYBBZiaX80KOYqLOEdwP66xnGj6XeqtKof9DA46wLGo2Z0
+         lwlThQLdpnDksS2w9lb1VnaYBu1nyPkhgva6qMDSkBPnl+TrqnRnzLbytTWSsRTfijiH
+         xShM1ddMazQ6l/9RtpWp2Qc/ptNMxm8DBJ3zn2zYkglFSWlc+WQYDUBJUb46jAoZtM6A
+         tO0hlzhGpYgq0Ex9McCvIvsOWXl5RBRt4KAGZ0SlJ0rXNrQOPbtvs4FdPoWZwz0xm/6l
+         mpfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=JqZruslsHjpa4eJlIAlthpxG4wQdLwUtXP9Ew+6KXH0=;
+        b=YqhQ26nhxI2705UmnTl5MzwVOq46Oiwj8TTx46ugNKmXI/MVzak+jgUg6gb7W45ECn
+         mYHQeDErE6Q7y0XAPF5pBHRdkxlEA7FKiJF02KVqRDwWeR4rTbUNsWMB0GpY89+YuPmK
+         +o+NT63+Zbt9Ycz4Xi8Xw5igFS6MHYZE1pWA8wOTuXQuYNrAFZnM5cPhWjqCxbBo23pk
+         2scfB75WBEDIlSu42Fbct5JqYuxX5vHTy7bHRhQStkGmw1oqzBeXdFVVRINguE7gDLVS
+         0G9j7QY8FlxyZ/m5eZS52MId7jE5IhCk6MAOTtOCJUV8ZMgArlbZ5Z6d+LganAmUZ/rq
+         M8Bg==
+X-Gm-Message-State: AOAM532764xWHPFJF5fzziJc50uv0LQt14EC5EvDfPmr63NZHsfwA6uW
+        iPHUIdsuyn9SbHb+CwxYVQ2HwXFXatrMKAGbSgI=
+X-Google-Smtp-Source: ABdhPJxZUB5LIsBWgjwwzSyo2a9ZiQaWfhgHHGiGFRFIbzlBb9AAwaX0oz46/wTMvjv1RjuWns2t6mDjoqFJ7TT89uM=
+X-Received: by 2002:a05:6402:20a:: with SMTP id t10mr9277445edv.119.1607648593056;
+ Thu, 10 Dec 2020 17:03:13 -0800 (PST)
+MIME-Version: 1.0
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 11 Dec 2020 11:03:01 +1000
+Message-ID: <CAPM=9txOVY0jehFoHQwb=4PCr+a9Bg_x9u_7484uPYg62UsLog@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.10 final
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AxiDMA driver exposed the dma_set_max_seg_size() to the DMAENGINE.
-It shall helps the DMA clients to create size-optimized linked-list
-for the controller.
+Hi Linus,
 
-However, there are certain situations where DMA client might not be
-abled to benefit from the dma_get_max_seg_size() if the segment size
-can't meet the nature of the DMA client's operation.
+Last week of fixes, just amdgpu and i915 collections. We had a i915
+regression reported by HJ Lu reported this morning, and this contains
+a fix for that he has tested.
 
-In the case of ALSA operation, ALSA application and driver expecting
-to run in a period of larger than 10ms regardless of the bit depth.
-With this large period, there is a strong request to split the linked-list
-in the AxiDMA driver.
+There are a fair few other fixes, but they are spread across the two
+drivers, and all fairly self contained.
 
-Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
----
- .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 111 ++++++++++++++----
- drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |   1 +
- 2 files changed, 92 insertions(+), 20 deletions(-)
+I'm going to send you out drm-next for next week in a few hours as I'm
+going on holidays until next Friday, I likely won't be checking email
+too closely, but Daniel should be available for any emergency.
 
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-index 1a218fcdbb16..bf83dea947be 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-@@ -576,6 +576,11 @@ static int dw_axi_dma_set_hw_desc(struct axi_dma_chan *chan,
- 	if (mem_width > DWAXIDMAC_TRANS_WIDTH_32)
- 		mem_width = DWAXIDMAC_TRANS_WIDTH_32;
- 
-+	if (!IS_ALIGNED(mem_addr, 4)) {
-+		dev_err(chan->chip->dev, "invalid buffer alignment\n");
-+		return -EINVAL;
-+	}
-+
- 	switch (chan->direction) {
- 	case DMA_MEM_TO_DEV:
- 		reg_width = __ffs(chan->config.dst_addr_width);
-@@ -637,6 +642,35 @@ static int dw_axi_dma_set_hw_desc(struct axi_dma_chan *chan,
- 	return 0;
- }
- 
-+static size_t calculate_block_len(struct axi_dma_chan *chan,
-+				  dma_addr_t dma_addr, size_t buf_len,
-+				  enum dma_transfer_direction direction)
-+{
-+	u32 data_width, reg_width, mem_width;
-+	size_t axi_block_ts, block_len;
-+
-+	axi_block_ts = chan->chip->dw->hdata->block_size[chan->id];
-+
-+	switch (direction) {
-+	case DMA_MEM_TO_DEV:
-+		data_width = BIT(chan->chip->dw->hdata->m_data_width);
-+		mem_width = __ffs(data_width | dma_addr | buf_len);
-+		if (mem_width > DWAXIDMAC_TRANS_WIDTH_32)
-+			mem_width = DWAXIDMAC_TRANS_WIDTH_32;
-+
-+		block_len = axi_block_ts << mem_width;
-+		break;
-+	case DMA_DEV_TO_MEM:
-+		reg_width = __ffs(chan->config.src_addr_width);
-+		block_len = axi_block_ts << reg_width;
-+		break;
-+	default:
-+		block_len = 0;
-+	}
-+
-+	return block_len;
-+}
-+
- static struct dma_async_tx_descriptor *
- dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, dma_addr_t dma_addr,
- 			    size_t buf_len, size_t period_len,
-@@ -647,13 +681,27 @@ dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, dma_addr_t dma_addr,
- 	struct axi_dma_hw_desc *hw_desc = NULL;
- 	struct axi_dma_desc *desc = NULL;
- 	dma_addr_t src_addr = dma_addr;
--	u32 num_periods = buf_len / period_len;
-+	u32 num_periods, num_segments;
-+	size_t axi_block_len;
-+	u32 total_segments;
-+	u32 segment_len;
- 	unsigned int i;
- 	int status;
- 	u64 llp = 0;
- 	u8 lms = 0; /* Select AXI0 master for LLI fetching */
- 
--	desc = axi_desc_alloc(num_periods);
-+	num_periods = buf_len / period_len;
-+
-+	axi_block_len = calculate_block_len(chan, dma_addr, buf_len, direction);
-+	if (axi_block_len == 0)
-+		return NULL;
-+
-+	num_segments = DIV_ROUND_UP(period_len, axi_block_len);
-+	segment_len = DIV_ROUND_UP(period_len, num_segments);
-+
-+	total_segments = num_periods * num_segments;
-+
-+	desc = axi_desc_alloc(total_segments);
- 	if (unlikely(!desc))
- 		goto err_desc_get;
- 
-@@ -661,12 +709,13 @@ dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, dma_addr_t dma_addr,
- 	desc->chan = chan;
- 	chan->cyclic = true;
- 	desc->length = 0;
-+	desc->period_len = period_len;
- 
--	for (i = 0; i < num_periods; i++) {
-+	for (i = 0; i < total_segments; i++) {
- 		hw_desc = &desc->hw_desc[i];
- 
- 		status = dw_axi_dma_set_hw_desc(chan, hw_desc, src_addr,
--						period_len);
-+						segment_len);
- 		if (status < 0)
- 			goto err_desc_get;
- 
-@@ -676,17 +725,17 @@ dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, dma_addr_t dma_addr,
- 		 */
- 		set_desc_last(hw_desc);
- 
--		src_addr += period_len;
-+		src_addr += segment_len;
- 	}
- 
- 	llp = desc->hw_desc[0].llp;
- 
- 	/* Managed transfer list */
- 	do {
--		hw_desc = &desc->hw_desc[--num_periods];
-+		hw_desc = &desc->hw_desc[--total_segments];
- 		write_desc_llp(hw_desc, llp | lms);
- 		llp = hw_desc->llp;
--	} while (num_periods);
-+	} while (total_segments);
- 
- 	if (dw_axi_dma_set_hw_channel(chan->chip, chan->hw_handshake_num, true))
- 		goto err_desc_get;
-@@ -709,9 +758,13 @@ dw_axi_dma_chan_prep_slave_sg(struct dma_chan *dchan, struct scatterlist *sgl,
- 	struct axi_dma_chan *chan = dchan_to_axi_dma_chan(dchan);
- 	struct axi_dma_hw_desc *hw_desc = NULL;
- 	struct axi_dma_desc *desc = NULL;
-+	u32 num_segments, segment_len;
-+	unsigned int loop = 0;
- 	struct scatterlist *sg;
-+	size_t axi_block_len;
-+	u32 len, num_sgs = 0;
- 	unsigned int i;
--	u32 mem, len;
-+	dma_addr_t mem;
- 	int status;
- 	u64 llp = 0;
- 	u8 lms = 0; /* Select AXI0 master for LLI fetching */
-@@ -719,35 +772,51 @@ dw_axi_dma_chan_prep_slave_sg(struct dma_chan *dchan, struct scatterlist *sgl,
- 	if (unlikely(!is_slave_direction(direction) || !sg_len))
- 		return NULL;
- 
--	chan->direction = direction;
-+	mem = sg_dma_address(sgl);
-+	len = sg_dma_len(sgl);
-+
-+	axi_block_len = calculate_block_len(chan, mem, len, direction);
-+	if (axi_block_len == 0)
-+		return NULL;
- 
--	desc = axi_desc_alloc(sg_len);
-+	for_each_sg(sgl, sg, sg_len, i)
-+		num_sgs += DIV_ROUND_UP(sg_dma_len(sg), axi_block_len);
-+
-+	desc = axi_desc_alloc(num_sgs);
- 	if (unlikely(!desc))
- 		goto err_desc_get;
- 
- 	desc->chan = chan;
- 	desc->length = 0;
-+	chan->direction = direction;
- 
- 	for_each_sg(sgl, sg, sg_len, i) {
- 		mem = sg_dma_address(sg);
- 		len = sg_dma_len(sg);
--		hw_desc = &desc->hw_desc[i];
--
--		status = dw_axi_dma_set_hw_desc(chan, hw_desc, mem, len);
--		if (status < 0)
--			goto err_desc_get;
--		desc->length += hw_desc->len;
-+		num_segments = DIV_ROUND_UP(sg_dma_len(sg), axi_block_len);
-+		segment_len = DIV_ROUND_UP(sg_dma_len(sg), num_segments);
-+
-+		do {
-+			hw_desc = &desc->hw_desc[loop++];
-+			status = dw_axi_dma_set_hw_desc(chan, hw_desc, mem, segment_len);
-+			if (status < 0)
-+				goto err_desc_get;
-+
-+			desc->length += hw_desc->len;
-+			len -= segment_len;
-+			mem += segment_len;
-+		} while (len >= segment_len);
- 	}
- 
- 	/* Set end-of-link to the last link descriptor of list */
--	set_desc_last(&desc->hw_desc[sg_len - 1]);
-+	set_desc_last(&desc->hw_desc[num_sgs - 1]);
- 
- 	/* Managed transfer list */
- 	do {
--		hw_desc = &desc->hw_desc[--sg_len];
-+		hw_desc = &desc->hw_desc[--num_sgs];
- 		write_desc_llp(hw_desc, llp | lms);
- 		llp = hw_desc->llp;
--	} while (sg_len);
-+	} while (num_sgs);
- 
- 	if (dw_axi_dma_set_hw_channel(chan->chip, chan->hw_handshake_num, true))
- 		goto err_desc_get;
-@@ -950,7 +1019,6 @@ static void axi_chan_block_xfer_complete(struct axi_dma_chan *chan)
- 	vd = vchan_next_desc(&chan->vc);
- 
- 	if (chan->cyclic) {
--		vchan_cyclic_callback(vd);
- 		desc = vd_to_axi_desc(vd);
- 		if (desc) {
- 			llp = lo_hi_readq(chan->chan_regs + CH_LLP);
-@@ -960,6 +1028,9 @@ static void axi_chan_block_xfer_complete(struct axi_dma_chan *chan)
- 					axi_chan_irq_clear(chan, hw_desc->lli->status_lo);
- 					hw_desc->lli->ctl_hi |= CH_CTL_H_LLI_VALID;
- 					desc->completed_blocks = i;
-+
-+					if (((hw_desc->len * (i + 1)) % desc->period_len) == 0)
-+						vchan_cyclic_callback(vd);
- 					break;
- 				}
- 			}
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-index 1e937ea2a96d..b69897887c76 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-@@ -100,6 +100,7 @@ struct axi_dma_desc {
- 	struct axi_dma_chan		*chan;
- 	u32				completed_blocks;
- 	u32				length;
-+	u32				period_len;
- };
- 
- static inline struct device *dchan2dev(struct dma_chan *dchan)
--- 
-2.18.0
+Dave.
 
+drm-fixes-2020-12-11:
+drm fixes for 5.10 final
+
+amdgpu:
+- Fan fix for CI asics
+- Fix a warning in possible_crtcs
+- Build fix for when debugfs is disabled
+- Display overflow fix
+- Display watermark fixes for Renoir
+- SDMA 5.2 fix
+- Stolen vga memory regression fix
+- Power profile fixes
+- Fix a regression from removal of GEM and PRIME callbacks
+
+amdkfd:
+- Fix a memory leak in dmabuf import
+
+i915:
+- rc7 regression fix for modesetting
+- vdsc/dp slice fixes
+- gen9 mocs entries fix
+- preemption timeout fix
+- unsigned compare against 0 fix
+- selftest fix
+- submission error propogating fix
+- request flow suspend fix
+The following changes since commit 0477e92881850d44910a7e94fc2c46f96faa131f:
+
+  Linux 5.10-rc7 (2020-12-06 14:25:12 -0800)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-12-11
+
+for you to fetch changes up to b1f195fc49812359296a901e26cc7c0b761d8a70:
+
+  drm/i915/display: Go softly softly on initial modeset failure
+(2020-12-11 09:54:30 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.10 final
+
+amdgpu:
+- Fan fix for CI asics
+- Fix a warning in possible_crtcs
+- Build fix for when debugfs is disabled
+- Display overflow fix
+- Display watermark fixes for Renoir
+- SDMA 5.2 fix
+- Stolen vga memory regression fix
+- Power profile fixes
+- Fix a regression from removal of GEM and PRIME callbacks
+
+amdkfd:
+- Fix a memory leak in dmabuf import
+
+i915:
+- rc7 regression fix for modesetting
+- vdsc/dp slice fixes
+- gen9 mocs entries fix
+- preemption timeout fix
+- unsigned compare against 0 fix
+- selftest fix
+- submission error propogatig fix
+- request flow suspend fix
+
+----------------------------------------------------------------
+Alex Deucher (3):
+      drm/amdgpu/powerplay: parse fan table for CI asics
+      drm/amdgpu/disply: set num_crtc earlier
+      drm/amdgpu: fix size calculation with stolen vga memory
+
+Andrey Grodzovsky (1):
+      drm/amdgpu: Initialise drm_gem_object_funcs for imported BOs
+
+Arnd Bergmann (1):
+      drm/amdgpu: fix debugfs creation/removal, again
+
+Changfeng (1):
+      drm/amd/pm: update smu10.h WORKLOAD_PPLIB setting for raven
+
+Chris Park (1):
+      drm/amd/display: Prevent bandwidth overflow
+
+Chris Wilson (5):
+      drm/i915/gem: Propagate error from cancelled submit due to context closure
+      drm/i915/gt: Ignore repeated attempts to suspend request flow across reset
+      drm/i915/gt: Cancel the preemption timeout on responding to it
+      drm/i915/gt: Declare gen9 has 64 mocs entries!
+      drm/i915/display: Go softly softly on initial modeset failure
+
+Colin Ian King (1):
+      drm/i915: fix size_t greater or equal to zero comparison
+
+Dan Carpenter (1):
+      drm/i915/gem: Check the correct variable in selftest
+
+Dave Airlie (2):
+      Merge tag 'amd-drm-fixes-5.10-2020-12-09' of
+git://people.freedesktop.org/~agd5f/linux into drm-fixes
+      Merge tag 'drm-intel-fixes-2020-12-09' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+
+Evan Quan (1):
+      drm/amd/pm: typo fix (CUSTOM -> COMPUTE)
+
+Felix Kuehling (1):
+      drm/amdkfd: Fix leak in dmabuf import
+
+Manasi Navare (1):
+      drm/i915/display/dp: Compute the correct slice count for VDSC on DP
+
+Stanley.Yang (1):
+      drm/amdgpu: fix sdma instance fw version and feature version init
+
+Sung Lee (1):
+      drm/amd/display: Add wm table for Renoir
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c        |   8 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c            |  41 ++++----
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c            |   3 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c            |  13 +--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ras.h            |   6 --
+ drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c             |   2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_chardev.c           |   2 +
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |   9 +-
+ .../drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c  |  93 ++++++++++++++++++-
+ drivers/gpu/drm/amd/display/dc/core/dc_link.c      |   7 +-
+ drivers/gpu/drm/amd/pm/inc/smu10.h                 |  14 ++-
+ .../drm/amd/pm/powerplay/hwmgr/processpptables.c   | 103 ++++++++++++++++++++-
+ .../gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.c   |   9 +-
+ .../drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c    |   2 +-
+ drivers/gpu/drm/i915/display/intel_display.c       |   2 +-
+ drivers/gpu/drm/i915/display/intel_dp.c            |   2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c     |   7 +-
+ drivers/gpu/drm/i915/gt/intel_lrc.c                |   7 +-
+ drivers/gpu/drm/i915/gt/intel_mocs.c               |   7 +-
+ drivers/gpu/drm/i915/gt/shmem_utils.c              |   2 +-
+ drivers/gpu/drm/i915/selftests/i915_gem.c          |   4 +-
+ 21 files changed, 269 insertions(+), 74 deletions(-)
