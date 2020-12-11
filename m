@@ -2,208 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1976A2D8151
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 941D72D814C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 22:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406492AbgLKVwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 16:52:49 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:56528 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393025AbgLKVwN (ORCPT
+        id S2406457AbgLKVws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 16:52:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391893AbgLKVwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Dec 2020 16:52:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1607723533; x=1639259533;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=tgJ71mbjaFfiwBso8x6Q+ZvaQudcDnf0t5I22yz3FKc=;
-  b=ogFcxJ0mUSZX9+fbl+PZfUOqSI3xkzdr8tREUugRRL/GBV5KgK7KINQL
-   /HjQC6I05f2v22JFDoZ+R4jRYcdCliFK43sIUrYSOO72NJLNkyh0iCwif
-   gorcBcOrgO3tfDVNFIQX60tkEYG/tKTi99U3kihxtQ65UwJT3hCf3s+jF
-   WO2VxyJJMTcIBgKA5hGiXHbtudY8V4QR4N1BMKvVYtqzvCtk/gJhZ7fFl
-   5Ampvx7mW1cg0ZJueT2xTf50OfSvIfetSDISoUtmXNV2AvZ3LOe3NgZ0k
-   JPuv1Gmp1YXFl93trV3ddJiyhjQ48XMxOD5HEh238qAWuDNjXkaG9alez
-   Q==;
-IronPort-SDR: CbR0Be67DWTqZciaZwLbPmd9C7A7L67LWwkMxnOL6akGezHCJKPu630plRwOXc4dF4S3P4bNMk
- AGWeYtMkqGx91ZWUfF912r/aUx1MOJP8++t99rYvDcOfD6b8kUauBOX4vMZq84q+CpcgMoUMFB
- SuNFs/sVCk3zh2qYsrD1xSMJ270U7Y0NNsqg+MlEC1E/xApjoS8nrgNou6do+dIooBJwt0dMia
- apUDG+El+mQm+ztbNUYGUnGYpOPAkFIxDQMeugqbSbzZLexndqeMYW3lbnzErRohY5EJ1c+XQV
- obg=
-X-IronPort-AV: E=Sophos;i="5.78,412,1599494400"; 
-   d="scan'208";a="159428056"
-Received: from mail-bn8nam11lp2168.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.168])
-  by ob1.hgst.iphmx.com with ESMTP; 12 Dec 2020 05:50:54 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GVYbGXKVWbPCy1dvXGBUQ7hR4wfPsVJzz7aoGYcbM89NGGq3nyOEsz6NP+/Ve/w+jfmEVOOGW+EV2NRzeHFU7+RGNzJdN+O7wnsvmo/rEDpMARArv4tXgt1GBGIUK2Qd/udxTV7kIGlWd8SLz77Gd/sb7ELUraSBtvoXZwFXiqGduUoTaeVyjNoM6BTHbJpHrPQgtgOhNqN8VN08RRM2J3sUGv7OaAZVFqzigRCN9WryAeV5PpTQW1HbRDEuV0aFX121v7m556DXJr9QBlchn9XCvpB7GuLRsNYRsPV8fzircSu6q82CDSBzpZFRZDW2s4IrGNlNu6rIhiGJBp1WQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZpVLfmPFAMoTlGC2JvMEbIde1Ot/st+Y/fjPvtLhrIY=;
- b=jryG2F5XEXGpjwoSUTzRtsPDlAu8+lhErqy1qdQ/18MJweC7yos2v9xdoUtRyT0Z46SMmcZKmOq5F23Stgf3+/dsoA/moIzuecRp8fcYHPmVjqKUgiTIqsvb2jctbM5g74/s+8J6N9Opub7xstcCZrDrIyKJgeuqQCfl0VryPcz+64mZbL2NLG+PCRDXebd4N7dqk9vXRpzx7McMLNO+M1ihPMwdDbMkzMnnL2vmw1O8irb6+RsOQ9e8QB0TUiHi++YDrJjqtTCLLmkBxFO/oQToR2qLUNn/pbNxNqkeTr/3YJzZRI5zSBAt697Wo/zQ9T+5x2lyDOD7dH4aHewyLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01579C0613CF;
+        Fri, 11 Dec 2020 13:51:13 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id b8so10138895ila.13;
+        Fri, 11 Dec 2020 13:51:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZpVLfmPFAMoTlGC2JvMEbIde1Ot/st+Y/fjPvtLhrIY=;
- b=hM9t5VdaPC3ZcDG3psmaT3FbWIwrBBKm/4H4VKbOwOBlCfEqb6oji32QfYcU6rNZefPXCDBvvPA+70Ko4czoxIQre6TzFfFDtpF02obsGzIe4eKI95nYUlTKJQoJjdSlwBtOd31ImEiJFSJV0mcoBFniK7ufhz822bLcY7p3sAQ=
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
- by BYAPR04MB3958.namprd04.prod.outlook.com (2603:10b6:a02:ae::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Fri, 11 Dec
- 2020 21:50:53 +0000
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::99ae:ab95:7c27:99e4]) by BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::99ae:ab95:7c27:99e4%7]) with mapi id 15.20.3632.025; Fri, 11 Dec 2020
- 21:50:53 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Puranjay Mohan <puranjay12@gmail.com>,
-        "bjorn@helgaas.com" <bjorn@helgaas.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drivers: block: skd: remove skd_pci_info()
-Thread-Topic: [PATCH] drivers: block: skd: remove skd_pci_info()
-Thread-Index: AQHWz9z+X41O+6EQc0KJnRIciprIXQ==
-Date:   Fri, 11 Dec 2020 21:50:52 +0000
-Message-ID: <BYAPR04MB496513CB49E42A3467427BF686CA0@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <20201211164137.8605-1-puranjay12@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [199.255.45.62]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: cc9a3a23-85fb-4267-8300-08d89e1ed4eb
-x-ms-traffictypediagnostic: BYAPR04MB3958:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR04MB3958ACC0AD18C2558919906886CA0@BYAPR04MB3958.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1332;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Q121NoGuewogx/r7vEko0noTYCcdbSlO+hs9O7MKot487FeJWRNsvK1rUfvxWypFB0LxhRdQrUcx8N3d8xElYhgTS3KBga7CSxpJv2Q1WXX4XEwLuFMepyeXEnjQ9PPQfgn08qOnsfkIM6PTnQHGUHcOf+3rsMIOUuTUDF5a9YlK6nX4Z0gbA9GDDszcIM6zzGmr6mKmwwgu0k0rD/7uaz8S/U/oPUJ5ygQ3R4sVv7jHVqxcVBPco9Rik6BSh6JmPFKrIZSu0EeJnhSgl12M9KFKlQgIKGmpTkBS7p1QQMah6CRWkZBJpAistwoL2ykSBmaQNNrpben0Lp2xPzVZIA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(136003)(76116006)(9686003)(6506007)(71200400001)(110136005)(66946007)(66446008)(8936002)(2906002)(52536014)(55016002)(5660300002)(86362001)(66476007)(53546011)(33656002)(8676002)(66556008)(64756008)(7696005)(508600001)(26005)(83380400001)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?YCOj0pXbYvGoH7YzI9sC/uYKDN8kJsoUgQsPZydfJHKbMtCdqSTVmadqQXo1?=
- =?us-ascii?Q?EUfTGsf560XEvzn/AcrDZIEWuPLEuuk5bHNvbiBSqRNcGrwJyxJXjxgcSaqM?=
- =?us-ascii?Q?EgEDpOziPT0+ha95xWjNW8iXJEru30mJnoib1R4Bq9KiTrajM8tMm93+9hyj?=
- =?us-ascii?Q?nU+1eiy2e5s8JcyqBshmfD3Niutbl3OehwySTuDQMXHPvTfltm6uG/5tyCo2?=
- =?us-ascii?Q?Gjc2AwznXLeKCkZ3vtrDuM16B+BL79etIqV9opmZjpIJkZsQ+AeYzMdZF/nF?=
- =?us-ascii?Q?vBxX0i+FLyW9ga0jhN53AGMOc78n4ZhOEpYz1R3HD9WnXRbNCYRMVuXwIMeB?=
- =?us-ascii?Q?pNXPl82mnmzXfTuMvFYdz7gO9FdYOeHF5f5bvP2z/ss/ImOAhpJOZn7wSxqH?=
- =?us-ascii?Q?OsN9HZJYfS500D1AM8VZuaxHVxZ5Eengn/ylyBnXWTSPL+EtttF0S6q4sfS0?=
- =?us-ascii?Q?C2cNkAD4eUmFuxnBFeNydAcbX9cQLs1DWZaWpnskMnnBFnGFbE6bd+DMiPq9?=
- =?us-ascii?Q?Bn1uWAtJFK38yUFab+JD1T8J2UKpuGDAhiVVVowadFjTfoBBsK3MqRxTWU4c?=
- =?us-ascii?Q?+N7wcKLf8a9GEZOs0DfBKWQjppeqRm2A2IkHs30AN5UuvWPNqGx33oPAGKmk?=
- =?us-ascii?Q?v2sS4BqZfestfwZDOtNDfz7pxbkQWEqZCJABA5VUZyKBoMSnZq7OOUEyTRSU?=
- =?us-ascii?Q?7jQDCETFh/Jx47xPBcdafUJw3B+OUXlY/ItDYzQBma43ouzK3hw1idqNAHmN?=
- =?us-ascii?Q?4lMaG9PsNS6YfZvsQ2I6Efb1bCWrioTawgIuhdOHUlU+VvAkJOF5HbjusOco?=
- =?us-ascii?Q?8BgyvDLhRqh3f96KNCPYK/+1xFBQgd2bqSXNmPNasCSvxRupPCiUlV70NMuT?=
- =?us-ascii?Q?OvJ9Mz3qyzF1p/6UyARaOW06NlQp/W95xp1hspXZJdUExUy/P7ZpufcQYJ8v?=
- =?us-ascii?Q?GjbRAnv3Ef0Fe1WRW3xDZxnlFBLoBp6vu7/zbhRAMaYXSGPzKfqQrQ2e7rWh?=
- =?us-ascii?Q?2sfi?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2qTMCUhI0/YQewF/VCItkzyJf+kYlqXC/vL1LYH/k5U=;
+        b=dDjJSvtLvuPChscPzyykjt7oV+4SFcMZTb7XeGwm0A+zISNUv62r2+uxjZVEojFVGE
+         rDJxX8r7nyJQ+HOnMrOxvP96myLBn7KeTf8pKYsEjHJC+vwZkUdDlp33AezFLEIYpoey
+         FDZSwg/hM0tnK+hoJOSKe1/Da5zFQSq1zwSwokSa18Yp1NPr66RtUNXyMREgXg+pFmcB
+         WVmJwde5mYI/dJUDhSOuQLDY2bbcA4cd9fTmquVBMRgBQnai6KaogjDlbmrDi3YnEP++
+         BTcncwBTXBq2fepO1ENQBKavvAtQscUFaSiQXR2rVmfKWMQoegJI+ts616EQJjH1e14r
+         k43A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2qTMCUhI0/YQewF/VCItkzyJf+kYlqXC/vL1LYH/k5U=;
+        b=RRmrvDRP9dRxKaGYRUI+WUYQW5ahgBfmr3uXiju2xtJkYJmC44kswZ+7dYN9YdjhLj
+         JZwGeuGVZeGZlVhcicp6JCwQ/sbx0VSy6ZfCrz5SxdmTk+entk0BT+iO90fdto25y4yE
+         k3EzRyGFd2Dp+uwSIlzvM7TgG/u5pRVwYkxccigLl2bD+DL0s0jxVdn+Al3aJYQZ1s7A
+         o2qSUN6gR0llMAVzcFNzwL68XRqKVvluWnJUYbmzrzSTV4xMElIj6qF1H5LfSSkniJtK
+         2z8RjmsHBSOMq0a6wMmJ0apNACvU/mlp3Ll5ay6O7KP9tYD/m3FvbCM7iCW0lGAv+Ezz
+         SJ4g==
+X-Gm-Message-State: AOAM531Yo9dIjLBM6Apzmk5szCbVefr0e5ujn2v28/MlkDal7HoWli5K
+        B6bQ1xif82EjmsB+JR5aJJ0dxY2su0h1fXblfNw=
+X-Google-Smtp-Source: ABdhPJwCtGSKUc/EOu8Tu0NYIKLY7+P8Ti3Qxg2wE8EctsXLINDw0dlf+mmrwpLaz+UKRYBz3JV/o45IAKg7w1Oewqg=
+X-Received: by 2002:a92:730d:: with SMTP id o13mr17783084ilc.95.1607723472280;
+ Fri, 11 Dec 2020 13:51:12 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc9a3a23-85fb-4267-8300-08d89e1ed4eb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2020 21:50:52.9917
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MzIK5DtNcmB7cSG0nkRJ32jg36nVt3UBe4J9/kiea4YPdqpe3gZ+UkC3Mwbv6U31W7N7BTdrIvuiJQI3/kEY5EaDV6xPkJSn89R5FWVNRdw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB3958
+References: <160765171921.6905.7897898635812579754.stgit@localhost.localdomain>
+ <CANn89iJ5HnJYv6eWb1jm6rK173DFkp2GRnfvi9vnYwXZPzE4LQ@mail.gmail.com>
+ <CAKgT0Uf_q=FgMHd9_wq5Bx8rCC-kS0Qz563rE9dL2hpQ6Evppg@mail.gmail.com>
+ <CANn89iJUT6aWm75ZpU_Ggmuqbb+cbLSGj0Bxysu9_wXRgNS8MQ@mail.gmail.com>
+ <CAKgT0Uecuh3mcGRpDAZzzbnQtOusc++H4SXAv2Scd297Ha5AYQ@mail.gmail.com> <CANn89iKfqKpXgCv_Z4iSt5RpjxYUvkYSoZKF3FZs+Jgev3aDgw@mail.gmail.com>
+In-Reply-To: <CANn89iKfqKpXgCv_Z4iSt5RpjxYUvkYSoZKF3FZs+Jgev3aDgw@mail.gmail.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Fri, 11 Dec 2020 13:51:01 -0800
+Message-ID: <CAKgT0Uc6gVOL5VWpsD54WiAvop9WQEudNsJNh9=Fr9PunJevWw@mail.gmail.com>
+Subject: Re: [net PATCH] tcp: Mark fastopen SYN packet as lost when receiving ICMP_TOOBIG/ICMP_FRAG_NEEDED
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Yuchung Cheng <ycheng@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        kernel-team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/20 08:45, Puranjay Mohan wrote:=0A=
-> PCI core calls __pcie_print_link_status() for every device, it prints=0A=
-> both the link width and the link speed. skd_pci_info() does the same=0A=
-> thing again, hence it can be removed.=0A=
->=0A=
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>=0A=
-> ---=0A=
->  drivers/block/skd_main.c | 31 -------------------------------=0A=
->  1 file changed, 31 deletions(-)=0A=
->=0A=
-> diff --git a/drivers/block/skd_main.c b/drivers/block/skd_main.c=0A=
-> index a962b4551bed..da7aac5335d9 100644=0A=
-> --- a/drivers/block/skd_main.c=0A=
-> +++ b/drivers/block/skd_main.c=0A=
-> @@ -3134,40 +3134,11 @@ static const struct pci_device_id skd_pci_tbl[] =
-=3D {=0A=
->  =0A=
->  MODULE_DEVICE_TABLE(pci, skd_pci_tbl);=0A=
->  =0A=
-> -static char *skd_pci_info(struct skd_device *skdev, char *str)=0A=
-> -{=0A=
-> -	int pcie_reg;=0A=
-> -=0A=
-> -	strcpy(str, "PCIe (");=0A=
-> -	pcie_reg =3D pci_find_capability(skdev->pdev, PCI_CAP_ID_EXP);=0A=
-> -=0A=
-> -	if (pcie_reg) {=0A=
-> -=0A=
-> -		char lwstr[6];=0A=
-> -		uint16_t pcie_lstat, lspeed, lwidth;=0A=
-> -=0A=
-> -		pcie_reg +=3D 0x12;=0A=
-> -		pci_read_config_word(skdev->pdev, pcie_reg, &pcie_lstat);=0A=
-> -		lspeed =3D pcie_lstat & (0xF);=0A=
-> -		lwidth =3D (pcie_lstat & 0x3F0) >> 4;=0A=
-> -=0A=
-> -		if (lspeed =3D=3D 1)=0A=
-> -			strcat(str, "2.5GT/s ");=0A=
-> -		else if (lspeed =3D=3D 2)=0A=
-> -			strcat(str, "5.0GT/s ");=0A=
-> -		else=0A=
-> -			strcat(str, "<unknown> ");=0A=
-The skd driver prints unknown if the speed is not "2.5GT/s" or "5.0GT/s".=
-=0A=
-__pcie_print_link_status()  prints "unknown" only if speed=0A=
-value >=3D ARRAY_SIZE(speed_strings).=0A=
-=0A=
-If a buggy skd card returns value that is not !=3D ("2.5GT/s" or "5.0GT/s")=
-=0A=
-&& value < ARRAY_SIZE(speed_strings) then it will not print the unknown but=
-=0A=
-the value from speed string array.=0A=
-=0A=
-Which breaks the current behavior. Please correct me if I'm wrong.=0A=
-> -		snprintf(lwstr, sizeof(lwstr), "%dX)", lwidth);=0A=
-> -		strcat(str, lwstr);=0A=
-> -	}=0A=
-> -	return str;=0A=
-> -}=0A=
->  =0A=
->  static int skd_pci_probe(struct pci_dev *pdev, const struct pci_device_i=
-d *ent)=0A=
->  {=0A=
->  	int i;=0A=
->  	int rc =3D 0;=0A=
-> -	char pci_str[32];=0A=
->  	struct skd_device *skdev;=0A=
->  =0A=
->  	dev_dbg(&pdev->dev, "vendor=3D%04X device=3D%04x\n", pdev->vendor,=0A=
-> @@ -3201,8 +3172,6 @@ static int skd_pci_probe(struct pci_dev *pdev, cons=
-t struct pci_device_id *ent)=0A=
->  		goto err_out_regions;=0A=
->  	}=0A=
->  =0A=
-> -	skd_pci_info(skdev, pci_str);=0A=
-> -	dev_info(&pdev->dev, "%s 64bit\n", pci_str);=0A=
->  =0A=
->  	pci_set_master(pdev);=0A=
->  	rc =3D pci_enable_pcie_error_reporting(pdev);=0A=
-=0A=
+On Fri, Dec 11, 2020 at 11:18 AM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Fri, Dec 11, 2020 at 6:15 PM Alexander Duyck
+> <alexander.duyck@gmail.com> wrote:
+> >
+> > On Fri, Dec 11, 2020 at 8:22 AM Eric Dumazet <edumazet@google.com> wrote:
+> > >
+> > > On Fri, Dec 11, 2020 at 5:03 PM Alexander Duyck
+> > > <alexander.duyck@gmail.com> wrote:
+> > >
+> > > > That's fine. I can target this for net-next. I had just selected net
+> > > > since I had considered it a fix, but I suppose it could be considered
+> > > > a behavioral change.
+> > >
+> > > We are very late in the 5.10 cycle, and we never handled ICMP in this
+> > > state, so net-next is definitely better.
+> > >
+> > > Note that RFC 7413 states in 4.1.3 :
+> > >
+> > >  The client MUST cache cookies from servers for later Fast Open
+> > >    connections.  For a multihomed client, the cookies are dependent on
+> > >    the client and server IP addresses.  Hence, the client should cache
+> > >    at most one (most recently received) cookie per client and server IP
+> > >    address pair.
+> > >
+> > >    When caching cookies, we recommend that the client also cache the
+> > >    Maximum Segment Size (MSS) advertised by the server.  The client can
+> > >    cache the MSS advertised by the server in order to determine the
+> > >    maximum amount of data that the client can fit in the SYN packet in
+> > >    subsequent TFO connections.  Caching the server MSS is useful
+> > >    because, with Fast Open, a client sends data in the SYN packet before
+> > >    the server announces its MSS in the SYN-ACK packet.  If the client
+> > >    sends more data in the SYN packet than the server will accept, this
+> > >    will likely require the client to retransmit some or all of the data.
+> > >    Hence, caching the server MSS can enhance performance.
+> > >
+> > >    Without a cached server MSS, the amount of data in the SYN packet is
+> > >    limited to the default MSS of 536 bytes for IPv4 [RFC1122] and 1220
+> > >    bytes for IPv6 [RFC2460].  Even if the client complies with this
+> > >    limit when sending the SYN, it is known that an IPv4 receiver
+> > >    advertising an MSS less than 536 bytes can receive a segment larger
+> > >    than it is expecting.
+> > >
+> > >    If the cached MSS is larger than the typical size (1460 bytes for
+> > >    IPv4 or 1440 bytes for IPv6), then the excess data in the SYN packet
+> > >    may cause problems that offset the performance benefit of Fast Open.
+> > >    For example, the unusually large SYN may trigger IP fragmentation and
+> > >    may confuse firewalls or middleboxes, causing SYN retransmission and
+> > >    other side effects.  Therefore, the client MAY limit the cached MSS
+> > >    to 1460 bytes for IPv4 or 1440 for IPv6.
+> > >
+> > >
+> > > Relying on ICMP is fragile, since they can be filtered in some way.
+> >
+> > In this case I am not relying on the ICMP, but thought that since I
+> > have it I should make use of it. WIthout the ICMP we would still just
+> > be waiting on the retransmit timer.
+> >
+> > The problem case has a v6-in-v6 tunnel between the client and the
+> > endpoint so both ends assume an MTU 1500 and advertise a 1440 MSS
+> > which works fine until they actually go to send a large packet between
+> > the two. At that point the tunnel is triggering an ICMP_TOOBIG and the
+> > endpoint is stalling since the MSS is dropped to 1400, but the SYN and
+> > data payload were already smaller than that so no retransmits are
+> > being triggered. This results in TFO being 1s slower than non-TFO
+> > because of the failure to trigger the retransmit for the frame that
+> > violated the PMTU. The patch is meant to get the two back into
+> > comparable times.
+>
+> Okay... Have you studied why tcp_v4_mtu_reduced() (and IPv6 equivalent)
+> code does not yet handle the retransmit in TCP_SYN_SENT state ?
+
+The problem lies in tcp_simple_retransmit(). Specifically the loop at
+the start of the function goes to check the retransmit queue to see if
+there are any packets larger than MSS and finds none since we don't
+place the SYN w/ data in there and instead have a separate SYN and
+data packet.
+
+I'm debating if I should take an alternative approach and modify the
+loop at the start of tcp_simple_transmit to add a check for a SYN
+packet, tp->syn_data being set, and then comparing the next frame
+length + MAX_TCP_HEADER_OPTIONS versus mss.
