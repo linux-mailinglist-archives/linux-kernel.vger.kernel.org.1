@@ -2,229 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84F02D70BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0822D70BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 08:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391251AbgLKHQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 02:16:57 -0500
-Received: from emcscan.emc.com.tw ([192.72.220.5]:60543 "EHLO
-        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436789AbgLKHQ2 (ORCPT
+        id S2436807AbgLKHUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 02:20:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436799AbgLKHTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 02:16:28 -0500
-X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
-   d="scan'208";a="38549208"
-Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
-  by emcscan.emc.com.tw with ESMTP; 11 Dec 2020 15:15:11 +0800
-Received: from 192.168.10.23
-        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(2853:0:AUTH_RELAY)
-        (envelope-from <jingle.wu@emc.com.tw>); Fri, 11 Dec 2020 15:15:11 +0800 (CST)
-Received: from 49.216.248.217
-        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(106420:1:AUTH_LOGIN)
-        (envelope-from <jingle.wu@emc.com.tw>); Fri, 11 Dec 2020 15:15:09 +0800 (CST)
-From:   "jingle.wu" <jingle.wu@emc.com.tw>
-To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        dmitry.torokhov@gmail.com
-Cc:     phoenix@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw,
-        "jingle.wu" <jingle.wu@emc.com.tw>
-Subject: [PATCH 2/2] Input: elantech - Some module tp of tracpoint report has a smbus protocol error.
-Date:   Fri, 11 Dec 2020 15:15:31 +0800
-Message-Id: <20201211071531.32413-1-jingle.wu@emc.com.tw>
-X-Mailer: git-send-email 2.17.1
+        Fri, 11 Dec 2020 02:19:55 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789E2C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 23:19:15 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id v9so5872345qtw.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Dec 2020 23:19:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=m0DrwSxF5qR9n1iY7YgNaOh8SW09GUyz6Ol3J+mXr+U=;
+        b=rtJ0RIZTlwQdQWlSPxuR3vOa5DfGSmbjmTZcnqckvebY6+WfCZ28FM95LkWIcA5Aaa
+         950sW7+R45o33bmOBbsJgqO4sxOT/7S3YrKoD+UUL8kz0J/jgNwd0wJI8UZcl9RJ2ID4
+         nXRNSY6adSUV3NiysAv+DAuGWrzsHymlYt4OFKxWcgeAxLXSpVGPNXRF1cbNybigF1NO
+         2LKcreA78JhdpHN30Wl/spIwxHl7Kh7FuBnFdZ7b41k3UVj1D+RMiPmWck+iIOwKEWuL
+         NnKp1XBcOEDmn5FZQ09tEECmisEOBjhPu13vjGfkHCEYExZ1CLMr8eMYV1e6nnP3BbDN
+         9+Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=m0DrwSxF5qR9n1iY7YgNaOh8SW09GUyz6Ol3J+mXr+U=;
+        b=BolFtX5/3crNrTuri1QdkZc5+V66wb9Yb+sw79OlzTMEIPh2U4zwTGmgyml1N4xeCJ
+         1nAuj6Y1upqyQG+yMPz8ldbD4G8WtkZ1Fzd/MWyN0KvirHgVvAJJ8b2Rv+Da9q68QrqO
+         F8tGjdVxLqESmEpl3Nxb2u+dlsPtP92XEH2qgr7LKfFTFWXrSXP6C4sf+aqHsPD1jQip
+         r1lke7ORx5LVrEIwosx7Syp73GL3OkKb5okelLbFZcPOKpIeghwDh9y7SyoirQAeZhmS
+         WnBz8L/86M2UXT9us2BOu7GMFy9pNE9Q1d9B781vF/J3sv2uR5NL1UWHkroKI6V6Y8/a
+         i0PA==
+X-Gm-Message-State: AOAM5334eU79sPUrGmJX+h0HaQirJfpDx+1reAGHQ0+VhwEUoAJeYctD
+        FtDRVaLdVTRwIsYXjRiU4HQFsXIfbqc=
+X-Google-Smtp-Source: ABdhPJxtyOsdLpo5DZhFrT/IRN9ptqe8Bwz63ouNOM1Twwi41wODcjPrjRdDdkVhC2OtsFMQDSEWR02EHGI=
+Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
+X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:f292:1cff:fee0:66cf])
+ (user=badhri job=sendgmr) by 2002:a0c:c405:: with SMTP id r5mr14548293qvi.4.1607671154568;
+ Thu, 10 Dec 2020 23:19:14 -0800 (PST)
+Date:   Thu, 10 Dec 2020 23:19:11 -0800
+Message-Id: <20201211071911.2205197-1-badhri@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH v1] usb: typec: tcpm: Update vbus_vsafe0v on init
+From:   Badhri Jagan Sridharan <badhri@google.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. Add the conditional expression to distinguish different patterns regarding 0, 1, 2.
-2. Add the function to get or set more bytes from register
-3. Get and correct the device informations including ic_type, module id from different pattern.
-4. Add the function to change the report id 0x5F of trackpoint.
-5. Some module has a bug which makes default SMBUS trackpoint report 0x5E has a smbus protocol error.
+During init, vbus_vsafe0v does not get updated till the first
+connect as a sink. This causes TCPM to be stuck in SRC_ATTACH_WAIT
+state while booting with a sink (For instance: a headset) connected.
 
-Signed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
+[    1.429168] Start toggling
+[    1.439907] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+[    1.445242] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+[   53.358528] CC1: 0 -> 0, CC2: 0 -> 2 [state TOGGLING, polarity 0, connected]
+[   53.358564] state change TOGGLING -> SRC_ATTACH_WAIT [rev1 NONE_AMS]
+
+Fix this by updating vbus_vsafe0v based on vbus_present status
+on boot.
+
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 ---
- drivers/input/mouse/elantech.c | 98 +++++++++++++++++++++++++++++++++-
- drivers/input/mouse/elantech.h |  4 ++
- 2 files changed, 100 insertions(+), 2 deletions(-)
+ drivers/usb/typec/tcpm/tcpm.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
-index 90f8765f9efc..1f6552e25bec 100644
---- a/drivers/input/mouse/elantech.c
-+++ b/drivers/input/mouse/elantech.c
-@@ -89,6 +89,48 @@ static int elantech_ps2_command(struct psmouse *psmouse,
- 	return rc;
- }
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index cedc6cf82d61..58a6302c549f 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -4794,6 +4794,24 @@ static void tcpm_init(struct tcpm_port *port)
+ 	if (port->vbus_present)
+ 		port->vbus_never_low = true;
  
-+/*
-+ * Send an Elantech style special command to read 3 bytes from a register
-+ */
-+static int elantech_read_reg_params(struct psmouse *psmouse, unsigned char reg,
-+					unsigned char *param)
-+{
-+	if (elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-+	    elantech_ps2_command(psmouse, NULL, ETP_REGISTER_READWRITE) ||
-+	    elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-+	    elantech_ps2_command(psmouse, NULL, reg) ||
-+	    elantech_ps2_command(psmouse, param, PSMOUSE_CMD_GETINFO)) {
-+			psmouse_err(psmouse,
-+			    "failed to read register 0x%02x.\n", reg);
-+			return -1;
-+	}
-+	return 0;
-+}
++	/*
++	 * 1. When vbus_present is true, voltage on VBUS is already at VSAFE5V.
++	 * So implicitly vbus_vsafe0v = false.
++	 *
++	 * 2. When vbus_present is false and TCPC does NOT support querying
++	 * vsafe0v status, then, it's best to assume vbus is at VSAFE0V i.e.
++	 * vbus_vsafe0v is true.
++	 *
++	 * 3. When vbus_present is false and TCPC does support querying vsafe0v,
++	 * then, query tcpc for vsafe0v status.
++	 */
++	if (port->vbus_present)
++		port->vbus_vsafe0v = false;
++	else if (!port->tcpc->is_vbus_vsafe0v)
++		port->vbus_vsafe0v = true;
++	else
++		port->vbus_vsafe0v = port->tcpc->is_vbus_vsafe0v(port->tcpc);
 +
-+/*
-+ * Send an Elantech style special command to write a register with a parameter
-+ */
-+static int elantech_write_reg_params(struct psmouse *psmouse, unsigned char reg,
-+					unsigned char *param)
-+{
-+	if (elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-+	    elantech_ps2_command(psmouse, NULL, ETP_REGISTER_READWRITE) ||
-+	    elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-+	    elantech_ps2_command(psmouse, NULL, reg) ||
-+	    elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-+	    elantech_ps2_command(psmouse, NULL, param[0]) ||
-+	    elantech_ps2_command(psmouse, NULL, ETP_PS2_CUSTOM_COMMAND) ||
-+	    elantech_ps2_command(psmouse, NULL, param[1]) ||
-+	    elantech_ps2_command(psmouse, NULL, PSMOUSE_CMD_SETSCALE11)) {
-+			psmouse_err(psmouse,
-+			    "failed to write register 0x%02x with value 0x%02x0x%02x.\n",
-+			    reg, param[0], param[1]);
-+			return -1;
-+		}
-+	return 0;
-+
-+}
-+
- /*
-  * Send an Elantech style special command to read a value from a register
-  */
-@@ -1529,19 +1571,33 @@ static const struct dmi_system_id no_hw_res_dmi_table[] = {
- 	{ }
- };
+ 	tcpm_set_state(port, tcpm_default_state(port), 0);
  
-+/*
-+ * Change Report id 0x5E to 0x5F.
-+ */
-+static int elantech_change_report_id(struct psmouse *psmouse)
-+{
-+	unsigned char param[2] = { 0x10, 0x03 };
-+
-+	if (elantech_write_reg_params(psmouse, 0x7, param) == 0)
-+		if (elantech_read_reg_params(psmouse, 0x7, param) == 0)
-+			if ((param[0] == 0x10) && (param[1] == 0x03))
-+				return 0;
-+	psmouse_err(psmouse, "change report id Fail.\n");
-+	return -1;
-+}
- /*
-  * determine hardware version and set some properties according to it.
-  */
- static int elantech_set_properties(struct elantech_device_info *info)
- {
- 	/* This represents the version of IC body. */
--	int ver = (info->fw_version & 0x0f0000) >> 16;
-+	info->ic_version = (info->fw_version & 0x0f0000) >> 16;
- 
- 	/* Early version of Elan touchpads doesn't obey the rule. */
- 	if (info->fw_version < 0x020030 || info->fw_version == 0x020600)
- 		info->hw_version = 1;
- 	else {
--		switch (ver) {
-+		switch (info->ic_version) {
- 		case 2:
- 		case 4:
- 			info->hw_version = 2;
-@@ -1557,6 +1613,11 @@ static int elantech_set_properties(struct elantech_device_info *info)
- 		}
- 	}
- 
-+	/* Get information pattern for hw_version 4 */
-+	info->pattern = 0x00;
-+	if (info->ic_version == 0x0f && (info->fw_version & 0xff) <= 0x02)
-+		info->pattern = info->fw_version & 0xff;
-+
- 	/* decide which send_cmd we're gonna use early */
- 	info->send_cmd = info->hw_version >= 3 ? elantech_send_cmd :
- 						 synaptics_send_cmd;
-@@ -1598,6 +1659,7 @@ static int elantech_query_info(struct psmouse *psmouse,
- {
- 	unsigned char param[3];
- 	unsigned char traces;
-+	unsigned char ic_body[3];
- 
- 	memset(info, 0, sizeof(*info));
- 
-@@ -1640,6 +1702,22 @@ static int elantech_query_info(struct psmouse *psmouse,
- 			     info->samples[2]);
- 	}
- 
-+	if (info->pattern > 0x00 && info->ic_version == 0xf) {
-+		if (info->send_cmd(psmouse, ETP_ICBODY_QUERY, ic_body)) {
-+			psmouse_err(psmouse, "failed to query ic body\n");
-+			return -EINVAL;
-+		}
-+		info->ic_version = be16_to_cpup((__be16 *)ic_body);
-+		psmouse_info(psmouse,
-+			     "Elan ic body : 0x%04x, current fw version : 0x%02x\n",
-+			     info->ic_version,
-+			     ic_body[2]);
-+	}
-+
-+	info->product_id = be16_to_cpup((__be16 *)info->samples);
-+	if (info->pattern == 0x00)
-+		info->product_id &= 0xff;
-+
- 	if (info->samples[1] == 0x74 && info->hw_version == 0x03) {
- 		/*
- 		 * This module has a bug which makes absolute mode
-@@ -1654,6 +1732,22 @@ static int elantech_query_info(struct psmouse *psmouse,
- 	/* The MSB indicates the presence of the trackpoint */
- 	info->has_trackpoint = (info->capabilities[0] & 0x80) == 0x80;
- 
-+	if (info->has_trackpoint)
-+		if (info->ic_version == 0x0011 && (info->product_id == 0x08 ||
-+						    info->product_id == 0x09 ||
-+						    info->product_id == 0x0D ||
-+						    info->product_id == 0x0E))
-+		/*
-+		 * This module has a bug which makes debult SMBUS trackpoint report
-+		 * 0x5E is a protocol error, if it is not changed to 0x5F report,
-+		 * so let's abort so we'll be using standard PS/2 protocol.
-+		 */
-+			if (elantech_change_report_id(psmouse) != 0) {
-+				psmouse_info(psmouse,
-+				"Trackpoint report is broken, forcing standard PS/2 protocol\n");
-+				return -ENODEV;
-+			}
-+
- 	info->x_res = 31;
- 	info->y_res = 31;
- 	if (info->hw_version == 4) {
-diff --git a/drivers/input/mouse/elantech.h b/drivers/input/mouse/elantech.h
-index e0a3e59d4f1b..571e6ca11d33 100644
---- a/drivers/input/mouse/elantech.h
-+++ b/drivers/input/mouse/elantech.h
-@@ -18,6 +18,7 @@
- #define ETP_CAPABILITIES_QUERY		0x02
- #define ETP_SAMPLE_QUERY		0x03
- #define ETP_RESOLUTION_QUERY		0x04
-+#define ETP_ICBODY_QUERY		0x05
- 
- /*
-  * Command values for register reading or writing
-@@ -140,7 +141,10 @@ struct elantech_device_info {
- 	unsigned char samples[3];
- 	unsigned char debug;
- 	unsigned char hw_version;
-+	unsigned char pattern;
- 	unsigned int fw_version;
-+	unsigned int ic_version;
-+	unsigned int product_id;
- 	unsigned int x_min;
- 	unsigned int y_min;
- 	unsigned int x_max;
+ 	if (port->tcpc->get_cc(port->tcpc, &cc1, &cc2) == 0)
 -- 
-2.17.1
+2.29.2.576.ga3fc446d84-goog
 
