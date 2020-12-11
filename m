@@ -2,100 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190402D7B20
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 779082D7B2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 17:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387906AbgLKQji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 11:39:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38597 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387512AbgLKQjX (ORCPT
+        id S2389080AbgLKQlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 11:41:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388328AbgLKQkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 11:39:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607704676;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PtVyYY9nnquN+aBfs+/yQ1OYbTNln1k2UMH3Bn2/FdM=;
-        b=YXrbJtroMyuLaNBfMVgId8m7n+MTTiZWnI/v6Yl3M9dayFfVNmjSSxDaTzlYrHUxZvCKBX
-        bXh/2ZQECfaeGaOpc2iaS9NLoI5MVRsJAbwnxZuAtxKaxQH0DZqx8qZz7WTVWpaLHk7+Sd
-        bwa18sbSd29hkVR9gNXjmE9LV95RCFg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-1-9Eb3NqLeNCy0Dhg_xbUbBw-1; Fri, 11 Dec 2020 11:37:54 -0500
-X-MC-Unique: 9Eb3NqLeNCy0Dhg_xbUbBw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7F490801817;
-        Fri, 11 Dec 2020 16:37:53 +0000 (UTC)
-Received: from treble (ovpn-115-21.rdu2.redhat.com [10.10.115.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C7FD25D72E;
-        Fri, 11 Dec 2020 16:37:50 +0000 (UTC)
-Date:   Fri, 11 Dec 2020 10:37:48 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: objtool crashes with some clang produced .o files
-Message-ID: <20201211163748.b37gashl6an6misu@treble>
-References: <CAK8P3a20LXgEQkYSpbFFrJs1mdg19W72dp3pbebH9Pkpib2g-g@mail.gmail.com>
- <CAKwvOdn79V-jaTH0mEtKyc-O+=Hj22bGtjKkZ1jriY2YABj-Lw@mail.gmail.com>
- <20201211093205.GU2414@hirez.programming.kicks-ass.net>
+        Fri, 11 Dec 2020 11:40:37 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F08BC0613D6;
+        Fri, 11 Dec 2020 08:39:57 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 3so9171409wmg.4;
+        Fri, 11 Dec 2020 08:39:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EI9aPgpwN0kAn+NcuRM5T8sHf2sm3FLfwleKZ58A6vo=;
+        b=geHwHLKj29aSotUtAIzbJd24cmBvYEM34f2q3QZuRwCln1T480zVpjAzyBxv7Es4sh
+         J3qqt/PClvJUgbNmuKKZ2qlrf5u9BhM4DZe5bPomOshHiU/OQnuHYotmIYYyEOfjxLzh
+         vLLidffBQvYS7M3X6+/aOEHpQsW4V/yoWPE92Ueu4IEOpiJiNORCwhEKSLKGsHsY9ych
+         TPwjlbGH7sHa9FsVTvdmPBqCILV2b69Jz1qwgdzZ46FlpHO72jc3poL6TLZuZZUKF6q+
+         klwBHi4rztXo2q0trxpu407vydMZeGNhZ5uaiFqYvWYj+GV00Q/MWyon9ceYYjDiO6Ex
+         eQ9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EI9aPgpwN0kAn+NcuRM5T8sHf2sm3FLfwleKZ58A6vo=;
+        b=eWjqtM2byw4xITlvSIvlRS1c7mdFCaBumUD1NwRLA1vJdjssBFCyQ6su7wn8Ar74hL
+         2C8+8b1QH5FFhjkAPksaII97/eLTbn/g21tV7HmHKS0VTi//KdLRhFdsMdFqrZsUawvr
+         B+IJrpyTae6tRehVW2nsLjmLEXzSERhxVnnukJR0CwJu2r0ZnIw7ZPaSGsdHkPYBRnuV
+         vuzJTCGCldbWOF9mQUiJxwVH1c0ppaboybaEVyAAGC/DrhG4MOWoY7Sh+f59WtL1zkTl
+         +QtJk1LksmZ1lGmdcMvY8T4GLB33WfKv5YEsObrk/osmTYm7uGC/K/n+tqI8Hh+/A/Lt
+         tyiA==
+X-Gm-Message-State: AOAM5323tT5lYTBF3O0HM01gZ6RFi7udOZn2Q6okgD7i1I1eW7+RpC0q
+        fzhBEOq4oywvCh30Toll4X0=
+X-Google-Smtp-Source: ABdhPJyHtiT4ldXUWVNk0fb3lJk2ON/ft0pbVeIt0RkzI0KkqccIPBu1mGzfyJWeK2f7+940fGA2Kw==
+X-Received: by 2002:a1c:b082:: with SMTP id z124mr14137969wme.129.1607704796062;
+        Fri, 11 Dec 2020 08:39:56 -0800 (PST)
+Received: from localhost.localdomain ([77.137.145.246])
+        by smtp.gmail.com with ESMTPSA id r20sm16061016wrg.66.2020.12.11.08.39.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 08:39:55 -0800 (PST)
+From:   Yonatan Linik <yonatanlinik@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org, willemb@google.com,
+        john.ogness@linutronix.de, arnd@arndb.de, maowenan@huawei.com,
+        colin.king@canonical.com, orcohen@paloaltonetworks.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Yonatan Linik <yonatanlinik@gmail.com>
+Subject: [PATCH 0/1] net: Fix use of proc_fs
+Date:   Fri, 11 Dec 2020 18:37:48 +0200
+Message-Id: <20201211163749.31956-1-yonatanlinik@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201211093205.GU2414@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 10:32:05AM +0100, Peter Zijlstra wrote:
-> Looking at elf.c, it seems we're missing an STT_SECTION symbol for
-> .text.
-> 
-> And indeed, when I add -fno-asynchronous-unwind-tables to clang-11, that
-> goes missing from the readelf .symtab listing. Help ?!
+This patch fixes the failure of af_packet module initialization when
+CONFIG_PROC_FS=n.
 
-I had a similar problem with ORC relocations:
+The commit message itself has a pretty thorough explanation.
+I will just add that I made sure this fixes the problem, both by
+using socket from userspace and by looking at kernel logs.
 
-  e81e07244325 ("objtool: Support Clang non-section symbols in ORC generation")
+Yonatan Linik (1):
+  net: Fix use of proc_fs
 
-If Clang strips the section symbol then we have to find the function
-symbol instead.
+ net/packet/af_packet.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Does this fix it?
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index c6ab44543c92..9bc18864154f 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -472,8 +472,25 @@ static int create_static_call_sections(struct objtool_file *file)
- 			return -1;
- 		}
- 		memset(reloc, 0, sizeof(*reloc));
--		reloc->sym = insn->sec->sym;
--		reloc->addend = insn->offset;
-+
-+		if (insn->sec->sym) {
-+			reloc->sym = insn->sec->sym;
-+			reloc->addend = insn->offset;
-+		} else {
-+			reloc->sym = find_symbol_containing(insn->sec, insn->offset);
-+			if (!reloc->sym) {
-+				WARN_FUNC("can't create static call: missing containing symbol",
-+					  insn->sec, insn->offset);
-+				return -1;
-+			}
-+
-+			reloc->addend = insn->offset - reloc->sym->offset;
-+		}
-+
- 		reloc->type = R_X86_64_PC32;
- 		reloc->offset = idx * sizeof(struct static_call_site);
- 		reloc->sec = reloc_sec;
+base-commit: bbf5c979011a099af5dc76498918ed7df445635b
+-- 
+2.25.1
 
