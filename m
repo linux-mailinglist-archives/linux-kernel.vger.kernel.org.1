@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA6F2D803B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:56:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8060E2D803E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 21:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394307AbgLKUyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 15:54:32 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:60480 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392551AbgLKUxv (ORCPT
+        id S1731997AbgLKU4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 15:56:48 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:36969 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729581AbgLKU43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 15:53:51 -0500
-Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
- id 852afc7a6c3a62dd; Fri, 11 Dec 2020 21:53:09 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Len Brown <lenb@kernel.org>, Rob Herring <robh@kernel.org>,
-        Qian Cai <qcai@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marc Zyngier <maz@kernel.org>, kernel-team@android.com,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ACPI: Use fwnode_init() to set up fwnode
-Date:   Fri, 11 Dec 2020 21:53:09 +0100
-Message-ID: <3491615.yqrABBVLMz@kreacher>
-In-Reply-To: <20201211202629.2164655-1-saravanak@google.com>
-References: <20201211202629.2164655-1-saravanak@google.com>
+        Fri, 11 Dec 2020 15:56:29 -0500
+Received: by mail-oi1-f193.google.com with SMTP id l207so11382052oib.4;
+        Fri, 11 Dec 2020 12:56:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oZMbLI/p6n3mu1U8gcQ9n+p5KHzJ0EBoVbGx3EQ0oI4=;
+        b=tOWfW3ZZGlKhZvn61x0XuRgL7lK74hZnXnbL1r03VmNQkLRcB/Q8nssfGv6rGbD6nO
+         m5im9WnhPfLiXxI87LMBANI1XmMJd1GhLNK71LLH7h8NRa0V5yRrQQ8kpVCl6oethyTW
+         k9MHlk7Qq/jRQ9JK5DmlXXRMA/yzMPdmHPHGqFeXQ+mDNAuslLDZHf6JhLCh/vFgM8vs
+         fByj585wT1WOiprqHci4eDW8WuNtbFCkqf+ncVDbDYhOFF5vT7xafjYk4NnwkQ/6SQrc
+         Cp1/ZAscDNJJ/5pNExx8uE24Lq6flB+/tD0fBjuaspnGjBAynpeeUJREsaAzDYiaKHAT
+         znPQ==
+X-Gm-Message-State: AOAM533RQy+ngR0UsSupI/28rbLv1eY5dNIvEbB8b8u1+kfzSleT57r5
+        6HGNTt8rpJBOmADkG+OY7Ggxb+dZOw==
+X-Google-Smtp-Source: ABdhPJxb7DR5rJB0l1QJh7XdRRRsyuFis3+BKlCSMqac1opUSMLgVJtyEeeqU0ltgyV/9gC6SbcfEQ==
+X-Received: by 2002:a05:6808:64d:: with SMTP id z13mr2625334oih.177.1607720148474;
+        Fri, 11 Dec 2020 12:55:48 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h2sm2095018otn.15.2020.12.11.12.55.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 12:55:47 -0800 (PST)
+Received: (nullmailer pid 905129 invoked by uid 1000);
+        Fri, 11 Dec 2020 20:55:46 -0000
+Date:   Fri, 11 Dec 2020 14:55:46 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, lukas@wunner.de, broonie@kernel.org,
+        devicetree@vger.kernel.org, thierry.reding@gmail.com
+Subject: Re: [PATCH v2 2/9] dt-bindings: spi: Add Tegra QSPI device tree
+ binding
+Message-ID: <20201211205546.GA904872@robh.at.kernel.org>
+References: <1607706088-1437-1-git-send-email-skomatineni@nvidia.com>
+ <1607706088-1437-3-git-send-email-skomatineni@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1607706088-1437-3-git-send-email-skomatineni@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, December 11, 2020 9:26:29 PM CET Saravana Kannan wrote:
-> Commit 01bb86b380a3 ("driver core: Add fwnode_init()") was supposed to
-> fix up all instances of fwnode creation to use fwnode_init(). But looks
-> like this instance was missed. This causes a NULL pointer dereference
-> during device_add() [1]. So, fix it.
+On Fri, 11 Dec 2020 09:01:19 -0800, Sowjanya Komatineni wrote:
+> This patch adds YAML based device tree binding document for Tegra
+> QSPI driver.
 > 
-> [   60.792324][    T1] Call trace:
-> [   60.795495][    T1]  device_add+0xf60/0x16b0
-> __fw_devlink_link_to_consumers at drivers/base/core.c:1583
-> (inlined by) fw_devlink_link_device at drivers/base/core.c:1726
-> (inlined by) device_add at drivers/base/core.c:3088
-> [   60.799813][    T1]  platform_device_add+0x274/0x628
-> [   60.804833][    T1]  acpi_iort_init+0x9d8/0xc50
-> [   60.809415][    T1]  acpi_init+0x45c/0x4e8
-> [   60.813556][    T1]  do_one_initcall+0x170/0xb70
-> [   60.818224][    T1]  kernel_init_freeable+0x6a8/0x734
-> [   60.823332][    T1]  kernel_init+0x18/0x12c
-> [   60.827566][    T1]  ret_from_fork+0x10/0x1c
-> [   60.838756][    T1] ---[ end trace fa5c8ce17a226d83 ]---
-> 
-> [1] - https://lore.kernel.org/linux-arm-kernel/02e7047071f0b54b046ac472adeeb3fafabc643c.camel@redhat.com/
-> Fixes: 01bb86b380a3 ("driver core: Add fwnode_init()")
-> Reported-by: Qian Cai <qcai@redhat.com>
-> Suggested-by: Robin Murphy <robin.murphy@arm.com>
-> Tested-by: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
 > ---
-> Greg,
-> 
-> Can you please pull this into driver-core-next since the commit that
-> causes this is only present in driver-core-next?
-> 
-> -Saravana
-> 
->  include/linux/acpi.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 39263c6b52e1..2630c2e953f7 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -55,7 +55,7 @@ static inline struct fwnode_handle *acpi_alloc_fwnode_static(void)
->  	if (!fwnode)
->  		return NULL;
->  
-> -	fwnode->ops = &acpi_static_fwnode_ops;
-> +	fwnode_init(fwnode, &acpi_static_fwnode_ops);
->  
->  	return fwnode;
->  }
+>  .../bindings/spi/nvidia,tegra210-quad.yaml         | 128 +++++++++++++++++++++
+>  1 file changed, 128 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
 > 
 
 
+My bot found errors running 'make dt_binding_check' on your patch:
 
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+./Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/spi/nvidia,tegra210-quad.yaml#
+Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.example.dts:35.25-35: Warning (reg_format): /example-0/spi@70410000/flash@0:reg: property has invalid length (4 bytes) (#address-cells == 2, #size-cells == 1)
+Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.example.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.example.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.example.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.example.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.example.dts:23.22-40.11: Warning (spi_bus_bridge): /example-0/spi@70410000: incorrect #address-cells for SPI bus
+Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.example.dts:23.22-40.11: Warning (spi_bus_bridge): /example-0/spi@70410000: incorrect #size-cells for SPI bus
+Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'spi_bus_bridge'
+Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.example.dts:33.25-39.19: Warning (avoid_default_addr_size): /example-0/spi@70410000/flash@0: Relying on default #address-cells value
+Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.example.dts:33.25-39.19: Warning (avoid_default_addr_size): /example-0/spi@70410000/flash@0: Relying on default #size-cells value
+Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.example.dt.yaml: Warning (unique_unit_address): Failed prerequisite 'avoid_default_addr_size'
+
+
+See https://patchwork.ozlabs.org/patch/1415099
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
