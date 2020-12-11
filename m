@@ -2,440 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7E62D7975
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 230222D7973
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 16:33:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728829AbgLKPdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 10:33:16 -0500
-Received: from mga03.intel.com ([134.134.136.65]:36904 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391401AbgLKPcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 10:32:17 -0500
-IronPort-SDR: wTdzD2TWF3JG88m66LeIwOLniLQZQkEZ6vetpycDUvfTWa3OWitmVRHqztrAOxz5WX7oqwZgC+
- OvFjF9wvNJfA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9832"; a="174561547"
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="174561547"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 07:30:31 -0800
-IronPort-SDR: sud/gx2DkmOYPu6zNeA/cfbA3SsUZTOq1vp4hJ00ByPeHNZVu1jsq+YCvkirxSYJelySQL7UEo
- h2bEcDxcCDLg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="409282889"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by orsmga001.jf.intel.com with SMTP; 11 Dec 2020 07:30:28 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 11 Dec 2020 17:30:27 +0200
-Date:   Fri, 11 Dec 2020 17:30:27 +0200
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Jim Cromie <jim.cromie@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        David Airlie <airlied@linux.ie>, jbaron@akamai.com,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [RFC PATCH 1/2] drm: RFC add choice to use dynamic debug in
- drm-debug
-Message-ID: <X9OQkyWYBpBb+PDC@intel.com>
-References: <20201204035318.332419-1-jim.cromie@gmail.com>
- <20201204035318.332419-2-jim.cromie@gmail.com>
+        id S2404067AbgLKPcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 10:32:32 -0500
+Received: from gproxy5-pub.mail.unifiedlayer.com ([67.222.38.55]:36396 "EHLO
+        gproxy5-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728097AbgLKPbi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 10:31:38 -0500
+Received: from cmgw12.unifiedlayer.com (unknown [10.9.0.12])
+        by gproxy5.mail.unifiedlayer.com (Postfix) with ESMTP id 9E2B6140593
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 08:30:52 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id nkNgkuHgJeMJHnkNgkzYDw; Fri, 11 Dec 2020 08:30:52 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=G/Ay7es5 c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=IkcTkHD0fZMA:10:nop_charset_1
+ a=zTNgK-yGK50A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=pGLkceISAAAA:8
+ a=8b9GpE9nAAAA:8 a=gXLdhW2jAAAA:8 a=VwQbUJbxAAAA:8 a=QyXUC8HyAAAA:8
+ a=4nLjXZC_2OsmtIj_7QcA:9 a=QEXdDO2ut3YA:10:nop_charset_2
+ a=T3LWEMljR5ZiDmsYVIUa:22 a=Dn9eIPSr_RzuO0KTJioD:22 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Gd4TqXY4BSKjxy0wZAJmMYfgONf9xSwv+hR20bhHipY=; b=yajlItLy2oSatIUQgXKfDhVvqd
+        OKHQycXXsPupYM4gKabd1CY2JWOUKxyMyv2eaBd7TAxZbG8J/emEpUR+i5Y4dUKTsTDDuMTnDiA+4
+        gU3sKynXxBm9NRl3pTAkUu1ibQ6kzZkYCa1w+6KkXMOolkSohb5SGhRf2SU7mvvYK3KZx5owawE7N
+        thYImYgU0PbXOdLes150gu+OLbFeIYdxeqVEmE8QhzUBN6tdh97C6ujbHgXPaACb9EJb9GoiNzzwq
+        h0ZVLx9huqwTN68WMnmquSt3xFD53vuEfFpe8L9IgHXG2K2/MpSSKWytqxVFGsTPyXXiY0HdDE2gp
+        rNngIAQg==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:41724 helo=localhost)
+        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1knkNf-003Xqj-K0; Fri, 11 Dec 2020 15:30:51 +0000
+Date:   Fri, 11 Dec 2020 07:30:50 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Charles Hsu <hsu.yungteng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        alan@redhat.com
+Subject: Re: [PATCH v6] hwmon: Add driver for STMicroelectronics PM6764
+ Voltage Regulator.
+Message-ID: <20201211153050.GA74106@roeck-us.net>
+References: <20201211094605.270734-1-hsu.yungteng@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201204035318.332419-2-jim.cromie@gmail.com>
-X-Patchwork-Hint: comment
+In-Reply-To: <20201211094605.270734-1-hsu.yungteng@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1knkNf-003Xqj-K0
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:41724
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 11
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 08:53:17PM -0700, Jim Cromie wrote:
-> drm's debug system uses distinct categories of debug messages, mapped
-> to bits in drm.debug.  Currently, code does a lot of unlikely bit-mask
-> checks on drm.debug (in drm_debug_enabled), we can use dynamic debug
-> instead, and get all that jump_label goodness.
+On Fri, Dec 11, 2020 at 05:46:05PM +0800, Charles Hsu wrote:
+> The output voltage use the MFR_READ_VOUT 0xD4
+> Vout value returned is linear11.
 > 
-> RFC: dynamic debug has no concept of category, but we can do without
-> one if we can prepend a class-prefix to each printk format.  Then we
-> can use "format ^prefix" to select the whole category with one query.
-> This is a log-facing and user visible change, but it seems unlikely to
-> cause trouble for log watchers; they're not relying on the absence of
-> class prefix strings.
-> 
-> This conversion yields ~2100 new callsites on my i7 laptop:
-> 
->   dyndbg: 195 debug prints in module drm_kms_helper
->   dyndbg: 298 debug prints in module drm
->   dyndbg: 1630 debug prints in module i915
-> 
-> Since this change has wide-ranging effects (many drm drivers, with
-> many callsites, and kernel image growth), and most vendors don't
-> enable DYNAMIC_DEBUG, we supplement the existing mechanism, adding
-> CONFIG_DRM_USE_DYNAMIC_DEBUG to enable the new one.
-> 
-> The indirection/switchover has a few parts:
-> 
-> 1 a new callback on drm.debug which calls dynamic_debug_exec_queries
->   to map those bits to specific query/commands
->   dynamic_debug_exec_queries("format ^drm:kms: +p", "drm*");
-> 
-> 2 a "converted" or "classy" DRM_UT_* map
->   similar to DRM_UT_* ( symbol => bit-mask )
->   named it  cDRM_UT_* ( symbol => format-class-prefix-string )
-> 
->   cDRM_UT_* is either ( CONFIG_DRM_USE_DYNAMIC_DEBUG )
->   legacy: cDRM_UT_* <-- DRM_UT_*
->   enabled:
->   +#define cDRM_UT_KMS    "drm:kms: "
->   +#define cDRM_UT_PRIME  "drm:prime: "
->   +#define cDRM_UT_ATOMIC "drm:atomic: "
-> 
->   these are similar to "gvt: cmd:" in i915/gvt
->   and effectively a replacement for DRM_NAME
->   please bikeshed on keys, values. latter are log-facing.
-> 
-> 3 drm_dev_dbg & drm_debug are renamed (prefixed with '_')
->   old names are now macros, which are ifdefd
->   legacy:  -> to renamed fn
->   enabled: -> dev_dbg & pr_debug, after prepending prefix to format.
-> 
-> 4 names in (2) are called from DRM_DEBUG_<Category> and drm_dbg_<Category>.
->   all these get "converted" to use cDRM_UT_*, to get right token type.
-> 
-> RFC: for dynamic debug, category is a source-facing addition;
-> something like pr_debug_cat(cat, ...) would do it, iff cat is a
-> compile-time const.  Note that cat isn't needed in the printing, it
-> would be saved into a new field in struct _ddebug, and used only for
-> callsite selection, activation and control.
-> 
-> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> Signed-off-by: Charles Hsu <hsu.yungteng@gmail.com>
+
+I'll keep the patch I already applied, with all the _compile_
+problems fixed. Please check out hwmon-next and submit follow-up
+patches if needed.
+
+Guenter
+
 > ---
->  drivers/gpu/drm/Kconfig     | 13 ++++++
->  drivers/gpu/drm/drm_print.c | 75 ++++++++++++++++++++++++++++--
->  include/drm/drm_print.h     | 92 +++++++++++++++++++++++++++----------
->  3 files changed, 153 insertions(+), 27 deletions(-)
+> v6:
+>  - Fix misspelling.
+> v5:
+>  - Add MAINTAINERS.
+> v4:
+>  - Add pm6764tr to Documentation/hwmon/index.rst.
+> v3:
+>  - Add Documentation(Documentation/hwmon/pm6764tr.rst).
+>  - Fix include order.
+> v2:
+>  - Fix formatting.
+>  - Remove pmbus_do_remove.
+>  - Change from .probe to .probe_new.
+> v1:
+>  - Initial patchset.
+> ---
+>  Documentation/hwmon/index.rst    |  1 +
+>  Documentation/hwmon/pm6764tr.rst | 32 ++++++++++++++
+>  MAINTAINERS                      |  7 +++
+>  drivers/hwmon/pmbus/Kconfig      |  9 ++++
+>  drivers/hwmon/pmbus/Makefile     |  1 +
+>  drivers/hwmon/pmbus/pm6764tr.c   | 76 ++++++++++++++++++++++++++++++++
+>  6 files changed, 126 insertions(+)
+>  create mode 100644 Documentation/hwmon/pm6764tr.rst
+>  create mode 100644 drivers/hwmon/pmbus/pm6764tr.c
 > 
-> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> index 147d61b9674e..854bc1ad21fb 100644
-> --- a/drivers/gpu/drm/Kconfig
-> +++ b/drivers/gpu/drm/Kconfig
-> @@ -54,6 +54,19 @@ config DRM_DEBUG_MM
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index b797db738225..b3ed0047543b 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -144,6 +144,7 @@ Hardware Monitoring Kernel Drivers
+>     pc87360
+>     pc87427
+>     pcf8591
+> +   pm6764
+>     pmbus
+>     powr1220
+>     pxe1610
+> diff --git a/Documentation/hwmon/pm6764tr.rst b/Documentation/hwmon/pm6764tr.rst
+> new file mode 100644
+> index 000000000000..4681780d3f0d
+> --- /dev/null
+> +++ b/Documentation/hwmon/pm6764tr.rst
+> @@ -0,0 +1,32 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +
+> +Kernel driver pm6764tr
+> +======================
+> +
+> +Supported chips:
+> +
+> +  * ST PM6764TR
+> +
+> +	Prefix: 'pm6764tr'
+> +
+> +	Addresses scanned: -
+> +
+> +	Datasheet: http://www.st.com/resource/en/data_brief/pm6764.pdf
+> +
+> +Authors:
+> +	<hsu.yungteng@gmail.com>
+> +
+> +Description:
+> +------------
+> +
+> +This driver supports the STMicroelectronics PM6764TR chip. The PM6764TR is a high
+> +performance digital controller designed to power Intelâ€™s VR12.5 processors and memories.
+> +
+> +The device utilizes digital technology to implement all control and power management
+> +functions to provide maximum flexibility and performance. The NVM is embedded to store
+> +custom configurations. The PM6764TR device features up to 4-phase programmable operation.
+> +
+> +The PM6764TR supports power state transitions featuring VFDE, and programmable DPM
+> +maintaining the best efficiency over all loading conditions without compromising transient
+> +response. The device assures fast and independent protection against load overcurrent,
+> +under/overvoltage and feedback disconnections.
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 2daa6ee673f7..0456a2101622 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13893,6 +13893,13 @@ M:	Logan Gunthorpe <logang@deltatee.com>
+>  S:	Maintained
+>  F:	drivers/dma/plx_dma.c
 >  
->  	  If in doubt, say "N".
+> +PM6764TR DRIVER
+> +M:	Charles Hsu	<hsu.yungteng@gmail.com>
+> +L:	linux-hwmon@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/hwmon/pm6764tr.rst
+> +F:	drivers/hwmon/pmbus/pm6764tr.c
+> +
+>  PM-GRAPH UTILITY
+>  M:	"Todd E Brandt" <todd.e.brandt@linux.intel.com>
+>  L:	linux-pm@vger.kernel.org
+> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+> index a25faf69fce3..9c846facce9f 100644
+> --- a/drivers/hwmon/pmbus/Kconfig
+> +++ b/drivers/hwmon/pmbus/Kconfig
+> @@ -220,6 +220,15 @@ config SENSORS_MP2975
+>  	  This driver can also be built as a module. If so, the module will
+>  	  be called mp2975.
 >  
-> +config DRM_USE_DYNAMIC_DEBUG
-> +	bool "use dynamic debug to implement drm.debug"
-> +	default n
-> +	depends on DRM
-> +	depends on DYNAMIC_DEBUG
-> +	depends on JUMP_LABEL
+> +config SENSORS_PM6764TR
+> +	tristate "ST PM6764TR"
 > +	help
-> +	  The drm debug category facility does a lot of unlikely bit-field
-> +	  tests at runtime; while cheap individually, the cost accumulates.
-> +	  This option uses dynamic debug facility (if configured and
-> +	  using jump_label) to avoid those runtime checks, patching
-> +	  the kernel when those debugs are desired.
+> +	  If you say yes here you get hardware monitoring support for ST
+> +	  PM6764TR.
 > +
->  config DRM_DEBUG_SELFTEST
->  	tristate "kselftests for DRM"
->  	depends on DRM
-> diff --git a/drivers/gpu/drm/drm_print.c b/drivers/gpu/drm/drm_print.c
-> index 111b932cf2a9..e2acdfc7088b 100644
-> --- a/drivers/gpu/drm/drm_print.c
-> +++ b/drivers/gpu/drm/drm_print.c
-> @@ -52,8 +52,75 @@ MODULE_PARM_DESC(debug, "Enable debug output, where each bit enables a debug cat
->  "\t\tBit 5 (0x20)  will enable VBL messages (vblank code)\n"
->  "\t\tBit 7 (0x80)  will enable LEASE messages (leasing code)\n"
->  "\t\tBit 8 (0x100) will enable DP messages (displayport code)");
+> +	  This driver can also be built as a module. If so, the module will
+> +	  be called pm6764tr.
 > +
-> +#ifndef CONFIG_DRM_USE_DYNAMIC_DEBUG
->  module_param_named(debug, __drm_debug, int, 0600);
->  
-> +#else
-> +static char *format_class_prefixes[] = {
-> +	cDRM_UT_CORE,
-> +	cDRM_UT_DRIVER,
-> +	cDRM_UT_KMS,
-> +	cDRM_UT_PRIME,
-> +	cDRM_UT_ATOMIC,
-> +	cDRM_UT_VBL,
-> +	cDRM_UT_STATE,
-> +	cDRM_UT_LEASE,
-> +	cDRM_UT_DP,
-> +	cDRM_UT_DRMRES
+>  config SENSORS_PXE1610
+>  	tristate "Infineon PXE1610"
+>  	help
+> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+> index 4c97ad0bd791..31ebdef5d4a6 100644
+> --- a/drivers/hwmon/pmbus/Makefile
+> +++ b/drivers/hwmon/pmbus/Makefile
+> @@ -25,6 +25,7 @@ obj-$(CONFIG_SENSORS_MAX31785)	+= max31785.o
+>  obj-$(CONFIG_SENSORS_MAX34440)	+= max34440.o
+>  obj-$(CONFIG_SENSORS_MAX8688)	+= max8688.o
+>  obj-$(CONFIG_SENSORS_MP2975)	+= mp2975.o
+> +obj-$(CONFIG_SENSORS_PM6764TR)	+= pm6764tr.o
+>  obj-$(CONFIG_SENSORS_PXE1610)	+= pxe1610.o
+>  obj-$(CONFIG_SENSORS_TPS40422)	+= tps40422.o
+>  obj-$(CONFIG_SENSORS_TPS53679)	+= tps53679.o
+> diff --git a/drivers/hwmon/pmbus/pm6764tr.c b/drivers/hwmon/pmbus/pm6764tr.c
+> new file mode 100644
+> index 000000000000..9531f370d7df
+> --- /dev/null
+> +++ b/drivers/hwmon/pmbus/pm6764tr.c
+> @@ -0,0 +1,76 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Hardware monitoring driver for STMicroelectronics digital controller PM6764TR
+> + */
+> +
+> +#include <linux/err.h>
+> +#include <linux/i2c.h>
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/pmbus.h>
+> +#include "pmbus.h"
+> +
+> +#define PM6764TR_PMBUS_READ_VOUT	0xD4
+> +
+> +static int pm6764tr_read_word_data(struct i2c_client *client, int page, int reg)
+> +{
+> +	int ret;
+> +
+> +	switch (reg) {
+> +	case PMBUS_VIRT_READ_VMON:
+> +		ret = pmbus_read_word_data(client, page, PM6764TR_PMBUS_READ_VOUT);
+> +		break;
+> +	default:
+> +		ret = -ENODATA;
+> +		break;
+> +	}
+> +	return ret;
+> +}
+> +
+> +static struct pmbus_driver_info pm6764tr_info = {
+> +	.pages = 1,
+> +	.format[PSC_VOLTAGE_IN] = linear,
+> +	.format[PSC_VOLTAGE_OUT] = vid,
+> +	.format[PSC_TEMPERATURE] = linear,
+> +	.format[PSC_CURRENT_OUT] = linear,
+> +	.format[PSC_POWER] = linear,
+> +	.func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN |  PMBUS_HAVE_PIN |
+> +		PMBUS_HAVE_IOUT | PMBUS_HAVE_POUT | PMBUS_HAVE_VMON |
+> +		PMBUS_HAVE_STATUS_IOUT | PMBUS_HAVE_STATUS_VOUT |
+> +		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
+> +	.read_word_data = pm6764tr_read_word_data,
 > +};
 > +
-> +#define OUR_QUERY_SIZE 64 /* > strlen "format '^%s' %cp" + longest prefix */
-> +
-> +static int param_set_dyndbg(const char *instr, const struct kernel_param *kp)
+> +static int pm6764tr_probe(struct i2c_client *client,
+> +			  const struct i2c_device_id *id)
 > +{
-> +	unsigned int val;
-> +	unsigned long changes, result;
-> +	int rc, chgct = 0, totct = 0, bitpos;
-> +	char query[OUR_QUERY_SIZE];
-> +
-> +	rc = kstrtouint(instr, 0, &val);
-> +	if (rc) {
-> +		pr_err("%s: failed\n", __func__);
-> +		return -EINVAL;
-> +	}
-> +	result = val;
-> +	changes = result ^ __drm_debug;
-> +
-> +	pr_debug("changes:0x%lx from result:0x%lx\n", changes, result);
-> +
-> +	for_each_set_bit(bitpos, &changes, ARRAY_SIZE(format_class_prefixes)) {
-> +
-> +		sprintf(query, "format '^%s' %cp", format_class_prefixes[bitpos],
-> +			test_bit(bitpos, &result) ? '+' : '-');
-> +
-> +		chgct = dynamic_debug_exec_queries(query, "drm*");
-> +		if (chgct < 0) {
-> +			pr_err("%s: exec err:%d on: %s\n", __func__, chgct, query);
-> +			continue;
-> +		}
-> +		pr_debug("change ct:%d on %s\n", chgct, query);
-> +		totct += chgct;
-> +	}
-> +	pr_debug("total changes: %d\n", totct);
-> +	__drm_debug = result;
-> +	return 0;
+> +	return pmbus_do_probe(client, id, &pm6764tr_info);
 > +}
-
-Is there an actual need to go through dyndbg and do all this stringy
-stuff, or would just eg. a static keys array for the debug categories
-get us the benefits of jump_label?
-
 > +
-> +static int param_get_dyndbg(char *buffer, const struct kernel_param *kp)
-> +{
-> +	pr_debug("debug-val:0x%x %u\n", __drm_debug, *((unsigned int *)kp->arg));
-> +	return scnprintf(buffer, PAGE_SIZE, "%u\n",
-> +			 *((unsigned int *)kp->arg));
-> +}
-> +static const struct kernel_param_ops param_ops_debug = {
-> +	.set = param_set_dyndbg,
-> +	.get = param_get_dyndbg,
+> +static const struct i2c_device_id pm6764tr_id[] = {
+> +	{"pm6764tr", 0},
+> +	{}
 > +};
-> +module_param_cb(debug, &param_ops_debug, &__drm_debug, 0644);
+> +MODULE_DEVICE_TABLE(i2c, pm6764tr_id);
 > +
-> +#endif /* CONFIG_DRM_USE_DYNAMIC_DEBUG */
+> +static const struct of_device_id pm6764tr_of_match[] = {
+> +	{.compatible = "st,pm6764tr"},
+> +	{}
+> +};
 > +
->  void __drm_puts_coredump(struct drm_printer *p, const char *str)
->  {
->  	struct drm_print_iterator *iterator = p->arg;
-> @@ -256,7 +323,7 @@ void drm_dev_printk(const struct device *dev, const char *level,
->  }
->  EXPORT_SYMBOL(drm_dev_printk);
->  
-> -void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
-> +void _drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
->  		 const char *format, ...)
->  {
->  	struct va_format vaf;
-> @@ -278,9 +345,9 @@ void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
->  
->  	va_end(args);
->  }
-> -EXPORT_SYMBOL(drm_dev_dbg);
-> +EXPORT_SYMBOL(_drm_dev_dbg);
->  
-> -void __drm_dbg(enum drm_debug_category category, const char *format, ...)
-> +void ___drm_dbg(enum drm_debug_category category, const char *format, ...)
->  {
->  	struct va_format vaf;
->  	va_list args;
-> @@ -297,7 +364,7 @@ void __drm_dbg(enum drm_debug_category category, const char *format, ...)
->  
->  	va_end(args);
->  }
-> -EXPORT_SYMBOL(__drm_dbg);
-> +EXPORT_SYMBOL(___drm_dbg);
->  
->  void __drm_err(const char *format, ...)
->  {
-> diff --git a/include/drm/drm_print.h b/include/drm/drm_print.h
-> index f32d179e139d..2bd5c38aa100 100644
-> --- a/include/drm/drm_print.h
-> +++ b/include/drm/drm_print.h
-> @@ -319,6 +319,51 @@ enum drm_debug_category {
->  	DRM_UT_DRMRES		= 0x200,
->  };
->  
-> +#if !defined(CONFIG_DRM_USE_DYNAMIC_DEBUG)
+> +/* This is the driver that will be inserted */
+> +static struct i2c_driver pm6764tr_driver = {
+> +	.driver = {
+> +		   .name = "pm6764tr",
+> +		   .of_match_table = of_match_ptr(pm6764tr_of_match),
+> +		   },
+> +	.probe_new = pm6764tr_probe,
+> +	.id_table = pm6764tr_id,
+> +};
 > +
-> +/* Use legacy drm-debug functions, implying drm_debug_enabled().
-> + * For cDRM_UT_* (converted category), identity map to DRM_UT_*
-> + */
-> +#define __drm_dbg(cls, fmt, ...)					\
-> +	___drm_dbg(cls, fmt, ##__VA_ARGS__)
-> +#define drm_dev_dbg(dev, cls, fmt, ...)					\
-> +	_drm_dev_dbg(dev, cls, fmt, ##__VA_ARGS__)
+> +module_i2c_driver(pm6764tr_driver);
 > +
-> +#define cDRM_UT_CORE	DRM_UT_CORE
-> +#define cDRM_UT_DRIVER	DRM_UT_DRIVER
-> +#define cDRM_UT_KMS	DRM_UT_KMS
-> +#define cDRM_UT_PRIME	DRM_UT_PRIME
-> +#define cDRM_UT_ATOMIC	DRM_UT_ATOMIC
-> +#define cDRM_UT_VBL	DRM_UT_VBL
-> +#define cDRM_UT_STATE	DRM_UT_STATE
-> +#define cDRM_UT_LEASE	DRM_UT_LEASE
-> +#define cDRM_UT_DP	DRM_UT_DP
-> +#define cDRM_UT_DRMRES	DRM_UT_DRMRES
-> +
-> +#else /* CONFIG_DRM_USE_DYNAMIC_DEBUG */
-> +
-> +/* use dynamic_debug to avoid drm_debug_enabled.
-> + * dyndbg has no category, so we prefix format with a class-string,
-> + * and alter cDRM_UT_* to provide those class strings
-> + */
-> +#define __drm_dbg(cls, fmt, ...)					\
-> +	pr_debug(cls # fmt, ##__VA_ARGS__)
-> +#define drm_dev_dbg(dev, cls, fmt, ...)					\
-> +	dev_dbg(dev, cls fmt, ##__VA_ARGS__)
-> +
-> +#define cDRM_UT_CORE	"drm:core: "
-> +#define cDRM_UT_DRIVER	"drm:drvr: "
-> +#define cDRM_UT_KMS	"drm:kms: "
-> +#define cDRM_UT_PRIME	"drm:prime: "
-> +#define cDRM_UT_ATOMIC	"drm:atomic: "
-> +#define cDRM_UT_VBL	"drm:vbl: "
-> +#define cDRM_UT_STATE	"drm:state: "
-> +#define cDRM_UT_LEASE	"drm:lease: "
-> +#define cDRM_UT_DP	"drm:dp: "
-> +#define cDRM_UT_DRMRES	"drm:res "
-> +
-> +#endif /* !CONFIG_DRM_USE_DYNAMIC_DEBUG */
-> +
->  static inline bool drm_debug_enabled(enum drm_debug_category category)
->  {
->  	return unlikely(__drm_debug & category);
-> @@ -334,7 +379,7 @@ __printf(3, 4)
->  void drm_dev_printk(const struct device *dev, const char *level,
->  		    const char *format, ...);
->  __printf(3, 4)
-> -void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
-> +void _drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
->  		 const char *format, ...);
->  
->  /**
-> @@ -383,7 +428,7 @@ void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
->   * @fmt: printf() like format string.
->   */
->  #define DRM_DEV_DEBUG(dev, fmt, ...)					\
-> -	drm_dev_dbg(dev, DRM_UT_CORE, fmt, ##__VA_ARGS__)
-> +	drm_dev_dbg(dev, cDRM_UT_CORE, fmt, ##__VA_ARGS__)
->  /**
->   * DRM_DEV_DEBUG_DRIVER() - Debug output for vendor specific part of the driver
->   *
-> @@ -391,7 +436,7 @@ void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
->   * @fmt: printf() like format string.
->   */
->  #define DRM_DEV_DEBUG_DRIVER(dev, fmt, ...)				\
-> -	drm_dev_dbg(dev, DRM_UT_DRIVER,	fmt, ##__VA_ARGS__)
-> +	drm_dev_dbg(dev, cDRM_UT_DRIVER, fmt, ##__VA_ARGS__)
->  /**
->   * DRM_DEV_DEBUG_KMS() - Debug output for modesetting code
->   *
-> @@ -443,25 +488,25 @@ void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
->  
->  
->  #define drm_dbg_core(drm, fmt, ...)					\
-> -	drm_dev_dbg((drm)->dev, DRM_UT_CORE, fmt, ##__VA_ARGS__)
-> +	drm_dev_dbg((drm)->dev, cDRM_UT_CORE, fmt, ##__VA_ARGS__)
->  #define drm_dbg(drm, fmt, ...)						\
-> -	drm_dev_dbg((drm)->dev, DRM_UT_DRIVER, fmt, ##__VA_ARGS__)
-> +	drm_dev_dbg((drm)->dev, cDRM_UT_DRIVER, fmt, ##__VA_ARGS__)
->  #define drm_dbg_kms(drm, fmt, ...)					\
-> -	drm_dev_dbg((drm)->dev, DRM_UT_KMS, fmt, ##__VA_ARGS__)
-> +	drm_dev_dbg((drm)->dev, cDRM_UT_KMS, fmt, ##__VA_ARGS__)
->  #define drm_dbg_prime(drm, fmt, ...)					\
-> -	drm_dev_dbg((drm)->dev, DRM_UT_PRIME, fmt, ##__VA_ARGS__)
-> +	drm_dev_dbg((drm)->dev, cDRM_UT_PRIME, fmt, ##__VA_ARGS__)
->  #define drm_dbg_atomic(drm, fmt, ...)					\
-> -	drm_dev_dbg((drm)->dev, DRM_UT_ATOMIC, fmt, ##__VA_ARGS__)
-> +	drm_dev_dbg((drm)->dev, cDRM_UT_ATOMIC, fmt, ##__VA_ARGS__)
->  #define drm_dbg_vbl(drm, fmt, ...)					\
-> -	drm_dev_dbg((drm)->dev, DRM_UT_VBL, fmt, ##__VA_ARGS__)
-> +	drm_dev_dbg((drm)->dev, cDRM_UT_VBL, fmt, ##__VA_ARGS__)
->  #define drm_dbg_state(drm, fmt, ...)					\
-> -	drm_dev_dbg((drm)->dev, DRM_UT_STATE, fmt, ##__VA_ARGS__)
-> +	drm_dev_dbg((drm)->dev, cDRM_UT_STATE, fmt, ##__VA_ARGS__)
->  #define drm_dbg_lease(drm, fmt, ...)					\
-> -	drm_dev_dbg((drm)->dev, DRM_UT_LEASE, fmt, ##__VA_ARGS__)
-> +	drm_dev_dbg((drm)->dev, cDRM_UT_LEASE, fmt, ##__VA_ARGS__)
->  #define drm_dbg_dp(drm, fmt, ...)					\
-> -	drm_dev_dbg((drm)->dev, DRM_UT_DP, fmt, ##__VA_ARGS__)
-> +	drm_dev_dbg((drm)->dev, cDRM_UT_DP, fmt, ##__VA_ARGS__)
->  #define drm_dbg_drmres(drm, fmt, ...)					\
-> -	drm_dev_dbg((drm)->dev, DRM_UT_DRMRES, fmt, ##__VA_ARGS__)
-> +	drm_dev_dbg((drm)->dev, cDRM_UT_DRMRES, fmt, ##__VA_ARGS__)
->  
->  
->  /*
-> @@ -471,7 +516,7 @@ void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
->   */
->  
->  __printf(2, 3)
-> -void __drm_dbg(enum drm_debug_category category, const char *format, ...);
-> +void ___drm_dbg(enum drm_debug_category category, const char *format, ...);
->  __printf(1, 2)
->  void __drm_err(const char *format, ...);
->  
-> @@ -500,29 +545,30 @@ void __drm_err(const char *format, ...);
->  #define DRM_ERROR_RATELIMITED(fmt, ...)					\
->  	DRM_DEV_ERROR_RATELIMITED(NULL, fmt, ##__VA_ARGS__)
->  
-> +
->  #define DRM_DEBUG(fmt, ...)						\
-> -	__drm_dbg(DRM_UT_CORE, fmt, ##__VA_ARGS__)
-> +	__drm_dbg(cDRM_UT_CORE, fmt, ##__VA_ARGS__)
->  
->  #define DRM_DEBUG_DRIVER(fmt, ...)					\
-> -	__drm_dbg(DRM_UT_DRIVER, fmt, ##__VA_ARGS__)
-> +	__drm_dbg(cDRM_UT_DRIVER, fmt, ##__VA_ARGS__)
->  
->  #define DRM_DEBUG_KMS(fmt, ...)						\
-> -	__drm_dbg(DRM_UT_KMS, fmt, ##__VA_ARGS__)
-> +	__drm_dbg(cDRM_UT_KMS, fmt, ##__VA_ARGS__)
->  
->  #define DRM_DEBUG_PRIME(fmt, ...)					\
-> -	__drm_dbg(DRM_UT_PRIME, fmt, ##__VA_ARGS__)
-> +	__drm_dbg(cDRM_UT_PRIME, fmt, ##__VA_ARGS__)
->  
->  #define DRM_DEBUG_ATOMIC(fmt, ...)					\
-> -	__drm_dbg(DRM_UT_ATOMIC, fmt, ##__VA_ARGS__)
-> +	__drm_dbg(cDRM_UT_ATOMIC, fmt, ##__VA_ARGS__)
->  
->  #define DRM_DEBUG_VBL(fmt, ...)						\
-> -	__drm_dbg(DRM_UT_VBL, fmt, ##__VA_ARGS__)
-> +	__drm_dbg(cDRM_UT_VBL, fmt, ##__VA_ARGS__)
->  
->  #define DRM_DEBUG_LEASE(fmt, ...)					\
-> -	__drm_dbg(DRM_UT_LEASE, fmt, ##__VA_ARGS__)
-> +	__drm_dbg(cDRM_UT_LEASE, fmt, ##__VA_ARGS__)
->  
->  #define DRM_DEBUG_DP(fmt, ...)						\
-> -	__drm_dbg(DRM_UT_DP, fmt, ## __VA_ARGS__)
-> +	__drm_dbg(cDRM_UT_DP, fmt, ## __VA_ARGS__)
->  
->  
->  #define DRM_DEBUG_KMS_RATELIMITED(fmt, ...)				\
-> @@ -531,7 +577,7 @@ void __drm_err(const char *format, ...);
->  				      DEFAULT_RATELIMIT_INTERVAL,       \
->  				      DEFAULT_RATELIMIT_BURST);         \
->  	if (__ratelimit(&_rs))						\
-> -		drm_dev_dbg(NULL, DRM_UT_KMS, fmt, ##__VA_ARGS__);	\
-> +		drm_dev_dbg(NULL, cDRM_UT_KMS, fmt, ##__VA_ARGS__);	\
->  })
->  
->  /*
-> -- 
-> 2.28.0
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-
--- 
-Ville Syrjälä
-Intel
+> +MODULE_AUTHOR("Charles Hsu");
+> +MODULE_DESCRIPTION("PMBus driver for  ST PM6764TR");
+> +MODULE_LICENSE("GPL");
