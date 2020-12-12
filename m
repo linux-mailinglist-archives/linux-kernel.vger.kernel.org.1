@@ -2,108 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F96C2D873A
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 16:20:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE152D873C
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 16:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439246AbgLLPTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 10:19:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725550AbgLLPTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 10:19:12 -0500
-X-Gm-Message-State: AOAM532Nx+9hrRde1Wogr21fNly1ShBy18YGqbulx7NXCgQtFnydjgwR
-        +WapUYbDeTdLPy/zsoZ7bDQZOykg1XwoqXS0YIs=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607786311;
-        bh=psS0hu2IUIHN0p65FsTtGV4EUTtLG77MUOh+AZo/pFQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RmFUg1o5T+2sP8kQE8wa7IRy+eKJo5EB9Gh6xs3WbV2I5d+MTIBbS4YUCVy94Z8S/
-         rs119tEMc8dJogiB88HTo3QzFZaReIkLWA8mDrP3WEpjmzAWNglqghpD9zk9EZenad
-         91ZdRJEOzgl3NsT5MJ5lsEaSK5mIpKSOals2+XUqWFRDAmbI+/5i/gABtOl2UFTa0s
-         RSPNcCwgf1tNBTn3Ptckf37nnREh+LBol2X7QYPZaNAR0F7DpiWexMD3vj6ijbFbYJ
-         ouatYiF+r0HIa6aBWBUD5LUPrG+1KTTWQ8pKO67Gx5wyw9n8yTuv3PU/WAVGVujGhz
-         v9V3IqYY/d4KQ==
-X-Google-Smtp-Source: ABdhPJyYQRTgL1rTSEK+bKujyRCO/OeCso0uNE89jr89FeehL7hSSu8lYv+6qAr6DfcKWjb3JSUKkYAcGQNDLHbUEbQ=
-X-Received: by 2002:a67:fd88:: with SMTP id k8mr15795093vsq.17.1607786310790;
- Sat, 12 Dec 2020 07:18:30 -0800 (PST)
+        id S2439250AbgLLPVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 10:21:37 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:58858 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgLLPVg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 10:21:36 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8676C20B717A;
+        Sat, 12 Dec 2020 07:20:54 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8676C20B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607786455;
+        bh=De4rpOU7R3cbE0tgBHmdBeaCpxGO9h+TqzXJ25bLXU0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Qp6NDi1/+kT4y61jN2rVY9no55vb/n4icGCopAQWuS6saUQ43bWnFH9QWLVOGwTQX
+         yNtVAwGFsctW/yo0jBcsc8P4ToeUWNdQQfbLnpCmFVpwVNU5/Ao0VFuJU3aLbRxgvA
+         /Bpm/oxpAuzEjQivPFlywVC3nsIs6eTDEpl01hvI=
+Subject: Re: [RFC PATCH 3/4] arm64: Use common of_kexec_setup_new_fdt()
+To:     Rob Herring <robh@kernel.org>, takahiro.akashi@linaro.org,
+        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au
+Cc:     Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        zohar@linux.ibm.com, james.morse@arm.com, sashal@kernel.org,
+        benh@kernel.crashing.org, paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
+References: <20201211221006.1052453-1-robh@kernel.org>
+ <20201211221006.1052453-4-robh@kernel.org>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <f0346242-2232-2c2a-a60f-316d4809ee5e@linux.microsoft.com>
+Date:   Sat, 12 Dec 2020 07:20:53 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201118071724.4866-1-wens@kernel.org> <20201118071724.4866-2-wens@kernel.org>
- <CAL_JsqJphYYUsQR_kLH_y1gOArTifpEVUiTJfDpDsL8WjGxRfA@mail.gmail.com>
-In-Reply-To: <CAL_JsqJphYYUsQR_kLH_y1gOArTifpEVUiTJfDpDsL8WjGxRfA@mail.gmail.com>
-From:   Chen-Yu Tsai <wens@kernel.org>
-Date:   Sat, 12 Dec 2020 23:18:17 +0800
-X-Gmail-Original-Message-ID: <CAGb2v6409SeptNUvMnpozriZ-L7iFCFFoG+=fJrtohxezDrEDQ@mail.gmail.com>
-Message-ID: <CAGb2v6409SeptNUvMnpozriZ-L7iFCFFoG+=fJrtohxezDrEDQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] PCI: rockchip: Make 'ep-gpios' DT property optional
-To:     Rob Herring <robh@kernel.org>
-Cc:     Chen-Yu Tsai <wens@kernel.org>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201211221006.1052453-4-robh@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 10:11 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Nov 18, 2020 at 1:17 AM Chen-Yu Tsai <wens@kernel.org> wrote:
-> >
-> > From: Chen-Yu Tsai <wens@csie.org>
-> >
-> > The Rockchip PCIe controller DT binding clearly states that 'ep-gpios' is
-> > an optional property. And indeed there are boards that don't require it.
-> >
-> > Make the driver follow the binding by using devm_gpiod_get_optional()
-> > instead of devm_gpiod_get().
-> >
-> > Fixes: e77f847df54c ("PCI: rockchip: Add Rockchip PCIe controller support")
-> > Fixes: 956cd99b35a8 ("PCI: rockchip: Separate common code from RC driver")
-> > Fixes: 964bac9455be ("PCI: rockchip: Split out rockchip_pcie_parse_dt() to parse DT")
-> > Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-> > ---
-> > Changes since v1:
-> >
-> >   - Rewrite subject to match existing convention and reference
-> >     'ep-gpios' DT property instead of the 'ep_gpio' field
-> > ---
-> >  drivers/pci/controller/pcie-rockchip.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/pci/controller/pcie-rockchip.c b/drivers/pci/controller/pcie-rockchip.c
-> > index 904dec0d3a88..c95950e9004f 100644
-> > --- a/drivers/pci/controller/pcie-rockchip.c
-> > +++ b/drivers/pci/controller/pcie-rockchip.c
-> > @@ -118,7 +118,7 @@ int rockchip_pcie_parse_dt(struct rockchip_pcie *rockchip)
-> >         }
-> >
-> >         if (rockchip->is_rc) {
-> > -               rockchip->ep_gpio = devm_gpiod_get(dev, "ep", GPIOD_OUT_HIGH);
-> > +               rockchip->ep_gpio = devm_gpiod_get_optional(dev, "ep", GPIOD_OUT_HIGH);
-> >                 if (IS_ERR(rockchip->ep_gpio)) {
-> >                         dev_err(dev, "missing ep-gpios property in node\n");
->
-> You should drop the error message. What it says is now never the
-> reason for the error and it could most likely be a deferred probe
-> which you don't want an error message for.
+On 12/11/20 2:10 PM, Rob Herring wrote:
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>   arch/arm64/kernel/machine_kexec_file.c | 123 +------------------------
+>   1 file changed, 3 insertions(+), 120 deletions(-)
+> 
 
-What about switching to dev_err_probe() instead?
+This change looks good to me.
 
-That way deferred probe errors get silenced (or get a better debug message),
-and error messages for other issues, such as miswritten gpio properties are
-still produced.
+Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 
-ChenYu
+  -lakshmi
 
-> >                         return PTR_ERR(rockchip->ep_gpio);
-> > --
-> > 2.29.1
-> >
+> diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
+> index 5b0e67b93cdc..7de9c47dee7c 100644
+> --- a/arch/arm64/kernel/machine_kexec_file.c
+> +++ b/arch/arm64/kernel/machine_kexec_file.c
+> @@ -15,23 +15,12 @@
+>   #include <linux/kexec.h>
+>   #include <linux/libfdt.h>
+>   #include <linux/memblock.h>
+> +#include <linux/of.h>
+>   #include <linux/of_fdt.h>
+> -#include <linux/random.h>
+>   #include <linux/slab.h>
+>   #include <linux/string.h>
+>   #include <linux/types.h>
+>   #include <linux/vmalloc.h>
+> -#include <asm/byteorder.h>
+> -
+> -/* relevant device tree properties */
+> -#define FDT_PROP_KEXEC_ELFHDR	"linux,elfcorehdr"
+> -#define FDT_PROP_MEM_RANGE	"linux,usable-memory-range"
+> -#define FDT_PROP_INITRD_START	"linux,initrd-start"
+> -#define FDT_PROP_INITRD_END	"linux,initrd-end"
+> -#define FDT_PROP_BOOTARGS	"bootargs"
+> -#define FDT_PROP_KASLR_SEED	"kaslr-seed"
+> -#define FDT_PROP_RNG_SEED	"rng-seed"
+> -#define RNG_SEED_SIZE		128
+>   
+>   const struct kexec_file_ops * const kexec_file_loaders[] = {
+>   	&kexec_image_ops,
+> @@ -50,112 +39,6 @@ int arch_kimage_file_post_load_cleanup(struct kimage *image)
+>   	return kexec_image_post_load_cleanup_default(image);
+>   }
+>   
+> -static int setup_dtb(struct kimage *image,
+> -		     unsigned long initrd_load_addr, unsigned long initrd_len,
+> -		     char *cmdline, void *dtb)
+> -{
+> -	int off, ret;
+> -
+> -	ret = fdt_path_offset(dtb, "/chosen");
+> -	if (ret < 0)
+> -		goto out;
+> -
+> -	off = ret;
+> -
+> -	ret = fdt_delprop(dtb, off, FDT_PROP_KEXEC_ELFHDR);
+> -	if (ret && ret != -FDT_ERR_NOTFOUND)
+> -		goto out;
+> -	ret = fdt_delprop(dtb, off, FDT_PROP_MEM_RANGE);
+> -	if (ret && ret != -FDT_ERR_NOTFOUND)
+> -		goto out;
+> -
+> -	if (image->type == KEXEC_TYPE_CRASH) {
+> -		/* add linux,elfcorehdr */
+> -		ret = fdt_appendprop_addrrange(dtb, 0, off,
+> -				FDT_PROP_KEXEC_ELFHDR,
+> -				image->arch.elf_headers_mem,
+> -				image->arch.elf_headers_sz);
+> -		if (ret)
+> -			return (ret == -FDT_ERR_NOSPACE ? -ENOMEM : -EINVAL);
+> -
+> -		/* add linux,usable-memory-range */
+> -		ret = fdt_appendprop_addrrange(dtb, 0, off,
+> -				FDT_PROP_MEM_RANGE,
+> -				crashk_res.start,
+> -				crashk_res.end - crashk_res.start + 1);
+> -		if (ret)
+> -			return (ret == -FDT_ERR_NOSPACE ? -ENOMEM : -EINVAL);
+> -	}
+> -
+> -	/* add bootargs */
+> -	if (cmdline) {
+> -		ret = fdt_setprop_string(dtb, off, FDT_PROP_BOOTARGS, cmdline);
+> -		if (ret)
+> -			goto out;
+> -	} else {
+> -		ret = fdt_delprop(dtb, off, FDT_PROP_BOOTARGS);
+> -		if (ret && (ret != -FDT_ERR_NOTFOUND))
+> -			goto out;
+> -	}
+> -
+> -	/* add initrd-* */
+> -	if (initrd_load_addr) {
+> -		ret = fdt_setprop_u64(dtb, off, FDT_PROP_INITRD_START,
+> -				      initrd_load_addr);
+> -		if (ret)
+> -			goto out;
+> -
+> -		ret = fdt_setprop_u64(dtb, off, FDT_PROP_INITRD_END,
+> -				      initrd_load_addr + initrd_len);
+> -		if (ret)
+> -			goto out;
+> -	} else {
+> -		ret = fdt_delprop(dtb, off, FDT_PROP_INITRD_START);
+> -		if (ret && (ret != -FDT_ERR_NOTFOUND))
+> -			goto out;
+> -
+> -		ret = fdt_delprop(dtb, off, FDT_PROP_INITRD_END);
+> -		if (ret && (ret != -FDT_ERR_NOTFOUND))
+> -			goto out;
+> -	}
+> -
+> -	/* add kaslr-seed */
+> -	ret = fdt_delprop(dtb, off, FDT_PROP_KASLR_SEED);
+> -	if (ret == -FDT_ERR_NOTFOUND)
+> -		ret = 0;
+> -	else if (ret)
+> -		goto out;
+> -
+> -	if (rng_is_initialized()) {
+> -		u64 seed = get_random_u64();
+> -		ret = fdt_setprop_u64(dtb, off, FDT_PROP_KASLR_SEED, seed);
+> -		if (ret)
+> -			goto out;
+> -	} else {
+> -		pr_notice("RNG is not initialised: omitting \"%s\" property\n",
+> -				FDT_PROP_KASLR_SEED);
+> -	}
+> -
+> -	/* add rng-seed */
+> -	if (rng_is_initialized()) {
+> -		void *rng_seed;
+> -		ret = fdt_setprop_placeholder(dtb, off, FDT_PROP_RNG_SEED,
+> -				RNG_SEED_SIZE, &rng_seed);
+> -		if (ret)
+> -			goto out;
+> -		get_random_bytes(rng_seed, RNG_SEED_SIZE);
+> -	} else {
+> -		pr_notice("RNG is not initialised: omitting \"%s\" property\n",
+> -				FDT_PROP_RNG_SEED);
+> -	}
+> -
+> -out:
+> -	if (ret)
+> -		return (ret == -FDT_ERR_NOSPACE) ? -ENOMEM : -EINVAL;
+> -
+> -	return 0;
+> -}
+> -
+>   /*
+>    * More space needed so that we can add initrd, bootargs, kaslr-seed,
+>    * rng-seed, userable-memory-range and elfcorehdr.
+> @@ -185,8 +68,8 @@ static int create_dtb(struct kimage *image,
+>   		if (ret)
+>   			return -EINVAL;
+>   
+> -		ret = setup_dtb(image, initrd_load_addr, initrd_len,
+> -				cmdline, buf);
+> +		ret = of_kexec_setup_new_fdt(image, buf, initrd_load_addr,
+> +					     initrd_len, cmdline);
+>   		if (ret) {
+>   			vfree(buf);
+>   			if (ret == -ENOMEM) {
+> 
+
