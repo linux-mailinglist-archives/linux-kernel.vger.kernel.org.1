@@ -2,130 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80502D8A6E
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 23:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BCC2D8A79
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 23:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408114AbgLLWom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 17:44:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
+        id S2408133AbgLLW7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 17:59:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbgLLWom (ORCPT
+        with ESMTP id S1725822AbgLLW7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 17:44:42 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDAD1C0613CF;
-        Sat, 12 Dec 2020 14:44:01 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id c7so13248915edv.6;
-        Sat, 12 Dec 2020 14:44:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yorWS1Y8OcDME3EOhngMSE0EO65pPSVP9MraA5daZhY=;
-        b=UHoNBstjp2q+SnfJxTCOzBgNooxiOkGq8uPN6NP2LNhs6sf78dBSdoq4gXKvTDDYBP
-         uPAHZrFiRtU0JoEWO99MKnWcV+J990n487iCug4w3ZwRmmLWrIVvBnEm1ZKS8uo5hF54
-         z8nSj3YwqHKXTefTIkUs3xYJh+VGm6AfiO5OTxyDLackzxSoltGJrMSh4jzvD77QimCi
-         N1DveBwdl5NozwpYigazWCiAYZZiB0d5m2L5FIqqTuZcNzpcfMToVEUmR+o74VgeH39b
-         w5OvaUSYsdA2V9F+9PLqI9L0bLG3OhM37U01k1bVnIyVvxd8/G0OH3XXBg6OfGkx8wZ/
-         uZ+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yorWS1Y8OcDME3EOhngMSE0EO65pPSVP9MraA5daZhY=;
-        b=Q7fQ3phBkZyL03exTZ47EpkJ04r+ZzUOm6Oesl0rC+1A7COUdgQRodQ0x7rM3U709+
-         zmtnEW2Jxm1Syrw23RS6pb/czaY0HwZ2xPwMK96L71rbJjUAdTaBiXav1IXEmAgWS/u5
-         YCPtWSe2okb4/Cv/1Bdbi7bUGvKWfeUHoUgLhHNB/bSh8tIqNz5U2lxnxqfm5mORDcuL
-         F6wJiuXxx+MpCNK7wYLFwyro9KW7P4JAgCp6+zGsvC2ePi+aims9HrylRPlLpP1jQuFt
-         MEa7v2kqOG5LmLTAIE7vW2A190U+1GJynyyLnON5z+eWJjNp2cCui4l+stqgBxXewNrP
-         KKEQ==
-X-Gm-Message-State: AOAM5337fYL1MZGnDMfssQvYJURIj3mS7URsZxWsL63JM5vFZk0iV1U9
-        SPT/dVnm2sOFL8q5MGULf3xRgLuWWOy/5UmYuls=
-X-Google-Smtp-Source: ABdhPJxDh8WOfncQIJ3MgT/K9xTvaIDmZdI9csJjQlO/qGNvpOifci9xXtmC9ejMpRzpYlmGAuI9enVhweGOfGUhSnI=
-X-Received: by 2002:a05:6402:2070:: with SMTP id bd16mr17714330edb.107.1607813040330;
- Sat, 12 Dec 2020 14:44:00 -0800 (PST)
+        Sat, 12 Dec 2020 17:59:01 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E34F9C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 14:58:20 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1koDqC-0000y7-AX; Sat, 12 Dec 2020 23:58:16 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1koDqA-00039f-Jk; Sat, 12 Dec 2020 23:58:14 +0100
+Date:   Sat, 12 Dec 2020 23:58:14 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v2] driver core: platform: don't oops in
+ platform_shutdown() on unbound devices
+Message-ID: <20201212225814.pg73imvdm2eevw3w@pengutronix.de>
+References: <20201212213832.237027-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-References: <20201206002629.12872-1-adrien.grassein@gmail.com>
- <20201210221629.17312-1-adrien.grassein@gmail.com> <20201211140412.GD4929@sirena.org.uk>
-In-Reply-To: <20201211140412.GD4929@sirena.org.uk>
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Date:   Sat, 12 Dec 2020 23:43:49 +0100
-Message-ID: <CABkfQAGR=sPwhwL0ifqXpqCWKHZ_8pPj6Da_ugOQzFbvYbKdDg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: regulator: add pf8x00 PMIC
-To:     Mark Brown <broonie@kernel.org>
-Cc:     lgirdwood@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
-        troy.kisky@boundarydevices.com,
-        Gary Bisson <gary.bisson@boundarydevices.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qlgm2d37siqq5rfz"
+Content-Disposition: inline
+In-Reply-To: <20201212213832.237027-1-dmitry.baryshkov@linaro.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-Le ven. 11 d=C3=A9c. 2020 =C3=A0 15:04, Mark Brown <broonie@kernel.org> a =
-=C3=A9crit :
->
-> On Thu, Dec 10, 2020 at 11:16:28PM +0100, Adrien Grassein wrote:
-> > Add a devicetree binding documentation for the pf8x00 regulator driver.
->
-> Please don't send new patches in reply to old threads, it makes it hard
-> to keep track of what is going on.
+--qlgm2d37siqq5rfz
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sorry. Should I create a new mail each time I send a new version of the pat=
-ch?
+Hello Dmitry,
 
->
-> > +          regulator-name:
-> > +            pattern: "^ldo[1-4]$"
-> > +            description:
-> > +              should be ldo1", ..., "ldo4"
->
-> This is part of the generic regulator binding and since it's for board
-> specific usage it should not be constrained by the chip binding.
+On Sun, Dec 13, 2020 at 12:38:32AM +0300, Dmitry Baryshkov wrote:
+> Platform code stopped checking if the device is bound to the actual
+> platform driver, thus calling non-existing drv->shutdown(). Verify that
+> _dev->driver is not NULL before calling shutdown callback.
 
-Ok.
->
-> > +          nxp,vselect-en:
-> > +            $ref: /schemas/types.yaml#definitions/flag
-> > +            description:
-> > +              Only available for ldo2. When specified, use the VSELECT
-> > +              input pin of the chip to control the output voltage of t=
-he
-> > +              ldo02 regulator. (3.3V if VSELECT is LOW, 1.8V if HIGH).
->
-> How is VSELECT used without a binding specifying some mechanism for
-> control?
+I'd write:
 
-I think that VSELECT input should be controlled by the sub system that
-uses it (via maybe a GPIO).
-On my board, it's directly controlled by another chip (so without a GPIO).
+	On shutdown the driver core calls the bus' shutdown callback also for
+	unbound devices. A driver's shutdown callback however is only called for
+	devices bound to this driver. Commit 9c30921fe799 ("driver core:
+	platform: use bus_type functions") changed the platform bus from driver
+	callbacks to bus callbacks, so the shutdown function must be prepared to
+	be called without a driver. Add the corresponding check in the
+	shutdown function.
 
->
-> > +          nxp,ilim-microamp:
-> > +            $ref: /schemas/types.yaml#definitions/uint32
-> > +            minimum: 2100
-> > +            maximum: 4500
-> > +            default: 2100
-> > +            enum: [ 2100, 2600, 3000, 4500 ]
-> > +            description:
-> > +              Defines the maximum current delivered by the regulator i=
-n microamp.
->
-> Instead of implementing a custom property this should use the already
-> existing properties for current limits, this is a common thing for
-> hardware to have so we shouldn't have custom bindings.  We'll need to
-> relax the check the code currently has for a non-zero minimum limit but
-> otherwise everything should already be there.
+With that adding the backtrace isn't necessary (and the patch is fine).
 
-Ok I now use "regulator-max-microamp" property from the regulator that
-acts like my property.
-I was wrong with the default value. I re-read the documentation and
-the default value is stored in OTP
-memory. So if someone skipped this property, it's OK to not send any value.
+Best regards
+Uwe
 
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-Thanks again,
-Regards,
+--qlgm2d37siqq5rfz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/VSwMACgkQwfwUeK3K
+7AmL+Af+Kt4G3f6WdUMguwk1HfuKTUs0kfdJ3hHRf54vNyO+MitUddUK2sfyw6ns
+FbAEgf+30lK5EVFoYcQtwxXweEZQa7sGREPWyzTkkz6HPyiDorC+C0iDJ6MtQQDs
+St8crw/DDhUohd/DKP3NF9nKRZZj47/ehFHakotMz9ljrdJjCcanDtV2zWTMBOSR
+7zp0MCuyIiHy2LSzJsyxfpyk0JcJY1gu1/OVyXK7kJFcDuRgO4A2zmY8Aed8UIif
+5SrdsQ2H+HnGqqQYr9T96zTYUjOea9LbSpkhLGrc8wcIyN5CW07n02fC8kEpUVrE
+CiEs0ap5b5kMYK1vOoU1rSbHQWsFDw==
+=/HEc
+-----END PGP SIGNATURE-----
+
+--qlgm2d37siqq5rfz--
