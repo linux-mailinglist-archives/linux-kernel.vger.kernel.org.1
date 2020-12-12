@@ -2,185 +2,1570 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016E92D85F4
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 11:41:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E882D8601
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 11:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438784AbgLLKkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 05:40:23 -0500
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:23472 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2438758AbgLLKkW (ORCPT
+        id S2438816AbgLLKsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 05:48:12 -0500
+Received: from bmail1.ministro.hu ([5.249.150.236]:58458 "EHLO
+        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437289AbgLLKsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 05:40:22 -0500
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BC6pfpk008713;
-        Fri, 11 Dec 2020 23:07:47 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=proofpoint;
- bh=xqUMd2AFnxUVFgbhS9ptH2KwZ2Pi1S9Qe/kmgeFPP3g=;
- b=kvxOBS0sU63ms+gGVkRg1kN4M0BNRTWkPHwZebEBdtWQeOQTVPscT0K8INDH+daVYkZG
- KczX38rXAoC86mxIMm7aWMsqZ58VVOFdX6aAY99TyHXMfAvv5c/qACKCojv1sF3LbMPe
- YB+Vr+ovdQvL/fFB2+vl/8q/qtANNEa0ZbumM0Kh7mIlNTEmm1Di5AAAwYH2ICmNXeUP
- 25xFoWAaVYHUyCed9Q+NDODHfN4uozzfyq+2fF2APbkkjT9JN197xSxYep1gaF9W48pg
- 7PAib1AotWabvlNsi6Up6a2BYYJsDzQWJKN1r2b712qRV9hNfnDXn5nI2n8LCMOoXLnS 6w== 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2177.outbound.protection.outlook.com [104.47.57.177])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 35cpvh88qr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Dec 2020 23:07:46 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PbRYy9CT/7i+xfhdwVQBxNISvizvT345oHjyn73GEVeGu/Z8M7EHfKDUpvMsrzXLlCZ+S5oZsH3nd0goSp9VYIpAumddzRGXmU3VjDnzQmKPA7/0dKnmLLeMGwX22DzXLJAluI/JxVKQm5dvP6O4tNVVs0QKNHXOhHooWNqZ1QRrh26au3n4WdPUBMXOHoS3XtSKkAERt4JOkP0EMDilgQHCc1A9BUOR3HS1pCnlZaQJnVspeaGhtaBiGWZhZVafNWUMi43B4j70uDf/J+HvPg5YqFR4eK6GljL9uU2pUV01LrRJfPoLT40NhoCr6NENfonTh4I4RtjFrh0i7f3N4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xqUMd2AFnxUVFgbhS9ptH2KwZ2Pi1S9Qe/kmgeFPP3g=;
- b=as8egpNThcz85wIoFhQDfGLuqzAoDdYsYNiCe6JFRvx75o+qXa0JUWh9fqOhbZlL4UlQ4FS9tp+pMwLherBtYnYZVLXou2YjrlHgCxigk5E/dq/eMRp6ErDtWp3C9dJTW+9UARcItpf7JLH8OersKdqT7Bs4vl7b/dxLrx2O8jhZbe1rShKoswL2rS3faBWgG8A6ZYkuraZRJ9KAoOTm7JbRjIFcmSLarbGI2Za/jcFyF/QTRh0WcsDO1s16/j4+b5DrJzJnPl93jI3fYXNyLNC+8P+/0IYNQ40wl4BXQdXh/yT1YbAuhcEP66F8Ng24ytdB+Z8ooLvv/Qy0nB5d5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
- dkim=pass header.d=cadence.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xqUMd2AFnxUVFgbhS9ptH2KwZ2Pi1S9Qe/kmgeFPP3g=;
- b=2x5Zo654kIZLyt9tZsvHU+b1m2mfwNIFlx5+4rpFP/I7iAwsQa1+g35vttbA20G8qUxDY+W304Hvc4K8TkeqiPRlJgdu7RKj5JwWSKQJw34udx9Lx+TZCuvC/21DpwPtKTD62CLFGTBCD9YTsCye/PrZv7MzSZRaH7J8/N7wVzE=
-Received: from SN2PR07MB2557.namprd07.prod.outlook.com (2603:10b6:804:12::9)
- by SA0PR07MB7658.namprd07.prod.outlook.com (2603:10b6:806:be::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Sat, 12 Dec
- 2020 07:07:43 +0000
-Received: from SN2PR07MB2557.namprd07.prod.outlook.com
- ([fe80::e164:6aec:aed1:1e2a]) by SN2PR07MB2557.namprd07.prod.outlook.com
- ([fe80::e164:6aec:aed1:1e2a%8]) with mapi id 15.20.3654.016; Sat, 12 Dec 2020
- 07:07:42 +0000
-From:   Athani Nadeem Ladkhan <nadeem@cadence.com>
-To:     Rob Herring <robh@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-CC:     Tom Joseph <tjoseph@cadence.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Milind Parab <mparab@cadence.com>,
-        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
-        Parshuram Raju Thombare <pthombar@cadence.com>
-Subject: RE: [PATCH v4 1/2] dt-bindings: pci: Retrain Link to work around Gen2
- training defect.
-Thread-Topic: [PATCH v4 1/2] dt-bindings: pci: Retrain Link to work around
- Gen2 training defect.
-Thread-Index: AQHWz8vmdVN4Fb0wXUex4zRT/e/XyqnyHzUAgADqL+A=
-Date:   Sat, 12 Dec 2020 07:07:42 +0000
-Message-ID: <SN2PR07MB2557145EE4C4E9C50A16CF64D8C90@SN2PR07MB2557.namprd07.prod.outlook.com>
-References: <20201211144236.3825-1-nadeem@cadence.com>
- <20201211144236.3825-2-nadeem@cadence.com>
- <CAL_JsqLTz2k03gzrjDqi2d1NHQV+3pXxg6OqwcJ17CmfGYMf-A@mail.gmail.com>
-In-Reply-To: <CAL_JsqLTz2k03gzrjDqi2d1NHQV+3pXxg6OqwcJ17CmfGYMf-A@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-Mentions: kishon@ti.com
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcbmFkZWVtXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctYjdiNTFlMTYtM2M0OC0xMWViLWFlOTItZDQ4MWQ3OWExZmRlXGFtZS10ZXN0XGI3YjUxZTE3LTNjNDgtMTFlYi1hZTkyLWQ0ODFkNzlhMWZkZWJvZHkudHh0IiBzej0iMjQyOCIgdD0iMTMyNTIyMzA0NTkyODAzMjAzIiBoPSJIRlJtWUJuZEozZDBxQkpobXFDeGVvRmN1V289IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
-x-dg-rorf: true
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=cadence.com;
-x-originating-ip: [59.145.174.78]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: af038a12-0b62-471d-50fd-08d89e6c9ec0
-x-ms-traffictypediagnostic: SA0PR07MB7658:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA0PR07MB7658B42D4A35920CA34D2F45D8C90@SA0PR07MB7658.namprd07.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gUt1GFur7OvTUNNvxzL+KYf7rGiZ9i2OkVPZLTMAWbmJeBTH8xeY6YG+Nk3z3k3zLkqFpoTBnOK+cfg5OVNEerFOhC6TiUbNqv1/3jRfzx7Ij0twav49fGjMIrgoe98tgfrnrZG9dxbEpSKCon2X/TU1wlaGwtx1xCWdLtEmYR/hjuYqB5PhLyVlvzQZ/QV07FzctW+NBJVxmlwtgCAuRApOk9tqI7/I3PRr0u83oGHFj+RGb307klL/BXuJB3Hxjd1rh0ajH82uATHzm4TOG1dXa+M0YDyScO3bPe3Mmeo50r2IH+gmaLdd6vwaWiHF4IP0Z6GD9Zr1eLOfGSzFs6acEEQ2fZKUr2d79ql7NDqeAAkdd9EzmoS8dJysw31n
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN2PR07MB2557.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(366004)(376002)(36092001)(52536014)(6506007)(33656002)(508600001)(54906003)(64756008)(76116006)(71200400001)(66556008)(26005)(66446008)(53546011)(83380400001)(8936002)(8676002)(9686003)(2906002)(110136005)(66476007)(86362001)(66946007)(5660300002)(186003)(107886003)(4326008)(55016002)(7696005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?MDgwMnVwUFViM2ZYQU9hMnBSci9LTUc3akU5N2djN2RReTRXMjFJYTBndW1r?=
- =?utf-8?B?S1JrdEJYNHFPZXVrMk1tMitpNS9WeGdwRlJtS0ZNclVJa2phYXUvRW44Zlli?=
- =?utf-8?B?Qkw0RG5qMWNKVkhUdTFRSjhjck1wYk10c1dHaDdHU0dMSm5NZUxva29naVpF?=
- =?utf-8?B?aWVkWWpIRlNESnUwNmJQK3RoeHhISDFoZDRuenlzRjI2Z09SRGhhZnNuRmhP?=
- =?utf-8?B?Z0JFWVZsYlVrY2haaVQ0YUE4RFExcFA4aVpYc08rVU9KcnE0QktjcjZzTGhS?=
- =?utf-8?B?ZDNSb21CZ2YvTnVlWE1HbGg2SGd5TnEzeHpabEVPZ21ZZW52aSs0Z0owcEdx?=
- =?utf-8?B?OW9XdkgwQUR0em1zVFlXVERDbkc3a2Q5TlBORnd6S21MOERoSHZ6S3BtS1dL?=
- =?utf-8?B?RXhnVTgyZTlaME9kMHdrUWFzSlBrYm5oTG1KQW9aMldTbnhLZ2VrRzZSZ01D?=
- =?utf-8?B?Tm96UEFzNjZORUJZU1NiMXpON2tnMlp1YUxZZUdXTUFueWExQ2hwYTFzWm1J?=
- =?utf-8?B?QlRWNDFNSW9weURSZjNUSnJHUmdTZDZOWG5UaWJGWDY5Ykp6WWJBYjdJUzZw?=
- =?utf-8?B?U2VQbUppOGZQYkc1Q1podGR4MEV4WG0xcEtpZEZxOHArYmRCc3VOdEdIcXhk?=
- =?utf-8?B?TjBFemRzLzNlL1VvVVkvWE42R0FPNFFXUk5ncTBybC9ZbmJsc2FPUHpzMWNn?=
- =?utf-8?B?bzhBVHlwaFV5Y0JpZ3lSREhKU1dBbXloWDNNaXNvcjlLNldsajhPSjUxWVlM?=
- =?utf-8?B?SnF0ZjlVV1JOeFhtQzkvWEtlQ2RETUV0SHVEbDNib3RpTUQ4dndmRmNRc1hl?=
- =?utf-8?B?V0M1ekF6cHplYU5DR2tKK3AzUkR0aGc1dlc5ZTNJMVdJaU9aMFJ3UnlBTW1y?=
- =?utf-8?B?ajBkNnJ0RE5wTGh0QWJkUUVOdm5KeXp0RHNMQ1gyTEU4Q2FYbS9FUmVVbE1s?=
- =?utf-8?B?TkU4NDZqTG9iVGJMQXVQdFV0RTF2dXgwdXQ1N0MrYnJoNER1OTdFRG1JY2dM?=
- =?utf-8?B?WlpHY1VvTzQzM2tKYnF3ZlJSa0JSM0FBanQ4TWE1MDdMeCsxaVpGRkRjM0VL?=
- =?utf-8?B?RjgrS3VFK29neFdPNmMrRUZORjVEN1VoYnNBQ1Y1VENVaWZMTm1xUFJPRjMw?=
- =?utf-8?B?a0xLYWFLaE1YK0prSmN5dEZtUkZzRHNuQ3lnTG5WdjVZS0pnQldzVXVuNGMx?=
- =?utf-8?B?anBkZWpTVEJLM285TnA2VWxLamRhTmtHWHozc1RwSGVMQlIxZDRGS2ZoQ1Vt?=
- =?utf-8?B?MzJUQlJwcyt3c2lGVlJTRzhjUERuNmwxQTRmbHo3VEtoZGdvZ0JYV0wzSzFy?=
- =?utf-8?Q?iwaHxbUCOIOg4=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Sat, 12 Dec 2020 05:48:00 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTP id 847D0123B2E;
+        Sat, 12 Dec 2020 08:10:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1607757043;
+        bh=7oM0kVVz0GhPGIiCJeZlsA/Wy1fygV8us3stY6iSPfI=;
+        h=Date:From:To:Subject:From;
+        b=X47EoN3N0h07I30lZ+tWIYB0RjfkBE99A/oFos6C7MCGQQxzA4Z+MZABBTrmnnA5p
+         S5griKZ03DavBGo1q2QyCkH4pMeZJGMkdNQu3gabp9G1B8+1GfPWlyv7xE+tQp6W4I
+         w3yJcnaCZklnbwnOi+3kO4iRf8RLRf1DWioK6HC28VjdoKT31KAqq+aKU1tcQ2aTNm
+         r7slURrSAaqxXnhUA+4eGNwj7d6bOIPA/0k27sIWixlff13roBmmG5ErX18XZ6RDBt
+         yCLmQzezIAhy/hB839lYT551buYMw+J+om8qAcTSAjT2aPBYfuHjKVKa+YY/kDrcfV
+         metgXJ2pDKziw==
+X-Virus-Scanned: Debian amavisd-new at ministro.hu
+Received: from bmail1.ministro.hu ([127.0.0.1])
+        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id p6lWD81YPBik; Sat, 12 Dec 2020 08:09:50 +0100 (CET)
+Received: from dincontrollerdev (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTPSA id DB73112106C;
+        Sat, 12 Dec 2020 08:09:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1607756990;
+        bh=7oM0kVVz0GhPGIiCJeZlsA/Wy1fygV8us3stY6iSPfI=;
+        h=Date:From:To:Subject:From;
+        b=msGQtZDYF5gxcnNHcNLqDDAfITjiiZKO34vOtOwF/siQ9Xy8OkEJwfUGrQ2wwDPix
+         0CUNSbz3pLdl2O2xCOMWwRK9ozNcM9h5R0txeGVkntjiYDGTrMz3LgPUAryxQ4+FAk
+         Gznym4MFxsnTNsRgbkCKLLOY3NwSXH7Q4+XsMufMLalh1RyGaKrfqXSx33Yl0X3HpU
+         vhrbXTqAYwmrX1LIm1STu0Lr6iX1xnMjrDz0pvDCF1GXvComINkqyZdZCsr6+GE4eP
+         U4N9x1MSHkdiAqLAC5mxm/X3M8YRoXXhGnSPEQ6vVfk4P8c5nEKwS/m4elnHzDQ2ZD
+         acCoWQX7vcs/Q==
+Date:   Sat, 12 Dec 2020 07:09:46 +0000
+From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
+        'Rob Herring' <robh+dt@kernel.org>,
+        'Jiri Slaby' <jirislaby@kernel.org>,
+        =?iso-8859-1?Q?'J=F3zsef_Horv=E1th'?= <info@ministro.hu>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] Serial: silabs si4455 serial driver
+Message-ID: <20201212070944.GA13909@dincontrollerdev>
 MIME-Version: 1.0
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN2PR07MB2557.namprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: af038a12-0b62-471d-50fd-08d89e6c9ec0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Dec 2020 07:07:42.7556
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OSYaXyYkzk3RFq9jYHHQ3k+Zu6MOmrMu1yMkdFeiXcJJAaKw4TubFsw8kPhXfETYEtRcITyRqaVJRo0l4Tvdo6CuPiEKDHqKvxxYTmf38X0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR07MB7658
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-12_02:2020-12-11,2020-12-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 malwarescore=0
- spamscore=0 clxscore=1015 mlxlogscore=999 priorityscore=1501 phishscore=0
- mlxscore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012120054
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUm9iIC8gS2lzaG9uLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206
-IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IEZyaWRheSwgRGVjZW1iZXIg
-MTEsIDIwMjAgMTA6MzIgUE0NCj4gVG86IEF0aGFuaSBOYWRlZW0gTGFka2hhbiA8bmFkZWVtQGNh
-ZGVuY2UuY29tPg0KPiBDYzogVG9tIEpvc2VwaCA8dGpvc2VwaEBjYWRlbmNlLmNvbT47IExvcmVu
-em8gUGllcmFsaXNpDQo+IDxsb3JlbnpvLnBpZXJhbGlzaUBhcm0uY29tPjsgQmpvcm4gSGVsZ2Fh
-cyA8YmhlbGdhYXNAZ29vZ2xlLmNvbT47IFBDSQ0KPiA8bGludXgtcGNpQHZnZXIua2VybmVsLm9y
-Zz47IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IEtpc2hvbiBWaWpheQ0KPiBBYnJhaGFt
-IEkgPGtpc2hvbkB0aS5jb20+OyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgTWlsaW5kIFBh
-cmFiDQo+IDxtcGFyYWJAY2FkZW5jZS5jb20+OyBTd2FwbmlsIEthc2hpbmF0aCBKYWtoYWRlDQo+
-IDxzamFraGFkZUBjYWRlbmNlLmNvbT47IFBhcnNodXJhbSBSYWp1IFRob21iYXJlDQo+IDxwdGhv
-bWJhckBjYWRlbmNlLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2NCAxLzJdIGR0LWJpbmRp
-bmdzOiBwY2k6IFJldHJhaW4gTGluayB0byB3b3JrIGFyb3VuZA0KPiBHZW4yIHRyYWluaW5nIGRl
-ZmVjdC4NCj4gDQo+IEVYVEVSTkFMIE1BSUwNCj4gDQo+IA0KPiBPbiBGcmksIERlYyAxMSwgMjAy
-MCBhdCA5OjAzIEFNIE5hZGVlbSBBdGhhbmkgPG5hZGVlbUBjYWRlbmNlLmNvbT4NCj4gd3JvdGU6
-DQo+ID4NCj4gPiBDYWRlbmNlIGNvbnRyb2xsZXIgd2lsbCBub3QgaW5pdGlhdGUgYXV0b25vbW91
-cyBzcGVlZCBjaGFuZ2UgaWYNCj4gPiBzdHJhcHBlZCBhcyBHZW4yLiBUaGUgUmV0cmFpbiBMaW5r
-IGJpdCBpcyBzZXQgYXMgcXVpcmsgdG8gZW5hYmxlIHRoaXMgc3BlZWQNCj4gY2hhbmdlLg0KPiA+
-IEFkZGluZyBhIHF1aXJrIGZsYWcgYmFzZWQgb24gYSBuZXcgY29tcGF0aWJsZSBzdHJpbmcuDQo+
-ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBOYWRlZW0gQXRoYW5pIDxuYWRlZW1AY2FkZW5jZS5jb20+
-DQo+ID4gLS0tDQo+ID4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wY2kvY2Ru
-cyxjZG5zLXBjaWUtaG9zdC55YW1sIHwgNA0KPiA+ICsrKy0NCj4gPiAgMSBmaWxlIGNoYW5nZWQs
-IDMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdA0KPiA+
-IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9jZG5zLGNkbnMtcGNpZS1o
-b3N0LnlhbWwNCj4gPiBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wY2kvY2Ru
-cyxjZG5zLXBjaWUtaG9zdC55YW1sDQo+ID4gaW5kZXggMjkzYjhlYzMxOGJjLi4yMDRkNzhmOWVm
-ZTMgMTAwNjQ0DQo+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3Bj
-aS9jZG5zLGNkbnMtcGNpZS1ob3N0LnlhbWwNCj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3MvcGNpL2NkbnMsY2Rucy1wY2llLWhvc3QueWFtbA0KPiA+IEBAIC0xNSw3
-ICsxNSw5IEBAIGFsbE9mOg0KPiA+DQo+ID4gIHByb3BlcnRpZXM6DQo+ID4gICAgY29tcGF0aWJs
-ZToNCj4gPiAtICAgIGNvbnN0OiBjZG5zLGNkbnMtcGNpZS1ob3N0DQo+ID4gKyAgICBlbnVtOg0K
-PiA+ICsgICAgICAgIC0gY2RucyxjZG5zLXBjaWUtaG9zdA0KPiA+ICsgICAgICAgIC0gY2Rucyxj
-ZG5zLXBjaWUtaG9zdC1xdWlyay1yZXRyYWluDQo+IA0KPiBTbywgd2UnbGwganVzdCBrZWVwIGFk
-ZGluZyBxdWlyayBzdHJpbmdzIG9uIHRvIHRoZSBjb21wYXRpYmxlPyBJIGRvbid0IHRoaW5rIHNv
-Lg0KPiBDb21wYXRpYmxlIHN0cmluZ3Mgc2hvdWxkIG1hcCB0byBhIHNwZWNpZmljIGltcGxlbWVu
-dGF0aW9uL3BsYXRmb3JtIGFuZA0KPiBxdWlya3MgY2FuIHRoZW4gYmUgaW1wbGllZCBmcm9tIHRo
-ZW0uIFRoaXMgaXMgdGhlIG9ubHkgd2F5IHdlIGNhbiBpbXBsZW1lbnQNCj4gcXVpcmtzIGluIHRo
-ZSBPUyB3aXRob3V0IGZpcm13YXJlDQo+IChEVCkgY2hhbmdlcy4NCk9rLCBJIHdpbGwgY2hhbmdl
-IHRoZSBjb21wYXRpYmxlIHN0cmluZyB0byAiIHRpLGo3MjFlLXBjaWUtaG9zdCIgaW4gcGxhY2Ug
-b2YgICIgY2RucyxjZG5zLXBjaWUtaG9zdC1xdWlyay1yZXRyYWluIiAuDQpAS2lzaG9uIFZpamF5
-IEFicmFoYW0gSTogSXMgdGhpcyBmaW5lPyBPciB3aWxsIHlvdSBzdWdnZXN0IGFuIGFwcHJvcHJp
-YXRlIG5hbWU/DQoNCk5hZGVlbQ0KPiANCj4gUm9iDQo=
+This is a serial port driver for
+ Silicon Labs Si4455 Sub-GHz transciver.
+
+The goal of this driver is to removing wires
+ between central(linux) device and remote serial devices/sensors,
+ but keeping the original user software.
+ It represents regular serial interface for the user space.
+
+Datasheet: https://www.silabs.com/documents/public/data-sheets/Si4455.pdf
+
+Signed-off-by: József Horváth <info@ministro.hu>
+---
+ .../staging/serial/silabs,si4455.yaml         |   95 ++
+ MAINTAINERS                                   |    6 +
+ drivers/tty/serial/Kconfig                    |    8 +
+ drivers/tty/serial/Makefile                   |    1 +
+ drivers/tty/serial/si4455.c                   | 1328 +++++++++++++++++
+ 5 files changed, 1438 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/staging/serial/silabs,si4455.yaml
+ create mode 100644 drivers/tty/serial/si4455.c
+
+diff --git a/Documentation/devicetree/bindings/staging/serial/silabs,si4455.yaml b/Documentation/devicetree/bindings/staging/serial/silabs,si4455.yaml
+new file mode 100644
+index 000000000000..d3a8c07c6714
+--- /dev/null
++++ b/Documentation/devicetree/bindings/staging/serial/silabs,si4455.yaml
+@@ -0,0 +1,95 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/staging/serial/silabs,si4455.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Silicon Labs Si4455 device tree bindings
++
++maintainers:
++  - József Horváth <info@ministro.hu>
++
++description:
++  This document is for describing the required device tree parameters for si4455 serial driver.
++  The si4455 driver tries to represent the Silicon Labs Si4455 sub-GHz transceiver device
++  like a serial port. The required parameters for proper operation are described below.
++  https://www.silabs.com/documents/public/data-sheets/Si4455.pdf
++
++properties:
++  compatible:
++    const: silabs,si4455
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  spi-max-frequency:
++    description: maximum clock frequency on SPI port
++    maximum: 500000
++
++  shutdown-gpios:
++    description: gpio pin for SDN
++    maxItems: 1
++
++  silabs,package-size:
++    description:
++      Radio payload length, variable packet length is not supported by driver.
++      This value should equal with EZConfig payload length.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 64
++    minimum: 1
++
++  silabs,tx-channel:
++    description:
++      Radio transmit channel selection.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 255
++    minimum: 0
++
++  silabs,rx-channel:
++    description:
++      Radio receive channel selection.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 255
++    minimum: 0
++
++  silabs,ez-config:
++    description:
++      Radio configuration data file name.
++    $ref: /schemas/types.yaml#/definitions/string
++    items:
++      pattern: ^[0-9a-z\._\-]{1,255}$
++
++required:
++  - reg
++  - interrupts
++  - spi-max-frequency
++  - shutdown-gpios
++  - silabs,package-size
++  - silabs,tx-channel
++  - silabs,rx-channel
++  - silabs,ez-config
++
++additionalProperties: false
++
++examples:
++  - |
++    spi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      si4455_0: serial@0 {
++        compatible = "silabs,si4455";
++        reg = <0>;
++        interrupt-parent = <&gpio>;
++        interrupts = <7 2>;
++        shutdown-gpios = <&gpio 26 1>;
++        spi-max-frequency = <300000>;
++        silabs,package-size = <30>;
++        silabs,tx-channel = <1>;
++        silabs,rx-channel = <2>;
++        silabs,ez-config = "si4455_spi0_0.ez.bin";
++      };
++    };
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a008b70f3c16..50db79c78005 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15952,6 +15952,12 @@ M:	Jérôme Pouiller <jerome.pouiller@silabs.com>
+ S:	Supported
+ F:	drivers/staging/wfx/
+ 
++SILICON LABS SI4455 SERIAL DRIVER
++M:	József Horváth <info@ministro.hu>
++S:	Maintained
++F:	Documentation/devicetree/bindings/staging/serial/silabs,si4455.yaml
++F:	drivers/tty/serial/si4455.c
++
+ SILICON MOTION SM712 FRAME BUFFER DRIVER
+ M:	Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+ M:	Teddy Wang <teddy.wang@siliconmotion.com>
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index 28f22e58639c..560aa311cd03 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -1583,6 +1583,14 @@ config SERIAL_MILBEAUT_USIO_CONSOLE
+ 	  receives all kernel messages and warnings and which allows logins in
+ 	  single user mode).
+ 
++config SERIAL_SI4455
++	tristate "Si4455 support"
++	depends on SPI
++	select SERIAL_CORE
++	help
++	  This driver is for Silicon Labs's Si4455 Sub-GHz transciver.
++	  Say 'Y' here if you wish to use it as serial port.
++
+ endmenu
+ 
+ config SERIAL_MCTRL_GPIO
+diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
+index caf167f0c10a..2a3076b98c78 100644
+--- a/drivers/tty/serial/Makefile
++++ b/drivers/tty/serial/Makefile
+@@ -90,6 +90,7 @@ obj-$(CONFIG_SERIAL_OWL)	+= owl-uart.o
+ obj-$(CONFIG_SERIAL_RDA)	+= rda-uart.o
+ obj-$(CONFIG_SERIAL_MILBEAUT_USIO) += milbeaut_usio.o
+ obj-$(CONFIG_SERIAL_SIFIVE)	+= sifive.o
++obj-$(CONFIG_SERIAL_SI4455) += si4455.o
+ 
+ # GPIOLIB helpers for modem control lines
+ obj-$(CONFIG_SERIAL_MCTRL_GPIO)	+= serial_mctrl_gpio.o
+diff --git a/drivers/tty/serial/si4455.c b/drivers/tty/serial/si4455.c
+new file mode 100644
+index 000000000000..349ac2a30761
+--- /dev/null
++++ b/drivers/tty/serial/si4455.c
+@@ -0,0 +1,1328 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2020 József Horváth <info@ministro.hu>
++ *
++ */
++#include <linux/bitops.h>
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/gpio/driver.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/of_gpio.h>
++#include <linux/regmap.h>
++#include <linux/serial_core.h>
++#include <linux/serial.h>
++#include <linux/tty.h>
++#include <linux/tty_flip.h>
++#include <linux/spi/spi.h>
++#include <linux/uaccess.h>
++#include <linux/string.h>
++#include <linux/firmware.h>
++
++#define PORT_SI4455						1096
++#define SI4455_NAME						"Si4455"
++#define SI4455_MAJOR						432
++#define SI4455_MINOR						567
++#define SI4455_UART_NRMAX					1
++#define SI4455_FIFO_SIZE					64
++
++#define SI4455_CMD_ID_EZCONFIG_CHECK				0x19
++#define SI4455_CMD_ID_PART_INFO					0x01
++#define SI4455_CMD_REPLY_COUNT_PART_INFO			9
++#define SI4455_CMD_ID_GET_INT_STATUS				0x20
++#define SI4455_CMD_REPLY_COUNT_GET_INT_STATUS			8
++#define SI4455_CMD_ID_FIFO_INFO					0x15
++#define SI4455_CMD_ARG_COUNT_FIFO_INFO				2
++#define SI4455_CMD_REPLY_COUNT_FIFO_INFO			2
++#define SI4455_CMD_FIFO_INFO_ARG_TX_BIT				0x01
++#define SI4455_CMD_FIFO_INFO_ARG_RX_BIT				0x02
++#define SI4455_CMD_ID_READ_CMD_BUFF				0x44
++#define SI4455_CMD_ID_READ_RX_FIFO				0x77
++#define SI4455_CMD_ID_WRITE_TX_FIFO				0x66
++#define SI4455_CMD_ID_START_RX					0x32
++#define SI4455_CMD_ARG_COUNT_START_RX				8
++#define SI4455_CMD_START_RX_RXTIMEOUT_STATE_RX			8
++#define SI4455_CMD_START_RX_RXVALID_STATE_RX			8
++#define SI4455_CMD_START_RX_RXINVALID_STATE_RX			8
++#define SI4455_CMD_ID_START_TX					0x31
++#define SI4455_CMD_ARG_COUNT_START_TX				5
++#define SI4455_CMD_ID_CHANGE_STATE				0x34
++#define SI4455_CMD_ARG_COUNT_CHANGE_STATE			2
++#define SI4455_CMD_CHANGE_STATE_STATE_READY			3
++#define SI4455_CMD_GET_CHIP_STATUS_ERROR_PEND_MASK		0x08
++#define SI4455_CMD_GET_CHIP_STATUS_ERROR_PEND_BIT		0x08
++#define SI4455_CMD_GET_INT_STATUS_PACKET_SENT_PEND_BIT		0x20
++#define SI4455_CMD_GET_INT_STATUS_PACKET_RX_PEND_BIT		0x10
++#define SI4455_CMD_GET_INT_STATUS_CRC_ERROR_BIT			0x08
++#define SI4455_CMD_ID_GET_MODEM_STATUS				0x22
++#define SI4455_CMD_ARG_COUNT_GET_MODEM_STATUS			2
++#define SI4455_CMD_REPLY_COUNT_GET_MODEM_STATUS			8
++
++struct si4455_part_info {
++	u8 chip_rev;
++	u16 part;
++	u8 pbuild;
++	u16 id;
++	u8 customer;
++	u8 rom_id;
++	u8 bond;
++};
++
++struct si4455_int_status {
++	u8 int_pend;
++	u8 int_status;
++	u8 ph_pend;
++	u8 ph_status;
++	u8 modem_pend;
++	u8 modem_status;
++	u8 chip_pend;
++	u8 chip_status;
++};
++
++struct si4455_modem_status {
++	u8 modem_pend;
++	u8 modem_status;
++	u8 curr_rssi;
++	u8 latch_rssi;
++	u8 ant1_rssi;
++	u8 ant2_rssi;
++	u16 afc_freq_offset;
++};
++
++struct si4455_fifo_info {
++	u8 rx_fifo_count;
++	u8 tx_fifo_space;
++};
++
++struct si4455_one {
++	struct uart_port port;
++	struct work_struct tx_work;
++};
++
++struct si4455_port {
++	struct mutex mutex; /* For syncing access to device */
++	int power_count;
++	bool connected;
++	struct gpio_desc *shdn_gpio;
++	struct si4455_part_info part_info;
++	struct si4455_modem_status modem_status;
++	u32 tx_channel;
++	u32 rx_channel;
++	u32 package_size;
++	bool configured;
++	bool tx_pending;
++	bool rx_pending;
++	u32 current_rssi;
++	struct si4455_one one;
++};
++
++static struct uart_driver si4455_uart = {
++	.owner			= THIS_MODULE,
++	.driver_name		= SI4455_NAME,
++#ifdef CONFIG_DEVFS_FS
++	.dev_name		= "ttySI%d",
++#else
++	.dev_name		= "ttySI",
++#endif
++	.major			= SI4455_MAJOR,
++	.minor			= SI4455_MINOR,
++	.nr			= SI4455_UART_NRMAX,
++};
++
++static int si4455_get_response(struct uart_port *port, int length, u8 *data)
++{
++	int ret;
++	u8 data_out[] = { SI4455_CMD_ID_READ_CMD_BUFF };
++	u8 *data_in = NULL;
++	struct spi_transfer xfer[2];
++	int timeout = 10000;
++
++	if (length > 0 && !data)
++		return -EINVAL;
++
++	data_in = kzalloc(1 + length, GFP_KERNEL);
++	if (!data_in)
++		return -ENOMEM;
++
++	memset(&xfer, 0x00, sizeof(xfer));
++	xfer[0].tx_buf = data_out;
++	xfer[0].len = sizeof(data_out);
++	xfer[1].rx_buf = data_in;
++	xfer[1].len = 1 + length;
++
++	while (--timeout > 0) {
++		data_out[0] = SI4455_CMD_ID_READ_CMD_BUFF;
++		ret = spi_sync_transfer(to_spi_device(port->dev), xfer,
++					ARRAY_SIZE(xfer));
++		if (ret) {
++			dev_err(port->dev, "%s: spi_sync_transfer error(%i)", __func__, ret);
++			break;
++		}
++
++		if (data_in[0] == 0xFF) {
++			if (length > 0 && data)
++				memcpy(data, &data_in[1], length);
++
++			break;
++		}
++		usleep_range(100, 200);
++	}
++	if (timeout == 0) {
++		dev_err(port->dev, "%s:timeout==%i", __func__, timeout);
++		ret = -EIO;
++	}
++	kfree(data_in);
++	return ret;
++}
++
++static int si4455_poll_cts(struct uart_port *port)
++{
++	return si4455_get_response(port, 0, NULL);
++}
++
++static int si4455_send_command(struct uart_port *port, int length, u8 *data)
++{
++	int ret;
++
++	ret = si4455_poll_cts(port);
++	if (ret) {
++		dev_err(port->dev,
++			"%s: si4455_poll_cts error(%i)", __func__, ret);
++		return ret;
++	}
++	ret = spi_write(to_spi_device(port->dev), data, length);
++	if (ret) {
++		dev_err(port->dev,
++			"%s: spi_write error(%i)", __func__, ret);
++	}
++	return ret;
++}
++
++static int si4455_send_command_get_response(struct uart_port *port,
++					    int out_length, u8 *data_out,
++					    int in_length, u8 *data_in)
++{
++	int ret;
++
++	ret = si4455_send_command(port, out_length, data_out);
++	if (ret) {
++		dev_err(port->dev,
++			"%s: si4455_send_command error(%i)", __func__, ret);
++		return ret;
++	}
++
++	ret = si4455_get_response(port, in_length, data_in);
++
++	return ret;
++}
++
++static int si4455_read_data(struct uart_port *port, u8 command, int poll,
++			    int length, u8 *data)
++{
++	int ret = 0;
++	u8 data_out[] = { command };
++	struct spi_transfer xfer[] = {
++		{
++			.tx_buf = data_out,
++			.len = sizeof(data_out),
++		}, {
++			.rx_buf = data,
++			.len = length,
++		}
++	};
++
++	if (poll) {
++		ret = si4455_poll_cts(port);
++		if (ret)
++			return ret;
++	}
++
++	ret = spi_sync_transfer(to_spi_device(port->dev),
++				xfer,
++				ARRAY_SIZE(xfer));
++	if (ret) {
++		dev_err(port->dev,
++			"%s: spi_sync_transfer error(%i)", __func__, ret);
++	}
++	return ret;
++}
++
++static int si4455_write_data(struct uart_port *port, u8 command, int poll,
++			     int length, const u8 *data)
++{
++	int ret = 0;
++	u8 *data_out;
++
++	if (poll) {
++		ret = si4455_poll_cts(port);
++		if (ret)
++			return ret;
++	}
++
++	data_out = kzalloc(1 + length, GFP_KERNEL);
++	if (!data_out)
++		return -ENOMEM;
++
++	data_out[0] = command;
++	memcpy(&data_out[1], data, length);
++	ret = spi_write(to_spi_device(port->dev), data_out, 1 + length);
++	if (ret) {
++		dev_err(port->dev,
++			"%s: spi_write error(%i)", __func__, ret);
++	}
++	kfree(data_out);
++
++	return ret;
++}
++
++static void si4455_set_power(struct si4455_port *priv, int on)
++{
++	if (!priv->shdn_gpio)
++		return;
++	if (on) {
++		gpiod_direction_output(priv->shdn_gpio, 0);
++		usleep_range(4000, 5000);
++		gpiod_set_value(priv->shdn_gpio, 1);
++		usleep_range(4000, 5000);
++	} else {
++		gpiod_direction_output(priv->shdn_gpio, 0);
++	}
++}
++
++static int si4455_s_power(struct device *dev, int on)
++{
++	struct si4455_port *s = dev_get_drvdata(dev);
++
++	dev_dbg(dev, "%s(on=%d)\n", __func__, on);
++	if (s->power_count == !on)
++		si4455_set_power(s, on);
++	s->power_count += on ? 1 : -1;
++	WARN_ON(s->power_count < 0);
++
++	return 0;
++}
++
++static int si4455_get_part_info(struct uart_port *port,
++				struct si4455_part_info *result)
++{
++	int ret;
++	u8 data_out[] = { SI4455_CMD_ID_PART_INFO };
++	u8 data_in[SI4455_CMD_REPLY_COUNT_PART_INFO];
++
++	ret = si4455_send_command_get_response(port, sizeof(data_out), data_out,
++					       sizeof(data_in), data_in);
++	if (ret) {
++		dev_err(port->dev,
++			"%s: si4455_send_command_get_response error(%i)",
++			__func__, ret);
++		return ret;
++	}
++
++	result->chip_rev = data_in[0];
++	memcpy(&result->part, &data_in[1], sizeof(result->part));
++	result->pbuild = data_in[3];
++	memcpy(&result->id, &data_in[4], sizeof(result->id));
++	result->customer = data_in[6];
++	result->rom_id = data_in[7];
++	result->bond = data_in[8];
++
++	return ret;
++}
++
++static int si4455_get_int_status(struct uart_port *port, u8 ph_clear,
++				 u8 modem_clear, u8 chip_clear,
++				 struct si4455_int_status *result)
++{
++	int ret;
++	u8 data_out[] = {
++		SI4455_CMD_ID_GET_INT_STATUS,
++		ph_clear,
++		modem_clear,
++		chip_clear
++	};
++	u8 data_in[SI4455_CMD_REPLY_COUNT_GET_INT_STATUS];
++
++	ret = si4455_send_command_get_response(port, sizeof(data_out), data_out,
++					       sizeof(data_in), data_in);
++	if (ret) {
++		dev_err(port->dev,
++			"%s: si4455_send_command_get_response error(%i)",
++			__func__, ret);
++	} else {
++		result->int_pend       = data_in[0];
++		result->int_status     = data_in[1];
++		result->ph_pend        = data_in[2];
++		result->ph_status      = data_in[3];
++		result->modem_pend     = data_in[4];
++		result->modem_status   = data_in[5];
++		result->chip_pend      = data_in[6];
++		result->chip_status    = data_in[7];
++	}
++	return ret;
++}
++
++static int si4455_get_modem_status(struct uart_port *port, u8 modem_clear,
++				   struct si4455_modem_status *result)
++{
++	int ret;
++	u8 data_out[] = {
++		SI4455_CMD_ID_GET_MODEM_STATUS,
++		modem_clear,
++	};
++	u8 data_in[SI4455_CMD_REPLY_COUNT_GET_MODEM_STATUS];
++
++	ret = si4455_send_command_get_response(port, sizeof(data_out), data_out,
++					       sizeof(data_in), data_in);
++	if (ret) {
++		dev_err(port->dev,
++			"%s: si4455_send_command_get_response error(%i)",
++			__func__, ret);
++	} else {
++		result->modem_pend      = data_in[0];
++		result->modem_status    = data_in[1];
++		result->curr_rssi       = data_in[2];
++		result->latch_rssi      = data_in[3];
++		result->ant1_rssi       = data_in[4];
++		result->ant2_rssi       = data_in[5];
++		memcpy(&result->afc_freq_offset,
++		       &data_in[6], sizeof(result->afc_freq_offset));
++	}
++	return ret;
++}
++
++static int si4455_fifo_info(struct uart_port *port, u8 fifo,
++			    struct si4455_fifo_info *result)
++{
++	int ret;
++	u8 data_out[SI4455_CMD_ARG_COUNT_FIFO_INFO] = {
++		SI4455_CMD_ID_FIFO_INFO, fifo
++	};
++	u8 data_in[SI4455_CMD_REPLY_COUNT_FIFO_INFO] = { 0 };
++
++	ret = si4455_send_command_get_response(port, sizeof(data_out), data_out,
++					       sizeof(data_in), data_in);
++	if (ret) {
++		dev_err(port->dev,
++			"%s: si4455_send_command_get_response error(%i)",
++			__func__, ret);
++	} else {
++		result->rx_fifo_count  = data_in[0];
++		result->tx_fifo_space  = data_in[1];
++	}
++	return ret;
++}
++
++static int si4455_read_rx_fifo(struct uart_port *port, int length, u8 *data)
++{
++	return si4455_read_data(port, SI4455_CMD_ID_READ_RX_FIFO, 0, length,
++				data);
++}
++
++static int si4455_write_tx_fifo(struct uart_port *port, int length, u8 *data)
++{
++	return si4455_write_data(port, SI4455_CMD_ID_WRITE_TX_FIFO, 0, length,
++				 data);
++}
++
++static int si4455_rx(struct uart_port *port, u32 channel, u8 condition,
++		     u16 length, u8 next_state1, u8 next_state2,
++		     u8 next_state3)
++{
++	u8 data_out[SI4455_CMD_ARG_COUNT_START_RX];
++
++	data_out[0] = SI4455_CMD_ID_START_RX;
++	data_out[1] = channel;
++	data_out[2] = condition;
++	data_out[3] = (u8)(length >> 8);
++	data_out[4] = (u8)(length);
++	data_out[5] = next_state1;
++	data_out[6] = next_state2;
++	data_out[7] = next_state3;
++
++	return si4455_send_command(port, SI4455_CMD_ARG_COUNT_START_RX,
++				   data_out);
++}
++
++static int si4455_tx(struct uart_port *port, u8 channel, u8 condition,
++		     u16 length)
++{
++	u8 data_out[/*6*/ SI4455_CMD_ARG_COUNT_START_TX];
++
++	data_out[0] = SI4455_CMD_ID_START_TX;
++	data_out[1] = channel;
++	data_out[2] = condition;
++	data_out[3] = (u8)(length >> 8);
++	data_out[4] = (u8)(length);
++	/*TODO: data_out[5] = 0x44; in case of rev c2a*/
++
++	return si4455_send_command(port, /*6*/ SI4455_CMD_ARG_COUNT_START_TX,
++				   data_out);
++}
++
++static int si4455_change_state(struct uart_port *port, u8 next_state1)
++{
++	u8 data_out[SI4455_CMD_ARG_COUNT_CHANGE_STATE];
++
++	data_out[0] = SI4455_CMD_ID_CHANGE_STATE;
++	data_out[1] = (u8)next_state1;
++
++	return si4455_send_command(port, SI4455_CMD_ARG_COUNT_CHANGE_STATE,
++				   data_out);
++}
++
++static int si4455_begin_tx(struct uart_port *port, u32 channel, int length,
++			   u8 *data)
++{
++	int ret = 0;
++	struct si4455_int_status int_status = { 0 };
++	struct si4455_fifo_info fifo_info = { 0 };
++
++	dev_dbg(port->dev, "%s(%u, %u)", __func__, channel, length);
++	if (length > SI4455_FIFO_SIZE || length < 0)
++		return -EINVAL;
++
++	ret = si4455_change_state(port,
++				  SI4455_CMD_CHANGE_STATE_STATE_READY);
++	if (ret) {
++		dev_err(port->dev, "%s: si4455_change_state error(%i)",
++			__func__, ret);
++		return ret;
++	}
++	ret = si4455_get_int_status(port, 0, 0, 0, &int_status);
++	if (ret) {
++		dev_err(port->dev, "%s: si4455_get_int_status error(%i)",
++			__func__, ret);
++		return ret;
++	}
++	ret = si4455_fifo_info(port,
++			       SI4455_CMD_FIFO_INFO_ARG_TX_BIT, &fifo_info);
++	if (ret) {
++		dev_err(port->dev, "%s: si4455_fifo_info error(%i)",
++			__func__, ret);
++		return ret;
++	}
++	ret = si4455_write_tx_fifo(port, (u16)length, data);
++	if (ret) {
++		dev_err(port->dev, "%s: si4455_write_tx_fifo error(%i)",
++			__func__, ret);
++		return ret;
++	}
++	ret = si4455_tx(port, channel, 0x30, length);
++	if (ret) {
++		dev_err(port->dev, "%s: si4455_tx error(%i)",
++			__func__, ret);
++		return ret;
++	}
++	return 0;
++}
++
++static int si4455_end_tx(struct uart_port *port)
++{
++	int ret = 0;
++	struct si4455_int_status int_status = { 0 };
++
++	ret = si4455_change_state(port,
++				  SI4455_CMD_CHANGE_STATE_STATE_READY);
++	if (ret) {
++		dev_err(port->dev, "%s: si4455_change_state error(%i)",
++			__func__, ret);
++		return ret;
++	}
++	ret = si4455_get_int_status(port, 0, 0, 0, &int_status);
++	if (ret) {
++		dev_err(port->dev, "%s: si4455_get_int_status error(%i)",
++			__func__, ret);
++		return ret;
++	}
++	return 0;
++}
++
++static int si4455_begin_rx(struct uart_port *port, u32 channel, u32 length)
++{
++	int ret = 0;
++	struct si4455_int_status int_status = { 0 };
++	struct si4455_fifo_info fifo_info = { 0 };
++
++	dev_dbg(port->dev, "%s(%u, %u)", __func__, channel, length);
++	ret = si4455_get_int_status(port, 0, 0, 0, &int_status);
++	if (ret) {
++		dev_err(port->dev, "%s: si4455_get_int_status error(%i)",
++			__func__, ret);
++		return ret;
++	}
++	ret = si4455_fifo_info(port,
++			       SI4455_CMD_FIFO_INFO_ARG_RX_BIT,
++			       &fifo_info);
++	if (ret) {
++		dev_err(port->dev, "%s: si4455_fifo_info error(%i)",
++			__func__, ret);
++		return ret;
++	}
++	ret = si4455_rx(port, channel, 0x00, length,
++			SI4455_CMD_START_RX_RXTIMEOUT_STATE_RX,
++			SI4455_CMD_START_RX_RXVALID_STATE_RX,
++			SI4455_CMD_START_RX_RXINVALID_STATE_RX);
++	if (ret) {
++		dev_err(port->dev, "%s: si4455_rx error(%i)",
++			__func__, ret);
++		return ret;
++	}
++	return 0;
++}
++
++static int si4455_end_rx(struct uart_port *port, u32 length, u8 *data)
++{
++	return si4455_read_rx_fifo(port, length, data);
++}
++
++static int si4455_configure(struct uart_port *port, const u8 *configuration_data)
++{
++	int ret = 0;
++	u8 col;
++	u8 response;
++	u8 count;
++	struct si4455_int_status int_status = { 0 };
++	u8 radio_cmd[16u];
++
++	/* While cycle as far as the pointer points to a command */
++	while (*configuration_data != 0x00) {
++		/* Commands structure in the array:
++		 * --------------------------------
++		 * LEN | <LEN length of data>
++		 */
++		count = *configuration_data++;
++		dev_dbg(port->dev, "%s: count(%u)",
++			__func__, count);
++		if (count > 16u) {
++			/* Initial configuration of Si4x55 */
++			if (SI4455_CMD_ID_WRITE_TX_FIFO
++				 == *configuration_data) {
++				if (count > 128u) {
++					/* Number of command bytes exceeds
++					 * maximal allowable length
++					 */
++					dev_err(port->dev, "%s: command length error(%i)",
++						__func__, count);
++					ret = -EINVAL;
++					break;
++				}
++
++				/* Load array to the device */
++				configuration_data++;
++				ret = si4455_write_data(port,
++							SI4455_CMD_ID_WRITE_TX_FIFO,
++							1,
++							count - 1,
++							configuration_data);
++				if (ret) {
++					dev_err(port->dev, "%s: si4455_write_data error(%i)",
++						__func__, ret);
++					break;
++				}
++
++				/* Point to the next command */
++				configuration_data += count - 1;
++
++				/* Continue command interpreter */
++				continue;
++			} else {
++				/* Number of command bytes exceeds
++				 * maximal allowable length
++				 */
++				ret = -EINVAL;
++				break;
++			}
++		}
++
++		for (col = 0u; col < count; col++) {
++			radio_cmd[col] = *configuration_data;
++			configuration_data++;
++		}
++
++		dev_dbg(port->dev, "%s: radio_cmd[0](%u)", __func__, radio_cmd[0]);
++		ret = si4455_send_command_get_response(port, count, radio_cmd,
++						       1, &response);
++		if (ret) {
++			dev_err(port->dev,
++				"%s: si4455_send_command_get_response error(%i)",
++				__func__, ret);
++			break;
++		}
++
++		/* Check response byte of EZCONFIG_CHECK command */
++		if (radio_cmd[0] == SI4455_CMD_ID_EZCONFIG_CHECK) {
++			if (response) {
++				/* Number of command bytes exceeds
++				 * maximal allowable length
++				 */
++				ret = -EIO;
++				dev_err(port->dev, "%s: EZConfig check error(%i)",
++					__func__, radio_cmd[0]);
++				break;
++			}
++		}
++
++		/* Get and clear all interrupts.  An error has occurred... */
++		si4455_get_int_status(port, 0, 0, 0, &int_status);
++		if (int_status.chip_pend
++		    & SI4455_CMD_GET_CHIP_STATUS_ERROR_PEND_MASK) {
++			ret = -EIO;
++			dev_err(port->dev, "%s: chip error(%i)",
++				__func__, int_status.chip_pend);
++			break;
++		}
++	}
++
++	return ret;
++}
++
++static int si4455_re_configure(struct uart_port *port, const struct firmware *configuration)
++{
++	int ret = 0;
++	struct si4455_port *s = dev_get_drvdata(port->dev);
++
++	mutex_lock(&s->mutex);
++	s->configured = 0;
++	if (s->power_count > 0)
++		si4455_s_power(port->dev, 0);
++
++	si4455_s_power(port->dev, 1);
++	ret = si4455_configure(port, configuration->data);
++	if (ret == 0)
++		s->configured = 1;
++	mutex_unlock(&s->mutex);
++	return ret;
++}
++
++static int si4455_do_work(struct uart_port *port)
++{
++	int ret = 0;
++	struct si4455_port *s = dev_get_drvdata(port->dev);
++	struct circ_buf *xmit = &port->state->xmit;
++	unsigned int tx_pending = 0;
++	unsigned int tx_to_end = 0;
++	u8 *data = NULL;
++
++	mutex_lock(&s->mutex);
++	dev_dbg(port->dev, "%s(connected=%i, configured=%i, power_count=%i)",
++		__func__, s->connected, s->configured, s->power_count);
++	if (s->connected && s->configured && s->power_count > 0) {
++		if (!(uart_circ_empty(xmit) || uart_tx_stopped(port) || s->tx_pending)) {
++			tx_pending = uart_circ_chars_pending(xmit);
++			if (s->package_size > 0) {
++				if (tx_pending >= s->package_size) {
++					tx_pending = s->package_size;
++					data = kzalloc(s->package_size, GFP_KERNEL);
++					tx_to_end = CIRC_CNT_TO_END(xmit->head,
++								    xmit->tail,
++								    UART_XMIT_SIZE);
++					if (tx_to_end < tx_pending) {
++						memcpy(data,
++						       xmit->buf + xmit->tail,
++						       tx_to_end);
++						memcpy(data,
++						       xmit->buf,
++						       tx_pending - tx_to_end);
++					} else {
++						memcpy(data,
++						       xmit->buf + xmit->tail,
++						       tx_pending);
++					}
++					if (si4455_begin_tx(port, s->tx_channel,
++							    tx_pending, data) == 0) {
++						s->tx_pending = true;
++					}
++					kfree(data);
++				}
++			} else {
++				//TODO: variable packet length
++			}
++		}
++		if (!s->tx_pending) {
++			if (s->package_size > 0) {
++				ret = si4455_begin_rx(port, s->rx_channel,
++						      s->package_size);
++			} else {
++				//TODO: variable packet length
++			}
++		}
++	}
++	mutex_unlock(&s->mutex);
++	return ret;
++}
++
++static void si4455_handle_rx_pend(struct si4455_port *s)
++{
++	struct uart_port *port = &s->one.port;
++	u8 *data = NULL;
++	int sret = 0;
++	int i = 0;
++
++	if (s->package_size > 0) {
++		data = kzalloc(s->package_size, GFP_KERNEL);
++		sret = si4455_end_rx(port, s->package_size, data);
++		if (sret == 0) {
++			for (i = 0; i < s->package_size; i++) {
++				uart_insert_char(port, 0, 0, data[i], TTY_NORMAL);
++				port->icount.rx++;
++			}
++			tty_flip_buffer_push(&port->state->port);
++		} else {
++			dev_err(port->dev,
++				"%s: si4455_end_rx error(%i)",
++				__func__,
++				sret);
++		}
++		kfree(data);
++	} else {
++		//TODO: variable packet length
++	}
++}
++
++static void si4455_handle_tx_pend(struct si4455_port *s)
++{
++	struct uart_port *port = &s->one.port;
++	struct circ_buf *xmit = &port->state->xmit;
++
++	if (s->tx_pending) {
++		if (s->package_size) {
++			port->icount.tx += s->package_size;
++			xmit->tail = (xmit->tail + s->package_size)
++					& (UART_XMIT_SIZE - 1);
++		} else {
++			//TODO: variable packet length
++		}
++		si4455_end_tx(port);
++		s->tx_pending = 0;
++	}
++}
++
++static irqreturn_t si4455_port_irq(struct si4455_port *s)
++{
++	struct uart_port *port = &s->one.port;
++	irqreturn_t ret = IRQ_NONE;
++	struct si4455_int_status int_status = { 0 };
++	struct si4455_fifo_info fifo_info = { 0 };
++
++	mutex_lock(&s->mutex);
++	if (s->connected && s->configured && s->power_count > 0) {
++		if (!si4455_get_int_status(port, 0, 0, 0, &int_status)) {
++			si4455_get_modem_status(port, 0, &s->modem_status);
++			if (int_status.chip_pend
++			    & SI4455_CMD_GET_CHIP_STATUS_ERROR_PEND_BIT) {
++				dev_err(port->dev,
++					"%s: chip_status:CMD_ERROR_PEND",
++					__func__);
++			} else if (int_status.ph_pend
++				   & SI4455_CMD_GET_INT_STATUS_PACKET_SENT_PEND_BIT) {
++				dev_dbg(port->dev,
++					"%s: ph_status:PACKET_SENT_PEND",
++					__func__);
++				si4455_handle_tx_pend(s);
++			} else if (int_status.ph_pend
++				   & SI4455_CMD_GET_INT_STATUS_PACKET_RX_PEND_BIT) {
++				dev_dbg(port->dev,
++					"%s: ph_status:PACKET_RX_PEND",
++					__func__);
++				s->current_rssi = s->modem_status.curr_rssi;
++				si4455_fifo_info(port, 0, &fifo_info);
++				si4455_handle_rx_pend(s);
++			} else if (int_status.ph_pend
++				   & SI4455_CMD_GET_INT_STATUS_CRC_ERROR_BIT) {
++				dev_dbg(port->dev,
++					"%s: ph_status:CRC_ERROR_PEND",
++					__func__);
++			}
++			ret = IRQ_HANDLED;
++		}
++	} else {
++		ret = IRQ_HANDLED;
++	}
++	mutex_unlock(&s->mutex);
++	si4455_do_work(port);
++	return ret;
++}
++
++static irqreturn_t si4455_ist(int irq, void *dev_id)
++{
++	struct si4455_port *s = (struct si4455_port *)dev_id;
++	bool handled = false;
++
++	if (si4455_port_irq(s) == IRQ_HANDLED)
++		handled = true;
++
++	return IRQ_RETVAL(handled);
++}
++
++static void si4455_tx_proc(struct work_struct *ws)
++{
++	struct si4455_one *one = container_of(ws, struct si4455_one, tx_work);
++
++	si4455_do_work(&one->port);
++}
++
++static unsigned int si4455_tx_empty(struct uart_port *port)
++{
++	return TIOCSER_TEMT;
++}
++
++static unsigned int si4455_get_mctrl(struct uart_port *port)
++{
++	dev_dbg(port->dev, "%s", __func__);
++	return TIOCM_DSR | TIOCM_CAR;
++}
++
++static void si4455_set_mctrl(struct uart_port *port, unsigned int mctrl)
++{
++	dev_dbg(port->dev, "%s", __func__);
++}
++
++static void si4455_set_termios(struct uart_port *port, struct ktermios *termios,
++			       struct ktermios *old)
++{
++	dev_dbg(port->dev, "%s", __func__);
++	if ((termios->c_cflag & CSIZE) != CS8)
++		dev_err(port->dev, "%s: CSIZE must be CS8", __func__);
++}
++
++static int si4455_startup(struct uart_port *port)
++{
++	struct si4455_port *s = dev_get_drvdata(port->dev);
++
++	dev_dbg(port->dev, "%s", __func__);
++	mutex_lock(&s->mutex);
++	s->connected = true;
++	mutex_unlock(&s->mutex);
++	return si4455_do_work(port);
++}
++
++static void si4455_shutdown(struct uart_port *port)
++{
++	struct si4455_port *s = dev_get_drvdata(port->dev);
++
++	dev_dbg(port->dev, "%s", __func__);
++	mutex_lock(&s->mutex);
++	s->connected = false;
++	mutex_unlock(&s->mutex);
++}
++
++static const char *si4455_type(struct uart_port *port)
++{
++	struct si4455_port *s = dev_get_drvdata(port->dev);
++
++	if (port->type != PORT_SI4455)
++		return NULL;
++	if (s->part_info.rom_id == 3)
++		return "SI4455-B1A";
++	else if (s->part_info.rom_id == 6)
++		return "SI4455-C2A";
++
++	return "SI4455(UNKNOWN-REV)";
++}
++
++static void si4455_config_port(struct uart_port *port, int flags)
++{
++	dev_dbg(port->dev, "%s", __func__);
++	if (flags & UART_CONFIG_TYPE)
++		port->type = PORT_SI4455;
++}
++
++static int si4455_verify_port(struct uart_port *port, struct serial_struct *s)
++{
++	if (s->type != PORT_UNKNOWN && s->type != PORT_SI4455)
++		return -EINVAL;
++
++	if (s->irq != port->irq)
++		return -EINVAL;
++
++	return 0;
++}
++
++static void si4455_start_tx(struct uart_port *port)
++{
++	struct si4455_one *one = container_of(port,
++					      struct si4455_one,
++					      port);
++
++	dev_dbg(port->dev, "%s", __func__);
++
++	if (!work_pending(&one->tx_work))
++		schedule_work(&one->tx_work);
++}
++
++static void si4455_null_void(struct uart_port *port)
++{
++	/* Do nothing */
++}
++
++static const struct uart_ops si4455_ops = {
++	.tx_empty		= si4455_tx_empty,
++	.set_mctrl		= si4455_set_mctrl,/* required */
++	.get_mctrl		= si4455_get_mctrl,
++	.stop_tx		= si4455_null_void,
++	.start_tx		= si4455_start_tx,
++	.stop_rx		= si4455_null_void,
++	.startup		= si4455_startup,
++	.shutdown		= si4455_shutdown,
++	.set_termios		= si4455_set_termios,/* required */
++	.type			= si4455_type,
++	.release_port		= si4455_null_void,
++	.config_port		= si4455_config_port,
++	.verify_port		= si4455_verify_port,
++};
++
++static int __maybe_unused si4455_suspend(struct device *dev)
++{
++	struct si4455_port *s = dev_get_drvdata(dev);
++
++	uart_suspend_port(&si4455_uart, &s->one.port);
++	return 0;
++}
++
++static int __maybe_unused si4455_resume(struct device *dev)
++{
++	struct si4455_port *s = dev_get_drvdata(dev);
++
++	uart_resume_port(&si4455_uart, &s->one.port);
++
++	return 0;
++}
++
++static SIMPLE_DEV_PM_OPS(si4455_pm_ops, si4455_suspend, si4455_resume);
++
++static ssize_t package_size_show(struct device *dev,
++				 struct device_attribute *attr, char *buf)
++{
++	struct si4455_port *s = dev_get_drvdata(dev);
++
++	return sprintf(buf, "%u\n", s->package_size);
++}
++
++static ssize_t package_size_store(struct device *dev,
++				  struct device_attribute *attr,
++				  const char *buf, size_t count)
++{
++	struct si4455_port *s = dev_get_drvdata(dev);
++	unsigned long val;
++	int ret;
++
++	ret = kstrtoul(buf, 10, &val);
++	if (ret)
++		return ret;
++
++	if (val > SI4455_FIFO_SIZE)
++		return -EINVAL;
++
++	s->package_size = val;
++	ret = si4455_do_work(&s->one.port);
++
++	return ret ? ret : count;
++}
++static DEVICE_ATTR_RW(package_size);
++
++static ssize_t rx_channel_show(struct device *dev,
++			       struct device_attribute *attr, char *buf)
++{
++	struct si4455_port *s = dev_get_drvdata(dev);
++
++	return sprintf(buf, "%u\n", s->rx_channel);
++}
++
++static ssize_t rx_channel_store(struct device *dev,
++				struct device_attribute *attr,
++				const char *buf, size_t count)
++{
++	struct si4455_port *s = dev_get_drvdata(dev);
++	unsigned long val;
++	int ret;
++
++	ret = kstrtoul(buf, 10, &val);
++	if (ret)
++		return ret;
++
++	s->rx_channel = val;
++	ret = si4455_do_work(&s->one.port);
++
++	return ret ? ret : count;
++}
++static DEVICE_ATTR_RW(rx_channel);
++
++static ssize_t tx_channel_show(struct device *dev,
++			       struct device_attribute *attr, char *buf)
++{
++	struct si4455_port *s = dev_get_drvdata(dev);
++
++	return sprintf(buf, "%u\n", s->tx_channel);
++}
++
++static ssize_t tx_channel_store(struct device *dev,
++				struct device_attribute *attr,
++				const char *buf, size_t count)
++{
++	struct si4455_port *s = dev_get_drvdata(dev);
++	unsigned long val;
++	int ret;
++
++	ret = kstrtoul(buf, 10, &val);
++	if (ret)
++		return ret;
++
++	s->tx_channel = val;
++	ret = si4455_do_work(&s->one.port);
++
++	return ret ? ret : count;
++}
++static DEVICE_ATTR_RW(tx_channel);
++
++static ssize_t current_rssi_show(struct device *dev,
++				 struct device_attribute *attr, char *buf)
++{
++	struct si4455_port *s = dev_get_drvdata(dev);
++
++	return sprintf(buf, "%u\n", s->current_rssi);
++}
++
++static DEVICE_ATTR(current_rssi, 0644, current_rssi_show, NULL);
++
++static struct attribute *si4455_attributes[] = {
++	&dev_attr_package_size.attr,
++	&dev_attr_rx_channel.attr,
++	&dev_attr_tx_channel.attr,
++	&dev_attr_current_rssi.attr,
++	NULL
++};
++
++static const struct attribute_group si4455_attr_group = {
++	.attrs = si4455_attributes,
++};
++
++static int si4455_probe(struct device *dev,
++			int irq)
++{
++	int ret;
++	struct si4455_port *s;
++	const void *of_ptr;
++	char ez_fw_name[255] = { 0 };
++	const struct firmware *ez_fw = NULL;
++
++	/* Alloc port structure */
++	dev_dbg(dev, "%s\n", __func__);
++	s = devm_kzalloc(dev, sizeof(*s), GFP_KERNEL);
++	if (!s) {
++		dev_err(dev, "Error allocating port structure\n");
++		return -ENOMEM;
++	}
++
++	dev_set_drvdata(dev, s);
++	mutex_init(&s->mutex);
++
++	s->shdn_gpio = devm_gpiod_get(dev, "shutdown", GPIOD_OUT_HIGH);
++	if (IS_ERR(s->shdn_gpio)) {
++		dev_err(dev, "Unable to reguest shdn gpio\n");
++		ret = -EINVAL;
++		goto out_generic;
++	}
++
++	of_ptr = of_get_property(dev->of_node, "silabs,package-size", NULL);
++	if (IS_ERR_OR_NULL(of_ptr)) {
++		dev_err(dev, "dt silabs,package-size property not present\n");
++		ret = -EINVAL;
++		goto out_generic;
++	}
++	s->package_size = be32_to_cpup(of_ptr);
++	if (s->package_size > SI4455_FIFO_SIZE) {
++		dev_err(dev, "dt silabs,package-size property maximum is %i\n", SI4455_FIFO_SIZE);
++		ret = -EINVAL;
++		goto out_generic;
++	}
++
++	of_ptr = of_get_property(dev->of_node, "silabs,tx-channel", NULL);
++	if (IS_ERR_OR_NULL(of_ptr)) {
++		dev_err(dev, "dt silabs,tx-channel property not present\n");
++		ret = -EINVAL;
++		goto out_generic;
++	}
++	s->tx_channel = be32_to_cpup(of_ptr);
++
++	of_ptr = of_get_property(dev->of_node, "silabs,rx-channel", NULL);
++	if (IS_ERR_OR_NULL(of_ptr)) {
++		dev_err(dev, "dt silabs,rx-channel property not present\n");
++		ret = -EINVAL;
++		goto out_generic;
++	}
++	s->rx_channel = be32_to_cpup(of_ptr);
++
++	of_ptr = of_get_property(dev->of_node, "silabs,ez-config", NULL);
++	if (IS_ERR_OR_NULL(of_ptr)) {
++		dev_err(dev, "dt silabs,ez-config property not present\n");
++		ret = -EINVAL;
++		goto out_generic;
++	}
++	strncpy(ez_fw_name, of_ptr, sizeof(ez_fw_name) - 1);
++
++	/* Initialize port data */
++	s->one.port.dev	= dev;
++	s->one.port.line = 0;
++	s->one.port.irq	= irq;
++	s->one.port.type	= PORT_SI4455;
++	s->one.port.fifosize	= SI4455_FIFO_SIZE;
++	s->one.port.flags	= UPF_FIXED_TYPE | UPF_LOW_LATENCY;
++	s->one.port.iotype	= UPIO_PORT;
++	s->one.port.iobase	= 0x00;
++	s->one.port.membase	= (void __iomem *)~0;
++	s->one.port.rs485_config = NULL;
++	s->one.port.ops	= &si4455_ops;
++
++	si4455_s_power(dev, 1);
++
++	//detect
++	ret = si4455_get_part_info(&s->one.port, &s->part_info);
++	dev_dbg(dev, "si4455_get_part_info()==%i", ret);
++	if (ret == 0) {
++		dev_dbg(dev, "partInfo.chip_rev= %u", s->part_info.chip_rev);
++		dev_dbg(dev, "partInfo.part= %u", s->part_info.part);
++		dev_dbg(dev, "partInfo.pbuild= %u", s->part_info.pbuild);
++		dev_dbg(dev, "partInfo.id= %u", s->part_info.id);
++		dev_dbg(dev, "partInfo.customer= %u", s->part_info.customer);
++		dev_dbg(dev, "partInfo.rom_id= %u", s->part_info.rom_id);
++		dev_dbg(dev, "partInfo.bond= %u", s->part_info.bond);
++		if (s->part_info.part != 0x5544) {
++			dev_err(dev, "part(%u) error", s->part_info.part);
++			ret = -ENODEV;
++		}
++	}
++
++	if (ret)
++		goto out_generic;
++
++	ret = request_firmware(&ez_fw, ez_fw_name, dev);
++	if (ret) {
++		dev_err(dev, "firmware(%s) request error(%i)\n", ez_fw_name, ret);
++		ret = -EINVAL;
++		goto out_generic;
++	}
++
++	ret = si4455_re_configure(&s->one.port, ez_fw);
++	release_firmware(ez_fw);
++	if (ret) {
++		dev_err(dev, "device configuration error(%i)\n", ret);
++		ret = -EINVAL;
++		goto out_generic;
++	}
++
++	/* Initialize queue for start TX */
++	INIT_WORK(&s->one.tx_work, si4455_tx_proc);
++
++	/* Register port */
++	ret = uart_add_one_port(&si4455_uart, &s->one.port);
++	if (ret) {
++		s->one.port.dev = NULL;
++		goto out_uart;
++	}
++
++	ret = sysfs_create_group(&dev->kobj, &si4455_attr_group);
++	if (ret) {
++		dev_err(dev, "sysfs_create_group error(%i)\n", ret);
++		goto out_uart;
++	}
++	/* Setup interrupt */
++	ret = devm_request_threaded_irq(dev, irq, NULL, si4455_ist,
++					IRQF_ONESHOT | IRQF_SHARED,
++					dev_name(dev), s);
++
++	if (!ret)
++		return 0;
++
++	dev_err(dev, "Unable to reguest IRQ %i\n", irq);
++	sysfs_remove_group(&dev->kobj, &si4455_attr_group);
++
++out_uart:
++	uart_remove_one_port(&si4455_uart, &s->one.port);
++out_generic:
++	mutex_destroy(&s->mutex);
++	si4455_s_power(dev, 0);
++
++	return ret;
++}
++
++static int si4455_remove(struct device *dev)
++{
++	struct si4455_port *s = dev_get_drvdata(dev);
++
++	cancel_work_sync(&s->one.tx_work);
++	sysfs_remove_group(&dev->kobj, &si4455_attr_group);
++	uart_remove_one_port(&si4455_uart, &s->one.port);
++
++	mutex_destroy(&s->mutex);
++
++	return 0;
++}
++
++static const struct of_device_id __maybe_unused si4455_dt_ids[] = {
++	{ .compatible = "silabs,si4455" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, si4455_dt_ids);
++
++static int si4455_spi_probe(struct spi_device *spi)
++{
++	int ret;
++	const struct of_device_id *of_id;
++
++	/* Setup SPI bus */
++	spi->bits_per_word	= 8;
++	spi->mode		= SPI_MODE_0;
++	ret = spi_setup(spi);
++	if (ret)
++		return ret;
++
++	if (spi->dev.of_node) {
++		of_id = of_match_device(si4455_dt_ids, &spi->dev);
++		if (!of_id)
++			return -ENODEV;
++	}
++
++	return si4455_probe(&spi->dev, spi->irq);
++}
++
++static int si4455_spi_remove(struct spi_device *spi)
++{
++	return si4455_remove(&spi->dev);
++}
++
++static struct spi_driver si4455_spi_driver = {
++	.driver = {
++		.name		= SI4455_NAME,
++		.of_match_table	= of_match_ptr(si4455_dt_ids),
++		.pm		= &si4455_pm_ops,
++	},
++	.probe			= si4455_spi_probe,
++	.remove			= si4455_spi_remove,
++};
++
++static int __init si4455_uart_init(void)
++{
++	int ret;
++
++	ret = uart_register_driver(&si4455_uart);
++	if (ret)
++		return ret;
++	spi_register_driver(&si4455_spi_driver);
++
++	return 0;
++}
++module_init(si4455_uart_init);
++
++static void __exit si4455_uart_exit(void)
++{
++	spi_unregister_driver(&si4455_spi_driver);
++	uart_unregister_driver(&si4455_uart);
++}
++module_exit(si4455_uart_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("József Horváth <info@ministro.hu>");
++MODULE_DESCRIPTION("Si4455 serial driver");
+-- 
+2.17.1
+
+
