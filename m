@@ -2,74 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663FA2D8703
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 15:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B4F2D8707
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 15:01:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439122AbgLLN6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 08:58:33 -0500
-Received: from aposti.net ([89.234.176.197]:47928 "EHLO aposti.net"
+        id S2439157AbgLLOAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 09:00:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437600AbgLLN62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 08:58:28 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     od@zcrc.me, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        stable@vger.kernel.org
-Subject: [PATCH] clk: ingenic: Fix divider calculation with div tables
-Date:   Sat, 12 Dec 2020 13:57:33 +0000
-Message-Id: <20201212135733.38050-1-paul@crapouillou.net>
+        id S2439135AbgLLOAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 09:00:39 -0500
+Date:   Sat, 12 Dec 2020 15:59:40 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607781598;
+        bh=W+S3uDjo9SUaklycr1VwLEkb3P+e5VKfy1opxSFjfP4=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=flXIgTj5QPdmF322uyfveGkWCvdiCUBTDqJEmaQAdBMU+9OnpTfe38HJDNJgc0lH8
+         G3M3nYjTvl4Jk0YTIcL5XhPPhChBAc7qxqYwpPq+/oyL9pin060A7R+FLePp8EI92r
+         GwnqdckCsl6axBY1CL4fx8yH/moiz2Z+oLa3jsxNsEo1pT2EOLhqIregvSKc55N4Zj
+         WuUAHrJAd8PgEDWlSYMQSNKmu4qJ1V3ZA+z2Yx8VyWB6hblUmlV0BHoIXeUaszFyMu
+         HjV36aGN0+weJj3fLUwesb3uBHEoXTzG37NgAFnxayD4MEFDMvTjDeUmf4Kr35XObN
+         Un6GIU6DTV1SA==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v14 10/10] secretmem: test: add basic selftest for
+ memfd_secret(2)
+Message-ID: <20201212135940.GD8946@kernel.org>
+References: <20201203062949.5484-1-rppt@kernel.org>
+ <20201203062949.5484-11-rppt@kernel.org>
+ <248f928b-1383-48ea-8584-ec10146e60c9@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <248f928b-1383-48ea-8584-ec10146e60c9@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous code assumed that a higher hardware value always resulted
-in a bigger divider, which is correct for the regular clocks, but is
-an invalid assumption when a divider table is provided for the clock.
+Hi John,
 
-Perfect example of this is the PLL0_HALF clock, which applies a /2
-divider with the hardware value 0, and a /1 divider otherwise.
+On Fri, Dec 11, 2020 at 10:16:23PM -0800, John Hubbard wrote:
+> On 12/2/20 10:29 PM, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> ...
+> > +#include "../kselftest.h"
+> > +
+> > +#define fail(fmt, ...) ksft_test_result_fail(fmt, ##__VA_ARGS__)
+> > +#define pass(fmt, ...) ksft_test_result_pass(fmt, ##__VA_ARGS__)
+> > +#define skip(fmt, ...) ksft_test_result_skip(fmt, ##__VA_ARGS__)
+> > +
+> > +#ifdef __NR_memfd_secret
+> > +
+> > +#include <linux/secretmem.h>
+> 
+> Hi Mike,
+> 
+> Say, when I tried this out from today's linux-next, I had to delete the
+> above line. In other words, the following was required in order to build:
+> 
+> diff --git a/tools/testing/selftests/vm/memfd_secret.c b/tools/testing/selftests/vm/memfd_secret.c
+> index 79578dfd13e6..c878c2b841fc 100644
+> --- a/tools/testing/selftests/vm/memfd_secret.c
+> +++ b/tools/testing/selftests/vm/memfd_secret.c
+> @@ -29,8 +29,6 @@
+> 
+>  #ifdef __NR_memfd_secret
+> 
+> -#include <linux/secretmem.h>
+> -
+>  #define PATTERN        0x55
+> 
+>  static const int prot = PROT_READ | PROT_WRITE;
+> 
+> 
+> ...and that makes sense to me, because:
+> 
+> a) secretmem.h is not in the uapi, which this selftests/vm build system
+>    expects (it runs "make headers_install" for us, which is *not* going
+>    to pick up items in the kernel include dirs), and
+> 
+> b) There is nothing in secretmem.h that this test uses, anyway! Just these:
+> 
+> bool vma_is_secretmem(struct vm_area_struct *vma);
+> bool page_is_secretmem(struct page *page);
+> bool secretmem_active(void);
+> 
+> 
+> ...or am I just Doing It Wrong? :)
 
-Fixes: a9fa2893fcc6 ("clk: ingenic: Add support for divider tables")
-Cc: <stable@vger.kernel.org> # 5.2
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/clk/ingenic/cgu.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+You are perfectly right, I had a stale header in uapi from the prevoius
+versions, the include in the test remained from then.
 
-diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
-index dac6edc670cc..c8e9cb6c8e39 100644
---- a/drivers/clk/ingenic/cgu.c
-+++ b/drivers/clk/ingenic/cgu.c
-@@ -392,15 +392,21 @@ static unsigned int
- ingenic_clk_calc_hw_div(const struct ingenic_cgu_clk_info *clk_info,
- 			unsigned int div)
- {
--	unsigned int i;
-+	unsigned int i, best_i = 0, best = (unsigned int)-1;
- 
- 	for (i = 0; i < (1 << clk_info->div.bits)
- 				&& clk_info->div.div_table[i]; i++) {
--		if (clk_info->div.div_table[i] >= div)
--			return i;
-+		if (clk_info->div.div_table[i] >= div &&
-+		    clk_info->div.div_table[i] < best) {
-+			best = clk_info->div.div_table[i];
-+			best_i = i;
-+
-+			if (div == best)
-+				break;
-+		}
- 	}
- 
--	return i - 1;
-+	return best_i;
- }
- 
- static unsigned
+@Andrew, can you please add the hunk above as a fixup?
+
+> thanks,
+> -- 
+> John Hubbard
+> NVIDIA
+
 -- 
-2.29.2
-
+Sincerely yours,
+Mike.
