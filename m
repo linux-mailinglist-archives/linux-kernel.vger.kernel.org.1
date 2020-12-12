@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E13B2D86B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 14:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 818762D86C2
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 14:11:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439057AbgLLNIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 08:08:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438928AbgLLNAK (ORCPT
+        id S2439074AbgLLNJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 08:09:27 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:41304 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438895AbgLLM7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 08:00:10 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6169DC0617A6;
-        Sat, 12 Dec 2020 04:58:43 -0800 (PST)
+        Sat, 12 Dec 2020 07:59:31 -0500
 Date:   Sat, 12 Dec 2020 12:58:37 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607777918;
+        s=2020; t=1607777917;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y5FJG/5PUN8sK5nmW11wfeTrSKuFRZczmKyjpyWOOJE=;
-        b=fMgdIJOq2WmaWvLsFvrOiCnNtECvDIRCHN5dUyUWyLanp5pPMozkXaRZXL6EdR+7SYSnWy
-        KTVkBdM7s05DZbwzIjzBo/4zxtvbr08orJVYwhWbPL52DS0YWaLoYzkuf0sOqMh4IbCgvX
-        DoD/uwNJSMy7p04h6OPrsWLv3/8x1rCzoWdK+l7gvYRYRIHPewnRzL8x8u/ojM0n6neDO/
-        n4EVWqsVzmCOiN3wCTnRk3dMsFvWMePSrnfQVTbD7NQ536gP6bLx4ImMOKSZVmbF7D53d1
-        gLnhGqSVicekL2ssZchh9x7h03+oddrD1JAzOATeq2jNc5XXPl57xaPNafbQSQ==
+        bh=oc8cgm7UUN7XaLwIPXgk3bunxGRBKvMP229OQ6pLvpA=;
+        b=q9zFVAgqodNwBdgIuK0hWZu5h+v+grGfU83BmuxgzgjJlDI+khJOvxu2BwbzLOvL/25y0G
+        aC1QR03pKpnrs3aT6NNNHFSXqjK2J2rHwF30XW2XCwGOYJaCXnBWYO7BDX5kF/tT0C3nHV
+        DsWWhqQdnLhO+hk75ssZ3o8r2awDocQe1qg0oSoYITeTu2rRx7NOF8QX/9dycdX5mA8XnC
+        8ELPFtPaUaDyZBqSH7L9zbrFokSDIfT6FkoklB/Wqncbuc0xDRj/a5aTY3zF80cLNdXZoR
+        Wg7rYKz680WNzRFet3/UiZTPFCDRkTzjWHiOIJPnpq6YxarTJX0smqDzJhLB8A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607777918;
+        s=2020e; t=1607777917;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y5FJG/5PUN8sK5nmW11wfeTrSKuFRZczmKyjpyWOOJE=;
-        b=gwxYIiuXYP0hczZb7/Q2y0vTJvP2u/YBBOPNLcYRYijYvz5B3IQ1iGEsqXwt7v/b55uG+a
-        Th9y7eitPv+oG7Aw==
+        bh=oc8cgm7UUN7XaLwIPXgk3bunxGRBKvMP229OQ6pLvpA=;
+        b=28vVBil9b9/iBxa7w2EaX9unACl5caN3u0M1s8nVeKAFnMQmq2h/3Wkp6N/HZEB45NZpuC
+        NTrU5WYlUsJHSpAg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] mfd: ab8500-debugfs: Remove the racy fiddling with irq_desc
+Subject: [tip: irq/core] PCI: xilinx-nwl: Use irq_data_get_irq_chip_data()
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>, x86@kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20201210194044.157283633@linutronix.de>
-References: <20201210194044.157283633@linutronix.de>
+In-Reply-To: <20201210194044.364211860@linutronix.de>
+References: <20201210194044.364211860@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160777791799.3364.16109636784825298493.tip-bot2@tip-bot2>
+Message-ID: <160777791748.3364.4812480310871675110.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,65 +59,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     4fa1cf7cde28ad4d7e4388cccfe682dded6a7aca
-Gitweb:        https://git.kernel.org/tip/4fa1cf7cde28ad4d7e4388cccfe682dded6a7aca
+Commit-ID:     f44d2329d5c179d24708ada87f5e77b781e336ca
+Gitweb:        https://git.kernel.org/tip/f44d2329d5c179d24708ada87f5e77b781e336ca
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 10 Dec 2020 20:25:52 +01:00
+AuthorDate:    Thu, 10 Dec 2020 20:25:54 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Sat, 12 Dec 2020 12:59:05 +01:00
 
-mfd: ab8500-debugfs: Remove the racy fiddling with irq_desc
+PCI: xilinx-nwl: Use irq_data_get_irq_chip_data()
 
-First of all drivers have absolutely no business to dig into the internals
-of an irq descriptor. That's core code and subject to change. All of this
-information is readily available to /proc/interrupts in a safe and race
-free way.
+Going through a full irq descriptor lookup instead of just using the proper
+helper function which provides direct access is suboptimal.
 
-Remove the inspection code which is a blatant violation of subsystem
-boundaries and racy against concurrent modifications of the interrupt
-descriptor.
-
-Print the irq line instead so the information can be looked up in a sane
-way in /proc/interrupts.
+In fact it _is_ wrong because the chip callback needs to get the chip data
+which is relevant for the chip while using the irq descriptor variant
+returns the irq chip data of the top level chip of a hierarchy. It does not
+matter in this case because the chip is the top level chip, but that
+doesn't make it more correct.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Acked-by: Lee Jones <lee.jones@linaro.org>
-Link: https://lore.kernel.org/r/20201210194044.157283633@linutronix.de
+Reviewed-by: Rob Herring <robh@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Link: https://lore.kernel.org/r/20201210194044.364211860@linutronix.de
 
 ---
- drivers/mfd/ab8500-debugfs.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
+ drivers/pci/controller/pcie-xilinx-nwl.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mfd/ab8500-debugfs.c b/drivers/mfd/ab8500-debugfs.c
-index 6d1bf7c..a320393 100644
---- a/drivers/mfd/ab8500-debugfs.c
-+++ b/drivers/mfd/ab8500-debugfs.c
-@@ -1513,24 +1513,14 @@ static int ab8500_interrupts_show(struct seq_file *s, void *p)
+diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c b/drivers/pci/controller/pcie-xilinx-nwl.c
+index f3cf7d6..22135df 100644
+--- a/drivers/pci/controller/pcie-xilinx-nwl.c
++++ b/drivers/pci/controller/pcie-xilinx-nwl.c
+@@ -379,13 +379,11 @@ static void nwl_pcie_msi_handler_low(struct irq_desc *desc)
+ 
+ static void nwl_mask_leg_irq(struct irq_data *data)
  {
- 	int line;
+-	struct irq_desc *desc = irq_to_desc(data->irq);
+-	struct nwl_pcie *pcie;
++	struct nwl_pcie *pcie = irq_data_get_irq_chip_data(data);
+ 	unsigned long flags;
+ 	u32 mask;
+ 	u32 val;
  
--	seq_puts(s, "name: number:  number of: wake:\n");
-+	seq_puts(s, "name: number: irq: number of: wake:\n");
+-	pcie = irq_desc_get_chip_data(desc);
+ 	mask = 1 << (data->hwirq - 1);
+ 	raw_spin_lock_irqsave(&pcie->leg_mask_lock, flags);
+ 	val = nwl_bridge_readl(pcie, MSGF_LEG_MASK);
+@@ -395,13 +393,11 @@ static void nwl_mask_leg_irq(struct irq_data *data)
  
- 	for (line = 0; line < num_interrupt_lines; line++) {
--		struct irq_desc *desc = irq_to_desc(line + irq_first);
--
--		seq_printf(s, "%3i:  %6i %4i",
-+		seq_printf(s, "%3i:  %4i %6i %4i\n",
- 			   line,
-+			   line + irq_first,
- 			   num_interrupts[line],
- 			   num_wake_interrupts[line]);
--
--		if (desc && desc->name)
--			seq_printf(s, "-%-8s", desc->name);
--		if (desc && desc->action) {
--			struct irqaction *action = desc->action;
--
--			seq_printf(s, "  %s", action->name);
--			while ((action = action->next) != NULL)
--				seq_printf(s, ", %s", action->name);
- 		}
- 		seq_putc(s, '\n');
- 	}
+ static void nwl_unmask_leg_irq(struct irq_data *data)
+ {
+-	struct irq_desc *desc = irq_to_desc(data->irq);
+-	struct nwl_pcie *pcie;
++	struct nwl_pcie *pcie = irq_data_get_irq_chip_data(data);
+ 	unsigned long flags;
+ 	u32 mask;
+ 	u32 val;
+ 
+-	pcie = irq_desc_get_chip_data(desc);
+ 	mask = 1 << (data->hwirq - 1);
+ 	raw_spin_lock_irqsave(&pcie->leg_mask_lock, flags);
+ 	val = nwl_bridge_readl(pcie, MSGF_LEG_MASK);
