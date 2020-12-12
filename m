@@ -2,54 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8A22D869B
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 14:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B23C2D8687
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 14:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407418AbgLLNEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 08:04:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438962AbgLLNAa (ORCPT
+        id S2438982AbgLLNAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 08:00:31 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:41350 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438901AbgLLM7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 08:00:30 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B4CC0611CC;
-        Sat, 12 Dec 2020 04:58:46 -0800 (PST)
+        Sat, 12 Dec 2020 07:59:32 -0500
 Date:   Sat, 12 Dec 2020 12:58:41 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607777921;
+        s=2020; t=1607777922;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=L1lBa/sKexG+SJIcc9xB/l2ZhQnK+L5HGjO6Gjgbu/Y=;
-        b=kgWX9PlyRFrD9URdfePcfdlNfGOQJeKY9Lh/kU4a0phVsyFKOF+6LLu/qf2XmVk0m+uoGL
-        JgF8INQLy2RmQZl2s1MTRoMLaHBKuGlObQmPXgG0l2l6JdM+l3ZtdfrF4g1QcAKOC4xBsA
-        8+h+fl3nTi3jFsF1hovPG4rYRlrm8AaivsC1/Lu5jkv2rXjNOlSuHjpqRqYc+7xg4aGpJ0
-        yudgfCxNEAHo4gwD0DBhkUivrJYMfzHgm2ltuBVl0w9UXQJCvrGBkaD+N0dAgQJTAtt2ib
-        BFt84c6qD3054YMI0QwkjBT+WRm16Fp+P+RV+3t1vZbCULUMvRWIhH6dz9RbOg==
+        bh=Hw9+vN6VNeTFsSnjEu5cBMevoJjTtsafUElMV/CY+Fs=;
+        b=neQntvKialOYujLnWc12+1jKiOZl8uwyqWqBWGG7Q8sq30u9xAElxxTVuzIvwYqM57DMOP
+        rgnfJhMCSJRbkJvUf8oya4rFZOQKtNIh9SlBXni/ayEXZon4H4EB+hMdexW7joWdQWUaSU
+        fGdQ59g16tnPUmC6yfNTwdIwYSKlRTwxsOnwHRR9ZlqWFq/2NXLEGoinJnnANc0lUZ773+
+        lobccHq9R7m7EOExpGF2nA4bVS3ly6DBRyYyz0UtrO2EweUQDOnC9z7EuUQ6ZZHqhdA0Nf
+        itka3N63EMJ6cPGzRTQ3PwLajZokDy/AbHj+7OqQxWBM8+n2RtzuhwPIlJx4iQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607777921;
+        s=2020e; t=1607777922;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=L1lBa/sKexG+SJIcc9xB/l2ZhQnK+L5HGjO6Gjgbu/Y=;
-        b=83HwTXf4c7basT0Asvm8byVBMIqddl1xjakznR+pQgkQMkDqky6ukZMwTMeupS4P/pZXws
-        B7XgaJ4aKj8eFxBA==
+        bh=Hw9+vN6VNeTFsSnjEu5cBMevoJjTtsafUElMV/CY+Fs=;
+        b=MujjXGIKJM7kjPA27zuRvSEYNjfKFahiUVrOZugzgtCEguGfLUJ5x78QZ8zn0aj3mTykf3
+        TXZpjE/Lt4KssoCg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq: Annotate irq stats data races
+Subject: [tip: irq/core] genirq: Move irq_set_lockdep_class() to core
 Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20201210194043.067097663@linutronix.de>
-References: <20201210194043.067097663@linutronix.de>
+In-Reply-To: <20201210194042.860029489@linutronix.de>
+References: <20201210194042.860029489@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160777792105.3364.9820233761878732243.tip-bot2@tip-bot2>
+Message-ID: <160777792160.3364.6971604740060856051.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,58 +57,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     fb4f676fc901cb547226efb3e69ffeaeefa124be
-Gitweb:        https://git.kernel.org/tip/fb4f676fc901cb547226efb3e69ffeaeefa124be
+Commit-ID:     a07d244f00de679c66643e89eba6e1baa62d3517
+Gitweb:        https://git.kernel.org/tip/a07d244f00de679c66643e89eba6e1baa62d3517
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 10 Dec 2020 20:25:41 +01:00
+AuthorDate:    Thu, 10 Dec 2020 20:25:39 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 12 Dec 2020 12:59:03 +01:00
+CommitterDate: Sat, 12 Dec 2020 12:59:02 +01:00
 
-genirq: Annotate irq stats data races
+genirq: Move irq_set_lockdep_class() to core
 
-Both the per cpu stats and the accumulated count are accessed lockless and
-can be concurrently modified. That's intentional and the stats are a rough
-estimate anyway. Annotate them with data_race().
+irq_set_lockdep_class() is used from modules and requires irq_to_desc() to
+be exported. Move it into the core code which lifts another requirement for
+the export.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201210194043.067097663@linutronix.de
+Link: https://lore.kernel.org/r/20201210194042.860029489@linutronix.de
 
 ---
- kernel/irq/irqdesc.c | 4 ++--
- kernel/irq/proc.c    | 5 +++--
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ include/linux/irqdesc.h | 10 ++++------
+ kernel/irq/irqdesc.c    | 14 ++++++++++++++
+ 2 files changed, 18 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-index f309869..d28f69e 100644
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -943,10 +943,10 @@ unsigned int kstat_irqs(unsigned int irq)
- 	if (!irq_settings_is_per_cpu_devid(desc) &&
- 	    !irq_settings_is_per_cpu(desc) &&
- 	    !irq_is_nmi(desc))
--	    return desc->tot_count;
-+		return data_race(desc->tot_count);
- 
- 	for_each_possible_cpu(cpu)
--		sum += *per_cpu_ptr(desc->kstat_irqs, cpu);
-+		sum += data_race(*per_cpu_ptr(desc->kstat_irqs, cpu));
- 	return sum;
+diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
+index 308d7db..4a1d016 100644
+--- a/include/linux/irqdesc.h
++++ b/include/linux/irqdesc.h
+@@ -240,16 +240,14 @@ static inline bool irq_is_percpu_devid(unsigned int irq)
+ 	return irq_check_status_bit(irq, IRQ_PER_CPU_DEVID);
  }
  
-diff --git a/kernel/irq/proc.c b/kernel/irq/proc.c
-index 72513ed..9813878 100644
---- a/kernel/irq/proc.c
-+++ b/kernel/irq/proc.c
-@@ -488,9 +488,10 @@ int show_interrupts(struct seq_file *p, void *v)
- 	if (!desc || irq_settings_is_hidden(desc))
- 		goto outsparse;
++void __irq_set_lockdep_class(unsigned int irq, struct lock_class_key *lock_class,
++			     struct lock_class_key *request_class);
+ static inline void
+ irq_set_lockdep_class(unsigned int irq, struct lock_class_key *lock_class,
+ 		      struct lock_class_key *request_class)
+ {
+-	struct irq_desc *desc = irq_to_desc(irq);
+-
+-	if (desc) {
+-		lockdep_set_class(&desc->lock, lock_class);
+-		lockdep_set_class(&desc->request_mutex, request_class);
+-	}
++	if (IS_ENABLED(CONFIG_LOCKDEP))
++		__irq_set_lockdep_class(irq, lock_class, request_class);
+ }
  
--	if (desc->kstat_irqs)
-+	if (desc->kstat_irqs) {
- 		for_each_online_cpu(j)
--			any_count |= *per_cpu_ptr(desc->kstat_irqs, j);
-+			any_count |= data_race(*per_cpu_ptr(desc->kstat_irqs, j));
+ #endif
+diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+index e810eb9..f309869 100644
+--- a/kernel/irq/irqdesc.c
++++ b/kernel/irq/irqdesc.c
+@@ -968,3 +968,17 @@ unsigned int kstat_irqs_usr(unsigned int irq)
+ 	rcu_read_unlock();
+ 	return sum;
+ }
++
++#ifdef CONFIG_LOCKDEP
++void __irq_set_lockdep_class(unsigned int irq, struct lock_class_key *lock_class,
++			     struct lock_class_key *request_class)
++{
++	struct irq_desc *desc = irq_to_desc(irq);
++
++	if (desc) {
++		lockdep_set_class(&desc->lock, lock_class);
++		lockdep_set_class(&desc->request_mutex, request_class);
 +	}
- 
- 	if ((!desc->action || irq_desc_is_chained(desc)) && !any_count)
- 		goto outsparse;
++}
++EXPORT_SYMBOL_GPL(irq_set_lockdep_class);
++#endif
