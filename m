@@ -2,80 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D10B2D8822
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9C12D882A
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406552AbgLLQYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 11:24:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439460AbgLLQKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 11:10:34 -0500
-From:   Sasha Levin <sashal@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sven Eckelmann <sven@narfation.org>,
-        Annika Wickert <annika.wickert@exaring.de>,
-        Annika Wickert <aw@awlnx.space>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 5/9] vxlan: Add needed_headroom for lower device
-Date:   Sat, 12 Dec 2020 11:08:44 -0500
-Message-Id: <20201212160848.2335307-5-sashal@kernel.org>
+        id S2407615AbgLLQ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 11:27:33 -0500
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:19299 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407602AbgLLQ1Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 11:27:24 -0500
+Received: from localhost.localdomain ([93.22.36.60])
+        by mwinf5d29 with ME
+        id 3URb240041HrHD103URbFF; Sat, 12 Dec 2020 17:25:40 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 12 Dec 2020 17:25:40 +0100
+X-ME-IP: 93.22.36.60
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     vkoul@kernel.org, dan.j.williams@intel.com, afaerber@suse.de,
+        manivannan.sadhasivam@linaro.org
+Cc:     dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] dmaengine: owl-dma: Fix a resource leak in the remove function
+Date:   Sat, 12 Dec 2020 17:25:35 +0100
+Message-Id: <20201212162535.95727-1-christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201212160848.2335307-1-sashal@kernel.org>
-References: <20201212160848.2335307-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Eckelmann <sven@narfation.org>
+A 'dma_pool_destroy()' call is missing in the remove function.
+Add it.
 
-[ Upstream commit 0a35dc41fea67ac4495ce7584406bf9557a6e7d0 ]
+This call is already made in the error handling path of the probe function.
 
-It was observed that sending data via batadv over vxlan (on top of
-wireguard) reduced the performance massively compared to raw ethernet or
-batadv on raw ethernet. A check of perf data showed that the
-vxlan_build_skb was calling all the time pskb_expand_head to allocate
-enough headroom for:
-
-  min_headroom = LL_RESERVED_SPACE(dst->dev) + dst->header_len
-  		+ VXLAN_HLEN + iphdr_len;
-
-But the vxlan_config_apply only requested needed headroom for:
-
-  lowerdev->hard_header_len + VXLAN6_HEADROOM or VXLAN_HEADROOM
-
-So it completely ignored the needed_headroom of the lower device. The first
-caller of net_dev_xmit could therefore never make sure that enough headroom
-was allocated for the rest of the transmit path.
-
-Cc: Annika Wickert <annika.wickert@exaring.de>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Tested-by: Annika Wickert <aw@awlnx.space>
-Link: https://lore.kernel.org/r/20201126125247.1047977-1-sven@narfation.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 47e20577c24d ("dmaengine: Add Actions Semi Owl family S900 DMA driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/net/vxlan.c | 1 +
+ drivers/dma/owl-dma.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
-index abf85f0ab72fc..8481a21fe7afb 100644
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -3180,6 +3180,7 @@ static void vxlan_config_apply(struct net_device *dev,
- 		dev->gso_max_segs = lowerdev->gso_max_segs;
+diff --git a/drivers/dma/owl-dma.c b/drivers/dma/owl-dma.c
+index 9fede32641e9..04202d75f4ee 100644
+--- a/drivers/dma/owl-dma.c
++++ b/drivers/dma/owl-dma.c
+@@ -1245,6 +1245,7 @@ static int owl_dma_remove(struct platform_device *pdev)
+ 	owl_dma_free(od);
  
- 		needed_headroom = lowerdev->hard_header_len;
-+		needed_headroom += lowerdev->needed_headroom;
+ 	clk_disable_unprepare(od->clk);
++	dma_pool_destroy(od->lli_pool);
  
- 		max_mtu = lowerdev->mtu - (use_ipv6 ? VXLAN6_HEADROOM :
- 					   VXLAN_HEADROOM);
+ 	return 0;
+ }
 -- 
 2.27.0
 
