@@ -2,50 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA51C2D8740
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 16:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3C22D8744
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 16:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439264AbgLLPW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 10:22:59 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:59074 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439255AbgLLPW7 (ORCPT
+        id S2439255AbgLLP0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 10:26:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730087AbgLLPZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 10:22:59 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4997020B717A;
-        Sat, 12 Dec 2020 07:22:17 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4997020B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607786537;
-        bh=BtIRQkWov9YJUVmerRIbFF7Rh3Yzt5VxVWb+6PFNe3o=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=W0yDY4BEiRN2lCJRoUEguoFZzDQk6PhmOHyom5/tu7Za1OkdqaxxNc3xN4yXIQp4N
-         tAb5BelU2ivcIi0Uaa9pB1LM+iBdQaSvuqJP4fDzlEuLT0ymYeLivoymE8EwyNlO+Y
-         3aiZFuzyd437g5yZkg+G0urm4VPL7bdMg7QT5K2M=
-Subject: Re: [RFC PATCH 4/4] powerpc: Use common of_kexec_setup_new_fdt()
-To:     Rob Herring <robh@kernel.org>, takahiro.akashi@linaro.org,
-        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au
-Cc:     Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        zohar@linux.ibm.com, james.morse@arm.com, sashal@kernel.org,
-        benh@kernel.crashing.org, paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
-References: <20201211221006.1052453-1-robh@kernel.org>
- <20201211221006.1052453-5-robh@kernel.org>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <c9501263-b97b-e715-fe7b-730ffee4bb3f@linux.microsoft.com>
-Date:   Sat, 12 Dec 2020 07:22:16 -0800
+        Sat, 12 Dec 2020 10:25:59 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 769EFC061793
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 07:25:19 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id f14so8736628qto.12
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 07:25:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Dd5IDMk6HdEREYAjvJvG5jiNGlnVzol4x0feAnkRhko=;
+        b=KHc7AYqhfFVLFwrn+eDW5521F5NUnXutf1Ope0Jsb1IBwZTIuBiIOQRFxjEP2TkSJt
+         wLRhwVXNI6i/ylMShHXMJSp5N8YwROF6m/vLotUy/6PzCoVV1lzjg4L9ODgpbOzIBQgY
+         Uvgn+t/c1+ZgjKHisaL+DkFa5APpmleSHPjAaIBQOjAdCLP1JxwtbNeW3TDVnQtMS7Ff
+         Qc7nR/6t+We9nhAq3rFRnXQ8FX/64uJZITvq4hIiIVxtMhwTsiFtoxSbCArly5us+7wW
+         lvYEhGynIEtS+/1qvajonUNnZx0p8YGDpjQ1J5cosU4LTxKO3Z8u08Bc8LQqxHEW/sMv
+         OTmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Dd5IDMk6HdEREYAjvJvG5jiNGlnVzol4x0feAnkRhko=;
+        b=KVhWKptMqtyGyZa4uqSWp/f2Zlq5E4fMDTKvqIdWQx111c7+LoAMBdCR8Cfu24xiV8
+         OlpYMbKDeUZzsi+kqQt/DhgLiQPqFGxvyONPAW1N7fIkGVnMQtf8/g4Up+7Q4aTDc+6s
+         k67nFP8oaaXYAJysP9tzJIplBF8j6S0QEwX/s/9q9KTjDDnxuC1Q4rYJhoVusgaw7Eb/
+         jkCTPd/khH0UbNLBpyCJEhW645SV4LAek9/jZk4BSJBrClnisicGtUwB2F9JMpASywGQ
+         vgBaaCTfCTs6c2wO94lfGHAB2Cdaby5l2+arE23xEGMGi1PXXAGd1Cv5OJ/26tGh8vKv
+         Vslw==
+X-Gm-Message-State: AOAM531WZrulwiszHXzsslO/BgTqXvpHlqJJZ5l0A/c1JTMaibjwxMEH
+        JmdDX+DNtlmd8XJcCuVXtOkd0g==
+X-Google-Smtp-Source: ABdhPJz4Xc1cCp3qMWuscQSL/Y19MJx0C5m1nmu4gAsk5Tm5+LxeTXzhqTZGG49VCiqpruutfweJhA==
+X-Received: by 2002:ac8:5286:: with SMTP id s6mr22799733qtn.22.1607786718459;
+        Sat, 12 Dec 2020 07:25:18 -0800 (PST)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id z10sm9925448qtm.54.2020.12.12.07.25.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Dec 2020 07:25:17 -0800 (PST)
+Subject: Re: [Patch v2 6/6] dt-bindings: crypto: qcom-qce: Add v5.4 to binding
+To:     Rob Herring <robh@kernel.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net, sboyd@kernel.org,
+        mturquette@baylibre.com, linux-arm-msm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+References: <20201119155233.3974286-1-thara.gopinath@linaro.org>
+ <20201119155233.3974286-7-thara.gopinath@linaro.org>
+ <20201207220909.GA918596@robh.at.kernel.org>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <f1babcb8-6017-dd3b-cbb6-9b4334037069@linaro.org>
+Date:   Sat, 12 Dec 2020 10:25:16 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201211221006.1052453-5-robh@kernel.org>
+In-Reply-To: <20201207220909.GA918596@robh.at.kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -53,173 +73,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/20 2:10 PM, Rob Herring wrote:
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> 
-> After the IMA changes, delete_fdt_mem_rsv() can also be removed.
-> 
->   arch/powerpc/kexec/file_load.c | 125 ++-------------------------------
->   1 file changed, 6 insertions(+), 119 deletions(-)
-> 
 
-This change looks good to me.
 
-Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+On 12/7/20 5:09 PM, Rob Herring wrote:
+> On Thu, Nov 19, 2020 at 10:52:33AM -0500, Thara Gopinath wrote:
+>> Add compatible string to support v5.4 crypto engine.
+>>
+>> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+>> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>> ---
+>>   Documentation/devicetree/bindings/crypto/qcom-qce.txt | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.txt b/Documentation/devicetree/bindings/crypto/qcom-qce.txt
+>> index fdd53b184ba8..ed1ede9c0acc 100644
+>> --- a/Documentation/devicetree/bindings/crypto/qcom-qce.txt
+>> +++ b/Documentation/devicetree/bindings/crypto/qcom-qce.txt
+>> @@ -2,7 +2,9 @@ Qualcomm crypto engine driver
+>>   
+>>   Required properties:
+>>   
+>> -- compatible  : should be "qcom,crypto-v5.1"
+>> +- compatible  : should be
+>> +		"qcom,crypto-v5.1" for ipq6018
+>> +		"qcom,crypto-v5.4" for sdm845
+> 
+> An outstanding example of why to use SoC specific compatibles rather
+> than versions. Keep v5.1, but use SoC compatibles going forward.
 
-  -lakshmi
+Hi Rob,
 
-> diff --git a/arch/powerpc/kexec/file_load.c b/arch/powerpc/kexec/file_load.c
-> index e452b11df631..956bcb2d1ec2 100644
-> --- a/arch/powerpc/kexec/file_load.c
-> +++ b/arch/powerpc/kexec/file_load.c
-> @@ -16,6 +16,7 @@
-> 
->   #include <linux/slab.h>
->   #include <linux/kexec.h>
-> +#include <linux/of.h>
->   #include <linux/of_fdt.h>
->   #include <linux/libfdt.h>
->   #include <asm/setup.h>
-> @@ -156,132 +157,18 @@ int setup_new_fdt(const struct kimage *image, void *fdt,
->   		  unsigned long initrd_load_addr, unsigned long initrd_len,
->   		  const char *cmdline)
->   {
-> -	int ret, chosen_node;
-> -	const void *prop;
-> -
-> -	/* Remove memory reservation for the current device tree. */
-> -	ret = delete_fdt_mem_rsv(fdt, __pa(initial_boot_params),
-> -				 fdt_totalsize(initial_boot_params));
-> -	if (ret == 0)
-> -		pr_debug("Removed old device tree reservation.\n");
-> -	else if (ret != -ENOENT)
-> -		return ret;
-> -
-> -	chosen_node = fdt_path_offset(fdt, "/chosen");
-> -	if (chosen_node == -FDT_ERR_NOTFOUND) {
-> -		chosen_node = fdt_add_subnode(fdt, fdt_path_offset(fdt, "/"),
-> -					      "chosen");
-> -		if (chosen_node < 0) {
-> -			pr_err("Error creating /chosen.\n");
-> -			return -EINVAL;
-> -		}
-> -	} else if (chosen_node < 0) {
-> -		pr_err("Malformed device tree: error reading /chosen.\n");
-> -		return -EINVAL;
-> -	}
-> -
-> -	/* Did we boot using an initrd? */
-> -	prop = fdt_getprop(fdt, chosen_node, "linux,initrd-start", NULL);
-> -	if (prop) {
-> -		uint64_t tmp_start, tmp_end, tmp_size;
-> -
-> -		tmp_start = fdt64_to_cpu(*((const fdt64_t *) prop));
-> -
-> -		prop = fdt_getprop(fdt, chosen_node, "linux,initrd-end", NULL);
-> -		if (!prop) {
-> -			pr_err("Malformed device tree.\n");
-> -			return -EINVAL;
-> -		}
-> -		tmp_end = fdt64_to_cpu(*((const fdt64_t *) prop));
-> -
-> -		/*
-> -		 * kexec reserves exact initrd size, while firmware may
-> -		 * reserve a multiple of PAGE_SIZE, so check for both.
-> -		 */
-> -		tmp_size = tmp_end - tmp_start;
-> -		ret = delete_fdt_mem_rsv(fdt, tmp_start, tmp_size);
-> -		if (ret == -ENOENT)
-> -			ret = delete_fdt_mem_rsv(fdt, tmp_start,
-> -						 round_up(tmp_size, PAGE_SIZE));
-> -		if (ret == 0)
-> -			pr_debug("Removed old initrd reservation.\n");
-> -		else if (ret != -ENOENT)
-> -			return ret;
-> -
-> -		/* If there's no new initrd, delete the old initrd's info. */
-> -		if (initrd_len == 0) {
-> -			ret = fdt_delprop(fdt, chosen_node,
-> -					  "linux,initrd-start");
-> -			if (ret) {
-> -				pr_err("Error deleting linux,initrd-start.\n");
-> -				return -EINVAL;
-> -			}
-> -
-> -			ret = fdt_delprop(fdt, chosen_node, "linux,initrd-end");
-> -			if (ret) {
-> -				pr_err("Error deleting linux,initrd-end.\n");
-> -				return -EINVAL;
-> -			}
-> -		}
-> -	}
-> -
-> -	if (initrd_len) {
-> -		ret = fdt_setprop_u64(fdt, chosen_node,
-> -				      "linux,initrd-start",
-> -				      initrd_load_addr);
-> -		if (ret < 0)
-> -			goto err;
-> -
-> -		/* initrd-end is the first address after the initrd image. */
-> -		ret = fdt_setprop_u64(fdt, chosen_node, "linux,initrd-end",
-> -				      initrd_load_addr + initrd_len);
-> -		if (ret < 0)
-> -			goto err;
-> -
-> -		ret = fdt_add_mem_rsv(fdt, initrd_load_addr, initrd_len);
-> -		if (ret) {
-> -			pr_err("Error reserving initrd memory: %s\n",
-> -			       fdt_strerror(ret));
-> -			return -EINVAL;
-> -		}
-> -	}
-> -
-> -	if (cmdline != NULL) {
-> -		ret = fdt_setprop_string(fdt, chosen_node, "bootargs", cmdline);
-> -		if (ret < 0)
-> -			goto err;
-> -	} else {
-> -		ret = fdt_delprop(fdt, chosen_node, "bootargs");
-> -		if (ret && ret != -FDT_ERR_NOTFOUND) {
-> -			pr_err("Error deleting bootargs.\n");
-> -			return -EINVAL;
-> -		}
-> -	}
-> +	int ret;
-> 
-> -	if (image->type == KEXEC_TYPE_CRASH) {
-> -		/*
-> -		 * Avoid elfcorehdr from being stomped on in kdump kernel by
-> -		 * setting up memory reserve map.
-> -		 */
-> -		ret = fdt_add_mem_rsv(fdt, image->arch.elf_headers_mem,
-> -				      image->arch.elf_headers_sz);
-> -		if (ret) {
-> -			pr_err("Error reserving elfcorehdr memory: %s\n",
-> -			       fdt_strerror(ret));
-> -			goto err;
-> -		}
-> -	}
-> +	ret = of_kexec_setup_new_fdt(image, fdt, initrd_load_addr, initrd_len, cmdline);
-> +	if (ret)
-> +		goto err;
-> 
-> -	ret = setup_ima_buffer(image, fdt, chosen_node);
-> +	ret = setup_ima_buffer(image, fdt, fdt_path_offset(fdt, "/chosen"));
->   	if (ret) {
->   		pr_err("Error setting up the new device tree.\n");
->   		return ret;
->   	}
-> 
-> -	ret = fdt_setprop(fdt, chosen_node, "linux,booted-from-kexec", NULL, 0);
-> -	if (ret)
-> -		goto err;
-> -
->   	return 0;
-> 
->   err:
-> --
-> 2.25.1
-> 
+Thanks for the review. We have different Soc's using the same version of
+the ip. Is it okay to have "qcom,sdm845-crypto", "qcom,crypto-v5.4" amd 
+have only "qcom,crypto-<version>" in the driver ?
 
+> 
+>>   - reg         : specifies base physical address and size of the registers map
+>>   - clocks      : phandle to clock-controller plus clock-specifier pair
+>>   - clock-names : "iface" clocks register interface
+>> -- 
+>> 2.25.1
+>>
+
+-- 
+Warm Regards
+Thara
