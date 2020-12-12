@@ -2,133 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5AA2D847F
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 05:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCEB2D8483
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 05:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438229AbgLLEdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 23:33:45 -0500
-Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:14120 "EHLO
-        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389029AbgLLEdS (ORCPT
+        id S2438250AbgLLEjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 23:39:05 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:60517 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391778AbgLLEjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 23:33:18 -0500
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS2.zhaoxin.com
- (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Sat, 12 Dec
- 2020 12:32:32 +0800
-Received: from [10.32.56.37] (10.32.56.37) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Sat, 12 Dec
- 2020 12:32:31 +0800
-Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <hpa@zytor.com>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <TimGuo-oc@zhaoxin.com>,
-        <CooperYan@zhaoxin.com>, <QiyuanWang@zhaoxin.com>,
-        <HerryYang@zhaoxin.com>, <CobeChen@zhaoxin.com>,
-        <SilviaZhao@zhaoxin.com>, <thomas.lendacky@amd.com>
-References: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com>
- <20201211130058.GZ2414@hirez.programming.kicks-ass.net>
-From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Message-ID: <757bfaea-04ce-fa92-f990-bcda3d7580d7@zhaoxin.com>
-Date:   Sat, 12 Dec 2020 12:32:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20201211130058.GZ2414@hirez.programming.kicks-ass.net>
+        Fri, 11 Dec 2020 23:39:00 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1607747914; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=IJ9BKtkmFurzufUByPFvKW2OloQiifc6SxwwsjEiHmQ=;
+ b=j3RDzlantQB7XYgKtrS5z3ZIdVZqtodyQg6xDIF07Vn1IMRsIbSyBelnTgiNzYWgdEDiH6Vn
+ 4OmXJGenEWSDTy7Uy/1k4U0WCQx/Lkv39DVssFwCw7Z67CTwuUKpN1H8D97EVT0Z7LubYCCw
+ UQvvDgStydva9s6+RHBgd7wN0mI=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5fd4492465f116f287021b4f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 12 Dec 2020 04:37:56
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 66D87C43462; Sat, 12 Dec 2020 04:37:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4D3D5C433CA;
+        Sat, 12 Dec 2020 04:37:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4D3D5C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.32.56.37]
-X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
+Subject: Re: [PATCH v3] ath10k: add option for chip-id based BDF selection
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
+References: <20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid>
+To:     Abhishek Kumar <kuabhs@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, kuabhs@chromium.org,
+        linux-wireless@vger.kernel.org, ath10k@lists.infradead.org,
+        pillair@codeaurora.org, briannorris@chromium.org,
+        dianders@chromium.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201212043756.66D87C43462@smtp.codeaurora.org>
+Date:   Sat, 12 Dec 2020 04:37:56 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/2020 21:00, Peter Zijlstra wrote:
-> On Fri, Dec 11, 2020 at 07:29:04PM +0800, Tony W Wang-oc wrote:
->> The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
->> On platforms with Zhaoxin CPUs supporting this X86 feature, When
->> crc32c-intel and crc32c-generic are both registered, system will
->> use crc32c-intel because its .cra_priority is greater than
->> crc32c-generic. This case expect to use crc32c-generic driver for
->> some Zhaoxin CPUs to get performance gain, So remove these Zhaoxin
->> CPUs support from crc32c-intel.
->>
->> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
->> ---
->>  arch/x86/crypto/crc32c-intel_glue.c | 8 ++++++++
->>  1 file changed, 8 insertions(+)
->>
->> diff --git a/arch/x86/crypto/crc32c-intel_glue.c b/arch/x86/crypto/crc32c-intel_glue.c
->> index feccb52..6dafdae 100644
->> --- a/arch/x86/crypto/crc32c-intel_glue.c
->> +++ b/arch/x86/crypto/crc32c-intel_glue.c
->> @@ -222,8 +222,16 @@ MODULE_DEVICE_TABLE(x86cpu, crc32c_cpu_id);
->>  
->>  static int __init crc32c_intel_mod_init(void)
->>  {
->> +	struct cpuinfo_x86 *c = &boot_cpu_data;
->> +
->>  	if (!x86_match_cpu(crc32c_cpu_id))
->>  		return -ENODEV;
->> +
->> +	if (c->x86_vendor == X86_VENDOR_ZHAOXIN || c->x86_vendor == X86_VENDOR_CENTAUR) {
->> +		if (c->x86 == 0x6 || (c->x86 == 0x7 && c->x86_model <= 0x3b))
->> +			return -ENODEV;
->> +	}
+Abhishek Kumar <kuabhs@chromium.org> wrote:
+
+> In some devices difference in chip-id should be enough to pick
+> the right BDF. Add another support for chip-id based BDF selection.
+> With this new option, ath10k supports 2 fallback options.
 > 
-> Egads, why can't you use that x86_match_cpu() above, and also this
-> really wants a comment on why you're excluding these chips. 
-
-When doing lmbench3 Create and Delete file test on partitions with ext4
-enabling metadata checksum, found using crc32c-generic driver could get
-about 20% performance gain than using the driver crc32c-intel on these
-chips.
-
-Also, since
-> (IIRC) ZHAOXIN is basically AND, shouldn't they also be listed?
+> The board name with chip-id as option looks as follows
+> board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
 > 
-> That is; write it like:
-> 
-> 	m = x86_match_cpu(crc32_cpu_id);
-> 	if (!m || !m->data)
-> 		return -ENODEV;
-> 
-> That way you can have positive and negative matches in the array
-> (obviously the existing FEATURE test would need data=1 and be last).
-> .
-> 
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2-00696-QCAHLSWMTPL-1
+> Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
+> Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Rakesh Pillai <pillair@codeaurora.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Lot thanks for you suggestion, will list these chips in crc32c_cpu_id
-and use x86_match_cpu:
+Patch applied to ath-next branch of ath.git, thanks.
 
- static const struct x86_cpu_id crc32c_cpu_id[] = {
-+       X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 0x6, X86_FEATURE_XMM4_2, 1),
-+       X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x1b,
-X86_FEATURE_XMM4_2, 1),
-+       X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x3b,
-X86_FEATURE_XMM4_2, 1),
-+       X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 0x6, X86_FEATURE_XMM4_2, 1),
-+       X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x1b,
-X86_FEATURE_XMM4_2, 1),
-+       X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x3b,
-X86_FEATURE_XMM4_2, 1),
-        X86_MATCH_FEATURE(X86_FEATURE_XMM4_2, NULL),
-        {}
- };
-@@ -228,8 +234,10 @@ MODULE_DEVICE_TABLE(x86cpu, crc32c_cpu_id);
+2bc2b87bb35a ath10k: add option for chip-id based BDF selection
 
- static int __init crc32c_intel_mod_init(void)
- {
--       if (!x86_match_cpu(crc32c_cpu_id))
-+       const struct x86_cpu_id *m = x86_match_cpu(crc32c_cpu_id);
-+       if (!m || m->driver_data)
-                return -ENODEV;
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20201207231824.v3.1.Ia6b95087ca566f77423f3802a78b946f7b593ff5@changeid/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-sincerely
-TonyWWangoc
