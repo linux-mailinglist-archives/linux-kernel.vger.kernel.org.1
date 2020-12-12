@@ -2,105 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F14EF2D84F6
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 06:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE9E2D852E
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 07:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438296AbgLLFxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 00:53:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725963AbgLLFxM (ORCPT
+        id S2438460AbgLLGS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 01:18:59 -0500
+Received: from mail.ipatinga.mg.gov.br ([189.76.226.139]:55522 "EHLO
+        zimbra.ipatinga.mg.gov.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388329AbgLLGSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 00:53:12 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B51AC0613D3;
-        Fri, 11 Dec 2020 21:52:32 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id y5so11756313iow.5;
-        Fri, 11 Dec 2020 21:52:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=de8qBW77ez2vG1k7g514vZ/gVwv8ByEiy7/gkUkjT1M=;
-        b=vREtwM0YGPhQ/XD++8S3cVIT38mJng6WEpGZ2IoNGpR1vrFbqwryxq/RwTbzBNeyut
-         ITQ2hlZyPNFcERgd6FfztKl+kQ/i0879wT6u5C4ITw1uPliT0BP3aXC3yGWs3G9l5d0r
-         fHAi+dIC2C1a8TTHFbt5oiAosHDLBP/ZZ+CDZbc88lVkGgG8+y3UMj+sN+eUM/dRxylR
-         g78ILa3OWWHTQjCDEVmfDuTf0B2H5nG03gcsc31nsKGwSrSMKhB4dFJxFy0zP31kFoos
-         jF3WVRVQ3rFgx8b1wQbpPXnzSZKIEF3PRmxRx9afR9zqevYdETq9dJCvgJtBBGHeUepN
-         i+3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=de8qBW77ez2vG1k7g514vZ/gVwv8ByEiy7/gkUkjT1M=;
-        b=fyH8YABECefg61h7ppufZ3WeIv2L57U12TNS7TqHad5ffJ9+gtsUr2x3UZY3gFNIj4
-         7NGfSTJauTa58yjI0PTnTnNrNqZVxMNKOElcrXN2pAzH8QCksZhaZClJMribgsNwFTJx
-         cxDnQWFFE3OXq1GjDjeELAERmhx+IY8XbWneMev75v9rf4t52I4noXHEyKq1RUehfzSw
-         fi/HLpKcykGnSJchT0ZtJDdmlDU3We9a8EctLCe5fRJZJSYaHdFr7sNruQKHH/ekAFxC
-         5/rbYK2mp1xhhkewF2oCVfRpUByK+t2hzO9dS1wmUpM2YTLFM4gws5g9b4Ddj1wTIPb/
-         jkxw==
-X-Gm-Message-State: AOAM532JIp6A+a/4778oCQEZE/wOILB7NIToNHvPg8IB0+bLB7bxdSOc
-        wBllinlloBibU3+ColxgKGc=
-X-Google-Smtp-Source: ABdhPJyIvcNYPBRy8ETgODWko7PYHuwoeJSdT+Ep4FOV4A/DgsWNsQZ/SHxOfg4PptQZ7xHi0/CkOQ==
-X-Received: by 2002:a05:6638:5b2:: with SMTP id b18mr20364316jar.69.1607752351667;
-        Fri, 11 Dec 2020 21:52:31 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id 143sm6795278ila.4.2020.12.11.21.52.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 21:52:30 -0800 (PST)
-Date:   Fri, 11 Dec 2020 22:52:28 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc:     Anders Roxell <anders.roxell@linaro.org>,
-        tsbogend@alpha.franken.de, ndesaulniers@google.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v2] mips: lib: uncached: fix non-standard usage of
- variable 'sp'
-Message-ID: <20201212055228.GA823758@ubuntu-m3-large-x86>
-References: <20201211102437.3929348-1-anders.roxell@linaro.org>
- <alpine.LFD.2.21.2012111950290.2104409@eddie.linux-mips.org>
+        Sat, 12 Dec 2020 01:18:31 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra.ipatinga.mg.gov.br (Postfix) with ESMTP id 594D91A9C2B;
+        Sat, 12 Dec 2020 03:06:18 -0300 (-03)
+Received: from zimbra.ipatinga.mg.gov.br ([127.0.0.1])
+        by localhost (zimbra.ipatinga.mg.gov.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id qg_wV0dflnri; Sat, 12 Dec 2020 03:06:18 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra.ipatinga.mg.gov.br (Postfix) with ESMTP id 605271A9C4F;
+        Sat, 12 Dec 2020 03:06:16 -0300 (-03)
+DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra.ipatinga.mg.gov.br 605271A9C4F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ipatinga.mg.gov.br;
+        s=76BA0250-521D-11E8-B04D-050F82C736C6; t=1607753176;
+        bh=5Z4YPfxq9M4J/ImdbSz90BSSAmK/mjQusvTKEw0NBpg=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=i0HCPJABlEzLSf91XaAqfHrNP2EPAE7eTQrd7lIxvxys3MWjuV1541LBz8/+ONFEz
+         PF/4gDNoH9MdWnp/lo11Zrh3Psr5HulL4KIBCmwP72NncdZPv4s70tYjQ0RXFl0RoU
+         bGf8ozVMT5rRnblql2c8HBO26Ht6SCVm8uddt0KP0WFEnSZPH4Afa+GhYa3oZUpBnQ
+         +j2XI5Bu4nCGBK/tsfUhqCOrENz7IuePwNey1C8KWABo9HBBoMZXHTONweWHkz+6/l
+         kXibSDqBrKhcBJFoDPJhTtLFNk7sIxaCu2lcwTxX5uXLRgbVLLrhV/vBn40XRNTgD7
+         Gb2gQyhG9jzAg==
+X-Virus-Scanned: amavisd-new at ipatinga.mg.gov.br
+Received: from zimbra.ipatinga.mg.gov.br ([127.0.0.1])
+        by localhost (zimbra.ipatinga.mg.gov.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id NyZ-sqz80Oev; Sat, 12 Dec 2020 03:06:16 -0300 (-03)
+Received: from [192.168.43.246] (unknown [129.205.124.246])
+        by zimbra.ipatinga.mg.gov.br (Postfix) with ESMTPSA id 664801A9F1F;
+        Sat, 12 Dec 2020 03:05:52 -0300 (-03)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.21.2012111950290.2104409@eddie.linux-mips.org>
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Your $ 3 million USD
+To:     Recipients <m119736@ipatinga.mg.gov.br>
+From:   " Mr Stefano Pessina" <m119736@ipatinga.mg.gov.br>
+Date:   Sat, 12 Dec 2020 07:05:21 +0100
+Reply-To: pessina108@gmail.com
+Message-Id: <20201212060553.664801A9F1F@zimbra.ipatinga.mg.gov.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 07:54:07PM +0000, Maciej W. Rozycki wrote:
-> On Fri, 11 Dec 2020, Anders Roxell wrote:
-> 
-> > diff --git a/arch/mips/lib/uncached.c b/arch/mips/lib/uncached.c
-> > index 09d5deea747f..f80a67c092b6 100644
-> > --- a/arch/mips/lib/uncached.c
-> > +++ b/arch/mips/lib/uncached.c
-> > @@ -37,10 +37,12 @@
-> >   */
-> >  unsigned long run_uncached(void *func)
-> >  {
-> > -	register long sp __asm__("$sp");
-> >  	register long ret __asm__("$2");
-> >  	long lfunc = (long)func, ufunc;
-> >  	long usp;
-> > +	long sp;
-> > +
-> > +	__asm__("move %0, $sp" : "=r" (sp));
-> 
->  I thought it might be better to make `sp' global instead, so that it's 
-> the compiler that chooses how to schedule accesses.  Have you tried that?
-> 
->   Maciej
+I'm Stefano Pessina, an Italian business tycoon, investor, and philanthropi=
+st. the vice chairman, chief executive officer (CEO), and the single larges=
+t shareholder of Walgreens Boots Alliance. I gave away 25 percent of my per=
+sonal wealth to charity. And I also pledged to give away the rest of 25% th=
+is year 2020 to Individuals.. I have decided to donate  (Three million doll=
+ars)to you. If you are interested in my donation,
 
-This will not work, as the LLVM Mips backend does not support using $sp
-as a global register variable:
+Do contact: pessina108@gmail.com
 
-https://github.com/llvm/llvm-project/commit/1440bb2a26ff13df1b29762658ee122cc0bc47ae
-
-$ make -skj"$(nproc)" ARCH=mips CROSS_COMPILE=mipsel-linux-gnu- LLVM=1 O=out \
-distclean malta_kvm_guest_defconfig vmlinux
-fatal error: error in backend: Invalid register name global variable
-...
-
-Cheers,
-Nathan
+Warm Regard
+CEO Walgreens Boots Alliance
+Stefano Pessina
