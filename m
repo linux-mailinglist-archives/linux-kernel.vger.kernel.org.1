@@ -2,84 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985832D8616
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 11:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B712D861C
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 11:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438825AbgLLKzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 05:55:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726591AbgLLKy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 05:54:59 -0500
-X-Gm-Message-State: AOAM530MgMyFxV64AKMHo3/fqrGgkMYA46ZH1Q7F0pR3uRNBZzNKIgli
-        pbahEjyBu04PfwTzrdC2uMNiaHKTDGyXmOLIIm8=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607770458;
-        bh=I2k6JcKef6p2Y07EpasqSQz/C60x4ofi+mzysUW+G74=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=R/u+XyxMYztIqz8elA/Sbr1Ln9z4A8v83dLt3pCpLOD/ZbY1zpSX1Yomgz6SflZrU
-         LMvGh6LS3Tja5Li8eCYqSENBJc6/0usA0wIhkEK/I8prf+6p3i/mOxV92bpCsdz5av
-         utUoGJrT8BdlMWKJFR830qULVrpSuy4XleiRLctvklEk+nD6b0riDEyo+E4teI3Mcf
-         8un+dmK7m+f4tTG0tQtLHpDokw01aO2T9OUeSTlR1IlkhKUBk5swqAO5yG4K7S7txC
-         CcI75E11StEX6xBMTUp+8huAH6NLFuJ9Ti87z0aY0cj2zqkXsl0uVdzm0CXqAaOqH+
-         LH92h+vWMxm/Q==
-X-Google-Smtp-Source: ABdhPJzTVu8UnT9t8lYDnzh23onvGBawiayLuGYYV5y7vjFoQ76zU9aHbwkc5nGeieLtu61vp0i14GB6Mi/WOJPGPyE=
-X-Received: by 2002:a05:6830:1c24:: with SMTP id f4mr12718462ote.108.1607770458126;
- Sat, 12 Dec 2020 02:54:18 -0800 (PST)
+        id S2438856AbgLLK6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 05:58:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726374AbgLLK6B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 05:58:01 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A01C0613D3;
+        Sat, 12 Dec 2020 02:57:20 -0800 (PST)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6E9431F45DBA;
+        Sat, 12 Dec 2020 10:57:18 +0000 (GMT)
+Date:   Sat, 12 Dec 2020 11:57:15 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <broonie@kernel.org>, <robh+dt@kernel.org>, <lukas@wunner.de>,
+        <bbrezillon@kernel.org>, <p.yadav@ti.com>,
+        <tudor.ambarus@microchip.com>, <linux-spi@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v3 5/9] spi: spi-mem: Allow masters to transfer dummy
+ cycles directly by hardware
+Message-ID: <20201212115715.31a8d755@collabora.com>
+In-Reply-To: <1607721363-8879-6-git-send-email-skomatineni@nvidia.com>
+References: <1607721363-8879-1-git-send-email-skomatineni@nvidia.com>
+        <1607721363-8879-6-git-send-email-skomatineni@nvidia.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com>
- <X9Ov3RWDpUik7gXo@sol.localdomain> <CAMj1kXEDjQG_my5FWVY+b7Q43-_waW74sZyBAPCkd7EEdku+Rw@mail.gmail.com>
-In-Reply-To: <CAMj1kXEDjQG_my5FWVY+b7Q43-_waW74sZyBAPCkd7EEdku+Rw@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 12 Dec 2020 11:54:07 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXH=u7+_DSEsUmFbtgGdPqCUs=AfTqX0mgL+DYvW2hAc8g@mail.gmail.com>
-Message-ID: <CAMj1kXH=u7+_DSEsUmFbtgGdPqCUs=AfTqX0mgL+DYvW2hAc8g@mail.gmail.com>
-Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        TimGuo-oc@zhaoxin.com, CooperYan@zhaoxin.com,
-        QiyuanWang@zhaoxin.com, HerryYang@zhaoxin.com,
-        CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Dec 2020 at 10:36, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Fri, 11 Dec 2020 at 20:07, Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > On Fri, Dec 11, 2020 at 07:29:04PM +0800, Tony W Wang-oc wrote:
-> > > The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
-> > > On platforms with Zhaoxin CPUs supporting this X86 feature, When
-> > > crc32c-intel and crc32c-generic are both registered, system will
-> > > use crc32c-intel because its .cra_priority is greater than
-> > > crc32c-generic. This case expect to use crc32c-generic driver for
-> > > some Zhaoxin CPUs to get performance gain, So remove these Zhaoxin
-> > > CPUs support from crc32c-intel.
-> > >
-> > > Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-> >
-> > Does this mean that the performance of the crc32c instruction on those CPUs is
-> > actually slower than a regular C implementation?  That's very weird.
-> >
->
-> This driver does not use CRC instructions, but carryless
-> multiplication and aggregation. So I suppose the pclmulqdq instruction
-> triggers some pathological performance limitation here.
->
+On Fri, 11 Dec 2020 13:15:59 -0800
+Sowjanya Komatineni <skomatineni@nvidia.com> wrote:
 
-Just noticed it uses both crc instructions and pclmulqdq instructions.
-Sorry for the noise.
+> This patch adds a flag SPI_MASTER_USES_HW_DUMMY_CYCLES for the controllers
+> that support transfer of dummy cycles by the hardware directly.
 
-> That means the crct10dif driver probably needs the same treatment.
+Hm, not sure this is a good idea. I mean, if we expect regular SPI
+devices to use this feature, then why not, but if it's just for
+spi-mem, I'd recommend implementing a driver-specific exec_op() instead
+of using the default one.
 
-Tony, can you confirm that the problem is in the CRC instructions and
-not in the PCLMULQDQ code path that supersedes it when available?
+If we go for those core changes, we should at least add a
+ctrl->max_dummy_cycles field so the core can fallback to regular writes
+when the number of dummy cycles in the spi_mem_op exceeds what the
+controller can do.
+
+> 
+> For controller with this flag set, spi-mem driver will skip dummy bytes
+> transfer in the spi message.
+> 
+> Controller drivers can get the number of dummy cycles from spi_message.
+> 
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  drivers/spi/spi-mem.c   | 18 +++++++++++-------
+>  include/linux/spi/spi.h |  8 ++++++++
+>  2 files changed, 19 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> index f3a3f19..38a523b 100644
+> --- a/drivers/spi/spi-mem.c
+> +++ b/drivers/spi/spi-mem.c
+> @@ -350,13 +350,17 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+>  	}
+>  
+>  	if (op->dummy.nbytes) {
+> -		memset(tmpbuf + op->addr.nbytes + 1, 0xff, op->dummy.nbytes);
+> -		xfers[xferpos].tx_buf = tmpbuf + op->addr.nbytes + 1;
+> -		xfers[xferpos].len = op->dummy.nbytes;
+> -		xfers[xferpos].tx_nbits = op->dummy.buswidth;
+> -		spi_message_add_tail(&xfers[xferpos], &msg);
+> -		xferpos++;
+> -		totalxferlen += op->dummy.nbytes;
+> +		if (ctlr->flags & SPI_MASTER_USES_HW_DUMMY_CYCLES) {
+> +			msg.dummy_cycles = (op->dummy.nbytes * 8) / op->dummy.buswidth;
+> +		} else {
+> +			memset(tmpbuf + op->addr.nbytes + 1, 0xff, op->dummy.nbytes);
+> +			xfers[xferpos].tx_buf = tmpbuf + op->addr.nbytes + 1;
+> +			xfers[xferpos].len = op->dummy.nbytes;
+> +			xfers[xferpos].tx_nbits = op->dummy.buswidth;
+> +			spi_message_add_tail(&xfers[xferpos], &msg);
+> +			xferpos++;
+> +			totalxferlen += op->dummy.nbytes;
+> +		}
+>  	}
+>  
+>  	if (op->data.nbytes) {
+> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> index aa09fdc..2024149 100644
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -512,6 +512,8 @@ struct spi_controller {
+>  
+>  #define SPI_MASTER_GPIO_SS		BIT(5)	/* GPIO CS must select slave */
+>  
+> +#define SPI_MASTER_USES_HW_DUMMY_CYCLES	BIT(6)	/* HW dummy bytes transfer */
+> +
+>  	/* flag indicating this is an SPI slave controller */
+>  	bool			slave;
+>  
+> @@ -1022,6 +1024,12 @@ struct spi_message {
+>  	unsigned		actual_length;
+>  	int			status;
+>  
+> +	/*
+> +	 * dummy cycles in the message transfer. This is used by the controller
+> +	 * drivers supports transfer of dummy cycles directly by the hardware.
+> +	 */
+> +	u8			dummy_cycles;
+> +
+>  	/* for optional use by whatever driver currently owns the
+>  	 * spi_message ...  between calls to spi_async and then later
+>  	 * complete(), that's the spi_controller controller driver.
+
