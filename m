@@ -2,16 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB102D868A
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 14:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A07022D8690
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 14:03:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438990AbgLLNAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 08:00:54 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:41338 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438898AbgLLM7b (ORCPT
+        id S2439009AbgLLNBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 08:01:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438958AbgLLNAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 07:59:31 -0500
+        Sat, 12 Dec 2020 08:00:30 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDE4C0611CA;
+        Sat, 12 Dec 2020 04:58:45 -0800 (PST)
 Date:   Sat, 12 Dec 2020 12:58:40 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1607777920;
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7JQ2DGHT0t4i6gF/9qcMTahRzSm/eFv8wIZRlzZ/bDI=;
-        b=N/94sXmPyx7eYuzDq84AipHfA3rGqr36FpMPctFWNdqPv2WHVXQriWeSDnedtjJnrZsuwW
-        C+GRewCpIIT6Mj5vhk0w8PylKtVguC7hPgxZYBgRWibNdRrthjyGR9VDY35yt2ERYPfV6b
-        xxODiJuhrsXmF9UGzfv78j/6wtsEN2kODdNGEWPonPjWH3VT09+RKdK4AdNhPtC0cicm/g
-        DbV31AqhCLJfFrDdEUNbfdT9wLj0XWYKvT7HCwy6GGpXvJilLszUcVZlMIfjMIUoI31gIr
-        1xqMsvUCOZ1hjoqMbvxNVycv66eV4Ja3w6FIl0KUzgqTg/IwG7kHwvs7sf4YnQ==
+        bh=aE2PPfPA5CvThEQVzbVw6mImk3myVuXPYyduaqON0Bw=;
+        b=nEtzHqZLi4YUBsCQP0a93dal5/fdTdILHGcdLSVF3p7BLSbwGkRK6LY6MlAE9u7v2rWX3S
+        BVuNFsZbgrbMDi7BFta2UxJFJ39ESlSdkCSx2F+izvOscwDlZNqB28KYjZy4EPhdoWSDaT
+        ZZQF4YMbs1zbzBAV2ylzwTeXR7dF3qQ0K6jGmHzVUB77vaoQWvut0dJvTFYhln+doNsKI6
+        mQcJO3mxkZrRG7ZbX8SfdddFzPNkqpqYvzA6eTvZP4n1HPLB0Urz8JWyqPfYWI1n1sq6Nr
+        8oN3o/EDB0dyHSPjK7DMwAjByxY+KQX1OoyHVhqhtSS1i20XgIVDHWwnvpZDDA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1607777920;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,20 +36,20 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7JQ2DGHT0t4i6gF/9qcMTahRzSm/eFv8wIZRlzZ/bDI=;
-        b=1vxdCaq/Z8ZNC4DznItO90Esh6/OlL4FlmpcmxN48p5yytPYpt2p+X4LLfHMqSQ7GsSHQE
-        8NtRqPA4cZcKarBg==
+        bh=aE2PPfPA5CvThEQVzbVw6mImk3myVuXPYyduaqON0Bw=;
+        b=I/OAa79e0Zhi8zvUMd77NqwSN9dPO1I5/Q4WJqgNyL+/nKr/wUP9MhpQWW33V2soOSKgvn
+        hmOzDkqhIzEoVWAQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq: Provide kstat_irqdesc_cpu()
+Subject: [tip: irq/core] genirq: Make kstat_irqs() static
 Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20201210194043.362094758@linutronix.de>
-References: <20201210194043.362094758@linutronix.de>
+In-Reply-To: <20201210194043.268774449@linutronix.de>
+References: <20201210194043.268774449@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160777792016.3364.4118604074336451470.tip-bot2@tip-bot2>
+Message-ID: <160777792041.3364.7294928960882791899.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -57,61 +60,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     ea5f36556b8bde14234ec223ebc59968ade4735a
-Gitweb:        https://git.kernel.org/tip/ea5f36556b8bde14234ec223ebc59968ade4735a
+Commit-ID:     63ca4e066a62afce8ebaf75ebd4c6ef67f7bb5ee
+Gitweb:        https://git.kernel.org/tip/63ca4e066a62afce8ebaf75ebd4c6ef67f7bb5ee
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 10 Dec 2020 20:25:44 +01:00
+AuthorDate:    Thu, 10 Dec 2020 20:25:43 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Sat, 12 Dec 2020 12:59:03 +01:00
 
-genirq: Provide kstat_irqdesc_cpu()
+genirq: Make kstat_irqs() static
 
-Most users of kstat_irqs_cpu() have the irq descriptor already. No point in
-calling into the core code and looking it up once more.
-
-Use it in per_cpu_count_show() to start with.
+No more users outside the core code.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201210194043.362094758@linutronix.de
+Link: https://lore.kernel.org/r/20201210194043.268774449@linutronix.de
 
 ---
- include/linux/irqdesc.h | 6 ++++++
- kernel/irq/irqdesc.c    | 4 ++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ include/linux/kernel_stat.h |  1 -
+ kernel/irq/irqdesc.c        | 19 ++++++-------------
+ 2 files changed, 6 insertions(+), 14 deletions(-)
 
-diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
-index 4a1d016..891b323 100644
---- a/include/linux/irqdesc.h
-+++ b/include/linux/irqdesc.h
-@@ -113,6 +113,12 @@ static inline void irq_unlock_sparse(void) { }
- extern struct irq_desc irq_desc[NR_IRQS];
- #endif
+diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
+index 89f0745..44ae1a7 100644
+--- a/include/linux/kernel_stat.h
++++ b/include/linux/kernel_stat.h
+@@ -67,7 +67,6 @@ static inline unsigned int kstat_softirqs_cpu(unsigned int irq, int cpu)
+ /*
+  * Number of interrupts per specific IRQ source, since bootup
+  */
+-extern unsigned int kstat_irqs(unsigned int irq);
+ extern unsigned int kstat_irqs_usr(unsigned int irq);
  
-+static inline unsigned int irq_desc_kstat_cpu(struct irq_desc *desc,
-+					      unsigned int cpu)
-+{
-+	return desc->kstat_irqs ? *per_cpu_ptr(desc->kstat_irqs, cpu) : 0;
-+}
-+
- static inline struct irq_desc *irq_data_to_desc(struct irq_data *data)
- {
- 	return container_of(data->common, struct irq_desc, irq_common_data);
+ /*
 diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-index 1f7325f..18dd779 100644
+index d28f69e..1f7325f 100644
 --- a/kernel/irq/irqdesc.c
 +++ b/kernel/irq/irqdesc.c
-@@ -147,12 +147,12 @@ static ssize_t per_cpu_count_show(struct kobject *kobj,
- 				  struct kobj_attribute *attr, char *buf)
+@@ -924,15 +924,7 @@ static bool irq_is_nmi(struct irq_desc *desc)
+ 	return desc->istate & IRQS_NMI;
+ }
+ 
+-/**
+- * kstat_irqs - Get the statistics for an interrupt
+- * @irq:	The interrupt number
+- *
+- * Returns the sum of interrupt counts on all cpus since boot for
+- * @irq. The caller must ensure that the interrupt is not removed
+- * concurrently.
+- */
+-unsigned int kstat_irqs(unsigned int irq)
++static unsigned int kstat_irqs(unsigned int irq)
  {
- 	struct irq_desc *desc = container_of(kobj, struct irq_desc, kobj);
--	int cpu, irq = desc->irq_data.irq;
- 	ssize_t ret = 0;
- 	char *p = "";
-+	int cpu;
+ 	struct irq_desc *desc = irq_to_desc(irq);
+ 	unsigned int sum = 0;
+@@ -951,13 +943,14 @@ unsigned int kstat_irqs(unsigned int irq)
+ }
  
- 	for_each_possible_cpu(cpu) {
--		unsigned int c = kstat_irqs_cpu(irq, cpu);
-+		unsigned int c = irq_desc_kstat_cpu(desc, cpu);
- 
- 		ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%s%u", p, c);
- 		p = ",";
+ /**
+- * kstat_irqs_usr - Get the statistics for an interrupt
++ * kstat_irqs_usr - Get the statistics for an interrupt from thread context
+  * @irq:	The interrupt number
+  *
+  * Returns the sum of interrupt counts on all cpus since boot for @irq.
+- * Contrary to kstat_irqs() this can be called from any context.
+- * It uses rcu since a concurrent removal of an interrupt descriptor is
+- * observing an rcu grace period before delayed_free_desc()/irq_kobj_release().
++ *
++ * It uses rcu to protect the access since a concurrent removal of an
++ * interrupt descriptor is observing an rcu grace period before
++ * delayed_free_desc()/irq_kobj_release().
+  */
+ unsigned int kstat_irqs_usr(unsigned int irq)
+ {
