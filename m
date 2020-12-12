@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631B02D8A17
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 22:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 465DA2D8A19
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 22:07:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407939AbgLLVD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 16:03:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38514 "EHLO mail.kernel.org"
+        id S2407952AbgLLVEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 16:04:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726912AbgLLVD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 16:03:58 -0500
-Subject: Re: [PULL REQUEST] i2c for 5.10
+        id S1726912AbgLLVD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 16:03:59 -0500
+Subject: Re: [GIT PULL] SCSI fixes for 5.10-rc7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607806998;
-        bh=LrD1Zfl1EeJhmin2MIKPDd6M2V7CbI7jps+oos3WPoI=;
+        s=k20201202; t=1607806999;
+        bh=jswMUpTjsyCQ5hfsOANp6aigxbw0bihRVxrpVeHpWtM=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=g1Yn1eCX9SGWyR1gVyrWOvYAuGI/fQR2flDsG1t58pSVuZiR1NLOWIOKRGnDnlzRO
-         12GOJWb9CHdqkyoY2K4aJZU4TevVgZsCMgQVznvaTqSJW6Zb/afob0GQk3xASgm5Am
-         dar9HsgUBw1iGOQwogDvRz/k0TsRMmDjmnDej/ikTQNtleXkm1VIeaA5qE6rFXASTX
-         ytGfV0Rq2kL86Rdgi+0GAeHWPCz7jV29qbQ2RLpe7EaTyl8KIDqsn3MYljNW1y91iz
-         cFhVd3i6vsT0wMgA3WCllso87zFCFSCQiuGolR6RcJjpe6/DivQ9eC5iIcybEbVXDh
-         o67J1D0f4zlig==
+        b=dQPejd9SpwYrlqpjuqW+SYqb8Q/goVC0+BbvMpSebv0oFBwoWbkPbevOnlloVfEnC
+         6IJUGdArh3aULKa7XM2dwFnqdBtYpqCTDvgtD61y0lqkvn1orpuPeGwM5NKPXfYNgu
+         55jdrQjjK0N+UGMzM1Uq3bwXmq8FrwMOALOtZQLTHNVT2FfDmXBxLQhhBG9IyA2rZG
+         kHCCnwuCFYPhi48IL/gKDvrcI2ymBiircTlCRG9EuC2SHXPp4BueTMKLPOMrxYxk4m
+         /xaaWfml1WnYdprTW/u83PynLAbEeCpLj8zoE6yITe2VQTaCGbPOJaLKCCkKqCa/7F
+         zycfusVVvL34g==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201212183046.GA8096@kunai>
-References: <20201212183046.GA8096@kunai>
-X-PR-Tracked-List-Id: <linux-i2c.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201212183046.GA8096@kunai>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
-X-PR-Tracked-Commit-Id: e977aaf899a6d3b3d6658da66e262b6e307ae3a2
+In-Reply-To: <a66d77104855fe9cec651d3c51aef288c2676dc2.camel@HansenPartnership.com>
+References: <a66d77104855fe9cec651d3c51aef288c2676dc2.camel@HansenPartnership.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <a66d77104855fe9cec651d3c51aef288c2676dc2.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: 4da3a54f5a025846f9930354cfb80f075b9952e0
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5ee595d9079b94ee931287ce004d34886b7d3c24
-Message-Id: <160780699796.2095.10671629074764009696.pr-tracker-bot@kernel.org>
-Date:   Sat, 12 Dec 2020 21:03:17 +0000
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+X-PR-Merge-Commit-Id: 6bff9bb8a292668e7da3e740394b061e5201f683
+Message-Id: <160780699924.2095.628693049935910139.pr-tracker-bot@kernel.org>
+Date:   Sat, 12 Dec 2020 21:03:19 +0000
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 12 Dec 2020 19:30:46 +0100:
+The pull request you sent on Sat, 12 Dec 2020 11:32:54 -0800:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5ee595d9079b94ee931287ce004d34886b7d3c24
+https://git.kernel.org/torvalds/c/6bff9bb8a292668e7da3e740394b061e5201f683
 
 Thank you!
 
