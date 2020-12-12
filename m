@@ -2,133 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69922D8496
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 06:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5B42D8498
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 06:09:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726517AbgLLFHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 00:07:55 -0500
-Received: from relay3.mymailcheap.com ([217.182.66.161]:49695 "EHLO
-        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726262AbgLLFHY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 00:07:24 -0500
-X-Greylist: delayed 3787 seconds by postgrey-1.27 at vger.kernel.org; Sat, 12 Dec 2020 00:07:20 EST
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay3.mymailcheap.com (Postfix) with ESMTPS id 9E7ED3F15F;
-        Sat, 12 Dec 2020 06:05:40 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id C7C012A368;
-        Sat, 12 Dec 2020 00:05:39 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1607749539;
-        bh=Ssf11oEwwM9nMlUz4m0LH/yq8lL7ITtIP7gq4UsqQRw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BkPoF5VnoPPmlFPbNPSsskQMiYPHSoi/5G2M8L6lIB6yvS+1L0Tuvu9Apd3JQsu1p
-         ywntm68pdYR+gX/BIqsvwIkUov51HkhwvfLGsn8k7J4rp3XelxvnOF42dGm6/aCCeh
-         CPUsbPbcGEuuELCE+6wO8Z4azOztJpH/lyb7qY/I=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id dERH21EBDmYY; Sat, 12 Dec 2020 00:05:39 -0500 (EST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Sat, 12 Dec 2020 00:05:38 -0500 (EST)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id E9B9442D9B;
-        Sat, 12 Dec 2020 05:05:37 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="QaPg7JZ8";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.161.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 8978A42D9B;
-        Sat, 12 Dec 2020 05:05:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1607749531; bh=Ssf11oEwwM9nMlUz4m0LH/yq8lL7ITtIP7gq4UsqQRw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QaPg7JZ8/F9J1RfO+LtqXJoPwUlOd4oXr6SSX0oUjoiuauBZgb0KFBCP9fSikmiZu
-         KRPCZLUMbEy+1R+NL8wskhq3WRdQ299woSfo0u7zXHgYaJ7EwQ9cKZMe44y0gfr0pR
-         5Sk6VrYfJ1CTGpNSrnGk5be4z3BlQQiNNO+YFBLo=
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org
-Subject: [RFC PATCH 09/12] dt-bindings: watchdog: sunxi: add compatible string for V831/V833 WDT
-Date:   Sat, 12 Dec 2020 13:05:16 +0800
-Message-Id: <20201212050519.3644837-1-icenowy@aosc.io>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201212040157.3639864-1-icenowy@aosc.io>
-References: <20201212040157.3639864-1-icenowy@aosc.io>
+        id S1726752AbgLLFJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 00:09:02 -0500
+Received: from mga11.intel.com ([192.55.52.93]:37497 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726533AbgLLFIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 00:08:36 -0500
+IronPort-SDR: B5rcOJbiFo8IlvCLmBHfLgnEnlmuYTjXKU5WFp5SPs/P8X2glY1fNqhKe6XJcgumXUVgOA7xly
+ r/O65uJXepZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9832"; a="171021451"
+X-IronPort-AV: E=Sophos;i="5.78,413,1599548400"; 
+   d="scan'208";a="171021451"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 21:07:53 -0800
+IronPort-SDR: TcO2tjKl/WI5AadpNOd/OBjPGPGKJljOUKTKJPM+y2ILH0z505s73O/1G0LtBxWc3iWC553Zpj
+ IeD9SLnIwxRg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,413,1599548400"; 
+   d="scan'208";a="324609691"
+Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 11 Dec 2020 21:07:52 -0800
+Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1knx8K-0001EU-48; Sat, 12 Dec 2020 05:07:52 +0000
+Date:   Sat, 12 Dec 2020 13:07:19 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.12.10a] BUILD SUCCESS
+ 3952b4a5d591b2052bf9700b6de783a0dceb6cc0
+Message-ID: <5fd45007.WBjj0+I1LL+Nkb5D%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: mail20.mymailcheap.com
-X-Spamd-Result: default: False [6.40 / 20.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.161.2:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[dt];
-         MIME_GOOD(-0.10)[text/plain];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         DMARC_NA(0.00)[aosc.io];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[11];
-         MID_CONTAINS_FROM(1.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
-X-Rspamd-Queue-Id: E9B9442D9B
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V831/V833 has a watchdog similar to the ones on previous Allwinner SoCs
-after sun6i.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.12.10a
+branch HEAD: 3952b4a5d591b2052bf9700b6de783a0dceb6cc0  squash! mm: Add mem_dump_obj() to print source of memory block
 
-Add a compatible string for it.
+elapsed time: 724m
 
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-watchdog@vger.kernel.org
-Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+configs tested: 118
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 linkstation_defconfig
+sh                         apsh4a3a_defconfig
+arm                           omap1_defconfig
+powerpc                     mpc512x_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+openrisc                            defconfig
+arm                            pleb_defconfig
+arm                          collie_defconfig
+arm                           sunxi_defconfig
+sh                          urquell_defconfig
+mips                           mtx1_defconfig
+powerpc                    mvme5100_defconfig
+mips                         cobalt_defconfig
+m68k                             allyesconfig
+arm                          gemini_defconfig
+sh                          rsk7269_defconfig
+sh                        apsh4ad0a_defconfig
+m68k                        m5272c3_defconfig
+mips                   sb1250_swarm_defconfig
+arm                       aspeed_g4_defconfig
+arc                         haps_hs_defconfig
+powerpc                        warp_defconfig
+sh                           se7343_defconfig
+parisc                           alldefconfig
+powerpc                    klondike_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                         assabet_defconfig
+powerpc                  mpc885_ads_defconfig
+mips                           xway_defconfig
+powerpc                      cm5200_defconfig
+arm                      footbridge_defconfig
+mips                      pistachio_defconfig
+mips                      maltaaprp_defconfig
+xtensa                         virt_defconfig
+xtensa                generic_kc705_defconfig
+sparc                            allyesconfig
+powerpc                          g5_defconfig
+m68k                       bvme6000_defconfig
+nds32                               defconfig
+powerpc                      pasemi_defconfig
+mips                     cu1000-neo_defconfig
+xtensa                    smp_lx200_defconfig
+sh                           se7619_defconfig
+xtensa                           allyesconfig
+arm                         mv78xx0_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                          simpad_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+i386                 randconfig-a004-20201209
+i386                 randconfig-a005-20201209
+i386                 randconfig-a001-20201209
+i386                 randconfig-a002-20201209
+i386                 randconfig-a006-20201209
+i386                 randconfig-a003-20201209
+x86_64               randconfig-a016-20201209
+x86_64               randconfig-a012-20201209
+x86_64               randconfig-a013-20201209
+x86_64               randconfig-a014-20201209
+x86_64               randconfig-a015-20201209
+x86_64               randconfig-a011-20201209
+i386                 randconfig-a013-20201209
+i386                 randconfig-a014-20201209
+i386                 randconfig-a011-20201209
+i386                 randconfig-a015-20201209
+i386                 randconfig-a012-20201209
+i386                 randconfig-a016-20201209
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20201209
+x86_64               randconfig-a006-20201209
+x86_64               randconfig-a005-20201209
+x86_64               randconfig-a001-20201209
+x86_64               randconfig-a002-20201209
+x86_64               randconfig-a003-20201209
+
 ---
- .../devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml  | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
-index e8f226376108..2f3c350b0057 100644
---- a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
-+++ b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
-@@ -18,6 +18,9 @@ properties:
-     oneOf:
-       - const: allwinner,sun4i-a10-wdt
-       - const: allwinner,sun6i-a31-wdt
-+      - items:
-+          - const: allwinner,sun8i-v831-wdt
-+          - const: allwinner,sun6i-a31-wdt
-       - items:
-           - const: allwinner,sun50i-a64-wdt
-           - const: allwinner,sun6i-a31-wdt
--- 
-2.28.0
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
