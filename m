@@ -2,25 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83AD2D87CC
+	by mail.lfdr.de (Postfix) with ESMTP id 62DE22D87CB
 	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439401AbgLLQMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2439521AbgLLQMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 12 Dec 2020 11:12:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57716 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:57724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439424AbgLLQKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2439425AbgLLQKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 12 Dec 2020 11:10:13 -0500
 From:   Sasha Levin <sashal@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc:     Brandon Syu <Brandon.Syu@amd.com>, Tony Cheng <Tony.Cheng@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>,
-        MPT-FusionLinux.pdl@avagotech.com, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 09/14] scsi: mpt3sas: Increase IOCInit request timeout to 30s
-Date:   Sat, 12 Dec 2020 11:08:26 -0500
-Message-Id: <20201212160831.2335172-9-sashal@kernel.org>
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.4 12/14] drm/amd/display: Init clock value by current vbios CLKs
+Date:   Sat, 12 Dec 2020 11:08:29 -0500
+Message-Id: <20201212160831.2335172-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201212160831.2335172-1-sashal@kernel.org>
 References: <20201212160831.2335172-1-sashal@kernel.org>
@@ -32,36 +33,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+From: Brandon Syu <Brandon.Syu@amd.com>
 
-[ Upstream commit 85dad327d9b58b4c9ce08189a2707167de392d23 ]
+[ Upstream commit 7e0b367db85ef7b91399006253759a024eab7653 ]
 
-Currently the IOCInit request message timeout is set to 10s. This is not
-sufficient in some scenarios such as during HBA FW downgrade operations.
+[Why]
+While booting into OS, driver updates DPP/DISP CLKs.
+But init clock value is zero which is invalid.
 
-Increase the IOCInit request timeout to 30s.
+[How]
+Get current clocks value to update init clocks.
+To avoid underflow.
 
-Link: https://lore.kernel.org/r/20201130082733.26120-1-sreekanth.reddy@broadcom.com
-Signed-off-by: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Brandon Syu <Brandon.Syu@amd.com>
+Reviewed-by: Tony Cheng <Tony.Cheng@amd.com>
+Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c   | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
-index 8be8c510fdf79..7532603aafb15 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@ -6227,7 +6227,7 @@ _base_send_ioc_init(struct MPT3SAS_ADAPTER *ioc)
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
+index dd92f9c295b45..9f301f8575a54 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
+@@ -97,8 +97,17 @@ void rn_update_clocks(struct clk_mgr *clk_mgr_base,
+ 			new_clocks->dppclk_khz = 100000;
+ 	}
  
- 	r = _base_handshake_req_reply_wait(ioc,
- 	    sizeof(Mpi2IOCInitRequest_t), (u32 *)&mpi_request,
--	    sizeof(Mpi2IOCInitReply_t), (u16 *)&mpi_reply, 10);
-+	    sizeof(Mpi2IOCInitReply_t), (u16 *)&mpi_reply, 30);
- 
- 	if (r != 0) {
- 		ioc_err(ioc, "%s: handshake failed (r=%d)\n", __func__, r);
+-	if (should_set_clock(safe_to_lower, new_clocks->dppclk_khz, clk_mgr->base.clks.dppclk_khz)) {
+-		if (clk_mgr->base.clks.dppclk_khz > new_clocks->dppclk_khz)
++	/*
++	 * Temporally ignore thew 0 cases for disp and dpp clks.
++	 * We may have a new feature that requires 0 clks in the future.
++	 */
++	if (new_clocks->dppclk_khz == 0 || new_clocks->dispclk_khz == 0) {
++		new_clocks->dppclk_khz = clk_mgr_base->clks.dppclk_khz;
++		new_clocks->dispclk_khz = clk_mgr_base->clks.dispclk_khz;
++	}
++
++	if (should_set_clock(safe_to_lower, new_clocks->dppclk_khz, clk_mgr_base->clks.dppclk_khz)) {
++		if (clk_mgr_base->clks.dppclk_khz > new_clocks->dppclk_khz)
+ 			dpp_clock_lowered = true;
+ 		clk_mgr_base->clks.dppclk_khz = new_clocks->dppclk_khz;
+ 		update_dppclk = true;
 -- 
 2.27.0
 
