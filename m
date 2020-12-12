@@ -2,762 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6FEC2D83F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 03:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E52B2D83F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 03:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437176AbgLLCGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 21:06:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437076AbgLLCFq (ORCPT
+        id S2407003AbgLLCS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 21:18:59 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35018 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728618AbgLLCSe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 21:05:46 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A7CC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 18:05:05 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id r24so16168515lfm.8
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 18:05:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ibc7QL6nLjwKa39OPe3RI/8WwFNGOMtc0RdavzcE3os=;
-        b=apbkgZ9Yv2rWJ11MwAezz0Xz7OCOqWVWjYqu956aV1A23OfKc3VWhjSU8D5TSf16X5
-         zPtGBVQqBaWSCzYNmFNKjVS2gbOx72n9PSh1uM000lhjnM7looZq6Lzww4mjD1zr5Vye
-         Dwl7nKYnlJmxpuaGWGjLTWgrmnSiwS2XElIyhXVkHRV9NLP1zbetUzymVfSSefmYqqYm
-         UPh9E6DxMoImPMiclF6s0e2zS5oMekSXi1OKnZ8RkYS9GNwoXz/9gbEXtYX7MSbVBPtQ
-         R4KNZPCpM2t70R+WPH3pyxGnz6qDikuenierO9p2dLJUQBsqBCEDkpC4Bxg4KRyZ04bs
-         GRLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ibc7QL6nLjwKa39OPe3RI/8WwFNGOMtc0RdavzcE3os=;
-        b=iHqusd7hZ2q4Ozt6L9ppSilrKS/crhykyybLx3DFMFydVg7uqeK4jWiF17J9byMmZM
-         IF4QFitZgs8TBnmJvk2Oi498n7oS4fOQ6srMerDz8Sw+6LzrDimc69KiuqRjEAIjScpW
-         9T/4k2IExnTuTfrM00hNgqGbCFbjyLKygPVl1+p2hYhuedTRsPMohPo+qp3sAj+eUWRX
-         pDJ7ajHNE5Es7lUqHepfDC8vnGqcwDNbH5GrD96RlAlr1r6W8tKeJqOdAS1Pdzcp8n9e
-         JKbPwmN8zT1KKEPZAHZdKls6r4BFFSwGKrExvKMTZ7Ge3LIK1zU1twr8byUhTC3fkuQc
-         eABw==
-X-Gm-Message-State: AOAM530qEyX2WlYSpQGIND5axi/j4FXbcZ+fLc+foFVL8f1nCFplht+R
-        VU4fZ4cWNydAMJ4THAEA3Zy6MgQz/UlZ6iyuo/mubA==
-X-Google-Smtp-Source: ABdhPJwcri3OQ1labIQ8ayUTXrivPenem9LMYTKM8LK9qXT5zVUIsSra1npHFzQel0LSF4eIPUFp6zm/7U8cBh1xJSc=
-X-Received: by 2002:a05:651c:1a5:: with SMTP id c5mr4346462ljn.172.1607738704031;
- Fri, 11 Dec 2020 18:05:04 -0800 (PST)
+        Fri, 11 Dec 2020 21:18:34 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BC22YVE136599;
+        Fri, 11 Dec 2020 21:17:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=CHlR03O/slhkZb7UI8AeVZ+E4TnENN5FXY5RSgCtZI0=;
+ b=Gv4+YDoZtt/dFZRvxOvWmDqddZ3JCIr4RXy6pEzwX/uKfUj57SRzGhVOAYbiJDMnr8hQ
+ BpH79INNJApoHGdv1hGbtwf5WVvWN0n46KLB+XHAmKU3TtNkme3xgtWL0U815GXRlgr1
+ VVk1mbDoz8zdIs7H23Anjcpm4YO/ERuG7wtl2QqE6E+1B2/jQKwfa5lZ8E8s9I87opfv
+ l9pkBTpp7tMWOg/oQmBUXBu0nWiL2v64a3yMeebPB52tlBMP0hjUTtSJJLKJk6o0BvfT
+ sxlb7KgRVi/Ce/OecLHJVLQxOlaRQelZPu8xLG1RKvnQS6BpxyaUT7yTl0U+z/mh85iH kg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35chm63y4a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Dec 2020 21:17:17 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BC22jaG137406;
+        Fri, 11 Dec 2020 21:17:17 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35chm63y3v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Dec 2020 21:17:16 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BC2CjZb030545;
+        Sat, 12 Dec 2020 02:17:16 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma03dal.us.ibm.com with ESMTP id 3581ua90v3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 12 Dec 2020 02:17:16 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BC2HESB23527900
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 12 Dec 2020 02:17:14 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B3CF8BE053;
+        Sat, 12 Dec 2020 02:17:14 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 96A49BE04F;
+        Sat, 12 Dec 2020 02:17:05 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.160.59.9])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Sat, 12 Dec 2020 02:17:05 +0000 (GMT)
+References: <20201211221006.1052453-1-robh@kernel.org>
+ <20201211221006.1052453-3-robh@kernel.org>
+ <6934c005-d848-314d-cfee-23f2273c119d@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Rob Herring <robh@kernel.org>, takahiro.akashi@linaro.org,
+        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au,
+        zohar@linux.ibm.com, james.morse@arm.com, sashal@kernel.org,
+        benh@kernel.crashing.org, paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
+Subject: Re: [RFC PATCH 2/4] of: Add a common kexec FDT setup function
+In-reply-to: <6934c005-d848-314d-cfee-23f2273c119d@linux.microsoft.com>
+Date:   Fri, 11 Dec 2020 23:17:02 -0300
+Message-ID: <87360bahup.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-References: <20201021224619.20796-1-john.stultz@linaro.org>
- <87y2jyelv6.fsf@kernel.org> <CALAqxLXxG1oHvUhBtu9doc78EwFo2kj=vfk_GDaR760ae+0YBQ@mail.gmail.com>
- <87o8kte87l.fsf@kernel.org>
-In-Reply-To: <87o8kte87l.fsf@kernel.org>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 11 Dec 2020 18:04:52 -0800
-Message-ID: <CALAqxLXdnaUfJKx0aN9xWwtfWVjMWigPpy2aqsNj56yvnbU80g@mail.gmail.com>
-Subject: Re: [PATCH v2] usb: dwc3: Trigger a GCTL soft reset when switching
- modes in DRD
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, Yu Chen <chenyu56@huawei.com>,
-        Tejas Joglekar <tejas.joglekar@synopsys.com>,
-        Yang Fei <fei.yang@intel.com>,
-        YongQin Liu <yongqin.liu@linaro.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Thinh Nguyen <thinhn@synopsys.com>,
-        Jun Li <lijun.kernel@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux USB List <linux-usb@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="00000000000058dcbb05b63ad656"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-11_10:2020-12-11,2020-12-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 malwarescore=0 adultscore=0 spamscore=0 phishscore=0
+ suspectscore=0 bulkscore=0 clxscore=1011 mlxscore=0 mlxlogscore=999
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012120010
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000058dcbb05b63ad656
-Content-Type: text/plain; charset="UTF-8"
 
-Hey Felipe,
-  Sorry for taking so long to get back to this. :(
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-On Fri, Oct 23, 2020 at 12:02 AM Felipe Balbi <balbi@kernel.org> wrote:
-> John Stultz <john.stultz@linaro.org> writes:
-> > On Thu, Oct 22, 2020 at 12:55 AM Felipe Balbi <balbi@kernel.org> wrote:
-> >> The only thing we need to do is verify
-> >> which registers are shadowed between host and peripheral roles and cache
-> >> only those registers.
-> >
-> > Sorry, could you explain this a bit more? Again, I don't have access
-> > to the hardware docs, so I'm just working with the source and any
-> > vendor patches I can find.
+> On 12/11/20 2:10 PM, Rob Herring wrote:
 >
-> Right, initialize it in gadget mode, then take a register dump (I think
-> our regdump facility in dwc3's debugfs is enough). Then flip to host
-> mode and take the same register dump. Now diff them. You'll see that
-> some registers get overwritten. The reason for that is that physically
-> some host and peripheral registers map to the same block of memory in
-> the IP. In other words, the address decoder in the Register File decodes
-> some addresses to the same physical block of memory. This was done, I
-> believe, to save die area by reducing gate count.
+> Hi Rob,
+>
+>> Both arm64 and powerpc do essentially the same FDT /chosen setup for
+>> kexec. We can simply combine everything each arch does. The differences
+>> are either omissions that arm64 should have or additional properties
+>> that will be ignored.
+>> The differences relative to the arm64 version:
+>> - If /chosen doesn't exist, it will be created (should never happen).
+>> - Any old dtb and initrd reserved memory will be released.
+>> - The new initrd and elfcorehdr are marked reserved.
+>> - "linux,booted-from-kexec" is set.
+>> The differences relative to the powerpc version:
+>> - "kaslr-seed" and "rng-seed" may be set.
+>> - "linux,elfcorehdr" is set.
+>> - Any existing "linux,usable-memory-range" is removed.
+>> Signed-off-by: Rob Herring <robh@kernel.org>
+>> ---
+>> This could be taken a step further and do the allocation of the new
+>> FDT. The difference is arm64 uses vmalloc and powerpc uses kmalloc. The
+>> arm64 version also retries with a bigger allocation. That seems
+>> unnecessary.
+>> ---
+>>   drivers/of/Makefile |   1 +
+>>   drivers/of/kexec.c  | 228 ++++++++++++++++++++++++++++++++++++++++++++
+>>   include/linux/of.h  |   5 +
+>>   3 files changed, 234 insertions(+)
+>>   create mode 100644 drivers/of/kexec.c
+>> diff --git a/drivers/of/Makefile b/drivers/of/Makefile
+>> index 6e1e5212f058..8ce11955afde 100644
+>> --- a/drivers/of/Makefile
+>> +++ b/drivers/of/Makefile
+>> @@ -13,5 +13,6 @@ obj-$(CONFIG_OF_RESERVED_MEM) += of_reserved_mem.o
+>>   obj-$(CONFIG_OF_RESOLVE)  += resolver.o
+>>   obj-$(CONFIG_OF_OVERLAY) += overlay.o
+>>   obj-$(CONFIG_OF_NUMA) += of_numa.o
+>> +obj-$(CONFIG_KEXEC_FILE) += kexec.o
+>
+> For the functions moved from powerpc & arm64 to "drivers/of/kexec.c" in this
+> patch, compiling kexec.c when CONFIG_KEXEC_FILE is enabled is fine. But when
+> more functions (such as remove_ima_buffer()) are moved to this file, Makefile
+> needs to be updated for other ima kexec related CONFIGs.
 
+IMA kexec is only available if CONFIG_KEXEC_FILE is enabled, so I don't
+understand what problem you are seeing.
 
-Ok. So I've taken regdump in gadget mode, and then in host mode
-against upstream, and then again with the patches.
-Diffs below (along with all the captured regdump files attached).
-Note, the problem when it occurs usually at bootup is that the device
-doesn't properly enter gadget mode, so in this case things were
-working (not exhibiting the failure) when I captured everything. If
-you need a regdump when the problem occurs and the IP gets stuck w/
-COREIDLE off, I can capture that too. Let me know
-
-Again, I'm without any hw docs here, so I'm at a little bit of a loss
-to understand how to use these diffs and your comment above about the
-register file using the same memory to generate an alternative
-solution to the patch I have (which is still working great in my
-testing/usage).
-
-Also, Thinh's recent feedback suggests it really is a programming flow
-issue when switching modes, so I'm not sure how to move this forward.
-
-Let me know what you suggest and I'm happy to take a stab at it.
-
-thanks
--john
-
-
---- regdump.gadget      2020-12-12 01:08:56.643246612 +0000
-+++ regdump.host        2020-12-12 01:16:40.195105355 +0000
-@@ -2,9 +2,9 @@
- GSBUSCFG1 = 0x00000300
- GTXTHRCFG = 0x24080000
- GRXTHRCFG = 0x04400000
--GCTL = 0x00112004
-+GCTL = 0x00111004
- GEVTEN = 0x00000000
--GSTS = 0x7e800000
-+GSTS = 0x7e800001
- GUCTL1 = 0x0104018a
- GSNPSID = 0x5533300a
- GGPIO = 0x00000000
-@@ -22,9 +22,9 @@
- GHWPARAMS5 = 0x04204108
- GHWPARAMS6 = 0x0feaec20
- GHWPARAMS7 = 0x04881e8d
--GDBGFIFOSPACE = 0x00420000
--GDBGLTSSM = 0x41090440
--GDBGBMU = 0x20300000
-+GDBGFIFOSPACE = 0x00820000
-+GDBGLTSSM = 0x48c90442
-+GDBGBMU = 0x21210000
- GPRTBIMAP_HS0 = 0x00000000
- GPRTBIMAP_HS1 = 0x00000000
- GPRTBIMAP_FS0 = 0x00000000
-@@ -93,22 +93,22 @@
- GUSB3PIPECTL(13) = 0x00000000
- GUSB3PIPECTL(14) = 0x00000000
- GUSB3PIPECTL(15) = 0x00000000
--GTXFIFOSIZ(0) = 0x00000042
--GTXFIFOSIZ(1) = 0x00420286
--GTXFIFOSIZ(2) = 0x02c80286
--GTXFIFOSIZ(3) = 0x054e0286
--GTXFIFOSIZ(4) = 0x07d40286
--GTXFIFOSIZ(5) = 0x0a5a0286
--GTXFIFOSIZ(6) = 0x0ce00286
--GTXFIFOSIZ(7) = 0x0f660286
--GTXFIFOSIZ(8) = 0x11ec0286
--GTXFIFOSIZ(9) = 0x14720286
--GTXFIFOSIZ(10) = 0x16f80286
--GTXFIFOSIZ(11) = 0x197e0103
--GTXFIFOSIZ(12) = 0x1a810103
--GTXFIFOSIZ(13) = 0x1b840103
--GTXFIFOSIZ(14) = 0x1c870103
--GTXFIFOSIZ(15) = 0x1d8a0103
-+GTXFIFOSIZ(0) = 0x00000082
-+GTXFIFOSIZ(1) = 0x00820184
-+GTXFIFOSIZ(2) = 0x02060286
-+GTXFIFOSIZ(3) = 0x048c0000
-+GTXFIFOSIZ(4) = 0x048c0000
-+GTXFIFOSIZ(5) = 0x048c0000
-+GTXFIFOSIZ(6) = 0x048c0000
-+GTXFIFOSIZ(7) = 0x048c0000
-+GTXFIFOSIZ(8) = 0x048c0000
-+GTXFIFOSIZ(9) = 0x048c0000
-+GTXFIFOSIZ(10) = 0x048c0000
-+GTXFIFOSIZ(11) = 0x048c0000
-+GTXFIFOSIZ(12) = 0x048c0000
-+GTXFIFOSIZ(13) = 0x048c0000
-+GTXFIFOSIZ(14) = 0x048c0000
-+GTXFIFOSIZ(15) = 0x048c0000
- GTXFIFOSIZ(16) = 0x00000000
- GTXFIFOSIZ(17) = 0x00000000
- GTXFIFOSIZ(18) = 0x00000000
-@@ -125,9 +125,9 @@
- GTXFIFOSIZ(29) = 0x00000000
- GTXFIFOSIZ(30) = 0x00000000
- GTXFIFOSIZ(31) = 0x00000000
--GRXFIFOSIZ(0) = 0x00000285
--GRXFIFOSIZ(1) = 0x02850000
--GRXFIFOSIZ(2) = 0x02850000
-+GRXFIFOSIZ(0) = 0x00000084
-+GRXFIFOSIZ(1) = 0x00840184
-+GRXFIFOSIZ(2) = 0x02080280
- GRXFIFOSIZ(3) = 0x00000000
- GRXFIFOSIZ(4) = 0x00000000
- GRXFIFOSIZ(5) = 0x00000000
-@@ -157,148 +157,148 @@
- GRXFIFOSIZ(29) = 0x00000000
- GRXFIFOSIZ(30) = 0x00000000
- GRXFIFOSIZ(31) = 0x00000000
--GEVNTADRLO(0) = 0x41ae8000
-+GEVNTADRLO(0) = 0x00000000
- GEVNTADRHI(0) = 0x00000000
--GEVNTSIZ(0) = 0x00001000
-+GEVNTSIZ(0) = 0x80000000
- GEVNTCOUNT(0) = 0x00000000
- GHWPARAMS8 = 0x00000fea
- DCFG = 0x0052082c
--DCTL = 0x8cf00a00
--DEVTEN = 0x00001217
--DSTS = 0x00020000
-+DCTL = 0x0cf00000
-+DEVTEN = 0x00000000
-+DSTS = 0x00cf36ec
- DGCMDPAR = 0x00000000
- DGCMD = 0x00000000
--DALEPENA = 0x0000000f
-+DALEPENA = 0x00000000
- DEPCMDPAR2(0) = 0x00000000
--DEPCMDPAR1(0) = 0x42dac000
--DEPCMDPAR0(0) = 0x00000000
--DEPCMD(0) = 0x00000006
-+DEPCMDPAR1(0) = 0x00000002
-+DEPCMDPAR0(0) = 0x41af5001
-+DEPCMD(0) = 0x00000000
- DEPCMDPAR2(1) = 0x00000000
--DEPCMDPAR1(1) = 0x42dac000
-+DEPCMDPAR1(1) = 0x00000000
- DEPCMDPAR0(1) = 0x00000000
--DEPCMD(1) = 0x00010006
--DEPCMDPAR2(2) = 0x00000000
-+DEPCMD(1) = 0x00000000
-+DEPCMDPAR2(2) = 0x42dac000
- DEPCMDPAR1(2) = 0x00000000
--DEPCMDPAR0(2) = 0x00000000
--DEPCMD(2) = 0x00020007
-+DEPCMDPAR0(2) = 0x0000007f
-+DEPCMD(2) = 0x00000000
- DEPCMDPAR2(3) = 0x00000000
- DEPCMDPAR1(3) = 0x00000000
- DEPCMDPAR0(3) = 0x00000000
--DEPCMD(3) = 0x00030007
--DEPCMDPAR2(4) = 0x00000000
-+DEPCMD(3) = 0x00000000
-+DEPCMDPAR2(4) = 0x43686000
- DEPCMDPAR1(4) = 0x00000000
--DEPCMDPAR0(4) = 0x00000001
--DEPCMD(4) = 0x00050002
-+DEPCMDPAR0(4) = 0x43685a48
-+DEPCMD(4) = 0x00000000
- DEPCMDPAR2(5) = 0x00000000
- DEPCMDPAR1(5) = 0x00000000
--DEPCMDPAR0(5) = 0x00000001
--DEPCMD(5) = 0x00060002
-+DEPCMDPAR0(5) = 0x00000000
-+DEPCMD(5) = 0x00000000
- DEPCMDPAR2(6) = 0x00000000
- DEPCMDPAR1(6) = 0x00000000
--DEPCMDPAR0(6) = 0x00000001
--DEPCMD(6) = 0x00070002
-+DEPCMDPAR0(6) = 0x00000000
-+DEPCMD(6) = 0x00000000
- DEPCMDPAR2(7) = 0x00000000
- DEPCMDPAR1(7) = 0x00000000
--DEPCMDPAR0(7) = 0x00000001
--DEPCMD(7) = 0x00080002
-+DEPCMDPAR0(7) = 0x00000000
-+DEPCMD(7) = 0x00000000
- DEPCMDPAR2(8) = 0x00000000
- DEPCMDPAR1(8) = 0x00000000
--DEPCMDPAR0(8) = 0x00000001
--DEPCMD(8) = 0x00090002
-+DEPCMDPAR0(8) = 0x00000000
-+DEPCMD(8) = 0x00000000
- DEPCMDPAR2(9) = 0x00000000
- DEPCMDPAR1(9) = 0x00000000
--DEPCMDPAR0(9) = 0x00000001
--DEPCMD(9) = 0x000a0002
-+DEPCMDPAR0(9) = 0x00000000
-+DEPCMD(9) = 0x00000000
- DEPCMDPAR2(10) = 0x00000000
- DEPCMDPAR1(10) = 0x00000000
--DEPCMDPAR0(10) = 0x00000001
--DEPCMD(10) = 0x000b0002
-+DEPCMDPAR0(10) = 0x00000000
-+DEPCMD(10) = 0x00000000
- DEPCMDPAR2(11) = 0x00000000
- DEPCMDPAR1(11) = 0x00000000
--DEPCMDPAR0(11) = 0x00000001
--DEPCMD(11) = 0x000c0002
-+DEPCMDPAR0(11) = 0x00000000
-+DEPCMD(11) = 0x00000000
- DEPCMDPAR2(12) = 0x00000000
- DEPCMDPAR1(12) = 0x00000000
--DEPCMDPAR0(12) = 0x00000001
--DEPCMD(12) = 0x000d0002
-+DEPCMDPAR0(12) = 0x00000000
-+DEPCMD(12) = 0x00000000
- DEPCMDPAR2(13) = 0x00000000
- DEPCMDPAR1(13) = 0x00000000
--DEPCMDPAR0(13) = 0x00000001
--DEPCMD(13) = 0x000e0002
-+DEPCMDPAR0(13) = 0x00000000
-+DEPCMD(13) = 0x00000000
- DEPCMDPAR2(14) = 0x00000000
- DEPCMDPAR1(14) = 0x00000000
--DEPCMDPAR0(14) = 0x00000001
--DEPCMD(14) = 0x000f0002
-+DEPCMDPAR0(14) = 0x00000000
-+DEPCMD(14) = 0x00000000
- DEPCMDPAR2(15) = 0x00000000
- DEPCMDPAR1(15) = 0x00000000
--DEPCMDPAR0(15) = 0x00000001
--DEPCMD(15) = 0x00100002
-+DEPCMDPAR0(15) = 0x00000000
-+DEPCMD(15) = 0x00000000
- DEPCMDPAR2(16) = 0x00000000
- DEPCMDPAR1(16) = 0x00000000
--DEPCMDPAR0(16) = 0x00000001
--DEPCMD(16) = 0x00110002
-+DEPCMDPAR0(16) = 0x00000000
-+DEPCMD(16) = 0x00000000
- DEPCMDPAR2(17) = 0x00000000
- DEPCMDPAR1(17) = 0x00000000
--DEPCMDPAR0(17) = 0x00000001
--DEPCMD(17) = 0x00120002
-+DEPCMDPAR0(17) = 0x00000000
-+DEPCMD(17) = 0x00000000
- DEPCMDPAR2(18) = 0x00000000
- DEPCMDPAR1(18) = 0x00000000
--DEPCMDPAR0(18) = 0x00000001
--DEPCMD(18) = 0x00130002
-+DEPCMDPAR0(18) = 0x00000000
-+DEPCMD(18) = 0x00000000
- DEPCMDPAR2(19) = 0x00000000
- DEPCMDPAR1(19) = 0x00000000
--DEPCMDPAR0(19) = 0x00000001
--DEPCMD(19) = 0x00140002
-+DEPCMDPAR0(19) = 0x00000000
-+DEPCMD(19) = 0x00000000
- DEPCMDPAR2(20) = 0x00000000
- DEPCMDPAR1(20) = 0x00000000
--DEPCMDPAR0(20) = 0x00000001
--DEPCMD(20) = 0x00150002
-+DEPCMDPAR0(20) = 0x00000000
-+DEPCMD(20) = 0x00000000
- DEPCMDPAR2(21) = 0x00000000
- DEPCMDPAR1(21) = 0x00000000
--DEPCMDPAR0(21) = 0x00000001
--DEPCMD(21) = 0x00160002
-+DEPCMDPAR0(21) = 0x00000000
-+DEPCMD(21) = 0x00000000
- DEPCMDPAR2(22) = 0x00000000
- DEPCMDPAR1(22) = 0x00000000
--DEPCMDPAR0(22) = 0x00000001
--DEPCMD(22) = 0x00170002
-+DEPCMDPAR0(22) = 0x00000000
-+DEPCMD(22) = 0x00000000
- DEPCMDPAR2(23) = 0x00000000
- DEPCMDPAR1(23) = 0x00000000
--DEPCMDPAR0(23) = 0x00000001
--DEPCMD(23) = 0x00180002
-+DEPCMDPAR0(23) = 0x00000000
-+DEPCMD(23) = 0x00000000
- DEPCMDPAR2(24) = 0x00000000
- DEPCMDPAR1(24) = 0x00000000
--DEPCMDPAR0(24) = 0x00000001
--DEPCMD(24) = 0x00190002
-+DEPCMDPAR0(24) = 0x00000000
-+DEPCMD(24) = 0x00000000
- DEPCMDPAR2(25) = 0x00000000
- DEPCMDPAR1(25) = 0x00000000
--DEPCMDPAR0(25) = 0x00000001
--DEPCMD(25) = 0x001a0002
-+DEPCMDPAR0(25) = 0x00000000
-+DEPCMD(25) = 0x00000000
- DEPCMDPAR2(26) = 0x00000000
- DEPCMDPAR1(26) = 0x00000000
--DEPCMDPAR0(26) = 0x00000001
--DEPCMD(26) = 0x001b0002
-+DEPCMDPAR0(26) = 0x00000000
-+DEPCMD(26) = 0x00000000
- DEPCMDPAR2(27) = 0x00000000
- DEPCMDPAR1(27) = 0x00000000
--DEPCMDPAR0(27) = 0x00000001
--DEPCMD(27) = 0x001c0002
-+DEPCMDPAR0(27) = 0x00000000
-+DEPCMD(27) = 0x00000000
- DEPCMDPAR2(28) = 0x00000000
- DEPCMDPAR1(28) = 0x00000000
--DEPCMDPAR0(28) = 0x00000001
--DEPCMD(28) = 0x001d0002
-+DEPCMDPAR0(28) = 0x00000000
-+DEPCMD(28) = 0x00000000
- DEPCMDPAR2(29) = 0x00000000
- DEPCMDPAR1(29) = 0x00000000
--DEPCMDPAR0(29) = 0x00000001
--DEPCMD(29) = 0x001e0002
-+DEPCMDPAR0(29) = 0x00000000
-+DEPCMD(29) = 0x00000000
- DEPCMDPAR2(30) = 0x00000000
- DEPCMDPAR1(30) = 0x00000000
--DEPCMDPAR0(30) = 0x00000001
--DEPCMD(30) = 0x001f0002
-+DEPCMDPAR0(30) = 0x00000000
-+DEPCMD(30) = 0x00000000
- DEPCMDPAR2(31) = 0x00000000
- DEPCMDPAR1(31) = 0x00000000
--DEPCMDPAR0(31) = 0x00000001
--DEPCMD(31) = 0x00200002
-+DEPCMDPAR0(31) = 0x00000000
-+DEPCMD(31) = 0x00000000
- OCFG = 0x00000000
- OCTL = 0x00000040
--OEVT = 0x80000000
-+OEVT = 0x00000000
- OEVTEN = 0x00000000
--OSTS = 0x0000201f
-+OSTS = 0x0000000e
-
-
---- regdump.gadget-patched      2020-12-12 00:54:18.310990983 +0000
-+++ regdump.host-patched        2020-12-12 00:55:04.566637171 +0000
-@@ -2,9 +2,9 @@
- GSBUSCFG1 = 0x00000300
- GTXTHRCFG = 0x24080000
- GRXTHRCFG = 0x04400000
--GCTL = 0x00112004
-+GCTL = 0x00111004
- GEVTEN = 0x00000000
--GSTS = 0x7e800000
-+GSTS = 0x7e800001
- GUCTL1 = 0x0104018a
- GSNPSID = 0x5533300a
- GGPIO = 0x00000000
-@@ -22,9 +22,9 @@
- GHWPARAMS5 = 0x04204108
- GHWPARAMS6 = 0x0feaec20
- GHWPARAMS7 = 0x04881e8d
--GDBGFIFOSPACE = 0x00420000
--GDBGLTSSM = 0x41090440
--GDBGBMU = 0x20300000
-+GDBGFIFOSPACE = 0x00820000
-+GDBGLTSSM = 0x48c90442
-+GDBGBMU = 0x21210000
- GPRTBIMAP_HS0 = 0x00000000
- GPRTBIMAP_HS1 = 0x00000000
- GPRTBIMAP_FS0 = 0x00000000
-@@ -93,22 +93,22 @@
- GUSB3PIPECTL(13) = 0x00000000
- GUSB3PIPECTL(14) = 0x00000000
- GUSB3PIPECTL(15) = 0x00000000
--GTXFIFOSIZ(0) = 0x00000042
--GTXFIFOSIZ(1) = 0x00420286
--GTXFIFOSIZ(2) = 0x02c80286
--GTXFIFOSIZ(3) = 0x054e0286
--GTXFIFOSIZ(4) = 0x07d40286
--GTXFIFOSIZ(5) = 0x0a5a0286
--GTXFIFOSIZ(6) = 0x0ce00286
--GTXFIFOSIZ(7) = 0x0f660286
--GTXFIFOSIZ(8) = 0x11ec0286
--GTXFIFOSIZ(9) = 0x14720286
--GTXFIFOSIZ(10) = 0x16f80286
--GTXFIFOSIZ(11) = 0x197e0103
--GTXFIFOSIZ(12) = 0x1a810103
--GTXFIFOSIZ(13) = 0x1b840103
--GTXFIFOSIZ(14) = 0x1c870103
--GTXFIFOSIZ(15) = 0x1d8a0103
-+GTXFIFOSIZ(0) = 0x00000082
-+GTXFIFOSIZ(1) = 0x00820184
-+GTXFIFOSIZ(2) = 0x02060286
-+GTXFIFOSIZ(3) = 0x048c0000
-+GTXFIFOSIZ(4) = 0x048c0000
-+GTXFIFOSIZ(5) = 0x048c0000
-+GTXFIFOSIZ(6) = 0x048c0000
-+GTXFIFOSIZ(7) = 0x048c0000
-+GTXFIFOSIZ(8) = 0x048c0000
-+GTXFIFOSIZ(9) = 0x048c0000
-+GTXFIFOSIZ(10) = 0x048c0000
-+GTXFIFOSIZ(11) = 0x048c0000
-+GTXFIFOSIZ(12) = 0x048c0000
-+GTXFIFOSIZ(13) = 0x048c0000
-+GTXFIFOSIZ(14) = 0x048c0000
-+GTXFIFOSIZ(15) = 0x048c0000
- GTXFIFOSIZ(16) = 0x00000000
- GTXFIFOSIZ(17) = 0x00000000
- GTXFIFOSIZ(18) = 0x00000000
-@@ -125,9 +125,9 @@
- GTXFIFOSIZ(29) = 0x00000000
- GTXFIFOSIZ(30) = 0x00000000
- GTXFIFOSIZ(31) = 0x00000000
--GRXFIFOSIZ(0) = 0x00000285
--GRXFIFOSIZ(1) = 0x02850000
--GRXFIFOSIZ(2) = 0x02850000
-+GRXFIFOSIZ(0) = 0x00000084
-+GRXFIFOSIZ(1) = 0x00840184
-+GRXFIFOSIZ(2) = 0x02080280
- GRXFIFOSIZ(3) = 0x00000000
- GRXFIFOSIZ(4) = 0x00000000
- GRXFIFOSIZ(5) = 0x00000000
-@@ -157,148 +157,148 @@
- GRXFIFOSIZ(29) = 0x00000000
- GRXFIFOSIZ(30) = 0x00000000
- GRXFIFOSIZ(31) = 0x00000000
--GEVNTADRLO(0) = 0x41b55000
-+GEVNTADRLO(0) = 0x00000000
- GEVNTADRHI(0) = 0x00000000
--GEVNTSIZ(0) = 0x00001000
-+GEVNTSIZ(0) = 0x80000000
- GEVNTCOUNT(0) = 0x00000000
- GHWPARAMS8 = 0x00000fea
- DCFG = 0x0052082c
--DCTL = 0x8cf00a00
--DEVTEN = 0x00001217
--DSTS = 0x0083e818
-+DCTL = 0x0cf00000
-+DEVTEN = 0x00000000
-+DSTS = 0x00cee2ac
- DGCMDPAR = 0x00000000
- DGCMD = 0x00000000
--DALEPENA = 0x0000000f
-+DALEPENA = 0x00000000
- DEPCMDPAR2(0) = 0x00000000
--DEPCMDPAR1(0) = 0x425b4000
--DEPCMDPAR0(0) = 0x00000000
--DEPCMD(0) = 0x00000006
-+DEPCMDPAR1(0) = 0x00000002
-+DEPCMDPAR0(0) = 0x41b65001
-+DEPCMD(0) = 0x00000000
- DEPCMDPAR2(1) = 0x00000000
--DEPCMDPAR1(1) = 0x425b4000
-+DEPCMDPAR1(1) = 0x00000000
- DEPCMDPAR0(1) = 0x00000000
--DEPCMD(1) = 0x00010006
--DEPCMDPAR2(2) = 0x00000000
-+DEPCMD(1) = 0x00000000
-+DEPCMDPAR2(2) = 0x425b4000
- DEPCMDPAR1(2) = 0x00000000
--DEPCMDPAR0(2) = 0x00000000
--DEPCMD(2) = 0x00020007
-+DEPCMDPAR0(2) = 0x0000007f
-+DEPCMD(2) = 0x00000000
- DEPCMDPAR2(3) = 0x00000000
- DEPCMDPAR1(3) = 0x00000000
- DEPCMDPAR0(3) = 0x00000000
--DEPCMD(3) = 0x00030007
--DEPCMDPAR2(4) = 0x00000000
-+DEPCMD(3) = 0x00000000
-+DEPCMDPAR2(4) = 0x4164c000
- DEPCMDPAR1(4) = 0x00000000
--DEPCMDPAR0(4) = 0x00000001
--DEPCMD(4) = 0x00050002
-+DEPCMDPAR0(4) = 0x4339da48
-+DEPCMD(4) = 0x00000000
- DEPCMDPAR2(5) = 0x00000000
- DEPCMDPAR1(5) = 0x00000000
--DEPCMDPAR0(5) = 0x00000001
--DEPCMD(5) = 0x00060002
-+DEPCMDPAR0(5) = 0x00000000
-+DEPCMD(5) = 0x00000000
- DEPCMDPAR2(6) = 0x00000000
- DEPCMDPAR1(6) = 0x00000000
--DEPCMDPAR0(6) = 0x00000001
--DEPCMD(6) = 0x00070002
-+DEPCMDPAR0(6) = 0x00000000
-+DEPCMD(6) = 0x00000000
- DEPCMDPAR2(7) = 0x00000000
- DEPCMDPAR1(7) = 0x00000000
--DEPCMDPAR0(7) = 0x00000001
--DEPCMD(7) = 0x00080002
-+DEPCMDPAR0(7) = 0x00000000
-+DEPCMD(7) = 0x00000000
- DEPCMDPAR2(8) = 0x00000000
- DEPCMDPAR1(8) = 0x00000000
--DEPCMDPAR0(8) = 0x00000001
--DEPCMD(8) = 0x00090002
-+DEPCMDPAR0(8) = 0x00000000
-+DEPCMD(8) = 0x00000000
- DEPCMDPAR2(9) = 0x00000000
- DEPCMDPAR1(9) = 0x00000000
--DEPCMDPAR0(9) = 0x00000001
--DEPCMD(9) = 0x000a0002
-+DEPCMDPAR0(9) = 0x00000000
-+DEPCMD(9) = 0x00000000
- DEPCMDPAR2(10) = 0x00000000
- DEPCMDPAR1(10) = 0x00000000
--DEPCMDPAR0(10) = 0x00000001
--DEPCMD(10) = 0x000b0002
-+DEPCMDPAR0(10) = 0x00000000
-+DEPCMD(10) = 0x00000000
- DEPCMDPAR2(11) = 0x00000000
- DEPCMDPAR1(11) = 0x00000000
--DEPCMDPAR0(11) = 0x00000001
--DEPCMD(11) = 0x000c0002
-+DEPCMDPAR0(11) = 0x00000000
-+DEPCMD(11) = 0x00000000
- DEPCMDPAR2(12) = 0x00000000
- DEPCMDPAR1(12) = 0x00000000
--DEPCMDPAR0(12) = 0x00000001
--DEPCMD(12) = 0x000d0002
-+DEPCMDPAR0(12) = 0x00000000
-+DEPCMD(12) = 0x00000000
- DEPCMDPAR2(13) = 0x00000000
- DEPCMDPAR1(13) = 0x00000000
--DEPCMDPAR0(13) = 0x00000001
--DEPCMD(13) = 0x000e0002
-+DEPCMDPAR0(13) = 0x00000000
-+DEPCMD(13) = 0x00000000
- DEPCMDPAR2(14) = 0x00000000
- DEPCMDPAR1(14) = 0x00000000
--DEPCMDPAR0(14) = 0x00000001
--DEPCMD(14) = 0x000f0002
-+DEPCMDPAR0(14) = 0x00000000
-+DEPCMD(14) = 0x00000000
- DEPCMDPAR2(15) = 0x00000000
- DEPCMDPAR1(15) = 0x00000000
--DEPCMDPAR0(15) = 0x00000001
--DEPCMD(15) = 0x00100002
-+DEPCMDPAR0(15) = 0x00000000
-+DEPCMD(15) = 0x00000000
- DEPCMDPAR2(16) = 0x00000000
- DEPCMDPAR1(16) = 0x00000000
--DEPCMDPAR0(16) = 0x00000001
--DEPCMD(16) = 0x00110002
-+DEPCMDPAR0(16) = 0x00000000
-+DEPCMD(16) = 0x00000000
- DEPCMDPAR2(17) = 0x00000000
- DEPCMDPAR1(17) = 0x00000000
--DEPCMDPAR0(17) = 0x00000001
--DEPCMD(17) = 0x00120002
-+DEPCMDPAR0(17) = 0x00000000
-+DEPCMD(17) = 0x00000000
- DEPCMDPAR2(18) = 0x00000000
- DEPCMDPAR1(18) = 0x00000000
--DEPCMDPAR0(18) = 0x00000001
--DEPCMD(18) = 0x00130002
-+DEPCMDPAR0(18) = 0x00000000
-+DEPCMD(18) = 0x00000000
- DEPCMDPAR2(19) = 0x00000000
- DEPCMDPAR1(19) = 0x00000000
--DEPCMDPAR0(19) = 0x00000001
--DEPCMD(19) = 0x00140002
-+DEPCMDPAR0(19) = 0x00000000
-+DEPCMD(19) = 0x00000000
- DEPCMDPAR2(20) = 0x00000000
- DEPCMDPAR1(20) = 0x00000000
--DEPCMDPAR0(20) = 0x00000001
--DEPCMD(20) = 0x00150002
-+DEPCMDPAR0(20) = 0x00000000
-+DEPCMD(20) = 0x00000000
- DEPCMDPAR2(21) = 0x00000000
- DEPCMDPAR1(21) = 0x00000000
--DEPCMDPAR0(21) = 0x00000001
--DEPCMD(21) = 0x00160002
-+DEPCMDPAR0(21) = 0x00000000
-+DEPCMD(21) = 0x00000000
- DEPCMDPAR2(22) = 0x00000000
- DEPCMDPAR1(22) = 0x00000000
--DEPCMDPAR0(22) = 0x00000001
--DEPCMD(22) = 0x00170002
-+DEPCMDPAR0(22) = 0x00000000
-+DEPCMD(22) = 0x00000000
- DEPCMDPAR2(23) = 0x00000000
- DEPCMDPAR1(23) = 0x00000000
--DEPCMDPAR0(23) = 0x00000001
--DEPCMD(23) = 0x00180002
-+DEPCMDPAR0(23) = 0x00000000
-+DEPCMD(23) = 0x00000000
- DEPCMDPAR2(24) = 0x00000000
- DEPCMDPAR1(24) = 0x00000000
--DEPCMDPAR0(24) = 0x00000001
--DEPCMD(24) = 0x00190002
-+DEPCMDPAR0(24) = 0x00000000
-+DEPCMD(24) = 0x00000000
- DEPCMDPAR2(25) = 0x00000000
- DEPCMDPAR1(25) = 0x00000000
--DEPCMDPAR0(25) = 0x00000001
--DEPCMD(25) = 0x001a0002
-+DEPCMDPAR0(25) = 0x00000000
-+DEPCMD(25) = 0x00000000
- DEPCMDPAR2(26) = 0x00000000
- DEPCMDPAR1(26) = 0x00000000
--DEPCMDPAR0(26) = 0x00000001
--DEPCMD(26) = 0x001b0002
-+DEPCMDPAR0(26) = 0x00000000
-+DEPCMD(26) = 0x00000000
- DEPCMDPAR2(27) = 0x00000000
- DEPCMDPAR1(27) = 0x00000000
--DEPCMDPAR0(27) = 0x00000001
--DEPCMD(27) = 0x001c0002
-+DEPCMDPAR0(27) = 0x00000000
-+DEPCMD(27) = 0x00000000
- DEPCMDPAR2(28) = 0x00000000
- DEPCMDPAR1(28) = 0x00000000
--DEPCMDPAR0(28) = 0x00000001
--DEPCMD(28) = 0x001d0002
-+DEPCMDPAR0(28) = 0x00000000
-+DEPCMD(28) = 0x00000000
- DEPCMDPAR2(29) = 0x00000000
- DEPCMDPAR1(29) = 0x00000000
--DEPCMDPAR0(29) = 0x00000001
--DEPCMD(29) = 0x001e0002
-+DEPCMDPAR0(29) = 0x00000000
-+DEPCMD(29) = 0x00000000
- DEPCMDPAR2(30) = 0x00000000
- DEPCMDPAR1(30) = 0x00000000
--DEPCMDPAR0(30) = 0x00000001
--DEPCMD(30) = 0x001f0002
-+DEPCMDPAR0(30) = 0x00000000
-+DEPCMD(30) = 0x00000000
- DEPCMDPAR2(31) = 0x00000000
- DEPCMDPAR1(31) = 0x00000000
--DEPCMDPAR0(31) = 0x00000001
--DEPCMD(31) = 0x00200002
-+DEPCMDPAR0(31) = 0x00000000
-+DEPCMD(31) = 0x00000000
- OCFG = 0x00000000
- OCTL = 0x00000040
--OEVT = 0x80000000
-+OEVT = 0x00000000
- OEVTEN = 0x00000000
--OSTS = 0x0000201f
-+OSTS = 0x0000000e
-
---00000000000058dcbb05b63ad656
-Content-Type: application/octet-stream; name="regdump.tar.xz"
-Content-Disposition: attachment; filename="regdump.tar.xz"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kil1ywxy0>
-X-Attachment-Id: f_kil1ywxy0
-
-/Td6WFoAAATm1rRGAgAhARYAAAB0L+Wj4J//BUFdADkZSSnDDnOxX9Ml4eywgga17i/RZRcNzdgp
-tIWslEh+ACBSlzJqDeniKFzRfufQXUqD8FXD1EdBoW44HvXojTSLf65GOaIgCD7UEx8VHnyRkZzS
-vbl5yOk2mB3I4qj5N0nvLYRhQ7DFldgJHdx/stp85/p+G7XR4KTOXilhSjkkFeIBOga2S+hjYvvS
-cLPsBzH9M3a1phEVigdDIVzJIkD5PK/2OmyTtbz+IMKCpMIJ8uzRoy+w/Y7H4AD1ByHpJNMcVfK+
-lZop+cyEtPz/qtu73zaC0560jpyT9KmlD+LFYC3N4FxTfRJwEdBONHmxFlRZIT7o0nrsCefIh/jR
-V4HwamvCLADk2wIXsOUtPfPedbrkdk2gn+QF5lo1FJFBgcECd4TG17VH5N9z7C5R2hYxd+3WXOum
-hVNn2eLBjMUHvdXxst6BloBBPRwle4qU19rrw8G00zrvJaXV+oKByVCcd9jW8jDv198IRCcqctu8
-YGWRKD7wZY7EJ3PX00h8qLl+fTSWlDAaXX8hA6GdAKwR9bjft6qBhXauDGi5bP4p9UWrxBAeG/Bb
-1Kix3plYh/MY802Y4PE7bvsGYogfei2foyB+utkCEc+tH2SqdGziQd06u6MBSrcXGmR/VihZbdvT
-/4oNKG/Isft8IpKYbVoys78IGnxPkFy52N92HaBf41Gflyj6E8SL3sa0Qf33vtxj4lVmAkO6jFxF
-C7Mq6uyn/P7LQ9nlKPhAai6UOFmi/MXL3Hc3YkziowCffFsZBygnkL2GOLol93fiKAQFTndb8PIY
-x3N59jdewLCnvkd/IbH3xp2yJqi7+gAwhoF2AEydLB+pYlZ9SlTQxbCxcqUdy60OrksPuNWiMqeG
-qP4ndU5vLkcBCZ2TJ+4PoJvPl7u50sGJkGLy2ZXUYuEH+bmzSuc/QEcj3LhMW0yT83ZfZXNNXV2n
-2qtAb2RIZv/OgPR4UPNJBP2Lg2TaRVfjxkms9cToltJi0AwhNxHcADIujn/zdJ7oKbYpBfWUJOpP
-VFCl6EHI6j0oAm13EWO3HZaIr52RNViF2JgwvE0nWeENbfThI9zYjoWFI5qNx1/9y4WQRobNd9UM
-ra/C5MsOo8PYC5WHtaK55TucvAH7pJnGWm28TIcLjQXwVCdU3p10XlaIugjLzw9oA7cAUp7tLtaK
-3c7RdqbU4ww87Z68BINStnR+YOcP3YH2jcdAQivHqAluJGuAepF0P0nuUaii9uzuJSPQmfT1+q9T
-aiOT7UH6Kxj1O2ebLxjNCTHXLNW/FCIm5+7Ds6uMlDoPeRzxZOfYPQ8NyMXqpqN6pcUNkm+XW2SX
-GZRzuzxDCc3lUAL78IVAjm5ykad7/P5gs/Ofsax4nB8HHkSqLOwzVwAxcasucY+vRot12n6yMZ2e
-b7+MIq36bVfBP9w4H4aFGhDks3DG2DcqF9DIOyVq9sHRotkGOCya/aDpCKyuv6gFaTZJzzHV3lb2
-cImBz0ACU/DxLeHW9OY3P4rqP3abX/hIpqIrLV7ta23SD4qs2f+bwLLpRaEvAZAb38kUeO5eDdvk
-Stg3voPcKGh0TLrbzuPpMDqQhpZjPHFeoWRTJ3j6Qrr+osU5VwWg/27sLRaEGIi4j37XiW+UlAKf
-jAmkroHjH7G8x8+LctF90ghn3FRnt5y9ZoMVWovitRXPp+5vF4U7IgT7e9KcQ74HTCTFB+cIIQVV
-d/2Ba1GEzqZwQzzbY5rWIMO5nGTLOepwZvVJQgjWZnhNsbZ6vC0vwmbyxekgwFcCqRBkNbELkIaK
-IMSO9nkwDQAAAAAAb2K0XmIIzbwAAd0KgMACAHSBhWmxxGf7AgAAAAAEWVo=
---00000000000058dcbb05b63ad656--
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
