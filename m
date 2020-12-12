@@ -2,55 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039D92D856A
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 10:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 601D82D8580
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 10:59:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438487AbgLLJwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 04:52:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405248AbgLLJwU (ORCPT
+        id S2438498AbgLLJ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 04:59:03 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:35806 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438467AbgLLJ6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 04:52:20 -0500
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DA3C0619DD
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 01:51:14 -0800 (PST)
-Received: from [2a02:fe0:c700:2:687c:e90d:da70:b07d] (port=60646)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Ywe_C4rlyn@ihsan-code.eu>)
-        id 1ko1YV-0005CE-T2
-        for linux-kernel@vger.kernel.org; Sat, 12 Dec 2020 10:51:11 +0100
-Subject: Re: Fair Pay: Some interesting observations of symboldevelopment..
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C4rlyn@ihsan-code.eu>
-To:     linux-kernel@vger.kernel.org
-References: <0cc3e3c3-cf47-dff1-b6c1-2ab562072a01@ihsan-code.eu>
- <0523bdfb-7d1f-998b-b79e-13fc7f85b6a7@ihsan-code.eu>
- <6737bbc9-aceb-dc43-b2c5-51265abfff5d@ihsan-code.eu>
- <b2b91154-bc58-d5cb-41f7-44a6c95b48cf@ihsan-code.eu>
- <861b1f05-3b1c-f458-32ce-c548b9b0c07f@ihsan-code.eu>
- <3c6233c8-f5c2-756f-14d2-d835e724b387@ihsan-code.eu>
- <3968fadc-4a52-b795-e966-d41057e1ba2b@ihsan-code.eu>
- <61ad9caf-2a17-e50e-1be3-1fe6c65229ad@ihsan-code.eu>
-Message-ID: <cd68e719-610a-6189-3cdf-8ee692bab419@ihsan-code.eu>
-Date:   Sat, 12 Dec 2020 10:50:56 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Sat, 12 Dec 2020 04:58:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1607766929;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=Message-Id:Date:Subject:Cc:To:From:From:Subject:Sender;
+        bh=g6bpl7WULr2ukmQidYOp2C0r5vm/laI1YjdSO2Z4mDY=;
+        b=WGnrZBALPPbamiiPMRkfsc49KHyr6BL/UIvbeiWw9K8Ik8UOaP4m2S0e5IzlrFXQL3
+        +FKM1JrBvM+vRxvNlhbtJCazTPGzLBN1CxzP3djUELk9SE4enmhRF8ojuykfzn/xfqO8
+        mACFdyE4l2db7qckI9Aqzrv3W1abmrwTOM2zZ165o3yX4JlhqF6t8FTZzhDrUWbeNVV5
+        90i/LhXBUwbtVO9UWDH763h0aUQ4Is696bJ8wtKVRrw67YCQBP8HaJ7T4frJfkAoCWkq
+        NtdcqBCu5L2lCUJhvDhiE8T1Lj66hsCkuaFty2fpMoLwWekwQHS7aJVQQO1C4PNnCxKu
+        Hmjw==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1mfYzBGHXH4FpDwNN0="
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+        by smtp.strato.de (RZmta 47.7.1 DYNA|AUTH)
+        with ESMTPSA id K0b553wBC9tQ2bo
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Sat, 12 Dec 2020 10:55:26 +0100 (CET)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
+        Andreas Kemnade <andreas@kemnade.info>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>, stable@vger.kernel.org
+Subject: [PATCH] DTS: ARM: gta04: remove legacy spi-cs-high to make display work again
+Date:   Sat, 12 Dec 2020 10:55:25 +0100
+Message-Id: <de8774e44a8f6402435e64034b8e7122157f5b52.1607766924.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <61ad9caf-2a17-e50e-1be3-1fe6c65229ad@ihsan-code.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No, SINO the only Giad it becomes.
+This reverts
 
-Took the name one step further aswell - Axim X. "Alim" (written right to 
-left in arabc script) means learned, and its a good name for an OS 
-aswell. Showing learnedness, and an example of some words that change 
-when written left to right in latin script it is, Axim X.
+commit f1f028ff89cb ("DTS: ARM: gta04: introduce legacy spi-cs-high to make display work again")
 
-Serenity!
-Ywe Cærlyn
-https://www.youtube.com/channel/UCR3gmLVjHS5A702wo4bol_Q
+which had to be intruduced after
+
+commit 6953c57ab172 ("gpio: of: Handle SPI chipselect legacy bindings")
+
+broke the GTA04 display. This contradicted the data sheet but was the only
+way to get it as an spi client operational again.
+
+The panel data sheet defines the chip-select to be active low.
+
+Now, with the arrival of
+
+commit 766c6b63aa04 ("spi: fix client driver breakages when using GPIO descriptors")
+
+the logic of interaction between spi-cs-high and the gpio descriptor flags
+has been changed a second time, making the display broken again. So we have
+to remove the original fix which in retrospect was a workaround of a bug in
+the spi subsystem and not a feature of the panel or bug in the device tree.
+
+With this fix the device tree is back in sync with the data sheet and
+spi subsystem code.
+
+Fixes: 766c6b63aa04 ("spi: fix client driver breakages when using GPIO descriptors")
+CC: stable@vger.kernel.org
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ arch/arm/boot/dts/omap3-gta04.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/omap3-gta04.dtsi b/arch/arm/boot/dts/omap3-gta04.dtsi
+index c8745bc800f71..003202d129907 100644
+--- a/arch/arm/boot/dts/omap3-gta04.dtsi
++++ b/arch/arm/boot/dts/omap3-gta04.dtsi
+@@ -124,7 +124,6 @@ lcd: td028ttec1@0 {
+ 			spi-max-frequency = <100000>;
+ 			spi-cpol;
+ 			spi-cpha;
+-			spi-cs-high;
+ 
+ 			backlight= <&backlight>;
+ 			label = "lcd";
+-- 
+2.26.2
+
