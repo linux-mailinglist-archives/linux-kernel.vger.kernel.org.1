@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F632D8730
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 16:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F96C2D873A
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 16:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439218AbgLLPFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 10:05:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725550AbgLLPFD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 10:05:03 -0500
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46263C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 07:04:23 -0800 (PST)
-Received: by mail-ua1-x943.google.com with SMTP id y25so375382uaq.7
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 07:04:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SIHzE5eZs0KEPIpA5NjA8gcyQH1GGVp3OBB3oHCA74I=;
-        b=DdbKMEVoZM5chftjfT/Gg/v7/+prBBJwpUGNi0GoSQ0iGWDleq3JzUspdcNXMfmyNP
-         nJa3dZEmhIlOzVlhvNVJ9JNvDKyO7dsFaoOQhSasJEYU9FBPJgBqEHZPCM8NZbl+DIve
-         Lcc3DsGRnrXhC/9emS/r4BVPvml2czXEu3kdlitwLzcD6MK3FBH5ZpvDwejgEFmYLS2o
-         YL4g1dd/aco/hAoQ6ieCe4jPuSVVK55pJo1CHuebA85UsC6CZz2ycF5vPajYYADHisuI
-         VDxDsXHj8bAP+14YVKaVVeEXuR7wUj762LvLQNyFstx4GUWXpCcEE9pmD1QZqLdMjiNl
-         14FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SIHzE5eZs0KEPIpA5NjA8gcyQH1GGVp3OBB3oHCA74I=;
-        b=fQZ2EY0cFs82OCkpjE2IBoZPuhcULGeSIhtKdPi+seGrx5eKfeN5OUQ+U4qOHbTCmu
-         iWFqgWSF8H/XOgW5XrCnS6cJt6SnDf0BPFQeb3ptB2c4U/4x1cj2+bvzVIzwBPa20L2u
-         fhygaKsJMc7aa9ZZfai+z7bHifCRInkSl/SsJinzbnLwMSOZp97O8zlCQhEy0v9FTyoZ
-         61OnrXIkvjomTSVf8Khf7FWVoWZD2kkBZGnyDozN9EUpBuls/BQG/R4wwMvY1EVIcZS5
-         J881qdX2xcahbAFEOPv91oU0PPRpaXvl7yLw8N95W8MtkWZtPHPbcjh2WNP0tSMBQHeF
-         WXOA==
-X-Gm-Message-State: AOAM531HtsUdDAk6DtezwF36zXyHzSGVqylg8PCI/sdNtkRxHfu9cBy1
-        L9g4n58mAvvO90wPHORQYjjGR8tTJUyQMuWmNFMG3l35By8=
-X-Google-Smtp-Source: ABdhPJzjAFglavIb7bKPJX7qn/3frrTPgtwDxYblpSvg5JtOKVCA5lXvXlWAa7FDjUQv8L0aGabGeEFa4YHDTHT6D54=
-X-Received: by 2002:ab0:127:: with SMTP id 36mr16109011uak.118.1607785461751;
- Sat, 12 Dec 2020 07:04:21 -0800 (PST)
+        id S2439246AbgLLPTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 10:19:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725550AbgLLPTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 10:19:12 -0500
+X-Gm-Message-State: AOAM532Nx+9hrRde1Wogr21fNly1ShBy18YGqbulx7NXCgQtFnydjgwR
+        +WapUYbDeTdLPy/zsoZ7bDQZOykg1XwoqXS0YIs=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607786311;
+        bh=psS0hu2IUIHN0p65FsTtGV4EUTtLG77MUOh+AZo/pFQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RmFUg1o5T+2sP8kQE8wa7IRy+eKJo5EB9Gh6xs3WbV2I5d+MTIBbS4YUCVy94Z8S/
+         rs119tEMc8dJogiB88HTo3QzFZaReIkLWA8mDrP3WEpjmzAWNglqghpD9zk9EZenad
+         91ZdRJEOzgl3NsT5MJ5lsEaSK5mIpKSOals2+XUqWFRDAmbI+/5i/gABtOl2UFTa0s
+         RSPNcCwgf1tNBTn3Ptckf37nnREh+LBol2X7QYPZaNAR0F7DpiWexMD3vj6ijbFbYJ
+         ouatYiF+r0HIa6aBWBUD5LUPrG+1KTTWQ8pKO67Gx5wyw9n8yTuv3PU/WAVGVujGhz
+         v9V3IqYY/d4KQ==
+X-Google-Smtp-Source: ABdhPJyYQRTgL1rTSEK+bKujyRCO/OeCso0uNE89jr89FeehL7hSSu8lYv+6qAr6DfcKWjb3JSUKkYAcGQNDLHbUEbQ=
+X-Received: by 2002:a67:fd88:: with SMTP id k8mr15795093vsq.17.1607786310790;
+ Sat, 12 Dec 2020 07:18:30 -0800 (PST)
 MIME-Version: 1.0
-References: <20201211150157.91399-1-ldufour@linux.ibm.com>
-In-Reply-To: <20201211150157.91399-1-ldufour@linux.ibm.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Sat, 12 Dec 2020 20:34:10 +0530
-Message-ID: <CAFqt6zbpWyaJmTGjXcHzdU8+Vow=Kawe6K=UGb4zW0sJJ0LKmg@mail.gmail.com>
-Subject: Re: [PATCH] mm/memory_hotplug: quieting offline operation
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com
+References: <20201118071724.4866-1-wens@kernel.org> <20201118071724.4866-2-wens@kernel.org>
+ <CAL_JsqJphYYUsQR_kLH_y1gOArTifpEVUiTJfDpDsL8WjGxRfA@mail.gmail.com>
+In-Reply-To: <CAL_JsqJphYYUsQR_kLH_y1gOArTifpEVUiTJfDpDsL8WjGxRfA@mail.gmail.com>
+From:   Chen-Yu Tsai <wens@kernel.org>
+Date:   Sat, 12 Dec 2020 23:18:17 +0800
+X-Gmail-Original-Message-ID: <CAGb2v6409SeptNUvMnpozriZ-L7iFCFFoG+=fJrtohxezDrEDQ@mail.gmail.com>
+Message-ID: <CAGb2v6409SeptNUvMnpozriZ-L7iFCFFoG+=fJrtohxezDrEDQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] PCI: rockchip: Make 'ep-gpios' DT property optional
+To:     Rob Herring <robh@kernel.org>
+Cc:     Chen-Yu Tsai <wens@kernel.org>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Johan Jonker <jbx6244@gmail.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 8:32 PM Laurent Dufour <ldufour@linux.ibm.com> wrote:
+On Mon, Dec 7, 2020 at 10:11 PM Rob Herring <robh@kernel.org> wrote:
 >
-> On PowerPC, when dymically removing memory from a system we can see in the console a
-> lot of messages like this:
-> [  186.575389] Offlined Pages 4096
+> On Wed, Nov 18, 2020 at 1:17 AM Chen-Yu Tsai <wens@kernel.org> wrote:
+> >
+> > From: Chen-Yu Tsai <wens@csie.org>
+> >
+> > The Rockchip PCIe controller DT binding clearly states that 'ep-gpios' is
+> > an optional property. And indeed there are boards that don't require it.
+> >
+> > Make the driver follow the binding by using devm_gpiod_get_optional()
+> > instead of devm_gpiod_get().
+> >
+> > Fixes: e77f847df54c ("PCI: rockchip: Add Rockchip PCIe controller support")
+> > Fixes: 956cd99b35a8 ("PCI: rockchip: Separate common code from RC driver")
+> > Fixes: 964bac9455be ("PCI: rockchip: Split out rockchip_pcie_parse_dt() to parse DT")
+> > Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+> > ---
+> > Changes since v1:
+> >
+> >   - Rewrite subject to match existing convention and reference
+> >     'ep-gpios' DT property instead of the 'ep_gpio' field
+> > ---
+> >  drivers/pci/controller/pcie-rockchip.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/pci/controller/pcie-rockchip.c b/drivers/pci/controller/pcie-rockchip.c
+> > index 904dec0d3a88..c95950e9004f 100644
+> > --- a/drivers/pci/controller/pcie-rockchip.c
+> > +++ b/drivers/pci/controller/pcie-rockchip.c
+> > @@ -118,7 +118,7 @@ int rockchip_pcie_parse_dt(struct rockchip_pcie *rockchip)
+> >         }
+> >
+> >         if (rockchip->is_rc) {
+> > -               rockchip->ep_gpio = devm_gpiod_get(dev, "ep", GPIOD_OUT_HIGH);
+> > +               rockchip->ep_gpio = devm_gpiod_get_optional(dev, "ep", GPIOD_OUT_HIGH);
+> >                 if (IS_ERR(rockchip->ep_gpio)) {
+> >                         dev_err(dev, "missing ep-gpios property in node\n");
+>
+> You should drop the error message. What it says is now never the
+> reason for the error and it could most likely be a deferred probe
+> which you don't want an error message for.
 
-Is it specific to PowerPC ?
+What about switching to dev_err_probe() instead?
 
->
-> This message is displayed on each LMB (256MB) removed, which means that we
-> removing 1TB of memory, this message is displayed 4096 times.
->
-> Moving it to DEBUG to not flood the console.
->
-> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
-> ---
->  mm/memory_hotplug.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index b44d4c7ba73b..c47a53a16782 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -1587,7 +1587,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
->
->         /* Mark all sections offline and remove free pages from the buddy. */
->         __offline_isolated_pages(start_pfn, end_pfn);
-> -       pr_info("Offlined Pages %ld\n", nr_pages);
-> +       pr_debug("Offlined Pages %ld\n", nr_pages);
->
->         /*
->          * The memory sections are marked offline, and the pageblock flags
-> --
-> 2.29.2
->
->
+That way deferred probe errors get silenced (or get a better debug message),
+and error messages for other issues, such as miswritten gpio properties are
+still produced.
+
+ChenYu
+
+> >                         return PTR_ERR(rockchip->ep_gpio);
+> > --
+> > 2.29.1
+> >
