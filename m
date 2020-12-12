@@ -2,77 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D442D879D
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 602C82D87AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436974AbgLLQIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 11:08:17 -0500
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:18041 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgLLQIA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 11:08:00 -0500
-Received: from localhost.localdomain ([93.22.36.60])
-        by mwinf5d29 with ME
-        id 3U6E240181HrHD103U6Efl; Sat, 12 Dec 2020 17:06:16 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 12 Dec 2020 17:06:16 +0100
-X-ME-IP: 93.22.36.60
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     leoyang.li@nxp.com, zw@zh-kernel.org, vkoul@kernel.org,
-        dan.j.williams@intel.com, iws@ovro.caltech.edu
-Cc:     linuxppc-dev@lists.ozlabs.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 2/2] dmaengine: fsldma: Fix a resource leak in an error handling path of the probe function
-Date:   Sat, 12 Dec 2020 17:06:14 +0100
-Message-Id: <20201212160614.92576-1-christophe.jaillet@wanadoo.fr>
+        id S2439433AbgLLQKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 11:10:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725802AbgLLQIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 11:08:50 -0500
+From:   Sasha Levin <sashal@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 01/23] drm/tegra: sor: Don't warn on probe deferral
+Date:   Sat, 12 Dec 2020 11:07:42 -0500
+Message-Id: <20201212160804.2334982-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of error, the previous 'fsl_dma_chan_probe()' calls must be undone
-by some 'fsl_dma_chan_remove()', as already done in the remove function.
+From: Jon Hunter <jonathanh@nvidia.com>
 
-It was added in the remove function in commit 77cd62e8082b ("fsldma: allow
-Freescale Elo DMA driver to be compiled as a module")
+[ Upstream commit cb7ff314e1d9f3d6c62fa2c392e41174721ed0b3 ]
 
-Fixes: d3f620b2c4fe ("fsldma: simplify IRQ probing and handling")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Deferred probe is an expected return value for tegra_output_probe().
+Given that the driver deals with it properly, there's no need to output
+a warning that may potentially confuse users.
+
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
-Patch provided as-is.
-I don't have the configuration to compile test this patch
----
- drivers/dma/fsldma.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/gpu/drm/tegra/sor.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/dma/fsldma.c b/drivers/dma/fsldma.c
-index 554f70a0c18c..f8459cc5315d 100644
---- a/drivers/dma/fsldma.c
-+++ b/drivers/dma/fsldma.c
-@@ -1214,6 +1214,7 @@ static int fsldma_of_probe(struct platform_device *op)
- {
- 	struct fsldma_device *fdev;
- 	struct device_node *child;
-+	unsigned int i;
- 	int err;
+diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
+index 45b5258c77a29..5d9a7f008fc6c 100644
+--- a/drivers/gpu/drm/tegra/sor.c
++++ b/drivers/gpu/drm/tegra/sor.c
+@@ -3759,10 +3759,9 @@ static int tegra_sor_probe(struct platform_device *pdev)
+ 		return err;
  
- 	fdev = kzalloc(sizeof(*fdev), GFP_KERNEL);
-@@ -1292,6 +1293,10 @@ static int fsldma_of_probe(struct platform_device *op)
- 	return 0;
+ 	err = tegra_output_probe(&sor->output);
+-	if (err < 0) {
+-		dev_err(&pdev->dev, "failed to probe output: %d\n", err);
+-		return err;
+-	}
++	if (err < 0)
++		return dev_err_probe(&pdev->dev, err,
++				     "failed to probe output\n");
  
- out_free_fdev:
-+	for (i = 0; i < FSL_DMA_MAX_CHANS_PER_DEVICE; i++) {
-+		if (fdev->chan[i])
-+			fsl_dma_chan_remove(fdev->chan[i]);
-+	}
- 	irq_dispose_mapping(fdev->irq);
- 	iounmap(fdev->regs);
- out_free:
+ 	if (sor->ops && sor->ops->probe) {
+ 		err = sor->ops->probe(sor);
 -- 
 2.27.0
 
