@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98E12D88C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 18:44:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E880F2D88C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 18:50:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439366AbgLLRoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 12:44:01 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:51598 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439433AbgLLRnv (ORCPT
+        id S2407553AbgLLRtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 12:49:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725996AbgLLRt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 12:43:51 -0500
-Received: by mail-il1-f199.google.com with SMTP id 1so6358233ilg.18
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 09:43:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=aSZGHDMYr39pdAExzWtTdZyDRsiSSJB+x/sK8AbEaCE=;
-        b=jG8eGIjzoj1LIcMiCRFHrtTXDDZg6KHmL0b2FWVmpxMKIv+0fPt610a7l59ww3vON1
-         8ugwGATBZI3TzdKJFGzbFqYHxFkPfwk0o92GjhnjUurfTf47XCJrTbdlOT4cGSeiuHjX
-         ztQKz1rlUI1erBr+sCqipDhpWQnsa0LUjkW7cfd3YCvQMbX7spX23ISBAL3HSFdoMPes
-         N9xjg0GA4vGrqswox6botzaU2h/Mc1+yENPZSk+VX1CJ7z1LRNG+ghOrYsFSIhmQ/321
-         tb+3U1ZGsNDzWQPh+khg9zFAsfdsQCOw9jdHVNN9ag3X3CIjiJuDK1se9sUheXVB4aNc
-         BVRA==
-X-Gm-Message-State: AOAM5331ryvEHpuoByQR+PBfFAIFQAaHC1pwIYudCG/OZlHLeIdm5bAx
-        faGpbSPshXqPcxbLW/SUsA9bBfwzSsj8l5x+WYekDVDU/yM/
-X-Google-Smtp-Source: ABdhPJxrL1TfLcbCV4wBF/uL3ocKjpSJ6geeoX7viRBgV2SDdoE8WQThYHUMOtsQpRS+m7UV4o4RTsuRh3lDgVql9Jx+TzcTIS0F
+        Sat, 12 Dec 2020 12:49:26 -0500
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F06C0613CF;
+        Sat, 12 Dec 2020 09:48:46 -0800 (PST)
+Received: by nautica.notk.org (Postfix, from userid 1001)
+        id 7FECBC009; Sat, 12 Dec 2020 18:48:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1607795323; bh=6jNxUhafw80XJW0WSZExsgVli3qWFNDqo5FolrVmiRY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fMijNZFQAEDU1akj6LT6eWxrqxHtibNpYRWAePwkhu5MFby7/RtOtUopfEi+i6YHg
+         Jd0Ymtj/vmEzT8mCiH09TSKXxbJN/GF0m1Y690d8nEKeK3ZsJNcUsaunO98/Zp8UdS
+         nnw4vxkwLu7Gwhd6frUCqT4J9W9ajJHYIrLkDSzf/ud9eAVcboQbQnNCKrjO7r6uxa
+         cOKDWxYlwWLHC1kUiMiy25yLvygOs4FGFRfXER2S1bek9PyrQCCpHKeYHEijNPCCtZ
+         6dw5StAd5xGwLqmhAt1O12uvBAHwIpcE3AOzpL6HgHzvi6qwfOYJo1OYSNq53E9pUm
+         WMQ79mHkkkakw==
+Date:   Sat, 12 Dec 2020 18:48:28 +0100
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] kbuild: rewrite ld-version.sh in shell script
+Message-ID: <20201212174828.GA17179@nautica>
+References: <20201212165431.150750-1-masahiroy@kernel.org>
+ <20201212165431.150750-3-masahiroy@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:c9cb:: with SMTP id z194mr22275866iof.110.1607794990282;
- Sat, 12 Dec 2020 09:43:10 -0800 (PST)
-Date:   Sat, 12 Dec 2020 09:43:10 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000447ae005b647f1df@google.com>
-Subject: KMSAN: uninit-value in legacy_dvb_usb_read_remote_control
-From:   syzbot <syzbot+2cd8c5db4a85f0a04142@syzkaller.appspotmail.com>
-To:     glider@google.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201212165431.150750-3-masahiroy@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Masahiro Yamada wrote on Sun, Dec 13, 2020:
+> This script was written in awk in spite of the file extension '.sh'.
+> Rewrite it as a shell script.
 
-syzbot found the following issue on:
+Wow! I wasn't expecting so much, would have sent some rework after the
+upcoming merge window.
+Thank you.
 
-HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=12d97ccb500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=eef728deea880383
-dashboard link: https://syzkaller.appspot.com/bug?extid=2cd8c5db4a85f0a04142
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=100658c5500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e4cb9b500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2cd8c5db4a85f0a04142@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in legacy_dvb_usb_read_remote_control+0x3b8/0x730 drivers/media/usb/dvb-usb/dvb-usb-remote.c:129
-CPU: 0 PID: 8393 Comm: kworker/0:5 Not tainted 5.10.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events legacy_dvb_usb_read_remote_control
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
- legacy_dvb_usb_read_remote_control+0x3b8/0x730 drivers/media/usb/dvb-usb/dvb-usb-remote.c:129
- process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
- worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
- kthread+0x51c/0x560 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-Local variable ----state@legacy_dvb_usb_read_remote_control created at:
- legacy_dvb_usb_read_remote_control+0x68/0x730 drivers/media/usb/dvb-usb/dvb-usb-remote.c:120
- legacy_dvb_usb_read_remote_control+0x68/0x730 drivers/media/usb/dvb-usb/dvb-usb-remote.c:120
-=====================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 8393 Comm: kworker/0:5 Tainted: G    B             5.10.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events legacy_dvb_usb_read_remote_control
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- panic+0x4c8/0xea7 kernel/panic.c:231
- kmsan_report+0x1da/0x1e0 mm/kmsan/kmsan_report.c:141
- __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
- legacy_dvb_usb_read_remote_control+0x3b8/0x730 drivers/media/usb/dvb-usb/dvb-usb-remote.c:129
- process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
- worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
- kthread+0x51c/0x560 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+Some comments below that you can probably ignore, this works for me.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
+> index 0f8a2c0f9502..c214aeb3200d 100755
+> --- a/scripts/ld-version.sh
+> +++ b/scripts/ld-version.sh
+> @@ -1,11 +1,22 @@
+> -#!/usr/bin/awk -f
+> +#!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0
+> -# extract linker version number from stdin and turn into single number
+> -	{
+> -	gsub(".*\\)", "");
+> -	gsub(".*version ", "");
+> -	gsub("-.*", "");
+> -	split($1,a, ".");
+> -	print a[1]*10000 + a[2]*100 + a[3];
+> -	exit
+> -	}
+> +#
+> +# Usage: $ ./scripts/ld-version.sh ld
+> +#
+> +# Print the linker version of `ld' in a 5 or 6-digit form
+> +# such as `23501' for GNU ld 2.35.1 etc.
+> +
+> +first_line="$($* --version | head -n 1)"
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Just nitpicking: this ($*) would fail if the argument contains spaces,
+it's generally better to use "$@" or "$1" (with quotes)
+
+Probably doesn't matter here as gcc/clang-version scripts have the same
+problem, so if someone had a problem with that they probably would have
+reported it there.
+
+> +
+> +if ! ( echo $first_line | grep -q "GNU ld"); then
+> +	echo 0
+> +	exit 1
+> +fi
+> +
+> +# Distributions may append an extra string like 2.35-15.fc33
+> +# Take the part that consists of numbers and dots.
+> +VERSION=$(echo $first_line | sed 's/.* \([^ ]*\)$/\1/' | sed 's/^\(^[0-9.]*\).*/\1/')
+> +MAJOR=$(echo $VERSION | cut -d . -f 1)
+> +MINOR=$(echo $VERSION | cut -d . -f 2)
+> +PATCHLEVEL=$(echo $VERSION | cut -d . -f 3)
+> +printf "%d%02d%02d\\n" $MAJOR $MINOR $PATCHLEVEL
+
+There is a bug if there is no dot at all (e.g. if binutils ever releases
+a version 3 and call it version 3 and not 3.0, the script would print
+30303 because cut when no delimiter is found always returns the whole
+string)
+This can be fixed by artificially appending a dot to VERSION:
+VERSION=$(echo $first_line | sed 's/.* \([^ ]*\)$/\1/' | sed 's/^\(^[0-9.]*\).*/\1./')
+
+I'm not sure it's worth worrying about either.
+
+
+Thanks again,
+-- 
+Dominique
