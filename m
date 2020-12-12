@@ -2,89 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4172D87E4
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C33E72D87E6
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437629AbgLLQSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 11:18:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405775AbgLLQSa (ORCPT
+        id S2437623AbgLLQTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 11:19:44 -0500
+Received: from gproxy1-pub.mail.unifiedlayer.com ([69.89.25.95]:46092 "EHLO
+        gproxy1-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729230AbgLLQTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 11:18:30 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D58C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 08:17:50 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id c79so9141539pfc.2
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 08:17:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BRbYY02f9clS43YVleEXwolZohCb1GhkfTVXt9QbL0E=;
-        b=vsjgYUTfNCCtDgpjPI/UNREc9kslTmeGhTtJqe29o5slFUu5D0I4gqrHyaQZFtNNE5
-         PxOEsyYzaRPefon/bTcQZ1nSPKPuwcIlAcjAsiOqPCmjNBV/SssN4m/0PT8NsVH0t/4x
-         v0vmoyHnwGrvChvbpBG5n3T7sepacpniirwjkrfEUwXVyD/tIZyLcrPldT75Gg09qmKa
-         ucChMtWnvvBZhWDPn1eNNYMW26Y+dHEJNpyh/PC3L/bQwOECLdPFW4vBm4gnHMrv3amr
-         gaLX1ASHPhFah+SWDlL7SiK/qAeaVq2wf9mVa0HBpqQga48sOgwKupTFKa955IeAH8vP
-         +XxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BRbYY02f9clS43YVleEXwolZohCb1GhkfTVXt9QbL0E=;
-        b=iw5nwnxp7Q62uset0f0A0gQDrLf6c7AEmRMG7pT98PRL3i7N7sF3s0Ya2LqCNX8wa2
-         mrVtobN9IRC7N9YmNYrLrP+AFk2v/cm94KDUylWH+dDU3yXAG4JRkEsa/vxy7B2SBzKZ
-         KaHhmDlzO+KtlrB/9p4/ekTvwtT+zJLYwotny4R6hvBAwEdtGVmo5xmHExGmnDuBw2g6
-         bfgu6BOaMhm4NiOd3w6WrPT7Hc9PCvmNnk7qZ4ssalZCGFK6y9UrD1l6SYJQEu5wA1I6
-         S/OSf9gbJuMu4FoeOTl+YtQugMPc4DaBsV7HQYO3s9EpAYdOWvDMaimTqFY3fmumzlDv
-         WuiQ==
-X-Gm-Message-State: AOAM531pshkI+yKdjiV0mQzVtl17U9DnRnTlYr+D5rKZOSeJj5/zMAMz
-        jSDHpbFz45knYXTwZFqoPfgDIQ==
-X-Google-Smtp-Source: ABdhPJzfQ1TvWSFFxUgORBv80/YGd8iJqo6CVFEw9wWbphuPqyp5Jh7hNOjT/EUYQphXwzY7Jiw9Tg==
-X-Received: by 2002:a63:f02:: with SMTP id e2mr16867120pgl.148.1607789869753;
-        Sat, 12 Dec 2020 08:17:49 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id g26sm14323628pfo.35.2020.12.12.08.17.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Dec 2020 08:17:49 -0800 (PST)
-Subject: Re: [PATCH -next] c6x: fix build of signal.c using _TIF_SIGNALs
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     linux-c6x-dev@linux-c6x.org, Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
-References: <20201210031742.14534-1-rdunlap@infradead.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <fe4f2b2e-66e6-94f2-d878-08a8e926cd4d@kernel.dk>
-Date:   Sat, 12 Dec 2020 09:17:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 12 Dec 2020 11:19:20 -0500
+Received: from cmgw11.unifiedlayer.com (unknown [10.9.0.11])
+        by gproxy1.mail.unifiedlayer.com (Postfix) with ESMTP id 21289C330C6B4
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 09:18:33 -0700 (MST)
+Received: from bh-25.webhostbox.net ([208.91.199.152])
+        by cmsmtp with ESMTP
+        id o7bMkD85bdCH5o7bMkFnxv; Sat, 12 Dec 2020 09:18:33 -0700
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.3 cv=IdWpp1ia c=1 sm=1 tr=0
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=kj9zAlcOel0A:10:nop_charset_1
+ a=zTNgK-yGK50A:10:nop_rcvd_month_year
+ a=evQFzbml-YQA:10:endurance_base64_authed_username_1 a=VwQbUJbxAAAA:8
+ a=UGG5zPGqAAAA:8 a=pGLkceISAAAA:8 a=1XWaLZrsAAAA:8 a=ekWyMdHfF5DymNlJAZQA:9
+ a=CjuIK1q_8ugA:10:nop_charset_2 a=AjGcO6oz07-iQ99wixmX:22
+ a=17ibUXfGiVyGqR_YBevW:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ohfb6PS6heT9rthxIVaAwHdwPtLaCOLcj0Or4Jj88tE=; b=zw+Zgzt8RzKBBLj43KwMbx3GSF
+        7W09c62qztGcN8PW7XnvsMJPOPHpVMhlP7IQ0W9WBQ8WRL7t4C6Q4jpxdXCuEF/aMV9zQ+MBPabBX
+        IUjJPfF5e44uT/bOhGqnmdyZiROYr1KXJwaUgidBNT/uI+Fooct0SNGO2CUXCI4fXeuo1v04g/wXc
+        nJG8EU8XmIHVWE01wKUBW4ly+UsKOtJ1HuqIXD72Ut3+R2onCxRilQwDrsMYyIwSUQCuxRe+aZMGB
+        PyF8aS7xxgrcWPos5rpt4ttVNo14eRoYiDdQl7Zu5CGLaeFJLerP0zBU65EsIM8tzF+5gClYz7BoW
+        qTjWHUmA==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:50122 helo=localhost)
+        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <linux@roeck-us.net>)
+        id 1ko7bL-002w99-Rs; Sat, 12 Dec 2020 16:18:32 +0000
+Date:   Sat, 12 Dec 2020 08:18:31 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        wireguard@lists.zx2c4.com
+Subject: Re: [PATCH v3] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
+Message-ID: <20201212161831.GA28098@roeck-us.net>
+References: <20201128193335.219395-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201210031742.14534-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201128193335.219395-1-masahiroy@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1ko7bL-002w99-Rs
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (localhost) [108.223.40.66]:50122
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 29
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/9/20 8:17 PM, Randy Dunlap wrote:
-> kernel/signal.c in arch/c6x/ needs <asm/asm-offsets.h> to build
-> since it contains _TIF_SIGNALfoobar #defines, so add it.
+On Sun, Nov 29, 2020 at 04:33:35AM +0900, Masahiro Yamada wrote:
+> Revert commit cebc04ba9aeb ("add CONFIG_ENABLE_MUST_CHECK").
 > 
-> Placates these build errors:
+> A lot of warn_unused_result warnings existed in 2006, but until now
+> they have been fixed thanks to people doing allmodconfig tests.
 > 
-> ../arch/c6x/kernel/signal.c: In function 'do_notify_resume':
-> ../arch/c6x/kernel/signal.c:316:27: error: '_TIF_SIGPENDING' undeclared (first use in this function); did you mean 'TIF_SIGPENDING'?
->   316 |  if (thread_info_flags & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
->       |                           ^~~~~~~~~~~~~~~
-> ../arch/c6x/kernel/signal.c:316:27: note: each undeclared identifier is reported only once for each function it appears in
-> ../arch/c6x/kernel/signal.c:316:45: error: '_TIF_NOTIFY_SIGNAL' undeclared (first use in this function); did you mean 'TIF_NOTIFY_SIGNAL'?
->   316 |  if (thread_info_flags & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
->       |                                             ^~~~~~~~~~~~~~~~~~
+> Our goal is to always enable __must_check where appropriate, so this
+> CONFIG option is no longer needed.
+> 
+> I see a lot of defconfig (arch/*/configs/*_defconfig) files having:
+> 
+>     # CONFIG_ENABLE_MUST_CHECK is not set
+> 
+> I did not touch them for now since it would be a big churn. If arch
+> maintainers want to clean them up, please go ahead.
+> 
+> While I was here, I also moved __must_check to compiler_attributes.h
+> from compiler_types.h
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> Acked-by: Nathan Chancellor <natechancellor@gmail.com>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Thanks Randy, folded in.
+This patch results in:
 
--- 
-Jens Axboe
+arch/sh/kernel/cpu/sh4a/smp-shx3.c: In function 'shx3_prepare_cpus':
+arch/sh/kernel/cpu/sh4a/smp-shx3.c:76:3: error: ignoring return value of 'request_irq' declared with attribute 'warn_unused_result'
 
+when building sh:defconfig. Checking for calls to request_irq()
+suggests that there will be other similar errors in various builds.
+Reverting the patch fixes the problem.
+
+Guenter
