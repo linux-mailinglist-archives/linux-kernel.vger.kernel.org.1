@@ -2,158 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B782D8449
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 05:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 778432D844D
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 05:14:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438047AbgLLEMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 23:12:47 -0500
-Received: from relay5.mymailcheap.com ([159.100.248.207]:33941 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395274AbgLLEMU (ORCPT
+        id S2438126AbgLLENT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 23:13:19 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:38987 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2438041AbgLLEMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 23:12:20 -0500
-Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [149.56.97.132])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id 9F26A260EB;
-        Sat, 12 Dec 2020 04:11:14 +0000 (UTC)
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay1.mymailcheap.com (Postfix) with ESMTPS id A0E363F201;
-        Sat, 12 Dec 2020 04:09:42 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id E7EAA2A5BB;
-        Sat, 12 Dec 2020 05:09:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1607746181;
-        bh=Ejlr4Vm/N68eETmbOxG/1yGC/FJ3CF8ukBOHzwwwHeg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=igSK+3ji+/2GxwURmInGkGLqmM0JLhwIF0NRu/RvXtecFioj6v1qgyOMY7O+IOo/0
-         DaahuoHa17vLw3afqLd0a7D1pw5U7z28KmdeAu5uYaS9D2tRRzsdX37OuJgIxtkREU
-         vDeBrEcaxWPhKC5XDMc3ayaxMVbOYpcsu8zMi+IQ=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id hbEjwtp11xE1; Sat, 12 Dec 2020 05:09:40 +0100 (CET)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Sat, 12 Dec 2020 05:09:40 +0100 (CET)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id DC69742F46;
-        Sat, 12 Dec 2020 04:09:39 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="ASvGa6UJ";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.161.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 0EE2C42F46;
-        Sat, 12 Dec 2020 04:09:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1607746170; bh=Ejlr4Vm/N68eETmbOxG/1yGC/FJ3CF8ukBOHzwwwHeg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ASvGa6UJ92ZDg1fWTkAd8xbPBtRo0Qox3JKP9Y1Q0pqdZy00CeXJfaU+ZBJmuyHgw
-         4UyGG6fWWnt2faihHYNjEyx8etmZgLefUitpkzVlgIFkYI6PQ4U5Z0sz7Ml0WA6KoU
-         aEOearHalD+r7VhDOB/6JSDNu7S1s86DSjPe3a0U=
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org
-Subject: [RFC PATCH 07/12] rtc: sun6i: add compatible string for V831/V833 RTC
-Date:   Sat, 12 Dec 2020 12:09:15 +0800
-Message-Id: <20201212040920.3641480-1-icenowy@aosc.io>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201212040157.3639864-1-icenowy@aosc.io>
-References: <20201212040157.3639864-1-icenowy@aosc.io>
+        Fri, 11 Dec 2020 23:12:55 -0500
+X-UUID: ae8caa889a4b48009cdf03b6d2b6f2de-20201212
+X-UUID: ae8caa889a4b48009cdf03b6d2b6f2de-20201212
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1996836764; Sat, 12 Dec 2020 12:12:02 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 12 Dec 2020 12:12:01 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 12 Dec 2020 12:12:00 +0800
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Subject: [PATCH v2, 00/17] drm/mediatek: add support for mediatek SOC MT8192
+Date:   Sat, 12 Dec 2020 12:11:40 +0800
+Message-ID: <1607746317-4696-1-git-send-email-yongqiang.niu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: mail20.mymailcheap.com
-X-Spamd-Result: default: False [6.40 / 20.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.161.2:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[dt];
-         MIME_GOOD(-0.10)[text/plain];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         DMARC_NA(0.00)[aosc.io];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[11];
-         MID_CONTAINS_FROM(1.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
-X-Rspamd-Queue-Id: DC69742F46
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These chips share the same die, and the RTC block is similar to H6
-one, but with functionality of dividing 24M clock to get 32k (useful for
-32k clock output).
+This series are based on 5.10-rc1 and provid 17 patch
+to support mediatek SOC MT8192
 
-Add compatible string for it. The special clock divider is TODO.
+Changes in v2:
+- base mmsys
+https://patchwork.kernel.org/project/linux-mediatek/cover/1607506379-10998-1-git-send-email-yongqiang.niu@mediatek.com/
+- base mt8192 gce dtbinding file
+https://patchwork.kernel.org/project/linux-mediatek/patch/1607141728-17307-2-git-send-email-yongqiang.niu@mediatek.com/
+- add dt-bindings description for post mask
+- add dt-bindings description for mt8192 display
+- fix some comment in v1
+- add mt8192 mmsys function call
 
-Cc: Alessandro Zummo <a.zummo@towertech.it>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: linux-rtc@vger.kernel.org
-Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
----
- drivers/rtc/rtc-sun6i.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+Changes in v1:
+- add some more ddp component
+- add mt8192 mmsys support
+- add ovl mount on support
+- add 2 more clock into mutex device
+- fix ovl smi_id_en and fb null software bug
+- fix ddp compoent size config bug
+- add mt8192 drm support
+- add ddp bypass shadow register function
+- add 8192 dts description
 
-diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
-index e2b8b150bcb4..c9a1f2319f92 100644
---- a/drivers/rtc/rtc-sun6i.c
-+++ b/drivers/rtc/rtc-sun6i.c
-@@ -378,6 +378,23 @@ static void __init sun50i_h6_rtc_clk_init(struct device_node *node)
- CLK_OF_DECLARE_DRIVER(sun50i_h6_rtc_clk, "allwinner,sun50i-h6-rtc",
- 		      sun50i_h6_rtc_clk_init);
- 
-+static const struct sun6i_rtc_clk_data sun8i_v831_rtc_data = {
-+	.rc_osc_rate = 16000000,
-+	.fixed_prescaler = 32,
-+	.has_prescaler = 1,
-+	.has_out_clk = 1,
-+	.export_iosc = 1,
-+	.has_losc_en = 1,
-+	.has_auto_swt = 1,
-+};
-+
-+static void __init sun8i_v831_rtc_clk_init(struct device_node *node)
-+{
-+	sun6i_rtc_clk_init(node, &sun8i_v831_rtc_data);
-+}
-+CLK_OF_DECLARE_DRIVER(sun8i_v831_rtc_clk, "allwinner,sun8i-v831-rtc",
-+		      sun8i_v831_rtc_clk_init);
-+
- /*
-  * The R40 user manual is self-conflicting on whether the prescaler is
-  * fixed or configurable. The clock diagram shows it as fixed, but there
-@@ -745,6 +762,7 @@ static const struct of_device_id sun6i_rtc_dt_ids[] = {
- 	{ .compatible = "allwinner,sun8i-h3-rtc" },
- 	{ .compatible = "allwinner,sun8i-r40-rtc" },
- 	{ .compatible = "allwinner,sun8i-v3-rtc" },
-+	{ .compatible = "allwinner,sun8i-v831-rtc" },
- 	{ .compatible = "allwinner,sun50i-h5-rtc" },
- 	{ .compatible = "allwinner,sun50i-h6-rtc" },
- 	{ /* sentinel */ },
+Yongqiang Niu (17):
+  dt-bindings: mediatek: add description for postmask
+  dt-bindings: mediatek: add CLK_MM_DISP_CONFIG control description for
+    mt8192 display
+  dt-bindings: mediatek: add description for mt8192 display
+  drm/mediatek: add component OVL_2L2
+  drm/mediatek: add component POSTMASK
+  drm/mediatek: add component RDMA4
+  drm/mediatek: add disp config and mm 26mhz clock into mutex device
+  drm/mediatek: enable OVL_LAYER_SMI_ID_EN for multi-layer usecase
+  drm/mediatek: check if fb is null
+  drm/mediatek: fix aal size config
+  drm/mediatek: fix dither size config
+  drm/mediatek: fix gamma size config
+  drm/mediatek: fix ccorr size config
+  soc: mediatek: mmsys: Use function call for setting mmsys ovl mout
+    register
+  soc: mediatek: mmsys: add mt8192 mmsys support
+  drm/mediatek: add support for mediatek SOC MT8192
+  arm64: dts: mt8192: add display node
+
+ .../bindings/display/mediatek/mediatek,disp.txt    |   6 +-
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi           | 130 +++++++++++++++++++++
+ drivers/gpu/drm/mediatek/mtk_disp_color.c          |   6 +
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c            |  34 +++++-
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c           |   6 +
+ drivers/gpu/drm/mediatek/mtk_drm_ddp.c             |  84 +++++++++++--
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c        |  50 +++++++-
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h        |   1 +
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c             |  48 ++++++++
+ drivers/soc/mediatek/mmsys/Makefile                |   1 +
+ drivers/soc/mediatek/mmsys/mt8192-mmsys.c          | 119 +++++++++++++++++++
+ drivers/soc/mediatek/mmsys/mtk-mmsys.c             |  18 +++
+ include/linux/soc/mediatek/mtk-mmsys.h             |   7 ++
+ 13 files changed, 496 insertions(+), 14 deletions(-)
+ create mode 100644 drivers/soc/mediatek/mmsys/mt8192-mmsys.c
+
 -- 
-2.28.0
+1.8.1.1.dirty
+
