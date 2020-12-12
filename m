@@ -2,118 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40D72D8428
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 04:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDBD2D8430
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 04:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438026AbgLLD1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 22:27:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51536 "EHLO
+        id S2438047AbgLLD7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 22:59:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438004AbgLLD1N (ORCPT
+        with ESMTP id S2405302AbgLLD6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 22:27:13 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140ADC0613CF;
-        Fri, 11 Dec 2020 19:26:33 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id w4so8504323pgg.13;
-        Fri, 11 Dec 2020 19:26:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4kixbiaTLgJsGXV+ExdUQR9g/IrBTwTuS3aGWFFjfHc=;
-        b=XME6BObuwL5AgaFXG/sXy1JEyFlna7R6JGA3umlwGVIR1+smU0wA1VAwEZE3Dg07ED
-         0F3QB6KKhEvy39afrK/oNDhc7PR5g12L2/S279nTF22G5X2DnbPRS8bYSjzD7PWWNgdF
-         hrLMgN/mICg+IiLoth8NQk0+9kRWCKz1HLhXejnP2TSyrqFjzXZ/kcluPZ6pMu3tlJK4
-         SpPkHkKDaCYqXlCef19BURhJHlBDLKKrhfqHgcK8GiLCeLGBAmqqpdCSJDGQ6Skm4L8T
-         kM73efpNs6n5q4JIWZ5yVP2c1n6gM5tmjmR/KtwNDVZfk97zENRzm0TXF95HygvN3So8
-         jAbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4kixbiaTLgJsGXV+ExdUQR9g/IrBTwTuS3aGWFFjfHc=;
-        b=qVJV8HhsjlXctYJq8Bp3PSDoc4gzjVb54ohvqQCAtI07GphKH8pZzMb46IRZKJNkki
-         0n7hAvuyNLGb6oapiqAsnRZTuPNrnfbqkxLZ8jvuoquT7PpwwsxB77kVkz/6cUr554Te
-         oGsGTVfQ/C2JeZhYtEqJ1NgWSnWs3aDEfF8NU2E8611mNGU6G5I8/1CDvDI4C7wQH+Ui
-         c2dcY/QTI8yrDdL1jj5Av26uE9ptU9KbzZrT7eb+hBHFlkvn/MolkGyjh4ftoS9Inmgr
-         mn+T5QQrhVZsnNOv41A8u9rGIPrm0YMu9uNkc79f/RpIgCNRp7GoHHiRRSAS23MgZG2Y
-         BqrQ==
-X-Gm-Message-State: AOAM531hCI3biygkH+z5Tr3wlh63Lhp1SgQW4EPxTTk1XNbT7ZTqXJ5n
-        3OVLIu+CafMgSKR0laI21ZgHGk8XtSc=
-X-Google-Smtp-Source: ABdhPJxJV2c5nM7U4+KWM2CvpWI8X+QiEx9+4aJWCvkBFSAxkCFJFDjD+vcvYpV5FoZ6taaHq1SkeQ==
-X-Received: by 2002:aa7:928c:0:b029:19a:de9d:fb11 with SMTP id j12-20020aa7928c0000b029019ade9dfb11mr14797249pfa.21.1607743592541;
-        Fri, 11 Dec 2020 19:26:32 -0800 (PST)
-Received: from [10.230.29.166] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id a10sm11822918pfi.168.2020.12.11.19.26.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Dec 2020 19:26:31 -0800 (PST)
-Subject: Re: [PATCH 2/2] soc: bcm: add PM driver for Broadcom's PMB
-To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20201211215942.5726-1-zajec5@gmail.com>
- <20201211215942.5726-3-zajec5@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <4d0bea20-1a3b-24d1-2d27-96f2f4fd48b9@gmail.com>
-Date:   Fri, 11 Dec 2020 19:26:28 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.5.1
+        Fri, 11 Dec 2020 22:58:45 -0500
+X-Greylist: delayed 424 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Dec 2020 19:58:04 PST
+Received: from cavan.codon.org.uk (cavan.codon.org.uk [IPv6:2a00:1098:84:22e::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7489C0613CF;
+        Fri, 11 Dec 2020 19:58:04 -0800 (PST)
+Received: by cavan.codon.org.uk (Postfix, from userid 1000)
+        id 6E4CB41572; Sat, 12 Dec 2020 03:50:12 +0000 (UTC)
+Date:   Sat, 12 Dec 2020 03:50:12 +0000
+From:   Matthew Garrett <mjg59@codon.org.uk>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rui.zhang@intel.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, amitk@kernel.org,
+        Matthew Garrett <mjg59@srcf.ucam.org>
+Subject: Re: [PATCH] thermal/core: Make 'forced_passive' as obsolete candidate
+Message-ID: <20201212035012.GA11926@codon.org.uk>
+References: <20201208153046.297456-1-daniel.lezcano@linaro.org>
+ <cc2085ca-ada9-d616-eed5-3496889da3bb@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20201211215942.5726-3-zajec5@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc2085ca-ada9-d616-eed5-3496889da3bb@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/11/2020 1:59 PM, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On Fri, Dec 11, 2020 at 02:17:55PM +0100, Daniel Lezcano wrote:
+> On 08/12/2020 16:30, Daniel Lezcano wrote:
+> > The passive file in sysfs forces the usage of a passive trip point set
+> > by the userspace when a broken BIOS does not provide the mitigation
+> > temperature for such thermal zone. The hardware evolved a lot since
+> > 2008 as a good thermal management is no longer an option.
+> > 
+> > Linux on the other side also provides now a way to load fixed ACPI
+> > table via the option ACPI_TABLE_UPGRADE, so additionnal trip point
+> > could be added there.
+> > 
+> > Set the option obsolete and plan to remove it, so the corresponding
+> > code can be removed from the core code and allow more cleanups the
+> > thermal framework deserves.
+> > 
+> > Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> > ---
 > 
-> PMB can be found on BCM4908 and many other chipsets (e.g. BCM63138).
-> It's needed to power on and off SoC blocks like PCIe, SATA, USB.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> Is there any concern about this change ?
 
-This looks good to me, just a few nipicks below.
-
-[snip]
-
-> +static int bcm_pmb_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	const struct bcm_pmb_pd_data *table;
-> +	const struct bcm_pmb_pd_data *e;
-> +	struct resource *res;
-> +	struct bcm_pmb *pmb;
-> +	int max_id;
-> +	int err;
-> +
-> +	dev_info(dev, "START\n");
-
-Stray debugging.
-
-[snip]
-
-> +
-> +static const struct bcm_pmb_pd_data bcm_pmb_bcm4908_data[] = {
-> +	{ .name = "pcie2", .id = BCM_PMB_PCIE2, .bus = 0, .device = 2, },
-> +	{ .name = "pcie0", .id = BCM_PMB_PCIE0, .bus = 1, .device = 14, },
-> +	{ .name = "pcie1", .id = BCM_PMB_PCIE1, .bus = 1, .device = 15, },
-> +	{ .name = "usb", .id = BCM_PMB_HOST_USB, .bus = 1, .device = 17, },
-
-Do you have to be more specific and spell out whether this is the host
-controller (xhci) or device (bdc)? If not, then this looks good to me.
--- 
-Florian
+Yes - what's the reason to do so? The code isn't specific to ACPI,
+so being able to override ACPI tables doesn't seem to justify it.
