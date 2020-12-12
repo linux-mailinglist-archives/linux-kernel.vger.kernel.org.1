@@ -2,126 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453E02D834E
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 01:15:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 808B02D8352
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 01:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407277AbgLLANr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 19:13:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45054 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389275AbgLLANR (ORCPT
+        id S2407290AbgLLAPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 19:15:05 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:56822 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389275AbgLLAO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 19:13:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607731911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lzlGKMbnrfGvCdrIWPnbPiuADFoVhbI0Kl9RIcmeVLQ=;
-        b=OGVjU2uJMc2w3y1kueBvyV9mCPkpOdIUdiX9pkRQhLrODfpEwof37XsScMlS7F/djD9kkG
-        euVFEmH9nw3hacepXymHE2mMczRTtaOu195f3mR9VDAo4vG8nVE3S48ipomsTAI6RIHlcb
-        yj8Px647cmCXDzdAQsZdWONskKI3gto=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-OaSsRKYsOn2CEx6p_i-obw-1; Fri, 11 Dec 2020 19:11:45 -0500
-X-MC-Unique: OaSsRKYsOn2CEx6p_i-obw-1
-Received: by mail-wr1-f72.google.com with SMTP id 91so3927712wrk.17
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 16:11:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lzlGKMbnrfGvCdrIWPnbPiuADFoVhbI0Kl9RIcmeVLQ=;
-        b=ImV5K/f23u8AkV0yVbpQdxCrEjm6j7qgeA2DQdGNZ0guxmy4cSYvzofaK2RdrgyfQQ
-         EldXkET6P1WcYupH24ZiV09DRSlwl1IlVhmHULciElnxCOZzWopbHoMvOHkXQtEugLQU
-         n6mOxJkDnIzSlNEwkmozkHABCyYHDiAFle7+CvmRkBS5jcoLXPhGTNWyAaujJNM4jsYR
-         27WIlwDg30e4XIKsdzCLMGu/xHlUwg3L8Ws/g/ke0JRvA3nilc2u8YvFCLnNbxgklDAt
-         P/zuilFSosBTLuCXdMO0eQZcOTuUtmvyAIrI0fbUlCSRpwU2br3Ju4ojEAqqAjz18wvo
-         5+og==
-X-Gm-Message-State: AOAM5333wkMF9aCF7ZfA8qBNH3dGgN1gQ6ENEOeutBj13iCgtNKNghaa
-        WIkUob2DM45VOAcM2ziuWbNBKMMhzsc59MbKAm+K+CclBPNdz1mNyOjOtalPwRyJLY9MHqSH5BQ
-        C1GTDHD3IyO6v4rk8HLMHFt+M
-X-Received: by 2002:a1c:7318:: with SMTP id d24mr16260164wmb.39.1607731904570;
-        Fri, 11 Dec 2020 16:11:44 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwUoIjTFz7kibleaF0KiCrf+JT2FvsBWrot4QvrzU18ItBt56b0YivFM2BmKg/8RZdvoxiT6g==
-X-Received: by 2002:a1c:7318:: with SMTP id d24mr16260153wmb.39.1607731904343;
-        Fri, 11 Dec 2020 16:11:44 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id b83sm16258211wmd.48.2020.12.11.16.11.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Dec 2020 16:11:43 -0800 (PST)
-Subject: Re: [PATCH v3] KVM: mmu: Fix SPTE encoding of MMIO generation upper
- half
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
-        stable@nongnu.org
-References: <20201211234532.686593-1-pbonzini@redhat.com>
- <X9QGw9vJfzCrFNzd@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8ae56d2b-23bd-c31e-94b3-34e0d5e8076e@redhat.com>
-Date:   Sat, 12 Dec 2020 01:11:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 11 Dec 2020 19:14:29 -0500
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5BFD120B717B;
+        Fri, 11 Dec 2020 16:13:47 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5BFD120B717B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607732028;
+        bh=J4T3fJj4p9fqeSZhjR49wzXu76bzrKvsGoakDtGMpRg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ISm5PIapPGVFsbLta5feYiGOqSo+05ZuXwfztAFSr8g7kZUuCi9k9GZ7gQAFAgKDE
+         hALQ9gB6RT86EsGPaY7QfYeIm6E9TNY+TwWyq62Ia803vjNxX61kJJUFPCJ4ptG/uF
+         XzvDMf3+vCE23bGmoGyuWrlQOj73B2RhImTtCNv4=
+Date:   Fri, 11 Dec 2020 18:13:43 -0600
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
+        jmorris@namei.org, nramas@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Subject: Re: [PATCH v8 3/8] IMA: define a hook to measure kernel integrity
+ critical data
+Message-ID: <20201212001343.GE4951@sequoia>
+References: <20201211235807.30815-1-tusharsu@linux.microsoft.com>
+ <20201211235807.30815-4-tusharsu@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <X9QGw9vJfzCrFNzd@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211235807.30815-4-tusharsu@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/20 00:54, Sean Christopherson wrote:
-> On Fri, Dec 11, 2020, Paolo Bonzini wrote:
->> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
->>
->> Commit cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
->> cleaned up the computation of MMIO generation SPTE masks, however it
->> introduced a bug how the upper part was encoded:
->> SPTE bits 52-61 were supposed to contain bits 10-19 of the current
->> generation number, however a missing shift encoded bits 1-10 there instead
->> (mostly duplicating the lower part of the encoded generation number that
->> then consisted of bits 1-9).
->>
->> In the meantime, the upper part was shrunk by one bit and moved by
->> subsequent commits to become an upper half of the encoded generation number
->> (bits 9-17 of bits 0-17 encoded in a SPTE).
->>
->> In addition to the above, commit 56871d444bc4 ("KVM: x86: fix overlap between SPTE_MMIO_MASK and generation")
->> has changed the SPTE bit range assigned to encode the generation number and
->> the total number of bits encoded but did not update them in the comment
->> attached to their defines, nor in the KVM MMU doc.
->> Let's do it here, too, since it is too trivial thing to warrant a separate
->> commit.
->>
->> Fixes: cae7ed3c2cb0 ("KVM: x86: Refactor the MMIO SPTE generation handling")
->> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
->> Message-Id: <156700708db2a5296c5ed7a8b9ac71f1e9765c85.1607129096.git.maciej.szmigiero@oracle.com>
->> Cc: stable@nongnu.org
+On 2020-12-11 15:58:02, Tushar Sugandhi wrote:
+> IMA provides capabilities to measure file data, and in-memory buffer
+> data. However, various data structures, policies, and states
+> stored in kernel memory also impact the integrity of the system.
+> Several kernel subsystems contain such integrity critical data. These
+> kernel subsystems help protect the integrity of a device. Currently,
+> IMA does not provide a generic function for kernel subsystems to measure
+> their integrity critical data.
+>  
+> Define a new IMA hook - ima_measure_critical_data to measure kernel
+> integrity critical data.
 > 
-> I assume you want stable@vger.kernel.org?
+> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
 
-I do.
+Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 
->> [Reorganize macros so that everything is computed from the bit ranges. - Paolo]
->> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
->> ---
->> 	Compared to v2 by Maciej, I chose to keep GEN_MASK's argument calculated,
+Tyler
+
+> ---
+>  include/linux/ima.h               |  6 ++++++
+>  security/integrity/ima/ima.h      |  1 +
+>  security/integrity/ima/ima_api.c  |  2 +-
+>  security/integrity/ima/ima_main.c | 34 +++++++++++++++++++++++++++++++
+>  4 files changed, 42 insertions(+), 1 deletion(-)
 > 
-> Booooo.  :-D
-
-But I explained why. :)
-
-Paolo
-
-> Reviewed-by: Sean Christopherson <seanjc@google.com>
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index ac3d82f962f2..675f54db6264 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -30,6 +30,9 @@ extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
+>  extern void ima_post_path_mknod(struct dentry *dentry);
+>  extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
+>  extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
+> +extern void ima_measure_critical_data(const char *event_name,
+> +				      const void *buf, int buf_len,
+> +				      bool measure_buf_hash);
+>  
+>  #ifdef CONFIG_IMA_APPRAISE_BOOTPARAM
+>  extern void ima_appraise_parse_cmdline(void);
+> @@ -122,6 +125,9 @@ static inline int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+>  }
+>  
+>  static inline void ima_kexec_cmdline(int kernel_fd, const void *buf, int size) {}
+> +static inline void ima_measure_critical_data(const char *event_name,
+> +					     const void *buf, int buf_len,
+> +					     bool measure_buf_hash) {}
+>  #endif /* CONFIG_IMA */
+>  
+>  #ifndef CONFIG_IMA_KEXEC
+> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+> index fa3044a7539f..7d9deda6a8b3 100644
+> --- a/security/integrity/ima/ima.h
+> +++ b/security/integrity/ima/ima.h
+> @@ -201,6 +201,7 @@ static inline unsigned int ima_hash_key(u8 *digest)
+>  	hook(POLICY_CHECK, policy)			\
+>  	hook(KEXEC_CMDLINE, kexec_cmdline)		\
+>  	hook(KEY_CHECK, key)				\
+> +	hook(CRITICAL_DATA, critical_data)		\
+>  	hook(MAX_CHECK, none)
+>  
+>  #define __ima_hook_enumify(ENUM, str)	ENUM,
+> diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
+> index af218babd198..9917e1730cb6 100644
+> --- a/security/integrity/ima/ima_api.c
+> +++ b/security/integrity/ima/ima_api.c
+> @@ -176,7 +176,7 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
+>   *		subj=, obj=, type=, func=, mask=, fsmagic=
+>   *	subj,obj, and type: are LSM specific.
+>   *	func: FILE_CHECK | BPRM_CHECK | CREDS_CHECK | MMAP_CHECK | MODULE_CHECK
+> - *	| KEXEC_CMDLINE | KEY_CHECK
+> + *	| KEXEC_CMDLINE | KEY_CHECK | CRITICAL_DATA
+>   *	mask: contains the permission mask
+>   *	fsmagic: hex value
+>   *
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index 0f8409d77602..dff4bce4fb09 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -922,6 +922,40 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
+>  	fdput(f);
+>  }
+>  
+> +/**
+> + * ima_measure_critical_data - measure kernel integrity critical data
+> + * @event_name: event name to be used for the buffer entry
+> + * @buf: pointer to buffer containing data to measure
+> + * @buf_len: length of buffer(in bytes)
+> + * @measure_buf_hash: measure buffer hash
+> + *
+> + * Measure the kernel subsystem data, critical to the integrity of the kernel,
+> + * into the IMA log and extend the @pcr.
+> + *
+> + * Use @event_name to describe the state/buffer data change.
+> + * Examples of critical data (@buf) could be various data structures,
+> + * policies, and states stored in kernel memory that can impact the integrity
+> + * of the system.
+> + *
+> + * If @measure_buf_hash is set to true - measure hash of the buffer data,
+> + * else measure the buffer data itself.
+> + * @measure_buf_hash can be used to save space, if the data being measured
+> + * is too large.
+> + *
+> + * The data (@buf) can only be measured, not appraised.
+> + */
+> +void ima_measure_critical_data(const char *event_name,
+> +			       const void *buf, int buf_len,
+> +			       bool measure_buf_hash)
+> +{
+> +	if (!event_name || !buf || !buf_len)
+> +		return;
+> +
+> +	process_buffer_measurement(NULL, buf, buf_len, event_name,
+> +				   CRITICAL_DATA, 0, NULL,
+> +				   measure_buf_hash);
+> +}
+> +
+>  static int __init init_ima(void)
+>  {
+>  	int error;
+> -- 
+> 2.17.1
 > 
-> 
->> 	but assert on the number of bits in the low and high parts.  This is
->> 	because any change on those numbers will have to be reflected in the
->> 	comment, and essentially we're asserting that the comment is up-to-date.
-> 
-
