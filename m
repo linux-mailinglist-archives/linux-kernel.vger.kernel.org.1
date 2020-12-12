@@ -2,146 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A99732D8877
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 18:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4812D887E
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 18:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405697AbgLLQzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 11:55:44 -0500
-Received: from conuserg-10.nifty.com ([210.131.2.77]:45143 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395531AbgLLQzo (ORCPT
+        id S2439593AbgLLQ6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 11:58:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406671AbgLLQ5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 11:55:44 -0500
-Received: from grover.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 0BCGsX0Q010674;
-        Sun, 13 Dec 2020 01:54:36 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 0BCGsX0Q010674
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1607792077;
-        bh=dpgq5RZvPfHgfloxAHMCr/hKbK6506wPMQVyOXg27a0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eLWAba1xRxtIa7MFfcp2kJuxBE5U0DAYaZ9omDn9VY0Lkc6ytCRVNmtS7NI7RBZoz
-         UyFDx7+CBvaw69rlFWbbG9QjazZ3eSLO5lUHTYhG26QsIdw91o6bLg08GGM7n2KbZ4
-         BAxIb6YfnDgaBQj1lRs+T9TyyBdTrf81eCl2WV+uHY5ABzzzZYJrrlI6IdMu+xWaKs
-         H27OiuWwE/9gFqP0DjLE033cAe95m/Pc34EqELipwyhMB09JYxduapwA9g3Wc+tIzW
-         5xmTXSAd2G9LNVSHgPvuWQd6j0gBLzLLXJ5dAkhkLlbndk9gNiI9PgguhvRiiY0T9d
-         6HQ97R3ogK6aA==
-X-Nifty-SrcIP: [126.90.211.135]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Dominique Martinet <asmadeus@codewreck.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
+        Sat, 12 Dec 2020 11:57:50 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A1BCC0613CF;
+        Sat, 12 Dec 2020 08:57:10 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id k8so11825395ilr.4;
+        Sat, 12 Dec 2020 08:57:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Jxm7FjWLOK0LeZ5TONPRUQR10b19NPzc0gXLsmUtSk8=;
+        b=L7SXmM5aaaq0mgJ+7/5AxBNsryueM9Onmbq14mL+cpuuNK6Fa4QlEwqesRlTLT6yAJ
+         EHKJxfyOQlOFd27qg1+iZavvGPBnc8HkgIGVygzZKR3HLa8blBwnFEam7dXdPMtHVlN7
+         5GaIAuW1W1njao8C5AMNNW0IisvO3oZtE7xZnRhUZzS0j0qwF57ZYPRQEBXYqcAvKXdL
+         y3ZyuuCTCQ+hhiyVwcgWBSjbJEfQZoIod+ffxsXRgDtHSvIbBxQwT6bne26WGbgiIK4N
+         dYY8dSHCLDfvXtaFfBuzSbzMeAao9sZqkiafR3FTqVZxjh91ufk2meZWopScwERPQFas
+         f4XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Jxm7FjWLOK0LeZ5TONPRUQR10b19NPzc0gXLsmUtSk8=;
+        b=iOsIkCz25W7BA0w4WunfIgRfZ4IE2/+vNTkPSY00eo6ZaGqH855Gap8PeaxsUdDXqk
+         P0vCpOrlTBhfMHjUIlG8SztXPRN2gi7GEagzoVDeoNist4ld5PrUcOyQ1bDT6ebgqG2l
+         n5K/nqz4VNJV/r2CIxQHIyLj5HGG2Rp1tdqbx8ybcboBLV2onYuls6uhhy1emBCAOkRz
+         CU9IASy8qQ25dPx/rplsVV6+p+OjUXSGxS8OzHpKFhbqx2bznI3Nq5DHkV28afUjvjmS
+         /rk4qxdvOvJ/3v4tDZy7Z5ICLGdB4Q2TZ5zjwMPQP+ZnJYIOuZ5VJntJDeZZfpcHe1rQ
+         P//Q==
+X-Gm-Message-State: AOAM533prmRAkKl/DB474ODx0JjnPp1QPWtDD20QX7yrk/xmtxCN6PwE
+        MY08Ez7O652ii/xy+bv0fY7oT6qFVW7IOw==
+X-Google-Smtp-Source: ABdhPJweNag0z8jUNTEBJfXTNWkbk9ca2ae0Kr7sLruYFI4q5hfR1er9PyJpV9gjnX8VUspYK0ghNw==
+X-Received: by 2002:a92:495b:: with SMTP id w88mr22754631ila.196.1607792229218;
+        Sat, 12 Dec 2020 08:57:09 -0800 (PST)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:f45d:df49:9a4c:4914])
+        by smtp.gmail.com with ESMTPSA id p18sm7733201ile.27.2020.12.12.08.57.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Dec 2020 08:57:08 -0800 (PST)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     aford@beaconembedded.com, charles.stevens@logicpd.com,
+        Adam Ford <aford173@gmail.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] kbuild: rewrite ld-version.sh in shell script
-Date:   Sun, 13 Dec 2020 01:54:31 +0900
-Message-Id: <20201212165431.150750-3-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201212165431.150750-1-masahiroy@kernel.org>
-References: <20201212165431.150750-1-masahiroy@kernel.org>
+Subject: [RFC] ravb: Add support for optional txc_refclk
+Date:   Sat, 12 Dec 2020 10:56:48 -0600
+Message-Id: <20201212165648.166220-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This script was written in awk in spite of the file extension '.sh'.
-Rewrite it as a shell script.
+The SoC expects the txv_refclk is provided, but if it is provided
+by a programmable clock, there needs to be a way to get and enable
+this clock to operate.  It needs to be optional since it's only
+necessary for those with programmable clocks.
 
-The code was mostly copy-pasted from scripts/lld-version.sh.
-The two scripts can be merged, but I am keeping this as a separate
-file for now.
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-I tested this script for some corner cases reported in the past:
-
- - GNU ld version 2.25-15.fc23
-   as reported by commit 8083013fc320 ("ld-version: Fix it on Fedora")
-
- - GNU ld (GNU Binutils) 2.20.1.20100303
-   as reported by commit 0d61ed17dd30 ("ld-version: Drop the 4th and
-   5th version components")
-
-I also cleaned up the macros in scripts/Kbuild.include. Remove
-ld-version, which has no direct user. You can use CONFIG_LD_VERSION
-if you need the version string in a Makefile.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- init/Kconfig           |  2 +-
- scripts/Kbuild.include |  6 +-----
- scripts/ld-version.sh  | 31 +++++++++++++++++++++----------
- 3 files changed, 23 insertions(+), 16 deletions(-)
-
-diff --git a/init/Kconfig b/init/Kconfig
-index 0872a5a2e759..a44a13a6b38d 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -35,7 +35,7 @@ config GCC_VERSION
+diff --git a/drivers/net/ethernet/renesas/ravb.h b/drivers/net/ethernet/renesas/ravb.h
+index 7453b17a37a2..ddf3bc5164d2 100644
+--- a/drivers/net/ethernet/renesas/ravb.h
++++ b/drivers/net/ethernet/renesas/ravb.h
+@@ -994,6 +994,7 @@ struct ravb_private {
+ 	struct platform_device *pdev;
+ 	void __iomem *addr;
+ 	struct clk *clk;
++	struct clk *ref_clk;
+ 	struct mdiobb_ctrl mdiobb;
+ 	u32 num_rx_ring[NUM_RX_QUEUE];
+ 	u32 num_tx_ring[NUM_TX_QUEUE];
+diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+index bd30505fbc57..4c3f95923ef2 100644
+--- a/drivers/net/ethernet/renesas/ravb_main.c
++++ b/drivers/net/ethernet/renesas/ravb_main.c
+@@ -2148,6 +2148,18 @@ static int ravb_probe(struct platform_device *pdev)
+ 		goto out_release;
+ 	}
  
- config LD_VERSION
- 	int
--	default $(shell,$(LD) --version | $(srctree)/scripts/ld-version.sh)
-+	default $(shell,$(srctree)/scripts/ld-version.sh $(LD))
- 
- config CC_IS_CLANG
- 	def_bool $(success,echo "$(CC_VERSION_TEXT)" | grep -q clang)
-diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
-index 08e011175b4c..167a68bbe7be 100644
---- a/scripts/Kbuild.include
-+++ b/scripts/Kbuild.include
-@@ -141,13 +141,9 @@ cc-ifversion = $(shell [ $(CONFIG_GCC_VERSION)0 $(1) $(2)000 ] && echo $(3) || e
- # Usage: KBUILD_LDFLAGS += $(call ld-option, -X, -Y)
- ld-option = $(call try-run, $(LD) $(KBUILD_LDFLAGS) $(1) -v,$(1),$(2),$(3))
- 
--# ld-version
--# Note this is mainly for HJ Lu's 3 number binutil versions
--ld-version = $(shell $(LD) --version | $(srctree)/scripts/ld-version.sh)
--
- # ld-ifversion
- # Usage:  $(call ld-ifversion, -ge, 22252, y)
--ld-ifversion = $(shell [ $(ld-version) $(1) $(2) ] && echo $(3) || echo $(4))
-+ld-ifversion = $(shell [ $(CONFIG_LD_VERSION) $(1) $(2) ] && echo $(3) || echo $(4))
- 
- ######
- 
-diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
-index 0f8a2c0f9502..c214aeb3200d 100755
---- a/scripts/ld-version.sh
-+++ b/scripts/ld-version.sh
-@@ -1,11 +1,22 @@
--#!/usr/bin/awk -f
-+#!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
--# extract linker version number from stdin and turn into single number
--	{
--	gsub(".*\\)", "");
--	gsub(".*version ", "");
--	gsub("-.*", "");
--	split($1,a, ".");
--	print a[1]*10000 + a[2]*100 + a[3];
--	exit
--	}
-+#
-+# Usage: $ ./scripts/ld-version.sh ld
-+#
-+# Print the linker version of `ld' in a 5 or 6-digit form
-+# such as `23501' for GNU ld 2.35.1 etc.
++	priv->ref_clk = devm_clk_get(&pdev->dev, "txc_refclk");
++	if (IS_ERR(priv->ref_clk)) {
++		if (PTR_ERR(priv->ref_clk) == -EPROBE_DEFER) {
++			/* for Probe defer return error */
++			error = PTR_ERR(priv->ref_clk);
++			goto out_release;
++		}
++		/* Ignore other errors since it's optional */
++	} else {
++		(void)clk_prepare_enable(priv->ref_clk);
++	}
 +
-+first_line="$($* --version | head -n 1)"
-+
-+if ! ( echo $first_line | grep -q "GNU ld"); then
-+	echo 0
-+	exit 1
-+fi
-+
-+# Distributions may append an extra string like 2.35-15.fc33
-+# Take the part that consists of numbers and dots.
-+VERSION=$(echo $first_line | sed 's/.* \([^ ]*\)$/\1/' | sed 's/^\(^[0-9.]*\).*/\1/')
-+MAJOR=$(echo $VERSION | cut -d . -f 1)
-+MINOR=$(echo $VERSION | cut -d . -f 2)
-+PATCHLEVEL=$(echo $VERSION | cut -d . -f 3)
-+printf "%d%02d%02d\\n" $MAJOR $MINOR $PATCHLEVEL
+ 	ndev->max_mtu = 2048 - (ETH_HLEN + VLAN_HLEN + ETH_FCS_LEN);
+ 	ndev->min_mtu = ETH_MIN_MTU;
+ 
 -- 
-2.27.0
+2.25.1
 
