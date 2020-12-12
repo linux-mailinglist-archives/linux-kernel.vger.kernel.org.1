@@ -2,114 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D362D8711
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 15:14:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 868292D8719
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 15:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727584AbgLLONw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 09:13:52 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:53689 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726070AbgLLONv (ORCPT
+        id S2439182AbgLLOef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 09:34:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgLLOef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 09:13:51 -0500
-Received: by mail-io1-f71.google.com with SMTP id l20so8543092ioc.20
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 06:13:35 -0800 (PST)
+        Sat, 12 Dec 2020 09:34:35 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D974BC0613CF;
+        Sat, 12 Dec 2020 06:33:54 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id cm17so12467862edb.4;
+        Sat, 12 Dec 2020 06:33:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=1ysjGHJCqoELjN/o6Ll5rueoAoZM1cNxe2y7UCTlF04=;
+        b=Zq3fEMjuP+QSEG9N3Rq4e6l4DAgKjPnXThIeusTrtO/97+iN+MdCPT6pwLYWYtxj/R
+         eG8vD2aGGvR4UIYUnRClKWHV46GcEafNUK1yWRWJq8Wu0wRDJAfwz7YXlmvSo74tjOBj
+         mw7HWKHG5SnqCQNxAiQQlDlRtsGbSthXMIRTUXUvkJC+Lz4KoA4jcLNqcLYGOpqudUlK
+         Zyt1xtJi9XjES6yaYSw+sQpvMyDSRTPmLTEaApu8YJfLuKw1rRoC3QDSowh1/4d9SoHB
+         tsPDz5NDqT2LaFjIqQtKnIrmgc5Ba+SxpJlM1GBrw2nEI9qjCrNE+iYtfJcY6XRL/6sv
+         tLQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=XazMq+T2mE11tpZMIR+EQUcLWgHPeuEdA3COL5lTxkY=;
-        b=B0Gi8aMDz0Ne+bh07c3hvBvtxgEXJVTAf1T2/CQtA/gwIMkDBP8/JIrH0v0dMji0Wk
-         3nzwqasYqz/qQXjleqf/e1TIUm18RbYuYaGIo3k6h8vcgnA0bdVaPqQbpsxntp0EgGqO
-         RzEm5Y0ySCfCEOhNlpVup2JLCJcOsm7kKQS8aCjcyp5lwK6Sl09L3NyWKqg1CMNPcIfq
-         /xK2LQgpQziZv4Y3Iquq+B/865uqZx9ufDjVVbCTK7RjGfXX1+u3NEr7nICAeAafWSqu
-         m5vD7tAMELE+gOkX29u+DQQnxF2rlnuB0uhi+pN0oC8sDfW2ZuLf3O+x73D6hBB+I2jg
-         0zKw==
-X-Gm-Message-State: AOAM533oybnuiUsV9NKcwcCgm/OuDSaGVBvytLshmBsRC7fQQ1atlEmh
-        gPtbM6mnL4mIHBATIQaKyJhn1T3nmvKi/tsa+YBvQXc0Etw2
-X-Google-Smtp-Source: ABdhPJx106Z6cBdjKm11r36+ybkHIPRmzunIjiryXWeO7CVbyqRJXS3o3WLJEg3f5Vgsye1ThuMO4CF6FJFvWycl+xFaQdqA0WaP
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=1ysjGHJCqoELjN/o6Ll5rueoAoZM1cNxe2y7UCTlF04=;
+        b=Y6GPF8jqrYR+xHpUNyO4WHgqWZwR5MQDNsRh+wN1lQas72gyYuhMWEDSzIA+TbA/my
+         4uu84KAXJ5eLisfRLlZoYfS01HwYjTJojaTN0Yo5FDb9dVuCmwNx3V+aMyO2TJf1huxK
+         DQTb1yFK/fnvSJzk78JbJ0/9lQ05scek9dxiYEVc25QcX0/ZwGHx1yGxqkjwo7f0LSK9
+         YywH7zphTWIgUJ+/Bpjf/GOcfqnMx46x27AisIC2fEaPAwCLdTVGEZkOy02MuTr3mkBa
+         FhFs+k7kIVh6CKHux5QSckM0fHqQcL62O+Kz0ktFGlcGySGU/FPRAkctOHeToazxIVU9
+         R97w==
+X-Gm-Message-State: AOAM532wTgQV9iLan3+M+3o8HfqZqC6uNJuLDkH9cvfEyzyPQ6awwRij
+        saO3RKR7H0qXtJnjQRwX+0tKHZflhNs=
+X-Google-Smtp-Source: ABdhPJxju1FAqC1ECfSi/xZzBI6E40EMjNXndwx+1PEi1Btip7tA16tNh/ggXyWZJX0dZStSDv5ziw==
+X-Received: by 2002:a50:9310:: with SMTP id m16mr16960068eda.94.1607783633428;
+        Sat, 12 Dec 2020 06:33:53 -0800 (PST)
+Received: from skbuf ([188.25.2.120])
+        by smtp.gmail.com with ESMTPSA id x15sm10894384edj.91.2020.12.12.06.33.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Dec 2020 06:33:52 -0800 (PST)
+Date:   Sat, 12 Dec 2020 16:33:51 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Libing Zhou <libing.zhou@nokia-sbell.com>, davem@davemloft.net,
+        mingo@redhat.com, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/netconsole: Support VLAN for netconsole
+Message-ID: <20201212143351.qzpadffnirht76yh@skbuf>
+References: <20201210100742.8874-1-libing.zhou@nokia-sbell.com>
+ <40a77a26-9944-245e-cb16-6690221efbd0@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:cb:: with SMTP id r11mr23109652ilq.11.1607782390554;
- Sat, 12 Dec 2020 06:13:10 -0800 (PST)
-Date:   Sat, 12 Dec 2020 06:13:10 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000043e88405b6450217@google.com>
-Subject: WARNING in ext4_xattr_set_entry
-From:   syzbot <syzbot+98b881fdd8ebf45ab4ae@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <40a77a26-9944-245e-cb16-6690221efbd0@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Dec 10, 2020 at 09:55:16AM -0800, Florian Fainelli wrote:
+> 
+> 
+> On 12/10/2020 2:07 AM, Libing Zhou wrote:
+> > During kernel startup phase, current netconsole doesn’t support VLAN
+> > since there is no VLAN interface setup already.
+> > 
+> > This patch provides VLAN ID and PCP as optional boot/module parameters
+> > to support VLAN environment, thus kernel startup log can be retrieved
+> > via VLAN.
+> > 
+> > Signed-off-by: Libing Zhou <libing.zhou@nokia-sbell.com>
+> > ---
+> >  Documentation/networking/netconsole.rst | 10 ++++-
+> >  drivers/net/netconsole.c                |  3 +-
+> >  include/linux/netpoll.h                 |  3 ++
+> >  net/core/netpoll.c                      | 58 ++++++++++++++++++++++++-
+> >  4 files changed, 70 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/Documentation/networking/netconsole.rst b/Documentation/networking/netconsole.rst
+> > index 1f5c4a04027c..a08387fcc3f0 100644
+> > --- a/Documentation/networking/netconsole.rst
+> > +++ b/Documentation/networking/netconsole.rst
+> > @@ -13,6 +13,8 @@ IPv6 support by Cong Wang <xiyou.wangcong@gmail.com>, Jan 1 2013
+> >  
+> >  Extended console support by Tejun Heo <tj@kernel.org>, May 1 2015
+> >  
+> > +VLAN support by Libing Zhou <libing.zhou@nokia-sbell.com>, Dec 8 2020
+> > +
+> >  Please send bug reports to Matt Mackall <mpm@selenic.com>
+> >  Satyam Sharma <satyam.sharma@gmail.com>, and Cong Wang <xiyou.wangcong@gmail.com>
+> >  
+> > @@ -34,7 +36,7 @@ Sender and receiver configuration:
+> >  It takes a string configuration parameter "netconsole" in the
+> >  following format::
+> >  
+> > - netconsole=[+][src-port]@[src-ip]/[<dev>],[tgt-port]@<tgt-ip>/[tgt-macaddr]
+> > + netconsole=[+][src-port]@[src-ip]/[<dev>],[tgt-port]@<tgt-ip>/[tgt-macaddr][-V<vid:pcp>]
+> >  
+> >     where
+> >  	+             if present, enable extended console support
+> > @@ -44,11 +46,17 @@ following format::
+> >  	tgt-port      port for logging agent (6666)
+> >  	tgt-ip        IP address for logging agent
+> >  	tgt-macaddr   ethernet MAC address for logging agent (broadcast)
+> > +	-V            if present, enable VLAN support
+> > +	vid:pcp       VLAN identifier and priority code point
+> >  
+> >  Examples::
+> >  
+> >   linux netconsole=4444@10.0.0.1/eth1,9353@10.0.0.2/12:34:56:78:9a:bc
+> >  
+> > +or using VLAN::
+> > +
+> > + linux netconsole=4444@10.0.0.1/eth1,9353@10.0.0.2/12:34:56:78:9a:bc-V100:1
+> > +
+> >  or::
+> >  
+> >   insmod netconsole netconsole=@/,@10.0.0.2/
+> > diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
+> > index 92001f7af380..f0690cd6a744 100644
+> > --- a/drivers/net/netconsole.c
+> > +++ b/drivers/net/netconsole.c
+> > @@ -36,7 +36,6 @@
+> >  #include <linux/inet.h>
+> >  #include <linux/configfs.h>
+> >  #include <linux/etherdevice.h>
+> > -
+> >  MODULE_AUTHOR("Maintainer: Matt Mackall <mpm@selenic.com>");
+> >  MODULE_DESCRIPTION("Console driver for network interfaces");
+> >  MODULE_LICENSE("GPL");
+> > @@ -46,7 +45,7 @@ MODULE_LICENSE("GPL");
+> >  
+> >  static char config[MAX_PARAM_LENGTH];
+> >  module_param_string(netconsole, config, MAX_PARAM_LENGTH, 0);
+> > -MODULE_PARM_DESC(netconsole, " netconsole=[src-port]@[src-ip]/[dev],[tgt-port]@<tgt-ip>/[tgt-macaddr]");
+> > +MODULE_PARM_DESC(netconsole, " netconsole=[src-port]@[src-ip]/[dev],[tgt-port]@<tgt-ip>/[tgt-macaddr][-V<vid:pcp>]");
+> >  
+> >  static bool oops_only = false;
+> >  module_param(oops_only, bool, 0600);
+> > diff --git a/include/linux/netpoll.h b/include/linux/netpoll.h
+> > index e6a2d72e0dc7..8ab3f25cadae 100644
+> > --- a/include/linux/netpoll.h
+> > +++ b/include/linux/netpoll.h
+> > @@ -31,6 +31,9 @@ struct netpoll {
+> >  	bool ipv6;
+> >  	u16 local_port, remote_port;
+> >  	u8 remote_mac[ETH_ALEN];
+> > +	bool vlan_present;
+> > +	u16 vlan_id;
+> > +	u8 pcp;
+> >  };
+> >  
+> >  struct netpoll_info {
+> > diff --git a/net/core/netpoll.c b/net/core/netpoll.c
+> > index 2338753e936b..077a7aec51ae 100644
+> > --- a/net/core/netpoll.c
+> > +++ b/net/core/netpoll.c
+> > @@ -478,6 +478,14 @@ void netpoll_send_udp(struct netpoll *np, const char *msg, int len)
+> >  
+> >  	skb->dev = np->dev;
+> >  
+> > +	if (np->vlan_present) {
+> > +		skb->vlan_proto = htons(ETH_P_8021Q);
+> > +
+> > +		/* htons for tci is done in __vlan_insert_inner_tag, not here */
+> > +		skb->vlan_tci = (np->pcp << VLAN_PRIO_SHIFT) + (np->vlan_id & VLAN_VID_MASK);
+> > +		skb->vlan_present = 1;
+> > +	}
+> 
+> This does not seem to be the way to go around this, I would rather
+> specifying eth0.<VID> on the netconsole parameters and automatically
+> create a VLAN interface from that which would ensure that everything
+> works properly and that the VLAN interface is linked to its lower device
+> properly.
+> 
+> If you prefer your current syntax, that is probably fine, too but you
+> should consider registering a VLAN device when you parse appropriate
+> options.
+> -- 
+> Florian
 
-syzbot found the following issue on:
-
-HEAD commit:    cd796ed3 Merge tag 'trace-v5.10-rc7' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14721287500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e597c2b53c984cd8
-dashboard link: https://syzkaller.appspot.com/bug?extid=98b881fdd8ebf45ab4ae
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f0f703500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13307137500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+98b881fdd8ebf45ab4ae@syzkaller.appspotmail.com
-
-EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
-ext4 filesystem being mounted at /root/file0 supports timestamps until 2038 (0x7fffffff)
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8454 at fs/ext4/xattr.c:1640 ext4_xattr_set_entry+0x30d0/0x3860 fs/ext4/xattr.c:1640
-Modules linked in:
-CPU: 1 PID: 8454 Comm: syz-executor801 Not tainted 5.10.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ext4_xattr_set_entry+0x30d0/0x3860 fs/ext4/xattr.c:1640
-Code: ff ff ff eb 05 e8 20 ad 5c ff 49 bd 00 00 00 00 00 fc ff df 48 8b 1c 24 48 8b ac 24 90 00 00 00 e9 b9 fd ff ff e8 00 ad 5c ff <0f> 0b e9 a1 d6 ff ff 48 8b 7c 24 78 4c 89 e6 e8 5c 81 c8 ff 49 8d
-RSP: 0018:ffffc9000142f718 EFLAGS: 00010293
-RAX: ffffffff82187230 RBX: 0000000000000000 RCX: ffff88801abc1a40
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 1ffff92000285f5d R08: ffffffff821848ca R09: ffffffff89600dd0
-R10: ffffffff89800000 R11: ffffffff898006be R12: 0000000000000001
-R13: dffffc0000000000 R14: ffffc9000142fae8 R15: ffff8880291d9020
-FS:  000000000151a880(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000560573deec1e CR3: 00000000117d2000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ext4_xattr_block_set+0x386/0x3c50 fs/ext4/xattr.c:1942
- ext4_xattr_set_handle+0xead/0x1ed0 fs/ext4/xattr.c:2390
- ext4_xattr_set+0x1d8/0x310 fs/ext4/xattr.c:2491
- __vfs_setxattr+0x3be/0x400 fs/xattr.c:177
- __vfs_setxattr_noperm+0x11e/0x4b0 fs/xattr.c:208
- vfs_setxattr+0xde/0x270 fs/xattr.c:283
- setxattr+0x167/0x340 fs/xattr.c:548
- path_setxattr+0x109/0x1c0 fs/xattr.c:567
- __do_sys_lsetxattr fs/xattr.c:589 [inline]
- __se_sys_lsetxattr fs/xattr.c:585 [inline]
- __x64_sys_lsetxattr+0xb4/0xd0 fs/xattr.c:585
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4445a9
-Code: 8d d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 5b d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffd1c974678 EFLAGS: 00000246 ORIG_RAX: 00000000000000bd
-RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 00000000004445a9
-RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000020000140
-RBP: 00000000006cf018 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402190
-R13: 0000000000402220 R14: 0000000000000000 R15: 0000000000000000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+I don't have a strong opinion, considering that I have not actually
+tried this. I do tend to agree with Florian about registering an 8021q
+interface, as long as there aren't any other complications associated
+with it. As for the syntax, I am not sure if "eth0.<VID>" is universal
+enough to make an ABI out of it.
