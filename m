@@ -2,112 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845CC2D8AA6
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 00:41:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BC82D8AA9
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 00:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408205AbgLLXkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 18:40:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgLLXkL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 18:40:11 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE987C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 15:39:30 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id a3so11940540wmb.5
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 15:39:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3RA7b4gOSOMOF2MsxAHtn2aENtr19yvmNfEq8yHFz8U=;
-        b=FrAF7Ou7p2Xmsy2mYbf3y2dqECOoelFe/cZKKPyeoD4YLU89gU/1mQ0wHL+2zMhKSi
-         Z4VwxEVgVHD6ht6uVHyEevG2fnVfvV5ytx9fxSIg0/F/nb1PYKS+i6Nd1aWKewdVGvAE
-         u7qhKzvHPc0RkpvjtEDpLuTJf6KCsZWCgnEQzJpn0K6B4Dj5zh7xsWeIKzDKNNCwQOZ3
-         es39xHUCasEmu3IbdC5wXi4a0oSnOnZ7MpJgKpYU6JvPuftqEpK2X9P0N97sBnePYgY9
-         jzf3yLo4UinmdTzZsXR5eV3XFkZuU3kAkM4XcVIlC8wrFrNi9/yrSuGxJQ1T3uBi+cj3
-         wFPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3RA7b4gOSOMOF2MsxAHtn2aENtr19yvmNfEq8yHFz8U=;
-        b=S3FL2noiUYifmLxbYiIM5cGSGMJG4OAqearcT0Vza6MluWTUBGDfec9QvRF/+jQXg7
-         q4z8DEbAVpL6jkkn/LJ8b83vLcEyUM/CSQi8i5SSs7FDKKDloP/JAYK0UTH0WaHGSngi
-         tQYt+468Ji5ju+CU513CxYwsdz/7xX2/VC7ElnxKOgKwipJNJvQhUdmnFlm58+XStpgw
-         3vfQiD7wv7nLQ0Q/V/zL4wRjWSzZ1xkKgq268vfQfr0To2Me83Vii5NOPU5w0th9QrvM
-         2toh9VYEv5bF2tSPhedMtP6t5l9da4h48xkoSOSFnSIHYRzg7Varpx6o37L6M/63p613
-         lbCw==
-X-Gm-Message-State: AOAM533Oa/1mgUU0GPoiP+QY8ygx8qIiEeS1maiamfL3dnXVQn7TZZTs
-        S/jKJ8nDrITKi6B4FNNEfC3zcQaCtq9ErQ==
-X-Google-Smtp-Source: ABdhPJxnc44nkAyYl2TTEvZs1Q4LGKIKq9jDhWN3hzL1fJUEGZYYhkzZrEV+o/2aIEoMZFGRhCgp5w==
-X-Received: by 2002:a1c:3902:: with SMTP id g2mr20337872wma.117.1607816369152;
-        Sat, 12 Dec 2020 15:39:29 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:fd07:6f0a:92a7:a3a0? ([2a01:e34:ed2f:f020:fd07:6f0a:92a7:a3a0])
-        by smtp.googlemail.com with ESMTPSA id w17sm23443556wru.82.2020.12.12.15.39.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Dec 2020 15:39:28 -0800 (PST)
-Subject: Re: [PATCH] thermal/core: Make 'forced_passive' as obsolete candidate
-To:     Matthew Garrett <mjg59@codon.org.uk>
-Cc:     rui.zhang@intel.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, amitk@kernel.org,
-        Matthew Garrett <mjg59@srcf.ucam.org>
-References: <20201208153046.297456-1-daniel.lezcano@linaro.org>
- <cc2085ca-ada9-d616-eed5-3496889da3bb@linaro.org>
- <20201212035012.GA11926@codon.org.uk>
- <20015331-955b-756f-3dce-4eb78e473704@linaro.org>
- <20201212200806.GA19048@codon.org.uk>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <6105a8e5-7590-5ba1-5f2b-aa24bf286150@linaro.org>
-Date:   Sun, 13 Dec 2020 00:39:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2439884AbgLLXl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 18:41:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726267AbgLLXl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 18:41:59 -0500
+Date:   Sun, 13 Dec 2020 00:41:16 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607816478;
+        bh=6QWq4Fbv5EWiMVzfXArjywVZkwvzqc/ihW7BC3cGPZw=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZKZHCT1fodBHM9AI1zj/DzR8ac82ETq/u1TSCumpJSmKZ+tIT1Z22LFhlIw7p14El
+         iM9Z3+q3byFwqk9Kg+I1FZ1kKoi2FzstUjIKU/AHMUUI6yjyo08f8fWN53yLr3g/72
+         JSYGdV8CG9tDsGXf7DbmLtLUCxIDdzaICnnLF6Xp4Avg9QohmDE15ErIiakReev2K1
+         RYh6H3z4Gy4HLyV+6s9Jbno6qt4JetLF5BvkXjPKTBJvqYxEL0cnVSSBKpjujpiAcV
+         r49J/s9KEEUqwoKGwUcxE61sKQ7UzcKKTvMapTV5Ut4jhMCqXB7aSy6ZpNOx/ji+xT
+         2J+6X5B/pbiAA==
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Michael Klein <michael@fossekall.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] power: reset: new driver regulator-poweroff
+Message-ID: <20201212234116.cddx5yur7ox7itxv@earth.universe>
+References: <20201211151445.115943-1-michael@fossekall.de>
+ <20201211151445.115943-2-michael@fossekall.de>
 MIME-Version: 1.0
-In-Reply-To: <20201212200806.GA19048@codon.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bqkjnicvkmtr26ev"
+Content-Disposition: inline
+In-Reply-To: <20201211151445.115943-2-michael@fossekall.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/2020 21:08, Matthew Garrett wrote:
-> On Sat, Dec 12, 2020 at 10:11:31AM +0100, Daniel Lezcano wrote:
->> On 12/12/2020 04:50, Matthew Garrett wrote:
->>> Yes - what's the reason to do so?
->>
->> I'm cleaning up the thermal core code, so questioning every old ABI.
->>
->>> The code isn't specific to ACPI,
->>> so being able to override ACPI tables doesn't seem to justify it.
->>
->> I agree, the code is no specific to ACPI.
->>
->> What non-ACPI architecture, without device tree or platform data would
->> need the 'passive' option today ?
-> 
-> Anything that provides a trip point that has no active notifications and
-> doesn't provide any information that tells the kernel to poll it.
 
-I'm not able to create a setup as you describe working correctly with
-the forced passive trip point.
+--bqkjnicvkmtr26ev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The forced passive trip can not be detected as there is no comparison
-with the defined temperature in the thermal_zone_device_update() function.
+Hi,
 
-The commit 0c01ebbfd3caf1 may be responsible of this.
+On Fri, Dec 11, 2020 at 04:14:43PM +0100, Michael Klein wrote:
+> This driver registers a pm_power_off function to turn off the board
+> by force-disabling a devicetree-defined regulator.
+>=20
+> Signed-off-by: Michael Klein <michael@fossekall.de>
+> ---
 
-If my analysis is correct, this 'feature' is broken since years, more
-than 8 years to be exact and nobody complained.
+Thanks, queued.
 
-If I'm right, we can remove this feature directly.
+-- Sebastian
 
+>  drivers/power/reset/Kconfig              |  7 ++
+>  drivers/power/reset/Makefile             |  1 +
+>  drivers/power/reset/regulator-poweroff.c | 82 ++++++++++++++++++++++++
+>  3 files changed, 90 insertions(+)
+>  create mode 100644 drivers/power/reset/regulator-poweroff.c
+>=20
+> diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
+> index d55b3727e00e..b22c4fdb2561 100644
+> --- a/drivers/power/reset/Kconfig
+> +++ b/drivers/power/reset/Kconfig
+> @@ -177,6 +177,13 @@ config POWER_RESET_QNAP
+> =20
+>  	  Say Y if you have a QNAP NAS.
+> =20
+> +config POWER_RESET_REGULATOR
+> +	bool "Regulator subsystem power-off driver"
+> +	depends on OF && REGULATOR
+> +	help
+> +	  This driver supports turning off your board by disabling a
+> +	  power regulator defined in the devicetree.
+> +
+>  config POWER_RESET_RESTART
+>  	bool "Restart power-off driver"
+>  	help
+> diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
+> index c51eceba9ea3..9dc49d3a57ff 100644
+> --- a/drivers/power/reset/Makefile
+> +++ b/drivers/power/reset/Makefile
+> @@ -19,6 +19,7 @@ obj-$(CONFIG_POWER_RESET_OCELOT_RESET) +=3D ocelot-rese=
+t.o
+>  obj-$(CONFIG_POWER_RESET_PIIX4_POWEROFF) +=3D piix4-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_LTC2952) +=3D ltc2952-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_QNAP) +=3D qnap-poweroff.o
+> +obj-$(CONFIG_POWER_RESET_REGULATOR) +=3D regulator-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_RESTART) +=3D restart-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_ST) +=3D st-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_VERSATILE) +=3D arm-versatile-reboot.o
+> diff --git a/drivers/power/reset/regulator-poweroff.c b/drivers/power/res=
+et/regulator-poweroff.c
+> new file mode 100644
+> index 000000000000..f697088e0ad1
+> --- /dev/null
+> +++ b/drivers/power/reset/regulator-poweroff.c
+> @@ -0,0 +1,82 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Force-disables a regulator to power down a device
+> + *
+> + * Michael Klein <michael@fossekall.de>
+> + *
+> + * Copyright (C) 2020 Michael Klein
+> + *
+> + * Based on the gpio-poweroff driver.
+> + */
+> +#include <linux/delay.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm.h>
+> +#include <linux/regulator/consumer.h>
+> +
+> +#define TIMEOUT_MS 3000
+> +
+> +/*
+> + * Hold configuration here, cannot be more than one instance of the driv=
+er
+> + * since pm_power_off itself is global.
+> + */
+> +static struct regulator *cpu_regulator;
+> +
+> +static void regulator_poweroff_do_poweroff(void)
+> +{
+> +	if (cpu_regulator && regulator_is_enabled(cpu_regulator))
+> +		regulator_force_disable(cpu_regulator);
+> +
+> +	/* give it some time */
+> +	mdelay(TIMEOUT_MS);
+> +
+> +	WARN_ON(1);
+> +}
+> +
+> +static int regulator_poweroff_probe(struct platform_device *pdev)
+> +{
+> +	/* If a pm_power_off function has already been added, leave it alone */
+> +	if (pm_power_off !=3D NULL) {
+> +		dev_err(&pdev->dev,
+> +			"%s: pm_power_off function already registered\n",
+> +			__func__);
+> +		return -EBUSY;
+> +	}
+> +
+> +	cpu_regulator =3D devm_regulator_get(&pdev->dev, "cpu");
+> +	if (IS_ERR(cpu_regulator))
+> +		return PTR_ERR(cpu_regulator);
+> +
+> +	pm_power_off =3D &regulator_poweroff_do_poweroff;
+> +	return 0;
+> +}
+> +
+> +static int regulator_poweroff_remove(__maybe_unused struct platform_devi=
+ce *pdev)
+> +{
+> +	if (pm_power_off =3D=3D &regulator_poweroff_do_poweroff)
+> +		pm_power_off =3D NULL;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id of_regulator_poweroff_match[] =3D {
+> +	{ .compatible =3D "regulator-poweroff", },
+> +	{},
+> +};
+> +
+> +static struct platform_driver regulator_poweroff_driver =3D {
+> +	.probe =3D regulator_poweroff_probe,
+> +	.remove =3D regulator_poweroff_remove,
+> +	.driver =3D {
+> +		.name =3D "poweroff-regulator",
+> +		.of_match_table =3D of_regulator_poweroff_match,
+> +	},
+> +};
+> +
+> +module_platform_driver(regulator_poweroff_driver);
+> +
+> +MODULE_AUTHOR("Michael Klein <michael@fossekall.de>");
+> +MODULE_DESCRIPTION("Regulator poweroff driver");
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_ALIAS("platform:poweroff-regulator");
+> --=20
+> 2.29.2
+>=20
+>=20
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+--bqkjnicvkmtr26ev
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/VVRwACgkQ2O7X88g7
++pobnQ/8DRqZP9pJQbIdOkTSWtKX6e/WJ+umvhdCGxjT2q3vfU9X0MwDtnBQzOk5
+igA02V7pduBfKRWR/V9J/4OtHvvY2iCAKRyqvnT57FEA1M9nFz21DhUpDKWEzczj
+mdR4DMM7g7OXdc0+FcbSCRqBEmatQM2N4xmLTTNmoQBWzMC04TdAPE0i12ZHQoIF
+YD7od3zfenYjg2g1C8Od2vjbIXx6tstDxRZlpaRSE1WGBHZ0g8hUjsBCWwtrJ983
+Fqs8RAj5BmkvNdJjaIzlGc+8MypzL9da9t7L+2Pnr/0W5LLEQn1nkwxzRMzGPqlf
+Nlk0kFHYXHqGzdgK1fid3zgFzHLZL1fZA14/LRrsqCwDlEwICL9cR0Jmzp1FKiPg
+o7VmHvrYiG/6rt0Gxz2Gg7Ka+S7hkWe9pjrVhkc6h62F2it0s+8eNXl+p+H7DooA
+QDb166OvIhyoEzz7RkeQ6EKmXF7qEWFoqZfKJuEa53FkhYjKsGzXD3x5C6WIpp3O
+ghCB3ZOT8BehiXG4eZ7OmZEzMdT8dBihoK2k2h3K7mvf25gvjYkJfQJ+ezJ9F5Om
+hCp3A5s7/d9TWEU9KLoC0bol17cvR+APjCexV+fn0zCUR1T1PNLqvjnz5/eG+qr/
+NU/F41U3f+XIjXmRtOudxi7MrufmVjC90WRhxzjQacrLCc5GEhE=
+=l5NK
+-----END PGP SIGNATURE-----
+
+--bqkjnicvkmtr26ev--
