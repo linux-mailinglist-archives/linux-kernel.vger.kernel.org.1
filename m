@@ -2,82 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA5B2D89CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 20:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE1F2D89D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 20:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407831AbgLLTkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 14:40:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406740AbgLLTkQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 14:40:16 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB34C0613CF;
-        Sat, 12 Dec 2020 11:39:36 -0800 (PST)
-Date:   Sat, 12 Dec 2020 19:39:33 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607801974;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jDYwAzyElCvXYFsbd5ktPcqPDvAo95UX4JW6sIh+rN4=;
-        b=uOTBBxtrKJ7/YvIxcPgRe3kdI8EbGvjDM73Q2d6UPx1XNPeejjOMudXLCtS3SEtN6oQdyB
-        AbBeMmyz6osmm5CjBHnAwf2gcjxQ5wffMxrMUsV87hUgz5AolQFisVp+gqlgKNJjy1Zrmy
-        w/BflINHWumCsEX5Dm+UJxYBr/2rd9NoN83CD9O83qhZxHFtaL7lBMqZo8RWd3aTH4iB5Q
-        kTIwMgYH+I9kiD5rGhxtjDar93NJCcmYDU1gcMlzAbGdzamt//aI9DqVX+//2iKr+Fe6dU
-        IqqNYy+pjtad5wCc8tFT10PNLUQONTfHkNi35HuaMFIkmEtsllF9BdOWYTz5lg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607801974;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jDYwAzyElCvXYFsbd5ktPcqPDvAo95UX4JW6sIh+rN4=;
-        b=O4Dwck/4MrxNR0YNqJoGhaZZg1hE/wFj1Pvv/ysPD/ckDZT0NCqSw2dlLzam6ba+TCcLY+
-        N6MMp9mP+5fRPaCg==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] Merge tag 'irqchip-5.11' of
- git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20201212135626.1479884-1-maz@kernel.org>
-References: <20201212135626.1479884-1-maz@kernel.org>
+        id S2407844AbgLLTtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 14:49:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726486AbgLLTso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 14:48:44 -0500
+Date:   Sat, 12 Dec 2020 11:48:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607802483;
+        bh=thn/QnopDGhA36N1/urymNIm0L9PfHPZm62GdCE6Hkg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Azc9ZFkQAHNRPn3nxBtrugpyYHBvIhjbLIa03OSbRrBGZAxIQbnwSv0JJdjew+Dq2
+         4AMfG89to+hsVFvX4cFFxim9z1Wtxx09yTLBPE98ZWr7JBPkcmYsmkMptbSlDyazZo
+         dC8yk8p7cxAyQhg4n3ScJgZITfRvYE2Uh01vdDu4tdVZMF6p1P7LjngKL5O6Lp+TTi
+         j/kIyoQmIvZaEZb16+08yq1bmM3Svl48Mnu37UuZfM3R/LcnkRfhYSvsYiXHesLA86
+         oAqalet9KYBx23au21yKatRP7zDqokg08t9w9s6X3VKXOzGqDzN1ha+7Knioc/dd1P
+         EDjrcI2yT559A==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yonatan Linik <yonatanlinik@gmail.com>
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org, willemb@google.com,
+        john.ogness@linutronix.de, arnd@arndb.de, maowenan@huawei.com,
+        colin.king@canonical.com, orcohen@paloaltonetworks.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 1/1] net: Fix use of proc_fs
+Message-ID: <20201212114802.21a6b257@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201211163749.31956-2-yonatanlinik@gmail.com>
+References: <20201211163749.31956-1-yonatanlinik@gmail.com>
+        <20201211163749.31956-2-yonatanlinik@gmail.com>
 MIME-Version: 1.0
-Message-ID: <160780197311.3364.14666601044973734196.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+On Fri, 11 Dec 2020 18:37:49 +0200 Yonatan Linik wrote:
+> proc_fs was used, in af_packet, without a surrounding #ifdef,
+> although there is no hard dependency on proc_fs.
+> That caused the initialization of the af_packet module to fail
+> when CONFIG_PROC_FS=n.
+> 
+> Specifically, proc_create_net() was used in af_packet.c,
+> and when it fails, packet_net_init() returns -ENOMEM.
+> It will always fail when the kernel is compiled without proc_fs,
+> because, proc_create_net() for example always returns NULL.
+> 
+> The calling order that starts in af_packet.c is as follows:
+> packet_init()
+> register_pernet_subsys()
+> register_pernet_operations()
+> __register_pernet_operations()
+> ops_init()
+> ops->init() (packet_net_ops.init=packet_net_init())
+> proc_create_net()
+> 
+> It worked in the past because register_pernet_subsys()'s return value
+> wasn't checked before this Commit 36096f2f4fa0 ("packet: Fix error path in
+> packet_init.").
+> It always returned an error, but was not checked before, so everything
+> was working even when CONFIG_PROC_FS=n.
+> 
+> The fix here is simply to add the necessary #ifdef.
+> 
+> Signed-off-by: Yonatan Linik <yonatanlinik@gmail.com>
 
-Commit-ID:     559db8c7e6ed1f24baf7264a6966ee4f051c6446
-Gitweb:        https://git.kernel.org/tip/559db8c7e6ed1f24baf7264a6966ee4f051c6446
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sat, 12 Dec 2020 20:35:24 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 12 Dec 2020 20:35:24 +01:00
+Hm, I'm guessing you hit this on a kernel upgrade of a real system?
+It seems like all callers to proc_create_net (and friends) interpret
+NULL as an error, but only handful is protected by an ifdef.
 
-Merge tag 'irqchip-5.11' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
+I checked a few and none of them cares about the proc_dir_entry pointer
+that gets returned. Should we perhaps rework the return values of the
+function so that we can return success if !CONFIG_PROC_FS without
+having to yield a pointer?
 
-Pull irqchip updates for 5.11 from Marc Zyngier:
+Obviously we can apply this fix so we can backport to 5.4 if you need
+it. I think the ifdef is fine, since it's what other callers have.
 
- - Preliminary support for managed interrupts on platform devices
- - Correctly identify allocation of MSIs proxyied by another device
- - Remove the fasteoi IPI flow which has been proved useless
- - Generalise the Ocelot support to new SoCs
- - Improve GICv4.1 vcpu entry, matching the corresponding KVM optimisation
- - Work around spurious interrupts on Qualcomm PDC
- - Random fixes and cleanups
+> diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+> index 2b33e977a905..031f2b593720 100644
+> --- a/net/packet/af_packet.c
+> +++ b/net/packet/af_packet.c
+> @@ -4612,9 +4612,11 @@ static int __net_init packet_net_init(struct net *net)
+>  	mutex_init(&net->packet.sklist_lock);
+>  	INIT_HLIST_HEAD(&net->packet.sklist);
+>  
+> +#ifdef CONFIG_PROC_FS
+>  	if (!proc_create_net("packet", 0, net->proc_net, &packet_seq_ops,
+>  			sizeof(struct seq_net_private)))
+>  		return -ENOMEM;
+> +#endif /* CONFIG_PROC_FS */
+>  
+>  	return 0;
+>  }
 
-Link: https://lore.kernel.org/r/20201212135626.1479884-1-maz@kernel.org
----
