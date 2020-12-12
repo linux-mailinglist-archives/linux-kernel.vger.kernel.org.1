@@ -2,79 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254FB2D88B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 18:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 532CD2D88C2
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 18:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438596AbgLLRjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 12:39:31 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:42210 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404003AbgLLRja (ORCPT
+        id S2439549AbgLLRoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 12:44:39 -0500
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:43701 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407700AbgLLRnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 12:39:30 -0500
-Date:   Sat, 12 Dec 2020 17:38:47 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607794728;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=zV7CVjbm1+62mfzyN4V2sX30rOJ3HjcrXX4B0n7Q9mc=;
-        b=1+egzGW+FvrcStBHPl7mTNG4i72dDuUrxHEqnV5nTCZsICjZtabNuGX8ZT5OZ2LFxTmZZG
-        Xz2e+i/Kbhz/Sl0xtO6cwhaFvEc/3eCabbiA2o7TqU8a/DOb4gmhGB7MwSBQX5+1lGnmHr
-        P2EjkrPnzZYI5jIFFbfdZiFbKYGyoarmmHj/1XS+uk12jsgowBsk7grGqIMZCj/JjAirFQ
-        LuOdVEgMpwyDzJowb9LCUOs0xny2uOBGxRtb6CHRA+DUYXITN44ZizuVhQYdaYYdP3lO2Q
-        CjSsrCrC/KqObtFUei3ITYwZVjFElTxxfUVrW4GO22oGXYzHeRNv+7sfVn519A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607794728;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=zV7CVjbm1+62mfzyN4V2sX30rOJ3HjcrXX4B0n7Q9mc=;
-        b=T/Cfj/57o5yux0DSGol6VVj8HnLZrbRdexJNcZGs7r07o8/px5H+rG8xtsTj+DKr+n+pg5
-        Kxs8Nwf/nFAnl5CQ==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] ntp: Fix build error
-Cc:     Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Sat, 12 Dec 2020 12:43:05 -0500
+Received: from localhost.localdomain ([93.22.133.216])
+        by mwinf5d65 with ME
+        id 3VhJ2400K4gHbkV03VhKYs; Sat, 12 Dec 2020 18:41:20 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 12 Dec 2020 18:41:20 +0100
+X-ME-IP: 93.22.133.216
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     laurent.pinchart@ideasonboard.com,
+        kieran.bingham+renesas@ideasonboard.com, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] media: vsp1: Fix an error handling path in the probe function
+Date:   Sat, 12 Dec 2020 18:41:19 +0100
+Message-Id: <20201212174119.120027-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Message-ID: <160779472752.3364.6530360000037468284.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+A previous 'rcar_fcp_get()' call must be undone in the error handling path,
+as already done in the remove function.
 
-Commit-ID:     a3356a079da268cd35460d9bfe052c74383e179b
-Gitweb:        https://git.kernel.org/tip/a3356a079da268cd35460d9bfe052c74383e179b
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Sat, 12 Dec 2020 18:29:20 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sat, 12 Dec 2020 18:35:12 +01:00
-
-ntp: Fix build error
-
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Fixes: 94fcdf829793 ("[media] v4l: vsp1: Add FCP support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- include/linux/timekeeping.h | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/platform/vsp1/vsp1_drv.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
-index 7f7e4a3..929d3f3 100644
---- a/include/linux/timekeeping.h
-+++ b/include/linux/timekeeping.h
-@@ -303,6 +303,8 @@ extern int persistent_clock_is_local;
- extern void read_persistent_clock64(struct timespec64 *ts);
- void read_persistent_wall_and_boot_offset(struct timespec64 *wall_clock,
- 					  struct timespec64 *boot_offset);
-+#ifdef CONFIG_GENERIC_CMOS_UPDATE
- extern int update_persistent_clock64(struct timespec64 now);
-+#endif
+diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
+index dc62533cf32c..aa66e4f5f3f3 100644
+--- a/drivers/media/platform/vsp1/vsp1_drv.c
++++ b/drivers/media/platform/vsp1/vsp1_drv.c
+@@ -882,8 +882,10 @@ static int vsp1_probe(struct platform_device *pdev)
+ 	}
  
- #endif
+ done:
+-	if (ret)
++	if (ret) {
+ 		pm_runtime_disable(&pdev->dev);
++		rcar_fcp_put(vsp1->fcp);
++	}
+ 
+ 	return ret;
+ }
+-- 
+2.27.0
+
