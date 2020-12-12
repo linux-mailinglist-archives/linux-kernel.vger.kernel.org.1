@@ -2,172 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6F12D8995
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 20:09:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 049982D8997
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 20:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439853AbgLLTIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 14:08:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
+        id S2501884AbgLLTJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 14:09:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391131AbgLLTH6 (ORCPT
+        with ESMTP id S2439851AbgLLTIx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 14:07:58 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7218DC0613D3
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 11:07:17 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id 190so79871wmz.0
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 11:07:17 -0800 (PST)
+        Sat, 12 Dec 2020 14:08:53 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D21C0613CF;
+        Sat, 12 Dec 2020 11:08:13 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id 11so9328897pfu.4;
+        Sat, 12 Dec 2020 11:08:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9GGQzKyouVvMusOKhxj4HNWH0PP14TPgBb62biha6pw=;
-        b=RK6mmKMdoBtnClJD2eSWvR7+yZfEntM55Z0+zpxy+DZs6KI1Ox6q6QLpw+BEYyKO33
-         S65/c7ZJ4rAoBR862uODmjmVd9LLXskDSdMJFm05HKm4ZMoFsEBOv3LkolTcv2QRgMJF
-         IvxVKFxxs8lsDi1mBrGi/heJL9WR6NJPuCRrwRSFm38xhLGxu9BexFh9d+Rmovq0sdKt
-         502ujvdomvL4P3RP/ezjYZgGSycerypE557kqm9m0m/hzi/4LuZO07Tvy8rZ8aGVvFF+
-         fNceGDPyFlq4YHCGh0CHyl8broUC82GELlNbwPONN3Dec4S/MyMlSp4lPJBOGZmp1prk
-         Ljdw==
+        bh=5d5sPO8wx8zg1h0wCHE+9bPaBcmdRWM6UrfrsupVMMc=;
+        b=I4OSGFP7adVI2ndfGQCPd0SwsK0rx+RD89j2Ej0NhjJdJZxcAtOfopLm9JNrPX+Dkn
+         ULhDz9H0HMmyR9xWD9vYPYzjXnipk/Cls0Z4BVJqYrdD9wj/4UN5+I0h/wc07o1GfloE
+         VQfdIZYS60dMNRNWobU9VT1kbU8EgufZsOGmzaUCguaP2UlLQLp7U13i6o2sLABR3iMr
+         CpmQHjBPytw4zv54by5HyL3KkhBCwXTcWUbCkAZrZSdNsoAKwuS9x0nIh5n8W69SFU+w
+         8rLdxSYwZe3GiGLgoFQZDgdInSANtr8BeQ8OILsT91okbprBNJIPFQVGHFKPitaKnXHc
+         QRsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9GGQzKyouVvMusOKhxj4HNWH0PP14TPgBb62biha6pw=;
-        b=gFYubMBCLmgl6uqRxQ+z5bNZVd5m8V1sLunZGmmXiaqHygps2/TgDRCG1GIF8ZyKKN
-         f/+L/M7acEy6jiEE4yf3iPSjPmyGqvuu0Xq1jtjuEDWEqUlbcpVDT7E+PfuhD/dy7mSb
-         1i5s0HJKop9hNtc8NFyz42bQ8eyf9nZaQei4hEl8Znrk6QowTOGxQwBt7JN/z527pT8E
-         oN2UT5BtygdQ1CQ2HlhYcv1ZO8CMfAD7GRoaNdj4qjKyEsXGNZmQUpw75EcbFLjO9f91
-         MR3dDxJEVP3UMLHnJogYgkHuv1NOO1QFWN4lnOxEb4W2A4D3CJjsSGS0GHQJABNQqYpU
-         O51g==
-X-Gm-Message-State: AOAM533dTUtmHXtDct2A+OSO/WtZAO4IywJrdKbkfcYoilxudYrn/Z1w
-        1KgaddADdZSqYt4pse3UkqZ25G+6LwMaCXA3aBMueQ==
-X-Google-Smtp-Source: ABdhPJzm8GLO2m3P+yFng68b0U7/DaYVYEutlXbyFqxm1dEEFf6xs2JV1+l6Y+IDA1L9GNC3C4hdaHL/2IZhXlKN3ys=
-X-Received: by 2002:a1c:9d85:: with SMTP id g127mr19872244wme.118.1607800034774;
- Sat, 12 Dec 2020 11:07:14 -0800 (PST)
+        bh=5d5sPO8wx8zg1h0wCHE+9bPaBcmdRWM6UrfrsupVMMc=;
+        b=oCkURlSdQk0+6PrO8Up/3D37KlocvwPqJgFowqPAKYF2+g3zWoWR21Jq/FudAv1vQD
+         fmDiXPIBDK7P33YVmuXGLafyvxY5zotj5ZvnKqxKsE2wrec4CBECI6iYAFnaHvNvtSXX
+         nPX57LrCDfVq3GSi35415NYaBTNUtU9bQ3sd2y60f4lb5QHoeQYfSDD1BuiXAibYgi9s
+         jAz8kCM6U85sC0pfj9z/lTIaBL0wLsOGej/ftRuuXRv4RlOskzwpLJ8/4lpzEv/2fPfj
+         IoeEIeH98KeJFI7P0Lr7xe2Edr8mDDkv86/Bsv+ZtA1H2oqIhhQvBIarvHrbAqt6WKV8
+         Qxsw==
+X-Gm-Message-State: AOAM531+6h6yl0pH+UK/RSYWsOAvvQ/nhz1z4bjnpBwFvnKwytt14zpe
+        w1ofUkaL12iVJka1z/1diwDj90DJm+KbaePHs7Dp7QeOvmlFfw==
+X-Google-Smtp-Source: ABdhPJwIo8+CSrfwuqpfmjq9ZWxFW0pVBxXGpMsZYdRxEl6zmWBOcTi2FNyscHh9XJZPIEcWp3lP/mMKjZvjTlDD6nY=
+X-Received: by 2002:a62:19cc:0:b029:19e:321b:a22e with SMTP id
+ 195-20020a6219cc0000b029019e321ba22emr9954366pfz.73.1607800092741; Sat, 12
+ Dec 2020 11:08:12 -0800 (PST)
 MIME-Version: 1.0
-References: <160773649920.2387.14668844101686155199.stgit@localhost.localdomain>
- <CAK6E8=c4LpxcaF3Mr1T9BtkD5SPK1eoK_hGOMNa6C9a4fpFQNg@mail.gmail.com> <CAKgT0UcS2s+gnYz0nvfpia5R+H7hSSVS4GGKOkkfyuz60zJpQQ@mail.gmail.com>
-In-Reply-To: <CAKgT0UcS2s+gnYz0nvfpia5R+H7hSSVS4GGKOkkfyuz60zJpQQ@mail.gmail.com>
-From:   Yuchung Cheng <ycheng@google.com>
-Date:   Sat, 12 Dec 2020 11:06:37 -0800
-Message-ID: <CAK6E8=c3c8uK8zGA9QS3cTLh59N6n=e_71a0BbQK7UfaPJqkSA@mail.gmail.com>
-Subject: Re: [net-next PATCH] tcp: Add logic to check for SYN w/ data in tcp_simple_retransmit
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, Martin Lau <kafai@fb.com>,
-        Kernel Team <kernel-team@fb.com>
+References: <20201211190335.16501-1-rdunlap@infradead.org> <CAHp75Vcckb5NA=tc5s5p_qzYE2qhJOT0vhCtfKhT_eqZe+PgXw@mail.gmail.com>
+ <ec8e703f-e1ea-1253-edc9-311f0ee3e8fd@infradead.org>
+In-Reply-To: <ec8e703f-e1ea-1253-edc9-311f0ee3e8fd@infradead.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 12 Dec 2020 21:07:56 +0200
+Message-ID: <CAHp75Vf-QcdL+FOd=8fUUQ0+ORC-RVKG+3Yqrar1J7wZMSDF+A@mail.gmail.com>
+Subject: Re: [PATCH -next] platform: surface: fix non-PM_SLEEP build warnings
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 11:01 AM Alexander Duyck
-<alexander.duyck@gmail.com> wrote:
->
-> On Sat, Dec 12, 2020 at 10:34 AM Yuchung Cheng <ycheng@google.com> wrote:
-> >
-> > On Fri, Dec 11, 2020 at 5:28 PM Alexander Duyck
-> > <alexander.duyck@gmail.com> wrote:
-> > >
-> > > From: Alexander Duyck <alexanderduyck@fb.com>
-> > >
-> > > There are cases where a fastopen SYN may trigger either a ICMP_TOOBIG
-> > > message in the case of IPv6 or a fragmentation request in the case of
-> > > IPv4. This results in the socket stalling for a second or more as it does
-> > > not respond to the message by retransmitting the SYN frame.
-> > >
-> > > Normally a SYN frame should not be able to trigger a ICMP_TOOBIG or
-> > > ICMP_FRAG_NEEDED however in the case of fastopen we can have a frame that
-> > > makes use of the entire MSS. In the case of fastopen it does, and an
-> > > additional complication is that the retransmit queue doesn't contain the
-> > > original frames. As a result when tcp_simple_retransmit is called and
-> > > walks the list of frames in the queue it may not mark the frames as lost
-> > > because both the SYN and the data packet each individually are smaller than
-> > > the MSS size after the adjustment. This results in the socket being stalled
-> > > until the retransmit timer kicks in and forces the SYN frame out again
-> > > without the data attached.
-> > >
-> > > In order to resolve this we can generate our best estimate for the original
-> > > packet size by detecting the fastopen SYN frame and then adding the
-> > > overhead for MAX_TCP_OPTION_SPACE and verifying if the SYN w/ data would
-> > > have exceeded the MSS. If so we can mark the frame as lost and retransmit
-> > > it.
-> > >
-> > > Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
-> > > ---
-> > >  net/ipv4/tcp_input.c |   30 +++++++++++++++++++++++++++---
-> > >  1 file changed, 27 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-> > > index 9e8a6c1aa019..79375b58de84 100644
-> > > --- a/net/ipv4/tcp_input.c
-> > > +++ b/net/ipv4/tcp_input.c
-> > > @@ -2686,11 +2686,35 @@ static void tcp_mtup_probe_success(struct sock *sk)
-> > >  void tcp_simple_retransmit(struct sock *sk)
-> > >  {
-> > >         const struct inet_connection_sock *icsk = inet_csk(sk);
-> > > +       struct sk_buff *skb = tcp_rtx_queue_head(sk);
-> > >         struct tcp_sock *tp = tcp_sk(sk);
-> > > -       struct sk_buff *skb;
-> > > -       unsigned int mss = tcp_current_mss(sk);
-> > > +       unsigned int mss;
-> > > +
-> > > +       /* A fastopen SYN request is stored as two separate packets within
-> > > +        * the retransmit queue, this is done by tcp_send_syn_data().
-> > > +        * As a result simply checking the MSS of the frames in the queue
-> > > +        * will not work for the SYN packet. So instead we must make a best
-> > > +        * effort attempt by validating the data frame with the mss size
-> > > +        * that would be computed now by tcp_send_syn_data and comparing
-> > > +        * that against the data frame that would have been included with
-> > > +        * the SYN.
-> > > +        */
-> > > +       if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_SYN && tp->syn_data) {
-> > > +               struct sk_buff *syn_data = skb_rb_next(skb);
-> > > +
-> > > +               mss = tcp_mtu_to_mss(sk, icsk->icsk_pmtu_cookie) +
-> > > +                     tp->tcp_header_len - sizeof(struct tcphdr) -
-> > > +                     MAX_TCP_OPTION_SPACE;
-> > nice comment! The original syn_data mss needs to be inferred which is
-> > a hassle to get right. my sense is path-mtu issue is enough to warrant
-> > they are lost.
-> > I suggest simply mark syn & its data lost if tcp_simple_retransmit is
-> > called during TFO handshake, i.e.
-> >
-> > diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-> > index 62f7aabc7920..7f0c4f2947eb 100644
-> > --- a/net/ipv4/tcp_input.c
-> > +++ b/net/ipv4/tcp_input.c
-> > @@ -2864,7 +2864,8 @@ void tcp_simple_retransmit(struct sock *sk)
-> >         unsigned int mss = tcp_current_mss(sk);
-> >
-> >         skb_rbtree_walk(skb, &sk->tcp_rtx_queue) {
-> > -               if (tcp_skb_seglen(skb) > mss)
-> > +               if (tcp_skb_seglen(skb) > mss ||
-> > +                   (tp->syn_data && sk->sk_state == TCP_SYN_SENT))
-> >                         tcp_mark_skb_lost(sk, skb);
-> >         }
-> >
-> > We have a TFO packetdrill test that verifies my suggested fix should
-> > trigger an immediate retransmit vs 1s wait.
->
-> Okay, I will go that route, although I will still probably make one
-> minor cleanup. Instead of testing for syn_data and state per packet I
-> will probably keep the bit where I overwrite mss since it is only used
-> in the loop. What I can do is switch it from unsigned int to int since
-> technically tcp_current_mss and tcp_skb_seglen are both a signed int
-> anyway. Then I can just set mss to -1 in the syn_data && TCP_SYN_SENT
-> case. That way all of the frames in the ring should fail the check
-> while only having to add one initial check outside the loop.
-sounds good. I thought about that too but decided it's normally just
-two skbs and not worth the hassle.
+On Sat, Dec 12, 2020 at 7:05 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 12/12/20 5:24 AM, Andy Shevchenko wrote:
+> > On Fri, Dec 11, 2020 at 9:20 PM Randy Dunlap <rdunlap@infradead.org> wrote:
 
-btw I thought about negatively caching this event to disable TFO
-completely afterward, but I assume it's not needed as the ICMP error
-should correct the route mtu hence future TFO should be fine. If
-that's not the case we might want to consider disable TFO to avoid
-this future "TFO->ICMP->SYN-retry" repetition.
+...
+
+> >> +#ifdef CONFIG_PM_SLEEP
+> >>  static int surface_gpe_suspend(struct device *dev)
+> >
+> > Perhaps __maybe_unused ?
+>
+> Yes, I am aware of that option.
+> I don't know why it would be preferred though.
+
+Here [1] is the rationale behind annotation vs. ifdeffery.
+
+[1]: https://lore.kernel.org/patchwork/patch/732981/
+
+-- 
+With Best Regards,
+Andy Shevchenko
