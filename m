@@ -2,95 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FF72D8A36
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 22:50:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7443E2D8A39
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 22:52:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408027AbgLLVtV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 12 Dec 2020 16:49:21 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:54734 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725822AbgLLVtT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 16:49:19 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-19-lcDaBSusM8WSczU6TB4oZA-1; Sat, 12 Dec 2020 21:47:40 +0000
-X-MC-Unique: lcDaBSusM8WSczU6TB4oZA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 12 Dec 2020 21:47:40 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 12 Dec 2020 21:47:40 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Masahiro Yamada' <masahiroy@kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>
-CC:     Dominique Martinet <asmadeus@codewreck.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 3/3] kbuild: rewrite ld-version.sh in shell script
-Thread-Topic: [PATCH 3/3] kbuild: rewrite ld-version.sh in shell script
-Thread-Index: AQHW0KfRQeCeMjpix0eG5Uz36Tqg2qnz/UVA
-Date:   Sat, 12 Dec 2020 21:47:40 +0000
-Message-ID: <ff1adc79f7884ba1a1dcbdd806e81d7b@AcuMS.aculab.com>
-References: <20201212165431.150750-1-masahiroy@kernel.org>
- <20201212165431.150750-3-masahiroy@kernel.org>
-In-Reply-To: <20201212165431.150750-3-masahiroy@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S2408041AbgLLVwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 16:52:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52196 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2408022AbgLLVwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 16:52:02 -0500
+Date:   Sat, 12 Dec 2020 13:51:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607809881;
+        bh=MpmTZDYvsuyckChPfpiFw4PCoYaOJ5VfYZAIYusX6U8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qqieKxnMKzAZdMQcLSnTj55DKscZ1s9/VojDduAml6i8IGAc5UrFdHgbXwwhC+PqW
+         NO3DLXvfQBYLXiU4WqYC5Rx6crydVVwvfhPBwhj0dA+gXudztISBuujcB0xbxRtya4
+         Ho4s88RQ5J1DniSAhLk1/rUhEOMVVCDXczLAZSVUzXdTtdCRQNI2uojinl2HYhyBtT
+         hl+jVxA4bHMpKBPtNuJ8sIVaViCAzKtN6P2ZWWmHUDW57yMTKxgZTehbTVP9oWTfs0
+         ftdJHDOLUQi4Rb+IwYXMvmPYyuHqHI55K1G2fhtYU2b18+R4zn76X5maxLhpQC5B1J
+         o7YUf+tSJqsvA==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yonatan Linik <yonatanlinik@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Willem de Bruijn <willemb@google.com>,
+        john.ogness@linutronix.de, Arnd Bergmann <arnd@arndb.de>,
+        Mao Wenan <maowenan@huawei.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        orcohen@paloaltonetworks.com, Networking <netdev@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH 1/1] net: Fix use of proc_fs
+Message-ID: <20201212135119.0db6723e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CA+s=kw3gmvk7CLu9NyiEwtBQ05eNFsTM2A679arPESVb55E2Xw@mail.gmail.com>
+References: <20201211163749.31956-1-yonatanlinik@gmail.com>
+        <20201211163749.31956-2-yonatanlinik@gmail.com>
+        <20201212114802.21a6b257@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CA+s=kw3gmvk7CLu9NyiEwtBQ05eNFsTM2A679arPESVb55E2Xw@mail.gmail.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada
-> Sent: 12 December 2020 16:55
+On Sat, 12 Dec 2020 23:39:20 +0200 Yonatan Linik wrote:
+> On Sat, Dec 12, 2020 at 9:48 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > On Fri, 11 Dec 2020 18:37:49 +0200 Yonatan Linik wrote:  
+> > > proc_fs was used, in af_packet, without a surrounding #ifdef,
+> > > although there is no hard dependency on proc_fs.
+> > > That caused the initialization of the af_packet module to fail
+> > > when CONFIG_PROC_FS=n.
+> > >
+> > > Specifically, proc_create_net() was used in af_packet.c,
+> > > and when it fails, packet_net_init() returns -ENOMEM.
+> > > It will always fail when the kernel is compiled without proc_fs,
+> > > because, proc_create_net() for example always returns NULL.
+> > >
+> > > The calling order that starts in af_packet.c is as follows:
+> > > packet_init()
+> > > register_pernet_subsys()
+> > > register_pernet_operations()
+> > > __register_pernet_operations()
+> > > ops_init()
+> > > ops->init() (packet_net_ops.init=packet_net_init())
+> > > proc_create_net()
+> > >
+> > > It worked in the past because register_pernet_subsys()'s return value
+> > > wasn't checked before this Commit 36096f2f4fa0 ("packet: Fix error path in
+> > > packet_init.").
+> > > It always returned an error, but was not checked before, so everything
+> > > was working even when CONFIG_PROC_FS=n.
+> > >
+> > > The fix here is simply to add the necessary #ifdef.
+> > >
+> > > Signed-off-by: Yonatan Linik <yonatanlinik@gmail.com>  
+> >
+> > Hm, I'm guessing you hit this on a kernel upgrade of a real system?  
 > 
-> This script was written in awk in spite of the file extension '.sh'.
-> Rewrite it as a shell script.
-...
-> +#
-> +# Usage: $ ./scripts/ld-version.sh ld
-> +#
-> +# Print the linker version of `ld' in a 5 or 6-digit form
-> +# such as `23501' for GNU ld 2.35.1 etc.
-> +
-> +first_line="$($* --version | head -n 1)"
-> +
-> +if ! ( echo $first_line | grep -q "GNU ld"); then
-> +	echo 0
-> +	exit 1
-> +fi
-> +
-> +# Distributions may append an extra string like 2.35-15.fc33
-> +# Take the part that consists of numbers and dots.
-> +VERSION=$(echo $first_line | sed 's/.* \([^ ]*\)$/\1/' | sed 's/^\(^[0-9.]*\).*/\1/')
-> +MAJOR=$(echo $VERSION | cut -d . -f 1)
-> +MINOR=$(echo $VERSION | cut -d . -f 2)
-> +PATCHLEVEL=$(echo $VERSION | cut -d . -f 3)
-> +printf "%d%02d%02d\\n" $MAJOR $MINOR $PATCHLEVEL
+> Yeah, suddenly using socket with AF_PACKET didn't work,
+> so I checked what happened.
+> 
+> > It seems like all callers to proc_create_net (and friends) interpret
+> > NULL as an error, but only handful is protected by an ifdef.  
+> 
+> I guess where there is no ifdef,
+> there should be a hard dependency on procfs,
+> using depends on in the Kconfig.
+> Maybe that's not the case everywhere it should be.
 
+You're right, on a closer look most of the places have a larger #ifdef
+block (which my grep didn't catch) or are under Kconfig. Of those I
+checked only TLS looks wrong (good job me) - would you care to fix that
+one as well, or should I?
 
-Hmmmm.....
-You've managed to convert an awk script into something that requires
-sh, head, grep, sed (twice), and cut (thrice).
-Plus (probably) a few sub-shells.
+> > I checked a few and none of them cares about the proc_dir_entry pointer
+> > that gets returned. Should we perhaps rework the return values of the
+> > function so that we can return success if !CONFIG_PROC_FS without
+> > having to yield a pointer?  
+> 
+> Sometimes the pointer returned is used,
+> for example in drivers/acpi/button.c.
+> Are you suggesting returning a bool while
+> having the pointer as an out parameter?
+> Because that would still be problematic where the pointer is used.
 
-It is quite ease to do it all in all in the shell.
+Ack, I was only thinking of changing proc_create_net* but as you
+rightly pointed out most callers already deal with the problem, 
+so maybe it's not worth refactoring.
 
-	David
+> > Obviously we can apply this fix so we can backport to 5.4 if you need
+> > it. I think the ifdef is fine, since it's what other callers have.
+> 
+> It would be great to apply this where the problem exists,
+> I believe this applies to other versions as well.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Will do. Linus is likely to cut the final 5.11 release on Sunday, so
+it needs to wait until next week for process reasons but it won't get
+lost. For the record:
 
+Fixes: 36096f2f4fa0 ("packet: Fix error path in packet_init")
