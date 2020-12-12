@@ -2,54 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5BA2D86A9
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 14:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 614B42D86A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 14:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405889AbgLLNEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 08:04:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438957AbgLLNAa (ORCPT
+        id S2438946AbgLLNA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 08:00:27 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:41354 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438902AbgLLM7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 08:00:30 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545BAC0611CB;
-        Sat, 12 Dec 2020 04:58:46 -0800 (PST)
-Date:   Sat, 12 Dec 2020 12:58:41 -0000
+        Sat, 12 Dec 2020 07:59:32 -0500
+Date:   Sat, 12 Dec 2020 12:58:42 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607777921;
+        s=2020; t=1607777922;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sxoNqSYapiGtMGFOuQGAr0QDBJi2mQgLankMvhDu6mg=;
-        b=qgCGWXWMmgd5PYO0V/6S5dHEeJ9i2tuYQvVR1bxNRIhvPVzHRdqjRBdsPauXGT18sBM5tF
-        X94GjrYbk+yrgZAtAQT0W6ZFA5ViSa/sgs8qjh2FhMWWPVMUTzrI/4TjG+w4A2yNtNXUTU
-        2+gJc6pfXmb1WfrdcCywb7gV8WzZzGtyd3TdvX+Rv+xRCVCR8wqCZPdkjPQsg0Kb3PvL9z
-        T3KOqq+DYaniwoCe2DmaxPwEFz2df1CiyX6ivQMfZw0q4MAj7tstrFZyOhQJ26f8fMNxb1
-        /JEsXwe6k2wJY5XdZDgCs4E3QhR5XneHsJISlQCzgYqNkJdcdGp0XrIUZwbSpA==
+        bh=kGy0SAz0UEhWBgbhQutreKEotNPDwsp5mdddjgN5K4o=;
+        b=4WdoNhBCkJwdhSW+O9RNrxRH70jX/UfZutB62RLkm2ULxYXzy9sz1X4HrChS7QP+TEQBMZ
+        R6SWKMqkhxgjXoBcTp6fr80uhyIbqq6BdtPy6eMykzx/DZ+J1NSnxM7F4yaKkvfcuVDCNT
+        GqnQ9Rlmk+5v28YCojvYonGZwu0DJh8KT0q69FzFUNpaZ61UabRRU1YQTKTMFYAfhbTypj
+        Zx5hru8usrTzE3o/M3HSQli81IgZM9++adZrqfl54RGjYFUXbR6TB3gpexSqQ4qUMf7PYS
+        iUKm34xe2CkXleYTvj6DYVq8eYM6FWauijE88tDAihTr1s+dvAusPtyIbAk38w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607777921;
+        s=2020e; t=1607777922;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sxoNqSYapiGtMGFOuQGAr0QDBJi2mQgLankMvhDu6mg=;
-        b=MbJtfl6joklMWG3SRZBm0NXgzupIeNu8C/4+7SO8v34JGvBtpQ4DVTZ4vgSbcEXchy4Dl/
-        gzld1jUjI86hkXBA==
+        bh=kGy0SAz0UEhWBgbhQutreKEotNPDwsp5mdddjgN5K4o=;
+        b=CAZfsg7+NkDtg2hbv6UVECA2IRjgwfFa6KFfAOEpKNRl9EzS1fvz1ktJ3Z0LMsXMYYGu7K
+        r6gquP5nArAGHvAg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq: Provide irq_get_effective_affinity()
+Subject: [tip: irq/core] genirq: Move irq_has_action() into core code
 Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20201210194042.967177918@linutronix.de>
-References: <20201210194042.967177918@linutronix.de>
+In-Reply-To: <20201210194042.548936472@linutronix.de>
+References: <20201210194042.548936472@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160777792133.3364.14572344639030307980.tip-bot2@tip-bot2>
+Message-ID: <160777792214.3364.6390594905664664886.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,40 +57,110 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     276b1e6e6fecc2f138c72519705dabc8bd01ffa9
-Gitweb:        https://git.kernel.org/tip/276b1e6e6fecc2f138c72519705dabc8bd01ffa9
+Commit-ID:     db123744af5d237048f23ede05cc7ef0dc48db01
+Gitweb:        https://git.kernel.org/tip/db123744af5d237048f23ede05cc7ef0dc48db01
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 10 Dec 2020 20:25:40 +01:00
+AuthorDate:    Thu, 10 Dec 2020 20:25:37 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Sat, 12 Dec 2020 12:59:02 +01:00
 
-genirq: Provide irq_get_effective_affinity()
+genirq: Move irq_has_action() into core code
 
-Provide an accessor to the effective interrupt affinity mask. Going to be
-used to replace open coded fiddling with the irq descriptor.
+This function uses irq_to_desc() and is going to be used by modules to
+replace the open coded irq_to_desc() (ab)usage. The final goal is to remove
+the export of irq_to_desc() so driver cannot fiddle with it anymore.
+
+Move it into the core code and fixup the usage sites to include the proper
+header.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201210194042.967177918@linutronix.de
+Link: https://lore.kernel.org/r/20201210194042.548936472@linutronix.de
 
 ---
- include/linux/irq.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/alpha/kernel/sys_jensen.c |  2 +-
+ arch/x86/kernel/topology.c     |  1 +
+ include/linux/interrupt.h      |  1 +
+ include/linux/irqdesc.h        |  7 +------
+ kernel/irq/manage.c            | 17 +++++++++++++++++
+ 5 files changed, 21 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/irq.h b/include/linux/irq.h
-index 79ce314..2385b81 100644
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -907,6 +907,13 @@ struct cpumask *irq_data_get_effective_affinity_mask(struct irq_data *d)
- }
+diff --git a/arch/alpha/kernel/sys_jensen.c b/arch/alpha/kernel/sys_jensen.c
+index 0a2ab6c..e5d870f 100644
+--- a/arch/alpha/kernel/sys_jensen.c
++++ b/arch/alpha/kernel/sys_jensen.c
+@@ -7,7 +7,7 @@
+  *
+  * Code supporting the Jensen.
+  */
+-
++#include <linux/interrupt.h>
+ #include <linux/kernel.h>
+ #include <linux/types.h>
+ #include <linux/mm.h>
+diff --git a/arch/x86/kernel/topology.c b/arch/x86/kernel/topology.c
+index 0a2ec80..f5477ea 100644
+--- a/arch/x86/kernel/topology.c
++++ b/arch/x86/kernel/topology.c
+@@ -25,6 +25,7 @@
+  *
+  * Send feedback to <colpatch@us.ibm.com>
+  */
++#include <linux/interrupt.h>
+ #include <linux/nodemask.h>
+ #include <linux/export.h>
+ #include <linux/mmzone.h>
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index ee8299e..e7c9726 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -232,6 +232,7 @@ extern void devm_free_irq(struct device *dev, unsigned int irq, void *dev_id);
+ # define local_irq_enable_in_hardirq()	local_irq_enable()
  #endif
  
-+static inline struct cpumask *irq_get_effective_affinity_mask(unsigned int irq)
-+{
-+	struct irq_data *d = irq_get_irq_data(irq);
-+
-+	return d ? irq_data_get_effective_affinity_mask(d) : NULL;
-+}
-+
- unsigned int arch_dynirq_lower_bound(unsigned int from);
++bool irq_has_action(unsigned int irq);
+ extern void disable_irq_nosync(unsigned int irq);
+ extern bool disable_hardirq(unsigned int irq);
+ extern void disable_irq(unsigned int irq);
+diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
+index 5745491..385a4fa 100644
+--- a/include/linux/irqdesc.h
++++ b/include/linux/irqdesc.h
+@@ -179,12 +179,7 @@ int handle_domain_nmi(struct irq_domain *domain, unsigned int hwirq,
+ /* Test to see if a driver has successfully requested an irq */
+ static inline int irq_desc_has_action(struct irq_desc *desc)
+ {
+-	return desc->action != NULL;
+-}
+-
+-static inline int irq_has_action(unsigned int irq)
+-{
+-	return irq_desc_has_action(irq_to_desc(irq));
++	return desc && desc->action != NULL;
+ }
  
- int __irq_alloc_descs(int irq, unsigned int from, unsigned int cnt, int node,
+ /**
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index c460e04..1767515 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -2752,3 +2752,20 @@ out_unlock:
+ 	return err;
+ }
+ EXPORT_SYMBOL_GPL(irq_set_irqchip_state);
++
++/**
++ * irq_has_action - Check whether an interrupt is requested
++ * @irq:	The linux irq number
++ *
++ * Returns: A snapshot of the current state
++ */
++bool irq_has_action(unsigned int irq)
++{
++	bool res;
++
++	rcu_read_lock();
++	res = irq_desc_has_action(irq_to_desc(irq));
++	rcu_read_unlock();
++	return res;
++}
++EXPORT_SYMBOL_GPL(irq_has_action);
