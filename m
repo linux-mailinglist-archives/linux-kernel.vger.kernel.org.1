@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998E82D8988
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 20:02:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A5E2D8991
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 20:06:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439786AbgLLTBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 14:01:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56648 "EHLO mail.kernel.org"
+        id S2439820AbgLLTCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 14:02:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407786AbgLLTBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 14:01:50 -0500
-Subject: Re: [git pull] Input updates for v5.10-rc7
+        id S2407786AbgLLTBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 14:01:51 -0500
+Subject: Re: [GIT PULL] xen: branch for v5.10-rc8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607799670;
-        bh=V1GbyEKqxA3DyjqJ+NQWByffW7wblzv/XSMZOJPMZt8=;
+        s=k20201202; t=1607799671;
+        bh=/z4e4OBG9dX34wwm48LbjXS2Jefc/mywFk+XdssA/Ws=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=LlpyZxERh/vyH2CO9aw/ekJQx94uW3UncbQGYolv6vkiUsH8ROzkOSRETa6c/K+mB
-         dzSvTt7GThRmzDEd+Yh95ZjFq6Qd2TAN4cmbaTcczFfhENyJxG0fNBhnCe+Lprx8tx
-         O0IeuwDA5OlmGTA/5Sw2JUFNhzk+Snyj/gpNG/H37emTjI1AcZe1yKTvd/SKByL2/K
-         b4Cdzdi2um3m1TEmBoA7AhdPR5pYHHaHImRKl/6NhPCqhQQmuZmzwFQvXFdotpcUZo
-         gKMDQtz70qTKotjTDMwg2sdJOvrKHUhVA2T2tBkvbodQopQ/uYeT4Bq3PdC3sdHiYo
-         eNCpU3s7+I/Dg==
+        b=COim9VWaDQNCkRwjVETWa6JIi88ouDhkK0sLAqw9k4SxZaJfC2DbE5z+3tpvY6nje
+         lx7hjbWu8CYxXnQcYFpwHXNkgZwDiqGqYHJBPNB8Eq37+8o/v3FJhIDtemKO1CWbGJ
+         3P31QoluUQ9XWyuDs/Y2edDVkxF+AgmA6eiuIQB3CCaqbLZ5NMyAgxc1/QZU+9+2eJ
+         6EAbcFJ/4VOL9hM8xUswWWQSsi1lyVhWLaVJFFLf2SSaVPmtetKeKXOU0yir8VJDMo
+         RTV2YvVAT/rHM8wy9U0UaXgzwqkNzuSiL7HtitZjH6soF3ZftZNvk/IDcesuCn/z9s
+         kLziimxS04E+Q==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <X9Q1UXLZ812+YO2p@google.com>
-References: <X9Q1UXLZ812+YO2p@google.com>
-X-PR-Tracked-List-Id: <linux-input.vger.kernel.org>
-X-PR-Tracked-Message-Id: <X9Q1UXLZ812+YO2p@google.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
-X-PR-Tracked-Commit-Id: cffdd6d90482316e18d686060a4397902ea04bd2
+In-Reply-To: <20201211085309.8128-1-jgross@suse.com>
+References: <20201211085309.8128-1-jgross@suse.com>
+X-PR-Tracked-List-Id: Xen developer discussion <xen-devel.lists.xenproject.org>
+X-PR-Tracked-Message-Id: <20201211085309.8128-1-jgross@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.10c-rc8-tag
+X-PR-Tracked-Commit-Id: ee32f32335e8c7f6154bf397f4ac9b6175b488a8
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 643e69aff89a2d0abc53979acc441b68ce86139b
-Message-Id: <160779967030.16081.10225298404477549381.pr-tracker-bot@kernel.org>
-Date:   Sat, 12 Dec 2020 19:01:10 +0000
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+X-PR-Merge-Commit-Id: b53966ffd4c0676c02987d4fc33b99bdfc548cf0
+Message-Id: <160779967131.16081.10288142971358980370.pr-tracker-bot@kernel.org>
+Date:   Sat, 12 Dec 2020 19:01:11 +0000
+To:     Juergen Gross <jgross@suse.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 11 Dec 2020 19:13:21 -0800:
+The pull request you sent on Fri, 11 Dec 2020 09:53:09 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.10c-rc8-tag
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/643e69aff89a2d0abc53979acc441b68ce86139b
+https://git.kernel.org/torvalds/c/b53966ffd4c0676c02987d4fc33b99bdfc548cf0
 
 Thank you!
 
