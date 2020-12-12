@@ -2,67 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B7D2D8527
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 07:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 174ED2D852C
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 07:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438457AbgLLGQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 01:16:02 -0500
-Received: from mail.ipatinga.mg.gov.br ([189.76.226.139]:43870 "EHLO
-        zimbra.ipatinga.mg.gov.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438461AbgLLGPm (ORCPT
+        id S2438455AbgLLGRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 01:17:23 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2794 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436746AbgLLGRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 01:15:42 -0500
-X-Greylist: delayed 413 seconds by postgrey-1.27 at vger.kernel.org; Sat, 12 Dec 2020 01:15:41 EST
-Received: from localhost (localhost [127.0.0.1])
-        by zimbra.ipatinga.mg.gov.br (Postfix) with ESMTP id 269171AD75E;
-        Sat, 12 Dec 2020 03:13:33 -0300 (-03)
-Received: from zimbra.ipatinga.mg.gov.br ([127.0.0.1])
-        by localhost (zimbra.ipatinga.mg.gov.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id qmiE9gPS6zzZ; Sat, 12 Dec 2020 03:13:33 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by zimbra.ipatinga.mg.gov.br (Postfix) with ESMTP id 4B78E1AD74E;
-        Sat, 12 Dec 2020 03:13:32 -0300 (-03)
-DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra.ipatinga.mg.gov.br 4B78E1AD74E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ipatinga.mg.gov.br;
-        s=76BA0250-521D-11E8-B04D-050F82C736C6; t=1607753612;
-        bh=5Z4YPfxq9M4J/ImdbSz90BSSAmK/mjQusvTKEw0NBpg=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=WFUXSU8xD5/SN+Y4NEqruS3+CR/d5feK7f4fMXcUFt0omRM/CuW+sWmuqLcab9xh0
-         OHoDr7r0WLvvbz6TWJuCel44r06I7TdhnL6AahzosYPWWBD0EEU1BzIYNyO25BXjdL
-         ENVHBO9QtCTVhn+Ja++BmWEdel7ium1UVjif0SiVhVqaE3wMZqAKp9SYVeMsNOLomq
-         tK/ebd1YVe3C6SCNwxCSBPoMBvy3KwdaWRhKqnGd+lkMHBC8FjwEq8ICngOCsWXq1/
-         BmBGR0vqelsIeheQNysU1/sVcrmo/oIAFhcVcYv9ICV8BS+8CQKHUJYmQemDKKtSDQ
-         9x/EDlloHhRig==
-X-Virus-Scanned: amavisd-new at ipatinga.mg.gov.br
-Received: from zimbra.ipatinga.mg.gov.br ([127.0.0.1])
-        by localhost (zimbra.ipatinga.mg.gov.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Z4ziHkDS0s4v; Sat, 12 Dec 2020 03:13:32 -0300 (-03)
-Received: from [192.168.43.246] (unknown [129.205.124.246])
-        by zimbra.ipatinga.mg.gov.br (Postfix) with ESMTPSA id 7C8611AD6AE;
-        Sat, 12 Dec 2020 03:13:09 -0300 (-03)
-Content-Type: text/plain; charset="iso-8859-1"
+        Sat, 12 Dec 2020 01:17:10 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fd4603d0000>; Fri, 11 Dec 2020 22:16:29 -0800
+Received: from [10.2.58.108] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 12 Dec
+ 2020 06:16:23 +0000
+Subject: Re: [PATCH v14 10/10] secretmem: test: add basic selftest for
+ memfd_secret(2)
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Christopher Lameter" <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        "Elena Reshetova" <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        <linux-api@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-riscv@lists.infradead.org>,
+        <x86@kernel.org>
+References: <20201203062949.5484-1-rppt@kernel.org>
+ <20201203062949.5484-11-rppt@kernel.org>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <248f928b-1383-48ea-8584-ec10146e60c9@nvidia.com>
+Date:   Fri, 11 Dec 2020 22:16:23 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:84.0) Gecko/20100101
+ Thunderbird/84.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Your $ 3 million USD
-To:     Recipients <m119736@ipatinga.mg.gov.br>
-From:   " Mr Stefano Pessina" <m119736@ipatinga.mg.gov.br>
-Date:   Sat, 12 Dec 2020 07:12:38 +0100
-Reply-To: pessina108@gmail.com
-Message-Id: <20201212061310.7C8611AD6AE@zimbra.ipatinga.mg.gov.br>
+In-Reply-To: <20201203062949.5484-11-rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1607753789; bh=ofgMBZd16EADbvAo0gykil1HQ3WXinWEQXFsF7eWzJ0=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=nHiMzIuFi9yGg9dtEXBRDsgSZmIDOiTwrsl4IkhMy6fFmjAA+d/AS9GK73/GrEl8c
+         L2wFofk2X8mSJW/vLEAbgA9QPMoBNfjJd8BWsCI0rrp+bj6/xYZKQSgViVMLkLSYK1
+         k66ZGlnQfrIIuas55l4diL4Iaoyoywisz15vCenxZUMAMyAtm2LyPLwxbz991YbWg8
+         nRt0uF/HuZ34WhsfN3HMzjfJx7L8KMpuqwwkCn0Y66dd5OlXb+xyLmZkRBWZVKoHt4
+         QQtiTloYRW+10TrH/r0jzw36mCIbK7syoQlFnk7px83Aq1dj4ALMG1TaKaeUNQMmQk
+         OnZsyXYjTgO+g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm Stefano Pessina, an Italian business tycoon, investor, and philanthropi=
-st. the vice chairman, chief executive officer (CEO), and the single larges=
-t shareholder of Walgreens Boots Alliance. I gave away 25 percent of my per=
-sonal wealth to charity. And I also pledged to give away the rest of 25% th=
-is year 2020 to Individuals.. I have decided to donate  (Three million doll=
-ars)to you. If you are interested in my donation,
+On 12/2/20 10:29 PM, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+...
+> +#include "../kselftest.h"
+> +
+> +#define fail(fmt, ...) ksft_test_result_fail(fmt, ##__VA_ARGS__)
+> +#define pass(fmt, ...) ksft_test_result_pass(fmt, ##__VA_ARGS__)
+> +#define skip(fmt, ...) ksft_test_result_skip(fmt, ##__VA_ARGS__)
+> +
+> +#ifdef __NR_memfd_secret
+> +
+> +#include <linux/secretmem.h>
 
-Do contact: pessina108@gmail.com
+Hi Mike,
 
-Warm Regard
-CEO Walgreens Boots Alliance
-Stefano Pessina
+Say, when I tried this out from today's linux-next, I had to delete the
+above line. In other words, the following was required in order to build:
+
+diff --git a/tools/testing/selftests/vm/memfd_secret.c b/tools/testing/selftests/vm/memfd_secret.c
+index 79578dfd13e6..c878c2b841fc 100644
+--- a/tools/testing/selftests/vm/memfd_secret.c
++++ b/tools/testing/selftests/vm/memfd_secret.c
+@@ -29,8 +29,6 @@
+
+  #ifdef __NR_memfd_secret
+
+-#include <linux/secretmem.h>
+-
+  #define PATTERN        0x55
+
+  static const int prot = PROT_READ | PROT_WRITE;
+
+
+...and that makes sense to me, because:
+
+a) secretmem.h is not in the uapi, which this selftests/vm build system
+    expects (it runs "make headers_install" for us, which is *not* going
+    to pick up items in the kernel include dirs), and
+
+b) There is nothing in secretmem.h that this test uses, anyway! Just these:
+
+bool vma_is_secretmem(struct vm_area_struct *vma);
+bool page_is_secretmem(struct page *page);
+bool secretmem_active(void);
+
+
+...or am I just Doing It Wrong? :)
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
