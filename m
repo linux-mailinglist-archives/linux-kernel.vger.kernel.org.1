@@ -2,68 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25A32D864F
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 12:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9645F2D8652
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 13:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438515AbgLLL4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 06:56:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726468AbgLLL4l (ORCPT
+        id S2438720AbgLLL7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 06:59:35 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:53420 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726468AbgLLL7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 06:56:41 -0500
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1562AC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 03:55:41 -0800 (PST)
-Received: from [2a02:fe0:c700:2:687c:e90d:da70:b07d] (port=61183)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Ywe_C4rlyn@ihsan-code.eu>)
-        id 1ko3Uv-00038W-VL
-        for linux-kernel@vger.kernel.org; Sat, 12 Dec 2020 12:55:37 +0100
-Subject: Re: Fair Pay: Some interesting observations of symboldevelopment..
-References: <0cc3e3c3-cf47-dff1-b6c1-2ab562072a01@ihsan-code.eu>
- <0523bdfb-7d1f-998b-b79e-13fc7f85b6a7@ihsan-code.eu>
- <6737bbc9-aceb-dc43-b2c5-51265abfff5d@ihsan-code.eu>
- <b2b91154-bc58-d5cb-41f7-44a6c95b48cf@ihsan-code.eu>
- <861b1f05-3b1c-f458-32ce-c548b9b0c07f@ihsan-code.eu>
- <3c6233c8-f5c2-756f-14d2-d835e724b387@ihsan-code.eu>
- <3968fadc-4a52-b795-e966-d41057e1ba2b@ihsan-code.eu>
- <61ad9caf-2a17-e50e-1be3-1fe6c65229ad@ihsan-code.eu>
- <cd68e719-610a-6189-3cdf-8ee692bab419@ihsan-code.eu>
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C4rlyn@ihsan-code.eu>
-Message-ID: <92c7325b-5774-35cd-ea6a-89ed87c2477b@ihsan-code.eu>
-Date:   Sat, 12 Dec 2020 12:55:22 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Sat, 12 Dec 2020 06:59:34 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BCBwMc2085016;
+        Sat, 12 Dec 2020 05:58:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607774302;
+        bh=1lqBr9ti3JSIRWEfFL56QuVCCYcjLjke99NVtpSRKqk=;
+        h=From:To:CC:Subject:Date;
+        b=AJ5owDiEmWgM53IT6JtJsssQV07TQ/yS/4nybnJFBFLHKiR5YURJWDirBrLjc0OdG
+         4uFGmWJzoHuvcZREDWoo7zUjEM28BibDAhlp/qhNxh7SpGUAnstEJfnUFRlwPclHhN
+         2kLzFUl3F3q2Huv6T8Ms2RGsuPWibNpXaHMCIA8Y=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BCBwMf2059097
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 12 Dec 2020 05:58:22 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sat, 12
+ Dec 2020 05:58:21 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sat, 12 Dec 2020 05:58:22 -0600
+Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BCBwINL013399;
+        Sat, 12 Dec 2020 05:58:19 -0600
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Boris Brezillon <bbrezillon@kernel.org>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mtd: spi-nor: sfdp: Fix SMPT parsing when 4BAIT table is before SMPT
+Date:   Sat, 12 Dec 2020 17:28:17 +0530
+Message-ID: <20201212115817.5122-1-vigneshr@ti.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <cd68e719-610a-6189-3cdf-8ee692bab419@ihsan-code.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have also included the sign for Adams giad on the mascot culture now:
+If 4BAIT table appears before SMPT then, nor->addr_width is set to 4 before
+SMPT table is parsed. This causes SMPT parser code to use addr_width of 4
+for reading current sector map configuration in spi_nor_get_map_in_use()
+if SMPT_CMD_ADDRESS_LEN reads SMPT_CMD_ADDRESS_LEN_USE_CURRENT (see
+spi_nor_smpt_addr_width()). Instead code should be using the value
+presented by BFPT_DWORD1_ADDRESS_BYTES field. On S28HS family of devices
+this bug leads to selection of invalid sector mapping thus causing erase
+and write failures.
 
-https://www.youtube.com/channel/UCi7TCodsP4Y4UTuIigrG9GQ
+Fix this by parsing 4BAIT address table at the very end after all other
+parameter tables are parsed.
 
-Symbolizing perfectness of "Allah" (written right to left in arabic 
-script), in the East, and SINO (left to right Latin script) perfect in 
-the West.
+Fixes: b038e8e3be72 ("mtd: spi-nor: parse SFDP Sector Map Parameter Table")
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+---
+ drivers/mtd/spi-nor/sfdp.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-Serenity!
-Ywe Cærlyn
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 22cb519efe3f..6d4dc1549cc7 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -1260,6 +1260,7 @@ static int spi_nor_parse_sccr(struct spi_nor *nor,
+ int spi_nor_parse_sfdp(struct spi_nor *nor,
+ 		       struct spi_nor_flash_parameter *params)
+ {
++	const struct sfdp_parameter_header *sfdp_4bait_param_header = NULL;
+ 	const struct sfdp_parameter_header *param_header, *bfpt_header;
+ 	struct sfdp_parameter_header *param_headers = NULL;
+ 	struct sfdp_header header;
+@@ -1341,7 +1342,13 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+ 			break;
+ 
+ 		case SFDP_4BAIT_ID:
+-			err = spi_nor_parse_4bait(nor, param_header, params);
++			/*
++			 * Parse 4BAIT table at the end as this will end up
++			 * changing nor->addr_width obtained from BFPT.
++			 * But other parsers, such as SMPT parser, need to
++			 * know default/current addr_width of the flash.
++			 */
++			sfdp_4bait_param_header = param_header;
+ 			break;
+ 
+ 		case SFDP_PROFILE1_ID:
+@@ -1369,6 +1376,12 @@ int spi_nor_parse_sfdp(struct spi_nor *nor,
+ 		}
+ 	}
+ 
++	if (sfdp_4bait_param_header &&
++	    spi_nor_parse_4bait(nor, sfdp_4bait_param_header, params)) {
++		dev_warn(dev, "Failed to parse optional parameter table: %04x\n",
++			 SFDP_PARAM_HEADER_ID(param_header));
++	}
++
+ exit:
+ 	kfree(param_headers);
+ 	return err;
+-- 
+2.29.2
 
-Den 12.12.2020 10:50, skrev Ywe Cærlyn:
-> No, SINO the only Giad it becomes.
-> 
-> Took the name one step further aswell - Axim X. "Alim" (written right to 
-> left in arabc script) means learned, and its a good name for an OS 
-> aswell. Showing learnedness, and an example of some words that change 
-> when written left to right in latin script it is, Axim X.
-> 
-> Serenity!
-> Ywe Cærlyn
-> https://www.youtube.com/channel/UCR3gmLVjHS5A702wo4bol_Q
