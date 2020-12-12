@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD802D885C
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 265AD2D8859
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439498AbgLLQhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 11:37:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57724 "EHLO mail.kernel.org"
+        id S2407660AbgLLQhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 11:37:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439377AbgLLQJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2439380AbgLLQJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 12 Dec 2020 11:09:36 -0500
 From:   Sasha Levin <sashal@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Davide Caratti <dcaratti@redhat.com>,
+Cc:     Sven Eckelmann <sven@narfation.org>,
         Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-api@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 09/23] selftests: tc-testing: enable CONFIG_NET_SCH_RED as a module
-Date:   Sat, 12 Dec 2020 11:07:50 -0500
-Message-Id: <20201212160804.2334982-9-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 14/23] vxlan: Copy needed_tailroom from lowerdev
+Date:   Sat, 12 Dec 2020 11:07:55 -0500
+Message-Id: <20201212160804.2334982-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201212160804.2334982-1-sashal@kernel.org>
 References: <20201212160804.2334982-1-sashal@kernel.org>
@@ -31,37 +31,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Davide Caratti <dcaratti@redhat.com>
+From: Sven Eckelmann <sven@narfation.org>
 
-[ Upstream commit e14038a7ead09faa180eb072adc4a2157a0b475f ]
+[ Upstream commit a5e74021e84bb5eadf760aaf2c583304f02269be ]
 
-a proper kernel configuration for running kselftest can be obtained with:
+While vxlan doesn't need any extra tailroom, the lowerdev might need it. In
+that case, copy it over to reduce the chance for additional (re)allocations
+in the transmit path.
 
- $ yes | make kselftest-merge
-
-enable compile support for the 'red' qdisc: otherwise, tdc kselftest fail
-when trying to run tdc test items contained in red.json.
-
-Signed-off-by: Davide Caratti <dcaratti@redhat.com>
-Link: https://lore.kernel.org/r/cfa23f2d4f672401e6cebca3a321dd1901a9ff07.1606416464.git.dcaratti@redhat.com
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Link: https://lore.kernel.org/r/20201126125247.1047977-2-sven@narfation.org
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/tc-testing/config | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/vxlan.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/testing/selftests/tc-testing/config b/tools/testing/selftests/tc-testing/config
-index c33a7aac27ff7..b71828df5a6dd 100644
---- a/tools/testing/selftests/tc-testing/config
-+++ b/tools/testing/selftests/tc-testing/config
-@@ -59,6 +59,7 @@ CONFIG_NET_IFE_SKBPRIO=m
- CONFIG_NET_IFE_SKBTCINDEX=m
- CONFIG_NET_SCH_FIFO=y
- CONFIG_NET_SCH_ETS=m
-+CONFIG_NET_SCH_RED=m
+diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
+index 85c4a6bfc7c06..94e14238fb8a1 100644
+--- a/drivers/net/vxlan.c
++++ b/drivers/net/vxlan.c
+@@ -3804,6 +3804,8 @@ static void vxlan_config_apply(struct net_device *dev,
+ 		needed_headroom = lowerdev->hard_header_len;
+ 		needed_headroom += lowerdev->needed_headroom;
  
- #
- ## Network testing
++		dev->needed_tailroom = lowerdev->needed_tailroom;
++
+ 		max_mtu = lowerdev->mtu - (use_ipv6 ? VXLAN6_HEADROOM :
+ 					   VXLAN_HEADROOM);
+ 		if (max_mtu < ETH_MIN_MTU)
 -- 
 2.27.0
 
