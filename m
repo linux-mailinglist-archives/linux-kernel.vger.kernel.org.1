@@ -2,24 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200B52D87A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B1B2D87C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:25:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439366AbgLLQJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 11:09:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57010 "EHLO mail.kernel.org"
+        id S2439505AbgLLQLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 11:11:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439334AbgLLQIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 11:08:51 -0500
+        id S2439381AbgLLQJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 11:09:36 -0500
 From:   Sasha Levin <sashal@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alexander Aring <aahringo@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, cluster-devel@redhat.com
-Subject: [PATCH AUTOSEL 5.9 05/23] gfs2: set lockdep subclass for iopen glocks
-Date:   Sat, 12 Dec 2020 11:07:46 -0500
-Message-Id: <20201212160804.2334982-5-sashal@kernel.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.9 07/23] kernel/cpu: add arch override for clear_tasks_mm_cpumask() mm handling
+Date:   Sat, 12 Dec 2020 11:07:48 -0500
+Message-Id: <20201212160804.2334982-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201212160804.2334982-1-sashal@kernel.org>
 References: <20201212160804.2334982-1-sashal@kernel.org>
@@ -31,107 +33,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit 515b269d5bd29a986d5e1c0a0cba87fa865a48b4 ]
+[ Upstream commit 8ff00399b153440c1c83e20c43020385b416415b ]
 
-This patch introduce a new globs attribute to define the subclass of the
-glock lockref spinlock. This avoid the following lockdep warning, which
-occurs when we lock an inode lock while an iopen lock is held:
+powerpc/64s keeps a counter in the mm which counts bits set in
+mm_cpumask as well as other things. This means it can't use generic code
+to clear bits out of the mask and doesn't adjust the arch specific
+counter.
 
-============================================
-WARNING: possible recursive locking detected
-5.10.0-rc3+ #4990 Not tainted
---------------------------------------------
-kworker/0:1/12 is trying to acquire lock:
-ffff9067d45672d8 (&gl->gl_lockref.lock){+.+.}-{3:3}, at: lockref_get+0x9/0x20
+Add an arch override that allows powerpc/64s to use
+clear_tasks_mm_cpumask().
 
-but task is already holding lock:
-ffff9067da308588 (&gl->gl_lockref.lock){+.+.}-{3:3}, at: delete_work_func+0x164/0x260
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&gl->gl_lockref.lock);
-  lock(&gl->gl_lockref.lock);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-3 locks held by kworker/0:1/12:
- #0: ffff9067c1bfdd38 ((wq_completion)delete_workqueue){+.+.}-{0:0}, at: process_one_work+0x1b7/0x540
- #1: ffffac594006be70 ((work_completion)(&(&gl->gl_delete)->work)){+.+.}-{0:0}, at: process_one_work+0x1b7/0x540
- #2: ffff9067da308588 (&gl->gl_lockref.lock){+.+.}-{3:3}, at: delete_work_func+0x164/0x260
-
-stack backtrace:
-CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.10.0-rc3+ #4990
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-Workqueue: delete_workqueue delete_work_func
-Call Trace:
- dump_stack+0x8b/0xb0
- __lock_acquire.cold+0x19e/0x2e3
- lock_acquire+0x150/0x410
- ? lockref_get+0x9/0x20
- _raw_spin_lock+0x27/0x40
- ? lockref_get+0x9/0x20
- lockref_get+0x9/0x20
- delete_work_func+0x188/0x260
- process_one_work+0x237/0x540
- worker_thread+0x4d/0x3b0
- ? process_one_work+0x540/0x540
- kthread+0x127/0x140
- ? __kthread_bind_mask+0x60/0x60
- ret_from_fork+0x22/0x30
-
-Suggested-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201126102530.691335-4-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/glock.c  | 1 +
- fs/gfs2/glops.c  | 1 +
- fs/gfs2/incore.h | 1 +
- 3 files changed, 3 insertions(+)
+ kernel/cpu.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
-index 120a4193a75a7..ac14ba220340d 100644
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -1038,6 +1038,7 @@ int gfs2_glock_get(struct gfs2_sbd *sdp, u64 number,
- 	gl->gl_node.next = NULL;
- 	gl->gl_flags = 0;
- 	gl->gl_name = name;
-+	lockdep_set_subclass(&gl->gl_lockref.lock, glops->go_subclass);
- 	gl->gl_lockref.count = 1;
- 	gl->gl_state = LM_ST_UNLOCKED;
- 	gl->gl_target = LM_ST_UNLOCKED;
-diff --git a/fs/gfs2/glops.c b/fs/gfs2/glops.c
-index 138500953b56f..27bffac51ed55 100644
---- a/fs/gfs2/glops.c
-+++ b/fs/gfs2/glops.c
-@@ -751,6 +751,7 @@ const struct gfs2_glock_operations gfs2_iopen_glops = {
- 	.go_callback = iopen_go_callback,
- 	.go_demote_ok = iopen_go_demote_ok,
- 	.go_flags = GLOF_LRU | GLOF_NONDISK,
-+	.go_subclass = 1,
- };
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 6ff2578ecf17d..2b8d7a5db3837 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -815,6 +815,10 @@ void __init cpuhp_threads_init(void)
+ }
  
- const struct gfs2_glock_operations gfs2_flock_glops = {
-diff --git a/fs/gfs2/incore.h b/fs/gfs2/incore.h
-index 387e99d6eda9e..d167307a36299 100644
---- a/fs/gfs2/incore.h
-+++ b/fs/gfs2/incore.h
-@@ -243,6 +243,7 @@ struct gfs2_glock_operations {
- 			const char *fs_id_buf);
- 	void (*go_callback)(struct gfs2_glock *gl, bool remote);
- 	void (*go_free)(struct gfs2_glock *gl);
-+	const int go_subclass;
- 	const int go_type;
- 	const unsigned long go_flags;
- #define GLOF_ASPACE 1 /* address space attached */
+ #ifdef CONFIG_HOTPLUG_CPU
++#ifndef arch_clear_mm_cpumask_cpu
++#define arch_clear_mm_cpumask_cpu(cpu, mm) cpumask_clear_cpu(cpu, mm_cpumask(mm))
++#endif
++
+ /**
+  * clear_tasks_mm_cpumask - Safely clear tasks' mm_cpumask for a CPU
+  * @cpu: a CPU id
+@@ -850,7 +854,7 @@ void clear_tasks_mm_cpumask(int cpu)
+ 		t = find_lock_task_mm(p);
+ 		if (!t)
+ 			continue;
+-		cpumask_clear_cpu(cpu, mm_cpumask(t->mm));
++		arch_clear_mm_cpumask_cpu(cpu, t->mm);
+ 		task_unlock(t);
+ 	}
+ 	rcu_read_unlock();
 -- 
 2.27.0
 
