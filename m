@@ -2,72 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DE62D847C
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 05:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5AA2D847F
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 05:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438168AbgLLE3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 23:29:00 -0500
-Received: from smtprelay0156.hostedemail.com ([216.40.44.156]:43902 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390895AbgLLE2e (ORCPT
+        id S2438229AbgLLEdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 23:33:45 -0500
+Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:14120 "EHLO
+        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389029AbgLLEdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 23:28:34 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 92A341802DA2D;
-        Sat, 12 Dec 2020 04:27:52 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:4321:5007:6119:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12740:12760:12895:13069:13141:13230:13311:13357:13439:13972:14096:14097:14181:14659:14721:21080:21451:21627:30012:30054:30060:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: shoe55_600a68027406
-X-Filterd-Recvd-Size: 2115
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 12 Dec 2020 04:27:50 +0000 (UTC)
-Message-ID: <4257c266dd5edf3ad6617657331abcabfd59188f.camel@perches.com>
-Subject: Re: [PATCH] block: drop dead assignments in loop_init()
-From:   Joe Perches <joe@perches.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Julia Lawall <julia.lawall@inria.fr>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        kernel-janitors@vger.kernel.org
-Date:   Fri, 11 Dec 2020 20:27:49 -0800
-In-Reply-To: <CAKXUXMxjtv5B4ekC58=Ww8R4Ju2MvT0pXbPi7XH+OU7JuYnP3w@mail.gmail.com>
-References: <20201211181236.25755-1-lukas.bulwahn@gmail.com>
-         <alpine.DEB.2.22.394.2012111923020.2669@hadrien>
-         <CAKXUXMxjtv5B4ekC58=Ww8R4Ju2MvT0pXbPi7XH+OU7JuYnP3w@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 11 Dec 2020 23:33:18 -0500
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS2.zhaoxin.com
+ (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Sat, 12 Dec
+ 2020 12:32:32 +0800
+Received: from [10.32.56.37] (10.32.56.37) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Sat, 12 Dec
+ 2020 12:32:31 +0800
+Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <x86@kernel.org>, <hpa@zytor.com>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <TimGuo-oc@zhaoxin.com>,
+        <CooperYan@zhaoxin.com>, <QiyuanWang@zhaoxin.com>,
+        <HerryYang@zhaoxin.com>, <CobeChen@zhaoxin.com>,
+        <SilviaZhao@zhaoxin.com>, <thomas.lendacky@amd.com>
+References: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+ <20201211130058.GZ2414@hirez.programming.kicks-ass.net>
+From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Message-ID: <757bfaea-04ce-fa92-f990-bcda3d7580d7@zhaoxin.com>
+Date:   Sat, 12 Dec 2020 12:32:23 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <20201211130058.GZ2414@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.32.56.37]
+X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-11 at 19:40 +0100, Lukas Bulwahn wrote:
-> On Fri, Dec 11, 2020 at 7:23 PM Julia Lawall <julia.lawall@inria.fr> wrote:
-> > On Fri, 11 Dec 2020, Lukas Bulwahn wrote:
-> > > Commit 8410d38c2552 ("loop: use __register_blkdev to allocate devices on
-> > > demand") simplified loop_init(); so computing the range of the block region
-> > > is not required anymore and can be dropped.
-> > > 
-> > > Drop dead assignments in loop_init().
-> > > 
-> > > As compilers will detect these unneeded assignments and optimize this,
-> > > the resulting object code is identical before and after this change.
-> > > 
-> > > No functional change. No change in object code.
-> > 
-> > It looks like some braces should be dropped too?
-
-> I just rewrote it to:
+On 11/12/2020 21:00, Peter Zijlstra wrote:
+> On Fri, Dec 11, 2020 at 07:29:04PM +0800, Tony W Wang-oc wrote:
+>> The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
+>> On platforms with Zhaoxin CPUs supporting this X86 feature, When
+>> crc32c-intel and crc32c-generic are both registered, system will
+>> use crc32c-intel because its .cra_priority is greater than
+>> crc32c-generic. This case expect to use crc32c-generic driver for
+>> some Zhaoxin CPUs to get performance gain, So remove these Zhaoxin
+>> CPUs support from crc32c-intel.
+>>
+>> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+>> ---
+>>  arch/x86/crypto/crc32c-intel_glue.c | 8 ++++++++
+>>  1 file changed, 8 insertions(+)
+>>
+>> diff --git a/arch/x86/crypto/crc32c-intel_glue.c b/arch/x86/crypto/crc32c-intel_glue.c
+>> index feccb52..6dafdae 100644
+>> --- a/arch/x86/crypto/crc32c-intel_glue.c
+>> +++ b/arch/x86/crypto/crc32c-intel_glue.c
+>> @@ -222,8 +222,16 @@ MODULE_DEVICE_TABLE(x86cpu, crc32c_cpu_id);
+>>  
+>>  static int __init crc32c_intel_mod_init(void)
+>>  {
+>> +	struct cpuinfo_x86 *c = &boot_cpu_data;
+>> +
+>>  	if (!x86_match_cpu(crc32c_cpu_id))
+>>  		return -ENODEV;
+>> +
+>> +	if (c->x86_vendor == X86_VENDOR_ZHAOXIN || c->x86_vendor == X86_VENDOR_CENTAUR) {
+>> +		if (c->x86 == 0x6 || (c->x86 == 0x7 && c->x86_model <= 0x3b))
+>> +			return -ENODEV;
+>> +	}
 > 
-> nr = max_loop ? max_loop : CONFIG_BLK_DEV_LOOP_MIN_COUNT;
+> Egads, why can't you use that x86_match_cpu() above, and also this
+> really wants a comment on why you're excluding these chips. 
 
-A relatively common gcc extension would use ?: like:
+When doing lmbench3 Create and Delete file test on partitions with ext4
+enabling metadata checksum, found using crc32c-generic driver could get
+about 20% performance gain than using the driver crc32c-intel on these
+chips.
 
-	nr = max_loop ?: CONFIG_BLK_DEV_LOOP_MIN_COUNT;
+Also, since
+> (IIRC) ZHAOXIN is basically AND, shouldn't they also be listed?
+> 
+> That is; write it like:
+> 
+> 	m = x86_match_cpu(crc32_cpu_id);
+> 	if (!m || !m->data)
+> 		return -ENODEV;
+> 
+> That way you can have positive and negative matches in the array
+> (obviously the existing FEATURE test would need data=1 and be last).
+> .
+> 
+
+Lot thanks for you suggestion, will list these chips in crc32c_cpu_id
+and use x86_match_cpu:
+
+ static const struct x86_cpu_id crc32c_cpu_id[] = {
++       X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 0x6, X86_FEATURE_XMM4_2, 1),
++       X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x1b,
+X86_FEATURE_XMM4_2, 1),
++       X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x3b,
+X86_FEATURE_XMM4_2, 1),
++       X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 0x6, X86_FEATURE_XMM4_2, 1),
++       X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x1b,
+X86_FEATURE_XMM4_2, 1),
++       X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x3b,
+X86_FEATURE_XMM4_2, 1),
+        X86_MATCH_FEATURE(X86_FEATURE_XMM4_2, NULL),
+        {}
+ };
+@@ -228,8 +234,10 @@ MODULE_DEVICE_TABLE(x86cpu, crc32c_cpu_id);
+
+ static int __init crc32c_intel_mod_init(void)
+ {
+-       if (!x86_match_cpu(crc32c_cpu_id))
++       const struct x86_cpu_id *m = x86_match_cpu(crc32c_cpu_id);
++       if (!m || m->driver_data)
+                return -ENODEV;
 
 
+sincerely
+TonyWWangoc
