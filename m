@@ -2,97 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF512D85B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 11:08:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E89742D8597
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 11:03:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438626AbgLLKH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 05:07:57 -0500
-Received: from ec2-3-21-30-127.us-east-2.compute.amazonaws.com ([3.21.30.127]:36210
-        "EHLO www.teo-en-ming.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726488AbgLLKGz (ORCPT
+        id S2388145AbgLLJyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 04:54:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407212AbgLLJyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 05:06:55 -0500
-Received: from localhost (localhost [IPv6:::1])
-        by www.teo-en-ming.com (Postfix) with ESMTPA id 6C66F44DD9A;
-        Sat, 12 Dec 2020 16:49:38 +0800 (+08)
+        Sat, 12 Dec 2020 04:54:15 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB5DC0611CC
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 01:11:35 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id x22so9448721wmc.5
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 01:11:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2Zwrk1C01SFawGIN2qVUduWj86VuxKX+lX/AnlfSy+k=;
+        b=FS/u6APMfZKK57ai1xg4P10itnRfUQXUWmXJjj+RO+J31Or98l0R/A4lrNC5f6l7sQ
+         1akR0qQUShOiDifcunzKNIZr0/GuXcMlDjLkacs40L7svrv4FhSDV9ujAGneNqBtpEag
+         FU8rG5L3073EH6EzSnF4YCNxnzUt0mYsWzP3DCHm3inwlsOpGzoKe7GXY/uJF2z5BfRj
+         +hs+zYQVa55mVRiTXAPsZjWIW3bXNR//WPkcSLcrnIKZnEKc7dk65GREJuYHM+UtFlGt
+         UwRhPPiMVigiwSNToasiSVGykqr/rj2xups7F8Kq0yrkqG2xKAzitv5bH1Lpz1fayBsw
+         98GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2Zwrk1C01SFawGIN2qVUduWj86VuxKX+lX/AnlfSy+k=;
+        b=gOOvCdlwdNESJij3uihjVRax7KmEXAWGRZp4WveMtDIV9Q0XrZDEVbBJzU0WLOHyP6
+         H3fYeIJZK3zk9mAwg7g9yjByCWb79slEMJSFwGMVsQsl4yXBCA6/2FftpMGrw4f3wd9g
+         3yvuqky2eBuaHlJvCvdyaPeA+WBXI6l5DT0L23qjqq1MH/eaqJNdvEKPs2WuP3AXdTDo
+         wU5e38jC/D4VfhUGmjTSGZmqb+0blQSzq+giS737z3qnUexHhuHeN9ZlMc6DJTX+55DF
+         jfnJPfo0wV4GB1NePaKeDguZcBNGSu53iSZCLw0kDPn5+ktv9Jj02P3ykWOZh66pjwLL
+         7Asg==
+X-Gm-Message-State: AOAM532AJKK9k+UhndCSfZdlXFP5EjowzvYywFYIUCCCsH3TxiuPwmkq
+        6TPV7NrvofrZ0nUrmm2FDFa4sX42NDR0eQ==
+X-Google-Smtp-Source: ABdhPJxBC4ft+6gF5rrqdIvOkyzrRh7kT2zrxAfO2eTWMBDfpT+FwaoER6sF4oWxigmNIv21OEtOHA==
+X-Received: by 2002:a1c:81d5:: with SMTP id c204mr17364176wmd.156.1607764294077;
+        Sat, 12 Dec 2020 01:11:34 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:fd07:6f0a:92a7:a3a0? ([2a01:e34:ed2f:f020:fd07:6f0a:92a7:a3a0])
+        by smtp.googlemail.com with ESMTPSA id q143sm19986932wme.28.2020.12.12.01.11.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Dec 2020 01:11:33 -0800 (PST)
+Subject: Re: [PATCH] thermal/core: Make 'forced_passive' as obsolete candidate
+To:     Matthew Garrett <mjg59@codon.org.uk>
+Cc:     rui.zhang@intel.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, amitk@kernel.org,
+        Matthew Garrett <mjg59@srcf.ucam.org>
+References: <20201208153046.297456-1-daniel.lezcano@linaro.org>
+ <cc2085ca-ada9-d616-eed5-3496889da3bb@linaro.org>
+ <20201212035012.GA11926@codon.org.uk>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <20015331-955b-756f-3dce-4eb78e473704@linaro.org>
+Date:   Sat, 12 Dec 2020 10:11:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Date:   Sat, 12 Dec 2020 16:49:38 +0800
-From:   Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     ceo@teo-en-ming-corp.com
-Subject: A must read for All Targeted Individuals: The Lieber Research Group
- at Harvard University
-Message-ID: <534e265eb9e50417c3f8628f9760f53d@teo-en-ming.com>
-X-Sender: ceo@teo-en-ming.com
-User-Agent: Roundcube Webmail/1.2.3
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201212035012.GA11926@codon.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject: A must read for All Targeted Individuals: The Lieber Research 
-Group at Harvard University
+On 12/12/2020 04:50, Matthew Garrett wrote:
+> On Fri, Dec 11, 2020 at 02:17:55PM +0100, Daniel Lezcano wrote:
+>> On 08/12/2020 16:30, Daniel Lezcano wrote:
+>>> The passive file in sysfs forces the usage of a passive trip point set
+>>> by the userspace when a broken BIOS does not provide the mitigation
+>>> temperature for such thermal zone. The hardware evolved a lot since
+>>> 2008 as a good thermal management is no longer an option.
+>>>
+>>> Linux on the other side also provides now a way to load fixed ACPI
+>>> table via the option ACPI_TABLE_UPGRADE, so additionnal trip point
+>>> could be added there.
+>>>
+>>> Set the option obsolete and plan to remove it, so the corresponding
+>>> code can be removed from the core code and allow more cleanups the
+>>> thermal framework deserves.
+>>>
+>>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>>> ---
+>>
+>> Is there any concern about this change ?
+> 
+> Yes - what's the reason to do so?
 
-As a Targeted Individual, have you ever wondered why your government 
-could read your mind/thoughts easily 24x7 and also make you hear 
-menacing/threatening voices?
+I'm cleaning up the thermal core code, so questioning every old ABI.
 
-Rest assured you are not crazy. All these could be done using science 
-and technology.
+> The code isn't specific to ACPI,
+> so being able to override ACPI tables doesn't seem to justify it.
 
-There is absolutely no need to have a brain surgery to have nanomaterial 
-brain implants.
+I agree, the code is no specific to ACPI.
 
-You can read more about the Lieber Research Group at Harvard University.
-
-The Link: http://cml.harvard.edu/
-
-The website of the Lieber Research Group at Harvard University says:
-
-"The Lieber group is focused broadly on science and technology at the 
-nanoscale, harnessing the unique physical properties of novel 
-nanomaterials to push scientific boundaries in biology and medicine.
-
-We are focusing on a novel approach for integrating electronics within 
-the brain and other areas of the nervous system, which involves 
-non-invasive syringe delivery of neural network-like mesh electronics 
-into targeted distinct brain regions. See Research page."
-
-As you can see from the statements above, it is absolutely not necessary 
-to have a brain surgery to have nanomaterial brain implaints. Your 
-government is able to deliver neural network-like mesh electronics into 
-targeted distinct brain regions using non-invasive syringe delivery.
-
-
-
-
+What non-ACPI architecture, without device tree or platform data would
+need the 'passive' option today ?
 
 
 -- 
------BEGIN EMAIL SIGNATURE-----
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-The Gospel for all Targeted Individuals (TIs):
-
-[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
-U.S. Embassy Workers
-
-Link: 
-https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
-
-********************************************************************************************
-
-Singaporean Targeted Individual Mr. Turritopsis Dohrnii Teo En Ming's 
-Academic
-Qualifications as at 14 Feb 2019 and refugee seeking attempts at the 
-United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan (5 Aug 
-2019) and Australia (25 Dec 2019 to 9 Jan 2020):
-
-[1] https://tdtemcerts.wordpress.com/
-
-[2] https://tdtemcerts.blogspot.sg/
-
-[3] https://www.scribd.com/user/270125049/Teo-En-Ming
-
------END EMAIL SIGNATURE-----
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
