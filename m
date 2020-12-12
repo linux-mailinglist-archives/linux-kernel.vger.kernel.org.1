@@ -2,169 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808B02D8352
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 01:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E27A22D8357
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 01:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407290AbgLLAPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 19:15:05 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:56822 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389275AbgLLAO3 (ORCPT
+        id S2407303AbgLLARB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 19:17:01 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:38742 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407296AbgLLAQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 19:14:29 -0500
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5BFD120B717B;
-        Fri, 11 Dec 2020 16:13:47 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5BFD120B717B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607732028;
-        bh=J4T3fJj4p9fqeSZhjR49wzXu76bzrKvsGoakDtGMpRg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ISm5PIapPGVFsbLta5feYiGOqSo+05ZuXwfztAFSr8g7kZUuCi9k9GZ7gQAFAgKDE
-         hALQ9gB6RT86EsGPaY7QfYeIm6E9TNY+TwWyq62Ia803vjNxX61kJJUFPCJ4ptG/uF
-         XzvDMf3+vCE23bGmoGyuWrlQOj73B2RhImTtCNv4=
-Date:   Fri, 11 Dec 2020 18:13:43 -0600
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
-        jmorris@namei.org, nramas@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Subject: Re: [PATCH v8 3/8] IMA: define a hook to measure kernel integrity
- critical data
-Message-ID: <20201212001343.GE4951@sequoia>
-References: <20201211235807.30815-1-tusharsu@linux.microsoft.com>
- <20201211235807.30815-4-tusharsu@linux.microsoft.com>
+        Fri, 11 Dec 2020 19:16:54 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607732172;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hqbFRYPDhcqtawXKx6n1the+OBNiDCmjIGiR3orx8EA=;
+        b=MTPSXyZNel+TcIxeSv7g6YdamWqolsj/qDRvreakkhpOYBYPCRI3agFKCkGqPzYpjuxtGW
+        /XMj+aBU2MdHIshyWBw4GG+CBsTgLbL4Yy9Q/7oZxL1nSrwOFAY98cmzMRuCwCu/Ts5c3a
+        t+JXgFw1KcxCDIyZ2GqwF102khftPh0IN7B8TdcZ+zTLjDnkQkFvBrhD97FZ7LEI7+IxLO
+        2Mqow/TANashMI4a4tFcdy21nCsl/L6cGtVUicC1KX5O5FpEMrQ42HUzQHhcz03EZMXAu0
+        ElqFkv4oINJhOBzC7wSZZwvWfOBP2x72JchABTDw4teO6Evk3nPYA3u7zvW6aA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607732172;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hqbFRYPDhcqtawXKx6n1the+OBNiDCmjIGiR3orx8EA=;
+        b=aKblQ0K5egUgfE4Cwdrg2BCOdlNYyE6qdQOf0JtBJ6zjaX70IDTx8gP8JQirGni6AaeMZZ
+        oEIiD4s7rXk795CA==
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Marco Elver <elver@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: Re: [patch 1/3] tick: Remove pointless cpu valid check in hotplug code
+In-Reply-To: <20201211222104.GB595642@lothringen>
+References: <20201206211253.919834182@linutronix.de> <20201206212002.582579516@linutronix.de> <20201211222104.GB595642@lothringen>
+Date:   Sat, 12 Dec 2020 01:16:12 +0100
+Message-ID: <87v9d7g9pv.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211235807.30815-4-tusharsu@linux.microsoft.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-11 15:58:02, Tushar Sugandhi wrote:
-> IMA provides capabilities to measure file data, and in-memory buffer
-> data. However, various data structures, policies, and states
-> stored in kernel memory also impact the integrity of the system.
-> Several kernel subsystems contain such integrity critical data. These
-> kernel subsystems help protect the integrity of a device. Currently,
-> IMA does not provide a generic function for kernel subsystems to measure
-> their integrity critical data.
->  
-> Define a new IMA hook - ima_measure_critical_data to measure kernel
-> integrity critical data.
-> 
-> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+On Fri, Dec 11 2020 at 23:21, Frederic Weisbecker wrote:
+> On Sun, Dec 06, 2020 at 10:12:54PM +0100, Thomas Gleixner wrote:
+>> tick_handover_do_timer() which is invoked when a CPU is unplugged has a
+>> @@ -407,17 +407,13 @@ EXPORT_SYMBOL_GPL(tick_broadcast_oneshot
+>>  /*
+>>   * Transfer the do_timer job away from a dying cpu.
+>>   *
+>> - * Called with interrupts disabled. Not locking required. If
+>> + * Called with interrupts disabled. No locking required. If
+>>   * tick_do_timer_cpu is owned by this cpu, nothing can change it.
+>>   */
+>>  void tick_handover_do_timer(void)
+>>  {
+>> -	if (tick_do_timer_cpu == smp_processor_id()) {
+>> -		int cpu = cpumask_first(cpu_online_mask);
+>> -
+>> -		tick_do_timer_cpu = (cpu < nr_cpu_ids) ? cpu :
+>> -			TICK_DO_TIMER_NONE;
+>> -	}
+>> +	if (tick_do_timer_cpu == smp_processor_id())
+>> +		tick_do_timer_cpu = cpumask_first(cpu_online_mask);
+>
+> I was about to whine that this randomly chosen CPU may be idle and leave
+> the timekeeping stale until I realized that stop_machine() is running at that
+> time. Might be worth adding a comment about that.
+>
+> Also why not just setting it to TICK_DO_TIMER_NONE and be done with it? Perhaps
+> to avoid that all the CPUs to compete and contend on jiffies update after stop
+> machine?
 
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+No. Because we'd need to add the NONE magic to NOHZ=n kernels which does
+not make sense.
 
-Tyler
+Thanks,
 
-> ---
->  include/linux/ima.h               |  6 ++++++
->  security/integrity/ima/ima.h      |  1 +
->  security/integrity/ima/ima_api.c  |  2 +-
->  security/integrity/ima/ima_main.c | 34 +++++++++++++++++++++++++++++++
->  4 files changed, 42 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/ima.h b/include/linux/ima.h
-> index ac3d82f962f2..675f54db6264 100644
-> --- a/include/linux/ima.h
-> +++ b/include/linux/ima.h
-> @@ -30,6 +30,9 @@ extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
->  extern void ima_post_path_mknod(struct dentry *dentry);
->  extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
->  extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
-> +extern void ima_measure_critical_data(const char *event_name,
-> +				      const void *buf, int buf_len,
-> +				      bool measure_buf_hash);
->  
->  #ifdef CONFIG_IMA_APPRAISE_BOOTPARAM
->  extern void ima_appraise_parse_cmdline(void);
-> @@ -122,6 +125,9 @@ static inline int ima_file_hash(struct file *file, char *buf, size_t buf_size)
->  }
->  
->  static inline void ima_kexec_cmdline(int kernel_fd, const void *buf, int size) {}
-> +static inline void ima_measure_critical_data(const char *event_name,
-> +					     const void *buf, int buf_len,
-> +					     bool measure_buf_hash) {}
->  #endif /* CONFIG_IMA */
->  
->  #ifndef CONFIG_IMA_KEXEC
-> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-> index fa3044a7539f..7d9deda6a8b3 100644
-> --- a/security/integrity/ima/ima.h
-> +++ b/security/integrity/ima/ima.h
-> @@ -201,6 +201,7 @@ static inline unsigned int ima_hash_key(u8 *digest)
->  	hook(POLICY_CHECK, policy)			\
->  	hook(KEXEC_CMDLINE, kexec_cmdline)		\
->  	hook(KEY_CHECK, key)				\
-> +	hook(CRITICAL_DATA, critical_data)		\
->  	hook(MAX_CHECK, none)
->  
->  #define __ima_hook_enumify(ENUM, str)	ENUM,
-> diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
-> index af218babd198..9917e1730cb6 100644
-> --- a/security/integrity/ima/ima_api.c
-> +++ b/security/integrity/ima/ima_api.c
-> @@ -176,7 +176,7 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
->   *		subj=, obj=, type=, func=, mask=, fsmagic=
->   *	subj,obj, and type: are LSM specific.
->   *	func: FILE_CHECK | BPRM_CHECK | CREDS_CHECK | MMAP_CHECK | MODULE_CHECK
-> - *	| KEXEC_CMDLINE | KEY_CHECK
-> + *	| KEXEC_CMDLINE | KEY_CHECK | CRITICAL_DATA
->   *	mask: contains the permission mask
->   *	fsmagic: hex value
->   *
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> index 0f8409d77602..dff4bce4fb09 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -922,6 +922,40 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
->  	fdput(f);
->  }
->  
-> +/**
-> + * ima_measure_critical_data - measure kernel integrity critical data
-> + * @event_name: event name to be used for the buffer entry
-> + * @buf: pointer to buffer containing data to measure
-> + * @buf_len: length of buffer(in bytes)
-> + * @measure_buf_hash: measure buffer hash
-> + *
-> + * Measure the kernel subsystem data, critical to the integrity of the kernel,
-> + * into the IMA log and extend the @pcr.
-> + *
-> + * Use @event_name to describe the state/buffer data change.
-> + * Examples of critical data (@buf) could be various data structures,
-> + * policies, and states stored in kernel memory that can impact the integrity
-> + * of the system.
-> + *
-> + * If @measure_buf_hash is set to true - measure hash of the buffer data,
-> + * else measure the buffer data itself.
-> + * @measure_buf_hash can be used to save space, if the data being measured
-> + * is too large.
-> + *
-> + * The data (@buf) can only be measured, not appraised.
-> + */
-> +void ima_measure_critical_data(const char *event_name,
-> +			       const void *buf, int buf_len,
-> +			       bool measure_buf_hash)
-> +{
-> +	if (!event_name || !buf || !buf_len)
-> +		return;
-> +
-> +	process_buffer_measurement(NULL, buf, buf_len, event_name,
-> +				   CRITICAL_DATA, 0, NULL,
-> +				   measure_buf_hash);
-> +}
-> +
->  static int __init init_ima(void)
->  {
->  	int error;
-> -- 
-> 2.17.1
-> 
+        tglx
