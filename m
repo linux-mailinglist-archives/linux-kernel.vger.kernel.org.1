@@ -2,201 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4B92D865C
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 13:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A3A2D8663
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 13:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438816AbgLLMIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 07:08:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390468AbgLLMIP (ORCPT
+        id S1727707AbgLLMPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 07:15:03 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:55261 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727289AbgLLMPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 07:08:15 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F835C0613CF;
-        Sat, 12 Dec 2020 04:07:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5uGUbqZhjHiAFzEaveOt5B81LShsdbsH9IIdL8TJHgs=; b=1/APFJxwx25Hg19gzab+qKtAGe
-        QkWfmF8G2F8FCCtH6lMqDwgHzbh5iegm8Ncu1e/6XYo0NyJotUcTBp7nqb4V8cYCKyckQ/Fmgks3W
-        CfOQONPeTlZZ9jos3IWFXVjTDhQG6QpJEuRd6KVtY8MApUapCasNKESSMvh6P+vU+kPDfO7rpkVe5
-        nsBpWZ03Pw8tB11eeusvHXev1ODuMcgPeDg+6tgRd2IFzEs0AkrI1m4xoykaFK6Z7MPdT3FikmJEU
-        FsVBatNSckEGrlgJbRgzFNvqtxaTdlAiKJ/PYRoowt0WayzLx+QrjRuE+4tYwZ9Z9WDVV2rCCRFtD
-        Vr8E3TkA==;
-Received: from [54.239.6.177] (helo=vpn-10-85-89-156.fra53.corp.amazon.com)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ko3gQ-0000S6-Qu; Sat, 12 Dec 2020 12:07:31 +0000
-Message-ID: <51569c779d9e26e69053503b2eb0c6c2c49143fc.camel@infradead.org>
-Subject: Re: [PATCH RFC 03/39] KVM: x86/xen: register shared_info page
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Ankur Arora <ankur.a.arora@oracle.com>,
-        Joao Martins <joao.m.martins@oracle.com>, kvm@vger.kernel.org,
+        Sat, 12 Dec 2020 07:15:03 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1ko3n2-0005la-6W; Sat, 12 Dec 2020 12:14:20 +0000
+Date:   Sat, 12 Dec 2020 13:14:19 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     Stephen Kitt <steve@sk2.org>, linux-man@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
         linux-kernel@vger.kernel.org
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Radim =?UTF-8?Q?Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-Date:   Sat, 12 Dec 2020 12:07:27 +0000
-In-Reply-To: <2d4df59d-f945-32dc-6999-a6f711e972ea@oracle.com>
-References: <20190220201609.28290-1-joao.m.martins@oracle.com>
-         <20190220201609.28290-4-joao.m.martins@oracle.com>
-         <b647bed6c75f8743b8afea251a88f00a5feaee29.camel@infradead.org>
-         <2d4df59d-f945-32dc-6999-a6f711e972ea@oracle.com>
-Content-Type: multipart/signed; micalg="sha-256";
-        protocol="application/x-pkcs7-signature";
-        boundary="=-BmNjTUcj9UNOXIs8KphA"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
+Subject: Re: [patch] close_range.2: new page documenting close_range(2)
+Message-ID: <20201212121419.odpgbaigrjhpkjnm@wittgenstein>
+References: <20201208215133.30575-1-steve@sk2.org>
+ <20201209095817.7ksihhftmnd3c3hi@wittgenstein>
+ <5f69d42d-c36d-b98a-3d00-7a5e7f489a07@gmail.com>
+ <20201209105618.okw5lgcdikg5bvae@wittgenstein>
+ <0ea38a7a-1c64-086e-3d64-38686f5b7856@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0ea38a7a-1c64-086e-3d64-38686f5b7856@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 10, 2020 at 03:36:42PM +0100, Alejandro Colomar (man-pages) wrote:
+> Hi Christian,
 
---=-BmNjTUcj9UNOXIs8KphA
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hi Alex,
 
-On Tue, 2020-12-01 at 16:40 -0800, Ankur Arora wrote:
-> > How come we get to pin the page and directly dereference it every time,
-> > while kvm_setup_pvclock_page() has to use kvm_write_guest_cached()
-> > instead?
->=20
-> So looking at my WIP trees from the time, this is something that
-> we went back and forth on as well with using just a pinned page or a
-> persistent kvm_vcpu_map().
+> 
+> Thanks for confirming that behavior.  Seems reasonable.
+> 
+> I was wondering...
+> If this call is equivalent to unshare(2)+{close(2) in a loop},
+> shouldn't it fail for the same reasons those syscalls can fail?
+> 
+> What about the following errors?:
+> 
+> From unshare(2):
+> 
+>        EPERM  The calling process did not have the  required  privi‐
+>               leges for this operation.
 
-I have a new plan.
+unshare(CLONE_FILES) doesn't require any privileges. Only flags relevant
+to kernel/nsproxy.c:unshare_nsproxy_namespaces() require privileges,
+i.e.
+CLONE_NEWNS
+CLONE_NEWUTS
+CLONE_NEWIPC
+CLONE_NEWNET
+CLONE_NEWPID
+CLONE_NEWCGROUP
+CLONE_NEWTIME
+so the permissions are the same.
 
-Screw pinning it and mapping it into kernel space just because we need
-to do atomic operations on it.=20
+> 
+> From close(2):
+>        EBADF  fd isn't a valid open file descriptor.
+> 
+> OK, this one can't happen with the current code.
+> Let's say there are fds 1 to 10, and you call 'close_range(20,30,0)'.
+> It's a no-op (although it will still unshare if the flag is set).
+> But souldn't it fail with EBADF?
 
-Futexes can do atomic operations on userspace; so can we. We just add
-atomic_cmpxchg_user() and use that.
+CLOSE_RANGE_UNSHARE should always give you a private file descriptor
+table independent of whether or not any file descriptors need to be
+closed. That's also how we documented the flag:
 
-We can add kvm_cmpxchg_guest_offset_cached() and use that from places
-like record_steal_time().
+/* Unshare the file descriptor table before closing file descriptors. */
+#define CLOSE_RANGE_UNSHARE	(1U << 1)
 
-That works nicely for all of the Xen support needs too, I think =E2=80=94 s=
-ince
-test-and-set and test-and-clear bit operations all want to be built on
-cmpxchg.
+A caller calling unshare(CLONE_FILES) and then an emulated close_range()
+or the proper close_range() syscall wants to make sure that all unwanted
+file descriptors are closed (if any) and that no new file descriptors
+can be injected afterwards. If you skip the unshare(CLONE_FILES) because
+there are no fds to be closed you open up a race window. It would also
+be annoying for userspace if they _may_ have received a private file
+descriptor table but only if any fds needed to be closed.
 
-The one thing I can think off offhand that it doesn't address easily is
-the testing of vcpu_info->evtchn_upcall_pending in
-kvm_xen_cpu_has_interrupt(), which really does want to be fast so I'm
-not sure I want to be using copy_from_user() for that.
+If people really were extremely keen about skipping the unshare when no
+fd needs to be closed then this could become a new flag. But I really
+don't think that's necessary and also doesn't make a lot of sense, imho.
 
+> 
+>        EINTR  The close() call was interrupted by a signal; see sig‐
+>               nal(7).
+> 
+>        EIO    An I/O error occurred.
+> 
+>        ENOSPC, EDQUOT
+>               On NFS, these errors are not normally reported against
+>               the first write which exceeds  the  available  storage
+>               space,  but  instead  against  a  subsequent write(2),
+>               fsync(2), or close().
 
-But I think I can open-code that to do the cache checking that
-kvm_read_guest_offset_cached() does, and use __get_user() directly in
-the fast path, falling back to actually calling
-kvm_read_guest_offset_cached() when it needs to. That will suffice
-until/unless we grow more use cases which would make it worth providing
-that as a kvm_get_guest...() set of functions for generic use.
+None of these will be seen by userspace because close_range() currently
+ignores all errors after it has begun closing files.
 
-
---=-BmNjTUcj9UNOXIs8KphA
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
-ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
-OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
-RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
-cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
-uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
-Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
-Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
-xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
-BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
-dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
-LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
-Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
-Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
-YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
-nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
-PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
-7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
-Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
-MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
-NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
-/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
-0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
-vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
-ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
-ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
-CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
-BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
-aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
-bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
-bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
-LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
-CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
-W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
-vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
-gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
-RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
-jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
-b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
-AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
-BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
-+bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
-WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
-aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
-CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
-u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
-RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
-QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
-b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
-cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
-SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
-0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
-KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
-E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
-M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
-jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
-yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
-gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
-R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
-ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
-MjEyMTIwNzI4WjAvBgkqhkiG9w0BCQQxIgQgH/i+mrlhk+GBk+QTRtn916Ovk5pIjC/AHQ/LOKsN
-ZfMwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
-TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
-PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
-aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBACeIN3o+I7Tm8u7F8En49CKhEfI7bW9BkFoj+V2R7CBIbl9H0Xowl1XW/slf9eB+
-nPvcHYL+w2lfskEN0KLHjb4mnWf4gz96iq9XaBkMLlu9pejm5iVAHl8X2lsjZjmvRy7G7RYAIkcn
-bTOCC87ZqOQDwmbOXDacFpyzgmLpTbBS+XuJSxLrjTbCldyt77H1VbEVW9Z53uCfCRqFKXSrqbaT
-RZ6JKuDGC2SSTmbxvl8TzMfG62DY3O7bfqFxqLM59cwLAY5SvTk9OIewEGNb+W6jl/tE3nWU2T4y
-YpLw4JnKyjqNN2Z5NLhaaKobZ1b4o89QAJJKLDJrZWmOUCwGXtEAAAAAAAA=
-
-
---=-BmNjTUcj9UNOXIs8KphA--
-
+Christian
