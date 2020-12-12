@@ -2,115 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9302A2D85B7
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 11:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9C62D859C
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 11:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407200AbgLLJyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 04:54:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41556 "EHLO
+        id S1730250AbgLLKDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 05:03:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728538AbgLLJxQ (ORCPT
+        with ESMTP id S2407318AbgLLJyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 04:53:16 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B239C0611D0
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 01:25:57 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1ko1A2-0000fv-I6; Sat, 12 Dec 2020 10:25:54 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1ko1A0-0000DC-RY; Sat, 12 Dec 2020 10:25:52 +0100
-Date:   Sat, 12 Dec 2020 10:25:50 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc:     linux-rtc@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>,
-        Bruno Thomsen <bruno.thomsen@gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: add reset-source property
-Message-ID: <20201212092550.mhkxw4pwmmbn5u4g@pengutronix.de>
-References: <20201204092752.GE74177@piout.net>
- <20201211215611.24392-1-rasmus.villemoes@prevas.dk>
- <20201211215611.24392-2-rasmus.villemoes@prevas.dk>
+        Sat, 12 Dec 2020 04:54:31 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6230C0619D2;
+        Sat, 12 Dec 2020 01:33:37 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id t8so8663011pfg.8;
+        Sat, 12 Dec 2020 01:33:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=f1FArQJwKvbV3BehyF4qEYRVrF15VQjMltXB6x2VXEs=;
+        b=VfglcvXKb3iG6utIOpUfYAhtiw18RAnZXn+8XlkXEyYi23SGNxEmGpmMtBJvmqNiwQ
+         OIQVaVut6CGtqNUs5pftpzY7bdxIAlVW1LvP4gMmfgXjyMaswbb6tUjYn+9zZfiruEFA
+         mVK1h31PnUfdKRNRvEaYnwUF48Kl1mFGBH2NyQpeJcN0xSx6z6Nxyn5a12Vcal50Z5Ok
+         1Cfqn72/66gvm3CAtIdmMP1WxOTYjRXNIu7G3e0rGQoeyWyeQ7EaluvMLFqhKYXeCUzB
+         DCxEh/eOh9yijgAQ1PRTyvWD/TDKrFRMUgDxrAVcuRCzruLk4W4bdqjBZ9UPI3xc96+e
+         pYTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=f1FArQJwKvbV3BehyF4qEYRVrF15VQjMltXB6x2VXEs=;
+        b=fqL6xJ6LPwjx0Y8DCFCQP46olE0HivZZbLJogXxOGVxAToumlDtOkCIeX6lrtMGlof
+         zGQQPOXMdc/EoijgU8jXIViQvF8SQ0O4UXmOAdMXqrcXRtsdW6ezlaF5129U480szFzF
+         ZRGDsilFm0lvZH13rOKRUW/xRY6Tfs/2ABfgxM9hcqQoIi+w9h2535+lSSYfQJtfwvmt
+         4BjHjuDUBgmc75J5Rlaqq+F1xD7kuKPcCWAuMzPM/cmFhyYEXxMfbYW5QdCDmB7AtRez
+         9Av+fV6fLMdWfa3yEmo0K5hOqF2gtrlAlJ12C/80AdnF30ZdxjrJoEUJuLyIN7EkwGXt
+         jKWg==
+X-Gm-Message-State: AOAM532+GeF9etmQ4JvHGL4UQaY/bxkgpXwHFa4QecwltoFxLWYCAWy8
+        BjKj6M9ZA9zER0d50kyhjw0=
+X-Google-Smtp-Source: ABdhPJz5b/yhDHG5uH6YU/ZzFV4elj98QRD5Y6ho7DQz8+eoqDrOz5qWPGF+glH9iqDCk2RFt6pbNw==
+X-Received: by 2002:a63:d401:: with SMTP id a1mr15671694pgh.42.1607765617145;
+        Sat, 12 Dec 2020 01:33:37 -0800 (PST)
+Received: from syed ([106.202.80.219])
+        by smtp.gmail.com with ESMTPSA id g9sm13902333pgk.73.2020.12.12.01.33.27
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 12 Dec 2020 01:33:36 -0800 (PST)
+Date:   Sat, 12 Dec 2020 15:03:15 +0530
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+To:     linus.walleij@linaro.org, akpm@linux-foundation.org
+Cc:     andriy.shevchenko@linux.intel.com, vilhelm.gray@gmail.com,
+        michal.simek@xilinx.com, arnd@arndb.de, rrichter@marvell.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        yamada.masahiro@socionext.com, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, amit.kucheria@verdurent.com,
+        linux-arch@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH v2 0/2] Modify bitmap_set_value() to suppress compiler warning
+Message-ID: <cover.1607765147.git.syednwaris@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="h25hckfjgae65qfw"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201211215611.24392-2-rasmus.villemoes@prevas.dk>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi All,
 
---h25hckfjgae65qfw
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The purpose of this patchset is to suppress the compiler warning (-Wtype-limits).
 
-On Fri, Dec 11, 2020 at 10:56:09PM +0100, Rasmus Villemoes wrote:
-> Some RTCs, e.g. the pcf2127, can be used as a hardware watchdog. But
-> if the reset pin is not actually wired up, the driver exposes a
-> watchdog device that doesn't actually work.
->=20
-> Provide a standard binding that can be used to indicate that a given
-> RTC can perform a reset of the machine, similar to wakeup-source.
->=20
-> Suggested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-> ---
->  Documentation/devicetree/bindings/rtc/rtc.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/rtc/rtc.yaml b/Documentati=
-on/devicetree/bindings/rtc/rtc.yaml
-> index ee237b2ed66a..b5e24dc24b0b 100644
-> --- a/Documentation/devicetree/bindings/rtc/rtc.yaml
-> +++ b/Documentation/devicetree/bindings/rtc/rtc.yaml
-> @@ -47,4 +47,9 @@ properties:
->      description:
->        Enables wake up of host system on alarm.
-> =20
-> +  reset-source:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      The RTC is able to reset the machine.
+In function bitmap_set_value(), add explicit check to see if the value being
+written into the bitmap does not fall outside the bitmap.
+The situation that it is falling outside is never possible in the code
+because the boundaries are required to be correct before the function is
+called. The responsibility is on the caller for ensuring the boundaries
+are correct.
+The code change is simply to silence the GCC warning messages
+because GCC is not aware that the boundaries have already been checked.
+As such, we're better off using __builtin_unreachable() here because we
+can avoid the latency of the conditional check entirely.
 
-Thanks for picking that up.
+Michal,
+What do you think of [PATCH 2/2]? Is the conditional check needed, and also does
+returning -EINVAL look good?
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+Changes in v2:
+ - [Patch 1/2]: Squashed earlier three patches into one.
 
-Note that the patch "rtc: pcf2127: move watchdog initialisation to a
-separate function" is already in next.
+Syed Nayyar Waris (2):
+  bitmap: Modify bitmap_set_value() to check bitmap length
+  gpio: xilinx: Add extra check if sum of widths exceed 64
 
-Best regards
-Uwe
+ drivers/gpio/gpio-xilinx.c | 18 ++++++++++++------
+ include/linux/bitmap.h     | 35 +++++++++++++++++++++--------------
+ lib/test_bitmap.c          |  4 ++--
+ 3 files changed, 35 insertions(+), 22 deletions(-)
 
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+base-commit: b640c4e12bbe1f0b6383c3ef788a89e5427c763f
+-- 
+2.29.0
 
---h25hckfjgae65qfw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/UjJsACgkQwfwUeK3K
-7Ak6yAgAgCSTdIROQXcz+oWnXcaYal26WfE+LC5XIFsI8uUXRMPkBikVvAV2Igyo
-nO4v3BShfMJakKKh2ZBzgqavR0GkQ/T91h+56WDbmQ+6fQAZ4Z+eOLbcXzOTtpXJ
-7B51uVET9TeWoTukwUyzs77FLR/TrCZM0m5dJvpuGeRWs5lfR78JH9nhGCVXW6Vh
-dZuMZV3W/QNL4gg1EVOJr027k46t0MeukbPyqcRFWSJh1splDM0MyrzZa07w9Lvk
-tIBtf62bdyUqVzjsfcICXdF4N29ht+WwZARa5nIYMa2MdK0TpnMs+y8b+PqAOgwR
-XTqCL/jOPXxLfPTd4O6pntLiRf4q1w==
-=wle7
------END PGP SIGNATURE-----
-
---h25hckfjgae65qfw--
