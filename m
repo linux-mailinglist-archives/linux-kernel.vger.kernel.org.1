@@ -2,74 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 834242D84AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 06:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7324E2D84DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 06:29:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404022AbgLLFWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 00:22:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727014AbgLLFVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 00:21:53 -0500
-Date:   Sat, 12 Dec 2020 10:51:08 +0530
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607750472;
-        bh=p4pDn+cuf2hqSNVU61KNyvncFgtp+nQKPT6OuE7kHxg=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sbjnF+XpZToBv/dbSiHbG3ZvQ8YpofvohnOhYjT4azmxUdB5CD6hv+HkZ2jfOcNz/
-         OCu9PKs33GxOfsxFVmJfTJi/dn6vNc/lpkK1FzJNyboXA5g7vz26UpeoXWgqIPVINV
-         7M6p2D0FJq9Kf2ORtfLhXEN3kgF+f/WXvPbMqUJm5tWEdnApw1RYaaMIkZVjdVwo60
-         d/FjM4jEx3YP9YaK1wxg+d6RsL7GLd46Dn3+K//3D+IoWQ5WBeycR5gli6kG3F9I/P
-         vaYMpcrcExgJkvcBTjouxfqDyKQ88+SBSc0AmuxH4Phy9uThq/1CjNjH2U4RatkjY7
-         N+azFCeMgh9Ew==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     nm@ti.com, ssantosh@kernel.org, robh+dt@kernel.org,
-        dan.j.williams@intel.com, t-kristo@ti.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-        vigneshr@ti.com, grygorii.strashko@ti.com
-Subject: Re: [PATCH v3 00/20] dmaengine/soc: k3-udma: Add support for BCDMA
- and PKTDMA
-Message-ID: <20201212052108.GA8403@vkoul-mobl>
-References: <20201208090440.31792-1-peter.ujfalusi@ti.com>
- <20201211162400.GZ8403@vkoul-mobl>
- <8df78a7a-abc8-e0e3-6b60-a0832be74aa5@ti.com>
+        id S2438331AbgLLF0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 00:26:07 -0500
+Received: from smtprelay0029.hostedemail.com ([216.40.44.29]:35790 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2437153AbgLLFZy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 00:25:54 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 641EF1803A836;
+        Sat, 12 Dec 2020 05:25:03 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1515:1516:1518:1534:1539:1568:1593:1594:1711:1714:1730:1747:1777:1792:2194:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3866:3867:3871:4321:5007:7875:10004:10400:10848:11026:11232:11473:11657:11658:11914:12043:12296:12297:12740:12895:13069:13311:13357:13439:13894:14659:14721:21080:21451:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: linen76_000822627407
+X-Filterd-Recvd-Size: 1608
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 12 Dec 2020 05:25:02 +0000 (UTC)
+Message-ID: <a81975ecafefb7aebd087a97780424d5bb9ba280.camel@perches.com>
+Subject: Re: [PATCH] net/mlx4: Use true,false for bool variable
+From:   Joe Perches <joe@perches.com>
+To:     Vasyl Gomonovych <gomonovych@gmail.com>, tariqt@nvidia.com
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 11 Dec 2020 21:25:01 -0800
+In-Reply-To: <20201211100518.29804-1-gomonovych@gmail.com>
+References: <20201211100518.29804-1-gomonovych@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8df78a7a-abc8-e0e3-6b60-a0832be74aa5@ti.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-12-20, 21:16, Peter Ujfalusi wrote:
-> Hi Vinod,
+On Fri, 2020-12-11 at 11:05 +0100, Vasyl Gomonovych wrote:
+> Fix en_rx.c:687:1-17: WARNING: Assignment of 0/1 to bool variable
+> Fix main.c:4465:5-13: WARNING: Comparison of 0/1 to bool variable
+[]
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+[]
+> @@ -4462,7 +4462,7 @@ static int __init mlx4_verify_params(void)
+>  		pr_warn("mlx4_core: log_num_vlan - obsolete module param, using %d\n",
+>  			MLX4_LOG_NUM_VLANS);
+>  
 > 
-> On 11/12/2020 18.24, Vinod Koul wrote:
-> > On 08-12-20, 11:04, Peter Ujfalusi wrote:
-> >> Hi,
-> >>
-> >> The series have build dependency on ti_sci/soc series (v2):
-> >> https://lore.kernel.org/lkml/20201008115224.1591-1-peter.ujfalusi@ti.com/
-> >>
-> >> Santosh kindly provided immutable branch and tag holding the series:
-> >> git://git.kernel.org/pub/scm/linux/kernel/git/ssantosh/linux-keystone.git tags/drivers_soc_for_5.11 
-> > 
-> > I have picked this and then merged this and pushed to test branch. If
-> > everything is okay, it will be next on monday
-> 
-> Thank you!
-> 
-> this might cause a sparse warning:
-> https://lore.kernel.org/lkml/a1f83b16-c1ce-630e-3410-738b80a92741@ti.com/
-> 
-> I can send an incremental patch or resend the whole series with this
-> correction?
+> -	if (use_prio != 0)
+> +	if (use_prio != false)
+>  		pr_warn("mlx4_core: use_prio - obsolete module param, ignored\n");
 
-Incremental please
+Generally, assuming use_prio is bool, this would be written
 
-Thanks
+	if (use_prio)
+		pr_warn("etc...")
 
--- 
-~Vinod
+
