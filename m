@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 167652D8493
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 06:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B69922D8496
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 06:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726238AbgLLFFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 00:05:47 -0500
-Received: from relay1.mymailcheap.com ([149.56.97.132]:59981 "EHLO
-        relay1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgLLFFk (ORCPT
+        id S1726517AbgLLFHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 00:07:55 -0500
+Received: from relay3.mymailcheap.com ([217.182.66.161]:49695 "EHLO
+        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726262AbgLLFHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 00:05:40 -0500
-X-Greylist: delayed 3558 seconds by postgrey-1.27 at vger.kernel.org; Sat, 12 Dec 2020 00:05:39 EST
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay1.mymailcheap.com (Postfix) with ESMTPS id 4D7073F157;
-        Sat, 12 Dec 2020 05:04:08 +0000 (UTC)
+        Sat, 12 Dec 2020 00:07:24 -0500
+X-Greylist: delayed 3787 seconds by postgrey-1.27 at vger.kernel.org; Sat, 12 Dec 2020 00:07:20 EST
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay3.mymailcheap.com (Postfix) with ESMTPS id 9E7ED3F15F;
+        Sat, 12 Dec 2020 06:05:40 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 92D8A2A510;
-        Sat, 12 Dec 2020 06:04:07 +0100 (CET)
+        by filter1.mymailcheap.com (Postfix) with ESMTP id C7C012A368;
+        Sat, 12 Dec 2020 00:05:39 -0500 (EST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1607749447;
-        bh=1kReouX7Rdy6dmkTKtScUVsD9gkvk20YqptCWD/nPTQ=;
+        s=default; t=1607749539;
+        bh=Ssf11oEwwM9nMlUz4m0LH/yq8lL7ITtIP7gq4UsqQRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VngGVNzUBlb83e5Of1MvSQLXN9EgFx8RY6oba/trw6li9eym/ffR6er+S8CuOuKDq
-         PNL9N0dM7R8Q7zc7TiYJgtyeEAhrCDTnk3BVGH3QwKrlG4f6cO7vGu+mslMeqaojoj
-         9TeySdwcqaam69dixdC3apCKdn3M/E6fWd0BNh5o=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id D8qkaISYhdYb; Sat, 12 Dec 2020 06:04:06 +0100 (CET)
+        b=BkPoF5VnoPPmlFPbNPSsskQMiYPHSoi/5G2M8L6lIB6yvS+1L0Tuvu9Apd3JQsu1p
+         ywntm68pdYR+gX/BIqsvwIkUov51HkhwvfLGsn8k7J4rp3XelxvnOF42dGm6/aCCeh
+         CPUsbPbcGEuuELCE+6wO8Z4azOztJpH/lyb7qY/I=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id dERH21EBDmYY; Sat, 12 Dec 2020 00:05:39 -0500 (EST)
 Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
         (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Sat, 12 Dec 2020 06:04:06 +0100 (CET)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id D767C42D9B;
-        Sat, 12 Dec 2020 05:04:05 +0000 (UTC)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Sat, 12 Dec 2020 00:05:38 -0500 (EST)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id E9B9442D9B;
+        Sat, 12 Dec 2020 05:05:37 +0000 (UTC)
 Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="L/Gu/b/J";
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="QaPg7JZ8";
         dkim-atps=neutral
 AI-Spam-Status: Not processed
 Received: from ice-e5v2.lan (unknown [59.41.161.2])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 53D3142D9B;
-        Sat, 12 Dec 2020 05:03:56 +0000 (UTC)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 8978A42D9B;
+        Sat, 12 Dec 2020 05:05:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1607749439; bh=1kReouX7Rdy6dmkTKtScUVsD9gkvk20YqptCWD/nPTQ=;
+        t=1607749531; bh=Ssf11oEwwM9nMlUz4m0LH/yq8lL7ITtIP7gq4UsqQRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L/Gu/b/J9CvdNZSy+4BcVkJ8P5mo3t6RU7Ej/w0vhMOalKZNwQiPThJBDr6aV8xnk
-         Sl6oGsYpCFj99tDjDINCAaCnjV2wb/W40vMvTD9y5w1AQTGVXy1k20bSHZ5XTnvrVu
-         4Oqe3oxIXBsXxTWK7j2lnsy9QmE4TmspDVbuuh14=
+        b=QaPg7JZ8/F9J1RfO+LtqXJoPwUlOd4oXr6SSX0oUjoiuauBZgb0KFBCP9fSikmiZu
+         KRPCZLUMbEy+1R+NL8wskhq3WRdQ299woSfo0u7zXHgYaJ7EwQ9cKZMe44y0gfr0pR
+         5Sk6VrYfJ1CTGpNSrnGk5be4z3BlQQiNNO+YFBLo=
 From:   Icenowy Zheng <icenowy@aosc.io>
 To:     Rob Herring <robh+dt@kernel.org>,
         Maxime Ripard <mripard@kernel.org>,
@@ -61,10 +61,12 @@ To:     Rob Herring <robh+dt@kernel.org>,
         Jernej Skrabec <jernej.skrabec@siol.net>
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>,
-        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
-Subject: [RFC PATCH 08/12] dt-bindings: mmc: sunxi: add compatible strings for V831 MMC
-Date:   Sat, 12 Dec 2020 13:03:42 +0800
-Message-Id: <20201212050346.3644673-1-icenowy@aosc.io>
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-watchdog@vger.kernel.org
+Subject: [RFC PATCH 09/12] dt-bindings: watchdog: sunxi: add compatible string for V831/V833 WDT
+Date:   Sat, 12 Dec 2020 13:05:16 +0800
+Message-Id: <20201212050519.3644837-1-icenowy@aosc.io>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201212040157.3639864-1-icenowy@aosc.io>
 References: <20201212040157.3639864-1-icenowy@aosc.io>
@@ -72,8 +74,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: mail20.mymailcheap.com
 X-Spamd-Result: default: False [6.40 / 20.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
          ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
          R_DKIM_ALLOW(0.00)[aosc.io:s=default];
          RECEIVED_SPAMHAUS_PBL(0.00)[59.41.161.2:received];
          FROM_HAS_DN(0.00)[];
@@ -83,51 +85,50 @@ X-Spamd-Result: default: False [6.40 / 20.00];
          TAGGED_RCPT(0.00)[dt];
          MIME_GOOD(-0.10)[text/plain];
          BROKEN_CONTENT_TYPE(1.50)[];
-         R_SPF_SOFTFAIL(0.00)[~all];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
          DMARC_NA(0.00)[aosc.io];
-         ML_SERVERS(-3.10)[213.133.102.83];
+         ML_SERVERS(-3.10)[148.251.23.173];
          DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[10];
+         RCPT_COUNT_SEVEN(0.00)[11];
          MID_CONTAINS_FROM(1.00)[];
          RCVD_NO_TLS_LAST(0.10)[];
          FROM_EQ_ENVFROM(0.00)[];
          MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
          RCVD_COUNT_TWO(0.00)[2];
          SUSPICIOUS_RECIPS(1.50)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Queue-Id: D767C42D9B
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Queue-Id: E9B9442D9B
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V831 has MMC controllers similar to the ones on H6.
+V831/V833 has a watchdog similar to the ones on previous Allwinner SoCs
+after sun6i.
 
-Add a compatible string for them.
+Add a compatible string for it.
 
-The eMMC controller compatible is not added, because the eMMC controller
-is not available on V831, only V833.
-
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: linux-mmc@vger.kernel.org
+Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-watchdog@vger.kernel.org
 Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
 ---
- .../devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml       | 3 +++
+ .../devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml  | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml b/Documentation/devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml
-index e82c9a07b6fb..985586cb93b4 100644
---- a/Documentation/devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml
-+++ b/Documentation/devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml
-@@ -35,6 +35,9 @@ properties:
-       - items:
-           - const: allwinner,sun8i-r40-mmc
-           - const: allwinner,sun50i-a64-mmc
+diff --git a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
+index e8f226376108..2f3c350b0057 100644
+--- a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
++++ b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
+@@ -18,6 +18,9 @@ properties:
+     oneOf:
+       - const: allwinner,sun4i-a10-wdt
+       - const: allwinner,sun6i-a31-wdt
 +      - items:
-+          - const: allwinner,sun8i-v831-mmc
-+          - const: allwinner,sun50i-a64-mmc
++          - const: allwinner,sun8i-v831-wdt
++          - const: allwinner,sun6i-a31-wdt
        - items:
-           - const: allwinner,sun50i-h5-emmc
-           - const: allwinner,sun50i-a64-emmc
+           - const: allwinner,sun50i-a64-wdt
+           - const: allwinner,sun6i-a31-wdt
 -- 
 2.28.0
