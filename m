@@ -2,26 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268692D87FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 101442D8804
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392965AbgLLQYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 11:24:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59552 "EHLO mail.kernel.org"
+        id S2407495AbgLLQZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 11:25:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439469AbgLLQKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 11:10:38 -0500
+        id S2439456AbgLLQKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 11:10:33 -0500
 From:   Sasha Levin <sashal@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Deepak R Varma <mh12gx2825@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 1/9] drm/tegra: replace idr_init() by idr_init_base()
-Date:   Sat, 12 Dec 2020 11:08:40 -0500
-Message-Id: <20201212160848.2335307-1-sashal@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.19 4/9] arm64: syscall: exit userspace before unmasking exceptions
+Date:   Sat, 12 Dec 2020 11:08:43 -0500
+Message-Id: <20201212160848.2335307-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201212160848.2335307-1-sashal@kernel.org>
+References: <20201212160848.2335307-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -30,37 +33,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Deepak R Varma <mh12gx2825@gmail.com>
+From: Mark Rutland <mark.rutland@arm.com>
 
-[ Upstream commit 41f71629b4c432f8dd47d70ace813be5f79d4d75 ]
+[ Upstream commit ca1314d73eed493c49bb1932c60a8605530db2e4 ]
 
-idr_init() uses base 0 which is an invalid identifier for this driver.
-The new function idr_init_base allows IDR to set the ID lookup from
-base 1. This avoids all lookups that otherwise starts from 0 since
-0 is always unused.
+In el0_svc_common() we unmask exceptions before we call user_exit(), and
+so there's a window where an IRQ or debug exception can be taken while
+RCU is not watching. In do_debug_exception() we account for this in via
+debug_exception_{enter,exit}(), but in the el1_irq asm we do not and we
+call trace functions which rely on RCU before we have a guarantee that
+RCU is watching.
 
-References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
+Let's avoid this by having el0_svc_common() exit userspace before
+unmasking exceptions, matching what we do for all other EL0 entry paths.
+We can use user_exit_irqoff() to avoid the pointless save/restore of IRQ
+flags while we're sure exceptions are masked in DAIF.
 
-Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+The workaround for Cortex-A76 erratum 1463225 may trigger a debug
+exception before this point, but the debug code invoked in this case is
+safe even when RCU is not watching.
+
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: James Morse <james.morse@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20201130115950.22492-2-mark.rutland@arm.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tegra/drm.c | 2 +-
+ arch/arm64/kernel/syscall.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/tegra/drm.c b/drivers/gpu/drm/tegra/drm.c
-index a2bd5876c6335..00808a3d67832 100644
---- a/drivers/gpu/drm/tegra/drm.c
-+++ b/drivers/gpu/drm/tegra/drm.c
-@@ -242,7 +242,7 @@ static int tegra_drm_open(struct drm_device *drm, struct drm_file *filp)
- 	if (!fpriv)
- 		return -ENOMEM;
+diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
+index 1457a0ba83dbc..f2d2dbbbfca20 100644
+--- a/arch/arm64/kernel/syscall.c
++++ b/arch/arm64/kernel/syscall.c
+@@ -102,8 +102,8 @@ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
+ 	regs->syscallno = scno;
  
--	idr_init(&fpriv->contexts);
-+	idr_init_base(&fpriv->contexts, 1);
- 	mutex_init(&fpriv->lock);
- 	filp->driver_priv = fpriv;
+ 	cortex_a76_erratum_1463225_svc_handler();
++	user_exit_irqoff();
+ 	local_daif_restore(DAIF_PROCCTX);
+-	user_exit();
  
+ 	if (has_syscall_work(flags)) {
+ 		/* set default errno for user-issued syscall(-1) */
 -- 
 2.27.0
 
