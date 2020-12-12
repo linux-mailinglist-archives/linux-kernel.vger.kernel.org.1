@@ -2,85 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5962D895E
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 19:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7FD2D896B
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 19:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404770AbgLLStm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 13:49:42 -0500
-Received: from smtprelay0132.hostedemail.com ([216.40.44.132]:42224 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726167AbgLLStj (ORCPT
+        id S2407739AbgLLSv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 13:51:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47449 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726167AbgLLSv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 13:49:39 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id B983F180A7FE4;
-        Sat, 12 Dec 2020 18:48:58 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:46:150:153:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1981:2110:2194:2199:2393:2553:2559:2562:2828:2914:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:5007:8603:10004:10400:10471:10848:10967:11232:11658:11914:12297:12679:12740:12760:12895:13069:13255:13311:13357:13439:14096:14097:14659:14721:21080:21212:21627:30012:30025:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: hour92_2d166912740b
-X-Filterd-Recvd-Size: 2591
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 12 Dec 2020 18:48:56 +0000 (UTC)
-Message-ID: <03bb4d4436ca7022effbf23551ada24ff9eeb4c6.camel@perches.com>
-Subject: Re: mmc: atmel-mci: Reduce scope for the variable
- =?UTF-8?Q?=E2=80=9Cslot=E2=80=9D?= in atmci_request_end()
-From:   Joe Perches <joe@perches.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Markus Elfring <Markus.Elfring@web.de>, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Colin Ian King <colin.king@canonical.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Sat, 12 Dec 2020 10:48:55 -0800
-In-Reply-To: <20201212131727.GL1781038@piout.net>
-References: <466b4c6d-032f-fbcc-58ac-75f6f39d734f@web.de>
-         <20201210151035.GC1578121@piout.net>
-         <ec71d7b8-a36b-04f5-77a8-22874ac241e1@web.de>
-         <20201210170723.GD1578121@piout.net>
-         <2667790c-fad2-aaa9-36e8-6be66949ac8d@web.de>
-         <20201210182150.GE1578121@piout.net>
-         <4c0d8efe-de25-f168-8b8d-b7f1ede6c6b1@web.de>
-         <20201211080301.GC1781038@piout.net>
-         <031a64e4261e1543a136d737436abefd63dbaee1.camel@perches.com>
-         <20201212131727.GL1781038@piout.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 12 Dec 2020 13:51:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607799031;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+8PgvJ932tyD+kO+UM8no2CrJ/budWb9RkQW3XvAXW0=;
+        b=eGLKXgzoIuwprM7OHtlFLU2ImFmm3a+dS1sjJOYvgAypro7dd8jO8iAh2LCsV7asIJNMWx
+        6gbgb6G9UDDGmvAOjGiEzo+Vq/9XW+UJomf3ZnhYkbow2bqiXmoUh6PghdJKgBKg5X0wQ6
+        D8DcenUPx7mc6CPrjazruMIT7k4I0XM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-577-UfkopIKKNhqhAsb6XnWmPQ-1; Sat, 12 Dec 2020 13:50:27 -0500
+X-MC-Unique: UfkopIKKNhqhAsb6XnWmPQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2716180A087;
+        Sat, 12 Dec 2020 18:50:25 +0000 (UTC)
+Received: from laptop.redhat.com (ovpn-115-41.ams2.redhat.com [10.36.115.41])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B91CC1F45B;
+        Sat, 12 Dec 2020 18:50:19 +0000 (UTC)
+From:   Eric Auger <eric.auger@redhat.com>
+To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, maz@kernel.org, drjones@redhat.com
+Cc:     alexandru.elisei@arm.com, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        shuah@kernel.org, pbonzini@redhat.com
+Subject: [PATCH 0/9] KVM/ARM: Some vgic fixes and init sequence KVM selftests
+Date:   Sat, 12 Dec 2020 19:50:01 +0100
+Message-Id: <20201212185010.26579-1-eric.auger@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-12-12 at 14:17 +0100, Alexandre Belloni wrote:
-> On 12/12/2020 01:16:39-0800, Joe Perches wrote:
-> > In this case Alexandre it seems true, but in the generic case
-> > it may be false.  It may depend on stack size and location.
-> > 
-> > For instance, with large structs declared either at the top
-> > of a function or in separate branches within the function:
->
-> I think you realize your example is way more complicated than
-> initializing basic type variable to 0 or NULL which has probably been
-> optimized forever.
+While writting vgic v3 init sequence KVM selftests I noticed some
+relatively minor issues. This was also the opportunity to try to
+fix the issue laterly reported by Zenghui, related to the RDIST_TYPER
+last bit emulation. The final patch is a first batch of VGIC init
+sequence selftests. Of course they can be augmented with a lot more
+register access tests, but let's try to move forward incrementally ...
 
-Maybe.
+Best Regards
 
-Markus does a lot of what most (or perhaps some) consider thoughtless.
+Eric
 
-A generic point might be maximizing the local scope of declarations.
+This series can be found at:
+https://github.com/eauger/linux/tree/vgic-selftests-and-fixes-v1
 
-Maximizing the local scope can make reading easier as the type of an
-automatic used for a temporary purpose can be found closer to the code
-that uses it.  This is especially true for long line-count functions.
+Eric Auger (9):
+  KVM: arm64: vgic-v3: Fix some error codes when setting RDIST base
+  KVM: arm64: Fix KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION read
+  KVM: arm64: vgic-v3: Fix error handling in vgic_v3_set_redist_base()
+  KVM: arm/arm64: vgic: Reset base address on kvm_vgic_dist_destroy()
+  KVM: arm: move has_run_once after the map_resources
+  docs: kvm: devices/arm-vgic-v3: enhance KVM_DEV_ARM_VGIC_CTRL_INIT doc
+  KVM: arm64: Simplify argument passing to vgic_uaccess_[read|write]
+  KVM: arm64: vgic-v3: Expose GICR_TYPER.Last for userspace
+  KVM: selftests: aarch64/vgic-v3 init sequence tests
 
-IMO: it's a reasonable goal though in this instance perhaps unnecessary.
+ .../virt/kvm/devices/arm-vgic-v3.rst          |   2 +-
+ arch/arm64/kvm/arm.c                          |   4 +-
+ arch/arm64/kvm/vgic/vgic-init.c               |   7 +-
+ arch/arm64/kvm/vgic/vgic-kvm-device.c         |   3 +
+ arch/arm64/kvm/vgic/vgic-mmio-v3.c            |  24 +-
+ arch/arm64/kvm/vgic/vgic-mmio.c               |  10 +-
+ include/kvm/arm_vgic.h                        |   1 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../testing/selftests/kvm/aarch64/vgic_init.c | 453 ++++++++++++++++++
+ .../testing/selftests/kvm/include/kvm_util.h  |   5 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  51 ++
+ 11 files changed, 546 insertions(+), 15 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/aarch64/vgic_init.c
 
-cheers, Joe
-
+-- 
+2.21.3
 
