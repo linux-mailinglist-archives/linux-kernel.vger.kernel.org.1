@@ -2,197 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8C72D8585
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 11:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E912D856D
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 10:56:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438515AbgLLKAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 05:00:02 -0500
-Received: from mga02.intel.com ([134.134.136.20]:61275 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438508AbgLLJ7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 04:59:36 -0500
-IronPort-SDR: ifZ8E8h53bGYsOeUzY+Qy2LwopJQHsMDkbQPfPp7f0zQwa6SzJZtTItV3d9R1VCmgq9VVUPb0W
- J7FG4CvqQo4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9832"; a="161586165"
-X-IronPort-AV: E=Sophos;i="5.78,413,1599548400"; 
-   d="scan'208";a="161586165"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2020 00:51:09 -0800
-IronPort-SDR: aSBz5MFlyrxBJJzgSWgWgFPnNZy+yYkUI01f1gEKuZmrrl5Qfun45FyAmLvVl/IFwKO0p7Bh7U
- 88DPh5b1fv1A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,413,1599548400"; 
-   d="scan'208";a="324863738"
-Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
-  by fmsmga008.fm.intel.com with ESMTP; 12 Dec 2020 00:51:04 -0800
-Date:   Sat, 12 Dec 2020 16:47:08 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     "Geva, Erez" <erez.geva.ext@siemens.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Cong Wang <xiyou.wangcong@gmail.com>, Sudler@ml01.01.org,
-        Andreas <andreas.meisinger@siemens.com>,
-        "jan.kiszka@siemens.com" <jan.kiszka@siemens.com>,
-        "henning.schild@siemens.com" <henning.schild@siemens.com>
-Subject: Re: [kbuild-all] Re: [PATCH 1/3] Add TX sending hardware timestamp.
-Message-ID: <20201212084708.GA31899@intel.com>
-References: <20201209143707.13503-2-erez.geva.ext@siemens.com>
- <202012101050.lTUKkbvy-lkp@intel.com>
- <VI1PR10MB244664932EF569D492539DB8ABCB0@VI1PR10MB2446.EURPRD10.PROD.OUTLOOK.COM>
+        id S2388959AbgLLJyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 04:54:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728938AbgLLJxQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 04:53:16 -0500
+Received: from mail-il1-x147.google.com (mail-il1-x147.google.com [IPv6:2607:f8b0:4864:20::147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BC4C061248
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 01:03:13 -0800 (PST)
+Received: by mail-il1-x147.google.com with SMTP id l11so9137448ilq.2
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 01:03:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=6Q8P6lZWJk9YvI1o3Ir5QP4xCY7zQR/frUrxy75o8kk=;
+        b=aKaJcuz94HOY4MrEa7qm3xPFBHq7EV5CZzaRIx9rffG5ZgSuuqD3HPPLOaLxDXNY8F
+         UiQs462cu/Gd/DjwCvJVFQNKGz67j7Js0HkwQgsdMUcVatKnye38U/gSVmEuxOeL4MDk
+         0twhCpU+3aJvUs4Qfpzy4cCAswjvAVzNjT9qu/0DsMTEYXldXY6qDmlVxKt5out671PK
+         oy1XNJq0Vxrs64VTXj331A5k161hVKrB5TspxCAoBotsCIqjSI6yRAgyzdsP2RLFqnWk
+         QPmZG1DLpRmhn7k9k7c3CX4/50MoyO/E8dF3YcHnj+dbMCak3YEAYdYjZIRtn97KFUvd
+         Aowg==
+X-Gm-Message-State: AOAM533ugk3HXwpeFSHL2sdrmhb+34WbtmU5hSlyYL8SRP3kzryrWr2o
+        qyf8Ek6C1y2H38LX9YRzGYfNFIO2aiuZrNM57IBfjxSEhoIw
+X-Google-Smtp-Source: ABdhPJyd3AKxjCLuOnS6FKa03FzV1nTM3nzrhwE8pcGZkkkvqlmJfF5eV5rBaWyiFCTrb4rIWZhbkOtCOUv9GcJfAQbTxcXAvo3L
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <VI1PR10MB244664932EF569D492539DB8ABCB0@VI1PR10MB2446.EURPRD10.PROD.OUTLOOK.COM>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a02:91c2:: with SMTP id s2mr21400206jag.48.1607763790376;
+ Sat, 12 Dec 2020 01:03:10 -0800 (PST)
+Date:   Sat, 12 Dec 2020 01:03:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009bb75905b640ad12@google.com>
+Subject: INFO: task can't die in connmark_exit_net
+From:   syzbot <syzbot+b3b63b6bff456bd95294@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 12:41:32PM +0000, Geva, Erez wrote:
-> 
-> On 10/12/2020 04:11, kernel test robot wrote:
-> > Hi Erez,
-> > 
-> > Thank you for the patch! Yet something to improve:
-> > 
-> Thanks for the robot,
-> as we rarely use clang for kernel. It is very helpful.
-> 
-> > [auto build test ERROR on b65054597872ce3aefbc6a666385eabdf9e288da]
-> > 
-> > url:    https://github.com/0day-ci/linux/commits/Erez-Geva/Add-sending-TX-hardware-timestamp-for-TC-ETF-Qdisc/20201210-000521
-> I can not find this commit
-> 
-> > base:    b65054597872ce3aefbc6a666385eabdf9e288da
-> > config: mips-randconfig-r026-20201209 (attached as .config)
-> > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 1968804ac726e7674d5de22bc2204b45857da344)
-> However the clang in 
-> https://download.01.org/0day-ci/cross-package/clang-latest/clang.tar.xz  is version 11
-Sorry that these are issues at our side, including the branch/commit missing.
-The push to download.01.org failed and did not really work, we will look for
-recovering them.
+Hello,
 
-> 
-> > reproduce (this is a W=1 build):
-> >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> Your make cross script tries to download the clang every time.
-> Please separate the download (which is ~400 MB and 2 GB after open) from the compilation.
-Hi Erez, thanks for your feedback, we will improve the reproduction
-side per these suggestions.
+syzbot found the following issue on:
 
-> 
-> Please use "wget" follow your own instructions in this email.
-> 
-> >          chmod +x ~/bin/make.cross
-> >          # install mips cross compiling tool for clang build
-> >          # apt-get install binutils-mips-linux-gnu
-> >          # https://github.com/0day-ci/linux/commit/8a8f634bc74db16dc551cfcf3b63c1183f98eaac
-> >          git remote add linux-review https://github.com/0day-ci/linux
-> >          git fetch --no-tags linux-review Erez-Geva/Add-sending-TX-hardware-timestamp-for-TC-ETF-Qdisc/20201210-000521
-> This branch is absent
-> 
-> >          git checkout 8a8f634bc74db16dc551cfcf3b63c1183f98eaac
-> This commit as well
-> 
-> >          # save the attached .config to linux build tree
-> >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=mips
-> > 
-> I use Debian 10.7.
-> I usually compile with GCC. I have not see any errors.
-> 
-> When I use clang 11 from download.01.org I get a crash right away.
-> Please add a proper instructions how to use clang on Debian or provide 
-> a Docker container with updated clang for testing.
-> 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > 
-> > All errors (new ones prefixed by >>):
-> > 
-> >>> net/core/sock.c:2383:7: error: use of undeclared identifier 'SCM_HW_TXTIME'; did you mean 'SOCK_HW_TXTIME'?
-> >             case SCM_HW_TXTIME:
-> >                  ^~~~~~~~~~~~~
-> >                  SOCK_HW_TXTIME
-> >     include/net/sock.h:862:2: note: 'SOCK_HW_TXTIME' declared here
-> >             SOCK_HW_TXTIME,
-> >             ^
-> >     1 error generated.
-> > 
-> > vim +2383 net/core/sock.c
-> > 
-> >    2351	
-> >    2352	int __sock_cmsg_send(struct sock *sk, struct msghdr *msg, struct cmsghdr *cmsg,
-> >    2353			     struct sockcm_cookie *sockc)
-> >    2354	{
-> >    2355		u32 tsflags;
-> >    2356	
-> >    2357		switch (cmsg->cmsg_type) {
-> >    2358		case SO_MARK:
-> >    2359			if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
-> >    2360				return -EPERM;
-> >    2361			if (cmsg->cmsg_len != CMSG_LEN(sizeof(u32)))
-> >    2362				return -EINVAL;
-> >    2363			sockc->mark = *(u32 *)CMSG_DATA(cmsg);
-> >    2364			break;
-> >    2365		case SO_TIMESTAMPING_OLD:
-> >    2366			if (cmsg->cmsg_len != CMSG_LEN(sizeof(u32)))
-> >    2367				return -EINVAL;
-> >    2368	
-> >    2369			tsflags = *(u32 *)CMSG_DATA(cmsg);
-> >    2370			if (tsflags & ~SOF_TIMESTAMPING_TX_RECORD_MASK)
-> >    2371				return -EINVAL;
-> >    2372	
-> >    2373			sockc->tsflags &= ~SOF_TIMESTAMPING_TX_RECORD_MASK;
-> >    2374			sockc->tsflags |= tsflags;
-> >    2375			break;
-> >    2376		case SCM_TXTIME:
-> >    2377			if (!sock_flag(sk, SOCK_TXTIME))
-> >    2378				return -EINVAL;
-> >    2379			if (cmsg->cmsg_len != CMSG_LEN(sizeof(u64)))
-> >    2380				return -EINVAL;
-> >    2381			sockc->transmit_time = get_unaligned((u64 *)CMSG_DATA(cmsg));
-> >    2382			break;
-> >> 2383		case SCM_HW_TXTIME:
-> >    2384			if (!sock_flag(sk, SOCK_HW_TXTIME))
-> >    2385				return -EINVAL;
-> >    2386			if (cmsg->cmsg_len != CMSG_LEN(sizeof(u64)))
-> >    2387				return -EINVAL;
-> >    2388			sockc->transmit_hw_time = get_unaligned((u64 *)CMSG_DATA(cmsg));
-> >    2389			break;
-> >    2390		/* SCM_RIGHTS and SCM_CREDENTIALS are semantically in SOL_UNIX. */
-> >    2391		case SCM_RIGHTS:
-> >    2392		case SCM_CREDENTIALS:
-> >    2393			break;
-> >    2394		default:
-> >    2395			return -EINVAL;
-> >    2396		}
-> >    2397		return 0;
-> >    2398	}
-> >    2399	EXPORT_SYMBOL(__sock_cmsg_send);
-> >    2400	
-> > 
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> > 
-> 
-> Please improve the robot, so we can comply and properly support clang compilation.
-Got it, we will keep improving the bot.
+HEAD commit:    15ac8fdb Add linux-next specific files for 20201207
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15fbf86b500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3696b8138207d24d
+dashboard link: https://syzkaller.appspot.com/bug?extid=b3b63b6bff456bd95294
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13121287500000
 
-> 
-> Thanks
->    Erez
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b3b63b6bff456bd95294@syzkaller.appspotmail.com
+
+INFO: task syz-executor.4:13889 can't die for more than 143 seconds.
+task:syz-executor.4  state:D stack:26200 pid:13889 ppid: 12369 flags:0x00004006
+Call Trace:
+ context_switch kernel/sched/core.c:4325 [inline]
+ __schedule+0x8eb/0x21b0 kernel/sched/core.c:5076
+ schedule+0xcf/0x270 kernel/sched/core.c:5155
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:5214
+ __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
+ __mutex_lock+0x81a/0x1110 kernel/locking/mutex.c:1103
+ tc_action_net_exit include/net/act_api.h:147 [inline]
+ connmark_exit_net+0x20/0x130 net/sched/act_connmark.c:241
+ ops_exit_list+0x10d/0x160 net/core/net_namespace.c:190
+ setup_net+0x508/0x850 net/core/net_namespace.c:365
+ copy_net_ns+0x376/0x7b0 net/core/net_namespace.c:483
+ create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
+ copy_namespaces+0x3e5/0x4d0 kernel/nsproxy.c:179
+ copy_process+0x2aa7/0x6fe0 kernel/fork.c:2103
+ kernel_clone+0xe7/0xad0 kernel/fork.c:2465
+ __do_sys_clone+0xc8/0x110 kernel/fork.c:2582
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e0f9
+RSP: 002b:00007fd04901bc68 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 000000000045e0f9
+RDX: 9999999999999999 RSI: 0000000000000000 RDI: 00000000e900e57c
+RBP: 000000000119c078 R08: ffffffffffffffff R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119c034
+R13: 00007fff629a5d7f R14: 00007fd04901c9c0 R15: 000000000119c034
+INFO: task syz-executor.1:13932 can't die for more than 143 seconds.
+task:syz-executor.1  state:D stack:26320 pid:13932 ppid: 12371 flags:0x00004006
+Call Trace:
+ context_switch kernel/sched/core.c:4325 [inline]
+ __schedule+0x8eb/0x21b0 kernel/sched/core.c:5076
+ schedule+0xcf/0x270 kernel/sched/core.c:5155
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:5214
+ __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
+ __mutex_lock+0x81a/0x1110 kernel/locking/mutex.c:1103
+ tc_action_net_exit include/net/act_api.h:147 [inline]
+ gate_exit_net+0x20/0x130 net/sched/act_gate.c:624
+ ops_exit_list+0x10d/0x160 net/core/net_namespace.c:190
+ setup_net+0x508/0x850 net/core/net_namespace.c:365
+ copy_net_ns+0x376/0x7b0 net/core/net_namespace.c:483
+ create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
+ copy_namespaces+0x3e5/0x4d0 kernel/nsproxy.c:179
+ copy_process+0x2aa7/0x6fe0 kernel/fork.c:2103
+ kernel_clone+0xe7/0xad0 kernel/fork.c:2465
+ __do_sys_clone+0xc8/0x110 kernel/fork.c:2582
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e0f9
+RSP: 002b:00007fd373ed4c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 000000000045e0f9
+RDX: 9999999999999999 RSI: 0000000000000000 RDI: 00000000e900e57c
+RBP: 000000000119c120 R08: ffffffffffffffff R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119c0dc
+R13: 00007ffc4464352f R14: 00007fd373ed59c0 R15: 000000000119c0dc
+
+Showing all locks held in the system:
+3 locks held by kworker/0:2/8:
+3 locks held by kworker/1:1/35:
+ #0: ffff8881473fb538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff8881473fb538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff8881473fb538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff8881473fb538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff8881473fb538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff8881473fb538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work+0x871/0x1630 kernel/workqueue.c:2246
+ #1: ffffc90000e6fda8 ((work_completion)(&(&ifa->dad_work)->work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1630 kernel/workqueue.c:2250
+ #2: ffffffff8d0d70c8 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_dad_work+0xa3/0x1280 net/ipv6/addrconf.c:4028
+1 lock held by khungtaskd/1655:
+ #0: ffffffff8b78db60 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x28c kernel/locking/lockdep.c:6254
+1 lock held by in:imklog/8192:
+ #0: ffff888012b58370 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:923
+4 locks held by kworker/u4:1/8580:
+3 locks held by kworker/u4:2/8830:
+3 locks held by kworker/0:4/9816:
+ #0: ffff888010862d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010862d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888010862d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888010862d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888010862d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888010862d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x871/0x1630 kernel/workqueue.c:2246
+ #1: ffffc90001dd7da8 (deferred_process_work){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1630 kernel/workqueue.c:2250
+ #2: ffffffff8d0d70c8 (rtnl_mutex){+.+.}-{3:3}, at: switchdev_deferred_process_work+0xa/0x20 net/switchdev/switchdev.c:74
+3 locks held by kworker/0:6/10010:
+ #0: ffff8881473fb538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff8881473fb538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff8881473fb538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff8881473fb538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff8881473fb538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff8881473fb538 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work+0x871/0x1630 kernel/workqueue.c:2246
+ #1: ffffc9000af5fda8 ((work_completion)(&(&ifa->dad_work)->work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1630 kernel/workqueue.c:2250
+ #2: ffffffff8d0d70c8 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_dad_work+0xa3/0x1280 net/ipv6/addrconf.c:4028
+3 locks held by kworker/0:27/12319:
+ #0: ffff888010862d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010862d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888010862d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888010862d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888010862d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888010862d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x871/0x1630 kernel/workqueue.c:2246
+ #1: ffffc90002e67da8 ((linkwatch_work).work){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1630 kernel/workqueue.c:2250
+ #2: ffffffff8d0d70c8 (rtnl_mutex){+.+.}-{3:3}, at: linkwatch_event+0xb/0x60 net/core/link_watch.c:250
+2 locks held by syz-executor.4/13889:
+ #0: ffffffff8d0bc590 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x352/0x7b0 net/core/net_namespace.c:479
+ #1: ffffffff8d0d70c8 (rtnl_mutex){+.+.}-{3:3}, at: tc_action_net_exit include/net/act_api.h:147 [inline]
+ #1: ffffffff8d0d70c8 (rtnl_mutex){+.+.}-{3:3}, at: connmark_exit_net+0x20/0x130 net/sched/act_connmark.c:241
+2 locks held by syz-executor.1/13932:
+ #0: ffffffff8d0bc590 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x352/0x7b0 net/core/net_namespace.c:479
+ #1: ffffffff8d0d70c8 (rtnl_mutex){+.+.}-{3:3}, at: tc_action_net_exit include/net/act_api.h:147 [inline]
+ #1: ffffffff8d0d70c8 (rtnl_mutex){+.+.}-{3:3}, at: gate_exit_net+0x20/0x130 net/sched/act_gate.c:624
+2 locks held by syz-executor.3/14181:
+ #0: ffffffff8d0bc590 (pernet_ops_rwsem){++++}-{3:3}, at: copy_net_ns+0x352/0x7b0 net/core/net_namespace.c:479
+ #1: ffffffff8d0d70c8 (rtnl_mutex){+.+.}-{3:3}, at: tc_action_net_exit include/net/act_api.h:147 [inline]
+ #1: ffffffff8d0d70c8 (rtnl_mutex){+.+.}-{3:3}, at: gate_exit_net+0x20/0x130 net/sched/act_gate.c:624
+2 locks held by syz-executor.5/14278:
+1 lock held by syz-executor.0/14352:
+ #0: ffffffff8d0d70c8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
+ #0: ffffffff8d0d70c8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x443/0xb80 net/core/rtnetlink.c:5559
+
+=============================================
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
