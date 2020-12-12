@@ -2,211 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 321C52D89C0
+	by mail.lfdr.de (Postfix) with ESMTP id A1D722D89C1
 	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 20:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407774AbgLLTdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 14:33:37 -0500
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:37496 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404498AbgLLTdg (ORCPT
+        id S2407792AbgLLTex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 14:34:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407785AbgLLTec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 14:33:36 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 2DE9C1280862;
-        Sat, 12 Dec 2020 11:32:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1607801576;
-        bh=ySLxiaULiztpp+29NfcC4MnDIuxzi3G/V8W5xOLkf2A=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=rAN79vKowMb1Ut1iHYA03ED/PNk3iK4xHVYVhntJG853cPTPTyOdOjqbV6g+uOTxl
-         0YXUCQuYZIJDv4/x0VCyAAk9iacydBsYwVBJ8DQr1aHWplfXHaPhONYce0cwi0bwM1
-         JSR6exo38dOSyllaqkHXkwlGsoCor1RtuzPHhlNw=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id HbFaAmR6yZTN; Sat, 12 Dec 2020 11:32:56 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id C25671280817;
-        Sat, 12 Dec 2020 11:32:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1607801576;
-        bh=ySLxiaULiztpp+29NfcC4MnDIuxzi3G/V8W5xOLkf2A=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=rAN79vKowMb1Ut1iHYA03ED/PNk3iK4xHVYVhntJG853cPTPTyOdOjqbV6g+uOTxl
-         0YXUCQuYZIJDv4/x0VCyAAk9iacydBsYwVBJ8DQr1aHWplfXHaPhONYce0cwi0bwM1
-         JSR6exo38dOSyllaqkHXkwlGsoCor1RtuzPHhlNw=
-Message-ID: <a66d77104855fe9cec651d3c51aef288c2676dc2.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 5.10-rc7
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Sat, 12 Dec 2020 11:32:54 -0800
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Sat, 12 Dec 2020 14:34:32 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90AFCC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 11:33:52 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607801630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fsSEGJCAwuZxgOgaIzYfbINvJnUoQRBOk4nJ9KS5zqw=;
+        b=NPplzLLHXnjuxlUJddCik8rZvWZ2eDXuF5ZhnOnr9WUhwcgUxKEdfBfbehHSP9I//Q89nv
+        DstD9SuOTAipJ62nPEAm70+2xV7aa47DAijthAIAskqxDEyf0av2shdrxIvcIw09ky/ukX
+        NE2CmVbppA6LbFxmwqeJU5TMdDg/DCzmYVSZaAjcv9FGiicePATzAN6MKiX1ISKhC3Jk81
+        kaOLkUjAKJLRFW/pf5dSAcT0vL7OvgBLc3LGOtA6QPzenM+9yb56X8RBt7zr3UT7g5WhYd
+        pfOchoxuSXGNxpmo+QmaixjFJowxYUS/UOms0h9C556FD14d9SuG2uzewzGsTg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607801630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fsSEGJCAwuZxgOgaIzYfbINvJnUoQRBOk4nJ9KS5zqw=;
+        b=0SHOMmvfnaM4Pw+HX4mcE1J1227oSps+1P7BwpG2xlwYHrdaTZLnTARPDodwEMNfAMvdjk
+        HHt+jwCL19w5OfDA==
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     "x86\@kernel.org" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: common_interrupt: No irq handler for vector
+In-Reply-To: <9741d93c-3cd1-c4ef-74bb-7f635231c778@linuxfoundation.org>
+References: <9741d93c-3cd1-c4ef-74bb-7f635231c778@linuxfoundation.org>
+Date:   Sat, 12 Dec 2020 20:33:50 +0100
+Message-ID: <87im96g6ox.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Five small fixes: four in drivers: hisi_sas: fix internal queue
-timeout, be2iscsi: revert a prior fix causing problems, bnx2i: add
-missing dependency, storvsc: late arriving revert of a problem fix, and
-one in the core.  The core one is a minor change to stop paying
-attention to the busy count when returning out of resources because
-there's a race window where the queue might not restart due to missing
-returning I/O.
+On Fri, Dec 11 2020 at 13:41, Shuah Khan wrote:
 
-The patch is available here:
+> I am debugging __common_interrupt: 1.55 No irq handler for vector
+> messages and noticed comments and code don't agree:
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+I bet that's on an AMD system with broken AGESA BIOS.... Good luck
+debugging it :) BIOS updates are on the way so I'm told.
 
-The short changelog is:
+> arch/x86/kernel/apic/msi.c: msi_set_affinity() says:
+>
+>
+>   * If the vector is in use then the installed device handler will
+>   * denote it as spurious which is no harm as this is a rare event
+>   * and interrupt handlers have to cope with spurious interrupts
+>   * anyway. If the vector is unused, then it is marked so it won't
+>   * trigger the 'No irq handler for vector' warning in
+>   * common_interrupt().
+>
+> common_interrupt() prints message if vector is unused: VECTOR_UNUSED
+>
+> ack_APIC_irq();
+>
+> if (desc == VECTOR_UNUSED) {
+>      pr_emerg_ratelimited("%s: %d.%u No irq handler for vector\n",
+>                            __func__, smp_processor_id(), vector);
+> }
+>
+> Something wrong here?
 
-Andrea Parri (Microsoft) (1):
-      Revert "scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()"
+No. It's perfectly correct in the MSI code. See further down.
 
-Dan Carpenter (1):
-      scsi: be2iscsi: Revert "Fix a theoretical leak in beiscsi_create_eqs()"
+	if (IS_ERR_OR_NULL(this_cpu_read(vector_irq[cfg->vector])))
+		this_cpu_write(vector_irq[cfg->vector], VECTOR_RETRIGGERED);
 
-Ming Lei (1):
-      scsi: core: Fix race between handling STS_RESOURCE and completion
+Thanks,
 
-Randy Dunlap (1):
-      scsi: bnx2i: Requires MMU
-
-Xiang Chen (1):
-      scsi: hisi_sas: Select a suitable queue for internal I/Os
-
-And the diffstat:
-
- drivers/scsi/be2iscsi/be_main.c        | 4 ++--
- drivers/scsi/bnx2i/Kconfig             | 1 +
- drivers/scsi/hisi_sas/hisi_sas_main.c  | 6 ++++++
- drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 5 +++++
- drivers/scsi/scsi_lib.c                | 3 +--
- drivers/scsi/storvsc_drv.c             | 5 -----
- 6 files changed, 15 insertions(+), 9 deletions(-)
-
-With full diff below.
-
-James
-
----
-
-diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
-index 202ba925c494..5c3513a4b450 100644
---- a/drivers/scsi/be2iscsi/be_main.c
-+++ b/drivers/scsi/be2iscsi/be_main.c
-@@ -3020,7 +3020,6 @@ static int beiscsi_create_eqs(struct beiscsi_hba *phba,
- 			goto create_eq_error;
- 		}
- 
--		mem->dma = paddr;
- 		mem->va = eq_vaddress;
- 		ret = be_fill_queue(eq, phba->params.num_eq_entries,
- 				    sizeof(struct be_eq_entry), eq_vaddress);
-@@ -3030,6 +3029,7 @@ static int beiscsi_create_eqs(struct beiscsi_hba *phba,
- 			goto create_eq_error;
- 		}
- 
-+		mem->dma = paddr;
- 		ret = beiscsi_cmd_eq_create(&phba->ctrl, eq,
- 					    BEISCSI_EQ_DELAY_DEF);
- 		if (ret) {
-@@ -3086,7 +3086,6 @@ static int beiscsi_create_cqs(struct beiscsi_hba *phba,
- 			goto create_cq_error;
- 		}
- 
--		mem->dma = paddr;
- 		ret = be_fill_queue(cq, phba->params.num_cq_entries,
- 				    sizeof(struct sol_cqe), cq_vaddress);
- 		if (ret) {
-@@ -3096,6 +3095,7 @@ static int beiscsi_create_cqs(struct beiscsi_hba *phba,
- 			goto create_cq_error;
- 		}
- 
-+		mem->dma = paddr;
- 		ret = beiscsi_cmd_cq_create(&phba->ctrl, cq, eq, false,
- 					    false, 0);
- 		if (ret) {
-diff --git a/drivers/scsi/bnx2i/Kconfig b/drivers/scsi/bnx2i/Kconfig
-index 75ace2302fed..0cc06c2ce0b8 100644
---- a/drivers/scsi/bnx2i/Kconfig
-+++ b/drivers/scsi/bnx2i/Kconfig
-@@ -4,6 +4,7 @@ config SCSI_BNX2_ISCSI
- 	depends on NET
- 	depends on PCI
- 	depends on (IPV6 || IPV6=n)
-+	depends on MMU
- 	select SCSI_ISCSI_ATTRS
- 	select NETDEVICES
- 	select ETHERNET
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
-index c8dd8588f800..274ccf18ce2d 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_main.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
-@@ -452,6 +452,12 @@ static int hisi_sas_task_prep(struct sas_task *task,
- 		blk_tag = blk_mq_unique_tag(scmd->request);
- 		dq_index = blk_mq_unique_tag_to_hwq(blk_tag);
- 		*dq_pointer = dq = &hisi_hba->dq[dq_index];
-+	} else if (hisi_hba->shost->nr_hw_queues)  {
-+		struct Scsi_Host *shost = hisi_hba->shost;
-+		struct blk_mq_queue_map *qmap = &shost->tag_set.map[HCTX_TYPE_DEFAULT];
-+		int queue = qmap->mq_map[raw_smp_processor_id()];
-+
-+		*dq_pointer = dq = &hisi_hba->dq[queue];
- 	} else {
- 		*dq_pointer = dq = sas_dev->dq;
- 	}
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-index 7133ca859b5e..960de375ce69 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-@@ -2452,6 +2452,11 @@ static int interrupt_init_v3_hw(struct hisi_hba *hisi_hba)
- 			rc = -ENOENT;
- 			goto free_irq_vectors;
- 		}
-+		cq->irq_mask = pci_irq_get_affinity(pdev, i + BASE_VECTORS_V3_HW);
-+		if (!cq->irq_mask) {
-+			dev_err(dev, "could not get cq%d irq affinity!\n", i);
-+			return -ENOENT;
-+		}
- 	}
- 
- 	return 0;
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index 60c7a7d74852..03c6d0620bfd 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -1703,8 +1703,7 @@ static blk_status_t scsi_queue_rq(struct blk_mq_hw_ctx *hctx,
- 		break;
- 	case BLK_STS_RESOURCE:
- 	case BLK_STS_ZONE_RESOURCE:
--		if (atomic_read(&sdev->device_busy) ||
--		    scsi_device_blocked(sdev))
-+		if (scsi_device_blocked(sdev))
- 			ret = BLK_STS_DEV_RESOURCE;
- 		break;
- 	default:
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index 99c8ff81de74..ded00a89bfc4 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -1246,11 +1246,6 @@ static void storvsc_on_channel_callback(void *context)
- 		request = (struct storvsc_cmd_request *)
- 			((unsigned long)desc->trans_id);
- 
--		if (hv_pkt_datalen(desc) < sizeof(struct vstor_packet) - vmscsi_size_delta) {
--			dev_err(&device->device, "Invalid packet len\n");
--			continue;
--		}
--
- 		if (request == &stor_device->init_request ||
- 		    request == &stor_device->reset_request) {
- 			memcpy(&request->vstor_packet, packet,
-
+        tglx
