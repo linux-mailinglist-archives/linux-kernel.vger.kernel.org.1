@@ -2,60 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3645E2D8A9A
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 00:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 845CC2D8AA6
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 00:41:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408194AbgLLXMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 18:12:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725822AbgLLXMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 18:12:07 -0500
-Date:   Sat, 12 Dec 2020 15:11:25 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607814686;
-        bh=bCJ0vEa+NXKDqpdHivUO/Cf39yNtoHaB+vwlCR4wO60=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Gf8yIPjKuFCMf4x4E9D+2oL2eGsxgC1L4B0TBLV64mbEeZ7gLoZmbl6S8cvjtAAEr
-         lu9iq7sEJFbz5p+mc6N597jxqrtyf5kd6mDQpsV56w3o51/Xi+CA1eD0KDe46FtAHh
-         zeb3BYEo8V+pghgMpIhrmz92oPylJZghKxvnHNipPykLYInfLlJTBR3F3AWEuMNzIK
-         DD+2FsZqIruH4mAppeV9HA5C7NLmV20ynPeHmyV1a9CpMoKJBflx9X2weOFSMrB7iw
-         /5XPA9PeFEb+NwySfwRL0TgHIlQpSoopYG8okkFQoz/8yqyaoOjLtcwh/vhECXJ/Q/
-         grB0h4z/eoImw==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     SeongJae Park <sjpark@amazon.com>,
-        David Miller <davem@davemloft.net>,
-        SeongJae Park <sjpark@amazon.de>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Florian Westphal <fw@strlen.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        netdev <netdev@vger.kernel.org>, rcu@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] net/ipv4/inet_fragment: Batch fqdir destroy works
-Message-ID: <20201212151125.1d8074a4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CANn89iKGU6_OusKfXeoT0hQN2kto2RF_RpL3GNBeB54iqvqvXw@mail.gmail.com>
-References: <20201211112405.31158-1-sjpark@amazon.com>
-        <CANn89iKGU6_OusKfXeoT0hQN2kto2RF_RpL3GNBeB54iqvqvXw@mail.gmail.com>
+        id S2408205AbgLLXkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 18:40:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726267AbgLLXkL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 18:40:11 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE987C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 15:39:30 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id a3so11940540wmb.5
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 15:39:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3RA7b4gOSOMOF2MsxAHtn2aENtr19yvmNfEq8yHFz8U=;
+        b=FrAF7Ou7p2Xmsy2mYbf3y2dqECOoelFe/cZKKPyeoD4YLU89gU/1mQ0wHL+2zMhKSi
+         Z4VwxEVgVHD6ht6uVHyEevG2fnVfvV5ytx9fxSIg0/F/nb1PYKS+i6Nd1aWKewdVGvAE
+         u7qhKzvHPc0RkpvjtEDpLuTJf6KCsZWCgnEQzJpn0K6B4Dj5zh7xsWeIKzDKNNCwQOZ3
+         es39xHUCasEmu3IbdC5wXi4a0oSnOnZ7MpJgKpYU6JvPuftqEpK2X9P0N97sBnePYgY9
+         jzf3yLo4UinmdTzZsXR5eV3XFkZuU3kAkM4XcVIlC8wrFrNi9/yrSuGxJQ1T3uBi+cj3
+         wFPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3RA7b4gOSOMOF2MsxAHtn2aENtr19yvmNfEq8yHFz8U=;
+        b=S3FL2noiUYifmLxbYiIM5cGSGMJG4OAqearcT0Vza6MluWTUBGDfec9QvRF/+jQXg7
+         q4z8DEbAVpL6jkkn/LJ8b83vLcEyUM/CSQi8i5SSs7FDKKDloP/JAYK0UTH0WaHGSngi
+         tQYt+468Ji5ju+CU513CxYwsdz/7xX2/VC7ElnxKOgKwipJNJvQhUdmnFlm58+XStpgw
+         3vfQiD7wv7nLQ0Q/V/zL4wRjWSzZ1xkKgq268vfQfr0To2Me83Vii5NOPU5w0th9QrvM
+         2toh9VYEv5bF2tSPhedMtP6t5l9da4h48xkoSOSFnSIHYRzg7Varpx6o37L6M/63p613
+         lbCw==
+X-Gm-Message-State: AOAM533Oa/1mgUU0GPoiP+QY8ygx8qIiEeS1maiamfL3dnXVQn7TZZTs
+        S/jKJ8nDrITKi6B4FNNEfC3zcQaCtq9ErQ==
+X-Google-Smtp-Source: ABdhPJxnc44nkAyYl2TTEvZs1Q4LGKIKq9jDhWN3hzL1fJUEGZYYhkzZrEV+o/2aIEoMZFGRhCgp5w==
+X-Received: by 2002:a1c:3902:: with SMTP id g2mr20337872wma.117.1607816369152;
+        Sat, 12 Dec 2020 15:39:29 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:fd07:6f0a:92a7:a3a0? ([2a01:e34:ed2f:f020:fd07:6f0a:92a7:a3a0])
+        by smtp.googlemail.com with ESMTPSA id w17sm23443556wru.82.2020.12.12.15.39.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Dec 2020 15:39:28 -0800 (PST)
+Subject: Re: [PATCH] thermal/core: Make 'forced_passive' as obsolete candidate
+To:     Matthew Garrett <mjg59@codon.org.uk>
+Cc:     rui.zhang@intel.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, amitk@kernel.org,
+        Matthew Garrett <mjg59@srcf.ucam.org>
+References: <20201208153046.297456-1-daniel.lezcano@linaro.org>
+ <cc2085ca-ada9-d616-eed5-3496889da3bb@linaro.org>
+ <20201212035012.GA11926@codon.org.uk>
+ <20015331-955b-756f-3dce-4eb78e473704@linaro.org>
+ <20201212200806.GA19048@codon.org.uk>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <6105a8e5-7590-5ba1-5f2b-aa24bf286150@linaro.org>
+Date:   Sun, 13 Dec 2020 00:39:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201212200806.GA19048@codon.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 15:36:53 +0100 Eric Dumazet wrote:
-> On Fri, Dec 11, 2020 at 12:24 PM SeongJae Park <sjpark@amazon.com> wrote:
-> > From: SeongJae Park <sjpark@amazon.de>
-> >
-> > On a few of our systems, I found frequent 'unshare(CLONE_NEWNET)' calls
-> > make the number of active slab objects including 'sock_inode_cache' type
-> > rapidly and continuously increase.  As a result, memory pressure occurs.
+On 12/12/2020 21:08, Matthew Garrett wrote:
+> On Sat, Dec 12, 2020 at 10:11:31AM +0100, Daniel Lezcano wrote:
+>> On 12/12/2020 04:50, Matthew Garrett wrote:
+>>> Yes - what's the reason to do so?
+>>
+>> I'm cleaning up the thermal core code, so questioning every old ABI.
+>>
+>>> The code isn't specific to ACPI,
+>>> so being able to override ACPI tables doesn't seem to justify it.
+>>
+>> I agree, the code is no specific to ACPI.
+>>
+>> What non-ACPI architecture, without device tree or platform data would
+>> need the 'passive' option today ?
 > 
-> Reviewed-by: Eric Dumazet <edumazet@google.com>
-> 
-> Jakub or David might change the patch title, no need to resend.
+> Anything that provides a trip point that has no active notifications and
+> doesn't provide any information that tells the kernel to poll it.
 
-"inet: frags: batch fqdir destroy works" it is.
+I'm not able to create a setup as you describe working correctly with
+the forced passive trip point.
 
-Applied, thanks!
+The forced passive trip can not be detected as there is no comparison
+with the defined temperature in the thermal_zone_device_update() function.
+
+The commit 0c01ebbfd3caf1 may be responsible of this.
+
+If my analysis is correct, this 'feature' is broken since years, more
+than 8 years to be exact and nobody complained.
+
+If I'm right, we can remove this feature directly.
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
