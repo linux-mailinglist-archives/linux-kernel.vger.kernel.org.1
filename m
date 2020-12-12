@@ -2,102 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED392D8576
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 10:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 039D92D856A
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 10:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437973AbgLLJ4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 04:56:47 -0500
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:31160 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407229AbgLLJ43 (ORCPT
+        id S2438487AbgLLJwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 04:52:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405248AbgLLJwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 04:56:29 -0500
-Received: from localhost.localdomain ([93.22.36.60])
-        by mwinf5d05 with ME
-        id 3Mmz2400z1HrHD103Mn0mg; Sat, 12 Dec 2020 10:47:01 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 12 Dec 2020 10:47:01 +0100
-X-ME-IP: 93.22.36.60
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, marcel@holtmann.org,
-        johan.hedberg@gmail.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] Bluetooth: btqcomsmd: Fix a resource leak in error handling paths in the probe function
-Date:   Sat, 12 Dec 2020 10:46:58 +0100
-Message-Id: <20201212094658.83861-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        Sat, 12 Dec 2020 04:52:20 -0500
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DA3C0619DD
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 01:51:14 -0800 (PST)
+Received: from [2a02:fe0:c700:2:687c:e90d:da70:b07d] (port=60646)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <Ywe_C4rlyn@ihsan-code.eu>)
+        id 1ko1YV-0005CE-T2
+        for linux-kernel@vger.kernel.org; Sat, 12 Dec 2020 10:51:11 +0100
+Subject: Re: Fair Pay: Some interesting observations of symboldevelopment..
+From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C4rlyn@ihsan-code.eu>
+To:     linux-kernel@vger.kernel.org
+References: <0cc3e3c3-cf47-dff1-b6c1-2ab562072a01@ihsan-code.eu>
+ <0523bdfb-7d1f-998b-b79e-13fc7f85b6a7@ihsan-code.eu>
+ <6737bbc9-aceb-dc43-b2c5-51265abfff5d@ihsan-code.eu>
+ <b2b91154-bc58-d5cb-41f7-44a6c95b48cf@ihsan-code.eu>
+ <861b1f05-3b1c-f458-32ce-c548b9b0c07f@ihsan-code.eu>
+ <3c6233c8-f5c2-756f-14d2-d835e724b387@ihsan-code.eu>
+ <3968fadc-4a52-b795-e966-d41057e1ba2b@ihsan-code.eu>
+ <61ad9caf-2a17-e50e-1be3-1fe6c65229ad@ihsan-code.eu>
+Message-ID: <cd68e719-610a-6189-3cdf-8ee692bab419@ihsan-code.eu>
+Date:   Sat, 12 Dec 2020 10:50:56 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
+In-Reply-To: <61ad9caf-2a17-e50e-1be3-1fe6c65229ad@ihsan-code.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some resource should be released in the error handling path of the probe
-function, as already done in the remove function.
+No, SINO the only Giad it becomes.
 
-The remove function was fixed in commit 5052de8deff5 ("soc: qcom: smd:
-Transition client drivers from smd to rpmsg")
+Took the name one step further aswell - Axim X. "Alim" (written right to 
+left in arabc script) means learned, and its a good name for an OS 
+aswell. Showing learnedness, and an example of some words that change 
+when written left to right in latin script it is, Axim X.
 
-Fixes: 1511cc750c3d ("Bluetooth: Introduce Qualcomm WCNSS SMD based HCI driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/bluetooth/btqcomsmd.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/bluetooth/btqcomsmd.c b/drivers/bluetooth/btqcomsmd.c
-index 98d53764871f..2acb719e596f 100644
---- a/drivers/bluetooth/btqcomsmd.c
-+++ b/drivers/bluetooth/btqcomsmd.c
-@@ -142,12 +142,16 @@ static int btqcomsmd_probe(struct platform_device *pdev)
- 
- 	btq->cmd_channel = qcom_wcnss_open_channel(wcnss, "APPS_RIVA_BT_CMD",
- 						   btqcomsmd_cmd_callback, btq);
--	if (IS_ERR(btq->cmd_channel))
--		return PTR_ERR(btq->cmd_channel);
-+	if (IS_ERR(btq->cmd_channel)) {
-+		ret = PTR_ERR(btq->cmd_channel);
-+		goto destroy_acl_channel;
-+	}
- 
- 	hdev = hci_alloc_dev();
--	if (!hdev)
--		return -ENOMEM;
-+	if (!hdev) {
-+		ret = -ENOMEM;
-+		goto destroy_cmd_channel;
-+	}
- 
- 	hci_set_drvdata(hdev, btq);
- 	btq->hdev = hdev;
-@@ -161,14 +165,21 @@ static int btqcomsmd_probe(struct platform_device *pdev)
- 	hdev->set_bdaddr = qca_set_bdaddr_rome;
- 
- 	ret = hci_register_dev(hdev);
--	if (ret < 0) {
--		hci_free_dev(hdev);
--		return ret;
--	}
-+	if (ret < 0)
-+		goto hci_free_dev;
- 
- 	platform_set_drvdata(pdev, btq);
- 
- 	return 0;
-+
-+hci_free_dev:
-+	hci_free_dev(hdev);
-+destroy_cmd_channel:
-+	rpmsg_destroy_ept(btq->cmd_channel);
-+destroy_acl_channel:
-+	rpmsg_destroy_ept(btq->acl_channel);
-+
-+	return ret;
- }
- 
- static int btqcomsmd_remove(struct platform_device *pdev)
--- 
-2.27.0
-
+Serenity!
+Ywe Cærlyn
+https://www.youtube.com/channel/UCR3gmLVjHS5A702wo4bol_Q
