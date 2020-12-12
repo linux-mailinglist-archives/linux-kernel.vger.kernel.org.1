@@ -2,112 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDEF2D87D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4172D87E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437274AbgLLQOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 11:14:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43167 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2436489AbgLLQOf (ORCPT
+        id S2437629AbgLLQSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 11:18:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405775AbgLLQSa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 11:14:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607789587;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PJHtWEAaq9mILAH7ZOu8et1GbzEeBq8r2vbaNO9BgGg=;
-        b=D84HDMRw7Me/scjOnhXWwy8pH9jilqmsTE1iogvhaN/90GEhqqb53yoYqcSv3YjtgHA9zR
-        XinrGP/vIgWxlKYVjjyvB0NzqdiELH2mwVf8D2AjEpGRBc7ffuavSVd0iO75jaylGFRQLq
-        IZ9LFFp29dncPnaFjUobyJqAnClP+4w=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-289-2fe2pk4IOr6gaZoToaqNMQ-1; Sat, 12 Dec 2020 11:13:05 -0500
-X-MC-Unique: 2fe2pk4IOr6gaZoToaqNMQ-1
-Received: by mail-pl1-f200.google.com with SMTP id c8so6802359plo.13
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 08:13:05 -0800 (PST)
+        Sat, 12 Dec 2020 11:18:30 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D58C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 08:17:50 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id c79so9141539pfc.2
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 08:17:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BRbYY02f9clS43YVleEXwolZohCb1GhkfTVXt9QbL0E=;
+        b=vsjgYUTfNCCtDgpjPI/UNREc9kslTmeGhTtJqe29o5slFUu5D0I4gqrHyaQZFtNNE5
+         PxOEsyYzaRPefon/bTcQZ1nSPKPuwcIlAcjAsiOqPCmjNBV/SssN4m/0PT8NsVH0t/4x
+         v0vmoyHnwGrvChvbpBG5n3T7sepacpniirwjkrfEUwXVyD/tIZyLcrPldT75Gg09qmKa
+         ucChMtWnvvBZhWDPn1eNNYMW26Y+dHEJNpyh/PC3L/bQwOECLdPFW4vBm4gnHMrv3amr
+         gaLX1ASHPhFah+SWDlL7SiK/qAeaVq2wf9mVa0HBpqQga48sOgwKupTFKa955IeAH8vP
+         +XxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PJHtWEAaq9mILAH7ZOu8et1GbzEeBq8r2vbaNO9BgGg=;
-        b=cZp3DhCJPYOvFMsvUkOfJPMQNvF4vtqSdxE1RIKYAp9BCnT41x+9ovFmFYxgDP4O2+
-         j6lPkpyXOBVJgh7Amir1+fe8887TNQZ2k+vCs967HKxAe+jFp00VsTXdISJ4+unNaYLd
-         0Juiw/avW/2ER5yiw22ctJtFG9NvEn+VZnBcu4rl4IVneTHb5IlLkJT5kQVMNOKtpnxJ
-         3lyRyWiiM+7k2q5DMFExOyA7ns5Qc055Q3imV+MFnKB+JDoJQHhidn11xu9B98wdV1mZ
-         z+90FJAKUt1QuItsd3s7hUwR+pS1U0grZmjwnjp9wAIyGQP0Ejoof8iEukuvHkdUvb9P
-         B5RQ==
-X-Gm-Message-State: AOAM5330UWj6G1xuznrKE64NZgWWNcjvGKdgqzMYZVCyw3DsAfgnv8dH
-        BMIdYOQYA862LPOFPenl+K6U78ODdesxZ/g7wU8IpmGfJ0c0D+0iWdd2//avYiB/6I5kPRJqfgs
-        GMxXi3/2AcZ/agOGJBAhaxNJb
-X-Received: by 2002:a17:902:b496:b029:da:d356:be8c with SMTP id y22-20020a170902b496b02900dad356be8cmr15659234plr.56.1607789584335;
-        Sat, 12 Dec 2020 08:13:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxh+RUJIV50IX1HR5B62wzsB/9XVzjJcLZ6EHjfG9xO+P+UCA20WZh1fLRq0/TdAH+2B+Z3cw==
-X-Received: by 2002:a17:902:b496:b029:da:d356:be8c with SMTP id y22-20020a170902b496b02900dad356be8cmr15659214plr.56.1607789584018;
-        Sat, 12 Dec 2020 08:13:04 -0800 (PST)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id k14sm14479519pfp.132.2020.12.12.08.13.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Dec 2020 08:13:03 -0800 (PST)
-Date:   Sun, 13 Dec 2020 00:12:53 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     chenlei0x@gmail.com
-Cc:     darrick.wong@oracle.com, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lei Chen <lennychen@tencent.com>
-Subject: Re: [PATCH] xfs: clean code for setting bma length in xfs_bmapi_write
-Message-ID: <20201212161253.GA94979@xiangao.remote.csb>
-References: <1607777297-22269-1-git-send-email-lennychen@tencent.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BRbYY02f9clS43YVleEXwolZohCb1GhkfTVXt9QbL0E=;
+        b=iw5nwnxp7Q62uset0f0A0gQDrLf6c7AEmRMG7pT98PRL3i7N7sF3s0Ya2LqCNX8wa2
+         mrVtobN9IRC7N9YmNYrLrP+AFk2v/cm94KDUylWH+dDU3yXAG4JRkEsa/vxy7B2SBzKZ
+         KaHhmDlzO+KtlrB/9p4/ekTvwtT+zJLYwotny4R6hvBAwEdtGVmo5xmHExGmnDuBw2g6
+         bfgu6BOaMhm4NiOd3w6WrPT7Hc9PCvmNnk7qZ4ssalZCGFK6y9UrD1l6SYJQEu5wA1I6
+         S/OSf9gbJuMu4FoeOTl+YtQugMPc4DaBsV7HQYO3s9EpAYdOWvDMaimTqFY3fmumzlDv
+         WuiQ==
+X-Gm-Message-State: AOAM531pshkI+yKdjiV0mQzVtl17U9DnRnTlYr+D5rKZOSeJj5/zMAMz
+        jSDHpbFz45knYXTwZFqoPfgDIQ==
+X-Google-Smtp-Source: ABdhPJzfQ1TvWSFFxUgORBv80/YGd8iJqo6CVFEw9wWbphuPqyp5Jh7hNOjT/EUYQphXwzY7Jiw9Tg==
+X-Received: by 2002:a63:f02:: with SMTP id e2mr16867120pgl.148.1607789869753;
+        Sat, 12 Dec 2020 08:17:49 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id g26sm14323628pfo.35.2020.12.12.08.17.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Dec 2020 08:17:49 -0800 (PST)
+Subject: Re: [PATCH -next] c6x: fix build of signal.c using _TIF_SIGNALs
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     linux-c6x-dev@linux-c6x.org, Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
+References: <20201210031742.14534-1-rdunlap@infradead.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <fe4f2b2e-66e6-94f2-d878-08a8e926cd4d@kernel.dk>
+Date:   Sat, 12 Dec 2020 09:17:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20201210031742.14534-1-rdunlap@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1607777297-22269-1-git-send-email-lennychen@tencent.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 08:48:17PM +0800, chenlei0x@gmail.com wrote:
-> From: Lei Chen <lennychen@tencent.com>
+On 12/9/20 8:17 PM, Randy Dunlap wrote:
+> kernel/signal.c in arch/c6x/ needs <asm/asm-offsets.h> to build
+> since it contains _TIF_SIGNALfoobar #defines, so add it.
 > 
-> xfs_bmapi_write may need alloc blocks when it encounters a hole
-> or delay extent. When setting bma.length, it does not need comparing
-> MAXEXTLEN and the length that the caller wants, because
-> xfs_bmapi_allocate will handle every thing properly for bma.length.
+> Placates these build errors:
 > 
-> Signed-off-by: Lei Chen <lennychen@tencent.com>
-> ---
->  fs/xfs/libxfs/xfs_bmap.c | 13 +------------
->  1 file changed, 1 insertion(+), 12 deletions(-)
-> 
-> diff --git a/fs/xfs/libxfs/xfs_bmap.c b/fs/xfs/libxfs/xfs_bmap.c
-> index dcf56bc..e1b6ac6 100644
-> --- a/fs/xfs/libxfs/xfs_bmap.c
-> +++ b/fs/xfs/libxfs/xfs_bmap.c
-> @@ -4417,18 +4417,7 @@ struct xfs_iread_state {
->  			bma.wasdel = wasdelay;
->  			bma.offset = bno;
->  			bma.flags = flags;
-> -
-> -			/*
-> -			 * There's a 32/64 bit type mismatch between the
-> -			 * allocation length request (which can be 64 bits in
-> -			 * length) and the bma length request, which is
-> -			 * xfs_extlen_t and therefore 32 bits. Hence we have to
-> -			 * check for 32-bit overflows and handle them here.
-> -			 */
-> -			if (len > (xfs_filblks_t)MAXEXTLEN)
-> -				bma.length = MAXEXTLEN;
-> -			else
-> -				bma.length = len;
-> +			bma.length = len;
+> ../arch/c6x/kernel/signal.c: In function 'do_notify_resume':
+> ../arch/c6x/kernel/signal.c:316:27: error: '_TIF_SIGPENDING' undeclared (first use in this function); did you mean 'TIF_SIGPENDING'?
+>   316 |  if (thread_info_flags & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
+>       |                           ^~~~~~~~~~~~~~~
+> ../arch/c6x/kernel/signal.c:316:27: note: each undeclared identifier is reported only once for each function it appears in
+> ../arch/c6x/kernel/signal.c:316:45: error: '_TIF_NOTIFY_SIGNAL' undeclared (first use in this function); did you mean 'TIF_NOTIFY_SIGNAL'?
+>   316 |  if (thread_info_flags & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
+>       |                                             ^~~~~~~~~~~~~~~~~~
 
-After refering to the definition of struct xfs_bmalloca, so I think
-bma.length is still a xfs_extlen_t ===> uint32_t, so I'm afraid the commit
-a99ebf43f49f ("xfs: fix allocation length overflow in xfs_bmapi_write()")
+Thanks Randy, folded in.
 
-and the reason for adding this is still valid for now?
-
-Thanks,
-Gao Xiang
+-- 
+Jens Axboe
 
