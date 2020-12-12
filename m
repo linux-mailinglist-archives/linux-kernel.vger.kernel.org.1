@@ -2,24 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265AD2D8859
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC902D884A
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407660AbgLLQhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 11:37:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57728 "EHLO mail.kernel.org"
+        id S2407565AbgLLQeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 11:34:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439380AbgLLQJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 11:09:36 -0500
+        id S2439404AbgLLQJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 11:09:56 -0500
 From:   Sasha Levin <sashal@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sven Eckelmann <sven@narfation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 14/23] vxlan: Copy needed_tailroom from lowerdev
-Date:   Sat, 12 Dec 2020 11:07:55 -0500
-Message-Id: <20201212160804.2334982-14-sashal@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, dm-devel@redhat.com,
+        linux-raid@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 17/23] dm table: Remove BUG_ON(in_interrupt())
+Date:   Sat, 12 Dec 2020 11:07:58 -0500
+Message-Id: <20201212160804.2334982-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201212160804.2334982-1-sashal@kernel.org>
 References: <20201212160804.2334982-1-sashal@kernel.org>
@@ -31,35 +33,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Eckelmann <sven@narfation.org>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit a5e74021e84bb5eadf760aaf2c583304f02269be ]
+[ Upstream commit e7b624183d921b49ef0a96329f21647d38865ee9 ]
 
-While vxlan doesn't need any extra tailroom, the lowerdev might need it. In
-that case, copy it over to reduce the chance for additional (re)allocations
-in the transmit path.
+The BUG_ON(in_interrupt()) in dm_table_event() is a historic leftover from
+a rework of the dm table code which changed the calling context.
 
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Link: https://lore.kernel.org/r/20201126125247.1047977-2-sven@narfation.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Issuing a BUG for a wrong calling context is frowned upon and
+in_interrupt() is deprecated and only covering parts of the wrong
+contexts. The sanity check for the context is covered by
+CONFIG_DEBUG_ATOMIC_SLEEP and other debug facilities already.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/vxlan.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/md/dm-table.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
-index 85c4a6bfc7c06..94e14238fb8a1 100644
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -3804,6 +3804,8 @@ static void vxlan_config_apply(struct net_device *dev,
- 		needed_headroom = lowerdev->hard_header_len;
- 		needed_headroom += lowerdev->needed_headroom;
+diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+index 229f461e7def3..36f2556c1d4f1 100644
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -1298,12 +1298,6 @@ void dm_table_event_callback(struct dm_table *t,
  
-+		dev->needed_tailroom = lowerdev->needed_tailroom;
-+
- 		max_mtu = lowerdev->mtu - (use_ipv6 ? VXLAN6_HEADROOM :
- 					   VXLAN_HEADROOM);
- 		if (max_mtu < ETH_MIN_MTU)
+ void dm_table_event(struct dm_table *t)
+ {
+-	/*
+-	 * You can no longer call dm_table_event() from interrupt
+-	 * context, use a bottom half instead.
+-	 */
+-	BUG_ON(in_interrupt());
+-
+ 	mutex_lock(&_event_lock);
+ 	if (t->event_fn)
+ 		t->event_fn(t->event_context);
 -- 
 2.27.0
 
