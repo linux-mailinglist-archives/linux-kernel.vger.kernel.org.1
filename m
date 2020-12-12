@@ -2,26 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C889B2D884B
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B53A2D883B
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437948AbgLLQeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 11:34:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57726 "EHLO mail.kernel.org"
+        id S2439423AbgLLQaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 11:30:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439402AbgLLQJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 11:09:56 -0500
+        id S2439427AbgLLQKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 11:10:13 -0500
 From:   Sasha Levin <sashal@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+Cc:     Ofir Bitton <obitton@habana.ai>, Oded Gabbay <ogabbay@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 02/14] kernel/cpu: add arch override for clear_tasks_mm_cpumask() mm handling
-Date:   Sat, 12 Dec 2020 11:08:19 -0500
-Message-Id: <20201212160831.2335172-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 04/14] habanalabs: put devices before driver removal
+Date:   Sat, 12 Dec 2020 11:08:21 -0500
+Message-Id: <20201212160831.2335172-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201212160831.2335172-1-sashal@kernel.org>
 References: <20201212160831.2335172-1-sashal@kernel.org>
@@ -33,52 +30,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Ofir Bitton <obitton@habana.ai>
 
-[ Upstream commit 8ff00399b153440c1c83e20c43020385b416415b ]
+[ Upstream commit 5555b7c56bdec7a29c789fec27f84d40f52fbdfa ]
 
-powerpc/64s keeps a counter in the mm which counts bits set in
-mm_cpumask as well as other things. This means it can't use generic code
-to clear bits out of the mask and doesn't adjust the arch specific
-counter.
+Driver never puts its device and control_device objects, hence
+a memory leak is introduced every driver removal.
 
-Add an arch override that allows powerpc/64s to use
-clear_tasks_mm_cpumask().
-
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201126102530.691335-4-npiggin@gmail.com
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/cpu.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/misc/habanalabs/device.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 7527825ac7daa..fa0e5727b4d9c 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -815,6 +815,10 @@ void __init cpuhp_threads_init(void)
+diff --git a/drivers/misc/habanalabs/device.c b/drivers/misc/habanalabs/device.c
+index a7a4fed4d8995..3eeb1920ddb43 100644
+--- a/drivers/misc/habanalabs/device.c
++++ b/drivers/misc/habanalabs/device.c
+@@ -229,16 +229,16 @@ delete_cdev_device:
+ 
+ static void device_cdev_sysfs_del(struct hl_device *hdev)
+ {
+-	/* device_release() won't be called so must free devices explicitly */
+-	if (!hdev->cdev_sysfs_created) {
+-		kfree(hdev->dev_ctrl);
+-		kfree(hdev->dev);
+-		return;
+-	}
++	if (!hdev->cdev_sysfs_created)
++		goto put_devices;
+ 
+ 	hl_sysfs_fini(hdev);
+ 	cdev_device_del(&hdev->cdev_ctrl, hdev->dev_ctrl);
+ 	cdev_device_del(&hdev->cdev, hdev->dev);
++
++put_devices:
++	put_device(hdev->dev);
++	put_device(hdev->dev_ctrl);
  }
  
- #ifdef CONFIG_HOTPLUG_CPU
-+#ifndef arch_clear_mm_cpumask_cpu
-+#define arch_clear_mm_cpumask_cpu(cpu, mm) cpumask_clear_cpu(cpu, mm_cpumask(mm))
-+#endif
-+
- /**
-  * clear_tasks_mm_cpumask - Safely clear tasks' mm_cpumask for a CPU
-  * @cpu: a CPU id
-@@ -850,7 +854,7 @@ void clear_tasks_mm_cpumask(int cpu)
- 		t = find_lock_task_mm(p);
- 		if (!t)
- 			continue;
--		cpumask_clear_cpu(cpu, mm_cpumask(t->mm));
-+		arch_clear_mm_cpumask_cpu(cpu, t->mm);
- 		task_unlock(t);
- 	}
- 	rcu_read_unlock();
+ /*
+@@ -1285,9 +1285,9 @@ sw_fini:
+ early_fini:
+ 	device_early_fini(hdev);
+ free_dev_ctrl:
+-	kfree(hdev->dev_ctrl);
++	put_device(hdev->dev_ctrl);
+ free_dev:
+-	kfree(hdev->dev);
++	put_device(hdev->dev);
+ out_disabled:
+ 	hdev->disabled = true;
+ 	if (add_cdev_sysfs_on_err)
 -- 
 2.27.0
 
