@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC662D7527
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAF72D7504
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 12:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395307AbgLKL7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 06:59:22 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:42671 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgLKL6r (ORCPT
+        id S2404918AbgLKLyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 06:54:44 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9519 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392205AbgLKLyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 06:58:47 -0500
-X-Originating-IP: 86.194.74.19
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id A947CC000D;
-        Fri, 11 Dec 2020 11:58:01 +0000 (UTC)
-Date:   Fri, 11 Dec 2020 12:58:00 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: Re: [PATCH] drivers: soc: atmel: Avoid calling at91_soc_init on non
- AT91 SoCs
-Message-ID: <20201211115800.GG1781038@piout.net>
-References: <20201211103143.1332302-1-sudeep.holla@arm.com>
- <20201211114515.GF1781038@piout.net>
- <20201211115055.acoezgrwh45hw6is@bogus>
+        Fri, 11 Dec 2020 06:54:37 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Csq1C0Bwdzhq2y;
+        Fri, 11 Dec 2020 19:53:19 +0800 (CST)
+Received: from huawei.com (10.151.151.249) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Dec 2020
+ 19:53:42 +0800
+From:   Dongjiu Geng <gengdongjiu@huawei.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>,
+        <dan.j.williams@intel.com>, <p.zabel@pengutronix.de>,
+        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <gengdongjiu@huawei.com>
+Subject: [PATCH v6 0/4] Enable Hi3559A SOC clock and HiSilicon Hiedma Controller
+Date:   Sat, 12 Dec 2020 13:05:54 +0000
+Message-ID: <20201212130558.49086-1-gengdongjiu@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211115055.acoezgrwh45hw6is@bogus>
+Content-Type: text/plain
+X-Originating-IP: [10.151.151.249]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/2020 11:50:55+0000, Sudeep Holla wrote:
-> On Fri, Dec 11, 2020 at 12:45:15PM +0100, Alexandre Belloni wrote:
-> > Hello,
-> > 
-> > On 11/12/2020 10:31:43+0000, Sudeep Holla wrote:
-> > > Since at91_soc_init is called unconditionally from atmel_soc_device_init,
-> > > we get the following warning on all non AT91 SoCs:
-> > > 	" AT91: Could not find identification node"
-> > > 
-> > > Fix the same by filtering with allowed AT91 SoC list.
-> > > 
-> > > Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-> > > Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> > > Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > > ---
-> > >  drivers/soc/atmel/soc.c | 11 +++++++++++
-> > >  1 file changed, 11 insertions(+)
-> > > 
-> > > diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
-> > > index c4472b68b7c2..ba9fc07cd91c 100644
-> > > --- a/drivers/soc/atmel/soc.c
-> > > +++ b/drivers/soc/atmel/soc.c
-> > > @@ -271,8 +271,19 @@ struct soc_device * __init at91_soc_init(const struct at91_soc *socs)
-> > >  	return soc_dev;
-> > >  }
-> > >  
-> > > +static const struct of_device_id at91_soc_allowed_list[] __initconst = {
-> > > +	{ .compatible = "atmel,at91rm9200", },
-> > > +	{ .compatible = "atmel,at91sam9260", },
-> > > +	{ .compatible = "atmel,sama5d2", },
-> > 
-> > This is a very small subset of the supported SoCs. a proper list would
-> > be:
-> > 
-> > atmel,at91rm9200
-> > atmel,at91sam9
-> > atmel,sama5
-> > atmel,samv7
-> > 
-> 
-> Sure I can update it but the existing functions at91_get_cidr_exid_from_chipid
-> and at91_get_cidr_exid_from_dbgu check for following 3 compatibles and bail
-> out if not found:
-> "atmel,at91rm9200-dbgu"
-> "atmel,at91sam9260-dbgu"
-> "atmel,sama5d2-chipid"
-> 
-> Quick check on DTS upstream suggested only 3 platforms, hence the choice.
-> 
+From: g00384164 <g00384164@huawei.com>
 
-No, atmel,at91sam9260-dbgu is used on most platforms:
-$ git grep atmel,at91sam9260-dbgu arch/arm/boot/dts/
-arch/arm/boot/dts/at91sam9260.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-arch/arm/boot/dts/at91sam9261.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-arch/arm/boot/dts/at91sam9263.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-arch/arm/boot/dts/at91sam9g45.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-arch/arm/boot/dts/at91sam9n12.dtsi:                             compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-arch/arm/boot/dts/at91sam9rl.dtsi:                              compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-arch/arm/boot/dts/at91sam9x5.dtsi:                              compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-arch/arm/boot/dts/sam9x60.dtsi:                         compatible = "microchip,sam9x60-dbgu", "microchip,sam9x60-usart", "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-arch/arm/boot/dts/sama5d3.dtsi:                         compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
-arch/arm/boot/dts/sama5d4.dtsi:                         compatible = "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+v5->v6:
+1. Drop #size-cells and #address-cell in the hisilicon,hi3559av100-clock.yaml
+2. Add discription for #reset-cells in the hisilicon,hi3559av100-clock.yaml
+3. Remove #clock-cells in hisilicon,hiedmacv310.yaml 
+4. Merge property misc_ctrl_base and misc_regmap together for hiedmacv310 driver
+
+v4->v5:
+1. change the patch author mail name
+
+v3->v4:
+1. fix the 'make dt_binding_check' issues.
+2. Combine the 'Enable HiSilicon Hiedma Controller' series patches to this series.
+3. fix the 'make dt_binding_check' issues in 'Enable HiSilicon Hiedma Controller' patchset
 
 
-> -- 
-> Regards,
-> Sudeep
+v2->v3:
+1. change dt-bindings documents from txt to yaml format.
+2. Add SHUB clock to access the devices of m7
+
+Dongjiu Geng (4):
+  dt-bindings: Document the hi3559a clock bindings
+  clk: hisilicon: Add clock driver for hi3559A SoC
+  dt: bindings: dma: Add DT bindings for HiSilicon Hiedma Controller
+  dmaengine: dma: Add Hiedma Controller v310 Device Driver
+
+ .../clock/hisilicon,hi3559av100-clock.yaml    |   59 +
+ .../bindings/dma/hisilicon,hiedmacv310.yaml   |   94 ++
+ drivers/clk/hisilicon/Kconfig                 |    7 +
+ drivers/clk/hisilicon/Makefile                |    1 +
+ drivers/clk/hisilicon/clk-hi3559a.c           |  865 ++++++++++
+ drivers/dma/Kconfig                           |   14 +
+ drivers/dma/Makefile                          |    1 +
+ drivers/dma/hiedmacv310.c                     | 1442 +++++++++++++++++
+ drivers/dma/hiedmacv310.h                     |  136 ++
+ include/dt-bindings/clock/hi3559av100-clock.h |  165 ++
+ 10 files changed, 2784 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
+ create mode 100644 Documentation/devicetree/bindings/dma/hisilicon,hiedmacv310.yaml
+ create mode 100644 drivers/clk/hisilicon/clk-hi3559a.c
+ create mode 100644 drivers/dma/hiedmacv310.c
+ create mode 100644 drivers/dma/hiedmacv310.h
+ create mode 100644 include/dt-bindings/clock/hi3559av100-clock.h
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.17.1
+
