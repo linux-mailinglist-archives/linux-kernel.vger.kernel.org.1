@@ -2,99 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8BB2D8678
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 13:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A012D867C
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 13:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438875AbgLLMtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 07:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40146 "EHLO
+        id S2438884AbgLLM4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 07:56:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726881AbgLLMtN (ORCPT
+        with ESMTP id S1725764AbgLLM4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 07:49:13 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5C7C0613CF;
-        Sat, 12 Dec 2020 04:48:33 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id v3so6107502plz.13;
-        Sat, 12 Dec 2020 04:48:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=bRL8EJ6k0luwxGr9nyjGvaWnrmapiVGTB3Vjulf/n54=;
-        b=bdiv3BUJLeX5IMffHi06X6meOenP1C6uAiXHV0hhGOkIQvrOJfxwCrt3TOAI2UkCcl
-         jOxlK7o2mlakk+97lvW7VuWoh45zgvyQs9qgxssiWOPwCG5sdj7dlsdoX06EQHSjnFpL
-         dnfBaEthN3gKySJdR8AYZOJYAItj8YjrMchM+2rVvGiLPuvFignnwaOpLvTQIoN7/1Cy
-         a2fTl9b2RnwUNb3Ds5OwHmEK5tE7OlV3FZjgJEYOF3c/9Fcp/sm0RKRQj4AKlnPFUKM6
-         WwGP4phz9DXqzw7iiIRboPzraqcshu2gmR1oVeQpMgE+1ld+XhNaAasuI/rQS16NzxNk
-         TaMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=bRL8EJ6k0luwxGr9nyjGvaWnrmapiVGTB3Vjulf/n54=;
-        b=YFG0w2PrfJh9O1o88XD+V2hUmomjlCV8mF1WAOu/g57f1llTzoIlSybBZnvJywPWlz
-         hGVmO8AO1+Hng5eQPgAIU4JZEY99s7U7+sS5owrL5tqxwFZf7Iw55xuEUr89df6Q4Qbx
-         DwQB2sEnLK7oKFUxCk54jjTYNlgOQ4sTxt7HA7wRTZXDyBiErrmt24e+b2zIfUGzkZdL
-         07Xy5oqxrEDhVenDyysMan/jZuL6oZCBuR7v2jhA70fjYLNe/AwaIvWVXSdJuthP3cCC
-         SMKPzde4h/8NLfKjDslDRJoXem/KLDfuHGN56Q7+MBYKa5PIbojqHgrNvuWjbKDVGeFb
-         8eGg==
-X-Gm-Message-State: AOAM531tB9UnD+IvE8h+SEd1EUNSrmyABNac44xIe4+ZFuutKbuaC2lC
-        TV+cvr+54nIG9fyj/IEf4ys=
-X-Google-Smtp-Source: ABdhPJxPShHkUt1AHHmKCAL1dMN/mFFyk+JZhJsAuXiXfeNf6rYsQwoDZ+NNLbUNdG83nJ9/DnUleQ==
-X-Received: by 2002:a17:902:9a0c:b029:d6:c6a3:66f with SMTP id v12-20020a1709029a0cb02900d6c6a3066fmr15104830plp.52.1607777313041;
-        Sat, 12 Dec 2020 04:48:33 -0800 (PST)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id x22sm14548405pfc.19.2020.12.12.04.48.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 12 Dec 2020 04:48:32 -0800 (PST)
-From:   chenlei0x@gmail.com
-X-Google-Original-From: lennychen@tencent.com
-To:     chenlei0x@gmail.com, darrick.wong@oracle.com,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Lei Chen <lennychen@tencent.com>
-Subject: [PATCH] xfs: clean code for setting bma length in xfs_bmapi_write
-Date:   Sat, 12 Dec 2020 20:48:17 +0800
-Message-Id: <1607777297-22269-1-git-send-email-lennychen@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sat, 12 Dec 2020 07:56:10 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C906CC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 04:55:29 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607777727;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kaF+v+fhwt1veB6ieNU6FFpGGrgEPEEqeSc+iQSLfQg=;
+        b=TlfreJBs4v5s1kkqxpHDRTAWFcKEPmkVDaBtAikAAQQRBUXJPpaIv+m63CP03mceoXxpYC
+        thPRa8m2vBgHXeYL1zAjMapYhYck74jUXfHd3mHRE/9UPODoSWxorV+JZM5IV5yLcJQys+
+        jMmgD7BmHPkm5aCTjIXsrHMz1kHppolocZH77o+HUpYuGuVPmloyKDxZ4QOspAwA7l0Hzv
+        aLYEkoEKb8JvJMGYBXKkhzq+nF+w997ZcHv5fd59Wfoe2z8moRFoJvcQQLT/7noPHvlp6R
+        Ot2Tr6RR4dFk9MRhW2uYnq/JDnpNYEsSp5n+QiUiqD/lluLhu2c3dBcdn97K4w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607777727;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kaF+v+fhwt1veB6ieNU6FFpGGrgEPEEqeSc+iQSLfQg=;
+        b=BzN/JMjDEUef2A4OFFc/1bFKpnVlFdYAdGx5DqpTsoZViU9P8phlCEHw2R4pSWg0NPTHNb
+        5SqMfWPqwN37RNCw==
+To:     Daniel Lezcano <daniel.lezcano@free.fr>
+Cc:     Dinh Nguyen <dinguyen@kernel.org>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] timers changes for v5.11 #2
+In-Reply-To: <65d593c1-93a8-bd43-bfb5-891e7c2f4f2b@free.fr>
+References: <65d593c1-93a8-bd43-bfb5-891e7c2f4f2b@free.fr>
+Date:   Sat, 12 Dec 2020 13:55:26 +0100
+Message-ID: <87o8izfakh.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lei Chen <lennychen@tencent.com>
+On Thu, Dec 10 2020 at 12:23, Daniel Lezcano wrote:
+> please consider pulling those 3 last changes which fixes some issues on
+> the drivers.
+>
+> The following changes since commit fef92cd2bc04c64bb3743d40c0b4be47aedf9e23:
+>
+>   Merge tag 'timers-v5.11' of
+> https://git.linaro.org/people/daniel.lezcano/linux into timers/core
+> (2020-12-04 00:39:45 +0100)
+>
+> are available in the Git repository at:
+>
+>   https://git.linaro.org/people/daniel.lezcano/linux.git tags/timers-v5.11-2
 
-xfs_bmapi_write may need alloc blocks when it encounters a hole
-or delay extent. When setting bma.length, it does not need comparing
-MAXEXTLEN and the length that the caller wants, because
-xfs_bmapi_allocate will handle every thing properly for bma.length.
+Pulled.
 
-Signed-off-by: Lei Chen <lennychen@tencent.com>
----
- fs/xfs/libxfs/xfs_bmap.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+Thanks,
 
-diff --git a/fs/xfs/libxfs/xfs_bmap.c b/fs/xfs/libxfs/xfs_bmap.c
-index dcf56bc..e1b6ac6 100644
---- a/fs/xfs/libxfs/xfs_bmap.c
-+++ b/fs/xfs/libxfs/xfs_bmap.c
-@@ -4417,18 +4417,7 @@ struct xfs_iread_state {
- 			bma.wasdel = wasdelay;
- 			bma.offset = bno;
- 			bma.flags = flags;
--
--			/*
--			 * There's a 32/64 bit type mismatch between the
--			 * allocation length request (which can be 64 bits in
--			 * length) and the bma length request, which is
--			 * xfs_extlen_t and therefore 32 bits. Hence we have to
--			 * check for 32-bit overflows and handle them here.
--			 */
--			if (len > (xfs_filblks_t)MAXEXTLEN)
--				bma.length = MAXEXTLEN;
--			else
--				bma.length = len;
-+			bma.length = len;
- 
- 			ASSERT(len > 0);
- 			ASSERT(bma.length > 0);
--- 
-1.8.3.1
-
+        tglx
