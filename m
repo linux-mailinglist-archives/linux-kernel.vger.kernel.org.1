@@ -2,86 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136EA2D8983
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 20:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 998E82D8988
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 20:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407819AbgLLS6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 13:58:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25663 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407742AbgLLSwC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 13:52:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607799035;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kn3KZ7/GxYn1wDyYk6D1LQUiV8vDzkIoMPBbbiV7RLY=;
-        b=eGxraiV/1KUR8nDsy3NkSoZiERVW4pvi7rlk2Pfc6gPLtyFqfOtPA3lWGZzpAhLJcotG5d
-        oGHm3aKyoZq9ghLmV36j7fpraI8nz2VaJnB+niwrHn358MIy818VP3dm2F4nft2F3RLzS7
-        Dr4rWzyM2o2/Z4AJ0KFDRZUR7/qmgXA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-153-jrQyYtE6O0GLo8dAS1Pvuw-1; Sat, 12 Dec 2020 13:50:34 -0500
-X-MC-Unique: jrQyYtE6O0GLo8dAS1Pvuw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63E5C800D55;
-        Sat, 12 Dec 2020 18:50:32 +0000 (UTC)
-Received: from laptop.redhat.com (ovpn-115-41.ams2.redhat.com [10.36.115.41])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 892131F069;
-        Sat, 12 Dec 2020 18:50:29 +0000 (UTC)
-From:   Eric Auger <eric.auger@redhat.com>
-To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, maz@kernel.org, drjones@redhat.com
-Cc:     alexandru.elisei@arm.com, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        shuah@kernel.org, pbonzini@redhat.com
-Subject: [PATCH 2/9] KVM: arm64: Fix KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION read
-Date:   Sat, 12 Dec 2020 19:50:03 +0100
-Message-Id: <20201212185010.26579-3-eric.auger@redhat.com>
-In-Reply-To: <20201212185010.26579-1-eric.auger@redhat.com>
-References: <20201212185010.26579-1-eric.auger@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S2439786AbgLLTBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 14:01:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2407786AbgLLTBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 14:01:50 -0500
+Subject: Re: [git pull] Input updates for v5.10-rc7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607799670;
+        bh=V1GbyEKqxA3DyjqJ+NQWByffW7wblzv/XSMZOJPMZt8=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=LlpyZxERh/vyH2CO9aw/ekJQx94uW3UncbQGYolv6vkiUsH8ROzkOSRETa6c/K+mB
+         dzSvTt7GThRmzDEd+Yh95ZjFq6Qd2TAN4cmbaTcczFfhENyJxG0fNBhnCe+Lprx8tx
+         O0IeuwDA5OlmGTA/5Sw2JUFNhzk+Snyj/gpNG/H37emTjI1AcZe1yKTvd/SKByL2/K
+         b4Cdzdi2um3m1TEmBoA7AhdPR5pYHHaHImRKl/6NhPCqhQQmuZmzwFQvXFdotpcUZo
+         gKMDQtz70qTKotjTDMwg2sdJOvrKHUhVA2T2tBkvbodQopQ/uYeT4Bq3PdC3sdHiYo
+         eNCpU3s7+I/Dg==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <X9Q1UXLZ812+YO2p@google.com>
+References: <X9Q1UXLZ812+YO2p@google.com>
+X-PR-Tracked-List-Id: <linux-input.vger.kernel.org>
+X-PR-Tracked-Message-Id: <X9Q1UXLZ812+YO2p@google.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+X-PR-Tracked-Commit-Id: cffdd6d90482316e18d686060a4397902ea04bd2
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 643e69aff89a2d0abc53979acc441b68ce86139b
+Message-Id: <160779967030.16081.10225298404477549381.pr-tracker-bot@kernel.org>
+Date:   Sat, 12 Dec 2020 19:01:10 +0000
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The doc says:
-"The characteristics of a specific redistributor region can
- be read by presetting the index field in the attr data.
- Only valid for KVM_DEV_TYPE_ARM_VGIC_V3"
+The pull request you sent on Fri, 11 Dec 2020 19:13:21 -0800:
 
-Unfortunately the existing code fails to read the input attr data
-and thus the index always is 0.
+> git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
 
-Fixes: 04c110932225 ("KVM: arm/arm64: Implement KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION")
-Cc: stable@vger.kernel.org#v4.17+
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
----
- arch/arm64/kvm/vgic/vgic-kvm-device.c | 3 +++
- 1 file changed, 3 insertions(+)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/643e69aff89a2d0abc53979acc441b68ce86139b
 
-diff --git a/arch/arm64/kvm/vgic/vgic-kvm-device.c b/arch/arm64/kvm/vgic/vgic-kvm-device.c
-index 44419679f91a..2f66cf247282 100644
---- a/arch/arm64/kvm/vgic/vgic-kvm-device.c
-+++ b/arch/arm64/kvm/vgic/vgic-kvm-device.c
-@@ -226,6 +226,9 @@ static int vgic_get_common_attr(struct kvm_device *dev,
- 		u64 addr;
- 		unsigned long type = (unsigned long)attr->attr;
- 
-+		if (copy_from_user(&addr, uaddr, sizeof(addr)))
-+			return -EFAULT;
-+
- 		r = kvm_vgic_addr(dev->kvm, type, &addr, false);
- 		if (r)
- 			return (r == -ENODEV) ? -ENXIO : r;
+Thank you!
+
 -- 
-2.21.3
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
