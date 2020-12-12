@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6C02D88AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 18:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5C92D88B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 18:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439289AbgLLRen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 12:34:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392965AbgLLRem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 12:34:42 -0500
-Date:   Sat, 12 Dec 2020 09:34:01 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607794442;
-        bh=s22lqFRbBa65jJaAjvTu8tN3w73WuV7MZDeePGuYqro=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JEORhnkXeDnyqaStPv3PEXlIdkWzEH4gDXJPpfRAZM+adf7cbXaUeZz8n9Zyxc5ml
-         5VSns66qRzDv4H4aRgsLlLTUHosjnpD0kGEJHQyV906vMVtnfVvcgb+W7TOTG4LRrv
-         NN5Szc6zzo8LZeEpdujYE+k0Hb++ohiPikOUA5JjQwlgLNq6Q6cQFKzTpFC/MmZIIL
-         AFQJrFBgBHEP7Iu/IOrTcnEC7GqDp7pSD/KjZtdYv8b2uW/tXcE97srJAY+iD966zz
-         q6smDDwH5MRUYubFUFlbPr+waApJwsg28/27cQcqZeyA90+PdGCaZLlzwNl2vjvYV1
-         /YNLhsj2fVaHw==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] net: dsa: qca: ar9331: export stats64
-Message-ID: <20201212093401.07b0e528@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201211105322.7818-3-o.rempel@pengutronix.de>
-References: <20201211105322.7818-1-o.rempel@pengutronix.de>
-        <20201211105322.7818-3-o.rempel@pengutronix.de>
+        id S2438538AbgLLRfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 12:35:34 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:47444 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731987AbgLLRfK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 12:35:10 -0500
+Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 02E6920B717A;
+        Sat, 12 Dec 2020 09:34:28 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 02E6920B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607794469;
+        bh=cZNRh5Q0U3GyMBcA1RlqvaJ5uqRCrL2/ckYKpzPbib4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=pB/695MRRD18jLHm/C0AAvVFk64X89Y4SucWJmv0A4oLuwIf5tE8CsTKFEkIpcd8A
+         e4EQNlfHwf8ZnJn9YtK9QqAC2iP2niJacGmuePAGBAQok6CMS4+757koOXqUg+aJqw
+         ZfV+lZZMAqg0dN9yzbUo4R0HQrzxBQqeYiUBYmd8=
+Subject: Re: [PATCH v8 4/8] IMA: add policy rule to measure critical data
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
+        jmorris@namei.org, nramas@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20201211235807.30815-1-tusharsu@linux.microsoft.com>
+ <20201211235807.30815-5-tusharsu@linux.microsoft.com>
+ <20201212002500.GF4951@sequoia>
+ <7e137e37-c195-1d16-05ef-56c2645fcc84@linux.microsoft.com>
+ <20201212144741.GH4951@sequoia>
+From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Message-ID: <157daf28-9b59-bb3a-9b14-17d5aa0a9943@linux.microsoft.com>
+Date:   Sat, 12 Dec 2020 09:34:28 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201212144741.GH4951@sequoia>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 11:53:22 +0100 Oleksij Rempel wrote:
-> Add stats support for the ar9331 switch.
+
+>>>> +	case CRITICAL_DATA:
+>>>> +		if (!rule->data_source)
+>>>> +			return true;
+>>>> +
+>>>> +		opt_list = rule->data_source;
+>>>> +		break;
+>>>
+>>> I guess this case should unconditionally return true in this patch and
+>>> then the include this additional logic in the next patch.
+>>>
+>>> Sorry, I missed these on my last review.
+>>>
+>> No worries.
+>>
+>> As I mentioned above, I kept it purposefully in this patch since
+>> my impression was rule->data_source is not part of the user facing
+>> policy.
+>>
+>> But I can simply return true here as you suggested, and move the logic to
+>> the next patch.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  drivers/net/dsa/qca/ar9331.c | 256 ++++++++++++++++++++++++++++++++++-
->  1 file changed, 255 insertions(+), 1 deletion(-)
+> I understand the thinking that it isn't harmful in this patch but I
+> think it is a bit cleaner to introduce the data_source policy language
+> element and all of its backend support in the same patch. Please move it
+> to the next patch. Thanks!
 > 
-> diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
-> index 4d49c5f2b790..5baef0ec6410 100644
-> --- a/drivers/net/dsa/qca/ar9331.c
-> +++ b/drivers/net/dsa/qca/ar9331.c
-> @@ -101,6 +101,9 @@
->  	 AR9331_SW_PORT_STATUS_RX_FLOW_EN | AR9331_SW_PORT_STATUS_TX_FLOW_EN | \
->  	 AR9331_SW_PORT_STATUS_SPEED_M)
->  
-> +/* MIB registers */
-> +#define AR9331_MIB_COUNTER(x)			(0x20000 + ((x) * 0x100))
-> +
->  /* Phy bypass mode
->   * ------------------------------------------------------------------------
->   * Bit:   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |11 |12 |13 |14 |15 |
-> @@ -154,6 +157,111 @@
->  #define AR9331_SW_MDIO_POLL_SLEEP_US		1
->  #define AR9331_SW_MDIO_POLL_TIMEOUT_US		20
->  
-> +/* The interval should be small enough to avoid overflow of 32bit MIBs */
-> +/*
-> + * FIXME: as long as we can't read MIBs from stats64 call directly, we should
-> + * poll stats more frequently then it is actually needed. In normal case
-> + * 100 sec interval should be OK.
+> Tyler
+> 
+Will do.
+Thanks a lot Tyler for a detailed review. Appreciate it.
 
-This comment is a little confusing, if you don't mind.
+~Tushar
 
-Should it says something like:
 
- FIXME: until we can read MIBs from stats64 call directly (i.e. sleep
- there), we have to poll stats more frequently then it is actually needed.
- For overflow protection, normally, 100 sec interval should have been OK.
 
