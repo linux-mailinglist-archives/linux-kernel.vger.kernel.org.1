@@ -2,160 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF232D88D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 18:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4652F2D88DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 19:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439637AbgLLR7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 12:59:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436681AbgLLR7N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 12:59:13 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464F1C0613CF;
-        Sat, 12 Dec 2020 09:58:33 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id q75so11517709wme.2;
-        Sat, 12 Dec 2020 09:58:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pGBq0gS9Tvo+AD3qRB5qrYqHg9rdP4UpBRTiGVfHgMQ=;
-        b=n3nX4RXUt0Y1qFxq5Y7ajmnaB01WSbjce38Le5nGxY1ex0QajFzqkBJj+wq8xwHzR9
-         kApk2MDuYvdaP34XRvNZkkAMMnaypaDk2GbHTLPP1AQqLuQW0UyKyXQUPUZZNDfIf1J7
-         hby7+sWa34J0X/kbqO9SDfkfWpAtpRUV+CmaqvEHYZFEzT+NNbrXHxzNrID3zTEWmRzJ
-         8orC9HaKfqw8XK/+SHIq+or0E3UQAU40LT2Lnoo9uvAI/QXPqyPAfrUcEJPaVdS+9wV+
-         07Q+QqjTEXHDOd3txtZK4jDqmv8udgzulj0dsyG6yucK1MkPGWIDrTgEqNTJit2A1qSK
-         voOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pGBq0gS9Tvo+AD3qRB5qrYqHg9rdP4UpBRTiGVfHgMQ=;
-        b=BwpI/Ky084gt7rQNLrScDAOUiEGYflHeqnWNfwkN/7fidqilCNVuX8Kz7bMOX4LlMg
-         e9RbKd6nx2r0K6RMSm8X167eNgRknyN1JTarhtmD8TnmHuVkiNbo2oxdX5hE7ifsa6VT
-         olrN4CdytISwNlnDtGhmqzCqLfpaH2klHfvDCa4ixJqN/0CbwVpZ0GLx8SmrlvBjXybD
-         9vbxtQqAiIP6vPfRnBQSYHUrEU3g7xc0GPjf0hxO9UlXfBSxN0b3goWl8bMgJQ1dEzGd
-         u0YyS50SmtINBSH7BVGiE6j1oP/lmmljGj/4Hye5oArH/fr9xCfu9oSDDF3quAJ2w8Vm
-         nU7g==
-X-Gm-Message-State: AOAM533fUDGJDQebLlgm7KQgRGhvzesUCVoL6kNvP82pje7brAdjsGGB
-        4DoJjDvfVVqc4sSeyCPaYgYiii77UUVZTA==
-X-Google-Smtp-Source: ABdhPJyMY+cJlY/szbTAn6DDiJ9IIGgqR3RS1KVEOB55NyBzfUPpeaMGz4aEv7ia+ODU1rKnEbYKlQ==
-X-Received: by 2002:a1c:a912:: with SMTP id s18mr19088413wme.26.1607795911156;
-        Sat, 12 Dec 2020 09:58:31 -0800 (PST)
-Received: from [192.168.0.160] ([170.253.49.0])
-        by smtp.gmail.com with ESMTPSA id z8sm20894522wmg.17.2020.12.12.09.58.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Dec 2020 09:58:30 -0800 (PST)
-Subject: Re: [patch] close_range.2: new page documenting close_range(2)
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Stephen Kitt <steve@sk2.org>, linux-man@vger.kernel.org,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        linux-kernel@vger.kernel.org
-References: <20201208215133.30575-1-steve@sk2.org>
- <20201209095817.7ksihhftmnd3c3hi@wittgenstein>
- <5f69d42d-c36d-b98a-3d00-7a5e7f489a07@gmail.com>
- <20201209105618.okw5lgcdikg5bvae@wittgenstein>
- <0ea38a7a-1c64-086e-3d64-38686f5b7856@gmail.com>
- <20201212121419.odpgbaigrjhpkjnm@wittgenstein>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <47a388ca-bcd8-d917-0a0a-cdbd185d6998@gmail.com>
-Date:   Sat, 12 Dec 2020 18:58:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2439650AbgLLSBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 13:01:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727128AbgLLSBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 13:01:30 -0500
+Date:   Sat, 12 Dec 2020 10:00:47 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607796049;
+        bh=S3eThU5DZW64V0rbc0rg8TngRTlVEbT08spoA0s5ET0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hgsIgdEbh9YkfeVZq8wq49gSCQivPsZl1i3UFuYKzMyWPMB1j2cwiuO2Kl+FNCGbK
+         wJqowWwZXRpqj5IfCEWvt06CkMZPlKUMXHD5IK1+hC0LNJmjxPMwBAOkhq7lnX34r1
+         5byDp9NnEa+Hk9oTkZReKOdUMAr4jv6vwa1PsnKxU7yOauTPSxOY5DPODE7iyUxobw
+         hADSzHiV0TTGP2yoRcFT2BUART9HA7RU8JJLfLoL8AmgTDQ/YzuZETX0SCxnPQKtx2
+         LyfFbALHKQs/VofC3DFg82Lv8AmAK0cK39+J5ZV2QfsrpTLzBbvcgY6SSBaJUIFZZT
+         WEwa6FQqCi2Ig==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] net: dsa: qca: ar9331: export stats64
+Message-ID: <20201212100047.1b6afb78@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201212134852.gwkugi372afazcd5@skbuf>
+References: <20201211105322.7818-1-o.rempel@pengutronix.de>
+        <20201211105322.7818-3-o.rempel@pengutronix.de>
+        <20201212134852.gwkugi372afazcd5@skbuf>
 MIME-Version: 1.0
-In-Reply-To: <20201212121419.odpgbaigrjhpkjnm@wittgenstein>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
+On Sat, 12 Dec 2020 15:48:52 +0200 Vladimir Oltean wrote:
+> > +	stats->rx_packets = u64_stats_read(&s->rx64byte) +
+> > +		u64_stats_read(&s->rx128byte) + u64_stats_read(&s->rx256byte) +
+> > +		u64_stats_read(&s->rx512byte) + u64_stats_read(&s->rx1024byte) +
+> > +		u64_stats_read(&s->rx1518byte) + u64_stats_read(&s->rxmaxbyte);
+> > +	stats->tx_packets = u64_stats_read(&s->tx64byte) +
+> > +		u64_stats_read(&s->tx128byte) + u64_stats_read(&s->tx256byte) +
+> > +		u64_stats_read(&s->tx512byte) + u64_stats_read(&s->tx1024byte) +
+> > +		u64_stats_read(&s->tx1518byte) + u64_stats_read(&s->txmaxbyte);
+> > +	stats->rx_bytes = u64_stats_read(&s->rxgoodbyte);
+> > +	stats->tx_bytes = u64_stats_read(&s->txbyte);
+> > +	stats->rx_errors = u64_stats_read(&s->rxfcserr) +
+> > +		u64_stats_read(&s->rxalignerr) + u64_stats_read(&s->rxrunt) +
+> > +		u64_stats_read(&s->rxfragment) + u64_stats_read(&s->rxoverflow);
+> > +	stats->tx_errors = u64_stats_read(&s->txoversize);  
+> 
+> Should tx_errors not also include tx_aborted_errors, tx_fifo_errors,
+> tx_window_errors?
 
-Makes sense to me.
+Yes.
 
-Thanks,
+> > +	stats->multicast = u64_stats_read(&s->rxmulti);
+> > +	stats->collisions = u64_stats_read(&s->txcollision);
+> > +	stats->rx_length_errors = u64_stats_read(&s->rxrunt) +
+> > +		u64_stats_read(&s->rxfragment) + u64_stats_read(&s->rxtoolong);
+> > +	stats->rx_crc_errors = u64_stats_read(&s->rxfcserr) +
+> > +		u64_stats_read(&s->rxalignerr) + u64_stats_read(&s->rxfragment);
 
-Alex
+Why would CRC errors include alignment errors and rxfragments?
 
-On 12/12/20 1:14 PM, Christian Brauner wrote:
-> On Thu, Dec 10, 2020 at 03:36:42PM +0100, Alejandro Colomar (man-pages) wrote:
->> Hi Christian,
+Besides looks like rxfragment is already counted to length errors.
+
+> > +	stats->rx_frame_errors = u64_stats_read(&s->rxalignerr);
+> > +	stats->rx_missed_errors = u64_stats_read(&s->rxoverflow);
+> > +	stats->tx_aborted_errors = u64_stats_read(&s->txabortcol);
+> > +	stats->tx_fifo_errors = u64_stats_read(&s->txunderrun);
+> > +	stats->tx_window_errors = u64_stats_read(&s->txlatecol);
+> > +	stats->rx_nohandler = u64_stats_read(&s->filtered);  
 > 
-> Hi Alex,
-> 
->>
->> Thanks for confirming that behavior.  Seems reasonable.
->>
->> I was wondering...
->> If this call is equivalent to unshare(2)+{close(2) in a loop},
->> shouldn't it fail for the same reasons those syscalls can fail?
->>
->> What about the following errors?:
->>
->> From unshare(2):
->>
->>        EPERM  The calling process did not have the  required  privi‐
->>               leges for this operation.
-> 
-> unshare(CLONE_FILES) doesn't require any privileges. Only flags relevant
-> to kernel/nsproxy.c:unshare_nsproxy_namespaces() require privileges,
-> i.e.
-> CLONE_NEWNS
-> CLONE_NEWUTS
-> CLONE_NEWIPC
-> CLONE_NEWNET
-> CLONE_NEWPID
-> CLONE_NEWCGROUP
-> CLONE_NEWTIME
-> so the permissions are the same.
-> 
->>
->> From close(2):
->>        EBADF  fd isn't a valid open file descriptor.
->>
->> OK, this one can't happen with the current code.
->> Let's say there are fds 1 to 10, and you call 'close_range(20,30,0)'.
->> It's a no-op (although it will still unshare if the flag is set).
->> But souldn't it fail with EBADF?
-> 
-> CLOSE_RANGE_UNSHARE should always give you a private file descriptor
-> table independent of whether or not any file descriptors need to be
-> closed. That's also how we documented the flag:
-> 
-> /* Unshare the file descriptor table before closing file descriptors. */
-> #define CLOSE_RANGE_UNSHARE	(1U << 1)
-> 
-> A caller calling unshare(CLONE_FILES) and then an emulated close_range()
-> or the proper close_range() syscall wants to make sure that all unwanted
-> file descriptors are closed (if any) and that no new file descriptors
-> can be injected afterwards. If you skip the unshare(CLONE_FILES) because
-> there are no fds to be closed you open up a race window. It would also
-> be annoying for userspace if they _may_ have received a private file
-> descriptor table but only if any fds needed to be closed.
-> 
-> If people really were extremely keen about skipping the unshare when no
-> fd needs to be closed then this could become a new flag. But I really
-> don't think that's necessary and also doesn't make a lot of sense, imho.
-> 
->>
->>        EINTR  The close() call was interrupted by a signal; see sig‐
->>               nal(7).
->>
->>        EIO    An I/O error occurred.
->>
->>        ENOSPC, EDQUOT
->>               On NFS, these errors are not normally reported against
->>               the first write which exceeds  the  available  storage
->>               space,  but  instead  against  a  subsequent write(2),
->>               fsync(2), or close().
-> 
-> None of these will be seen by userspace because close_range() currently
-> ignores all errors after it has begun closing files.
-> 
-> Christian
-> 
+> Should rx_nohandler not be also included in rx_errors?
+
+I don't think drivers should ever touch rx_nohandler, it's a pretty
+specific SW stat. But you made me realize that we never specified where
+to count frames discarded due to L2 address filtering. It appears that
+high speed adapters I was looking at don't have such statistic?
+
+I would go with rx_dropped, if that's what ->filtered is.
+
+We should probably update the doc like this:
+
+diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+index 874cc12a34d9..82708c6db432 100644
+--- a/include/uapi/linux/if_link.h
++++ b/include/uapi/linux/if_link.h
+@@ -75,8 +75,9 @@ struct rtnl_link_stats {
+  *
+  * @rx_dropped: Number of packets received but not processed,
+  *   e.g. due to lack of resources or unsupported protocol.
+- *   For hardware interfaces this counter should not include packets
+- *   dropped by the device which are counted separately in
++ *   For hardware interfaces this counter may include packets discarded
++ *   due to L2 address filtering but should not include packets dropped
++ *   by the device due to buffer exhaustion which are counted separately in
+  *   @rx_missed_errors (since procfs folds those two counters together).
+  *
+  * @tx_dropped: Number of packets dropped on their way to transmission,
+
+
+> You can probably avoid reading a few of these twice by assigning the
+> more specific ones first, then the rx_errors and tx_errors at the end.
