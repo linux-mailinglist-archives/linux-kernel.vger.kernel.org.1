@@ -2,184 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CC22D8491
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 06:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 167652D8493
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 06:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725952AbgLLFD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 00:03:29 -0500
-Received: from mga14.intel.com ([192.55.52.115]:13949 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725320AbgLLFCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 00:02:35 -0500
-IronPort-SDR: C6uW5OjWaXZPvfJirnU9379uzt+8/mTmHiUCqxXEMGxCgHmoJV+wUPOo6GzIfoVdlsiJrkYUaz
- UPNe6U1vz/Sg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9832"; a="173760554"
-X-IronPort-AV: E=Sophos;i="5.78,413,1599548400"; 
-   d="scan'208";a="173760554"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 21:01:53 -0800
-IronPort-SDR: +wxxtlVkv+5gSr1RCOHm+YlPmgEUTVS8Td9NAAap6aVMB013Rxv0spgZFAcLi5vECdwtqbKlBR
- +UzCVXMIVqpQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,413,1599548400"; 
-   d="scan'208";a="349922280"
-Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 11 Dec 2020 21:01:52 -0800
-Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1knx2V-0001EL-E3; Sat, 12 Dec 2020 05:01:51 +0000
-Date:   Sat, 12 Dec 2020 13:00:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.12.11a] BUILD SUCCESS
- 915fc30b2c2c6f03d8fe36707ee0f908bb28dc0d
-Message-ID: <5fd44e85.XRp3ew+l4A7XLJbA%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726238AbgLLFFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 00:05:47 -0500
+Received: from relay1.mymailcheap.com ([149.56.97.132]:59981 "EHLO
+        relay1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726022AbgLLFFk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 00:05:40 -0500
+X-Greylist: delayed 3558 seconds by postgrey-1.27 at vger.kernel.org; Sat, 12 Dec 2020 00:05:39 EST
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id 4D7073F157;
+        Sat, 12 Dec 2020 05:04:08 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id 92D8A2A510;
+        Sat, 12 Dec 2020 06:04:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1607749447;
+        bh=1kReouX7Rdy6dmkTKtScUVsD9gkvk20YqptCWD/nPTQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=VngGVNzUBlb83e5Of1MvSQLXN9EgFx8RY6oba/trw6li9eym/ffR6er+S8CuOuKDq
+         PNL9N0dM7R8Q7zc7TiYJgtyeEAhrCDTnk3BVGH3QwKrlG4f6cO7vGu+mslMeqaojoj
+         9TeySdwcqaam69dixdC3apCKdn3M/E6fWd0BNh5o=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id D8qkaISYhdYb; Sat, 12 Dec 2020 06:04:06 +0100 (CET)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Sat, 12 Dec 2020 06:04:06 +0100 (CET)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id D767C42D9B;
+        Sat, 12 Dec 2020 05:04:05 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="L/Gu/b/J";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.161.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 53D3142D9B;
+        Sat, 12 Dec 2020 05:03:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1607749439; bh=1kReouX7Rdy6dmkTKtScUVsD9gkvk20YqptCWD/nPTQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=L/Gu/b/J9CvdNZSy+4BcVkJ8P5mo3t6RU7Ej/w0vhMOalKZNwQiPThJBDr6aV8xnk
+         Sl6oGsYpCFj99tDjDINCAaCnjV2wb/W40vMvTD9y5w1AQTGVXy1k20bSHZ5XTnvrVu
+         4Oqe3oxIXBsXxTWK7j2lnsy9QmE4TmspDVbuuh14=
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
+Subject: [RFC PATCH 08/12] dt-bindings: mmc: sunxi: add compatible strings for V831 MMC
+Date:   Sat, 12 Dec 2020 13:03:42 +0800
+Message-Id: <20201212050346.3644673-1-icenowy@aosc.io>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201212040157.3639864-1-icenowy@aosc.io>
+References: <20201212040157.3639864-1-icenowy@aosc.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: mail20.mymailcheap.com
+X-Spamd-Result: default: False [6.40 / 20.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.161.2:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[dt];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         DMARC_NA(0.00)[aosc.io];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         MID_CONTAINS_FROM(1.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Queue-Id: D767C42D9B
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.12.11a
-branch HEAD: 915fc30b2c2c6f03d8fe36707ee0f908bb28dc0d  doc: Remove obsolete rcutree.rcu_idle_lazy_gp_delay boot parameter
+V831 has MMC controllers similar to the ones on H6.
 
-elapsed time: 722m
+Add a compatible string for them.
 
-configs tested: 122
-configs skipped: 2
+The eMMC controller compatible is not added, because the eMMC controller
+is not available on V831, only V833.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 linkstation_defconfig
-sh                         apsh4a3a_defconfig
-arm                           omap1_defconfig
-powerpc                     mpc512x_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-openrisc                            defconfig
-arm                            pleb_defconfig
-arm                          collie_defconfig
-arm                           sunxi_defconfig
-sh                          urquell_defconfig
-mips                           mtx1_defconfig
-powerpc                    mvme5100_defconfig
-mips                         cobalt_defconfig
-m68k                             allyesconfig
-powerpc                     tqm8541_defconfig
-sh                          landisk_defconfig
-powerpc                       holly_defconfig
-arm                          exynos_defconfig
-arm                          gemini_defconfig
-sh                          rsk7269_defconfig
-sh                        apsh4ad0a_defconfig
-m68k                        m5272c3_defconfig
-mips                   sb1250_swarm_defconfig
-arm                       aspeed_g4_defconfig
-arc                         haps_hs_defconfig
-powerpc                        warp_defconfig
-sh                           se7343_defconfig
-parisc                           alldefconfig
-powerpc                    klondike_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                         assabet_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                           xway_defconfig
-powerpc                      cm5200_defconfig
-arm                      footbridge_defconfig
-mips                      pistachio_defconfig
-mips                      maltaaprp_defconfig
-xtensa                         virt_defconfig
-xtensa                generic_kc705_defconfig
-sparc                            allyesconfig
-powerpc                          g5_defconfig
-m68k                       bvme6000_defconfig
-nds32                               defconfig
-powerpc                      pasemi_defconfig
-mips                     cu1000-neo_defconfig
-xtensa                    smp_lx200_defconfig
-sh                           se7619_defconfig
-xtensa                           allyesconfig
-arm                         mv78xx0_defconfig
-sh                  sh7785lcr_32bit_defconfig
-arm                          simpad_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-i386                 randconfig-a004-20201209
-i386                 randconfig-a005-20201209
-i386                 randconfig-a001-20201209
-i386                 randconfig-a002-20201209
-i386                 randconfig-a006-20201209
-i386                 randconfig-a003-20201209
-x86_64               randconfig-a016-20201209
-x86_64               randconfig-a012-20201209
-x86_64               randconfig-a013-20201209
-x86_64               randconfig-a014-20201209
-x86_64               randconfig-a015-20201209
-x86_64               randconfig-a011-20201209
-i386                 randconfig-a013-20201209
-i386                 randconfig-a014-20201209
-i386                 randconfig-a011-20201209
-i386                 randconfig-a015-20201209
-i386                 randconfig-a012-20201209
-i386                 randconfig-a016-20201209
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20201209
-x86_64               randconfig-a006-20201209
-x86_64               randconfig-a005-20201209
-x86_64               randconfig-a001-20201209
-x86_64               randconfig-a002-20201209
-x86_64               randconfig-a003-20201209
-
+Cc: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: linux-mmc@vger.kernel.org
+Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ .../devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml       | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml b/Documentation/devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml
+index e82c9a07b6fb..985586cb93b4 100644
+--- a/Documentation/devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml
++++ b/Documentation/devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml
+@@ -35,6 +35,9 @@ properties:
+       - items:
+           - const: allwinner,sun8i-r40-mmc
+           - const: allwinner,sun50i-a64-mmc
++      - items:
++          - const: allwinner,sun8i-v831-mmc
++          - const: allwinner,sun50i-a64-mmc
+       - items:
+           - const: allwinner,sun50i-h5-emmc
+           - const: allwinner,sun50i-a64-emmc
+-- 
+2.28.0
