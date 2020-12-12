@@ -2,125 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8FD2D84EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 06:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F14EF2D84F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 06:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732270AbgLLFra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 00:47:30 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:41340 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731406AbgLLFrK (ORCPT
+        id S2438296AbgLLFxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 00:53:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725963AbgLLFxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 00:47:10 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 195E420B717A;
-        Fri, 11 Dec 2020 21:46:28 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 195E420B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607751988;
-        bh=V31bOChnr8lat3WNyoEvadwinYKZ3Pm3p29JNFXDyvc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=m5okTUXaQpr9BxPcQD+AKL1HBqahIUQGwQy5M0QXxtaObm3u3cP5aGmBF8SCtyZD8
-         bhl8wETUf6c/N0ncRmptKshSMM9lvyRPf4QzEyml8m4gB/CXc0Op/ss2tR6CZyTbJs
-         X2wjf4djHP4LKy9fbUokPuvcVqOMy4Nho/T8tqMk=
-Subject: Re: [RFC PATCH 2/4] of: Add a common kexec FDT setup function
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     Rob Herring <robh@kernel.org>, takahiro.akashi@linaro.org,
-        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au,
-        zohar@linux.ibm.com, james.morse@arm.com, sashal@kernel.org,
-        benh@kernel.crashing.org, paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
-References: <20201211221006.1052453-1-robh@kernel.org>
- <20201211221006.1052453-3-robh@kernel.org>
- <6934c005-d848-314d-cfee-23f2273c119d@linux.microsoft.com>
- <87360bahup.fsf@manicouagan.localdomain>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <49579baf-6159-0eac-fa36-6fdb618c2320@linux.microsoft.com>
-Date:   Fri, 11 Dec 2020 21:46:27 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 12 Dec 2020 00:53:12 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B51AC0613D3;
+        Fri, 11 Dec 2020 21:52:32 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id y5so11756313iow.5;
+        Fri, 11 Dec 2020 21:52:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=de8qBW77ez2vG1k7g514vZ/gVwv8ByEiy7/gkUkjT1M=;
+        b=vREtwM0YGPhQ/XD++8S3cVIT38mJng6WEpGZ2IoNGpR1vrFbqwryxq/RwTbzBNeyut
+         ITQ2hlZyPNFcERgd6FfztKl+kQ/i0879wT6u5C4ITw1uPliT0BP3aXC3yGWs3G9l5d0r
+         fHAi+dIC2C1a8TTHFbt5oiAosHDLBP/ZZ+CDZbc88lVkGgG8+y3UMj+sN+eUM/dRxylR
+         g78ILa3OWWHTQjCDEVmfDuTf0B2H5nG03gcsc31nsKGwSrSMKhB4dFJxFy0zP31kFoos
+         jF3WVRVQ3rFgx8b1wQbpPXnzSZKIEF3PRmxRx9afR9zqevYdETq9dJCvgJtBBGHeUepN
+         i+3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=de8qBW77ez2vG1k7g514vZ/gVwv8ByEiy7/gkUkjT1M=;
+        b=fyH8YABECefg61h7ppufZ3WeIv2L57U12TNS7TqHad5ffJ9+gtsUr2x3UZY3gFNIj4
+         7NGfSTJauTa58yjI0PTnTnNrNqZVxMNKOElcrXN2pAzH8QCksZhaZClJMribgsNwFTJx
+         cxDnQWFFE3OXq1GjDjeELAERmhx+IY8XbWneMev75v9rf4t52I4noXHEyKq1RUehfzSw
+         fi/HLpKcykGnSJchT0ZtJDdmlDU3We9a8EctLCe5fRJZJSYaHdFr7sNruQKHH/ekAFxC
+         5/rbYK2mp1xhhkewF2oCVfRpUByK+t2hzO9dS1wmUpM2YTLFM4gws5g9b4Ddj1wTIPb/
+         jkxw==
+X-Gm-Message-State: AOAM532JIp6A+a/4778oCQEZE/wOILB7NIToNHvPg8IB0+bLB7bxdSOc
+        wBllinlloBibU3+ColxgKGc=
+X-Google-Smtp-Source: ABdhPJyIvcNYPBRy8ETgODWko7PYHuwoeJSdT+Ep4FOV4A/DgsWNsQZ/SHxOfg4PptQZ7xHi0/CkOQ==
+X-Received: by 2002:a05:6638:5b2:: with SMTP id b18mr20364316jar.69.1607752351667;
+        Fri, 11 Dec 2020 21:52:31 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id 143sm6795278ila.4.2020.12.11.21.52.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Dec 2020 21:52:30 -0800 (PST)
+Date:   Fri, 11 Dec 2020 22:52:28 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     Anders Roxell <anders.roxell@linaro.org>,
+        tsbogend@alpha.franken.de, ndesaulniers@google.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] mips: lib: uncached: fix non-standard usage of
+ variable 'sp'
+Message-ID: <20201212055228.GA823758@ubuntu-m3-large-x86>
+References: <20201211102437.3929348-1-anders.roxell@linaro.org>
+ <alpine.LFD.2.21.2012111950290.2104409@eddie.linux-mips.org>
 MIME-Version: 1.0
-In-Reply-To: <87360bahup.fsf@manicouagan.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.21.2012111950290.2104409@eddie.linux-mips.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/20 6:17 PM, Thiago Jung Bauermann wrote:
+On Fri, Dec 11, 2020 at 07:54:07PM +0000, Maciej W. Rozycki wrote:
+> On Fri, 11 Dec 2020, Anders Roxell wrote:
 > 
-> Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+> > diff --git a/arch/mips/lib/uncached.c b/arch/mips/lib/uncached.c
+> > index 09d5deea747f..f80a67c092b6 100644
+> > --- a/arch/mips/lib/uncached.c
+> > +++ b/arch/mips/lib/uncached.c
+> > @@ -37,10 +37,12 @@
+> >   */
+> >  unsigned long run_uncached(void *func)
+> >  {
+> > -	register long sp __asm__("$sp");
+> >  	register long ret __asm__("$2");
+> >  	long lfunc = (long)func, ufunc;
+> >  	long usp;
+> > +	long sp;
+> > +
+> > +	__asm__("move %0, $sp" : "=r" (sp));
 > 
->> On 12/11/20 2:10 PM, Rob Herring wrote:
->>
->> Hi Rob,
->>
->>> Both arm64 and powerpc do essentially the same FDT /chosen setup for
->>> kexec. We can simply combine everything each arch does. The differences
->>> are either omissions that arm64 should have or additional properties
->>> that will be ignored.
->>> The differences relative to the arm64 version:
->>> - If /chosen doesn't exist, it will be created (should never happen).
->>> - Any old dtb and initrd reserved memory will be released.
->>> - The new initrd and elfcorehdr are marked reserved.
->>> - "linux,booted-from-kexec" is set.
->>> The differences relative to the powerpc version:
->>> - "kaslr-seed" and "rng-seed" may be set.
->>> - "linux,elfcorehdr" is set.
->>> - Any existing "linux,usable-memory-range" is removed.
->>> Signed-off-by: Rob Herring <robh@kernel.org>
->>> ---
->>> This could be taken a step further and do the allocation of the new
->>> FDT. The difference is arm64 uses vmalloc and powerpc uses kmalloc. The
->>> arm64 version also retries with a bigger allocation. That seems
->>> unnecessary.
->>> ---
->>>    drivers/of/Makefile |   1 +
->>>    drivers/of/kexec.c  | 228 ++++++++++++++++++++++++++++++++++++++++++++
->>>    include/linux/of.h  |   5 +
->>>    3 files changed, 234 insertions(+)
->>>    create mode 100644 drivers/of/kexec.c
->>> diff --git a/drivers/of/Makefile b/drivers/of/Makefile
->>> index 6e1e5212f058..8ce11955afde 100644
->>> --- a/drivers/of/Makefile
->>> +++ b/drivers/of/Makefile
->>> @@ -13,5 +13,6 @@ obj-$(CONFIG_OF_RESERVED_MEM) += of_reserved_mem.o
->>>    obj-$(CONFIG_OF_RESOLVE)  += resolver.o
->>>    obj-$(CONFIG_OF_OVERLAY) += overlay.o
->>>    obj-$(CONFIG_OF_NUMA) += of_numa.o
->>> +obj-$(CONFIG_KEXEC_FILE) += kexec.o
->>
->> For the functions moved from powerpc & arm64 to "drivers/of/kexec.c" in this
->> patch, compiling kexec.c when CONFIG_KEXEC_FILE is enabled is fine. But when
->> more functions (such as remove_ima_buffer()) are moved to this file, Makefile
->> needs to be updated for other ima kexec related CONFIGs.
+>  I thought it might be better to make `sp' global instead, so that it's 
+> the compiler that chooses how to schedule accesses.  Have you tried that?
 > 
-> IMA kexec is only available if CONFIG_KEXEC_FILE is enabled, so I don't
-> understand what problem you are seeing.
-> 
+>   Maciej
 
-delete_fdt_mem_rsv() and setup_fdt() functions are defined when 
-CONFIG_KEXEC_FILE is enabled. So there is no problem with this patch as 
-such.
+This will not work, as the LLVM Mips backend does not support using $sp
+as a global register variable:
 
-I was thinking when other arch independent functions such as 
-do_get_kexec_buffer() and remove_ima_buffer() are moved to 
-"drivers/of/kexec.c", they need to be defined only when 
-CONFIG_HAVE_IMA_KEXEC is enabled.
+https://github.com/llvm/llvm-project/commit/1440bb2a26ff13df1b29762658ee122cc0bc47ae
 
-If CONFIG_HAVE_IMA_KEXEC is enabled, CONFIG_KEXEC_FILE is also enabled. 
-So there shouldn't be a problem moving those functions to 
-"drivers/of/kexec.c". You are right Thiago. Thanks.
+$ make -skj"$(nproc)" ARCH=mips CROSS_COMPILE=mipsel-linux-gnu- LLVM=1 O=out \
+distclean malta_kvm_guest_defconfig vmlinux
+fatal error: error in backend: Invalid register name global variable
+...
 
-  -lakshmi
-
-
-
+Cheers,
+Nathan
