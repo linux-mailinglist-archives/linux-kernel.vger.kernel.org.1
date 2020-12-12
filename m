@@ -2,73 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475082D8648
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 12:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D25A32D864F
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 12:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438626AbgLLLlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 06:41:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438416AbgLLLlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 06:41:23 -0500
-Date:   Sat, 12 Dec 2020 12:41:46 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607773236;
-        bh=jqjRDO6it4PIfRZs/qkqjcU0uJ3CmwvFfKshqnxbEDU=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ruMxCQ1kiuFBWVpjRNsxHUsJiHQFxppEuykEu2jJG1JMO9u+CUu9k8+095VnIGgm7
-         V4AkxF0t33HSAtHsO7AhaiLlNyRwzVMk5OiIJHEpHz+j8Etd4Jgw95ABY5DJkE0PBI
-         LlKzBjJzjCeHrsK6ZJMbP0xc+Fuy8cOpiefMBX8M=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Len Brown <lenb@kernel.org>, Rob Herring <robh@kernel.org>,
-        Qian Cai <qcai@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marc Zyngier <maz@kernel.org>, kernel-team@android.com,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ACPI: Use fwnode_init() to set up fwnode
-Message-ID: <X9SsegnBlMN+RTb6@kroah.com>
-References: <20201211202629.2164655-1-saravanak@google.com>
- <3491615.yqrABBVLMz@kreacher>
+        id S2438515AbgLLL4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 06:56:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726468AbgLLL4l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 06:56:41 -0500
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1562AC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 03:55:41 -0800 (PST)
+Received: from [2a02:fe0:c700:2:687c:e90d:da70:b07d] (port=61183)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <Ywe_C4rlyn@ihsan-code.eu>)
+        id 1ko3Uv-00038W-VL
+        for linux-kernel@vger.kernel.org; Sat, 12 Dec 2020 12:55:37 +0100
+Subject: Re: Fair Pay: Some interesting observations of symboldevelopment..
+References: <0cc3e3c3-cf47-dff1-b6c1-2ab562072a01@ihsan-code.eu>
+ <0523bdfb-7d1f-998b-b79e-13fc7f85b6a7@ihsan-code.eu>
+ <6737bbc9-aceb-dc43-b2c5-51265abfff5d@ihsan-code.eu>
+ <b2b91154-bc58-d5cb-41f7-44a6c95b48cf@ihsan-code.eu>
+ <861b1f05-3b1c-f458-32ce-c548b9b0c07f@ihsan-code.eu>
+ <3c6233c8-f5c2-756f-14d2-d835e724b387@ihsan-code.eu>
+ <3968fadc-4a52-b795-e966-d41057e1ba2b@ihsan-code.eu>
+ <61ad9caf-2a17-e50e-1be3-1fe6c65229ad@ihsan-code.eu>
+ <cd68e719-610a-6189-3cdf-8ee692bab419@ihsan-code.eu>
+To:     linux-kernel@vger.kernel.org
+From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C4rlyn@ihsan-code.eu>
+Message-ID: <92c7325b-5774-35cd-ea6a-89ed87c2477b@ihsan-code.eu>
+Date:   Sat, 12 Dec 2020 12:55:22 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3491615.yqrABBVLMz@kreacher>
+In-Reply-To: <cd68e719-610a-6189-3cdf-8ee692bab419@ihsan-code.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 09:53:09PM +0100, Rafael J. Wysocki wrote:
-> On Friday, December 11, 2020 9:26:29 PM CET Saravana Kannan wrote:
-> > Commit 01bb86b380a3 ("driver core: Add fwnode_init()") was supposed to
-> > fix up all instances of fwnode creation to use fwnode_init(). But looks
-> > like this instance was missed. This causes a NULL pointer dereference
-> > during device_add() [1]. So, fix it.
-> > 
-> > [   60.792324][    T1] Call trace:
-> > [   60.795495][    T1]  device_add+0xf60/0x16b0
-> > __fw_devlink_link_to_consumers at drivers/base/core.c:1583
-> > (inlined by) fw_devlink_link_device at drivers/base/core.c:1726
-> > (inlined by) device_add at drivers/base/core.c:3088
-> > [   60.799813][    T1]  platform_device_add+0x274/0x628
-> > [   60.804833][    T1]  acpi_iort_init+0x9d8/0xc50
-> > [   60.809415][    T1]  acpi_init+0x45c/0x4e8
-> > [   60.813556][    T1]  do_one_initcall+0x170/0xb70
-> > [   60.818224][    T1]  kernel_init_freeable+0x6a8/0x734
-> > [   60.823332][    T1]  kernel_init+0x18/0x12c
-> > [   60.827566][    T1]  ret_from_fork+0x10/0x1c
-> > [   60.838756][    T1] ---[ end trace fa5c8ce17a226d83 ]---
-> > 
-> > [1] - https://lore.kernel.org/linux-arm-kernel/02e7047071f0b54b046ac472adeeb3fafabc643c.camel@redhat.com/
-> > Fixes: 01bb86b380a3 ("driver core: Add fwnode_init()")
-> > Reported-by: Qian Cai <qcai@redhat.com>
-> > Suggested-by: Robin Murphy <robin.murphy@arm.com>
-> > Tested-by: Marc Zyngier <maz@kernel.org>
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+I have also included the sign for Adams giad on the mascot culture now:
+
+https://www.youtube.com/channel/UCi7TCodsP4Y4UTuIigrG9GQ
+
+Symbolizing perfectness of "Allah" (written right to left in arabic 
+script), in the East, and SINO (left to right Latin script) perfect in 
+the West.
+
+Serenity!
+Ywe Cærlyn
+
+Den 12.12.2020 10:50, skrev Ywe Cærlyn:
+> No, SINO the only Giad it becomes.
 > 
-> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-Now queued up, thanks.
-
-greg k-h
+> Took the name one step further aswell - Axim X. "Alim" (written right to 
+> left in arabc script) means learned, and its a good name for an OS 
+> aswell. Showing learnedness, and an example of some words that change 
+> when written left to right in latin script it is, Axim X.
+> 
+> Serenity!
+> Ywe Cærlyn
+> https://www.youtube.com/channel/UCR3gmLVjHS5A702wo4bol_Q
