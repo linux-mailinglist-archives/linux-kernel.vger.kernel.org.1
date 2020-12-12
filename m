@@ -2,79 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78852D86EC
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 14:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 369DD2D86F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 14:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407433AbgLLN11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 08:27:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394867AbgLLN1R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 08:27:17 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B5AC0613D6;
-        Sat, 12 Dec 2020 05:26:34 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id g20so5324735plo.2;
-        Sat, 12 Dec 2020 05:26:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I4VqsG1yFpsFOT9S1zeuPn9KCPXP27bm/uC47zpRqcA=;
-        b=RbvZAZsxwmrDQNDBuYEj3EwW2gc2Rhic5bc+rQNzZHuBmnBjwW/M3wj4Z72YXATR3S
-         Cu+1cttlKOahJV5IeHZmifQw7GffJ6GPH7xj4EPzVFm/ehtmEn55tydLL+p4S2A4Ooiy
-         pHVajpVHXlqdH7O9B/CSrHsiTsj4SG2O7riy+uQoH0t/9ldzY4W2H7ccv+YlDzF35q5u
-         BQtQhfZq/h/0yFt8upM0DqOJ+OzdVgLj9tqMgUmYslDaVDwvrpUuYRcuMARWrWg51+lr
-         5j1CvD2dOb52wnIpyZERx2SdIkhipXVj24A14SYXKCYLoN478a/nBS1od14MXWGa7MTu
-         IdDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I4VqsG1yFpsFOT9S1zeuPn9KCPXP27bm/uC47zpRqcA=;
-        b=AEIVyMr9xI7ovqDecjgWkp8T+8/J/X0abtd+GTbEL/yIc5fK+u1R/CIViKsWkgoEjI
-         zJUkD8UxlZBBkTWwUpeTW39yP71fk8jYvUlYh5uiUDb8P4ycRUwwWxceMmTCB3HK7K+S
-         Gf9V9NfkZq4WABKZZ33H/XOgzFDFQf8WvJdrXFjdsWAQ4rPY14fj7pWUzOvHAUaAx7YT
-         kW/k7q8NROOn2wSj/pgnk4l8dEr1Z6Lu2vgvZUpkFJaThk88DGnHJ8rGAL8HUpmg96LU
-         nXoZliLMICzETeBtgERRSLry0j/rFaP7365JtyAZZcLuecYVB7B0gpQvZJD1iM2r43t5
-         5SFg==
-X-Gm-Message-State: AOAM5310vg3gOwca6ZYyK5b6rWnM1P+cJ0yb8xZA6KEMt4oa6b+UxJiA
-        Z8ap48x3Cqwk6m0NZzpTorsDoOeCYa8y4FqcFgMs7/ds4Vc=
-X-Google-Smtp-Source: ABdhPJzcKNW1T1DWhsr1jw7ij1ZjETkKiXpgv5FX3b9pBKb89lYbgKuM4LSWQ+6mjAO/wpdPtP1didkm/h94QOi3Siw=
-X-Received: by 2002:a17:90a:c592:: with SMTP id l18mr17506415pjt.228.1607779593870;
- Sat, 12 Dec 2020 05:26:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20201209234857.1521453-1-alexandre.belloni@bootlin.com> <20201209234857.1521453-2-alexandre.belloni@bootlin.com>
-In-Reply-To: <20201209234857.1521453-2-alexandre.belloni@bootlin.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 12 Dec 2020 15:26:17 +0200
-Message-ID: <CAHp75Vc1HAndj0qPHFpW+-5Nikz+CqKwD9MWA0vWH3-FtXPvOA@mail.gmail.com>
-Subject: Re: [PATCH 1/6] iio:pressure:ms5637: switch to probe_new
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S2437518AbgLLNmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 08:42:32 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:65470 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725966AbgLLNmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 08:42:17 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CtTMS6XzkzB09Zf;
+        Sat, 12 Dec 2020 14:41:24 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id xGQ7G9eZ9jcv; Sat, 12 Dec 2020 14:41:24 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CtTMS3DCXzB09Zd;
+        Sat, 12 Dec 2020 14:41:24 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DFA1E8B782;
+        Sat, 12 Dec 2020 14:41:25 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 2dCtmEZkHX1W; Sat, 12 Dec 2020 14:41:25 +0100 (CET)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 96EEF8B75B;
+        Sat, 12 Dec 2020 14:41:25 +0100 (CET)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 6FA1B655C6; Sat, 12 Dec 2020 13:41:25 +0000 (UTC)
+Message-Id: <56feccd7b6fcd98e353361a233fa7bb8e67c3164.1607780469.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/mm: Fix hugetlb_free_pmd_range() and
+ hugetlb_free_pud_range()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, qcai@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Sat, 12 Dec 2020 13:41:25 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 2:01 AM Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
->
-> Switch to the modern i2c probe_new callback and drop the i2c_device_id
-> array.
+Commit 7bfe54b5f165 ("powerpc/mm: Refactor the floor/ceiling check in
+hugetlb range freeing functions") inadvertely removed the mask
+applied to start parameter in those two functions, leading to the
+following crash on power9.
 
-First part is okay.
-The second is interesting. It depends if we would like to keep a
-possibility to instantiate devices from user space (strictly speaking
-it's an ABI breakage).
+[ 7703.114640][T58070] LTP: starting hugemmap05_1 (hugemmap05 -m)
+[ 7703.157792][   C99] ------------[ cut here ]------------
+[ 7703.158279][   C99] kernel BUG at arch/powerpc/mm/book3s64/pgtable.c:387!
+[ 7703.158306][   C99] Oops: Exception in kernel mode, sig: 5 [#1]
+[ 7703.158330][   C99] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=256 NUMA PowerNV
+[ 7703.158343][   C99] Modules linked in: vfio_pci vfio_virqfd vfio_iommu_spapr_tce vfio vfio_spapr_eeh loop kvm_hv kvm ip_tables x_tables sd_mod ahci libahci tg3 libata firmware_class libphy dm_mirror dm_region_hash dm_log dm_mod [last unloaded: dummy_del_mod]
+[ 7703.158435][   C99] CPU: 99 PID: 308 Comm: ksoftirqd/99 Tainted: G           O      5.10.0-rc7-next-20201211 #1
+[ 7703.158464][   C99] NIP:  c00000000005dbec LR: c0000000003352f4 CTR: 0000000000000000
+[ 7703.158489][   C99] REGS: c00020000bb6f830 TRAP: 0700   Tainted: G           O       (5.10.0-rc7-next-20201211)
+[ 7703.158528][   C99] MSR:  900000000282b033 <SF,HV,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 24002284  XER: 20040000
+[ 7703.158570][   C99] GPR00: c0000000003352f4 c00020000bb6fad0 c000000007f70b00 c0002000385b3ff0
+[ 7703.158570][   C99] GPR04: 0000000000000000 0000000000000003 c00020000bb6f8b4 0000000000000001
+[ 7703.158570][   C99] GPR08: 0000000000000001 0000000000000009 0000000000000008 0000000000000002
+[ 7703.158570][   C99] GPR12: 0000000024002488 c000201fff649c00 c000000007f2a20c 0000000000000000
+[ 7703.158570][   C99] GPR16: 0000000000000007 0000000000000000 c000000000194d10 c000000000194d10
+[ 7703.158570][   C99] GPR24: 0000000000000014 0000000000000015 c000201cc6e72398 c000000007fac4b4
+[ 7703.158570][   C99] GPR28: c000000007f2bf80 c000000007fac2f8 0000000000000008 c000200033870000
+[ 7703.158766][   C99] NIP [c00000000005dbec] __tlb_remove_table+0x1dc/0x1e0
+pgtable_free at arch/powerpc/mm/book3s64/pgtable.c:387
+(inlined by) __tlb_remove_table at arch/powerpc/mm/book3s64/pgtable.c:405
+[ 7703.158805][   C99] LR [c0000000003352f4] tlb_remove_table_rcu+0x54/0xa0
+[ 7703.158853][   C99] Call Trace:
+[ 7703.158872][   C99] [c00020000bb6fad0] [c00000000005db4c] __tlb_remove_table+0x13c/0x1e0 (unreliable)
+[ 7703.158890][   C99] [c00020000bb6fb00] [c0000000003352f4] tlb_remove_table_rcu+0x54/0xa0
+__tlb_remove_table_free at mm/mmu_gather.c:101
+(inlined by) tlb_remove_table_rcu at mm/mmu_gather.c:156
+[ 7703.158927][   C99] [c00020000bb6fb30] [c000000000194d7c] rcu_core+0x35c/0xbb0
+rcu_do_batch at kernel/rcu/tree.c:2502
+(inlined by) rcu_core at kernel/rcu/tree.c:2737
+[ 7703.158966][   C99] [c00020000bb6fbf0] [c00000000095a3d0] __do_softirq+0x480/0x704
+[ 7703.159006][   C99] [c00020000bb6fd10] [c0000000000cc1f4] run_ksoftirqd+0x74/0xd0
+run_ksoftirqd at kernel/softirq.c:651
+(inlined by) run_ksoftirqd at kernel/softirq.c:642
+[ 7703.159046][   C99] [c00020000bb6fd30] [c0000000001040c8] smpboot_thread_fn+0x278/0x320
+[ 7703.159096][   C99] [c00020000bb6fda0] [c0000000000fc8a4] kthread+0x1c4/0x1d0
+[ 7703.159145][   C99] [c00020000bb6fe10] [c00000000000d9fc] ret_from_kernel_thread+0x5c/0x80
+[ 7703.159183][   C99] Instruction dump:
+[ 7703.159204][   C99] 60000000 7c0802a6 3c82f8b4 7fe3fb78 38847470 f8010040 482b4fc5 60000000
+[ 7703.159248][   C99] 0fe00000 7c0802a6 fbe10028 f8010040 <0fe00000> 3c4c07f1 38422f10 7c0802a6
+[ 7703.159293][   C99] ---[ end trace 1d92a5231ba6a0d5 ]---
 
+Properly apply the masks before calling pmd_free_tlb() and
+pud_free_tlb() respectively.
+
+Reported-by: Qian Cai <qcai@redhat.com>
+Fixes: 7bfe54b5f165 ("powerpc/mm: Refactor the floor/ceiling check in hugetlb range freeing functions")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/mm/hugetlbpage.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
+index f8d8a4988e15..8b3cc4d688e8 100644
+--- a/arch/powerpc/mm/hugetlbpage.c
++++ b/arch/powerpc/mm/hugetlbpage.c
+@@ -396,9 +396,9 @@ static void hugetlb_free_pmd_range(struct mmu_gather *tlb, pud_t *pud,
+ 	if (range_is_outside_limits(start, end, floor, ceiling, PUD_MASK))
+ 		return;
+ 
+-	pmd = pmd_offset(pud, start);
++	pmd = pmd_offset(pud, start & PUD_MASK);
+ 	pud_clear(pud);
+-	pmd_free_tlb(tlb, pmd, start);
++	pmd_free_tlb(tlb, pmd, start & PUD_MASK);
+ 	mm_dec_nr_pmds(tlb->mm);
+ }
+ 
+@@ -439,9 +439,9 @@ static void hugetlb_free_pud_range(struct mmu_gather *tlb, p4d_t *p4d,
+ 	if (range_is_outside_limits(start, end, floor, ceiling, PGDIR_MASK))
+ 		return;
+ 
+-	pud = pud_offset(p4d, start);
++	pud = pud_offset(p4d, start & PGDIR_MASK);
+ 	p4d_clear(p4d);
+-	pud_free_tlb(tlb, pud, start);
++	pud_free_tlb(tlb, pud, start & PGDIR_MASK);
+ 	mm_dec_nr_puds(tlb->mm);
+ }
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.0
+
