@@ -2,86 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6125D2D8488
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 05:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CC22D8491
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 06:07:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438282AbgLLEju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 23:39:50 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:44451 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391871AbgLLEj2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 23:39:28 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607747943; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=i8zqkVg2ktWijVXZg6xHLf1LawcHpSQx6Vhiil725vw=;
- b=Aek49BJoFQAIS0CTl9z24t02eSv8N9fXj+sK3DP29BCflAw2M9khPSvrpCC9afM/aSInU0rC
- 4iEwMZLWcXsOj9hANpNZQOE0Xgb7rZeDWemW50/Cj5fRdyQx5BoOoSD6fvIoHmm5rMBy2D8Q
- oFI+3HkVlXAWLQbqThKysQFcvN0=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5fd44962fa3411972b72b0df (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 12 Dec 2020 04:38:58
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 90C84C433ED; Sat, 12 Dec 2020 04:38:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 16E90C433CA;
-        Sat, 12 Dec 2020 04:38:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 16E90C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1725952AbgLLFD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 00:03:29 -0500
+Received: from mga14.intel.com ([192.55.52.115]:13949 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725320AbgLLFCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 00:02:35 -0500
+IronPort-SDR: C6uW5OjWaXZPvfJirnU9379uzt+8/mTmHiUCqxXEMGxCgHmoJV+wUPOo6GzIfoVdlsiJrkYUaz
+ UPNe6U1vz/Sg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9832"; a="173760554"
+X-IronPort-AV: E=Sophos;i="5.78,413,1599548400"; 
+   d="scan'208";a="173760554"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 21:01:53 -0800
+IronPort-SDR: +wxxtlVkv+5gSr1RCOHm+YlPmgEUTVS8Td9NAAap6aVMB013Rxv0spgZFAcLi5vECdwtqbKlBR
+ +UzCVXMIVqpQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,413,1599548400"; 
+   d="scan'208";a="349922280"
+Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 11 Dec 2020 21:01:52 -0800
+Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1knx2V-0001EL-E3; Sat, 12 Dec 2020 05:01:51 +0000
+Date:   Sat, 12 Dec 2020 13:00:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.12.11a] BUILD SUCCESS
+ 915fc30b2c2c6f03d8fe36707ee0f908bb28dc0d
+Message-ID: <5fd44e85.XRp3ew+l4A7XLJbA%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Subject: Re: [RESEND PATCH] ath11k: use MHI provided APIs to allocate and free
- MHI
- controller
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1605634436-36506-1-git-send-email-bbhatt@codeaurora.org>
-References: <1605634436-36506-1-git-send-email-bbhatt@codeaurora.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-wireless@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201212043858.90C84C433ED@smtp.codeaurora.org>
-Date:   Sat, 12 Dec 2020 04:38:58 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bhaumik Bhatt <bbhatt@codeaurora.org> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.12.11a
+branch HEAD: 915fc30b2c2c6f03d8fe36707ee0f908bb28dc0d  doc: Remove obsolete rcutree.rcu_idle_lazy_gp_delay boot parameter
 
-> Use MHI provided APIs to allocate and free MHI controller to
-> improve MHI host driver handling. This also fixes a memory leak
-> as the MHI controller was allocated but never freed.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+elapsed time: 722m
 
-Patch applied to ath-next branch of ath.git, thanks.
+configs tested: 122
+configs skipped: 2
 
-57449b07eafc ath11k: use MHI provided APIs to allocate and free MHI controller
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/1605634436-36506-1-git-send-email-bbhatt@codeaurora.org/
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 linkstation_defconfig
+sh                         apsh4a3a_defconfig
+arm                           omap1_defconfig
+powerpc                     mpc512x_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+openrisc                            defconfig
+arm                            pleb_defconfig
+arm                          collie_defconfig
+arm                           sunxi_defconfig
+sh                          urquell_defconfig
+mips                           mtx1_defconfig
+powerpc                    mvme5100_defconfig
+mips                         cobalt_defconfig
+m68k                             allyesconfig
+powerpc                     tqm8541_defconfig
+sh                          landisk_defconfig
+powerpc                       holly_defconfig
+arm                          exynos_defconfig
+arm                          gemini_defconfig
+sh                          rsk7269_defconfig
+sh                        apsh4ad0a_defconfig
+m68k                        m5272c3_defconfig
+mips                   sb1250_swarm_defconfig
+arm                       aspeed_g4_defconfig
+arc                         haps_hs_defconfig
+powerpc                        warp_defconfig
+sh                           se7343_defconfig
+parisc                           alldefconfig
+powerpc                    klondike_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                         assabet_defconfig
+powerpc                  mpc885_ads_defconfig
+mips                           xway_defconfig
+powerpc                      cm5200_defconfig
+arm                      footbridge_defconfig
+mips                      pistachio_defconfig
+mips                      maltaaprp_defconfig
+xtensa                         virt_defconfig
+xtensa                generic_kc705_defconfig
+sparc                            allyesconfig
+powerpc                          g5_defconfig
+m68k                       bvme6000_defconfig
+nds32                               defconfig
+powerpc                      pasemi_defconfig
+mips                     cu1000-neo_defconfig
+xtensa                    smp_lx200_defconfig
+sh                           se7619_defconfig
+xtensa                           allyesconfig
+arm                         mv78xx0_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                          simpad_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+i386                 randconfig-a004-20201209
+i386                 randconfig-a005-20201209
+i386                 randconfig-a001-20201209
+i386                 randconfig-a002-20201209
+i386                 randconfig-a006-20201209
+i386                 randconfig-a003-20201209
+x86_64               randconfig-a016-20201209
+x86_64               randconfig-a012-20201209
+x86_64               randconfig-a013-20201209
+x86_64               randconfig-a014-20201209
+x86_64               randconfig-a015-20201209
+x86_64               randconfig-a011-20201209
+i386                 randconfig-a013-20201209
+i386                 randconfig-a014-20201209
+i386                 randconfig-a011-20201209
+i386                 randconfig-a015-20201209
+i386                 randconfig-a012-20201209
+i386                 randconfig-a016-20201209
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+clang tested configs:
+x86_64               randconfig-a004-20201209
+x86_64               randconfig-a006-20201209
+x86_64               randconfig-a005-20201209
+x86_64               randconfig-a001-20201209
+x86_64               randconfig-a002-20201209
+x86_64               randconfig-a003-20201209
 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
