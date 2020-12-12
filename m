@@ -2,89 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FFF2D83D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 02:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7412D83DA
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 02:29:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406542AbgLLBY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 20:24:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
+        id S2406221AbgLLB32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 20:29:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395139AbgLLBXy (ORCPT
+        with ESMTP id S2437076AbgLLB3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 20:23:54 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F298C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 17:23:14 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id g20so4674309plo.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 17:23:14 -0800 (PST)
+        Fri, 11 Dec 2020 20:29:03 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32718C0613CF;
+        Fri, 11 Dec 2020 17:28:23 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id b5so1785715pjk.2;
+        Fri, 11 Dec 2020 17:28:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
          :content-transfer-encoding;
-        bh=vBtSCo2aiVK+Pe61Pe1iCNpVRoVlE9vowQAOup0zUVo=;
-        b=dYSqgqy5cEveG6dzM6glJgQcweYN29Jm+7P3TivHfgKnveCQwCxxrnWF2dKcStcQpJ
-         3+oEJsl6Sq5GkXwsmx03Xjlu+yrt4/+pPZiv/LSMfL+BDxmwWGKQx4/jWqS8fgJupmQ/
-         w9cAUX4Jbd3eo+7K5KTIy4Q0MKjyvVzZ7nXs0=
+        bh=XE0rlFPg1mJA2Km2y94Yg0vZGLDfpfOBughewlzeYmE=;
+        b=CPWCmAYDsODAr5NF3xVJP/lJ5CUeMNvmGI89cSrGrwutCtKLNL9oqUeKrfvD2q5PIR
+         J1KBIPOcQ+EVTmBBTkKWRMeRPmj0mxpxzUnAHoYHn+7/qTCL0pfkiKnIld/m5f0fFI3U
+         1dGxxHpephKLoKixY5j3sSknaBybig1M7EdIeIgwaqo88BmJmbprRd+N7aLpfeQcp8JG
+         FhLM/UO7szwaonqIGXwj0oDcGjwPSBpDQScQCcTu83UD2gbc0ajHmkxUbifE9oyVIXWi
+         jHCvMiSNRQ3sjCAswH7INvKz7Li7HR/cWLEGrS4gzBDUuLDAOjz9OQi/L0ce0N4BFMoB
+         DJuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vBtSCo2aiVK+Pe61Pe1iCNpVRoVlE9vowQAOup0zUVo=;
-        b=S9dn87cN+goBC1R34PmUyFBFM05K3yl3DdpahPbmQEpREP4ZJqJDEFC3S2NXZOLnSN
-         b03zsG3cRGYsAYFW015EQVByWrXReCroPlBQJTnS4HDIujtjmw1tNbUtUx48vtnoR423
-         TFIYcB/3rkZp+5FcnokfBxBIBN3ki+l+9pvWCgVsuQ40QTTSL1UecnS/i1BRYaNQc3Ve
-         sGtbIqPS7z7s5jStGJvf1Xranoz5U8uruOjMBiFKKEJ7goLVXpJxzxP5Vq15pk/9usyl
-         yqnKj8qM3xqwRr5JSteBrJZ1JjrXw6j4DWXYqI+LE8nfhW7N+eET4EIBWRoZ+/cZ40C6
-         BcBg==
-X-Gm-Message-State: AOAM5334b4htU4bCO4Rc/JhzZhWgXewVFEmuk2Nf5jFvIHYojvAIKCIs
-        EsAnyyDNR+/JoOSJwLIqx3ticw==
-X-Google-Smtp-Source: ABdhPJy0Omx3Bd/nYZtQzkm1h7saxbiLpbRzdG7yoONL2juuSNDiJMIvVeh0TdIIKVu6urt97ZoSww==
-X-Received: by 2002:a17:90a:ead1:: with SMTP id ev17mr15819352pjb.51.1607736193819;
-        Fri, 11 Dec 2020 17:23:13 -0800 (PST)
-Received: from shiro.work (p1268123-ipngn200803sizuokaden.shizuoka.ocn.ne.jp. [118.13.124.123])
-        by smtp.googlemail.com with ESMTPSA id c2sm11623071pfa.59.2020.12.11.17.23.11
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=XE0rlFPg1mJA2Km2y94Yg0vZGLDfpfOBughewlzeYmE=;
+        b=LeT1TXU/klcujaQSoknuTggdyWjbiiKlhPXjKS3FwX5xILTeU1Hgemn+imd+RmBMcr
+         dev7kcmoKLbG6+kDDY8r0CZuyNGkaskOoxbimeihnUyToaE4g33qG/KNVfmQd3l1P0Tl
+         2T1B6yiAIzBAofIzsD/JprhCj15aQSn9krMfK7fKWl1U6ZHXec0FMs/UI82QtQUeW8NI
+         xFbNzfOZQ9ZWbvOEt1nndsA34YsrhOKtDTNVjABFifcIDgtD+xR82lNsBDwIY8OosX1J
+         fYvY/5i01Qu9Z1lD9s5yYcrY4ZcCHIcGD0ZhaTyUKRkOUiEPwhP7mztLop8o4bo93ijZ
+         5BuQ==
+X-Gm-Message-State: AOAM532y5xQNKz2lI1PYqUejm3GPgQgDA5qq99f31ddjwhtLqno5eJGU
+        5/vX7DDY59Adz9m5mOx9cz0=
+X-Google-Smtp-Source: ABdhPJya+ZautjadHl5y0UxotaFPIPROXEqF+OXYbVDEBrqR+KWp4LlzeUi9q9mNTNbm1sqpic/+4Q==
+X-Received: by 2002:a17:90a:301:: with SMTP id 1mr5715894pje.86.1607736502490;
+        Fri, 11 Dec 2020 17:28:22 -0800 (PST)
+Received: from localhost.localdomain ([2001:470:b:9c3:9e5c:8eff:fe4f:f2d0])
+        by smtp.gmail.com with ESMTPSA id l23sm11764759pgm.22.2020.12.11.17.28.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 17:23:13 -0800 (PST)
-From:   Daniel Palmer <daniel@0x0f.com>
-To:     soc@kernel.org, arnd@arndb.de
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH] dt-bindings: vendor-prefixes: Fix misordering introduced by honestar prefix
-Date:   Sat, 12 Dec 2020 10:22:53 +0900
-Message-Id: <20201212012253.373074-1-daniel@0x0f.com>
-X-Mailer: git-send-email 2.29.2
+        Fri, 11 Dec 2020 17:28:21 -0800 (PST)
+Subject: [net-next PATCH] tcp: Add logic to check for SYN w/ data in
+ tcp_simple_retransmit
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+To:     edumazet@google.com, davem@davemloft.net, kuba@kernel.org,
+        ycheng@google.com
+Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kafai@fb.com,
+        kernel-team@fb.com
+Date:   Fri, 11 Dec 2020 17:28:19 -0800
+Message-ID: <160773649920.2387.14668844101686155199.stgit@localhost.localdomain>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The prefix for honestar should come before honeywell.
+From: Alexander Duyck <alexanderduyck@fb.com>
 
-Fixes: 43181b5d8072 ("dt-bindings: vendor-prefixes: Add honestar vendor prefix")
-Link: https://lore.kernel.org/linux-arm-kernel/CAFr9PXmwOEuHHA-kDeL1YS8bWvovrt43MXxyy1J+hGbXwPUFSA@mail.gmail.com/
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+There are cases where a fastopen SYN may trigger either a ICMP_TOOBIG
+message in the case of IPv6 or a fragmentation request in the case of
+IPv4. This results in the socket stalling for a second or more as it does
+not respond to the message by retransmitting the SYN frame.
+
+Normally a SYN frame should not be able to trigger a ICMP_TOOBIG or
+ICMP_FRAG_NEEDED however in the case of fastopen we can have a frame that
+makes use of the entire MSS. In the case of fastopen it does, and an
+additional complication is that the retransmit queue doesn't contain the
+original frames. As a result when tcp_simple_retransmit is called and
+walks the list of frames in the queue it may not mark the frames as lost
+because both the SYN and the data packet each individually are smaller than
+the MSS size after the adjustment. This results in the socket being stalled
+until the retransmit timer kicks in and forces the SYN frame out again
+without the data attached.
+
+In order to resolve this we can generate our best estimate for the original
+packet size by detecting the fastopen SYN frame and then adding the
+overhead for MAX_TCP_OPTION_SPACE and verifying if the SYN w/ data would
+have exceeded the MSS. If so we can mark the frame as lost and retransmit
+it.
+
+Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/ipv4/tcp_input.c |   30 +++++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index a6cf2cef6f89..5f9bb0c152af 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -449,10 +449,10 @@ patternProperties:
-     description: Hitex Development Tools
-   "^holt,.*":
-     description: Holt Integrated Circuits, Inc.
--  "^honeywell,.*":
--    description: Honeywell
-   "^honestar,.*":
-     description: Honestar Technologies Co., Ltd.
-+  "^honeywell,.*":
-+    description: Honeywell
-   "^hoperun,.*":
-     description: Jiangsu HopeRun Software Co., Ltd.
-   "^hp,.*":
--- 
-2.29.2
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index 9e8a6c1aa019..79375b58de84 100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -2686,11 +2686,35 @@ static void tcp_mtup_probe_success(struct sock *sk)
+ void tcp_simple_retransmit(struct sock *sk)
+ {
+ 	const struct inet_connection_sock *icsk = inet_csk(sk);
++	struct sk_buff *skb = tcp_rtx_queue_head(sk);
+ 	struct tcp_sock *tp = tcp_sk(sk);
+-	struct sk_buff *skb;
+-	unsigned int mss = tcp_current_mss(sk);
++	unsigned int mss;
++
++	/* A fastopen SYN request is stored as two separate packets within
++	 * the retransmit queue, this is done by tcp_send_syn_data().
++	 * As a result simply checking the MSS of the frames in the queue
++	 * will not work for the SYN packet. So instead we must make a best
++	 * effort attempt by validating the data frame with the mss size
++	 * that would be computed now by tcp_send_syn_data and comparing
++	 * that against the data frame that would have been included with
++	 * the SYN.
++	 */
++	if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_SYN && tp->syn_data) {
++		struct sk_buff *syn_data = skb_rb_next(skb);
++
++		mss = tcp_mtu_to_mss(sk, icsk->icsk_pmtu_cookie) +
++		      tp->tcp_header_len - sizeof(struct tcphdr) -
++		      MAX_TCP_OPTION_SPACE;
+ 
+-	skb_rbtree_walk(skb, &sk->tcp_rtx_queue) {
++		if (syn_data && syn_data->len > mss)
++			tcp_mark_skb_lost(sk, skb);
++
++		skb = syn_data;
++	} else {
++		mss = tcp_current_mss(sk);
++	}
++
++	skb_rbtree_walk_from(skb) {
+ 		if (tcp_skb_seglen(skb) > mss)
+ 			tcp_mark_skb_lost(sk, skb);
+ 	}
+
 
