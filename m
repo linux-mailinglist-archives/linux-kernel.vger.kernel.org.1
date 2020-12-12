@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942572D87B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:25:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4BF2D87C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:25:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439464AbgLLQKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 11:10:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57726 "EHLO mail.kernel.org"
+        id S2406066AbgLLQLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 11:11:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439376AbgLLQJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2439378AbgLLQJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 12 Dec 2020 11:09:36 -0500
 From:   Sasha Levin <sashal@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Ofir Bitton <obitton@habana.ai>, Oded Gabbay <ogabbay@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.9 10/23] habanalabs: free host huge va_range if not used
-Date:   Sat, 12 Dec 2020 11:07:51 -0500
-Message-Id: <20201212160804.2334982-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.9 11/23] habanalabs: put devices before driver removal
+Date:   Sat, 12 Dec 2020 11:07:52 -0500
+Message-Id: <20201212160804.2334982-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201212160804.2334982-1-sashal@kernel.org>
 References: <20201212160804.2334982-1-sashal@kernel.org>
@@ -32,32 +32,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ofir Bitton <obitton@habana.ai>
 
-[ Upstream commit c8c39fbd01d42c30454e42c16bcd69c17260b90a ]
+[ Upstream commit 5555b7c56bdec7a29c789fec27f84d40f52fbdfa ]
 
-If huge range is not valid, driver uses the host range also for
-huge page allocations, but driver never frees its allocation.
-This introduces a memory leak every time a user closes its context.
+Driver never puts its device and control_device objects, hence
+a memory leak is introduced every driver removal.
 
 Signed-off-by: Ofir Bitton <obitton@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/common/memory.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/misc/habanalabs/common/device.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
-index 5ff4688683fd3..7b839189c0161 100644
---- a/drivers/misc/habanalabs/common/memory.c
-+++ b/drivers/misc/habanalabs/common/memory.c
-@@ -1616,6 +1616,7 @@ static int vm_ctx_init_with_ranges(struct hl_ctx *ctx,
- 			goto host_hpage_range_err;
- 		}
- 	} else {
-+		kfree(ctx->host_huge_va_range);
- 		ctx->host_huge_va_range = ctx->host_va_range;
- 	}
+diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
+index 24b01cce0a384..39fa31d05d9cd 100644
+--- a/drivers/misc/habanalabs/common/device.c
++++ b/drivers/misc/habanalabs/common/device.c
+@@ -227,16 +227,16 @@ delete_cdev_device:
  
+ static void device_cdev_sysfs_del(struct hl_device *hdev)
+ {
+-	/* device_release() won't be called so must free devices explicitly */
+-	if (!hdev->cdev_sysfs_created) {
+-		kfree(hdev->dev_ctrl);
+-		kfree(hdev->dev);
+-		return;
+-	}
++	if (!hdev->cdev_sysfs_created)
++		goto put_devices;
+ 
+ 	hl_sysfs_fini(hdev);
+ 	cdev_device_del(&hdev->cdev_ctrl, hdev->dev_ctrl);
+ 	cdev_device_del(&hdev->cdev, hdev->dev);
++
++put_devices:
++	put_device(hdev->dev);
++	put_device(hdev->dev_ctrl);
+ }
+ 
+ /*
+@@ -1362,9 +1362,9 @@ sw_fini:
+ early_fini:
+ 	device_early_fini(hdev);
+ free_dev_ctrl:
+-	kfree(hdev->dev_ctrl);
++	put_device(hdev->dev_ctrl);
+ free_dev:
+-	kfree(hdev->dev);
++	put_device(hdev->dev);
+ out_disabled:
+ 	hdev->disabled = true;
+ 	if (add_cdev_sysfs_on_err)
 -- 
 2.27.0
 
