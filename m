@@ -2,139 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967802D8720
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 15:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9832D8729
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 15:49:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439197AbgLLOjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 09:39:14 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:41716 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439184AbgLLOiu (ORCPT
+        id S2439203AbgLLOs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 09:48:26 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:54782 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgLLOsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 09:38:50 -0500
-Date:   Sat, 12 Dec 2020 14:38:04 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607783886;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ctoc9ZBF8Rtp6rNRB1dSMwhG6BZtNY2Za0ZLFtdoy2k=;
-        b=hKVuucGP6bageM/i+G5OWrlD3jFannQmm+A7c+Cgr+9p8IGHgjiH+6zavai8iDmBSdGr2k
-        NlT41mkhrFc1w96yJvKr1x5ohodGfUipoEZsLy9NNp0VjW/Vpe1Nwh2gRiPIqgcozN8hdG
-        NKIL3fiX6Ai4gBaVNpBorAQGS2GSDsY1sfDHZa7mfJx8Yeb8qaTK76/4LM0R8rImpTiChB
-        pmHa8eaRMnIzkXx6qX7PeuKlGHSIKBaUXvyTrecSeV+POD1XwsnGf4UCEkDsW9oYmu1RUS
-        oTxPEoRHKl0Zj4yLcD/y3FBVCfFYnpc+0aMY7kQg8w8eYi5d9i1METLC6jO2jw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607783886;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ctoc9ZBF8Rtp6rNRB1dSMwhG6BZtNY2Za0ZLFtdoy2k=;
-        b=yfC/I915/0Z8RBZnvi3rLjsimCUyQFIa6vntpR7D6tm/90KvB3bu4Q8NX/bvyo9BpthXgD
-        2+k6vnesi1GGu0CQ==
-From:   "tip-bot2 for Masami Hiramatsu" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/kprobes: Fix optprobe to detect INT3 padding correctly
-Cc:     Adam Zabrocki <pi3@pi3.com.pl>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Kees Cook <keescook@chromium.org>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <160767025681.3880685.16021570341428835411.stgit@devnote2>
-References: <160767025681.3880685.16021570341428835411.stgit@devnote2>
+        Sat, 12 Dec 2020 09:48:25 -0500
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 43A5A20B717A;
+        Sat, 12 Dec 2020 06:47:43 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 43A5A20B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607784464;
+        bh=7rvIg+C95XPCYPYAFneW2aePc3XSRuDLvoT56+NKeXk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QyUnRFPbnGYZvrLptKN9jY69HTvpMS5CaqSR1McFATSNefU01LhoR1c6hd8dXKIJQ
+         MMIg+HlhiHyKnFXTTaHduplkzZL3G0b4QGqGFy/f9X/kVNE4nhaWgabmYy/Z99HLfc
+         xEsur1DspVNmTLo24MDo1f3yDpVmFNcVoUc53a0k=
+Date:   Sat, 12 Dec 2020 08:47:41 -0600
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
+        jmorris@namei.org, nramas@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Subject: Re: [PATCH v8 4/8] IMA: add policy rule to measure critical data
+Message-ID: <20201212144741.GH4951@sequoia>
+References: <20201211235807.30815-1-tusharsu@linux.microsoft.com>
+ <20201211235807.30815-5-tusharsu@linux.microsoft.com>
+ <20201212002500.GF4951@sequoia>
+ <7e137e37-c195-1d16-05ef-56c2645fcc84@linux.microsoft.com>
 MIME-Version: 1.0
-Message-ID: <160778388491.3364.18100034608128839164.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7e137e37-c195-1d16-05ef-56c2645fcc84@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On 2020-12-11 17:17:22, Tushar Sugandhi wrote:
+> 
+> 
+> On 2020-12-11 4:25 p.m., Tyler Hicks wrote:
+> > On 2020-12-11 15:58:03, Tushar Sugandhi wrote:
+> > > A new IMA policy rule is needed for the IMA hook
+> > > ima_measure_critical_data() and the corresponding func CRITICAL_DATA for
+> > > measuring the input buffer. The policy rule should ensure the buffer
+> > > would get measured only when the policy rule allows the action. The
+> > > policy rule should also support the necessary constraints (flags etc.)
+> > > for integrity critical buffer data measurements.
+> > > 
+> > > Add a policy rule to define the constraints for restricting integrity
+> > > critical data measurements.
+> > > 
+> > > Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+> > > ---
+> > >   Documentation/ABI/testing/ima_policy |  2 +-
+> > >   security/integrity/ima/ima_policy.c  | 34 ++++++++++++++++++++++++----
+> > >   2 files changed, 31 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+> > > index e35263f97fc1..6ec7daa87cba 100644
+> > > --- a/Documentation/ABI/testing/ima_policy
+> > > +++ b/Documentation/ABI/testing/ima_policy
+> > > @@ -32,7 +32,7 @@ Description:
+> > >   			func:= [BPRM_CHECK][MMAP_CHECK][CREDS_CHECK][FILE_CHECK]MODULE_CHECK]
+> > >   			        [FIRMWARE_CHECK]
+> > >   				[KEXEC_KERNEL_CHECK] [KEXEC_INITRAMFS_CHECK]
+> > > -				[KEXEC_CMDLINE] [KEY_CHECK]
+> > > +				[KEXEC_CMDLINE] [KEY_CHECK] [CRITICAL_DATA]
+> > >   			mask:= [[^]MAY_READ] [[^]MAY_WRITE] [[^]MAY_APPEND]
+> > >   			       [[^]MAY_EXEC]
+> > >   			fsmagic:= hex value
+> > > diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> > > index a09d1a41a290..07116ff35c25 100644
+> > > --- a/security/integrity/ima/ima_policy.c
+> > > +++ b/security/integrity/ima/ima_policy.c
+> > > @@ -85,6 +85,7 @@ struct ima_rule_entry {
+> > >   	} lsm[MAX_LSM_RULES];
+> > >   	char *fsname;
+> > >   	struct ima_rule_opt_list *keyrings; /* Measure keys added to these keyrings */
+> > > +	struct ima_rule_opt_list *data_source; /* Measure data from this source */
+> > 
+> > Argh, there are still some more instances of data_source sneaking into
+> > this patch too early instead of waiting until the next patch.
+> > 
+> I kept it purposefully in this patch so that the
+> "case CRITICAL_DATA:" could be properly defined.
+> 
+> Also, my impression was rule->data_source is not part of the user facing
+> policy.
+> 
+> Whereas IMA_DATA_SOURCE, Opt_data_source, data_source=%s are.
+> That's why they are part of Patch #5.
+> 
+> Patch #5 IMA: limit critical data measurement based on a label
+> 
+> > >   	struct ima_template_desc *template;
+> > >   };
+> > > @@ -479,6 +480,12 @@ static bool ima_match_rule_data(struct ima_rule_entry *rule,
+> > >   		opt_list = rule->keyrings;
+> > >   		break;
+> > > +	case CRITICAL_DATA:
+> > > +		if (!rule->data_source)
+> > > +			return true;
+> > > +
+> > > +		opt_list = rule->data_source;
+> > > +		break;
+> > 
+> > I guess this case should unconditionally return true in this patch and
+> > then the include this additional logic in the next patch.
+> > 
+> > Sorry, I missed these on my last review.
+> > 
+> No worries.
+> 
+> As I mentioned above, I kept it purposefully in this patch since
+> my impression was rule->data_source is not part of the user facing
+> policy.
+> 
+> But I can simply return true here as you suggested, and move the logic to
+> the next patch.
 
-Commit-ID:     0d07c0ec4381f630c801539c79ad8dcc627f6e4a
-Gitweb:        https://git.kernel.org/tip/0d07c0ec4381f630c801539c79ad8dcc627f6e4a
-Author:        Masami Hiramatsu <mhiramat@kernel.org>
-AuthorDate:    Fri, 11 Dec 2020 16:04:17 +09:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Sat, 12 Dec 2020 15:25:17 +01:00
+I understand the thinking that it isn't harmful in this patch but I
+think it is a bit cleaner to introduce the data_source policy language
+element and all of its backend support in the same patch. Please move it
+to the next patch. Thanks!
 
-x86/kprobes: Fix optprobe to detect INT3 padding correctly
+Tyler
 
-Commit
-
-  7705dc855797 ("x86/vmlinux: Use INT3 instead of NOP for linker fill bytes")
-
-changed the padding bytes between functions from NOP to INT3. However,
-when optprobe decodes a target function it finds INT3 and gives up the
-jump optimization.
-
-Instead of giving up any INT3 detection, check whether the rest of the
-bytes to the end of the function are INT3. If all of them are INT3,
-those come from the linker. In that case, continue the optprobe jump
-optimization.
-
- [ bp: Massage commit message. ]
-
-Fixes: 7705dc855797 ("x86/vmlinux: Use INT3 instead of NOP for linker fill bytes")
-Reported-by: Adam Zabrocki <pi3@pi3.com.pl>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/160767025681.3880685.16021570341428835411.stgit@devnote2
----
- arch/x86/kernel/kprobes/opt.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
-index 041f0b5..08eb230 100644
---- a/arch/x86/kernel/kprobes/opt.c
-+++ b/arch/x86/kernel/kprobes/opt.c
-@@ -272,6 +272,19 @@ static int insn_is_indirect_jump(struct insn *insn)
- 	return ret;
- }
- 
-+static bool is_padding_int3(unsigned long addr, unsigned long eaddr)
-+{
-+	unsigned char ops;
-+
-+	for (; addr < eaddr; addr++) {
-+		if (get_kernel_nofault(ops, (void *)addr) < 0 ||
-+		    ops != INT3_INSN_OPCODE)
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
- /* Decode whole function to ensure any instructions don't jump into target */
- static int can_optimize(unsigned long paddr)
- {
-@@ -310,9 +323,14 @@ static int can_optimize(unsigned long paddr)
- 			return 0;
- 		kernel_insn_init(&insn, (void *)recovered_insn, MAX_INSN_SIZE);
- 		insn_get_length(&insn);
--		/* Another subsystem puts a breakpoint */
-+		/*
-+		 * In the case of detecting unknown breakpoint, this could be
-+		 * a padding INT3 between functions. Let's check that all the
-+		 * rest of the bytes are also INT3.
-+		 */
- 		if (insn.opcode.bytes[0] == INT3_INSN_OPCODE)
--			return 0;
-+			return is_padding_int3(addr, paddr - offset + size) ? 1 : 0;
-+
- 		/* Recover address */
- 		insn.kaddr = (void *)addr;
- 		insn.next_byte = (void *)(addr + insn.length);
+> 
+> +	case CRITICAL_DATA:
+> +		if (!rule->data_source)
+> +			return true;
+> +
+> +		opt_list = rule->data_source;
+> +		break;
+> 
+> 
+> ~Tushar
+> 
