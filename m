@@ -2,88 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5C92D88B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 18:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 254FB2D88B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 18:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438538AbgLLRfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 12:35:34 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:47444 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731987AbgLLRfK (ORCPT
+        id S2438596AbgLLRjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 12:39:31 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:42210 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404003AbgLLRja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 12:35:10 -0500
-Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 02E6920B717A;
-        Sat, 12 Dec 2020 09:34:28 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 02E6920B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607794469;
-        bh=cZNRh5Q0U3GyMBcA1RlqvaJ5uqRCrL2/ckYKpzPbib4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=pB/695MRRD18jLHm/C0AAvVFk64X89Y4SucWJmv0A4oLuwIf5tE8CsTKFEkIpcd8A
-         e4EQNlfHwf8ZnJn9YtK9QqAC2iP2niJacGmuePAGBAQok6CMS4+757koOXqUg+aJqw
-         ZfV+lZZMAqg0dN9yzbUo4R0HQrzxBQqeYiUBYmd8=
-Subject: Re: [PATCH v8 4/8] IMA: add policy rule to measure critical data
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com, sashal@kernel.org,
-        jmorris@namei.org, nramas@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20201211235807.30815-1-tusharsu@linux.microsoft.com>
- <20201211235807.30815-5-tusharsu@linux.microsoft.com>
- <20201212002500.GF4951@sequoia>
- <7e137e37-c195-1d16-05ef-56c2645fcc84@linux.microsoft.com>
- <20201212144741.GH4951@sequoia>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <157daf28-9b59-bb3a-9b14-17d5aa0a9943@linux.microsoft.com>
-Date:   Sat, 12 Dec 2020 09:34:28 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 12 Dec 2020 12:39:30 -0500
+Date:   Sat, 12 Dec 2020 17:38:47 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607794728;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=zV7CVjbm1+62mfzyN4V2sX30rOJ3HjcrXX4B0n7Q9mc=;
+        b=1+egzGW+FvrcStBHPl7mTNG4i72dDuUrxHEqnV5nTCZsICjZtabNuGX8ZT5OZ2LFxTmZZG
+        Xz2e+i/Kbhz/Sl0xtO6cwhaFvEc/3eCabbiA2o7TqU8a/DOb4gmhGB7MwSBQX5+1lGnmHr
+        P2EjkrPnzZYI5jIFFbfdZiFbKYGyoarmmHj/1XS+uk12jsgowBsk7grGqIMZCj/JjAirFQ
+        LuOdVEgMpwyDzJowb9LCUOs0xny2uOBGxRtb6CHRA+DUYXITN44ZizuVhQYdaYYdP3lO2Q
+        CjSsrCrC/KqObtFUei3ITYwZVjFElTxxfUVrW4GO22oGXYzHeRNv+7sfVn519A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607794728;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=zV7CVjbm1+62mfzyN4V2sX30rOJ3HjcrXX4B0n7Q9mc=;
+        b=T/Cfj/57o5yux0DSGol6VVj8HnLZrbRdexJNcZGs7r07o8/px5H+rG8xtsTj+DKr+n+pg5
+        Kxs8Nwf/nFAnl5CQ==
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] ntp: Fix build error
+Cc:     Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-In-Reply-To: <20201212144741.GH4951@sequoia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Message-ID: <160779472752.3364.6530360000037468284.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the timers/core branch of tip:
 
->>>> +	case CRITICAL_DATA:
->>>> +		if (!rule->data_source)
->>>> +			return true;
->>>> +
->>>> +		opt_list = rule->data_source;
->>>> +		break;
->>>
->>> I guess this case should unconditionally return true in this patch and
->>> then the include this additional logic in the next patch.
->>>
->>> Sorry, I missed these on my last review.
->>>
->> No worries.
->>
->> As I mentioned above, I kept it purposefully in this patch since
->> my impression was rule->data_source is not part of the user facing
->> policy.
->>
->> But I can simply return true here as you suggested, and move the logic to
->> the next patch.
-> 
-> I understand the thinking that it isn't harmful in this patch but I
-> think it is a bit cleaner to introduce the data_source policy language
-> element and all of its backend support in the same patch. Please move it
-> to the next patch. Thanks!
-> 
-> Tyler
-> 
-Will do.
-Thanks a lot Tyler for a detailed review. Appreciate it.
+Commit-ID:     a3356a079da268cd35460d9bfe052c74383e179b
+Gitweb:        https://git.kernel.org/tip/a3356a079da268cd35460d9bfe052c74383e179b
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Sat, 12 Dec 2020 18:29:20 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Sat, 12 Dec 2020 18:35:12 +01:00
 
-~Tushar
+ntp: Fix build error
 
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+---
+ include/linux/timekeeping.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-
+diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
+index 7f7e4a3..929d3f3 100644
+--- a/include/linux/timekeeping.h
++++ b/include/linux/timekeeping.h
+@@ -303,6 +303,8 @@ extern int persistent_clock_is_local;
+ extern void read_persistent_clock64(struct timespec64 *ts);
+ void read_persistent_wall_and_boot_offset(struct timespec64 *wall_clock,
+ 					  struct timespec64 *boot_offset);
++#ifdef CONFIG_GENERIC_CMOS_UPDATE
+ extern int update_persistent_clock64(struct timespec64 now);
++#endif
+ 
+ #endif
