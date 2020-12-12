@@ -2,126 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B09D2D89E4
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 21:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 794C82D89E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 21:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439872AbgLLUGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 15:06:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407863AbgLLUGi (ORCPT
+        id S2439880AbgLLUJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 15:09:14 -0500
+Received: from cavan.codon.org.uk ([176.126.240.207]:53748 "EHLO
+        cavan.codon.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726472AbgLLUI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 15:06:38 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1668C0613CF;
-        Sat, 12 Dec 2020 12:05:57 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id j26so9017178qtq.8;
-        Sat, 12 Dec 2020 12:05:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=NikLZAMXA6dsXesyJ9crXqoFZuWybuJXmotB1Aiulu8=;
-        b=SJlFV34vohHjtVZZX0yXxVp+ULkRvZ1tMlwE+y+DOOI2Mp3oEU4YgizRoomIB6Df6S
-         LvCwoEHOENNDP4kAs90QUSGnlQy3VCBcm5jKKAjD4cXjo+i9xdb5QGf6HoAFfmRmBqPl
-         JnCCNvO0361TcQKN8xJHYn2QUOb3/N7MxvNb0MZc19Ykc74lFjxzN/2UF5P48dgNEezY
-         7CznEJxzNHKzc+yQroEtrf3uKQ+/wEJGZW6KSwhA+FVdsA/P6REzbNfoDrKzd3fW3QUl
-         wLAHmJPWjmBJ0Z1Ei6NuxaL3+9WPH+Wbbin9E6+yHmkh447IMGYS93i97WHxymAZf1aI
-         sclA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=NikLZAMXA6dsXesyJ9crXqoFZuWybuJXmotB1Aiulu8=;
-        b=ILVe5itxgbha6wbdHkTk2sJFp4KET0Y2+aFXP94XKgb2CKFQhD2OfGbZ75DC8uKS6A
-         Kby3cG6Ohd9q8fTVMn7ZB9lktgGU8ipLQtWvy1y7SSGPOxeM0qLRY/MXjn5rbrCKuayo
-         dSbEpU/1OwwOfUK2ZSmbMCpq1z8ns/ZCuEmUjxz74oWPXsqtEiUj1puoQvx01sPu2JPC
-         6iS8X0UWZnlHwgKXW4oKn96rKYSJydIqHJFgNunJeCXPxxdnlEUMZAVu3no0Vs75b5cH
-         7ivMl10ibCHUqpLh23SP/zDVMq2zmTIwl+br1W+WACszfT9Q4iKV5OwsSekj27qu4oM1
-         25lg==
-X-Gm-Message-State: AOAM531pOvwFDqbmAdxeJlRISfHjrjm5gZz3ZhAH0Ru9yfXmH7bmxV6t
-        sDzlU5xMOwmy+KsMMI4xGgE=
-X-Google-Smtp-Source: ABdhPJztoO6Y/Ywtr0NBjXHVW0ojw4+crhO9+t8TqyVsi8KPEpCGbk6RKVULY/sSmkqNt1Zo7rVRmg==
-X-Received: by 2002:ac8:7b9d:: with SMTP id p29mr15077917qtu.75.1607803556856;
-        Sat, 12 Dec 2020 12:05:56 -0800 (PST)
-Received: from localhost.localdomain ([2001:470:b:9c3:9e5c:8eff:fe4f:f2d0])
-        by smtp.gmail.com with ESMTPSA id h1sm10419236qtr.1.2020.12.12.12.05.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Dec 2020 12:05:56 -0800 (PST)
-Subject: [net-next PATCH v2] tcp: Add logic to check for SYN w/ data in
- tcp_simple_retransmit
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-To:     edumazet@google.com, davem@davemloft.net, kuba@kernel.org,
-        ycheng@google.com
-Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kafai@fb.com,
-        kernel-team@fb.com
-Date:   Sat, 12 Dec 2020 12:05:53 -0800
-Message-ID: <160780355379.2904.733062980589887769.stgit@localhost.localdomain>
-User-Agent: StGit/0.23
+        Sat, 12 Dec 2020 15:08:56 -0500
+X-Greylist: delayed 58674 seconds by postgrey-1.27 at vger.kernel.org; Sat, 12 Dec 2020 15:08:49 EST
+Received: by cavan.codon.org.uk (Postfix, from userid 1000)
+        id 2C31741575; Sat, 12 Dec 2020 20:08:06 +0000 (UTC)
+Date:   Sat, 12 Dec 2020 20:08:06 +0000
+From:   Matthew Garrett <mjg59@codon.org.uk>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rui.zhang@intel.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, amitk@kernel.org,
+        Matthew Garrett <mjg59@srcf.ucam.org>
+Subject: Re: [PATCH] thermal/core: Make 'forced_passive' as obsolete candidate
+Message-ID: <20201212200806.GA19048@codon.org.uk>
+References: <20201208153046.297456-1-daniel.lezcano@linaro.org>
+ <cc2085ca-ada9-d616-eed5-3496889da3bb@linaro.org>
+ <20201212035012.GA11926@codon.org.uk>
+ <20015331-955b-756f-3dce-4eb78e473704@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20015331-955b-756f-3dce-4eb78e473704@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Duyck <alexanderduyck@fb.com>
+On Sat, Dec 12, 2020 at 10:11:31AM +0100, Daniel Lezcano wrote:
+> On 12/12/2020 04:50, Matthew Garrett wrote:
+> > Yes - what's the reason to do so?
+> 
+> I'm cleaning up the thermal core code, so questioning every old ABI.
+> 
+> > The code isn't specific to ACPI,
+> > so being able to override ACPI tables doesn't seem to justify it.
+> 
+> I agree, the code is no specific to ACPI.
+> 
+> What non-ACPI architecture, without device tree or platform data would
+> need the 'passive' option today ?
 
-There are cases where a fastopen SYN may trigger either a ICMP_TOOBIG
-message in the case of IPv6 or a fragmentation request in the case of
-IPv4. This results in the socket stalling for a second or more as it does
-not respond to the message by retransmitting the SYN frame.
-
-Normally a SYN frame should not be able to trigger a ICMP_TOOBIG or
-ICMP_FRAG_NEEDED however in the case of fastopen we can have a frame that
-makes use of the entire MSS. In the case of fastopen it does, and an
-additional complication is that the retransmit queue doesn't contain the
-original frames. As a result when tcp_simple_retransmit is called and
-walks the list of frames in the queue it may not mark the frames as lost
-because both the SYN and the data packet each individually are smaller than
-the MSS size after the adjustment. This results in the socket being stalled
-until the retransmit timer kicks in and forces the SYN frame out again
-without the data attached.
-
-In order to resolve this we can generate our best estimate for the original
-packet size by detecting the fastopen SYN frame and then adding the
-overhead for MAX_TCP_OPTION_SPACE and verifying if the SYN w/ data would
-have exceeded the MSS. If so we can mark the frame as lost and retransmit
-it.
-
-Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
----
- net/ipv4/tcp_input.c |   17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
-
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 9e8a6c1aa019..e44327a39a1f 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -2688,7 +2688,22 @@ void tcp_simple_retransmit(struct sock *sk)
- 	const struct inet_connection_sock *icsk = inet_csk(sk);
- 	struct tcp_sock *tp = tcp_sk(sk);
- 	struct sk_buff *skb;
--	unsigned int mss = tcp_current_mss(sk);
-+	int mss;
-+
-+	/* A fastopen SYN request is stored as two separate packets within
-+	 * the retransmit queue, this is done by tcp_send_syn_data().
-+	 * As a result simply checking the MSS of the frames in the queue
-+	 * will not work for the SYN packet.
-+	 *
-+	 * Us being here is an indication of a path MTU issue so we can
-+	 * assume that the fastopen SYN was lost and just mark all the
-+	 * frames in the retransmit queue as lost. We will use an MSS of
-+	 * -1 to mark all frames as lost, otherwise compute the current MSS.
-+	 */
-+	if (tp->syn_data && sk->sk_state == TCP_SYN_SENT)
-+		mss = -1;
-+	else
-+		mss = tcp_current_mss(sk);
- 
- 	skb_rbtree_walk(skb, &sk->tcp_rtx_queue) {
- 		if (tcp_skb_seglen(skb) > mss)
-
-
+Anything that provides a trip point that has no active notifications and
+doesn't provide any information that tells the kernel to poll it.
