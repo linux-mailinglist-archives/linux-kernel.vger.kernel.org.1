@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07022D8690
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 14:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5669B2D869D
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 14:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439009AbgLLNBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 08:01:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41842 "EHLO
+        id S2405368AbgLLNEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 08:04:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438958AbgLLNAa (ORCPT
+        with ESMTP id S2438960AbgLLNAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 12 Dec 2020 08:00:30 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDE4C0611CA;
-        Sat, 12 Dec 2020 04:58:45 -0800 (PST)
-Date:   Sat, 12 Dec 2020 12:58:40 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2E4C0611CD;
+        Sat, 12 Dec 2020 04:58:46 -0800 (PST)
+Date:   Sat, 12 Dec 2020 12:58:41 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607777920;
+        s=2020; t=1607777922;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aE2PPfPA5CvThEQVzbVw6mImk3myVuXPYyduaqON0Bw=;
-        b=nEtzHqZLi4YUBsCQP0a93dal5/fdTdILHGcdLSVF3p7BLSbwGkRK6LY6MlAE9u7v2rWX3S
-        BVuNFsZbgrbMDi7BFta2UxJFJ39ESlSdkCSx2F+izvOscwDlZNqB28KYjZy4EPhdoWSDaT
-        ZZQF4YMbs1zbzBAV2ylzwTeXR7dF3qQ0K6jGmHzVUB77vaoQWvut0dJvTFYhln+doNsKI6
-        mQcJO3mxkZrRG7ZbX8SfdddFzPNkqpqYvzA6eTvZP4n1HPLB0Urz8JWyqPfYWI1n1sq6Nr
-        8oN3o/EDB0dyHSPjK7DMwAjByxY+KQX1OoyHVhqhtSS1i20XgIVDHWwnvpZDDA==
+        bh=MlLS4zuELpmyBB0r77+brO8S40F0TIcGoUk45xpK1Ic=;
+        b=kp8OudaDJ/WfuU4rqCEHseabsu968PSKaB4eQKDAsrv0mViLUVmTXkRsj8pdITfSd7eow2
+        u/dhhJDvaEt1qirZbTiTZt96+z5C4qpnMizqLGV5mbHq9AjY9n0WKojIOr6MGqRdJTm0MT
+        iDxLLtOe88lCdbAWPyeFjjCblPHM9iCqcz1BLcpRI5lucHWOLP+9C183gKPiXNTRkhNkiA
+        IWoCCz80wZcTbXUIcKlsfEJ3hYYBiBU86gtaXrup6otOs9pqDMsCiltAW/RfBCMViO2GGt
+        TRKExbKH989biNMA+IxZN1S4sTHrED5oi1gypzzMGQhin4f4yindjAtKmXmuIQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607777920;
+        s=2020e; t=1607777922;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aE2PPfPA5CvThEQVzbVw6mImk3myVuXPYyduaqON0Bw=;
-        b=I/OAa79e0Zhi8zvUMd77NqwSN9dPO1I5/Q4WJqgNyL+/nKr/wUP9MhpQWW33V2soOSKgvn
-        hmOzDkqhIzEoVWAQ==
+        bh=MlLS4zuELpmyBB0r77+brO8S40F0TIcGoUk45xpK1Ic=;
+        b=HX0BUWN4Y78ZzTgfjr/FXNA3CGNVkAz+N2cnxx86G2rEqiUcdaiQlsCykTLKPr3BkhsJOW
+        KvFiKlZGKqd232DQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq: Make kstat_irqs() static
+Subject: [tip: irq/core] genirq: Move status flag checks to core
 Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20201210194043.268774449@linutronix.de>
-References: <20201210194043.268774449@linutronix.de>
+In-Reply-To: <20201210194042.703779349@linutronix.de>
+References: <20201210194042.703779349@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160777792041.3364.7294928960882791899.tip-bot2@tip-bot2>
+Message-ID: <160777792185.3364.6052947970564908929.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,74 +60,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     63ca4e066a62afce8ebaf75ebd4c6ef67f7bb5ee
-Gitweb:        https://git.kernel.org/tip/63ca4e066a62afce8ebaf75ebd4c6ef67f7bb5ee
+Commit-ID:     a578bb32cb1a46676caae72dc0c668630ab40c1f
+Gitweb:        https://git.kernel.org/tip/a578bb32cb1a46676caae72dc0c668630ab40c1f
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 10 Dec 2020 20:25:43 +01:00
+AuthorDate:    Thu, 10 Dec 2020 20:25:38 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 12 Dec 2020 12:59:03 +01:00
+CommitterDate: Sat, 12 Dec 2020 12:59:02 +01:00
 
-genirq: Make kstat_irqs() static
+genirq: Move status flag checks to core
 
-No more users outside the core code.
+These checks are used by modules and prevent the removal of the export of
+irq_to_desc(). Move the accessor into the core.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201210194043.268774449@linutronix.de
+Link: https://lore.kernel.org/r/20201210194042.703779349@linutronix.de
 
 ---
- include/linux/kernel_stat.h |  1 -
- kernel/irq/irqdesc.c        | 19 ++++++-------------
- 2 files changed, 6 insertions(+), 14 deletions(-)
+ include/linux/irqdesc.h | 17 +++++------------
+ kernel/irq/manage.c     | 20 ++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
-index 89f0745..44ae1a7 100644
---- a/include/linux/kernel_stat.h
-+++ b/include/linux/kernel_stat.h
-@@ -67,7 +67,6 @@ static inline unsigned int kstat_softirqs_cpu(unsigned int irq, int cpu)
- /*
-  * Number of interrupts per specific IRQ source, since bootup
-  */
--extern unsigned int kstat_irqs(unsigned int irq);
- extern unsigned int kstat_irqs_usr(unsigned int irq);
- 
- /*
-diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-index d28f69e..1f7325f 100644
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -924,15 +924,7 @@ static bool irq_is_nmi(struct irq_desc *desc)
- 	return desc->istate & IRQS_NMI;
+diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
+index 385a4fa..308d7db 100644
+--- a/include/linux/irqdesc.h
++++ b/include/linux/irqdesc.h
+@@ -223,28 +223,21 @@ irq_set_chip_handler_name_locked(struct irq_data *data, struct irq_chip *chip,
+ 	data->chip = chip;
  }
  
--/**
-- * kstat_irqs - Get the statistics for an interrupt
-- * @irq:	The interrupt number
-- *
-- * Returns the sum of interrupt counts on all cpus since boot for
-- * @irq. The caller must ensure that the interrupt is not removed
-- * concurrently.
-- */
--unsigned int kstat_irqs(unsigned int irq)
-+static unsigned int kstat_irqs(unsigned int irq)
++bool irq_check_status_bit(unsigned int irq, unsigned int bitmask);
++
+ static inline bool irq_balancing_disabled(unsigned int irq)
  {
- 	struct irq_desc *desc = irq_to_desc(irq);
- 	unsigned int sum = 0;
-@@ -951,13 +943,14 @@ unsigned int kstat_irqs(unsigned int irq)
+-	struct irq_desc *desc;
+-
+-	desc = irq_to_desc(irq);
+-	return desc->status_use_accessors & IRQ_NO_BALANCING_MASK;
++	return irq_check_status_bit(irq, IRQ_NO_BALANCING_MASK);
  }
  
- /**
-- * kstat_irqs_usr - Get the statistics for an interrupt
-+ * kstat_irqs_usr - Get the statistics for an interrupt from thread context
-  * @irq:	The interrupt number
-  *
-  * Returns the sum of interrupt counts on all cpus since boot for @irq.
-- * Contrary to kstat_irqs() this can be called from any context.
-- * It uses rcu since a concurrent removal of an interrupt descriptor is
-- * observing an rcu grace period before delayed_free_desc()/irq_kobj_release().
+ static inline bool irq_is_percpu(unsigned int irq)
+ {
+-	struct irq_desc *desc;
+-
+-	desc = irq_to_desc(irq);
+-	return desc->status_use_accessors & IRQ_PER_CPU;
++	return irq_check_status_bit(irq, IRQ_PER_CPU);
+ }
+ 
+ static inline bool irq_is_percpu_devid(unsigned int irq)
+ {
+-	struct irq_desc *desc;
+-
+-	desc = irq_to_desc(irq);
+-	return desc->status_use_accessors & IRQ_PER_CPU_DEVID;
++	return irq_check_status_bit(irq, IRQ_PER_CPU_DEVID);
+ }
+ 
+ static inline void
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index 1767515..49950c3 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -2769,3 +2769,23 @@ bool irq_has_action(unsigned int irq)
+ 	return res;
+ }
+ EXPORT_SYMBOL_GPL(irq_has_action);
++
++/**
++ * irq_check_status_bit - Check whether bits in the irq descriptor status are set
++ * @irq:	The linux irq number
++ * @bitmask:	The bitmask to evaluate
 + *
-+ * It uses rcu to protect the access since a concurrent removal of an
-+ * interrupt descriptor is observing an rcu grace period before
-+ * delayed_free_desc()/irq_kobj_release().
-  */
- unsigned int kstat_irqs_usr(unsigned int irq)
- {
++ * Returns: True if one of the bits in @bitmask is set
++ */
++bool irq_check_status_bit(unsigned int irq, unsigned int bitmask)
++{
++	struct irq_desc *desc;
++	bool res = false;
++
++	rcu_read_lock();
++	desc = irq_to_desc(irq);
++	if (desc)
++		res = !!(desc->status_use_accessors & bitmask);
++	rcu_read_unlock();
++	return res;
++}
