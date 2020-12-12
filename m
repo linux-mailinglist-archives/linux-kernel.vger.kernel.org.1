@@ -2,112 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5CF2D88C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 18:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 609062D88D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 18:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439604AbgLLRzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 12:55:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59092 "EHLO
+        id S2439629AbgLLR51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 12:57:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727514AbgLLRzn (ORCPT
+        with ESMTP id S2436464AbgLLR51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 12:55:43 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662FDC0613CF;
-        Sat, 12 Dec 2020 09:55:03 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id a8so19731575lfb.3;
-        Sat, 12 Dec 2020 09:55:03 -0800 (PST)
+        Sat, 12 Dec 2020 12:57:27 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA2EC0613CF;
+        Sat, 12 Dec 2020 09:56:46 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id m25so19700927lfc.11;
+        Sat, 12 Dec 2020 09:56:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=t/n/SZO57zH+6NrngqhLDU18rnISd3B9T8WfYcT9OVY=;
-        b=Az53OnX215u3j5WV+PfOQiLX82i72LtCP7dvEQ96A8kK3qS8C3Yv4xUDOQWladxXs9
-         2SkA373eLzlsNOLBxk4M/73cAVEALP6c9NrqovDL5ZgLf93wbEVJwB+fOjdgbU3d8WLw
-         ibdYNObpMFPqCF7iRkEC9uVt5PV6NLsdHDKH5Mf37lkPsn+068an5K7wFCR4Quc221X0
-         5a76gyRf8R9oSvTwnuBYqMDBX92VLARbOd2fYRqP6ioFKCvghQhuZB1kTReh1DVcMsCJ
-         JYoeb8GDnrBHwj8sQDto795RDI+Kl+FZEBUgUSl1H7A+huK96BUAnoS1RULfbbfam+l1
-         B4rQ==
+        bh=pK/TauEwOQxjwMKh9S4vhOg5BDCl+TEdAralgbPgXms=;
+        b=aukVNiw0MKku0nqBpuYaenetr6qzqZ2SZk7xS+AVbbG0DdWO6e9O7GAESr+p0RrhPW
+         Py6ZQYc6Ifj47A3Z1giRxjGfEqI1AI8dR5xkBzrVc908UOKrGN2YE66MH3lynSc5+5Bo
+         LL01huvcKfRfndHEi3xX9dK+0Em5+2m7Di0CyIbXVoTqzDfLrXFOuRG8dlH2H3VgCSgs
+         MaqqVnwf8+aMzO2b61SgjThqBsA8phFJE81uqp53cqe/IPcv9+UsgTxzqoLUVV40k+5a
+         OdTzUYORTvlld7Tj2+x1gQ+aKPUcZCI5G5slYVFACzx9Mve8JC0iaDR7N41Q62enF9gz
+         Cmrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=t/n/SZO57zH+6NrngqhLDU18rnISd3B9T8WfYcT9OVY=;
-        b=Y9fnv8rKCnjEaK+yLlO75LSh2rkg0hb3An3AZHrmNmiebX3BaazFGX9lnphUobNl36
-         lkPErQVt0CJs/+pwFVrl1M6fdCf7jayiKuXb/0qn/JPwRB0IcZUY7l8Yrbex1i6aJhgH
-         iWsbT0Jub98QXJOq/rl/ipyObj2fNQw12UJbfrLoLKkHIChkbg+lZnfFIOWxZRVQsuig
-         o8VF8X852b+SaQ1rHGPXAUeMGneJdovvJn4JELOX/5TYngib73KMmmXcqq+4Q0rQeLWq
-         h0hgjC3kQ3j+DNW9PIdvrOXwodj/qqDB/m5g8w0EIJPJmM4t67qQ9EFrCrbUGzrH6/5M
-         g48g==
-X-Gm-Message-State: AOAM532tLO9WY1GelwjKho/89WOcJvC5dcO2J05vrow4gWZ4I4c4xKhd
-        z3fRZVftGUaO6tZZaFtOaLSh0u3hkuU=
-X-Google-Smtp-Source: ABdhPJz63qGvDMQ6+R7rSAFJUdfoExgTKPuNQY/FDHF03Qjn2z2Y9LdCAD6ipINPbcjxSxfthnxnuw==
-X-Received: by 2002:ac2:5691:: with SMTP id 17mr7391498lfr.537.1607795701603;
-        Sat, 12 Dec 2020 09:55:01 -0800 (PST)
-Received: from [192.168.1.100] ([31.173.85.216])
-        by smtp.gmail.com with ESMTPSA id k11sm1353981lfj.170.2020.12.12.09.55.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Dec 2020 09:55:01 -0800 (PST)
-Subject: Re: [RFC] ravb: Add support for optional txc_refclk
-To:     Adam Ford <aford173@gmail.com>, linux-renesas-soc@vger.kernel.org
-Cc:     aford@beaconembedded.com, charles.stevens@logicpd.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201212165648.166220-1-aford173@gmail.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <7f5f8ef2-3e4f-5076-0558-26b48e75b674@gmail.com>
-Date:   Sat, 12 Dec 2020 20:54:58 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pK/TauEwOQxjwMKh9S4vhOg5BDCl+TEdAralgbPgXms=;
+        b=neXCKPR2uMp7e6juoocghuJN6vUS0lufuGOCKYI5hZmcYqDixYp0sSgo9qbtX5/lDj
+         fTmtSYPVk5fdGymxG51Od0SqVBF8r9JLpF74oAJll+P0ZNDad5+QabT0j9GhsloPYls3
+         Nhp2cGMAnfcDVtMblFeDY0AZ+FVQWMACn1EpGFQVCqIhJ8i7DStUD0XK+uXNrJR7QnQv
+         iRNrbS/tGplwWu8iRXpKxY2mst4Y6kGPayJq/PXpOe/bv47wsZtuATRUz5PbZXKAfmr6
+         XgidD2jNvU4wjgNQktuwTP4Xo2rj9aLExQu30jO4ZZjV1eqM9FGUVaVugMboZygfgVnb
+         VoSA==
+X-Gm-Message-State: AOAM532zyQw+B7XfQtM20HSQvuYNzFzZmLBwQtiKCPN/pQ9y2da40HMa
+        W27blTQTl+IMI78ToQuaaJR9rYYUWa8=
+X-Google-Smtp-Source: ABdhPJyE+QJMmowLy3ikdGLmYMZmOGXu61IyfrtCPMiyLL18flvhK4t1ZPDRNRSbRqobFtId5YSVZA==
+X-Received: by 2002:a19:cb05:: with SMTP id b5mr6258564lfg.61.1607795804802;
+        Sat, 12 Dec 2020 09:56:44 -0800 (PST)
+Received: from localhost.localdomain (88-114-222-21.elisa-laajakaista.fi. [88.114.222.21])
+        by smtp.gmail.com with ESMTPSA id w12sm1325418lff.181.2020.12.12.09.56.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Dec 2020 09:56:44 -0800 (PST)
+From:   Topi Miettinen <toiwoton@gmail.com>
+To:     linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Topi Miettinen <toiwoton@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH v2] mm/vmalloc: randomize vmalloc() allocations
+Date:   Sat, 12 Dec 2020 19:56:35 +0200
+Message-Id: <20201212175635.4217-1-toiwoton@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201212165648.166220-1-aford173@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Memory mappings inside kernel allocated with vmalloc() are in
+predictable order and packed tightly toward the low addresses. With
+new kernel boot parameter 'randomize_vmalloc=1', the entire area is
+used randomly to make the allocations less predictable and harder to
+guess for attackers. Also module and BPF code locations get randomized
+(within their dedicated and rather small area though) and if
+CONFIG_VMAP_STACK is enabled, also kernel thread stack locations.
 
-On 12.12.2020 19:56, Adam Ford wrote:
+On 32 bit systems this may cause problems due to increased VM
+fragmentation if the address space gets crowded.
 
-> The SoC expects the txv_refclk is provided, but if it is provided
-> by a programmable clock, there needs to be a way to get and enable
-> this clock to operate.  It needs to be optional since it's only
-> necessary for those with programmable clocks.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-[...]
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index bd30505fbc57..4c3f95923ef2 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -2148,6 +2148,18 @@ static int ravb_probe(struct platform_device *pdev)
->   		goto out_release;
->   	}
->   
-> +	priv->ref_clk = devm_clk_get(&pdev->dev, "txc_refclk");
+On all systems, it will reduce performance and increase memory and
+cache usage due to less efficient use of page tables and inability to
+merge adjacent VMAs with compatible attributes. On x86_64 with 5 level
+page tables, in the worst case, additional page table entries of up to
+4 pages are created for each mapping, so with small mappings there's
+considerable penalty.
 
-    Why not devm_clk_get_optional()?
+Without randomize_vmalloc=1:
+$ cat /proc/vmallocinfo
+0xffffc90000000000-0xffffc90000002000    8192 acpi_os_map_iomem+0x29e/0x2c0 phys=0x000000003ffe1000 ioremap
+0xffffc90000002000-0xffffc90000005000   12288 acpi_os_map_iomem+0x29e/0x2c0 phys=0x000000003ffe0000 ioremap
+0xffffc90000005000-0xffffc90000007000    8192 hpet_enable+0x36/0x4a9 phys=0x00000000fed00000 ioremap
+0xffffc90000007000-0xffffc90000009000    8192 gen_pool_add_owner+0x49/0x130 pages=1 vmalloc
+0xffffc90000009000-0xffffc9000000b000    8192 gen_pool_add_owner+0x49/0x130 pages=1 vmalloc
+0xffffc9000000b000-0xffffc9000000d000    8192 gen_pool_add_owner+0x49/0x130 pages=1 vmalloc
+0xffffc9000000d000-0xffffc9000000f000    8192 gen_pool_add_owner+0x49/0x130 pages=1 vmalloc
+0xffffc90000011000-0xffffc90000015000   16384 n_tty_open+0x16/0xe0 pages=3 vmalloc
+0xffffc900003de000-0xffffc900003e0000    8192 acpi_os_map_iomem+0x29e/0x2c0 phys=0x00000000fed00000 ioremap
+0xffffc900003e0000-0xffffc900003e2000    8192 memremap+0x1a1/0x280 phys=0x00000000000f5000 ioremap
+0xffffc900003e2000-0xffffc900003f3000   69632 pcpu_create_chunk+0x80/0x2c0 pages=16 vmalloc
+0xffffc900003f3000-0xffffc90000405000   73728 pcpu_create_chunk+0xb7/0x2c0 pages=17 vmalloc
+0xffffc90000405000-0xffffc9000040a000   20480 pcpu_create_chunk+0xed/0x2c0 pages=4 vmalloc
+0xffffe8ffffc00000-0xffffe8ffffe00000 2097152 pcpu_get_vm_areas+0x0/0x1a40 vmalloc
 
-> +	if (IS_ERR(priv->ref_clk)) {
-> +		if (PTR_ERR(priv->ref_clk) == -EPROBE_DEFER) {
-> +			/* for Probe defer return error */
-> +			error = PTR_ERR(priv->ref_clk);
-> +			goto out_release;
-> +		}
-> +		/* Ignore other errors since it's optional */
-> +	} else {
-> +		(void)clk_prepare_enable(priv->ref_clk);
-> +	}
-> +
->   	ndev->max_mtu = 2048 - (ETH_HLEN + VLAN_HLEN + ETH_FCS_LEN);
->   	ndev->min_mtu = ETH_MIN_MTU;
->   
+With randomize_vmalloc=1, the allocations are randomized:
+$ cat /proc/vmallocinfo
+0xffffca3a36442000-0xffffca3a36447000   20480 pcpu_create_chunk+0xed/0x2c0 pages=4 vmalloc
+0xffffca63034d6000-0xffffca63034d9000   12288 acpi_os_map_iomem+0x29e/0x2c0 phys=0x000000003ffe0000 ioremap
+0xffffcce23d32e000-0xffffcce23d330000    8192 memremap+0x1a1/0x280 phys=0x00000000000f5000 ioremap
+0xffffcfb9f0e22000-0xffffcfb9f0e24000    8192 hpet_enable+0x36/0x4a9 phys=0x00000000fed00000 ioremap
+0xffffd1df23e9e000-0xffffd1df23eb0000   73728 pcpu_create_chunk+0xb7/0x2c0 pages=17 vmalloc
+0xffffd690c2990000-0xffffd690c2992000    8192 acpi_os_map_iomem+0x29e/0x2c0 phys=0x000000003ffe1000 ioremap
+0xffffd8460c718000-0xffffd8460c71c000   16384 n_tty_open+0x16/0xe0 pages=3 vmalloc
+0xffffd89aba709000-0xffffd89aba70b000    8192 gen_pool_add_owner+0x49/0x130 pages=1 vmalloc
+0xffffe0ca3f2ed000-0xffffe0ca3f2ef000    8192 acpi_os_map_iomem+0x29e/0x2c0 phys=0x00000000fed00000 ioremap
+0xffffe3ba44802000-0xffffe3ba44804000    8192 gen_pool_add_owner+0x49/0x130 pages=1 vmalloc
+0xffffe4524b2a2000-0xffffe4524b2a4000    8192 gen_pool_add_owner+0x49/0x130 pages=1 vmalloc
+0xffffe61372b2e000-0xffffe61372b30000    8192 gen_pool_add_owner+0x49/0x130 pages=1 vmalloc
+0xffffe704d2f7c000-0xffffe704d2f8d000   69632 pcpu_create_chunk+0x80/0x2c0 pages=16 vmalloc
+0xffffe8ffffc00000-0xffffe8ffffe00000 2097152 pcpu_get_vm_areas+0x0/0x1a40 vmalloc
 
-MBR, Sergei
+With CONFIG_VMAP_STACK, also kernel thread stacks are placed in
+vmalloc area and therefore they also get randomized (only one example
+line from /proc/vmallocinfo shown for brevity):
+
+unrandomized:
+0xffffc90000018000-0xffffc90000021000   36864 kernel_clone+0xf9/0x560 pages=8 vmalloc
+
+randomized:
+0xffffcb57611a8000-0xffffcb57611b1000   36864 kernel_clone+0xf9/0x560 pages=8 vmalloc
+
+CC: Andrew Morton <akpm@linux-foundation.org>
+CC: Andy Lutomirski <luto@kernel.org>
+CC: Jann Horn <jannh@google.com>
+CC: Kees Cook <keescook@chromium.org>
+CC: Linux API <linux-api@vger.kernel.org>
+CC: Matthew Wilcox <willy@infradead.org>
+CC: Mike Rapoport <rppt@kernel.org>
+Signed-off-by: Topi Miettinen <toiwoton@gmail.com>
+---
+v2: retry allocation from other end of vmalloc space in case of
+failure (Matthew Wilcox), improve commit message and documentation
+---
+ .../admin-guide/kernel-parameters.txt         | 23 +++++++++++++++
+ mm/vmalloc.c                                  | 29 +++++++++++++++++--
+ 2 files changed, 50 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 44fde25bb221..9386b1b40a27 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4017,6 +4017,29 @@
+ 
+ 	ramdisk_start=	[RAM] RAM disk image start address
+ 
++	randomize_vmalloc= [KNL] Randomize vmalloc() allocations. With 1,
++			the entire vmalloc() area is used randomly to
++			make the allocations less predictable and
++			harder to guess for attackers. Also module and
++			BPF code locations get randomized (within
++			their dedicated and rather small area though)
++			and if CONFIG_VMAP_STACK is enabled, also
++			kernel thread stack locations.
++
++			On 32 bit systems this may cause problems due
++			to increased VM fragmentation if the address
++			space gets crowded.
++
++			On all systems, it will reduce performance and
++			increase memory and cache usage due to less
++			efficient use of page tables and inability to
++			merge adjacent VMAs with compatible
++			attributes. On x86_64 with 5 level page
++			tables, in the worst case, additional page
++			table entries of up to 4 pages are created for
++			each mapping, so with small mappings there's
++			considerable penalty.
++
+ 	random.trust_cpu={on,off}
+ 			[KNL] Enable or disable trusting the use of the
+ 			CPU's random number generator (if available) to
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 6ae491a8b210..d78528af6316 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -34,6 +34,7 @@
+ #include <linux/bitops.h>
+ #include <linux/rbtree_augmented.h>
+ #include <linux/overflow.h>
++#include <linux/random.h>
+ 
+ #include <linux/uaccess.h>
+ #include <asm/tlbflush.h>
+@@ -1079,6 +1080,17 @@ adjust_va_to_fit_type(struct vmap_area *va,
+ 	return 0;
+ }
+ 
++static int randomize_vmalloc = 0;
++
++static int __init set_randomize_vmalloc(char *str)
++{
++	if (!str)
++		return 0;
++	randomize_vmalloc = simple_strtoul(str, &str, 0);
++	return 1;
++}
++__setup("randomize_vmalloc=", set_randomize_vmalloc);
++
+ /*
+  * Returns a start address of the newly allocated area, if success.
+  * Otherwise a vend is returned that indicates failure.
+@@ -1152,7 +1164,7 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+ 				int node, gfp_t gfp_mask)
+ {
+ 	struct vmap_area *va, *pva;
+-	unsigned long addr;
++	unsigned long addr, voffset;
+ 	int purged = 0;
+ 	int ret;
+ 
+@@ -1207,11 +1219,24 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+ 	if (pva && __this_cpu_cmpxchg(ne_fit_preload_node, NULL, pva))
+ 		kmem_cache_free(vmap_area_cachep, pva);
+ 
++	/* Randomize allocation */
++	if (randomize_vmalloc) {
++		voffset = get_random_long() & (roundup_pow_of_two(vend - vstart) - 1);
++		voffset = PAGE_ALIGN(voffset);
++		if (voffset + size > vend - vstart)
++			voffset = vend - vstart - size;
++	} else
++		voffset = 0;
++
+ 	/*
+ 	 * If an allocation fails, the "vend" address is
+ 	 * returned. Therefore trigger the overflow path.
+ 	 */
+-	addr = __alloc_vmap_area(size, align, vstart, vend);
++	addr = __alloc_vmap_area(size, align, vstart + voffset, vend);
++
++	if (unlikely(addr == vend) && voffset)
++		/* Retry randomization from other end */
++		addr = __alloc_vmap_area(size, align, vstart, vstart + voffset + size);
+ 	spin_unlock(&free_vmap_area_lock);
+ 
+ 	if (unlikely(addr == vend))
+
+base-commit: 7f376f1917d7461e05b648983e8d2aea9d0712b2
+-- 
+2.29.2
+
