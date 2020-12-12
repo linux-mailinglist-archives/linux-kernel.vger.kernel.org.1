@@ -2,74 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20E82D856F
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 10:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED392D8576
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 10:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390904AbgLLJyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 04:54:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407229AbgLLJy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 04:54:28 -0500
-X-Gm-Message-State: AOAM531XCqonceRNB/Rx9BFvM75SPj7eexNEcF3GKDZPXepzXuvOLaww
-        NSR5sVMYO+8oiNz5z9ilGFckB0L+7Ta7gug7f1Q=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607765800;
-        bh=nFGtZ/HFEHYfdCjnllpqPiKX/TmzW3TQgjTrncJ6pZQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=baf2PcFhvxCvZxtGrLwrC1ENdEdlbJEQdN/O/ORkF5uxhuXxsSgdSWBiwiSYYWc0B
-         +WoGFHmw4W1eLQsfIs9dX4Cdts/iMIsnXEMgW9Gwby/VqRx+Fy/W6+RsLVnZzADy5q
-         pHm4PzWAiagcz6l+XSxVZL6K/9+chAX1CRSsTfzlERK2YlY3ONuozS8uKKSOy7iN47
-         qX2hQdYYKdfm5u3FD/ZXdYxIgy74pS4x2u3q75HPNSWR19q1BSqEzYrFt2T9llMynM
-         MQC8IjWKoV8kwqgoL6WsX0fbKMRDzXSZ+lX8VP1HJ0LR+rymFCH+EF4O7lMNnrjwu6
-         sNuHHyIwd7leA==
-X-Google-Smtp-Source: ABdhPJyKp2IMSGtwQ8agGmA1yEbsCVDrgQU7NO2o4B7q4Q/kokew7wD2ltF2196c5GcLnIFERGdFU7WlhtQdY1o5Gyc=
-X-Received: by 2002:a05:6830:10d2:: with SMTP id z18mr12824788oto.90.1607765799289;
- Sat, 12 Dec 2020 01:36:39 -0800 (PST)
+        id S2437973AbgLLJ4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 04:56:47 -0500
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:31160 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407229AbgLLJ43 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 04:56:29 -0500
+Received: from localhost.localdomain ([93.22.36.60])
+        by mwinf5d05 with ME
+        id 3Mmz2400z1HrHD103Mn0mg; Sat, 12 Dec 2020 10:47:01 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 12 Dec 2020 10:47:01 +0100
+X-ME-IP: 93.22.36.60
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, marcel@holtmann.org,
+        johan.hedberg@gmail.com
+Cc:     linux-arm-msm@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] Bluetooth: btqcomsmd: Fix a resource leak in error handling paths in the probe function
+Date:   Sat, 12 Dec 2020 10:46:58 +0100
+Message-Id: <20201212094658.83861-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com> <X9Ov3RWDpUik7gXo@sol.localdomain>
-In-Reply-To: <X9Ov3RWDpUik7gXo@sol.localdomain>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 12 Dec 2020 10:36:28 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEDjQG_my5FWVY+b7Q43-_waW74sZyBAPCkd7EEdku+Rw@mail.gmail.com>
-Message-ID: <CAMj1kXEDjQG_my5FWVY+b7Q43-_waW74sZyBAPCkd7EEdku+Rw@mail.gmail.com>
-Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        TimGuo-oc@zhaoxin.com, CooperYan@zhaoxin.com,
-        QiyuanWang@zhaoxin.com, HerryYang@zhaoxin.com,
-        CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 at 20:07, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Fri, Dec 11, 2020 at 07:29:04PM +0800, Tony W Wang-oc wrote:
-> > The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
-> > On platforms with Zhaoxin CPUs supporting this X86 feature, When
-> > crc32c-intel and crc32c-generic are both registered, system will
-> > use crc32c-intel because its .cra_priority is greater than
-> > crc32c-generic. This case expect to use crc32c-generic driver for
-> > some Zhaoxin CPUs to get performance gain, So remove these Zhaoxin
-> > CPUs support from crc32c-intel.
-> >
-> > Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
->
-> Does this mean that the performance of the crc32c instruction on those CPUs is
-> actually slower than a regular C implementation?  That's very weird.
->
+Some resource should be released in the error handling path of the probe
+function, as already done in the remove function.
 
-This driver does not use CRC instructions, but carryless
-multiplication and aggregation. So I suppose the pclmulqdq instruction
-triggers some pathological performance limitation here.
+The remove function was fixed in commit 5052de8deff5 ("soc: qcom: smd:
+Transition client drivers from smd to rpmsg")
 
-That means the crct10dif driver probably needs the same treatment.
+Fixes: 1511cc750c3d ("Bluetooth: Introduce Qualcomm WCNSS SMD based HCI driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/bluetooth/btqcomsmd.c | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/bluetooth/btqcomsmd.c b/drivers/bluetooth/btqcomsmd.c
+index 98d53764871f..2acb719e596f 100644
+--- a/drivers/bluetooth/btqcomsmd.c
++++ b/drivers/bluetooth/btqcomsmd.c
+@@ -142,12 +142,16 @@ static int btqcomsmd_probe(struct platform_device *pdev)
+ 
+ 	btq->cmd_channel = qcom_wcnss_open_channel(wcnss, "APPS_RIVA_BT_CMD",
+ 						   btqcomsmd_cmd_callback, btq);
+-	if (IS_ERR(btq->cmd_channel))
+-		return PTR_ERR(btq->cmd_channel);
++	if (IS_ERR(btq->cmd_channel)) {
++		ret = PTR_ERR(btq->cmd_channel);
++		goto destroy_acl_channel;
++	}
+ 
+ 	hdev = hci_alloc_dev();
+-	if (!hdev)
+-		return -ENOMEM;
++	if (!hdev) {
++		ret = -ENOMEM;
++		goto destroy_cmd_channel;
++	}
+ 
+ 	hci_set_drvdata(hdev, btq);
+ 	btq->hdev = hdev;
+@@ -161,14 +165,21 @@ static int btqcomsmd_probe(struct platform_device *pdev)
+ 	hdev->set_bdaddr = qca_set_bdaddr_rome;
+ 
+ 	ret = hci_register_dev(hdev);
+-	if (ret < 0) {
+-		hci_free_dev(hdev);
+-		return ret;
+-	}
++	if (ret < 0)
++		goto hci_free_dev;
+ 
+ 	platform_set_drvdata(pdev, btq);
+ 
+ 	return 0;
++
++hci_free_dev:
++	hci_free_dev(hdev);
++destroy_cmd_channel:
++	rpmsg_destroy_ept(btq->cmd_channel);
++destroy_acl_channel:
++	rpmsg_destroy_ept(btq->acl_channel);
++
++	return ret;
+ }
+ 
+ static int btqcomsmd_remove(struct platform_device *pdev)
+-- 
+2.27.0
+
