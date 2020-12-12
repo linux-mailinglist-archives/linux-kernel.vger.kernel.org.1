@@ -2,141 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7412D83DA
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 02:29:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8512D83DF
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 02:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406221AbgLLB32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 20:29:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
+        id S2406858AbgLLBc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 20:32:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437076AbgLLB3D (ORCPT
+        with ESMTP id S2406542AbgLLBcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 20:29:03 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32718C0613CF;
-        Fri, 11 Dec 2020 17:28:23 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id b5so1785715pjk.2;
-        Fri, 11 Dec 2020 17:28:23 -0800 (PST)
+        Fri, 11 Dec 2020 20:32:43 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA40C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 17:32:03 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id t37so8378644pga.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Dec 2020 17:32:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=XE0rlFPg1mJA2Km2y94Yg0vZGLDfpfOBughewlzeYmE=;
-        b=CPWCmAYDsODAr5NF3xVJP/lJ5CUeMNvmGI89cSrGrwutCtKLNL9oqUeKrfvD2q5PIR
-         J1KBIPOcQ+EVTmBBTkKWRMeRPmj0mxpxzUnAHoYHn+7/qTCL0pfkiKnIld/m5f0fFI3U
-         1dGxxHpephKLoKixY5j3sSknaBybig1M7EdIeIgwaqo88BmJmbprRd+N7aLpfeQcp8JG
-         FhLM/UO7szwaonqIGXwj0oDcGjwPSBpDQScQCcTu83UD2gbc0ajHmkxUbifE9oyVIXWi
-         jHCvMiSNRQ3sjCAswH7INvKz7Li7HR/cWLEGrS4gzBDUuLDAOjz9OQi/L0ce0N4BFMoB
-         DJuQ==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=89PR1XJOQ3AXJnqqfEc8vjhhdDtUcMjkmWKDCFEBDfA=;
+        b=KziBoxlqrygnMqkQZIsOH1IqWRTRks0E0laPSHjpnzDIsngRIIM4b/UeleALrKa3YJ
+         4GKyhns8nOMvfT+0LrReca3YXhaHbbqyo2LOdX7LTMywJWPTkNzg2sgUkdhM0M7sved4
+         soStHWAioS20Du7cAwmgPNc8A/femXn/+xkGo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=XE0rlFPg1mJA2Km2y94Yg0vZGLDfpfOBughewlzeYmE=;
-        b=LeT1TXU/klcujaQSoknuTggdyWjbiiKlhPXjKS3FwX5xILTeU1Hgemn+imd+RmBMcr
-         dev7kcmoKLbG6+kDDY8r0CZuyNGkaskOoxbimeihnUyToaE4g33qG/KNVfmQd3l1P0Tl
-         2T1B6yiAIzBAofIzsD/JprhCj15aQSn9krMfK7fKWl1U6ZHXec0FMs/UI82QtQUeW8NI
-         xFbNzfOZQ9ZWbvOEt1nndsA34YsrhOKtDTNVjABFifcIDgtD+xR82lNsBDwIY8OosX1J
-         fYvY/5i01Qu9Z1lD9s5yYcrY4ZcCHIcGD0ZhaTyUKRkOUiEPwhP7mztLop8o4bo93ijZ
-         5BuQ==
-X-Gm-Message-State: AOAM532y5xQNKz2lI1PYqUejm3GPgQgDA5qq99f31ddjwhtLqno5eJGU
-        5/vX7DDY59Adz9m5mOx9cz0=
-X-Google-Smtp-Source: ABdhPJya+ZautjadHl5y0UxotaFPIPROXEqF+OXYbVDEBrqR+KWp4LlzeUi9q9mNTNbm1sqpic/+4Q==
-X-Received: by 2002:a17:90a:301:: with SMTP id 1mr5715894pje.86.1607736502490;
-        Fri, 11 Dec 2020 17:28:22 -0800 (PST)
-Received: from localhost.localdomain ([2001:470:b:9c3:9e5c:8eff:fe4f:f2d0])
-        by smtp.gmail.com with ESMTPSA id l23sm11764759pgm.22.2020.12.11.17.28.19
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=89PR1XJOQ3AXJnqqfEc8vjhhdDtUcMjkmWKDCFEBDfA=;
+        b=aarXpgBhzxdym7XRirB4L8lT97Zx5ysfWCndzad54uYbWuFT5XFlMASP+5tAKrFYnN
+         bKwm4iVgIVsYDgRYD8U5rDdr470jGw/8Ux07kK1oGBHYQY+CBiLCcVg8IVvaE1A9Y/uO
+         GJCKBW+TSdkmdM/8YJRd6j+cBaapBTiIk/lRSoUBFyKURy1cwnQc+1SMn0ghBZtklDqa
+         hrZumjd7ACBgvPxz3nzrdB7ZLMcJ+RAfHyFeFyjXVISjhq0k37k870NI7OyE7aBOsZt2
+         tyINKUpXUOj4YAs/h/++AXs6Oa4dgsCkOjx1KMF7dyrkZEHnz/DTMBZl70Qt9cAnfPjH
+         PZUg==
+X-Gm-Message-State: AOAM532VPqSprMWtL8YZRue6rS2iFXA+2gECKo0bhAufHQpV4gKAHCbC
+        xCbqjVQaYiKGBNQzAdPpHWF3WcxFzHPHNA==
+X-Google-Smtp-Source: ABdhPJwMnvGRsZafrjgyMGtbAW3djZ4NDokRc5FKyg0KgrMLwX3pTXAWpcwmCaUsX1DAFXwRttktEg==
+X-Received: by 2002:a63:4e58:: with SMTP id o24mr14318396pgl.322.1607736722938;
+        Fri, 11 Dec 2020 17:32:02 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id ci2sm10838684pjb.40.2020.12.11.17.32.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 17:28:21 -0800 (PST)
-Subject: [net-next PATCH] tcp: Add logic to check for SYN w/ data in
- tcp_simple_retransmit
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-To:     edumazet@google.com, davem@davemloft.net, kuba@kernel.org,
-        ycheng@google.com
-Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kafai@fb.com,
-        kernel-team@fb.com
-Date:   Fri, 11 Dec 2020 17:28:19 -0800
-Message-ID: <160773649920.2387.14668844101686155199.stgit@localhost.localdomain>
-User-Agent: StGit/0.23
-MIME-Version: 1.0
+        Fri, 11 Dec 2020 17:32:02 -0800 (PST)
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAD=FV=WuyuF-PL2PMnLjWCyWGzOqn8beTVP3ZXWvfLdLhPh8=A@mail.gmail.com>
+References: <20201203074459.13078-1-rojay@codeaurora.org> <CAD=FV=WuQjKC6GHy8d2nuqS-fgsUfxYrJosg3eyC9JU1FPCcjw@mail.gmail.com> <160764316821.1580929.18177257779550490986@swboyd.mtv.corp.google.com> <CAD=FV=WvG085orLqnvg9WUobL7iyxwgoxh-8RvOaRdi9rLeDUg@mail.gmail.com> <160764785500.1580929.4255309510717807485@swboyd.mtv.corp.google.com> <CAD=FV=VD78fmSRciFf38AbZG=EFPzDiT_e7QkEC08zA9iL1vTw@mail.gmail.com> <160764967649.1580929.3992720095789306793@swboyd.mtv.corp.google.com> <CAD=FV=Xgw+33pCycHyaMPsk64Qs+oh8e-RtJaM1yn0F27qZRVQ@mail.gmail.com> <160765077856.1580929.643282739071441296@swboyd.mtv.corp.google.com> <CAD=FV=WuyuF-PL2PMnLjWCyWGzOqn8beTVP3ZXWvfLdLhPh8=A@mail.gmail.com>
+Subject: Re: [PATCH] spi: spi-geni-qcom: Fix NULL pointer access in geni_spi_isr
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        msavaliy@qti.qualcomm.com
+To:     Doug Anderson <dianders@chromium.org>
+Date:   Fri, 11 Dec 2020 17:32:00 -0800
+Message-ID: <160773672053.1580929.15441111796129112926@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Duyck <alexanderduyck@fb.com>
+Quoting Doug Anderson (2020-12-10 17:51:53)
+> Hi,
+>=20
+> On Thu, Dec 10, 2020 at 5:39 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> >
+> > Quoting Doug Anderson (2020-12-10 17:30:17)
+> > > On Thu, Dec 10, 2020 at 5:21 PM Stephen Boyd <swboyd@chromium.org> wr=
+ote:
+> > > >
+> > > > Yeah and so if it comes way later because it timed out then what's =
+the
+> > > > point of calling synchronize_irq() again? To make the completion
+> > > > variable set when it won't be tested again until it is reinitialize=
+d?
+> > >
+> > > Presumably the idea is to try to recover to a somewhat usable state
+> > > again?  We're not rebooting the machine so, even though this transfer
+> > > failed, we will undoubtedly do another transfer later.  If that
+> > > "abort" interrupt comes way later while we're setting up the next
+> > > transfer we'll really confuse ourselves.
+> >
+> > The interrupt handler just sets a completion variable. What does that
+> > confuse?
+>=20
+> The interrupt handler sees a "DONE" interrupt.  If we've made it far
+> enough into setting up the next transfer that "cur_xfer" has been set
+> then it might do more, no?
 
-There are cases where a fastopen SYN may trigger either a ICMP_TOOBIG
-message in the case of IPv6 or a fragmentation request in the case of
-IPv4. This results in the socket stalling for a second or more as it does
-not respond to the message by retransmitting the SYN frame.
+I thought it saw a cancel/abort EN bit?
 
-Normally a SYN frame should not be able to trigger a ICMP_TOOBIG or
-ICMP_FRAG_NEEDED however in the case of fastopen we can have a frame that
-makes use of the entire MSS. In the case of fastopen it does, and an
-additional complication is that the retransmit queue doesn't contain the
-original frames. As a result when tcp_simple_retransmit is called and
-walks the list of frames in the queue it may not mark the frames as lost
-because both the SYN and the data packet each individually are smaller than
-the MSS size after the adjustment. This results in the socket being stalled
-until the retransmit timer kicks in and forces the SYN frame out again
-without the data attached.
+        if (m_irq & M_CMD_CANCEL_EN)
+                complete(&mas->cancel_done);
+        if (m_irq & M_CMD_ABORT_EN)
+                complete(&mas->abort_done)
 
-In order to resolve this we can generate our best estimate for the original
-packet size by detecting the fastopen SYN frame and then adding the
-overhead for MAX_TCP_OPTION_SPACE and verifying if the SYN w/ data would
-have exceeded the MSS. If so we can mark the frame as lost and retransmit
-it.
+and only a DONE bit if a transfer happened.
 
-Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
----
- net/ipv4/tcp_input.c |   30 +++++++++++++++++++++++++++---
- 1 file changed, 27 insertions(+), 3 deletions(-)
+>=20
+>=20
+> > > I guess you could go the route of adding a synchronize_irq() at the
+> > > start of the next transfer, but I'd rather add the overhead in the
+> > > exceptional case (the timeout) than the normal case.  In the normal
+> > > case we don't need to worry about random IRQs from the past transfer
+> > > suddenly showing up.
+> > >
+> >
+> > How does adding synchronize_irq() at the end guarantee that the abort is
+> > cleared out of the hardware though? It seems to assume that the abort is
+> > pending at the GIC when it could still be running through the hardware
+> > and not executed yet. It seems like a synchronize_irq() for that is
+> > wishful thinking that the irq is merely pending even though it timed
+> > out and possibly never ran. Maybe it's stuck in a write buffer in the
+> > CPU?
+>=20
+> I guess I'm asserting that if a full second passed (because we timed
+> out) and after that full second no interrupts are pending then the
+> interrupt will never come.  That seems a reasonable assumption to me.
+> It seems hard to believe it'd be stuck in a write buffer for a full
+> second?
+>=20
 
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 9e8a6c1aa019..79375b58de84 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -2686,11 +2686,35 @@ static void tcp_mtup_probe_success(struct sock *sk)
- void tcp_simple_retransmit(struct sock *sk)
- {
- 	const struct inet_connection_sock *icsk = inet_csk(sk);
-+	struct sk_buff *skb = tcp_rtx_queue_head(sk);
- 	struct tcp_sock *tp = tcp_sk(sk);
--	struct sk_buff *skb;
--	unsigned int mss = tcp_current_mss(sk);
-+	unsigned int mss;
-+
-+	/* A fastopen SYN request is stored as two separate packets within
-+	 * the retransmit queue, this is done by tcp_send_syn_data().
-+	 * As a result simply checking the MSS of the frames in the queue
-+	 * will not work for the SYN packet. So instead we must make a best
-+	 * effort attempt by validating the data frame with the mss size
-+	 * that would be computed now by tcp_send_syn_data and comparing
-+	 * that against the data frame that would have been included with
-+	 * the SYN.
-+	 */
-+	if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_SYN && tp->syn_data) {
-+		struct sk_buff *syn_data = skb_rb_next(skb);
-+
-+		mss = tcp_mtu_to_mss(sk, icsk->icsk_pmtu_cookie) +
-+		      tp->tcp_header_len - sizeof(struct tcphdr) -
-+		      MAX_TCP_OPTION_SPACE;
- 
--	skb_rbtree_walk(skb, &sk->tcp_rtx_queue) {
-+		if (syn_data && syn_data->len > mss)
-+			tcp_mark_skb_lost(sk, skb);
-+
-+		skb = syn_data;
-+	} else {
-+		mss = tcp_current_mss(sk);
-+	}
-+
-+	skb_rbtree_walk_from(skb) {
- 		if (tcp_skb_seglen(skb) > mss)
- 			tcp_mark_skb_lost(sk, skb);
- 	}
-
-
+Ok, so if we don't expect an irq to come in why are we calling
+synchronize_irq()? I'm lost.
