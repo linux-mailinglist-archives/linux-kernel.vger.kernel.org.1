@@ -2,95 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8522D7582
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A7D2D753D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Dec 2020 13:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405518AbgLKMZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 07:25:16 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9169 "EHLO
+        id S2405885AbgLKMAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 07:00:37 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9167 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391658AbgLKMYl (ORCPT
+        with ESMTP id S1727780AbgLKL7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 07:24:41 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Csqgv0w1fz15ZR7;
-        Fri, 11 Dec 2020 20:23:23 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Dec 2020
- 20:23:52 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <kuba@kernel.org>, <nikolay@nvidia.com>, <davem@davemloft.net>,
-        <roopa@nvidia.com>
-CC:     <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] net: bridge: Fix a warning when del bridge sysfs
-Date:   Fri, 11 Dec 2020 20:29:21 +0800
-Message-ID: <20201211122921.40386-1-wanghai38@huawei.com>
+        Fri, 11 Dec 2020 06:59:53 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Csq7F5yjJz15YMk;
+        Fri, 11 Dec 2020 19:58:33 +0800 (CST)
+Received: from huawei.com (10.151.151.249) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Dec 2020
+ 19:59:00 +0800
+From:   Dongjiu Geng <gengdongjiu@huawei.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>,
+        <dan.j.williams@intel.com>, <p.zabel@pengutronix.de>,
+        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <gengdongjiu@huawei.com>
+Subject: [PATCH RESEND v6 1/4] dt-bindings: Document the hi3559a clock bindings
+Date:   Sat, 12 Dec 2020 13:11:12 +0000
+Message-ID: <20201212131115.569-2-gengdongjiu@huawei.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201212131115.569-1-gengdongjiu@huawei.com>
+References: <20201212131115.569-1-gengdongjiu@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
+X-Originating-IP: [10.151.151.249]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got a warining report:
+Add DT bindings documentation for hi3559a SoC clock.
 
-br_sysfs_addbr: can't create group bridge4/bridge
-------------[ cut here ]------------
-sysfs group 'bridge' not found for kobject 'bridge4'
-WARNING: CPU: 2 PID: 9004 at fs/sysfs/group.c:279 sysfs_remove_group fs/sysfs/group.c:279 [inline]
-WARNING: CPU: 2 PID: 9004 at fs/sysfs/group.c:279 sysfs_remove_group+0x153/0x1b0 fs/sysfs/group.c:270
-Modules linked in: iptable_nat
-...
-Call Trace:
-  br_dev_delete+0x112/0x190 net/bridge/br_if.c:384
-  br_dev_newlink net/bridge/br_netlink.c:1381 [inline]
-  br_dev_newlink+0xdb/0x100 net/bridge/br_netlink.c:1362
-  __rtnl_newlink+0xe11/0x13f0 net/core/rtnetlink.c:3441
-  rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3500
-  rtnetlink_rcv_msg+0x385/0x980 net/core/rtnetlink.c:5562
-  netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2494
-  netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
-  netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1330
-  netlink_sendmsg+0x793/0xc80 net/netlink/af_netlink.c:1919
-  sock_sendmsg_nosec net/socket.c:651 [inline]
-  sock_sendmsg+0x139/0x170 net/socket.c:671
-  ____sys_sendmsg+0x658/0x7d0 net/socket.c:2353
-  ___sys_sendmsg+0xf8/0x170 net/socket.c:2407
-  __sys_sendmsg+0xd3/0x190 net/socket.c:2440
-  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-In br_device_event(), if the bridge sysfs fails to be added,
-br_device_event() should return error. This can prevent warining
-when removing bridge sysfs that do not exist.
-
-Fixes: bb900b27a2f4 ("bridge: allow creating bridge devices with netlink")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: Dongjiu Geng <gengdongjiu@huawei.com>
 ---
-v1->v2: Fix this by check br_sysfs_addbr() return value as Nik's suggestion
- net/bridge/br.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ .../clock/hisilicon,hi3559av100-clock.yaml    |  59 +++++++
+ include/dt-bindings/clock/hi3559av100-clock.h | 165 ++++++++++++++++++
+ 2 files changed, 224 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
+ create mode 100644 include/dt-bindings/clock/hi3559av100-clock.h
 
-diff --git a/net/bridge/br.c b/net/bridge/br.c
-index 401eeb9142eb..1b169f8e7491 100644
---- a/net/bridge/br.c
-+++ b/net/bridge/br.c
-@@ -43,7 +43,10 @@ static int br_device_event(struct notifier_block *unused, unsigned long event, v
- 
- 		if (event == NETDEV_REGISTER) {
- 			/* register of bridge completed, add sysfs entries */
--			br_sysfs_addbr(dev);
-+			err = br_sysfs_addbr(dev);
-+			if (err)
-+				return notifier_from_errno(err);
+diff --git a/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml b/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
+new file mode 100644
+index 000000000000..3ceb29cec704
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/hisilicon,hi3559av100-clock.yaml
+@@ -0,0 +1,59 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/hisilicon,hi3559av100-clock.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 			return NOTIFY_DONE;
- 		}
- 	}
++title: Hisilicon SOC Clock for HI3559AV100
++
++maintainers:
++  - Dongjiu Geng <gengdongjiu@huawei.com>
++
++description: |
++  Hisilicon SOC clock control module which supports the clocks, resets and
++  power domains on HI3559AV100.
++
++  See also:
++    dt-bindings/clock/hi3559av100-clock.h
++
++properties:
++  compatible:
++    enum:
++      - hisilicon,hi3559av100-clock
++      - hisilicon,hi3559av100-shub-clock
++
++  reg:
++    minItems: 1
++    maxItems: 2
++
++  '#clock-cells':
++    const: 1
++
++  '#reset-cells':
++    const: 2
++    description: |
++      First cell is reset request register offset.
++      Second cell is bit offset in reset request register.
++
++required:
++  - compatible
++  - reg
++  - '#clock-cells'
++  - '#reset-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        clock-controller@12010000 {
++            compatible = "hisilicon,hi3559av100-clock";
++            #clock-cells = <1>;
++            #reset-cells = <2>;
++            reg = <0x0 0x12010000 0x0 0x10000>;
++        };
++    };
++...
+diff --git a/include/dt-bindings/clock/hi3559av100-clock.h b/include/dt-bindings/clock/hi3559av100-clock.h
+new file mode 100644
+index 000000000000..5fe7689010a0
+--- /dev/null
++++ b/include/dt-bindings/clock/hi3559av100-clock.h
+@@ -0,0 +1,165 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later or BSD-2-Clause */
++/*
++ * Copyright (c) 2019-2020, Huawei Tech. Co., Ltd.
++ *
++ * Author: Dongjiu Geng <gengdongjiu@huawei.com>
++ */
++
++#ifndef __DTS_HI3559AV100_CLOCK_H
++#define __DTS_HI3559AV100_CLOCK_H
++
++/*  fixed   rate    */
++#define HI3559AV100_FIXED_1188M     1
++#define HI3559AV100_FIXED_1000M     2
++#define HI3559AV100_FIXED_842M      3
++#define HI3559AV100_FIXED_792M      4
++#define HI3559AV100_FIXED_750M      5
++#define HI3559AV100_FIXED_710M      6
++#define HI3559AV100_FIXED_680M      7
++#define HI3559AV100_FIXED_667M      8
++#define HI3559AV100_FIXED_631M      9
++#define HI3559AV100_FIXED_600M      10
++#define HI3559AV100_FIXED_568M      11
++#define HI3559AV100_FIXED_500M      12
++#define HI3559AV100_FIXED_475M      13
++#define HI3559AV100_FIXED_428M      14
++#define HI3559AV100_FIXED_400M      15
++#define HI3559AV100_FIXED_396M      16
++#define HI3559AV100_FIXED_300M      17
++#define HI3559AV100_FIXED_250M      18
++#define HI3559AV100_FIXED_198M      19
++#define HI3559AV100_FIXED_187p5M    20
++#define HI3559AV100_FIXED_150M      21
++#define HI3559AV100_FIXED_148p5M    22
++#define HI3559AV100_FIXED_125M      23
++#define HI3559AV100_FIXED_107M      24
++#define HI3559AV100_FIXED_100M      25
++#define HI3559AV100_FIXED_99M       26
++#define HI3559AV100_FIXED_74p25M    27
++#define HI3559AV100_FIXED_72M       28
++#define HI3559AV100_FIXED_60M       29
++#define HI3559AV100_FIXED_54M       30
++#define HI3559AV100_FIXED_50M       31
++#define HI3559AV100_FIXED_49p5M     32
++#define HI3559AV100_FIXED_37p125M   33
++#define HI3559AV100_FIXED_36M       34
++#define HI3559AV100_FIXED_32p4M     35
++#define HI3559AV100_FIXED_27M       36
++#define HI3559AV100_FIXED_25M       37
++#define HI3559AV100_FIXED_24M       38
++#define HI3559AV100_FIXED_12M       39
++#define HI3559AV100_FIXED_3M        40
++#define HI3559AV100_FIXED_1p6M      41
++#define HI3559AV100_FIXED_400K      42
++#define HI3559AV100_FIXED_100K      43
++#define HI3559AV100_FIXED_200M      44
++#define HI3559AV100_FIXED_75M       75
++
++#define HI3559AV100_I2C0_CLK    50
++#define HI3559AV100_I2C1_CLK    51
++#define HI3559AV100_I2C2_CLK    52
++#define HI3559AV100_I2C3_CLK    53
++#define HI3559AV100_I2C4_CLK    54
++#define HI3559AV100_I2C5_CLK    55
++#define HI3559AV100_I2C6_CLK    56
++#define HI3559AV100_I2C7_CLK    57
++#define HI3559AV100_I2C8_CLK    58
++#define HI3559AV100_I2C9_CLK    59
++#define HI3559AV100_I2C10_CLK   60
++#define HI3559AV100_I2C11_CLK   61
++
++#define HI3559AV100_SPI0_CLK    62
++#define HI3559AV100_SPI1_CLK    63
++#define HI3559AV100_SPI2_CLK    64
++#define HI3559AV100_SPI3_CLK    65
++#define HI3559AV100_SPI4_CLK    66
++#define HI3559AV100_SPI5_CLK    67
++#define HI3559AV100_SPI6_CLK    68
++
++#define HI3559AV100_EDMAC_CLK     69
++#define HI3559AV100_EDMAC_AXICLK  70
++#define HI3559AV100_EDMAC1_CLK    71
++#define HI3559AV100_EDMAC1_AXICLK 72
++#define HI3559AV100_VDMAC_CLK     73
++
++/*  mux clocks  */
++#define HI3559AV100_FMC_MUX     80
++#define HI3559AV100_SYSAPB_MUX  81
++#define HI3559AV100_UART_MUX    82
++#define HI3559AV100_SYSBUS_MUX  83
++#define HI3559AV100_A73_MUX     84
++#define HI3559AV100_MMC0_MUX    85
++#define HI3559AV100_MMC1_MUX    86
++#define HI3559AV100_MMC2_MUX    87
++#define HI3559AV100_MMC3_MUX    88
++
++/*  gate    clocks  */
++#define HI3559AV100_FMC_CLK     90
++#define HI3559AV100_UART0_CLK   91
++#define HI3559AV100_UART1_CLK   92
++#define HI3559AV100_UART2_CLK   93
++#define HI3559AV100_UART3_CLK   94
++#define HI3559AV100_UART4_CLK   95
++#define HI3559AV100_MMC0_CLK    96
++#define HI3559AV100_MMC1_CLK    97
++#define HI3559AV100_MMC2_CLK    98
++#define HI3559AV100_MMC3_CLK    99
++
++#define HI3559AV100_ETH_CLK         100
++#define HI3559AV100_ETH_MACIF_CLK   101
++#define HI3559AV100_ETH1_CLK        102
++#define HI3559AV100_ETH1_MACIF_CLK  103
++
++/*  complex */
++#define HI3559AV100_MAC0_CLK                110
++#define HI3559AV100_MAC1_CLK                111
++#define HI3559AV100_SATA_CLK                112
++#define HI3559AV100_USB_CLK                 113
++#define HI3559AV100_USB1_CLK                114
++
++/* pll clocks */
++#define HI3559AV100_APLL_CLK                250
++#define HI3559AV100_GPLL_CLK                251
++
++#define HI3559AV100_CRG_NR_CLKS	            256
++
++#define HI3559AV100_SHUB_SOURCE_SOC_24M	    0
++#define HI3559AV100_SHUB_SOURCE_SOC_200M    1
++#define HI3559AV100_SHUB_SOURCE_SOC_300M    2
++#define HI3559AV100_SHUB_SOURCE_PLL         3
++#define HI3559AV100_SHUB_SOURCE_CLK         4
++
++#define HI3559AV100_SHUB_I2C0_CLK           10
++#define HI3559AV100_SHUB_I2C1_CLK           11
++#define HI3559AV100_SHUB_I2C2_CLK           12
++#define HI3559AV100_SHUB_I2C3_CLK           13
++#define HI3559AV100_SHUB_I2C4_CLK           14
++#define HI3559AV100_SHUB_I2C5_CLK           15
++#define HI3559AV100_SHUB_I2C6_CLK           16
++#define HI3559AV100_SHUB_I2C7_CLK           17
++
++#define HI3559AV100_SHUB_SPI_SOURCE_CLK     20
++#define HI3559AV100_SHUB_SPI4_SOURCE_CLK    21
++#define HI3559AV100_SHUB_SPI0_CLK           22
++#define HI3559AV100_SHUB_SPI1_CLK           23
++#define HI3559AV100_SHUB_SPI2_CLK           24
++#define HI3559AV100_SHUB_SPI3_CLK           25
++#define HI3559AV100_SHUB_SPI4_CLK           26
++
++#define HI3559AV100_SHUB_UART_CLK_32K       30
++#define HI3559AV100_SHUB_UART_SOURCE_CLK    31
++#define HI3559AV100_SHUB_UART_DIV_CLK       32
++#define HI3559AV100_SHUB_UART0_CLK          33
++#define HI3559AV100_SHUB_UART1_CLK          34
++#define HI3559AV100_SHUB_UART2_CLK          35
++#define HI3559AV100_SHUB_UART3_CLK          36
++#define HI3559AV100_SHUB_UART4_CLK          37
++#define HI3559AV100_SHUB_UART5_CLK          38
++#define HI3559AV100_SHUB_UART6_CLK          39
++
++#define HI3559AV100_SHUB_EDMAC_CLK          40
++
++#define HI3559AV100_SHUB_NR_CLKS            50
++
++#endif  /* __DTS_HI3559AV100_CLOCK_H */
++
 -- 
 2.17.1
 
