@@ -2,629 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3202D8976
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 19:55:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF152D897D
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 19:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439796AbgLLSxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 13:53:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46586 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2437781AbgLLSwc (ORCPT
+        id S2406659AbgLLS5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 13:57:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406167AbgLLS4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 13:52:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607799064;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QCUyYtcxvBoQYrzmcXaSDL6PgUcV8dQaREUxiRDyaIw=;
-        b=FdSPOIOgNdAzEJYbrXZo8/cMqvrbKJOXLEiArd5KaEaODdUnGzOu6CM19eKdz/8iZh573/
-        3l41hu4zgtTPmlXJ545MZCKTLxervs7gmaULxeR2T5wgno5QDL9agvGGaa1yNc1tF4MLKb
-        Kzdt1p97YY1bT2F3iLGCR9UD+TXskpE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-VZw_UR0zOsiwB0raYJDU3Q-1; Sat, 12 Dec 2020 13:51:02 -0500
-X-MC-Unique: VZw_UR0zOsiwB0raYJDU3Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A57A7107ACE3;
-        Sat, 12 Dec 2020 18:51:00 +0000 (UTC)
-Received: from laptop.redhat.com (ovpn-115-41.ams2.redhat.com [10.36.115.41])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 903C41F069;
-        Sat, 12 Dec 2020 18:50:57 +0000 (UTC)
-From:   Eric Auger <eric.auger@redhat.com>
-To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, maz@kernel.org, drjones@redhat.com
-Cc:     alexandru.elisei@arm.com, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        shuah@kernel.org, pbonzini@redhat.com
-Subject: [PATCH 9/9] KVM: selftests: aarch64/vgic-v3 init sequence tests
-Date:   Sat, 12 Dec 2020 19:50:10 +0100
-Message-Id: <20201212185010.26579-10-eric.auger@redhat.com>
-In-Reply-To: <20201212185010.26579-1-eric.auger@redhat.com>
-References: <20201212185010.26579-1-eric.auger@redhat.com>
+        Sat, 12 Dec 2020 13:56:46 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06037C061794
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 10:56:06 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id b8so11962050ila.13
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 10:56:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xoATNY6l7UvnRR540ZxeHmNTuygWDYuG0d6WKBGh/fQ=;
+        b=kfOCrGHdvi6jfrPSEsCAIMzsQdAErnLROpmpV8S1jLNeJNXe2uzbSrIZ7i2YPDDsEN
+         UwyUafk63Y6mRhxYw8OBHOnbtjIXZKrTzHX/gu7wTd/ovUI8QWIxl/DcfuDewcHntbOo
+         fPv0Wg9IEqRd+uR+RkU4Pl52ewBkJhMOB68MOUcKO67Wgz+4prb17RKgtGHetRFu6Ymj
+         Mahk5x3qBUtTQxXVjemcWmWfXHUO3cF1l4mOSVzi2wBxaiTD2Gou9IYBvCt31WcpQamR
+         QmlC9aXNzG/XODLMC3JvxXvwlskR3bfNnCx/aTQlMqjYteA6PsZUSJZK6m+nt1XJla4f
+         WP3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xoATNY6l7UvnRR540ZxeHmNTuygWDYuG0d6WKBGh/fQ=;
+        b=ijuXrFuDX1M2zgwuUTC2vS5qpPtkVxcX50JZ2Jy+wc4Cgf9WZo9BS7r1MlpYrVw1a1
+         2ycr2o+pF4r2AOEUT2CERDbc2pZ4nqasynh95EoVuY8fznFTV2wBmbCb88eATWpVMAXc
+         eGA8rZxBm/8Opf+Z0LphRw5n/Yqk0OjfDdzjmT/alzL601cOenAWAZtssvSM9dUO8+8w
+         KwHX3ADjvxWL+SLRZE0n1BvTrwkpy3yw5MzHsyAvLwXrYfeTkEdr1DQ97/lRCCVXICp8
+         IL0Rnkf75TlBeaF9sXXrnY+i/ur04tss2LCVGV8/zKpfQs21/SVkjfDX3dqQNJVMPtP/
+         1I+A==
+X-Gm-Message-State: AOAM531hf7XTRgREer0lhSxMXsXhqVZXZtk7hPQoMwnkQTgeU6stxlDK
+        k/eXkwJeF8pRiKzjNJCqKzQ5loro1j63IW7dtyTDgy+pzp6+Zg==
+X-Google-Smtp-Source: ABdhPJxGQLhHvuwwgqyZDuB5zsrS0LdiJw/ICNuSUTcLE49l8c3P2+2O0DJDpQY1xVtYQiMu/u5llgr2Zdvnwv5yWhE=
+X-Received: by 2002:a92:9881:: with SMTP id a1mr24463090ill.238.1607799365127;
+ Sat, 12 Dec 2020 10:56:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20201211085039.GA7619@ubuntu> <CAAH8bW8piLSCYLKjVXYV45cJeHApFX3Z3G=Zx-nap3yCA1=DDg@mail.gmail.com>
+ <CAM7-yPR4fFCcmav2HhSqV2Zs5coOfvuVeqD_U2HkXxwsBSEobw@mail.gmail.com>
+In-Reply-To: <CAM7-yPR4fFCcmav2HhSqV2Zs5coOfvuVeqD_U2HkXxwsBSEobw@mail.gmail.com>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Sat, 12 Dec 2020 10:55:54 -0800
+Message-ID: <CAAH8bW9L=oVLTE28D+=8=TuF2oof3g3M1Fo4ncPNBfv0vm+k6g@mail.gmail.com>
+Subject: Re: [PATCH] lib/find_bit_bench: fix the unmatched iterations cnt
+To:     Yun Levi <ppbuk5246@gmail.com>
+Cc:     dushistov@mail.ru, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        richard.weiyang@linux.alibaba.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        joseph.qi@linux.alibaba.com, skalluru@marvell.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tests exercise the VGIC_V3 device creation including the
-associated KVM_DEV_ARM_VGIC_GRP_ADDR group attributes:
+On Fri, Dec 11, 2020 at 4:09 PM Yun Levi <ppbuk5246@gmail.com> wrote:
+>
+> > I didn't understand why is so (I mean "same", I think you rather talking about
+> > same order of amount of itterations).
+>
+> Yes. That's what I want to talk about. Thanks!
+>
+> > Can you provide before and after to compare?
+>
+> I tested when the bitmap's 0 bit is set only. and below are before and
+> after results.
+>
+> before:
+>               Start testing find_bit() with random-filled bitmap
+> [  +0.000481] find_next_bit:                    8966 ns,      2 iterations
+> [  +0.001739] find_next_zero_bit:            1726335 ns, 327679 iterations
+> [  +0.000020] find_last_bit:                    7428 ns,      1 iterations
+> [  +0.000017] find_first_bit:                   5523 ns,      2 iterations
+> [  +0.000022] find_next_and_bit:                9643 ns,      1 iterations
+> [  +0.000007]
+>               Start testing find_bit() with sparse bitmap
+> [  +0.000041] find_next_bit:                   16343 ns,    656 iterations
+> [  +0.001943] find_next_zero_bit:            1928324 ns, 327025 iterations
+> [  +0.000029] find_last_bit:                   14398 ns,    656 iterations
+> [  +0.000725] find_first_bit:                 711383 ns,    656 iterations
+> [  +0.000022] find_next_and_bit:                9581 ns,      1 iterations
+>
+> after:
+> [Dec12 08:25]
+>               Start testing find_bit() with random-filled bitmap
+> [  +0.000687] find_next_bit:                   11079 ns,      1 iterations
+> [  +0.002156] find_next_zero_bit:            2055752 ns, 327679 iterations
+> [  +0.000022] find_last_bit:                    8052 ns,      1 iterations
+> [  +0.000020] find_first_bit:                   6270 ns,      1 iterations
+> [  +0.000024] find_next_and_bit:                9519 ns,      0 iterations
+> [  +0.000007]
+>               Start testing find_bit() with sparse bitmap
+> [  +0.000047] find_next_bit:                   18389 ns,    655 iterations
+> [  +0.001807] find_next_zero_bit:            1793314 ns, 327025 iterations
+> [  +0.000027] find_last_bit:                   13600 ns,    655 iterations
+> [  +0.000604] find_first_bit:                 591173 ns,    655 iterations
+> [  +0.000023] find_next_and_bit:                9392 ns,      0 iterations
 
-- KVM_VGIC_V3_ADDR_TYPE_DIST/REDIST (vcpu_first and vgic_first)
-- KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION (redist_regions).
+> find_next_and_bit:                9392 ns,      0 iterations
 
-Another test dedicates to KVM_DEV_ARM_VGIC_GRP_REDIST_REGS group
-and especially the GICR_TYPER read. The goal was to test the case
-recently fixed by commit 23bde34771f1
-("KVM: arm64: vgic-v3: Drop the reporting of GICR_TYPER.Last for userspace").
+This is definitely wrong. The test simply says that it has parsed the bitmap
+without actually parsing it. Bollocks.
 
-The API under test can be found at
-Documentation/virt/kvm/devices/arm-vgic-v3.rst
+> >I think it's not that important, because the difference is not measurable.
+> > But if this part raises questions, I have nothing against aligning numbers.
+> Right it's not that important, But if the amount of iteration value is
+> not same to the same bitmap,
+> makes people confused when they run the test cases. so I just fix.
 
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
----
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../testing/selftests/kvm/aarch64/vgic_init.c | 453 ++++++++++++++++++
- .../testing/selftests/kvm/include/kvm_util.h  |   5 +
- tools/testing/selftests/kvm/lib/kvm_util.c    |  51 ++
- 4 files changed, 510 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/aarch64/vgic_init.c
+Can you please welcome those people to join the discussion? What exactly
+confuses them? What is their usecase? Will they be satisfied if we add
+the comment pointing that we count _iterations_, not number of bits?
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index 3d14ef77755e..dc2fd33bd580 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -68,6 +68,7 @@ TEST_GEN_PROGS_x86_64 += steal_time
- 
- TEST_GEN_PROGS_aarch64 += aarch64/get-reg-list
- TEST_GEN_PROGS_aarch64 += aarch64/get-reg-list-sve
-+TEST_GEN_PROGS_aarch64 += aarch64/vgic_init
- TEST_GEN_PROGS_aarch64 += demand_paging_test
- TEST_GEN_PROGS_aarch64 += dirty_log_test
- TEST_GEN_PROGS_aarch64 += kvm_create_max_vcpus
-diff --git a/tools/testing/selftests/kvm/aarch64/vgic_init.c b/tools/testing/selftests/kvm/aarch64/vgic_init.c
-new file mode 100644
-index 000000000000..e8caa64c0395
---- /dev/null
-+++ b/tools/testing/selftests/kvm/aarch64/vgic_init.c
-@@ -0,0 +1,453 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * vgic init sequence tests
-+ *
-+ * Copyright (C) 2020, Red Hat, Inc.
-+ */
-+#define _GNU_SOURCE
-+#include <linux/kernel.h>
-+#include <sys/syscall.h>
-+#include <asm/kvm.h>
-+#include <asm/kvm_para.h>
-+
-+#include "test_util.h"
-+#include "kvm_util.h"
-+#include "processor.h"
-+
-+#define NR_VCPUS		4
-+
-+#define REDIST_REGION_ATTR_ADDR(count, base, flags, index) (((uint64_t)(count) << 52) | \
-+	((uint64_t)((base) >> 16) << 16) | ((uint64_t)(flags) << 12) | index)
-+#define REG_OFFSET(vcpu, offset) (((uint64_t)vcpu << 32) | offset)
-+
-+#define GICR_TYPER 0x8
-+
-+static int access_redist_reg(int gicv3_fd, int vcpu, int offset,
-+			     uint32_t *val, bool write)
-+{
-+	uint64_t attr = REG_OFFSET(vcpu, offset);
-+
-+	return kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_REDIST_REGS,
-+				 attr, val, write);
-+}
-+
-+static void guest_code(int cpu)
-+{
-+	GUEST_SYNC(0);
-+	GUEST_SYNC(1);
-+	GUEST_SYNC(2);
-+	GUEST_DONE();
-+}
-+
-+static int run_vcpu(struct kvm_vm *vm, uint32_t vcpuid)
-+{
-+	static int run;
-+	struct ucall uc;
-+	int ret;
-+
-+	vcpu_args_set(vm, vcpuid, 1, vcpuid);
-+	ret = _vcpu_ioctl(vm, vcpuid, KVM_RUN, NULL);
-+	get_ucall(vm, vcpuid, &uc);
-+	run++;
-+
-+	if (ret)
-+		return -errno;
-+	return 0;
-+}
-+
-+int dist_rdist_tests(struct kvm_vm *vm)
-+{
-+	int ret, gicv3_fd, max_ipa_bits;
-+	uint64_t addr;
-+
-+	max_ipa_bits = kvm_check_cap(KVM_CAP_ARM_VM_IPA_SIZE);
-+
-+	ret = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, true);
-+	if (ret) {
-+		print_skip("GICv3 not supported");
-+		exit(KSFT_SKIP);
-+	}
-+
-+	ret = kvm_create_device(vm, 0, true);
-+	TEST_ASSERT(ret == -ENODEV, "unsupported device");
-+
-+	/* Create the device */
-+
-+	gicv3_fd = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, false);
-+	TEST_ASSERT(gicv3_fd > 0, "GICv3 device created");
-+
-+	/* Check attributes */
-+
-+	ret = kvm_device_check_attr(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				    KVM_VGIC_V3_ADDR_TYPE_DIST);
-+	TEST_ASSERT(!ret, "KVM_DEV_ARM_VGIC_GRP_ADDR/KVM_VGIC_V3_ADDR_TYPE_DIST supported");
-+
-+	ret = kvm_device_check_attr(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				    KVM_VGIC_V3_ADDR_TYPE_REDIST);
-+	TEST_ASSERT(!ret, "KVM_DEV_ARM_VGIC_GRP_ADDR/KVM_VGIC_V3_ADDR_TYPE_REDIST supported");
-+
-+	ret = kvm_device_check_attr(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR, 0);
-+	TEST_ASSERT(ret == -ENXIO, "attribute not supported");
-+
-+	/* misaligned DIST and REDIST addresses */
-+
-+	addr = 0x1000;
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_DIST, &addr, true);
-+	TEST_ASSERT(ret == -EINVAL, "GICv3 dist base not 64kB aligned");
-+
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST, &addr, true);
-+	TEST_ASSERT(ret == -EINVAL, "GICv3 redist base not 64kB aligned");
-+
-+	/* out of range address */
-+	if (max_ipa_bits) {
-+		addr = 1ULL << max_ipa_bits;
-+		ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+					KVM_VGIC_V3_ADDR_TYPE_DIST, &addr, true);
-+		TEST_ASSERT(ret == -E2BIG, "dist address beyond IPA limit");
-+
-+		ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+					KVM_VGIC_V3_ADDR_TYPE_REDIST, &addr, true);
-+		TEST_ASSERT(ret == -E2BIG, "redist address beyond IPA limit");
-+	}
-+
-+	/* set REDIST base address */
-+	addr = 0x00000;
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST, &addr, true);
-+	TEST_ASSERT(!ret, "GICv3 redist base set");
-+
-+	addr = 0xE0000;
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST, &addr, true);
-+	TEST_ASSERT(ret == -EEXIST, "GICv3 redist base set again");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(NR_VCPUS, 0x100000, 0, 0);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(ret == -EINVAL, "attempt to mix GICv3 REDIST and REDIST_REGION");
-+
-+	/*
-+	 * Set overlapping DIST / REDIST, cannot be detected here. Will be detected
-+	 * on first vcpu run instead.
-+	 */
-+	addr = 3 * 2 * 0x10000;
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR, KVM_VGIC_V3_ADDR_TYPE_DIST,
-+				&addr, true);
-+	TEST_ASSERT(!ret, "dist overlapping rdist");
-+
-+	ret = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, false);
-+	TEST_ASSERT(ret == -EEXIST, "create GICv3 device twice");
-+
-+	ret = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, true);
-+	TEST_ASSERT(!ret, "create GICv3 in test mode while the same already is created");
-+
-+	if (!kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V2, true)) {
-+		ret = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V2, true);
-+		TEST_ASSERT(ret == -EINVAL, "create GICv2 while v3 exists");
-+	}
-+
-+	return gicv3_fd;
-+}
-+
-+static int redist_region_tests(struct kvm_vm *vm, int gicv3_fd)
-+{
-+	int ret, max_ipa_bits;
-+	uint64_t addr, expected_addr;
-+
-+	max_ipa_bits = kvm_check_cap(KVM_CAP_ARM_VM_IPA_SIZE);
-+
-+	ret = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, true);
-+	if (ret) {
-+		print_skip("GICv3 not supported");
-+		exit(KSFT_SKIP);
-+	}
-+
-+	if (gicv3_fd < 0) {
-+		gicv3_fd = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, false);
-+		TEST_ASSERT(gicv3_fd >= 0, "VGIC_V3 device created");
-+	}
-+
-+	ret = kvm_device_check_attr(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				    KVM_VGIC_V3_ADDR_TYPE_REDIST);
-+	TEST_ASSERT(!ret, "Multiple redist regions advertised");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(NR_VCPUS, 0x100000, 2, 0);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(ret == -EINVAL, "redist region attr value with flags != 0");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(0, 0x100000, 0, 0);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(ret == -EINVAL, "redist region attr value with count== 0");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(2, 0x200000, 0, 1);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(ret == -EINVAL, "attempt to register the first rdist region with index != 0");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(2, 0x201000, 0, 1);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(ret == -EINVAL, "rdist region with misaligned address");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(2, 0x200000, 0, 0);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(!ret, "First valid redist region with 2 rdist @ 0x200000, index 0");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(2, 0x200000, 0, 1);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(ret == -EINVAL, "register an rdist region with already used index");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(1, 0x210000, 0, 2);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(ret == -EINVAL, "register an rdist region overlapping with another one");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(1, 0x240000, 0, 2);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(ret == -EINVAL, "register redist region with index not +1");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(1, 0x240000, 0, 1);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(!ret, "register valid redist region with 1 rdist @ 0x220000, index 1");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(1, 1ULL << max_ipa_bits, 0, 2);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(ret == -E2BIG, "register redist region with base address beyond IPA range");
-+
-+	addr = 0x260000;
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST, &addr, true);
-+	TEST_ASSERT(ret == -EINVAL, "Mix KVM_VGIC_V3_ADDR_TYPE_REDIST and REDIST_REGION");
-+
-+	/*
-+	 * Now there are 2 redist regions:
-+	 * region 0 @ 0x200000 2 redists
-+	 * region 1 @ 0x240000 1 redist
-+	 * now attempt to read their characteristics
-+	 */
-+
-+	addr = REDIST_REGION_ATTR_ADDR(0, 0, 0, 0);
-+	expected_addr = REDIST_REGION_ATTR_ADDR(2, 0x200000, 0, 0);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, false);
-+	TEST_ASSERT(!ret && addr == expected_addr, "read characteristics of region #0");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(0, 0, 0, 1);
-+	expected_addr = REDIST_REGION_ATTR_ADDR(1, 0x240000, 0, 1);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, false);
-+	TEST_ASSERT(!ret && addr == expected_addr, "read characteristics of region #1");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(0, 0, 0, 2);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, false);
-+	TEST_ASSERT(ret == -ENOENT, "read characteristics of non existing region");
-+
-+	addr = 0x260000;
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_DIST, &addr, true);
-+	TEST_ASSERT(!ret, "set dist region");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(1, 0x260000, 0, 2);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(ret == -EINVAL, "register redist region colliding with dist");
-+
-+	return gicv3_fd;
-+}
-+
-+static void vgic_first(void)
-+{
-+	int ret, i, gicv3_fd;
-+	struct kvm_vm *vm;
-+
-+	vm = vm_create_default(0, 0, guest_code);
-+
-+	gicv3_fd = dist_rdist_tests(vm);
-+
-+	/* Add the rest of the VCPUs */
-+	for (i = 1; i < NR_VCPUS; ++i)
-+		vm_vcpu_add_default(vm, i, guest_code);
-+
-+	ret = run_vcpu(vm, 3);
-+	TEST_ASSERT(ret == -EINVAL, "dist/rdist overlap detected on 1st vcpu run");
-+
-+	close(gicv3_fd);
-+	kvm_vm_free(vm);
-+}
-+
-+
-+static void vcpu_first(void)
-+{
-+	int ret, i, gicv3_fd;
-+	struct kvm_vm *vm;
-+
-+	vm = vm_create_default(0, 0, guest_code);
-+
-+	/* Add the rest of the VCPUs */
-+	for (i = 1; i < NR_VCPUS; ++i)
-+		vm_vcpu_add_default(vm, i, guest_code);
-+
-+	gicv3_fd = dist_rdist_tests(vm);
-+
-+	ret = run_vcpu(vm, 3);
-+	TEST_ASSERT(ret == -EINVAL, "dist/rdist overlap detected on 1st vcpu run");
-+
-+	close(gicv3_fd);
-+	kvm_vm_free(vm);
-+}
-+
-+static void redist_regions(void)
-+{
-+	int ret, i, gicv3_fd = -1;
-+	struct kvm_vm *vm;
-+	uint64_t addr;
-+	void *dummy = NULL;
-+
-+	vm = vm_create_default(0, 0, guest_code);
-+	ucall_init(vm, NULL);
-+
-+	/* Add the rest of the VCPUs */
-+	for (i = 1; i < NR_VCPUS; ++i)
-+		vm_vcpu_add_default(vm, i, guest_code);
-+
-+	gicv3_fd = redist_region_tests(vm, gicv3_fd);
-+
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_CTRL,
-+				KVM_DEV_ARM_VGIC_CTRL_INIT, NULL, true);
-+	TEST_ASSERT(!ret, "init the vgic");
-+
-+	ret = run_vcpu(vm, 3);
-+	TEST_ASSERT(ret == -ENXIO, "running without sufficient number of rdists");
-+
-+	/*
-+	 * At this time the kvm_vgic_map_resources destroyed the vgic
-+	 * Redo everything
-+	 */
-+	gicv3_fd = redist_region_tests(vm, gicv3_fd);
-+
-+	addr = REDIST_REGION_ATTR_ADDR(1, 0x280000, 0, 2);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(!ret, "register a third region allowing to cover the 4 vcpus");
-+
-+	ret = run_vcpu(vm, 3);
-+	TEST_ASSERT(ret == -EBUSY, "running without vgic explicit init");
-+
-+	/* again need to redo init and this time do the explicit init*/
-+	gicv3_fd = redist_region_tests(vm, gicv3_fd);
-+
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, dummy, true);
-+	TEST_ASSERT(ret == -EFAULT, "register a third region allowing to cover the 4 vcpus");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(1, 0x280000, 0, 2);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(!ret, "register a third region allowing to cover the 4 vcpus");
-+
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_CTRL,
-+				KVM_DEV_ARM_VGIC_CTRL_INIT, NULL, true);
-+	TEST_ASSERT(!ret, "init the vgic");
-+
-+	ret = run_vcpu(vm, 3);
-+	TEST_ASSERT(!ret, "vcpu run");
-+
-+	close(gicv3_fd);
-+	kvm_vm_free(vm);
-+}
-+
-+static void typer_accesses(void)
-+{
-+	int ret, i, gicv3_fd = -1;
-+	uint64_t addr;
-+	struct kvm_vm *vm;
-+	uint32_t val;
-+
-+	vm = vm_create_default(0, 0, guest_code);
-+	ucall_init(vm, NULL);
-+
-+	gicv3_fd = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, false);
-+	TEST_ASSERT(gicv3_fd >= 0, "VGIC_V3 device created");
-+
-+	vm_vcpu_add_default(vm, 3, guest_code);
-+
-+	ret = access_redist_reg(gicv3_fd, 1, GICR_TYPER, &val, false);
-+	TEST_ASSERT(ret == -EINVAL, "attempting to read GICR_TYPER of non created vcpu");
-+
-+	vm_vcpu_add_default(vm, 1, guest_code);
-+
-+	ret = access_redist_reg(gicv3_fd, 1, GICR_TYPER, &val, false);
-+	TEST_ASSERT(ret == -EBUSY, "read GICR_TYPER before GIC initialized");
-+
-+	vm_vcpu_add_default(vm, 2, guest_code);
-+
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_CTRL,
-+				KVM_DEV_ARM_VGIC_CTRL_INIT, NULL, true);
-+	TEST_ASSERT(!ret, "init the vgic after the vcpu creations");
-+
-+	for (i = 0; i < NR_VCPUS ; i++) {
-+		ret = access_redist_reg(gicv3_fd, 0, GICR_TYPER, &val, false);
-+		TEST_ASSERT(!ret && !val, "read GICR_TYPER before rdist region setting");
-+	}
-+
-+	addr = REDIST_REGION_ATTR_ADDR(2, 0x200000, 0, 0);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(!ret, "first rdist region with a capacity of 2 rdists");
-+
-+	/* The 2 first rdists should be put there (vcpu 0 and 3) */
-+	ret = access_redist_reg(gicv3_fd, 0, GICR_TYPER, &val, false);
-+	TEST_ASSERT(!ret && !val, "read typer of rdist #0");
-+
-+	ret = access_redist_reg(gicv3_fd, 3, GICR_TYPER, &val, false);
-+	TEST_ASSERT(!ret && val == 0x310, "read typer of rdist #1");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(10, 0x100000, 0, 1);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(ret == -EINVAL, "collision with previous rdist region");
-+
-+	ret = access_redist_reg(gicv3_fd, 1, GICR_TYPER, &val, false);
-+	TEST_ASSERT(!ret && val == 0x100,
-+		    "no redist region attached to vcpu #1 yet, last cannot be returned");
-+
-+	ret = access_redist_reg(gicv3_fd, 2, GICR_TYPER, &val, false);
-+	TEST_ASSERT(!ret && val == 0x200,
-+		    "no redist region attached to vcpu #2, last cannot be returned");
-+
-+	addr = REDIST_REGION_ATTR_ADDR(10, 0x20000, 0, 1);
-+	ret = kvm_device_access(gicv3_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-+				KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &addr, true);
-+	TEST_ASSERT(!ret, "second rdist region");
-+
-+	ret = access_redist_reg(gicv3_fd, 1, GICR_TYPER, &val, false);
-+	TEST_ASSERT(!ret && val == 0x100, "read typer of rdist #1");
-+
-+	ret = access_redist_reg(gicv3_fd, 2, GICR_TYPER, &val, false);
-+	TEST_ASSERT(!ret && val == 0x210,
-+		    "read typer of rdist #1, last properly returned");
-+
-+	close(gicv3_fd);
-+	kvm_vm_free(vm);
-+}
-+
-+int main(int ac, char **av)
-+{
-+	vcpu_first();
-+	vgic_first();
-+	redist_regions();
-+	typer_accesses();
-+
-+	return 0;
-+}
-+
-diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-index 7d29aa786959..0fecea13a570 100644
---- a/tools/testing/selftests/kvm/include/kvm_util.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util.h
-@@ -200,6 +200,11 @@ int vcpu_nested_state_set(struct kvm_vm *vm, uint32_t vcpuid,
- 			  struct kvm_nested_state *state, bool ignore_error);
- #endif
- 
-+int kvm_device_check_attr(int dev_fd, uint32_t group, uint64_t attr);
-+int kvm_create_device(struct kvm_vm *vm, uint64_t type, bool test);
-+int kvm_device_access(int dev_fd, uint32_t group, uint64_t attr,
-+		      void *val, bool write);
-+
- const char *exit_reason_str(unsigned int exit_reason);
- 
- void virt_pgd_alloc(struct kvm_vm *vm, uint32_t pgd_memslot);
-diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-index 126c6727a6b0..e3ec381e8c0c 100644
---- a/tools/testing/selftests/kvm/lib/kvm_util.c
-+++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -1582,6 +1582,57 @@ void vm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg)
- 		cmd, ret, errno, strerror(errno));
- }
- 
-+/*
-+ * Device Ioctl
-+ */
-+
-+int kvm_device_check_attr(int dev_fd, uint32_t group, uint64_t attr)
-+{
-+	struct kvm_device_attr attribute = {
-+		.group = group,
-+		.attr = attr,
-+		.flags = 0,
-+	};
-+	int ret;
-+
-+	ret = ioctl(dev_fd, KVM_HAS_DEVICE_ATTR, &attribute);
-+	if (ret == -1)
-+		return -errno;
-+	return ret;
-+}
-+
-+int kvm_create_device(struct kvm_vm *vm, uint64_t type, bool test)
-+{
-+	struct kvm_create_device create_dev;
-+	int ret;
-+
-+	create_dev.type = type;
-+	create_dev.fd = -1;
-+	create_dev.flags = test ? KVM_CREATE_DEVICE_TEST : 0;
-+	ret = ioctl(vm_get_fd(vm), KVM_CREATE_DEVICE, &create_dev);
-+	if (ret == -1)
-+		return -errno;
-+	return test ? 0 : create_dev.fd;
-+}
-+
-+int kvm_device_access(int dev_fd, uint32_t group, uint64_t attr,
-+		      void *val, bool write)
-+{
-+	struct kvm_device_attr kvmattr = {
-+		.group = group,
-+		.attr = attr,
-+		.flags = 0,
-+		.addr = (uintptr_t)val,
-+	};
-+	int ret;
-+
-+	ret = ioctl(dev_fd, write ? KVM_SET_DEVICE_ATTR : KVM_GET_DEVICE_ATTR,
-+		    &kvmattr);
-+	if (ret)
-+		return -errno;
-+	return ret;
-+}
-+
- /*
-  * VM Dump
-  *
--- 
-2.21.3
+> > What for this check against ++cnt? I doubt that the counter can overflow.
+> This test case suppose the bitmap size is 327680 (4096UL * 8 * 10)
+> So I think there is no case that the counter can overflow in the testcase.
+>
+> >>         time = ktime_get() - time;
+> >>         pr_err("find_first_bit:     %18llu ns, %6ld\n", time, cnt);
+> > Why this?
+> Sorry, I don't catch what you are saying.
+> Could you tell me in detail?
 
+This change adds useless check against overflow on each iteration.
+Except that, nothing is changed. We don't need this change, right?
+
+> > Can you please confirm that for bitmap 0001,
+> > test_find_{first,next,next_and}_bit reports cnt == 0, and
+> > test_find_last_bit() reports 1?
+> This happens because "test_find_first_bit" calls __clear_bit
+> in case of bitmap 0001 (only 0 bit set), the test_find_first_bit will
+> clear the 0 bit
+> that makes no match with bitmap2 so it reports 0.
+>
+> In the view we need to call the find_last_bit or find_next_bit to know
+> bitmap is empty so cnt should be the 1 in that case,
+> I think it possible by initializing cnt as 1.
+
+Again, we count iterations, not the number of set bits. If you are able to
+demonstrate that this test counts iterations wrongly, I'll happily
+accept the fix.
+Otherwise NACK.
+
+Yury
+
+> > Do you experience the same problem with find_next_and_bit() as well?
+> Nope, But compared to other test cases, I think it's better to
+> integrate their format.
+> Should I sustain the former one?
+>
+> On Sat, Dec 12, 2020 at 2:20 AM Yury Norov <yury.norov@gmail.com> wrote:
+> >
+> > On Fri, Dec 11, 2020 at 12:50 AM Levi Yun <ppbuk5246@gmail.com> wrote:
+> > >
+> > > We should have same iteration count when we walk the same bitmap
+> > > regardless of using find_next_bit or find_last_b
+> >
+> > I think it's not that important, because the difference is not measurable.
+> > But if this part raises questions, I have nothing against aligning numbers.
+> >
+> > > When we run the find_bit_benchmark.ko, we sometime get
+> > > unmatched iterations count below:
+> > >
+> > >              Start testing find_bit() with random-filled bitmap
+> > > [+...] find_next_bit:                  875085 ns, 163755 iterations <
+> > > [+...] find_next_zero_bit:             865319 ns, 163926 iterations
+> > > [+...] find_last_bit:                  611807 ns, 163756 iterations <
+> > > [+...] find_first_bit:                1601016 ns,  16335 iterations
+> > > [+...] find_next_and_bit:              400645 ns,  74040 iterations
+> > > [+...]
+> > >               Start testing find_bit() with sparse bitmap
+> > > [+...] find_next_bit:                    9942 ns,    654 iterations
+> > > [+...] find_next_zero_bit:            1678445 ns, 327027 iterations
+> > > [+...] find_last_bit:                    7131 ns,    654 iterations
+> > > [+...] find_first_bit:                 551383 ns,    654 iterations
+> > > [+...] find_next_and_bit:                3027 ns,      1 iterations
+> > >
+> > > Normally, this is happen when the last bit of bitmap was set.
+> >
+> > Can you please confirm that for bitmap 0001,
+> > test_find_{first,next,next_and}_bit reports cnt == 0, and
+> > test_find_last_bit() reports 1?
+> >
+> > > This patch fix the unmatched iterations count between
+> > > test_find_next_bit and test_find_last_bit.
+> > >
+> > > Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
+> > > ---
+> > >  lib/find_bit_benchmark.c | 30 ++++++++++++++++--------------
+> > >  1 file changed, 16 insertions(+), 14 deletions(-)
+> > >
+> > > diff --git a/lib/find_bit_benchmark.c b/lib/find_bit_benchmark.c
+> > > index 5637c5711db9..766e0487852b 100644
+> > > --- a/lib/find_bit_benchmark.c
+> > > +++ b/lib/find_bit_benchmark.c
+> > > @@ -35,14 +35,14 @@ static DECLARE_BITMAP(bitmap2, BITMAP_LEN) __initdata;
+> > >   */
+> > >  static int __init test_find_first_bit(void *bitmap, unsigned long len)
+> > >  {
+> > > -       unsigned long i, cnt;
+> > > +       unsigned long i = 0, cnt = 0;
+> > >         ktime_t time;
+> > >
+> > >         time = ktime_get();
+> > > -       for (cnt = i = 0; i < len; cnt++) {
+> > > +       do {
+> > >                 i = find_first_bit(bitmap, len);
+> > >                 __clear_bit(i, bitmap);
+> > > -       }
+> > > +       } while (i++ < len && ++cnt);
+> >
+> > What for this check against ++cnt? I doubt that the counter can overflow.
+> >
+> > >         time = ktime_get() - time;
+> > >         pr_err("find_first_bit:     %18llu ns, %6ld\n", time, cnt);
+> > >
+> > > @@ -51,12 +51,13 @@ static int __init test_find_first_bit(void *bitmap, unsigned long len)
+> > >
+> > >  static int __init test_find_next_bit(const void *bitmap, unsigned long len)
+> > >  {
+> > > -       unsigned long i, cnt;
+> > > +       unsigned long i = 0, cnt = 0;
+> > >         ktime_t time;
+> > >
+> > >         time = ktime_get();
+> > > -       for (cnt = i = 0; i < BITMAP_LEN; cnt++)
+> > > -               i = find_next_bit(bitmap, BITMAP_LEN, i) + 1;
+> > > +       do {
+> > > +               i = find_next_bit(bitmap, BITMAP_LEN, i);
+> > > +       } while (i++ < BITMAP_LEN && ++cnt);
+> > >         time = ktime_get() - time;
+> > >         pr_err("find_next_bit:      %18llu ns, %6ld iterations\n", time, cnt);
+> > >
+> > > @@ -65,12 +66,13 @@ static int __init test_find_next_bit(const void *bitmap, unsigned long len)
+> > >
+> > >  static int __init test_find_next_zero_bit(const void *bitmap, unsigned long len)
+> > >  {
+> > > -       unsigned long i, cnt;
+> > > +       unsigned long i = 0, cnt = 0;
+> > >         ktime_t time;
+> > >
+> > >         time = ktime_get();
+> > > -       for (cnt = i = 0; i < BITMAP_LEN; cnt++)
+> > > -               i = find_next_zero_bit(bitmap, len, i) + 1;
+> > > +       do {
+> > > +               i = find_next_zero_bit(bitmap, len, i);
+> > > +       } while (i++ < BITMAP_LEN && ++cnt);
+> > >         time = ktime_get() - time;
+> > >         pr_err("find_next_zero_bit: %18llu ns, %6ld iterations\n", time, cnt);
+> > >
+> > > @@ -84,12 +86,11 @@ static int __init test_find_last_bit(const void *bitmap, unsigned long len)
+> > >
+> > >         time = ktime_get();
+> > >         do {
+> > > -               cnt++;
+> > >                 l = find_last_bit(bitmap, len);
+> > >                 if (l >= len)
+> > >                         break;
+> > >                 len = l;
+> > > -       } while (len);
+> > > +       } while (len >= 0 && ++cnt);
+> >
+> > Why this?
+> >
+> > >         time = ktime_get() - time;
+> > >         pr_err("find_last_bit:      %18llu ns, %6ld iterations\n", time, cnt);
+> > >
+> > > @@ -99,12 +100,13 @@ static int __init test_find_last_bit(const void *bitmap, unsigned long len)
+> > >  static int __init test_find_next_and_bit(const void *bitmap,
+> > >                 const void *bitmap2, unsigned long len)
+> > >  {
+> > > -       unsigned long i, cnt;
+> > > +       unsigned long i = 0, cnt = 0;
+> > >         ktime_t time;
+> > >
+> > >         time = ktime_get();
+> > > -       for (cnt = i = 0; i < BITMAP_LEN; cnt++)
+> > > -               i = find_next_and_bit(bitmap, bitmap2, BITMAP_LEN, i + 1);
+> > > +       do {
+> > > +               i = find_next_and_bit(bitmap, bitmap2, BITMAP_LEN, i);
+> > > +       } while (i++ < BITMAP_LEN && ++cnt);
+> >
+> > Do you experience the same problem with find_next_and_bit() as well?
+> >
+> > >         time = ktime_get() - time;
+> > >         pr_err("find_next_and_bit:  %18llu ns, %6ld iterations\n", time, cnt);
+> > >
+> > > --
+> > > 2.27.0
