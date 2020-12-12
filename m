@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508CB2D87CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 672282D87C9
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439528AbgLLQMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 11:12:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59452 "EHLO mail.kernel.org"
+        id S2407483AbgLLQMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 11:12:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439443AbgLLQKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 11:10:21 -0500
+        id S2439397AbgLLQJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 11:09:56 -0500
 From:   Sasha Levin <sashal@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc:     Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>,
-        MPT-FusionLinux.pdl@avagotech.com, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 16/23] scsi: mpt3sas: Increase IOCInit request timeout to 30s
-Date:   Sat, 12 Dec 2020 11:07:57 -0500
-Message-Id: <20201212160804.2334982-16-sashal@kernel.org>
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 18/23] iwlwifi: pcie: add one missing entry for AX210
+Date:   Sat, 12 Dec 2020 11:07:59 -0500
+Message-Id: <20201212160804.2334982-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201212160804.2334982-1-sashal@kernel.org>
 References: <20201212160804.2334982-1-sashal@kernel.org>
@@ -32,36 +32,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+From: Luca Coelho <luciano.coelho@intel.com>
 
-[ Upstream commit 85dad327d9b58b4c9ce08189a2707167de392d23 ]
+[ Upstream commit 5febcdef30902fa870128b9789b873199f13aff1 ]
 
-Currently the IOCInit request message timeout is set to 10s. This is not
-sufficient in some scenarios such as during HBA FW downgrade operations.
+The 0x0024 subsytem device ID was missing from the list, so some AX210
+devices were not recognized.  Add it.
 
-Increase the IOCInit request timeout to 30s.
-
-Link: https://lore.kernel.org/r/20201130082733.26120-1-sreekanth.reddy@broadcom.com
-Signed-off-by: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20201202143859.308eab4db42c.I3763196cd3f7bb36f3dcabf02ec4e7c4fe859c0f@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/pcie/drv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
-index 87d05c1950870..d62c1aaf53fbd 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@ -6441,7 +6441,7 @@ _base_send_ioc_init(struct MPT3SAS_ADAPTER *ioc)
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
+index e02bafb8921f6..0a4c7d1b37f0e 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
+@@ -536,6 +536,7 @@ static const struct pci_device_id iwl_hw_card_ids[] = {
  
- 	r = _base_handshake_req_reply_wait(ioc,
- 	    sizeof(Mpi2IOCInitRequest_t), (u32 *)&mpi_request,
--	    sizeof(Mpi2IOCInitReply_t), (u16 *)&mpi_reply, 10);
-+	    sizeof(Mpi2IOCInitReply_t), (u16 *)&mpi_reply, 30);
- 
- 	if (r != 0) {
- 		ioc_err(ioc, "%s: handshake failed (r=%d)\n", __func__, r);
+ 	{IWL_PCI_DEVICE(0x2725, 0x0090, iwlax211_2ax_cfg_so_gf_a0)},
+ 	{IWL_PCI_DEVICE(0x2725, 0x0020, iwlax210_2ax_cfg_ty_gf_a0)},
++	{IWL_PCI_DEVICE(0x2725, 0x0024, iwlax210_2ax_cfg_ty_gf_a0)},
+ 	{IWL_PCI_DEVICE(0x2725, 0x0310, iwlax210_2ax_cfg_ty_gf_a0)},
+ 	{IWL_PCI_DEVICE(0x2725, 0x0510, iwlax210_2ax_cfg_ty_gf_a0)},
+ 	{IWL_PCI_DEVICE(0x2725, 0x0A10, iwlax210_2ax_cfg_ty_gf_a0)},
 -- 
 2.27.0
 
