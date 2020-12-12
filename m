@@ -2,371 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992322D83CC
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 02:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5344B2D83D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 02:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406430AbgLLBUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Dec 2020 20:20:01 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:36752 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405263AbgLLBTS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Dec 2020 20:19:18 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A65D020B717A;
-        Fri, 11 Dec 2020 17:18:36 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A65D020B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607735917;
-        bh=L+sSAkNyKVg99f8bs8P0XtidfzP9K6JUhgjxWMuy8zU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=O0+EjY8JmRCvw0ikI+PgHAEt95LET9uFpYonHaDHkSrhS437xzwASjb3MY9SuuuaB
-         eK06Z/+aI3x6vxTPaRXcqyyRUrPXz0QxSqQ4T7slQNZ94asLwC5/QL0//HwBx5B20d
-         Z1mJPvqdQEhuOqhfLqECiw8+dv69Wl+bRQMqpxu8=
-Subject: Re: [RFC PATCH 2/4] of: Add a common kexec FDT setup function
-To:     Rob Herring <robh@kernel.org>, takahiro.akashi@linaro.org,
-        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au
-Cc:     Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        zohar@linux.ibm.com, james.morse@arm.com, sashal@kernel.org,
-        benh@kernel.crashing.org, paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
-References: <20201211221006.1052453-1-robh@kernel.org>
- <20201211221006.1052453-3-robh@kernel.org>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <6934c005-d848-314d-cfee-23f2273c119d@linux.microsoft.com>
-Date:   Fri, 11 Dec 2020 17:18:36 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201211221006.1052453-3-robh@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S2406501AbgLLBVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Dec 2020 20:21:46 -0500
+Received: from mail-co1nam11on2113.outbound.protection.outlook.com ([40.107.220.113]:23392
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2405263AbgLLBVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Dec 2020 20:21:18 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZZSEyCggheYnmSMglFaougJVKsjs4AhHmUe7vbkWHo5rJHF9SRTen5Fs9P2+Uhua6C+rkuhW6Tp5sWcX3wYrnMYNEGFc+Lafg2Ue8blR/9d2mOgRTmg2TTY6vldFKlM2jTLd20TMiBRzck/VT7BD7zsKSLvuep3wL66p4xYmTmtKWUT7x0TlP3+U8/qA2BtJhp6hY1XXpYVThOSJcCDdvNcirGDNEeM/vFmu+nh6TfOMGOnkfQgYqex5FMBMNElXQYV21qebTDdXRrkIPUgDuh8tUZZJ4PwiEhLWQk8QOxs4ffMh/jahCxE4mXXKkDTbj2idVC6dq+5WZiTeEQwhUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0fqnKBCG7QBwhdU79CJLMXQqKjTazJFW1AVCZzVk0uw=;
+ b=Zd4vEhgKdC9nPzGgiJs6Vaoji1hqDPNHZUV8Bz549yvva/wloHfP4nfrpZwPF/XLdl5Lo44OY2oMos/Nqhz09t8ZPSf05CZ5vGiab6bBgUD0O+ebRvAUEwuCh3IMmdzvxO1xwn7oD3mv/WiYQsy0vcBBoMcXz0+VvvrTLYZVkYhcS/AzSBJhVVwlrNl5oLyoXpxCVmZcIfZRXjDmpLvr2asW4DCiJShoHqEeWlP3h0pwqmUCjOSyghSQOHXWMF2JDgomCupi4ViymUHXTwNvg874wfcOpYY31CH9JrccxZ5FrepPV1VVoCJEihZfVF+TL6KLeKxlF8bFCuazKxAw8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0fqnKBCG7QBwhdU79CJLMXQqKjTazJFW1AVCZzVk0uw=;
+ b=VXVNyAf4knmeOCS75yuTez7Gve/IDMJSdVcngvDItwe0iKOs7AAYvBnU6j5R7HalQwq6tspI0ouIdXA4NW196ru8sIqKvQSz2aEuzpL6VvavnbGyecsGjq0b2yWYY3KtFkyBcVVyCpiXNQZkOSY6QcmdnSgQ+yB+N6QB//Z9wmA=
+Received: from (2603:10b6:300:77::17) by
+ MWHPR2101MB0874.namprd21.prod.outlook.com (2603:10b6:301:7e::39) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.2; Sat, 12 Dec
+ 2020 01:20:30 +0000
+Received: from MWHPR21MB0863.namprd21.prod.outlook.com
+ ([fe80::9de4:6549:6890:b7ba]) by MWHPR21MB0863.namprd21.prod.outlook.com
+ ([fe80::9de4:6549:6890:b7ba%5]) with mapi id 15.20.3654.018; Sat, 12 Dec 2020
+ 01:20:30 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: How can a userspace program tell if the system supports the ACPI S4
+ state (Suspend-to-Disk)?
+Thread-Topic: How can a userspace program tell if the system supports the ACPI
+ S4 state (Suspend-to-Disk)?
+Thread-Index: AdbQHxbRjXJd8DrBQaCk5mureoGP6g==
+Date:   Sat, 12 Dec 2020 01:20:30 +0000
+Message-ID: <MWHPR21MB0863BA3D689DDEC3CA6BC262BFC91@MWHPR21MB0863.namprd21.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=cc632347-9b72-4af3-830a-ef8dbaa58bab;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-12T00:35:28Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [2601:600:a280:7f70:8009:837e:3c90:8d73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: fc2c7293-c8e0-4c85-1a74-08d89e3c1da0
+x-ms-traffictypediagnostic: MWHPR2101MB0874:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR2101MB0874EE378D0CF2BBC4380500BFC91@MWHPR2101MB0874.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:586;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Mx90NuUZT8mKv0TFSVcxx0n2/BGn8z2dgeBl7/6tCO0VGny+oHNFFFAKSjpupUJD7UK5M+3BCT3KlvRHxH/PQmypZ/bf7bkqdTibtaUn+n8UGIZcpr6PPHlRs+s7tRhEBBbE5WX/9GBoEgrHTtvyAnyhKJ+6Z4sQKYwva3zxToAv0whWFctljSDgNn8MPMWfrVhvtE5ZnBkLDMVj76MHXZbRuWJWHMSJlS7fjQQrAZPuYqgRywuTYBSf8RoK5kfQcEFvKkZ347m6l0wWI4oP0MXwZV0MTmKUnX9aWDXQcqchyzjuKCs/IPPWgbMmJ+MvjRrLYX7gUPIh7iOQP+nqhQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB0863.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(136003)(9686003)(66476007)(2906002)(66556008)(64756008)(66946007)(54906003)(52536014)(6916009)(76116006)(66446008)(55016002)(5660300002)(33656002)(7696005)(4326008)(86362001)(107886003)(82950400001)(71200400001)(450100002)(6506007)(8676002)(508600001)(82960400001)(8990500004)(186003)(10290500003)(83380400001)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?PJZf52bVATwbktDyLGMkDGhJRnQYw2+JptWlZm/N5SUheqHZSXzAmSq/iHUl?=
+ =?us-ascii?Q?ddc/+g/aqljJ+zA6eISclf+OS6bclvz/VwxKoNYYedW2XvmhcZ5Lv0GuYJGb?=
+ =?us-ascii?Q?YTTHczmifZKZCtaO5VdbbAwnN/hdG8aUOenJbsY55jbiF/I00NAU+XvhXDGi?=
+ =?us-ascii?Q?xyxPTAO1dJmtQNl6C8Ij57JOS6F3YFhGYmZIp9rX31fJo0pa38jJEQebGWjg?=
+ =?us-ascii?Q?meRD+iGmPIbH65Tpp6y+ZsmnEJu6BvR6p41qbvA+N5Riqealm5iD/2CQiotk?=
+ =?us-ascii?Q?ti2mlUSnhxrksD38KsC5F/geBB82hp51ZX5GdM7eqyFwmQDZPYF5nVOIBys0?=
+ =?us-ascii?Q?OjTiRzOzBcXRwmQjCMBP0W9vvUPvqEx4cZmeQMclbD2zR66+nvSTqzGNyofx?=
+ =?us-ascii?Q?Eicqda1ysVyXGQJl8nHO2kbCH8XqPwFWRaAerdA9mIsdj8qHKiSVYfiEF69t?=
+ =?us-ascii?Q?5on7CMjWh71GbBwD2xZCyn50ufievwFlDwzq6KaVDYc2WTspLpYGgZXljhpG?=
+ =?us-ascii?Q?jPLODZ26nkaAGF4Ipjvw1iDYvUB7VbO0S6LZo/eadTgJ7JwfpC874MOCae/s?=
+ =?us-ascii?Q?jMNQM2u+78COfQzQ2i0D98OAEMpA60q5Nu6jHngiUGhVyO+aW+N3BqjnjDtO?=
+ =?us-ascii?Q?VxUnF9P1Z4cpdDKJddz0ZY4ank3ILVQTw2cJymZScXc+6wTjZl17N20ZvKIb?=
+ =?us-ascii?Q?uRB3dWP2C4CZMBLKmmLNz3QYHjVDCKnwr71psBcsLzb1SBF8kLw4KI4gYYuC?=
+ =?us-ascii?Q?2HQXQvI6pypdJycUr62vZiebZVmYE41uCimUn8yBIiQzyxy8YBH9bAi9JfnS?=
+ =?us-ascii?Q?5zLZWx4+h71Ts8ZC4FrB2o4ww5kRkQxzxgK5HFQjiTMpz8vYi3F41B2dTNDa?=
+ =?us-ascii?Q?+hz+BMrRR427Krl/LQCpofkUEX6QffXAAoVKt9wPJhOgqQuNAZfZdilERjQA?=
+ =?us-ascii?Q?Zct+5kXOHOxD8HAYKwcAHgP91+I8OxT44WcREfYzl7zx7OsokRRsMIiHKIRp?=
+ =?us-ascii?Q?ZLgcyoyFFWyn/zTe9zTTq8GKQs6b2r68dQtFEr/+meyRLCQ=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB0863.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc2c7293-c8e0-4c85-1a74-08d89e3c1da0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Dec 2020 01:20:30.3594
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uZu9n0M2QEHO4CTAZzO6IWdHoiAzQtUL3hjpCloCMszs9XyM8qIg378ha8IOCOLeWuELXrjSjVPE1xxVfh5oSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR2101MB0874
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/20 2:10 PM, Rob Herring wrote:
+Hi all,
+It looks like Linux can hibernate even if the system does not support the A=
+CPI
+S4 state, as long as the system can shut down, so "cat /sys/power/state"
+always contains "disk", unless we specify the kernel parameter "nohibernate=
+"
+or we use LOCKDOWN_HIBERNATION.
 
-Hi Rob,
+In some scenarios IMO it can still be useful if the userspace is able to de=
+tect
+if the ACPI S4 state is supported or not, e.g. when a Linux guest runs on=20
+Hyper-V, Hyper-V uses the virtual ACPI S4 state as an indicator of the prop=
+er
+support of the tool stack on the host, i.e. the guest is discouraged from=20
+trying hibernation if the state is not supported.
 
-> Both arm64 and powerpc do essentially the same FDT /chosen setup for
-> kexec. We can simply combine everything each arch does. The differences
-> are either omissions that arm64 should have or additional properties
-> that will be ignored.
-> 
-> The differences relative to the arm64 version:
-> - If /chosen doesn't exist, it will be created (should never happen).
-> - Any old dtb and initrd reserved memory will be released.
-> - The new initrd and elfcorehdr are marked reserved.
-> - "linux,booted-from-kexec" is set.
-> 
-> The differences relative to the powerpc version:
-> - "kaslr-seed" and "rng-seed" may be set.
-> - "linux,elfcorehdr" is set.
-> - Any existing "linux,usable-memory-range" is removed.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> This could be taken a step further and do the allocation of the new
-> FDT. The difference is arm64 uses vmalloc and powerpc uses kmalloc. The
-> arm64 version also retries with a bigger allocation. That seems
-> unnecessary.
-> ---
->   drivers/of/Makefile |   1 +
->   drivers/of/kexec.c  | 228 ++++++++++++++++++++++++++++++++++++++++++++
->   include/linux/of.h  |   5 +
->   3 files changed, 234 insertions(+)
->   create mode 100644 drivers/of/kexec.c
-> 
-> diff --git a/drivers/of/Makefile b/drivers/of/Makefile
-> index 6e1e5212f058..8ce11955afde 100644
-> --- a/drivers/of/Makefile
-> +++ b/drivers/of/Makefile
-> @@ -13,5 +13,6 @@ obj-$(CONFIG_OF_RESERVED_MEM) += of_reserved_mem.o
->   obj-$(CONFIG_OF_RESOLVE)  += resolver.o
->   obj-$(CONFIG_OF_OVERLAY) += overlay.o
->   obj-$(CONFIG_OF_NUMA) += of_numa.o
-> +obj-$(CONFIG_KEXEC_FILE) += kexec.o
+I know we can check the S4 state by 'dmesg':
 
-For the functions moved from powerpc & arm64 to "drivers/of/kexec.c" in 
-this patch, compiling kexec.c when CONFIG_KEXEC_FILE is enabled is fine. 
-But when more functions (such as remove_ima_buffer()) are moved to this 
-file, Makefile needs to be updated for other ima kexec related CONFIGs.
+# dmesg |grep ACPI: | grep support
+[    3.034134] ACPI: (supports S0 S4 S5)
 
-Why not compile kexec.c when CONFIG_OF_FLATTREE is enabled, and handle 
-other CONFIGs using IS_ENABLED (like you'd suggested earlier)?
+But this method is unreliable because the kernel msg buffer can be filled
+and overwritten. Is there any better method? If not, do you think if the
+below patch is appropriate? Thanks!
 
->   
->   obj-$(CONFIG_OF_UNITTEST) += unittest-data/
-> diff --git a/drivers/of/kexec.c b/drivers/of/kexec.c
-> new file mode 100644
-> index 000000000000..66787be081fe
-> --- /dev/null
-> +++ b/drivers/of/kexec.c
-> @@ -0,0 +1,228 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2020 Arm Limited
-> + *
-> + * Based on arch/arm64/kernel/machine_kexec_file.c:
-> + *  Copyright (C) 2018 Linaro Limited
-> + *
-> + * And arch/powerpc/kexec/file_load.c:
-> + *  Copyright (C) 2016  IBM Corporation
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/kexec.h>
-> +#include <linux/libfdt.h>
-> +#include <linux/of.h>
-> +#include <linux/of_fdt.h>
-> +#include <linux/random.h>
-> +#include <linux/types.h>
-> +
-> +/* relevant device tree properties */
-> +#define FDT_PROP_KEXEC_ELFHDR	"linux,elfcorehdr"
-> +#define FDT_PROP_MEM_RANGE	"linux,usable-memory-range"
-> +#define FDT_PROP_INITRD_START	"linux,initrd-start"
-> +#define FDT_PROP_INITRD_END	"linux,initrd-end"
-> +#define FDT_PROP_BOOTARGS	"bootargs"
-> +#define FDT_PROP_KASLR_SEED	"kaslr-seed"
-> +#define FDT_PROP_RNG_SEED	"rng-seed"
-> +#define RNG_SEED_SIZE		128
+diff --git a/kernel/power/main.c b/kernel/power/main.c
+index 0aefd6f57e0a..931a1526ea69 100644
+--- a/kernel/power/main.c
++++ b/kernel/power/main.c
+@@ -9,6 +9,7 @@
+ #include <linux/export.h>
+ #include <linux/kobject.h>
+ #include <linux/string.h>
++#include <linux/acpi.h>
+ #include <linux/pm-trace.h>
+ #include <linux/workqueue.h>
+ #include <linux/debugfs.h>
+@@ -600,8 +601,12 @@ static ssize_t state_show(struct kobject *kobj, struct=
+ kobj_attribute *attr,
+                        s +=3D sprintf(s,"%s ", pm_states[i]);
 
-> +
-> +/**
-> + * fdt_find_and_del_mem_rsv - delete memory reservation with given address and size
-> + *
-> + * Return: 0 on success, or negative errno on error.
-> + */
-> +static int fdt_find_and_del_mem_rsv(void *fdt, unsigned long start, unsigned long size)
-> +{
-> +	int i, ret, num_rsvs = fdt_num_mem_rsv(fdt);
-> +
-> +	for (i = 0; i < num_rsvs; i++) {
-> +		u64 rsv_start, rsv_size;
-> +
-> +		ret = fdt_get_mem_rsv(fdt, i, &rsv_start, &rsv_size);
-> +		if (ret) {
-> +			pr_err("Malformed device tree.\n");
-> +			return -EINVAL;
-> +		}
-> +
-> +		if (rsv_start == start && rsv_size == size) {
-> +			ret = fdt_del_mem_rsv(fdt, i);
-> +			if (ret) {
-> +				pr_err("Error deleting device tree reservation.\n");
-> +				return -EINVAL;
-> +			}
-> +
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	return -ENOENT;
-> +}
-> +
-> +/*
-> + * of_kexec_setup_new_fdt - modify /chosen and memory reservation for the next kernel
-> + *
-> + * @image:		kexec image being loaded.
-> + * @fdt:		Flattened device tree for the next kernel.
-> + * @initrd_load_addr:	Address where the next initrd will be loaded.
-> + * @initrd_len:		Size of the next initrd, or 0 if there will be none.
-> + * @cmdline:		Command line for the next kernel, or NULL if there will
-> + *			be none.
-nit: alignment of the parameter description seems to be off. But it 
-could be due to my mail client.
+ #endif
+-       if (hibernation_available())
+-               s +=3D sprintf(s, "disk ");
++       if (hibernation_available()) {
++               if (acpi_sleep_state_supported(ACPI_STATE_S4))
++                       s +=3D sprintf(s, "disk+ ");
++               else
++                       s +=3D sprintf(s, "disk ");
++       }
+        if (s !=3D buf)
+                /* convert the last space to a newline */
+                *(s-1) =3D '\n';
 
-> + *
-> + * Return: 0 on success, or negative errno on error.
-> + */
-> +int of_kexec_setup_new_fdt(const struct kimage *image, void *fdt,
-> +			   unsigned long initrd_load_addr, unsigned long initrd_len,
-> +			   const char *cmdline)
-> +{
-> +	int ret, chosen_node;
-> +	const void *prop;
-> +
-> +	/* Remove memory reservation for the current device tree. */
-> +	ret = fdt_find_and_del_mem_rsv(fdt, __pa(initial_boot_params),
-> +				       fdt_totalsize(initial_boot_params));
-> +	if (ret == -EINVAL)
-> +		return ret;
-> +
-> +	chosen_node = fdt_path_offset(fdt, "/chosen");
-> +	if (chosen_node == -FDT_ERR_NOTFOUND)
-> +		chosen_node = fdt_add_subnode(fdt, fdt_path_offset(fdt, "/"),
-> +					      "chosen");
-> +	if (chosen_node < 0) {
-> +		ret = chosen_node;
-> +		goto out;
-> +	}
-> +
-> +	ret = fdt_delprop(fdt, chosen_node, FDT_PROP_KEXEC_ELFHDR);
-> +	if (ret && ret != -FDT_ERR_NOTFOUND)
-> +		goto out;
-> +	ret = fdt_delprop(fdt, chosen_node, FDT_PROP_MEM_RANGE);
-> +	if (ret && ret != -FDT_ERR_NOTFOUND)
-> +		goto out;
-> +
-> +	/* Did we boot using an initrd? */
-> +	prop = fdt_getprop(fdt, chosen_node, "linux,initrd-start", NULL);
-> +	if (prop) {
-> +		u64 tmp_start, tmp_end, tmp_size;
-> +
-> +		tmp_start = fdt64_to_cpu(*((const fdt64_t *) prop));
-> +
-> +		prop = fdt_getprop(fdt, chosen_node, "linux,initrd-end", NULL);
-> +		if (!prop)
-> +			return -EINVAL;
-> +
-> +		tmp_end = fdt64_to_cpu(*((const fdt64_t *) prop));
-> +
-> +		/*
-> +		 * kexec reserves exact initrd size, while firmware may
-> +		 * reserve a multiple of PAGE_SIZE, so check for both.
-> +		 */
-> +		tmp_size = tmp_end - tmp_start;
-> +		ret = fdt_find_and_del_mem_rsv(fdt, tmp_start, tmp_size);
-> +		if (ret == -ENOENT)
-> +			ret = fdt_find_and_del_mem_rsv(fdt, tmp_start,
-> +						       round_up(tmp_size, PAGE_SIZE));
-> +		if (ret == -EINVAL)
-> +			return ret;
-> +	}
-> +
-> +	/* add initrd-* */
-> +	if (initrd_load_addr) {
-> +		ret = fdt_setprop_u64(fdt, chosen_node, FDT_PROP_INITRD_START,
-> +				      initrd_load_addr);
-> +		if (ret)
-> +			goto out;
-> +
-> +		ret = fdt_setprop_u64(fdt, chosen_node, FDT_PROP_INITRD_END,
-> +				      initrd_load_addr + initrd_len);
-> +		if (ret)
-> +			goto out;
-> +
-> +		ret = fdt_add_mem_rsv(fdt, initrd_load_addr, initrd_len);
-> +		if (ret)
-> +			goto out;
-> +
-> +	} else {
-> +		ret = fdt_delprop(fdt, chosen_node, FDT_PROP_INITRD_START);
-> +		if (ret && (ret != -FDT_ERR_NOTFOUND))
-> +			goto out;
-> +
-> +		ret = fdt_delprop(fdt, chosen_node, FDT_PROP_INITRD_END);
-> +		if (ret && (ret != -FDT_ERR_NOTFOUND))
-> +			goto out;
-> +	}
-> +
-> +	if (image->type == KEXEC_TYPE_CRASH) {
-> +		/* add linux,elfcorehdr */
-> +		ret = fdt_appendprop_addrrange(fdt, 0, chosen_node,
-> +				FDT_PROP_KEXEC_ELFHDR,
-> +				image->arch.elf_headers_mem,
-> +				image->arch.elf_headers_sz);
-> +		if (ret)
-> +			goto out;
-> +
-> +		/*
-> +		 * Avoid elfcorehdr from being stomped on in kdump kernel by
-> +		 * setting up memory reserve map.
-> +		 */
-> +		ret = fdt_add_mem_rsv(fdt, image->arch.elf_headers_mem,
-> +				      image->arch.elf_headers_sz);
-Return value from fdt_add_mem_rsv() should be checked.
+Thanks,
+-- Dexuan
 
-> +
-> +		/* add linux,usable-memory-range */
-> +		ret = fdt_appendprop_addrrange(fdt, 0, chosen_node,
-> +				FDT_PROP_MEM_RANGE,
-> +				crashk_res.start,
-> +				crashk_res.end - crashk_res.start + 1);
-> +		if (ret)
-> +			goto out;
-> +	}
-> +
-> +	/* add bootargs */
-> +	if (cmdline) {
-> +		ret = fdt_setprop_string(fdt, chosen_node, FDT_PROP_BOOTARGS, cmdline);
-> +		if (ret)
-> +			goto out;
-> +	} else {
-> +		ret = fdt_delprop(fdt, chosen_node, FDT_PROP_BOOTARGS);
-> +		if (ret && (ret != -FDT_ERR_NOTFOUND))
-> +			goto out;
-> +	}
-> +
-> +	/* add kaslr-seed */
-> +	ret = fdt_delprop(fdt, chosen_node, FDT_PROP_KASLR_SEED);
-> +	if (ret == -FDT_ERR_NOTFOUND)
-> +		ret = 0;
-> +	else if (ret)
-> +		goto out;
-> +
-> +	if (rng_is_initialized()) {
-> +		u64 seed = get_random_u64();
-> +		ret = fdt_setprop_u64(fdt, chosen_node, FDT_PROP_KASLR_SEED, seed);
-> +		if (ret)
-> +			goto out;
-> +	} else {
-> +		pr_notice("RNG is not initialised: omitting \"%s\" property\n",
-> +				FDT_PROP_KASLR_SEED);
-> +	}
-> +
-> +	/* add rng-seed */
-> +	if (rng_is_initialized()) {
-> +		void *rng_seed;
-> +		ret = fdt_setprop_placeholder(fdt, chosen_node, FDT_PROP_RNG_SEED,
-> +				RNG_SEED_SIZE, &rng_seed);
-> +		if (ret)
-> +			goto out;
-> +		get_random_bytes(rng_seed, RNG_SEED_SIZE);
-> +	} else {
-> +		pr_notice("RNG is not initialised: omitting \"%s\" property\n",
-> +				FDT_PROP_RNG_SEED);
-> +	}
-> +
-> +	ret = fdt_setprop(fdt, chosen_node, "linux,booted-from-kexec", NULL, 0);
-> +
-> +out:
-> +	if (ret)
-> +		return (ret == -FDT_ERR_NOSPACE) ? -ENOMEM : -EINVAL;
-> +
-> +	return 0;
-> +}
-> diff --git a/include/linux/of.h b/include/linux/of.h
-> index 5d51891cbf1a..3375f5295875 100644
-> --- a/include/linux/of.h
-> +++ b/include/linux/of.h
-> @@ -558,6 +558,11 @@ int of_map_id(struct device_node *np, u32 id,
->   	       const char *map_name, const char *map_mask_name,
->   	       struct device_node **target, u32 *id_out);
->   
-> +struct kimage;
-> +int of_kexec_setup_new_fdt(const struct kimage *image, void *fdt,
-> +			   unsigned long initrd_load_addr, unsigned long initrd_len,
-> +			   const char *cmdline);
-
-of_kexec_setup_new_fdt() should only be declared if CONFIG_KEXEC_FILE is 
-enabled. Right?
-
-  -lakshmi
-
-> +
->   #else /* CONFIG_OF */
->   
->   static inline void of_core_init(void)
-> 
 
