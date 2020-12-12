@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA4C2D89CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 20:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA5B2D89CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 20:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501958AbgLLTjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 14:39:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
+        id S2407831AbgLLTkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 14:40:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388996AbgLLTjB (ORCPT
+        with ESMTP id S2406740AbgLLTkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 14:39:01 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D5FC0613CF;
-        Sat, 12 Dec 2020 11:38:21 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id r17so12043974ilo.11;
-        Sat, 12 Dec 2020 11:38:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8ed86JCFkhqrw2FizD1MHvIk0o1cDOKUQ8JXozTaLJU=;
-        b=ft+8MdXIhIo7GCkVK1CssvoJTPZaWtMji3R9/E3gOvJ04Oxi+SKjxdnbrjuwcK8Sqq
-         KPJy8bW/3GsiGl3nU5Hge87I3PWXXRNrLvIh+ovn+qCbNsOS6wXpta6OpsREFF8tFHtB
-         Fy9oc3C1MIEvYNARYNSt1vhgW9+Ntxp9nHQU0MRZrkCPoj67mZZoWov0kP54kicpbgW+
-         Ml0truKI/bBkF+DmDWhAPyvd+r8hCKBi2m0wlTFoVPLlN/KRB+0nKabcXAJStJv+gnVz
-         YTSTEujrI3xi7Kh/0G/29DSUzA+87BmsKNHxI/SO1VkSDxc8/oMR54MZAMGUIxpenTyB
-         Hdrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8ed86JCFkhqrw2FizD1MHvIk0o1cDOKUQ8JXozTaLJU=;
-        b=ZBVv2xvMPGZdfe77IHmJIYvRF3ahE+G+JOgLAR99S2C1ZxvwYKJ15vd97oLu37DLdG
-         kDTGiWS0dAWW8Gwpcc3aoEZE5LjuTiZ/lFSiF2rHhefn+7ruaGSgR0PNjDY/9cZi9yrf
-         jYZm8d8zFfYxP2OvCqDJjptl46FqWPcTzpwvCpePHz9m9HUJEw3SsKN5qZfVU7hyUzP0
-         ywMprqyxPRFwNDlGUJHS73CYH7dyk6slZbIRNiLihl9B/yeVm7E+tFfLn/iaEgemxBGu
-         hnfNYXfForDDB7jsPGsVai1x/DEAKtjMZZpl5Xt8dB5Ry4FYOXe5FwIyy+FJDuSKK6WQ
-         EkQA==
-X-Gm-Message-State: AOAM532pf6kb6W3BXhu1GirgyZBZlmWSJLYtr2YO8nvsxHbyGSRwtODn
-        1wxF3yg1gfwLMmUbd/Q5b0Vb8pdHp10WBodTMvU=
-X-Google-Smtp-Source: ABdhPJz3mxXDZcTO4S4g/QokeJ2IJDAIEavfxn/VBpSsZ/zrsgf8VYFVai9TC7JMdt1ZxYFZzT1C9ZM7O5hKhLSeyhE=
-X-Received: by 2002:a92:d0c8:: with SMTP id y8mr22783097ila.46.1607801900716;
- Sat, 12 Dec 2020 11:38:20 -0800 (PST)
+        Sat, 12 Dec 2020 14:40:16 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB34C0613CF;
+        Sat, 12 Dec 2020 11:39:36 -0800 (PST)
+Date:   Sat, 12 Dec 2020 19:39:33 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607801974;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jDYwAzyElCvXYFsbd5ktPcqPDvAo95UX4JW6sIh+rN4=;
+        b=uOTBBxtrKJ7/YvIxcPgRe3kdI8EbGvjDM73Q2d6UPx1XNPeejjOMudXLCtS3SEtN6oQdyB
+        AbBeMmyz6osmm5CjBHnAwf2gcjxQ5wffMxrMUsV87hUgz5AolQFisVp+gqlgKNJjy1Zrmy
+        w/BflINHWumCsEX5Dm+UJxYBr/2rd9NoN83CD9O83qhZxHFtaL7lBMqZo8RWd3aTH4iB5Q
+        kTIwMgYH+I9kiD5rGhxtjDar93NJCcmYDU1gcMlzAbGdzamt//aI9DqVX+//2iKr+Fe6dU
+        IqqNYy+pjtad5wCc8tFT10PNLUQONTfHkNi35HuaMFIkmEtsllF9BdOWYTz5lg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607801974;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jDYwAzyElCvXYFsbd5ktPcqPDvAo95UX4JW6sIh+rN4=;
+        b=O4Dwck/4MrxNR0YNqJoGhaZZg1hE/wFj1Pvv/ysPD/ckDZT0NCqSw2dlLzam6ba+TCcLY+
+        N6MMp9mP+5fRPaCg==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] Merge tag 'irqchip-5.11' of
+ git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20201212135626.1479884-1-maz@kernel.org>
+References: <20201212135626.1479884-1-maz@kernel.org>
 MIME-Version: 1.0
-References: <20201212165648.166220-1-aford173@gmail.com> <7f5f8ef2-3e4f-5076-0558-26b48e75b674@gmail.com>
-In-Reply-To: <7f5f8ef2-3e4f-5076-0558-26b48e75b674@gmail.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Sat, 12 Dec 2020 13:38:09 -0600
-Message-ID: <CAHCN7xKbcO0-h1mEWe7vZYdJ6bQ8_KzN-MpFRhDbBVpQznAMzg@mail.gmail.com>
-Subject: Re: [RFC] ravb: Add support for optional txc_refclk
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Charles Stevens <charles.stevens@logicpd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160780197311.3364.14666601044973734196.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 11:55 AM Sergei Shtylyov
-<sergei.shtylyov@gmail.com> wrote:
->
-> Hello!
->
-> On 12.12.2020 19:56, Adam Ford wrote:
->
-> > The SoC expects the txv_refclk is provided, but if it is provided
-> > by a programmable clock, there needs to be a way to get and enable
-> > this clock to operate.  It needs to be optional since it's only
-> > necessary for those with programmable clocks.
-> >
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
-> [...]
-> > diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> > index bd30505fbc57..4c3f95923ef2 100644
-> > --- a/drivers/net/ethernet/renesas/ravb_main.c
-> > +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> > @@ -2148,6 +2148,18 @@ static int ravb_probe(struct platform_device *pdev)
-> >               goto out_release;
-> >       }
-> >
-> > +     priv->ref_clk = devm_clk_get(&pdev->dev, "txc_refclk");
->
->     Why not devm_clk_get_optional()?
+The following commit has been merged into the irq/core branch of tip:
 
-I am not that familiar with the clock API.  I'll look into that
-function. It looks like it makes more sense.  I'll send a V2.
+Commit-ID:     559db8c7e6ed1f24baf7264a6966ee4f051c6446
+Gitweb:        https://git.kernel.org/tip/559db8c7e6ed1f24baf7264a6966ee4f051c6446
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Sat, 12 Dec 2020 20:35:24 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sat, 12 Dec 2020 20:35:24 +01:00
 
-adam
->
-> > +     if (IS_ERR(priv->ref_clk)) {
-> > +             if (PTR_ERR(priv->ref_clk) == -EPROBE_DEFER) {
-> > +                     /* for Probe defer return error */
-> > +                     error = PTR_ERR(priv->ref_clk);
-> > +                     goto out_release;
-> > +             }
-> > +             /* Ignore other errors since it's optional */
-> > +     } else {
-> > +             (void)clk_prepare_enable(priv->ref_clk);
-> > +     }
-> > +
-> >       ndev->max_mtu = 2048 - (ETH_HLEN + VLAN_HLEN + ETH_FCS_LEN);
-> >       ndev->min_mtu = ETH_MIN_MTU;
-> >
->
-> MBR, Sergei
+Merge tag 'irqchip-5.11' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
+
+Pull irqchip updates for 5.11 from Marc Zyngier:
+
+ - Preliminary support for managed interrupts on platform devices
+ - Correctly identify allocation of MSIs proxyied by another device
+ - Remove the fasteoi IPI flow which has been proved useless
+ - Generalise the Ocelot support to new SoCs
+ - Improve GICv4.1 vcpu entry, matching the corresponding KVM optimisation
+ - Work around spurious interrupts on Qualcomm PDC
+ - Random fixes and cleanups
+
+Link: https://lore.kernel.org/r/20201212135626.1479884-1-maz@kernel.org
+---
