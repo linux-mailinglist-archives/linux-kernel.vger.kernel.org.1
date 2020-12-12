@@ -2,117 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4652F2D88DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 19:02:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2052D88F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 19:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439650AbgLLSBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 13:01:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727128AbgLLSBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 13:01:30 -0500
-Date:   Sat, 12 Dec 2020 10:00:47 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607796049;
-        bh=S3eThU5DZW64V0rbc0rg8TngRTlVEbT08spoA0s5ET0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hgsIgdEbh9YkfeVZq8wq49gSCQivPsZl1i3UFuYKzMyWPMB1j2cwiuO2Kl+FNCGbK
-         wJqowWwZXRpqj5IfCEWvt06CkMZPlKUMXHD5IK1+hC0LNJmjxPMwBAOkhq7lnX34r1
-         5byDp9NnEa+Hk9oTkZReKOdUMAr4jv6vwa1PsnKxU7yOauTPSxOY5DPODE7iyUxobw
-         hADSzHiV0TTGP2yoRcFT2BUART9HA7RU8JJLfLoL8AmgTDQ/YzuZETX0SCxnPQKtx2
-         LyfFbALHKQs/VofC3DFg82Lv8AmAK0cK39+J5ZV2QfsrpTLzBbvcgY6SSBaJUIFZZT
-         WEwa6FQqCi2Ig==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] net: dsa: qca: ar9331: export stats64
-Message-ID: <20201212100047.1b6afb78@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201212134852.gwkugi372afazcd5@skbuf>
-References: <20201211105322.7818-1-o.rempel@pengutronix.de>
-        <20201211105322.7818-3-o.rempel@pengutronix.de>
-        <20201212134852.gwkugi372afazcd5@skbuf>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S2439730AbgLLSEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 13:04:52 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:50994 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439659AbgLLSD4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 13:03:56 -0500
+Received: from tusharsu-Ubuntu.lan (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7058B20B717A;
+        Sat, 12 Dec 2020 10:03:13 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7058B20B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607796193;
+        bh=vCQUAGmBb+lBud9tI3Vw26KvwW+PpvH5Od68HwQhKsk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JNMR9Y/A9qDx+BcrHPtwewxpWg8mm80j0/mHSAK2q5XE14vyT9dfnk5DpOHVjLnFW
+         3lwjT4tndcHFXSuQ31N/goA/9+PYMko33lhkHVehrgIRKUyYsF0rr7TN1c1XyJjNjT
+         i/XIh0cEDFyvog4TceOhT/Pp5GBkWnk6XmD+qdi0=
+From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
+To:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Subject: [PATCH v9 0/8] IMA: support for measuring kernel integrity critical data
+Date:   Sat, 12 Dec 2020 10:02:43 -0800
+Message-Id: <20201212180251.9943-1-tusharsu@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Dec 2020 15:48:52 +0200 Vladimir Oltean wrote:
-> > +	stats->rx_packets = u64_stats_read(&s->rx64byte) +
-> > +		u64_stats_read(&s->rx128byte) + u64_stats_read(&s->rx256byte) +
-> > +		u64_stats_read(&s->rx512byte) + u64_stats_read(&s->rx1024byte) +
-> > +		u64_stats_read(&s->rx1518byte) + u64_stats_read(&s->rxmaxbyte);
-> > +	stats->tx_packets = u64_stats_read(&s->tx64byte) +
-> > +		u64_stats_read(&s->tx128byte) + u64_stats_read(&s->tx256byte) +
-> > +		u64_stats_read(&s->tx512byte) + u64_stats_read(&s->tx1024byte) +
-> > +		u64_stats_read(&s->tx1518byte) + u64_stats_read(&s->txmaxbyte);
-> > +	stats->rx_bytes = u64_stats_read(&s->rxgoodbyte);
-> > +	stats->tx_bytes = u64_stats_read(&s->txbyte);
-> > +	stats->rx_errors = u64_stats_read(&s->rxfcserr) +
-> > +		u64_stats_read(&s->rxalignerr) + u64_stats_read(&s->rxrunt) +
-> > +		u64_stats_read(&s->rxfragment) + u64_stats_read(&s->rxoverflow);
-> > +	stats->tx_errors = u64_stats_read(&s->txoversize);  
-> 
-> Should tx_errors not also include tx_aborted_errors, tx_fifo_errors,
-> tx_window_errors?
+IMA measures files and buffer data such as keys, command-line arguments
+passed to the kernel on kexec system call, etc. While these measurements
+are necessary for monitoring and validating the integrity of the system,
+they are not sufficient. Various data structures, policies, and states
+stored in kernel memory also impact the integrity of the system.
+Several kernel subsystems contain such integrity critical data -
+e.g. LSMs like SELinux, AppArmor etc. or device-mapper targets like
+dm-crypt, dm-verity, dm-integrity etc. These kernel subsystems help
+protect the integrity of a device. Their integrity critical data is not
+expected to change frequently during run-time. Some of these structures
+cannot be defined as __ro_after_init, because they are initialized later.
 
-Yes.
+For a given device, various external services/infrastructure tools
+(including the attestation service) interact with it - both during the
+setup and during rest of the device run-time. They share sensitive data
+and/or execute critical workload on that device. The external services
+may want to verify the current run-time state of the relevant kernel
+subsystems before fully trusting the device with business critical
+data/workload. For instance, verifying that SELinux is in "enforce" mode
+along with the expected policy, disks are encrypted with a certain
+configuration, secure boot is enabled etc.
 
-> > +	stats->multicast = u64_stats_read(&s->rxmulti);
-> > +	stats->collisions = u64_stats_read(&s->txcollision);
-> > +	stats->rx_length_errors = u64_stats_read(&s->rxrunt) +
-> > +		u64_stats_read(&s->rxfragment) + u64_stats_read(&s->rxtoolong);
-> > +	stats->rx_crc_errors = u64_stats_read(&s->rxfcserr) +
-> > +		u64_stats_read(&s->rxalignerr) + u64_stats_read(&s->rxfragment);
+This series provides the necessary IMA functionality for kernel
+subsystems to ensure their configuration can be measured:
+  - by kernel subsystems themselves,
+  - in a tamper resistant way,
+  - and re-measured - triggered on state/configuration change.
 
-Why would CRC errors include alignment errors and rxfragments?
+This patch set:
+  - defines a new IMA hook ima_measure_critical_data() to measure
+    integrity critical data,
+  - limits the critical data being measured based on a label,
+  - defines a builtin critical data measurement policy,
+  - and includes an SELinux consumer of the new IMA critical data hook.
 
-Besides looks like rxfragment is already counted to length errors.
+This series is based on the following repo/branch:
 
-> > +	stats->rx_frame_errors = u64_stats_read(&s->rxalignerr);
-> > +	stats->rx_missed_errors = u64_stats_read(&s->rxoverflow);
-> > +	stats->tx_aborted_errors = u64_stats_read(&s->txabortcol);
-> > +	stats->tx_fifo_errors = u64_stats_read(&s->txunderrun);
-> > +	stats->tx_window_errors = u64_stats_read(&s->txlatecol);
-> > +	stats->rx_nohandler = u64_stats_read(&s->filtered);  
-> 
-> Should rx_nohandler not be also included in rx_errors?
+ repo: https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
+ branch: next-integrity
+ commit 207cdd565dfc ("ima: Don't modify file descriptor mode on the fly")
 
-I don't think drivers should ever touch rx_nohandler, it's a pretty
-specific SW stat. But you made me realize that we never specified where
-to count frames discarded due to L2 address filtering. It appears that
-high speed adapters I was looking at don't have such statistic?
-
-I would go with rx_dropped, if that's what ->filtered is.
-
-We should probably update the doc like this:
-
-diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-index 874cc12a34d9..82708c6db432 100644
---- a/include/uapi/linux/if_link.h
-+++ b/include/uapi/linux/if_link.h
-@@ -75,8 +75,9 @@ struct rtnl_link_stats {
-  *
-  * @rx_dropped: Number of packets received but not processed,
-  *   e.g. due to lack of resources or unsupported protocol.
-- *   For hardware interfaces this counter should not include packets
-- *   dropped by the device which are counted separately in
-+ *   For hardware interfaces this counter may include packets discarded
-+ *   due to L2 address filtering but should not include packets dropped
-+ *   by the device due to buffer exhaustion which are counted separately in
-  *   @rx_missed_errors (since procfs folds those two counters together).
-  *
-  * @tx_dropped: Number of packets dropped on their way to transmission,
+Change Log v9:
+Incorporated feedback from Tyler on v8 of this series.
+ - Moved rule->data_source logic from Patch #4 to Patch #5.
+ - Removed unnecessary variable event_name from selinux_event_name()
+   in Patch #8.
 
 
-> You can probably avoid reading a few of these twice by assigning the
-> more specific ones first, then the rx_errors and tx_errors at the end.
+Change Log v8:
+Incorporated feedback from Tyler on v7 of this series.
+ - Removed unnecessary 'else' clauses in ima_match_rule_data().
+ - Fixed ima_store_template() to pass the buffer hash in case the
+   buffer is large.
+ - fixed function description for ima_measure_critical_data().
+ - Moved some usage of CRITICAL_DATA from Patch #3 to Patch #4.
+ - Moved IMA_DATA_SOURCE from Patch #4 to Patch #5.
+ - Removed unnecessary pr_err() from ima_measure_critical_data()
+   and selinux_event_name().
+ - Fixed log formatting in selinux_measure_state() to be consistent
+   with other messages in that file.
+
+Change Log v7:
+Incorporated feedback from Mimi on v6 of this series.
+ - Updated cover letter and patch descriptions as per Mimi's feedback.
+ - Changed references to variable names and policy documentation from
+   plural "data_sources" to singular "data_source".
+ - Updated SELinux patch to measure only policy, instead of policy and
+   state. The state measurement will be upstreamed through a separate
+   patch.
+ - Updated admin-guide/kernel-parameters.txt to document support for
+   critical_data in builtin policy.
+
+Change Log v6:
+Incorporated feedback from Mimi on v5 of this series.
+ - Got rid of patch 5 from the v5 of the series.(the allow list for data
+   sources)
+ - Updated function descriptions, changed variable names etc.
+ - Moved the input param event_data_source in ima_measure_critical_data()
+   to a new patch. (patch 6/8 of this series)
+ - Split patch 4 from v5 of the series into two patches (patch 4/8 and 
+   patch 5/8)
+ - Updated cover letter and patch descriptions as per feedback.
+
+Change Log v5:
+(1) Incorporated feedback from Stephen on the last SeLinux patch.
+ SeLinux Patch: https://patchwork.kernel.org/patch/11801585/
+ - Freed memory in the reverse order of allocation in 
+   selinux_measure_state().
+ - Used scnprintf() instead of snprintf() to create the string for
+   selinux state.
+ - Allocated event name passed to ima_measure_critical_data() before
+   gathering selinux state and policy information for measuring.
+
+(2) Incorporated feedback from Mimi on v4 of this series.
+ V4 of this Series: https://patchwork.kernel.org/project/linux-integrity/list/?series=354437
+
+ - Removed patch "[v4,2/6] IMA: conditionally allow empty rule data"
+ - Reversed the order of following patches.
+      [v4,4/6] IMA: add policy to measure critical data from kernel components
+      [v4,5/6] IMA: add hook to measure critical data from kernel components
+   and renamed them to remove "from kernel components"
+ - Added a new patch to this series - 
+       IMA: add critical_data to built-in policy rules
+
+ - Added the next version of SeLinux patch (mentioned above) to this
+   series 
+       selinux: measure state and hash of the policy using IMA
+
+ - Updated cover-letter description to give broader perspective of the
+   feature, rearranging paragraphs, removing unnecessary info, clarifying
+   terms etc.
+ - Got rid of opt_list param from ima_match_rule_data().
+ - Updated the documentation to remove sources that don't yet exist.
+ - detailed IMA hook description added to ima_measure_critical_data(),
+   as well as elaborating terms event_name, event_data_source. 
+ - "data_sources:=" is not a mandatory policy option for 
+   func=CRITICAL_DATA anymore. If not present, all the data sources
+   specified in __ima_supported_kernel_data_sources will be measured.
+
+
+Lakshmi Ramasubramanian (2):
+  IMA: define a builtin critical data measurement policy
+  selinux: include a consumer of the new IMA critical data hook
+
+Tushar Sugandhi (6):
+  IMA: generalize keyring specific measurement constructs
+  IMA: add support to measure buffer data hash
+  IMA: define a hook to measure kernel integrity critical data
+  IMA: add policy rule to measure critical data
+  IMA: limit critical data measurement based on a label
+  IMA: extend critical data hook to limit the measurement based on a
+    label
+
+ Documentation/ABI/testing/ima_policy          |   5 +-
+ .../admin-guide/kernel-parameters.txt         |   5 +-
+ include/linux/ima.h                           |   8 ++
+ security/integrity/ima/ima.h                  |   8 +-
+ security/integrity/ima/ima_api.c              |   8 +-
+ security/integrity/ima/ima_appraise.c         |   2 +-
+ security/integrity/ima/ima_asymmetric_keys.c  |   2 +-
+ security/integrity/ima/ima_main.c             |  81 ++++++++++--
+ security/integrity/ima/ima_policy.c           | 118 ++++++++++++++----
+ security/integrity/ima/ima_queue_keys.c       |   3 +-
+ security/selinux/Makefile                     |   2 +
+ security/selinux/include/security.h           |  11 +-
+ security/selinux/measure.c                    |  79 ++++++++++++
+ security/selinux/ss/services.c                |  71 +++++++++--
+ 14 files changed, 352 insertions(+), 51 deletions(-)
+ create mode 100644 security/selinux/measure.c
+
+-- 
+2.17.1
+
