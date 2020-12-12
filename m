@@ -2,25 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672282D87C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 164A02D87C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Dec 2020 17:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407483AbgLLQMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 11:12:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57720 "EHLO mail.kernel.org"
+        id S1726204AbgLLQLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 11:11:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439397AbgLLQJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2439407AbgLLQJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 12 Dec 2020 11:09:56 -0500
 From:   Sasha Levin <sashal@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+Cc:     Brandon Syu <Brandon.Syu@amd.com>, Tony Cheng <Tony.Cheng@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 18/23] iwlwifi: pcie: add one missing entry for AX210
-Date:   Sat, 12 Dec 2020 11:07:59 -0500
-Message-Id: <20201212160804.2334982-18-sashal@kernel.org>
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.9 20/23] drm/amd/display: Init clock value by current vbios CLKs
+Date:   Sat, 12 Dec 2020 11:08:01 -0500
+Message-Id: <20201212160804.2334982-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201212160804.2334982-1-sashal@kernel.org>
 References: <20201212160804.2334982-1-sashal@kernel.org>
@@ -32,33 +33,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luca Coelho <luciano.coelho@intel.com>
+From: Brandon Syu <Brandon.Syu@amd.com>
 
-[ Upstream commit 5febcdef30902fa870128b9789b873199f13aff1 ]
+[ Upstream commit 7e0b367db85ef7b91399006253759a024eab7653 ]
 
-The 0x0024 subsytem device ID was missing from the list, so some AX210
-devices were not recognized.  Add it.
+[Why]
+While booting into OS, driver updates DPP/DISP CLKs.
+But init clock value is zero which is invalid.
 
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/iwlwifi.20201202143859.308eab4db42c.I3763196cd3f7bb36f3dcabf02ec4e7c4fe859c0f@changeid
+[How]
+Get current clocks value to update init clocks.
+To avoid underflow.
+
+Signed-off-by: Brandon Syu <Brandon.Syu@amd.com>
+Reviewed-by: Tony Cheng <Tony.Cheng@amd.com>
+Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/pcie/drv.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c   | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-index e02bafb8921f6..0a4c7d1b37f0e 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-@@ -536,6 +536,7 @@ static const struct pci_device_id iwl_hw_card_ids[] = {
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
+index 2f8fee05547ac..c001307b0a59a 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
+@@ -163,8 +163,17 @@ void rn_update_clocks(struct clk_mgr *clk_mgr_base,
+ 			new_clocks->dppclk_khz = 100000;
+ 	}
  
- 	{IWL_PCI_DEVICE(0x2725, 0x0090, iwlax211_2ax_cfg_so_gf_a0)},
- 	{IWL_PCI_DEVICE(0x2725, 0x0020, iwlax210_2ax_cfg_ty_gf_a0)},
-+	{IWL_PCI_DEVICE(0x2725, 0x0024, iwlax210_2ax_cfg_ty_gf_a0)},
- 	{IWL_PCI_DEVICE(0x2725, 0x0310, iwlax210_2ax_cfg_ty_gf_a0)},
- 	{IWL_PCI_DEVICE(0x2725, 0x0510, iwlax210_2ax_cfg_ty_gf_a0)},
- 	{IWL_PCI_DEVICE(0x2725, 0x0A10, iwlax210_2ax_cfg_ty_gf_a0)},
+-	if (should_set_clock(safe_to_lower, new_clocks->dppclk_khz, clk_mgr->base.clks.dppclk_khz)) {
+-		if (clk_mgr->base.clks.dppclk_khz > new_clocks->dppclk_khz)
++	/*
++	 * Temporally ignore thew 0 cases for disp and dpp clks.
++	 * We may have a new feature that requires 0 clks in the future.
++	 */
++	if (new_clocks->dppclk_khz == 0 || new_clocks->dispclk_khz == 0) {
++		new_clocks->dppclk_khz = clk_mgr_base->clks.dppclk_khz;
++		new_clocks->dispclk_khz = clk_mgr_base->clks.dispclk_khz;
++	}
++
++	if (should_set_clock(safe_to_lower, new_clocks->dppclk_khz, clk_mgr_base->clks.dppclk_khz)) {
++		if (clk_mgr_base->clks.dppclk_khz > new_clocks->dppclk_khz)
+ 			dpp_clock_lowered = true;
+ 		clk_mgr_base->clks.dppclk_khz = new_clocks->dppclk_khz;
+ 		update_dppclk = true;
 -- 
 2.27.0
 
