@@ -2,108 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FF42D8E8A
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 17:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 294112D8E8D
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 17:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389237AbgLMQNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 11:13:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730102AbgLMQNM (ORCPT
+        id S2392162AbgLMQOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 11:14:35 -0500
+Received: from labrats.qualcomm.com ([199.106.110.90]:3052 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389886AbgLMQOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 11:13:12 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F20BC0613CF;
-        Sun, 13 Dec 2020 08:12:31 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id 15so16365069oix.8;
-        Sun, 13 Dec 2020 08:12:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WPVtQ1Mz44bztjvcPbTZApa19516/GGnEk5ljEDINh8=;
-        b=L/JfijbPJ+Mj6ae8tPUwxOCHZgScF73DL+rf5343UU8YIQsh+vfCfORPpoy6HRnGJW
-         grIooOv5e1GUBaCmCjRTUZz8LVeZgCVfsQJBLjPN7e40g/6B9dnj7YGiNPN4jFE/olIw
-         1NHIaP3FB/yOJ6eutVvMj05bzu10Q/IQLEOLSS9czRAS/Ghj/iEMTFGtUbyz+F+CboEn
-         do81klb60xpuHhi0Fh0kDNJfDdFOjfNi21Ih7bu5D7Ktt442jdzr7GiJjqS0/c3pS2xB
-         GN1Zs+IuAb8cnCw+2AH2zZYU4NqFn0KU9h+MH6bJPbVwMlk8BmKHrwOyCM5V6ugUIwsW
-         VLMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WPVtQ1Mz44bztjvcPbTZApa19516/GGnEk5ljEDINh8=;
-        b=extmHYiT62kl1xtJfoKr0WbPusimh1fN/2+zOJXCYyvdLeQNFqJmEL/llXBI2S36M5
-         cukiU3enxzrgL2mT49T00Y14YaRhx+oqyA3+vG3dUB6ndaZ6Fq90C1niS7yAvBmLyLEl
-         g+F0Il7IJV+MX2EaE9Vc2lOTKyoJFC74Y8LIceMwV6QLRD67h2fMycTkKPAgQTSMECmE
-         0zJX9qWoQTnniB3grINYW+cEwI6DHN69tueex+nHzq3G8n1aIvRJPPxRtPvz173r/8+s
-         1o2avOBbGypv6ymh9N13UvlhedgOEgZCsoFkGQPqk3KucNZZ+HuUtcE7q9ciTc+nLnsr
-         BH6g==
-X-Gm-Message-State: AOAM5333cM8PU2YkViBQUXjudTxh7fXu2Akd1piLduTKgc1uVGUUwvRJ
-        d74WEpt0cm7k7vrv4p6sRLc=
-X-Google-Smtp-Source: ABdhPJzDm1OOjQ+niynzARCVQxF7RYZaIszycjgUqvnjTyHf2h0ymmlodIeXMC3j6PqR4BIxIg2Q6Q==
-X-Received: by 2002:aca:72c1:: with SMTP id p184mr15980530oic.86.1607875950737;
-        Sun, 13 Dec 2020 08:12:30 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r13sm1332253oti.49.2020.12.13.08.12.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 13 Dec 2020 08:12:29 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 13 Dec 2020 08:12:28 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.xyz>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 16/21] dt-bindings: watchdog: sun4i: Add A100
- compatible
-Message-ID: <20201213161228.GA44341@roeck-us.net>
-References: <20201211011934.6171-1-andre.przywara@arm.com>
- <20201211011934.6171-17-andre.przywara@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211011934.6171-17-andre.przywara@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Sun, 13 Dec 2020 11:14:20 -0500
+IronPort-SDR: 78gQUK12LruSsnoiP9m5cjBhdqxDMOGQxnyqWpcwpPP9Aew0IldaS56bJJRPgjBdI/5Qq9WiAP
+ QKTEYvQxxDjSqwZSu6aQa6vEEn1A9BRq0/YWUx7NY28ytLA8HagfG9S2AclP299GUsxulRltlA
+ 6+ryldk/KTCsI9IYPvPww+NvHbw2/zBMBA6Cwi/jzM2gH6MpQgksCWQGyBgg7tZ96sD5BFnt4Z
+ lX1WTQWprFgd+88/fDqXgcEoyDhWA3CiqVd/+ryCxDKvMMDe/x+Nl1T2RQhFrKjnk/u19EmOmV
+ VeA=
+X-IronPort-AV: E=Sophos;i="5.78,416,1599548400"; 
+   d="scan'208";a="29356135"
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by labrats.qualcomm.com with ESMTP; 13 Dec 2020 08:13:34 -0800
+X-QCInternal: smtphost
+Received: from stor-presley.qualcomm.com ([192.168.140.85])
+  by ironmsg02-sd.qualcomm.com with ESMTP; 13 Dec 2020 08:13:28 -0800
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id 776AD21616; Sun, 13 Dec 2020 08:13:28 -0800 (PST)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3 1/3] scsi: ufs: Protect some contexts from unexpected clock scaling
+Date:   Sun, 13 Dec 2020 08:13:17 -0800
+Message-Id: <1607876000-3293-2-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1607876000-3293-1-git-send-email-cang@codeaurora.org>
+References: <1607876000-3293-1-git-send-email-cang@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 01:19:29AM +0000, Andre Przywara wrote:
-> From: Yangtao Li <frank@allwinnertech.com>
-> 
-> Add a binding for A100's watchdog controller.
-> 
-> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+In contexts like suspend, shutdown and error handling, we need to suspend
+devfreq to make sure these contexts won't be disturbed by clock scaling.
+However, suspending devfreq is not enough since users can still trigger a
+clock scaling by manipulating the sysfs node clkscale_enable and devfreq
+sysfs nodes like min/max_freq and governor. Add one more flag in struct
+clk_scaling such that these contexts can prevent clock scaling from being
+invoked through above sysfs nodes.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 84 +++++++++++++++++++++++++++++++----------------
+ drivers/scsi/ufs/ufshcd.h |  2 ++
+ 2 files changed, 58 insertions(+), 28 deletions(-)
 
-> ---
->  .../devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml  | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
-> index e8f226376108..5ac607de8be4 100644
-> --- a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
-> @@ -21,6 +21,9 @@ properties:
->        - items:
->            - const: allwinner,sun50i-a64-wdt
->            - const: allwinner,sun6i-a31-wdt
-> +      - items:
-> +          - const: allwinner,sun50i-a100-wdt
-> +          - const: allwinner,sun6i-a31-wdt
->        - items:
->            - const: allwinner,sun50i-h6-wdt
->            - const: allwinner,sun6i-a31-wdt
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 0c148fc..59dac09 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1147,12 +1147,23 @@ static int ufshcd_clock_scaling_prepare(struct ufs_hba *hba)
+ 	 */
+ 	ufshcd_scsi_block_requests(hba);
+ 	down_write(&hba->clk_scaling_lock);
+-	if (ufshcd_wait_for_doorbell_clr(hba, DOORBELL_CLR_TOUT_US)) {
++
++	if (!hba->clk_scaling.is_allowed)
++		ret = -EAGAIN;
++
++	if (ufshcd_wait_for_doorbell_clr(hba, DOORBELL_CLR_TOUT_US))
+ 		ret = -EBUSY;
++
++	if (ret) {
+ 		up_write(&hba->clk_scaling_lock);
+ 		ufshcd_scsi_unblock_requests(hba);
++		goto out;
+ 	}
+ 
++	/* let's not get into low power until clock scaling is completed */
++	ufshcd_hold(hba, false);
++
++out:
+ 	return ret;
+ }
+ 
+@@ -1160,6 +1171,7 @@ static void ufshcd_clock_scaling_unprepare(struct ufs_hba *hba)
+ {
+ 	up_write(&hba->clk_scaling_lock);
+ 	ufshcd_scsi_unblock_requests(hba);
++	ufshcd_release(hba);
+ }
+ 
+ /**
+@@ -1175,12 +1187,9 @@ static int ufshcd_devfreq_scale(struct ufs_hba *hba, bool scale_up)
+ {
+ 	int ret = 0;
+ 
+-	/* let's not get into low power until clock scaling is completed */
+-	ufshcd_hold(hba, false);
+-
+ 	ret = ufshcd_clock_scaling_prepare(hba);
+ 	if (ret)
+-		goto out;
++		return ret;
+ 
+ 	/* scale down the gear before scaling down clocks */
+ 	if (!scale_up) {
+@@ -1212,8 +1221,6 @@ static int ufshcd_devfreq_scale(struct ufs_hba *hba, bool scale_up)
+ 
+ out_unprepare:
+ 	ufshcd_clock_scaling_unprepare(hba);
+-out:
+-	ufshcd_release(hba);
+ 	return ret;
+ }
+ 
+@@ -1487,7 +1494,7 @@ static ssize_t ufshcd_clkscale_enable_show(struct device *dev,
+ {
+ 	struct ufs_hba *hba = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", hba->clk_scaling.is_allowed);
++	return snprintf(buf, PAGE_SIZE, "%d\n", hba->clk_scaling.is_enabled);
+ }
+ 
+ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
+@@ -1496,12 +1503,20 @@ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
+ 	struct ufs_hba *hba = dev_get_drvdata(dev);
+ 	u32 value;
+ 	int err;
++	unsigned long flags;
++	bool update = true;
+ 
+ 	if (kstrtou32(buf, 0, &value))
+ 		return -EINVAL;
+ 
+ 	value = !!value;
+-	if (value == hba->clk_scaling.is_allowed)
++	spin_lock_irqsave(hba->host->host_lock, flags);
++	if (value == hba->clk_scaling.is_enabled)
++		update = false;
++	else
++		hba->clk_scaling.is_enabled = value;
++	spin_unlock_irqrestore(hba->host->host_lock, flags);
++	if (!update)
+ 		goto out;
+ 
+ 	pm_runtime_get_sync(hba->dev);
+@@ -1510,8 +1525,6 @@ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
+ 	cancel_work_sync(&hba->clk_scaling.suspend_work);
+ 	cancel_work_sync(&hba->clk_scaling.resume_work);
+ 
+-	hba->clk_scaling.is_allowed = value;
+-
+ 	if (value) {
+ 		ufshcd_resume_clkscaling(hba);
+ 	} else {
+@@ -1845,8 +1858,6 @@ static void ufshcd_init_clk_scaling(struct ufs_hba *hba)
+ 	snprintf(wq_name, sizeof(wq_name), "ufs_clkscaling_%d",
+ 		 hba->host->host_no);
+ 	hba->clk_scaling.workq = create_singlethread_workqueue(wq_name);
+-
+-	ufshcd_clkscaling_init_sysfs(hba);
+ }
+ 
+ static void ufshcd_exit_clk_scaling(struct ufs_hba *hba)
+@@ -1854,6 +1865,8 @@ static void ufshcd_exit_clk_scaling(struct ufs_hba *hba)
+ 	if (!ufshcd_is_clkscaling_supported(hba))
+ 		return;
+ 
++	if (hba->devfreq)
++		device_remove_file(hba->dev, &hba->clk_scaling.enable_attr);
+ 	destroy_workqueue(hba->clk_scaling.workq);
+ 	ufshcd_devfreq_remove(hba);
+ }
+@@ -1918,7 +1931,7 @@ static void ufshcd_clk_scaling_start_busy(struct ufs_hba *hba)
+ 	if (!hba->clk_scaling.active_reqs++)
+ 		queue_resume_work = true;
+ 
+-	if (!hba->clk_scaling.is_allowed || hba->pm_op_in_progress)
++	if (!hba->clk_scaling.is_enabled || hba->pm_op_in_progress)
+ 		return;
+ 
+ 	if (queue_resume_work)
+@@ -4987,7 +5000,8 @@ static void __ufshcd_transfer_req_compl(struct ufs_hba *hba,
+ 				complete(hba->dev_cmd.complete);
+ 			}
+ 		}
+-		if (ufshcd_is_clkscaling_supported(hba))
++		if (ufshcd_is_clkscaling_supported(hba) &&
++		    hba->clk_scaling.active_reqs > 0)
+ 			hba->clk_scaling.active_reqs--;
+ 	}
+ 
+@@ -5650,18 +5664,25 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+ 		ufshcd_vops_resume(hba, UFS_RUNTIME_PM);
+ 	} else {
+ 		ufshcd_hold(hba, false);
+-		if (hba->clk_scaling.is_allowed) {
++		if (hba->clk_scaling.is_enabled) {
+ 			cancel_work_sync(&hba->clk_scaling.suspend_work);
+ 			cancel_work_sync(&hba->clk_scaling.resume_work);
+ 			ufshcd_suspend_clkscaling(hba);
+ 		}
+ 	}
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = false;
++	up_write(&hba->clk_scaling_lock);
+ }
+ 
+ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
+ {
+ 	ufshcd_release(hba);
+-	if (hba->clk_scaling.is_allowed)
++
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = true;
++	up_write(&hba->clk_scaling_lock);
++	if (hba->clk_scaling.is_enabled)
+ 		ufshcd_resume_clkscaling(hba);
+ 	pm_runtime_put(hba->dev);
+ }
+@@ -7620,12 +7641,14 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
+ 			sizeof(struct ufs_pa_layer_attr));
+ 		hba->clk_scaling.saved_pwr_info.is_valid = true;
+ 		if (!hba->devfreq) {
++			hba->clk_scaling.is_allowed = true;
+ 			ret = ufshcd_devfreq_init(hba);
+ 			if (ret)
+ 				goto out;
+-		}
+ 
+-		hba->clk_scaling.is_allowed = true;
++			hba->clk_scaling.is_enabled = true;
++			ufshcd_clkscaling_init_sysfs(hba);
++		}
+ 	}
+ 
+ 	ufs_bsg_probe(hba);
+@@ -8491,11 +8514,14 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	ufshcd_hold(hba, false);
+ 	hba->clk_gating.is_suspended = true;
+ 
+-	if (hba->clk_scaling.is_allowed) {
++	if (hba->clk_scaling.is_enabled) {
+ 		cancel_work_sync(&hba->clk_scaling.suspend_work);
+ 		cancel_work_sync(&hba->clk_scaling.resume_work);
+ 		ufshcd_suspend_clkscaling(hba);
+ 	}
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = false;
++	up_write(&hba->clk_scaling_lock);
+ 
+ 	if (req_dev_pwr_mode == UFS_ACTIVE_PWR_MODE &&
+ 			req_link_state == UIC_LINK_ACTIVE_STATE) {
+@@ -8592,8 +8618,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	goto out;
+ 
+ set_link_active:
+-	if (hba->clk_scaling.is_allowed)
+-		ufshcd_resume_clkscaling(hba);
+ 	ufshcd_vreg_set_hpm(hba);
+ 	if (ufshcd_is_link_hibern8(hba) && !ufshcd_uic_hibern8_exit(hba))
+ 		ufshcd_set_link_active(hba);
+@@ -8603,7 +8627,10 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	if (!ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE))
+ 		ufshcd_disable_auto_bkops(hba);
+ enable_gating:
+-	if (hba->clk_scaling.is_allowed)
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = true;
++	up_write(&hba->clk_scaling_lock);
++	if (hba->clk_scaling.is_enabled)
+ 		ufshcd_resume_clkscaling(hba);
+ 	hba->clk_gating.is_suspended = false;
+ 	hba->dev_info.b_rpm_dev_flush_capable = false;
+@@ -8701,7 +8728,10 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 
+ 	hba->clk_gating.is_suspended = false;
+ 
+-	if (hba->clk_scaling.is_allowed)
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = true;
++	up_write(&hba->clk_scaling_lock);
++	if (hba->clk_scaling.is_enabled)
+ 		ufshcd_resume_clkscaling(hba);
+ 
+ 	/* Enable Auto-Hibernate if configured */
+@@ -8725,8 +8755,6 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	ufshcd_vreg_set_lpm(hba);
+ disable_irq_and_vops_clks:
+ 	ufshcd_disable_irq(hba);
+-	if (hba->clk_scaling.is_allowed)
+-		ufshcd_suspend_clkscaling(hba);
+ 	ufshcd_setup_clocks(hba, false);
+ 	if (ufshcd_is_clkgating_allowed(hba)) {
+ 		hba->clk_gating.state = CLKS_OFF;
+@@ -8915,6 +8943,8 @@ int ufshcd_shutdown(struct ufs_hba *hba)
+ 
+ 	pm_runtime_get_sync(hba->dev);
+ 
++	ufshcd_exit_clk_scaling(hba);
++
+ 	ret = ufshcd_suspend(hba, UFS_SHUTDOWN_PM);
+ out:
+ 	if (ret)
+@@ -8944,8 +8974,6 @@ void ufshcd_remove(struct ufs_hba *hba)
+ 
+ 	ufshcd_exit_clk_scaling(hba);
+ 	ufshcd_exit_clk_gating(hba);
+-	if (ufshcd_is_clkscaling_supported(hba))
+-		device_remove_file(hba->dev, &hba->clk_scaling.enable_attr);
+ 	ufshcd_hba_exit(hba);
+ }
+ EXPORT_SYMBOL_GPL(ufshcd_remove);
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index e0f00a4..9fcecba 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -382,6 +382,7 @@ struct ufs_saved_pwr_info {
+  * @workq: workqueue to schedule devfreq suspend/resume work
+  * @suspend_work: worker to suspend devfreq
+  * @resume_work: worker to resume devfreq
++ * @is_enabled: tracks if scaling is currently enabled or not
+  * @is_allowed: tracks if scaling is currently allowed or not
+  * @is_busy_started: tracks if busy period has started or not
+  * @is_suspended: tracks if devfreq is suspended or not
+@@ -396,6 +397,7 @@ struct ufs_clk_scaling {
+ 	struct workqueue_struct *workq;
+ 	struct work_struct suspend_work;
+ 	struct work_struct resume_work;
++	bool is_enabled;
+ 	bool is_allowed;
+ 	bool is_busy_started;
+ 	bool is_suspended;
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
