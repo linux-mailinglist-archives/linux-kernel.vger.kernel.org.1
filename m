@@ -2,99 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C1E2D90C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 22:31:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4291D2D90C8
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 22:34:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406595AbgLMV21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 16:28:27 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4115 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406401AbgLMV2H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 16:28:07 -0500
-Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CvHf04pRKzXmyg;
-        Mon, 14 Dec 2020 05:26:48 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Mon, 14 Dec 2020 05:27:19 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Mon, 14 Dec 2020 05:27:19 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.002;
- Mon, 14 Dec 2020 05:27:19 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>
-CC:     "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] dma-mapping: add unlikely hint for error path in
- dma_mapping_error
-Thread-Topic: [PATCH v2] dma-mapping: add unlikely hint for error path in
- dma_mapping_error
-Thread-Index: AQHW0W2iIa3g+8k+H0GczkNg20i1Mqn1hbAg
-Date:   Sun, 13 Dec 2020 21:27:19 +0000
-Message-ID: <93ac85090ffa4313a7dc87a38d1f6aa1@hisilicon.com>
-References: <39581f9a-0066-ad98-094d-d41082145e23@gmail.com>
-In-Reply-To: <39581f9a-0066-ad98-094d-d41082145e23@gmail.com>
-Accept-Language: en-GB, en-US
+        id S2406660AbgLMVcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 16:32:16 -0500
+Received: from mail-bn8nam12on2135.outbound.protection.outlook.com ([40.107.237.135]:64430
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2406618AbgLMVcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 16:32:01 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PTxqjLWHMR0E4stPuMssI4jK/pUXd4WX0l/65CRYBFC+/eeXJYiSvbWHB6pNGymz1Nu/sILqFxem4b3dH8skbsmf/T5/jYlvfvj+zk8SvkeZSbI2Kcus4uVZ6MTwq91nsGT0xfTRdnrNchgkI4/gB85KS/8WAymegR3vVU6MX3E8hkZjUMHknhzkiq0hIoDpQkuKlLnERBVwUmG8D32IrFoDuJ3L0PSdrGX/gPR3aUbM3efRHNfgQsDvSHIxZqarVgepg9xJM3MALqAsmc2u/8NqKq0rZdM/gLDt7URnbGjcxlo5pySk96LtnLtOetQSls/jF+WDbirP6q5ISMm8nA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HmfvUAi+gy2400B/UumrBdjAP/FYH//ZPsvHNpYiAMs=;
+ b=V7pf+6XNAaGW05HAxnlZMdoolnp7wRgDEpuW3SzP7a57wIvVxJ6Llbi0BGnpG9vr7XciaN2OXkSkaNUa62z1oNU1a/9KXu9o00FSPiduzFC6Co1LctD8h2wWoRKtg93cui+BycFuSNdyj6ugdGZ5hUfIUUmXQR58n5UltHyh+VljCmrPG6qkjTDjbfFMawNHCYX+j6nw+CKU9Iji8XHW0nxRjmB2WRPXDATEI1QrCS/BY+QUbDn+hSSh7hhG3l2fVeSkyaMUq+oH/zXTicqzu04vkv9BavbQJzuiHG4RS+5jsDQfwiEMamElv7jLi6jZz4WsKNkg6z9rKYJoQ12g/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HmfvUAi+gy2400B/UumrBdjAP/FYH//ZPsvHNpYiAMs=;
+ b=NoN95MdgdZmyCgvVeZSb7fIcL+6ay6u83jl2eIttnMV/s5yBIGkviQWFY0pv7axdCpzI84pSYcBi//CBtLh8h5hgIcU7dYCgZSi4sL2Hxy7EKvwi6rmbKU8fBWHQGxOUlY3GseIHT328W2RheGrOFbZQvGWimtidbFu641D/D/A=
+Received: from (2603:10b6:302:a::16) by
+ MW4PR21MB1908.namprd21.prod.outlook.com (2603:10b6:303:7b::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3676.5; Sun, 13 Dec 2020 21:31:13 +0000
+Received: from MW2PR2101MB1052.namprd21.prod.outlook.com
+ ([fe80::b8f6:e748:cdf2:1922]) by MW2PR2101MB1052.namprd21.prod.outlook.com
+ ([fe80::b8f6:e748:cdf2:1922%8]) with mapi id 15.20.3700.004; Sun, 13 Dec 2020
+ 21:31:13 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: RE: [PATCH] hv_netvsc: Validate number of allocated sub-channels
+Thread-Topic: [PATCH] hv_netvsc: Validate number of allocated sub-channels
+Thread-Index: AQHWvcArHKNiz0JRYEOFtu/aejjXH6n1sp+w
+Date:   Sun, 13 Dec 2020 21:31:13 +0000
+Message-ID: <MW2PR2101MB10528F523D391FC902C284EAD7C89@MW2PR2101MB1052.namprd21.prod.outlook.com>
+References: <20201118153310.112404-1-parri.andrea@gmail.com>
+In-Reply-To: <20201118153310.112404-1-parri.andrea@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.9]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-13T21:31:11Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=129927ae-4213-4d40-acd0-761d39ad6b6d;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: bea10611-901b-40f9-d42a-08d89fae6a98
+x-ms-traffictypediagnostic: MW4PR21MB1908:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW4PR21MB19084CD7351BE93E516C3B02D7C81@MW4PR21MB1908.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:862;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ISbpP8PUPvwieThZyW+d0fblvufqDXv0z368OdXW5Z3B32xuO36Gazk6m0VRbTrSo+c+vHO//FXvkRuiFVnWd5qtU9HfEdFFZNzpbYQnoO8wQja8+konYSQ+c0pk/cQ1z+CpLKKPknUXVKBy37ZH7bqcIh/IaO3KMitH6LB05qXNttuYKtmt6FAwWX6Crc4sM7Y9aAtVq2qPv22ctNwGMvBB85gEAI3N+jychLgF6bPxrEXWV1uKLpKZ/kvuM0T+C9yfrxhNl+cByxG1gWHDjQi5HB4dkKlk81+gma3ge8XFvrofU24HzfBy7fzVUkCAOnkCdybnYuJIM+y0ObB33cEtN+qOFBcLuRbVmq9HKcntEnAqiT9QCzDG/a9ZEY9ykEdzr1lOqCTZK2OuKcbV4A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1052.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(346002)(66446008)(82960400001)(82950400001)(508600001)(76116006)(10290500003)(8990500004)(52536014)(71200400001)(26005)(186003)(4326008)(86362001)(33656002)(5660300002)(7696005)(6506007)(54906003)(8676002)(55016002)(8936002)(2906002)(9686003)(66556008)(66946007)(64756008)(66476007)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?HhfDV7SDSUs7s4FkE/ph4CJudd4X7MKL+mIrgLILAML2fbR1ZfxVnQlJPTJs?=
+ =?us-ascii?Q?7otv47dciD1L5E4eYi9z93YS1Fk2OW6wDSSnuX9CT0dRF6MZpvQS3LFN3xGB?=
+ =?us-ascii?Q?jhgk0ZhP39bvZc3g6oR7QKFwUAIFGglQa7o+SstkR1jYj1tEbPZFZ3rmzDK3?=
+ =?us-ascii?Q?dA1oDSYOAjkvBvZASlLN9g60D+5m225xR81DVlgMVYP9u4J2mumQ8fzG1PnW?=
+ =?us-ascii?Q?rc56VxOLilrkB5rhR7aGqPKI+fp22Q84Zs7s0Lsf5iYv0a+dRfegcSB2BUGo?=
+ =?us-ascii?Q?21PgHzJA+xhf44i6fI5z6u5/2Cf0GHc+aVu4PluGz+iqGNfB1+grYB0kIPky?=
+ =?us-ascii?Q?jFW4OYiWpdQniycixN34s3ukQbD019hm8oZJWv+ilJaxs95f/i4BcwWxV3Uq?=
+ =?us-ascii?Q?/aS2cpfIhPGtZEXPC1efx5aLq3sKgr78tsJg3qbCIp5fWaVmRv4+cfVWZQs7?=
+ =?us-ascii?Q?r7J/DNce9bjLWppz4VsIV7iSIo8J+l39M77CBcUnPqozh4pYkazcOK1KrSwG?=
+ =?us-ascii?Q?XBoWFH9FGbgP+P4sHGOH9o74D3wzM+gu1tCyr8UflkyzPjmG/lDy7YKHPo6y?=
+ =?us-ascii?Q?SEARRy7tJdhOQM6OtKv2BdyFBkxI2I+r+/iSPAaI55V6lM7JuLCAwuta66Fy?=
+ =?us-ascii?Q?cZR9H5yiY/hBhLtVuPRq3M05Aps1K2fOwMEQ0AQsUv/3t/wpUeWcV73s4SYn?=
+ =?us-ascii?Q?BlESezL3sg8jhHbCZdVGb1XABQrTBC+CAREMqXmjBryQYghTENBtGUkVro9g?=
+ =?us-ascii?Q?aGJo0w6wUNSCC+z3Y/z0Sc6DM6EW8WfdIiger41jL4OVE2hGfwt7cJSmddWr?=
+ =?us-ascii?Q?R+J6RUGD7+02e2QBa3qH+rexvY9Q7nLU2jHpto6g7q2YZZi60TBWy66enKwC?=
+ =?us-ascii?Q?4qFGew0Pv7pjmbuTVzVhz9DFz6dQq1wc09kGJpbyLJqcN9xJLVnwut7aqKSQ?=
+ =?us-ascii?Q?M1wC/7BTG7Nngmw5MiwtZrXiaft/vXbdP/JF6SIbn+o=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1052.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bea10611-901b-40f9-d42a-08d89fae6a98
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Dec 2020 21:31:13.3262
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Xt06KoSjFrDdR8ETPROYkpfigKifpChAKqwDUXdNgDEuTQmCdvCubg+f9YHwD5KiSc3JDfv9TdhGTMPoK/xvXaGBHeZN6XxqRkFSvDrl7SM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1908
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSGVpbmVyIEthbGx3ZWl0
-IFttYWlsdG86aGthbGx3ZWl0MUBnbWFpbC5jb21dDQo+IFNlbnQ6IE1vbmRheSwgRGVjZW1iZXIg
-MTQsIDIwMjAgNTozMyBBTQ0KPiBUbzogQ2hyaXN0b3BoIEhlbGx3aWcgPGhjaEBsc3QuZGU+OyBN
-YXJlayBTenlwcm93c2tpDQo+IDxtLnN6eXByb3dza2lAc2Ftc3VuZy5jb20+OyBSb2JpbiBNdXJw
-aHkgPHJvYmluLm11cnBoeUBhcm0uY29tPjsgU29uZyBCYW8gSHVhDQo+IChCYXJyeSBTb25nKSA8
-c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+DQo+IENjOiBvcGVuIGxpc3Q6QU1EIElPTU1VIChB
-TUQtVkkpIDxpb21tdUBsaXN0cy5saW51eC1mb3VuZGF0aW9uLm9yZz47IExpbnV4DQo+IEtlcm5l
-bCBNYWlsaW5nIExpc3QgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+DQo+IFN1YmplY3Q6
-IFtQQVRDSCB2Ml0gZG1hLW1hcHBpbmc6IGFkZCB1bmxpa2VseSBoaW50IGZvciBlcnJvciBwYXRo
-IGluDQo+IGRtYV9tYXBwaW5nX2Vycm9yDQo+IA0KPiBaaWxsaW9ucyBvZiBkcml2ZXJzIHVzZSB0
-aGUgdW5saWtlbHkoKSBoaW50IHdoZW4gY2hlY2tpbmcgdGhlIHJlc3VsdCBvZg0KPiBkbWFfbWFw
-cGluZ19lcnJvcigpLiBUaGlzIGlzIGFuIGlubGluZSBmdW5jdGlvbiBhbnl3YXksIHNvIHdlIGNh
-biBtb3ZlDQo+IHRoZSBoaW50IGludG8gdGhpcyBmdW5jdGlvbiBhbmQgcmVtb3ZlIGl0IGZyb20g
-ZHJpdmVycy4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEhlaW5lciBLYWxsd2VpdCA8aGthbGx3ZWl0
-MUBnbWFpbC5jb20+DQoNCm5vdCBzdXJlIGlmIHRoaXMgaXMgcmVhbGx5IG5lY2Vzc2FyeS4gSXQg
-c2VlbXMgdGhlIG9yaWdpbmFsIGNvZGUNCmlzIG1vcmUgcmVhZGFibGUuIFJlYWRlcnMgY2FuIG1v
-cmUgZWFzaWx5IHVuZGVyc3RhbmQgd2UgYXJlDQpwcmVkaWN0aW5nIHRoZSBicmFuY2ggYmFzZWQg
-b24gdGhlIHJldHVybiB2YWx1ZSBvZg0KZG1hX21hcHBpbmdfZXJyb3IoKS4NCg0KQW55d2F5LCBJ
-IGRvbid0IG9iamVjdCB0byB0aGlzIG9uZS4gaWYgb3RoZXIgcGVvcGxlIGxpa2UgaXQsIEkgYW0N
-CmFsc28gb2sgd2l0aCBpdC4NCg0KPiAtLS0NCj4gdjI6DQo+IFNwbGl0IHRoZSBiaWcgcGF0Y2gg
-aW50byB0aGUgY2hhbmdlIGZvciBkbWEtbWFwcGluZy5oIGFuZCBmb2xsb3ctdXANCj4gcGF0Y2hl
-cyBwZXIgc3Vic3lzdGVtIHRoYXQgd2lsbCBnbyB0aHJvdWdoIHRoZSB0cmVlcyBvZiB0aGUgcmVz
-cGVjdGl2ZQ0KPiBtYWludGFpbmVycy4NCj4gLS0tDQo+ICBpbmNsdWRlL2xpbnV4L2RtYS1tYXBw
-aW5nLmggfCAyICstDQo+ICBrZXJuZWwvZG1hL21hcF9iZW5jaG1hcmsuYyAgfCAyICstDQo+ICAy
-IGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4gDQo+IGRp
-ZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2RtYS1tYXBwaW5nLmggYi9pbmNsdWRlL2xpbnV4L2Rt
-YS1tYXBwaW5nLmgNCj4gaW5kZXggMmU0OTk5NmE4Li42MTc3ZTIwYjUgMTAwNjQ0DQo+IC0tLSBh
-L2luY2x1ZGUvbGludXgvZG1hLW1hcHBpbmcuaA0KPiArKysgYi9pbmNsdWRlL2xpbnV4L2RtYS1t
-YXBwaW5nLmgNCj4gQEAgLTk1LDcgKzk1LDcgQEAgc3RhdGljIGlubGluZSBpbnQgZG1hX21hcHBp
-bmdfZXJyb3Ioc3RydWN0IGRldmljZSAqZGV2LA0KPiBkbWFfYWRkcl90IGRtYV9hZGRyKQ0KPiAg
-ew0KPiAgCWRlYnVnX2RtYV9tYXBwaW5nX2Vycm9yKGRldiwgZG1hX2FkZHIpOw0KPiANCj4gLQlp
-ZiAoZG1hX2FkZHIgPT0gRE1BX01BUFBJTkdfRVJST1IpDQo+ICsJaWYgKHVubGlrZWx5KGRtYV9h
-ZGRyID09IERNQV9NQVBQSU5HX0VSUk9SKSkNCj4gIAkJcmV0dXJuIC1FTk9NRU07DQo+ICAJcmV0
-dXJuIDA7DQo+ICB9DQo+IGRpZmYgLS1naXQgYS9rZXJuZWwvZG1hL21hcF9iZW5jaG1hcmsuYyBi
-L2tlcm5lbC9kbWEvbWFwX2JlbmNobWFyay5jDQo+IGluZGV4IGIxNDk2ZTc0NC4uOTAxNDIwYTVk
-IDEwMDY0NA0KPiAtLS0gYS9rZXJuZWwvZG1hL21hcF9iZW5jaG1hcmsuYw0KPiArKysgYi9rZXJu
-ZWwvZG1hL21hcF9iZW5jaG1hcmsuYw0KPiBAQCAtNzgsNyArNzgsNyBAQCBzdGF0aWMgaW50IG1h
-cF9iZW5jaG1hcmtfdGhyZWFkKHZvaWQgKmRhdGEpDQo+IA0KPiAgCQltYXBfc3RpbWUgPSBrdGlt
-ZV9nZXQoKTsNCj4gIAkJZG1hX2FkZHIgPSBkbWFfbWFwX3NpbmdsZShtYXAtPmRldiwgYnVmLCBQ
-QUdFX1NJWkUsIG1hcC0+ZGlyKTsNCj4gLQkJaWYgKHVubGlrZWx5KGRtYV9tYXBwaW5nX2Vycm9y
-KG1hcC0+ZGV2LCBkbWFfYWRkcikpKSB7DQo+ICsJCWlmIChkbWFfbWFwcGluZ19lcnJvcihtYXAt
-PmRldiwgZG1hX2FkZHIpKSB7DQo+ICAJCQlwcl9lcnIoImRtYV9tYXBfc2luZ2xlIGZhaWxlZCBv
-biAlc1xuIiwNCj4gIAkJCQlkZXZfbmFtZShtYXAtPmRldikpOw0KPiAgCQkJcmV0ID0gLUVOT01F
-TTsNCj4gLS0NCj4gMi4yOS4yDQoNClRoYW5rcw0KQmFycnkNCg0K
+From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Wednesday, No=
+vember 18, 2020 7:33 AM
+>=20
+> Lack of validation could lead to out-of-bound reads and information
+> leaks (cf. usage of nvdev->chan_table[]).  Check that the number of
+> allocated sub-channels fits into the expected range.
+>=20
+> Suggested-by: Saruhan Karademir <skarade@microsoft.com>
+> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: netdev@vger.kernel.org
+> ---
+> Based on hyperv-next.
+>=20
+>  drivers/net/hyperv/rndis_filter.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>=20
+> diff --git a/drivers/net/hyperv/rndis_filter.c b/drivers/net/hyperv/rndis=
+_filter.c
+> index 3835d9bea1005..c5a709f67870f 100644
+> --- a/drivers/net/hyperv/rndis_filter.c
+> +++ b/drivers/net/hyperv/rndis_filter.c
+> @@ -1226,6 +1226,11 @@ int rndis_set_subchannel(struct net_device *ndev,
+>  		return -EIO;
+>  	}
+>=20
+> +	/* Check that number of allocated sub channel is within the expected ra=
+nge */
+> +	if (init_packet->msg.v5_msg.subchn_comp.num_subchannels > nvdev->num_ch=
+n - 1) {
+> +		netdev_err(ndev, "invalid number of allocated sub channel\n");
+> +		return -EINVAL;
+> +	}
+>  	nvdev->num_chn =3D 1 +
+>  		init_packet->msg.v5_msg.subchn_comp.num_subchannels;
+>=20
+> --
+> 2.25.1
+
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
