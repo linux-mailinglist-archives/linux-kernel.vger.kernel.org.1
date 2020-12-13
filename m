@@ -2,66 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC98F2D8B65
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 06:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E832D8B6B
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 06:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727198AbgLMFOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 00:14:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34184 "EHLO mail.kernel.org"
+        id S1727605AbgLMFWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 00:22:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725306AbgLMFOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 00:14:43 -0500
+        id S1725287AbgLMFWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 00:22:16 -0500
 Content-Type: text/plain; charset="utf-8"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607836443;
-        bh=VaeAUus1rNjDVdpneM1XXAW2srOZQ+w5dltPlY5NNS0=;
+        s=k20201202; t=1607836895;
+        bh=cV44tKi6E31BnITtCOWLyHjjS9XLowKnbRhNJZXaJOw=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=TVSR2uV8fXibrDJR0JsFRK2z5DyNUykiQtSg7rHx7t60763vOPg5/eidNeG8tT1zW
-         u9zOoF1TQi0lCyDjSJ3GSUHjq44LtCbqOB34mPkWM+k2NbMWZH3KaqGhbF4o780yQY
-         6PNWK+rWJ8rCKerWpESwn7BlzoSFe4gv17J2aEVa3OUqvSVfgCLLdWiRu+pK4xkWzg
-         WAmafQpCldA8y/U4XSsZD02KWyOhiXyxGsWMQh5qnbTlKd8kxYpHQ3mmH+bBmc2y/A
-         v0Gfbv3pUnNrlJsqBY9oNZB4BbXCSU2SIt8hICHfLSKvYpYwqnB751wqsXTZxeeJsU
-         1SSrLT9hUv3Sg==
+        b=Dvra/5D2RYTkXWfQDsSyjOxTYcgxltABeZJVULPDQo/+W23kQkutGuebyBF3k9wDa
+         /UT3mbkXolf6NeCO/upjzstc/oITZaf1QnZTfZrm2zXKKxKO8bqZSUYeOtqQBMWWUN
+         q2Mib44yzw0PjAN3kcOvX+LucaQ/QYAz6+UuBaOmoc52voH+h8+J/9cbtGUl3R1W6o
+         bq0RZjFrT4eli8YQLmvegx+3KsxuMbIIfMFoF8yY57cbmkyHdauNV39vxGW1/uViay
+         3VWKWD2vr7nL43828x6xLgjAnHp89DR/3t3EPGR4JAqO+fjXbKfXb7cgLkR1wZw78w
+         7G8WYGUQ5Dl7w==
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201211164801.7838-2-nsaenzjulienne@suse.de>
-References: <20201211164801.7838-1-nsaenzjulienne@suse.de> <20201211164801.7838-2-nsaenzjulienne@suse.de>
-Subject: Re: [PATCH v6 01/11] firmware: raspberrypi: Keep count of all consumers
+In-Reply-To: <20201210093201.2419737-1-geert+renesas@glider.be>
+References: <20201210093201.2419737-1-geert+renesas@glider.be>
+Subject: Re: [PATCH v11] ARM: uncompress: Validate start of physical memory against passed DTB
 From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-pwm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, wahrenst@gmx.net,
-        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        p.zabel@pengutronix.de, linux-gpio@vger.kernel.org,
-        linus.walleij@linaro.org, linux-clk@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org, bgolaszewski@baylibre.com,
-        andy.shevchenko@gmail.com
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, u.kleine-koenig@pengutronix.de
-Date:   Sat, 12 Dec 2020 21:14:01 -0800
-Message-ID: <160783644171.1580929.15619962172135112128@swboyd.mtv.corp.google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Eric Miao <eric.miao@nvidia.com>,
+        Uwe =?utf-8?q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Lukasz Stelmach <l.stelmach@samsung.com>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Russell King <linux@armlinux.org.uk>
+Date:   Sat, 12 Dec 2020 21:21:34 -0800
+Message-ID: <160783689435.1580929.1038454293190061446@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Nicolas Saenz Julienne (2020-12-11 08:47:50)
-> When unbinding the firmware device we need to make sure it has no
-> consumers left. Otherwise we'd leave them with a firmware handle
-> pointing at freed memory.
->=20
-> Keep a reference count of all consumers and introduce rpi_firmware_put()
-> which will permit automatically decrease the reference count upon
-> unbinding consumer drivers.
->=20
-> Suggested-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
->=20
-> ---
+Quoting Geert Uytterhoeven (2020-12-10 01:32:01)
+> diff --git a/arch/arm/boot/compressed/fdt_check_mem_start.c b/arch/arm/bo=
+ot/compressed/fdt_check_mem_start.c
+> new file mode 100644
+> index 0000000000000000..e58c3a79c8a31ec4
+> --- /dev/null
+> +++ b/arch/arm/boot/compressed/fdt_check_mem_start.c
+> @@ -0,0 +1,131 @@
+[...]
+> +
+> +static uint64_t get_val(const fdt32_t *cells, uint32_t ncells)
+> +{
+> +       uint64_t r =3D 0;
 
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+This assignment is unnecessary?
+
+> +
+> +       r =3D fdt32_ld(cells);
+> +       if (ncells > 1)
+> +               r =3D (r << 32) | fdt32_ld(cells + 1);
+> +
+> +       return r;
