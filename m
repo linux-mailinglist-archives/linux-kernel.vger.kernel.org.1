@@ -2,45 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB932D8FC9
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 653832D8FE2
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393955AbgLMTKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 14:10:30 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:46656 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727764AbgLMTBv (ORCPT
+        id S2392540AbgLMTQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 14:16:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392438AbgLMTDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 14:01:51 -0500
+        Sun, 13 Dec 2020 14:03:08 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F423DC0611E4;
+        Sun, 13 Dec 2020 11:01:09 -0800 (PST)
 Date:   Sun, 13 Dec 2020 19:01:08 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607886069;
+        s=2020; t=1607886068;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=tDm9P/LbIofFWkfxL2Svk8ijFLazuTzsi3rIhIdZrac=;
-        b=G5Ajujs3Gybhb4talnEotpZ4uKYOtEae0pPwomvnIkirhJXqVZZVRuBU94A6ZoFdOQq8LT
-        JwCW/AoQkfnOL/Zhoqk9HEKm4YSCE8t+YLhb6DsyolfybL/Dw8Tw8LQzos5+QaR5e1/9CS
-        tQQIqIe5wgLSj674ycCWJEhv1NMIZltInWKrQie052ZU8L+WlGodcqhIfwPdbNcyXMBm8o
-        McbX12oTcXLvLX4V9AmmzgvdwJj93VE1LFF4+xgltcY40sKn9LkHq1/wQmblWFfg86fOg0
-        f7CWjRe/2UXsAUtj4NwQmGh21O7i9ob0kzbXjN0xt5n/VNsqQSNbeX7GoDBK2A==
+        bh=51x+MREM8dNzugf/lifkteXE3BiuRzwXrH4XUHKMe0s=;
+        b=25ENoFGjTf7Kh/3noLdqX4fhXPXhfPCQ7IcdKccPSBEXWFAD+BFdL5qhDVVkr0DfSz5+A4
+        27rMoh00OJpBs7AWW0q2+vN3oYYWVnEknieae4ZZ+PcMo+utQPx38TSNL8sNGaiKv+kdN5
+        EgoZMgT8uDIUYle+nkNELYmuDklLw4aS0Cxizr6mxEp7Z2YseT4c38Bl4lmT6ulbcNBkQf
+        ohR6/FkJjiR+ynPD37sMOZ2j9OZFrum005fLalTD8xfEF8vBpovc717XOEAYXkLuQO5UxF
+        o9U8h2agjZ2jCrU/vrQyq1s8OKPHXA5DlIPKt0xeFtEmWiMjBRR+riDUnX2ndw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607886069;
+        s=2020e; t=1607886068;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=tDm9P/LbIofFWkfxL2Svk8ijFLazuTzsi3rIhIdZrac=;
-        b=woxEt6I9tXByPr4IpYrOCRiZmKZMb0VpXCLUQlUz/A7qJeQC1E1zwf9YkQOrLWuF4Dg4xF
-        W4Z+rFsuhucj7ADQ==
+        bh=51x+MREM8dNzugf/lifkteXE3BiuRzwXrH4XUHKMe0s=;
+        b=OyKoiTd7aEZcsPm6BZl2qI+UBwDXoDXEKN2upsI1FTiwqgLwJsUERnkbyMYE0F1iNOKdP9
+        ohFxmFvSE8EKEsDA==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Prevent jitter processes from delaying failed run
+Subject: [tip: core/rcu] torture: Accept time units on kvm.sh --duration argument
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <160788606892.3364.140833623628200915.tip-bot2@tip-bot2>
+Message-ID: <160788606808.3364.14022211682176943547.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -51,68 +54,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     c64659ef29e3901be0900ec6fb0485fa3dbdcfd8
-Gitweb:        https://git.kernel.org/tip/c64659ef29e3901be0900ec6fb0485fa3dbdcfd8
+Commit-ID:     7de1ca35269ee20e40c35666c810cbaea528c719
+Gitweb:        https://git.kernel.org/tip/7de1ca35269ee20e40c35666c810cbaea528c719
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Fri, 18 Sep 2020 13:26:22 -07:00
+AuthorDate:    Tue, 22 Sep 2020 17:20:11 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Fri, 06 Nov 2020 17:13:53 -08:00
+CommitterDate: Fri, 06 Nov 2020 17:13:55 -08:00
 
-torture: Prevent jitter processes from delaying failed run
+torture: Accept time units on kvm.sh --duration argument
 
-Even when the kernel panics and qemu dies, runs with jitter enabled will
-continue uselessly until the jitter.sh processes terminate.  This can
-be annoying if a planned one-hour run instead dies during boot.
+The "--duration <minutes>" has worked well for a very long time, but
+it can be inconvenient to compute the minutes for (say) a 28-hour run.
+It can also be annoying to have to let a simple boot test run for a full
+minute.  This commit therefore permits an "s" suffix to specify seconds,
+"m" to specify minutes (which remains the default), "h" suffix to specify
+hours, and "d" to specify days.
 
-This commit therefore kills the jitter.sh processes when the run ends
-more than one minute prior to the termination time specified by the
-kvm.sh --duration argument or its default.
+With this change, "--duration 5" still specifies that each scenario
+run for five minutes, but "--duration 30s" runs for only 30 seconds,
+"--duration 8h" runs for eight hours, and "--duration 2d" runs for
+two days.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 14 +++++++-
- tools/testing/selftests/rcutorture/bin/kvm.sh            |  5 ++-
- 2 files changed, 18 insertions(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/bin/kvm.sh | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index d04966a..3cd03d0 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -226,6 +226,20 @@ do
- 				echo "ps -fp $killpid" >> $resdir/Warnings 2>&1
- 				ps -fp $killpid >> $resdir/Warnings 2>&1
- 			fi
-+			# Reduce probability of PID reuse by allowing a one-minute buffer
-+			if test $((kruntime + 60)) -lt $seconds && test -s "$resdir/../jitter_pids"
-+			then
-+				awk < "$resdir/../jitter_pids" '
-+				NF > 0 {
-+					pidlist = pidlist " " $1;
-+					n++;
-+				}
-+				END {
-+					if (n > 0) {
-+						print "kill " pidlist;
-+					}
-+				}' | sh
-+			fi
- 		else
- 			echo ' ---' `date`: "Kernel done"
- 		fi
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 6eb1d3f..5ad3882 100755
+index 5ad3882..c348d96 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -459,8 +459,11 @@ function dump(first, pastlast, batchnum)
- 	print "if test -n \"$needqemurun\""
- 	print "then"
- 	print "\techo ---- Starting kernels. `date` | tee -a " rd "log";
--	for (j = 0; j < njitter; j++)
-+	print "\techo > " rd "jitter_pids"
-+	for (j = 0; j < njitter; j++) {
- 		print "\tjitter.sh " j " " dur " " ja[2] " " ja[3] "&"
-+		print "\techo $! >> " rd "jitter_pids"
-+	}
- 	print "\twait"
- 	print "\techo ---- All kernel runs complete. `date` | tee -a " rd "log";
- 	print "else"
+@@ -58,7 +58,7 @@ usage () {
+ 	echo "       --datestamp string"
+ 	echo "       --defconfig string"
+ 	echo "       --dryrun sched|script"
+-	echo "       --duration minutes"
++	echo "       --duration minutes | <seconds>s | <hours>h | <days>d"
+ 	echo "       --gdb"
+ 	echo "       --help"
+ 	echo "       --interactive"
+@@ -128,8 +128,20 @@ do
+ 		shift
+ 		;;
+ 	--duration)
+-		checkarg --duration "(minutes)" $# "$2" '^[0-9]*$' '^error'
+-		dur=$(($2*60))
++		checkarg --duration "(minutes)" $# "$2" '^[0-9][0-9]*\(s\|m\|h\|d\|\)$' '^error'
++		mult=60
++		if echo "$2" | grep -q 's$'
++		then
++			mult=1
++		elif echo "$2" | grep -q 'h$'
++		then
++			mult=3600
++		elif echo "$2" | grep -q 'd$'
++		then
++			mult=86400
++		fi
++		ts=`echo $2 | sed -e 's/[smhd]$//'`
++		dur=$(($ts*mult))
+ 		shift
+ 		;;
+ 	--gdb)
