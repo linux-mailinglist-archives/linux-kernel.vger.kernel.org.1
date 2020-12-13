@@ -2,140 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AEA72D90DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 23:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9CE2D90E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 23:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406647AbgLMWNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 17:13:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731431AbgLMWNB (ORCPT
+        id S1731431AbgLMWNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 17:13:51 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:51431 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729851AbgLMWNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 17:13:01 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94385C0613CF;
-        Sun, 13 Dec 2020 14:12:20 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id 91so14551787wrj.7;
-        Sun, 13 Dec 2020 14:12:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9nxrWqcqD+NfL/E6pdVeNrVlJmdS2gvVv7D8xgbY/eQ=;
-        b=dF086oKY/H0yy2SCYekpY3t0HtfeVwzk1D52EsK+0RLf/3jUCSsARG9ZujjcHMv/XR
-         IksFhDEai7bxAT180ne63PVGVMJ2IxPZllBnCOvZ6TT/UFY6RVpeJ4GqJPpvRWHoO1i2
-         Ne74Xp7a6VZkZ4FkC1ynQ3pTGGM+QriCt56G65RpMPl23xrivoMP7p53OQwubf35J2my
-         SEl9h+/qIWB+FKzywtT4aPCqWhxHSuS+nmB5aXn1gqPzoIXneMy1w82SajjjMxBLT0mF
-         5nGDMbNqdP+QlAeb46T9zBlCxOGrjPK26O4xSmujxTPIBzOfc7CRO9NEI3BNHiMhpLl9
-         maeQ==
+        Sun, 13 Dec 2020 17:13:50 -0500
+Received: by mail-io1-f70.google.com with SMTP id h206so9723580iof.18
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 14:13:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=9nxrWqcqD+NfL/E6pdVeNrVlJmdS2gvVv7D8xgbY/eQ=;
-        b=mJX1MrHUoHxlJ4DKFxo3JCyvNYRRzLKGC5kbN9P6O1BzCZY4gpQBkxm2h9lLuK+qyM
-         cGTdanw4vdTSDzIWsRwaYhc+puDs27V243tjFHL8qN+H/gI7jP3iXLW+a8P9mEySHcrZ
-         TRf4hXzBswDNBbuQ7bPIEepGlp5LvesmwwcedVEMi2qIiwmC6Jy7h8dY7l8LabcXApsK
-         pRprG9zMo81i4B27zhLMho5MpZoIm43/IclMcKPTm9oAS7EBHECSpOXbJie4KYkt02zz
-         VlBhvNZRWfXbN0XfTS9Cjx+fL7WHYm+0c7PdgOBL0521mzSlvgeKd11tBKrPOhO8WQKs
-         wxUw==
-X-Gm-Message-State: AOAM531ZMW9IuFjbclvwbJXLdV/f3ftD6piWsl33x60DF73F4FrWzIDh
-        Qk3t6ZACX7Kc2KtO0yhld+1Fg6EAJ6Ju3ZjQ
-X-Google-Smtp-Source: ABdhPJyUDq/ElypTFjQP41ePoMgoMoW+nE653MComyet2+mKcZ6hmkEjnDKHEfu2VyKKSi5WyODxdw==
-X-Received: by 2002:a5d:56c3:: with SMTP id m3mr8832166wrw.419.1607897539098;
-        Sun, 13 Dec 2020 14:12:19 -0800 (PST)
-Received: from [192.168.8.124] ([85.255.232.163])
-        by smtp.gmail.com with ESMTPSA id h9sm27378431wre.24.2020.12.13.14.12.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 13 Dec 2020 14:12:18 -0800 (PST)
-Subject: Re: [PATCH 1/2] iov: introduce ITER_BVEC_FLAG_FIXED
-To:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1607477897.git.asml.silence@gmail.com>
- <de27dbca08f8005a303e5efd81612c9a5cdcf196.1607477897.git.asml.silence@gmail.com>
- <20201209083645.GB21968@infradead.org>
- <20201209130723.GL3579531@ZenIV.linux.org.uk>
- <b6cd4108-dbfe-5753-768f-92f55f38d6cd@gmail.com>
- <20201209175553.GA26252@infradead.org>
- <20201209182456.GR7338@casper.infradead.org>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <ef3ddc2c-75ea-59aa-f27e-f974b003802e@gmail.com>
-Date:   Sun, 13 Dec 2020 22:09:00 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=w1iVowg0N/qJHYngp+HBkLQGVichd+3RsxM7hOiF15A=;
+        b=BvADvhVXyjo8oWN6tEOo74JULsX2Ghx5qGWeG4DxFjfw2qGuP7LUC21k/u9bHADTkm
+         cMGSsjzM81h4vvV9MZpxE1Ynj8Pipw1F1yRz9J1ovYZkD1ABCrGF4FIBJOGt7/Z2q6Qq
+         lfvLrmVPcqiCa0MzTx5WzFDFE64Qfk5DSBwfQHwZ5DE6bQfZ6ySWDRdXCGeS+ScnD+Qy
+         sd2ObqAmLIuwjrFKPZowdgPil95vEOQ8WcYuR8DJEWDb/jE9hmxc8xDxOuj0KygjsIFH
+         yY6N/+xcKv+OcL0TGHNCKuQd37BJ5cQYIBDbZf5UugT4v6Wyr76SvzvvubrzIJylrZlK
+         dubA==
+X-Gm-Message-State: AOAM533McHqqeytBVO71V3QMN74ZLTxIl28WSAFm4znSZiE6elJUE36Z
+        Q9VBoCDvrR47gk8xkhap2CblxZvm8nMvxyKXPbfYeAfr5ZnW
+X-Google-Smtp-Source: ABdhPJy3JTr8hqGI3zGv/Wkdcx+RazBV8t/O0wjfDZjAg7HdB7z/TLVmseVqVktqODfQ2IusqJ7AbuAItL4bAzdFjI44jn30Phbu
 MIME-Version: 1.0
-In-Reply-To: <20201209182456.GR7338@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:d8c4:: with SMTP id l4mr29201837ilo.38.1607897589768;
+ Sun, 13 Dec 2020 14:13:09 -0800 (PST)
+Date:   Sun, 13 Dec 2020 14:13:09 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ac68ed05b65fd4d2@google.com>
+Subject: UBSAN: shift-out-of-bounds in hash_mac_create
+From:   syzbot <syzbot+d66bfadebca46cf61a2b@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@blackhole.kfki.hu, kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com, vvs@virtuozzo.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/12/2020 18:24, Matthew Wilcox wrote:
-> On Wed, Dec 09, 2020 at 05:55:53PM +0000, Christoph Hellwig wrote:
->> On Wed, Dec 09, 2020 at 01:37:05PM +0000, Pavel Begunkov wrote:
->>> Yeah, I had troubles to put comments around, and it's still open.
->>>
->>> For current cases it can be bound to kiocb, e.g. "if an bvec iter passed
->>> "together" with kiocb then the vector should stay intact up to 
->>> ->ki_complete()". But that "together" is rather full of holes.
->>
->> What about: "For bvec based iters the bvec must not be freed until the
->> I/O has completed.  For asynchronous I/O that means it must be freed
->> no earlier than from ->ki_complete."
-> 
-> Perhaps for the second sentence "If the I/O is completed asynchronously,
-> the bvec must not be freed before ->ki_complete() has been called"?
+Hello,
 
-Sounds good, I'll use it. Thanks!
+syzbot found the following issue on:
 
--- 
-Pavel Begunkov
+HEAD commit:    a9e26cb5 Add linux-next specific files for 20201208
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=16f05123500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e259434a8eaf0206
+dashboard link: https://syzkaller.appspot.com/bug?extid=d66bfadebca46cf61a2b
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13afdcbd500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12b14b37500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d66bfadebca46cf61a2b@syzkaller.appspotmail.com
+
+================================================================================
+UBSAN: shift-out-of-bounds in net/netfilter/ipset/ip_set_hash_gen.h:151:6
+shift exponent 32 is too large for 32-bit type 'unsigned int'
+CPU: 0 PID: 8498 Comm: syz-executor519 Not tainted 5.10.0-rc7-next-20201208-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ htable_bits net/netfilter/ipset/ip_set_hash_gen.h:151 [inline]
+ hash_mac_create.cold+0x58/0x9b net/netfilter/ipset/ip_set_hash_gen.h:1524
+ ip_set_create+0x610/0x1380 net/netfilter/ipset/ip_set_core.c:1115
+ nfnetlink_rcv_msg+0xecc/0x1180 net/netfilter/nfnetlink.c:252
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ nfnetlink_rcv+0x1ac/0x420 net/netfilter/nfnetlink.c:600
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x907/0xe40 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440419
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffd29571ba8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440419
+RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 0000000000000009 R09: 00000000004002c8
+R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000401c20
+R13: 0000000000401cb0 R14: 0000000000000000 R15: 0000000000000000
+================================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
