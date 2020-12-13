@@ -2,79 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA542D8F11
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 18:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A27312D8F14
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 18:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406510AbgLMRYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 12:24:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48652 "EHLO
+        id S2406559AbgLMRZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 12:25:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392611AbgLMRYB (ORCPT
+        with ESMTP id S2391774AbgLMRZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 12:24:01 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4EAC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 09:23:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=87mGaq6A/2oEflAS9WJMZOfYYxB6mcw5Ht+huFs8tKE=; b=vYNX3O9KkvGqgR6G0YKWCW7pCW
-        UoSXOBpnw0NLVnY0A7PVX3XfT4YXpZZDMfD+4fgKw37k7scyG7BlRzqM2DQlY56UYX9mIvXqWoKHc
-        pGyDPKGGcchOfSYBOstMybxrQwKk2qf28ku9He3Ryq5U8hlpgXqJEe5ofViUI5dj+uoSbvPgnk/P1
-        Bg9qNU9LT+RrJj6j+YHaBc0uXkViwo0Rj+cCCv4xfynQZ5g+RRpsM88UbuVpSidJX6peXZMdYuVkk
-        60iYoOgYO5Ji+U7mVnkb6Ww6Yqdp3JzzW3ojktQYY0iu7KgW1kupWDQCOYydQL63BF9EMzTZ9jMXR
-        uI1GI9gA==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1koV5L-0006zU-S3; Sun, 13 Dec 2020 17:23:04 +0000
-Subject: Re: [PATCH] char: xillybus: Add driver for XillyUSB (Xillybus variant
- for USB)
-To:     eli.billauer@gmail.com, gregkh@linuxfoundation.org, arnd@arndb.de
-Cc:     linux-kernel@vger.kernel.org
-References: <20201213170503.59017-1-eli.billauer@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c661c10e-fa21-d3e5-9d94-6f8f2d89f1d0@infradead.org>
-Date:   Sun, 13 Dec 2020 09:22:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201213170503.59017-1-eli.billauer@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Sun, 13 Dec 2020 12:25:32 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B351C0613CF;
+        Sun, 13 Dec 2020 09:24:52 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id iq13so4940967pjb.3;
+        Sun, 13 Dec 2020 09:24:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ynUaEpsEiEz0ejoqZQtxyLmuvONt7mY31z9UMZmBqrg=;
+        b=lB5oJiSsStxJAd2Wxa48tsFNwCsy6Ra3YKgA/SioVMiudEc69fq9H0T4VgyuVhMwWl
+         PZg/1hh1y+KQ29qoYktIdVdeaK/JkLnU87tpyQu8sp+ot/dLdCx4RWxFgluTV1wwNM2n
+         xysv6Ly0zZV3FKU3YkSBa1Zvkrr0m/3zT7/BmQrbqMampKUbeGVcGQY7Ic0SxLBReJvb
+         hF15ZDf/OVckYE0dksbU8oXePatEZHtMR+vuGk+A4R+UhUoV7em+sQnTX2dsyoeFlEUk
+         aDjuTL3Zh4YxVv0tChLsHGQ/IMcKL5zKo5DthCiSm/MzJ8S+zx8kxAlFbn1UDitY//Ij
+         Id7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ynUaEpsEiEz0ejoqZQtxyLmuvONt7mY31z9UMZmBqrg=;
+        b=UqdobnS4O8j9XYfASZ7yrIAz+sjIVvH5h88V8cIRREft6Lp96mQHfgmqJslCHfyrzd
+         WDtjoy3HZm0AYg6eEwsUwsjrEOdBRZqnSP/O17seE3cA9ZsRF3W7QUM3O75hlUABnpiU
+         n4jFl8jaEmENGdPidrwk7F/iXEvcRgijz3DnzA+0LarlU5QfN5UX63Cm3SyWR+3dCruS
+         +t/gACX66tF+Lt9zjXeI4W9bvZdINTKCVC3bcHvpK+btKUY4F14mfdQzAQA0KOWGIcOu
+         iaT0LW+hiKqhwooLD5aVkO7v6F9sx7lIcyd3WFChqJetcfHFt2BuU0n+vbddQd43NXgb
+         PVFA==
+X-Gm-Message-State: AOAM531mlTBdcqEK+Pz3yQJcu1LNZOPrIoEFaFMNatVYoEim0D1l/jaf
+        iXSs8HHOYkefbAKU63VsX366l+Ejb5MUWZ/7
+X-Google-Smtp-Source: ABdhPJzmWfWZY0MmPn0XVmLoJ82aPcEp1BoUFiGGXzptPaDUS4fF9XLh7iZPP648u5PJq5+oub91lQ==
+X-Received: by 2002:a17:902:7606:b029:da:246c:5bd8 with SMTP id k6-20020a1709027606b02900da246c5bd8mr19330240pll.27.1607880291814;
+        Sun, 13 Dec 2020 09:24:51 -0800 (PST)
+Received: from localhost.localdomain ([2409:4073:4d9c:e725:65e2:47cd:81e3:bc30])
+        by smtp.gmail.com with ESMTPSA id y15sm15593863pju.13.2020.12.13.09.24.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Dec 2020 09:24:51 -0800 (PST)
+From:   devajithvs <devajithvs@gmail.com>
+Cc:     Devajith V S <devajithvs@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Robert Yang <decatf@gmail.com>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: iio: accel: kxcjk1013: Document regulator supplies
+Date:   Sun, 13 Dec 2020 22:54:35 +0530
+Message-Id: <20201213172437.2779-1-devajithvs@gmail.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/13/20 9:05 AM, eli.billauer@gmail.com wrote:
-> diff --git a/drivers/char/xillybus/Kconfig b/drivers/char/xillybus/Kconfig
-> index 130dbdce858f..18fa99ec1029 100644
-> --- a/drivers/char/xillybus/Kconfig
-> +++ b/drivers/char/xillybus/Kconfig
-> @@ -32,3 +32,14 @@ config XILLYBUS_OF
->  	  system, say M.
->  
->  endif # if XILLYBUS
-> +
+From: Devajith V S <devajithvs@gmail.com>
 
-Hi Eli,
+kxcjk1013 devices have VDD and VDDIO power lines. Need
+to make sure the regulators are enabled before any
+communication with kxcjk1013. Document support for
+vdd/vddio-supply to implement this.
 
-You don't want this new part inside the "if XILLYBUS" block above?
-IOW, XILLYUSB does not need XILLYBUS?
+Signed-off-by: Devajith V S <devajithvs@gmail.com>
+---
+ .../devicetree/bindings/iio/accel/kionix,kxcjk1013.yaml        | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> +config XILLYUSB
-> +	tristate "XillyUSB: Xillybus generic FPGA interface for USB"
-> +	depends on USB
-> +	select CRC32
-> +	help
-> +	  XillyUSB is the Xillybus variant which uses USB for communicating
-> +	  with the FPGA.
-> +
-> +	  Set to M if you want Xillybus to use USB for communicating with
-> +	  the FPGA.
-
-thanks.
+diff --git a/Documentation/devicetree/bindings/iio/accel/kionix,kxcjk1013.yaml b/Documentation/devicetree/bindings/iio/accel/kionix,kxcjk1013.yaml
+index 5667d09df..fbb714431 100644
+--- a/Documentation/devicetree/bindings/iio/accel/kionix,kxcjk1013.yaml
++++ b/Documentation/devicetree/bindings/iio/accel/kionix,kxcjk1013.yaml
+@@ -20,6 +20,9 @@ properties:
+   reg:
+     maxItems: 1
+ 
++  vdd-supply: true
++  vddio-supply: true
++
+   mount-matrix:
+     description: an optional 3x3 mounting rotation matrix.
+ 
 -- 
-~Randy
+2.17.1
 
