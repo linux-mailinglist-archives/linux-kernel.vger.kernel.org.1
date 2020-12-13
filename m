@@ -2,106 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CF52D8E1B
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 15:59:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F77F2D8E23
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 16:08:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406416AbgLMO73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 09:59:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729513AbgLMO7M (ORCPT
+        id S1726787AbgLMPIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 10:08:19 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:36700 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726468AbgLMPIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 09:59:12 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005F5C0613CF;
-        Sun, 13 Dec 2020 06:58:31 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id w127so13028137ybw.8;
-        Sun, 13 Dec 2020 06:58:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=plNVcmrce8g2J8M3GvZaxtbh0wYjjwJH9EhP4nToGcg=;
-        b=LpFXWaQL6fLau/RHuV7zuorCsHamAKs9/0ITBJlTv5NR82LANrttpzO2ebQMsHpZfG
-         18b+X5d4gAG21gQxCKibZHkhKwIbA39zfcomdlccbTuhTTpTYE8s66MoSH14+4HiQUnr
-         g4mbJj/cbabq1rM/S6PMysI3haCDy9iyIGpBgd0he39coQdvcCX3FGp28qe7ki5efaDV
-         DBw+xjWRj9e3WpJE8JAacbCQFHl5SMH3FRHCj/uBZ6C2eT+VmDlUybrGEq1alP6Zll1R
-         oPZbKzlxxQp7fxvY3PmQ59y30aadQOZGheSPiTTOv/SGokObhWdsdMTtSemZUbpWin2k
-         P+DQ==
+        Sun, 13 Dec 2020 10:08:17 -0500
+Received: by mail-wm1-f65.google.com with SMTP id y23so12972961wmi.1;
+        Sun, 13 Dec 2020 07:08:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=plNVcmrce8g2J8M3GvZaxtbh0wYjjwJH9EhP4nToGcg=;
-        b=ssEYGbdNTuw6FZhE7RTTWkkkoDB0yhjJT5a7NuZ23B18ZBrew1jVVc3Kzgu311V6oP
-         wNtygylQbDusexVTgz/1FdXlZnFnXcr904e1Wi4r9YdcmXCIx2uSRFu7KtoGLk+Bz+6b
-         Nh6N7cNLc7YsgQDZQ8wJbex7qAhzEsBNoyht8kqdfhzOrLAy+DL/QkERiJMTG4vP+i+W
-         LPRNrJJOHtGrlhHqq7ebl0I2xUDEQ/o1wxnyqT0/Mj9L71Zrfq2DEddZ2f1j67Q/ysHC
-         AOfKl13FKmWD+4RpFuc3TX98Xr76Uq5BNJTGzE+gDx66/j2jN6ltH0Z0SYBY0SrDf8Zd
-         ukQA==
-X-Gm-Message-State: AOAM532LHjlDIclXAGky5patU+xQLOCkIa5TfRkVv8iIISoEaayA6sKf
-        goHRMCT7MUURs1paHdYTVSl+WwHicA5PvRhCZz8=
-X-Google-Smtp-Source: ABdhPJyleUHOQ1Dzwsvco4D8Kb6ED8lXDzo42gqSNXB0njsWpLnkEVMEMAkYlMTU9I4fZNhLo+xUhDEMmRjvFVpRMyU=
-X-Received: by 2002:a25:538a:: with SMTP id h132mr11841975ybb.247.1607871511230;
- Sun, 13 Dec 2020 06:58:31 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=H1MJojJpKvAPud9O3M00FZKCTLaLbASeTmO/BwG1kiQ=;
+        b=BJ6etC/vpBtIoMn3wgykGdcS952U9ZXZ4AvMmW/zk1cdmrfX+O67zJ7DTUfSZ7ancM
+         oHBeXSjbVhN+IABTX7h2YSKo4VcaG+KuLIXtzy/fSDmfJdwiOwHhvN5qBK15I7SyEq9t
+         oX6lrS64UJFKQxWae3m7FgEW3Thr0oXQhQVmipdUCjln5kziXfYCZcwxTb1PD18of0d3
+         KkRUfKtGCYgHpVCkr2iU5ELW73DTXZbbUhuDajrZq1uD77MMhzDuhN/DsenOE27dPKPx
+         SG4mKXwYGPiLgug4b/4effoLVICyrvfshVIQpdEvOEODSBdJsauVWdH112bK6MJWZDo1
+         Ubjw==
+X-Gm-Message-State: AOAM532K6V8rF4CidxkPpBMDqsOdjkHPjU4pNnMgmOLeSFaEP1Ehh/E+
+        jfZVSCqrM+bX7guauMxOEHudzUQKVGk=
+X-Google-Smtp-Source: ABdhPJzvAmgajiU8zHEIQ/T0wezLuBDWvTYiB8Suv0Vzwv5VmcyDhVLx2w6q90BoHThm3xzNi3HLNg==
+X-Received: by 2002:a1c:1bcc:: with SMTP id b195mr23624478wmb.131.1607872055089;
+        Sun, 13 Dec 2020 07:07:35 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id m11sm11021421wmi.16.2020.12.13.07.07.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Dec 2020 07:07:34 -0800 (PST)
+Date:   Sun, 13 Dec 2020 15:07:32 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     linux-hyperv@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        David Hildenbrand <david@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 0/2] hv_balloon: hide ballooned out memory in stats
+Message-ID: <20201213150732.f7tmjaybztqxyfz7@liuwe-devbox-debian-v2>
+References: <20201202161245.2406143-1-vkuznets@redhat.com>
+ <20201209131718.aqy6uddgqivgiglj@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-References: <20201128193335.219395-1-masahiroy@kernel.org> <20201212161831.GA28098@roeck-us.net>
- <CANiq72=e9Csgpcu3MdLGB77dL_QBn6PpqoG215YUHZLNCUGP0w@mail.gmail.com> <8f645b94-80e5-529c-7b6a-d9b8d8c9685e@roeck-us.net>
-In-Reply-To: <8f645b94-80e5-529c-7b6a-d9b8d8c9685e@roeck-us.net>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sun, 13 Dec 2020 15:58:20 +0100
-Message-ID: <CANiq72kML=UmMLyKcorYwOhp2oqjfz7_+JN=EmPp05AapHbFSg@mail.gmail.com>
-Subject: Re: [PATCH v3] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        wireguard@lists.zx2c4.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209131718.aqy6uddgqivgiglj@liuwe-devbox-debian-v2>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 1:55 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> Witz komm raus, Du bist umzingelt.
+On Wed, Dec 09, 2020 at 01:17:18PM +0000, Wei Liu wrote:
+> On Wed, Dec 02, 2020 at 05:12:43PM +0100, Vitaly Kuznetsov wrote:
+> > It was noticed that 'free' information on a Hyper-V guest reports ballooned
+> > out memory in 'total' and this contradicts what other ballooning drivers 
+> > (e.g. virtio-balloon/virtio-mem/xen balloon) do.
+> > 
+> > Vitaly Kuznetsov (2):
+> >   hv_balloon: simplify math in alloc_balloon_pages()
+> >   hv_balloon: do adjust_managed_page_count() when
+> >     ballooning/un-ballooning
+> 
+> LGTM.
+> 
+> I will wait for a few more days before applying this series to
+> hyperv-next.
 
-Please, explain this reference. :-)
+Applied to hyperv-next.
 
-> The key here is "if nobody complains". I would argue that it is _your_
-> responsibility to do those builds, and not the reponsibility of others
-> to do it for you.
-
-Testing allmodconfig for a popular architecture, agreed, it is due
-diligence to avoid messing -next that day.
-
-Testing a matrix of configs * arches * gcc/clang * compiler versions?
-No, sorry, that is what CI/-next/-rcs are for and that is where the
-"if nobody complains" comes from.
-
-If you think building a set of code for a given arch/config/etc. is
-particularly important, then it is _your_ responsibility to build it
-once in a while in -next (as you have done). If it is not that
-important, somebody will speak up in one -rc. If not, is anyone
-actually building that code at all?
-
-Otherwise, changing core/shared code would be impossible. Please don't
-blame the author for making a sensible change that will improve code
-quality for everyone.
-
-> But, sure, your call. Please feel free to ignore my report.
-
-I'm not ignoring the report, quite the opposite. I am trying to
-understand why you think reverting is needed for something that has
-been more than a week in -next without any major breakage and still
-has a long road to v5.11.
-
-Cheers,
-Miguel
+Wei.
