@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6B62D8FCD
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:14:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E77D2D8FBB
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729232AbgLMTHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 14:07:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
+        id S1728530AbgLMTGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 14:06:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389883AbgLMTC3 (ORCPT
+        with ESMTP id S2389226AbgLMTC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 14:02:29 -0500
+        Sun, 13 Dec 2020 14:02:27 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2756C0611C5;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201D1C061285;
         Sun, 13 Dec 2020 11:01:06 -0800 (PST)
 Date:   Sun, 13 Dec 2020 19:01:04 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607886065;
+        s=2020; t=1607886064;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=xc8c0J7TIMfKYXkIM1dKgjXLPKmxRqSqITG4PfD4hiE=;
-        b=jrR4rKBmm+oXMUvLNoW4KYuOWLOUXAU4A164C5kTWy/o+5jvz3Ol9pl/ijHPF6y2x4E4Ub
-        aKViQR1OWsU8S8VZk+wnBEIXPV3NdU7TDA7OXddBOhMOiwBf42Add4IXUQCZfZBuVlxKTm
-        Ue01q6MAHLwTD41yypHCDTnJIEmTMwXJNtOBsnHGCOHN81B9p0VVDcyLMTPOILuVtbAnCc
-        hLTsoJYp8qhAV6f5oWCcIcsqApL3jKAfoUGAv5prkxuzLSZwf4+p5miK30IZXTZrRyS7E6
-        iZpMaFLxnZsol/+q74WWKVUTxyOmSYwwzJiFLR8rjJsat6x+mzJY5irosHT7PQ==
+        bh=zR80Psi9+dk3trXcieVnZ9atAyP5/MXYjAlf50qgcZU=;
+        b=jY3jSo0GieO1dM/wZYqVzCnJAfhyCO/Z4RF6Q93OBZnPCgPCzaFOdKUmVDnxIHXHACUrOO
+        gynecL2e0TtH5ifxzlNFikzPjHPjwJFO6qo1KLc7ekkOwMz0zeW1bsxSGFEBSb76IbyysA
+        gY0cLf8YnLExrzfBtAg0SpHxzINrcy8nqpBdxDGwUtgCQ+6z2m9ikIBgEZscSjt/1WKn8f
+        X/tUxfSmNMm9UnIqR6BnG7t2RZCL0+oEVsP/luxp6O4DGsbQQBpjDll77L9RzhbLLg5pGi
+        UMg9fWOZ2P0BpJvd+thZa4+ZN5pfTZQT7f4MZY0pMHbNPDjqrF8qyLgXy1EdQg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607886065;
+        s=2020e; t=1607886064;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=xc8c0J7TIMfKYXkIM1dKgjXLPKmxRqSqITG4PfD4hiE=;
-        b=zB4mkphYZazp1+8QOj1d85573Ajzmiv1p6bDhdonIkh1sm2XE6yoz0AU3LkRhfWSMPQw8w
-        sr5slLa6/2E+b3Dg==
+        bh=zR80Psi9+dk3trXcieVnZ9atAyP5/MXYjAlf50qgcZU=;
+        b=shOq4GpR4M4foX6ENSGJH8wf6V69d7IC0kyYC36CHAN14fvQCi3ALix8VxHZwtTPQLVY12
+        l5BF38zsOwb+cGAg==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] tools/memory-model: Add a glossary of LKMM terms
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+Subject: [tip: core/rcu] tools/memory-model: Label MP tests' producers and consumers
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <160788606488.3364.12585060638080343395.tip-bot2@tip-bot2>
+Message-ID: <160788606400.3364.7268549375683971734.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -54,197 +55,244 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     0a27ce6b6968866fa8e3bd70371d67752db7718f
-Gitweb:        https://git.kernel.org/tip/0a27ce6b6968866fa8e3bd70371d67752db7718f
+Commit-ID:     b6ff30849ca723b78306514246b98ca5645d92f5
+Gitweb:        https://git.kernel.org/tip/b6ff30849ca723b78306514246b98ca5645d92f5
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 22 Oct 2020 15:16:08 -07:00
+AuthorDate:    Thu, 05 Nov 2020 13:39:28 -08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Fri, 06 Nov 2020 17:24:53 -08:00
+CommitterDate: Fri, 06 Nov 2020 17:25:17 -08:00
 
-tools/memory-model: Add a glossary of LKMM terms
+tools/memory-model: Label MP tests' producers and consumers
 
-[ paulmck: Apply Alan Stern feedback. ]
+This commit adds comments that label the MP tests' producer and consumer
+processes, and also that label the "exists" clause as the bad outcome.
+
+Reported-by: Johannes Weiner <hannes@cmpxchg.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/memory-model/Documentation/glossary.txt | 172 +++++++++++++++++-
- 1 file changed, 172 insertions(+)
- create mode 100644 tools/memory-model/Documentation/glossary.txt
+ tools/memory-model/litmus-tests/MP+fencewmbonceonce+fencermbonceonce.litmus | 6 +++---
+ tools/memory-model/litmus-tests/MP+onceassign+derefonce.litmus              | 6 +++---
+ tools/memory-model/litmus-tests/MP+polockmbonce+poacquiresilsil.litmus      | 6 +++---
+ tools/memory-model/litmus-tests/MP+polockonce+poacquiresilsil.litmus        | 6 +++---
+ tools/memory-model/litmus-tests/MP+polocks.litmus                           | 6 +++---
+ tools/memory-model/litmus-tests/MP+poonceonces.litmus                       | 6 +++---
+ tools/memory-model/litmus-tests/MP+pooncerelease+poacquireonce.litmus       | 6 +++---
+ tools/memory-model/litmus-tests/MP+porevlocks.litmus                        | 6 +++---
+ 8 files changed, 24 insertions(+), 24 deletions(-)
 
-diff --git a/tools/memory-model/Documentation/glossary.txt b/tools/memory-model/Documentation/glossary.txt
-new file mode 100644
-index 0000000..79acb75
---- /dev/null
-+++ b/tools/memory-model/Documentation/glossary.txt
-@@ -0,0 +1,172 @@
-+This document contains brief definitions of LKMM-related terms.  Like most
-+glossaries, it is not intended to be read front to back (except perhaps
-+as a way of confirming a diagnosis of OCD), but rather to be searched
-+for specific terms.
-+
-+
-+Address Dependency:  When the address of a later memory access is computed
-+	based on the value returned by an earlier load, an "address
-+	dependency" extends from that load extending to the later access.
-+	Address dependencies are quite common in RCU read-side critical
-+	sections:
-+
-+	 1 rcu_read_lock();
-+	 2 p = rcu_dereference(gp);
-+	 3 do_something(p->a);
-+	 4 rcu_read_unlock();
-+
-+	 In this case, because the address of "p->a" on line 3 is computed
-+	 from the value returned by the rcu_dereference() on line 2, the
-+	 address dependency extends from that rcu_dereference() to that
-+	 "p->a".  In rare cases, optimizing compilers can destroy address
-+	 dependencies.	Please see Documentation/RCU/rcu_dereference.txt
-+	 for more information.
-+
-+	 See also "Control Dependency" and "Data Dependency".
-+
-+Acquire:  With respect to a lock, acquiring that lock, for example,
-+	using spin_lock().  With respect to a non-lock shared variable,
-+	a special operation that includes a load and which orders that
-+	load before later memory references running on that same CPU.
-+	An example special acquire operation is smp_load_acquire(),
-+	but atomic_read_acquire() and atomic_xchg_acquire() also include
-+	acquire loads.
-+
-+	When an acquire load returns the value stored by a release store
-+	to that same variable, then all operations preceding that store
-+	happen before any operations following that load acquire.
-+
-+	See also "Relaxed" and "Release".
-+
-+Coherence (co):  When one CPU's store to a given variable overwrites
-+	either the value from another CPU's store or some later value,
-+	there is said to be a coherence link from the second CPU to
-+	the first.
-+
-+	It is also possible to have a coherence link within a CPU, which
-+	is a "coherence internal" (coi) link.  The term "coherence
-+	external" (coe) link is used when it is necessary to exclude
-+	the coi case.
-+
-+	See also "From-reads" and "Reads-from".
-+
-+Control Dependency:  When a later store's execution depends on a test
-+	of a value computed from a value returned by an earlier load,
-+	a "control dependency" extends from that load to that store.
-+	For example:
-+
-+	 1 if (READ_ONCE(x))
-+	 2   WRITE_ONCE(y, 1);
-+
-+	 Here, the control dependency extends from the READ_ONCE() on
-+	 line 1 to the WRITE_ONCE() on line 2.	Control dependencies are
-+	 fragile, and can be easily destroyed by optimizing compilers.
-+	 Please see control-dependencies.txt for more information.
-+
-+	 See also "Address Dependency" and "Data Dependency".
-+
-+Cycle:	Memory-barrier pairing is restricted to a pair of CPUs, as the
-+	name suggests.	And in a great many cases, a pair of CPUs is all
-+	that is required.  In other cases, the notion of pairing must be
-+	extended to additional CPUs, and the result is called a "cycle".
-+	In a cycle, each CPU's ordering interacts with that of the next:
-+
-+	CPU 0                CPU 1                CPU 2
-+	WRITE_ONCE(x, 1);    WRITE_ONCE(y, 1);    WRITE_ONCE(z, 1);
-+	smp_mb();            smp_mb();            smp_mb();
-+	r0 = READ_ONCE(y);   r1 = READ_ONCE(z);   r2 = READ_ONCE(x);
-+
-+	CPU 0's smp_mb() interacts with that of CPU 1, which interacts
-+	with that of CPU 2, which in turn interacts with that of CPU 0
-+	to complete the cycle.	Because of the smp_mb() calls between
-+	each pair of memory accesses, the outcome where r0, r1, and r2
-+	are all equal to zero is forbidden by LKMM.
-+
-+	See also "Pairing".
-+
-+Data Dependency:  When the data written by a later store is computed based
-+	on the value returned by an earlier load, a "data dependency"
-+	extends from that load to that later store.  For example:
-+
-+	 1 r1 = READ_ONCE(x);
-+	 2 WRITE_ONCE(y, r1 + 1);
-+
-+	In this case, the data dependency extends from the READ_ONCE()
-+	on line 1 to the WRITE_ONCE() on line 2.  Data dependencies are
-+	fragile and can be easily destroyed by optimizing compilers.
-+	Because optimizing compilers put a great deal of effort into
-+	working out what values integer variables might have, this is
-+	especially true in cases where the dependency is carried through
-+	an integer.
-+
-+	See also "Address Dependency" and "Control Dependency".
-+
-+From-Reads (fr):  When one CPU's store to a given variable happened
-+	too late to affect the value returned by another CPU's
-+	load from that same variable, there is said to be a from-reads
-+	link from the load to the store.
-+
-+	It is also possible to have a from-reads link within a CPU, which
-+	is a "from-reads internal" (fri) link.  The term "from-reads
-+	external" (fre) link is used when it is necessary to exclude
-+	the fri case.
-+
-+	See also "Coherence" and "Reads-from".
-+
-+Fully Ordered:  An operation such as smp_mb() that orders all of
-+	its CPU's prior accesses with all of that CPU's subsequent
-+	accesses, or a marked access such as atomic_add_return()
-+	that orders all of its CPU's prior accesses, itself, and
-+	all of its CPU's subsequent accesses.
-+
-+Marked Access:  An access to a variable that uses an special function or
-+	macro such as "r1 = READ_ONCE(x)" or "smp_store_release(&a, 1)".
-+
-+	See also "Unmarked Access".
-+
-+Pairing: "Memory-barrier pairing" reflects the fact that synchronizing
-+	data between two CPUs requires that both CPUs their accesses.
-+	Memory barriers thus tend to come in pairs, one executed by
-+	one of the CPUs and the other by the other CPU.  Of course,
-+	pairing also occurs with other types of operations, so that a
-+	smp_store_release() pairs with an smp_load_acquire() that reads
-+	the value stored.
-+
-+	See also "Cycle".
-+
-+Reads-From (rf):  When one CPU's load returns the value stored by some other
-+	CPU, there is said to be a reads-from link from the second
-+	CPU's store to the first CPU's load.  Reads-from links have the
-+	nice property that time must advance from the store to the load,
-+	which means that algorithms using reads-from links can use lighter
-+	weight ordering and synchronization compared to algorithms using
-+	coherence and from-reads links.
-+
-+	It is also possible to have a reads-from link within a CPU, which
-+	is a "reads-from internal" (rfi) link.	The term "reads-from
-+	external" (rfe) link is used when it is necessary to exclude
-+	the rfi case.
-+
-+	See also Coherence" and "From-reads".
-+
-+Relaxed:  A marked access that does not imply ordering, for example, a
-+	READ_ONCE(), WRITE_ONCE(), a non-value-returning read-modify-write
-+	operation, or a value-returning read-modify-write operation whose
-+	name ends in "_relaxed".
-+
-+	See also "Acquire" and "Release".
-+
-+Release:  With respect to a lock, releasing that lock, for example,
-+	using spin_unlock().  With respect to a non-lock shared variable,
-+	a special operation that includes a store and which orders that
-+	store after earlier memory references that ran on that same CPU.
-+	An example special release store is smp_store_release(), but
-+	atomic_set_release() and atomic_cmpxchg_release() also include
-+	release stores.
-+
-+	See also "Acquire" and "Relaxed".
-+
-+Unmarked Access:  An access to a variable that uses normal C-language
-+	syntax, for example, "a = b[2]";
-+
-+	See also "Marked Access".
+diff --git a/tools/memory-model/litmus-tests/MP+fencewmbonceonce+fencermbonceonce.litmus b/tools/memory-model/litmus-tests/MP+fencewmbonceonce+fencermbonceonce.litmus
+index f15e501..c5c168d 100644
+--- a/tools/memory-model/litmus-tests/MP+fencewmbonceonce+fencermbonceonce.litmus
++++ b/tools/memory-model/litmus-tests/MP+fencewmbonceonce+fencermbonceonce.litmus
+@@ -13,14 +13,14 @@ C MP+fencewmbonceonce+fencermbonceonce
+ 	int flag;
+ }
+ 
+-P0(int *buf, int *flag)
++P0(int *buf, int *flag) // Producer
+ {
+ 	WRITE_ONCE(*buf, 1);
+ 	smp_wmb();
+ 	WRITE_ONCE(*flag, 1);
+ }
+ 
+-P1(int *buf, int *flag)
++P1(int *buf, int *flag) // Consumer
+ {
+ 	int r0;
+ 	int r1;
+@@ -30,4 +30,4 @@ P1(int *buf, int *flag)
+ 	r1 = READ_ONCE(*buf);
+ }
+ 
+-exists (1:r0=1 /\ 1:r1=0)
++exists (1:r0=1 /\ 1:r1=0) (* Bad outcome. *)
+diff --git a/tools/memory-model/litmus-tests/MP+onceassign+derefonce.litmus b/tools/memory-model/litmus-tests/MP+onceassign+derefonce.litmus
+index ed8ee9b..20ff626 100644
+--- a/tools/memory-model/litmus-tests/MP+onceassign+derefonce.litmus
++++ b/tools/memory-model/litmus-tests/MP+onceassign+derefonce.litmus
+@@ -15,13 +15,13 @@ C MP+onceassign+derefonce
+ 	int y=0;
+ }
+ 
+-P0(int *x, int **p)
++P0(int *x, int **p) // Producer
+ {
+ 	WRITE_ONCE(*x, 1);
+ 	rcu_assign_pointer(*p, x);
+ }
+ 
+-P1(int *x, int **p)
++P1(int *x, int **p) // Consumer
+ {
+ 	int *r0;
+ 	int r1;
+@@ -32,4 +32,4 @@ P1(int *x, int **p)
+ 	rcu_read_unlock();
+ }
+ 
+-exists (1:r0=x /\ 1:r1=0)
++exists (1:r0=x /\ 1:r1=0) (* Bad outcome. *)
+diff --git a/tools/memory-model/litmus-tests/MP+polockmbonce+poacquiresilsil.litmus b/tools/memory-model/litmus-tests/MP+polockmbonce+poacquiresilsil.litmus
+index b1b1266..153917a 100644
+--- a/tools/memory-model/litmus-tests/MP+polockmbonce+poacquiresilsil.litmus
++++ b/tools/memory-model/litmus-tests/MP+polockmbonce+poacquiresilsil.litmus
+@@ -15,7 +15,7 @@ C MP+polockmbonce+poacquiresilsil
+ 	int x;
+ }
+ 
+-P0(spinlock_t *lo, int *x)
++P0(spinlock_t *lo, int *x) // Producer
+ {
+ 	spin_lock(lo);
+ 	smp_mb__after_spinlock();
+@@ -23,7 +23,7 @@ P0(spinlock_t *lo, int *x)
+ 	spin_unlock(lo);
+ }
+ 
+-P1(spinlock_t *lo, int *x)
++P1(spinlock_t *lo, int *x) // Consumer
+ {
+ 	int r1;
+ 	int r2;
+@@ -34,4 +34,4 @@ P1(spinlock_t *lo, int *x)
+ 	r3 = spin_is_locked(lo);
+ }
+ 
+-exists (1:r1=1 /\ 1:r2=0 /\ 1:r3=1)
++exists (1:r1=1 /\ 1:r2=0 /\ 1:r3=1) (* Bad outcome. *)
+diff --git a/tools/memory-model/litmus-tests/MP+polockonce+poacquiresilsil.litmus b/tools/memory-model/litmus-tests/MP+polockonce+poacquiresilsil.litmus
+index 867c75d..aad6439 100644
+--- a/tools/memory-model/litmus-tests/MP+polockonce+poacquiresilsil.litmus
++++ b/tools/memory-model/litmus-tests/MP+polockonce+poacquiresilsil.litmus
+@@ -15,14 +15,14 @@ C MP+polockonce+poacquiresilsil
+ 	int x;
+ }
+ 
+-P0(spinlock_t *lo, int *x)
++P0(spinlock_t *lo, int *x) // Producer
+ {
+ 	spin_lock(lo);
+ 	WRITE_ONCE(*x, 1);
+ 	spin_unlock(lo);
+ }
+ 
+-P1(spinlock_t *lo, int *x)
++P1(spinlock_t *lo, int *x) // Consumer
+ {
+ 	int r1;
+ 	int r2;
+@@ -33,4 +33,4 @@ P1(spinlock_t *lo, int *x)
+ 	r3 = spin_is_locked(lo);
+ }
+ 
+-exists (1:r1=1 /\ 1:r2=0 /\ 1:r3=1)
++exists (1:r1=1 /\ 1:r2=0 /\ 1:r3=1) (* Bad outcome. *)
+diff --git a/tools/memory-model/litmus-tests/MP+polocks.litmus b/tools/memory-model/litmus-tests/MP+polocks.litmus
+index 4b0c2ed..21cbca6 100644
+--- a/tools/memory-model/litmus-tests/MP+polocks.litmus
++++ b/tools/memory-model/litmus-tests/MP+polocks.litmus
+@@ -17,7 +17,7 @@ C MP+polocks
+ 	int flag;
+ }
+ 
+-P0(int *buf, int *flag, spinlock_t *mylock)
++P0(int *buf, int *flag, spinlock_t *mylock) // Producer
+ {
+ 	WRITE_ONCE(*buf, 1);
+ 	spin_lock(mylock);
+@@ -25,7 +25,7 @@ P0(int *buf, int *flag, spinlock_t *mylock)
+ 	spin_unlock(mylock);
+ }
+ 
+-P1(int *buf, int *flag, spinlock_t *mylock)
++P1(int *buf, int *flag, spinlock_t *mylock) // Consumer
+ {
+ 	int r0;
+ 	int r1;
+@@ -36,4 +36,4 @@ P1(int *buf, int *flag, spinlock_t *mylock)
+ 	r1 = READ_ONCE(*buf);
+ }
+ 
+-exists (1:r0=1 /\ 1:r1=0)
++exists (1:r0=1 /\ 1:r1=0) (* Bad outcome. *)
+diff --git a/tools/memory-model/litmus-tests/MP+poonceonces.litmus b/tools/memory-model/litmus-tests/MP+poonceonces.litmus
+index 3010bba..9f9769d 100644
+--- a/tools/memory-model/litmus-tests/MP+poonceonces.litmus
++++ b/tools/memory-model/litmus-tests/MP+poonceonces.litmus
+@@ -12,13 +12,13 @@ C MP+poonceonces
+ 	int flag;
+ }
+ 
+-P0(int *buf, int *flag)
++P0(int *buf, int *flag) // Producer
+ {
+ 	WRITE_ONCE(*buf, 1);
+ 	WRITE_ONCE(*flag, 1);
+ }
+ 
+-P1(int *buf, int *flag)
++P1(int *buf, int *flag) // Consumer
+ {
+ 	int r0;
+ 	int r1;
+@@ -27,4 +27,4 @@ P1(int *buf, int *flag)
+ 	r1 = READ_ONCE(*buf);
+ }
+ 
+-exists (1:r0=1 /\ 1:r1=0)
++exists (1:r0=1 /\ 1:r1=0) (* Bad outcome. *)
+diff --git a/tools/memory-model/litmus-tests/MP+pooncerelease+poacquireonce.litmus b/tools/memory-model/litmus-tests/MP+pooncerelease+poacquireonce.litmus
+index 21e825d..cbe28e7 100644
+--- a/tools/memory-model/litmus-tests/MP+pooncerelease+poacquireonce.litmus
++++ b/tools/memory-model/litmus-tests/MP+pooncerelease+poacquireonce.litmus
+@@ -13,13 +13,13 @@ C MP+pooncerelease+poacquireonce
+ 	int flag;
+ }
+ 
+-P0(int *buf, int *flag)
++P0(int *buf, int *flag) // Producer
+ {
+ 	WRITE_ONCE(*buf, 1);
+ 	smp_store_release(flag, 1);
+ }
+ 
+-P1(int *buf, int *flag)
++P1(int *buf, int *flag) // Consumer
+ {
+ 	int r0;
+ 	int r1;
+@@ -28,4 +28,4 @@ P1(int *buf, int *flag)
+ 	r1 = READ_ONCE(*buf);
+ }
+ 
+-exists (1:r0=1 /\ 1:r1=0)
++exists (1:r0=1 /\ 1:r1=0) (* Bad outcome. *)
+diff --git a/tools/memory-model/litmus-tests/MP+porevlocks.litmus b/tools/memory-model/litmus-tests/MP+porevlocks.litmus
+index 9691d55..012041b 100644
+--- a/tools/memory-model/litmus-tests/MP+porevlocks.litmus
++++ b/tools/memory-model/litmus-tests/MP+porevlocks.litmus
+@@ -17,7 +17,7 @@ C MP+porevlocks
+ 	int flag;
+ }
+ 
+-P0(int *buf, int *flag, spinlock_t *mylock)
++P0(int *buf, int *flag, spinlock_t *mylock) // Consumer
+ {
+ 	int r0;
+ 	int r1;
+@@ -28,7 +28,7 @@ P0(int *buf, int *flag, spinlock_t *mylock)
+ 	spin_unlock(mylock);
+ }
+ 
+-P1(int *buf, int *flag, spinlock_t *mylock)
++P1(int *buf, int *flag, spinlock_t *mylock) // Producer
+ {
+ 	spin_lock(mylock);
+ 	WRITE_ONCE(*buf, 1);
+@@ -36,4 +36,4 @@ P1(int *buf, int *flag, spinlock_t *mylock)
+ 	WRITE_ONCE(*flag, 1);
+ }
+ 
+-exists (0:r0=1 /\ 0:r1=0)
++exists (0:r0=1 /\ 0:r1=0) (* Bad outcome. *)
