@@ -2,128 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71ED92D8C8A
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 10:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41ACE2D8C8E
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 10:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405713AbgLMJtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 04:49:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726340AbgLMJtH (ORCPT
+        id S2405781AbgLMJzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 04:55:14 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55304 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726340AbgLMJzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 04:49:07 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BF2C0613CF;
-        Sun, 13 Dec 2020 01:48:27 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id i9so14013816ioo.2;
-        Sun, 13 Dec 2020 01:48:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DrGbDyNeh25uekmQEz9FpP8pASRopkwZQwpthWnr/M8=;
-        b=Yaw5EQYbZRDwxMnl1nVENrrQ9HFFMXqbkqfWi7CgXPelJ0VCxe7Xzb7RhEF6Omuazx
-         Y5+eg6YKKlLd1fbpp/ll9qUxvcz0phRsbusah7xqoL31/+nyb2HFjhz+qlzsInF1LfrP
-         4Fsc8Ljwvw2uK3PqgmQ1swGtZ/jC1NzEUAjtZZ7t8Dc7zgQOn+TOohoGUwwXPqimyAgG
-         n5sZr+SrFVNa6SQ6EtBugzr2wRIVqgP4Q+WffGTiOOgJmZnfmdtEpXJUENU5JWRDqeMv
-         C1L/EPZSF29+LeTsL5jz/KT2BWMpcccOWvA5dGd1Wrj2C53I8S61WHTIIIUmqU67rOrX
-         1jiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DrGbDyNeh25uekmQEz9FpP8pASRopkwZQwpthWnr/M8=;
-        b=i+31aL+6etXSBatRE2YYg7AQSArdP+iFlq4khUYxeXViUgQgfHhAiAbpOagmBIcThc
-         K5eJnHloQYho6DRk2WU1PLRWU/xm35cGsyEgPLYNXNB9GPKzR0CKG1aWXwGMMTNm5xaO
-         Xq3BFRJ3w5mMvfxM7mjrhqPx06QZY0z0K8xM36mJp3NhBe4EiRa+kSErcTovvTla9qbk
-         pWBgu3uqQj+BfkiqBwJPAJBaHr2R6I6Xz3YMtKMYJKkX84PIWN1MSmMikkxBkZA9SFi5
-         ScsMy6FvIosV3rFyp9lwaPCmgXU0CCG+vAAT2oko+cBf8UCgYbKFvbL068N/PNnmwgCz
-         k0CA==
-X-Gm-Message-State: AOAM532zGfVX5J1UyHsR8zSQTeOphU1joGf9Mf0LWNwGoS8j6VZOWrHS
-        Jkyul9hYCOMUvg1iYophRp3u2bvumjkfWEouOWs=
-X-Google-Smtp-Source: ABdhPJwk8FoE15Szg8cwx7iAei7vz3MxELq08xWu1OFUF1gb5aZMI53l/lJzE/iatVqQiGcN+m6O8VmUiENZ4K6+7Ko=
-X-Received: by 2002:a6b:8ec9:: with SMTP id q192mr26733029iod.28.1607852906625;
- Sun, 13 Dec 2020 01:48:26 -0800 (PST)
+        Sun, 13 Dec 2020 04:55:12 -0500
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E3F431F44F7D;
+        Sun, 13 Dec 2020 09:54:29 +0000 (GMT)
+Date:   Sun, 13 Dec 2020 10:54:26 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <broonie@kernel.org>, <robh+dt@kernel.org>, <lukas@wunner.de>,
+        <bbrezillon@kernel.org>, <p.yadav@ti.com>,
+        <tudor.ambarus@microchip.com>, <linux-spi@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v3 5/9] spi: spi-mem: Allow masters to transfer dummy
+ cycles directly by hardware
+Message-ID: <20201213105426.294827c8@collabora.com>
+In-Reply-To: <7efb281a-98d7-68c5-1515-0e980b6cfe12@nvidia.com>
+References: <1607721363-8879-1-git-send-email-skomatineni@nvidia.com>
+        <1607721363-8879-6-git-send-email-skomatineni@nvidia.com>
+        <20201212115715.31a8d755@collabora.com>
+        <7efb281a-98d7-68c5-1515-0e980b6cfe12@nvidia.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20201211163749.31956-1-yonatanlinik@gmail.com>
- <20201211163749.31956-2-yonatanlinik@gmail.com> <20201212114802.21a6b257@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CA+s=kw3gmvk7CLu9NyiEwtBQ05eNFsTM2A679arPESVb55E2Xw@mail.gmail.com> <20201212135119.0db6723e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201212135119.0db6723e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Yonatan Linik <yonatanlinik@gmail.com>
-Date:   Sun, 13 Dec 2020 11:48:15 +0200
-Message-ID: <CA+s=kw3xw-_Q846CigmygetaHXfr0KFHNsmO9a=Ww9Z=G6yT7w@mail.gmail.com>
-Subject: Re: [PATCH 1/1] net: Fix use of proc_fs
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Willem de Bruijn <willemb@google.com>,
-        john.ogness@linutronix.de, Arnd Bergmann <arnd@arndb.de>,
-        Mao Wenan <maowenan@huawei.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        orcohen@paloaltonetworks.com, Networking <netdev@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 11:51 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Sat, 12 Dec 2020 23:39:20 +0200 Yonatan Linik wrote:
-> > On Sat, Dec 12, 2020 at 9:48 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> > >
-> > > On Fri, 11 Dec 2020 18:37:49 +0200 Yonatan Linik wrote:
-> > > > proc_fs was used, in af_packet, without a surrounding #ifdef,
-> > > > although there is no hard dependency on proc_fs.
-> > > > That caused the initialization of the af_packet module to fail
-> > > > when CONFIG_PROC_FS=n.
-> > > >
-> > > > Specifically, proc_create_net() was used in af_packet.c,
-> > > > and when it fails, packet_net_init() returns -ENOMEM.
-> > > > It will always fail when the kernel is compiled without proc_fs,
-> > > > because, proc_create_net() for example always returns NULL.
-> > > >
-> > > > The calling order that starts in af_packet.c is as follows:
-> > > > packet_init()
-> > > > register_pernet_subsys()
-> > > > register_pernet_operations()
-> > > > __register_pernet_operations()
-> > > > ops_init()
-> > > > ops->init() (packet_net_ops.init=packet_net_init())
-> > > > proc_create_net()
-> > > >
-> > > > It worked in the past because register_pernet_subsys()'s return value
-> > > > wasn't checked before this Commit 36096f2f4fa0 ("packet: Fix error path in
-> > > > packet_init.").
-> > > > It always returned an error, but was not checked before, so everything
-> > > > was working even when CONFIG_PROC_FS=n.
-> > > >
-> > > > The fix here is simply to add the necessary #ifdef.
-> > > >
-> > > > Signed-off-by: Yonatan Linik <yonatanlinik@gmail.com>
-> > >
-> > > Hm, I'm guessing you hit this on a kernel upgrade of a real system?
-> >
-> > Yeah, suddenly using socket with AF_PACKET didn't work,
-> > so I checked what happened.
-> >
-> > > It seems like all callers to proc_create_net (and friends) interpret
-> > > NULL as an error, but only handful is protected by an ifdef.
-> >
-> > I guess where there is no ifdef,
-> > there should be a hard dependency on procfs,
-> > using depends on in the Kconfig.
-> > Maybe that's not the case everywhere it should be.
->
-> You're right, on a closer look most of the places have a larger #ifdef
-> block (which my grep didn't catch) or are under Kconfig. Of those I
-> checked only TLS looks wrong (good job me) - would you care to fix that
-> one as well, or should I?
+On Sat, 12 Dec 2020 09:28:50 -0800
+Sowjanya Komatineni <skomatineni@nvidia.com> wrote:
 
-I can fix that as well, you are talking about tls_proc.c, right?
+> On 12/12/20 2:57 AM, Boris Brezillon wrote:
+> > On Fri, 11 Dec 2020 13:15:59 -0800
+> > Sowjanya Komatineni <skomatineni@nvidia.com> wrote:
+> >  
+> >> This patch adds a flag SPI_MASTER_USES_HW_DUMMY_CYCLES for the controllers
+> >> that support transfer of dummy cycles by the hardware directly.  
+> > Hm, not sure this is a good idea. I mean, if we expect regular SPI
+> > devices to use this feature, then why not, but if it's just for
+> > spi-mem, I'd recommend implementing a driver-specific exec_op() instead
+> > of using the default one.  
+> 
+> dummy cycles programming is SPI device specific.
+> 
+> Transfer of dummy bytes by SW or HW controller can be depending on 
+> features supported by controller.
+> 
+> Adding controller driver specific exec_op() Just for skipping dummy 
+> bytes transfer will have so much of redundant code pretty much what all 
+> spi_mem_exec_op does.
+> 
+> So in v1, I handled this in controller driver by skipping SW transfer of 
+> dummy bytes during dummy phase and programming dummy cycles in 
+> controller register to allow HW to transfer.
+> 
+> Based on v1 feedback discussion, added this flag 
+> SPI_MASTER_USES_HW_DUMMY_CYCLES which can be used by controllers 
+> supporting HW dummy bytes transfer and updated spi_mem_exec_op to skip 
+> SW dummy bytes.
+> 
+> This helps other controllers supporting HW transfer of dummy bytes as 
+> well just to set the flag and use dummy cycles directly.
+
+Except saying a spi_message has X dummy cycle is not precise enough.
+Where are those dummy cycles in the transfer sequence? spi-mem has well
+defined sequencing (cmd[+addr][+dummy][+data]) so we know exacly where
+dummy cycles are, but trying to retro-fit the dummy-cycle concept in
+the generic spi_message is confusing IMHO. If want to avoid code
+duplication, I'm pretty sure the driver can be reworked so the
+spi_transfer/exec_op() path can share most of the logic (that probably
+implies declaring a tegra_qspi_op).
+
+> 
+> > If we go for those core changes, we should at least add a
+> > ctrl->max_dummy_cycles field so the core can fallback to regular writes
+> > when the number of dummy cycles in the spi_mem_op exceeds what the
+> > controller can do.  
+> Yes makes sense. Will add this once we decide on keeping this flag to 
+> identify controllers supporting HW transfer of dummy bytes Vs SW transfer.
+> >> For controller with this flag set, spi-mem driver will skip dummy bytes
+> >> transfer in the spi message.
+> >>
+> >> Controller drivers can get the number of dummy cycles from spi_message.
+> >>
+> >> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> >> ---
+> >>   drivers/spi/spi-mem.c   | 18 +++++++++++-------
+> >>   include/linux/spi/spi.h |  8 ++++++++
+> >>   2 files changed, 19 insertions(+), 7 deletions(-)
+> >>
+> >> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> >> index f3a3f19..38a523b 100644
+> >> --- a/drivers/spi/spi-mem.c
+> >> +++ b/drivers/spi/spi-mem.c
+> >> @@ -350,13 +350,17 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+> >>   	}
+> >>   
+> >>   	if (op->dummy.nbytes) {
+> >> -		memset(tmpbuf + op->addr.nbytes + 1, 0xff, op->dummy.nbytes);
+> >> -		xfers[xferpos].tx_buf = tmpbuf + op->addr.nbytes + 1;
+> >> -		xfers[xferpos].len = op->dummy.nbytes;
+> >> -		xfers[xferpos].tx_nbits = op->dummy.buswidth;
+> >> -		spi_message_add_tail(&xfers[xferpos], &msg);
+> >> -		xferpos++;
+> >> -		totalxferlen += op->dummy.nbytes;
+> >> +		if (ctlr->flags & SPI_MASTER_USES_HW_DUMMY_CYCLES) {
+> >> +			msg.dummy_cycles = (op->dummy.nbytes * 8) / op->dummy.buswidth;
+> >> +		} else {
+> >> +			memset(tmpbuf + op->addr.nbytes + 1, 0xff, op->dummy.nbytes);
+> >> +			xfers[xferpos].tx_buf = tmpbuf + op->addr.nbytes + 1;
+> >> +			xfers[xferpos].len = op->dummy.nbytes;
+> >> +			xfers[xferpos].tx_nbits = op->dummy.buswidth;
+> >> +			spi_message_add_tail(&xfers[xferpos], &msg);
+> >> +			xferpos++;
+> >> +			totalxferlen += op->dummy.nbytes;
+> >> +		}
+> >>   	}
+> >>   
+> >>   	if (op->data.nbytes) {
+> >> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> >> index aa09fdc..2024149 100644
+> >> --- a/include/linux/spi/spi.h
+> >> +++ b/include/linux/spi/spi.h
+> >> @@ -512,6 +512,8 @@ struct spi_controller {
+> >>   
+> >>   #define SPI_MASTER_GPIO_SS		BIT(5)	/* GPIO CS must select slave */
+> >>   
+> >> +#define SPI_MASTER_USES_HW_DUMMY_CYCLES	BIT(6)	/* HW dummy bytes transfer */
+> >> +
+> >>   	/* flag indicating this is an SPI slave controller */
+> >>   	bool			slave;
+> >>   
+> >> @@ -1022,6 +1024,12 @@ struct spi_message {
+> >>   	unsigned		actual_length;
+> >>   	int			status;
+> >>   
+> >> +	/*
+> >> +	 * dummy cycles in the message transfer. This is used by the controller
+> >> +	 * drivers supports transfer of dummy cycles directly by the hardware.
+> >> +	 */
+> >> +	u8			dummy_cycles;
+> >> +
+> >>   	/* for optional use by whatever driver currently owns the
+> >>   	 * spi_message ...  between calls to spi_async and then later
+> >>   	 * complete(), that's the spi_controller controller driver.  
+
