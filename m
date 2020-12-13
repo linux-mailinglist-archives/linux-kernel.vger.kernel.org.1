@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776222D8FDC
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 782A32D8FE6
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388643AbgLMTPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 14:15:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35656 "EHLO
+        id S2392046AbgLMTRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 14:17:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392633AbgLMTDL (ORCPT
+        with ESMTP id S2391198AbgLMTDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 14:03:11 -0500
+        Sun, 13 Dec 2020 14:03:00 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D40FC0619DC;
-        Sun, 13 Dec 2020 11:01:13 -0800 (PST)
-Date:   Sun, 13 Dec 2020 19:01:11 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6008C0619E0;
+        Sun, 13 Dec 2020 11:01:17 -0800 (PST)
+Date:   Sun, 13 Dec 2020 19:01:12 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607886071;
+        s=2020; t=1607886073;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=9KmIG01WK2x+giseGK1prrPDVZzP4U/krLu+tFmYKWc=;
-        b=TwDiVQ+Au0aulbQxNyk6NAXzIKYfvKXEsGoxMAzTWvWbh5LcSuSjYW8ef4MAa43+drBLcj
-        qWc0ci3XplxFT4ifD9bo/WmTkGbJLAnU9IaciJ3uqBjumApMNhGJbiv8L5yyvQQ89IIl2/
-        YY37XtF+3USETxXpkqZf56AxMLEDdq6BYfFapQ3N2gRLS81jDUm7hnHHTPbMAGR7IVxQQC
-        312e6Iy0ZgNCKeixrTwgzhRAzvdN9CDAZoTQVc5dZpInLk5CfdtGEvo/YW4ZHrMDsg6LFP
-        C17XG4HpvmNAFRyD8LMNoY1DfV9r3gsBd6Nr6C0RiHWbB951PL1DLFE/C+eygg==
+        bh=+ONpkVr+xJSAiq/QtWJxar7fy5u6o0y45WC+Ku8wBnQ=;
+        b=H496wmg2vv7WrPVh1kis4F8DamSz/Z/q+vDpgoa/ab7/pd6Mq0e4065qjkr7ge7e5I+XyF
+        PK9tFDykVUM7vzPx2CPQcklnsuhd6AtT6hQnjC+NqOw7YGaGIK6UQQwJKVDC9l0LUzKtVU
+        uKKD3tesFRRRfQhL4ATOecUHczq729DWkDwIeHe3E86+MD8eoJG6UCm6ogsndLzPH7q6uD
+        M+dFgHTjYQiqOksP1r6Cez4gPV+5yV8dK7siklJttgPu1dz8ewEbYlNy8n/X4gbN33p5JA
+        2T1f/gqJGp9p67emVotsMWdFPZO2y3czTaBiOFXTNo1ToK4i9OZLyDSSLF3zzw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607886071;
+        s=2020e; t=1607886073;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=9KmIG01WK2x+giseGK1prrPDVZzP4U/krLu+tFmYKWc=;
-        b=8pqAiuO1nE5CsEPw6HwnUGExGRlb3zvidtfwNNnMVQdSEdflknnWISe8w/EpapJudKvY0Y
-        hGwb0nepJPtS0WBQ==
-From:   "tip-bot2 for Hui Su" <tip-bot2@linutronix.de>
+        bh=+ONpkVr+xJSAiq/QtWJxar7fy5u6o0y45WC+Ku8wBnQ=;
+        b=eFPscEiE8xbCI951lhbcCs43P/cz2aKmqV79/x3e9fFnXAkO4cjR49Vc6ZO0YOARnKjr22
+        NA+/CVMLroQuhwCQ==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] docs/rcu: Update the call_rcu() API
-Cc:     Hui Su <sh_def@163.com>, "Paul E. McKenney" <paulmck@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: [tip: core/rcu] refscale: Bounds-check module parameters
+Cc:     kernel test robot <lkp@intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <160788607120.3364.15958072665237755984.tip-bot2@tip-bot2>
+Message-ID: <160788607257.3364.7154683119357481731.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -54,35 +55,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     c386e29d43728778ddd642fa73cc582bee684171
-Gitweb:        https://git.kernel.org/tip/c386e29d43728778ddd642fa73cc582bee684171
-Author:        Hui Su <sh_def@163.com>
-AuthorDate:    Thu, 15 Oct 2020 22:13:34 +08:00
+Commit-ID:     0c6d18d84db11840dd0f3f65750c6ea0bb6b8e0d
+Gitweb:        https://git.kernel.org/tip/0c6d18d84db11840dd0f3f65750c6ea0bb6b8e0d
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Thu, 27 Aug 2020 09:58:19 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Fri, 06 Nov 2020 17:02:43 -08:00
+CommitterDate: Mon, 02 Nov 2020 17:13:29 -08:00
 
-docs/rcu: Update the call_rcu() API
+refscale: Bounds-check module parameters
 
-This commit updates the documented API of call_rcu() to use the
-rcu_callback_t typedef instead of the open-coded function definition.
+The default value for refscale.nreaders is -1, which results in the code
+setting the value to three-quarters of the number of CPUs.  On single-CPU
+systems, this results in three-quarters of the value one, which the C
+language's integer arithmetic rounds to zero.  This in turn results in
+a divide-by-zero error.
 
-Signed-off-by: Hui Su <sh_def@163.com>
+This commit therefore adds bounds checking to the refscale module
+parameters, so that if they are less than one, they are set to the
+value one.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Tested-by "Chen, Rong A" <rong.a.chen@intel.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/RCU/whatisRCU.rst | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/rcu/refscale.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-index fb3ff76..1a4723f 100644
---- a/Documentation/RCU/whatisRCU.rst
-+++ b/Documentation/RCU/whatisRCU.rst
-@@ -497,8 +497,7 @@ long -- there might be other high-priority work to be done.
- In such cases, one uses call_rcu() rather than synchronize_rcu().
- The call_rcu() API is as follows::
- 
--	void call_rcu(struct rcu_head * head,
--		      void (*func)(struct rcu_head *head));
-+	void call_rcu(struct rcu_head *head, rcu_callback_t func);
- 
- This function invokes func(head) after a grace period has elapsed.
- This invocation might happen from either softirq or process context,
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index 952595c..fb5f20d 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -681,6 +681,12 @@ ref_scale_init(void)
+ 	// Reader tasks (default to ~75% of online CPUs).
+ 	if (nreaders < 0)
+ 		nreaders = (num_online_cpus() >> 1) + (num_online_cpus() >> 2);
++	if (WARN_ONCE(loops <= 0, "%s: loops = %ld, adjusted to 1\n", __func__, loops))
++		loops = 1;
++	if (WARN_ONCE(nreaders <= 0, "%s: nreaders = %d, adjusted to 1\n", __func__, nreaders))
++		nreaders = 1;
++	if (WARN_ONCE(nruns <= 0, "%s: nruns = %d, adjusted to 1\n", __func__, nruns))
++		nruns = 1;
+ 	reader_tasks = kcalloc(nreaders, sizeof(reader_tasks[0]),
+ 			       GFP_KERNEL);
+ 	if (!reader_tasks) {
