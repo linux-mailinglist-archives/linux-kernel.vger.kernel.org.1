@@ -2,64 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4752D8ACE
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 02:22:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEEE2D8AD1
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 02:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439968AbgLMBVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 20:21:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726074AbgLMBUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 20:20:47 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607822407;
-        bh=kamsfLluyGJCkDdF8e3xmFsL1h7UPia0fZmevAtdGyA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=PUrh1E5tCQlgQdTS/o9V6tgjCQdE/3Gq/mHswnQHYlSDyBUDj9fxqZclZbyzJPVMV
-         lxe8u/UR1NKiJ/RP4PCGGaOBhqOmQt30TY958jDjjwKq3jsWTrLVEchTrOdpgvsJOn
-         pvfFO9l3Fljrl5smVyRkRZFOJ+Vf3C/pcN0K/Sp1tXT1voyClBqA9d60/SWiHaXqjT
-         xxzdhEw6eoDxTvSb5PwnxH8Q+9y4qGGgEXkk+enywvJnIDtUzq3Hp6RMX7wD3Iac2y
-         bbSvRHOvs9/CZPDnGtgtNEl6uNxmb1m+7KmX+rF1SxN91Xe6DXgZMw0AmyEiKCZlpR
-         8AR9yB+xDuiqg==
+        id S2439981AbgLMBVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 20:21:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439971AbgLMBVF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 20:21:05 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 413C5C0613CF;
+        Sat, 12 Dec 2020 17:20:25 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id y8so6712438plp.8;
+        Sat, 12 Dec 2020 17:20:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5w7+jTgC8hBJiHtcsnmrY7j8FYxZ7rdBNlmPCyHcgzw=;
+        b=PD/47T/zAPbDNd2ZPt8k9Mv+Mn1VXpQeAhkbcM7VQMohbhTNvjyEtL4VFn1CvygL91
+         gqVBG/pL2SrfuMPfoVhZoZ/q27AuuyInxdJlSspeOgmUKlWMm0RoedXJTaL9jC3Blqxm
+         G/1OIT1XPqiem/SagfHaMK28261VXClzwspLymV+pq+9jXcZBUSTpgSODIM0OURxvdFv
+         VhTmvcHX7d5/nWBbFZoGuV4DCfZNf4jYOdAqJmQndy9lrcuL5WaZ67zXclw5SBokGary
+         iih14x1dGf2m8ftOA6y7oBY8mhDPZLnp58jYO5Elck51q3Y3BbVKO66ZUwqddLLVCy8N
+         yCUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5w7+jTgC8hBJiHtcsnmrY7j8FYxZ7rdBNlmPCyHcgzw=;
+        b=OoSL4kpOFcFx16uzZulyatu6FeJMVF5rcrP6nvQZECg4g0iiYSivnr8OJsra79k+dc
+         WFJml4E6jQVfitdrqeS8/Ako5uM0hgkprsykbJKjX7x0danBZs62ADRRtHVrY9vzqDmm
+         s0CXc89ecF9ada9ByinqPqc3WeNlJPAzhKmAeFJyFeRT3LwG2jrmOZi4DouSVLBQfvrV
+         XR3t7YQ8r55UihaSoe7eq9SiqyTtcRBqzirLDiX6zDfUZi8LC6i38aA+x8lDJWmc2UpZ
+         MNrj5i2MCX3AQtJNya31BuAK7qZisUPCUppDID1T0Pe7tg82zu4McZsgXlJh/Gka/nW5
+         cRFA==
+X-Gm-Message-State: AOAM531M8hKSg/i48Lceghow65cZgk3ULePOH29BTMZ8cIB86zm4ZRpz
+        9hcoZXp1fYv268M/Sp0UI4W+DG1tTByQKTrL
+X-Google-Smtp-Source: ABdhPJxD7QxA9VZj9NvzLnEEK1zxJxuFW5VGThfbPVXjzDJ61BgCpHdj6MGvjGe97ihVxDShLrIOog==
+X-Received: by 2002:a17:902:9b97:b029:da:4299:2214 with SMTP id y23-20020a1709029b97b02900da42992214mr17124758plp.37.1607822424413;
+        Sat, 12 Dec 2020 17:20:24 -0800 (PST)
+Received: from glados.. ([2601:647:6000:3e5b::a27])
+        by smtp.gmail.com with ESMTPSA id u189sm1642670pfb.51.2020.12.12.17.20.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Dec 2020 17:20:24 -0800 (PST)
+From:   Thomas Hebb <tommyhebb@gmail.com>
+To:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Cc:     Thomas Hebb <tommyhebb@gmail.com>, stable@vger.kernel.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: dapm: remove widget from dirty list on free
+Date:   Sat, 12 Dec 2020 17:20:12 -0800
+Message-Id: <f8b5f031d50122bf1a9bfc9cae046badf4a7a31a.1607822410.git.tommyhebb@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: x25: Remove unimplemented X.25-over-LLC code
- stubs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160782240712.6413.5405278375067438996.git-patchwork-notify@kernel.org>
-Date:   Sun, 13 Dec 2020 01:20:07 +0000
-References: <20201209033346.83742-1-xie.he.0141@gmail.com>
-In-Reply-To: <20201209033346.83742-1-xie.he.0141@gmail.com>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ms@dev.tdt.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+A widget's "dirty" list_head, much like its "list" list_head, eventually
+chains back to a list_head on the snd_soc_card itself. This means that
+the list can stick around even after the widget (or all widgets) have
+been freed. Currently, however, widgets that are in the dirty list when
+freed remain there, corrupting the entire list and leading to memory
+errors and undefined behavior when the list is next accessed or
+modified.
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+I encountered this issue when a component failed to probe relatively
+late in snd_soc_bind_card(), causing it to bail out and call
+soc_cleanup_card_resources(), which eventually called
+snd_soc_dapm_free() with widgets that were still dirty from when they'd
+been added.
 
-On Tue,  8 Dec 2020 19:33:46 -0800 you wrote:
-> According to the X.25 documentation, there was a plan to implement
-> X.25-over-802.2-LLC. It never finished but left various code stubs in the
-> X.25 code. At this time it is unlikely that it would ever finish so it
-> may be better to remove those code stubs.
-> 
-> Also change the documentation to make it clear that this is not a ongoing
-> plan anymore. Change words like "will" to "could", "would", etc.
-> 
-> [...]
+Fixes: db432b414e20 ("ASoC: Do DAPM power checks only for widgets changed since last run")
+Cc: stable@vger.kernel.org
+Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+---
 
-Here is the summary with links:
-  - [net-next] net: x25: Remove unimplemented X.25-over-LLC code stubs
-    https://git.kernel.org/netdev/net-next/c/13458ffe0a95
+ sound/soc/soc-dapm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 7f87b449f950..148c095df27b 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2486,6 +2486,7 @@ void snd_soc_dapm_free_widget(struct snd_soc_dapm_widget *w)
+ 	enum snd_soc_dapm_direction dir;
+ 
+ 	list_del(&w->list);
++	list_del(&w->dirty);
+ 	/*
+ 	 * remove source and sink paths associated to this widget.
+ 	 * While removing the path, remove reference to it from both
+-- 
+2.29.2
 
