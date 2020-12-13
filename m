@@ -2,64 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8CE2D8DE2
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 15:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9001F2D8DE4
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 15:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406017AbgLMOMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 09:12:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37894 "EHLO mail.kernel.org"
+        id S2389226AbgLMOQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 09:16:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395199AbgLMOL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 09:11:57 -0500
-Date:   Sun, 13 Dec 2020 09:11:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607868677;
-        bh=4iY0ichsoz9AxrcT1VWUCiZr3pTTCjf5adfxu9D6nwg=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A6siXNdczE7kwUXOYvZQy1uojPOV6wvA01EpOpL9+aoMdtv0OEPkR/+frL6JKC8Xj
-         VD2zJjLkR2AT5wGuanmZRdm7lYAoF1+Bgpu6c44a4MfXkvgh2iGtr+NtPh6J1/eT4t
-         A0LH4sHaWkd/rWNoKJK/jhDx0aye7sLdqDKQpT0Q96NiWzUOTUm6EBRuSXrkwh/Mye
-         nyHTfJvZ04WcakIgxEKgt9JgBnWv2bEtmqEiZvZXECuKJkp3tTxwXBZLRWzwV+lhhy
-         tb8TTX8fMWUApN8prtxLIE+Nev3oNqvL4ggn8X3xxWdeSorzv8+Ys+hEbw1cAnTMxl
-         XB9tlyalA1U5Q==
-From:   Sasha Levin <sashal@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.9 28/39] intel_idle: Fix intel_idle() vs tracing
-Message-ID: <20201213141115.GR643756@sasha-vm>
-References: <20201203132834.930999-1-sashal@kernel.org>
- <20201203132834.930999-28-sashal@kernel.org>
- <20201203171035.GO2414@hirez.programming.kicks-ass.net>
+        id S1726546AbgLMOQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 09:16:30 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 76D802253D;
+        Sun, 13 Dec 2020 14:15:48 +0000 (UTC)
+Date:   Sun, 13 Dec 2020 14:15:45 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Ye, Xiang" <xiang.ye@intel.com>
+Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] iio:Documentation: Add documentation for hinge
+ sensor channels
+Message-ID: <20201213141545.1e9d30de@archlinux>
+In-Reply-To: <20201207091818.GA23419@host>
+References: <20201203035352.13918-1-xiang.ye@intel.com>
+        <20201203035352.13918-4-xiang.ye@intel.com>
+        <20201205160540.22d2b8d5@archlinux>
+        <20201207091818.GA23419@host>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201203171035.GO2414@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 06:10:35PM +0100, Peter Zijlstra wrote:
->On Thu, Dec 03, 2020 at 08:28:22AM -0500, Sasha Levin wrote:
->> From: Peter Zijlstra <peterz@infradead.org>
->>
->> [ Upstream commit 6e1d2bc675bd57640f5658a4a657ae488db4c204 ]
->>
->> cpuidle->enter() callbacks should not call into tracing because RCU
->> has already been disabled. Instead of doing the broadcast thing
->> itself, simply advertise to the cpuidle core that those states stop
->> the timer.
->>
->> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->> Link: https://lkml.kernel.org/r/20201123143510.GR3021@hirez.programming.kicks-ass.net
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->This patch has a known compile issue, fix is pending.
+On Mon, 7 Dec 2020 17:18:18 +0800
+"Ye, Xiang" <xiang.ye@intel.com> wrote:
 
-I've also grabbed 4d916140bf28 ("intel_idle: Build fix"). Thanks!
+> Hi Jonathan
+> 
+> Thanks for review and comments.
+> 
+> On Sat, Dec 05, 2020 at 04:05:40PM +0000, Jonathan Cameron wrote:
+> > On Thu,  3 Dec 2020 11:53:52 +0800
+> > Ye Xiang <xiang.ye@intel.com> wrote:
+> >   
+> > > Add channel description for hinge sensor, including channel label
+> > > attribute and raw data description.
+> > > 
+> > > Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+> > > ---
+> > >  Documentation/ABI/testing/sysfs-bus-iio | 17 +++++++++++++++++
+> > >  1 file changed, 17 insertions(+)
+> > > 
+> > > diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
+> > > index df42bed09f25..82303b1bdff0 100644
+> > > --- a/Documentation/ABI/testing/sysfs-bus-iio
+> > > +++ b/Documentation/ABI/testing/sysfs-bus-iio
+> > > @@ -1802,3 +1802,20 @@ Contact:	linux-iio@vger.kernel.org
+> > >  Description:
+> > >  		Unscaled light intensity according to CIE 1931/DIN 5033 color space.
+> > >  		Units after application of scale are nano nanowatts per square meter.
+> > > +
+> > > +What:		/sys/bus/iio/devices/iio:deviceX/in_anglY_raw
+> > > +KernelVersion:	5.12
+> > > +Contact:	linux-iio@vger.kernel.org
+> > > +Description:
+> > > +		Angle of rotation for channel Y. Units after application of scale
+> > > +		and offset are radians.  
+> > 
+> > This entry is already mostly in the doc around line 200, just without the index.
+> > Please just add the What: line to that block to reduce repetition.
+> > If you want to add... "Where present, Y indexes the channel." or something like
+> > that feel free.  
+> When adding in_anglY_raw to in_angl_raw block, Should I update the KernelVersion form
+> 4.17 to 5.12? Like blow:
+> 
+> What:		/sys/bus/iio/devices/iio:deviceX/in_angl_raw
+> What:		/sys/bus/iio/devices/iio:deviceX/in_anglY_raw
+> KernelVersion:	5.12
+> Contact:	linux-iio@vger.kernel.org
+> Description:
+> 		Angle of rotation. Units after application of scale and offset
+> 		are radians. Where present, Y indexes the channel.
 
--- 
+No. This is an unfortunate limitation of these files unless we keep duplicating
+nearly identical text.
+
+I'm not that worried about documenting an optional bit of ABI as apparently
+being in an earlier kernel than it actually was.  That way any userspace
+will work.  The other way around is more likely to cause problems.
+
+> 
+> > 
+> >   
+> > > +
+> > > +What:		/sys/bus/iio/devices/iio:deviceX/in_anglY_label
+> > > +KernelVersion:	5.12
+> > > +Contact:	linux-iio@vger.kernel.org
+> > > +Description:
+> > > +		Optional symbolic label for channel Y.
+> > > +		For Intel hid hinge sensor, the label values are:
+> > > +		hinge, keyboard, screen. It means the three channels
+> > > +		each correspond respectively to hinge angle, keyboard angle,
+> > > +		and screen angle.  
+> > 
+> > Makes sense to keep this block separate given the additional info provided.
+> > Alternative would be to add it to the one with in_voltageY_label which would
+> > be odd given what follows!  
+> Ok, Then I will keep the in_anglY_label block here. BTW, I didnot see in_voltageY_label
+> in sysfs-bus-iio in current kernel master branch.
+It was part of the series that added the support for per channel labels to the core.
+3079188f821c ("iio:Documentation: Add documentation for label channel attribute")
+so will only going into current master in the merge window that will open shortly.
+
 Thanks,
-Sasha
+
+Jonathan
+
+> 
+> > 
+> > Thanks,
+> > 
+> > Jonathan
+> >   
+> Thanks
+> Ye, Xiang
+> >   
+
