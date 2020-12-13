@@ -2,117 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E3C2D8E0A
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 15:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 592DF2D8E0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 15:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395125AbgLMOv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 09:51:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389306AbgLMOv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 09:51:56 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B120A23121;
-        Sun, 13 Dec 2020 14:51:14 +0000 (UTC)
-Date:   Sun, 13 Dec 2020 14:51:11 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Cristian Pop <cristian.pop@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH v3 1/3] dt-bindings: iio: dac: AD5766 yaml documentation
-Message-ID: <20201213145111.42adf00f@archlinux>
-In-Reply-To: <20201208131957.34381-1-cristian.pop@analog.com>
-References: <20201208131957.34381-1-cristian.pop@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2395413AbgLMOxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 09:53:51 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:57179 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395200AbgLMOxv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 09:53:51 -0500
+Received: by mail-il1-f200.google.com with SMTP id r20so11486809ilh.23
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 06:53:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=fWF53rcHi8QspkjztKtg7fthAltlqOrg0gZKXd1Tx+4=;
+        b=DviFXAAK7K6c7N0hyFO+9YEACtEvWhXFS7/O32IFxuI7s5hWoKtMD3uYBlw47OYkGd
+         6Hv4j1kvUFqt6oUY69F3y0QUhVtCYrrGUXv+U0etMWETeMJW9r89goe3yoKlZlq+hJAj
+         9X7WZoqb6F/yEXwtjQa30LG0M/kut7GezvUzvPiQHA/2qc1RqWrHaQWODAr3M1iWWj1u
+         ETcFPabVAQdcrvV98/kGCkDy4m+Q0reGoSZByGSmA/5VyuzjjhOj04nPA4wVZ7EC79ev
+         vjyx7OQWxzpv6udX1oZeZ6EmLRQrFnyok2i3JdphSkfVa0QkB2AEi2zodXiSeXBZrSZV
+         UuWA==
+X-Gm-Message-State: AOAM531+0Id1z24C3iUJLuHaplvHm/Zz/ze6GZ3IGsB208Kqop9C2JlL
+        lAPVlgjyjh7VWnILx0xwlyO0FBb6YKdYxgJmqgUhr/DYQUcO
+X-Google-Smtp-Source: ABdhPJzrJnVwLKuT4IGifrvkCv9PDEMjNNrq6FMGbcr0krUHEsKI3sBFDe0MTfP+Ug664/YEqs0v9dxinAyACJKe5RpnNxro4nSk
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:5802:: with SMTP id m2mr4547791ilb.271.1607871190712;
+ Sun, 13 Dec 2020 06:53:10 -0800 (PST)
+Date:   Sun, 13 Dec 2020 06:53:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002aca2e05b659af04@google.com>
+Subject: memory leak in xskq_create
+From:   syzbot <syzbot+cfa88ddd0655afa88763@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bjorn.topel@intel.com, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, jonathan.lemon@gmail.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        magnus.karlsson@intel.com, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 15:19:55 +0200
-Cristian Pop <cristian.pop@analog.com> wrote:
+Hello,
 
-> This adds device tree bindings for the AD5766 DAC.
-> 
-> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
-> ---
->  Changes in v3:
-> 	- Fix errors
->  .../bindings/iio/dac/adi,ad5766.yaml          | 58 +++++++++++++++++++
->  1 file changed, 58 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> new file mode 100644
-> index 000000000000..25ec5bc0a6c6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5766.yaml
-> @@ -0,0 +1,58 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2020 Analog Devices Inc.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/dac/adi,ad5766.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices AD5766 DAC device driver
-> +
-> +maintainers:
-> +  - Cristian Pop <cristian.pop@analog.com>
-> +
-> +description: |
-> +  Bindings for the Analog Devices AD5766 current DAC device. Datasheet can be
-> +  found here:
-> +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad5766-5767.pdf
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,ad5766
-> +      - adi,ad5767
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  spi-max-frequency:
-> +    maximum: 1000000
-> +
-> +  spi-cpol: true
-> +
-> +  reset-gpios:
-> +    description: GPIO spec for the RESET pin. If specified, it will be
-> +      asserted during driver probe.
-> +    maxItems: 1
+syzbot found the following issue on:
 
-Given we've recently been bitten by this in another driver I took a look at the datasheet.
-This is an active low pin (not reset) so document it as such and set logic
-as appropriate in the driver.
+HEAD commit:    a68a0262 mm/madvise: remove racy mm ownership check
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=165b9413500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4305fa9ea70c7a9f
+dashboard link: https://syzkaller.appspot.com/bug?extid=cfa88ddd0655afa88763
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1180a237500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114067cf500000
 
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - spi-max-frequency
-> +  - spi-cpol
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    spi {
-> +          #address-cells = <1>;
-> +          #size-cells = <0>;
-> +          
-> +          ad5766@0 {
-> +              compatible = "adi,ad5766";
-> +              reg = <0>;
-> +              spi-cpol;
-> +              spi-max-frequency = <1000000>;
-> +              reset-gpios = <&gpio 22 0>;
-> +            };
-> +      };
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cfa88ddd0655afa88763@syzkaller.appspotmail.com
 
+Debian GNU/Linux 9 syzkaller ttyS0
+Warning: Permanently added '10.128.0.50' (ECDSA) to the list of known hosts.
+executing program
+executing program
+BUG: memory leak
+unreferenced object 0xffff88810f897940 (size 64):
+  comm "syz-executor991", pid 8502, jiffies 4294942194 (age 14.080s)
+  hex dump (first 32 bytes):
+    7f 00 00 00 80 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 a0 37 0c 81 88 ff ff 00 00 00 00 00 00 00 00  ..7.............
+  backtrace:
+    [<00000000639d0dd1>] xskq_create+0x23/0xd0 include/linux/slab.h:552
+    [<00000000b680b035>] xsk_init_queue net/xdp/xsk.c:508 [inline]
+    [<00000000b680b035>] xsk_setsockopt+0x1c4/0x590 net/xdp/xsk.c:875
+    [<000000002b302260>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2132
+    [<00000000ae03723e>] __do_sys_setsockopt net/socket.c:2143 [inline]
+    [<00000000ae03723e>] __se_sys_setsockopt net/socket.c:2140 [inline]
+    [<00000000ae03723e>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2140
+    [<0000000005c2b4a0>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000003db140f>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88810f8979c0 (size 64):
+  comm "syz-executor991", pid 8503, jiffies 4294942194 (age 14.080s)
+  hex dump (first 32 bytes):
+    ff 03 00 00 00 04 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 13 12 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000639d0dd1>] xskq_create+0x23/0xd0 include/linux/slab.h:552
+    [<00000000b680b035>] xsk_init_queue net/xdp/xsk.c:508 [inline]
+    [<00000000b680b035>] xsk_setsockopt+0x1c4/0x590 net/xdp/xsk.c:875
+    [<000000002b302260>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2132
+    [<00000000ae03723e>] __do_sys_setsockopt net/socket.c:2143 [inline]
+    [<00000000ae03723e>] __se_sys_setsockopt net/socket.c:2140 [inline]
+    [<00000000ae03723e>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2140
+    [<0000000005c2b4a0>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000003db140f>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
