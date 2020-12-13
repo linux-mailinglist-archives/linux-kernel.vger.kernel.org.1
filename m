@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393242D8FBD
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F432D8FE5
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:17:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728444AbgLMTHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 14:07:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
+        id S2394076AbgLMTRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 14:17:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730551AbgLMTCm (ORCPT
+        with ESMTP id S2392046AbgLMTDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 14:02:42 -0500
+        Sun, 13 Dec 2020 14:03:08 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4C2C0611CA;
-        Sun, 13 Dec 2020 11:01:07 -0800 (PST)
-Date:   Sun, 13 Dec 2020 19:01:05 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DECEC0611CE;
+        Sun, 13 Dec 2020 11:01:09 -0800 (PST)
+Date:   Sun, 13 Dec 2020 19:01:06 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607886065;
+        s=2020; t=1607886067;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=HFR0kfB/VhDZx5Bpcb56YuTh1L5yWFqTGfdoKEkoE9g=;
-        b=P8khpuBmFdJowsIeqQT7vhKlnYCncR+SNltNHcJ2iP5QdcJwhtu43a01cXSy6ez0WkWBJL
-        laAcJF8lKm95GotOLms095ojRpCM+tEDgqTBegjcwLUuUh8rsleVGondE2yQE4I9DDjGTN
-        INkRK/P0AGrdgTJW2c9H1DGCu+vwlzV0NattZ03noDHfRC0JcPNWcQ6uHE5ZVeiMi/6pJr
-        iaaYouDDhaf1QxMF7G7H81CxNyZOYD4H2Ma0JOAq7Ix5bXj4qjw0a+CjLKFmtlcx6O6XpX
-        4xlx3OFFq2V25EPStOPpiSeOARovLUOv2s79AWblEA2/4O5/XxfE8bDZgiziLg==
+        bh=H3YgJEq4LYUQ3ezjb0CkeGil1mVwqCH8FIuwNs/eaTo=;
+        b=eUAesJkOe78zlyQTUoC0A8O1M/gjEjUG96j5JximghWoOirwbAHax+7J9wHZ5rlPBDUPI4
+        POlkxaIacvPaZNemmPrpAlZ+tyB0l9UAYlG+/hfqgKPl/rbUtjvQ1m48dZl+rJ8z+zvMQp
+        /fiOXhkAPVbHdRzuBdrQKchMF0mv/JA5zMy9l6jx/pkzH2Wx3/z4eNoVlP4wSasdlrzn6J
+        x2zQizo647bxkO7nnPyraH+j0IbwiRmIPC/fV1cxwewlvjaco8Dhh1iUI4ciJ1IoO1+OLq
+        ToHXJSaYmZYs6ZGn9mgiSdmNgl9QHBI3YkEJm6X4zu4IWy2wxWCs+pg05ShDMQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607886065;
+        s=2020e; t=1607886067;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=HFR0kfB/VhDZx5Bpcb56YuTh1L5yWFqTGfdoKEkoE9g=;
-        b=OhcQFBqKYbJ1X3RXGYKSihT+Esyd1RV9GCTGbjT2gF52K14yBNZpeYZB7we2C9jZyG7KZ1
-        s9Gb1QaGPmPcPpCw==
-From:   "tip-bot2 for Fox Chen" <tip-bot2@linutronix.de>
+        bh=H3YgJEq4LYUQ3ezjb0CkeGil1mVwqCH8FIuwNs/eaTo=;
+        b=/GfpKS8kT5gpl2wNq8yUwCnUOxZqAsVdJVcgXxzzdtYsd/YQ+plxtFerVjWVdoaNqKFz7/
+        J4gtjmPTyxjO9YAw==
+From:   "tip-bot2 for Bhaskar Chowdhury" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] docs/memory-barriers.txt: Fix a typo in CPU MEMORY
- BARRIERS section
-Cc:     Fox Chen <foxhlchen@gmail.com>, Will Deacon <will@kernel.org>,
+Subject: [tip: core/rcu] tools/nolibc: Fix a spelling error in a comment
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <160788606519.3364.8577581789632517372.tip-bot2@tip-bot2>
+Message-ID: <160788606676.3364.14206290151138290950.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,39 +56,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     d8566f15da9b1e51fd35f24321ec133095e02d06
-Gitweb:        https://git.kernel.org/tip/d8566f15da9b1e51fd35f24321ec133095e02d06
-Author:        Fox Chen <foxhlchen@gmail.com>
-AuthorDate:    Wed, 09 Sep 2020 14:53:40 +08:00
+Commit-ID:     06dc8d4591b8d8ce0ece94474718b53f0a5c5de3
+Gitweb:        https://git.kernel.org/tip/06dc8d4591b8d8ce0ece94474718b53f0a5c5de3
+Author:        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+AuthorDate:    Tue, 20 Oct 2020 21:22:56 +02:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Fri, 06 Nov 2020 17:24:51 -08:00
+CommitterDate: Fri, 06 Nov 2020 17:13:58 -08:00
 
-docs/memory-barriers.txt: Fix a typo in CPU MEMORY BARRIERS section
+tools/nolibc:  Fix a spelling error in a comment
 
-Commit 39323c6 ("smp_mb__{before,after}_atomic(): update Documentation")
-has a typo in CPU MEORY BARRIERS section:
-"RMW functions that do not imply are memory barrier are ..." should be
-"RMW functions that do not imply a memory barrier are ...".
+Fix a spelling in the comment line.
 
-This patch fixes this typo.
+s/memry/memory/p
 
-Signed-off-by: Fox Chen <foxhlchen@gmail.com>
-Acked-by: Will Deacon <will@kernel.org>
+This is on linux-next.
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Signed-off-by: Willy Tarreau <w@1wt.eu>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/memory-barriers.txt | 2 +-
+ tools/include/nolibc/nolibc.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
-index 17c8e0c..7367ada 100644
---- a/Documentation/memory-barriers.txt
-+++ b/Documentation/memory-barriers.txt
-@@ -1870,7 +1870,7 @@ There are some more advanced barrier functions:
+diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
+index d6d2623..e61d36c 100644
+--- a/tools/include/nolibc/nolibc.h
++++ b/tools/include/nolibc/nolibc.h
+@@ -107,7 +107,7 @@ static int errno;
+ #endif
  
-      These are for use with atomic RMW functions that do not imply memory
-      barriers, but where the code needs a memory barrier. Examples for atomic
--     RMW functions that do not imply are memory barrier are e.g. add,
-+     RMW functions that do not imply a memory barrier are e.g. add,
-      subtract, (failed) conditional operations, _relaxed functions,
-      but not atomic_read or atomic_set. A common example where a memory
-      barrier may be required is when atomic ops are used for reference
+ /* errno codes all ensure that they will not conflict with a valid pointer
+- * because they all correspond to the highest addressable memry page.
++ * because they all correspond to the highest addressable memory page.
+  */
+ #define MAX_ERRNO 4095
+ 
