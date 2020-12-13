@@ -2,84 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F672D8DBB
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 15:08:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B72CA2D8DC2
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 15:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394963AbgLMOF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 09:05:59 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:45252 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726723AbgLMOF7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 09:05:59 -0500
-Date:   Sun, 13 Dec 2020 14:05:16 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607868317;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=8qeVt2rx1xomEFfNQBZEl0wuqlJ2B0W9cuSSPb9aJOg=;
-        b=yVHD9S5jqeZB4g9T1mCbI7B26GvVLk5U7QwkbTi/HwuTb57hg1srE1lER4x/l7ZuAHnT6R
-        DToqa2F7ZkKXujGwvNdblKnlhr3sYwb3mdKhN5j6Cf37MR3QKscEy+1lPBpPE1l9C4etBK
-        8apLA0ohBXQn+EjUqyqoWmkau3nB/MUovOs2tHU0EJLNGKk4YymWok6C9dEP+TvRrrRi0m
-        DKDn9csskSSPE3B6lAwKJ1PnLVCBA6RRE4o/QgyBV2Wc3ei8bG3S0TI7lFT1kuQqmVBAfY
-        qfH0UfcHnR+QHIJvXBt9Tae4bx8FXGWgx9MujgMtGNWxmHj5fbwbIANQ9AmQeA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607868317;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=8qeVt2rx1xomEFfNQBZEl0wuqlJ2B0W9cuSSPb9aJOg=;
-        b=py018k6dfvZ2c5JQi4h6+d8z99dWm9afZ8JlkpXNrm5kivbja8I33ZuswExvCmmNLsM4Nb
-        5vT1tITAJh8YWiDg==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] s390/irq: Use the correct irq stats accessor
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
+        id S2395199AbgLMOGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 09:06:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395074AbgLMOGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 09:06:31 -0500
+Date:   Sun, 13 Dec 2020 09:05:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607868350;
+        bh=mcbojKX0rCRAglq8j0baJ+vgXce4rMTNLcaD/nWwNHs=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rRFQLa9PCwMZs0lPKS99ktrsTgouLcbSl8Wem5V5bqvQpsD5VnSfXkjJkwDv6NpTP
+         wYi8ROaa6VTvX1JMo/pD7EayF2ds/o4Bh2HD+DjRVHnRSTuWGz1+NY9VukNrnmOgBv
+         zWlyg3DYQevPMBJ4qe9HX8IXTWiyLHK9C2CZ5CPIsSfXd+llpnf0rIXyXtJOMaLuJA
+         FeEzDOO1d1pjE2yFrwqwrLLrNlh3LDvfPPRMltmi3ikLrvqqauzeiSmphedv+1IwEx
+         uQYLBzXaoa0SF7zjUhhOfPMNx17/ZjnEUrvUhbTJWa+2k8Rp5NHeo4Zjgr/RJ5Dpcw
+         3F+kzL1Linugg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     Andrea Parri <parri.andrea@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org,
+        Saruhan Karademir <skarade@microsoft.com>,
+        devel@linuxdriverproject.org
+Subject: Re: [PATCH AUTOSEL 5.9 15/23] scsi: storvsc: Validate length of
+ incoming packet in storvsc_on_channel_callback()
+Message-ID: <20201213140549.GP643756@sasha-vm>
+References: <20201212160804.2334982-1-sashal@kernel.org>
+ <20201212160804.2334982-15-sashal@kernel.org>
+ <20201212180901.GA19225@andrea>
 MIME-Version: 1.0
-Message-ID: <160786831611.3364.16380497402097854439.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201212180901.GA19225@andrea>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+On Sat, Dec 12, 2020 at 07:09:01PM +0100, Andrea Parri wrote:
+>Hi Sasha,
+>
+>On Sat, Dec 12, 2020 at 11:07:56AM -0500, Sasha Levin wrote:
+>> From: "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+>>
+>> [ Upstream commit 3b8c72d076c42bf27284cda7b2b2b522810686f8 ]
+>
+>FYI, we found that this commit introduced a regression and posted a
+>revert:
+>
+>  https://lkml.kernel.org/r/20201211131404.21359-1-parri.andrea@gmail.com
+>
+>Same comment for the AUTOSEL 5.4, 4.19 and 4.14 you've just posted.
 
-Commit-ID:     5684f2a950727020ebaece04fe89e00d04e3b479
-Gitweb:        https://git.kernel.org/tip/5684f2a950727020ebaece04fe89e00d04e3b479
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sun, 13 Dec 2020 14:08:51 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sun, 13 Dec 2020 14:58:44 +01:00
+I'll drop those, thanks!
 
-s390/irq: Use the correct irq stats accessor
-
-It's irq_desc_kstat_cpu() and not irq_desc_kstat_irq().
-
-Fixes: 7a0a6b22431b ("s390/irq: Use irq_desc_kstat_cpu() in show_msi_interrupt()")
-Reported-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- arch/s390/kernel/irq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/s390/kernel/irq.c b/arch/s390/kernel/irq.c
-index d9cd898..f8a8b94 100644
---- a/arch/s390/kernel/irq.c
-+++ b/arch/s390/kernel/irq.c
-@@ -124,7 +124,7 @@ static void show_msi_interrupt(struct seq_file *p, int irq)
- 	raw_spin_lock_irqsave(&desc->lock, flags);
- 	seq_printf(p, "%3d: ", irq);
- 	for_each_online_cpu(cpu)
--		seq_printf(p, "%10u ", irq_desc_kstat_irq(desc, cpu));
-+		seq_printf(p, "%10u ", irq_desc_kstat_cpu(desc, cpu));
- 
- 	if (desc->irq_data.chip)
- 		seq_printf(p, " %8s", desc->irq_data.chip->name);
+-- 
+Thanks,
+Sasha
