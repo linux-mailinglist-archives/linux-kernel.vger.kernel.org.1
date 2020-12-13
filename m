@@ -2,194 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B664D2D8E16
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 15:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACB22D8E11
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 15:57:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406252AbgLMO5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 09:57:12 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:42007 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405496AbgLMO4z (ORCPT
+        id S2405355AbgLMO4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 09:56:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729813AbgLMO4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 09:56:55 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D158758032E;
-        Sun, 13 Dec 2020 09:55:48 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Sun, 13 Dec 2020 09:55:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=dpcwTT
-        z/sesD3B1rZoBYSQwgGPQNjssdt5XLEtahVEc=; b=HosWXGNIaVwtkVUadRZphf
-        vpGtRomJMH/cvw37j0NuQLej2sw8tqNCj9GFX9+Mg03v+Bk34NG37Po68y14S1s9
-        gtje7ny4yNPNulCrcApDMja4srFBDpTzz9q5+/A8KKThMczApn5Y8qoWp/XdF+ay
-        oE4safZdDFaCtLrv7kgXZLTEWtyP2IZ6KcSfgsx5T9L6dumu83jXTNVrb4gJWpIe
-        wlk7BCyyM5Mdz2+6E6vWvmA6GEK2G0b7G6tQbgSxB9KaEglCrNl2eFOnORiMpO1g
-        nqAEskOoS8nvrY63A8yj78ZefU02Qq4fg/4Xx4rnJmAGdIiBwQzwBdVJohAApAiQ
-        ==
-X-ME-Sender: <xms:civWX_INofMYSLDeo9a-pXLqhRdVTvASyltTSSbW9J3GPnMGSKfPWw>
-    <xme:civWXzJ4KG2NadP5GQmFgRYJZBfYLsxKGEMBlUkQES679EPsmPx37CE8ZuVdWelPD
-    -wzGpj1dQ85uDw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekiedgjedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpedtffekkeefudffveegueejffejhfetgfeuuefgvedtieehudeuueekhfduheel
-    teenucfkphepkeegrddvvdelrdduhedvrddvjeenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:civWX3txsPdj8soGqTHXvWqAqnOtW1-6ZLkNzkxD81m99myoBtHBkw>
-    <xmx:civWX4Y_XIivAyt3NKavMS9BSUxTEz6ORzo3mWUtyEBoR_IJFZ6rQA>
-    <xmx:civWX2Y0JfCkNjq3893pdIBdRW9EF2UtuyL6CW8UbbsIi6wGans3RQ>
-    <xmx:dCvWX7Ku_M9SovOxHfJ4-zuE8WpDH3q4eEaNQbRl97Icxq1xS9AsAA>
-Received: from localhost (igld-84-229-152-27.inter.net.il [84.229.152.27])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BC8C2108005C;
-        Sun, 13 Dec 2020 09:55:45 -0500 (EST)
-Date:   Sun, 13 Dec 2020 16:55:43 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        Marek Behun <marek.behun@nic.cz>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH v3 net-next 1/7] net: bridge: notify switchdev of
- disappearance of old FDB entry upon migration
-Message-ID: <20201213145543.GA2539586@shredder.lan>
-References: <20201213140710.1198050-1-vladimir.oltean@nxp.com>
- <20201213140710.1198050-2-vladimir.oltean@nxp.com>
+        Sun, 13 Dec 2020 09:56:53 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB8FC0613CF;
+        Sun, 13 Dec 2020 06:56:13 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id m6so653439pfm.6;
+        Sun, 13 Dec 2020 06:56:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3GVFJG5+b4wwaYZGJY5Q+Ty6yteB44I1X0LEyJpOD4Q=;
+        b=GQo8nLjwy/A+Xg4osxyLYZrO41bSCW7aCe+uxkuHo9PGo+M0tWYbKc6bxIYPizyS7J
+         juIeeq/7CO8m/xfEpcWNZz39mf5LauZ2R3bAxoGjyyrdpVA4rSEcYEpU/JdfDwP/1G+k
+         KY2595tBSlNf2HLzMdrabbvmr0S4Qalr/IjpBZVlDtpMWbSXu3vC5wFzOaMWgXY8gacy
+         PJriOKpHfdn3eLCHFLgIIiZzuw2TIi1bjREXPFIvRsV2yDY888gAlfZok/r5diHJ2r78
+         SStpmIAx39oRh98debp8Qce656veGXmBj8zjOM8klMCHFLiCDgXoja8XHicnrA3Uk5fr
+         Hpfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3GVFJG5+b4wwaYZGJY5Q+Ty6yteB44I1X0LEyJpOD4Q=;
+        b=cIc8vZeMEZVNRrg/jLG/KexPxo5ZFIQjsTcQGHbUhJPQmi2RUrhxsAJB5xqCk5lbHc
+         pnd+QsbS87juUscZQshljBksqRj2HIf4tTpw/53rdkxbveNnm8zW2jKhcy7UHd2K4iSq
+         hSsNy9J8XtMhOm7GYNCwQhUB1ft4nBtD2WVPSMX1dcWZEhFnh6NWOdq8I0GCUNFEbIQw
+         qEeDMMvBvbFqg9RErYytlhWc/UUc/XEq5OOY6vAM1V+KWJX7nEMSa/re9j4KJxW+uuJL
+         j0hyR3jq2K4o0DII0zkxtvOCgE/4xrVhIIbXPnxPzvUKbDL+ikTBibMxe2T5A4sW/hWF
+         YN3w==
+X-Gm-Message-State: AOAM532JDn9fi0+527gu4/GcB61wpjzV5WI7pZjGfW7AFy/Enw9heJsi
+        /YSUhO9weiaHe7Go5xjtx1cktiIPBoOWHo7Id0A=
+X-Google-Smtp-Source: ABdhPJyHCjy5gjCeZf12NOQT17rVqbmsRh+vBivyM/+Ci93YR1wXBbG3c7sP9pW22RPlYkg5PP+otes6jmJuO6o0IMM=
+X-Received: by 2002:a62:445:0:b029:19c:162b:bbef with SMTP id
+ 66-20020a6204450000b029019c162bbbefmr20182418pfe.40.1607871372903; Sun, 13
+ Dec 2020 06:56:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201213140710.1198050-2-vladimir.oltean@nxp.com>
+References: <cover.1607765147.git.syednwaris@gmail.com> <20268bfeb500ad8819e3a11aa1bea27eade4fd39.1607765147.git.syednwaris@gmail.com>
+In-Reply-To: <20268bfeb500ad8819e3a11aa1bea27eade4fd39.1607765147.git.syednwaris@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 13 Dec 2020 16:55:56 +0200
+Message-ID: <CAHp75Vef2WDjD=DkoTV13Akk9yxwbF1oJH-=O4Kg_uxtY1qOdQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] bitmap: Modify bitmap_set_value() to check bitmap length
+To:     Syed Nayyar Waris <syednwaris@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 04:07:04PM +0200, Vladimir Oltean wrote:
-> Currently the bridge emits atomic switchdev notifications for
-> dynamically learnt FDB entries. Monitoring these notifications works
-> wonders for switchdev drivers that want to keep their hardware FDB in
-> sync with the bridge's FDB.
-> 
-> For example station A wants to talk to station B in the diagram below,
-> and we are concerned with the behavior of the bridge on the DUT device:
-> 
->                    DUT
->  +-------------------------------------+
->  |                 br0                 |
->  | +------+ +------+ +------+ +------+ |
->  | |      | |      | |      | |      | |
->  | | swp0 | | swp1 | | swp2 | | eth0 | |
->  +-------------------------------------+
->       |        |                  |
->   Station A    |                  |
->                |                  |
->          +--+------+--+    +--+------+--+
->          |  |      |  |    |  |      |  |
->          |  | swp0 |  |    |  | swp0 |  |
->  Another |  +------+  |    |  +------+  | Another
->   switch |     br0    |    |     br0    | switch
->          |  +------+  |    |  +------+  |
->          |  |      |  |    |  |      |  |
->          |  | swp1 |  |    |  | swp1 |  |
->          +--+------+--+    +--+------+--+
->                                   |
->                               Station B
-> 
-> Interfaces swp0, swp1, swp2 are handled by a switchdev driver that has
-> the following property: frames injected from its control interface bypass
-> the internal address analyzer logic, and therefore, this hardware does
-> not learn from the source address of packets transmitted by the network
-> stack through it. So, since bridging between eth0 (where Station B is
-> attached) and swp0 (where Station A is attached) is done in software,
-> the switchdev hardware will never learn the source address of Station B.
-> So the traffic towards that destination will be treated as unknown, i.e.
-> flooded.
-> 
-> This is where the bridge notifications come in handy. When br0 on the
-> DUT sees frames with Station B's MAC address on eth0, the switchdev
-> driver gets these notifications and can install a rule to send frames
-> towards Station B's address that are incoming from swp0, swp1, swp2,
-> only towards the control interface. This is all switchdev driver private
-> business, which the notification makes possible.
-> 
-> All is fine until someone unplugs Station B's cable and moves it to the
-> other switch:
-> 
->                    DUT
->  +-------------------------------------+
->  |                 br0                 |
->  | +------+ +------+ +------+ +------+ |
->  | |      | |      | |      | |      | |
->  | | swp0 | | swp1 | | swp2 | | eth0 | |
->  +-------------------------------------+
->       |        |                  |
->   Station A    |                  |
->                |                  |
->          +--+------+--+    +--+------+--+
->          |  |      |  |    |  |      |  |
->          |  | swp0 |  |    |  | swp0 |  |
->  Another |  +------+  |    |  +------+  | Another
->   switch |     br0    |    |     br0    | switch
->          |  +------+  |    |  +------+  |
->          |  |      |  |    |  |      |  |
->          |  | swp1 |  |    |  | swp1 |  |
->          +--+------+--+    +--+------+--+
->                |
->            Station B
-> 
-> Luckily for the use cases we care about, Station B is noisy enough that
-> the DUT hears it (on swp1 this time). swp1 receives the frames and
-> delivers them to the bridge, who enters the unlikely path in br_fdb_update
-> of updating an existing entry. It moves the entry in the software bridge
-> to swp1 and emits an addition notification towards that.
-> 
-> As far as the switchdev driver is concerned, all that it needs to ensure
-> is that traffic between Station A and Station B is not forever broken.
-> If it does nothing, then the stale rule to send frames for Station B
-> towards the control interface remains in place. But Station B is no
-> longer reachable via the control interface, but via a port that can
-> offload the bridge port learning attribute. It's just that the port is
-> prevented from learning this address, since the rule overrides FDB
-> updates. So the rule needs to go. The question is via what mechanism.
+On Sun, Dec 13, 2020 at 4:24 PM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+>
+> Add explicit check to see if the value being written into the bitmap
+> does not fall outside the bitmap.
+> The situation that it is falling outside would never be possible in the
+> code because the boundaries are required to be correct before the
+> function is called. The responsibility is on the caller for ensuring the
+> boundaries are correct.
+> The code change is simply to silence the GCC warning messages
+> because GCC is not aware that the boundaries have already been checked.
+> As such, we're better off using __builtin_unreachable() here because we
+> can avoid the latency of the conditional check entirely.
+>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
+> Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+>
+> lib/test_bitmap.c: Modify for_each_set_clump test
+>
+> Modify the test where bitmap_set_value() is called. bitmap_set_value()
+> now takes an extra bitmap-width as second argument and the width of
+> value is now present as the fourth argument.
+>
+> Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
+>
+> gpio: xilinx: Modify bitmap_set_value() calls
+>
+> Modify the bitmap_set_value() calls. bitmap_set_value()
+> now takes an extra bitmap width as second argument and the width of
+> value is now present as the fourth argument.
+>
+> Cc: Michal Simek <michal.simek@xilinx.com>
+> Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
 
-Can you please clarify why the FDB replacement notification is not
-enough? Is it because the hardware you are working with manages MACs to
-CPU in a separate table from its FDB table? I assume that's why you
-refer to it as a "rule" instead of FDB entry? How common is this with
-DSA switches?
+Commit message here definitely needs more work.
+First of all, it's now quite awkward to see this squashed stuff like this.
+Second, it misses the warning examples it's talking about.
+Third, it repeats some tags.
+Fourth, it misses the Fixes tag.
 
-Asking because it is not clear to me from the commit message. The patch
-looks fine.
+Please, redone it correctly (one commit message with clear purpose and
+example of warnings followed by Fixes tag) and resend a v3.
 
-> 
-> It sure would be possible for this switchdev driver to keep track of all
-> addresses which are sent to the control interface, and then also listen
-> for bridge notifier events on its own ports, searching for the ones that
-> have a MAC address which was previously sent to the control interface.
-> But this is cumbersome and inefficient. Instead, with one small change,
-> the bridge could notify of the address deletion from the old port, in a
-> symmetrical manner with how it did for the insertion. Then the switchdev
-> driver would not be required to monitor learn/forget events for its own
-> ports. It could just delete the rule towards the control interface upon
-> bridge entry migration. This would make hardware address learning be
-> possible again. Then it would take a few more packets until the hardware
-> and software FDB would be in sync again.
-> 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+You may mention in the cover letter that this is squashed of three
+patches from v1 (and give a link to lore.kernel.org).
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+-- 
+With Best Regards,
+Andy Shevchenko
