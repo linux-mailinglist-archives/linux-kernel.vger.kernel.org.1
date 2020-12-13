@@ -2,295 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F52C2D8EB2
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 17:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E97172D8EB5
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 17:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731032AbgLMQYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 11:24:10 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:43723 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgLMQXw (ORCPT
+        id S1726166AbgLMQ0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 11:26:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725996AbgLMQ0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 11:23:52 -0500
-Received: by mail-io1-f69.google.com with SMTP id c7so9408138iob.10
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 08:23:36 -0800 (PST)
+        Sun, 13 Dec 2020 11:26:09 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B1EC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 08:25:28 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id r14so14002736wrn.0
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 08:25:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jamieiles-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Rf+b9N2htku5WJ9Hu0NGJ+c4uKlPgFBYFEnRhIM8Uhs=;
+        b=S2Ty7Lhn1rwak6hdqcbPARjAEnxxvMgu6mXc9eqNXbZ4hVjaGEqQB8pMUoe4zTi1a7
+         9K5iVrrFK26itWqBcEUcsB426J87wE6+0bdUwlzGPyaQAK7WJ2mi8EEN38iGxMFmnrsP
+         RvAbxMjbqNfxeOib8SiOEhiZQlK2QiETI6lZECSO98DeQC4x86MPTvAar80gTr8fHlo9
+         Me754RKBSGlMI4siQAk6QGOOJKPhpOHTAHbm+6yPlQO+KD153S9F2Nau3c/43mdt5Cbk
+         efxE27ZeDqsyw9BQh3/7tvmX/sjx5PrOfXZJKnEygqAclqItBdi4Ow5kpP0d/zx2xj9h
+         cClA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Iwni+YtbLHs3ZSKcjfrHyb75vai9D6cvVexI6znW6fw=;
-        b=oEKKxoFMnwuBRbInsay14xo6D5IWJRVjIAI9AUmcqBoVU+Ep/dA5qaSycynk03sXAC
-         EDylPqlfc1o8GOL0vkmxBcDIeV2B+Lfa8z/gEbGeMVf96W73mYM23OONQwT9i8Hpj23Q
-         +gkLc7bAPKRehDCz36Vw1C83oPR/dzPLfdfftMEU7cPoiZbfCkJ0XiUUUP5q5uKDwqF4
-         VNYh3Xt3fYwn4JAneL+lP4k9fzzUVwKejAqyJKbT6XnZ91nf9Wk8MZEhhSB/29JbDTSs
-         TrZwRUIjf875oqvAZ7Ej0e5TEiOTVhrht2KfxK7OyDkJPMzMBCtAprZopAIiLNtxQGWU
-         hzRw==
-X-Gm-Message-State: AOAM531nFnJ++qfyl7HUlaopBmb7eTeRAHHi8y7l3IAS1TD3rE1sonpl
-        bzF59AHb6Lan6YIYBSdsdbbuwP+hgHO2ZSuIWNKDYrNYOzWv
-X-Google-Smtp-Source: ABdhPJzXr/CSj32kbKj8ySQBnKWQM204VY06qiLLbMloZRxRHBlewY6tQxih03VUFOxB2uuviXPO1IswUhWhtdcI499xVATLd13r
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Rf+b9N2htku5WJ9Hu0NGJ+c4uKlPgFBYFEnRhIM8Uhs=;
+        b=Ll00n4Qvgja6Ebpr2L9Bfxf3NXHGOq6HAIvXQljKvIjyout0WlQO5oKyRhrl9iF13O
+         6JCR5S6K6ARiG5EOxhYAMzXHlfWhRLUfZJfxUnx+FoFsqrRKuDQDVFy/gzY5TEo+POXE
+         L3mpgjuGEbjAZyA4DP4CCU+H66ffBAknEgZychERHwp1wB4RNcNDW18YdWHRSkpX5/1q
+         e+Zu1PTzDF9Eqyv9XURZmLm88I7PiKcXcHtrQVujXBETAxbjFATalRdmH5Wn+VYAFnwx
+         a7gAg7w2e0n3oPA7fJpFtSyUrS9ttaJZd5J/EX5x7xxVO2d2OoXW0yYl56IsXwxg8OwT
+         ftOg==
+X-Gm-Message-State: AOAM533OWdBVBstdCf85qkVJymyC2idhXpkaFkZIBFZnlTZkX1tnDf6S
+        nM9OWPSG949ajd3lUH2jnRpFjA==
+X-Google-Smtp-Source: ABdhPJzLE3t6E6T+7CANIDVOP3RTPKz+wUMY/WJbm93kEjoOQjfqOkI5aZIByNISKdCoVp6ig7p5VA==
+X-Received: by 2002:a5d:5005:: with SMTP id e5mr24119814wrt.279.1607876727343;
+        Sun, 13 Dec 2020 08:25:27 -0800 (PST)
+Received: from localhost ([82.44.17.50])
+        by smtp.gmail.com with ESMTPSA id z2sm27245655wml.23.2020.12.13.08.25.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Dec 2020 08:25:26 -0800 (PST)
+Date:   Sun, 13 Dec 2020 16:25:25 +0000
+From:   Jamie Iles <jamie@jamieiles.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Jamie Iles <jamie@jamieiles.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>, soc@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 0/4] Remove PicoXcell
+Message-ID: <20201213162525.GA223635@willow>
+References: <20201210200315.2965567-1-robh@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:153:: with SMTP id y19mr28157499jao.47.1607876590778;
- Sun, 13 Dec 2020 08:23:10 -0800 (PST)
-Date:   Sun, 13 Dec 2020 08:23:10 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000009442305b65af1fa@google.com>
-Subject: INFO: task hung in netdev_run_todo (2)
-From:   syzbot <syzbot+9d77543f47951a63d5c1@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210200315.2965567-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Acked-by: Jamie Iles <jamie@jamieiles.com>
 
-syzbot found the following issue on:
+for the series.  Intel EOLd this product now, good idea to remove it.
 
-HEAD commit:    7575fdda Merge tag 'platform-drivers-x86-v5.9-2' of git://..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1110b33f900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c06bcf3cc963d91c
-dashboard link: https://syzkaller.appspot.com/bug?extid=9d77543f47951a63d5c1
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+Thanks,
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Jamie
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9d77543f47951a63d5c1@syzkaller.appspotmail.com
-
-INFO: task kworker/u4:2:26 blocked for more than 143 seconds.
-      Not tainted 5.9.0-rc8-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/u4:2    state:D stack:24024 pid:   26 ppid:     2 flags:0x00004000
-Workqueue: netns cleanup_net
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- netdev_run_todo+0x8f8/0xdb0 net/core/dev.c:10183
- ip6gre_exit_batch_net+0x516/0x750 net/ipv6/ip6_gre.c:1610
- ops_exit_list+0x10d/0x160 net/core/net_namespace.c:189
- cleanup_net+0x4ea/0xa00 net/core/net_namespace.c:603
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-INFO: task kworker/0:4:8175 blocked for more than 143 seconds.
-      Not tainted 5.9.0-rc8-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/0:4     state:D stack:25936 pid: 8175 ppid:     2 flags:0x00004000
-Workqueue: events linkwatch_event
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- linkwatch_event+0xb/0x60 net/core/link_watch.c:250
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-INFO: task syz-executor.5:8896 blocked for more than 144 seconds.
-      Not tainted 5.9.0-rc8-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.5  state:D stack:27440 pid: 8896 ppid:  6920 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- tc_new_tfilter+0x928/0x2130 net/sched/cls_api.c:2020
- rtnetlink_rcv_msg+0x80f/0xad0 net/core/rtnetlink.c:5554
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x331/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmmsg+0x195/0x480 net/socket.c:2497
- __do_sys_sendmmsg net/socket.c:2526 [inline]
- __se_sys_sendmmsg net/socket.c:2523 [inline]
- __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2523
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45de29
-Code: Bad RIP value.
-RSP: 002b:00007f9e84d3cc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 0000000000027f40 RCX: 000000000045de29
-RDX: 04924924924926d3 RSI: 0000000020000200 RDI: 0000000000000005
-RBP: 000000000118c160 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118c124
-R13: 00007ffdec73781f R14: 00007f9e84d3d9c0 R15: 000000000118c124
-INFO: task syz-executor.3:8909 blocked for more than 145 seconds.
-      Not tainted 5.9.0-rc8-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.3  state:D stack:26800 pid: 8909 ppid:  6916 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45de29
-Code: Bad RIP value.
-RSP: 002b:00007f269716ec78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000002e5c0 RCX: 000000000045de29
-RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000000000005
-RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007ffce0487dbf R14: 00007f269716f9c0 R15: 000000000118bf2c
-INFO: task syz-executor.2:8929 blocked for more than 145 seconds.
-      Not tainted 5.9.0-rc8-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.2  state:D stack:28360 pid: 8929 ppid:     1 flags:0x00000004
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xec9/0x2280 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4661
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- rtnl_lock net/core/rtnetlink.c:72 [inline]
- rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- __sys_sendto+0x21c/0x320 net/socket.c:1992
- __do_sys_sendto net/socket.c:2004 [inline]
- __se_sys_sendto net/socket.c:2000 [inline]
- __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2000
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4178a7
-Code: Bad RIP value.
-RSP: 002b:00007ffdfb298fd0 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
-RAX: ffffffffffffffda RBX: 00000000016a4300 RCX: 00000000004178a7
-RDX: 0000000000000028 RSI: 00000000016a4350 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 00007ffdfb298fe0 R09: 000000000000000c
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
-R13: 0000000000000000 R14: 00000000016a4350 R15: 0000000000000003
-
-Showing all locks held in the system:
-4 locks held by kworker/u4:2/26:
- #0: ffff88821b047138 ((wq_completion)netns){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff88821b047138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff88821b047138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff88821b047138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff88821b047138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff88821b047138 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x82b/0x1670 kernel/workqueue.c:2240
- #1: ffffc90000e27da8 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work+0x85f/0x1670 kernel/workqueue.c:2244
- #2: ffffffff8b13d830 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x9b/0xa00 net/core/net_namespace.c:565
- #3: ffffffff8b14f0c8 (rtnl_mutex){+.+.}-{3:3}, at: netdev_run_todo+0x8f8/0xdb0 net/core/dev.c:10183
-1 lock held by khungtaskd/1175:
- #0: ffffffff8a067f40 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:5852
-1 lock held by in:imklog/6574:
- #0: ffff888091a216b0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
-3 locks held by kworker/0:4/8175:
- #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8880aa063d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x82b/0x1670 kernel/workqueue.c:2240
- #1: ffffc90015e77da8 ((linkwatch_work).work){+.+.}-{0:0}, at: process_one_work+0x85f/0x1670 kernel/workqueue.c:2244
- #2: ffffffff8b14f0c8 (rtnl_mutex){+.+.}-{3:3}, at: linkwatch_event+0xb/0x60 net/core/link_watch.c:250
-3 locks held by kworker/0:5/8220:
- #0: ffff888214886d38 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888214886d38 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888214886d38 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888214886d38 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888214886d38 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888214886d38 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work+0x82b/0x1670 kernel/workqueue.c:2240
- #1: ffffc90015fc7da8 ((addr_chk_work).work){+.+.}-{0:0}, at: process_one_work+0x85f/0x1670 kernel/workqueue.c:2244
- #2: ffffffff8b14f0c8 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_verify_work+0xa/0x20 net/ipv6/addrconf.c:4568
-2 locks held by syz-executor.5/8871:
-1 lock held by syz-executor.5/8896:
- #0: ffffffff8b14f0c8 (rtnl_mutex){+.+.}-{3:3}, at: tc_new_tfilter+0x928/0x2130 net/sched/cls_api.c:2020
-1 lock held by syz-executor.3/8909:
- #0: ffffffff8b14f0c8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8b14f0c8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
-1 lock held by syz-executor.2/8929:
- #0: ffffffff8b14f0c8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8b14f0c8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3f9/0xad0 net/core/rtnetlink.c:5560
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 1175 Comm: khungtaskd Not tainted 5.9.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x70/0xb1 lib/nmi_backtrace.c:101
- nmi_trigger_cpumask_backtrace+0x1b3/0x223 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
- watchdog+0xd7d/0x1000 kernel/hung_task.c:295
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 7 Comm: kworker/u4:0 Not tainted 5.9.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: bat_events batadv_nc_worker
-RIP: 0010:lockdep_recursion_finish kernel/locking/lockdep.c:398 [inline]
-RIP: 0010:lock_release+0x43a/0x8f0 kernel/locking/lockdep.c:5051
-Code: 9a 02 00 00 65 4c 8b 24 25 c0 fe 01 00 49 8d bc 24 e4 08 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 0f b6 14 02 <48> 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 fe 02 00 00 41
-RSP: 0018:ffffc90000cdfb38 EFLAGS: 00000803
-RAX: dffffc0000000000 RBX: 0000000000000003 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffff8880472c8e98 RDI: ffff8880a960eaa4
-RBP: 1ffff9200019bf69 R08: 0000000000000001 R09: ffff8880a960eaa0
-R10: fffffbfff16b3019 R11: 0000000000000000 R12: ffff8880a960e1c0
-R13: 0000000000000002 R14: ffffffff880a9b45 R15: ffff8880a960e1c0
-FS:  0000000000000000(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f33c36ef000 CR3: 00000000a7f77000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __raw_spin_unlock_bh include/linux/spinlock_api_smp.h:174 [inline]
- _raw_spin_unlock_bh+0x12/0x30 kernel/locking/spinlock.c:207
- spin_unlock_bh include/linux/spinlock.h:399 [inline]
- batadv_nc_purge_paths+0x2a5/0x3a0 net/batman-adv/network-coding.c:470
- batadv_nc_worker+0x831/0xe50 net/batman-adv/network-coding.c:719
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On Thu, Dec 10, 2020 at 02:03:11PM -0600, Rob Herring wrote:
+> PicoXcell has had nothing but treewide cleanups for at least the last 8
+> years and no signs of activity. The most recent activity is a yocto vendor
+> kernel based on v3.0 in 2015.
+> 
+> These patches can go via the respective maintainers' trees.
+> 
+> Rob
+> 
+> Rob Herring (4):
+>   ARM: dts: Remove PicoXcell platforms
+>   ARM: Remove PicoXcell platform support
+>   crypto: Remove PicoXcell driver
+>   dt-bindings: Remove PicoXcell bindings
+> 
+>  .../devicetree/bindings/arm/picoxcell.txt     |   24 -
+>  .../bindings/crypto/picochip-spacc.txt        |   21 -
+>  .../devicetree/bindings/net/macb.txt          |    2 -
+>  .../bindings/timer/snps,dw-apb-timer.yaml     |    7 -
+>  MAINTAINERS                                   |    9 -
+>  arch/arm/Kconfig                              |    2 -
+>  arch/arm/Kconfig.debug                        |   13 +-
+>  arch/arm/Makefile                             |    1 -
+>  arch/arm/boot/dts/Makefile                    |    3 -
+>  arch/arm/boot/dts/picoxcell-pc3x2.dtsi        |  239 ---
+>  arch/arm/boot/dts/picoxcell-pc3x3.dtsi        |  355 ----
+>  arch/arm/boot/dts/picoxcell-pc7302-pc3x2.dts  |   78 -
+>  arch/arm/boot/dts/picoxcell-pc7302-pc3x3.dts  |   84 -
+>  arch/arm/mach-picoxcell/Kconfig               |    9 -
+>  arch/arm/mach-picoxcell/Makefile              |    2 -
+>  arch/arm/mach-picoxcell/common.c              |   81 -
+>  drivers/crypto/Kconfig                        |   18 -
+>  drivers/crypto/Makefile                       |    1 -
+>  drivers/crypto/picoxcell_crypto.c             | 1806 -----------------
+>  drivers/crypto/picoxcell_crypto_regs.h        |  115 --
+>  20 files changed, 1 insertion(+), 2869 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/arm/picoxcell.txt
+>  delete mode 100644 Documentation/devicetree/bindings/crypto/picochip-spacc.txt
+>  delete mode 100644 arch/arm/boot/dts/picoxcell-pc3x2.dtsi
+>  delete mode 100644 arch/arm/boot/dts/picoxcell-pc3x3.dtsi
+>  delete mode 100644 arch/arm/boot/dts/picoxcell-pc7302-pc3x2.dts
+>  delete mode 100644 arch/arm/boot/dts/picoxcell-pc7302-pc3x3.dts
+>  delete mode 100644 arch/arm/mach-picoxcell/Kconfig
+>  delete mode 100644 arch/arm/mach-picoxcell/Makefile
+>  delete mode 100644 arch/arm/mach-picoxcell/common.c
+>  delete mode 100644 drivers/crypto/picoxcell_crypto.c
+>  delete mode 100644 drivers/crypto/picoxcell_crypto_regs.h
+> 
+> --
+> 2.25.1
