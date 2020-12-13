@@ -2,119 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746D42D8CB9
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 12:29:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2FD2D8CBF
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 12:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392923AbgLML1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 06:27:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgLML1W (ORCPT
+        id S2394516AbgLML3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 06:29:43 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55826 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725864AbgLML3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 06:27:22 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94550C0613CF;
-        Sun, 13 Dec 2020 03:26:42 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id b5so4949420pjl.0;
-        Sun, 13 Dec 2020 03:26:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FiB/9WTUgU4k/cf1D0blDI9YAXhtbx3zQedTzR+o/44=;
-        b=Q39cbSGJNxB7lNbK8VSBdugLFAqITRcxO5zVgeyE5kdwfTpPgOc2INZ1pyzUFoQh1y
-         tUhGBX+d2U/ThdHvcwJPW4v/O9C34HsjzrCGUwCcdLDNWoF3K6WpbChyvgUNyvPDB47j
-         hPjkMtcbWSfpj//r1NvWwPjfB/1LuJ7yB3dP7fVxHQINRJl/cAR77mNmxUiKPqTpD1P2
-         nVBL1E2FQtNurAj6gU5m9ZQ3Fjj0oIitNmIix1jgMDTh2AJgkGWufl4qzYYEH0Ahl5Dv
-         Q6PcAxESb0StC6/Hz6npHFTKxLHjhUEhr33RStPxZXUe+iwHiNfwgQ5RFtTWKDyoemZZ
-         /rvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FiB/9WTUgU4k/cf1D0blDI9YAXhtbx3zQedTzR+o/44=;
-        b=X3rly3nib5HQOKhuUPqS4/FncqrjcfF2PLPn5Msdaoi+Jpm+Ho7GzDoNo8yMzsiG4m
-         pw3QgANbRiUw6A1oUVFB1D5YfgiU0j/ytpqlEZadgolZGiolHBp099A7aGKzAgn1Z8qo
-         iiX3EK0+lBc90+dJRjf4WPxyxHd9jZR2zbG6//tKFr3VZ1VNMjP3ZCIS8K0w8rlssmxU
-         xRRT+gQs8dx1Fhdz3ZsnkaPkZPwYtfTu8QizLv5gNFXxRPzuegEGaF7B+uuv+IfoLDWt
-         ogpJqD0DZOPiWYdWjrsTc2RxK3QOP9REyDvv0YfCdSo14FQ6GgDCNIXgNYmUvICKlm9k
-         YXFw==
-X-Gm-Message-State: AOAM533fXJPw88Jsa27t4GEt3Ch0ZpI1gwLzfQGyIWObMXr4Lk2B0tyw
-        UyK0jaHI2al5OZz+0W94c61EEiB6ljiN6V4CTJQuPiNkqHA=
-X-Google-Smtp-Source: ABdhPJwiXtXy2oACWVRlcBjf9y8PHvLNGqnrluOTNM7ptACjV1zVSZgM0Rd9w5rg3AWZmxqci4j6W1Ugz/T97lZlbXY=
-X-Received: by 2002:a17:902:b7c3:b029:da:76bc:2aa9 with SMTP id
- v3-20020a170902b7c3b02900da76bc2aa9mr18484847plz.21.1607858802089; Sun, 13
- Dec 2020 03:26:42 -0800 (PST)
+        Sun, 13 Dec 2020 06:29:42 -0500
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 480961F44CF6;
+        Sun, 13 Dec 2020 11:28:59 +0000 (GMT)
+Date:   Sun, 13 Dec 2020 12:28:49 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <broonie@kernel.org>, <robh+dt@kernel.org>, <lukas@wunner.de>,
+        <bbrezillon@kernel.org>, <p.yadav@ti.com>,
+        <tudor.ambarus@microchip.com>, <linux-spi@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v3 5/9] spi: spi-mem: Allow masters to transfer dummy
+ cycles directly by hardware
+Message-ID: <20201213122849.65ddd988@collabora.com>
+In-Reply-To: <20201213105426.294827c8@collabora.com>
+References: <1607721363-8879-1-git-send-email-skomatineni@nvidia.com>
+        <1607721363-8879-6-git-send-email-skomatineni@nvidia.com>
+        <20201212115715.31a8d755@collabora.com>
+        <7efb281a-98d7-68c5-1515-0e980b6cfe12@nvidia.com>
+        <20201213105426.294827c8@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20201211211916.6259-1-semen.protsenko@linaro.org> <20201211211916.6259-2-semen.protsenko@linaro.org>
-In-Reply-To: <20201211211916.6259-2-semen.protsenko@linaro.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 13 Dec 2020 13:26:25 +0200
-Message-ID: <CAHp75VeV2jdDYCqnsXEL_iQDwMdGf+chHg9CQ22OpoFsXuEZuA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] usb: dwc3: drd: Avoid error when extcon is missing
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 5:22 AM Sam Protsenko
-<semen.protsenko@linaro.org> wrote:
->
-> If "port" node is missing in PHY controller node, dwc3_get_extcon()
-> isn't able to find extcon device. This is perfectly fine in case when
+On Sun, 13 Dec 2020 10:54:26 +0100
+Boris Brezillon <boris.brezillon@collabora.com> wrote:
 
-devices
+> On Sat, 12 Dec 2020 09:28:50 -0800
+> Sowjanya Komatineni <skomatineni@nvidia.com> wrote:
+> 
+> > On 12/12/20 2:57 AM, Boris Brezillon wrote:  
+> > > On Fri, 11 Dec 2020 13:15:59 -0800
+> > > Sowjanya Komatineni <skomatineni@nvidia.com> wrote:
+> > >    
+> > >> This patch adds a flag SPI_MASTER_USES_HW_DUMMY_CYCLES for the controllers
+> > >> that support transfer of dummy cycles by the hardware directly.    
+> > > Hm, not sure this is a good idea. I mean, if we expect regular SPI
+> > > devices to use this feature, then why not, but if it's just for
+> > > spi-mem, I'd recommend implementing a driver-specific exec_op() instead
+> > > of using the default one.    
+> > 
+> > dummy cycles programming is SPI device specific.
+> > 
+> > Transfer of dummy bytes by SW or HW controller can be depending on 
+> > features supported by controller.
+> > 
+> > Adding controller driver specific exec_op() Just for skipping dummy 
+> > bytes transfer will have so much of redundant code pretty much what all 
+> > spi_mem_exec_op does.
+> > 
+> > So in v1, I handled this in controller driver by skipping SW transfer of 
+> > dummy bytes during dummy phase and programming dummy cycles in 
+> > controller register to allow HW to transfer.
+> > 
+> > Based on v1 feedback discussion, added this flag 
+> > SPI_MASTER_USES_HW_DUMMY_CYCLES which can be used by controllers 
+> > supporting HW dummy bytes transfer and updated spi_mem_exec_op to skip 
+> > SW dummy bytes.
+> > 
+> > This helps other controllers supporting HW transfer of dummy bytes as 
+> > well just to set the flag and use dummy cycles directly.  
+> 
+> Except saying a spi_message has X dummy cycle is not precise enough.
+> Where are those dummy cycles in the transfer sequence? spi-mem has well
+> defined sequencing (cmd[+addr][+dummy][+data]) so we know exacly where
+> dummy cycles are, but trying to retro-fit the dummy-cycle concept in
+> the generic spi_message is confusing IMHO. If want to avoid code
+> duplication, I'm pretty sure the driver can be reworked so the
+> spi_transfer/exec_op() path can share most of the logic (that probably
+> implies declaring a tegra_qspi_op).
 
-> "usb-role-switch" or OTG is used, but next misleading error message is
-> printed in that case, from of_graph_get_remote_node():
->
->     OF: graph: no port node found in /phy@1234abcd
->
-> Avoid printing that message by checking if port node exists in PHY node
+Something like that might also do the trick:
 
-if the port
+--->8---
 
-> before calling of_graph_get_remote_node().
-
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> Changes in v3:
->   - Split patch into two patches: logic diff and style diff
->
->  drivers/usb/dwc3/drd.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
-> index 3e1c1aacf002..312a4d060e80 100644
-> --- a/drivers/usb/dwc3/drd.c
-> +++ b/drivers/usb/dwc3/drd.c
-> @@ -463,7 +463,10 @@ static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
->         }
->
->         np_phy = of_parse_phandle(dev->of_node, "phys", 0);
-> -       np_conn = of_graph_get_remote_node(np_phy, -1, -1);
-> +       if (of_graph_is_present(np_phy))
-> +               np_conn = of_graph_get_remote_node(np_phy, -1, -1);
-> +       else
-> +               np_conn = NULL;
->
->         if (np_conn)
->                 edev = extcon_find_edev_by_node(np_conn);
-> --
-> 2.29.2
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index ef53290b7d24..8b0476f37fbb 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -353,6 +353,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+                xfers[xferpos].tx_buf = tmpbuf + op->addr.nbytes + 1;
+                xfers[xferpos].len = op->dummy.nbytes;
+                xfers[xferpos].tx_nbits = op->dummy.buswidth;
++               xfers[xferpos].dummy_data = 1;
+                spi_message_add_tail(&xfers[xferpos], &msg);
+                xferpos++;
+                totalxferlen += op->dummy.nbytes;
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 99380c0825db..ecf7989318c5 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -807,6 +807,10 @@ extern void spi_res_release(struct spi_controller *ctlr,
+  *      transfer. If 0 the default (from @spi_device) is used.
+  * @bits_per_word: select a bits_per_word other than the device default
+  *      for this transfer. If 0 the default (from @spi_device) is used.
++ * @dummy_data: set to 1 for a dummy transfer (a transfer whose data is
++ *      ignored). Controllers that are able to issue dummy cycles can ignore
++ *      tx_buf, for those that can't tx_buf will contain dummy bytes. The
++ *      number of  dummy cycles to issue is (len * tx_bits) / 8.
+  * @cs_change: affects chipselect after this transfer completes
+  * @cs_change_delay: delay between cs deassert and assert when
+  *      @cs_change is set and @spi_transfer is not the last in @spi_message
+@@ -919,6 +923,7 @@ struct spi_transfer {
+        struct sg_table tx_sg;
+        struct sg_table rx_sg;
+ 
++       unsigned        dummy_data:1;
+        unsigned        cs_change:1;
+        unsigned        tx_nbits:3;
+        unsigned        rx_nbits:3;
