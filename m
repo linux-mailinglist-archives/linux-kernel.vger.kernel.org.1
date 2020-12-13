@@ -2,79 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 741702D8F08
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 18:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0872D8F06
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 18:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405500AbgLMRUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 12:20:07 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:59808 "EHLO honk.sigxcpu.org"
+        id S2406294AbgLMRTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 12:19:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405293AbgLMRSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 12:18:03 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 2A0E5FB04;
-        Sun, 13 Dec 2020 18:17:20 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id cknW5tdcTti8; Sun, 13 Dec 2020 18:17:18 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 59FEF43FE1; Sun, 13 Dec 2020 18:17:14 +0100 (CET)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Martin Kepplinger <martink@posteo.de>,
-        Angus Ainslie <angus@akkea.ca>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vinod Koul <vkoul@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Michael Walle <michael@walle.cc>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org
-Subject: [PATCH 4/4] arm64: dts: imx8mq-librem5-devkit: Drop custom clock settings
-Date:   Sun, 13 Dec 2020 18:17:14 +0100
-Message-Id: <3ecaf4b895deefafc3fc467e56dcff5d1afe8ac7.1607879709.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1607879709.git.agx@sigxcpu.org>
-References: <cover.1607879709.git.agx@sigxcpu.org>
+        id S2405500AbgLMRSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 12:18:25 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3A582313B;
+        Sun, 13 Dec 2020 17:17:43 +0000 (UTC)
+Date:   Sun, 13 Dec 2020 17:17:40 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/6] iio:pressure:ms5637: limit available sample
+ frequencies
+Message-ID: <20201213171740.66079670@archlinux>
+In-Reply-To: <CAHp75Vf7A7e4RC2_wjizsPiGn3EjSPhxq4RA2vSQ0BtKaU1T0Q@mail.gmail.com>
+References: <20201209234857.1521453-1-alexandre.belloni@bootlin.com>
+        <20201209234857.1521453-4-alexandre.belloni@bootlin.com>
+        <CAHp75Vf7A7e4RC2_wjizsPiGn3EjSPhxq4RA2vSQ0BtKaU1T0Q@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Otherwise the boot hangs early on.
+On Sat, 12 Dec 2020 20:26:16 +0200
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
----
- arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts | 5 -----
- 1 file changed, 5 deletions(-)
+> On Thu, Dec 10, 2020 at 2:03 AM Alexandre Belloni
+> <alexandre.belloni@bootlin.com> wrote:
+> >
+> > Avoid exposing all the sampling frequencies for chip that only support a
+> > subset.  
+> 
+> > +static ssize_t ms5637_show_samp_freq(struct device *dev, struct device_attribute *attr, char *buf)
+> > +{
+> > +       struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> > +       struct ms_tp_dev *dev_data = iio_priv(indio_dev);
+> > +       int i, len = 0;
+> > +
+> > +       for (i = 0; i <= dev_data->hw->max_res_index; i++)
+> > +               len += scnprintf(buf + len, PAGE_SIZE - len, "%u ", ms5637_samp_freq[i]);  
+> 
+> Doesn't IIO core have a helper?
+read_avail() callback and matching masks provide the infrastructure to do this.
+It's not a huge saving in code by the time you've wired it up, but has the
+advantage that consumer drivers can get hold of the values.  Mind you
+I'm not sure what consumers we are likely to get for pressure drivers any
+time soon.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-index 5fdea6b74ed5..b913a2aee328 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-@@ -244,11 +244,6 @@ &A53_3 {
- 	cpu-supply = <&buck2_reg>;
- };
- 
--&clk {
--	assigned-clocks = <&clk IMX8MQ_AUDIO_PLL1>, <&clk IMX8MQ_AUDIO_PLL2>;
--	assigned-clock-rates = <786432000>, <722534400>;
--};
--
- &dphy {
- 	status = "okay";
- };
--- 
-2.29.2
+> Also, it's better to use sysfs_emit().
+
+New one to me. Thanks.  sysfs_emit_at() here I guess.
+
+Nice.
+
+Jonathan
+
+> 
+> > +       buf[len - 1] = '\n';
+> > +
+> > +       return len;
+> > +}  
+> 
 
