@@ -2,93 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8732D8CA3
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 11:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2022D8CAA
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 12:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394317AbgLMKaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 05:30:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42076 "EHLO
+        id S2394397AbgLMLC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 06:02:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727877AbgLMKaL (ORCPT
+        with ESMTP id S1727708AbgLMLC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 05:30:11 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16B1C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 02:29:29 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1koOd0-0000re-Qj; Sun, 13 Dec 2020 11:29:22 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1koOcz-0000Yt-5x; Sun, 13 Dec 2020 11:29:21 +0100
-Date:   Sun, 13 Dec 2020 11:29:18 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v3] driver core: platform: don't oops in
- platform_shutdown() on unbound devices
-Message-ID: <20201213102918.lpvhzbqwae63nns4@pengutronix.de>
-References: <20201212235533.247537-1-dmitry.baryshkov@linaro.org>
+        Sun, 13 Dec 2020 06:02:58 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A65C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 03:02:17 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id a12so13494684wrv.8
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 03:02:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=REbzHnQpX8ZFKZ/7cj+SuCzQJd+wUlVVcehKx4VnzHw=;
+        b=wmpcNnjg2dS8LcAP80ETORu4VS/cSH0a2uYfQFZB4DAGPSzGiwyXzxmSwmql+X5UJG
+         wImax83S0MM3N+3OTuHqU7tCO/hmCFpUJjKwlY6gqs/nHrtCM1PFSoyocgeKFUHZU5Kk
+         JW4WWaUjshyfXNADsEZ6O3qu5R16AqnJyVxw1XIy6R32gCg8EF11ZhngWICZBugHE0L0
+         xui8tThIXUKa+G9K6JOJPE+/za8lAq8NKozP30yZjtI0/hnLAvCJOrmBCi45yWhJTVYu
+         XEoDBbHRjyfWde/GQSAg57Cc7Q5buuLrmGDIlJLYTcSFUGOnR45OvgiaBgg4iggClPE4
+         DwVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=REbzHnQpX8ZFKZ/7cj+SuCzQJd+wUlVVcehKx4VnzHw=;
+        b=iwMVe9ZNRB3X3lodOO1lQ1d4SkE9wEDZ48fzkJ523tBb5FZyByULxS4Vb51LZD8cSg
+         qbOWvSIqwGjelQT1EyIGM2JQ1EHzWed/b4Y7hriPIYAcjiBeWR0fud8hg1qQ8043/xU6
+         SoHdePaeukMcJXu85rsk/jlGXKKPlqqNeyVePj0vvRcx2l9eAeCqU1IeAzO6ws8lstE9
+         2KNomKA0jaqrie8Rx6vWEon4NlYzT0OPjWOlC+KqZECC/EtYn3uC56Jf0reAssgurXWn
+         4LVCkzR+YkCWRPcuJcjmXvYBn4pYLHQHnfIvOKBZdPz0a2kFTQuzRmCZj89wE39NmORi
+         ZW2w==
+X-Gm-Message-State: AOAM532ShBNc8Gfy8a3EzHVNEl8vLbqoPW12sj+v8QVHCa449nll2r9c
+        1fk5q1Y1AHiu22C4s0nzAhZ1KQ==
+X-Google-Smtp-Source: ABdhPJxcw7hP/Ce0Jao2cU3RgX+XzikJNgWR3P9pEAhLQV4Mjf1BjcxPh4lxYN/ZIwgVwJGyRHrdqg==
+X-Received: by 2002:a5d:4349:: with SMTP id u9mr22841145wrr.319.1607857335973;
+        Sun, 13 Dec 2020 03:02:15 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:ed37:d2d0:f316:c7b3? ([2a01:e34:ed2f:f020:ed37:d2d0:f316:c7b3])
+        by smtp.googlemail.com with ESMTPSA id q17sm25043907wrr.53.2020.12.13.03.02.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 13 Dec 2020 03:02:15 -0800 (PST)
+Subject: Re: [PATCH] thermal/core: Make 'forced_passive' as obsolete candidate
+To:     Matthew Garrett <mjg59@codon.org.uk>
+Cc:     rui.zhang@intel.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, amitk@kernel.org,
+        Matthew Garrett <mjg59@srcf.ucam.org>
+References: <20201208153046.297456-1-daniel.lezcano@linaro.org>
+ <cc2085ca-ada9-d616-eed5-3496889da3bb@linaro.org>
+ <20201212035012.GA11926@codon.org.uk>
+ <20015331-955b-756f-3dce-4eb78e473704@linaro.org>
+ <20201212200806.GA19048@codon.org.uk>
+ <6105a8e5-7590-5ba1-5f2b-aa24bf286150@linaro.org>
+ <20201213011105.GA21385@codon.org.uk>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <a2e3c6ac-b87d-9dec-bf1f-60814739b2fe@linaro.org>
+Date:   Sun, 13 Dec 2020 12:02:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pn44pw7wy433nbaj"
-Content-Disposition: inline
-In-Reply-To: <20201212235533.247537-1-dmitry.baryshkov@linaro.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201213011105.GA21385@codon.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13/12/2020 02:11, Matthew Garrett wrote:
+> On Sun, Dec 13, 2020 at 12:39:26AM +0100, Daniel Lezcano wrote:
+>> On 12/12/2020 21:08, Matthew Garrett wrote:
+>>> Anything that provides a trip point that has no active notifications and
+>>> doesn't provide any information that tells the kernel to poll it.
+>>
+>> I'm not able to create a setup as you describe working correctly with
+>> the forced passive trip point.
+>>
+>> The forced passive trip can not be detected as there is no comparison
+>> with the defined temperature in the thermal_zone_device_update() function.
+> 
+> The logic seems to be in the step_wise thermal governor. I'm not sure
+> why it would be used in thermal_zone_device_update() - the entire point
+> is that we don't get updates from the device?
 
---pn44pw7wy433nbaj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The thermal_zone_device_update() loops the trip points:
 
-On Sun, Dec 13, 2020 at 02:55:33AM +0300, Dmitry Baryshkov wrote:
-> On shutdown the driver core calls the bus' shutdown callback also for
-> unbound devices. A driver's shutdown callback however is only called for
-> devices bound to this driver. Commit 9c30921fe799 ("driver core:
-> platform: use bus_type functions") changed the platform bus from driver
-> callbacks to bus callbacks, so the shutdown function must be prepared to
-> be called without a driver. Add the corresponding check in the shutdown
-> function.
->=20
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Fixes: 9c30921fe799 ("driver core: platform: use bus_type functions")
+        for (count = 0; count < tz->trips; count++)
+                handle_thermal_trip(tz, count);
 
-nice commit log :-)
+As the 'forced_passive' is not in this loop (because it was moved in the
+step_wise governor), the temperature crossing is never detected and the
+'forced_passive' logic in the governor is never called.
 
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+That is something I realized when answering to your comment.
 
-Thanks
-Uwe
+>> If my analysis is correct, this 'feature' is broken since years, more
+>> than 8 years to be exact and nobody complained.
+> 
+> I've no problem with it being removed if there are no users, but in that
+> case the justification should be rewritten - ACPI table updates aren't a
+> complete replacement for the functionality offered (and can't be used if
+> the lockdown LSM is being used in any case).
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Yes, I understand your point. Given it is not working since years, I
+think we can just drop the feature and change the reason of the removal
+in the log, instead of ACPI table updates, just say it is no longer used.
 
---pn44pw7wy433nbaj
-Content-Type: application/pgp-signature; name="signature.asc"
+Does it sound fine ?
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/V7PsACgkQwfwUeK3K
-7AkzbggAoEJb4JKgVNlAmCumDDV2R4Be0oj8KRrGg7Wew75+cL/6MEFauis6hmMo
-WnnLrP3ZPgTndI2g6vsQef2PuVVJS6M+5UQUatONp7KzW0w7o6wZWiQBPcvIfnyX
-qPNvfP1hdVguXpsZpveqLGioufrceR9xbxmHBkAtsZppDcEiPTh8L039qRisNdTg
-IiQz9KqeucFCAA4EglsCEeWtbaRww0WiQ+5NcZjy/rnniyA/GyauvUUxJJHPZr1Y
-bKVH6q/cG1aL3xB0fdEH4X5w29Tay6jZEzqq7X/Jy/5kBn9K3gqz3GYIQ86SwtUt
-3vvfmszT4QaxKXJBXU1jkkaj1QXzJA==
-=fbDd
------END PGP SIGNATURE-----
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
---pn44pw7wy433nbaj--
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
