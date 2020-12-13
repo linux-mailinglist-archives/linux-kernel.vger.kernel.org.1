@@ -2,99 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485412D8E76
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 16:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDEE2D8E7B
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 17:03:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392235AbgLMP7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 10:59:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728704AbgLMP7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 10:59:12 -0500
-X-Gm-Message-State: AOAM533lAUJlq1RylAguuMFUGbjov9HABwrgxuNf+kHhhjtC94Y5vS82
-        0vIu91tf9a02jmbmBE2CN9Xg2fN7EtsWpRrMtw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607875112;
-        bh=TUEXd1NufKhBjH3w0YLBQgI4G4nF26Jpf12BZg2DdkU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vJRnrzs7P6heS4pWkFfwEyWeiYDaKgI8pRS8Vf5gSRcEtXB5EwUnu+gviqkUk2kx8
-         UJtwlNtQFpdWCpJJ4Q3u99L6dtww4ZH8/QzHtnR4TT/9kBlGAdZibwxZquibbdFPsS
-         JGPg4q+sP/2ZD4BbS7ZoMFGDLMxOIH2Z2yJs/3Jx0XM8fVZ523kAmK2y/BRM8MRbkh
-         oVcZLY0MU6VthHzq/YwAAnRAEfeoyBmjEQbReRd3FxlEhBVGXJRShrQfO3VIw4VWUQ
-         vlais4qeT+kLJAkJBZOomUre3HjGXg7d/q5yBUmmKzbjIunjf3i/EbN4EMXzfQNWVv
-         ps7CcvvE3qjjA==
-X-Google-Smtp-Source: ABdhPJzQ7X5J5ZOuZiSIqmWQH6RPNRgCbzq8nEgfd2GgED4aXNSwfqseLuR73PpirrPAI1Pa+7yPj6L3B8AH6G4uL4U=
-X-Received: by 2002:aa7:dbca:: with SMTP id v10mr5100096edt.219.1607875110439;
- Sun, 13 Dec 2020 07:58:30 -0800 (PST)
+        id S2393610AbgLMQCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 11:02:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390756AbgLMQCU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 11:02:20 -0500
+X-Greylist: delayed 288 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 13 Dec 2020 08:01:39 PST
+Received: from chokjaroensteel.com (va163-44-197-135-f.a004.g.bkk1.static.cnode.io [IPv6:2404:8680:1101:302:a163:44:197:135f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAFBCC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 08:01:39 -0800 (PST)
+Received: by chokjaroensteel.com (Postfix, from userid 10000)
+        id 4F2C912A39F; Sun, 13 Dec 2020 22:34:49 +0700 (ICT)
+To:     linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?5bey5ZCR5oKo5o2Q5qy+?=
+X-PHP-Originating-Script: 10000:mnrdatyzpr.php
+Date:   Sun, 13 Dec 2020 22:34:49 +0700
+From:   "Mr. Francois Pinault" <support@chokjaroensteel.com>
+Reply-To: francoispinault8@outlook.com
+Message-ID: <ce8a3becfd20fca41c2056459f4a12d7@www.chokjaroensteel.com>
 MIME-Version: 1.0
-References: <1607746317-4696-1-git-send-email-yongqiang.niu@mediatek.com> <1607746317-4696-4-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1607746317-4696-4-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sun, 13 Dec 2020 23:58:18 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9p0J0uMRu1gzkgCzj3uf=1gKPjubAbkx-aYY=rRuc3Pw@mail.gmail.com>
-Message-ID: <CAAOTY_9p0J0uMRu1gzkgCzj3uf=1gKPjubAbkx-aYY=rRuc3Pw@mail.gmail.com>
-Subject: Re: [PATCH v2, 03/17] dt-bindings: mediatek: add description for
- mt8192 display
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
+注意：如果您在垃圾邮件/大容量文件夹中收到此消息，那是由于Internet服务提供商实施的限制，我们（FrançoisPinault）敦促您真诚对待它。
+***********************************************
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B412=E6=9C=
-=8812=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8B=E5=8D=8812:12=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> add description for mt8192 display
+您好，弗朗索瓦·皮诺特先生向您捐赠了价值£2,000,000.00英镑。 您可以在Wikipedia或Forbes上验证我的个人资料：
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+https://www.forbes.com/profile/francoispinault/
+要么
+https://zh.wikipedia.org/wiki/François_Pinault
 
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt | 2=
- +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp=
-.txt
-> index dfbec76..b4e62ae 100644
-> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
-t
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
-t
-> @@ -44,7 +44,7 @@ Required properties (all function blocks):
->         "mediatek,<chip>-dpi"                   - DPI controller, see med=
-iatek,dpi.txt
->         "mediatek,<chip>-disp-mutex"            - display mutex
->         "mediatek,<chip>-disp-od"               - overdrive
-> -  the supported chips are mt2701, mt7623, mt2712, mt8173 and mt8183.
-> +  the supported chips are mt2701, mt7623, mt2712, mt8173, mt8183 and mt8=
-192.
->  - reg: Physical base address and length of the function block register s=
-pace
->  - interrupts: The interrupt signal from the function block (required, ex=
-cept for
->    merge and split function blocks).
-> --
-> 1.8.1.1.dirty
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+有关更多信息和捐赠索赔，请立即通过以下电子邮件与我联系：francoispinault8@outlook.com
+
+或添加微信：ornella_147
+
+
+此致，
+弗朗索瓦·皮诺特先生
+
