@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC332D8FF6
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB932D8FC9
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390535AbgLMTCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 14:02:39 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:46628 "EHLO
+        id S2393955AbgLMTKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 14:10:30 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:46656 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727708AbgLMTBu (ORCPT
+        with ESMTP id S1727764AbgLMTBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 14:01:50 -0500
-Date:   Sun, 13 Dec 2020 19:01:07 -0000
+        Sun, 13 Dec 2020 14:01:51 -0500
+Date:   Sun, 13 Dec 2020 19:01:08 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607886068;
+        s=2020; t=1607886069;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=bvmAIlVjhtU6GZaTHkP/xJhOOBYnt6v/xtySe+Lxtrk=;
-        b=zm5idZ3Wocy8FEwPtCr0xdqe9TZ0AAhBKALDYgn4nY0Rh05mNPJPXRx0vycisLuvreY1nh
-        ygSO3AO2zDLQW9P3m9FkWAYkcogKjDQet206c4vLlbQjyOZfypMvdtIfGMnD6PYG6vlZRB
-        wIcL68ZJxFIvMIbPdnKoTnHBNKhO/uoX468VMZDecipxDNbkwZHp0MM33l9+MQSAGPqeDN
-        tK4cRMRGhNrVJjyIszFfOZyJqMm/5rrhznKp2uTJNxYlnumuj+AoPG8NaGayckbCFWgnpV
-        TUo1eUWlIoWVwsMMrHSZraGjmKdyAx/3Izw1oXYx6ntmTzoQ8IgjyBP8ietAsQ==
+        bh=tDm9P/LbIofFWkfxL2Svk8ijFLazuTzsi3rIhIdZrac=;
+        b=G5Ajujs3Gybhb4talnEotpZ4uKYOtEae0pPwomvnIkirhJXqVZZVRuBU94A6ZoFdOQq8LT
+        JwCW/AoQkfnOL/Zhoqk9HEKm4YSCE8t+YLhb6DsyolfybL/Dw8Tw8LQzos5+QaR5e1/9CS
+        tQQIqIe5wgLSj674ycCWJEhv1NMIZltInWKrQie052ZU8L+WlGodcqhIfwPdbNcyXMBm8o
+        McbX12oTcXLvLX4V9AmmzgvdwJj93VE1LFF4+xgltcY40sKn9LkHq1/wQmblWFfg86fOg0
+        f7CWjRe/2UXsAUtj4NwQmGh21O7i9ob0kzbXjN0xt5n/VNsqQSNbeX7GoDBK2A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607886068;
+        s=2020e; t=1607886069;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=bvmAIlVjhtU6GZaTHkP/xJhOOBYnt6v/xtySe+Lxtrk=;
-        b=LyCMiR2lPeaGNhy8HzL48f1xrseGhjiN/xsW+YHVnQ0sNhJ8m+adJlL2eeFXgeZuwemgsj
-        4d/QrClgvoJtXUDw==
+        bh=tDm9P/LbIofFWkfxL2Svk8ijFLazuTzsi3rIhIdZrac=;
+        b=woxEt6I9tXByPr4IpYrOCRiZmKZMb0VpXCLUQlUz/A7qJeQC1E1zwf9YkQOrLWuF4Dg4xF
+        W4Z+rFsuhucj7ADQ==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcutorture: Small code cleanups
+Subject: [tip: core/rcu] torture: Prevent jitter processes from delaying failed run
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <160788606789.3364.13277474191983409443.tip-bot2@tip-bot2>
+Message-ID: <160788606892.3364.140833623628200915.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -51,41 +51,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     293b93d66f149a9bd124aae195f048268e11870c
-Gitweb:        https://git.kernel.org/tip/293b93d66f149a9bd124aae195f048268e11870c
+Commit-ID:     c64659ef29e3901be0900ec6fb0485fa3dbdcfd8
+Gitweb:        https://git.kernel.org/tip/c64659ef29e3901be0900ec6fb0485fa3dbdcfd8
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Wed, 23 Sep 2020 16:46:36 -07:00
+AuthorDate:    Fri, 18 Sep 2020 13:26:22 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Fri, 06 Nov 2020 17:13:55 -08:00
+CommitterDate: Fri, 06 Nov 2020 17:13:53 -08:00
 
-rcutorture: Small code cleanups
+torture: Prevent jitter processes from delaying failed run
 
-The rcu_torture_cleanup() function fails to NULL out the reader_tasks
-pointer after freeing it and its fakewriter_tasks loop has redundant
-braces.  This commit therefore cleans these up.
+Even when the kernel panics and qemu dies, runs with jitter enabled will
+continue uselessly until the jitter.sh processes terminate.  This can
+be annoying if a planned one-hour run instead dies during boot.
+
+This commit therefore kills the jitter.sh processes when the run ends
+more than one minute prior to the termination time specified by the
+kvm.sh --duration argument or its default.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 14 +++++++-
+ tools/testing/selftests/rcutorture/bin/kvm.sh            |  5 ++-
+ 2 files changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 4391d2f..e7d52fd 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2496,13 +2496,13 @@ rcu_torture_cleanup(void)
- 			torture_stop_kthread(rcu_torture_reader,
- 					     reader_tasks[i]);
- 		kfree(reader_tasks);
-+		reader_tasks = NULL;
- 	}
- 
- 	if (fakewriter_tasks) {
--		for (i = 0; i < nfakewriters; i++) {
-+		for (i = 0; i < nfakewriters; i++)
- 			torture_stop_kthread(rcu_torture_fakewriter,
- 					     fakewriter_tasks[i]);
--		}
- 		kfree(fakewriter_tasks);
- 		fakewriter_tasks = NULL;
- 	}
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index d04966a..3cd03d0 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -226,6 +226,20 @@ do
+ 				echo "ps -fp $killpid" >> $resdir/Warnings 2>&1
+ 				ps -fp $killpid >> $resdir/Warnings 2>&1
+ 			fi
++			# Reduce probability of PID reuse by allowing a one-minute buffer
++			if test $((kruntime + 60)) -lt $seconds && test -s "$resdir/../jitter_pids"
++			then
++				awk < "$resdir/../jitter_pids" '
++				NF > 0 {
++					pidlist = pidlist " " $1;
++					n++;
++				}
++				END {
++					if (n > 0) {
++						print "kill " pidlist;
++					}
++				}' | sh
++			fi
+ 		else
+ 			echo ' ---' `date`: "Kernel done"
+ 		fi
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index 6eb1d3f..5ad3882 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -459,8 +459,11 @@ function dump(first, pastlast, batchnum)
+ 	print "if test -n \"$needqemurun\""
+ 	print "then"
+ 	print "\techo ---- Starting kernels. `date` | tee -a " rd "log";
+-	for (j = 0; j < njitter; j++)
++	print "\techo > " rd "jitter_pids"
++	for (j = 0; j < njitter; j++) {
+ 		print "\tjitter.sh " j " " dur " " ja[2] " " ja[3] "&"
++		print "\techo $! >> " rd "jitter_pids"
++	}
+ 	print "\twait"
+ 	print "\techo ---- All kernel runs complete. `date` | tee -a " rd "log";
+ 	print "else"
