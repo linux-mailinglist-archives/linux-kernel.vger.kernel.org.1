@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014A62D8B9D
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 06:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CF52D8B9E
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 06:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729288AbgLMFjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 00:39:11 -0500
-Received: from mga04.intel.com ([192.55.52.120]:13243 "EHLO mga04.intel.com"
+        id S1729944AbgLMFjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 00:39:14 -0500
+Received: from mga02.intel.com ([134.134.136.20]:55717 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727865AbgLMFjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 00:39:11 -0500
-IronPort-SDR: BrQexX+9eyVo4iE2fRlxI2M8yJsTlZl9ui5iAgrKS11hwqUTnlEoLtRAnk8HkdJEvGUgVyESZn
- CJndejuvMUMA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9833"; a="172020624"
+        id S1727865AbgLMFjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 00:39:12 -0500
+IronPort-SDR: l5q4eZqR6tjA3Gpae8UqyLYPwCvaoroDuLgmS4GzrlKDpDBKlna50pNFJQRa/+m/aQUSHWj3tx
+ p+oS7nFDYyRg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9833"; a="161637335"
 X-IronPort-AV: E=Sophos;i="5.78,415,1599548400"; 
-   d="scan'208";a="172020624"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2020 21:38:30 -0800
-IronPort-SDR: nxUa8MeLS5oSLjg0d7OSmtfrH7FB8wK7wKIjN8cy/oU5jUvdCtjeJ8tuM7rSB6AqUn+jZst7rR
- X80U181V0vuw==
+   d="scan'208";a="161637335"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2020 21:38:31 -0800
+IronPort-SDR: L2ex9e4dLquHGrr8ro7dTAHijzgMCT5Bz1o4YrZQtUjfA6VqxYteJNylHNNg8XO/aFH3eBvdyn
+ /xJyWdfgpEgQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,415,1599548400"; 
-   d="scan'208";a="329121244"
+   d="scan'208";a="445304176"
 Received: from lkp-server01.sh.intel.com (HELO ecc0cebe68d1) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 12 Dec 2020 21:38:29 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 12 Dec 2020 21:38:29 -0800
 Received: from kbuild by ecc0cebe68d1 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1koK5U-0001fa-Nn; Sun, 13 Dec 2020 05:38:28 +0000
-Date:   Sun, 13 Dec 2020 13:37:37 +0800
+        id 1koK5U-0001fd-Rs; Sun, 13 Dec 2020 05:38:28 +0000
+Date:   Sun, 13 Dec 2020 13:37:40 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/core] BUILD SUCCESS
- a3356a079da268cd35460d9bfe052c74383e179b
-Message-ID: <5fd5a8a1.vNMQR5sBTllXDQDA%lkp@intel.com>
+Subject: [tip:master] BUILD SUCCESS
+ dc780fed5a1be01ece7e0d5588337340a642183c
+Message-ID: <5fd5a8a4.hN0QZ5p6nzWxTnEe%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  timers/core
-branch HEAD: a3356a079da268cd35460d9bfe052c74383e179b  ntp: Fix build error
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: dc780fed5a1be01ece7e0d5588337340a642183c  Merge branch 'core/entry'
 
 elapsed time: 720m
 
-configs tested: 155
+configs tested: 151
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -96,12 +96,6 @@ arm                        multi_v7_defconfig
 powerpc                  mpc885_ads_defconfig
 arm                     davinci_all_defconfig
 sh                        edosk7705_defconfig
-arm                        shmobile_defconfig
-powerpc                 linkstation_defconfig
-sh                        apsh4ad0a_defconfig
-arc                           tb10x_defconfig
-riscv                             allnoconfig
-arm                        multi_v5_defconfig
 sh                           se7724_defconfig
 arm                       imx_v6_v7_defconfig
 powerpc                     tqm8540_defconfig
@@ -125,6 +119,8 @@ mips                       lemote2f_defconfig
 sh                               allmodconfig
 powerpc                      bamboo_defconfig
 mips                           rs90_defconfig
+sh                        apsh4ad0a_defconfig
+riscv                             allnoconfig
 powerpc                 mpc8315_rdb_defconfig
 mips                         tb0287_defconfig
 powerpc                      cm5200_defconfig
