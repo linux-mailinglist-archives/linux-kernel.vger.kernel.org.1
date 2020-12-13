@@ -2,80 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131172D9045
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4682D9049
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390255AbgLMTri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 14:47:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgLMTrh (ORCPT
+        id S1732425AbgLMTwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 14:52:15 -0500
+Received: from relay12.mail.gandi.net ([217.70.178.232]:59121 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725308AbgLMTwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 14:47:37 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C01C0613CF;
-        Sun, 13 Dec 2020 11:46:57 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id o144so13014877ybc.0;
-        Sun, 13 Dec 2020 11:46:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W1lkJR6Tf0DSnFojsG7MMX8zHLQgDTQjXzhBTEJ/2jw=;
-        b=PG7d8+k0vVH/CZnexGwEEFsg8otWhpWCqHVRmhwgJLNIp1T8mhMgEzeSStTtnbXq4Z
-         SJBHXkfB2VA/8WHiN5bMuGY8/Jwnkqgnq3minO/aG+sfx3KY1K8dL//FE5UiNcmObpAB
-         NIAtJlTu1Ai0gJuCLbiO6ottS7Ak+cYWQms/+qOqvWRY40qRuC+66sEMFI3tW3dpaXRd
-         544K2rKZVYywsThZYPkY1EvFawo7ljVDBR6eF40WC/hmath2DSunXP9jRMD3ZsxEE928
-         DgXtpH9a7k6k3IbT7SYJSR0UIFJ1rrenEmv/bnuTBg0QY/y3Uv+Dt8SNmpeJWyinvOv2
-         HrZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W1lkJR6Tf0DSnFojsG7MMX8zHLQgDTQjXzhBTEJ/2jw=;
-        b=GuUW+K1CljGubUwMP/tlYSEdtt36owhXIh36sKzY15RAg77xqIikVdfCSCb7v5iPBC
-         ssTiMH+qRTzCURuI2nRq2fow3QBMAReifif0ePy89/Z8PjKJ0JSnPtT/6Zockh64Vifm
-         NPHEITEYQT4/k5CePAtgNxop9heaVco4ItrHza77r1mPyoOwd4GYwWIgkbBx0x8iUvel
-         6Wp7pccW5mZ8Gvgdz4Sy/01lbu6VAFdVd+tbj10r3xJ/egpapsSeEPVUMiW+VZq3JjpY
-         1UBJmudaPmq6uAcEna5te57ywut2auCWa/FHUG7I3O5aYAOPGOcwWU+RAvelBMrA75Mk
-         t0iw==
-X-Gm-Message-State: AOAM532NYyrF34oh6K4LDYYtqiMJl+0t5K/5LPt/VazQ898FHisgTDiK
-        N89YLB6/lfBbrmvZg62zDh793ZOpBYyP7GD++4kt+OoT
-X-Google-Smtp-Source: ABdhPJxhpX6GnebHkY3TuhpxGk7g9frp5gRKb3YlxLsRdnIolUVmruMsUd3PNtzc+vvVWRINN1Ad1krS5cke2/HYjEI=
-X-Received: by 2002:a25:50a:: with SMTP id 10mr8558198ybf.115.1607888816911;
- Sun, 13 Dec 2020 11:46:56 -0800 (PST)
+        Sun, 13 Dec 2020 14:52:12 -0500
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 23558200002;
+        Sun, 13 Dec 2020 19:51:30 +0000 (UTC)
+Date:   Sun, 13 Dec 2020 20:51:29 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/6] iio:pressure:ms5637: introduce hardware
+ differentiation
+Message-ID: <20201213195129.GN1781038@piout.net>
+References: <20201209234857.1521453-1-alexandre.belloni@bootlin.com>
+ <20201209234857.1521453-3-alexandre.belloni@bootlin.com>
+ <20201213171237.4dfe58f5@archlinux>
 MIME-Version: 1.0
-References: <20201212195548.231494-1-dwaipayanray1@gmail.com>
- <CAKXUXMx9EnhWhGAJf4ousAgkxDUrN=g2zGaPEk6ijJYse7VJaQ@mail.gmail.com>
- <CABJPP5BeB-aXDDk-8vy-8dOaNaM5jitx6QWKtV7Y3zXM5DgvUA@mail.gmail.com> <3ce8fa0c0d7a2c38b532bd4944f4158cfa0db072.camel@perches.com>
-In-Reply-To: <3ce8fa0c0d7a2c38b532bd4944f4158cfa0db072.camel@perches.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sun, 13 Dec 2020 20:46:46 +0100
-Message-ID: <CANiq72kOE3Y0Jji=igG_vqu0MoZyGeJJSfNWwj3ZA4oSikG9eQ@mail.gmail.com>
-Subject: Re: [PATCH] leds: Use DEVICE_ATTR_{RW, RO, WO} macros
-To:     Joe Perches <joe@perches.com>
-Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-leds@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Murphy <dmurphy@ti.com>, Pavel Machek <pavel@ucw.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201213171237.4dfe58f5@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 7:21 PM Joe Perches <joe@perches.com> wrote:
->
-> clang-format is not a tool to rewrite code only neaten its layout.
->
-> coccinelle _might_ be able to do this for limited cases where the
-> show function is in the same compilation unit/file, but even then
-> it would not be a trivial script.
+On 13/12/2020 17:12:37+0000, Jonathan Cameron wrote:
+> >  static const int ms5637_samp_freq[6] = { 960, 480, 240, 120, 60, 30 };
+> >  /* String copy of the above const for readability purpose */
+> >  static const char ms5637_show_samp_freq[] = "960 480 240 120 60 30";
+> > @@ -128,6 +133,7 @@ static const struct iio_info ms5637_info = {
+> >  
+> >  static int ms5637_probe(struct i2c_client *client)
+> >  {
+> > +	const struct ms_tp_data *data = device_get_match_data(&client->dev);
+> 
+> As a follow up to the earlier fun with greybus etc, have to jump through
+> some hoops to have a fallback here if we have a firmware type that can't
+> do get_match_data driver/base/sw_node.c is the one greybus is using.
+> 
+> We have drivers that don't do this because frankly I didn't know about it
+> until a month or two ago.  However, I'm not keen to introduce any
+> more.
+> 
 
-+1 The most robust approach, but the one that is most involved, would
-be a clang-tidy check.
+Couldn't greybus be fixed in that regard? Using the i2c_device_id has
+been deprecated for a while now.
 
-Cheers,
-Miguel
+what we could do is only provide ms5803 support when there is an
+of_node. So this doesn't break the ABI and doesn't break greybus and at
+the same time doesn't unnecessarily add complexity to the probe for
+something that will probably never be used.
+
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
