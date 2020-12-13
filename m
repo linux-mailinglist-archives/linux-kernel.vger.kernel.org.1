@@ -2,48 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D462D8FEC
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 518322D8F9A
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394779AbgLMTTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 14:19:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390858AbgLMTCp (ORCPT
+        id S2389894AbgLMTCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 14:02:30 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:46644 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727749AbgLMTBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 14:02:45 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95143C0619D2;
-        Sun, 13 Dec 2020 11:01:10 -0800 (PST)
+        Sun, 13 Dec 2020 14:01:50 -0500
 Date:   Sun, 13 Dec 2020 19:01:08 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1607886069;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=G7QLHTegqDOMbTL7Eolqj5e3EEvh3LxSWYrSs8xHqV8=;
-        b=u6ferVDrP6I+tUzXNwb14CJchkAx3RfW5So1hzDJ2GJ3iRHEJ+1z3E6kQipFQqfXwOn/iT
-        BBR+Dj198UjJk3dqMmRk+0qdNqaLRVDZLkTmVGHXdeuuxkpV3PU4K595IbEAf5fRyGxfKO
-        ykDGy9Yn4WXgYQkczG8GkX5DRRzYSJKL3FyJluKFkyYRRPojEq6K2v71KO5oLr/SM70re/
-        MQYY+ZND9lYmm3h2uwI7YZv3R2iwpXV+Ggk1O+hVSGPkD8qNaxghThy/Bkxb3SJ/yd6Vne
-        hFDZB0NGS0yDm6hjtkvu5fLfzbb1kVgk9GPmdi3vZSSNcHzkv9YuywrhL13pbg==
+        bh=ioqWbLtfgzyASVT8t6YeJ1VfjgW0TsH3AGUfj13WTiQ=;
+        b=WGIfXH0qbaRga5fs0D6VLw2oUFeHWn5ja+OrgdDA4/2ZoivYBqZq2J+m4e9a0s+Qvr6Bq6
+        xOTBweL7rcK1GZZrkN05fOZVTuhdrjQvKwzZs9ExH5rsC8UMCWGNp1guIDt1nHicT9hB20
+        xHeghQf3mqoaea5cVDXrdpagsIoy2u7M+QtRcCIXfLUgp3KCsR4twXiQHTJrC/qzrubHTp
+        53nTKeRQ2EsoXdy7WwDbgi+YeFJPF711JtU2gIz62ioJC9FJt7TYHdoZ6SRLQqh3ql2B3n
+        F4d+9YVIpyM7zoavwgsyibaqrvUJDHyWJvNn+e+H8bb71ImQLnclnbwoGcTtfg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1607886069;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=G7QLHTegqDOMbTL7Eolqj5e3EEvh3LxSWYrSs8xHqV8=;
-        b=C2gbe4WYv4ghLb1VwYyKZqB6GnGRWX5tVm56bccRIBtqKcmXRn+FWRibterW2WTpOGiw3F
-        grCb492/hI+Ku5DA==
+        bh=ioqWbLtfgzyASVT8t6YeJ1VfjgW0TsH3AGUfj13WTiQ=;
+        b=jPnJW+wxGiSNyFm8U87POlmrp+xvrKLG1TMX0SjlI7IxGPdLhq/Fnia7KWIURSYsI2Q7Jt
+        1HwlQtUiXeZFaiCg==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcutorture: Prevent hangs for invalid arguments
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+Subject: [tip: core/rcu] torture: Force weak-hashed pointers on console log
+Cc:     "Anna-Maria Gleixner" <anna-maria@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <160788606872.3364.1545706199518102462.tip-bot2@tip-bot2>
+Message-ID: <160788606853.3364.18172340506904894589.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -54,48 +52,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     4994684ce10924a0302567c315c91b0a64eeef46
-Gitweb:        https://git.kernel.org/tip/4994684ce10924a0302567c315c91b0a64eeef46
+Commit-ID:     c1e06287583e5ec496e4c02bf5b319e5e41a1fd2
+Gitweb:        https://git.kernel.org/tip/c1e06287583e5ec496e4c02bf5b319e5e41a1fd2
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Fri, 18 Sep 2020 13:30:33 -07:00
+AuthorDate:    Mon, 21 Sep 2020 13:18:48 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Fri, 06 Nov 2020 17:13:53 -08:00
+CommitterDate: Fri, 06 Nov 2020 17:13:54 -08:00
 
-rcutorture: Prevent hangs for invalid arguments
+torture: Force weak-hashed pointers on console log
 
-If an rcutorture torture-test run is given a bad kvm.sh argument, the
-test will complain to the console, which is good.  What is bad is that
-from the user's perspective, it will just hang for the time specified
-by the --duration argument.  This commit therefore forces an immediate
-kernel shutdown if a rcu_torture_init()-time error occurs, thus avoiding
-the appearance of a hang.  It also forces a console splat in this case
-to clearly indicate the presence of an error.
+Although the rcutorture scripting now deals correctly with full-up
+security-induced pointer obfuscation, it is still counter-productive for
+kernel hackers who are analyzing console output.  This commit therefore
+sets the debug_boot_weak_hash kernel boot parameter, which enables
+printing of weak-hashed pointers for torture-test runs.
 
+Please note that this change applies only to runs initiated by the
+kvm.sh scripting.  If you are instead using modprobe and rmmod, it is
+your responsibility to build and boot the underlying kernel to your taste.
+
+Please note further that this change does not result in a security hole
+in normal use.  The rcutorture testing runs with a negligible userspace,
+no networking, and no user interaction.  Besides which, there is no data
+of value that can be extracted from an rcutorture guest OS that could
+not also be extracted from the host that this guest is running on.
+
+Suggested-by: Anna-Maria Gleixner <anna-maria@linutronix.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcutorture.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/bin/functions.sh | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 916ea4f..db37671 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2647,7 +2647,6 @@ rcu_torture_init(void)
- 		for (i = 0; i < ARRAY_SIZE(torture_ops); i++)
- 			pr_cont(" %s", torture_ops[i]->name);
- 		pr_cont("\n");
--		WARN_ON(!IS_MODULE(CONFIG_RCU_TORTURE_TEST));
- 		firsterr = -EINVAL;
- 		cur_ops = NULL;
- 		goto unwind;
-@@ -2815,6 +2814,10 @@ rcu_torture_init(void)
- unwind:
- 	torture_init_end();
- 	rcu_torture_cleanup();
-+	if (shutdown_secs) {
-+		WARN_ON(!IS_MODULE(CONFIG_RCU_TORTURE_TEST));
-+		kernel_power_off();
-+	}
- 	return firsterr;
- }
- 
+diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
+index 51f3464..8266349 100644
+--- a/tools/testing/selftests/rcutorture/bin/functions.sh
++++ b/tools/testing/selftests/rcutorture/bin/functions.sh
+@@ -169,6 +169,7 @@ identify_qemu () {
+ # Output arguments for the qemu "-append" string based on CPU type
+ # and the TORTURE_QEMU_INTERACTIVE environment variable.
+ identify_qemu_append () {
++	echo debug_boot_weak_hash
+ 	local console=ttyS0
+ 	case "$1" in
+ 	qemu-system-x86_64|qemu-system-i386)
