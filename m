@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798752D8D5B
+	by mail.lfdr.de (Postfix) with ESMTP id 013632D8D5A
 	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 14:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406979AbgLMNmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 08:42:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42782 "EHLO
+        id S2436840AbgLMNmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 08:42:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406911AbgLMNk2 (ORCPT
+        with ESMTP id S2406904AbgLMNk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 13 Dec 2020 08:40:28 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4222C0617B0
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 05:39:11 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id d26so533881wrb.12
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 05:39:11 -0800 (PST)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBF8C06138C
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 05:39:13 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id r3so13769405wrt.2
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 05:39:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=cbUcWwmkA9H9YpcVE1GVGOEgOuV0HZe1q4eWGHmdNsE=;
-        b=iHI/sNz1gp8cM/UulK/nrn+fMJm0gW4FrGrgGVU+hRuYfCKy786t+KVZF4nv1adOI3
-         6/c51vX2X8FlzIVsskcuzV66NSG6yRw7loz5fQhdN2BDmb8uE7tyDs0MvQQAPhgoNIuG
-         iWTT4vzbR1A7ehzQyUl1Phz2WCOOgCYvDCKQQEBQVtPjAnOd5mORq/PE4HpnacwUwuCd
-         Tp/ZkFlBB757mZLMjIolC11ws6aCenrMOurenf4a243G0kBAWcbzyaSyhK37A86SnWi1
-         33B8c4qg6sE9VxKGEbuTFOn0cML9KUMUm3J7M8skKm2VdSbaFZv9EB/vsCY2ZGxL3mgY
-         FvhQ==
+        bh=J3PZl3v5letKJ2h+yc7UDgCpdNc6hrV/Unle3u7Kmm4=;
+        b=uW4wb4g3xbWMFVPxRoJnCkwVTFieYy588hVy4kssI1wficjVlmx+g60FiZplY3hP9h
+         Ht1rP0CjIFMBmF01jBxWZmIFZ15IGB4CKIJOYPemXTfhip/Vo3CA07pj/8X/HobqfqJq
+         31ZPRLskDBeHT5hwTpH2Uzl5mqEbC5ICSUNy4YU3C+2q7AUi9k89tyYuOEO7WA0G8bgL
+         PEqhOwrB9Io0vYgKZiev6+pNfkP/6XSHR1U/SOG3dmTHB0UFsSX1GbpkohyArs8MyBFA
+         3osEmK20uZQ+X7LCZy+eh1Hy0ZrHqknKT9/xI6Ew6ntLYF37hK0dIcOs/YYBDMAsMJvl
+         MXuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=cbUcWwmkA9H9YpcVE1GVGOEgOuV0HZe1q4eWGHmdNsE=;
-        b=tLjGFE7PMEpsPf6SyazGrqaBVWGlYlJoaAKZoMrg749EuBsFqVGpUgEehRfTc9mRtQ
-         QQp8IM8UmG9Q4t8RMMlh/t4gut6vquEX3+lbM66th1p0eKzOHb7FvwJUlJGczuHGDHCS
-         f2g6iUHWmiBKJ4rO4cje06eKVDLRf+H8J5lSxqc0g9xql2jvdoM4c9VAUnV4SDdJMCcE
-         or1nNVAjPVMlRxQjlfvxEd9iWNwxikB9t2Yrd0WHIl/vnscOxFAHrx18YVLwHye8J3jB
-         KN0k3OBA0B0L/1GjPt6eVpbSvijL04xbsFe9D1gzHxW+IFbfLlM813Gw833hI3GDnoSx
-         OVYw==
-X-Gm-Message-State: AOAM532+BQIghIEy1roDH/GkwqwCN0qi2cqk/YKwbdK5B8FuAiDA8sLs
-        4fyVgO0DnXwH3Qm4jcMzxrdOTQ==
-X-Google-Smtp-Source: ABdhPJy6/Wpg1M+sZjjuL4em1DWaHSn+xD74cN6YQYjB6D4/4y8nx81SNGwFeicLDUYnKoX68KUxSA==
-X-Received: by 2002:adf:f70c:: with SMTP id r12mr24028297wrp.234.1607866750731;
-        Sun, 13 Dec 2020 05:39:10 -0800 (PST)
+        bh=J3PZl3v5letKJ2h+yc7UDgCpdNc6hrV/Unle3u7Kmm4=;
+        b=HVUFl/+WuvRrM1sx6C5sfN7fzVsh/i/xy62O+baO2/dM0LE/qqJdwAPmAh/kasBtWH
+         h1RiSoECBF9aPrfkd6y2Z7i+RhNlg5ckF655ASwNQ8ZYswAr2kYEtn6qDP3uFfvnQieB
+         ePmA2g8JPPU2h+B5Rd3PzzhWldCsKvJIrE6OE2J8Bi8KTjjeADG1YBuatCIuEIrOPB0E
+         kj32apqSySwwFtWtoU2goScvKjC5ylQouY8h00lGLZeHSNCvUCEU/zGiGHaM+MngyD2C
+         fteYFU7r5WEtR+eeoATSpTpJlnYchodgApNOgLCwoIYqMOL09ATuW+6jbGg/llMZt8bk
+         IqFQ==
+X-Gm-Message-State: AOAM532gM0D0DzUophk8wXABhUvAqPWxih+yA6puVBR03VgPmK7yBO4W
+        mQ3IhTvwwie4eBE5EoAzdEYjoA==
+X-Google-Smtp-Source: ABdhPJzoVLId6O4O2TyX/23t+TdIg3qJ28Ko4evvH2ZY1p5zNJihlFU5bQ0C9SNP50Oz7oEnHGsAOQ==
+X-Received: by 2002:adf:fd42:: with SMTP id h2mr10038786wrs.142.1607866752036;
+        Sun, 13 Dec 2020 05:39:12 -0800 (PST)
 Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id l7sm25180387wme.4.2020.12.13.05.39.09
+        by smtp.gmail.com with ESMTPSA id l7sm25180387wme.4.2020.12.13.05.39.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Dec 2020 05:39:09 -0800 (PST)
+        Sun, 13 Dec 2020 05:39:11 -0800 (PST)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>,
@@ -62,9 +62,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
         James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2 08/11] perf c2c: Refactor node header
-Date:   Sun, 13 Dec 2020 13:38:47 +0000
-Message-Id: <20201213133850.10070-9-leo.yan@linaro.org>
+Subject: [PATCH v2 09/11] perf c2c: Add local variables for output metrics
+Date:   Sun, 13 Dec 2020 13:38:48 +0000
+Message-Id: <20201213133850.10070-10-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201213133850.10070-1-leo.yan@linaro.org>
 References: <20201213133850.10070-1-leo.yan@linaro.org>
@@ -72,67 +72,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The node header array contains 3 items, each item is used for one of
-the 3 flavors for node accessing info.  To extend sorting on all load
-references and not always stick to HITMs, the second header string
-"Node{cpus %hitms %stores}" should be adjusted (e.g. it's changed as
-"Node{cpus %loads %stores}").
+For different display types, it might use different metrics for
+outputting and sorting.  So this patch adds several local variables:
 
-For this reason, this patch changes the node header array to three
-flat variables and uses switch-case in function setup_nodes_header(),
-thus it is easier for altering the header string.
+  "cl_output": pointer for outputting single cache line metrics;
+  "output_str": pointer for outputting cache line metrics;
+  "sort_str": pointer to the sorting metrics.
+
+This is flexsible and the variables can be assigned to different strings
+based on the specified display type.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/builtin-c2c.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+ tools/perf/builtin-c2c.c | 59 ++++++++++++++++++++++------------------
+ 1 file changed, 33 insertions(+), 26 deletions(-)
 
 diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-index 50018bfb1089..846ee58d6cfb 100644
+index 846ee58d6cfb..9342c30d86ee 100644
 --- a/tools/perf/builtin-c2c.c
 +++ b/tools/perf/builtin-c2c.c
-@@ -1806,12 +1806,6 @@ static struct c2c_dimension dim_dso = {
- 	.se		= &sort_dso,
- };
- 
--static struct c2c_header header_node[3] = {
--	HEADER_LOW("Node"),
--	HEADER_LOW("Node{cpus %hitms %stores}"),
--	HEADER_LOW("Node{cpu list}"),
--};
--
- static struct c2c_dimension dim_node = {
- 	.name		= "node",
- 	.cmp		= empty_cmp,
-@@ -2293,9 +2287,27 @@ static int resort_cl_cb(struct hist_entry *he, void *arg __maybe_unused)
- 	return 0;
- }
- 
-+static struct c2c_header header_node_0 = HEADER_LOW("Node");
-+static struct c2c_header header_node_1 = HEADER_LOW("Node{cpus %hitms %stores}");
-+static struct c2c_header header_node_2 = HEADER_LOW("Node{cpu list}");
+@@ -2500,16 +2500,17 @@ static void print_pareto(FILE *out)
+ 	struct perf_hpp_list hpp_list;
+ 	struct rb_node *nd;
+ 	int ret;
++	const char *cl_output;
 +
- static void setup_nodes_header(void)
- {
--	dim_node.header = header_node[c2c.node_info];
-+	switch (c2c.node_info) {
-+	case 0:
-+		dim_node.header = header_node_0;
-+		break;
-+	case 1:
-+		dim_node.header = header_node_1;
-+		break;
-+	case 2:
-+		dim_node.header = header_node_2;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return;
- }
++	cl_output = "cl_num,"
++		    "cl_rmt_hitm,"
++		    "cl_lcl_hitm,"
++		    "cl_stores_l1hit,"
++		    "cl_stores_l1miss,"
++		    "dcacheline";
  
- static int setup_nodes(struct perf_session *session)
+ 	perf_hpp_list__init(&hpp_list);
+-	ret = hpp_list__parse(&hpp_list,
+-				"cl_num,"
+-				"cl_rmt_hitm,"
+-				"cl_lcl_hitm,"
+-				"cl_stores_l1hit,"
+-				"cl_stores_l1miss,"
+-				"dcacheline",
+-				NULL);
++	ret = hpp_list__parse(&hpp_list, cl_output, NULL);
+ 
+ 	if (WARN_ONCE(ret, "failed to setup sort entries\n"))
+ 		return;
+@@ -3053,6 +3054,7 @@ static int perf_c2c__report(int argc, const char **argv)
+ 	OPT_END()
+ 	};
+ 	int err = 0;
++	const char *output_str, *sort_str = NULL;
+ 
+ 	argc = parse_options(argc, argv, options, report_c2c_usage,
+ 			     PARSE_OPT_STOP_AT_NON_OPTION);
+@@ -3129,24 +3131,29 @@ static int perf_c2c__report(int argc, const char **argv)
+ 		goto out_mem2node;
+ 	}
+ 
+-	c2c_hists__reinit(&c2c.hists,
+-			"cl_idx,"
+-			"dcacheline,"
+-			"dcacheline_node,"
+-			"dcacheline_count,"
+-			"percent_hitm,"
+-			"tot_hitm,lcl_hitm,rmt_hitm,"
+-			"tot_recs,"
+-			"tot_loads,"
+-			"tot_stores,"
+-			"stores_l1hit,stores_l1miss,"
+-			"ld_fbhit,ld_l1hit,ld_l2hit,"
+-			"ld_lclhit,lcl_hitm,"
+-			"ld_rmthit,rmt_hitm,"
+-			"dram_lcl,dram_rmt",
+-			c2c.display == DISPLAY_TOT ? "tot_hitm" :
+-			c2c.display == DISPLAY_LCL ? "lcl_hitm" : "rmt_hitm"
+-			);
++	output_str = "cl_idx,"
++		     "dcacheline,"
++		     "dcacheline_node,"
++		     "dcacheline_count,"
++		     "percent_hitm,"
++		     "tot_hitm,lcl_hitm,rmt_hitm,"
++		     "tot_recs,"
++		     "tot_loads,"
++		     "tot_stores,"
++		     "stores_l1hit,stores_l1miss,"
++		     "ld_fbhit,ld_l1hit,ld_l2hit,"
++		     "ld_lclhit,lcl_hitm,"
++		     "ld_rmthit,rmt_hitm,"
++		     "dram_lcl,dram_rmt";
++
++	if (c2c.display == DISPLAY_TOT)
++		sort_str = "tot_hitm";
++	else if (c2c.display == DISPLAY_RMT)
++		sort_str = "rmt_hitm";
++	else if (c2c.display == DISPLAY_LCL)
++		sort_str = "lcl_hitm";
++
++	c2c_hists__reinit(&c2c.hists, output_str, sort_str);
+ 
+ 	ui_progress__init(&prog, c2c.hists.hists.nr_entries, "Sorting...");
+ 
 -- 
 2.17.1
 
