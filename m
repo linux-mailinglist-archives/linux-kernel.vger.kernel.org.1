@@ -2,229 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390A32D90ED
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 23:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 966CE2D90F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 23:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406711AbgLMWaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 17:30:24 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18438 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731175AbgLMWaC (ORCPT
+        id S2406833AbgLMWgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 17:36:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727958AbgLMWgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 17:30:02 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BDMBj9G059546;
-        Sun, 13 Dec 2020 17:29:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=V1zmJvv/J3Tu5Mv95QCY0IBPJcTkOgwk4YgXrqAO/4Y=;
- b=hNxa4ezFneSS1MzDUBGKBAgDA+H3ZsflcGMkt7riU//8aByBlweOpOsvCxyxbVrObCSx
- QibWQX3fUL/o2yBEYiomUyxIPs8DAPTf00PFfRk6ixJYSTjRTeweuC1uaVTXdgDmCx3e
- /FrFrzIB0orWysdl20dD3NE+jkw1CG964p70lgSjoEfrMmcuPXdEUD9iqtGOYjHCBch1
- IUrPLev1ON0j/5U69rqS0JLlyev6usHQie9VLVtVvmf1VMEVAharzKq4V9vk3g90h6su
- EhlGt8C5zkLe3ef0gt/CYNIbT6uCnUzdfLmXxF7H25DedrgRfxzf7qUMNZZIIX8xCQcn cQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35duhkg9ww-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 13 Dec 2020 17:29:03 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BDMS13G108405;
-        Sun, 13 Dec 2020 17:29:03 -0500
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35duhkg9w7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 13 Dec 2020 17:29:03 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BDMSAL2015673;
-        Sun, 13 Dec 2020 22:29:02 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma04wdc.us.ibm.com with ESMTP id 35cng8kf3d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 13 Dec 2020 22:29:02 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BDMT14X24510782
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 13 Dec 2020 22:29:01 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 297FD7805C;
-        Sun, 13 Dec 2020 22:29:01 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 13C6D7805E;
-        Sun, 13 Dec 2020 22:28:58 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.80.214.106])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Sun, 13 Dec 2020 22:28:57 +0000 (GMT)
-Message-ID: <5d0085a960956ce8d9eae06465313012d448189c.camel@linux.ibm.com>
-Subject: Re: [PATCH] KVM/SVM: add support for SEV attestation command
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Brijesh Singh <brijesh.singh@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     kvm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        John Allen <john.allen@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Date:   Sun, 13 Dec 2020 14:28:56 -0800
-In-Reply-To: <78e18a3d-900b-fac5-19ca-c2defeb8d73a@amd.com>
-References: <20201204212847.13256-1-brijesh.singh@amd.com>
-         <CAMj1kXFkyJwZ4BGSU-4UB5VR1etJ6atb7YpWMTzzBuu9FQKagA@mail.gmail.com>
-         <78e18a3d-900b-fac5-19ca-c2defeb8d73a@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Sun, 13 Dec 2020 17:36:37 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CBA7C0613D6;
+        Sun, 13 Dec 2020 14:35:57 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id i9so14598699wrc.4;
+        Sun, 13 Dec 2020 14:35:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=T/iMHlNe3EXqKdrKSSOGAg78Pv8UK8/sm1Ps+5hAae8=;
+        b=QK+uEcUR3n45dcppnC8rUI7SUt+EekvZqDXgpILUe5MQzMidUgXUdXP6v2zHyi7et7
+         goQaIJNNrV/2I3d9VJvUg6zH8xL6UGl5CevK8Xn4QzGwy7q5cPHyhG0BXMXtLb1+IHke
+         pmBO18GSzVNgq/x7Ex+ZKUCiLvPSoM8SLfHOqaN4EiYNmvd8ZRyAmX7BsMDaS+LhQRCD
+         0mTVnPddDK6nW4sfRG/4IzHu6oSJvw0DjzizGLsnRPholfMkPgyexF8zPYCvNoozF/Ct
+         9NXpcNyVEYZnh+pUR/vvtB1T0AKqAZyizff6x5Zx9LfRWHVjMxSQo9QhAzogmtTUsw5Z
+         ZL5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=T/iMHlNe3EXqKdrKSSOGAg78Pv8UK8/sm1Ps+5hAae8=;
+        b=J4ph4u1OWb4oXiofemhKInPZ8v8qoqvEdSUcx9n9HbxadVj0tcCIxFd74aofApMrgY
+         LP4uJcIspdjSxHsHR9j4JeXce1OSK7aiW3txXmdaAvD8xAJiWYQD5UfSQUr8uG8U3pU+
+         jptYL2VAQ42C/UZObFnj7Izxl3syZ7d1Ub8oFgUoaoeN7d6DFRG397FppANddFAtsY6k
+         vGh/vsk1k3bTEhVqZZum15aF8pnkBmj2Yk1lHgUcnDXeS/hOy1vmQMbGAesuOhqEefuq
+         aQZio+Z42k6VTGCYxx754zP+SR3mIJTTqDXk6zwiQJQA4OBf13m2Lpf9oKgh+aRltzmR
+         Zjfw==
+X-Gm-Message-State: AOAM530iFOw3ZKnv+tPxYHmeNE/aCJB8XcW9hRjzZDmDCSsO9DYQbGBp
+        vARO3zF4y/dpP90AhrGa1pR5PkJo7kLtmA==
+X-Google-Smtp-Source: ABdhPJyg/gyoUQy3dn1LFAtjEiAf3m7z89efUHD5gS8vI43ipZaPHHNRS7jKvU5zRONSbr+6BukzGg==
+X-Received: by 2002:adf:a551:: with SMTP id j17mr25470714wrb.217.1607898955703;
+        Sun, 13 Dec 2020 14:35:55 -0800 (PST)
+Received: from [192.168.8.124] ([85.255.232.163])
+        by smtp.gmail.com with ESMTPSA id h98sm31473084wrh.69.2020.12.13.14.35.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 13 Dec 2020 14:35:55 -0800 (PST)
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1605799583.git.asml.silence@gmail.com>
+ <9bc27cb3ef6ab49b6b2ccee3db6613838aee17af.1605799583.git.asml.silence@gmail.com>
+ <20201119170340.GA6179@infradead.org>
+ <ce79f47e-2ec0-ba29-a991-c537a8990dee@gmail.com>
+ <20201211020100.GB107834@ZenIV.linux.org.uk>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: [PATCH 2/2] iov_iter: optimise iter type checking
+Message-ID: <857a3161-fbd5-5ff8-d733-ca57923302b5@gmail.com>
+Date:   Sun, 13 Dec 2020 22:32:37 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-13_06:2020-12-11,2020-12-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- impostorscore=0 spamscore=0 clxscore=1011 mlxscore=0 lowpriorityscore=0
- phishscore=0 malwarescore=0 priorityscore=1501 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012130169
+In-Reply-To: <20201211020100.GB107834@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-12-09 at 21:25 -0600, Brijesh Singh wrote:
-> Noted, I will send v2 with these fixed.
+On 11/12/2020 02:01, Al Viro wrote:
+> On Thu, Nov 19, 2020 at 05:12:44PM +0000, Pavel Begunkov wrote:
+>> On 19/11/2020 17:03, Christoph Hellwig wrote:
+>>> On Thu, Nov 19, 2020 at 03:29:43PM +0000, Pavel Begunkov wrote:
+>>>> The problem here is that iov_iter_is_*() helpers check types for
+>>>> equality, but all iterate_* helpers do bitwise ands. This confuses
+>>>> a compiler, so even if some cases were handled separately with
+>>>> iov_iter_is_*(), it can't eliminate and skip unreachable branches in
+>>>> following iterate*().
+>>>
+>>> I think we need to kill the iov_iter_is_* helpers, renumber to not do
+>>> the pointless bitmask and just check for equality (might turn into a
+>>> bunch of nice switch statements actually).
+>>
+>> There are uses like below though, and that would also add some overhead
+>> on iov_iter_type(), so it's not apparent to me which version would be
+>> cleaner/faster in the end. But yeah, we can experiment after landing
+>> this patch.
+>>
+>> if (type & (ITER_BVEC|ITER_KVEC))
+> 
+> There are exactly 3 such places, and all of them would've been just as well
+> with case ITER_BVEC: case ITER_KVEC: ... in a switch.
+> 
+> Hmm...  I wonder which would work better:
+> 
+> enum iter_type {
+>         ITER_IOVEC = 0,
+>         ITER_KVEC = 2,
+>         ITER_BVEC = 4,
+>         ITER_PIPE = 6,
+>         ITER_DISCARD = 8,
+> };
+> iov_iter_type(iter)	(((iter)->type) & ~1)
+> iov_iter_rw(iter)	(((iter)->type) & 1)
+> 
+> or
+> 
+> enum iter_type {
+>         ITER_IOVEC,
+>         ITER_KVEC,
+>         ITER_BVEC,
+>         ITER_PIPE,
+>         ITER_DISCARD,
+> };
+> iov_iter_type(iter)	(((iter)->type) & (~0U>>1))
+> // callers of iov_iter_rw() are almost all comparing with explicit READ or WRITE
+> iov_iter_rw(iter)	(((iter)->type) & ~(~0U>>1) ? WRITE : READ)
+> with places like iov_iter_kvec() doing
+> 	i->type = ITER_KVEC | ((direction == WRITE) ? BIT(31) : 0);
+> 
+> Preferences?
 
-I ran a test on this.  It turns out for rome systems you need firmware
-md_sev_fam17h_model3xh_0.24b0A (or later) installed to get this and the
-QEMU patch with the base64 decoding fixed, but with that
+For the bitmask version (with this patch) we have most of
+iov_iter_type() completely optimised out. E.g. identical
 
-Tested-by: James Bottomley <jejb@linux.ibm.com>
+iov_iter_type(i) & ITER_IOVEC <=> iter->type & ITER_IOVEC
 
-Attached is the test programme I used.
+It's also nice to have iov_iter_rw() to be just
+(type & 1), operations with which can be optimised in a handful of ways.
 
-James
+Unless the compiler would be able to heavily optimise switches,
+e.g. to out-of-memory/calculation-based jump tables, that I doubt,
+I'd personally leave it be. Though, not like it should matter much.
 
----
-
-#!/usr/bin/python3
-##
-# Python script get an attestation and verify it with the PEK
-#
-# This assumes you've already exported the pek.cert with sev-tool
-# from https://github.com/AMDESE/sev-tool.git
-#
-# sev-tool --export_cert_chain
-#
-# creates several files, the only one this script needs is pek.cert
-#
-# Tables and chapters refer to the amd 55766.pdf document
-#
-# https://www.amd.com/system/files/TechDocs/55766_SEV-KM_API_Specification.pdf
-##
-import sys
-import os 
-import base64
-import hashlib
-from argparse import ArgumentParser
-from Crypto.PublicKey import ECC
-from Crypto.Math.Numbers import Integer
-from git.qemu.python.qemu import qmp
-
-if __name__ == "__main__":
-    parser = ArgumentParser(description='Inject secret into SEV')
-    parser.add_argument('--pek-cert',
-                        help='The Platform DH certificate in binary form',
-                        default='pek.cert')
-    parser.add_argument('--socket',
-                        help='Socket to connect to QMP on, defaults to localhost:6550',
-                        default='localhost:6550')
-    args = parser.parse_args()
-
-    if (args.socket[0] == '/'):
-        socket = args.socket
-    elif (':' in args.socket):
-        s = args.socket.split(':')
-        socket = (s[0], int(s[1]))
-    else:
-        parse.error('--socket must be <host>:<port> or /path/to/unix')
-
-    fh = open(args.pek_cert, 'rb')
-    pek = bytearray(fh.read())
-    curve = int.from_bytes(pek[16:20], byteorder='little')
-    curves = {
-        1: 'p256',
-        2: 'p384'
-        }
-    Qx = int.from_bytes(bytes(pek[20:92]), byteorder='little')
-    Qy = int.from_bytes(bytes(pek[92:164]), byteorder='little')
-
-    pubkey = ECC.construct(point_x=Qx, point_y=Qy, curve=curves[curve])
-
-    Qmp = qmp.QEMUMonitorProtocol(address=socket);
-    Qmp.connect()
-    caps = Qmp.command('query-sev')
-    print('SEV query found API={api-major}.{api-minor} build={build-id} policy={policy}\n'.format(**caps))
-
-    nonce=os.urandom(16)
-
-    report = Qmp.command('query-sev-attestation-report',
-                         mnonce=base64.b64encode(nonce).decode())
-
-    a = base64.b64decode(report['data'])
-
-    ##
-    # returned data is formulated as Table 60. Attestation Report Buffer
-    ##
-    rnonce = a[0:16]
-    rmeas = a[16:48]
-
-    if (nonce != rnonce):
-        sys.exit('returned nonce doesn\'t match input nonce')
-
-    policy = int.from_bytes(a[48:52], byteorder='little')
-    usage = int.from_bytes(a[52:56], byteorder='little')
-    algo = int.from_bytes(a[56:60], byteorder='little')
-
-    if (policy != caps['policy']):
-        sys.exit('Policy mismatch:', policy, '!=', caps['policy'])
-
-    if (usage != 0x1002):
-        sys.exit('error PEK is not specified in usage: ', usage)
-
-    if (algo == 0x2):
-        h = hashlib.sha256()
-    elif (algo == 0x102):
-        ##
-        # The spec (6.8) says the signature must be ECDSA-SHA256 so this
-        # should be impossible, but it turns out to be the way our
-        # current test hardware produces its signature
-        ##
-        h = hashlib.sha384()
-    else:
-        sys.exit('unrecognized signing algorithm: ', algo)
-
-    h.update(a[0:52])
-
-    sig = a[64:208]
-    r = int.from_bytes(sig[0:72],byteorder='little')
-    s = int.from_bytes(sig[72:144],byteorder='little')
-    ##
-    # subtlety: r and s are little (AMD defined) z is big (crypto requirement)
-    ##
-    z = int.from_bytes(h.digest(), byteorder='big')
-
-    ##
-    # python crypto doesn't have a way of passing in r and s as
-    # integers and I'm not inclined to wrap them up as a big endian
-    # binary signature to have Signature.DSS unwrap them again, so
-    # call the _verify() private interface that does take integers
-    ##
-    if (not pubkey._verify(Integer(z), (Integer(r), Integer(s)))):
-        sys.exit('returned signature did not verify')
-
-    print('usage={usage}, algorithm={algo}'.format(usage=hex(usage),
-                                                   algo=hex(algo)))
-    print('ovmf-hash: ', rmeas.hex())
-
+-- 
+Pavel Begunkov
