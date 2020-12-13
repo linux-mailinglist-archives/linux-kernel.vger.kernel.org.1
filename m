@@ -2,137 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DEA2D9123
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 00:17:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7732D9129
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 00:28:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730613AbgLMXQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 18:16:42 -0500
-Received: from vern.gendns.com ([98.142.107.122]:52546 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729616AbgLMXQJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 18:16:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=zyX8hLy2iIEuQf2PAeLxUnbs+rlbHoQgAw1c0qZ61gU=; b=CPGnz8S9nYyg8v5NuWAmTtJEur
-        YQCJPYgVhwHp54+Gzr2+NpvVK3uyzUP4SHUFv8ZcXZuI8TaKLOu2DTRKbbyQqctBa24P/3QTR+Fkv
-        PNuZZlJ8OwMKtlvxAKjl47/xc5OJEHkDR3yFqcQzwk4ETFjsHLsNMmadv0Q2uO5pmi114ZFkcr+HE
-        Fhlq/ld2MySrlodCtsEsRxwEB3FFNEZc9M0ezHrKMH5fGLlarhf1q74ZgCcsQ+AWe05I3u6hTWMr3
-        uzSOMK2rcAF5+6gsHFqyuHYsCmsbJtJ7AvXt11zNkgD1ibtqqm1NfGqx1uYK02F3xfglu4+vWGKf9
-        efsKoClg==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:38102 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1koaaB-0008Rk-QQ; Sun, 13 Dec 2020 18:15:15 -0500
-Subject: Re: [PATCH v6 0/5] Introduce the Counter character device interface
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
-Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
-References: <cover.1606075915.git.vilhelm.gray@gmail.com>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <6f0d78ae-9724-f67f-f133-a1148a5f1688@lechnology.com>
-Date:   Sun, 13 Dec 2020 17:15:14 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2405965AbgLMX0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 18:26:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730631AbgLMX0X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 18:26:23 -0500
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55712C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 15:25:43 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id bd6so7051351qvb.9
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 15:25:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KtQJ72HQtdfcAffC0RWWjlj3EllHxGw6h8fIo2FDXKo=;
+        b=c20gFRT4k1+LbDU6DCix8rivM3H0Hven+F+jL8v26xgJLS/8Kq0bMQdJKaeXBFZeIK
+         0SrgULTgkelJ9h0xkPQZ3tXqHsK2IdX9y0tHHRLu5LyzPjXRtKe3R7fEAKjpgMQhUaOT
+         gqIarCWD0KOrwj/Xemc6+DPlDaKAx/sr2c0SNnSSGi0STCttOi+DaIfHAcwXyjHfeijX
+         +NV8fARVH/k3DDRxjjzUazdFT+eu17cTf/Q4UrEjLJ8vaCBahqaMi9c/V9/qmAoJCmo2
+         8Mp4mfTWWT1UUXx6L7oi1whCxuqwAv9RZQSBYMvdlbl5eUVuDz8ykWfWgks2epfLKmoc
+         Sn4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KtQJ72HQtdfcAffC0RWWjlj3EllHxGw6h8fIo2FDXKo=;
+        b=k6Pcty+Z5GDWC7AlaSxJUW2KAMP1bwX39WWoXgDJBp8JKb9Jqyk+mSHSXAz1bMkl+B
+         nGPFYpsTMh7o/EJ5Hi5WbvoMYyktpdZ2r2Lw+M1ELsEqUfpNVM+6d4T91sPB1XkJJuZt
+         OW9dRCSW++EcoFV6qIeF2utgYCLI0hakl1Rx/1EgSm7K9gvJsHDB9JLfVBKmXmWD8dip
+         dx495VP5q5Ro8rbdVT20OjUSEmi6Y07iQ70AdYkmkNuTfyeXpM4ZvNI/v13EXfTghvjb
+         dbBZBryrMl7+Pct+CCtGh3/Ss+9NdIj0dh36XeaaSI/ZCzlg4Et/5oK0AVDr4TNU+gMI
+         IBqg==
+X-Gm-Message-State: AOAM530c+FPpA31ij3Sb9TJp1hFO+57gr7RHj9We7vHFVywc//lFX7aW
+        ZQm0cRK4RIYdReOAfvGHpcNE0JoP4yNforAYEsE=
+X-Google-Smtp-Source: ABdhPJyH1OaT8lJP0r7mWKBxAGtDW5OL1rUPU//e2Go/Hk1RUMYbd7SIA0MYUoCS+yqpcQPYFHEZ6PGVacMO15N0oAQ=
+X-Received: by 2002:a0c:dd85:: with SMTP id v5mr29860078qvk.60.1607901942475;
+ Sun, 13 Dec 2020 15:25:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cover.1606075915.git.vilhelm.gray@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+References: <20201201102711.8727-1-p.yadav@ti.com> <20201201102711.8727-2-p.yadav@ti.com>
+ <20201208181050.z747aiiccoxj6xqz@ti.com>
+In-Reply-To: <20201208181050.z747aiiccoxj6xqz@ti.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Mon, 14 Dec 2020 00:25:30 +0100
+Message-ID: <CAFLxGvz2LnHBFK61Dp7T-aSqdLY1xVLmuHQyOgxMQ9bmcZQK_Q@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] UBI: Do not zero out EC and VID on ECC-ed NOR flashes
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/20 2:29 PM, William Breathitt Gray wrote:
-> 
-> 1. Should standard Counter component data types be defined as u8 or u32?
-> 
->     Many standard Counter component types such COUNTER_COMP_SIGNAL_LEVEL
->     have standard values defined (e.g. COUNTER_SIGNAL_LEVEL_LOW and
->     COUNTER_SIGNAL_LEVEL_HIGH). These values are currently handled by the
->     Counter subsystem code as u8 data types.
-> 
->     If u32 is used for these values instead, C enum structures could be
->     used by driver authors to implicitly cast these values via the driver
->     callback parameters.
-> 
->     This question is primarily addressed to David Lechner. I'm somewhat
->     confused about how this setup would look in device drivers. I've gone
->     ahead and refactored the code to support u32 enums, and pushed it to
->     a separate branch on my repository called counter_chrdev_v6_u32_enum:
->     https://gitlab.com/vilhelmgray/iio/-/tree/counter_chrdev_v6_u32_enum
-> 
->     Please check it out and let me know what you think. Is this the
->     support you had in mind? I'm curious to see an example of how would
->     your driver callback functions would look in this case. If everything
->     works out fine, then I'll submit this branch as v7 of this patchset.
+On Tue, Dec 8, 2020 at 7:17 PM Pratyush Yadav <p.yadav@ti.com> wrote:
+>
+> Richard,
+>
+> On 01/12/20 03:57PM, Pratyush Yadav wrote:
+> > For NOR flashes EC and VID are zeroed out before an erase is issued to
+> > make sure UBI does not mistakenly treat the PEB as used and associate it
+> > with an LEB.
+> >
+> > But on some flashes, like the Cypress Semper S28 SPI NOR flash family,
+> > multi-pass page programming is not allowed on the default ECC scheme.
+> > This means zeroing out these magic numbers will result in the flash
+> > throwing a page programming error.
+> >
+> > Do not zero out EC and VID for such flashes. A writesize > 1 is an
+> > indication of an ECC-ed flash.
+>
+> Patches 2/3 and 3/3 have been picked up in the spi-nor tree. Can you
+> please pick this patch up?
 
-I haven't had time to look at this in depth, but just superficially looking
-at it, it is mostly there. The driver callback would just use the enum type
-in place of u32. For example:
+Yep, patch is in my next tree.
 
-static int ti_eqep_function_write(struct counter_device *counter,
-				  struct counter_count *count,
-				  enum counter_function function)
-
-and the COUNTER_FUNCTION_* constants would be defined as:
-
-enum counter_function {
-	COUNTER_FUNCTION_INCREASE,
-	...
-};
-
-instead of using #define macros.
-
-One advantage I see to using u8, at least in the user API data structures,
-is that it increases the number of events that fit in the kfifo buffer by
-a significant factor.
-
-And that is not to say that we couldn't do both: have the user API structs
-use u8 for enum values and still use u32/strong enum types internally in
-the callback functions.
-
-
-
-> 
-> 2. How should we handle "raw" timestamps?
-> 
->     Ahmad Fatoum brought up the possibility of returning "raw" timestamps
->     similar to what the network stack offers (see the network stack
->     SOF_TIMESTAMPING_{RAW,SYS}_HARDWARE support).
-> 
->     I'm not very familiar with the networking stack code, but if I
->     understand correctly the SOF_TIMESTAMPING_RAW_HARDWARE timestamps are
->     values returned from the device. If so, I suspect we would be able to
->     support these "raw" timestamps by defining them as Counter Extensions
->     and returning them in struct counter_event elements similar to the
->     other Extension values.
-
-Is nanosecond resolution good enough? In the TI eQEP driver I considered
-returning the raw timer value, but quickly realized that it would not be
-very nice to expect the user code to know the clock rate of the timer. It
-was very easy to get the clock rate in the kernel and just convert the
-timer value to nanoseconds before returning it to userspace.
-
-So if there is some specialized case where it can be solved no other way
-besides using raw timestamps, then sure, include it. Otherwise I think we
-should stick with nanoseconds for time values when possible.
+-- 
+Thanks,
+//richard
