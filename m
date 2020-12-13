@@ -2,84 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FA02D8E8C
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 17:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA562D8E96
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 17:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393408AbgLMQOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 11:14:35 -0500
-Received: from labrats.qualcomm.com ([199.106.110.90]:3392 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730046AbgLMQO2 (ORCPT
+        id S2436503AbgLMQRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 11:17:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730046AbgLMQRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 11:14:28 -0500
-IronPort-SDR: RTHi7lNhX826BLwrhdMhi4peiNTk/Gh1xfpNJwqudLz6LE/DEA7iBp3q8X3ywFtsbUBEXvquzu
- oyW4aFe6dQNhCd4Tg+5SsOIAzC2xM0kJE71RnOA/OjaTyjCYDF9DHdGnbpWC7VLkeivZUPEKyr
- fl4mbB13//IplX+G2g6ARAJJcngPbrzYJvbjaAS+vNrdzkHy3ohRAzAlqdNcNdndxW/GpbWkYE
- 08uBiC8BHp71Cy9l5NFBzzPzVvOMuqW4UcrIb8sm0AiaIkFLzZnXOvvv1eaKZWHnS+EOOSmg73
- Hxk=
-X-IronPort-AV: E=Sophos;i="5.78,416,1599548400"; 
-   d="scan'208";a="47580261"
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by labrats.qualcomm.com with ESMTP; 13 Dec 2020 08:13:37 -0800
-X-QCInternal: smtphost
-Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
-  by ironmsg04-sd.qualcomm.com with ESMTP; 13 Dec 2020 08:13:36 -0800
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id E3B2B21616; Sun, 13 Dec 2020 08:13:36 -0800 (PST)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 3/3] scsi: ufs: Revert "Make sure clk scaling happens only when HBA is runtime ACTIVE"
-Date:   Sun, 13 Dec 2020 08:13:19 -0800
-Message-Id: <1607876000-3293-4-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607876000-3293-1-git-send-email-cang@codeaurora.org>
-References: <1607876000-3293-1-git-send-email-cang@codeaurora.org>
+        Sun, 13 Dec 2020 11:17:16 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F294CC0613CF;
+        Sun, 13 Dec 2020 08:16:35 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id d27so16390926oic.0;
+        Sun, 13 Dec 2020 08:16:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wn3kZ9eoiz2kfwwRpuyMg/j17oBtSySw24zP5dlXSfI=;
+        b=qooO/KV5EjNcitWHFP/0gcFvFLwMLFBM24mZ2h0icy1TDAuOA5x8QR1oxR3LPBfQAJ
+         PUXL3SdMGXEdtvVFM0m5POCU5gi2b3FGsEyCNvWf5XaS1JBiOxXjo2tIplLYx24664n6
+         FgGrVU6o6IdmjjyM/mybtmKchUJnbBdaDn7vMmOHCfBS9neOlwAkD5Aso4bmAS8S1ZGs
+         wZjVsSMct1mwyfNNXaOVM/LELQphf5ipME9yifPTLGxcsyi1vkmk3fhCctiEwmKRVCST
+         7NmE0g6t2GGRBESY69T3UdUuV0XnFHdu8nrhdFvkGwLNX0Iv3T7BK+NEhquXmpGZO8qt
+         6LAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wn3kZ9eoiz2kfwwRpuyMg/j17oBtSySw24zP5dlXSfI=;
+        b=P0B8sANdkoYKjIt7kSCp2yNXWnqiQTIFHyc4e42+XqBUe/BQ1NfWsxnPu8eTjXK4MO
+         E+J0wlVkw/bD4KZH8suybgTziCoeHBoq2Di7M3RtmmK5gqunAUySqoAy2nc35KzNBF4h
+         C63bEq4OdCLr4e8sb9sCJza/kewn0p3ZoZioZ5ZKOGLszX4alKOioiD4E7Lhb1OwzLSd
+         74sfe5+xXFzii1BlfNAlhgQy8COIu+4t2WsVGl7z7Bs0ZgfJp1ZjAMmqVKJrYDNvp/0o
+         0PzTwK+nYX4HJ3okEB6tlsnJjTi1gbllBdLulwqeRLmMZcVIqk2qhtNIP9KuVdnB/B0F
+         o4CQ==
+X-Gm-Message-State: AOAM530UuBB7FkyQnHu4qcWKamycIK4ARzTqRY8C7PO39rImOVn0dD/o
+        F18rIG2sZA5uN760XT8elBc=
+X-Google-Smtp-Source: ABdhPJzCUnsh2yzJjDGf2Ifk+qHTgOCfGhjh87nCxzS2MMtIDKjLjscKkMo+yuxozRdN4S6HI/jZhA==
+X-Received: by 2002:a05:6808:3b8:: with SMTP id n24mr15263083oie.89.1607876195391;
+        Sun, 13 Dec 2020 08:16:35 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m10sm3644548oig.27.2020.12.13.08.16.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 13 Dec 2020 08:16:34 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 13 Dec 2020 08:16:33 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     heiko@sntech.de, robh+dt@kernel.org, wim@linux-watchdog.org,
+        jamie@jamieiles.com, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-binding: watchdog: add Rockchip compatibles to
+ snps,dw-wdt.yaml
+Message-ID: <20201213161633.GA44820@roeck-us.net>
+References: <20201116142539.12377-1-jbx6244@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116142539.12377-1-jbx6244@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 73cc291c27024 ("Make sure clk scaling happens only when HBA is
-runtime ACTIVE") is no longer needed since commit f7a42540928a8 ("scsi:
-ufs: Protect some contexts from unexpected clock scaling") is a more
-mature fix to protect UFS LLD stability from clock scaling invoked through
-sysfs nodes by users.
+On Mon, Nov 16, 2020 at 03:25:39PM +0100, Johan Jonker wrote:
+> The Rockchip watchdog compatibles below are already in use,
+> but somehow never added to a document,
+> so add them to the snps,dw-wdt.yaml file.
+> 
+> "rockchip,rk3066-wdt", "snps,dw-wdt"
+> "rockchip,rk3188-wdt", "snps,dw-wdt"
+> "rockchip,rk3288-wdt", "snps,dw-wdt"
+> "rockchip,rk3368-wdt", "snps,dw-wdt"
+> 
+> make ARCH=arm dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> 
+> make ARCH=arm64 dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> 
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Signed-off-by: Can Guo <cang@codeaurora.org>
----
- drivers/scsi/ufs/ufshcd.c | 7 -------
- 1 file changed, 7 deletions(-)
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index f2ca087..7f79e05 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -1301,15 +1301,8 @@ static int ufshcd_devfreq_target(struct device *dev,
- 	}
- 	spin_unlock_irqrestore(hba->host->host_lock, irq_flags);
- 
--	pm_runtime_get_noresume(hba->dev);
--	if (!pm_runtime_active(hba->dev)) {
--		pm_runtime_put_noidle(hba->dev);
--		ret = -EAGAIN;
--		goto out;
--	}
- 	start = ktime_get();
- 	ret = ufshcd_devfreq_scale(hba, scale_up);
--	pm_runtime_put(hba->dev);
- 
- 	trace_ufshcd_profile_clk_scaling(dev_name(hba->dev),
- 		(scale_up ? "up" : "down"),
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+> ---
+>  Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> index d9fc7bb85..f7ee9229c 100644
+> --- a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> @@ -14,7 +14,15 @@ maintainers:
+>  
+>  properties:
+>    compatible:
+> -    const: snps,dw-wdt
+> +    oneOf:
+> +      - const: snps,dw-wdt
+> +      - items:
+> +          - enum:
+> +              - rockchip,rk3066-wdt
+> +              - rockchip,rk3188-wdt
+> +              - rockchip,rk3288-wdt
+> +              - rockchip,rk3368-wdt
+> +          - const: snps,dw-wdt
+>  
+>    reg:
+>      maxItems: 1
