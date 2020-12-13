@@ -2,130 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022122D911E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 00:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A782D9122
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 00:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727178AbgLMXOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 18:14:03 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3024 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725874AbgLMXOA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 18:14:00 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BDN2Oee181123;
-        Sun, 13 Dec 2020 18:13:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=9NT1XXYa5wl70p6HiLU6THBshqdAzNi8Zkj2uMWS2zk=;
- b=ke1LRtflBMoE0uW00iX/TKszmRaXuAK+7JG2qlV8Poy71vKPqjpZqn13LQTvFNINFBXG
- SSm/MHkwnUcsBdMN5NbxkvLqodDlHyZtN7zGssmo6MYV89QJJFraod0zWWy2dTigBvYi
- v0UKLpBmefbDq4X242R2kfh1eVA/XafadhIQHO7bTO9l///D1OWTElE6Z2fzInFuxAg5
- lZs8dV2Eq7hlVSZ2NAbNsEBmjoMv18ftPnxfNEJhfCNCHn4oUChpqp0oMEoaoMUoffb1
- Uzr3Rn16aOHYhOHUKdgtBdQ+Nwk+VwFn/TJASxTQRotXuvP+9XZAAubhNGaVZo1ei65y yA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35du45he5q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 13 Dec 2020 18:13:18 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BDNAoBu010826;
-        Sun, 13 Dec 2020 18:13:17 -0500
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35du45he5b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 13 Dec 2020 18:13:17 -0500
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BDNDFaD009621;
-        Sun, 13 Dec 2020 23:13:15 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04fra.de.ibm.com with ESMTP id 35cng88ste-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 13 Dec 2020 23:13:15 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BDNDCU728639512
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 13 Dec 2020 23:13:12 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 759305204E;
-        Sun, 13 Dec 2020 23:13:12 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.171.55.88])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id EC61D52051;
-        Sun, 13 Dec 2020 23:13:11 +0000 (GMT)
-Date:   Mon, 14 Dec 2020 00:13:10 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
-Subject: Re: [PATCH] s390/vfio-ap: Clean up vfio_ap resources when KVM
- pointer invalidated
-Message-ID: <20201214001310.2cb6f1ff.pasic@linux.ibm.com>
-In-Reply-To: <ff21dd8e-9ac7-8625-5c77-4705e1344477@linux.ibm.com>
-References: <20201202234101.32169-1-akrowiak@linux.ibm.com>
-        <ab3f1948-bb23-c0d0-7205-f46cd6dbe99d@linux.ibm.com>
-        <20201208014018.3f89527f.pasic@linux.ibm.com>
-        <ff21dd8e-9ac7-8625-5c77-4705e1344477@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        id S1728943AbgLMXPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 18:15:48 -0500
+Received: from vern.gendns.com ([98.142.107.122]:52508 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727482AbgLMXPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 18:15:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=R7V4MLduBEFhpLTGn2FAZimfL7QOVlaM/Xne+lB6Whs=; b=0j4WemgLDwYJTkB1oyf2JCWWOG
+        0w8ZArsWhMy9lF79Sg7Kg01VXuuDCwiP53zD8d6D2Gcyx/wHx3N6Y+Q4qTKx2uHiyLLNHU/d+Zz+n
+        +3o2UtF5qWqOQ4VKhAlQ+gt0lbngjOADQ3pH84x1nazw5l5AYhanbu9cn98/AEsf30XQzh/E2eqDZ
+        fLfwXaSx+CSTeNWKWjMXzHqsAV4WqdIDVwm/HY/64Gg1UBVIoXdF50vPY1wvVWmx5kxQwFOjmZ0k3
+        +6C5nopXZa5Z9dYHx5JhXsImeD9KzAvId/M38zQ52MGxEN7a2gLt3Xeg75Pj2qJ04OA6Mu3nKaFmw
+        YM2Munmw==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:38098 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1koaZx-0008MT-AK; Sun, 13 Dec 2020 18:15:01 -0500
+Subject: Re: [PATCH v6 1/5] counter: Internalize sysfs interface code
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
+Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <cover.1606075915.git.vilhelm.gray@gmail.com>
+ <950660d49af7d12b09bc9d3b1db6f8ff74209c26.1606075915.git.vilhelm.gray@gmail.com>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <9fe4090e-2780-31b8-8ffa-2c665c6a2a4e@lechnology.com>
+Date:   Sun, 13 Dec 2020 17:15:00 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-13_06:2020-12-11,2020-12-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 mlxlogscore=907
- priorityscore=1501 malwarescore=0 spamscore=0 mlxscore=0 impostorscore=0
- bulkscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012130177
+In-Reply-To: <950660d49af7d12b09bc9d3b1db6f8ff74209c26.1606075915.git.vilhelm.gray@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 16:08:53 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+On 11/22/20 2:29 PM, William Breathitt Gray wrote:
 
-> >>> +static void vfio_ap_mdev_put_kvm(struct ap_matrix_mdev *matrix_mdev)
-> >>> +{
-> >>> +	if (matrix_mdev->kvm) {
-> >>> +		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-> >>> +		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> >>> +		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);  
-> >> This reset probably does not belong here since there is no
-> >> reason to reset the queues in the group notifier (see below).  
-> > What about kvm_s390_gisc_unregister()? That needs a valid kvm
-> > pointer, or? Or is it OK to not pair a kvm_s390_gisc_register()
-> > with an kvm_s390_gisc_unregister()?  
-> 
-> I probably should have been more specific about what I meant.
-> I was thinking that the reset should not be dependent upon
-> whether there is a KVM pointer or not since this function is
-> also called from the release callback. On the other hand,
-> the vfio_ap_mdev_reset_queues function calls the
-> vfio_ap_irq_disable (AQIC) function after each queue is reset.
-> The vfio_ap_irq_disable function also cleans up the AQIC
-> resources which requires that the KVM point is valid, so if
-> the vfio_ap_reset_queues function is not called with a
-> valid KVM pointer, that could result in an exception.
-> 
-> The thing is, it is unnecessary to disable interrupts after
-> resetting a queue because the reset disables interrupts,
-> so I think I should include a patch for this fix that does the
-> following:
-> 
-> 1. Removes the disabling of interrupts subsequent to resetting
->      a queue.
-> 2. Includes the cleanup of AQIC resources when a queue is
->      reset if a KVM pointer is present.
+>   14 files changed, 1806 insertions(+), 2546 deletions(-)
 
-Sounds like a plan. I see, in your v2 vfio_ap_mdev_unset_kvm()
-does call vfio_ap_mdev_reset_queues() even when called from the
-group notifier. I also like that the cleanup of AQIC resources is
-a part of queue_reset. In fact I asked a while ago (Message-ID:
-<20201027074846.30ee0ddc.pasic@linux.ibm.com> in October) to make
-vfio_ap_mdev_reset_queue() call vfio_ap_free_aqic_resources(q).
+It would be really nice if we could break this down into smaller
+pieces and start getting it merged. It is really tough to keep
+reviewing this much code in one patch over and over again.
 
-Regards,
-Halil 
+Here are some initial findings from testing:
 
+
+> +static void counter_device_release(struct device *dev)
+> +{
+> +	struct counter_device *const counter = dev_get_drvdata(dev);
+> +
+> +	counter_chrdev_remove(counter);
+> +	ida_simple_remove(&counter_ida, counter->id);
+> +}
+
+
+I got the following error after `modprobe -r ti-eqep`:
+
+[ 1186.045766] ------------[ cut here ]------------
+[ 1186.050647] WARNING: CPU: 0 PID: 2625 at lib/refcount.c:28 counter_device_release+0x10/0x24 [counter]
+[ 1186.059976] refcount_t: underflow; use-after-free.
+[ 1186.064790] Modules linked in: aes_arm_bs(+) crypto_simd cryptd ccm usb_f_mass_storage usb_f_acm u_serial usb_f_ecm rfcomm usb_f_rndis u_ether libcomposite aes_arm aes_generic cmac bnep wl18xx wlcore mac80211 libarc4 sha256_generic libsha256 sha256_arm cfg80211 ti_am335x_adc kfifo_buf omap_aes_driver omap_crypto omap_sham crypto_engine pm33xx ti_emif_sram hci_uart omap_rng btbcm rng_core ti_eqep(-) counter bluetooth c_can_platform c_can ecdh_generic bmp280_spi ecc can_dev libaes bmp280_i2c bmp280 industrialio omap_mailbox musb_dsps wlcore_sdio musb_hdrc udc_core usbcore wkup_m3_ipc at24 omap_wdt phy_am335x watchdog phy_am335x_control ti_am335x_tscadc phy_generic wkup_m3_rproc usb_common cppi41 rtc_omap leds_gpio led_class cpufreq_dt pwm_tiehrpwm autofs4
+[ 1186.132376] CPU: 0 PID: 2625 Comm: modprobe Not tainted 5.10.0-rc7bone-counter+ #23
+[ 1186.140070] Hardware name: Generic AM33XX (Flattened Device Tree)
+[ 1186.146225] [<c0110d70>] (unwind_backtrace) from [<c010b640>] (show_stack+0x10/0x14)
+[ 1186.154017] [<c010b640>] (show_stack) from [<c09a0c98>] (dump_stack+0xc4/0xe4)
+[ 1186.161285] [<c09a0c98>] (dump_stack) from [<c0137ba0>] (__warn+0xd8/0x100)
+[ 1186.168284] [<c0137ba0>] (__warn) from [<c099c8e4>] (warn_slowpath_fmt+0x94/0xbc)
+[ 1186.175814] [<c099c8e4>] (warn_slowpath_fmt) from [<bf10b0e8>] (counter_device_release+0x10/0x24 [counter])
+[ 1186.185632] [<bf10b0e8>] (counter_device_release [counter]) from [<c0667118>] (device_release+0x30/0xa4)
+[ 1186.195163] [<c0667118>] (device_release) from [<c057f73c>] (kobject_put+0x94/0x104)
+[ 1186.202944] [<c057f73c>] (kobject_put) from [<c057f73c>] (kobject_put+0x94/0x104)
+[ 1186.210472] [<c057f73c>] (kobject_put) from [<bf19004c>] (ti_eqep_remove+0x10/0x30 [ti_eqep])
+[ 1186.219047] [<bf19004c>] (ti_eqep_remove [ti_eqep]) from [<c066f390>] (platform_drv_remove+0x24/0x3c)
+[ 1186.228313] [<c066f390>] (platform_drv_remove) from [<c066d934>] (device_release_driver_internal+0xfc/0x1d0)
+[ 1186.238187] [<c066d934>] (device_release_driver_internal) from [<c066da78>] (driver_detach+0x58/0xa8)
+[ 1186.247456] [<c066da78>] (driver_detach) from [<c066c5ec>] (bus_remove_driver+0x4c/0xa0)
+[ 1186.255594] [<c066c5ec>] (bus_remove_driver) from [<c01dd150>] (sys_delete_module+0x180/0x264)
+[ 1186.264250] [<c01dd150>] (sys_delete_module) from [<c0100080>] (ret_fast_syscall+0x0/0x54)
+[ 1186.272551] Exception stack(0xd247ffa8 to 0xd247fff0)
+[ 1186.277629] ffa0:                   004fb478 004fb478 004fb4b4 00000800 b3bfcf00 00000000
+[ 1186.285847] ffc0: 004fb478 004fb478 004fb478 00000081 00000000 be974900 be974a55 004fb478
+[ 1186.294062] ffe0: 004f8f5c be97352c 004ddd97 b6d11d68
+[ 1186.299253] ---[ end trace e1c61dea091f1078 ]---
+
+> +static ssize_t counter_comp_u8_store(struct device *dev,
+> +				     struct device_attribute *attr,
+> +				     const char *buf, size_t len)
+> +{
+> +	const struct counter_attribute *const a = to_counter_attribute(attr);
+> +	struct counter_device *const counter = dev_get_drvdata(dev);
+> +	struct counter_count *const count = a->parent;
+> +	struct counter_synapse *const synapse = a->comp.priv;
+> +	const struct counter_available *const avail = a->comp.priv;
+> +	int err;
+> +	bool bool_data;
+> +	int idx;
+> +	u8 data;
+> +
+> +	switch (a->comp.type) {
+> +	case COUNTER_COMP_BOOL:
+> +		err = kstrtobool(buf, &bool_data);
+> +		data = bool_data;
+> +		break;
+> +	case COUNTER_COMP_FUNCTION:
+> +		err = find_in_string_array(&data, count->functions_list,
+> +					   count->num_functions, buf,
+> +					   counter_function_str);
+> +		break;
+> +	case COUNTER_COMP_SYNAPSE_ACTION:
+> +		err = find_in_string_array(&data, synapse->actions_list,
+> +					   synapse->num_actions, buf,
+> +					   counter_synapse_action_str);
+> +		break;
+> +	case COUNTER_COMP_ENUM:
+> +		idx = __sysfs_match_string(avail->strs, avail->num_items, buf);
+> +		if (idx < 0)
+> +			return idx;
+> +		data = idx;
+> +		break;
+> +	case COUNTER_COMP_COUNT_MODE:
+> +		err = find_in_string_array(&data, avail->enums,
+> +					   avail->num_items, buf,
+> +					   counter_count_mode_str);
+> +		break;
+> +	default:
+> +		err = kstrtou8(buf, 0, &data);
+> +		break;
+> +	}
+> +	if (err)
+
+This needs to be `if (err < 0)`. There are cases where the functions
+above return positive values. (And to be overly safe, it probably wouldn't
+hurt to use err < 0 everywhere - not just in this function.)
+
+> +		return err;
+> +
+> +	switch (a->scope) {
+> +	case COUNTER_SCOPE_DEVICE:
+> +		err = a->comp.device_u8_write(counter, data);
+> +		break;
+> +	case COUNTER_SCOPE_SIGNAL:
+> +		err = a->comp.signal_u8_write(counter, a->parent, data);
+> +		break;
+> +	case COUNTER_SCOPE_COUNT:
+> +		if (a->comp.type == COUNTER_COMP_SYNAPSE_ACTION)
+> +			err = a->comp.action_write(counter, count, synapse,
+> +						   data);
+> +		else
+> +			err = a->comp.count_u8_write(counter, count, data);
+> +		break;
+> +	}
+> +	if (err)
+> +		return err;
+> +
+> +	return len;
+> +}
