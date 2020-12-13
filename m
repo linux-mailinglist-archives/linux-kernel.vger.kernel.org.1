@@ -2,205 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B8F2D8EDE
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 17:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 212212D8EEC
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 18:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389883AbgLMQp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 11:45:58 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:58938 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725996AbgLMQp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 11:45:58 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id BF448FB05;
-        Sun, 13 Dec 2020 17:45:14 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 9o5ZzOY7uUL2; Sun, 13 Dec 2020 17:45:13 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id BDA8543FDC; Sun, 13 Dec 2020 17:45:12 +0100 (CET)
-Date:   Sun, 13 Dec 2020 17:45:12 +0100
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <guido.gunther@puri.sm>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, kishon@ti.com,
-        vkoul@kernel.org, robh+dt@kernel.org, a.hajda@samsung.com,
-        narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@siol.net, airlied@linux.ie,
-        daniel@ffwll.ch, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        robert.chiras@nxp.com, martin.kepplinger@puri.sm
-Subject: Re: [PATCH v3 3/5] dt-bindings: phy: Convert mixel,mipi-dsi-phy to
- json-schema
-Message-ID: <20201213164512.GC28272@bogon.m.sigxcpu.org>
-References: <1607651182-12307-1-git-send-email-victor.liu@nxp.com>
- <1607651182-12307-4-git-send-email-victor.liu@nxp.com>
+        id S1730551AbgLMQ76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 11:59:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726214AbgLMQ76 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 11:59:58 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F19C0613CF;
+        Sun, 13 Dec 2020 08:59:17 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id n26so19265790eju.6;
+        Sun, 13 Dec 2020 08:59:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=II3z2KtGXYfccGsk4AiZsYqrzwoXcVMGnMLgumJisoY=;
+        b=SAHUtmIarY7j7e4zeN3fFvTYIChAGt+Y7GNnQPhDC0+IPhzQJopCVLzBGPCQ5eFaiq
+         L6j+nOGMJgIGwajqVssbzaKzuaBQrpADs0OPacCgrLoEUP89l+DvXKAWnAI7YZxJT/Ki
+         T7PGOUupcgHjLrwfXc2TYUJwa1eoPQ+yowBNhUhZpvn4SCLxZ32xYEjt/x+jtPK3BTVB
+         x90FSoflQ/kMvA2zgF86AeYL9ftHV+sy/51siMs2PT1oBQDRWywhaEfHUE0mmcAlTVUC
+         5oD4MqiKMIyunrjoTks9w9RC/Lr8kaqPOqkxeZ8XwBfRzC7g6XqBKTUY3mKrc4SYbm9S
+         N83g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=II3z2KtGXYfccGsk4AiZsYqrzwoXcVMGnMLgumJisoY=;
+        b=KmSM6tYcefX9IdgXmo2u+v1Xoyw1rFGTczG8b1EnNsB5Z779uz3+BPcHaSk9/3N1E3
+         WaK2JdbsLsvyqDw9BnNiGp3AiurTZcwe8+N9FpeCLGSuadMl9kvmqM2lOKXsKkor4wS7
+         53I5Yc7JH0VK/aRGVB0ExR+F0BCBmXIzEq3MBCFV4wpAbYrLyLW2L2z25andPSNcOnSP
+         lR3j3IXULrZUgHzeiXQ1pPHTMfNHUCrbQG5tRgxSDXGidsqJrzeti+JCsKVYMcPFqiJc
+         bU2CXWjHed3e+zDZgLmDDWPA/HdFTGGq1l5v9yrYXq5jdMK318nkZ5SlbGAxyypx62Yc
+         3GYw==
+X-Gm-Message-State: AOAM532Im/JwA+TlvyiAhwWGn/U+Kto/O6Vfeii5sX8bOinfV2aFyyLf
+        D1CUJfHbhql4FJALhOEEp1UVO3zFmqh66ZZI2JQ=
+X-Google-Smtp-Source: ABdhPJxTfbMDN5oNcaUz9aMPM/tB7U1x+Iz17INemv3bReSILPHPG9p0mVcWKxhWANbZ6WNgGkXDAuybmWqfDwG+G5s=
+X-Received: by 2002:a17:906:2798:: with SMTP id j24mr19280203ejc.328.1607878756610;
+ Sun, 13 Dec 2020 08:59:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1607651182-12307-4-git-send-email-victor.liu@nxp.com>
+References: <20201115185210.573739-1-martin.blumenstingl@googlemail.com>
+ <20201115185210.573739-2-martin.blumenstingl@googlemail.com> <20201207191716.GA647149@robh.at.kernel.org>
+In-Reply-To: <20201207191716.GA647149@robh.at.kernel.org>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sun, 13 Dec 2020 17:59:05 +0100
+Message-ID: <CAFBinCDXqnPQtu4ZQW2ngxKVSbRQNFbnhy6M04gE+Mc8HOTM8g@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 1/5] dt-bindings: net: dwmac-meson: use picoseconds
+ for the RGMII RX delay
+To:     Rob Herring <robh@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, jianxin.pan@amlogic.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        khilman@baylibre.com, Neil Armstrong <narmstrong@baylibre.com>,
+        jbrunet@baylibre.com, andrew@lunn.ch, f.fainelli@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Fri, Dec 11, 2020 at 09:46:20AM +0800, Liu Ying wrote:
-> This patch converts the mixel,mipi-dsi-phy binding to
-> DT schema format using json-schema.
-> 
-> Comparing to the plain text version, the new binding adds
-> the 'assigned-clocks', 'assigned-clock-parents' and
-> 'assigned-clock-rates' properites, otherwise 'make dtbs_check'
-> would complain that there are mis-matches.  Also, the new
-> binding requires the 'power-domains' property since all potential
-> SoCs that embed this PHY would provide a power domain for it.
-> The example of the new binding takes reference to the latest
-> dphy node in imx8mq.dtsi.
-> 
-> Cc: Guido Günther <agx@sigxcpu.org>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: NXP Linux Team <linux-imx@nxp.com>
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
-> v2->v3:
-> * Improve the 'clock-names' property by dropping 'items:'.
-> 
-> v1->v2:
-> * Newly introduced in v2.  (Guido)
-> 
->  .../devicetree/bindings/phy/mixel,mipi-dsi-phy.txt | 29 ---------
->  .../bindings/phy/mixel,mipi-dsi-phy.yaml           | 72 ++++++++++++++++++++++
->  2 files changed, 72 insertions(+), 29 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.txt
->  create mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.txt b/Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.txt
-> deleted file mode 100644
-> index 9b23407..00000000
-> --- a/Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.txt
-> +++ /dev/null
-> @@ -1,29 +0,0 @@
-> -Mixel DSI PHY for i.MX8
-> -
-> -The Mixel MIPI-DSI PHY IP block is e.g. found on i.MX8 platforms (along the
-> -MIPI-DSI IP from Northwest Logic). It represents the physical layer for the
-> -electrical signals for DSI.
-> -
-> -Required properties:
-> -- compatible: Must be:
-> -  - "fsl,imx8mq-mipi-dphy"
-> -- clocks: Must contain an entry for each entry in clock-names.
-> -- clock-names: Must contain the following entries:
-> -  - "phy_ref": phandle and specifier referring to the DPHY ref clock
-> -- reg: the register range of the PHY controller
-> -- #phy-cells: number of cells in PHY, as defined in
-> -  Documentation/devicetree/bindings/phy/phy-bindings.txt
-> -  this must be <0>
-> -
-> -Optional properties:
-> -- power-domains: phandle to power domain
-> -
-> -Example:
-> -	dphy: dphy@30a0030 {
-> -		compatible = "fsl,imx8mq-mipi-dphy";
-> -		clocks = <&clk IMX8MQ_CLK_DSI_PHY_REF>;
-> -		clock-names = "phy_ref";
-> -		reg = <0x30a00300 0x100>;
-> -		power-domains = <&pd_mipi0>;
-> -		#phy-cells = <0>;
-> -        };
-> diff --git a/Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml b/Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml
-> new file mode 100644
-> index 00000000..c34f2e6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml
-> @@ -0,0 +1,72 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/phy/mixel,mipi-dsi-phy.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mixel DSI PHY for i.MX8
-> +
-> +maintainers:
-> +  - Guido Günther <agx@sigxcpu.org>
-> +
-> +description: |
-> +  The Mixel MIPI-DSI PHY IP block is e.g. found on i.MX8 platforms (along the
-> +  MIPI-DSI IP from Northwest Logic). It represents the physical layer for the
-> +  electrical signals for DSI.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx8mq-mipi-dphy
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    const: phy_ref
-> +
-> +  assigned-clocks:
-> +    maxItems: 1
-> +
-> +  assigned-clock-parents:
-> +    maxItems: 1
-> +
-> +  assigned-clock-rates:
-> +    maxItems: 1
-> +
-> +  "#phy-cells":
-> +    const: 0
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - assigned-clocks
-> +  - assigned-clock-parents
-> +  - assigned-clock-rates
-> +  - "#phy-cells"
-> +  - power-domains
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/imx8mq-clock.h>
-> +    dphy: dphy@30a0030 {
-> +        compatible = "fsl,imx8mq-mipi-dphy";
-> +        reg = <0x30a00300 0x100>;
-> +        clocks = <&clk IMX8MQ_CLK_DSI_PHY_REF>;
-> +        clock-names = "phy_ref";
-> +        assigned-clocks = <&clk IMX8MQ_CLK_DSI_PHY_REF>;
-> +        assigned-clock-parents = <&clk IMX8MQ_VIDEO_PLL1_OUT>;
-> +        assigned-clock-rates = <24000000>;
-> +        #phy-cells = <0>;
-> +        power-domains = <&pgc_mipi>;
-> +    };
+Hi Rob,
+
+On Mon, Dec 7, 2020 at 8:17 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Sun, Nov 15, 2020 at 07:52:06PM +0100, Martin Blumenstingl wrote:
+> > Amlogic Meson G12A, G12B and SM1 SoCs have a more advanced RGMII RX
+> > delay register which allows picoseconds precision. Deprecate the old
+> > "amlogic,rx-delay-ns" in favour of a new "amlogic,rgmii-rx-delay-ps"
+> > property.
+> >
+> > For older SoCs the only known supported values were 0ns and 2ns. The new
+> > SoCs have 200ps precision and support RGMII RX delays between 0ps and
+> > 3000ps.
+> >
+> > While here, also update the description of the RX delay to indicate
+> > that:
+> > - with "rgmii" or "rgmii-id" the RX delay should be specified
+> > - with "rgmii-id" or "rgmii-rxid" the RX delay is added by the PHY so
+> >   any configuration on the MAC side is ignored
+> > - with "rmii" the RX delay is not applicable and any configuration is
+> >   ignored
+> >
+> > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> > ---
+> >  .../bindings/net/amlogic,meson-dwmac.yaml     | 61 +++++++++++++++++--
+> >  1 file changed, 56 insertions(+), 5 deletions(-)
+>
+> Don't we have common properties for this now?
+I did a quick:
+$ grep -R rx-delay Documentation/devicetree/bindings/net/
+
+I could find "rx-delay" without vendor prefix, but that's not using
+any unit in the name (ns, ps, ...)
+Please let me know if you aware of any "generic" property for the RX
+delay in picosecond precision
 
 
-Reviewed-by: Guido Günther <agx@sigxcpu.org>
-
-Thanks for the conversion!
- -- Guido
-
-
-
-> -- 
-> 2.7.4
-> 
+Best regards,
+Martin
