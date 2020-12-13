@@ -2,76 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3D42D8C9C
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 11:17:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E2D2D8CA1
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 11:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394230AbgLMKPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 05:15:38 -0500
-Received: from ozlabs.org ([203.11.71.1]:34391 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393178AbgLMKPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 05:15:38 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S2405795AbgLMKQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 05:16:17 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55460 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394256AbgLMKPr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 05:15:47 -0500
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cv0kg1MPzz9sTL;
-        Sun, 13 Dec 2020 21:14:51 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607854491;
-        bh=gfNx/8oKIbz/C8FQ//ILHIvDXNvgBsaZCk5dClnU0R4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=T7/chqnifO5ws5QKYw8/tPWewFyzSpy4rEIgE4WM8MsuzufmvPFBjdZltOVQK75V4
-         GlQ06zFdVGZZOmzbw5jrlbPxxYZp/439hVk2QH7TWSEH/zHI1X+P0p9memhctAHxbd
-         AtQnDOV9XtEXiLApdaw3bRnWerZdWhcckkawuXPIj+uhyT8fgdKqFLNL+hnAIdaO78
-         0LOGN1AERYx8HLflkKxgh84fbsw5HS4qJk/D0Xi06gPj1WVUGY+XPVpFsaubWC3Udf
-         o4q70lLxZssaGRaKI39RcVFiRN4DFNwaEbygDjTtcq1ZkE3iDHGs4RBJMGpxOS5zsD
-         +f3sxYLiFhFEw==
-Date:   Sun, 13 Dec 2020 21:14:34 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steve French <smfrench@gmail.com>,
-        CIFS <linux-cifs@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the cifs tree
-Message-ID: <20201213211434.27bf402f@canb.auug.org.au>
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 530CA1F44A61;
+        Sun, 13 Dec 2020 10:15:00 +0000 (GMT)
+Date:   Sun, 13 Dec 2020 11:14:56 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <broonie@kernel.org>, <robh+dt@kernel.org>, <lukas@wunner.de>,
+        <bbrezillon@kernel.org>, <p.yadav@ti.com>,
+        <tudor.ambarus@microchip.com>, <linux-spi@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v3 6/9] spi: tegra210-quad: Add support for hardware
+ dummy cycles
+Message-ID: <20201213111456.4485a0b6@collabora.com>
+In-Reply-To: <1607721363-8879-7-git-send-email-skomatineni@nvidia.com>
+References: <1607721363-8879-1-git-send-email-skomatineni@nvidia.com>
+        <1607721363-8879-7-git-send-email-skomatineni@nvidia.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/10.jE..CW9K2rw+xtI9UVZq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/10.jE..CW9K2rw+xtI9UVZq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, 11 Dec 2020 13:16:00 -0800
+Sowjanya Komatineni <skomatineni@nvidia.com> wrote:
 
-Hi all,
+> Tegra Quad SPI controller hardware supports sending dummy cycles
+> after address bytes.
+> 
+> This patch adds this support.
+> 
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  drivers/spi/spi-tegra210-quad.c | 22 +++++++++++++++++++++-
+>  1 file changed, 21 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/spi/spi-tegra210-quad.c b/drivers/spi/spi-tegra210-quad.c
+> index 624f395..1d1b125 100644
+> --- a/drivers/spi/spi-tegra210-quad.c
+> +++ b/drivers/spi/spi-tegra210-quad.c
+> @@ -124,6 +124,13 @@
+>  #define QSPI_DMA_TIMEOUT			(msecs_to_jiffies(1000))
+>  #define DEFAULT_QSPI_DMA_BUF_LEN		(64 * 1024)
+>  
+> +enum transfer_phase {
+> +	CMD_BYTE_XFER = 0,
+> +	ADDR_BYTES_XFER,
+> +	DATA_BYTES_XFER,
+> +	MAX_XFERS,
+> +};
+> +
+>  struct tegra_qspi_client_data {
+>  	int tx_clk_tap_delay;
+>  	int rx_clk_tap_delay;
+> @@ -857,6 +864,8 @@ static int tegra_qspi_start_transfer_one(struct spi_device *spi,
+>  
+>  	tqspi->command1_reg = command1;
+>  
+> +	tegra_qspi_writel(tqspi, QSPI_NUM_DUMMY_CYCLE(tqspi->dummy_cycles), QSPI_MISC_REG);
+> +
+>  	ret = tegra_qspi_flush_fifos(tqspi, false);
+>  	if (ret < 0)
+>  		return ret;
+> @@ -977,7 +986,7 @@ static int tegra_qspi_transfer_one_message(struct spi_master *master, struct spi
+>  	struct spi_device *spi = msg->spi;
+>  	struct spi_transfer *xfer;
+>  	bool is_first_msg = true;
+> -	int ret;
+> +	int ret, xfer_phase = 0;
+>  
+>  	msg->status = 0;
+>  	msg->actual_length = 0;
+> @@ -987,6 +996,15 @@ static int tegra_qspi_transfer_one_message(struct spi_master *master, struct spi
+>  	list_for_each_entry(xfer, &msg->transfers, transfer_list) {
+>  		u32 cmd1;
+>  
+> +		/*
+> +		 * Program dummy clock cycles in Tegra QSPI register only
+> +		 * during address transfer phase.
+> +		 */
+> +		if (xfer_phase == ADDR_BYTES_XFER)
+> +			tqspi->dummy_cycles = msg->dummy_cycles;
+> +		else
+> +			tqspi->dummy_cycles = 0;
 
-Commit
+That's fragile. You're trying to guess the phase (which is clearly a
+spi-mem concept) from the position of the transfer in the list. What
+happens if a spi-mem operation has no address bytes but requires dummy
+cycles after the command? What happens if we patch spi_mem_exec_op() to
+merge the cmd and address bytes in a single transfer (that's an option
+I considered at some point when designing the framework before deciding
+it was not worth the extra complexity)?
 
-  3aa4e616197b ("cifs: Register generic netlink family")
+Besides, I keep thinking the regular transfer path should not assume
+it's being passed spi-mem operations, if it is, that means you should
+overload the default exec_op(). The more I look at it the less I like
+this idea of adding a dummy_cycles field to spi_message. I'm pretty
+sure we can find other ways to avoid code duplication if that's your
+main concern.
 
-is missing a Signed-off-by from its committer.
+> +
+>  		reinit_completion(&tqspi->xfer_completion);
+>  
+>  		cmd1 = tegra_qspi_setup_transfer_one(spi, xfer, is_first_msg);
+> @@ -1018,6 +1036,7 @@ static int tegra_qspi_transfer_one_message(struct spi_master *master, struct spi
+>  		}
+>  
+>  		msg->actual_length += xfer->len;
+> +		xfer_phase++;
+>  
+>  complete_xfer:
+>  		if (ret < 0) {
+> @@ -1203,6 +1222,7 @@ static int tegra_qspi_probe(struct platform_device *pdev)
+>  	master->mode_bits = SPI_MODE_0 | SPI_MODE_3 | SPI_CS_HIGH |
+>  			    SPI_TX_DUAL | SPI_RX_DUAL | SPI_TX_QUAD | SPI_RX_QUAD;
+>  	master->bits_per_word_mask = SPI_BPW_MASK(32) | SPI_BPW_MASK(16) | SPI_BPW_MASK(8);
+> +	master->flags = SPI_MASTER_USES_HW_DUMMY_CYCLES;
+>  	master->setup = tegra_qspi_setup;
+>  	master->cleanup = tegra_qspi_cleanup;
+>  	master->transfer_one_message = tegra_qspi_transfer_one_message;
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/10.jE..CW9K2rw+xtI9UVZq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/V6YsACgkQAVBC80lX
-0GzPsggApLHybUvF97x85qr9Sc6zYa5dg9u3RARn7o3hei+6toVOIk3AbTATZv6S
-+Hd7eTy8Y3PYOWSYt+E7oizzOz/4UxkcZKuMfYb8r5xAy3AGjPRTDUzevE25A+C8
-wN20j9lcHIfBv/0cl2C85mrYjpIyyNU53+aYchYUn/doniSXpd6pJoPhI4s44rOS
-pXPm8b9U2oPukBAGS8G2oZcfbO+f1sSgdeNnbO92pCIvvqlPDXxWlOtZzk718hIn
-4VK9dXizqQfO2qRC/1gYgI55kkAnJkN72D8RxirwqgCYmvdG6Mokzg9J/jEYbBnO
-foCv7uFr2Y7skbOkYFNUs4Ko0puDpw==
-=meC8
------END PGP SIGNATURE-----
-
---Sig_/10.jE..CW9K2rw+xtI9UVZq--
