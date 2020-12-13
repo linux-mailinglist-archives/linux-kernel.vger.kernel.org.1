@@ -2,45 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40CD2D8FC5
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D00F2D8FFC
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728345AbgLMTJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 14:09:53 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:46580 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727617AbgLMTBs (ORCPT
+        id S2391124AbgLMTU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 14:20:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390541AbgLMTCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 14:01:48 -0500
+        Sun, 13 Dec 2020 14:02:42 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AFF6C0611CD;
+        Sun, 13 Dec 2020 11:01:09 -0800 (PST)
 Date:   Sun, 13 Dec 2020 19:01:06 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607886066;
+        s=2020; t=1607886067;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=kOGcz7pprpHlXyNUhrjS6mK+wGYnNchqzW5XTBPzgQk=;
-        b=xNdCcaJ3xVOmseUz+MUChAK3SNRwufY6lmmQaV2ZAl8Zvk+AlAmX7jmZFhckYteOGK04A8
-        K1ykF36TBOTdSExt8zQFSYLO5Vwucd75S69Z564+3WJvfjW7IA7MDP/BeuePEFzyKvD2/d
-        5xuuHlfNaG4uUNwp8AnC+BsJkPEYj+McbDtEe6gFH0NMhb+pJk2b4g9iJWIfK5xxH+CcKV
-        m8ohqk5ru1MlLKZUaSY9MTDO/k9FmWJM6dv8fEy0dMMfIuNm8UKtuFxPTs9MI20Zvo7Fmf
-        ApCFxjscGiL2EBcs4Q24uAyz0vIPgW3d8lIMVlcBpbVeB4PWN8ZqtmI+gDyXhg==
+        bh=gLfNGSf+Jq0ugP7ZpAIPH82xJZnlCDZp13juylGORx8=;
+        b=Ki2klPN5aufyx0GjxPnHjGs4z7hGHwX+8GmkBkZluSEoeo331U2oLlXfIIf9+UrG1/A1FB
+        aox6wSrkJyjFLYzeG+hbCtLUQQh6EcBfOi990gug6ppaAMmjWOo1uacXHK90Se7WvMjP6D
+        vR/Z33E0suDF8B8btPPEofzvTcUBv/XrlWY75CGxr1dXhXtxlW5h63VlvnKn0+sB0hJAxr
+        0VyXxv3/ebGyXrKp2nv8oOThKcPNu57pK3sEFfwf/ogYPvlxRwBF6d+iggOTaeHZeM36bc
+        n5KYlc0x2CqnaSoij+eDI9P2+MgAJi9KygUgvcOa7R6I251+NsO6Ic/O6cwUFw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607886066;
+        s=2020e; t=1607886067;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=kOGcz7pprpHlXyNUhrjS6mK+wGYnNchqzW5XTBPzgQk=;
-        b=qOAGmJ3sSgtFE0m+k5sfuVUsDTJetuvvF5kQIBI93parPqXpsP8VB4+jOdjQnc32P116bC
-        v71vbpHKy9nTzyDA==
+        bh=gLfNGSf+Jq0ugP7ZpAIPH82xJZnlCDZp13juylGORx8=;
+        b=mvif0Jl9Mm5of4Qp3BMbVSoCGWt/uyLCdr3stM3jeVXT+1WYuiMwqh1PPpRtPsx2+PYBu4
+        MFT8d9tuYJNWPxAA==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu-tasks: Make the units of ->init_fract be jiffies
+Subject: [tip: core/rcu] torture: Make kvm-check-branches.sh use --allcpus
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <160788606634.3364.2265028186602312293.tip-bot2@tip-bot2>
+Message-ID: <160788606692.3364.15241784450900157813.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -51,79 +54,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     75dc2da5ecd65bdcbfc4d59b9d9b7342c61fe374
-Gitweb:        https://git.kernel.org/tip/75dc2da5ecd65bdcbfc4d59b9d9b7342c61fe374
+Commit-ID:     5be7d80deb80ceef50a6bd86d83c8fd62264778a
+Gitweb:        https://git.kernel.org/tip/5be7d80deb80ceef50a6bd86d83c8fd62264778a
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 17 Sep 2020 16:17:17 -07:00
+AuthorDate:    Thu, 15 Oct 2020 11:42:17 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Fri, 06 Nov 2020 17:17:59 -08:00
+CommitterDate: Fri, 06 Nov 2020 17:13:58 -08:00
 
-rcu-tasks: Make the units of ->init_fract be jiffies
+torture: Make kvm-check-branches.sh use --allcpus
 
-Currently, the units of ->init_fract are milliseconds while those of
-->gp_sleep are jiffies.  For consistency with each other and with the
-argument of schedule_timeout_idle(), this commit changes the units of
-->init_fract to jiffies.
-
-This change does affect the backoff algorithm, but only on systems where
-HZ is not 1000, and even there the change makes more sense, given that the
-current setup would "back off" to the same number of jiffies repeatedly.
-In contrast, with this change, the number of jiffies waited increases
-on each pass through the loop in the rcu_tasks_wait_gp() function.
+Currently the kvm-check-branches.sh script calculates the number of CPUs
+and passes this to the kvm.sh --cpus command-line argument.  This works,
+but this commit saves a line by instead using the new kvm.sh --allcpus
+command-line argument.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 0b45989..35bdcfd 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -335,8 +335,6 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh b/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh
+index 6e65c13..370406b 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-check-branches.sh
+@@ -52,8 +52,7 @@ echo Results directory: $resdir/$ds
+ KVM="`pwd`/tools/testing/selftests/rcutorture"; export KVM
+ PATH=${KVM}/bin:$PATH; export PATH
+ . functions.sh
+-cpus="`identify_qemu_vcpus`"
+-echo Using up to $cpus CPUs.
++echo Using all `identify_qemu_vcpus` CPUs.
  
- 	// Start off with initial wait and slowly back off to 1 HZ wait.
- 	fract = rtp->init_fract;
--	if (fract > HZ)
--		fract = HZ;
+ # Each pass through this loop does one command-line argument.
+ for gitbr in $@
+@@ -74,7 +73,7 @@ do
+ 		# Test the specified commit.
+ 		git checkout $i > $resdir/$ds/$idir/git-checkout.out 2>&1
+ 		echo git checkout return code: $? "(Commit $ntry: $i)"
+-		kvm.sh --cpus $cpus --duration 3 --trust-make > $resdir/$ds/$idir/kvm.sh.out 2>&1
++		kvm.sh --allcpus --duration 3 --trust-make > $resdir/$ds/$idir/kvm.sh.out 2>&1
+ 		ret=$?
+ 		echo kvm.sh return code $ret for commit $i from branch $gitbr
  
- 	while (!list_empty(&holdouts)) {
- 		bool firstreport;
-@@ -345,10 +343,10 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
- 
- 		/* Slowly back off waiting for holdouts */
- 		set_tasks_gp_state(rtp, RTGS_WAIT_SCAN_HOLDOUTS);
--		schedule_timeout_idle(HZ/fract);
-+		schedule_timeout_idle(fract);
- 
--		if (fract > 1)
--			fract--;
-+		if (fract < HZ)
-+			fract++;
- 
- 		rtst = READ_ONCE(rcu_task_stall_timeout);
- 		needreport = rtst > 0 && time_after(jiffies, lastreport + rtst);
-@@ -557,7 +555,7 @@ EXPORT_SYMBOL_GPL(rcu_barrier_tasks);
- static int __init rcu_spawn_tasks_kthread(void)
- {
- 	rcu_tasks.gp_sleep = HZ / 10;
--	rcu_tasks.init_fract = 10;
-+	rcu_tasks.init_fract = HZ / 10;
- 	rcu_tasks.pregp_func = rcu_tasks_pregp_step;
- 	rcu_tasks.pertask_func = rcu_tasks_pertask;
- 	rcu_tasks.postscan_func = rcu_tasks_postscan;
-@@ -1178,12 +1176,12 @@ static int __init rcu_spawn_tasks_trace_kthread(void)
- {
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB)) {
- 		rcu_tasks_trace.gp_sleep = HZ / 10;
--		rcu_tasks_trace.init_fract = 10;
-+		rcu_tasks_trace.init_fract = HZ / 10;
- 	} else {
- 		rcu_tasks_trace.gp_sleep = HZ / 200;
- 		if (rcu_tasks_trace.gp_sleep <= 0)
- 			rcu_tasks_trace.gp_sleep = 1;
--		rcu_tasks_trace.init_fract = HZ / 5;
-+		rcu_tasks_trace.init_fract = HZ / 200;
- 		if (rcu_tasks_trace.init_fract <= 0)
- 			rcu_tasks_trace.init_fract = 1;
- 	}
