@@ -2,142 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1722E2D8E64
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 16:50:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 485412D8E76
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 16:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406480AbgLMPtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 10:49:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437373AbgLMPs4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 10:48:56 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EC5C061282
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 07:48:15 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id t22so1044881pfl.3
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 07:48:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8PHQMDJVT/2kbWGLsVFJZvXcjqBWqkHm052KcpZafNs=;
-        b=xoZ7TJtucKFyWd/KXHfwhMtbtS4gJ6sw9uzj7IqYvTpodH5CzDSwSgXuThA5h4Q6A+
-         eZihdRRdqxg5NDapbLPVVgPCzSna72Ym4XfQXY6oSHt9a5RUQCNIh0qqBr7mAsuBCfoh
-         8Kczq64LoXlGC0LpNaCTgeQD9aEe8/FBf9RY2n+DD2IWNpFwhGyEKpXKsYzygvQT0bhn
-         Yh3PhLQdwuL7zMGzVhrd9JU3/4IXXL/poO5HC+z+5rkI7f/oiSOn+kFgDRuKIpFjcBXz
-         8JPanJC3BkrKigzXcRTFANHdPnbkPk7SmCiDiUI3mzZogyAT6Qa9T7LzEzPWuvuXblWj
-         1RsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8PHQMDJVT/2kbWGLsVFJZvXcjqBWqkHm052KcpZafNs=;
-        b=iHOCG3VOwA6mPzBiLtOy/QPKqiVtQz0mGJwFnPhz4sz3eWGWh6q1XyHSYBBbLF8Rh5
-         BvOkUoC4VezSoQZRdw0+GtKTVdWsD85ai5JS09fEe/ZGTqNb5QAWCF8QQBFzDe8SraOc
-         AgbGeMNCjTX9iSjZNTEQvS6dHUTxbnUL6xwKTebLtn4qkiGRFA4ZJh3IIKuWp4417sQr
-         3yXmKMuWV7+3uZQJsabvqiMp4c8xkDKb2GSbsCqQg+vSmk8TCVo3/2TOG3urpfL4e0Pr
-         b2QBVs5d8QTNu6h8nQZ2Ie4sT+qAxnP37fJ2qeGESSoUEojwWugIlVPbTDUtU+DRYCq0
-         7OZg==
-X-Gm-Message-State: AOAM530aeSuUrs1p8xJE/S8HGtYvKZ7kvEzrHFzOGy2ga+WbjlPk0XUm
-        3qF1uyPmyN3rY4QvKQsGLNXDGQ==
-X-Google-Smtp-Source: ABdhPJxO8m6vbHvN+Y+6gAAGCOcfBgNQKWbes0jV8vWQBVVN5WQG3RTs7OvVcaoRVyAvV3yCN29fGQ==
-X-Received: by 2002:a63:4e4c:: with SMTP id o12mr20238792pgl.348.1607874495455;
-        Sun, 13 Dec 2020 07:48:15 -0800 (PST)
-Received: from localhost.bytedance.net ([103.136.221.66])
-        by smtp.gmail.com with ESMTPSA id e24sm13113753pjt.16.2020.12.13.07.48.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 13 Dec 2020 07:48:14 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v9 11/11] mm/hugetlb: Optimize the code with the help of the compiler
-Date:   Sun, 13 Dec 2020 23:45:34 +0800
-Message-Id: <20201213154534.54826-12-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20201213154534.54826-1-songmuchun@bytedance.com>
-References: <20201213154534.54826-1-songmuchun@bytedance.com>
+        id S2392235AbgLMP7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 10:59:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728704AbgLMP7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 10:59:12 -0500
+X-Gm-Message-State: AOAM533lAUJlq1RylAguuMFUGbjov9HABwrgxuNf+kHhhjtC94Y5vS82
+        0vIu91tf9a02jmbmBE2CN9Xg2fN7EtsWpRrMtw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607875112;
+        bh=TUEXd1NufKhBjH3w0YLBQgI4G4nF26Jpf12BZg2DdkU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vJRnrzs7P6heS4pWkFfwEyWeiYDaKgI8pRS8Vf5gSRcEtXB5EwUnu+gviqkUk2kx8
+         UJtwlNtQFpdWCpJJ4Q3u99L6dtww4ZH8/QzHtnR4TT/9kBlGAdZibwxZquibbdFPsS
+         JGPg4q+sP/2ZD4BbS7ZoMFGDLMxOIH2Z2yJs/3Jx0XM8fVZ523kAmK2y/BRM8MRbkh
+         oVcZLY0MU6VthHzq/YwAAnRAEfeoyBmjEQbReRd3FxlEhBVGXJRShrQfO3VIw4VWUQ
+         vlais4qeT+kLJAkJBZOomUre3HjGXg7d/q5yBUmmKzbjIunjf3i/EbN4EMXzfQNWVv
+         ps7CcvvE3qjjA==
+X-Google-Smtp-Source: ABdhPJzQ7X5J5ZOuZiSIqmWQH6RPNRgCbzq8nEgfd2GgED4aXNSwfqseLuR73PpirrPAI1Pa+7yPj6L3B8AH6G4uL4U=
+X-Received: by 2002:aa7:dbca:: with SMTP id v10mr5100096edt.219.1607875110439;
+ Sun, 13 Dec 2020 07:58:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1607746317-4696-1-git-send-email-yongqiang.niu@mediatek.com> <1607746317-4696-4-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1607746317-4696-4-git-send-email-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sun, 13 Dec 2020 23:58:18 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9p0J0uMRu1gzkgCzj3uf=1gKPjubAbkx-aYY=rRuc3Pw@mail.gmail.com>
+Message-ID: <CAAOTY_9p0J0uMRu1gzkgCzj3uf=1gKPjubAbkx-aYY=rRuc3Pw@mail.gmail.com>
+Subject: Re: [PATCH v2, 03/17] dt-bindings: mediatek: add description for
+ mt8192 display
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        DTML <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We cannot optimize if a "struct page" crosses page boundaries. If
-it is true, we can optimize the code with the help of a compiler.
-When free_vmemmap_pages_per_hpage() returns zero, most functions are
-optimized by the compiler.
+Hi, Yongqiang:
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- include/linux/hugetlb.h | 3 ++-
- mm/hugetlb_vmemmap.c    | 7 +++++++
- mm/hugetlb_vmemmap.h    | 5 +++--
- 3 files changed, 12 insertions(+), 3 deletions(-)
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B412=E6=9C=
+=8812=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8B=E5=8D=8812:12=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> add description for mt8192 display
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 7295f6b3d55e..adc17765e0e9 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -791,7 +791,8 @@ extern bool hugetlb_free_vmemmap_enabled;
- 
- static inline bool is_hugetlb_free_vmemmap_enabled(void)
- {
--	return hugetlb_free_vmemmap_enabled;
-+	return hugetlb_free_vmemmap_enabled &&
-+	       is_power_of_2(sizeof(struct page));
- }
- #else
- static inline bool is_hugetlb_free_vmemmap_enabled(void)
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index bbcefd5fb7d1..e83c48c63a7b 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -240,6 +240,13 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
- 	BUILD_BUG_ON(NR_USED_SUBPAGE >=
- 		     RESERVE_VMEMMAP_SIZE / sizeof(struct page));
- 
-+	/*
-+	 * The compiler can help us to optimize this function to null
-+	 * when the size of the struct page is not power of 2.
-+	 */
-+	if (!is_power_of_2(sizeof(struct page)))
-+		return;
-+
- 	if (!hugetlb_free_vmemmap_enabled)
- 		return;
- 
-diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-index 8fd9ae113dbd..1a29a80f9fe1 100644
---- a/mm/hugetlb_vmemmap.h
-+++ b/mm/hugetlb_vmemmap.h
-@@ -17,11 +17,12 @@ void hugetlb_vmemmap_init(struct hstate *h);
- 
- /*
-  * How many vmemmap pages associated with a HugeTLB page that can be freed
-- * to the buddy allocator.
-+ * to the buddy allocator. The checking of the is_power_of_2() aims to let
-+ * the compiler help us optimize the code as much as possible.
-  */
- static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
- {
--	return h->nr_free_vmemmap_pages;
-+	return h->nr_free_vmemmap_pages && is_power_of_2(sizeof(struct page));
- }
- #else
- static inline void alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
--- 
-2.11.0
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
+>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt | 2=
+ +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp=
+.txt
+> index dfbec76..b4e62ae 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
+t
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
+t
+> @@ -44,7 +44,7 @@ Required properties (all function blocks):
+>         "mediatek,<chip>-dpi"                   - DPI controller, see med=
+iatek,dpi.txt
+>         "mediatek,<chip>-disp-mutex"            - display mutex
+>         "mediatek,<chip>-disp-od"               - overdrive
+> -  the supported chips are mt2701, mt7623, mt2712, mt8173 and mt8183.
+> +  the supported chips are mt2701, mt7623, mt2712, mt8173, mt8183 and mt8=
+192.
+>  - reg: Physical base address and length of the function block register s=
+pace
+>  - interrupts: The interrupt signal from the function block (required, ex=
+cept for
+>    merge and split function blocks).
+> --
+> 1.8.1.1.dirty
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
