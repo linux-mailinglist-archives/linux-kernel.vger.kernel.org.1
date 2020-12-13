@@ -2,117 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14E52D9135
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 00:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 315132D9138
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 00:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731542AbgLMXjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 18:39:52 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:40285 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727178AbgLMXjw (ORCPT
+        id S2405643AbgLMXnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 18:43:52 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:43725 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395476AbgLMXnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 18:39:52 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 884EF5802F6;
-        Sun, 13 Dec 2020 18:39:05 -0500 (EST)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Sun, 13 Dec 2020 18:39:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=4lHOpViz9Uk605e41Hrs+5fXfKYstr/
-        VFbQwhb8nXrg=; b=UbSlnCLDhANCg855IwkVcVmwuahAyDXV27svY2ihosz96I6
-        gK5fkE6GfHwOqm5splI79tFW5n23NQyUGo7w+TdYNp3QoG+hrta31NSTnzo+m6EO
-        NTfrQQNZQfHbrygy42U9ERoeAF1G/WX4lu9NZsLdIgDKkxcyPfddRV5TOkhYB3ms
-        8UhWBmMW2i7j/hxF25ge6NN8CBPXWe3HGpR5+9kVd+42Zo0VkKAHTOzoe3VNjRKZ
-        6fA+Yb9n0IdYp9VLwdKc3t2m8nL0wHBBDXT9UBFhAcHXofkGTH/vGdujuxtx8N+A
-        PcJz82QE2mo1XdmxR63mV0lSq71nnzViQ9ju51A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=4lHOpV
-        iz9Uk605e41Hrs+5fXfKYstr/VFbQwhb8nXrg=; b=Kq28aFtvvATd6Vay+s70mN
-        PGLpfc6Oq636taHkqOI8AZnP4LvAibjukn9GHz6eBEkSrEkr8bp2Lt1BU+9lyEG2
-        tnw0VsuY0YShAmV27Tt8HdCK2QKArm9ziIZV+HSi61bSmsjB6PM0QNiw0otIZflq
-        8YscBHKOjfFqZ2zLrvkX3CHnLFMvSyL/O0TIEBmmcyoTwEKSrKfzytGVlsHqdeZT
-        I/kcNRqeKGxNroNpGca8jIDqcm8RyTab4+cRijHigtU+Alj3/R8ioav36d+fTykT
-        ggByfpBhofiG8x4A84DttPURq2cVOsd1+D8ofY35y5Xq3hW8ik6b5M1qU8ZHF0gA
-        ==
-X-ME-Sender: <xms:GKbWXwbCHGIlrGcBhT6zGN_cUN0KbRyR_Vlerw2O3SweMTkSTxNPUw>
-    <xme:GKbWX7YcDvb2VIfFhQvBhjkSl2Ne83GmwDXDQT13szmb-nfq1De9p4S7uITWCNj6-
-    ty4LBfNOcttvsZ4IQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekiedgudejiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehn
-    ughrvgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtf
-    frrghtthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedv
-    hefhveeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:GKbWX68V9rQifaf9__a2OrS4urq6q3qm_fUecZO5uHB0w-56aHsieg>
-    <xmx:GKbWX6rheSh73kaIFem1PCH1O2U2L5m3CkS6_RNYAh2dh21BwxJ_XA>
-    <xmx:GKbWX7qVn20PT3qolmXenLjjQlMMbrpjPXcopomhZ9c0yiDkMYwioQ>
-    <xmx:GabWX4gKXz2uVtLJJo1eG4_fHgkdLwppxEZfQ3SiR6cw0OEa7t6cCw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 1EB68E00B2; Sun, 13 Dec 2020 18:39:02 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.1-61-gb52c239-fm-20201210.001-gb52c2396
-Mime-Version: 1.0
-Message-Id: <5eec9b11-c0b7-4b77-8c03-ec2c7d52d828@www.fastmail.com>
-In-Reply-To: <CAHp75VcMuHiUFgSas26DA-Bh1gGA_G5FT+9cetK=En9Q_oMZtg@mail.gmail.com>
-References: <20201210065013.29348-1-troy_lee@aspeedtech.com>
- <CAHp75VcMuHiUFgSas26DA-Bh1gGA_G5FT+9cetK=En9Q_oMZtg@mail.gmail.com>
-Date:   Mon, 14 Dec 2020 10:08:42 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Andy Shevchenko" <andy.shevchenko@gmail.com>,
-        "Troy Lee" <troy_lee@aspeedtech.com>
-Cc:     "OpenBMC Maillist" <openbmc@lists.ozlabs.org>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "open list" <linux-kernel@vger.kernel.org>,
-        "Troy Lee" <leetroy@gmail.com>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
-Subject: Re: [PATCH] gpio: aspeed: Lock GPIO pin used as IRQ
-Content-Type: text/plain
+        Sun, 13 Dec 2020 18:43:51 -0500
+Received: by mail-il1-f199.google.com with SMTP id p6so12160121ils.10
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 15:43:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=s2gFcE0JO5IbAYsTllPGaj7DKv5TX9Tw8jj2GUsTpwE=;
+        b=SgWTJLsO0dSTPCwUB0vagHtcS17iufhNETes/SN9phRuES1yV+IlThdaPRpvo0RULT
+         WVLXciojCKIB/Aewv3YayToFIeP2ITVs2Ivr2kgI69/HizdaeQOy6dNR6KDWLf1niI1H
+         yKBGUngNnhD3//kdthcRkNMeOm5wlIk4VBnFqGr79/JSCDknbQCCybzJTJtZG/1Hmqo0
+         yfPh7Fqu7JJwgILU21CCxpn8lZDMXEgFqIu08EYze9/fiJW+TVEBSZJ0AQ4wrbsdSv55
+         ATgnTrAbUgrWU3JZKaVQegzZY9jNRcLS9LF7WLZuYKPe6Sp17LyyZU81xfALLTL21s4v
+         mqPQ==
+X-Gm-Message-State: AOAM5309AR7hQ0Ry15BVOAZP5n9xK1RFwTQeDeuanrD3HdahsjcGoi18
+        A2qCcdylwGzQdo/H+3St845NzlQIlTikr6CS/rJXUHLJZ7mf
+X-Google-Smtp-Source: ABdhPJyU/XPgbndriEj8RBAS1kFXcE2RkPXHa+AfM6tq8YwmQFDZWQD0UNj02M0FSdWiW5Xbn27zsz0JQbr/w2DlRdSIEzHaKGei
+MIME-Version: 1.0
+X-Received: by 2002:a92:2801:: with SMTP id l1mr31110100ilf.124.1607902990708;
+ Sun, 13 Dec 2020 15:43:10 -0800 (PST)
+Date:   Sun, 13 Dec 2020 15:43:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000098361105b6611620@google.com>
+Subject: UBSAN: shift-out-of-bounds in snto32
+From:   syzbot <syzbot+1e911ad71dd4ea72e04a@syzkaller.appspotmail.com>
+To:     benjamin.tissoires@redhat.com, jikos@kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    a9e26cb5 Add linux-next specific files for 20201208
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1198c937500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e259434a8eaf0206
+dashboard link: https://syzkaller.appspot.com/bug?extid=1e911ad71dd4ea72e04a
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13ba5f07500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=122a9613500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1e911ad71dd4ea72e04a@syzkaller.appspotmail.com
+
+================================================================================
+UBSAN: shift-out-of-bounds in drivers/hid/hid-core.c:1315:20
+shift exponent 4294967295 is too large for 32-bit type 'int'
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.0-rc7-next-20201208-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ snto32.cold+0x37/0x3c drivers/hid/hid-core.c:1315
+ hid_input_field drivers/hid/hid-core.c:1548 [inline]
+ hid_report_raw_event+0x7a9/0x11b0 drivers/hid/hid-core.c:1783
+ hid_input_report+0x360/0x4c0 drivers/hid/hid-core.c:1850
+ hid_irq_in+0x50e/0x690 drivers/hid/usbhid/hid-core.c:284
+ __usb_hcd_giveback_urb+0x2b0/0x5c0 drivers/usb/core/hcd.c:1657
+ usb_hcd_giveback_urb+0x38c/0x430 drivers/usb/core/hcd.c:1728
+ dummy_timer+0x11f4/0x32a0 drivers/usb/gadget/udc/dummy_hcd.c:1971
+ call_timer_fn+0x1a5/0x710 kernel/time/timer.c:1417
+ expire_timers kernel/time/timer.c:1462 [inline]
+ __run_timers.part.0+0x692/0xa80 kernel/time/timer.c:1731
 
 
-On Fri, 11 Dec 2020, at 00:44, Andy Shevchenko wrote:
-> On Thu, Dec 10, 2020 at 9:36 AM Troy Lee <troy_lee@aspeedtech.com> wrote:
-> >
-> > GPIO pins can be used as IRQ indicators. When they do,
-> > those pins should be flaged with locks to avoid kernel
-> 
-> flagged
-> 
-> > warning message.
-> 
-> ...
-> 
-> > @@ -651,6 +651,13 @@ static int aspeed_gpio_set_type(struct irq_data *d, unsigned int type)
-> 
-> > +       rc = gpiochip_lock_as_irq(&gpio->chip, d->hwirq);
-> > +       if (rc) {
-> > +               dev_err(gpio->chip.parent, "unable to lock GPIO %lu as IRQ\n",
-> > +                       d->hwirq);
-> > +               return rc;
-> > +       }
-> 
-> It's a copy'n'paste of generic code. Why do you need it in an unusual
-> place, i.e. ->irq_set_type() IIUC?
-> Can you elaborate about an issue, because this seems to be a hack?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Yep - Troy please provide more information. What was the warning you saw? How
-were the GPIOs allocated on the system that triggered the warning? What did you
-do to trigger the warning?
-
-Andrew
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
