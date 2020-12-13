@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDEE2D8FED
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7082D8FF7
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394832AbgLMTTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 14:19:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35530 "EHLO
+        id S2394525AbgLMTTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 14:19:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390972AbgLMTCp (ORCPT
+        with ESMTP id S2390899AbgLMTCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 13 Dec 2020 14:02:45 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA98C0619D5;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D6BC0619D7;
         Sun, 13 Dec 2020 11:01:11 -0800 (PST)
 Date:   Sun, 13 Dec 2020 19:01:09 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607886069;
+        s=2020; t=1607886070;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=7FSzG2Qo2EDCOGqUHRDOHrD5/tJZs7moRwnfQ7bvgOE=;
-        b=xonTMBZDMmrjv2lO+QBhs1BDxKLGzh23xTcL36d58PLVFBWUuUPB/5bzWoBZltAl/P5LJ2
-        +VUvswwEYcTBcuKU9Py3TXXPHdQNwVcayaYI8ps7Z5ZX+y3PVPlZpRWQN8jUZRlK2wcpt8
-        NYnadb7Da4SBwrV1hNjXOLdSHOYH14FsFKOnJUG2GIBfrKCHk9Ty1UvfQ18tyGDZJCOxQs
-        2WU7hXL4IEXD/sMAI4nde7iVMhXoEaEHfTjOzSp/4yOSRwgYbhrk4C1a+hR9f6ZI4y7/ty
-        vFgbuXR3FqORLRNmKAZeRSXR0dIu3lxqY7w1OosAd23ou14yc2kg8F9+45ooFA==
+        bh=bMGiSKYV+6e3N2o4vbsZYfzOtkbUx6tCOEltPbA/NxY=;
+        b=Yr6W8k/VrWhu/nsULVQj8xW1BLY7g2wEURr52tmaSBbDtkJzgHBBv/sU4xCohtzasBNSTC
+        goW5OdKOhOkfXtNnbXhEIrSOrW6ryoPyJhlmLiwzS8RtvSM2vCcF8F57lkmwG5/m+Fe/1v
+        lZrlmXNdOkILbNN8DuaFTam3F4LjX96yZfei9XRYGynRoryvR4HjPJv5sDENKoP1Iv9+AA
+        w/QSHL41+/lzaxirDOsGdGgKKAbNk69r3i+veQUQqM8FH3ZDyFnhErFK9zQ8c+dmBdN5R7
+        iDepoLDvKDeimM6HnIbVwC1KgxM0BGqlgayIFF4o7BpcFSxiua18dMT/wcV8Gg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607886069;
+        s=2020e; t=1607886070;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=7FSzG2Qo2EDCOGqUHRDOHrD5/tJZs7moRwnfQ7bvgOE=;
-        b=hcuxeWMoAKwYss7VX0LXIUNMgLLuUPHKuSSel44H3w8v1XMMifjU1dRLETVHp0FnRDfIXk
-        Iir+DYih0SQ86yAA==
-From:   "tip-bot2 for Hou Tao" <tip-bot2@linutronix.de>
+        bh=bMGiSKYV+6e3N2o4vbsZYfzOtkbUx6tCOEltPbA/NxY=;
+        b=rzlrxm1LCiU23JIuiztQCUljWXkFQ6RtBPR5lXEj0TXVo7cfjnjQPJXw9i3vHSfqn0QDgT
+        K3DoVmYt+YUp35CA==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] locktorture: Ignore nreaders_stress if no readlock support
-Cc:     Hou Tao <houtao1@huawei.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+Subject: [tip: core/rcu] refscale: Prevent hangs for invalid arguments
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <160788606933.3364.1160215468410470955.tip-bot2@tip-bot2>
+Message-ID: <160788606971.3364.8908973636375392973.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -55,40 +54,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     e5ace37d83af459bd491847df570b6763c602344
-Gitweb:        https://git.kernel.org/tip/e5ace37d83af459bd491847df570b6763c602344
-Author:        Hou Tao <houtao1@huawei.com>
-AuthorDate:    Fri, 18 Sep 2020 19:44:24 +08:00
+Commit-ID:     bc80d353b3f565138cda7e95ed4020e6e69360b2
+Gitweb:        https://git.kernel.org/tip/bc80d353b3f565138cda7e95ed4020e6e69360b2
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Thu, 17 Sep 2020 10:37:10 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Fri, 06 Nov 2020 17:13:52 -08:00
+CommitterDate: Fri, 06 Nov 2020 17:13:51 -08:00
 
-locktorture: Ignore nreaders_stress if no readlock support
+refscale: Prevent hangs for invalid arguments
 
-Exclusive locks do not have readlock support, which means that a
-locktorture run with the following module parameters will do nothing:
+If an refscale torture-test run is given a bad kvm.sh argument, the
+test will complain to the console, which is good.  What is bad is that
+from the user's perspective, it will just hang for the time specified
+by the --duration argument.  This commit therefore forces an immediate
+kernel shutdown if a ref_scale_init()-time error occurs, thus avoiding
+the appearance of a hang.  It also forces a console splat in this case
+to clearly indicate the presence of an error.
 
- torture_type=mutex_lock nwriters_stress=0 nreaders_stress=1
-
-This commit therefore rejects this combination for exclusive locks by
-returning -EINVAL during module init.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/locking/locktorture.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/rcu/refscale.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 316531d..046ea2d 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -870,7 +870,8 @@ static int __init lock_torture_init(void)
- 		goto unwind;
- 	}
- 
--	if (nwriters_stress == 0 && nreaders_stress == 0) {
-+	if (nwriters_stress == 0 &&
-+	    (!cxt.cur_ops->readlock || nreaders_stress == 0)) {
- 		pr_alert("lock-torture: must run at least one locking thread\n");
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index fb5f20d..23ff36a 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -658,7 +658,6 @@ ref_scale_init(void)
+ 		for (i = 0; i < ARRAY_SIZE(scale_ops); i++)
+ 			pr_cont(" %s", scale_ops[i]->name);
+ 		pr_cont("\n");
+-		WARN_ON(!IS_MODULE(CONFIG_RCU_REF_SCALE_TEST));
  		firsterr = -EINVAL;
+ 		cur_ops = NULL;
  		goto unwind;
+@@ -718,6 +717,10 @@ ref_scale_init(void)
+ unwind:
+ 	torture_init_end();
+ 	ref_scale_cleanup();
++	if (shutdown) {
++		WARN_ON(!IS_MODULE(CONFIG_RCU_REF_SCALE_TEST));
++		kernel_power_off();
++	}
+ 	return firsterr;
+ }
+ 
