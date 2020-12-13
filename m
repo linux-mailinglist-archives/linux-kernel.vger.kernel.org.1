@@ -2,124 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BB22D9114
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 00:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 907162D9116
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 00:03:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436485AbgLMXBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 18:01:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731289AbgLMXAz (ORCPT
+        id S2436551AbgLMXCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 18:02:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56612 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2436543AbgLMXCC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 18:00:55 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9262FC061793
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 15:00:14 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id r5so15211733eda.12
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 15:00:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e7XlCtFnQpWXdPLq8hdrC5r7fY/5pa4RVHpiXnxDixo=;
-        b=phMwJHB9hrJuAPuoWHUETTAUr+ZXE5D8Ao7Ty3wpgc050dKNUUBoMKAXf1O7pY4AG2
-         Xvk00py2QBa9gKDfoXui8tEcs2y9V79MuOSXo2ruf2ygLpdH+K/6J3L+CFCPs0Cd06zx
-         LAdvXdZSbvPFKX0IuziZEm33XyeJTEhaVAT2EK+UaWO3UBeLYiHhD78GWArvt2zk4FoX
-         l7qJQSQDN7srZVbqa+aqHAuVxDfPYDCfIRzSwdlyzoPLpEfHAqcRsAWKhVNvlKucQDeK
-         JlCh88udcetwhUsaJi2ehJ6eQQFhsvVPgEAZCxNW+2ydC6oZD2RqcKbJKXkh/EFIFMKt
-         3fbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e7XlCtFnQpWXdPLq8hdrC5r7fY/5pa4RVHpiXnxDixo=;
-        b=l4XbQ/XxA/50oDf6+hUKRRYxWkg0cEahKAmdwIA0a6JPqdKBcAHl1vuWAEOm9/nwMG
-         cDX1i96oCq9zzWY3FgDirQ3nsk7lsdYzqg0tt85PjMlBEZDfQqRFTjsVClcfG2qP14t7
-         oD5gDs01YZ5gaPa/yFzYy6u/yAZd9T5S2HuQOA63mfvHvl+J/w0LZVbdPpZgEF7rqNeV
-         axs+k/DECcCZB6VyHXEguSI6L4rsQ0/plfGpAZq7W/xiy8n04wOLZov5USN56DBBwQcp
-         +GXOAsCbj0JX90yc5tyk1qC9iMbxfGjqFbG2Z4cRHzDrc6fU9BKRdTc++DmeOWkZPWQB
-         McjA==
-X-Gm-Message-State: AOAM533eCJdOMGnCkimzQFGieQZZf+JGuJetiyI7EHfKqSbGodXQY6N7
-        3k0lYQclkoKS26sopeP569rpZ0IjeuhkzsdEmgqR
-X-Google-Smtp-Source: ABdhPJyT8YEFTOyPKj1YPFnMWE+J+xwjmaptRDMSvik5afJSTQCXwpVgWI9ImeHlYLjJ2Ma1kD7KLF+btWLmDE7O+p4=
-X-Received: by 2002:aa7:d7d8:: with SMTP id e24mr21950323eds.135.1607900413041;
- Sun, 13 Dec 2020 15:00:13 -0800 (PST)
+        Sun, 13 Dec 2020 18:02:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607900428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aWZraJBXiN5UWeboBzyeAoAmA5muh6tgXP73Wtx9kiI=;
+        b=hIQg3weXYNnIE8xsUrrqYXATmZq3FGL4G3IVuAMqTuGYn/FGt/AwJanrk2tScE8BiI5M/o
+        VCbcOrh+lINXAAr0MdeUbVEmkxY7NsO8qsTLPtYSgRlVHjswNBDPD/jVMiYYowWrhZ1+Hr
+        6+xMcQJUEyZMqrLLn1xxwivMLMGiVp4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-479-QcE1AIsCMXSZUyoyVvf4Yw-1; Sun, 13 Dec 2020 18:00:24 -0500
+X-MC-Unique: QcE1AIsCMXSZUyoyVvf4Yw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F06A107ACF8;
+        Sun, 13 Dec 2020 23:00:22 +0000 (UTC)
+Received: from krava (unknown [10.40.192.121])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 9415C10021B3;
+        Sun, 13 Dec 2020 23:00:20 +0000 (UTC)
+Date:   Mon, 14 Dec 2020 00:00:19 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 1/2] perf report: Support --header-only for pipe mode
+Message-ID: <20201213230019.GB502638@krava>
+References: <20201210061302.88213-1-namhyung@kernel.org>
 MIME-Version: 1.0
-References: <20201204000212.773032-1-stephen.s.brennan@oracle.com>
- <20201212205522.GF2443@casper.infradead.org> <877dpln5uf.fsf@x220.int.ebiederm.org>
- <20201213162941.GG2443@casper.infradead.org>
-In-Reply-To: <20201213162941.GG2443@casper.infradead.org>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Sun, 13 Dec 2020 18:00:01 -0500
-Message-ID: <CAHC9VhSytjTGPhaKFC7Cq1qotps7oyFjU7vN4oLYSxXrruTfAQ@mail.gmail.com>
-Subject: Re: [PATCH v2] proc: Allow pid_revalidate() during LOOKUP_RCU
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Stephen Brennan <stephen.s.brennan@oracle.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210061302.88213-1-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 11:30 AM Matthew Wilcox <willy@infradead.org> wrote:
-> On Sun, Dec 13, 2020 at 08:22:32AM -0600, Eric W. Biederman wrote:
-> > Matthew Wilcox <willy@infradead.org> writes:
-> >
-> > > On Thu, Dec 03, 2020 at 04:02:12PM -0800, Stephen Brennan wrote:
-> > >> -void pid_update_inode(struct task_struct *task, struct inode *inode)
-> > >> +static int do_pid_update_inode(struct task_struct *task, struct inode *inode,
-> > >> +                         unsigned int flags)
-> > >
-> > > I'm really nitpicking here, but this function only _updates_ the inode
-> > > if flags says it should.  So I was thinking something like this
-> > > (compile tested only).
-> > >
-> > > I'd really appreocate feedback from someone like Casey or Stephen on
-> > > what they need for their security modules.
-> >
-> > Just so we don't have security module questions confusing things
-> > can we please make this a 2 patch series?  With the first
-> > patch removing security_task_to_inode?
-> >
-> > The justification for the removal is that all security_task_to_inode
-> > appears to care about is the file type bits in inode->i_mode.  Something
-> > that never changes.  Having this in a separate patch would make that
-> > logical change easier to verify.
->
-> I don't think that's right, which is why I keep asking Stephen & Casey
-> for their thoughts.
+On Thu, Dec 10, 2020 at 03:13:01PM +0900, Namhyung Kim wrote:
+> The --header-only checks file header and prints the feature data.  But
+> as pipe mode doesn't have it in the header it prints almost nothing.
+> Change it to process first few records until it founds HEADER_FEATURE.
+> 
+> Before:
+>   $ perf record -o- true | perf report -i- --header-only
+>   # ========
+>   # captured on    : Thu Dec 10 14:34:59 2020
+>   # header version : 1
+>   # data offset    : 0
+>   # data size      : 0
+>   # feat offset    : 0
+>   # ========
+>   #
+> 
+> After:
+>   $ perf record -o- true | perf report -i- --header-only
+>   # ========
+>   # captured on    : Thu Dec 10 14:49:11 2020
+>   # header version : 1
+>   # data offset    : 0
+>   # data size      : 0
+>   # feat offset    : 0
+>   # ========
+>   #
+>   # hostname : balhae
+>   # os release : 5.7.17-1xxx
+>   # perf version : 5.10.rc6.gdb0ea13cc741
+>   # arch : x86_64
+>   # nrcpus online : 8
+>   # nrcpus avail : 8
+>   # cpudesc : Intel(R) Core(TM) i7-8665U CPU @ 1.90GHz
+>   # cpuid : GenuineIntel,6,142,12
+>   # total memory : 16158916 kB
+>   # cmdline : perf record -o- true
+>   # event : name = cycles, , id = { 81, 82, 83, 84, 85, 86, 87, 88 }, size = 120, ...
+>   # CPU_TOPOLOGY info available, use -I to display
+>   # NUMA_TOPOLOGY info available, use -I to display
+>   # pmu mappings: intel_pt = 9, intel_bts = 8, software = 1, power = 20, uprobe = 7, ...
+>   # time of first sample : 0.000000
+>   # time of last sample : 0.000000
+>   # sample duration :      0.000 ms
+>   # MEM_TOPOLOGY info available, use -I to display
+>   # cpu pmu capabilities: branches=32, max_precise=3, pmu_name=skylake
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-The SELinux security_task_to_inode() implementation only cares about
-inode->i_mode S_IFMT bits from the inode so that we can set the object
-class correctly.  The inode's SELinux label is taken from the
-associated task.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Casey would need to comment on Smack's needs.
+thanks,
+jirka
 
-> For example,
->
->  * Sets the smack pointer in the inode security blob
->  */
-> static void smack_task_to_inode(struct task_struct *p, struct inode *inode)
-> {
->         struct inode_smack *isp = smack_inode(inode);
->         struct smack_known *skp = smk_of_task_struct(p);
->
->         isp->smk_inode = skp;
->         isp->smk_flags |= SMK_INODE_INSTANT;
-> }
->
-> That seems to do rather more than checking the file type bits.
+> ---
+>  tools/perf/builtin-report.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+> index 5efbd0602f17..2a845d6cac09 100644
+> --- a/tools/perf/builtin-report.c
+> +++ b/tools/perf/builtin-report.c
+> @@ -226,6 +226,8 @@ static int process_feature_event(struct perf_session *session,
+>  		pr_err("failed: wrong feature ID: %" PRI_lu64 "\n",
+>  		       event->feat.feat_id);
+>  		return -1;
+> +	} else if (rep->header_only) {
+> +		session_done = 1;
+>  	}
+>  
+>  	/*
+> @@ -1512,6 +1514,13 @@ int cmd_report(int argc, const char **argv)
+>  		perf_session__fprintf_info(session, stdout,
+>  					   report.show_full_info);
+>  		if (report.header_only) {
+> +			if (data.is_pipe) {
+> +				/*
+> +				 * we need to process first few records
+> +				 * which contains PERF_RECORD_HEADER_FEATURE.
+> +				 */
+> +				perf_session__process_events(session);
+> +			}
+>  			ret = 0;
+>  			goto error;
+>  		}
+> -- 
+> 2.29.2.576.ga3fc446d84-goog
+> 
 
--- 
-paul moore
-www.paul-moore.com
