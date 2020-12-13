@@ -2,163 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E672D8E38
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 16:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 090AD2D8E3A
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 16:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729915AbgLMPRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 10:17:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20957 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406508AbgLMPQw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 10:16:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607872525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QFK1ZDhIoaUyExjTXZFlOfOZ3dXuJkhzO36EQH+4tPU=;
-        b=hK5RUzDbN6lhjIOuGbMSAN9u4H72SOjs5/y7wd6SrX4AK6QEomn2bTeyr40YTit0P74WLn
-        zuqhdUQ9R84wAcZInRv5ZB6cyNIG9MMr6KAkkFXGJ+PWcdyxkq86Kh34VT4FUAKTvYd43t
-        GKIwgfQQbdouwcrLhiLyTlnGrXvkh0Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-147-P9UtheO6P4CJz-VJ4CrRdw-1; Sun, 13 Dec 2020 10:15:21 -0500
-X-MC-Unique: P9UtheO6P4CJz-VJ4CrRdw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82AD1107ACF7;
-        Sun, 13 Dec 2020 15:15:19 +0000 (UTC)
-Received: from localhost (ovpn-12-67.pek2.redhat.com [10.72.12.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E1BBF19713;
-        Sun, 13 Dec 2020 15:15:18 +0000 (UTC)
-Date:   Sun, 13 Dec 2020 23:15:16 +0800
-From:   "bhe@redhat.com" <bhe@redhat.com>
-To:     Rahul Gopakumar <gopakumarr@vmware.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "natechancellor@gmail.com" <natechancellor@gmail.com>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        Rajender M <manir@vmware.com>,
-        Yiu Cho Lau <lauyiuch@vmware.com>,
-        Peter Jonasson <pjonasson@vmware.com>,
-        Venkatesh Rajaram <rajaramv@vmware.com>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: Performance regressions in "boot_time" tests in Linux 5.8 Kernel
-Message-ID: <20201213151516.GA12368@MiWiFi-R3L-srv>
-References: <20201022040440.GX25604@MiWiFi-R3L-srv>
- <DM6PR05MB5292D8B85FA9DDE263F6147AA41D0@DM6PR05MB5292.namprd05.prod.outlook.com>
- <DM6PR05MB5292DF14DF1C82FFE001AC24A4100@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201102143035.GA3177@MiWiFi-R3L-srv>
- <DM6PR05MB5292FD196FF6B18DCB47CE25A4110@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201112145149.GN8486@MiWiFi-R3L-srv>
- <DM6PR05MB52920B2D4267AD7D073D3C36A4FF0@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201122010844.GR8486@MiWiFi-R3L-srv>
- <DM6PR05MB52927C9962D498F1E49BABAAA4FB0@DM6PR05MB5292.namprd05.prod.outlook.com>
- <BYAPR05MB5800E8478DF45F39BE06F8ADA4CA0@BYAPR05MB5800.namprd05.prod.outlook.com>
+        id S2437022AbgLMPRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 10:17:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730018AbgLMPR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 10:17:29 -0500
+Date:   Sun, 13 Dec 2020 16:16:45 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607872608;
+        bh=pEiuqB9pAZbrN292hjKDbjBh1bbQUpVOf/f5lPhZzEQ=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=papV6FLD96BXoyZOlsI0R1TlvUIoPV0HQeU0lnGtnjJk8+YRXUXA+niGSE1bP6Xvy
+         TTAiaNjzJZW0WZBiihNbrUyKExm0BwxfruvL820O0gxSl4TX9g93CjevSQCGbnFlnQ
+         RvWwI52nWFjn3nBMyuzoK7ZpoMtaqMtoTL/6Bg1g=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        wireguard@lists.zx2c4.com
+Subject: Re: [PATCH v3] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
+Message-ID: <X9YwXZvjSWANm4wR@kroah.com>
+References: <20201128193335.219395-1-masahiroy@kernel.org>
+ <20201212161831.GA28098@roeck-us.net>
+ <CANiq72=e9Csgpcu3MdLGB77dL_QBn6PpqoG215YUHZLNCUGP0w@mail.gmail.com>
+ <8f645b94-80e5-529c-7b6a-d9b8d8c9685e@roeck-us.net>
+ <CANiq72kML=UmMLyKcorYwOhp2oqjfz7_+JN=EmPp05AapHbFSg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BYAPR05MB5800E8478DF45F39BE06F8ADA4CA0@BYAPR05MB5800.namprd05.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <CANiq72kML=UmMLyKcorYwOhp2oqjfz7_+JN=EmPp05AapHbFSg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/20 at 04:16pm, Rahul Gopakumar wrote:
-> Hi Baoquan,
+On Sun, Dec 13, 2020 at 03:58:20PM +0100, Miguel Ojeda wrote:
+> > The key here is "if nobody complains". I would argue that it is _your_
+> > responsibility to do those builds, and not the reponsibility of others
+> > to do it for you.
 > 
-> We re-evaluated your last patch and it seems to be fixing the
-> initial performance bug reported. During our previous testing,
-> we did not apply the patch rightly hence it was reporting
-> some issues. 
+> Testing allmodconfig for a popular architecture, agreed, it is due
+> diligence to avoid messing -next that day.
 > 
-> Here is the dmesg log confirming no delay in the draft patch.
+> Testing a matrix of configs * arches * gcc/clang * compiler versions?
+> No, sorry, that is what CI/-next/-rcs are for and that is where the
+> "if nobody complains" comes from.
 > 
-> Vanilla (5.10 rc3)
-> ------------------
+> If you think building a set of code for a given arch/config/etc. is
+> particularly important, then it is _your_ responsibility to build it
+> once in a while in -next (as you have done). If it is not that
+> important, somebody will speak up in one -rc. If not, is anyone
+> actually building that code at all?
 > 
-> [    0.024011] On node 2 totalpages: 89391104
-> [    0.024012]   Normal zone: 1445888 pages used for memmap
-> [    0.024012]   Normal zone: 89391104 pages, LIFO batch:63
-> [    2.054646] ACPI: PM-Timer IO Port: 0x448 --------------> 2 secs delay
+> Otherwise, changing core/shared code would be impossible. Please don't
+> blame the author for making a sensible change that will improve code
+> quality for everyone.
 > 
-> Patch
-> ------
+> > But, sure, your call. Please feel free to ignore my report.
 > 
-> [    0.024166] On node 2 totalpages: 89391104
-> [    0.024167]   Normal zone: 1445888 pages used for memmap
-> [    0.024167]   Normal zone: 89391104 pages, LIFO batch:63
-> [    0.026694] ACPI: PM-Timer IO Port: 0x448 --------------> No delay
-> 
-> Attached dmesg logs. Let me know if anything is needed from our end.
+> I'm not ignoring the report, quite the opposite. I am trying to
+> understand why you think reverting is needed for something that has
+> been more than a week in -next without any major breakage and still
+> has a long road to v5.11.
 
-I posted formal patchset to fix this issue. The patch 1 is doing the
-fix, and almost the same as the draft v2 patch I attached in this thread.
-Please feel free to help test and add your Tested-by: tag in the patch
-thread if possible.
+Because if you get a report of something breaking for your change, you
+need to work to resolve it, not argue about it.  Otherwise it needs to
+be dropped/reverted.
 
-> 
-> 
-> 
-> From: Rahul Gopakumar <gopakumarr@vmware.com>
-> Sent: 24 November 2020 8:33 PM
-> To: bhe@redhat.com <bhe@redhat.com>
-> Cc: linux-mm@kvack.org <linux-mm@kvack.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; akpm@linux-foundation.org <akpm@linux-foundation.org>; natechancellor@gmail.com <natechancellor@gmail.com>; ndesaulniers@google.com <ndesaulniers@google.com>; clang-built-linux@googlegroups.com <clang-built-linux@googlegroups.com>; rostedt@goodmis.org <rostedt@goodmis.org>; Rajender M <manir@vmware.com>; Yiu Cho Lau <lauyiuch@vmware.com>; Peter Jonasson <pjonasson@vmware.com>; Venkatesh Rajaram <rajaramv@vmware.com>
-> Subject: Re: Performance regressions in "boot_time" tests in Linux 5.8 Kernel 
->  
-> Hi Baoquan,
-> 
-> We applied the new patch to 5.10 rc3 and tested it. We are still
-> observing the same page corruption issue which we saw with the
-> old patch. This is causing 3 secs delay in boot time.
-> 
-> Attached dmesg log from the new patch and also from vanilla
-> 5.10 rc3 kernel.
-> 
-> There are multiple lines like below in the dmesg log of the
-> new patch.
-> 
-> "BUG: Bad page state in process swapper  pfn:ab08001"
-> 
-> ________________________________________
-> From: bhe@redhat.com <bhe@redhat.com>
-> Sent: 22 November 2020 6:38 AM
-> To: Rahul Gopakumar
-> Cc: linux-mm@kvack.org; linux-kernel@vger.kernel.org; akpm@linux-foundation.org; natechancellor@gmail.com; ndesaulniers@google.com; clang-built-linux@googlegroups.com; rostedt@goodmis.org; Rajender M; Yiu Cho Lau; Peter Jonasson; Venkatesh Rajaram
-> Subject: Re: Performance regressions in "boot_time" tests in Linux 5.8 Kernel
-> 
-> On 11/20/20 at 03:11am, Rahul Gopakumar wrote:
-> > Hi Baoquan,
-> >
-> > To which commit should we apply the draft patch. We tried applying
-> > the patch to the commit 3e4fb4346c781068610d03c12b16c0cfb0fd24a3
-> > (the one we used for applying the previous patch) but it fails.
-> 
-> I tested on 5.10-rc3+. You can append below change to the old patch in
-> your testing kernel.
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index fa6076e1a840..5e5b74e88d69 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -448,6 +448,8 @@ defer_init(int nid, unsigned long pfn, unsigned long end_pfn)
->         if (end_pfn < pgdat_end_pfn(NODE_DATA(nid)))
->                 return false;
-> 
-> +       if (NODE_DATA(nid)->first_deferred_pfn != ULONG_MAX)
-> +               return true;
->         /*
->          * We start only with one section of pages, more pages are added as
->          * needed until the rest of deferred pages are initialized.
+Please fix.
 
+thanks,
 
-
+greg k-h
