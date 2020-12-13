@@ -2,141 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E01F2D8F67
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 19:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0792F2D8F64
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 19:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393145AbgLMSnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 13:43:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
+        id S2392964AbgLMSlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 13:41:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389529AbgLMSjy (ORCPT
+        with ESMTP id S2390051AbgLMSj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 13:39:54 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3FEFC0611CD;
-        Sun, 13 Dec 2020 10:38:48 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id 75so1755616ilv.13;
-        Sun, 13 Dec 2020 10:38:48 -0800 (PST)
+        Sun, 13 Dec 2020 13:39:56 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B951C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 10:39:41 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id m12so24640637lfo.7
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 10:39:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8U041WmRtyq8BrXAJ3gOrPaoRGECeAfxoPRSHkkfdX8=;
-        b=ScRCo9H/n9rcd41zcQ+TpdXmygMaZAocyJdzDRB9f+v9BNYWxVpGozPUIoAIBx//CO
-         Q6OdVoCgB7G319Y4h+ulvlrQoiYhbQjthHbjfcs2Va1sjKZsoRpClnjmIdzbpcVeD700
-         OGb/uKOZWNAlS7Ll9SWpppEcdNkbL1EvUCJU0OdA33WnVRXY29WxMqNZcAUX/e1WLlGL
-         BiTHZCfuDwNcMUooCxJxlg33AgnlJNYtSQyLgyNV1mRukYzjDKXPAOheefKipYoqn/R7
-         sFaW6PIMOIYap+oHK8IU4S/t9ZkmK2w7tiT7KMILpPh8/eJfZKtBbm4CaQRxWJ/5QkcS
-         93+A==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qCn3NHtoWSZwuf21MXbxZMkWcXxQPfte0L3AbThqKOs=;
+        b=PQe1yb2FT6b3+I5xwdl+l2pAvL2uAUA3xo3uVxyNTlGJ8LYDvptzluXtJTfugZu4Jl
+         nYKGs6vdkRE3I/zr9B+xrS6/2MrN73SfFPtyUZ4YF50p/pXTBLgPs1lf4tLZx/iFl2rC
+         LDZuE+iI7INtKWTlSu9McBWtrTzb4Sp2Td0km3Qw34nF81+vkOEyv+LnBe19Pud/gPau
+         6bgAE4V6b1vGArlimMvRbyf7cc6e0Mdf4XjUg3YQ338ZLov4GelZqpkMXs+A7A4V5Wjy
+         gbFTXk/lFeYpEWFQaP5quspXrG8lsclrKUJofR20SVN6HH51rS89qxaMSQIvGjX5QeHm
+         tRRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8U041WmRtyq8BrXAJ3gOrPaoRGECeAfxoPRSHkkfdX8=;
-        b=ZMyIimco08OuWhN7dsBUUasFtX7pdrMSCJDkbUSzkhkVLGpDbMZ616NG9qZ4Hvxjm0
-         6E9a67b4BGDGT4zeeIgLDn6vJPxin0TczYqmuY1VlZGCv8tgWx1YhT1gsAn8a0Z11fwo
-         GEm1d7hYbFEnSIAZUJkm/yZST9qkeLwxYx1xrh9Q5o7RdzkokptY1wQoass4f/2Q7a7p
-         2xo/EYbjtEX1B7g6l1txwPFOKFycFwGZvEI391E0eu9BvZjzj6kNz2iZyZCSuLwFqlZ2
-         QD1TPOuQ7K1RdBocr8ycgkcSpgcrfYccR/LXlkPkw4fBomXpX1DruvhFtF1hXyyq4pIE
-         lxeA==
-X-Gm-Message-State: AOAM532pxF9nTxoiZLmjTOHmC8Fq2iSxL8i4r+b6TmLPokyikJIV5zR4
-        viHR8jPqrF1tPCxc6YxsqpLTw0bejaNwkA==
-X-Google-Smtp-Source: ABdhPJzPYh8wQw0Vw60pTqRwBugHjKzTNFBVh5w9mw4JaSxbSt55aritY+vpq0jrkgg0C5H3nlguUA==
-X-Received: by 2002:a92:cb0d:: with SMTP id s13mr30298321ilo.73.1607884727809;
-        Sun, 13 Dec 2020 10:38:47 -0800 (PST)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:f45d:df49:9a4c:4914])
-        by smtp.gmail.com with ESMTPSA id o11sm7804532ioa.37.2020.12.13.10.38.46
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qCn3NHtoWSZwuf21MXbxZMkWcXxQPfte0L3AbThqKOs=;
+        b=mpmbTYtOV1gVUvNtBe8JN2tuig83xNW0wTqY4Z7MRQ3JAxeTN02cLky/8LwBVa4M/s
+         VnQM8gBsYkGYjGZBKnmsrhVmwpc5Y+dLQjOgEMILL4dV0B9hQqcRRJ0ml7J7kkJtgx5y
+         ao5NLtX8hSaJQvs5b+TA5qHb+F2x1pZdEUC7sTHu8hjy9uNG7J1A2pPAxE6A9YHiNKjQ
+         lD/yEJLqG+Pliix/qHjUlDTXkm+UbC8M2dwpudDlD7vs80/VafwyCfs+FlfKYDgP4sov
+         E4eSWtFpUIRaDzU79pAk2FYONiDoTxi7nyxi1+O5P2oNaIupf3gtD9JkTx8WcWjDVcIU
+         Eddg==
+X-Gm-Message-State: AOAM5339qmJgtFp034Sfd0XmuA/5QZMfFMTZjhlzT02TcD0P+Ogb8DRD
+        fkvlsZBSo/48joUtUm7iPSU=
+X-Google-Smtp-Source: ABdhPJxSo0ee6ZjLQoK2ZfQEL0k6blaIVMM25WSDnIHC0hMbKO6+BOiBSTqiHdwFr76bWV9GIrkzDg==
+X-Received: by 2002:a19:5512:: with SMTP id n18mr5617641lfe.270.1607884778749;
+        Sun, 13 Dec 2020 10:39:38 -0800 (PST)
+Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id t1sm1002713ljg.44.2020.12.13.10.39.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Dec 2020 10:38:47 -0800 (PST)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Sun, 13 Dec 2020 10:39:38 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Sun, 13 Dec 2020 19:39:36 +0100
+To:     Waiman Long <longman@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 18/18] arm64: dts: renesas: Introduce r8a774e1-beacon-rzg2h-kit
-Date:   Sun, 13 Dec 2020 12:37:58 -0600
-Message-Id: <20201213183759.223246-19-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201213183759.223246-1-aford173@gmail.com>
-References: <20201213183759.223246-1-aford173@gmail.com>
+Subject: Re: [PATCH] mm/vmalloc: Fix unlock order in s_stop()
+Message-ID: <20201213183936.GA20007@pc636>
+References: <20201213180843.16938-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201213180843.16938-1-longman@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Beacon EmebeddedWorks is introducing a new kit based on the
-RZ/G2H SoC from Renesas.
+On Sun, Dec 13, 2020 at 01:08:43PM -0500, Waiman Long wrote:
+> When multiple locks are acquired, they should be released in reverse
+> order. For s_start() and s_stop() in mm/vmalloc.c, that is not the
+> case.
+> 
+>   s_start: mutex_lock(&vmap_purge_lock); spin_lock(&vmap_area_lock);
+>   s_stop : mutex_unlock(&vmap_purge_lock); spin_unlock(&vmap_area_lock);
+> 
+> This unlock sequence, though allowed, is not optimal. If a waiter is
+> present, mutex_unlock() will need to go through the slowpath of waking
+> up the waiter with preemption disabled. Fix that by releasing the
+> spinlock first before the mutex.
+> 
+> Fixes: e36176be1c39 ("mm/vmalloc: rework vmap_area_lock")
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  mm/vmalloc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 6ae491a8b210..75913f685c71 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -3448,11 +3448,11 @@ static void *s_next(struct seq_file *m, void *p, loff_t *pos)
+>  }
+>  
+>  static void s_stop(struct seq_file *m, void *p)
+> -	__releases(&vmap_purge_lock)
+>  	__releases(&vmap_area_lock)
+> +	__releases(&vmap_purge_lock)
+>  {
+> -	mutex_unlock(&vmap_purge_lock);
+>  	spin_unlock(&vmap_area_lock);
+> +	mutex_unlock(&vmap_purge_lock);
+>  }
+>  
+>  static void show_numa_info(struct seq_file *m, struct vm_struct *v)
+BTW, if navigation over both list is an issue, for example when there
+are multiple heavy readers of /proc/vmallocinfo, i think, it make sense
+to implement RCU safe lists iteration and get rid of both locks.
 
-The SOM supports eMMC, WiFi and Bluetooth, along with a Cat-M1
-cellular radio.
+As for the patch: Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-The Baseboard has Ethernet, USB, HDMI, stereo audio in and out,
-along with a variety of push buttons and LED's, and support for
-a parallel RGB and an LVDS display.  It uses the same baseboard
-and SOM files as the RZ/G2M and RZ/G2N kits.
+Thanks!
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
----
- .../dts/renesas/r8a774e1-beacon-rzg2h-kit.dts | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/renesas/r8a774e1-beacon-rzg2h-kit.dts b/arch/arm64/boot/dts/renesas/r8a774e1-beacon-rzg2h-kit.dts
-new file mode 100644
-index 000000000000..8ff5856ac727
---- /dev/null
-+++ b/arch/arm64/boot/dts/renesas/r8a774e1-beacon-rzg2h-kit.dts
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2020, Compass Electronics Group, LLC
-+ */
-+
-+/dts-v1/;
-+
-+#include "r8a774e1.dtsi"
-+#include "beacon-renesom-som.dtsi"
-+#include "beacon-renesom-baseboard.dtsi"
-+
-+/ {
-+	model = "Beacon Embedded Works RZ/G2H Development Kit";
-+	compatible =	"beacon,beacon-rzg2h", "renesas,r8a774e1";
-+
-+	aliases {
-+		serial0 = &scif2;
-+		serial1 = &hscif0;
-+		serial2 = &hscif1;
-+		serial3 = &scif0;
-+		serial4 = &hscif2;
-+		serial5 = &scif5;
-+		serial6 = &scif4;
-+		ethernet0 = &avb;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory@500000000 {
-+		device_type = "memory";
-+		reg = <0x5 0x00000000 0x0 0x80000000>;
-+	};
-+};
-+
-+&du {
-+	status = "okay";
-+
-+	clocks = <&cpg CPG_MOD 724>,
-+		<&cpg CPG_MOD 723>,
-+		<&cpg CPG_MOD 721>,
-+		<&versaclock5 1>,
-+		<&x302_clk>,
-+		<&versaclock5 2>;
-+	clock-names = "du.0", "du.1", "du.3",
-+		"dclkin.0", "dclkin.1", "dclkin.3";
-+};
--- 
-2.25.1
-
+--
+Vlad Rezki
