@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E6C2D9039
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:40:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317222D903C
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730478AbgLMTjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 14:39:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727909AbgLMTjl (ORCPT
+        id S2390532AbgLMTkG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 13 Dec 2020 14:40:06 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:44498 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732853AbgLMTj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 14:39:41 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CCBC0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 11:38:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=gtkC2cwUyIZHi2THFuqJZjqPt1krJsPvyreKUidD7mw=; b=Ch83eRaVuMImRjym8HnQzBa5XQ
-        dVYR4G4EuxcCPragNt7sSP0FkCy7XSei5yKmrQE90qh1M5Pi1XjPnaNKEchmnAQSmJwEpLWjcPcvB
-        rdzVOHEihCHC95LRzGBF990z4UEUUoEDT8lgtYMEDsJlDJZEHvijvg/8k5I+Y3/Li6+F0301OPNuw
-        /ABD5ONp0bVNbr+H+cMEaNCL09swp3D03xKk4HK04ES08EkdskHaf+C1jHXdEgUrDF0dz4rlxBp5q
-        Mhv3zCy6EbT2AQyLC6sQLOIq9c6EAFOVHv0Yk6SEVVQyq2D6h+QFB5dFCo72UNduxHsvwg6l9ZJut
-        z9lGfXJA==;
-Received: from [2602:306:c5a2:a380:9e7b:efff:fe40:2b26]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1koXCT-0005tq-MO; Sun, 13 Dec 2020 19:38:33 +0000
-Subject: Re: [PATCH] powerpc/ps3: use dma_mapping_error()
-To:     =?UTF-8?Q?Vincent_Stehl=c3=a9?= <vincent.stehle@laposte.net>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-References: <20201213182622.23047-1-vincent.stehle@laposte.net>
-From:   Geoff Levand <geoff@infradead.org>
-Message-ID: <a1aa680e-5eca-6c09-0e57-da7f09d99f9f@infradead.org>
-Date:   Sun, 13 Dec 2020 11:38:31 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 13 Dec 2020 14:39:59 -0500
+Received: by mail-ot1-f67.google.com with SMTP id f16so13655729otl.11
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 11:39:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9CtsVDwoNbPTm3v5e+HpA6cbwiDsDEPWbKL4B1oehZc=;
+        b=AsWh8T6SXFyxZRYWoMdmKTu5RB+55gpBZ2D2OlB/neWv+XVXi8kzoVJAamBoerjIjy
+         pWcAQEvw359iEwgoUJZYZAkeuP01PDcDFTGVRR3yrYgp85rvpN9bj5lGezitm2CMaCgA
+         YzUNJmt96KpSZwuv0D+hmdkhJHQyeOTOPPZgryAOR0UE6j4BCVmR3HHzT3LXnhh41HAM
+         MJ9FJdHC6jJb5E7vqS+fqduTCoJt1BJ98Ag1FG+mzVqwW0uaATuNjgfomLUBcM4IPWNp
+         L96xsyp0i/oJXsSvh11YlvM+lgcYunLxl+tD0o7G1aw8pkBNp8/q6By3g8a0QdBXHTNG
+         +fpw==
+X-Gm-Message-State: AOAM5301je8UJqHPII7K69UwCMEE4ISoAcAHNABSIbs8XAz+dLe9WPFi
+        ZESzWQy3+IwlE3X0b16+6bH0zxYgrM1pNy3PlUU=
+X-Google-Smtp-Source: ABdhPJwC4wvQQzNa66xLyDbpxyVUlVclWiUrLQIUV9Yw9yMKCbEGzT4yJtkd0MM8nhOTjUfp24qRgmJ/l4peJF8rnLo=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr17149997otc.145.1607888359063;
+ Sun, 13 Dec 2020 11:39:19 -0800 (PST)
 MIME-Version: 1.0
+References: <20201213182622.23047-1-vincent.stehle@laposte.net>
 In-Reply-To: <20201213182622.23047-1-vincent.stehle@laposte.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sun, 13 Dec 2020 20:39:07 +0100
+Message-ID: <CAMuHMdXphVnZneudRR48+asCSGzXDVvBxaAQCtrZ3P-cEGHz4w@mail.gmail.com>
+Subject: Re: [PATCH] powerpc/ps3: use dma_mapping_error()
+To:     =?UTF-8?Q?Vincent_Stehl=C3=A9?= <vincent.stehle@laposte.net>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geoff Levand <geoff@infradead.org>,
+        Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/13/20 10:26 AM, Vincent Stehlé wrote:
+On Sun, Dec 13, 2020 at 8:06 PM Vincent Stehlé
+<vincent.stehle@laposte.net> wrote:
 > The DMA address returned by dma_map_single() should be checked with
 > dma_mapping_error(). Fix the ps3stor_setup() function accordingly.
-> 
+>
 > Fixes: 80071802cb9c ("[POWERPC] PS3: Storage Driver Core")
 > Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
-> Cc: Geoff Levand <geoff@infradead.org>
-> Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-> ---
->  drivers/ps3/ps3stor_lib.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Looks good.  Thanks for submitting.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Acked by: Geoff Levand <geoff@infradead.org>
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
