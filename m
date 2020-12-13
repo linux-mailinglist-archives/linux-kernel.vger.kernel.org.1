@@ -2,114 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9B42D8ED2
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 17:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F6C2D8EC9
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 17:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405955AbgLMQed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 11:34:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
+        id S2437453AbgLMQdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 11:33:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437022AbgLMQda (ORCPT
+        with ESMTP id S1730046AbgLMQdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 11:33:30 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81457C0613D3;
-        Sun, 13 Dec 2020 08:32:50 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id t13so13079331ybq.7;
-        Sun, 13 Dec 2020 08:32:50 -0800 (PST)
+        Sun, 13 Dec 2020 11:33:32 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54190C0613D6
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 08:32:51 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id i24so14584409edj.8
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 08:32:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OOly9loxLYTvtE1Njo5WCf0TNy0xF1kl9c/YUhN9Ldg=;
-        b=CQnFeP/qKJ1PIVVbcikxlOyY0crNPCzCLu36oBQIVFV74Qm25kpqcvPED0RU69ffXH
-         uD6MhZB+lq4W+AwP/iSR1y65ptVYtL2M9m/31Fq2JJPuJWN6yPuvek6A5N6ax9r5UCRw
-         v0A7+nXAqDoI6u2QDgJS/P0XsGWZQKRj7ErAjJubTAV4bU8mufhSSkpu98ZVvUCjUmKH
-         m8l5+M1F6sAbrcTb0c9JMjQIhq3a3okT8zVEj/9CKQSUV3R07tDspVdX2gGqJCSVv6xy
-         7W5JptzuBD1Rtp0cr87thNuZ5gZd+z6n4BrWRFemSfSqlGvEaVbpoSKchAuRye9qKD9Z
-         moJA==
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=CaMA9RW5UtaplKUmsQNUohW2cKU7SkQPGntX3Q5iuX4=;
+        b=TJFilUYHE2iJDtdrpTCgCza67kS9Ayk6PYibDjmLcoN8r7Yg6bRfzL7pON5le7jkRj
+         6H+uG5ZYrPd8w55+aJvTghf18n2LJkCmzB+z6qpC+T7gV7BFPtI9rDQCMVH2C8/KQvry
+         kMG2vyLyOTrDOLJBL/AzrpImh2cosKfoWLKDMUHGmq9Jr0BZWSz07uUjV/TcLgYjQ0Gl
+         piPrx/RxKKVw46XyxPaAZRMMQ7SX3OgGUElxLFe9HLC0WnjBhsMmQmXJRM1VpCxnIsWm
+         tNQedvIXhq8TQLNLmO1zQTsnwn1sTEJIo599xml57IPj1chXox7Mg3/nAvarymI+gMXA
+         Etow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OOly9loxLYTvtE1Njo5WCf0TNy0xF1kl9c/YUhN9Ldg=;
-        b=AIYSGmlfBWA3irA0NOc3iIS0v/cmJEJiSwOETpMqkK1mEnb+WblO9NijPDP8nmVsW+
-         vx1wd2iyARDDW06IchgdjBN6Q73YTYOtvaVR0g7EFeCm9DrvlBhSKytUV9f0ssGyAjCP
-         td10z4hBmOwU/ZpWMVScyI18oUahmrt9dUo2J1HyPfZzxTnlz3cxiso0549w5toJBgVL
-         0oksyKChiJnVQis/inMdC9PDWncuubZpUmAKQ2uqBDgBQjCaLTxSQrU69Q8TigDAwp3i
-         KPZY6SHtqrTp4sfFIYwI4nY4sxybGvHWQms3p11Qxu0DkPeLnOlWExBuhaFmIBh6+Zhv
-         jjJg==
-X-Gm-Message-State: AOAM531WQd28SJvN9Y4xpxoOdDP/G/gzi486s+WPDdmTbklRLxg+xPVk
-        QsKkbpliiVF9k74x1bVxnLdjIk+XCPhiXH3fWAiPCCTpzFQ=
-X-Google-Smtp-Source: ABdhPJzYbmOg9ijb/AZ8TKkK+fOnNQR1Y5LH6RzvAMw7yylGfsj/NGzlkqPYBT43q2CZBUVma+fLSh0qufHXXvXT9TQ=
-X-Received: by 2002:a25:40d:: with SMTP id 13mr32470818ybe.422.1607877169805;
- Sun, 13 Dec 2020 08:32:49 -0800 (PST)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=CaMA9RW5UtaplKUmsQNUohW2cKU7SkQPGntX3Q5iuX4=;
+        b=M8vekQxrd97dUTcUxxcxhiuLCudjPGJuKpvWQJkzCUS7b50MrzWWHnNX9TdYFOPBLJ
+         GBRr+AfrUkGoSemWSwdbohjvs5aJ0xhkLxQxbsJ0pxI/fgTPft/HPSElkXOoF7MWk3pn
+         P35X2/LXwZ9PjubdCJ+B8y5kiz7JiYDNxSOJaIy8W9ONxbx4c25nx+/1q3EdPkAG1IVm
+         ShFIzhJCJmMCZv5Eznt6HAb0UpEiImXQ2ZaMpGT8plRLCRVNZJnEcntmMXpmygQCpH6b
+         OPMOb0BbNtOdIeVNEr/MJoWl91RDkOk/9Zy5oAYrGYdO+7smlFTj/f/An0bD14SEleTS
+         bgQA==
+X-Gm-Message-State: AOAM5318RJ0xDDf4z0izrv15Oagy0PHoXjjHkfH9J/GPfevprTlx7PS1
+        dmHBk4WoHBdIirjLnH1wCX3EkmpV5rU=
+X-Google-Smtp-Source: ABdhPJw6ZtNa4IRYK7c5+vO+ev1wTHdXB6evuKIfRG7TTlUcQOVhLar8KvOMzRrkjsejNTlYpdYXQg==
+X-Received: by 2002:a05:6402:1041:: with SMTP id e1mr1736396edu.54.1607877169581;
+        Sun, 13 Dec 2020 08:32:49 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f06:5500:39f9:b9d0:a27c:7a5d? (p200300ea8f06550039f9b9d0a27c7a5d.dip0.t-ipconnect.de. [2003:ea:8f06:5500:39f9:b9d0:a27c:7a5d])
+        by smtp.googlemail.com with ESMTPSA id j27sm11871297ejo.61.2020.12.13.08.32.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 13 Dec 2020 08:32:49 -0800 (PST)
+To:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Cc:     "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH v2] dma-mapping: add unlikely hint for error path in
+ dma_mapping_error
+Message-ID: <39581f9a-0066-ad98-094d-d41082145e23@gmail.com>
+Date:   Sun, 13 Dec 2020 17:32:39 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201128193335.219395-1-masahiroy@kernel.org> <20201212161831.GA28098@roeck-us.net>
- <CANiq72=e9Csgpcu3MdLGB77dL_QBn6PpqoG215YUHZLNCUGP0w@mail.gmail.com>
- <8f645b94-80e5-529c-7b6a-d9b8d8c9685e@roeck-us.net> <f5c2d237-1cc7-5a78-c87c-29b7db825f68@urlichs.de>
-In-Reply-To: <f5c2d237-1cc7-5a78-c87c-29b7db825f68@urlichs.de>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sun, 13 Dec 2020 17:32:38 +0100
-Message-ID: <CANiq72kajFSgKmYW0tXUXNEQpMwBW7BsFSeqbMVDmXqBXDLh_A@mail.gmail.com>
-Subject: Re: [PATCH v3] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
-To:     Matthias Urlichs <matthias@urlichs.de>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        wireguard@lists.zx2c4.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 4:38 PM 'Matthias Urlichs' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> If your change to a function breaks its callers, it's your job to fix
+Zillions of drivers use the unlikely() hint when checking the result of
+dma_mapping_error(). This is an inline function anyway, so we can move
+the hint into this function and remove it from drivers.
 
-No function has changed. This patch enables a warning (that for some
-reason is an error in the case of Guenter).
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+---
+v2:
+Split the big patch into the change for dma-mapping.h and follow-up
+patches per subsystem that will go through the trees of the respective
+maintainers.
+---
+ include/linux/dma-mapping.h | 2 +-
+ kernel/dma/map_benchmark.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Even if this was a hard error, the same applies: the function hasn't
-changed. It just means callers never tested with
-`CONFIG_ENABLE_MUST_CHECK` for *years*.
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index 2e49996a8..6177e20b5 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -95,7 +95,7 @@ static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
+ {
+ 	debug_dma_mapping_error(dev, dma_addr);
+ 
+-	if (dma_addr == DMA_MAPPING_ERROR)
++	if (unlikely(dma_addr == DMA_MAPPING_ERROR))
+ 		return -ENOMEM;
+ 	return 0;
+ }
+diff --git a/kernel/dma/map_benchmark.c b/kernel/dma/map_benchmark.c
+index b1496e744..901420a5d 100644
+--- a/kernel/dma/map_benchmark.c
++++ b/kernel/dma/map_benchmark.c
+@@ -78,7 +78,7 @@ static int map_benchmark_thread(void *data)
+ 
+ 		map_stime = ktime_get();
+ 		dma_addr = dma_map_single(map->dev, buf, PAGE_SIZE, map->dir);
+-		if (unlikely(dma_mapping_error(map->dev, dma_addr))) {
++		if (dma_mapping_error(map->dev, dma_addr)) {
+ 			pr_err("dma_map_single failed on %s\n",
+ 				dev_name(map->dev));
+ 			ret = -ENOMEM;
+-- 
+2.29.2
 
-> the callers proactively instead of waiting for "as they come" bug
-> reports. (Assuming, of course, that you know about the breakage. Which
-> you do when you tell us that the bad pattern can simply be grepped for.)
-
-No, *we don't know about the breakage*. The grep was for the
-particular function Guenter reported, and done to validate his
-concern.
-
-If you want to manually inspect every caller of every `__must_check`
-function, or to write a cocci patch or a clang-tidy check or similar
-(that would be obsolete as soon as `__must_check` is enabled), you are
-welcome to do so. But a much better usage of our time would be letting
-machines do their job.
-
-> If nothing else, that's far more efficient than [number_of_callers]
-> separate patches by other people who each need to find the offending
-> change, figure out what to change and/or who to report the problem to,
-> and so on until the fix lands in the kernel.
-
-This change is not in Linus' tree, it is on -next.
-
-> Moreover, this wouldn't leave the kernel sources in a non-bisect-able
-> state during that time.
-
-Again, the change is in -next. That is the point: to do integration
-testing and let the bots run against it.
-
-Cheers,
-Miguel
