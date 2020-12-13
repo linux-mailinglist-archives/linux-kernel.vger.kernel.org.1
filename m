@@ -2,130 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D872D8F8C
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 19:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A74B22D902A
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:30:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725843AbgLMSxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 13:53:17 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:34804 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgLMSw6 (ORCPT
+        id S1726881AbgLMTBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 14:01:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726377AbgLMTBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 13:52:58 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BDInnv5095008;
-        Sun, 13 Dec 2020 18:52:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=m+agSRCv2C7vA1smCTi9nr9ItANyGc4Iz5+EOO7ykN8=;
- b=CjylZuqN6lVabLCFgLdzeaUdMmE3xSDWWJXAUzymzlsZoiR8Uggp2G2dekEfTWR61N28
- 23zeynROsAP/N9YlLT84VY7IO/NnFh0vyZxx8Om6KsS4HtSKjdkkxPRxKUfw7xZGMOYP
- gIzWg5iVPBF+ctewxhnCj616R4St2fK4mmQJSdzYGyoYfCWnoxGj5s/H9tVtsvO6yL+B
- 1kr0CSLGGJa7nls4iZrmXO2EPRkxvs6M1OfAHgwIIbRzGw6kFHBZOfsaKL9tG4zG2T7I
- pzzEcV8OWET8Jy9mx2/3BdQuaf+7M1ljYZGQSV3s3Tk9/0ZqZrRbk1a+GQlhZSMIsIHu 3Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 35cntktnan-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 13 Dec 2020 18:52:05 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BDIf3Rd045988;
-        Sun, 13 Dec 2020 18:50:04 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 35d7ejqw4q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 13 Dec 2020 18:50:04 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BDIo3tt021888;
-        Sun, 13 Dec 2020 18:50:03 GMT
-Received: from Junxiaos-MacBook-Pro.local (/73.231.9.254)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 13 Dec 2020 10:50:02 -0800
-Subject: Re: [PATCH RFC 0/8] dcache: increase poison resistance
-To:     Konstantin Khlebnikov <koct9i@gmail.com>
-Cc:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Waiman Long <longman@redhat.com>,
-        Gautham Ananthakrishna <gautham.ananthakrishna@oracle.com>,
-        matthew.wilcox@oracle.com
-References: <158893941613.200862.4094521350329937435.stgit@buzz>
- <97ece625-2799-7ae6-28b5-73c52c7c497b@oracle.com>
- <CALYGNiN2F8gcKX+2nKOi1tapquJWfyzUkajWxTqgd9xvd7u1AA@mail.gmail.com>
-From:   Junxiao Bi <junxiao.bi@oracle.com>
-Message-ID: <d116ead4-f603-7e0c-e6ab-e721332c9832@oracle.com>
-Date:   Sun, 13 Dec 2020 10:49:45 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
+        Sun, 13 Dec 2020 14:01:42 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C08CC0613CF;
+        Sun, 13 Dec 2020 11:01:02 -0800 (PST)
+Date:   Sun, 13 Dec 2020 19:00:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607886060;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=7uCXFZk38Cf0w3xZoB0lL2iSrYgDjhM5dzQdHf426t4=;
+        b=Tt65TSQ3YmnTMNv/m51Dgl8gUP8dC/K+HwLNkU0Gw6oRelxOxqbrQsZcOWb33N5R6UCy3o
+        r9Ln3wNqli4ytknEHsXACfdfhiuiHsXkafEfBXzd1dxK4hIfysjruDYXRpGS2C3euMx0Bm
+        /LAzeOdteIrfY1F1e4GVMceVRNLPuxM0s0hPV6j0lzCJ8jqSvZzyNJOvZlCETlepfpb3Dd
+        NLfCk83Uy3bh8EzZpJ+Nb0HDBLgIMSB2vcZ8LjBMi2ysb/F9086LfUUr1iW6DKjoGopMkm
+        zUdN2FAbfqF+MTFD/k+D1e+wwF74lOIBDKDR89euZ1A7VlLfTWWgNIPecNRDRQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607886060;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=7uCXFZk38Cf0w3xZoB0lL2iSrYgDjhM5dzQdHf426t4=;
+        b=lP5OET2Bo/k5qS9MU0hMzH34kGwXrVBprE38zNK16UpIUwXAgTs/6pVdRk2qpydDz1rF9L
+        xnadhWroPHN40gCw==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/rcu] srcu: Take early exit on memory-allocation failure
+Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-In-Reply-To: <CALYGNiN2F8gcKX+2nKOi1tapquJWfyzUkajWxTqgd9xvd7u1AA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Message-ID: <160788605872.3364.276499462904083916.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 bulkscore=0
- suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012130147
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 priorityscore=1501 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012130148
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/20 11:32 PM, Konstantin Khlebnikov wrote:
+The following commit has been merged into the core/rcu branch of tip:
 
-> On Thu, Dec 10, 2020 at 2:01 AM Junxiao Bi <junxiao.bi@oracle.com 
-> <mailto:junxiao.bi@oracle.com>> wrote:
->
->     Hi Konstantin,
->
->     We tested this patch set recently and found it limiting negative
->     dentry
->     to a small part of total memory. And also we don't see any
->     performance
->     regression on it. Do you have any plan to integrate it into
->     mainline? It
->     will help a lot on memory fragmentation issue causing by dentry slab,
->     there were a lot of customer cases where sys% was very high since
->     most
->     cpu were doing memory compaction, dentry slab was taking too much
->     memory
->     and nearly all dentry there were negative.
->
->
-> Right now I don't have any plans for this. I suspect such problems will
-> appear much more often since machines are getting bigger.
-> So, somebody will take care of it.
-We already had a lot of customer cases. It made no sense to leave so 
-many negative dentry in the system, it caused memory fragmentation and 
-not much benefit.
->
-> First part which collects negative dentries at the end list of 
-> siblings could be
-> done in a more obvious way by splitting the list in two.
-> But this touches much more code.
-That would add new field to dentry?
->
-> Last patch isn't very rigid but does non-trivial changes.
-> Probably it's better to call some garbage collector thingy periodically.
-> Lru list needs pressure to age and reorder entries properly.
+Commit-ID:     50edb988534c621a56ca103c0c16ac59e7399f01
+Gitweb:        https://git.kernel.org/tip/50edb988534c621a56ca103c0c16ac59e7399f01
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Thu, 10 Sep 2020 11:54:42 -07:00
+Committer:     Paul E. McKenney <paulmck@kernel.org>
+CommitterDate: Thu, 19 Nov 2020 19:37:17 -08:00
 
-Swap the negative dentry to the head of hash list when it get accessed? 
-Extra ones can be easily trimmed when swapping, using GC is to reduce 
-perf impact?
+srcu: Take early exit on memory-allocation failure
 
-Thanks,
+It turns out that init_srcu_struct() can be invoked from usermode tasks,
+and that fatal signals received by these tasks can cause memory-allocation
+failures.  These failures are not handled well by init_srcu_struct(),
+so much so that NULL pointer dereferences can result.  This commit
+therefore causes init_srcu_struct() to take an early exit upon detection
+of memory-allocation failure.
 
-Junxioao.
+Link: https://lore.kernel.org/lkml/20200908144306.33355-1-aik@ozlabs.ru/
+Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Tested-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/srcutree.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
->
-> Gc could be off by default or thresholds set very high (50% of ram for 
-> example).
-> Final setup could be left up to owners of large systems, which needs 
-> fine tuning.
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index c13348e..6f7880a 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -177,11 +177,13 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+ 	INIT_DELAYED_WORK(&ssp->work, process_srcu);
+ 	if (!is_static)
+ 		ssp->sda = alloc_percpu(struct srcu_data);
++	if (!ssp->sda)
++		return -ENOMEM;
+ 	init_srcu_struct_nodes(ssp, is_static);
+ 	ssp->srcu_gp_seq_needed_exp = 0;
+ 	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
+ 	smp_store_release(&ssp->srcu_gp_seq_needed, 0); /* Init done. */
+-	return ssp->sda ? 0 : -ENOMEM;
++	return 0;
+ }
+ 
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
