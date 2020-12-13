@@ -2,105 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212212D8EEC
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 18:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5670C2D8EF1
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 18:07:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730551AbgLMQ76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 11:59:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgLMQ76 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 11:59:58 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F19C0613CF;
-        Sun, 13 Dec 2020 08:59:17 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id n26so19265790eju.6;
-        Sun, 13 Dec 2020 08:59:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=II3z2KtGXYfccGsk4AiZsYqrzwoXcVMGnMLgumJisoY=;
-        b=SAHUtmIarY7j7e4zeN3fFvTYIChAGt+Y7GNnQPhDC0+IPhzQJopCVLzBGPCQ5eFaiq
-         L6j+nOGMJgIGwajqVssbzaKzuaBQrpADs0OPacCgrLoEUP89l+DvXKAWnAI7YZxJT/Ki
-         T7PGOUupcgHjLrwfXc2TYUJwa1eoPQ+yowBNhUhZpvn4SCLxZ32xYEjt/x+jtPK3BTVB
-         x90FSoflQ/kMvA2zgF86AeYL9ftHV+sy/51siMs2PT1oBQDRWywhaEfHUE0mmcAlTVUC
-         5oD4MqiKMIyunrjoTks9w9RC/Lr8kaqPOqkxeZ8XwBfRzC7g6XqBKTUY3mKrc4SYbm9S
-         N83g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=II3z2KtGXYfccGsk4AiZsYqrzwoXcVMGnMLgumJisoY=;
-        b=KmSM6tYcefX9IdgXmo2u+v1Xoyw1rFGTczG8b1EnNsB5Z779uz3+BPcHaSk9/3N1E3
-         WaK2JdbsLsvyqDw9BnNiGp3AiurTZcwe8+N9FpeCLGSuadMl9kvmqM2lOKXsKkor4wS7
-         53I5Yc7JH0VK/aRGVB0ExR+F0BCBmXIzEq3MBCFV4wpAbYrLyLW2L2z25andPSNcOnSP
-         lR3j3IXULrZUgHzeiXQ1pPHTMfNHUCrbQG5tRgxSDXGidsqJrzeti+JCsKVYMcPFqiJc
-         bU2CXWjHed3e+zDZgLmDDWPA/HdFTGGq1l5v9yrYXq5jdMK318nkZ5SlbGAxyypx62Yc
-         3GYw==
-X-Gm-Message-State: AOAM532Im/JwA+TlvyiAhwWGn/U+Kto/O6Vfeii5sX8bOinfV2aFyyLf
-        D1CUJfHbhql4FJALhOEEp1UVO3zFmqh66ZZI2JQ=
-X-Google-Smtp-Source: ABdhPJxTfbMDN5oNcaUz9aMPM/tB7U1x+Iz17INemv3bReSILPHPG9p0mVcWKxhWANbZ6WNgGkXDAuybmWqfDwG+G5s=
-X-Received: by 2002:a17:906:2798:: with SMTP id j24mr19280203ejc.328.1607878756610;
- Sun, 13 Dec 2020 08:59:16 -0800 (PST)
+        id S2391589AbgLMRFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 12:05:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726472AbgLMRFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 12:05:41 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2B862313B;
+        Sun, 13 Dec 2020 17:04:58 +0000 (UTC)
+Date:   Sun, 13 Dec 2020 17:04:53 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/6] iio:pressure:ms5637: switch to probe_new
+Message-ID: <20201213170453.2de3a963@archlinux>
+In-Reply-To: <CAHp75Vc1HAndj0qPHFpW+-5Nikz+CqKwD9MWA0vWH3-FtXPvOA@mail.gmail.com>
+References: <20201209234857.1521453-1-alexandre.belloni@bootlin.com>
+        <20201209234857.1521453-2-alexandre.belloni@bootlin.com>
+        <CAHp75Vc1HAndj0qPHFpW+-5Nikz+CqKwD9MWA0vWH3-FtXPvOA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201115185210.573739-1-martin.blumenstingl@googlemail.com>
- <20201115185210.573739-2-martin.blumenstingl@googlemail.com> <20201207191716.GA647149@robh.at.kernel.org>
-In-Reply-To: <20201207191716.GA647149@robh.at.kernel.org>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sun, 13 Dec 2020 17:59:05 +0100
-Message-ID: <CAFBinCDXqnPQtu4ZQW2ngxKVSbRQNFbnhy6M04gE+Mc8HOTM8g@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 1/5] dt-bindings: net: dwmac-meson: use picoseconds
- for the RGMII RX delay
-To:     Rob Herring <robh@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, jianxin.pan@amlogic.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        khilman@baylibre.com, Neil Armstrong <narmstrong@baylibre.com>,
-        jbrunet@baylibre.com, andrew@lunn.ch, f.fainelli@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Sat, 12 Dec 2020 15:26:17 +0200
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-On Mon, Dec 7, 2020 at 8:17 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Sun, Nov 15, 2020 at 07:52:06PM +0100, Martin Blumenstingl wrote:
-> > Amlogic Meson G12A, G12B and SM1 SoCs have a more advanced RGMII RX
-> > delay register which allows picoseconds precision. Deprecate the old
-> > "amlogic,rx-delay-ns" in favour of a new "amlogic,rgmii-rx-delay-ps"
-> > property.
+> On Thu, Dec 10, 2020 at 2:01 AM Alexandre Belloni
+> <alexandre.belloni@bootlin.com> wrote:
 > >
-> > For older SoCs the only known supported values were 0ns and 2ns. The new
-> > SoCs have 200ps precision and support RGMII RX delays between 0ps and
-> > 3000ps.
-> >
-> > While here, also update the description of the RX delay to indicate
-> > that:
-> > - with "rgmii" or "rgmii-id" the RX delay should be specified
-> > - with "rgmii-id" or "rgmii-rxid" the RX delay is added by the PHY so
-> >   any configuration on the MAC side is ignored
-> > - with "rmii" the RX delay is not applicable and any configuration is
-> >   ignored
-> >
-> > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> > ---
-> >  .../bindings/net/amlogic,meson-dwmac.yaml     | 61 +++++++++++++++++--
-> >  1 file changed, 56 insertions(+), 5 deletions(-)
->
-> Don't we have common properties for this now?
-I did a quick:
-$ grep -R rx-delay Documentation/devicetree/bindings/net/
+> > Switch to the modern i2c probe_new callback and drop the i2c_device_id
+> > array.  
+> 
+> First part is okay.
+> The second is interesting. It depends if we would like to keep a
+> possibility to instantiate devices from user space (strictly speaking
+> it's an ABI breakage).
+> 
+We've also been bitten by this recently via greybus which does
+it's instantiations using the i2c_device_id table as I understand it.
+That's resulted in us reverting a few specific cases where we'd
+done pretty much what you have done here.
 
-I could find "rx-delay" without vendor prefix, but that's not using
-any unit in the name (ns, ps, ...)
-Please let me know if you aware of any "generic" property for the RX
-delay in picosecond precision
+So drop that part of the change.
+
+Thanks,
+
+Jonathan
 
 
-Best regards,
-Martin
