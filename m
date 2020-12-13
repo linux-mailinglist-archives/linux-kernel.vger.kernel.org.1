@@ -2,115 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 823EE2D9043
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 131172D9045
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388643AbgLMToW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 14:44:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50464 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728530AbgLMToW (ORCPT
+        id S2390255AbgLMTri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 14:47:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725308AbgLMTrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 14:44:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607888575;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4PybtF7w1Lh4LKher9Pdy6RACSnKlX1ExGTMf/b4q00=;
-        b=R7EnDWL5mRudewuKPWOQNW3J43IsOjyg/8msd8ayYhHfKPmrxWDIJBc9saZMu4tFt8ydyD
-        Wl/Z399YB7FtslOQKn4AkNyE+L6cABSQs495iQapI2LFPgVdAkMiuZOn7QomHdv7Flns44
-        kb30uoHwDSQ2n2q0wh2iPmWzJY8UyD8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-569-YhqXPidyOvmi-F4vVw-m6Q-1; Sun, 13 Dec 2020 14:42:53 -0500
-X-MC-Unique: YhqXPidyOvmi-F4vVw-m6Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D4C1180A094;
-        Sun, 13 Dec 2020 19:42:52 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-112-248.rdu2.redhat.com [10.10.112.248])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B193A62461;
-        Sun, 13 Dec 2020 19:42:51 +0000 (UTC)
-Subject: Re: [PATCH] mm/vmalloc: Fix unlock order in s_stop()
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20201213180843.16938-1-longman@redhat.com>
- <20201213183936.GA20007@pc636>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <ae1f12c5-b57f-7b40-81d5-0fdf7927c437@redhat.com>
-Date:   Sun, 13 Dec 2020 14:42:51 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Sun, 13 Dec 2020 14:47:37 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C01C0613CF;
+        Sun, 13 Dec 2020 11:46:57 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id o144so13014877ybc.0;
+        Sun, 13 Dec 2020 11:46:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W1lkJR6Tf0DSnFojsG7MMX8zHLQgDTQjXzhBTEJ/2jw=;
+        b=PG7d8+k0vVH/CZnexGwEEFsg8otWhpWCqHVRmhwgJLNIp1T8mhMgEzeSStTtnbXq4Z
+         SJBHXkfB2VA/8WHiN5bMuGY8/Jwnkqgnq3minO/aG+sfx3KY1K8dL//FE5UiNcmObpAB
+         NIAtJlTu1Ai0gJuCLbiO6ottS7Ak+cYWQms/+qOqvWRY40qRuC+66sEMFI3tW3dpaXRd
+         544K2rKZVYywsThZYPkY1EvFawo7ljVDBR6eF40WC/hmath2DSunXP9jRMD3ZsxEE928
+         DgXtpH9a7k6k3IbT7SYJSR0UIFJ1rrenEmv/bnuTBg0QY/y3Uv+Dt8SNmpeJWyinvOv2
+         HrZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W1lkJR6Tf0DSnFojsG7MMX8zHLQgDTQjXzhBTEJ/2jw=;
+        b=GuUW+K1CljGubUwMP/tlYSEdtt36owhXIh36sKzY15RAg77xqIikVdfCSCb7v5iPBC
+         ssTiMH+qRTzCURuI2nRq2fow3QBMAReifif0ePy89/Z8PjKJ0JSnPtT/6Zockh64Vifm
+         NPHEITEYQT4/k5CePAtgNxop9heaVco4ItrHza77r1mPyoOwd4GYwWIgkbBx0x8iUvel
+         6Wp7pccW5mZ8Gvgdz4Sy/01lbu6VAFdVd+tbj10r3xJ/egpapsSeEPVUMiW+VZq3JjpY
+         1UBJmudaPmq6uAcEna5te57ywut2auCWa/FHUG7I3O5aYAOPGOcwWU+RAvelBMrA75Mk
+         t0iw==
+X-Gm-Message-State: AOAM532NYyrF34oh6K4LDYYtqiMJl+0t5K/5LPt/VazQ898FHisgTDiK
+        N89YLB6/lfBbrmvZg62zDh793ZOpBYyP7GD++4kt+OoT
+X-Google-Smtp-Source: ABdhPJxhpX6GnebHkY3TuhpxGk7g9frp5gRKb3YlxLsRdnIolUVmruMsUd3PNtzc+vvVWRINN1Ad1krS5cke2/HYjEI=
+X-Received: by 2002:a25:50a:: with SMTP id 10mr8558198ybf.115.1607888816911;
+ Sun, 13 Dec 2020 11:46:56 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201213183936.GA20007@pc636>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20201212195548.231494-1-dwaipayanray1@gmail.com>
+ <CAKXUXMx9EnhWhGAJf4ousAgkxDUrN=g2zGaPEk6ijJYse7VJaQ@mail.gmail.com>
+ <CABJPP5BeB-aXDDk-8vy-8dOaNaM5jitx6QWKtV7Y3zXM5DgvUA@mail.gmail.com> <3ce8fa0c0d7a2c38b532bd4944f4158cfa0db072.camel@perches.com>
+In-Reply-To: <3ce8fa0c0d7a2c38b532bd4944f4158cfa0db072.camel@perches.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sun, 13 Dec 2020 20:46:46 +0100
+Message-ID: <CANiq72kOE3Y0Jji=igG_vqu0MoZyGeJJSfNWwj3ZA4oSikG9eQ@mail.gmail.com>
+Subject: Re: [PATCH] leds: Use DEVICE_ATTR_{RW, RO, WO} macros
+To:     Joe Perches <joe@perches.com>
+Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-leds@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Murphy <dmurphy@ti.com>, Pavel Machek <pavel@ucw.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/13/20 1:39 PM, Uladzislau Rezki wrote:
-> On Sun, Dec 13, 2020 at 01:08:43PM -0500, Waiman Long wrote:
->> When multiple locks are acquired, they should be released in reverse
->> order. For s_start() and s_stop() in mm/vmalloc.c, that is not the
->> case.
->>
->>    s_start: mutex_lock(&vmap_purge_lock); spin_lock(&vmap_area_lock);
->>    s_stop : mutex_unlock(&vmap_purge_lock); spin_unlock(&vmap_area_lock);
->>
->> This unlock sequence, though allowed, is not optimal. If a waiter is
->> present, mutex_unlock() will need to go through the slowpath of waking
->> up the waiter with preemption disabled. Fix that by releasing the
->> spinlock first before the mutex.
->>
->> Fixes: e36176be1c39 ("mm/vmalloc: rework vmap_area_lock")
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   mm/vmalloc.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
->> index 6ae491a8b210..75913f685c71 100644
->> --- a/mm/vmalloc.c
->> +++ b/mm/vmalloc.c
->> @@ -3448,11 +3448,11 @@ static void *s_next(struct seq_file *m, void *p, loff_t *pos)
->>   }
->>   
->>   static void s_stop(struct seq_file *m, void *p)
->> -	__releases(&vmap_purge_lock)
->>   	__releases(&vmap_area_lock)
->> +	__releases(&vmap_purge_lock)
->>   {
->> -	mutex_unlock(&vmap_purge_lock);
->>   	spin_unlock(&vmap_area_lock);
->> +	mutex_unlock(&vmap_purge_lock);
->>   }
->>   
->>   static void show_numa_info(struct seq_file *m, struct vm_struct *v)
-> BTW, if navigation over both list is an issue, for example when there
-> are multiple heavy readers of /proc/vmallocinfo, i think, it make sense
-> to implement RCU safe lists iteration and get rid of both locks.
+On Sun, Dec 13, 2020 at 7:21 PM Joe Perches <joe@perches.com> wrote:
+>
+> clang-format is not a tool to rewrite code only neaten its layout.
+>
+> coccinelle _might_ be able to do this for limited cases where the
+> show function is in the same compilation unit/file, but even then
+> it would not be a trivial script.
 
-Making it lockless is certainly better, but doing lockless the right way 
-is tricky. I will probably keep it as it unless there is a significant 
-advantage of doing so.
++1 The most robust approach, but the one that is most involved, would
+be a clang-tidy check.
 
 Cheers,
-Longman
-
->
-> As for the patch: Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
->
-> Thanks!
->
-> --
-> Vlad Rezki
->
-
+Miguel
