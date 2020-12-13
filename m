@@ -2,94 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5432D8B57
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 06:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA222D8B59
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 06:12:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725864AbgLMFFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 00:05:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgLMFFH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 00:05:07 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CB3C0613CF;
-        Sat, 12 Dec 2020 21:04:26 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id o144so11738778ybc.0;
-        Sat, 12 Dec 2020 21:04:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z/uJz/Jw3MmfDGc84gX9EJKwTVBpnb7jcNLsPy/WYTg=;
-        b=qbb6zoMeusOCfpjDEE+KXrzxNik5+GwTEST8oZQxqGb0IPh7Acicglg6QgggwsSODl
-         nhmi5IZs8NFMHOJS9Yo8im9+F6eMyboUcziJjh0xGEuvW0hFEMamyfTAMmkMzuwuwX7N
-         F7un+qdeVf7AfMvJFsM2N74xMrk1N+n+CNi+PoK2LZ/g5SRKe2ZSOaXInTCmSuGM2UqK
-         WDSAPOgdLlaVIC/WZKgWOfLzQGw9yV3yCE+Yjctj5TDfdBKiGsBr/0IZ/eCnmiev/IRO
-         dO9L/dpm29dI+w++0vDQl4NexJ7Effk7Df2uak5r9BhepGYXo6RWONeUuJxNmOU48l+r
-         D/yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z/uJz/Jw3MmfDGc84gX9EJKwTVBpnb7jcNLsPy/WYTg=;
-        b=XKSqZ6bfBciGaU7LzdB3WKul/iFwhhxI0Gv04mJjHedTiHmqdGEHQcMG3g2p57cPAU
-         m/SYb+Hvj6Oyou8jUgTEqUAwYEyjrYyR+MWxLOD3wDwQd1vg4RQ0FJLwVrgsFeT09nGU
-         c3UO6YyTZpKDrsrMG54+KCNE3YvJpqs3eqzWD+LaehX75++x0bDFy2a++DjfADG8nxWh
-         2KKi4QUkLu/09LEvq2zShT1KehL772kfuvUb58+JWAS3iRqmgoiTykeYbpQlLVhXxjrj
-         LprRssx2Ci+LVl1+/LwWecOJ2ZTprYJQC6CG8Oy4vaBpmlFOB7+OdI190upm/IsrCQ+w
-         oTpQ==
-X-Gm-Message-State: AOAM531pY59J2DVnZ6wFKh2A1Bg7hxt8NB+3guFBCYpna4MX96nhm+nY
-        32bHdyYEQSmDLGgXUqMa5xRwOBW3yLuapGueO8nBGZTdHAc=
-X-Google-Smtp-Source: ABdhPJwwjj1eu9V+fuA1Gf6y0i37Y+U+rhZRbNZrW53zzJW2PAYnMbAfMlzfkf0c0LLKIpapY5qqc4+MNZRlFQ4aivA=
-X-Received: by 2002:a25:ef0c:: with SMTP id g12mr8240256ybd.26.1607835865316;
- Sat, 12 Dec 2020 21:04:25 -0800 (PST)
+        id S1726049AbgLMFLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 00:11:22 -0500
+Received: from mga07.intel.com ([134.134.136.100]:48309 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725876AbgLMFLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 00:11:21 -0500
+IronPort-SDR: rh7TJDJfqv00PM8ZyUZoA9i9TFFMIzelb+/rEY4DB8kKgx++sSfcYcbSK/ukoPa5HebaaHeaqg
+ XyEsw9wHytDA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9833"; a="238690323"
+X-IronPort-AV: E=Sophos;i="5.78,415,1599548400"; 
+   d="scan'208";a="238690323"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2020 21:09:34 -0800
+IronPort-SDR: VULFeSzlvORzFoLgMzzy83Dkw5iWbIcQdw2eC8to6i6A4W1bakbFTJT8XWn/pQC/r0Q6N3i8Tc
+ qj8Uhf0YayJw==
+X-IronPort-AV: E=Sophos;i="5.78,415,1599548400"; 
+   d="scan'208";a="366436241"
+Received: from ascinco-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.175.177])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2020 21:09:34 -0800
+Subject: Re: [PATCH v8 1/2] PCI/ERR: Call pci_bus_reset() before calling
+ ->slot_reset() callback
+To:     bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@intel.com, knsathya@kernel.org
+References: <b464e4c8b3022ce3e0c69e64456619fc86378c15.1603740826.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <d12dd711-cdaf-0a79-8deb-e2381b79163b@linux.intel.com>
+Date:   Sat, 12 Dec 2020 21:09:32 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201128193335.219395-1-masahiroy@kernel.org> <20201212161831.GA28098@roeck-us.net>
-In-Reply-To: <20201212161831.GA28098@roeck-us.net>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sun, 13 Dec 2020 06:04:14 +0100
-Message-ID: <CANiq72=e9Csgpcu3MdLGB77dL_QBn6PpqoG215YUHZLNCUGP0w@mail.gmail.com>
-Subject: Re: [PATCH v3] Compiler Attributes: remove CONFIG_ENABLE_MUST_CHECK
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        wireguard@lists.zx2c4.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b464e4c8b3022ce3e0c69e64456619fc86378c15.1603740826.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 5:18 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> This patch results in:
->
-> arch/sh/kernel/cpu/sh4a/smp-shx3.c: In function 'shx3_prepare_cpus':
-> arch/sh/kernel/cpu/sh4a/smp-shx3.c:76:3: error: ignoring return value of 'request_irq' declared with attribute 'warn_unused_result'
->
-> when building sh:defconfig. Checking for calls to request_irq()
-> suggests that there will be other similar errors in various builds.
-> Reverting the patch fixes the problem.
 
-Which ones? From a quick grep and some filtering I could only find one
-file with wrong usage apart from this one:
 
-    drivers/net/ethernet/lantiq_etop.c:
-request_irq(irq, ltq_etop_dma_irq, 0, "etop_tx", priv);
-    drivers/net/ethernet/lantiq_etop.c:
-request_irq(irq, ltq_etop_dma_irq, 0, "etop_rx", priv);
+On 10/26/20 12:37 PM, Kuppuswamy Sathyanarayanan wrote:
+> Currently if report_error_detected() or report_mmio_enabled()
+> functions requests PCI_ERS_RESULT_NEED_RESET, current
+> pcie_do_recovery() implementation does not do the requested
+> explicit device reset, but instead just calls the
+> report_slot_reset() on all affected devices. Notifying about the
+> reset via report_slot_reset() without doing the actual device
+> reset is incorrect. So call pci_bus_reset() before triggering
+> ->slot_reset() callback.
+Gentle ping! Any comments on this patch set?
+> 
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Reviewed-by: Sinan Kaya <okaya@kernel.org>
+> Reviewed-by: Ashok Raj <ashok.raj@intel.com>
+> ---
+>   Changes since v7:
+>    * Rebased on top of v5.10-rc1.
+> 
+>   Changes since v6:
+>    * None.
+> 
+>   Changes since v5:
+>    * Added Ashok's Reviewed-by tag.
+> 
+>   Changes since v4:
+>    * Added check for pci_reset_bus() return value.
+> 
+>   drivers/pci/pcie/err.c | 12 +++++++-----
+>   1 file changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> index c543f419d8f9..315a4d559c4c 100644
+> --- a/drivers/pci/pcie/err.c
+> +++ b/drivers/pci/pcie/err.c
+> @@ -152,6 +152,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>   {
+>   	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
+>   	struct pci_bus *bus;
+> +	int ret;
+>   
+>   	/*
+>   	 * Error recovery runs on all subordinates of the first downstream port.
+> @@ -181,11 +182,12 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>   	}
+>   
+>   	if (status == PCI_ERS_RESULT_NEED_RESET) {
+> -		/*
+> -		 * TODO: Should call platform-specific
+> -		 * functions to reset slot before calling
+> -		 * drivers' slot_reset callbacks?
+> -		 */
+> +		ret = pci_reset_bus(dev);
+> +		if (ret < 0) {
+> +			pci_err(dev, "Failed to reset %d\n", ret);
+> +			status = PCI_ERS_RESULT_DISCONNECT;
+> +			goto failed;
+> +		}
+>   		status = PCI_ERS_RESULT_RECOVERED;
+>   		pci_dbg(dev, "broadcast slot_reset message\n");
+>   		pci_walk_bus(bus, report_slot_reset, &status);
+> 
 
-Of course, this does not cover other functions, but it means there
-aren't many issues and/or people building the code if nobody complains
-within a few weeks. So I think we can fix them as they come.
-
-Cheers,
-Miguel
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
