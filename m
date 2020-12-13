@@ -2,115 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0792F2D8F64
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 19:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D872D8F8C
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 19:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392964AbgLMSlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 13:41:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390051AbgLMSj4 (ORCPT
+        id S1725843AbgLMSxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 13:53:17 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:34804 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgLMSw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 13:39:56 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B951C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 10:39:41 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id m12so24640637lfo.7
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 10:39:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qCn3NHtoWSZwuf21MXbxZMkWcXxQPfte0L3AbThqKOs=;
-        b=PQe1yb2FT6b3+I5xwdl+l2pAvL2uAUA3xo3uVxyNTlGJ8LYDvptzluXtJTfugZu4Jl
-         nYKGs6vdkRE3I/zr9B+xrS6/2MrN73SfFPtyUZ4YF50p/pXTBLgPs1lf4tLZx/iFl2rC
-         LDZuE+iI7INtKWTlSu9McBWtrTzb4Sp2Td0km3Qw34nF81+vkOEyv+LnBe19Pud/gPau
-         6bgAE4V6b1vGArlimMvRbyf7cc6e0Mdf4XjUg3YQ338ZLov4GelZqpkMXs+A7A4V5Wjy
-         gbFTXk/lFeYpEWFQaP5quspXrG8lsclrKUJofR20SVN6HH51rS89qxaMSQIvGjX5QeHm
-         tRRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qCn3NHtoWSZwuf21MXbxZMkWcXxQPfte0L3AbThqKOs=;
-        b=mpmbTYtOV1gVUvNtBe8JN2tuig83xNW0wTqY4Z7MRQ3JAxeTN02cLky/8LwBVa4M/s
-         VnQM8gBsYkGYjGZBKnmsrhVmwpc5Y+dLQjOgEMILL4dV0B9hQqcRRJ0ml7J7kkJtgx5y
-         ao5NLtX8hSaJQvs5b+TA5qHb+F2x1pZdEUC7sTHu8hjy9uNG7J1A2pPAxE6A9YHiNKjQ
-         lD/yEJLqG+Pliix/qHjUlDTXkm+UbC8M2dwpudDlD7vs80/VafwyCfs+FlfKYDgP4sov
-         E4eSWtFpUIRaDzU79pAk2FYONiDoTxi7nyxi1+O5P2oNaIupf3gtD9JkTx8WcWjDVcIU
-         Eddg==
-X-Gm-Message-State: AOAM5339qmJgtFp034Sfd0XmuA/5QZMfFMTZjhlzT02TcD0P+Ogb8DRD
-        fkvlsZBSo/48joUtUm7iPSU=
-X-Google-Smtp-Source: ABdhPJxSo0ee6ZjLQoK2ZfQEL0k6blaIVMM25WSDnIHC0hMbKO6+BOiBSTqiHdwFr76bWV9GIrkzDg==
-X-Received: by 2002:a19:5512:: with SMTP id n18mr5617641lfe.270.1607884778749;
-        Sun, 13 Dec 2020 10:39:38 -0800 (PST)
-Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id t1sm1002713ljg.44.2020.12.13.10.39.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Dec 2020 10:39:38 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Sun, 13 Dec 2020 19:39:36 +0100
-To:     Waiman Long <longman@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/vmalloc: Fix unlock order in s_stop()
-Message-ID: <20201213183936.GA20007@pc636>
-References: <20201213180843.16938-1-longman@redhat.com>
+        Sun, 13 Dec 2020 13:52:58 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BDInnv5095008;
+        Sun, 13 Dec 2020 18:52:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=m+agSRCv2C7vA1smCTi9nr9ItANyGc4Iz5+EOO7ykN8=;
+ b=CjylZuqN6lVabLCFgLdzeaUdMmE3xSDWWJXAUzymzlsZoiR8Uggp2G2dekEfTWR61N28
+ 23zeynROsAP/N9YlLT84VY7IO/NnFh0vyZxx8Om6KsS4HtSKjdkkxPRxKUfw7xZGMOYP
+ gIzWg5iVPBF+ctewxhnCj616R4St2fK4mmQJSdzYGyoYfCWnoxGj5s/H9tVtsvO6yL+B
+ 1kr0CSLGGJa7nls4iZrmXO2EPRkxvs6M1OfAHgwIIbRzGw6kFHBZOfsaKL9tG4zG2T7I
+ pzzEcV8OWET8Jy9mx2/3BdQuaf+7M1ljYZGQSV3s3Tk9/0ZqZrRbk1a+GQlhZSMIsIHu 3Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 35cntktnan-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 13 Dec 2020 18:52:05 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BDIf3Rd045988;
+        Sun, 13 Dec 2020 18:50:04 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 35d7ejqw4q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 13 Dec 2020 18:50:04 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BDIo3tt021888;
+        Sun, 13 Dec 2020 18:50:03 GMT
+Received: from Junxiaos-MacBook-Pro.local (/73.231.9.254)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 13 Dec 2020 10:50:02 -0800
+Subject: Re: [PATCH RFC 0/8] dcache: increase poison resistance
+To:     Konstantin Khlebnikov <koct9i@gmail.com>
+Cc:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Waiman Long <longman@redhat.com>,
+        Gautham Ananthakrishna <gautham.ananthakrishna@oracle.com>,
+        matthew.wilcox@oracle.com
+References: <158893941613.200862.4094521350329937435.stgit@buzz>
+ <97ece625-2799-7ae6-28b5-73c52c7c497b@oracle.com>
+ <CALYGNiN2F8gcKX+2nKOi1tapquJWfyzUkajWxTqgd9xvd7u1AA@mail.gmail.com>
+From:   Junxiao Bi <junxiao.bi@oracle.com>
+Message-ID: <d116ead4-f603-7e0c-e6ab-e721332c9832@oracle.com>
+Date:   Sun, 13 Dec 2020 10:49:45 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201213180843.16938-1-longman@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CALYGNiN2F8gcKX+2nKOi1tapquJWfyzUkajWxTqgd9xvd7u1AA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012130147
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ mlxlogscore=999 impostorscore=0 priorityscore=1501 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012130148
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 01:08:43PM -0500, Waiman Long wrote:
-> When multiple locks are acquired, they should be released in reverse
-> order. For s_start() and s_stop() in mm/vmalloc.c, that is not the
-> case.
-> 
->   s_start: mutex_lock(&vmap_purge_lock); spin_lock(&vmap_area_lock);
->   s_stop : mutex_unlock(&vmap_purge_lock); spin_unlock(&vmap_area_lock);
-> 
-> This unlock sequence, though allowed, is not optimal. If a waiter is
-> present, mutex_unlock() will need to go through the slowpath of waking
-> up the waiter with preemption disabled. Fix that by releasing the
-> spinlock first before the mutex.
-> 
-> Fixes: e36176be1c39 ("mm/vmalloc: rework vmap_area_lock")
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  mm/vmalloc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 6ae491a8b210..75913f685c71 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -3448,11 +3448,11 @@ static void *s_next(struct seq_file *m, void *p, loff_t *pos)
->  }
->  
->  static void s_stop(struct seq_file *m, void *p)
-> -	__releases(&vmap_purge_lock)
->  	__releases(&vmap_area_lock)
-> +	__releases(&vmap_purge_lock)
->  {
-> -	mutex_unlock(&vmap_purge_lock);
->  	spin_unlock(&vmap_area_lock);
-> +	mutex_unlock(&vmap_purge_lock);
->  }
->  
->  static void show_numa_info(struct seq_file *m, struct vm_struct *v)
-BTW, if navigation over both list is an issue, for example when there
-are multiple heavy readers of /proc/vmallocinfo, i think, it make sense
-to implement RCU safe lists iteration and get rid of both locks.
+On 12/11/20 11:32 PM, Konstantin Khlebnikov wrote:
 
-As for the patch: Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> On Thu, Dec 10, 2020 at 2:01 AM Junxiao Bi <junxiao.bi@oracle.com 
+> <mailto:junxiao.bi@oracle.com>> wrote:
+>
+>     Hi Konstantin,
+>
+>     We tested this patch set recently and found it limiting negative
+>     dentry
+>     to a small part of total memory. And also we don't see any
+>     performance
+>     regression on it. Do you have any plan to integrate it into
+>     mainline? It
+>     will help a lot on memory fragmentation issue causing by dentry slab,
+>     there were a lot of customer cases where sys% was very high since
+>     most
+>     cpu were doing memory compaction, dentry slab was taking too much
+>     memory
+>     and nearly all dentry there were negative.
+>
+>
+> Right now I don't have any plans for this. I suspect such problems will
+> appear much more often since machines are getting bigger.
+> So, somebody will take care of it.
+We already had a lot of customer cases. It made no sense to leave so 
+many negative dentry in the system, it caused memory fragmentation and 
+not much benefit.
+>
+> First part which collects negative dentries at the end list of 
+> siblings could be
+> done in a more obvious way by splitting the list in two.
+> But this touches much more code.
+That would add new field to dentry?
+>
+> Last patch isn't very rigid but does non-trivial changes.
+> Probably it's better to call some garbage collector thingy periodically.
+> Lru list needs pressure to age and reorder entries properly.
 
-Thanks!
+Swap the negative dentry to the head of hash list when it get accessed? 
+Extra ones can be easily trimmed when swapping, using GC is to reduce 
+perf impact?
 
---
-Vlad Rezki
+Thanks,
+
+Junxioao.
+
+>
+> Gc could be off by default or thresholds set very high (50% of ram for 
+> example).
+> Final setup could be left up to owners of large systems, which needs 
+> fine tuning.
