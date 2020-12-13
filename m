@@ -2,50 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F40C2D8FFB
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A40CD2D8FC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392645AbgLMTU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 14:20:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390621AbgLMTCm (ORCPT
+        id S1728345AbgLMTJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 14:09:53 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:46580 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727617AbgLMTBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 14:02:42 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7EDC0611CC;
-        Sun, 13 Dec 2020 11:01:08 -0800 (PST)
+        Sun, 13 Dec 2020 14:01:48 -0500
 Date:   Sun, 13 Dec 2020 19:01:06 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607886067;
+        s=2020; t=1607886066;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=AfIp9zdPPjG7b/XlRprPnAo3XsKymjjD+tq3ysqdbt8=;
-        b=GKjDga0mU4faB358jQS6pA0HjtCF4/Pml9th/w2n4WDWVsA+5NuCSUwqi4Jpb/QBuZpXBr
-        HmN7LxD8i3SEgWbiK9RuIyGs50hyn0U5BIXTlNuyPBDPATAflodGoI5rBm+K971VxH9m9K
-        zBD7j+nBeS0Z9md9fu27Zp3jj82D/FaYb2YzMTN5JnXcpy/qzzYd3yp+xjdpdB97L9D/3/
-        TzVtz16um5/JEDmGcrfL7L/B6LlZWG3vgvJLi4CvmB2EjpyxyyyAWSVdfBB2bL52BINsBn
-        /MyxvrLRC9NSsOy7c7PmRQh/o6znH92TXA4/9DWDZnmLpj7z2anXBJ2W1QSwIw==
+        bh=kOGcz7pprpHlXyNUhrjS6mK+wGYnNchqzW5XTBPzgQk=;
+        b=xNdCcaJ3xVOmseUz+MUChAK3SNRwufY6lmmQaV2ZAl8Zvk+AlAmX7jmZFhckYteOGK04A8
+        K1ykF36TBOTdSExt8zQFSYLO5Vwucd75S69Z564+3WJvfjW7IA7MDP/BeuePEFzyKvD2/d
+        5xuuHlfNaG4uUNwp8AnC+BsJkPEYj+McbDtEe6gFH0NMhb+pJk2b4g9iJWIfK5xxH+CcKV
+        m8ohqk5ru1MlLKZUaSY9MTDO/k9FmWJM6dv8fEy0dMMfIuNm8UKtuFxPTs9MI20Zvo7Fmf
+        ApCFxjscGiL2EBcs4Q24uAyz0vIPgW3d8lIMVlcBpbVeB4PWN8ZqtmI+gDyXhg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607886067;
+        s=2020e; t=1607886066;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=AfIp9zdPPjG7b/XlRprPnAo3XsKymjjD+tq3ysqdbt8=;
-        b=viuwjLpvtp2JEGJrl0HTCbZ15qyuRdtKJIB8t9kpLbSVLL80xWbZlK7kgDlJcxggfuP+pj
-        r5peXAeRvR+EBlBw==
-From:   "tip-bot2 for Anna-Maria Behnsen" <tip-bot2@linutronix.de>
+        bh=kOGcz7pprpHlXyNUhrjS6mK+wGYnNchqzW5XTBPzgQk=;
+        b=qOAGmJ3sSgtFE0m+k5sfuVUsDTJetuvvF5kQIBI93parPqXpsP8VB4+jOdjQnc32P116bC
+        v71vbpHKy9nTzyDA==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] tools/rcutorture: Fix BUG parsing of console.log
-Cc:     "Anna-Maria Behnsen" <anna-maria@linutronix.de>,
-        Benedikt Spranger <b.spranger@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+Subject: [tip: core/rcu] rcu-tasks: Make the units of ->init_fract be jiffies
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <160788606660.3364.3387967143308615584.tip-bot2@tip-bot2>
+Message-ID: <160788606634.3364.2265028186602312293.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,36 +51,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     01f9e708d9eae6335ae9ff25ab09893c20727a55
-Gitweb:        https://git.kernel.org/tip/01f9e708d9eae6335ae9ff25ab09893c20727a55
-Author:        Anna-Maria Behnsen <anna-maria@linutronix.de>
-AuthorDate:    Mon, 02 Nov 2020 18:12:20 +01:00
+Commit-ID:     75dc2da5ecd65bdcbfc4d59b9d9b7342c61fe374
+Gitweb:        https://git.kernel.org/tip/75dc2da5ecd65bdcbfc4d59b9d9b7342c61fe374
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Thu, 17 Sep 2020 16:17:17 -07:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Fri, 06 Nov 2020 17:13:58 -08:00
+CommitterDate: Fri, 06 Nov 2020 17:17:59 -08:00
 
-tools/rcutorture: Fix BUG parsing of console.log
+rcu-tasks: Make the units of ->init_fract be jiffies
 
-For the rcutorture test summary log file console.log of virtual machines is
-parsed. When a console.log contains "DEBUG", BUG counter is incremented
-because regular expression does not handle to ignore DEBUG.
+Currently, the units of ->init_fract are milliseconds while those of
+->gp_sleep are jiffies.  For consistency with each other and with the
+argument of schedule_timeout_idle(), this commit changes the units of
+->init_fract to jiffies.
 
-Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Reviewed-by: Benedikt Spranger <b.spranger@linutronix.de>
+This change does affect the backoff algorithm, but only on systems where
+HZ is not 1000, and even there the change makes more sense, given that the
+current setup would "back off" to the same number of jiffies repeatedly.
+In contrast, with this change, the number of jiffies waited increases
+on each pass through the loop in the rcu_tasks_wait_gp() function.
+
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/parse-console.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tasks.h | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-index e033380..263b1be 100755
---- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
-+++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-@@ -133,7 +133,7 @@ then
- 	then
- 		summary="$summary  Warnings: $n_warn"
- 	fi
--	n_bugs=`egrep -c 'BUG|Oops:' $file`
-+	n_bugs=`egrep -c '\bBUG|Oops:' $file`
- 	if test "$n_bugs" -ne 0
- 	then
- 		summary="$summary  Bugs: $n_bugs"
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 0b45989..35bdcfd 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -335,8 +335,6 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ 
+ 	// Start off with initial wait and slowly back off to 1 HZ wait.
+ 	fract = rtp->init_fract;
+-	if (fract > HZ)
+-		fract = HZ;
+ 
+ 	while (!list_empty(&holdouts)) {
+ 		bool firstreport;
+@@ -345,10 +343,10 @@ static void rcu_tasks_wait_gp(struct rcu_tasks *rtp)
+ 
+ 		/* Slowly back off waiting for holdouts */
+ 		set_tasks_gp_state(rtp, RTGS_WAIT_SCAN_HOLDOUTS);
+-		schedule_timeout_idle(HZ/fract);
++		schedule_timeout_idle(fract);
+ 
+-		if (fract > 1)
+-			fract--;
++		if (fract < HZ)
++			fract++;
+ 
+ 		rtst = READ_ONCE(rcu_task_stall_timeout);
+ 		needreport = rtst > 0 && time_after(jiffies, lastreport + rtst);
+@@ -557,7 +555,7 @@ EXPORT_SYMBOL_GPL(rcu_barrier_tasks);
+ static int __init rcu_spawn_tasks_kthread(void)
+ {
+ 	rcu_tasks.gp_sleep = HZ / 10;
+-	rcu_tasks.init_fract = 10;
++	rcu_tasks.init_fract = HZ / 10;
+ 	rcu_tasks.pregp_func = rcu_tasks_pregp_step;
+ 	rcu_tasks.pertask_func = rcu_tasks_pertask;
+ 	rcu_tasks.postscan_func = rcu_tasks_postscan;
+@@ -1178,12 +1176,12 @@ static int __init rcu_spawn_tasks_trace_kthread(void)
+ {
+ 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB)) {
+ 		rcu_tasks_trace.gp_sleep = HZ / 10;
+-		rcu_tasks_trace.init_fract = 10;
++		rcu_tasks_trace.init_fract = HZ / 10;
+ 	} else {
+ 		rcu_tasks_trace.gp_sleep = HZ / 200;
+ 		if (rcu_tasks_trace.gp_sleep <= 0)
+ 			rcu_tasks_trace.gp_sleep = 1;
+-		rcu_tasks_trace.init_fract = HZ / 5;
++		rcu_tasks_trace.init_fract = HZ / 200;
+ 		if (rcu_tasks_trace.init_fract <= 0)
+ 			rcu_tasks_trace.init_fract = 1;
+ 	}
