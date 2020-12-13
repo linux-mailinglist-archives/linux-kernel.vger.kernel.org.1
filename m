@@ -2,158 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762762D8DEE
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 15:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 306792D8DEB
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 15:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728389AbgLMOYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 09:24:32 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:45992 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725778AbgLMOYG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 09:24:06 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1koSHQ-0088st-9C; Sun, 13 Dec 2020 07:23:20 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1koSHL-00089n-7m; Sun, 13 Dec 2020 07:23:20 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Stephen Brennan <stephen.s.brennan@oracle.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201204000212.773032-1-stephen.s.brennan@oracle.com>
-        <20201212205522.GF2443@casper.infradead.org>
-Date:   Sun, 13 Dec 2020 08:22:32 -0600
-In-Reply-To: <20201212205522.GF2443@casper.infradead.org> (Matthew Wilcox's
-        message of "Sat, 12 Dec 2020 20:55:22 +0000")
-Message-ID: <877dpln5uf.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1726813AbgLMOXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 09:23:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725778AbgLMOXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 09:23:38 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 069A12253D;
+        Sun, 13 Dec 2020 14:22:56 +0000 (UTC)
+Date:   Sun, 13 Dec 2020 14:22:53 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] iio: dummy: convert all simple allocation devm_
+ variants
+Message-ID: <20201213142253.14afd9d9@archlinux>
+In-Reply-To: <CA+U=Dsr_95ktcCFQApndtsPzO3dSVpvpBYUTDh6njBv15FYV=A@mail.gmail.com>
+References: <20201203095005.72252-1-alexandru.ardelean@analog.com>
+        <20201205163618.3b26334f@archlinux>
+        <CA+U=Dsr_95ktcCFQApndtsPzO3dSVpvpBYUTDh6njBv15FYV=A@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1koSHL-00089n-7m;;;mid=<877dpln5uf.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18GcGxMolQ2R37qJNnK7xeJF6oKU8YDCBs=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Matthew Wilcox <willy@infradead.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 4670 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 9 (0.2%), b_tie_ro: 8 (0.2%), parse: 0.94 (0.0%),
-        extract_message_metadata: 12 (0.3%), get_uri_detail_list: 1.49 (0.0%),
-        tests_pri_-1000: 5 (0.1%), tests_pri_-950: 1.25 (0.0%),
-        tests_pri_-900: 1.03 (0.0%), tests_pri_-90: 235 (5.0%), check_bayes:
-        233 (5.0%), b_tokenize: 8 (0.2%), b_tok_get_all: 8 (0.2%),
-        b_comp_prob: 2.5 (0.1%), b_tok_touch_all: 86 (1.8%), b_finish: 0.74
-        (0.0%), tests_pri_0: 252 (5.4%), check_dkim_signature: 0.60 (0.0%),
-        check_dkim_adsp: 2.6 (0.1%), poll_dns_idle: 4138 (88.6%),
-        tests_pri_10: 1.81 (0.0%), tests_pri_500: 4148 (88.8%), rewrite_mail:
-        0.00 (0.0%)
-Subject: Re: [PATCH v2] proc: Allow pid_revalidate() during LOOKUP_RCU
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> writes:
+On Mon, 7 Dec 2020 09:22:28 +0200
+Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
 
-> On Thu, Dec 03, 2020 at 04:02:12PM -0800, Stephen Brennan wrote:
->> -void pid_update_inode(struct task_struct *task, struct inode *inode)
->> +static int do_pid_update_inode(struct task_struct *task, struct inode *inode,
->> +			       unsigned int flags)
->
-> I'm really nitpicking here, but this function only _updates_ the inode
-> if flags says it should.  So I was thinking something like this
-> (compile tested only).
->
-> I'd really appreocate feedback from someone like Casey or Stephen on
-> what they need for their security modules.
+> On Sat, Dec 5, 2020 at 8:46 PM Jonathan Cameron <jic23@kernel.org> wrote:
+> >
+> > On Thu, 3 Dec 2020 11:50:03 +0200
+> > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+> >  
+> > > Since a main requirement for an IIO device is to have a parent device
+> > > object, it makes sense to attach more of the IIO device's objects to the
+> > > lifetime of the parent object, to clean up the code.
+> > > The idea is to also provide a base example that is more up-to-date with
+> > > what's going on lately with most IIO drivers.  
+> >
+> > To some degree maybe, it's also very very handy for testing odd corner
+> > cases with.  I'd definitely not recommend it as a reference driver
+> > because it inherently has some odd corners because we need to
+> > fake various things that don't exist without hardware.  
+> 
+> It's funny because during GSoC it seemed like some people would try to
+> use this as a starting point, then shift to another working ADC/DAC
+> example.
 
-Just so we don't have security module questions confusing things
-can we please make this a 2 patch series?  With the first
-patch removing security_task_to_inode?
+Hmm. It make sense to use it if you are interested in see what actually
+turns up in userspace etc as a gsoc student probably doesn't have much
+hardware that is already supported.  But code wise it's somewhat odd
+and may be less good as an example than a i2c/spi ADC.
 
-The justification for the removal is that all security_task_to_inode
-appears to care about is the file type bits in inode->i_mode.  Something
-that never changes.  Having this in a separate patch would make that
-logical change easier to verify.
+> I was also thinking about maybe extending this a bit further, to have
+> it a bit more dynamic at load time [being able to load fake IIO
+> drivers, load fake data to be read via fake IIO device].
+> No idea when this will be ready, but it's on my long todo-list.
 
-Eric
+Sure. It's always been on my long term list to make this driver do
+more complex stuff, but real parts often get in the way unless I'm
+proving out something I don't have any real hardware for.
 
->
-> diff --git a/fs/proc/base.c b/fs/proc/base.c
-> index b362523a9829..771f330bfce7 100644
-> --- a/fs/proc/base.c
-> +++ b/fs/proc/base.c
-> @@ -1968,6 +1968,25 @@ void pid_update_inode(struct task_struct *task, struct inode *inode)
->  	security_task_to_inode(task, inode);
->  }
->  
-> +/* See if we can avoid the above call.  Assumes RCU lock held */
-> +static bool inode_needs_pid_update(struct task_struct *task,
-> +		const struct inode *inode)
-> +{
-> +	kuid_t uid;
-> +	kgid_t gid;
-> +
-> +	if (inode->i_mode & (S_ISUID | S_ISGID))
-> +		return true;
-> +	task_dump_owner(task, inode->i_mode, &uid, &gid);
-> +	if (!uid_eq(uid, inode->i_uid) || !gid_eq(gid, inode->i_gid))
-> +		return true;
-> +	/*
-> +	 * XXX: Do we need to call the security system here to see if
-> +	 * there's a pending update?
-> +	 */
-> +	return false;
-> +}
-> +
->  /*
->   * Rewrite the inode's ownerships here because the owning task may have
->   * performed a setuid(), etc.
-> @@ -1978,8 +1997,15 @@ static int pid_revalidate(struct dentry *dentry, unsigned int flags)
->  	struct inode *inode;
->  	struct task_struct *task;
->  
-> -	if (flags & LOOKUP_RCU)
-> +	if (flags & LOOKUP_RCU) {
-> +		inode = d_inode_rcu(dentry);
-> +		task = pid_task(proc_pid(inode), PIDTYPE_PID);
-> +		if (!task)
-> +			return 0;
-> +		if (!inode_needs_pid_update(task, inode))
-> +			return 1;
->  		return -ECHILD;
-> +	}
->  
->  	inode = d_inode(dentry);
->  	task = get_proc_task(inode);
+> 
+> >  
+> > >
+> > > This change tackles the simple allocations, to convert them to
+> > > device-managed calls, and tie them to the parent device.  
+> >
+> > I'm confused or maybe I missrecall how this works.
+> >
+> > IIRC there isn't a parent device...
+> >
+> > Maybe we could create one via a bit of smoke and magic.  
+> 
+> Yep, there isn't one.
+> I'll add one through some smoke, magic, some OF and maybe some fake
+> i2c/spi device IDs.
+
+Hmm. Whatever is done needs to be both non invasive and not imply
+anything that isn't true.  Maybe better off with a platform device
+than i2c or spi as the parent.
+
+Jonathan
+
+> 
+> >
+> >  
+> > >
+> > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > > ---
+> > >  drivers/iio/dummy/iio_simple_dummy.c | 29 ++++++++--------------------
+> > >  1 file changed, 8 insertions(+), 21 deletions(-)
+> > >
+> > > diff --git a/drivers/iio/dummy/iio_simple_dummy.c b/drivers/iio/dummy/iio_simple_dummy.c
+> > > index c0b7ef900735..2a2e62f780a1 100644
+> > > --- a/drivers/iio/dummy/iio_simple_dummy.c
+> > > +++ b/drivers/iio/dummy/iio_simple_dummy.c
+> > > @@ -574,11 +574,9 @@ static struct iio_sw_device *iio_dummy_probe(const char *name)
+> > >        * parent = &client->dev;
+> > >        */
+> > >
+> > > -     swd = kzalloc(sizeof(*swd), GFP_KERNEL);
+> > > -     if (!swd) {
+> > > -             ret = -ENOMEM;
+> > > -             goto error_kzalloc;
+> > > -     }
+> > > +     swd = devm_kzalloc(parent, sizeof(*swd), GFP_KERNEL);
+> > > +     if (!swd)
+> > > +             return ERR_PTR(-ENOMEM);
+> > >       /*
+> > >        * Allocate an IIO device.
+> > >        *
+> > > @@ -587,11 +585,9 @@ static struct iio_sw_device *iio_dummy_probe(const char *name)
+> > >        * It also has a region (accessed by iio_priv()
+> > >        * for chip specific state information.
+> > >        */
+> > > -     indio_dev = iio_device_alloc(parent, sizeof(*st));
+> > > -     if (!indio_dev) {
+> > > -             ret = -ENOMEM;
+> > > -             goto error_ret;
+> > > -     }
+> > > +     indio_dev = devm_iio_device_alloc(parent, sizeof(*st));
+> > > +     if (!indio_dev)
+> > > +             return ERR_PTR(-ENOMEM);
+> > >
+> > >       st = iio_priv(indio_dev);
+> > >       mutex_init(&st->lock);
+> > > @@ -615,7 +611,7 @@ static struct iio_sw_device *iio_dummy_probe(const char *name)
+> > >        *    indio_dev->name = id->name;
+> > >        *    indio_dev->name = spi_get_device_id(spi)->name;
+> > >        */
+> > > -     indio_dev->name = kstrdup(name, GFP_KERNEL);
+> > > +     indio_dev->name = devm_kstrdup(parent, name, GFP_KERNEL);
+> > >
+> > >       /* Provide description of available channels */
+> > >       indio_dev->channels = iio_dummy_channels;
+> > > @@ -632,7 +628,7 @@ static struct iio_sw_device *iio_dummy_probe(const char *name)
+> > >
+> > >       ret = iio_simple_dummy_events_register(indio_dev);
+> > >       if (ret < 0)
+> > > -             goto error_free_device;
+> > > +             return ERR_PTR(ret);
+> > >
+> > >       ret = iio_simple_dummy_configure_buffer(indio_dev);
+> > >       if (ret < 0)
+> > > @@ -649,11 +645,6 @@ static struct iio_sw_device *iio_dummy_probe(const char *name)
+> > >       iio_simple_dummy_unconfigure_buffer(indio_dev);
+> > >  error_unregister_events:
+> > >       iio_simple_dummy_events_unregister(indio_dev);
+> > > -error_free_device:
+> > > -     iio_device_free(indio_dev);
+> > > -error_ret:
+> > > -     kfree(swd);
+> > > -error_kzalloc:
+> > >       return ERR_PTR(ret);
+> > >  }
+> > >
+> > > @@ -683,10 +674,6 @@ static int iio_dummy_remove(struct iio_sw_device *swd)
+> > >
+> > >       iio_simple_dummy_events_unregister(indio_dev);
+> > >
+> > > -     /* Free all structures */
+> > > -     kfree(indio_dev->name);
+> > > -     iio_device_free(indio_dev);
+> > > -
+> > >       return 0;
+> > >  }
+> > >  
+> >  
+
