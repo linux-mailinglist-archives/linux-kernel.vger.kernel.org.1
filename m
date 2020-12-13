@@ -2,69 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317222D903C
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F482D903E
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 20:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390532AbgLMTkG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 13 Dec 2020 14:40:06 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:44498 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732853AbgLMTj7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 14:39:59 -0500
-Received: by mail-ot1-f67.google.com with SMTP id f16so13655729otl.11
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 11:39:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9CtsVDwoNbPTm3v5e+HpA6cbwiDsDEPWbKL4B1oehZc=;
-        b=AsWh8T6SXFyxZRYWoMdmKTu5RB+55gpBZ2D2OlB/neWv+XVXi8kzoVJAamBoerjIjy
-         pWcAQEvw359iEwgoUJZYZAkeuP01PDcDFTGVRR3yrYgp85rvpN9bj5lGezitm2CMaCgA
-         YzUNJmt96KpSZwuv0D+hmdkhJHQyeOTOPPZgryAOR0UE6j4BCVmR3HHzT3LXnhh41HAM
-         MJ9FJdHC6jJb5E7vqS+fqduTCoJt1BJ98Ag1FG+mzVqwW0uaATuNjgfomLUBcM4IPWNp
-         L96xsyp0i/oJXsSvh11YlvM+lgcYunLxl+tD0o7G1aw8pkBNp8/q6By3g8a0QdBXHTNG
-         +fpw==
-X-Gm-Message-State: AOAM5301je8UJqHPII7K69UwCMEE4ISoAcAHNABSIbs8XAz+dLe9WPFi
-        ZESzWQy3+IwlE3X0b16+6bH0zxYgrM1pNy3PlUU=
-X-Google-Smtp-Source: ABdhPJwC4wvQQzNa66xLyDbpxyVUlVclWiUrLQIUV9Yw9yMKCbEGzT4yJtkd0MM8nhOTjUfp24qRgmJ/l4peJF8rnLo=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr17149997otc.145.1607888359063;
- Sun, 13 Dec 2020 11:39:19 -0800 (PST)
-MIME-Version: 1.0
-References: <20201213182622.23047-1-vincent.stehle@laposte.net>
-In-Reply-To: <20201213182622.23047-1-vincent.stehle@laposte.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 13 Dec 2020 20:39:07 +0100
-Message-ID: <CAMuHMdXphVnZneudRR48+asCSGzXDVvBxaAQCtrZ3P-cEGHz4w@mail.gmail.com>
-Subject: Re: [PATCH] powerpc/ps3: use dma_mapping_error()
-To:     =?UTF-8?Q?Vincent_Stehl=C3=A9?= <vincent.stehle@laposte.net>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Geoff Levand <geoff@infradead.org>,
-        Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        id S2391293AbgLMTke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 14:40:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728853AbgLMTj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 14:39:57 -0500
+Subject: Re: [GIT pull] x86/urgent for 5.10
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607888356;
+        bh=XU12oJ5ptOds2p9w4548svaCVx7r4IsRyIHLlEdhH1s=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=G+FMikDnNGJe3OCn8Z9fScBg7B0PihCjsw9Otg1I0P8jbHhMGAP0JXT6qbycNs7Ex
+         /pIEmmBDPZ4jyaQ5YOER9yzg0kzv0RF7rX76gpmyUCmeDz7OfZtvz3+oeNXdxVg9AW
+         5vXEjVur/VBTTmRMw9GBaFcWpOWUHEr5SpZxUy0tY0vWuKK0RHHZKa6dD9aNuviMgl
+         DXEFVXJupcuuEhholODcyVY/PnkChXupf8udtUlE3ceyMEMDc5mflnoPyT0QLO4Jod
+         Eq1X60rSpy/6hkV7WWeH+T8jVXsBDcl7KsQjhzXq4CxfXbIIWkwuwEaTRlQQnIRP/l
+         NVh547XgP0FTw==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <160787544257.29236.9507174976469921731.tglx@nanos>
+References: <160787544257.29236.9507174976469921731.tglx@nanos>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <160787544257.29236.9507174976469921731.tglx@nanos>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2020-12-13
+X-PR-Tracked-Commit-Id: 0d07c0ec4381f630c801539c79ad8dcc627f6e4a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ec6f5e0e5ca0764b4bc522c9f9d5abf876a0e3e3
+Message-Id: <160788835691.9552.9914419967789101948.pr-tracker-bot@kernel.org>
+Date:   Sun, 13 Dec 2020 19:39:16 +0000
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 8:06 PM Vincent Stehlé
-<vincent.stehle@laposte.net> wrote:
-> The DMA address returned by dma_map_single() should be checked with
-> dma_mapping_error(). Fix the ps3stor_setup() function accordingly.
->
-> Fixes: 80071802cb9c ("[POWERPC] PS3: Storage Driver Core")
-> Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
+The pull request you sent on Sun, 13 Dec 2020 16:04:02 -0000:
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2020-12-13
 
-Gr{oetje,eeting}s,
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ec6f5e0e5ca0764b4bc522c9f9d5abf876a0e3e3
 
-                        Geert
+Thank you!
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
