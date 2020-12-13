@@ -2,65 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21AC42D8C71
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 09:42:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0E62D8C80
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 10:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405155AbgLMIkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 03:40:55 -0500
-Received: from smtprelay0054.hostedemail.com ([216.40.44.54]:56898 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728170AbgLMIkz (ORCPT
+        id S2405543AbgLMJ0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 04:26:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405251AbgLMJ0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 03:40:55 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 172151E06;
-        Sun, 13 Dec 2020 08:40:14 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3870:3871:3872:3873:3874:4321:5007:6691:7514:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21627,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: neck30_631061227410
-X-Filterd-Recvd-Size: 1954
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 13 Dec 2020 08:40:11 +0000 (UTC)
-Message-ID: <3ce8fa0c0d7a2c38b532bd4944f4158cfa0db072.camel@perches.com>
-Subject: Re: [PATCH] leds: Use DEVICE_ATTR_{RW, RO, WO} macros
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-leds@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Murphy <dmurphy@ti.com>, Pavel Machek <pavel@ucw.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Date:   Sun, 13 Dec 2020 00:40:10 -0800
-In-Reply-To: <CABJPP5BeB-aXDDk-8vy-8dOaNaM5jitx6QWKtV7Y3zXM5DgvUA@mail.gmail.com>
-References: <20201212195548.231494-1-dwaipayanray1@gmail.com>
-         <CAKXUXMx9EnhWhGAJf4ousAgkxDUrN=g2zGaPEk6ijJYse7VJaQ@mail.gmail.com>
-         <CABJPP5BeB-aXDDk-8vy-8dOaNaM5jitx6QWKtV7Y3zXM5DgvUA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sun, 13 Dec 2020 04:26:52 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3FBCC0613CF;
+        Sun, 13 Dec 2020 01:26:11 -0800 (PST)
+Date:   Sun, 13 Dec 2020 09:26:08 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607851569;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=2FKsp/UvUY+SYDsBs87AhUa2pNu2au8e7VMA7lSsciA=;
+        b=r3GjPN51uLqQxolKmcTD+LyJnJ6UneBvmef6MX7IfF1l5Gk8s1GjWBivqHeCbL363hJT4H
+        oXwuW5X2HR11eZJFL1xM9kllUwwG3ChvmODkhTs1AdOrnAMPegGYjLm74gbJPEiYlXaXAk
+        7y3jvRFBjITmYVOS70v2Cr4n/PhUR5Z43U8kVKMXmpdcIP6MxPhTl21gaX5ve/89OObi7l
+        vqcQUWeXLmhsKVSmPrb7AZwLbnUtq6La2WbAVfZUNPa3pDhZxGf5hwo+/2uc9in9BZOdJ3
+        cuxYABTAlzId+ermDcr7NRb+rbRHhYBkbQL2Kxtl/MiJSVRy6jneqPobljNpFQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607851569;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=2FKsp/UvUY+SYDsBs87AhUa2pNu2au8e7VMA7lSsciA=;
+        b=zvzzRx5Ee6f6VthB398dy+9AOA3tb4dDrjvZsdd5od7p6BSWozffAHws+TUKhgQkaearBz
+        i0WiRcwtjRVfUcAg==
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] ntp: Fix prototype in the !CONFIG_GENERIC_CMOS_UPDATE case
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
+Message-ID: <160785156829.3364.3073127459161350249.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-12-13 at 13:48 +0530, Dwaipayan Ray wrote:
-> On Sun, Dec 13, 2020 at 1:31 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-[]
-> > Will you also add a checkpatch rule to identify other DEVICE_ATTR(...)
-> > that can be adjusted to the refined macros, so that checkpatch informs
-> > other submitters as well?
-> > 
-> I think a checkpatch rule for this already exists. But it cannot automatically
-> rename the function names. That might be the only drawback we got.
-> Probably clang-format could fix these automatically.
+The following commit has been merged into the timers/core branch of tip:
 
-clang-format is not a tool to rewrite code only neaten its layout.
+Commit-ID:     3cabca87b329cbcbdf295be0094adbd72c7b1f67
+Gitweb:        https://git.kernel.org/tip/3cabca87b329cbcbdf295be0094adbd72c7b1f67
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Sat, 12 Dec 2020 18:29:20 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Sun, 13 Dec 2020 10:16:31 +01:00
 
-coccinelle _might_ be able to do this for limited cases where the
-show function is in the same compilation unit/file, but even then
-it would not be a trivial script.
+ntp: Fix prototype in the !CONFIG_GENERIC_CMOS_UPDATE case
 
+In the !CONFIG_GENERIC_CMOS_UPDATE case the update_persistent_clock64() function
+gets defined as a stub in ntp.c - make the prototype in <linux/timekeeping.h>
+conditional on CONFIG_GENERIC_CMOS_UPDATE as well.
 
+Fixes: 76e87d96b30b5 ("ntp: Consolidate the RTC update implementation")
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ include/linux/timekeeping.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
+index 7f7e4a3..929d3f3 100644
+--- a/include/linux/timekeeping.h
++++ b/include/linux/timekeeping.h
+@@ -303,6 +303,8 @@ extern int persistent_clock_is_local;
+ extern void read_persistent_clock64(struct timespec64 *ts);
+ void read_persistent_wall_and_boot_offset(struct timespec64 *wall_clock,
+ 					  struct timespec64 *boot_offset);
++#ifdef CONFIG_GENERIC_CMOS_UPDATE
+ extern int update_persistent_clock64(struct timespec64 now);
++#endif
+ 
+ #endif
