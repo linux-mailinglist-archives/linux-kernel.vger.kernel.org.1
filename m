@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 509A62D8C98
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 11:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3D42D8C9C
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 11:17:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391534AbgLMKNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 05:13:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbgLMKNR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 05:13:17 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E7AEC0613CF;
-        Sun, 13 Dec 2020 02:12:52 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id f17so10450821pge.6;
-        Sun, 13 Dec 2020 02:12:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=lsVx0n4zixxira9lv35hWS/y6k/uVu6Aq4wNzOSEerQ=;
-        b=B3g/XyLF32jvXzIhBauVCSIK+Cap/WLc88FRLJ5wVQGa3ZaXCbY2lGzwymWFc6eI47
-         kHQ1QP3eFu0wRjC2WO33G1ppzdYYAVEZc2DtWss/zzlTuCfEpOdtTTd2lmyxQP93eTFC
-         CalyUGpr9FFgokvmbfxAFbcGqGy3ksNkCdfvFFsHloDzkR4H/0BeyalJDWLyFwaJ7rEQ
-         Ks7wYV2L34HvbLwSPS101yDczdG6fetkKBcPcvTS6EjL32P2ozTRHpNILZL7AYy7xaze
-         YBaYMgSGx5ItCXb8uZbhCSTdLvLgBf6HynTPwzKAxAK1tidmyehe3hkHpNoQnd1aSLGw
-         crBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=lsVx0n4zixxira9lv35hWS/y6k/uVu6Aq4wNzOSEerQ=;
-        b=ff0Cuj/okhzWQZesmcU84O5n7IbCbqtMPHEgzSDs8EzoQHxsSmrFihEDeEocJpUZ7m
-         Wq8czpWqVXEUoB+QZhiqlNFoMiQJo1mxFCA9O9DiiBqqXHr+qT5f4vZKy1Tu540feM9y
-         FWHq1tA40sincK4lwqM75cLtcyQxspuIJKOG6YnWppymFKDoKrQtpWokAYjUwzMNZPyq
-         RtayhGUqjEQ/g+a7rG+3jf4KNTeN1XoLDMbbo5DJNt7pOxzwkV4G2qAU1Y6DMkqOJqr+
-         IxnFxLCS4A9lyrIEvAdpoVLjhlS0DnV7POp+S0gCXmJZNuzyQmZo1cPoSdIwc8CiU8qH
-         5Rbw==
-X-Gm-Message-State: AOAM531U75SYYY7ZZ9Ef4VUkOlreie2Yx4ddo8W4Kh9VXtAAQREARZxg
-        PIF/IYu7QPcSuROyJEq5Ww8=
-X-Google-Smtp-Source: ABdhPJwLJ2zQO1VWY3ErJTxneKfBu7E+i00lhvxlMuSU3DTPBNxZOpv7HPhddCEBfFAYYqJq7ssY0w==
-X-Received: by 2002:a65:55c1:: with SMTP id k1mr19135135pgs.130.1607854371734;
-        Sun, 13 Dec 2020 02:12:51 -0800 (PST)
-Received: from localhost.localdomain ([182.226.226.37])
-        by smtp.googlemail.com with ESMTPSA id s7sm16973115pfh.207.2020.12.13.02.12.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Dec 2020 02:12:50 -0800 (PST)
-From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
-X-Google-Original-From: Bongsu Jeon
-To:     krzk@kernel.org
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
-Subject: [PATCH net-next] nfc: s3fwrn5: Remove the delay for nfc sleep
-Date:   Sun, 13 Dec 2020 19:12:38 +0900
-Message-Id: <20201213101238.28373-1-bongsu.jeon@samsung.com>
-X-Mailer: git-send-email 2.17.1
+        id S2394230AbgLMKPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 05:15:38 -0500
+Received: from ozlabs.org ([203.11.71.1]:34391 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393178AbgLMKPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 05:15:38 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cv0kg1MPzz9sTL;
+        Sun, 13 Dec 2020 21:14:51 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607854491;
+        bh=gfNx/8oKIbz/C8FQ//ILHIvDXNvgBsaZCk5dClnU0R4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=T7/chqnifO5ws5QKYw8/tPWewFyzSpy4rEIgE4WM8MsuzufmvPFBjdZltOVQK75V4
+         GlQ06zFdVGZZOmzbw5jrlbPxxYZp/439hVk2QH7TWSEH/zHI1X+P0p9memhctAHxbd
+         AtQnDOV9XtEXiLApdaw3bRnWerZdWhcckkawuXPIj+uhyT8fgdKqFLNL+hnAIdaO78
+         0LOGN1AERYx8HLflkKxgh84fbsw5HS4qJk/D0Xi06gPj1WVUGY+XPVpFsaubWC3Udf
+         o4q70lLxZssaGRaKI39RcVFiRN4DFNwaEbygDjTtcq1ZkE3iDHGs4RBJMGpxOS5zsD
+         +f3sxYLiFhFEw==
+Date:   Sun, 13 Dec 2020 21:14:34 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steve French <smfrench@gmail.com>,
+        CIFS <linux-cifs@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the cifs tree
+Message-ID: <20201213211434.27bf402f@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/10.jE..CW9K2rw+xtI9UVZq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bongsu Jeon <bongsu.jeon@samsung.com>
+--Sig_/10.jE..CW9K2rw+xtI9UVZq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-remove the delay for nfc sleep because nfc doesn't need the sleep delay.
+Hi all,
 
-Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
----
- drivers/nfc/s3fwrn5/phy_common.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Commit
 
-diff --git a/drivers/nfc/s3fwrn5/phy_common.c b/drivers/nfc/s3fwrn5/phy_common.c
-index 497b02b30ae7..81318478d5fd 100644
---- a/drivers/nfc/s3fwrn5/phy_common.c
-+++ b/drivers/nfc/s3fwrn5/phy_common.c
-@@ -20,7 +20,8 @@ void s3fwrn5_phy_set_wake(void *phy_id, bool wake)
- 
- 	mutex_lock(&phy->mutex);
- 	gpio_set_value(phy->gpio_fw_wake, wake);
--	msleep(S3FWRN5_EN_WAIT_TIME);
-+	if (wake)
-+		msleep(S3FWRN5_EN_WAIT_TIME);
- 	mutex_unlock(&phy->mutex);
- }
- EXPORT_SYMBOL(s3fwrn5_phy_set_wake);
--- 
-2.17.1
+  3aa4e616197b ("cifs: Register generic netlink family")
 
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/10.jE..CW9K2rw+xtI9UVZq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/V6YsACgkQAVBC80lX
+0GzPsggApLHybUvF97x85qr9Sc6zYa5dg9u3RARn7o3hei+6toVOIk3AbTATZv6S
++Hd7eTy8Y3PYOWSYt+E7oizzOz/4UxkcZKuMfYb8r5xAy3AGjPRTDUzevE25A+C8
+wN20j9lcHIfBv/0cl2C85mrYjpIyyNU53+aYchYUn/doniSXpd6pJoPhI4s44rOS
+pXPm8b9U2oPukBAGS8G2oZcfbO+f1sSgdeNnbO92pCIvvqlPDXxWlOtZzk718hIn
+4VK9dXizqQfO2qRC/1gYgI55kkAnJkN72D8RxirwqgCYmvdG6Mokzg9J/jEYbBnO
+foCv7uFr2Y7skbOkYFNUs4Ko0puDpw==
+=meC8
+-----END PGP SIGNATURE-----
+
+--Sig_/10.jE..CW9K2rw+xtI9UVZq--
