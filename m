@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E832D8B6B
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 06:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE5E2D8B99
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 06:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbgLMFWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 00:22:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725287AbgLMFWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 00:22:16 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607836895;
-        bh=cV44tKi6E31BnITtCOWLyHjjS9XLowKnbRhNJZXaJOw=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=Dvra/5D2RYTkXWfQDsSyjOxTYcgxltABeZJVULPDQo/+W23kQkutGuebyBF3k9wDa
-         /UT3mbkXolf6NeCO/upjzstc/oITZaf1QnZTfZrm2zXKKxKO8bqZSUYeOtqQBMWWUN
-         q2Mib44yzw0PjAN3kcOvX+LucaQ/QYAz6+UuBaOmoc52voH+h8+J/9cbtGUl3R1W6o
-         bq0RZjFrT4eli8YQLmvegx+3KsxuMbIIfMFoF8yY57cbmkyHdauNV39vxGW1/uViay
-         3VWKWD2vr7nL43828x6xLgjAnHp89DR/3t3EPGR4JAqO+fjXbKfXb7cgLkR1wZw78w
-         7G8WYGUQ5Dl7w==
+        id S1728529AbgLMFad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 00:30:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727865AbgLMFab (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 00:30:31 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F45C0613D6
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 21:29:51 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id f17so10205584pge.6
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 21:29:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RIRFinfbgbZO50AJSCxLN6fLNwVVOhGqRKpbkplO8ug=;
+        b=GdgXpGFH+jNsbOUFmm8A+ht+nCz00rdXqYsd+AUSbdipXdCw26nOkJKHb11QeQKAWs
+         DjO9KXWtR8dCEofzaRIg9CsTIZnm6HMUs/IR471Sm1tyBNm0/NGtEMARWk7HTxYsRlfB
+         8ewXopKQm4y7VM/axMqJDhV4ul5T/vhuwYas8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RIRFinfbgbZO50AJSCxLN6fLNwVVOhGqRKpbkplO8ug=;
+        b=WXTbRS0aLz47ZcFfABruY3Mo3QHSq/QJPjYBGVLlY1HYiTyckwjmUk/rk5jJ3LP1Pn
+         yH62xUn/OGb/rSnNeplgfNDyvjWJ3w+5pQEbVPhbLHDSEP0yvy/Ke10GiJUAg6RqMuHE
+         A53Hg/oKsAl/pvboEvUy7t/YUADyQJPAmfi1VMQW8YwVsWlYpRFqazwdUmQGokMo3Osv
+         Pt6mdELdOPP0+BH5XlqpkpAYFvYjOU/JKakzbho00Vne02o9/rI19sWzuhbI1iiXm7gb
+         WAyBMU/AIDw00zuSe/CFRLMP5dKfe7BJ2BJv83XJZT6aVPNOplw6Ary8NmwNUSjYEerk
+         y1vg==
+X-Gm-Message-State: AOAM530CAzPeOExnNBtR5FDfwzcQlm1U4ZmQVopqUz3TxJkaoevBvdKP
+        uSU/HaNycf+f0ZHVN6tsaMvJ+A==
+X-Google-Smtp-Source: ABdhPJzzjIM+frmXipKHf8je8MLsddRzOudjIcl+IK083vh1hHszJcGuzYLOdc+NV9K198oULyFJNA==
+X-Received: by 2002:a63:cc4c:: with SMTP id q12mr18838228pgi.361.1607837390716;
+        Sat, 12 Dec 2020 21:29:50 -0800 (PST)
+Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id w200sm15862917pfc.14.2020.12.12.21.29.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Dec 2020 21:29:50 -0800 (PST)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Mukesh Kumar Savaliya <msavaliy@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>
+Subject: [PATCH] spi: spi-qcom-qspi: Use irq trigger flags from firmware
+Date:   Sat, 12 Dec 2020 21:29:48 -0800
+Message-Id: <20201213052948.308263-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201210093201.2419737-1-geert+renesas@glider.be>
-References: <20201210093201.2419737-1-geert+renesas@glider.be>
-Subject: Re: [PATCH v11] ARM: uncompress: Validate start of physical memory against passed DTB
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Eric Miao <eric.miao@nvidia.com>,
-        Uwe =?utf-8?q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Lukasz Stelmach <l.stelmach@samsung.com>,
-        Chris Brandt <chris.brandt@renesas.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Russell King <linux@armlinux.org.uk>
-Date:   Sat, 12 Dec 2020 21:21:34 -0800
-Message-ID: <160783689435.1580929.1038454293190061446@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Geert Uytterhoeven (2020-12-10 01:32:01)
-> diff --git a/arch/arm/boot/compressed/fdt_check_mem_start.c b/arch/arm/bo=
-ot/compressed/fdt_check_mem_start.c
-> new file mode 100644
-> index 0000000000000000..e58c3a79c8a31ec4
-> --- /dev/null
-> +++ b/arch/arm/boot/compressed/fdt_check_mem_start.c
-> @@ -0,0 +1,131 @@
-[...]
-> +
-> +static uint64_t get_val(const fdt32_t *cells, uint32_t ncells)
-> +{
-> +       uint64_t r =3D 0;
+We don't need to force this to be trigger high here, as the firmware
+properly configures the irq flags already. Drop it to save a line.
 
-This assignment is unnecessary?
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Rajendra Nayak <rnayak@codeaurora.org>
+Cc: Mukesh Kumar Savaliya <msavaliy@codeaurora.org>
+Cc: Akash Asthana <akashast@codeaurora.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/spi/spi-qcom-qspi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> +
-> +       r =3D fdt32_ld(cells);
-> +       if (ncells > 1)
-> +               r =3D (r << 32) | fdt32_ld(cells + 1);
-> +
-> +       return r;
+diff --git a/drivers/spi/spi-qcom-qspi.c b/drivers/spi/spi-qcom-qspi.c
+index 5eed88af6899..8e70f5e63e0b 100644
+--- a/drivers/spi/spi-qcom-qspi.c
++++ b/drivers/spi/spi-qcom-qspi.c
+@@ -516,8 +516,7 @@ static int qcom_qspi_probe(struct platform_device *pdev)
+ 	ret = platform_get_irq(pdev, 0);
+ 	if (ret < 0)
+ 		goto exit_probe_master_put;
+-	ret = devm_request_irq(dev, ret, qcom_qspi_irq,
+-			IRQF_TRIGGER_HIGH, dev_name(dev), ctrl);
++	ret = devm_request_irq(dev, ret, qcom_qspi_irq, 0, dev_name(dev), ctrl);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to request irq %d\n", ret);
+ 		goto exit_probe_master_put;
+
+base-commit: b65054597872ce3aefbc6a666385eabdf9e288da
+-- 
+https://chromeos.dev
+
