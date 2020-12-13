@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B854B2D8AB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 00:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BD62D8AB4
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 01:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439930AbgLLX4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Dec 2020 18:56:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgLLX4S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Dec 2020 18:56:18 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A56C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 15:55:37 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id o17so18053425lfg.4
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Dec 2020 15:55:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hkidxSbyfjazWTOT26iGmUSG6KLeMMJ88g5Y/5sKAWE=;
-        b=NE+B30e651TYDS1g07lefGbDGsWhnU+hQSZuHR7LZyjKzJCIZrJa/pYvefuKcUEGaS
-         YKp520acgh7eA7ObHnle55a/mPVHTsYpg53rDJDOkKEqHWqMfGCeBr4PBEgyaGewqJB+
-         wdsNmHvrSpXjUUdYQDvxpQh5HXRBGvLeWZBjuQSadiyWfy6qko5LNK+JetNT1YFHDliY
-         ZJdfWY47WIw+pBrHRLEYEOvWoPhNhnGKOeCUt2y8btRzHGbUIZ/xkfogPvb2M8+/bdJw
-         yLTVS/a28Jtu0+PK7Ak5ftHuHEyHlFmXJBQ9EvJNCDsWb0I5FDG8mcdNM1uj8OP+kt5C
-         8JIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hkidxSbyfjazWTOT26iGmUSG6KLeMMJ88g5Y/5sKAWE=;
-        b=kJktfskOSq3bWvYAoHMhjoGjTrZiBGuAJVlQ1eLboLdc8Bo+5OqwgSW63bfYeoVgZG
-         df5Eh23cS61Uss1tu2+SvgnDvwHiyPWHsY6FHvemdc5sVUWtqAQptUgpYyiA8bgPisja
-         ugwIMl4lFLeZK9H5QSia2/jPyvjtwEAnhU/IsP0FiwijneZpztGZbK2MTYbiR8bJ4DkT
-         KWCuGcvbmab5jqXMCOnJ931Au5+cPkVOVnE+C4KnMrnHhJoV3J8Ai62/7cyQ5fTVeM/J
-         PpY0b9GqczRJiYrmbWvvTQhKTx+5r59V+p+8xz9gH1lY3EMHktyHXIGTagmYCKlZI3Fe
-         3d1g==
-X-Gm-Message-State: AOAM531h0V1bIo4xzHc19yRs2XKL9WwimIqEd4eplDFETs3fkPX2vnE9
-        toOrTGJbgFYo1bENTi9m8gOe9Q==
-X-Google-Smtp-Source: ABdhPJx6u2NNxVdESUsjE2iSJo2juthV+ResfzLcVuhxzg0eOVhxITqb4LWlfOp7HwuTkmR2nqqgFQ==
-X-Received: by 2002:a2e:9195:: with SMTP id f21mr7691766ljg.191.1607817336472;
-        Sat, 12 Dec 2020 15:55:36 -0800 (PST)
-Received: from eriador.lumag.spb.ru ([188.162.65.97])
-        by smtp.gmail.com with ESMTPSA id m12sm1724554lji.110.2020.12.12.15.55.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Dec 2020 15:55:35 -0800 (PST)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: [PATCH v3] driver core: platform: don't oops in platform_shutdown() on unbound devices
-Date:   Sun, 13 Dec 2020 02:55:33 +0300
-Message-Id: <20201212235533.247537-1-dmitry.baryshkov@linaro.org>
-X-Mailer: git-send-email 2.29.2
+        id S2439896AbgLMAFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Dec 2020 19:05:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38266 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726267AbgLMAFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Dec 2020 19:05:21 -0500
+Date:   Sun, 13 Dec 2020 01:04:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607817880;
+        bh=XyYC08d8VreFz0iZIfxjdgW3Ja0+ozXIt8da6M+Ioas=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G1BOWp9qYB2geORSiLGJF2aK7dDSADSCOkPMJa6vmR26ss8cw5pIoeC9tHlAaFqes
+         vVVrUiJsNzKwTN1nNzgyoKDpeIn7eb/+DbY78gzGXTNsEGvKk9ja6sVG+IlM7NISIV
+         t9Lj3xNobdUdEISP5R3+3OZzkFUQnMRmP6pFEBmwwIiGHtTL3qmxAybmecgQ7oFdXw
+         xd2Bm6kO4M0jnq7sCDcxV1jT0lu5CV1/2xoEHzsGXrOscZYxfaI0i+Hi2ak4BREH/d
+         BR2gYMSV0xucPvT/mUaY7nk1Bn83fa5KTpI3gbp07bDFOnwrtDBQ9WaODxpWs5N3Xr
+         We5OfydqYKX9A==
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Masanari Iida <standby24x7@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH] power: supply: Fix a typo in warning message
+Message-ID: <20201213000438.2gubioh2rqcxerei@earth.universe>
+References: <20201205012532.1196962-1-standby24x7@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="j35co2bppgb3rqv2"
+Content-Disposition: inline
+In-Reply-To: <20201205012532.1196962-1-standby24x7@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On shutdown the driver core calls the bus' shutdown callback also for
-unbound devices. A driver's shutdown callback however is only called for
-devices bound to this driver. Commit 9c30921fe799 ("driver core:
-platform: use bus_type functions") changed the platform bus from driver
-callbacks to bus callbacks, so the shutdown function must be prepared to
-be called without a driver. Add the corresponding check in the shutdown
-function.
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Fixes: 9c30921fe799 ("driver core: platform: use bus_type functions")
----
- drivers/base/platform.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+--j35co2bppgb3rqv2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index 0358dc3ea3ad..e9477e0bbca5 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -1351,9 +1351,13 @@ static int platform_remove(struct device *_dev)
- 
- static void platform_shutdown(struct device *_dev)
- {
--	struct platform_driver *drv = to_platform_driver(_dev->driver);
- 	struct platform_device *dev = to_platform_device(_dev);
-+	struct platform_driver *drv;
-+
-+	if (!_dev->driver)
-+		return;
- 
-+	drv = to_platform_driver(_dev->driver);
- 	if (drv->shutdown)
- 		drv->shutdown(dev);
- }
--- 
-2.29.2
+Hi,
 
+On Sat, Dec 05, 2020 at 10:25:32AM +0900, Masanari Iida wrote:
+> This patch fix a warning messages in power_supply_sysfs.c
+>=20
+> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+> ---
+
+Thanks, queued.
+
+-- Sebastian
+
+>  drivers/power/supply/power_supply_sysfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/su=
+pply/power_supply_sysfs.c
+> index a616b9d8f43c..92dd63171193 100644
+> --- a/drivers/power/supply/power_supply_sysfs.c
+> +++ b/drivers/power/supply/power_supply_sysfs.c
+> @@ -402,7 +402,7 @@ void power_supply_init_attrs(struct device_type *dev_=
+type)
+>  		struct device_attribute *attr;
+> =20
+>  		if (!power_supply_attrs[i].prop_name) {
+> -			pr_warn("%s: Property %d skipped because is is missing from power_sup=
+ply_attrs\n",
+> +			pr_warn("%s: Property %d skipped because it is missing from power_sup=
+ply_attrs\n",
+>  				__func__, i);
+>  			sprintf(power_supply_attrs[i].attr_name, "_err_%d", i);
+>  		} else {
+> --=20
+> 2.25.0
+>=20
+
+--j35co2bppgb3rqv2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/VWpEACgkQ2O7X88g7
++pqLuA//U9MSYJWLieSFnBiCVSMlhtZpH7QjeubbvwqUeOV5kmYbaMzwHVRUw7P0
+qg2ALirxaEbStY0GFtWTSdQj2v+MEuCQLXHMLn/pJ32KU/8r+CJnWox7T5fGnHqZ
+p64/lS5xrV1IdvMl4LPqgQrNOGGsiWm58XkAxbNpFirFVSc57vCNQKXC3gf14HPy
+0RI0n2L5ZXMqljd3GhkYuUg0QuInWp1BRkpqaFQ+l+xT1Hu9QzQ/vN6XjLxb4r4K
+0EjTm8+Rl4I6rcmdZtDOTFQs6qk88eaZ8jBqGSIx8lSF5Fjdma7frNxzEmY8lKPH
+Py6Hadt/6pJ4wfakCunAH6zq1XS8sBaNxdzaQevWJXz3r306mWX6dzXWNEgC7AAF
+sdAGvOtOvweAKwNQcSi8OB0yQwf4FNFedCiVj0GvgesbZ2dsk2asCylrVrQ6MWsh
+pNjwCZBunkPeGqNhJnl/3i9FjybdLqk2EoTE/nJtZMPIsAJY+nCN6oOsEY4P6iEj
+VAygV3exywcnctWZFwe717OXp9aGR+H3VIoQwO7U1LkPQUNh+1yiuzF1cEd9zTky
+8DgLfmt98b/SsObyAoGpevbuO2FlafpV74uUn4N//P1HaTxL6VhcxV0JweCVEvl4
+iUd68HPr2Or0eGetDVZbI2sb4XzW5kmqEynXUvavyVnboloMg0o=
+=9700
+-----END PGP SIGNATURE-----
+
+--j35co2bppgb3rqv2--
