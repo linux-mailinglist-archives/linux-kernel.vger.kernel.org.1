@@ -2,142 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009632D8CB6
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 12:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 746D42D8CB9
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Dec 2020 12:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729288AbgLMLYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 06:24:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50368 "EHLO
+        id S2392923AbgLML1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 06:27:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgLMLYv (ORCPT
+        with ESMTP id S1725864AbgLML1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 06:24:51 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27F6C0613CF;
-        Sun, 13 Dec 2020 03:24:10 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id 6so3980368ejz.5;
-        Sun, 13 Dec 2020 03:24:10 -0800 (PST)
+        Sun, 13 Dec 2020 06:27:22 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94550C0613CF;
+        Sun, 13 Dec 2020 03:26:42 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id b5so4949420pjl.0;
+        Sun, 13 Dec 2020 03:26:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IW66fMc7VTs1PtxS+22ry7ms1/9mizOXCdVTfKV5hpo=;
-        b=bQn+oB1JoyeFOF0nG/mlAluMS+9oNaqRxA17ZBM9Oe3AOE8/JG6goH/EB1c4QkEda4
-         T1lTzWqlfslNfkdjp202c07yMWPNGbIBbpqQZ+AzfJmqs+Kgj+dLxGZ+wWZGA5mc0NdB
-         BijFlgEZnvzEJb3MGQPxQa2/dgeJuYhDvxuwz6QAxAIoRHfwl22d5quEoZXOhJp6a+qE
-         ETivnglunAiRLTbK3ng7taHfwUqrNTJL3Mef8dDWPaAGgN2enm8bDppfomcBBDdM6fOw
-         jt/C5/9LwS2YQBDgMwgsJ0z4C3ZaAE2+qiQJ4375nfTotPFrKA5zulfu7Q8I9D/Awk7+
-         1yaQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FiB/9WTUgU4k/cf1D0blDI9YAXhtbx3zQedTzR+o/44=;
+        b=Q39cbSGJNxB7lNbK8VSBdugLFAqITRcxO5zVgeyE5kdwfTpPgOc2INZ1pyzUFoQh1y
+         tUhGBX+d2U/ThdHvcwJPW4v/O9C34HsjzrCGUwCcdLDNWoF3K6WpbChyvgUNyvPDB47j
+         hPjkMtcbWSfpj//r1NvWwPjfB/1LuJ7yB3dP7fVxHQINRJl/cAR77mNmxUiKPqTpD1P2
+         nVBL1E2FQtNurAj6gU5m9ZQ3Fjj0oIitNmIix1jgMDTh2AJgkGWufl4qzYYEH0Ahl5Dv
+         Q6PcAxESb0StC6/Hz6npHFTKxLHjhUEhr33RStPxZXUe+iwHiNfwgQ5RFtTWKDyoemZZ
+         /rvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IW66fMc7VTs1PtxS+22ry7ms1/9mizOXCdVTfKV5hpo=;
-        b=BVBMTCn3Bvu5bU8u22YwrSx8UYIrLr1dn/Gtu7QCctWasiftRQClF1RfJ4Jide5z2/
-         oEbevEBznY4HqoeALxnXi/snXKW4lE+iHGRP/WO6+Sf4tO8t8uUs+qLpaH1MwAHNpjST
-         7cICSEyp2srchAP8d7jtWgTMNvk6g/WDXK0iLlUM6eQ1yOK5eqfCPXl6wejZhIxn8spN
-         OtxPSqA6Zsp1kiSzRKxsKsc7prwux91PXGcVki2CZ9dR5KijWb8tZJ8Nhx4OgeqeJJ2n
-         5rYbYMBo9KQMgbYy4+1+7tclWUFLaU25ryFUH+kBxqSkZXQQAooPRicLP8pJtpMyntbE
-         VKCg==
-X-Gm-Message-State: AOAM531B7l7ilylRnx7vVwCRaWZ3ILOCQdDgyAMfMKyzuFnW395gUQT8
-        1sE6TCaMzKMc6W+DxYtzQ4c=
-X-Google-Smtp-Source: ABdhPJynlxi2QKNBVsllMFmw4nuD/o/QttB0CiO5OzyzZ7oeGscU5QYtBXumKqp3eM2r1PK4665luQ==
-X-Received: by 2002:a17:906:a2d0:: with SMTP id by16mr18015254ejb.207.1607858649230;
-        Sun, 13 Dec 2020 03:24:09 -0800 (PST)
-Received: from [192.168.0.107] ([77.127.34.194])
-        by smtp.gmail.com with ESMTPSA id de12sm12533753edb.82.2020.12.13.03.24.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 13 Dec 2020 03:24:08 -0800 (PST)
-Subject: Re: [patch 20/30] net/mlx4: Replace irq_to_desc() abuse
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-pci@vger.kernel.org,
-        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org
-References: <20201210192536.118432146@linutronix.de>
- <20201210194044.580936243@linutronix.de>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-Message-ID: <01e427f9-7238-d6a8-25ec-8585914d32df@gmail.com>
-Date:   Sun, 13 Dec 2020 13:24:00 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FiB/9WTUgU4k/cf1D0blDI9YAXhtbx3zQedTzR+o/44=;
+        b=X3rly3nib5HQOKhuUPqS4/FncqrjcfF2PLPn5Msdaoi+Jpm+Ho7GzDoNo8yMzsiG4m
+         pw3QgANbRiUw6A1oUVFB1D5YfgiU0j/ytpqlEZadgolZGiolHBp099A7aGKzAgn1Z8qo
+         iiX3EK0+lBc90+dJRjf4WPxyxHd9jZR2zbG6//tKFr3VZ1VNMjP3ZCIS8K0w8rlssmxU
+         xRRT+gQs8dx1Fhdz3ZsnkaPkZPwYtfTu8QizLv5gNFXxRPzuegEGaF7B+uuv+IfoLDWt
+         ogpJqD0DZOPiWYdWjrsTc2RxK3QOP9REyDvv0YfCdSo14FQ6GgDCNIXgNYmUvICKlm9k
+         YXFw==
+X-Gm-Message-State: AOAM533fXJPw88Jsa27t4GEt3Ch0ZpI1gwLzfQGyIWObMXr4Lk2B0tyw
+        UyK0jaHI2al5OZz+0W94c61EEiB6ljiN6V4CTJQuPiNkqHA=
+X-Google-Smtp-Source: ABdhPJwiXtXy2oACWVRlcBjf9y8PHvLNGqnrluOTNM7ptACjV1zVSZgM0Rd9w5rg3AWZmxqci4j6W1Ugz/T97lZlbXY=
+X-Received: by 2002:a17:902:b7c3:b029:da:76bc:2aa9 with SMTP id
+ v3-20020a170902b7c3b02900da76bc2aa9mr18484847plz.21.1607858802089; Sun, 13
+ Dec 2020 03:26:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201210194044.580936243@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201211211916.6259-1-semen.protsenko@linaro.org> <20201211211916.6259-2-semen.protsenko@linaro.org>
+In-Reply-To: <20201211211916.6259-2-semen.protsenko@linaro.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 13 Dec 2020 13:26:25 +0200
+Message-ID: <CAHp75VeV2jdDYCqnsXEL_iQDwMdGf+chHg9CQ22OpoFsXuEZuA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] usb: dwc3: drd: Avoid error when extcon is missing
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Dec 13, 2020 at 5:22 AM Sam Protsenko
+<semen.protsenko@linaro.org> wrote:
+>
+> If "port" node is missing in PHY controller node, dwc3_get_extcon()
+> isn't able to find extcon device. This is perfectly fine in case when
 
+devices
 
-On 12/10/2020 9:25 PM, Thomas Gleixner wrote:
-> No driver has any business with the internals of an interrupt
-> descriptor. Storing a pointer to it just to use yet another helper at the
-> actual usage site to retrieve the affinity mask is creative at best. Just
-> because C does not allow encapsulation does not mean that the kernel has no
-> limits.
-> 
-> Retrieve a pointer to the affinity mask itself and use that. It's still
-> using an interface which is usually not for random drivers, but definitely
-> less hideous than the previous hack.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Tariq Toukan <tariqt@nvidia.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Cc: linux-rdma@vger.kernel.org
+> "usb-role-switch" or OTG is used, but next misleading error message is
+> printed in that case, from of_graph_get_remote_node():
+>
+>     OF: graph: no port node found in /phy@1234abcd
+>
+> Avoid printing that message by checking if port node exists in PHY node
+
+if the port
+
+> before calling of_graph_get_remote_node().
+
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->   drivers/net/ethernet/mellanox/mlx4/en_cq.c   |    8 +++-----
->   drivers/net/ethernet/mellanox/mlx4/en_rx.c   |    6 +-----
->   drivers/net/ethernet/mellanox/mlx4/mlx4_en.h |    3 ++-
->   3 files changed, 6 insertions(+), 11 deletions(-)
-> 
+> Changes in v3:
+>   - Split patch into two patches: logic diff and style diff
+>
+>  drivers/usb/dwc3/drd.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
+> index 3e1c1aacf002..312a4d060e80 100644
+> --- a/drivers/usb/dwc3/drd.c
+> +++ b/drivers/usb/dwc3/drd.c
+> @@ -463,7 +463,10 @@ static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
+>         }
+>
+>         np_phy = of_parse_phandle(dev->of_node, "phys", 0);
+> -       np_conn = of_graph_get_remote_node(np_phy, -1, -1);
+> +       if (of_graph_is_present(np_phy))
+> +               np_conn = of_graph_get_remote_node(np_phy, -1, -1);
+> +       else
+> +               np_conn = NULL;
+>
+>         if (np_conn)
+>                 edev = extcon_find_edev_by_node(np_conn);
+> --
+> 2.29.2
+>
 
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
-Thanks for your patch.
+-- 
+With Best Regards,
+Andy Shevchenko
