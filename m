@@ -2,256 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706A92D9D42
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DB72D9D28
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:03:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502157AbgLNRIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:08:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
+        id S2440397AbgLNRCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:02:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502108AbgLNRIP (ORCPT
+        with ESMTP id S2440388AbgLNRCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:08:15 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1CCC061793
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:07:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=BO2JNTcLJJKsWGSs92KVZEoG426aAmF3ad3fveSpfjs=; b=Z32MW2GXUe+/GnBQ3Pi814itgP
-        tdVNBAcJb/FK8kcKox43MEeZs0Vw06YU7sYSJS031aZDHmt/Kv8bm/IPJLHT2DKl+BKBdxazYm3HY
-        FoMNDqFLUW3Rb9LoR0Jqdd7E1HBK2QC6GDPY+R5t2HN2IxQlEq3FZ7zrpYJy5y9gl3Vh4z0K+3I6n
-        qAPa1jZIUqWb0fBPR2Xl9n8cB6ZO2ScTptdvr7MbUcjPO5rgVmNPYXglUJv2izFmgDTrr+Mvsbvvn
-        SdaZwJ7wnC7QaTbKfezNV970OPB9spZhAeLnh70HtmJE9PLtQdeqT4/bPsF+F+t6pPncPxUAYfVqq
-        zUmmHJkQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1korJT-0002Qp-7R; Mon, 14 Dec 2020 17:07:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3CBFA305DD1;
-        Mon, 14 Dec 2020 18:07:05 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 781052364D0D8; Mon, 14 Dec 2020 18:07:04 +0100 (CET)
-Message-ID: <20201214170018.126628741@infradead.org>
-User-Agent: quilt/0.66
-Date:   Mon, 14 Dec 2020 17:48:27 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     mgorman@techsingularity.net, vincent.guittot@linaro.org
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
-        aubrey.li@linux.intel.com, mingo@redhat.com, juri.lelli@redhat.com,
-        valentin.schneider@arm.com, qais.yousef@arm.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        tim.c.chen@linux.intel.com, benbjiang@gmail.com
-Subject: [RFC][PATCH 5/5] sched/fair: SIS_PROP the idle core scan
-References: <20201214164822.402812729@infradead.org>
+        Mon, 14 Dec 2020 12:02:08 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95B6C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:01:27 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id x22so14404559wmc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:01:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4rKc3k/8U8hxAEjZzV49Vk7VDE1v7E2xpMe/kBCJFBI=;
+        b=wKsQfqJrynPmzpMMsxKjboxVpD/1N3zg/vJtI3Z08Rl6LpbK95nV5zwitVjQYd/BE/
+         mbp6GpyyjcdkOo219WP3HREnwM00uz90+hi5dpQR9C5A7tgDijD9ghAmpwGg3qU3eoQT
+         79gd97G+9QlhjApL09Hu8WX8ovUGGq8zv780dIa1ptvz0Tj2UCFtHKaK071sPk7I1KGf
+         L/P8HoU1b8LmSdMEVlqAdrHO1zaTpvMkTCpLx3jkqMB2FrkNgLLFsDknlsgxmh5w2+Im
+         lIic/BNHnqGBd0JmDWnmwLGrLOGiFD5u65uXlJ1LHF3iMwgmca1dxxwwhVgdyvXzMzgL
+         Wb4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4rKc3k/8U8hxAEjZzV49Vk7VDE1v7E2xpMe/kBCJFBI=;
+        b=oqgcghG1N0AhuAznG2m7Xxugn3bX7HYeOoz/2eGNbFuGprw65afok6w7SKhjDERY7Q
+         zcY7VH+hSV+oH7fCBmhbUOm3Af3Ya5c8k7v7kgqlXQtegzbjcDhQ/MWaLeKiIYIDYOgm
+         unhX5EpnworpqHeBH6dOL7s2EoXZd1cguaBpU3RvRWKFuxkooRveiIJVATd7FVgm/nrr
+         5Q5MsqrjMaNvutlLhGxDxK8wLHElxGgn6mjNMorSdxdX6j87WRgvwszttalb9/aqeoGt
+         NP0PnsDn7NG6etKPXcg0jr+IwFIrjbhgdmJa9LtzLk07vjhu1+k3/ID4Ev165LGjGFTT
+         /mpg==
+X-Gm-Message-State: AOAM531KTjoLB7Plft2aknHTR+PxaTLf0yilqI6L80QHPHvI0BHo2cHY
+        Nh52FgW1hWr85bKEjFmnTW6i6A==
+X-Google-Smtp-Source: ABdhPJxEmH6X6neOFnVOnJy4jllk08QSxvJGaeVXxFqODHv1zPpW5JmDKL36UZaw0CJfr19My9sigA==
+X-Received: by 2002:a1c:9609:: with SMTP id y9mr13748496wmd.75.1607965286547;
+        Mon, 14 Dec 2020 09:01:26 -0800 (PST)
+Received: from apalos.home ([2a02:587:4664:2be3:2e56:dcff:fe9a:8f06])
+        by smtp.gmail.com with ESMTPSA id m18sm18081725wrw.43.2020.12.14.09.01.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 09:01:25 -0800 (PST)
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     ard.biesheuvel@arm.com
+Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Ingo Molnar <mingo@kernel.org>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] efi/libstub: Allow EFI_NOT_FOUND on LOAD_FILE2_PROTOCOL calls for initrd
+Date:   Mon, 14 Dec 2020 19:01:21 +0200
+Message-Id: <20201214170122.4569-1-ilias.apalodimas@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Further unify the new select_idle_cpu() loop and remove the 'smt'
-selection code and unconditionally use SIS_PROP, even for idle core
-searches.
+At the moment the EFI stub tries to load an initrd from the
+cmdline provided option only if the LoadFile2 protocol does not exist
+on the initrd device path.
 
-This effectively brings back the effects of select_idle_smt() which we
-removed a few patches ago due to always iterating the target core.
+This might prove problematic for EFI installers that need their own
+version of initrd to start the installation process and the firmware
+installs the protocol but doesn't have a file to back it up (yet).
+Although some firmware implementations return EFI_NOT_FOUND, we
+currently return EFI_LOAD_ERROR in efi_load_initrd_dev_path() which
+stops the cmdline provided initrd to load.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+So let's change the behavior slightly here and explicitly respect the
+firmware in case it returns EFI_NOT_FOUND. This way we can load the
+cmdline provided initrd.
+
+Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
 ---
- include/linux/sched/topology.h |    1 
- kernel/sched/fair.c            |   90 +++--------------------------------------
- kernel/sched/idle.c            |    1 
- kernel/sched/sched.h           |   13 -----
- 4 files changed, 7 insertions(+), 98 deletions(-)
+ drivers/firmware/efi/libstub/efi-stub-helper.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -73,7 +73,6 @@ struct sched_group;
- struct sched_domain_shared {
- 	atomic_t	ref;
- 	atomic_t	nr_busy_cpus;
--	int		has_idle_cores;
- };
- 
- struct sched_domain {
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1581,11 +1581,9 @@ numa_type numa_classify(unsigned int imb
- 
- #ifdef CONFIG_SCHED_SMT
- /* Forward declarations of select_idle_sibling helpers */
--static inline bool test_idle_cores(int cpu, bool def);
- static inline int numa_idle_core(int idle_core, int cpu)
- {
--	if (!static_branch_likely(&sched_smt_present) ||
--	    idle_core >= 0 || !test_idle_cores(cpu, false))
-+	if (!static_branch_likely(&sched_smt_present) || idle_core >= 0)
- 		return idle_core;
- 
- 	/*
-@@ -6020,60 +6018,6 @@ EXPORT_SYMBOL_GPL(sched_smt_present);
- 
- int sched_smt_weight = 1;
- 
--static inline void set_idle_cores(int cpu, int val)
--{
--	struct sched_domain_shared *sds;
--
--	sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
--	if (sds)
--		WRITE_ONCE(sds->has_idle_cores, val);
--}
--
--static inline bool test_idle_cores(int cpu, bool def)
--{
--	struct sched_domain_shared *sds;
--
--	sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
--	if (sds)
--		return READ_ONCE(sds->has_idle_cores);
--
--	return def;
--}
--
--/*
-- * Scans the local SMT mask to see if the entire core is idle, and records this
-- * information in sd_llc_shared->has_idle_cores.
-- *
-- * Since SMT siblings share all cache levels, inspecting this limited remote
-- * state should be fairly cheap.
-- */
--void __update_idle_core(struct rq *rq)
--{
--	int core = cpu_of(rq);
--	int cpu;
--
--	rcu_read_lock();
--	if (test_idle_cores(core, true))
--		goto unlock;
--
--	for_each_cpu(cpu, cpu_smt_mask(core)) {
--		if (cpu == core)
--			continue;
--
--		if (!available_idle_cpu(cpu))
--			goto unlock;
--	}
--
--	set_idle_cores(core, 1);
--unlock:
--	rcu_read_unlock();
--}
--
--/*
-- * Scan the entire LLC domain for idle cores; this dynamically switches off if
-- * there are no idle cores left in the system; tracked through
-- * sd_llc->shared->has_idle_cores and enabled through update_idle_core() above.
-- */
- static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
- {
- 	bool idle = true;
-@@ -6109,15 +6053,6 @@ static int select_idle_core(struct task_
- 
- #define sched_smt_weight	1
- 
--static inline void set_idle_cores(int cpu, int val)
--{
--}
--
--static inline bool test_idle_cores(int cpu, bool def)
--{
--	return def;
--}
--
- static inline int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
- {
- 	return __select_idle_cpu(p, core, cpus, idle_cpu);
-@@ -6136,7 +6071,6 @@ static int select_idle_cpu(struct task_s
- {
- 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
- 	int i, cpu, idle_cpu = -1, loops = 1, nr = INT_MAX;
--	bool smt = test_idle_cores(target, false);
- 	int this = smp_processor_id();
- 	struct sched_domain *this_sd;
- 	u64 time;
-@@ -6147,7 +6081,7 @@ static int select_idle_cpu(struct task_s
- 
- 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
- 
--	if (sched_feat(SIS_PROP) && !smt) {
-+	if (sched_feat(SIS_PROP)) {
- 		u64 avg_cost, avg_idle, span_avg;
- 
- 		/*
-@@ -6169,17 +6103,10 @@ static int select_idle_cpu(struct task_s
+diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
+index aa8da0a49829..391aae2f0cde 100644
+--- a/drivers/firmware/efi/libstub/efi-stub-helper.c
++++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
+@@ -560,6 +560,7 @@ static const struct {
+  * * %EFI_SUCCESS if the initrd was loaded successfully, in which
+  *   case @load_addr and @load_size are assigned accordingly
+  * * %EFI_NOT_FOUND if no LoadFile2 protocol exists on the initrd device path
++ *   or if the firmware provides LoadFile2 but can't find a file to load
+  * * %EFI_INVALID_PARAMETER if load_addr == NULL or load_size == NULL
+  * * %EFI_OUT_OF_RESOURCES if memory allocation failed
+  * * %EFI_LOAD_ERROR in all other cases
+@@ -599,7 +600,14 @@ efi_status_t efi_load_initrd_dev_path(unsigned long *load_addr,
+ 				(void *)initrd_addr);
+ 	if (status != EFI_SUCCESS) {
+ 		efi_free(initrd_size, initrd_addr);
+-		return EFI_LOAD_ERROR;
++		/*
++		 * Some firmware implementations might install the EFI
++		 * protocol without checking the file is present and return
++		 * EFI_NOT_FOUND when trying to load the file.
++		 * If that's the case, allow the cmdline defined initrd to
++		 * load.
++		 */
++		return status == EFI_NOT_FOUND ? status : EFI_LOAD_ERROR;
  	}
  
- 	for_each_cpu_wrap(cpu, cpus, target) {
--		if (smt) {
--			i = select_idle_core(p, cpu, cpus, &idle_cpu);
--			if ((unsigned)i < nr_cpumask_bits)
--				return i;
--
--		} else {
--			i = __select_idle_cpu(p, cpu, cpus, &idle_cpu);
--			if ((unsigned)i < nr_cpumask_bits) {
--				idle_cpu = i;
--				break;
--			}
-+		i = select_idle_core(p, cpu, cpus, &idle_cpu);
-+		if ((unsigned)i < nr_cpumask_bits) {
-+			idle_cpu = i;
-+			break;
- 		}
- 
- 		if (loops >= nr)
-@@ -6188,10 +6115,7 @@ static int select_idle_cpu(struct task_s
- 		loops++;
- 	}
- 
--	if (smt)
--		set_idle_cores(this, false);
--
--	if (sched_feat(SIS_PROP) && !smt) {
-+	if (sched_feat(SIS_PROP)) {
- 		time = cpu_clock(this) - time;
- 		time = div_u64(time, loops);
- 		update_avg(&this_sd->avg_scan_cost, time);
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -428,7 +428,6 @@ static void put_prev_task_idle(struct rq
- 
- static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool first)
- {
--	update_idle_core(rq);
- 	schedstat_inc(rq->sched_goidle);
- }
- 
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1099,19 +1099,6 @@ static inline bool is_migration_disabled
- #endif
- }
- 
--#ifdef CONFIG_SCHED_SMT
--extern void __update_idle_core(struct rq *rq);
--
--static inline void update_idle_core(struct rq *rq)
--{
--	if (static_branch_unlikely(&sched_smt_present))
--		__update_idle_core(rq);
--}
--
--#else
--static inline void update_idle_core(struct rq *rq) { }
--#endif
--
- DECLARE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
- 
- #define cpu_rq(cpu)		(&per_cpu(runqueues, (cpu)))
-
+ 	*load_addr = initrd_addr;
+-- 
+2.29.2
 
