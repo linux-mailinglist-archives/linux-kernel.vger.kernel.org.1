@@ -2,84 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6882D9540
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5AD2D9543
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404957AbgLNJ1t convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Dec 2020 04:27:49 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:33302 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbgLNJ10 (ORCPT
+        id S2393102AbgLNJ3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 04:29:47 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:44593 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726289AbgLNJ3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 04:27:26 -0500
-Received: by mail-lf1-f68.google.com with SMTP id l11so28424489lfg.0;
-        Mon, 14 Dec 2020 01:27:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jo/1+FyF+IsssW4QTtp7VT7/1NWdibvPFQ9XrhExF8Q=;
-        b=EIQFkoMlAwqzxgVCMHCJRMYpOs+eNEArjJyDPOfeyNoQlyrqX1hFDcc40c1g18XWcJ
-         7T9qVgyaBRibf38ie7LeIK8r4KQjHJD4XYuATJvLL08UEgbQoqFwA71YV5hi5DEupkND
-         PSbd1PBG1MkopkOXULersDScbCs1ROeA+k1xSfi3iXhHRtDrztH+khVtpkyXy1Cz6kDA
-         yst01+hcDXyTZuYf9bg7sMceWRURLVqmbgDuHvKER/vPgxNqBNNts/fhHgYgOkzR7Uk8
-         WycOShHi4NRYsYjaR26fXZOY7dR1gbPXR5VUgCQga2dmZwHVNNkp1c2lO4DLd/N00zuK
-         e9ZA==
-X-Gm-Message-State: AOAM533O3tQ4STwH0QoRpaWbbFNEkGwAbWY7h7l+JTYGogoGxb9Vo4gp
-        2/cGVzc3HcKMiKKUA9lsEFZaI8IW8RN63w==
-X-Google-Smtp-Source: ABdhPJwhCq7dLa/57hd23oCtY9WoqeiiPRGrS7IB7zA9wbypY1uS1GMwwCSIqJuRwxyhq7PRgw34Gg==
-X-Received: by 2002:a2e:b8d3:: with SMTP id s19mr10152363ljp.35.1607938003377;
-        Mon, 14 Dec 2020 01:26:43 -0800 (PST)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id f2sm2249967ljc.118.2020.12.14.01.26.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Dec 2020 01:26:42 -0800 (PST)
-Received: by mail-lf1-f46.google.com with SMTP id x20so8852902lfe.12;
-        Mon, 14 Dec 2020 01:26:42 -0800 (PST)
-X-Received: by 2002:a2e:6e06:: with SMTP id j6mr9929044ljc.282.1607938002616;
- Mon, 14 Dec 2020 01:26:42 -0800 (PST)
+        Mon, 14 Dec 2020 04:29:40 -0500
+X-UUID: 6a9b6ff6c833496cabda8d49bc852a5c-20201214
+X-UUID: 6a9b6ff6c833496cabda8d49bc852a5c-20201214
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <lecopzer.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1082158233; Mon, 14 Dec 2020 17:28:52 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 14 Dec 2020 17:28:50 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 14 Dec 2020 17:28:50 +0800
+From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
+To:     <mark.rutland@arm.com>
+CC:     <catalin.marinas@arm.com>, <lecopzer.chen@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
+        <will@kernel.org>, <yj.chiang@mediatek.com>
+Subject: Re: [PATCH] arm64: Kconfig: Add SYS_SUPPORTS_APM_EMULATION
+Date:   Mon, 14 Dec 2020 17:28:51 +0800
+Message-ID: <20201214092851.16741-1-lecopzer.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20201125103637.GC70906@C02TD0UTHF1T.local>
+References: <20201125103637.GC70906@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-References: <20201202135409.13683-1-andre.przywara@arm.com>
- <20201202135409.13683-3-andre.przywara@arm.com> <70df5b048c81485053df91a3e53dc840487677e3.camel@aosc.io>
-In-Reply-To: <70df5b048c81485053df91a3e53dc840487677e3.camel@aosc.io>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Mon, 14 Dec 2020 17:26:31 +0800
-X-Gmail-Original-Message-ID: <CAGb2v65N9nn52tpgH3Jr_ndYO515bggvg+a3ON6ji12oZ-nX8Q@mail.gmail.com>
-Message-ID: <CAGb2v65N9nn52tpgH3Jr_ndYO515bggvg+a3ON6ji12oZ-nX8Q@mail.gmail.com>
-Subject: Re: [PATCH 2/8] pinctrl: sunxi: Add support for the Allwinner H616
- pin controller
-To:     Icenowy Zheng <icenowy@aosc.io>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.xyz>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yangtao Li <frank@allwinnertech.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 12:28 AM Icenowy Zheng <icenowy@aosc.io> wrote:
->
-> 在 2020-12-02星期三的 13:54 +0000，Andre Przywara写道：
-> > Port A is used for an internal connection to some analogue circuitry
-> > which looks like an AC200 IP (as in the H6), though this is not
-> > mentioned in the manual.
->
-> When developing for V831, I found that PIO controller in H616 (and
-> V831) has the functionality of selecting IO voltage of PF bank (needed
-> to handle UHS-I).
->
-> How should we model this in PIO driver?
+Hi,
 
-I suppose we could expose it as a regulator for the mmc node to consume
-as its vqmmc-supply?
+Could any maintainer help review this?
 
-ChenYu
+Thanks a lot for your help,
+
+BRs,
+Lecopzer
+
+
+> Although most of modern devices use ACPI, there still has combination
+> of APM + ARM64.
+> 
+> In order to select CONFIG_APM_EMULATION, make SYS_SUPPORTS_APM_EMULATION
+> default is y if ACPI isn't configured.
+> 
+> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> Suggested-by: YJ Chiang <yj.chiang@mediatek.com>
+> ---
+>  arch/arm64/Kconfig | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 1515f6f153a0..5e9e3694015a 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -260,6 +260,9 @@ config NO_IOPORT_MAP
+>  config STACKTRACE_SUPPORT
+>  	def_bool y
+>  
+> +config SYS_SUPPORTS_APM_EMULATION
+> +	def_bool y if !ACPI
+> +
+>  config ILLEGAL_POINTER_VALUE
+>  	hex
+>  	default 0xdead000000000000
+
+
+
