@@ -2,113 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAA82DA157
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9742DA159
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503110AbgLNUSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:18:50 -0500
-Received: from ms.lwn.net ([45.79.88.28]:53068 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502877AbgLNUSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:18:37 -0500
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id E512F2C1;
-        Mon, 14 Dec 2020 20:17:43 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E512F2C1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1607977064; bh=QLI/egtl/FomJoWgApEqMIP5NgPgYuRFAI2eyPIlVK0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=G04smzzbupfuSYIT2doemW6+DddWm9fDKYjHMZtEeMr9KDgGFK0lTotg4pTOk+BWu
-         oNgJevOGttLeWPYQR3bJF9KDeHeds5C2hEJ2cgFA2pnvxk9D1wZcfLr1DZ08dscK5B
-         KMTeb6zyn2QTnHpGLjuAGHFmfQ8AOHbkQDRbyzw051iM5Tber7RUHjMHWFALFC+5/v
-         hiUMdf+V+rgrgOsEhEk5pTilg/s6fCw5soQwyduZQhlUI0jC5EcY8nO0NoqQwMZuqk
-         0orElOBUnGFdl0+urICeEO4AVen3BQxCEfsN76wwMAkBx6cx8PpqA4c+9zq/kjEbl1
-         9k0vdUPARrUGQ==
-Date:   Mon, 14 Dec 2020 13:17:42 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Wang Qing <wangqing@vivo.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        linux-doc@vger.kernel.org
-Subject: Re: linux-next: build warning after merge of the jc_docs tree
-Message-ID: <20201214131742.20d2252f@lwn.net>
-In-Reply-To: <20201215065143.65ccf365@canb.auug.org.au>
-References: <20201116170303.0d457d04@canb.auug.org.au>
-        <20201215065143.65ccf365@canb.auug.org.au>
-Organization: LWN.net
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+        id S2502924AbgLNUVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:21:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727855AbgLNUVG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 15:21:06 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C70C0613D3;
+        Mon, 14 Dec 2020 12:20:26 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id jx16so24341671ejb.10;
+        Mon, 14 Dec 2020 12:20:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=CAtJX87HqXXu8z9DPu1gGW2L6L0r7ONQKKLzHO1fhlQ=;
+        b=C+fe6fZP1TyzKBNGaW3LtoCox4rIcmYQOaU/AZ3k/EnlwAdE11YbebbqXWTORnxWod
+         5ahtEiayO26PSzWmOLPkl32Lyt4MYMW5/LiKiYnUhstsO3Kd2lKOLmnulPwGxoz7ON3j
+         1n9GklV8ykXWFVRfOz0a61IjGRBzKJI5XwMbng3GGO9s+FuCIUH2YLlTL7ODTnlW5NT1
+         Cmp5U+59K9dGVQpqmWRidQZ4sKScemDOzTE5ry5YzO5aiNPF+dWs0OSA7EicWhOqi5EA
+         5akAIGeuk10AatEsiTGYiCsA2ponvV8+ey46LhE1SHYTGuNgVHEt+BQSfo9q6ZRUecSB
+         iiRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=CAtJX87HqXXu8z9DPu1gGW2L6L0r7ONQKKLzHO1fhlQ=;
+        b=fof6hqXvzj9rDxiXo/atKyQi61Tx0dt/vQRqW7iC3nEMLkz6tXJZ5L3PulExPhMgl+
+         0OneqTAW+A8oJlFYZ4ZrVGY58hy+5YME9IN+NtBBnMeL98KJOQznwEPffftNRAmKW01/
+         pEA2aQiczKzXAr0CQGmGr934gtel4wFNR91dIE4ir+Lzr2drj3piCqpLBHc2JjkCXiEQ
+         S3shSJkqA5BaBm1TpO0/fiP0V45aE4LgBjOP1nwxBKVPCFtf3D2xvYPaBWn9J6JEDfhc
+         Bu5L85QfgtO6gMHniSDW0N7LCwFuyxhseDnxg+aEVdPTyQFntX4bPAJdOdaEJlzfSeUH
+         cYJQ==
+X-Gm-Message-State: AOAM532dMSvg7i8DJugdDEHp4p5GbGSF32X73J563UXC4XUzOgirH68M
+        qbG0AxPauaXNMBJ2yVUchXw=
+X-Google-Smtp-Source: ABdhPJx4TEOVB6AI5rxHDmYP9CjlKqOJ47Mfj2ukov49ocF0SB7yMBvtbk4NqrtVu+OtS/Wc+uIRvA==
+X-Received: by 2002:a17:906:2818:: with SMTP id r24mr23244078ejc.100.1607977224826;
+        Mon, 14 Dec 2020 12:20:24 -0800 (PST)
+Received: from localhost.localdomain (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.gmail.com with ESMTPSA id r7sm9334634edh.86.2020.12.14.12.20.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 12:20:24 -0800 (PST)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org, rostedt@goodmis.org, joe@perches.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/6] Several changes for the UPIU trace
+Date:   Mon, 14 Dec 2020 21:20:08 +0100
+Message-Id: <20201214202014.13835-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 06:51:43 +1100
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+From: Bean Huo <beanhuo@micron.com>
 
-> On Mon, 16 Nov 2020 17:03:03 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > After merging the jc_docs tree, today's linux-next build (htmldocs)
-> > produced this warning:
-> >=20
-> > Documentation/translations/zh_CN/filesystems/tmpfs.rst:5: WARNING: unde=
-fined label: tmpfs_index (if the link has no caption the label must precede=
- a section header)
-> >=20
-> > Introduced by commit
-> >=20
-> >   09028e60fcea ("doc: zh_CN: add translatation for tmpfs") =20
->=20
-> I am still getting this warning.
+Changelog:
 
-OK, enough of that; I've just tacked on the following patch to address
-this problem, thanks for the report.
+V2--V3:
+  1. Fix a typo in patch 1/6 (Reported-by: Joe Perches <joe@perches.com>)
 
-Thanks,
+V1--V2:
+  1. Convert __get_str(str) to __print_symbolic()
+  2. Add new patches 1/6, 2/6,3/6
+  3. Use __print_symbolic() in patch 6/6
 
-jon
+Bean Huo (6):
+  scsi: ufs: Remove stringize operator '#' restriction
+  scsi: ufs: Use __print_symbolic() for UFS trace string print
+  scsi: ufs: Don't call trace_ufshcd_upiu() in case trace poit is
+    disabled
+  scsi: ufs: Distinguish between query REQ and query RSP in query trace
+  scsi: ufs: Distinguish between TM request UPIU and response UPIU in TM
+    UPIU trace
+  scsi: ufs: Make UPIU trace easier differentiate among CDB, OSF, and TM
 
-=46rom 47e44ed01434e51e2e42b188482d837c01e5d16e Mon Sep 17 00:00:00 2001
-From: Jonathan Corbet <corbet@lwn.net>
-Date: Mon, 14 Dec 2020 13:14:22 -0700
-Subject: [PATCH] docs: fix broken cross reference in translations/zh_CN
+ drivers/scsi/ufs/ufs.h     |  17 ++++++
+ drivers/scsi/ufs/ufshcd.c  |  72 ++++++++++++++++---------
+ include/trace/events/ufs.h | 108 +++++++++++++++++++++++--------------
+ 3 files changed, 131 insertions(+), 66 deletions(-)
 
-Commit 09028e60fcea ("doc: zh_CN: add translatation for tmpfs") introduced
-a cross reference without adding the appropriate target tag, leading to
-this docs-build warning:
-
-  Documentation/translations/zh_CN/filesystems/tmpfs.rst:5: WARNING: undefi=
-ned label: tmpfs_index (if the link has no caption the label must precede a=
- section header)
-
-With automarkup, we don't actually need an explicit reference here at all,
-so just take it out.
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: 09028e60fcea ("doc: zh_CN: add translatation for tmpfs")
-Signed-off-by: Jonathan Corbet <corbet@lwn.net>
----
- Documentation/translations/zh_CN/filesystems/tmpfs.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/translations/zh_CN/filesystems/tmpfs.rst b/Docum=
-entation/translations/zh_CN/filesystems/tmpfs.rst
-index cf3ccab20e50..6fd9d83b2db5 100644
---- a/Documentation/translations/zh_CN/filesystems/tmpfs.rst
-+++ b/Documentation/translations/zh_CN/filesystems/tmpfs.rst
-@@ -2,7 +2,7 @@
-=20
- .. include:: ../disclaimer-zh_CN.rst
-=20
--:Original: :ref:`Documentation/filesystems/tmpfs.rst <tmpfs_index>`
-+:Original: Documentation/filesystems/tmpfs.rst
-=20
- translated by Wang Qing<wangqing@vivo.com>
-=20
---=20
-2.28.0
+-- 
+2.17.1
 
