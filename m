@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111812DA400
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B326E2DA3FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441071AbgLNXNZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Dec 2020 18:13:25 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:57433 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2408943AbgLNXNS (ORCPT
+        id S2408942AbgLNXNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 18:13:17 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:39697 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408924AbgLNXNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 18:13:18 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-212--YJV7hHZP5qYgI2RziD5Pg-1; Mon, 14 Dec 2020 23:11:39 +0000
-X-MC-Unique: -YJV7hHZP5qYgI2RziD5Pg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 14 Dec 2020 23:11:40 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 14 Dec 2020 23:11:40 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Bean Huo' <huobean@gmail.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "joe@perches.com" <joe@perches.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 1/6] scsi: ufs: Remove stringize operator '#'
- restriction
-Thread-Topic: [PATCH v3 1/6] scsi: ufs: Remove stringize operator '#'
- restriction
-Thread-Index: AQHW0lb4M+N3d8cRYUCXs7DyCMlcaqn3Nw+g
-Date:   Mon, 14 Dec 2020 23:11:40 +0000
-Message-ID: <977f3ea155644cd89bc83f2e9dcf281e@AcuMS.aculab.com>
-References: <20201214202014.13835-1-huobean@gmail.com>
- <20201214202014.13835-2-huobean@gmail.com>
-In-Reply-To: <20201214202014.13835-2-huobean@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 14 Dec 2020 18:13:14 -0500
+Received: by mail-oi1-f193.google.com with SMTP id w124so18074441oia.6;
+        Mon, 14 Dec 2020 15:12:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xEzETSLwFb14jsmrw0FlyX7cWx9XxZAaCfC6Tl6Q1gM=;
+        b=OLh66mHEF4OxGlq+ZYHC/k28Wvc1y2sgqQe5j7jrkHI+1/qSYJ5/h44hwVCEJypJbh
+         NUGToZGcNfyO/tX1yDZYdG+xgK8xzy+ljp+3BZQoeoCiD3SH5NUWciWMo830U6gZaTa7
+         3fVem+h7PLlgXYPnq6GKmbKkdHhr9kV/HMy37WE+gT771C1dg9+mYC2EnHrdFOvwclGn
+         O589F7OrlmUnJOlKxUpfYR77QZhGlxQ4QVRig/Qoa0otv7mqhiI6NxZeu1YTa70skPHR
+         ggRO3lTWyX+U0k1h6A1Be1Uxt4qyaYBvqn3dlk6waEHd8lE1o3rVm9KeZXKAFJQ62RYr
+         qYVQ==
+X-Gm-Message-State: AOAM5302ztfkPAZLaNTHWoWABa61qm7EIiDwPeEhFstoeq92XmDe87kW
+        owT9dB2w4M/v1tUP3DT/aw==
+X-Google-Smtp-Source: ABdhPJzA/b4BevvSdW2BPBsRNI6l4NaGaCBla97jZ3xzwyR9BVSTVxGIWmfwoPP1/8/7Q5HiUv26Hw==
+X-Received: by 2002:aca:3554:: with SMTP id c81mr15514729oia.23.1607987553638;
+        Mon, 14 Dec 2020 15:12:33 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i82sm4612225oif.33.2020.12.14.15.12.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 15:12:32 -0800 (PST)
+Received: (nullmailer pid 2557998 invoked by uid 1000);
+        Mon, 14 Dec 2020 23:12:31 -0000
+Date:   Mon, 14 Dec 2020 17:12:31 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-sunxi@googlegroups.com,
+        linux-media@vger.kernel.org, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        kevin.lhopital@hotmail.com,
+        Helen Koike <helen.koike@collabora.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        devicetree@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Yong Deng <yong.deng@magewell.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        devel@driverdev.osuosl.org
+Subject: Re: [PATCH v3 06/15] dt-bindings: media: sun6i-a31-csi: Add MIPI
+ CSI-2 input port
+Message-ID: <20201214231231.GA2555279@robh.at.kernel.org>
+References: <20201211155708.154710-1-paul.kocialkowski@bootlin.com>
+ <20201211155708.154710-7-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211155708.154710-7-paul.kocialkowski@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <huobean@gmail.com>
-> Sent: 14 December 2020 20:20
+On Fri, 11 Dec 2020 16:56:59 +0100, Paul Kocialkowski wrote:
+> The A31 CSI controller supports two distinct input interfaces:
+> parallel and an external MIPI CSI-2 bridge. The parallel interface
+> is often connected to a set of hardware pins while the MIPI CSI-2
+> bridge is an internal FIFO-ish link. As a result, these two inputs
+> are distinguished as two different ports.
 > 
-> From: Bean Huo <beanhuo@micron.com>
+> Note that only one of the two may be present on a controller instance.
+> For example, the V3s has one controller dedicated to MIPI-CSI2 and one
+> dedicated to parallel.
 > 
-> Current EM macro definition, we use stringize operator '#', which turns
-> the argument it precedes into a quoted string. Thus requires the symbol
-> of __print_symbolic() should be the string corresponding to the name of
-> the enum.
+> Update the binding with an explicit ports node that holds two distinct
+> port nodes: one for parallel input and one for MIPI CSI-2.
 > 
-> However, we have other cases, the symbol and enum name are not the same,
-> we can redefine EM/EMe, but there will introduce some redundant codes.
-> This patch is to remove this restriction, let others reuse the current
-> EM/EMe definition.
+> This is backward-compatible with the single-port approach that was
+> previously taken for representing the parallel interface port, which
+> stays enumerated as fwnode port 0.
 > 
-> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> Note that additional ports may be added in the future, especially to
+> support feeding the CSI controller's output to the ISP.
+> 
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 > ---
->  include/trace/events/ufs.h | 40 +++++++++++++++++++-------------------
->  1 file changed, 20 insertions(+), 20 deletions(-)
+>  .../media/allwinner,sun6i-a31-csi.yaml        | 88 ++++++++++++++++---
+>  1 file changed, 75 insertions(+), 13 deletions(-)
 > 
-> diff --git a/include/trace/events/ufs.h b/include/trace/events/ufs.h
-> index 0bd54a184391..fa755394bc0f 100644
-> --- a/include/trace/events/ufs.h
-> +++ b/include/trace/events/ufs.h
-> @@ -20,28 +20,28 @@
-..
-> +#define UFS_LINK_STATES						\
-> +	EM(UIC_LINK_OFF_STATE,		"UIC_LINK_OFF_STATE")		\
-> +	EM(UIC_LINK_ACTIVE_STATE,	"UIC_LINK_ACTIVE_STATE")	\
-> +	EMe(UIC_LINK_HIBERN8_STATE,	"UIC_LINK_HIBERN8_STATE")
 
-If you make EM a parameter to UFS_LINK_STATES then the caller
-can pass in the name of a #define that does the required expansion.
-The caller can also add in any required terminator after the last entry.
-For an enum (which doesn't want a , at the end) just add a dummy entry.
-You often want a constant for the number of items anyway.
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-	David
+Though, it may need updating to use video-interfaces and graph 
+schemas[1] depending what lands first.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+[1] https://lore.kernel.org/linux-devicetree/20201210211625.3070388-4-robh@kernel.org/
