@@ -2,100 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B01F2D9E38
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C512D9E61
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440522AbgLNRvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:51:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439274AbgLNRvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:51:01 -0500
-Date:   Mon, 14 Dec 2020 17:50:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607968220;
-        bh=7c3uSBpWEkrGyLpkCUlDnIX7pZbHL7FF3A2/sYOnzDo=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GX0fbQrYdnWDEYLpMP3jiWLRtIOOsYgtpKSu6yRM+pJCcIH+FjzS9ask4+GRjrpQm
-         vkp46yljFoJQIui6UqV8RfkTeHcu6wzxYgXHKIQ/3o3ZLOYjmPeszYEBKGvBn4RApP
-         NYtJ+bibI0AiaE6nRP/4CWo0GBPClDFZBfnn8s2qb0MAi9Ga1tcGSRX9KZyUJbxiWE
-         lL6X1hc15h2A37GjepLfSflyzPimNZlF0NjNG7F+HOjeaYSiCDxXsq2dWiBuKndVGO
-         rTRaY0eLW7M8UsOiYnZCeCu6AdWVDwVGeNljzNEl9N3ZP9qkoqA3qKCI1pK3YXKPZN
-         OX7F6tJJhKANA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Subject: Re: [PATCH v4 1/2] Partially revert ASoC: qcom: Fix enabling BCLK
- and LRCLK in LPAIF invalid state
-Message-ID: <20201214175009.GD4880@sirena.org.uk>
-References: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
- <1606539559-4277-2-git-send-email-srivasam@codeaurora.org>
- <20201130124617.GC4756@sirena.org.uk>
- <966993b7-4720-bdd2-cf4d-cf5a7c11a0c1@codeaurora.org>
- <20201201175135.GO5239@sirena.org.uk>
- <89456f01-aa02-7a7d-a47b-bf1f26e66d4c@codeaurora.org>
+        id S2408738AbgLNSAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 13:00:07 -0500
+Received: from lpdvacalvio01.broadcom.com ([192.19.229.182]:36328 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2408014AbgLNR7m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:59:42 -0500
+Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id 2703080F3;
+        Mon, 14 Dec 2020 09:50:25 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 2703080F3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1607968225;
+        bh=FiZzrokXj/Wcz9DvgJNMcsRGqr2Epz7xd7OEyplP+kI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=YhwbyxPDbVluUt0jw+MkgNcmo8BJzWqtLGGnZgKS8TIbpcS+9UhDOT+P3MrSA/jOi
+         uJme6kd9L5o0Xeo2F5RdoAy4z4RST2ZeubkzBvXjvNqdaLfFXhIpwZ3oNKhJRBY7Cg
+         oSWJZhyuJDKsnIQa0NlIs2z2uRNqeiP3BliYOna4=
+Subject: Re: [PATCH 2/2] hwrng: iproc-rng200: Move enable/disable in separate
+ function
+To:     matthias.bgg@kernel.org, mpm@selenic.com,
+        herbert@gondor.apana.org.au, rjui@broadcom.com,
+        sbranden@broadcom.com, f.fainelli@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Julia.Lawall@inria.fr,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, nsaenzjulienne@suse.de,
+        linux-crypto@vger.kernel.org, Matthias Brugger <mbrugger@suse.com>
+References: <20201214160454.22769-1-matthias.bgg@kernel.org>
+ <20201214160454.22769-2-matthias.bgg@kernel.org>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <9f87ad0f-b281-33f4-b81d-e62a37d536fc@broadcom.com>
+Date:   Mon, 14 Dec 2020 09:50:24 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/3yNEOqWowh/8j+e"
-Content-Disposition: inline
-In-Reply-To: <89456f01-aa02-7a7d-a47b-bf1f26e66d4c@codeaurora.org>
-X-Cookie: Everything you know is wrong!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201214160454.22769-2-matthias.bgg@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-CA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---/3yNEOqWowh/8j+e
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 14, 2020 at 06:13:22PM +0530, Srinivasa Rao Mandadapu wrote:
-> On 12/1/2020 11:21 PM, Mark Brown wrote:
+On 2020-12-14 8:04 a.m., matthias.bgg@kernel.org wrote:
+> From: Matthias Brugger <mbrugger@suse.com>
+>
+> We are calling the same code for enable and disable the block in various
+> parts of the driver. Put that code into a new function to reduce code
+> duplication.
+Patch needs to be regenerated after most of PATCH 1 dropped.
+>
+> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+>
+> ---
+>
+>  drivers/char/hw_random/iproc-rng200.c | 37 ++++++++++++---------------
+>  1 file changed, 17 insertions(+), 20 deletions(-)
+>
+> diff --git a/drivers/char/hw_random/iproc-rng200.c b/drivers/char/hw_random/iproc-rng200.c
+> index e106ce3c0146..3367b26085e8 100644
+> --- a/drivers/char/hw_random/iproc-rng200.c
+> +++ b/drivers/char/hw_random/iproc-rng200.c
+> @@ -53,15 +53,26 @@ struct iproc_rng200_dev {
+>  
+>  #define to_rng_priv(rng)	container_of(rng, struct iproc_rng200_dev, rng)
+>  
+> -static void iproc_rng200_restart(void __iomem *rng_base)
+> +static void iproc_rng200_enable(void __iomem *rng_base, bool enable)
+>  {
+>  	uint32_t val;
+>  
+> -	/* Disable RBG */
+>  	val = ioread32(rng_base + RNG_CTRL_OFFSET);
+>  	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
+> -	val &= ~RNG_CTRL_RNG_RBGEN_ENABLE;
+> +
+> +	if (enable)
+> +		val |= RNG_CTRL_RNG_RBGEN_ENABLE;
+> +	else
+> +		val &= ~RNG_CTRL_RNG_RBGEN_ENABLE;
+> +
+>  	iowrite32(val, rng_base + RNG_CTRL_OFFSET);
+> +}
+> +
+> +static void iproc_rng200_restart(void __iomem *rng_base)
+> +{
+> +	uint32_t val;
+> +
+> +	iproc_rng200_enable(rng_base, false);
+>  
+>  	/* Clear all interrupt status */
+>  	iowrite32(0xFFFFFFFFUL, rng_base + RNG_INT_STATUS_OFFSET);
+> @@ -83,11 +94,7 @@ static void iproc_rng200_restart(void __iomem *rng_base)
+>  	val &= ~RBG_SOFT_RESET;
+>  	iowrite32(val, rng_base + RBG_SOFT_RESET_OFFSET);
+>  
+> -	/* Enable RBG */
+> -	val = ioread32(rng_base + RNG_CTRL_OFFSET);
+> -	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
+> -	val |= RNG_CTRL_RNG_RBGEN_ENABLE;
+> -	iowrite32(val, rng_base + RNG_CTRL_OFFSET);
+> +	iproc_rng200_enable(rng_base, true);
+>  }
+>  
+>  static int iproc_rng200_read(struct hwrng *rng, void *buf, size_t max,
+> @@ -154,13 +161,8 @@ static int iproc_rng200_read(struct hwrng *rng, void *buf, size_t max,
+>  static int iproc_rng200_init(struct hwrng *rng)
+>  {
+>  	struct iproc_rng200_dev *priv = to_rng_priv(rng);
+> -	uint32_t val;
+>  
+> -	/* Setup RNG. */
+> -	val = ioread32(priv->base + RNG_CTRL_OFFSET);
+> -	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
+> -	val |= RNG_CTRL_RNG_RBGEN_ENABLE;
+> -	iowrite32(val, priv->base + RNG_CTRL_OFFSET);
+> +	iproc_rng200_enable(priv->base, true);
+>  
+>  	return 0;
+>  }
+> @@ -168,13 +170,8 @@ static int iproc_rng200_init(struct hwrng *rng)
+>  static void iproc_rng200_cleanup(struct hwrng *rng)
+>  {
+>  	struct iproc_rng200_dev *priv = to_rng_priv(rng);
+> -	uint32_t val;
+>  
+> -	/* Disable RNG hardware */
+> -	val = ioread32(priv->base + RNG_CTRL_OFFSET);
+> -	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
+> -	val &= ~RNG_CTRL_RNG_RBGEN_ENABLE;
+> -	iowrite32(val, priv->base + RNG_CTRL_OFFSET);
+> +	iproc_rng200_enable(priv->base, false);
+>  }
+>  
+>  static int iproc_rng200_probe(struct platform_device *pdev)
 
-> > > Later from review comments by Srinivas kandagatla, I got to know
-> > >=20
-> > > about regcache sync APIs, which can be used=A0 to sync cache after re=
-sume and
-> > >=20
-> > > HW registers can be updated with=A0 original values. With that playba=
-ck can be
-> > > continued.
-
-> > > So is the reason, I am reverting partial changes in the commit b18249=
-68221c.
-
-> > I don't understand why a fix for the register cache not being in sync
-> > with the hardware doesn't involve syncing the register cache with the
-> > hardware.
-
-> I am sorry I couldn't understand your point. Could you please elaborate y=
-our
-> query?
-
-Your changelog talks about syncing the cache but neither the driver nor
-your change actually does that.
-
---/3yNEOqWowh/8j+e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/XpdAACgkQJNaLcl1U
-h9D/Zwf/fjn9hyBot5AFRtqGND9G8HLpAtWHKW70cPH+wBsFuqB0CLI8tZbBwh0q
-kWZwfm8x8OxC44uZBFactuNZmp1+PgJ6Gj9f7wUuFBAYWUAIMjERH3qmIdBnNKwk
-iVor+tLIrpGRfncjfL0tK7Xxd6YPQx0G7pDkxMHbP7sg6SS094m2CtHFo+jPRtec
-AKRcvjIy7xw561ot5vqjMz62CTazM87RuqnVJsE81XcST4slkJLD9IUOSWTLDivK
-UHNg/3hc3fAUBHwvPC+0t9suBwSMkifi9hJuTGbhPTnPILmRF9GJ0l4+PCqpnrVn
-v5oEVRw7ErT3avD1VlAlKlN49wz43Q==
-=jFTq
------END PGP SIGNATURE-----
-
---/3yNEOqWowh/8j+e--
