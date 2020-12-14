@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F86F2D9E34
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:53:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B01F2D9E38
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440507AbgLNRuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:50:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439430AbgLNRtZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:49:25 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1796FC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:48:45 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id r14so17315551wrn.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:48:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x6MJJWYnbLurSucwkvQN40DA7gXHouhO+MnPaJhZ0uE=;
-        b=xOa4385hO46H8KPHEQqJaGVXnb3ulUEVMV4t2wWE2U8iWnG6Op7c7NU7kWaewyHCfF
-         rnsNTQb1fwMR9GX17FCUdLIzkFr3QS+MpdAco18pwrXjRdXTI74QWiz4LGJIoGFKEeRw
-         bcfJwsxxGfygKaja4+IypDw+oj92BiEL2ZS04/D9CiIBlPSAASo52uSMPHXG6c5q6BTG
-         hOBK9qSSqDZQuwbHc9vBqwlNFAQUdqYwNXWfcBMGmC4aqKrvvOVdx3FdBH4K1k4ZLe/O
-         eb7BTDna7o2qRJMv3QcogwO0WTqhADszeufXdd7pHYc+X+YTrgDHyKo7pu+dx78XiZ30
-         2Bqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x6MJJWYnbLurSucwkvQN40DA7gXHouhO+MnPaJhZ0uE=;
-        b=mxK+jxDpc4PvvedVHcOw2VDOVfb3FsqC82yDzlrhbI5Yggl9rFaUmuhmuBVd10FnFd
-         5A+3TBihguCXg1JSTlbDISiLYNxcZt3eD7xnQr0aUBiQuopQeR+Vd8srlOVKYrbyjOKu
-         JOlok7Zppjf79rxtJ8OWOYuZtjDjD9hWtEdl7alo4Zv0EKkk0T5SAwHrv8mQKTJY404T
-         bQW17I4+qyVTQCVZ5k/AqLRX/enOcALMeAoSf2sZkl4R+45S5RNTjyMFFWrA6KaauC59
-         RTHVMfVm8CLytJOwMOYTMxFy/mG+VMqNvLL0+AVnmGwzpgdNi312Hc5rGI1vp8ciEgO+
-         GtTA==
-X-Gm-Message-State: AOAM530DBejbE8WuH81Hjt68S6AnZSekMRHGjDwznKGfzYrbbcAuuf1Z
-        qFYIFKTfRzQogIeaETANXLYZIw==
-X-Google-Smtp-Source: ABdhPJzTrk3umS/6GpkJSSULoPX1cp5IeLfFpImjzWrU7zYs2OZfyO0b2SEi/enC5dkKPppRfo4dwQ==
-X-Received: by 2002:adf:a3ca:: with SMTP id m10mr30303663wrb.228.1607968123791;
-        Mon, 14 Dec 2020 09:48:43 -0800 (PST)
-Received: from apalos.home (athedsl-4484548.home.otenet.gr. [94.71.57.204])
-        by smtp.gmail.com with ESMTPSA id q73sm33043980wme.44.2020.12.14.09.48.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 09:48:43 -0800 (PST)
-Date:   Mon, 14 Dec 2020 19:48:40 +0200
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Heinrich Schuchardt <xypron.glpk@gmx.de>
-Cc:     ard.biesheuvel@arm.com, Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Ingo Molnar <mingo@kernel.org>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] efi/libstub: Allow EFI_NOT_FOUND on LOAD_FILE2_PROTOCOL
- calls for initrd
-Message-ID: <X9eleMqn6Ron/myG@apalos.home>
-References: <20201214170122.4569-1-ilias.apalodimas@linaro.org>
- <aa66cc54-f987-cdcd-05a7-4b63aa8b422d@gmx.de>
+        id S2440522AbgLNRvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:51:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439274AbgLNRvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:51:01 -0500
+Date:   Mon, 14 Dec 2020 17:50:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607968220;
+        bh=7c3uSBpWEkrGyLpkCUlDnIX7pZbHL7FF3A2/sYOnzDo=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GX0fbQrYdnWDEYLpMP3jiWLRtIOOsYgtpKSu6yRM+pJCcIH+FjzS9ask4+GRjrpQm
+         vkp46yljFoJQIui6UqV8RfkTeHcu6wzxYgXHKIQ/3o3ZLOYjmPeszYEBKGvBn4RApP
+         NYtJ+bibI0AiaE6nRP/4CWo0GBPClDFZBfnn8s2qb0MAi9Ga1tcGSRX9KZyUJbxiWE
+         lL6X1hc15h2A37GjepLfSflyzPimNZlF0NjNG7F+HOjeaYSiCDxXsq2dWiBuKndVGO
+         rTRaY0eLW7M8UsOiYnZCeCu6AdWVDwVGeNljzNEl9N3ZP9qkoqA3qKCI1pK3YXKPZN
+         OX7F6tJJhKANA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Subject: Re: [PATCH v4 1/2] Partially revert ASoC: qcom: Fix enabling BCLK
+ and LRCLK in LPAIF invalid state
+Message-ID: <20201214175009.GD4880@sirena.org.uk>
+References: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
+ <1606539559-4277-2-git-send-email-srivasam@codeaurora.org>
+ <20201130124617.GC4756@sirena.org.uk>
+ <966993b7-4720-bdd2-cf4d-cf5a7c11a0c1@codeaurora.org>
+ <20201201175135.GO5239@sirena.org.uk>
+ <89456f01-aa02-7a7d-a47b-bf1f26e66d4c@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/3yNEOqWowh/8j+e"
 Content-Disposition: inline
-In-Reply-To: <aa66cc54-f987-cdcd-05a7-4b63aa8b422d@gmx.de>
+In-Reply-To: <89456f01-aa02-7a7d-a47b-bf1f26e66d4c@codeaurora.org>
+X-Cookie: Everything you know is wrong!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 06:39:21PM +0100, Heinrich Schuchardt wrote:
-> On 14.12.20 18:01, Ilias Apalodimas wrote:
-> > At the moment the EFI stub tries to load an initrd from the
-> > cmdline provided option only if the LoadFile2 protocol does not exist
-> > on the initrd device path.
-> >
-> > This might prove problematic for EFI installers that need their own
-> > version of initrd to start the installation process and the firmware
-> 
-> Did you hit a real world case?
-> 
 
-Yes while trying to install debian with U-boot, in which I enabled LoadFile2
-protocol
+--/3yNEOqWowh/8j+e
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[...]
-> > @@ -599,7 +600,14 @@ efi_status_t efi_load_initrd_dev_path(unsigned long *load_addr,
-> >  				(void *)initrd_addr);
-> >  	if (status != EFI_SUCCESS) {
-> >  		efi_free(initrd_size, initrd_addr);
-> > -		return EFI_LOAD_ERROR;
-> > +		/*
-> > +		 * Some firmware implementations might install the EFI
-> 
-> In U-Boot the filename is set a compile time. As the path may relate to
-> a removable medium, it would not make sense to check the existence of
-> the file when installing the protocol.
-> 
+On Mon, Dec 14, 2020 at 06:13:22PM +0530, Srinivasa Rao Mandadapu wrote:
+> On 12/1/2020 11:21 PM, Mark Brown wrote:
 
-Agree. That's why I am trying to change the behavior of the stub slightly
-and respect the firmware's return value on this.
-More over the whole idea is to load the file exactly when requested, rather
-than store it in memory and wait until someone requests it.
+> > > Later from review comments by Srinivas kandagatla, I got to know
+> > >=20
+> > > about regcache sync APIs, which can be used=A0 to sync cache after re=
+sume and
+> > >=20
+> > > HW registers can be updated with=A0 original values. With that playba=
+ck can be
+> > > continued.
 
-> > +		 * protocol without checking the file is present and return
-> > +		 * EFI_NOT_FOUND when trying to load the file.
-> > +		 * If that's the case, allow the cmdline defined initrd to
-> > +		 * load.
-> 
-> U-Boot's implementation could also return EFI_NO_MEDIA if
-> CONFIG_EFI_INITRD_FILESPEC relates to a non-existent partition.
-> 
-> Why should we fall back to the command line in this case?
-> 
-> The whole idea of this protocol is to disallow the specification of an
-> initrd via the command line.
+> > > So is the reason, I am reverting partial changes in the commit b18249=
+68221c.
 
-We are not falling back in that case. We only allow a fallback if 
-EFI_NOT_FOUND is explicitly returned. 
+> > I don't understand why a fix for the register cache not being in sync
+> > with the hardware doesn't involve syncing the register cache with the
+> > hardware.
 
-That being said my check is wrong. I need to check it on the first invocation
-of load file, not the last one. I'll send a V2
+> I am sorry I couldn't understand your point. Could you please elaborate y=
+our
+> query?
 
-Regards
-/Ilias
+Your changelog talks about syncing the cache but neither the driver nor
+your change actually does that.
+
+--/3yNEOqWowh/8j+e
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/XpdAACgkQJNaLcl1U
+h9D/Zwf/fjn9hyBot5AFRtqGND9G8HLpAtWHKW70cPH+wBsFuqB0CLI8tZbBwh0q
+kWZwfm8x8OxC44uZBFactuNZmp1+PgJ6Gj9f7wUuFBAYWUAIMjERH3qmIdBnNKwk
+iVor+tLIrpGRfncjfL0tK7Xxd6YPQx0G7pDkxMHbP7sg6SS094m2CtHFo+jPRtec
+AKRcvjIy7xw561ot5vqjMz62CTazM87RuqnVJsE81XcST4slkJLD9IUOSWTLDivK
+UHNg/3hc3fAUBHwvPC+0t9suBwSMkifi9hJuTGbhPTnPILmRF9GJ0l4+PCqpnrVn
+v5oEVRw7ErT3avD1VlAlKlN49wz43Q==
+=jFTq
+-----END PGP SIGNATURE-----
+
+--/3yNEOqWowh/8j+e--
