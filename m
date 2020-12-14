@@ -2,118 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA712D9785
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 821EE2D978D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407865AbgLNLjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 06:39:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730191AbgLNLi7 (ORCPT
+        id S2407893AbgLNLkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 06:40:23 -0500
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:48725 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405769AbgLNLkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:38:59 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F03BC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 03:38:19 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id k12so2126383qth.23
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 03:38:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=uG9hUyn2l1hT7e+Msb6nBQLe6pVUc/Tidhzusbc3Z5E=;
-        b=ZTznCCQdNCgK7E2pAMIcNbbA7wJKQTUvxOpa22aA1+jPwk96Q6ybn5x0Hlewl1BV+M
-         rdm2A5IYo22MuIYm2ayvtprzP14QUHxfL2YaEuKws1KAxNUZKm+sb0p6O++oaRNlltYl
-         9fJru+O7IVxaWdY7nsTgVYiaano6f3uFs1K8qvLOEWXkwm1MrQjDj9azwrQIsONxou1C
-         HGAMcoq5m53BjAIoHoGl/dCrsQzpuCUhwTjSEklHB4K9EQb3Ly94fkYQy9fb8fUALq5w
-         od0leQyMDFwrwzbMMVf1xlNh1t4EPwBdnDZsw7MrtVu57cDs653DfJXbUMb1WPPrQh60
-         Qomg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=uG9hUyn2l1hT7e+Msb6nBQLe6pVUc/Tidhzusbc3Z5E=;
-        b=Y1QHxcsTGVeDS2x4t4J3yyPgqJ+7nlxcZlAI0I8vaoVaUW8jzNX4AHj3aabCSVXvRG
-         +krTn5I3Pj2MyPYEwTzSuKZgsG8Y/U37XxcqRGUCncrICnoc8y1IfbJ5SUsWgWS7xlZ4
-         Br0O33MUXOGBcouuG+dFOCbJjvjzHhBT0nEqRRACXNkAZk8i9RP25vpU2N7Qdo2D5fKc
-         Mw9eH2j+oWVPDXAufYYyFS3AqOrNwZWAlb59a3DVdxJR7KV4iP++1YBfsctngO1068zM
-         moHR0IrLpi+Z8QxsxMdNiqJhpwr96Qlq/32Tpn4/+5dXp2/0VXWnFpCS23PCUdqu33Ne
-         0zqA==
-X-Gm-Message-State: AOAM533b+ngj5k4Ot7Dn0QbkbElaYAT4esIAyjcAfz59v+3V3bd5caE/
-        1nRoW4bEn7Y0nytZFCLSoGonfEPYXyVXFw==
-X-Google-Smtp-Source: ABdhPJxHwGmlZQ28Xrpp+ClKhqzlEFvlg574xO6+LQM9eMJO9G054bEQyV8VMrMOXnK4L4JwkFMWXhYkqJ8pkQ==
-Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a05:6214:302:: with SMTP id
- i2mr15763177qvu.14.1607945898242; Mon, 14 Dec 2020 03:38:18 -0800 (PST)
-Date:   Mon, 14 Dec 2020 11:38:12 +0000
-Message-Id: <20201214113812.305274-1-jackmanb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH bpf-next v2] libbpf: Expose libbpf ringbufer epoll_fd
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 14 Dec 2020 06:40:03 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 6835658050A;
+        Mon, 14 Dec 2020 06:39:07 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 14 Dec 2020 06:39:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=h4tM2jXirOMSD1zihxUdk1ovjF7
+        7z3fxMQ6d0RdoD6U=; b=dnK/868K+AwJSo/XNIzQU3gx7WvJii+Kqa+LkfMPs3c
+        k2c93fyxmID2AQ9fldvzOrSMt8Z+iZ8/1InI2Z5GzAGwROKnb7ntgDuVAWOT63Pi
+        s99kRahpymSFdJJeUdk64Cy42AH80JsC32dcH8umMQxgxfnHdFlVOsj6ZkpwoBda
+        0PGtwrqSKemuaDtCzZ16QyI4BNeLk+5PKIXtFckdujss5RPOI/dn4DeKUYAMMoRF
+        NXJCIOMyCVXwMnaNc2bJs2LPhFF6fIYoLL3Qaln8fXwh+NQDLSmHq/J6bDV0lC45
+        ZZm5i7lRmcwnwrpiki7w4ocQCM0VUteiqzl/GPbBg0w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=h4tM2j
+        XirOMSD1zihxUdk1ovjF77z3fxMQ6d0RdoD6U=; b=oihxjcjdoq3Jzfhaj+oXBh
+        iaGzQXVDw4Zr+3Y0EZMEiAo4BG4KHr+3knuM1Xvs3ofwsWxXhlPgELTaiDhLYrpt
+        06NeFUrmbP943F74mDf11H+pPXJJ3skA2g9YT60WI/5nwyvg7RRbSRFAZRDpuFVS
+        XPmg6KuNNPDaxysf7dfjWIBMjOpvWLv9Glb5HCzAURmC1Gj9bOog4JC3IGPo6ScF
+        77ZH0h8QdGVcJXD7Mz1pD8HzT/Bk6r4ALL8jOOJ93wtkOCEjy/PWjXFVG9DArpWK
+        Q29bUpwm8whZklbpkL13xc1ib8/VztcmO9N43KifVvk5JvzmE/fTD0ErSlfAf8og
+        ==
+X-ME-Sender: <xms:2U7XX17PrusISI2vTBDlszYpD73ByMV7lO5aDvjOOvLDNqzNac7bbQ>
+    <xme:2U7XXy7bWl6za7LBTLLMsJm4u6HQprgH98JLa-sXv1vbbrnWseBc4HXoj4SjIs4hy
+    IjHfux80LiakpDJ5_Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgfeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:2U7XX8f-Yrf0UDyuPgz811tNXopvYhY5bSb75X8XWRSLTkwq_u8PBA>
+    <xmx:2U7XX-KwZLxn1UhudSfy2gEn66zk_foLQeRyf8scz2J7dIBE0ggPUw>
+    <xmx:2U7XX5IgZvZfLb_QSTZh-FJeNuT4abvYf-MTohbv7i3wUf87jY4uPA>
+    <xmx:207XXyiNkmiAohPwgcoqt3e7CETdME3A2QVJeinyzxqStxG9_RkUaA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E40A7108005C;
+        Mon, 14 Dec 2020 06:39:04 -0500 (EST)
+Date:   Mon, 14 Dec 2020 12:39:04 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com
+Subject: Re: [PATCH v3 09/15] media: sunxi: Add support for the A31 MIPI
+ CSI-2 controller
+Message-ID: <20201214113904.v6j7z3yrvjv74dcd@gilmour>
+References: <20201211155708.154710-1-paul.kocialkowski@bootlin.com>
+ <20201211155708.154710-10-paul.kocialkowski@bootlin.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="wl35bqlaasqbg43y"
+Content-Disposition: inline
+In-Reply-To: <20201211155708.154710-10-paul.kocialkowski@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This provides a convenient perf ringbuf -> libbpf ringbuf migration
-path for users of external polling systems. It is analogous to
-perf_buffer__epoll_fd.
 
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
-Difference from v1: Added entry to libbpf.map.
+--wl35bqlaasqbg43y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- tools/lib/bpf/libbpf.h   | 1 +
- tools/lib/bpf/libbpf.map | 1 +
- tools/lib/bpf/ringbuf.c  | 6 ++++++
- 3 files changed, 8 insertions(+)
+On Fri, Dec 11, 2020 at 04:57:02PM +0100, Paul Kocialkowski wrote:
+> +#define sun6i_mipi_csi2_subdev_video(subdev) \
+> +	container_of(subdev, struct sun6i_mipi_csi2_video, subdev)
+> +
+> +#define sun6i_mipi_csi2_video_dev(video) \
+> +	container_of(video, struct sun6i_mipi_csi2_dev, video)
 
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 6909ee81113a..cde07f64771e 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -536,6 +536,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
- 				ring_buffer_sample_fn sample_cb, void *ctx);
- LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
- LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
-+LIBBPF_API int ring_buffer__epoll_fd(struct ring_buffer *rb);
+Isn't it a bit unsafe?
 
- /* Perf buffer APIs */
- struct perf_buffer;
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 7c4126542e2b..7be850271be6 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -348,4 +348,5 @@ LIBBPF_0.3.0 {
- 		btf__new_split;
- 		xsk_setup_xdp_prog;
- 		xsk_socket__update_xskmap;
-+                ring_buffer__epoll_fd;
- } LIBBPF_0.2.0;
-diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-index 5c6522c89af1..45a36648b403 100644
---- a/tools/lib/bpf/ringbuf.c
-+++ b/tools/lib/bpf/ringbuf.c
-@@ -282,3 +282,9 @@ int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
- 	}
- 	return cnt < 0 ? -errno : res;
- }
-+
-+/* Get an fd that can be used to sleep until data is available in the ring(s) */
-+int ring_buffer__epoll_fd(struct ring_buffer *rb)
-+{
-+	return rb->epoll_fd;
-+}
+The second subdev and video here is not the variable passed in the macro
+but the field in the structure, so any attempt at using those two macros
+with anything but a variable named subdev or video will result in a
+compilation issue?
 
-base-commit: b4fe9fec51ef48011f11c2da4099f0b530449c92
---
-2.29.2.576.ga3fc446d84-goog
+Maxime
 
+--wl35bqlaasqbg43y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9dO1wAKCRDj7w1vZxhR
+xb8UAQCe9ql3Nxn0nlTSWUSqxoplbpYkA5kmXzAwghQIyaX20wD+LX4lxWJ1O67c
+MOXxx+Pku4au4HcY56vDu0LAhVu1ZQc=
+=6qDt
+-----END PGP SIGNATURE-----
+
+--wl35bqlaasqbg43y--
