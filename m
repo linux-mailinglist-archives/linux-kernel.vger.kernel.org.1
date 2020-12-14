@@ -2,173 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E218F2DA127
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30812DA125
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:11:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503034AbgLNUJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:09:54 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:47208 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502860AbgLNUJl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2503000AbgLNUJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:09:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502928AbgLNUJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Dec 2020 15:09:41 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BEK8L4L073067;
-        Mon, 14 Dec 2020 14:08:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607976501;
-        bh=bYx/KPXoQnydtHvU0A93Ft8RQtsoKRmWYVYqEzohC3E=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=ca6cYdkcTVbnkADiNBN0eInegJ8WDq4+PFGkFWDOfk4/LXyfDKsgmkIHAkRgfcDpP
-         0CJgnGqdd7ya9oPUwsDPmaq5ZAkF7MsJGCw8s4RmyZq3mfbtPoNr2EMQBOh+D2Rbuq
-         ClrMKStJktpBh5LWXg0cUwUzr56JkyJM4WLnHvfU=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BEK8LOM088012
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Dec 2020 14:08:21 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 14
- Dec 2020 14:08:21 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 14 Dec 2020 14:08:21 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BEK8Hgr080343;
-        Mon, 14 Dec 2020 14:08:18 -0600
-Subject: Re: [v2] i2c: mediatek: Move suspend and resume handling to NOIRQ
- phase
-To:     Qii Wang <qii.wang@mediatek.com>
-CC:     Wolfram Sang <wsa@the-dreams.de>, <matthias.bgg@gmail.com>,
-        <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>
-References: <1605701861-30800-1-git-send-email-qii.wang@mediatek.com>
- <20201202153543.GG874@kunai> <1606958735.25719.29.camel@mhfsdcap03>
- <629d171a-0e77-3d74-ae23-e6439dcf17b7@ti.com>
- <1607326431.25719.33.camel@mhfsdcap03>
- <a9cb5ba5-f3ce-3f82-15cc-30419bb70f4e@ti.com>
- <1607565387.25719.43.camel@mhfsdcap03>
- <e83ab23b-81f2-620c-039b-9cadd84a39fa@ti.com>
- <1607935685.25719.49.camel@mhfsdcap03>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <765c182a-5c68-b408-85ca-f757e891090e@ti.com>
-Date:   Mon, 14 Dec 2020 22:08:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+X-Gm-Message-State: AOAM5308UP0otOf2o58CijEzVk4jm6CA1/JIESbew5u0MudRS9fCRb42
+        0IMbYHy2soJqxUe557yJ0uBb7t72OGUr9wKtZcpJEQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607976536;
+        bh=TKXksRv4ElF9AR3si5HqiL6XEICDaC1eW6DKF5Yk5Nk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QOZ0wCL66CxwTTlRa/NS+nrpGvypaHF5U2FkR7s46wXEqpK5doz0RHRd6vBDWxAW4
+         r7o2gYJJ3PZ2JTm256hffJi2nnEYsxtonMmB8SaqDdO1D9KVE8aeCSVRlyIk2MxfVb
+         Nq7AzKaiL+jQMb1KbIe0+9vqI49QiXEfr0Jx+ysDldQ2v9nLDsqDDP45jkp6hGqJmh
+         OmclkJgtB3plm4vK9rJZP8TDO2KrznTZQIfetLf1jytUj0qxnD0WemIA3orcCM/Nsi
+         SdSTrRF7A7izUkbQyZ6pjpcjAsByJhAbPaFoX+rlVa5IdvV17KSt3jHksCfM1hKzwi
+         goE8MOceTDNhQ==
+X-Google-Smtp-Source: ABdhPJzEJCSPXY2rUKyPY8ufvSSaC7eN1NemTVxh2DRY99B3QhCMzO9GGlPQhf2oE3i3ROdM3GOqRO73gdr+pCkLQzc=
+X-Received: by 2002:a5d:43c3:: with SMTP id v3mr6339473wrr.184.1607976534234;
+ Mon, 14 Dec 2020 12:08:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1607935685.25719.49.camel@mhfsdcap03>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20201214174127.1398114-1-michael.roth@amd.com> <X9e/L3YTAT/N+ljh@google.com>
+In-Reply-To: <X9e/L3YTAT/N+ljh@google.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 14 Dec 2020 12:08:42 -0800
+X-Gmail-Original-Message-ID: <CALCETrUakTkyR3-Sh+8fKR3wVf_O7Hp=7TOnDP-UnO5B6EjLag@mail.gmail.com>
+Message-ID: <CALCETrUakTkyR3-Sh+8fKR3wVf_O7Hp=7TOnDP-UnO5B6EjLag@mail.gmail.com>
+Subject: Re: [PATCH v2] KVM: SVM: use vmsave/vmload for saving/restoring
+ additional host state
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Michael Roth <michael.roth@amd.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Andy Lutomirski <luto@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 14, 2020 at 11:38 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> +Andy, who provided a lot of feedback on v1.
+>
+> >
+> >  static unsigned long svm_get_rflags(struct kvm_vcpu *vcpu)
+> > @@ -3507,14 +3503,8 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu,
+> >
+> >       __svm_vcpu_run(svm->vmcb_pa, (unsigned long *)&svm->vcpu.arch.regs);
+>
+> Tying in with avoiding svm->host_save_area, what about passing in the PA of the
+> save area and doing the vmload in __svm_vcpu_run()?  One less instance of inline
+> assembly to stare at...
 
+One potential side benefit is that we wouldn't execute any C code with
+the wrong MSR_GS_BASE, which avoids any concerns about
+instrumentation, stack protector, or some *SAN feature exploding due
+to a percpu memory not working.
 
-On 14/12/2020 10:48, Qii Wang wrote:
-> On Thu, 2020-12-10 at 15:03 +0200, Grygorii Strashko wrote:
->>
->> On 10/12/2020 03:56, Qii Wang wrote:
->>> On Mon, 2020-12-07 at 18:35 +0200, Grygorii Strashko wrote:
->>>>
->>>>>
->>>>> On Thu, 2020-12-03 at 10:01 +0200, Grygorii Strashko wrote:
->>>>>>
->>>>>> On 03/12/2020 03:25, Qii Wang wrote:
->>>>>>> On Wed, 2020-12-02 at 16:35 +0100, Wolfram Sang wrote:
->>>>>>>> Hi,
->>>>>>>>
->>>>>>>>> Some i2c device driver indirectly uses I2C driver when it is now
->>>>>>>>> being suspended. The i2c devices driver is suspended during the
->>>>>>>>> NOIRQ phase and this cannot be changed due to other dependencies.
->>>>>>>>> Therefore, we also need to move the suspend handling for the I2C
->>>>>>>>> controller driver to the NOIRQ phase as well.
->>>>>>>>>
->>>>>>>>> Signed-off-by: Qii Wang <qii.wang@mediatek.com>
->>>>>>>>
->>>>>>>> Is this a bugfix and should go into 5.10? Or can it wait for 5.11?
->>>>>>>>
->>>>>>>
->>>>>>> Yes, Can you help to apply it into 5.10? Thanks
->>>>>>
->>>>>> To be honest if you still do have any i2c device which accessing i2c buss after _noirq
->>>>>> stage and your driver does not implement .master_xfer_atomic() - you definitely have a bigger problem.
->>>>>> So adding IRQF_NO_SUSPEND sound like a hack and probably works just by luck.
->>>>>>
->>>>>
->>>>> At present, it is only a problem caused by missing interrupts,
->>>>> and .master_xfer_atomic() just a implement in polling mode. Why not set
->>>>> the interrupt to a state that can always be triggered?
->>>>>
->>>>>
->>>>
->>>> Because you must not use any IRQ driven operations after _noirq suspend state as it might (and most probably will)
->>>> cause unpredictable behavior later  in suspend_enter():
->>>>
->>>> 	arch_suspend_disable_irqs();
->>>> 	BUG_ON(!irqs_disabled());
->>>> ^after this point any IRQ driven I2C transfer will cause IRQ to be re-enabled
->>>>
->>>> if you need  turn off device from platform callbacks -  .master_xfer_atomic() has to be implemented and used.
->>>>     
->>> Maybe my comment is a bit disturbing.Our purpose is not to call i2c and
->>> use interrupts after _noirq pauses.So We use
->>> i2c_mark_adapter_suspended&i2c_mark_adapter_resumed to block these i2c
->>> transfers， There will not have any IRQ driven I2C transfer after this
->>> point:
->>>           arch_suspend_disable_irqs();
->>>           BUG_ON(!irqs_disabled());
->>> But some device driver will do i2c transfer after
->>> dpm_noirq_resume_devices in dpm_resume_noirq(PMSG_RESUME) when our
->>> driver irq hasn't resume.
->>> 	void dpm_resume_noirq(pm_message_t state)
->>> 	{
->>>           	dpm_noirq_resume_devices(state);
->>
->> Just to clarify. You have resume sequence in dpm_noirq_resume_devices
->>    dpm_noirq_resume_devices -> resume I2C -> resume some device -> do i2c transfer after?
->>
-> 
-> Yes.
-
-huh. First consider IRQF_EARLY_RESUME - it's better, but still will be a hack
-
-> 
->> Is "some device" in Kernel mainline?
->>
-> 
-> The problematic device driver is drivers/regulator/da9211-regulator.c in
-> Kernel mainline.
-
-regulator is passive device, somebody should call it !?
-
-And da9211-regulator IRQ handler should remain disabled till resume_device_irqs() call.
-
-note. regulator_class implements only
-
-static const struct dev_pm_ops __maybe_unused regulator_pm_ops = {
-	.suspend	= regulator_suspend,
-	.resume		= regulator_resume,
-};
-
-
-> 
->>>           	resume_device_irqs();
->>>           	device_wakeup_disarm_wake_irqs();
->>>           	cpuidle_resume();
->>> 	}
->>> .master_xfer_atomic() seems to be invalid for this question at this
->>> time?
->>>
->>
-> 
-
--- 
-Best regards,
-grygorii
+--Andy
