@@ -2,26 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E784A2DA06B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 848002DA033
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:22:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502620AbgLNT1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 14:27:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46104 "EHLO mail.kernel.org"
+        id S2502661AbgLNTHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 14:07:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502215AbgLNRgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:36:55 -0500
+        id S2408575AbgLNRhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:37:04 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>,
+        Sven Eckelmann <sven@narfation.org>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 010/105] powerpc/64s: Fix hash ISA v3.0 TLBIEL instruction generation
-Date:   Mon, 14 Dec 2020 18:27:44 +0100
-Message-Id: <20201214172555.776521509@linuxfoundation.org>
+Subject: [PATCH 5.9 011/105] batman-adv: Consider fragmentation for needed_headroom
+Date:   Mon, 14 Dec 2020 18:27:45 +0100
+Message-Id: <20201214172555.823340072@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201214172555.280929671@linuxfoundation.org>
 References: <20201214172555.280929671@linuxfoundation.org>
@@ -33,36 +34,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Sven Eckelmann <sven@narfation.org>
 
-[ Upstream commit 5844cc25fd121074de7895181a2fa1ce100a0fdd ]
+[ Upstream commit 4ca23e2c2074465bff55ea14221175fecdf63c5f ]
 
-A typo has the R field of the instruction assigned by lucky dip a la
-register allocator.
+If a batman-adv packets has to be fragmented, then the original batman-adv
+packet header is not stripped away. Instead, only a new header is added in
+front of the packet after it was split.
 
-Fixes: d4748276ae14c ("powerpc/64s: Improve local TLB flush for boot and MCE on POWER9")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201126102530.691335-2-npiggin@gmail.com
+This size must be considered to avoid cost intensive reallocations during
+the transmission through the various device layers.
+
+Fixes: 7bca68c7844b ("batman-adv: Add lower layer needed_(head|tail)room to own ones")
+Reported-by: Linus Lüssing <linus.luessing@c0d3.blue>
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/mm/book3s64/hash_native.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/batman-adv/hard-interface.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/powerpc/mm/book3s64/hash_native.c b/arch/powerpc/mm/book3s64/hash_native.c
-index cf20e5229ce1f..562094863e915 100644
---- a/arch/powerpc/mm/book3s64/hash_native.c
-+++ b/arch/powerpc/mm/book3s64/hash_native.c
-@@ -68,7 +68,7 @@ static __always_inline void tlbiel_hash_set_isa300(unsigned int set, unsigned in
- 	rs = ((unsigned long)pid << PPC_BITLSHIFT(31));
+diff --git a/net/batman-adv/hard-interface.c b/net/batman-adv/hard-interface.c
+index fa06b51c0144d..d72c183919b44 100644
+--- a/net/batman-adv/hard-interface.c
++++ b/net/batman-adv/hard-interface.c
+@@ -554,6 +554,9 @@ static void batadv_hardif_recalc_extra_skbroom(struct net_device *soft_iface)
+ 	needed_headroom = lower_headroom + (lower_header_len - ETH_HLEN);
+ 	needed_headroom += batadv_max_header_len();
  
- 	asm volatile(PPC_TLBIEL(%0, %1, %2, %3, %4)
--		     : : "r"(rb), "r"(rs), "i"(ric), "i"(prs), "r"(r)
-+		     : : "r"(rb), "r"(rs), "i"(ric), "i"(prs), "i"(r)
- 		     : "memory");
++	/* fragmentation headers don't strip the unicast/... header */
++	needed_headroom += sizeof(struct batadv_frag_packet);
++
+ 	soft_iface->needed_headroom = needed_headroom;
+ 	soft_iface->needed_tailroom = lower_tailroom;
  }
- 
 -- 
 2.27.0
 
