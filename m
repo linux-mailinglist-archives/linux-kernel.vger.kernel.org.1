@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27072DA1E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:45:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD942DA1EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503276AbgLNUoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:44:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502980AbgLNUoz (ORCPT
+        id S2503434AbgLNUqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:46:52 -0500
+Received: from www62.your-server.de ([213.133.104.62]:33924 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503422AbgLNUqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:44:55 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EF7C0613D3;
-        Mon, 14 Dec 2020 12:44:14 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvtfL6kwqz9sS8;
-        Tue, 15 Dec 2020 07:44:10 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607978652;
-        bh=ljhtdvCD/AIx7f6wVXxij9Zvl9nrP4BdyDGBE6oeE8E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SG5XVgadS6beI8SEUbBiAETScLh/fzOsl90/5OUbNSxfEYW0dpSKb+jkwUHi64q3S
-         vZUHnF3xx0KDcIcuv7HjRt/CTw8LcJ6+v3bfmRX9AqMxrjXZX2SU7a49shCT86Jd88
-         4ISHzlgK1UYfgKW15nvQbAL4ncLhxteFNZIU1i71xfCSnsDFFYwabx3c/2LsLemPut
-         jRiZnpEz7vHGiMRHQGcmGQDfwCsIqp1XB/EAjJMTV0XDkFFKoUL+CMm5kxXVjHSxay
-         t4JtDFX+B8kDMB/gBCxaFJ/U9KWBppOjgtnn1fR/etImjvqr/hSR9COiSyKf238dTS
-         AQSYicXVuJHYg==
-Date:   Tue, 15 Dec 2020 07:44:09 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Dominique Martinet <asmadeus@codewreck.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the kbuild tree
-Message-ID: <20201215074409.0ae087ac@canb.auug.org.au>
-In-Reply-To: <20201209203029.7f2a8db2@canb.auug.org.au>
-References: <20201209203029.7f2a8db2@canb.auug.org.au>
+        Mon, 14 Dec 2020 15:46:52 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1koujS-0008m6-GC; Mon, 14 Dec 2020 21:46:10 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1koujS-000Por-9g; Mon, 14 Dec 2020 21:46:10 +0100
+Subject: Re: [PATCH bpf-next v2] libbpf: Expose libbpf ringbufer epoll_fd
+To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org
+References: <20201214113812.305274-1-jackmanb@google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f19112d6-7ee7-f685-b203-e0961a246b80@iogearbox.net>
+Date:   Mon, 14 Dec 2020 21:46:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/g=E7yPY1=zdZ7W=GHuA7yPE";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201214113812.305274-1-jackmanb@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26017/Mon Dec 14 15:33:39 2020)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/g=E7yPY1=zdZ7W=GHuA7yPE
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 12/14/20 12:38 PM, Brendan Jackman wrote:
+> This provides a convenient perf ringbuf -> libbpf ringbuf migration
+> path for users of external polling systems. It is analogous to
+> perf_buffer__epoll_fd.
+> 
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
+> Difference from v1: Added entry to libbpf.map.
+> 
+>   tools/lib/bpf/libbpf.h   | 1 +
+>   tools/lib/bpf/libbpf.map | 1 +
+>   tools/lib/bpf/ringbuf.c  | 6 ++++++
+>   3 files changed, 8 insertions(+)
+> 
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 6909ee81113a..cde07f64771e 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -536,6 +536,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
+>   				ring_buffer_sample_fn sample_cb, void *ctx);
+>   LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
+>   LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
+> +LIBBPF_API int ring_buffer__epoll_fd(struct ring_buffer *rb);
+> 
+>   /* Perf buffer APIs */
+>   struct perf_buffer;
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 7c4126542e2b..7be850271be6 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -348,4 +348,5 @@ LIBBPF_0.3.0 {
+>   		btf__new_split;
+>   		xsk_setup_xdp_prog;
+>   		xsk_socket__update_xskmap;
+> +                ring_buffer__epoll_fd;
 
-Hi all,
+Fyi, this had a whitespace issue, Andrii fixed it up while applying.
 
-On Wed, 9 Dec 2020 20:30:29 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> After merging the kbuild tree, today's linux-next build (x86_64
-> modules_install) produced this warning:
->=20
-> Warning: 'make modules_install' requires depmod. Please install it.
-> This is probably in the kmod package.
->=20
-> Introduced by commit
->=20
->   330029209513 ("kbuild: don't hardcode depmod path")
->=20
-> Unfortunately for most of us (?), /sbin is not in our PATH ...
+>   } LIBBPF_0.2.0;
+> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> index 5c6522c89af1..45a36648b403 100644
+> --- a/tools/lib/bpf/ringbuf.c
+> +++ b/tools/lib/bpf/ringbuf.c
+> @@ -282,3 +282,9 @@ int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
+>   	}
+>   	return cnt < 0 ? -errno : res;
+>   }
+> +
+> +/* Get an fd that can be used to sleep until data is available in the ring(s) */
+> +int ring_buffer__epoll_fd(struct ring_buffer *rb)
+> +{
+> +	return rb->epoll_fd;
+> +}
+> 
+> base-commit: b4fe9fec51ef48011f11c2da4099f0b530449c92
+> --
+> 2.29.2.576.ga3fc446d84-goog
+> 
 
-I am still getting this warning.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/g=E7yPY1=zdZ7W=GHuA7yPE
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/XzpkACgkQAVBC80lX
-0GxPtwgAk/UuDigJgEX8JBu+FaelEhkf9DLWM2nPxSKUValnUTAnXBCmH6vgq6yN
-qnPUefCRHZnigXSFE2wd2e3Stk7EmZv0UWxV0CwlaENR7SQpwO7TgY+YC08Ses63
-aaereNko+dBRWDHOiTT3HN2m0tzONqILgNPR/jRGYHO6KX0UV4MWvJwZSQ9gK8Mx
-Ic5Do+ibhObb3zUe4J+Mlc8neh5pqaed1Ju1qb1yQFZ8DOpxrHagbHvFWrgDIH7C
-HsDF3v04nsdPd5E/s9hnvwVbGQU70BUrUjIvTjGtFgaHRWKdkZd70BfAu/RSTupg
-tonDNDAacVvcOpv9xVx5WMbsdhjHcw==
-=LwRM
------END PGP SIGNATURE-----
-
---Sig_/g=E7yPY1=zdZ7W=GHuA7yPE--
