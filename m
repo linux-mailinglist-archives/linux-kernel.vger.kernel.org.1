@@ -2,83 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3462D9E52
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA852D9E48
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440524AbgLNR4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:56:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22344 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2502490AbgLNR4D (ORCPT
+        id S2502491AbgLNR4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:56:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502436AbgLNRzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:56:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607968473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=45PKN0u+6PU+HJHk6Jc+DgoEp0htkAnWfKxzeMiZZx0=;
-        b=VFixxVEXh5bTldEiWHI5/lJe9H6/Nh9N05tKnPRrquJjXL+yHTWONIuhiAyMxRgkzZKH4v
-        80256CGPyrleQp62wo8yg52aAXByHNSkjMvitvD2hQLRSJ8tuxtxkhzg4rBXG/BBcidjRN
-        GvVxK2E4un5SimQaDC63GcDyvkZeNl8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-592-ClbKa5GuN3eqkJU0NSZ_xQ-1; Mon, 14 Dec 2020 12:54:31 -0500
-X-MC-Unique: ClbKa5GuN3eqkJU0NSZ_xQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DEB54180A094;
-        Mon, 14 Dec 2020 17:54:30 +0000 (UTC)
-Received: from redhat.com (null.msp.redhat.com [10.15.80.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9C21A71C94;
-        Mon, 14 Dec 2020 17:54:30 +0000 (UTC)
-Date:   Mon, 14 Dec 2020 11:54:29 -0600
-From:   David Teigland <teigland@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] dlm updates for 5.11
-Message-ID: <20201214175429.GB9687@redhat.com>
+        Mon, 14 Dec 2020 12:55:04 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5067DC0613D3;
+        Mon, 14 Dec 2020 09:54:24 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id p18so1396381pgm.11;
+        Mon, 14 Dec 2020 09:54:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y4OYtfMZ2K4JBiXVgvri6qdCRzrXhV7GNsl1P8DU6OY=;
+        b=EiicOxwiEwHVWdr7gf4zPmzQAO8KNK1cZoS4wLniUM+K7hPK7ptvrO8Ou4eXgvHmQk
+         dWvWqpo3IOx0Yp4GqJNB+7AMnm7tO/QlPhhPD36Yv1xb+qbQkz+BonbT9TAmvrdevolm
+         2NxSBrcIkuREzr9piI3iROS0meXenStOYMNYkRs9FwIBVkwSX3zFDc6zGOJ4vH5EMJb4
+         qs1CT44ohrLggc6RIyVsb3ONIaQPmXynSDpED5IiqMkb6DDsrHCEvSOeDXJXy0nqVw7f
+         OSD75fr3rm67onFok/tv07nym4qmoY0WtJAyPqncBt61bOylOyl+OxYJktbuAHBlcYvW
+         V1+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y4OYtfMZ2K4JBiXVgvri6qdCRzrXhV7GNsl1P8DU6OY=;
+        b=eUCqzCAKCvcGhTLPABtcGfrlFqhgQQv4BCpZ8XaPGLT50GU7TYpIo+7BWLxTreDodS
+         3+tutKH8igbj7Mbktydbx/gW8Sk6slFbCc1Fsli67xOW7jihzgwDxwlw40Zg7aqPJUzL
+         +4Zd4tgiMhuYmquAvyX0LEKvKDo2wVnKl+5bPYXdNtMKYyyEkoQ9+DskB7fEC/hUhPQ0
+         t9WaaQzHAmmGYtPIl/AvHvXVe+/+yYYLJ/IuvQY2SioZUv20CWk00d+7bcagP0OeKr2d
+         94sxF5FbmRy0W45lkN1BqP4seYTTohxLp0YjIhmbUDeAxRaR99bZhnLBG8FeCJ9maR74
+         sSjQ==
+X-Gm-Message-State: AOAM533rmB34eT+5QKtdBQsBFnwp5jiygcOvPFfgJE8s73ImzxHleeXN
+        P3ieFdZCBwBLIQii107yUd30XFhoFb+ebSly6BthxPsFY7A=
+X-Google-Smtp-Source: ABdhPJxWhrMA20bv+G9Pm0/5nVz3ofkooo6Xmq49SWViDFHg+N7BhSEuraHzjokkjvI3798fa9btDLQY/77VJip5SHU=
+X-Received: by 2002:a63:b1e:: with SMTP id 30mr25347309pgl.203.1607968463784;
+ Mon, 14 Dec 2020 09:54:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.8.3 (2017-05-23)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20201211042625.129255-1-drew@beagleboard.org> <CAHp75VcAbdrSnb_ag9Rc0tny3Vtqjs1if+ahk7U36V2eaKMpSw@mail.gmail.com>
+ <20201211234304.GA189853@x1>
+In-Reply-To: <20201211234304.GA189853@x1>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 14 Dec 2020 19:55:12 +0200
+Message-ID: <CAHp75Vf-=nM-M2K-v_8iyME4t6ZF-gvSZ5ePsxQFhObJ_0YHsw@mail.gmail.com>
+Subject: Re: [RFC PATCH] pinctrl: add helper to expose pinctrl state in debugfs
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sat, Dec 12, 2020 at 1:43 AM Drew Fustini <drew@beagleboard.org> wrote:
+> On Fri, Dec 11, 2020 at 11:15:21PM +0200, Andy Shevchenko wrote:
+> > On Fri, Dec 11, 2020 at 1:54 PM Drew Fustini <drew@beagleboard.org> wrote:
+> > >
+> > > BeagleBoard.org [0] currently uses an out-of-tree driver called
+> > > bone-pinmux-helper [1] developed by Pantelis Antoniou [2] back in 2013.
+> >
+> > And it looks like it's still using APIs from 2013.
+> > Needs quite a clean up.
+>
+> Thanks for taking a look at my RFC and responding. It is good to know
+> that it is using out-dated APIs. Would you be able to elaborate?
+>
+> It interacts with pinctrl core through devm_pinctrl_get(),
+> pinctrl_lookup_state() and pinctrl_select_state(). Is there newer way of
+> doing that?
 
-Please pull dlm updates from tag:
+No. I'm talking mostly about FS callbacks where some relatively old
+new APIs can be used, such as kasprintf().
 
-git://git.kernel.org/pub/scm/linux/kernel/git/teigland/linux-dlm.git dlm-5.11
+...
 
-This set includes more low level communication layer cleanups.
-The main change is the listening socket is no longer handled as
-a special case of node connection sockets.  There is one small
-fix for checking the number of local connections.
-Thanks,
-Dave
+> > > I used the compatible string "pinctrl,state-helper" but would appreciate
+> > > advice on how to best name this. Should I create a new vendor prefix?
+> >
+> > Since it's BB specific, it should have file name and compatible string
+> > accordingly.
+>
+> At first, I was thinking about this as a beaglebone specific solution
+> and had bone in the driver name and compatible string. But then I
+> realized it could used in other situations where it is beneficial to
+> to read and select a pinctrl state through debugfs.
+>
+> I'm happy to rebrand the naming as beaglebone if that would be more
+> acceptable.
 
-Alexander Aring (13):
-      fs: dlm: fix proper srcu api call
-      fs: dlm: define max send buffer
-      fs: dlm: add get buffer error handling
-      fs: dlm: flush othercon at close
-      fs: dlm: handle non blocked connect event
-      fs: dlm: add helper for init connection
-      fs: dlm: move connect callback in node creation
-      fs: dlm: move shutdown action to node creation
-      fs: dlm: refactor sctp sock parameter
-      fs: dlm: listen socket out of connection hash
-      fs: dlm: fix check for multi-homed hosts
-      fs: dlm: constify addr_compare
-      fs: dlm: check on existing node address
+See below.
 
- fs/dlm/lockspace.c |   2 +-
- fs/dlm/lowcomms.c  | 304 ++++++++++++++++++++++++++++-------------------------
- fs/dlm/lowcomms.h  |   2 +
- fs/dlm/member.c    |   2 +-
- fs/dlm/rcom.c      |   6 +-
- 5 files changed, 168 insertions(+), 148 deletions(-)
+> > But I'm wondering, why it requires this kind of thing and can't be
+> > simply always part of the kernel based on configuration option?
+>
+> Do you mean not having a new CONFIG option for this driver and just have
+> it be enabled by CONFIG_PINCTRL?
 
+No, configuration option stays, but no compatible strings no nothing
+like that. Just probed always when loaded.
+Actually not even sure we want to have it as a module.
+
+...
+
+> > > The P9_14_pinmux entry would cause pinctrl-state-helper to be probed.
+> > > The driver would create the corresponding pinctrl state file in debugfs
+> > > for the pin.  Here is an example of how the state can be read and
+> > > written from userspace:
+> > >
+> > > root@beaglebone:~# cat /sys/kernel/debug/ocp\:P9_14_pinmux/state
+> > > default
+> > > root@beaglebone:~# echo pwm > /sys/kernel/debug/ocp\:P9_14_pinmux/state
+> > > root@beaglebone:~# cat /sys/kernel/debug/ocp\:P9_14_pinmux/state
+> > > pwm
+> >
+> > Shouldn't it be rather a part of a certain pin control folder:
+> > debug/pinctrl/.../mux/...
+> > ?
+>
+> Yes, I think that would make sense, but I was struggling to figure out
+> how to do that. pinctrl_init_debugfs() in pinctrl/core.c does create the
+> "pinctrl" directory, but I could not figure out how to use this as the
+> parent dir when calling debugfs_create_dir() in this driver's probe().
+>
+> I thought there might be a way in debugfs API to use existing directory
+> path as a parent but I couldn't figure anything like that. I would
+> appreciate any advice.
+
+If the option is boolean from the beginning then you just call it from
+the corresponding pin control instantiation chain.
+
+-- 
+With Best Regards,
+Andy Shevchenko
