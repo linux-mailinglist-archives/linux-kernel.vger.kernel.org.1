@@ -2,75 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30812DA125
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B0D2DA12E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:14:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503000AbgLNUJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:09:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52990 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502928AbgLNUJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:09:41 -0500
-X-Gm-Message-State: AOAM5308UP0otOf2o58CijEzVk4jm6CA1/JIESbew5u0MudRS9fCRb42
-        0IMbYHy2soJqxUe557yJ0uBb7t72OGUr9wKtZcpJEQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607976536;
-        bh=TKXksRv4ElF9AR3si5HqiL6XEICDaC1eW6DKF5Yk5Nk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QOZ0wCL66CxwTTlRa/NS+nrpGvypaHF5U2FkR7s46wXEqpK5doz0RHRd6vBDWxAW4
-         r7o2gYJJ3PZ2JTm256hffJi2nnEYsxtonMmB8SaqDdO1D9KVE8aeCSVRlyIk2MxfVb
-         Nq7AzKaiL+jQMb1KbIe0+9vqI49QiXEfr0Jx+ysDldQ2v9nLDsqDDP45jkp6hGqJmh
-         OmclkJgtB3plm4vK9rJZP8TDO2KrznTZQIfetLf1jytUj0qxnD0WemIA3orcCM/Nsi
-         SdSTrRF7A7izUkbQyZ6pjpcjAsByJhAbPaFoX+rlVa5IdvV17KSt3jHksCfM1hKzwi
-         goE8MOceTDNhQ==
-X-Google-Smtp-Source: ABdhPJzEJCSPXY2rUKyPY8ufvSSaC7eN1NemTVxh2DRY99B3QhCMzO9GGlPQhf2oE3i3ROdM3GOqRO73gdr+pCkLQzc=
-X-Received: by 2002:a5d:43c3:: with SMTP id v3mr6339473wrr.184.1607976534234;
- Mon, 14 Dec 2020 12:08:54 -0800 (PST)
+        id S2502780AbgLNULR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:11:17 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:49690 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388148AbgLNUK0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 15:10:26 -0500
+Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
+ id ab5e17d3a5fb2745; Mon, 14 Dec 2020 21:09:37 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>
+Subject: [PATCH v2 3/3] cpufreq: intel_pstate: Implement the ->adjust_perf() callback
+Date:   Mon, 14 Dec 2020 21:09:26 +0100
+Message-ID: <1770942.kMzID5dSeU@kreacher>
+In-Reply-To: <3827230.0GnL3RTcl1@kreacher>
+References: <20360841.iInq7taT2Z@kreacher> <3827230.0GnL3RTcl1@kreacher>
 MIME-Version: 1.0
-References: <20201214174127.1398114-1-michael.roth@amd.com> <X9e/L3YTAT/N+ljh@google.com>
-In-Reply-To: <X9e/L3YTAT/N+ljh@google.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 14 Dec 2020 12:08:42 -0800
-X-Gmail-Original-Message-ID: <CALCETrUakTkyR3-Sh+8fKR3wVf_O7Hp=7TOnDP-UnO5B6EjLag@mail.gmail.com>
-Message-ID: <CALCETrUakTkyR3-Sh+8fKR3wVf_O7Hp=7TOnDP-UnO5B6EjLag@mail.gmail.com>
-Subject: Re: [PATCH v2] KVM: SVM: use vmsave/vmload for saving/restoring
- additional host state
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Michael Roth <michael.roth@amd.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 11:38 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> +Andy, who provided a lot of feedback on v1.
->
-> >
-> >  static unsigned long svm_get_rflags(struct kvm_vcpu *vcpu)
-> > @@ -3507,14 +3503,8 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu,
-> >
-> >       __svm_vcpu_run(svm->vmcb_pa, (unsigned long *)&svm->vcpu.arch.regs);
->
-> Tying in with avoiding svm->host_save_area, what about passing in the PA of the
-> save area and doing the vmload in __svm_vcpu_run()?  One less instance of inline
-> assembly to stare at...
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-One potential side benefit is that we wouldn't execute any C code with
-the wrong MSR_GS_BASE, which avoids any concerns about
-instrumentation, stack protector, or some *SAN feature exploding due
-to a percpu memory not working.
+Make intel_pstate expose the ->adjust_perf() callback when it
+operates in the passive mode with HWP enabled which causes the
+schedutil governor to use that callback instead of ->fast_switch().
 
---Andy
+The minimum and target performance-level values passed by the
+governor to ->adjust_perf() are converted to HWP.REQ.MIN and
+HWP.REQ.DESIRED, respectively, which allows the processor to
+adjust its configuration to maximize energy-efficiency while
+providing sufficient capacity.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+v1 -> v2:
+ - No changes.
+
+---
+ drivers/cpufreq/intel_pstate.c |   70 +++++++++++++++++++++++++++++++++--------
+ 1 file changed, 58 insertions(+), 12 deletions(-)
+
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -2526,20 +2526,19 @@ static void intel_cpufreq_trace(struct c
+ 		fp_toint(cpu->iowait_boost * 100));
+ }
+ 
+-static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 target_pstate,
+-				     bool strict, bool fast_switch)
++static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 min, u32 max,
++				     u32 desired, bool fast_switch)
+ {
+ 	u64 prev = READ_ONCE(cpu->hwp_req_cached), value = prev;
+ 
+ 	value &= ~HWP_MIN_PERF(~0L);
+-	value |= HWP_MIN_PERF(target_pstate);
++	value |= HWP_MIN_PERF(min);
+ 
+-	/*
+-	 * The entire MSR needs to be updated in order to update the HWP min
+-	 * field in it, so opportunistically update the max too if needed.
+-	 */
+ 	value &= ~HWP_MAX_PERF(~0L);
+-	value |= HWP_MAX_PERF(strict ? target_pstate : cpu->max_perf_ratio);
++	value |= HWP_MAX_PERF(max);
++
++	value &= ~HWP_DESIRED_PERF(~0L);
++	value |= HWP_DESIRED_PERF(desired);
+ 
+ 	if (value == prev)
+ 		return;
+@@ -2569,11 +2568,15 @@ static int intel_cpufreq_update_pstate(s
+ 	int old_pstate = cpu->pstate.current_pstate;
+ 
+ 	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
+-	if (hwp_active)
+-		intel_cpufreq_adjust_hwp(cpu, target_pstate,
+-					 policy->strict_target, fast_switch);
+-	else if (target_pstate != old_pstate)
++	if (hwp_active) {
++		int max_pstate = policy->strict_target ?
++					target_pstate : cpu->max_perf_ratio;
++
++		intel_cpufreq_adjust_hwp(cpu, target_pstate, max_pstate, 0,
++					 fast_switch);
++	} else if (target_pstate != old_pstate) {
+ 		intel_cpufreq_adjust_perf_ctl(cpu, target_pstate, fast_switch);
++	}
+ 
+ 	cpu->pstate.current_pstate = target_pstate;
+ 
+@@ -2634,6 +2637,47 @@ static unsigned int intel_cpufreq_fast_s
+ 	return target_pstate * cpu->pstate.scaling;
+ }
+ 
++static void intel_cpufreq_adjust_perf(unsigned int cpunum,
++				      unsigned long min_perf,
++				      unsigned long target_perf,
++				      unsigned long capacity)
++{
++	struct cpudata *cpu = all_cpu_data[cpunum];
++	int old_pstate = cpu->pstate.current_pstate;
++	int cap_pstate, min_pstate, max_pstate, target_pstate;
++
++	update_turbo_state();
++	cap_pstate = global.turbo_disabled ? cpu->pstate.max_pstate :
++					     cpu->pstate.turbo_pstate;
++
++	/* Optimization: Avoid unnecessary divisions. */
++
++	target_pstate = cap_pstate;
++	if (target_perf < capacity)
++		target_pstate = DIV_ROUND_UP(cap_pstate * target_perf, capacity);
++
++	min_pstate = cap_pstate;
++	if (min_perf < capacity)
++		min_pstate = DIV_ROUND_UP(cap_pstate * min_perf, capacity);
++
++	if (min_pstate < cpu->pstate.min_pstate)
++		min_pstate = cpu->pstate.min_pstate;
++
++	if (min_pstate < cpu->min_perf_ratio)
++		min_pstate = cpu->min_perf_ratio;
++
++	max_pstate = min(cap_pstate, cpu->max_perf_ratio);
++	if (max_pstate < min_pstate)
++		max_pstate = min_pstate;
++
++	target_pstate = clamp_t(int, target_pstate, min_pstate, max_pstate);
++
++	intel_cpufreq_adjust_hwp(cpu, min_pstate, max_pstate, target_pstate, true);
++
++	cpu->pstate.current_pstate = target_pstate;
++	intel_cpufreq_trace(cpu, INTEL_PSTATE_TRACE_FAST_SWITCH, old_pstate);
++}
++
+ static int intel_cpufreq_cpu_init(struct cpufreq_policy *policy)
+ {
+ 	int max_state, turbo_max, min_freq, max_freq, ret;
+@@ -3032,6 +3076,8 @@ static int __init intel_pstate_init(void
+ 			intel_pstate.attr = hwp_cpufreq_attrs;
+ 			intel_cpufreq.attr = hwp_cpufreq_attrs;
+ 			intel_cpufreq.flags |= CPUFREQ_NEED_UPDATE_LIMITS;
++			intel_cpufreq.fast_switch = NULL;
++			intel_cpufreq.adjust_perf = intel_cpufreq_adjust_perf;
+ 			if (!default_driver)
+ 				default_driver = &intel_pstate;
+ 
+
+
+
