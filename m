@@ -2,197 +2,1208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D545A2D983B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7CF2D983F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407492AbgLNMpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 07:45:39 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:64608 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439287AbgLNMo5 (ORCPT
+        id S2439365AbgLNMqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 07:46:50 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:15228 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731521AbgLNMq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 07:44:57 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607949873; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=m7xKg4xAkB9ELFLlJVew8JC46YRWsfUOcTswVSYnR9E=; b=o2Ctk8JGhS4KMB7Y4GTsD3hxce5ndLahQig4QBjQHMaaRjPyRVTRUhmunavxaQomFAqcUsrp
- gv5r3BH4U8MBro390yVV5zV2RNG+ImmtMqUwzTTVj0WZ3fepLQuAOO7QcP5NlhluOiCJ18va
- uVgOUNOYsYiUOaJpy17Rn5REfAo=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5fd75e151f9c9f3c53f17ffa (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Dec 2020 12:44:05
- GMT
-Sender: vbadigan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C87D3C433ED; Mon, 14 Dec 2020 12:44:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.105] (unknown [49.205.247.211])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vbadigan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CB67CC433C6;
-        Mon, 14 Dec 2020 12:44:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CB67CC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vbadigan@codeaurora.org
-Subject: Re: [PATCH v4 2/2] mmc: sdhci-msm: Actually set the actual clock
-To:     Douglas Anderson <dianders@chromium.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-References: <20201211091150.v4.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
- <20201211091150.v4.2.I7564620993acd4baa63fa0e3925ca879a86d3ee3@changeid>
-From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Message-ID: <e817284c-1ae9-7d3f-5195-7313651ef9da@codeaurora.org>
-Date:   Mon, 14 Dec 2020 18:13:51 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Mon, 14 Dec 2020 07:46:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1607949987; x=1639485987;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=Ad0o+KPj//TKgM/fjNigcOoZdGyaHA38uLF/EEK/wAY=;
+  b=M8DnzQHxQyueq9B+sLyvgbSxk/tkWMNmL4poCONAm4ukECxEHMxsCU0d
+   pwKJsqPKB2HNmqaKpR73WahJjpB5+jEutpuE1j1dNb22aYWgC3DMQ4Dyu
+   IYNZPXJoy5HbXbCrH7B4sFoYiiu5rAZTVhxL3Rd5uLDbjfM+QYXzI/qkB
+   pFxHtw9vpVLuJ/BD/vLwn+uWpTVq6gjLtZyP2/HlpLEoRanjYj4HIsNnU
+   WsDiEypm5h2Qv1od/aJt8t65GGUBmfMFwi0RtXD8IEnBB0cjVgvS9c1MU
+   BruDx/NoKZpNp1xMZzvEkf8RlouYqN4WEWmxX8X/x/weIcYqsf9psl+1M
+   Q==;
+IronPort-SDR: r7DIPNnpzDCUJCAFvLlNgso6wZ3huMEjCmH/QpKIEEhVZtznylrSJsd6Jk8Yl9o5673egM1KAr
+ u3/L5c08Ea6y09Xg7WKcmocmmTZi/gOR4CLu/Eftg69xh4tMpFrRdJTtSzPNfXqN6hA+uMHKsf
+ nvRIu2HyvyOA6MsssbcoOb0CBEC9dhfW/WbD1n3VrvvP1woBTkXqDJJnDpFOrESyXTenCf6JL2
+ BfM/G2CkHzL2aJMzslX28RK3KX79xcXbgggG2Kl5v7ypJoZAYoYACK4r/CRqRE8qO2q73Muj1e
+ bao=
+X-IronPort-AV: E=Sophos;i="5.78,418,1599548400"; 
+   d="scan'208";a="97019947"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Dec 2020 05:45:09 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 14 Dec 2020 05:45:09 -0700
+Received: from training-HP-280-G1-MT-PC.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Mon, 14 Dec 2020 05:45:05 -0700
+From:   Divya Koppera <Divya.Koppera@microchip.com>
+To:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <marex@denx.de>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <UNGLinuxDriver@microchip.com>
+Subject: [PATCH v1 net-next] net: phy: mchp: Add 1588 support for LAN8814 Quad PHY
+Date:   Mon, 14 Dec 2020 18:15:02 +0530
+Message-ID: <20201214124502.28950-1-Divya.Koppera@microchip.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20201211091150.v4.2.I7564620993acd4baa63fa0e3925ca879a86d3ee3@changeid>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch add supports for 1588 Hardware Timestamping support
+to LAN8814 Quad Phy. It supports L2 and Ipv4 encapsulations.
 
-On 12/11/2020 10:42 PM, Douglas Anderson wrote:
-> The MSM SDHCI driver always set the "actual_clock" field to 0.  It had
-> a comment about it not being needed because we weren't using the
-> standard SDHCI divider mechanism and we'd just fallback to
-> "host->clock".  However, it's still better to provide the actual
-> clock.  Why?
->
-> 1. It will make timeout calculations slightly better.  On one system I
->     have, the eMMC requets 200 MHz (for HS400-ES) but actually gets 192
->     MHz.  These are close, but why not get the more accurate one.
->
-> 2. If things are seriously off in the clock driver and it's missing
->     rates or picking the wrong rate (maybe it's rounding up instead of
->     down), this will make it much more obvious what's going on.
->
-> NOTE: we have to be a little careful here because the "actual_clock"
-> field shouldn't include the multiplier that sdhci-msm needs
-> internally.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
->
-> Changes in v4:
-> - ("mmc: sdhci-msm: Actually set the actual clock") new for v4.
->
->   drivers/mmc/host/sdhci-msm.c | 32 ++++++++++++++------------------
->   1 file changed, 14 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-> index 50beb407dbe9..08a3960001ad 100644
-> --- a/drivers/mmc/host/sdhci-msm.c
-> +++ b/drivers/mmc/host/sdhci-msm.c
-> @@ -328,7 +328,7 @@ static void sdhci_msm_v5_variant_writel_relaxed(u32 val,
->   	writel_relaxed(val, host->ioaddr + offset);
->   }
->   
-> -static unsigned int msm_get_clock_rate_for_bus_mode(struct sdhci_host *host,
-> +static unsigned int msm_get_clock_mult_for_bus_mode(struct sdhci_host *host,
->   						    unsigned int clock)
+Signed-off-by: Divya Koppera<divya.koppera@microchip.com>
+---
+ drivers/net/phy/micrel.c | 1054 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 1048 insertions(+), 6 deletions(-)
 
-nit: clock variable not being used anymore. We can drop it.
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index 54e0d75203da..adb10ad314d1 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -27,6 +27,14 @@
+ #include <linux/of.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
++#include <linux/ptp_clock_kernel.h>
++#include <linux/ptp_clock.h>
++#include <linux/ptp_classify.h>
++#include <linux/net_tstamp.h>
++#include <linux/netdevice.h>
++#include <linux/if_vlan.h>
++#include <linux/ip.h>
++#include <linux/ipv6.h>
+ 
+ /* Operation Mode Strap Override */
+ #define MII_KSZPHY_OMSO				0x16
+@@ -53,6 +61,136 @@
+ #define	KSZPHY_INTCS_STATUS			(KSZPHY_INTCS_LINK_DOWN_STATUS |\
+ 						 KSZPHY_INTCS_LINK_UP_STATUS)
+ 
++/* Lan8814 general Interrupt control/status reg in GPHY specific block. */
++#define LAN8814_INTC				0x18
++#define LAN8814_INTC_JABBER			BIT(7)
++#define LAN8814_INTC_RECEIVE_ERR		BIT(6)
++#define LAN8814_INTC_PAGE_RECEIVE		BIT(5)
++#define LAN8814_INTC_PARELLEL			BIT(4)
++#define LAN8814_INTC_LINK_PARTNER_ACK		BIT(3)
++#define LAN8814_INTC_LINK_DOWN			BIT(2)
++#define LAN8814_INTC_REMOTE_FAULT		BIT(1)
++#define LAN8814_INTC_LINK_UP			BIT(0)
++#define LAN8814_INTC_ALL			(LAN8814_INTC_LINK_UP |\
++						 LAN8814_INTC_LINK_DOWN)
++
++#define LAN8814_INTS				0x1B
++#define LAN8814_INTS_JABBER			BIT(7)
++#define LAN8814_INTS_RECEIVE_ERR		BIT(6)
++#define LAN8814_INTS_PAGE_RECEIVE		BIT(5)
++#define LAN8814_INTS_PARELLEL			BIT(4)
++#define LAN8814_INTS_LINK_PARTNER_ACK		BIT(3)
++#define LAN8814_INTS_LINK_DOWN			BIT(2)
++#define LAN8814_INTS_REMOTE_FAULT		BIT(1)
++#define LAN8814_INTS_LINK_UP			BIT(0)
++#define LAN8814_INTS_ALL			(LAN8814_INTS_LINK_UP |\
++						 LAN8814_INTS_LINK_DOWN)
++
++#define LAN8814_PTP_MAX_FREQ_ADJ_IN_PPB		(31249999)
++#define LAN8814_PTP_MAX_FINE_ADJ_IN_SCALED_PPM	(2047999934)
++
++#define PTP_RX_MOD				0x024F
++#define PTP_RX_RSVD_BYTE_CFG			0x0250
++#define PTP_RX_TIMESTAMP_EN			0x024D
++#define PTP_TX_TIMESTAMP_EN			0x028D
++
++#define PTP_TX_PARSE_L2_ADDR_EN			0x0284
++#define PTP_RX_PARSE_L2_ADDR_EN			0x0244
++#define PTP_FLAG_ISR_ENABLED			BIT(2)
++#define PTP_FLAG_PTP_CLOCK_REGISTERED		BIT(1)
++
++#define LTC_HARD_RESET				0x023F
++#define LTC_HARD_RESET_				BIT(0)
++
++#define TSU_HARD_RESET				0x02C1
++#define TSU_HARD_RESET_				BIT(0)
++
++#define PTP_CMD_CTL				0x0200
++#define PTP_CMD_CTL_PTP_DISABLE_		BIT(0)
++#define PTP_CMD_CTL_PTP_ENABLE_			BIT(1)
++#define PTP_CMD_CTL_PTP_CLOCK_READ_		BIT(3)
++#define PTP_CMD_CTL_PTP_CLOCK_LOAD_		BIT(4)
++#define PTP_CMD_CTL_PTP_LTC_STEP_SEC_		BIT(5)
++#define PTP_CMD_CTL_PTP_LTC_STEP_NSEC_		BIT(6)
++
++#define PTP_CLOCK_SET_SEC_HI			(0x0205)
++#define PTP_CLOCK_SET_SEC_MID			(0x0206)
++#define PTP_CLOCK_SET_SEC_LO			(0x0207)
++#define PTP_CLOCK_SET_NS_HI			(0x0208)
++#define PTP_CLOCK_SET_NS_LO			(0x0209)
++#define PTP_CLOCK_SET_SUBNS_LO			(0x020B)
++#define PTP_CLOCK_SET_SUBNS_HI			(0x020A)
++
++#define PTP_CLOCK_READ_SEC_HI			(0x0229)
++#define PTP_CLOCK_READ_SEC_MID			(0x022A)
++#define PTP_CLOCK_READ_SEC_LO			(0x022B)
++#define PTP_CLOCK_READ_NS_HI			(0x022C)
++#define PTP_CLOCK_READ_NS_LO			(0x022D)
++#define PTP_CLOCK_READ_SUBNS_HI			(0x022E)
++#define PTP_CLOCK_READ_SUBNS_LO			(0x022F)
++
++#define PTP_OPERATING_MODE			(0x0241)
++#define PTP_OPERATING_MODE_STANDALONE		0x01
++
++#define PTP_TX_MOD				(0x028F)
++#define PTP_TX_MOD_TX_PTP_SYNC_TS_INSERT_	BIT(12)
++#define PTP_TX_MOD_BAD_UDPV4_CHKSUM_FORCE_FCS_DIS_ BIT(3)
++
++#define PTP_RX_PARSE_CONFIG			(0x0242)
++#define PTP_RX_PARSE_CONFIG_LAYER2_EN_		BIT(0)
++#define PTP_RX_PARSE_CONFIG_IPV4_EN_		BIT(1)
++
++#define PTP_TX_PARSE_CONFIG			(0x0282)
++#define PTP_TX_PARSE_CONFIG_LAYER2_EN_		BIT(0)
++#define PTP_TX_PARSE_CONFIG_IPV4_EN_		BIT(1)
++
++#define PTP_CLOCK_RATE_ADJ_HI_			(0x020C)
++#define PTP_CLOCK_RATE_ADJ_LO_			(0x020D)
++#define PTP_CLOCK_RATE_ADJ_DIR_			BIT(15)
++
++#define PTP_LTC_STEP_ADJ_HI			(0x0212)
++#define PTP_LTC_STEP_ADJ_LO			(0x0213)
++#define PTP_LTC_STEP_ADJ_DIR_			BIT(15)
++
++#define PTP_TX_MSG_HEADER1			(0x0298)
++#define PTP_TX_MSG_HEADER1_MSG_TYPE_		(0x000F)
++#define PTP_TX_MSG_HEADER1_MSG_TYPE_SYNC_	(0x00000000)
++
++#define LAN8814_INTR_CTRL_REG			(0x34)
++#define LAN8814_INTR_CTRL_REG_POLARITY		BIT(1)
++#define LAN8814_INTR_CTRL_REG_INTR_ENABLE	BIT(0)
++
++#define LAN8814_INTR_STS_REG			(0x33)
++#define LAN8814_INTR_STS_REG_1588_TSU0		BIT(0)
++
++#define PTP_CAP_INFO				(0x022A)
++#define PTP_CAP_INFO_TX_TS_CNT_GET_(reg_val)	(((reg_val) & 0x0f00) >> 8)
++
++#define PTP_TX_EGRESS_SEC_HI			(0x0296)
++#define PTP_TX_EGRESS_SEC_LO			(0x0297)
++#define PTP_TX_EGRESS_NS_HI			(0x0294)
++#define PTP_TX_EGRESS_NS_HI_TX_TS_VALID_	BIT(15)
++#define PTP_TX_EGRESS_NS_LO			(0x0295)
++#define PTP_TX_MSG_HEADER2			(0x0299)
++
++#define PTP_RX_INGRESS_SEC_HI			(0x0256)
++#define PTP_RX_INGRESS_SEC_LO			(0x0257)
++#define PTP_RX_INGRESS_NS_HI			(0x0254)
++#define PTP_RX_INGRESS_NS_LO			(0x0255)
++#define PTP_RX_MSG_HEADER2			(0x0259)
++
++#define PTP_TSU_INT_EN				(0x200)
++#define PTP_TSU_INT_EN_PTP_TX_TS_OVRFL_EN	BIT(3)
++#define PTP_TSU_INT_EN_PTP_TX_TS_EN		BIT(2)
++#define PTP_TSU_INT_EN_PTP_RX_TS_OVRFL_EN	BIT(1)
++#define PTP_TSU_INT_EN_PTP_RX_TS_EN		BIT(0)
++
++#define PTP_TSU_INT_STS				(0x201)
++#define PTP_TSU_INT_STS_PTP_TX_TS_OVRFL_INT	BIT(3)
++#define PTP_TSU_INT_STS_PTP_TX_TS_EN		BIT(2)
++#define PTP_TSU_INT_STS_PTP_RX_TS_OVRFL_INT	BIT(1)
++#define PTP_TSU_INT_STS_PTP_RX_TS_EN		BIT(0)
++
+ /* PHY Control 1 */
+ #define	MII_KSZPHY_CTRL_1			0x1e
+ 
+@@ -76,6 +214,9 @@
+ #define MII_KSZPHY_TX_DATA_PAD_SKEW             0x106
+ 
+ #define PS_TO_REG				200
++#define KSZ_EXT_PAGE_ACCESS_CONTROL		0x16
++#define KSZ_EXT_PAGE_ACCESS_ADDRESS_DATA	0x17
++#define OFF_PTP_CONTROL				32 /* PTPv1 only */
+ 
+ struct kszphy_hw_stat {
+ 	const char *string;
+@@ -96,6 +237,47 @@ struct kszphy_type {
+ 	bool has_rmii_ref_clk_sel;
+ };
+ 
++struct lan8814_ptp {
++	int flags;
++	struct ptp_clock *ptp_clock;
++	struct ptp_clock_info ptp_clock_info;
++	struct ptp_pin_desc pin_config[1];
++	enum hwtstamp_tx_types tx_type;
++	enum hwtstamp_rx_filters rx_filter;
++	struct sk_buff_head tx_queue;
++};
++
++struct lan8814_ptphdr {
++	u8 tsmt; /* transportSpecific | messageType */
++	u8 ver;  /* reserved0 | versionPTP */
++	__be16 msglen;
++	u8 domain;
++	u8 rsrvd1;
++	__be16 flags;
++	__be64 correction;
++	__be32 rsrvd2;
++	__be64 clk_identity;
++	__be16 src_port_id;
++	__be16 seq_id;
++	u8 ctrl;
++	u8 log_interval;
++} __attribute__((__packed__));
++
++struct lan8814_priv {
++	const struct kszphy_type *type;
++	int led_mode;
++	bool rmii_ref_clk_sel;
++	bool rmii_ref_clk_sel_val;
++	u64 stats[ARRAY_SIZE(kszphy_hw_stats)];
++	struct mii_timestamper mii_ts;
++	struct phy_device *phydev;
++	struct lan8814_ptp ptp;
++	int hwts_tx_en;
++	int hwts_rx_en;
++	int layer;
++	int version;
++};
++
+ struct kszphy_priv {
+ 	const struct kszphy_type *type;
+ 	int led_mode;
+@@ -135,6 +317,38 @@ static const struct kszphy_type ksz9021_type = {
+ 	.interrupt_level_mask	= BIT(14),
+ };
+ 
++static void lan8814_ptp_clock_get(struct phy_device *phydev,
++				  u32 *seconds, u32 *nano_seconds,
++				  u32 *sub_nano_seconds);
++
++static int lan8814_read_page_reg(struct phy_device *phydev,
++				 int page, u32 addr)
++{
++	u32 data;
++
++	phy_write(phydev, KSZ_EXT_PAGE_ACCESS_CONTROL, page);
++	phy_write(phydev, KSZ_EXT_PAGE_ACCESS_ADDRESS_DATA, addr);
++	phy_write(phydev, KSZ_EXT_PAGE_ACCESS_CONTROL, (page | 0x4000));
++	data = phy_read(phydev, KSZ_EXT_PAGE_ACCESS_ADDRESS_DATA);
++
++	return data;
++}
++
++static int lan8814_write_page_reg(struct phy_device *phydev,
++				  int page, u16 addr, u16 val)
++{
++	phy_write(phydev, KSZ_EXT_PAGE_ACCESS_CONTROL, page);
++	phy_write(phydev, KSZ_EXT_PAGE_ACCESS_ADDRESS_DATA, addr);
++	phy_write(phydev, KSZ_EXT_PAGE_ACCESS_CONTROL, (page | 0x4000));
++	val = phy_write(phydev, KSZ_EXT_PAGE_ACCESS_ADDRESS_DATA, val);
++	if (val != 0) {
++		phydev_err(phydev, "Error: phy_write_mmd has returned error %d\n",
++			   val);
++		return val;
++	}
++	return 0;
++}
++
+ static int kszphy_extended_write(struct phy_device *phydev,
+ 				u32 regnum, u16 val)
+ {
+@@ -149,16 +363,198 @@ static int kszphy_extended_read(struct phy_device *phydev,
+ 	return phy_read(phydev, MII_KSZPHY_EXTREG_READ);
+ }
+ 
+-static int kszphy_ack_interrupt(struct phy_device *phydev)
++static void lan8814_ptp_tx_ts_get(struct phy_device *phydev,
++				  u32 *seconds, u32 *nano_seconds,
++				  u32 *seq_id);
++
++static struct lan8814_ptphdr *get_ptp_header_l4(struct sk_buff *skb,
++						struct iphdr *iphdr,
++						struct udphdr *udphdr)
++{
++	if (iphdr->version != 4 || iphdr->protocol != IPPROTO_UDP)
++		return NULL;
++
++	return (struct lan8814_ptphdr *)(((unsigned char *)udphdr) + UDP_HLEN);
++}
++
++static struct lan8814_ptphdr *get_ptp_header_tx(struct sk_buff *skb)
++{
++	struct ethhdr *ethhdr = eth_hdr(skb);
++	struct udphdr *udphdr;
++	struct iphdr *iphdr;
++
++	if (ethhdr->h_proto == htons(ETH_P_1588))
++		return (struct lan8814_ptphdr *)(((unsigned char *)ethhdr) +
++				skb_mac_header_len(skb));
++
++	if (ethhdr->h_proto != htons(ETH_P_IP))
++		return NULL;
++
++	iphdr = ip_hdr(skb);
++	udphdr = udp_hdr(skb);
++
++	return get_ptp_header_l4(skb, iphdr, udphdr);
++}
++
++static int get_sig(struct sk_buff *skb, u8 *sig)
++{
++	struct lan8814_ptphdr *ptphdr = get_ptp_header_tx(skb);
++	struct ethhdr *ethhdr = eth_hdr(skb);
++	unsigned int i;
++
++	if (!ptphdr)
++		return -EOPNOTSUPP;
++
++	sig[0] = (__force u16)ptphdr->seq_id >> 8;
++	sig[1] = (__force u16)ptphdr->seq_id & GENMASK(7, 0);
++	sig[2] = ptphdr->domain;
++	sig[3] = ptphdr->tsmt & GENMASK(3, 0);
++
++	memcpy(&sig[4], ethhdr->h_dest, ETH_ALEN);
++
++	/* Fill the last bytes of the signature to reach a 16B signature */
++	for (i = 10; i < 16; i++)
++		sig[i] = ptphdr->tsmt & GENMASK(3, 0);
++
++	return 0;
++}
++
++static void lan8814_dequeue_skb(struct lan8814_ptp *ptp)
++{
++	struct lan8814_priv *priv = container_of(ptp, struct lan8814_priv, ptp);
++	struct phy_device *phydev = priv->phydev;
++	struct skb_shared_hwtstamps shhwtstamps;
++	struct sk_buff *skb;
++	u8 skb_sig[16];
++	int len, rc;
++	u32 reg, cnt;
++	u32 seconds, nsec, seq_id;
++
++	reg = lan8814_read_page_reg(phydev, 5, PTP_CAP_INFO);
++	cnt = PTP_CAP_INFO_TX_TS_CNT_GET_(reg);
++
++	/* FIFO is Empty*/
++	if (cnt == 0)
++		return;
++
++	len = skb_queue_len(&ptp->tx_queue);
++	if (len < 1)
++		return;
++
++	while (len--) {
++		skb = __skb_dequeue(&ptp->tx_queue);
++		if (!skb)
++			return;
++
++		/* Can't get the signature of the packet, won't ever
++		 * be able to have one so let's dequeue the packet.
++		 */
++		if (get_sig(skb, skb_sig) < 0) {
++			kfree_skb(skb);
++			continue;
++		}
++
++		lan8814_ptp_tx_ts_get(phydev, &seconds, &nsec, &seq_id);
++
++		rc = memcmp(skb_sig, &seq_id, sizeof(skb_sig));
++
++		/* Check if we found the signature we were looking for. */
++		if (memcmp(skb_sig, &seq_id, sizeof(skb_sig))) {
++			memset(&shhwtstamps, 0, sizeof(shhwtstamps));
++			shhwtstamps.hwtstamp = ktime_set(seconds, nsec);
++			skb_complete_tx_timestamp(skb, &shhwtstamps);
++
++			return;
++		}
++
++		/* Valid signature but does not match the one of the
++		 * packet in the FIFO right now, reschedule it for later
++		 * packets.
++		 */
++		__skb_queue_tail(&ptp->tx_queue, skb);
++	}
++}
++
++static void lan8814_get_tx_ts(struct lan8814_ptp *ptp)
+ {
+-	/* bit[7..0] int status, which is a read and clear register. */
++	u32 reg;
++	struct lan8814_priv *priv = container_of(ptp, struct lan8814_priv, ptp);
++	struct phy_device *phydev = priv->phydev;
++
++	do {
++		lan8814_dequeue_skb(ptp);
++
++		/* If other timestamps are available in the FIFO, process them. */
++		reg = lan8814_read_page_reg(phydev, 5, PTP_CAP_INFO);
++	} while (PTP_CAP_INFO_TX_TS_CNT_GET_(reg) > 1);
++}
++
++irqreturn_t lan8814_handle_ptp_interrupt(struct phy_device *phydev)
++{
++	struct lan8814_priv *lan8814 = phydev->priv;
+ 	int rc;
+ 
+-	rc = phy_read(phydev, MII_KSZPHY_INTCS);
++	rc = lan8814_read_page_reg(phydev, 5, PTP_TSU_INT_STS);
++
++	if (!(rc & PTP_TSU_INT_STS_PTP_TX_TS_EN))
++		return IRQ_NONE;
++
++	lan8814_get_tx_ts(&lan8814->ptp);
+ 
+-	return (rc < 0) ? rc : 0;
++	return IRQ_HANDLED;
++}
++
++irqreturn_t lan8814_handle_interrupt(struct phy_device *phydev)
++{
++	int irq_status;
++
++	irq_status = lan8814_read_page_reg(phydev, 4, LAN8814_INTR_STS_REG);
++	if (irq_status < 0)
++		return IRQ_NONE;
++
++	if (irq_status & LAN8814_INTR_STS_REG_1588_TSU0)
++		return lan8814_handle_ptp_interrupt(phydev);
++
++	irq_status = phy_read(phydev, LAN8814_INTS);
++	if (irq_status < 0)
++		return IRQ_NONE;
++
++	if (irq_status & LAN8814_INTS_ALL)
++		phy_mac_interrupt(phydev);
++
++	return IRQ_HANDLED;
+ }
+ 
++static int kszphy_ack_interrupt(struct phy_device *phydev)
++{
++	if (phy_read(phydev, MII_KSZPHY_INTCS) < 0)
++		return -1;
++
++	return 0;
++}
++
++static int lan8814_config_ts_intr(struct phy_device *phydev)
++{
++	return lan8814_write_page_reg(phydev, 5, PTP_TSU_INT_EN, PTP_TSU_INT_EN_PTP_TX_TS_EN |
++					  PTP_TSU_INT_EN_PTP_TX_TS_OVRFL_EN);
++}
++
++static int lan8814_config_intr(struct phy_device *phydev)
++{
++	int temp;
++
++	lan8814_write_page_reg(phydev, 4, LAN8814_INTR_CTRL_REG,
++			       LAN8814_INTR_CTRL_REG_POLARITY |
++			       LAN8814_INTR_CTRL_REG_INTR_ENABLE);
++
++	/* enable / disable interrupts */
++	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
++		temp = LAN8814_INTC_ALL;
++	else
++		temp = 0;
++
++	return phy_write(phydev, LAN8814_INTC, temp);
++}
+ static int kszphy_config_intr(struct phy_device *phydev)
+ {
+ 	const struct kszphy_type *type = phydev->drv->driver_data;
+@@ -304,7 +700,7 @@ static int kszphy_nand_tree_disable(struct phy_device *phydev)
+ /* Some config bits need to be set again on resume, handle them here. */
+ static int kszphy_config_reset(struct phy_device *phydev)
+ {
+-	struct kszphy_priv *priv = phydev->priv;
++	struct lan8814_priv *priv = phydev->priv;
+ 	int ret;
+ 
+ 	if (priv->rmii_ref_clk_sel) {
+@@ -1124,6 +1520,567 @@ static int kszphy_resume(struct phy_device *phydev)
+ 	return 0;
+ }
+ 
++static bool lan8814_ptp_is_enable(struct phy_device *phydev)
++{
++	if (phy_read(phydev, PTP_CMD_CTL) & PTP_CMD_CTL_PTP_ENABLE_)
++		return true;
++
++	return false;
++}
++
++static void lan8814_ptp_rx_ts_get(struct phy_device *phydev,
++				  u32 *seconds, u32 *nano_seconds, u32 *seq_id)
++{
++	if (seconds) {
++		(*seconds) = lan8814_read_page_reg(phydev, 5, PTP_RX_INGRESS_SEC_HI);
++		(*seconds) = ((*seconds) << 16) |
++			     lan8814_read_page_reg(phydev, 5, PTP_RX_INGRESS_SEC_LO);
++	}
++
++	if (nano_seconds) {
++		(*nano_seconds) = lan8814_read_page_reg(phydev, 5, PTP_RX_INGRESS_NS_HI);
++		(*nano_seconds) = (((*nano_seconds) & 0x3fff) << 16)
++				   | lan8814_read_page_reg(phydev, 5, PTP_RX_INGRESS_NS_LO);
++	}
++
++	if (seq_id)
++		(*seq_id) = lan8814_read_page_reg(phydev, 5, PTP_RX_MSG_HEADER2);
++}
++
++static void lan8814_ptp_tx_ts_get(struct phy_device *phydev,
++				  u32 *seconds, u32 *nano_seconds, u32 *seq_id)
++{
++	if (seconds) {
++		(*seconds) = lan8814_read_page_reg(phydev, 5, PTP_TX_EGRESS_SEC_HI);
++		(*seconds) = ((*seconds) << 16) |
++			     lan8814_read_page_reg(phydev, 5, PTP_TX_EGRESS_SEC_LO);
++	}
++
++	if (nano_seconds) {
++		(*nano_seconds) = lan8814_read_page_reg(phydev, 5, PTP_TX_EGRESS_NS_HI);
++		(*nano_seconds) = (((*nano_seconds) & 0x3fff) << 16) |
++			lan8814_read_page_reg(phydev, 5, PTP_TX_EGRESS_NS_LO);
++	}
++
++	if (seq_id)
++		(*seq_id) = lan8814_read_page_reg(phydev, 5, PTP_TX_MSG_HEADER2);
++}
++
++static int lan8814_ts_info(struct mii_timestamper *mii_ts, struct ethtool_ts_info *info)
++{
++	struct lan8814_priv *ksz9031 = container_of(mii_ts, struct lan8814_priv, mii_ts);
++
++	info->so_timestamping =
++		SOF_TIMESTAMPING_TX_HARDWARE |
++		SOF_TIMESTAMPING_RX_HARDWARE |
++		SOF_TIMESTAMPING_RAW_HARDWARE;
++
++	info->phc_index = ptp_clock_index(ksz9031->ptp.ptp_clock);
++
++	info->tx_types =
++		(1 << HWTSTAMP_TX_OFF) |
++		(1 << HWTSTAMP_TX_ON) |
++		(1 << HWTSTAMP_TX_ONESTEP_SYNC);
++
++	info->rx_filters =
++		(1 << HWTSTAMP_FILTER_NONE) |
++		(1 << HWTSTAMP_FILTER_PTP_V1_L4_EVENT) |
++		(1 << HWTSTAMP_FILTER_PTP_V2_L4_EVENT) |
++		(1 << HWTSTAMP_FILTER_PTP_V2_L2_EVENT) |
++		(1 << HWTSTAMP_FILTER_PTP_V2_EVENT);
++
++	return 0;
++}
++
++static int lan8814_hwtstamp(struct mii_timestamper *mii_ts, struct ifreq *ifr)
++{
++	struct lan8814_priv *lan8814 = container_of(mii_ts, struct lan8814_priv, mii_ts);
++	struct hwtstamp_config config;
++	int txcfg, rxcfg;
++
++	if (copy_from_user(&config, ifr->ifr_data, sizeof(config)))
++		return -EFAULT;
++
++	lan8814->hwts_tx_en = config.tx_type;
++
++	lan8814->ptp.rx_filter = config.rx_filter;
++	lan8814->ptp.tx_type = config.tx_type;
++
++	switch (config.rx_filter) {
++	case HWTSTAMP_FILTER_NONE:
++		lan8814->hwts_rx_en = 0;
++		lan8814->layer = 0;
++		lan8814->version = 0;
++		break;
++	case HWTSTAMP_FILTER_PTP_V2_L4_EVENT:
++	case HWTSTAMP_FILTER_PTP_V2_L4_SYNC:
++	case HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ:
++		lan8814->hwts_rx_en = 1;
++		lan8814->layer = PTP_CLASS_L4;
++		lan8814->version = PTP_CLASS_V2;
++		break;
++	case HWTSTAMP_FILTER_PTP_V2_L2_EVENT:
++	case HWTSTAMP_FILTER_PTP_V2_L2_SYNC:
++	case HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ:
++		lan8814->hwts_rx_en = 1;
++		lan8814->layer = PTP_CLASS_L2;
++		lan8814->version = PTP_CLASS_V2;
++		break;
++	case HWTSTAMP_FILTER_PTP_V2_EVENT:
++	case HWTSTAMP_FILTER_PTP_V2_SYNC:
++	case HWTSTAMP_FILTER_PTP_V2_DELAY_REQ:
++		lan8814->hwts_rx_en = 1;
++		lan8814->layer = PTP_CLASS_L4 | PTP_CLASS_L2;
++		lan8814->version = PTP_CLASS_V2;
++		break;
++	default:
++		return -ERANGE;
++	}
++
++	lan8814_write_page_reg(lan8814->phydev, 5, PTP_RX_PARSE_CONFIG, 0);
++	lan8814_write_page_reg(lan8814->phydev, 5, PTP_TX_PARSE_CONFIG, 0);
++
++	if (lan8814->hwts_rx_en && (lan8814->layer & PTP_CLASS_L2))
++		rxcfg = PTP_RX_PARSE_CONFIG_LAYER2_EN_;
++
++	if (lan8814->hwts_tx_en && (lan8814->layer & PTP_CLASS_L2))
++		txcfg = PTP_TX_PARSE_CONFIG_LAYER2_EN_;
++
++	if (lan8814->hwts_rx_en && (lan8814->layer & PTP_CLASS_L4))
++		rxcfg |= PTP_RX_PARSE_CONFIG_IPV4_EN_;
++
++	if (lan8814->hwts_tx_en && (lan8814->layer & PTP_CLASS_L4))
++		txcfg |= PTP_TX_PARSE_CONFIG_IPV4_EN_;
++
++	if (lan8814_ptp_is_enable(lan8814->phydev))
++		lan8814_write_page_reg(lan8814->phydev, 4, PTP_CMD_CTL,
++				       PTP_CMD_CTL_PTP_DISABLE_);
++
++	lan8814_write_page_reg(lan8814->phydev, 5, PTP_RX_PARSE_CONFIG, rxcfg);
++	lan8814_write_page_reg(lan8814->phydev, 5, PTP_TX_PARSE_CONFIG, txcfg);
++	lan8814_write_page_reg(lan8814->phydev, 5, PTP_RX_TIMESTAMP_EN, 0x3);
++	lan8814_write_page_reg(lan8814->phydev, 5, PTP_TX_TIMESTAMP_EN, 0x3);
++	lan8814_write_page_reg(lan8814->phydev, 5, PTP_TX_PARSE_L2_ADDR_EN, 0);
++	lan8814_write_page_reg(lan8814->phydev, 5, PTP_RX_PARSE_L2_ADDR_EN, 0);
++
++	lan8814_write_page_reg(lan8814->phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_ENABLE_);
++	if (lan8814->hwts_tx_en == HWTSTAMP_TX_ONESTEP_SYNC) {
++		lan8814_write_page_reg(lan8814->phydev, 5, PTP_TX_MOD,
++				       PTP_TX_MOD_TX_PTP_SYNC_TS_INSERT_);
++	} else if (lan8814->hwts_tx_en == HWTSTAMP_TX_ON) {
++		/* Enabling 2 step offloading and all option for TS insertion/correction fields */
++		lan8814_write_page_reg(lan8814->phydev, 5, PTP_TX_MOD, 0x800);
++		lan8814_config_ts_intr(lan8814->phydev);
++	}
++
++	return copy_to_user(ifr->ifr_data, &config, sizeof(config)) ? -EFAULT : 0;
++}
++
++static bool lan8814_rxtstamp(struct mii_timestamper *mii_ts, struct sk_buff *skb, int type)
++{
++	struct lan8814_priv *ksz9031 = container_of(mii_ts, struct lan8814_priv, mii_ts);
++	struct skb_shared_hwtstamps *shhwtstamps = NULL;
++	u32 seconds, nsec, seq_id;
++
++	if (!ksz9031->hwts_rx_en)
++		return false;
++
++	if (!skb)
++		return false;
++
++	if ((type & ksz9031->version) == 0 || (type & ksz9031->layer) == 0)
++		return false;
++
++	if (ksz9031->ptp.rx_filter == HWTSTAMP_FILTER_NONE ||
++	    type == PTP_CLASS_NONE)
++		return false;
++
++	lan8814_ptp_rx_ts_get(ksz9031->phydev, &seconds, &nsec, &seq_id);
++
++	/* Saving timestamp and sending through skbuff */
++	shhwtstamps = skb_hwtstamps(skb);
++	memset(shhwtstamps, 0, sizeof(*shhwtstamps));
++	shhwtstamps->hwtstamp = ktime_set(seconds, nsec);
++
++	netif_rx_ni(skb);
++
++	return true;
++}
++
++static int is_sync(struct sk_buff *skb, int type)
++{
++	u8 *data = skb->data, *msgtype;
++	unsigned int offset = 0;
++
++	if (type & PTP_CLASS_VLAN)
++		offset += VLAN_HLEN;
++
++	switch (type & PTP_CLASS_PMASK) {
++	case PTP_CLASS_IPV4:
++		offset += ETH_HLEN + IPV4_HLEN(data + offset) + UDP_HLEN;
++		break;
++	case PTP_CLASS_IPV6:
++		offset += ETH_HLEN + IP6_HLEN + UDP_HLEN;
++		break;
++	case PTP_CLASS_L2:
++		offset += ETH_HLEN;
++		break;
++	default:
++		return 0;
++	}
++
++	if (type & PTP_CLASS_V1)
++		offset += OFF_PTP_CONTROL;
++
++	if (skb->len < offset + 1)
++		return 0;
++
++	msgtype = data + offset;
++
++	return (*msgtype & 0xf) == 0;
++}
++
++static void lan8814_txtstamp(struct mii_timestamper *mii_ts,
++			     struct sk_buff *skb, int type)
++{
++	struct lan8814_priv *kszphy = container_of(mii_ts, struct lan8814_priv, mii_ts);
++
++	switch (kszphy->hwts_tx_en) {
++	case HWTSTAMP_TX_ONESTEP_SYNC:
++		if (is_sync(skb, type)) {
++			kfree_skb(skb);
++			return;
++		}
++	case HWTSTAMP_TX_ON:
++		skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
++		skb_queue_tail(&kszphy->ptp.tx_queue, skb);
++		break;
++
++	case HWTSTAMP_TX_OFF:
++	default:
++		kfree_skb(skb);
++		break;
++	}
++}
++
++static void lan8814_ptp_clock_set(struct phy_device *phydev,
++				  u32 seconds, u32 nano_seconds,
++				 u32 sub_nano_seconds)
++{
++	u32 sec_low, sec_high, nsec_low, nsec_high, snsec_low, snsec_high;
++
++	sec_low = seconds & 0xffff;
++	sec_high = ((seconds >> 16) & 0xffff);
++	nsec_low = nano_seconds & 0xffff;
++	nsec_high = ((nano_seconds >> 16) & 0x3fff);
++	snsec_low = sub_nano_seconds & 0xffff;
++	snsec_high = ((sub_nano_seconds >> 16) & 0xffff);
++
++	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_LO, sec_low);
++	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_SET_SEC_MID, sec_high);
++	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_LO, nsec_low);
++	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_SET_NS_HI, nsec_high);
++	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_SET_SUBNS_LO, snsec_low);
++	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_SET_SUBNS_HI, snsec_high);
++
++	lan8814_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_CLOCK_LOAD_);
++}
++
++static void lan8814_ptp_clock_get(struct phy_device *phydev,
++				  u32 *seconds, u32 *nano_seconds,
++				  u32 *sub_nano_seconds)
++{
++	lan8814_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_CLOCK_READ_);
++
++	if (seconds) {
++		(*seconds) = lan8814_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_MID);
++		(*seconds) = ((*seconds) << 16) |
++			     lan8814_read_page_reg(phydev, 4, PTP_CLOCK_READ_SEC_LO);
++	}
++
++	if (nano_seconds) {
++		(*nano_seconds) = lan8814_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_HI);
++		(*nano_seconds) = (((*nano_seconds) & 0x3fff) << 16) |
++				  lan8814_read_page_reg(phydev, 4, PTP_CLOCK_READ_NS_LO);
++	}
++
++	if (sub_nano_seconds) {
++		(*sub_nano_seconds) = lan8814_read_page_reg(phydev, 4,
++								PTP_CLOCK_READ_SUBNS_HI);
++		(*sub_nano_seconds) = ((*sub_nano_seconds) << 16) |
++				       lan8814_read_page_reg(phydev, 4,
++							     PTP_CLOCK_READ_SUBNS_LO);
++	}
++}
++
++static int lan8814_ptpci_gettime64(struct ptp_clock_info *ptpci,
++				   struct timespec64 *ts)
++{
++	struct lan8814_ptp *ptp =
++		container_of(ptpci, struct lan8814_ptp, ptp_clock_info);
++	struct lan8814_priv *priv =
++		container_of(ptp, struct lan8814_priv, ptp);
++	struct phy_device *phydev = priv->phydev;
++	u32 nano_seconds = 0;
++	u32 seconds = 0;
++
++	lan8814_ptp_clock_get(phydev, &seconds, &nano_seconds, NULL);
++	ts->tv_sec = seconds;
++	ts->tv_nsec = nano_seconds;
++
++	return 0;
++}
++
++static void lan8814_ptp_clock_step(struct phy_device *phydev,
++				   s64 time_step_ns)
++{
++	u32 nano_seconds_step	= 0;
++	u64 abs_time_step_ns	= 0;
++	u32 unsigned_seconds	= 0;
++	u32 nano_seconds	= 0;
++	u32 remainder		= 0;
++	s32 seconds		= 0;
++
++	if (time_step_ns >  15000000000LL) {
++		/* convert to clock set */
++		lan8814_ptp_clock_get(phydev, &unsigned_seconds,	&nano_seconds, NULL);
++		unsigned_seconds += div_u64_rem(time_step_ns, 1000000000LL,
++				&remainder);
++		nano_seconds += remainder;
++		if (nano_seconds >= 1000000000) {
++			unsigned_seconds++;
++			nano_seconds -= 1000000000;
++		}
++		lan8814_ptp_clock_set(phydev, unsigned_seconds,
++				      nano_seconds, 0);
++		return;
++	} else if (time_step_ns < -15000000000LL) {
++		/* convert to clock set */
++		time_step_ns = -time_step_ns;
++
++		lan8814_ptp_clock_get(phydev, &unsigned_seconds,
++				      &nano_seconds, NULL);
++		unsigned_seconds -= div_u64_rem(time_step_ns, 1000000000LL,
++				&remainder);
++		nano_seconds_step = remainder;
++		if (nano_seconds < nano_seconds_step) {
++			unsigned_seconds--;
++			nano_seconds += 1000000000;
++		}
++		nano_seconds -= nano_seconds_step;
++		lan8814_ptp_clock_set(phydev, unsigned_seconds,
++				      nano_seconds, 0);
++		return;
++	}
++
++	/* do clock step */
++	if (time_step_ns >= 0) {
++		abs_time_step_ns = (u64)(time_step_ns);
++		seconds = (s32)div_u64_rem(abs_time_step_ns, 1000000000,
++				&remainder);
++		nano_seconds = (u32)remainder;
++	} else {
++		abs_time_step_ns = (u64)(-time_step_ns);
++		seconds = -((s32)div_u64_rem(abs_time_step_ns, 1000000000,
++					&remainder));
++		nano_seconds = (u32)remainder;
++		if (nano_seconds > 0) {
++			/* subtracting nano seconds is not allowed
++			 * convert to subtracting from seconds,
++			 * and adding to nanoseconds
++			 */
++			seconds--;
++			nano_seconds = (1000000000 - nano_seconds);
++		}
++	}
++
++	if (nano_seconds > 0) {
++		/* add 8 ns to cover the likely normal increment */
++		nano_seconds += 8;
++	}
++
++	if (nano_seconds >= 1000000000) {
++		/* carry into seconds */
++		seconds++;
++		nano_seconds -= 1000000000;
++	}
++
++	while (seconds) {
++		if (seconds > 0) {
++			u32 adjustment_value = (u32)seconds;
++			u16 adjustment_value_lo, adjustment_value_hi;
++
++			adjustment_value_lo = adjustment_value & 0xffff;
++			adjustment_value_hi = (adjustment_value >> 16) & 0x3fff;
++
++			if (adjustment_value > 0xF)
++				adjustment_value = 0xF;
++			lan8814_write_page_reg(phydev, 4, PTP_LTC_STEP_ADJ_LO,
++					       adjustment_value);
++			lan8814_write_page_reg(phydev, 4, PTP_LTC_STEP_ADJ_HI,
++					       PTP_LTC_STEP_ADJ_DIR_ |
++					       adjustment_value_hi);
++			seconds -= ((s32)adjustment_value);
++		} else {
++			u32 adjustment_value = (u32)(-seconds);
++			u16 adjustment_value_lo, adjustment_value_hi;
++
++			adjustment_value_lo = adjustment_value & 0xffff;
++			adjustment_value_hi = (adjustment_value >> 16) & 0x3fff;
++			if (adjustment_value > 0xF)
++				adjustment_value = 0xF;
++			lan8814_write_page_reg(phydev, 4, PTP_LTC_STEP_ADJ_LO,
++					       adjustment_value);
++			lan8814_write_page_reg(phydev, 4, PTP_LTC_STEP_ADJ_HI,
++					       PTP_LTC_STEP_ADJ_DIR_ |
++					       adjustment_value_hi);
++			seconds += ((s32)adjustment_value);
++		}
++		lan8814_write_page_reg(phydev, 4, PTP_CMD_CTL,
++				       PTP_CMD_CTL_PTP_LTC_STEP_SEC_);
++	}
++	if (nano_seconds) {
++		u16 nano_seconds_lo;
++		u16 nano_seconds_hi;
++
++		nano_seconds_lo = nano_seconds & 0xffff;
++		nano_seconds_hi = (nano_seconds >> 16) & 0x3fff;
++
++		lan8814_write_page_reg(phydev, 4, PTP_LTC_STEP_ADJ_LO,
++				       nano_seconds_lo);
++		lan8814_write_page_reg(phydev, 4, PTP_LTC_STEP_ADJ_HI,
++				       PTP_LTC_STEP_ADJ_DIR_ |
++				       nano_seconds_hi);
++		lan8814_write_page_reg(phydev, 4, PTP_CMD_CTL,
++				       PTP_CMD_CTL_PTP_LTC_STEP_NSEC_);
++	}
++}
++
++static int lan8814_ptpci_adjtime(struct ptp_clock_info *ptpci, s64 delta)
++{
++	struct lan8814_ptp *ptp =
++		container_of(ptpci, struct lan8814_ptp, ptp_clock_info);
++	struct lan8814_priv *priv =
++		container_of(ptp, struct lan8814_priv, ptp);
++	struct phy_device *phydev = priv->phydev;
++
++	lan8814_ptp_clock_step(phydev, delta);
++
++	return 0;
++}
++
++static int lan8814_ptpci_adjfreq(struct ptp_clock_info *ptpci, s32 delta_ppb)
++{
++	struct lan8814_ptp *ptp =
++		container_of(ptpci, struct lan8814_ptp, ptp_clock_info);
++	struct lan8814_priv *priv =
++		container_of(ptp, struct lan8814_priv, ptp);
++	struct phy_device *phydev = priv->phydev;
++	u32 kszphy_rate_adj = 0;
++	u16 kszphy_rate_adj_lo = 0, kszphy_rate_adj_hi = 0;
++	bool positive = true;
++	u32 u32_delta = 0;
++	u64 u64_delta = 0;
++
++	if (delta_ppb > 0) {
++		u32_delta = (u32)delta_ppb;
++		positive = true;
++	} else {
++		u32_delta = (u32)(-delta_ppb);
++		positive = false;
++	}
++	u64_delta = (((u64)u32_delta) << 35);
++	kszphy_rate_adj = div_u64(u64_delta, 1000000000);
++
++	kszphy_rate_adj_lo = kszphy_rate_adj & 0xffff;
++	kszphy_rate_adj_hi = (kszphy_rate_adj >> 16) & 0x3fff;
++
++	if (positive)
++		kszphy_rate_adj_hi |= PTP_CLOCK_RATE_ADJ_DIR_;
++
++	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_RATE_ADJ_HI_, kszphy_rate_adj_hi);
++	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_RATE_ADJ_LO_, kszphy_rate_adj_lo);
++
++	return 0;
++}
++
++static int lan8814_ptpci_adjfine(struct ptp_clock_info *ptpci, long scaled_ppm)
++{
++	struct lan8814_ptp *ptp =
++		container_of(ptpci, struct lan8814_ptp, ptp_clock_info);
++	struct lan8814_priv *priv = container_of(ptp, struct lan8814_priv, ptp);
++	struct phy_device *phydev = priv->phydev;
++	u32 kszphy_rate_adj = 0;
++	u16 kszphy_rate_adj_lo = 0, kszphy_rate_adj_hi = 0;
++	bool positive = true;
++	u64 u64_delta = 0;
++
++	if ((scaled_ppm < (-LAN8814_PTP_MAX_FINE_ADJ_IN_SCALED_PPM)) ||
++	    scaled_ppm > LAN8814_PTP_MAX_FINE_ADJ_IN_SCALED_PPM) {
++		return -EINVAL;
++	}
++	if (scaled_ppm > 0) {
++		u64_delta = (u64)scaled_ppm;
++		positive = true;
++	} else {
++		u64_delta = (u64)(-scaled_ppm);
++		positive = false;
++	}
++	u64_delta = (u64_delta << 13);
++	kszphy_rate_adj = div_u64(u64_delta, 15625);
++
++	kszphy_rate_adj_lo = kszphy_rate_adj & 0xffff;
++	kszphy_rate_adj_hi = (kszphy_rate_adj >> 16) & 0x3fff;
++
++	if (positive)
++		kszphy_rate_adj_hi |= PTP_CLOCK_RATE_ADJ_DIR_;
++
++	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_RATE_ADJ_HI_, kszphy_rate_adj_hi);
++	lan8814_write_page_reg(phydev, 4, PTP_CLOCK_RATE_ADJ_LO_, kszphy_rate_adj_lo);
++
++	return 0;
++}
++
++static void lan8814_ptp_reset(struct phy_device *phydev)
++{
++	if (lan8814_ptp_is_enable(phydev))
++		lan8814_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_DISABLE_);
++
++	lan8814_write_page_reg(phydev, 4, LTC_HARD_RESET, LTC_HARD_RESET_);
++	lan8814_write_page_reg(phydev, 5, TSU_HARD_RESET, TSU_HARD_RESET_);
++}
++
++static void lan8814_ptp_enable(struct phy_device *phydev)
++{
++	if (lan8814_ptp_is_enable(phydev))
++		return;
++
++	lan8814_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_ENABLE_);
++}
++
++static void lan8814_ptp_sync_to_system_clock(struct phy_device *phydev)
++{
++	struct timespec64 ts;
++
++	ktime_get_clocktai_ts64(&ts);
++
++	lan8814_ptp_clock_set(phydev, ts.tv_sec, ts.tv_nsec, 0);
++}
++
++static void lan8814_ptp_init(struct phy_device *phydev)
++{
++	u32 temp;
++
++	lan8814_ptp_reset(phydev);
++	lan8814_ptp_sync_to_system_clock(phydev);
++	temp = lan8814_read_page_reg(phydev, 5, PTP_TX_MOD);
++	temp |= PTP_TX_MOD_BAD_UDPV4_CHKSUM_FORCE_FCS_DIS_;
++	lan8814_write_page_reg(phydev, 5, PTP_TX_MOD, temp);
++	lan8814_write_page_reg(phydev, 4, PTP_OPERATING_MODE,
++			       PTP_OPERATING_MODE_STANDALONE);
++	lan8814_ptp_enable(phydev);
++}
++
+ static int kszphy_probe(struct phy_device *phydev)
+ {
+ 	const struct kszphy_type *type = phydev->drv->driver_data;
+@@ -1185,6 +2142,89 @@ static int kszphy_probe(struct phy_device *phydev)
+ 	return 0;
+ }
+ 
++static int lan8814_probe(struct phy_device *phydev)
++{
++	struct lan8814_priv *priv;
++	struct clk *clk;
++	const struct kszphy_type *type = phydev->drv->driver_data;
++	const struct device_node *np = phydev->mdio.dev.of_node;
++
++	priv = devm_kzalloc(&phydev->mdio.dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	skb_queue_head_init(&priv->ptp.tx_queue);
++
++	priv->phydev = phydev;
++
++	priv->type = type;
++
++	priv->mii_ts.rxtstamp = lan8814_rxtstamp;
++	priv->mii_ts.txtstamp = lan8814_txtstamp;
++	priv->mii_ts.hwtstamp = lan8814_hwtstamp;
++	priv->mii_ts.ts_info  = lan8814_ts_info;
++
++	phydev->mii_ts = &priv->mii_ts;
++
++	phydev->priv = priv;
++
++	lan8814_ptp_init(phydev);
++
++	priv->ptp.flags |= PTP_FLAG_ISR_ENABLED;
++
++	if (!IS_ENABLED(CONFIG_PTP_1588_CLOCK))
++		return 0;
++
++	clk = devm_clk_get(&phydev->mdio.dev, "rmii-ref");
++	/* NOTE: clk may be NULL if building without CONFIG_HAVE_CLK */
++	if (!IS_ERR_OR_NULL(clk)) {
++		unsigned long rate = clk_get_rate(clk);
++		bool rmii_ref_clk_sel_25_mhz;
++
++		priv->rmii_ref_clk_sel = type->has_rmii_ref_clk_sel;
++		rmii_ref_clk_sel_25_mhz = of_property_read_bool(np,
++				"micrel,rmii-reference-clock-select-25-mhz");
++
++		if (rate > 24500000 && rate < 25500000) {
++			priv->rmii_ref_clk_sel_val = rmii_ref_clk_sel_25_mhz;
++		} else if (rate > 49500000 && rate < 50500000) {
++			priv->rmii_ref_clk_sel_val = !rmii_ref_clk_sel_25_mhz;
++		} else {
++			phydev_err(phydev, "Clock rate out of range: %ld\n",
++				   rate);
++			return -EINVAL;
++		}
++	}
++
++	priv->ptp.ptp_clock_info.owner = THIS_MODULE;
++	snprintf(priv->ptp.ptp_clock_info.name, 30, "%s",
++		 phydev->drv->name);
++	priv->ptp.ptp_clock_info.max_adj = LAN8814_PTP_MAX_FREQ_ADJ_IN_PPB;
++	priv->ptp.ptp_clock_info.n_alarm = 0;
++	priv->ptp.ptp_clock_info.n_ext_ts = 0;
++	priv->ptp.ptp_clock_info.n_per_out = 1;
++	priv->ptp.ptp_clock_info.n_pins = 0;
++	priv->ptp.ptp_clock_info.pps = 0;
++	priv->ptp.ptp_clock_info.pin_config = NULL;
++	priv->ptp.ptp_clock_info.adjfine = lan8814_ptpci_adjfine;
++	priv->ptp.ptp_clock_info.adjfreq = lan8814_ptpci_adjfreq;
++	priv->ptp.ptp_clock_info.adjtime = lan8814_ptpci_adjtime;
++	priv->ptp.ptp_clock_info.gettime64 = lan8814_ptpci_gettime64;
++	priv->ptp.ptp_clock_info.getcrosststamp = NULL;
++
++	priv->ptp.ptp_clock = ptp_clock_register(&priv->ptp.ptp_clock_info,
++						 &phydev->mdio.dev);
++
++	if (IS_ERR_OR_NULL(priv->ptp.ptp_clock))
++		phydev_err(phydev, "ptp_clock_register failed %lu\n",
++			   PTR_ERR(priv->ptp.ptp_clock));
++
++	priv->ptp.flags |= PTP_FLAG_PTP_CLOCK_REGISTERED;
++	phydev_info(phydev, "successfully registered ptp clock\n");
++
++	return 0;
++}
++
+ static struct phy_driver ksphy_driver[] = {
+ {
+ 	.phy_id		= PHY_ID_KS8737,
+@@ -1352,7 +2392,7 @@ static struct phy_driver ksphy_driver[] = {
+ 	.phy_id_mask	= MICREL_PHY_ID_MASK,
+ 	.name		= "Microchip INDY Gigabit Quad PHY",
+ 	.driver_data	= &ksz9021_type,
+-	.probe		= kszphy_probe,
++	.probe		= lan8814_probe,
+ 	.soft_reset	= genphy_soft_reset,
+ 	.read_status	= ksz9031_read_status,
+ 	.get_sset_count	= kszphy_get_sset_count,
+@@ -1360,6 +2400,8 @@ static struct phy_driver ksphy_driver[] = {
+ 	.get_stats	= kszphy_get_stats,
+ 	.suspend	= genphy_suspend,
+ 	.resume		= kszphy_resume,
++	.config_intr	= lan8814_config_intr,
++	.handle_interrupt = lan8814_handle_interrupt,
+ }, {
+ 	.phy_id		= PHY_ID_KSZ9131,
+ 	.phy_id_mask	= MICREL_PHY_ID_MASK,
+-- 
+2.17.1
 
->   {
->   	struct mmc_ios ios = host->mmc->ios;
-> @@ -342,8 +342,8 @@ static unsigned int msm_get_clock_rate_for_bus_mode(struct sdhci_host *host,
->   	    ios.timing == MMC_TIMING_MMC_DDR52 ||
->   	    ios.timing == MMC_TIMING_MMC_HS400 ||
->   	    host->flags & SDHCI_HS400_TUNING)
-> -		clock *= 2;
-> -	return clock;
-> +		return 2;
-> +	return 1;
->   }
->   
->   static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
-> @@ -354,14 +354,16 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
->   	struct mmc_ios curr_ios = host->mmc->ios;
->   	struct clk *core_clk = msm_host->bulk_clks[0].clk;
->   	unsigned long achieved_rate;
-> +	unsigned int desired_rate;
-> +	unsigned int mult;
->   	int rc;
->   
-> -	clock = msm_get_clock_rate_for_bus_mode(host, clock);
-> -	rc = dev_pm_opp_set_rate(mmc_dev(host->mmc), clock);
-> +	mult = msm_get_clock_mult_for_bus_mode(host, clock);
-> +	desired_rate = clock * mult;
-> +	rc = dev_pm_opp_set_rate(mmc_dev(host->mmc), desired_rate);
->   	if (rc) {
->   		pr_err("%s: Failed to set clock at rate %u at timing %d\n",
-> -		       mmc_hostname(host->mmc), clock,
-> -		       curr_ios.timing);
-> +		       mmc_hostname(host->mmc), desired_rate, curr_ios.timing);
->   		return;
->   	}
->   
-> @@ -371,11 +373,12 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
->   	 * encounter it.
->   	 */
->   	achieved_rate = clk_get_rate(core_clk);
-> -	if (achieved_rate > clock)
-> +	if (achieved_rate > desired_rate)
->   		pr_warn("%s: Card appears overclocked; req %u Hz, actual %lu Hz\n",
-> -			mmc_hostname(host->mmc), clock, achieved_rate);
-> +			mmc_hostname(host->mmc), desired_rate, achieved_rate);
-> +	host->mmc->actual_clock = achieved_rate / mult;
->   
-> -	msm_host->clk_rate = clock;
-> +	msm_host->clk_rate = desired_rate;
-
-
-Can you set msm_host->clk_rate also to achieved_rate?
-
-At few places in this driver, host->clock is being used where 
-achieved_rate should be used ideally.
-I will replace those instances with 'msm_host->clk_rate' in a separate 
-patch once this change merged.
-
-
->   	pr_debug("%s: Setting clock at rate %lu at timing %d\n",
->   		 mmc_hostname(host->mmc), achieved_rate, curr_ios.timing);
->   }
-> @@ -1756,13 +1759,6 @@ static unsigned int sdhci_msm_get_min_clock(struct sdhci_host *host)
->   static void __sdhci_msm_set_clock(struct sdhci_host *host, unsigned int clock)
->   {
->   	u16 clk;
-> -	/*
-> -	 * Keep actual_clock as zero -
-> -	 * - since there is no divider used so no need of having actual_clock.
-> -	 * - MSM controller uses SDCLK for data timeout calculation. If
-> -	 *   actual_clock is zero, host->clock is taken for calculation.
-> -	 */
-> -	host->mmc->actual_clock = 0;
->   
->   	sdhci_writew(host, 0, SDHCI_CLOCK_CONTROL);
->   
-> @@ -1785,7 +1781,7 @@ static void sdhci_msm_set_clock(struct sdhci_host *host, unsigned int clock)
->   	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
->   
->   	if (!clock) {
-> -		msm_host->clk_rate = clock;
-> +		host->mmc->actual_clock = msm_host->clk_rate = 0;
->   		goto out;
->   	}
->   
