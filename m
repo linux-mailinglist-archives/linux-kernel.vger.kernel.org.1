@@ -2,182 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093312D9847
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D083C2D984E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406851AbgLNMuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 07:50:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731521AbgLNMuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 07:50:07 -0500
-X-Gm-Message-State: AOAM533gKAwzCqrSKAZEpii2Bw6HX9gf/HQYIHnri6ZZEP3RGoaO+jaK
-        TmEdoJ8Z57gCOUuo0tT7YyKf3iTcLKg6bFfDvnw=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607950165;
-        bh=XhgKhK7Njh5RT/CQ5PItmzp13WD7BGx9W7NVLDTxC4g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bvAzRxAfXiafMmOZ78+AtTa0/MbGqQ3C6P7IfXuF1gUlyIg4+lESxfPDZTuML0OV1
-         3FxdCmy5TjJTSmDt956suDBWigSGlRZS+UbhcjibGkIxJXwYfccPfcMR/s0uue66Iw
-         RnblJJUKJVUnz3SzGV2hrw0nGKcJNci0OHoCXH9uGpvU3I628DfriS0XgxvP6fC0ug
-         9l6mCRpGQKLZcudL+bZRRUjKQqZ4l6sd+Z6tZyAMeOg266WoCE9JpggQi3MQr7AN9H
-         1n2q1osW2S60PWmS5wtOdD785ZxGy8YJPq1WPuBRLlVITpXE5+r51zOFH1Dcy9kpu8
-         CZm4qgyBdDdlQ==
-X-Google-Smtp-Source: ABdhPJwS5aNadcQWu2+nHwjFU7/V16x3ZsRYZdU/+f73suKpTJNLJneJtjo15kQfdhqTljmgqaPAIQXeqID53htvoNY=
-X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr10726115ots.251.1607950165001;
- Mon, 14 Dec 2020 04:49:25 -0800 (PST)
+        id S2406739AbgLNMwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 07:52:37 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21810 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732174AbgLNMwK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 07:52:10 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BECWHCj193558;
+        Mon, 14 Dec 2020 07:51:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to : sender; s=pp1;
+ bh=XZj1J5RML+8dGiI1mOBhArxN8Q5zCMpEepZPxYM0BQo=;
+ b=YHcfKe2bDsjvnpJDMg0JHb9z6vhO5G6L5H28Arv/F3dTl99z86Q79KOxTaLn9rjFnA9l
+ 1QeGfQJvbcepJIqQMJjXXsaTZsBHyJ19DEef4Ye03ESJdQPhROOUfSp+BYPP6wn6yhzE
+ 9ylJibi8TPj6jtmbgJcHi5qsrvw2429Y8k8rhN7AMKyuKEeZM9RsHEpeVBVQf4nBPH1A
+ iosu3/Zd5kHA+6FFKf17Y2dVZ40fdmnEY24BXLiI+iLqCfM1IK9hEMwPamWEmFpmTzgL
+ RQjPAmS2MV6ftofWSuGDRrEPrVcvgimCSkq+Dg46rVb7HIJJ0QrD2M7vwnt56kcD0nP7 lw== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35e2s59xvc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Dec 2020 07:51:14 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BECXfYv032010;
+        Mon, 14 Dec 2020 12:51:12 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03fra.de.ibm.com with ESMTP id 35cng8b74y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Dec 2020 12:51:11 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BECnrdm54198612
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Dec 2020 12:49:54 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E5471A4057;
+        Mon, 14 Dec 2020 12:49:53 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D2981A4040;
+        Mon, 14 Dec 2020 12:49:53 +0000 (GMT)
+Received: from t480-pf1aa2c2 (unknown [9.145.92.204])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 14 Dec 2020 12:49:53 +0000 (GMT)
+Received: from bblock by t480-pf1aa2c2 with local (Exim 4.94)
+        (envelope-from <bblock@linux.ibm.com>)
+        id 1konIW-000bQw-Sh; Mon, 14 Dec 2020 13:49:52 +0100
+Date:   Mon, 14 Dec 2020 13:49:52 +0100
+From:   Benjamin Block <bblock@linux.ibm.com>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Steffen Maier <maier@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        <linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] scsi: zfcp: move the position of put_device
+Message-ID: <X9dfcBC/qqUc4bmh@t480-pf1aa2c2.linux.ibm.com>
+References: <20201201024716.42926-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
-References: <CAK8P3a20LXgEQkYSpbFFrJs1mdg19W72dp3pbebH9Pkpib2g-g@mail.gmail.com>
- <CAKwvOdn79V-jaTH0mEtKyc-O+=Hj22bGtjKkZ1jriY2YABj-Lw@mail.gmail.com>
- <20201211093205.GU2414@hirez.programming.kicks-ass.net> <20201211163748.b37gashl6an6misu@treble>
- <20201211164915.GA2414@hirez.programming.kicks-ass.net> <20201211174610.2bfprpvrrlg66awd@treble>
- <CAKwvOdkWU3qQ_m3v1xn1Mm6+obC202NWEaF8g_gz3oqeeLkMQA@mail.gmail.com> <CAKwvOdmVq2StZbKZ0eaLEZmrPMgRUJMZFso+2G8tLJA_Nd-swA@mail.gmail.com>
-In-Reply-To: <CAKwvOdmVq2StZbKZ0eaLEZmrPMgRUJMZFso+2G8tLJA_Nd-swA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 14 Dec 2020 13:49:07 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2NudGg_i7AMMF67mcFy-UD3RZbUwdWOm5Wv0AUQ0nLLQ@mail.gmail.com>
-Message-ID: <CAK8P3a2NudGg_i7AMMF67mcFy-UD3RZbUwdWOm5Wv0AUQ0nLLQ@mail.gmail.com>
-Subject: Re: objtool crashes with some clang produced .o files
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201201024716.42926-1-miaoqinglang@huawei.com>
+Sender: Benjamin Block <bblock@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-14_05:2020-12-11,2020-12-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 clxscore=1015 phishscore=0
+ lowpriorityscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012140086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-net/xfrm/xfrm_output.o: warning: objtool: xfrm_output_resume()+0xdb4:
-unreachable instruction
-On Sat, Dec 12, 2020 at 1:42 AM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> On Fri, Dec 11, 2020 at 12:57 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > Thanks for the patch!
-> >
-> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1207
->
-> Arnd reported another objtool warning/error from another randconfig in
-> https://github.com/ClangBuiltLinux/linux/issues/1209 and CrOS just hit
-> this as well.
->
-> I haven't been able to isolate the configs yet (Arnd has posted the
-> full config: https://pastebin.com/wwwhUL8L
->
-> $ ./tools/objtool/objtool orc generate  --no-fp --no-unreachable
-> --retpoline arch/x86/entry/thunk_64.o
-> arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn
-> at offset 0x3e
->
-> Is the offset 0x3e referring to the final `ret` instruction in
-> preempt_schedule_notrace_thunk?  Observing insn_to_reloc_sym_addend()
-> (with your patch applied), it looks like both calls to
-> find_symbol_containing() with offset and offset-1 returns NULL.  I'm
-> curious if there's another quirk going on here, or possibly a config
-> from the randconfig that's messing up the special case? I don't follow
-> the comment about:
-> 119        * Hack alert.  This happens when we need to reference
-> 120        * the NOP pad insn immediately after the function.
-> 121        */
->
-> Attached the object file FWIW.
+On Tue, Dec 01, 2020 at 10:47:16AM +0800, Qinglang Miao wrote:
+> Have the `put_device()` call after `device_unregister()` in both
+> `zfcp_unit_remove()` and `zfcp_sysfs_port_remove_store()` to make
+> it more natural, for put_device() ought to be the last time we
+> touch the object in both functions.
+> 
+> And add comments after put_device to make codes clearer.
+> 
+> Suggested-by: Steffen Maier <maier@linux.ibm.com>
+> Suggested-by: Benjamin Block <bblock@linux.ibm.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>  v2: add comments after put_device as Steffen suggested.
+> 
+>  drivers/s390/scsi/zfcp_sysfs.c | 4 ++--
+>  drivers/s390/scsi/zfcp_unit.c  | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
 
-For completeness, these are the ones I currently see using clang-11
-and clang-12, I believe
-I have reported each one in the past:
+Got a bit delayed.
+Looks good, I queue it, and we send it with the changes for 5.12 once
+the merge window for 5.11 is over.
 
-1. For each file in kernel/trace/
-kernel/trace/trace_clock.o: warning: objtool:
-__llvm_gcov_writeout()+0x7: call without frame pointer save/setup
-kernel/trace/trace_clock.o: warning: objtool: __llvm_gcov_reset()+0x0:
-call without frame pointer save/setup
-kernel/trace/trace_clock.o: warning: objtool: __llvm_gcov_flush()+0x0:
-call without frame pointer save/setup
-kernel/trace/trace_clock.o: warning: objtool: __llvm_gcov_init()+0x0:
-call without frame pointer save/setup
+Thanks.
 
-2) reiserfs_panic()
-fs/reiserfs/do_balan.o: warning: objtool: replace_key()+0x3db: stack
-state mismatch: cfa1=7+104 cfa2=7+128
-fs/reiserfs/do_balan.o: warning: objtool: balance_leaf()+0xd80d: stack
-state mismatch: cfa1=7+424 cfa2=7+440
-fs/reiserfs/lbalance.o: warning: objtool:
-leaf_copy_boundary_item()+0x2bc5: stack state mismatch: cfa1=7+248
-cfa2=7+240
-fs/reiserfs/lbalance.o: warning: objtool:
-leaf_copy_items_entirely()+0xcda: stack state mismatch: cfa1=7+256
-cfa2=7+248
-fs/reiserfs/ibalance.o: warning: objtool: balance_internal()+0x3448:
-stack state mismatch: cfa1=7+328 cfa2=7+336
-fs/reiserfs/ibalance.o: warning: objtool:
-internal_move_pointers_items()+0x7c1: stack state mismatch: cfa1=7+200
-cfa2=7+192
-
-3) unreachable instructions:
-arch/x86/entry/entry_64.o: warning: objtool: .entry.text+0xb95:
-unreachable instruction
-net/xfrm/xfrm_output.o: warning: objtool: xfrm_output_resume()+0xdb4:
-unreachable instruction
-drivers/hwmon/pmbus/adm1275.o: warning: objtool:
-adm1275_probe()+0x622: unreachable instruction
-drivers/xen/privcmd.o: warning: objtool: mmap_batch_fn()+0x14d:
-unreachable instruction
-drivers/xen/privcmd.o: warning: objtool:
-privcmd_ioctl_mmap_batch()+0x954: unreachable instruction
-lib/string.o: warning: objtool: fortify_panic()+0x3: unreachable instruction
-drivers/scsi/smartpqi/smartpqi_init.o: warning: objtool:
-pqi_shutdown()+0x244: unreachable instruction
-
-4) jitterentropy built with -O0:
-crypto/jitterentropy.o: warning: objtool: tsan.module_ctor()+0x0: call
-without frame pointer save/setup
-
-5) unsafe_put_user() misoptimization
-arch/x86/kernel/signal.o: warning: objtool: __setup_rt_frame()+0x4c7:
-call to memset() with UACCESS enabled
-arch/x86/ia32/ia32_signal.o: warning: objtool:
-ia32_setup_rt_frame()+0x15b: call to memset() with UACCESS enabled
-
-6) user_access_save()/restore() problem in ftrace
-kernel/trace/trace_branch.o: warning: objtool:
-ftrace_likely_update()+0x1ed: call to __stack_chk_fail() with UACCESS
-enabled
-
-7) sibling calls:
-mm/vmscan.o: warning: objtool: shrink_node()+0x540: sibling call from
-callable instruction with modified stack frame
-drivers/spi/spi-rockchip.o: warning: objtool:
-rockchip_spi_transfer_one()+0x2e0: sibling call from callable
-instruction with modified stack frame
-drivers/gpu/drm/i915/gem/i915_gem_execbuffer.o: warning: objtool:
-check_relocations()+0x68: return with modified stack frame
-
-8) i915 GEM_BUG_ON() stack state mismatch (same as reiserfs_panic()):
-drivers/gpu/drm/i915/gem/i915_gem_execbuffer.o: warning: objtool:
-check_relocations()+0x145: stack state mismatch: cfa1=7+48 cfa2=-1+0
-drivers/gpu/drm/i915/gem/i915_gem_mman.o: warning: objtool:
-__igt_mmap_revoke()+0x180: stack state mismatch: cfa1=7+48 cfa2=-1+0
-
-9) kasan build, for each file:
-     arch/x86/entry/vdso/vma.o: warning: objtool:
-asan.module_ctor()+0xc: call without frame pointer save/setup
-     arch/x86/entry/vdso/vma.o: warning: objtool:
-asan.module_dtor()+0xc: call without frame pointer save/setup
-     arch/x86/entry/vsyscall/vsyscall_64.o: warning: objtool:
-asan.module_ctor()+0xc: call without frame pointer save/setup
-     arch/x86/entry/vsyscall/vsyscall_64.o: warning: objtool:
-asan.module_dtor()+0xc: call without frame pointer save/setup
-     arch/x86/events/amd/core.o: warning: objtool:
-asan.module_ctor()+0xc: call without frame pointer save/setup
-     arch/x86/events/amd/core.o: warning: objtool:
-asan.module_dtor()+0xc: call without frame pointer save/setup
-     arch/x86/events/amd/ibs.o: warning: objtool:
-asan.module_ctor()+0xc: call without frame pointer save/setup
-     arch/x86/events/amd/ibs.o: warning: objtool:
-asan.module_dtor()+0xc: call without frame pointer save/setup
-
-        Arnd
+-- 
+Best Regards, Benjamin Block  / Linux on IBM Z Kernel Development / IBM Systems
+IBM Deutschland Research & Development GmbH    /    https://www.ibm.com/privacy
+Vorsitz. AufsR.: Gregor Pillen         /        Geschäftsführung: Dirk Wittkopp
+Sitz der Gesellschaft: Böblingen / Registergericht: AmtsG Stuttgart, HRB 243294
