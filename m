@@ -2,203 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A64C2D9EB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA45C2D9EBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440390AbgLNSPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 13:15:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26019 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391382AbgLNSPF (ORCPT
+        id S2440699AbgLNSQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 13:16:51 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:37598 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439948AbgLNSQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 13:15:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607969615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AwwzZdDyF1r6qcS1a83NpXAsbn9SW/LPeb1RFJju/b4=;
-        b=ORK/hdJv2KLSE7P0fTClKEl14It18qK3jwu3CpI6x59RZ0qAc3zm6brJ8u3YScTHoYb7F3
-        6cV0UgjAFTJhli6uaOSjzyfByUwzSXMde6MNOZzvQEfjDeEC418erR1o/k4PB7uH4vNauU
-        8t5KaEdUWuGC/GmxndB7uhEWK7TdEkQ=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169--PXK4H4dO3epZdSEM4PDGA-1; Mon, 14 Dec 2020 13:13:24 -0500
-X-MC-Unique: -PXK4H4dO3epZdSEM4PDGA-1
-Received: by mail-wm1-f69.google.com with SMTP id k128so7088817wme.7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:13:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AwwzZdDyF1r6qcS1a83NpXAsbn9SW/LPeb1RFJju/b4=;
-        b=hJxTfW3SEvs3GeUXRQqmZRnZIA3l+sSNw70D1Gt4DovP189JTZJKH6eOyTbRwPDc3o
-         u9YW8t+WYgao7sY/nr+rV/zo2i7ZK+exL2v/Lc5myyMQn7K7T71URJi9E3nYzD9MVGj4
-         sZUQEX+JP2MK5ufQkPvLaLfipIOe6M8rzgnao1kEmMr6sMjhd3jd2k8gc2za9bldOAtt
-         KkOSCEQzYlkqtI6dMC6q1P2zY5gmnScsyvpYC2NQ1L28DFYQdfFFkWXr7zOZiy+lfgCr
-         dlghz2AEnLZtgvWTidHJ5IPOCIcgVslFIJjVC7EoFh0LGsTiUFSn4Iu3t/UtbyxZtidF
-         1EfQ==
-X-Gm-Message-State: AOAM530088SPJuvjHevnReLnEzj5JXA8LxAzJxSmmysrsExD/fjGZMTL
-        y2DLCo8FLiCx87IpB3xej22RK/DoX0aGvzeZDetGGP9OZhcV/MofO8WEAssCSEmCtTO77+G1Xjl
-        d9e4tvuqC7t5M3wyeDPbYXqaZ
-X-Received: by 2002:a1c:6008:: with SMTP id u8mr28240640wmb.173.1607969603260;
-        Mon, 14 Dec 2020 10:13:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyuUM/UOHcT7yv0tgDWk8gjs5bzu4UDZt8mSBTZrr1Gppa0JPSQqRDV8wZEKahD+QUrFaqO9g==
-X-Received: by 2002:a1c:6008:: with SMTP id u8mr28240616wmb.173.1607969602964;
-        Mon, 14 Dec 2020 10:13:22 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j59sm4170676wrj.13.2020.12.14.10.13.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Dec 2020 10:13:22 -0800 (PST)
-Subject: Re: [PATCH v5 00/34] SEV-ES hypervisor support
-To:     Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1607620209.git.thomas.lendacky@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <e348086e-1ca1-9020-7c0f-421768a96944@redhat.com>
-Date:   Mon, 14 Dec 2020 19:13:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 14 Dec 2020 13:16:32 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BEIEDCI034754;
+        Mon, 14 Dec 2020 18:15:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=ZaSEriH/etd6gavTjqmBnMgdg9IepI1ZheaObdqlGiI=;
+ b=cJ2Sha+ltYGzoTHA12hggpi/bgadXCRyNBJL8YwE4ndhbX+PxqpXW5r7Obad/SQV2AyL
+ aOFDUxT1PQJvP17banc9fT7SZ16/eDq4bV2PpRE2XciAalqaWGWkyml6bjalzEa4Y5b6
+ GhS3Vec5dIGEHAfMT8CTNVsctSOflUev/6yO/dX37RG2yEwZSgGiI4d1BIZFzzREy3BH
+ ogCVKoO+WhAbSWJKYbNxq8FSbUjErmkgfGxQbc1okfqi89AuCStusgQujCp2xp15ilUp
+ YgjoKdqvYGuMAHdFTxdcX8Wsw6whOSApi8mluhDimq1xwiZer0z5fO57eX4XR4fqdAfW bw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 35cn9r6qas-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 14 Dec 2020 18:15:36 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BEIEn3g065836;
+        Mon, 14 Dec 2020 18:15:35 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 35e6ep9ck7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Dec 2020 18:15:35 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BEIFUs6025547;
+        Mon, 14 Dec 2020 18:15:31 GMT
+Received: from localhost (/10.159.237.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 14 Dec 2020 10:15:29 -0800
+From:   Stephen Brennan <stephen.s.brennan@oracle.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] proc: Allow pid_revalidate() during LOOKUP_RCU
+In-Reply-To: <877dpln5uf.fsf@x220.int.ebiederm.org>
+References: <20201204000212.773032-1-stephen.s.brennan@oracle.com>
+ <20201212205522.GF2443@casper.infradead.org>
+ <877dpln5uf.fsf@x220.int.ebiederm.org>
+Date:   Mon, 14 Dec 2020 10:15:27 -0800
+Message-ID: <8736082r0g.fsf@stepbren-lnx.us.oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <cover.1607620209.git.thomas.lendacky@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 phishscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 mlxlogscore=956 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012140121
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=973
+ impostorscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012140121
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/20 18:09, Tom Lendacky wrote:
-> From: Tom Lendacky <thomas.lendacky@amd.com>
-> 
-> This patch series provides support for running SEV-ES guests under KVM.
-> 
-> Secure Encrypted Virtualization - Encrypted State (SEV-ES) expands on the
-> SEV support to protect the guest register state from the hypervisor. See
-> "AMD64 Architecture Programmer's Manual Volume 2: System Programming",
-> section "15.35 Encrypted State (SEV-ES)" [1].
-> 
-> In order to allow a hypervisor to perform functions on behalf of a guest,
-> there is architectural support for notifying a guest's operating system
-> when certain types of VMEXITs are about to occur. This allows the guest to
-> selectively share information with the hypervisor to satisfy the requested
-> function. The notification is performed using a new exception, the VMM
-> Communication exception (#VC). The information is shared through the
-> Guest-Hypervisor Communication Block (GHCB) using the VMGEXIT instruction.
-> The GHCB format and the protocol for using it is documented in "SEV-ES
-> Guest-Hypervisor Communication Block Standardization" [2].
-> 
-> Under SEV-ES, a vCPU save area (VMSA) must be encrypted. SVM is updated to
-> build the initial VMSA and then encrypt it before running the guest. Once
-> encrypted, it must not be modified by the hypervisor. Modification of the
-> VMSA will result in the VMRUN instruction failing with a SHUTDOWN exit
-> code. KVM must support the VMGEXIT exit code in order to perform the
-> necessary functions required of the guest. The GHCB is used to exchange
-> the information needed by both the hypervisor and the guest.
-> 
-> Register data from the GHCB is copied into the KVM register variables and
-> accessed as usual during handling of the exit. Upon return to the guest,
-> updated registers are copied back to the GHCB for the guest to act upon.
-> 
-> There are changes to some of the intercepts that are needed under SEV-ES.
-> For example, CR0 writes cannot be intercepted, so the code needs to ensure
-> that the intercept is not enabled during execution or that the hypervisor
-> does not try to read the register as part of exit processing. Another
-> example is shutdown processing, where the vCPU cannot be directly reset.
-> 
-> Support is added to handle VMGEXIT events and implement the GHCB protocol.
-> This includes supporting standard exit events, like a CPUID instruction
-> intercept, to new support, for things like AP processor booting. Much of
-> the existing SVM intercept support can be re-used by setting the exit
-> code information from the VMGEXIT and calling the appropriate intercept
-> handlers.
-> 
-> Finally, to launch and run an SEV-ES guest requires changes to the vCPU
-> initialization, loading and execution.
-> 
-> [1] https://www.amd.com/system/files/TechDocs/24593.pdf
-> [2] https://developer.amd.com/wp-content/resources/56421.pdf
-> 
-> ---
-> 
-> These patches are based on the KVM queue branch:
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git queue
-> 
-> dc924b062488 ("KVM: SVM: check CR4 changes against vcpu->arch")
-> 
-> A version of the tree can also be found at:
-> https://github.com/AMDESE/linux/tree/sev-es-v5
->   This tree has one addition patch that is not yet part of the queue
->   tree that is required to run any SEV guest:
->   [PATCH] KVM: x86: adjust SEV for commit 7e8e6eed75e
->   https://lore.kernel.org/kvm/20201130143959.3636394-1-pbonzini@redhat.com/
-> 
-> Changes from v4:
-> - Updated the tracking support for CR0/CR4
-> 
-> Changes from v3:
-> - Some krobot fixes.
-> - Some checkpatch cleanups.
-> 
-> Changes from v2:
-> - Update the freeing of the VMSA page to account for the encrypted memory
->    cache coherency feature as well as the VM page flush feature.
-> - Update the GHCB dump function with a bit more detail.
-> - Don't check for RAX being present as part of a string IO operation.
-> - Include RSI when syncing from GHCB to support KVM hypercall arguments.
-> - Add GHCB usage field validation check.
-> 
-> Changes from v1:
-> - Removed the VMSA indirection support:
->    - On LAUNCH_UPDATE_VMSA, sync traditional VMSA over to the new SEV-ES
->      VMSA area to be encrypted.
->    - On VMGEXIT VMEXIT, directly copy valid registers into vCPU arch
->      register array from GHCB. On VMRUN (following a VMGEXIT), directly
->      copy dirty vCPU arch registers to GHCB.
->    - Removed reg_read_override()/reg_write_override() KVM ops.
-> - Added VMGEXIT exit-reason validation.
-> - Changed kvm_vcpu_arch variable vmsa_encrypted to guest_state_protected
-> - Updated the tracking support for EFER/CR0/CR4/CR8 to minimize changes
->    to the x86.c code
-> - Updated __set_sregs to not set any register values (previously supported
->    setting the tracked values of EFER/CR0/CR4/CR8)
-> - Added support for reporting SMM capability at the VM-level. This allows
->    an SEV-ES guest to indicate SMM is not supported
-> - Updated FPU support to check for a guest FPU save area before using it.
->    Updated SVM to free guest FPU for an SEV-ES guest during KVM create_vcpu
->    op.
-> - Removed changes to the kvm_skip_emulated_instruction()
-> - Added VMSA validity checks before invoking LAUNCH_UPDATE_VMSA
-> - Minor code restructuring in areas for better readability
-> 
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Jim Mattson <jmattson@google.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Cc: Wanpeng Li <wanpengli@tencent.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
+ebiederm@xmission.com (Eric W. Biederman) writes:
 
-I'm queuing everything except patch 27, there's time to include it later 
-in 5.11.
+> Matthew Wilcox <willy@infradead.org> writes:
+>
+>> On Thu, Dec 03, 2020 at 04:02:12PM -0800, Stephen Brennan wrote:
+>>> -void pid_update_inode(struct task_struct *task, struct inode *inode)
+>>> +static int do_pid_update_inode(struct task_struct *task, struct inode *inode,
+>>> +			       unsigned int flags)
+>>
+>> I'm really nitpicking here, but this function only _updates_ the inode
+>> if flags says it should.  So I was thinking something like this
+>> (compile tested only).
+>>
+>> I'd really appreocate feedback from someone like Casey or Stephen on
+>> what they need for their security modules.
+>
+> Just so we don't have security module questions confusing things
+> can we please make this a 2 patch series?  With the first
+> patch removing security_task_to_inode?
+>
+> The justification for the removal is that all security_task_to_inode
+> appears to care about is the file type bits in inode->i_mode.  Something
+> that never changes.  Having this in a separate patch would make that
+> logical change easier to verify.
+>
 
-Regarding MSRs, take a look at the series I'm sending shortly (or 
-perhaps in a couple hours).  For now I'll keep it in kvm/queue, but the 
-plan is to get acks quickly and/or just include it in 5.11.  Please try 
-the kvm/queue branch to see if I screwed up anything.
+I'll gladly split that out in v3 so we can continue the discussion
+there.
 
-Paolo
+I'll also include some changes with Matthew's suggestion of
+inode_needs_pid_update(). This in combination with your suggestion to do
+fewer flag checks in pid_revalidate() should cleanup the code a fair bit.
 
+Stephen
+
+> Eric
+>
+>>
+>> diff --git a/fs/proc/base.c b/fs/proc/base.c
+>> index b362523a9829..771f330bfce7 100644
+>> --- a/fs/proc/base.c
+>> +++ b/fs/proc/base.c
+>> @@ -1968,6 +1968,25 @@ void pid_update_inode(struct task_struct *task, struct inode *inode)
+>>  	security_task_to_inode(task, inode);
+>>  }
+>>  
+>> +/* See if we can avoid the above call.  Assumes RCU lock held */
+>> +static bool inode_needs_pid_update(struct task_struct *task,
+>> +		const struct inode *inode)
+>> +{
+>> +	kuid_t uid;
+>> +	kgid_t gid;
+>> +
+>> +	if (inode->i_mode & (S_ISUID | S_ISGID))
+>> +		return true;
+>> +	task_dump_owner(task, inode->i_mode, &uid, &gid);
+>> +	if (!uid_eq(uid, inode->i_uid) || !gid_eq(gid, inode->i_gid))
+>> +		return true;
+>> +	/*
+>> +	 * XXX: Do we need to call the security system here to see if
+>> +	 * there's a pending update?
+>> +	 */
+>> +	return false;
+>> +}
+>> +
+>>  /*
+>>   * Rewrite the inode's ownerships here because the owning task may have
+>>   * performed a setuid(), etc.
+>> @@ -1978,8 +1997,15 @@ static int pid_revalidate(struct dentry *dentry, unsigned int flags)
+>>  	struct inode *inode;
+>>  	struct task_struct *task;
+>>  
+>> -	if (flags & LOOKUP_RCU)
+>> +	if (flags & LOOKUP_RCU) {
+>> +		inode = d_inode_rcu(dentry);
+>> +		task = pid_task(proc_pid(inode), PIDTYPE_PID);
+>> +		if (!task)
+>> +			return 0;
+>> +		if (!inode_needs_pid_update(task, inode))
+>> +			return 1;
+>>  		return -ECHILD;
+>> +	}
+>>  
+>>  	inode = d_inode(dentry);
+>>  	task = get_proc_task(inode);
