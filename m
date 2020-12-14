@@ -2,173 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A4E2D998E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 879BD2D999F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:19:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439091AbgLNOPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 09:15:11 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:46879 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2438848AbgLNOPL (ORCPT
+        id S2440021AbgLNOSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 09:18:50 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:57632 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439156AbgLNOST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 09:15:11 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 9864A580264;
-        Mon, 14 Dec 2020 09:14:04 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 14 Dec 2020 09:14:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=RCeXuv10zP/8MzcFIhLlQWXE0aB
-        CI5Zj/Gl0vxB5cPU=; b=mv6C5ng9UTV+bK262jts9CRIusaO9oQ/eaPF3BsoisA
-        WAzRSnEO3mG1QEoJgl+4GQtmdH7Po6EfTQMgSef0vdorC/F7Kurjv6UWXmRS0WTh
-        uUp7o8QH/Fy0d6i6zP+sqysxh9Q/+rkCqsaxoigd++Q9q9XjwQ71nZEEaXCjwTZy
-        vptPpb0dI5X6MHxAVN50RKPC9FA99qNF6G7QHyh+vzpo4kzn+/WOB2DZaSMZt2+o
-        Mp3S+ZpKdg6yx/1J6nqSQHAHPLtiaEWd5kMitUowICSjMMmGacpKo+HyXAX2U7T7
-        UHEL8l73SaPLvSJ8TJe2KE7rDctQAsuIWxmRbaupeIA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=RCeXuv
-        10zP/8MzcFIhLlQWXE0aBCI5Zj/Gl0vxB5cPU=; b=KkonWNVg0AnbvVwKToZx/F
-        UsrUvT7Nzc8UnYIQWiH7ySfg3NVtB1ADi0eRnybrtLkRSJwamcwBQsBvBaaafyaH
-        /S6WBWVnukEhXxYNmfz+Tnkn4Kh9eXBgn2bjmxnGmJFvVyOzJ37HjZbXx65GHU8C
-        ZrldTSIeEpBifVcaeHRWUBoDYVt3b1UC9WRwX9Ly9UYtpGEJmZide06TnMKD2xJd
-        fsyYNqioJ4Pt6DZohBpsRqYgIc5AWXEFcDATUJQokzY/sfA5lHixcxtoWG+WNVGM
-        suw9rW1oHjRFOjhDBzPfCBHJl0Bred/6C6MRiTN6+OiU8RLTOd0ROYaAr6TcPz0Q
-        ==
-X-ME-Sender: <xms:KnPXX2BL7dRAMX62EshOv6iL4UttJ1yg62m-cxpemNaLkt795VZ9dg>
-    <xme:KnPXXwh0N98RPT9DBsS97UtdJy2irB_WqMlj6JcopNv9eBHqGukSCjTrfLXggP7dy
-    jxvqET0LX8xECSAxyM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgieefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:KnPXX5nvm7uQDEUQgB_bRXpamrbYvwR5u0AOJS2QbrqU9b-rzZGqCQ>
-    <xmx:KnPXX0zml86MUIx71PaOPKW3tDqwN_9ofbOkraaJZ3ANdrN3sr1zuQ>
-    <xmx:KnPXX7Qa6eEOYMTaBFRhJ834pmLSWMnQHKbImGPyichkhCbeQpuEmQ>
-    <xmx:LHPXXwLCW1g3NtC-WM-kWV_8yPTJre-wRjrJ3Vi13e6GRnqCjQOrbA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 801E4108005C;
-        Mon, 14 Dec 2020 09:14:02 -0500 (EST)
-Date:   Mon, 14 Dec 2020 15:14:00 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Chen-Yu Tsai <wens@csie.org>
-Cc:     =?utf-8?B?QW5kcsOp?= Przywara <andre.przywara@arm.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.xyz>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        devicetree <devicetree@vger.kernel.org>
-Subject: Re: [linux-sunxi] Re: [PATCH v2 19/21] arm64: dts: allwinner: Add
- Allwinner H616 .dtsi file
-Message-ID: <20201214141400.des3jwfhmbnxd7xe@gilmour>
-References: <20201211011934.6171-1-andre.przywara@arm.com>
- <20201211011934.6171-20-andre.przywara@arm.com>
- <20201214095831.j63nks3fqxlaw75w@gilmour>
- <20201214125343.0cd1bc6a@slackpad.fritz.box>
- <CAGb2v677X7h_Xo3L6gP0Ws4P0ROmZ0LhwNStZk-zcL7XtTRCLA@mail.gmail.com>
+        Mon, 14 Dec 2020 09:18:19 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BEEADvJ071907;
+        Mon, 14 Dec 2020 14:17:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=RHfuFk1oW8oW5MMEI9K9uXKlSZyYVbE3kY1cnzm8N9E=;
+ b=o7iiggxkkeureV3QXraU40ZQW33BybRtmR0YaqUo1RV0tYrdzafoymLlT1+cgYN1AWnx
+ fyFXXb3jK4sxuHspnHSR6xNkpUUiUVn4nphdgmYjXsk/yRnBeZaCazg3g1KmAqi7i+de
+ tM0SbiC/YrhV1/bVCq1qC55UsK+HeBIr5WUVzZ3TbgVc17ejdVDU7KGUmaDfb9ZjMwOU
+ 7zSMqDhwgO2zK1BSdHr4D8QkzrIyRNQzA8MwMI6git5wXsmVt84JjyzLZly1ZDrmmm0B
+ fCZ9SOg2pnPIhzRpeiKCFw5XCxeX2OhNh2k+quFgNKzDCmMeauQhcQXUWV1h1oY89q6E 4A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 35cn9r5cyt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 14 Dec 2020 14:17:06 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BEEG59E047210;
+        Mon, 14 Dec 2020 14:17:06 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 35d7sukd71-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Dec 2020 14:17:06 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BEEGtYL021946;
+        Mon, 14 Dec 2020 14:16:56 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 14 Dec 2020 06:16:55 -0800
+Date:   Mon, 14 Dec 2020 17:16:44 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     "'Philipp Gerlesberger'" <Philipp.Gerlesberger@fau.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "linux-kernel@i4.cs.fau.de" <linux-kernel@i4.cs.fau.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "ij72uhux@stud.informatik.uni-erlangen.de" 
+        <ij72uhux@stud.informatik.uni-erlangen.de>,
+        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v2 12/12] media: atomisp: Fix LOGICAL_CONTINUATIONS
+Message-ID: <20201214141644.GF2809@kadam>
+References: <20201214110156.6152-1-Philipp.Gerlesberger@fau.de>
+ <20201214110156.6152-13-Philipp.Gerlesberger@fau.de>
+ <4eef67d66b0b48feba474906431daa30@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="64zcwd4wdxdwsyj3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGb2v677X7h_Xo3L6gP0Ws4P0ROmZ0LhwNStZk-zcL7XtTRCLA@mail.gmail.com>
+In-Reply-To: <4eef67d66b0b48feba474906431daa30@AcuMS.aculab.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012140100
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 lowpriorityscore=0 clxscore=1011 spamscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012140099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---64zcwd4wdxdwsyj3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Dec 14, 2020 at 09:28:36PM +0800, Chen-Yu Tsai wrote:
-> On Mon, Dec 14, 2020 at 8:53 PM Andre Przywara <andre.przywara@arm.com> w=
-rote:
+On Mon, Dec 14, 2020 at 11:53:04AM +0000, David Laight wrote:
+> From: Philipp Gerlesberger
+> > Sent: 14 December 2020 11:02
 > >
-> > On Mon, 14 Dec 2020 10:58:31 +0100
-> > Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > Hi,
-> >
-> > > On Fri, Dec 11, 2020 at 01:19:32AM +0000, Andre Przywara wrote:
-> > > > +   reserved-memory {
-> > > > +           #address-cells =3D <2>;
-> > > > +           #size-cells =3D <2>;
-> > > > +           ranges;
-> > > > +
-> > > > +           /* 512KiB reserved for ARM Trusted Firmware (BL31)
-> > > > */
-> > > > +           secmon_reserved: secmon@40000000 {
-> > > > +                   reg =3D <0x0 0x40000000 0x0 0x80000>;
-> > > > +                   no-map;
-> > > > +           };
-> > > > +   };
-> > >
-> > > This should still be set by the firmware
-> > >
-> > > > +           mmc0: mmc@4020000 {
-> > > > +                   compatible =3D "allwinner,sun50i-h616-mmc",
-> > > > +                                "allwinner,sun50i-a100-mmc";
-> > > > +                   reg =3D <0x04020000 0x1000>;
-> > > > +                   clocks =3D <&ccu CLK_BUS_MMC0>, <&ccu
-> > > > CLK_MMC0>;
-> > > > +                   clock-names =3D "ahb", "mmc";
-> > > > +                   resets =3D <&ccu RST_BUS_MMC0>;
-> > > > +                   reset-names =3D "ahb";
-> > > > +                   interrupts =3D <GIC_SPI 35
-> > > > IRQ_TYPE_LEVEL_HIGH>;
-> > > > +                   pinctrl-names =3D "default";
-> > > > +                   pinctrl-0 =3D <&mmc0_pins>;
-> > > > +                   status =3D "disabled";
-> > > > +                   #address-cells =3D <1>;
-> > > > +                   #size-cells =3D <0>;
-> > > > +           };
-> > >
-> > > Somewhat related: we shouldn't set the MMC speed flags in the drivers.
-> > > This is biting us on the already supported SoCs, so it would be great
-> > > to not repeat the same mistake with the new ones
-> >
-> > Do you mean to list the "sd-uhs-sdr50" and friends properties here in
-> > the DT?
-> > What is the best practice here in terms putting them in the .dts vs.
-> > the .dtsi? Surely the controller has limits, but bad traces on a board
-> > could impose further restrictions, right?
-> > Though that's probably rare, so it sounds like a lot of churn to list
-> > them in every board DT. So can we list everything in here (.dtsi), then
-> > delete in those affected boards only?
->=20
-> The driver will most certainly already have the basic high speed modes
-> enabled. Or we can list them in the .dtsi file.
+> > Logical continuations should be on the previous line
+> > 
+> > Co-developed-by: Andrey Khlopkov <ij72uhux@stud.informatik.uni-erlangen.de>
+> > Signed-off-by: Andrey Khlopkov <ij72uhux@stud.informatik.uni-erlangen.de>
+> > Signed-off-by: Philipp Gerlesberger <Philipp.Gerlesberger@fau.de>
+> > ---
+> >  drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
+> > b/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
+> > index 2f1c2df59f71..7d44070c7114 100644
+> > --- a/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
+> > +++ b/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
+> > @@ -24,8 +24,8 @@
+> >   *****************************************************************************/
+> >  int ia_css_queue_local_init(ia_css_queue_t *qhandle, ia_css_queue_local_t *desc)
+> >  {
+> > -	if (NULL == qhandle || NULL == desc
+> > -	    || NULL == desc->cb_elems || NULL == desc->cb_desc) {
+> > +	if (NULL == qhandle || NULL == desc ||
+> > +	    NULL == desc->cb_elems || NULL == desc->cb_desc) {
+> >  		/* Invalid parameters, return error*/
 
-I'd list them all in the DTSI, trying to be smart has bitten us already
-so I'd like to avoid it as much as possible.
+Delete this comment as well.  It's pointless.  (And the curly braces).
 
-And if we find a better way, we can set it in the driver if it's in the
-DTSI already. doing the opposite would be harder
+> >  		return -EINVAL;
+> 
 
-Maxime
+regards,
+dan carpenter
 
---64zcwd4wdxdwsyj3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9dzKAAKCRDj7w1vZxhR
-xYxQAQD05F90JhDUdr3GvaKEJQquCi8Tn5R6I8mNQHN9twlqtAEA/M9pX42neqt3
-LRIEV6YkIcUb/12pIeA4eDNUBy27sgk=
-=gQPC
------END PGP SIGNATURE-----
-
---64zcwd4wdxdwsyj3--
