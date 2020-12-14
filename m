@@ -2,321 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA85B2D91D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 03:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9B62D91D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 03:48:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437955AbgLNCqD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 13 Dec 2020 21:46:03 -0500
-Received: from mail-eopbgr1320101.outbound.protection.outlook.com ([40.107.132.101]:58578
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726096AbgLNCqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 21:46:02 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G3T26FPDH0d5ud4aCcBgJuG4BiZy8yAqm/MZRB84Qd5mB5eQxn2NhnnhhsTF3/DB96y5nouTZeXObHguKGIeH46TzesmZTzjCyZxquP2A19Vt6jDAc886YOe0zc7WA+AMsqH6svqHpDmh5TbTwa8lPHUkGi94xf3Q0ZlCS0+OYo/WXHJqxEzwAqFwGVcaFMllW7VElgTNUMtBk7/BHMzeS0DZNOLvw+0syr4x86/KsqopHJl4xtAbRNC/F35LhEy5XVp7v9eSeK1TNxoQo2M2+L4jBlrD3xkNRysnCLH8cxO3/siYi2FBSRPgfpFrrkf0g+pcOvIij4ceW+H5zGazA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CMcTpZgmsnllOCRht/wkHVq8cHzvKRDv1CIdoXXoZ/I=;
- b=XJb48UtuMGnxuyAvomFiOBa38CrCERCIEzFCL2CNFJc/aeh0sD+fJdHBLrgtJRUC/LJ18PlOwKzGzCf5URPnCIX6L6PKUC+i3pAMXGwPjhxzHIeGTkaz1+M1tl7kFk/GoSRli8tgwCE/6FnZjlFyHjuzLsVpxKSD6dNVT8oXTFCXLsR72A9wJRLp+V2Azz3jUHZAVyKgDkPUkhRekmf89sMzBus8QIjegWWgHeMdsdsxZy4hxlaixldggoSDrNBMepNtb+qRiDecoaV+bzm1+wMk6EJ2e61x3CJwtgwZNOxWVDZwRAd568/D5jC7wav1sKqRynvYwtXA0vbh4UM8pA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
- by HK0PR06MB2274.apcprd06.prod.outlook.com (2603:1096:203:4d::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.17; Mon, 14 Dec
- 2020 02:44:23 +0000
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::7061:73d9:50ae:b35e]) by HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::7061:73d9:50ae:b35e%7]) with mapi id 15.20.3654.025; Mon, 14 Dec 2020
- 02:44:23 +0000
-From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
-To:     Andrew Jeffery <andrew@aj.id.au>, Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>
-CC:     Ryan Chen <ryan_chen@aspeedtech.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Corey Minyard <minyard@acm.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Haiyue Wang <haiyue.wang@linux.intel.com>,
-        Cyril Bur <cyrilbur@gmail.com>,
-        Robert Lippert <rlippert@google.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-Subject: RE: [PATCH v2 5/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
-Thread-Topic: [PATCH v2 5/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
-Thread-Index: AQHWq0XpiGvCIQ3se0K0W53Se1w+kan2LtDg
-Date:   Mon, 14 Dec 2020 02:44:22 +0000
-Message-ID: <HK0PR06MB3779F5B4B9629909DDF441F091C70@HK0PR06MB3779.apcprd06.prod.outlook.com>
-References: <20201005082806.28899-1-chiawei_wang@aspeedtech.com>
- <20201005082806.28899-6-chiawei_wang@aspeedtech.com>
- <2e2d3a02-6677-4b0e-b538-d3130a3b20d1@www.fastmail.com>
-In-Reply-To: <2e2d3a02-6677-4b0e-b538-d3130a3b20d1@www.fastmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: aj.id.au; dkim=none (message not signed)
- header.d=none;aj.id.au; dmarc=none action=none header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 73e832f6-415f-4504-55f8-08d89fda2a25
-x-ms-traffictypediagnostic: HK0PR06MB2274:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HK0PR06MB22749012E518D78F834A8AF791C70@HK0PR06MB2274.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: SZs/mpw98cMoxQwsR9N9XJgchCe8fQ7UQjNH1hcxVmHWt/XspjY5FufHSITlpDXv1/mYwHkPpj9VUDynuzVqXzGhmwRdNK2yNDNP4eIYGXq4EE0GEgcmYKBYBAFwpLiRPgUT1Hn215qzmIapqHlD95NVg+lXJCH75+74kI65pFiKh2CaT+5dAi4ndufdfAm7vEt6LYibT385VNZRKS2CGrJOL+YqQakO0vT2nJbXfBL9+X/AaKdd2BX9Iq1wCWAfmCVobQPDVAoWSKrNYOlDOYub73VVKueRiQTVFrtkfJAL+Nff97h0jBGc7iJkxqLQjTvwhO2KYz6C78n60eLipkHTEI5IoO0Sb9MJ4OsmX38irzZUggIYAfnxFTaHVG2IzvjH9DYdOdRD5mLHPg7lhw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39830400003)(346002)(136003)(366004)(396003)(64756008)(66556008)(26005)(8936002)(66476007)(55236004)(9686003)(66946007)(4326008)(66446008)(966005)(71200400001)(86362001)(6506007)(110136005)(478600001)(53546011)(54906003)(5660300002)(55016002)(316002)(76116006)(83380400001)(2906002)(52536014)(7696005)(8676002)(186003)(7416002)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?mh9K1MRp/RHJ1IAzE3y7t1KXZohtaxGXMpemezDFIENwccDfRr2ZETjDJWu6?=
- =?us-ascii?Q?JrocWgtTMV9rq6+483pBf1aPOmTszvzmfT/LJHsFQVvp1pAtejhfMtzKpr/y?=
- =?us-ascii?Q?VwES7Y+1ab6XOqQMFI4dCKL/OMCHiMEFwezScevz2iFSy9uVB3nPQOeJTRn+?=
- =?us-ascii?Q?Kdx3qCAHyzISqBkifmy27YEBjJvgM6BpQs8quSPfLJEyW4rQ6P2L+yccl5uY?=
- =?us-ascii?Q?4LH6lrCO5yB71QMgf8rs1blZFSePreALam7zKfytTHtUpuOkjmNk3fElhtII?=
- =?us-ascii?Q?8/puTCF8hMZ2XkYfydDIhLv9arQc2ngtC6pGNSMl9yfdHSxS1FQFMZHh+FAK?=
- =?us-ascii?Q?X90XegCptbkWqJkqhalxa4mUKvGwm/RVavMWsGUeG4CTpASuF8odMn0pPxxx?=
- =?us-ascii?Q?uyYzpCsLimxnyuEDF5MqITNaCQmPlPl93fsc1O+tEm/72cSFgwz5Z28cpKra?=
- =?us-ascii?Q?5PoRLiF4/2LB6AR+9Do1JMESK8pCls00XT2fqLTj59JQ0EIBVHBOuMogGiUK?=
- =?us-ascii?Q?JJ/GbKUJ5a2/Zw2MtwA5hv4vFuTXwHIC8mg/plARnH1n6z56y0jQhBwpkKAn?=
- =?us-ascii?Q?qeX+E8WC+7F4XNdUkMmwwgu7npwCse9Oq/sf9Lf1M3SVXpdUhVveLTEYVLAe?=
- =?us-ascii?Q?Z/fnkPZcWdZ2bOXGBrDyWYqe6sXBm/MNFxYsygF3/CjwwjG+V+LObvYjQHs5?=
- =?us-ascii?Q?MCPb+7BM2FxTqRZQIl6hsI84ny2rrgfQVRFTov1lB/9ZibWkuP3TLnvuXjmo?=
- =?us-ascii?Q?EVhMeR/kYLH9YO1Btecl+2AUi+Xq/NwK5rHELgDfqNS5PNlwwZyNxNHaLBM+?=
- =?us-ascii?Q?DXGbqaFxwSbLTSKm+xC/nLQs5pkn+TgmlMnyGGGsF5yh4SlCgilpmNJSBppq?=
- =?us-ascii?Q?Hh6bMbE/EbPuh7O7ypW0e9Tt5TBGxixwkUOdaJQ3HfWte9Z+NKjQ0lZb6pNg?=
- =?us-ascii?Q?vnmh+8Im4Tu8Nko9TLYBgpPlPKdKDu9NlL4/Sh7ScZg=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S2437970AbgLNCs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 21:48:27 -0500
+Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:53816 "EHLO
+        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbgLNCs1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 21:48:27 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id 979CB20138C7;
+        Mon, 14 Dec 2020 10:47:39 +0800 (HKT)
+X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
+Received: from mail.gtsys.com.hk ([127.0.0.1])
+        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id eEZruve0Ysmf; Mon, 14 Dec 2020 10:47:39 +0800 (HKT)
+Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id 7559F20138C6;
+        Mon, 14 Dec 2020 10:47:39 +0800 (HKT)
+Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
+        by s01.gtsys.com.hk (Postfix) with ESMTP id 68520C01FAD;
+        Mon, 14 Dec 2020 10:47:39 +0800 (HKT)
+Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
+        id 0E8912000CF; Mon, 14 Dec 2020 10:47:38 +0800 (HKT)
+From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
+To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH 0/3] rockchip: emmc: rk3399 add vendor prefix 
+Date:   Mon, 14 Dec 2020 10:47:16 +0800
+Message-Id: <20201214024720.24656-1-chris.ruehl@gtsys.com.hk>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73e832f6-415f-4504-55f8-08d89fda2a25
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Dec 2020 02:44:23.0012
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ave/rWn2JZdRB2RPoW0EH7YaowV+SE0r+bq+j13QO4sGFEXboLxHvf4joZO4+sbUdmkzqNMajw1zqwrh6nSH1s5/VBTeOR6yVLGxSO4KQRQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2274
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew & Rob,
+This patchset follow up with commit 
+Following the reference in vendor-prefixes.yaml, update implementation,
+devicetree binding dtsi and documentation for the phy-rockchip-emmc.
 
-Do you have any suggestion on this patch?
-Or should I send a v3 patch with the commits reordering for the review?
-Thanks.
-
-Chiawei
-
-> -----Original Message-----
-> From: Andrew Jeffery <andrew@aj.id.au>
-> Sent: Monday, October 26, 2020 11:12 AM
-> To: ChiaWei Wang <chiawei_wang@aspeedtech.com>; Rob Herring
-> <robh+dt@kernel.org>; Joel Stanley <joel@jms.id.au>
-> Cc: Ryan Chen <ryan_chen@aspeedtech.com>; Lee Jones
-> <lee.jones@linaro.org>; Corey Minyard <minyard@acm.org>; Arnd Bergmann
-> <arnd@arndb.de>; Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Linus
-> Walleij <linus.walleij@linaro.org>; Haiyue Wang
-> <haiyue.wang@linux.intel.com>; Cyril Bur <cyrilbur@gmail.com>; Robert
-> Lippert <rlippert@google.com>; linux-arm-kernel@lists.infradead.org;
-> linux-aspeed@lists.ozlabs.org; linux-kernel@vger.kernel.org;
-> openbmc@lists.ozlabs.org; linux-gpio@vger.kernel.org
-> Subject: Re: [PATCH v2 5/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
-> 
-> Hi Wang Chia-Wei,
-> 
-> On Mon, 5 Oct 2020, at 18:58, Chia-Wei, Wang wrote:
-> > The LPC controller has no concept of the BMC and the Host partitions.
-> > This patch fixes the documentation by removing the description on LPC
-> > partitions. The register offsets illustrated in the DTS node examples
-> > are also fixed to adapt to the LPC DTS change.
-> >
-> > Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
-> 
-> The documentation at [1] suggests this should probably be patch 1/5 rather
-> than 5/5, so if you send the series again I'd probably rearrange it. Following the
-> steps outlined in [1] helps catch Rob's attention in the right way :)
-> 
-> [1]
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Docume
-> ntation/devicetree/bindings/submitting-patches.rst?h=v5.9
-> 
-> Rob:
-> 
-> The changes here go some way towards cleaning up mistakes I made in the
-> Aspeed LPC controller binding. The proposed change is very much not
-> backwards compatible, but Joel and I don't want to live with the resulting mess
-> in the drivers of catering to both layouts. Another way we could avoid the
-> driver mess is to rev all the bindings and immediately drop support for the old
-> compatibles in the drivers. This creates a bit more churn in the bindings. What
-> are you willing to accommodate?
-> 
-> All consumers I'm aware of ship the Aspeed BMC dtb in FIT images alongside
-> the kernel, so while backwards-incompatible changes are rightly frowned upon
-> I feel we probably wouldn't cause too much damage if we went that path.
-> 
-> Andrew
-> 
-> > ---
-> >  .../devicetree/bindings/mfd/aspeed-lpc.txt    | 85 +++----------------
-> >  1 file changed, 14 insertions(+), 71 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-> > b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-> > index a92acf1dd491..866f54a09e09 100644
-> > --- a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-> > +++ b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-> > @@ -9,13 +9,7 @@ primary use case of the Aspeed LPC controller is as a
-> > slave on the bus  conditions it can also take the role of bus master.
-> >
-> >  The LPC controller is represented as a multi-function device to
-> > account for the -mix of functionality it provides. The principle split
-> > is between the register -layout at the start of the I/O space which
-> > is, to quote the Aspeed datasheet, -"basically compatible with the
-> > [LPC registers from the] popular BMC controller -H8S/2168[1]", and
-> > everything else, where everything else is an eclectic -collection of
-> > functions with a esoteric register layout. "Everything else", -here
-> > labeled the "host" portion of the controller, includes, but is not
-> > limited
-> > -to:
-> > +mix of functionality, which includes, but is not limited to:
-> >
-> >  * An IPMI Block Transfer[2] Controller
-> >
-> > @@ -44,8 +38,8 @@ Required properties
-> >  ===================
-> >
-> >  - compatible:	One of:
-> > -		"aspeed,ast2400-lpc", "simple-mfd"
-> > -		"aspeed,ast2500-lpc", "simple-mfd"
-> > +		"aspeed,ast2400-lpc", "simple-mfd", "syscon"
-> > +		"aspeed,ast2500-lpc", "simple-mfd", "syscon"
-> >
-> >  - reg:		contains the physical address and length values of the Aspeed
-> >                  LPC memory region.
-> > @@ -55,66 +49,17 @@ Required properties
-> >  - ranges: 	Maps 0 to the physical address and length of the LPC memory
-> >                  region
-> >
-> > -Required LPC Child nodes
-> > -========================
-> > -
-> > -BMC Node
-> > ---------
-> > -
-> > -- compatible:	One of:
-> > -		"aspeed,ast2400-lpc-bmc"
-> > -		"aspeed,ast2500-lpc-bmc"
-> > -
-> > -- reg:		contains the physical address and length values of the
-> > -                H8S/2168-compatible LPC controller memory region
-> > -
-> > -Host Node
-> > ----------
-> > -
-> > -- compatible:   One of:
-> > -		"aspeed,ast2400-lpc-host", "simple-mfd", "syscon"
-> > -		"aspeed,ast2500-lpc-host", "simple-mfd", "syscon"
-> > -
-> > -- reg:		contains the address and length values of the host-related
-> > -                register space for the Aspeed LPC controller
-> > -
-> > -- #address-cells: <1>
-> > -- #size-cells:	<1>
-> > -- ranges: 	Maps 0 to the address and length of the host-related LPC
-> memory
-> > -                region
-> > -
-> >  Example:
-> >
-> >  lpc: lpc@1e789000 {
-> > -	compatible = "aspeed,ast2500-lpc", "simple-mfd";
-> > +	compatible = "aspeed,ast2500-lpc", "simple-mfd", "syscon";
-> >  	reg = <0x1e789000 0x1000>;
-> >
-> >  	#address-cells = <1>;
-> >  	#size-cells = <1>;
-> >  	ranges = <0x0 0x1e789000 0x1000>;
-> > -
-> > -	lpc_bmc: lpc-bmc@0 {
-> > -		compatible = "aspeed,ast2500-lpc-bmc";
-> > -		reg = <0x0 0x80>;
-> > -	};
-> > -
-> > -	lpc_host: lpc-host@80 {
-> > -		compatible = "aspeed,ast2500-lpc-host", "simple-mfd", "syscon";
-> > -		reg = <0x80 0x1e0>;
-> > -		reg-io-width = <4>;
-> > -
-> > -		#address-cells = <1>;
-> > -		#size-cells = <1>;
-> > -		ranges = <0x0 0x80 0x1e0>;
-> > -	};
-> >  };
-> >
-> > -BMC Node Children
-> > -==================
-> > -
-> > -
-> > -Host Node Children
-> > -==================
-> >
-> >  LPC Host Interface Controller
-> >  -------------------
-> > @@ -145,14 +90,12 @@ Optional properties:
-> >
-> >  Example:
-> >
-> > -lpc-host@80 {
-> > -	lpc_ctrl: lpc-ctrl@0 {
-> > -		compatible = "aspeed,ast2500-lpc-ctrl";
-> > -		reg = <0x0 0x80>;
-> > -		clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
-> > -		memory-region = <&flash_memory>;
-> > -		flash = <&spi>;
-> > -	};
-> > +lpc_ctrl: lpc-ctrl@80 {
-> > +	compatible = "aspeed,ast2500-lpc-ctrl";
-> > +	reg = <0x80 0x80>;
-> > +	clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
-> > +	memory-region = <&flash_memory>;
-> > +	flash = <&spi>;
-> >  };
-> >
-> >  LPC Host Controller
-> > @@ -174,9 +117,9 @@ Required properties:
-> >
-> >  Example:
-> >
-> > -lhc: lhc@20 {
-> > +lhc: lhc@a0 {
-> >  	compatible = "aspeed,ast2500-lhc";
-> > -	reg = <0x20 0x24 0x48 0x8>;
-> > +	reg = <0xa0 0x24 0xc8 0x8>;
-> >  };
-> >
-> >  LPC reset control
-> > @@ -194,8 +137,8 @@ Required properties:
-> >
-> >  Example:
-> >
-> > -lpc_reset: reset-controller@18 {
-> > +lpc_reset: reset-controller@98 {
-> >          compatible = "aspeed,ast2500-lpc-reset";
-> > -        reg = <0x18 0x4>;
-> > +        reg = <0x98 0x4>;
-> >          #reset-cells = <1>;
-> >  };
-> > --
-> > 2.17.1
-> >
-> >
+Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+---
+Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt | 19 ++++++++++---------
+arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi               |  2 +-
+arch/arm64/boot/dts/rockchip/rk3399.dtsi                    |  2 +-
+drivers/phy/rockchip/phy-rockchip-emmc.c                    |  6 +++---
+4 files changed, 15 insertions(+), 14 deletions(-)
