@@ -2,187 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6792D9748
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A975A2D974D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:22:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407486AbgLNLTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 06:19:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21867 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405720AbgLNLTr (ORCPT
+        id S2437675AbgLNLU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 06:20:58 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2458 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2437066AbgLNLUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:19:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607944699;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F4WpDOB82qi6h6t3jJ3tbxgH310VkOCKGTWeYt2UXbU=;
-        b=eogR9VazN2a/o4/a/4UYo3w9o/BBDpK6EUJec7Ostxg/Njkd/2jSB4nWSnZcT4uEW72Ix7
-        xRPMwerrqpwKT6v6DIbJE4MhQBqlCFV4MCOZFZ6FHsux4Z+cMfiVS9w6rzMER6jeMnHDmF
-        DpUahkYM5gqer/sN4A8fWkhdzqAD9ec=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-566-ADtyoSuNOkqdw6gonoTr8g-1; Mon, 14 Dec 2020 06:18:18 -0500
-X-MC-Unique: ADtyoSuNOkqdw6gonoTr8g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 55801800D53;
-        Mon, 14 Dec 2020 11:18:12 +0000 (UTC)
-Received: from [10.36.114.184] (ovpn-114-184.ams2.redhat.com [10.36.114.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 18A935D9DC;
-        Mon, 14 Dec 2020 11:18:07 +0000 (UTC)
-Subject: Re: [PATCH v2 1/2] mm: memblock: enforce overlap of memory.memblock
- and memory.reserved
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Mel Gorman <mgorman@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>
-References: <20201209214304.6812-1-rppt@kernel.org>
- <20201209214304.6812-2-rppt@kernel.org>
- <522640a5-32ab-2247-4c2a-f248c2528f97@redhat.com>
- <20201214111221.GC198219@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <a512bd63-b171-3ed5-6996-2c99b6c9a226@redhat.com>
-Date:   Mon, 14 Dec 2020 12:18:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 14 Dec 2020 06:20:31 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BEB2Nbb114924;
+        Mon, 14 Dec 2020 06:19:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : mime-version : content-type; s=pp1;
+ bh=epD1OkkYVHVoRRwlByD37c3vMErXzXSpOwrIvkR4rIg=;
+ b=GtacolhJJnTXy+a+4FkDEfn19XJwZi+37QUwYg0XhnVOe741whldCFMJ6bfrFNcNzAEP
+ IloYlVXvg0fpPpboee59f3giC3WDqYHNBetCTYzi7IcnF1v1Q74oT6CBs2c9/fnK9Isj
+ jKZ4TiHEdnopoKNvgXmosf6k77I0RSXS+Xt2qZqVVf9Wi3RHHqlwbzQVH0I9+7XBpJnU
+ 1Ft+6KXdvRVSiCaxJEzaDPCQCck1hrFtqY+5cRmNjHXJ1ebwTZTXKCFP1JHUpFZ7rqj7
+ n8yDTH//MF7cG2JKZiiXwG8C5h1r2hXSqH0IlbHnmgMbIrKLdCpKThAvAlyxyj1rAV1N +g== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35e2s57gy1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Dec 2020 06:19:46 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BEBH09Q031798;
+        Mon, 14 Dec 2020 11:19:44 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 35cng8b39h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Dec 2020 11:19:43 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BEBIPSC33358258
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Dec 2020 11:18:25 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B351311C050;
+        Mon, 14 Dec 2020 11:18:25 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5DC0A11C04C;
+        Mon, 14 Dec 2020 11:18:25 +0000 (GMT)
+Received: from osiris (unknown [9.171.56.22])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 14 Dec 2020 11:18:25 +0000 (GMT)
+Date:   Mon, 14 Dec 2020 12:18:23 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] s390 updates for 5.11 merge window
+Message-ID: <20201214111823.GA5573@osiris>
 MIME-Version: 1.0
-In-Reply-To: <20201214111221.GC198219@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-14_04:2020-12-11,2020-12-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 clxscore=1015 phishscore=0
+ lowpriorityscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012140076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.12.20 12:12, Mike Rapoport wrote:
-> On Mon, Dec 14, 2020 at 11:11:35AM +0100, David Hildenbrand wrote:
->> On 09.12.20 22:43, Mike Rapoport wrote:
->>> From: Mike Rapoport <rppt@linux.ibm.com>
->>>
->>> memblock does not require that the reserved memory ranges will be a subset
->>> of memblock.memory.
->>>
->>> As the result there maybe reserved pages that are not in the range of any
->>> zone or node because zone and node boundaries are detected based on
->>> memblock.memory and pages that only present in memblock.reserved are not
->>> taken into account during zone/node size detection.
->>>
->>> Make sure that all ranges in memblock.reserved are added to memblock.memory
->>> before calculating node and zone boundaries.
->>>
->>> Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
->>> Reported-by: Andrea Arcangeli <aarcange@redhat.com>
->>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->>> ---
->>>  include/linux/memblock.h |  1 +
->>>  mm/memblock.c            | 24 ++++++++++++++++++++++++
->>>  mm/page_alloc.c          |  7 +++++++
->>>  3 files changed, 32 insertions(+)
->>>
->>> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
->>> index ef131255cedc..e64dae2dd1ce 100644
->>> --- a/include/linux/memblock.h
->>> +++ b/include/linux/memblock.h
->>> @@ -120,6 +120,7 @@ int memblock_clear_nomap(phys_addr_t base, phys_addr_t size);
->>>  unsigned long memblock_free_all(void);
->>>  void reset_node_managed_pages(pg_data_t *pgdat);
->>>  void reset_all_zones_managed_pages(void);
->>> +void memblock_enforce_memory_reserved_overlap(void);
->>>  
->>>  /* Low level functions */
->>>  void __next_mem_range(u64 *idx, int nid, enum memblock_flags flags,
->>> diff --git a/mm/memblock.c b/mm/memblock.c
->>> index b68ee86788af..9277aca642b2 100644
->>> --- a/mm/memblock.c
->>> +++ b/mm/memblock.c
->>> @@ -1857,6 +1857,30 @@ void __init_memblock memblock_trim_memory(phys_addr_t align)
->>>  	}
->>>  }
->>>  
->>> +/**
->>> + * memblock_enforce_memory_reserved_overlap - make sure every range in
->>> + * @memblock.reserved is covered by @memblock.memory
->>> + *
->>> + * The data in @memblock.memory is used to detect zone and node boundaries
->>> + * during initialization of the memory map and the page allocator. Make
->>> + * sure that every memory range present in @memblock.reserved is also added
->>> + * to @memblock.memory even if the architecture specific memory
->>> + * initialization failed to do so
->>> + */
->>> +void __init memblock_enforce_memory_reserved_overlap(void)
->>> +{
->>> +	phys_addr_t start, end;
->>> +	int nid;
->>> +	u64 i;
->>> +
->>> +	__for_each_mem_range(i, &memblock.reserved, &memblock.memory,
->>> +			     NUMA_NO_NODE, MEMBLOCK_NONE, &start, &end, &nid) {
->>> +		pr_warn("memblock: reserved range [%pa-%pa] is not in memory\n",
->>> +			&start, &end);
->>> +		memblock_add_node(start, (end - start), nid);
->>> +	}
->>> +}
->>> +
->>>  void __init_memblock memblock_set_current_limit(phys_addr_t limit)
->>>  {
->>>  	memblock.current_limit = limit;
->>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->>> index eaa227a479e4..dbc57dbbacd8 100644
->>> --- a/mm/page_alloc.c
->>> +++ b/mm/page_alloc.c
->>> @@ -7436,6 +7436,13 @@ void __init free_area_init(unsigned long *max_zone_pfn)
->>>  	memset(arch_zone_highest_possible_pfn, 0,
->>>  				sizeof(arch_zone_highest_possible_pfn));
->>>  
->>> +	/*
->>> +	 * Some architectures (e.g. x86) have reserved pages outside of
->>> +	 * memblock.memory. Make sure these pages are taken into account
->>> +	 * when detecting zone and node boundaries
->>> +	 */
->>> +	memblock_enforce_memory_reserved_overlap();
->>> +
->>>  	start_pfn = find_min_pfn_with_active_regions();
->>>  	descending = arch_has_descending_max_zone_pfns();
->>>  
->>>
->>
->> CCing Dan.
->>
->> This implies that any memory that is E820_TYPE_SOFT_RESERVED that was
->> reserved via memblock_reserve() will be added via memblock_add_node() as
->> well, resulting in all such memory getting a memmap allocated right when
->> booting up, right?
->>
->> IIRC, there are use cases where that is absolutely not desired.
-> 
-> Hmm, if this is the case we need entirely different solution to ensure
-> that we don't have partial pageblocks in a zone and we have all the
-> memory map initialized to a known state.
-> 
->> Am I missing something? (@Dan?)
-> 
-> BTW, @Dan, why did you need to memblock_reserve(E820_TYPE_SOFT_RESERVED)
-> without memblock_add()ing it?
+Hi Linus,
 
-I suspect to cover cases where it might partially span memory sections
-(or even sub-sections). Maybe we should focus on initializing that part
-only - meaning, not adding all memory to .memory but only !section
-aligned pieces.
+please pull s390 updates for the 5.11 merge window.
 
+Note that the diffstat summary when merging this will look slightly different
+than the one generated by 'git request-pull' below:
 
--- 
+107 files changed, 1268 insertions(+), 1993 deletions(-)
+
+This is because I had to merge our fixes branch, which contains commits which
+are already in 5.10, twice into our features branch to resolve dependencies.
+
+There is also "mm: simplify follow_pte{,pmd}" sitting in Andrew's patch
+collection which will break s390 compilation due to a conflict with a commit
+in this pull request.
+
+However Andrew already has a fixup patch for that, so I guess this problem will
+be solved "automatically". That is: Andrew handles it :)
+
+This is the fixup patch:
+https://www.ozlabs.org/~akpm/mmotm/broken-out/mm-simplify-follow_ptepmd-fix.patch
+
 Thanks,
+Heiko
 
-David / dhildenb
+The following changes since commit f8394f232b1eab649ce2df5c5f15b0e528c92091:
 
+  Linux 5.10-rc3 (2020-11-08 16:10:16 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.11-1
+
+for you to fetch changes up to 343dbdb7cb8997a2cb0fd804d6563b8a6de8d49b:
+
+  s390/mm: add support to allocate gigantic hugepages using CMA (2020-12-10 21:11:01 +0100)
+
+----------------------------------------------------------------
+- Add support for the hugetlb_cma command line option to allocate gigantic
+  hugepages using CMA:
+
+- Add arch_get_random_long() support.
+
+- Add ap bus userspace notifications.
+
+- Increase default size of vmalloc area to 512GB and otherwise let it increase
+  dynamically by the size of physical memory. This should fix all occurrences
+  where the vmalloc area was not large enough.
+
+- Completely get rid of set_fs() (aka select SET_FS) and rework address space
+  handling while doing that; making address space handling much more simple.
+
+- Reimplement getcpu vdso syscall in C.
+
+- Add support for extended SCLP responses (> 4k). This allows e.g. to handle
+  also potential large system configurations.
+
+- Simplify KASAN by removing 3-level page table support and only supporting
+  4-levels from now on.
+
+- Improve debug-ability of the kernel decompressor code, which now prints also
+  stack traces and symbols in case of problems to the console.
+
+- Remove more power management leftovers.
+
+- Other various fixes and improvements all over the place.
+
+----------------------------------------------------------------
+Alexander Gordeev (2):
+      s390/vmem: remove redundant check
+      s390/vmem: make variable and function names consistent
+
+Christian Borntraeger (1):
+      s390/trng: set quality to 1024
+
+Daniel Vetter (1):
+      s390/pci: remove races against pte updates
+
+Gerald Schaefer (1):
+      s390/mm: add support to allocate gigantic hugepages using CMA
+
+Harald Freudenberger (3):
+      s390/ap: ap bus userspace notifications for some bus conditions
+      s390/zcrypt/pkey: introduce zcrypt_wait_api_operational() function
+      s390/crypto: add arch_get_random_long() support
+
+Heiko Carstens (15):
+      s390: fix system call exit path
+      s390/mm: extend default vmalloc area size to 512GB
+      s390/mm: let vmalloc area size depend on physical memory size
+      s390: update defconfigs
+      s390/mm: remove unused clear_user_asce()
+      Merge branch 'fixes' into features
+      s390: add separate program check exit path
+      init/Kconfig: make COMPILE_TEST depend on !S390
+      Merge branch 'fixes' into features
+      s390/mm: remove set_fs / rework address space handling
+      s390/mm: use invalid asce instead of kernel asce
+      s390/mm: add debug user asce support
+      s390/vdso: reimplement getcpu vdso syscall
+      s390/vdso: add missing prototypes for vdso functions
+      s390/mm: use invalid asce for user space when switching to init_mm
+
+Julian Wiedmann (3):
+      s390/prng: let misc_register() add the prng sysfs attributes
+      s390/stp: let subsys_system_register() sysfs attributes
+      s390/ap: let bus_register() add the AP bus sysfs attributes
+
+Mauro Carvalho Chehab (1):
+      s390/cio: fix kernel-doc markups in cio driver.
+
+Niklas Schnelle (2):
+      s390/pci: inform when missing required facilities
+      s390/Kconfig: default PCI_NR_FUNCTIONS to 512
+
+Philipp Rudo (2):
+      s390/kexec_file: fix diag308 subcode when loading crash kernel
+      s390/boot: add build-id to decompressor
+
+Qinglang Miao (1):
+      s390/cio: fix use-after-free in ccw_device_destroy_console
+
+Sumanth Korikkar (3):
+      s390/sclp: use memblock for early read cpu info
+      s390/sclp: avoid copy of sclp_info_sccb
+      s390/sclp: provide extended sccb support
+
+Sven Schnelle (4):
+      s390: fix fpu restore in entry.S
+      s390/idle: add missing mt_cycles calculation
+      s390/idle: fix accounting with machine checks
+      s390/smp: perform initial CPU reset also for SMT siblings
+
+Thomas Richter (1):
+      s390/cpum_sf.c: fix file permission for cpum_sfb_size
+
+Vasily Gorbik (18):
+      s390/head: set io/ext handlers to disabled wait
+      s390/udelay: make it work for the early code
+      s390: remove unused s390_base_ext_handler
+      s390/kasan: remove 3-level paging support
+      s390: make sure vmemmap is top region table entry aligned
+      s390/decompressor: fix build warning
+      s390/kasan: avoid confusing naming
+      s390/kasan: remove obvious parameter with the only possible value
+      s390/kasan: make kasan header self-contained
+      s390/kasan: move memory needs estimation into a function
+      s390/early: rewrite program parameter setup in C
+      s390: unify identity mapping limits handling
+      s390/ftrace: assume -mhotpatch or -mrecord-mcount always available
+      s390/decompressor: add decompressor_printk
+      s390/decompressor: correct some asm symbols annotations
+      s390/decompressor: add symbols support
+      s390/decompressor: add stacktrace support
+      s390/decompressor: print cmdline and BEAR on pgm_check
+
+Vineeth Vijayan (10):
+      s390/zfcp: remove pm support from zfcp driver
+      s390/dasd: remove unused pm related functions
+      s390: remove pm support from console drivers
+      s390/cio: remove pm support from eadm-sch drivers
+      s390/tape: remove unsupported PM functions
+      s390/vmur: remove unused pm related functions
+      s390/cio: remove pm support from chsc subchannel driver
+      s390/cio: remove pm support from IO subchannel drivers
+      s390/cio: remove pm support from css-bus driver
+      s390/cio: remove pm support from ccw bus driver
+
+ arch/s390/Kconfig                           |   6 +-
+ arch/s390/Kconfig.debug                     |   8 +
+ arch/s390/Makefile                          |   2 +-
+ arch/s390/boot/boot.h                       |  18 +-
+ arch/s390/boot/compressed/.gitignore        |   1 +
+ arch/s390/boot/compressed/Makefile          |  26 ++-
+ arch/s390/boot/compressed/decompressor.h    |   4 +-
+ arch/s390/boot/compressed/vmlinux.lds.S     |   9 +
+ arch/s390/boot/head.S                       |  32 +++-
+ arch/s390/boot/head_kdump.S                 |   8 +-
+ arch/s390/boot/ipl_parm.c                   |  49 ++---
+ arch/s390/boot/kaslr.c                      |  33 +---
+ arch/s390/boot/mem_detect.c                 |  13 +-
+ arch/s390/boot/pgm_check_info.c             | 224 +++++++++++++++--------
+ arch/s390/boot/startup.c                    |  70 +++++++-
+ arch/s390/configs/debug_defconfig           |   2 +
+ arch/s390/crypto/arch_random.c              | 110 +++++++++++-
+ arch/s390/crypto/prng.c                     |  53 ++----
+ arch/s390/include/asm/archrandom.h          |   5 +-
+ arch/s390/include/asm/ccwdev.h              |  12 +-
+ arch/s390/include/asm/cio.h                 |   2 +-
+ arch/s390/include/asm/delay.h               |   1 +
+ arch/s390/include/asm/ftrace.h              |  31 ++--
+ arch/s390/include/asm/futex.h               |   6 -
+ arch/s390/include/asm/kasan.h               |  37 +++-
+ arch/s390/include/asm/lowcore.h             |   4 +-
+ arch/s390/include/asm/mmu_context.h         |  37 +---
+ arch/s390/include/asm/pgtable.h             |  13 +-
+ arch/s390/include/asm/processor.h           |  13 +-
+ arch/s390/include/asm/ptrace.h              |   1 +
+ arch/s390/include/asm/sclp.h                |   7 +-
+ arch/s390/include/asm/setup.h               |   6 +-
+ arch/s390/include/asm/thread_info.h         |   2 +-
+ arch/s390/include/asm/timex.h               |   7 +
+ arch/s390/include/asm/uaccess.h             |  22 +--
+ arch/s390/include/asm/vdso.h                |  25 +--
+ arch/s390/kernel/asm-offsets.c              |  17 +-
+ arch/s390/kernel/base.S                     |  22 ---
+ arch/s390/kernel/early.c                    |   4 +-
+ arch/s390/kernel/entry.S                    | 145 ++++++++-------
+ arch/s390/kernel/entry.h                    |   1 -
+ arch/s390/kernel/ftrace.c                   |  63 ++-----
+ arch/s390/kernel/head64.S                   |   7 +-
+ arch/s390/kernel/mcount.S                   |   8 -
+ arch/s390/kernel/perf_cpum_sf.c             |   2 +-
+ arch/s390/kernel/process.c                  |  14 --
+ arch/s390/kernel/setup.c                    |  50 +++---
+ arch/s390/kernel/smp.c                      |  32 +---
+ arch/s390/kernel/time.c                     |  44 ++---
+ arch/s390/kernel/vdso.c                     |  58 +-----
+ arch/s390/kernel/vdso64/Makefile            |   5 +-
+ arch/s390/kernel/vdso64/getcpu.S            |  31 ----
+ arch/s390/kernel/vdso64/getcpu.c            |  21 +++
+ arch/s390/kernel/vdso64/vdso.h              |  14 ++
+ arch/s390/kernel/vdso64/vdso64.lds.S        |   1 -
+ arch/s390/kernel/vdso64/vdso64_generic.c    |   1 +
+ arch/s390/kernel/vdso64/vdso_user_wrapper.S |   1 +
+ arch/s390/kernel/vmlinux.lds.S              |   3 +-
+ arch/s390/lib/delay.c                       |  13 ++
+ arch/s390/lib/uaccess.c                     | 105 +++--------
+ arch/s390/mm/dump_pagetables.c              |   2 +-
+ arch/s390/mm/fault.c                        |  29 +--
+ arch/s390/mm/init.c                         |  12 +-
+ arch/s390/mm/kasan_init.c                   |  93 ++++------
+ arch/s390/mm/pgalloc.c                      |  13 +-
+ arch/s390/mm/vmem.c                         |  38 ++--
+ arch/s390/pci/pci.c                         |   4 +-
+ arch/s390/pci/pci_mmio.c                    | 104 ++++++-----
+ arch/s390/purgatory/head.S                  |   9 +-
+ drivers/char/hw_random/s390-trng.c          |   7 +-
+ drivers/s390/block/dasd.c                   |  93 +---------
+ drivers/s390/block/dasd_eckd.c              |  94 ----------
+ drivers/s390/block/dasd_fba.c               |   3 -
+ drivers/s390/block/dasd_int.h               |  10 --
+ drivers/s390/char/con3215.c                 |  85 +--------
+ drivers/s390/char/con3270.c                 |   1 -
+ drivers/s390/char/raw3270.c                 |  78 +-------
+ drivers/s390/char/raw3270.h                 |   1 -
+ drivers/s390/char/sclp.h                    |  10 +-
+ drivers/s390/char/sclp_cmd.c                |  16 +-
+ drivers/s390/char/sclp_early.c              |  59 ++++---
+ drivers/s390/char/sclp_early_core.c         |  13 +-
+ drivers/s390/char/tape.h                    |   1 -
+ drivers/s390/char/tape_34xx.c               |   1 -
+ drivers/s390/char/tape_3590.c               |   1 -
+ drivers/s390/char/tape_core.c               |  50 ------
+ drivers/s390/char/vmur.c                    |  24 ---
+ drivers/s390/cio/chsc_sch.c                 |  29 ---
+ drivers/s390/cio/cmf.c                      |   5 -
+ drivers/s390/cio/css.c                      | 130 +-------------
+ drivers/s390/cio/css.h                      |  10 --
+ drivers/s390/cio/device.c                   | 265 +---------------------------
+ drivers/s390/cio/device.h                   |   1 -
+ drivers/s390/cio/device_fsm.c               |   6 -
+ drivers/s390/cio/eadm_sch.c                 |  13 --
+ drivers/s390/cio/io_sch.h                   |   1 -
+ drivers/s390/crypto/ap_bus.c                | 213 ++++++++++++++++++----
+ drivers/s390/crypto/ap_bus.h                |  12 ++
+ drivers/s390/crypto/pkey_api.c              |  15 ++
+ drivers/s390/crypto/zcrypt_api.c            |  66 +++++++
+ drivers/s390/crypto/zcrypt_api.h            |   2 +
+ drivers/s390/scsi/zfcp_ccw.c                |  57 +-----
+ drivers/s390/scsi/zfcp_dbf.c                |  25 ---
+ drivers/s390/scsi/zfcp_def.h                |   1 -
+ drivers/s390/scsi/zfcp_ext.h                |   1 -
+ init/Kconfig                                |   2 +-
+ lib/Kconfig.kasan                           |   9 -
+ scripts/recordmcount.pl                     |   3 -
+ 108 files changed, 1279 insertions(+), 1999 deletions(-)
+ delete mode 100644 arch/s390/kernel/vdso64/getcpu.S
+ create mode 100644 arch/s390/kernel/vdso64/getcpu.c
+ create mode 100644 arch/s390/kernel/vdso64/vdso.h
