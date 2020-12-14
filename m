@@ -2,37 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252742DA0FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FBA2DA102
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:05:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502945AbgLNUCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:02:09 -0500
-Received: from static.214.254.202.116.clients.your-server.de ([116.202.254.214]:55738
-        "EHLO ciao.gmane.io" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502757AbgLNUBq (ORCPT
+        id S2502951AbgLNUDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:03:10 -0500
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:49582 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502903AbgLNUCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:01:46 -0500
-Received: from list by ciao.gmane.io with local (Exim 4.92)
-        (envelope-from <glk-linux-kernel-4@m.gmane-mx.org>)
-        id 1kou1j-000527-5S
-        for linux-kernel@vger.kernel.org; Mon, 14 Dec 2020 21:00:59 +0100
-X-Injected-Via-Gmane: http://gmane.org/
-To:     linux-kernel@vger.kernel.org
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+        Mon, 14 Dec 2020 15:02:46 -0500
+Received: from [192.168.42.210] ([93.22.36.105])
+        by mwinf5d56 with ME
+        id 4L0t2400Q2G6YR103L0uuQ; Mon, 14 Dec 2020 21:01:01 +0100
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 14 Dec 2020 21:01:01 +0100
+X-ME-IP: 93.22.36.105
 Subject: Re: [PATCH] net: mscc: ocelot: Fix a resource leak in the error
  handling path of the probe function
-Date:   Mon, 14 Dec 2020 21:00:53 +0100
-Message-ID: <ecca5770-7cb3-c0a0-0a33-fcc3854d0b74@wanadoo.fr>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     UNGLinuxDriver@microchip.com, vladimir.oltean@nxp.com,
+        claudiu.manoil@nxp.com, alexandre.belloni@bootlin.com,
+        davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Newsgroups: gmane.linux.kernel,gmane.linux.network,gmane.linux.kernel.janitors
 References: <20201213114838.126922-1-christophe.jaillet@wanadoo.fr>
  <20201214114831.GE2809@kadam>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <ecca5770-7cb3-c0a0-0a33-fcc3854d0b74@wanadoo.fr>
+Date:   Mon, 14 Dec 2020 21:00:53 +0100
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.5.1
+MIME-Version: 1.0
 In-Reply-To: <20201214114831.GE2809@kadam>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Cc:     netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -91,4 +98,3 @@ This may worth stating it in the commit message.
 Can it be done when/if the patch is applied?
 
 CJ
-
