@@ -2,97 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630E92D9389
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 08:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5842D9383
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 08:08:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438889AbgLNHJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 02:09:23 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:42392 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438873AbgLNHJC (ORCPT
+        id S1726305AbgLNHIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 02:08:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392940AbgLNHIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 02:09:02 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BE73rXZ144743;
-        Mon, 14 Dec 2020 07:08:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=s7FDTZIBJKNR9KDMY14+lIuuYdlKTv9NS+Ix6giURYQ=;
- b=SderraMcfpBBIcxAUzDxRWv1UO4RERr989Qzya0I5vquPqCY9fO2FvaPbm7J6185El8J
- yMbTl5SNmKPLIomee1H0V6eMsg7fHOPVNIFz4J3vfyvA8fntIIDsgGSyhxzq/y48eUeJ
- Ko0uYi73QvLi/09rao+PAOE6pt16dIb+LZsQn1WjW4BNJjAbN8qjZ5u89lLkD0rLE97T
- WC8DBGJG1qSkr29qNk7JQJeDhPrxR5M/K2frSslz3lep8tmpGcvj1ZYcLRsYccSCKLQU
- Izp7kGwV3qnn8KEHKF74la2b677ZY9GBIfF+Px3X31hGn/iBR2exUuB6nQoe70szV8EI fQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 35cntkuna2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Dec 2020 07:08:04 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BE7628B185250;
-        Mon, 14 Dec 2020 07:06:04 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 35d7su3kyx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Dec 2020 07:06:03 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BE75lhQ014580;
-        Mon, 14 Dec 2020 07:05:47 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 13 Dec 2020 23:05:46 -0800
-Date:   Mon, 14 Dec 2020 10:05:36 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     kernel-janitors@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: Re: mmc: atmel-mci: Reduce =?utf-8?Q?scope?=
- =?utf-8?Q?_for_the_variable_=E2=80=9Cslot=E2=80=9D?= in atmci_request_end()
-Message-ID: <20201214070536.GB2809@kadam>
-References: <466b4c6d-032f-fbcc-58ac-75f6f39d734f@web.de>
- <20201210151035.GC1578121@piout.net>
- <20201211083731.GP2789@kadam>
- <e7910b04-4c4a-567b-d87d-d12352a48cfc@web.de>
+        Mon, 14 Dec 2020 02:08:05 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92F7C0613CF;
+        Sun, 13 Dec 2020 23:07:24 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id n26so21039455eju.6;
+        Sun, 13 Dec 2020 23:07:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QWzR/ajntQQ8OUu1eo9cHzjXBqYXTELyiik0EYAgp6c=;
+        b=BZQh5xNlSsdb6hrrLdcbHcyRgcGFT9VrZOvm68joTduKjVi50NMmX22Yugytx7Xo7H
+         w2vZaNPSJQSAYyk8ZabBa2YDHeJqQAC69t+CcHfIfBAxCCOoAlIK0TqYUG6pAk527fWZ
+         VGQ5x9zaF8Ai0ogqnOor13smC6PoDtuDitdzZTdLzkkp8hPUmh5XZRzM8M11ukL1h5Nc
+         deqr7VXcjIrlzRbxOlaUpVePANjCg54N45MIs+7kgw8s2AtMOBhmHjIF4tbU34Cy+GxZ
+         FpsqKBBLubkEmgd74TfY82x27SkLuBNKrz5lpwjmAUyUTzz2Bl/YauGXzLp4xdF3i00q
+         Qqww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QWzR/ajntQQ8OUu1eo9cHzjXBqYXTELyiik0EYAgp6c=;
+        b=UmsteioTogXDz2FEgusEU1oQZBc+tG8YTU/IyXH0oI7OYnC8urlwjHYfDhUvT5WvFw
+         3aBGd17pDC5eFf5NQObOzHYTqQgoXD4RocyzEEMtegh+ix+AqH5cuXowjqw8Rc42s1ZI
+         tgLLjmCCL2c5F/NXEurzyWpaOdNu66FYSBVZzNik57rOSTsHHX4jCyQGmdbZdrl6BwLZ
+         t7H21lvlM+CNuFWIB5DyM80W5dsFgzMYA141dPl4zKHlC6HUD8YqvEJNZBxNlDvQRjx+
+         qOhyEJNA/PscpiQEj51Z/0yQPRf4n6E+vLWW44LHB0wyS+aYfVR5qHxl5EtUEAkgA1rz
+         zUvA==
+X-Gm-Message-State: AOAM531ku2QqjK3JVMRfv5ts/y7c6awKNSRN+g8yUaqD4TP24vmAvKLL
+        sv7vFUTTaNmYOqEMlCjSSjFaH6EoP+o9ZMFajgk=
+X-Google-Smtp-Source: ABdhPJznXbr+iFcyZQ0stzB05Z3JXUu6f2/PCyWYcbP3IUZ3HcqQL6yvr7ZEoaMx/h/x22bIeETtTTVWUHBtMe+z7b0=
+X-Received: by 2002:a17:906:68d1:: with SMTP id y17mr21530318ejr.447.1607929643589;
+ Sun, 13 Dec 2020 23:07:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e7910b04-4c4a-567b-d87d-d12352a48cfc@web.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0
- mlxlogscore=917 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012140053
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
- mlxlogscore=934 impostorscore=0 priorityscore=1501 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012140053
+References: <20201211135139.49232-1-selvakuma.s1@samsung.com>
+ <CGME20201211135200epcas5p217eaa00b35a59b3468c198d85309fd7d@epcas5p2.samsung.com>
+ <20201211135139.49232-2-selvakuma.s1@samsung.com> <SN4PR0401MB359867B95139ACD1ACFF0E709BCA0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+In-Reply-To: <SN4PR0401MB359867B95139ACD1ACFF0E709BCA0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+From:   Selva Jove <selvajove@gmail.com>
+Date:   Mon, 14 Dec 2020 12:37:08 +0530
+Message-ID: <CAHqX9vYfGONfavB1hLRtdeSwhU6VWrPLzXFfmgwkB6-pgB9o7g@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 1/2] block: add simple copy support
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     SelvaKumar S <selvakuma.s1@samsung.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "kbusch@kernel.org" <kbusch@kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        "hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "mpatocka@redhat.com" <mpatocka@redhat.com>,
+        "hare@suse.de" <hare@suse.de>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "nj.shetty@samsung.com" <nj.shetty@samsung.com>,
+        "joshi.k@samsung.com" <joshi.k@samsung.com>,
+        "javier.gonz@samsung.com" <javier.gonz@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 10:08:54AM +0100, Markus Elfring wrote:
-> > This makes it hard to review any patches or follow discussion...
-> 
-> You shared also special software development opinions about extra variable
-> initialisations occasionally, didn't you?
+On Fri, Dec 11, 2020 at 9:56 PM Johannes Thumshirn
+<Johannes.Thumshirn@wdc.com> wrote:
+>
+> On 11/12/2020 15:57, SelvaKumar S wrote:
+> [...]
+> > +int blk_copy_emulate(struct block_device *bdev, struct blk_copy_payload *payload,
+> > +             gfp_t gfp_mask)
+> > +{
+> > +     struct request_queue *q = bdev_get_queue(bdev);
+> > +     struct bio *bio;
+> > +     void *buf = NULL;
+> > +     int i, nr_srcs, max_range_len, ret, cur_dest, cur_size;
+> > +
+> > +     nr_srcs = payload->copy_range;
+> > +     max_range_len = q->limits.max_copy_range_sectors << SECTOR_SHIFT;
+> > +     cur_dest = payload->dest;
+> > +     buf = kvmalloc(max_range_len, GFP_ATOMIC);
+>
+> Why GFP_ATOMIC and not the passed in gfp_mask? Especially as this is a kvmalloc()
+> which has the potential to grow quite big.
+>
+> > +int __blkdev_issue_copy(struct block_device *bdev, sector_t dest,
+> > +             sector_t nr_srcs, struct range_entry *rlist, gfp_t gfp_mask,
+> > +             int flags, struct bio **biop)
+> > +{
+>
+> [...]
+>
+> > +     total_size = struct_size(payload, range, nr_srcs);
+> > +     payload = kmalloc(total_size, GFP_ATOMIC | __GFP_NOWARN);
+>
+> Same here.
+>
+>
+> > diff --git a/block/ioctl.c b/block/ioctl.c
+> > index 6b785181344f..a4a507d85e56 100644
+> > --- a/block/ioctl.c
+> > +++ b/block/ioctl.c
+> > @@ -142,6 +142,47 @@ static int blk_ioctl_discard(struct block_device *bdev, fmode_t mode,
+> >                                   GFP_KERNEL, flags);
+> >  }
+> >
+> > +static int blk_ioctl_copy(struct block_device *bdev, fmode_t mode,
+> > +             unsigned long arg, unsigned long flags)
+> > +{
+>
+> [...]
+>
+> > +
+> > +     rlist = kmalloc_array(crange.nr_range, sizeof(*rlist),
+> > +                     GFP_ATOMIC | __GFP_NOWARN);
+>
+> And here. I think this one can even be GFP_KERNEL.
+>
+>
+>
 
-I generally put everything at the top of the function...  I don't have
-a well developed philosophy for when variables should be declared with
-a smaller scope.
-
-	int ret;  <-- this should always be function scope
-
-Probably the other people are right that making scopes shorter is more
-important when the function is very long.
-
-regards,
-dan carpenter
+Thanks. Will fix this.
