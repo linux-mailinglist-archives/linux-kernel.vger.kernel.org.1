@@ -2,164 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52ACC2D9E98
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D432D9DBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440603AbgLNSIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 13:08:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408622AbgLNRjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:39:21 -0500
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.9 105/105] compiler.h: fix barrier_data() on clang
-Date:   Mon, 14 Dec 2020 18:29:19 +0100
-Message-Id: <20201214172600.338038310@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201214172555.280929671@linuxfoundation.org>
-References: <20201214172555.280929671@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1732658AbgLNRaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:30:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440378AbgLNRaj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:30:39 -0500
+Received: from scorn.kernelslacker.org (scorn.kernelslacker.org [IPv6:2600:3c03:e000:2fb::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AFA0C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:29:59 -0800 (PST)
+Received: from [2601:196:4600:6634:ae9e:17ff:feb7:72ca] (helo=wopr.kernelslacker.org)
+        by scorn.kernelslacker.org with esmtp (Exim 4.92)
+        (envelope-from <davej@codemonkey.org.uk>)
+        id 1korfY-0004o6-Dt; Mon, 14 Dec 2020 12:29:56 -0500
+Received: by wopr.kernelslacker.org (Postfix, from userid 1026)
+        id 08F3C56016E; Mon, 14 Dec 2020 12:29:56 -0500 (EST)
+Date:   Mon, 14 Dec 2020 12:29:55 -0500
+From:   Dave Jones <davej@codemonkey.org.uk>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Mike Snitzer <snitzer@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, dm-devel@redhat.com
+Subject: Re: Linux 5.10
+Message-ID: <20201214172955.GA9066@codemonkey.org.uk>
+Mail-Followup-To: Dave Jones <davej@codemonkey.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, Mike Snitzer <snitzer@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, dm-devel@redhat.com
+References: <CAHk-=whCKhxNyKn1Arut8xUDKTwp3fWcCj_jbL5dbzkUmo45gQ@mail.gmail.com>
+ <20201214053147.GA24093@codemonkey.org.uk>
+ <X9b9ujh5T6U5+aBY@kroah.com>
+ <20201214160247.GA2090@redhat.com>
+ <20201214162631.GA2290@redhat.com>
+ <6522caad-bfe8-2554-2ba9-dff5856233d1@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6522caad-bfe8-2554-2ba9-dff5856233d1@kernel.dk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Note: SpamAssassin invocation failed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arvind Sankar <nivedita@alum.mit.edu>
-
-commit 3347acc6fcd4ee71ad18a9ff9d9dac176b517329 upstream.
-
-Commit 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h
-mutually exclusive") neglected to copy barrier_data() from
-compiler-gcc.h into compiler-clang.h.
-
-The definition in compiler-gcc.h was really to work around clang's more
-aggressive optimization, so this broke barrier_data() on clang, and
-consequently memzero_explicit() as well.
-
-For example, this results in at least the memzero_explicit() call in
-lib/crypto/sha256.c:sha256_transform() being optimized away by clang.
-
-Fix this by moving the definition of barrier_data() into compiler.h.
-
-Also move the gcc/clang definition of barrier() into compiler.h,
-__memory_barrier() is icc-specific (and barrier() is already defined
-using it in compiler-intel.h) and doesn't belong in compiler.h.
-
-[rdunlap@infradead.org: fix ALPHA builds when SMP is not enabled]
-
-Link: https://lkml.kernel.org/r/20201101231835.4589-1-rdunlap@infradead.org
-Fixes: 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201014212631.207844-1-nivedita@alum.mit.edu
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/asm-generic/barrier.h  |    1 +
- include/linux/compiler-clang.h |    6 ------
- include/linux/compiler-gcc.h   |   19 -------------------
- include/linux/compiler.h       |   18 ++++++++++++++++--
- 4 files changed, 17 insertions(+), 27 deletions(-)
-
---- a/include/asm-generic/barrier.h
-+++ b/include/asm-generic/barrier.h
-@@ -13,6 +13,7 @@
+On Mon, Dec 14, 2020 at 10:21:59AM -0700, Jens Axboe wrote:
  
- #ifndef __ASSEMBLY__
- 
-+#include <linux/compiler.h>
- #include <asm/rwonce.h>
- 
- #ifndef nop
---- a/include/linux/compiler-clang.h
-+++ b/include/linux/compiler-clang.h
-@@ -52,12 +52,6 @@
- #define COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW 1
- #endif
- 
--/* The following are for compatibility with GCC, from compiler-gcc.h,
-- * and may be redefined here because they should not be shared with other
-- * compilers, like ICC.
-- */
--#define barrier() __asm__ __volatile__("" : : : "memory")
--
- #if __has_feature(shadow_call_stack)
- # define __noscs	__attribute__((__no_sanitize__("shadow-call-stack")))
- #endif
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -15,25 +15,6 @@
- # error Sorry, your compiler is too old - please upgrade it.
- #endif
- 
--/* Optimization barrier */
--
--/* The "volatile" is due to gcc bugs */
--#define barrier() __asm__ __volatile__("": : :"memory")
--/*
-- * This version is i.e. to prevent dead stores elimination on @ptr
-- * where gcc and llvm may behave differently when otherwise using
-- * normal barrier(): while gcc behavior gets along with a normal
-- * barrier(), llvm needs an explicit input variable to be assumed
-- * clobbered. The issue is as follows: while the inline asm might
-- * access any memory it wants, the compiler could have fit all of
-- * @ptr into memory registers instead, and since @ptr never escaped
-- * from that, it proved that the inline asm wasn't touching any of
-- * it. This version works well with both compilers, i.e. we're telling
-- * the compiler that the inline asm absolutely may see the contents
-- * of @ptr. See also: https://llvm.org/bugs/show_bug.cgi?id=15495
-- */
--#define barrier_data(ptr) __asm__ __volatile__("": :"r"(ptr) :"memory")
--
- /*
-  * This macro obfuscates arithmetic on a variable address so that gcc
-  * shouldn't recognize the original var, and make assumptions about it.
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -80,11 +80,25 @@ void ftrace_likely_update(struct ftrace_
- 
- /* Optimization barrier */
- #ifndef barrier
--# define barrier() __memory_barrier()
-+/* The "volatile" is due to gcc bugs */
-+# define barrier() __asm__ __volatile__("": : :"memory")
- #endif
- 
- #ifndef barrier_data
--# define barrier_data(ptr) barrier()
-+/*
-+ * This version is i.e. to prevent dead stores elimination on @ptr
-+ * where gcc and llvm may behave differently when otherwise using
-+ * normal barrier(): while gcc behavior gets along with a normal
-+ * barrier(), llvm needs an explicit input variable to be assumed
-+ * clobbered. The issue is as follows: while the inline asm might
-+ * access any memory it wants, the compiler could have fit all of
-+ * @ptr into memory registers instead, and since @ptr never escaped
-+ * from that, it proved that the inline asm wasn't touching any of
-+ * it. This version works well with both compilers, i.e. we're telling
-+ * the compiler that the inline asm absolutely may see the contents
-+ * of @ptr. See also: https://llvm.org/bugs/show_bug.cgi?id=15495
-+ */
-+# define barrier_data(ptr) __asm__ __volatile__("": :"r"(ptr) :"memory")
- #endif
- 
- /* workaround for GCC PR82365 if needed */
+ > >>>> [   87.290698] attempt to access beyond end of device
+ > >>>>                md0: rw=4096, want=13996467328, limit=6261202944
+ > >>>> [   87.293371] attempt to access beyond end of device
+ > >>>>                md0: rw=4096, want=13998564480, limit=6261202944
+ > >>>> [   87.296045] BTRFS warning (device md0): couldn't read tree root
+ > >>>> [   87.300056] BTRFS error (device md0): open_ctree failed
+ > >>>>
+ > >>>> Reverting it goes back to the -rc7 behaviour where it mounts fine.
+ > >>>
+ > >>> If the developer/maintainer(s) agree, I can revert this and push out a
+ > >>> 5.10.1, just let me know.
+ > >>
+ > >> Yes, these should be reverted from 5.10 via 5.10.1:
+ > >>
+ > >> e0910c8e4f87 dm raid: fix discard limits for raid1 and raid10
+ > >> f075cfb1dc59 md: change mddev 'chunk_sectors' from int to unsigned
+ > > 
+ > > Sorry, f075cfb1dc59 was my local commit id, the corresponding upstream
+ > > commit as staged by Jens is:
+ > > 
+ > > 6ffeb1c3f82 md: change mddev 'chunk_sectors' from int to unsigned
+ > > 
+ > > So please revert:
+ > > 6ffeb1c3f822 md: change mddev 'chunk_sectors' from int to unsigned
+ > > and then revert:
+ > > e0910c8e4f87 dm raid: fix discard limits for raid1 and raid10
+ > 
+ > Working with Song on understanding the failure case here. raid6 was
+ > tested prior to this being shipped. We'll be back with more soon...
 
+FYI, mixup in my original mail, it was raid5  (I forgot I converted it from
+raid6->raid5 a few months back).  But I wouldn't be surprised if they
+were both equally affected given what that header touched.
+
+	Dave
 
