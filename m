@@ -2,75 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52E22D91DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 03:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DED332D91DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 03:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438046AbgLNCui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 21:50:38 -0500
-Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:53966 "EHLO
-        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S2438033AbgLNCuJ (ORCPT
+        id S2438104AbgLNCx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 21:53:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406966AbgLNCx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 21:50:09 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 422F620139DE;
-        Mon, 14 Dec 2020 10:49:00 +0800 (HKT)
-X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
-Received: from mail.gtsys.com.hk ([127.0.0.1])
-        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id wIylvA8Ctrid; Mon, 14 Dec 2020 10:49:00 +0800 (HKT)
-Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 2843320139A0;
-        Mon, 14 Dec 2020 10:49:00 +0800 (HKT)
-Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
-        by s01.gtsys.com.hk (Postfix) with ESMTP id 2CAFAC01FAD;
-        Mon, 14 Dec 2020 10:49:00 +0800 (HKT)
-Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
-        id 16E252000CF; Mon, 14 Dec 2020 10:49:00 +0800 (HKT)
-From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
-To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Johan Jonker <jbx6244@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] devicetree: dtsi: rk3399-puma.dtsi, add "rockchip," vendor prefix
-Date:   Mon, 14 Dec 2020 10:47:19 +0800
-Message-Id: <20201214024720.24656-4-chris.ruehl@gtsys.com.hk>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201214024720.24656-1-chris.ruehl@gtsys.com.hk>
-References: <20201214024720.24656-1-chris.ruehl@gtsys.com.hk>
+        Sun, 13 Dec 2020 21:53:57 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F895C0613D6
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 18:53:12 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id iq13so5433041pjb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 18:53:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sargun.me; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KfQodhCI8ZuQp7YRRZQxpihD4EYNwbDWNGKzRDV3Rag=;
+        b=1KGzDS5u0//+69i40jGl8BDlvmqcrhtOGrim4gQ5ZvvqQHMirN53vp1rc+KQ2APQji
+         9Qd3c1wKn31jlea+mxfiu1w+7gInJ4ouz8qQcxMw5YKDSzVCmRaZx9YMvbNDmbwZydSl
+         61B+dCsaa8pDkz33W8h+7js6xg2xFV1aH8glo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KfQodhCI8ZuQp7YRRZQxpihD4EYNwbDWNGKzRDV3Rag=;
+        b=m3mCRT27ZXIeVyNLPbq1Djbucf6ZzN86Ot+CipndcBdaP1w7P7+L0HPMoKiz0ErDqV
+         S51r8t3Li5LDO5BQ/LWzr26QKjhdEu1+rnlQTXVQJAPV/B0Ooethxn6+LSSt4OjEb/AE
+         WpsN7+0BE/uYXFR2k0VdQtMwQCb2IHKbeXjiPe2cwvfD52T3VjvLaeFRT8thaePJI2YN
+         JrpGaC3JtHhPN786qW1LFnbpSdn2sLzTb2r2T98A0rOMxe4riL6z6/NlXqVMGI4nmjaf
+         iAr1QzuuIxPAY3VbvdyE7UUrNtIBSJm6aSy+nHt/oxEE3NELgqCGxSeZTOQXsQ5iYWhf
+         O/fw==
+X-Gm-Message-State: AOAM530uGLKFuVksdeBAsEPwZgBFomTZJ3Dg7/Nud/dOdFdorzIEsGQC
+        Wl6xDvwbHiR1Ma8CM5V2QU6Svw==
+X-Google-Smtp-Source: ABdhPJxnGNsNFzFel27Bu+rpPuTScapWtzqvD2o5GTyqWhbGx2VaTCHkBQzQMWb/zF/JNETrpe05IA==
+X-Received: by 2002:a17:902:bf06:b029:dc:1f:ac61 with SMTP id bi6-20020a170902bf06b02900dc001fac61mr2372550plb.16.1607914391619;
+        Sun, 13 Dec 2020 18:53:11 -0800 (PST)
+Received: from ubuntu.netflix.com (203.20.25.136.in-addr.arpa. [136.25.20.203])
+        by smtp.gmail.com with ESMTPSA id h20sm17102713pgv.23.2020.12.13.18.53.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Dec 2020 18:53:10 -0800 (PST)
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <schumaker.anna@gmail.com>,
+        "J . Bruce Fields" <bfields@fieldses.org>
+Cc:     Sargun Dhillon <sargun@sargun.me>,
+        David Howells <dhowells@redhat.com>, linux-nfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mauricio@kinvolk.io, Alban Crequy <alban.crequy@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH RESEND v5 0/2] NFS: Fix interaction between fs_context and user namespaces
+Date:   Sun, 13 Dec 2020 18:53:03 -0800
+Message-Id: <20201214025305.25984-1-sargun@sargun.me>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update rk3399-puma.dtsi with the vendor prefix referred in
-vendor-prefixes.yaml.
-Optional property: rockchip,drive-impedance-ohm
+This is a resend[2] for consideration into the next NFS client merge window.
 
-Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
----
- arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Right now, it is possible to mount NFS with an non-matching super block
+user ns, and NFS sunrpc user ns. This (for the user) results in an awkward
+set of interactions if using anything other than auth_null, where the UIDs
+being sent to the server are different than the local UIDs being checked.
+This can cause "breakage", where if you try to communicate with the NFS
+server with any other set of mappings, it breaks.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-index 4660416c8f38..b715e73f9749 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-@@ -146,7 +146,7 @@
- 
- &emmc_phy {
- 	status = "okay";
--	drive-impedance-ohm = <33>;
-+	rockchip,drive-impedance-ohm = <33>;
- };
- 
- &gmac {
+The reason for this is that you can call fsopen("nfs4") in the unprivileged
+namespace, and that configures fs_context with all the right information
+for that user namespace. In addition, it also keeps a gets a cred object
+associated with the caller -- which should match the user namespace.
+Unfortunately, the mount has to be finished in the init_user_ns because we
+currently require CAP_SYS_ADMIN in the init user namespace to call fsmount.
+This means that the superblock's user namespace is set "correctly" to the
+container, but there's absolutely no way nfs4idmap to consume an
+unprivileged user namespace because the cred / user_ns that's passed down
+to nfs4idmap is the one at fsmount.
+
+How this actually exhibits is let's say that the UID 0 in the user
+namespace is mapped to UID 1000 in the init user ns (and kuid space). What
+will happen is that nfs4idmap will translate the UID 1000 into UID 0 on the
+wire, even if the mount is in entirely in the mount / user namespace of the
+container.
+
+So, it looks something like this
+Client in unprivileged User NS (UID: 0, KUID: 0)
+	->Perform open()
+		...VFS / NFS bits...
+		nfs_map_uid_to_name ->
+			from_kuid_munged(init_user_ns, uid) (returns 0)
+				RPC with UID 0
+
+This behaviour happens "the other way" as well, where the UID in the
+container may be 0, but the corresponding kuid is 1000. When a response
+from an NFS server comes in we decode it according to the idmap userns.
+The way this exhibits is even more odd.
+
+Server responds with file attribute (UID: 0, GID: 0)
+	->nfs_map_name_to_uid(..., 0)
+		->make_kuid(init_user_ns, id) (returns 0)
+			....VFS / NFS Bits...
+			->from_kuid(container_ns, 0) -> invalid uid
+				-> EOVERFLOW
+
+This changes the nfs server to use the cred / userns from fs_context, which
+is how idmap is constructed. This subsequently is used in the above
+described flow of converting uids back-and-forth.
+
+Trond gave the feedback that this behaviour [implemented by this patch] is
+how the legacy sys_mount() behaviour worked[1], and that the intended
+behaviour is for UIDs to be plumbed through entirely, where the user
+namespaces UIDs are what is sent over the wire, and not the init user ns.
+
+[1]: https://lore.kernel.org/linux-nfs/8feccf45f6575a204da03e796391cc135283eb88.camel@hammerspace.com/
+[2]: https://lore.kernel.org/linux-nfs/20201112100952.3514-1-sargun@sargun.me/
+
+Sargun Dhillon (2):
+  NFS: NFSv2/NFSv3: Use cred from fs_context during mount
+  NFSv4: Refactor to use user namespaces for nfs4idmap
+
+ fs/nfs/client.c     | 4 ++--
+ fs/nfs/nfs4client.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
 -- 
-2.20.1
+2.25.1
 
