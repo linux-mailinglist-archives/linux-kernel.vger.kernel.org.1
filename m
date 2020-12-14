@@ -2,95 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DCC2D97A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E452D97A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438525AbgLNLrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 06:47:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41242 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407656AbgLNLrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:47:08 -0500
-Date:   Mon, 14 Dec 2020 12:46:25 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607946387;
-        bh=wyj3+V8/GidtOhBncWae6PlOpBcFpm/Iv+pC8sW/RkI=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BaXsLGisJuwfyFAbkFDHfoiHv9pUqw1vMP4oMOiUd/xDvJ2rLQ9sfORYj9oTYCBJj
-         h8smgylxiSc3oR1S6CES3regeYUf+e2iVOXGiRs31qYSWQXCJAkZT+BALh8JgQv42N
-         zn/nScC5Oc12sHSObgLjQvurD4H62sl9t7T1MJI//7mU1TjNXgTWaOw4KKy1THQERI
-         sq7vNoHstJoNZZ/Z7hcWvVKHyOaNj+mppniF1RRFpFEkUDY01kddURJshR8PGqty4v
-         b9AXmBOKIwnl0vl8HnOuET1dRiNF8nFNJSioZp+TLfbAh2v07CGuDeidwf6Sr8b5tL
-         IqJtGa3TjBnpg==
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Michael Klein <michael@fossekall.de>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] power: reset: new driver regulator-poweroff
-Message-ID: <20201214114625.xq55gkkmvdigese5@earth.universe>
-References: <20201211151445.115943-1-michael@fossekall.de>
- <20201211151445.115943-2-michael@fossekall.de>
- <20201212234116.cddx5yur7ox7itxv@earth.universe>
- <20201214100204.ngkgfrghdp3ui3um@gilmour>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uy472czivduskjvu"
-Content-Disposition: inline
-In-Reply-To: <20201214100204.ngkgfrghdp3ui3um@gilmour>
+        id S2438578AbgLNLsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 06:48:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438530AbgLNLrf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 06:47:35 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBB0C0613CF;
+        Mon, 14 Dec 2020 03:47:10 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id e2so12316689pgi.5;
+        Mon, 14 Dec 2020 03:47:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=/sj5dLXt24sh61lvcsgpABuLIqlJqFU1rHY/mqcSIRs=;
+        b=frhHmzOc78dpdY1fADjgVo/mxFIHVbEU45s7IyfZGPQVvWXx0j5l0SCs5C/M+soRMd
+         ZIt76MoWwLaVYJep7A86+QgVB5W6hMn23rzTDfu76lh3LB8irMhbVN7xStLIG4ORGt7M
+         95u5QbAH9gH6CRbylNLDQaeOhQKsuev0YNY5KepbOMeZksdYHps+o9dYoqFY0iuwP8zO
+         JCunHZqKYOmg62jH68SknpbPyqDVpD7JdOJ5L+hO1R160imwBZHTOYzeTKZXrjoH5xVQ
+         mwZwmvpOr/XRUbaqheAOeklqKSAe2VlVDQGcm6Mc6msUn+6oJP93O0+KjEsg6ofO2pRq
+         /W2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/sj5dLXt24sh61lvcsgpABuLIqlJqFU1rHY/mqcSIRs=;
+        b=U5tbwA//zZOlyycYWwCVagE+LM3tjcHt6OOXRW8OmugZrYYpUcDsEtisuerUH2/sGf
+         n3Jbc5kygj+OFgfCR/miq5nMr+nQN7uJEmHKceeTbQHROPJWFndFwsfuGqj+Fv51R3GR
+         RT/dFO42Lo48mq9tfbQ5QDPc36wEN31p1c64JBDhycqOAxwVqMjs8hydapfNt5n37OBe
+         NwEzVbX5JhjtgpmK61uzyinZOqcQspEUvDX/2MALMz3JPy59j4Ka525PjXvcPk22hL4i
+         fzsbbXTXrX2uLDibeWSUsEmVi/AEXmu9sHcaUAzuw1N9WaZkUKc4F+sLY3qevfHNQNgS
+         LywQ==
+X-Gm-Message-State: AOAM531+oUJsxGVX59rOoqQXmXB9YXteDmgMYOBNolfW6MVVbQeNhcXA
+        HNaXhqmAJ/dWCup17WnKEyU=
+X-Google-Smtp-Source: ABdhPJxUEEax5L2fx/qRE2NzO+kFIVY2bl1ZbTZrfXfq6QuwFn9jjM+qgx9cYb5Jr30J+L3o03Kv9Q==
+X-Received: by 2002:a63:eb4b:: with SMTP id b11mr23926208pgk.351.1607946429816;
+        Mon, 14 Dec 2020 03:47:09 -0800 (PST)
+Received: from localhost.localdomain ([182.226.226.37])
+        by smtp.googlemail.com with ESMTPSA id h18sm2294116pfo.172.2020.12.14.03.47.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 03:47:08 -0800 (PST)
+From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
+X-Google-Original-From: Bongsu Jeon
+To:     krzk@kernel.org
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: [PATCH net-next] nfc: s3fwrn5: Remove unused nci prop commands
+Date:   Mon, 14 Dec 2020 20:46:58 +0900
+Message-Id: <20201214114658.27771-1-bongsu.jeon@samsung.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Bongsu Jeon <bongsu.jeon@samsung.com>
 
---uy472czivduskjvu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+remove the unused nci prop commands that samsung driver doesn't use.
 
-Hi Maxime,
+Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+---
+ drivers/nfc/s3fwrn5/nci.c | 25 -------------------------
+ drivers/nfc/s3fwrn5/nci.h | 22 ----------------------
+ 2 files changed, 47 deletions(-)
 
-On Mon, Dec 14, 2020 at 11:02:04AM +0100, Maxime Ripard wrote:
-> Hi Sebastian,
->=20
-> On Sun, Dec 13, 2020 at 12:41:16AM +0100, Sebastian Reichel wrote:
-> > Hi,
-> >=20
-> > On Fri, Dec 11, 2020 at 04:14:43PM +0100, Michael Klein wrote:
-> > > This driver registers a pm_power_off function to turn off the board
-> > > by force-disabling a devicetree-defined regulator.
-> > >=20
-> > > Signed-off-by: Michael Klein <michael@fossekall.de>
-> > > ---
-> >=20
-> > Thanks, queued.
->=20
-> Did you also merge the binding?
+diff --git a/drivers/nfc/s3fwrn5/nci.c b/drivers/nfc/s3fwrn5/nci.c
+index 103bf5c92bdc..f042d3eaf8f6 100644
+--- a/drivers/nfc/s3fwrn5/nci.c
++++ b/drivers/nfc/s3fwrn5/nci.c
+@@ -21,31 +21,11 @@ static int s3fwrn5_nci_prop_rsp(struct nci_dev *ndev, struct sk_buff *skb)
+ }
+ 
+ static struct nci_driver_ops s3fwrn5_nci_prop_ops[] = {
+-	{
+-		.opcode = nci_opcode_pack(NCI_GID_PROPRIETARY,
+-				NCI_PROP_AGAIN),
+-		.rsp = s3fwrn5_nci_prop_rsp,
+-	},
+-	{
+-		.opcode = nci_opcode_pack(NCI_GID_PROPRIETARY,
+-				NCI_PROP_GET_RFREG),
+-		.rsp = s3fwrn5_nci_prop_rsp,
+-	},
+ 	{
+ 		.opcode = nci_opcode_pack(NCI_GID_PROPRIETARY,
+ 				NCI_PROP_SET_RFREG),
+ 		.rsp = s3fwrn5_nci_prop_rsp,
+ 	},
+-	{
+-		.opcode = nci_opcode_pack(NCI_GID_PROPRIETARY,
+-				NCI_PROP_GET_RFREG_VER),
+-		.rsp = s3fwrn5_nci_prop_rsp,
+-	},
+-	{
+-		.opcode = nci_opcode_pack(NCI_GID_PROPRIETARY,
+-				NCI_PROP_SET_RFREG_VER),
+-		.rsp = s3fwrn5_nci_prop_rsp,
+-	},
+ 	{
+ 		.opcode = nci_opcode_pack(NCI_GID_PROPRIETARY,
+ 				NCI_PROP_START_RFREG),
+@@ -61,11 +41,6 @@ static struct nci_driver_ops s3fwrn5_nci_prop_ops[] = {
+ 				NCI_PROP_FW_CFG),
+ 		.rsp = s3fwrn5_nci_prop_rsp,
+ 	},
+-	{
+-		.opcode = nci_opcode_pack(NCI_GID_PROPRIETARY,
+-				NCI_PROP_WR_RESET),
+-		.rsp = s3fwrn5_nci_prop_rsp,
+-	},
+ };
+ 
+ void s3fwrn5_nci_get_prop_ops(struct nci_driver_ops **ops, size_t *n)
+diff --git a/drivers/nfc/s3fwrn5/nci.h b/drivers/nfc/s3fwrn5/nci.h
+index 23c0b28f247a..a80f0fb082a8 100644
+--- a/drivers/nfc/s3fwrn5/nci.h
++++ b/drivers/nfc/s3fwrn5/nci.h
+@@ -11,9 +11,6 @@
+ 
+ #include "s3fwrn5.h"
+ 
+-#define NCI_PROP_AGAIN		0x01
+-
+-#define NCI_PROP_GET_RFREG	0x21
+ #define NCI_PROP_SET_RFREG	0x22
+ 
+ struct nci_prop_set_rfreg_cmd {
+@@ -25,23 +22,6 @@ struct nci_prop_set_rfreg_rsp {
+ 	__u8 status;
+ };
+ 
+-#define NCI_PROP_GET_RFREG_VER	0x24
+-
+-struct nci_prop_get_rfreg_ver_rsp {
+-	__u8 status;
+-	__u8 data[8];
+-};
+-
+-#define NCI_PROP_SET_RFREG_VER	0x25
+-
+-struct nci_prop_set_rfreg_ver_cmd {
+-	__u8 data[8];
+-};
+-
+-struct nci_prop_set_rfreg_ver_rsp {
+-	__u8 status;
+-};
+-
+ #define NCI_PROP_START_RFREG	0x26
+ 
+ struct nci_prop_start_rfreg_rsp {
+@@ -70,8 +50,6 @@ struct nci_prop_fw_cfg_rsp {
+ 	__u8 status;
+ };
+ 
+-#define NCI_PROP_WR_RESET	0x2f
+-
+ void s3fwrn5_nci_get_prop_ops(struct nci_driver_ops **ops, size_t *n);
+ int s3fwrn5_nci_rf_configure(struct s3fwrn5_info *info, const char *fw_name);
+ 
+-- 
+2.17.1
 
-Yes.
-
--- Sebastian
-
---uy472czivduskjvu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/XUIcACgkQ2O7X88g7
-+pr0Fg/9FDDxDr8rhtSeHCAMSGYGI/0Z++QmPLDpGkvEW1wl3bN65PJs++gg4ys8
-pEQ46pqhyeeNB1Ua/B/NNFoLrTxoJl/K2vym/9qNcINtkU2RqJBM1mdbyis6TBB1
-HyH3T6DxAwWgLsavY3xyZE9YOSv727RYIlkMEHeELvoO6TRToiVmgd5vTqumsAds
-EXCiV1uAXGuiujxVxyI9K6/mKK0FZ9ViWgzCRL8pHQIvUj9frndeJPvSnSZUH0Yk
-UwaX2xbhaZmuRLzbVgV/f4VfdhzJgILzh3BgFdiO5zQByjfODBFT117X7CONVtqL
-yngZDUOpMZufgLiGgot+WiMca4e8UY5FEPrwqZ/x7E6ByB5jtejJk8yLKRwwLssC
-uk0MRKVB8Z/q7PioBnKFaJNgkoC1/HURgBHAL9BCxA3OWOSql075ByKfubv5KCgW
-efmO5IM3LSidrU4xezqA0GkQF3J0tl0r0uk7cfrL2r+PgBjJyLdhoIyPhOXFw4ul
-WW+amS5KZCSVby0wTQ2PBxYVQ+JAQSaOuW32DvFckPU7DK9UDB0Ti3EcxjyPUycT
-KxlaFRgJ5ReuVpC+mpli2+LqxJfmSNoBeUihsegU2ijRcg1cbt49i2tCZ7LgdW0O
-GUZcREN7C0nrb+UEn7SuNkCWJVi5HlpY8OWV2ZJalvZZkjx9oVk=
-=9/Cy
------END PGP SIGNATURE-----
-
---uy472czivduskjvu--
