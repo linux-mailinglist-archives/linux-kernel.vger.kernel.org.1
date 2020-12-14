@@ -2,146 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C512D9E61
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:01:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFB32D9EA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408738AbgLNSAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 13:00:07 -0500
-Received: from lpdvacalvio01.broadcom.com ([192.19.229.182]:36328 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2408014AbgLNR7m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:59:42 -0500
-Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id 2703080F3;
-        Mon, 14 Dec 2020 09:50:25 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 2703080F3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1607968225;
-        bh=FiZzrokXj/Wcz9DvgJNMcsRGqr2Epz7xd7OEyplP+kI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=YhwbyxPDbVluUt0jw+MkgNcmo8BJzWqtLGGnZgKS8TIbpcS+9UhDOT+P3MrSA/jOi
-         uJme6kd9L5o0Xeo2F5RdoAy4z4RST2ZeubkzBvXjvNqdaLfFXhIpwZ3oNKhJRBY7Cg
-         oSWJZhyuJDKsnIQa0NlIs2z2uRNqeiP3BliYOna4=
-Subject: Re: [PATCH 2/2] hwrng: iproc-rng200: Move enable/disable in separate
- function
-To:     matthias.bgg@kernel.org, mpm@selenic.com,
-        herbert@gondor.apana.org.au, rjui@broadcom.com,
-        sbranden@broadcom.com, f.fainelli@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Julia.Lawall@inria.fr,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, nsaenzjulienne@suse.de,
-        linux-crypto@vger.kernel.org, Matthias Brugger <mbrugger@suse.com>
-References: <20201214160454.22769-1-matthias.bgg@kernel.org>
- <20201214160454.22769-2-matthias.bgg@kernel.org>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <9f87ad0f-b281-33f4-b81d-e62a37d536fc@broadcom.com>
-Date:   Mon, 14 Dec 2020 09:50:24 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2440737AbgLNSMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 13:12:41 -0500
+Received: from 108.78.124.78.rev.sfr.net ([78.124.78.108]:38296 "EHLO
+        legeek.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439865AbgLNSMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 13:12:09 -0500
+X-Greylist: delayed 1009 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Dec 2020 13:12:08 EST
+From:   sylvain.bertrand@legeek.net
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH] unlock patched C gccs
 MIME-Version: 1.0
-In-Reply-To: <20201214160454.22769-2-matthias.bgg@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-CA
+Content-Disposition: inline
+X-Mutt-Fcc: =mail
+message-id: <48937guecrhuc8g89g8gqjk89jqkgrcg98g@freedom>
+Date:   Mon, 14 Dec 2020 17:51:36 +0000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Sylvain BERTRAND <sylvain.bertrand@legeek.net>
 
+unlock the usage of patched gccs with proper warnings and fix the
+blocking usage of c11 _Generic by using builtins available on
+much more C and CXX gccs
 
-On 2020-12-14 8:04 a.m., matthias.bgg@kernel.org wrote:
-> From: Matthias Brugger <mbrugger@suse.com>
->
-> We are calling the same code for enable and disable the block in various
-> parts of the driver. Put that code into a new function to reduce code
-> duplication.
-Patch needs to be regenerated after most of PATCH 1 dropped.
->
-> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
->
-> ---
->
->  drivers/char/hw_random/iproc-rng200.c | 37 ++++++++++++---------------
->  1 file changed, 17 insertions(+), 20 deletions(-)
->
-> diff --git a/drivers/char/hw_random/iproc-rng200.c b/drivers/char/hw_random/iproc-rng200.c
-> index e106ce3c0146..3367b26085e8 100644
-> --- a/drivers/char/hw_random/iproc-rng200.c
-> +++ b/drivers/char/hw_random/iproc-rng200.c
-> @@ -53,15 +53,26 @@ struct iproc_rng200_dev {
->  
->  #define to_rng_priv(rng)	container_of(rng, struct iproc_rng200_dev, rng)
->  
-> -static void iproc_rng200_restart(void __iomem *rng_base)
-> +static void iproc_rng200_enable(void __iomem *rng_base, bool enable)
->  {
->  	uint32_t val;
->  
-> -	/* Disable RBG */
->  	val = ioread32(rng_base + RNG_CTRL_OFFSET);
->  	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
-> -	val &= ~RNG_CTRL_RNG_RBGEN_ENABLE;
-> +
-> +	if (enable)
-> +		val |= RNG_CTRL_RNG_RBGEN_ENABLE;
-> +	else
-> +		val &= ~RNG_CTRL_RNG_RBGEN_ENABLE;
-> +
->  	iowrite32(val, rng_base + RNG_CTRL_OFFSET);
-> +}
-> +
-> +static void iproc_rng200_restart(void __iomem *rng_base)
-> +{
-> +	uint32_t val;
-> +
-> +	iproc_rng200_enable(rng_base, false);
->  
->  	/* Clear all interrupt status */
->  	iowrite32(0xFFFFFFFFUL, rng_base + RNG_INT_STATUS_OFFSET);
-> @@ -83,11 +94,7 @@ static void iproc_rng200_restart(void __iomem *rng_base)
->  	val &= ~RBG_SOFT_RESET;
->  	iowrite32(val, rng_base + RBG_SOFT_RESET_OFFSET);
->  
-> -	/* Enable RBG */
-> -	val = ioread32(rng_base + RNG_CTRL_OFFSET);
-> -	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
-> -	val |= RNG_CTRL_RNG_RBGEN_ENABLE;
-> -	iowrite32(val, rng_base + RNG_CTRL_OFFSET);
-> +	iproc_rng200_enable(rng_base, true);
->  }
->  
->  static int iproc_rng200_read(struct hwrng *rng, void *buf, size_t max,
-> @@ -154,13 +161,8 @@ static int iproc_rng200_read(struct hwrng *rng, void *buf, size_t max,
->  static int iproc_rng200_init(struct hwrng *rng)
->  {
->  	struct iproc_rng200_dev *priv = to_rng_priv(rng);
-> -	uint32_t val;
->  
-> -	/* Setup RNG. */
-> -	val = ioread32(priv->base + RNG_CTRL_OFFSET);
-> -	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
-> -	val |= RNG_CTRL_RNG_RBGEN_ENABLE;
-> -	iowrite32(val, priv->base + RNG_CTRL_OFFSET);
-> +	iproc_rng200_enable(priv->base, true);
->  
->  	return 0;
->  }
-> @@ -168,13 +170,8 @@ static int iproc_rng200_init(struct hwrng *rng)
->  static void iproc_rng200_cleanup(struct hwrng *rng)
->  {
->  	struct iproc_rng200_dev *priv = to_rng_priv(rng);
-> -	uint32_t val;
->  
-> -	/* Disable RNG hardware */
-> -	val = ioread32(priv->base + RNG_CTRL_OFFSET);
-> -	val &= ~RNG_CTRL_RNG_RBGEN_MASK;
-> -	val &= ~RNG_CTRL_RNG_RBGEN_ENABLE;
-> -	iowrite32(val, priv->base + RNG_CTRL_OFFSET);
-> +	iproc_rng200_enable(priv->base, false);
->  }
->  
->  static int iproc_rng200_probe(struct platform_device *pdev)
+Signed-off-by: Sylvain BERTRAND <sylvain.bertrand@legeek.net>
+---
+ tested on mainline 2c85ebc57b3e1817b6ce1a6b703928e113a90442 building
+    a running kernel.
+ include/linux/compiler-gcc.h: unlock blocking macros with warnings.
+ include/linux/compiler_types.h: use a __generic() wrapper macro
+    with common builtins instead of c11 _Generic. 
+ include/linux/seqlock.h use the: __generic() macro instead of c11
+    _Generic.
+ Makefile: benign blocking gcc option.
+
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -10,9 +10,30 @@
+ 		     + __GNUC_MINOR__ * 100	\
+ 		     + __GNUC_PATCHLEVEL__)
+ 
++#if GCC_VERSION < 40800
++#define GCC_C
++/* comment out/patch out to acknowledge the following warning message */
++# warning you need to patch gcc:
++# warning "gcc 4.7.x would need:"
++# warning "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58145"
++# warning "https://gcc.gnu.org/legacy-ml/gcc-patches/2012-04/msg00452.html"
++#elif GCC_VERSION < 40900
+ /* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58145 */
+-#if GCC_VERSION < 40900
+-# error Sorry, your version of GCC is too old - please use 4.9 or newer.
++# error Sorry, your version of GCC misses some bug fixes and features - please use 4.9 or patch your GCC.
++#else
++#define GCC_CXX
++#endif
++
++/* help prevent planned obsolescence due to the use of recent c11 _Generic */
++#if GCC_VERSION >= 40900
++#define __generic(expr, t, yes, no)                                     \
++        _Generic(expr, t: yes, default: no)
++#elif GCC_VERSION >= 30100
++#define __generic(expr, t, yes, no)                                     \
++        __builtin_choose_expr(                                          \
++            __builtin_types_compatible_p(__typeof(expr), t), yes, no)
++#else
++# error your gcc compiler cannot support the __generic macro
+ #endif
+ 
+ /*
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -254,23 +254,19 @@
+  * __unqual_scalar_typeof(x) - Declare an unqualified scalar type, leaving
+  *			       non-scalar types unchanged.
+  */
+-/*
+- * Prefer C11 _Generic for better compile-times and simpler code. Note: 'char'
+- * is not type-compatible with 'signed char', and we define a separate case.
+- */
+-#define __scalar_type_to_expr_cases(type)				\
+-		unsigned type:	(unsigned type)0,			\
+-		signed type:	(signed type)0
+-
+ #define __unqual_scalar_typeof(x) typeof(				\
+-		_Generic((x),						\
+-			 char:	(char)0,				\
+-			 __scalar_type_to_expr_cases(char),		\
+-			 __scalar_type_to_expr_cases(short),		\
+-			 __scalar_type_to_expr_cases(int),		\
+-			 __scalar_type_to_expr_cases(long),		\
+-			 __scalar_type_to_expr_cases(long long),	\
+-			 default: (x)))
++	__generic((x), char, (char)0,					\
++	__generic((x), unsigned char, (unsigned char)0,			\
++	__generic((x), signed char, (unsigned char)0,			\
++	__generic((x), unsigned short, (unsigned short)0,		\
++	__generic((x), signed short, (signed short)0,			\
++	__generic((x), unsigned int, (unsigned int)0,			\
++	__generic((x), signed int, (signed int)0,			\
++	__generic((x), unsigned long, (unsigned long)0,			\
++	__generic((x), signed long, (signed long)0,			\
++	__generic((x), unsigned long long, (unsigned long long)0,	\
++	__generic((x), signed long long, (signed long long)0,		\
++	(x)))))))))))))
+ 
+ /* Is this type a native word size -- useful for atomic operations */
+ #define __native_word(t) \
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -296,17 +296,20 @@
+ #define SEQCNT_MUTEX_ZERO(name, lock)		SEQCOUNT_LOCKNAME_ZERO(name, lock)
+ #define SEQCNT_WW_MUTEX_ZERO(name, lock) 	SEQCOUNT_LOCKNAME_ZERO(name, lock)
+ 
+-#define __seqprop_case(s, lockname, prop)				\
+-	seqcount_##lockname##_t: __seqprop_##lockname##_##prop((void *)(s))
+-
+-#define __seqprop(s, prop) _Generic(*(s),				\
+-	seqcount_t:		__seqprop_##prop((void *)(s)),		\
+-	__seqprop_case((s),	raw_spinlock,	prop),			\
+-	__seqprop_case((s),	spinlock,	prop),			\
+-	__seqprop_case((s),	rwlock,		prop),			\
+-	__seqprop_case((s),	mutex,		prop),			\
+-	__seqprop_case((s),	ww_mutex,	prop))
+-
++#define __seqprop(s, prop) 						\
++	__generic(*(s), seqcount_t, __seqprop_##prop((void *)(s)),	\
++	__generic(*(s), seqcount_raw_spinlock_t,			\
++			__seqprop_raw_spinlock_##prop((void *)(s)),	\
++	__generic(*(s), seqcount_spinlock_t,				\
++			__seqprop_spinlock_##prop((void *)(s)),		\
++	__generic(*(s), seqcount_rwlock_t,				\
++			__seqprop_rwlock_##prop((void *)(s)),		\
++	__generic(*(s), seqcount_mutex_t,				\
++			__seqprop_mutex_##prop((void *)(s)),		\
++	__generic(*(s), seqcount_ww_mutex_t,				\
++			__seqprop_ww_mutex_##prop((void *)(s)),		\
++	panic("seqlock:__seqprop:unsupported type")))))))
++	
+ #define __seqcount_ptr(s)		__seqprop(s, ptr)
+ #define __seqcount_sequence(s)		__seqprop(s, sequence)
+ #define __seqcount_lock_preemptible(s)	__seqprop(s, preemptible)
+--- a/Makefile
++++ b/Makefile
+@@ -936,9 +936,6 @@
+ # conserve stack if available
+ KBUILD_CFLAGS   += $(call cc-option,-fconserve-stack)
+ 
+-# Prohibit date/time macros, which would make the build non-deterministic
+-KBUILD_CFLAGS   += -Werror=date-time
+-
+ # enforce correct pointer usage
+ KBUILD_CFLAGS   += $(call cc-option,-Werror=incompatible-pointer-types)
+ 
 
