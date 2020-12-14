@@ -2,66 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81642DA306
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5294C2DA2FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440808AbgLNWJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 17:09:48 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:37539 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441080AbgLNWH3 (ORCPT
+        id S2438576AbgLNWIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 17:08:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441155AbgLNWHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 17:07:29 -0500
-Received: by mail-oi1-f194.google.com with SMTP id l207so21023159oib.4;
-        Mon, 14 Dec 2020 14:07:12 -0800 (PST)
+        Mon, 14 Dec 2020 17:07:42 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7433BC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:07:02 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id c12so13081687pfo.10
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:07:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=TbW/QR7klkTL5Q0NcAJZPMi5v/vDDc8pXqRkGTGE/H8=;
+        b=JqxzVARQe1kB450KnuTgatRR/3dUe4nyZj8g63om3QAWRf2a6rSkZLGsdJ7j/Ind1m
+         ZJUK+RVd3La/v520CjE66YNG2Qd8kO12cqb1v8P52qnjK/6qpZOslh2BT6wNKa2ju3od
+         m5noLshWryy7E6Ke885jmxItnKUlrWbg6swQanGe7Bv5F2HI4xylFB3qF1ABSPVBMNbD
+         pHoru2k9dl32/XVfVX+axXmWVowLN19vC07l6esyLa0zFszIrCxAjwxNl2H11kR75yLE
+         qffiBmnZYrAQcuzUCIr+buUH5nRZ5pvrkxd+ZIqUMfzf/qLLMgaP3KFDWyfJZlK+qyq/
+         FEiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0/I65MXMkNznaW5LKxsVjR34sG4yDznp7JKf020+wMs=;
-        b=qxddUNS/4OQprr3zCEg0AmEH1dDG/o9Ln0JiKJbQkx3BP7R4jGm+BqR9VZhV0sWKu0
-         YyFPKv/G8XhDHp02fsZTmlU0af7E4U6DovB9fvzuh14EZOUR7ztCIgHmkEwPNwpbsS9u
-         73jvnHM4FokC58gyP7bYzoaIlcDtKVgJtHYtcXx8Opzm5Cna7IyezLCv6D7SvJtjJ2z2
-         8vKdB9w/gdhBadvxmXiQ1WPUWUNXeunWykQWrIRuBYMGDkNZJ9EzbbJ3WFEXS/5caj8j
-         ezdOOWmncPG/t/lnLCaP3ncoa7l/61iJooO97ZEEA7E1+h/4d0vmGE+zoeMaDblIwIaC
-         vQoA==
-X-Gm-Message-State: AOAM533mi/EZOP2D1PXv2+QUMCwc/b9hf/b6dcTEdSYXvHLp9EGQ+LGr
-        +J2LmneFbIVVgpeF27Zk6g==
-X-Google-Smtp-Source: ABdhPJx+39HYyPsjA6xBoSfU2ve06K7MlTuoJO6hqIby89sUj/Ci9w4qXjJZlysdJqYzOH+JUJHhkA==
-X-Received: by 2002:a05:6808:352:: with SMTP id j18mr20177974oie.78.1607983606634;
-        Mon, 14 Dec 2020 14:06:46 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id f18sm4632704otf.55.2020.12.14.14.06.45
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=TbW/QR7klkTL5Q0NcAJZPMi5v/vDDc8pXqRkGTGE/H8=;
+        b=fx3gPhgw4yLQ4lAgR3r/bVcEmdvZtW0O01V/mtihyc9HXqE751MGnIqg9AGSoKLhRe
+         zj+7QBl4te83HJQO67wi9b3FSdMzeiPia1dorC0LKoYOLSeF+CL9miRv6xStVOkPOEjC
+         ej5+d0hYbxYmf9/3q1OHlnLmfZpPUzulBcRSa4oi7lwfktD84t73/CQlPg3xouF2DKXU
+         mWAScbtcM3BMfuuS6MP8l/YiQhVwrAQBx08MO1jLfvLVeH7ZSedjJJ7HFzInxFP1moLD
+         uSE5m0jEFNXBYa8boa3CM5ZoJGFoiIqZj5ooG4/TxsbDGmj3+gIiih1IMlD/dvWRas4H
+         UXCg==
+X-Gm-Message-State: AOAM531mYdoLhPoJh58PP2D0u1E70+HwHheLbiSN4V6XiHoukz64iLsH
+        D0C0+HJ30KIYaEDNMjsPDdzZQg==
+X-Google-Smtp-Source: ABdhPJyK37b+5r2+zmLtfHveiF0FNGSji0x0FQhwBesNdi+7CNMVAp2VuBim8Sn8sG5aFt8Wd6LqtQ==
+X-Received: by 2002:a62:a20f:0:b029:18b:70ec:c75b with SMTP id m15-20020a62a20f0000b029018b70ecc75bmr25517080pff.56.1607983621971;
+        Mon, 14 Dec 2020 14:07:01 -0800 (PST)
+Received: from [192.168.1.9] ([171.61.231.84])
+        by smtp.gmail.com with ESMTPSA id 37sm17722184pjz.41.2020.12.14.14.06.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 14:06:45 -0800 (PST)
-Received: (nullmailer pid 2471687 invoked by uid 1000);
-        Mon, 14 Dec 2020 22:06:44 -0000
-Date:   Mon, 14 Dec 2020 16:06:44 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     devicetree@vger.kernel.org, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: mali-bifrost: Add
- dynamic-power-coefficient
-Message-ID: <20201214220644.GA2471636@robh.at.kernel.org>
-References: <20201209115143.15321-1-lukasz.luba@arm.com>
- <20201209115143.15321-3-lukasz.luba@arm.com>
+        Mon, 14 Dec 2020 14:07:01 -0800 (PST)
+Message-ID: <16c4bcb9a1451fe75c63394c027bb9a42b0256a5.camel@rajagiritech.edu.in>
+Subject: Re: [PATCH 5.9 000/105] 5.9.15-rc1 review
+From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Date:   Tue, 15 Dec 2020 03:36:57 +0530
+In-Reply-To: <20201214172555.280929671@linuxfoundation.org>
+References: <20201214172555.280929671@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209115143.15321-3-lukasz.luba@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Dec 2020 11:51:43 +0000, Lukasz Luba wrote:
-> Add a property dynamic-power-coefficient which allows to register Energy
-> Model for the Mali Bifrost devices.
+On Mon, 2020-12-14 at 18:27 +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.9.15 release.
+> There are 105 patches in this series, all will be posted as a
+> response
+> to this one.  If anyone has any issues with these being applied,
+> please
+> let me know.
 > 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->  .../bindings/gpu/arm,mali-bifrost.yaml          | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
+> Responses should be made by Wed, 16 Dec 2020 17:25:32 +0000.
+> Anything received after that time might be too late.
 > 
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.15-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
+> stable-rc.git linux-5.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+hello,
+ 
+Compiled and booted  5.9.15-rc1+ . No typical dmesg regression or
+regressions
 
-Applied, thanks!
+Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+
+-- 
+software engineer
+rajagiri school of engineering and technology - autonomous
+
+
