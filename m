@@ -2,113 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D062D2D9AF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3C82D9AE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407897AbgLNP2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 10:28:50 -0500
-Received: from elvis.franken.de ([193.175.24.41]:40263 "EHLO elvis.franken.de"
+        id S2391257AbgLNPZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 10:25:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731884AbgLNP2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 10:28:06 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kopkv-0006Cf-01; Mon, 14 Dec 2020 16:27:21 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A5C8EC037B; Mon, 14 Dec 2020 16:20:40 +0100 (CET)
-Date:   Mon, 14 Dec 2020 16:20:40 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Octeon: irq: Alloc desc before configuring IRQ
-Message-ID: <20201214152040.GB9149@alpha.franken.de>
-References: <20201127111355.28601-1-alexander.sverdlin@nokia.com>
+        id S2405383AbgLNPZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 10:25:05 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD59222A99;
+        Mon, 14 Dec 2020 15:24:23 +0000 (UTC)
+Date:   Mon, 14 Dec 2020 10:24:22 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, Ingo Molnar <mingo@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        linux-rt-users <linux-rt-users@vger.kernel.org>
+Subject: Re: [PATCH] blktrace: fix 'BUG: sleeping function called from
+ invalid context' in case of PREEMPT_RT
+Message-ID: <20201214102422.2d84035d@gandalf.local.home>
+In-Reply-To: <20201214022217.1754273-1-ming.lei@redhat.com>
+References: <20201214022217.1754273-1-ming.lei@redhat.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201127111355.28601-1-alexander.sverdlin@nokia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 12:13:55PM +0100, Alexander A Sverdlin wrote:
-> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+On Mon, 14 Dec 2020 10:22:17 +0800
+Ming Lei <ming.lei@redhat.com> wrote:
+
+> trace_note_tsk() is called by __blk_add_trace(), which is covered by RCU read lock.
+> So in case of PREEMPT_RT, warning of 'BUG: sleeping function called from invalid context'
+> will be triggered because spin lock is converted to rtmutex.
+
+The RCU read_lock() can not be the cause of this issue, because under
+PREEMPT_RT, rcu_read_lock() can be preempted.
+
+What was the full back trace of this problem?
+
 > 
-> Allocate the IRQ descriptors where necessary before configuring them via
-> irq_set_chip_and_handler(). Fixes the following soft lockup:
+> Fix the issue by converting running_trace_lock into raw_spin_lock().
 > 
-> watchdog: BUG: soft lockup - CPU#5 stuck for 22s! [modprobe:72]
-> Modules linked in:
-> irq event stamp: 33288
-> hardirqs last  enabled at (33287): [<ffffffff8012e680>] restore_partial+0x74/0x150
-> hardirqs last disabled at (33288): [<ffffffff8012e9e8>] handle_int+0x128/0x178
-> softirqs last  enabled at (33284): [<ffffffff80859c4c>] __do_softirq+0x5c4/0x6d0
-> softirqs last disabled at (33279): [<ffffffff80164018>] irq_exit+0xe8/0xf0
-> CPU: 5 PID: 72 Comm: modprobe Not tainted 4.19.80-... #1
-> $ 0   : 0000000000000000 0000000000000001 0000000000000003 8000000002bdc640
-> $ 4   : 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> $ 8   : 0000000000000001 0000000000000001 0000000000000000 ffffffff803076cc
-> $12   : 0000000000000000 0000000000000000 ffffffff817f0000 0000000008000000
-> $16   : ffffffff80a96d10 ffffffff80a90000 8000000002c41780 8000000002c41788
-> $20   : 0000000000000001 ffffffff8013b248 800000008ef28080 ffffffff80bb8700
-> $24   : 0000000003bf0000 ffffffff802d0610
-> $28   : 800000008ef20000 800000008ef23bd0 0000000000000006 ffffffff8020d6f8
-> Hi    : 0000000000000160
-> Lo    : 0000000000000014
-> epc   : ffffffff8020d72c smp_call_function_many+0x2f4/0x370
-> ra    : ffffffff8020d6f8 smp_call_function_many+0x2c0/0x370
-> Status: 10008ce3 KX SX UX KERNEL EXL IE
-> Cause : 40808000 (ExcCode 00)
-> PrId  : 000d900a (Cavium Octeon II)
-> CPU: 5 PID: 72 Comm: modprobe Not tainted 4.19.80-... #1
-> Stack : ffffffff80ab0000 00000051801c0da0 0000000010000ce0 5e70a8a65518aeac
->         5e70a8a65518aeac 0000000000000000 800000008e0cfb48 ffffffff81820000
->         800000008e0cfad4 00000000f0ce6f64 0000000000000001 0000000000000000
->         ffffffff801ccfb8 0000000000000000 0000000000000000 ffffffff817f0000
->         800000008531d840 ffffffff80a90000 fffe000000000000 0000000000000000
->         ffffffff80b20000 ffffffffffffffff ffffffff80bb3980 ffffffff80bb3980
->         ffffffff80a90000 00000000fffffffe ffffffff8057a760 0000000000000028
->         ffffffff80c50028 800000008ef20000 800000008e0cfb40 ffffffff80b20000
->         ffffffff80835d6c 0000000000000000 800000008e0cfc78 5e70a8a65518aeac
->         ffffffff80a9dbf7 ffffffff80835c2c ffffffff801357a4 ffffffff809bdd50
->         ...
-> Call Trace:
-> [<ffffffff801357a4>] show_stack+0x9c/0x130
-> [<ffffffff80835d6c>] dump_stack+0xdc/0x140
-> [<ffffffff8023d490>] watchdog_timer_fn+0x3e8/0x478
-> [<ffffffff801f43e4>] __hrtimer_run_queues+0x18c/0x6d8
-> [<ffffffff801f507c>] hrtimer_interrupt+0x104/0x2e8
-> [<ffffffff801391a8>] c0_compare_interrupt+0x60/0x90
-> [<ffffffff801d0fcc>] __handle_irq_event_percpu+0xb4/0x4a0
-> [<ffffffff801d13ec>] handle_irq_event_percpu+0x34/0x90
-> [<ffffffff801d6b24>] handle_percpu_irq+0x9c/0xe0
-> [<ffffffff801d01f4>] generic_handle_irq+0x34/0x50
-> [<ffffffff80859678>] do_IRQ+0x18/0x28
-> [<ffffffff80107548>] plat_irq_dispatch+0x90/0x128
-> [<ffffffff8012ea2c>] handle_int+0x16c/0x178
-> [<ffffffff8020d72c>] smp_call_function_many+0x2f4/0x370
-> [<ffffffff8020d7e8>] smp_call_function+0x40/0xa0
-> [<ffffffff8013bc1c>] flush_tlb_mm+0x44/0x140
-> [<ffffffff802d50b0>] tlb_flush_mmu+0x38/0x90
-> [<ffffffff802d5154>] arch_tlb_finish_mmu+0x4c/0x88
-> [<ffffffff802d52bc>] tlb_finish_mmu+0x24/0x50
-> [<ffffffff802e0c54>] exit_mmap+0x11c/0x1b8
-> [<ffffffff80157bb4>] mmput+0x84/0x138
-> [<ffffffff80160ad4>] do_exit+0x314/0xc88
-> [<ffffffff801628e0>] do_group_exit+0x48/0xb0
-> [<ffffffff80162958>] __wake_up_parent+0x0/0x18
-> 
-> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Ming Lei <ming.lei@redhat.com>
 > ---
->  arch/mips/cavium-octeon/octeon-irq.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
+>  kernel/trace/blktrace.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+> index 2c5b3c5317c2..53dc876d669d 100644
+> --- a/kernel/trace/blktrace.c
+> +++ b/kernel/trace/blktrace.c
+> @@ -34,7 +34,7 @@ static struct trace_array *blk_tr;
+>  static bool blk_tracer_enabled __read_mostly;
+>  
+>  static LIST_HEAD(running_trace_list);
+> -static __cacheline_aligned_in_smp DEFINE_SPINLOCK(running_trace_lock);
+> +static __cacheline_aligned_in_smp DEFINE_RAW_SPINLOCK(running_trace_lock);
+>  
+>  /* Select an alternative, minimalistic output than the original one */
+>  #define TRACE_BLK_OPT_CLASSIC	0x1
+> @@ -121,12 +121,12 @@ static void trace_note_tsk(struct task_struct *tsk)
+>  	struct blk_trace *bt;
+>  
+>  	tsk->btrace_seq = blktrace_seq;
+> -	spin_lock_irqsave(&running_trace_lock, flags);
+> +	raw_spin_lock_irqsave(&running_trace_lock, flags);
+>  	list_for_each_entry(bt, &running_trace_list, running_list) {
+>  		trace_note(bt, tsk->pid, BLK_TN_PROCESS, tsk->comm,
+>  			   sizeof(tsk->comm), 0);
+>  	}
 
-applied to mips-next.
+How big is this running_trace_list? May not be something we want raw locks
+around.
 
-Thomas.
+Please understand that converting locks to raw should be the last resort.
+One should always look at the reason for a spin lock in a preempt disabled
+area and see if there's other means of solving it before simply switch a
+lock to raw, as each raw spinlock makes PREEMPT_RT less real time.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+-- Steve
+
+
+> -	spin_unlock_irqrestore(&running_trace_lock, flags);
+> +	raw_spin_unlock_irqrestore(&running_trace_lock, flags);
+>  }
+>  
+>  static void trace_note_time(struct blk_trace *bt)
+> @@ -669,9 +669,9 @@ static int __blk_trace_startstop(struct request_queue *q, int start)
+>  			blktrace_seq++;
+>  			smp_mb();
+>  			bt->trace_state = Blktrace_running;
+> -			spin_lock_irq(&running_trace_lock);
+> +			raw_spin_lock_irq(&running_trace_lock);
+>  			list_add(&bt->running_list, &running_trace_list);
+> -			spin_unlock_irq(&running_trace_lock);
+> +			raw_spin_unlock_irq(&running_trace_lock);
+>  
+>  			trace_note_time(bt);
+>  			ret = 0;
+> @@ -679,9 +679,9 @@ static int __blk_trace_startstop(struct request_queue *q, int start)
+>  	} else {
+>  		if (bt->trace_state == Blktrace_running) {
+>  			bt->trace_state = Blktrace_stopped;
+> -			spin_lock_irq(&running_trace_lock);
+> +			raw_spin_lock_irq(&running_trace_lock);
+>  			list_del_init(&bt->running_list);
+> -			spin_unlock_irq(&running_trace_lock);
+> +			raw_spin_unlock_irq(&running_trace_lock);
+>  			relay_flush(bt->rchan);
+>  			ret = 0;
+>  		}
+
