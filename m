@@ -2,210 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DF82DA456
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:45:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA6A2DA45A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727761AbgLNXm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 18:42:57 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:64390 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726580AbgLNXmt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 18:42:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1607989369; x=1639525369;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=33PHwqJ/wK7i58gbDwOM9s3fmUfMYZ3NWhii2Loltb8=;
-  b=b1aUXRD/Mpp40RsydPV9qH9j6DnTB1mCGbEzfI3bKqUZmidkSXP/Tm7O
-   H4XfhfVJD6C/Gs7sgSyULRUkSxtX8CsVdv59Pkl6DOL1r8K7QuiMWr6bu
-   Wi/lH6Tz0JARUBsE4Sp7Q27IZZ69JklQ1mBLY4CcM2OoBPz5rkASN+FDg
-   nZ+iQC7mKtQsuTA3QLFR0Oqnr03EE5vjaoXKi8F0QI7U2SyVZWqWtCdr/
-   5ZfCdA61G+YHIJNbyNY/NLE6SYPio2s+Fuys6NxU3KaAWES/wMkluAd2J
-   eqsf6xIEtpIdSjYBREMz39umes6+fhrrB/vDLW1RrJ/gexo5I7wunxpQK
-   w==;
-IronPort-SDR: 3Ef9NWsCimbXCOb9mnDdS8T3kH6ajS4+1nWRkFxrAfpa9tt11pHCvqdYTA1vii6ZBsekpbsD1G
- t5+3l5w3JpgR6NpjY6fMLF2rcQjHQV9DmggOZmfkQcHmRhkcrlSqaH87mnZqAOp6pSAa/IhKgN
- WrkIrwh2uxAXirEDaM8SAUbH/c+rGd3mcSnA8O9m4YDbMHoEGHLHOSSqDFRMFJofxgSD/9ZWe9
- +OJmX29rhbIvwx0U1wbYhJLNaMRZ2rMsqrRzahd5Ny0zpkEtRV+HUE2Bsb57g50VQTmXfeo7K0
- 3CI=
-X-IronPort-AV: E=Sophos;i="5.78,420,1599494400"; 
-   d="scan'208";a="156347789"
-Received: from mail-dm6nam12lp2170.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.170])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Dec 2020 07:41:42 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J7Q7bHb1csnpklnTxyDpK+5FLl6qWGZTFjP1ARCorsSbITwbNWhPuKHXUjBS+uJQHEW7nBNEP7jv7rynAucxyAGRYH5M+flL4PDso/qJlKlagwPt2033CmCcUrZfV4Fpu33CRbDuK6YJYvKO6mTw5UVNjsFOePAYmNvmlZUZG8YvQMjoZhthUZyOEdtL1T8mtzlGTyMPKaINfEvBFxjpoWIiBgIC2CXFRQrtPmLfYP+tD4eC5dz/OtOnPz/JB+pEEjs0T8BF0neH0RZFmHKh1LTRXHkCaXudMxQuBaatE7EZGePac/eKFdZje8SDvqFlzq2nTW7JWzcbesk6R+FZBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+/rBc+wGKc+WqoTqP/m4T4UKGqpfwvZpf0Ya8vDxQLo=;
- b=IGAdg7IoLH9DcumERRL0c3zh+aTdMZvCFtiAP0iPYodM8Q7f4pTPuG+p1zDviwDxXc9xdN49nn6iizwWtZwMqV9I7bRQ3Szwtf0lVtpYd+aE8IJaAp6CA7ieZ8En7wEkrRulj1yMxlqGca2bJnSGGNNt85lY9UmkxdPnv6OM134TmX/dyXQdfhZ8ZAnTOzU+CA2xHrm8Ck7p5j2W2zscLMg9UEyDRtNwtifgcwOJzbtLoZX/55BdgXQ/KoLw+Dqxy7ukUqWR15LFLZE9IuzW57WAkA14DvMMVW++RCuWV66s67eJS74DBqo+t1rCIFTMS5xRHftVSibb3yRxuBuePw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+/rBc+wGKc+WqoTqP/m4T4UKGqpfwvZpf0Ya8vDxQLo=;
- b=eL7JUgASPWc/D3RBf9UEWh8PbUIBIC/RaFSUHRcULBlCrdVw3qj8W/tygyQE6mXaoWKCcD1iJHCXUE6qCFVxQmXbubbbRKceNljyivhj3LN0N4Xf/OEIGLkXTucrU9cWdgWHBR0q5Ul/HtQuEf375PPOPMALqZ2J7704vzOm70M=
-Received: from CH2PR04MB6522.namprd04.prod.outlook.com (2603:10b6:610:34::19)
- by CH2PR04MB6760.namprd04.prod.outlook.com (2603:10b6:610:91::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.17; Mon, 14 Dec
- 2020 23:41:40 +0000
-Received: from CH2PR04MB6522.namprd04.prod.outlook.com
- ([fe80::897c:a04b:4eb0:640a]) by CH2PR04MB6522.namprd04.prod.outlook.com
- ([fe80::897c:a04b:4eb0:640a%7]) with mapi id 15.20.3632.023; Mon, 14 Dec 2020
- 23:41:40 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Puranjay Mohan <puranjay12@gmail.com>,
-        "bjorn@helgaas.com" <bjorn@helgaas.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] drivers: block: skd: remove skd_pci_info()
-Thread-Topic: [PATCH v1] drivers: block: skd: remove skd_pci_info()
-Thread-Index: AQHW0i2wqDaNil4lgECF1jii2YcNxg==
-Date:   Mon, 14 Dec 2020 23:41:40 +0000
-Message-ID: <CH2PR04MB6522E0FCC3673C97064156C7E7C70@CH2PR04MB6522.namprd04.prod.outlook.com>
-References: <20201214152720.11922-1-puranjay12@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [60.117.181.124]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: e4d8e6ff-e2c7-4e29-7a09-08d8a089ce8a
-x-ms-traffictypediagnostic: CH2PR04MB6760:
-x-microsoft-antispam-prvs: <CH2PR04MB67609FFE5EA09E62E199A9C8E7C70@CH2PR04MB6760.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:191;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6P8hVyN9/xGgikENqTIVVinoMjE/FwXzRiUgSBG+9unnAE4Ckxvs5KCai564JkQFQj5GvYYn4w0+Hk7Xi8wE6nBQZ5mXeLVpwpi8RwqIRUe/mwozuuF4kRzZypHm2pW7znl+7n2cyaZosBnFw2elxR0liSReJtjz91kjR4tMU6lmGua0Wl5pYj5XFZBSl6jYIkVCMx/MAzK3AdKgGe2c6pn7qNebWHvSR3J+oAnl/XdgC0TbWMl2gR3pAkcJPlLm8Pk6wKnV5D19P/1UF1i5FzkHijfGgqHZr9UeI1XKwBMh2Yf/GN23pCeDKgQ3yGqys9kR6Caoq41o5BXMYNvOlQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR04MB6522.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(9686003)(52536014)(5660300002)(64756008)(53546011)(186003)(2906002)(8936002)(66556008)(66946007)(76116006)(66446008)(66476007)(91956017)(110136005)(6506007)(71200400001)(7696005)(8676002)(26005)(83380400001)(55016002)(508600001)(33656002)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?h0Mbl6VK50wjO2p4UW5UAv8VjSOMwLFmpkhP7769wRr0yBnsgn2Rbqs266lV?=
- =?us-ascii?Q?M8911XzGkNLSnUtO3erc6z8MkgIC5nMFPNFlY2zskNbgIR2DZai+sNhmTEQP?=
- =?us-ascii?Q?L5F/lH8A5NhBSRT08A6x1V78ZxLnOoWk4qDTarDi1rW16TVvhM37dPuW7WDE?=
- =?us-ascii?Q?DwmEVrM6OhoIcbvzdbIRFlfL7o7tYMwiADE+HcxJGs1/NTxhfVOXASBHUGWZ?=
- =?us-ascii?Q?LNtWoSfmG/xQZM9NgPyMQWja24XZmxvUztjvAwlA5G52mNqqHFsXV8S89t7r?=
- =?us-ascii?Q?1+EwwkA0Y7jcqdzZ+BLE3GpIyj+iz7PlPsSHkmJub2RBZMgYE3rMKfKRww3e?=
- =?us-ascii?Q?H08ooM9376v9w52EY4BTASmtoAIP2JPlSICAadZDtkBeG6y/eQc2AGPaAhK4?=
- =?us-ascii?Q?ifJWh8s2rRWP2TBlMRxtEHDbd4gQPZsZ7l5ezS8zTHvE/NgI2G4x79MUv7Di?=
- =?us-ascii?Q?Wl3zr0Dkhbrgwd06jjLXJlPPxKb7NDnhez+Jp1HV7FmfnSPDuO9JA7V0V3NT?=
- =?us-ascii?Q?1XAxQDmJE4BHbNjLcFiexwMcQTTwNLR/Yglh1cOKn8T3uHM7s3zOmc/RtKrD?=
- =?us-ascii?Q?m0vtZBWyk3tiew4pCwo2cqtNfyopS7O8XHgOpobDRZ9qeaZFykyVL8IMIo0p?=
- =?us-ascii?Q?KPxgrouClcPp1420yYpzhH2/2n+uPFPR2JIpx7stmWCNYxUjKPLpiaQHWD/E?=
- =?us-ascii?Q?NqFCfJsKlH6VnhdHESHom3j0WXrwHOvOy0XCGQPPvmQYWFiwvGRjoQ8jyXsV?=
- =?us-ascii?Q?taBbW84bEHUJefhiWDCMyc6EBT6AU9o/mYNNd4RxbC4xcNz0zmjYxw95HLqP?=
- =?us-ascii?Q?olepakqaQPESu8SITvcI1lYf2GMyrNuK5dWPcGHwzxCcKXZpv2Ujcju34nEy?=
- =?us-ascii?Q?ibqKzYhJkh0ep6HnIsI2EuFoz/H+7yBmuM1mcWT3sWevzdiKDb003A6RRvKG?=
- =?us-ascii?Q?qRiBnqLvnlGBVQ1WlkEqjlocRW3MymbBBh2iFB9hr522W1ueFlODPnEE7gnI?=
- =?us-ascii?Q?tkXg?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728200AbgLNXqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 18:46:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728112AbgLNXqE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 18:46:04 -0500
+Date:   Mon, 14 Dec 2020 23:45:18 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607989523;
+        bh=nmVeZbOM6GWp/MXK73GTwAScW4A9C2OsxbBerJBRXas=;
+        h=From:To:Cc:Subject:From;
+        b=FdUBnG1NApEfaJr5cv6kBs6jNS711Qv5k1lQt/6T9JMtcxqZKXg30CN7TKkzynr9S
+         qDsXOmfuo9F7n+Y2qA+ARBVrS+q3QWIsCunKpl36tG6W0Nmh18GatjkhxtOLnioddV
+         YjMHhnzum23SJozCcYl/UWimaqnB5vNxvZYIPPy9Ywy8DeEF5TIXWj3OGwYx4JLxMa
+         CXtG3y80bdPwjyBqhIHcZPL86QfeAGlPizyrHdgrNvEkoYY/lPOZxIYKBGIr7q6Lzv
+         LGnB01nvtXDGTkzRPw/iJyHoV0Wx0sMpqUm98bC+o6+FOgpa+AJBsV98RB1GRtTnnu
+         gmtafSxcrJn9w==
+From:   Will Deacon <will@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>, kernel-team@android.com
+Subject: [GIT PULL] IOMMU updates for 5.11
+Message-ID: <20201214234518.GA14575@willie-the-truck>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR04MB6522.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4d8e6ff-e2c7-4e29-7a09-08d8a089ce8a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Dec 2020 23:41:40.8244
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Rnl1CaQ9yY6qi4hVgtNL5VKooJ8VLz4LSEdq2SQX3skGykTtOFer61W8MYPgvNPMaGnUHQNHxFXXyMI5TncruQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB6760
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/15 0:27, Puranjay Mohan wrote:=0A=
-> Change the call to skd_pci_info() to pcie_print_link_status().=0A=
-> pcie_print_link_status() can be used to print the link speed and=0A=
-> the link width, skd_pci_info() does the same and hence it is removed.=0A=
-> =0A=
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>=0A=
-> ---=0A=
-> v1 - Add call to pcie_print_link_status()=0A=
-> ---=0A=
->  drivers/block/skd_main.c | 33 +--------------------------------=0A=
->  1 file changed, 1 insertion(+), 32 deletions(-)=0A=
-> =0A=
-> diff --git a/drivers/block/skd_main.c b/drivers/block/skd_main.c=0A=
-> index a962b4551bed..efd69f349043 100644=0A=
-> --- a/drivers/block/skd_main.c=0A=
-> +++ b/drivers/block/skd_main.c=0A=
-> @@ -3134,40 +3134,10 @@ static const struct pci_device_id skd_pci_tbl[] =
-=3D {=0A=
->  =0A=
->  MODULE_DEVICE_TABLE(pci, skd_pci_tbl);=0A=
->  =0A=
-> -static char *skd_pci_info(struct skd_device *skdev, char *str)=0A=
-> -{=0A=
-> -	int pcie_reg;=0A=
-> -=0A=
-> -	strcpy(str, "PCIe (");=0A=
-> -	pcie_reg =3D pci_find_capability(skdev->pdev, PCI_CAP_ID_EXP);=0A=
-> -=0A=
-> -	if (pcie_reg) {=0A=
-> -=0A=
-> -		char lwstr[6];=0A=
-> -		uint16_t pcie_lstat, lspeed, lwidth;=0A=
-> -=0A=
-> -		pcie_reg +=3D 0x12;=0A=
-> -		pci_read_config_word(skdev->pdev, pcie_reg, &pcie_lstat);=0A=
-> -		lspeed =3D pcie_lstat & (0xF);=0A=
-> -		lwidth =3D (pcie_lstat & 0x3F0) >> 4;=0A=
-> -=0A=
-> -		if (lspeed =3D=3D 1)=0A=
-> -			strcat(str, "2.5GT/s ");=0A=
-> -		else if (lspeed =3D=3D 2)=0A=
-> -			strcat(str, "5.0GT/s ");=0A=
-> -		else=0A=
-> -			strcat(str, "<unknown> ");=0A=
-> -		snprintf(lwstr, sizeof(lwstr), "%dX)", lwidth);=0A=
-> -		strcat(str, lwstr);=0A=
-> -	}=0A=
-> -	return str;=0A=
-> -}=0A=
-> -=0A=
->  static int skd_pci_probe(struct pci_dev *pdev, const struct pci_device_i=
-d *ent)=0A=
->  {=0A=
->  	int i;=0A=
->  	int rc =3D 0;=0A=
-> -	char pci_str[32];=0A=
->  	struct skd_device *skdev;=0A=
->  =0A=
->  	dev_dbg(&pdev->dev, "vendor=3D%04X device=3D%04x\n", pdev->vendor,=0A=
-> @@ -3201,8 +3171,7 @@ static int skd_pci_probe(struct pci_dev *pdev, cons=
-t struct pci_device_id *ent)=0A=
->  		goto err_out_regions;=0A=
->  	}=0A=
->  =0A=
-> -	skd_pci_info(skdev, pci_str);=0A=
-> -	dev_info(&pdev->dev, "%s 64bit\n", pci_str);=0A=
-> +	pcie_print_link_status(pdev);=0A=
->  =0A=
->  	pci_set_master(pdev);=0A=
->  	rc =3D pci_enable_pcie_error_reporting(pdev);=0A=
-> =0A=
-=0A=
-Note: V1 of this patch was the one I commented on. This one should thus be =
-V2.=0A=
-=0A=
-In any case, this looks OK to me.=0A=
-=0A=
-Acked-by: Damien Le Moal <damien.lemoal@wdc.com>=0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+Hi Linus,
+
+Please pull these IOMMU updates for 5.11: there's a good mixture of
+improvements to the core code and driver changes across the board.
+Summary in the tag and merge commits.
+
+One thing worth pointing out is that this includes a quirk to work
+around behaviour in the i915 driver (see 65f746e8285f ("iommu: Add quirk
+for Intel graphic devices in map_sg")), which otherwise interacts badly
+with the conversion of the intel IOMMU driver over to the DMA-IOMMU APU
+but has being fixed properly in the DRM tree. We'll revert the quirk
+later this cycle once we've confirmed that things don't fall apart
+without it.
+
+Cheers,
+
+Will
+
+--->8
+
+The following changes since commit 4165bf015ba9454f45beaad621d16c516d5c5afe:
+
+  iommu/amd: Set DTE[IntTabLen] to represent 512 IRTEs (2020-12-07 11:00:24 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/iommu-updates-v5.11
+
+for you to fetch changes up to 5ae9a046a452d60b6a6c076f6df7e3f8e34f918f:
+
+  iommu/amd: Add sanity check for interrupt remapping table length macros (2020-12-11 12:47:22 +0000)
+
+----------------------------------------------------------------
+IOMMU updates for 5.11
+
+- IOVA allocation optimisations and removal of unused code
+
+- Introduction of DOMAIN_ATTR_IO_PGTABLE_CFG for parameterising the
+  page-table of an IOMMU domain
+
+- Support for changing the default domain type in sysfs
+
+- Optimisation to the way in which identity-mapped regions are created
+
+- Driver updates:
+  * Arm SMMU updates, including continued work on Shared Virtual Memory
+  * Tegra SMMU updates, including support for PCI devices
+  * Intel VT-D updates, including conversion to the IOMMU-DMA API
+
+- Cleanup, kerneldoc and minor refactoring
+
+----------------------------------------------------------------
+Bjorn Andersson (3):
+      iommu/arm-smmu: Allow implementation specific write_s2cr
+      iommu/arm-smmu-qcom: Read back stream mappings
+      iommu/arm-smmu-qcom: Implement S2CR quirk
+
+Chen Jun (1):
+      iommu: Modify the description of iommu_sva_unbind_device
+
+Christoph Hellwig (1):
+      dma-iommu: remove __iommu_dma_mmap
+
+Christophe JAILLET (1):
+      iommu/vt-d: Avoid GFP_ATOMIC where it is not needed
+
+Cong Wang (1):
+      iommu: avoid taking iova_rbtree_lock twice
+
+Jean-Philippe Brucker (4):
+      iommu/ioasid: Add ioasid references
+      iommu/sva: Add PASID helpers
+      iommu/arm-smmu-v3: Implement iommu_sva_bind/unbind()
+      iommu/arm-smmu-v3: Hook up ATC invalidation to mm ops
+
+John Garry (3):
+      iommu: Delete split_and_remove_iova()
+      iommu: Stop exporting alloc_iova_mem()
+      iommu: Stop exporting free_iova_mem()
+
+Jordan Crouse (2):
+      iommu/arm-smmu-qcom: Add implementation for the adreno GPU SMMU
+      dt-bindings: arm-smmu: Add compatible string for Adreno GPU SMMU
+
+Kaixu Xia (1):
+      iommu/arm-smmu-v3: Assign boolean values to a bool variable
+
+Keqian Zhu (1):
+      iommu: Defer the early return in arm_(v7s/lpae)_map
+
+Kunkun Jiang (1):
+      iommu/io-pgtable-arm: Remove unused 'level' parameter from iopte_type() macro
+
+Lu Baolu (6):
+      iommu: Add quirk for Intel graphic devices in map_sg
+      iommu/vt-d: Update domain geometry in iommu_ops.at(de)tach_dev
+      iommu/vt-d: Cleanup after converting to dma-iommu ops
+      iommu: Move def_domain type check for untrusted device into core
+      iommu: Fix htmldocs warnings in sysfs-kernel-iommu_groups
+      iommu/vt-d: Remove set but not used variable
+
+Lukas Bulwahn (1):
+      iommu/vt-d: include conditionally on CONFIG_INTEL_IOMMU_SVM
+
+Nicolin Chen (5):
+      iommu/tegra-smmu: Unwrap tegra_smmu_group_get
+      iommu/tegra-smmu: Expand mutex protection range
+      iommu/tegra-smmu: Use fwspec in tegra_smmu_(de)attach_dev
+      iommu/tegra-smmu: Rework tegra_smmu_probe_device()
+      iommu/tegra-smmu: Add PCI support
+
+Rob Clark (1):
+      iommu/arm-smmu: Add a way for implementations to influence SCTLR
+
+Robin Murphy (2):
+      iommu/arm-smmu: Use new devm_krealloc()
+      iommu/io-pgtable: Remove tlb_flush_leaf
+
+Sai Prakash Ranjan (4):
+      iommu/arm-smmu: Add support for pagetable config domain attribute
+      iommu/arm-smmu: Move non-strict mode to use io_pgtable_domain_attr
+      iommu: arm-smmu-impl: Use table to list QCOM implementations
+      iommu: arm-smmu-impl: Add a space before open parenthesis
+
+Sai Praneeth Prakhya (3):
+      iommu: Add support to change default domain of an iommu group
+      iommu: Take lock before reading iommu group default domain type
+      iommu: Document usage of "/sys/kernel/iommu_groups/<grp_id>/type" file
+
+Suravee Suthikulpanit (1):
+      iommu/amd: Add sanity check for interrupt remapping table length macros
+
+Tom Murphy (4):
+      iommu: Handle freelists when using deferred flushing in iommu drivers
+      iommu: Add iommu_dma_free_cpu_cached_iovas()
+      iommu: Allow the dma-iommu api to use bounce buffers
+      iommu/vt-d: Convert intel iommu driver to the iommu ops
+
+Vijayanand Jitta (2):
+      iommu/iova: Retry from last rb tree node if iova search fails
+      iommu/iova: Free global iova rcache on iova alloc failure
+
+Will Deacon (10):
+      Merge branch 'stable/for-linus-5.10-rc2' of git://git.kernel.org/.../konrad/swiotlb into for-next/iommu/vt-d
+      Merge branch 'for-next/iommu/io-pgtable-domain-attr' into for-next/iommu/arm-smmu
+      Merge branch 'for-next/iommu/arm-smmu' into for-next/iommu/core
+      Merge branch 'for-next/iommu/default-domains' into for-next/iommu/core
+      Merge branch 'for-next/iommu/iova' into for-next/iommu/core
+      Merge branch 'for-next/iommu/misc' into for-next/iommu/core
+      Merge branch 'for-next/iommu/svm' into for-next/iommu/core
+      Merge branch 'for-next/iommu/tegra-smmu' into for-next/iommu/core
+      Merge branch 'for-next/iommu/vt-d' into for-next/iommu/core
+      Merge branch 'for-next/iommu/fixes' into for-next/iommu/core
+
+Yang Yingliang (1):
+      iommu: return error code when it can't get group
+
+Yong Wu (1):
+      iommu: Improve the performance for direct_mapping
+
+ .../ABI/testing/sysfs-kernel-iommu_groups          |  30 +
+ Documentation/admin-guide/kernel-parameters.txt    |   5 -
+ .../devicetree/bindings/iommu/arm,smmu.yaml        |   9 +-
+ drivers/gpu/drm/msm/msm_iommu.c                    |   1 -
+ drivers/gpu/drm/panfrost/panfrost_mmu.c            |   7 -
+ drivers/iommu/Kconfig                              |   7 +
+ drivers/iommu/Makefile                             |   1 +
+ drivers/iommu/amd/amd_iommu_types.h                |  19 +-
+ drivers/iommu/amd/init.c                           |   6 +-
+ drivers/iommu/amd/iommu.c                          |   2 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c    | 244 +++++-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c        |  59 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h        |  30 +
+ drivers/iommu/arm/arm-smmu/arm-smmu-impl.c         |  13 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu-nvidia.c       |  17 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c         | 270 +++++-
+ drivers/iommu/arm/arm-smmu/arm-smmu.c              |  76 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu.h              |   5 +-
+ drivers/iommu/arm/arm-smmu/qcom_iommu.c            |   8 -
+ drivers/iommu/dma-iommu.c                          | 244 +++++-
+ drivers/iommu/intel/Kconfig                        |   1 +
+ drivers/iommu/intel/iommu.c                        | 919 +++------------------
+ drivers/iommu/intel/svm.c                          |   6 +-
+ drivers/iommu/io-pgtable-arm-v7s.c                 |  11 +-
+ drivers/iommu/io-pgtable-arm.c                     |  29 +-
+ drivers/iommu/ioasid.c                             |  38 +-
+ drivers/iommu/iommu-sva-lib.c                      |  86 ++
+ drivers/iommu/iommu-sva-lib.h                      |  15 +
+ drivers/iommu/iommu.c                              | 276 ++++++-
+ drivers/iommu/iova.c                               | 100 ++-
+ drivers/iommu/ipmmu-vmsa.c                         |   1 -
+ drivers/iommu/msm_iommu.c                          |   7 -
+ drivers/iommu/mtk_iommu.c                          |   1 -
+ drivers/iommu/tegra-smmu.c                         | 240 ++----
+ drivers/xen/swiotlb-xen.c                          |   3 +-
+ include/linux/dma-iommu.h                          |   8 +
+ include/linux/io-pgtable.h                         |  19 +-
+ include/linux/ioasid.h                             |  10 +-
+ include/linux/iommu.h                              |   2 +
+ include/linux/iova.h                               |  21 -
+ include/linux/swiotlb.h                            |  10 +-
+ kernel/dma/swiotlb.c                               |  22 +-
+ 42 files changed, 1613 insertions(+), 1265 deletions(-)
+ create mode 100644 drivers/iommu/iommu-sva-lib.c
+ create mode 100644 drivers/iommu/iommu-sva-lib.h
