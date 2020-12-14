@@ -2,132 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A794F2D93A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 08:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE162D93A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 08:33:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438937AbgLNHaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 02:30:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726970AbgLNHaN (ORCPT
+        id S2439018AbgLNHcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 02:32:50 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:35027 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439000AbgLNHcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 02:30:13 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3661C0613D3
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 23:29:27 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id e2so11895861pgi.5
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 23:29:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1UnPe12dT6b6iT2C3p6i0jSOevvJBWZfKVGfvi3n+4A=;
-        b=eT+GqU2qoeWuLBldveCoVslUSrxOIVa2IZjrtcr6Q7RerPM7rFWrOhUpGPkf0xGN6c
-         j/nPFAgGri8DY2g/qLWdm2jcst92kllfEsmnBfXio8h9floVPWSDeLha/Tyo0Zah4bjb
-         9x9WVaIKA0ufM+BR+RM4we4lJl/yFngZ437eA=
+        Mon, 14 Dec 2020 02:32:48 -0500
+Received: by mail-oi1-f194.google.com with SMTP id s2so18240894oij.2;
+        Sun, 13 Dec 2020 23:32:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1UnPe12dT6b6iT2C3p6i0jSOevvJBWZfKVGfvi3n+4A=;
-        b=psNb8jeWiAvA18K1lyibGY+IGXi/73dxU2HkVUHG1kUsVXL5o5mje37nTnjgBmmt0y
-         pC2nYBYc6QGiE3DjFmwiHXfJOxPOtsoAbwEcUypmCcOYZd/t93SZgwDnfm3BhFxTXuqE
-         ww0McVqrmsdgFZjbh5d4qpFu5JWILn2me7s2WI8ZzzzaMNzofLXjY+pSf0UcAV105F3A
-         xC2dmpRlwczPe5JfAx6CkFU3z/TvGe6pj8RZJn+75DfeVAI5js+ZkTF5gL35TcOr7CFi
-         PqsKXhl+3mta3flcJb9kPMtSYrSIdgoOg0Xu/yDFlMzpj6pVDpO3R+GLveUxqJBp8VyC
-         seWQ==
-X-Gm-Message-State: AOAM531IPavb5GBvxHU1hLFzWOCpbd8m1Za3mrI4CI72/ek20kWq4jfF
-        55vWSlj0HL0lKAGdQ6hNG4o+o+Aq7bDrHA==
-X-Google-Smtp-Source: ABdhPJyYR7QYt2Y7JFzV3OTCWyiglmqng5k93TIGp7kJzNduqM93tcZuMcXBbFERx+x9mDkIU7AE4Q==
-X-Received: by 2002:a63:c26:: with SMTP id b38mr22979908pgl.333.1607930967361;
-        Sun, 13 Dec 2020 23:29:27 -0800 (PST)
-Received: from localhost ([2401:fa00:1:10:3e52:82ff:fe5e:cc9d])
-        by smtp.gmail.com with ESMTPSA id gw7sm16746930pjb.36.2020.12.13.23.29.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 13 Dec 2020 23:29:26 -0800 (PST)
-From:   Claire Chang <tientzu@chromium.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        robh@kernel.org, sre@kernel.org, pavel@ucw.cz
-Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Claire Chang <tientzu@chromium.org>
-Subject: [PATCH] Bluetooth: hci_uart: Fix a race for write_work scheduling
-Date:   Mon, 14 Dec 2020 15:29:21 +0800
-Message-Id: <20201214072921.3402608-1-tientzu@chromium.org>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BftzBGcfKzrdavGS134SjsPLLF2ruabtKuv1iEkU87M=;
+        b=aHSCat1cWxgTaolbj/QgwAHvB8PxX0QHYNACP6wj/l6vKhIEI3zcgG9hjw8TUPA5Y7
+         msavVzjnfPB7BCQS3ciIs3UlCG+9JW245W+g6Ch+wPFFICMkISF0IZzyUOGT2RINt4fi
+         PLS8zR5oSBUlT3nl4j1dZ8Id8AiLiWEVZ5jRoYBzSa2WIpOWthmBvrKnlLk1IdZiiZOH
+         LbcHKxE1sKOUuk6tFkIk94tJLzpy2/iutRzDeR6VoL+oJXZzDx2hdJp6Qm77DsFCgQ5y
+         m9Evao3GRZdPRpxM9D/xPAHHkWoct5grIxn3kpJCC0HjZnylLrSTYmX9XthJ16L3vMA1
+         8zYA==
+X-Gm-Message-State: AOAM530VyA2Cm0Vy7ES83Bezwu5q0Zl7KZaw5Y4xvbYr2zar3jEQpffx
+        1B/bqQsSjSeZYPGaant0lYVyJ0A4R/MskqDRRAc=
+X-Google-Smtp-Source: ABdhPJyK95q4KGKvFo9ijVGJmhONVBgouh2E4UAW95p/Qanb/0y6OOaTboohbFwChAeAnqCiwLmCHDMVBfOe7y5EPzA=
+X-Received: by 2002:aca:ec09:: with SMTP id k9mr17359385oih.153.1607931127977;
+ Sun, 13 Dec 2020 23:32:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201212174119.120027-1-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20201212174119.120027-1-christophe.jaillet@wanadoo.fr>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 14 Dec 2020 08:31:56 +0100
+Message-ID: <CAMuHMdUJVN3ywmSfCDKT05k24hxNtn5C8TdO6nyscUFiCy441w@mail.gmail.com>
+Subject: Re: [PATCH] media: vsp1: Fix an error handling path in the probe function
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In hci_uart_write_work, there is a loop/goto checking the value of
-HCI_UART_TX_WAKEUP. If HCI_UART_TX_WAKEUP is set again, it keeps trying
-hci_uart_dequeue; otherwise, it clears HCI_UART_SENDING and returns.
+On Sun, Dec 13, 2020 at 5:22 PM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+> A previous 'rcar_fcp_get()' call must be undone in the error handling path,
+> as already done in the remove function.
+>
+> Fixes: 94fcdf829793 ("[media] v4l: vsp1: Add FCP support")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-In hci_uart_tx_wakeup, if HCI_UART_SENDING is already set, it sets
-HCI_UART_TX_WAKEUP, skips schedule_work and assumes the running/pending
-hci_uart_write_work worker will do hci_uart_dequeue properly.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-However, if the HCI_UART_SENDING check in hci_uart_tx_wakeup is done after
-the loop breaks, but before HCI_UART_SENDING is cleared in
-hci_uart_write_work, the schedule_work is skipped incorrectly.
+Gr{oetje,eeting}s,
 
-Fix this race by changing the order of HCI_UART_SENDING and
-HCI_UART_TX_WAKEUP modification.
+                        Geert
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Fixes: 82f5169bf3d3 ("Bluetooth: hci_uart: add serdev driver support library")
-Signed-off-by: Claire Chang <tientzu@chromium.org>
----
- drivers/bluetooth/hci_ldisc.c  | 7 +++----
- drivers/bluetooth/hci_serdev.c | 4 ++--
- 2 files changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/bluetooth/hci_ldisc.c b/drivers/bluetooth/hci_ldisc.c
-index f83d67eafc9f..8be4d807d137 100644
---- a/drivers/bluetooth/hci_ldisc.c
-+++ b/drivers/bluetooth/hci_ldisc.c
-@@ -127,10 +127,9 @@ int hci_uart_tx_wakeup(struct hci_uart *hu)
- 	if (!test_bit(HCI_UART_PROTO_READY, &hu->flags))
- 		goto no_schedule;
- 
--	if (test_and_set_bit(HCI_UART_SENDING, &hu->tx_state)) {
--		set_bit(HCI_UART_TX_WAKEUP, &hu->tx_state);
-+	set_bit(HCI_UART_TX_WAKEUP, &hu->tx_state);
-+	if (test_and_set_bit(HCI_UART_SENDING, &hu->tx_state))
- 		goto no_schedule;
--	}
- 
- 	BT_DBG("");
- 
-@@ -174,10 +173,10 @@ static void hci_uart_write_work(struct work_struct *work)
- 		kfree_skb(skb);
- 	}
- 
-+	clear_bit(HCI_UART_SENDING, &hu->tx_state);
- 	if (test_bit(HCI_UART_TX_WAKEUP, &hu->tx_state))
- 		goto restart;
- 
--	clear_bit(HCI_UART_SENDING, &hu->tx_state);
- 	wake_up_bit(&hu->tx_state, HCI_UART_SENDING);
- }
- 
-diff --git a/drivers/bluetooth/hci_serdev.c b/drivers/bluetooth/hci_serdev.c
-index ef96ad06fa54..9e03402ef1b3 100644
---- a/drivers/bluetooth/hci_serdev.c
-+++ b/drivers/bluetooth/hci_serdev.c
-@@ -83,9 +83,9 @@ static void hci_uart_write_work(struct work_struct *work)
- 			hci_uart_tx_complete(hu, hci_skb_pkt_type(skb));
- 			kfree_skb(skb);
- 		}
--	} while (test_bit(HCI_UART_TX_WAKEUP, &hu->tx_state));
- 
--	clear_bit(HCI_UART_SENDING, &hu->tx_state);
-+		clear_bit(HCI_UART_SENDING, &hu->tx_state);
-+	} while (test_bit(HCI_UART_TX_WAKEUP, &hu->tx_state));
- }
- 
- /* ------- Interface to HCI layer ------ */
 -- 
-2.29.2.576.ga3fc446d84-goog
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
