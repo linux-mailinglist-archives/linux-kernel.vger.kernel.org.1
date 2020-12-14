@@ -2,68 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9788A2DA1D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E27072DA1E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503467AbgLNUmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:42:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503465AbgLNUmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:42:00 -0500
-Date:   Mon, 14 Dec 2020 12:41:18 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607978479;
-        bh=bZ5V7cOF7Y3xEFjRNlJqO2zCRUqXweheRPkf/g8LBCE=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q/SHUzEA9Fb7pfRUiNH3yy5W3V2/z/6ZJ41cbKshqUZC7G7kjPc0LeyPXmKO1kGfQ
-         B5/WkyrjNdgEBTpCSLTNsldwIkF57ta9xS2jV6GJls1roMtGCM7JIkhnOre+W7/U+X
-         y4y2LYeQSWM8l8FKZTarm2+1jEdRBeL2iEmHxyEADkq27oiXc4uovchXd5TWWXmScs
-         QtFRIJipqi7+HIL5z4zG91R3kPvU1M04YeVqg5nQ/kCOI7SRRoO+sjLwFys/Jxwozc
-         eKVdosF3I8Q2WrqpGhKhCQKDHc0+z78WvVts/XyYxgX7qf63IJhT9+wFNVEdfeIBP1
-         5m4zUr/fqa+1Q==
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, TimGuo-oc@zhaoxin.com,
-        CooperYan@zhaoxin.com, QiyuanWang@zhaoxin.com,
-        HerryYang@zhaoxin.com, CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
-Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
-Message-ID: <X9fN7mOMdn1Dxn63@sol.localdomain>
-References: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com>
- <X9Ov3RWDpUik7gXo@sol.localdomain>
- <1f8d17bf-c1d9-6496-d2f8-5773633011fb@zhaoxin.com>
+        id S2503276AbgLNUoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:44:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502980AbgLNUoz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 15:44:55 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EF7C0613D3;
+        Mon, 14 Dec 2020 12:44:14 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvtfL6kwqz9sS8;
+        Tue, 15 Dec 2020 07:44:10 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607978652;
+        bh=ljhtdvCD/AIx7f6wVXxij9Zvl9nrP4BdyDGBE6oeE8E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SG5XVgadS6beI8SEUbBiAETScLh/fzOsl90/5OUbNSxfEYW0dpSKb+jkwUHi64q3S
+         vZUHnF3xx0KDcIcuv7HjRt/CTw8LcJ6+v3bfmRX9AqMxrjXZX2SU7a49shCT86Jd88
+         4ISHzlgK1UYfgKW15nvQbAL4ncLhxteFNZIU1i71xfCSnsDFFYwabx3c/2LsLemPut
+         jRiZnpEz7vHGiMRHQGcmGQDfwCsIqp1XB/EAjJMTV0XDkFFKoUL+CMm5kxXVjHSxay
+         t4JtDFX+B8kDMB/gBCxaFJ/U9KWBppOjgtnn1fR/etImjvqr/hSR9COiSyKf238dTS
+         AQSYicXVuJHYg==
+Date:   Tue, 15 Dec 2020 07:44:09 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Dominique Martinet <asmadeus@codewreck.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the kbuild tree
+Message-ID: <20201215074409.0ae087ac@canb.auug.org.au>
+In-Reply-To: <20201209203029.7f2a8db2@canb.auug.org.au>
+References: <20201209203029.7f2a8db2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f8d17bf-c1d9-6496-d2f8-5773633011fb@zhaoxin.com>
+Content-Type: multipart/signed; boundary="Sig_/g=E7yPY1=zdZ7W=GHuA7yPE";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 10:28:19AM +0800, Tony W Wang-oc wrote:
-> On 12/12/2020 01:43, Eric Biggers wrote:
-> > On Fri, Dec 11, 2020 at 07:29:04PM +0800, Tony W Wang-oc wrote:
-> >> The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
-> >> On platforms with Zhaoxin CPUs supporting this X86 feature, When
-> >> crc32c-intel and crc32c-generic are both registered, system will
-> >> use crc32c-intel because its .cra_priority is greater than
-> >> crc32c-generic. This case expect to use crc32c-generic driver for
-> >> some Zhaoxin CPUs to get performance gain, So remove these Zhaoxin
-> >> CPUs support from crc32c-intel.
-> >>
-> >> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-> > 
-> > Does this mean that the performance of the crc32c instruction on those CPUs is
-> > actually slower than a regular C implementation?  That's very weird.
-> > 
-> 
-> From the lmbench3 Create and Delete file test on those chips, I think yes.
-> 
+--Sig_/g=E7yPY1=zdZ7W=GHuA7yPE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Did you try measuring the performance of the hashing itself, and not some
-higher-level filesystem operations?
+Hi all,
 
-- Eric
+On Wed, 9 Dec 2020 20:30:29 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> After merging the kbuild tree, today's linux-next build (x86_64
+> modules_install) produced this warning:
+>=20
+> Warning: 'make modules_install' requires depmod. Please install it.
+> This is probably in the kmod package.
+>=20
+> Introduced by commit
+>=20
+>   330029209513 ("kbuild: don't hardcode depmod path")
+>=20
+> Unfortunately for most of us (?), /sbin is not in our PATH ...
+
+I am still getting this warning.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/g=E7yPY1=zdZ7W=GHuA7yPE
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/XzpkACgkQAVBC80lX
+0GxPtwgAk/UuDigJgEX8JBu+FaelEhkf9DLWM2nPxSKUValnUTAnXBCmH6vgq6yN
+qnPUefCRHZnigXSFE2wd2e3Stk7EmZv0UWxV0CwlaENR7SQpwO7TgY+YC08Ses63
+aaereNko+dBRWDHOiTT3HN2m0tzONqILgNPR/jRGYHO6KX0UV4MWvJwZSQ9gK8Mx
+Ic5Do+ibhObb3zUe4J+Mlc8neh5pqaed1Ju1qb1yQFZ8DOpxrHagbHvFWrgDIH7C
+HsDF3v04nsdPd5E/s9hnvwVbGQU70BUrUjIvTjGtFgaHRWKdkZd70BfAu/RSTupg
+tonDNDAacVvcOpv9xVx5WMbsdhjHcw==
+=LwRM
+-----END PGP SIGNATURE-----
+
+--Sig_/g=E7yPY1=zdZ7W=GHuA7yPE--
