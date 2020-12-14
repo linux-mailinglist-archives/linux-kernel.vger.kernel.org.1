@@ -2,213 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5F02D923C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 05:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B270F2D9243
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 05:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438568AbgLNESr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 23:18:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgLNESr (ORCPT
+        id S2438588AbgLNEXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 23:23:13 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:32938 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgLNEWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 23:18:47 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9555C0613CF;
-        Sun, 13 Dec 2020 20:18:06 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvSmX4mstz9sT6;
-        Mon, 14 Dec 2020 15:18:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607919484;
-        bh=Ap4veYE6g8S6YKlenbtrX+KmmgQamRiHcRuH1VqFN+s=;
-        h=Date:From:To:Cc:Subject:From;
-        b=V1vNNohqhMdlrFbS4ZZYvngSMFee7gyh97cqz97pWhDiVPHQ3W+37m+OicYCvzBNs
-         35VbiBgIa3+H60yTvjMsoCIiVHvSTKHJAcmG9uJ8PpHA8bwQCYXW+IjLbB4AbdsjLm
-         QknQECl8GNvV+myaxH/3ynDOt84b/mqtmGNx2mqCXF0Za7CEKE8hoKOxW6rCr8GACg
-         ClQLit/z1Q9nsseSvLo0/nqHxrWTW+0zZ+bqIDKARFShx3dWmSqppmiFQhyuesnW64
-         URNx8PH32Zdhk0GhODELBUFxdWyUjxXWG0pcGTo5c3vZxgJoorV0SU3F1OQJyhFaWx
-         e0pnOjUbqO0Sw==
-Date:   Mon, 14 Dec 2020 15:18:03 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>, Song Liu <songliubraving@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the block tree
-Message-ID: <20201214151803.411b3b41@canb.auug.org.au>
+        Sun, 13 Dec 2020 23:22:47 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BE4L2rL006453;
+        Sun, 13 Dec 2020 22:21:02 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607919662;
+        bh=SmX+/KcHIUjmfa1cMOr9m4Aiifj00xIx9O09s77Qhj4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=KjqzVeICD0QxOKJLmjnB/qg4zHDsNagEE2KW4sxShuCF0egKN+TnNZwcoIAJdHrUn
+         AfldAI0pdywfm2dwAiNpec+nYYji94G5CtHa41oFl+Tt/dBzMIPu4gcCF0zftkmITo
+         DNazBwM+INrOhIE+S7ET8pNxIdror8Dz3FORzSZY=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BE4L2gJ094630
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 13 Dec 2020 22:21:02 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 13
+ Dec 2020 22:21:01 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sun, 13 Dec 2020 22:21:02 -0600
+Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BE4Kvw9034513;
+        Sun, 13 Dec 2020 22:20:58 -0600
+Subject: Re: [PATCH v4 1/2] dt-bindings: pci: Retrain Link to work around Gen2
+ training defect.
+To:     Athani Nadeem Ladkhan <nadeem@cadence.com>,
+        Rob Herring <robh@kernel.org>
+CC:     Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Milind Parab <mparab@cadence.com>,
+        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        Parshuram Raju Thombare <pthombar@cadence.com>
+References: <20201211144236.3825-1-nadeem@cadence.com>
+ <20201211144236.3825-2-nadeem@cadence.com>
+ <CAL_JsqLTz2k03gzrjDqi2d1NHQV+3pXxg6OqwcJ17CmfGYMf-A@mail.gmail.com>
+ <SN2PR07MB2557145EE4C4E9C50A16CF64D8C90@SN2PR07MB2557.namprd07.prod.outlook.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <912c1efa-6c25-9e5d-5094-6c9dd8e3755d@ti.com>
+Date:   Mon, 14 Dec 2020 09:50:56 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rgN3xbXPFOB5eCTLP4HJp/x";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <SN2PR07MB2557145EE4C4E9C50A16CF64D8C90@SN2PR07MB2557.namprd07.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/rgN3xbXPFOB5eCTLP4HJp/x
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Nadeem,
 
-Hi all,
+On 12/12/20 12:37 pm, Athani Nadeem Ladkhan wrote:
+> Hi Rob / Kishon,
+> 
+>> -----Original Message-----
+>> From: Rob Herring <robh@kernel.org>
+>> Sent: Friday, December 11, 2020 10:32 PM
+>> To: Athani Nadeem Ladkhan <nadeem@cadence.com>
+>> Cc: Tom Joseph <tjoseph@cadence.com>; Lorenzo Pieralisi
+>> <lorenzo.pieralisi@arm.com>; Bjorn Helgaas <bhelgaas@google.com>; PCI
+>> <linux-pci@vger.kernel.org>; linux-kernel@vger.kernel.org; Kishon Vijay
+>> Abraham I <kishon@ti.com>; devicetree@vger.kernel.org; Milind Parab
+>> <mparab@cadence.com>; Swapnil Kashinath Jakhade
+>> <sjakhade@cadence.com>; Parshuram Raju Thombare
+>> <pthombar@cadence.com>
+>> Subject: Re: [PATCH v4 1/2] dt-bindings: pci: Retrain Link to work around
+>> Gen2 training defect.
+>>
+>> EXTERNAL MAIL
+>>
+>>
+>> On Fri, Dec 11, 2020 at 9:03 AM Nadeem Athani <nadeem@cadence.com>
+>> wrote:
+>>>
+>>> Cadence controller will not initiate autonomous speed change if
+>>> strapped as Gen2. The Retrain Link bit is set as quirk to enable this speed
+>> change.
+>>> Adding a quirk flag based on a new compatible string.
+>>>
+>>> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml | 4
+>>> +++-
+>>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git
+>>> a/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+>>> b/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+>>> index 293b8ec318bc..204d78f9efe3 100644
+>>> --- a/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+>>> +++ b/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+>>> @@ -15,7 +15,9 @@ allOf:
+>>>
+>>>  properties:
+>>>    compatible:
+>>> -    const: cdns,cdns-pcie-host
+>>> +    enum:
+>>> +        - cdns,cdns-pcie-host
+>>> +        - cdns,cdns-pcie-host-quirk-retrain
+>>
+>> So, we'll just keep adding quirk strings on to the compatible? I don't think so.
+>> Compatible strings should map to a specific implementation/platform and
+>> quirks can then be implied from them. This is the only way we can implement
+>> quirks in the OS without firmware
+>> (DT) changes.
+> Ok, I will change the compatible string to " ti,j721e-pcie-host" in place of  " cdns,cdns-pcie-host-quirk-retrain" .
+> @Kishon Vijay Abraham I: Is this fine? Or will you suggest an appropriate name?
 
-After merging the block tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+IMHO it should be something like "cdns,cdns-pcie-host-vX", since the
+quirk itself is not specific to TI platform rather Cadence IP version.
 
-drivers/md/raid0.c: In function 'raid0_handle_discard':
-drivers/md/raid0.c:511:26: error: passing argument 1 of 'trace_block_bio_re=
-map' from incompatible pointer type [-Werror=3Dincompatible-pointer-types]
-  511 |    trace_block_bio_remap(bdev_get_queue(rdev->bdev),
-      |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~
-      |                          |
-      |                          struct request_queue *
-In file included from include/trace/events/block.h:11,
-                 from drivers/md/raid0.c:17:
-include/trace/events/block.h:458:23: note: expected 'struct bio *' but argu=
-ment is of type 'struct request_queue *'
-  458 |  TP_PROTO(struct bio *bio, dev_t dev, sector_t from),
-      |           ~~~~~~~~~~~~^~~
-include/linux/tracepoint.h:238:34: note: in definition of macro '__DECLARE_=
-TRACE'
-  238 |  static inline void trace_##name(proto)    \
-      |                                  ^~~~~
-include/linux/tracepoint.h:411:24: note: in expansion of macro 'PARAMS'
-  411 |  __DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),  \
-      |                        ^~~~~~
-include/linux/tracepoint.h:547:2: note: in expansion of macro 'DECLARE_TRAC=
-E'
-  547 |  DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
-      |  ^~~~~~~~~~~~~
-include/linux/tracepoint.h:547:22: note: in expansion of macro 'PARAMS'
-  547 |  DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
-      |                      ^~~~~~
-include/trace/events/block.h:456:1: note: in expansion of macro 'TRACE_EVEN=
-T'
-  456 | TRACE_EVENT(block_bio_remap,
-      | ^~~~~~~~~~~
-include/trace/events/block.h:458:2: note: in expansion of macro 'TP_PROTO'
-  458 |  TP_PROTO(struct bio *bio, dev_t dev, sector_t from),
-      |  ^~~~~~~~
-drivers/md/raid0.c:512:5: warning: passing argument 2 of 'trace_block_bio_r=
-emap' makes integer from pointer without a cast [-Wint-conversion]
-  512 |     discard_bio, disk_devt(mddev->gendisk),
-      |     ^~~~~~~~~~~
-      |     |
-      |     struct bio *
-In file included from include/trace/events/block.h:11,
-                 from drivers/md/raid0.c:17:
-include/trace/events/block.h:458:34: note: expected 'dev_t' {aka 'unsigned =
-int'} but argument is of type 'struct bio *'
-  458 |  TP_PROTO(struct bio *bio, dev_t dev, sector_t from),
-      |                            ~~~~~~^~~
-include/linux/tracepoint.h:238:34: note: in definition of macro '__DECLARE_=
-TRACE'
-  238 |  static inline void trace_##name(proto)    \
-      |                                  ^~~~~
-include/linux/tracepoint.h:411:24: note: in expansion of macro 'PARAMS'
-  411 |  __DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),  \
-      |                        ^~~~~~
-include/linux/tracepoint.h:547:2: note: in expansion of macro 'DECLARE_TRAC=
-E'
-  547 |  DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
-      |  ^~~~~~~~~~~~~
-include/linux/tracepoint.h:547:22: note: in expansion of macro 'PARAMS'
-  547 |  DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
-      |                      ^~~~~~
-include/trace/events/block.h:456:1: note: in expansion of macro 'TRACE_EVEN=
-T'
-  456 | TRACE_EVENT(block_bio_remap,
-      | ^~~~~~~~~~~
-include/trace/events/block.h:458:2: note: in expansion of macro 'TP_PROTO'
-  458 |  TP_PROTO(struct bio *bio, dev_t dev, sector_t from),
-      |  ^~~~~~~~
-drivers/md/raid0.c:511:4: error: too many arguments to function 'trace_bloc=
-k_bio_remap'
-  511 |    trace_block_bio_remap(bdev_get_queue(rdev->bdev),
-      |    ^~~~~~~~~~~~~~~~~~~~~
-In file included from include/trace/events/block.h:11,
-                 from drivers/md/raid0.c:17:
-include/linux/tracepoint.h:238:21: note: declared here
-  238 |  static inline void trace_##name(proto)    \
-      |                     ^~~~~~
-include/linux/tracepoint.h:411:2: note: in expansion of macro '__DECLARE_TR=
-ACE'
-  411 |  __DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),  \
-      |  ^~~~~~~~~~~~~~~
-include/linux/tracepoint.h:547:2: note: in expansion of macro 'DECLARE_TRAC=
-E'
-  547 |  DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
-      |  ^~~~~~~~~~~~~
-include/trace/events/block.h:456:1: note: in expansion of macro 'TRACE_EVEN=
-T'
-  456 | TRACE_EVENT(block_bio_remap,
-      | ^~~~~~~~~~~
-
-Caused by commit
-
-  1c02fca620f7 ("block: remove the request_queue argument to the block_bio_=
-remap tracepoint")
-
-interacting with commit
-
-  57a0f3a81ef2 ("Revert "md: add md_submit_discard_bio() for submitting dis=
-card bio"")
-
-from Linus' tree.
-
-I have applied the following merge fix:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 14 Dec 2020 15:14:26 +1100
-Subject: [PATCH] fixup for "block: remove the request_queue argument to the=
- block_bio_remap tracepoint"
-
-conflicting with
-
-"Revert "md: add md_submit_discard_bio() for submitting discard bio""
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/md/raid0.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/md/raid0.c b/drivers/md/raid0.c
-index 8f5b0143d8c6..67f157f2525d 100644
---- a/drivers/md/raid0.c
-+++ b/drivers/md/raid0.c
-@@ -508,8 +508,8 @@ static void raid0_handle_discard(struct mddev *mddev, s=
-truct bio *bio)
- 		bio_chain(discard_bio, bio);
- 		bio_clone_blkg_association(discard_bio, bio);
- 		if (mddev->gendisk)
--			trace_block_bio_remap(bdev_get_queue(rdev->bdev),
--				discard_bio, disk_devt(mddev->gendisk),
-+			trace_block_bio_remap(discard_bio,
-+				disk_devt(mddev->gendisk),
- 				bio->bi_iter.bi_sector);
- 		submit_bio_noacct(discard_bio);
- 	}
---=20
-2.29.2
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/rgN3xbXPFOB5eCTLP4HJp/x
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/W53sACgkQAVBC80lX
-0GwR3wf/VaRztQkjmysC3E5kSROkNLTnSAoLIAi6it6wcBMXe0I+SK5E+DJK/pOt
-QMVrL2Xx235qjTU3Zuqjr470XVtvrTX8PfBZnLOeiIqZ0IpyZ8xdbWyyQLWwc2O/
-t621f+alBHBW0Q9F+YwuL6CQY0PV3S9Pw+9OJ+Q12VQ9niyRQXecrNfr9yJnJJxj
-Msp0KdhKuNRqzGZmtjn+gFUkmIDyAVVCboKgr5CwnwQsdqzyfScuwnJiKWiCGtqm
-ewdk2HwlqgA6PuKoeTGTbJ66x7bSQ7sPt6uRpeQmaXnaWSH5N9XUX4S1v91OtSvs
-ZUdg+A6TMqMZXmFncMjaW88mPf7f9A==
-=QpF7
------END PGP SIGNATURE-----
-
---Sig_/rgN3xbXPFOB5eCTLP4HJp/x--
+Thank You,
+Kishon
