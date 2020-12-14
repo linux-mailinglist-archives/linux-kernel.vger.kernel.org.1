@@ -2,71 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B702D9D39
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD622D9D45
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502088AbgLNRHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:07:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728823AbgLNRGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:06:48 -0500
-Date:   Mon, 14 Dec 2020 18:07:12 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607965567;
-        bh=XjDBjYMCqVD98jVY+CGYKWMFLLq5KO9XQBw4EMhV+B8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NqFNLfa3msvVa1ZGRzFFgG6Nol618BrIswo2mFPWYssqVCDkRx9cePPq3/TZGm2Ax
-         OZffz9GQnR2rV/nqMCOYaGVdBFpoUHYQGIVqaQv8XwGD289JeGPazXpyNUKmiDiB4m
-         5Isj5mCJ79vmE7EArDh043Pfg4ISDjhwkvJzP8D0=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org, sashal@kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
-        pbonzini@redhat.com, alex.williamson@redhat.com,
-        pasic@linux.vnet.ibm.com
-Subject: Re: [PATCH v3] s390/vfio-ap: clean up vfio_ap resources when KVM
- pointer invalidated
-Message-ID: <X9ebwKJSSyVP/M9H@kroah.com>
-References: <20201214165617.28685-1-akrowiak@linux.ibm.com>
+        id S2408190AbgLNRJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:09:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31037 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2502174AbgLNRIz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:08:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607965649;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Azb2htRas8xw7ALEsczO2gUqGRQgmT58BISrepmg2Mo=;
+        b=gpdf8RRP5zzt25TeiD+g1VwuLen6MSYO0r1hJ7LaRRQIlJEDMwk2HKK1Z3lY6vgGK8QI9+
+        KjLwmF8J4FAEgJgmlyy+otqF534KHMmzpsKhRIGQmVytWZ8FtnlidDQn5pxwGA3pzP899E
+        Ecqh3OJBMRNH/cIIUtCWsBZcdyWpGIQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-292-34PIeuvkNd2Fj1lCH-6HNg-1; Mon, 14 Dec 2020 12:07:28 -0500
+X-MC-Unique: 34PIeuvkNd2Fj1lCH-6HNg-1
+Received: by mail-wr1-f72.google.com with SMTP id b5so6841507wrp.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:07:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Azb2htRas8xw7ALEsczO2gUqGRQgmT58BISrepmg2Mo=;
+        b=bA0+Ikp3n6hIslW/rp/pfNyqVjwoN9H4ukUnGcDFnWcfFBKdfNWS38xjd8vQ6pnwID
+         fX+cVdRqWzE9PgSOGrMEgyalXMDp3UbMCiG+iF0s+T7pYNPo3VxNtes1OTkDoulsRTfy
+         AqIZP8Yu+9XCKxknMZmJCSDDv9kzBAn/Omnl0n11HFswOtTy7ksNdP3pKqnyiPkvPC4d
+         dhVQCx4pOLwHWfFxKPHrC5IqezbKhWByD2f4oHd27cJCCaAvm/kxOtynBIK24itcXqFF
+         5OUJQXPkB4D4Lv9WB3rAYl9OT6Mb6vNmeXxRS9VSJtUjgJFpFMTILAI8hjV9QORnX7Mu
+         L/IQ==
+X-Gm-Message-State: AOAM533xyn9UZz0AeWEP9YYjVYmR9OLmPh4+yEx5gZu1EnR1mrqPPcPq
+        2d/3/qBF7zggs0UGFTjilEzfuELQAr+u+dq9yBRB1qD1/l9VTVtQ7nC8CHaUupkAyzABHk7vb5A
+        SUk1JIuy4OE6TG1PZ+psYKs4P
+X-Received: by 2002:a1c:7c19:: with SMTP id x25mr29307634wmc.94.1607965646719;
+        Mon, 14 Dec 2020 09:07:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz7I/rvdEHeRXqeMaWfQBBGfoNDRbexdnUYpm5DZwVRI2+hpzR31gY+6uQIurK6i2JelGwaVw==
+X-Received: by 2002:a1c:7c19:: with SMTP id x25mr29307609wmc.94.1607965646430;
+        Mon, 14 Dec 2020 09:07:26 -0800 (PST)
+Received: from steredhat (host-79-13-204-15.retail.telecomitalia.it. [79.13.204.15])
+        by smtp.gmail.com with ESMTPSA id m11sm16704991wmi.16.2020.12.14.09.07.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 09:07:25 -0800 (PST)
+Date:   Mon, 14 Dec 2020 18:07:22 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Andra Paraschiv <andraprs@amazon.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        David Duncan <davdunc@amazon.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Alexander Graf <graf@amazon.de>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH net-next v4 3/5] vsock_addr: Check for supported flag
+ values
+Message-ID: <20201214170722.hzv3lc3iqk2p6rsv@steredhat>
+References: <20201214161122.37717-1-andraprs@amazon.com>
+ <20201214161122.37717-4-andraprs@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201214165617.28685-1-akrowiak@linux.ibm.com>
+In-Reply-To: <20201214161122.37717-4-andraprs@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 11:56:17AM -0500, Tony Krowiak wrote:
-> The vfio_ap device driver registers a group notifier with VFIO when the
-> file descriptor for a VFIO mediated device for a KVM guest is opened to
-> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
-> event). When the KVM pointer is set, the vfio_ap driver takes the
-> following actions:
-> 1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
->    of the mediated device.
-> 2. Calls the kvm_get_kvm() function to increment its reference counter.
-> 3. Sets the function pointer to the function that handles interception of
->    the instruction that enables/disables interrupt processing.
-> 4. Sets the masks in the KVM guest's CRYCB to pass AP resources through to
->    the guest.
-> 
-> In order to avoid memory leaks, when the notifier is called to receive
-> notification that the KVM pointer has been set to NULL, the vfio_ap device
-> driver should reverse the actions taken when the KVM pointer was set.
-> 
-> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->  drivers/s390/crypto/vfio_ap_ops.c | 29 ++++++++++++++++++++---------
->  1 file changed, 20 insertions(+), 9 deletions(-)
+On Mon, Dec 14, 2020 at 06:11:20PM +0200, Andra Paraschiv wrote:
+>Check if the provided flags value from the vsock address data structure
+>includes the supported flags in the corresponding kernel version.
+>
+>The first byte of the "svm_zero" field is used as "svm_flags", so add
+>the flags check instead.
+>
+>Changelog
+>
+>v3 -> v4
+>
+>* New patch in v4.
+>
+>Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+>---
+> net/vmw_vsock/vsock_addr.c | 4 +++-
+> 1 file changed, 3 insertions(+), 1 deletion(-)
 
-<formletter>
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+>
+>diff --git a/net/vmw_vsock/vsock_addr.c b/net/vmw_vsock/vsock_addr.c
+>index 909de26cb0e70..223b9660a759f 100644
+>--- a/net/vmw_vsock/vsock_addr.c
+>+++ b/net/vmw_vsock/vsock_addr.c
+>@@ -22,13 +22,15 @@ EXPORT_SYMBOL_GPL(vsock_addr_init);
+>
+> int vsock_addr_validate(const struct sockaddr_vm *addr)
+> {
+>+	__u8 svm_valid_flags = VMADDR_FLAG_TO_HOST;
+>+
+> 	if (!addr)
+> 		return -EFAULT;
+>
+> 	if (addr->svm_family != AF_VSOCK)
+> 		return -EAFNOSUPPORT;
+>
+>-	if (addr->svm_zero[0] != 0)
+>+	if (addr->svm_flags & ~svm_valid_flags)
+> 		return -EINVAL;
+>
+> 	return 0;
+>-- 
+>2.20.1 (Apple Git-117)
+>
+>
+>
+>
+>Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+>
 
-</formletter>
