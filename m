@@ -2,102 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A21892DA1D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9788A2DA1D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503461AbgLNUl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:41:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503456AbgLNUl5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:41:57 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F88C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 12:41:16 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607978475;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qS4qcXxU+s6fWyXG9bhT3LCWQ3xJUKBwKmfnPv0f8e0=;
-        b=aAUs1vIZtJFAElWdVUA3tsB5j0spD9WB5JudPfs2RhLs9KY73m5wGivKRp+emDmtTwszzw
-        AroOm5SFJDHCa2/c8xNM089MBqO70a0l2CAjGO8LlEzjTdAHGcqNL8I8nNNZ/yMhN+jRc/
-        55dgocRTidD2m6IuEEs2FYvnNZFdDYoSf+yBl/GutlBWqosyAGosT1cXrgYMlhO/lc6lol
-        VRLvNjChuwgVxEi7Eg9m1c4/eByBP26utQM3aMfPDab+G0W9NY2CL5CpGKU4Jxse51QAEt
-        JfrCRgIIZpInZixcb6ACj3xxEvD4SKhVkDZ5ZuLXjt8ZlrULVUyLaVWMjFwFkA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607978475;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qS4qcXxU+s6fWyXG9bhT3LCWQ3xJUKBwKmfnPv0f8e0=;
-        b=y1axIo43d0o2ZM/Gv1XtbPmEifu2hjgDU9AlSfl/V3hDPxUb+XeRNByRJrsjL3x9LLCTmP
-        JCxq+AdsgWFkfFBQ==
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     "x86\@kernel.org" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: common_interrupt: No irq handler for vector
-In-Reply-To: <3630fe3f-0dff-e21e-17a8-ed251df81fbc@linuxfoundation.org>
-References: <9741d93c-3cd1-c4ef-74bb-7f635231c778@linuxfoundation.org> <87im96g6ox.fsf@nanos.tec.linutronix.de> <3630fe3f-0dff-e21e-17a8-ed251df81fbc@linuxfoundation.org>
-Date:   Mon, 14 Dec 2020 21:41:14 +0100
-Message-ID: <87lfe0dst1.fsf@nanos.tec.linutronix.de>
+        id S2503467AbgLNUmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:42:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2503465AbgLNUmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 15:42:00 -0500
+Date:   Mon, 14 Dec 2020 12:41:18 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607978479;
+        bh=bZ5V7cOF7Y3xEFjRNlJqO2zCRUqXweheRPkf/g8LBCE=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q/SHUzEA9Fb7pfRUiNH3yy5W3V2/z/6ZJ41cbKshqUZC7G7kjPc0LeyPXmKO1kGfQ
+         B5/WkyrjNdgEBTpCSLTNsldwIkF57ta9xS2jV6GJls1roMtGCM7JIkhnOre+W7/U+X
+         y4y2LYeQSWM8l8FKZTarm2+1jEdRBeL2iEmHxyEADkq27oiXc4uovchXd5TWWXmScs
+         QtFRIJipqi7+HIL5z4zG91R3kPvU1M04YeVqg5nQ/kCOI7SRRoO+sjLwFys/Jxwozc
+         eKVdosF3I8Q2WrqpGhKhCQKDHc0+z78WvVts/XyYxgX7qf63IJhT9+wFNVEdfeIBP1
+         5m4zUr/fqa+1Q==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, TimGuo-oc@zhaoxin.com,
+        CooperYan@zhaoxin.com, QiyuanWang@zhaoxin.com,
+        HerryYang@zhaoxin.com, CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
+Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
+Message-ID: <X9fN7mOMdn1Dxn63@sol.localdomain>
+References: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+ <X9Ov3RWDpUik7gXo@sol.localdomain>
+ <1f8d17bf-c1d9-6496-d2f8-5773633011fb@zhaoxin.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f8d17bf-c1d9-6496-d2f8-5773633011fb@zhaoxin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14 2020 at 09:11, Shuah Khan wrote:
-> On 12/12/20 12:33 PM, Thomas Gleixner wrote:
->> On Fri, Dec 11 2020 at 13:41, Shuah Khan wrote:
->> 
->>> I am debugging __common_interrupt: 1.55 No irq handler for vector
->>> messages and noticed comments and code don't agree:
->> 
->> I bet that's on an AMD system with broken AGESA BIOS.... Good luck
->> debugging it :) BIOS updates are on the way so I'm told.
->> 
-> Interesting. The behavior I am seeing doesn't seem to be consistent
-> with BIOS problem. I don't see these messages on 5.10-rc7. I started
-> seeing them on stable releases. It started right around 5.9.9 and
-> not present on 5.9.7.
+On Mon, Dec 14, 2020 at 10:28:19AM +0800, Tony W Wang-oc wrote:
+> On 12/12/2020 01:43, Eric Biggers wrote:
+> > On Fri, Dec 11, 2020 at 07:29:04PM +0800, Tony W Wang-oc wrote:
+> >> The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
+> >> On platforms with Zhaoxin CPUs supporting this X86 feature, When
+> >> crc32c-intel and crc32c-generic are both registered, system will
+> >> use crc32c-intel because its .cra_priority is greater than
+> >> crc32c-generic. This case expect to use crc32c-generic driver for
+> >> some Zhaoxin CPUs to get performance gain, So remove these Zhaoxin
+> >> CPUs support from crc32c-intel.
+> >>
+> >> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+> > 
+> > Does this mean that the performance of the crc32c instruction on those CPUs is
+> > actually slower than a regular C implementation?  That's very weird.
+> > 
+> 
+> From the lmbench3 Create and Delete file test on those chips, I think yes.
+> 
 
-What kind of machine?
+Did you try measuring the performance of the hashing itself, and not some
+higher-level filesystem operations?
 
-> I am bisecting to isolate. Same issue on all stables 5.4, 4.19 and
-> so on. If it is BIOS problem I would expect to see it on 5.10-rc7
-> and wouldn't have expected to start seeing it 5.9.9.
-
-Can you provide some more details, e.g. dmesg please?
-
->> No. It's perfectly correct in the MSI code. See further down.
->> 
->> 	if (IS_ERR_OR_NULL(this_cpu_read(vector_irq[cfg->vector])))
->> 		this_cpu_write(vector_irq[cfg->vector], VECTOR_RETRIGGERED);
->> 
->
-> I am asking about inconsistent comments and the actual message as the
-> comment implies if vector is VECTOR_UNUSED state, this message won't
-> be triggered in common_interrupt. Based on that my read is the comment
-> might be wrong if the code is correct as you are saying.
-
-The comment says:
-
-  >>    * anyway. If the vector is unused, then it is marked so it won't
-  >>    * trigger the 'No irq handler for vector' warning in
-  >>    * common_interrupt().
-
-  If the vector is unused, then it is _marked_ so ....
-
-It perhaps should explicitely say 'is marked as VECTOR_RETRIGGERED' to make
-it clear.
-
-Thanks,
-
-        tglx
+- Eric
