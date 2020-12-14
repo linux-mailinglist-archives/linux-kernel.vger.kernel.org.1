@@ -2,111 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F992DA112
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 130112DA12F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:14:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502942AbgLNUFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:05:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502971AbgLNUE5 (ORCPT
+        id S2503042AbgLNUL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:11:28 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:55000 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502853AbgLNUKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:04:57 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410A4C061793
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 12:03:42 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id f17so13363472pge.6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 12:03:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=glOnBFiECF8TpThPY1T9sfOwrbTI0Z62FinuvRqJFM0=;
-        b=Ihg/wFKGpdoKe519ELAQtVqcDaavMDG5r1bihOEcNRbZQC+E7hplzqpQEDgnpdH4j+
-         Oq4WgDsgFsUhl2gaWy8jb2LcpU6VfJdTj6goH9M5mG8HI3M9NSfZXSjLLnRzMDPxRtZs
-         IimAH8Frd9xs5hPPBaUPviKS0I7ce5DX4v0ZMKbI11ovv2oy9SoqLOumdsXFRraW1ef6
-         9resbu3JryZ2X3XZ6eUytHER6uZ/MiBvaApyfiaQoE3wk1lLeFkuAxTAtI7gDcBRsy3G
-         UBZto2UDXbLui+9dqZ0GmYsiYJ2T2wxV7cNEUQls7zJ7ffuD4TV8Jowwfi9/FyzTiK9K
-         4CXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=glOnBFiECF8TpThPY1T9sfOwrbTI0Z62FinuvRqJFM0=;
-        b=mRswOktXrHsG3omi28gh1Fa7xtVNFLF5XBdfRDSY8t8OUMg9aWoDbg1YF1MagHfcNm
-         l44sijdeqpPZ5kjBYf7u0y2Yngawl9YYhzspofV5F4mBaejUKbeYmHWVNLCoBUz/na1l
-         SqF3dt2+783vab19NbFExkojYr3D++qn+u2xDvQp5iijKWZBAgBzLA/mj+gN4PzEjHW+
-         WWZiwltkTSCapxGdaaLpGUsrp7Nl4zbcKKcOXoIGQc8q7jmgYFtnzb8pY5XfJx9gojGe
-         nIyV3EhNGPEy8aJ58oV+Var9Trus0bwsyadx2PCuSSdZ7Ix73TLzWXJkCSNAUmcB0CWD
-         SiDA==
-X-Gm-Message-State: AOAM531lR987m1gIs6H7Sh4OmcXCrBIdc62Hn7xs23KvYmSdAi969OBm
-        qBl4jK9wiU3B6Gzf2okudeL+/A==
-X-Google-Smtp-Source: ABdhPJwvuNU7fNETFGXKRki8LGh9J9X3JjvJeJr8KA/CryX3oDtGLsr/ecJej4eRH91ApwyyhXsmww==
-X-Received: by 2002:a63:4f4c:: with SMTP id p12mr23050633pgl.432.1607976221864;
-        Mon, 14 Dec 2020 12:03:41 -0800 (PST)
-Received: from localhost.localdomain ([163.172.76.58])
-        by smtp.googlemail.com with ESMTPSA id js9sm22434109pjb.2.2020.12.14.12.03.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 12:03:41 -0800 (PST)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     arnd@arndb.de, davem@davemloft.net, herbert@gondor.apana.org.au,
-        jernej.skrabec@siol.net, mripard@kernel.org, wens@csie.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH v4 8/8] crypto: sun4i-ss: add SPDX header and remove blank lines
-Date:   Mon, 14 Dec 2020 20:02:32 +0000
-Message-Id: <20201214200232.17357-9-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201214200232.17357-1-clabbe@baylibre.com>
-References: <20201214200232.17357-1-clabbe@baylibre.com>
+        Mon, 14 Dec 2020 15:10:43 -0500
+Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
+ id ed48d699427488a5; Mon, 14 Dec 2020 21:09:40 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>
+Subject: [PATCH v2 1/3] cpufreq: schedutil: Add util to struct sg_cpu
+Date:   Mon, 14 Dec 2020 21:04:11 +0100
+Message-ID: <12570124.nDbfvnBycr@kreacher>
+In-Reply-To: <3827230.0GnL3RTcl1@kreacher>
+References: <20360841.iInq7taT2Z@kreacher> <3827230.0GnL3RTcl1@kreacher>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchs fixes some remaining style issue.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Instead of passing util and max between functions while computing the
+utilization and capacity, store the former in struct sg_cpu (along
+with the latter and bw_dl).
+
+This will allow the current utilization value to be compared with the
+one obtained previously (which is requisite for some code changes to
+follow this one), but also it causes the code to look slightly more
+consistent and cleaner.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c | 3 ---
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c   | 1 +
- 2 files changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-index d5275d914d09..c2e6f5ed1d79 100644
---- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-+++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-@@ -148,7 +148,6 @@ static int noinline_for_stack sun4i_ss_opti_poll(struct skcipher_request *areq)
- 	return err;
+v1 -> v2:
+   * Added the tag from Viresh.
+
+---
+ kernel/sched/cpufreq_schedutil.c |   42 ++++++++++++++++++---------------------
+ 1 file changed, 20 insertions(+), 22 deletions(-)
+
+Index: linux-pm/kernel/sched/cpufreq_schedutil.c
+===================================================================
+--- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
++++ linux-pm/kernel/sched/cpufreq_schedutil.c
+@@ -53,6 +53,7 @@ struct sugov_cpu {
+ 	unsigned int		iowait_boost;
+ 	u64			last_update;
+ 
++	unsigned long		util;
+ 	unsigned long		bw_dl;
+ 	unsigned long		max;
+ 
+@@ -276,16 +277,15 @@ unsigned long schedutil_cpu_util(int cpu
+ 	return min(max, util);
  }
  
--
- static int noinline_for_stack sun4i_ss_cipher_poll_fallback(struct skcipher_request *areq)
+-static unsigned long sugov_get_util(struct sugov_cpu *sg_cpu)
++static void sugov_get_util(struct sugov_cpu *sg_cpu)
  {
- 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(areq);
-@@ -562,7 +561,6 @@ int sun4i_ss_cipher_init(struct crypto_tfm *tfm)
- 				    sizeof(struct sun4i_cipher_req_ctx) +
- 				    crypto_skcipher_reqsize(op->fallback_tfm));
+ 	struct rq *rq = cpu_rq(sg_cpu->cpu);
+-	unsigned long util = cpu_util_cfs(rq);
+ 	unsigned long max = arch_scale_cpu_capacity(sg_cpu->cpu);
  
+ 	sg_cpu->max = max;
+ 	sg_cpu->bw_dl = cpu_bw_dl(rq);
 -
- 	err = pm_runtime_get_sync(op->ss->dev);
- 	if (err < 0)
- 		goto error_pm;
-@@ -649,5 +647,4 @@ int sun4i_ss_des3_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 	crypto_skcipher_set_flags(op->fallback_tfm, tfm->base.crt_flags & CRYPTO_TFM_REQ_MASK);
- 
- 	return crypto_skcipher_setkey(op->fallback_tfm, key, keylen);
--
+-	return schedutil_cpu_util(sg_cpu->cpu, util, max, FREQUENCY_UTIL, NULL);
++	sg_cpu->util = schedutil_cpu_util(sg_cpu->cpu, cpu_util_cfs(rq), max,
++					  FREQUENCY_UTIL, NULL);
  }
-diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c
-index 152841076e3a..443160a114bb 100644
---- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c
-+++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- #include "sun4i-ss.h"
  
- int sun4i_ss_prng_seed(struct crypto_rng *tfm, const u8 *seed,
--- 
-2.26.2
+ /**
+@@ -362,8 +362,6 @@ static void sugov_iowait_boost(struct su
+  * sugov_iowait_apply() - Apply the IO boost to a CPU.
+  * @sg_cpu: the sugov data for the cpu to boost
+  * @time: the update time from the caller
+- * @util: the utilization to (eventually) boost
+- * @max: the maximum value the utilization can be boosted to
+  *
+  * A CPU running a task which woken up after an IO operation can have its
+  * utilization boosted to speed up the completion of those IO operations.
+@@ -377,18 +375,17 @@ static void sugov_iowait_boost(struct su
+  * This mechanism is designed to boost high frequently IO waiting tasks, while
+  * being more conservative on tasks which does sporadic IO operations.
+  */
+-static unsigned long sugov_iowait_apply(struct sugov_cpu *sg_cpu, u64 time,
+-					unsigned long util, unsigned long max)
++static void sugov_iowait_apply(struct sugov_cpu *sg_cpu, u64 time)
+ {
+ 	unsigned long boost;
+ 
+ 	/* No boost currently required */
+ 	if (!sg_cpu->iowait_boost)
+-		return util;
++		return;
+ 
+ 	/* Reset boost if the CPU appears to have been idle enough */
+ 	if (sugov_iowait_reset(sg_cpu, time, false))
+-		return util;
++		return;
+ 
+ 	if (!sg_cpu->iowait_boost_pending) {
+ 		/*
+@@ -397,18 +394,19 @@ static unsigned long sugov_iowait_apply(
+ 		sg_cpu->iowait_boost >>= 1;
+ 		if (sg_cpu->iowait_boost < IOWAIT_BOOST_MIN) {
+ 			sg_cpu->iowait_boost = 0;
+-			return util;
++			return;
+ 		}
+ 	}
+ 
+ 	sg_cpu->iowait_boost_pending = false;
+ 
+ 	/*
+-	 * @util is already in capacity scale; convert iowait_boost
++	 * sg_cpu->util is already in capacity scale; convert iowait_boost
+ 	 * into the same scale so we can compare.
+ 	 */
+-	boost = (sg_cpu->iowait_boost * max) >> SCHED_CAPACITY_SHIFT;
+-	return max(boost, util);
++	boost = (sg_cpu->iowait_boost * sg_cpu->max) >> SCHED_CAPACITY_SHIFT;
++	if (sg_cpu->util < boost)
++		sg_cpu->util = boost;
+ }
+ 
+ #ifdef CONFIG_NO_HZ_COMMON
+@@ -439,9 +437,8 @@ static void sugov_update_single(struct u
+ {
+ 	struct sugov_cpu *sg_cpu = container_of(hook, struct sugov_cpu, update_util);
+ 	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
+-	unsigned long util, max;
+-	unsigned int next_f;
+ 	unsigned int cached_freq = sg_policy->cached_raw_freq;
++	unsigned int next_f;
+ 
+ 	sugov_iowait_boost(sg_cpu, time, flags);
+ 	sg_cpu->last_update = time;
+@@ -451,10 +448,10 @@ static void sugov_update_single(struct u
+ 	if (!sugov_should_update_freq(sg_policy, time))
+ 		return;
+ 
+-	util = sugov_get_util(sg_cpu);
+-	max = sg_cpu->max;
+-	util = sugov_iowait_apply(sg_cpu, time, util, max);
+-	next_f = get_next_freq(sg_policy, util, max);
++	sugov_get_util(sg_cpu);
++	sugov_iowait_apply(sg_cpu, time);
++
++	next_f = get_next_freq(sg_policy, sg_cpu->util, sg_cpu->max);
+ 	/*
+ 	 * Do not reduce the frequency if the CPU has not been idle
+ 	 * recently, as the reduction is likely to be premature then.
+@@ -491,9 +488,10 @@ static unsigned int sugov_next_freq_shar
+ 		struct sugov_cpu *j_sg_cpu = &per_cpu(sugov_cpu, j);
+ 		unsigned long j_util, j_max;
+ 
+-		j_util = sugov_get_util(j_sg_cpu);
++		sugov_get_util(j_sg_cpu);
++		sugov_iowait_apply(j_sg_cpu, time);
++		j_util = j_sg_cpu->util;
+ 		j_max = j_sg_cpu->max;
+-		j_util = sugov_iowait_apply(j_sg_cpu, time, j_util, j_max);
+ 
+ 		if (j_util * max > j_max * util) {
+ 			util = j_util;
+
+
 
