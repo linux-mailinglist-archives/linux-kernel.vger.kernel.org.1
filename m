@@ -2,104 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301542D9FA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 167162D9FA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502241AbgLNSxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 13:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57656 "EHLO
+        id S2440324AbgLNSyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 13:54:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731829AbgLNSwi (ORCPT
+        with ESMTP id S1731829AbgLNSxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 13:52:38 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6300C0613D3;
-        Mon, 14 Dec 2020 10:51:57 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id d17so24016372ejy.9;
-        Mon, 14 Dec 2020 10:51:57 -0800 (PST)
+        Mon, 14 Dec 2020 13:53:44 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E2CC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:53:04 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id t16so17493483wra.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:53:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kmEWL9N858FqTq18xXGT1VCd7aIAPnn5gZrMzk+8WhI=;
-        b=Afo/cIHYdCXKfH752KDHu2O8NkEAZVkf5WOf6ECkwK6ARDFUB9yPT62H0/v8tHgR61
-         xevdbRVodazqrMPywJcq0YpH6GAk0IBsIBbAhWWqt9ZMLBqKJ6a9hLu/PipJmUyfGTPo
-         Abtg9nUqww/AxeLq/yWXA+dVCSXjo/w6S3SRRs1iXQqrqXPDtKhg1/ET/sIw1wiEq0ZW
-         8QKetn2wA0RdciaRs+/YQmdpA6LHbt84IdWgBoWFF/o/lW5ASQssnMQiBqM5PjbMgPh4
-         ec4PusS/fQfZ4OjwHcIGGAX00j+4UJPzU7p++7M5Zqc5naun3uQUz+YC2pdd2zVCQL4O
-         RbVA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dDdObFQGHP44wB5uzTs8CFNojQR78cri+zip8zY60tY=;
+        b=qtseBLRRIiwub6DQNE6y6+zZnF+JWErsu8k99AdAIvuuayLrf/JVtUx+i2syw5V4Et
+         fBAiG55BonHRp6eybFbp70rUSOhqyI92D3DFf1K5IXp7+P6csHI0BJm8mJD3aYXXoVQD
+         R7qAw4vhwvylhCM8wMrds9Fw3Ypx+YuJGaSYI3gtl5+mz9xfjFnZeFng6nS+BmSb5xwf
+         BMKIDVQZPmtjzgv+/DF06K6LLIyEeIygqx3mzwI9XHByDW1kusU4bDMY7AO8S4XTLepY
+         Uk7zUN7/LcB3AGtk3Nk8KhUiyqIV51EvFBJpuFm9AgVheEAgFZQuBoezANi/FsA0Dnqi
+         KiIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kmEWL9N858FqTq18xXGT1VCd7aIAPnn5gZrMzk+8WhI=;
-        b=CuFahRSrWno3ZCr8AEge5PGnT6iH0DLkZng9NWHwkfzdM5ZzCF+hpzlTxqAjZDV8vL
-         GrDOnirnC3qZLTZNhCWrdQ0CpSbZKLFPsEsTf1VCrrTvV9oYqgvws/8xzgwm8mGCaZGk
-         fK/4p3hk9u/8mRTgKEJTYY38YCcHpBUAB9PWqzlhHJxr/EflEpB2z8YLG8KocYENcS5i
-         cE2KO8aiJamF44bf9cpvTw9jiqUEzofE9a6UoVEwTiyVPAERXVKla94nXpdaj4HXUJA5
-         sWjHW+czeL44uHNkt/mcgQu8XPtdCHTLFYCtrpFHg68lpTk51NxbKLMZG34gcxoVI+jM
-         AkzA==
-X-Gm-Message-State: AOAM532iX1sLMkEhNOxq9aD4dd0h+3rLm+SFMnftxKcx+pOr2w13u028
-        oEaXDsj6Urp38f2jghsn7Jo=
-X-Google-Smtp-Source: ABdhPJxrxN33uribVUjiZKJXkD851HxLdfh1YJ77xbUmPGGGbrrluHT7/CfnPcd+aN6YyEq31DBpFQ==
-X-Received: by 2002:a17:907:4271:: with SMTP id nq1mr19563127ejb.358.1607971916648;
-        Mon, 14 Dec 2020 10:51:56 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id h23sm14154997ejg.37.2020.12.14.10.51.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 14 Dec 2020 10:51:56 -0800 (PST)
-Message-ID: <f23cea390a812f5126dbb232b1944e5499cc40dc.camel@gmail.com>
-Subject: Re: [PATCH v2 1/6] scsi: ufs: Remove stringize operator '#'
- restriction
-From:   Bean Huo <huobean@gmail.com>
-To:     Joe Perches <joe@perches.com>, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org, rostedt@goodmis.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 14 Dec 2020 19:51:55 +0100
-In-Reply-To: <ade665cbfa138d1851343576caad84a61e904c46.camel@perches.com>
-References: <20201214161502.13440-1-huobean@gmail.com>
-         <20201214161502.13440-2-huobean@gmail.com>
-         <ade665cbfa138d1851343576caad84a61e904c46.camel@perches.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dDdObFQGHP44wB5uzTs8CFNojQR78cri+zip8zY60tY=;
+        b=W1J5mm/i+oHe2L4igUIKvUAF8dhUrwHhAeyDFzzXHvc0pYqYCWYeFHQ09E5bJHyB+b
+         FOyZSyB0y/doT1q0M5aedqrtUEIsSr0gboJljqnz47v89RpOLK1T9vjx34dp1sxulMIF
+         XZ7V6hdftbyeRhSXlnUdXugZWoJ1oDGYdX0InnzqykZTo0P6HEcCGMHbTwYoO449p5gE
+         9HRHHmV0eneYbfmfWFhIGdx/bOpmcQe2UQB0xk7wGsX8uLlLVN5q0g5BJl2vixci5yoX
+         v9JN09GeHOctclnPS3yRACz5BkFyPlr3vfFhxyhwxlwIa/M7G48lQvLadAFt/FTGwBMI
+         Ve+A==
+X-Gm-Message-State: AOAM530JpYxCZdtyuXnY3V4B6sP88tjmhNEv2eflPkJcB4kMqxpL0IzX
+        Re1PSGIBsQjvX8i9aoTD0M3+70oU5gDG358WoA6bZg==
+X-Google-Smtp-Source: ABdhPJwEMTtYeETuXF3/XCpMDfqlJZwPT9M5sPnMxHan/mH+fTUl/SwsWhAn4rnqs7N+v2n/cTjVFqXQvHBIvXNHCAY=
+X-Received: by 2002:a5d:4cd1:: with SMTP id c17mr30383506wrt.49.1607971982996;
+ Mon, 14 Dec 2020 10:53:02 -0800 (PST)
+MIME-Version: 1.0
+References: <160780498125.3272.15437756269539236825.stgit@localhost.localdomain>
+ <CANn89i+uQ0p81O3-aWO-WPifc35KtpDFRsO9WJKrXxEhpArDWw@mail.gmail.com>
+In-Reply-To: <CANn89i+uQ0p81O3-aWO-WPifc35KtpDFRsO9WJKrXxEhpArDWw@mail.gmail.com>
+From:   Yuchung Cheng <ycheng@google.com>
+Date:   Mon, 14 Dec 2020 10:52:26 -0800
+Message-ID: <CAK6E8=ftSyOhBnB8ZXb_NaBW0wKLSQRjGCm5xE=RMCg=BMnb1g@mail.gmail.com>
+Subject: Re: [net-next PATCH v3] tcp: Add logic to check for SYN w/ data in tcp_simple_retransmit
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        kernel-team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-14 at 08:46 -0800, Joe Perches wrote:
-> > However, we have other cases, the symbol and enum name are not the
-> > same,
-> > we can redefine EM/EMe, but there will introduce some redundant
-> > codes.
-> > This patch is to remove this restriction, let others reuse the
-> > current
-> > EM/EMe definition.
-> 
-> I think the other way (adding new definitions for the cases when the
-> name and string are different) is less error prone.
-> 
-yes, agree with you, but here it is ok, it is not too much copy/paste.
+On Mon, Dec 14, 2020 at 9:42 AM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Sat, Dec 12, 2020 at 9:31 PM Alexander Duyck
+> <alexander.duyck@gmail.com> wrote:
+> >
+> > From: Alexander Duyck <alexanderduyck@fb.com>
+> >
+> > There are cases where a fastopen SYN may trigger either a ICMP_TOOBIG
+> > message in the case of IPv6 or a fragmentation request in the case of
+> > IPv4. This results in the socket stalling for a second or more as it does
+> > not respond to the message by retransmitting the SYN frame.
+> >
+> > Normally a SYN frame should not be able to trigger a ICMP_TOOBIG or
+> > ICMP_FRAG_NEEDED however in the case of fastopen we can have a frame that
+> > makes use of the entire MSS. In the case of fastopen it does, and an
+> > additional complication is that the retransmit queue doesn't contain the
+> > original frames. As a result when tcp_simple_retransmit is called and
+> > walks the list of frames in the queue it may not mark the frames as lost
+> > because both the SYN and the data packet each individually are smaller than
+> > the MSS size after the adjustment. This results in the socket being stalled
+> > until the retransmit timer kicks in and forces the SYN frame out again
+> > without the data attached.
+> >
+> > In order to resolve this we can reduce the MSS the packets are compared
+> > to in tcp_simple_retransmit to -1 for cases where we are still in the
+> > TCP_SYN_SENT state for a fastopen socket. Doing this we will mark all of
+> > the packets related to the fastopen SYN as lost.
+> >
+> > Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
+> > ---
+> >
+>
+> SGTM, thanks !
+>
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
+Nice work. I tested and verified it works with our packetdrill
 
-> > diff --git a/include/trace/events/ufs.h
-> > b/include/trace/events/ufs.h
-> 
-> []
-> > +#define
-> > UFS_LINK_STATES                                              \
-> > +     EM(UIC_LINK_OFF_STATE, "UIC_LINK_OFF_STATE")            \
-> > +     EM(UIC_LINK_ACTIVE_STATE, "UIC_LINK_ACTIVE_STATE,")     \
-> 
-> For instance:
-> 
-> Like here where you added an unnecessary and unwanted comma
+Signed-off-by: Yuchung Cheng <ycheng@google.com>
 
-Thanks, I will fix it in next version.
-
-Bean
-
-
+>
+> > v2: Changed logic to invalidate all retransmit queue frames if fastopen SYN
+> > v3: Updated commit message to reflect actual solution in 3rd paragraph
+> >
