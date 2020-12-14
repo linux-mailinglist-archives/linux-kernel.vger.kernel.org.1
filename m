@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A755B2D97BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2C92D97C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407773AbgLNLy5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Dec 2020 06:54:57 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:44073 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407754AbgLNLym (ORCPT
+        id S2407705AbgLNL6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 06:58:34 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:49747 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730662AbgLNL6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:54:42 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-57-NlvEctBAMaCvCybvQIbvtA-1; Mon, 14 Dec 2020 11:53:03 +0000
-X-MC-Unique: NlvEctBAMaCvCybvQIbvtA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 14 Dec 2020 11:53:04 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 14 Dec 2020 11:53:04 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Philipp Gerlesberger' <Philipp.Gerlesberger@fau.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "ij72uhux@stud.informatik.uni-erlangen.de" 
-        <ij72uhux@stud.informatik.uni-erlangen.de>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "linux-kernel@i4.cs.fau.de" <linux-kernel@i4.cs.fau.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>
-Subject: RE: [PATCH v2 12/12] media: atomisp: Fix LOGICAL_CONTINUATIONS
-Thread-Topic: [PATCH v2 12/12] media: atomisp: Fix LOGICAL_CONTINUATIONS
-Thread-Index: AQHW0gocnJO7wsTYYEGwNcWFQ1O+9qn2emzA
-Date:   Mon, 14 Dec 2020 11:53:04 +0000
-Message-ID: <4eef67d66b0b48feba474906431daa30@AcuMS.aculab.com>
-References: <20201214110156.6152-1-Philipp.Gerlesberger@fau.de>
- <20201214110156.6152-13-Philipp.Gerlesberger@fau.de>
-In-Reply-To: <20201214110156.6152-13-Philipp.Gerlesberger@fau.de>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 14 Dec 2020 06:58:34 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein.fritz.box)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1komUB-0002C6-NA; Mon, 14 Dec 2020 11:57:51 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] time namespace fixes for v5.11
+Date:   Mon, 14 Dec 2020 12:57:44 +0100
+Message-Id: <20201214115744.3306832-1-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Gerlesberger
-> Sent: 14 December 2020 11:02
->
-> Logical continuations should be on the previous line
-> 
-> Co-developed-by: Andrey Khlopkov <ij72uhux@stud.informatik.uni-erlangen.de>
-> Signed-off-by: Andrey Khlopkov <ij72uhux@stud.informatik.uni-erlangen.de>
-> Signed-off-by: Philipp Gerlesberger <Philipp.Gerlesberger@fau.de>
-> ---
->  drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
-> b/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
-> index 2f1c2df59f71..7d44070c7114 100644
-> --- a/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
-> +++ b/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
-> @@ -24,8 +24,8 @@
->   *****************************************************************************/
->  int ia_css_queue_local_init(ia_css_queue_t *qhandle, ia_css_queue_local_t *desc)
->  {
-> -	if (NULL == qhandle || NULL == desc
-> -	    || NULL == desc->cb_elems || NULL == desc->cb_desc) {
-> +	if (NULL == qhandle || NULL == desc ||
-> +	    NULL == desc->cb_elems || NULL == desc->cb_desc) {
->  		/* Invalid parameters, return error*/
->  		return -EINVAL;
+Hi Linus,
 
-Get rid of the obnoxious backwards tests and it probably fits in 80 columns.
+Here are some time namespace fixes for v5.11.
 
-	if (!qhandle || !desc || !desc->cb_elems || !desc->desc) {
-		...
+/* Summary */
+When time namespaces were introduced we missed to virtualize the "btime" field
+in /proc/stat. This confuses tasks which are in another time namespace with a
+virtualized boottime which is common in some container workloads. This pr
+contains Michael's series to fix "btime" which Thomas asked me to take through
+my tree.
+To fix "btime" virtualization we simply subtract the offset of the time
+namespace's boottime from btime before printing the stats. Note that since
+start_boottime of processes are seconds since boottime and the boottime stamp
+is now shifted according to the time namespace's offset, the offset of the time
+namespace also needs to be applied before the process stats are given to
+userspace. This avoids that processes shown by tools such as "ps" appear as
+time travelers in the corresponding time namespace. Selftests are included to
+verify that btime virtualization in /proc/stat works as expected.
 
-OTOH if it isn't expected that any of these might be NULL just delete
-the test.
-If they ever are 'accidentally' NULL it is usually easier to debug
-the NULL pointer dereference than an obscure error return.
+The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
 
-	David
+  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+are available in the Git repository at:
 
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/time-namespace-v5.11
+
+for you to fetch changes up to 5c62634fc65101d350cbd47722fb76f02693059d:
+
+  namespace: make timens_on_fork() return nothing (2020-11-18 11:06:47 +0100)
+
+/* Testing */
+All patches are based on v5.10-rc2. All old and new tests are passing.
+Please note that I missed to merge these fixes into my for-next branch and so
+linux-next has not contained the commits in this pr.
+I'm still sending this pr because these are fairly trivial bugfixes and have
+seen vetting from multiple people. I have also now merged this tag into my
+for-next branch so these commits will show up in linux-next soon. If you feel
+more comfortable with this sitting in linux-next for a while please just ignore
+this pr and I'll resend after rc1 has been released.
+
+/* Conflicts */
+At the time of creating this PR no merge conflicts were reported from
+linux-next and no merge 2c85ebc57b3e ("Linux 5.10").
+
+Please consider pulling these changes from the signed time-namespace-v5.11 tag.
+
+Thanks!
+Christian
+
+----------------------------------------------------------------
+time-namespace-v5.11
+
+----------------------------------------------------------------
+Hui Su (1):
+      namespace: make timens_on_fork() return nothing
+
+Michael Weiß (3):
+      timens: additional helper functions for boottime offset handling
+      fs/proc: apply the time namespace offset to /proc/stat btime
+      selftests/timens: added selftest for /proc/stat btime
+
+ fs/proc/array.c                         |  6 ++--
+ fs/proc/stat.c                          |  3 ++
+ include/linux/time_namespace.h          | 28 ++++++++++++++--
+ kernel/nsproxy.c                        |  7 +---
+ kernel/time/namespace.c                 |  6 ++--
+ tools/testing/selftests/timens/procfs.c | 58 ++++++++++++++++++++++++++++++++-
+ 6 files changed, 92 insertions(+), 16 deletions(-)
