@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8B62D9DBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 002E72D9F89
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502057AbgLNR3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:29:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41262 "EHLO mail.kernel.org"
+        id S2441020AbgLNStc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 13:49:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440440AbgLNR2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:28:46 -0500
+        id S2502269AbgLNRhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:37:45 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 08/36] arm64: dts: broadcom: clear the warnings caused by empty dma-ranges
+Subject: [PATCH 5.9 018/105] ibmvnic: delay next reset if hard reset fails
 Date:   Mon, 14 Dec 2020 18:27:52 +0100
-Message-Id: <20201214172543.724590092@linuxfoundation.org>
+Message-Id: <20201214172556.148598300@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201214172543.302523401@linuxfoundation.org>
-References: <20201214172543.302523401@linuxfoundation.org>
+In-Reply-To: <20201214172555.280929671@linuxfoundation.org>
+References: <20201214172555.280929671@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,109 +33,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
 
-[ Upstream commit 2013a4b684b6eb614ee5c9a3c07b0ae6f5ca96d9 ]
+[ Upstream commit f15fde9d47b887b406f5e76490d601cfc26643c9 ]
 
-The scripts/dtc/checks.c requires that the node have empty "dma-ranges"
-property must have the same "#address-cells" and "#size-cells" values as
-the parent node. Otherwise, the following warnings is reported:
+If auto-priority failover is enabled, the backing device needs time
+to settle if hard resetting fails for any reason. Add a delay of 60
+seconds before retrying the hard-reset.
 
-arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
-(dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
-its #address-cells (1) differs from / (2)
-arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
-(dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
-its #size-cells (1) differs from / (2)
-
-Arnd Bergmann figured out why it's necessary:
-Also note that the #address-cells=<1> means that any device under
-this bus is assumed to only support 32-bit addressing, and DMA will
-have to go through a slow swiotlb in the absence of an IOMMU.
-
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20201016090833.1892-2-thunder.leizhen@huawei.com'
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 2770a7984db5 ("ibmvnic: Introduce hard reset recovery")
+Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../dts/broadcom/stingray/stingray-usb.dtsi   | 20 +++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi b/arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi
-index 55259f973b5a9..aef8f2b00778d 100644
---- a/arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi
-+++ b/arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi
-@@ -5,20 +5,20 @@
- 	usb {
- 		compatible = "simple-bus";
- 		dma-ranges;
--		#address-cells = <1>;
--		#size-cells = <1>;
--		ranges = <0x0 0x0 0x68500000 0x00400000>;
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges = <0x0 0x0 0x0 0x68500000 0x0 0x00400000>;
- 
- 		usbphy0: usb-phy@0 {
- 			compatible = "brcm,sr-usb-combo-phy";
--			reg = <0x00000000 0x100>;
-+			reg = <0x0 0x00000000 0x0 0x100>;
- 			#phy-cells = <1>;
- 			status = "disabled";
- 		};
- 
- 		xhci0: usb@1000 {
- 			compatible = "generic-xhci";
--			reg = <0x00001000 0x1000>;
-+			reg = <0x0 0x00001000 0x0 0x1000>;
- 			interrupts = <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>;
- 			phys = <&usbphy0 1>, <&usbphy0 0>;
- 			phy-names = "phy0", "phy1";
-@@ -28,7 +28,7 @@
- 
- 		bdc0: usb@2000 {
- 			compatible = "brcm,bdc-v0.16";
--			reg = <0x00002000 0x1000>;
-+			reg = <0x0 0x00002000 0x0 0x1000>;
- 			interrupts = <GIC_SPI 259 IRQ_TYPE_LEVEL_HIGH>;
- 			phys = <&usbphy0 0>, <&usbphy0 1>;
- 			phy-names = "phy0", "phy1";
-@@ -38,21 +38,21 @@
- 
- 		usbphy1: usb-phy@10000 {
- 			compatible = "brcm,sr-usb-combo-phy";
--			reg = <0x00010000 0x100>;
-+			reg = <0x0 0x00010000 0x0 0x100>;
- 			#phy-cells = <1>;
- 			status = "disabled";
- 		};
- 
- 		usbphy2: usb-phy@20000 {
- 			compatible = "brcm,sr-usb-hs-phy";
--			reg = <0x00020000 0x100>;
-+			reg = <0x0 0x00020000 0x0 0x100>;
- 			#phy-cells = <0>;
- 			status = "disabled";
- 		};
- 
- 		xhci1: usb@11000 {
- 			compatible = "generic-xhci";
--			reg = <0x00011000 0x1000>;
-+			reg = <0x0 0x00011000 0x0 0x1000>;
- 			interrupts = <GIC_SPI 263 IRQ_TYPE_LEVEL_HIGH>;
- 			phys = <&usbphy1 1>, <&usbphy2>, <&usbphy1 0>;
- 			phy-names = "phy0", "phy1", "phy2";
-@@ -62,7 +62,7 @@
- 
- 		bdc1: usb@21000 {
- 			compatible = "brcm,bdc-v0.16";
--			reg = <0x00021000 0x1000>;
-+			reg = <0x0 0x00021000 0x0 0x1000>;
- 			interrupts = <GIC_SPI 266 IRQ_TYPE_LEVEL_HIGH>;
- 			phys = <&usbphy2>;
- 			phy-names = "phy0";
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index f892cb4a08f4e..006670f318bf1 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -2243,6 +2243,14 @@ static void __ibmvnic_reset(struct work_struct *work)
+ 				rc = do_hard_reset(adapter, rwi, reset_state);
+ 				rtnl_unlock();
+ 			}
++			if (rc) {
++				/* give backing device time to settle down */
++				netdev_dbg(adapter->netdev,
++					   "[S:%d] Hard reset failed, waiting 60 secs\n",
++					   adapter->state);
++				set_current_state(TASK_UNINTERRUPTIBLE);
++				schedule_timeout(60 * HZ);
++			}
+ 		} else if (!(rwi->reset_reason == VNIC_RESET_FATAL &&
+ 				adapter->from_passive_init)) {
+ 			rc = do_reset(adapter, rwi, reset_state);
 -- 
 2.27.0
 
