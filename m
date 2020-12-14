@@ -2,98 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB622D97F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 123412D97FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731282AbgLNMYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 07:24:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33282 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730982AbgLNMYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 07:24:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B7030B73F;
-        Mon, 14 Dec 2020 12:23:39 +0000 (UTC)
-Date:   Mon, 14 Dec 2020 13:23:40 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/platform for v5.11
-Message-ID: <20201214122340.GH26358@zn.tnic>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        id S2407779AbgLNM3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 07:29:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731433AbgLNM3A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 07:29:00 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3841C0613CF;
+        Mon, 14 Dec 2020 04:28:34 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id y8so8518677plp.8;
+        Mon, 14 Dec 2020 04:28:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=07u9K7qAejnZ1AxQEPtLr06bSZi6WWdia77VeMAOMaQ=;
+        b=JcEyTWu2UOHibV9usPkBnZgqxc6g0lA6QrFTY24VeoqEAidkt/WdGG+XbslL0jPO/H
+         l5g0bt/7Me4Jt/SMbugHdEjgVMOju/eDaTGDs5ESL7Wy5c5PVPsIgoGgpv0zyOTgMvYD
+         pN/ZttlxrNTaQNStVjOvNDyf5m0+vjv/wTgMBtItvnh5jwYI773m0YxikZfaFuRun98K
+         yl/T74D/N1kemj6hLvl2usJAMZKu0CEZevKGQDEYaVwexhH6AHbhXlRi1YeoqwLoaPAv
+         G5aFhrGzXZy/6LM39akORWCqnpJ86b18LMsTTdTf2TXJXjXv8eHePKBKpruh2hwLu8Ro
+         xYPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=07u9K7qAejnZ1AxQEPtLr06bSZi6WWdia77VeMAOMaQ=;
+        b=USZsaVovCK4bI+Hfc+PG0fjV/4rav5HPsvT+lwn1mbeuDul8t3gSD0JGd28cUcNVva
+         TiZ+YzBFQ8Fo5Km6dedDskqQRVqqnynftAltpO1nFgaRALSMFxEf7yFOVBXURp1g2r0f
+         Pj0NAOaQThy3M+zy4Qq7qOwvu/oblaORCGgVZdiiirYVQfgGACkuE8gpfJ9hVLKZyEap
+         gpkGBQp7aI7QTFiNdNjnMQjF6jc0aafSE4fVBwyoOREqP7PhbZYSfNGwF6dcRtesy/Iz
+         g+vuHoIsmc7nlFPzrdq9CtCstypedYu8NRtlRPPMzMSfv1hlh1jk40XS7muoiFY9EcpB
+         Qghw==
+X-Gm-Message-State: AOAM530cJ6YfuTBmhGyp5VTr5kjZ7r1qZIcYdH6bEpuaRBft5ESH/tPR
+        Wnh15RjOZ+z0jpYIQ2e7tVFp8fEg1yg=
+X-Google-Smtp-Source: ABdhPJxvFyea72ZXOadXN6hiQN2xi1NxMm3ERgg4Kc38UImajV8HVri2OqtZkR8lGNCqQsmQ7AphMQ==
+X-Received: by 2002:a17:90a:a58f:: with SMTP id b15mr17964901pjq.17.1607948914220;
+        Mon, 14 Dec 2020 04:28:34 -0800 (PST)
+Received: from localhost.localdomain ([182.226.226.37])
+        by smtp.googlemail.com with ESMTPSA id i2sm18938458pjd.21.2020.12.14.04.28.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 04:28:33 -0800 (PST)
+From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
+X-Google-Original-From: Bongsu Jeon
+To:     krzk@kernel.org
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
+Subject: [PATCH net-next] MAINTAINERS: Update maintainer for SAMSUNG S3FWRN5 NFC
+Date:   Mon, 14 Dec 2020 21:28:23 +0900
+Message-Id: <20201214122823.2061-1-bongsu.jeon@samsung.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+From: Bongsu Jeon <bongsu.jeon@samsung.com>
 
-please pull the x86/platform drivers pile for v5.11.
+add an email to look after the SAMSUNG NFC driver.
 
-Thx.
-
+Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
 ---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-The following changes since commit 418baf2c28f3473039f2f7377760bd8f6897ae18:
-
-  Linux 5.10-rc5 (2020-11-22 15:36:08 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_platform_for_v5.11
-
-for you to fetch changes up to c9624cb7db1c418cbdc8fd2cde6835f83cd0f8a2:
-
-  x86/platform/uv: Update sysfs documentation (2020-12-07 21:19:20 +0100)
-
-----------------------------------------------------------------
-- Add a new uv_sysfs driver and expose read-only information from UV BIOS
-(Justin Ernst and Mike Travis)
-
-- The usual set of small fixes.
-
-----------------------------------------------------------------
-Dan Carpenter (1):
-      x86/platform/uv: Fix an error code in uv_hubs_init()
-
-Justin Ernst (5):
-      x86/platform/uv: Remove existing /sys/firmware/sgi_uv/ interface
-      x86/platform/uv: Add and export uv_bios_* functions
-      x86/platform/uv: Add new uv_sysfs platform driver
-      x86/platform/uv: Update ABI documentation of /sys/firmware/sgi_uv/
-      x86/platform/uv: Update MAINTAINERS for uv_sysfs driver
-
-Mike Travis (5):
-      x86/platform/uv: Add kernel interfaces for obtaining system info
-      x86/platform/uv: Add sysfs leaves to replace those in procfs
-      x86/platform/uv: Add sysfs hubless leaves
-      x86/platform/uv: Add deprecated messages to /proc info leaves
-      x86/platform/uv: Update sysfs documentation
-
-Zou Wei (1):
-      x86/platform/uv: Make uv_pcibus_kset and uv_hubs_kset static
-
- Documentation/ABI/testing/sysfs-firmware-sgi_uv | 160 +++-
- MAINTAINERS                                     |   6 +
- arch/x86/include/asm/uv/bios.h                  |  51 ++
- arch/x86/include/asm/uv/uv_geo.h                | 103 +++
- arch/x86/kernel/apic/x2apic_uv_x.c              |  23 +-
- arch/x86/platform/uv/Makefile                   |   2 +-
- arch/x86/platform/uv/bios_uv.c                  |  55 ++
- arch/x86/platform/uv/uv_sysfs.c                 |  63 --
- drivers/platform/x86/Kconfig                    |  11 +
- drivers/platform/x86/Makefile                   |   3 +
- drivers/platform/x86/uv_sysfs.c                 | 929 ++++++++++++++++++++++++
- 11 files changed, 1327 insertions(+), 79 deletions(-)
- create mode 100644 arch/x86/include/asm/uv/uv_geo.h
- delete mode 100644 arch/x86/platform/uv/uv_sysfs.c
- create mode 100644 drivers/platform/x86/uv_sysfs.c
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5c1a6ba5ef26..cb1634eb010d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15425,6 +15425,7 @@ F:	include/media/drv-intf/s3c_camif.h
+ SAMSUNG S3FWRN5 NFC DRIVER
+ M:	Krzysztof Kozlowski <krzk@kernel.org>
+ M:	Krzysztof Opasiak <k.opasiak@samsung.com>
++M:	Bongsu Jeon <bongsu.jeon@samsung.com>
+ L:	linux-nfc@lists.01.org (moderated for non-subscribers)
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
