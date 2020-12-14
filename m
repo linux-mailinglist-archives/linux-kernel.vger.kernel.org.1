@@ -2,185 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D302D9CEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD62A2D9CF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:48:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501990AbgLNQqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:46:31 -0500
-Received: from mail-dm6nam11on2047.outbound.protection.outlook.com ([40.107.223.47]:3921
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389013AbgLNQqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:46:22 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=niwaKd9stWM17YFktWdqcAkYwvku7J2OSHywC6Q6g5ktZlN4VgJC51FXfAIhYl6vfdiU+vRFwxAebYOa333OztcPHTW1aKsI7MuHPLbP+T5DHiViajLYA7zBWtirToQyezujPDL006fy3m4Afqdgz9HclhMYcQVXj3JvmWrX2UR1N40Af/Y+0Ihihg8acLBdlqMX1Q0+5awJ95cA2U3DCnWottGFaIcQK1rY9OY9wPATQwhAa0Km8Mq8/k68U+UMfxyXeqaC2Tzj8Vmz6ueAtRqdLl7+2HdVCd9Bxlmpn8FihNDlPv1QsIH9l/1YvlmL7VhUe8iL9Ur4EkQQRW47LA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DYJs4No6CGxwoKq8YRi99aK2jQef9Ma4gF3+9OfzsaY=;
- b=nYYkFqV8Bx3ckazkyrzZNRYh1D6ZYFPKHJUZBzx9k4XfZnZwW96YrkD9bVFTbJyfaUtAAVy0R23ziMBOzPaS8TYIJoNPehi3vg/z43/aoeA4/wR4Gs0v4e8X/XomDV5yrAJdIeSOhlRcQty4R8VAYSyAgCEC3lVwUp58yXSojsG4K9qyWftNAwXL44tPB/1FfNob0LJJxv8DdpYwsn/w2x86Qr1uw9USNopMVRWq87m0P4dQwatX/4sDMbzUs5dUQU6nkxzPOfMAnwEi84zZo2fBwwgLhXLQDZohDQJFmS1aIn2QRZQ6e68WHCfZlpON+oYA/oUgPSWWzRfZB9rhNg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DYJs4No6CGxwoKq8YRi99aK2jQef9Ma4gF3+9OfzsaY=;
- b=KfWdNaE4r8tb5JYcNypsFIkX2Q+ubEHLt+PBtMRCWWDAMuyyFdgsgq9dpwlrYqncT3XMXYmx6ddVIrU1KPUDAN/dF4mCJDRj0L8QL6hLb0ZIkNj1d07XJtiDJ1ht+A3JzTVg0VWQEls81N02z8Pqijyi6yyWyKoOmzsHn8pobuk=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM5PR12MB1834.namprd12.prod.outlook.com (2603:10b6:3:10a::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.12; Mon, 14 Dec 2020 16:45:22 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::d95e:b9d:1d6a:e845]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::d95e:b9d:1d6a:e845%12]) with mapi id 15.20.3654.024; Mon, 14 Dec 2020
- 16:45:22 +0000
-Subject: Re: [PATCH v5 02/34] KVM: SVM: Remove the call to
- sev_platform_status() during setup
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <cover.1607620209.git.thomas.lendacky@amd.com>
- <618380488358b56af558f2682203786f09a49483.1607620209.git.thomas.lendacky@amd.com>
- <a1a912c7-b2f8-561b-c569-d74ff946c9f5@redhat.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <cb08bc7c-5acf-bac3-5c45-1983eda3a1b5@amd.com>
-Date:   Mon, 14 Dec 2020 10:45:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <a1a912c7-b2f8-561b-c569-d74ff946c9f5@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: CH2PR15CA0002.namprd15.prod.outlook.com
- (2603:10b6:610:51::12) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+        id S2502126AbgLNQrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 11:47:19 -0500
+Received: from smtprelay0156.hostedemail.com ([216.40.44.156]:46500 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2502118AbgLNQrS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 11:47:18 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 6CA581730873;
+        Mon, 14 Dec 2020 16:46:34 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3872:3873:4250:4321:5007:6737:7576:10004:10400:10848:11026:11232:11473:11658:11914:12048:12297:12438:12679:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21433:21451:21627:30012:30029:30054:30089:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: look56_4507fd12741c
+X-Filterd-Recvd-Size: 2092
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 14 Dec 2020 16:46:31 +0000 (UTC)
+Message-ID: <ade665cbfa138d1851343576caad84a61e904c46.camel@perches.com>
+Subject: Re: [PATCH v2 1/6] scsi: ufs: Remove stringize operator '#'
+ restriction
+From:   Joe Perches <joe@perches.com>
+To:     Bean Huo <huobean@gmail.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org, rostedt@goodmis.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 14 Dec 2020 08:46:30 -0800
+In-Reply-To: <20201214161502.13440-2-huobean@gmail.com>
+References: <20201214161502.13440-1-huobean@gmail.com>
+         <20201214161502.13440-2-huobean@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.118] (165.204.77.1) by CH2PR15CA0002.namprd15.prod.outlook.com (2603:10b6:610:51::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Mon, 14 Dec 2020 16:45:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 1e758f5c-b9b1-4f4b-655e-08d8a04fa660
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1834:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB18340F8202977A84B49FBFC2ECC70@DM5PR12MB1834.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 83TR4+EPRWeix9n6wPU64oIKqZETDuQX9s/zGhhfGFVQqi0sv+7qsEJsncucZ2mQW7AtGPNyRvu5R9+As8lhvvMdLPCOFK7PeN6KCrwVbPotRiIHi/hnQLp3rnGpRqRbqH6suRA+doDtX5gipWX6XgVQCGGMgx9HNjmcOhOyJrIuj3XSDCFrkPmaXymjX6TUvhyGl6vzehnDq3jafWLWGjhEZX+uKTHXtEaDt5p+OP08K8oZHCP12w7TF191F8TQjKg9ps1yVa+KHaoFxefdv7R9LMLitvXFP5goXDYwquaErxroo+HUQ60wvW4SE5nhwIqwtdhNmNKeAavtHYs2M+shd382aLOZzfu23MfpsmC1iD9Vpe9NQufmyOQJYGsQqvXM5PRO9KJG61y9mQ0Xiq6+N7p0jvpi9UO+CBdQu3y2BxLSSys53qu+JGdATnGJ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(4326008)(83380400001)(6486002)(2906002)(54906003)(16576012)(34490700003)(2616005)(52116002)(186003)(53546011)(31686004)(31696002)(16526019)(956004)(86362001)(508600001)(66946007)(7416002)(26005)(66476007)(66556008)(8936002)(5660300002)(8676002)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WG5WbzJjbFVtUDd3RmwrQ0daT3l0RCtIcTJTdGIyTm03UXpHeEl6ZlQyK0g0?=
- =?utf-8?B?SjEzOGk4YUh6NXc1VE96blFpY1ZMUnJ2Tk1Ha2FmUjY4WllRRVJCYXpiVDBE?=
- =?utf-8?B?d0VPMUpwSitFL1JIWGVlT2hhSlJKL3lJa2thQUFjOEhFMTFYTzA0OTFlbUdm?=
- =?utf-8?B?TGxNNmtMNU1FTmtmb0hkNm02R01UaUJYQzU1cU45VzlRSDhUd3NPVHNxVi9T?=
- =?utf-8?B?K1hDWHJtQWpITThNdnU0TzlkLzVvT2s1Zm15ellqUjFrOWV5eEozWFQyeUZh?=
- =?utf-8?B?WXJTRE1HYXRJUWU4VG9zcHBVN21iMGUrVlQ2NWdJWldSS0s3ZmlJa041YmFH?=
- =?utf-8?B?Wm5LNFhHL2xodVJ4YnhHbXBGYmlsSGxvcGQvd1BBUmZScGNxeWhnTHk0OUEr?=
- =?utf-8?B?ZXlDZldVT0p4cWlQdzdZaFRTaVFIWmExNitrcjdneDRiLyt5RGkrNGtrQ28y?=
- =?utf-8?B?RVpJaVVpTGFXRHlRcG0xekc4Tkk2OFF5cUFBUXE5SWIwcU84L3A0OXNUZWRO?=
- =?utf-8?B?N3VSZ1JhcXJBNkNBRDExc2hnSmkwdDNtcXR5Vmtjc3FLSjVvM1QxcS9KYVpK?=
- =?utf-8?B?cmRSaGJWVUtrNm0rN0pNamo0N08yc09LWE9WSEZkMmpmU3M0VHNuaDhUYisz?=
- =?utf-8?B?UkRSMEs5ZU0vZkVoMDFNSkdNWlFZV255Z1lwNjkxUXp0NzlGRkcvMjZvSUMv?=
- =?utf-8?B?UzI2TmhwR2p3c3lxaDUySUgzbWdFM2d1elF0VEZDTlNBM3FHd3l2Nll3NTMv?=
- =?utf-8?B?SzF1dXl6bFdWWG1mR0FlWU51d2dGeEdqdk9zVkJOUE9ib0tSOUR4UFZiT1pl?=
- =?utf-8?B?anZJQVA3dDdIeHg4bU5RUk5mdEp5WHFZODEwRlNHZDZBSjhzMGpJZWZabTJj?=
- =?utf-8?B?SGhHV2F5eWh3UjlLaGM4RFpLOGt3UmdkaWhVMlkxVVZmV0ZXeEVxYmhLamQ2?=
- =?utf-8?B?UmF0bk55RXhLNFE5b1E2NWl2ODdEdmpNY3JsOWdLMkJEYUlUYndFdHBBdHBh?=
- =?utf-8?B?N3lxYit3N1NTVTJnMk4wVk9sQmxyb2RPN0R6MzF3OTRNZGtDTVNIeEVmM3di?=
- =?utf-8?B?R3F4V0t2RzNSSDFmTVRBbmtPUjVPNmFiaGpGY2UrNE1pVHc1K1VvZE5lL0NP?=
- =?utf-8?B?WEkxMXNGQm1qcEphS0hTeFlWb2ZNODdsMEdqWE1jVEpNNUZ5VHQwWTlZNU8z?=
- =?utf-8?B?a2NzeGJleC85UlZDNmMzcnBiL1ZoZUxOODdzR2FZeTJlZi95ZjhDZ2tWekdD?=
- =?utf-8?B?NUdKZ2pDSmQ0SGRnS21yb1NDM2ZiZWZ2MTI3cTFadHA4eFdoZkdLNTBHZkF0?=
- =?utf-8?Q?S5li1/ydEIE0wxAJHmGUJH6G2gv+hqQrcA?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2020 16:45:22.5541
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e758f5c-b9b1-4f4b-655e-08d8a04fa660
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sICSJg4btAbMx+fLM9ZoVVk42LSJIksW8/qGts4AcOmgwHneMrX4JVVDdGu0i+Dpjkx596rYWi/l8jOUv13i1Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1834
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/14/20 6:29 AM, Paolo Bonzini wrote:
-> On 10/12/20 18:09, Tom Lendacky wrote:
->> From: Tom Lendacky <thomas.lendacky@amd.com>
->>
->> When both KVM support and the CCP driver are built into the kernel instead
->> of as modules, KVM initialization can happen before CCP initialization. As
->> a result, sev_platform_status() will return a failure when it is called
->> from sev_hardware_setup(), when this isn't really an error condition.
->>
->> Since sev_platform_status() doesn't need to be called at this time anyway,
->> remove the invocation from sev_hardware_setup().
->>
->> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
->> ---
->>   arch/x86/kvm/svm/sev.c | 22 +---------------------
->>   1 file changed, 1 insertion(+), 21 deletions(-)
->>
->> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
->> index c0b14106258a..a4ba5476bf42 100644
->> --- a/arch/x86/kvm/svm/sev.c
->> +++ b/arch/x86/kvm/svm/sev.c
->> @@ -1127,9 +1127,6 @@ void sev_vm_destroy(struct kvm *kvm)
->>     int __init sev_hardware_setup(void)
->>   {
->> -    struct sev_user_data_status *status;
->> -    int rc;
->> -
->>       /* Maximum number of encrypted guests supported simultaneously */
->>       max_sev_asid = cpuid_ecx(0x8000001F);
->>   @@ -1148,26 +1145,9 @@ int __init sev_hardware_setup(void)
->>       if (!sev_reclaim_asid_bitmap)
->>           return 1;
->>   -    status = kmalloc(sizeof(*status), GFP_KERNEL);
->> -    if (!status)
->> -        return 1;
->> -
->> -    /*
->> -     * Check SEV platform status.
->> -     *
->> -     * PLATFORM_STATUS can be called in any state, if we failed to query
->> -     * the PLATFORM status then either PSP firmware does not support SEV
->> -     * feature or SEV firmware is dead.
->> -     */
->> -    rc = sev_platform_status(status, NULL);
->> -    if (rc)
->> -        goto err;
->> -
->>       pr_info("SEV supported\n");
->>   -err:
->> -    kfree(status);
->> -    return rc;
->> +    return 0;
->>   }
->>     void sev_hardware_teardown(void)
->>
+On Mon, 2020-12-14 at 17:14 +0100, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
 > 
-> Queued with Cc: stable.
+> Current EM macro definition, we use stringize operator '#', which turns
+> the argument it precedes into a quoted string. Thus requires the symbol
+> of __print_symbolic() should be the string corresponding to the name of
+> the enum.
 > 
-> Note that sev_platform_status now can become static within
-> drivers/crypto/ccp/sev-dev.c.
+> However, we have other cases, the symbol and enum name are not the same,
+> we can redefine EM/EMe, but there will introduce some redundant codes.
+> This patch is to remove this restriction, let others reuse the current
+> EM/EMe definition.
 
-Nice catch. I'll look at doing a follow-on patch to change that.
+I think the other way (adding new definitions for the cases when the
+name and string are different) is less error prone.
 
-Thanks,
-Tom
+> diff --git a/include/trace/events/ufs.h b/include/trace/events/ufs.h
+[]
+> +#define UFS_LINK_STATES						\
+> +	EM(UIC_LINK_OFF_STATE, "UIC_LINK_OFF_STATE")		\
+> +	EM(UIC_LINK_ACTIVE_STATE, "UIC_LINK_ACTIVE_STATE,")	\
 
-> 
-> Paolo
+For instance:
+
+Like here where you added an unnecessary and unwanted comma
+
+
