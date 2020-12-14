@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5294C2DA2FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1EB92DA32C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438576AbgLNWIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 17:08:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441155AbgLNWHm (ORCPT
+        id S2440085AbgLNWQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 17:16:46 -0500
+Received: from smtp-outgoing.laposte.net ([160.92.124.103]:49316 "EHLO
+        smtp-outgoing.laposte.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438938AbgLNWQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 17:07:42 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7433BC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:07:02 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id c12so13081687pfo.10
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:07:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=TbW/QR7klkTL5Q0NcAJZPMi5v/vDDc8pXqRkGTGE/H8=;
-        b=JqxzVARQe1kB450KnuTgatRR/3dUe4nyZj8g63om3QAWRf2a6rSkZLGsdJ7j/Ind1m
-         ZJUK+RVd3La/v520CjE66YNG2Qd8kO12cqb1v8P52qnjK/6qpZOslh2BT6wNKa2ju3od
-         m5noLshWryy7E6Ke885jmxItnKUlrWbg6swQanGe7Bv5F2HI4xylFB3qF1ABSPVBMNbD
-         pHoru2k9dl32/XVfVX+axXmWVowLN19vC07l6esyLa0zFszIrCxAjwxNl2H11kR75yLE
-         qffiBmnZYrAQcuzUCIr+buUH5nRZ5pvrkxd+ZIqUMfzf/qLLMgaP3KFDWyfJZlK+qyq/
-         FEiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=TbW/QR7klkTL5Q0NcAJZPMi5v/vDDc8pXqRkGTGE/H8=;
-        b=fx3gPhgw4yLQ4lAgR3r/bVcEmdvZtW0O01V/mtihyc9HXqE751MGnIqg9AGSoKLhRe
-         zj+7QBl4te83HJQO67wi9b3FSdMzeiPia1dorC0LKoYOLSeF+CL9miRv6xStVOkPOEjC
-         ej5+d0hYbxYmf9/3q1OHlnLmfZpPUzulBcRSa4oi7lwfktD84t73/CQlPg3xouF2DKXU
-         mWAScbtcM3BMfuuS6MP8l/YiQhVwrAQBx08MO1jLfvLVeH7ZSedjJJ7HFzInxFP1moLD
-         uSE5m0jEFNXBYa8boa3CM5ZoJGFoiIqZj5ooG4/TxsbDGmj3+gIiih1IMlD/dvWRas4H
-         UXCg==
-X-Gm-Message-State: AOAM531mYdoLhPoJh58PP2D0u1E70+HwHheLbiSN4V6XiHoukz64iLsH
-        D0C0+HJ30KIYaEDNMjsPDdzZQg==
-X-Google-Smtp-Source: ABdhPJyK37b+5r2+zmLtfHveiF0FNGSji0x0FQhwBesNdi+7CNMVAp2VuBim8Sn8sG5aFt8Wd6LqtQ==
-X-Received: by 2002:a62:a20f:0:b029:18b:70ec:c75b with SMTP id m15-20020a62a20f0000b029018b70ecc75bmr25517080pff.56.1607983621971;
-        Mon, 14 Dec 2020 14:07:01 -0800 (PST)
-Received: from [192.168.1.9] ([171.61.231.84])
-        by smtp.gmail.com with ESMTPSA id 37sm17722184pjz.41.2020.12.14.14.06.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 14:07:01 -0800 (PST)
-Message-ID: <16c4bcb9a1451fe75c63394c027bb9a42b0256a5.camel@rajagiritech.edu.in>
-Subject: Re: [PATCH 5.9 000/105] 5.9.15-rc1 review
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Date:   Tue, 15 Dec 2020 03:36:57 +0530
-In-Reply-To: <20201214172555.280929671@linuxfoundation.org>
-References: <20201214172555.280929671@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-2 
+        Mon, 14 Dec 2020 17:16:23 -0500
+X-mail-filterd: {"version":"1.2.0","queueID":"4CvwYf6pTxz14K0Z","contextId":"5ad60ae5-0adb-4a61-8f43-5548b330c63c"}
+Received: from outgoing-mail.laposte.net (localhost.localdomain [127.0.0.1])
+        by mlpnf0109.laposte.net (SMTP Server) with ESMTP id 4CvwYf6pTxz14K0Z;
+        Mon, 14 Dec 2020 23:10:14 +0100 (CET)
+X-mail-filterd: {"version":"1.2.0","queueID":"4CvwYf5C2zz14K0Y","contextId":"92eebd32-b65c-4692-81e1-11509830ca81"}
+X-lpn-mailing: LEGIT
+X-lpn-spamrating: 36
+X-lpn-spamlevel: not-spam
+X-lpn-spamcause: OK, (-100)(0000)gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgudehlecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfntefrqffuvffgpdfqfgfvpdggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgjfhggtgfgsehtkeertdertdejnecuhfhrohhmpeggihhntggvnhhtucfuthgvhhhlrocuoehvihhntggvnhhtrdhsthgvhhhlvgeslhgrphhoshhtvgdrnhgvtheqnecuggftrfgrthhtvghrnhepleejhfdtjeekvdelhfeiteduheeuveeugedtveejieejvdegkefgheevkeevtdefnecukfhppeekkedruddvuddrudegledrgeelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehhvghloheprhhomhhurghlugdrsggvrhhgvghrihgvpdhinhgvthepkeekrdduvddurddugeelrdegledpmhgrihhlfhhrohhmpehvihhntggvnhhtrdhsthgvhhhlvgeslhgrphhoshhtvgdrnhgvthdprhgtphhtthhopegurghvvghmsegurghvvghmlhhofhhtrdhnvghtpdhrtghpthhtohepkhhusggrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehvihhntggvnhhtrdhsthgvhhhlvgeslhgrphhoshhtvgdrnhgvthdprhgtphhtthhopehjfihisehlihhnuhigrdhisghmrdgtohhmpdhrtghpthhtohepfhhlohhrihgrnhdrfhgrihhnvghllhhisehtvghlvggto
+ hhmihhnthdrvghupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgvthguvghvsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+Received: from romuald.bergerie (unknown [88.121.149.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mlpnf0109.laposte.net (SMTP Server) with ESMTPSA id 4CvwYf5C2zz14K0Y;
+        Mon, 14 Dec 2020 23:10:14 +0100 (CET)
+Received: from radicelle.bergerie (radicelle.bergerie [192.168.124.12])
+        by romuald.bergerie (Postfix) with ESMTPS id 377313DFACBE;
+        Mon, 14 Dec 2020 23:10:14 +0100 (CET)
+Received: from vincent by radicelle.bergerie with local (Exim 4.94)
+        (envelope-from <vincent@radicelle.bergerie>)
+        id 1kow2n-0005F1-V1; Mon, 14 Dec 2020 23:10:13 +0100
+From:   =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Julian Wiedmann <jwi@linux.ibm.com>,
+        =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Florian Fainelli <florian.fainelli@telecomint.eu>
+Subject: [PATCH v2] net: korina: fix return value
+Date:   Mon, 14 Dec 2020 23:09:52 +0100
+Message-Id: <20201214220952.19935-1-vincent.stehle@laposte.net>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201214130832.7bedb230@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20201214130832.7bedb230@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=laposte.net; s=lpn-wlmd; t=1607983816; bh=Eqp7OqU6UYHB3kLsmTmi2wd+ZeXuzYEo6/9CG3irLxg=; h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding; b=rYv/FQ4QQh5J+bShwpNd7RMeqB5RNh5vm4e7dVwnMazfDvTNbnd0UmuqJ2RAY/Px4Q+0nk8O63i4prwNdz2ZmJsx9OTKngZCuqKiLgwnt7GdFhwacqQD80NcRtd/LrhXIZGIFhUuqFeqzy09GgB0kvlWrTbWv7CzWO8yYxwf7GbyEMomAJFBPIUBqrxoG/s1OZzpr+ipBk8kr/IB/dZdQ8AADbycX5Vpt9b4leAahMbedxz3cCnOA+uhwfmye43hCVQR9AleJEkUYPnX9DMx0VA2Jg+x2aFuuOMLzS+li/A3XQkgQ5bJBStKk7VnFATVevBEpD3/HH5mTvQnSeEfMw==;
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-14 at 18:27 +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.9.15 release.
-> There are 105 patches in this series, all will be posted as a
-> response
-> to this one.  If anyone has any issues with these being applied,
-> please
-> let me know.
-> 
-> Responses should be made by Wed, 16 Dec 2020 17:25:32 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.15-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
-> stable-rc.git linux-5.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-hello,
- 
-Compiled and booted  5.9.15-rc1+ . No typical dmesg regression or
-regressions
+The ndo_start_xmit() method must not attempt to free the skb to transmit
+when returning NETDEV_TX_BUSY. Therefore, make sure the
+korina_send_packet() function returns NETDEV_TX_OK when it frees a packet=
+.
 
-Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MAC")
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Vincent Stehl=C3=A9 <vincent.stehle@laposte.net>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Florian Fainelli <florian.fainelli@telecomint.eu>
+---
 
--- 
-software engineer
-rajagiri school of engineering and technology - autonomous
 
+Changes since v1:
+- Keep freeing the packet but return NETDEV_TX_OK, as suggested by Jakub
+
+
+ drivers/net/ethernet/korina.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.=
+c
+index bf48f0ded9c7d..925161959b9ba 100644
+--- a/drivers/net/ethernet/korina.c
++++ b/drivers/net/ethernet/korina.c
+@@ -219,7 +219,7 @@ static int korina_send_packet(struct sk_buff *skb, st=
+ruct net_device *dev)
+ 			dev_kfree_skb_any(skb);
+ 			spin_unlock_irqrestore(&lp->lock, flags);
+=20
+-			return NETDEV_TX_BUSY;
++			return NETDEV_TX_OK;
+ 		}
+ 	}
+=20
+--=20
+2.29.2
 
