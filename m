@@ -2,82 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0252D932E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 07:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C292D9331
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 07:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392079AbgLNGAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 01:00:10 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:43410 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387733AbgLNF77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 00:59:59 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_38l_9ZfFUodAA--.52092S5;
-        Mon, 14 Dec 2020 13:59:04 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        id S2438709AbgLNGCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 01:02:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48906 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2438698AbgLNGCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 01:02:36 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AB231AC10;
+        Mon, 14 Dec 2020 06:01:54 +0000 (UTC)
+Subject: Re: [PATCH -next] md/bcache: convert comma to semicolon
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        kent.overstreet@gmail.com, linux-bcache@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] MIPS: Loongson: Enable Loongson LS7A SPI in loongson3_defconfig
-Date:   Mon, 14 Dec 2020 13:58:54 +0800
-Message-Id: <1607925534-8312-4-git-send-email-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1607925534-8312-1-git-send-email-zhangqing@loongson.cn>
-References: <1607925534-8312-1-git-send-email-zhangqing@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx_38l_9ZfFUodAA--.52092S5
-X-Coremail-Antispam: 1UD129KBjvdXoWrKw4UXFW7tr4UGw4fWr1kAFb_yoW3WFc_Ja
-        y7Kw18WrW8JrWxuayxXw4rWrWDCa4UWFn5CF17tr1fXaya9rnxtFWDAFW7G3W5uasI9rW3
-        ZaykJa429F1xtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbS8YjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
-        IE14v26r1rM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CE
-        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6x
-        kF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280
-        aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzV
-        Aqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S
-        6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8WwCF04k20xvY0x
-        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
-        C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
-        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-        CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07joc_fUUUUU=
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+References: <20201211085222.2762-1-zhengyongjun3@huawei.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <896b0315-2aec-47ce-d281-d231f54de805@suse.de>
+Date:   Mon, 14 Dec 2020 14:01:51 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <20201211085222.2762-1-zhengyongjun3@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is now supported, enable for Loongson systems.
+On 12/11/20 4:52 PM, Zheng Yongjun wrote:
+> Replace a comma between expression statements by a semicolon.
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
----
+Thanks for the catch. Added in my 2nd wave series.
 
-v2:
- - Modify CONFIG_SPI_LOONGSON to CONFIG_SPI_LS7A
+Coly Li
 
-v3:
- - No changes
-
----
- arch/mips/configs/loongson3_defconfig | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
-index 38a817e..28784cb 100644
---- a/arch/mips/configs/loongson3_defconfig
-+++ b/arch/mips/configs/loongson3_defconfig
-@@ -271,6 +271,9 @@ CONFIG_HW_RANDOM=y
- CONFIG_RAW_DRIVER=m
- CONFIG_I2C_CHARDEV=y
- CONFIG_I2C_PIIX4=y
-+CONFIG_SPI=y
-+CONFIG_SPI_MASTER=y
-+CONFIG_SPI_LS7A=y
- CONFIG_GPIO_LOONGSON=y
- CONFIG_SENSORS_LM75=m
- CONFIG_SENSORS_LM93=m
--- 
-2.1.0
+> ---
+>  drivers/md/bcache/sysfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
+> index 554e3afc9b68..00a520c03f41 100644
+> --- a/drivers/md/bcache/sysfs.c
+> +++ b/drivers/md/bcache/sysfs.c
+> @@ -404,7 +404,7 @@ STORE(__cached_dev)
+>  		if (!env)
+>  			return -ENOMEM;
+>  		add_uevent_var(env, "DRIVER=bcache");
+> -		add_uevent_var(env, "CACHED_UUID=%pU", dc->sb.uuid),
+> +		add_uevent_var(env, "CACHED_UUID=%pU", dc->sb.uuid);
+>  		add_uevent_var(env, "CACHED_LABEL=%s", buf);
+>  		kobject_uevent_env(&disk_to_dev(dc->disk.disk)->kobj,
+>  				   KOBJ_CHANGE,
+> 
 
