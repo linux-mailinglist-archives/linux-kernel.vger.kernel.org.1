@@ -2,117 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCF52DA17C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A88B02DA1AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503165AbgLNUZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:25:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502983AbgLNUZh (ORCPT
+        id S2503403AbgLNUfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:35:08 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:58924 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503081AbgLNUeh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:25:37 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4B5C0613D3;
-        Mon, 14 Dec 2020 12:24:57 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvtD64wtSz9s0b;
-        Tue, 15 Dec 2020 07:24:54 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607977495;
-        bh=geJe/dQTScUt1rlFSJVvjotS+qgEY1WuqzHhLRBERnI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AUttmobgOXzU0zVDxipPlDPyymHYSH8FiM+e5AKb5levX3TD6OPAgm+C19yiHKcC1
-         5MISZ4MP0Xe/DxiGVasopArg+RL2TvHkQCLf67KBpI1hYu+5l3B3/5Ee9ZNVdil0bN
-         SbRR03ChRFiwU1BHRFX9OQzcl+E/rfKgWNysBlZxHsWEYN+25vb9XXo3r4tmdvQjMj
-         /GOhnSNTk4Dlr0Uzx+w0sKrI2R6sBuCKzLqGWl/WHiXIl868EyrfCJGxOzk+4xqOEE
-         7qD7btq7eUqESnmu62+3TdeL+tEv8J6uiaxZTN3Biaz2eUS4G3MsUVJDJqewmj5GZW
-         pQ0Dq4OmpnH4Q==
-Date:   Tue, 15 Dec 2020 07:24:53 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Howells <dhowells@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: Re: linux-next: manual merge of the notifications tree with Linus'
- tree
-Message-ID: <20201215072453.3b61bdc9@canb.auug.org.au>
-In-Reply-To: <20201021124733.344e5107@canb.auug.org.au>
-References: <20201021124733.344e5107@canb.auug.org.au>
+        Mon, 14 Dec 2020 15:34:37 -0500
+Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
+ id 7070c570a071b69d; Mon, 14 Dec 2020 21:33:41 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Hans De Goede <hdegoede@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [RFT][PATCH v1 1/3] ACPI: scan: Evaluate _DEP before adding the device
+Date:   Mon, 14 Dec 2020 21:25:23 +0100
+Message-ID: <1841307.UyYFXhZDfv@kreacher>
+In-Reply-To: <1646930.v2jOOB1UEN@kreacher>
+References: <1646930.v2jOOB1UEN@kreacher>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/jtq9dvA+9Kfd8J/YkiGFfeL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/jtq9dvA+9Kfd8J/YkiGFfeL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Hi all,
+Evaluate _DEP before calling acpi_add_single_object() from
+acpi_bus_check_add() and do that only for ACPI_BUS_TYPE_DEVICE
+objects.
 
-On Wed, 21 Oct 2020 12:47:33 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the notifications tree got conflicts in:
->=20
->   arch/alpha/kernel/syscalls/syscall.tbl
->   arch/arm/tools/syscall.tbl
->   arch/arm64/include/asm/unistd32.h
->   arch/ia64/kernel/syscalls/syscall.tbl
->   arch/m68k/kernel/syscalls/syscall.tbl
->   arch/microblaze/kernel/syscalls/syscall.tbl
->   arch/mips/kernel/syscalls/syscall_n32.tbl
->   arch/mips/kernel/syscalls/syscall_n64.tbl
->   arch/mips/kernel/syscalls/syscall_o32.tbl
->   arch/parisc/kernel/syscalls/syscall.tbl
->   arch/powerpc/kernel/syscalls/syscall.tbl
->   arch/s390/kernel/syscalls/syscall.tbl
->   arch/sh/kernel/syscalls/syscall.tbl
->   arch/sparc/kernel/syscalls/syscall.tbl
->   arch/x86/entry/syscalls/syscall_32.tbl
->   arch/x86/entry/syscalls/syscall_64.tbl
->   arch/xtensa/kernel/syscalls/syscall.tbl
->   include/uapi/asm-generic/unistd.h
->=20
-> between commit:
->=20
->   ecb8ac8b1f14 ("mm/madvise: introduce process_madvise() syscall: an exte=
-rnal memory hinting API")
->=20
-> from Linus' tree and commit:
->=20
->   4cd92d064cb0 ("watch_queue: Implement mount topology and attribute chan=
-ge notifications")
->=20
-> from the notifications tree.
+While at it, rename acpi_device_dep_initialize() to
+acpi_scan_check_dep(), fix up a memory allocation statement in
+that function, consistently treat memory allocation failures in
+there as intermittent errors and make some related janitorial
+changes in it.
 
-Just a reminder that I am still getting this conflict.
+This change will help to avoid calling acpi_add_single_object() if
+there are unmet _DEP dependencies in the future, as that may cause
+some control methods, potentially depending on the presence of
+operation regions supplied by other devices, to be evaluated
+prematurely.
 
---=20
-Cheers,
-Stephen Rothwell
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/scan.c |   44 +++++++++++++++++++++++++-------------------
+ 1 file changed, 25 insertions(+), 19 deletions(-)
 
---Sig_/jtq9dvA+9Kfd8J/YkiGFfeL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -1842,32 +1842,30 @@ static void acpi_scan_init_hotplug(struc
+ 	}
+ }
+ 
+-static void acpi_device_dep_initialize(struct acpi_device *adev)
++static u32 acpi_scan_check_dep(acpi_handle handle)
+ {
+-	struct acpi_dep_data *dep;
+ 	struct acpi_handle_list dep_devices;
+ 	acpi_status status;
++	u32 count;
+ 	int i;
+ 
+-	adev->dep_unmet = 0;
++	if (!acpi_has_method(handle, "_DEP"))
++		return 0;
+ 
+-	if (!acpi_has_method(adev->handle, "_DEP"))
+-		return;
+-
+-	status = acpi_evaluate_reference(adev->handle, "_DEP", NULL,
+-					&dep_devices);
++	status = acpi_evaluate_reference(handle, "_DEP", NULL, &dep_devices);
+ 	if (ACPI_FAILURE(status)) {
+-		dev_dbg(&adev->dev, "Failed to evaluate _DEP.\n");
+-		return;
++		acpi_handle_debug(handle, "Failed to evaluate _DEP.\n");
++		return 0;
+ 	}
+ 
+-	for (i = 0; i < dep_devices.count; i++) {
++	for (count = 0, i = 0; i < dep_devices.count; i++) {
+ 		struct acpi_device_info *info;
+-		int skip;
++		struct acpi_dep_data *dep;
++		bool skip;
+ 
+ 		status = acpi_get_object_info(dep_devices.handles[i], &info);
+ 		if (ACPI_FAILURE(status)) {
+-			dev_dbg(&adev->dev, "Error reading _DEP device info\n");
++			acpi_handle_debug(handle, "Error reading _DEP device info\n");
+ 			continue;
+ 		}
+ 
+@@ -1877,26 +1875,30 @@ static void acpi_device_dep_initialize(s
+ 		if (skip)
+ 			continue;
+ 
+-		dep = kzalloc(sizeof(struct acpi_dep_data), GFP_KERNEL);
++		dep = kzalloc(sizeof(*dep), GFP_KERNEL);
+ 		if (!dep)
+-			return;
++			continue;
++
++		count++;
+ 
+ 		dep->supplier = dep_devices.handles[i];
+-		dep->consumer  = adev->handle;
+-		adev->dep_unmet++;
++		dep->consumer = handle;
+ 
+ 		mutex_lock(&acpi_dep_list_lock);
+ 		list_add_tail(&dep->node , &acpi_dep_list);
+ 		mutex_unlock(&acpi_dep_list_lock);
+ 	}
++
++	return count;
+ }
+ 
+ static acpi_status acpi_bus_check_add(acpi_handle handle, u32 lvl_not_used,
+ 				      void *not_used, void **return_value)
+ {
+ 	struct acpi_device *device = NULL;
+-	int type;
++	u32 dep_count = 0;
+ 	unsigned long long sta;
++	int type;
+ 	int result;
+ 
+ 	acpi_bus_get_device(handle, &device);
+@@ -1912,12 +1914,16 @@ static acpi_status acpi_bus_check_add(ac
+ 		return AE_OK;
+ 	}
+ 
++	if (type == ACPI_BUS_TYPE_DEVICE)
++		dep_count = acpi_scan_check_dep(handle);
++
+ 	acpi_add_single_object(&device, handle, type, sta);
+ 	if (!device)
+ 		return AE_CTRL_DEPTH;
+ 
++	device->dep_unmet = dep_count;
++
+ 	acpi_scan_init_hotplug(device);
+-	acpi_device_dep_initialize(device);
+ 
+  out:
+ 	if (!*return_value)
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/XyhUACgkQAVBC80lX
-0GxHqAf9ETA8/9ciUkjrUQ8ndi8rudKmhSezfjxNZzrtGUP22uRZdANAJLHXVpHM
-AU+raGQ5nyOtogtGTcxv2Zis11TRDKajBKyJ2tGjbjyOpljEWo8ujFKUvmd6EAn0
-xKXwh9GO6IwgSpMtPQwX4lFdGB+w+00+zfZ/gwYlTqYOAG3i8tkv1S+i7l+WfX32
-zy9DTUv5bxJn1qaKkqQbSy10EIIGCkLoFFVCImDWI9lhaaf53r9KCqz5so0eX1ll
-dPneAKPfdvyfmA+V8AC7fkVY2na8mIkvOWniDLms91oKUQwAQWnuBk+f++fz5YjX
-CoI7U7L+lnj+EOVQ3GrlszWeANMuXw==
-=efIM
------END PGP SIGNATURE-----
 
---Sig_/jtq9dvA+9Kfd8J/YkiGFfeL--
