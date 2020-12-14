@@ -2,25 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296472D9FDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2952D9FD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502193AbgLNTBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2408903AbgLNTBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 14 Dec 2020 14:01:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46104 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:46084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502219AbgLNRh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2502216AbgLNRh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Dec 2020 12:37:29 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 038/105] phy: usb: Fix incorrect clearing of tca_drv_sel bit in SETUP reg for 7211
-Date:   Mon, 14 Dec 2020 18:28:12 +0100
-Message-Id: <20201214172557.114450633@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Maciej Matuszczyk <maccraft123mc@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 039/105] arm64: dts: rockchip: Remove system-power-controller from pmic on Odroid Go Advance
+Date:   Mon, 14 Dec 2020 18:28:13 +0100
+Message-Id: <20201214172557.162893548@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201214172555.280929671@linuxfoundation.org>
 References: <20201214172555.280929671@linuxfoundation.org>
@@ -32,45 +33,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Cooper <alcooperx@gmail.com>
+From: Maciej Matuszczyk <maccraft123mc@gmail.com>
 
-[ Upstream commit 209c805835b29495cf66cc705b206da8f4a68e6e ]
+[ Upstream commit 01fe332800d0d2f94337b45c1973f4cf28ae6195 ]
 
-The 7211a0 has a tca_drv_sel bit in the USB SETUP register that
-should never be enabled. This feature is only used if there is a
-USB Type-C PHY, and the 7211 does not have one. If the bit is
-enabled, the VBUS signal will never be asserted. In the 7211a0,
-the bit was incorrectly defaulted to on so the driver had to clear
-the bit. In the 7211c0 the state was inverted so the driver should
-no longer clear the bit. This hasn't been a problem because all
-current 7211 boards don't use the VBUS signal, but there are some
-future customer boards that may use it.
+This fixes a poweroff issue when this is supposed to happen
+via PSCI.
 
-Signed-off-by: Al Cooper <alcooperx@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20201002190115.48017-1-alcooperx@gmail.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Maciej Matuszczyk <maccraft123mc@gmail.com>
+Link: https://lore.kernel.org/r/20201023181629.119727-1-maccraft123mc@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c | 5 -----
- 1 file changed, 5 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c b/drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c
-index 456dc4a100c20..e63457e145c71 100644
---- a/drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c
-+++ b/drivers/phy/broadcom/phy-brcm-usb-init-synopsys.c
-@@ -270,11 +270,6 @@ static void usb_init_common_7211b0(struct brcm_usb_init_params *params)
- 	reg |= params->mode << USB_PHY_UTMI_CTL_1_PHY_MODE_SHIFT;
- 	brcm_usb_writel(reg, usb_phy + USB_PHY_UTMI_CTL_1);
- 
--	/* Fix the incorrect default */
--	reg = brcm_usb_readl(ctrl + USB_CTRL_SETUP);
--	reg &= ~USB_CTRL_SETUP_tca_drv_sel_MASK;
--	brcm_usb_writel(reg, ctrl + USB_CTRL_SETUP);
--
- 	usb_init_common(params);
- 
- 	/*
+diff --git a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
+index 35bd6b904b9c7..3376810385193 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
+@@ -243,7 +243,6 @@
+ 		interrupts = <RK_PB2 IRQ_TYPE_LEVEL_LOW>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pmic_int>;
+-		rockchip,system-power-controller;
+ 		wakeup-source;
+ 		#clock-cells = <1>;
+ 		clock-output-names = "rk808-clkout1", "xin32k";
 -- 
 2.27.0
 
