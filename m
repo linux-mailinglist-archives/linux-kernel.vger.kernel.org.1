@@ -2,140 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADAF02DA0D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:51:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4792DA0D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502795AbgLNTts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 14:49:48 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23260 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387981AbgLNTtd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2502782AbgLNTtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 14 Dec 2020 14:49:33 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BEJVISG097680;
-        Mon, 14 Dec 2020 14:48:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=WrThR4FCepceMwyx9/mpU2je7KVchlEszyLDLOp+1XA=;
- b=Fu7byyrRW54tmCDuJuC0zdmcifv2Y+WBM12b8TXsY9hX7aDXjU93+CdotrIkcTJF86Tm
- 9IBChixgs3ls87D1aMfR4EPAP9l7Ta22bqrhthF1WbwcDkzA+SdD1iG+3BOCtP2yXhm3
- yax7xVWtlI4YmCb+cyrFG+NTHz6X9xHOFVWLsD8cSwVOawqHQgwvNJ1PahURcaYZflG4
- p79frf7OoxUT4Tui3TlxyC1QKiBvU9go3UfbPb9fr63fADFxDDKBZhV3RN2jzLAgflU+
- LagO+zCJCP8w+TU5p1s6oeiiHmutZ15WzpnY6vx+f234LwZNBh3jYY1MKKAqUAdI9/sH 2A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35edn1sbpv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 14:48:47 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BEJVLQx098092;
-        Mon, 14 Dec 2020 14:48:47 -0500
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35edn1sbpq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 14:48:47 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BEJkHPB032353;
-        Mon, 14 Dec 2020 19:48:46 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma01dal.us.ibm.com with ESMTP id 35cng8xvqa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 19:48:46 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BEJmjY661407614
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Dec 2020 19:48:45 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9353DAE05F;
-        Mon, 14 Dec 2020 19:48:45 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EF196AE060;
-        Mon, 14 Dec 2020 19:48:44 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.193.150])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 14 Dec 2020 19:48:44 +0000 (GMT)
-Subject: Re: [PATCH v3] s390/vfio-ap: clean up vfio_ap resources when KVM
- pointer invalidated
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org, sashal@kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
-        pbonzini@redhat.com, alex.williamson@redhat.com,
-        pasic@linux.vnet.ibm.com
-References: <20201214165617.28685-1-akrowiak@linux.ibm.com>
- <X9ebwKJSSyVP/M9H@kroah.com>
- <237fe6d3-ebcc-1046-b295-a0154ce1158e@linux.ibm.com>
- <X9fAWD/k9Wbp7Rac@kroah.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <9ac4e4f3-3b59-8bdd-50d6-439fc4c35b9c@linux.ibm.com>
-Date:   Mon, 14 Dec 2020 14:48:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+Received: from ozlabs.org ([203.11.71.1]:58217 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731027AbgLNTtc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 14:49:32 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvsQV0N0Cz9sSC;
+        Tue, 15 Dec 2020 06:48:48 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607975330;
+        bh=/XUJ/f62xB+BtpCeFkBYMW89n9Z307JH8sKXLrbJbGM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DZfXFXs/55hetcedt1lkjHV92lrM+RYzpM0tWfARwjw8wuZP3zbSbYxdlaAf4WEvd
+         pjX3/3+DAOpKsmIxceke7zeVZXX2GvM5+tUsldGv9zeEef6tVcVBZuAVk9kj4pjrW2
+         IpW0tsWuwuVoEeL+QjiuDeVYEAagg+KU3gvN4QvyhOIWLlRtf6iuQl4pVw5C2yUaKS
+         HU3mOotY8WZo5oRx7op7OETgbXAfZEVcxas/jwaESZwVvS63R4aNSg9Z/FyCahffWQ
+         X8HR3J2YEg3c9QATSnJXtHa3TLn8Kds5Ok1HThJeKPFTCMvZGE8wXebUi9Vx8oCvbN
+         SCyjbsuRod5CA==
+Date:   Tue, 15 Dec 2020 06:48:47 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Helge Deller <deller@gmx.de>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the parisc-hd tree with the
+ asm-generic tree
+Message-ID: <20201215064847.3676d9bf@canb.auug.org.au>
+In-Reply-To: <20201102123841.39eb4216@canb.auug.org.au>
+References: <20201102123841.39eb4216@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <X9fAWD/k9Wbp7Rac@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-14_10:2020-12-11,2020-12-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- suspectscore=0 priorityscore=1501 phishscore=0 clxscore=1015 spamscore=0
- mlxlogscore=787 malwarescore=0 lowpriorityscore=0 impostorscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012140125
+Content-Type: multipart/signed; boundary="Sig_/qtK.EFTpCXVkUm_tXdqZ3k7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/qtK.EFTpCXVkUm_tXdqZ3k7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 12/14/20 2:43 PM, Greg KH wrote:
-> On Mon, Dec 14, 2020 at 02:39:17PM -0500, Tony Krowiak wrote:
->>
->> On 12/14/20 12:07 PM, Greg KH wrote:
->>> On Mon, Dec 14, 2020 at 11:56:17AM -0500, Tony Krowiak wrote:
->>>> The vfio_ap device driver registers a group notifier with VFIO when the
->>>> file descriptor for a VFIO mediated device for a KVM guest is opened to
->>>> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
->>>> event). When the KVM pointer is set, the vfio_ap driver takes the
->>>> following actions:
->>>> 1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
->>>>      of the mediated device.
->>>> 2. Calls the kvm_get_kvm() function to increment its reference counter.
->>>> 3. Sets the function pointer to the function that handles interception of
->>>>      the instruction that enables/disables interrupt processing.
->>>> 4. Sets the masks in the KVM guest's CRYCB to pass AP resources through to
->>>>      the guest.
->>>>
->>>> In order to avoid memory leaks, when the notifier is called to receive
->>>> notification that the KVM pointer has been set to NULL, the vfio_ap device
->>>> driver should reverse the actions taken when the KVM pointer was set.
->>>>
->>>> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
->>>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->>>> ---
->>>>    drivers/s390/crypto/vfio_ap_ops.c | 29 ++++++++++++++++++++---------
->>>>    1 file changed, 20 insertions(+), 9 deletions(-)
->>> <formletter>
->>>
->>> This is not the correct way to submit patches for inclusion in the
->>> stable kernel tree.  Please read:
->>>       https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
->>> for how to do this properly.
->>>
->>> </formletter>
->> I read the document on the correct way to submit patches for inclusion in
->> the stable kernel. I apologize for my ignorance, but I don't see the
->> problem. Can you help me out here? Does a patch that fixes a memory leak
->> not qualify or is it something else?
-> You forgot to put "Cc: stable..." in the signed-off-by area.
+On Mon, 2 Nov 2020 12:38:41 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
 >
-> thanks,
+> Today's linux-next merge of the parisc-hd tree got a conflict in:
+>=20
+>   arch/parisc/kernel/time.c
+>=20
+> between commit:
+>=20
+>   686092e7daaa ("parisc: use legacy_timer_tick")
+>=20
+> from the asm-generic tree and commit:
+>=20
+>   3b7ab4a74a2d ("parisc: Switch to clockevent based timers")
+>=20
+> from the parisc-hd tree.
+>=20
+> I fixed it up (I effectively reverted the former commit) and can carry the
+> fix as necessary. This is now fixed as far as linux-next is concerned,
+> but any non trivial conflicts should be mentioned to your upstream
+> maintainer when your tree is submitted for merging.  You may also want
+> to consider cooperating with the maintainer of the conflicting tree to
+> minimise any particularly complex conflicts.
 
-Option 1, I must be blind. thanks
+This is just a reminder that this conflict still exists.
 
->
-> greg k-h
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/qtK.EFTpCXVkUm_tXdqZ3k7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/XwZ8ACgkQAVBC80lX
+0Gwz/wf+Nkz5FSqhuNAExXPlerbEhnCScJloRr+ULcBr+2AEhQMP8G4UQzbOwm1N
+Vdd4IGZYK98SoMMqXtsXSZqRPpeB1+kw5nfbIuoHnw9s0KFQRcIR+pAaBV6SL8b7
+ssP8NwAwYiMGMBI3KtdZhy/9/qt8hgM/1akOoBv72KRZmZ1qvW/FX/zJzRtYqGOg
+k4GNRCzRly+PUdtXn1XvhWaXQHj89v07Rmzlt5oAIA4YeBFiN42fd9/WtEb+zKID
+cgUZ25xxrm+4FCA+nFcv8qA1CxjBR2wIAJH2iwX1yYMudhWYB40/UTCyuP2i+vJP
+M0G8yU+a8ZNMPDX4sobJh1YfcYBGmQ==
+=wrK2
+-----END PGP SIGNATURE-----
+
+--Sig_/qtK.EFTpCXVkUm_tXdqZ3k7--
