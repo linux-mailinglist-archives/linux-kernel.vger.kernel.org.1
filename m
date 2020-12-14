@@ -2,85 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6202D9556
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDC92D9557
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731677AbgLNJdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 04:33:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55828 "EHLO
+        id S1731617AbgLNJdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 04:33:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726876AbgLNJc7 (ORCPT
+        with ESMTP id S1726876AbgLNJdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 04:32:59 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A73CC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 01:32:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YUoipkrrpYhnigWXpgpKxtM4aoanwWNczHgeVzWov4I=; b=HZPzONIdrjODcOlP/tE5pkCK+D
-        UzcL1hrOa9yeBRpou0ey8eMYH2AfpNVHgk50HNm3VyM++4M2zYPtaSW0B3DdEC2kmzNGDyT16+cgM
-        8ViyrOpZNnJY8WHvgcP9LSTGeWwD7u0Mm30NDgJRB908oJh2FAjdNTf+rxaFNID3crCiPzRi37L0/
-        KGv6ctfhLYucXLd33gwcYrHlzfRO10Ri4k2LDwqUXPKvoVftD+RCoW8KgOxmIGtvcuhM77lPhxbUL
-        YuyzTGQGcqoI65W1CUVZJjLhEJ1KSxTXeC9FH7bvQpPG4hMo5cWmWAX1PsEbf2HFNdSZFOUe6WjzL
-        okq87/ag==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kokDA-0005i3-IN; Mon, 14 Dec 2020 09:32:08 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E5C7D3059C6;
-        Mon, 14 Dec 2020 10:32:07 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D74802BA1531B; Mon, 14 Dec 2020 10:32:07 +0100 (CET)
-Date:   Mon, 14 Dec 2020 10:32:07 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        valentin.schneider@arm.com, qais.yousef@arm.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
-        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
-Subject: Re: [RFC PATCH v7] sched/fair: select idle cpu from idle cpumask for
- task wakeup
-Message-ID: <20201214093207.GY3040@hirez.programming.kicks-ass.net>
-References: <20201209062404.175565-1-aubrey.li@linux.intel.com>
- <20201209143510.GO3371@techsingularity.net>
- <3802e27a-56ed-9495-21b9-7c4277065155@linux.intel.com>
- <20201210113441.GS3371@techsingularity.net>
- <31308700-aa28-b1f7-398e-ee76772b6b87@linux.intel.com>
- <20201210125833.GT3371@techsingularity.net>
- <20201211174442.GU3040@hirez.programming.kicks-ass.net>
- <20201211204337.GX3371@techsingularity.net>
- <20201211221905.GV3040@hirez.programming.kicks-ass.net>
- <20201211225002.GY3371@techsingularity.net>
+        Mon, 14 Dec 2020 04:33:25 -0500
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9763BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 01:32:44 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by michel.telenet-ops.be with bizsmtp
+        id 49Yh2400R4C55Sk069YhWD; Mon, 14 Dec 2020 10:32:41 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kokDh-00ATA1-7L; Mon, 14 Dec 2020 10:32:41 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kokDg-003SXO-D3; Mon, 14 Dec 2020 10:32:40 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for 5.11
+Date:   Mon, 14 Dec 2020 10:32:37 +0100
+Message-Id: <20201214093237.824639-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211225002.GY3371@techsingularity.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 10:50:02PM +0000, Mel Gorman wrote:
+	Hi Linus,
 
-> > > The third potential downside is that the SMT sibling is not guaranteed to
-> > > be checked due to SIS_PROP throttling but in the old code, that would have
-> > > been checked by select_idle_smt(). That might result in premature stacking
-> > > of runnable tasks on the same CPU. Similarly, as __select_idle_core may
-> > > find multiple idle candidates, it will not pick the targets SMT sibling
-> > > if it is idle like select_idle_smt would have.
-> > > 
-> > > That said, I am skeptical that select_idle_smt() matters all that often.
-> > 
-> > This, I didn't really believe in it either.
-> > 
-> 
-> Good because I think any benefit from select_idle_smt is so marginal
-> that it should be ignored if the full scan is simpler overall.
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
 
-Perhaps we should start out with a simple patch removing that pass..
-That should show, what, if anything, the effect of it is.
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.11-tag1
+
+for you to fetch changes up to 2ae92e8b9b7eb042ccb7e9fc7ea9431f211a1bd3:
+
+  MAINTAINERS: Update m68k Mac entry (2020-12-07 10:48:16 +0100)
+
+----------------------------------------------------------------
+m68k updates for v5.11
+
+  - Fix WARNING splat in pmac_zilog driver,
+  - Fix ADB input device regression,
+  - Assume maintainership for adb-iop and via-macii,
+  - Minor fixes and improvements,
+  - Defconfig updates.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      m68k: Avoid xchg() warning
+
+Finn Thain (8):
+      m68k: mac: Refactor iop_preinit() and iop_init()
+      m68k: mac: Remove dead code
+      m68k: mac: Remove redundant VIA register writes
+      m68k: mac: Update Kconfig help
+      m68k: Fix WARNING splat in pmac_zilog driver
+      macintosh/adb-iop: Always wait for reply message from IOP
+      macintosh/adb-iop: Send correct poll command
+      MAINTAINERS: Update m68k Mac entry
+
+Geert Uytterhoeven (2):
+      m68k: defconfig: Update defconfigs for v5.10-rc1
+      m68k: defconfig: Enable KUnit tests
+
+Laurent Vivier (1):
+      m68k: Remove unused mach_max_dma_address
+
+Youling Tang (2):
+      m68k: Drop redundant NOTES in link script
+      m68k: Add a missing ELF_DETAILS in link script
+
+ MAINTAINERS                          |  2 ++
+ arch/m68k/Kconfig.machine            |  8 ++----
+ arch/m68k/amiga/config.c             |  8 ------
+ arch/m68k/apollo/config.c            |  1 -
+ arch/m68k/atari/config.c             |  1 -
+ arch/m68k/bvme6000/config.c          |  1 -
+ arch/m68k/configs/amiga_defconfig    |  9 ++++--
+ arch/m68k/configs/apollo_defconfig   |  9 ++++--
+ arch/m68k/configs/atari_defconfig    |  9 ++++--
+ arch/m68k/configs/bvme6000_defconfig |  9 ++++--
+ arch/m68k/configs/hp300_defconfig    |  9 ++++--
+ arch/m68k/configs/mac_defconfig      |  9 ++++--
+ arch/m68k/configs/multi_defconfig    |  9 ++++--
+ arch/m68k/configs/mvme147_defconfig  |  9 ++++--
+ arch/m68k/configs/mvme16x_defconfig  |  9 ++++--
+ arch/m68k/configs/q40_defconfig      |  9 ++++--
+ arch/m68k/configs/sun3_defconfig     |  9 ++++--
+ arch/m68k/configs/sun3x_defconfig    |  9 ++++--
+ arch/m68k/hp300/config.c             |  1 -
+ arch/m68k/include/asm/cmpxchg.h      | 10 +++----
+ arch/m68k/include/asm/machdep.h      |  1 -
+ arch/m68k/kernel/setup_mm.c          |  1 -
+ arch/m68k/kernel/vmlinux-nommu.lds   |  3 +-
+ arch/m68k/kernel/vmlinux-std.lds     |  3 +-
+ arch/m68k/kernel/vmlinux-sun3.lds    |  2 +-
+ arch/m68k/mac/config.c               | 26 ++++++-----------
+ arch/m68k/mac/iop.c                  | 54 ++++++++++++----------------------
+ arch/m68k/mac/via.c                  | 21 --------------
+ arch/m68k/mvme147/config.c           |  1 -
+ arch/m68k/mvme16x/config.c           |  1 -
+ arch/m68k/q40/config.c               |  5 ----
+ arch/m68k/sun3x/config.c             |  2 --
+ drivers/macintosh/adb-iop.c          | 56 ++++++++++++++++++++++++------------
+ drivers/tty/serial/pmac_zilog.c      | 14 +++++----
+ 34 files changed, 171 insertions(+), 159 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
