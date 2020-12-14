@@ -2,187 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB302D955C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A252D955F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731455AbgLNJiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 04:38:14 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17856 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730191AbgLNJiO (ORCPT
+        id S1729416AbgLNJjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 04:39:12 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:45487 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728644AbgLNJip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 04:38:14 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BE9UvE8115948;
-        Mon, 14 Dec 2020 04:36:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=SMGwKNiIjJsSLpFJJvLVdjJnbI5L7cgDo0FDAfmnpRY=;
- b=jDRZ1tcYgvvzlGeDFe/zCdMREHl70xaCrIh5VFZ7sCwZAJWLavud2tRuV8T13CixF6RC
- QTgb02diMePBnFbq8YsUIZV/EbnKBWCx9nje1yepW0AuvQuzyqtWw/riX6iRur2pYp4G
- l+tdZLspQRwKuTg2q2aEvj6ikuzMXxbBZgTm5pEhd1oGeSWJDa1Jz1KaGLDeucakIpxi
- IrcfLMRDR7WTiVbHBrGQvt0K/dDBhYCnDleJ0CXgbDNEq4d173JEYRbiZAkVNH4Q+i5S
- lKaYYAmW27uE8K3e3GCp/zfK6B/YJpElOi69w4angrssbvHUVvoR7l0siMt+dqZM6oHL Lg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35e4fbswce-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 04:36:37 -0500
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BE9VwDl118761;
-        Mon, 14 Dec 2020 04:36:36 -0500
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35e4fbswbw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 04:36:36 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BE9Wxuw002607;
-        Mon, 14 Dec 2020 09:36:34 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma05fra.de.ibm.com with ESMTP id 35cng890sg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 09:36:34 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BE9aVNd29688154
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Dec 2020 09:36:31 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2F07D4C050;
-        Mon, 14 Dec 2020 09:36:31 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 793874C046;
-        Mon, 14 Dec 2020 09:36:29 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.29.158])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 14 Dec 2020 09:36:29 +0000 (GMT)
-Subject: Re: [PATCH v12 00/31] Speculative page faults
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        Chinwen Chang <chinwen.chang@mediatek.com>
-Cc:     Haiyan Song <haiyanx.song@intel.com>, akpm@linux-foundation.org,
-        mhocko@kernel.org, peterz@infradead.org, kirill@shutemov.name,
-        ak@linux.intel.com, dave@stgolabs.net, jack@suse.cz,
-        Matthew Wilcox <willy@infradead.org>,
-        aneesh.kumar@linux.ibm.com, benh@kernel.crashing.org,
-        mpe@ellerman.id.au, paulus@samba.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, hpa@zytor.com,
-        Will Deacon <will.deacon@arm.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        sergey.senozhatsky.work@gmail.com,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        kemi.wang@intel.com, Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Rientjes <rientjes@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Ganesh Mahendran <opensource.ganesh@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Punit Agrawal <punitagrawal@gmail.com>,
-        vinayak menon <vinayakm.list@gmail.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        zhong jiang <zhongjiang@huawei.com>,
-        Balbir Singh <bsingharora@gmail.com>, sj38.park@gmail.com,
-        Michel Lespinasse <walken@google.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        haren@linux.vnet.ibm.com, npiggin@gmail.com,
-        paulmck@linux.vnet.ibm.com, Tim Chen <tim.c.chen@linux.intel.com>,
-        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
-        miles.chen@mediatek.com
-References: <20190416134522.17540-1-ldufour@linux.ibm.com>
- <20190606065129.d5s3534p23twksgp@haiyan.sh.intel.com>
- <3d3cefa2-0ebb-e86d-b060-7ba67c48a59f@linux.ibm.com>
- <1c412ebe-c213-ee67-d261-c70ddcd34b79@linux.ibm.com>
- <20190620081945.hwj6ruqddefnxg6z@haiyan.sh.intel.com>
- <1594027500.30360.32.camel@mtkswgap22>
- <490c0811-50cd-0802-2cbc-9c031ef309f6@linux.ibm.com>
- <1594099897.30360.58.camel@mtkswgap22> <X9bIDHZbe4MB+BAg@google.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <b256e5ed-0d4c-4baf-16a6-f32f122e344f@linux.ibm.com>
-Date:   Mon, 14 Dec 2020 10:36:29 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
+        Mon, 14 Dec 2020 04:38:45 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 63B17580392;
+        Mon, 14 Dec 2020 04:37:31 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 14 Dec 2020 04:37:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=HWHAg7xpE7CitXLNsFfZMevT63D
+        F9AXAXnEVExpoqhQ=; b=R+UJ4OEqqfYuz0cFPUVKj+CReQjIpmHFv4DcBgsAOUP
+        KpthKRYwqiv6+PruBC8xlOYr0J9sryjeO/nHWjKuUcm67yCu+bkPQeKTgIArT52I
+        lXVSECorzWInoAtEIAukQGnP1fiT1Wq/UhP750uyJ++pMxzOEb2cACEwltjq5322
+        LbR2trlqWuZ33p4E6KRAYanFc3VKEwq/sf9GgASY+V2R8caldcniktciFX+Lpb1B
+        a2i2HqyuG26lay5wPLZyDpf83m3cNlWEhFDUBmADy9oegMu827y9Lpf9qqMjtBkr
+        fcFsrVZAhLqXKdkQrWFRao9Gja/LRUvaynXwWeEeNfQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=HWHAg7
+        xpE7CitXLNsFfZMevT63DF9AXAXnEVExpoqhQ=; b=IGEyRPcmDONLzmRhmwptS1
+        7sBVDSiuxDUzEG2s7jW8yFc5nd2U3qxWM+5tWYL5F7Hl3SxrxYvL7K9YZKMbByV2
+        +/M3CY5mUxzCu8mi+d81udonMXxrQRxIK+CygYRn/k0Ke+SQUWKbtKWSQaNvLJgb
+        dgJnerJYDWP/3grTln95J4RrOCCKHK9P/WjRCYqPmVbzk6EJf0ECoEmob3dN7ms0
+        PReBCXW2V4lvrWn94f8bs0+z5w7ZNVK7n20sbgRfSSb9XVlbXKp9Ci/bqB+ipUMv
+        vI0xatn6HUxHjpCPHv7Em2kq2KihsreYGbrl73pkTW5rfO5cbuQpH0uEFrGFffEQ
+        ==
+X-ME-Sender: <xms:WjLXXyupwYT0K6SqrRKhshL7K5qqU-Zpb_usAZHw-L3rzoVkDzIx3g>
+    <xme:WjLXX3fFCwrRxBnfy2yEGDGuqP-9qkS5CsA-v7-AIOFlvPimOlrSwdtEI0nIjlAk3
+    HISbFiw8QcYBNzmRf0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgtdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:WjLXX9xVgA1BTQL8ANNSPQRPV8-URZ_26_17mh76-T6xeWcNu4QGrw>
+    <xmx:WjLXX9Oie0B4ft4zETPpbHCrIXh5zU-KLLOs7RqcbAZKwmFU0zyskA>
+    <xmx:WjLXXy-qtdmQrV_r0qbZXbNtW66eVzXzFWzXw-9Bj8O3CYcTdb2zxQ>
+    <xmx:WzLXX1UewJcoqevkxdCThp0_uvdOr8a6L0k66A4vCrefZM-Ax9tBXg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C7D6524005D;
+        Mon, 14 Dec 2020 04:37:29 -0500 (EST)
+Date:   Mon, 14 Dec 2020 10:37:28 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Icenowy Zheng <icenowy@aosc.xyz>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v2 02/21] dt-bindings: pinctrl: Add Allwinner H616
+ compatible strings
+Message-ID: <20201214093728.ehd2362jzclbxwp5@gilmour>
+References: <20201211011934.6171-1-andre.przywara@arm.com>
+ <20201211011934.6171-3-andre.przywara@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <X9bIDHZbe4MB+BAg@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-14_04:2020-12-11,2020-12-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- clxscore=1011 malwarescore=0 suspectscore=0 adultscore=0 mlxlogscore=999
- impostorscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012140067
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="teps3mzqehr2ukhi"
+Content-Disposition: inline
+In-Reply-To: <20201211011934.6171-3-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 14/12/2020 à 03:03, Joel Fernandes a écrit :
-> On Tue, Jul 07, 2020 at 01:31:37PM +0800, Chinwen Chang wrote:
-> [..]
->>>> Hi Laurent,
->>>>
->>>> We merged SPF v11 and some patches from v12 into our platforms. After
->>>> several experiments, we observed SPF has obvious improvements on the
->>>> launch time of applications, especially for those high-TLP ones,
->>>>
->>>> # launch time of applications(s):
->>>>
->>>> package           version      w/ SPF      w/o SPF      improve(%)
->>>> ------------------------------------------------------------------
->>>> Baidu maps        10.13.3      0.887       0.98         9.49
->>>> Taobao            8.4.0.35     1.227       1.293        5.10
->>>> Meituan           9.12.401     1.107       1.543        28.26
->>>> WeChat            7.0.3        2.353       2.68         12.20
->>>> Honor of Kings    1.43.1.6     6.63        6.713        1.24
->>>
->>> That's great news, thanks for reporting this!
->>>
->>>>
->>>> By the way, we have verified our platforms with those patches and
->>>> achieved the goal of mass production.
->>>
->>> Another good news!
->>> For my information, what is your targeted hardware?
->>>
->>> Cheers,
->>> Laurent.
->>
->> Hi Laurent,
->>
->> Our targeted hardware belongs to ARM64 multi-core series.
-> 
-> Hello!
-> 
-> I was trying to develop an intuition about why does SPF give improvement for
-> you on small CPU systems. This is just a high-level theory but:
-> 
-> 1. Assume the improvement is because of elimination of "blocking" on
-> mmap_sem.
-> Could it be that the mmap_sem is acquired in write-mode unnecessarily in some
-> places, thus causing blocking on mmap_sem in other paths? If so, is it
-> feasible to convert such usages to acquiring them in read-mode?
 
-That's correct, and the goal of this series is to try not holding the mmap_sem 
-in read mode during page fault processing.
+--teps3mzqehr2ukhi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Converting mmap_sem holder from write to read mode is not so easy and that work 
-as already been done in some places. If you think there are areas where this 
-could be done, you're welcome to send patches fixing that.
+On Fri, Dec 11, 2020 at 01:19:15AM +0000, Andre Przywara wrote:
+> A new SoC, a new compatible string.
+> Also we were too miserly with just allowing seven interrupt banks.
+>=20
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> ---
+>  .../pinctrl/allwinner,sun4i-a10-pinctrl.yaml   | 18 ++++++++++++++++--
+>  1 file changed, 16 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a1=
+0-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-=
+a10-pinctrl.yaml
+> index 5240487dfe50..292b05d9ed08 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinct=
+rl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinct=
+rl.yaml
+> @@ -53,6 +53,8 @@ properties:
+>        - allwinner,sun50i-h5-pinctrl
+>        - allwinner,sun50i-h6-pinctrl
+>        - allwinner,sun50i-h6-r-pinctrl
+> +      - allwinner,sun50i-h616-pinctrl
+> +      - allwinner,sun50i-h616-r-pinctrl
+>        - allwinner,suniv-f1c100s-pinctrl
+>        - nextthing,gr8-pinctrl
+> =20
+> @@ -61,7 +63,7 @@ properties:
+> =20
+>    interrupts:
+>      minItems: 1
+> -    maxItems: 7
+> +    maxItems: 8
+>      description:
+>        One interrupt per external interrupt bank supported on the
+>        controller, sorted by bank number ascending order.
+> @@ -91,7 +93,7 @@ properties:
+>        bank found in the controller
+>      $ref: /schemas/types.yaml#/definitions/uint32-array
+>      minItems: 1
+> -    maxItems: 5
+> +    maxItems: 8
+> =20
+>  patternProperties:
+>    # It's pretty scary, but the basic idea is that:
+> @@ -145,6 +147,18 @@ allOf:
+>    # boards are defining it at the moment so it would generate a lot of
+>    # warnings.
+> =20
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - allwinner,sun50i-h616-pinctrl
+> +
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          minItems: 8
+> +          maxItems: 8
+> +
 
-> 2. Assume the improvement is because of lesser read-side contention on
-> mmap_sem.
-> On small CPU systems, I would not expect reducing cache-line bouncing to give
-> such a dramatic improvement in performance as you are seeing.
+You don't need to have both if they are equals, and in this particular
+case we already check that the maximum is 8 so there's no need to repeat
+that check here.
 
-I don't think cache line bouncing reduction is the main sourcec of performance 
-improvement, I would rather think this is the lower part here.
-I guess this is mainly because during loading time a lot of page fault is 
-occuring and thus SPF is reducing the contention on the mmap_sem.
+Maxime
 
-> Thanks for any insight on this!
-> 
-> - Joel
-> 
+--teps3mzqehr2ukhi
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9cyWAAKCRDj7w1vZxhR
+xYfnAQDBD2pe+FNR4IA9GRNzIHQdPJoicvUpXdOkIZ3Vg4PxnwEAwDkKO+5X8qIm
+0YBiAOU4IfGNDdKT2j1xV9fMEDkLqwk=
+=T4BT
+-----END PGP SIGNATURE-----
+
+--teps3mzqehr2ukhi--
