@@ -2,154 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3AD32D9CE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:48:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5B72D9CE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501911AbgLNQoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:44:03 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:58975 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2440301AbgLNQnd (ORCPT
+        id S2440228AbgLNQny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 11:43:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440304AbgLNQne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:43:33 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 72FEF3FA;
-        Mon, 14 Dec 2020 11:42:45 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 14 Dec 2020 11:42:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=+Z0W6DSS/5RY5S9CO+WB5sz6dtt
-        PRA/z0CeH3Ghi4oE=; b=q1yOCS+HteWDw0h4gmyoV76fzY/g8o/rkhFqVIjWaEF
-        SOXCSHMcqZzBrPBAF2/JK4g8qmS5CMPXo8gP72XbvgbFeh8UggyyM9XUECguf+MQ
-        +CRRDLW57S1N3wqnHtAhnwdXlSEPH5BkVOQl+xt39G8ASNt0dmk2C1DvsKmp2NYX
-        0XvwMytaOAwIM2/atZpIsP4JiaNZWwR6+eaz2SBwREol/fHilnU1EZvAq5yeHvV3
-        er6NvWGVCbCrrTQ0bcVFKtJqwhU3SDPyA8Nmj7M1PeyLosarXD6lMfqIhv94P0ia
-        Mj1H+AsfUFWNvuUyn6w180fye4KV87bS5ix0EhGQiMA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=+Z0W6D
-        SS/5RY5S9CO+WB5sz6dttPRA/z0CeH3Ghi4oE=; b=Dk0es85cfh9cD9DPwtv13e
-        Zi6iB5LoBCZi9qo3FPKv57rE9VLiVZG+cHHAWGLoKuZR/QPInGIov9DwcGq5Y+a4
-        eSPVT9r445nU3GpCoHi2xiNwVsh6doFBfdrL96Brb14f4tXMjWlvg+M4/rDm9N26
-        bfQs2D+UZN4pZxExDNaNRrQWxqD2KE3vtXdaW0/dXPgaUMufq7PHh1qCRNNPd4GB
-        OIoTGBUmg3T8jwWJJRw1t76QmS9DgmBagyjvz4XBt3UhKClxKR8VJ+L5g5IinTlP
-        EcwaD73IZsJ4JBzGhPsMMvzjZKTvHWYBfO4aBXAtznE1W4HGycwaPHNnSQrlg7iA
-        ==
-X-ME-Sender: <xms:A5bXX40Oiq0pxpNMl6NGxS35hIGV0lAOGVerfrdIKVAiwTFPzs58HQ>
-    <xme:A5bXXyLbPysGJ8gQPjL854JffhMW_kIv6Ihh6IwY3GLsLapH4-5IefJPyCkzx-uvs
-    a0Bh0ZA_XkxC_Ojm00>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgleefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:BJbXX3GX9dvfW_BNeIga-imAy6es3d_o1H6FuCRbCKnKqAr-11F8BQ>
-    <xmx:BJbXX-UetlxfR69dTvHg5E_2z6NxNxde8wAp0rdS01kz3QKQ4ijk_Q>
-    <xmx:BJbXX_xzp1Ki9UCvoD5yW4k8vBXx-APhqyImY8MDGGnxjSHv1zhkGw>
-    <xmx:BZbXX8eD5X5DfWsz4FXb9lIpqLYvv4DsVgZCtY9tTd9Cp4_1fvDBRg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C6D1124005D;
-        Mon, 14 Dec 2020 11:42:43 -0500 (EST)
-Date:   Mon, 14 Dec 2020 17:42:42 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Icenowy Zheng <icenowy@aosc.io>
-Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org
-Subject: Re: [RFC PATCH 05/12] pinctrl: sunxi: add pinctrl driver for
- V831/V833
-Message-ID: <20201214164242.aevn5wghn26e74sq@gilmour>
-References: <20201212040157.3639864-1-icenowy@aosc.io>
- <20201212040430.3640418-2-icenowy@aosc.io>
- <20201214142118.bxdzu7z7cdomhgy7@gilmour>
- <5C8F8115-4DE6-4000-84DF-8D3BE2574713@aosc.io>
+        Mon, 14 Dec 2020 11:43:34 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3954C0617A7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:42:52 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id b18so16342419ots.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:42:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IDItWI1H2zdgCBJ7qsVj/mCH0/hwotw5iRObk/6BRmY=;
+        b=My+W/dX9eBu8xcYiKOkUoLAlw3/6Qk01Ygt3/jXQ8PcrRurADrJmnUseiDYLXNLlAM
+         fxno7RXRJ+mTkIbtUew8jGSJvqhMKoUaNEpFrGE/G832pxltTkqSDHZ39wYiSTGeRBm/
+         3RX3qHplnrro0XaY8EMXsb4cHNl/hb5UAO8m7tlkNV7oJSDM4yd44iCr0G3z6U2/xRf+
+         q5nVpytP6OXc7o/fD4NjymjF0vV6PAab478J50mzT+utp7t72FjyEemoooCnzHMCf6nA
+         YdoWRjgQYOXYhaNAUYKoEy+foitkmUyrCALH/2bQE03pzFtdQzZ7pi0d/DAqEkLzzqxN
+         kZsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IDItWI1H2zdgCBJ7qsVj/mCH0/hwotw5iRObk/6BRmY=;
+        b=Xv4ezTYFp3U9K7tGO6n2Inqn7v4ycEPD1u1JgPbuI60Ydk5zmv3sliowPiGyZtheEy
+         X+blEFs+QKeUZApUFXXyH3utkR7LjpRwPjcC5gxHFyd31xGQqhsRjV1S4v7kOCdq9yuf
+         rFW9697PQ05SOw4052Yx1MQWmAZW+1LB9g0sihgTqlD9feJIuzTkZ7MiB3DD5m2ATKAX
+         VYIadaEaCv7vDwDyFzYAZ8CtoYMZWjH1Mxh/wnU9DUWz/WRqFSxzxOdkXcIXGkA7vkJh
+         HWYRxlQSK5FWPUoTYlS3rkkABK+GMDzSTaaKYTOp8c08GP9YNQZMex6LsM4WB/vFVl26
+         bcTA==
+X-Gm-Message-State: AOAM53279Xd7sKHawMb9kmxOOyslNtZmFBIwBCLgzmnwU6rZRRcvKDBP
+        Vsx9uyD02QYWdt0QlN1kKWiStA==
+X-Google-Smtp-Source: ABdhPJxMIWMsvyGFX+dDibExUl/E6x14Cs8oKnJCYdgnOLdiI5EZfYeTGh9q+cw1YUYGAA5q4utOvw==
+X-Received: by 2002:a05:6830:1482:: with SMTP id s2mr20405867otq.296.1607964172184;
+        Mon, 14 Dec 2020 08:42:52 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w21sm3963794ooj.32.2020.12.14.08.42.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 08:42:51 -0800 (PST)
+Date:   Mon, 14 Dec 2020 10:42:49 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Taniya Das <tdas@codeaurora.org>, vbadigan@codeaurora.org,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] mmc: sdhci-msm: Actually set the actual clock
+Message-ID: <X9eWCf3KNxGpvtYO@builder.lan>
+References: <20201211091150.v4.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
+ <20201211091150.v4.2.I7564620993acd4baa63fa0e3925ca879a86d3ee3@changeid>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lryc4p36xq4m6xdc"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5C8F8115-4DE6-4000-84DF-8D3BE2574713@aosc.io>
+In-Reply-To: <20201211091150.v4.2.I7564620993acd4baa63fa0e3925ca879a86d3ee3@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri 11 Dec 11:12 CST 2020, Douglas Anderson wrote:
 
---lryc4p36xq4m6xdc
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> The MSM SDHCI driver always set the "actual_clock" field to 0.  It had
+> a comment about it not being needed because we weren't using the
+> standard SDHCI divider mechanism and we'd just fallback to
+> "host->clock".  However, it's still better to provide the actual
+> clock.  Why?
+> 
+> 1. It will make timeout calculations slightly better.  On one system I
+>    have, the eMMC requets 200 MHz (for HS400-ES) but actually gets 192
+>    MHz.  These are close, but why not get the more accurate one.
+> 
+> 2. If things are seriously off in the clock driver and it's missing
+>    rates or picking the wrong rate (maybe it's rounding up instead of
+>    down), this will make it much more obvious what's going on.
+> 
+> NOTE: we have to be a little careful here because the "actual_clock"
+> field shouldn't include the multiplier that sdhci-msm needs
+> internally.
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-On Mon, Dec 14, 2020 at 11:19:48PM +0800, Icenowy Zheng wrote:
->=20
->=20
-> =E4=BA=8E 2020=E5=B9=B412=E6=9C=8814=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=
-=8810:21:18, Maxime Ripard <maxime@cerno.tech> =E5=86=99=E5=88=B0:
-> >On Sat, Dec 12, 2020 at 12:04:23PM +0800, Icenowy Zheng wrote:
-> >> V831/V833 are new chips from Allwinner. They're the same die with
-> >> different package.
-> >>=20
-> >> Add a pinctrl driver for them.
-> >>=20
-> >> The difference between V831/V833 pinctrl is implemented based on the
-> >> user manual.
-> >>=20
-> >> Cc: Linus Walleij <linus.walleij@linaro.org>
-> >> Cc: linux-gpio@vger.kernel.org
-> >> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-> >> ---
-> >>  drivers/pinctrl/sunxi/Kconfig              |   5 +
-> >>  drivers/pinctrl/sunxi/Makefile             |   1 +
-> >>  drivers/pinctrl/sunxi/pinctrl-sun8i-v83x.c | 743
-> >+++++++++++++++++++++
-> >>  drivers/pinctrl/sunxi/pinctrl-sunxi.h      |   2 +
-> >>  4 files changed, 751 insertions(+)
-> >>  create mode 100644 drivers/pinctrl/sunxi/pinctrl-sun8i-v83x.c
-> >>=20
-> >> diff --git a/drivers/pinctrl/sunxi/Kconfig
-> >b/drivers/pinctrl/sunxi/Kconfig
-> >> index 593293584ecc..fc13335a3eda 100644
-> >> --- a/drivers/pinctrl/sunxi/Kconfig
-> >> +++ b/drivers/pinctrl/sunxi/Kconfig
-> >> @@ -73,6 +73,11 @@ config PINCTRL_SUN8I_V3S
-> >>  	default MACH_SUN8I
-> >>  	select PINCTRL_SUNXI
-> >> =20
-> >> +config PINCTRL_SUN8I_V83X
-> >> +	bool "Support for the Allwinner V831/V833 PIO"
-> >> +	default MACH_SUN8I
-> >> +	select PINCTRL_SUNXI
-> >> +
-> >
-> >We're not using the wildcard much, and I'd rather be consistent with
-> >the
-> >name / Kconfig option scheme used for the clock driver (and the rest of
-> >the SoCs in a similar situation)
->=20
-> Well, call everything V831, or call everything V833, or call things usabl=
-e=20
-> on V831 V831 and things only available to V833 V833?
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-It would feel more natural to have everything called v831, with things
-v833-specific obviously called v833
+Regards,
+Bjorn
 
-Maxime
-
---lryc4p36xq4m6xdc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9eWAgAKCRDj7w1vZxhR
-xe/dAQDpgTTCJbOrDiCeLVgRzVrqTjXtVMYwgo1nT5k8wHiLHAD/S/zXMmQVxRhq
-wXN7VkZ5kBNAAygKElNawmYb1GA6LA4=
-=F/ni
------END PGP SIGNATURE-----
-
---lryc4p36xq4m6xdc--
+> ---
+> 
+> Changes in v4:
+> - ("mmc: sdhci-msm: Actually set the actual clock") new for v4.
+> 
+>  drivers/mmc/host/sdhci-msm.c | 32 ++++++++++++++------------------
+>  1 file changed, 14 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+> index 50beb407dbe9..08a3960001ad 100644
+> --- a/drivers/mmc/host/sdhci-msm.c
+> +++ b/drivers/mmc/host/sdhci-msm.c
+> @@ -328,7 +328,7 @@ static void sdhci_msm_v5_variant_writel_relaxed(u32 val,
+>  	writel_relaxed(val, host->ioaddr + offset);
+>  }
+>  
+> -static unsigned int msm_get_clock_rate_for_bus_mode(struct sdhci_host *host,
+> +static unsigned int msm_get_clock_mult_for_bus_mode(struct sdhci_host *host,
+>  						    unsigned int clock)
+>  {
+>  	struct mmc_ios ios = host->mmc->ios;
+> @@ -342,8 +342,8 @@ static unsigned int msm_get_clock_rate_for_bus_mode(struct sdhci_host *host,
+>  	    ios.timing == MMC_TIMING_MMC_DDR52 ||
+>  	    ios.timing == MMC_TIMING_MMC_HS400 ||
+>  	    host->flags & SDHCI_HS400_TUNING)
+> -		clock *= 2;
+> -	return clock;
+> +		return 2;
+> +	return 1;
+>  }
+>  
+>  static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
+> @@ -354,14 +354,16 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
+>  	struct mmc_ios curr_ios = host->mmc->ios;
+>  	struct clk *core_clk = msm_host->bulk_clks[0].clk;
+>  	unsigned long achieved_rate;
+> +	unsigned int desired_rate;
+> +	unsigned int mult;
+>  	int rc;
+>  
+> -	clock = msm_get_clock_rate_for_bus_mode(host, clock);
+> -	rc = dev_pm_opp_set_rate(mmc_dev(host->mmc), clock);
+> +	mult = msm_get_clock_mult_for_bus_mode(host, clock);
+> +	desired_rate = clock * mult;
+> +	rc = dev_pm_opp_set_rate(mmc_dev(host->mmc), desired_rate);
+>  	if (rc) {
+>  		pr_err("%s: Failed to set clock at rate %u at timing %d\n",
+> -		       mmc_hostname(host->mmc), clock,
+> -		       curr_ios.timing);
+> +		       mmc_hostname(host->mmc), desired_rate, curr_ios.timing);
+>  		return;
+>  	}
+>  
+> @@ -371,11 +373,12 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
+>  	 * encounter it.
+>  	 */
+>  	achieved_rate = clk_get_rate(core_clk);
+> -	if (achieved_rate > clock)
+> +	if (achieved_rate > desired_rate)
+>  		pr_warn("%s: Card appears overclocked; req %u Hz, actual %lu Hz\n",
+> -			mmc_hostname(host->mmc), clock, achieved_rate);
+> +			mmc_hostname(host->mmc), desired_rate, achieved_rate);
+> +	host->mmc->actual_clock = achieved_rate / mult;
+>  
+> -	msm_host->clk_rate = clock;
+> +	msm_host->clk_rate = desired_rate;
+>  	pr_debug("%s: Setting clock at rate %lu at timing %d\n",
+>  		 mmc_hostname(host->mmc), achieved_rate, curr_ios.timing);
+>  }
+> @@ -1756,13 +1759,6 @@ static unsigned int sdhci_msm_get_min_clock(struct sdhci_host *host)
+>  static void __sdhci_msm_set_clock(struct sdhci_host *host, unsigned int clock)
+>  {
+>  	u16 clk;
+> -	/*
+> -	 * Keep actual_clock as zero -
+> -	 * - since there is no divider used so no need of having actual_clock.
+> -	 * - MSM controller uses SDCLK for data timeout calculation. If
+> -	 *   actual_clock is zero, host->clock is taken for calculation.
+> -	 */
+> -	host->mmc->actual_clock = 0;
+>  
+>  	sdhci_writew(host, 0, SDHCI_CLOCK_CONTROL);
+>  
+> @@ -1785,7 +1781,7 @@ static void sdhci_msm_set_clock(struct sdhci_host *host, unsigned int clock)
+>  	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
+>  
+>  	if (!clock) {
+> -		msm_host->clk_rate = clock;
+> +		host->mmc->actual_clock = msm_host->clk_rate = 0;
+>  		goto out;
+>  	}
+>  
+> -- 
+> 2.29.2.576.ga3fc446d84-goog
+> 
