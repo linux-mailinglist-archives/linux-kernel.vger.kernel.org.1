@@ -2,233 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E452DA369
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA782DA36A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408748AbgLNW3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 17:29:20 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:43930 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390134AbgLNW3J (ORCPT
+        id S2408793AbgLNWaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 17:30:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390134AbgLNW3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 17:29:09 -0500
-Received: from [IPv6:2a00:5f00:102:0:a0b6:46ff:fefa:49e7] (unknown [IPv6:2a00:5f00:102:0:a0b6:46ff:fefa:49e7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: gtucker)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6DA3E1F4503D;
-        Mon, 14 Dec 2020 22:28:23 +0000 (GMT)
-Subject: Re: linusw/devel bisection:
- baseline.bootrr.mediatek-mt8173-pinctrl-probed on mt8173-elm-hana
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-References: <5fd76cf2.1c69fb81.6f19b.b16a@mx.google.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Johan Hovold <johan@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        linux-mediatek@lists.infradead.org
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <483b08f2-09c3-e753-d2ce-4e34fee627f3@collabora.com>
-Date:   Mon, 14 Dec 2020 22:28:19 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Mon, 14 Dec 2020 17:29:39 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BCDC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:28:59 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id w3so17412838otp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:28:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lQJ31nxgRFNp8EZMZx7FpPO6Zey0SIdb/j3Aj9RQw50=;
+        b=k5EFIvrMkJbEa+nK4q3JlJtULb4oIuWXZdnkEt4LnpFVI+TxG2Jnfz0fPBbLKC5eu9
+         6RbYVvc6lMGoLbEJi9s8qKo+dXDFtWvsS/B25mqkuJC9hvnLqxZZbjirD+PJznv/f9Ve
+         GIlFqFYORvcO4RSSbWHaHryZm/j4P+dYbBzeB8D7rvtGAV2pEWnrKVwG4gAwbPR9cahs
+         54Jw5pZi/XPWQH/nbj9N5wVXCOk0mdQLMtPP/vc93QpVAZS+bM3lisrJrD/RukYnhOyJ
+         yFR6Ms38ryp/uevoKuiskLbkORJZfXnHCSyFGuoc21ippsVhFurKa0cE3IBd7HaiPMBP
+         zSug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lQJ31nxgRFNp8EZMZx7FpPO6Zey0SIdb/j3Aj9RQw50=;
+        b=pI3G3+eFGttUQH7DEer7wPUVTiJaPonI1sXp3e1D3x4xo2c6HMT7qhyOEP1oGCP8no
+         8dt8ycCROJhsVnVg6d2Xqgap7CQWeXECA/JZ+V+tRb3zkkI5I9ZsY/1zQ8cm5lU2LHsb
+         2vSnwEdcIsPzvI8SE+WNmJzEK2upjQkBmM9OW6nmxo8AenhLHk2wse7uQsa/j/LJtIQX
+         kn21xB4FN//GIjtUOYHkAiOGADyOBd1mu/QwjU8tWWL+AwISHCicR8JXlM52d82vfkaQ
+         4ERaGgMuc8GLSjsvhHtQ3R+Gp8THrgh3wyGd880SP1IjZJKMZVfp91b73bRLuz4QDAZf
+         NyKg==
+X-Gm-Message-State: AOAM5324PTjUB2aYYEobtVcoCT9iB+rWT2JEIeO6QBkHheL0d/NWN3Tp
+        ZYKRlQVJuJeR2A4FYvAwrgdPoZ0/DicH0ga4HSA=
+X-Google-Smtp-Source: ABdhPJz4xCYDEx6ZevgUKDDg/umaaRlXBpiemsW3Y0HOAK/v6cPBraxTcPoES/oo9oSLJyGxEDM5dvWueoFZRAehe8I=
+X-Received: by 2002:a05:6830:1d66:: with SMTP id l6mr4788158oti.23.1607984939076;
+ Mon, 14 Dec 2020 14:28:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <5fd76cf2.1c69fb81.6f19b.b16a@mx.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAPM=9tyNrbap4FG6qstkC5YTznqVebD=ye+4+Z+t42yQnL325A@mail.gmail.com>
+ <CAHk-=wjue4aOyQQq+C6SEurwe6XABhMyNtsfn1goU==Hf_QUqA@mail.gmail.com>
+In-Reply-To: <CAHk-=wjue4aOyQQq+C6SEurwe6XABhMyNtsfn1goU==Hf_QUqA@mail.gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 14 Dec 2020 17:28:48 -0500
+Message-ID: <CADnq5_MyMm+FmmbKHccDDOBryEdgbQHdw3rtuhUv=cvJrirHFg@mail.gmail.com>
+Subject: Re: [git pull] drm for 5.11-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Dave Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Dec 14, 2020 at 5:21 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Thu, Dec 10, 2020 at 7:52 PM Dave Airlie <airlied@gmail.com> wrote:
+> >
+> > This is an early pull request for drm for 5.11 merge window. I'm going
+> > to be out for most of the first week of the merge window so thought
+> > I'd just preempt things and send this early.
+>
+> Ok, I've merged this, and Dave is likely gone already, but it _looks_
+> like there's a problem with the drm tree on my Radeon workstation.
+>
+> It works fine on my i915 laptop.
+>
+> The symptoms are that the boot just hangs after
+>
+>    fb0: switching to amdgpudrmfb from EFI VGA
+>
+> when on a working kernel the next lines are
+>
+>   amdgpu 0000:49:00.0: vgaarb: deactivate vga console
+>   [drm] initializing kernel modesetting (POLARIS10 0x1002:0x67DF
+> 0x1DA2:0xE353 0xE7).
+>   amdgpu 0000:49:00.0: amdgpu: Trusted Memory Zone (TMZ) feature not supported
+>   [drm] register mmio base: 0xE1C00000
+>   [drm] register mmio size: 262144
+>
+> I'm bisecting for more details, but it might take a while, and I
+> thought I'd start the ball rolling with this initial report in case
+> somebody goes "Aahh.., we know about that case already, the fix is
+> XYZ"...
+>
 
-Please see the bisection report below about the pinctrl driver
-failing to probe on the arm64 mt8173-elm-hana platform.
+The relevant fixes are:
+https://cgit.freedesktop.org/drm/drm-misc/commit/?h=drm-misc-next-fixes&id=aefec40938e4a0e1214f9121520aba4d51697cd9
+https://cgit.freedesktop.org/drm/drm-misc/commit/?h=drm-misc-next-fixes&id=95e3d610d35c9c5b51e12c5c8ac18061ae08cf97
 
-Reports aren't automatically sent to the public while we're
-trialing new bisection features on kernelci.org but this one
-looks valid.
+Alex
 
-This is the error message:
 
-[    0.051788] gpio gpiochip0: Detected name collision for GPIO name ''
-[    0.051813] gpio gpiochip0: GPIO name collision on the same chip, this is not allowed, fix all lines on the chip to have unique names
-[    0.051832] gpiochip_add_data_with_key: GPIOs 377..511 (1000b000.pinctrl) failed to register, -17
-[    0.051946] mediatek-mt8173-pinctrl: probe of 1000b000.pinctrl failed with error -22
 
-and the full log:
-
-  https://storage.kernelci.org/linusw/devel/v5.10-rc4-91-g65efb43ac94b/arm64/defconfig/gcc-8/lab-collabora/baseline-mt8173-elm-hana.html#L492
-
-I guess some GPIO now needs to be renamed following your patch
-which enforces uniqueness, so it's not a problem with the patch
-per se.  As I'm not sure if it's something you would want to fix
-yourself, I've also CC-ed MediaTek and others such as Enric who
-knows about this platform and helped enable the test in KernelCI.
-
-Best wishes,
-Guillaume
-
-On 14/12/2020 13:47, KernelCI bot wrote:
-> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-> * This automated bisection report was sent to you on the basis  *
-> * that you may be involved with the breaking commit it has      *
-> * found.  No manual investigation has been done to verify it,   *
-> * and the root cause of the problem may be somewhere else.      *
-> *                                                               *
-> * If you do send a fix, please include this trailer:            *
-> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
-> *                                                               *
-> * Hope this helps!                                              *
-> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-> 
-> linusw/devel bisection: baseline.bootrr.mediatek-mt8173-pinctrl-probed on mt8173-elm-hana
-> 
-> Summary:
->   Start:      65efb43ac94b gpiolib: Disallow identical line names in the same chip
->   Plain log:  https://storage.kernelci.org/linusw/devel/v5.10-rc4-91-g65efb43ac94b/arm64/defconfig/gcc-8/lab-collabora/baseline-mt8173-elm-hana.txt
->   HTML log:   https://storage.kernelci.org/linusw/devel/v5.10-rc4-91-g65efb43ac94b/arm64/defconfig/gcc-8/lab-collabora/baseline-mt8173-elm-hana.html
->   Result:     65efb43ac94b gpiolib: Disallow identical line names in the same chip
-> 
-> Checks:
->   revert:     PASS
->   verify:     PASS
-> 
-> Parameters:
->   Tree:       linusw
->   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git/
->   Branch:     devel
->   Target:     mt8173-elm-hana
->   CPU arch:   arm64
->   Lab:        lab-collabora
->   Compiler:   gcc-8
->   Config:     defconfig
->   Test case:  baseline.bootrr.mediatek-mt8173-pinctrl-probed
-> 
-> Breaking commit found:
-> 
-> -------------------------------------------------------------------------------
-> commit 65efb43ac94bffeb652cddba4106817bb38c5e71
-> Author: Linus Walleij <linus.walleij@linaro.org>
-> Date:   Sat Dec 12 01:34:47 2020 +0100
-> 
->     gpiolib: Disallow identical line names in the same chip
->     
->     We need to make this namespace hierarchical: at least do not
->     allow two lines on the same chip to have the same name, this
->     is just too much flexibility. If we name a line on a chip,
->     name it uniquely on that chip.
->     
->     I don't know what happens if we just apply this, I *hope* there
->     are not a lot of systems out there breaking this simple and
->     intuitive rule.
->     
->     As a side effect, this makes the device tree naming code
->     scream a bit if names are not globally unique.
->     
->     I think there are not super-many device trees out there naming
->     their lines so let's fix this before the problem becomes
->     widespread.
->     
->     Cc: Geert Uytterhoeven <geert+renesas@glider.be>
->     Cc: Johan Hovold <johan@kernel.org>
->     Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
->     Link: https://lore.kernel.org/r/20201212003447.238474-1-linus.walleij@linaro.org
-> 
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 5ce0c14c637b..fe1b96b7f127 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -330,11 +330,9 @@ static struct gpio_desc *gpio_name_to_desc(const char * const name)
->  
->  /*
->   * Take the names from gc->names and assign them to their GPIO descriptors.
-> - * Warn if a name is already used for a GPIO line on a different GPIO chip.
->   *
-> - * Note that:
-> - *   1. Non-unique names are still accepted,
-> - *   2. Name collisions within the same GPIO chip are not reported.
-> + * - Fail if a name is already used for a GPIO line on the same chip.
-> + * - Allow names to not be globally unique but warn about it.
->   */
->  static int gpiochip_set_desc_names(struct gpio_chip *gc)
->  {
-> @@ -343,13 +341,19 @@ static int gpiochip_set_desc_names(struct gpio_chip *gc)
->  
->  	/* First check all names if they are unique */
->  	for (i = 0; i != gc->ngpio; ++i) {
-> -		struct gpio_desc *gpio;
-> +		struct gpio_desc *gpiod;
->  
-> -		gpio = gpio_name_to_desc(gc->names[i]);
-> -		if (gpio)
-> +		gpiod = gpio_name_to_desc(gc->names[i]);
-> +		if (gpiod) {
->  			dev_warn(&gdev->dev,
->  				 "Detected name collision for GPIO name '%s'\n",
->  				 gc->names[i]);
-> +			if (gpiod->gdev == gdev) {
-> +				dev_err(&gdev->dev,
-> +					"GPIO name collision on the same chip, this is not allowed, fix all lines on the chip to have unique names\n");
-> +				return -EEXIST;
-> +			}
-> +		}
->  	}
->  
->  	/* Then add all names to the GPIO descriptors */
-> @@ -402,8 +406,22 @@ static int devprop_gpiochip_set_names(struct gpio_chip *chip)
->  		return ret;
->  	}
->  
-> -	for (i = 0; i < count; i++)
-> +	for (i = 0; i < count; i++) {
-> +		struct gpio_desc *gpiod;
-> +
-> +		gpiod = gpio_name_to_desc(names[i]);
-> +		if (gpiod) {
-> +			dev_warn(&gdev->dev,
-> +                                 "Detected name collision for GPIO name '%s'\n",
-> +                                 names[i]);
-> +			if (gpiod->gdev == gdev) {
-> +				dev_err(&gdev->dev,
-> +					"GPIO name collision on the same chip, this is not allowed, fix all lines on the chip to have unique names\n");
-> +				return -EEXIST;
-> +			}
-> +		}
->  		gdev->descs[i].name = names[i];
-> +	}
->  
->  	kfree(names);
-> -------------------------------------------------------------------------------
-> 
-> 
-> Git bisection log:
-> 
-> -------------------------------------------------------------------------------
-> git bisect start
-> # good: [9777d0bfdae796de3f8d73879a43bc00145dc8ee] gpio: cs5535: Simplify the return expression of cs5535_gpio_probe()
-> git bisect good 9777d0bfdae796de3f8d73879a43bc00145dc8ee
-> # bad: [65efb43ac94bffeb652cddba4106817bb38c5e71] gpiolib: Disallow identical line names in the same chip
-> git bisect bad 65efb43ac94bffeb652cddba4106817bb38c5e71
-> # good: [a8f25236e6e3d945139b62da0c4398778f77a5b3] MAINTAINERS: Add maintainer for HiSilicon GPIO driver
-> git bisect good a8f25236e6e3d945139b62da0c4398778f77a5b3
-> # first bad commit: [65efb43ac94bffeb652cddba4106817bb38c5e71] gpiolib: Disallow identical line names in the same chip
-> -------------------------------------------------------------------------------
-> 
-> 
-> -=-=-=-=-=-=-=-=-=-=-=-
-> Groups.io Links: You receive all messages sent to this group.
-> View/Reply Online (#4626): https://groups.io/g/kernelci-results/message/4626
-> Mute This Topic: https://groups.io/mt/78950269/924702
-> Group Owner: kernelci-results+owner@groups.io
-> Unsubscribe: https://groups.io/g/kernelci-results/unsub [guillaume.tucker@collabora.com]
-> -=-=-=-=-=-=-=-=-=-=-=-
-> 
-> 
-
+>               Linus
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
