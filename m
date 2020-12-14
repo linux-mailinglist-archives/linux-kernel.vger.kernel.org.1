@@ -2,140 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D192DA275
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD54E2DA27E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:22:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503612AbgLNVRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 16:17:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726557AbgLNVRd (ORCPT
+        id S2503609AbgLNVVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 16:21:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26001 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2503572AbgLNVUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 16:17:33 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EBE7C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:16:53 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id f16so17210299otl.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:16:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=6f8m1ssHwXG9JNfNkbWg5A0BGB7gO6er1DG8qgB1GbU=;
-        b=lQtFHlz+McBNdaTM9p3vvq/RNx3aW3GUOVEPN8x9M3UPEHpq4L2jEg48d1ycfeCGJv
-         WQXIZOV0/JdW2XUwDinnlyZUjL6HFk21AC2WlUWcwXA1Yq8CdcnbfPkr34iPmAL1rcPe
-         KIOtpFe8UcpiaN1oKrRxsA+MRHKS2J9cGhxbsoKpHQCyJskEh9JKXyYUJG77U7GYfn5F
-         Zti+9gbrfQZ7TyIyEU2y0H5NwCds/b9QmEet+7hzUwaQSI2fCUFywiOFGggTXdNnFNpg
-         69CbsJlhFWHzpYvqAtMRXhTWYkhBkbqGn/zNg3t9ELS0MlKIa3QypXfIGSTHxh/nBjKu
-         2+nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=6f8m1ssHwXG9JNfNkbWg5A0BGB7gO6er1DG8qgB1GbU=;
-        b=VkVkJMiWUWX8D56L/WRc4CCsbjB8+wLX4/M2UWTDt3z9TzWTvxDtHE062+BcXxLfP5
-         oZKEKRKpx47coLzL9viPaHjeRMM7xNjG66R6u8UUNj09g7BTEwV6idgT1e/vU0+3JrCK
-         EKuk6SjenUFq4wWPdakV9VVMw0mVBPJWP22KKTkCrKBO0QuDoh/wxXbWPJFv1uHcSOTk
-         XcajyPxWsSYIl5DUlZW9Xn+VjeJMOQwki3NdN39/6hf9UQLHGzNZD5CMf+TZUrLa7Atx
-         dLUua+ProEcEnChz8rQm6nZk88RZ/mZCfu+rj0BD8GWTnAJB61OVXIoSAPtyddJUAzrv
-         Cvag==
-X-Gm-Message-State: AOAM533XJDue641wCuOhEURNfCc3A5vwYyK04PG2WB2z9zfwPmzlNzgV
-        PPUWftPwBFya/GU+2auN0Y3IlA==
-X-Google-Smtp-Source: ABdhPJyLBlt1Orysb4nvb3lC1nALltH2pQLJJ86aKWyzG5xYPWANVcsxbZnzG87CdsOKa8BPNOjfUQ==
-X-Received: by 2002:a05:6830:1482:: with SMTP id s2mr21216866otq.296.1607980612567;
-        Mon, 14 Dec 2020 13:16:52 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id f67sm4603670otb.60.2020.12.14.13.16.50
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 14 Dec 2020 13:16:51 -0800 (PST)
-Date:   Mon, 14 Dec 2020 13:16:39 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Rik van Riel <riel@surriel.com>, hughd@google.com,
-        xuyu@linux.alibaba.com, mgorman@suse.de, aarcange@redhat.com,
-        willy@infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, linux-mm@kvack.org, vbabka@suse.cz,
-        mhocko@suse.com
-Subject: Re: [PATCH v6 0/3] mm,thp,shm: limit shmem THP alloc gfp_mask
-In-Reply-To: <20201124194925.623931-1-riel@surriel.com>
-Message-ID: <alpine.LSU.2.11.2012141226350.1925@eggly.anvils>
-References: <20201124194925.623931-1-riel@surriel.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Mon, 14 Dec 2020 16:20:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607980752;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kCwhYTgPmmce18TYeNVDm64FKjEsl3Uj/IWWxXne59A=;
+        b=cuywHD1IA+8bl+ECKHUJsNTwC2A2D3ygEiOLXZ3LkaBxzY5f23YTxC68v5NLUvaCk8v9V0
+        yQeYkiV9p3nLPdZ7p+dYzmGxuszCzfFWQn/HckiiFqCUgKdStOiCgvYj1xm/X4IyzY9rVc
+        PkAnlvEuPjdA/VxAG6co68PtZSsI734=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-448-sPOru02hPbG18SVrLnASRw-1; Mon, 14 Dec 2020 16:19:08 -0500
+X-MC-Unique: sPOru02hPbG18SVrLnASRw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E44D459;
+        Mon, 14 Dec 2020 21:19:06 +0000 (UTC)
+Received: from [10.10.64.194] (ovpn-64-194.rdu2.redhat.com [10.10.64.194])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7A55E6A8E4;
+        Mon, 14 Dec 2020 21:19:05 +0000 (UTC)
+Subject: Re: MOK variable config table: Kernel Panic in SEV-enabled VMs
+To:     "Hyunwook (Wooky) Baek" <baekhw@google.com>,
+        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+Cc:     pjones@redhat.com, dhowells@redhat.com, prarit@redhat.com,
+        Peter Gonda <pgonda@google.com>,
+        Rachit Mathur <rachitmathur@google.com>,
+        Zach Marano <zmarano@google.com>,
+        Jianxiong Gao <jxgao@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        David Rientjes <rientjes@google.com>, keescook@chromium.org
+References: <CABMWKFCCd=DiruUr3W8DGGozexW-gmeFWVEg2OmuJLuTJXFr_g@mail.gmail.com>
+From:   Lenny Szubowicz <lszubowi@redhat.com>
+Message-ID: <e4fec86d-204b-9ea9-f48e-8b918f4159d3@redhat.com>
+Date:   Mon, 14 Dec 2020 16:19:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <CABMWKFCCd=DiruUr3W8DGGozexW-gmeFWVEg2OmuJLuTJXFr_g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Nov 2020, Rik van Riel wrote:
-
-> The allocation flags of anonymous transparent huge pages can be controlled
-> through the files in /sys/kernel/mm/transparent_hugepage/defrag, which can
-> help the system from getting bogged down in the page reclaim and compaction
-> code when many THPs are getting allocated simultaneously.
+On 12/14/20 3:52 PM, Hyunwook (Wooky) Baek wrote:
+> Hello,
 > 
-> However, the gfp_mask for shmem THP allocations were not limited by those
-> configuration settings, and some workloads ended up with all CPUs stuck
-> on the LRU lock in the page reclaim code, trying to allocate dozens of
-> THPs simultaneously.
+> We found SEV-enabled VMs crash with the latest CentOS and Rhel images in Google
+> Cloud (centos-8-v20201112 and rhel-8-v20201112), because the MOK var table patch
+> (https://lkml.org/lkml/2020/8/25/1344) is making a #GP with SEV-enabled VMs,
+> but the patch is backported to those images. It looks like the patch
+> is also included in
+> the v5.10 release candidate.
 > 
-> This patch applies the same configurated limitation of THPs to shmem
-> hugepage allocations, to prevent that from happening.
+> The SEV-enabled VMs work fine with the previous Rhel-8 and Centos-8 images
+> (centos-8-v20201014 and rhel-8-v20201014).
 > 
-> This way a THP defrag setting of "never" or "defer+madvise" will result
-> in quick allocation failures without direct reclaim when no 2MB free
-> pages are available.
+> The following is the kernel log messages that show the VM crashes while
+> running efi_mokvar_sysfs_init() with the rhel image (the centos kernel log is
+> almost identical):
 > 
-> With this patch applied, THP allocations for tmpfs will be a little
-> more aggressive than today for files mmapped with MADV_HUGEPAGE,
-> and a little less aggressive for files that are not mmapped or
-> mapped without that flag.
+> [    1.720049] EFI Variables Facility v0.08 2004-May-17
+> [    1.943612] input: AT Translated Set 2 keyboard as
+> /devices/platform/i8042/serio0/input/input2
+> [    2.480607] general protection fault: 0000 [#1] SMP NOPTI
+> [    2.481549] CPU: 1 PID: 1 Comm: swapper/0 Not tainted
+> 4.18.0-193.28.1.el8_2.x86_64 #1
+> [    2.481549] Hardware name: Google Google Compute Engine/Google
+> Compute Engine, BIOS Google 01/01/2011
+> [    2.481549] RIP: 0010:efi_mokvar_sysfs_init+0xa9/0x19d
+> [    2.481549] Code: 4b 00 48 85 c0 0f 85 be 00 00 00 48 c7 c7 d8 a8
+> 12 9b bd f4 ff ff ff e8 a4 ba 73 fe e9 f0 00 00 00 48 85 d2 0f 85 b1
+> 00 00 00 <41> 80 3c 24 00 0f 84 bf 00 00 00 4d 85 e4 0f 84 b6 00 00 00
+> 48 8b
+> [    2.481549] RSP: 0018:ffffa6d7c0c67df8 EFLAGS: 00010282
+> [    2.481549] RAX: 0df68117d0b79f0b RBX: ffff96fe32837720 RCX: 0000000000000000
+> [    2.481549] RDX: ffffa6d7c0c81000 RSI: ffffffff9b3934c0 RDI: ffff96fe32837758
+> [    2.481549] RBP: ffffffff9b3934c0 R08: ffffffff9b3934c0 R09: 0000000000000228
+> [    2.481549] R10: 0000000000000007 R11: 0000000000000008 R12: 0df627ef917fb013
+> [    2.481549] R13: ffffffff9b3934c0 R14: ffffffff9a6b3da0 R15: ffff96fe32837758
+> [    2.481549] FS:  0000000000000000(0000) GS:ffff96fe37b00000(0000)
+> knlGS:0000000000000000
+> [    2.481549] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    2.481549] CR2: 00007f0508d7c000 CR3: 0000800232ff8000 CR4: 0000000000340ee0
+> [    2.481549] Call Trace:
+> [    2.481549]  ? efi_rci2_sysfs_init+0x26d/0x26d
+> [    2.481549]  ? do_early_param+0x91/0x91
+> [    2.481549]  do_one_initcall+0x46/0x1c3
+> [    2.481549]  ? do_early_param+0x91/0x91
+> [    2.481549]  kernel_init_freeable+0x1af/0x258
+> [    2.481549]  ? rest_init+0xaa/0xaa
+> [    2.481549]  kernel_init+0xa/0xff
+> [    2.481549]  ret_from_fork+0x22/0x40
+> [    2.481549] Modules linked in:
+> [    2.511520] ---[ end trace 24709f23c20e9cd9 ]---
+> [    2.512376] RIP: 0010:efi_mokvar_sysfs_init+0xa9/0x19d
+> [    2.513249] Code: 4b 00 48 85 c0 0f 85 be 00 00 00 48 c7 c7 d8 a8
+> 12 9b bd f4 ff ff ff e8 a4 ba 73 fe e9 f0 00 00 00 48 85 d2 0f 85 b1
+> 00 00 00 <41> 80 3c 24 00 0f 84 bf 00 00 00 4d 85 e4 0f 84 b6 00 00 00
+> 48 8b
+> [    2.516876] RSP: 0018:ffffa6d7c0c67df8 EFLAGS: 00010282
+> [    2.517844] RAX: 0df68117d0b79f0b RBX: ffff96fe32837720 RCX: 0000000000000000
+> [    2.519128] RDX: ffffa6d7c0c81000 RSI: ffffffff9b3934c0 RDI: ffff96fe32837758
+> [    2.520328] RBP: ffffffff9b3934c0 R08: ffffffff9b3934c0 R09: 0000000000000228
+> [    2.521771] R10: 0000000000000007 R11: 0000000000000008 R12: 0df627ef917fb013
+> [    2.523025] R13: ffffffff9b3934c0 R14: ffffffff9a6b3da0 R15: ffff96fe32837758
+> [    2.524218] FS:  0000000000000000(0000) GS:ffff96fe37b00000(0000)
+> knlGS:0000000000000000
+> [    2.525591] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    2.528401] CR2: 00007f0508d7c000 CR3: 0000800232ff8000 CR4: 0000000000340ee0
+> [    2.530155] Kernel panic - not syncing: Fatal exception
+> [    2.531145] Kernel Offset: 0x19000000 from 0xffffffff81000000
+> (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+> [    2.531145] ---[ end Kernel panic - not syncing: Fatal exception ]---
 > 
-> v6: make khugepaged actually obey tmpfs mount flags
-> v5: reduce gfp mask further if needed, to accomodate i915 (Matthew Wilcox)
-> v4: rename alloc_hugepage_direct_gfpmask to vma_thp_gfp_mask (Matthew Wilcox)
-> v3: fix NULL vma issue spotted by Hugh Dickins & tested
-> v2: move gfp calculation to shmem_getpage_gfp as suggested by Yu Xu
+> Regards,
+> Wooky
+> 
 
-Andrew, please don't rush
+First off, this problem does not exist in the upstream kernel because of
+the prior commit:
 
-mmthpshmem-limit-shmem-thp-alloc-gfp_mask.patch
-mmthpshm-limit-gfp-mask-to-no-more-than-specified.patch
-mmthpshmem-make-khugepaged-obey-tmpfs-mount-flags.patch
+985e537a4082 x86/ioremap: Map EFI runtime services data as encrypted for SEV
 
-to Linus in your first wave of mmotm->5.11 sendings.
-Or, alternatively, go ahead and send them to Linus, but
-be aware that I'm fairly likely to want adjustments later.
+Unfortunately, that upstream commit is not included in the RHEL 8.3 kernel.
+We did not detect the necessity of this commit in time to include it in RHEL 8.3.
+However, I expect that it will be included a future bug fix release.
 
-Sorry for limping along so far behind, but I still have more
-re-reading of the threads to do, and I'm still investigating
-why tmpfs huge=always becomes so ineffective in my testing with
-these changes, even if I ramp up from default defrag=madvise to
-defrag=always:
-                    5.10   mmotm
-thp_file_alloc   4641788  216027
-thp_file_fallback 275339 8895647
+                                -Lenny.
 
-I've been looking into it off and on for weeks (gfp_mask wrangling is
-not my favourite task! so tend to find higher priorities to divert me);
-hoped to arrive at a conclusion before merge window, but still have
-nothing constructive to say yet, hence my silence so far.
 
-Above's "a little less aggressive" appears understatement at present.
-I respect what Rik is trying to achieve here, and I may end up
-concluding that there's nothing better to be done than what he has.
-My kind of hugepage-thrashing-in-low-memory may be so remote from
-normal usage, and could be skirting the latency horrors we all want
-to avoid: but I haven't reached that conclusion yet - the disparity
-in effectiveness still deserves more investigation.
-
-(There's also a specific issue with the gfp_mask limiting: I have
-not yet reviewed the allowing and denying in detail, but it looks
-like it does not respect the caller's GFP_ZONEMASK - the gfp in
-shmem_getpage_gfp() and shmem_read_mapping_page_gfp() is there to
-satisfy the gma500, which wanted to use shmem but could only manage
-DMA32.  I doubt it wants THPS, but shmem_enabled=force forces them.)
-
-Thanks,
-Hugh
