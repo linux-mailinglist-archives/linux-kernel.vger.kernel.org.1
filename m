@@ -2,248 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70B62D961E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1EF2D962C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406755AbgLNKJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 05:09:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731455AbgLNKJ4 (ORCPT
+        id S2436572AbgLNKNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 05:13:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40691 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729802AbgLNKNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 05:09:56 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49ED9C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 02:09:16 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id s2so18633780oij.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 02:09:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fHMGOG9XGGX2S8lH0eaqu8mmPkkQUQ+KKQLPpJ+q8rA=;
-        b=qE4Ym0mXRsgQqJnvYQ8APWlGHgzzBKCSHnVWnONJJFA/vq0F9Lvoqwb3gbAUo/5yeo
-         EpCQNbxOY5N9TVcDQ1+sVeaZaPVRU0ozKGk67y7H5gKdnOVuu2Xq6nm9yzxDkEsI1SoI
-         Tk0u8DzGulAhv3sj7/O9i3aeSF2YGVCv3qcqqICLVVVBuPnOdsDL57iu7ayKu+GpHaKi
-         8GblBHdaoqVDrWV7lmkCLrhZZtNdnKHc/nws2rqqf1VVyjlQFlJz1FMuziN5Gi64OdFP
-         DTMeu+fV0BIsae0B2CcN9N2yWIceo7rGKeVnS7ykLE2/nkl6etJmFEJwRfWdZHGlkeb2
-         NoOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fHMGOG9XGGX2S8lH0eaqu8mmPkkQUQ+KKQLPpJ+q8rA=;
-        b=Wxp4VCZbNDCtq3PqCpGjGtC6aPXZXzLObLHKlVdk1FM/2fRUJq387Oirc7umNCX7/5
-         Ou3wkmX1yEW4HC9A66SGQG1k6PU7EaJoBTbsb6xh0sGkh9fZVHHyX8mWAxkiyYg0HYGE
-         9G0lZcMiHos0KYFcJZty4s/n71SkJkMyPiMfilD5sCzbej4mjz4R9EbmbDr9jX417bmY
-         oOh8mSvE5Gy9qiAU2aJ+8VWbpQpkjDZclaHeMvDolM4Ygwk07+s0qTZe4NIsnffx4sJV
-         VOxGsKvOciJ7yuLvRhlG4hRTlq0ThY46VxEcwXEhJPtwJtcz06NVO7SJR2ETWmAOltRj
-         2BGA==
-X-Gm-Message-State: AOAM531q4n0FtuSZC9VqUs+kOLwZIgrt2Ob/aHiZjHdPjo5IhvMmtOlM
-        GxnnVruL7a2dSmYD+mh4e5GiFcqM4mocsTrPchbUAw==
-X-Google-Smtp-Source: ABdhPJytT4EKFDi56n441z+unF2IVIxwFucYbcDEAvWJTOOF38hLAYqX6bU/YZwOdXGzW0sFKPXvbc2n838og/GYRcg=
-X-Received: by 2002:aca:ddd6:: with SMTP id u205mr13383698oig.121.1607940554182;
- Mon, 14 Dec 2020 02:09:14 -0800 (PST)
+        Mon, 14 Dec 2020 05:13:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607940706;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=707h+0X97qSXU9YyiMZs36jnPgGreBPrjTB3UVLUTiM=;
+        b=MOK9pLNr94GVQxWnh1lpaCb7B9A9fs3HeTIXSGSmFnBTFJiwdXeBfHSCTqsCpHdWM3eNym
+        3BSQJY3eVkwgaGzA0c4hasy5Ew43QnICyeJ/fcmq4asUto63btvMV3fG2mBd8Bhn3LkuLw
+        cf1WqSsgDT1SCpMV8dqUI4AdJy+Q+Hg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-EoskWq0BPNu8QwkNCKR_BA-1; Mon, 14 Dec 2020 05:11:42 -0500
+X-MC-Unique: EoskWq0BPNu8QwkNCKR_BA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 33E61190B2BF;
+        Mon, 14 Dec 2020 10:11:40 +0000 (UTC)
+Received: from [10.36.114.184] (ovpn-114-184.ams2.redhat.com [10.36.114.184])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7FA6B709AD;
+        Mon, 14 Dec 2020 10:11:36 +0000 (UTC)
+Subject: Re: [PATCH v2 1/2] mm: memblock: enforce overlap of memory.memblock
+ and memory.reserved
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Mel Gorman <mgorman@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20201209214304.6812-1-rppt@kernel.org>
+ <20201209214304.6812-2-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <522640a5-32ab-2247-4c2a-f248c2528f97@redhat.com>
+Date:   Mon, 14 Dec 2020 11:11:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <000000000000b4862805b54ef573@google.com> <X8kLG5D+j4rT6L7A@elver.google.com>
- <CANn89iJWD5oXPLgtY47umTgo3gCGBaoy+XJfXnw1ecES_EXkCw@mail.gmail.com>
- <CANpmjNOaWbGJQ5Y=qC3cA31-R-Jy4Fbe+p=OBG5O2Amz8dLtLA@mail.gmail.com>
- <CANn89iKWf1EVZUuAHup+5ndhxvOqGopq53=vZ9yeok=DnRjggg@mail.gmail.com>
- <X8kjPIrLJUd8uQIX@elver.google.com> <af884a0e-5d4d-f71b-4821-b430ac196240@gmail.com>
- <CANpmjNNDKm_ObRnO_b3gH6wDYjb6_ex-KhZA5q5BRzEMgo+0xg@mail.gmail.com>
- <X9DHa2OG6lewtfPQ@elver.google.com> <X9JR/J6dMMOy1obu@elver.google.com>
- <CANn89i+2mAu_srdvefKLDY23HvrbOG1aMfj5uwvk6tYZ9uBtMA@mail.gmail.com> <CANpmjNMdgX1H=ztDH5cpmmZJ3duL4M8Vn9Ty-XzNpsrhx0h4sA@mail.gmail.com>
-In-Reply-To: <CANpmjNMdgX1H=ztDH5cpmmZJ3duL4M8Vn9Ty-XzNpsrhx0h4sA@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 14 Dec 2020 11:09:02 +0100
-Message-ID: <CANpmjNPdK3rRF5eJM5uZ-8wJDp_8TF1P3jOvAo8kqu4YDDJtGQ@mail.gmail.com>
-Subject: Re: WARNING in sk_stream_kill_queues (5)
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Jann Horn <jannh@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Willem de Bruijn <willemb@google.com>,
-        syzbot <syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201209214304.6812-2-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 at 20:01, Marco Elver <elver@google.com> wrote:
-> On Thu, 10 Dec 2020 at 18:14, Eric Dumazet <edumazet@google.com> wrote:
-> > On Thu, Dec 10, 2020 at 5:51 PM Marco Elver <elver@google.com> wrote:
-> [...]
-> > > So I started putting gdb to work, and whenever I see an allocation
-> > > exactly like the above that goes through tso_fragment() a warning
-> > > immediately follows.
-> > >
-> > > Long story short, I somehow synthesized this patch that appears to fix
-> > > things, but I can't explain why exactly:
-> > >
-> > > | --- a/net/core/skbuff.c
-> > > | +++ b/net/core/skbuff.c
-> > > | @@ -1679,13 +1679,6 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
-> > > |
-> > > |       skb_metadata_clear(skb);
-> > > |
-> > > | -     /* It is not generally safe to change skb->truesize.
-> > > | -      * For the moment, we really care of rx path, or
-> > > | -      * when skb is orphaned (not attached to a socket).
-> > > | -      */
-> > > | -     if (!skb->sk || skb->destructor == sock_edemux)
-> > > | -             skb->truesize += size - osize;
-> > > | -
-> > > |       return 0;
-> > > |
-> > > |  nofrags:
-> > >
-> > > Now, here are the breadcrumbs I followed:
-> > >
-> > >
-> > > 1.      Breakpoint on kfence_ksize() -- first allocation that matches the above:
-> > >
-> > >         | #0  __kfence_ksize (s=18446612700164612096) at mm/kfence/core.c:726
-> > >         | #1  0xffffffff816fbf30 in kfence_ksize (addr=0xffff888436856000) at mm/kfence/core.c:737
-> > >         | #2  0xffffffff816217cf in ksize (objp=0xffff888436856000) at mm/slab_common.c:1178
-> > >         | #3  0xffffffff84896911 in __alloc_skb (size=914710528, gfp_mask=2592, flags=0, node=-1) at net/core/skbuff.c:217
-> > >         | #4  0xffffffff84d0ba73 in alloc_skb_fclone (priority=<optimized out>, size=<optimized out>) at ./include/linux/skbuff.h:1144
-> > >         | #5  sk_stream_alloc_skb (sk=0xffff8881176cc000, size=0, gfp=2592, force_schedule=232) at net/ipv4/tcp.c:888
-> > >         | #6  0xffffffff84d41c36 in tso_fragment (gfp=<optimized out>, mss_now=<optimized out>, len=<optimized out>,
-> > >         |     skb=<optimized out>, sk=<optimized out>) at net/ipv4/tcp_output.c:2124
-> > >         | #7  tcp_write_xmit (sk=0xffff8881176cc000, mss_now=21950, nonagle=3096, push_one=-1996874776, gfp=0)
-> > >         |     at net/ipv4/tcp_output.c:2674
-> > >         | #8  0xffffffff84d43e48 in __tcp_push_pending_frames (sk=0xffff8881176cc000, cur_mss=337, nonagle=0)
-> > >         |     at ./include/net/sock.h:918
-> > >         | #9  0xffffffff84d3259c in tcp_push_pending_frames (sk=<optimized out>) at ./include/net/tcp.h:1864
-> > >         | #10 tcp_data_snd_check (sk=<optimized out>) at net/ipv4/tcp_input.c:5374
-> > >         | #11 tcp_rcv_established (sk=0xffff8881176cc000, skb=0x0 <fixed_percpu_data>) at net/ipv4/tcp_input.c:5869
-> > >         | #12 0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f52ea0) at net/ipv4/tcp_ipv4.c:1668
-> > >         | [...]
-> > >
-> > >         Set watchpoint on skb->truesize:
-> > >
-> > >         | (gdb) frame 3
-> > >         | #3  0xffffffff84896911 in __alloc_skb (size=914710528, gfp_mask=2592, flags=0, node=-1) at net/core/skbuff.c:217
-> > >         | 217             size = SKB_WITH_OVERHEAD(ksize(data));
-> > >         | (gdb) p &skb->truesize
-> > >         | $5 = (unsigned int *) 0xffff888117f55f90
-> > >         | (gdb) awatch *0xffff888117f55f90
-> > >         | Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
-> > >
-> > > 2.      Some time later, we see that the skb with kfence-allocated data
-> > >         is cloned:
-> > >
-> > >         | Thread 7 hit Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
-> > >         |
-> > >         | Value = 1570
-> > >         | 0xffffffff84886947 in __skb_clone (n=0xffff888117f55fa0, skb=0xffff888117f55ec0) at net/core/skbuff.c:1002
-> > >         | 1002            C(truesize);
-> > >         | (gdb) bt
-> > >         | #0  0xffffffff84886947 in __skb_clone (n=0xffff888117f55fa0, skb=0xffff888117f55ec0) at net/core/skbuff.c:1002
-> > >         | #1  0xffffffff8488bfb9 in skb_clone (skb=0xffff888117f55ec0, gfp_mask=2592) at net/core/skbuff.c:1454
-> > >         | #2  0xffffffff84d3cd1c in __tcp_transmit_skb (sk=0xffff8881176cc000, skb=0xffff888117f55ec0, clone_it=0, gfp_mask=2592,
-> > >         |     rcv_nxt=0) at net/ipv4/tcp_output.c:1267
-> > >         | #3  0xffffffff84d4125b in tcp_transmit_skb (gfp_mask=<optimized out>, clone_it=<optimized out>, skb=<optimized out>,
-> > >         |     sk=<optimized out>) at ./include/linux/tcp.h:439
-> > >         | #4  tcp_write_xmit (sk=0xffff8881176cc000, mss_now=392485600, nonagle=1326, push_one=-1996875104, gfp=0)
-> > >         |     at net/ipv4/tcp_output.c:2688
-> > >         | #5  0xffffffff84d43e48 in __tcp_push_pending_frames (sk=0xffff8881176cc000, cur_mss=337, nonagle=0)
-> > >         |     at ./include/net/sock.h:918
-> > >         | #6  0xffffffff84d3259c in tcp_push_pending_frames (sk=<optimized out>) at ./include/net/tcp.h:1864
-> > >         | #7  tcp_data_snd_check (sk=<optimized out>) at net/ipv4/tcp_input.c:5374
-> > >         | #8  tcp_rcv_established (sk=0xffff8881176cc000, skb=0x0 <fixed_percpu_data>) at net/ipv4/tcp_input.c:5869
-> > >         | #9  0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f57820) at net/ipv4/tcp_ipv4.c:1668
-> > >         | #10 0xffffffff8487bf67 in sk_backlog_rcv (skb=<optimized out>, sk=<optimized out>) at ./include/net/sock.h:1010
-> > >         [...]
-> > >
-> > >
-> > > 3.      The original skb (that was cloned) has its truesize adjusted
-> > >         after a pskb_expand_head():
-> > >
-> > >         | Thread 2 hit Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
-> > >         |
-> > >         | Old value = 1570
-> > >         | New value = 1954
-> > >
-> > >         ^^ the difference between the old and the new value is exactly
-> > >         384, which is also the final underflow of the sk_wmem_queued
-> > >         that triggers the warning. Presumably if the original allocation
-> > >         had been through kmalloc-1k and not KFENCE, the difference here
-> > >         would have been 0, since ksize() of the original allocation in
-> > >         step (1) would have been 1024, and not 640 (difference of 384).
-> > >
-> > >         | 0xffffffff8488d84b in pskb_expand_head (skb=0xffff888117f55ec0, nhead=401956752, ntail=1954, gfp_mask=2298092192)
-> > >         |     at net/core/skbuff.c:1687
-> > >         | 1687                    skb->truesize += size - osize;
-> > >         | (gdb) bt
-> > >         | #0  0xffffffff8488d84b in pskb_expand_head (skb=0xffff888117f55ec0, nhead=401956752, ntail=1954, gfp_mask=2298092192)
-> > >         |     at net/core/skbuff.c:1687
-> > >         | #1  0xffffffff8488de01 in skb_prepare_for_shift (skb=<optimized out>) at ./arch/x86/include/asm/atomic.h:29
-> > >         | #2  skb_prepare_for_shift (skb=0xffff888117f55ec0) at net/core/skbuff.c:3276
-> > >         | #3  0xffffffff848936b1 in skb_shift (tgt=0xffff888117f549c0, skb=0xffff888117f55ec0, shiftlen=674) at net/core/skbuff.c:3351
-> > >         | #4  0xffffffff84d264de in tcp_skb_shift (shiftlen=<optimized out>, pcount=<optimized out>, from=<optimized out>,
-> > >         |     to=<optimized out>) at net/ipv4/tcp_input.c:1497
-> > >         | #5  tcp_shift_skb_data (dup_sack=<optimized out>, end_seq=<optimized out>, start_seq=<optimized out>, state=<optimized out>,
-> > >         |     skb=<optimized out>, sk=<optimized out>) at net/ipv4/tcp_input.c:1605
-> > >         | #6  tcp_sacktag_walk (skb=0xffff888117f55ec0, sk=0xffff8881176cc000, next_dup=0x894,
-> > >         |     state=0xffffffff88fa1aa0 <watchpoints+192>, start_seq=0, end_seq=401956752, dup_sack_in=false)
-> > >         |     at net/ipv4/tcp_input.c:1670
-> > >         | #7  0xffffffff84d276de in tcp_sacktag_write_queue (sk=0xffff888117f55f90, ack_skb=0x1888117f55f90, prior_snd_una=2196,
-> > >         |     state=0xffffffff88fa1aa0 <watchpoints+192>) at net/ipv4/tcp_input.c:1931
-> > >         | #8  0xffffffff84d2ca1d in tcp_ack (sk=0xffff8881176cc000, skb=0x1888117f55f90, flag=16643) at net/ipv4/tcp_input.c:3758
-> > >         | #9  0xffffffff84d32387 in tcp_rcv_established (sk=0xffff8881176cc000, skb=0xffff888117f54020) at net/ipv4/tcp_input.c:5858
-> > >         | #10 0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f54020) at net/ipv4/tcp_ipv4.c:1668
-> > >         [...]
-> > >
-> > >
-> > > Any of this make sense?
-> >
-> > Very nice debugging !
-> >
-> > I guess we could fix this in skb_prepare_for_shift(), eventually
-> > caring for the truesize manipulation
-> > (or reverting the change done in pskb_expand_head(), since only kfence
-> > is having this issue.
->
-> Phew, good to hear I finally got lucky. :-)
->
-> Either option is fine, as long as it avoids this problem in future.
-> Hopefully it can be fixed for 5.11.
->
-> > (All TCP skbs in output path have the same allocation size for skb->head)
-> >
-> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > index e578544b2cc7110ec2f6bcf4c29d93e4b4b1ad14..798b51eeeaa4fbed65d41d9eab207dbbf438dab3
-> > 100644
-> > --- a/net/core/skbuff.c
-> > +++ b/net/core/skbuff.c
-> > @@ -3270,7 +3270,14 @@ EXPORT_SYMBOL(skb_split);
-> >   */
-> >  static int skb_prepare_for_shift(struct sk_buff *skb)
-> >  {
-> > -       return skb_cloned(skb) && pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
-> > +       unsigned int ret = 0, save;
-> > +
-> > +       if (skb_cloned(skb)) {
-> > +               save = skb->truesize;
-> > +               ret = pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
-> > +               skb->truesize = save;
-> > +       }
-> > +       return ret;
-> >  }
->
-> FWIW,
->
->     Tested-by: Marco Elver <elver@google.com>
+On 09.12.20 22:43, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> memblock does not require that the reserved memory ranges will be a subset
+> of memblock.memory.
+> 
+> As the result there maybe reserved pages that are not in the range of any
+> zone or node because zone and node boundaries are detected based on
+> memblock.memory and pages that only present in memblock.reserved are not
+> taken into account during zone/node size detection.
+> 
+> Make sure that all ranges in memblock.reserved are added to memblock.memory
+> before calculating node and zone boundaries.
+> 
+> Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
+> Reported-by: Andrea Arcangeli <aarcange@redhat.com>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>  include/linux/memblock.h |  1 +
+>  mm/memblock.c            | 24 ++++++++++++++++++++++++
+>  mm/page_alloc.c          |  7 +++++++
+>  3 files changed, 32 insertions(+)
+> 
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index ef131255cedc..e64dae2dd1ce 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -120,6 +120,7 @@ int memblock_clear_nomap(phys_addr_t base, phys_addr_t size);
+>  unsigned long memblock_free_all(void);
+>  void reset_node_managed_pages(pg_data_t *pgdat);
+>  void reset_all_zones_managed_pages(void);
+> +void memblock_enforce_memory_reserved_overlap(void);
+>  
+>  /* Low level functions */
+>  void __next_mem_range(u64 *idx, int nid, enum memblock_flags flags,
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index b68ee86788af..9277aca642b2 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -1857,6 +1857,30 @@ void __init_memblock memblock_trim_memory(phys_addr_t align)
+>  	}
+>  }
+>  
+> +/**
+> + * memblock_enforce_memory_reserved_overlap - make sure every range in
+> + * @memblock.reserved is covered by @memblock.memory
+> + *
+> + * The data in @memblock.memory is used to detect zone and node boundaries
+> + * during initialization of the memory map and the page allocator. Make
+> + * sure that every memory range present in @memblock.reserved is also added
+> + * to @memblock.memory even if the architecture specific memory
+> + * initialization failed to do so
+> + */
+> +void __init memblock_enforce_memory_reserved_overlap(void)
+> +{
+> +	phys_addr_t start, end;
+> +	int nid;
+> +	u64 i;
+> +
+> +	__for_each_mem_range(i, &memblock.reserved, &memblock.memory,
+> +			     NUMA_NO_NODE, MEMBLOCK_NONE, &start, &end, &nid) {
+> +		pr_warn("memblock: reserved range [%pa-%pa] is not in memory\n",
+> +			&start, &end);
+> +		memblock_add_node(start, (end - start), nid);
+> +	}
+> +}
+> +
+>  void __init_memblock memblock_set_current_limit(phys_addr_t limit)
+>  {
+>  	memblock.current_limit = limit;
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index eaa227a479e4..dbc57dbbacd8 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -7436,6 +7436,13 @@ void __init free_area_init(unsigned long *max_zone_pfn)
+>  	memset(arch_zone_highest_possible_pfn, 0,
+>  				sizeof(arch_zone_highest_possible_pfn));
+>  
+> +	/*
+> +	 * Some architectures (e.g. x86) have reserved pages outside of
+> +	 * memblock.memory. Make sure these pages are taken into account
+> +	 * when detecting zone and node boundaries
+> +	 */
+> +	memblock_enforce_memory_reserved_overlap();
+> +
+>  	start_pfn = find_min_pfn_with_active_regions();
+>  	descending = arch_has_descending_max_zone_pfns();
+>  
+> 
 
-Has this patch, or similar, already been sent?
+CCing Dan.
 
+This implies that any memory that is E820_TYPE_SOFT_RESERVED that was
+reserved via memblock_reserve() will be added via memblock_add_node() as
+well, resulting in all such memory getting a memmap allocated right when
+booting up, right?
+
+IIRC, there are use cases where that is absolutely not desired.
+
+Am I missing something? (@Dan?)
+
+-- 
 Thanks,
--- Marco
+
+David / dhildenb
+
