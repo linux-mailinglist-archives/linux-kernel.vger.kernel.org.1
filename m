@@ -2,71 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE162D93A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 08:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E722D93A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 08:33:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439018AbgLNHcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 02:32:50 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:35027 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439000AbgLNHcs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 02:32:48 -0500
-Received: by mail-oi1-f194.google.com with SMTP id s2so18240894oij.2;
-        Sun, 13 Dec 2020 23:32:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BftzBGcfKzrdavGS134SjsPLLF2ruabtKuv1iEkU87M=;
-        b=aHSCat1cWxgTaolbj/QgwAHvB8PxX0QHYNACP6wj/l6vKhIEI3zcgG9hjw8TUPA5Y7
-         msavVzjnfPB7BCQS3ciIs3UlCG+9JW245W+g6Ch+wPFFICMkISF0IZzyUOGT2RINt4fi
-         PLS8zR5oSBUlT3nl4j1dZ8Id8AiLiWEVZ5jRoYBzSa2WIpOWthmBvrKnlLk1IdZiiZOH
-         LbcHKxE1sKOUuk6tFkIk94tJLzpy2/iutRzDeR6VoL+oJXZzDx2hdJp6Qm77DsFCgQ5y
-         m9Evao3GRZdPRpxM9D/xPAHHkWoct5grIxn3kpJCC0HjZnylLrSTYmX9XthJ16L3vMA1
-         8zYA==
-X-Gm-Message-State: AOAM530VyA2Cm0Vy7ES83Bezwu5q0Zl7KZaw5Y4xvbYr2zar3jEQpffx
-        1B/bqQsSjSeZYPGaant0lYVyJ0A4R/MskqDRRAc=
-X-Google-Smtp-Source: ABdhPJyK95q4KGKvFo9ijVGJmhONVBgouh2E4UAW95p/Qanb/0y6OOaTboohbFwChAeAnqCiwLmCHDMVBfOe7y5EPzA=
-X-Received: by 2002:aca:ec09:: with SMTP id k9mr17359385oih.153.1607931127977;
- Sun, 13 Dec 2020 23:32:07 -0800 (PST)
+        id S2439031AbgLNHdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 02:33:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439019AbgLNHcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 02:32:53 -0500
+X-Gm-Message-State: AOAM532P/Jx5HQ8zHZnzdJSXIXRord0FpeZ6O9YjSF0H6+Y7xmL01VSa
+        DF928zR9jDZl7jBE6T0CY4A69UAlXiNwmlGfJZ4=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607931132;
+        bh=B2/NH6QzCAvUVo+NfGwDUvirnlGhp4a3QWT1Pn51uwc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=S4c9Kw3VFdY1ieTdCvu5Gh2HDvGwx5EukY7CMRW4PeXP8Ehx5SpLtxiqjEf0Jtbry
+         g3qRBpHQ6lSQHWUiqTtMGlkUV00lDoSXVf1BlMHLOW4zz6u6bGPac+5RWfm/nxMnqA
+         hxJZgDmnuAFtDr6QUGoOCehPk6PTplk1hj6JeNuOLJ27eNmjU2xmm226jJoHGmLVtR
+         hOJm2n0OjHxyz3j/hC1woSYpN0gVd1RFF/+kGYfIky/Kwh1JtYbU47KpimeZ0WegyH
+         ilcfP7H4uDjiMD9bOVb4EtPgKUxvPgLoZJuJesvPdhxZQ5jK7el5fJstDCtQIpiEs0
+         fssxMneVRKdeQ==
+X-Google-Smtp-Source: ABdhPJxhkJKxgWYA3DE8Y2xrY2FcYqWHlZDBZvTu1/6D/ZL/XRSVdmCzFSsBvv0qJHjyBJ9uupZJWukaFYbw0YQPd1g=
+X-Received: by 2002:a9d:12c:: with SMTP id 41mr18568064otu.77.1607931131884;
+ Sun, 13 Dec 2020 23:32:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20201212174119.120027-1-christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20201212174119.120027-1-christophe.jaillet@wanadoo.fr>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 14 Dec 2020 08:31:56 +0100
-Message-ID: <CAMuHMdUJVN3ywmSfCDKT05k24hxNtn5C8TdO6nyscUFiCy441w@mail.gmail.com>
-Subject: Re: [PATCH] media: vsp1: Fix an error handling path in the probe function
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+References: <20201214164836.0d73cf9a@canb.auug.org.au>
+In-Reply-To: <20201214164836.0d73cf9a@canb.auug.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 14 Dec 2020 08:32:00 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFmRTLfyfF_pkkwNzDnvz6ra2_RYan8UJUzSXYmjKEZRg@mail.gmail.com>
+Message-ID: <CAMj1kXFmRTLfyfF_pkkwNzDnvz6ra2_RYan8UJUzSXYmjKEZRg@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the tip tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 5:22 PM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
-> A previous 'rcar_fcp_get()' call must be undone in the error handling path,
-> as already done in the remove function.
+On Mon, 14 Dec 2020 at 06:48, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
-> Fixes: 94fcdf829793 ("[media] v4l: vsp1: Add FCP support")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Hi all,
+>
+> After merging the tip tree, today's linux-next build (arm
+> multi_v7_defconfig) produced this warning:
+>
+> In file included from include/linux/kernel.h:14,
+>                  from include/linux/list.h:9,
+>                  from include/linux/wait.h:7,
+>                  from include/linux/wait_bit.h:8,
+>                  from include/linux/fs.h:6,
+>                  from include/linux/proc_fs.h:10,
+>                  from include/linux/efi.h:19,
+>                  from drivers/firmware/efi/libstub/arm32-stub.c:5:
+> drivers/firmware/efi/libstub/arm32-stub.c: In function 'handle_kernel_image':
+> include/linux/minmax.h:18:28: warning: comparison of distinct pointer types lacks a cast
+>    18 |  (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+>       |                            ^~
+> include/linux/minmax.h:32:4: note: in expansion of macro '__typecheck'
+>    32 |   (__typecheck(x, y) && __no_side_effects(x, y))
+>       |    ^~~~~~~~~~~
+> include/linux/minmax.h:42:24: note: in expansion of macro '__safe_cmp'
+>    42 |  __builtin_choose_expr(__safe_cmp(x, y), \
+>       |                        ^~~~~~~~~~
+> include/linux/minmax.h:58:19: note: in expansion of macro '__careful_cmp'
+>    58 | #define max(x, y) __careful_cmp(x, y, >)
+>       |                   ^~~~~~~~~~~~~
+> arch/arm/include/asm/efi.h:74:25: note: in expansion of macro 'max'
+>    74 | #define EFI_PHYS_ALIGN  max(SZ_2M, roundup_pow_of_two(TEXT_OFFSET))
+>       |                         ^~~
+> drivers/firmware/efi/libstub/arm32-stub.c:123:44: note: in expansion of macro 'EFI_PHYS_ALIGN'
+>   123 |  int alloc_size = MAX_UNCOMP_KERNEL_SIZE + EFI_PHYS_ALIGN;
+>       |                                            ^~~~~~~~~~~~~~
+...
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Gr{oetje,eeting}s,
+Thanks for the report. I actually spotted this and sent a fix
+yesterday [0]. I'll send it to -tip today.
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+[0] https://lore.kernel.org/linux-efi/20201213151306.73558-1-ardb@kernel.org/
