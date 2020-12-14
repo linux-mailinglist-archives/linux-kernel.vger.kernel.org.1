@@ -2,99 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05192D987D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 14:05:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF902D9881
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 14:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407918AbgLNNCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 08:02:17 -0500
-Received: from foss.arm.com ([217.140.110.172]:47166 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407907AbgLNNCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 08:02:14 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 092FF1FB;
-        Mon, 14 Dec 2020 05:01:28 -0800 (PST)
-Received: from [10.57.33.60] (unknown [10.57.33.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE7313F66B;
-        Mon, 14 Dec 2020 05:01:26 -0800 (PST)
-Subject: Re: [PATCH v2] dma-mapping: add unlikely hint for error path in
- dma_mapping_error
-To:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Cc:     "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <39581f9a-0066-ad98-094d-d41082145e23@gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <ba14be47-6c77-94d6-9904-b4679e62091b@arm.com>
-Date:   Mon, 14 Dec 2020 13:01:25 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
-MIME-Version: 1.0
-In-Reply-To: <39581f9a-0066-ad98-094d-d41082145e23@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S2407791AbgLNNFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 08:05:04 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:53731 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404621AbgLNNFE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 08:05:04 -0500
+Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 14 Dec 2020 05:04:23 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 14 Dec 2020 05:04:21 -0800
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 14 Dec 2020 18:34:07 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id 99FA4212FF; Mon, 14 Dec 2020 18:34:06 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v4] venus: core: add support to dump FW region
+Date:   Mon, 14 Dec 2020 18:33:51 +0530
+Message-Id: <1607951031-12980-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-13 16:32, Heiner Kallweit wrote:
-> Zillions of drivers use the unlikely() hint when checking the result of
-> dma_mapping_error(). This is an inline function anyway, so we can move
-> the hint into this function and remove it from drivers.
+Add support to dump video FW region during FW crash
+using devcoredump helpers.
 
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+Major changes since v1:
+- update the name of function (Stephen)
+- store start address and size in resource structure during
+  probe and reuse while dumping (Stephen, Stanimir)
 
-FWIW I consider this case similar to the same hint in WARN_ON() and 
-friends - it's a pretty severe condition that should never be expected 
-to be hit in normal operation, so it's entirely logical for it to be 
-implicitly unlikely. I struggle to imagine any case that would 
-specifically *not* want that (or worse, want to hint it as likely). Some 
-DMA API backends may spend considerable time trying as hard as possible 
-to make a mapping work before eventually admitting defeat, so the idea 
-of ever trying to optimise at the driver level for failure in hot paths 
-just makes no sense.
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/media/platform/qcom/venus/core.c     | 31 ++++++++++++++++++++++++++++
+ drivers/media/platform/qcom/venus/core.h     |  2 ++
+ drivers/media/platform/qcom/venus/firmware.c |  3 +++
+ 3 files changed, 36 insertions(+)
 
-Thanks,
-Robin.
+diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+index bdd293f..2ddbd36 100644
+--- a/drivers/media/platform/qcom/venus/core.c
++++ b/drivers/media/platform/qcom/venus/core.c
+@@ -7,8 +7,10 @@
+ #include <linux/interconnect.h>
+ #include <linux/ioctl.h>
+ #include <linux/delay.h>
++#include <linux/devcoredump.h>
+ #include <linux/list.h>
+ #include <linux/module.h>
++#include <linux/of_address.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+@@ -22,6 +24,33 @@
+ #include "firmware.h"
+ #include "pm_helpers.h"
+ 
++static void venus_coredump(struct venus_core *core)
++{
++	struct device *dev;
++	phys_addr_t mem_phys;
++	size_t mem_size;
++	void *mem_va;
++	void *data;
++
++	dev = core->dev;
++	mem_phys = core->fw.mem_phys;
++	mem_size = core->fw.mem_size;
++
++	mem_va = memremap(mem_phys, mem_size, MEMREMAP_WC);
++	if (!mem_va)
++		return;
++
++	data = vmalloc(mem_size);
++	if (!data) {
++		memunmap(mem_va);
++		return;
++	}
++
++	memcpy(data, mem_va, mem_size);
++	memunmap(mem_va);
++	dev_coredumpv(dev, data, mem_size, GFP_KERNEL);
++}
++
+ static void venus_event_notify(struct venus_core *core, u32 event)
+ {
+ 	struct venus_inst *inst;
+@@ -67,6 +96,8 @@ static void venus_sys_error_handler(struct work_struct *work)
+ 
+ 	venus_shutdown(core);
+ 
++	venus_coredump(core);
++
+ 	pm_runtime_put_sync(core->dev);
+ 
+ 	while (core->pmdomains[0] && pm_runtime_active(core->pmdomains[0]))
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+index 3a477fc..b37de95 100644
+--- a/drivers/media/platform/qcom/venus/core.h
++++ b/drivers/media/platform/qcom/venus/core.h
+@@ -178,6 +178,8 @@ struct venus_core {
+ 		struct device *dev;
+ 		struct iommu_domain *iommu_domain;
+ 		size_t mapped_mem_size;
++		phys_addr_t mem_phys;
++		size_t mem_size;
+ 	} fw;
+ 	struct mutex lock;
+ 	struct list_head instances;
+diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
+index d03e2dd..89defc2 100644
+--- a/drivers/media/platform/qcom/venus/firmware.c
++++ b/drivers/media/platform/qcom/venus/firmware.c
+@@ -201,6 +201,9 @@ int venus_boot(struct venus_core *core)
+ 		return -EINVAL;
+ 	}
+ 
++	core->fw.mem_size = mem_size;
++	core->fw.mem_phys = mem_phys;
++
+ 	if (core->use_tz)
+ 		ret = qcom_scm_pas_auth_and_reset(VENUS_PAS_ID);
+ 	else
+-- 
+2.7.4
 
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> ---
-> v2:
-> Split the big patch into the change for dma-mapping.h and follow-up
-> patches per subsystem that will go through the trees of the respective
-> maintainers.
-> ---
->   include/linux/dma-mapping.h | 2 +-
->   kernel/dma/map_benchmark.c  | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-> index 2e49996a8..6177e20b5 100644
-> --- a/include/linux/dma-mapping.h
-> +++ b/include/linux/dma-mapping.h
-> @@ -95,7 +95,7 @@ static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
->   {
->   	debug_dma_mapping_error(dev, dma_addr);
->   
-> -	if (dma_addr == DMA_MAPPING_ERROR)
-> +	if (unlikely(dma_addr == DMA_MAPPING_ERROR))
->   		return -ENOMEM;
->   	return 0;
->   }
-> diff --git a/kernel/dma/map_benchmark.c b/kernel/dma/map_benchmark.c
-> index b1496e744..901420a5d 100644
-> --- a/kernel/dma/map_benchmark.c
-> +++ b/kernel/dma/map_benchmark.c
-> @@ -78,7 +78,7 @@ static int map_benchmark_thread(void *data)
->   
->   		map_stime = ktime_get();
->   		dma_addr = dma_map_single(map->dev, buf, PAGE_SIZE, map->dir);
-> -		if (unlikely(dma_mapping_error(map->dev, dma_addr))) {
-> +		if (dma_mapping_error(map->dev, dma_addr)) {
->   			pr_err("dma_map_single failed on %s\n",
->   				dev_name(map->dev));
->   			ret = -ENOMEM;
-> 
