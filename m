@@ -2,192 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5B72D9CE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B1B2D9CEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440228AbgLNQny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:43:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440304AbgLNQne (ORCPT
+        id S2501980AbgLNQpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 11:45:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23524 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406424AbgLNQpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:43:34 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3954C0617A7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:42:52 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id b18so16342419ots.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:42:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IDItWI1H2zdgCBJ7qsVj/mCH0/hwotw5iRObk/6BRmY=;
-        b=My+W/dX9eBu8xcYiKOkUoLAlw3/6Qk01Ygt3/jXQ8PcrRurADrJmnUseiDYLXNLlAM
-         fxno7RXRJ+mTkIbtUew8jGSJvqhMKoUaNEpFrGE/G832pxltTkqSDHZ39wYiSTGeRBm/
-         3RX3qHplnrro0XaY8EMXsb4cHNl/hb5UAO8m7tlkNV7oJSDM4yd44iCr0G3z6U2/xRf+
-         q5nVpytP6OXc7o/fD4NjymjF0vV6PAab478J50mzT+utp7t72FjyEemoooCnzHMCf6nA
-         YdoWRjgQYOXYhaNAUYKoEy+foitkmUyrCALH/2bQE03pzFtdQzZ7pi0d/DAqEkLzzqxN
-         kZsQ==
+        Mon, 14 Dec 2020 11:45:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607964258;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sTQlUJBJ+1xKcR7W+ayhV1sJLYL+miqfe6UVqpTkY4A=;
+        b=DmrPfRLXq6I/YBkdgu3BJQ1i6ddpwiTlqko8I/v2j8rb9i6Gk0YrhU4G/wH/QiVubQWpcb
+        Fgc5Q2R6Hmcz1qysfvXnPP0W0UUZxx+PYobePb3T8GtVDFRDHLUOiF8CudZIIp+xlS9Osp
+        2CRtn9V9Yhm4O2caiRrX29w21dm8sTM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-525-qQnWDrUGMPea4s4OqQ6l1w-1; Mon, 14 Dec 2020 11:44:16 -0500
+X-MC-Unique: qQnWDrUGMPea4s4OqQ6l1w-1
+Received: by mail-wm1-f71.google.com with SMTP id z139so1012532wmc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:44:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IDItWI1H2zdgCBJ7qsVj/mCH0/hwotw5iRObk/6BRmY=;
-        b=Xv4ezTYFp3U9K7tGO6n2Inqn7v4ycEPD1u1JgPbuI60Ydk5zmv3sliowPiGyZtheEy
-         X+blEFs+QKeUZApUFXXyH3utkR7LjpRwPjcC5gxHFyd31xGQqhsRjV1S4v7kOCdq9yuf
-         rFW9697PQ05SOw4052Yx1MQWmAZW+1LB9g0sihgTqlD9feJIuzTkZ7MiB3DD5m2ATKAX
-         VYIadaEaCv7vDwDyFzYAZ8CtoYMZWjH1Mxh/wnU9DUWz/WRqFSxzxOdkXcIXGkA7vkJh
-         HWYRxlQSK5FWPUoTYlS3rkkABK+GMDzSTaaKYTOp8c08GP9YNQZMex6LsM4WB/vFVl26
-         bcTA==
-X-Gm-Message-State: AOAM53279Xd7sKHawMb9kmxOOyslNtZmFBIwBCLgzmnwU6rZRRcvKDBP
-        Vsx9uyD02QYWdt0QlN1kKWiStA==
-X-Google-Smtp-Source: ABdhPJxMIWMsvyGFX+dDibExUl/E6x14Cs8oKnJCYdgnOLdiI5EZfYeTGh9q+cw1YUYGAA5q4utOvw==
-X-Received: by 2002:a05:6830:1482:: with SMTP id s2mr20405867otq.296.1607964172184;
-        Mon, 14 Dec 2020 08:42:52 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w21sm3963794ooj.32.2020.12.14.08.42.51
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=sTQlUJBJ+1xKcR7W+ayhV1sJLYL+miqfe6UVqpTkY4A=;
+        b=Mk3qgNwAlmAQO2fgmNnyfwutKnhrndgIJnscGJjmvENUtWJjLGFbu9i3pX7lSDS0lM
+         knjFmsYi9BuuHCvdNm5hyuUI4MhEOkBnNmh+Yl249zhiUl2Hz9ZafgRFaISkbsMVdOxU
+         VQcAKte9CnfqGb0IKT82IKzQiNtQM1Nh06/BA2bz1O2kxM9j0QDfF1zCSLW5vQs/OsIy
+         aXVcJa+9MCaKwmfvgfsUhOjM7HuzbM+jK0la8Xd4dDyMYRVtxt88DqTu8lRbAoUIEpn6
+         Ug/j+SPKMuHD8ChSvWGP8sTTfa5WooP3l/oo9EPqmPQyoI5LQrsNwgNqiHCDYUkNJVA4
+         CTjA==
+X-Gm-Message-State: AOAM530etPwplTH+pxeWTmn1wDY76B1rA5A8/BIfm8eQF21ACOI3JdPA
+        5JQqxNFfYJm2Dv3+BBOWpWQUELFqcI8ssO/+E8CUDLG5wR3BIM2x6pAZNgGv+BxBrgXuRl+B2o3
+        OwLsnQvNTJ4epvdQk5rVQP8HU
+X-Received: by 2002:a5d:610d:: with SMTP id v13mr30260415wrt.425.1607964253820;
+        Mon, 14 Dec 2020 08:44:13 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwKk43dStphquLYXnLDD/h4UkHfeQYfoqiZnRsZuI3MS0MCxLP8cVSaCwG2k2RP/zntvwZwXw==
+X-Received: by 2002:a5d:610d:: with SMTP id v13mr30260400wrt.425.1607964253550;
+        Mon, 14 Dec 2020 08:44:13 -0800 (PST)
+Received: from linux.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
+        by smtp.gmail.com with ESMTPSA id a62sm34998124wmh.40.2020.12.14.08.44.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 08:42:51 -0800 (PST)
-Date:   Mon, 14 Dec 2020 10:42:49 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Taniya Das <tdas@codeaurora.org>, vbadigan@codeaurora.org,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] mmc: sdhci-msm: Actually set the actual clock
-Message-ID: <X9eWCf3KNxGpvtYO@builder.lan>
-References: <20201211091150.v4.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
- <20201211091150.v4.2.I7564620993acd4baa63fa0e3925ca879a86d3ee3@changeid>
+        Mon, 14 Dec 2020 08:44:12 -0800 (PST)
+Date:   Mon, 14 Dec 2020 17:44:11 +0100
+From:   Guillaume Nault <gnault@redhat.com>
+To:     Martin Zaharinov <micron10@gmail.com>
+Cc:     "linux-kernel@vger kernel. org" <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>, netdev@vger.kernel.org
+Subject: Re: Urgent: BUG: PPP ioctl Transport endpoint is not connected
+Message-ID: <20201214164411.GA8350@linux.home>
+References: <83C781EB-5D66-426E-A216-E1B846A3EC8A@gmail.com>
+ <20201209164013.GA21199@linux.home>
+ <1E49F9F8-0325-439E-B200-17C8CB6A3CBE@gmail.com>
+ <20201209181033.GB21199@linux.home>
+ <FDF5FB97-DB82-4DFD-AC05-28F60C6D166F@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201211091150.v4.2.I7564620993acd4baa63fa0e3925ca879a86d3ee3@changeid>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <FDF5FB97-DB82-4DFD-AC05-28F60C6D166F@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 11 Dec 11:12 CST 2020, Douglas Anderson wrote:
+On Thu, Dec 10, 2020 at 09:16:24AM +0200, Martin Zaharinov wrote:
+> And one other 
+> From other mailing I see you send patch to Denys Fedoryshchenko this patch is : 
+> 
+> diff --git a/drivers/net/ppp/ppp_generic.c 
+> b/drivers/net/ppp/ppp_generic.c
+> 
+> index 255a5def56e9..2acf4b0eabd1 100644
+> --- a/drivers/net/ppp/ppp_generic.c
+> +++ b/drivers/net/ppp/ppp_generic.c
+> @@ -3161,6 +3161,15 @@ ppp_connect_channel(struct channel *pch, int 
+> unit)
+> 
+> goto outl;
+> 
+> ppp_lock(ppp);
+> +   spin_lock_bh(>downl);
+> +   if (!pch->chan) {
+> +   /* Don't connect unregistered channels */
+> +   ppp_unlock(ppp);
+> +   spin_unlock_bh(>downl);
+> +   ret = -ENOTCONN;
+> +   goto outl;
+> +   }
+> +   spin_unlock_bh(>downl);
+> if (pch->file.hdrlen > ppp->file.hdrlen)
+> ppp->file.hdrlen = pch->file.hdrlen;
+> hdrlen = pch->file.hdrlen + 2;   /* for protocol bytes */
 
-> The MSM SDHCI driver always set the "actual_clock" field to 0.  It had
-> a comment about it not being needed because we weren't using the
-> standard SDHCI divider mechanism and we'd just fallback to
-> "host->clock".  However, it's still better to provide the actual
-> clock.  Why?
-> 
-> 1. It will make timeout calculations slightly better.  On one system I
->    have, the eMMC requets 200 MHz (for HS400-ES) but actually gets 192
->    MHz.  These are close, but why not get the more accurate one.
-> 
-> 2. If things are seriously off in the clock driver and it's missing
->    rates or picking the wrong rate (maybe it's rounding up instead of
->    down), this will make it much more obvious what's going on.
-> 
-> NOTE: we have to be a little careful here because the "actual_clock"
-> field shouldn't include the multiplier that sdhci-msm needs
-> internally.
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+This was a quick untested patch that I sent to help debugging Denys'
+problem. It has a lock inversion problem that I fixed before I formally
+submitted it upstream. I even warned about it in the original thread:
+https://lore.kernel.org/netdev/20180302174328.GD1413@alphalink.fr/
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> But in official stable kernel three In ppp_generic.c is this : 
+> 
+> spin_lock_bh(&pch->downl); 
+> 	if (!pch->chan) { 
+> 	/* Don't connect unregistered channels */ 
+> 	spin_unlock_bh(&pch->downl); 
+> 	ppp_unlock(ppp); 
+> 	ret = -ENOTCONN; 
+> 	goto outl; }
+> 	spin_unlock_bh(&pch->downl);	
 
-Regards,
-Bjorn
+This one is correct.
 
-> ---
+> It is  normal to unlock ppp after spin_unlock ?
+> shouldn't it be as you wrote it?
+> In your patch first :
 > 
-> Changes in v4:
-> - ("mmc: sdhci-msm: Actually set the actual clock") new for v4.
+> +   ppp_unlock(ppp);
+> +   spin_unlock_bh(>downl);
+
+No, nested locks have to be released in the reverse order they were
+acquired.
+
+> But in stable kernel is : 
 > 
->  drivers/mmc/host/sdhci-msm.c | 32 ++++++++++++++------------------
->  1 file changed, 14 insertions(+), 18 deletions(-)
+> spin_unlock_bh(&pch->downl); 
+> 	ppp_unlock(ppp); 
+
+This is correct, and has been correctly backported to 4.14-stable.
+
+
+> > On 9 Dec 2020, at 20:10, Guillaume Nault <gnault@redhat.com> wrote:
+> > 
+> > On Wed, Dec 09, 2020 at 06:57:44PM +0200, Martin Zaharinov wrote:
+> >>> On 9 Dec 2020, at 18:40, Guillaume Nault <gnault@redhat.com> wrote:
+> >>> On Wed, Dec 09, 2020 at 04:47:52PM +0200, Martin Zaharinov wrote:
+> >>>> Hi All
+> >>>> 
+> >>>> I have problem with latest kernel release 
+> >>>> And the problem is base on this late problem :
+> >>>> 
+> >>>> 
+> >>>> https://www.mail-archive.com/search?l=netdev@vger.kernel.org&q=subject:%22Re%5C%3A+ppp%5C%2Fpppoe%2C+still+panic+4.15.3+in+ppp_push%22&o=newest&f=1
+> >>>> 
+> >>>> I have same problem in kernel 5.6 > now I use kernel 5.9.13 and have same problem.
+> >>>> 
+> >>>> 
+> >>>> In kernel 5.9.13 now don’t have any crashes in dimes but in one moment accel service stop with defunct and in log have many of this line :
+> >>>> 
+> >>>> 
+> >>>> error: vlan608: ioctl(PPPIOCCONNECT): Transport endpoint is not connected
+> >>>> error: vlan617: ioctl(PPPIOCCONNECT): Transport endpoint is not connected
+> >>>> error: vlan679: ioctl(PPPIOCCONNECT): Transport endpoint is not connected
+> >>>> 
+> >>>> In one moment connected user bump double or triple and after that service defunct and need wait to drop all session to start .
+> >>>> 
+> >>>> I talk with accel-ppp team and they said this is kernel related problem and to back to kernel 4.14 there is not this problem.
+> >>>> 
+> >>>> Problem is come after kernel 4.15 > and not have solution to this moment.
+> >>> 
+> >>> I'm sorry, I don't understand.
+> >>> Do you mean that v4.14 worked fine (no crash, no ioctl() error)?
+> >>> Did the problem start appearing in v4.15? Or did v4.15 work and the
+> >>> problem appeared in v4.16?
+> >> 
+> >> In Telegram group I talk with Sergey and Dimka and told my the problem is come after changes from 4.14 to 4.15 
+> >> Sergey write this : "as I know, there was a similar issue in kernel 4.15 so maybe it is still not fixed"
+> > 
+> > Ok, but what is your experience? Do you have a kernel version where
+> > accel-ppp reports no ioctl() error and doesn't crash the kernel?
+> > 
+> > There wasn't a lot of changes between 4.14 and 4.15 for PPP.
+> > The only PPP patch I can see that might have been risky is commit
+> > 0171c4183559 ("ppp: unlock all_ppp_mutex before registering device").
+> > 
+> >> I don’t have options to test with this old kernel 4.14.xxx i don’t have support for them.
+> >> 
+> >> 
+> >>> 
+> >>>> Please help to find the problem.
+> >>>> 
+> >>>> Last time in link I see is make changes in ppp_generic.c 
+> >>>> 
+> >>>> ppp_lock(ppp);
+> >>>>       spin_lock_bh(&pch->downl);
+> >>>>       if (!pch->chan) {
+> >>>>               /* Don't connect unregistered channels */
+> >>>>               spin_unlock_bh(&pch->downl);
+> >>>>               ppp_unlock(ppp);
+> >>>>               ret = -ENOTCONN;
+> >>>>               goto outl;
+> >>>>       }
+> >>>>       spin_unlock_bh(&pch->downl);
+> >>>> 
+> >>>> 
+> >>>> But this fix only to don’t display error and freeze system 
+> >>>> The problem is stay and is to big.
+> >>> 
+> >>> Do you use accel-ppp's unit-cache option? Does the problem go away if
+> >>> you stop using it?
+> >>> 
+> >> 
+> >> No I don’t use unit-cache , if I set unit-cache accel-ppp defunct same but user Is connect and disconnet more fast.
+> >> 
+> >> The problem is same with unit and without . 
+> >> Only after this patch I don’t see error in dimes but this is not solution.
+> > 
+> > Soryy, what's "in dimes"?
+> > Do you mean that reverting commit 77f840e3e5f0 ("ppp: prevent
+> > unregistered channels from connecting to PPP units") fixes your problem?
+> > 
+> >> In network have customer what have power cut problem, when drop 600 user and back Is normal but in this moment kernel is locking and start to make this : 
+> >> sessions:
+> >>  starting: 4235
+> >>  active: 3882
+> >>  finishing: 378
+> >> The problem is starting session is not real user normal user in this server is ~4k customers .
+> > 
+> > What type of session is it? L2TP, PPPoE, PPTP?
+> > 
+> >> I use pppd_compat .
+> >> 
+> >> Any idea ?
+> >> 
+> >>>> 
+> >>>> Please help to fix.
+> >> Martin
 > 
-> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-> index 50beb407dbe9..08a3960001ad 100644
-> --- a/drivers/mmc/host/sdhci-msm.c
-> +++ b/drivers/mmc/host/sdhci-msm.c
-> @@ -328,7 +328,7 @@ static void sdhci_msm_v5_variant_writel_relaxed(u32 val,
->  	writel_relaxed(val, host->ioaddr + offset);
->  }
->  
-> -static unsigned int msm_get_clock_rate_for_bus_mode(struct sdhci_host *host,
-> +static unsigned int msm_get_clock_mult_for_bus_mode(struct sdhci_host *host,
->  						    unsigned int clock)
->  {
->  	struct mmc_ios ios = host->mmc->ios;
-> @@ -342,8 +342,8 @@ static unsigned int msm_get_clock_rate_for_bus_mode(struct sdhci_host *host,
->  	    ios.timing == MMC_TIMING_MMC_DDR52 ||
->  	    ios.timing == MMC_TIMING_MMC_HS400 ||
->  	    host->flags & SDHCI_HS400_TUNING)
-> -		clock *= 2;
-> -	return clock;
-> +		return 2;
-> +	return 1;
->  }
->  
->  static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
-> @@ -354,14 +354,16 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
->  	struct mmc_ios curr_ios = host->mmc->ios;
->  	struct clk *core_clk = msm_host->bulk_clks[0].clk;
->  	unsigned long achieved_rate;
-> +	unsigned int desired_rate;
-> +	unsigned int mult;
->  	int rc;
->  
-> -	clock = msm_get_clock_rate_for_bus_mode(host, clock);
-> -	rc = dev_pm_opp_set_rate(mmc_dev(host->mmc), clock);
-> +	mult = msm_get_clock_mult_for_bus_mode(host, clock);
-> +	desired_rate = clock * mult;
-> +	rc = dev_pm_opp_set_rate(mmc_dev(host->mmc), desired_rate);
->  	if (rc) {
->  		pr_err("%s: Failed to set clock at rate %u at timing %d\n",
-> -		       mmc_hostname(host->mmc), clock,
-> -		       curr_ios.timing);
-> +		       mmc_hostname(host->mmc), desired_rate, curr_ios.timing);
->  		return;
->  	}
->  
-> @@ -371,11 +373,12 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
->  	 * encounter it.
->  	 */
->  	achieved_rate = clk_get_rate(core_clk);
-> -	if (achieved_rate > clock)
-> +	if (achieved_rate > desired_rate)
->  		pr_warn("%s: Card appears overclocked; req %u Hz, actual %lu Hz\n",
-> -			mmc_hostname(host->mmc), clock, achieved_rate);
-> +			mmc_hostname(host->mmc), desired_rate, achieved_rate);
-> +	host->mmc->actual_clock = achieved_rate / mult;
->  
-> -	msm_host->clk_rate = clock;
-> +	msm_host->clk_rate = desired_rate;
->  	pr_debug("%s: Setting clock at rate %lu at timing %d\n",
->  		 mmc_hostname(host->mmc), achieved_rate, curr_ios.timing);
->  }
-> @@ -1756,13 +1759,6 @@ static unsigned int sdhci_msm_get_min_clock(struct sdhci_host *host)
->  static void __sdhci_msm_set_clock(struct sdhci_host *host, unsigned int clock)
->  {
->  	u16 clk;
-> -	/*
-> -	 * Keep actual_clock as zero -
-> -	 * - since there is no divider used so no need of having actual_clock.
-> -	 * - MSM controller uses SDCLK for data timeout calculation. If
-> -	 *   actual_clock is zero, host->clock is taken for calculation.
-> -	 */
-> -	host->mmc->actual_clock = 0;
->  
->  	sdhci_writew(host, 0, SDHCI_CLOCK_CONTROL);
->  
-> @@ -1785,7 +1781,7 @@ static void sdhci_msm_set_clock(struct sdhci_host *host, unsigned int clock)
->  	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
->  
->  	if (!clock) {
-> -		msm_host->clk_rate = clock;
-> +		host->mmc->actual_clock = msm_host->clk_rate = 0;
->  		goto out;
->  	}
->  
-> -- 
-> 2.29.2.576.ga3fc446d84-goog
-> 
+
