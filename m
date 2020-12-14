@@ -2,134 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02902D9CD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:40:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9523C2D9CD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:40:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440183AbgLNQhe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Dec 2020 11:37:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440068AbgLNQhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:37:34 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F364222286;
-        Mon, 14 Dec 2020 16:36:52 +0000 (UTC)
-Date:   Mon, 14 Dec 2020 11:36:51 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
-        <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
-        <huawei.libin@huawei.com>, <cj.chengjian@huawei.com>
-Subject: Re: [PATCH] kretprobe: avoid re-registration of the same kretprobe
- earlier
-Message-ID: <20201214113651.04e550f6@gandalf.local.home>
-In-Reply-To: <9dff21f8-4ab9-f9b2-64fd-cc8c5f731932@huawei.com>
-References: <20201124115719.11799-1-bobo.shaobowang@huawei.com>
-        <20201130161850.34bcfc8a@gandalf.local.home>
-        <20201202083253.9dbc76704149261e131345bf@kernel.org>
-        <9dff21f8-4ab9-f9b2-64fd-cc8c5f731932@huawei.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2439790AbgLNQiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 11:38:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727024AbgLNQil (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 11:38:41 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F9FC0613D3;
+        Mon, 14 Dec 2020 08:38:01 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id DE2D51F442AB
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     linux-integrity@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
+        kernel@collabora.com,
+        "dlaurie@chromium.org" <dlaurie@chromium.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: Re: [PATCH v6] char: tpm: add i2c driver for cr50
+In-Reply-To: <20201211103443.GA12091@kernel.org>
+References: <20201207142016.482122-1-adrian.ratiu@collabora.com>
+ <20201208173906.GA58213@kernel.org> <87y2i7b186.fsf@collabora.com>
+ <20201211103443.GA12091@kernel.org>
+Date:   Mon, 14 Dec 2020 18:37:55 +0200
+Message-ID: <87v9d4baxo.fsf@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Dec 2020 09:23:35 +0800
-"Wangshaobo (bobo)" <bobo.shaobowang@huawei.com> wrote:
-
-> Hi steve, Masami,
+On Fri, 11 Dec 2020, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> On Wed, Dec 09, 2020 at 02:41:45PM +0200, Adrian Ratiu wrote: 
+>> On Tue, 08 Dec 2020, Jarkko Sakkinen <jarkko@kernel.org> wrote: 
+>> > On Mon, Dec 07, 2020 at 04:20:16PM +0200, Adrian Ratiu wrote: 
+>> > > From: "dlaurie@chromium.org" <dlaurie@chromium.org>  Add 
+>> > > TPM 2.0 compatible I2C interface for chips with cr50 
+>> > > firmware. The firmware running on the currently supported 
+>> > > H1 MCU requires a special driver to handle its specific 
+>> > > protocol, and this makes it unsuitable to use 
+>> > > tpm_tis_core_* and instead it must implement the underlying 
+>> > > TPM protocol similar to the other I2C TPM drivers.   - All 
+>> > > 4 bytes of status register must be read/written at once.  - 
+>> > > FIFO and burst count is limited to 63 and must be drained 
+>> > > by AP.  - Provides an interrupt to indicate when read 
+>> > > response data is ready and when the TPM is finished 
+>> > > processing write data.   This driver is based on the 
+>> > > existing infineon I2C TPM driver, which most closely 
+>> > > matches the cr50 i2c protocol behavior. 
+>> >  Starts to look legit. Has anyone tested this? 
+>>  I tested on an x86_64 Chromebook EVE (aka Google Pixelbook) by 
+>> chainloading in legacy mode and booting into a Yocto-based 
+>> userspace (meta-chromebook) where I used tpm2-tools to 
+>> communicate with the chip and also built and tested a 
+>> ChromiumOS userspace in developer mode.   I do not have access 
+>> to other HW which has this chip, so it is about as much testing 
+>> I can do to confirm the driver works on this HW.   Adrian 
 > 
-> Thanks for your works, i will check code again and modify properly 
-> according to steve's suggestion.
-> 
-> -- ShaoBo
-> 
+> So can you respond to this with tested-by. It's sufficient 
+> because collateral effects of driver failing are insignificant 
+> for the kernel as whole. 
 
-Anything happen with this? 
+Tested-by: Adrian Ratiu <adrian.ratiu@collabora.com>
 
--- Steve
-
-
-> 在 2020/12/2 7:32, Masami Hiramatsu 写道:
-> > On Mon, 30 Nov 2020 16:18:50 -0500
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> >  
-> >> Masami,
-> >>
-> >> Can you review this patch, and also, should this go to -rc and stable?
-> >>
-> >> -- Steve  
-> > Thanks for ping me!
-> >  
-> >> On Tue, 24 Nov 2020 19:57:19 +0800
-> >> Wang ShaoBo <bobo.shaobowang@huawei.com> wrote:
-> >>  
-> >>> Our system encountered a re-init error when re-registering same kretprobe,
-> >>> where the kretprobe_instance in rp->free_instances is illegally accessed
-> >>> after re-init.  
-> > Ah, OK. Anyway if re-register happens on kretprobe, it must lose instances
-> > on the list before checking re-register in register_kprobe().
-> > So the idea looks good to me.
-> >
-> >  
-> >>> Implementation to avoid re-registration has been introduced for kprobe
-> >>> before, but lags for register_kretprobe(). We must check if kprobe has
-> >>> been re-registered before re-initializing kretprobe, otherwise it will
-> >>> destroy the data struct of kretprobe registered, which can lead to memory
-> >>> leak, system crash, also some unexpected behaviors.
-> >>>
-> >>> we use check_kprobe_rereg() to check if kprobe has been re-registered
-> >>> before calling register_kretprobe(), for giving a warning message and
-> >>> terminate registration process.
-> >>>
-> >>> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
-> >>> Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
-> >>> ---
-> >>>   kernel/kprobes.c | 8 ++++++++
-> >>>   1 file changed, 8 insertions(+)
-> >>>
-> >>> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> >>> index 41fdbb7953c6..7f54a70136f3 100644
-> >>> --- a/kernel/kprobes.c
-> >>> +++ b/kernel/kprobes.c
-> >>> @@ -2117,6 +2117,14 @@ int register_kretprobe(struct kretprobe *rp)
-> >>>   		}
-> >>>   	}
-> >>>   
-> >>> +	/*
-> >>> +	 * Return error if it's being re-registered,
-> >>> +	 * also give a warning message to the developer.
-> >>> +	 */
-> >>> +	ret = check_kprobe_rereg(&rp->kp);
-> >>> +	if (WARN_ON(ret))
-> >>> +		return ret;  
-> > If you call this here, you must make sure kprobe_addr() is called on rp->kp.
-> > But if kretprobe_blacklist_size == 0, kprobe_addr() is not called before
-> > this check. So it should be in between kprobe_on_func_entry() and
-> > kretprobe_blacklist_size check, like this
-> >
-> > 	if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
-> > 		return -EINVAL;
-> >
-> > 	addr = kprobe_addr(&rp->kp);
-> > 	if (IS_ERR(addr))
-> > 		return PTR_ERR(addr);
-> > 	rp->kp.addr = addr;
-> >
-> > 	ret = check_kprobe_rereg(&rp->kp);
-> > 	if (WARN_ON(ret))
-> > 		return ret;
-> >
-> >          if (kretprobe_blacklist_size) {
-> > 		for (i = 0; > > +	ret = check_kprobe_rereg(&rp->kp);
-> >
-> >
-> > Thank you,
-> >
-> >  
-
+>  
+>  /Jarkko
