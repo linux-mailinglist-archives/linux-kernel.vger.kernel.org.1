@@ -2,78 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5978D2D9527
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:27:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDDB2D952C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:27:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407585AbgLNJZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 04:25:10 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:45076 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732158AbgLNJZD (ORCPT
+        id S1725948AbgLNJ0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 04:26:09 -0500
+Received: from ns2.baikalchip.com ([94.125.187.42]:46572 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726027AbgLNJ0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 04:25:03 -0500
-Received: from [192.168.0.217] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0FB0E3E;
-        Mon, 14 Dec 2020 10:24:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1607937857;
-        bh=dMasbpkgAFewrDWYt0LKSsXeJYXjZFEXDlk0PkueXcc=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=QFqYmWuWqKa379wTcDmmyhwiv5Yv16YqQcATQHQziYojHLKhC+bx2e33Oos2dmxh/
-         X6pPt4dUtTasKWZ3xXysP8vJ8wFdLJ+w4KXhpCeVn7soYJmUI9dsfTGWTJPTXgF9wU
-         Ti+eCC3Au+eUTFhz8atJIP4Bu+oqP7NxWIPsLVPw=
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Subject: Re: [PATCH] media: vsp1: Fix an error handling path in the probe
- function
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        laurent.pinchart@ideasonboard.com, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20201212174119.120027-1-christophe.jaillet@wanadoo.fr>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <592359b9-8e2a-6b5c-053f-ec16d9085b22@ideasonboard.com>
-Date:   Mon, 14 Dec 2020 09:24:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 14 Dec 2020 04:26:03 -0500
+Date:   Mon, 14 Dec 2020 12:25:16 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [RFC] net: stmmac: Problem with adding the native GPIOs support
+Message-ID: <20201214092516.lmbezb6hrbda6hzo@mobilestation>
 MIME-Version: 1.0
-In-Reply-To: <20201212174119.120027-1-christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+Hello folks,
 
-On 12/12/2020 17:41, Christophe JAILLET wrote:
-> A previous 'rcar_fcp_get()' call must be undone in the error handling path,
-> as already done in the remove function.
+I've got a problem, which has been blowing by head up for more than three
+weeks now, and I'm desperately need your help in that matter. See our
+Baikal-T1 SoC is created with two DW GMAC v3.73a IP-cores. Each core
+has been synthesized with two GPIOs: one as GPI and another as GPO. There
+are multiple Baikal-T1-based devices have been created so far with active
+GMAC interface usage and each of them has been designed like this:
 
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+ +------------------------+
+ | Baikal-T1 +------------+       +------------+
+ |   SoC     | DW GMAC    |       |   Some PHY |
+ |           |      Rx-clk+<------+Rx-clk      |
+ |           |            |       |            |
+ |           |         GPI+<------+#IRQ        |
+ |           |            |       |            |
+ |           |       RGMII+<----->+RGMII       |
+ |           |        MDIO+<----->+MDIO        |
+ |           |            |       |            |
+ |           |         GPO+------>+#RST        |
+ |           |            |       |            |
+ |           |      Tx-clk+------>+Tx-clk      |
+ |           |            |       |            |
+ |           +------------+       +------------+
+ +------------------------+
 
-> Fixes: 94fcdf829793 ("[media] v4l: vsp1: Add FCP support")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/media/platform/vsp1/vsp1_drv.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
-> index dc62533cf32c..aa66e4f5f3f3 100644
-> --- a/drivers/media/platform/vsp1/vsp1_drv.c
-> +++ b/drivers/media/platform/vsp1/vsp1_drv.c
-> @@ -882,8 +882,10 @@ static int vsp1_probe(struct platform_device *pdev)
->  	}
->  
->  done:
-> -	if (ret)
-> +	if (ret) {
->  		pm_runtime_disable(&pdev->dev);
-> +		rcar_fcp_put(vsp1->fcp);
-> +	}
->  
->  	return ret;
->  }
-> 
+Each of such devices has got en external RGMII-PHY attached configured via the
+MDIO bus with Rx-clock supplied by the PHY and Tx-clock consumed by it. The
+main peculiarity of such configuration is that the DW GMAC GPIOs have been used
+to catch the PHY IRQs and to reset the PHY. Seeing the GPIOs support hasn't
+been added to the STMMAC driver it's the very first setup for now, which has
+been using them. Anyway the hardware setup depicted above doesn't seem
+problematic at the first glance, but in fact it is. See, the DW *MAC driver
+(STMMAC ethernet driver) is doing the MAC reset each time it performs the
+device open or resume by means of the call-chain:
 
+  stmmac_open()---+
+                  +->stmmac_hw_setup()->stmmac_init_dma_engine()->stmmac_reset().
+  stmmac_resume()-+
+
+Such reset causes the whole interface reset: MAC, DMA and, what is more
+important, GPIOs as being exposed as part of the MAC registers. That
+in our case automatically causes the external PHY reset, what neither
+the STTMAC driver nor the PHY subsystem expect at all.
+
+Moreover the stmmac_reset() method polls the DMA_BUS_MODE.SFT_RESET flag
+state to be sure the MAC is successfully completed. But since the external
+PHY has got in reset state it doesn't generate the Rx-clk signal. Due to
+that the MAC-DMA won't get out of the reset state so the stmmac_reset()
+method will return timeout error. Of course I could manually restore the
+GPIOs state in the stmmac_reset() before start to poll the SFT_RESET flag,
+which may release the PHY reset. But that seems more like a workaround,
+because the PHY still has been in reset and need to be reinitialized
+anyway. Moreover some PHY may need to have more complicated reset cycle
+with certain delays between RST assertion/de-assertion, so the workaround
+won't work well for them.
+
+To sum it up my question is what is the right way to resolve the problem
+described above? My first idea was to just move the MAC reset from the
+net-device open()/close() callbacks to the
+stmmac_dvr_probe()/stmmac_dvr_remove() functions and don't reset the whole
+interface on each device open. The problems we may have in that case is
+due to the suspend/resume procedures, which for some reason require the
+MAC reset too. That's why I need your help in this matter. Do you have any
+idea how to gently add the GPIOs support and don't break the STMMAC
+driver?
+
+One more tiny question regarding the DW *MAC drivers available in kernel.
+Aside of the DW GMAC Baikal-T1 SoC has also got DW xGMAC v2.11a embedded
+with XPCS PHY attached. My question is what driver should we better use to
+handle our xGMAC interface? AFAICS there are three DW *MAC-related drivers
+the kernel currently provides:
+1) drivers/net/ethernet/stmicro/stmmac
+2) drivers/net/ethernet/amd/
+3) drivers/net/ethernet/synopsys/
+xGBE interface is supported by the drivers 1) and 2). In accordance with
+https://www.spinics.net/lists/netdev/msg414148.html all xGMAC related
+parts should have been added to 2), but recently the XGMAC support has
+been added to 1). So I am confused what driver is now supposed to be used
+for new xGMACs?
+
+Regards,
+-Sergey
