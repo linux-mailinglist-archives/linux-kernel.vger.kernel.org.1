@@ -2,213 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A99352D9472
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 09:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2402D9477
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439466AbgLNI7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 03:59:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728481AbgLNI7P (ORCPT
+        id S2439492AbgLNI74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 03:59:56 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:46415 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439472AbgLNI73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 03:59:15 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4CDC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 00:58:34 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id w16so12023069pga.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 00:58:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GFrxUJ2+3DxqruW/vfemtxiKuJAN5bbNqUiktWTQp2Y=;
-        b=tMTk1D6iJ+/oRV9cjcLelYnSoO+4js04/uVFG7Su1vTfxYye+vAK91XNJwWyEKM0sr
-         CCHxTwi/z9g1FN2s/DMxRmyHgdqqFAYDRVatsQfu0ua7bOpUJo02nE/z5fchZjmGs9sd
-         ZX5t7fwy5QLMWiCa+FCUDyRV/Rs6UA7HgDbsxsIAjTioKesxWhRfKK56F8LUz2WJtx0z
-         as50v8c/k6BGXqylOc4jUis0YgSPxKKCs3R5c38X1JQtxlK/K5CYeIwntJjDYvjuIrey
-         yoZ8dU0oZdUn+P1CQJ3zfWNQa6vAT4nGifwDtH5i0vXX6FDVcgDZ50Kq2Xo3qdpoNBQQ
-         T8dQ==
+        Mon, 14 Dec 2020 03:59:29 -0500
+Received: by mail-lf1-f68.google.com with SMTP id y19so28145310lfa.13;
+        Mon, 14 Dec 2020 00:59:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GFrxUJ2+3DxqruW/vfemtxiKuJAN5bbNqUiktWTQp2Y=;
-        b=Wy2XUsJi31XUPiFYJ9CnSxoh6xCGdQH0p9mMiE0V5k/32Q710UEEPBwxC5lQBS8Vp/
-         hyHS4SPI1ktxqHtWrgoz1G/5JBoQChjXaZU8qLb64k5j4XWhmD1RaBEvuwp7TMRrIuTp
-         g7tWkGR0ZIUwZD8EGAi+VCcDxDKX5UvuAWLuewSipgOsOzAD2KtMtUM26fE6YHUMwhE0
-         Xf+U1j9Szsoi0pk0116cIptR0jHLnBqbQ50I3/BhyyciFJB447Crz/3+LUfMnDCdfivL
-         MZkef0Au+kXH/XmpDKMYbAEQ4I0faa8HYLIHm/JaMtUz5mWOY4sU5X3vTi6ORWS10HDu
-         UlPg==
-X-Gm-Message-State: AOAM531gpV7RA1gpnXmZO7BEioKGUC/d/EUHuPbp9moJc2LW4lafuml9
-        inl/0w75vqb6xqEIKRNAtgLUN6Ks/D6bhbC2+bM=
-X-Google-Smtp-Source: ABdhPJySyVCTs0X4q0LDZcyNPCCXc6o0dRfJ3mMubOr8kLAtzdl7+UFRbMMRzM31RCCsgm/F2HB6IbPZXsD9X4uYXQE=
-X-Received: by 2002:a63:802:: with SMTP id 2mr23627036pgi.292.1607936314469;
- Mon, 14 Dec 2020 00:58:34 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Lr5XsBxGYGsi86hSbsch7/IRMB+x1iKvkn7GZc67tW8=;
+        b=O/lrdeQ/4pcwmhj+AhhM8qbzeJWbHRGr8mqP5WbAEis9xFgBAqKF3VIRdW5pc+a8v4
+         BcYdqsA1b/Bbf03Nm+DXdzAHkcovpL71i/fSwe7e8OFAG6dtQYsXXdX+dUfTU/Ol68Xf
+         LMctO9IStHOS0Q5202GB1jThJ1KNz38ZkTag07aduWu3EZo768vo9qCylMJ1Rape2HqM
+         PuOeOC8Zxp10Hjzh0Y6gpwYgozrXL/KyiaUGd8GwoE5ewsOjflnHOL2/x7lZa0mboWfw
+         VaSp0/RavASspoFAzn7t6CFDGH0z/SkbKhbak1cK91cgR5zfB3SwnoCcx7NweAyE78DA
+         QeZg==
+X-Gm-Message-State: AOAM532Z35Y9cKGvBUQ2JuJ22DMlYFp1vC45p6khnZg9Vcz0gAboRAZ8
+        k0ou/snzgqmeLZx1zx/Q84A=
+X-Google-Smtp-Source: ABdhPJyhhmDZ7vcuIblH29uJeGjTMhhbNEqXAoVlSXDhsWa+GIQSBCxgnnou7Fw/tJWAtPwTNKLsdA==
+X-Received: by 2002:a19:cb05:: with SMTP id b5mr8699978lfg.61.1607936326079;
+        Mon, 14 Dec 2020 00:58:46 -0800 (PST)
+Received: from xi.terra (c-b3cbe455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.203.179])
+        by smtp.gmail.com with ESMTPSA id e1sm1700092lfs.279.2020.12.14.00.58.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 00:58:44 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kojgm-0006Sj-9M; Mon, 14 Dec 2020 09:58:40 +0100
+Date:   Mon, 14 Dec 2020 09:58:40 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-usb <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        patong.mxl@gmail.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Angelo Dureghello <angelo.dureghello@timesys.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Subject: Re: [PATCH v5 2/3] usb: serial: xr_serial: Add gpiochip support
+Message-ID: <X9cpQO3IV4IgX1dh@localhost>
+References: <20201122170822.21715-3-mani@kernel.org>
+ <CACRpkdbY-aZB1BAD=JkZAHA+OQvpH12AD3tLAp6Nf1hwr74s9A@mail.gmail.com>
+ <X8ZmfbQp7/BGgxec@localhost>
+ <CACRpkdZJdxqxUEQaKUHctHRSQAUpYZJtuxonwVd_ZFAsLBbKrA@mail.gmail.com>
+ <X89OOUOG0x0SSxXA@localhost>
+ <CACRpkdavm7GG8HdV1xk0W_b1EzUmvF0kKAGnp0u6t42NAWa9iA@mail.gmail.com>
+ <X9DsWahl6UDwZwBn@localhost>
+ <CACRpkdYm-j9QcK8hgNrC33KruWE17Q0F4+T=UanE7PCEZEtu6w@mail.gmail.com>
+ <X9HiGaIzk4UaZG7i@localhost>
+ <CACRpkdZ6MUzRe9m=NrqA_5orhZXDtWj+qoFMHX7v6Zjsx-rVGg@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAJ8uoz3wQ=mtPUsyQsgHPHcMNT55aayAQ+JmmL7VAz3KJEOtpw@mail.gmail.com>
- <1607762670.6417274-1-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1607762670.6417274-1-xuanzhuo@linux.alibaba.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 14 Dec 2020 09:58:23 +0100
-Message-ID: <CAJ8uoz2TYFcDLE0ObnSeEBUGGFq=dquiTxCtk323LBNj6twZpw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] xsk: save the undone skb
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "open list:XDP SOCKETS <netdev@vger.kernel.org>, open list:XDP SOCKETS
-        <bpf@vger.kernel.org>, open list" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdZ6MUzRe9m=NrqA_5orhZXDtWj+qoFMHX7v6Zjsx-rVGg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 9:47 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->
-> On Fri, 11 Dec 2020 16:32:06 +0100, Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
-> > On Fri, Dec 11, 2020 at 2:12 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
-> > >
-> > > We can reserve the skb. When sending fails, NETDEV_TX_BUSY or
-> > > xskq_prod_reserve fails. As long as skb is successfully generated and
-> > > successfully configured, we can reserve skb if we encounter exceptions
-> > > later.
-> > >
-> > > Especially when NETDEV_TX_BUSY fails, there is no need to deal with
-> > > the problem that xskq_prod_reserve has been updated.
-> > >
-> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > ---
-> > >  include/net/xdp_sock.h |  3 +++
-> > >  net/xdp/xsk.c          | 36 +++++++++++++++++++++++++++---------
-> > >  2 files changed, 30 insertions(+), 9 deletions(-)
-> > >
-> > > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> > > index 4f4e93b..fead0c9 100644
-> > > --- a/include/net/xdp_sock.h
-> > > +++ b/include/net/xdp_sock.h
-> > > @@ -76,6 +76,9 @@ struct xdp_sock {
-> > >         struct mutex mutex;
-> > >         struct xsk_queue *fq_tmp; /* Only as tmp storage before bind */
-> > >         struct xsk_queue *cq_tmp; /* Only as tmp storage before bind */
-> > > +
-> > > +       struct sk_buff *skb_undone;
-> > > +       bool skb_undone_reserve;
-> > >  };
-> > >
-> > >  #ifdef CONFIG_XDP_SOCKETS
-> > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > > index e28c682..1051024 100644
-> > > --- a/net/xdp/xsk.c
-> > > +++ b/net/xdp/xsk.c
-> > > @@ -435,6 +435,19 @@ static int xsk_generic_xmit(struct sock *sk)
-> > >         if (xs->queue_id >= xs->dev->real_num_tx_queues)
-> > >                 goto out;
-> > >
-> > > +       if (xs->skb_undone) {
-> > > +               if (xs->skb_undone_reserve) {
-> > > +                       if (xskq_prod_reserve(xs->pool->cq))
-> > > +                               goto out;
-> > > +
-> > > +                       xs->skb_undone_reserve = false;
-> > > +               }
-> > > +
-> > > +               skb = xs->skb_undone;
-> > > +               xs->skb_undone = NULL;
-> > > +               goto xmit;
-> > > +       }
-> > > +
-> > >         while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
-> > >                 char *buffer;
-> > >                 u64 addr;
-> > > @@ -454,12 +467,7 @@ static int xsk_generic_xmit(struct sock *sk)
-> > >                 addr = desc.addr;
-> > >                 buffer = xsk_buff_raw_get_data(xs->pool, addr);
-> > >                 err = skb_store_bits(skb, 0, buffer, len);
-> > > -               /* This is the backpressure mechanism for the Tx path.
-> > > -                * Reserve space in the completion queue and only proceed
-> > > -                * if there is space in it. This avoids having to implement
-> > > -                * any buffering in the Tx path.
-> > > -                */
-> > > -               if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-> > > +               if (unlikely(err)) {
-> > >                         kfree_skb(skb);
-> > >                         goto out;
-> > >                 }
-> > > @@ -470,12 +478,22 @@ static int xsk_generic_xmit(struct sock *sk)
-> > >                 skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
-> > >                 skb->destructor = xsk_destruct_skb;
-> > >
-> > > +               /* This is the backpressure mechanism for the Tx path.
-> > > +                * Reserve space in the completion queue and only proceed
-> > > +                * if there is space in it. This avoids having to implement
-> > > +                * any buffering in the Tx path.
-> > > +                */
-> > > +               if (xskq_prod_reserve(xs->pool->cq)) {
-> > > +                       xs->skb_undone_reserve = true;
-> > > +                       xs->skb_undone = skb;
-> > > +                       goto out;
-> > > +               }
-> > > +
-> > > +xmit:
-> >
-> > This will not work in the general case since we cannot guarantee that
-> > the application does not replace the packet in the Tx ring before it
-> > calls send() again. This is fully legal. I also do not like to
-> > introduce state between calls. Much simpler to have it stateless which
-> > means less error prone.
-> >
-> > On the positive side, I will submit a patch that improves performance
-> > of this transmit function by using the new batch interfaces I
-> > introduced a month ago. With this patch I get a throughput improvement
-> > of between 15 and 25% for the txpush benchmark in xdpsock. This is
-> > much more than you will get from this patch. It also avoids the
-> > problem you are addressing here completely. I will submit the patch
-> > next week after the bug fix in this code has trickled down to
-> > bpf-next. Hope you will like the throughput improvement that it
-> > provides.
->
-> In fact, we can also call xskq_cons_release before save the undone skb and
-> exiting this function, so do not worry about the users modifying the data
-> in tx. Of course, I understand that you want to have it stateless.
-> I agree with this. I will give up this idea temporarily.
->
-> But here in the case of NETDEV_TX_BUSY, xskq_prod_reserve has been called,
-> but skb is released directly without xsk_destruct_skb, this should be a bug.
+On Sat, Dec 12, 2020 at 01:03:32AM +0100, Linus Walleij wrote:
+> On Thu, Dec 10, 2020 at 9:53 AM Johan Hovold <johan@kernel.org> wrote:
+> > On Wed, Dec 09, 2020 at 05:25:32PM +0100, Linus Walleij wrote:
+> 
+> > I just replied to that thread, but to summarize, you can't rely on
+> > having the sysfs code detect collisions since that will trigger a bunch
+> > of nasty warnings and backtraces. We also don't want the sysfs interface
+> > for a specific USB device to depend on probe order (only the first one
+> > plugged in gets to use the line names). And adding line names now could
+> > in fact be what breaks currently working scripts.
+> 
+> Yes the sysfs ABI is very volatile and easy to break.
+> 
+> As pointed out in the other reply, sysfs base GPIO number is all
+> wibbly-wobbly on anything hot-pluggable so in a way I feel it
+> is the right thing to disallow sysfs altogether on hotpluggable
+> devices.
 
-Yes, you are correct. In this case the reservation in the cq is not
-rolled back and we really make the ring one entry smaller. After
-enough of these errors, the ring will be of size zero and the socket
-will stop working for transmit. Thank you so much for spotting this. I
-believe this was introduced when I tried to make NETDEV_TX_BUSY not
-drop packets and instead give the user a chance to just resend them.
-This part seems to be in dire need of some solid tests contributed to
-the new xsk selftests.
+No, the gpio numbers will of course vary, but since gpiolib exports the
+base number for the chip, a scripts can easily determine the right gpio
+number as base + offset.
 
-I will bundle this fix as patch 2 in a patch set with the other race
-that you found. I need the locking of that one to be able to safely
-back out the reservation.
+Having probe order break that by sometimes exporting the line using it's
+name is what would be a problem.
 
-> >
-> > >                 err = __dev_direct_xmit(skb, xs->queue_id);
-> > >                 if  (err == NETDEV_TX_BUSY) {
-> > >                         /* Tell user-space to retry the send */
-> > > -                       skb->destructor = sock_wfree;
-> > > -                       /* Free skb without triggering the perf drop trace */
-> > > -                       consume_skb(skb);
-> > > +                       xs->skb_undone = skb;
-> > >                         err = -EAGAIN;
-> > >                         goto out;
-> > >                 }
-> > > --
-> > > 1.8.3.1
-> > >
+> > Just did a super quick check and it seems libgpiod still assumes a flat
+> > name space. For example, gpiod_chip_find_line() returns only the first
+> > line found that matches a name. Shouldn't be impossible to extend, but
+> > just want to make sure this flat namespace assumption hasn't been to
+> > heavily relied upon.
+> 
+> The unique way to identify a GPIO is gpiochip instance (with
+> topology from sysfs) and then a line number on that chip.
+> This is done e.g. in the example tool
+> tools/gpio/gpio-hammer.c
+> 
+> As you can see the tool doesn't use these line names.
+>
+> The line names are really like symbolic links or something.
+> But they are indeed in a flat namespace so we should try to
+> at least make them unique if it turns out people love to use
+> these.
+
+Not necessarily, they could be unique per chip as we're discussing here
+with respect to hotpluggable controllers. We just can't have it both
+ways.
+
+> As it is now system designers mostly use device tree to assign
+> line names and they try to make these unique because they don't
+> like the nasty warnings from gpiolib.
+>
+> If I google for the phrase "Detected name collision for GPIO name"
+> I just find the code, our discussions and some USB serial devices
+> warning about this so far.
+> 
+> Maybe we should just make a patch to disallow it?
+
+That would make it impossible to provide name lines on hotpluggable
+controllers, which would be nice to support.
+
+Johan
