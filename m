@@ -2,118 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F64A2D9651
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:33:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 895752D9654
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:33:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407093AbgLNKa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 05:30:29 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:43946 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725798AbgLNKaK (ORCPT
+        id S2407187AbgLNKbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 05:31:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407098AbgLNKbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 05:30:10 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-55-50EQHyNGNHiW9NdgJgIL1Q-1; Mon, 14 Dec 2020 10:28:24 +0000
-X-MC-Unique: 50EQHyNGNHiW9NdgJgIL1Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 14 Dec 2020 10:28:25 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 14 Dec 2020 10:28:25 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Pavel Begunkov' <asml.silence@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-CC:     Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 2/2] iov_iter: optimise iter type checking
-Thread-Topic: [PATCH 2/2] iov_iter: optimise iter type checking
-Thread-Index: AQHW0aC/wcpmi7SVjkSsjWABD6g0gan2YYKw
-Date:   Mon, 14 Dec 2020 10:28:24 +0000
-Message-ID: <b0e01a4dc3fc4afeb95b7be826ff2375@AcuMS.aculab.com>
-References: <cover.1605799583.git.asml.silence@gmail.com>
- <9bc27cb3ef6ab49b6b2ccee3db6613838aee17af.1605799583.git.asml.silence@gmail.com>
- <20201119170340.GA6179@infradead.org>
- <ce79f47e-2ec0-ba29-a991-c537a8990dee@gmail.com>
- <20201211020100.GB107834@ZenIV.linux.org.uk>
- <857a3161-fbd5-5ff8-d733-ca57923302b5@gmail.com>
-In-Reply-To: <857a3161-fbd5-5ff8-d733-ca57923302b5@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+        Mon, 14 Dec 2020 05:31:39 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F4E8C0613CF;
+        Mon, 14 Dec 2020 02:30:59 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id o13so5697675lfr.3;
+        Mon, 14 Dec 2020 02:30:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=MI62PWiHocssZD5BOU83V19NEAQHNHTNpNxSRVXX950=;
+        b=KN+oDWEueXCIIw9fKU/tzVzw2tDpcZ0vyfFhKk6DCsLaCEuHpzoaIehE2xu2jOTiSz
+         AANvBxFdPKUydxlUwWxxEKU5cP42K1p3HoPvPPNdjrMNPRhXgdr6KkwAwiY+wDQRFAGG
+         J5LKorHuvMUFsGEXrfN8SkZbZzLC9DCN8RI++49VS+/PA2r3bL5dqF8jbGPrLN/JD2W1
+         oxr9lXi+kjRoimjzJ1/HEtz5HYIdSavrL79Sp4I2D287UhY5AFuQlAOXvjJvcBR+05rl
+         1Lkshxjatu5vOMMuZWbM718st5SSHS0/+w6MVH57HBtEZu0H5AohcMdw0uyYJ9DLdVKY
+         FmNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=MI62PWiHocssZD5BOU83V19NEAQHNHTNpNxSRVXX950=;
+        b=hi96ywtZWE+TmxZ00bTQU9hzMQbS1oIo5+4JiEA1M7VubF5crzJx6mfUiaKThEwLKg
+         rN9d58+gZRjhNfFOiNzGKmARMaPWOK24tJ+3xWbyq2zYnwAyEHpsIu5ONIZiOvc5XCMa
+         O671kLzEEwoFBBfuQE0rC0TvZ8WpgO0qBIYLXGRO1J/a0hzPZp6MSycehCYYkSj4cO1O
+         pPR1uB/C64aBruCP3sxLhJvAcHeWFZ3Hrz7fae2M3XG77hPJbfDVCB94AVo/zpdbsyD+
+         H4DvpvW60K5/GPmsSAqKlQ3CTESoy+aDleGNbxtYZQtp5xn6FOzxK6BV6wMWAtmrqmXk
+         wDeA==
+X-Gm-Message-State: AOAM530W3MW8J7aB+KQvO8FjYD21XPuHJUWtOVWZphPNbbFDS2xWz8DG
+        S2s7iu7Q08VjvpPJ+vmbaAw=
+X-Google-Smtp-Source: ABdhPJyltMX/8ogUUfsgUpl8NqA7BNTGX8eDd2C5+4Ujp33w1VpZwefeR/4+zU97uY2gpl0v2nhxYA==
+X-Received: by 2002:a19:2254:: with SMTP id i81mr9991848lfi.422.1607941857651;
+        Mon, 14 Dec 2020 02:30:57 -0800 (PST)
+Received: from localhost.localdomain ([91.90.166.178])
+        by smtp.googlemail.com with ESMTPSA id x8sm54361ljd.67.2020.12.14.02.30.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 02:30:56 -0800 (PST)
+From:   Vasyl Gomonovych <gomonovych@gmail.com>
+To:     tariqt@nvidia.com, kuba@kernel.org, joe@perches.com
+Cc:     Vasyl Gomonovych <gomonovych@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] net/mlx4: Use true,false for bool variable
+Date:   Mon, 14 Dec 2020 11:30:08 +0100
+Message-Id: <20201214103008.14783-1-gomonovych@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201212090234.0362d64f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20201212090234.0362d64f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogUGF2ZWwgQmVndW5rb3YNCj4gU2VudDogMTMgRGVjZW1iZXIgMjAyMCAyMjozMw0KPiAN
-Cj4gT24gMTEvMTIvMjAyMCAwMjowMSwgQWwgVmlybyB3cm90ZToNCj4gPiBPbiBUaHUsIE5vdiAx
-OSwgMjAyMCBhdCAwNToxMjo0NFBNICswMDAwLCBQYXZlbCBCZWd1bmtvdiB3cm90ZToNCj4gPj4g
-T24gMTkvMTEvMjAyMCAxNzowMywgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6DQo+ID4+PiBPbiBU
-aHUsIE5vdiAxOSwgMjAyMCBhdCAwMzoyOTo0M1BNICswMDAwLCBQYXZlbCBCZWd1bmtvdiB3cm90
-ZToNCj4gPj4+PiBUaGUgcHJvYmxlbSBoZXJlIGlzIHRoYXQgaW92X2l0ZXJfaXNfKigpIGhlbHBl
-cnMgY2hlY2sgdHlwZXMgZm9yDQo+ID4+Pj4gZXF1YWxpdHksIGJ1dCBhbGwgaXRlcmF0ZV8qIGhl
-bHBlcnMgZG8gYml0d2lzZSBhbmRzLiBUaGlzIGNvbmZ1c2VzDQo+ID4+Pj4gYSBjb21waWxlciwg
-c28gZXZlbiBpZiBzb21lIGNhc2VzIHdlcmUgaGFuZGxlZCBzZXBhcmF0ZWx5IHdpdGgNCj4gPj4+
-PiBpb3ZfaXRlcl9pc18qKCksIGl0IGNhbid0IGVsaW1pbmF0ZSBhbmQgc2tpcCB1bnJlYWNoYWJs
-ZSBicmFuY2hlcyBpbg0KPiA+Pj4+IGZvbGxvd2luZyBpdGVyYXRlKigpLg0KPiA+Pj4NCj4gPj4+
-IEkgdGhpbmsgd2UgbmVlZCB0byBraWxsIHRoZSBpb3ZfaXRlcl9pc18qIGhlbHBlcnMsIHJlbnVt
-YmVyIHRvIG5vdCBkbw0KPiA+Pj4gdGhlIHBvaW50bGVzcyBiaXRtYXNrIGFuZCBqdXN0IGNoZWNr
-IGZvciBlcXVhbGl0eSAobWlnaHQgdHVybiBpbnRvIGENCj4gPj4+IGJ1bmNoIG9mIG5pY2Ugc3dp
-dGNoIHN0YXRlbWVudHMgYWN0dWFsbHkpLg0KPiA+Pg0KPiA+PiBUaGVyZSBhcmUgdXNlcyBsaWtl
-IGJlbG93IHRob3VnaCwgYW5kIHRoYXQgd291bGQgYWxzbyBhZGQgc29tZSBvdmVyaGVhZA0KPiA+
-PiBvbiBpb3ZfaXRlcl90eXBlKCksIHNvIGl0J3Mgbm90IGFwcGFyZW50IHRvIG1lIHdoaWNoIHZl
-cnNpb24gd291bGQgYmUNCj4gPj4gY2xlYW5lci9mYXN0ZXIgaW4gdGhlIGVuZC4gQnV0IHllYWgs
-IHdlIGNhbiBleHBlcmltZW50IGFmdGVyIGxhbmRpbmcNCj4gPj4gdGhpcyBwYXRjaC4NCj4gPj4N
-Cj4gPj4gaWYgKHR5cGUgJiAoSVRFUl9CVkVDfElURVJfS1ZFQykpDQo+ID4NCj4gPiBUaGVyZSBh
-cmUgZXhhY3RseSAzIHN1Y2ggcGxhY2VzLCBhbmQgYWxsIG9mIHRoZW0gd291bGQndmUgYmVlbiBq
-dXN0IGFzIHdlbGwNCj4gPiB3aXRoIGNhc2UgSVRFUl9CVkVDOiBjYXNlIElURVJfS1ZFQzogLi4u
-IGluIGEgc3dpdGNoLg0KPiA+DQo+ID4gSG1tLi4uICBJIHdvbmRlciB3aGljaCB3b3VsZCB3b3Jr
-IGJldHRlcjoNCj4gPg0KPiA+IGVudW0gaXRlcl90eXBlIHsNCj4gPiAgICAgICAgIElURVJfSU9W
-RUMgPSAwLA0KPiA+ICAgICAgICAgSVRFUl9LVkVDID0gMiwNCj4gPiAgICAgICAgIElURVJfQlZF
-QyA9IDQsDQo+ID4gICAgICAgICBJVEVSX1BJUEUgPSA2LA0KPiA+ICAgICAgICAgSVRFUl9ESVND
-QVJEID0gOCwNCj4gPiB9Ow0KPiA+IGlvdl9pdGVyX3R5cGUoaXRlcikJKCgoaXRlciktPnR5cGUp
-ICYgfjEpDQo+ID4gaW92X2l0ZXJfcncoaXRlcikJKCgoaXRlciktPnR5cGUpICYgMSkNCj4gPg0K
-PiA+IG9yDQo+ID4NCj4gPiBlbnVtIGl0ZXJfdHlwZSB7DQo+ID4gICAgICAgICBJVEVSX0lPVkVD
-LA0KPiA+ICAgICAgICAgSVRFUl9LVkVDLA0KPiA+ICAgICAgICAgSVRFUl9CVkVDLA0KPiA+ICAg
-ICAgICAgSVRFUl9QSVBFLA0KPiA+ICAgICAgICAgSVRFUl9ESVNDQVJELA0KPiA+IH07DQo+ID4g
-aW92X2l0ZXJfdHlwZShpdGVyKQkoKChpdGVyKS0+dHlwZSkgJiAofjBVPj4xKSkNCj4gPiAvLyBj
-YWxsZXJzIG9mIGlvdl9pdGVyX3J3KCkgYXJlIGFsbW9zdCBhbGwgY29tcGFyaW5nIHdpdGggZXhw
-bGljaXQgUkVBRCBvciBXUklURQ0KPiA+IGlvdl9pdGVyX3J3KGl0ZXIpCSgoKGl0ZXIpLT50eXBl
-KSAmIH4ofjBVPj4xKSA/IFdSSVRFIDogUkVBRCkNCj4gPiB3aXRoIHBsYWNlcyBsaWtlIGlvdl9p
-dGVyX2t2ZWMoKSBkb2luZw0KPiA+IAlpLT50eXBlID0gSVRFUl9LVkVDIHwgKChkaXJlY3Rpb24g
-PT0gV1JJVEUpID8gQklUKDMxKSA6IDApOw0KPiA+DQo+ID4gUHJlZmVyZW5jZXM/DQo+IA0KPiBG
-b3IgdGhlIGJpdG1hc2sgdmVyc2lvbiAod2l0aCB0aGlzIHBhdGNoKSB3ZSBoYXZlIG1vc3Qgb2YN
-Cj4gaW92X2l0ZXJfdHlwZSgpIGNvbXBsZXRlbHkgb3B0aW1pc2VkIG91dC4gRS5nLiBpZGVudGlj
-YWwNCj4gDQo+IGlvdl9pdGVyX3R5cGUoaSkgJiBJVEVSX0lPVkVDIDw9PiBpdGVyLT50eXBlICYg
-SVRFUl9JT1ZFQw0KPiANCj4gSXQncyBhbHNvIG5pY2UgdG8gaGF2ZSBpb3ZfaXRlcl9ydygpIHRv
-IGJlIGp1c3QNCj4gKHR5cGUgJiAxKSwgb3BlcmF0aW9ucyB3aXRoIHdoaWNoIGNhbiBiZSBvcHRp
-bWlzZWQgaW4gYSBoYW5kZnVsIG9mIHdheXMuDQo+IA0KPiBVbmxlc3MgdGhlIGNvbXBpbGVyIHdv
-dWxkIGJlIGFibGUgdG8gaGVhdmlseSBvcHRpbWlzZSBzd2l0Y2hlcywNCj4gZS5nLiB0byBvdXQt
-b2YtbWVtb3J5L2NhbGN1bGF0aW9uLWJhc2VkIGp1bXAgdGFibGVzLCB0aGF0IEkgZG91YnQsDQo+
-IEknZCBwZXJzb25hbGx5IGxlYXZlIGl0IGJlLiBUaG91Z2gsIG5vdCBsaWtlIGl0IHNob3VsZCBt
-YXR0ZXIgbXVjaC4NCg0KVGhlIGFkdmFudGFnZSBvZiB0aGUgYml0LW1hc2tzIGlzIHRoYXQgdGhl
-ICd1c3VhbCcgb3B0aW9ucyBjYW4NCmJlIHRlc3RlZCBmb3IgdG9nZXRoZXIuIFNvIHRoZSBjb2Rl
-IGNhbiBiZSAoZm9yIGV4YW1wbGUpOg0KCWlmIChsaWtlbHkoaXRlci0+dHlwZSAmIChJVEVSX0lP
-VkVDIHwgSVRFUl9QSVBFKSB7DQoJCWlmIChsaWtlbHkoKGl0ZXItPnR5cGUgJiBJVEVSX0lPVkVD
-KSkgew0KCQkJLi4uIGNvZGUgZm9yIGlvdmVjDQoJCX0gZWxzZSBbDQoJCQkuLi4gY29kZSBmb3Ig
-cGlwZQ0KCQl9DQoJfSBlbHNlIGlmIChpdGVyLT50eXBlICYgSVRFUl9CVkVDKSB7DQoJCS4uLiBj
-b2RlIGZvciBidmVjDQoJfSBlbHNlIGlmIChpdGVyLT50eXBlICYgSVRFUl9LVkVDKSB7DQoJCS4u
-IGNvZGUgZm9yIGt2ZWMNCgl9IGVsc2Ugew0KCQkuLiBtdXN0IGJlIGRpc2NhcmQNCgl9DQoNCkkn
-bSBub3Qgc3VyZSBvZiB0aGUgYmVzdCBvcmRlciB0aG91Z2guDQpZb3UgbWlnaHQgd2FudCAzIGJp
-dHMgaW4gdGhlIGZpcnN0IHRlc3QuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3Mg
-TGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQ
-VCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+It is fix for semantic patch warning available in
+scripts/coccinelle/misc/boolinit.cocci
+Fix en_rx.c:687:1-17: WARNING: Assignment of 0/1 to bool variable
+Fix main.c:4465:5-13: WARNING: Comparison of 0/1 to bool variable
+
+Signed-off-by: Vasyl Gomonovych <gomonovych@gmail.com>
+---
+ - Add coccicheck script name
+ - Simplify if condition
+---
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c | 2 +-
+ drivers/net/ethernet/mellanox/mlx4/main.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+index 502d1b97855c..b0f79a5151cf 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+@@ -684,7 +684,7 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
+ 	xdp_prog = rcu_dereference(ring->xdp_prog);
+ 	xdp.rxq = &ring->xdp_rxq;
+ 	xdp.frame_sz = priv->frag_info[0].frag_stride;
+-	doorbell_pending = 0;
++	doorbell_pending = false;
+ 
+ 	/* We assume a 1:1 mapping between CQEs and Rx descriptors, so Rx
+ 	 * descriptor offset can be deduced from the CQE index instead of
+diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+index c326b434734e..3492a4f3691e 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/main.c
++++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+@@ -4462,7 +4462,7 @@ static int __init mlx4_verify_params(void)
+ 		pr_warn("mlx4_core: log_num_vlan - obsolete module param, using %d\n",
+ 			MLX4_LOG_NUM_VLANS);
+ 
+-	if (use_prio != 0)
++	if (use_prio)
+ 		pr_warn("mlx4_core: use_prio - obsolete module param, ignored\n");
+ 
+ 	if ((log_mtts_per_seg < 0) || (log_mtts_per_seg > 7)) {
+-- 
+2.17.1
 
