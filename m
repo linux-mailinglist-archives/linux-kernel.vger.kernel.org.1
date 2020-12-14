@@ -2,73 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FB232DA1BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E832DA1C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502905AbgLNUhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:37:16 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:35785 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2503212AbgLNUg5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:36:57 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0BEKa8vk008684
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 15:36:09 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 4DB4B420136; Mon, 14 Dec 2020 15:36:08 -0500 (EST)
-Date:   Mon, 14 Dec 2020 15:36:08 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: UBSAN: shift-out-of-bounds in ext4_fill_super
-Message-ID: <20201214203608.GJ575698@mit.edu>
-References: <20201210023638.GP52960@mit.edu>
- <00000000000024030c05b61412e6@google.com>
- <CACT4Y+bkaVq1RzONGuPJxu-pSyCSRrEs7xV0sa2n0oLNkicHQQ@mail.gmail.com>
- <20201210182821.GS52960@mit.edu>
- <CACT4Y+bqDdidJpYimvzY5UkrXzw7JuefHndOM0+c6Y8e56vBjQ@mail.gmail.com>
+        id S2503360AbgLNUiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:38:20 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:50535 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2503151AbgLNUiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 15:38:10 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvtVb0bN4z9sS8;
+        Tue, 15 Dec 2020 07:37:26 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607978247;
+        bh=F8W/sHrl7s2jvPo8Lke/2+DMVfOKctENiZyZDtH+AjI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Zw+sEBFmMV6Hd+3s2J2pvu0Euw/d3JM3+uRn9PpmH4ygLtjty//cyQYnpC3d1Ov/0
+         ssaOuqCIAK38C767qmXrK6Q6aQELFJEbAhHd1/Bx2BzxUjZxernQl9Kz/3/AzAZw+J
+         /gqDoF6PND26GWI3iL6UhYrP0pm6Li/obSih/LlpgKoLyKp5K8lrEZl2zzPESy9Xv4
+         hx+4sS3pW6R9i44abCCHd9UQZtQIIceN7ShxNsgf53hR0v7oxulfz/Mjx0l3b+Z8Sp
+         tYj1ahkUhQ9RV406ALVxbjlccuaADf3hNWr0qb06eMmjaHmstarp+IG79WqdQvnroI
+         08WplmGiji52A==
+Date:   Tue, 15 Dec 2020 07:37:25 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the ftrace tree with Linus' tree
+Message-ID: <20201215073725.42abe121@canb.auug.org.au>
+In-Reply-To: <20201208160222.04ad114f@canb.auug.org.au>
+References: <20201208160222.04ad114f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+bqDdidJpYimvzY5UkrXzw7JuefHndOM0+c6Y8e56vBjQ@mail.gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/MDP2PmQ0gePUPIoZcwKACgy";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Dropping off-topic lists)
+--Sig_/MDP2PmQ0gePUPIoZcwKACgy
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 14, 2020 at 03:37:37PM +0100, Dmitry Vyukov wrote:
-> > It's going to make everyone else's tags who pull from ext4.git messy,
-> > though, with gobs of tags that probably won't be of use to them.  It
-> > does avoid the need to use git fetch --tags --force, and I guess
-> > people are used to the need to GC tags with the linux-repo.
+Hi all,
 
-(I had meant to say linux-next repo above.)
+On Tue, 8 Dec 2020 16:02:22 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>=20
+> Today's linux-next merge of the ftrace tree got a conflict in:
+>=20
+>   kernel/trace/ring_buffer.c
+>=20
+> between commit:
+>=20
+>   68e10d5ff512 ("ring-buffer: Always check to put back before stamp when =
+crossing pages")
+>=20
+> from Linus' tree and commit:
+>=20
+>   5b7be9c709e1 ("ring-buffer: Add test to validate the time stamp deltas")
+>=20
+> from the ftrace tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc kernel/trace/ring_buffer.c
+> index a6268e09160a,7cd888ee9ac7..000000000000
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@@ -3234,12 -3391,16 +3391,14 @@@ __rb_reserve_next(struct ring_buffer_pe
+>  =20
+>   	/* See if we shot pass the end of this buffer page */
+>   	if (unlikely(write > BUF_PAGE_SIZE)) {
+>  -		if (tail !=3D w) {
+>  -			/* before and after may now different, fix it up*/
+>  -			b_ok =3D rb_time_read(&cpu_buffer->before_stamp, &info->before);
+>  -			a_ok =3D rb_time_read(&cpu_buffer->write_stamp, &info->after);
+>  -			if (a_ok && b_ok && info->before !=3D info->after)
+>  -				(void)rb_time_cmpxchg(&cpu_buffer->before_stamp,
+>  -						      info->before, info->after);
+>  -		}
+>  +		/* before and after may now different, fix it up*/
+>  +		b_ok =3D rb_time_read(&cpu_buffer->before_stamp, &info->before);
+>  +		a_ok =3D rb_time_read(&cpu_buffer->write_stamp, &info->after);
+>  +		if (a_ok && b_ok && info->before !=3D info->after)
+>  +			(void)rb_time_cmpxchg(&cpu_buffer->before_stamp,
+>  +					      info->before, info->after);
+> + 		if (a_ok && b_ok)
+> + 			check_buffer(cpu_buffer, info, CHECK_FULL_PAGE);
+>   		return rb_move_tail(cpu_buffer, tail, info);
+>   	}
+>  =20
 
-> syzbot is now prepared and won't fail next time, nor on other similar
-> trees. Which is good.
-> So it's really up to you.
+Just a reminder that this conflict still exists.
 
-I'm curious --- are you having to do anything special in terms of
-deleting old tags to keep the size of the repo under control?  Git
-will keep a tag around indefinitely, so if you have huge numbers of
-next-YYYYMMDD tags in your repo, the size will grow without bound.
-Are you doing anything to automatically garbage collect tags to preven
-this from being a problem?
-
-(I am not pulling linux-next every day; only when I need to debug a
-bug reported against the -next tree, so I just manually delete the
-tags as necessary.  So I'm curious what folks who are following
-linux-next are doing, and whether they have something specific for
-linux-next tags, or whether they have a more general solution.)
-
+--=20
 Cheers,
+Stephen Rothwell
 
-					- Ted
+--Sig_/MDP2PmQ0gePUPIoZcwKACgy
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/XzQYACgkQAVBC80lX
+0GzSfwgAjL2ix6rG/NAKY/8DbpHDLB87GCayec0QaoAEziC3v2ALt38rRzVtQpsB
+OkJe/02cm3zjAQJoNo8qgu7l2ElmvuvR2u2jEMPr8XuB2wc4P8JZONtWEkNj62zZ
+JjeQfhL1E8dB29opCkN3qDb9AiVdOFbE+MzsZbroE/kr0avArBBleKyBcmKRLDKh
+hDd8ghwNyc2eZLrgZA+Nws/QQPdMMtZvnvSYFLztixZOhUZYkRto/1qDLQzjXmxn
+tsVGJfrARM42Gtab/Yjd1lwp7Fgpez9o1OAxd7nglo/SFVX85UBgdir0vopZ7+PO
+qzWdGqbz98d4hURJVsFt4hgW+bhPSw==
+=W04S
+-----END PGP SIGNATURE-----
+
+--Sig_/MDP2PmQ0gePUPIoZcwKACgy--
