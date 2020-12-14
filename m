@@ -2,331 +2,1020 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B93F32D9660
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF18E2D9666
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436975AbgLNKeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 05:34:24 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:50787 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436630AbgLNKdx (ORCPT
+        id S2437183AbgLNKhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 05:37:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729483AbgLNKhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 05:33:53 -0500
-Received: by mail-il1-f200.google.com with SMTP id t8so13086663ils.17
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 02:33:36 -0800 (PST)
+        Mon, 14 Dec 2020 05:37:36 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1431CC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 02:36:56 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id d17so21871386ejy.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 02:36:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9clZQeO7cYWsdY50MIGy1dzRWIyLBwS4IDexsWHmwhA=;
+        b=PQL6ScO28r+ADM4yAVtyPL1ne1DKisV1ValGNFCSuKTRCNR6LnyfD3HXEgaGHn4SHj
+         mjE9NWsHlhIp5LrlOlsOLumBG3fk8giY1o+Q6ghvYAT7F+u/Q5EgwHRa4JkJYjUcLkoB
+         lyAgVoWAyKgcJ6urtP3pAhXsSxI6YMe1dcw0E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=xBOPoqrXHLeRKmnn2H4OYIta3b1Of/o2WJC8PPktQGg=;
-        b=t68FA6ekk2P/q73q61cmLERIiDb4cz7oyrV6Nhr95Fys6uZh4VC2hEhTzAbOer9aDs
-         2EwVQpvFpwAH0CMkA54aY/+3eN+BDWnbZv0JhTzHEn0Lrhu3QUdpSFr5+R02cA1MdfPr
-         oLESGW+JAxHByjh8ZKeuIcPBG1DMrsMkb3fe2T+Bi6aNa1Pz6erCo5Pgx38oM/EJ2+Lq
-         VqsPD8amtMe6OQ1hziWAS/cKSGsvVAKJx0iqTqMqunhxzhnzLyhZ+QLZm/dkZTC6wF7T
-         IxUlpGSN1ifzsksvg5pmVZWNtvaEpQNXEY207949AiE4SGAaGW0MTwqHYHjXShWuxShY
-         T5qQ==
-X-Gm-Message-State: AOAM530B1O71zD0NZtuk1s5gW+9NL1deowuHmzPd72sd14B2Hn5YISQX
-        JpuZ1ZXphJeFewv2qKUXIonYYHDwDwyd850E66EARit5zPeX
-X-Google-Smtp-Source: ABdhPJw4v3PL31sL6fEocTznjZ4TgrcB/+sm1loq2bUIkg/qJ+mY8o37FzED+RkXSt5I7N5MyUmy2aJD0daPkexRVtjKsAdvA9ek
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9clZQeO7cYWsdY50MIGy1dzRWIyLBwS4IDexsWHmwhA=;
+        b=qeYwzFxYVtlYrKQxfx23CPJHbgaFV8CpAkOOUe8JuI3V4mpVzwKSPBvpSGgQ4KkRf2
+         qFgF+F+br60mOLx/O3UFXtBKL6LloNXo2zmWAnsXtQ51sGzOW0O9VnPrG5PhazMwJEzm
+         56GuUFsRuJ7SpWiwY4rgZK6kpfJJyD6GAwwQ532XWWZF45t7zLHgFkaZCzZ9QAUu/B+W
+         eEV+wwxKYs3SXSX3gwRInNdlvzTXmf2ulBa82KH8IjtpciVKOTr8VtmZo0aWAaLGHhIG
+         oCa/Iytuh76xOqRHYRjBddGGOYzYn9yVAWbhMiokPDNpL8T7YXzr9Sk/9/OJRvBAa+qa
+         Uo3A==
+X-Gm-Message-State: AOAM532xC5kyUi7qeUwHP9xN8k1+q/33jN+KT4S1Xkkyibg42djCNKcK
+        je3Uvc9KjYo7ZYZFRz5ezfmt3dr/gQW0UzEa
+X-Google-Smtp-Source: ABdhPJzDjFpN0pHwX4fxHLOzZMnGndbjbT3Ly35dlIXOvTEe1JGIKqE8JgxtyPfYMsjHglKvE4H7qw==
+X-Received: by 2002:a17:906:cf81:: with SMTP id um1mr22551937ejb.122.1607942214775;
+        Mon, 14 Dec 2020 02:36:54 -0800 (PST)
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com. [209.85.128.42])
+        by smtp.gmail.com with ESMTPSA id r16sm15117252edp.43.2020.12.14.02.36.54
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Dec 2020 02:36:54 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id a3so14799610wmb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 02:36:54 -0800 (PST)
+X-Received: by 2002:a1c:5447:: with SMTP id p7mr27176689wmi.116.1607942213336;
+ Mon, 14 Dec 2020 02:36:53 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:83c8:: with SMTP id u8mr31506109ior.160.1607941991216;
- Mon, 14 Dec 2020 02:33:11 -0800 (PST)
-Date:   Mon, 14 Dec 2020 02:33:11 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000034b9aa05b66a2b25@google.com>
-Subject: INFO: task hung in cfg80211_event_work
-From:   syzbot <syzbot+84fea7179610ae50a9c7@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20200804192939.2251988-1-helen.koike@collabora.com>
+ <20200804192939.2251988-3-helen.koike@collabora.com> <20201120111403.GB841224@chromium.org>
+ <164584fc-a0c3-7988-fc43-8b3f19d46988@collabora.com>
+In-Reply-To: <164584fc-a0c3-7988-fc43-8b3f19d46988@collabora.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Mon, 14 Dec 2020 19:36:42 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5BacJRiifRoNYksWLoL-EmSTZRRssbOMHAgVHfjVxHo0w@mail.gmail.com>
+Message-ID: <CAAFQd5BacJRiifRoNYksWLoL-EmSTZRRssbOMHAgVHfjVxHo0w@mail.gmail.com>
+Subject: Re: [PATCH v5 2/7] media: v4l2: Add extended buffer operations
+To:     Helen Koike <helen.koike@collabora.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Hirokazu Honda <hiroh@chromium.org>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>,
+        Brian Starkey <Brian.Starkey@arm.com>, kernel@collabora.com,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Maxime Jourdan <mjourdan@baylibre.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Nov 24, 2020 at 5:33 AM Helen Koike <helen.koike@collabora.com> wrote:
+>
+> Hi Tomasz,
+>
+>
+> On 11/20/20 8:14 AM, Tomasz Figa wrote:
+> > Hi Helen,
+> >
+> > On Tue, Aug 04, 2020 at 04:29:34PM -0300, Helen Koike wrote:
+> >> From: Hans Verkuil <hans.verkuil@cisco.com>
+> >>
+> >> Those extended buffer ops have several purpose:
+> >> 1/ Fix y2038 issues by converting the timestamp into an u64 counting
+> >>    the number of ns elapsed since 1970
+> >> 2/ Unify single/multiplanar handling
+> >> 3/ Add a new start offset field to each v4l2 plane buffer info struct
+> >>    to support the case where a single buffer object is storing all
+> >>    planes data, each one being placed at a different offset
+> >>
+> >> New hooks are created in v4l2_ioctl_ops so that drivers can start using
+> >> these new objects.
+> >>
+> >> The core takes care of converting new ioctls requests to old ones
+> >> if the driver does not support the new hooks, and vice versa.
+> >>
+> >> Note that the timecode field is gone, since there doesn't seem to be
+> >> in-kernel users. We can be added back in the reserved area if needed or
+> >> use the Request API to collect more metadata information from the
+> >> frame.
+> >>
+> >
+> > Thanks for the patch. Please see my comments inline.
+>
+> Thank you for your detailed review, please see my comments below.
+>
+> >
+> >> Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
+> >> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+> >> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> >> ---
+> >> Changes in v5:
+> >> - migrate memory from v4l2_ext_buffer to v4l2_ext_plane
+> >> - return mem_offset to struct v4l2_ext_plane
+> >> - change sizes and reorder fields to avoid holes in the struct and make
+> >>   it the same for 32 and 64 bits
+> >>
+> >> Changes in v4:
+> >> - Use v4l2_ext_pix_format directly in the ioctl, drop v4l2_ext_format,
+> >> making V4L2_BUF_TYPE_VIDEO_[OUTPUT,CAPTURE] the only valid types.
+> >> - Drop VIDIOC_EXT_EXPBUF, since the only difference from VIDIOC_EXPBUF
+> >> was that with VIDIOC_EXT_EXPBUF we could export multiple planes at once.
+> >> I think we can add this later, so I removed it from this RFC to simplify it.
+> >> - Remove num_planes field from struct v4l2_ext_buffer
+> >> - Add flags field to struct v4l2_ext_create_buffers
+> >> - Reformulate struct v4l2_ext_plane
+> >> - Fix some bugs caught by v4l2-compliance
+> >> - Rebased on top of media/master (post 5.8-rc1)
+> >>
+> >> Changes in v3:
+> >> - Rebased on top of media/master (post 5.4-rc1)
+> >>
+> >> Changes in v2:
+> >> - Add reserved space to v4l2_ext_buffer so that new fields can be added
+> >>   later on
+> >> ---
+> >>  drivers/media/v4l2-core/v4l2-dev.c   |  29 ++-
+> >>  drivers/media/v4l2-core/v4l2-ioctl.c | 353 +++++++++++++++++++++++++--
+> >>  include/media/v4l2-ioctl.h           |  26 ++
+> >>  include/uapi/linux/videodev2.h       |  90 +++++++
+> >>  4 files changed, 476 insertions(+), 22 deletions(-)
+> >>
+> >> diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
+> >> index e1829906bc086..cb21ee8eb075c 100644
+> >> --- a/drivers/media/v4l2-core/v4l2-dev.c
+> >> +++ b/drivers/media/v4l2-core/v4l2-dev.c
+> >> @@ -720,15 +720,34 @@ static void determine_valid_ioctls(struct video_device *vdev)
+> >>              SET_VALID_IOCTL(ops, VIDIOC_TRY_FMT, vidioc_try_fmt_sdr_out);
+> >>      }
+> >>
+> >> +    if (is_vid || is_tch) {
+> >> +            /* ioctls valid for video and touch */
+> >> +            if (ops->vidioc_querybuf || ops->vidioc_ext_querybuf)
+> >> +                    set_bit(_IOC_NR(VIDIOC_EXT_QUERYBUF), valid_ioctls);
+> >> +            if (ops->vidioc_qbuf || ops->vidioc_ext_qbuf)
+> >> +                    set_bit(_IOC_NR(VIDIOC_EXT_QBUF), valid_ioctls);
+> >> +            if (ops->vidioc_dqbuf || ops->vidioc_ext_dqbuf)
+> >> +                    set_bit(_IOC_NR(VIDIOC_EXT_DQBUF), valid_ioctls);
+> >> +            if (ops->vidioc_create_bufs || ops->vidioc_ext_create_bufs)
+> >> +                    set_bit(_IOC_NR(VIDIOC_EXT_CREATE_BUFS), valid_ioctls);
+> >> +            if (ops->vidioc_prepare_buf || ops->vidioc_ext_prepare_buf)
+> >> +                    set_bit(_IOC_NR(VIDIOC_EXT_PREPARE_BUF), valid_ioctls);
+> >
+> > nit: Could we stick to the SET_VALID_IOCTL() macro and just call it twice,
+> > once for the new and once for the legacy callback?
+>
+> Ack.
+>
+> >
+> >> +    }
+> >> +
+> >>      if (is_vid || is_vbi || is_sdr || is_tch || is_meta) {
+> >>              /* ioctls valid for video, vbi, sdr, touch and metadata */
+> >>              SET_VALID_IOCTL(ops, VIDIOC_REQBUFS, vidioc_reqbufs);
+> >> -            SET_VALID_IOCTL(ops, VIDIOC_QUERYBUF, vidioc_querybuf);
+> >> -            SET_VALID_IOCTL(ops, VIDIOC_QBUF, vidioc_qbuf);
+> >>              SET_VALID_IOCTL(ops, VIDIOC_EXPBUF, vidioc_expbuf);
+> >> -            SET_VALID_IOCTL(ops, VIDIOC_DQBUF, vidioc_dqbuf);
+> >> -            SET_VALID_IOCTL(ops, VIDIOC_CREATE_BUFS, vidioc_create_bufs);
+> >> -            SET_VALID_IOCTL(ops, VIDIOC_PREPARE_BUF, vidioc_prepare_buf);
+> >> +            if (ops->vidioc_querybuf || ops->vidioc_ext_querybuf)
+> >> +                    set_bit(_IOC_NR(VIDIOC_QUERYBUF), valid_ioctls);
+> >> +            if (ops->vidioc_qbuf || ops->vidioc_ext_qbuf)
+> >> +                    set_bit(_IOC_NR(VIDIOC_QBUF), valid_ioctls);
+> >> +            if (ops->vidioc_dqbuf || ops->vidioc_ext_dqbuf)
+> >> +                    set_bit(_IOC_NR(VIDIOC_DQBUF), valid_ioctls);
+> >> +            if (ops->vidioc_create_bufs || ops->vidioc_ext_create_bufs)
+> >> +                    set_bit(_IOC_NR(VIDIOC_CREATE_BUFS), valid_ioctls);
+> >> +            if (ops->vidioc_prepare_buf || ops->vidioc_ext_prepare_buf)
+> >> +                    set_bit(_IOC_NR(VIDIOC_PREPARE_BUF), valid_ioctls);
+> >
+> > Is it valid to check the new callbacks for devices that the new API is not
+> > valid for (e.g. vbi)? Perhaps we could call SET_VALID_IOCTL(ops, <ioctl>,
+> > vidioc_ext_*) in the upper if added in this patch and keep the code above
+> > as is?
+>
+> Just to be clear, the only valid type should be VFL_TYPE_VIDEO right?
+> Ext but API won't support touch devices for instance, right?
+>
 
-syzbot found the following issue on:
+Yes, at least at this point. If one needs, it could be added in the
+future, but honestly I don't see much use of the other types these
+days.
 
-HEAD commit:    a68a0262 mm/madvise: remove racy mm ownership check
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15bb9413500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=59df2a4dced5f928
-dashboard link: https://syzkaller.appspot.com/bug?extid=84fea7179610ae50a9c7
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1169fa13500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1240f123500000
+>
+> >
+> >>              SET_VALID_IOCTL(ops, VIDIOC_STREAMON, vidioc_streamon);
+> >>              SET_VALID_IOCTL(ops, VIDIOC_STREAMOFF, vidioc_streamoff);
+> >>      }
+> >> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+> >> index 14a0def50f8ea..7ecdd9cc1bf48 100644
+> >> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> >> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> >> @@ -527,6 +527,26 @@ static void v4l_print_buffer(const void *arg, bool write_only)
+> >>                      tc->type, tc->flags, tc->frames, *(__u32 *)tc->userbits);
+> >>  }
+> >>
+> >> +static void v4l_print_ext_buffer(const void *arg, bool write_only)
+> >> +{
+> >> +    const struct v4l2_ext_buffer *e = arg;
+> >> +    const struct v4l2_ext_plane *plane;
+> >> +    unsigned int i;
+> >> +
+> >> +    pr_cont("%lld index=%d, type=%s, flags=0x%08x, field=%s, sequence=%d\n",
+> >> +            e->timestamp, e->index, prt_names(e->type, v4l2_type_names),
+> >> +            e->flags, prt_names(e->field, v4l2_field_names), e->sequence);
+> >
+> > Should we also print the request FD?
+>
+> Yes, I'll update this for next version.
+>
+> >
+> >> +
+> >> +    for (i = 0; i < VIDEO_MAX_PLANES &&
+> >> +                e->planes[i].buffer_length; i++) {
+> >> +            plane = &e->planes[i];
+> >> +            pr_debug("plane %d: buffer_length=%d, plane_length=%d offset=0x%08x, memory=%s\n",
+> >> +                     i, plane->buffer_length, plane->plane_length,
+> >> +                     plane->offset,
+> >> +                     prt_names(plane->memory, v4l2_memory_names));
+> >
+> > Should we also print mem_offset/userptr/dmabuf_fd?
+>
+> I see they are not printed by v4l_print_buffer(),
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+84fea7179610ae50a9c7@syzkaller.appspotmail.com
+offset/userptr are printed in v4l2_print_buffer:
+https://elixir.bootlin.com/linux/latest/source/drivers/media/v4l2-core/v4l2-ioctl.c#L494
 
-INFO: task kworker/u4:2:58 blocked for more than 161 seconds.
-      Not tainted 5.10.0-rc7-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/u4:2    state:D stack:23600 pid:   58 ppid:     2 flags:0x00004000
-Workqueue: cfg80211 cfg80211_event_work
-Call Trace:
- context_switch kernel/sched/core.c:3779 [inline]
- __schedule+0x893/0x2130 kernel/sched/core.c:4528
- schedule+0xcf/0x270 kernel/sched/core.c:4606
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4665
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- cfg80211_event_work+0xe/0x20 net/wireless/core.c:321
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> since these fields are in an
+> union, the value of two of them will be invalid (I wonder if this can bring
+> confusion).
+> I also wondered if printing them can't cause a security issue.
+>
+> But I can add those prints if you think it make sense.
+>
 
-Showing all locks held in the system:
-2 locks held by kworker/0:0/5:
- #0: ffff888010066538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888010066538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888010066538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888010066538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888010066538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888010066538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
- #1: ffffc90000ca7da8 ((work_completion)(&rew.rew_work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
-3 locks held by kworker/1:0/17:
-3 locks held by kworker/u4:2/58:
- #0: ffff888141147138 ((wq_completion)cfg80211){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888141147138 ((wq_completion)cfg80211){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888141147138 ((wq_completion)cfg80211){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888141147138 ((wq_completion)cfg80211){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888141147138 ((wq_completion)cfg80211){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888141147138 ((wq_completion)cfg80211){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
- #1: ffffc90000f2fda8 ((work_completion)(&rdev->event_work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
- #2: ffffffff8c927908 (rtnl_mutex){+.+.}-{3:3}, at: cfg80211_event_work+0xe/0x20 net/wireless/core.c:321
-1 lock held by khungtaskd/1657:
- #0: ffffffff8b3378e0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6254
-1 lock held by khugepaged/1664:
- #0: ffffffff8b4062a8 (lock#5){+.+.}-{3:3}, at: lru_add_drain_all+0x5f/0x6f0 mm/swap.c:801
-1 lock held by in:imklog/8161:
- #0: ffff88801c8459f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
-2 locks held by syz-executor702/8473:
- #0: ffffffff8c9aec50 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:810
- #1: ffffffff8c927908 (rtnl_mutex){+.+.}-{3:3}, at: nl80211_pre_doit+0x34f/0x630 net/wireless/nl80211.c:14579
-2 locks held by syz-executor702/8474:
- #0: ffffffff8c9aec50 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:810
- #1: ffffffff8c9aed08 (genl_mutex){+.+.}-{3:3}, at: genl_lock net/netlink/genetlink.c:33 [inline]
- #1: ffffffff8c9aed08 (genl_mutex){+.+.}-{3:3}, at: genl_rcv_msg+0x3e0/0x580 net/netlink/genetlink.c:798
-2 locks held by syz-executor702/8476:
- #0: ffffffff8c9aec50 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:810
- #1: ffffffff8c9aed08 (genl_mutex){+.+.}-{3:3}, at: genl_lock net/netlink/genetlink.c:33 [inline]
- #1: ffffffff8c9aed08 (genl_mutex){+.+.}-{3:3}, at: genl_rcv_msg+0x3e0/0x580 net/netlink/genetlink.c:798
-3 locks held by syz-executor702/8477:
- #0: ffff888021e90460 (sb_writers#4){.+.+}-{0:0}, at: do_unlinkat+0x190/0x660 fs/namei.c:3879
- #1: ffff888031258488 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
- #1: ffff888031258488 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: do_unlinkat+0x27d/0x660 fs/namei.c:3883
- #2: ffff88803125a288 (&sb->s_type->i_mutex_key#9){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
- #2: ffff88803125a288 (&sb->s_type->i_mutex_key#9){+.+.}-{3:3}, at: vfs_unlink+0xcd/0x600 fs/namei.c:3824
-3 locks held by syz-executor702/8478:
- #0: ffffffff8c9aec50 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:810
- #1: ffffffff8c9aed08 (genl_mutex){+.+.}-{3:3}, at: genl_lock net/netlink/genetlink.c:33 [inline]
- #1: ffffffff8c9aed08 (genl_mutex){+.+.}-{3:3}, at: genl_rcv_msg+0x3e0/0x580 net/netlink/genetlink.c:798
- #2: ffffffff8c927908 (rtnl_mutex){+.+.}-{3:3}, at: ieee80211_register_hw+0x1782/0x3b60 net/mac80211/main.c:1222
-5 locks held by kworker/u4:0/8484:
- #0: ffff88801303f938 ((wq_completion)phy3){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff88801303f938 ((wq_completion)phy3){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff88801303f938 ((wq_completion)phy3){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff88801303f938 ((wq_completion)phy3){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff88801303f938 ((wq_completion)phy3){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff88801303f938 ((wq_completion)phy3){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
- #1: ffffc900016ffda8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
- #2: ffff888013f78d00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
- #2: ffff888013f78d00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x93/0xe80 net/mac80211/ibss.c:1683
- #3: ffff888013921548 (&local->sta_mtx){+.+.}-{3:3}, at: ieee80211_ibss_sta_expire net/mac80211/ibss.c:1262 [inline]
- #3: ffff888013921548 (&local->sta_mtx){+.+.}-{3:3}, at: ieee80211_sta_merge_ibss net/mac80211/ibss.c:1305 [inline]
- #3: ffff888013921548 (&local->sta_mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x481/0xe80 net/mac80211/ibss.c:1711
- #4: ffffffff8b33ffa8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:290 [inline]
- #4: ffffffff8b33ffa8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x4f2/0x610 kernel/rcu/tree_exp.h:836
-5 locks held by kworker/u4:1/8965:
- #0: ffff888027081138 ((wq_completion)phy5){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888027081138 ((wq_completion)phy5){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888027081138 ((wq_completion)phy5){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888027081138 ((wq_completion)phy5){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888027081138 ((wq_completion)phy5){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888027081138 ((wq_completion)phy5){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
- #1: ffffc90002eefda8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
- #2: ffff888025bd8d00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
- #2: ffff888025bd8d00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_rx_queued_mgmt+0xe9/0x1870 net/mac80211/ibss.c:1631
- #3: ffff888014bb9548 (&local->sta_mtx){+.+.}-{3:3}, at: sta_info_destroy_addr+0x48/0xe0 net/mac80211/sta_info.c:1127
- #4: ffffffff8b33ffa8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:322 [inline]
- #4: ffffffff8b33ffa8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x27e/0x610 kernel/rcu/tree_exp.h:836
-3 locks held by syz-executor702/9802:
-4 locks held by kworker/u4:4/9815:
- #0: ffff88802c99c938 ((wq_completion)phy4){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff88802c99c938 ((wq_completion)phy4){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff88802c99c938 ((wq_completion)phy4){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff88802c99c938 ((wq_completion)phy4){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff88802c99c938 ((wq_completion)phy4){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff88802c99c938 ((wq_completion)phy4){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
- #1: ffffc9000a91fda8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
- #2: ffff88801459cd00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
- #2: ffff88801459cd00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x93/0xe80 net/mac80211/ibss.c:1683
- #3: ffff888013f71548 (&local->sta_mtx){+.+.}-{3:3}, at: ieee80211_ibss_sta_expire net/mac80211/ibss.c:1262 [inline]
- #3: ffff888013f71548 (&local->sta_mtx){+.+.}-{3:3}, at: ieee80211_sta_merge_ibss net/mac80211/ibss.c:1305 [inline]
- #3: ffff888013f71548 (&local->sta_mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x481/0xe80 net/mac80211/ibss.c:1711
-4 locks held by kworker/u4:5/9825:
- #0: ffff888026e79138 ((wq_completion)phy7){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888026e79138 ((wq_completion)phy7){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888026e79138 ((wq_completion)phy7){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888026e79138 ((wq_completion)phy7){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888026e79138 ((wq_completion)phy7){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888026e79138 ((wq_completion)phy7){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
- #1: ffffc9000aa0fda8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
- #2: ffff8880275acd00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
- #2: ffff8880275acd00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_rx_queued_mgmt+0xe9/0x1870 net/mac80211/ibss.c:1631
- #3: ffff888017fc9548 (&local->sta_mtx){+.+.}-{3:3}, at: sta_info_destroy_addr+0x48/0xe0 net/mac80211/sta_info.c:1127
+We know the memory type, so we can interpret the union appropriately
+and adjust the message printed.
 
-=============================================
+I don't think this poses any security issue, as it prints things that
+belong to the userspace already and are only meaningful in the context
+of the given userspace process.
 
-NMI backtrace for cpu 0
-CPU: 0 PID: 1657 Comm: khungtaskd Not tainted 5.10.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
- watchdog+0xd43/0xfa0 kernel/hung_task.c:294
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 9802 Comm: syz-executor702 Not tainted 5.10.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:check_kcov_mode kernel/kcov.c:163 [inline]
-RIP: 0010:__sanitizer_cov_trace_pc+0x19/0x60 kernel/kcov.c:197
-Code: 8b 54 24 08 48 8b 34 24 e9 a1 fd ff ff 0f 1f 40 00 65 48 8b 14 25 00 f0 01 00 65 8b 05 40 eb 91 7e a9 00 01 ff 00 48 8b 34 24 <74> 0f f6 c4 01 74 35 8b 82 5c 14 00 00 85 c0 74 2b 8b 82 38 14 00
-RSP: 0018:ffffc90000d90028 EFLAGS: 00000006
-RAX: 0000000000010101 RBX: ffffc90000d90120 RCX: ffffffff818ed219
-RDX: ffff8880328ccec0 RSI: ffffffff818ed227 RDI: 0000000000000007
-RBP: ffffc90000d90280 R08: 0000000000000000 R09: ffffffff8ebaf667
-R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
-R13: ffff888032b13000 R14: 0000000000000000 R15: ffffc90000d90120
-FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f5ba2697710 CR3: 0000000012582000 CR4: 0000000000350ee0
-Call Trace:
- <IRQ>
- perf_prepare_sample+0x817/0x1d40 kernel/events/core.c:7136
- __perf_event_output kernel/events/core.c:7191 [inline]
- perf_event_output_forward+0xf3/0x270 kernel/events/core.c:7211
- __perf_event_overflow+0x13c/0x370 kernel/events/core.c:8867
- perf_swevent_hrtimer+0x37c/0x3f0 kernel/events/core.c:10267
- __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
- __hrtimer_run_queues+0x1ce/0xea0 kernel/time/hrtimer.c:1583
- hrtimer_interrupt+0x334/0x940 kernel/time/hrtimer.c:1645
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
- __sysvec_apic_timer_interrupt+0x146/0x540 arch/x86/kernel/apic/apic.c:1097
- run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:91 [inline]
- sysvec_apic_timer_interrupt+0x48/0x100 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
-RIP: 0010:lock_release+0x3d5/0x710 kernel/locking/lockdep.c:5445
-Code: 15 02 00 00 48 c7 c7 40 5f 4b 89 e8 c5 6b 8f 07 b8 ff ff ff ff 65 0f c1 05 58 d8 ab 7e 83 f8 01 0f 85 67 01 00 00 ff 34 24 9d <48> b8 00 00 00 00 00 fc ff df 48 01 c5 48 c7 45 00 00 00 00 00 c7
-RSP: 0018:ffffc90000d906d0 EFLAGS: 00000246
-RAX: 0000000000000001 RBX: 02e61d1879d3e8c2 RCX: ffffc90000d90720
-RDX: 1ffff11006519af9 RSI: 0000000000000101 RDI: 0000000000000000
-RBP: 1ffff920001b20dc R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000001
-R13: 0000000000000002 R14: ffff8880328cd7d0 R15: ffff8880328ccec0
- rcu_lock_release include/linux/rcupdate.h:253 [inline]
- rcu_read_unlock include/linux/rcupdate.h:695 [inline]
- is_bpf_text_address+0xcb/0x160 kernel/bpf/core.c:710
- kernel_text_address kernel/extable.c:151 [inline]
- kernel_text_address+0xbd/0xf0 kernel/extable.c:120
- __kernel_text_address+0x9/0x30 kernel/extable.c:105
- unwind_get_return_address arch/x86/kernel/unwind_orc.c:318 [inline]
- unwind_get_return_address+0x51/0x90 arch/x86/kernel/unwind_orc.c:313
- arch_stack_walk+0x93/0xe0 arch/x86/kernel/stacktrace.c:26
- stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:121
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
- slab_post_alloc_hook mm/slab.h:535 [inline]
- slab_alloc_node mm/slub.c:2891 [inline]
- __kmalloc_node_track_caller+0x1e0/0x3e0 mm/slub.c:4495
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0xae/0x550 net/core/skbuff.c:210
- alloc_skb include/linux/skbuff.h:1094 [inline]
- ndisc_alloc_skb+0x134/0x320 net/ipv6/ndisc.c:420
- ndisc_send_rs+0x388/0x700 net/ipv6/ndisc.c:686
- addrconf_rs_timer+0x3f2/0x820 net/ipv6/addrconf.c:3873
- call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1410
- expire_timers kernel/time/timer.c:1455 [inline]
- __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1747
- __run_timers kernel/time/timer.c:1728 [inline]
- run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1760
- __do_softirq+0x2a0/0x9f6 kernel/softirq.c:298
- asm_call_irq_on_stack+0xf/0x20
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:393 [inline]
- __irq_exit_rcu kernel/softirq.c:423 [inline]
- irq_exit_rcu+0x132/0x200 kernel/softirq.c:435
- sysvec_apic_timer_interrupt+0x4d/0x100 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
-RIP: 0010:schedule_debug kernel/sched/core.c:4278 [inline]
-RIP: 0010:__schedule+0x12c/0x2130 kernel/sched/core.c:4423
-Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 7d 1a 00 00 48 ba 00 00 00 00 00 fc ff df 49 8b 45 18 48 89 c1 48 c1 e9 03 80 3c 11 00 <0f> 85 43 1a 00 00 48 81 38 9d 6e ac 57 0f 85 c5 1f 00 00 49 8d 45
-RSP: 0018:ffffc9000a94f8e0 EFLAGS: 00000246
-RAX: ffffc9000a948000 RBX: 0000000000000001 RCX: 1ffff92001529000
-RDX: dffffc0000000000 RSI: 0000000000000001 RDI: ffff8880328cced8
-RBP: ffffc9000a94f9a8 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880b9f34940
-R13: ffff8880328ccec0 R14: ffff8880b9f34940 R15: 0000000000034940
- preempt_schedule_irq+0x4e/0x90 kernel/sched/core.c:4789
- irqentry_exit_cond_resched kernel/entry/common.c:357 [inline]
- irqentry_exit_cond_resched kernel/entry/common.c:349 [inline]
- irqentry_exit+0x7a/0xa0 kernel/entry/common.c:387
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
-RIP: 0010:get_freepointer mm/slub.c:278 [inline]
-RIP: 0010:slab_free_freelist_hook+0x8b/0x150 mm/slub.c:1562
-Code: 8b 43 28 49 8b 55 00 48 89 54 05 00 48 8b 04 24 49 89 6d 00 48 83 38 00 0f 84 8d 00 00 00 4c 39 f5 0f 84 90 00 00 00 8b 43 28 <4c> 89 e5 4d 8b 24 04 0f 1f 44 00 00 9c 41 5f fa 41 f7 c7 00 02 00
-RSP: 0018:ffffc9000a94fa80 EFLAGS: 00000246
-RAX: 0000000000000038 RBX: ffff888010f21500 RCX: ffffffff8130c470
-RDX: ffffc9000a94fac8 RSI: ffffc9000a94fac0 RDI: ffff888010f21500
-RBP: ffff888010f21500 R08: 0000000000000001 R09: ffff888031f4f13f
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880211a8000
-R13: ffffc9000a94fac0 R14: ffff8880211a8000 R15: ffffffff8b460f60
- slab_free mm/slub.c:3142 [inline]
- kmem_cache_free+0x82/0x350 mm/slub.c:3158
- free_mm_slot mm/khugepaged.c:414 [inline]
- __khugepaged_exit+0x2b8/0x3f0 mm/khugepaged.c:531
- khugepaged_exit include/linux/khugepaged.h:52 [inline]
- __mmput+0x389/0x470 kernel/fork.c:1078
- mmput+0x53/0x60 kernel/fork.c:1100
- exit_mm kernel/exit.c:486 [inline]
- do_exit+0xa72/0x29b0 kernel/exit.c:796
- do_group_exit+0x125/0x310 kernel/exit.c:906
- get_signal+0x42a/0x1f10 kernel/signal.c:2758
- arch_do_signal+0x82/0x2390 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
- exit_to_user_mode_prepare+0x100/0x1a0 kernel/entry/common.c:191
- syscall_exit_to_user_mode+0x38/0x260 kernel/entry/common.c:266
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x44a3e9
-Code: Unable to access opcode bytes at RIP 0x44a3bf.
-RSP: 002b:00007fa491ecadb8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 00000000006e0c38 RCX: 000000000044a3e9
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00000000006e0c38
-RBP: 00000000006e0c30 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006e0c3c
-R13: 00007fffc6dec0df R14: 00007fa491ecb9c0 R15: 0000000000000005
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.207 msecs
+> >
+> >> +    }
+> >> +}
+> >> +
+> >>  static void v4l_print_exportbuffer(const void *arg, bool write_only)
+> >>  {
+> >>      const struct v4l2_exportbuffer *p = arg;
+> >> @@ -546,6 +566,15 @@ static void v4l_print_create_buffers(const void *arg, bool write_only)
+> >>      v4l_print_format(&p->format, write_only);
+> >>  }
+> >>
+> >> +static void v4l_print_ext_create_buffers(const void *arg, bool write_only)
+> >> +{
+> >> +    const struct v4l2_ext_create_buffers *p = arg;
+> >> +
+> >> +    pr_cont("index=%d, count=%d, memory=%s, ", p->index, p->count,
+> >> +            prt_names(p->memory, v4l2_memory_names));
+> >> +    v4l_print_ext_pix_format(&p->format, write_only);
+> >
+> > Should we also print capabilities and flags?
+>
+> I just saw these prints are called after the ioctl handler, and not before,
+> to I guess it make sense.
+>
+> It is not printed by v4l_print_create_buffers(), I think we can add in both then.
+>
+> >
+> >> +}
+> >> +
+> >>  static void v4l_print_streamparm(const void *arg, bool write_only)
+> >>  {
+> >>      const struct v4l2_streamparm *p = arg;
+> >> @@ -1220,6 +1249,143 @@ int v4l2_format_to_ext_pix_format(const struct v4l2_format *f,
+> >>  }
+> >>  EXPORT_SYMBOL_GPL(v4l2_format_to_ext_pix_format);
+> >>
+> >> +/*
+> >> + * If mplane_cap is true, b->m.planes should have a valid pointer of a
+> >> + * struct v4l2_plane array, and b->length with its size
+> >> + */
+> >> +int v4l2_ext_buffer_to_buffer(const struct v4l2_ext_buffer *e,
+> >> +                          struct v4l2_buffer *b, bool mplane_cap)
+> >> +{
+> >> +    unsigned int planes_array_size = b->length;
+> >> +    struct v4l2_plane *planes = b->m.planes;
+> >> +    u64 nsecs;
+> >> +
+> >> +    if (!mplane_cap && e->planes[1].buffer_length != 0)
+> >> +            return -EINVAL;
+> >> +
+> >> +    memset(b, 0, sizeof(*b));
+> >> +
+> >> +    b->index = e->index;
+> >> +    b->flags = e->flags;
+> >> +    b->field = e->field;
+> >> +    b->sequence = e->sequence;
+> >> +    b->memory = e->planes[0].memory;
+> >> +    b->request_fd = e->request_fd;
+> >> +    b->timestamp.tv_sec = div64_u64_rem(e->timestamp, NSEC_PER_SEC, &nsecs);
+> >> +    b->timestamp.tv_usec = (u32)nsecs / NSEC_PER_USEC;
+> >> +
+> >> +    if (mplane_cap) {
+> >> +            unsigned int i;
+> >> +
+> >> +            if (!planes || !planes_array_size)
+> >> +                    return -EINVAL;
+> >> +
+> >> +            b->m.planes = planes;
+> >
+> > planes was initialized to b->m.planes at declaration time. Should we
+> > perhaps move its declaration to within this block to make it more clear and
+> > remove this assignment?
+>
+> The variable "planes" is saving the pointer of b->m.planes before we do
+> memset(b, 0, sizeof(*b)), so I can reassing it back if it make sense.
+>
+> I can add a comment to make this more clear.
+>
 
+Right, I think the code is a bit confusing. Should we just pass the
+planes array pointer as a separate argument to the function?
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> >> +
+> >> +            if (e->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
+> >> +                    b->type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
+> >> +            else
+> >> +                    b->type = V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
+> >> +
+> >> +            for (i = 0; i < VIDEO_MAX_PLANES && i < planes_array_size &&
+> >> +                        e->planes[i].buffer_length; i++) {
+> >> +
+> >> +                    if (e->planes[0].memory != e->planes[i].memory)
+> >> +                            return -EINVAL;
+> >> +
+> >> +                    if (e->planes[i].offset)
+> >> +                            return -EINVAL;
+> >
+> > Is it really invalid to have a non-zero offset? Shouldn't the data_offset
+> > field of the legacy struct be populated instead, in the cases where it was
+> > defined to be valid?
+>
+> My understanding of data_offset, is that it is used when the hardware can
+> write/read a header to/from the buffer.
+>
+> But this doesn't seem to be used by any driver
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+This is not true:
+https://elixir.bootlin.com/linux/latest/source/drivers/media/platform/qcom/venus/venc.c#L963
+
+>, so there is an attempt to
+> repourpose it here:
+>
+>     https://patchwork.linuxtv.org/project/linux-media/patch/1429040689-23808-2-git-send-email-laurent.pinchart@ideasonboard.com/
+>
+> But this wans't merged.
+>
+> So in the current API, there is no way to specify an offset in the buffer.
+>
+> I guess we can repurpose data_offset first, what do you think?
+>
+
+We need to stick to the original behavior for data_offset, so that an
+encoder has a way to tell the userspace how many bytes of the header
+it needs to skip.
+
+> >
+> >> +
+> >> +                    memset(&b->m.planes[i], 0, sizeof(b->m.planes[i]));
+> >> +
+> >> +                    if (b->memory == V4L2_MEMORY_MMAP)
+> >> +                            b->m.planes[i].m.mem_offset = e->planes[i].m.mem_offset;
+> >> +                    else if (b->memory == V4L2_MEMORY_DMABUF)
+> >> +                            b->m.planes[i].m.fd = e->planes[i].m.dmabuf_fd;
+> >> +                    else
+> >> +                            b->m.planes[i].m.userptr = e->planes[i].m.userptr;
+> >> +
+> >> +                    b->m.planes[i].bytesused = e->planes[i].plane_length;
+> >
+> > I might be getting the meaning of plane_length wrong, but doesn't this
+> > depend on the direction? If the userspace gives a CAPTURE buffer, it would
+> > have bytesused = 0, but if the kernel returns it, it would have bytesused =
+> > <size of the payload>.
+>
+> You are right, it depends on the direction, thanks for catching this.
+>
+> Also, in the Ext api, we don't have the <size of the payload>, so I'm using the
+> plane_length instead, I'm not sure if there is a better way.
+
+I thought about this for a while and it sounds like in the code added
+by this series, plane_length is basically used as the old bytesused
+and buffer_length as the old length. Would it make sense to just
+preserve the old naming?
+
+>
+> >
+> >> +                    b->m.planes[i].length = e->planes[i].buffer_length;
+> >> +            }
+> >> +            /* In multi-planar, length contain the number of planes */
+> >> +            b->length = i;
+> >> +    } else {
+> >> +            b->type = e->type;
+> >> +            b->bytesused = e->planes[0].plane_length;
+> >> +            b->length = e->planes[0].buffer_length;
+> >> +
+> >> +            if (e->planes[0].offset)
+> >> +                    return -EINVAL;
+> >
+> > Ditto.
+>
+> Ack.
+>
+> >
+> >> +
+> >> +            if (b->memory == V4L2_MEMORY_MMAP)
+> >> +                    b->m.offset = e->planes[0].m.mem_offset;
+> >> +            else if (b->memory == V4L2_MEMORY_DMABUF)
+> >> +                    b->m.fd = e->planes[0].m.dmabuf_fd;
+> >> +            else
+> >> +                    b->m.userptr = e->planes[0].m.userptr;
+> >> +    }
+> >> +
+> >> +    return 0;
+> >> +}
+> >> +EXPORT_SYMBOL_GPL(v4l2_ext_buffer_to_buffer);
+> >> +
+> >> +int v4l2_buffer_to_ext_buffer(const struct v4l2_buffer *b,
+> >> +                          struct v4l2_ext_buffer *e)
+> >> +{
+> >> +    memset(e, 0, sizeof(*e));
+> >> +
+> >> +    e->index = b->index;
+> >> +    e->flags = b->flags;
+> >> +    e->field = b->field;
+> >> +    e->sequence = b->sequence;
+> >> +    e->request_fd = b->request_fd;
+> >> +    e->timestamp = b->timestamp.tv_sec * NSEC_PER_SEC +
+> >> +            b->timestamp.tv_usec * NSEC_PER_USEC;
+> >> +    if (V4L2_TYPE_IS_MULTIPLANAR(b->type)) {
+> >> +            unsigned int i;
+> >> +
+> >> +            if (!b->m.planes)
+> >> +                    return -EINVAL;
+> >> +
+> >> +            if (b->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
+> >> +                    e->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+> >> +            else
+> >> +                    e->type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
+> >> +
+> >> +            /* In multi-planar, length contain the number of planes */
+> >> +            for (i = 0; i < b->length; i++) {
+> >
+> > The design of the new struct implies that the planes describe color planes
+> > and not memory planes, so this code is incorrect, because for non-M format
+> > variants it would fill in only the first plane of the new struct.
+>
+> Yes, as discussed in 1/7, the handling of planes is wrong, I'll correct
+> this for next version.
+>
+> >
+> >> +                    if (b->memory == V4L2_MEMORY_MMAP)
+> >> +                            e->planes[i].m.mem_offset = b->m.planes[i].m.mem_offset;
+> >> +                    else if (b->memory == V4L2_MEMORY_DMABUF)
+> >> +                            e->planes[i].m.dmabuf_fd = b->m.planes[i].m.fd;
+> >> +                    else
+> >> +                            e->planes[i].m.userptr = b->m.planes[i].m.userptr;
+> >> +
+> >> +                    e->planes[i].memory = b->memory;
+> >> +                    e->planes[i].buffer_length = b->m.planes[i].length;
+> >> +                    e->planes[i].plane_length = b->m.planes[i].bytesused;
+> >> +                    if (b->m.planes[i].data_offset)
+> >> +                            pr_warn("Ignoring data_offset value %d\n",
+> >> +                                    b->m.planes[i].data_offset);
+> >
+> > Why? As per my comment above, there are valid use cases defined in the spec.
+>
+> Please see my comment about about data_offset.
+>
+> >
+> >> +            }
+> >> +    } else {
+> >> +            e->type = b->type;
+> >> +            e->planes[0].memory = b->memory;
+> >> +            e->planes[0].plane_length = b->bytesused;
+> >> +            e->planes[0].buffer_length = b->length;
+> >> +            if (b->memory == V4L2_MEMORY_MMAP)
+> >> +                    e->planes[0].m.mem_offset = b->m.offset;
+> >> +            else if (b->memory == V4L2_MEMORY_DMABUF)
+> >> +                    e->planes[0].m.dmabuf_fd = b->m.fd;
+> >> +            else
+> >> +                    e->planes[0].m.userptr = b->m.userptr;
+> >
+> > Similar to the MULTIPLANAR case, we should fill in the planes[] entries
+> > corresponding to the number of color planes of the format, e.g. 2 for NV12.
+>
+> Ack.
+>
+> >
+> >> +    }
+> >> +
+> >> +    return 0;
+> >> +}
+> >> +EXPORT_SYMBOL_GPL(v4l2_buffer_to_ext_buffer);
+> >> +
+> >>  static int v4l_querycap(const struct v4l2_ioctl_ops *ops,
+> >>                              struct file *file, void *fh, void *arg)
+> >>  {
+> >> @@ -2473,31 +2639,112 @@ static int v4l_reqbufs(const struct v4l2_ioctl_ops *ops,
+> >>      return ops->vidioc_reqbufs(file, fh, p);
+> >>  }
+> >>
+> >> +static int v4l_do_buf_op(int (*op)(struct file *, void *,
+> >> +                               struct v4l2_buffer *),
+> >> +                     int (*ext_op)(struct file *, void *,
+> >> +                                   struct v4l2_ext_buffer *),
+> >> +                     struct file *file, void *fh, struct v4l2_buffer *b)
+> >> +{
+> >> +    struct v4l2_ext_buffer e;
+> >> +    int ret;
+> >> +
+> >> +    ret = check_fmt(file, b->type);
+> >> +    if (ret)
+> >> +            return ret;
+> >> +
+> >> +    if (op)
+> >> +            return op(file, fh, b);
+> >> +
+> >> +    ret = v4l2_buffer_to_ext_buffer(b, &e);
+> >> +    if (ret)
+> >> +            return ret;
+> >> +
+> >> +    ret = ext_op(file, fh, &e);
+> >> +    if (ret)
+> >> +            return ret;
+> >> +
+> >> +    v4l2_ext_buffer_to_buffer(&e, b, V4L2_TYPE_IS_MULTIPLANAR(b->type));
+> >> +    return 0;
+> >> +}
+> >> +
+> >> +static int v4l_do_ext_buf_op(int (*op)(struct file *, void *,
+> >> +                                   struct v4l2_buffer *),
+> >> +                         int (*ext_op)(struct file *, void *,
+> >> +                                       struct v4l2_ext_buffer *),
+> >> +                         struct file *file, void *fh,
+> >> +                         struct v4l2_ext_buffer *e)
+> >> +{
+> >> +    struct video_device *vdev = video_devdata(file);
+> >> +    struct v4l2_plane planes[VIDEO_MAX_PLANES];
+> >> +    struct v4l2_buffer b;
+> >> +    bool mplane_cap;
+> >> +    int ret;
+> >> +
+> >> +    ret = check_fmt(file, e->type);
+> >> +    if (ret)
+> >> +            return ret;
+> >> +
+> >> +    if (ext_op)
+> >> +            return ext_op(file, fh, e);
+> >> +
+> >> +    mplane_cap = !!(vdev->device_caps &
+> >> +                    (V4L2_CAP_VIDEO_CAPTURE_MPLANE |
+> >> +                     V4L2_CAP_VIDEO_OUTPUT_MPLANE |
+> >> +                     V4L2_CAP_VIDEO_M2M_MPLANE));
+> >> +    b.m.planes = planes;
+> >> +    b.length = VIDEO_MAX_PLANES;
+> >> +    ret = v4l2_ext_buffer_to_buffer(e, &b, mplane_cap);
+> >> +    if (ret)
+> >> +            return ret;
+> >> +
+> >> +    ret = op(file, fh, &b);
+> >> +    if (ret)
+> >> +            return ret;
+> >> +
+> >> +    v4l2_buffer_to_ext_buffer(&b, e);
+> >> +    return 0;
+> >> +}
+> >> +
+> >>  static int v4l_querybuf(const struct v4l2_ioctl_ops *ops,
+> >> -                            struct file *file, void *fh, void *arg)
+> >> +                    struct file *file, void *fh, void *arg)
+> >>  {
+> >> -    struct v4l2_buffer *p = arg;
+> >> -    int ret = check_fmt(file, p->type);
+> >> +    return v4l_do_buf_op(ops->vidioc_querybuf, ops->vidioc_ext_querybuf,
+> >> +                         file, fh, arg);
+> >> +}
+> >>
+> >> -    return ret ? ret : ops->vidioc_querybuf(file, fh, p);
+> >> +static int v4l_ext_querybuf(const struct v4l2_ioctl_ops *ops,
+> >> +                        struct file *file, void *fh, void *arg)
+> >> +{
+> >> +    return v4l_do_ext_buf_op(ops->vidioc_querybuf,
+> >> +                             ops->vidioc_ext_querybuf, file, fh, arg);
+> >>  }
+> >>
+> >>  static int v4l_qbuf(const struct v4l2_ioctl_ops *ops,
+> >> -                            struct file *file, void *fh, void *arg)
+> >> +                struct file *file, void *fh, void *arg)
+> >>  {
+> >> -    struct v4l2_buffer *p = arg;
+> >> -    int ret = check_fmt(file, p->type);
+> >> +    return v4l_do_buf_op(ops->vidioc_qbuf, ops->vidioc_ext_qbuf,
+> >> +                         file, fh, arg);
+> >> +}
+> >>
+> >> -    return ret ? ret : ops->vidioc_qbuf(file, fh, p);
+> >> +static int v4l_ext_qbuf(const struct v4l2_ioctl_ops *ops,
+> >> +                    struct file *file, void *fh, void *arg)
+> >> +{
+> >> +    return v4l_do_ext_buf_op(ops->vidioc_qbuf, ops->vidioc_ext_qbuf,
+> >> +                             file, fh, arg);
+> >>  }
+> >>
+> >>  static int v4l_dqbuf(const struct v4l2_ioctl_ops *ops,
+> >> -                            struct file *file, void *fh, void *arg)
+> >> +                 struct file *file, void *fh, void *arg)
+> >>  {
+> >> -    struct v4l2_buffer *p = arg;
+> >> -    int ret = check_fmt(file, p->type);
+> >> +    return v4l_do_buf_op(ops->vidioc_dqbuf, ops->vidioc_ext_dqbuf,
+> >> +                         file, fh, arg);
+> >> +}
+> >>
+> >> -    return ret ? ret : ops->vidioc_dqbuf(file, fh, p);
+> >> +static int v4l_ext_dqbuf(const struct v4l2_ioctl_ops *ops,
+> >> +                     struct file *file, void *fh, void *arg)
+> >> +{
+> >> +    return v4l_do_ext_buf_op(ops->vidioc_dqbuf, ops->vidioc_ext_dqbuf,
+> >> +                             file, fh, arg);
+> >>  }
+> >>
+> >>  static int v4l_create_bufs(const struct v4l2_ioctl_ops *ops,
+> >> @@ -2513,7 +2760,27 @@ static int v4l_create_bufs(const struct v4l2_ioctl_ops *ops,
+> >>
+> >>      v4l_sanitize_format(&create->format);
+> >>
+> >> -    ret = ops->vidioc_create_bufs(file, fh, create);
+> >> +    if (ops->vidioc_create_bufs) {
+> >> +            ret = ops->vidioc_create_bufs(file, fh, create);
+> >> +    } else {
+> >> +            struct v4l2_ext_create_buffers ecreate = {
+> >> +                    .count = create->count,
+> >> +                    .memory = create->memory,
+> >> +            };
+> >> +
+> >> +            ret = v4l2_format_to_ext_pix_format(&create->format,
+> >> +                                                &ecreate.format, true);
+> >> +            if (ret)
+> >> +                    return ret;
+> >> +
+> >> +            ret = ops->vidioc_ext_create_bufs(file, fh, &ecreate);
+> >> +            if (ret)
+> >> +                    return ret;
+> >> +
+> >> +            create->index = ecreate.index;
+> >> +            create->count = ecreate.count;
+> >> +            create->capabilities = ecreate.capabilities;
+> >> +    }
+> >>
+> >>      if (create->format.type == V4L2_BUF_TYPE_VIDEO_CAPTURE ||
+> >>          create->format.type == V4L2_BUF_TYPE_VIDEO_OUTPUT)
+> >> @@ -2522,13 +2789,60 @@ static int v4l_create_bufs(const struct v4l2_ioctl_ops *ops,
+> >>      return ret;
+> >>  }
+> >>
+> >> +static int v4l_ext_create_bufs(const struct v4l2_ioctl_ops *ops,
+> >> +                           struct file *file, void *fh, void *arg)
+> >> +{
+> >> +    struct v4l2_ext_create_buffers *ecreate = arg;
+> >> +    struct video_device *vdev = video_devdata(file);
+> >> +    struct v4l2_create_buffers create = {
+> >> +            .count = ecreate->count,
+> >> +            .memory = ecreate->memory,
+> >> +            .flags = ecreate->flags,
+> >> +    };
+> >> +    bool mplane_cap;
+> >> +    int ret;
+> >> +
+> >> +    ret = check_fmt(file, ecreate->format.type);
+> >> +    if (ret)
+> >> +            return ret;
+> >> +
+> >> +    if (ops->vidioc_ext_create_bufs)
+> >> +            return ops->vidioc_ext_create_bufs(file, fh, ecreate);
+> >> +
+> >> +    mplane_cap = !!(vdev->device_caps &
+> >> +                    (V4L2_CAP_VIDEO_CAPTURE_MPLANE |
+> >> +                     V4L2_CAP_VIDEO_OUTPUT_MPLANE |
+> >> +                     V4L2_CAP_VIDEO_M2M_MPLANE));
+> >> +    ret = v4l2_ext_pix_format_to_format(&ecreate->format,
+> >> +                                        &create.format, mplane_cap, true);
+> >> +    if (ret)
+> >> +            return ret;
+> >> +
+> >> +    ret = v4l_create_bufs(ops, file, fh, &create);
+> >> +    if (ret)
+> >> +            return ret;
+> >> +
+> >> +    ecreate->index = create.index;
+> >> +    ecreate->count = create.count;
+> >> +    ecreate->capabilities = create.capabilities;
+> >> +
+> >> +    return 0;
+> >> +}
+> >> +
+> >>  static int v4l_prepare_buf(const struct v4l2_ioctl_ops *ops,
+> >> -                            struct file *file, void *fh, void *arg)
+> >> +                       struct file *file, void *fh, void *arg)
+> >>  {
+> >> -    struct v4l2_buffer *b = arg;
+> >> -    int ret = check_fmt(file, b->type);
+> >> +    return v4l_do_buf_op(ops->vidioc_prepare_buf,
+> >> +                         ops->vidioc_ext_prepare_buf,
+> >> +                         file, fh, arg);
+> >> +}
+> >>
+> >> -    return ret ? ret : ops->vidioc_prepare_buf(file, fh, b);
+> >> +static int v4l_ext_prepare_buf(const struct v4l2_ioctl_ops *ops,
+> >> +                           struct file *file, void *fh, void *arg)
+> >> +{
+> >> +    return v4l_do_ext_buf_op(ops->vidioc_prepare_buf,
+> >> +                             ops->vidioc_ext_prepare_buf,
+> >> +                             file, fh, arg);
+> >>  }
+> >>
+> >>  static int v4l_g_parm(const struct v4l2_ioctl_ops *ops,
+> >> @@ -3202,12 +3516,15 @@ static const struct v4l2_ioctl_info v4l2_ioctls[] = {
+> >>      IOCTL_INFO(VIDIOC_S_EXT_PIX_FMT, v4l_s_ext_pix_fmt, v4l_print_ext_pix_format, INFO_FL_PRIO),
+> >>      IOCTL_INFO(VIDIOC_REQBUFS, v4l_reqbufs, v4l_print_requestbuffers, INFO_FL_PRIO | INFO_FL_QUEUE),
+> >>      IOCTL_INFO(VIDIOC_QUERYBUF, v4l_querybuf, v4l_print_buffer, INFO_FL_QUEUE | INFO_FL_CLEAR(v4l2_buffer, length)),
+> >> +    IOCTL_INFO(VIDIOC_EXT_QUERYBUF, v4l_ext_querybuf, v4l_print_ext_buffer, INFO_FL_QUEUE | INFO_FL_CLEAR(v4l2_ext_buffer, planes)),
+> >>      IOCTL_INFO(VIDIOC_G_FBUF, v4l_stub_g_fbuf, v4l_print_framebuffer, 0),
+> >>      IOCTL_INFO(VIDIOC_S_FBUF, v4l_stub_s_fbuf, v4l_print_framebuffer, INFO_FL_PRIO),
+> >>      IOCTL_INFO(VIDIOC_OVERLAY, v4l_overlay, v4l_print_u32, INFO_FL_PRIO),
+> >>      IOCTL_INFO(VIDIOC_QBUF, v4l_qbuf, v4l_print_buffer, INFO_FL_QUEUE),
+> >>      IOCTL_INFO(VIDIOC_EXPBUF, v4l_stub_expbuf, v4l_print_exportbuffer, INFO_FL_QUEUE | INFO_FL_CLEAR(v4l2_exportbuffer, flags)),
+> >> +    IOCTL_INFO(VIDIOC_EXT_QBUF, v4l_ext_qbuf, v4l_print_ext_buffer, INFO_FL_QUEUE),
+> >
+> > Looking at the other entries, shouldn't this one be 1 line higher?
+>
+> Yes.
+>
+> >
+> > That said, I wonder if it wouldn't look cleaner if we just put all the
+> > EXT ioctls together at the bottom.
+>
+> I can move them and we can see if it is better or not.
+>
+> >
+> >>      IOCTL_INFO(VIDIOC_DQBUF, v4l_dqbuf, v4l_print_buffer, INFO_FL_QUEUE),
+> >> +    IOCTL_INFO(VIDIOC_EXT_DQBUF, v4l_ext_dqbuf, v4l_print_ext_buffer, INFO_FL_QUEUE),
+> >>      IOCTL_INFO(VIDIOC_STREAMON, v4l_streamon, v4l_print_buftype, INFO_FL_PRIO | INFO_FL_QUEUE),
+> >>      IOCTL_INFO(VIDIOC_STREAMOFF, v4l_streamoff, v4l_print_buftype, INFO_FL_PRIO | INFO_FL_QUEUE),
+> >>      IOCTL_INFO(VIDIOC_G_PARM, v4l_g_parm, v4l_print_streamparm, INFO_FL_CLEAR(v4l2_streamparm, type)),
+> >> @@ -3272,7 +3589,9 @@ static const struct v4l2_ioctl_info v4l2_ioctls[] = {
+> >>      IOCTL_INFO(VIDIOC_SUBSCRIBE_EVENT, v4l_subscribe_event, v4l_print_event_subscription, 0),
+> >>      IOCTL_INFO(VIDIOC_UNSUBSCRIBE_EVENT, v4l_unsubscribe_event, v4l_print_event_subscription, 0),
+> >>      IOCTL_INFO(VIDIOC_CREATE_BUFS, v4l_create_bufs, v4l_print_create_buffers, INFO_FL_PRIO | INFO_FL_QUEUE),
+> >> +    IOCTL_INFO(VIDIOC_EXT_CREATE_BUFS, v4l_ext_create_bufs, v4l_print_ext_create_buffers, INFO_FL_PRIO | INFO_FL_QUEUE),
+> >>      IOCTL_INFO(VIDIOC_PREPARE_BUF, v4l_prepare_buf, v4l_print_buffer, INFO_FL_QUEUE),
+> >> +    IOCTL_INFO(VIDIOC_EXT_PREPARE_BUF, v4l_ext_prepare_buf, v4l_print_ext_buffer, INFO_FL_QUEUE),
+> >>      IOCTL_INFO(VIDIOC_ENUM_DV_TIMINGS, v4l_stub_enum_dv_timings, v4l_print_enum_dv_timings, INFO_FL_CLEAR(v4l2_enum_dv_timings, pad)),
+> >>      IOCTL_INFO(VIDIOC_QUERY_DV_TIMINGS, v4l_stub_query_dv_timings, v4l_print_dv_timings, INFO_FL_ALWAYS_COPY),
+> >>      IOCTL_INFO(VIDIOC_DV_TIMINGS_CAP, v4l_stub_dv_timings_cap, v4l_print_dv_timings_cap, INFO_FL_CLEAR(v4l2_dv_timings_cap, pad)),
+> >> diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
+> >> index 8bbcb74d8ee31..75996657ad1ba 100644
+> >> --- a/include/media/v4l2-ioctl.h
+> >> +++ b/include/media/v4l2-ioctl.h
+> >> @@ -169,16 +169,26 @@ struct v4l2_fh;
+> >>   *  :ref:`VIDIOC_REQBUFS <vidioc_reqbufs>` ioctl
+> >>   * @vidioc_querybuf: pointer to the function that implements
+> >>   *  :ref:`VIDIOC_QUERYBUF <vidioc_querybuf>` ioctl
+> >> + * @vidioc_ext_querybuf: pointer to the function that implements
+> >> + *  :ref:`VIDIOC_EXT_QUERYBUF <vidioc_ext_querybuf>` ioctl
+> >>   * @vidioc_qbuf: pointer to the function that implements
+> >>   *  :ref:`VIDIOC_QBUF <vidioc_qbuf>` ioctl
+> >> + * @vidioc_ext_qbuf: pointer to the function that implements
+> >> + *  :ref:`VIDIOC_EXT_QBUF <vidioc_ext_qbuf>` ioctl
+> >>   * @vidioc_expbuf: pointer to the function that implements
+> >>   *  :ref:`VIDIOC_EXPBUF <vidioc_expbuf>` ioctl
+> >>   * @vidioc_dqbuf: pointer to the function that implements
+> >>   *  :ref:`VIDIOC_DQBUF <vidioc_qbuf>` ioctl
+> >> + * @vidioc_ext_dqbuf: pointer to the function that implements
+> >> + *  :ref:`VIDIOC_EXT_DQBUF <vidioc_ext_qbuf>` ioctl
+> >>   * @vidioc_create_bufs: pointer to the function that implements
+> >>   *  :ref:`VIDIOC_CREATE_BUFS <vidioc_create_bufs>` ioctl
+> >> + * @vidioc_ext_create_bufs: pointer to the function that implements
+> >> + *  :ref:`VIDIOC_EXT_CREATE_BUFS <vidioc_ext_create_bufs>` ioctl
+> >>   * @vidioc_prepare_buf: pointer to the function that implements
+> >>   *  :ref:`VIDIOC_PREPARE_BUF <vidioc_prepare_buf>` ioctl
+> >> + * @vidioc_ext_prepare_buf: pointer to the function that implements
+> >> + *  :ref:`VIDIOC_EXT_PREPARE_BUF <vidioc_ext_prepare_buf>` ioctl
+> >>   * @vidioc_overlay: pointer to the function that implements
+> >>   *  :ref:`VIDIOC_OVERLAY <vidioc_overlay>` ioctl
+> >>   * @vidioc_g_fbuf: pointer to the function that implements
+> >> @@ -439,17 +449,27 @@ struct v4l2_ioctl_ops {
+> >>                            struct v4l2_requestbuffers *b);
+> >>      int (*vidioc_querybuf)(struct file *file, void *fh,
+> >>                             struct v4l2_buffer *b);
+> >> +    int (*vidioc_ext_querybuf)(struct file *file, void *fh,
+> >> +                               struct v4l2_ext_buffer *b);
+> >>      int (*vidioc_qbuf)(struct file *file, void *fh,
+> >>                         struct v4l2_buffer *b);
+> >> +    int (*vidioc_ext_qbuf)(struct file *file, void *fh,
+> >> +                           struct v4l2_ext_buffer *b);
+> >>      int (*vidioc_expbuf)(struct file *file, void *fh,
+> >>                           struct v4l2_exportbuffer *e);
+> >>      int (*vidioc_dqbuf)(struct file *file, void *fh,
+> >>                          struct v4l2_buffer *b);
+> >> +    int (*vidioc_ext_dqbuf)(struct file *file, void *fh,
+> >> +                            struct v4l2_ext_buffer *b);
+> >>
+> >>      int (*vidioc_create_bufs)(struct file *file, void *fh,
+> >>                                struct v4l2_create_buffers *b);
+> >> +    int (*vidioc_ext_create_bufs)(struct file *file, void *fh,
+> >> +                                  struct v4l2_ext_create_buffers *b);
+> >>      int (*vidioc_prepare_buf)(struct file *file, void *fh,
+> >>                                struct v4l2_buffer *b);
+> >> +    int (*vidioc_ext_prepare_buf)(struct file *file, void *fh,
+> >> +                                  struct v4l2_ext_buffer *b);
+> >>
+> >>      int (*vidioc_overlay)(struct file *file, void *fh, unsigned int i);
+> >>      int (*vidioc_g_fbuf)(struct file *file, void *fh,
+> >> @@ -758,6 +778,12 @@ int v4l2_ext_pix_format_to_format(const struct v4l2_ext_pix_format *e,
+> >>                                struct v4l2_format *f,
+> >>                                bool mplane_cap, bool strict);
+> >>
+> >> +int v4l2_ext_buffer_to_buffer(const struct v4l2_ext_buffer *e,
+> >> +                          struct v4l2_buffer *b,
+> >> +                          bool mplane_cap);
+> >> +int v4l2_buffer_to_ext_buffer(const struct v4l2_buffer *b,
+> >> +                          struct v4l2_ext_buffer *e);
+> >> +
+> >>  /*
+> >>   * The user space interpretation of the 'v4l2_event' differs
+> >>   * based on the 'time_t' definition on 32-bit architectures, so
+> >> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> >> index 7123c6a4d9569..334cafdd2be97 100644
+> >> --- a/include/uapi/linux/videodev2.h
+> >> +++ b/include/uapi/linux/videodev2.h
+> >> @@ -996,6 +996,41 @@ struct v4l2_plane {
+> >>      __u32                   reserved[11];
+> >>  };
+> >>
+> >> +/**
+> >> + * struct v4l2_ext_plane - extended plane buffer info
+> >> + * @buffer_length:  size of the entire buffer in bytes, should fit
+> >> + *                  @offset + @plane_length
+> >
+> > Do we actually need this buffer_length at all? We have 3 memory types:
+> >
+> > 1) MMAP - here vb2 already knows the buffer size, because it created it.
+> >
+> > 2) DMABUF - the DMA-buf kAPI provides the information about buffer size.
+> >
+> > 3) USERPTR - this might actually benefit from buffer_length, because there
+> >    are additional alignmnent requirements for the user memory, e.g. the
+> >    offset and size must be cacheline aligned.
+> >
+> > Arguably, 1) and 2) are the main usage scenarios, while the user space that
+> > uses them would have to suffer from added complexity, because of the
+> > legacy/niche case 3).
+> >
+> > Could we make this field valid only for USERPTR?
+>
+> I think so, make sense, I'll implement this for next version.
+>
+> >
+> >> + * @plane_length:   size of the plane in bytes.
+> >> + * @mem_offset:             If V4L2_MEMORY_MMAP is used, then it can be a "cookie"
+> >> + *                  that should be passed to mmap() called on the video node.
+> >> + * @userptr:                when memory is V4L2_MEMORY_USERPTR, a userspace pointer pointing
+> >> + *                  to this plane.
+> >> + * @dmabuf_fd:              when memory is V4L2_MEMORY_DMABUF, a userspace file descriptor
+> >> + *                  associated with this plane.
+> >> + * @offset:         offset in the memory buffer where the plane starts.
+> >> + * @memory:         enum v4l2_memory; the method, in which the actual video
+> >> + *                  data is passed
+> >> + * @reserved:               extra space reserved for future fields, must be set to 0.
+> >> + *
+> >> + *
+> >> + * Buffers consist of one or more planes, e.g. an YCbCr buffer with two planes
+> >> + * can have one plane for Y, and another for interleaved CbCr components.
+> >> + * Each plane can reside in a separate memory buffer, or even in
+> >> + * a completely separate memory node (e.g. in embedded devices).
+> >> + */
+> >> +struct v4l2_ext_plane {
+> >> +    __u32 buffer_length;
+> >> +    __u32 plane_length;
+> >> +    union {
+> >> +            __u32 mem_offset;
+> >> +            __u64 userptr;
+> >> +            __s32 dmabuf_fd;
+> >> +    } m;
+> >> +    __u32 offset;
+> >> +    __u32 memory;
+> >> +    __u32 reserved[4];
+> >> +};
+> >
+> > Don't we also need bytesused? Or would plane_length essentially mean the
+> > amount of space or payload, depending on the usage context?
+>
+> In my understanding, plane_length is the max amount of data the plane can
+> occupy, othersize it can overflow the buffer or mess with another plane
+> that is in the same buffer on a different offset.
+>
+> I'm probably wrong, but I don't really see why the payload size is usefull,
+> unless if we set a plane_legth that is much bigger then the data it can carry,
+> that can impact performance.
+> Payload can also be calculated from the format.
+
+It is required for non-2D-image formats, such as compressed bitstream.
+In that case, the size of the image varies between frames and is
+usually less than the size of the buffer.
+
+>
+> I can add it back if it is usefull. Please let me know your thoughts.
+>
+
+As I mentioned above, it looks like plane_length is used almost
+exactly the same way bytesused was in the original code, so maybe it
+could just stay this way?
+
+> >
+> > Similarly, the original data_offset was useful as a return field, which
+> > some drivers use to indicate that the beginning of the plane is occupied by
+> > some header or otherwise irrelevant data, which must be skipped. Would the
+> > offset field be used for this purpose now?
+>
+> I didn't add an equivalent of the data_offset, since it seemed to be
+> unused (please see my comments about this above).
+>
+> >
+> >> +
+> >>  /**
+> >>   * struct v4l2_buffer - video buffer info
+> >>   * @index:  id number of the buffer
+> >> @@ -1057,6 +1092,33 @@ struct v4l2_buffer {
+> >>      };
+> >>  };
+> >>
+> >> +/**
+> >> + * struct v4l2_ext_buffer - extended video buffer info
+> >> + * @index:  id number of the buffer
+> >> + * @type:   V4L2_BUF_TYPE_VIDEO_CAPTURE or V4L2_BUF_TYPE_VIDEO_OUTPUT
+> >> + * @flags:  buffer informational flags
+> >
+> > nit: The order of comments doesn't match the order of fields in the struct.
+>
+> Ack.
+>
+> >
+> >> + * @field:  enum v4l2_field; field order of the image in the buffer
+> >> + * @timestamp:      frame timestamp
+> >> + * @sequence:       sequence count of this frame
+> >> + * @planes: per-plane buffer information
+> >> + * @request_fd:     fd of the request that this buffer should use
+> >> + * @reserved:       extra space reserved for future fields, must be set to 0
+> >> + *
+> >> + * Contains data exchanged by application and driver using one of the Streaming
+> >> + * I/O methods.
+> >> + */
+> >> +struct v4l2_ext_buffer {
+> >> +    __u32 index;
+> >> +    __u32 type;
+> >> +    __u32 field;
+> >> +    __u32 sequence;
+> >> +    __u64 flags;
+> >> +    __u64 timestamp;
+> >
+> > What's the unit? How does this play with the other UAPI that the user space
+> > may use, e.g. clock_gettime() which returns struct timespec?
+>
+> The unity is nsec:
+>
+>         e->timestamp = b->timestamp.tv_sec * NSEC_PER_SEC +
+>                 b->timestamp.tv_usec * NSEC_PER_USEC;
+>
+> I can clarify in the docs, is this ok?
+>
+
+Yes, it definitely needs to be documented. That said, what's the
+rationale for switching from the timeval representation to the flat
+nsec-based one?
+
+Best regards,
+Tomasz
