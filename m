@@ -2,105 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4482DA3F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:06:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8F62DA3F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441318AbgLNXGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 18:06:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441285AbgLNXGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 18:06:09 -0500
-Date:   Mon, 14 Dec 2020 23:05:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607987128;
-        bh=5TsguwUz8VJK8ed5bDwSWwfzf/cJOL0KfWWRDjoJhzQ=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UAk4LB1gakF+U6GGpj55Ykx0xhrgf1wtLYgo9r9mFeGtMMIUlQosvriFGgdFwiXeC
-         IMuICyeGuCBx+14A+DqLiEZQP22TONAInVWdM5n49DxlVWfXAhICFXY58y6wpVsqU9
-         +/x+SeHiERi8NqQ18agSEF4pSFmSFlQy5i2Cz8iQpiYgJLYkvasjxZ+mgFNNEpahMT
-         UGmUFefAp3QT9mdbW9QFW/LuG3NPWfVA0lyiu0fI/XKpBCjF35lh0ax0CdwhdD03kG
-         djx8wy94NUek0W0az2sJTnimVI7JdePAliR5FelHiMnIvT+Qyj+PDJcZZDKH9ttMKk
-         rirQyugEJC3JQ==
-From:   Will Deacon <will@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 2/3] kbuild: LD_VERSION redenomination
-Message-ID: <20201214230521.GA14124@willie-the-truck>
-References: <20201212165431.150750-1-masahiroy@kernel.org>
- <20201212165431.150750-2-masahiroy@kernel.org>
+        id S2408783AbgLNXLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 18:11:32 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:38116 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726884AbgLNXLc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 18:11:32 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BENAER7189852;
+        Mon, 14 Dec 2020 23:10:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=ZgfrS8asxPlKxf8u6E3lDMqj0dpzTas5DAUZTX/96BU=;
+ b=ZnX+NbRmkt3P7jsWAPa6BvcMOAZZYFq1Hff0h1wvDoeEPFigPucFXj98wb2X5ATI9G84
+ XTpexSXEWT1BGdBkRjCbk4J7b6eOURSeTjZX7qFCs50y72nvnhiHeLuUFBpnx60VFqxB
+ aoYSwZNGDJAKEOr+Dpr7hKUHeKKod1o+VTXIrYye4sr0ORwN0M7JDh5hmNrRqnXQhXFU
+ gCfhZu5rew5DULgEawMMwPN+PfjnqlopsWVaV1y6+Ru+v2jUEWgoyjTIcDJWvAd2kSUt
+ ndyJemYjVLleGDNfrOo1AOxdAwq05CPEsHW7uU8hJxuLCdUTbpGfKRj73s/7b7v6M9EK bw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 35cn9r7x03-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 14 Dec 2020 23:10:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BEN58bf096736;
+        Mon, 14 Dec 2020 23:10:44 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 35d7em461d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Dec 2020 23:10:44 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BENAhq1002957;
+        Mon, 14 Dec 2020 23:10:43 GMT
+Received: from dhcp-10-159-135-62.vpn.oracle.com (/10.159.135.62)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 14 Dec 2020 15:10:43 -0800
+Subject: Re: [PATCH RFC 0/8] dcache: increase poison resistance
+To:     Konstantin Khlebnikov <koct9i@gmail.com>
+Cc:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Waiman Long <longman@redhat.com>,
+        Gautham Ananthakrishna <gautham.ananthakrishna@oracle.com>,
+        matthew.wilcox@oracle.com
+References: <158893941613.200862.4094521350329937435.stgit@buzz>
+ <97ece625-2799-7ae6-28b5-73c52c7c497b@oracle.com>
+ <CALYGNiN2F8gcKX+2nKOi1tapquJWfyzUkajWxTqgd9xvd7u1AA@mail.gmail.com>
+ <d116ead4-f603-7e0c-e6ab-e721332c9832@oracle.com>
+ <CALYGNiM8Fp=ZV8S6c2L50ne1cGhE30PrT-C=4nfershvfAgP+Q@mail.gmail.com>
+From:   Junxiao Bi <junxiao.bi@oracle.com>
+Message-ID: <04b4d5cf-780d-83a9-2b2b-80ae6029ae2c@oracle.com>
+Date:   Mon, 14 Dec 2020 15:10:25 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201212165431.150750-2-masahiroy@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CALYGNiM8Fp=ZV8S6c2L50ne1cGhE30PrT-C=4nfershvfAgP+Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9835 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012140154
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9835 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012140154
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 01:54:30AM +0900, Masahiro Yamada wrote:
-> Commit ccbef1674a15 ("Kbuild, lto: add ld-version and ld-ifversion
-> macros") introduced scripts/ld-version.sh for GCC LTO.
-> 
-> At that time, this script handled 5 version fields because GCC LTO
-> needed the downstream binutils. (https://lkml.org/lkml/2014/4/8/272)
-> 
-> The code snippet from the submitted patch was as follows:
-> 
->     # We need HJ Lu's Linux binutils because mainline binutils does not
->     # support mixing assembler and LTO code in the same ld -r object.
->     # XXX check if the gcc plugin ld is the expected one too
->     # XXX some Fedora binutils should also support it. How to check for that?
->     ifeq ($(call ld-ifversion,-ge,22710001,y),y)
->         ...
-> 
-> However, GCC LTO was not merged into the mainline after all.
-> (https://lkml.org/lkml/2014/4/8/272)
-> 
-> So, the 4th and 5th fields were never used, and finally removed by
-> commit 0d61ed17dd30 ("ld-version: Drop the 4th and 5th version
-> components").
-> 
-> Since then, the last 4-digits returned by this script is always zeros.
-> 
-> Remove the meaningless last 4-digits. This makes the version format
-> consistent with GCC_VERSION, CLANG_VERSION, LLD_VERSION.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  arch/arm64/Kconfig            | 2 +-
->  arch/mips/loongson64/Platform | 2 +-
->  arch/mips/vdso/Kconfig        | 2 +-
->  arch/powerpc/Makefile         | 2 +-
->  arch/powerpc/lib/Makefile     | 2 +-
->  scripts/ld-version.sh         | 2 +-
->  6 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index a6b5b7ef40ae..69d56b21a6ec 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1499,7 +1499,7 @@ config ARM64_PTR_AUTH
->  	depends on (CC_HAS_SIGN_RETURN_ADDRESS || CC_HAS_BRANCH_PROT_PAC_RET) && AS_HAS_PAC
->  	# Modern compilers insert a .note.gnu.property section note for PAC
->  	# which is only understood by binutils starting with version 2.33.1.
-> -	depends on LD_IS_LLD || LD_VERSION >= 233010000 || (CC_IS_GCC && GCC_VERSION < 90100)
-> +	depends on LD_IS_LLD || LD_VERSION >= 23301 || (CC_IS_GCC && GCC_VERSION < 90100)
->  	depends on !CC_IS_CLANG || AS_HAS_CFI_NEGATE_RA_STATE
->  	depends on (!FUNCTION_GRAPH_TRACER || DYNAMIC_FTRACE_WITH_REGS)
->  	help
+On 12/13/20 11:43 PM, Konstantin Khlebnikov wrote:
 
-Acked-by: Will Deacon <will@kernel.org>
+>
+>
+> On Sun, Dec 13, 2020 at 9:52 PM Junxiao Bi <junxiao.bi@oracle.com 
+> <mailto:junxiao.bi@oracle.com>> wrote:
+>
+>     On 12/11/20 11:32 PM, Konstantin Khlebnikov wrote:
+>
+>     > On Thu, Dec 10, 2020 at 2:01 AM Junxiao Bi
+>     <junxiao.bi@oracle.com <mailto:junxiao.bi@oracle.com>
+>     > <mailto:junxiao.bi@oracle.com <mailto:junxiao.bi@oracle.com>>>
+>     wrote:
+>     >
+>     >     Hi Konstantin,
+>     >
+>     >     We tested this patch set recently and found it limiting negative
+>     >     dentry
+>     >     to a small part of total memory. And also we don't see any
+>     >     performance
+>     >     regression on it. Do you have any plan to integrate it into
+>     >     mainline? It
+>     >     will help a lot on memory fragmentation issue causing by
+>     dentry slab,
+>     >     there were a lot of customer cases where sys% was very high
+>     since
+>     >     most
+>     >     cpu were doing memory compaction, dentry slab was taking too
+>     much
+>     >     memory
+>     >     and nearly all dentry there were negative.
+>     >
+>     >
+>     > Right now I don't have any plans for this. I suspect such
+>     problems will
+>     > appear much more often since machines are getting bigger.
+>     > So, somebody will take care of it.
+>     We already had a lot of customer cases. It made no sense to leave so
+>     many negative dentry in the system, it caused memory fragmentation
+>     and
+>     not much benefit.
+>
+>
+> Dcache could grow so big only if the system lacks of memory pressure.
+>
+> Simplest solution is a cronjob which provinces such pressure by
+> creating sparse file on disk-based fs and then reading it.
+> This should wash away all inactive caches with no IO and zero chance 
+> of oom.
+Sound good, will try.
+>
+>     >
+>     > First part which collects negative dentries at the end list of
+>     > siblings could be
+>     > done in a more obvious way by splitting the list in two.
+>     > But this touches much more code.
+>     That would add new field to dentry?
+>
+>
+> Yep. Decision is up to maintainers.
+>
+>     >
+>     > Last patch isn't very rigid but does non-trivial changes.
+>     > Probably it's better to call some garbage collector thingy
+>     periodically.
+>     > Lru list needs pressure to age and reorder entries properly.
+>
+>     Swap the negative dentry to the head of hash list when it get
+>     accessed?
+>     Extra ones can be easily trimmed when swapping, using GC is to reduce
+>     perf impact?
+>
+>
+> Reclaimer/shrinker scans denties in LRU lists, it's an another list.
 
-Will
+Ah, you mean GC to reclaim from LRU list. I am not sure it could catch 
+up the speed of negative dentry generating.
+
+Thanks,
+
+Junxiao.
+
+> My patch used order in hash lists is a very unusual way. Don't be 
+> confused.
+>
+> There are four lists
+> parent - siblings
+> hashtable - hashchain
+> LRU
+> inode - alias
+>
+>
+>     Thanks,
+>
+>     Junxioao.
+>
+>     >
+>     > Gc could be off by default or thresholds set very high (50% of
+>     ram for
+>     > example).
+>     > Final setup could be left up to owners of large systems, which
+>     needs
+>     > fine tuning.
+>
