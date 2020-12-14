@@ -2,65 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B422DA191
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:31:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B672DA19A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:34:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503341AbgLNUbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:31:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45250 "EHLO
+        id S2503350AbgLNUbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:31:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503334AbgLNUau (ORCPT
+        with ESMTP id S2503343AbgLNUbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:30:50 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A4FC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 12:30:10 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607977808;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XyvnDUNbFYWmumoIKd0vV6gFzgLV5tEpBq/C0vCsK5E=;
-        b=E6WmGYbA/3fdNRsYrCx4UNsVtwEWGZ2k7UiCS5CjCyU9BmR4Ums6RHo9S6z+b/+F+ypUhh
-        ik/hZ8E0B6JZHziDjQ4bBcWt4wji3maPygNkKtbLwMdn2OadfxsyEh1vw/AyZyZzAGWzim
-        rts6YI1IFGIGRTgcvbne5qdIBS2xd3fUiXmzfWqK5WuJDfmaTA7hBlsKYPoUhhbjwZu0p3
-        z4SdfZ+NlvNdzipJZUSPo8HBKejgWanexJGeD0ZKz/+RrE8JEOFb81B5Dt8l9YQta07XX1
-        VMahSfB8YsRFVJcA5hcbYjrd+C12VHMl8i95TKELjiTKGhUmgFnEXW4gfmx/FA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607977808;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XyvnDUNbFYWmumoIKd0vV6gFzgLV5tEpBq/C0vCsK5E=;
-        b=7lmSysuQ0IBG9UJyTdN/0X8ctAE1VHBrZvbfzQ9SuDMy+3NZtsVxtW7L/fxXvqf4meL8TO
-        +aSNCz+cNFD52WAg==
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [GIT pull] efi/core for v5.11-rc1
-In-Reply-To: <160797733182.10793.8402797805442982544.tglx@nanos>
-References: <160797732939.10793.9152151866806316627.tglx@nanos> <160797733182.10793.8402797805442982544.tglx@nanos>
-Date:   Mon, 14 Dec 2020 21:30:08 +0100
-Message-ID: <87o8iwdtbj.fsf@nanos.tec.linutronix.de>
+        Mon, 14 Dec 2020 15:31:23 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1110C0613D6;
+        Mon, 14 Dec 2020 12:30:43 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvtLk10y1z9sS8;
+        Tue, 15 Dec 2020 07:30:38 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607977841;
+        bh=/s2WPvDJ27wPzNAJfhUULDr9Sv85rl1/IxJ0YMrcCA8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gdiHp/PWMNs6ECEuVxcIc7eXKPreghrv2N7c1Ve6xb2oH7t4aqyAI0teiIKlEofNt
+         FjbB0DauEZY39ntfTTz1ttRb3WgpGKMCoRmgzbfzi/LFClOAhvpX0g8VmzurTKcFef
+         XddZQj5/NBP3G8WDLJcq/JNxY57CI1HPQZOLWQIE4h54Ibeag7+66Ypou4LFzK1KMs
+         X/boeStrRgrRJV6bGy9QunKZDcVnBA4TfJYyczXx4CoXa+05vO8oF8SomaJ6nLf7ur
+         NbsTqSjL8MBcGvZEWtCOL4CYwfmLs3lJI2ufWFWYt++hO14Y/coOI5QHhAo40YAHm5
+         Z6dcmQd5kb8vA==
+Date:   Tue, 15 Dec 2020 07:30:37 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Martin Cerveny <m.cerveny@computer.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Maxime Ripard <maxime@cerno.tech>
+Subject: Re: linux-next: manual merge of the v4l-dvb tree with the arm-soc
+ tree
+Message-ID: <20201215073037.5bb96437@canb.auug.org.au>
+In-Reply-To: <20201208110413.04400395@canb.auug.org.au>
+References: <20201208110413.04400395@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/0VqBaD1pA7DIpvY0Y=8=wM5";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+--Sig_/0VqBaD1pA7DIpvY0Y=8=wM5
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 14 2020 at 20:22, Thomas Gleixner wrote:
+Hi all,
 
-> Linus,
+On Tue, 8 Dec 2020 11:04:13 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
 >
-> please pull the latest efi/core branch from:
->
->    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi-core-2020-12-14
+> Today's linux-next merge of the v4l-dvb tree got a conflict in:
+>=20
+>   drivers/staging/media/sunxi/cedrus/cedrus.c
+>=20
+> between commit:
+>=20
+>   c6e95daab1cc ("media: cedrus: Remove the MBUS quirks")
+>=20
+> from the arm-soc tree and commits:
+>=20
+>   503dab0b8a56 ("media: cedrus: Register all codecs as capability")
+>   68b4a01f88af ("media: cedrus: Make VP8 codec as capability")
+>=20
+> from the v4l-dvb tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc drivers/staging/media/sunxi/cedrus/cedrus.c
+> index d5fca10ea5b4,18d54f9fd715..000000000000
+> --- a/drivers/staging/media/sunxi/cedrus/cedrus.c
+> +++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
+> @@@ -522,7 -584,11 +584,10 @@@ static const struct cedrus_variant sun5
+>  =20
+>   static const struct cedrus_variant sun50i_h6_cedrus_variant =3D {
+>   	.capabilities	=3D CEDRUS_CAPABILITY_UNTILED |
+> - 			  CEDRUS_CAPABILITY_H265_DEC,
+> + 			  CEDRUS_CAPABILITY_MPEG2_DEC |
+> + 			  CEDRUS_CAPABILITY_H264_DEC |
+> + 			  CEDRUS_CAPABILITY_H265_DEC |
+> + 			  CEDRUS_CAPABILITY_VP8_DEC,
+>  -	.quirks		=3D CEDRUS_QUIRK_NO_DMA_OFFSET,
+>   	.mod_rate	=3D 600000000,
+>   };
+>  =20
 
-please ignore this one. There is some last minute unclear issue with
-this lot. Ard is working on an update.
+Just a reminder that this conflict still exists.
 
-Thanks,
+--=20
+Cheers,
+Stephen Rothwell
 
-        tglx
+--Sig_/0VqBaD1pA7DIpvY0Y=8=wM5
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Xy20ACgkQAVBC80lX
+0GxD+AgAkoniNsSje1GKDmeTzhWU/P6h9lax50ZAoOUqaSBten7vfx0EhOhVfTfs
++EmfiSoLXq2KNiNdMfpARwFCYTBa1GBbpH4wwogjMjl39FFsc2uX/Y3/EL/sTNvW
+2h94FSGLbhl9q8cpo47gTi2GOa06NXyz5X+afQRxIugWkG1WnuEm41QktPaqEjSf
+NKMR7iNT0twvE6z5ryAKoFFe4FhE8aE995/fBnpE7XTTeq22sLfbdbzMcD3m4xOM
+18vB0b62GdSRqhbTKgIklQk8qbtlOINioKETfPsP5FjJQY0w1V58HvZW/jbN1So3
+yf1VksxR+khrGZhSL3/YL6XYnkx58A==
+=7/OA
+-----END PGP SIGNATURE-----
+
+--Sig_/0VqBaD1pA7DIpvY0Y=8=wM5--
