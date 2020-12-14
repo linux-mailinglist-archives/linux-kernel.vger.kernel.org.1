@@ -2,185 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8B32D9797
+	by mail.lfdr.de (Postfix) with ESMTP id 449A92D9796
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:44:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438417AbgLNLn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 06:43:29 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:44129 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2438197AbgLNLnA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:43:00 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 9EE8D580221;
-        Mon, 14 Dec 2020 06:42:03 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 14 Dec 2020 06:42:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=iiNPNEsEdF7Sa6z6H7UqKpT5vMo
-        rbcrmTtDuIlLvEU4=; b=RN/KPZJLbZUrIVLVJ15R6PZNwGxCLjllTmX0dIGshPf
-        edyIZgGDaZnTjoVRG2liqsZqNq+dmK82bPHAXQ4RKULMMt6CZjFU4LXSqjHgmOCj
-        3Uczwke2H1jFuzQl4dsxtyBV1eik6yynUuN3SaDLcf1rnjfYP1ZXZhCg0+7IM8xn
-        81gYE72n1AYxiX6OWMC6ufOvVzAbSX4OPP3knpXNgUAoWrFKd2UbRgLCn3ktEQWU
-        VuqUGMWUobtehHXLgx1Dp2wyLX3nLDmOkN4mCxGYvMaL7IfOusUWVCVgCAQOufHa
-        WrN1IEi7rJbwXrwuNjtEsfz0e4bVD1ceVYRNtHc4yMg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=iiNPNE
-        sEdF7Sa6z6H7UqKpT5vMorbcrmTtDuIlLvEU4=; b=hd+YVbqjLPb+gC6M725zkX
-        9ADb7veUpmM90bjfm5IouUVZ1vhOdWgSD0LeXfoE6aRFcJ6Qw7nrPhVhlFI801c0
-        TMaTSfqcGYzVzbvnT4NsXdbh2ZfHfUk//51KbTbq11pfY5NRNiWxHPDIaBR/nRYI
-        MysKjNwoO8q+bUxiSwstVL+fLsawdzrLzUyHAXLRMQTpW3NRFRNFXOOBZM/C94YG
-        cAeo06MVX6U6K6mVGlJc4TFZQRK62uhwpPG3NdXvT3iHYA2nb6OS9/JI/ZyLsLBq
-        +fhRIbbK2IRqYBxR3Mh1W7E4/IgaCcvIu9o9hemWb62hWeLD4gUl93Hj1yve3oNg
-        ==
-X-ME-Sender: <xms:iU_XX_y-9g3mxklumCmKFHoIfXXjXJS76JHfDJ8SK3VzkeyLK7YXSg>
-    <xme:iU_XX3M6a6IRyRz2IMkWyH9ZCYJtKrOA_V7ET2xZ0LgUBMsBoH__xJZaZiHiE1Ypq
-    Xhfm9c3m4mrR_LrA0o>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgfeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepuddvudfhkeekhefgffetffelgffftdehffduffegveetffehueeivddvjedv
-    gfevnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:iU_XX2MqVLuVF4MpwOwxCkO_V3YG1JP24FO-OCQl_8HbKkVXYQNzLA>
-    <xmx:iU_XXxTr2Q9Z-UPC4_k4ZD-VIs11YoJgmrh00oHwf8p6LJRg9TNEew>
-    <xmx:iU_XXwAZbKZbWAUR4T6_NLiHguhYMfXchvRx0X1d4-UYU4WbTqrmig>
-    <xmx:i0_XXyR35CFHCWDVHKvW10Ec97Mx_QwG3a1DlqqdyxhQ_AWDyE5h2Q>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7DDE124005D;
-        Mon, 14 Dec 2020 06:42:01 -0500 (EST)
-Date:   Mon, 14 Dec 2020 12:41:59 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        kevin.lhopital@hotmail.com
-Subject: Re: [PATCH v3 13/15] media: sunxi: Add support for the A83T MIPI
- CSI-2 controller
-Message-ID: <20201214114159.oqb4o5fdnnmr4n5q@gilmour>
-References: <20201211155708.154710-1-paul.kocialkowski@bootlin.com>
- <20201211155708.154710-14-paul.kocialkowski@bootlin.com>
+        id S2438378AbgLNLnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 06:43:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33866 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437909AbgLNLmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 06:42:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8ADACAC10;
+        Mon, 14 Dec 2020 11:42:04 +0000 (UTC)
+Date:   Mon, 14 Dec 2020 12:42:00 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/SGX for v5.11
+Message-ID: <20201214114200.GD26358@zn.tnic>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="luqjk2un2nyifiz3"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201211155708.154710-14-paul.kocialkowski@bootlin.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
---luqjk2un2nyifiz3
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+please pull the Intel Software Guard eXtensions enablement. This has
+been long in the making, we were one revision number short of 42. :)
 
-On Fri, Dec 11, 2020 at 04:57:06PM +0100, Paul Kocialkowski wrote:
-> The A83T supports MIPI CSI-2 with a composite controller, covering
-> both the protocol logic and the D-PHY implementation. This controller
-> seems to be found on the A83T only and probably was abandoned since.
->=20
-> This implementation splits the protocol and D-PHY registers and
-> uses the PHY framework internally. The D-PHY is not registered as a
-> standalone PHY driver since it cannot be used with any other
-> controller.
->=20
-> There are a few notable points about the controller:
-> - The initialisation sequence involes writing specific magic init
->   values that do not seem to make any particular sense given the
->   concerned register fields;
-> - Interrupts appear to be hitting regardless of the interrupt mask
->   registers, which can cause a serious flood when transmission errors
->   occur.
->=20
-> Only 8-bit and 10-bit Bayer formats are currently supported.
-> While up to 4 internal channels to the CSI controller exist, only one
-> is currently supported by this implementation.
->=20
-> This work is based on the first version of the driver submitted by
-> K=E9vin L'h=F4pital, which was adapted to mainline from the Allwinner BSP.
-> This version integrates MIPI CSI-2 support as a standalone V4L2 subdev
-> instead of merging it in the sun6i-csi driver.
->=20
-> It was tested on a Banana Pi M3 board with an OV8865 sensor in a 4-lane
-> configuration.
->=20
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> ---
->  arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts  |   2 +-
->  drivers/media/platform/sunxi/Kconfig          |   1 +
->  drivers/media/platform/sunxi/Makefile         |   1 +
->  .../sunxi/sun8i-a83t-mipi-csi2/Kconfig        |  11 +
->  .../sunxi/sun8i-a83t-mipi-csi2/Makefile       |   4 +
->  .../sun8i-a83t-mipi-csi2/sun8i_a83t_dphy.c    |  92 +++
->  .../sun8i-a83t-mipi-csi2/sun8i_a83t_dphy.h    |  39 ++
->  .../sun8i_a83t_mipi_csi2.c                    | 657 ++++++++++++++++++
->  .../sun8i_a83t_mipi_csi2.h                    | 197 ++++++
->  9 files changed, 1003 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/Kco=
-nfig
->  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/Mak=
-efile
->  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun=
-8i_a83t_dphy.c
->  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun=
-8i_a83t_dphy.h
->  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun=
-8i_a83t_mipi_csi2.c
->  create mode 100644 drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/sun=
-8i_a83t_mipi_csi2.h
->=20
-> diff --git a/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts b/arch/arm/boot=
-/dts/sun8i-a83t-bananapi-m3.dts
-> index b437eaeb91e9..bebe843a069b 100644
-> --- a/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts
-> +++ b/arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts
-> @@ -151,7 +151,7 @@ port@1 {
-> =20
->  			csi_in_mipi_csi2: endpoint {
->  				remote-endpoint =3D <&mipi_csi2_out_csi>;
-> -			}
-> +			};
->  		};
->  	};
->  };
+Thx.
 
-This looks unrelated?
+---
 
-(and there's the same issue with the macros)
+The following changes since commit 09162bc32c880a791c6c0668ce0745cf7958f576:
 
-Maxime
+  Linux 5.10-rc4 (2020-11-15 16:44:31 -0800)
 
---luqjk2un2nyifiz3
-Content-Type: application/pgp-signature; name="signature.asc"
+are available in the Git repository at:
 
------BEGIN PGP SIGNATURE-----
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_sgx_for_v5.11
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9dPhwAKCRDj7w1vZxhR
-xcPdAP9q/q7r3QMKBCP+VcvAh9TUKqtz+e1Ae6scNCnvC2TD4gD/QJvT4IfRkQ73
-koqE0XhbpldU7zAAxee4lM8ofAEFhQw=
-=ZA9r
------END PGP SIGNATURE-----
+for you to fetch changes up to a4b9c48b96517ff4780b22a784e7537eac5dc21b:
 
---luqjk2un2nyifiz3--
+  x86/sgx: Return -EINVAL on a zero length buffer in sgx_ioc_enclave_add_pages() (2020-12-03 19:54:40 +0100)
+
+----------------------------------------------------------------
+"Intel SGX is new hardware functionality that can be used by
+applications to populate protected regions of user code and data called
+enclaves. Once activated, the new hardware protects enclave code and
+data from outside access and modification.
+
+Enclaves provide a place to store secrets and process data with those
+secrets. SGX has been used, for example, to decrypt video without
+exposing the decryption keys to nosy debuggers that might be used to
+subvert DRM. Software has generally been rewritten specifically to
+run in enclaves, but there are also projects that try to run limited
+unmodified software in enclaves."
+
+Most of the functionality is concentrated into arch/x86/kernel/cpu/sgx/
+except the addition of a new mprotect() hook to control enclave page
+permissions and support for vDSO exceptions fixup which will is used by
+SGX enclaves.
+
+All this work by Sean Christopherson, Jarkko Sakkinen and many others.
+
+----------------------------------------------------------------
+Borislav Petkov (1):
+      x86/sgx: Fix sgx_ioc_enclave_provision() kernel-doc comment
+
+Dave Hansen (1):
+      x86/sgx: Clarify 'laundry_list' locking
+
+Jarkko Sakkinen (17):
+      x86/sgx: Add SGX architectural data structures
+      x86/sgx: Add wrappers for ENCLS functions
+      x86/cpu/intel: Add a nosgx kernel parameter
+      x86/sgx: Add SGX page allocator functions
+      x86/sgx: Add an SGX misc driver interface
+      x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
+      x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
+      x86/sgx: Add SGX_IOC_ENCLAVE_INIT
+      x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION
+      selftests/x86: Add a selftest for SGX
+      x86/sgx: Add a page reclaimer
+      x86/sgx: Add ptrace() support for the SGX driver
+      Documentation/x86: Document SGX kernel architecture
+      x86/sgx: Update MAINTAINERS
+      selftests/sgx: Use a statically generated 3072-bit RSA key
+      x86/sgx: Return -ERESTARTSYS in sgx_ioc_enclave_add_pages()
+      x86/sgx: Return -EINVAL on a zero length buffer in sgx_ioc_enclave_add_pages()
+
+Mauro Carvalho Chehab (1):
+      x86/sgx: Fix a typo in kernel-doc markup
+
+Sean Christopherson (10):
+      x86/cpufeatures: Add Intel SGX hardware bits
+      x86/{cpufeatures,msr}: Add Intel SGX Launch Control hardware bits
+      x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections
+      x86/mm: Signal SIGSEGV with PF_SGX
+      x86/cpu/intel: Detect SGX support
+      mm: Add 'mprotect' hook to struct vm_operations_struct
+      x86/vdso: Add support for exception fixup in vDSO functions
+      x86/fault: Add a helper function to sanitize error code
+      x86/traps: Attempt to fixup exceptions in vDSO before signaling
+      x86/vdso: Implement a vDSO for Intel SGX enclave call
+
+ Documentation/admin-guide/kernel-parameters.txt    |   2 +
+ Documentation/userspace-api/ioctl/ioctl-number.rst |   1 +
+ Documentation/x86/index.rst                        |   1 +
+ Documentation/x86/sgx.rst                          | 211 ++++++
+ MAINTAINERS                                        |  13 +
+ arch/x86/Kconfig                                   |  17 +
+ arch/x86/entry/vdso/Makefile                       |   8 +-
+ arch/x86/entry/vdso/extable.c                      |  46 ++
+ arch/x86/entry/vdso/extable.h                      |  28 +
+ arch/x86/entry/vdso/vdso-layout.lds.S              |   9 +-
+ arch/x86/entry/vdso/vdso.lds.S                     |   1 +
+ arch/x86/entry/vdso/vdso2c.h                       |  50 +-
+ arch/x86/entry/vdso/vsgx.S                         | 151 +++++
+ arch/x86/include/asm/cpufeatures.h                 |   2 +
+ arch/x86/include/asm/disabled-features.h           |   8 +-
+ arch/x86/include/asm/enclu.h                       |   9 +
+ arch/x86/include/asm/msr-index.h                   |   8 +
+ arch/x86/include/asm/trap_pf.h                     |   2 +
+ arch/x86/include/asm/vdso.h                        |   5 +
+ arch/x86/include/uapi/asm/sgx.h                    | 168 +++++
+ arch/x86/kernel/cpu/Makefile                       |   1 +
+ arch/x86/kernel/cpu/feat_ctl.c                     |  38 +-
+ arch/x86/kernel/cpu/sgx/Makefile                   |   5 +
+ arch/x86/kernel/cpu/sgx/arch.h                     | 338 ++++++++++
+ arch/x86/kernel/cpu/sgx/driver.c                   | 194 ++++++
+ arch/x86/kernel/cpu/sgx/driver.h                   |  29 +
+ arch/x86/kernel/cpu/sgx/encl.c                     | 740 +++++++++++++++++++++
+ arch/x86/kernel/cpu/sgx/encl.h                     | 119 ++++
+ arch/x86/kernel/cpu/sgx/encls.h                    | 231 +++++++
+ arch/x86/kernel/cpu/sgx/ioctl.c                    | 716 ++++++++++++++++++++
+ arch/x86/kernel/cpu/sgx/main.c                     | 733 ++++++++++++++++++++
+ arch/x86/kernel/cpu/sgx/sgx.h                      |  86 +++
+ arch/x86/kernel/traps.c                            |  10 +
+ arch/x86/mm/fault.c                                |  45 +-
+ include/linux/mm.h                                 |   7 +
+ mm/mprotect.c                                      |   7 +
+ tools/testing/selftests/Makefile                   |   1 +
+ tools/testing/selftests/sgx/.gitignore             |   2 +
+ tools/testing/selftests/sgx/Makefile               |  57 ++
+ tools/testing/selftests/sgx/call.S                 |  44 ++
+ tools/testing/selftests/sgx/defines.h              |  21 +
+ tools/testing/selftests/sgx/load.c                 | 277 ++++++++
+ tools/testing/selftests/sgx/main.c                 | 246 +++++++
+ tools/testing/selftests/sgx/main.h                 |  41 ++
+ tools/testing/selftests/sgx/sign_key.S             |  12 +
+ tools/testing/selftests/sgx/sign_key.pem           |  39 ++
+ tools/testing/selftests/sgx/sigstruct.c            | 381 +++++++++++
+ tools/testing/selftests/sgx/test_encl.c            |  20 +
+ tools/testing/selftests/sgx/test_encl.lds          |  40 ++
+ tools/testing/selftests/sgx/test_encl_bootstrap.S  |  89 +++
+ 50 files changed, 5290 insertions(+), 19 deletions(-)
+ create mode 100644 Documentation/x86/sgx.rst
+ create mode 100644 arch/x86/entry/vdso/extable.c
+ create mode 100644 arch/x86/entry/vdso/extable.h
+ create mode 100644 arch/x86/entry/vdso/vsgx.S
+ create mode 100644 arch/x86/include/asm/enclu.h
+ create mode 100644 arch/x86/include/uapi/asm/sgx.h
+ create mode 100644 arch/x86/kernel/cpu/sgx/Makefile
+ create mode 100644 arch/x86/kernel/cpu/sgx/arch.h
+ create mode 100644 arch/x86/kernel/cpu/sgx/driver.c
+ create mode 100644 arch/x86/kernel/cpu/sgx/driver.h
+ create mode 100644 arch/x86/kernel/cpu/sgx/encl.c
+ create mode 100644 arch/x86/kernel/cpu/sgx/encl.h
+ create mode 100644 arch/x86/kernel/cpu/sgx/encls.h
+ create mode 100644 arch/x86/kernel/cpu/sgx/ioctl.c
+ create mode 100644 arch/x86/kernel/cpu/sgx/main.c
+ create mode 100644 arch/x86/kernel/cpu/sgx/sgx.h
+ create mode 100644 tools/testing/selftests/sgx/.gitignore
+ create mode 100644 tools/testing/selftests/sgx/Makefile
+ create mode 100644 tools/testing/selftests/sgx/call.S
+ create mode 100644 tools/testing/selftests/sgx/defines.h
+ create mode 100644 tools/testing/selftests/sgx/load.c
+ create mode 100644 tools/testing/selftests/sgx/main.c
+ create mode 100644 tools/testing/selftests/sgx/main.h
+ create mode 100644 tools/testing/selftests/sgx/sign_key.S
+ create mode 100644 tools/testing/selftests/sgx/sign_key.pem
+ create mode 100644 tools/testing/selftests/sgx/sigstruct.c
+ create mode 100644 tools/testing/selftests/sgx/test_encl.c
+ create mode 100644 tools/testing/selftests/sgx/test_encl.lds
+ create mode 100644 tools/testing/selftests/sgx/test_encl_bootstrap.S
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
