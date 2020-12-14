@@ -2,104 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5272D989E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 14:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6CE2D98A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 14:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407824AbgLNNQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 08:16:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58090 "EHLO mail.kernel.org"
+        id S2407879AbgLNNST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 08:18:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725763AbgLNNQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 08:16:25 -0500
-X-Gm-Message-State: AOAM533fCbREzfACd5I8f9vC+VzXkpKUf+lyBnytQC5DYAWnIkSX8bXr
-        c/jTzWTq8o2itWwPlxn7HDUrOwRRjLbXDiDoy+U=
+        id S2404263AbgLNNST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 08:18:19 -0500
+Date:   Mon, 14 Dec 2020 15:17:31 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607951744;
-        bh=X7NfmqFfeZxN9ZZWHM4FSxFJ7dLG2FO+7mXQYFgN0xU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=h5s4ri4H+20pEzRL3JhNoK9BP5C5LvZrlFo6iMhvJJoXYW7SEnmswysV/x0rOiAD2
-         Nyfi1Bq00QJwXDFq1V+ssj58s0FQUYJ0bB3OjIfDztXfPSWYcdZUm47qV2nomjvfSz
-         Fv+Mzs7bZ7EFBan544VLAzSqiGBlFOeW1sUgoQmemAG54yuKsB/p7RwjSQuAeQLjoG
-         H+hqygPcQbm2wiA3k1izV81QSlgncvHIAXNmXnOr23+4r+Wq/QfT5CUhxIC7AN9Fkd
-         3zVCJQ9yjgfwUPL33PA0lCerbagulkYGapUrVVkO0f7f6C8V1yddnI6EP/bxM/u3u+
-         C6LfeRDQ1IpWQ==
-X-Google-Smtp-Source: ABdhPJwneBXIbGc4q2UDyJgiJ3+uJZH1pPDANBY87SMMfQGTFfmv+G+j1p8TNNjg6eMN42mNCUMwLX+OWlLV2W508rA=
-X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr10871981ots.251.1607951742989;
- Mon, 14 Dec 2020 05:15:42 -0800 (PST)
+        s=k20201202; t=1607951858;
+        bh=mYAoGe6rJEj3V88cDWAq9WS6LBoh+Vq4t7f40loaYuk=;
+        h=From:To:Cc:Subject:From;
+        b=FnTyUcfqYMlhxhz6mTLo29HFEGSGiTWBbc4dUmQDXefsHQ8zofdYpq3xd4tV4mtHx
+         ovxqr+7XgGSIZt+ACLo60Yg9V5ya2YEO8pOtXqANc1KmvBRUD9yBxNBE7tbBrQfDYy
+         7I4QQLUIuGjMIGkzT775YkX22Q+ljH7pMN+CSWC7WaDPR1RBPzs6YMRDcniDFTWts/
+         HAlBMUoZgbtXb8VJ07DdmX2oKSNk79gilBFXjiYrWSy1j50P1bTUTblsvNU8HEuc+q
+         z8CHZfNkxy4ApzZMbr9zyCT3M/Iu4RnpTbne4/iP6PIWe5CedSGy5caSIpOoOyJ+PX
+         Km2IZ0dqrb+8w==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Faiyaz Mohammed <faiyazm@codeaurora.org>, vinmenon@codeaurora.org,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] memblock: debug enhancements
+Message-ID: <20201214131731.GA247200@kernel.org>
 MIME-Version: 1.0
-References: <20190307091514.2489338-1-arnd@arndb.de> <X9S28TcEXd2zghzp@elver.google.com>
- <87czzeg5ep.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87czzeg5ep.fsf@nanos.tec.linutronix.de>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 14 Dec 2020 14:15:26 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0LWjNgwm605TM4dKCsn078X7NC3sEfdBSgcMNEocQ5iA@mail.gmail.com>
-Message-ID: <CAK8P3a0LWjNgwm605TM4dKCsn078X7NC3sEfdBSgcMNEocQ5iA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] futex: mark futex_detect_cmpxchg() as 'noinline'
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org,
-        sparclinux <sparclinux@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 9:01 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> On Sat, Dec 12 2020 at 13:26, Marco Elver wrote:
-> > On Thu, Mar 07, 2019 at 10:14AM +0100, Arnd Bergmann wrote:
-> >> -static void __init futex_detect_cmpxchg(void)
-> >> +static noinline void futex_detect_cmpxchg(void)
-> >>  {
-> >>  #ifndef CONFIG_HAVE_FUTEX_CMPXCHG
-> >>      u32 curval;
-> >
-> > What ever happened to this patch?
->
-> It obviously fell through the cracks.
->
-> > I'm seeing this again with the attached config + next-20201211 (for
-> > testing https://bugs.llvm.org/show_bug.cgi?id=48492). Had to apply this
-> > patch to build the kernel.
->
-> What really bothers me is to remove the __init from a function which is
-> clearly only used during init. And looking deeper it's simply a hack.
->
-> This function is only needed when an architecture has to runtime
-> discover whether the CPU supports it or not. ARM has unconditional
-> support for this, so the obvious thing to do is the below.
->
+Hi Linus,
 
-Ah perfect, that is clearly the right solution here.
+The following changes since commit 09162bc32c880a791c6c0668ce0745cf7958f576:
 
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -86,6 +86,7 @@ config ARM
->         select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
->         select HAVE_FUNCTION_GRAPH_TRACER if !THUMB2_KERNEL && !CC_IS_CLANG
->         select HAVE_FUNCTION_TRACER if !XIP_KERNEL
-> +       select HAVE_FUTEX_CMPXCHG if FUTEX
->         select HAVE_GCC_PLUGINS
->         select HAVE_HW_BREAKPOINT if PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7)
->         select HAVE_IDE if PCI || ISA || PCMCIA
+  Linux 5.10-rc4 (2020-11-15 16:44:31 -0800)
 
-I had a look at what other architectures always implement
-futex_atomic_cmpxchg_inatomic() or can use the asm-generic non-SMP version,
-and I found that it's pretty much all of them, the odd ones being just sparc32
-and csky, which use asm-generic/futex.h but do have an SMP option,
-as well as xtensa
+are available in the Git repository at:
 
-I would guess that for csky, this is a mistake, as the architecture is fairly
-new and should be able to implement it. Not sure about sparc32.
+  https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock.git/ tags/memblock-v5.11-rc1
 
-       Arnd
+for you to fetch changes up to 5bdba520c1b318578caffd325515b35d187f8a0e:
+
+  mm: memblock: drop __init from memblock functions to make it inline (2020-11-17 17:38:25 +0200)
+
+----------------------------------------------------------------
+memblock: debug enhancements
+
+Improve tracking of early memory allocations when memblock debug is
+enabled:
+
+* Add memblock_dbg() to memblock_phys_alloc_range() to get details about
+  its usage
+* Make memblock allocator wrappers actually inline to track their callers
+  in memblock debug messages
+
+----------------------------------------------------------------
+Faiyaz Mohammed (2):
+      mm: memblock: add more debug logs
+      mm: memblock: drop __init from memblock functions to make it inline
+
+ include/linux/memblock.h | 18 +++++++++---------
+ mm/memblock.c            |  3 +++
+ 2 files changed, 12 insertions(+), 9 deletions(-)
+
+-- 
+Sincerely yours,
+Mike.
