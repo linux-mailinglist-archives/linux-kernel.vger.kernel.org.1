@@ -2,75 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA12F2D91FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 04:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD0E2D91FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 04:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438270AbgLNDB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 22:01:27 -0500
-Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:54610 "EHLO
-        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S2438224AbgLNDBB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 22:01:01 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 2A31320136F8;
-        Mon, 14 Dec 2020 11:00:12 +0800 (HKT)
-X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
-Received: from mail.gtsys.com.hk ([127.0.0.1])
-        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id TLFs9o6B741i; Mon, 14 Dec 2020 11:00:12 +0800 (HKT)
-Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 13A5720136F7;
-        Mon, 14 Dec 2020 11:00:12 +0800 (HKT)
-Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
-        by s01.gtsys.com.hk (Postfix) with ESMTP id 16FCEC01FAD;
-        Mon, 14 Dec 2020 11:00:12 +0800 (HKT)
-Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
-        id 083B12000CF; Mon, 14 Dec 2020 11:00:12 +0800 (HKT)
-From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
-To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Johan Jonker <jbx6244@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 4/4] devicetree: dtsi: rk3399-puma.dtsi, add "rockchip," vendor prefix
-Date:   Mon, 14 Dec 2020 10:59:45 +0800
-Message-Id: <20201214025946.25753-5-chris.ruehl@gtsys.com.hk>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201214025946.25753-1-chris.ruehl@gtsys.com.hk>
-References: <20201214025946.25753-1-chris.ruehl@gtsys.com.hk>
+        id S2438163AbgLNDEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 22:04:08 -0500
+Received: from lists.nic.cz ([217.31.204.67]:58868 "EHLO mail.nic.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725966AbgLNDEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 22:04:05 -0500
+Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id 4B8EB140005;
+        Mon, 14 Dec 2020 04:03:24 +0100 (CET)
+Date:   Mon, 14 Dec 2020 04:03:17 +0100
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     <pavel@ucw.cz>, <dmurphy@ti.com>, <linux-leds@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] drivers: leds: simplify the return expression of
+ register_nasgpio_led()
+Message-ID: <20201214040317.4c34ec76@nic.cz>
+In-Reply-To: <20201210135657.1435-1-zhengyongjun3@huawei.com>
+References: <20201210135657.1435-1-zhengyongjun3@huawei.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update rk3399-puma.dtsi with the vendor prefix referred in
-vendor-prefixes.yaml.
-Optional property: rockchip,drive-impedance-ohm
+subject prefix should be
 
-Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
----
- arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-index 4660416c8f38..b715e73f9749 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-@@ -146,7 +146,7 @@
- 
- &emmc_phy {
- 	status = "okay";
--	drive-impedance-ohm = <33>;
-+	rockchip,drive-impedance-ohm = <33>;
- };
- 
- &gmac {
--- 
-2.20.1
-
+leds: ss4200: simplify the return expression of register_nasgpio_led
