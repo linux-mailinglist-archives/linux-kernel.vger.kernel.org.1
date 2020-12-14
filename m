@@ -2,94 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE982D9C97
+	by mail.lfdr.de (Postfix) with ESMTP id 781CE2D9C98
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501900AbgLNQYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:24:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58892 "EHLO mail.kernel.org"
+        id S2440289AbgLNQYj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Dec 2020 11:24:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440213AbgLNQYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:24:06 -0500
-Date:   Mon, 14 Dec 2020 16:23:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607963005;
-        bh=AHdANBBLNTJw739m69nu1X9LxbPWyebOEdf8x8REzLI=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m1I79GixJahrYdFPYjFIKqA6vALsyqCralLCJyWM3v6O2BYsc1VFHeMksKIlOzQLU
-         YhMKPRo+bElsRWMKtQ1OPne74/xQcD1lcX+VmsN4xJgKJlrK7TVJj3Vh+EezydIA9K
-         KYOhdXt20eceahFYp0oXWXCH7VWCFkrTtYjI/4NQBuMccz89J0v/39AlBCcQnx7fVR
-         exIwIVX83Eslw0S0KIdZDhLgOmBKnpW3LZMym1/AboPHHfSQ3CXybnaHAIkhwZwCOH
-         cnJdQt61NdwWjRveDyv6Zb+bFqR0WKdaMXYgL5m9QdRa4/oDeA4ieR+Hv6culExWqn
-         /zUfKSRFNqEsA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, robh+dt@kernel.org,
-        lukas@wunner.de, bbrezillon@kernel.org, p.yadav@ti.com,
-        tudor.ambarus@microchip.com, linux-spi@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 5/9] spi: spi-mem: Allow masters to transfer dummy
- cycles directly by hardware
-Message-ID: <20201214162315.GA4880@sirena.org.uk>
-References: <1607721363-8879-1-git-send-email-skomatineni@nvidia.com>
- <1607721363-8879-6-git-send-email-skomatineni@nvidia.com>
- <20201212115715.31a8d755@collabora.com>
+        id S2440030AbgLNQYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 11:24:09 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73CE822795;
+        Mon, 14 Dec 2020 16:23:27 +0000 (UTC)
+Date:   Mon, 14 Dec 2020 11:23:25 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] Several changes for the UPIU trace
+Message-ID: <20201214112325.464a2cb0@gandalf.local.home>
+In-Reply-To: <20201214161502.13440-1-huobean@gmail.com>
+References: <20201214161502.13440-1-huobean@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
-Content-Disposition: inline
-In-Reply-To: <20201212115715.31a8d755@collabora.com>
-X-Cookie: Everything you know is wrong!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 14 Dec 2020 17:14:56 +0100
+Bean Huo <huobean@gmail.com> wrote:
 
---SUOF0GtieIMvvwua
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> Changelog:
+> 
+> V1--V2:
+>   1. Convert __get_str(str) to __print_symbolic()
+>   2. Add new patches 1/6, 2/6,3/6
+>   3. Use __print_symbolic() in patch 6/6
+> 
+> Bean Huo (6):
+>   scsi: ufs: Remove stringize operator '#' restriction
+>   scsi: ufs: Use __print_symbolic() for UFS trace string print
+>   scsi: ufs: Don't call trace_ufshcd_upiu() in case trace poit is
+>     disabled
+>   scsi: ufs: Distinguish between query REQ and query RSP in query trace
+>   scsi: ufs: Distinguish between TM request UPIU and response UPIU in TM
+>     UPIU trace
+>   scsi: ufs: Make UPIU trace easier differentiate among CDB, OSF, and TM
+> 
+>  drivers/scsi/ufs/ufs.h     |  17 ++++++
+>  drivers/scsi/ufs/ufshcd.c  |  72 ++++++++++++++++---------
+>  include/trace/events/ufs.h | 108 +++++++++++++++++++++++--------------
+>  3 files changed, 131 insertions(+), 66 deletions(-)
+> 
 
-On Sat, Dec 12, 2020 at 11:57:15AM +0100, Boris Brezillon wrote:
-> Sowjanya Komatineni <skomatineni@nvidia.com> wrote:
+From a tracing point of view for the series.
 
-> > This patch adds a flag SPI_MASTER_USES_HW_DUMMY_CYCLES for the controllers
-> > that support transfer of dummy cycles by the hardware directly.
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-> Hm, not sure this is a good idea. I mean, if we expect regular SPI
-> devices to use this feature, then why not, but if it's just for
-> spi-mem, I'd recommend implementing a driver-specific exec_op() instead
-> of using the default one.
-
-I *have* seen other high speed devices which had padding bits in the
-transfer (see regmap's pad_bits feature), I think that corresponds to
-flash dummy bits but haven't checked that the hardware support lines up.
-I'm not sure it's ever been seen as something that we particularly
-needed to speed up with hardware offload though.
-
-> If we go for those core changes, we should at least add a
-> ctrl->max_dummy_cycles field so the core can fallback to regular writes
-> when the number of dummy cycles in the spi_mem_op exceeds what the
-> controller can do.
-
-That seems sensible if there's a risk of controllers being too limited,
-which knowing hardware seems likely.
-
---SUOF0GtieIMvvwua
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/XkXIACgkQJNaLcl1U
-h9CBsAf/XWrzX5DEizCXgE7T1DvfpDtH0jdGsooRqjRftlV5KVN61c4clryl717B
-ix3GAXx57e3OO/JyWtBuKeLChLsyvDcz4CWnr8AMTmHcxYO1KTlqS9GEEs4EEFIO
-lXBiuZ/9yb2/HJSdJTg0w+mudFvH3B2gsVDZ1C5Waupm+HdqPSP1xilOs1owTVpa
-0fNhf99+NIryvBNeGI4vt9okktA+fnhh0u2VjSXQwyyw4woVVrp+Zv5cn1KSx7cX
-DLP9ciLZBUUWoVX5Vh+IIL0k9un1kKBmAjtUgjdTGYyg0yPdJn+sEvHdnifN0wxP
-Pywb4/N/I3lzBeJah5fx5DH0AZ+GyA==
-=GioU
------END PGP SIGNATURE-----
-
---SUOF0GtieIMvvwua--
+-- Steve
