@@ -2,118 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5BF2D9B22
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCE32D9B24
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438394AbgLNPeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 10:34:23 -0500
-Received: from mga04.intel.com ([192.55.52.120]:30982 "EHLO mga04.intel.com"
+        id S2406101AbgLNPeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 10:34:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393522AbgLNPeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 10:34:00 -0500
-IronPort-SDR: gVNBJJXkFZzNdbQbxUzAs5ewxYV324hQS7eyIwpMU1yulLOdGXV4i3Af+fiZWJ33tR1WudOkgX
- vpVaJZoFUK/g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9834"; a="172158481"
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="172158481"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2020 07:32:14 -0800
-IronPort-SDR: /HG8w61mTEl4KCXsgO03xHjFiK4b90Og4EnBaLT5jruDhCYt3dgNTnMCqVWOM3o59KCNoNzbR4
- 8HLWPKW8qunQ==
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="411288740"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2020 07:32:05 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kopqU-00EIeN-LK; Mon, 14 Dec 2020 17:33:06 +0200
-Date:   Mon, 14 Dec 2020 17:33:06 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
-Message-ID: <20201214153306.GI4077@smile.fi.intel.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-19-djrscally@gmail.com>
- <20201130200719.GB4077@smile.fi.intel.com>
- <20201130233232.GD25713@pendragon.ideasonboard.com>
- <20201201184925.GJ4077@smile.fi.intel.com>
- <6f3b0d7b-1ce7-aaf1-63c6-08a22dc77791@gmail.com>
+        id S1729861AbgLNPeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 10:34:17 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBD8922B2C;
+        Mon, 14 Dec 2020 15:33:36 +0000 (UTC)
+Date:   Mon, 14 Dec 2020 10:33:35 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Jason Baron <jbaron@akamai.com>
+Subject: Re: [PATCH] jump_label: Do not profile branch annotations
+Message-ID: <20201214103335.3cb2d0bb@gandalf.local.home>
+In-Reply-To: <20201214085206.GW3040@hirez.programming.kicks-ass.net>
+References: <20201211163754.585174b9@gandalf.local.home>
+        <20201214085206.GW3040@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6f3b0d7b-1ce7-aaf1-63c6-08a22dc77791@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 10:48:39PM +0000, Daniel Scally wrote:
-> On 01/12/2020 18:49, Andy Shevchenko wrote:
-> >>>> +	table_entry = (struct gpiod_lookup)GPIO_LOOKUP_IDX(acpi_dev_name(adev),
-> >>>> +							   ares->data.gpio.pin_table[0],
-> >>>> +							   func, 0, GPIO_ACTIVE_HIGH);
-> >>>
-> >>> You won't need this if you have regular INT3472 platform driver.
-> >>> Simple call there _DSM to map resources to the type and use devm_gpiod_get on
-> >>> consumer behalf. Thus, previous patch is not needed.
-> >>
-> >> How does the consumer (the camera sensor) retrieve the GPIO though ? The
-> >> _DSM is in the PMIC device object, while the real consumer is the camera
-> >> sensor.
+On Mon, 14 Dec 2020 09:52:06 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
+
+> On Fri, Dec 11, 2020 at 04:37:54PM -0500, Steven Rostedt wrote:
+> > From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > > 
-> > 1. A GPIO proxy
-> > 2. A custom GPIO lookup tables
-> > 3. An fwnode passing to the sensor (via swnodes graph)
+> > While running my branch profiler that checks for incorrect "likely" and
+> > "unlikely"s around the kernel, there's a large number of them that are
+> > incorrect due to being "static_branches".
 > > 
-> > First may issue deferred probe, while second needs some ordering tricks I guess.
-> > Third one should also provide an ACPI GPIO mapping table or so to make the
-> > consumer rely on names rather than custom numbers.
+> > As static_branches are rather special, as they are likely or unlikely for
+> > other reasons than normal annotations are used for, there's no reason to
+> > have them be profiled.
 > > 
-> > Perhaps someone may propose other solutions.
+> > Expose the "unlikely_notrace" and "likely_notrace" so that the
+> > static_branch can use them, and have them be ignored by the branch
+> > profilers.  
 > 
-> Hi Andy
-> 
-> Sorry; some more clarification here if you have time please:
+> The less that abomination does the better ;-), I'll take it through tip
+> then?
 
-No problem, thanks for discussing this.
+Sure, go ahead.
 
-> 1. Do you mean here, register a new gpio_chip providing GPIOs to the
-> sensors, and just have the .set() callback for that function set the
-> corresponding line against the INT3472 device?
+Thanks.
 
-Yes. On one hand it should be a consumer (*gpiod_get*() family of APIs),
-on the other it should be provider of known (artificial) GPIO chip.
-
-> 2. I thought custom GPIO lookup tables was what I was doing, are you
-> referring to something else?
-
-I think so, i.e. nothing else from high point of view.
-
-> 3. I guess you mean something like of_find_gpio() and acpi_find_gpio()
-> here? As far as I can see there isn't currently a swnodes
-> equivalent...we could just pass it via reference of course but it would
-> mean the sensor drivers would all need to account for that.
-
-Theoretically we may provide GPIOs as swnodes. In that case the consumer will
-get them as usual But I think it may be too complicated / over engineered.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+-- Steve
