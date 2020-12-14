@@ -2,105 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936AE2DA23F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C04C2DA23A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503494AbgLNVBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 16:01:54 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:57024 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503706AbgLNVBs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 16:01:48 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BEKsHeE144093;
-        Mon, 14 Dec 2020 21:00:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=aa0Ax+bPQnK4YL5LoY0LgelOl5GRjz9JrB0IR+sjwy4=;
- b=ZI3+5u9fy8oScjTCPSIf0nTtRFLUqT+rmE9ZY5kRukhi7zEbtkOhM1ANvHwO7nOCgi2N
- 09NS9xbcnV9uICnIhloRb5nT4+Mh5wNP7E2k95vLT5yq+NicQHkzj3sQUClD2B63PCkV
- iu7c4BOhuH8BbVldQeT3+PcYmeGxEao0sfoVdwy+2ncWx6tfP07IUKuugxzSQ1vAxNZ5
- pJTECX1MndtEGJigCmXGolSHW7PE/aS5eQm8VB7s2G8lKqMpLyfPuJFhuE6+an4rhX3k
- hcUTsD8xzCT2fLlHKZAHeCpXJ53fwnhQjCpfUUdvlvCcRh04cKwzor65YmwqTBoBXiRI lg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 35cn9r7ftb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Dec 2020 21:00:47 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BEKt5rf135821;
-        Mon, 14 Dec 2020 20:58:47 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 35e6jq0b48-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Dec 2020 20:58:47 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BEKwcf0020933;
-        Mon, 14 Dec 2020 20:58:39 GMT
-Received: from [10.159.141.221] (/10.159.141.221)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 14 Dec 2020 12:58:38 -0800
-Subject: Re: [RFC PATCH v2 0/6] fsdax: introduce fs query to support reflink
-To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        david@fromorbit.com, hch@lst.de, song@kernel.org, rgoldwyn@suse.de,
-        qi.fuli@fujitsu.com, y-goto@fujitsu.com
-References: <20201123004116.2453-1-ruansy.fnst@cn.fujitsu.com>
-From:   Jane Chu <jane.chu@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <89ab4ec4-e4f0-7c17-6982-4f55bb40f574@oracle.com>
-Date:   Mon, 14 Dec 2020 12:58:32 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S2503717AbgLNVBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 16:01:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38108 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2503680AbgLNVBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 16:01:21 -0500
+Message-ID: <8035075adf8738792f4fa39032eeeb997bc1e653.camel@kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607979519;
+        bh=cldqRzZxWGs3Mp0GWam6BN3UIEF7254f3nfHMyN7cv4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Gtxqgx/zUgAV/HC4HUDaTWWErUYbIXoTgkKUYMD/ELlewv6ngbmFefFbLOnnQE37B
+         fwW9w8lNXB0jkS0zaOY6KiQuNNvzR6i/TAi+fgG1AW/EykMErJidLU/39fKuq2JQ6H
+         cYZqxR/cWcdcz2hfp8VGfziH+pOYPr8oSmVaMVsoIT/cKvofZxClMOcYe7qD5WQeeL
+         NIffLKExOZStE6EtkCW8G8ODK2nn1z9f76JCt7Kq0Z4tPHOOMdZSDtSFcABv2Uu75T
+         yhfntlEnCdaAYrYdYHk5OeIYZ35zyWy0f9d7SzNO3zktL7NiFTX5VRmoH1k+TTpoKc
+         hhNH7an3hKyYw==
+Subject: Re: [patch 23/30] net/mlx5: Use effective interrupt affinity
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        linux-parisc@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-pci@vger.kernel.org,
+        Karthikeyan Mitran <m.karthikeyan@mobiveil.co.in>,
+        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org
+Date:   Mon, 14 Dec 2020 12:58:36 -0800
+In-Reply-To: <20201210194044.876342330@linutronix.de>
+References: <20201210192536.118432146@linutronix.de>
+         <20201210194044.876342330@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20201123004116.2453-1-ruansy.fnst@cn.fujitsu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 bulkscore=0
- malwarescore=0 adultscore=0 mlxlogscore=999 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012140140
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- impostorscore=0 lowpriorityscore=0 clxscore=1011 spamscore=0
- malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012140140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Shiyang,
-
-On 11/22/2020 4:41 PM, Shiyang Ruan wrote:
-> This patchset is a try to resolve the problem of tracking shared page
-> for fsdax.
+On Thu, 2020-12-10 at 20:25 +0100, Thomas Gleixner wrote:
+> Using the interrupt affinity mask for checking locality is not really
+> working well on architectures which support effective affinity masks.
 > 
-> Change from v1:
->    - Intorduce ->block_lost() for block device
->    - Support mapped device
->    - Add 'not available' warning for realtime device in XFS
->    - Rebased to v5.10-rc1
+> The affinity mask is either the system wide default or set by user
+> space,
+> but the architecture can or even must reduce the mask to the
+> effective set,
+> which means that checking the affinity mask itself does not really
+> tell
+> about the actual target CPUs.
 > 
-> This patchset moves owner tracking from dax_assocaite_entry() to pmem
-> device, by introducing an interface ->memory_failure() of struct
-> pagemap.  The interface is called by memory_failure() in mm, and
-> implemented by pmem device.  Then pmem device calls its ->block_lost()
-> to find the filesystem which the damaged page located in, and call
-> ->storage_lost() to track files or metadata assocaited with this page.
-> Finally we are able to try to fix the damaged data in filesystem and do
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Saeed Mahameed <saeedm@nvidia.com>
+> Cc: Leon Romanovsky <leon@kernel.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: netdev@vger.kernel.org
+> Cc: linux-rdma@vger.kernel.org
+> 
 
-Does that mean clearing poison? if so, would you mind to elaborate 
-specifically which change does that?
+Acked-by: Saeed Mahameed <saeedm@nvidia.com>
 
-Thanks!
--jane
-
-> other necessary processing, such as killing processes who are using the
-> files affected.
