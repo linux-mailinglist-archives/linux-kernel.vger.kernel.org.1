@@ -2,35 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B492D9FDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A905E2D9DD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408845AbgLNTBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 14:01:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45998 "EHLO mail.kernel.org"
+        id S2502186AbgLNRgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:36:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502190AbgLNRh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:37:29 -0500
+        id S2502080AbgLNRfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:35:51 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Mikhail Zaslonko <zaslonko@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 036/105] zlib: export S390 symbols for zlib modules
-Date:   Mon, 14 Dec 2020 18:28:10 +0100
-Message-Id: <20201214172557.017083640@linuxfoundation.org>
+        stable@vger.kernel.org, Zhan Liu <zliua@micron.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 27/36] mmc: block: Fixup condition for CMD13 polling for RPMB requests
+Date:   Mon, 14 Dec 2020 18:28:11 +0100
+Message-Id: <20201214172544.634468072@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201214172555.280929671@linuxfoundation.org>
-References: <20201214172555.280929671@linuxfoundation.org>
+In-Reply-To: <20201214172543.302523401@linuxfoundation.org>
+References: <20201214172543.302523401@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,61 +32,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Bean Huo <beanhuo@micron.com>
 
-[ Upstream commit 11fb479ff5d9872ddff02dd533c16d60372c86b2 ]
+commit 6246d7c9d15aaff0bc3863f67900c6a6e6be921b upstream.
 
-Fix build errors when ZLIB_INFLATE=m and ZLIB_DEFLATE=m and ZLIB_DFLTCC=y
-by exporting the 2 needed symbols in dfltcc_inflate.c.
+The CMD13 polling is needed for commands with R1B responses. In commit
+a0d4c7eb71dd ("mmc: block: Add CMD13 polling for MMC IOCTLS with R1B
+response"), the intent was to introduce this for requests targeted to the
+RPMB partition. However, the condition to trigger the polling loop became
+wrong, leading to unnecessary polling. Let's fix the condition to avoid
+this.
 
-Fixes these build errors:
+Fixes: a0d4c7eb71dd ("mmc: block: Add CMD13 polling for MMC IOCTLS with R1B response")
+Cc: stable@vger.kernel.org
+Reported-by: Zhan Liu <zliua@micron.com>
+Signed-off-by: Zhan Liu <zliua@micron.com>
+Signed-off-by: Bean Huo <beanhuo@micron.com>
+Link: https://lore.kernel.org/r/20201202202320.22165-1-huobean@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-  ERROR: modpost: "dfltcc_inflate" [lib/zlib_inflate/zlib_inflate.ko] undefined!
-  ERROR: modpost: "dfltcc_can_inflate" [lib/zlib_inflate/zlib_inflate.ko] undefined!
-
-Fixes: 126196100063 ("lib/zlib: add s390 hardware support for kernel zlib_inflate")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Cc: Mikhail Zaslonko <zaslonko@linux.ibm.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Link: https://lkml.kernel.org/r/20201123191712.4882-1-rdunlap@infradead.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/zlib_dfltcc/dfltcc_inflate.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mmc/core/block.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/zlib_dfltcc/dfltcc_inflate.c b/lib/zlib_dfltcc/dfltcc_inflate.c
-index aa9ef23474df0..db107016d29b3 100644
---- a/lib/zlib_dfltcc/dfltcc_inflate.c
-+++ b/lib/zlib_dfltcc/dfltcc_inflate.c
-@@ -4,6 +4,7 @@
- #include "dfltcc_util.h"
- #include "dfltcc.h"
- #include <asm/setup.h>
-+#include <linux/export.h>
- #include <linux/zutil.h>
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -630,7 +630,7 @@ static int __mmc_blk_ioctl_cmd(struct mm
  
- /*
-@@ -29,6 +30,7 @@ int dfltcc_can_inflate(
-     return is_bit_set(dfltcc_state->af.fns, DFLTCC_XPND) &&
-                is_bit_set(dfltcc_state->af.fmts, DFLTCC_FMT0);
- }
-+EXPORT_SYMBOL(dfltcc_can_inflate);
+ 	memcpy(&(idata->ic.response), cmd.resp, sizeof(cmd.resp));
  
- static int dfltcc_was_inflate_used(
-     z_streamp strm
-@@ -147,3 +149,4 @@ dfltcc_inflate_action dfltcc_inflate(
-     return (cc == DFLTCC_CC_OP1_TOO_SHORT || cc == DFLTCC_CC_OP2_TOO_SHORT) ?
-         DFLTCC_INFLATE_BREAK : DFLTCC_INFLATE_CONTINUE;
- }
-+EXPORT_SYMBOL(dfltcc_inflate);
--- 
-2.27.0
-
+-	if (idata->rpmb || (cmd.flags & MMC_RSP_R1B)) {
++	if (idata->rpmb || (cmd.flags & MMC_RSP_R1B) == MMC_RSP_R1B) {
+ 		/*
+ 		 * Ensure RPMB/R1B command has completed by polling CMD13
+ 		 * "Send Status".
 
 
