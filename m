@@ -2,169 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1413F2DA2D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A012DA2DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:54:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439031AbgLNVuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 16:50:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
+        id S2440029AbgLNVvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 16:51:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440050AbgLNVuB (ORCPT
+        with ESMTP id S2406618AbgLNVvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 16:50:01 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4F2C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:49:21 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id 15so20949924oix.8
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:49:21 -0800 (PST)
+        Mon, 14 Dec 2020 16:51:00 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C39C4C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:50:19 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id 9so13798760oiq.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:50:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xwc4jX2cVzI9GAPOLZxtNDFTIGEsJRQAPMon6mB69F8=;
-        b=fkIxSTKdBBFWS/VLhbLVQ0ym5+uNJi7s6sCD8mRohvztdY1RIvKuTMIYKVqZxXd5+t
-         WUQnGa7VzoKOrHmP1BOvUGlKGxAFtgQnOG2BXTsIM4KEoB+xbtGxXAyNrv/hzmwRtHur
-         gBLiWvJUyXWdK6cCE2mBXYUzEejBqavTjequZjv4xD4QCvIYdBbbKkeUXlHhiHeVYoAl
-         6SdJYy0vONpADtfO+YpbYFzknut4APElD6xxt57mqgcl2YVJKKvx9a0icbz5Ruaknt74
-         l4uchtdx+yBnK0Zwup/ewoZa1kyhHM0vmd5XG/EwoDCoAHMAAZssz8umouw5YqYJ99mQ
-         kzJg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=jOxU8kZwhYfdYwRPjwXKdZug7e2Tg+3U90XP5oXdV88=;
+        b=OaHrUT9fYU+oAqziL4DHHzFQZ8epAwywU163d2MuFcMg/MfRQz8NereEj4lKumaYC0
+         CbIqfGs0dURuxdVZxSUs9h/popHBTuJMLhxuRPVsff1UDpPGIM45gQZznsOJZAh1XV8t
+         vYVR/ZzNiK0C6N92iB4JF7e1YDIV1USc36JmOZaEWw5FKH8xdktORJFmhXxTJJtchcJz
+         nZv7GoThbNrH7+g+0TEd5Z1haOYyireT0d2LLOpNaxCeE7I1RBitPYJ1ktS881iucm5y
+         KbXzcDzHmdqRNiDsQMJc5BbGviVBHdU6zwEyCjRNc0DF2jSb7BX127MlhczV7k9iSfFv
+         SoqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xwc4jX2cVzI9GAPOLZxtNDFTIGEsJRQAPMon6mB69F8=;
-        b=YjxLMFW2QHap9U6K4f6g4H3GySvePbLx7TJFebWkLE3lde8eCbR7d8aFtTz6iw5EvO
-         Mkg7IVme0GvAg21Ooi+DXSGAWAAI5NkeTp9Ax9qiFy0Apeuoo2ETu1e03/WagiFodypf
-         m+68+Ncg9hvKhyApR4yxmpoOs/d6/OAwcjHg/+v6ChT8L7oa5JxOhAaDIs2EqvZSuC9N
-         pWYJOTPGnWHtHvIswmEtPc0k+bCeFINtWKhRRF0KcgArEgOlpKpxCl4Nd3vpzPHjtZpp
-         lbnz0k8FUwRyB8Jq/S29P5Wn3eXj8TYuomn0HhY2Vsj51tr+L4CQB0mWMdRQghFgMfWN
-         4nzA==
-X-Gm-Message-State: AOAM531WNAe16Hcn53FLvhpkwzPZUVO2EExU+le3siULlCaDYjq0nYIR
-        AFp0qjctbkXwdl5iutmEYbNCiSH1mm1FWqFfgMk=
-X-Google-Smtp-Source: ABdhPJwXTJY4vOyrXu0/kLhsMtwrSYzJagyhpKZBcswQMlbTtwatKXLLkTcMHL7fAndk4Q+k2gxjmvaCUzQd+b673nI=
-X-Received: by 2002:aca:4f97:: with SMTP id d145mr19595326oib.123.1607982560930;
- Mon, 14 Dec 2020 13:49:20 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=jOxU8kZwhYfdYwRPjwXKdZug7e2Tg+3U90XP5oXdV88=;
+        b=qywwTnu6PNuMmF0DawI8qnTnw9ias+Rk9FrkF+jzEJNkUJKsv/djyepNpgs5xbq/zn
+         3VpP5mDMbbXkqvlE7l9WAz4gIWIOWEliHhLdjBmBkJf3ejA7vlBGrx6W+WdGuOJJBYQY
+         aqLxK+K3wjOUuv8cG8CF8zZ2uMhNRNGoh3p9lotJR8t55SR9jeZhSzOsgs7DVPyJgWl7
+         r9sFUaqntn8FvXINBDX/HLtnnmIToHtWkzhvMR3rZVxjzgHwVwVw3wthUbiKauLZZSwS
+         Z+lsVyxEYzVa1Isn0UvdmDCoN85K8Yy5tJphQrin32PdrbrwTj5FmcekzfddtXXtElpR
+         AInQ==
+X-Gm-Message-State: AOAM531Nz9MsdT1PzteeeSLYs+imn4VlerX9OgxxU734ngxXNx2hbgDy
+        ST+e9WnVjxHOGisVYEgX19yItg==
+X-Google-Smtp-Source: ABdhPJy7koPk5qAygFqkOdbXjul3bcFcEBkr9ljx5A5AkGpaXS6AD6SpRRXflYHZJpeiyi8sek7Xkw==
+X-Received: by 2002:aca:3dd7:: with SMTP id k206mr19748236oia.134.1607982618989;
+        Mon, 14 Dec 2020 13:50:18 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id f201sm4345440oig.21.2020.12.14.13.50.17
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 14 Dec 2020 13:50:18 -0800 (PST)
+Date:   Mon, 14 Dec 2020 13:50:16 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Yu Zhao <yuzhao@google.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/11] mm: enlarge the "int nr_pages" parameter of
+ update_lru_size()
+In-Reply-To: <20201207220949.830352-12-yuzhao@google.com>
+Message-ID: <alpine.LSU.2.11.2012141317351.1925@eggly.anvils>
+References: <20201207220949.830352-1-yuzhao@google.com> <20201207220949.830352-12-yuzhao@google.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-References: <20201211155553.GC25974@zn.tnic>
-In-Reply-To: <20201211155553.GC25974@zn.tnic>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 14 Dec 2020 16:49:09 -0500
-Message-ID: <CADnq5_MHqWqOd5ZngitF4UUDoZsh+fPrYJtHpJMbJdjAhFfhew@mail.gmail.com>
-Subject: Re: 8353d30e747f ("drm/amd/display: disable stream if pixel clock
- changed with link active")
-To:     Borislav Petkov <bp@alien8.de>, Harry Wentland <hwentlan@amd.com>,
-        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>
-Cc:     Chiawen Huang <chiawen.huang@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Tony Cheng <Tony.Cheng@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 11:49 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> Hi,
->
-> patch in $Subject breaks booting on a laptop here, GPU details are
-> below. The machine stops booting right when it attempts to switch modes
-> during boot, to a higher mode than the default VGA one. Machine doesn't
-> ping and is otherwise unresponsive so that a hard reset is the only
-> thing that helps.
->
-> Reverting that patch ontop of -rc7 fixes it and the machine boots just fine.
+On Mon, 7 Dec 2020, Yu Zhao wrote:
 
-+ a few more display folks
+> update_lru_sizes() defines an unsigned long argument and passes it as
+> nr_pages to update_lru_size(). Though this isn't causing any overflows
+> I'm aware of, it's a bad idea to go through the demotion given that we
+> have recently stumbled on a related type promotion problem fixed by
+> commit 2da9f6305f30 ("mm/vmscan: fix NR_ISOLATED_FILE corruption on 64-bit")
+> 
+> Note that the underlying counters are already in long. This is another
+> reason we shouldn't have the demotion.
+> 
+> This patch enlarges all relevant parameters on the path to the final
+> underlying counters:
+> 	update_lru_size(int -> long)
+> 		if memcg:
+> 			__mod_lruvec_state(int -> long)
+> 				if smp:
+> 					__mod_node_page_state(long)
+> 				else:
+> 					__mod_node_page_state(int -> long)
+> 			__mod_memcg_lruvec_state(int -> long)
+> 				__mod_memcg_state(int -> long)
+> 		else:
+> 			__mod_lruvec_state(int -> long)
+> 				if smp:
+> 					__mod_node_page_state(long)
+> 				else:
+> 					__mod_node_page_state(int -> long)
+> 
+> 		__mod_zone_page_state(long)
+> 
+> 		if memcg:
+> 			mem_cgroup_update_lru_size(int -> long)
+> 
+> Note that __mod_node_page_state() for the smp case and
+> __mod_zone_page_state() already use long. So this change also fixes
+> the inconsistency.
+> 
+> Signed-off-by: Yu Zhao <yuzhao@google.com>
 
-This patch looks like a correctness fix, but not critical.  Unless
-anyone has a proper fix handy, I'll just revert it for now and we can
-revisit it properly.
+NAK from me to this 11/11: I'm running happily with your 1-10 on top of
+mmotm (I'll review them n a few days, but currently more concerned with
+Rik's shmem huge gfp_mask), but had to leave this one out.
 
-Alex
+You think you are future-proofing with this, but it is present-breaking.
 
+It looks plausible (though seems random: why these particular functions
+use long but others not? why __mod_memcg_state() long, mod_memcg_state()
+int?), and I was fooled; but fortunately was still testing with memcg
+moving, for Alex's patchset.
 
->
-> Thx.
->
-> [    1.628086] ata1.00: supports DRM functions and may not be fully accessible
-> [    1.632050] ata1.00: supports DRM functions and may not be fully accessible
-> [    1.895818] [drm] amdgpu kernel modesetting enabled.
-> [    1.897628] [drm] initializing kernel modesetting (CARRIZO 0x1002:0x9874 0x103C:0x807E 0xC4).
-> [    1.898256] [drm] register mmio base: 0xD0C00000
-> [    1.898422] [drm] register mmio size: 262144
-> [    1.898583] [drm] add ip block number 0 <vi_common>
-> [    1.898759] [drm] add ip block number 1 <gmc_v8_0>
-> [    1.898931] [drm] add ip block number 2 <cz_ih>
-> [    1.899082] [drm] add ip block number 3 <gfx_v8_0>
-> [    1.899241] [drm] add ip block number 4 <sdma_v3_0>
-> [    1.899439] [drm] add ip block number 5 <powerplay>
-> [    1.899573] [drm] add ip block number 6 <dm>
-> [    1.899693] [drm] add ip block number 7 <uvd_v6_0>
-> [    1.899827] [drm] add ip block number 8 <vce_v3_0>
-> [    1.911458] [drm] BIOS signature incorrect 5b 7
-> [    1.912551] [drm] UVD is enabled in physical mode
-> [    1.912707] [drm] VCE enabled in physical mode
-> [    1.912921] [drm] vm size is 64 GB, 2 levels, block size is 10-bit, fragment size is 9-bit
-> [    1.913837] [drm] Detected VRAM RAM=512M, BAR=512M
-> [    1.913998] [drm] RAM width 128bits UNKNOWN
-> [    1.915149] [drm] amdgpu: 512M of VRAM memory ready
-> [    1.915306] [drm] amdgpu: 3072M of GTT memory ready.
-> [    1.915468] [drm] GART: num cpu pages 262144, num gpu pages 262144
-> [    1.916139] [drm] PCIE GART of 1024M enabled (table at 0x000000F400900000).
-> [    1.918733] [drm] Found UVD firmware Version: 1.91 Family ID: 11
-> [    1.918950] [drm] UVD ENC is disabled
-> [    1.919680] [drm] Found VCE firmware Version: 52.4 Binary ID: 3
-> [    1.925963] [drm] DM_PPLIB: values for Engine clock
-> [    1.926106] [drm] DM_PPLIB:   300000
-> [    1.926205] [drm] DM_PPLIB:   360000
-> [    1.926304] [drm] DM_PPLIB:   423530
-> [    1.926404] [drm] DM_PPLIB:   514290
-> [    1.926516] [drm] DM_PPLIB:   626090
-> [    1.926629] [drm] DM_PPLIB:   720000
-> [    1.926743] [drm] DM_PPLIB: Validation clocks:
-> [    1.926952] [drm] DM_PPLIB:    engine_max_clock: 72000
-> [    1.927117] [drm] DM_PPLIB:    memory_max_clock: 80000
-> [    1.927281] [drm] DM_PPLIB:    level           : 8
-> [    1.927435] [drm] DM_PPLIB: values for Display clock
-> [    1.927594] [drm] DM_PPLIB:   300000
-> [    1.927708] [drm] DM_PPLIB:   400000
-> [    1.927822] [drm] DM_PPLIB:   496560
-> [    1.927936] [drm] DM_PPLIB:   626090
-> [    1.928048] [drm] DM_PPLIB:   685720
-> [    1.928161] [drm] DM_PPLIB:   757900
-> [    1.928275] [drm] DM_PPLIB: Validation clocks:
-> [    1.928419] [drm] DM_PPLIB:    engine_max_clock: 72000
-> [    1.928584] [drm] DM_PPLIB:    memory_max_clock: 80000
-> [    1.928748] [drm] DM_PPLIB:    level           : 8
-> [    1.928901] [drm] DM_PPLIB: values for Memory clock
-> [    1.929058] [drm] DM_PPLIB:   333000
-> [    1.929172] [drm] DM_PPLIB:   800000
-> [    1.929403] [drm] DM_PPLIB: Validation clocks:
-> [    1.929549] [drm] DM_PPLIB:    engine_max_clock: 72000
-> [    1.929716] [drm] DM_PPLIB:    memory_max_clock: 80000
-> [    1.929919] [drm] DM_PPLIB:    level           : 8
-> [    1.930148] [drm] Display Core initialized with v3.2.104!
-> [    2.003938] [drm] UVD initialized successfully.
-> [    2.204023] [drm] VCE initialized successfully.
-> [    2.206228] [drm] fb mappable at 0xA0EE4000
-> [    2.206375] [drm] vram apper at 0xA0000000
-> [    2.206514] [drm] size 14745600
-> [    2.206654] [drm] fb depth is 24
-> [    2.206760] [drm]    pitch is 10240
-> [    2.207123] fbcon: amdgpudrmfb (fb0) is primary device
-> [    2.301263] amdgpu 0000:00:01.0: [drm] fb0: amdgpudrmfb frame buffer device
-> [    2.320735] [drm] Initialized amdgpu 3.40.0 20150101 for 0000:00:01.0 on minor 0
->
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+Soon got stuck waiting in balance_dirty_pages(), /proc/vmstat showing
+nr_anon_pages 2263142822377729
+nr_mapped 125095217474159
+nr_file_pages 225421358649526
+nr_dirty 8589934592
+nr_writeback 1202590842920
+nr_shmem 40501541678768
+nr_anon_transparent_hugepages 51539607554
+
+That last (anon THPs) nothing to do with this patch, but illustrates
+what Muchun is fixing in his 1/7 "mm: memcontrol: fix NR_ANON_THPS
+accounting in charge moving".
+
+The rest of them could be fixed by changing mem_cgroup_move_account()'s
+"unsigned int nr_pages" to "long nr_pages" in this patch, but I think
+it's safer just to drop the patch: the promotion of "unsigned int" to
+"long" does not work as you would like it to.
+
+I see that mm/vmscan.c contains several "unsigned int" counts of pages,
+everything works fine at present so far as I know, and those appeared
+to work even with your patch; but I am not confident in my test coverage,
+and not confident in us being able to outlaw unsigned int page counts in
+future.
+
+Hugh
