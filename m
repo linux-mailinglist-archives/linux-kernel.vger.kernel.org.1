@@ -2,66 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C482D982B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E24912D982A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439065AbgLNMln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 07:41:43 -0500
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:33520 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405336AbgLNMjz (ORCPT
+        id S2439057AbgLNMlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 07:41:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407257AbgLNMlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 07:39:55 -0500
-Received: by mail-ej1-f65.google.com with SMTP id b9so22253905ejy.0;
-        Mon, 14 Dec 2020 04:39:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Jnd/4aY9dAQDER69V5GznysggrKivLx5zBLqZJJ/zu0=;
-        b=YdxB0+YyFf1Pq2RYMcbR20izyE+mmMQcFaux7MzScqzWSLAkjbtSSAi4HPkPyzC4Vc
-         em0GW8pKv06a0BunieWJaa/qggfexktqEsuA5s+yisqT2HNCJF9bWRAMslkOZmXgnJ+P
-         QU+2pOxpRGKE6J7KiT7cJT2fscsEWsQ0MpG18ckE4QAYGk2ORSoC55Lidr4r/NhFJdI8
-         2d0pi5yejNIWwtpnzhE4isKFyUtmJCnJq8AYxQp6xJkNwOuM5/TJWXk+TQePfhvEwE0e
-         t5y8GY1hcj7ZZ/Wz8dFu04cqBgDqF9+auYShFerD7qFNoDJpQhAriVcsDZrMj4yCj4ER
-         Rd+Q==
-X-Gm-Message-State: AOAM532mZh5xWv28V2cXAoLGTGEbayZKGHmXY+NTtfStipm6gz1m5p/a
-        +EVNf7BGBbKBfybPMHCwNQ7Ul7UEsMqcyg==
-X-Google-Smtp-Source: ABdhPJycMC2SeFP3Jq3dhhZ6LzLfRmGggegB+hc3Af/l9+D1a0mq+6eunktjr1wdg/aEHwJsGoEDFg==
-X-Received: by 2002:a17:906:3712:: with SMTP id d18mr23043935ejc.178.1607949551897;
-        Mon, 14 Dec 2020 04:39:11 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id s19sm15561207edx.7.2020.12.14.04.39.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Dec 2020 04:39:11 -0800 (PST)
-Subject: Re: [PATCH v4] Serial: silabs si4455 serial driver
-To:     =?UTF-8?Q?J=c3=b3zsef_Horv=c3=a1th?= <info@ministro.hu>
-Cc:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
-        'Rob Herring' <robh+dt@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201212070944.GA13909@dincontrollerdev>
- <2855efaf-79a5-f43b-ff8c-9c01a3f14df7@kernel.org>
- <20201214123519.GA10229@dev>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <77bb5835-b1f2-125a-d2d1-ad67612b164d@kernel.org>
-Date:   Mon, 14 Dec 2020 13:39:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 14 Dec 2020 07:41:18 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE7BC0613CF;
+        Mon, 14 Dec 2020 04:40:38 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0a470045f2ad4f8d5ac204.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:4700:45f2:ad4f:8d5a:c204])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A62F51EC0518;
+        Mon, 14 Dec 2020 13:40:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1607949636;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=GEjtONQLztM4l6fqlu0/p/U/N6XQIhTzVwLg91ABImU=;
+        b=BENNIPNsDRYudHYbN0ot904umrFe64GAJovJIb9gbrPuMgUsbXmNIfrhti6TgbsIVQmDCV
+        fNCewDuF45fiMtsoPpNEjqbYPIxcJHhYv9EZGoiJdRzG/Sbaok8Pcby3/F4/WzzRVt9Xq/
+        G/FcXZK8QfehzOTIBFKFMme0p3S2qvw=
+Date:   Mon, 14 Dec 2020 13:40:23 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Punit Agrawal <punitagrawal@gmail.com>
+Cc:     Wei Huang <whuang2@amd.com>, rjw@rjwysocki.net, wei.huang2@amd.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [RFC PATCH 2/4] cpufreq: acpi-cpufreq: Add processor to the
+ ignore PSD override list
+Message-ID: <20201214124023.GA25916@zn.tnic>
+References: <20201125144847.3920-1-punitagrawal@gmail.com>
+ <20201125144847.3920-3-punitagrawal@gmail.com>
+ <cadb5d57-5aaf-79bc-e30e-502d5e522689@amd.com>
+ <20201207202610.GG20489@zn.tnic>
+ <e9b4ae11-1fe3-a660-bb65-d3ba55ffcc56@amd.com>
+ <20201207223057.GJ20489@zn.tnic>
+ <87a6unq3xv.fsf@stealth>
+ <20201208233216.GH27920@zn.tnic>
+ <871rfvoqy7.fsf@stealth>
 MIME-Version: 1.0
-In-Reply-To: <20201214123519.GA10229@dev>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <871rfvoqy7.fsf@stealth>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14. 12. 20, 13:35, József Horváth wrote:
-> I'm in trouble with the device tree binding schema of this driver too.
+On Sat, Dec 12, 2020 at 08:36:48AM +0900, Punit Agrawal wrote:
+> To me it suggests, that there are likely more systems from the family
+> that show the characteristic described below.
 
-Sorry, someone else has to help you who actually masters DT details.
+Until we find a *single* system with a broken BIOS which has those
+objects kaputt and then this heuristic would need an exception.
+
+VS the clear statement from AMD that from zen3 onwards, all BIOS will be
+tested. I hope they boot Linux at least before they ship.
+
+> In all these systems, the override causes this topology information to
+> be ignored - treating each core to be a separate domain. The proposed
+> patch removes the override so that _PSD is taken into account.
+
+You're still not answering my question: what does the coupling of the
+SMT threads bring on those systems? Power savings? Perf improvement?
+Anything palpable or measurable?
+
+Thx.
 
 -- 
-js
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
