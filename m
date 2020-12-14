@@ -2,82 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41DF92DA018
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BCC2DA024
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:19:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502373AbgLNTQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 14:16:11 -0500
-Received: from smtprelay0041.hostedemail.com ([216.40.44.41]:34594 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2502176AbgLNTPz (ORCPT
+        id S2387448AbgLNTQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 14:16:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502221AbgLNTPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 14:15:55 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id B8D39181D303A;
-        Mon, 14 Dec 2020 19:15:04 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2198:2199:2200:2393:2553:2559:2562:2731:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:4321:5007:6248:7514:7875:8531:9040:10004:10400:10848:10967:11232:11658:11914:12043:12296:12297:12663:12740:12895:13069:13161:13229:13311:13357:13439:13894:14181:14659:14721:14777:14819:21063:21080:21433:21451:21627:21740:21819:30022:30029:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: list62_47160c62741d
-X-Filterd-Recvd-Size: 2570
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 14 Dec 2020 19:15:03 +0000 (UTC)
-Message-ID: <1113d2d634d46adb9384e09c3f70cb8376a815c4.camel@perches.com>
-Subject: Re: [PATCH v2] net/mlx4: Use true,false for bool variable
-From:   Joe Perches <joe@perches.com>
-To:     Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>
-Cc:     Vasyl Gomonovych <gomonovych@gmail.com>, tariqt@nvidia.com,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 14 Dec 2020 11:15:01 -0800
-In-Reply-To: <20201214110351.29ae7abb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20201212090234.0362d64f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <20201214103008.14783-1-gomonovych@gmail.com>
-         <20201214111608.GE5005@unreal>
-         <20201214110351.29ae7abb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Mon, 14 Dec 2020 14:15:54 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE4FC061793
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 11:15:14 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id i7so1545856pgc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 11:15:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DvnE2hRJY7kzQqquLbMReDl3CoLwGW6U65prR7sDm9Q=;
+        b=XAzYL/Np59tugJc5pSNVhHvgxgerKgerBYkidJkaVGyucNPIRzwKNr6nqN8lrh8AQh
+         Wl7Gc5YTLSANuJQTAL2PXEYT2OYLL1YMYmz3ff1ARVC9AU1CPa2hDHVDtBDQcS7q2fHY
+         ihtRaN5iY2/lQAFzszz/C0EvUbFSr8ubyG6WSpnlFDDbcxvmKfbnXcmg6ASneKu4P+Vo
+         23Ykw1VUUx8OrQed+BWbaetf2TeJZqlwKTZH/3ABSKU9INu5XYNUm1BCc8/LzmNj77W3
+         sO0rTE46JTiiUxXEM1IAEc789FDjw07aClUTOozkhaIwpHYn5j/i1xlcUowqlxc/FaJE
+         8gFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DvnE2hRJY7kzQqquLbMReDl3CoLwGW6U65prR7sDm9Q=;
+        b=ixQIz3ozn2B46FN5QTHWLus9PLslzy47u4LGDaqOtGvvkvEBREJIn/4EE+MzwxBY0e
+         gVBZsN1LMyp19THcAOaIB714rj+YoNlJsFOdqG6oaQ5OGl0Rxx6nsAF4bi9vBsyeRjJz
+         2lckFxVBQnQyI3SfqKZ7wfDU345+c86x4ogwlGfZfJ0obZKCksAWhM+ZzGZxSqv6BAfQ
+         /SBY0qflt8EXAK6vPp9qd9EmiFtBcUuo4uXvmHCEeLLKxoax6BhwKdeYu1E3HluSR46n
+         YWzHCxoOJrPQBKNJa6AevRFwcro5/tixqzHD5lsEHr6gymocv/CtWDL7nZuoSo9JoU/4
+         gWJw==
+X-Gm-Message-State: AOAM533tq1LwAGwHNa9zbB5VXfNxK5zp3vWgzLLxZ736lGFF5rFXRjMN
+        WQvF1nxLd+xqkBPSlZYI6PYeTA==
+X-Google-Smtp-Source: ABdhPJzOfxHBLaCUcnj9WU7hpMeQHi16SvlQfeSUUXVBFQFbsOz5pj+SKk2/7Tgmeqtvq0o39PtBmQ==
+X-Received: by 2002:a63:f348:: with SMTP id t8mr25554313pgj.425.1607973313883;
+        Mon, 14 Dec 2020 11:15:13 -0800 (PST)
+Received: from google.com (h208-100-161-3.bendor.broadband.dynamic.tds.net. [208.100.161.3])
+        by smtp.gmail.com with ESMTPSA id 197sm14992845pgg.43.2020.12.14.11.15.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 11:15:12 -0800 (PST)
+Date:   Mon, 14 Dec 2020 11:15:10 -0800
+From:   Will McVicker <willmcvicker@google.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        security@kernel.org
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Will Coster <willcoster@google.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v1] HID: make arrays usage and value to be the same
+Message-ID: <X9e5vl+nw4GQNYEw@google.com>
+References: <20201205004848.2541215-1-willmcvicker@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201205004848.2541215-1-willmcvicker@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-14 at 11:03 -0800, Jakub Kicinski wrote:
-> On Mon, 14 Dec 2020 13:16:08 +0200 Leon Romanovsky wrote:
-> > On Mon, Dec 14, 2020 at 11:30:08AM +0100, Vasyl Gomonovych wrote:
-> > > It is fix for semantic patch warning available in
-> > > scripts/coccinelle/misc/boolinit.cocci
-> > > Fix en_rx.c:687:1-17: WARNING: Assignment of 0/1 to bool variable
-> > > Fix main.c:4465:5-13: WARNING: Comparison of 0/1 to bool variable
-> > > 
-> > > Signed-off-by: Vasyl Gomonovych <gomonovych@gmail.com>
-> > > ---
-> > >  - Add coccicheck script name
-> > >  - Simplify if condition
-> > > ---
-> > >  drivers/net/ethernet/mellanox/mlx4/en_rx.c | 2 +-
-> > >  drivers/net/ethernet/mellanox/mlx4/main.c  | 2 +-
-> > >  2 files changed, 2 insertions(+), 2 deletions(-)  
-> > 
-> > Please refrain from sending new version of patches as reply-to to
-> > previous variants. It makes to appear previous patches out-of-order
-> > while viewing in threaded mode.
+On Sat, Dec 05, 2020 at 12:48:48AM +0000, Will McVicker wrote:
+> The HID subsystem allows an "HID report field" to have a different
+> number of "values" and "usages" when it is allocated. When a field
+> struct is created, the size of the usage array is guaranteed to be at
+> least as large as the values array, but it may be larger. This leads to
+> a potential out-of-bounds write in
+> __hidinput_change_resolution_multipliers() and an out-of-bounds read in
+> hidinput_count_leds().
 > 
-> Yes, please! I'm glad I'm not the only one who feels this way! :)
+> To fix this, let's make sure that both the usage and value arrays are
+> the same size.
+> 
+> Signed-off-by: Will McVicker <willmcvicker@google.com>
+> ---
+>  drivers/hid/hid-core.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+> index 56172fe6995c..8a8b2b982f83 100644
+> --- a/drivers/hid/hid-core.c
+> +++ b/drivers/hid/hid-core.c
+> @@ -90,7 +90,7 @@ EXPORT_SYMBOL_GPL(hid_register_report);
+>   * Register a new field for this report.
+>   */
+>  
+> -static struct hid_field *hid_register_field(struct hid_report *report, unsigned usages, unsigned values)
+> +static struct hid_field *hid_register_field(struct hid_report *report, unsigned usages)
+>  {
+>  	struct hid_field *field;
+>  
+> @@ -101,7 +101,7 @@ static struct hid_field *hid_register_field(struct hid_report *report, unsigned
+>  
+>  	field = kzalloc((sizeof(struct hid_field) +
+>  			 usages * sizeof(struct hid_usage) +
+> -			 values * sizeof(unsigned)), GFP_KERNEL);
+> +			 usages * sizeof(unsigned)), GFP_KERNEL);
+>  	if (!field)
+>  		return NULL;
+>  
+> @@ -300,7 +300,7 @@ static int hid_add_field(struct hid_parser *parser, unsigned report_type, unsign
+>  	usages = max_t(unsigned, parser->local.usage_index,
+>  				 parser->global.report_count);
+>  
+> -	field = hid_register_field(report, usages, parser->global.report_count);
+> +	field = hid_register_field(report, usages);
+>  	if (!field)
+>  		return 0;
+>  
+> -- 
+> 2.29.2.576.ga3fc446d84-goog
+> 
 
-I'm the other way.
+Hi Jiri and Benjamin,
 
-I prefer revisions to single patches (as opposed to large patch series)
-in the same thread.
+This is a friendly reminder in case this got lost in your inbox.
 
-There is no other easy way for changes to a patch to be tracked AFAIK.
-
-Most email clients use both In-Reply-To: and References: headers as
-the mechanism to thread replies.
-
-Keeping the latest messages at the bottom of a thread works well
-to see revision sequences.
-
+Thanks,
+Will
 
