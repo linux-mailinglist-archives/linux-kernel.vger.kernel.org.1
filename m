@@ -2,92 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04B42D950E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:23:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D688A2D9515
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:23:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439940AbgLNJUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 04:20:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgLNJUA (ORCPT
+        id S2394804AbgLNJWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 04:22:33 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9875 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726633AbgLNJVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 04:20:00 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443EBC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 01:19:20 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id o17so25418639lfg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 01:19:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2KiNFGuHRAngXU50uYN5PWqWRF/ruTUekfUrlri0CfQ=;
-        b=q4CcTX/QLO2V8+gRMKZ6WBTELmqzgjgvSoCKFoWlN76XMuPOfLR9SV36d5X1/2w2iS
-         0J6Qn32h7syXJNuhSOxptmpYKdV0RwCQl5LmpHJVCOtLR8APxnWawj1AqnRsSZFeCfOa
-         twdM4XmKyoQebBWA1YUR8J2zg6NtsPcoFR3jxPmorhpK2hFfhehb4uoMveR1D2EtmHgp
-         tvJsYp9xKPSKF5O1+rqXBDw3mz1uSODx+FzvRrOJUxiBk/lPupH//CNldZakk1Ed9dQf
-         lQJgGJ554qE47JsYzmiT7h0AM/JyJSZQ3d2vsBfJQRMx57PBo/+S0ledP049enSbxGPm
-         8Hnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2KiNFGuHRAngXU50uYN5PWqWRF/ruTUekfUrlri0CfQ=;
-        b=K4tMHLhfxhT1VOOcWLk6tDL1P81OWvrkRVrzNYRVffSWaQQ6IaIQswADzoPzGIBxbZ
-         BBnak5ptxHoieCQH/N1bAEwjima/5OYu+MLPyetsT0HjkTk2pEmF5TvscUUUOjRgY53I
-         NRB2gKW03z69tMMfRTTgqntNxGKn0I9F3EGZwCLbi4UoGu6gMUaPabzr8FuoqouChRb3
-         KbPy/1LK3RS55yWTT5cIUgMvGNBT71xMnv0dRC6uTUCfz72N3WJbWG1fT+u+LhISTtro
-         4Xq+T+EgNZ4sxSt9HDj3rBhAYB182FfJN4A2ppDOciDDvDd2sGx0TBtF3EC3+viT8qAX
-         lYwQ==
-X-Gm-Message-State: AOAM5339AWB2B+8JD8rKZnoJ6tVKRN4vSIH5xhEOGKIHdTyRHLdlRjC6
-        tTNFCTUR9ClLl3+IcL5zFjVn9JywrdgLV9RFNJ30ADzN7c++PA==
-X-Google-Smtp-Source: ABdhPJwhvfpGJx5eYW996f7rt6XIHNAUFvQqTPj+6iJ1YJaQVGYhhsnA8B0WVBteIZYui42JJ4uZaIpk2CKEHgPzgTA=
-X-Received: by 2002:a19:8384:: with SMTP id f126mr8561066lfd.649.1607937558820;
- Mon, 14 Dec 2020 01:19:18 -0800 (PST)
+        Mon, 14 Dec 2020 04:21:50 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CvbTV4tSCz7Fq6;
+        Mon, 14 Dec 2020 17:20:30 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 14 Dec 2020 17:21:00 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] f2fs: fix to tag FIEMAP_EXTENT_MERGED in f2fs_fiemap()
+Date:   Mon, 14 Dec 2020 17:20:57 +0800
+Message-ID: <20201214092057.21629-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201122170822.21715-3-mani@kernel.org> <CACRpkdbY-aZB1BAD=JkZAHA+OQvpH12AD3tLAp6Nf1hwr74s9A@mail.gmail.com>
- <X8ZmfbQp7/BGgxec@localhost> <CACRpkdZJdxqxUEQaKUHctHRSQAUpYZJtuxonwVd_ZFAsLBbKrA@mail.gmail.com>
- <X89OOUOG0x0SSxXA@localhost> <CACRpkdavm7GG8HdV1xk0W_b1EzUmvF0kKAGnp0u6t42NAWa9iA@mail.gmail.com>
- <X9DsWahl6UDwZwBn@localhost> <CACRpkdYm-j9QcK8hgNrC33KruWE17Q0F4+T=UanE7PCEZEtu6w@mail.gmail.com>
- <X9HiGaIzk4UaZG7i@localhost> <CACRpkdZ6MUzRe9m=NrqA_5orhZXDtWj+qoFMHX7v6Zjsx-rVGg@mail.gmail.com>
- <X9cpQO3IV4IgX1dh@localhost>
-In-Reply-To: <X9cpQO3IV4IgX1dh@localhost>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 14 Dec 2020 10:19:07 +0100
-Message-ID: <CACRpkdaGWpk=hB6osfXDqx_aSx0aYDyqJRNtY3Gr8z4bLPxZcQ@mail.gmail.com>
-Subject: Re: [PATCH v5 2/3] usb: serial: xr_serial: Add gpiochip support
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        patong.mxl@gmail.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Angelo Dureghello <angelo.dureghello@timesys.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 9:58 AM Johan Hovold <johan@kernel.org> wrote:
-> On Sat, Dec 12, 2020 at 01:03:32AM +0100, Linus Walleij wrote:
+f2fs does not natively support extents in metadata, 'extent' in f2fs
+is used as a virtual concept, so in f2fs_fiemap() interface, it needs
+to tag FIEMAP_EXTENT_MERGED flag to indicated the extent status is a
+result of merging.
 
-> > If I google for the phrase "Detected name collision for GPIO name"
-> > I just find the code, our discussions and some USB serial devices
-> > warning about this so far.
-> >
-> > Maybe we should just make a patch to disallow it?
->
-> That would make it impossible to provide name lines on hotpluggable
-> controllers, which would be nice to support.
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ fs/f2fs/data.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I merged a patch for this now, let's tighten this loose end up.
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 894c5680db4a..baa9ccf84e2c 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -1971,6 +1971,7 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+ 	}
+ 
+ 	if (size) {
++		flags |= FIEMAP_EXTENT_MERGED;
+ 		if (IS_ENCRYPTED(inode))
+ 			flags |= FIEMAP_EXTENT_DATA_ENCRYPTED;
+ 
+-- 
+2.29.2
 
-Also: thanks for poking me about this, I should have looked into
-this ages ago :/ focus you know...
-
-Yours,
-Linus Walleij
