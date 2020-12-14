@@ -2,264 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F74B2DA1BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D62892DA188
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503411AbgLNUgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:36:09 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:57844 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503355AbgLNUeh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:34:37 -0500
-Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
- id 4438d705b772e000; Mon, 14 Dec 2020 21:33:40 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Hans De Goede <hdegoede@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [RFT][PATCH v1 2/3] ACPI: scan: Defer enumeration of devices with _DEP lists
-Date:   Mon, 14 Dec 2020 21:27:27 +0100
-Message-ID: <2066680.U3vERgk28e@kreacher>
-In-Reply-To: <1646930.v2jOOB1UEN@kreacher>
-References: <1646930.v2jOOB1UEN@kreacher>
+        id S2503168AbgLNU2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:28:35 -0500
+Received: from ozlabs.org ([203.11.71.1]:33155 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502880AbgLNU2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 15:28:21 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvtH95KYQz9sTL;
+        Tue, 15 Dec 2020 07:27:33 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607977658;
+        bh=DfhluT4S4Y8v8FRe9QpVkJAPtSsILegesMre6oxvJKw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AS9KA2hEMHFjXYybbBaGtBl4akJLvK4TLDrx/5qtrqdnirDc92FUuGZzVTBhhwTOW
+         mtcd1CEKM0TPdwbOzxmRUw1MHzA7Qkk3k5VV3mrsO913b4fQWBccbIl2IVEUvFHlc4
+         cqwD8uKJvE454wfQBFzg5H7P+MDXd/7qdSWdcu8FbpopEYdOxNXFeGV31o8c4fU/8K
+         Pf5qFFxulTHM1gTh/Fa5fX/rlEUgd1lL6BocSWwPOol5uXTKFUnfQK3cPK0uijzs7c
+         9ag3uE7Djh+sO1uUotFxWb6JgdMnw/HIyiJMy52QIkJ7J9Ppl39rUtktALv/iYuLCB
+         ihYKEm3aHIytQ==
+Date:   Tue, 15 Dec 2020 07:27:32 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the staging tree
+Message-ID: <20201215072732.39529a15@canb.auug.org.au>
+In-Reply-To: <20201207164601.2b9cefc8@canb.auug.org.au>
+References: <20201207164601.2b9cefc8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; boundary="Sig_/S+vopx2qEjnH6_YV4gZaT=a";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+--Sig_/S+vopx2qEjnH6_YV4gZaT=a
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-In some cases ACPI control methods used during device enumeration
-(such as _HID or _STA) may rely on Operation Region handlers
-supplied by the drivers of other devices [1]:
+Hi all,
 
- An example of this is the Acer Switch 10E SW3-016 model. The _HID
- method of the ACPI node for the UART attached Bluetooth, reads
- GPIOs to detect the installed wifi chip and update the _HID for the
- Bluetooth's ACPI node accordingly. The current ACPI scan code calls
- _HID before the GPIO controller's OpRegions are available, leading
- to the wrong _HID being used and Bluetooth not working.
+On Mon, 7 Dec 2020 16:46:01 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> Hi all,
+>=20
+> After merging the staging tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>=20
+> drivers/iio/trigger/iio-trig-sysfs.c: In function 'iio_sysfs_trigger_prob=
+e':
+> drivers/iio/trigger/iio-trig-sysfs.c:164:21: error: 'struct irq_work' has=
+ no member named 'flags'
+>   164 |  atomic_set(&t->work.flags, IRQ_WORK_HARD_IRQ);
+>       |                     ^
+>=20
+> Caused by commit
+>=20
+>   0449fc4eead7 ("iio: sysfs-trigger: Mark irq_work to expire in hardirq c=
+ontext")
+>=20
+> interacting with commit
+>=20
+>   7a9f50a05843 ("irq_work: Cleanup")
+>=20
+> from the tip tree.
+>=20
+> I applied the following merge fix patch:
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 7 Dec 2020 16:42:18 +1100
+> Subject: [PATCH] fixup for "irq_work: Cleanup"
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  drivers/iio/trigger/iio-trig-sysfs.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/iio/trigger/iio-trig-sysfs.c b/drivers/iio/trigger/i=
+io-trig-sysfs.c
+> index 10a3fd29362b..0f6b512a5c37 100644
+> --- a/drivers/iio/trigger/iio-trig-sysfs.c
+> +++ b/drivers/iio/trigger/iio-trig-sysfs.c
+> @@ -160,8 +160,7 @@ static int iio_sysfs_trigger_probe(int id)
+>  	t->trig->dev.parent =3D &iio_sysfs_trig_dev;
+>  	iio_trigger_set_drvdata(t->trig, t);
+> =20
+> -	init_irq_work(&t->work, iio_sysfs_trigger_work);
+> -	atomic_set(&t->work.flags, IRQ_WORK_HARD_IRQ);
+> +	t->work =3D IRQ_WORK_INIT_HARD(iio_sysfs_trigger_work);
+> =20
+>  	ret =3D iio_trigger_register(t->trig);
+>  	if (ret)
 
-In principle, in those cases there should be a _DEP control method
-under the device object with OpRegion enumeration dependencies, so
-deferring the enumeration of devices with _DEP returning a non-empty
-list of suppliers of OpRegions depended on by the given device
-(modulo some known exceptions that don't really supply any OpRegions
-and are listed by _DEP for other reasons irrelevant for Linux) should
-at least address the first-order dependencies by allowing the OpRegion
-suppliers to be enumerated before their consumers.
+Just a reminder that I am still applying this merge fix.
+--=20
+Cheers,
+Stephen Rothwell
 
-Implement the above idea by modifying acpi_bus_scan() to enumerate
-devices in the given scope of the ACPI namespace in two passes,
-where the first pass covers the devices without "significant" lists
-of dependencies coming from _DEP only and the second pass covers
-all of the devices that were not enumerated in the first pass.
+--Sig_/S+vopx2qEjnH6_YV4gZaT=a
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Take _DEP into account only for device objects with _HID, mostly in
-order to avoid deferring the creation of ACPI device objects that
-represent PCI devices and must be present during the enumeration
-of the PCI bus (which takes place during the processing of the ACPI
-device object that represents the host bridge), so that they can
-be properly associated with the corresponding PCI devices.
+-----BEGIN PGP SIGNATURE-----
 
-Link: https://lore.kernel.org/linux-acpi/20201121203040.146252-1-hdegoede@redhat.com/ # [1]
-Reported-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/scan.c |  103 +++++++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 78 insertions(+), 25 deletions(-)
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/XyrQACgkQAVBC80lX
+0GxbnQgAgzkV5vh8nAroR2rOssT2ORPDVGBnn5v78f0zPg6ycRwt4vu1qpsjdd8A
+ttBmuOsB8c7WInW1FKj/WGa2PtQSuNgagVy0PnXIOGXxjvWglBfFMdnA8i9M6SCF
+cG3+JDaIRJ+izLvuxziMgTFtO3PKWXqyhRgIYDmPzO/uNDOq8FgNlYYfBhZZ3QgG
+eg9ST2MujYEJqStXDB3SLmNV+rhujWc8pwZw4urlb7qz7CZEPEQdllz3G4BPBZkl
+mOJqAh06aocjqrrG6rOWYu6cFU4wqtQ7pftz/k7FIEn8r/Is0F/5h95vahxoYbjQ
+rm/1GuTrXbiWjZKqsnzep+LJ7ZOyrw==
+=hcRC
+-----END PGP SIGNATURE-----
 
-Index: linux-pm/drivers/acpi/scan.c
-===================================================================
---- linux-pm.orig/drivers/acpi/scan.c
-+++ linux-pm/drivers/acpi/scan.c
-@@ -1635,8 +1635,6 @@ void acpi_init_device_object(struct acpi
- 	device_initialize(&device->dev);
- 	dev_set_uevent_suppress(&device->dev, true);
- 	acpi_init_coherency(device);
--	/* Assume there are unmet deps until acpi_device_dep_initialize() runs */
--	device->dep_unmet = 1;
- }
- 
- void acpi_device_add_finalize(struct acpi_device *device)
-@@ -1849,7 +1847,13 @@ static u32 acpi_scan_check_dep(acpi_hand
- 	u32 count;
- 	int i;
- 
--	if (!acpi_has_method(handle, "_DEP"))
-+	/*
-+	 * Check for _HID here to avoid deferring the enumeration of:
-+	 * 1. PCI devices.
-+	 * 2. ACPI nodes describing USB ports.
-+	 * Still, checking for _HID catches more then just these cases ...
-+	 */
-+	if (!acpi_has_method(handle, "_DEP") || !acpi_has_method(handle, "_HID"))
- 		return 0;
- 
- 	status = acpi_evaluate_reference(handle, "_DEP", NULL, &dep_devices);
-@@ -1892,11 +1896,24 @@ static u32 acpi_scan_check_dep(acpi_hand
- 	return count;
- }
- 
--static acpi_status acpi_bus_check_add(acpi_handle handle, u32 lvl_not_used,
--				      void *not_used, void **return_value)
-+static void acpi_scan_dep_init(struct acpi_device *adev)
-+{
-+	struct acpi_dep_data *dep;
-+
-+	mutex_lock(&acpi_dep_list_lock);
-+
-+	list_for_each_entry(dep, &acpi_dep_list, node) {
-+		if (dep->consumer == adev->handle)
-+			adev->dep_unmet++;
-+	}
-+
-+	mutex_unlock(&acpi_dep_list_lock);
-+}
-+
-+static acpi_status acpi_bus_check_add(acpi_handle handle, bool check_dep,
-+				      struct acpi_device **adev_p)
- {
- 	struct acpi_device *device = NULL;
--	u32 dep_count = 0;
- 	unsigned long long sta;
- 	int type;
- 	int result;
-@@ -1914,24 +1931,40 @@ static acpi_status acpi_bus_check_add(ac
- 		return AE_OK;
- 	}
- 
--	if (type == ACPI_BUS_TYPE_DEVICE)
--		dep_count = acpi_scan_check_dep(handle);
-+	if (type == ACPI_BUS_TYPE_DEVICE && check_dep) {
-+		u32 count = acpi_scan_check_dep(handle);
-+		/* Bail out if the number of recorded dependencies is not 0. */
-+		if (count > 0)
-+			return AE_CTRL_DEPTH;
-+	}
- 
- 	acpi_add_single_object(&device, handle, type, sta);
- 	if (!device)
- 		return AE_CTRL_DEPTH;
- 
--	device->dep_unmet = dep_count;
--
- 	acpi_scan_init_hotplug(device);
-+	if (!check_dep)
-+		acpi_scan_dep_init(device);
- 
-- out:
--	if (!*return_value)
--		*return_value = device;
-+out:
-+	if (!*adev_p)
-+		*adev_p = device;
- 
- 	return AE_OK;
- }
- 
-+static acpi_status acpi_bus_check_add_1(acpi_handle handle, u32 lvl_not_used,
-+					void *not_used, void **ret_p)
-+{
-+	return acpi_bus_check_add(handle, true, (struct acpi_device **)ret_p);
-+}
-+
-+static acpi_status acpi_bus_check_add_2(acpi_handle handle, u32 lvl_not_used,
-+					void *not_used, void **ret_p)
-+{
-+	return acpi_bus_check_add(handle, false, (struct acpi_device **)ret_p);
-+}
-+
- static void acpi_default_enumeration(struct acpi_device *device)
- {
- 	/*
-@@ -1999,12 +2032,16 @@ static int acpi_scan_attach_handler(stru
- 	return ret;
- }
- 
--static void acpi_bus_attach(struct acpi_device *device)
-+static void acpi_bus_attach(struct acpi_device *device, bool first_pass)
- {
- 	struct acpi_device *child;
-+	bool skip = !first_pass && device->flags.visited;
- 	acpi_handle ejd;
- 	int ret;
- 
-+	if (skip)
-+		goto ok;
-+
- 	if (ACPI_SUCCESS(acpi_bus_get_ejd(device->handle, &ejd)))
- 		register_dock_dependent_device(device, ejd);
- 
-@@ -2051,9 +2088,9 @@ static void acpi_bus_attach(struct acpi_
- 
-  ok:
- 	list_for_each_entry(child, &device->children, node)
--		acpi_bus_attach(child);
-+		acpi_bus_attach(child, first_pass);
- 
--	if (device->handler && device->handler->hotplug.notify_online)
-+	if (!skip && device->handler && device->handler->hotplug.notify_online)
- 		device->handler->hotplug.notify_online(device);
- }
- 
-@@ -2071,7 +2108,8 @@ void acpi_walk_dep_device_list(acpi_hand
- 
- 			adev->dep_unmet--;
- 			if (!adev->dep_unmet)
--				acpi_bus_attach(adev);
-+				acpi_bus_attach(adev, true);
-+
- 			list_del(&dep->node);
- 			kfree(dep);
- 		}
-@@ -2096,17 +2134,32 @@ EXPORT_SYMBOL_GPL(acpi_walk_dep_device_l
-  */
- int acpi_bus_scan(acpi_handle handle)
- {
--	void *device = NULL;
-+	struct acpi_device *device = NULL;
- 
--	if (ACPI_SUCCESS(acpi_bus_check_add(handle, 0, NULL, &device)))
-+	/* Pass 1: Avoid enumerating devices with missing dependencies. */
-+
-+	if (ACPI_SUCCESS(acpi_bus_check_add(handle, true, &device)))
- 		acpi_walk_namespace(ACPI_TYPE_ANY, handle, ACPI_UINT32_MAX,
--				    acpi_bus_check_add, NULL, NULL, &device);
-+				    acpi_bus_check_add_1, NULL, NULL,
-+				    (void **)&device);
- 
--	if (device) {
--		acpi_bus_attach(device);
--		return 0;
--	}
--	return -ENODEV;
-+	if (!device)
-+		return -ENODEV;
-+
-+	acpi_bus_attach(device, true);
-+
-+	/* Pass 2: Enumerate all of the remaining devices. */
-+
-+	device = NULL;
-+
-+	if (ACPI_SUCCESS(acpi_bus_check_add(handle, false, &device)))
-+		acpi_walk_namespace(ACPI_TYPE_ANY, handle, ACPI_UINT32_MAX,
-+				    acpi_bus_check_add_2, NULL, NULL,
-+				    (void **)&device);
-+
-+	acpi_bus_attach(device, false);
-+
-+	return 0;
- }
- EXPORT_SYMBOL(acpi_bus_scan);
- 
-
-
-
+--Sig_/S+vopx2qEjnH6_YV4gZaT=a--
