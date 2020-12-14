@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1102D96DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C33B2D96EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437257AbgLNK7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 05:59:17 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:54452 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407369AbgLNK5r (ORCPT
+        id S2404511AbgLNLEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 06:04:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727892AbgLNLD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 05:57:47 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R861e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0UIa9lBF_1607943417;
-Received: from localhost(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0UIa9lBF_1607943417)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 14 Dec 2020 18:57:03 +0800
-From:   Hui Zhu <teawater@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Hui Zhu <teawaterz@linux.alibaba.com>
-Subject: [PATCH] samples/bpf/Makefile: Create tools/testing/selftests/bpf dir
-Date:   Mon, 14 Dec 2020 18:56:54 +0800
-Message-Id: <20201214105654.5048-1-teawater@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 14 Dec 2020 06:03:57 -0500
+Received: from faui03.informatik.uni-erlangen.de (faui03.informatik.uni-erlangen.de [IPv6:2001:638:a000:4130:131:188:30:103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9478CC061793;
+        Mon, 14 Dec 2020 03:03:03 -0800 (PST)
+Received: from cipterm0.informatik.uni-erlangen.de (cipterm0.cip.cs.fau.de [IPv6:2001:638:a000:4130:131:188:30:90])
+        by faui03.informatik.uni-erlangen.de (Postfix) with ESMTP id 78D9F240B57;
+        Mon, 14 Dec 2020 12:02:17 +0100 (CET)
+Received: by cipterm0.informatik.uni-erlangen.de (Postfix, from userid 67858)
+        id 71B223280146; Mon, 14 Dec 2020 12:02:17 +0100 (CET)
+From:   Philipp Gerlesberger <Philipp.Gerlesberger@fau.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Philipp Gerlesberger <Philipp.Gerlesberger@fau.de>,
+        ij72uhux@stud.informatik.uni-erlangen.de,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@i4.cs.fau.de, gregkh@linuxfoundation.org,
+        sakari.ailus@linux.intel.com, mchehab@kernel.org
+Subject: [PATCH v2 00/12] media: atomisp: Codingstyle
+Date:   Mon, 14 Dec 2020 12:01:44 +0100
+Message-Id: <20201214110156.6152-1-Philipp.Gerlesberger@fau.de>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Zhu <teawaterz@linux.alibaba.com>
+Hello!
 
-Got an error when I built samples/bpf in a separate directory:
-make O=../bk/ defconfig
-make -j64 bzImage
-make headers_install
-make V=1 M=samples/bpf
-...
-...
-make -C /home/teawater/kernel/linux/samples/bpf/../..//tools/build
-CFLAGS= LDFLAGS= fixdep
-make -f
-/home/teawater/kernel/linux/samples/bpf/../..//tools/build/Makefile.build
-dir=. obj=fixdep
-make all_cmd
-Warning: Kernel ABI header at 'tools/include/uapi/linux/netlink.h'
-differs from latest version at 'include/uapi/linux/netlink.h'
-Warning: Kernel ABI header at 'tools/include/uapi/linux/if_link.h'
-differs from latest version at 'include/uapi/linux/if_link.h'
-  gcc
--Wp,-MD,samples/bpf/../../tools/testing/selftests/bpf/.cgroup_helpers.o.d
--Wall -O2 -Wmissing-prototypes -Wstrict-prototypes -I./usr/include
--I/home/teawater/kernel/linux/tools/testing/selftests/bpf/
--I/home/teawater/kernel/linux/tools/lib/
--I/home/teawater/kernel/linux/tools/include
--I/home/teawater/kernel/linux/tools/perf -DHAVE_ATTR_TEST=0  -c -o
-samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.o
-/home/teawater/kernel/linux/samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.c
-/home/teawater/kernel/linux/samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.c:315:1:
-fatal error: opening dependency file
-samples/bpf/../../tools/testing/selftests/bpf/.cgroup_helpers.o.d: No
-such file or directory
+This series fix some codingstyle errors in the files
+rmgr_vbuf.c, ia_css_rmgr.h, timer.c, spctrl.c and queue.c
+in the drivers/staging/media area.
 
-ls -al samples/bpf/../../tools/testing/selftests/bpf/
-ls: cannot access 'samples/bpf/../../tools/testing/selftests/bpf/': No
-such file or directory
+V2:
+[Patch 1/12] Also remove NULL, 0 and false members to make it
+	     C99 standard comform.
 
-There is no samples/bpf/../../tools/testing/selftests/bpf/ causing a
-compilation error.
+[Patch 6/12] Checkpatch throws COMPLEX_MACRO Error. Handle that
+	     error by deleting these defines.
 
-This commit add a "make -p" before build files in
-samples/bpf/../../tools/testing/selftests/bpf/ to handle the issue.
+The other patches are the same. 
 
-Signed-off-by: Hui Zhu <teawaterz@linux.alibaba.com>
----
- samples/bpf/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+Best regards
+Philipp
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index aeebf5d12f32..5b940eedf2e8 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -262,6 +262,7 @@ clean:
- 
- $(LIBBPF): FORCE
- # Fix up variables inherited from Kbuild that tools/ build system won't like
-+	mkdir -p $(obj)/../../tools/testing/selftests/bpf/
- 	$(MAKE) -C $(dir $@) RM='rm -rf' EXTRA_CFLAGS="$(TPROGS_CFLAGS)" \
- 		LDFLAGS=$(TPROGS_LDFLAGS) srctree=$(BPF_SAMPLES_PATH)/../../ O=
- 
+----------------------------------------------------------------------
+  media: atomisp: Convert comments to C99 initializers
+  media: atomisp: Fix Block Comments
+  media: atomisp: Fix EMBEDDED_FUNCTION_NAME warning
+  media: atomisp: Fix OPEN_ENDED_LINE
+  media: atomisp: Fix overlong line
+  media: atomisp: Remove defines
+  media: atomisp: Fix funciton decleration
+  media: atomisp: Delete braces
+  media: atomisp: Fix PARENTHESIS_ALIGNMENT
+  media: atomisp: Fix BLOCK_COMMENT_STYLE
+  media: atomisp: Write function decleration in one line
+  media: atomisp: Fix LOGICAL_CONTINUATIONS
+
+ .../atomisp/pci/runtime/queue/src/queue.c     | 48 +++++--------------
+ .../pci/runtime/rmgr/interface/ia_css_rmgr.h  |  5 +-
+ .../atomisp/pci/runtime/rmgr/src/rmgr_vbuf.c  | 41 ++++++----------
+ .../atomisp/pci/runtime/spctrl/src/spctrl.c   |  7 ++-
+ .../atomisp/pci/runtime/timer/src/timer.c     |  7 +--
+ 5 files changed, 33 insertions(+), 75 deletions(-)
+
 -- 
-2.17.1
+2.20.1
 
