@@ -2,198 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449A92D9796
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 357D02D97A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:47:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438378AbgLNLnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 06:43:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33866 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437909AbgLNLmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:42:46 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8ADACAC10;
-        Mon, 14 Dec 2020 11:42:04 +0000 (UTC)
-Date:   Mon, 14 Dec 2020 12:42:00 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/SGX for v5.11
-Message-ID: <20201214114200.GD26358@zn.tnic>
+        id S2407748AbgLNLqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 06:46:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407656AbgLNLqo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 06:46:44 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8D1C0613CF;
+        Mon, 14 Dec 2020 03:46:03 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id z3so11598333qtw.9;
+        Mon, 14 Dec 2020 03:46:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cFpqITYOXCkjCo14SrWlF+fIUrrOdHtQXzZ7bCjs+sk=;
+        b=L4+xrczYAz+d6QuRe9rN7VKfaESVqwYUJn5lQOzM2yqiL8jFAB8bNHgxedgD05OSHH
+         iB2S3GY7cAACZ0kdSSATwb5G+mVQ9/HERuTu/cq8UJYotX0rR2DJVs072U/BXwB5qlzH
+         JP6DPM3tPeMonC05yyYQg9E5m54sC0dVbnUzcsyYjP/bVFWMentoMP3Md9LfG5GDTVlf
+         fQEZyljnauGKIzPrtFtpxQXlXHiQwN9PpEXNKj5jaHAAJ2CqofRKcl3iizMY8EISX6CI
+         xSfw3KqQPKWxuIchke2Fy4YwRFv1zX5COVPxh/wcVP6U/2tH4Qdm5g9CDvg3YIdQmLlT
+         6F4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cFpqITYOXCkjCo14SrWlF+fIUrrOdHtQXzZ7bCjs+sk=;
+        b=KNt1rgZ3C3xpgFx+YNyC4li09MSxZ1V2NwVPiu59GgnxVj422TNbdtICTur+3HeBvB
+         RnBC3KvEwUlY8yNqOnFV3TxecC1jCvhbmJWB5kXjGHhA0TW7PztyDV5GhaFPwaXvLft5
+         4bVcFbwotDkUkpYx8JDr60iqCJIiSxKsd4dW6zKZ6bVlBP4NxwUSrD9r6v2xeDVgzbO+
+         ChuOqnGwmguUoP5th/ajGhGQaW1NqnH8WtnKF3YK+7gprzGNZy03SF6S3Gc9HBhr9wun
+         1UlNtyiCmoVUSKCNQ2QNCJnZ8NFDFQUUUkrhYGMnt4yhVwGq2B32KDDNE3Hs1bliPQcK
+         lPIQ==
+X-Gm-Message-State: AOAM5321W3IazwOyh/2vz2JSgBZnYA+xBl9XHIwcpIGfyRl9gF2EcKSW
+        UYu+5kOmGPl9s2eqesMQDDk=
+X-Google-Smtp-Source: ABdhPJwIaZWlVJcOm74x87CmzZkfPq/479y3kedp+WhNNky6z5+UhoxmlbLfJJVHrjVXpSO2s8setw==
+X-Received: by 2002:aed:3482:: with SMTP id x2mr31980781qtd.368.1607946363126;
+        Mon, 14 Dec 2020 03:46:03 -0800 (PST)
+Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id c2sm15053805qke.109.2020.12.14.03.46.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 03:46:02 -0800 (PST)
+Date:   Mon, 14 Dec 2020 06:46:00 -0500
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     linux-iio@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] counter:ti-eqep: remove floor
+Message-ID: <X9dQeKy/Ol4d+3iM@shinobu>
+References: <20201214000927.1793062-1-david@lechnology.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1/RN+4jYLU6AmmqK"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201214000927.1793062-1-david@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-please pull the Intel Software Guard eXtensions enablement. This has
-been long in the making, we were one revision number short of 42. :)
+--1/RN+4jYLU6AmmqK
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thx.
+On Sun, Dec 13, 2020 at 06:09:27PM -0600, David Lechner wrote:
+> The hardware doesn't support this. QPOSINIT is an initialization value
+> that is triggered by other things. When the counter overflows, it
+> always wraps around to zero.
+>=20
+> Fixes: f213729f6796 "counter: new TI eQEP driver"
+> Signed-off-by: David Lechner <david@lechnology.com>
 
----
+Is the QPOSINIT preprocessor define needed at all anymore, or should it als=
+o be
+removed?
 
-The following changes since commit 09162bc32c880a791c6c0668ce0745cf7958f576:
+Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 
-  Linux 5.10-rc4 (2020-11-15 16:44:31 -0800)
+> ---
+>  drivers/counter/ti-eqep.c | 35 -----------------------------------
+>  1 file changed, 35 deletions(-)
+>=20
+> diff --git a/drivers/counter/ti-eqep.c b/drivers/counter/ti-eqep.c
+> index a60aee1a1a29..65df9ef5b5bc 100644
+> --- a/drivers/counter/ti-eqep.c
+> +++ b/drivers/counter/ti-eqep.c
+> @@ -235,36 +235,6 @@ static ssize_t ti_eqep_position_ceiling_write(struct=
+ counter_device *counter,
+>  	return len;
+>  }
+> =20
+> -static ssize_t ti_eqep_position_floor_read(struct counter_device *counte=
+r,
+> -					   struct counter_count *count,
+> -					   void *ext_priv, char *buf)
+> -{
+> -	struct ti_eqep_cnt *priv =3D counter->priv;
+> -	u32 qposinit;
+> -
+> -	regmap_read(priv->regmap32, QPOSINIT, &qposinit);
+> -
+> -	return sprintf(buf, "%u\n", qposinit);
+> -}
+> -
+> -static ssize_t ti_eqep_position_floor_write(struct counter_device *count=
+er,
+> -					    struct counter_count *count,
+> -					    void *ext_priv, const char *buf,
+> -					    size_t len)
+> -{
+> -	struct ti_eqep_cnt *priv =3D counter->priv;
+> -	int err;
+> -	u32 res;
+> -
+> -	err =3D kstrtouint(buf, 0, &res);
+> -	if (err < 0)
+> -		return err;
+> -
+> -	regmap_write(priv->regmap32, QPOSINIT, res);
+> -
+> -	return len;
+> -}
+> -
+>  static ssize_t ti_eqep_position_enable_read(struct counter_device *count=
+er,
+>  					    struct counter_count *count,
+>  					    void *ext_priv, char *buf)
+> @@ -301,11 +271,6 @@ static struct counter_count_ext ti_eqep_position_ext=
+[] =3D {
+>  		.read	=3D ti_eqep_position_ceiling_read,
+>  		.write	=3D ti_eqep_position_ceiling_write,
+>  	},
+> -	{
+> -		.name	=3D "floor",
+> -		.read	=3D ti_eqep_position_floor_read,
+> -		.write	=3D ti_eqep_position_floor_write,
+> -	},
+>  	{
+>  		.name	=3D "enable",
+>  		.read	=3D ti_eqep_position_enable_read,
+> --=20
+> 2.25.1
+>=20
 
-are available in the Git repository at:
+--1/RN+4jYLU6AmmqK
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_sgx_for_v5.11
+-----BEGIN PGP SIGNATURE-----
 
-for you to fetch changes up to a4b9c48b96517ff4780b22a784e7537eac5dc21b:
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl/XUG0ACgkQhvpINdm7
+VJK87hAA07/kdR5gJXf/BTakREdhq1vWdNPv0TRGCdYMUnh/ruc+bJIe3zzfFDXI
+OjNkRKS39aE6rWn2sKt59kNMujfddcVJZQehj3NBMSfjCe1OZ8Sk6T/N30cEOs8m
+rV/tkcVnP6s9OlizKQfLKNvi3tkQzaIYTP6EJ4SIYJ0VJOJ8I+xjk8Z1mek6HXYt
+lnLCuKqkEF63F+0045MSxVy+UsG4ZsHMhL7JZ293mxdBgzpaw90fS1aUpEzE62Tj
+dEB99h5yUb+K9GzhcuNHFVUMtAEOcREjSHHNWxX2C9Uux+pnYJ5hLz3rC8CkN0K2
+05yNxog/wRZZEozAaFJhJsVq7kGicvsId5mRKUZwaGML9yW4P2scsy8nYLhvBSgm
+0ZeuWpRE3a3IhWx2FJKttJi2nR46NP7ppDDbz/ZPrrkLfyn/mXTfdExwQEIjh8oU
+SsnF5uGidGmj9YPBtsRbNQbhEyN9JwDElWFHFJGWkUAmENEBARa3tH5NT6mkcn6p
+AMJjUHt89K1DfhhOnhUXC3QapPZPAwv3L37352H4XnHLZim/uIQcL+xILEiuu8bd
+0BH+9ohl6ZQEzbyLfm5PWQPsyFYCsfP24AKRNdWvDQldM/JkSJ5zsgCKg2TfyBPt
+2Gf4Dd/DmX8QlrA4dAxCeBGs29zlcsMy5rQxBa/5yhF8Nd/cQ+Q=
+=QubZ
+-----END PGP SIGNATURE-----
 
-  x86/sgx: Return -EINVAL on a zero length buffer in sgx_ioc_enclave_add_pages() (2020-12-03 19:54:40 +0100)
-
-----------------------------------------------------------------
-"Intel SGX is new hardware functionality that can be used by
-applications to populate protected regions of user code and data called
-enclaves. Once activated, the new hardware protects enclave code and
-data from outside access and modification.
-
-Enclaves provide a place to store secrets and process data with those
-secrets. SGX has been used, for example, to decrypt video without
-exposing the decryption keys to nosy debuggers that might be used to
-subvert DRM. Software has generally been rewritten specifically to
-run in enclaves, but there are also projects that try to run limited
-unmodified software in enclaves."
-
-Most of the functionality is concentrated into arch/x86/kernel/cpu/sgx/
-except the addition of a new mprotect() hook to control enclave page
-permissions and support for vDSO exceptions fixup which will is used by
-SGX enclaves.
-
-All this work by Sean Christopherson, Jarkko Sakkinen and many others.
-
-----------------------------------------------------------------
-Borislav Petkov (1):
-      x86/sgx: Fix sgx_ioc_enclave_provision() kernel-doc comment
-
-Dave Hansen (1):
-      x86/sgx: Clarify 'laundry_list' locking
-
-Jarkko Sakkinen (17):
-      x86/sgx: Add SGX architectural data structures
-      x86/sgx: Add wrappers for ENCLS functions
-      x86/cpu/intel: Add a nosgx kernel parameter
-      x86/sgx: Add SGX page allocator functions
-      x86/sgx: Add an SGX misc driver interface
-      x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
-      x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
-      x86/sgx: Add SGX_IOC_ENCLAVE_INIT
-      x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION
-      selftests/x86: Add a selftest for SGX
-      x86/sgx: Add a page reclaimer
-      x86/sgx: Add ptrace() support for the SGX driver
-      Documentation/x86: Document SGX kernel architecture
-      x86/sgx: Update MAINTAINERS
-      selftests/sgx: Use a statically generated 3072-bit RSA key
-      x86/sgx: Return -ERESTARTSYS in sgx_ioc_enclave_add_pages()
-      x86/sgx: Return -EINVAL on a zero length buffer in sgx_ioc_enclave_add_pages()
-
-Mauro Carvalho Chehab (1):
-      x86/sgx: Fix a typo in kernel-doc markup
-
-Sean Christopherson (10):
-      x86/cpufeatures: Add Intel SGX hardware bits
-      x86/{cpufeatures,msr}: Add Intel SGX Launch Control hardware bits
-      x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections
-      x86/mm: Signal SIGSEGV with PF_SGX
-      x86/cpu/intel: Detect SGX support
-      mm: Add 'mprotect' hook to struct vm_operations_struct
-      x86/vdso: Add support for exception fixup in vDSO functions
-      x86/fault: Add a helper function to sanitize error code
-      x86/traps: Attempt to fixup exceptions in vDSO before signaling
-      x86/vdso: Implement a vDSO for Intel SGX enclave call
-
- Documentation/admin-guide/kernel-parameters.txt    |   2 +
- Documentation/userspace-api/ioctl/ioctl-number.rst |   1 +
- Documentation/x86/index.rst                        |   1 +
- Documentation/x86/sgx.rst                          | 211 ++++++
- MAINTAINERS                                        |  13 +
- arch/x86/Kconfig                                   |  17 +
- arch/x86/entry/vdso/Makefile                       |   8 +-
- arch/x86/entry/vdso/extable.c                      |  46 ++
- arch/x86/entry/vdso/extable.h                      |  28 +
- arch/x86/entry/vdso/vdso-layout.lds.S              |   9 +-
- arch/x86/entry/vdso/vdso.lds.S                     |   1 +
- arch/x86/entry/vdso/vdso2c.h                       |  50 +-
- arch/x86/entry/vdso/vsgx.S                         | 151 +++++
- arch/x86/include/asm/cpufeatures.h                 |   2 +
- arch/x86/include/asm/disabled-features.h           |   8 +-
- arch/x86/include/asm/enclu.h                       |   9 +
- arch/x86/include/asm/msr-index.h                   |   8 +
- arch/x86/include/asm/trap_pf.h                     |   2 +
- arch/x86/include/asm/vdso.h                        |   5 +
- arch/x86/include/uapi/asm/sgx.h                    | 168 +++++
- arch/x86/kernel/cpu/Makefile                       |   1 +
- arch/x86/kernel/cpu/feat_ctl.c                     |  38 +-
- arch/x86/kernel/cpu/sgx/Makefile                   |   5 +
- arch/x86/kernel/cpu/sgx/arch.h                     | 338 ++++++++++
- arch/x86/kernel/cpu/sgx/driver.c                   | 194 ++++++
- arch/x86/kernel/cpu/sgx/driver.h                   |  29 +
- arch/x86/kernel/cpu/sgx/encl.c                     | 740 +++++++++++++++++++++
- arch/x86/kernel/cpu/sgx/encl.h                     | 119 ++++
- arch/x86/kernel/cpu/sgx/encls.h                    | 231 +++++++
- arch/x86/kernel/cpu/sgx/ioctl.c                    | 716 ++++++++++++++++++++
- arch/x86/kernel/cpu/sgx/main.c                     | 733 ++++++++++++++++++++
- arch/x86/kernel/cpu/sgx/sgx.h                      |  86 +++
- arch/x86/kernel/traps.c                            |  10 +
- arch/x86/mm/fault.c                                |  45 +-
- include/linux/mm.h                                 |   7 +
- mm/mprotect.c                                      |   7 +
- tools/testing/selftests/Makefile                   |   1 +
- tools/testing/selftests/sgx/.gitignore             |   2 +
- tools/testing/selftests/sgx/Makefile               |  57 ++
- tools/testing/selftests/sgx/call.S                 |  44 ++
- tools/testing/selftests/sgx/defines.h              |  21 +
- tools/testing/selftests/sgx/load.c                 | 277 ++++++++
- tools/testing/selftests/sgx/main.c                 | 246 +++++++
- tools/testing/selftests/sgx/main.h                 |  41 ++
- tools/testing/selftests/sgx/sign_key.S             |  12 +
- tools/testing/selftests/sgx/sign_key.pem           |  39 ++
- tools/testing/selftests/sgx/sigstruct.c            | 381 +++++++++++
- tools/testing/selftests/sgx/test_encl.c            |  20 +
- tools/testing/selftests/sgx/test_encl.lds          |  40 ++
- tools/testing/selftests/sgx/test_encl_bootstrap.S  |  89 +++
- 50 files changed, 5290 insertions(+), 19 deletions(-)
- create mode 100644 Documentation/x86/sgx.rst
- create mode 100644 arch/x86/entry/vdso/extable.c
- create mode 100644 arch/x86/entry/vdso/extable.h
- create mode 100644 arch/x86/entry/vdso/vsgx.S
- create mode 100644 arch/x86/include/asm/enclu.h
- create mode 100644 arch/x86/include/uapi/asm/sgx.h
- create mode 100644 arch/x86/kernel/cpu/sgx/Makefile
- create mode 100644 arch/x86/kernel/cpu/sgx/arch.h
- create mode 100644 arch/x86/kernel/cpu/sgx/driver.c
- create mode 100644 arch/x86/kernel/cpu/sgx/driver.h
- create mode 100644 arch/x86/kernel/cpu/sgx/encl.c
- create mode 100644 arch/x86/kernel/cpu/sgx/encl.h
- create mode 100644 arch/x86/kernel/cpu/sgx/encls.h
- create mode 100644 arch/x86/kernel/cpu/sgx/ioctl.c
- create mode 100644 arch/x86/kernel/cpu/sgx/main.c
- create mode 100644 arch/x86/kernel/cpu/sgx/sgx.h
- create mode 100644 tools/testing/selftests/sgx/.gitignore
- create mode 100644 tools/testing/selftests/sgx/Makefile
- create mode 100644 tools/testing/selftests/sgx/call.S
- create mode 100644 tools/testing/selftests/sgx/defines.h
- create mode 100644 tools/testing/selftests/sgx/load.c
- create mode 100644 tools/testing/selftests/sgx/main.c
- create mode 100644 tools/testing/selftests/sgx/main.h
- create mode 100644 tools/testing/selftests/sgx/sign_key.S
- create mode 100644 tools/testing/selftests/sgx/sign_key.pem
- create mode 100644 tools/testing/selftests/sgx/sigstruct.c
- create mode 100644 tools/testing/selftests/sgx/test_encl.c
- create mode 100644 tools/testing/selftests/sgx/test_encl.lds
- create mode 100644 tools/testing/selftests/sgx/test_encl_bootstrap.S
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+--1/RN+4jYLU6AmmqK--
