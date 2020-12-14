@@ -2,352 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A975A2D974D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CAE2D974F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437675AbgLNLU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 06:20:58 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2458 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2437066AbgLNLUb (ORCPT
+        id S1729840AbgLNLVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 06:21:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437219AbgLNLUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:20:31 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BEB2Nbb114924;
-        Mon, 14 Dec 2020 06:19:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : mime-version : content-type; s=pp1;
- bh=epD1OkkYVHVoRRwlByD37c3vMErXzXSpOwrIvkR4rIg=;
- b=GtacolhJJnTXy+a+4FkDEfn19XJwZi+37QUwYg0XhnVOe741whldCFMJ6bfrFNcNzAEP
- IloYlVXvg0fpPpboee59f3giC3WDqYHNBetCTYzi7IcnF1v1Q74oT6CBs2c9/fnK9Isj
- jKZ4TiHEdnopoKNvgXmosf6k77I0RSXS+Xt2qZqVVf9Wi3RHHqlwbzQVH0I9+7XBpJnU
- 1Ft+6KXdvRVSiCaxJEzaDPCQCck1hrFtqY+5cRmNjHXJ1ebwTZTXKCFP1JHUpFZ7rqj7
- n8yDTH//MF7cG2JKZiiXwG8C5h1r2hXSqH0IlbHnmgMbIrKLdCpKThAvAlyxyj1rAV1N +g== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35e2s57gy1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 06:19:46 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BEBH09Q031798;
-        Mon, 14 Dec 2020 11:19:44 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03fra.de.ibm.com with ESMTP id 35cng8b39h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 11:19:43 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BEBIPSC33358258
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Dec 2020 11:18:25 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B351311C050;
-        Mon, 14 Dec 2020 11:18:25 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5DC0A11C04C;
-        Mon, 14 Dec 2020 11:18:25 +0000 (GMT)
-Received: from osiris (unknown [9.171.56.22])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 14 Dec 2020 11:18:25 +0000 (GMT)
-Date:   Mon, 14 Dec 2020 12:18:23 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] s390 updates for 5.11 merge window
-Message-ID: <20201214111823.GA5573@osiris>
+        Mon, 14 Dec 2020 06:20:50 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1076DC0613CF;
+        Mon, 14 Dec 2020 03:20:10 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id z12so6112108pjn.1;
+        Mon, 14 Dec 2020 03:20:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ETJkm2h9mUdQRDtcG4X/2MD3yrQCIlxA3Hfl870jwj4=;
+        b=r25mGmNkMaVymoukJdYxFlGJGfK3XkU1Ny6frMPmg1Fdb4iaEVZVO5QJxKuLBsNJCd
+         9XIjrmInI0sKFHvqhJeTasbCPeKoST0dYXVhh4kAwaiDpK3laTHnDD+5gjnjupU8Mzwe
+         JLq3IWBkN+fpgnsUsbkaGyuzOcZhMzCkaWWU0/f/zXhUnxzXpa89XE5mmqtgUXmywH2O
+         1ElETGTCZHt/SjBNRVeHXfxYwdu5YNvQMXijPywj125EwbqRD7balLvykrWwlfNoQg6j
+         sQyhCi1yW6GLYyDZA2T4UUiKctuaj0MJDVQL9YFMTS/kBY2AQQGLnYxqG9bbWAIj9TUP
+         KShg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ETJkm2h9mUdQRDtcG4X/2MD3yrQCIlxA3Hfl870jwj4=;
+        b=m4EH+dIxDKEWHj/OugtKAY/Z4bfqdtDUHusT6fVYTtMaJZm2TTu6ECsz4csH9x2ff/
+         B4k/+kw7fxl7KsWwL83QjNsil1ayHDtRZMwfXM4g80y1+z6aVQtcMSiyot1sWQ1fDYBp
+         vkcCcMquiRUtvUu8VjNyBmf+AWKxga+z+8IMtogATNPNiFmiWdPcfmHf9b2rLfeQUDZM
+         h3k5lRT4iK/1athnIv4sqP8GzyXKllvoTO3t1ZoEaO5sIr7aEwkEzu4qEAJsNEGjmdv0
+         vz3oKYrwyPh619W2BQFYSqZDSUBp7noMR9p0Qxn9oq/ISTfhYLXBi0jidPU+bM2sq4CB
+         Ga0Q==
+X-Gm-Message-State: AOAM532V3EMtO6zpD+iXij95fSxEli161w13K7lwo6O8W3e0D0Z/A7t+
+        otxXp8+WkYT5u1jGgDxw9dT6nz6FkrgRRhTKJyo=
+X-Google-Smtp-Source: ABdhPJxx632u2IOxtU3Khq37YXRxCyhybqvc7sZw19fW3k6MMlCDyqHRfIJROCTqqmNg6nOj9Dnnq1qLiQh0tpkR8Rw=
+X-Received: by 2002:a17:90b:a17:: with SMTP id gg23mr25511515pjb.129.1607944809447;
+ Mon, 14 Dec 2020 03:20:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-14_04:2020-12-11,2020-12-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- priorityscore=1501 impostorscore=0 bulkscore=0 clxscore=1015 phishscore=0
- lowpriorityscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012140076
+References: <20201211190335.16501-1-rdunlap@infradead.org> <CAHp75Vcckb5NA=tc5s5p_qzYE2qhJOT0vhCtfKhT_eqZe+PgXw@mail.gmail.com>
+ <ec8e703f-e1ea-1253-edc9-311f0ee3e8fd@infradead.org> <CAHp75Vf-QcdL+FOd=8fUUQ0+ORC-RVKG+3Yqrar1J7wZMSDF+A@mail.gmail.com>
+ <3d5a5c8f-4bb1-6205-ae76-354473d59a18@infradead.org>
+In-Reply-To: <3d5a5c8f-4bb1-6205-ae76-354473d59a18@infradead.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 14 Dec 2020 13:19:52 +0200
+Message-ID: <CAHp75Vc3_ye3Ph0uVYdcsKr0QY5RGSaHmCgU1A2q-U2GCAafsQ@mail.gmail.com>
+Subject: Re: [PATCH -next] platform: surface: fix non-PM_SLEEP build warnings
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Dec 14, 2020 at 2:53 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 12/12/20 11:07 AM, Andy Shevchenko wrote:
+> > On Sat, Dec 12, 2020 at 7:05 PM Randy Dunlap <rdunlap@infradead.org> wrote:
 
-please pull s390 updates for the 5.11 merge window.
+...
 
-Note that the diffstat summary when merging this will look slightly different
-than the one generated by 'git request-pull' below:
+> > Here [1] is the rationale behind annotation vs. ifdeffery.
+> >
+> > [1]: https://lore.kernel.org/patchwork/patch/732981/
+> >
+> Thanks for the link.  I'll send a v2.
+>
+> Could we add that to the Linux BKP (Best Known Practices)
+> document?
 
-107 files changed, 1268 insertions(+), 1993 deletions(-)
+Perhaps. The author of that is Arnd, maybe he has something to add.
 
-This is because I had to merge our fixes branch, which contains commits which
-are already in 5.10, twice into our features branch to resolve dependencies.
-
-There is also "mm: simplify follow_pte{,pmd}" sitting in Andrew's patch
-collection which will break s390 compilation due to a conflict with a commit
-in this pull request.
-
-However Andrew already has a fixup patch for that, so I guess this problem will
-be solved "automatically". That is: Andrew handles it :)
-
-This is the fixup patch:
-https://www.ozlabs.org/~akpm/mmotm/broken-out/mm-simplify-follow_ptepmd-fix.patch
-
-Thanks,
-Heiko
-
-The following changes since commit f8394f232b1eab649ce2df5c5f15b0e528c92091:
-
-  Linux 5.10-rc3 (2020-11-08 16:10:16 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.11-1
-
-for you to fetch changes up to 343dbdb7cb8997a2cb0fd804d6563b8a6de8d49b:
-
-  s390/mm: add support to allocate gigantic hugepages using CMA (2020-12-10 21:11:01 +0100)
-
-----------------------------------------------------------------
-- Add support for the hugetlb_cma command line option to allocate gigantic
-  hugepages using CMA:
-
-- Add arch_get_random_long() support.
-
-- Add ap bus userspace notifications.
-
-- Increase default size of vmalloc area to 512GB and otherwise let it increase
-  dynamically by the size of physical memory. This should fix all occurrences
-  where the vmalloc area was not large enough.
-
-- Completely get rid of set_fs() (aka select SET_FS) and rework address space
-  handling while doing that; making address space handling much more simple.
-
-- Reimplement getcpu vdso syscall in C.
-
-- Add support for extended SCLP responses (> 4k). This allows e.g. to handle
-  also potential large system configurations.
-
-- Simplify KASAN by removing 3-level page table support and only supporting
-  4-levels from now on.
-
-- Improve debug-ability of the kernel decompressor code, which now prints also
-  stack traces and symbols in case of problems to the console.
-
-- Remove more power management leftovers.
-
-- Other various fixes and improvements all over the place.
-
-----------------------------------------------------------------
-Alexander Gordeev (2):
-      s390/vmem: remove redundant check
-      s390/vmem: make variable and function names consistent
-
-Christian Borntraeger (1):
-      s390/trng: set quality to 1024
-
-Daniel Vetter (1):
-      s390/pci: remove races against pte updates
-
-Gerald Schaefer (1):
-      s390/mm: add support to allocate gigantic hugepages using CMA
-
-Harald Freudenberger (3):
-      s390/ap: ap bus userspace notifications for some bus conditions
-      s390/zcrypt/pkey: introduce zcrypt_wait_api_operational() function
-      s390/crypto: add arch_get_random_long() support
-
-Heiko Carstens (15):
-      s390: fix system call exit path
-      s390/mm: extend default vmalloc area size to 512GB
-      s390/mm: let vmalloc area size depend on physical memory size
-      s390: update defconfigs
-      s390/mm: remove unused clear_user_asce()
-      Merge branch 'fixes' into features
-      s390: add separate program check exit path
-      init/Kconfig: make COMPILE_TEST depend on !S390
-      Merge branch 'fixes' into features
-      s390/mm: remove set_fs / rework address space handling
-      s390/mm: use invalid asce instead of kernel asce
-      s390/mm: add debug user asce support
-      s390/vdso: reimplement getcpu vdso syscall
-      s390/vdso: add missing prototypes for vdso functions
-      s390/mm: use invalid asce for user space when switching to init_mm
-
-Julian Wiedmann (3):
-      s390/prng: let misc_register() add the prng sysfs attributes
-      s390/stp: let subsys_system_register() sysfs attributes
-      s390/ap: let bus_register() add the AP bus sysfs attributes
-
-Mauro Carvalho Chehab (1):
-      s390/cio: fix kernel-doc markups in cio driver.
-
-Niklas Schnelle (2):
-      s390/pci: inform when missing required facilities
-      s390/Kconfig: default PCI_NR_FUNCTIONS to 512
-
-Philipp Rudo (2):
-      s390/kexec_file: fix diag308 subcode when loading crash kernel
-      s390/boot: add build-id to decompressor
-
-Qinglang Miao (1):
-      s390/cio: fix use-after-free in ccw_device_destroy_console
-
-Sumanth Korikkar (3):
-      s390/sclp: use memblock for early read cpu info
-      s390/sclp: avoid copy of sclp_info_sccb
-      s390/sclp: provide extended sccb support
-
-Sven Schnelle (4):
-      s390: fix fpu restore in entry.S
-      s390/idle: add missing mt_cycles calculation
-      s390/idle: fix accounting with machine checks
-      s390/smp: perform initial CPU reset also for SMT siblings
-
-Thomas Richter (1):
-      s390/cpum_sf.c: fix file permission for cpum_sfb_size
-
-Vasily Gorbik (18):
-      s390/head: set io/ext handlers to disabled wait
-      s390/udelay: make it work for the early code
-      s390: remove unused s390_base_ext_handler
-      s390/kasan: remove 3-level paging support
-      s390: make sure vmemmap is top region table entry aligned
-      s390/decompressor: fix build warning
-      s390/kasan: avoid confusing naming
-      s390/kasan: remove obvious parameter with the only possible value
-      s390/kasan: make kasan header self-contained
-      s390/kasan: move memory needs estimation into a function
-      s390/early: rewrite program parameter setup in C
-      s390: unify identity mapping limits handling
-      s390/ftrace: assume -mhotpatch or -mrecord-mcount always available
-      s390/decompressor: add decompressor_printk
-      s390/decompressor: correct some asm symbols annotations
-      s390/decompressor: add symbols support
-      s390/decompressor: add stacktrace support
-      s390/decompressor: print cmdline and BEAR on pgm_check
-
-Vineeth Vijayan (10):
-      s390/zfcp: remove pm support from zfcp driver
-      s390/dasd: remove unused pm related functions
-      s390: remove pm support from console drivers
-      s390/cio: remove pm support from eadm-sch drivers
-      s390/tape: remove unsupported PM functions
-      s390/vmur: remove unused pm related functions
-      s390/cio: remove pm support from chsc subchannel driver
-      s390/cio: remove pm support from IO subchannel drivers
-      s390/cio: remove pm support from css-bus driver
-      s390/cio: remove pm support from ccw bus driver
-
- arch/s390/Kconfig                           |   6 +-
- arch/s390/Kconfig.debug                     |   8 +
- arch/s390/Makefile                          |   2 +-
- arch/s390/boot/boot.h                       |  18 +-
- arch/s390/boot/compressed/.gitignore        |   1 +
- arch/s390/boot/compressed/Makefile          |  26 ++-
- arch/s390/boot/compressed/decompressor.h    |   4 +-
- arch/s390/boot/compressed/vmlinux.lds.S     |   9 +
- arch/s390/boot/head.S                       |  32 +++-
- arch/s390/boot/head_kdump.S                 |   8 +-
- arch/s390/boot/ipl_parm.c                   |  49 ++---
- arch/s390/boot/kaslr.c                      |  33 +---
- arch/s390/boot/mem_detect.c                 |  13 +-
- arch/s390/boot/pgm_check_info.c             | 224 +++++++++++++++--------
- arch/s390/boot/startup.c                    |  70 +++++++-
- arch/s390/configs/debug_defconfig           |   2 +
- arch/s390/crypto/arch_random.c              | 110 +++++++++++-
- arch/s390/crypto/prng.c                     |  53 ++----
- arch/s390/include/asm/archrandom.h          |   5 +-
- arch/s390/include/asm/ccwdev.h              |  12 +-
- arch/s390/include/asm/cio.h                 |   2 +-
- arch/s390/include/asm/delay.h               |   1 +
- arch/s390/include/asm/ftrace.h              |  31 ++--
- arch/s390/include/asm/futex.h               |   6 -
- arch/s390/include/asm/kasan.h               |  37 +++-
- arch/s390/include/asm/lowcore.h             |   4 +-
- arch/s390/include/asm/mmu_context.h         |  37 +---
- arch/s390/include/asm/pgtable.h             |  13 +-
- arch/s390/include/asm/processor.h           |  13 +-
- arch/s390/include/asm/ptrace.h              |   1 +
- arch/s390/include/asm/sclp.h                |   7 +-
- arch/s390/include/asm/setup.h               |   6 +-
- arch/s390/include/asm/thread_info.h         |   2 +-
- arch/s390/include/asm/timex.h               |   7 +
- arch/s390/include/asm/uaccess.h             |  22 +--
- arch/s390/include/asm/vdso.h                |  25 +--
- arch/s390/kernel/asm-offsets.c              |  17 +-
- arch/s390/kernel/base.S                     |  22 ---
- arch/s390/kernel/early.c                    |   4 +-
- arch/s390/kernel/entry.S                    | 145 ++++++++-------
- arch/s390/kernel/entry.h                    |   1 -
- arch/s390/kernel/ftrace.c                   |  63 ++-----
- arch/s390/kernel/head64.S                   |   7 +-
- arch/s390/kernel/mcount.S                   |   8 -
- arch/s390/kernel/perf_cpum_sf.c             |   2 +-
- arch/s390/kernel/process.c                  |  14 --
- arch/s390/kernel/setup.c                    |  50 +++---
- arch/s390/kernel/smp.c                      |  32 +---
- arch/s390/kernel/time.c                     |  44 ++---
- arch/s390/kernel/vdso.c                     |  58 +-----
- arch/s390/kernel/vdso64/Makefile            |   5 +-
- arch/s390/kernel/vdso64/getcpu.S            |  31 ----
- arch/s390/kernel/vdso64/getcpu.c            |  21 +++
- arch/s390/kernel/vdso64/vdso.h              |  14 ++
- arch/s390/kernel/vdso64/vdso64.lds.S        |   1 -
- arch/s390/kernel/vdso64/vdso64_generic.c    |   1 +
- arch/s390/kernel/vdso64/vdso_user_wrapper.S |   1 +
- arch/s390/kernel/vmlinux.lds.S              |   3 +-
- arch/s390/lib/delay.c                       |  13 ++
- arch/s390/lib/uaccess.c                     | 105 +++--------
- arch/s390/mm/dump_pagetables.c              |   2 +-
- arch/s390/mm/fault.c                        |  29 +--
- arch/s390/mm/init.c                         |  12 +-
- arch/s390/mm/kasan_init.c                   |  93 ++++------
- arch/s390/mm/pgalloc.c                      |  13 +-
- arch/s390/mm/vmem.c                         |  38 ++--
- arch/s390/pci/pci.c                         |   4 +-
- arch/s390/pci/pci_mmio.c                    | 104 ++++++-----
- arch/s390/purgatory/head.S                  |   9 +-
- drivers/char/hw_random/s390-trng.c          |   7 +-
- drivers/s390/block/dasd.c                   |  93 +---------
- drivers/s390/block/dasd_eckd.c              |  94 ----------
- drivers/s390/block/dasd_fba.c               |   3 -
- drivers/s390/block/dasd_int.h               |  10 --
- drivers/s390/char/con3215.c                 |  85 +--------
- drivers/s390/char/con3270.c                 |   1 -
- drivers/s390/char/raw3270.c                 |  78 +-------
- drivers/s390/char/raw3270.h                 |   1 -
- drivers/s390/char/sclp.h                    |  10 +-
- drivers/s390/char/sclp_cmd.c                |  16 +-
- drivers/s390/char/sclp_early.c              |  59 ++++---
- drivers/s390/char/sclp_early_core.c         |  13 +-
- drivers/s390/char/tape.h                    |   1 -
- drivers/s390/char/tape_34xx.c               |   1 -
- drivers/s390/char/tape_3590.c               |   1 -
- drivers/s390/char/tape_core.c               |  50 ------
- drivers/s390/char/vmur.c                    |  24 ---
- drivers/s390/cio/chsc_sch.c                 |  29 ---
- drivers/s390/cio/cmf.c                      |   5 -
- drivers/s390/cio/css.c                      | 130 +-------------
- drivers/s390/cio/css.h                      |  10 --
- drivers/s390/cio/device.c                   | 265 +---------------------------
- drivers/s390/cio/device.h                   |   1 -
- drivers/s390/cio/device_fsm.c               |   6 -
- drivers/s390/cio/eadm_sch.c                 |  13 --
- drivers/s390/cio/io_sch.h                   |   1 -
- drivers/s390/crypto/ap_bus.c                | 213 ++++++++++++++++++----
- drivers/s390/crypto/ap_bus.h                |  12 ++
- drivers/s390/crypto/pkey_api.c              |  15 ++
- drivers/s390/crypto/zcrypt_api.c            |  66 +++++++
- drivers/s390/crypto/zcrypt_api.h            |   2 +
- drivers/s390/scsi/zfcp_ccw.c                |  57 +-----
- drivers/s390/scsi/zfcp_dbf.c                |  25 ---
- drivers/s390/scsi/zfcp_def.h                |   1 -
- drivers/s390/scsi/zfcp_ext.h                |   1 -
- init/Kconfig                                |   2 +-
- lib/Kconfig.kasan                           |   9 -
- scripts/recordmcount.pl                     |   3 -
- 108 files changed, 1279 insertions(+), 1999 deletions(-)
- delete mode 100644 arch/s390/kernel/vdso64/getcpu.S
- create mode 100644 arch/s390/kernel/vdso64/getcpu.c
- create mode 100644 arch/s390/kernel/vdso64/vdso.h
+-- 
+With Best Regards,
+Andy Shevchenko
