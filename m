@@ -2,125 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D962DA45D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9149E2DA462
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727294AbgLNXrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 18:47:21 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:45813 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727300AbgLNXrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 18:47:09 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cvyhf0k3xz9sRK;
-        Tue, 15 Dec 2020 10:46:26 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607989587;
-        bh=+zLolRCIT4qpIfZSJNjSg4Xw4U1OY+fGl+wCDLOzkjg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cnKfDbOMM3mjDgexqgrr1T84BKlaYj6kaGYaJkGTotX1LnyZyGvv3/2as5aZ7/qNC
-         Iv9IL7pJtNm28c/DXH8TfeWvVxmASFpJITza20lNZu8U32BxtBD1GsPF9NI01xDpAe
-         y3vMuHAff5Zyn3ArYWSybNgkWQmCcazV7KHvHDfTH9VOpRxJd5r/brUoNGtDlPw5L8
-         MIZ4RV/N0Y3mq78q2VjnwEWK/rfV7iXxnNkHSEp1Odphs5cvn364b13NtJyE1hCfRK
-         K6uj2aCFB/5bNbZwVCDydR05sUvwJfw+PQ/G4Y1sW0bjHA3xcMaJysoNJxqnccLeUI
-         FR+PVB0YOR01g==
-Date:   Tue, 15 Dec 2020 10:46:24 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto List <linux-crypto@vger.kernel.org>
-Cc:     Eric Biggers <ebiggers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the ceph tree
-Message-ID: <20201215104624.603c75da@canb.auug.org.au>
+        id S1728634AbgLNXuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 18:50:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbgLNXuT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 18:50:19 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF37BC06179C;
+        Mon, 14 Dec 2020 15:49:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=vucjdQCLyAd3Q0AdZs6xHlknqACs9Tp5nQldv2CB1TU=; b=qIr4fpcCqB3zbFi3ySlzcZp0ZX
+        vD0DiVNJsS3n6o6Xl4V+jBmK1kPukdAjKZN62wYsz98OY2WGnDVcAeGcTgb8GIP9LAPhuOfG+I16J
+        YEnhGQjNWYf3UdkPzpdF5TbDMJPcHkGPxXArzYo/Qugm/RTSAqpBbZtiQbUHt7s0NlHae7qYBlVi3
+        CGzdUhoR6HmBuale0d4+F/kxOGff1i3/I4xwP14uo9EUke4r6564WhGx5t8pXvj0RGcpnphNVEaU+
+        WgdsfmFMolAR5Qk3paKUBOX6n65O8ZyXsXrA8i5BDGQeHGrivK5/NHwqH8HAMGepLSwG8KU+XtyNv
+        iO8kOqlA==;
+Received: from [2601:1c0:6280:3f0::1494]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1koxay-0008LS-K6; Mon, 14 Dec 2020 23:49:36 +0000
+Subject: Re: [PATCH -next] platform: surface: fix non-PM_SLEEP build warnings
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+References: <20201211190335.16501-1-rdunlap@infradead.org>
+ <CAHp75Vcckb5NA=tc5s5p_qzYE2qhJOT0vhCtfKhT_eqZe+PgXw@mail.gmail.com>
+ <ec8e703f-e1ea-1253-edc9-311f0ee3e8fd@infradead.org>
+ <CAHp75Vf-QcdL+FOd=8fUUQ0+ORC-RVKG+3Yqrar1J7wZMSDF+A@mail.gmail.com>
+ <3d5a5c8f-4bb1-6205-ae76-354473d59a18@infradead.org>
+ <CAHp75Vc3_ye3Ph0uVYdcsKr0QY5RGSaHmCgU1A2q-U2GCAafsQ@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0f07d6b8-6a28-ba31-9cfa-53abffb0c0ff@infradead.org>
+Date:   Mon, 14 Dec 2020 15:49:33 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ZCBAKa_hl0AZPkIEEKSZPi8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAHp75Vc3_ye3Ph0uVYdcsKr0QY5RGSaHmCgU1A2q-U2GCAafsQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ZCBAKa_hl0AZPkIEEKSZPi8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 12/14/20 3:19 AM, Andy Shevchenko wrote:
+> On Mon, Dec 14, 2020 at 2:53 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>> On 12/12/20 11:07 AM, Andy Shevchenko wrote:
+>>> On Sat, Dec 12, 2020 at 7:05 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+> 
+> ...
+> 
+>>> Here [1] is the rationale behind annotation vs. ifdeffery.
+>>>
+>>> [1]: https://lore.kernel.org/patchwork/patch/732981/
+>>>
+>> Thanks for the link.  I'll send a v2.
+>>
+>> Could we add that to the Linux BKP (Best Known Practices)
+>> document?
+> 
+> Perhaps. The author of that is Arnd, maybe he has something to add.
+> 
 
-Hi all,
+Where is it located?  My search foo could not find it.
 
-After merging the ceph tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
-
-net/ceph/messenger_v2.c:13:10: fatal error: crypto/sha.h: No such file or d=
-irectory
-   13 | #include <crypto/sha.h>
-      |          ^~~~~~~~~~~~~~
-
-Caused by commit
-
-  cd1a677cad99 ("libceph, ceph: implement msgr2.1 protocol (crc and secure =
-modes)")
-
-interacting with commit
-
-  a24d22b225ce ("crypto: sha - split sha.h into sha1.h and sha2.h")
-
-from the crypto tree (and now in Linus' tree).
-
-I have applied the following merge fix patch:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 15 Dec 2020 10:40:58 +1100
-Subject: [PATCH] fixup for "crypto: sha - split sha.h into sha1.h and sha2.=
-h"
-
-conflicting with
-
-"libceph, ceph: implement msgr2.1 protocol (crc and secure modes)"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- net/ceph/messenger_v2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/ceph/messenger_v2.c b/net/ceph/messenger_v2.c
-index 5e38c847317b..c1ebb2aa08b5 100644
---- a/net/ceph/messenger_v2.c
-+++ b/net/ceph/messenger_v2.c
-@@ -10,7 +10,7 @@
- #include <crypto/aead.h>
- #include <crypto/algapi.h>  /* for crypto_memneq() */
- #include <crypto/hash.h>
--#include <crypto/sha.h>
-+#include <crypto/sha2.h>
- #include <linux/bvec.h>
- #include <linux/crc32c.h>
- #include <linux/net.h>
---=20
-2.29.2
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ZCBAKa_hl0AZPkIEEKSZPi8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/X+VAACgkQAVBC80lX
-0Gz6mgf/XJ06Oo1tsJeiQa8ZiqjyuvOOt6mNgqoe6KyFrgKFDUS83t4TDbMiJlKa
-5O9bavpKw0Sv8SdmB2mo0T4OLqtOcjQQSxsGHOw3XO/KkKECIePOVg6rYHSdIC4+
-Dl19BKXNm+IbjgyYlnVAAYEbwZr0PVK9TzStMkRRcWgu6VK4rivprihIPTBbJL9W
-UWpQRMd3/jRNsj+HQTUq/1DM8DQ40EMNb7GNFoks2Ia4zAYSILa2796FCPHNI98q
-paBRqQtA9gfnAT8ZsAIDic5Ytn5L3vc+1yoVPBuOdBCbLjHuNREWqMy04dmfQj4K
-bBvkbY+IOK0aKX200DGPXS4P1G6uhQ==
-=FYzZ
------END PGP SIGNATURE-----
-
---Sig_/ZCBAKa_hl0AZPkIEEKSZPi8--
+thanks.
+-- 
+~Randy
