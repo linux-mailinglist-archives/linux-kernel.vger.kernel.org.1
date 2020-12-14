@@ -2,147 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA072D9C3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF802D9C44
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:15:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440176AbgLNQNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:13:01 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:17431 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440129AbgLNQMz (ORCPT
+        id S2501877AbgLNQOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 11:14:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439397AbgLNQMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:12:55 -0500
+        Mon, 14 Dec 2020 11:12:40 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC10C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:12:00 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id u12so16214192ilv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:12:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1607962374; x=1639498374;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zXFK+MoocoSV73CfHWbUW2KCkZcW9mL6RBYOgT9upFg=;
-  b=C5KZOmC9oy1NgaW0BsLMJ5LQIn5HujHWlzs2nHAyfgWmylFwT/O7iwvM
-   sbaNOR0/LpoT3Y3PQ3vTuy9nwM3OAk1Q8mabTEKB3L0AZZjzQtRVE2x4a
-   utk6fHSMXEuubrTHAci0Dr3y4vM+3y2hAi3pc1/YKxtAGpbMELA7I6UI7
-   4=;
-X-IronPort-AV: E=Sophos;i="5.78,420,1599523200"; 
-   d="scan'208";a="72496270"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 14 Dec 2020 16:12:06 +0000
-Received: from EX13D16EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id 22E13A19BB;
-        Mon, 14 Dec 2020 16:12:06 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com.com (10.43.160.21) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 14 Dec 2020 16:12:00 +0000
-From:   Andra Paraschiv <andraprs@amazon.com>
-To:     netdev <netdev@vger.kernel.org>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Duncan <davdunc@amazon.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Alexander Graf <graf@amazon.de>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: [PATCH net-next v4 5/5] af_vsock: Assign the vsock transport considering the vsock address flags
-Date:   Mon, 14 Dec 2020 18:11:22 +0200
-Message-ID: <20201214161122.37717-6-andraprs@amazon.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20201214161122.37717-1-andraprs@amazon.com>
-References: <20201214161122.37717-1-andraprs@amazon.com>
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZTXoG2qokwQOOAH/JCxYPppMWBym+BlZjzxgmZUXCVA=;
+        b=Q7xtmIHUjBmP9MyxpCti4E92ojbb6m/4TSlSAFG35wQi9sLBGWySchq6vG5SmeGrPx
+         HE8yxovn6hO08uhu6udFkC78WXrhouysC7GDBB47YrVTTCBAyd3lRB4BiSlJf+97xSmT
+         Qyg0lcLI1e6weX+d6qNgLYadaU0UZSotR+JhQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZTXoG2qokwQOOAH/JCxYPppMWBym+BlZjzxgmZUXCVA=;
+        b=s5SLNVOvW84q7IyFuAlPi78AUb6WFJwxTX+Q8GvlaRMFYc885pXN4TwAOFfkf7cJJ3
+         kuNhXptc7qSy/iKNW40ognYKn6tXQ70tzryJAjcaz2+TfFR9GhFjSGl1sMKLZYuK3VN2
+         EfdasYbJkAswkscDGGd9yR/QsTgM10UDQwCuLgvs0ZruSFzoP9Ua5ZP4XRJhOK4jH++U
+         ej5SKIY4WHDCV7/S51hADQltIBm5nVs2r4t8qNjiFxURYB9qW5jGTS1OfyOAw4cgPi56
+         3FIlUZSWrIxJd223ET4BM18XUjbw6+MXlGSLSgZsv2DH9TEzcRqAjAXU9coicp4LPoHA
+         jI0w==
+X-Gm-Message-State: AOAM532BtOFF2Rk2oc3mxyAfKEldfSW4VU19r50GKzXnwB/UEN8ov2UH
+        np4O5p36aXxLZoLss6ogYo+Aow==
+X-Google-Smtp-Source: ABdhPJwTJtMrK6jTitNgqNdP9+kywP+Rjc1AaXMNvpHgWoe/Uqfy3Gu4wa/Y74Asy9OY45yE/FCcqQ==
+X-Received: by 2002:a92:cb82:: with SMTP id z2mr36633148ilo.195.1607962319435;
+        Mon, 14 Dec 2020 08:11:59 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id n10sm66089ila.69.2020.12.14.08.11.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Dec 2020 08:11:58 -0800 (PST)
+Subject: Re: common_interrupt: No irq handler for vector
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <9741d93c-3cd1-c4ef-74bb-7f635231c778@linuxfoundation.org>
+ <87im96g6ox.fsf@nanos.tec.linutronix.de>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <3630fe3f-0dff-e21e-17a8-ed251df81fbc@linuxfoundation.org>
+Date:   Mon, 14 Dec 2020 09:11:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-X-Originating-IP: [10.43.160.21]
-X-ClientProxiedBy: EX13D23UWC001.ant.amazon.com (10.43.162.196) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <87im96g6ox.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vsock flags field can be set in the connect path (user space app)
-and the (listen) receive path (kernel space logic).
+On 12/12/20 12:33 PM, Thomas Gleixner wrote:
+> On Fri, Dec 11 2020 at 13:41, Shuah Khan wrote:
+> 
+>> I am debugging __common_interrupt: 1.55 No irq handler for vector
+>> messages and noticed comments and code don't agree:
+> 
+> I bet that's on an AMD system with broken AGESA BIOS.... Good luck
+> debugging it :) BIOS updates are on the way so I'm told.
+> 
 
-When the vsock transport is assigned, the remote CID is used to
-distinguish between types of connection.
+Interesting. The behavior I am seeing doesn't seem to be consistent
+with BIOS problem. I don't see these messages on 5.10-rc7. I started
+seeing them on stable releases. It started right around 5.9.9 and
+not present on 5.9.7.
 
-Use the vsock flags value (in addition to the CID) from the remote
-address to decide which vsock transport to assign. For the sibling VMs
-use case, all the vsock packets need to be forwarded to the host, so
-always assign the guest->host transport if the VMADDR_FLAG_TO_HOST flag
-is set. For the other use cases, the vsock transport assignment logic is
-not changed.
+I am bisecting to isolate. Same issue on all stables 5.4, 4.19 and
+so on. If it is BIOS problem I would expect to see it on 5.10-rc7
+and wouldn't have expected to start seeing it 5.9.9.
 
-Changelog
++ add Greg since I am talking about stable releases.
 
-v3 -> v4
+>> arch/x86/kernel/apic/msi.c: msi_set_affinity() says:
+>>
+>>
+>>    * If the vector is in use then the installed device handler will
+>>    * denote it as spurious which is no harm as this is a rare event
+>>    * and interrupt handlers have to cope with spurious interrupts
+>>    * anyway. If the vector is unused, then it is marked so it won't
+>>    * trigger the 'No irq handler for vector' warning in
+>>    * common_interrupt().
+>>
+>> common_interrupt() prints message if vector is unused: VECTOR_UNUSED
+>>
+>> ack_APIC_irq();
+>>
+>> if (desc == VECTOR_UNUSED) {
+>>       pr_emerg_ratelimited("%s: %d.%u No irq handler for vector\n",
+>>                             __func__, smp_processor_id(), vector);
+>> }
+>>
+>> Something wrong here?
+> 
+> No. It's perfectly correct in the MSI code. See further down.
+> 
+> 	if (IS_ERR_OR_NULL(this_cpu_read(vector_irq[cfg->vector])))
+> 		this_cpu_write(vector_irq[cfg->vector], VECTOR_RETRIGGERED);
+> 
 
-* Update the "remote_flags" local variable type to reflect the change of
-  the "svm_flags" field to be 1 byte in size.
+I am asking about inconsistent comments and the actual message as the
+comment implies if vector is VECTOR_UNUSED state, this message won't
+be triggered in common_interrupt. Based on that my read is the comment
+might be wrong if the code is correct as you are saying.
 
-v2 -> v3
-
-* Update bitwise check logic to not compare result to the flag value.
-
-v1 -> v2
-
-* Use bitwise operator to check the vsock flag.
-* Use the updated "VMADDR_FLAG_TO_HOST" flag naming.
-* Merge the checks for the g2h transport assignment in one "if" block.
-
-Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
----
- net/vmw_vsock/af_vsock.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index 83d035eab0b05..fc484fb37fffb 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -421,7 +421,8 @@ static void vsock_deassign_transport(struct vsock_sock *vsk)
-  * The vsk->remote_addr is used to decide which transport to use:
-  *  - remote CID == VMADDR_CID_LOCAL or g2h->local_cid or VMADDR_CID_HOST if
-  *    g2h is not loaded, will use local transport;
-- *  - remote CID <= VMADDR_CID_HOST will use guest->host transport;
-+ *  - remote CID <= VMADDR_CID_HOST or h2g is not loaded or remote flags field
-+ *    includes VMADDR_FLAG_TO_HOST flag value, will use guest->host transport;
-  *  - remote CID > VMADDR_CID_HOST will use host->guest transport;
-  */
- int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-@@ -429,6 +430,7 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
- 	const struct vsock_transport *new_transport;
- 	struct sock *sk = sk_vsock(vsk);
- 	unsigned int remote_cid = vsk->remote_addr.svm_cid;
-+	__u8 remote_flags;
- 	int ret;
- 
- 	/* If the packet is coming with the source and destination CIDs higher
-@@ -443,6 +445,8 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
- 	    vsk->remote_addr.svm_cid > VMADDR_CID_HOST)
- 		vsk->remote_addr.svm_flags |= VMADDR_FLAG_TO_HOST;
- 
-+	remote_flags = vsk->remote_addr.svm_flags;
-+
- 	switch (sk->sk_type) {
- 	case SOCK_DGRAM:
- 		new_transport = transport_dgram;
-@@ -450,7 +454,8 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
- 	case SOCK_STREAM:
- 		if (vsock_use_local_transport(remote_cid))
- 			new_transport = transport_local;
--		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g)
-+		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g ||
-+			 (remote_flags & VMADDR_FLAG_TO_HOST))
- 			new_transport = transport_g2h;
- 		else
- 			new_transport = transport_h2g;
--- 
-2.20.1 (Apple Git-117)
-
-
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
-
+thanks,
+-- Shuah
