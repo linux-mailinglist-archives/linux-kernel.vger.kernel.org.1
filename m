@@ -2,24 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFAE2D9DCE
+	by mail.lfdr.de (Postfix) with ESMTP id 1EECB2D9DCD
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502078AbgLNRf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:35:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45408 "EHLO mail.kernel.org"
+        id S2407629AbgLNRfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:35:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730249AbgLNRfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:35:05 -0500
+        id S2405248AbgLNRfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:35:02 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 5.4 25/36] Input: i8042 - add Acer laptops to the i8042 reset list
-Date:   Mon, 14 Dec 2020 18:28:09 +0100
-Message-Id: <20201214172544.538935184@linuxfoundation.org>
+        stable@vger.kernel.org, Coiby Xu <coiby.xu@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 5.4 26/36] pinctrl: amd: remove debounce filter setting in IRQ type setting
+Date:   Mon, 14 Dec 2020 18:28:10 +0100
+Message-Id: <20201214172544.587380608@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201214172543.302523401@linuxfoundation.org>
 References: <20201214172543.302523401@linuxfoundation.org>
@@ -31,74 +34,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chiu@endlessos.org>
+From: Coiby Xu <coiby.xu@gmail.com>
 
-commit ce6520b0eafad5962ffc21dc47cd7bd3250e9045 upstream.
+commit 47a0001436352c9853d72bf2071e85b316d688a2 upstream.
 
-The touchpad operates in Basic Mode by default in the Acer BIOS
-setup, but some Aspire/TravelMate models require the i8042 to be
-reset in order to be correctly detected.
+Debounce filter setting should be independent from IRQ type setting
+because according to the ACPI specs, there are separate arguments for
+specifying debounce timeout and IRQ type in GpioIo() and GpioInt().
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
-Link: https://lore.kernel.org/r/20201207071250.15021-1-chiu@endlessos.org
+Together with commit 06abe8291bc31839950f7d0362d9979edc88a666
+("pinctrl: amd: fix incorrect way to disable debounce filter") and
+Andy's patch "gpiolib: acpi: Take into account debounce settings" [1],
+this will fix broken touchpads for laptops whose BIOS set the
+debounce timeout to a relatively large value. For example, the BIOS
+of Lenovo AMD gaming laptops including Legion-5 15ARH05 (R7000),
+Legion-5P (R7000P) and IdeaPad Gaming 3 15ARH05, set the debounce
+timeout to 124.8ms. This led to the kernel receiving only ~7 HID
+reports per second from the Synaptics touchpad
+(MSFT0001:00 06CB:7F28).
+
+Existing touchpads like [2][3] are not troubled by this bug because
+the debounce timeout has been set to 0 by the BIOS before enabling
+the debounce filter in setting IRQ type.
+
+[1] https://lore.kernel.org/linux-gpio/20201111222008.39993-11-andriy.shevchenko@linux.intel.com/
+    8dcb7a15a585 ("gpiolib: acpi: Take into account debounce settings")
+[2] https://github.com/Syniurge/i2c-amd-mp2/issues/11#issuecomment-721331582
+[3] https://forum.manjaro.org/t/random-short-touchpad-freezes/30832/28
+
+Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Link: https://lore.kernel.org/linux-gpio/CAHp75VcwiGREBUJ0A06EEw-SyabqYsp%2Bdqs2DpSrhaY-2GVdAA%40mail.gmail.com/
+BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190
+Link: https://lore.kernel.org/r/20201125130320.311059-1-coiby.xu@gmail.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/input/serio/i8042-x86ia64io.h |   42 ++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ drivers/pinctrl/pinctrl-amd.c |    7 -------
+ 1 file changed, 7 deletions(-)
 
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -612,6 +612,48 @@ static const struct dmi_system_id __init
- 		},
- 	},
- 	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire A114-31"),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire A314-31"),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire A315-31"),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire ES1-132"),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire ES1-332"),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire ES1-432"),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "TravelMate Spin B118-RN"),
-+		},
-+	},
-+	{
- 		/* Advent 4211 */
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "DIXONSXP"),
+--- a/drivers/pinctrl/pinctrl-amd.c
++++ b/drivers/pinctrl/pinctrl-amd.c
+@@ -435,7 +435,6 @@ static int amd_gpio_irq_set_type(struct
+ 		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
+ 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+ 		pin_reg |= ACTIVE_HIGH << ACTIVE_LEVEL_OFF;
+-		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
+ 		irq_set_handler_locked(d, handle_edge_irq);
+ 		break;
+ 
+@@ -443,7 +442,6 @@ static int amd_gpio_irq_set_type(struct
+ 		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
+ 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+ 		pin_reg |= ACTIVE_LOW << ACTIVE_LEVEL_OFF;
+-		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
+ 		irq_set_handler_locked(d, handle_edge_irq);
+ 		break;
+ 
+@@ -451,7 +449,6 @@ static int amd_gpio_irq_set_type(struct
+ 		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
+ 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+ 		pin_reg |= BOTH_EADGE << ACTIVE_LEVEL_OFF;
+-		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
+ 		irq_set_handler_locked(d, handle_edge_irq);
+ 		break;
+ 
+@@ -459,8 +456,6 @@ static int amd_gpio_irq_set_type(struct
+ 		pin_reg |= LEVEL_TRIGGER << LEVEL_TRIG_OFF;
+ 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+ 		pin_reg |= ACTIVE_HIGH << ACTIVE_LEVEL_OFF;
+-		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
+-		pin_reg |= DB_TYPE_PRESERVE_LOW_GLITCH << DB_CNTRL_OFF;
+ 		irq_set_handler_locked(d, handle_level_irq);
+ 		break;
+ 
+@@ -468,8 +463,6 @@ static int amd_gpio_irq_set_type(struct
+ 		pin_reg |= LEVEL_TRIGGER << LEVEL_TRIG_OFF;
+ 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+ 		pin_reg |= ACTIVE_LOW << ACTIVE_LEVEL_OFF;
+-		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
+-		pin_reg |= DB_TYPE_PRESERVE_HIGH_GLITCH << DB_CNTRL_OFF;
+ 		irq_set_handler_locked(d, handle_level_irq);
+ 		break;
+ 
 
 
