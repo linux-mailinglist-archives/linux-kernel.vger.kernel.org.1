@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA2B2D96D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EFA2D96D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407422AbgLNK5r convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Dec 2020 05:57:47 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:56604 "EHLO
+        id S2407525AbgLNK7K convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Dec 2020 05:59:10 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:32300 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407343AbgLNK5A (ORCPT
+        by vger.kernel.org with ESMTP id S2407351AbgLNK5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 05:57:00 -0500
+        Mon, 14 Dec 2020 05:57:39 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-qgEGsDKMMi6b2TwnfViS_A-1; Mon, 14 Dec 2020 05:56:05 -0500
-X-MC-Unique: qgEGsDKMMi6b2TwnfViS_A-1
+ us-mta-333-Ay5cmk_RPu6uMcAuQyMurQ-1; Mon, 14 Dec 2020 05:56:39 -0500
+X-MC-Unique: Ay5cmk_RPu6uMcAuQyMurQ-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA0C3107ACE3;
-        Mon, 14 Dec 2020 10:56:03 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7ACDA107ACE3;
+        Mon, 14 Dec 2020 10:56:37 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.194.107])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4AC687048B;
-        Mon, 14 Dec 2020 10:56:00 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D64F1704D9;
+        Mon, 14 Dec 2020 10:56:30 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
+Cc:     Ian Rogers <irogers@google.com>,
+        lkml <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Ingo Molnar <mingo@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -34,14 +35,13 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Michael Petlan <mpetlan@redhat.com>,
         Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Alexei Budankov <abudankov@huawei.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 10/15] perf tools: Synthesize build id for kernel/modules/tasks
-Date:   Mon, 14 Dec 2020 11:54:52 +0100
-Message-Id: <20201214105457.543111-11-jolsa@kernel.org>
+Subject: [PATCH 13/15] perf buildid-cache: Add --debuginfod option
+Date:   Mon, 14 Dec 2020 11:54:55 +0100
+Message-Id: <20201214105457.543111-14-jolsa@kernel.org>
 In-Reply-To: <20201214105457.543111-1-jolsa@kernel.org>
 References: <20201214105457.543111-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -56,78 +56,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding build id to synthesized mmap2 events for
-everything - kernel/modules/tasks.
+Adding --debuginfod option to specify debuginfod url and
+support to do that through config file as well.
 
+Use following in ~/.perfconfig file:
+
+  [buildid-cache]
+  debuginfod=http://192.168.122.174:8002
+
+Acked-by: Ian Rogers <irogers@google.com>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/util/synthetic-events.c | 32 ++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ .../perf/Documentation/perf-buildid-cache.txt |  6 ++++
+ tools/perf/Documentation/perf-config.txt      |  7 +++++
+ tools/perf/builtin-buildid-cache.c            | 28 +++++++++++++++++--
+ 3 files changed, 38 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index c209377106f5..a8d951a79f5e 100644
---- a/tools/perf/util/synthetic-events.c
-+++ b/tools/perf/util/synthetic-events.c
-@@ -347,6 +347,31 @@ static bool read_proc_maps_line(struct io *io, __u64 *start, __u64 *end,
- 	}
+diff --git a/tools/perf/Documentation/perf-buildid-cache.txt b/tools/perf/Documentation/perf-buildid-cache.txt
+index b77da5138bca..b9987d1399ca 100644
+--- a/tools/perf/Documentation/perf-buildid-cache.txt
++++ b/tools/perf/Documentation/perf-buildid-cache.txt
+@@ -84,6 +84,12 @@ OPTIONS
+ 	used when creating a uprobe for a process that resides in a
+ 	different mount namespace from the perf(1) utility.
+ 
++--debuginfod=URLs::
++	Specify debuginfod URL to be used when retrieving perf.data binaries,
++	it follows the same syntax as the DEBUGINFOD_URLS variable, like:
++
++	  buildid-cache.debuginfod=http://192.168.122.174:8002
++
+ SEE ALSO
+ --------
+ linkperf:perf-record[1], linkperf:perf-report[1], linkperf:perf-buildid-list[1]
+diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
+index 31069d8a5304..e3672c5d801b 100644
+--- a/tools/perf/Documentation/perf-config.txt
++++ b/tools/perf/Documentation/perf-config.txt
+@@ -238,6 +238,13 @@ buildid.*::
+ 		cache location, or to disable it altogether. If you want to disable it,
+ 		set buildid.dir to /dev/null. The default is $HOME/.debug
+ 
++buildid-cache.*::
++	buildid-cache.debuginfod=URLs
++		Specify debuginfod URLs to be used when retrieving perf.data binaries,
++		it follows the same syntax as the DEBUGINFOD_URLS variable, like:
++
++		  buildid-cache.debuginfod=http://192.168.122.174:8002
++
+ annotate.*::
+ 	These are in control of addresses, jump function, source code
+ 	in lines of assembly code from a specific program.
+diff --git a/tools/perf/builtin-buildid-cache.c b/tools/perf/builtin-buildid-cache.c
+index f0afb2c89e03..864597fd9cf6 100644
+--- a/tools/perf/builtin-buildid-cache.c
++++ b/tools/perf/builtin-buildid-cache.c
+@@ -27,6 +27,7 @@
+ #include "util/time-utils.h"
+ #include "util/util.h"
+ #include "util/probe-file.h"
++#include "util/config.h"
+ #include <linux/string.h>
+ #include <linux/err.h>
+ #include <linux/zalloc.h>
+@@ -550,12 +551,21 @@ build_id_cache__add_perf_data(const char *path, bool all)
+ 	return err;
  }
  
-+static void perf_record_mmap2__read_build_id(struct perf_record_mmap2 *event,
-+					     bool is_kernel)
++static int perf_buildid_cache_config(const char *var, const char *value, void *cb)
 +{
-+	struct build_id bid;
-+	int rc;
++	const char **debuginfod = cb;
 +
-+	if (is_kernel)
-+		rc = sysfs__read_build_id("/sys/kernel/notes", &bid);
-+	else
-+		rc = filename__read_build_id(event->filename, &bid) > 0 ? 0 : -1;
++	if (!strcmp(var, "buildid-cache.debuginfod"))
++		*debuginfod = strdup(value);
 +
-+	if (rc == 0) {
-+		memcpy(event->build_id, bid.data, sizeof(bid.data));
-+		event->build_id_size = (u8) bid.size;
-+		event->header.misc |= PERF_RECORD_MISC_MMAP_BUILD_ID;
-+		event->__reserved_1 = 0;
-+		event->__reserved_2 = 0;
-+	} else {
-+		if (event->filename[0] == '/') {
-+			pr_debug2("Failed to read build ID for %s\n",
-+				  event->filename);
-+		}
-+	}
++	return 0;
 +}
 +
- int perf_event__synthesize_mmap_events(struct perf_tool *tool,
- 				       union perf_event *event,
- 				       pid_t pid, pid_t tgid,
-@@ -453,6 +478,9 @@ int perf_event__synthesize_mmap_events(struct perf_tool *tool,
- 		event->mmap2.pid = tgid;
- 		event->mmap2.tid = pid;
+ int cmd_buildid_cache(int argc, const char **argv)
+ {
+ 	struct strlist *list;
+ 	struct str_node *pos;
+-	int ret = 0;
+-	int ns_id = -1;
++	int ret, ns_id = -1;
+ 	bool force = false;
+ 	bool list_files = false;
+ 	bool opts_flag = false;
+@@ -565,7 +575,8 @@ int cmd_buildid_cache(int argc, const char **argv)
+ 		   *purge_name_list_str = NULL,
+ 		   *missing_filename = NULL,
+ 		   *update_name_list_str = NULL,
+-		   *kcore_filename = NULL;
++		   *kcore_filename = NULL,
++		   *debuginfod = NULL;
+ 	char sbuf[STRERR_BUFSIZE];
  
-+		if (symbol_conf.buildid_mmap2)
-+			perf_record_mmap2__read_build_id(&event->mmap2, false);
-+
- 		if (perf_tool__process_synth_event(tool, event, machine, process) != 0) {
- 			rc = -1;
- 			break;
-@@ -633,6 +661,8 @@ int perf_event__synthesize_modules(struct perf_tool *tool, perf_event__handler_t
+ 	struct perf_data data = {
+@@ -590,6 +601,8 @@ int cmd_buildid_cache(int argc, const char **argv)
+ 	OPT_BOOLEAN('f', "force", &force, "don't complain, do it"),
+ 	OPT_STRING('u', "update", &update_name_list_str, "file list",
+ 		    "file(s) to update"),
++	OPT_STRING(0, "debuginfod", &debuginfod, "debuginfod url",
++		    "set debuginfod url"),
+ 	OPT_INCR('v', "verbose", &verbose, "be more verbose"),
+ 	OPT_INTEGER(0, "target-ns", &ns_id, "target pid for namespace context"),
+ 	OPT_END()
+@@ -599,6 +612,10 @@ int cmd_buildid_cache(int argc, const char **argv)
+ 		NULL
+ 	};
  
- 			memcpy(event->mmap2.filename, pos->dso->long_name,
- 			       pos->dso->long_name_len + 1);
++	ret = perf_config(perf_buildid_cache_config, &debuginfod);
++	if (ret)
++		return ret;
 +
-+			perf_record_mmap2__read_build_id(&event->mmap2, false);
- 		} else {
- 			size = PERF_ALIGN(pos->dso->long_name_len + 1, sizeof(u64));
- 			event->mmap.header.type = PERF_RECORD_MMAP;
-@@ -1053,6 +1083,8 @@ static int __perf_event__synthesize_kernel_mmap(struct perf_tool *tool,
- 		event->mmap2.start = map->start;
- 		event->mmap2.len   = map->end - event->mmap.start;
- 		event->mmap2.pid   = machine->pid;
+ 	argc = parse_options(argc, argv, buildid_cache_options,
+ 			     buildid_cache_usage, 0);
+ 
+@@ -610,6 +627,11 @@ int cmd_buildid_cache(int argc, const char **argv)
+ 	if (argc || !(list_files || opts_flag))
+ 		usage_with_options(buildid_cache_usage, buildid_cache_options);
+ 
++	if (debuginfod) {
++		pr_debug("DEBUGINFOD_URLS=%s\n", debuginfod);
++		setenv("DEBUGINFOD_URLS", debuginfod, 1);
++	}
 +
-+		perf_record_mmap2__read_build_id(&event->mmap2, true);
- 	} else {
- 		size = snprintf(event->mmap.filename, sizeof(event->mmap.filename),
- 				"%s%s", machine->mmap_name, kmap->ref_reloc_sym->name) + 1;
+ 	/* -l is exclusive. It can not be used with other options. */
+ 	if (list_files && opts_flag) {
+ 		usage_with_options_msg(buildid_cache_usage,
 -- 
 2.26.2
 
