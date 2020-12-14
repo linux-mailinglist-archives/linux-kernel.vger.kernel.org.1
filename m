@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A542DA3E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4482DA3F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:06:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441420AbgLNXB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 18:01:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441400AbgLNXBC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 18:01:02 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B3AC061793;
-        Mon, 14 Dec 2020 15:00:21 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id c79so13211554pfc.2;
-        Mon, 14 Dec 2020 15:00:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=090tfOfLBXA3a9GUTJRAKpFjvledKH4Bekhs4Eg20Pc=;
-        b=cdX7pnvO3BEHfIrpZUALNVRhY77Yvx1vsmWX11SwI8DdvoYBKo0LCxNGC6LtVMQMxs
-         lwOaK83GOusmzA2A+JKKmHFTtzxdw+rrMn7nO1tQqsQcru9sH/FDc8e/7y3fpxyf395b
-         2Gj2xKoSSxma76aY0dAiQJe2GanygHe9Ac9OCdu207SVBF4dxnMauVbafFEETkEcADLe
-         Lu+a9vLZdcdge/yundmOwsr5cz2Rsd5MDm7Qc+37+MKZ/XQi+2R8H3q7mkU3tjSq+tNA
-         97d2dtbX+ILh3FBxTGHO+oFi1r2YOAXdIr0sfSiV2cJK56WjrsKCdd5T2hDnvHoblhY6
-         sIow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=090tfOfLBXA3a9GUTJRAKpFjvledKH4Bekhs4Eg20Pc=;
-        b=Cb4Pn4CD5dD494Ho89kpkzuf51MgAYXNB9++uHrsRTJmAJIdLg0/ihtseccn/IYcha
-         SBawYqeLpQ/Ob5nr70ceNm3w9S3yAFTzIDBYQdggy4dDypFDZy7+xjuJBp+ogkl+rJlG
-         5r+Cjtok7Cdo1LqxlT8JMv/Kg69/DIrPGIwywkm/4SI6c4IdNCFkVBtRyPIKgMVji1Im
-         TK8gnNFrrCS7Kp6qG2L8Lzdex+/Z09zYhXUPKsAaePkZ+wSnyQBmYQr7E0vQn8w+HA9M
-         NzVh/2OTXnDoq1PJCwH4OfxHqSQGQz4jpCC96drO5vlg8yT8w8xn5N2yiB+tPKXNrS95
-         2Kig==
-X-Gm-Message-State: AOAM5312ljVEWApYH96QcNBLjcc5eXcMhv9t3MCYF1qgjHSQFEaGMXgj
-        bDtfU8+zhSZSjdaHOYO3nBU=
-X-Google-Smtp-Source: ABdhPJwVEnbeFUdm4qb2knm8penZArC7pDe+Nf6ORp2jRc29SSBt8lCXcdEATS/m8aGRiMbj44E1EQ==
-X-Received: by 2002:a63:5a61:: with SMTP id k33mr25605135pgm.12.1607986821342;
-        Mon, 14 Dec 2020 15:00:21 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id fv22sm20358841pjb.14.2020.12.14.15.00.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 15:00:20 -0800 (PST)
-Date:   Mon, 14 Dec 2020 15:00:18 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Dudley Du <dudl@cypress.com>, Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] input: cyapa_gen6: fix out-of-bounds stack access
-Message-ID: <X9fugmc5XldpHqnW@google.com>
-References: <20201026161332.3708389-1-arnd@kernel.org>
+        id S2441318AbgLNXGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 18:06:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2441285AbgLNXGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 18:06:09 -0500
+Date:   Mon, 14 Dec 2020 23:05:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607987128;
+        bh=5TsguwUz8VJK8ed5bDwSWwfzf/cJOL0KfWWRDjoJhzQ=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UAk4LB1gakF+U6GGpj55Ykx0xhrgf1wtLYgo9r9mFeGtMMIUlQosvriFGgdFwiXeC
+         IMuICyeGuCBx+14A+DqLiEZQP22TONAInVWdM5n49DxlVWfXAhICFXY58y6wpVsqU9
+         +/x+SeHiERi8NqQ18agSEF4pSFmSFlQy5i2Cz8iQpiYgJLYkvasjxZ+mgFNNEpahMT
+         UGmUFefAp3QT9mdbW9QFW/LuG3NPWfVA0lyiu0fI/XKpBCjF35lh0ax0CdwhdD03kG
+         djx8wy94NUek0W0az2sJTnimVI7JdePAliR5FelHiMnIvT+Qyj+PDJcZZDKH9ttMKk
+         rirQyugEJC3JQ==
+From:   Will Deacon <will@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 2/3] kbuild: LD_VERSION redenomination
+Message-ID: <20201214230521.GA14124@willie-the-truck>
+References: <20201212165431.150750-1-masahiroy@kernel.org>
+ <20201212165431.150750-2-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201026161332.3708389-1-arnd@kernel.org>
+In-Reply-To: <20201212165431.150750-2-masahiroy@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 05:13:29PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Sun, Dec 13, 2020 at 01:54:30AM +0900, Masahiro Yamada wrote:
+> Commit ccbef1674a15 ("Kbuild, lto: add ld-version and ld-ifversion
+> macros") introduced scripts/ld-version.sh for GCC LTO.
 > 
-> gcc -Warray-bounds warns about a serious bug in
-> cyapa_pip_retrieve_data_structure:
+> At that time, this script handled 5 version fields because GCC LTO
+> needed the downstream binutils. (https://lkml.org/lkml/2014/4/8/272)
 > 
-> drivers/input/mouse/cyapa_gen6.c: In function 'cyapa_pip_retrieve_data_structure.constprop':
-> include/linux/unaligned/access_ok.h:40:17: warning: array subscript -1 is outside array bounds of 'struct retrieve_data_struct_cmd[1]' [-Warray-bounds]
->    40 |  *((__le16 *)p) = cpu_to_le16(val);
-> drivers/input/mouse/cyapa_gen6.c:569:13: note: while referencing 'cmd'
->   569 |  } __packed cmd;
->       |             ^~~
+> The code snippet from the submitted patch was as follows:
 > 
-> Apparently the '-2' was added to the pointer instead of the value,
-> writing garbage into the stack next to this variable.
+>     # We need HJ Lu's Linux binutils because mainline binutils does not
+>     # support mixing assembler and LTO code in the same ld -r object.
+>     # XXX check if the gcc plugin ld is the expected one too
+>     # XXX some Fedora binutils should also support it. How to check for that?
+>     ifeq ($(call ld-ifversion,-ge,22710001,y),y)
+>         ...
 > 
-> Fixes: c2c06c41f700 ("Input: cyapa - add gen6 device module support")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> However, GCC LTO was not merged into the mainline after all.
+> (https://lkml.org/lkml/2014/4/8/272)
+> 
+> So, the 4th and 5th fields were never used, and finally removed by
+> commit 0d61ed17dd30 ("ld-version: Drop the 4th and 5th version
+> components").
+> 
+> Since then, the last 4-digits returned by this script is always zeros.
+> 
+> Remove the meaningless last 4-digits. This makes the version format
+> consistent with GCC_VERSION, CLANG_VERSION, LLD_VERSION.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  arch/arm64/Kconfig            | 2 +-
+>  arch/mips/loongson64/Platform | 2 +-
+>  arch/mips/vdso/Kconfig        | 2 +-
+>  arch/powerpc/Makefile         | 2 +-
+>  arch/powerpc/lib/Makefile     | 2 +-
+>  scripts/ld-version.sh         | 2 +-
+>  6 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index a6b5b7ef40ae..69d56b21a6ec 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1499,7 +1499,7 @@ config ARM64_PTR_AUTH
+>  	depends on (CC_HAS_SIGN_RETURN_ADDRESS || CC_HAS_BRANCH_PROT_PAC_RET) && AS_HAS_PAC
+>  	# Modern compilers insert a .note.gnu.property section note for PAC
+>  	# which is only understood by binutils starting with version 2.33.1.
+> -	depends on LD_IS_LLD || LD_VERSION >= 233010000 || (CC_IS_GCC && GCC_VERSION < 90100)
+> +	depends on LD_IS_LLD || LD_VERSION >= 23301 || (CC_IS_GCC && GCC_VERSION < 90100)
+>  	depends on !CC_IS_CLANG || AS_HAS_CFI_NEGATE_RA_STATE
+>  	depends on (!FUNCTION_GRAPH_TRACER || DYNAMIC_FTRACE_WITH_REGS)
+>  	help
 
-Applied, thank you.
+Acked-by: Will Deacon <will@kernel.org>
 
--- 
-Dmitry
+Will
