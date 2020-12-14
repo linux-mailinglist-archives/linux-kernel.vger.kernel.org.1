@@ -2,191 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7C12D92EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 06:50:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 820632D92FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 06:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390032AbgLNFth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 00:49:37 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:34227 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726177AbgLNFtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 00:49:36 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvVnC5D5jz9sRR;
-        Mon, 14 Dec 2020 16:48:37 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607924933;
-        bh=3JgDXWZLmjE1DToRwNs64MKUO9l19hfDGbOLoi22EXw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=M0h61/ofCbOocNZ+W3KBOzYyQv0mkuyxf5MThyEA8NdaE72jY/HAHMq0IUyMfziHX
-         5cKiZmrb2qEzdr0WmvUTok86iUEmkvUczJVDANrssKAJxvj3JGhH3XBLu6XdlOcf9N
-         tLqja/by+wwwgyw81gZMZfCMhxcGO2p2GzAHkyyXVZJ9EsuhnqfYUvRDNanQ3ljgrj
-         LltFA6gndRcp0xSumhfloYGtxJZv1zKROchn1kkQkMMQ56sEEg9e6hdV7+EteF+Pwi
-         ssMA+yYIOU49lzYOTSinsl0qeQ4fQU+IRG6xOQmZBfByvA3D8+tdQj6dGS22FoZFZr
-         CnYpOJ1cc8G+g==
-Date:   Mon, 14 Dec 2020 16:48:36 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the tip tree
-Message-ID: <20201214164836.0d73cf9a@canb.auug.org.au>
+        id S2389660AbgLNFus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 00:50:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390077AbgLNFuh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 00:50:37 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A57EC0613CF;
+        Sun, 13 Dec 2020 21:49:57 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id y5so15758153iow.5;
+        Sun, 13 Dec 2020 21:49:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EzSj9ml19X1fpvFM+ibRGRWOesLE9X7twr2UcjQK6RM=;
+        b=Sj+btmu338yVzZf9IJdItaTlpCa9OvRugFyIo43i1GTNr2KYCS0DPEhzn4O9iCrVr+
+         zp3vQ/BceQD+Bha48E8zOrKmt3gAos9yHXxaUXkHNv3N3aPKZ2zVyDhMzDbkNnwE191n
+         ri3rGSjQqbNHHCFovIokFrJwBssQv/BByMDI6bPWMeJOC2MDG04i6v7aeOrtnt7BT6Jy
+         wQRuyXVzALlMPRXn9uUvq+L6r5Hu3Vqxh3HPRX7x6hOAuGwFIILYKvB4TD8NR0lwDi+5
+         /lnelvPaPz4iXG8pxaYNf4qrpDP6HkZY0u0DL+B7XmH9RyH5lJ/jYcDm0m5lo1yeriTG
+         +fEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EzSj9ml19X1fpvFM+ibRGRWOesLE9X7twr2UcjQK6RM=;
+        b=DCvvoCTqiNq1JhRmtyWAbvRox97nwSn+JwLAcJOm0Z4kRJCdIAo5e6ugk7Pv6qv5qr
+         dbP3fXCi4nmMB+RGHwGS0Jc1Q4wGMhOLYiG7FjjygeSkkSIxrax5PZIcKHskIsvd4KS4
+         7ZFzbargG9Gvs92ppB/pQ7epSXvh7F3tcaGO2IDn6kNI4507DMG3soM4mTVvgOaarxd2
+         GxMRovc/R3e4N8aIY/8hUCpH5s8UmIQybRzDAD8ykLbu292HSQlgAgtpWGIA3i9ng+P+
+         m6ku/IKJM5b6N1VPIkHUsmhHpvQThRkEXzcPS3PwmALcfPHvPfKFXvGp0fDmRoo8IgFh
+         ha/w==
+X-Gm-Message-State: AOAM5316ETMpbx1/OZuJHQOFkg04TQhmvJ6bGiLQPT7j1JAVXGcdD7EM
+        LqkENbf8H5s1vDymhdwgsAXnU3VTz3Mg1a61Sc4=
+X-Google-Smtp-Source: ABdhPJw01VcC/8JoePKk0J/yxnUTJBSNAx9/YJr8eMEw8jQcyo+jtql3VToOVEUl3j6AXoWcnNf5WeFY1gbJJpWwy7Q=
+X-Received: by 2002:a02:cc89:: with SMTP id s9mr30784713jap.81.1607924996345;
+ Sun, 13 Dec 2020 21:49:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/xT8_XsTdsRY3tkthhjDyt8x";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201207163255.564116-1-mszeredi@redhat.com> <20201207163255.564116-9-mszeredi@redhat.com>
+ <CAOQ4uxgy23chB-NQcXJ+P3hO0_M3iAkgi_wyhbpfT3wkaU+E7w@mail.gmail.com> <CAJfpegvpEkB2HL5THcUsmBVvcru1-DkSTo_DmA4pWNU_TV7ODg@mail.gmail.com>
+In-Reply-To: <CAJfpegvpEkB2HL5THcUsmBVvcru1-DkSTo_DmA4pWNU_TV7ODg@mail.gmail.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Mon, 14 Dec 2020 07:49:45 +0200
+Message-ID: <CAOQ4uxi2Gn2-nZajpqMd+u487eT7y=EZNafEeyd72178biKZ4w@mail.gmail.com>
+Subject: Re: [PATCH v2 08/10] ovl: do not fail because of O_NOATIME
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/xT8_XsTdsRY3tkthhjDyt8x
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Dec 11, 2020 at 4:44 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> On Tue, Dec 8, 2020 at 12:32 PM Amir Goldstein <amir73il@gmail.com> wrote:
+> >
+> > On Mon, Dec 7, 2020 at 6:37 PM Miklos Szeredi <mszeredi@redhat.com> wrote:
+> > >
+> > > In case the file cannot be opened with O_NOATIME because of lack of
+> > > capabilities, then clear O_NOATIME instead of failing.
+> > >
+> > > Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+> > > ---
+> > >  fs/overlayfs/file.c | 5 +++--
+> > >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
+> > > index dc767034d37b..d6ac7ac66410 100644
+> > > --- a/fs/overlayfs/file.c
+> > > +++ b/fs/overlayfs/file.c
+> > > @@ -53,9 +53,10 @@ static struct file *ovl_open_realfile(const struct file *file,
+> > >         err = inode_permission(realinode, MAY_OPEN | acc_mode);
+> > >         if (err) {
+> > >                 realfile = ERR_PTR(err);
+> > > -       } else if (!inode_owner_or_capable(realinode)) {
+> > > -               realfile = ERR_PTR(-EPERM);
+> > >         } else {
+> > > +               if (!inode_owner_or_capable(realinode))
+> > > +                       flags &= ~O_NOATIME;
+> > > +
+> >
+> > Isn't that going to break:
+> >
+> >         flags |= OVL_OPEN_FLAGS;
+> >
+> >         /* If some flag changed that cannot be changed then something's amiss */
+> >         if (WARN_ON((file->f_flags ^ flags) & ~OVL_SETFL_MASK))
+> >
+> > IOW setting a flag that is allowed to change will fail because of
+> > missing O_ATIME in file->f_flags.
+>
+> Well spotted.  I just removed those lines as a fix.   The check never
+> triggered since its introduction in 4.19, so I guess it isn't worth
+> adding more complexity for.
+>
+> >
+> > I guess we need test coverage for SETFL.
+>
+> There might be some in ltp, haven't checked.  Would be nice if the fs
+> related ltp tests could be integrated into xfstests.
+>
 
-Hi all,
+There is some test coverage for SETFL in xfstests.
 
-After merging the tip tree, today's linux-next build (arm
-multi_v7_defconfig) produced this warning:
+The t_immutable tests for one, but those would not run if the mounter
+has no CAP_LINUX_IMMUTABLE, so would not have been useful to
+detect the problem above.
 
-In file included from include/linux/kernel.h:14,
-                 from include/linux/list.h:9,
-                 from include/linux/wait.h:7,
-                 from include/linux/wait_bit.h:8,
-                 from include/linux/fs.h:6,
-                 from include/linux/proc_fs.h:10,
-                 from include/linux/efi.h:19,
-                 from drivers/firmware/efi/libstub/arm32-stub.c:5:
-drivers/firmware/efi/libstub/arm32-stub.c: In function 'handle_kernel_image=
-':
-include/linux/minmax.h:18:28: warning: comparison of distinct pointer types=
- lacks a cast
-   18 |  (!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
-      |                            ^~
-include/linux/minmax.h:32:4: note: in expansion of macro '__typecheck'
-   32 |   (__typecheck(x, y) && __no_side_effects(x, y))
-      |    ^~~~~~~~~~~
-include/linux/minmax.h:42:24: note: in expansion of macro '__safe_cmp'
-   42 |  __builtin_choose_expr(__safe_cmp(x, y), \
-      |                        ^~~~~~~~~~
-include/linux/minmax.h:58:19: note: in expansion of macro '__careful_cmp'
-   58 | #define max(x, y) __careful_cmp(x, y, >)
-      |                   ^~~~~~~~~~~~~
-arch/arm/include/asm/efi.h:74:25: note: in expansion of macro 'max'
-   74 | #define EFI_PHYS_ALIGN  max(SZ_2M, roundup_pow_of_two(TEXT_OFFSET))
-      |                         ^~~
-drivers/firmware/efi/libstub/arm32-stub.c:123:44: note: in expansion of mac=
-ro 'EFI_PHYS_ALIGN'
-  123 |  int alloc_size =3D MAX_UNCOMP_KERNEL_SIZE + EFI_PHYS_ALIGN;
-      |                                            ^~~~~~~~~~~~~~
-include/linux/minmax.h:18:28: warning: comparison of distinct pointer types=
- lacks a cast
-   18 |  (!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
-      |                            ^~
-include/linux/minmax.h:32:4: note: in expansion of macro '__typecheck'
-   32 |   (__typecheck(x, y) && __no_side_effects(x, y))
-      |    ^~~~~~~~~~~
-include/linux/minmax.h:42:24: note: in expansion of macro '__safe_cmp'
-   42 |  __builtin_choose_expr(__safe_cmp(x, y), \
-      |                        ^~~~~~~~~~
-include/linux/minmax.h:58:19: note: in expansion of macro '__careful_cmp'
-   58 | #define max(x, y) __careful_cmp(x, y, >)
-      |                   ^~~~~~~~~~~~~
-arch/arm/include/asm/efi.h:74:25: note: in expansion of macro 'max'
-   74 | #define EFI_PHYS_ALIGN  max(SZ_2M, roundup_pow_of_two(TEXT_OFFSET))
-      |                         ^~~
-drivers/firmware/efi/libstub/arm32-stub.c:139:20: note: in expansion of mac=
-ro 'EFI_PHYS_ALIGN'
-  139 |  if ((alloc_base % EFI_PHYS_ALIGN) > slack) {
-      |                    ^~~~~~~~~~~~~~
-In file included from include/linux/list.h:9,
-                 from include/linux/wait.h:7,
-                 from include/linux/wait_bit.h:8,
-                 from include/linux/fs.h:6,
-                 from include/linux/proc_fs.h:10,
-                 from include/linux/efi.h:19,
-                 from drivers/firmware/efi/libstub/arm32-stub.c:5:
-include/linux/minmax.h:18:28: warning: comparison of distinct pointer types=
- lacks a cast
-   18 |  (!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
-      |                            ^~
-include/linux/kernel.h:63:46: note: in definition of macro '__round_mask'
-   63 | #define __round_mask(x, y) ((__typeof__(x))((y)-1))
-      |                                              ^
-drivers/firmware/efi/libstub/arm32-stub.c:144:17: note: in expansion of mac=
-ro 'round_up'
-  144 |   kernel_base =3D round_up(alloc_base, EFI_PHYS_ALIGN);
-      |                 ^~~~~~~~
-include/linux/minmax.h:32:4: note: in expansion of macro '__typecheck'
-   32 |   (__typecheck(x, y) && __no_side_effects(x, y))
-      |    ^~~~~~~~~~~
-include/linux/minmax.h:42:24: note: in expansion of macro '__safe_cmp'
-   42 |  __builtin_choose_expr(__safe_cmp(x, y), \
-      |                        ^~~~~~~~~~
-include/linux/minmax.h:58:19: note: in expansion of macro '__careful_cmp'
-   58 | #define max(x, y) __careful_cmp(x, y, >)
-      |                   ^~~~~~~~~~~~~
-arch/arm/include/asm/efi.h:74:25: note: in expansion of macro 'max'
-   74 | #define EFI_PHYS_ALIGN  max(SZ_2M, roundup_pow_of_two(TEXT_OFFSET))
-      |                         ^~~
-drivers/firmware/efi/libstub/arm32-stub.c:144:38: note: in expansion of mac=
-ro 'EFI_PHYS_ALIGN'
-  144 |   kernel_base =3D round_up(alloc_base, EFI_PHYS_ALIGN);
-      |                                      ^~~~~~~~~~~~~~
-include/linux/minmax.h:18:28: warning: comparison of distinct pointer types=
- lacks a cast
-   18 |  (!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
-      |                            ^~
-include/linux/kernel.h:63:46: note: in definition of macro '__round_mask'
-   63 | #define __round_mask(x, y) ((__typeof__(x))((y)-1))
-      |                                              ^
-drivers/firmware/efi/libstub/arm32-stub.c:148:17: note: in expansion of mac=
-ro 'round_down'
-  148 |   kernel_base =3D round_down(alloc_base, EFI_PHYS_ALIGN);
-      |                 ^~~~~~~~~~
-include/linux/minmax.h:32:4: note: in expansion of macro '__typecheck'
-   32 |   (__typecheck(x, y) && __no_side_effects(x, y))
-      |    ^~~~~~~~~~~
-include/linux/minmax.h:42:24: note: in expansion of macro '__safe_cmp'
-   42 |  __builtin_choose_expr(__safe_cmp(x, y), \
-      |                        ^~~~~~~~~~
-include/linux/minmax.h:58:19: note: in expansion of macro '__careful_cmp'
-   58 | #define max(x, y) __careful_cmp(x, y, >)
-      |                   ^~~~~~~~~~~~~
-arch/arm/include/asm/efi.h:74:25: note: in expansion of macro 'max'
-   74 | #define EFI_PHYS_ALIGN  max(SZ_2M, roundup_pow_of_two(TEXT_OFFSET))
-      |                         ^~~
-drivers/firmware/efi/libstub/arm32-stub.c:148:40: note: in expansion of mac=
-ro 'EFI_PHYS_ALIGN'
-  148 |   kernel_base =3D round_down(alloc_base, EFI_PHYS_ALIGN);
-      |                                        ^~~~~~~~~~~~~~
+fsstress also seems to have support for SETFL ops, but I am not sure
+in how many tests it is exercises and perhaps the relevant problem
+would have been covered by some stress test that is not in the 'quick'
+tests group.
 
-Introduced by commit
-
-  c0249238feef ("efi: arm: reduce minimum alignment of uncompressed kernel")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/xT8_XsTdsRY3tkthhjDyt8x
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/W/LQACgkQAVBC80lX
-0GxUKgf/btiJpW+e6kT0WJjfXKkotdBim4DhCeLgY5CYV3GujfI/YW66KdZwrPMm
-E0yTr68AmYhdFtBI7QgJqm0bQ1WL4yleJVNNZDPv0RzF474Lq5Ru2+TWUBv2TMJy
-Gl2/Bke2BGY1HB7Qe5jansnyQwtnpfF2SDBVTuDkGmAfNphsXXkp3AxTAROfuFcR
-jAIklnSpVObFHmKisPpYGqjCPhz5ZIHbX2Mzf/iFKP3dvArMHtL7Ho0Kg6vzN90z
-/5SJlT+eCKGyDMo4qt0gEifgohAcnTDEdydZ0CGxpOostYgdrLDQmRqZEqcvXN26
-g1QjhdvSkvWcQntIuEzsaiXkttgBhA==
-=dIpL
------END PGP SIGNATURE-----
-
---Sig_/xT8_XsTdsRY3tkthhjDyt8x--
+Thanks,
+Amir.
