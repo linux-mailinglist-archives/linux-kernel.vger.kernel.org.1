@@ -2,128 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2CA2D9CD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFC92D9CDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731427AbgLNQkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:40:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36988 "EHLO
+        id S2440246AbgLNQnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 11:43:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727024AbgLNQjy (ORCPT
+        with ESMTP id S1726223AbgLNQnD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:39:54 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B91C0613D3;
-        Mon, 14 Dec 2020 08:39:14 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id r17so16342101ilo.11;
-        Mon, 14 Dec 2020 08:39:14 -0800 (PST)
+        Mon, 14 Dec 2020 11:43:03 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC09C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:42:23 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id 131so12373710pfb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:42:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZzQAX3OTtnVfAh68IFiHEJAtHPixTEJsh0l+VUazkzs=;
-        b=FpqI/C2Lw1zaZwIU9Q2geAe2b+Dx9dq327jdZq9trPuxavemNvW3M4lIsBFEnANTu8
-         vLWLyura2QO2zrGeKFOFPJFBxfqgA2Dr49YNC1vA4DwYVbZJnSy6e+xwyDfwivI9yBjF
-         w9MVlq7KQtQEfHSwwMugDHJowAsPfHWrimx9OuRPrHTTnInUaoMe/1aqu1W/FmO98M63
-         /16jlrmXc2x+Qkfd7F5J/U6dgxZIy1jAh/gdnuqxI0KoCa3TkG8Tc7eBLZcc3ll82LrJ
-         5v/YAOvFpB23RJU6L1YYOofUXQvTGuicrNoD96VXfO5cIKUdHCnXm7wFV/q663dd1IUp
-         nyUg==
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:user-agent:mime-version;
+        bh=JezVwkcUvzbDeHvXSRBpUCVs/qIVAUJGi+DKg0XJKa8=;
+        b=mXy18jyh6x9Yg5x/9PYmMAfeBUgoUAzxkI+cBR3uyWjLrqttklGNM7KuVM/9iipOZe
+         VHQ9K2I6ui+Nj3uEYv48Btuq1yNGWExK39A4eceIf3RWrY/2FfHE34g5jtEc8X1z8u2r
+         FCxIyX3B7DGQVYCT+4BP9UO9+umtNa23eqJHtlW/q0zeoOKQ/0DxmMIvZ2fdRB8cWKAo
+         zQRJpywYzWIU73CiY+vAFhXTp0eLd9toXWU0aoQMAVANbcruQRWN692WWd5ZsRlqIU5b
+         r15VUxXEoJG0qsMjChSfzd0P5vjMRjzn+8aS5kXhxmo4ig7DhvGcszGEmfLFcFA9d9zv
+         eZNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZzQAX3OTtnVfAh68IFiHEJAtHPixTEJsh0l+VUazkzs=;
-        b=R8s0yvJ2YFkahvQ1SMtr6WB0aNcWuj5z9A4YIH65GwzubEtMk6Z/J6aNeZVbXPXe3T
-         sPEljbpiVMbN+3JdSFibv+YMZ7YiogoiWrJNqo2sKCV3jla/bVP3dUc39uzO2aARgRdN
-         24lPxKdl61VPxEjVrVOj0j3oLio3qDYs9tfEvaF5VmPB565B16Q9mXuQpSQG9oTPlokx
-         GzZNSqNzMrKGsyoszRr1r8zVMUV4QYN5fPvkVuO1fgJmxI5zzbgkQdP2MtxZNWQ2Ai71
-         mKPy0d/pPWoGmsdhIO2VYmMOQg/qphtHTOvUmgQOj39sps1dB5aIsUP64KuGtWelQpnh
-         H6DA==
-X-Gm-Message-State: AOAM530TS7+rX1uYSjQaXagZIwcbbXqgIes02vE1xheHyxq075xXyAW/
-        kKpcKYnXx5jjNdWG1HUQYdzePqM4Cc7a4+GGsgU=
-X-Google-Smtp-Source: ABdhPJzVChOyL4APOxK4QH4vXoPjci6MSc+GIbk2oYNY6T0rrNrmq/h5h3qtkCbdg6I51KTqqUNanK5NTgl+DS4y8LA=
-X-Received: by 2002:a92:d8cc:: with SMTP id l12mr35335239ilo.64.1607963953418;
- Mon, 14 Dec 2020 08:39:13 -0800 (PST)
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:user-agent
+         :mime-version;
+        bh=JezVwkcUvzbDeHvXSRBpUCVs/qIVAUJGi+DKg0XJKa8=;
+        b=nUItJkB716ChxsfNDomHHwNnQ15jgbDG4BnzQ/uUdO067CHoTily9tccVKYVRjBPTu
+         DquCkW3LhAcXTtkqpK9yT+KcQ5+casEBMoyXuADhaBOTB564x1ePLEdqZzJAbQxfTCAB
+         1YtT3tmwa5SWdJ9onA78tqQ9SNDrSd1gwEdmwsV4Z5YaDyD2s5i0xsFQfdwY0eMsy/R/
+         sebgguGuAMXEIStlbSaOTXN+iCxCPNDnfGl4jbMmAJ26ZGxZboIkqNZl0XE3SRfPYToq
+         f6Ep/oj6uHTFydMP+KvzC8fNKZIcNqG7b/r1qg/zGCMDObJgEqi4XbmYZhpDKrpCILJw
+         nYjg==
+X-Gm-Message-State: AOAM532q4YRUVbpjgm+XlaKTqUgcWbJeuKVAPIm1ZTUCEodOo6FgHywO
+        +0uafVMZdoxe3iyevvJdM4z7Mg==
+X-Google-Smtp-Source: ABdhPJzM/uVhPAKhk3NynN9yUtwSZCsn+2/4gY8gnVryTIoG815YrBdV7grCk4Reut9MNSIKbdcOIg==
+X-Received: by 2002:a62:3582:0:b029:19e:4935:bea2 with SMTP id c124-20020a6235820000b029019e4935bea2mr24381264pfa.34.1607964143127;
+        Mon, 14 Dec 2020 08:42:23 -0800 (PST)
+Received: from [192.168.1.9] ([171.61.231.84])
+        by smtp.gmail.com with ESMTPSA id u12sm19496373pfn.88.2020.12.14.08.42.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 08:42:22 -0800 (PST)
+Message-ID: <e479c654b6ca08057bf18a4e1c1d1ed3cdf8fdc8.camel@rajagiritech.edu.in>
+Subject: related to fixing  depreciated  api
+From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Date:   Mon, 14 Dec 2020 22:12:14 +0530
+Content-Type: multipart/mixed; boundary="=-b+EomzCa5T42UxINaR95"
+User-Agent: Evolution 3.38.1-2 
 MIME-Version: 1.0
-References: <20201214153450.874339-1-mario.limonciello@dell.com>
-In-Reply-To: <20201214153450.874339-1-mario.limonciello@dell.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 14 Dec 2020 08:39:01 -0800
-Message-ID: <CAKgT0UfSeW_mod5kqNFL71Nepbk+Kg65Vw_HeLVLjykX98u=xg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] Improve s0ix flows for systems i219LM
-To:     Mario Limonciello <mario.limonciello@dell.com>
-Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        David Miller <davem@davemloft.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Netfin <sasha.neftin@intel.com>,
-        Aaron Brown <aaron.f.brown@intel.com>,
-        Stefan Assmann <sassmann@redhat.com>,
-        David Arcari <darcari@redhat.com>,
-        Yijun Shen <Yijun.Shen@dell.com>,
-        "Yuan, Perry" <Perry.Yuan@dell.com>,
-        Anthony Wong <anthony.wong@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 7:35 AM Mario Limonciello
-<mario.limonciello@dell.com> wrote:
->
-> commit e086ba2fccda ("e1000e: disable s0ix entry and exit flows for ME systems")
-> disabled s0ix flows for systems that have various incarnations of the
-> i219-LM ethernet controller.  This was done because of some regressions
-> caused by an earlier
-> commit 632fbd5eb5b0e ("e1000e: fix S0ix flows for cable connected case")
-> with i219-LM controller.
->
-> Per discussion with Intel architecture team this direction should be changed and
-> allow S0ix flows to be used by default.  This patch series includes directional
-> changes for their conclusions in https://lkml.org/lkml/2020/12/13/15.
->
-> Changes from v3 to v4:
->  - Drop patch 1 for proper s0i3.2 entry, it was separated and is now merged in kernel
->  - Add patch to only run S0ix flows if shutdown succeeded which was suggested in
->    thread
->  - Adjust series for guidance from https://lkml.org/lkml/2020/12/13/15
->    * Revert i219-LM disallow-list.
->    * Drop all patches for systems tested by Dell in an allow list
->    * Increase ULP timeout to 1000ms
-> Changes from v2 to v3:
->  - Correct some grammar and spelling issues caught by Bjorn H.
->    * s/s0ix/S0ix/ in all commit messages
->    * Fix a typo in commit message
->    * Fix capitalization of proper nouns
->  - Add more pre-release systems that pass
->  - Re-order the series to add systems only at the end of the series
->  - Add Fixes tag to a patch in series.
->
-> Changes from v1 to v2:
->  - Directly incorporate Vitaly's dependency patch in the series
->  - Split out s0ix code into it's own file
->  - Adjust from DMI matching to PCI subsystem vendor ID/device matching
->  - Remove module parameter and sysfs, use ethtool flag instead.
->  - Export s0ix flag to ethtool private flags
->  - Include more people and lists directly in this submission chain.
->
-> Mario Limonciello (4):
->   e1000e: Only run S0ix flows if shutdown succeeded
->   e1000e: bump up timeout to wait when ME un-configure ULP mode
->   Revert "e1000e: disable s0ix entry and exit flows for ME systems"
->   e1000e: Export S0ix flags to ethtool
->
->  drivers/net/ethernet/intel/e1000e/e1000.h   |  1 +
->  drivers/net/ethernet/intel/e1000e/ethtool.c | 40 ++++++++++++++
->  drivers/net/ethernet/intel/e1000e/ich8lan.c |  4 +-
->  drivers/net/ethernet/intel/e1000e/netdev.c  | 59 ++++-----------------
->  4 files changed, 53 insertions(+), 51 deletions(-)
->
 
-The changes look good to me.
+--=-b+EomzCa5T42UxINaR95
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+hello,
+
+i have worked on to  fix  depreciated api issue from
+tools/testing/selftests/intel_pstate/aerf.c
+
+i met with the following error related...
+
+--------------x------------------x----------------->
+$pwd
+/home/jeffrin/UP/linux-kselftest/tools/testing/selftests/intel_pstate
+$make
+gcc  -Wall -D_GNU_SOURCE    aperf.c /home/jeffrin/UP/linux-
+kselftest/tools/testing/selftests/kselftest_harness.h
+/home/jeffrin/UP/linux-kselftest/tools/testing/selftests/kselftest.h -
+lm -o /home/jeffrin/UP/linux-
+kselftest/tools/testing/selftests/intel_pstate/aperf
+aperf.c: In function ‘main’:
+aperf.c:58:2: warning: ‘ftime’ is deprecated [-Wdeprecated-
+declarations]
+   58 |  ftime(&before);
+      |  ^~~~~
+In file included from aperf.c:9:
+/usr/include/x86_64-linux-gnu/sys/timeb.h:39:12: note: declared here
+   39 | extern int ftime (struct timeb *__timebuf)
+      |            ^~~~~
+aperf.c:67:2: warning: ‘ftime’ is deprecated [-Wdeprecated-
+declarations]
+   67 |  ftime(&after);
+      |  ^~~~~
+In file included from aperf.c:9:
+/usr/include/x86_64-linux-gnu/sys/timeb.h:39:12: note: declared here
+   39 | extern int ftime (struct timeb *__timebuf)
+      |            ^~~~~
+$
+----------------x---------------x---------------------->
+
+
+from ftime manual  i found that it is depreciated...
+
+This  function is deprecated, and will be removed in a future version
+of the GNU C library.  Use clock_gettime(2) instead.
+
+
+now clock_gettime  gives  new data structure.
+
+ struct timespec {
+               time_t   tv_sec;        /* seconds */
+               long     tv_nsec;       /* nanoseconds */
+           };
+
+
+i worked on with the new data structure and some errors that came
+along.
+typical final output looks good but  values of runtime and typical
+frequency
+does not look normal during "sudo bash run.sh".
+
+output of "git diff" and  a  portion of output of   "sudo bash run.sh".
+is attached.
+
+
+
+-- 
+software engineer
+rajagiri school of engineering and technology - autonomous
+
+
+
+--=-b+EomzCa5T42UxINaR95
+Content-Disposition: attachment; filename="diff-or.txt"
+Content-Type: text/plain; name="diff-or.txt"; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2ludGVsX3BzdGF0ZS9hcGVyZi5j
+IGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvaW50ZWxfcHN0YXRlL2FwZXJmLmMKaW5kZXggZjZj
+ZDAzYTg3NDkzLi43ZTM1ZTc4NzJmMTYgMTAwNjQ0Ci0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRl
+c3RzL2ludGVsX3BzdGF0ZS9hcGVyZi5jCisrKyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2lu
+dGVsX3BzdGF0ZS9hcGVyZi5jCkBAIC02LDcgKzYsNyBAQAogI2luY2x1ZGUgPHN5cy90eXBlcy5o
+PgogI2luY2x1ZGUgPHN5cy9zdGF0Lmg+CiAjaW5jbHVkZSA8ZmNudGwuaD4KLSNpbmNsdWRlIDxz
+eXMvdGltZWIuaD4KKyNpbmNsdWRlIDx0aW1lLmg+CiAjaW5jbHVkZSA8c2NoZWQuaD4KICNpbmNs
+dWRlIDxlcnJuby5oPgogI2luY2x1ZGUgPHN0cmluZy5oPgpAQCAtMjIsMTAgKzIyLDEyIEBAIGlu
+dCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJndikgewogCWxvbmcgbG9uZyB0c2MsIG9sZF90c2Ms
+IG5ld190c2M7CiAJbG9uZyBsb25nIGFwZXJmLCBvbGRfYXBlcmYsIG5ld19hcGVyZjsKIAlsb25n
+IGxvbmcgbXBlcmYsIG9sZF9tcGVyZiwgbmV3X21wZXJmOwotCXN0cnVjdCB0aW1lYiBiZWZvcmUs
+IGFmdGVyOworCXN0cnVjdCB0aW1lc3BlYyBiZWZvcmUsIGFmdGVyOworICAgICAgICBjbG9ja2lk
+X3QgY2xraWQ7CiAJbG9uZyBsb25nIGludCBzdGFydCwgZmluaXNoLCB0b3RhbDsKIAljcHVfc2V0
+X3QgY3B1c2V0OwogCisKIAlpZiAoYXJnYyAhPSAyKSB7CiAJCXVzYWdlKGFyZ3ZbMF0pOwogCQly
+ZXR1cm4gMTsKQEAgLTQxLDYgKzQzLDEwIEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJn
+dikgewogCiAJc3ByaW50Zihtc3JfZmlsZV9uYW1lLCAiL2Rldi9jcHUvJWQvbXNyIiwgY3B1KTsK
+IAlmZCA9IG9wZW4obXNyX2ZpbGVfbmFtZSwgT19SRE9OTFkpOworICAgICAgICAjZGVmaW5lIENM
+T0NLRkQgMworICAgICAgICAjZGVmaW5lIEZEX1RPX0NMT0NLSUQoZmQpICAgKCh+KGNsb2NraWRf
+dCkgKGZkKSA8PCAzKSB8IENMT0NLRkQpCisgICAgICAgIGNsa2lkID0gRkRfVE9fQ0xPQ0tJRChm
+ZCk7CisKIAogCWlmIChmZCA9PSAtMSkgewogCQlwcmludGYoIi9kZXYvY3B1LyVkL21zcjogJXNc
+biIsIGNwdSwgc3RyZXJyb3IoZXJybm8pKTsKQEAgLTU1LDcgKzYxLDcgQEAgaW50IG1haW4oaW50
+IGFyZ2MsIGNoYXIgKiphcmd2KSB7CiAJCXJldHVybiAxOwogCX0KIAotCWZ0aW1lKCZiZWZvcmUp
+OworCWNsb2NrX2dldHRpbWUoY2xraWQsJmJlZm9yZSk7CiAJcHJlYWQoZmQsICZvbGRfdHNjLCAg
+c2l6ZW9mKG9sZF90c2MpLCAweDEwKTsKIAlwcmVhZChmZCwgJm9sZF9hcGVyZiwgIHNpemVvZihv
+bGRfbXBlcmYpLCAweGU3KTsKIAlwcmVhZChmZCwgJm9sZF9tcGVyZiwgIHNpemVvZihvbGRfYXBl
+cmYpLCAweGU4KTsKQEAgLTY0LDcgKzcwLDcgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKiph
+cmd2KSB7CiAJCXNxcnQoaSk7CiAJfQogCi0JZnRpbWUoJmFmdGVyKTsKKwljbG9ja19nZXR0aW1l
+KGNsa2lkLCZhZnRlcik7CiAJcHJlYWQoZmQsICZuZXdfdHNjLCAgc2l6ZW9mKG5ld190c2MpLCAw
+eDEwKTsKIAlwcmVhZChmZCwgJm5ld19hcGVyZiwgIHNpemVvZihuZXdfbXBlcmYpLCAweGU3KTsK
+IAlwcmVhZChmZCwgJm5ld19tcGVyZiwgIHNpemVvZihuZXdfYXBlcmYpLCAweGU4KTsKQEAgLTcz
+LDExICs3OSwxMCBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3YpIHsKIAlhcGVyZiA9
+IG5ld19hcGVyZi1vbGRfYXBlcmY7CiAJbXBlcmYgPSBuZXdfbXBlcmYtb2xkX21wZXJmOwogCi0J
+c3RhcnQgPSBiZWZvcmUudGltZSoxMDAwICsgYmVmb3JlLm1pbGxpdG07Ci0JZmluaXNoID0gYWZ0
+ZXIudGltZSoxMDAwICsgYWZ0ZXIubWlsbGl0bTsKLQl0b3RhbCA9IGZpbmlzaCAtIHN0YXJ0Owot
+Ci0JcHJpbnRmKCJydW5UaW1lOiAlNC4yZlxuIiwgMS4wKnRvdGFsLzEwMDApOwotCXByaW50Zigi
+ZnJlcTogJTcuMGZcbiIsIHRzYyAvICgxLjAqYXBlcmYgLyAoMS4wICogbXBlcmYpKSAvIHRvdGFs
+KTsKKwlzdGFydCA9IGJlZm9yZS50dl9zZWMqMTAwMDAwMCArIGJlZm9yZS50dl9uc2VjOworCWZp
+bmlzaCA9IGFmdGVyLnR2X3NlYyoxMDAwMDAwICsgYWZ0ZXIudHZfbnNlYzsKKwl0b3RhbCA9IGZp
+bmlzaCAtIHN0YXJ0OyAKKwlwcmludGYoInJ1blRpbWU6ICU0LjJmXG4iLCAxLjAqdG90YWwvMTAw
+MDAwMCk7IAorCXByaW50ZigiZnJlcTogJTcuMGZcbiIsIHRzYyAvICgxLjAgKiBhcGVyZiAvMS4w
+ICogKG1wZXJmKSkgLyB0b3RhbCk7CiAJcmV0dXJuIDA7CiB9Cg==
+
+
+--=-b+EomzCa5T42UxINaR95
+Content-Disposition: attachment; filename="shot.txt"
+Content-Type: text/plain; name="shot.txt"; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+U2V0dGluZyBtYXhpbXVtIGZyZXF1ZW5jeSB0byA1MDAKbGF1bmNoaW5nIGFwZXJmIGxvYWQgb24g
+MApsYXVuY2hpbmcgYXBlcmYgbG9hZCBvbiAxCmxhdW5jaGluZyBhcGVyZiBsb2FkIG9uIDIKbGF1
+bmNoaW5nIGFwZXJmIGxvYWQgb24gMwpzbGVlcGluZyBmb3IgNSBzZWNvbmRzCndhaXRpbmcgZm9y
+IGpvYiBpZCA3NTIxCnJ1blRpbWU6IDAuMDAKZnJlcTogICAgIGluZgpydW5UaW1lOiAwLjAwCmZy
+ZXE6ICAgICBpbmYKcnVuVGltZTogMC4wMApmcmVxOiAgICAgaW5mCnJ1blRpbWU6IDAuMDAKZnJl
+cTogICAgIGluZgp3YWl0aW5nIGZvciBqb2IgaWQgNzUyMgp3YWl0aW5nIGZvciBqb2IgaWQgNzUy
+Mwp3YWl0aW5nIGZvciBqb2IgaWQgNzUyNApTZXR0aW5nIG1heGltdW0gZnJlcXVlbmN5IHRvIDQw
+MApsYXVuY2hpbmcgYXBlcmYgbG9hZCBvbiAwCmxhdW5jaGluZyBhcGVyZiBsb2FkIG9uIDEKbGF1
+bmNoaW5nIGFwZXJmIGxvYWQgb24gMgpsYXVuY2hpbmcgYXBlcmYgbG9hZCBvbiAzCnNsZWVwaW5n
+IGZvciA1IHNlY29uZHMKd2FpdGluZyBmb3Igam9iIGlkIDc1NDAKcnVuVGltZTogMC4wMApmcmVx
+OiAgICAgaW5mCnJ1blRpbWU6IDAuMDAKZnJlcTogICAgIGluZgpydW5UaW1lOiAwLjAwCmZyZXE6
+ICAgICBpbmYKd2FpdGluZyBmb3Igam9iIGlkIDc1NDEKcnVuVGltZTogMC4wMApmcmVxOiAgICAg
+aW5mCndhaXRpbmcgZm9yIGpvYiBpZCA3NTQyCndhaXRpbmcgZm9yIGpvYiBpZCA3NTQzCj09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PQpUaGUgbWFya2V0aW5nIGZyZXF1ZW5jeSBvZiB0aGUgY3B1IGlzIDIzMDAgTUh6
+ClRoZSBtYXhpbXVtIGZyZXF1ZW5jeSBvZiB0aGUgY3B1IGlzIDIzMDAgTUh6ClRoZSBtaW5pbXVt
+IGZyZXF1ZW5jeSBvZiB0aGUgY3B1IGlzIDQwMCBNSHoKVGFyZ2V0CSAgICAgIEFjdHVhbAkgICAg
+RGlmZmVyZW5jZQkgIE1TUigweDE5OSkJbWF4X3BlcmZfcGN0CjIzMDAJICAgICAgMjMwMAkgICAg
+MAkJICAweDQwMAkJMjMwMDAwCjIyMDAJICAgICAgMjIwMAkgICAgMAkJICAweDQwMAkJMjMwMDAw
+CjIxMDAJICAgICAgMjEwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjIwMDAJICAgICAgMjAwMAkg
+ICAgMAkJICAweDQwMAkJMjMwMDAwCjE5MDAJICAgICAgMTkwMAkgICAgMAkJICAweDQwMAkJMjMw
+MDAwCjE4MDAJICAgICAgMTgwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjE3MDAJICAgICAgMTcw
+MAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjE2MDAJICAgICAgMTYwMAkgICAgMAkJICAweDQwMAkJ
+MjMwMDAwCjE1MDAJICAgICAgMTUwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjE0MDAJICAgICAg
+MTQwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjEzMDAJICAgICAgMTMwMAkgICAgMAkJICAweDQw
+MAkJMjMwMDAwCjEyMDAJICAgICAgMTIwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjExMDAJICAg
+ICAgMTEwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjEwMDAJICAgICAgOTk5CSAgICAtMQkJICAw
+eDQwMAkJMjMwMDAwCjkwMAkgICAgICA5MDAJICAgIDAJCSAgMHg0MDAJCTIzMDAwMAo4MDAJICAg
+ICAgODAwCSAgICAwCQkgIDB4NDAwCQkyMzAwMDAKNzAwCSAgICAgIDcwMAkgICAgMAkJICAweDQw
+MAkJMjMwMDAwCjYwMAkgICAgICA2MDAJICAgIDAJCSAgMHg0MDAJCTIzMDAwMAo1MDAJICAgICAg
+NTAwCSAgICAwCQkgIDB4NDAwCQkyMzAwMDAKNDAwCSAgICAgIDQwMAkgICAgMAkJICAw
+
+
+--=-b+EomzCa5T42UxINaR95--
+
