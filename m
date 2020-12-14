@@ -2,207 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3197D2DA16E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FD22DA166
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503181AbgLNUWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:22:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503122AbgLNUVq (ORCPT
+        id S2503201AbgLNUWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:22:34 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:36369 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503125AbgLNUVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:21:46 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C70FC0617A7;
-        Mon, 14 Dec 2020 12:20:33 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id x16so24375612ejj.7;
-        Mon, 14 Dec 2020 12:20:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=T7NLv1aBqZpZKVuxYL8PCGe79bEsa2C7xJDZKccReFI=;
-        b=vNMzE3CqO0q8FAX55WJ6hWyD8sVTymC7/Rox4k7ek5F4NxxtbS9VCoODIQlxcBGCRd
-         9YqTq3iw2Ij1VwMcduadK0pkiHlg1tXU3WU+w1p1voSkwzAZtKs3cSazklCUW5nctM6y
-         DZUElglf+Mk8PxapJn7hXMoFFlbN+YQ/CfLqHkMMTgTkwBHQkDoPN69eewcb2fg0dS+R
-         l2/QC4zyiN/QBetvVDVf1DjIjFLSFdF2ONhFcwm3cdmdbiTkz6EkZY7HkVdYn6yCS1Cp
-         BGlLc6P7Zo/3WPXuGjFN6Dk6FvprMvb/wvaJdVqTIDPnISBrj0VYo1guB9L5QpZ+SvWf
-         vOFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=T7NLv1aBqZpZKVuxYL8PCGe79bEsa2C7xJDZKccReFI=;
-        b=O+d8Kg2evSQuoay7Vac7a6SKBtPO/vqTeD3eJKn1Yn9Aax2+vswifKRcKcZR4v/d2x
-         iuwuDpw/AC0mUV/ZQenU9GnyM6kZGqRGM2xaqSRRoNSqTKM4KIoE0ALUcFFZg/ibIv0Z
-         9GlXQI56ss6V14YqgDa339AgsjkKUFgijUGKBVtbDBBFIaPMdba0G9XXstyVnWxhZH51
-         Ugr2xGAaSV/33Zh+Xpqsr3//9cMUg79EHOCU5wbHeawoi1smiSIIUBu1+kfpjk5nFFDw
-         1vOroyzsQi54sbmkMfej27Xg8GSTJ6h+BjbQk8tvn55kx4VgV+3kYbakUnGDa2tmOZfM
-         TQTA==
-X-Gm-Message-State: AOAM531uNQe7re/mmIaST+3/3kCgPgwoIxwgB/o0p4/ClmUmXIsD2s96
-        VsBwqA1qaZ1WtxqtVEi/iVk=
-X-Google-Smtp-Source: ABdhPJwJK43XdswlUi5IX2q9kT87LzTRLPajeZuDBjxA/uJrjhvg4UEPORZmiGQNTZsjSDb03IPk9Q==
-X-Received: by 2002:a17:906:a011:: with SMTP id p17mr23727087ejy.30.1607977232008;
-        Mon, 14 Dec 2020 12:20:32 -0800 (PST)
-Received: from localhost.localdomain (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.gmail.com with ESMTPSA id r7sm9334634edh.86.2020.12.14.12.20.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 12:20:31 -0800 (PST)
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org, rostedt@goodmis.org, joe@perches.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 6/6] scsi: ufs: Make UPIU trace easier differentiate among CDB, OSF, and TM
-Date:   Mon, 14 Dec 2020 21:20:14 +0100
-Message-Id: <20201214202014.13835-7-huobean@gmail.com>
+        Mon, 14 Dec 2020 15:21:50 -0500
+Received: from [192.188.8.81] (helo=ascalon)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kamal@canonical.com>)
+        id 1kouL3-0007W7-FK; Mon, 14 Dec 2020 20:20:57 +0000
+Received: from kamal by ascalon with local (Exim 4.90_1)
+        (envelope-from <kamal@ascalon>)
+        id 1kouL0-0001v1-Ls; Mon, 14 Dec 2020 12:20:54 -0800
+From:   Kamal Mostafa <kamal@canonical.com>
+To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Kamal Mostafa <kamal@canonical.com>, stable@vger.kernel.org
+Subject: [PATCH] selftests/bpf: clarify build error if no vmlinux
+Date:   Mon, 14 Dec 2020 12:20:48 -0800
+Message-Id: <20201214202049.7205-1-kamal@canonical.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201214202014.13835-1-huobean@gmail.com>
-References: <20201214202014.13835-1-huobean@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+If Makefile cannot find any of the vmlinux's in its VMLINUX_BTF_PATHS list,
+it tries to run btftool incorrectly, with VMLINUX_BTF unset:
 
-Transaction Specific Fields (TSF) in the UPIU package could be CDB
-(SCSI/UFS Command Descriptor Block), OSF (Opcode Specific Field), and
-TM I/O parameter (Task Management Input/Output Parameter). But, currently,
-we take all of these as CDB  in the UPIU trace. Thus makes user confuse
-among CDB, OSF, and TM message. So fix it with this patch.
+    bpftool btf dump file $(VMLINUX_BTF) format c
 
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Bean Huo <beanhuo@micron.com>
+Such that the keyword 'format' is misinterpreted as the path to vmlinux.
+The resulting build error message is fairly cryptic:
+
+      GEN      vmlinux.h
+    Error: failed to load BTF from format: No such file or directory
+
+This patch makes the failure reason clearer by yielding this instead:
+
+    Makefile:...: *** cannot find a vmlinux for VMLINUX_BTF at any of
+    "{paths}".  Stop.
+
+Fixes: acbd06206bbb ("selftests/bpf: Add vmlinux.h selftest exercising tracing of syscalls")
+Cc: stable@vger.kernel.org # 5.7+
+Signed-off-by: Kamal Mostafa <kamal@canonical.com>
 ---
- drivers/scsi/ufs/ufs.h     |  7 +++++++
- drivers/scsi/ufs/ufshcd.c  |  9 +++++----
- include/trace/events/ufs.h | 18 +++++++++++++++---
- 3 files changed, 27 insertions(+), 7 deletions(-)
+ tools/testing/selftests/bpf/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-index ba24b504f85a..50f46f3bc8a2 100644
---- a/drivers/scsi/ufs/ufs.h
-+++ b/drivers/scsi/ufs/ufs.h
-@@ -554,6 +554,13 @@ enum ufs_trace_str_t {
- 	UFS_TM_SEND, UFS_TM_COMP, UFS_TM_ERR
- };
- 
-+/*
-+ * Transaction Specific Fields (TSF) type in the UPIU package, this enum is
-+ * used in include/trace/events/ufs.h for UFS command trace.
-+ */
-+enum ufs_trace_tsf_t {
-+	UFS_TSF_CDB, UFS_TSF_OSF, UFS_TSF_TM_INPUT, UFS_TSF_TM_OUTPUT
-+};
- 
- /**
-  * ufs_is_valid_unit_desc_lun - checks if the given LUN has a unit descriptor
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 2cf983b3de1a..58ba7402d0c3 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -312,7 +312,8 @@ static void ufshcd_add_cmd_upiu_trace(struct ufs_hba *hba, unsigned int tag,
- 	if (!trace_ufshcd_upiu_enabled())
- 		return;
- 
--	trace_ufshcd_upiu(dev_name(hba->dev), str_t, &rq->header, &rq->sc.cdb);
-+	trace_ufshcd_upiu(dev_name(hba->dev), str_t, &rq->header, &rq->sc.cdb,
-+			  UFS_TSF_CDB);
- }
- 
- static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba, unsigned int tag,
-@@ -329,7 +330,7 @@ static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba, unsigned int tag,
- 		rq_rsp = (struct utp_upiu_req *)hba->lrb[tag].ucd_rsp_ptr;
- 
- 	trace_ufshcd_upiu(dev_name(hba->dev), str_t, &rq_rsp->header,
--			  &rq_rsp->qr);
-+			  &rq_rsp->qr, UFS_TSF_OSF);
- }
- 
- static void ufshcd_add_tm_upiu_trace(struct ufs_hba *hba, unsigned int tag,
-@@ -343,10 +344,10 @@ static void ufshcd_add_tm_upiu_trace(struct ufs_hba *hba, unsigned int tag,
- 
- 	if (str_t == UFS_TM_SEND)
- 		trace_ufshcd_upiu(dev_name(hba->dev), str_t, &descp->req_header,
--				  &descp->input_param1);
-+				  &descp->input_param1, UFS_TSF_TM_INPUT);
- 	else
- 		trace_ufshcd_upiu(dev_name(hba->dev), str_t, &descp->rsp_header,
--				  &descp->output_param1);
-+				  &descp->output_param1, UFS_TSF_TM_OUTPUT);
- }
- 
- static void ufshcd_add_uic_command_trace(struct ufs_hba *hba,
-diff --git a/include/trace/events/ufs.h b/include/trace/events/ufs.h
-index 335a8d6b490f..0e25a569d95a 100644
---- a/include/trace/events/ufs.h
-+++ b/include/trace/events/ufs.h
-@@ -48,6 +48,12 @@
- 	EM(UFS_TM_COMP,		"tm_complete")			\
- 	EMe(UFS_TM_ERR,		"tm_complete_err")
- 
-+#define UFS_CMD_TRACE_TSF_TYPES					\
-+	EM(UFS_TSF_CDB,		"CDB")		                \
-+	EM(UFS_TSF_OSF,		"OSF")		                \
-+	EM(UFS_TSF_TM_INPUT,	"TM_INPUT")                     \
-+	EMe(UFS_TSF_TM_OUTPUT,	"TM_OUTPUT")
-+
- /* Enums require being exported to userspace, for user tool parsing */
- #undef EM
- #undef EMe
-@@ -58,6 +64,7 @@ UFS_LINK_STATES;
- UFS_PWR_MODES;
- UFSCHD_CLK_GATING_STATES;
- UFS_CMD_TRACE_STRINGS
-+UFS_CMD_TRACE_TSF_TYPES
- 
- /*
-  * Now redefine the EM() and EMe() macros to map the enums to the strings
-@@ -70,6 +77,8 @@ UFS_CMD_TRACE_STRINGS
- 
- #define show_ufs_cmd_trace_str(str_t)	\
- 				__print_symbolic(str_t, UFS_CMD_TRACE_STRINGS)
-+#define show_ufs_cmd_trace_tsf(tsf)	\
-+				__print_symbolic(tsf, UFS_CMD_TRACE_TSF_TYPES)
- 
- TRACE_EVENT(ufshcd_clk_gating,
- 
-@@ -311,15 +320,16 @@ TRACE_EVENT(ufshcd_uic_command,
- 
- TRACE_EVENT(ufshcd_upiu,
- 	TP_PROTO(const char *dev_name, enum ufs_trace_str_t str_t, void *hdr,
--		 void *tsf),
-+		 void *tsf, enum ufs_trace_tsf_t tsf_t),
- 
--	TP_ARGS(dev_name, str_t, hdr, tsf),
-+	TP_ARGS(dev_name, str_t, hdr, tsf, tsf_t),
- 
- 	TP_STRUCT__entry(
- 		__string(dev_name, dev_name)
- 		__field(enum ufs_trace_str_t, str_t)
- 		__array(unsigned char, hdr, 12)
- 		__array(unsigned char, tsf, 16)
-+		__field(enum ufs_trace_tsf_t, tsf_t)
- 	),
- 
- 	TP_fast_assign(
-@@ -327,12 +337,14 @@ TRACE_EVENT(ufshcd_upiu,
- 		__entry->str_t = str_t;
- 		memcpy(__entry->hdr, hdr, sizeof(__entry->hdr));
- 		memcpy(__entry->tsf, tsf, sizeof(__entry->tsf));
-+		__entry->tsf_t = tsf_t;
- 	),
- 
- 	TP_printk(
--		"%s: %s: HDR:%s, CDB:%s",
-+		"%s: %s: HDR:%s, %s:%s",
- 		show_ufs_cmd_trace_str(__entry->str_t), __get_str(dev_name),
- 		__print_hex(__entry->hdr, sizeof(__entry->hdr)),
-+		show_ufs_cmd_trace_tsf(__entry->tsf_t),
- 		__print_hex(__entry->tsf, sizeof(__entry->tsf))
- 	)
- );
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 542768f5195b..93ed34ef6e3f 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -196,6 +196,9 @@ $(BUILD_DIR)/libbpf $(BUILD_DIR)/bpftool $(BUILD_DIR)/resolve_btfids $(INCLUDE_D
+ $(INCLUDE_DIR)/vmlinux.h: $(VMLINUX_BTF) | $(BPFTOOL) $(INCLUDE_DIR)
+ ifeq ($(VMLINUX_H),)
+ 	$(call msg,GEN,,$@)
++ifeq ($(VMLINUX_BTF),)
++$(error cannot find a vmlinux for VMLINUX_BTF at any of "$(VMLINUX_BTF_PATHS)")
++endif
+ 	$(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $@
+ else
+ 	$(call msg,CP,,$@)
 -- 
 2.17.1
 
