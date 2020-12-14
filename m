@@ -2,98 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0E42DA2AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D17BE2DA2B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:47:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437317AbgLNVnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 16:43:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56554 "EHLO
+        id S2441132AbgLNVpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 16:45:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392109AbgLNVnq (ORCPT
+        with ESMTP id S2441034AbgLNVo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 16:43:46 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18277C0613D3;
-        Mon, 14 Dec 2020 13:43:06 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvvyG1V2zz9s0b;
-        Tue, 15 Dec 2020 08:43:01 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607982182;
-        bh=9zZ4CaJ1f9yKLix26zpf+IqButEHk07/UblP1CruQGc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=b4mnC5oIz14QoU6jId/JtbDuMe3QiiUOgA//4uhZK4fzI/Chn0GElyK0t+q0fNNrW
-         e6AppecIgxshLXVCFBg6017mH8SABibD2B+tzk5/F/d/QVuqyAukAp/wxnfpkHg6u5
-         AESmYw431tOcc+bAGzFa93Z0HhGVn2BvyBSuLp5z/Q5Fz39ncThG1u8ejtzTes8Xn6
-         NkYIY1xedppB0OnztVQS6om0GwdR4MkP1F22u+K7CXZoC9fkD2nfMcoW57OkyCtuL1
-         8o1i8R9BvNnKolrRkxWj4Zai6HuA2CtBM2VOPwsPuZYg3XSN2rll0TR+fjilemDubn
-         16Clny3iNcTug==
-Date:   Tue, 15 Dec 2020 08:43:00 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the block tree
-Message-ID: <20201215084300.3543c433@canb.auug.org.au>
-In-Reply-To: <20201214213612.GS6430@suse.cz>
-References: <20201202150149.42543862@canb.auug.org.au>
-        <20201215070956.6852e939@canb.auug.org.au>
-        <25c43226-f937-0866-9c0b-46867bd04cc7@kernel.dk>
-        <20201214213612.GS6430@suse.cz>
+        Mon, 14 Dec 2020 16:44:58 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C8CC061793
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:44:18 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id q22so13037045pfk.12
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:44:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6EWmrppepC6CHcBZOqhjNztvHasoofk8FBuQ7CK72Yo=;
+        b=mlBDwaeR5EuT6thidly4obxEYWArXsfs8EmBKFKvYaUpY1DmcjmF+VaqtG4iTHINT7
+         FCF4QnHO0zFmQGeRNsOnf9aLmv0PgPgM62Yiq5xdZxNZ55Oo4kUVltzD7qWaf3M3O/L4
+         D0JItD3kQic9c8ZP/u2MlOvD+RaeHKs8561wd3mGt1txmrGnkQCy12wzgpOqqd2kxDw+
+         +T4eRRkuhC4NJbRoLJq7alsoh+TwbAVMbKSPRMWVX28HMsXdeFKXUyJwNXnrqGDvAS0p
+         oJFC5Tq8Q64l74jlOjiJWeTDfSYUHNDbT/uG7iZqCZ4COqrasq0kWFLb7//kPGEK7DNN
+         tvwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6EWmrppepC6CHcBZOqhjNztvHasoofk8FBuQ7CK72Yo=;
+        b=TSTZKwx3LiyypQWQzzSpXArK90FlaTfyC92Agyjq5JMuHzEKYgovmU2K8ZxhyjILsg
+         Y5Qs1zCi/kDP6KZ5s8aWWrBL4FnJLfwsbjVIA1c55SOeh0uVmClBYnK8f+Imuuh0oSTu
+         ZUJTQg2lv8OhK+SgwIneG16tiR+g6UY/Hn0JCEkv0KgaEEe4fGkE8GxKUQJjDpteMK1d
+         M7/IE+yDU3La5/dOvWgRbVSKy7tXkwiLncbLeLyNOEHRT01g+nnmZWXZP1atmaaUTWss
+         LLe51pg8as0f6W5hFm7JgeNu6BMmiJVWIj1TsdAoiowWbvkbVdJzcIieDXZQlG78xYwT
+         YJyA==
+X-Gm-Message-State: AOAM5329bEyJnmFZISpFDL/Rs7jvnnYG0x/i8wFjBQf93YgyiRU2OfYt
+        ZanoLPQxPz4FjnrdddFmGbMQAo6eZBM5DFaWYKkSMA==
+X-Google-Smtp-Source: ABdhPJz0JzYkf4G+e7/8YeB0Xj41+fXETTPGT4aAt+KsRx0P/0WfwpiHwW5NxVnrsiyY7ZkKS7H3cI1Y6xqq+O4xRgY=
+X-Received: by 2002:a62:7c4a:0:b029:19d:b7bc:2c51 with SMTP id
+ x71-20020a627c4a0000b029019db7bc2c51mr26329699pfc.30.1607982257943; Mon, 14
+ Dec 2020 13:44:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/yP56w+C5xgj2Oxokg8e0qTf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201016175339.2429280-1-ndesaulniers@google.com> <160319373854.2175971.17968938488121846972.b4-ty@kernel.org>
+In-Reply-To: <160319373854.2175971.17968938488121846972.b4-ty@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 14 Dec 2020 13:44:06 -0800
+Message-ID: <CAKwvOdnYcff_bcWZYkUC5qKso6EPRWrDgMAdn1KE1_YMCTy__A@mail.gmail.com>
+Subject: Re: [PATCH] arm64: link with -z norelro regardless of CONFIG_RELOCATABLE
+To:     Alan Modra <amodra@gmail.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        kernel-team <kernel-team@android.com>,
+        Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Smith <Peter.Smith@arm.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        Quentin Perret <qperret@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/yP56w+C5xgj2Oxokg8e0qTf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi David,
-
-On Mon, 14 Dec 2020 22:36:12 +0100 David Sterba <dsterba@suse.cz> wrote:
+On Tue, Oct 20, 2020 at 10:57 AM Will Deacon <will@kernel.org> wrote:
 >
-> On Mon, Dec 14, 2020 at 01:12:46PM -0700, Jens Axboe wrote:
-> > On 12/14/20 1:09 PM, Stephen Rothwell wrote: =20
-> > > Just a reminder that I am still applying the above merge fix. =20
-> >=20
-> > I sent in my core changes, but they haven't been pulled yet. So I guess
-> > we're dealing with a timing situation... David, did you send in the btr=
-fs
-> > pull yet? =20
->=20
-> Yes
-> https://lore.kernel.org/lkml/cover.1607955523.git.dsterba@suse.com/
+> On Fri, 16 Oct 2020 10:53:39 -0700, Nick Desaulniers wrote:
+> > With CONFIG_EXPERT=y, CONFIG_KASAN=y, CONFIG_RANDOMIZE_BASE=n,
+> > CONFIG_RELOCATABLE=n, we observe the following failure when trying to
+> > link the kernel image with LD=ld.lld:
+> >
+> > error: section: .exit.data is not contiguous with other relro sections
+> >
+> > ld.lld defaults to -z relro while ld.bfd defaults to -z norelro. This
+> > was previously fixed, but only for CONFIG_RELOCATABLE=y.
+>
+> Applied to arm64 (for-next/core), thanks!
+>
+> [1/1] arm64: link with -z norelro regardless of CONFIG_RELOCATABLE
+>       https://git.kernel.org/arm64/c/3b92fa7485eb
 
-I would expect you *both* to at least mention this conflict to Linus ...
+It looks like this is now producing warnings when linking with BFD.
+$ make ...
+...
+  LD      .tmp_vmlinux.kallsyms1
+aarch64-linux-gnu-ld: warning: -z norelro ignored
+  KSYMS   .tmp_vmlinux.kallsyms1.S
+  AS      .tmp_vmlinux.kallsyms1.S
+  LD      .tmp_vmlinux.kallsyms2
+aarch64-linux-gnu-ld: warning: -z norelro ignored
+  KSYMS   .tmp_vmlinux.kallsyms2.S
+  AS      .tmp_vmlinux.kallsyms2.S
+  LD      vmlinux
+aarch64-linux-gnu-ld: warning: -z norelro ignored
 
---=20
-Cheers,
-Stephen Rothwell
+Alan, looking at binutils-gdb commit 5fd104addfddb ("Emit a warning
+when -z relro is unsupported") mentions targets lacking relro support
+will produce this warning.  I thought aarch64 supports relro
+though...?
+Looks like we're invoking:
++ aarch64-linux-gnu-ld -EL -maarch64elf --no-undefined -X -z norelro
+-shared -Bsymbolic -z notext --no-apply-dynamic-relocs
+--fix-cortex-a53-843419 --build-id=sha1 --orphan-handling=warn
+--strip-debug -o .tmp_vmlinux.kallsyms1 -T
+./arch/arm64/kernel/vmlinux.lds --whole-archive
+arch/arm64/kernel/head.o init/built-in.a usr/built-in.a
+arch/arm64/built-in.a kernel/built-in.a certs/built-in.a mm/built-in.a
+fs/built-in.a ipc/built-in.a security/built-in.a crypto/built-in.a
+block/built-in.a arch/arm64/lib/built-in.a lib/built-in.a
+arch/arm64/lib/lib.a lib/lib.a drivers/built-in.a sound/built-in.a
+net/built-in.a virt/built-in.a --no-whole-archive --start-group
+./drivers/firmware/efi/libstub/lib.a --end-group
+aarch64-linux-gnu-ld: warning: -z norelro ignored
 
---Sig_/yP56w+C5xgj2Oxokg8e0qTf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+So we set the emulation mode via -maarch64elf, and our preprocessed
+linker script has `OUTPUT_ARCH(aarch64)`. From that commit, there's a
+linked mailing list discussion:
+https://sourceware.org/legacy-ml/binutils/2017-01/msg00441.html
 
------BEGIN PGP SIGNATURE-----
+Is there something more we need to do to our linker script
+(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/kernel/vmlinux.lds.S)
+for BFD not to warn when passing `-z norelro`?  It looks like common
+page size might need to be specified?  I tried:
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/X3GQACgkQAVBC80lX
-0GwUOAf7BCupZhrH2m2TJVGAUKCPwPHu4YXNRd6qZwz5TD6ZnwIh9coLFVzi8DaO
-ReDNKTw1vJDUK8x5Aa+J4AWvsRIZehVTjX1b7l0TMizYHLL/6xR+GUEBauaIUjmE
-z4T/vheB0eP+hfqvOdOhAe6YKoODs9ShXzQyHZNPPaG6YY91qjhwLYVmqE3HpLdl
-ScOH8T8PvuafJMbKaJoDGUHI5Tn39NiP4poo06mKQzD0ssAkm0YRrTklQnCjUe8n
-bpM2h0G+n7vuq3il6uMCRtciu0Z5pNUuCrbv3fWrZqPxAGEBWvEITMb4lYcx4CA5
-nTEUUH3aSi40uo3kCrZ5v9R1XlslJQ==
-=A+gw
------END PGP SIGNATURE-----
+diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+index 1bda604f4c70..ae8cce140fdf 100644
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -121,7 +121,7 @@ SECTIONS
+                _text = .;
+                HEAD_TEXT
+        }
+-       .text : {                       /* Real text segment            */
++       .text ALIGN (CONSTANT (COMMONPAGESIZE)): {      /* Real text
+segment    */
 
---Sig_/yP56w+C5xgj2Oxokg8e0qTf--
+and passing `-z common-page-size=4096` but neither seemed to do the
+trick. (https://docs.adacore.com/live/wave/binutils-stable/html/ld/ld.html#index-COMMONPAGESIZE-553
+
+Worst case, we add `-z norelro` just for LLD:
+
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 6a87d592bd00..6a6235e1e8a9 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -10,7 +10,7 @@
+ #
+ # Copyright (C) 1995-2001 by Russell King
+
+-LDFLAGS_vmlinux        :=--no-undefined -X -z norelro
++LDFLAGS_vmlinux        :=--no-undefined -X
+
+ ifeq ($(CONFIG_RELOCATABLE), y)
+ # Pass --no-apply-dynamic-relocs to restore pre-binutils-2.27 behaviour
+@@ -28,6 +28,10 @@ LDFLAGS_vmlinux      += --fix-cortex-a53-843419
+   endif
+ endif
+
++ifeq ($(CONFIG_LD_IS_LLD), y)
++LDFLAGS_vmlinux        += -z norelro
++endif
++
+ ifeq ($(CONFIG_ARM64_USE_LSE_ATOMICS), y)
+   ifneq ($(CONFIG_ARM64_LSE_ATOMICS), y)
+ $(warning LSE atomics not supported by binutils)
+
+-- 
+Thanks,
+~Nick Desaulniers
