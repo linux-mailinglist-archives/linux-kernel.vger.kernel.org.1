@@ -2,68 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8202F2D9300
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 06:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7593D2D9302
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 06:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403865AbgLNFxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 00:53:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36090 "EHLO mail.kernel.org"
+        id S2406728AbgLNFyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 00:54:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726058AbgLNFxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 00:53:42 -0500
-Date:   Mon, 14 Dec 2020 06:52:58 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1607925182;
-        bh=SoiheqCI9PIiKWpVjyXjG6Sn5NCVQc3Mxb3Mboyp9XI=;
-        h=From:To:Subject:References:In-Reply-To:From;
-        b=I9RkWVsDnRHa6i1jZQQ6+NM0Hu/LXJbdeEYnxBmtdkqhLofqsVy5AWdLXD4fiZ9Ge
-         QbWdfxYF1F4BI3Si17BOv2rEIEPLwWUXoeHHmTTLAR/ZQ2htpEecCk1VR9RF5fZhfS
-         +gHFBisOTIS7XPmMJ0sGBGel1/LE4+ZiTh8y71i8=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dave Jones <davej@codemonkey.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: Re: Linux 5.10
-Message-ID: <X9b9ujh5T6U5+aBY@kroah.com>
-References: <CAHk-=whCKhxNyKn1Arut8xUDKTwp3fWcCj_jbL5dbzkUmo45gQ@mail.gmail.com>
- <20201214053147.GA24093@codemonkey.org.uk>
+        id S1726058AbgLNFyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 00:54:09 -0500
+Date:   Sun, 13 Dec 2020 21:53:27 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607925209;
+        bh=i16BifUJiG908ADKX33lN3E+d1H+NPST+DKFRlua0sc=;
+        h=From:To:Cc:Subject:From;
+        b=Vz742K6NGVNpmN1b2Mu7MfDQY8/MpslxDH3rDOKvNd87Tq2HQdUGp9Zb28PahoBTo
+         9KPjGVineDijLgwV+U7csBNuX0nb9QN6k83hjaxFeZNk2GTahWNQFC71XfcguogXN8
+         +trPJwx0qNFUM8+41Iv05enSTy0VwY4KkCf/G/1i8NTMKV0TNzg7yRbHKXd9MN43wh
+         po+FoQ3oHkG05hHTVnwWwtKuf+W4TvAE0FIZV7YWp16KTnzUOa8xR21rrX8gQn/3lF
+         RbpB4SoHtb7EzqCCoueVr6+UL4NR02NttEHOBGIwt2+YnC4k2oUvX7yo4kzowW8Ygr
+         wlnxN5hS3PGqg==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [GIT PULL] fsverity updates for 5.11
+Message-ID: <X9b910/Ldj6kdljm@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201214053147.GA24093@codemonkey.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 12:31:47AM -0500, Dave Jones wrote:
-> On Sun, Dec 13, 2020 at 03:03:29PM -0800, Linus Torvalds wrote:
->  > Ok, here it is - 5.10 is tagged and pushed out.
->  > 
->  > I pretty much always wish that the last week was even calmer than it
->  > was, and that's true here too. There's a fair amount of fixes in here,
->  > including a few last-minute reverts for things that didn't get fixed,
->  > but nothing makes me go "we need another week".
-> 
-> ...
-> 
->  > Mike Snitzer (1):
->  >       md: change mddev 'chunk_sectors' from int to unsigned
-> 
-> Seems to be broken.  This breaks mounting my raid6 partition:
-> 
-> [   87.290698] attempt to access beyond end of device
->                md0: rw=4096, want=13996467328, limit=6261202944
-> [   87.293371] attempt to access beyond end of device
->                md0: rw=4096, want=13998564480, limit=6261202944
-> [   87.296045] BTRFS warning (device md0): couldn't read tree root
-> [   87.300056] BTRFS error (device md0): open_ctree failed
-> 
-> Reverting it goes back to the -rc7 behaviour where it mounts fine.
+The following changes since commit 09162bc32c880a791c6c0668ce0745cf7958f576:
 
-If the developer/maintainer(s) agree, I can revert this and push out a
-5.10.1, just let me know.
+  Linux 5.10-rc4 (2020-11-15 16:44:31 -0800)
 
-thanks,
+are available in the Git repository at:
 
-greg k-h
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fsverity-for-linus
+
+for you to fetch changes up to bde493349025ca0559e2fff88592935af3b8df19:
+
+  fs-verity: move structs needed for file signing to UAPI header (2020-11-23 19:30:14 -0800)
+
+----------------------------------------------------------------
+
+Some cleanups for fs-verity:
+
+- Rename some names that have been causing confusion.
+
+- Move structs needed for file signing to the UAPI header.
+
+----------------------------------------------------------------
+Eric Biggers (4):
+      fs-verity: remove filenames from file comments
+      fs-verity: rename fsverity_signed_digest to fsverity_formatted_digest
+      fs-verity: rename "file measurement" to "file digest"
+      fs-verity: move structs needed for file signing to UAPI header
+
+ Documentation/filesystems/fsverity.rst | 68 ++++++++++++++++------------------
+ fs/verity/enable.c                     |  8 ++--
+ fs/verity/fsverity_private.h           | 36 ++----------------
+ fs/verity/hash_algs.c                  |  2 +-
+ fs/verity/init.c                       |  2 +-
+ fs/verity/measure.c                    | 12 +++---
+ fs/verity/open.c                       | 24 ++++++------
+ fs/verity/signature.c                  | 14 +++----
+ fs/verity/verify.c                     |  2 +-
+ include/uapi/linux/fsverity.h          | 49 ++++++++++++++++++++++++
+ 10 files changed, 116 insertions(+), 101 deletions(-)
