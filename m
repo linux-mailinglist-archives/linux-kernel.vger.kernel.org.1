@@ -2,82 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692CF2D9741
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F062C2D9740
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407508AbgLNLRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 06:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407614AbgLNLRR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:17:17 -0500
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD93BC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 03:16:16 -0800 (PST)
-Received: from [2a02:fe0:c700:2:687c:e90d:da70:b07d] (port=55262)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Ywe_C4rlyn@ihsan-code.eu>)
-        id 1kolpt-00020x-12
-        for linux-kernel@vger.kernel.org; Mon, 14 Dec 2020 12:16:13 +0100
-Subject: Axi X: A Mass Commercial Nix Based O.S. (Fair Pay initiative as
- earlier discussed)
-References: <0cc3e3c3-cf47-dff1-b6c1-2ab562072a01@ihsan-code.eu>
- <0523bdfb-7d1f-998b-b79e-13fc7f85b6a7@ihsan-code.eu>
- <6737bbc9-aceb-dc43-b2c5-51265abfff5d@ihsan-code.eu>
- <b2b91154-bc58-d5cb-41f7-44a6c95b48cf@ihsan-code.eu>
- <861b1f05-3b1c-f458-32ce-c548b9b0c07f@ihsan-code.eu>
- <3c6233c8-f5c2-756f-14d2-d835e724b387@ihsan-code.eu>
- <3968fadc-4a52-b795-e966-d41057e1ba2b@ihsan-code.eu>
- <61ad9caf-2a17-e50e-1be3-1fe6c65229ad@ihsan-code.eu>
- <cd68e719-610a-6189-3cdf-8ee692bab419@ihsan-code.eu>
- <92c7325b-5774-35cd-ea6a-89ed87c2477b@ihsan-code.eu>
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C4rlyn@ihsan-code.eu>
-Message-ID: <1da993f8-4e39-e527-b269-0cbb20405173@ihsan-code.eu>
-Date:   Mon, 14 Dec 2020 12:16:05 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S2407612AbgLNLRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 06:17:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725785AbgLNLQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 06:16:53 -0500
+Date:   Mon, 14 Dec 2020 13:16:08 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607944572;
+        bh=NW4r1Tcxoq5gXK7oXCVu+J52nphOih0Z+rS0DjoWhmg=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P5cOmZU6g+CgucBWIZXlRMJAYAQjceTR3kOjCivc5aRsLak7N4pVavLGSPd95Rv25
+         FcF9owVY0eekKqSeZGPxuzgYTZLPm4j7Bh634MiJRcO65vqOcH1IxCOdJAxOFyL6bs
+         2U0if1B7pbW3XvUO8F80z+3t6kpsy+nSwDY6oZmUzEEcyrGEoUg3NT+iVEVSdmeFuj
+         6XaFDO5U3dQ1yMLpiJ2ejCFX2sqPYhJOrwzkHxgsDf8ImtjIWISXGLMijNYnIPUwvn
+         +jEWhI2KZIRCcsjftobQir3Xco5YkXgQUxxnEpE4N+YE5r82UgZv6VGN0mqp8nyolZ
+         6FAuA3kHGe1sg==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Vasyl Gomonovych <gomonovych@gmail.com>
+Cc:     tariqt@nvidia.com, kuba@kernel.org, joe@perches.com,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] net/mlx4: Use true,false for bool variable
+Message-ID: <20201214111608.GE5005@unreal>
+References: <20201212090234.0362d64f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201214103008.14783-1-gomonovych@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <92c7325b-5774-35cd-ea6a-89ed87c2477b@ihsan-code.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201214103008.14783-1-gomonovych@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I hereby announce Axi X, a mass commercial O.S. based on Nix.
+On Mon, Dec 14, 2020 at 11:30:08AM +0100, Vasyl Gomonovych wrote:
+> It is fix for semantic patch warning available in
+> scripts/coccinelle/misc/boolinit.cocci
+> Fix en_rx.c:687:1-17: WARNING: Assignment of 0/1 to bool variable
+> Fix main.c:4465:5-13: WARNING: Comparison of 0/1 to bool variable
+>
+> Signed-off-by: Vasyl Gomonovych <gomonovych@gmail.com>
+> ---
+>  - Add coccicheck script name
+>  - Simplify if condition
+> ---
+>  drivers/net/ethernet/mellanox/mlx4/en_rx.c | 2 +-
+>  drivers/net/ethernet/mellanox/mlx4/main.c  | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-Logo even with colorcoding hints.
+Please refrain from sending new version of patches as reply-to to
+previous variants. It makes to appear previous patches out-of-order
+while viewing in threaded mode.
 
-And a roadmap for fair pay unity in East and West, based on La Guad. If 
-that is science or La Quran, as we think ultimately a standard Ibrahimic 
-expression is needed.
-
-Some examples of my mascot work and the O.S. link itself.
-
-I started work early on with this, as Bit o 3-D. A usergames client with 
-3rd party work seems perfect for nix, and will be the best economy for 
-games. Also many younger people can make games with this. And if skilled 
-aquired can go ultimately into source aswell. (Known in Amiga culture 
-already with the module Style Blend here also, if anyone remembers this, 
-which it seems many do.)
-
-Was in some demo crews, and Majic 12, at the age of 16. The channel Tov 
-Crew reminisces on this.
-
-And went on to do the new club music that came with IT, called Trance. 
-As I knew programming, this also was mascot culture, for what I now call 
-Axi X.
-
-Later did research on Monotheism, and have had top 1% research on 
-Academia.edu, that now is the basis for Axi X.
-
-Axi X, begun on separate channel!
-
-Hail La Guad!
-
-Serenity!
-Ywe Cærlyn
-
+Thanks
