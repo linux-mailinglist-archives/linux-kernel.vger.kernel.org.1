@@ -2,86 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FD72DA416
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:22:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B61912DA41C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387941AbgLNXWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 18:22:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725993AbgLNXWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 18:22:01 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E1E32250F;
-        Mon, 14 Dec 2020 23:21:19 +0000 (UTC)
-Date:   Mon, 14 Dec 2020 18:21:17 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Bean Huo' <huobean@gmail.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "joe@perches.com" <joe@perches.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/6] scsi: ufs: Remove stringize operator '#'
- restriction
-Message-ID: <20201214182117.1bbc717d@gandalf.local.home>
-In-Reply-To: <977f3ea155644cd89bc83f2e9dcf281e@AcuMS.aculab.com>
-References: <20201214202014.13835-1-huobean@gmail.com>
-        <20201214202014.13835-2-huobean@gmail.com>
-        <977f3ea155644cd89bc83f2e9dcf281e@AcuMS.aculab.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1732297AbgLNXZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 18:25:09 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:40559 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730610AbgLNXZH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 18:25:07 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1koxCT-0002DV-Rd; Mon, 14 Dec 2020 23:24:17 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Carl Huang <cjhuang@codeaurora.org>,
+        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ath11k: add missing null check on allocated skb
+Date:   Mon, 14 Dec 2020 23:24:17 +0000
+Message-Id: <20201214232417.84556-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 23:11:40 +0000
-David Laight <David.Laight@ACULAB.COM> wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> > ---
-> >  include/trace/events/ufs.h | 40 +++++++++++++++++++-------------------
-> >  1 file changed, 20 insertions(+), 20 deletions(-)
-> > 
-> > diff --git a/include/trace/events/ufs.h b/include/trace/events/ufs.h
-> > index 0bd54a184391..fa755394bc0f 100644
-> > --- a/include/trace/events/ufs.h
-> > +++ b/include/trace/events/ufs.h
-> > @@ -20,28 +20,28 @@  
-> ..
-> > +#define UFS_LINK_STATES						\
-> > +	EM(UIC_LINK_OFF_STATE,		"UIC_LINK_OFF_STATE")		\
-> > +	EM(UIC_LINK_ACTIVE_STATE,	"UIC_LINK_ACTIVE_STATE")	\
-> > +	EMe(UIC_LINK_HIBERN8_STATE,	"UIC_LINK_HIBERN8_STATE")  
-> 
-> If you make EM a parameter to UFS_LINK_STATES then the caller
-> can pass in the name of a #define that does the required expansion.
-> The caller can also add in any required terminator after the last entry.
-> For an enum (which doesn't want a , at the end) just add a dummy entry.
-> You often want a constant for the number of items anyway.
+Currently the null check on a newly allocated skb is missing and
+this can lead to a null pointer dereference is the allocation fails.
+Fix this by adding a null check and returning -ENOMEM.
 
-This is currently the way its done in multiple other places. When creating
-the "EMe" trick, I've thought about it, but then realized it would make the
-other locations look strange without the expected comma, and decided that
-EMe() would be the best solution, as it's only strange in where it's added,
-and not where its used.
+Addresses-Coverity: ("Dereference null return")
+Fixes: 43ed15e1ee01 ("ath11k: put hw to DBS using WMI_PDEV_SET_HW_MODE_CMDID")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/wireless/ath/ath11k/wmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
- $ git grep -l EMe include/trace/ |wc -l
-     11
-
-It's already used in 11 other files, let's not muck with it now.
-
--- Steve
+diff --git a/drivers/net/wireless/ath/ath11k/wmi.c b/drivers/net/wireless/ath/ath11k/wmi.c
+index da4b546b62cb..c869ff479212 100644
+--- a/drivers/net/wireless/ath/ath11k/wmi.c
++++ b/drivers/net/wireless/ath/ath11k/wmi.c
+@@ -3460,6 +3460,8 @@ int ath11k_wmi_set_hw_mode(struct ath11k_base *ab,
+ 	len = sizeof(*cmd);
+ 
+ 	skb = ath11k_wmi_alloc_skb(wmi_ab, len);
++	if (!skb)
++		return -ENOMEM;
+ 	cmd = (struct wmi_pdev_set_hw_mode_cmd_param *)skb->data;
+ 
+ 	cmd->tlv_header = FIELD_PREP(WMI_TLV_TAG, WMI_TAG_PDEV_SET_HW_MODE_CMD) |
+-- 
+2.29.2
 
