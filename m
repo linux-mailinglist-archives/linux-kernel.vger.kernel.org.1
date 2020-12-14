@@ -2,126 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FA42D9CE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:48:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3AD32D9CE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:48:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440282AbgLNQnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:43:21 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:35526 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726223AbgLNQnG (ORCPT
+        id S2501911AbgLNQoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 11:44:03 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:58975 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2440301AbgLNQnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:43:06 -0500
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5131F20B717A;
-        Mon, 14 Dec 2020 08:42:24 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5131F20B717A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1607964144;
-        bh=17oy4+dXfaSLajpExnudcAmGMiMK3qcSh76GKO4RE2Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b2qc6msEewlTpaaV0pHx7Usu0G6P2kINFg1UemHsrAy0bPMmhv+KSd6uf9Ipt43F7
-         9ZVKoQrg73yNjw0u7uwhG92+h9a+KuVMhqxpH5ycdsnsUvuE2IjguASH0E3x3Yx3iV
-         XzTsxGp+NTbKbRHRyT9l877JRxZkgxsHU+0yRmnY=
-Date:   Mon, 14 Dec 2020 10:42:22 -0600
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Maurizio Drocco <maurizio.drocco@ibm.com>,
-        Bruno Meneguele <bmeneg@redhat.com>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.7 03/30] ima: extend boot_aggregate with kernel
- measurements
-Message-ID: <20201214164222.GK4951@sequoia>
-References: <20200708154116.3199728-1-sashal@kernel.org>
- <20200708154116.3199728-3-sashal@kernel.org>
- <1594224793.23056.251.camel@linux.ibm.com>
- <20200709012735.GX2722994@sasha-vm>
- <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
- <20201211031008.GN489768@sequoia>
- <659c09673affe9637a5d1391c12af3aa710ba78a.camel@linux.ibm.com>
+        Mon, 14 Dec 2020 11:43:33 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id 72FEF3FA;
+        Mon, 14 Dec 2020 11:42:45 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 14 Dec 2020 11:42:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=+Z0W6DSS/5RY5S9CO+WB5sz6dtt
+        PRA/z0CeH3Ghi4oE=; b=q1yOCS+HteWDw0h4gmyoV76fzY/g8o/rkhFqVIjWaEF
+        SOXCSHMcqZzBrPBAF2/JK4g8qmS5CMPXo8gP72XbvgbFeh8UggyyM9XUECguf+MQ
+        +CRRDLW57S1N3wqnHtAhnwdXlSEPH5BkVOQl+xt39G8ASNt0dmk2C1DvsKmp2NYX
+        0XvwMytaOAwIM2/atZpIsP4JiaNZWwR6+eaz2SBwREol/fHilnU1EZvAq5yeHvV3
+        er6NvWGVCbCrrTQ0bcVFKtJqwhU3SDPyA8Nmj7M1PeyLosarXD6lMfqIhv94P0ia
+        Mj1H+AsfUFWNvuUyn6w180fye4KV87bS5ix0EhGQiMA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=+Z0W6D
+        SS/5RY5S9CO+WB5sz6dttPRA/z0CeH3Ghi4oE=; b=Dk0es85cfh9cD9DPwtv13e
+        Zi6iB5LoBCZi9qo3FPKv57rE9VLiVZG+cHHAWGLoKuZR/QPInGIov9DwcGq5Y+a4
+        eSPVT9r445nU3GpCoHi2xiNwVsh6doFBfdrL96Brb14f4tXMjWlvg+M4/rDm9N26
+        bfQs2D+UZN4pZxExDNaNRrQWxqD2KE3vtXdaW0/dXPgaUMufq7PHh1qCRNNPd4GB
+        OIoTGBUmg3T8jwWJJRw1t76QmS9DgmBagyjvz4XBt3UhKClxKR8VJ+L5g5IinTlP
+        EcwaD73IZsJ4JBzGhPsMMvzjZKTvHWYBfO4aBXAtznE1W4HGycwaPHNnSQrlg7iA
+        ==
+X-ME-Sender: <xms:A5bXX40Oiq0pxpNMl6NGxS35hIGV0lAOGVerfrdIKVAiwTFPzs58HQ>
+    <xme:A5bXXyLbPysGJ8gQPjL854JffhMW_kIv6Ihh6IwY3GLsLapH4-5IefJPyCkzx-uvs
+    a0Bh0ZA_XkxC_Ojm00>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgleefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:BJbXX3GX9dvfW_BNeIga-imAy6es3d_o1H6FuCRbCKnKqAr-11F8BQ>
+    <xmx:BJbXX-UetlxfR69dTvHg5E_2z6NxNxde8wAp0rdS01kz3QKQ4ijk_Q>
+    <xmx:BJbXX_xzp1Ki9UCvoD5yW4k8vBXx-APhqyImY8MDGGnxjSHv1zhkGw>
+    <xmx:BZbXX8eD5X5DfWsz4FXb9lIpqLYvv4DsVgZCtY9tTd9Cp4_1fvDBRg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C6D1124005D;
+        Mon, 14 Dec 2020 11:42:43 -0500 (EST)
+Date:   Mon, 14 Dec 2020 17:42:42 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org
+Subject: Re: [RFC PATCH 05/12] pinctrl: sunxi: add pinctrl driver for
+ V831/V833
+Message-ID: <20201214164242.aevn5wghn26e74sq@gilmour>
+References: <20201212040157.3639864-1-icenowy@aosc.io>
+ <20201212040430.3640418-2-icenowy@aosc.io>
+ <20201214142118.bxdzu7z7cdomhgy7@gilmour>
+ <5C8F8115-4DE6-4000-84DF-8D3BE2574713@aosc.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="lryc4p36xq4m6xdc"
 Content-Disposition: inline
-In-Reply-To: <659c09673affe9637a5d1391c12af3aa710ba78a.camel@linux.ibm.com>
+In-Reply-To: <5C8F8115-4DE6-4000-84DF-8D3BE2574713@aosc.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-11 06:01:54, Mimi Zohar wrote:
-> On Thu, 2020-12-10 at 21:10 -0600, Tyler Hicks wrote:
-> > On 2020-11-29 08:17:38, Mimi Zohar wrote:
-> > > Hi Sasha,
-> > > 
-> > > On Wed, 2020-07-08 at 21:27 -0400, Sasha Levin wrote:
-> > > > On Wed, Jul 08, 2020 at 12:13:13PM -0400, Mimi Zohar wrote:
-> > > > >Hi Sasha,
-> > > > >
-> > > > >On Wed, 2020-07-08 at 11:40 -0400, Sasha Levin wrote:
-> > > > >> From: Maurizio Drocco <maurizio.drocco@ibm.com>
-> > > > >>
-> > > > >> [ Upstream commit 20c59ce010f84300f6c655d32db2610d3433f85c ]
-> > > > >>
-> > > > >> Registers 8-9 are used to store measurements of the kernel and its
-> > > > >> command line (e.g., grub2 bootloader with tpm module enabled). IMA
-> > > > >> should include them in the boot aggregate. Registers 8-9 should be
-> > > > >> only included in non-SHA1 digests to avoid ambiguity.
-> > > > >
-> > > > >Prior to Linux 5.8, the SHA1 template data hashes were padded before
-> > > > >being extended into the TPM.  Support for calculating and extending
-> > > > >the per TPM bank template data digests is only being upstreamed in
-> > > > >Linux 5.8.
-> > > > >
-> > > > >How will attestation servers know whether to include PCRs 8 & 9 in the
-> > > > >the boot_aggregate calculation?  Now, there is a direct relationship
-> > > > >between the template data SHA1 padded digest not including PCRs 8 & 9,
-> > > > >and the new per TPM bank template data digest including them.
-> > > > 
-> > > > Got it, I'll drop it then, thank you!
-> > > 
-> > > After re-thinking this over, I realized that the attestation server can
-> > > verify the "boot_aggregate" based on the quoted PCRs without knowing
-> > > whether padded SHA1 hashes or per TPM bank hash values were extended
-> > > into the TPM[1], but non-SHA1 boot aggregate values [2] should always
-> > > include PCRs 8 & 9.
-> > 
-> > I'm still not clear on how an attestation server would know to include
-> > PCRs 8 and 9 after this change came through a stable kernel update. It
-> > doesn't seem like something appropriate for stable since it requires
-> > code changes to attestation servers to handle the change.
-> > 
-> > I know this has already been released in some stable releases, so I'm
-> > too late, but perhaps I'm missing something.
-> 
-> The point of adding PCRs 8 & 9 only to non-SHA1 boot_aggregate values
-> was to avoid affecting existing attestation servers.  The intention was
-> when attestation servers added support for the non-sha1 boot_aggregate
-> values, they'd also include PCRs 8 & 9.  The existing SHA1
-> boot_aggregate value remains PCRs 0 - 7.
 
-AFAIK, there's nothing that prevents the non-SHA1 TPM 2.0 PCR banks from
-being used even before v5.8, albeit with zero padded SHA1 digests.
-Existing attestation servers that already support that configuration are
-broken by this stable backport.
+--lryc4p36xq4m6xdc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> To prevent this or something similar from happening again, what should
-> have been the proper way of including PCRs 8 & 9?
+On Mon, Dec 14, 2020 at 11:19:48PM +0800, Icenowy Zheng wrote:
+>=20
+>=20
+> =E4=BA=8E 2020=E5=B9=B412=E6=9C=8814=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=
+=8810:21:18, Maxime Ripard <maxime@cerno.tech> =E5=86=99=E5=88=B0:
+> >On Sat, Dec 12, 2020 at 12:04:23PM +0800, Icenowy Zheng wrote:
+> >> V831/V833 are new chips from Allwinner. They're the same die with
+> >> different package.
+> >>=20
+> >> Add a pinctrl driver for them.
+> >>=20
+> >> The difference between V831/V833 pinctrl is implemented based on the
+> >> user manual.
+> >>=20
+> >> Cc: Linus Walleij <linus.walleij@linaro.org>
+> >> Cc: linux-gpio@vger.kernel.org
+> >> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+> >> ---
+> >>  drivers/pinctrl/sunxi/Kconfig              |   5 +
+> >>  drivers/pinctrl/sunxi/Makefile             |   1 +
+> >>  drivers/pinctrl/sunxi/pinctrl-sun8i-v83x.c | 743
+> >+++++++++++++++++++++
+> >>  drivers/pinctrl/sunxi/pinctrl-sunxi.h      |   2 +
+> >>  4 files changed, 751 insertions(+)
+> >>  create mode 100644 drivers/pinctrl/sunxi/pinctrl-sun8i-v83x.c
+> >>=20
+> >> diff --git a/drivers/pinctrl/sunxi/Kconfig
+> >b/drivers/pinctrl/sunxi/Kconfig
+> >> index 593293584ecc..fc13335a3eda 100644
+> >> --- a/drivers/pinctrl/sunxi/Kconfig
+> >> +++ b/drivers/pinctrl/sunxi/Kconfig
+> >> @@ -73,6 +73,11 @@ config PINCTRL_SUN8I_V3S
+> >>  	default MACH_SUN8I
+> >>  	select PINCTRL_SUNXI
+> >> =20
+> >> +config PINCTRL_SUN8I_V83X
+> >> +	bool "Support for the Allwinner V831/V833 PIO"
+> >> +	default MACH_SUN8I
+> >> +	select PINCTRL_SUNXI
+> >> +
+> >
+> >We're not using the wildcard much, and I'd rather be consistent with
+> >the
+> >name / Kconfig option scheme used for the clock driver (and the rest of
+> >the SoCs in a similar situation)
+>=20
+> Well, call everything V831, or call everything V833, or call things usabl=
+e=20
+> on V831 V831 and things only available to V833 V833?
 
-I don't think that commits like 6f1a1d103b48 ("ima: Switch to
-ima_hash_algo for boot aggregate") and 20c59ce010f8 ("ima: extend
-boot_aggregate with kernel measurements") should be backported to
-stable.
+It would feel more natural to have everything called v831, with things
+v833-specific obviously called v833
 
-Including PCRs 8 and 9 definitely makes sense to include in the
-boot_aggregate value but limiting such a change to "starting in 5.8",
-rather than "starting in 5.8 and 5.4.82", is the safer approach when
-attestation server modifications are required.
+Maxime
 
-Tyler
+--lryc4p36xq4m6xdc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
-> thanks,
-> 
-> Mimi
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9eWAgAKCRDj7w1vZxhR
+xe/dAQDpgTTCJbOrDiCeLVgRzVrqTjXtVMYwgo1nT5k8wHiLHAD/S/zXMmQVxRhq
+wXN7VkZ5kBNAAygKElNawmYb1GA6LA4=
+=F/ni
+-----END PGP SIGNATURE-----
+
+--lryc4p36xq4m6xdc--
