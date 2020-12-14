@@ -2,143 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27862D93A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 08:26:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A794F2D93A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 08:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407101AbgLNHZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 02:25:27 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9435 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726970AbgLNHZ1 (ORCPT
+        id S2438937AbgLNHaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 02:30:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726970AbgLNHaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 02:25:27 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CvXvN2j1szhsDs;
-        Mon, 14 Dec 2020 15:24:16 +0800 (CST)
-Received: from [10.174.177.149] (10.174.177.149) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 14 Dec 2020 15:24:42 +0800
-Subject: Re: [PATCH] PCI: fix use-after-free in pci_register_host_bridge
-To:     Rob Herring <robh@kernel.org>
-CC:     Bjorn Helgaas <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20201120074848.31418-1-miaoqinglang@huawei.com>
- <20201211154652.GA313883@robh.at.kernel.org>
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-Message-ID: <db2c9d2f-29b1-2bff-1261-7da6f5baaf4a@huawei.com>
-Date:   Mon, 14 Dec 2020 15:24:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 14 Dec 2020 02:30:13 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3661C0613D3
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 23:29:27 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id e2so11895861pgi.5
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 23:29:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1UnPe12dT6b6iT2C3p6i0jSOevvJBWZfKVGfvi3n+4A=;
+        b=eT+GqU2qoeWuLBldveCoVslUSrxOIVa2IZjrtcr6Q7RerPM7rFWrOhUpGPkf0xGN6c
+         j/nPFAgGri8DY2g/qLWdm2jcst92kllfEsmnBfXio8h9floVPWSDeLha/Tyo0Zah4bjb
+         9x9WVaIKA0ufM+BR+RM4we4lJl/yFngZ437eA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1UnPe12dT6b6iT2C3p6i0jSOevvJBWZfKVGfvi3n+4A=;
+        b=psNb8jeWiAvA18K1lyibGY+IGXi/73dxU2HkVUHG1kUsVXL5o5mje37nTnjgBmmt0y
+         pC2nYBYc6QGiE3DjFmwiHXfJOxPOtsoAbwEcUypmCcOYZd/t93SZgwDnfm3BhFxTXuqE
+         ww0McVqrmsdgFZjbh5d4qpFu5JWILn2me7s2WI8ZzzzaMNzofLXjY+pSf0UcAV105F3A
+         xC2dmpRlwczPe5JfAx6CkFU3z/TvGe6pj8RZJn+75DfeVAI5js+ZkTF5gL35TcOr7CFi
+         PqsKXhl+3mta3flcJb9kPMtSYrSIdgoOg0Xu/yDFlMzpj6pVDpO3R+GLveUxqJBp8VyC
+         seWQ==
+X-Gm-Message-State: AOAM531IPavb5GBvxHU1hLFzWOCpbd8m1Za3mrI4CI72/ek20kWq4jfF
+        55vWSlj0HL0lKAGdQ6hNG4o+o+Aq7bDrHA==
+X-Google-Smtp-Source: ABdhPJyYR7QYt2Y7JFzV3OTCWyiglmqng5k93TIGp7kJzNduqM93tcZuMcXBbFERx+x9mDkIU7AE4Q==
+X-Received: by 2002:a63:c26:: with SMTP id b38mr22979908pgl.333.1607930967361;
+        Sun, 13 Dec 2020 23:29:27 -0800 (PST)
+Received: from localhost ([2401:fa00:1:10:3e52:82ff:fe5e:cc9d])
+        by smtp.gmail.com with ESMTPSA id gw7sm16746930pjb.36.2020.12.13.23.29.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 13 Dec 2020 23:29:26 -0800 (PST)
+From:   Claire Chang <tientzu@chromium.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        robh@kernel.org, sre@kernel.org, pavel@ucw.cz
+Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Claire Chang <tientzu@chromium.org>
+Subject: [PATCH] Bluetooth: hci_uart: Fix a race for write_work scheduling
+Date:   Mon, 14 Dec 2020 15:29:21 +0800
+Message-Id: <20201214072921.3402608-1-tientzu@chromium.org>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
 MIME-Version: 1.0
-In-Reply-To: <20201211154652.GA313883@robh.at.kernel.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.149]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In hci_uart_write_work, there is a loop/goto checking the value of
+HCI_UART_TX_WAKEUP. If HCI_UART_TX_WAKEUP is set again, it keeps trying
+hci_uart_dequeue; otherwise, it clears HCI_UART_SENDING and returns.
 
+In hci_uart_tx_wakeup, if HCI_UART_SENDING is already set, it sets
+HCI_UART_TX_WAKEUP, skips schedule_work and assumes the running/pending
+hci_uart_write_work worker will do hci_uart_dequeue properly.
 
-ÔÚ 2020/12/11 23:46, Rob Herring Ð´µÀ:
-> On Fri, Nov 20, 2020 at 03:48:48PM +0800, Qinglang Miao wrote:
->> When put_device(&bridge->dev) being called, kfree(bridge) is inside
->> of release function, so the following device_del would cause a
->> use-after-free bug.
->>
->> Fixes: 37d6a0a6f470 ("PCI: Add pci_register_host_bridge() interface")
-> 
-> That commit did have some problems, but this patch doesn't apply to that
-> commit. See commits 1b54ae8327a4 and 9885440b16b8.
-> 
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
->> ---
->>   drivers/pci/probe.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
->> index 4289030b0..82292e87e 100644
->> --- a/drivers/pci/probe.c
->> +++ b/drivers/pci/probe.c
->> @@ -991,8 +991,8 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
->>   	return 0;
->>   
->>   unregister:
->> -	put_device(&bridge->dev);
->>   	device_del(&bridge->dev);
->> +	put_device(&bridge->dev);
-> 
-> I don't think this is right.
-> 
-> Let's look at pci_register_host_bridge() with only the relevant
-> sections:
-> 
-> static int pci_register_host_bridge(struct pci_host_bridge *bridge)
-> {
-> 	...
-> 
-> 	err = device_add(&bridge->dev);
-> 	if (err) {
-> 		put_device(&bridge->dev);
-> 		goto free;
-> 	}
-> 	bus->bridge = get_device(&bridge->dev);
-> 
->          ...
-> 	if (err)
-> 		goto unregister;
-> 	...
-> 
-> 	return 0;
-> 
-> unregister:
-> 	put_device(&bridge->dev);
-> 	device_del(&bridge->dev);
-> 
-> free:
-> 	kfree(bus);
-> 	return err;
-> }
-> 
-> The documentation for device_add says this:
->   * Rule of thumb is: if device_add() succeeds, you should call
->   * device_del() when you want to get rid of it. If device_add() has
->   * *not* succeeded, use *only* put_device() to drop the reference
->   * count.
-> 
-> The put_device at the end is to balance the get_device after device_add.
-> It will *only* decrement the use count. Then we call device_del as the
-> documentation says.
-> 
-> Rob
-> .
-Hi, Rob
+However, if the HCI_UART_SENDING check in hci_uart_tx_wakeup is done after
+the loop breaks, but before HCI_UART_SENDING is cleared in
+hci_uart_write_work, the schedule_work is skipped incorrectly.
 
-Your words make sence to me: the code is *logicly* correct here and 
-won't raise a use-after-free bug. I do hold a misunderstanding of this 
-one, sorry for that ~
+Fix this race by changing the order of HCI_UART_SENDING and
+HCI_UART_TX_WAKEUP modification.
 
-But I still think this patch should be reconsidered:
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: 82f5169bf3d3 ("Bluetooth: hci_uart: add serdev driver support library")
+Signed-off-by: Claire Chang <tientzu@chromium.org>
+---
+ drivers/bluetooth/hci_ldisc.c  | 7 +++----
+ drivers/bluetooth/hci_serdev.c | 4 ++--
+ 2 files changed, 5 insertions(+), 6 deletions(-)
 
-The kdoc of device_unregister explicitly mentions the possibility that 
-other refs might continue to exist after device_unregister was called, 
-and *del_device* is first part of it.
+diff --git a/drivers/bluetooth/hci_ldisc.c b/drivers/bluetooth/hci_ldisc.c
+index f83d67eafc9f..8be4d807d137 100644
+--- a/drivers/bluetooth/hci_ldisc.c
++++ b/drivers/bluetooth/hci_ldisc.c
+@@ -127,10 +127,9 @@ int hci_uart_tx_wakeup(struct hci_uart *hu)
+ 	if (!test_bit(HCI_UART_PROTO_READY, &hu->flags))
+ 		goto no_schedule;
+ 
+-	if (test_and_set_bit(HCI_UART_SENDING, &hu->tx_state)) {
+-		set_bit(HCI_UART_TX_WAKEUP, &hu->tx_state);
++	set_bit(HCI_UART_TX_WAKEUP, &hu->tx_state);
++	if (test_and_set_bit(HCI_UART_SENDING, &hu->tx_state))
+ 		goto no_schedule;
+-	}
+ 
+ 	BT_DBG("");
+ 
+@@ -174,10 +173,10 @@ static void hci_uart_write_work(struct work_struct *work)
+ 		kfree_skb(skb);
+ 	}
+ 
++	clear_bit(HCI_UART_SENDING, &hu->tx_state);
+ 	if (test_bit(HCI_UART_TX_WAKEUP, &hu->tx_state))
+ 		goto restart;
+ 
+-	clear_bit(HCI_UART_SENDING, &hu->tx_state);
+ 	wake_up_bit(&hu->tx_state, HCI_UART_SENDING);
+ }
+ 
+diff --git a/drivers/bluetooth/hci_serdev.c b/drivers/bluetooth/hci_serdev.c
+index ef96ad06fa54..9e03402ef1b3 100644
+--- a/drivers/bluetooth/hci_serdev.c
++++ b/drivers/bluetooth/hci_serdev.c
+@@ -83,9 +83,9 @@ static void hci_uart_write_work(struct work_struct *work)
+ 			hci_uart_tx_complete(hu, hci_skb_pkt_type(skb));
+ 			kfree_skb(skb);
+ 		}
+-	} while (test_bit(HCI_UART_TX_WAKEUP, &hu->tx_state));
+ 
+-	clear_bit(HCI_UART_SENDING, &hu->tx_state);
++		clear_bit(HCI_UART_SENDING, &hu->tx_state);
++	} while (test_bit(HCI_UART_TX_WAKEUP, &hu->tx_state));
+ }
+ 
+ /* ------- Interface to HCI layer ------ */
+-- 
+2.29.2.576.ga3fc446d84-goog
 
-By the way, 'del_device() called before put_device()' is everywhere in 
-kernel code, like device_unregister(), pci_destroy_dev() or 
-switchtec_pci_remove()
-
-In fact, I can't find another place in kernel code looks like:
-	put_device(x);
-  	device_del(x);
-
-So I guess put_device() ought to be the last time we touch the object 
-(I don't find evidence strong enough in kdoc to prove this) and putting 
-put_device after device_del is a more natural logic.
-
-Qinglang
-.
-
-> 
