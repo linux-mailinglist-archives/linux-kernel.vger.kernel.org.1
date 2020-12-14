@@ -2,118 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1EB02D9686
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FFA2D968B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407225AbgLNKo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 05:44:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729223AbgLNKoW (ORCPT
+        id S2394076AbgLNKpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 05:45:51 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:40155 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgLNKpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 05:44:22 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5D7C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 02:43:42 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id q75so14823753wme.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 02:43:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gPCYc+i9Iy87r57uStW+ARtubvlgXBH6jVAjmF4IhnU=;
-        b=brfsj5+b+IqlJui0vPdCHYpYP2bFYzO+1JlWfKz1weffGaprU8OkE8dqZ9gA8Ypm/0
-         v6+grN5KbiSQRACrcBWw1asFdDFVqF9nBu3Oa0GUPYv5yBkX67nd1ntfLcAJg0zP6PdE
-         xlq10No04/AwJLV6O3ydkHlsjEAP4HvjVzoA+aYzj43B5E2rQHWk/Z7UGIyKRfSzOZGq
-         LSBaHiBg/MvYDr977DGjKw/verW1+v2Q4CYL/idPu8LHXXM/r9HzNyp7TPbAOeKFlyOV
-         7pCIn4oa/HWqnDFni36IPva5UF+BAQ+YUV6hhDKYRIcADocHuV2u230LRwac34Cs6XGF
-         Q/Ew==
+        Mon, 14 Dec 2020 05:45:50 -0500
+Received: by mail-lf1-f67.google.com with SMTP id m12so28985775lfo.7;
+        Mon, 14 Dec 2020 02:45:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gPCYc+i9Iy87r57uStW+ARtubvlgXBH6jVAjmF4IhnU=;
-        b=atkI0pjSzsFf3a8l0fik5zGnYAngphHJwUX1j60G6zEGkzfi3O8NQ6dCMPoiQR5bFK
-         svKrChYTb57LPY00Hf1Ap859DOeudKWVHuHSKDYVFuPwpAiHEGrNBi1EtN+YxnPPMUnS
-         AVw493DgbizEFnGorBPa7Exi1zT7XSHUHdbUJMpzkqHHnNst2U/p9t4lYF5nROkLr0Pu
-         Z8EUXZSnIEbB4lxqLKs9AKOIJyaaAjaPYJxzDPEpseI1bzc0HWyNChQ7Xj4jch3hwiIk
-         MpKy5lFEFSHolrc3N7ywWFfBI+rSfjk2a7ZC0WLDglSGxITyizrb3zjCgDD16ff7ZDNO
-         0r3w==
-X-Gm-Message-State: AOAM533ghi0j3usF3+P5ilYZvMGiRPUbKwu2L6q02j37fPn4VRQAeLsO
-        L1hPo1N4DsnYYjQoJWw7QGd8CSulGnTyJ2nf
-X-Google-Smtp-Source: ABdhPJyQXVJMnqfLrDR2gjT3sPvs5VM6+4B7QNqCQiLsarQ76jozBbecP92kWQZKTuGAqkMV/ku7Vw==
-X-Received: by 2002:a1c:bc57:: with SMTP id m84mr26948837wmf.163.1607942619946;
-        Mon, 14 Dec 2020 02:43:39 -0800 (PST)
-Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id w189sm18608037wmg.31.2020.12.14.02.43.38
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=37w8XI/PHey+7PCjYDCHtGlWY4jIOMQTFTKt1BKLli8=;
+        b=APFZhWosw4+oeG7YRIvp7Ft3J0ji6/5a9XcpvIwgL3hQBAcui3MByQS30QnqxK27QV
+         Fa03qVofXxn5Zy0RD7GBwSKiQXVPOWSgICMEvF99qjlt8BYFChW6ffxsozDNJDm3VxXC
+         cvNcFD6hcCOLnBqG1uJovPPih0PZXt0qlLNpVBtEqdi4p8JmqQtUbfm4NMAo3jreqwx9
+         bKOmItIfbrtMiLbBvCEqWPDNdCAEqtdS0AKgZHqG0y3TSUFNODvCNlHL1sUj66krdqbw
+         cLdsguuDlcrSkjHbFT3aMUT3ee9ASYBr0E/PjuM8ppYWtfQ9PygryUW08YIUHHsQCe55
+         t8fQ==
+X-Gm-Message-State: AOAM531iWaY6BAsMptQ53VJ+hezNmlNt2SRm1YuE2pdFVWVEAwuChkCe
+        J+s0upryUMJ0iUwmr5kyTCY=
+X-Google-Smtp-Source: ABdhPJwxpFM8dAuCXKcVa2ktkCXVhq9CmWEY2/vnzgZ8t3QJANf4Lw3aSd7XbwB++em0NaF+QvFuVQ==
+X-Received: by 2002:ac2:5334:: with SMTP id f20mr9452559lfh.30.1607942708388;
+        Mon, 14 Dec 2020 02:45:08 -0800 (PST)
+Received: from xi.terra (c-b3cbe455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.203.179])
+        by smtp.gmail.com with ESMTPSA id a15sm2044855lfg.27.2020.12.14.02.45.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 02:43:39 -0800 (PST)
-Date:   Mon, 14 Dec 2020 10:43:37 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jon Nettleton <jon@solid-run.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linaro Patches <patches@linaro.org>
-Subject: Re: [RFC HACK PATCH] PCI: dwc: layerscape: Hack around enumeration
- problems with Honeycomb LX2K
-Message-ID: <20201214104337.wbvq2gvj3wi6bvzc@holly.lan>
-References: <20201211121507.28166-1-daniel.thompson@linaro.org>
- <CAL_JsqKQxFvkFtph1BZD2LKdZjboxhMTWkZe_AWS-vMD9y0pMw@mail.gmail.com>
- <20201211170558.clfazgoetmery6u3@holly.lan>
+        Mon, 14 Dec 2020 02:45:07 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@xi.terra>)
+        id 1kolLi-0007Oc-O1; Mon, 14 Dec 2020 11:45:03 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        syzbot+e87ebe0f7913f71f2ea5@syzkaller.appspotmail.com,
+        stable <stable@vger.kernel.org>
+Subject: [PATCH] USB: yurex: fix control-URB timeout handling
+Date:   Mon, 14 Dec 2020 11:44:44 +0100
+Message-Id: <20201214104444.28386-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <000000000000e2186705b65e671f@google.com>
+References: <000000000000e2186705b65e671f@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211170558.clfazgoetmery6u3@holly.lan>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 05:05:58PM +0000, Daniel Thompson wrote:
-> On Fri, Dec 11, 2020 at 08:37:40AM -0600, Rob Herring wrote:
-> > On Fri, Dec 11, 2020 at 6:15 AM Daniel Thompson
-> > >     BTW I noticed many other pcie-designware drivers take advantage
-> > >     of a function called dw_pcie_wait_for_link() in their init paths...
-> > >     but my naive attempts to add it to the layerscape driver results
-> > >     in non-booting systems so I haven't embarrassed myself by including
-> > >     that in the patch!
-> > 
-> > You need to look at what's pending for v5.11, because I reworked this
-> > to be more unified. The ordering of init is also possibly changed. The
-> > sequence is now like this:
-> > 
-> >         dw_pcie_setup_rc(pp);
-> >         dw_pcie_msi_init(pp);
-> > 
-> >         if (!dw_pcie_link_up(pci) && pci->ops->start_link) {
-> >                 ret = pci->ops->start_link(pci);
-> >                 if (ret)
-> >                         goto err_free_msi;
-> >         }
-> > 
-> >         /* Ignore errors, the link may come up later */
-> >         dw_pcie_wait_for_link(pci);
-> 
-> Thanks. That looks likely to fix it since IIUC dw_pcie_wait_for_link()
-> will end up waiting somewhat like the double check I added to
-> ls_pcie_link_up().
-> 
-> I'll take a look at let you know.
+Make sure to always cancel the control URB in write() so that it can be
+reused after a timeout or spurious CMD_ACK.
 
-Yes. These changes have fixed the enumeration problems for me.
+Currently any further write requests after a timeout would fail after
+triggering a WARN() in usb_submit_urb() when attempting to submit the
+already active URB.
 
-I tested pci/next and I cherry picked your patch series onto v5.10 and
-both are working well.
+Reported-by: syzbot+e87ebe0f7913f71f2ea5@syzkaller.appspotmail.com
+Fixes: 6bc235a2e24a ("USB: add driver for Meywa-Denki & Kayac YUREX")
+Cc: stable <stable@vger.kernel.org>     # 2.6.37
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/usb/misc/yurex.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Given this fixes a bug for me, do you think there is any scope for me
-to whittle down your series into patches for the stable kernels or am
-I likely to find too many extra bits being pulled in?
+diff --git a/drivers/usb/misc/yurex.c b/drivers/usb/misc/yurex.c
+index 73ebfa6e9715..c640f98d20c5 100644
+--- a/drivers/usb/misc/yurex.c
++++ b/drivers/usb/misc/yurex.c
+@@ -496,6 +496,9 @@ static ssize_t yurex_write(struct file *file, const char __user *user_buffer,
+ 		timeout = schedule_timeout(YUREX_WRITE_TIMEOUT);
+ 	finish_wait(&dev->waitq, &wait);
+ 
++	/* make sure URB is idle after timeout or (spurious) CMD_ACK */
++	usb_kill_urb(dev->cntl_urb);
++
+ 	mutex_unlock(&dev->io_mutex);
+ 
+ 	if (retval < 0) {
+-- 
+2.26.2
 
-
-Daniel.
