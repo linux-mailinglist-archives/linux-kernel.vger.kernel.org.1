@@ -2,59 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932E92D9913
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 14:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 074B62D992F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 14:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408023AbgLNNlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 08:41:37 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9523 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405793AbgLNNlT (ORCPT
+        id S2408131AbgLNNmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 08:42:37 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:39034 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406512AbgLNNmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 08:41:19 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CvjDt4lMVzhtf2;
-        Mon, 14 Dec 2020 21:39:58 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 14 Dec 2020 21:40:24 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <sre@kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] power/supply/bq24190_charger: convert comma to semicolon
-Date:   Mon, 14 Dec 2020 21:40:54 +0800
-Message-ID: <20201214134054.4296-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Mon, 14 Dec 2020 08:42:09 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BEDc9eH032162;
+        Mon, 14 Dec 2020 07:41:18 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=AUJbEVt+xcr9JudRJq6czZ/xGOKIYbyS0jkgoeJnzDI=;
+ b=kvpAeMyeXq/jHf8sg2DL3qiIDiza89GLug+UOc/3XZnbZorZ7UMYM/VGagFXcWUx2gnu
+ b2jmJTbGFZunLj87HCHVLqqMOxEdEA9t/RbEeZAi0NgP4IoMTn5JmDHJJMBpkTqs56Sf
+ KmepCMz1v4Eh93FdWPYDnQ4oMLhu1abwYCzpL379HQmJfKl0TN7JKbxnoBLE1xv9kx5Z
+ xfR+27HkqazsGALgziUYGljkcXwDbFKVhKyZlAj/BGGjTm0THHnkeO7P5AxAuAfmMwaj
+ Cl4wn0WdS3OWCFH8cDzFY7VOFcyiKGGhyXWLGYcH0f221dbvdDENsb021ZefYAlBuuuM ow== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 35cu5rtcj1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 14 Dec 2020 07:41:18 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 14 Dec
+ 2020 13:41:16 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Mon, 14 Dec 2020 13:41:16 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BFD6311CA;
+        Mon, 14 Dec 2020 13:41:16 +0000 (UTC)
+Date:   Mon, 14 Dec 2020 13:41:16 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+CC:     Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@opensource.wolfsonmicro.com>,
+        Samuel Ortiz <sameo@linux.intel.com>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH] mfd: wm831x-auxadc: Prevent use after free in
+ wm831x_auxadc_read_irq()
+Message-ID: <20201214134116.GC9673@ediswmail.ad.cirrus.com>
+References: <X9dTjo3VQIMJP6O9@mwanda>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <X9dTjo3VQIMJP6O9@mwanda>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 mlxscore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 clxscore=1011 malwarescore=0
+ impostorscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012140095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace a comma between expression statements by a semicolon.
+On Mon, Dec 14, 2020 at 02:59:10PM +0300, Dan Carpenter wrote:
+> The "req" struct is always added to the "wm831x->auxadc_pending" list,
+> but it's only removed from the list on the success path.  If a failure
+> occurs then the "req" struct is freed but it's still on the list,
+> leading to a use after free.
+> 
+> Fixes: 78bb3688ea18 ("mfd: Support multiple active WM831x AUXADC conversions")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/power/supply/bq24190_charger.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-diff --git a/drivers/power/supply/bq24190_charger.c b/drivers/power/supply/bq24190_charger.c
-index d14186525e1e..00c4f335481f 100644
---- a/drivers/power/supply/bq24190_charger.c
-+++ b/drivers/power/supply/bq24190_charger.c
-@@ -1757,7 +1757,7 @@ static int bq24190_probe(struct i2c_client *client,
- 	charger_cfg.drv_data = bdi;
- 	charger_cfg.of_node = dev->of_node;
- 	charger_cfg.supplied_to = bq24190_charger_supplied_to;
--	charger_cfg.num_supplicants = ARRAY_SIZE(bq24190_charger_supplied_to),
-+	charger_cfg.num_supplicants = ARRAY_SIZE(bq24190_charger_supplied_to);
- 	bdi->charger = power_supply_register(dev, &bq24190_charger_desc,
- 						&charger_cfg);
- 	if (IS_ERR(bdi->charger)) {
--- 
-2.22.0
-
+Thanks,
+Charles
