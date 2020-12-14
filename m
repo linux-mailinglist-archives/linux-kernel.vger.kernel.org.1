@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CDE2D9A1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF7B2D9A23
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408233AbgLNOii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 09:38:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408226AbgLNOie (ORCPT
+        id S2407862AbgLNOjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 09:39:55 -0500
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:54579 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407382AbgLNOjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 09:38:34 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357BCC061793
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 06:37:50 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id b9so11932839qtr.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 06:37:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HunglVjcvBMAm8Vnq5RKFceAB0LUszPBed8/+5881NA=;
-        b=HEpN52kifpE64ZoqKFvmqtw415H2UUKpykICzQf/95P3n6NYbr1D2wfMBFeISonvqU
-         63uoTYYyM21eSDzjLmhM0x8S5ec62HgO1f88RYej0gmrzjcV1RLJ55G/cLQn3SN6Vb99
-         FB8Po6DREKkbhRBbSlLrHoi+3ZHl/UgT3roQ9XZQMXLqpZW69ecabKdSc17ByZFnP2zL
-         boR44VyI7yXpOfVb6Cbh/dfMgPJZPkL1x3Nevu4uoXFeutq4PITVrA8p8xEEgiuU2nJZ
-         mMpdcnXApLbUS7R/VvOlwCl8nJuFcOK5LEX1KhzR+Ea4Xb9GB9mze27wFJlSMFLhiIm1
-         kz/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HunglVjcvBMAm8Vnq5RKFceAB0LUszPBed8/+5881NA=;
-        b=j0KN6kUBbx65hvePpBpVHHDSbA9qFtOO4XLqFG+KanpgCMu0G2v5Xl7DCR6X/a75oc
-         6tws51odHGRnir/mn8f5OQnA0l03OoXruij/FadvFg82EpKdrl9WCHFMahQXYijvFkgE
-         PbjvDpNMx0lsmin9Pxt8lpjIOsiUDHRyIQirWM8xN8Fx5mnazJl2k74jvXeUAgw/i+YO
-         +8RgPMafvkgnxbGEjP2RZ1bsMO/tDvWRPfp+MKDYTdSzjJydmqgb3dwSmxK+sIQ6SB2C
-         V1kPDjpDVPePFvT/RJmzETqOR/Qd1Uv752fi1FHX6euV+jCyyJJA4Lq5YW9xS2VZOBeb
-         2ACQ==
-X-Gm-Message-State: AOAM533h6IizJlATIHaALQ7C4OrSiQt+u4xLKdt2Wbefo3/XVHfIbZdT
-        W7SOXggblkMMRyUxxA3Tsu7Rf3D9RnhB4OS2FSQtlw==
-X-Google-Smtp-Source: ABdhPJzeIiPc1hYkr4hJt6QGcMzIk0jnXi6Gwhu4Wyy5i30MHSACUVb6cee6+HGIOL8wK9K+sgrxIe5id4ligrAa/pw=
-X-Received: by 2002:ac8:4e1c:: with SMTP id c28mr31562407qtw.67.1607956669043;
- Mon, 14 Dec 2020 06:37:49 -0800 (PST)
+        Mon, 14 Dec 2020 09:39:17 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 941676F3;
+        Mon, 14 Dec 2020 09:38:10 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 14 Dec 2020 09:38:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=L+rX2CmOwQGtvUvi7iN9sVCi3bo
+        tW8KO7zKQJDj5/e8=; b=M44ztO4Lp5nIQkl5yGMu8Lj+rMlArxAoQNakc+VGKhn
+        BusDmpc5r9yQaTpnUuKWo8o4OnZfDcxztxiqlNynf3RdyWzl+WuUQRYJ0k73vNcY
+        k0CaIWlQGOTz7RaNmdw7k2ZOgNtnBFLmVhaIz/F8fUCcN7q2jnBTacCakb0wYv3R
+        y/n5GC2S9nddyB+ZzfF/HMwXkDJj0/D6Ra+aNauwRD/V/x9eIXyjPhZtR21S+vCj
+        R1FpNqQ0ViBY7W+go7AS3sOxJl3c3ycEvfA+CSyBbfqgO5okA2H+6Cck1dMJb7L6
+        Fw/ixxPuV0BZ8FOne+xTiIrDGIoR/A9u2kMa3N46MXA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=L+rX2C
+        mOwQGtvUvi7iN9sVCi3botW8KO7zKQJDj5/e8=; b=OSw83sUVy9b4tJ1Mt3Y3d7
+        41MyykYsyVFwwDS4Em4rp0zKlwEm63e1HYObAyW3WJEZ+e7x8fnXWGFLzq2CjTKg
+        SlxIjysJfkatVbshPBsy+QVzKJ2Ua4YkEZ6gMu6DgsIFabSIuhzuxQVbHyBC3u17
+        gfnqCsEohhpUeLZPBRBiMM7YicZjGJVm9bgxs2dM12JsqXnJRRYvupAtee0JnNKi
+        MsQS+3LGc7zQpt7f8K2YBsiDFeAjdeLX+9fnw8oZFm0Z0K7VVrwWs0nkyVOHf6LV
+        2pfphw7FWdKaD2NNb8aF69qOI95J1KUJPeHTxIbdhk0MuP7Dma70OoHOPRXPBw6g
+        ==
+X-ME-Sender: <xms:0HjXXz_IBu7DCxzaVLNKrX7KB8uYkIdu5jsmJ30MKJW9s-SeBpS4Yg>
+    <xme:0HjXX5WPdIhe7e_ATKx3qOP8CwFQTGHHIv5XwoBMPfaRJ-fGUKIPnMWix2OitCL8v
+    HeTmEmNWO-cIjjOWoM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgieejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:0HjXXxD4zheHsrNA1_mBSeTuKerQo_9u-KguPDmv9_V81iRapXSpNA>
+    <xmx:0HjXXywHPNkHqxOb6acVIJUNke1FQqr7u62cg4NRonXzbZLqgeKapQ>
+    <xmx:0HjXX2AZWxre5nDxsco4GLWno4v-l8bNSXQwuguD_rbqJqeUaaTatw>
+    <xmx:0njXX54d4kKHNovKyH_0npolRJRxu7ezyjvW4qqFKintTc-r8oBhNw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4FF64108005F;
+        Mon, 14 Dec 2020 09:38:08 -0500 (EST)
+Date:   Mon, 14 Dec 2020 15:38:07 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc@vger.kernel.org
+Subject: Re: [RFC PATCH 08/12] dt-bindings: mmc: sunxi: add compatible
+ strings for V831 MMC
+Message-ID: <20201214143807.3wsot6yk4z6s32u5@gilmour>
+References: <20201212040157.3639864-1-icenowy@aosc.io>
+ <20201212050346.3644673-1-icenowy@aosc.io>
 MIME-Version: 1.0
-References: <20201210023638.GP52960@mit.edu> <00000000000024030c05b61412e6@google.com>
- <CACT4Y+bkaVq1RzONGuPJxu-pSyCSRrEs7xV0sa2n0oLNkicHQQ@mail.gmail.com> <20201210182821.GS52960@mit.edu>
-In-Reply-To: <20201210182821.GS52960@mit.edu>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 14 Dec 2020 15:37:37 +0100
-Message-ID: <CACT4Y+bqDdidJpYimvzY5UkrXzw7JuefHndOM0+c6Y8e56vBjQ@mail.gmail.com>
-Subject: Re: UBSAN: shift-out-of-bounds in ext4_fill_super
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     syzbot <syzbot+345b75652b1d24227443@syzkaller.appspotmail.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="a6eeaa2leewxdmgu"
+Content-Disposition: inline
+In-Reply-To: <20201212050346.3644673-1-icenowy@aosc.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 7:28 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
->
-> On Thu, Dec 10, 2020 at 09:09:51AM +0100, Dmitry Vyukov wrote:
-> > >  * [new tag]                   ext4-for-linus-5.8-rc1-2 -> ext4-for-linus-5.8-rc1-2
-> > >  ! [rejected]                  ext4_for_linus           -> ext4_for_linus  (would clobber existing tag)
-> >
-> > Interesting. First time I see this. Should syzkaller use 'git fetch
-> > --tags --force"?...
-> > StackOverflow suggests it should help:
-> > https://stackoverflow.com/questions/58031165/how-to-get-rid-of-would-clobber-existing-tag
->
-> Yeah, sorry, ext4_for_linus is a signed tag which is only used to
-> authenticate my pull request to Linus.  After Linus accepts the pull,
-> the digital signature is going to be upstream, and so I end up
-> deleting and the reusing that tag for the next merge window.
->
-> I guess I could just start always using ext4_for_linus-<VERSION> and
-> just delete the tags once they have been accepted, to keep my list of
-> tags clean.
->
-> It's going to make everyone else's tags who pull from ext4.git messy,
-> though, with gobs of tags that probably won't be of use to them.  It
-> does avoid the need to use git fetch --tags --force, and I guess
-> people are used to the need to GC tags with the linux-repo.  So maybe
-> that's the right thing to do going forward.
 
-Hi Ted,
+--a6eeaa2leewxdmgu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-syzbot is now prepared and won't fail next time, nor on other similar
-trees. Which is good.
-So it's really up to you.
+On Sat, Dec 12, 2020 at 01:03:42PM +0800, Icenowy Zheng wrote:
+> V831 has MMC controllers similar to the ones on H6.
+>=20
+> Add a compatible string for them.
+>=20
+> The eMMC controller compatible is not added, because the eMMC controller
+> is not available on V831, only V833.
+>=20
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: linux-mmc@vger.kernel.org
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
 
-Thanks
+There's pretty much the same comment than on the H616, it would be great
+to not have any mode flags being set by the driver to avoid the mess we
+have on the older SoCs right now.
+
+Maxime
+
+--a6eeaa2leewxdmgu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9d4zwAKCRDj7w1vZxhR
+xeatAQDlfmtMP5DKMl4QYDtMXUTYVkUEr47s/NVuvZOKmuYQ+AD7B1b1CtM9BG2Q
+TiZsaeXjCGmbFXswP8LlUIdf8b3UhgE=
+=csW8
+-----END PGP SIGNATURE-----
+
+--a6eeaa2leewxdmgu--
