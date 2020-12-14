@@ -2,122 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D2B2DA36B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E452DA369
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438602AbgLNWaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 17:30:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403758AbgLNW25 (ORCPT
+        id S2408748AbgLNW3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 17:29:20 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:43930 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390134AbgLNW3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 17:28:57 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41008C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:28:16 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607984894;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZwGjXDtahr4KTyDSi0g260yZ5xO8g59eVFxZugK4RhQ=;
-        b=W/BWUe9NLEDOafBYlG5e2drZwX/5QOfOGhJk6+YMbZ4jmQiLYr/P0bpalwFJBiSniL6QaZ
-        WmJbU8a6rd2dvt6u6XZyq89/BnUccVIS9s/sWd4nLS4HpBCSgXLzU87iueylW4p8JH0B/Q
-        wZZ9tpfEuSQAM2iAi1+MKehUfyZIJYwS2WxJdBk2C0mVwX6t/VBzxdHuHuSV+233nxQtke
-        xQshOygnQocTgF1QNd0Q91uhX/xO5ttBiMcGJwJhNGz28XvTQStY/yJpoFFngEL1uQRqaY
-        omGvKo7dGw6gOok5e8yiuSiWPmKPnC5qwrp6qW+xfO58EQ5o2+mZhH/R884VkQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607984894;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZwGjXDtahr4KTyDSi0g260yZ5xO8g59eVFxZugK4RhQ=;
-        b=OPMq20ndnvOpLVv122m/QGRtNM+eRoPX61xzOlci9C6Pf3FtaqXOzx7Uv+waufrLwOOV/p
-        P4gJ71eNg8szSnDg==
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     "x86\@kernel.org" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: common_interrupt: No irq handler for vector
-In-Reply-To: <d71e74e7-afae-39c3-1ea6-62bfcfa31413@linuxfoundation.org>
-References: <9741d93c-3cd1-c4ef-74bb-7f635231c778@linuxfoundation.org> <87im96g6ox.fsf@nanos.tec.linutronix.de> <3630fe3f-0dff-e21e-17a8-ed251df81fbc@linuxfoundation.org> <87lfe0dst1.fsf@nanos.tec.linutronix.de> <d71e74e7-afae-39c3-1ea6-62bfcfa31413@linuxfoundation.org>
-Date:   Mon, 14 Dec 2020 23:28:14 +0100
-Message-ID: <87czzcdnup.fsf@nanos.tec.linutronix.de>
+        Mon, 14 Dec 2020 17:29:09 -0500
+Received: from [IPv6:2a00:5f00:102:0:a0b6:46ff:fefa:49e7] (unknown [IPv6:2a00:5f00:102:0:a0b6:46ff:fefa:49e7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: gtucker)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6DA3E1F4503D;
+        Mon, 14 Dec 2020 22:28:23 +0000 (GMT)
+Subject: Re: linusw/devel bisection:
+ baseline.bootrr.mediatek-mt8173-pinctrl-probed on mt8173-elm-hana
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+References: <5fd76cf2.1c69fb81.6f19b.b16a@mx.google.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Johan Hovold <johan@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        linux-mediatek@lists.infradead.org
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <483b08f2-09c3-e753-d2ce-4e34fee627f3@collabora.com>
+Date:   Mon, 14 Dec 2020 22:28:19 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <5fd76cf2.1c69fb81.6f19b.b16a@mx.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shuah,
+Hi Linus,
 
-On Mon, Dec 14 2020 at 13:57, Shuah Khan wrote:
-> On 12/14/20 1:41 PM, Thomas Gleixner wrote:
-> Here is the processor and BIOS info:
-> AMD Ryzen 7 4700G with Radeon Graphics
-> LENOVO ThinkCentre Embedded Controller -[O4ZCT12A-1.12]-
-> LENOVO ThinkCentre BIOS Boot Block Revision 1.1C
->
->> 
->>> I am bisecting to isolate. Same issue on all stables 5.4, 4.19 and
->>> so on. If it is BIOS problem I would expect to see it on 5.10-rc7
->>> and wouldn't have expected to start seeing it 5.9.9.
->> 
->> Can you provide some more details, e.g. dmesg please?
->> 
->
-> __common_interrupt: 1.55 No irq handler for vector
-> __common_interrupt: 2.55 No irq handler for vector
-> __common_interrupt: 3.55 No irq handler for vector
-> __common_interrupt: 4.55 No irq handler for vector
-> __common_interrupt: 5.55 No irq handler for vector
-> __common_interrupt: 6.55 No irq handler for vector
-> __common_interrupt: 7.55 No irq handler for vector
-> __common_interrupt: 8.55 No irq handler for vector
-> __common_interrupt: 9.55 No irq handler for vector
-> __common_interrupt: 10.55 No irq handler for vector
+Please see the bisection report below about the pinctrl driver
+failing to probe on the arm64 mt8173-elm-hana platform.
 
-This _IS_ the AGESA BIOS bug.
+Reports aren't automatically sent to the public while we're
+trialing new bisection features on kernelci.org but this one
+looks valid.
 
->>>> No. It's perfectly correct in the MSI code. See further down.
->>>>
->>>> 	if (IS_ERR_OR_NULL(this_cpu_read(vector_irq[cfg->vector])))
->>>> 		this_cpu_write(vector_irq[cfg->vector], VECTOR_RETRIGGERED);
->>>>
->>>
->>> I am asking about inconsistent comments and the actual message as the
->>> comment implies if vector is VECTOR_UNUSED state, this message won't
->>> be triggered in common_interrupt. Based on that my read is the comment
->>> might be wrong if the code is correct as you are saying.
->> 
->> The comment says:
->> 
->>    >>    * anyway. If the vector is unused, then it is marked so it won't
->>    >>    * trigger the 'No irq handler for vector' warning in
->>    >>    * common_interrupt().
->> 
->>    If the vector is unused, then it is _marked_ so ....
->
-> See the messages above.
+This is the error message:
 
-This code has absolutely nothing to do with these messages and this code
-marks the vector RETRIGGERED so the warning cannot happen if the MSI
-migration causes this spurious vector to be emitted. That marking is
-there _because_ the migration triggered the warning occasionally which
-is unavoidable due the silliness of hardware.
+[    0.051788] gpio gpiochip0: Detected name collision for GPIO name ''
+[    0.051813] gpio gpiochip0: GPIO name collision on the same chip, this is not allowed, fix all lines on the chip to have unique names
+[    0.051832] gpiochip_add_data_with_key: GPIOs 377..511 (1000b000.pinctrl) failed to register, -17
+[    0.051946] mediatek-mt8173-pinctrl: probe of 1000b000.pinctrl failed with error -22
 
-The problem is that the buggy BIOS causes vector 55 which is the legacy
-X86 interrupt 7 to be sent to the secondary CPUs 1-10 when they come up
-the first time during boot. This has been reported to death already and
-AMD confirmed that it is an AGESA BIOS bug and that it is fixed with
-AGESA BIOS version 1.1.8.0.
+and the full log:
 
-The reason why it shows up now might be timing related, nothing else.
+  https://storage.kernelci.org/linusw/devel/v5.10-rc4-91-g65efb43ac94b/arm64/defconfig/gcc-8/lab-collabora/baseline-mt8173-elm-hana.html#L492
 
-Thanks,
+I guess some GPIO now needs to be renamed following your patch
+which enforces uniqueness, so it's not a problem with the patch
+per se.  As I'm not sure if it's something you would want to fix
+yourself, I've also CC-ed MediaTek and others such as Enric who
+knows about this platform and helped enable the test in KernelCI.
 
-        tglx
+Best wishes,
+Guillaume
+
+On 14/12/2020 13:47, KernelCI bot wrote:
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> * This automated bisection report was sent to you on the basis  *
+> * that you may be involved with the breaking commit it has      *
+> * found.  No manual investigation has been done to verify it,   *
+> * and the root cause of the problem may be somewhere else.      *
+> *                                                               *
+> * If you do send a fix, please include this trailer:            *
+> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+> *                                                               *
+> * Hope this helps!                                              *
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> 
+> linusw/devel bisection: baseline.bootrr.mediatek-mt8173-pinctrl-probed on mt8173-elm-hana
+> 
+> Summary:
+>   Start:      65efb43ac94b gpiolib: Disallow identical line names in the same chip
+>   Plain log:  https://storage.kernelci.org/linusw/devel/v5.10-rc4-91-g65efb43ac94b/arm64/defconfig/gcc-8/lab-collabora/baseline-mt8173-elm-hana.txt
+>   HTML log:   https://storage.kernelci.org/linusw/devel/v5.10-rc4-91-g65efb43ac94b/arm64/defconfig/gcc-8/lab-collabora/baseline-mt8173-elm-hana.html
+>   Result:     65efb43ac94b gpiolib: Disallow identical line names in the same chip
+> 
+> Checks:
+>   revert:     PASS
+>   verify:     PASS
+> 
+> Parameters:
+>   Tree:       linusw
+>   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git/
+>   Branch:     devel
+>   Target:     mt8173-elm-hana
+>   CPU arch:   arm64
+>   Lab:        lab-collabora
+>   Compiler:   gcc-8
+>   Config:     defconfig
+>   Test case:  baseline.bootrr.mediatek-mt8173-pinctrl-probed
+> 
+> Breaking commit found:
+> 
+> -------------------------------------------------------------------------------
+> commit 65efb43ac94bffeb652cddba4106817bb38c5e71
+> Author: Linus Walleij <linus.walleij@linaro.org>
+> Date:   Sat Dec 12 01:34:47 2020 +0100
+> 
+>     gpiolib: Disallow identical line names in the same chip
+>     
+>     We need to make this namespace hierarchical: at least do not
+>     allow two lines on the same chip to have the same name, this
+>     is just too much flexibility. If we name a line on a chip,
+>     name it uniquely on that chip.
+>     
+>     I don't know what happens if we just apply this, I *hope* there
+>     are not a lot of systems out there breaking this simple and
+>     intuitive rule.
+>     
+>     As a side effect, this makes the device tree naming code
+>     scream a bit if names are not globally unique.
+>     
+>     I think there are not super-many device trees out there naming
+>     their lines so let's fix this before the problem becomes
+>     widespread.
+>     
+>     Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+>     Cc: Johan Hovold <johan@kernel.org>
+>     Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+>     Link: https://lore.kernel.org/r/20201212003447.238474-1-linus.walleij@linaro.org
+> 
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index 5ce0c14c637b..fe1b96b7f127 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -330,11 +330,9 @@ static struct gpio_desc *gpio_name_to_desc(const char * const name)
+>  
+>  /*
+>   * Take the names from gc->names and assign them to their GPIO descriptors.
+> - * Warn if a name is already used for a GPIO line on a different GPIO chip.
+>   *
+> - * Note that:
+> - *   1. Non-unique names are still accepted,
+> - *   2. Name collisions within the same GPIO chip are not reported.
+> + * - Fail if a name is already used for a GPIO line on the same chip.
+> + * - Allow names to not be globally unique but warn about it.
+>   */
+>  static int gpiochip_set_desc_names(struct gpio_chip *gc)
+>  {
+> @@ -343,13 +341,19 @@ static int gpiochip_set_desc_names(struct gpio_chip *gc)
+>  
+>  	/* First check all names if they are unique */
+>  	for (i = 0; i != gc->ngpio; ++i) {
+> -		struct gpio_desc *gpio;
+> +		struct gpio_desc *gpiod;
+>  
+> -		gpio = gpio_name_to_desc(gc->names[i]);
+> -		if (gpio)
+> +		gpiod = gpio_name_to_desc(gc->names[i]);
+> +		if (gpiod) {
+>  			dev_warn(&gdev->dev,
+>  				 "Detected name collision for GPIO name '%s'\n",
+>  				 gc->names[i]);
+> +			if (gpiod->gdev == gdev) {
+> +				dev_err(&gdev->dev,
+> +					"GPIO name collision on the same chip, this is not allowed, fix all lines on the chip to have unique names\n");
+> +				return -EEXIST;
+> +			}
+> +		}
+>  	}
+>  
+>  	/* Then add all names to the GPIO descriptors */
+> @@ -402,8 +406,22 @@ static int devprop_gpiochip_set_names(struct gpio_chip *chip)
+>  		return ret;
+>  	}
+>  
+> -	for (i = 0; i < count; i++)
+> +	for (i = 0; i < count; i++) {
+> +		struct gpio_desc *gpiod;
+> +
+> +		gpiod = gpio_name_to_desc(names[i]);
+> +		if (gpiod) {
+> +			dev_warn(&gdev->dev,
+> +                                 "Detected name collision for GPIO name '%s'\n",
+> +                                 names[i]);
+> +			if (gpiod->gdev == gdev) {
+> +				dev_err(&gdev->dev,
+> +					"GPIO name collision on the same chip, this is not allowed, fix all lines on the chip to have unique names\n");
+> +				return -EEXIST;
+> +			}
+> +		}
+>  		gdev->descs[i].name = names[i];
+> +	}
+>  
+>  	kfree(names);
+> -------------------------------------------------------------------------------
+> 
+> 
+> Git bisection log:
+> 
+> -------------------------------------------------------------------------------
+> git bisect start
+> # good: [9777d0bfdae796de3f8d73879a43bc00145dc8ee] gpio: cs5535: Simplify the return expression of cs5535_gpio_probe()
+> git bisect good 9777d0bfdae796de3f8d73879a43bc00145dc8ee
+> # bad: [65efb43ac94bffeb652cddba4106817bb38c5e71] gpiolib: Disallow identical line names in the same chip
+> git bisect bad 65efb43ac94bffeb652cddba4106817bb38c5e71
+> # good: [a8f25236e6e3d945139b62da0c4398778f77a5b3] MAINTAINERS: Add maintainer for HiSilicon GPIO driver
+> git bisect good a8f25236e6e3d945139b62da0c4398778f77a5b3
+> # first bad commit: [65efb43ac94bffeb652cddba4106817bb38c5e71] gpiolib: Disallow identical line names in the same chip
+> -------------------------------------------------------------------------------
+> 
+> 
+> -=-=-=-=-=-=-=-=-=-=-=-
+> Groups.io Links: You receive all messages sent to this group.
+> View/Reply Online (#4626): https://groups.io/g/kernelci-results/message/4626
+> Mute This Topic: https://groups.io/mt/78950269/924702
+> Group Owner: kernelci-results+owner@groups.io
+> Unsubscribe: https://groups.io/g/kernelci-results/unsub [guillaume.tucker@collabora.com]
+> -=-=-=-=-=-=-=-=-=-=-=-
+> 
+> 
+
