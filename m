@@ -2,128 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C3D2D9702
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:08:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 122E22D9732
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729628AbgLNLH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 06:07:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407690AbgLNLHa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:07:30 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9043C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 03:06:35 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id 23so29107161lfg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 03:06:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=91Fi62YRIS4Qn6KO/9qSSfAEFCCwvmrnELKnrs1gSak=;
-        b=RXm958TAHnbV81cWTdfZkaz4J2LXVnX/G/QULCB45ONmQNZXongcyH33ltdJe7f41l
-         Q1kIQu7mBQoDBJWkAoWR18X3cQ2DLwsIGjGzLAhI9yrzq18I0mRP3L8Z5BIz3BJI25L5
-         pWt1ERh+q6OzxwH4JypYTbRwv9PKb0BDrKpVF42mfCO6L5vQBzf0JSn/tok7vNwfLj0S
-         OW3kBImVFwHPLODQLrK2fI5vQp7uxLBv6HTGx2t/hCIuKh/d60C522wl0c4Wcg4FdtIa
-         uYcBBrLA13hRFAVmfGzBkejieX+SHjB8nlIvIFKvb11fyEWURrplk7nPeOyehSIMcHnV
-         nHfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=91Fi62YRIS4Qn6KO/9qSSfAEFCCwvmrnELKnrs1gSak=;
-        b=KoWviAxFC/bQInRZ9KGQw54r3MEtlHvApQoFgA7axv7RC4ekXukVNCpdaSnOZmpcF8
-         TbuCAGCXzkZEPvKXKTR8ZVNUov9agvHp8tj/ygECfZb/41wxFl0wa8xb8pakQgkbEAbv
-         l60h8yMC6JGWLNK4Mx8iWngadPqKHYhatV0JNdkZxFQpdlr5e3xxZVmFxb1+qhdFwp71
-         2bG8TMlExwd6OnEHDzNJFS/lte+fkd7dm1NCrh5UzYvUNDpxvKP2INx/hl/jxbZXM3ZK
-         6hiv6TxXAH/wB6FiIHy/xh/Lvut72SbI4+v5perd4NCRpMT+X/JuS3PvvG/2Cz1RGz4U
-         aDPQ==
-X-Gm-Message-State: AOAM533p1xIVt7KNVzWJ9Kzn9NG2NvcYpyOUGGIo7EHLl8Vwkkl+asdi
-        3Ng6CcyNN3F7WBfFY/EFWBnk9IzqnM76xHra
-X-Google-Smtp-Source: ABdhPJzSzQh01E26X3BXk3jup3Yn066amJXzbnjsaisJb1HdHAeGSPBNzo+Fgl5Y/4Q67+7wpABz6A==
-X-Received: by 2002:a2e:9151:: with SMTP id q17mr10479296ljg.475.1607943994446;
-        Mon, 14 Dec 2020 03:06:34 -0800 (PST)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id f26sm1199576ljg.137.2020.12.14.03.06.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 03:06:33 -0800 (PST)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v4 2/2] usb: dwc3: drd: Improve dwc3_get_extcon() style
-Date:   Mon, 14 Dec 2020 13:07:41 +0200
-Message-Id: <20201214110741.8512-3-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201214110741.8512-1-semen.protsenko@linaro.org>
-References: <20201214110741.8512-1-semen.protsenko@linaro.org>
+        id S2407533AbgLNLOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 06:14:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731657AbgLNLNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 06:13:10 -0500
+Date:   Mon, 14 Dec 2020 13:12:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607944349;
+        bh=GkRrfJbxH307o+eT9bWI7gk2D73iFU3r1RvrpZL02pM=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R2ZYB6PBI6bnwZjdvz27i+v8m3w1cq6k3XJELsdi97OX8rTODm8XSm94tRVCbMJhd
+         VQeOUL22Sjqm0mzD6VMgmt42Gr8+x9BvZYd7whTBofFXpdhV0Ct2lIU4VweVfwhRuG
+         Tyogu3ZvPDKM6X6AcPjlwa5cUseISLUmhiEiM6liwYp24hADm2p9Nsiozh+J31t32b
+         zeVcgwRUbOuLFekmpw/5W57EkEdOp2cL/b4RBikd6JWi4k/rKm6Joj0RgM9BlMRPf5
+         LuTzfkY280axXFZmFpmuqdU91/Kr7JU2Y/2kLffUJcI7M7hse+3lNZ22T+UwBaoLkd
+         AzvOFu6ZELC8A==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Mel Gorman <mgorman@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v2 1/2] mm: memblock: enforce overlap of memory.memblock
+ and memory.reserved
+Message-ID: <20201214111221.GC198219@kernel.org>
+References: <20201209214304.6812-1-rppt@kernel.org>
+ <20201209214304.6812-2-rppt@kernel.org>
+ <522640a5-32ab-2247-4c2a-f248c2528f97@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <522640a5-32ab-2247-4c2a-f248c2528f97@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous change ("usb: dwc3: drd: Avoid error when extcon is
-missing") changed the code flow in dwc3_get_extcon() function, leading
-to unnecessary if-branch. This patch does housekeeping by reworking the
-code for obtaining an extcon device from the "port" node.
+On Mon, Dec 14, 2020 at 11:11:35AM +0100, David Hildenbrand wrote:
+> On 09.12.20 22:43, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > memblock does not require that the reserved memory ranges will be a subset
+> > of memblock.memory.
+> > 
+> > As the result there maybe reserved pages that are not in the range of any
+> > zone or node because zone and node boundaries are detected based on
+> > memblock.memory and pages that only present in memblock.reserved are not
+> > taken into account during zone/node size detection.
+> > 
+> > Make sure that all ranges in memblock.reserved are added to memblock.memory
+> > before calculating node and zone boundaries.
+> > 
+> > Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
+> > Reported-by: Andrea Arcangeli <aarcange@redhat.com>
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > ---
+> >  include/linux/memblock.h |  1 +
+> >  mm/memblock.c            | 24 ++++++++++++++++++++++++
+> >  mm/page_alloc.c          |  7 +++++++
+> >  3 files changed, 32 insertions(+)
+> > 
+> > diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> > index ef131255cedc..e64dae2dd1ce 100644
+> > --- a/include/linux/memblock.h
+> > +++ b/include/linux/memblock.h
+> > @@ -120,6 +120,7 @@ int memblock_clear_nomap(phys_addr_t base, phys_addr_t size);
+> >  unsigned long memblock_free_all(void);
+> >  void reset_node_managed_pages(pg_data_t *pgdat);
+> >  void reset_all_zones_managed_pages(void);
+> > +void memblock_enforce_memory_reserved_overlap(void);
+> >  
+> >  /* Low level functions */
+> >  void __next_mem_range(u64 *idx, int nid, enum memblock_flags flags,
+> > diff --git a/mm/memblock.c b/mm/memblock.c
+> > index b68ee86788af..9277aca642b2 100644
+> > --- a/mm/memblock.c
+> > +++ b/mm/memblock.c
+> > @@ -1857,6 +1857,30 @@ void __init_memblock memblock_trim_memory(phys_addr_t align)
+> >  	}
+> >  }
+> >  
+> > +/**
+> > + * memblock_enforce_memory_reserved_overlap - make sure every range in
+> > + * @memblock.reserved is covered by @memblock.memory
+> > + *
+> > + * The data in @memblock.memory is used to detect zone and node boundaries
+> > + * during initialization of the memory map and the page allocator. Make
+> > + * sure that every memory range present in @memblock.reserved is also added
+> > + * to @memblock.memory even if the architecture specific memory
+> > + * initialization failed to do so
+> > + */
+> > +void __init memblock_enforce_memory_reserved_overlap(void)
+> > +{
+> > +	phys_addr_t start, end;
+> > +	int nid;
+> > +	u64 i;
+> > +
+> > +	__for_each_mem_range(i, &memblock.reserved, &memblock.memory,
+> > +			     NUMA_NO_NODE, MEMBLOCK_NONE, &start, &end, &nid) {
+> > +		pr_warn("memblock: reserved range [%pa-%pa] is not in memory\n",
+> > +			&start, &end);
+> > +		memblock_add_node(start, (end - start), nid);
+> > +	}
+> > +}
+> > +
+> >  void __init_memblock memblock_set_current_limit(phys_addr_t limit)
+> >  {
+> >  	memblock.current_limit = limit;
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index eaa227a479e4..dbc57dbbacd8 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -7436,6 +7436,13 @@ void __init free_area_init(unsigned long *max_zone_pfn)
+> >  	memset(arch_zone_highest_possible_pfn, 0,
+> >  				sizeof(arch_zone_highest_possible_pfn));
+> >  
+> > +	/*
+> > +	 * Some architectures (e.g. x86) have reserved pages outside of
+> > +	 * memblock.memory. Make sure these pages are taken into account
+> > +	 * when detecting zone and node boundaries
+> > +	 */
+> > +	memblock_enforce_memory_reserved_overlap();
+> > +
+> >  	start_pfn = find_min_pfn_with_active_regions();
+> >  	descending = arch_has_descending_max_zone_pfns();
+> >  
+> > 
+> 
+> CCing Dan.
+> 
+> This implies that any memory that is E820_TYPE_SOFT_RESERVED that was
+> reserved via memblock_reserve() will be added via memblock_add_node() as
+> well, resulting in all such memory getting a memmap allocated right when
+> booting up, right?
+> 
+> IIRC, there are use cases where that is absolutely not desired.
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-Changes in v4:
-  - Moved the comment from patch 2/2 to 1/2
-  - Fixed typos in commit message
-Changes in v3:
-  - Split patch into two patches: logic diff and style diff
+Hmm, if this is the case we need entirely different solution to ensure
+that we don't have partial pageblocks in a zone and we have all the
+memory map initialized to a known state.
 
- drivers/usb/dwc3/drd.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+> Am I missing something? (@Dan?)
 
-diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
-index da428cf2eb5b..e2b68bb770d1 100644
---- a/drivers/usb/dwc3/drd.c
-+++ b/drivers/usb/dwc3/drd.c
-@@ -441,8 +441,8 @@ static int dwc3_drd_notifier(struct notifier_block *nb,
- static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
- {
- 	struct device *dev = dwc->dev;
--	struct device_node *np_phy, *np_conn;
--	struct extcon_dev *edev;
-+	struct device_node *np_phy;
-+	struct extcon_dev *edev = NULL;
- 	const char *name;
- 
- 	if (device_property_read_bool(dev, "extcon"))
-@@ -470,17 +470,14 @@ static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
- 	 * or OTG mode.
- 	 */
- 	np_phy = of_parse_phandle(dev->of_node, "phys", 0);
--	if (of_graph_is_present(np_phy))
--		np_conn = of_graph_get_remote_node(np_phy, -1, -1);
--	else
--		np_conn = NULL;
--
--	if (np_conn)
--		edev = extcon_find_edev_by_node(np_conn);
--	else
--		edev = NULL;
-+	if (of_graph_is_present(np_phy)) {
-+		struct device_node *np_conn;
- 
--	of_node_put(np_conn);
-+		np_conn = of_graph_get_remote_node(np_phy, -1, -1);
-+		if (np_conn)
-+			edev = extcon_find_edev_by_node(np_conn);
-+		of_node_put(np_conn);
-+	}
- 	of_node_put(np_phy);
- 
- 	return edev;
+BTW, @Dan, why did you need to memblock_reserve(E820_TYPE_SOFT_RESERVED)
+without memblock_add()ing it?
+
+> -- 
+> Thanks,
+> 
+> David / dhildenb
+> 
+
 -- 
-2.29.2
-
+Sincerely yours,
+Mike.
