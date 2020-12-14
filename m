@@ -2,158 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B062D9988
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:14:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 346D62D99F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440030AbgLNONU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 09:13:20 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:37803 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727458AbgLNONU (ORCPT
+        id S1727777AbgLNO1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 09:27:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408237AbgLNO1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 09:13:20 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id AAE91580264;
-        Mon, 14 Dec 2020 09:12:13 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 14 Dec 2020 09:12:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=oPI5HgnVfN7c7xc2RC5PhDz4rdE
-        fvl2DDBtK4UExMW4=; b=ET4gdNm3wukJ27HyFZde/XQSFbT1fP+rwoXRooGD6vw
-        qIVImpYo4EY71ON7gzZzBs2jFRdFrA639vOgGBIH/DghTA7mhBKQzmQGEY2swlON
-        gX/NDO7zk+2e3r+/FnHvjp1pDffOJtiyeAPy73f3DDAQqF9lsQiwyKmXeG/qHg9Q
-        fDW99Tg6JcnqReGlf5xlyvd7DPMN49HpWf4kpdM9t4oBOhYcTNfiOT0FUZ5HJaB0
-        zhenrW8aptxuQ+CPeOA/ARb2UrYnYExv/AweLhHhEaemTJBy1+4xW25E3Mdr17So
-        AwuNFP6FQ0FO35Dfk553/5KulSjZdcXwk3COcp/w5EQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=oPI5Hg
-        nVfN7c7xc2RC5PhDz4rdEfvl2DDBtK4UExMW4=; b=X700nfHOOwF8Fcblg6tXnW
-        NVZEbmR8WECEvZlIjR8J7nEdx++Zd85CF+EHr6xyS5KfvIibWtLDffW+5X06TlA8
-        jmP3hmkn7Z1nXocXlsjmiewYscJ249vwQVNQTumK+zQkMHV4Pt57pBHxnYt/J5pd
-        I/FT3MRy+rRy4e0EM8vANavVE/XIggsSc6eqZXHCGgtdmCjfzbogjJ8Y6ogN3e5z
-        1FQN9c+5DCNnURhV64DWGIHzjtmlJ4nkw5ZuALRT1vKFNhdHeKSSGjvGduDkfSPw
-        m5P/SALBy0ZxIcJf9ayfLSUItcmQ10rPgooEYA1dNde/l7DaGHsu8yKN3Z9qWxGg
-        ==
-X-ME-Sender: <xms:u3LXX-J0K9zoqU4PtH8LRk36W1xFFbs6fst3YA4DXKQSvR4zGZEW3w>
-    <xme:u3LXX2Ls0c335bCS7iuYgKEXCw93lWQsoEXWr_0iuYCzuKSFhNFNClGO512sHNhlw
-    yFQzNIgLenQWQJFwVo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgieduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:u3LXX-sJehq8yx3-NQspCB-owcRnYxgcsVbC5U7srdSQiOX4Jsa2RA>
-    <xmx:u3LXXzbHZh7N3ouMeqcTdZtU2zR_2JvnRRSX_02O7v5zelHAh24Qeg>
-    <xmx:u3LXX1Yayf5Yk4SHArv9yXXO7J6ZBrocGQLMB-djFw_h4CCbxGc16Q>
-    <xmx:vXLXXyTuogJnWTizq8_nzlsyoIgmZFA31Fr86Pg16m-BkHiZI0v6jw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 0FF8724005D;
-        Mon, 14 Dec 2020 09:12:10 -0500 (EST)
-Date:   Mon, 14 Dec 2020 15:12:09 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.xyz>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 19/21] arm64: dts: allwinner: Add Allwinner H616 .dtsi
- file
-Message-ID: <20201214141209.xky5dn42dkrv4vvm@gilmour>
-References: <20201211011934.6171-1-andre.przywara@arm.com>
- <20201211011934.6171-20-andre.przywara@arm.com>
- <20201214095831.j63nks3fqxlaw75w@gilmour>
- <20201214125343.0cd1bc6a@slackpad.fritz.box>
+        Mon, 14 Dec 2020 09:27:17 -0500
+X-Greylist: delayed 463 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 14 Dec 2020 06:26:36 PST
+Received: from mx-rz-2.rrze.uni-erlangen.de (mx-rz-2.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7538EC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 06:26:36 -0800 (PST)
+Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx-rz-2.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4Cvk5m05g9zPkgs;
+        Mon, 14 Dec 2020 15:18:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2013;
+        t=1607955532; bh=vLO5fXeRxKsAS5KJjQ3cfc+9RBxQWtygoZ46KEfGDC0=;
+        h=From:To:Cc:Subject:Date:From:To:CC:Subject;
+        b=USLKXoH1RyaMC/6Xtw5z7ObGPrka/K6d80pRsVyY5/z3R4XhIsxwwgmClgkbq9g0d
+         rmgcYBX6HBBkjf6vJxzi0i/QQrCavGAODMS+8SY8zETmvus/Ig6Jhl5S69Vy9Y4bSM
+         Lpsv6thnwqimVFeSpD1VbMM+mB3VZxM524SJU4Caachpl0BZQrFAcCJvUXnMYR2n1f
+         ZEW8/ctw39Au45msuRVO+y4JL217g8MzI6z+uGzjli/5RQpnx0jws7WR5xRWm4r/mt
+         iKkpYQcNajN39FgWHWYxZTW96C77MGmttjPlJcLGQrBT7yTBibKrZ7kGlKSaMZbz8I
+         0aDpiPlfkTpiQ==
+X-Virus-Scanned: amavisd-new at boeck1.rrze.uni-erlangen.de (RRZE)
+X-RRZE-Flag: Not-Spam
+X-RRZE-Submit-IP: 2001:638:a000:4130:131:188:30:84
+Received: from cip1e4.informatik.uni-erlangen.de (cip1e4.cip.cs.fau.de [IPv6:2001:638:a000:4130:131:188:30:84])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: U2FsdGVkX1/0nW3u0adL3Xc+/bNl9f6AmCPKBELKVrs=)
+        by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4Cvk5h3MjtzPlS7;
+        Mon, 14 Dec 2020 15:18:48 +0100 (CET)
+From:   Stefan Saecherl <stefan.saecherl@fau.de>
+To:     x86@kernel.org
+Cc:     linux-kernel@i4.cs.fau.de,
+        Stefan Saecherl <stefan.saecherl@fau.de>,
+        Lorena Kretzschmar <qy15sije@cip.cs.fau.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/kgdb: Allow removal of early BPs
+Date:   Mon, 14 Dec 2020 15:13:12 +0100
+Message-Id: <20201214141314.5717-1-stefan.saecherl@fau.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4tjwk5mvzqfd55qc"
-Content-Disposition: inline
-In-Reply-To: <20201214125343.0cd1bc6a@slackpad.fritz.box>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The problem is that breakpoints that are set early (e.g. via kgdbwait)
+cannot be deleted after boot completed (to be precise after mark_rodata_ro
+ran).
 
---4tjwk5mvzqfd55qc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+When setting a breakpoint early there are executable pages that are
+writable so the copy_to_kernel_nofault call in kgdb_arch_set_breakpoint
+succeeds and the breakpoint is saved as type BP_BREAKPOINT.
 
-On Mon, Dec 14, 2020 at 12:53:43PM +0000, Andre Przywara wrote:
-> On Mon, 14 Dec 2020 10:58:31 +0100
-> Maxime Ripard <maxime@cerno.tech> wrote:
-> > On Fri, Dec 11, 2020 at 01:19:32AM +0000, Andre Przywara wrote:
-> > > +	reserved-memory {
-> > > +		#address-cells =3D <2>;
-> > > +		#size-cells =3D <2>;
-> > > +		ranges;
-> > > +
-> > > +		/* 512KiB reserved for ARM Trusted Firmware (BL31)
-> > > */
-> > > +		secmon_reserved: secmon@40000000 {
-> > > +			reg =3D <0x0 0x40000000 0x0 0x80000>;
-> > > +			no-map;
-> > > +		};
-> > > +	}; =20
-> >=20
-> > This should still be set by the firmware
-> >=20
-> > > +		mmc0: mmc@4020000 {
-> > > +			compatible =3D "allwinner,sun50i-h616-mmc",
-> > > +				     "allwinner,sun50i-a100-mmc";
-> > > +			reg =3D <0x04020000 0x1000>;
-> > > +			clocks =3D <&ccu CLK_BUS_MMC0>, <&ccu
-> > > CLK_MMC0>;
-> > > +			clock-names =3D "ahb", "mmc";
-> > > +			resets =3D <&ccu RST_BUS_MMC0>;
-> > > +			reset-names =3D "ahb";
-> > > +			interrupts =3D <GIC_SPI 35
-> > > IRQ_TYPE_LEVEL_HIGH>;
-> > > +			pinctrl-names =3D "default";
-> > > +			pinctrl-0 =3D <&mmc0_pins>;
-> > > +			status =3D "disabled";
-> > > +			#address-cells =3D <1>;
-> > > +			#size-cells =3D <0>;
-> > > +		}; =20
-> >=20
-> > Somewhat related: we shouldn't set the MMC speed flags in the drivers.
-> > This is biting us on the already supported SoCs, so it would be great
-> > to not repeat the same mistake with the new ones
->=20
-> Do you mean to list the "sd-uhs-sdr50" and friends properties here in
-> the DT?
-> What is the best practice here in terms putting them in the .dts vs.
-> the .dtsi? Surely the controller has limits, but bad traces on a board
-> could impose further restrictions, right?
->
-> Though that's probably rare, so it sounds like a lot of churn to list
-> them in every board DT. So can we list everything in here (.dtsi), then
-> delete in those affected boards only?
+Later in the boot write access to these pages is restricted. So when
+removing the breakpoint the copy_to_kernel_nofault call in
+kgdb_arch_remove_breakpoint is destined to fail and the breakpoint removal
+fails. So after copy_to_kernel_nofault failed try to text_poke_kgdb which
+can work around nonwriteability.
 
-Yeah, I completely agree :)
+One thing to consider when doing this is that code can go away during boot
+(e.g. .init.text). Previously kgdb_arch_remove_breakpoint handled this case
+gracefully by just having copy_to_kernel_nofault fail but if one then calls
+text_poke_kgdb the system dies due to the BUG_ON we moved out of
+__text_poke.  To avoid this __text_poke now returns an error in case of a
+nonpresent code page and the error is handled at call site.
 
-Maxime
+Checkpatch complains about two uses of BUG_ON but the new code should not
+trigger BUG_ON in cases where the old didn't.
 
---4tjwk5mvzqfd55qc
-Content-Type: application/pgp-signature; name="signature.asc"
+Co-developed-by: Lorena Kretzschmar <qy15sije@cip.cs.fau.de>
+Signed-off-by: Lorena Kretzschmar <qy15sije@cip.cs.fau.de>
+Signed-off-by: Stefan Saecherl <stefan.saecherl@fau.de>
+---
+ arch/x86/kernel/alternative.c | 16 +++++++----
+ arch/x86/kernel/kgdb.c        | 54 ++++++++++++++++++++++++-----------
+ 2 files changed, 48 insertions(+), 22 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 2400ad62f330..0f145d837885 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -878,11 +878,9 @@ static void *__text_poke(void *addr, const void *opcode, size_t len)
+ 		if (cross_page_boundary)
+ 			pages[1] = virt_to_page(addr + PAGE_SIZE);
+ 	}
+-	/*
+-	 * If something went wrong, crash and burn since recovery paths are not
+-	 * implemented.
+-	 */
+-	BUG_ON(!pages[0] || (cross_page_boundary && !pages[1]));
++
++	if (!pages[0] || (cross_page_boundary && !pages[1]))
++		return ERR_PTR(-EFAULT);
+ 
+ 	/*
+ 	 * Map the page without the global bit, as TLB flushing is done with
+@@ -976,7 +974,13 @@ void *text_poke(void *addr, const void *opcode, size_t len)
+ {
+ 	lockdep_assert_held(&text_mutex);
+ 
+-	return __text_poke(addr, opcode, len);
++	addr = __text_poke(addr, opcode, len);
++	/*
++	 * If something went wrong, crash and burn since recovery paths are not
++	 * implemented.
++	 */
++	BUG_ON(IS_ERR(addr));
++	return addr;
+ }
+ 
+ /**
+diff --git a/arch/x86/kernel/kgdb.c b/arch/x86/kernel/kgdb.c
+index ff7878df96b4..e98c9c43db7c 100644
+--- a/arch/x86/kernel/kgdb.c
++++ b/arch/x86/kernel/kgdb.c
+@@ -731,6 +731,7 @@ void kgdb_arch_set_pc(struct pt_regs *regs, unsigned long ip)
+ int kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
+ {
+ 	int err;
++	void *addr;
+ 
+ 	bpt->type = BP_BREAKPOINT;
+ 	err = copy_from_kernel_nofault(bpt->saved_instr, (char *)bpt->bpt_addr,
+@@ -747,8 +748,14 @@ int kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
+ 	 */
+ 	if (mutex_is_locked(&text_mutex))
+ 		return -EBUSY;
+-	text_poke_kgdb((void *)bpt->bpt_addr, arch_kgdb_ops.gdb_bpt_instr,
+-		       BREAK_INSTR_SIZE);
++
++	addr = text_poke_kgdb((void *)bpt->bpt_addr, arch_kgdb_ops.gdb_bpt_instr,
++				BREAK_INSTR_SIZE);
++	/* This should never trigger because the above call to copy_from_kernel_nofault
++	 * already succeeded.
++	 */
++	BUG_ON(IS_ERR(addr));
++
+ 	bpt->type = BP_POKE_BREAKPOINT;
+ 
+ 	return 0;
+@@ -756,21 +763,36 @@ int kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
+ 
+ int kgdb_arch_remove_breakpoint(struct kgdb_bkpt *bpt)
+ {
+-	if (bpt->type != BP_POKE_BREAKPOINT)
+-		goto knl_write;
+-	/*
+-	 * It is safe to call text_poke_kgdb() because normal kernel execution
+-	 * is stopped on all cores, so long as the text_mutex is not locked.
+-	 */
+-	if (mutex_is_locked(&text_mutex))
+-		goto knl_write;
+-	text_poke_kgdb((void *)bpt->bpt_addr, bpt->saved_instr,
+-		       BREAK_INSTR_SIZE);
+-	return 0;
++	void *addr;
++	int err;
+ 
+-knl_write:
+-	return copy_to_kernel_nofault((char *)bpt->bpt_addr,
+-				  (char *)bpt->saved_instr, BREAK_INSTR_SIZE);
++	if (bpt->type == BP_POKE_BREAKPOINT) {
++		if (mutex_is_locked(&text_mutex)) {
++			err = copy_to_kernel_nofault((char *)bpt->bpt_addr,
++							(char *)bpt->saved_instr,
++							BREAK_INSTR_SIZE);
++		} else {
++			/*
++			 * It is safe to call text_poke_kgdb() because normal kernel execution
++			 * is stopped on all cores, so long as the text_mutex is not locked.
++			 */
++			addr = text_poke_kgdb((void *)bpt->bpt_addr,
++							bpt->saved_instr,
++							BREAK_INSTR_SIZE);
++			err = PTR_ERR_OR_ZERO(addr);
++		}
++	} else {
++		err = copy_to_kernel_nofault((char *)bpt->bpt_addr,
++						(char *)bpt->saved_instr,
++						BREAK_INSTR_SIZE);
++		if (err == -EFAULT && !mutex_is_locked(&text_mutex)) {
++			addr = text_poke_kgdb((void *)bpt->bpt_addr,
++						bpt->saved_instr,
++						BREAK_INSTR_SIZE);
++			err = PTR_ERR_OR_ZERO(addr);
++		}
++	}
++	return err;
+ }
+ 
+ const struct kgdb_arch arch_kgdb_ops = {
+-- 
+2.20.1
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9dyuQAKCRDj7w1vZxhR
-xfOmAQDAUlEjonuvKgzrcKb89bymLb1GtDfICxmZo8pcsDYFkAEAymQgz1ZZR/ev
-9cwmWik25ODTVmrSb0Mf+AKo6XJ2eQM=
-=8BAy
------END PGP SIGNATURE-----
-
---4tjwk5mvzqfd55qc--
