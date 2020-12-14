@@ -2,189 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18212D9D51
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE31D2D9D5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408386AbgLNRL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:11:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49092 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2408381AbgLNRLT (ORCPT
+        id S2408414AbgLNRNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:13:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408413AbgLNRNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:11:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607965792;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bfJv7pyU3y1plqcZLspvJWWR6I6MIq6AZVeJWdRv7rM=;
-        b=b+fjcCglgypxga5/c6i6CzWRcgtpphn+YeVj6Lc3Lv/ak2uQc7sRuNf6/kNuvlTJJsOMYx
-        w8Zi0+qfUDfzjtB0HZl0dIi9IBo+Q9gbU8V70BrqfNHb7Nc0LHNm4eZR/SbV0lo47xeTOp
-        MWIyppE4t26EV6c7dLK/suLNEpdZVQQ=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-536-yuEih19FNOiogAMVtr6huw-1; Mon, 14 Dec 2020 12:09:51 -0500
-X-MC-Unique: yuEih19FNOiogAMVtr6huw-1
-Received: by mail-wr1-f69.google.com with SMTP id v1so6895581wri.16
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:09:50 -0800 (PST)
+        Mon, 14 Dec 2020 12:13:13 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED87C0613D3;
+        Mon, 14 Dec 2020 09:12:33 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id 82so9252658yby.6;
+        Mon, 14 Dec 2020 09:12:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6rKntWAzezKQY6iRUqQwhm52Tcc3Is8F5R6X0L2T4x0=;
+        b=aeBQBa2+tSZ5IwKLmky59/317du25kb5QvdC9TIwDci6aoupzBEyy0TJWD23cZbZpF
+         FCLyMLzHRAX3P5Z7NxUChIi374ZZENIny2AKBbunXKVNy6DzhXMgMh7TN6FO4ro5ZcY3
+         R5RRQIkjF4/1PiU2BZORpSsOzq7qi2OjkmiuSssrk2EzVILNXwzCj1Xn0b6BPH21y1fP
+         NstTfcQ+kIy7CTI0Cw3NpZYysrZyPyfe3eo2Tw9/QzmIwcusOC9Kr3CJ+N+zog7Klj/n
+         L0UpRvL69C4gv37lyjwfCuQwFFsM/YkZqfPnLb/4wRodAzYUhgFAxa1U6OdFQFHveYpe
+         L9Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=bfJv7pyU3y1plqcZLspvJWWR6I6MIq6AZVeJWdRv7rM=;
-        b=ZFsCnWvvMfXH90lcAuZjY6ooxb5M5CaVtaAcPGYnVtF/Yejs4LvniAOnYdsE2nBG/L
-         zOV3rrG1IJuukBN6z0J24PtRthYpgrRlJFhNOJ2B/idt0Ded7yBaTWajCBKS9r9bsMr4
-         aAGrqSixUWt27QqIHwrRTBjE1i/qF7u01rCsxImnDYDFGpG6AbW9FljIJJuaZrq+6ESa
-         06p+qV31sMYv86A/QJF8SGlC4/lPNvMMiz0bCrFU9tJvl+v6uu7P+nqShgJhyXPCFkBG
-         opmpD3FSRDQX+oHEqT7I8Id+OOc5A5wWGkZgRXa7VPnG9cEcWctTLgF4ujBGN01bIe+Y
-         WOfg==
-X-Gm-Message-State: AOAM532EYqULCwfbRuhAKW+lb7gynsjY7Zomiqa8wl1bMj6CAfuqxvPh
-        DjW1DeyLwNrC4CgZGkldujNeyauAQkaQxLOJi4sslNx65roZ8QgK5ChLDAy+yzYMxuFCNWo3Nor
-        aUF2cE6bWoiUDpFxYeA6ssK0x
-X-Received: by 2002:a1c:1fc4:: with SMTP id f187mr28784528wmf.107.1607965789305;
-        Mon, 14 Dec 2020 09:09:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxRVXsSXqA3sY4VvpK70uLZVdAE7dFO3NJoxd/7i8PSqwKK7XsINKbTuV+o1EUCRA8cYqOwUg==
-X-Received: by 2002:a1c:1fc4:: with SMTP id f187mr28784511wmf.107.1607965789070;
-        Mon, 14 Dec 2020 09:09:49 -0800 (PST)
-Received: from linux.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
-        by smtp.gmail.com with ESMTPSA id y6sm32273563wmg.39.2020.12.14.09.09.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 09:09:48 -0800 (PST)
-Date:   Mon, 14 Dec 2020 18:09:46 +0100
-From:   Guillaume Nault <gnault@redhat.com>
-To:     Martin Zaharinov <micron10@gmail.com>
-Cc:     "linux-kernel@vger kernel. org" <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>, netdev@vger.kernel.org
-Subject: Re: Urgent: BUG: PPP ioctl Transport endpoint is not connected
-Message-ID: <20201214170946.GB8350@linux.home>
-References: <83C781EB-5D66-426E-A216-E1B846A3EC8A@gmail.com>
- <20201209164013.GA21199@linux.home>
- <1E49F9F8-0325-439E-B200-17C8CB6A3CBE@gmail.com>
- <20201209181033.GB21199@linux.home>
- <B70AAB31-B656-43B4-97B6-6E0FA0E1E680@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6rKntWAzezKQY6iRUqQwhm52Tcc3Is8F5R6X0L2T4x0=;
+        b=U5eXP1VXeg87W0QtoPpQ2LNheUq0us8LTfbrgpJ2/DZOPRYwPnifMf8FfVHOvdSHlf
+         T8zkhwPS0gZO/nwLgnik5VDExl6BvNXsZKsUNvkPez5jAojCJ/uI9DiiBGOHe3wPWC5D
+         r8Sbj+KvXB1RxmJNGEYcwMZ2pX3Lgj1jk30DTgEDR/EWao1RKWHrz/mA739sfQP68OAs
+         31d3bQ8DJhfc6Kar58OHIdz6pzP+ejbPMkToEeNkF344kQQvjkH5TS6YeNQ4yOoR1pFY
+         BpoU5eQCY7vWtVfs8m+o9SduzPRz8MjhJfcKBMapb4l1NW1fRqkpcENAl4/aJgfRUeMy
+         fnvA==
+X-Gm-Message-State: AOAM533Pfw4xfePqJugC0jaJDAleyFXw351/DPV/0T2hjKcyfP6m/5a9
+        MZb1EONLWDIYS5JQPB0LeTH+Pzdq+ZzclbB6vZA=
+X-Google-Smtp-Source: ABdhPJwmepRzWIWkCfUMN5Kbq6U3QkiOKjfBZudMDR1drxErt8YUn0ov9ksl8/hO4b05XcLvCKm9aVC8DsljRQN2Pl0=
+X-Received: by 2002:a25:f02:: with SMTP id 2mr36268254ybp.500.1607965948994;
+ Mon, 14 Dec 2020 09:12:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <B70AAB31-B656-43B4-97B6-6E0FA0E1E680@gmail.com>
+References: <CADxRZqzXQRYgKc=y-KV=S_yHL+Y8Ay2mh5ezeZUnpRvg+syWKw@mail.gmail.com>
+ <20201214111512.415717ac@gandalf.local.home> <20201214112629.3cf6f240@gandalf.local.home>
+In-Reply-To: <20201214112629.3cf6f240@gandalf.local.home>
+From:   Anatoly Pugachev <matorola@gmail.com>
+Date:   Mon, 14 Dec 2020 20:12:18 +0300
+Message-ID: <CADxRZqwDAZK3s2jjavUKunvbE3jux=yNfPQFRwvMZRjqqS_6cw@mail.gmail.com>
+Subject: Re: [sparc64] ftrace: kernel startup-tests unaligned access
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 09:12:18PM +0200, Martin Zaharinov wrote:
-> 
-> 
-> > On 9 Dec 2020, at 20:10, Guillaume Nault <gnault@redhat.com> wrote:
-> > 
-> > On Wed, Dec 09, 2020 at 06:57:44PM +0200, Martin Zaharinov wrote:
-> >>> On 9 Dec 2020, at 18:40, Guillaume Nault <gnault@redhat.com> wrote:
-> >>> On Wed, Dec 09, 2020 at 04:47:52PM +0200, Martin Zaharinov wrote:
-> >>>> Hi All
-> >>>> 
-> >>>> I have problem with latest kernel release 
-> >>>> And the problem is base on this late problem :
-> >>>> 
-> >>>> 
-> >>>> https://www.mail-archive.com/search?l=netdev@vger.kernel.org&q=subject:%22Re%5C%3A+ppp%5C%2Fpppoe%2C+still+panic+4.15.3+in+ppp_push%22&o=newest&f=1
-> >>>> 
-> >>>> I have same problem in kernel 5.6 > now I use kernel 5.9.13 and have same problem.
-> >>>> 
-> >>>> 
-> >>>> In kernel 5.9.13 now don’t have any crashes in dimes but in one moment accel service stop with defunct and in log have many of this line :
-> >>>> 
-> >>>> 
-> >>>> error: vlan608: ioctl(PPPIOCCONNECT): Transport endpoint is not connected
-> >>>> error: vlan617: ioctl(PPPIOCCONNECT): Transport endpoint is not connected
-> >>>> error: vlan679: ioctl(PPPIOCCONNECT): Transport endpoint is not connected
-> >>>> 
-> >>>> In one moment connected user bump double or triple and after that service defunct and need wait to drop all session to start .
-> >>>> 
-> >>>> I talk with accel-ppp team and they said this is kernel related problem and to back to kernel 4.14 there is not this problem.
-> >>>> 
-> >>>> Problem is come after kernel 4.15 > and not have solution to this moment.
-> >>> 
-> >>> I'm sorry, I don't understand.
-> >>> Do you mean that v4.14 worked fine (no crash, no ioctl() error)?
-> >>> Did the problem start appearing in v4.15? Or did v4.15 work and the
-> >>> problem appeared in v4.16?
-> >> 
-> >> In Telegram group I talk with Sergey and Dimka and told my the problem is come after changes from 4.14 to 4.15 
-> >> Sergey write this : "as I know, there was a similar issue in kernel 4.15 so maybe it is still not fixed"
-> > 
-> > Ok, but what is your experience? Do you have a kernel version where
-> > accel-ppp reports no ioctl() error and doesn't crash the kernel?
-> Reported by Sergey and Dimka  version 4.14 < don’t have this problem,
-> Only version after 4.15.0 > have problem and with patch only fix to don’t put crash log in dimes and freeze system.
+On Mon, Dec 14, 2020 at 7:26 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> On Mon, 14 Dec 2020 11:15:12 -0500 Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> > Does sparc64 require 8 byte alignment for 8 byte words?
+> >
+>
+> In other words, does this patch fix anything?
+>
+> -- Steve
+>
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 56b6ccc0e32d..fa716994f77e 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -143,6 +143,22 @@ config UPROBES
+>             managed by the kernel and kept transparent to the probed
+>             application. )
+>
+> +config HAVE_64BIT_ALIGNED_ACCESS
+...
 
-If they know about some regressions, please tell them to report them
-(either to the list or directly to me). Because I'm not aware of
-anything that broke with 4.15.
+Steven,
 
-> > 
-> > There wasn't a lot of changes between 4.14 and 4.15 for PPP.
-> > The only PPP patch I can see that might have been risky is commit
-> > 0171c4183559 ("ppp: unlock all_ppp_mutex before registering device").
-> 
-> For my changes is a atomic and skb kfree .
-> > 
-> >> I don’t have options to test with this old kernel 4.14.xxx i don’t have support for them.
-> >> 
-> >> 
-> >>> 
-> >>>> Please help to find the problem.
-> >>>> 
-> >>>> Last time in link I see is make changes in ppp_generic.c 
-> >>>> 
-> >>>> ppp_lock(ppp);
-> >>>>       spin_lock_bh(&pch->downl);
-> >>>>       if (!pch->chan) {
-> >>>>               /* Don't connect unregistered channels */
-> >>>>               spin_unlock_bh(&pch->downl);
-> >>>>               ppp_unlock(ppp);
-> >>>>               ret = -ENOTCONN;
-> >>>>               goto outl;
-> >>>>       }
-> >>>>       spin_unlock_bh(&pch->downl);
-> >>>> 
-> >>>> 
-> >>>> But this fix only to don’t display error and freeze system 
-> >>>> The problem is stay and is to big.
-> >>> 
-> >>> Do you use accel-ppp's unit-cache option? Does the problem go away if
-> >>> you stop using it?
-> >>> 
-> >> 
-> >> No I don’t use unit-cache , if I set unit-cache accel-ppp defunct same but user Is connect and disconnet more fast.
-> >> 
-> >> The problem is same with unit and without . 
-> >> Only after this patch I don’t see error in dimes but this is not solution.
-> > 
-> > Soryy, what's "in dimes"?
-> > Do you mean that reverting commit 77f840e3e5f0 ("ppp: prevent
-> > unregistered channels from connecting to PPP units") fixes your problem?
-> Sorry text correct in dmesg*
-> 
-> I don’t make any changes of ppp part of kernel 5.9.13 I use clean build for ppp .
-> > 
-> >> In network have customer what have power cut problem, when drop 600 user and back Is normal but in this moment kernel is locking and start to make this : 
-> >> sessions:
-> >>  starting: 4235
-> >>  active: 3882
-> >>  finishing: 378
-> >> The problem is starting session is not real user normal user in this server is ~4k customers .
-> > 
-> > What type of session is it? L2TP, PPPoE, PPTP?
-> > 
-> Session is PPPoE only with radius auth
-> 
-> >> I use pppd_compat .
-> >> 
-> >> Any idea ?
-> >> 
-> >>>> 
-> >>>> Please help to fix.
-> >> Martin
-> 
+yes, this patch fully fixes ftrace sparc64 "unaligned access". Thanks!
 
+$ journalctl -b -k --no-hostname -o short-monotonic | grep -c unaligned
+0
+
+$ diff -u <(gzip -dc ~/dmesg/config-5.10.0.gz) <(gzip -dc /proc/config.gz)
+--- /dev/fd/63  2020-12-14 20:11:10.442415669 +0300
++++ /dev/fd/62  2020-12-14 20:11:10.438415619 +0300
+@@ -305,6 +305,7 @@
+ CONFIG_JUMP_LABEL=y
+ # CONFIG_STATIC_KEYS_SELFTEST is not set
+ CONFIG_UPROBES=y
++CONFIG_HAVE_64BIT_ALIGNED_ACCESS=y
+ CONFIG_KRETPROBES=y
+ CONFIG_HAVE_KPROBES=y
+ CONFIG_HAVE_KRETPROBES=y
+@@ -2842,7 +2843,10 @@
+ # CONFIG_TRACEPOINT_BENCHMARK is not set
+ # CONFIG_RING_BUFFER_BENCHMARK is not set
+ # CONFIG_TRACE_EVAL_MAP_FILE is not set
+-# CONFIG_FTRACE_STARTUP_TEST is not set
++CONFIG_FTRACE_SELFTEST=y
++CONFIG_FTRACE_STARTUP_TEST=y
++CONFIG_EVENT_TRACE_STARTUP_TEST=y
++# CONFIG_EVENT_TRACE_TEST_SYSCALLS is not set
+ # CONFIG_RING_BUFFER_STARTUP_TEST is not set
+ # CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+ # CONFIG_KPROBE_EVENT_GEN_TEST is not set
