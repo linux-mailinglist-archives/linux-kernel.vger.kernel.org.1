@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DEE52D9215
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 04:42:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D932D9217
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 04:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438430AbgLNDl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 22:41:58 -0500
-Received: from mga03.intel.com ([134.134.136.65]:41628 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438375AbgLNDlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 22:41:49 -0500
-IronPort-SDR: r7dvl32y3z8JBWnJ7iRu9/QQUeTiEIAsAxjwnFQ8wLtcMYG/sdWlK6A02ecrGiv3s/k+kM+IlC
- SOgwveZMGMdw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9834"; a="174762712"
+        id S2438438AbgLNDmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 22:42:43 -0500
+Received: from labrats.qualcomm.com ([199.106.110.90]:1081 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438375AbgLNDmZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 22:42:25 -0500
+IronPort-SDR: CNPjLB8U2r0Fgtaiknb/rAw4D8FmB18qWG1Z+oI3KGyXu5dOre4CcWcBl+6zAoMIHjIG2/zobi
+ w4UC+FvyojqDARC7BXatwLvL/BUO7/6iCowmpsLeiFB8Qjrv+uaNcy0AKCQeNpZQGxG8DqwhLi
+ tR7kK7RDVtClPBmvM0pvp1cmu4iMFcOxY55vQKtDcZno5BSzyMxVv2i4PScUg354Yur6WwClkq
+ WE/en/jSYD/ycr/DReIoEzW6ss31Mlv450WSca7GgluiL/vxQMc6jJjvtFueKK0fG0BjImswA2
+ w1A=
 X-IronPort-AV: E=Sophos;i="5.78,417,1599548400"; 
-   d="scan'208";a="174762712"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2020 19:41:03 -0800
-IronPort-SDR: z1wgAxhEXN3lValOlrPUkmvwVUfLqMmYoC2bZZ0uMSYkVeLED80F2zrriBXUMxP/b96adHc3ks
- y7aql/dNs09A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,417,1599548400"; 
-   d="scan'208";a="331726438"
-Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Dec 2020 19:41:01 -0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com
-Subject: [PATCH v2 2/2] Documentation: fpga: dfl: Add description for DFL UIO support
-Date:   Mon, 14 Dec 2020 11:36:21 +0800
-Message-Id: <1607916981-14782-3-git-send-email-yilun.xu@intel.com>
+   d="scan'208";a="47581862"
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by labrats.qualcomm.com with ESMTP; 13 Dec 2020 19:41:39 -0800
+X-QCInternal: smtphost
+Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP; 13 Dec 2020 19:41:38 -0800
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id 9D20221216; Sun, 13 Dec 2020 19:41:38 -0800 (PST)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH V2 1/1] scsi: ufs: Fix a possible NULL pointer issue
+Date:   Sun, 13 Dec 2020 19:41:32 -0800
+Message-Id: <1607917296-11735-1-git-send-email-cang@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607916981-14782-1-git-send-email-yilun.xu@intel.com>
-References: <1607916981-14782-1-git-send-email-yilun.xu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds description for UIO support for dfl devices on DFL
-bus.
+During system resume/suspend, hba could be NULL. In this case, do not touch
+eh_sem.
 
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
----
-v2: no doc in v1, add it for v2.
----
- Documentation/fpga/dfl.rst | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+Fixes: 88a92d6ae4fe ("scsi: ufs: Serialize eh_work with system PM events and async scan")
 
-diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-index 0404fe6..a15e81e 100644
---- a/Documentation/fpga/dfl.rst
-+++ b/Documentation/fpga/dfl.rst
-@@ -502,6 +502,29 @@ FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
- could be a reference.
+Signed-off-by: Can Guo <cang@codeaurora.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index c1c401b..ef155a9 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -8883,8 +8883,11 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
+ 	int ret = 0;
+ 	ktime_t start = ktime_get();
  
++	if (!hba)
++		return 0;
++
+ 	down(&hba->eh_sem);
+-	if (!hba || !hba->is_powered)
++	if (!hba->is_powered)
+ 		return 0;
  
-+UIO support for DFL devices
-+===========================
-+The FPGA is open for users to be reprogramed with newly developed hardware
-+components. They could instantiate a new private feature in the DFL, and then
-+get a DFL device in their system. In some cases users may need a userspace
-+driver for the DFL device:
-+
-+* Users may need to run some diagnostic test for their hardwares.
-+* Some hardware is designed for specific purposes and does not fit into one of
-+  the standard kernel subsystems.
-+
-+This requires the direct access to the MMIO space and interrupt handling in
-+userspace. We implemented a dfl-uio-pdev module which exposes the UIO device
-+interfaces. It adds the uio_pdrv_genirq platform device with the resources of
-+the DFL device, and let the generic UIO platform device driver provide UIO
-+support to userspace.
-+
-+The DFL UIO driver has a special matching algorithem. It will match any DFL
-+device which could not be handled by other DFL drivers. In this way, it will
-+not impact the functionality of the features which are already supported by the
-+system.
-+
-+
- Open discussion
- ===============
- FME driver exports one ioctl (DFL_FPGA_FME_PORT_PR) for partial reconfiguration
+ 	if ((ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl) ==
+@@ -8932,10 +8935,8 @@ int ufshcd_system_resume(struct ufs_hba *hba)
+ 	int ret = 0;
+ 	ktime_t start = ktime_get();
+ 
+-	if (!hba) {
+-		up(&hba->eh_sem);
++	if (!hba)
+ 		return -EINVAL;
+-	}
+ 
+ 	if (!hba->is_powered || pm_runtime_suspended(hba->dev))
+ 		/*
 -- 
-2.7.4
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
