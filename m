@@ -2,224 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFC92D9CDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65FA42D9CE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:48:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440246AbgLNQnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:43:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726223AbgLNQnD (ORCPT
+        id S2440282AbgLNQnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 11:43:21 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:35526 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726223AbgLNQnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:43:03 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC09C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:42:23 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id 131so12373710pfb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:42:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:user-agent:mime-version;
-        bh=JezVwkcUvzbDeHvXSRBpUCVs/qIVAUJGi+DKg0XJKa8=;
-        b=mXy18jyh6x9Yg5x/9PYmMAfeBUgoUAzxkI+cBR3uyWjLrqttklGNM7KuVM/9iipOZe
-         VHQ9K2I6ui+Nj3uEYv48Btuq1yNGWExK39A4eceIf3RWrY/2FfHE34g5jtEc8X1z8u2r
-         FCxIyX3B7DGQVYCT+4BP9UO9+umtNa23eqJHtlW/q0zeoOKQ/0DxmMIvZ2fdRB8cWKAo
-         zQRJpywYzWIU73CiY+vAFhXTp0eLd9toXWU0aoQMAVANbcruQRWN692WWd5ZsRlqIU5b
-         r15VUxXEoJG0qsMjChSfzd0P5vjMRjzn+8aS5kXhxmo4ig7DhvGcszGEmfLFcFA9d9zv
-         eZNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:user-agent
-         :mime-version;
-        bh=JezVwkcUvzbDeHvXSRBpUCVs/qIVAUJGi+DKg0XJKa8=;
-        b=nUItJkB716ChxsfNDomHHwNnQ15jgbDG4BnzQ/uUdO067CHoTily9tccVKYVRjBPTu
-         DquCkW3LhAcXTtkqpK9yT+KcQ5+casEBMoyXuADhaBOTB564x1ePLEdqZzJAbQxfTCAB
-         1YtT3tmwa5SWdJ9onA78tqQ9SNDrSd1gwEdmwsV4Z5YaDyD2s5i0xsFQfdwY0eMsy/R/
-         sebgguGuAMXEIStlbSaOTXN+iCxCPNDnfGl4jbMmAJ26ZGxZboIkqNZl0XE3SRfPYToq
-         f6Ep/oj6uHTFydMP+KvzC8fNKZIcNqG7b/r1qg/zGCMDObJgEqi4XbmYZhpDKrpCILJw
-         nYjg==
-X-Gm-Message-State: AOAM532q4YRUVbpjgm+XlaKTqUgcWbJeuKVAPIm1ZTUCEodOo6FgHywO
-        +0uafVMZdoxe3iyevvJdM4z7Mg==
-X-Google-Smtp-Source: ABdhPJzM/uVhPAKhk3NynN9yUtwSZCsn+2/4gY8gnVryTIoG815YrBdV7grCk4Reut9MNSIKbdcOIg==
-X-Received: by 2002:a62:3582:0:b029:19e:4935:bea2 with SMTP id c124-20020a6235820000b029019e4935bea2mr24381264pfa.34.1607964143127;
-        Mon, 14 Dec 2020 08:42:23 -0800 (PST)
-Received: from [192.168.1.9] ([171.61.231.84])
-        by smtp.gmail.com with ESMTPSA id u12sm19496373pfn.88.2020.12.14.08.42.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 08:42:22 -0800 (PST)
-Message-ID: <e479c654b6ca08057bf18a4e1c1d1ed3cdf8fdc8.camel@rajagiritech.edu.in>
-Subject: related to fixing  depreciated  api
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Date:   Mon, 14 Dec 2020 22:12:14 +0530
-Content-Type: multipart/mixed; boundary="=-b+EomzCa5T42UxINaR95"
-User-Agent: Evolution 3.38.1-2 
+        Mon, 14 Dec 2020 11:43:06 -0500
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5131F20B717A;
+        Mon, 14 Dec 2020 08:42:24 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5131F20B717A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1607964144;
+        bh=17oy4+dXfaSLajpExnudcAmGMiMK3qcSh76GKO4RE2Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b2qc6msEewlTpaaV0pHx7Usu0G6P2kINFg1UemHsrAy0bPMmhv+KSd6uf9Ipt43F7
+         9ZVKoQrg73yNjw0u7uwhG92+h9a+KuVMhqxpH5ycdsnsUvuE2IjguASH0E3x3Yx3iV
+         XzTsxGp+NTbKbRHRyT9l877JRxZkgxsHU+0yRmnY=
+Date:   Mon, 14 Dec 2020 10:42:22 -0600
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Maurizio Drocco <maurizio.drocco@ibm.com>,
+        Bruno Meneguele <bmeneg@redhat.com>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.7 03/30] ima: extend boot_aggregate with kernel
+ measurements
+Message-ID: <20201214164222.GK4951@sequoia>
+References: <20200708154116.3199728-1-sashal@kernel.org>
+ <20200708154116.3199728-3-sashal@kernel.org>
+ <1594224793.23056.251.camel@linux.ibm.com>
+ <20200709012735.GX2722994@sasha-vm>
+ <5b8dcdaf66fbe2a39631833b03772a11613fbbbf.camel@linux.ibm.com>
+ <20201211031008.GN489768@sequoia>
+ <659c09673affe9637a5d1391c12af3aa710ba78a.camel@linux.ibm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <659c09673affe9637a5d1391c12af3aa710ba78a.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-12-11 06:01:54, Mimi Zohar wrote:
+> On Thu, 2020-12-10 at 21:10 -0600, Tyler Hicks wrote:
+> > On 2020-11-29 08:17:38, Mimi Zohar wrote:
+> > > Hi Sasha,
+> > > 
+> > > On Wed, 2020-07-08 at 21:27 -0400, Sasha Levin wrote:
+> > > > On Wed, Jul 08, 2020 at 12:13:13PM -0400, Mimi Zohar wrote:
+> > > > >Hi Sasha,
+> > > > >
+> > > > >On Wed, 2020-07-08 at 11:40 -0400, Sasha Levin wrote:
+> > > > >> From: Maurizio Drocco <maurizio.drocco@ibm.com>
+> > > > >>
+> > > > >> [ Upstream commit 20c59ce010f84300f6c655d32db2610d3433f85c ]
+> > > > >>
+> > > > >> Registers 8-9 are used to store measurements of the kernel and its
+> > > > >> command line (e.g., grub2 bootloader with tpm module enabled). IMA
+> > > > >> should include them in the boot aggregate. Registers 8-9 should be
+> > > > >> only included in non-SHA1 digests to avoid ambiguity.
+> > > > >
+> > > > >Prior to Linux 5.8, the SHA1 template data hashes were padded before
+> > > > >being extended into the TPM.  Support for calculating and extending
+> > > > >the per TPM bank template data digests is only being upstreamed in
+> > > > >Linux 5.8.
+> > > > >
+> > > > >How will attestation servers know whether to include PCRs 8 & 9 in the
+> > > > >the boot_aggregate calculation?  Now, there is a direct relationship
+> > > > >between the template data SHA1 padded digest not including PCRs 8 & 9,
+> > > > >and the new per TPM bank template data digest including them.
+> > > > 
+> > > > Got it, I'll drop it then, thank you!
+> > > 
+> > > After re-thinking this over, I realized that the attestation server can
+> > > verify the "boot_aggregate" based on the quoted PCRs without knowing
+> > > whether padded SHA1 hashes or per TPM bank hash values were extended
+> > > into the TPM[1], but non-SHA1 boot aggregate values [2] should always
+> > > include PCRs 8 & 9.
+> > 
+> > I'm still not clear on how an attestation server would know to include
+> > PCRs 8 and 9 after this change came through a stable kernel update. It
+> > doesn't seem like something appropriate for stable since it requires
+> > code changes to attestation servers to handle the change.
+> > 
+> > I know this has already been released in some stable releases, so I'm
+> > too late, but perhaps I'm missing something.
+> 
+> The point of adding PCRs 8 & 9 only to non-SHA1 boot_aggregate values
+> was to avoid affecting existing attestation servers.  The intention was
+> when attestation servers added support for the non-sha1 boot_aggregate
+> values, they'd also include PCRs 8 & 9.  The existing SHA1
+> boot_aggregate value remains PCRs 0 - 7.
 
---=-b+EomzCa5T42UxINaR95
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+AFAIK, there's nothing that prevents the non-SHA1 TPM 2.0 PCR banks from
+being used even before v5.8, albeit with zero padded SHA1 digests.
+Existing attestation servers that already support that configuration are
+broken by this stable backport.
 
-hello,
+> To prevent this or something similar from happening again, what should
+> have been the proper way of including PCRs 8 & 9?
 
-i have worked on to  fix  depreciated api issue from
-tools/testing/selftests/intel_pstate/aerf.c
+I don't think that commits like 6f1a1d103b48 ("ima: Switch to
+ima_hash_algo for boot aggregate") and 20c59ce010f8 ("ima: extend
+boot_aggregate with kernel measurements") should be backported to
+stable.
 
-i met with the following error related...
+Including PCRs 8 and 9 definitely makes sense to include in the
+boot_aggregate value but limiting such a change to "starting in 5.8",
+rather than "starting in 5.8 and 5.4.82", is the safer approach when
+attestation server modifications are required.
 
---------------x------------------x----------------->
-$pwd
-/home/jeffrin/UP/linux-kselftest/tools/testing/selftests/intel_pstate
-$make
-gcc  -Wall -D_GNU_SOURCE    aperf.c /home/jeffrin/UP/linux-
-kselftest/tools/testing/selftests/kselftest_harness.h
-/home/jeffrin/UP/linux-kselftest/tools/testing/selftests/kselftest.h -
-lm -o /home/jeffrin/UP/linux-
-kselftest/tools/testing/selftests/intel_pstate/aperf
-aperf.c: In function ‘main’:
-aperf.c:58:2: warning: ‘ftime’ is deprecated [-Wdeprecated-
-declarations]
-   58 |  ftime(&before);
-      |  ^~~~~
-In file included from aperf.c:9:
-/usr/include/x86_64-linux-gnu/sys/timeb.h:39:12: note: declared here
-   39 | extern int ftime (struct timeb *__timebuf)
-      |            ^~~~~
-aperf.c:67:2: warning: ‘ftime’ is deprecated [-Wdeprecated-
-declarations]
-   67 |  ftime(&after);
-      |  ^~~~~
-In file included from aperf.c:9:
-/usr/include/x86_64-linux-gnu/sys/timeb.h:39:12: note: declared here
-   39 | extern int ftime (struct timeb *__timebuf)
-      |            ^~~~~
-$
-----------------x---------------x---------------------->
+Tyler
 
-
-from ftime manual  i found that it is depreciated...
-
-This  function is deprecated, and will be removed in a future version
-of the GNU C library.  Use clock_gettime(2) instead.
-
-
-now clock_gettime  gives  new data structure.
-
- struct timespec {
-               time_t   tv_sec;        /* seconds */
-               long     tv_nsec;       /* nanoseconds */
-           };
-
-
-i worked on with the new data structure and some errors that came
-along.
-typical final output looks good but  values of runtime and typical
-frequency
-does not look normal during "sudo bash run.sh".
-
-output of "git diff" and  a  portion of output of   "sudo bash run.sh".
-is attached.
-
-
-
--- 
-software engineer
-rajagiri school of engineering and technology - autonomous
-
-
-
---=-b+EomzCa5T42UxINaR95
-Content-Disposition: attachment; filename="diff-or.txt"
-Content-Type: text/plain; name="diff-or.txt"; charset="UTF-8"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2ludGVsX3BzdGF0ZS9hcGVyZi5j
-IGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvaW50ZWxfcHN0YXRlL2FwZXJmLmMKaW5kZXggZjZj
-ZDAzYTg3NDkzLi43ZTM1ZTc4NzJmMTYgMTAwNjQ0Ci0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRl
-c3RzL2ludGVsX3BzdGF0ZS9hcGVyZi5jCisrKyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2lu
-dGVsX3BzdGF0ZS9hcGVyZi5jCkBAIC02LDcgKzYsNyBAQAogI2luY2x1ZGUgPHN5cy90eXBlcy5o
-PgogI2luY2x1ZGUgPHN5cy9zdGF0Lmg+CiAjaW5jbHVkZSA8ZmNudGwuaD4KLSNpbmNsdWRlIDxz
-eXMvdGltZWIuaD4KKyNpbmNsdWRlIDx0aW1lLmg+CiAjaW5jbHVkZSA8c2NoZWQuaD4KICNpbmNs
-dWRlIDxlcnJuby5oPgogI2luY2x1ZGUgPHN0cmluZy5oPgpAQCAtMjIsMTAgKzIyLDEyIEBAIGlu
-dCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJndikgewogCWxvbmcgbG9uZyB0c2MsIG9sZF90c2Ms
-IG5ld190c2M7CiAJbG9uZyBsb25nIGFwZXJmLCBvbGRfYXBlcmYsIG5ld19hcGVyZjsKIAlsb25n
-IGxvbmcgbXBlcmYsIG9sZF9tcGVyZiwgbmV3X21wZXJmOwotCXN0cnVjdCB0aW1lYiBiZWZvcmUs
-IGFmdGVyOworCXN0cnVjdCB0aW1lc3BlYyBiZWZvcmUsIGFmdGVyOworICAgICAgICBjbG9ja2lk
-X3QgY2xraWQ7CiAJbG9uZyBsb25nIGludCBzdGFydCwgZmluaXNoLCB0b3RhbDsKIAljcHVfc2V0
-X3QgY3B1c2V0OwogCisKIAlpZiAoYXJnYyAhPSAyKSB7CiAJCXVzYWdlKGFyZ3ZbMF0pOwogCQly
-ZXR1cm4gMTsKQEAgLTQxLDYgKzQzLDEwIEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJn
-dikgewogCiAJc3ByaW50Zihtc3JfZmlsZV9uYW1lLCAiL2Rldi9jcHUvJWQvbXNyIiwgY3B1KTsK
-IAlmZCA9IG9wZW4obXNyX2ZpbGVfbmFtZSwgT19SRE9OTFkpOworICAgICAgICAjZGVmaW5lIENM
-T0NLRkQgMworICAgICAgICAjZGVmaW5lIEZEX1RPX0NMT0NLSUQoZmQpICAgKCh+KGNsb2NraWRf
-dCkgKGZkKSA8PCAzKSB8IENMT0NLRkQpCisgICAgICAgIGNsa2lkID0gRkRfVE9fQ0xPQ0tJRChm
-ZCk7CisKIAogCWlmIChmZCA9PSAtMSkgewogCQlwcmludGYoIi9kZXYvY3B1LyVkL21zcjogJXNc
-biIsIGNwdSwgc3RyZXJyb3IoZXJybm8pKTsKQEAgLTU1LDcgKzYxLDcgQEAgaW50IG1haW4oaW50
-IGFyZ2MsIGNoYXIgKiphcmd2KSB7CiAJCXJldHVybiAxOwogCX0KIAotCWZ0aW1lKCZiZWZvcmUp
-OworCWNsb2NrX2dldHRpbWUoY2xraWQsJmJlZm9yZSk7CiAJcHJlYWQoZmQsICZvbGRfdHNjLCAg
-c2l6ZW9mKG9sZF90c2MpLCAweDEwKTsKIAlwcmVhZChmZCwgJm9sZF9hcGVyZiwgIHNpemVvZihv
-bGRfbXBlcmYpLCAweGU3KTsKIAlwcmVhZChmZCwgJm9sZF9tcGVyZiwgIHNpemVvZihvbGRfYXBl
-cmYpLCAweGU4KTsKQEAgLTY0LDcgKzcwLDcgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKiph
-cmd2KSB7CiAJCXNxcnQoaSk7CiAJfQogCi0JZnRpbWUoJmFmdGVyKTsKKwljbG9ja19nZXR0aW1l
-KGNsa2lkLCZhZnRlcik7CiAJcHJlYWQoZmQsICZuZXdfdHNjLCAgc2l6ZW9mKG5ld190c2MpLCAw
-eDEwKTsKIAlwcmVhZChmZCwgJm5ld19hcGVyZiwgIHNpemVvZihuZXdfbXBlcmYpLCAweGU3KTsK
-IAlwcmVhZChmZCwgJm5ld19tcGVyZiwgIHNpemVvZihuZXdfYXBlcmYpLCAweGU4KTsKQEAgLTcz
-LDExICs3OSwxMCBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3YpIHsKIAlhcGVyZiA9
-IG5ld19hcGVyZi1vbGRfYXBlcmY7CiAJbXBlcmYgPSBuZXdfbXBlcmYtb2xkX21wZXJmOwogCi0J
-c3RhcnQgPSBiZWZvcmUudGltZSoxMDAwICsgYmVmb3JlLm1pbGxpdG07Ci0JZmluaXNoID0gYWZ0
-ZXIudGltZSoxMDAwICsgYWZ0ZXIubWlsbGl0bTsKLQl0b3RhbCA9IGZpbmlzaCAtIHN0YXJ0Owot
-Ci0JcHJpbnRmKCJydW5UaW1lOiAlNC4yZlxuIiwgMS4wKnRvdGFsLzEwMDApOwotCXByaW50Zigi
-ZnJlcTogJTcuMGZcbiIsIHRzYyAvICgxLjAqYXBlcmYgLyAoMS4wICogbXBlcmYpKSAvIHRvdGFs
-KTsKKwlzdGFydCA9IGJlZm9yZS50dl9zZWMqMTAwMDAwMCArIGJlZm9yZS50dl9uc2VjOworCWZp
-bmlzaCA9IGFmdGVyLnR2X3NlYyoxMDAwMDAwICsgYWZ0ZXIudHZfbnNlYzsKKwl0b3RhbCA9IGZp
-bmlzaCAtIHN0YXJ0OyAKKwlwcmludGYoInJ1blRpbWU6ICU0LjJmXG4iLCAxLjAqdG90YWwvMTAw
-MDAwMCk7IAorCXByaW50ZigiZnJlcTogJTcuMGZcbiIsIHRzYyAvICgxLjAgKiBhcGVyZiAvMS4w
-ICogKG1wZXJmKSkgLyB0b3RhbCk7CiAJcmV0dXJuIDA7CiB9Cg==
-
-
---=-b+EomzCa5T42UxINaR95
-Content-Disposition: attachment; filename="shot.txt"
-Content-Type: text/plain; name="shot.txt"; charset="UTF-8"
-Content-Transfer-Encoding: base64
-
-U2V0dGluZyBtYXhpbXVtIGZyZXF1ZW5jeSB0byA1MDAKbGF1bmNoaW5nIGFwZXJmIGxvYWQgb24g
-MApsYXVuY2hpbmcgYXBlcmYgbG9hZCBvbiAxCmxhdW5jaGluZyBhcGVyZiBsb2FkIG9uIDIKbGF1
-bmNoaW5nIGFwZXJmIGxvYWQgb24gMwpzbGVlcGluZyBmb3IgNSBzZWNvbmRzCndhaXRpbmcgZm9y
-IGpvYiBpZCA3NTIxCnJ1blRpbWU6IDAuMDAKZnJlcTogICAgIGluZgpydW5UaW1lOiAwLjAwCmZy
-ZXE6ICAgICBpbmYKcnVuVGltZTogMC4wMApmcmVxOiAgICAgaW5mCnJ1blRpbWU6IDAuMDAKZnJl
-cTogICAgIGluZgp3YWl0aW5nIGZvciBqb2IgaWQgNzUyMgp3YWl0aW5nIGZvciBqb2IgaWQgNzUy
-Mwp3YWl0aW5nIGZvciBqb2IgaWQgNzUyNApTZXR0aW5nIG1heGltdW0gZnJlcXVlbmN5IHRvIDQw
-MApsYXVuY2hpbmcgYXBlcmYgbG9hZCBvbiAwCmxhdW5jaGluZyBhcGVyZiBsb2FkIG9uIDEKbGF1
-bmNoaW5nIGFwZXJmIGxvYWQgb24gMgpsYXVuY2hpbmcgYXBlcmYgbG9hZCBvbiAzCnNsZWVwaW5n
-IGZvciA1IHNlY29uZHMKd2FpdGluZyBmb3Igam9iIGlkIDc1NDAKcnVuVGltZTogMC4wMApmcmVx
-OiAgICAgaW5mCnJ1blRpbWU6IDAuMDAKZnJlcTogICAgIGluZgpydW5UaW1lOiAwLjAwCmZyZXE6
-ICAgICBpbmYKd2FpdGluZyBmb3Igam9iIGlkIDc1NDEKcnVuVGltZTogMC4wMApmcmVxOiAgICAg
-aW5mCndhaXRpbmcgZm9yIGpvYiBpZCA3NTQyCndhaXRpbmcgZm9yIGpvYiBpZCA3NTQzCj09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PQpUaGUgbWFya2V0aW5nIGZyZXF1ZW5jeSBvZiB0aGUgY3B1IGlzIDIzMDAgTUh6
-ClRoZSBtYXhpbXVtIGZyZXF1ZW5jeSBvZiB0aGUgY3B1IGlzIDIzMDAgTUh6ClRoZSBtaW5pbXVt
-IGZyZXF1ZW5jeSBvZiB0aGUgY3B1IGlzIDQwMCBNSHoKVGFyZ2V0CSAgICAgIEFjdHVhbAkgICAg
-RGlmZmVyZW5jZQkgIE1TUigweDE5OSkJbWF4X3BlcmZfcGN0CjIzMDAJICAgICAgMjMwMAkgICAg
-MAkJICAweDQwMAkJMjMwMDAwCjIyMDAJICAgICAgMjIwMAkgICAgMAkJICAweDQwMAkJMjMwMDAw
-CjIxMDAJICAgICAgMjEwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjIwMDAJICAgICAgMjAwMAkg
-ICAgMAkJICAweDQwMAkJMjMwMDAwCjE5MDAJICAgICAgMTkwMAkgICAgMAkJICAweDQwMAkJMjMw
-MDAwCjE4MDAJICAgICAgMTgwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjE3MDAJICAgICAgMTcw
-MAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjE2MDAJICAgICAgMTYwMAkgICAgMAkJICAweDQwMAkJ
-MjMwMDAwCjE1MDAJICAgICAgMTUwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjE0MDAJICAgICAg
-MTQwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjEzMDAJICAgICAgMTMwMAkgICAgMAkJICAweDQw
-MAkJMjMwMDAwCjEyMDAJICAgICAgMTIwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjExMDAJICAg
-ICAgMTEwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjEwMDAJICAgICAgOTk5CSAgICAtMQkJICAw
-eDQwMAkJMjMwMDAwCjkwMAkgICAgICA5MDAJICAgIDAJCSAgMHg0MDAJCTIzMDAwMAo4MDAJICAg
-ICAgODAwCSAgICAwCQkgIDB4NDAwCQkyMzAwMDAKNzAwCSAgICAgIDcwMAkgICAgMAkJICAweDQw
-MAkJMjMwMDAwCjYwMAkgICAgICA2MDAJICAgIDAJCSAgMHg0MDAJCTIzMDAwMAo1MDAJICAgICAg
-NTAwCSAgICAwCQkgIDB4NDAwCQkyMzAwMDAKNDAwCSAgICAgIDQwMAkgICAgMAkJICAw
-
-
---=-b+EomzCa5T42UxINaR95--
-
+> 
+> thanks,
+> 
+> Mimi
+> 
