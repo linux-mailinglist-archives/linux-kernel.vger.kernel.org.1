@@ -2,202 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB692DA115
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C912DA129
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:11:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503016AbgLNUGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:06:32 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:42849 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502885AbgLNUFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:05:33 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cvsmw4KZ8z9sSC;
-        Tue, 15 Dec 2020 07:04:48 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607976289;
-        bh=oL63cv0DHfgA/xVGOOVPl/zQ1j5ovfcaXlp1rfCYqOk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=m5tnWk4oJzcI9ElSUjTDGZMbsFL57PwSL0HNbykqW08wkujRBJvQ9hcRXLJlmXWbE
-         nq0BrmJzkcLNWcZFydWHX2r9p3uIJajEGWnJa+f4lSC2bIqUMGmWz21uk68wQiyTwO
-         QrGDYiAEVGRcOaeujf+kispoFPeOmGHChI4o56q6JeBWkXHenMKQx17SUM17LDNjxA
-         aQhPsu5M+qz20kQv1kr2ntiBeMKtg0XDRdXwmM2O9E67smfNF3woKir3qsDQgpLADE
-         K7Tlc0x4x8LJLwhCn04KObaPyP1Pu3i8yVH9LICO5xFd+YOXYit/tlI8G2wcUZgQ0r
-         8NlV6I0selKFA==
-Date:   Tue, 15 Dec 2020 07:04:47 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: Re: linux-next: manual merge of the userns tree with the bpf-next
- tree
-Message-ID: <20201215070447.6b1f8bd9@canb.auug.org.au>
-In-Reply-To: <20201126162248.7e7963fe@canb.auug.org.au>
-References: <20201126162248.7e7963fe@canb.auug.org.au>
+        id S2503019AbgLNUK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:10:59 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:43956 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502801AbgLNUKc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 15:10:32 -0500
+Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
+ id a63a85a8384da918; Mon, 14 Dec 2020 21:09:39 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>
+Subject: [PATCH v2 2/3] cpufreq: Add special-purpose fast-switching callback for drivers
+Date:   Mon, 14 Dec 2020 21:08:00 +0100
+Message-ID: <10727653.HtF45dgyQg@kreacher>
+In-Reply-To: <3827230.0GnL3RTcl1@kreacher>
+References: <20360841.iInq7taT2Z@kreacher> <3827230.0GnL3RTcl1@kreacher>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gJkgLvE2aGolAWX_AKyXp3F";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gJkgLvE2aGolAWX_AKyXp3F
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Hi all,
+First off, some cpufreq drivers (eg. intel_pstate) can pass hints
+beyond the current target frequency to the hardware and there are no
+provisions for doing that in the cpufreq framework.  In particular,
+today the driver has to assume that it should not allow the frequency
+to fall below the one requested by the governor (or the required
+capacity may not be provided) which may not be the case and which may
+lead to excessive energy usage in some scenarios.
 
-On Thu, 26 Nov 2020 16:22:48 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the userns tree got a conflict in:
->=20
->   kernel/bpf/task_iter.c
->=20
-> between commit:
->=20
->   91b2db27d3ff ("bpf: Simplify task_file_seq_get_next()")
->=20
-> from the bpf-next tree and commit:
->=20
->   edc52f17257a ("bpf/task_iter: In task_file_seq_get_next use task_lookup=
-_next_fd_rcu")
->=20
-> from the userns tree.
->=20
-> I fixed it up (I think, see below) and can carry the fix as
-> necessary. This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
->=20
-> --=20
-> Cheers,
-> Stephen Rothwell
->=20
-> diff --cc kernel/bpf/task_iter.c
-> index 0458a40edf10,4ec63170c741..000000000000
-> --- a/kernel/bpf/task_iter.c
-> +++ b/kernel/bpf/task_iter.c
-> @@@ -136,41 -135,29 +135,30 @@@ struct bpf_iter_seq_task_file_info=20
->   };
->  =20
->   static struct file *
->  -task_file_seq_get_next(struct bpf_iter_seq_task_file_info *info,
->  -		       struct task_struct **task)
->  +task_file_seq_get_next(struct bpf_iter_seq_task_file_info *info)
->   {
->   	struct pid_namespace *ns =3D info->common.ns;
-> - 	u32 curr_tid =3D info->tid, max_fds;
-> - 	struct files_struct *curr_files;
-> + 	u32 curr_tid =3D info->tid;
->   	struct task_struct *curr_task;
-> - 	int curr_fd =3D info->fd;
-> + 	unsigned int curr_fd =3D info->fd;
->  =20
->   	/* If this function returns a non-NULL file object,
-> - 	 * it held a reference to the task/files_struct/file.
-> + 	 * it held a reference to the task/file.
->   	 * Otherwise, it does not hold any reference.
->   	 */
->   again:
->  -	if (*task) {
->  -		curr_task =3D *task;
->  +	if (info->task) {
->  +		curr_task =3D info->task;
-> - 		curr_files =3D info->files;
->   		curr_fd =3D info->fd;
->   	} else {
->   		curr_task =3D task_seq_get_next(ns, &curr_tid, true);
->  -		if (!curr_task)
->  +		if (!curr_task) {
->  +			info->task =3D NULL;
-> - 			info->files =3D NULL;
->   			return NULL;
->  +		}
->  =20
-> - 		curr_files =3D get_files_struct(curr_task);
-> - 		if (!curr_files) {
-> - 			put_task_struct(curr_task);
-> - 			curr_tid =3D ++(info->tid);
-> - 			info->fd =3D 0;
-> - 			goto again;
-> - 		}
-> -=20
-> - 		info->files =3D curr_files;
-> + 		/* set *task and info->tid */
->  -		*task =3D curr_task;
->  +		info->task =3D curr_task;
->   		if (curr_tid =3D=3D info->tid) {
->   			curr_fd =3D info->fd;
->   		} else {
-> @@@ -198,10 -183,8 +184,8 @@@
->  =20
->   	/* the current task is done, go to the next task */
->   	rcu_read_unlock();
-> - 	put_files_struct(curr_files);
->   	put_task_struct(curr_task);
->  -	*task =3D NULL;
->  +	info->task =3D NULL;
-> - 	info->files =3D NULL;
->   	info->fd =3D 0;
->   	curr_tid =3D ++(info->tid);
->   	goto again;
-> @@@ -210,13 -193,18 +194,12 @@@
->   static void *task_file_seq_start(struct seq_file *seq, loff_t *pos)
->   {
->   	struct bpf_iter_seq_task_file_info *info =3D seq->private;
->  -	struct task_struct *task =3D NULL;
->   	struct file *file;
->  =20
->  -	file =3D task_file_seq_get_next(info, &task);
->  -	if (!file) {
->  -		info->task =3D NULL;
->  -		return NULL;
->  -	}
->  -
->  -	if (*pos =3D=3D 0)
->  +	info->task =3D NULL;
-> - 	info->files =3D NULL;
->  +	file =3D task_file_seq_get_next(info);
->  +	if (file && *pos =3D=3D 0)
->   		++*pos;
->  -	info->task =3D task;
->  =20
->   	return file;
->   }
+Second, the hints passed by these drivers to the hardware need not be
+in terms of the frequency, so representing the utilization numbers
+coming from the scheduler as frequency before passing them to those
+drivers is not really useful.
 
-Just a reminder that this conflict still exists.  Commit 91b2db27d3ff
-is now in the net-next tree.
+Address the two points above by adding a special-purpose replacement
+for the ->fast_switch callback, called ->adjust_perf, allowing the
+governor to pass abstract performance level (rather than frequency)
+values for the minimum (required) and target (desired) performance
+along with the CPU capacity to compare them to.
 
---=20
-Cheers,
-Stephen Rothwell
+Also update the schedutil governor to use the new callback instead
+of ->fast_switch if present and if the utilization mertics are
+frequency-invariant (that is requisite for the direct mapping
+between the utilization and the CPU performance levels to be a
+reasonable approximation).
 
---Sig_/gJkgLvE2aGolAWX_AKyXp3F
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
------BEGIN PGP SIGNATURE-----
+v1 -> v2:
+ - Do not share optimization code between the freq and perf paths.
+ - Fall back from perf to freq if scale invariance is not supported.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/XxV8ACgkQAVBC80lX
-0GxgRwf/aZijf0vP/9l9ZObx8C3NOh1EJQG2Nw0WU+YVp3JaCf/JntvagICq7F4A
-pGap0QaPA5ze1YNPldJCX7n5S3mJ+CGj7NTVYM6QE123r0ppcMB1p004HJPZinBK
-DSIfdu7qrN6ENHChnDL6ahUM/xgwMEeflzpwBiwzajg0HeFQC8sMu4jYoyGb73VR
-jO32N2nC8YYMZLuskivHiF00cqXl5SnOuVEQSsLXoAomtfW4lzifTmTHpSsu+1G8
-Bvrwg6OQQM2C20R3vn5bY/ovHpBtdhBqKH6BAeT1MyoCtRue4ppcO5LVV0MwDVMt
-Tx20JUe1ZvUEABwiiIKUYASaPJfEiQ==
-=aohr
------END PGP SIGNATURE-----
+Changes with respect to the RFC:
+ - Don't pass "busy" to ->adjust_perf().
+ - Use a special 'update_util' hook for the ->adjust_perf() case in
+   schedutil (this still requires an additional branch because of the
+   shared common code between this case and the "frequency" one, but
+   IMV this version is cleaner nevertheless).
 
---Sig_/gJkgLvE2aGolAWX_AKyXp3F--
+---
+ drivers/cpufreq/cpufreq.c        |   40 ++++++++++++++++++++++
+ include/linux/cpufreq.h          |   14 ++++++++
+ include/linux/sched/cpufreq.h    |    5 ++
+ kernel/sched/cpufreq_schedutil.c |   68 +++++++++++++++++++++++++++++++++------
+ 4 files changed, 117 insertions(+), 10 deletions(-)
+
+Index: linux-pm/include/linux/cpufreq.h
+===================================================================
+--- linux-pm.orig/include/linux/cpufreq.h
++++ linux-pm/include/linux/cpufreq.h
+@@ -320,6 +320,15 @@ struct cpufreq_driver {
+ 					unsigned int index);
+ 	unsigned int	(*fast_switch)(struct cpufreq_policy *policy,
+ 				       unsigned int target_freq);
++	/*
++	 * ->fast_switch() replacement for drivers that use an internal
++	 * representation of performance levels and can pass hints other than
++	 * the target performance level to the hardware.
++	 */
++	void		(*adjust_perf)(unsigned int cpu,
++				       unsigned long min_perf,
++				       unsigned long target_perf,
++				       unsigned long capacity);
+ 
+ 	/*
+ 	 * Caches and returns the lowest driver-supported frequency greater than
+@@ -588,6 +597,11 @@ struct cpufreq_governor {
+ /* Pass a target to the cpufreq driver */
+ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
+ 					unsigned int target_freq);
++void cpufreq_driver_adjust_perf(unsigned int cpu,
++				unsigned long min_perf,
++				unsigned long target_perf,
++				unsigned long capacity);
++bool cpufreq_driver_has_adjust_perf(void);
+ int cpufreq_driver_target(struct cpufreq_policy *policy,
+ 				 unsigned int target_freq,
+ 				 unsigned int relation);
+Index: linux-pm/drivers/cpufreq/cpufreq.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/cpufreq.c
++++ linux-pm/drivers/cpufreq/cpufreq.c
+@@ -2097,6 +2097,46 @@ unsigned int cpufreq_driver_fast_switch(
+ }
+ EXPORT_SYMBOL_GPL(cpufreq_driver_fast_switch);
+ 
++/**
++ * cpufreq_driver_adjust_perf - Adjust CPU performance level in one go.
++ * @cpu: Target CPU.
++ * @min_perf: Minimum (required) performance level (units of @capacity).
++ * @target_perf: Terget (desired) performance level (units of @capacity).
++ * @capacity: Capacity of the target CPU.
++ *
++ * Carry out a fast performance level switch of @cpu without sleeping.
++ *
++ * The driver's ->adjust_perf() callback invoked by this function must be
++ * suitable for being called from within RCU-sched read-side critical sections
++ * and it is expected to select a suitable performance level equal to or above
++ * @min_perf and preferably equal to or below @target_perf.
++ *
++ * This function must not be called if policy->fast_switch_enabled is unset.
++ *
++ * Governors calling this function must guarantee that it will never be invoked
++ * twice in parallel for the same CPU and that it will never be called in
++ * parallel with either ->target() or ->target_index() or ->fast_switch() for
++ * the same CPU.
++ */
++void cpufreq_driver_adjust_perf(unsigned int cpu,
++				 unsigned long min_perf,
++				 unsigned long target_perf,
++				 unsigned long capacity)
++{
++	cpufreq_driver->adjust_perf(cpu, min_perf, target_perf, capacity);
++}
++
++/**
++ * cpufreq_driver_has_adjust_perf - Check "direct fast switch" callback.
++ *
++ * Return 'true' if the ->adjust_perf callback is present for the
++ * current driver or 'false' otherwise.
++ */
++bool cpufreq_driver_has_adjust_perf(void)
++{
++	return !!cpufreq_driver->adjust_perf;
++}
++
+ /* Must set freqs->new to intermediate frequency */
+ static int __target_intermediate(struct cpufreq_policy *policy,
+ 				 struct cpufreq_freqs *freqs, int index)
+Index: linux-pm/kernel/sched/cpufreq_schedutil.c
+===================================================================
+--- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
++++ linux-pm/kernel/sched/cpufreq_schedutil.c
+@@ -432,13 +432,10 @@ static inline void ignore_dl_rate_limit(
+ 		sg_policy->limits_changed = true;
+ }
+ 
+-static void sugov_update_single(struct update_util_data *hook, u64 time,
+-				unsigned int flags)
++static inline bool sugov_update_single_common(struct sugov_cpu *sg_cpu,
++					      u64 time, unsigned int flags)
+ {
+-	struct sugov_cpu *sg_cpu = container_of(hook, struct sugov_cpu, update_util);
+ 	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
+-	unsigned int cached_freq = sg_policy->cached_raw_freq;
+-	unsigned int next_f;
+ 
+ 	sugov_iowait_boost(sg_cpu, time, flags);
+ 	sg_cpu->last_update = time;
+@@ -446,11 +443,25 @@ static void sugov_update_single(struct u
+ 	ignore_dl_rate_limit(sg_cpu, sg_policy);
+ 
+ 	if (!sugov_should_update_freq(sg_policy, time))
+-		return;
++		return false;
+ 
+ 	sugov_get_util(sg_cpu);
+ 	sugov_iowait_apply(sg_cpu, time);
+ 
++	return true;
++}
++
++static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
++				     unsigned int flags)
++{
++	struct sugov_cpu *sg_cpu = container_of(hook, struct sugov_cpu, update_util);
++	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
++	unsigned int cached_freq = sg_policy->cached_raw_freq;
++	unsigned int next_f;
++
++	if (!sugov_update_single_common(sg_cpu, time, flags))
++		return;
++
+ 	next_f = get_next_freq(sg_policy, sg_cpu->util, sg_cpu->max);
+ 	/*
+ 	 * Do not reduce the frequency if the CPU has not been idle
+@@ -477,6 +488,38 @@ static void sugov_update_single(struct u
+ 	}
+ }
+ 
++static void sugov_update_single_perf(struct update_util_data *hook, u64 time,
++				     unsigned int flags)
++{
++	struct sugov_cpu *sg_cpu = container_of(hook, struct sugov_cpu, update_util);
++	unsigned long prev_util = sg_cpu->util;
++
++	/*
++	 * Fall back to the "frequency" path if frequency invariance is not
++	 * supported, because the direct mapping between the utilization and
++	 * the performance levels depends on the frequency invariance.
++	 */
++	if (!arch_scale_freq_invariant()) {
++		sugov_update_single_freq(hook, time, flags);
++		return;
++	}
++
++	if (!sugov_update_single_common(sg_cpu, time, flags))
++		return;
++
++	/*
++	 * Do not reduce the target performance level if the CPU has not been
++	 * idle recently, as the reduction is likely to be premature then.
++	 */
++	if (sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
++		sg_cpu->util = prev_util;
++
++	cpufreq_driver_adjust_perf(sg_cpu->cpu, map_util_perf(sg_cpu->bw_dl),
++				   map_util_perf(sg_cpu->util), sg_cpu->max);
++
++	sg_cpu->sg_policy->last_freq_update_time = time;
++}
++
+ static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu, u64 time)
+ {
+ 	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
+@@ -815,6 +858,7 @@ static void sugov_exit(struct cpufreq_po
+ static int sugov_start(struct cpufreq_policy *policy)
+ {
+ 	struct sugov_policy *sg_policy = policy->governor_data;
++	void (*uu)(struct update_util_data *data, u64 time, unsigned int flags);
+ 	unsigned int cpu;
+ 
+ 	sg_policy->freq_update_delay_ns	= sg_policy->tunables->rate_limit_us * NSEC_PER_USEC;
+@@ -834,13 +878,17 @@ static int sugov_start(struct cpufreq_po
+ 		sg_cpu->sg_policy		= sg_policy;
+ 	}
+ 
++	if (policy_is_shared(policy))
++		uu = sugov_update_shared;
++	else if (policy->fast_switch_enabled && cpufreq_driver_has_adjust_perf())
++		uu = sugov_update_single_perf;
++	else
++		uu = sugov_update_single_freq;
++
+ 	for_each_cpu(cpu, policy->cpus) {
+ 		struct sugov_cpu *sg_cpu = &per_cpu(sugov_cpu, cpu);
+ 
+-		cpufreq_add_update_util_hook(cpu, &sg_cpu->update_util,
+-					     policy_is_shared(policy) ?
+-							sugov_update_shared :
+-							sugov_update_single);
++		cpufreq_add_update_util_hook(cpu, &sg_cpu->update_util, uu);
+ 	}
+ 	return 0;
+ }
+Index: linux-pm/include/linux/sched/cpufreq.h
+===================================================================
+--- linux-pm.orig/include/linux/sched/cpufreq.h
++++ linux-pm/include/linux/sched/cpufreq.h
+@@ -28,6 +28,11 @@ static inline unsigned long map_util_fre
+ {
+ 	return (freq + (freq >> 2)) * util / cap;
+ }
++
++static inline unsigned long map_util_perf(unsigned long util)
++{
++	return util + (util >> 2);
++}
+ #endif /* CONFIG_CPU_FREQ */
+ 
+ #endif /* _LINUX_SCHED_CPUFREQ_H */
+
+
+
