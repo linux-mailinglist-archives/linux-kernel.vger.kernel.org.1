@@ -2,164 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612C52D9279
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 06:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A14C22D9288
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 06:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbgLNFMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 00:12:15 -0500
-Received: from mail-eopbgr1400139.outbound.protection.outlook.com ([40.107.140.139]:50346
-        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725776AbgLNFMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 00:12:05 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IdsRf/N37trIKyjcLgSe8X6bBEnwxEn77VkUuUb2wNCUj7VxHoA6WFCbdELwkgVtuLxQ59hl1mttRB4CL0rkPqFZ4iz2OMmTmyNtUkDLOImIt0fpF0Qa0UGbeVO2Nzqo3kZASEgOyzQSpmScaXflk2ttK0Ypj2dC0oS/S3rJaB4wzb/mx2LX8LjSmr7DjEVgtWExmkkbf3u5XF0u0/AhqKN7Rdi6aNp8vc9cj/4OMDmQbVcBIOG/T5z2xvVMfN2x6pAlkeqgROp9JIoyjBtgNsDPr8tCS1rxx289qmtR83Y4Vju0UGCNo+4MoVJsWfM8FTJVcqnbeZKnseqvD1VTQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=laSb3A1PS7HNMczdwqdQhR02b3eeT5Jz3Xqk20DJmsA=;
- b=kgAvg91yYEHypBJc5qn8Ehqw/OW9bsrEMIHLPMEEPjN4gmpijNz5V6NAqpAJiUDec/C3FU/i3582MHh8j4rg7b+68I/A9zzAVh/IBrkYuJPKYSXC1DXZ+liliPCk53wmu12aI6k85VjTutC1RFufTberl5XydqqCtClAMyoX7G6ftoDqjKUByGzzy7zQWALighQBaJr5HBKxHL71iqYhlbKRJZZDQQ/nv8yqdMSXanecYLu/5NVsfsWdDiw+5OVM3kBxgG6QcBn3CYD6tgwy16ES4v3rbisG7IvwaazpK2AynqDDTPngZHiaOBHtPDPeMUVPyG8of0CR3ZXBY2VBRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
+        id S1732973AbgLNFRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 00:17:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727418AbgLNFRi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 00:17:38 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D4EC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 21:16:57 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id c12so11319942pfo.10
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 21:16:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=laSb3A1PS7HNMczdwqdQhR02b3eeT5Jz3Xqk20DJmsA=;
- b=CQX1K4EW7f2DO7MVvP4uH/w7VDG30b6Mkf2CPCoqwrGVP+NIXw4FL7mnEMZ7i9w4w6uZDDQHSTiFWCX5jjui7+dP9jwrgiHD3oZEb9462fF2yrRUbqoi3bmuyK5SRyL+M9QziXmA97uXIGVwq4JQYXL1qgz/c6BIrUfuANR2aEw=
-Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com (2603:1096:404:d5::22)
- by TYAPR01MB3214.jpnprd01.prod.outlook.com (2603:1096:404:7f::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.18; Mon, 14 Dec
- 2020 05:11:15 +0000
-Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com
- ([fe80::2023:7ed1:37c3:8037]) by TY2PR01MB3692.jpnprd01.prod.outlook.com
- ([fe80::2023:7ed1:37c3:8037%5]) with mapi id 15.20.3654.025; Mon, 14 Dec 2020
- 05:11:15 +0000
-From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "marek.vasut+renesas@gmail.com" <marek.vasut+renesas@gmail.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>
-CC:     linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        Khiem Nguyen <khiem.nguyen.xt@renesas.com>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 07/10] gpio: bd9571mwv: Add BD9574MWF support
-Thread-Topic: [PATCH v2 07/10] gpio: bd9571mwv: Add BD9574MWF support
-Thread-Index: AQHWz7CtZd3OPT8upki88GGKNcKzL6nx2k+AgAQx4TA=
-Date:   Mon, 14 Dec 2020 05:11:15 +0000
-Message-ID: <TY2PR01MB3692C65167FAB05C8F9D9981D8C70@TY2PR01MB3692.jpnprd01.prod.outlook.com>
-References: <1607686060-17448-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-         <1607686060-17448-8-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <0d0e0b6e47cdc28f2053d0f2be7e237f2586d46c.camel@fi.rohmeurope.com>
-In-Reply-To: <0d0e0b6e47cdc28f2053d0f2be7e237f2586d46c.camel@fi.rohmeurope.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: fi.rohmeurope.com; dkim=none (message not signed)
- header.d=none;fi.rohmeurope.com; dmarc=none action=none
- header.from=renesas.com;
-x-originating-ip: [240f:60:5f3e:1:1453:ff:c191:5a7a]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: d7a69dcf-46f8-4f35-c1ee-08d89feeaef2
-x-ms-traffictypediagnostic: TYAPR01MB3214:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TYAPR01MB3214ED65D80D49ABB79A0877D8C70@TYAPR01MB3214.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: SHRlDe6YSM/H824LAE5LS/2gPZT4oBNrOB+t8V1+ODi5B3Q4H4uaTWh9eFllbKZdGduM4bQiFyPrqyaBO0M3kykXpvTw+WyURmW632HQAkv6bRxDKv9ftZSMb9nf+jGcxzzvQB6KPeo92UO/a4XkIz7NVwGCOX4ERseYvjkZYJBs7w+IIN1C/y+Rk8Dexa4U/S8OJe6+nZKglfaka/QmzxLSTorlv6EvO/sOfsxRgs7Eh3NB5p/UDrYtiqPgE70uZA+sD4qVu09IIXLFuaqGMGdgOIhiHPYsOzPAfUop2pP1j810QuFLldR7lGDdOnIJmYzO+UkOCk4ePsvjSCQmBQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3692.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(366004)(39860400002)(136003)(2906002)(186003)(66946007)(83380400001)(66476007)(64756008)(478600001)(71200400001)(66556008)(316002)(7696005)(86362001)(9686003)(6506007)(76116006)(66446008)(55016002)(5660300002)(8676002)(7416002)(8936002)(4326008)(33656002)(4001150100001)(52536014)(110136005)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?NUFHaE1CR1I1dGlNWU04ZzYweTVnZWc5a1N4b0J6QnJDaE1oOEQ2SzFybGlq?=
- =?utf-8?B?RjdNanVOcWkybTRleXJVZHM4NmRsSldaOGkwQ3VZdE1Da3BBbFlGbjI5MmE0?=
- =?utf-8?B?T0x0TExmcWkwUmliSmE1cDAwRkpKdVpDNmZkRm1ya0RtUVdGaEFHMHYzTHlz?=
- =?utf-8?B?SFJqOVM4c3dweDJoTWZQYnFTTVRtSTdia002UGZYd05oTnVDSmVqOUZsT3Rh?=
- =?utf-8?B?RnFpczVsM3h1c0xISlZUYUM3RGtTK3Zkekc4bVA5cmJPTlluYmtCTXVrSDJq?=
- =?utf-8?B?SEF6ZmVUQU8zOEVTK0hvMVlPUHIwaXlKUlo5d3dKdmx5bEVlQVk1SkY3Z2k1?=
- =?utf-8?B?VnBqTmlNS0RQcUFpOEw0UFBPOEJZUFBLa0p1cnFIVW9iNmQwLzgyOGw5cHB3?=
- =?utf-8?B?Y2liaFdFT0h4ZGN1TURYK0ZnTFBkOEtJZDZmV3loSUdDQVRDU1p1d1poRW9u?=
- =?utf-8?B?MElKUXBFcG5NaVJyNGJQUVozVlN1eDlFWE5BQUtiSFVqaVZCaG5WQ0J2YVZr?=
- =?utf-8?B?WEY5dXZyMVhtRUF2VW50dSthWWtvdE1Nd3JtS3phMHRnNXFSRjlLY0sxeVlo?=
- =?utf-8?B?VFc5YWpOaDJGNTdkZGp2c2FNY2xHVTAyNHVXMmxoUFZuMFVjS0w3S3RqajVS?=
- =?utf-8?B?RitJK2RwYU9RaXRrRU1TazMxdXVDWE5KY1lKdWN5TFd6RUlXdHRYN1ZuQXVE?=
- =?utf-8?B?enY0N2s5QjdtOGU5U0NLNkFhRnllbGlhaFFEemdKV0NoRHdmVTJRMFZ5TG5Z?=
- =?utf-8?B?dDBoUy9KNHJ0ellwdXdWNGRDcTRlbXBHS1BUWEF2MkN4a1k4TEJ4SWNVU2Rw?=
- =?utf-8?B?WjNGTitCSVVXTWpmNnh3TU04dVc1ZThuS3dsUVNmTENjTmtETGdOdVN6dHg3?=
- =?utf-8?B?S3hJUEJlbG9ZR25VRWh4aXlJdHBHd05KWWtrRzNQS0lFTlNlcEVqUThKblZa?=
- =?utf-8?B?QS80MFRoQ0FNb2s0MjRMcnVoZ3NBR1dYOS9yYm03RWxoUXJKb3hiTVhkUlg2?=
- =?utf-8?B?VUM4S0xVTXRyclJ2WnV4R3hCZXdLUS9hdDhjY3BRUFN0TlJsMjVSU0N6L0NU?=
- =?utf-8?B?b2xRM3hQYmV2Z3praXZBT0tLWDN5U0c2ZHY1ajJwcGxuWU5NcXU0VjJVNEIz?=
- =?utf-8?B?elU5VitWb3ZJQm1kOWR1OEY5WE9CWkk5TDA3UXdEamJZQWRiQW9sUUMxNXBy?=
- =?utf-8?B?eGNqM25PVWJxREFoTGUxVkJHcHNsaUJmY1hIVWJldTNBRWVRTDA4MldwS0k4?=
- =?utf-8?B?QUpJUVdOOHpSajJ5M3NOaUpDaHpFNHVsL0xySXdFcU10dmJHQXgwVUVtYzMr?=
- =?utf-8?B?WXc5TTdZMjVQR1JKZVV5a1NIZmpmendCYTc0WGtyZmZiR0xvU2VXVUxpTEV6?=
- =?utf-8?Q?1h4BGho3zB9GWVU3oI71tsabqD3nVX68=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N1Nel5Scj6DHsRcstdI0CADTOeJRVxq0W6PfMKurToI=;
+        b=d3T/MAP9G2zaws1f/uZ/O5za8PmycfvFhIq66HQJQ6shQhbOBg3qUWb2mFfZMHfn0e
+         DVwgWH6A1rgwEM3ANg9TkzhVUT6NgL+q3D7/d6YOxrhmZKNl6XadrYkYLXQkfksqj4s1
+         ZG4VUEFRN8a3VpK3ErzXooIKf+hUT/wiILDp8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N1Nel5Scj6DHsRcstdI0CADTOeJRVxq0W6PfMKurToI=;
+        b=qDG2fCabEITVa3LjCjdKxFclOvuFli8Egxo5QbUUei+2mylXj35i+KNMdn0xfBxCTU
+         UMhQb60XW0KHX2oyGuM4npvEUDaUG1RY1HnEnDyui04DogB0fG+CdtdwOttpolRE4a8w
+         Sot6La0yVuZKSb7pLzOLO3dnLLRJsF0p4dx8Loq5B2Aa+EqQSMOypXH9/hBUsY51pOte
+         IxNUUFfhHQMKv67fCZNSKBCcNWof+yc+kOvz6B/U8VYE2XEUn810/8gAuMyKf8nxPzG1
+         Ge8++WoYawguyEDhX1TXusHquOijM7iUbK1yaDO8m4LiHMi+xIG34nODtZQNLnJhOmLG
+         q/Wg==
+X-Gm-Message-State: AOAM531m/D1mD3T0vMc7lKtDc9e+nncq0x9LXd4ux4h1TRWJ8vSJtmbb
+        KlhagTLLXGbkgi12lQpfNu4jYw==
+X-Google-Smtp-Source: ABdhPJy1CSWhNTkNbc4BjMo2+fs9Xwc9HusvXlkOzgp5pU4/JKZHdOuA0W66NOpmAAf12a2w/JpcbQ==
+X-Received: by 2002:a62:8b:0:b029:19d:a1b3:e78 with SMTP id 133-20020a62008b0000b029019da1b30e78mr22106304pfa.25.1607923016991;
+        Sun, 13 Dec 2020 21:16:56 -0800 (PST)
+Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:b:f693:9fff:fef4:a8fc])
+        by smtp.gmail.com with ESMTPSA id n127sm18611747pfd.143.2020.12.13.21.16.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Dec 2020 21:16:56 -0800 (PST)
+From:   Ikjoon Jang <ikjn@chromium.org>
+To:     linux-mediatek@lists.infradead.org, linux-usb@vger.kernel.org
+Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Zhanyong Wang <zhanyong.wang@mediatek.com>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        Ikjoon Jang <ikjn@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] usb: xhci-mtk: fix unreleased bandwidth data
+Date:   Mon, 14 Dec 2020 13:16:50 +0800
+Message-Id: <20201214131640.v3.1.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
+X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3692.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d7a69dcf-46f8-4f35-c1ee-08d89feeaef2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Dec 2020 05:11:15.8423
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +R19Nus6k41ScBfsOiMqlujRBxVzzWdXsGq3CqYsPNDjz9Qu/Vwu5Peh3HpDncHHGCrEyZRBt/n/L+MhLBbS+VyC1ZszRbqbWATxXH+Vy6E4ynMOKXthABb6StBDm/Wr
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB3214
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWF0dGktc2FuLA0KDQpUaGFuayB5b3UgZm9yIHlvdXIgcmV2aWV3IQ0KDQo+IEZyb206IFZh
-aXR0aW5lbiwgTWF0dGksIFNlbnQ6IEZyaWRheSwgRGVjZW1iZXIgMTEsIDIwMjAgOTo1NSBQTQ0K
-PiANCj4gT24gRnJpLCAyMDIwLTEyLTExIGF0IDIwOjI3ICswOTAwLCBZb3NoaWhpcm8gU2hpbW9k
-YSB3cm90ZToNCj4gPiBBZGQgc3VwcG9ydCBmb3IgQkQ5NTc0TVdGIHdoaWNoIGlzIHNpbGltYXIg
-Y2hpcCB3aXRoIEJEOTU3MU1XVi4NCj4gPiBOb3RlIHRoYXQgQkQ5NTc0TVdGIGhhcyBhbiBhZGRp
-dGlvbmFsIGZlYXR1cmUsIGJ1dCBkb2Vzbid0DQo+ID4gc3VwcG9ydCBpdCBmb3Igbm93Lg0KPiAN
-Cj4gbml0Og0KPiBQZXJoYXBzIG1lbnRpb24gd2hpY2ggZmVhdHVyZT8NCg0KQkQ5NTc0TVdGIEdQ
-SU9bMDFdIGhhdmUgNCBmdW5jdGlvbnMgbGlrZSBiZWxvdy4NCiAxKSBHUElPLCAyKSAiUkVDT1Zf
-R1BPVVQiLCAzKSAiRlJFUVNFTCIsIDQpICJSVENfSU4iDQoNCkl0IHNlZW1zICJwaW5jdHJsIiBm
-ZWF0dXJlcyB0aG91Z2ggYW5kIEkgZG9uJ3Qga25vdw0KdGhlc2UgZmVhdHVyZXMgaW4gZGV0YWls
-IGZvciBub3cuDQoNCj4gQW5kIEkgdGhpbmsgeW91IG1lYW4gdGhlIGRyaXZlciBkb2VzIG5vdCBz
-dXBwb3J0IGl0IHlldD8NCg0KWW91J3JlIGNvcnJlY3QuIE5vdyB0aGlzIGRyaXZlciBvbmx5IHN1
-cHBvcnQgdGhlIDEpIEdQSU8uDQoNCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFlvc2hpaGlybyBT
-aGltb2RhIDx5b3NoaWhpcm8uc2hpbW9kYS51aEByZW5lc2FzLmNvbT4NCj4gDQo+IEZXSVc6DQo+
-IFJldmlld2VkLUJ5OiBNYXR0aSBWYWl0dGluZW4gPG1hdHRpLnZhaXR0aW5lbkBmaS5yb2htZXVy
-b3BlLmNvbT4NCg0KVGhhbmsgeW91IGZvciB5b3VyIHJldmlldyENCg0KPiA+IC0tLQ0KPiA+ICBk
-cml2ZXJzL2dwaW8vZ3Bpby1iZDk1NzFtd3YuYyB8IDYgKysrKy0tDQo+ID4gIDEgZmlsZSBjaGFu
-Z2VkLCA0IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9ncGlvL2dwaW8tYmQ5NTcxbXd2LmMgYi9kcml2ZXJzL2dwaW8vZ3Bpby0NCj4g
-PiBiZDk1NzFtd3YuYw0KPiA+IGluZGV4IDBlNTM5NWYuLmRmNjEwMmIgMTAwNjQ0DQo+ID4gLS0t
-IGEvZHJpdmVycy9ncGlvL2dwaW8tYmQ5NTcxbXd2LmMNCj4gPiArKysgYi9kcml2ZXJzL2dwaW8v
-Z3Bpby1iZDk1NzFtd3YuYw0KPiA+IEBAIC0xLDYgKzEsNiBAQA0KPiA+ICAvLyBTUERYLUxpY2Vu
-c2UtSWRlbnRpZmllcjogR1BMLTIuMC1vbmx5DQo+ID4gIC8qDQo+ID4gLSAqIFJPSE0gQkQ5NTcx
-TVdWLU0gR1BJTyBkcml2ZXINCj4gPiArICogUk9ITSBCRDk1NzFNV1YtTSBhbmQgQkQ5NTc0TVdG
-LU0gR1BJTyBkcml2ZXINCj4gPiAgICoNCj4gPiAgICogQ29weXJpZ2h0IChDKSAyMDE3IE1hcmVr
-IFZhc3V0IDxtYXJlay52YXN1dCtyZW5lc2FzQGdtYWlsLmNvbT4NCj4gPiAgICoNCj4gPiBAQCAt
-MTAsNiArMTAsNyBAQA0KPiA+ICAgKi8NCj4gPg0KPiA+ICAjaW5jbHVkZSA8bGludXgvZ3Bpby9k
-cml2ZXIuaD4NCj4gPiArI2luY2x1ZGUgPGxpbnV4L21mZC9yb2htLWdlbmVyaWMuaD4NCj4gPiAg
-I2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0KPiA+ICAjaW5jbHVkZSA8bGludXgvcGxhdGZvcm1f
-ZGV2aWNlLmg+DQo+ID4NCj4gPiBAQCAtMTE4LDcgKzExOSw4IEBAIHN0YXRpYyBpbnQgYmQ5NTcx
-bXd2X2dwaW9fcHJvYmUoc3RydWN0DQo+ID4gcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+ICB9
-DQo+ID4NCj4gPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2VfaWQgYmQ5NTcx
-bXd2X2dwaW9faWRfdGFibGVbXSA9IHsNCj4gPiAtCXsgImJkOTU3MW13di1ncGlvIiwgfSwNCj4g
-PiArCXsgImJkOTU3MW13di1ncGlvIiwgUk9ITV9DSElQX1RZUEVfQkQ5NTcxIH0sDQo+ID4gKwl7
-ICJiZDk1NzRtd2YtZ3BpbyIsIFJPSE1fQ0hJUF9UWVBFX0JEOTU3NCB9LA0KPiANCj4gSSBndWVz
-cyB0aGVzZSBDSElQX1RZUEVTIGFyZSB1c2VkIGJ5IHN1YnNlcXVlbnQgcGF0Y2hlcz8NCj4gDQo+
-IEkgZ3Vlc3MgdGhpcyBtZWFucyB0aGUgZXhpc3RpbmcgZnVuY3Rpb25hbGl0eSBpbiBib3RoIGNo
-aXBzIGlzIHNhbWUsDQo+IHJpZ2h0PyAoR1BJTyByZWdpc3RlciBhZGRyZXNzZXMgZXRjPyAtIEkg
-ZG9uJ3QgaGF2ZSBCRDk1NzEgZGF0YS1zaGVldA0KPiBzbyBJIGNhbid0IGNoZWNrKQ0KDQpZZXMs
-IHRoZSBleGlzdGluZyBmdW5jdGlvbmFsaXR5IGluIGJvdGggY2hpcHMgaXMgc2FtZS4NCkdQSU8g
-cmVnaXN0ZXIgYWRkcmVzc2VzIGFuZCBiaXRzIGFyZSB0aGUgc2FtZS4NCk5vdGUgdGhhdCBCRDk1
-NzRNV0YgaGFzIG9uZSBtb3JlIHJlZ2lzdGVyLCBidXQgdGhlIGRyaXZlcg0KZG9lc24ndCB1c2Ug
-aXQgZm9yIG5vdy4NCg0KQmVzdCByZWdhcmRzLA0KWW9zaGloaXJvIFNoaW1vZGENCg0K
+xhci-mtk has hooks on add_endpoint() and drop_endpoint() from xhci
+to handle its own sw bandwidth managements and stores bandwidth data
+into internal table every time add_endpoint() is called,
+so when bandwidth allocation fails at one endpoint, all earlier
+allocation from the same interface could still remain at the table.
+
+This patch adds two more hooks from check_bandwidth() and
+reset_bandwidth(), and make mtk-xhci to releases all failed endpoints
+from reset_bandwidth().
+
+Fixes: 4b0f7a77fb3c ("usb: xhci-mtk: supports bandwidth scheduling with multi-TT")
+Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+
+---
+
+Changes in v3:
+- drop unrelated code cleanups in v2
+- change Fixes tag to keep dependency
+
+Changes in v2:
+- fix a 0-day warning from unused variable
+- split one big patch into three patches
+- fix wrong offset in mediatek hw flags
+
+ drivers/usb/host/xhci-mtk-sch.c | 121 ++++++++++++++++++++++----------
+ drivers/usb/host/xhci-mtk.h     |  13 ++++
+ drivers/usb/host/xhci.c         |   9 +++
+ 3 files changed, 106 insertions(+), 37 deletions(-)
+
+diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
+index 45c54d56ecbd..72c493758c3f 100644
+--- a/drivers/usb/host/xhci-mtk-sch.c
++++ b/drivers/usb/host/xhci-mtk-sch.c
+@@ -200,6 +200,7 @@ static struct mu3h_sch_ep_info *create_sch_ep(struct usb_device *udev,
+ 
+ 	sch_ep->sch_tt = tt;
+ 	sch_ep->ep = ep;
++	INIT_LIST_HEAD(&sch_ep->tt_endpoint);
+ 
+ 	return sch_ep;
+ }
+@@ -583,6 +584,8 @@ int xhci_mtk_sch_init(struct xhci_hcd_mtk *mtk)
+ 
+ 	mtk->sch_array = sch_array;
+ 
++	INIT_LIST_HEAD(&mtk->bw_ep_list_new);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(xhci_mtk_sch_init);
+@@ -601,19 +604,14 @@ int xhci_mtk_add_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 	struct xhci_ep_ctx *ep_ctx;
+ 	struct xhci_slot_ctx *slot_ctx;
+ 	struct xhci_virt_device *virt_dev;
+-	struct mu3h_sch_bw_info *sch_bw;
+ 	struct mu3h_sch_ep_info *sch_ep;
+-	struct mu3h_sch_bw_info *sch_array;
+ 	unsigned int ep_index;
+-	int bw_index;
+-	int ret = 0;
+ 
+ 	xhci = hcd_to_xhci(hcd);
+ 	virt_dev = xhci->devs[udev->slot_id];
+ 	ep_index = xhci_get_endpoint_index(&ep->desc);
+ 	slot_ctx = xhci_get_slot_ctx(xhci, virt_dev->in_ctx);
+ 	ep_ctx = xhci_get_ep_ctx(xhci, virt_dev->in_ctx, ep_index);
+-	sch_array = mtk->sch_array;
+ 
+ 	xhci_dbg(xhci, "%s() type:%d, speed:%d, mpkt:%d, dir:%d, ep:%p\n",
+ 		__func__, usb_endpoint_type(&ep->desc), udev->speed,
+@@ -632,39 +630,34 @@ int xhci_mtk_add_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 		return 0;
+ 	}
+ 
+-	bw_index = get_bw_index(xhci, udev, ep);
+-	sch_bw = &sch_array[bw_index];
+-
+ 	sch_ep = create_sch_ep(udev, ep, ep_ctx);
+ 	if (IS_ERR_OR_NULL(sch_ep))
+ 		return -ENOMEM;
+ 
+ 	setup_sch_info(udev, ep_ctx, sch_ep);
+ 
+-	ret = check_sch_bw(udev, sch_bw, sch_ep);
+-	if (ret) {
+-		xhci_err(xhci, "Not enough bandwidth!\n");
+-		if (is_fs_or_ls(udev->speed))
+-			drop_tt(udev);
+-
+-		kfree(sch_ep);
+-		return -ENOSPC;
+-	}
++	list_add_tail(&sch_ep->endpoint, &mtk->bw_ep_list_new);
+ 
+-	list_add_tail(&sch_ep->endpoint, &sch_bw->bw_ep_list);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(xhci_mtk_add_ep_quirk);
+ 
+-	ep_ctx->reserved[0] |= cpu_to_le32(EP_BPKTS(sch_ep->pkts)
+-		| EP_BCSCOUNT(sch_ep->cs_count) | EP_BBM(sch_ep->burst_mode));
+-	ep_ctx->reserved[1] |= cpu_to_le32(EP_BOFFSET(sch_ep->offset)
+-		| EP_BREPEAT(sch_ep->repeat));
++static void xhci_mtk_drop_ep(struct xhci_hcd_mtk *mtk, struct usb_device *udev,
++			     struct mu3h_sch_ep_info *sch_ep)
++{
++	struct xhci_hcd *xhci = hcd_to_xhci(mtk->hcd);
++	int bw_index = get_bw_index(xhci, udev, sch_ep->ep);
++	struct mu3h_sch_bw_info *sch_bw = &mtk->sch_array[bw_index];
+ 
+-	xhci_dbg(xhci, " PKTS:%x, CSCOUNT:%x, BM:%x, OFFSET:%x, REPEAT:%x\n",
+-			sch_ep->pkts, sch_ep->cs_count, sch_ep->burst_mode,
+-			sch_ep->offset, sch_ep->repeat);
++	update_bus_bw(sch_bw, sch_ep, 0);
++	list_del(&sch_ep->endpoint);
+ 
+-	return 0;
++	if (sch_ep->sch_tt) {
++		list_del(&sch_ep->tt_endpoint);
++		drop_tt(udev);
++	}
++	kfree(sch_ep);
+ }
+-EXPORT_SYMBOL_GPL(xhci_mtk_add_ep_quirk);
+ 
+ void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 		struct usb_host_endpoint *ep)
+@@ -675,7 +668,7 @@ void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 	struct xhci_virt_device *virt_dev;
+ 	struct mu3h_sch_bw_info *sch_array;
+ 	struct mu3h_sch_bw_info *sch_bw;
+-	struct mu3h_sch_ep_info *sch_ep;
++	struct mu3h_sch_ep_info *sch_ep, *tmp;
+ 	int bw_index;
+ 
+ 	xhci = hcd_to_xhci(hcd);
+@@ -694,17 +687,71 @@ void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 	bw_index = get_bw_index(xhci, udev, ep);
+ 	sch_bw = &sch_array[bw_index];
+ 
+-	list_for_each_entry(sch_ep, &sch_bw->bw_ep_list, endpoint) {
++	list_for_each_entry_safe(sch_ep, tmp, &sch_bw->bw_ep_list, endpoint) {
+ 		if (sch_ep->ep == ep) {
+-			update_bus_bw(sch_bw, sch_ep, 0);
+-			list_del(&sch_ep->endpoint);
+-			if (is_fs_or_ls(udev->speed)) {
+-				list_del(&sch_ep->tt_endpoint);
+-				drop_tt(udev);
+-			}
+-			kfree(sch_ep);
+-			break;
++			xhci_mtk_drop_ep(mtk, udev, sch_ep);
+ 		}
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(xhci_mtk_drop_ep_quirk);
++
++int xhci_mtk_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
++{
++	struct xhci_hcd_mtk *mtk = hcd_to_mtk(hcd);
++	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
++	struct xhci_virt_device *virt_dev = xhci->devs[udev->slot_id];
++	struct mu3h_sch_bw_info *sch_bw;
++	struct mu3h_sch_ep_info *sch_ep, *tmp;
++	int bw_index, ret;
++
++	dev_dbg(&udev->dev, "%s\n", __func__);
++
++	list_for_each_entry(sch_ep, &mtk->bw_ep_list_new, endpoint) {
++		bw_index = get_bw_index(xhci, udev, sch_ep->ep);
++		sch_bw = &mtk->sch_array[bw_index];
++
++		ret = check_sch_bw(udev, sch_bw, sch_ep);
++		if (ret) {
++			xhci_err(xhci, "Not enough bandwidth!\n");
++			return -ENOSPC;
++		}
++	}
++
++	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_list_new, endpoint) {
++		struct xhci_ep_ctx *ep_ctx;
++		struct usb_host_endpoint *ep = sch_ep->ep;
++		unsigned int ep_index = xhci_get_endpoint_index(&ep->desc);
++
++		bw_index = get_bw_index(xhci, udev, ep);
++		sch_bw = &mtk->sch_array[bw_index];
++
++		list_move_tail(&sch_ep->endpoint, &sch_bw->bw_ep_list);
++
++		ep_ctx = xhci_get_ep_ctx(xhci, virt_dev->in_ctx, ep_index);
++		ep_ctx->reserved[0] |= cpu_to_le32(EP_BPKTS(sch_ep->pkts)
++			| EP_BCSCOUNT(sch_ep->cs_count)
++			| EP_BBM(sch_ep->burst_mode));
++		ep_ctx->reserved[1] |= cpu_to_le32(EP_BOFFSET(sch_ep->offset)
++			| EP_BREPEAT(sch_ep->repeat));
++
++		xhci_dbg(xhci, " PKTS:%x, CSCOUNT:%x, BM:%x, OFFSET:%x, REPEAT:%x\n",
++			sch_ep->pkts, sch_ep->cs_count, sch_ep->burst_mode,
++			sch_ep->offset, sch_ep->repeat);
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(xhci_mtk_check_bandwidth);
++
++void xhci_mtk_reset_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
++{
++	struct xhci_hcd_mtk *mtk = hcd_to_mtk(hcd);
++	struct mu3h_sch_ep_info *sch_ep, *tmp;
++
++	dev_dbg(&udev->dev, "%s\n", __func__);
++
++	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_list_new, endpoint) {
++		xhci_mtk_drop_ep(mtk, udev, sch_ep);
++	}
++}
++EXPORT_SYMBOL_GPL(xhci_mtk_reset_bandwidth);
+diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
+index 8be8c5f7ff62..05ca989985fc 100644
+--- a/drivers/usb/host/xhci-mtk.h
++++ b/drivers/usb/host/xhci-mtk.h
+@@ -130,6 +130,7 @@ struct mu3c_ippc_regs {
+ struct xhci_hcd_mtk {
+ 	struct device *dev;
+ 	struct usb_hcd *hcd;
++	struct list_head bw_ep_list_new;
+ 	struct mu3h_sch_bw_info *sch_array;
+ 	struct mu3c_ippc_regs __iomem *ippc_regs;
+ 	bool has_ippc;
+@@ -165,6 +166,8 @@ int xhci_mtk_add_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 		struct usb_host_endpoint *ep);
+ void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 		struct usb_host_endpoint *ep);
++int xhci_mtk_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev);
++void xhci_mtk_reset_bandwidth(struct usb_hcd *hcd, struct usb_device *udev);
+ 
+ #else
+ static inline int xhci_mtk_add_ep_quirk(struct usb_hcd *hcd,
+@@ -178,6 +181,16 @@ static inline void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd,
+ {
+ }
+ 
++static inline int xhci_mtk_check_bandwidth(struct usb_hcd *hcd,
++		struct usb_device *udev)
++{
++	return 0;
++}
++
++static inline void xhci_mtk_reset_bandwidth(struct usb_hcd *hcd,
++		struct usb_device *udev)
++{
++}
+ #endif
+ 
+ #endif		/* _XHCI_MTK_H_ */
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 2bf6c526ac7a..5a9e01b33688 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -2854,6 +2854,12 @@ static int xhci_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+ 	xhci_dbg(xhci, "%s called for udev %p\n", __func__, udev);
+ 	virt_dev = xhci->devs[udev->slot_id];
+ 
++	if (xhci->quirks & XHCI_MTK_HOST) {
++		ret = xhci_mtk_check_bandwidth(hcd, udev);
++		if (ret < 0)
++			return ret;
++	}
++
+ 	command = xhci_alloc_command(xhci, true, GFP_KERNEL);
+ 	if (!command)
+ 		return -ENOMEM;
+@@ -2941,6 +2947,9 @@ static void xhci_reset_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+ 		return;
+ 	xhci = hcd_to_xhci(hcd);
+ 
++	if (xhci->quirks & XHCI_MTK_HOST)
++		xhci_mtk_reset_bandwidth(hcd, udev);
++
+ 	xhci_dbg(xhci, "%s called for udev %p\n", __func__, udev);
+ 	virt_dev = xhci->devs[udev->slot_id];
+ 	/* Free any rings allocated for added endpoints */
+-- 
+2.29.2.684.gfbc64c5ab5-goog
+
