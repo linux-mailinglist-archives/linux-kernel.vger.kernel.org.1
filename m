@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2942DA0EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2112B2DA0DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502817AbgLNTwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 14:52:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44218 "EHLO mail.kernel.org"
+        id S2502812AbgLNTwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 14:52:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387981AbgLNTwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2502796AbgLNTwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Dec 2020 14:52:07 -0500
-Subject: Re: [GIT PULL] auxdisplay for v5.11
+Subject: Re: [GIT PULL for v5.11-rc1] media updates
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1607975487;
-        bh=zbu/xJU8vAoLFc8ITBJFvL1RBRSng0rNP0g0sB4vQKA=;
+        bh=EtT4RsJyy4qxZFqo+omxasdPx7GNeuLVlb3ymRqFKVg=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=rSThr1aAG9LE3ND/eqIZIoqypPxHAL+BlXFczmRtBX74Sqg5PKNtiDfb7cEDn/Cph
-         lL/5AgSRSDKatwm2zZnO69u5H3pmJezEMQLM7GY7oYI7i2xnQLCD1zZ1FvcIqGsMyB
-         bHGs5ScH9+yJ/WKvXX2U5D29n9yptOcEu2x/PKeEP/r4amqe0Q4qYCDm+HMJidmyoJ
-         sP/1mIO8fr0cKaHCLcvPNSz0v3sGne/g3NMpHywg3tDGlsNyb3/JM+kzrt0YB0zWeP
-         /4Qyn40QQfcGIKEJblFWGR4EXt2RjiLeYchFBa2halFt3iqvBbO5vQhx1DqkUiGRHR
-         UFTcXcFa6kGvA==
+        b=Tg9PIDvh3pMvmuSXK3uBG5bgF9SNootcjci09WRY+zd0eP1pA+P8MLuU93m1f3ElL
+         oFiBEhq3lAtaEz5nVQEX6+IgoTAFDxfGNOcJLcEwabkcGlJjhw7z6IZYhtnvgxpzOz
+         iAgYQJeSjmdlf+O6Jr8nZfArALACh+2yZgT7oHz1yZv1dJAHfYrbLRj1XsrbyRrSPb
+         92mVxpE4hmj2iIkXuFYRk/XnaInsigv+90xI+ICYAXpI9HyLMLM4ANWP0cvXH9ieQb
+         cqbCxUG9+fWM5DEsGGb7uIkzsGEDBhD8a7IKud97d3Ugi6MXacq80n8aOGzkEuDOf3
+         DxO9jTqshfAVA==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201213042450.GA26048@kernel.org>
-References: <20201213042450.GA26048@kernel.org>
+In-Reply-To: <20201214092132.63215862@coco.lan>
+References: <20201214092132.63215862@coco.lan>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201213042450.GA26048@kernel.org>
-X-PR-Tracked-Remote: https://github.com/ojeda/linux.git tags/auxdisplay-for-linus-v5.11
-X-PR-Tracked-Commit-Id: 351dcacc6d774258be9fec6f51c14f8ff38243f6
+X-PR-Tracked-Message-Id: <20201214092132.63215862@coco.lan>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.11-1
+X-PR-Tracked-Commit-Id: 7ea4d23293300ca2f225595849a4fe444fb80ea4
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bcc68bd8161261ceeb1a4ab02b5265758944f90d
-Message-Id: <160797548696.21325.11054507534913941993.pr-tracker-bot@kernel.org>
-Date:   Mon, 14 Dec 2020 19:51:26 +0000
-To:     Miguel Ojeda <ojeda@kernel.org>
+X-PR-Merge-Commit-Id: fab0fca1da5cdc48be051715cd9787df04fdce3a
+Message-Id: <160797548724.21325.11492920738092093664.pr-tracker-bot@kernel.org>
+Date:   Mon, 14 Dec 2020 19:51:27 +0000
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Lars Poeschel <poeschel@lemonage.de>, Willy Tarreau <w@1wt.eu>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 13 Dec 2020 05:24:50 +0100:
+The pull request you sent on Mon, 14 Dec 2020 09:21:32 +0100:
 
-> https://github.com/ojeda/linux.git tags/auxdisplay-for-linus-v5.11
+> git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.11-1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bcc68bd8161261ceeb1a4ab02b5265758944f90d
+https://git.kernel.org/torvalds/c/fab0fca1da5cdc48be051715cd9787df04fdce3a
 
 Thank you!
 
