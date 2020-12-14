@@ -2,205 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E742D95CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:05:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CDA2D95D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406618AbgLNKFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 05:05:33 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:34197 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727959AbgLNKEz (ORCPT
+        id S2406711AbgLNKGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 05:06:49 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:41911 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728795AbgLNKGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 05:04:55 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 220505C00D4;
-        Mon, 14 Dec 2020 05:04:09 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 14 Dec 2020 05:04:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=C8RetmLmqcDdToUcR6GaNwlQHeI
-        55zHmNEuTFJfNQGM=; b=kXSjxHwJY6J+vyejKZGn7cyuM+YGb3GIvz65HJVF1ex
-        AlW33R9xnTkrZm5fJL52ls+Z1spVRgfUpCNl7qdrfyM6o41vPmBjGYCCSMkQbnXg
-        28dkuHIG3PsxoOqXPDGVqVcoVVRYvhfZd5Ymngz8SLIzyAqAXEwc4NYtOsq0u4Ar
-        eo4l0XYbA35ZaAqPNy3alFPRf/wmz0FwUXZ1lqcWJU1O39E6iVmYpiNjLP20tRdW
-        M2iFmYKxUkXkDXMli9eSm0K7fJgjNq+lIbKC5EuDt4/UOecnSZgy+9/uzVbJjcOO
-        AnvazrQlxJeFZMCO87Z24aYYcvSYsau4uqr2fTqxTKg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=C8Retm
-        LmqcDdToUcR6GaNwlQHeI55zHmNEuTFJfNQGM=; b=OhnU8749mvcSo8JczLQtpj
-        PmjhA5yR0T4a0gHvFEP5SJCS/2ZdveuAsP5g/fpCA1rJBq8DpsnvIyHEM4wP1ZsE
-        7419t3cof+NXG1eNZF+8Hu3bianJDuLNUi1RGbvvhhXBU2HasPQlmlkE8qv2dkbC
-        ZTDQYzlbmSiot2Sxp2dMK9zNX/mG1EQ72VU9NDVaj6ZNq1JdvOCKQq2nTUMZrv2H
-        p60r66Bbi+mkkuhc0bdNR4yb9ESHrxE361MKqjK/ZRSY98VeTFtvOczINqCIz59z
-        1XpXeAI5MQsJe8JEUc08nVRO2ie9D5ZPY51Wqv2M3pwyfhoo8bCwXY65dKEOtvPQ
-        ==
-X-ME-Sender: <xms:lzjXX0rSpWCYoMPji4YN4AgG-5DRSQyYz2bUktScyQd-2wf1xOG7aA>
-    <xme:lzjXX6oht3F4W3zisETAPMXAMDDq6A6BVAvqNi2MD22ChLje5ZcwD7BWCP_rqgzaL
-    _zBsbolTCgvQSX1hps>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedguddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepffetteevieejteeuhfffgeektefghfeileehhedtuddutefhhfejtddvtddu
-    ledvnecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdrohhrghenucfkphepledtrdekle
-    drieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
-    ohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:lzjXX5NpUF-IaVqQSUo_VDkCL4fJwb1M7AOyAhtCMW35xH4dx3rhtw>
-    <xmx:lzjXX75xfuawgoNj-fJsHMQevlWojgsYx_GAZqPSGTVjhlQRQ6cyAg>
-    <xmx:lzjXXz7mcpmXFq6mgRQohgBhAw1VtDlqLuf0cnpjOYFFmAnE85Pr3g>
-    <xmx:mTjXX5SWxUXHHbMoJ1Xhsf3NDyhIUtNq3624II6WIACfIsqbk_DhKA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EFCF6240066;
-        Mon, 14 Dec 2020 05:04:06 -0500 (EST)
-Date:   Mon, 14 Dec 2020 11:04:05 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
-Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: Re: [PATCH v4 1/2] dt-bindings: hwlock: add sun8i_hwspinlock
-Message-ID: <20201214100405.ajvwiw4dxaqjgaor@gilmour>
-References: <cover.1607674518.git.wilken.gottwalt@posteo.net>
- <8b0c0b80bfc2dbb9010bac00fe0c90493ad8db09.1607674518.git.wilken.gottwalt@posteo.net>
- <20201211085757.faumhyto7akeayeg@gilmour>
- <20201211101311.654ac449@monster.powergraphx.local>
+        Mon, 14 Dec 2020 05:06:32 -0500
+Received: by mail-oi1-f196.google.com with SMTP id 15so18607674oix.8;
+        Mon, 14 Dec 2020 02:06:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wU59+CvZmcAbyjsN37G3+XqMzje/NQXAt7rsV5oGj0k=;
+        b=pBG2Aq3lZ7mlTuDZWXC5FtzKOOoJp5zZ0WZhcRqSr71BQG7p+CJuEhzrYIaVhEDjNl
+         UtW0pFdF2jvwNMvEGxYAQFWTKt4YgGJlQhs6ITKd28Zenz6+Nwcqxj9FKCd8Vpc7+oEH
+         zqm/8IzAYdYwMGmC72SyxS0W+3iqzSXvKMUuWAXDFXucoYvj2VR60eRMuK2A1Fqgrzef
+         q3xjMjARB3X4ziPdPpGIAK4AZegPXjGTktFTOEXYZJFx7znnz2B7FCF6v2dQibp9ye+K
+         kIlSZ/QJfIid+AFU3+laQ2AFDB9j/dKN1u/nm2D//P2aQL11YB09rkb//CSR0X9upkIh
+         QJDg==
+X-Gm-Message-State: AOAM531cVSYKQ+QC8/B0y2YCsSoNaTLcYRYOfiYHt0OuPKngKNKQQN5Z
+        T/KpZm+CYq8Gjz16n9iUurAphB2MC6inWwtDUQk=
+X-Google-Smtp-Source: ABdhPJwQdx6cW6UQ7QqSDaHV7ufUH8rElpntvn+VgJnJPtAuMuVoDgv/Yj3DxHb3j3T7wqzfOFCCZy3FcSOGhfm7I1I=
+X-Received: by 2002:aca:4b16:: with SMTP id y22mr17563683oia.148.1607940351152;
+ Mon, 14 Dec 2020 02:05:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="v3hk2ivwl2kkfhgs"
-Content-Disposition: inline
-In-Reply-To: <20201211101311.654ac449@monster.powergraphx.local>
+References: <20201212165648.166220-1-aford173@gmail.com>
+In-Reply-To: <20201212165648.166220-1-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 14 Dec 2020 11:05:40 +0100
+Message-ID: <CAMuHMdUr5MWpa5fhpKgAm7zRgzzJga=pjNSVG3aoTvCmuq5poQ@mail.gmail.com>
+Subject: Re: [RFC] ravb: Add support for optional txc_refclk
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        charles.stevens@logicpd.com,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Adam,
 
---v3hk2ivwl2kkfhgs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sun, Dec 13, 2020 at 5:18 PM Adam Ford <aford173@gmail.com> wrote:
+> The SoC expects the txv_refclk is provided, but if it is provided
+> by a programmable clock, there needs to be a way to get and enable
+> this clock to operate.  It needs to be optional since it's only
+> necessary for those with programmable clocks.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-On Fri, Dec 11, 2020 at 10:13:11AM +0100, Wilken Gottwalt wrote:
-> On Fri, 11 Dec 2020 09:57:57 +0100
-> Maxime Ripard <maxime@cerno.tech> wrote:
->=20
-> > Hi,
-> >=20
-> > On Fri, Dec 11, 2020 at 09:23:48AM +0100, Wilken Gottwalt wrote:
-> > > Adds documentation on how to use the sun8i_hwspinlock driver for sun8i
-> > > compatible SoCs.
-> > >=20
-> > > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
-> > > ---
-> > > Changes in v4:
-> > >   - changed binding to sun8i-a33-hwpinlock
-> > >   - added changes suggested by Maxime Ripard
-> > >=20
-> > > Changes in v3:
-> > >   - changed symbols from sunxi to sun8i
-> > >=20
-> > > Changes in v2:
-> > >   - fixed memory ranges
-> > > ---
-> > >  .../bindings/hwlock/sun8i-hwspinlock.yaml     | 56 +++++++++++++++++=
-++
-> > >  1 file changed, 56 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/hwlock/sun8i-hw=
-spinlock.yaml
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/hwlock/sun8i-hwspinloc=
-k.yaml
-> > > b/Documentation/devicetree/bindings/hwlock/sun8i-hwspinlock.yaml new =
-file mode 100644
-> > > index 000000000000..76963d8abd5f
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/hwlock/sun8i-hwspinlock.yaml
-> >=20
-> > We usually have the schemas with the same name than the compatible=20
-> >=20
-> > > @@ -0,0 +1,56 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/hwlock/sun8i-hwspinlock.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: SUN8I hardware spinlock driver for Allwinner sun8i compatible=
- SoCs
-> > > +
-> > > +maintainers:
-> > > +  - Wilken Gottwalt <wilken.gottwalt@posteo.net>
-> > > +
-> > > +description:
-> > > +  The hardware unit provides sempahores between the ARM cores and th=
-e embedded
-> >=20
-> >                                 ^ typo
->=20
-> Hmm, you are right. This is odd, the patch checking script didn't catch t=
-hat one.
->=20
-> > > +  OpenRisc core on the SoC.
-> >=20
-> > It's not just OpenRisc: there's some SoC that will have an xtensa core.=
- Maybe we can replace
-> > openrisc by secondary?
-> =20
-> So there are actually different embedded cores? What about embedded
-> companion core?
+Thanks for your patch!
 
-Companion core works for me
+> --- a/drivers/net/ethernet/renesas/ravb.h
+> +++ b/drivers/net/ethernet/renesas/ravb.h
+> @@ -994,6 +994,7 @@ struct ravb_private {
+>         struct platform_device *pdev;
+>         void __iomem *addr;
+>         struct clk *clk;
+> +       struct clk *ref_clk;
+>         struct mdiobb_ctrl mdiobb;
+>         u32 num_rx_ring[NUM_RX_QUEUE];
+>         u32 num_tx_ring[NUM_TX_QUEUE];
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index bd30505fbc57..4c3f95923ef2 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -2148,6 +2148,18 @@ static int ravb_probe(struct platform_device *pdev)
+>                 goto out_release;
+>         }
+>
+> +       priv->ref_clk = devm_clk_get(&pdev->dev, "txc_refclk");
 
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: allwinner,sun8i-a33-hwspinlock
-> > > +
-> > > +    reg:
-> > > +      maxItems: 1
-> > > +
-> > > +    clocks:
-> > > +      maxItems: 1
-> > > +
-> > > +    clock-names:
-> > > +      items:
-> > > +        - const: ahb
-> >=20
-> > clock-names is useless when you have a single clock
-> >=20
-> > > +
-> > > +    resets:
-> > > +      maxItems: 1
-> > > +
-> > > +    reset-names:
-> > > +      items:
-> > > +        - const: ahb
-> >=20
-> > and reset-names is useless as well when there's a single reset line
->=20
-> So just drop the reset-names lines? I'm still a bit unsure about this dt
-> yaml documentation format. I try to learn from the existing bindings, but
-> the quality seems a bit mixed. So thank you for your patience.
+Please also update the DT bindings[1], to document the optional
+presence of the clock.
 
-Yeah, drop the reset-names and clock-names properties from the
-properties section, required enum and your example
+> +       if (IS_ERR(priv->ref_clk)) {
+> +               if (PTR_ERR(priv->ref_clk) == -EPROBE_DEFER) {
+> +                       /* for Probe defer return error */
+> +                       error = PTR_ERR(priv->ref_clk);
+> +                       goto out_release;
+> +               }
+> +               /* Ignore other errors since it's optional */
+> +       } else {
+> +               (void)clk_prepare_enable(priv->ref_clk);
 
-Maxime
+This can fail.
+Does this clock need to be enabled all the time?
+At least it should be disabled in the probe failure path, and in
+ravb_remove().
 
---v3hk2ivwl2kkfhgs
-Content-Type: application/pgp-signature; name="signature.asc"
+[1] Documentation/devicetree/bindings/net/renesas,etheravb.yaml
 
------BEGIN PGP SIGNATURE-----
+Gr{oetje,eeting}s,
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9c4lQAKCRDj7w1vZxhR
-xTWEAP4qqfMWlCYuuDd1JE6/KS2fcKqf8SI2gkG0dBc/yFKNmAD/UL+pVIfqRhYf
-ZmI03AEZ3cLCGxhu3tMrUU69tnnWGA4=
-=CuUq
------END PGP SIGNATURE-----
+                        Geert
 
---v3hk2ivwl2kkfhgs--
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
