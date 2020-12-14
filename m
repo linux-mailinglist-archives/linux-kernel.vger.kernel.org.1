@@ -2,134 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88AF2DA0CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:51:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB8B2DA0C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502766AbgLNTrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 14:47:55 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:49804 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502231AbgLNTre (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2502772AbgLNTr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 14:47:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502651AbgLNTre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Dec 2020 14:47:34 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BEJhcxY078826;
-        Mon, 14 Dec 2020 19:44:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=9CpYb5wMuTD4D858Y8Wlg/v+AWmNBrj4tuddL77vOzs=;
- b=SLdCZ+Gb2NnkQfkpQm/oHPLqJlIo/omIU72d8hO9cCHzBrN6UqG7LjcIfuZ7WcjCJIfy
- ikw6fHpIiKMOgyNXYDmM+uOPaTxZM6S9cQmUSHNfmg5pSHB5OvYN6XxLL03bkI7eqPA0
- wkf4fBkUNlIk3Nzkm98mIJF//IGv+1IttwLgF2SYePuNbZj3za6iYdUxe/AXhzpz6+Zg
- gJb0GuCq/G59/Jotmy+4Ziz3Igx1cswXigUMohD4ewi2d4yhEv97AOZOHrcAWIxj4YB8
- q9bv/dBQPKZ68+9VUPldT6pmoUBkw5okmSiAWRW9wGzTpDMWQfaWTNLNc+6qRnyfEKOT KA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 35cntky3av-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Dec 2020 19:44:25 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BEJf5gd127147;
-        Mon, 14 Dec 2020 19:44:24 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 35e6jpx9aq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Dec 2020 19:44:24 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BEJiHGe031003;
-        Mon, 14 Dec 2020 19:44:19 GMT
-Received: from [192.168.0.193] (/69.207.174.138)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 14 Dec 2020 11:44:17 -0800
-Subject: Re: [PATCH -tip 23/32] sched: Add a per-thread core scheduling
- interface
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-24-joel@joelfernandes.org>
- <20201202214717.GA27531@chyser-vm-1.appad1iad.osdevelopmeniad.oraclevcn.com>
- <20201206173418.GC201514@google.com>
- <20201209185203.GC6876@chyser-vm-1.appad1iad.osdevelopmeniad.oraclevcn.com>
- <X9e9dcLMrMJThZs+@google.com>
-From:   chris hyser <chris.hyser@oracle.com>
-Message-ID: <16a390e4-b44d-b0eb-1df6-6e56d78d009f@oracle.com>
-Date:   Mon, 14 Dec 2020 14:44:09 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+X-Gm-Message-State: AOAM531DRRlvufKRAOkXba7tZfqH6G/poFFbg9eiAZpAEmvJi4CszD4r
+        X9alM2ON5MwaHJ8YEAbuDjsaBjJv6+Q6+rCokEQ=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607975211;
+        bh=iceNd6VKbkYU3nfVma/61jZjDtVc/NaK9/C3nnbBU+s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YqOE4WkisE4n/EA2GnnXtjTtyvTCfho3/J/05vyZ2nsT70AO7ql79KlyA+i9606SD
+         MPbennpTkRpYhfCT4z6VX4rxQUjPy41QhfJw1LjEGnvKwZGUl6rZsD1g9BkV9vZSo8
+         zE5OsIeE0JwN9Tw2mq4leC/p106L+/+Tjg8/7uHzVx9VhBOX27Bs/ttvos1NBncu6j
+         9IadRHjAqDuVuKAzQrW0sWXCgdK63OXRkorda7DMTE58Fr43Fc1a6+2WBZ0712/eD/
+         kJwTdG3dLLiOn7UqIPp2EFThm+2sfSZyb7U6NrvN62Nwgbj/wUsZ6lelV03cLqFhQC
+         ZEfAsgGEclKTQ==
+X-Google-Smtp-Source: ABdhPJzYGX1MMWPJFOHz30xp0aU5ph8u4S7t+0cxYtTT/8ErnPkWs3IM3N63LP5Kxy3d1xhce/zozUnaGS1ftZEokd4=
+X-Received: by 2002:aca:3b41:: with SMTP id i62mr4305679oia.67.1607975210247;
+ Mon, 14 Dec 2020 11:46:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <X9e9dcLMrMJThZs+@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 bulkscore=0
- malwarescore=0 adultscore=0 mlxlogscore=999 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012140130
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 priorityscore=1501 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012140131
+References: <20201016090833.1892-1-thunder.leizhen@huawei.com>
+ <20201016090833.1892-2-thunder.leizhen@huawei.com> <20201128045328.2411772-1-f.fainelli@gmail.com>
+ <CAK8P3a1_5RgcPz+bgo1bbUBk8NTJd=1-Y5-=CsQYkFgLfTE3_A@mail.gmail.com> <9c6c6b7e-8c39-8c49-5c87-9b560c027841@broadcom.com>
+In-Reply-To: <9c6c6b7e-8c39-8c49-5c87-9b560c027841@broadcom.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 14 Dec 2020 20:46:33 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2XYk8D80XARrpUSBHk1yye3KHXOdaQge4HNSZZOC=xKw@mail.gmail.com>
+Message-ID: <CAK8P3a2XYk8D80XARrpUSBHk1yye3KHXOdaQge4HNSZZOC=xKw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] arm64: dts: broadcom: clear the warnings caused by
+ empty dma-ranges
+To:     Ray Jui <ray.jui@broadcom.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Scott Branden <sbranden@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Bharat Gooty <bharat.gooty@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/14/20 2:31 PM, Joel Fernandes wrote:
->> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
->> index cffdfab..50c31f3 100644
->> --- a/kernel/sched/debug.c
->> +++ b/kernel/sched/debug.c
->> @@ -1030,6 +1030,7 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
->>   
->>   #ifdef CONFIG_SCHED_CORE
->>   	__PS("core_cookie", p->core_cookie);
->> +	__PS("core_task_cookie", p->core_task_cookie);
->>   #endif
-> 
-> Hmm, so the final cookie of the task is always p->core_cookie. This is what
-> the scheduler uses. All other fields are ingredients to derive the final
-> cookie value.
-> 
-> I will drop this hunk from your overall diff, but let me know if you
-> disagree!
+On Mon, Dec 14, 2020 at 8:09 PM Ray Jui <ray.jui@broadcom.com> wrote:
+> On 11/28/2020 1:58 AM, Arnd Bergmann wrote:
+> > On Sat, Nov 28, 2020 at 5:53 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+> >>
+> >> On Fri, 16 Oct 2020 17:08:32 +0800, Zhen Lei <thunder.leizhen@huawei.com> wrote:
+> >>> The scripts/dtc/checks.c requires that the node have empty "dma-ranges"
+> >>> property must have the same "#address-cells" and "#size-cells" values as
+> >>> the parent node. Otherwise, the following warnings is reported:
+> >>>
+> >>> arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
+> >>> (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
+> >>> its #address-cells (1) differs from / (2)
+> >>> arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
+> >>> (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
+> >>> its #size-cells (1) differs from / (2)
+> >>>
+> >>> Arnd Bergmann figured out why it's necessary:
+> >>> Also note that the #address-cells=<1> means that any device under
+> >>> this bus is assumed to only support 32-bit addressing, and DMA will
+> >>> have to go through a slow swiotlb in the absence of an IOMMU.
+> >>>
+> >>> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> >>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> >>> ---
+> >>
+> >> Applied to devicetree-arm64/next, thanks!
+> >
+> > The notification may have gone missing, but I had merged it into v5.10-fixes
+> > already, and as of today, it's in mainline, so you can drop it from your
+> > next branch, or just leave it in if you want to avoid taking things out of
+> > your tree.
+>
+> It looks like this patch might have caused a regression on Stingray USB.
+> Bharat, could you please confirm?
 
+Well, this is what I had asked about originally, I assumed that
+Florian had asked someone with access to the datasheet.
 
-No problem. That was there primarily for debugging.
+> The fix would be to properly define the dma-ranges to be 32-bit (0x0 ~
+> 0xffffffff) since IOMMU is disabled on this device and the device's DMA
+> engine is on a 32-bit bus.
 
-Thanks.
+That's not how dma-ranges work, they tell you what the capabilities
+of the bus are, while the capabilities of the device are identified by
+the properties of that device.
 
--chrish
+The device claims to be compatible with "generic-xhci", so the
+driver asks for a 64-bit mask to be set according to the xhci
+specification. If this device is not xhci compliant, then it should
+not ask for a 64-bit mask.
 
+However, if this is a 64-bit capable bus master on a 32-bit bus,
+then the dma-ranges property should list the capabilities of the
+bus, so the kernel can force the driver to fall back to 32-bit addressing.
+
+      Arnd
