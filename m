@@ -2,177 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F0B2D91E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 03:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8072D91EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 03:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438123AbgLNCzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 21:55:36 -0500
-Received: from mga05.intel.com ([192.55.52.43]:39178 "EHLO mga05.intel.com"
+        id S2438135AbgLNCz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 21:55:58 -0500
+Received: from ozlabs.org ([203.11.71.1]:50019 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726867AbgLNCzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 21:55:36 -0500
-IronPort-SDR: lkf3SNpL/q7m11VzAreQNAQ+xjDkfaU9Udl5KP9eGuB0juA3XSW8aPEJpoM1GqpkfMPg5PQfbG
- Ulhzj7Uefg+w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9834"; a="259372351"
-X-IronPort-AV: E=Sophos;i="5.78,417,1599548400"; 
-   d="scan'208";a="259372351"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2020 18:54:52 -0800
-IronPort-SDR: xlRut6PSb/7PvRgbse2l5QRFPa2urVkOtb+RmBpop9tCNdLRxzIUSw5Qv6bZMlbJYz1ZRyFtXL
- pUBZlIYxh//g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,417,1599548400"; 
-   d="scan'208";a="331660700"
-Received: from lkp-server02.sh.intel.com (HELO a947d92d0467) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Dec 2020 18:54:51 -0800
-Received: from kbuild by a947d92d0467 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1koe0g-00007E-FD; Mon, 14 Dec 2020 02:54:50 +0000
-Date:   Mon, 14 Dec 2020 10:54:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/core] BUILD REGRESSION
- 3bda84519c6c2d57e7378417ac116f61d50abae1
-Message-ID: <5fd6d3f8.gEmff2CDu9zPTszN%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726867AbgLNCzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 21:55:41 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvQwb3PhQz9sRR;
+        Mon, 14 Dec 2020 13:54:54 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607914498;
+        bh=lCODkhvBcMAzJ2JraOyKtROTbpTLOwTpUeDgzVZ/WRM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Lq0kS14Z9K5kg/7Ulx/AT1LTd8ZyCMaty5dD+SUh4y74I2umSRDhCHP5liqXOFyY8
+         0U/U4151W4P1mj2EL+3ywuuJSijuyvj5rjyXdf+thNGWoxyfncmnfXadOs0OX3yjSm
+         aiotfihN/PqbwNseEQo6tpxBFEYHoJFFXIBTTd/oWDGMlJZxVLhyoOLpFkqDdNJ19K
+         +CJh+KLTivNH8vJp2V10IBnn6jxT0THTJoIiid/C3LGsdrdymKuk2wevrKhmY9jYmu
+         YvGclKVB+KcVPJq99ukGSW/Sb0wTZw3/3tYvMhhn7wORlMAHahoDxPPLYp7cRc/cf9
+         Gai4LPLahKYBg==
+Date:   Mon, 14 Dec 2020 13:54:53 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>
+Cc:     Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mike Healy <mikex.healy@intel.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: linux-next: manual merge of the drm tree with the crypto tree
+Message-ID: <20201214135453.16e76e9d@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/8qi0JHtIjRjh.eFSKzZUn+z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  irq/core
-branch HEAD: 3bda84519c6c2d57e7378417ac116f61d50abae1  genirq: Reexport irq_to_desc() for PPC KVM
+--Sig_/8qi0JHtIjRjh.eFSKzZUn+z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Error/Warning reports:
+Hi all,
 
-https://lore.kernel.org/lkml/202012140602.BCg2ue7N-lkp@intel.com
+Today's linux-next merge of the drm tree got a conflict in:
 
-Error/Warning in current branch:
+  MAINTAINERS
 
-ERROR: modpost: ".irq_to_desc" [arch/powerpc/kvm/kvm-hv.ko] undefined!
+between commit:
 
-Error/Warning ids grouped by kconfigs:
+  885743324513 ("crypto: keembay - Add support for Keem Bay OCS AES/SM4")
 
-gcc_recent_errors
-`-- powerpc-allmodconfig
-    `-- ERROR:irq_to_desc-arch-powerpc-kvm-kvm-hv.ko-undefined
+from the crypto tree and commit:
 
-elapsed time: 772m
+  ed794057b052 ("drm/kmb: Build files for KeemBay Display driver")
 
-configs tested: 104
-configs skipped: 2
+from the drm tree.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                 kfr2r09-romimage_defconfig
-sh                         microdev_defconfig
-mips                        bcm47xx_defconfig
-powerpc                mpc7448_hpc2_defconfig
-sh                          lboxre2_defconfig
-arm                           h3600_defconfig
-arc                 nsimosci_hs_smp_defconfig
-sh                        sh7785lcr_defconfig
-arm                              alldefconfig
-arc                          axs101_defconfig
-sh                          urquell_defconfig
-sh                        dreamcast_defconfig
-arm                  colibri_pxa300_defconfig
-sh                         apsh4a3a_defconfig
-c6x                         dsk6455_defconfig
-powerpc                     sbc8548_defconfig
-sparc                       sparc64_defconfig
-powerpc                     sequoia_defconfig
-mips                malta_kvm_guest_defconfig
-c6x                        evmc6678_defconfig
-mips                        bcm63xx_defconfig
-arm                     eseries_pxa_defconfig
-m68k                        m5307c3_defconfig
-powerpc                         wii_defconfig
-sh                           se7780_defconfig
-powerpc                       ebony_defconfig
-m68k                          sun3x_defconfig
-m68k                       m5275evb_defconfig
-xtensa                  audio_kc705_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20201213
-i386                 randconfig-a004-20201213
-i386                 randconfig-a003-20201213
-i386                 randconfig-a002-20201213
-i386                 randconfig-a005-20201213
-i386                 randconfig-a006-20201213
-x86_64               randconfig-a003-20201213
-x86_64               randconfig-a006-20201213
-x86_64               randconfig-a002-20201213
-x86_64               randconfig-a005-20201213
-x86_64               randconfig-a004-20201213
-x86_64               randconfig-a001-20201213
-i386                 randconfig-a014-20201213
-i386                 randconfig-a013-20201213
-i386                 randconfig-a012-20201213
-i386                 randconfig-a011-20201213
-i386                 randconfig-a016-20201213
-i386                 randconfig-a015-20201213
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                                  kexec
-x86_64                               rhel-8.3
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-clang tested configs:
-x86_64               randconfig-a016-20201213
-x86_64               randconfig-a012-20201213
-x86_64               randconfig-a013-20201213
-x86_64               randconfig-a015-20201213
-x86_64               randconfig-a014-20201213
-x86_64               randconfig-a011-20201213
+--=20
+Cheers,
+Stephen Rothwell
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+diff --cc MAINTAINERS
+index 3b358262de8f,eb18459c1d16..000000000000
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@@ -6932,11 -6913,16 +6941,10 @@@ S:	Maintaine
+  W:	http://floatingpoint.sourceforge.net/emulator/index.html
+  F:	arch/x86/math-emu/
+ =20
+ -FRAME RELAY DLCI/FRAD (Sangoma drivers too)
+ -L:	netdev@vger.kernel.org
+ -S:	Orphan
+ -F:	drivers/net/wan/dlci.c
+ -F:	drivers/net/wan/sdla.c
+ -
+  FRAMEBUFFER LAYER
+- M:	Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+  L:	dri-devel@lists.freedesktop.org
+  L:	linux-fbdev@vger.kernel.org
+- S:	Maintained
++ S:	Orphan
+  Q:	http://patchwork.kernel.org/project/linux-fbdev/list/
+  T:	git git://anongit.freedesktop.org/drm/drm-misc
+  F:	Documentation/fb/
+@@@ -8985,16 -8962,13 +8993,23 @@@ M:	Deepak Saxena <dsaxena@plexity.net
+  S:	Maintained
+  F:	drivers/char/hw_random/ixp4xx-rng.c
+ =20
++ INTEL KEEMBAY DRM DRIVER
++ M:	Anitha Chrisanthus <anitha.chrisanthus@intel.com>
++ M:	Edmund Dea <edmund.j.dea@intel.com>
++ S:	Maintained
++ F:	Documentation/devicetree/bindings/display/intel,kmb_display.yaml
++ F:	drivers/gpu/drm/kmb/
++=20
+ +INTEL KEEM BAY OCS AES/SM4 CRYPTO DRIVER
+ +M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+ +S:	Maintained
+ +F:	Documentation/devicetree/bindings/crypto/intel,keembay-ocs-aes.yaml
+ +F:	drivers/crypto/keembay/Kconfig
+ +F:	drivers/crypto/keembay/Makefile
+ +F:	drivers/crypto/keembay/keembay-ocs-aes-core.c
+ +F:	drivers/crypto/keembay/ocs-aes.c
+ +F:	drivers/crypto/keembay/ocs-aes.h
+ +
+  INTEL MANAGEMENT ENGINE (mei)
+  M:	Tomas Winkler <tomas.winkler@intel.com>
+  L:	linux-kernel@vger.kernel.org
+
+--Sig_/8qi0JHtIjRjh.eFSKzZUn+z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/W0/0ACgkQAVBC80lX
+0GyRRQf+JhtIB4eEMtaUN1EiCWo8HsYmi9p1zRP+Q5EYizSxggmTQZ8uR/ySfD0w
+YIrgTLwACjuq7xLQddaZNEW9X2sV8r0D61ax1d7hvYftYwQWF5zYHuqdTj99sfgm
+xCpxvpWdTG/AIXUG8EqzRYPWFLYaD/FgiMiNxp5EvVHqCty4DrxOQ47AdRJXTduF
+06C65eJ+RU2jKjtraoWLB6wQh22wzeQ2cUGYObP4AJdfannoDEz4Kw8CWHvFq/1P
+wkmnJt8eX0xSkXOx2is/Vem5ckLyfvnUsWu3yG60syYlTF/FE1NXofsZw3SPlLn5
+RIZKggHKvxU0LKkhfnWcZ0C5wPrsSg==
+=PC48
+-----END PGP SIGNATURE-----
+
+--Sig_/8qi0JHtIjRjh.eFSKzZUn+z--
