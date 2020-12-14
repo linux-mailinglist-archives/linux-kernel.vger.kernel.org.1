@@ -2,201 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463282DA2DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1413F2DA2D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732775AbgLNVwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 16:52:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
+        id S2439031AbgLNVuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 16:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441082AbgLNVpD (ORCPT
+        with ESMTP id S2440050AbgLNVuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 16:45:03 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C20C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:44:23 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id r4so9628054pls.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:44:23 -0800 (PST)
+        Mon, 14 Dec 2020 16:50:01 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4F2C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:49:21 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id 15so20949924oix.8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:49:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PMXJLiKcXqOuq1fSx1dZKXuKwhly4eCplfXBPHcW2uo=;
-        b=fMw42NK0Vv4AkVqZYjC8aVy3I+z6+B6jWHLNFGHqJZpsRmHB5PcS0GoQFrUqCMHBMf
-         Yi8ZPM8RcbxHLc6X6t2HjSU/4abIVomNVcbrFjNiw8hhW/TUfCSei1PGQCbrUnP6QHCq
-         ghbQhRHF7uc7YjTEYc23FLZZOvhUUkxb9sMjwQ0rmSc2gdGYffjtvDHoU1AUBQH7193+
-         vVe/lsNoggmXDtQaN219ZUVQD2Z8YE349gyIEoiIHaxg31R+W8mFaPhgSH5X8k9XKR1N
-         EH7n5mIKqQOBVqGqxx9entop+1WGk6/UvmstmAV82uYtlI0FgTDCV4nJBzAqGtUN64N5
-         bg3A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xwc4jX2cVzI9GAPOLZxtNDFTIGEsJRQAPMon6mB69F8=;
+        b=fkIxSTKdBBFWS/VLhbLVQ0ym5+uNJi7s6sCD8mRohvztdY1RIvKuTMIYKVqZxXd5+t
+         WUQnGa7VzoKOrHmP1BOvUGlKGxAFtgQnOG2BXTsIM4KEoB+xbtGxXAyNrv/hzmwRtHur
+         gBLiWvJUyXWdK6cCE2mBXYUzEejBqavTjequZjv4xD4QCvIYdBbbKkeUXlHhiHeVYoAl
+         6SdJYy0vONpADtfO+YpbYFzknut4APElD6xxt57mqgcl2YVJKKvx9a0icbz5Ruaknt74
+         l4uchtdx+yBnK0Zwup/ewoZa1kyhHM0vmd5XG/EwoDCoAHMAAZssz8umouw5YqYJ99mQ
+         kzJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PMXJLiKcXqOuq1fSx1dZKXuKwhly4eCplfXBPHcW2uo=;
-        b=qS+peb4avzO5gY7PkLoPXfqfeEcMtu2F3sSUTf7fRpKO64+iUYOq3EPfnlMZ8On1Dv
-         KGDMd44Ah8XI9Wly81fL4QLwITK0sl5q/Gs1URX7ku1CUB//bLuuBwgEZHla0lT6i1SP
-         q0Xr0Gw7GLEXOEbUYYE0TpQSp0N7D44Co4CufV7gYioERtXiQ3t9ukggXSA5ODDxnzDi
-         SIRZfk9zE3n3UC/im0Znjc7O3O84LkLaVPMODOiqe5Y1JA3J78VKbg5xmFInNPL4IZhl
-         JjhzZEWWKUnhSQEOkfHdXqdqiI/7rcOFGNYQSZuOWaVRim47RFZuRzMQeQS1lDpZlNbs
-         8SHQ==
-X-Gm-Message-State: AOAM530+pRaDGeAVOkSKhLhtTxnWpjk/YaIx7cjDKkhvqGDiUa67Y5WG
-        alxdadbJyOiIvkGzmC3joN15IQ==
-X-Google-Smtp-Source: ABdhPJx6WDKMKNTg07/DKZXqVykrSNXKqqxEXbSIu+73dzQaCppft6CsvvmQiFErJW/bXxEiKXj/Zw==
-X-Received: by 2002:a17:90b:217:: with SMTP id fy23mr27562416pjb.199.1607982262636;
-        Mon, 14 Dec 2020 13:44:22 -0800 (PST)
-Received: from x1 ([2601:1c0:4701:ae70:a12:934a:f94c:522c])
-        by smtp.gmail.com with ESMTPSA id kb12sm18343417pjb.2.2020.12.14.13.44.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 13:44:21 -0800 (PST)
-Date:   Mon, 14 Dec 2020 13:44:19 -0800
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>
-Subject: Re: [RFC PATCH] pinctrl: add helper to expose pinctrl state in
- debugfs
-Message-ID: <20201214214419.GA1196223@x1>
-References: <20201211042625.129255-1-drew@beagleboard.org>
- <CAHp75VcAbdrSnb_ag9Rc0tny3Vtqjs1if+ahk7U36V2eaKMpSw@mail.gmail.com>
- <20201211234304.GA189853@x1>
- <CAHp75Vf-=nM-M2K-v_8iyME4t6ZF-gvSZ5ePsxQFhObJ_0YHsw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xwc4jX2cVzI9GAPOLZxtNDFTIGEsJRQAPMon6mB69F8=;
+        b=YjxLMFW2QHap9U6K4f6g4H3GySvePbLx7TJFebWkLE3lde8eCbR7d8aFtTz6iw5EvO
+         Mkg7IVme0GvAg21Ooi+DXSGAWAAI5NkeTp9Ax9qiFy0Apeuoo2ETu1e03/WagiFodypf
+         m+68+Ncg9hvKhyApR4yxmpoOs/d6/OAwcjHg/+v6ChT8L7oa5JxOhAaDIs2EqvZSuC9N
+         pWYJOTPGnWHtHvIswmEtPc0k+bCeFINtWKhRRF0KcgArEgOlpKpxCl4Nd3vpzPHjtZpp
+         lbnz0k8FUwRyB8Jq/S29P5Wn3eXj8TYuomn0HhY2Vsj51tr+L4CQB0mWMdRQghFgMfWN
+         4nzA==
+X-Gm-Message-State: AOAM531WNAe16Hcn53FLvhpkwzPZUVO2EExU+le3siULlCaDYjq0nYIR
+        AFp0qjctbkXwdl5iutmEYbNCiSH1mm1FWqFfgMk=
+X-Google-Smtp-Source: ABdhPJwXTJY4vOyrXu0/kLhsMtwrSYzJagyhpKZBcswQMlbTtwatKXLLkTcMHL7fAndk4Q+k2gxjmvaCUzQd+b673nI=
+X-Received: by 2002:aca:4f97:: with SMTP id d145mr19595326oib.123.1607982560930;
+ Mon, 14 Dec 2020 13:49:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vf-=nM-M2K-v_8iyME4t6ZF-gvSZ5ePsxQFhObJ_0YHsw@mail.gmail.com>
+References: <20201211155553.GC25974@zn.tnic>
+In-Reply-To: <20201211155553.GC25974@zn.tnic>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 14 Dec 2020 16:49:09 -0500
+Message-ID: <CADnq5_MHqWqOd5ZngitF4UUDoZsh+fPrYJtHpJMbJdjAhFfhew@mail.gmail.com>
+Subject: Re: 8353d30e747f ("drm/amd/display: disable stream if pixel clock
+ changed with link active")
+To:     Borislav Petkov <bp@alien8.de>, Harry Wentland <hwentlan@amd.com>,
+        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>
+Cc:     Chiawen Huang <chiawen.huang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Tony Cheng <Tony.Cheng@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 07:55:12PM +0200, Andy Shevchenko wrote:
-> On Sat, Dec 12, 2020 at 1:43 AM Drew Fustini <drew@beagleboard.org> wrote:
-> > On Fri, Dec 11, 2020 at 11:15:21PM +0200, Andy Shevchenko wrote:
-> > > On Fri, Dec 11, 2020 at 1:54 PM Drew Fustini <drew@beagleboard.org> wrote:
-> > > >
-> > > > BeagleBoard.org [0] currently uses an out-of-tree driver called
-> > > > bone-pinmux-helper [1] developed by Pantelis Antoniou [2] back in 2013.
-> > >
-> > > And it looks like it's still using APIs from 2013.
-> > > Needs quite a clean up.
-> >
-> > Thanks for taking a look at my RFC and responding. It is good to know
-> > that it is using out-dated APIs. Would you be able to elaborate?
-> >
-> > It interacts with pinctrl core through devm_pinctrl_get(),
-> > pinctrl_lookup_state() and pinctrl_select_state(). Is there newer way of
-> > doing that?
-> 
-> No. I'm talking mostly about FS callbacks where some relatively old
-> new APIs can be used, such as kasprintf().
+On Fri, Dec 11, 2020 at 11:49 AM Borislav Petkov <bp@alien8.de> wrote:
+>
+> Hi,
+>
+> patch in $Subject breaks booting on a laptop here, GPU details are
+> below. The machine stops booting right when it attempts to switch modes
+> during boot, to a higher mode than the default VGA one. Machine doesn't
+> ping and is otherwise unresponsive so that a hard reset is the only
+> thing that helps.
+>
+> Reverting that patch ontop of -rc7 fixes it and the machine boots just fine.
 
-Thanks for following up. I'll will take a look at that and update the code.
++ a few more display folks
 
-> > > > I used the compatible string "pinctrl,state-helper" but would appreciate
-> > > > advice on how to best name this. Should I create a new vendor prefix?
-> > >
-> > > Since it's BB specific, it should have file name and compatible string
-> > > accordingly.
-> >
-> > At first, I was thinking about this as a beaglebone specific solution
-> > and had bone in the driver name and compatible string. But then I
-> > realized it could used in other situations where it is beneficial to
-> > to read and select a pinctrl state through debugfs.
-> >
-> > I'm happy to rebrand the naming as beaglebone if that would be more
-> > acceptable.
-> 
-> See below.
-> 
-> > > But I'm wondering, why it requires this kind of thing and can't be
-> > > simply always part of the kernel based on configuration option?
-> >
-> > Do you mean not having a new CONFIG option for this driver and just have
-> > it be enabled by CONFIG_PINCTRL?
-> 
-> No, configuration option stays, but no compatible strings no nothing
-> like that. Just probed always when loaded.
+This patch looks like a correctness fix, but not critical.  Unless
+anyone has a proper fix handy, I'll just revert it for now and we can
+revisit it properly.
 
-I first started down the route of implementing this inside of
-pinctrl-single.  I found it didn't work because devm_pinctrl_get() would
-fail.  I think was because it was happening too early for pinctrl to be
-ready.
-
-I do think it seems awkward to have to add this to dts and have the
-driver get probed for each entry:
-
-        P1_04_pinmux {
-                compatible = "pinctrl,state-helper";
-                status = "okay";
-                pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "gpio_input", "pruout", "pruin";
-                pinctrl-0 = <&P1_04_default_pin>;
-                pinctrl-1 = <&P1_04_gpio_pin>;
-                pinctrl-2 = <&P1_04_gpio_pu_pin>;
-                pinctrl-3 = <&P1_04_gpio_pd_pin>;
-                pinctrl-4 = <&P1_04_gpio_input_pin>;
-                pinctrl-5 = <&P1_04_pruout_pin>;
-                pinctrl-6 = <&P1_04_pruin_pin>;
-        };
-
-But I am having a hard time figuring out another way of doing it.
-
-Any ideas as to what would trigger the probe() if there was not a match
-on a compatible like "pinctrl,state-helper"?
-
-> Actually not even sure we want to have it as a module.
-
-And have just be a part of one of the existing pinctrl files like core.c?
-
-> 
-> ...
-> 
-> > > > The P9_14_pinmux entry would cause pinctrl-state-helper to be probed.
-> > > > The driver would create the corresponding pinctrl state file in debugfs
-> > > > for the pin.  Here is an example of how the state can be read and
-> > > > written from userspace:
-> > > >
-> > > > root@beaglebone:~# cat /sys/kernel/debug/ocp\:P9_14_pinmux/state
-> > > > default
-> > > > root@beaglebone:~# echo pwm > /sys/kernel/debug/ocp\:P9_14_pinmux/state
-> > > > root@beaglebone:~# cat /sys/kernel/debug/ocp\:P9_14_pinmux/state
-> > > > pwm
-> > >
-> > > Shouldn't it be rather a part of a certain pin control folder:
-> > > debug/pinctrl/.../mux/...
-> > > ?
-> >
-> > Yes, I think that would make sense, but I was struggling to figure out
-> > how to do that. pinctrl_init_debugfs() in pinctrl/core.c does create the
-> > "pinctrl" directory, but I could not figure out how to use this as the
-> > parent dir when calling debugfs_create_dir() in this driver's probe().
-> >
-> > I thought there might be a way in debugfs API to use existing directory
-> > path as a parent but I couldn't figure anything like that. I would
-> > appreciate any advice.
-> 
-> If the option is boolean from the beginning then you just call it from
-> the corresponding pin control instantiation chain.
+Alex
 
 
-Sorry, I am not sure I understand what you mean here.  What does
-"option" mean in this context?  I don't think there is any value that is
-boolean invovled.  The pinctrl states are strings.
-
-With regards to parent directory, I did discover there is
-debugfs_lookup(), so I can get the dentry for "pinctrl" and create new
-subdirectory inside of it.  This is the structure now:
-
-/sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_35_pinmux/state
-/sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_34_pinmux/state
-/sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_33_pinmux/state
-/sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_32_pinmux/state
-etc..
-
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-
-Thanks for reviewing,
-Drew
+>
+> Thx.
+>
+> [    1.628086] ata1.00: supports DRM functions and may not be fully accessible
+> [    1.632050] ata1.00: supports DRM functions and may not be fully accessible
+> [    1.895818] [drm] amdgpu kernel modesetting enabled.
+> [    1.897628] [drm] initializing kernel modesetting (CARRIZO 0x1002:0x9874 0x103C:0x807E 0xC4).
+> [    1.898256] [drm] register mmio base: 0xD0C00000
+> [    1.898422] [drm] register mmio size: 262144
+> [    1.898583] [drm] add ip block number 0 <vi_common>
+> [    1.898759] [drm] add ip block number 1 <gmc_v8_0>
+> [    1.898931] [drm] add ip block number 2 <cz_ih>
+> [    1.899082] [drm] add ip block number 3 <gfx_v8_0>
+> [    1.899241] [drm] add ip block number 4 <sdma_v3_0>
+> [    1.899439] [drm] add ip block number 5 <powerplay>
+> [    1.899573] [drm] add ip block number 6 <dm>
+> [    1.899693] [drm] add ip block number 7 <uvd_v6_0>
+> [    1.899827] [drm] add ip block number 8 <vce_v3_0>
+> [    1.911458] [drm] BIOS signature incorrect 5b 7
+> [    1.912551] [drm] UVD is enabled in physical mode
+> [    1.912707] [drm] VCE enabled in physical mode
+> [    1.912921] [drm] vm size is 64 GB, 2 levels, block size is 10-bit, fragment size is 9-bit
+> [    1.913837] [drm] Detected VRAM RAM=512M, BAR=512M
+> [    1.913998] [drm] RAM width 128bits UNKNOWN
+> [    1.915149] [drm] amdgpu: 512M of VRAM memory ready
+> [    1.915306] [drm] amdgpu: 3072M of GTT memory ready.
+> [    1.915468] [drm] GART: num cpu pages 262144, num gpu pages 262144
+> [    1.916139] [drm] PCIE GART of 1024M enabled (table at 0x000000F400900000).
+> [    1.918733] [drm] Found UVD firmware Version: 1.91 Family ID: 11
+> [    1.918950] [drm] UVD ENC is disabled
+> [    1.919680] [drm] Found VCE firmware Version: 52.4 Binary ID: 3
+> [    1.925963] [drm] DM_PPLIB: values for Engine clock
+> [    1.926106] [drm] DM_PPLIB:   300000
+> [    1.926205] [drm] DM_PPLIB:   360000
+> [    1.926304] [drm] DM_PPLIB:   423530
+> [    1.926404] [drm] DM_PPLIB:   514290
+> [    1.926516] [drm] DM_PPLIB:   626090
+> [    1.926629] [drm] DM_PPLIB:   720000
+> [    1.926743] [drm] DM_PPLIB: Validation clocks:
+> [    1.926952] [drm] DM_PPLIB:    engine_max_clock: 72000
+> [    1.927117] [drm] DM_PPLIB:    memory_max_clock: 80000
+> [    1.927281] [drm] DM_PPLIB:    level           : 8
+> [    1.927435] [drm] DM_PPLIB: values for Display clock
+> [    1.927594] [drm] DM_PPLIB:   300000
+> [    1.927708] [drm] DM_PPLIB:   400000
+> [    1.927822] [drm] DM_PPLIB:   496560
+> [    1.927936] [drm] DM_PPLIB:   626090
+> [    1.928048] [drm] DM_PPLIB:   685720
+> [    1.928161] [drm] DM_PPLIB:   757900
+> [    1.928275] [drm] DM_PPLIB: Validation clocks:
+> [    1.928419] [drm] DM_PPLIB:    engine_max_clock: 72000
+> [    1.928584] [drm] DM_PPLIB:    memory_max_clock: 80000
+> [    1.928748] [drm] DM_PPLIB:    level           : 8
+> [    1.928901] [drm] DM_PPLIB: values for Memory clock
+> [    1.929058] [drm] DM_PPLIB:   333000
+> [    1.929172] [drm] DM_PPLIB:   800000
+> [    1.929403] [drm] DM_PPLIB: Validation clocks:
+> [    1.929549] [drm] DM_PPLIB:    engine_max_clock: 72000
+> [    1.929716] [drm] DM_PPLIB:    memory_max_clock: 80000
+> [    1.929919] [drm] DM_PPLIB:    level           : 8
+> [    1.930148] [drm] Display Core initialized with v3.2.104!
+> [    2.003938] [drm] UVD initialized successfully.
+> [    2.204023] [drm] VCE initialized successfully.
+> [    2.206228] [drm] fb mappable at 0xA0EE4000
+> [    2.206375] [drm] vram apper at 0xA0000000
+> [    2.206514] [drm] size 14745600
+> [    2.206654] [drm] fb depth is 24
+> [    2.206760] [drm]    pitch is 10240
+> [    2.207123] fbcon: amdgpudrmfb (fb0) is primary device
+> [    2.301263] amdgpu 0000:00:01.0: [drm] fb0: amdgpudrmfb frame buffer device
+> [    2.320735] [drm] Initialized amdgpu 3.40.0 20150101 for 0000:00:01.0 on minor 0
+>
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
