@@ -2,68 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DEA2D9A88
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 000652D9A90
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437360AbgLNPDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 10:03:01 -0500
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:42063 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725969AbgLNPDB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 10:03:01 -0500
-Received: by mail-lf1-f44.google.com with SMTP id u18so30839654lfd.9;
-        Mon, 14 Dec 2020 07:02:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rNjw8fLVk9WQ4dMTafx3Vq87Bdz/DhQRF/deifNhG7w=;
-        b=Fr7N4hY+nwb/Nv0c/sz6vhxDMhPHcmTsfI0zbgWsYoQIJNtJZyRwaaiJdq3gVny4g0
-         bvPgjXl7Vj5b0uORNqmZQuX79lkzh5GsXER+oMsMKf9+w5R9mX7JQj9zg/j1LvgVlvnF
-         ZNbTWFJqrGUVi1Z/fu5g0mrn7KVONvkPyoam6xcevxmeaU2mt1dUKRp31zNGbj0Tyecy
-         guLjDLgZywwUuRHPWY8v/Ac5BjwUjl4q+Hbi3vzMjt2ZyN4Z6CnrrXj3QF1gsqYrc/BU
-         gR1HG/CN7PGOEvv3WkV4CANPXm1XiSqxtqLyRFePN08JiKODb1AD0bBnURQ1SPVWX+Fm
-         EaNw==
-X-Gm-Message-State: AOAM531rKHoWSijjxCOyY+acXZMGvsGZdrZCTgEPZijdQE0EksIlwj6z
-        SP5HaL/TBKjP5pgaDc6SaeI=
-X-Google-Smtp-Source: ABdhPJxEA9hEa5PT/lNq1mMVL6L77Be5Q6dQaCnnBCnztxc7XgZJ/iEWRtzxWzmsffU5XCyfB9Mriw==
-X-Received: by 2002:a19:483:: with SMTP id 125mr9350226lfe.19.1607958139245;
-        Mon, 14 Dec 2020 07:02:19 -0800 (PST)
-Received: from xi.terra (c-b3cbe455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.203.179])
-        by smtp.gmail.com with ESMTPSA id v14sm2166229lfe.270.2020.12.14.07.02.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 07:02:17 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kopMb-0007vY-As; Mon, 14 Dec 2020 16:02:14 +0100
-Date:   Mon, 14 Dec 2020 16:02:13 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     syzbot <syzbot+e87ebe0f7913f71f2ea5@syzkaller.appspotmail.com>
-Cc:     andreyknvl@google.com, gregkh@linuxfoundation.org,
-        johan@kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, stable@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: WARNING in yurex_write/usb_submit_urb
-Message-ID: <X9d+dZq/IA+tiw5v@localhost>
-References: <X9dDkwlOTFeo9eZ6@localhost>
- <000000000000af6ec005b66dbaa2@google.com>
+        id S2390902AbgLNPGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 10:06:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726660AbgLNPGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 10:06:18 -0500
+X-Gm-Message-State: AOAM5327pdXoz4s46y8m1NxI2O5s+8yXAdLteMeCrv2j6Gu0L5SqxmPw
+        Z/GDkV1l3FBvYt5OUvrshubycddbNvslMKL2Tw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607958336;
+        bh=a1F4GYIz8WZZheoIQJa26d8oTs+duE0aM/uetIhYZ3k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nJDW3YMkWpCLZQ9363A1qxsa2gPUy13vYabHYSVqZq0sNRV9rMk49jEXkyuKDbFs0
+         lMvKN/qte5f/E6OObP8Epx0wRvPqfXNbnVZqArhxIWAhumXeRKJyliDj9zFXJfCYxv
+         fHr544lluW3ilsGXc+fdY66O6UBdxYF9V0ZHVN7n3++e39FN1tGpErEsUMfEdZe+Jj
+         z77GiMnHGH2bD37yLW34xAdC27MsO9k3OLChFMV7OOk5O24kK/2wRJAFsdfZghsjVB
+         HaI+vR2hfwG+lTMtFXcqw32tFEN2ME+Lws2RvgdejLK6Mhp3K5F1/NRcFmebfgXqFR
+         XIiQ8EQ0aGpgQ==
+X-Google-Smtp-Source: ABdhPJz5RHNLQ+OW0J3APptaHpR5PcCXJxM9D0gpTwMuJq0MgiNOFJlcd064NOmzvzNFSS0YXuU1pYjLXv0fIa5YQsg=
+X-Received: by 2002:a05:6402:352:: with SMTP id r18mr24358985edw.373.1607958334944;
+ Mon, 14 Dec 2020 07:05:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000af6ec005b66dbaa2@google.com>
+References: <20201211144236.3825-1-nadeem@cadence.com> <20201211144236.3825-2-nadeem@cadence.com>
+ <CAL_JsqLTz2k03gzrjDqi2d1NHQV+3pXxg6OqwcJ17CmfGYMf-A@mail.gmail.com>
+ <SN2PR07MB2557145EE4C4E9C50A16CF64D8C90@SN2PR07MB2557.namprd07.prod.outlook.com>
+ <912c1efa-6c25-9e5d-5094-6c9dd8e3755d@ti.com>
+In-Reply-To: <912c1efa-6c25-9e5d-5094-6c9dd8e3755d@ti.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 14 Dec 2020 09:05:23 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLEmb4N6AKWpJmh9mGkE3QWsgABUqcH4Zvb5CiSMe_Zvg@mail.gmail.com>
+Message-ID: <CAL_JsqLEmb4N6AKWpJmh9mGkE3QWsgABUqcH4Zvb5CiSMe_Zvg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: pci: Retrain Link to work around Gen2
+ training defect.
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Athani Nadeem Ladkhan <nadeem@cadence.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Milind Parab <mparab@cadence.com>,
+        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        Parshuram Raju Thombare <pthombar@cadence.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 06:48:03AM -0800, syzbot wrote:
-> Hello,
-> 
-> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-> WARNING in yurex_write/usb_submit_urb
+On Sun, Dec 13, 2020 at 10:21 PM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>
+> Hi Nadeem,
+>
+> On 12/12/20 12:37 pm, Athani Nadeem Ladkhan wrote:
+> > Hi Rob / Kishon,
+> >
+> >> -----Original Message-----
+> >> From: Rob Herring <robh@kernel.org>
+> >> Sent: Friday, December 11, 2020 10:32 PM
+> >> To: Athani Nadeem Ladkhan <nadeem@cadence.com>
+> >> Cc: Tom Joseph <tjoseph@cadence.com>; Lorenzo Pieralisi
+> >> <lorenzo.pieralisi@arm.com>; Bjorn Helgaas <bhelgaas@google.com>; PCI
+> >> <linux-pci@vger.kernel.org>; linux-kernel@vger.kernel.org; Kishon Vijay
+> >> Abraham I <kishon@ti.com>; devicetree@vger.kernel.org; Milind Parab
+> >> <mparab@cadence.com>; Swapnil Kashinath Jakhade
+> >> <sjakhade@cadence.com>; Parshuram Raju Thombare
+> >> <pthombar@cadence.com>
+> >> Subject: Re: [PATCH v4 1/2] dt-bindings: pci: Retrain Link to work around
+> >> Gen2 training defect.
+> >>
+> >> EXTERNAL MAIL
+> >>
+> >>
+> >> On Fri, Dec 11, 2020 at 9:03 AM Nadeem Athani <nadeem@cadence.com>
+> >> wrote:
+> >>>
+> >>> Cadence controller will not initiate autonomous speed change if
+> >>> strapped as Gen2. The Retrain Link bit is set as quirk to enable this speed
+> >> change.
+> >>> Adding a quirk flag based on a new compatible string.
+> >>>
+> >>> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
+> >>> ---
+> >>>  Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml | 4
+> >>> +++-
+> >>>  1 file changed, 3 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git
+> >>> a/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+> >>> b/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+> >>> index 293b8ec318bc..204d78f9efe3 100644
+> >>> --- a/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+> >>> +++ b/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+> >>> @@ -15,7 +15,9 @@ allOf:
+> >>>
+> >>>  properties:
+> >>>    compatible:
+> >>> -    const: cdns,cdns-pcie-host
+> >>> +    enum:
+> >>> +        - cdns,cdns-pcie-host
+> >>> +        - cdns,cdns-pcie-host-quirk-retrain
+> >>
+> >> So, we'll just keep adding quirk strings on to the compatible? I don't think so.
+> >> Compatible strings should map to a specific implementation/platform and
+> >> quirks can then be implied from them. This is the only way we can implement
+> >> quirks in the OS without firmware
+> >> (DT) changes.
+> > Ok, I will change the compatible string to " ti,j721e-pcie-host" in place of  " cdns,cdns-pcie-host-quirk-retrain" .
+> > @Kishon Vijay Abraham I: Is this fine? Or will you suggest an appropriate name?
+>
+> IMHO it should be something like "cdns,cdns-pcie-host-vX", since the
+> quirk itself is not specific to TI platform rather Cadence IP version.
 
-It appears syzbot never tested the patch from the thread. Probably using
-it's mail interface incorrectly, I don't know and I don't have time to
-investigate. The patch itself is correct.
+That's fine if Cadence has a need for it, but for TI platforms use the
+TI compatible string. ECOs on version X IP without changing X is not
+uncommon.
 
-Johan
+Rob
