@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786532DA339
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E81FD2DA2F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407911AbgLNWSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 17:18:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53030 "EHLO mail.kernel.org"
+        id S2407745AbgLNWEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 17:04:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727624AbgLNWDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 17:03:22 -0500
-Subject: Re: [GIT PULL] EDAC updates for 5.11
+        id S1729628AbgLNWDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 17:03:24 -0500
+Subject: Re: [GIT PULL] x86/SGX for v5.11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607983360;
-        bh=Q1M/R4wnq0RTG56mQzavEZ/JxFGSm3a/iav2csKtuZ0=;
+        s=k20201202; t=1607983363;
+        bh=/YOyFQ2LgZ8sMQmPJE0KWy34KqL4XyDvKfjv2jRoxOc=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Bm9m+drjeSpiOu+iZ2MFm0BrCX2FIzgeaZaNgPntNXNBCMovUE3Eq3RihyMvF1kP+
-         BhBoplEJO279tqqUpzoOITlRgyRzC3ggkA7mMA+KFNfXmPGI7D7XDcRqox12/pDRME
-         ZCorB/6WpR+ZVdnj1LpPBEOO5qgsQXjua6+Pg70+CTMeVmfR38WH88IU7unVD+nlrN
-         hQUy+obqUZbK2u1NHL5iFrotqwcbpGLzJ5GFRtrivbJY5WQOsPzyGi6RnkjXPyVVjM
-         78i10BPKhpxjeJXKeY6XXJ1RI93BpiVgH++7aCwyMy8hjcObM5wRbPmvkYuBkXjFdU
-         JlHtWzrCfi+WA==
+        b=NiSTij/Exuoh2L6iFDTQo8j5t3aAkd0N7lOGDBxF1Hst1rf0n8nrCci5uW4lxBh++
+         QZBQK15jq5TSahJUpct60HseEywxw/2fboYrmj/v/aViwxWBw4Z87+gfc1YwTReiAe
+         1A66uxhzUsvKMzXkLhtUhZIlMmN8gwKqeJqWdE7Saii6LdQcHMWUth1uWSAylTrs1D
+         d4JF+dREqHd04IVFORQSf/jkcY8JioYWhd8gMatnZM33JS1WJ5qB4nBLcZz4H+m+qU
+         2aIpZpSG4/YMzaIjcmNEZTwN8yNf33raesoHg1vrkCUfpg8idaQI3I2GK92z8r1Bz3
+         8ApC83xMR3kng==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201214110422.GA26358@zn.tnic>
-References: <20201214110422.GA26358@zn.tnic>
-X-PR-Tracked-List-Id: <linux-edac.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201214110422.GA26358@zn.tnic>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_v5.11
-X-PR-Tracked-Commit-Id: f84b799996e29ad3b37e83f7871e79023f29979d
+In-Reply-To: <20201214114200.GD26358@zn.tnic>
+References: <20201214114200.GD26358@zn.tnic>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201214114200.GD26358@zn.tnic>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_sgx_for_v5.11
+X-PR-Tracked-Commit-Id: a4b9c48b96517ff4780b22a784e7537eac5dc21b
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9e7f25886bdf16679d3d72624003bef5ef7dc785
-Message-Id: <160798336069.30284.10383850113368020190.pr-tracker-bot@kernel.org>
-Date:   Mon, 14 Dec 2020 22:02:40 +0000
+X-PR-Merge-Commit-Id: 5583ff677b3108cde989b6d4fd1958e091420c0c
+Message-Id: <160798336378.30284.2509879876302159760.pr-tracker-bot@kernel.org>
+Date:   Mon, 14 Dec 2020 22:02:43 +0000
 To:     Borislav Petkov <bp@suse.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-edac <linux-edac@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
+        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 14 Dec 2020 12:04:22 +0100:
+The pull request you sent on Mon, 14 Dec 2020 12:42:00 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git tags/edac_updates_for_v5.11
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_sgx_for_v5.11
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9e7f25886bdf16679d3d72624003bef5ef7dc785
+https://git.kernel.org/torvalds/c/5583ff677b3108cde989b6d4fd1958e091420c0c
 
 Thank you!
 
