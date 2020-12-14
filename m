@@ -2,219 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A23D2D9DB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 579A12D9DA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440481AbgLNR37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:29:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440472AbgLNR3i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:29:38 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D1DC0613D3;
-        Mon, 14 Dec 2020 09:28:57 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id t16so17248281wra.3;
-        Mon, 14 Dec 2020 09:28:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BjqOsBm0T2267qBkF0+4Cq11tMxRrd4IKFD1JljKqow=;
-        b=ET/aMlXbQcEIoiEfeR0Kr+pg1TYXEKY+bGcA/d5eHW4EzWfkrwE+2OPRs0vrJCiG+M
-         xiR/LH0TZ4ln+TjYwY7gCGA7Y041gPnejE1GnkTaqMhkLXxlwAKTfV74eyZDXkg6QUZr
-         TM8wzFfW1PRocED7O8oX54QcAQ5aj6Hduz4Ns45uuVahfRMvZjbPOc4l3JObsVOPjUaA
-         qbeAfirCyV32JXcs+I+ekZlhcoOM1sJQWYIH9vLkE9/Ea3iOyvR9BB9ACXeteHkKT/id
-         inNCiPEwNFuXFfUFAjR6CWz76fL0HAmIh0fxjAB0ipemmRvVBs235sC2QRQ3+RNDXvY5
-         Q1Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=BjqOsBm0T2267qBkF0+4Cq11tMxRrd4IKFD1JljKqow=;
-        b=C4MCXMiu4Rh/K52uM3HIs5vi+fVB6W7eyfchAy+eamCAtar1lrhIwU3P6RMqUsxNBK
-         5i0eHNMgTugUXA57c+hoPxJgCLkfDjQcRy8aZinLwzZWQiBlPlVq0/+jPczRTzK0s594
-         W2U72ZWoq3VKqaVLKqs3VGhKXLag5OeBIlAEbGR+ylr61B6Fjy7ee86J6tCSQZVE5wM6
-         VwZ/NOH1RtvIXrQuZO6IHGXF7a7VEcuOACV6omLo6qOl5KTES68qRv+mYvaw7xkLG10h
-         LCCwSwlgkb/u6R+OaiZjALot0yWvFjitjxgoWUQuM0pOoQK7sPqTYb6qwz2yxxyZF2vj
-         7IQw==
-X-Gm-Message-State: AOAM531yYnDnZk6IEZBZ8U6+tVOuodpLkpweKGdpFkV0zMI/0andFcMC
-        fXaQPtx/+z5AcGmqSwgtTNm0PAsdcWrpyw==
-X-Google-Smtp-Source: ABdhPJzNqF9rPRyBqXNfK6L9jUzUYGuQoSMNjHL4HIRmlS4wjwEQ6PGh2htT34PRfVqAPOigq1Nq1w==
-X-Received: by 2002:a5d:4683:: with SMTP id u3mr30474965wrq.19.1607966936140;
-        Mon, 14 Dec 2020 09:28:56 -0800 (PST)
-Received: from [192.168.8.128] ([85.255.232.163])
-        by smtp.gmail.com with ESMTPSA id h9sm31472192wre.24.2020.12.14.09.28.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Dec 2020 09:28:55 -0800 (PST)
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <cover.1605799583.git.asml.silence@gmail.com>
- <9bc27cb3ef6ab49b6b2ccee3db6613838aee17af.1605799583.git.asml.silence@gmail.com>
- <20201119170340.GA6179@infradead.org>
- <ce79f47e-2ec0-ba29-a991-c537a8990dee@gmail.com>
- <20201211020100.GB107834@ZenIV.linux.org.uk>
- <857a3161-fbd5-5ff8-d733-ca57923302b5@gmail.com>
- <b0e01a4dc3fc4afeb95b7be826ff2375@AcuMS.aculab.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- mQINBFmKBOQBEAC76ZFxLAKpDw0bKQ8CEiYJRGn8MHTUhURL02/7n1t0HkKQx2K1fCXClbps
- bdwSHrhOWdW61pmfMbDYbTj6ZvGRvhoLWfGkzujB2wjNcbNTXIoOzJEGISHaPf6E2IQx1ik9
- 6uqVkK1OMb7qRvKH0i7HYP4WJzYbEWVyLiAxUj611mC9tgd73oqZ2pLYzGTqF2j6a/obaqha
- +hXuWTvpDQXqcOZJXIW43atprH03G1tQs7VwR21Q1eq6Yvy2ESLdc38EqCszBfQRMmKy+cfp
- W3U9Mb1w0L680pXrONcnlDBCN7/sghGeMHjGKfNANjPc+0hzz3rApPxpoE7HC1uRiwC4et83
- CKnncH1l7zgeBT9Oa3qEiBlaa1ZCBqrA4dY+z5fWJYjMpwI1SNp37RtF8fKXbKQg+JuUjAa9
- Y6oXeyEvDHMyJYMcinl6xCqCBAXPHnHmawkMMgjr3BBRzODmMr+CPVvnYe7BFYfoajzqzq+h
- EyXSl3aBf0IDPTqSUrhbmjj5OEOYgRW5p+mdYtY1cXeK8copmd+fd/eTkghok5li58AojCba
- jRjp7zVOLOjDlpxxiKhuFmpV4yWNh5JJaTbwCRSd04sCcDNlJj+TehTr+o1QiORzc2t+N5iJ
- NbILft19Izdn8U39T5oWiynqa1qCLgbuFtnYx1HlUq/HvAm+kwARAQABtDFQYXZlbCBCZWd1
- bmtvdiAoc2lsZW5jZSkgPGFzbWwuc2lsZW5jZUBnbWFpbC5jb20+iQJOBBMBCAA4FiEE+6Ju
- PTjTbx479o3OWt5b1Glr+6UFAlmKBOQCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQ
- Wt5b1Glr+6WxZA//QueaKHzgdnOikJ7NA/Vq8FmhRlwgtP0+E+w93kL+ZGLzS/cUCIjn2f4Q
- Mcutj2Neg0CcYPX3b2nJiKr5Vn0rjJ/suiaOa1h1KzyNTOmxnsqE5fmxOf6C6x+NKE18I5Jy
- xzLQoktbdDVA7JfB1itt6iWSNoOTVcvFyvfe5ggy6FSCcP+m1RlR58XxVLH+qlAvxxOeEr/e
- aQfUzrs7gqdSd9zQGEZo0jtuBiB7k98t9y0oC9Jz0PJdvaj1NZUgtXG9pEtww3LdeXP/TkFl
- HBSxVflzeoFaj4UAuy8+uve7ya/ECNCc8kk0VYaEjoVrzJcYdKP583iRhOLlZA6HEmn/+Gh9
- 4orG67HNiJlbFiW3whxGizWsrtFNLsSP1YrEReYk9j1SoUHHzsu+ZtNfKuHIhK0sU07G1OPN
- 2rDLlzUWR9Jc22INAkhVHOogOcc5ajMGhgWcBJMLCoi219HlX69LIDu3Y34uIg9QPZIC2jwr
- 24W0kxmK6avJr7+n4o8m6sOJvhlumSp5TSNhRiKvAHB1I2JB8Q1yZCIPzx+w1ALxuoWiCdwV
- M/azguU42R17IuBzK0S3hPjXpEi2sK/k4pEPnHVUv9Cu09HCNnd6BRfFGjo8M9kZvw360gC1
- reeMdqGjwQ68o9x0R7NBRrtUOh48TDLXCANAg97wjPoy37dQE7e5Ag0EWYoE5AEQAMWS+aBV
- IJtCjwtfCOV98NamFpDEjBMrCAfLm7wZlmXy5I6o7nzzCxEw06P2rhzp1hIqkaab1kHySU7g
- dkpjmQ7Jjlrf6KdMP87mC/Hx4+zgVCkTQCKkIxNE76Ff3O9uTvkWCspSh9J0qPYyCaVta2D1
- Sq5HZ8WFcap71iVO1f2/FEHKJNz/YTSOS/W7dxJdXl2eoj3gYX2UZNfoaVv8OXKaWslZlgqN
- jSg9wsTv1K73AnQKt4fFhscN9YFxhtgD/SQuOldE5Ws4UlJoaFX/yCoJL3ky2kC0WFngzwRF
- Yo6u/KON/o28yyP+alYRMBrN0Dm60FuVSIFafSqXoJTIjSZ6olbEoT0u17Rag8BxnxryMrgR
- dkccq272MaSS0eOC9K2rtvxzddohRFPcy/8bkX+t2iukTDz75KSTKO+chce62Xxdg62dpkZX
- xK+HeDCZ7gRNZvAbDETr6XI63hPKi891GeZqvqQVYR8e+V2725w+H1iv3THiB1tx4L2bXZDI
- DtMKQ5D2RvCHNdPNcZeldEoJwKoA60yg6tuUquvsLvfCwtrmVI2rL2djYxRfGNmFMrUDN1Xq
- F3xozA91q3iZd9OYi9G+M/OA01husBdcIzj1hu0aL+MGg4Gqk6XwjoSxVd4YT41kTU7Kk+/I
- 5/Nf+i88ULt6HanBYcY/+Daeo/XFABEBAAGJAjYEGAEIACAWIQT7om49ONNvHjv2jc5a3lvU
- aWv7pQUCWYoE5AIbDAAKCRBa3lvUaWv7pfmcEACKTRQ28b1y5ztKuLdLr79+T+LwZKHjX++P
- 4wKjEOECCcB6KCv3hP+J2GCXDOPZvdg/ZYZafqP68Yy8AZqkfa4qPYHmIdpODtRzZSL48kM8
- LRzV8Rl7J3ItvzdBRxf4T/Zseu5U6ELiQdCUkPGsJcPIJkgPjO2ROG/ZtYa9DvnShNWPlp+R
- uPwPccEQPWO/NP4fJl2zwC6byjljZhW5kxYswGMLBwb5cDUZAisIukyAa8Xshdan6C2RZcNs
- rB3L7vsg/R8UCehxOH0C+NypG2GqjVejNZsc7bgV49EOVltS+GmGyY+moIzxsuLmT93rqyII
- 5rSbbcTLe6KBYcs24XEoo49Zm9oDA3jYvNpeYD8rDcnNbuZh9kTgBwFN41JHOPv0W2FEEWqe
- JsCwQdcOQ56rtezdCJUYmRAt3BsfjN3Jn3N6rpodi4Dkdli8HylM5iq4ooeb5VkQ7UZxbCWt
- UVMKkOCdFhutRmYp0mbv2e87IK4erwNHQRkHUkzbsuym8RVpAZbLzLPIYK/J3RTErL6Z99N2
- m3J6pjwSJY/zNwuFPs9zGEnRO4g0BUbwGdbuvDzaq6/3OJLKohr5eLXNU3JkT+3HezydWm3W
- OPhauth7W0db74Qd49HXK0xe/aPrK+Cp+kU1HRactyNtF8jZQbhMCC8vMGukZtWaAwpjWiiH bA==
-Subject: Re: [PATCH 2/2] iov_iter: optimise iter type checking
-Message-ID: <5b65de70-19db-4572-d122-df65191ab098@gmail.com>
-Date:   Mon, 14 Dec 2020 17:25:37 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S2440407AbgLNR17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:27:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439385AbgLNR16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:27:58 -0500
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 5.4 00/36] 5.4.84-rc1 review
+Date:   Mon, 14 Dec 2020 18:27:44 +0100
+Message-Id: <20201214172543.302523401@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <b0e01a4dc3fc4afeb95b7be826ff2375@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.4.84-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.4.84-rc1
+X-KernelTest-Deadline: 2020-12-16T17:25+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/12/2020 10:28, David Laight wrote:
-> From: Pavel Begunkov
->> Sent: 13 December 2020 22:33
->>
->> On 11/12/2020 02:01, Al Viro wrote:
->>> On Thu, Nov 19, 2020 at 05:12:44PM +0000, Pavel Begunkov wrote:
->>>> On 19/11/2020 17:03, Christoph Hellwig wrote:
->>>>> On Thu, Nov 19, 2020 at 03:29:43PM +0000, Pavel Begunkov wrote:
->>>>>> The problem here is that iov_iter_is_*() helpers check types for
->>>>>> equality, but all iterate_* helpers do bitwise ands. This confuses
->>>>>> a compiler, so even if some cases were handled separately with
->>>>>> iov_iter_is_*(), it can't eliminate and skip unreachable branches in
->>>>>> following iterate*().
->>>>>
->>>>> I think we need to kill the iov_iter_is_* helpers, renumber to not do
->>>>> the pointless bitmask and just check for equality (might turn into a
->>>>> bunch of nice switch statements actually).
->>>>
->>>> There are uses like below though, and that would also add some overhead
->>>> on iov_iter_type(), so it's not apparent to me which version would be
->>>> cleaner/faster in the end. But yeah, we can experiment after landing
->>>> this patch.
->>>>
->>>> if (type & (ITER_BVEC|ITER_KVEC))
->>>
->>> There are exactly 3 such places, and all of them would've been just as well
->>> with case ITER_BVEC: case ITER_KVEC: ... in a switch.
->>>
->>> Hmm...  I wonder which would work better:
->>>
->>> enum iter_type {
->>>         ITER_IOVEC = 0,
->>>         ITER_KVEC = 2,
->>>         ITER_BVEC = 4,
->>>         ITER_PIPE = 6,
->>>         ITER_DISCARD = 8,
->>> };
->>> iov_iter_type(iter)	(((iter)->type) & ~1)
->>> iov_iter_rw(iter)	(((iter)->type) & 1)
->>>
->>> or
->>>
->>> enum iter_type {
->>>         ITER_IOVEC,
->>>         ITER_KVEC,
->>>         ITER_BVEC,
->>>         ITER_PIPE,
->>>         ITER_DISCARD,
->>> };
->>> iov_iter_type(iter)	(((iter)->type) & (~0U>>1))
->>> // callers of iov_iter_rw() are almost all comparing with explicit READ or WRITE
->>> iov_iter_rw(iter)	(((iter)->type) & ~(~0U>>1) ? WRITE : READ)
->>> with places like iov_iter_kvec() doing
->>> 	i->type = ITER_KVEC | ((direction == WRITE) ? BIT(31) : 0);
->>>
->>> Preferences?
->>
->> For the bitmask version (with this patch) we have most of
->> iov_iter_type() completely optimised out. E.g. identical
->>
->> iov_iter_type(i) & ITER_IOVEC <=> iter->type & ITER_IOVEC
->>
->> It's also nice to have iov_iter_rw() to be just
->> (type & 1), operations with which can be optimised in a handful of ways.
->>
->> Unless the compiler would be able to heavily optimise switches,
->> e.g. to out-of-memory/calculation-based jump tables, that I doubt,
->> I'd personally leave it be. Though, not like it should matter much.
-> 
-> The advantage of the bit-masks is that the 'usual' options can
-> be tested for together. So the code can be (for example):
+This is the start of the stable review cycle for the 5.4.84 release.
+There are 36 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Well, you can do that for the non-bitwise case as well.
-In a simpler form but should be enough.
+Responses should be made by Wed, 16 Dec 2020 17:25:32 +0000.
+Anything received after that time might be too late.
 
-enum { ITER_IOVEC = 1, ITER_BVEC = 2, ... }
-if (type <= ITER_BVEC) {
-	if (iovec) ...
-	if (bvec) ...
-} else { ... }
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.84-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+and the diffstat can be found below.
+
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.4.84-rc1
+
+Arvind Sankar <nivedita@alum.mit.edu>
+    compiler.h: fix barrier_data() on clang
+
+Minchan Kim <minchan@kernel.org>
+    mm/zsmalloc.c: drop ZSMALLOC_PGTABLE_MAPPING
+
+Thomas Gleixner <tglx@linutronix.de>
+    x86/apic/vector: Fix ordering in vector assignment
+
+Andy Lutomirski <luto@kernel.org>
+    x86/membarrier: Get rid of a dubious optimization
+
+Arvind Sankar <nivedita@alum.mit.edu>
+    x86/mm/mem_encrypt: Fix definition of PMD_FLAGS_DEC_WP
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    scsi: be2iscsi: Revert "Fix a theoretical leak in beiscsi_create_eqs()"
+
+Miles Chen <miles.chen@mediatek.com>
+    proc: use untagged_addr() for pagemap_read addresses
+
+Arnd Bergmann <arnd@arndb.de>
+    kbuild: avoid static_assert for genksyms
+
+Manasi Navare <manasi.d.navare@intel.com>
+    drm/i915/display/dp: Compute the correct slice count for VDSC on DP
+
+Bean Huo <beanhuo@micron.com>
+    mmc: block: Fixup condition for CMD13 polling for RPMB requests
+
+Coiby Xu <coiby.xu@gmail.com>
+    pinctrl: amd: remove debounce filter setting in IRQ type setting
+
+Chris Chiu <chiu@endlessos.org>
+    Input: i8042 - add Acer laptops to the i8042 reset list
+
+Dmitry Torokhov <dmitry.torokhov@gmail.com>
+    Input: cm109 - do not stomp on control URB
+
+Libo Chen <libo.chen@oracle.com>
+    ktest.pl: Fix incorrect reboot for grub2bls
+
+Pankaj Sharma <pankj.sharma@samsung.com>
+    can: m_can: m_can_dev_setup(): add support for bosch mcan version 3.3.0
+
+Hans de Goede <hdegoede@redhat.com>
+    platform/x86: touchscreen_dmi: Add info for the Irbis TW118 tablet
+
+Max Verevkin <me@maxverevkin.tk>
+    platform/x86: intel-vbtn: Support for tablet mode on HP Pavilion 13 x360 PC
+
+Timo Witte <timo.witte@gmail.com>
+    platform/x86: acer-wmi: add automatic keyboard background light toggle key as KEY_LIGHTS_TOGGLE
+
+Hans de Goede <hdegoede@redhat.com>
+    platform/x86: thinkpad_acpi: Add BAT1 is primary battery quirk for Thinkpad Yoga 11e 4th gen
+
+Hans de Goede <hdegoede@redhat.com>
+    platform/x86: thinkpad_acpi: Do not report SW_TABLET_MODE on Yoga 11e
+
+Jon Hunter <jonathanh@nvidia.com>
+    arm64: tegra: Disable the ACONNECT for Jetson TX2
+
+Hao Si <si.hao@zte.com.cn>
+    soc: fsl: dpio: Get the cpumask through cpumask_of(cpu)
+
+Ran Wang <ran.wang_1@nxp.com>
+    spi: spi-nxp-fspi: fix fspi panic by unexpected interrupts
+
+Xu Qiang <xuqiang36@huawei.com>
+    irqchip/gic-v3-its: Unconditionally save/restore the ITS state on suspend
+
+Lijun Pan <ljp@linux.ibm.com>
+    ibmvnic: skip tx timeout reset while in resetting
+
+Georgi Djakov <georgi.djakov@linaro.org>
+    interconnect: qcom: qcs404: Remove GPU and display RPM IDs
+
+Can Guo <cang@codeaurora.org>
+    scsi: ufs: Make sure clk scaling happens only when HBA is runtime ACTIVE
+
+Vineet Gupta <vgupta@synopsys.com>
+    ARC: stack unwinding: don't assume non-current task is sleeping
+
+Zhen Lei <thunder.leizhen@huawei.com>
+    arm64: dts: broadcom: clear the warnings caused by empty dma-ranges
+
+Michael Ellerman <mpe@ellerman.id.au>
+    powerpc: Drop -me200 addition to build flags
+
+Sara Sharon <sara.sharon@intel.com>
+    iwlwifi: mvm: fix kernel panic in case of assert during CSA
+
+Johannes Berg <johannes.berg@intel.com>
+    iwlwifi: pcie: set LTR to avoid completion timeout
+
+Markus Reichl <m.reichl@fivetechno.de>
+    arm64: dts: rockchip: Assign a fixed index to mmc devices on rk3399 boards.
+
+Johannes Berg <johannes.berg@intel.com>
+    iwlwifi: pcie: limit memory read spin time
+
+Fangrui Song <maskray@google.com>
+    x86/lib: Change .weak to SYM_FUNC_START_WEAK for arch/x86/lib/mem*_64.S
+
+Nick Desaulniers <ndesaulniers@google.com>
+    Kbuild: do not emit debug info for assembly with LLVM_IAS=1
 
 
-> 	if (likely(iter->type & (ITER_IOVEC | ITER_PIPE) {
-> 		if (likely((iter->type & ITER_IOVEC)) {
-> 			... code for iovec
-> 		} else [
-> 			... code for pipe
-> 		}
-> 	} else if (iter->type & ITER_BVEC) {
-> 		... code for bvec
-> 	} else if (iter->type & ITER_KVEC) {
-> 		.. code for kvec
-> 	} else {
-> 		.. must be discard
-> 	}
+-------------
 
--- 
-Pavel Begunkov
+Diffstat:
+
+ Makefile                                           |  7 +++-
+ arch/arc/kernel/stacktrace.c                       | 23 +++++++----
+ .../boot/dts/broadcom/stingray/stingray-usb.dtsi   | 20 +++++-----
+ arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts | 12 ------
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi           |  3 ++
+ arch/powerpc/Makefile                              |  1 -
+ arch/x86/include/asm/pgtable_types.h               |  1 +
+ arch/x86/include/asm/sync_core.h                   |  9 +++--
+ arch/x86/kernel/apic/vector.c                      | 24 ++++++-----
+ arch/x86/lib/memcpy_64.S                           |  4 +-
+ arch/x86/lib/memmove_64.S                          |  4 +-
+ arch/x86/lib/memset_64.S                           |  4 +-
+ arch/x86/mm/mem_encrypt_identity.c                 |  4 +-
+ arch/x86/mm/tlb.c                                  | 10 ++++-
+ drivers/gpu/drm/i915/display/intel_dp.c            |  2 +-
+ drivers/input/misc/cm109.c                         |  7 +++-
+ drivers/input/serio/i8042-x86ia64io.h              | 42 ++++++++++++++++++++
+ drivers/interconnect/qcom/qcs404.c                 |  4 +-
+ drivers/irqchip/irq-gic-v3-its.c                   | 16 ++------
+ drivers/mmc/core/block.c                           |  2 +-
+ drivers/net/can/m_can/m_can.c                      |  2 +
+ drivers/net/ethernet/ibm/ibmvnic.c                 |  6 +++
+ drivers/net/wireless/intel/iwlwifi/iwl-csr.h       | 10 +++++
+ drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c  |  2 +-
+ .../wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c   | 20 ++++++++++
+ drivers/net/wireless/intel/iwlwifi/pcie/trans.c    | 36 ++++++++++++-----
+ drivers/pinctrl/pinctrl-amd.c                      |  7 ----
+ drivers/platform/x86/acer-wmi.c                    |  1 +
+ drivers/platform/x86/intel-vbtn.c                  |  6 +++
+ drivers/platform/x86/thinkpad_acpi.c               | 10 ++++-
+ drivers/platform/x86/touchscreen_dmi.c             | 23 +++++++++++
+ drivers/scsi/be2iscsi/be_main.c                    |  4 +-
+ drivers/scsi/ufs/ufshcd.c                          |  7 ++++
+ drivers/soc/fsl/dpio/dpio-driver.c                 |  5 +--
+ drivers/spi/spi-nxp-fspi.c                         |  7 ++++
+ fs/proc/task_mmu.c                                 |  8 +++-
+ include/linux/build_bug.h                          |  5 +++
+ include/linux/compiler-clang.h                     |  6 ---
+ include/linux/compiler-gcc.h                       | 19 ---------
+ include/linux/compiler.h                           | 18 ++++++++-
+ include/linux/zsmalloc.h                           |  1 -
+ mm/Kconfig                                         | 13 ------
+ mm/zsmalloc.c                                      | 46 ----------------------
+ tools/testing/ktest/ktest.pl                       |  2 +-
+ 44 files changed, 270 insertions(+), 193 deletions(-)
+
+
