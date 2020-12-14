@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699EE2D98DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 14:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7ED12D98E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 14:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407987AbgLNNdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 08:33:21 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9173 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732365AbgLNNcp (ORCPT
+        id S2439739AbgLNNeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 08:34:12 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9877 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439684AbgLNNdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 08:32:45 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cvj2m1nnzz15f6d;
-        Mon, 14 Dec 2020 21:31:12 +0800 (CST)
+        Mon, 14 Dec 2020 08:33:45 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cvj4734skz7G86;
+        Mon, 14 Dec 2020 21:32:23 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 14 Dec 2020 21:31:41 +0800
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 14 Dec 2020 21:32:49 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <jikos@kernel.org>, <jic23@kernel.org>,
-        <srinivas.pandruvada@linux.intel.com>,
-        <benjamin.tissoires@redhat.com>
-CC:     <linux-input@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] hid/hid-sensor-custom: convert comma to semicolon
-Date:   Mon, 14 Dec 2020 21:32:12 +0800
-Message-ID: <20201214133212.3569-1-zhengyongjun3@huawei.com>
+To:     <b.zolnierkie@samsung.com>, <krzk@kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-fbdev@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] fbdev: s3c2410fb: convert comma to semicolon
+Date:   Mon, 14 Dec 2020 21:33:17 +0800
+Message-ID: <20201214133317.3622-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -42,22 +41,22 @@ Replace a comma between expression statements by a semicolon.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/hid/hid-sensor-custom.c | 2 +-
+ drivers/video/fbdev/s3c2410fb.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-sensor-custom.c b/drivers/hid/hid-sensor-custom.c
-index 4d25577a8573..6c47a2e7623d 100644
---- a/drivers/hid/hid-sensor-custom.c
-+++ b/drivers/hid/hid-sensor-custom.c
-@@ -728,7 +728,7 @@ static int hid_sensor_custom_dev_if_add(struct hid_sensor_custom *sensor_inst)
+diff --git a/drivers/video/fbdev/s3c2410fb.c b/drivers/video/fbdev/s3c2410fb.c
+index d8ae5258de46..d8da6bf3775d 100644
+--- a/drivers/video/fbdev/s3c2410fb.c
++++ b/drivers/video/fbdev/s3c2410fb.c
+@@ -411,7 +411,7 @@ static void s3c2410fb_activate_var(struct fb_info *info)
+ 	/* set lcd address pointers */
+ 	s3c2410fb_set_lcdaddr(info);
  
- 	sensor_inst->custom_dev.minor = MISC_DYNAMIC_MINOR;
- 	sensor_inst->custom_dev.name = dev_name(&sensor_inst->pdev->dev);
--	sensor_inst->custom_dev.fops = &hid_sensor_custom_fops,
-+	sensor_inst->custom_dev.fops = &hid_sensor_custom_fops;
- 	ret = misc_register(&sensor_inst->custom_dev);
- 	if (ret) {
- 		kfifo_free(&sensor_inst->data_fifo);
+-	fbi->regs.lcdcon1 |= S3C2410_LCDCON1_ENVID,
++	fbi->regs.lcdcon1 |= S3C2410_LCDCON1_ENVID;
+ 	writel(fbi->regs.lcdcon1, regs + S3C2410_LCDCON1);
+ }
+ 
 -- 
 2.22.0
 
