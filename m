@@ -2,111 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 167162D9FA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB87F2D9FBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:59:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440324AbgLNSyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 13:54:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
+        id S2502370AbgLNS5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 13:57:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731829AbgLNSxo (ORCPT
+        with ESMTP id S2502248AbgLNS5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 13:53:44 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E2CC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:53:04 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id t16so17493483wra.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:53:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dDdObFQGHP44wB5uzTs8CFNojQR78cri+zip8zY60tY=;
-        b=qtseBLRRIiwub6DQNE6y6+zZnF+JWErsu8k99AdAIvuuayLrf/JVtUx+i2syw5V4Et
-         fBAiG55BonHRp6eybFbp70rUSOhqyI92D3DFf1K5IXp7+P6csHI0BJm8mJD3aYXXoVQD
-         R7qAw4vhwvylhCM8wMrds9Fw3Ypx+YuJGaSYI3gtl5+mz9xfjFnZeFng6nS+BmSb5xwf
-         BMKIDVQZPmtjzgv+/DF06K6LLIyEeIygqx3mzwI9XHByDW1kusU4bDMY7AO8S4XTLepY
-         Uk7zUN7/LcB3AGtk3Nk8KhUiyqIV51EvFBJpuFm9AgVheEAgFZQuBoezANi/FsA0Dnqi
-         KiIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dDdObFQGHP44wB5uzTs8CFNojQR78cri+zip8zY60tY=;
-        b=W1J5mm/i+oHe2L4igUIKvUAF8dhUrwHhAeyDFzzXHvc0pYqYCWYeFHQ09E5bJHyB+b
-         FOyZSyB0y/doT1q0M5aedqrtUEIsSr0gboJljqnz47v89RpOLK1T9vjx34dp1sxulMIF
-         XZ7V6hdftbyeRhSXlnUdXugZWoJ1oDGYdX0InnzqykZTo0P6HEcCGMHbTwYoO449p5gE
-         9HRHHmV0eneYbfmfWFhIGdx/bOpmcQe2UQB0xk7wGsX8uLlLVN5q0g5BJl2vixci5yoX
-         v9JN09GeHOctclnPS3yRACz5BkFyPlr3vfFhxyhwxlwIa/M7G48lQvLadAFt/FTGwBMI
-         Ve+A==
-X-Gm-Message-State: AOAM530JpYxCZdtyuXnY3V4B6sP88tjmhNEv2eflPkJcB4kMqxpL0IzX
-        Re1PSGIBsQjvX8i9aoTD0M3+70oU5gDG358WoA6bZg==
-X-Google-Smtp-Source: ABdhPJwEMTtYeETuXF3/XCpMDfqlJZwPT9M5sPnMxHan/mH+fTUl/SwsWhAn4rnqs7N+v2n/cTjVFqXQvHBIvXNHCAY=
-X-Received: by 2002:a5d:4cd1:: with SMTP id c17mr30383506wrt.49.1607971982996;
- Mon, 14 Dec 2020 10:53:02 -0800 (PST)
+        Mon, 14 Dec 2020 13:57:00 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89EDC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:56:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=E9p2fQLU+kZ8mfKkC7toHhZ7VgcwGHnKqCLNvwn4P8k=; b=OcxiEbZrXxgCVxht7qvEu0hTvo
+        KOWCihxnceuUesbzpigpQQDzZu57/6+67M09uB1UJw5q2wjhbsZFLKMUz6ciZVDjrJnd/2WQ8VJkC
+        VAJmu+E+ZhJGCoIyKWkBWk7EyImlTy2oIb/TnmvnpKGKTI50hz7Bj0CeF8izMe6eaKkslFTcIYMxr
+        dKpGe5eFZVuxE1UDB5YF9V7xfBr9mXbPPdWxEMUor/Oql/nzB0RKd8Xzlr69bbGH41lu/ysEMx8Aw
+        sOH8DEpzUZA6HMhosyGEDG3m7/O4t0+uejJ4ZpnYsNfBlAoEjW4rQrzz/f4kpYzaQw70OqnL1GxLF
+        VuZSeAzg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kot10-0008QV-90; Mon, 14 Dec 2020 18:56:10 +0000
+Date:   Mon, 14 Dec 2020 18:56:10 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries
+ when prefaulting
+Message-ID: <20201214185610.GO2443@casper.infradead.org>
+References: <20201209163950.8494-1-will@kernel.org>
+ <20201209163950.8494-2-will@kernel.org>
+ <CAHk-=wgos=vgteG52=J=rVSeq6-Y2g2+Kn1=xV=wYjVzM6O9UQ@mail.gmail.com>
+ <20201209184049.GA8778@willie-the-truck>
+ <CAHk-=wgVqGh402dxfhR=bx2QSH=+4kq9doarNmD77baqDKdiUg@mail.gmail.com>
+ <20201210150828.4b7pg5lx666r7l2u@black.fi.intel.com>
+ <CAHk-=wiU8ktvak2hCj2TWJ6wMSwVsUSvi5Bjf4i1JGvpGmyUZw@mail.gmail.com>
+ <20201214160724.ewhjqoi32chheone@box>
+ <CAHk-=wi80Qp6nZC0yyewhnqvrmPx2h_yWvfq4A25ONb7z9BywQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <160780498125.3272.15437756269539236825.stgit@localhost.localdomain>
- <CANn89i+uQ0p81O3-aWO-WPifc35KtpDFRsO9WJKrXxEhpArDWw@mail.gmail.com>
-In-Reply-To: <CANn89i+uQ0p81O3-aWO-WPifc35KtpDFRsO9WJKrXxEhpArDWw@mail.gmail.com>
-From:   Yuchung Cheng <ycheng@google.com>
-Date:   Mon, 14 Dec 2020 10:52:26 -0800
-Message-ID: <CAK6E8=ftSyOhBnB8ZXb_NaBW0wKLSQRjGCm5xE=RMCg=BMnb1g@mail.gmail.com>
-Subject: Re: [net-next PATCH v3] tcp: Add logic to check for SYN w/ data in tcp_simple_retransmit
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        kernel-team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wi80Qp6nZC0yyewhnqvrmPx2h_yWvfq4A25ONb7z9BywQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 9:42 AM Eric Dumazet <edumazet@google.com> wrote:
->
-> On Sat, Dec 12, 2020 at 9:31 PM Alexander Duyck
-> <alexander.duyck@gmail.com> wrote:
-> >
-> > From: Alexander Duyck <alexanderduyck@fb.com>
-> >
-> > There are cases where a fastopen SYN may trigger either a ICMP_TOOBIG
-> > message in the case of IPv6 or a fragmentation request in the case of
-> > IPv4. This results in the socket stalling for a second or more as it does
-> > not respond to the message by retransmitting the SYN frame.
-> >
-> > Normally a SYN frame should not be able to trigger a ICMP_TOOBIG or
-> > ICMP_FRAG_NEEDED however in the case of fastopen we can have a frame that
-> > makes use of the entire MSS. In the case of fastopen it does, and an
-> > additional complication is that the retransmit queue doesn't contain the
-> > original frames. As a result when tcp_simple_retransmit is called and
-> > walks the list of frames in the queue it may not mark the frames as lost
-> > because both the SYN and the data packet each individually are smaller than
-> > the MSS size after the adjustment. This results in the socket being stalled
-> > until the retransmit timer kicks in and forces the SYN frame out again
-> > without the data attached.
-> >
-> > In order to resolve this we can reduce the MSS the packets are compared
-> > to in tcp_simple_retransmit to -1 for cases where we are still in the
-> > TCP_SYN_SENT state for a fastopen socket. Doing this we will mark all of
-> > the packets related to the fastopen SYN as lost.
-> >
-> > Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
-> > ---
-> >
->
-> SGTM, thanks !
->
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-Nice work. I tested and verified it works with our packetdrill
+On Mon, Dec 14, 2020 at 09:54:06AM -0800, Linus Torvalds wrote:
+> > I expected to hate it more, but it looks reasonable. Opencoded
+> > xas_for_each() smells bad, but...
+> 
+> I think the open-coded xas_for_each() per se isn't a problem, but I
+> agree that the startup condition is a bit ugly. And I'm actually
+> personally more confused by why xas_retry() is needed here, bit not in
+> many other places. That is perhaps more obvious now that it shows up
+> twice.
+> 
+> Adding Willy to the cc in case he has comments on that, and can
+> explain it to me in small words.
+> 
+> [ https://lore.kernel.org/lkml/20201214160724.ewhjqoi32chheone@box/
+> for context ]
 
-Signed-off-by: Yuchung Cheng <ycheng@google.com>
+The xas_retry() is something I now regret, but haven't got annoyed enough
+by it yet to fix (also, other projects).  It originated in the radix
+tree where we would get a radix_tree_node and then iterate over it in
+header macros.  If we're holding the rcu_read_lock() and somebody else
+deletes an entry leaving the entry at index 0 as the only index in the
+tree, we tell the RCU readers to rewalk the tree from the top by putting
+a retry entry in place of the real entry.
 
->
-> > v2: Changed logic to invalidate all retransmit queue frames if fastopen SYN
-> > v3: Updated commit message to reflect actual solution in 3rd paragraph
-> >
+It's not entirely clear to me now why we did that.  Just leave the entry
+alone and the RCU-walkers will see it, then the rest of the node is empty.
+
+As to why we need to do this in some places and not others; you can
+only see a retry entry if you're only protected by the RCU lock.  If
+you're protected by the spinlock, you can't see any nodes which
+contain retry entries.
+
+But I now think we should just get rid of retry entries.  Maybe I'm
+missing a good reason to keep them.
