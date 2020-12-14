@@ -2,302 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C912DA129
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:11:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E218F2DA127
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503019AbgLNUK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:10:59 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:43956 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502801AbgLNUKc (ORCPT
+        id S2503034AbgLNUJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:09:54 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47208 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502860AbgLNUJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:10:32 -0500
-Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
- id a63a85a8384da918; Mon, 14 Dec 2020 21:09:39 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        Giovanni Gherdovich <ggherdovich@suse.com>
-Subject: [PATCH v2 2/3] cpufreq: Add special-purpose fast-switching callback for drivers
-Date:   Mon, 14 Dec 2020 21:08:00 +0100
-Message-ID: <10727653.HtF45dgyQg@kreacher>
-In-Reply-To: <3827230.0GnL3RTcl1@kreacher>
-References: <20360841.iInq7taT2Z@kreacher> <3827230.0GnL3RTcl1@kreacher>
+        Mon, 14 Dec 2020 15:09:41 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BEK8L4L073067;
+        Mon, 14 Dec 2020 14:08:21 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607976501;
+        bh=bYx/KPXoQnydtHvU0A93Ft8RQtsoKRmWYVYqEzohC3E=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ca6cYdkcTVbnkADiNBN0eInegJ8WDq4+PFGkFWDOfk4/LXyfDKsgmkIHAkRgfcDpP
+         0CJgnGqdd7ya9oPUwsDPmaq5ZAkF7MsJGCw8s4RmyZq3mfbtPoNr2EMQBOh+D2Rbuq
+         ClrMKStJktpBh5LWXg0cUwUzr56JkyJM4WLnHvfU=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BEK8LOM088012
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 14 Dec 2020 14:08:21 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 14
+ Dec 2020 14:08:21 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 14 Dec 2020 14:08:21 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BEK8Hgr080343;
+        Mon, 14 Dec 2020 14:08:18 -0600
+Subject: Re: [v2] i2c: mediatek: Move suspend and resume handling to NOIRQ
+ phase
+To:     Qii Wang <qii.wang@mediatek.com>
+CC:     Wolfram Sang <wsa@the-dreams.de>, <matthias.bgg@gmail.com>,
+        <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>
+References: <1605701861-30800-1-git-send-email-qii.wang@mediatek.com>
+ <20201202153543.GG874@kunai> <1606958735.25719.29.camel@mhfsdcap03>
+ <629d171a-0e77-3d74-ae23-e6439dcf17b7@ti.com>
+ <1607326431.25719.33.camel@mhfsdcap03>
+ <a9cb5ba5-f3ce-3f82-15cc-30419bb70f4e@ti.com>
+ <1607565387.25719.43.camel@mhfsdcap03>
+ <e83ab23b-81f2-620c-039b-9cadd84a39fa@ti.com>
+ <1607935685.25719.49.camel@mhfsdcap03>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <765c182a-5c68-b408-85ca-f757e891090e@ti.com>
+Date:   Mon, 14 Dec 2020 22:08:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <1607935685.25719.49.camel@mhfsdcap03>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-First off, some cpufreq drivers (eg. intel_pstate) can pass hints
-beyond the current target frequency to the hardware and there are no
-provisions for doing that in the cpufreq framework.  In particular,
-today the driver has to assume that it should not allow the frequency
-to fall below the one requested by the governor (or the required
-capacity may not be provided) which may not be the case and which may
-lead to excessive energy usage in some scenarios.
-
-Second, the hints passed by these drivers to the hardware need not be
-in terms of the frequency, so representing the utilization numbers
-coming from the scheduler as frequency before passing them to those
-drivers is not really useful.
-
-Address the two points above by adding a special-purpose replacement
-for the ->fast_switch callback, called ->adjust_perf, allowing the
-governor to pass abstract performance level (rather than frequency)
-values for the minimum (required) and target (desired) performance
-along with the CPU capacity to compare them to.
-
-Also update the schedutil governor to use the new callback instead
-of ->fast_switch if present and if the utilization mertics are
-frequency-invariant (that is requisite for the direct mapping
-between the utilization and the CPU performance levels to be a
-reasonable approximation).
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-v1 -> v2:
- - Do not share optimization code between the freq and perf paths.
- - Fall back from perf to freq if scale invariance is not supported.
-
-Changes with respect to the RFC:
- - Don't pass "busy" to ->adjust_perf().
- - Use a special 'update_util' hook for the ->adjust_perf() case in
-   schedutil (this still requires an additional branch because of the
-   shared common code between this case and the "frequency" one, but
-   IMV this version is cleaner nevertheless).
-
----
- drivers/cpufreq/cpufreq.c        |   40 ++++++++++++++++++++++
- include/linux/cpufreq.h          |   14 ++++++++
- include/linux/sched/cpufreq.h    |    5 ++
- kernel/sched/cpufreq_schedutil.c |   68 +++++++++++++++++++++++++++++++++------
- 4 files changed, 117 insertions(+), 10 deletions(-)
-
-Index: linux-pm/include/linux/cpufreq.h
-===================================================================
---- linux-pm.orig/include/linux/cpufreq.h
-+++ linux-pm/include/linux/cpufreq.h
-@@ -320,6 +320,15 @@ struct cpufreq_driver {
- 					unsigned int index);
- 	unsigned int	(*fast_switch)(struct cpufreq_policy *policy,
- 				       unsigned int target_freq);
-+	/*
-+	 * ->fast_switch() replacement for drivers that use an internal
-+	 * representation of performance levels and can pass hints other than
-+	 * the target performance level to the hardware.
-+	 */
-+	void		(*adjust_perf)(unsigned int cpu,
-+				       unsigned long min_perf,
-+				       unsigned long target_perf,
-+				       unsigned long capacity);
- 
- 	/*
- 	 * Caches and returns the lowest driver-supported frequency greater than
-@@ -588,6 +597,11 @@ struct cpufreq_governor {
- /* Pass a target to the cpufreq driver */
- unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
- 					unsigned int target_freq);
-+void cpufreq_driver_adjust_perf(unsigned int cpu,
-+				unsigned long min_perf,
-+				unsigned long target_perf,
-+				unsigned long capacity);
-+bool cpufreq_driver_has_adjust_perf(void);
- int cpufreq_driver_target(struct cpufreq_policy *policy,
- 				 unsigned int target_freq,
- 				 unsigned int relation);
-Index: linux-pm/drivers/cpufreq/cpufreq.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/cpufreq.c
-+++ linux-pm/drivers/cpufreq/cpufreq.c
-@@ -2097,6 +2097,46 @@ unsigned int cpufreq_driver_fast_switch(
- }
- EXPORT_SYMBOL_GPL(cpufreq_driver_fast_switch);
- 
-+/**
-+ * cpufreq_driver_adjust_perf - Adjust CPU performance level in one go.
-+ * @cpu: Target CPU.
-+ * @min_perf: Minimum (required) performance level (units of @capacity).
-+ * @target_perf: Terget (desired) performance level (units of @capacity).
-+ * @capacity: Capacity of the target CPU.
-+ *
-+ * Carry out a fast performance level switch of @cpu without sleeping.
-+ *
-+ * The driver's ->adjust_perf() callback invoked by this function must be
-+ * suitable for being called from within RCU-sched read-side critical sections
-+ * and it is expected to select a suitable performance level equal to or above
-+ * @min_perf and preferably equal to or below @target_perf.
-+ *
-+ * This function must not be called if policy->fast_switch_enabled is unset.
-+ *
-+ * Governors calling this function must guarantee that it will never be invoked
-+ * twice in parallel for the same CPU and that it will never be called in
-+ * parallel with either ->target() or ->target_index() or ->fast_switch() for
-+ * the same CPU.
-+ */
-+void cpufreq_driver_adjust_perf(unsigned int cpu,
-+				 unsigned long min_perf,
-+				 unsigned long target_perf,
-+				 unsigned long capacity)
-+{
-+	cpufreq_driver->adjust_perf(cpu, min_perf, target_perf, capacity);
-+}
-+
-+/**
-+ * cpufreq_driver_has_adjust_perf - Check "direct fast switch" callback.
-+ *
-+ * Return 'true' if the ->adjust_perf callback is present for the
-+ * current driver or 'false' otherwise.
-+ */
-+bool cpufreq_driver_has_adjust_perf(void)
-+{
-+	return !!cpufreq_driver->adjust_perf;
-+}
-+
- /* Must set freqs->new to intermediate frequency */
- static int __target_intermediate(struct cpufreq_policy *policy,
- 				 struct cpufreq_freqs *freqs, int index)
-Index: linux-pm/kernel/sched/cpufreq_schedutil.c
-===================================================================
---- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
-+++ linux-pm/kernel/sched/cpufreq_schedutil.c
-@@ -432,13 +432,10 @@ static inline void ignore_dl_rate_limit(
- 		sg_policy->limits_changed = true;
- }
- 
--static void sugov_update_single(struct update_util_data *hook, u64 time,
--				unsigned int flags)
-+static inline bool sugov_update_single_common(struct sugov_cpu *sg_cpu,
-+					      u64 time, unsigned int flags)
- {
--	struct sugov_cpu *sg_cpu = container_of(hook, struct sugov_cpu, update_util);
- 	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
--	unsigned int cached_freq = sg_policy->cached_raw_freq;
--	unsigned int next_f;
- 
- 	sugov_iowait_boost(sg_cpu, time, flags);
- 	sg_cpu->last_update = time;
-@@ -446,11 +443,25 @@ static void sugov_update_single(struct u
- 	ignore_dl_rate_limit(sg_cpu, sg_policy);
- 
- 	if (!sugov_should_update_freq(sg_policy, time))
--		return;
-+		return false;
- 
- 	sugov_get_util(sg_cpu);
- 	sugov_iowait_apply(sg_cpu, time);
- 
-+	return true;
-+}
-+
-+static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
-+				     unsigned int flags)
-+{
-+	struct sugov_cpu *sg_cpu = container_of(hook, struct sugov_cpu, update_util);
-+	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
-+	unsigned int cached_freq = sg_policy->cached_raw_freq;
-+	unsigned int next_f;
-+
-+	if (!sugov_update_single_common(sg_cpu, time, flags))
-+		return;
-+
- 	next_f = get_next_freq(sg_policy, sg_cpu->util, sg_cpu->max);
- 	/*
- 	 * Do not reduce the frequency if the CPU has not been idle
-@@ -477,6 +488,38 @@ static void sugov_update_single(struct u
- 	}
- }
- 
-+static void sugov_update_single_perf(struct update_util_data *hook, u64 time,
-+				     unsigned int flags)
-+{
-+	struct sugov_cpu *sg_cpu = container_of(hook, struct sugov_cpu, update_util);
-+	unsigned long prev_util = sg_cpu->util;
-+
-+	/*
-+	 * Fall back to the "frequency" path if frequency invariance is not
-+	 * supported, because the direct mapping between the utilization and
-+	 * the performance levels depends on the frequency invariance.
-+	 */
-+	if (!arch_scale_freq_invariant()) {
-+		sugov_update_single_freq(hook, time, flags);
-+		return;
-+	}
-+
-+	if (!sugov_update_single_common(sg_cpu, time, flags))
-+		return;
-+
-+	/*
-+	 * Do not reduce the target performance level if the CPU has not been
-+	 * idle recently, as the reduction is likely to be premature then.
-+	 */
-+	if (sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
-+		sg_cpu->util = prev_util;
-+
-+	cpufreq_driver_adjust_perf(sg_cpu->cpu, map_util_perf(sg_cpu->bw_dl),
-+				   map_util_perf(sg_cpu->util), sg_cpu->max);
-+
-+	sg_cpu->sg_policy->last_freq_update_time = time;
-+}
-+
- static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu, u64 time)
- {
- 	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
-@@ -815,6 +858,7 @@ static void sugov_exit(struct cpufreq_po
- static int sugov_start(struct cpufreq_policy *policy)
- {
- 	struct sugov_policy *sg_policy = policy->governor_data;
-+	void (*uu)(struct update_util_data *data, u64 time, unsigned int flags);
- 	unsigned int cpu;
- 
- 	sg_policy->freq_update_delay_ns	= sg_policy->tunables->rate_limit_us * NSEC_PER_USEC;
-@@ -834,13 +878,17 @@ static int sugov_start(struct cpufreq_po
- 		sg_cpu->sg_policy		= sg_policy;
- 	}
- 
-+	if (policy_is_shared(policy))
-+		uu = sugov_update_shared;
-+	else if (policy->fast_switch_enabled && cpufreq_driver_has_adjust_perf())
-+		uu = sugov_update_single_perf;
-+	else
-+		uu = sugov_update_single_freq;
-+
- 	for_each_cpu(cpu, policy->cpus) {
- 		struct sugov_cpu *sg_cpu = &per_cpu(sugov_cpu, cpu);
- 
--		cpufreq_add_update_util_hook(cpu, &sg_cpu->update_util,
--					     policy_is_shared(policy) ?
--							sugov_update_shared :
--							sugov_update_single);
-+		cpufreq_add_update_util_hook(cpu, &sg_cpu->update_util, uu);
- 	}
- 	return 0;
- }
-Index: linux-pm/include/linux/sched/cpufreq.h
-===================================================================
---- linux-pm.orig/include/linux/sched/cpufreq.h
-+++ linux-pm/include/linux/sched/cpufreq.h
-@@ -28,6 +28,11 @@ static inline unsigned long map_util_fre
- {
- 	return (freq + (freq >> 2)) * util / cap;
- }
-+
-+static inline unsigned long map_util_perf(unsigned long util)
-+{
-+	return util + (util >> 2);
-+}
- #endif /* CONFIG_CPU_FREQ */
- 
- #endif /* _LINUX_SCHED_CPUFREQ_H */
 
 
+On 14/12/2020 10:48, Qii Wang wrote:
+> On Thu, 2020-12-10 at 15:03 +0200, Grygorii Strashko wrote:
+>>
+>> On 10/12/2020 03:56, Qii Wang wrote:
+>>> On Mon, 2020-12-07 at 18:35 +0200, Grygorii Strashko wrote:
+>>>>
+>>>>>
+>>>>> On Thu, 2020-12-03 at 10:01 +0200, Grygorii Strashko wrote:
+>>>>>>
+>>>>>> On 03/12/2020 03:25, Qii Wang wrote:
+>>>>>>> On Wed, 2020-12-02 at 16:35 +0100, Wolfram Sang wrote:
+>>>>>>>> Hi,
+>>>>>>>>
+>>>>>>>>> Some i2c device driver indirectly uses I2C driver when it is now
+>>>>>>>>> being suspended. The i2c devices driver is suspended during the
+>>>>>>>>> NOIRQ phase and this cannot be changed due to other dependencies.
+>>>>>>>>> Therefore, we also need to move the suspend handling for the I2C
+>>>>>>>>> controller driver to the NOIRQ phase as well.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+>>>>>>>>
+>>>>>>>> Is this a bugfix and should go into 5.10? Or can it wait for 5.11?
+>>>>>>>>
+>>>>>>>
+>>>>>>> Yes, Can you help to apply it into 5.10? Thanks
+>>>>>>
+>>>>>> To be honest if you still do have any i2c device which accessing i2c buss after _noirq
+>>>>>> stage and your driver does not implement .master_xfer_atomic() - you definitely have a bigger problem.
+>>>>>> So adding IRQF_NO_SUSPEND sound like a hack and probably works just by luck.
+>>>>>>
+>>>>>
+>>>>> At present, it is only a problem caused by missing interrupts,
+>>>>> and .master_xfer_atomic() just a implement in polling mode. Why not set
+>>>>> the interrupt to a state that can always be triggered?
+>>>>>
+>>>>>
+>>>>
+>>>> Because you must not use any IRQ driven operations after _noirq suspend state as it might (and most probably will)
+>>>> cause unpredictable behavior later  in suspend_enter():
+>>>>
+>>>> 	arch_suspend_disable_irqs();
+>>>> 	BUG_ON(!irqs_disabled());
+>>>> ^after this point any IRQ driven I2C transfer will cause IRQ to be re-enabled
+>>>>
+>>>> if you need  turn off device from platform callbacks -  .master_xfer_atomic() has to be implemented and used.
+>>>>     
+>>> Maybe my comment is a bit disturbing.Our purpose is not to call i2c and
+>>> use interrupts after _noirq pauses.So We use
+>>> i2c_mark_adapter_suspended&i2c_mark_adapter_resumed to block these i2c
+>>> transfers， There will not have any IRQ driven I2C transfer after this
+>>> point:
+>>>           arch_suspend_disable_irqs();
+>>>           BUG_ON(!irqs_disabled());
+>>> But some device driver will do i2c transfer after
+>>> dpm_noirq_resume_devices in dpm_resume_noirq(PMSG_RESUME) when our
+>>> driver irq hasn't resume.
+>>> 	void dpm_resume_noirq(pm_message_t state)
+>>> 	{
+>>>           	dpm_noirq_resume_devices(state);
+>>
+>> Just to clarify. You have resume sequence in dpm_noirq_resume_devices
+>>    dpm_noirq_resume_devices -> resume I2C -> resume some device -> do i2c transfer after?
+>>
+> 
+> Yes.
 
+huh. First consider IRQF_EARLY_RESUME - it's better, but still will be a hack
+
+> 
+>> Is "some device" in Kernel mainline?
+>>
+> 
+> The problematic device driver is drivers/regulator/da9211-regulator.c in
+> Kernel mainline.
+
+regulator is passive device, somebody should call it !?
+
+And da9211-regulator IRQ handler should remain disabled till resume_device_irqs() call.
+
+note. regulator_class implements only
+
+static const struct dev_pm_ops __maybe_unused regulator_pm_ops = {
+	.suspend	= regulator_suspend,
+	.resume		= regulator_resume,
+};
+
+
+> 
+>>>           	resume_device_irqs();
+>>>           	device_wakeup_disarm_wake_irqs();
+>>>           	cpuidle_resume();
+>>> 	}
+>>> .master_xfer_atomic() seems to be invalid for this question at this
+>>> time?
+>>>
+>>
+> 
+
+-- 
+Best regards,
+grygorii
