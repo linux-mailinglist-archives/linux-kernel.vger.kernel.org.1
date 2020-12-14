@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F842D9D60
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B17902D9D5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408393AbgLNRPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:15:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41368 "EHLO
+        id S2502135AbgLNRIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:08:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502097AbgLNRIP (ORCPT
+        with ESMTP id S2502103AbgLNRIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Dec 2020 12:08:15 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26233C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:07:32 -0800 (PST)
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D78C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:07:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
-        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=b7V9C5rYB2gK5xFWJZfpw2tKiubulRuOf3rkkopOWBo=; b=gQVGd/fyl532SO0TyBJPTSgccz
-        dNduGGgCcoueu0HviYZUiraqFE9y9LknY4CfiVQlKZL7E1JsqZ7GyAmuuosyuOS/MjTc//CDtBKL0
-        2LjLbbvMr03TEicWt3iwKWPvg4PODaU4o3d2Hkg/VkCMnKrjzOznGV/6jTG5ff8TAqc20mg8uz788
-        paEKMNVWq0o1/ITV9UB+o2B31TH8RJ98Day1uomriiMrdjrQtMIyR9so/V3a/KLcfOvcd71YocRmQ
-        qwOiYGiaATffGMvisWqGsH983KYw94JkxV2eZZs1DMhYT6Iea2K3zPlT4wihzCY7d2K6PGXuDO0fF
-        k/55IzRw==;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=xwRP1HYoq3KaWNU4ESSEQPQzxrz2ErrEqWsxTITkomc=; b=VU2U5QRCN9tQi82zr79uZQRJ+/
+        B+wtleVz3qwHVygFL6QLl36SGhrSWtSa6IRNOlv+VutFVZ0EPNvJQqoeM9iuenGuIGZXZvZqTO6q2
+        pchU0mRVNDfpKxKy2a4/8ICCA23XuGXXdqpFoiMh+zG5XwRVJAqE/ael5lNe6dRnd3CZuvZPftpYJ
+        RNb6vMmojz3uq2aVX/R4Ggq4dpQ6NML0bZat7Y5O2pM496W+wG9/LECbp4RzdSYH9UihUuVcy5SFF
+        qvbMf7eUxy2CoIIACshTvMs8CPPhBU8TSgkLsNLA3abY6AqjApsgmT2duq4tsnzU5SbPN6dLYKqyz
+        Cj0vKmaA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1korJS-0000iD-Qc; Mon, 14 Dec 2020 17:07:06 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1korJT-0002Qq-86; Mon, 14 Dec 2020 17:07:07 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 99A6E305C11;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 96DB03010CF;
         Mon, 14 Dec 2020 18:07:04 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 6224E235BB0B0; Mon, 14 Dec 2020 18:07:04 +0100 (CET)
-Message-ID: <20201214164822.402812729@infradead.org>
+        id 658DD21F9FEF9; Mon, 14 Dec 2020 18:07:04 +0100 (CET)
+Message-ID: <20201214170017.877557652@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 14 Dec 2020 17:48:22 +0100
+Date:   Mon, 14 Dec 2020 17:48:23 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mgorman@techsingularity.net, vincent.guittot@linaro.org
 Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
@@ -45,22 +45,62 @@ Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
         valentin.schneider@arm.com, qais.yousef@arm.com,
         dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
         tim.c.chen@linux.intel.com, benbjiang@gmail.com
-Subject: [RFC][PATCH 0/5] select_idle_sibling() wreckage
+Subject: [RFC][PATCH 1/5] sched/fair: Fix select_idle_cpu()s cost accounting
+References: <20201214164822.402812729@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We compute the average cost of the total scan, but then use it as a
+per-cpu scan cost when computing the scan proportion. Fix this by
+properly computing a per-cpu scan cost.
 
-Hai, here them patches Mel asked for. They've not (yet) been through the
-robots, so there might be some build fail for configs I've not used.
+This also fixes a bug where we would terminate early (!--nr, case) and
+not account that cost at all.
 
-Benchmark time :-)
-
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/linux/sched/topology.h |    1
- kernel/sched/core.c            |   19 +++-
- kernel/sched/fair.c            |  171 +++++++++++------------------------------
- kernel/sched/idle.c            |    1
- kernel/sched/sched.h           |   13 ---
- 5 files changed, 63 insertions(+), 142 deletions(-)
+ kernel/sched/fair.c |   13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6144,10 +6144,10 @@ static inline int select_idle_smt(struct
+ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int target)
+ {
+ 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
++	int cpu, loops = 1, nr = INT_MAX;
++	int this = smp_processor_id();
+ 	struct sched_domain *this_sd;
+ 	u64 time;
+-	int this = smp_processor_id();
+-	int cpu, nr = INT_MAX;
+ 
+ 	this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
+ 	if (!this_sd)
+@@ -6175,14 +6175,19 @@ static int select_idle_cpu(struct task_s
+ 	}
+ 
+ 	for_each_cpu_wrap(cpu, cpus, target) {
+-		if (!--nr)
+-			return -1;
+ 		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+ 			break;
++
++		if (loops >= nr) {
++			cpu = -1;
++			break;
++		}
++		loops++;
+ 	}
+ 
+ 	if (sched_feat(SIS_PROP)) {
+ 		time = cpu_clock(this) - time;
++		time = div_u64(time, loops);
+ 		update_avg(&this_sd->avg_scan_cost, time);
+ 	}
+ 
+
 
