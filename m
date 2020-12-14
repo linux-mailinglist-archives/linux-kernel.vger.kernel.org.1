@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF7B2D9A23
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B94742D9A26
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:40:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407862AbgLNOjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 09:39:55 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:54579 "EHLO
+        id S2438249AbgLNOkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 09:40:43 -0500
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:56683 "EHLO
         wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407382AbgLNOjR (ORCPT
+        by vger.kernel.org with ESMTP id S2407382AbgLNOkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 09:39:17 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 941676F3;
-        Mon, 14 Dec 2020 09:38:10 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 14 Dec 2020 09:38:11 -0500
+        Mon, 14 Dec 2020 09:40:33 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id C4FA4788;
+        Mon, 14 Dec 2020 09:39:26 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 14 Dec 2020 09:39:27 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=L+rX2CmOwQGtvUvi7iN9sVCi3bo
-        tW8KO7zKQJDj5/e8=; b=M44ztO4Lp5nIQkl5yGMu8Lj+rMlArxAoQNakc+VGKhn
-        BusDmpc5r9yQaTpnUuKWo8o4OnZfDcxztxiqlNynf3RdyWzl+WuUQRYJ0k73vNcY
-        k0CaIWlQGOTz7RaNmdw7k2ZOgNtnBFLmVhaIz/F8fUCcN7q2jnBTacCakb0wYv3R
-        y/n5GC2S9nddyB+ZzfF/HMwXkDJj0/D6Ra+aNauwRD/V/x9eIXyjPhZtR21S+vCj
-        R1FpNqQ0ViBY7W+go7AS3sOxJl3c3ycEvfA+CSyBbfqgO5okA2H+6Cck1dMJb7L6
-        Fw/ixxPuV0BZ8FOne+xTiIrDGIoR/A9u2kMa3N46MXA==
+        :content-type:in-reply-to; s=fm1; bh=A08lNUVBDG1fIqSA/WcJBe1gCa3
+        5qJ4SM7MLqAPYhRk=; b=pcd6dzQF94254RF6sJEL0xI9LH4OjopXfQ0ICPxQH2C
+        +6DqPMsVJWeCncFZE73l+6aJiP1/5F+3ePYteSVdd+Hy2yUA2NaOEFTfYwzZgnFn
+        nCie1olReJotTqRjESDEUGhNEnaq3Pa40+r21zwpH1TS6p6n3Logtg7RlhhoZpEV
+        E6qDcPgqsXRHMrL83/ArP+itgtcX/FYklLy/1/Zs3M/8fJ6jYQFV0YHKZIMhAMEC
+        zMcspdEAKBUwjisEAYBXZXoyeNWOYAlP1LbA4pBwb20Y3IINZDBXb5hheBO8MdFv
+        CNS7heQHLcGHYM6rd7FnaGussGBhv71oHr6FbW5kAzQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=L+rX2C
-        mOwQGtvUvi7iN9sVCi3botW8KO7zKQJDj5/e8=; b=OSw83sUVy9b4tJ1Mt3Y3d7
-        41MyykYsyVFwwDS4Em4rp0zKlwEm63e1HYObAyW3WJEZ+e7x8fnXWGFLzq2CjTKg
-        SlxIjysJfkatVbshPBsy+QVzKJ2Ua4YkEZ6gMu6DgsIFabSIuhzuxQVbHyBC3u17
-        gfnqCsEohhpUeLZPBRBiMM7YicZjGJVm9bgxs2dM12JsqXnJRRYvupAtee0JnNKi
-        MsQS+3LGc7zQpt7f8K2YBsiDFeAjdeLX+9fnw8oZFm0Z0K7VVrwWs0nkyVOHf6LV
-        2pfphw7FWdKaD2NNb8aF69qOI95J1KUJPeHTxIbdhk0MuP7Dma70OoHOPRXPBw6g
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=A08lNU
+        VBDG1fIqSA/WcJBe1gCa35qJ4SM7MLqAPYhRk=; b=nt4gqBY3kMmm/KVeH4vm9V
+        Pv/mzAU+nzIRUlvLA/M+78xKI/lubtjf8E0GK+gSsofbrI7EoepBfC1iXLlYE6rb
+        sNfVKDegj4LcUvE/bg1NzJFQ8k2esAJO34MTIiXzivVF7MQBkWZwURMEQ2xu1037
+        SswUelA5OABduQp1+joKVwbVRrB7R5HCV+mw0f7erWFBXMnBzIBlM+iXo+WxH9NJ
+        +6Hu8hw1zenGokxJuVj3BH4MxmYS402LTc+CTxzMd19PMEX73QVYq+hdSO+fOVMw
+        KC4AnhuD0XZUY0zYzg0yH6F2s9uo0lonsZtUjH1G+AfnjyYGtbXovLpxmLmS5l0A
         ==
-X-ME-Sender: <xms:0HjXXz_IBu7DCxzaVLNKrX7KB8uYkIdu5jsmJ30MKJW9s-SeBpS4Yg>
-    <xme:0HjXX5WPdIhe7e_ATKx3qOP8CwFQTGHHIv5XwoBMPfaRJ-fGUKIPnMWix2OitCL8v
-    HeTmEmNWO-cIjjOWoM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgieejucetufdoteggodetrfdotf
+X-ME-Sender: <xms:HXnXX8bDUqwUheJBGLfmxBexZhcRaui1W8oRWE9AICnRHJKyBPkFMQ>
+    <xme:HXnXX3ZbnzG0u_AKByP9J3eqw2RhJc1Ncde2blUlUUiM-WnpQ03nvvw7y47m4nlBe
+    LBsNypzyFzwwJJ3Nw4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgieekucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
@@ -48,68 +48,57 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgieejucetufdoteggod
     htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
     gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
     frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:0HjXXxD4zheHsrNA1_mBSeTuKerQo_9u-KguPDmv9_V81iRapXSpNA>
-    <xmx:0HjXXywHPNkHqxOb6acVIJUNke1FQqr7u62cg4NRonXzbZLqgeKapQ>
-    <xmx:0HjXX2AZWxre5nDxsco4GLWno4v-l8bNSXQwuguD_rbqJqeUaaTatw>
-    <xmx:0njXX54d4kKHNovKyH_0npolRJRxu7ezyjvW4qqFKintTc-r8oBhNw>
+X-ME-Proxy: <xmx:HXnXX29NLulKKW6aaGyukt--uZHH1M_29cPrVD4pcN1J-0SAmZauLg>
+    <xmx:HXnXX2oegMtzF6AuBq3jPVq_3cl2RDX01nFhn4K7Q8yf8oUuING-Uw>
+    <xmx:HXnXX3rz2_JexrTUPQv1Vw8rFyUs1zNgz1Ewq0qczmOpK1_K_BRu1Q>
+    <xmx:HnnXX4lxEVEsz3thUB0oUQzSMK0uVjSXccTSZiuEJiyNlLKkn4Pvbw>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4FF64108005F;
-        Mon, 14 Dec 2020 09:38:08 -0500 (EST)
-Date:   Mon, 14 Dec 2020 15:38:07 +0100
+        by mail.messagingengine.com (Postfix) with ESMTPA id F38ED24005A;
+        Mon, 14 Dec 2020 09:39:24 -0500 (EST)
+Date:   Mon, 14 Dec 2020 15:39:23 +0100
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Icenowy Zheng <icenowy@aosc.io>
 Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org
-Subject: Re: [RFC PATCH 08/12] dt-bindings: mmc: sunxi: add compatible
- strings for V831 MMC
-Message-ID: <20201214143807.3wsot6yk4z6s32u5@gilmour>
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 11/12] ARM: dts: sun8i: add DTSI file for V831
+Message-ID: <20201214143923.26rbsffwdxgq7max@gilmour>
 References: <20201212040157.3639864-1-icenowy@aosc.io>
- <20201212050346.3644673-1-icenowy@aosc.io>
+ <20201212051202.3645115-2-icenowy@aosc.io>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="a6eeaa2leewxdmgu"
+        protocol="application/pgp-signature"; boundary="onevegrhfjzwg2d4"
 Content-Disposition: inline
-In-Reply-To: <20201212050346.3644673-1-icenowy@aosc.io>
+In-Reply-To: <20201212051202.3645115-2-icenowy@aosc.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---a6eeaa2leewxdmgu
+--onevegrhfjzwg2d4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Dec 12, 2020 at 01:03:42PM +0800, Icenowy Zheng wrote:
-> V831 has MMC controllers similar to the ones on H6.
->=20
-> Add a compatible string for them.
->=20
-> The eMMC controller compatible is not added, because the eMMC controller
-> is not available on V831, only V833.
->=20
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: linux-mmc@vger.kernel.org
-> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+On Sat, Dec 12, 2020 at 01:12:01PM +0800, Icenowy Zheng wrote:
+> +		spi0: spi@5010000 {
+> +			compatible = "allwinner,sun8i-v831-spi",
+> +				     "allwinner,sun50i-h6-spi",
+> +				     "allwinner,sun8i-h3-spi";
 
-There's pretty much the same comment than on the H616, it would be great
-to not have any mode flags being set by the driver to avoid the mess we
-have on the older SoCs right now.
+That's not the compatible you've documented in the binding
 
 Maxime
 
---a6eeaa2leewxdmgu
+--onevegrhfjzwg2d4
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9d4zwAKCRDj7w1vZxhR
-xeatAQDlfmtMP5DKMl4QYDtMXUTYVkUEr47s/NVuvZOKmuYQ+AD7B1b1CtM9BG2Q
-TiZsaeXjCGmbFXswP8LlUIdf8b3UhgE=
-=csW8
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9d5GwAKCRDj7w1vZxhR
+xTftAP46rAiffO3ienPFE5ZGSWhjx8xD8PxVemAiHauoDKzoIAEAzgHJmsMxW1FH
+ZmJYhqDfMVr1qEtV2HkWgYc66uQ4MAM=
+=TOgy
 -----END PGP SIGNATURE-----
 
---a6eeaa2leewxdmgu--
+--onevegrhfjzwg2d4--
