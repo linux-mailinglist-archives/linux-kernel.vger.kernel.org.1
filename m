@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453E22D9B04
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:33:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096E12D9B0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438688AbgLNPa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 10:30:58 -0500
-Received: from mga12.intel.com ([192.55.52.136]:59116 "EHLO mga12.intel.com"
+        id S2408140AbgLNPct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 10:32:49 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:53818 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726321AbgLNPak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 10:30:40 -0500
-IronPort-SDR: 78DfHj6F2AkDum15ulwjEvESvPK9IgExTqfE0KMsltc2bxCf8uAPzyJ46pQemAGaYXvKoz/+yT
- sZdmYuv8fsuw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9834"; a="153956437"
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="153956437"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2020 07:28:55 -0800
-IronPort-SDR: OPwsMQMavvnOkLnZ56LPyn7D6nn+yVWXLjMMuRKhic8gvmnwEXWCNPBGokfcYN/1iDaM2LVPLt
- 9bOuV6UByL8g==
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="487149117"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2020 07:28:53 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kopnP-00EIcQ-3k; Mon, 14 Dec 2020 17:29:55 +0200
-Date:   Mon, 14 Dec 2020 17:29:55 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: drivers/media/pci/intel/ipu3/ipu3-cio2.c:163:56: warning:
- implicit conversion from 'unsigned long' to 'u16' (aka 'unsigned short')
- changes value from 131072 to 0
-Message-ID: <20201214152955.GH4077@smile.fi.intel.com>
-References: <202011211600.bZyprrVg-lkp@intel.com>
- <20201123104018.GX4077@smile.fi.intel.com>
- <20201211165614.GC26370@paasikivi.fi.intel.com>
+        id S1731429AbgLNPck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 10:32:40 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kopp9-00Bw1U-Qv; Mon, 14 Dec 2020 16:31:43 +0100
+Date:   Mon, 14 Dec 2020 16:31:43 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC] net: stmmac: Problem with adding the native GPIOs support
+Message-ID: <20201214153143.GB2841266@lunn.ch>
+References: <20201214092516.lmbezb6hrbda6hzo@mobilestation>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201211165614.GC26370@paasikivi.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201214092516.lmbezb6hrbda6hzo@mobilestation>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 06:56:14PM +0200, Sakari Ailus wrote:
-> On Mon, Nov 23, 2020 at 12:40:18PM +0200, Andy Shevchenko wrote:
-> > On Sat, Nov 21, 2020 at 04:23:05PM +0800, kernel test robot wrote:
-
-...
-
-> > > All warnings (new ones prefixed by >>):
-> > > 
-> > > >> drivers/media/pci/intel/ipu3/ipu3-cio2.c:163:56: warning: implicit conversion from 'unsigned long' to 'u16' (aka 'unsigned short') changes value from 131072 to 0 [-Wconstant-conversion]
-> > >            entry[1].second_entry.num_of_pages = CIO2_LOP_ENTRIES * CIO2_MAX_LOPS;
-> > >                                               ~ ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
-> > >    1 warning generated.
-> > 
-> > Okay, now we have an interesting case. The IP is quite unlikely be used on
-> > ARM64, but my patches made the clear picture about use of PAGE_SIZE here.
-> > 
-> > So, I see at least the following options to mitigate the above, i.e.:
-> >  1/ reduce driver scope to X86
-> >  2/ fix the variables to be wider type to be able to hold PAGE_SIZE > 4k
-> >  3/ switch to custom PAGE_SIZE / _SHIFT / _MASK and accompanying macros
-> > 
-> > And I still consider 3/ is silly move because as we see the driver was
-> > never assumed to work with big page sizes (besides unsigned short type
-> > here, PAGE_SHIFT and PAGE_MASK in the original code was as is and on ARM64
-> > they compiled to 0 values w/o warnings, effectively make the driver
-> > improperly functioning anyway).
+On Mon, Dec 14, 2020 at 12:25:16PM +0300, Serge Semin wrote:
+> Hello folks,
 > 
-> Apologies for the late answer.
+> I've got a problem, which has been blowing by head up for more than three
+> weeks now, and I'm desperately need your help in that matter. See our
+> Baikal-T1 SoC is created with two DW GMAC v3.73a IP-cores. Each core
+> has been synthesized with two GPIOs: one as GPI and another as GPO. There
+> are multiple Baikal-T1-based devices have been created so far with active
+> GMAC interface usage and each of them has been designed like this:
 > 
-> I think I'd favour the first option. It's not really useful to be able to
-> compile this elsewhere; as such the driver doesn't do anything special that
-> would make it prone to breakage through changes elsewhere.
+>  +------------------------+
+>  | Baikal-T1 +------------+       +------------+
+>  |   SoC     | DW GMAC    |       |   Some PHY |
+>  |           |      Rx-clk+<------+Rx-clk      |
+>  |           |            |       |            |
+>  |           |         GPI+<------+#IRQ        |
+>  |           |            |       |            |
+>  |           |       RGMII+<----->+RGMII       |
+>  |           |        MDIO+<----->+MDIO        |
+>  |           |            |       |            |
+>  |           |         GPO+------>+#RST        |
+>  |           |            |       |            |
+>  |           |      Tx-clk+------>+Tx-clk      |
+>  |           |            |       |            |
+>  |           +------------+       +------------+
+>  +------------------------+
 > 
-> Would you like to send a patch? :-)
+> Each of such devices has got en external RGMII-PHY attached configured via the
+> MDIO bus with Rx-clock supplied by the PHY and Tx-clock consumed by it. The
+> main peculiarity of such configuration is that the DW GMAC GPIOs have been used
+> to catch the PHY IRQs and to reset the PHY. Seeing the GPIOs support hasn't
+> been added to the STMMAC driver it's the very first setup for now, which has
+> been using them.
 
-Done.
+It sounds like you need to cleanly implement a GPIO controller within
+the stmmac driver. But you probably want to make it conditional on a
+DT property. For example, look to see if there is the
+'gpio-controller;'
 
--- 
-With Best Regards,
-Andy Shevchenko
+> Anyway the hardware setup depicted above doesn't seem
+> problematic at the first glance, but in fact it is. See, the DW *MAC driver
+> (STMMAC ethernet driver) is doing the MAC reset each time it performs the
+> device open or resume by means of the call-chain:
+> 
+>   stmmac_open()---+
+>                   +->stmmac_hw_setup()->stmmac_init_dma_engine()->stmmac_reset().
+>   stmmac_resume()-+
+> 
+> Such reset causes the whole interface reset: MAC, DMA and, what is more
+> important, GPIOs as being exposed as part of the MAC registers. That
+> in our case automatically causes the external PHY reset, what neither
+> the STTMAC driver nor the PHY subsystem expect at all.
 
+Is the reset of the GPIO sub block under software control? When you
+have a GPIO controller implemented, you would want to disable this.
 
+Once you have a GPIO controller, you can make use of the standard PHY
+DT properties to allow the PHY driver to make use of the interrupt,
+and to control the reset of the PHY.
+
+     Andrew
