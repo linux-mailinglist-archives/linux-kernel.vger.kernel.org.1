@@ -2,108 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19172D9C92
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE982D9C97
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440274AbgLNQX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:23:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439790AbgLNQXG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:23:06 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B93C0617A7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:21:47 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id l207so19780606oib.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:21:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dypRW42Ag7SaNLUbf+uRP+IPcXW54P4LYSzuOs3g98U=;
-        b=YUpN5dXm3OUT+XIzfFv0/IsmZDizXudCOrliTwPuAwdNhNisqhZHrinOtRIsBM+Pci
-         KUd191tAFdQgNa8BuTyJdi89g2JmKTlm98C5axup3HYhao4ko9xKSrzDEOq3KwWNYnFq
-         B3SWlKDwYV5QpeEqru6dF8bLBOgBpt6Of+DjlDnbbh/YaX3hNEQNRDL+3lCHSxHJwXcs
-         vF//zSrAvlVhDG9jQX6RWMWQkceoV38s+amNbh7HMpqaUy/eENJ4yMEz5iMpQV6rnNQK
-         y0DCREvCBXKnFwcFeuCFKfDC/zbnM3IOIy3heJeztRYf1vqdvhXZqms1or0xbJuhee1o
-         Qs3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dypRW42Ag7SaNLUbf+uRP+IPcXW54P4LYSzuOs3g98U=;
-        b=BUKhKfkJsTXK6Fzd80WbcLKakyeJfDLEENhRnYdpRRfqPqrftUh6A9mDQTHS+R6Yrk
-         LO/uEDohsz1NCZ5mhdNnUIiw0tYWMQzqYZ6ETE9SDjbsXDkE1Whcnxlj/fZzT/6UJ8eL
-         GDE0umuGxHpcG9V5jaaGS6T9yyvrdZvloRJm3svyklMV1SXJpeFisoi3CYypvZewBG2K
-         EozOj75xnkfsP54VH4BYpDR4QyWByNBq5l3lAkRrmAm83eU2CIbUVR3q+cgZvZkaSJ1/
-         4u2dm2KnTn9nXgMP4Hz45OevhGBInAZcSGR+ljZUo5ST4EN33pD6H9ccm1nhdIwqyYGP
-         0DsQ==
-X-Gm-Message-State: AOAM53181Ohz0fGHcT5TuVezSx9z9rgN72o2asgqAdJvkwf0Kr6yXEJ2
-        /rg+JHqsohS/si1ogziQ05qTNA==
-X-Google-Smtp-Source: ABdhPJytx4fAQVDhA0UmXOWYQZ4w31/WKetaPmA3PWn5pcAwVbQgOFRfKCsJK7iHTnq3U5Vymw2H7w==
-X-Received: by 2002:aca:ed51:: with SMTP id l78mr2098851oih.144.1607962906753;
-        Mon, 14 Dec 2020 08:21:46 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id k71sm4180810otk.48.2020.12.14.08.21.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 08:21:45 -0800 (PST)
-Date:   Mon, 14 Dec 2020 10:21:44 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     agross@kernel.org, joro@8bytes.org, will@kernel.org,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] iommu: msm_iommu: Delete useless kfree code
-Message-ID: <X9eRGFup8LqSejsp@builder.lan>
-References: <20201214134746.5044-1-zhengyongjun3@huawei.com>
+        id S2501900AbgLNQYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 11:24:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2440213AbgLNQYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 11:24:06 -0500
+Date:   Mon, 14 Dec 2020 16:23:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607963005;
+        bh=AHdANBBLNTJw739m69nu1X9LxbPWyebOEdf8x8REzLI=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m1I79GixJahrYdFPYjFIKqA6vALsyqCralLCJyWM3v6O2BYsc1VFHeMksKIlOzQLU
+         YhMKPRo+bElsRWMKtQ1OPne74/xQcD1lcX+VmsN4xJgKJlrK7TVJj3Vh+EezydIA9K
+         KYOhdXt20eceahFYp0oXWXCH7VWCFkrTtYjI/4NQBuMccz89J0v/39AlBCcQnx7fVR
+         exIwIVX83Eslw0S0KIdZDhLgOmBKnpW3LZMym1/AboPHHfSQ3CXybnaHAIkhwZwCOH
+         cnJdQt61NdwWjRveDyv6Zb+bFqR0WKdaMXYgL5m9QdRa4/oDeA4ieR+Hv6culExWqn
+         /zUfKSRFNqEsA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, robh+dt@kernel.org,
+        lukas@wunner.de, bbrezillon@kernel.org, p.yadav@ti.com,
+        tudor.ambarus@microchip.com, linux-spi@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 5/9] spi: spi-mem: Allow masters to transfer dummy
+ cycles directly by hardware
+Message-ID: <20201214162315.GA4880@sirena.org.uk>
+References: <1607721363-8879-1-git-send-email-skomatineni@nvidia.com>
+ <1607721363-8879-6-git-send-email-skomatineni@nvidia.com>
+ <20201212115715.31a8d755@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
 Content-Disposition: inline
-In-Reply-To: <20201214134746.5044-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20201212115715.31a8d755@collabora.com>
+X-Cookie: Everything you know is wrong!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14 Dec 07:47 CST 2020, Zheng Yongjun wrote:
 
-> The parameter of kfree function is NULL, so kfree code is useless, delete it.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+--SUOF0GtieIMvvwua
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+On Sat, Dec 12, 2020 at 11:57:15AM +0100, Boris Brezillon wrote:
+> Sowjanya Komatineni <skomatineni@nvidia.com> wrote:
 
-Regards,
-Bjorn
+> > This patch adds a flag SPI_MASTER_USES_HW_DUMMY_CYCLES for the controllers
+> > that support transfer of dummy cycles by the hardware directly.
 
-> ---
->  drivers/iommu/msm_iommu.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/drivers/iommu/msm_iommu.c b/drivers/iommu/msm_iommu.c
-> index 3615cd6241c4..1286674a1322 100644
-> --- a/drivers/iommu/msm_iommu.c
-> +++ b/drivers/iommu/msm_iommu.c
-> @@ -319,7 +319,7 @@ static struct iommu_domain *msm_iommu_domain_alloc(unsigned type)
->  
->  	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
->  	if (!priv)
-> -		goto fail_nomem;
-> +		return NULL;
->  
->  	INIT_LIST_HEAD(&priv->list_attached);
->  
-> @@ -328,10 +328,6 @@ static struct iommu_domain *msm_iommu_domain_alloc(unsigned type)
->  	priv->domain.geometry.force_aperture = true;
->  
->  	return &priv->domain;
-> -
-> -fail_nomem:
-> -	kfree(priv);
-> -	return NULL;
->  }
->  
->  static void msm_iommu_domain_free(struct iommu_domain *domain)
-> -- 
-> 2.22.0
-> 
+> Hm, not sure this is a good idea. I mean, if we expect regular SPI
+> devices to use this feature, then why not, but if it's just for
+> spi-mem, I'd recommend implementing a driver-specific exec_op() instead
+> of using the default one.
+
+I *have* seen other high speed devices which had padding bits in the
+transfer (see regmap's pad_bits feature), I think that corresponds to
+flash dummy bits but haven't checked that the hardware support lines up.
+I'm not sure it's ever been seen as something that we particularly
+needed to speed up with hardware offload though.
+
+> If we go for those core changes, we should at least add a
+> ctrl->max_dummy_cycles field so the core can fallback to regular writes
+> when the number of dummy cycles in the spi_mem_op exceeds what the
+> controller can do.
+
+That seems sensible if there's a risk of controllers being too limited,
+which knowing hardware seems likely.
+
+--SUOF0GtieIMvvwua
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/XkXIACgkQJNaLcl1U
+h9CBsAf/XWrzX5DEizCXgE7T1DvfpDtH0jdGsooRqjRftlV5KVN61c4clryl717B
+ix3GAXx57e3OO/JyWtBuKeLChLsyvDcz4CWnr8AMTmHcxYO1KTlqS9GEEs4EEFIO
+lXBiuZ/9yb2/HJSdJTg0w+mudFvH3B2gsVDZ1C5Waupm+HdqPSP1xilOs1owTVpa
+0fNhf99+NIryvBNeGI4vt9okktA+fnhh0u2VjSXQwyyw4woVVrp+Zv5cn1KSx7cX
+DLP9ciLZBUUWoVX5Vh+IIL0k9un1kKBmAjtUgjdTGYyg0yPdJn+sEvHdnifN0wxP
+Pywb4/N/I3lzBeJah5fx5DH0AZ+GyA==
+=GioU
+-----END PGP SIGNATURE-----
+
+--SUOF0GtieIMvvwua--
