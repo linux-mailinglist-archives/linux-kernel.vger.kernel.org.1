@@ -2,214 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1932D9559
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB302D955C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731160AbgLNJff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 04:35:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730241AbgLNJff (ORCPT
+        id S1731455AbgLNJiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 04:38:14 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17856 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730191AbgLNJiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 04:35:35 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE706C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 01:34:54 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id b64so10984963qkc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 01:34:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=s7I3IQjihF/l5M5NpOWkbtUsOkBOq12IgPccKBHENpw=;
-        b=BIrnpDzIJn2tUouG/zISgnUOGrf0H1CeZ/wdEpCMwQ58cOI2WM95R8ZsVMpE9k/pru
-         jmue/53TKzTspNneGvzJUtlGjso85frjksU6nR1WnE/rSMknPy3ElCMZq7nZrcBs0nez
-         UKiTy+2R7fJFZnfU7EfsQSU2DUh34AOUp8hk1W686ZMamB95i6JNCDHlYVGfJjaAEUp5
-         yPCgeWiCqOzc3SuMQ/MUcD01+kW3uwXKP2j7zlmPkcVYqRdfAOINmOp8kxGHFkqeAfPG
-         yhxgD/ZXAsXGc7K37nTC/C91LF5euEaGlzirdV4T4Jp78L7mLFANbcmjmemR0Pun8mZH
-         DX2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=s7I3IQjihF/l5M5NpOWkbtUsOkBOq12IgPccKBHENpw=;
-        b=F4eZwI8eEsPul7ZA1Jg2hyZb1jijxGL+epwUe06ijrKHZZwb5DCBXiMLzcHoZbiU+F
-         +4a2zgNgE3zsgaZaKtidKobH8AeuMardM/wxxSjjzQAjr/3ljA8LtYLNl33UwUgDr71R
-         tYNxK2k7rkYnJbiwJLXAsx6lo8ixUQ/+Z5s+MRR2pwxEt+ioVIYnup8Vw5amixM5dSRz
-         nBDQG4Q5FLupwls9LY+Rqks50Ehl4lHpXApXEWwJ77VAv3R4N/90TDGvqYVBfIpacZ9G
-         Jz68e8gknEdc35De7KMCIWXPMmw2dh30XzimpBk6DifuvVXMzSLkfmnD2hjywmiy7o+x
-         Uaqg==
-X-Gm-Message-State: AOAM531z50MThxBzvmVyUa4n6Evw64sLzivmnFcJc3inWRs8hu5ZzQJ8
-        FMxVpr5TX3+Nb9C7XltCN8FiIM8tZceJF2lCNdeZ8g==
-X-Google-Smtp-Source: ABdhPJwO+hFDyg6ok0gHTpSFFEj1saBmMnoBTxK8Jvtqn99wxzgHCCtHjMCZ7r0Cx4ykxWflBaBXMwoYL2/rtggH6IE=
-X-Received: by 2002:a05:620a:2051:: with SMTP id d17mr27195814qka.403.1607938493788;
- Mon, 14 Dec 2020 01:34:53 -0800 (PST)
+        Mon, 14 Dec 2020 04:38:14 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BE9UvE8115948;
+        Mon, 14 Dec 2020 04:36:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=SMGwKNiIjJsSLpFJJvLVdjJnbI5L7cgDo0FDAfmnpRY=;
+ b=jDRZ1tcYgvvzlGeDFe/zCdMREHl70xaCrIh5VFZ7sCwZAJWLavud2tRuV8T13CixF6RC
+ QTgb02diMePBnFbq8YsUIZV/EbnKBWCx9nje1yepW0AuvQuzyqtWw/riX6iRur2pYp4G
+ l+tdZLspQRwKuTg2q2aEvj6ikuzMXxbBZgTm5pEhd1oGeSWJDa1Jz1KaGLDeucakIpxi
+ IrcfLMRDR7WTiVbHBrGQvt0K/dDBhYCnDleJ0CXgbDNEq4d173JEYRbiZAkVNH4Q+i5S
+ lKaYYAmW27uE8K3e3GCp/zfK6B/YJpElOi69w4angrssbvHUVvoR7l0siMt+dqZM6oHL Lg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35e4fbswce-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Dec 2020 04:36:37 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BE9VwDl118761;
+        Mon, 14 Dec 2020 04:36:36 -0500
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35e4fbswbw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Dec 2020 04:36:36 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BE9Wxuw002607;
+        Mon, 14 Dec 2020 09:36:34 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 35cng890sg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Dec 2020 09:36:34 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BE9aVNd29688154
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Dec 2020 09:36:31 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2F07D4C050;
+        Mon, 14 Dec 2020 09:36:31 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 793874C046;
+        Mon, 14 Dec 2020 09:36:29 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.29.158])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 14 Dec 2020 09:36:29 +0000 (GMT)
+Subject: Re: [PATCH v12 00/31] Speculative page faults
+To:     Joel Fernandes <joel@joelfernandes.org>,
+        Chinwen Chang <chinwen.chang@mediatek.com>
+Cc:     Haiyan Song <haiyanx.song@intel.com>, akpm@linux-foundation.org,
+        mhocko@kernel.org, peterz@infradead.org, kirill@shutemov.name,
+        ak@linux.intel.com, dave@stgolabs.net, jack@suse.cz,
+        Matthew Wilcox <willy@infradead.org>,
+        aneesh.kumar@linux.ibm.com, benh@kernel.crashing.org,
+        mpe@ellerman.id.au, paulus@samba.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, hpa@zytor.com,
+        Will Deacon <will.deacon@arm.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        sergey.senozhatsky.work@gmail.com,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        kemi.wang@intel.com, Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Rientjes <rientjes@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ganesh Mahendran <opensource.ganesh@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Punit Agrawal <punitagrawal@gmail.com>,
+        vinayak menon <vinayakm.list@gmail.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        zhong jiang <zhongjiang@huawei.com>,
+        Balbir Singh <bsingharora@gmail.com>, sj38.park@gmail.com,
+        Michel Lespinasse <walken@google.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        haren@linux.vnet.ibm.com, npiggin@gmail.com,
+        paulmck@linux.vnet.ibm.com, Tim Chen <tim.c.chen@linux.intel.com>,
+        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
+        miles.chen@mediatek.com
+References: <20190416134522.17540-1-ldufour@linux.ibm.com>
+ <20190606065129.d5s3534p23twksgp@haiyan.sh.intel.com>
+ <3d3cefa2-0ebb-e86d-b060-7ba67c48a59f@linux.ibm.com>
+ <1c412ebe-c213-ee67-d261-c70ddcd34b79@linux.ibm.com>
+ <20190620081945.hwj6ruqddefnxg6z@haiyan.sh.intel.com>
+ <1594027500.30360.32.camel@mtkswgap22>
+ <490c0811-50cd-0802-2cbc-9c031ef309f6@linux.ibm.com>
+ <1594099897.30360.58.camel@mtkswgap22> <X9bIDHZbe4MB+BAg@google.com>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <b256e5ed-0d4c-4baf-16a6-f32f122e344f@linux.ibm.com>
+Date:   Mon, 14 Dec 2020 10:36:29 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <1607576401-25609-1-git-send-email-vjitta@codeaurora.org>
- <CAG_fn=VKsrYx+YOGPnZw_Q5t6Fx7B59FSUuphj7Ou+DDFKQ+8Q@mail.gmail.com>
- <77e98f0b-c9c3-9380-9a57-ff1cd4022502@codeaurora.org> <CAG_fn=WbN6unD3ASkLUcEmZvALOj=dvC0yp6CcJFkV+3mmhwxw@mail.gmail.com>
- <6cc89f7b-bf40-2fd3-96ce-2a02d7535c91@codeaurora.org>
-In-Reply-To: <6cc89f7b-bf40-2fd3-96ce-2a02d7535c91@codeaurora.org>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 14 Dec 2020 10:34:41 +0100
-Message-ID: <CAG_fn=VOHag5AUwFbOj_cV+7RDAk8UnjjqEtv2xmkSDb_iTYcQ@mail.gmail.com>
-Subject: Re: [PATCH v3] lib: stackdepot: Add support to configure STACK_HASH_SIZE
-To:     Vijayanand Jitta <vjitta@codeaurora.org>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        dan.j.williams@intel.com, broonie@kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@google.com>, qcai@redhat.com,
-        ylal@codeaurora.org, vinmenon@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <X9bIDHZbe4MB+BAg@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-14_04:2020-12-11,2020-12-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ clxscore=1011 malwarescore=0 suspectscore=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012140067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 5:02 AM Vijayanand Jitta <vjitta@codeaurora.org> wr=
-ote:
->
->
->
-> On 12/11/2020 6:55 PM, Alexander Potapenko wrote:
-> > On Fri, Dec 11, 2020 at 1:45 PM Vijayanand Jitta <vjitta@codeaurora.org=
-> wrote:
-> >>
-> >>
-> >>
-> >> On 12/11/2020 2:06 PM, Alexander Potapenko wrote:
-> >>> On Thu, Dec 10, 2020 at 6:01 AM <vjitta@codeaurora.org> wrote:
-> >>>>
-> >>>> From: Yogesh Lal <ylal@codeaurora.org>
-> >>>>
-> >>>> Add a kernel parameter stack_hash_order to configure STACK_HASH_SIZE=
-.
-> >>>>
-> >>>> Aim is to have configurable value for STACK_HASH_SIZE, so that one
-> >>>> can configure it depending on usecase there by reducing the static
-> >>>> memory overhead.
-> >>>>
-> >>>> One example is of Page Owner, default value of STACK_HASH_SIZE lead
-> >>>> stack depot to consume 8MB of static memory. Making it configurable
-> >>>> and use lower value helps to enable features like CONFIG_PAGE_OWNER
-> >>>> without any significant overhead.
-> >>>
-> >>> Can we go with a static CONFIG_ parameter instead?
-> >>> Guess most users won't bother changing the default anyway, and for
-> >>> CONFIG_PAGE_OWNER users changing the size at boot time is not strictl=
-y
-> >>> needed.
-> >>>
-> >> Thanks for review.
-> >>
-> >> One advantage of having run time parameter is we can simply set it to =
-a
-> >> lower value at runtime if page_owner=3Doff thereby reducing the memory
-> >> usage or use default value if we want to use page owner so, we have so=
-me
-> >> some flexibility here. This is not possible with static parameter as w=
-e
-> >> have to have some predefined value.
-> >
-> > If we are talking about a configuration in which page_owner is the
-> > only stackdepot user in the system, then for page_owner=3Doff it
-> > probably makes more sense to disable stackdepot completely instead of
-> > setting it to a lower value. This is a lot easier to do in terms of
-> > correctness.
-> > But if there are other users (e.g. KASAN), their stackdepot usage may
-> > actually dominate that of page_owner.
-> >
-> >>>> -static struct stack_record *stack_table[STACK_HASH_SIZE] =3D {
-> >>>> -       [0 ...  STACK_HASH_SIZE - 1] =3D NULL
-> >>>> +static unsigned int stack_hash_order =3D 20;
-> >>>
-> >>> Please initialize with MAX_STACK_HASH_ORDER instead.
-> >>>
-> >>
-> >> Sure, will update this.
-> >>
-> >
-> >
-> >>>> +
-> >>>> +static int __init init_stackdepot(void)
-> >>>> +{
-> >>>> +       size_t size =3D (STACK_HASH_SIZE * sizeof(struct stack_recor=
-d *));
-> >>>> +
-> >>>> +       stack_table =3D vmalloc(size);
-> >>>> +       memcpy(stack_table, stack_table_def, size);
-> >>>
-> >>> Looks like you are assuming stack_table_def already contains some dat=
-a
-> >>> by this point.
-> >>> But if STACK_HASH_SIZE shrinks this memcpy() above will just copy som=
-e
-> >>> part of the table, whereas the rest will be lost.
-> >>> We'll need to:
-> >>> - either explicitly decide we can afford losing this data (no idea ho=
-w
-> >>> bad this can potentially be),
-> >>> - or disallow storing anything prior to full stackdepot initializatio=
-n
-> >>> (then we don't need stack_table_def),
-> >>> - or carefully move all entries to the first part of the table.
-> >>>
-> >>> Alex
-> >>>
-> >>
-> >> The hash for stack_table_def is computed using the run time parameter
-> >> stack_hash_order, though stack_table_def is a bigger array it will onl=
-y
-> >> use the entries that are with in the run time configured STACK_HASH_SI=
-ZE
-> >> range. so, there will be no data loss during copy.
-> >
-> > Do we expect any data to be stored into stack_table_def before
-> > setup_stack_hash_order() is called?
-> > If the answer is no, then we could probably drop stack_table_def and
-> > allocate the table right in setup_stack_hash_order()?
-> >
->
-> Yes, we do see an allocation from stack depot even before init is called
-> from kasan, thats the reason for having stack_table_def.
-> This is the issue reported due to that on v2, so i added stack_table_def.
-> https://lkml.org/lkml/2020/12/3/839
+Le 14/12/2020 à 03:03, Joel Fernandes a écrit :
+> On Tue, Jul 07, 2020 at 01:31:37PM +0800, Chinwen Chang wrote:
+> [..]
+>>>> Hi Laurent,
+>>>>
+>>>> We merged SPF v11 and some patches from v12 into our platforms. After
+>>>> several experiments, we observed SPF has obvious improvements on the
+>>>> launch time of applications, especially for those high-TLP ones,
+>>>>
+>>>> # launch time of applications(s):
+>>>>
+>>>> package           version      w/ SPF      w/o SPF      improve(%)
+>>>> ------------------------------------------------------------------
+>>>> Baidu maps        10.13.3      0.887       0.98         9.49
+>>>> Taobao            8.4.0.35     1.227       1.293        5.10
+>>>> Meituan           9.12.401     1.107       1.543        28.26
+>>>> WeChat            7.0.3        2.353       2.68         12.20
+>>>> Honor of Kings    1.43.1.6     6.63        6.713        1.24
+>>>
+>>> That's great news, thanks for reporting this!
+>>>
+>>>>
+>>>> By the way, we have verified our platforms with those patches and
+>>>> achieved the goal of mass production.
+>>>
+>>> Another good news!
+>>> For my information, what is your targeted hardware?
+>>>
+>>> Cheers,
+>>> Laurent.
+>>
+>> Hi Laurent,
+>>
+>> Our targeted hardware belongs to ARM64 multi-core series.
+> 
+> Hello!
+> 
+> I was trying to develop an intuition about why does SPF give improvement for
+> you on small CPU systems. This is just a high-level theory but:
+> 
+> 1. Assume the improvement is because of elimination of "blocking" on
+> mmap_sem.
+> Could it be that the mmap_sem is acquired in write-mode unnecessarily in some
+> places, thus causing blocking on mmap_sem in other paths? If so, is it
+> feasible to convert such usages to acquiring them in read-mode?
 
-But at that point STACK_HASH_SIZE is still equal to 1L <<
-MAX_STACK_HASH_ORDER, isn't it?
-Then we still need to take care of the records that fit into the
-bigger array, but not the smaller one.
+That's correct, and the goal of this series is to try not holding the mmap_sem 
+in read mode during page fault processing.
 
-> Thanks,
-> Vijay
->
-> >> Thanks,
-> >> Vijay
-> >>
-> >> --
-> >> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> >> member of Code Aurora Forum, hosted by The Linux Foundation
-> >
-> >
-> >
->
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> member of Code Aurora Forum, hosted by The Linux Foundation
+Converting mmap_sem holder from write to read mode is not so easy and that work 
+as already been done in some places. If you think there are areas where this 
+could be done, you're welcome to send patches fixing that.
 
+> 2. Assume the improvement is because of lesser read-side contention on
+> mmap_sem.
+> On small CPU systems, I would not expect reducing cache-line bouncing to give
+> such a dramatic improvement in performance as you are seeing.
 
+I don't think cache line bouncing reduction is the main sourcec of performance 
+improvement, I would rather think this is the lower part here.
+I guess this is mainly because during loading time a lot of page fault is 
+occuring and thus SPF is reducing the contention on the mmap_sem.
 
---=20
-Alexander Potapenko
-Software Engineer
+> Thanks for any insight on this!
+> 
+> - Joel
+> 
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
