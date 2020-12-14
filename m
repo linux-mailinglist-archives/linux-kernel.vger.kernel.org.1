@@ -2,92 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7BB2D9CB8
+	by mail.lfdr.de (Postfix) with ESMTP id DBA7C2D9CBA
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:29:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440302AbgLNQ3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:29:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35254 "EHLO
+        id S2440140AbgLNQ3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 11:29:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440035AbgLNQ2d (ORCPT
+        with ESMTP id S2440242AbgLNQ2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:28:33 -0500
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F86C0613D3;
-        Mon, 14 Dec 2020 08:27:52 -0800 (PST)
-Received: by mail-vs1-xe42.google.com with SMTP id p7so9280963vsf.8;
-        Mon, 14 Dec 2020 08:27:52 -0800 (PST)
+        Mon, 14 Dec 2020 11:28:48 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9099C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:28:07 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id v14so14304331wml.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:28:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1/dJ41wzQrS/fWmX/gkz6e3GWIPT1AAo3V7XT47RGng=;
-        b=fslF4tMbpOitLsJRfkkBKoFxLpSKhWEt9WX/324yk1nvhB0tmNwCCApaQtFKPqWKdB
-         WphoU84CP2QxH1LtVP3TFmKQE+GLsjoYERJv8KDEZE/ewFFZmB7Ug5BdKJyhV8FillAN
-         FW/0/Xf1+mrBUABHKmCsO2J4QgqimNV1eq7nZnHXxsuLs8wnMj7SD0NA2WiWzRdrgV+L
-         PJqua/Jzo9asbAwsh2aPIjZ1jYxKmsJgEtDnVqb10WeSvqSO28DNlAG6Hs/ZaL46rsZC
-         KLowZRMniPho9TvsQN37nTdHAbXhNKW+ykZ8bFiWbTCea8nRT4KCgyc09+lvy/m7jLMO
-         5UpQ==
+        d=jrtc27.com; s=gmail.jrtc27.user;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=51YsbQIYuq9kiX/Ezj5Ht0AVHuSlN5jsKWqnvhPG9kE=;
+        b=iDHzsbT6UFubPP0i50ey89vA1UgdSoprtVon0iTpYV1cW+lOkGEWfqFwtngURquUz5
+         B077Wh7OmIoJub+RoM+M1x6u85K6cAbUV1EjwYve6CQ9Aor5/hA0jWrFAR9CLuFrFXkz
+         3C2jp8TLffbBwnwyp1NdC+MQFZvQRineyv56g4pvimfGyyIKlzCGmHTKHa4EmgyeVeiV
+         mTw6lJyWtD1sScow0A6lE6kIX4apxVttPZd2oBVY/jNrebHSjsEaQOFQwg5VCtcYqqN0
+         JcM99HgTBXlqpNWMFCze1PUVc0oWhq7eQUDbMfzWFsQpV5I2DugUwd6SmpwvpYAI8V9s
+         ODvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1/dJ41wzQrS/fWmX/gkz6e3GWIPT1AAo3V7XT47RGng=;
-        b=qNTeLc/av9PsVcq6oEPjZO9qyM9WhAomVfYOfHxVzMp+81O5eZUiEwxg+bl3vWxcXM
-         MmUe1Azlmdasix+Jf1wTPgxyslMzdN3ecPd3p3XapZCz1E4DHGRexC/lSks6gP6GOG5I
-         natbnpuEOsC6xOoRrykdk/ut9vsrhGrLNcKcjhCvaJLF9weEI2cDluObDq3j9MV8/RWt
-         HsCIQhRHypmMoErrz+3pJGjF/DQK8cAyRqvEcVC2l0WEiEgOtFmEyqrl2OD2vdHpY61R
-         fZ4dRizF/A6mpnfZl6b1m0wHwFPDuSoPTcMhc3GLtjrvuMoWZ68pGq3vQquYsVMxpxf8
-         9bDA==
-X-Gm-Message-State: AOAM531ezzbyzriHBRtXblkcvTjWdB/GXRJh+ysZYpxABInFKlR9bYnU
-        le/VIqi+hEeisMXdsboFCEHyzYFPOJrqjTc5SAgKsJSLBzNv9A==
-X-Google-Smtp-Source: ABdhPJwHKK/CJW0eTYTcAnQRCmAWgqmzjoKjM6MqRY3PKgdImcNPLMUx9XjXz84oLs5X197+nevI2fPPa/Y/U+s1i7k=
-X-Received: by 2002:a67:507:: with SMTP id 7mr17555159vsf.42.1607963272063;
- Mon, 14 Dec 2020 08:27:52 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=51YsbQIYuq9kiX/Ezj5Ht0AVHuSlN5jsKWqnvhPG9kE=;
+        b=lw/weIt6CAKn3sZ5n5fJhkXvvU2x5+BgwzU6iZHN4ertP6ytww0n/Cc020aB4GhGgb
+         J4NvQSCdFIP0gdkVdXR3xJReA+l15/h9bVHMMO2pzk6GvIwjDHIgnF1WR2fM6I57k/Gu
+         B/qBSlxcelnWmxgjhheQllaGoJyCNKh/tggt5JssP4i5zFo+55e9z0btSS0dxDtRbntj
+         zmZk7EMzoJ9K4ZD/hyZ/gOxW1p7E1BvDIAT3GFbr08kt8z8q1gxcoLe8dwnpziJPMr29
+         AT14obREkzK+3oMsG9bFA4t90KMrjzGVttXnqlJy4KR0YO8AWowrIsun8KmfpblV0W9o
+         PHfg==
+X-Gm-Message-State: AOAM533ON82wjSZlqtIC8oBOAe0suOjukF5IFCm3tcA/ekIvw2f5nYu6
+        TDU6Bcfz5QnxervkqkaK7adW+A==
+X-Google-Smtp-Source: ABdhPJy/HD9Xc/p5LiC20sf0NJ5AuesdVQXZgve4vr1XtQmZ1M0zrGpdVf8En/HPezn6ogxD8VFYdQ==
+X-Received: by 2002:a7b:cb0c:: with SMTP id u12mr28187914wmj.11.1607963286539;
+        Mon, 14 Dec 2020 08:28:06 -0800 (PST)
+Received: from Jessicas-MacBook.local (trinity-students-nat.trin.cam.ac.uk. [131.111.193.104])
+        by smtp.gmail.com with ESMTPSA id v64sm30884456wme.25.2020.12.14.08.28.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 14 Dec 2020 08:28:05 -0800 (PST)
+Received: by Jessicas-MacBook.local (Postfix, from userid 501)
+        id 53694209CCA69F; Mon, 14 Dec 2020 16:28:04 +0000 (GMT)
+Date:   Mon, 14 Dec 2020 16:28:04 +0000
+From:   Jessica Clarke <jrtc27@jrtc27.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Anatoly Pugachev <matorola@gmail.com>,
+        Linux Kernel list <linux-kernel@vger.kernel.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [sparc64] ftrace: kernel startup-tests unaligned access
+Message-ID: <20201214162804.GA27786@Jessicas-MacBook.local>
+References: <CADxRZqzXQRYgKc=y-KV=S_yHL+Y8Ay2mh5ezeZUnpRvg+syWKw@mail.gmail.com>
+ <20201214111512.415717ac@gandalf.local.home>
 MIME-Version: 1.0
-References: <X8+DI7ZN7mXtsxv9@ulmo> <CAGngYiXgVbEXj-yR=DTeA4pO-N3=WhiHjQhknFsbfXBeD_yRbw@mail.gmail.com>
- <X8+waLH58pOaMI06@ulmo> <20201208182637.hm5uzuw5ueelo26k@pengutronix.de>
- <X9EDGHySNYb7CxcW@ulmo> <20201210090124.rfswkrcttsg5gszp@pengutronix.de>
- <X9JWlVPb9ZGdB4q9@ulmo> <20201210203926.ouzrq3ff5k6zhlvt@pengutronix.de>
- <X9Mu8zrJjFTe6fJq@ulmo> <20201211103454.tqcfzy3ayn2gz7k4@pengutronix.de> <X9d2iFCzSkqLu8zR@ulmo>
-In-Reply-To: <X9d2iFCzSkqLu8zR@ulmo>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Mon, 14 Dec 2020 11:27:40 -0500
-Message-ID: <CAGngYiUMP8P=8nEJu2weaR11PoZ9B2OGEdaz=DEeDsLoh3gmCw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] pwm: pca9685: Switch to atomic API
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Clemens Gruber <clemens.gruber@pqgruber.com>,
-        linux-pwm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201214111512.415717ac@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thierry,
+On Mon, Dec 14, 2020 at 11:15:12AM -0500, Steven Rostedt wrote:
+> On Mon, 14 Dec 2020 18:59:02 +0300
+> Anatoly Pugachev <matorola@gmail.com> wrote:
+> 
+> > Hello!
+> > 
+> > Enabled ftrace startup tests on a sparc64 test VM/LDOM:
+> > 
+> > $ diff -u <(gzip -dc ~/dmesg/config-5.10.0.gz) <(gzip -dc /proc/config.gz)
+> > --- /dev/fd/63  2020-12-14 16:19:38.239372599 +0300
+> > +++ /dev/fd/62  2020-12-14 16:19:38.235372433 +0300
+> > @@ -2842,7 +2842,10 @@
+> >  # CONFIG_TRACEPOINT_BENCHMARK is not set
+> >  # CONFIG_RING_BUFFER_BENCHMARK is not set
+> >  # CONFIG_TRACE_EVAL_MAP_FILE is not set
+> > -# CONFIG_FTRACE_STARTUP_TEST is not set
+> > +CONFIG_FTRACE_SELFTEST=y
+> > +CONFIG_FTRACE_STARTUP_TEST=y
+> > +CONFIG_EVENT_TRACE_STARTUP_TEST=y
+> > +# CONFIG_EVENT_TRACE_TEST_SYSCALLS is not set
+> >  # CONFIG_RING_BUFFER_STARTUP_TEST is not set
+> >  # CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+> >  # CONFIG_KPROBE_EVENT_GEN_TEST is not set
+> > 
+> > 
+> > Got the following results with kernel boot logs:
+> > 
+> > Dec 14 13:48:15 kernel: clocksource: jiffies: mask: 0xffffffff
+> > max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+> > Dec 14 13:48:15 kernel: futex hash table entries: 65536 (order: 9,
+> > 4194304 bytes, linear)
+> > Dec 14 13:48:15 kernel: Running postponed tracer tests:
+> > Dec 14 13:48:15 kernel: Testing tracer function:
+> > Dec 14 13:48:15 kernel: Kernel unaligned access at TPC[552a20]
+> > trace_function+0x40/0x140
+> > Dec 14 13:48:15 kernel: Kernel unaligned access at TPC[552a24]
+> > trace_function+0x44/0x140
+> > Dec 14 13:48:15 kernel: Kernel unaligned access at TPC[552a20]
+> > trace_function+0x40/0x140
+> > Dec 14 13:48:15 kernel: Kernel unaligned access at TPC[552a24]
+> > trace_function+0x44/0x140
+> > Dec 14 13:48:15 kernel: Kernel unaligned access at TPC[552a20]
+> > trace_function+0x40/0x140
+> 
+> Does sparc64 require 8 byte alignment for 8 byte words?
 
-On Mon, Dec 14, 2020 at 9:28 AM Thierry Reding <thierry.reding@gmail.com> wrote:
->
->
-> Perhaps Clemens and Sven can shed some light into how this driver is
-> being used. There clearly seem to be people interested in this driver,
-> so why are there no consumers of this upstream. What's keeping people
-> from upstreaming device trees that make use of this?
->
+Yes, SPARC requires natural alignment for all primitive types (and that
+even includes 8-byte alignment for 8-byte types on 32-bit SPARC as it
+has load/store pair instructions the compiler is free to use).
 
-There are many reasons why a driver may not appear in the devicetree.
-In my specific case, I backported the PCA9685 driver to a 4.1 Android vendor
-kernel. This is too far behind to upstream. Also, the company regards the
-devicetree as a trade secret, which it is entitled to do, as devicetrees
-tend to be dual-licensed (GPL and MIT).
-
-More generally, I believe that the PCA9685 is quite popular in the Raspberry
-Pi world. Raspi devicetrees are not part of mainline, for various reasons
-that we don't need to get into here.
-
-Example:
-https://learn.adafruit.com/adafruit-16-channel-servo-driver-with-raspberry-pi
+Jess
