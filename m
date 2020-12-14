@@ -2,175 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17BE2DA2B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463282DA2DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:54:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441132AbgLNVpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 16:45:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
+        id S1732775AbgLNVwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 16:52:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441034AbgLNVo6 (ORCPT
+        with ESMTP id S2441082AbgLNVpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 16:44:58 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C8CC061793
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:44:18 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id q22so13037045pfk.12
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:44:18 -0800 (PST)
+        Mon, 14 Dec 2020 16:45:03 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C20C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:44:23 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id r4so9628054pls.11
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 13:44:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6EWmrppepC6CHcBZOqhjNztvHasoofk8FBuQ7CK72Yo=;
-        b=mlBDwaeR5EuT6thidly4obxEYWArXsfs8EmBKFKvYaUpY1DmcjmF+VaqtG4iTHINT7
-         FCF4QnHO0zFmQGeRNsOnf9aLmv0PgPgM62Yiq5xdZxNZ55Oo4kUVltzD7qWaf3M3O/L4
-         D0JItD3kQic9c8ZP/u2MlOvD+RaeHKs8561wd3mGt1txmrGnkQCy12wzgpOqqd2kxDw+
-         +T4eRRkuhC4NJbRoLJq7alsoh+TwbAVMbKSPRMWVX28HMsXdeFKXUyJwNXnrqGDvAS0p
-         oJFC5Tq8Q64l74jlOjiJWeTDfSYUHNDbT/uG7iZqCZ4COqrasq0kWFLb7//kPGEK7DNN
-         tvwg==
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PMXJLiKcXqOuq1fSx1dZKXuKwhly4eCplfXBPHcW2uo=;
+        b=fMw42NK0Vv4AkVqZYjC8aVy3I+z6+B6jWHLNFGHqJZpsRmHB5PcS0GoQFrUqCMHBMf
+         Yi8ZPM8RcbxHLc6X6t2HjSU/4abIVomNVcbrFjNiw8hhW/TUfCSei1PGQCbrUnP6QHCq
+         ghbQhRHF7uc7YjTEYc23FLZZOvhUUkxb9sMjwQ0rmSc2gdGYffjtvDHoU1AUBQH7193+
+         vVe/lsNoggmXDtQaN219ZUVQD2Z8YE349gyIEoiIHaxg31R+W8mFaPhgSH5X8k9XKR1N
+         EH7n5mIKqQOBVqGqxx9entop+1WGk6/UvmstmAV82uYtlI0FgTDCV4nJBzAqGtUN64N5
+         bg3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6EWmrppepC6CHcBZOqhjNztvHasoofk8FBuQ7CK72Yo=;
-        b=TSTZKwx3LiyypQWQzzSpXArK90FlaTfyC92Agyjq5JMuHzEKYgovmU2K8ZxhyjILsg
-         Y5Qs1zCi/kDP6KZ5s8aWWrBL4FnJLfwsbjVIA1c55SOeh0uVmClBYnK8f+Imuuh0oSTu
-         ZUJTQg2lv8OhK+SgwIneG16tiR+g6UY/Hn0JCEkv0KgaEEe4fGkE8GxKUQJjDpteMK1d
-         M7/IE+yDU3La5/dOvWgRbVSKy7tXkwiLncbLeLyNOEHRT01g+nnmZWXZP1atmaaUTWss
-         LLe51pg8as0f6W5hFm7JgeNu6BMmiJVWIj1TsdAoiowWbvkbVdJzcIieDXZQlG78xYwT
-         YJyA==
-X-Gm-Message-State: AOAM5329bEyJnmFZISpFDL/Rs7jvnnYG0x/i8wFjBQf93YgyiRU2OfYt
-        ZanoLPQxPz4FjnrdddFmGbMQAo6eZBM5DFaWYKkSMA==
-X-Google-Smtp-Source: ABdhPJz0JzYkf4G+e7/8YeB0Xj41+fXETTPGT4aAt+KsRx0P/0WfwpiHwW5NxVnrsiyY7ZkKS7H3cI1Y6xqq+O4xRgY=
-X-Received: by 2002:a62:7c4a:0:b029:19d:b7bc:2c51 with SMTP id
- x71-20020a627c4a0000b029019db7bc2c51mr26329699pfc.30.1607982257943; Mon, 14
- Dec 2020 13:44:17 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PMXJLiKcXqOuq1fSx1dZKXuKwhly4eCplfXBPHcW2uo=;
+        b=qS+peb4avzO5gY7PkLoPXfqfeEcMtu2F3sSUTf7fRpKO64+iUYOq3EPfnlMZ8On1Dv
+         KGDMd44Ah8XI9Wly81fL4QLwITK0sl5q/Gs1URX7ku1CUB//bLuuBwgEZHla0lT6i1SP
+         q0Xr0Gw7GLEXOEbUYYE0TpQSp0N7D44Co4CufV7gYioERtXiQ3t9ukggXSA5ODDxnzDi
+         SIRZfk9zE3n3UC/im0Znjc7O3O84LkLaVPMODOiqe5Y1JA3J78VKbg5xmFInNPL4IZhl
+         JjhzZEWWKUnhSQEOkfHdXqdqiI/7rcOFGNYQSZuOWaVRim47RFZuRzMQeQS1lDpZlNbs
+         8SHQ==
+X-Gm-Message-State: AOAM530+pRaDGeAVOkSKhLhtTxnWpjk/YaIx7cjDKkhvqGDiUa67Y5WG
+        alxdadbJyOiIvkGzmC3joN15IQ==
+X-Google-Smtp-Source: ABdhPJx6WDKMKNTg07/DKZXqVykrSNXKqqxEXbSIu+73dzQaCppft6CsvvmQiFErJW/bXxEiKXj/Zw==
+X-Received: by 2002:a17:90b:217:: with SMTP id fy23mr27562416pjb.199.1607982262636;
+        Mon, 14 Dec 2020 13:44:22 -0800 (PST)
+Received: from x1 ([2601:1c0:4701:ae70:a12:934a:f94c:522c])
+        by smtp.gmail.com with ESMTPSA id kb12sm18343417pjb.2.2020.12.14.13.44.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 13:44:21 -0800 (PST)
+Date:   Mon, 14 Dec 2020 13:44:19 -0800
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>
+Subject: Re: [RFC PATCH] pinctrl: add helper to expose pinctrl state in
+ debugfs
+Message-ID: <20201214214419.GA1196223@x1>
+References: <20201211042625.129255-1-drew@beagleboard.org>
+ <CAHp75VcAbdrSnb_ag9Rc0tny3Vtqjs1if+ahk7U36V2eaKMpSw@mail.gmail.com>
+ <20201211234304.GA189853@x1>
+ <CAHp75Vf-=nM-M2K-v_8iyME4t6ZF-gvSZ5ePsxQFhObJ_0YHsw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201016175339.2429280-1-ndesaulniers@google.com> <160319373854.2175971.17968938488121846972.b4-ty@kernel.org>
-In-Reply-To: <160319373854.2175971.17968938488121846972.b4-ty@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 14 Dec 2020 13:44:06 -0800
-Message-ID: <CAKwvOdnYcff_bcWZYkUC5qKso6EPRWrDgMAdn1KE1_YMCTy__A@mail.gmail.com>
-Subject: Re: [PATCH] arm64: link with -z norelro regardless of CONFIG_RELOCATABLE
-To:     Alan Modra <amodra@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        kernel-team <kernel-team@android.com>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Smith <Peter.Smith@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        Quentin Perret <qperret@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vf-=nM-M2K-v_8iyME4t6ZF-gvSZ5ePsxQFhObJ_0YHsw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 10:57 AM Will Deacon <will@kernel.org> wrote:
->
-> On Fri, 16 Oct 2020 10:53:39 -0700, Nick Desaulniers wrote:
-> > With CONFIG_EXPERT=y, CONFIG_KASAN=y, CONFIG_RANDOMIZE_BASE=n,
-> > CONFIG_RELOCATABLE=n, we observe the following failure when trying to
-> > link the kernel image with LD=ld.lld:
+On Mon, Dec 14, 2020 at 07:55:12PM +0200, Andy Shevchenko wrote:
+> On Sat, Dec 12, 2020 at 1:43 AM Drew Fustini <drew@beagleboard.org> wrote:
+> > On Fri, Dec 11, 2020 at 11:15:21PM +0200, Andy Shevchenko wrote:
+> > > On Fri, Dec 11, 2020 at 1:54 PM Drew Fustini <drew@beagleboard.org> wrote:
+> > > >
+> > > > BeagleBoard.org [0] currently uses an out-of-tree driver called
+> > > > bone-pinmux-helper [1] developed by Pantelis Antoniou [2] back in 2013.
+> > >
+> > > And it looks like it's still using APIs from 2013.
+> > > Needs quite a clean up.
 > >
-> > error: section: .exit.data is not contiguous with other relro sections
+> > Thanks for taking a look at my RFC and responding. It is good to know
+> > that it is using out-dated APIs. Would you be able to elaborate?
 > >
-> > ld.lld defaults to -z relro while ld.bfd defaults to -z norelro. This
-> > was previously fixed, but only for CONFIG_RELOCATABLE=y.
->
-> Applied to arm64 (for-next/core), thanks!
->
-> [1/1] arm64: link with -z norelro regardless of CONFIG_RELOCATABLE
->       https://git.kernel.org/arm64/c/3b92fa7485eb
+> > It interacts with pinctrl core through devm_pinctrl_get(),
+> > pinctrl_lookup_state() and pinctrl_select_state(). Is there newer way of
+> > doing that?
+> 
+> No. I'm talking mostly about FS callbacks where some relatively old
+> new APIs can be used, such as kasprintf().
 
-It looks like this is now producing warnings when linking with BFD.
-$ make ...
-...
-  LD      .tmp_vmlinux.kallsyms1
-aarch64-linux-gnu-ld: warning: -z norelro ignored
-  KSYMS   .tmp_vmlinux.kallsyms1.S
-  AS      .tmp_vmlinux.kallsyms1.S
-  LD      .tmp_vmlinux.kallsyms2
-aarch64-linux-gnu-ld: warning: -z norelro ignored
-  KSYMS   .tmp_vmlinux.kallsyms2.S
-  AS      .tmp_vmlinux.kallsyms2.S
-  LD      vmlinux
-aarch64-linux-gnu-ld: warning: -z norelro ignored
+Thanks for following up. I'll will take a look at that and update the code.
 
-Alan, looking at binutils-gdb commit 5fd104addfddb ("Emit a warning
-when -z relro is unsupported") mentions targets lacking relro support
-will produce this warning.  I thought aarch64 supports relro
-though...?
-Looks like we're invoking:
-+ aarch64-linux-gnu-ld -EL -maarch64elf --no-undefined -X -z norelro
--shared -Bsymbolic -z notext --no-apply-dynamic-relocs
---fix-cortex-a53-843419 --build-id=sha1 --orphan-handling=warn
---strip-debug -o .tmp_vmlinux.kallsyms1 -T
-./arch/arm64/kernel/vmlinux.lds --whole-archive
-arch/arm64/kernel/head.o init/built-in.a usr/built-in.a
-arch/arm64/built-in.a kernel/built-in.a certs/built-in.a mm/built-in.a
-fs/built-in.a ipc/built-in.a security/built-in.a crypto/built-in.a
-block/built-in.a arch/arm64/lib/built-in.a lib/built-in.a
-arch/arm64/lib/lib.a lib/lib.a drivers/built-in.a sound/built-in.a
-net/built-in.a virt/built-in.a --no-whole-archive --start-group
-./drivers/firmware/efi/libstub/lib.a --end-group
-aarch64-linux-gnu-ld: warning: -z norelro ignored
+> > > > I used the compatible string "pinctrl,state-helper" but would appreciate
+> > > > advice on how to best name this. Should I create a new vendor prefix?
+> > >
+> > > Since it's BB specific, it should have file name and compatible string
+> > > accordingly.
+> >
+> > At first, I was thinking about this as a beaglebone specific solution
+> > and had bone in the driver name and compatible string. But then I
+> > realized it could used in other situations where it is beneficial to
+> > to read and select a pinctrl state through debugfs.
+> >
+> > I'm happy to rebrand the naming as beaglebone if that would be more
+> > acceptable.
+> 
+> See below.
+> 
+> > > But I'm wondering, why it requires this kind of thing and can't be
+> > > simply always part of the kernel based on configuration option?
+> >
+> > Do you mean not having a new CONFIG option for this driver and just have
+> > it be enabled by CONFIG_PINCTRL?
+> 
+> No, configuration option stays, but no compatible strings no nothing
+> like that. Just probed always when loaded.
 
-So we set the emulation mode via -maarch64elf, and our preprocessed
-linker script has `OUTPUT_ARCH(aarch64)`. From that commit, there's a
-linked mailing list discussion:
-https://sourceware.org/legacy-ml/binutils/2017-01/msg00441.html
+I first started down the route of implementing this inside of
+pinctrl-single.  I found it didn't work because devm_pinctrl_get() would
+fail.  I think was because it was happening too early for pinctrl to be
+ready.
 
-Is there something more we need to do to our linker script
-(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/kernel/vmlinux.lds.S)
-for BFD not to warn when passing `-z norelro`?  It looks like common
-page size might need to be specified?  I tried:
+I do think it seems awkward to have to add this to dts and have the
+driver get probed for each entry:
 
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 1bda604f4c70..ae8cce140fdf 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -121,7 +121,7 @@ SECTIONS
-                _text = .;
-                HEAD_TEXT
-        }
--       .text : {                       /* Real text segment            */
-+       .text ALIGN (CONSTANT (COMMONPAGESIZE)): {      /* Real text
-segment    */
+        P1_04_pinmux {
+                compatible = "pinctrl,state-helper";
+                status = "okay";
+                pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "gpio_input", "pruout", "pruin";
+                pinctrl-0 = <&P1_04_default_pin>;
+                pinctrl-1 = <&P1_04_gpio_pin>;
+                pinctrl-2 = <&P1_04_gpio_pu_pin>;
+                pinctrl-3 = <&P1_04_gpio_pd_pin>;
+                pinctrl-4 = <&P1_04_gpio_input_pin>;
+                pinctrl-5 = <&P1_04_pruout_pin>;
+                pinctrl-6 = <&P1_04_pruin_pin>;
+        };
 
-and passing `-z common-page-size=4096` but neither seemed to do the
-trick. (https://docs.adacore.com/live/wave/binutils-stable/html/ld/ld.html#index-COMMONPAGESIZE-553
+But I am having a hard time figuring out another way of doing it.
 
-Worst case, we add `-z norelro` just for LLD:
+Any ideas as to what would trigger the probe() if there was not a match
+on a compatible like "pinctrl,state-helper"?
 
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 6a87d592bd00..6a6235e1e8a9 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -10,7 +10,7 @@
- #
- # Copyright (C) 1995-2001 by Russell King
+> Actually not even sure we want to have it as a module.
 
--LDFLAGS_vmlinux        :=--no-undefined -X -z norelro
-+LDFLAGS_vmlinux        :=--no-undefined -X
+And have just be a part of one of the existing pinctrl files like core.c?
 
- ifeq ($(CONFIG_RELOCATABLE), y)
- # Pass --no-apply-dynamic-relocs to restore pre-binutils-2.27 behaviour
-@@ -28,6 +28,10 @@ LDFLAGS_vmlinux      += --fix-cortex-a53-843419
-   endif
- endif
+> 
+> ...
+> 
+> > > > The P9_14_pinmux entry would cause pinctrl-state-helper to be probed.
+> > > > The driver would create the corresponding pinctrl state file in debugfs
+> > > > for the pin.  Here is an example of how the state can be read and
+> > > > written from userspace:
+> > > >
+> > > > root@beaglebone:~# cat /sys/kernel/debug/ocp\:P9_14_pinmux/state
+> > > > default
+> > > > root@beaglebone:~# echo pwm > /sys/kernel/debug/ocp\:P9_14_pinmux/state
+> > > > root@beaglebone:~# cat /sys/kernel/debug/ocp\:P9_14_pinmux/state
+> > > > pwm
+> > >
+> > > Shouldn't it be rather a part of a certain pin control folder:
+> > > debug/pinctrl/.../mux/...
+> > > ?
+> >
+> > Yes, I think that would make sense, but I was struggling to figure out
+> > how to do that. pinctrl_init_debugfs() in pinctrl/core.c does create the
+> > "pinctrl" directory, but I could not figure out how to use this as the
+> > parent dir when calling debugfs_create_dir() in this driver's probe().
+> >
+> > I thought there might be a way in debugfs API to use existing directory
+> > path as a parent but I couldn't figure anything like that. I would
+> > appreciate any advice.
+> 
+> If the option is boolean from the beginning then you just call it from
+> the corresponding pin control instantiation chain.
 
-+ifeq ($(CONFIG_LD_IS_LLD), y)
-+LDFLAGS_vmlinux        += -z norelro
-+endif
-+
- ifeq ($(CONFIG_ARM64_USE_LSE_ATOMICS), y)
-   ifneq ($(CONFIG_ARM64_LSE_ATOMICS), y)
- $(warning LSE atomics not supported by binutils)
 
--- 
-Thanks,
-~Nick Desaulniers
+Sorry, I am not sure I understand what you mean here.  What does
+"option" mean in this context?  I don't think there is any value that is
+boolean invovled.  The pinctrl states are strings.
+
+With regards to parent directory, I did discover there is
+debugfs_lookup(), so I can get the dentry for "pinctrl" and create new
+subdirectory inside of it.  This is the structure now:
+
+/sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_35_pinmux/state
+/sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_34_pinmux/state
+/sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_33_pinmux/state
+/sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_32_pinmux/state
+etc..
+
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+
+Thanks for reviewing,
+Drew
