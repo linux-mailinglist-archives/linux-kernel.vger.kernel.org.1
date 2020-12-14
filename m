@@ -2,5164 +2,1565 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D6B2DA180
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE9D2DA196
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503302AbgLNU1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:27:07 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:54124 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503188AbgLNU0d (ORCPT
+        id S2503288AbgLNU1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:27:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503213AbgLNU0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:26:33 -0500
-Date:   Mon, 14 Dec 2020 20:22:17 -0000
+        Mon, 14 Dec 2020 15:26:22 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BB3C0617A7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 12:25:33 -0800 (PST)
+Date:   Mon, 14 Dec 2020 20:22:19 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1607977531;
+        s=2020; t=1607977532;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=uV223PaH92kdkr3CfIzc60U67fRVYrL09gWfsw21WAk=;
-        b=mp/kj9arGHkYxKKvOSSSzexGDSIUJJZLVzs6q/T9GkXqdrNqsPbJpq2lCKcQ3VGMOVydXc
-        mYh8DZvNEKbelM9xxM9DWd3uR4ctY+f31HTHwjQROVMkEYD+ivNMp6Wk6VLO9VBhamec37
-        dSjnMNzgOJR+ZYMqXrLcKd+r6i36tDzZRvVFA6akOxgwSDQYVIl42+YVFiuKDQiC5Bjl7J
-        U+t2U7wtrRvGHxVU/SZNtfRDRuLlS0rVe9PTlX4fvtngkyDf5wNXfRzX9G+Zz3B6taypCI
-        ZncZKgzW4iKMY5Ef4ii+ThF0fKUNhYa6KFGaMpxACWwrDmWodIuzJeimgdw6nA==
+        bh=j5cZ0C7z+xtJCS/KZqjFW66+/2DFF3NI9aL6vLm5UrE=;
+        b=ITxE0oLLOaTYWTwBamwc6dnOUh6HqqDMlyO38PZtduTcjuZMC1qaxh/miFq8GfIJ7IgPsK
+        lsRwDRs4pTGSCNXnHlIoaIZR0mdgiBd22SCYWgCRCMpw9rhPvRoz0NaTWYXcp2ribIWOAG
+        7TBAVtK5t+bWlKRRsvSfSJqH4z9uicokbY7J50zCDPaZShFXMEaU6zpfxHurFXTtzpzoJE
+        20gEoJQTal9LYQKtcEehSuUDSs76Rg2HYdiuSAZjsyE0PGsLGy73LM+zXe1bLW2MTf+kk8
+        ulwcYW3g6mnV3EFQalD6BJs+YxBgOSdmVXAE7uM1OYZyUBuh9s+wVy+NgojNvA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1607977531;
+        s=2020e; t=1607977532;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=uV223PaH92kdkr3CfIzc60U67fRVYrL09gWfsw21WAk=;
-        b=LXikcqyKR0EB+2eSPP5GkMf08cnOPMLaN++70EBuHvJkEUCDRi/+ykusdGXe0rTCVIrSpQ
-        dCrRoMWkMCDkWzCw==
+        bh=j5cZ0C7z+xtJCS/KZqjFW66+/2DFF3NI9aL6vLm5UrE=;
+        b=EET8wp/NGmbAamK1iB7DiHMHdkd1wcIktKU4dRUNlqtBspWDaCpCDky1ShZhmys/Qj8p5g
+        Ns4kzqyHRYcOjnBA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] sched/core for v5.11-rc1
+Subject: [GIT pull] timers/core for v5.11-rc1
 References: <160797732939.10793.9152151866806316627.tglx@nanos>
-Message-ID: <160797733789.10793.18065892325435860673.tglx@nanos>
+Message-ID: <160797733911.10793.4629796194957263398.tglx@nanos>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
-
-please pull the latest sched/core branch from:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-core-2020-12-14
-
-up to:  5b78f2dc3153: sched/fair: Trivial correction of the newidle_balance() comment
-
-
-Scheduler updates:
-
- - migrate_disable/enable() support which originates from the RT tree and
-   is now a prerequisite for the new preemptible kmap_local() API which aims
-   to replace kmap_atomic().
-
- - A fair amount of topology and NUMA related improvements
-
- - Improvements for the frequency invariant calculations
-
- - Enhanced robustness for the global CPU priority tracking and decision
-   making
-
- - The usual small fixes and enhancements all over the place
-
-
-Thanks,
-
-	tglx
-
------------------->
-Barry Song (2):
-      Documentation: scheduler: fix information on arch SD flags, sched_domain and sched_debug
-      sched/fair: Trivial correction of the newidle_balance() comment
-
-Daniel Jordan (1):
-      cpuset: fix race between hotplug work and later CPU offline
-
-Dietmar Eggemann (3):
-      sched/cpupri: Remove pri_to_cpu[CPUPRI_IDLE]
-      sched/cpupri: Remove pri_to_cpu[1]
-      sched/uclamp: Allow to reset a task uclamp constraint value
-
-Giovanni Gherdovich (2):
-      x86, sched: Use midpoint of max_boost and max_P for frequency invariance on AMD EPYC
-      x86: Print ratio freq_max/freq_base used in frequency invariance calculations
-
-Hui Su (1):
-      sched/fair: Remove superfluous lock section in do_sched_cfs_slack_timer()
-
-Ionela Voinescu (3):
-      sched/topology,schedutil: Wrap sched domains rebuild
-      arm64: Rebuild sched domains on invariance status changes
-      sched/topology: Condition EAS enablement on FIE support
-
-Julia Lawall (1):
-      sched/fair: Check for idle core in wake_affine
-
-Mathieu Desnoyers (3):
-      sched: fix exit_mm vs membarrier (v4)
-      sched: membarrier: cover kthread_use_mm (v4)
-      sched: membarrier: document memory ordering scenarios
-
-Mauro Carvalho Chehab (1):
-      sched: Fix kernel-doc markup
-
-Mel Gorman (5):
-      sched/numa: Rename nr_running and break out the magic number
-      sched: Avoid unnecessary calculation of load imbalance at clone time
-      sched/numa: Allow a floating imbalance between NUMA nodes
-      sched: Limit the amount of NUMA imbalance that can exist at fork time
-      sched/fair: Clear SMT siblings after determining the core is not idle
-
-Nathan Fontenot (1):
-      x86, sched: Calculate frequency invariance for AMD systems
-
-Peng Liu (2):
-      sched/deadline: Optimize sched_dl_global_validate()
-      sched/deadline: Fix sched_dl_global_validate()
-
-Peng Wang (1):
-      sched/fair: Reorder throttle_cfs_rq() path
-
-Peter Zijlstra (21):
-      sched/cpupri: Remap CPUPRI_NORMAL to MAX_RT_PRIO-1
-      sched/cpupri: Add CPUPRI_HIGHER
-      sched/fair: Exclude the current CPU from find_new_ilb()
-      sched: Remove relyance on STRUCT_ALIGNMENT
-      stop_machine: Add function and caller debug info
-      sched: Fix balance_callback()
-      sched/hotplug: Ensure only per-cpu kthreads run during hotplug
-      workqueue: Manually break affinity on hotplug
-      sched: Fix hotplug vs CPU bandwidth control
-      sched: Massage set_cpus_allowed()
-      sched: Add migrate_disable()
-      sched: Fix migrate_disable() vs set_cpus_allowed_ptr()
-      sched,rt: Use cpumask_any*_distribute()
-      sched,rt: Use the full cpumask for balancing
-      sched, lockdep: Annotate ->pi_lock recursion
-      sched: Fix migrate_disable() vs rt/dl balancing
-      sched/proc: Print accurate cpumask vs migrate_disable()
-      sched: Fix migration_cpu_stop() WARN
-      irq_work: Cleanup
-      smp: Cleanup smp_call_function*()
-      irq_work: Optimize irq_work_single()
-
-Tal Zussman (1):
-      sched/core: Fix typos in comments
-
-Thomas Gleixner (5):
-      sched: Reenable interrupts in do_sched_yield()
-      sched/core: Wait for tasks being pushed away on hotplug
-      sched/hotplug: Consolidate task migration on CPU unplug
-      sched/core: Make migrate disable and CPU hotplug cooperative
-      sched: Make migrate_disable/enable() independent of RT
-
-Valentin Schneider (7):
-      sched: Deny self-issued __set_cpus_allowed_ptr() when migrate_disable()
-      sched: Comment affine_move_task()
-      sched: Add WF_TTWU, WF_EXEC wakeup flags
-      sched: Remove select_task_rq()'s sd_flag parameter
-      sched/fair: Dissociate wakeup decisions from SD flag value
-      sched/core: Add missing completion for affine_move_task() waiters
-      sched/topology: Warn when NUMA diameter > 2
-
-jun qian (1):
-      sched/fair: Improve the accuracy of sched_stat_wait statistics
-
-
- Documentation/scheduler/sched-domains.rst       |   26 +-
- arch/arm64/kernel/topology.c                    |   10 +
- arch/mips/kernel/process.c                      |    5 +-
- arch/mips/kernel/smp.c                          |   25 +-
- arch/s390/pci/pci_irq.c                         |    4 +-
- arch/x86/include/asm/topology.h                 |    5 +
- arch/x86/kernel/cpuid.c                         |    7 +-
- arch/x86/kernel/smpboot.c                       |   79 +-
- arch/x86/lib/msr-smp.c                          |    7 +-
- block/blk-mq.c                                  |    4 +-
- drivers/acpi/cppc_acpi.c                        |    7 +
- drivers/cpuidle/coupled.c                       |    3 +-
- drivers/gpu/drm/i915/i915_request.c             |    4 +-
- drivers/net/ethernet/cavium/liquidio/lio_core.c |    9 +-
- fs/proc/array.c                                 |    4 +-
- include/linux/cpuhotplug.h                      |    1 +
- include/linux/cpumask.h                         |    6 +
- include/linux/irq_work.h                        |   33 +-
- include/linux/irqflags.h                        |    8 +-
- include/linux/kernel.h                          |   21 +-
- include/linux/preempt.h                         |   83 +-
- include/linux/sched.h                           |    5 +
- include/linux/sched/hotplug.h                   |    2 +
- include/linux/sched/mm.h                        |    5 +
- include/linux/sched/topology.h                  |    8 +
- include/linux/smp.h                             |   19 +-
- include/linux/stop_machine.h                    |    5 +
- include/uapi/linux/sched/types.h                |    2 +
- kernel/bpf/stackmap.c                           |    2 +-
- kernel/cgroup/cpuset.c                          |   33 +-
- kernel/cpu.c                                    |    9 +-
- kernel/debug/debug_core.c                       |    6 +-
- kernel/exit.c                                   |   16 +-
- kernel/irq_work.c                               |   45 +-
- kernel/kthread.c                                |   21 +
- kernel/printk/printk.c                          |    6 +-
- kernel/rcu/tree.c                               |    3 +-
- kernel/sched/core.c                             | 1104 ++++++++++++++++++-----
- kernel/sched/cpudeadline.c                      |    4 +-
- kernel/sched/cpufreq_schedutil.c                |    9 +-
- kernel/sched/cpupri.c                           |   52 +-
- kernel/sched/cpupri.h                           |    8 +-
- kernel/sched/deadline.c                         |  101 ++-
- kernel/sched/fair.c                             |  121 ++-
- kernel/sched/idle.c                             |    7 +-
- kernel/sched/membarrier.c                       |  147 ++-
- kernel/sched/rt.c                               |   99 +-
- kernel/sched/sched.h                            |  150 ++-
- kernel/sched/stop_task.c                        |    5 +-
- kernel/sched/topology.c                         |   61 +-
- kernel/smp.c                                    |   52 +-
- kernel/stop_machine.c                           |   27 +-
- kernel/time/tick-sched.c                        |    6 +-
- kernel/trace/bpf_trace.c                        |    2 +-
- kernel/workqueue.c                              |    4 +
- lib/cpumask.c                                   |   18 +
- lib/dump_stack.c                                |    2 +
- lib/smp_processor_id.c                          |    5 +
- net/core/dev.c                                  |    3 +-
- 59 files changed, 1906 insertions(+), 619 deletions(-)
-
-diff --git a/Documentation/scheduler/sched-domains.rst b/Documentation/scheduler/sched-domains.rst
-index 5c4b7f4f0062..8582fa5e9170 100644
---- a/Documentation/scheduler/sched-domains.rst
-+++ b/Documentation/scheduler/sched-domains.rst
-@@ -65,21 +65,17 @@ of the SMP domain will span the entire machine, with each group having the
- cpumask of a node. Or, you could do multi-level NUMA or Opteron, for example,
- might have just one domain covering its one NUMA level.
- 
--The implementor should read comments in include/linux/sched.h:
--struct sched_domain fields, SD_FLAG_*, SD_*_INIT to get an idea of
--the specifics and what to tune.
-+The implementor should read comments in include/linux/sched/sd_flags.h:
-+SD_* to get an idea of the specifics and what to tune for the SD flags
-+of a sched_domain.
- 
--Architectures may retain the regular override the default SD_*_INIT flags
--while using the generic domain builder in kernel/sched/core.c if they wish to
--retain the traditional SMT->SMP->NUMA topology (or some subset of that). This
--can be done by #define'ing ARCH_HASH_SCHED_TUNE.
--
--Alternatively, the architecture may completely override the generic domain
--builder by #define'ing ARCH_HASH_SCHED_DOMAIN, and exporting your
--arch_init_sched_domains function. This function will attach domains to all
--CPUs using cpu_attach_domain.
-+Architectures may override the generic domain builder and the default SD flags
-+for a given topology level by creating a sched_domain_topology_level array and
-+calling set_sched_topology() with this array as the parameter.
- 
- The sched-domains debugging infrastructure can be enabled by enabling
--CONFIG_SCHED_DEBUG. This enables an error checking parse of the sched domains
--which should catch most possible errors (described above). It also prints out
--the domain structure in a visual format.
-+CONFIG_SCHED_DEBUG and adding 'sched_debug' to your cmdline. If you forgot to
-+tweak your cmdline, you can also flip the /sys/kernel/debug/sched_debug
-+knob. This enables an error checking parse of the sched domains which should
-+catch most possible errors (described above). It also prints out the domain
-+structure in a visual format.
-diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-index 543c67cae02f..2a9b69fdabc9 100644
---- a/arch/arm64/kernel/topology.c
-+++ b/arch/arm64/kernel/topology.c
-@@ -213,6 +213,7 @@ static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
- 
- static int __init init_amu_fie(void)
- {
-+	bool invariance_status = topology_scale_freq_invariant();
- 	cpumask_var_t valid_cpus;
- 	bool have_policy = false;
- 	int ret = 0;
-@@ -255,6 +256,15 @@ static int __init init_amu_fie(void)
- 	if (!topology_scale_freq_invariant())
- 		static_branch_disable(&amu_fie_key);
- 
-+	/*
-+	 * Task scheduler behavior depends on frequency invariance support,
-+	 * either cpufreq or counter driven. If the support status changes as
-+	 * a result of counter initialisation and use, retrigger the build of
-+	 * scheduling domains to ensure the information is propagated properly.
-+	 */
-+	if (invariance_status != topology_scale_freq_invariant())
-+		rebuild_sched_domains_energy();
-+
- free_valid_mask:
- 	free_cpumask_var(valid_cpus);
- 
-diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-index 75ebd8d7bd5d..d7e288f3a1e7 100644
---- a/arch/mips/kernel/process.c
-+++ b/arch/mips/kernel/process.c
-@@ -702,7 +702,6 @@ unsigned long arch_align_stack(unsigned long sp)
- 	return sp & ALMASK;
- }
- 
--static DEFINE_PER_CPU(call_single_data_t, backtrace_csd);
- static struct cpumask backtrace_csd_busy;
- 
- static void handle_backtrace(void *info)
-@@ -711,6 +710,9 @@ static void handle_backtrace(void *info)
- 	cpumask_clear_cpu(smp_processor_id(), &backtrace_csd_busy);
- }
- 
-+static DEFINE_PER_CPU(call_single_data_t, backtrace_csd) =
-+	CSD_INIT(handle_backtrace, NULL);
-+
- static void raise_backtrace(cpumask_t *mask)
- {
- 	call_single_data_t *csd;
-@@ -730,7 +732,6 @@ static void raise_backtrace(cpumask_t *mask)
- 		}
- 
- 		csd = &per_cpu(backtrace_csd, cpu);
--		csd->func = handle_backtrace;
- 		smp_call_function_single_async(cpu, csd);
- 	}
- }
-diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-index 48d84d5fcc36..74b9102fd06e 100644
---- a/arch/mips/kernel/smp.c
-+++ b/arch/mips/kernel/smp.c
-@@ -687,36 +687,23 @@ EXPORT_SYMBOL(flush_tlb_one);
- 
- #ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
- 
--static DEFINE_PER_CPU(call_single_data_t, tick_broadcast_csd);
--
--void tick_broadcast(const struct cpumask *mask)
--{
--	call_single_data_t *csd;
--	int cpu;
--
--	for_each_cpu(cpu, mask) {
--		csd = &per_cpu(tick_broadcast_csd, cpu);
--		smp_call_function_single_async(cpu, csd);
--	}
--}
--
- static void tick_broadcast_callee(void *info)
- {
- 	tick_receive_broadcast();
- }
- 
--static int __init tick_broadcast_init(void)
-+static DEFINE_PER_CPU(call_single_data_t, tick_broadcast_csd) =
-+	CSD_INIT(tick_broadcast_callee, NULL);
-+
-+void tick_broadcast(const struct cpumask *mask)
- {
- 	call_single_data_t *csd;
- 	int cpu;
- 
--	for (cpu = 0; cpu < NR_CPUS; cpu++) {
-+	for_each_cpu(cpu, mask) {
- 		csd = &per_cpu(tick_broadcast_csd, cpu);
--		csd->func = tick_broadcast_callee;
-+		smp_call_function_single_async(cpu, csd);
- 	}
--
--	return 0;
- }
--early_initcall(tick_broadcast_init);
- 
- #endif /* CONFIG_GENERIC_CLOCKEVENTS_BROADCAST */
-diff --git a/arch/s390/pci/pci_irq.c b/arch/s390/pci/pci_irq.c
-index 743f257cf2cb..1311b6f9d6dd 100644
---- a/arch/s390/pci/pci_irq.c
-+++ b/arch/s390/pci/pci_irq.c
-@@ -178,9 +178,7 @@ static void zpci_handle_fallback_irq(void)
- 		if (atomic_inc_return(&cpu_data->scheduled) > 1)
- 			continue;
- 
--		cpu_data->csd.func = zpci_handle_remote_irq;
--		cpu_data->csd.info = &cpu_data->scheduled;
--		cpu_data->csd.flags = 0;
-+		INIT_CSD(&cpu_data->csd, zpci_handle_remote_irq, &cpu_data->scheduled);
- 		smp_call_function_single_async(cpu, &cpu_data->csd);
- 	}
- }
-diff --git a/arch/x86/include/asm/topology.h b/arch/x86/include/asm/topology.h
-index f4234575f3fd..488a8e848754 100644
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -218,4 +218,9 @@ static inline void arch_set_max_freq_ratio(bool turbo_disabled)
- }
- #endif
- 
-+#ifdef CONFIG_ACPI_CPPC_LIB
-+void init_freq_invariance_cppc(void);
-+#define init_freq_invariance_cppc init_freq_invariance_cppc
-+#endif
-+
- #endif /* _ASM_X86_TOPOLOGY_H */
-diff --git a/arch/x86/kernel/cpuid.c b/arch/x86/kernel/cpuid.c
-index 3492aa36bf09..6f7b8cc1bc9f 100644
---- a/arch/x86/kernel/cpuid.c
-+++ b/arch/x86/kernel/cpuid.c
-@@ -74,10 +74,9 @@ static ssize_t cpuid_read(struct file *file, char __user *buf,
- 
- 	init_completion(&cmd.done);
- 	for (; count; count -= 16) {
--		call_single_data_t csd = {
--			.func = cpuid_smp_cpuid,
--			.info = &cmd,
--		};
-+		call_single_data_t csd;
-+
-+		INIT_CSD(&csd, cpuid_smp_cpuid, &cmd);
- 
- 		cmd.regs.eax = pos;
- 		cmd.regs.ecx = pos >> 32;
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index de776b2e6046..3577bb756d64 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -82,6 +82,10 @@
- #include <asm/hw_irq.h>
- #include <asm/stackprotector.h>
- 
-+#ifdef CONFIG_ACPI_CPPC_LIB
-+#include <acpi/cppc_acpi.h>
-+#endif
-+
- /* representing HT siblings of each logical CPU */
- DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_sibling_map);
- EXPORT_PER_CPU_SYMBOL(cpu_sibling_map);
-@@ -148,7 +152,7 @@ static inline void smpboot_restore_warm_reset_vector(void)
- 	*((volatile u32 *)phys_to_virt(TRAMPOLINE_PHYS_LOW)) = 0;
- }
- 
--static void init_freq_invariance(bool secondary);
-+static void init_freq_invariance(bool secondary, bool cppc_ready);
- 
- /*
-  * Report back to the Boot Processor during boot time or to the caller processor
-@@ -186,7 +190,7 @@ static void smp_callin(void)
- 	 */
- 	set_cpu_sibling_map(raw_smp_processor_id());
- 
--	init_freq_invariance(true);
-+	init_freq_invariance(true, false);
- 
- 	/*
- 	 * Get our bogomips.
-@@ -1340,7 +1344,7 @@ void __init native_smp_prepare_cpus(unsigned int max_cpus)
- 	set_sched_topology(x86_topology);
- 
- 	set_cpu_sibling_map(0);
--	init_freq_invariance(false);
-+	init_freq_invariance(false, false);
- 	smp_sanity_check();
- 
- 	switch (apic_intr_mode) {
-@@ -2027,6 +2031,48 @@ static bool intel_set_max_freq_ratio(void)
- 	return true;
- }
- 
-+#ifdef CONFIG_ACPI_CPPC_LIB
-+static bool amd_set_max_freq_ratio(void)
-+{
-+	struct cppc_perf_caps perf_caps;
-+	u64 highest_perf, nominal_perf;
-+	u64 perf_ratio;
-+	int rc;
-+
-+	rc = cppc_get_perf_caps(0, &perf_caps);
-+	if (rc) {
-+		pr_debug("Could not retrieve perf counters (%d)\n", rc);
-+		return false;
-+	}
-+
-+	highest_perf = perf_caps.highest_perf;
-+	nominal_perf = perf_caps.nominal_perf;
-+
-+	if (!highest_perf || !nominal_perf) {
-+		pr_debug("Could not retrieve highest or nominal performance\n");
-+		return false;
-+	}
-+
-+	perf_ratio = div_u64(highest_perf * SCHED_CAPACITY_SCALE, nominal_perf);
-+	/* midpoint between max_boost and max_P */
-+	perf_ratio = (perf_ratio + SCHED_CAPACITY_SCALE) >> 1;
-+	if (!perf_ratio) {
-+		pr_debug("Non-zero highest/nominal perf values led to a 0 ratio\n");
-+		return false;
-+	}
-+
-+	arch_turbo_freq_ratio = perf_ratio;
-+	arch_set_max_freq_ratio(false);
-+
-+	return true;
-+}
-+#else
-+static bool amd_set_max_freq_ratio(void)
-+{
-+	return false;
-+}
-+#endif
-+
- static void init_counter_refs(void)
- {
- 	u64 aperf, mperf;
-@@ -2038,7 +2084,7 @@ static void init_counter_refs(void)
- 	this_cpu_write(arch_prev_mperf, mperf);
- }
- 
--static void init_freq_invariance(bool secondary)
-+static void init_freq_invariance(bool secondary, bool cppc_ready)
- {
- 	bool ret = false;
- 
-@@ -2054,15 +2100,38 @@ static void init_freq_invariance(bool secondary)
- 
- 	if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
- 		ret = intel_set_max_freq_ratio();
-+	else if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD) {
-+		if (!cppc_ready) {
-+			return;
-+		}
-+		ret = amd_set_max_freq_ratio();
-+	}
- 
- 	if (ret) {
- 		init_counter_refs();
- 		static_branch_enable(&arch_scale_freq_key);
-+		pr_info("Estimated ratio of average max frequency by base frequency (times 1024): %llu\n", arch_max_freq_ratio);
- 	} else {
- 		pr_debug("Couldn't determine max cpu frequency, necessary for scale-invariant accounting.\n");
- 	}
- }
- 
-+#ifdef CONFIG_ACPI_CPPC_LIB
-+static DEFINE_MUTEX(freq_invariance_lock);
-+
-+void init_freq_invariance_cppc(void)
-+{
-+	static bool secondary;
-+
-+	mutex_lock(&freq_invariance_lock);
-+
-+	init_freq_invariance(secondary, true);
-+	secondary = true;
-+
-+	mutex_unlock(&freq_invariance_lock);
-+}
-+#endif
-+
- static void disable_freq_invariance_workfn(struct work_struct *work)
- {
- 	static_branch_disable(&arch_scale_freq_key);
-@@ -2112,7 +2181,7 @@ void arch_scale_freq_tick(void)
- 	schedule_work(&disable_freq_invariance_work);
- }
- #else
--static inline void init_freq_invariance(bool secondary)
-+static inline void init_freq_invariance(bool secondary, bool cppc_ready)
- {
- }
- #endif /* CONFIG_X86_64 */
-diff --git a/arch/x86/lib/msr-smp.c b/arch/x86/lib/msr-smp.c
-index fee8b9c0520c..75a0915b0d01 100644
---- a/arch/x86/lib/msr-smp.c
-+++ b/arch/x86/lib/msr-smp.c
-@@ -169,12 +169,11 @@ static void __wrmsr_safe_on_cpu(void *info)
- int rdmsr_safe_on_cpu(unsigned int cpu, u32 msr_no, u32 *l, u32 *h)
- {
- 	struct msr_info_completion rv;
--	call_single_data_t csd = {
--		.func	= __rdmsr_safe_on_cpu,
--		.info	= &rv,
--	};
-+	call_single_data_t csd;
- 	int err;
- 
-+	INIT_CSD(&csd, __rdmsr_safe_on_cpu, &rv);
-+
- 	memset(&rv, 0, sizeof(rv));
- 	init_completion(&rv.done);
- 	rv.msr.msr_no = msr_no;
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 55bcee5dc032..d35b3c0c876a 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -671,9 +671,7 @@ bool blk_mq_complete_request_remote(struct request *rq)
- 		return false;
- 
- 	if (blk_mq_complete_need_ipi(rq)) {
--		rq->csd.func = __blk_mq_complete_request_remote;
--		rq->csd.info = rq;
--		rq->csd.flags = 0;
-+		INIT_CSD(&rq->csd, __blk_mq_complete_request_remote, rq);
- 		smp_call_function_single_async(rq->mq_ctx->cpu, &rq->csd);
- 	} else {
- 		if (rq->q->nr_hw_queues > 1)
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index 7a99b19bb893..a852dc4927f7 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -39,6 +39,7 @@
- #include <linux/ktime.h>
- #include <linux/rwsem.h>
- #include <linux/wait.h>
-+#include <linux/topology.h>
- 
- #include <acpi/cppc_acpi.h>
- 
-@@ -688,6 +689,10 @@ static bool is_cppc_supported(int revision, int num_ent)
-  *	}
-  */
- 
-+#ifndef init_freq_invariance_cppc
-+static inline void init_freq_invariance_cppc(void) { }
-+#endif
-+
- /**
-  * acpi_cppc_processor_probe - Search for per CPU _CPC objects.
-  * @pr: Ptr to acpi_processor containing this CPU's logical ID.
-@@ -850,6 +855,8 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
- 		goto out_free;
- 	}
- 
-+	init_freq_invariance_cppc();
-+
- 	kfree(output.pointer);
- 	return 0;
- 
-diff --git a/drivers/cpuidle/coupled.c b/drivers/cpuidle/coupled.c
-index 04003b90dc49..74068742cef3 100644
---- a/drivers/cpuidle/coupled.c
-+++ b/drivers/cpuidle/coupled.c
-@@ -674,8 +674,7 @@ int cpuidle_coupled_register_device(struct cpuidle_device *dev)
- 	coupled->refcnt++;
- 
- 	csd = &per_cpu(cpuidle_coupled_poke_cb, dev->cpu);
--	csd->func = cpuidle_coupled_handle_poke;
--	csd->info = (void *)(unsigned long)dev->cpu;
-+	INIT_CSD(csd, cpuidle_coupled_handle_poke, (void *)(unsigned long)dev->cpu);
- 
- 	return 0;
- }
-diff --git a/drivers/gpu/drm/i915/i915_request.c b/drivers/gpu/drm/i915/i915_request.c
-index 0e813819b041..5385b081a376 100644
---- a/drivers/gpu/drm/i915/i915_request.c
-+++ b/drivers/gpu/drm/i915/i915_request.c
-@@ -197,7 +197,7 @@ __notify_execute_cb(struct i915_request *rq, bool (*fn)(struct irq_work *wrk))
- 
- 	llist_for_each_entry_safe(cb, cn,
- 				  llist_del_all(&rq->execute_cb),
--				  work.llnode)
-+				  work.node.llist)
- 		fn(&cb->work);
- }
- 
-@@ -460,7 +460,7 @@ __await_execution(struct i915_request *rq,
- 	 * callback first, then checking the ACTIVE bit, we serialise with
- 	 * the completed/retired request.
- 	 */
--	if (llist_add(&cb->work.llnode, &signal->execute_cb)) {
-+	if (llist_add(&cb->work.node.llist, &signal->execute_cb)) {
- 		if (i915_request_is_active(signal) ||
- 		    __request_in_flight(signal))
- 			__notify_execute_cb_imm(signal);
-diff --git a/drivers/net/ethernet/cavium/liquidio/lio_core.c b/drivers/net/ethernet/cavium/liquidio/lio_core.c
-index 9ef172976b35..37d064193f0f 100644
---- a/drivers/net/ethernet/cavium/liquidio/lio_core.c
-+++ b/drivers/net/ethernet/cavium/liquidio/lio_core.c
-@@ -729,13 +729,8 @@ static void liquidio_napi_drv_callback(void *arg)
- 	    droq->cpu_id == this_cpu) {
- 		napi_schedule_irqoff(&droq->napi);
- 	} else {
--		call_single_data_t *csd = &droq->csd;
--
--		csd->func = napi_schedule_wrapper;
--		csd->info = &droq->napi;
--		csd->flags = 0;
--
--		smp_call_function_single_async(droq->cpu_id, csd);
-+		INIT_CSD(&droq->csd, napi_schedule_wrapper, &droq->napi);
-+		smp_call_function_single_async(droq->cpu_id, &droq->csd);
- 	}
- }
- 
-diff --git a/fs/proc/array.c b/fs/proc/array.c
-index 65ec2029fa80..7052441be967 100644
---- a/fs/proc/array.c
-+++ b/fs/proc/array.c
-@@ -382,9 +382,9 @@ static inline void task_context_switch_counts(struct seq_file *m,
- static void task_cpus_allowed(struct seq_file *m, struct task_struct *task)
- {
- 	seq_printf(m, "Cpus_allowed:\t%*pb\n",
--		   cpumask_pr_args(task->cpus_ptr));
-+		   cpumask_pr_args(&task->cpus_mask));
- 	seq_printf(m, "Cpus_allowed_list:\t%*pbl\n",
--		   cpumask_pr_args(task->cpus_ptr));
-+		   cpumask_pr_args(&task->cpus_mask));
- }
- 
- static inline void task_core_dumping(struct seq_file *m, struct mm_struct *mm)
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index bc56287a1ed1..0042ef362511 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -152,6 +152,7 @@ enum cpuhp_state {
- 	CPUHP_AP_ONLINE,
- 	CPUHP_TEARDOWN_CPU,
- 	CPUHP_AP_ONLINE_IDLE,
-+	CPUHP_AP_SCHED_WAIT_EMPTY,
- 	CPUHP_AP_SMPBOOT_THREADS,
- 	CPUHP_AP_X86_VDSO_VMA_ONLINE,
- 	CPUHP_AP_IRQ_AFFINITY_ONLINE,
-diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-index f0d895d6ac39..383684e30f12 100644
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -199,6 +199,11 @@ static inline int cpumask_any_and_distribute(const struct cpumask *src1p,
- 	return cpumask_next_and(-1, src1p, src2p);
- }
- 
-+static inline int cpumask_any_distribute(const struct cpumask *srcp)
-+{
-+	return cpumask_first(srcp);
-+}
-+
- #define for_each_cpu(cpu, mask)			\
- 	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask)
- #define for_each_cpu_not(cpu, mask)		\
-@@ -252,6 +257,7 @@ int cpumask_any_but(const struct cpumask *mask, unsigned int cpu);
- unsigned int cpumask_local_spread(unsigned int i, int node);
- int cpumask_any_and_distribute(const struct cpumask *src1p,
- 			       const struct cpumask *src2p);
-+int cpumask_any_distribute(const struct cpumask *srcp);
- 
- /**
-  * for_each_cpu - iterate over every cpu in a mask
-diff --git a/include/linux/irq_work.h b/include/linux/irq_work.h
-index 30823780c192..ec2a47a81e42 100644
---- a/include/linux/irq_work.h
-+++ b/include/linux/irq_work.h
-@@ -14,28 +14,37 @@
-  */
- 
- struct irq_work {
--	union {
--		struct __call_single_node node;
--		struct {
--			struct llist_node llnode;
--			atomic_t flags;
--		};
--	};
-+	struct __call_single_node node;
- 	void (*func)(struct irq_work *);
- };
- 
-+#define __IRQ_WORK_INIT(_func, _flags) (struct irq_work){	\
-+	.node = { .u_flags = (_flags), },			\
-+	.func = (_func),					\
-+}
-+
-+#define IRQ_WORK_INIT(_func) __IRQ_WORK_INIT(_func, 0)
-+#define IRQ_WORK_INIT_LAZY(_func) __IRQ_WORK_INIT(_func, IRQ_WORK_LAZY)
-+#define IRQ_WORK_INIT_HARD(_func) __IRQ_WORK_INIT(_func, IRQ_WORK_HARD_IRQ)
-+
-+#define DEFINE_IRQ_WORK(name, _f)				\
-+	struct irq_work name = IRQ_WORK_INIT(_f)
-+
- static inline
- void init_irq_work(struct irq_work *work, void (*func)(struct irq_work *))
- {
--	atomic_set(&work->flags, 0);
--	work->func = func;
-+	*work = IRQ_WORK_INIT(func);
- }
- 
--#define DEFINE_IRQ_WORK(name, _f) struct irq_work name = {	\
--		.flags = ATOMIC_INIT(0),			\
--		.func  = (_f)					\
-+static inline bool irq_work_is_pending(struct irq_work *work)
-+{
-+	return atomic_read(&work->node.a_flags) & IRQ_WORK_PENDING;
- }
- 
-+static inline bool irq_work_is_busy(struct irq_work *work)
-+{
-+	return atomic_read(&work->node.a_flags) & IRQ_WORK_BUSY;
-+}
- 
- bool irq_work_queue(struct irq_work *work);
- bool irq_work_queue_on(struct irq_work *work, int cpu);
-diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
-index 3ed4e8771b64..8de0e1373de7 100644
---- a/include/linux/irqflags.h
-+++ b/include/linux/irqflags.h
-@@ -107,14 +107,14 @@ do {						\
- 		  current->irq_config = 0;			\
- 	  } while (0)
- 
--# define lockdep_irq_work_enter(__work)					\
-+# define lockdep_irq_work_enter(_flags)					\
- 	  do {								\
--		  if (!(atomic_read(&__work->flags) & IRQ_WORK_HARD_IRQ))\
-+		  if (!((_flags) & IRQ_WORK_HARD_IRQ))			\
- 			current->irq_config = 1;			\
- 	  } while (0)
--# define lockdep_irq_work_exit(__work)					\
-+# define lockdep_irq_work_exit(_flags)					\
- 	  do {								\
--		  if (!(atomic_read(&__work->flags) & IRQ_WORK_HARD_IRQ))\
-+		  if (!((_flags) & IRQ_WORK_HARD_IRQ))			\
- 			current->irq_config = 0;			\
- 	  } while (0)
- 
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 2f05e9128201..665837f9a831 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -204,6 +204,7 @@ extern int _cond_resched(void);
- extern void ___might_sleep(const char *file, int line, int preempt_offset);
- extern void __might_sleep(const char *file, int line, int preempt_offset);
- extern void __cant_sleep(const char *file, int line, int preempt_offset);
-+extern void __cant_migrate(const char *file, int line);
- 
- /**
-  * might_sleep - annotation for functions that can sleep
-@@ -227,6 +228,18 @@ extern void __cant_sleep(const char *file, int line, int preempt_offset);
- # define cant_sleep() \
- 	do { __cant_sleep(__FILE__, __LINE__, 0); } while (0)
- # define sched_annotate_sleep()	(current->task_state_change = 0)
-+
-+/**
-+ * cant_migrate - annotation for functions that cannot migrate
-+ *
-+ * Will print a stack trace if executed in code which is migratable
-+ */
-+# define cant_migrate()							\
-+	do {								\
-+		if (IS_ENABLED(CONFIG_SMP))				\
-+			__cant_migrate(__FILE__, __LINE__);		\
-+	} while (0)
-+
- /**
-  * non_block_start - annotate the start of section where sleeping is prohibited
-  *
-@@ -251,6 +264,7 @@ extern void __cant_sleep(const char *file, int line, int preempt_offset);
- 				   int preempt_offset) { }
- # define might_sleep() do { might_resched(); } while (0)
- # define cant_sleep() do { } while (0)
-+# define cant_migrate()		do { } while (0)
- # define sched_annotate_sleep() do { } while (0)
- # define non_block_start() do { } while (0)
- # define non_block_end() do { } while (0)
-@@ -258,13 +272,6 @@ extern void __cant_sleep(const char *file, int line, int preempt_offset);
- 
- #define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
- 
--#ifndef CONFIG_PREEMPT_RT
--# define cant_migrate()		cant_sleep()
--#else
--  /* Placeholder for now */
--# define cant_migrate()		do { } while (0)
--#endif
--
- /**
-  * abs - return absolute value of an argument
-  * @x: the value.  If it is unsigned type, it is converted to signed type first.
-diff --git a/include/linux/preempt.h b/include/linux/preempt.h
-index 7d9c1c0e149c..6df63cbe8bb0 100644
---- a/include/linux/preempt.h
-+++ b/include/linux/preempt.h
-@@ -322,34 +322,71 @@ static inline void preempt_notifier_init(struct preempt_notifier *notifier,
- 
- #endif
- 
--/**
-- * migrate_disable - Prevent migration of the current task
-+#ifdef CONFIG_SMP
-+
-+/*
-+ * Migrate-Disable and why it is undesired.
-  *
-- * Maps to preempt_disable() which also disables preemption. Use
-- * migrate_disable() to annotate that the intent is to prevent migration,
-- * but not necessarily preemption.
-+ * When a preempted task becomes elegible to run under the ideal model (IOW it
-+ * becomes one of the M highest priority tasks), it might still have to wait
-+ * for the preemptee's migrate_disable() section to complete. Thereby suffering
-+ * a reduction in bandwidth in the exact duration of the migrate_disable()
-+ * section.
-  *
-- * Can be invoked nested like preempt_disable() and needs the corresponding
-- * number of migrate_enable() invocations.
-- */
--static __always_inline void migrate_disable(void)
--{
--	preempt_disable();
--}
--
--/**
-- * migrate_enable - Allow migration of the current task
-+ * Per this argument, the change from preempt_disable() to migrate_disable()
-+ * gets us:
-+ *
-+ * - a higher priority tasks gains reduced wake-up latency; with preempt_disable()
-+ *   it would have had to wait for the lower priority task.
-+ *
-+ * - a lower priority tasks; which under preempt_disable() could've instantly
-+ *   migrated away when another CPU becomes available, is now constrained
-+ *   by the ability to push the higher priority task away, which might itself be
-+ *   in a migrate_disable() section, reducing it's available bandwidth.
-+ *
-+ * IOW it trades latency / moves the interference term, but it stays in the
-+ * system, and as long as it remains unbounded, the system is not fully
-+ * deterministic.
-+ *
-+ *
-+ * The reason we have it anyway.
-  *
-- * Counterpart to migrate_disable().
-+ * PREEMPT_RT breaks a number of assumptions traditionally held. By forcing a
-+ * number of primitives into becoming preemptible, they would also allow
-+ * migration. This turns out to break a bunch of per-cpu usage. To this end,
-+ * all these primitives employ migirate_disable() to restore this implicit
-+ * assumption.
-  *
-- * As migrate_disable() can be invoked nested, only the outermost invocation
-- * reenables migration.
-+ * This is a 'temporary' work-around at best. The correct solution is getting
-+ * rid of the above assumptions and reworking the code to employ explicit
-+ * per-cpu locking or short preempt-disable regions.
-+ *
-+ * The end goal must be to get rid of migrate_disable(), alternatively we need
-+ * a schedulability theory that does not depend on abritrary migration.
-+ *
-+ *
-+ * Notes on the implementation.
-+ *
-+ * The implementation is particularly tricky since existing code patterns
-+ * dictate neither migrate_disable() nor migrate_enable() is allowed to block.
-+ * This means that it cannot use cpus_read_lock() to serialize against hotplug,
-+ * nor can it easily migrate itself into a pending affinity mask change on
-+ * migrate_enable().
-+ *
-+ *
-+ * Note: even non-work-conserving schedulers like semi-partitioned depends on
-+ *       migration, so migrate_disable() is not only a problem for
-+ *       work-conserving schedulers.
-  *
-- * Currently mapped to preempt_enable().
-  */
--static __always_inline void migrate_enable(void)
--{
--	preempt_enable();
--}
-+extern void migrate_disable(void);
-+extern void migrate_enable(void);
-+
-+#else
-+
-+static inline void migrate_disable(void) { }
-+static inline void migrate_enable(void) { }
-+
-+#endif /* CONFIG_SMP */
- 
- #endif /* __LINUX_PREEMPT_H */
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 76cd21fa5501..942b87f80cc7 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -722,6 +722,11 @@ struct task_struct {
- 	int				nr_cpus_allowed;
- 	const cpumask_t			*cpus_ptr;
- 	cpumask_t			cpus_mask;
-+	void				*migration_pending;
-+#ifdef CONFIG_SMP
-+	unsigned short			migration_disabled;
-+#endif
-+	unsigned short			migration_flags;
- 
- #ifdef CONFIG_PREEMPT_RCU
- 	int				rcu_read_lock_nesting;
-diff --git a/include/linux/sched/hotplug.h b/include/linux/sched/hotplug.h
-index 9a62ffdd296f..412cdaba33eb 100644
---- a/include/linux/sched/hotplug.h
-+++ b/include/linux/sched/hotplug.h
-@@ -11,8 +11,10 @@ extern int sched_cpu_activate(unsigned int cpu);
- extern int sched_cpu_deactivate(unsigned int cpu);
- 
- #ifdef CONFIG_HOTPLUG_CPU
-+extern int sched_cpu_wait_empty(unsigned int cpu);
- extern int sched_cpu_dying(unsigned int cpu);
- #else
-+# define sched_cpu_wait_empty	NULL
- # define sched_cpu_dying	NULL
- #endif
- 
-diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-index d5ece7a9a403..a91fb3ad9ec7 100644
---- a/include/linux/sched/mm.h
-+++ b/include/linux/sched/mm.h
-@@ -347,6 +347,8 @@ static inline void membarrier_mm_sync_core_before_usermode(struct mm_struct *mm)
- 
- extern void membarrier_exec_mmap(struct mm_struct *mm);
- 
-+extern void membarrier_update_current_mm(struct mm_struct *next_mm);
-+
- #else
- #ifdef CONFIG_ARCH_HAS_MEMBARRIER_CALLBACKS
- static inline void membarrier_arch_switch_mm(struct mm_struct *prev,
-@@ -361,6 +363,9 @@ static inline void membarrier_exec_mmap(struct mm_struct *mm)
- static inline void membarrier_mm_sync_core_before_usermode(struct mm_struct *mm)
- {
- }
-+static inline void membarrier_update_current_mm(struct mm_struct *next_mm)
-+{
-+}
- #endif
- 
- #endif /* _LINUX_SCHED_MM_H */
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index 9ef7bf686a9f..8f0f778b7c91 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -225,6 +225,14 @@ static inline bool cpus_share_cache(int this_cpu, int that_cpu)
- 
- #endif	/* !CONFIG_SMP */
- 
-+#if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
-+extern void rebuild_sched_domains_energy(void);
-+#else
-+static inline void rebuild_sched_domains_energy(void)
-+{
-+}
-+#endif
-+
- #ifndef arch_scale_cpu_capacity
- /**
-  * arch_scale_cpu_capacity - get the capacity scale factor of a given CPU.
-diff --git a/include/linux/smp.h b/include/linux/smp.h
-index 9f13966d3d92..70c6f6284dcf 100644
---- a/include/linux/smp.h
-+++ b/include/linux/smp.h
-@@ -21,24 +21,23 @@ typedef bool (*smp_cond_func_t)(int cpu, void *info);
-  * structure shares (partial) layout with struct irq_work
-  */
- struct __call_single_data {
--	union {
--		struct __call_single_node node;
--		struct {
--			struct llist_node llist;
--			unsigned int flags;
--#ifdef CONFIG_64BIT
--			u16 src, dst;
--#endif
--		};
--	};
-+	struct __call_single_node node;
- 	smp_call_func_t func;
- 	void *info;
- };
- 
-+#define CSD_INIT(_func, _info) \
-+	(struct __call_single_data){ .func = (_func), .info = (_info), }
-+
- /* Use __aligned() to avoid to use 2 cache lines for 1 csd */
- typedef struct __call_single_data call_single_data_t
- 	__aligned(sizeof(struct __call_single_data));
- 
-+#define INIT_CSD(_csd, _func, _info)		\
-+do {						\
-+	*(_csd) = CSD_INIT((_func), (_info));	\
-+} while (0)
-+
- /*
-  * Enqueue a llist_node on the call_single_queue; be very careful, read
-  * flush_smp_call_function_queue() in detail.
-diff --git a/include/linux/stop_machine.h b/include/linux/stop_machine.h
-index 76d8b09384a7..30577c3aecf8 100644
---- a/include/linux/stop_machine.h
-+++ b/include/linux/stop_machine.h
-@@ -24,6 +24,7 @@ typedef int (*cpu_stop_fn_t)(void *arg);
- struct cpu_stop_work {
- 	struct list_head	list;		/* cpu_stopper->works */
- 	cpu_stop_fn_t		fn;
-+	unsigned long		caller;
- 	void			*arg;
- 	struct cpu_stop_done	*done;
- };
-@@ -36,6 +37,8 @@ void stop_machine_park(int cpu);
- void stop_machine_unpark(int cpu);
- void stop_machine_yield(const struct cpumask *cpumask);
- 
-+extern void print_stop_info(const char *log_lvl, struct task_struct *task);
-+
- #else	/* CONFIG_SMP */
- 
- #include <linux/workqueue.h>
-@@ -80,6 +83,8 @@ static inline bool stop_one_cpu_nowait(unsigned int cpu,
- 	return false;
- }
- 
-+static inline void print_stop_info(const char *log_lvl, struct task_struct *task) { }
-+
- #endif	/* CONFIG_SMP */
- 
- /*
-diff --git a/include/uapi/linux/sched/types.h b/include/uapi/linux/sched/types.h
-index c852153ddb0d..f2c4589d4dbf 100644
---- a/include/uapi/linux/sched/types.h
-+++ b/include/uapi/linux/sched/types.h
-@@ -96,6 +96,8 @@ struct sched_param {
-  * on a CPU with a capacity big enough to fit the specified value.
-  * A task with a max utilization value smaller than 1024 is more likely
-  * scheduled on a CPU with no more capacity than the specified value.
-+ *
-+ * A task utilization boundary can be reset by setting the attribute to -1.
-  */
- struct sched_attr {
- 	__u32 size;
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 06065fa27124..599041cd0c8a 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -298,7 +298,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
- 	if (irqs_disabled()) {
- 		if (!IS_ENABLED(CONFIG_PREEMPT_RT)) {
- 			work = this_cpu_ptr(&up_read_work);
--			if (atomic_read(&work->irq_work.flags) & IRQ_WORK_BUSY) {
-+			if (irq_work_is_busy(&work->irq_work)) {
- 				/* cannot queue more up_read, fallback */
- 				irq_work_busy = true;
- 			}
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 57b5b5d0a5fd..53c70c470a38 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -983,25 +983,48 @@ partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
-  */
- static void rebuild_sched_domains_locked(void)
- {
-+	struct cgroup_subsys_state *pos_css;
- 	struct sched_domain_attr *attr;
- 	cpumask_var_t *doms;
-+	struct cpuset *cs;
- 	int ndoms;
- 
- 	lockdep_assert_cpus_held();
- 	percpu_rwsem_assert_held(&cpuset_rwsem);
- 
- 	/*
--	 * We have raced with CPU hotplug. Don't do anything to avoid
-+	 * If we have raced with CPU hotplug, return early to avoid
- 	 * passing doms with offlined cpu to partition_sched_domains().
--	 * Anyways, hotplug work item will rebuild sched domains.
-+	 * Anyways, cpuset_hotplug_workfn() will rebuild sched domains.
-+	 *
-+	 * With no CPUs in any subpartitions, top_cpuset's effective CPUs
-+	 * should be the same as the active CPUs, so checking only top_cpuset
-+	 * is enough to detect racing CPU offlines.
- 	 */
- 	if (!top_cpuset.nr_subparts_cpus &&
- 	    !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
- 		return;
- 
--	if (top_cpuset.nr_subparts_cpus &&
--	   !cpumask_subset(top_cpuset.effective_cpus, cpu_active_mask))
--		return;
-+	/*
-+	 * With subpartition CPUs, however, the effective CPUs of a partition
-+	 * root should be only a subset of the active CPUs.  Since a CPU in any
-+	 * partition root could be offlined, all must be checked.
-+	 */
-+	if (top_cpuset.nr_subparts_cpus) {
-+		rcu_read_lock();
-+		cpuset_for_each_descendant_pre(cs, pos_css, &top_cpuset) {
-+			if (!is_partition_root(cs)) {
-+				pos_css = css_rightmost_descendant(pos_css);
-+				continue;
-+			}
-+			if (!cpumask_subset(cs->effective_cpus,
-+					    cpu_active_mask)) {
-+				rcu_read_unlock();
-+				return;
-+			}
-+		}
-+		rcu_read_unlock();
-+	}
- 
- 	/* Generate domain masks and attrs */
- 	ndoms = generate_sched_domains(&doms, &attr);
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 6ff2578ecf17..fa535eaa4826 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -1602,7 +1602,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
- 		.name			= "ap:online",
- 	},
- 	/*
--	 * Handled on controll processor until the plugged processor manages
-+	 * Handled on control processor until the plugged processor manages
- 	 * this itself.
- 	 */
- 	[CPUHP_TEARDOWN_CPU] = {
-@@ -1611,6 +1611,13 @@ static struct cpuhp_step cpuhp_hp_states[] = {
- 		.teardown.single	= takedown_cpu,
- 		.cant_stop		= true,
- 	},
-+
-+	[CPUHP_AP_SCHED_WAIT_EMPTY] = {
-+		.name			= "sched:waitempty",
-+		.startup.single		= NULL,
-+		.teardown.single	= sched_cpu_wait_empty,
-+	},
-+
- 	/* Handle smpboot threads park/unpark */
- 	[CPUHP_AP_SMPBOOT_THREADS] = {
- 		.name			= "smpboot/threads:online",
-diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-index 1e75a8923a8d..af6e8b4fb359 100644
---- a/kernel/debug/debug_core.c
-+++ b/kernel/debug/debug_core.c
-@@ -225,8 +225,6 @@ NOKPROBE_SYMBOL(kgdb_skipexception);
-  * Default (weak) implementation for kgdb_roundup_cpus
-  */
- 
--static DEFINE_PER_CPU(call_single_data_t, kgdb_roundup_csd);
--
- void __weak kgdb_call_nmi_hook(void *ignored)
- {
- 	/*
-@@ -241,6 +239,9 @@ void __weak kgdb_call_nmi_hook(void *ignored)
- }
- NOKPROBE_SYMBOL(kgdb_call_nmi_hook);
- 
-+static DEFINE_PER_CPU(call_single_data_t, kgdb_roundup_csd) =
-+	CSD_INIT(kgdb_call_nmi_hook, NULL);
-+
- void __weak kgdb_roundup_cpus(void)
- {
- 	call_single_data_t *csd;
-@@ -267,7 +268,6 @@ void __weak kgdb_roundup_cpus(void)
- 			continue;
- 		kgdb_info[cpu].rounding_up = true;
- 
--		csd->func = kgdb_call_nmi_hook;
- 		ret = smp_call_function_single_async(cpu, csd);
- 		if (ret)
- 			kgdb_info[cpu].rounding_up = false;
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 1f236ed375f8..3594291a8542 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -478,10 +478,24 @@ static void exit_mm(void)
- 	BUG_ON(mm != current->active_mm);
- 	/* more a memory barrier than a real lock */
- 	task_lock(current);
-+	/*
-+	 * When a thread stops operating on an address space, the loop
-+	 * in membarrier_private_expedited() may not observe that
-+	 * tsk->mm, and the loop in membarrier_global_expedited() may
-+	 * not observe a MEMBARRIER_STATE_GLOBAL_EXPEDITED
-+	 * rq->membarrier_state, so those would not issue an IPI.
-+	 * Membarrier requires a memory barrier after accessing
-+	 * user-space memory, before clearing tsk->mm or the
-+	 * rq->membarrier_state.
-+	 */
-+	smp_mb__after_spinlock();
-+	local_irq_disable();
- 	current->mm = NULL;
--	mmap_read_unlock(mm);
-+	membarrier_update_current_mm(NULL);
- 	enter_lazy_tlb(mm, current);
-+	local_irq_enable();
- 	task_unlock(current);
-+	mmap_read_unlock(mm);
- 	mm_update_next_owner(mm);
- 	mmput(mm);
- 	if (test_thread_flag(TIF_MEMDIE))
-diff --git a/kernel/irq_work.c b/kernel/irq_work.c
-index eca83965b631..e8da1e71583a 100644
---- a/kernel/irq_work.c
-+++ b/kernel/irq_work.c
-@@ -31,10 +31,10 @@ static bool irq_work_claim(struct irq_work *work)
- {
- 	int oflags;
- 
--	oflags = atomic_fetch_or(IRQ_WORK_CLAIMED | CSD_TYPE_IRQ_WORK, &work->flags);
-+	oflags = atomic_fetch_or(IRQ_WORK_CLAIMED | CSD_TYPE_IRQ_WORK, &work->node.a_flags);
- 	/*
- 	 * If the work is already pending, no need to raise the IPI.
--	 * The pairing atomic_fetch_andnot() in irq_work_run() makes sure
-+	 * The pairing smp_mb() in irq_work_single() makes sure
- 	 * everything we did before is visible.
- 	 */
- 	if (oflags & IRQ_WORK_PENDING)
-@@ -53,12 +53,12 @@ void __weak arch_irq_work_raise(void)
- static void __irq_work_queue_local(struct irq_work *work)
- {
- 	/* If the work is "lazy", handle it from next tick if any */
--	if (atomic_read(&work->flags) & IRQ_WORK_LAZY) {
--		if (llist_add(&work->llnode, this_cpu_ptr(&lazy_list)) &&
-+	if (atomic_read(&work->node.a_flags) & IRQ_WORK_LAZY) {
-+		if (llist_add(&work->node.llist, this_cpu_ptr(&lazy_list)) &&
- 		    tick_nohz_tick_stopped())
- 			arch_irq_work_raise();
- 	} else {
--		if (llist_add(&work->llnode, this_cpu_ptr(&raised_list)))
-+		if (llist_add(&work->node.llist, this_cpu_ptr(&raised_list)))
- 			arch_irq_work_raise();
- 	}
- }
-@@ -102,7 +102,7 @@ bool irq_work_queue_on(struct irq_work *work, int cpu)
- 	if (cpu != smp_processor_id()) {
- 		/* Arch remote IPI send/receive backend aren't NMI safe */
- 		WARN_ON_ONCE(in_nmi());
--		__smp_call_single_queue(cpu, &work->llnode);
-+		__smp_call_single_queue(cpu, &work->node.llist);
- 	} else {
- 		__irq_work_queue_local(work);
- 	}
-@@ -136,23 +136,28 @@ void irq_work_single(void *arg)
- 	int flags;
- 
- 	/*
--	 * Clear the PENDING bit, after this point the @work
--	 * can be re-used.
--	 * Make it immediately visible so that other CPUs trying
--	 * to claim that work don't rely on us to handle their data
--	 * while we are in the middle of the func.
-+	 * Clear the PENDING bit, after this point the @work can be re-used.
-+	 * The PENDING bit acts as a lock, and we own it, so we can clear it
-+	 * without atomic ops.
- 	 */
--	flags = atomic_fetch_andnot(IRQ_WORK_PENDING, &work->flags);
-+	flags = atomic_read(&work->node.a_flags);
-+	flags &= ~IRQ_WORK_PENDING;
-+	atomic_set(&work->node.a_flags, flags);
-+
-+	/*
-+	 * See irq_work_claim().
-+	 */
-+	smp_mb();
- 
--	lockdep_irq_work_enter(work);
-+	lockdep_irq_work_enter(flags);
- 	work->func(work);
--	lockdep_irq_work_exit(work);
-+	lockdep_irq_work_exit(flags);
-+
- 	/*
--	 * Clear the BUSY bit and return to the free state if
--	 * no-one else claimed it meanwhile.
-+	 * Clear the BUSY bit, if set, and return to the free state if no-one
-+	 * else claimed it meanwhile.
- 	 */
--	flags &= ~IRQ_WORK_PENDING;
--	(void)atomic_cmpxchg(&work->flags, flags, flags & ~IRQ_WORK_BUSY);
-+	(void)atomic_cmpxchg(&work->node.a_flags, flags, flags & ~IRQ_WORK_BUSY);
- }
- 
- static void irq_work_run_list(struct llist_head *list)
-@@ -166,7 +171,7 @@ static void irq_work_run_list(struct llist_head *list)
- 		return;
- 
- 	llnode = llist_del_all(list);
--	llist_for_each_entry_safe(work, tmp, llnode, llnode)
-+	llist_for_each_entry_safe(work, tmp, llnode, node.llist)
- 		irq_work_single(work);
- }
- 
-@@ -198,7 +203,7 @@ void irq_work_sync(struct irq_work *work)
- {
- 	lockdep_assert_irqs_enabled();
- 
--	while (atomic_read(&work->flags) & IRQ_WORK_BUSY)
-+	while (irq_work_is_busy(work))
- 		cpu_relax();
- }
- EXPORT_SYMBOL_GPL(irq_work_sync);
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 933a625621b8..e6aa66551241 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -1249,6 +1249,7 @@ void kthread_use_mm(struct mm_struct *mm)
- 		tsk->active_mm = mm;
- 	}
- 	tsk->mm = mm;
-+	membarrier_update_current_mm(mm);
- 	switch_mm_irqs_off(active_mm, mm, tsk);
- 	local_irq_enable();
- 	task_unlock(tsk);
-@@ -1256,8 +1257,19 @@ void kthread_use_mm(struct mm_struct *mm)
- 	finish_arch_post_lock_switch();
- #endif
- 
-+	/*
-+	 * When a kthread starts operating on an address space, the loop
-+	 * in membarrier_{private,global}_expedited() may not observe
-+	 * that tsk->mm, and not issue an IPI. Membarrier requires a
-+	 * memory barrier after storing to tsk->mm, before accessing
-+	 * user-space memory. A full memory barrier for membarrier
-+	 * {PRIVATE,GLOBAL}_EXPEDITED is implicitly provided by
-+	 * mmdrop(), or explicitly with smp_mb().
-+	 */
- 	if (active_mm != mm)
- 		mmdrop(active_mm);
-+	else
-+		smp_mb();
- 
- 	to_kthread(tsk)->oldfs = force_uaccess_begin();
- }
-@@ -1277,9 +1289,18 @@ void kthread_unuse_mm(struct mm_struct *mm)
- 	force_uaccess_end(to_kthread(tsk)->oldfs);
- 
- 	task_lock(tsk);
-+	/*
-+	 * When a kthread stops operating on an address space, the loop
-+	 * in membarrier_{private,global}_expedited() may not observe
-+	 * that tsk->mm, and not issue an IPI. Membarrier requires a
-+	 * memory barrier after accessing user-space memory, before
-+	 * clearing tsk->mm.
-+	 */
-+	smp_mb__after_spinlock();
- 	sync_mm_rss(mm);
- 	local_irq_disable();
- 	tsk->mm = NULL;
-+	membarrier_update_current_mm(NULL);
- 	/* active_mm is still 'mm' */
- 	enter_lazy_tlb(mm, tsk);
- 	local_irq_enable();
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index fe64a49344bf..9ef23d4b07c7 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -3025,10 +3025,8 @@ static void wake_up_klogd_work_func(struct irq_work *irq_work)
- 		wake_up_interruptible(&log_wait);
- }
- 
--static DEFINE_PER_CPU(struct irq_work, wake_up_klogd_work) = {
--	.func = wake_up_klogd_work_func,
--	.flags = ATOMIC_INIT(IRQ_WORK_LAZY),
--};
-+static DEFINE_PER_CPU(struct irq_work, wake_up_klogd_work) =
-+	IRQ_WORK_INIT_LAZY(wake_up_klogd_work_func);
- 
- void wake_up_klogd(void)
- {
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index bd04b09b84b3..ed4941f0bd59 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1311,8 +1311,6 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
- 		if (IS_ENABLED(CONFIG_IRQ_WORK) &&
- 		    !rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
- 		    (rnp->ffmask & rdp->grpmask)) {
--			init_irq_work(&rdp->rcu_iw, rcu_iw_handler);
--			atomic_set(&rdp->rcu_iw.flags, IRQ_WORK_HARD_IRQ);
- 			rdp->rcu_iw_pending = true;
- 			rdp->rcu_iw_gp_seq = rnp->gp_seq;
- 			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
-@@ -3964,6 +3962,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
- 	rdp->cpu_no_qs.b.norm = true;
- 	rdp->core_needs_qs = false;
- 	rdp->rcu_iw_pending = false;
-+	rdp->rcu_iw = IRQ_WORK_INIT_HARD(rcu_iw_handler);
- 	rdp->rcu_iw_gp_seq = rdp->gp_seq - 1;
- 	trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("cpuonl"));
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index e7e453492cff..7af80c3fce12 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -97,7 +97,7 @@ int sysctl_sched_rt_runtime = 950000;
-  *
-  * Normal scheduling state is serialized by rq->lock. __schedule() takes the
-  * local CPU's rq->lock, it optionally removes the task from the runqueue and
-- * always looks at the local rq data structures to find the most elegible task
-+ * always looks at the local rq data structures to find the most eligible task
-  * to run next.
-  *
-  * Task enqueue is also under rq->lock, possibly taken from another CPU.
-@@ -320,14 +320,6 @@ void update_rq_clock(struct rq *rq)
- 	update_rq_clock_task(rq, delta);
- }
- 
--static inline void
--rq_csd_init(struct rq *rq, call_single_data_t *csd, smp_call_func_t func)
--{
--	csd->flags = 0;
--	csd->func = func;
--	csd->info = rq;
--}
--
- #ifdef CONFIG_SCHED_HRTICK
- /*
-  * Use HR-timers to deliver accurate preemption points.
-@@ -428,7 +420,7 @@ void hrtick_start(struct rq *rq, u64 delay)
- static void hrtick_rq_init(struct rq *rq)
- {
- #ifdef CONFIG_SMP
--	rq_csd_init(rq, &rq->hrtick_csd, __hrtick_start);
-+	INIT_CSD(&rq->hrtick_csd, __hrtick_start, rq);
- #endif
- 	hrtimer_init(&rq->hrtick_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
- 	rq->hrtick_timer.function = hrtick;
-@@ -518,7 +510,7 @@ static bool __wake_q_add(struct wake_q_head *head, struct task_struct *task)
- 
- 	/*
- 	 * Atomically grab the task, if ->wake_q is !nil already it means
--	 * its already queued (either by us or someone else) and will get the
-+	 * it's already queued (either by us or someone else) and will get the
- 	 * wakeup due to that.
- 	 *
- 	 * In order to ensure that a pending wakeup will observe our pending
-@@ -769,7 +761,7 @@ bool sched_can_stop_tick(struct rq *rq)
- 		return false;
- 
- 	/*
--	 * If there are more than one RR tasks, we need the tick to effect the
-+	 * If there are more than one RR tasks, we need the tick to affect the
- 	 * actual RR behaviour.
- 	 */
- 	if (rq->rt.rr_nr_running) {
-@@ -1187,14 +1179,14 @@ static inline void uclamp_rq_dec_id(struct rq *rq, struct task_struct *p,
- 	 * accounting was performed at enqueue time and we can just return
- 	 * here.
- 	 *
--	 * Need to be careful of the following enqeueue/dequeue ordering
-+	 * Need to be careful of the following enqueue/dequeue ordering
- 	 * problem too
- 	 *
- 	 *	enqueue(taskA)
- 	 *	// sched_uclamp_used gets enabled
- 	 *	enqueue(taskB)
- 	 *	dequeue(taskA)
--	 *	// Must not decrement bukcet->tasks here
-+	 *	// Must not decrement bucket->tasks here
- 	 *	dequeue(taskB)
- 	 *
- 	 * where we could end up with stale data in uc_se and
-@@ -1413,17 +1405,24 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
- static int uclamp_validate(struct task_struct *p,
- 			   const struct sched_attr *attr)
- {
--	unsigned int lower_bound = p->uclamp_req[UCLAMP_MIN].value;
--	unsigned int upper_bound = p->uclamp_req[UCLAMP_MAX].value;
-+	int util_min = p->uclamp_req[UCLAMP_MIN].value;
-+	int util_max = p->uclamp_req[UCLAMP_MAX].value;
- 
--	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN)
--		lower_bound = attr->sched_util_min;
--	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX)
--		upper_bound = attr->sched_util_max;
-+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-+		util_min = attr->sched_util_min;
- 
--	if (lower_bound > upper_bound)
--		return -EINVAL;
--	if (upper_bound > SCHED_CAPACITY_SCALE)
-+		if (util_min + 1 > SCHED_CAPACITY_SCALE + 1)
-+			return -EINVAL;
-+	}
-+
-+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
-+		util_max = attr->sched_util_max;
-+
-+		if (util_max + 1 > SCHED_CAPACITY_SCALE + 1)
-+			return -EINVAL;
-+	}
-+
-+	if (util_min != -1 && util_max != -1 && util_min > util_max)
- 		return -EINVAL;
- 
- 	/*
-@@ -1438,20 +1437,41 @@ static int uclamp_validate(struct task_struct *p,
- 	return 0;
- }
- 
-+static bool uclamp_reset(const struct sched_attr *attr,
-+			 enum uclamp_id clamp_id,
-+			 struct uclamp_se *uc_se)
-+{
-+	/* Reset on sched class change for a non user-defined clamp value. */
-+	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)) &&
-+	    !uc_se->user_defined)
-+		return true;
-+
-+	/* Reset on sched_util_{min,max} == -1. */
-+	if (clamp_id == UCLAMP_MIN &&
-+	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN &&
-+	    attr->sched_util_min == -1) {
-+		return true;
-+	}
-+
-+	if (clamp_id == UCLAMP_MAX &&
-+	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX &&
-+	    attr->sched_util_max == -1) {
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
- static void __setscheduler_uclamp(struct task_struct *p,
- 				  const struct sched_attr *attr)
- {
- 	enum uclamp_id clamp_id;
- 
--	/*
--	 * On scheduling class change, reset to default clamps for tasks
--	 * without a task-specific value.
--	 */
- 	for_each_clamp_id(clamp_id) {
- 		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
-+		unsigned int value;
- 
--		/* Keep using defined clamps across class changes */
--		if (uc_se->user_defined)
-+		if (!uclamp_reset(attr, clamp_id, uc_se))
- 			continue;
- 
- 		/*
-@@ -1459,21 +1479,25 @@ static void __setscheduler_uclamp(struct task_struct *p,
- 		 * at runtime.
- 		 */
- 		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
--			__uclamp_update_util_min_rt_default(p);
-+			value = sysctl_sched_uclamp_util_min_rt_default;
- 		else
--			uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
-+			value = uclamp_none(clamp_id);
-+
-+		uclamp_se_set(uc_se, value, false);
- 
- 	}
- 
- 	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
- 		return;
- 
--	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN &&
-+	    attr->sched_util_min != -1) {
- 		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
- 			      attr->sched_util_min, true);
- 	}
- 
--	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
-+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX &&
-+	    attr->sched_util_max != -1) {
- 		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
- 			      attr->sched_util_max, true);
- 	}
-@@ -1696,6 +1720,76 @@ void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags)
- 
- #ifdef CONFIG_SMP
- 
-+static void
-+__do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32 flags);
-+
-+static int __set_cpus_allowed_ptr(struct task_struct *p,
-+				  const struct cpumask *new_mask,
-+				  u32 flags);
-+
-+static void migrate_disable_switch(struct rq *rq, struct task_struct *p)
-+{
-+	if (likely(!p->migration_disabled))
-+		return;
-+
-+	if (p->cpus_ptr != &p->cpus_mask)
-+		return;
-+
-+	/*
-+	 * Violates locking rules! see comment in __do_set_cpus_allowed().
-+	 */
-+	__do_set_cpus_allowed(p, cpumask_of(rq->cpu), SCA_MIGRATE_DISABLE);
-+}
-+
-+void migrate_disable(void)
-+{
-+	struct task_struct *p = current;
-+
-+	if (p->migration_disabled) {
-+		p->migration_disabled++;
-+		return;
-+	}
-+
-+	preempt_disable();
-+	this_rq()->nr_pinned++;
-+	p->migration_disabled = 1;
-+	preempt_enable();
-+}
-+EXPORT_SYMBOL_GPL(migrate_disable);
-+
-+void migrate_enable(void)
-+{
-+	struct task_struct *p = current;
-+
-+	if (p->migration_disabled > 1) {
-+		p->migration_disabled--;
-+		return;
-+	}
-+
-+	/*
-+	 * Ensure stop_task runs either before or after this, and that
-+	 * __set_cpus_allowed_ptr(SCA_MIGRATE_ENABLE) doesn't schedule().
-+	 */
-+	preempt_disable();
-+	if (p->cpus_ptr != &p->cpus_mask)
-+		__set_cpus_allowed_ptr(p, &p->cpus_mask, SCA_MIGRATE_ENABLE);
-+	/*
-+	 * Mustn't clear migration_disabled() until cpus_ptr points back at the
-+	 * regular cpus_mask, otherwise things that race (eg.
-+	 * select_fallback_rq) get confused.
-+	 */
-+	barrier();
-+	p->migration_disabled = 0;
-+	this_rq()->nr_pinned--;
-+	preempt_enable();
-+}
-+EXPORT_SYMBOL_GPL(migrate_enable);
-+
-+static inline bool rq_has_pinned_tasks(struct rq *rq)
-+{
-+	return rq->nr_pinned;
-+}
-+
- /*
-  * Per-CPU kthreads are allowed to run on !active && online CPUs, see
-  * __set_cpus_allowed_ptr() and select_fallback_rq().
-@@ -1705,7 +1799,7 @@ static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
- 	if (!cpumask_test_cpu(cpu, p->cpus_ptr))
- 		return false;
- 
--	if (is_per_cpu_kthread(p))
-+	if (is_per_cpu_kthread(p) || is_migration_disabled(p))
- 		return cpu_online(cpu);
- 
- 	return cpu_active(cpu);
-@@ -1750,8 +1844,16 @@ static struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,
- }
- 
- struct migration_arg {
--	struct task_struct *task;
--	int dest_cpu;
-+	struct task_struct		*task;
-+	int				dest_cpu;
-+	struct set_affinity_pending	*pending;
-+};
-+
-+struct set_affinity_pending {
-+	refcount_t		refs;
-+	struct completion	done;
-+	struct cpu_stop_work	stop_work;
-+	struct migration_arg	arg;
- };
- 
- /*
-@@ -1783,16 +1885,19 @@ static struct rq *__migrate_task(struct rq *rq, struct rq_flags *rf,
-  */
- static int migration_cpu_stop(void *data)
- {
-+	struct set_affinity_pending *pending;
- 	struct migration_arg *arg = data;
- 	struct task_struct *p = arg->task;
-+	int dest_cpu = arg->dest_cpu;
- 	struct rq *rq = this_rq();
-+	bool complete = false;
- 	struct rq_flags rf;
- 
- 	/*
- 	 * The original target CPU might have gone down and we might
- 	 * be on another CPU but it doesn't matter.
- 	 */
--	local_irq_disable();
-+	local_irq_save(rf.flags);
- 	/*
- 	 * We need to explicitly wake pending tasks before running
- 	 * __migrate_task() such that we will not miss enforcing cpus_ptr
-@@ -1802,21 +1907,137 @@ static int migration_cpu_stop(void *data)
- 
- 	raw_spin_lock(&p->pi_lock);
- 	rq_lock(rq, &rf);
-+
-+	pending = p->migration_pending;
- 	/*
- 	 * If task_rq(p) != rq, it cannot be migrated here, because we're
- 	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued because
- 	 * we're holding p->pi_lock.
- 	 */
- 	if (task_rq(p) == rq) {
-+		if (is_migration_disabled(p))
-+			goto out;
-+
-+		if (pending) {
-+			p->migration_pending = NULL;
-+			complete = true;
-+		}
-+
-+		/* migrate_enable() --  we must not race against SCA */
-+		if (dest_cpu < 0) {
-+			/*
-+			 * When this was migrate_enable() but we no longer
-+			 * have a @pending, a concurrent SCA 'fixed' things
-+			 * and we should be valid again. Nothing to do.
-+			 */
-+			if (!pending) {
-+				WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
-+				goto out;
-+			}
-+
-+			dest_cpu = cpumask_any_distribute(&p->cpus_mask);
-+		}
-+
- 		if (task_on_rq_queued(p))
--			rq = __migrate_task(rq, &rf, p, arg->dest_cpu);
-+			rq = __migrate_task(rq, &rf, p, dest_cpu);
- 		else
--			p->wake_cpu = arg->dest_cpu;
-+			p->wake_cpu = dest_cpu;
-+
-+	} else if (dest_cpu < 0 || pending) {
-+		/*
-+		 * This happens when we get migrated between migrate_enable()'s
-+		 * preempt_enable() and scheduling the stopper task. At that
-+		 * point we're a regular task again and not current anymore.
-+		 *
-+		 * A !PREEMPT kernel has a giant hole here, which makes it far
-+		 * more likely.
-+		 */
-+
-+		/*
-+		 * The task moved before the stopper got to run. We're holding
-+		 * ->pi_lock, so the allowed mask is stable - if it got
-+		 * somewhere allowed, we're done.
-+		 */
-+		if (pending && cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
-+			p->migration_pending = NULL;
-+			complete = true;
-+			goto out;
-+		}
-+
-+		/*
-+		 * When this was migrate_enable() but we no longer have an
-+		 * @pending, a concurrent SCA 'fixed' things and we should be
-+		 * valid again. Nothing to do.
-+		 */
-+		if (!pending) {
-+			WARN_ON_ONCE(!cpumask_test_cpu(task_cpu(p), &p->cpus_mask));
-+			goto out;
-+		}
-+
-+		/*
-+		 * When migrate_enable() hits a rq mis-match we can't reliably
-+		 * determine is_migration_disabled() and so have to chase after
-+		 * it.
-+		 */
-+		task_rq_unlock(rq, p, &rf);
-+		stop_one_cpu_nowait(task_cpu(p), migration_cpu_stop,
-+				    &pending->arg, &pending->stop_work);
-+		return 0;
- 	}
--	rq_unlock(rq, &rf);
--	raw_spin_unlock(&p->pi_lock);
-+out:
-+	task_rq_unlock(rq, p, &rf);
-+
-+	if (complete)
-+		complete_all(&pending->done);
-+
-+	/* For pending->{arg,stop_work} */
-+	pending = arg->pending;
-+	if (pending && refcount_dec_and_test(&pending->refs))
-+		wake_up_var(&pending->refs);
-+
-+	return 0;
-+}
-+
-+int push_cpu_stop(void *arg)
-+{
-+	struct rq *lowest_rq = NULL, *rq = this_rq();
-+	struct task_struct *p = arg;
-+
-+	raw_spin_lock_irq(&p->pi_lock);
-+	raw_spin_lock(&rq->lock);
-+
-+	if (task_rq(p) != rq)
-+		goto out_unlock;
-+
-+	if (is_migration_disabled(p)) {
-+		p->migration_flags |= MDF_PUSH;
-+		goto out_unlock;
-+	}
-+
-+	p->migration_flags &= ~MDF_PUSH;
-+
-+	if (p->sched_class->find_lock_rq)
-+		lowest_rq = p->sched_class->find_lock_rq(p, rq);
-+
-+	if (!lowest_rq)
-+		goto out_unlock;
- 
--	local_irq_enable();
-+	// XXX validate p is still the highest prio task
-+	if (task_rq(p) == rq) {
-+		deactivate_task(rq, p, 0);
-+		set_task_cpu(p, lowest_rq->cpu);
-+		activate_task(lowest_rq, p, 0);
-+		resched_curr(lowest_rq);
-+	}
-+
-+	double_unlock_balance(rq, lowest_rq);
-+
-+out_unlock:
-+	rq->push_busy = false;
-+	raw_spin_unlock(&rq->lock);
-+	raw_spin_unlock_irq(&p->pi_lock);
-+
-+	put_task_struct(p);
- 	return 0;
- }
- 
-@@ -1824,18 +2045,39 @@ static int migration_cpu_stop(void *data)
-  * sched_class::set_cpus_allowed must do the below, but is not required to
-  * actually call this function.
-  */
--void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask)
-+void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask, u32 flags)
- {
-+	if (flags & (SCA_MIGRATE_ENABLE | SCA_MIGRATE_DISABLE)) {
-+		p->cpus_ptr = new_mask;
-+		return;
-+	}
-+
- 	cpumask_copy(&p->cpus_mask, new_mask);
- 	p->nr_cpus_allowed = cpumask_weight(new_mask);
- }
- 
--void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
-+static void
-+__do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32 flags)
- {
- 	struct rq *rq = task_rq(p);
- 	bool queued, running;
- 
--	lockdep_assert_held(&p->pi_lock);
-+	/*
-+	 * This here violates the locking rules for affinity, since we're only
-+	 * supposed to change these variables while holding both rq->lock and
-+	 * p->pi_lock.
-+	 *
-+	 * HOWEVER, it magically works, because ttwu() is the only code that
-+	 * accesses these variables under p->pi_lock and only does so after
-+	 * smp_cond_load_acquire(&p->on_cpu, !VAL), and we're in __schedule()
-+	 * before finish_task().
-+	 *
-+	 * XXX do further audits, this smells like something putrid.
-+	 */
-+	if (flags & SCA_MIGRATE_DISABLE)
-+		SCHED_WARN_ON(!p->on_cpu);
-+	else
-+		lockdep_assert_held(&p->pi_lock);
- 
- 	queued = task_on_rq_queued(p);
- 	running = task_current(rq, p);
-@@ -1851,7 +2093,7 @@ void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
- 	if (running)
- 		put_prev_task(rq, p);
- 
--	p->sched_class->set_cpus_allowed(p, new_mask);
-+	p->sched_class->set_cpus_allowed(p, new_mask, flags);
- 
- 	if (queued)
- 		enqueue_task(rq, p, ENQUEUE_RESTORE | ENQUEUE_NOCLOCK);
-@@ -1859,6 +2101,208 @@ void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
- 		set_next_task(rq, p);
- }
- 
-+void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
-+{
-+	__do_set_cpus_allowed(p, new_mask, 0);
-+}
-+
-+/*
-+ * This function is wildly self concurrent; here be dragons.
-+ *
-+ *
-+ * When given a valid mask, __set_cpus_allowed_ptr() must block until the
-+ * designated task is enqueued on an allowed CPU. If that task is currently
-+ * running, we have to kick it out using the CPU stopper.
-+ *
-+ * Migrate-Disable comes along and tramples all over our nice sandcastle.
-+ * Consider:
-+ *
-+ *     Initial conditions: P0->cpus_mask = [0, 1]
-+ *
-+ *     P0@CPU0                  P1
-+ *
-+ *     migrate_disable();
-+ *     <preempted>
-+ *                              set_cpus_allowed_ptr(P0, [1]);
-+ *
-+ * P1 *cannot* return from this set_cpus_allowed_ptr() call until P0 executes
-+ * its outermost migrate_enable() (i.e. it exits its Migrate-Disable region).
-+ * This means we need the following scheme:
-+ *
-+ *     P0@CPU0                  P1
-+ *
-+ *     migrate_disable();
-+ *     <preempted>
-+ *                              set_cpus_allowed_ptr(P0, [1]);
-+ *                                <blocks>
-+ *     <resumes>
-+ *     migrate_enable();
-+ *       __set_cpus_allowed_ptr();
-+ *       <wakes local stopper>
-+ *                         `--> <woken on migration completion>
-+ *
-+ * Now the fun stuff: there may be several P1-like tasks, i.e. multiple
-+ * concurrent set_cpus_allowed_ptr(P0, [*]) calls. CPU affinity changes of any
-+ * task p are serialized by p->pi_lock, which we can leverage: the one that
-+ * should come into effect at the end of the Migrate-Disable region is the last
-+ * one. This means we only need to track a single cpumask (i.e. p->cpus_mask),
-+ * but we still need to properly signal those waiting tasks at the appropriate
-+ * moment.
-+ *
-+ * This is implemented using struct set_affinity_pending. The first
-+ * __set_cpus_allowed_ptr() caller within a given Migrate-Disable region will
-+ * setup an instance of that struct and install it on the targeted task_struct.
-+ * Any and all further callers will reuse that instance. Those then wait for
-+ * a completion signaled at the tail of the CPU stopper callback (1), triggered
-+ * on the end of the Migrate-Disable region (i.e. outermost migrate_enable()).
-+ *
-+ *
-+ * (1) In the cases covered above. There is one more where the completion is
-+ * signaled within affine_move_task() itself: when a subsequent affinity request
-+ * cancels the need for an active migration. Consider:
-+ *
-+ *     Initial conditions: P0->cpus_mask = [0, 1]
-+ *
-+ *     P0@CPU0            P1                             P2
-+ *
-+ *     migrate_disable();
-+ *     <preempted>
-+ *                        set_cpus_allowed_ptr(P0, [1]);
-+ *                          <blocks>
-+ *                                                       set_cpus_allowed_ptr(P0, [0, 1]);
-+ *                                                         <signal completion>
-+ *                          <awakes>
-+ *
-+ * Note that the above is safe vs a concurrent migrate_enable(), as any
-+ * pending affinity completion is preceded by an uninstallation of
-+ * p->migration_pending done with p->pi_lock held.
-+ */
-+static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flags *rf,
-+			    int dest_cpu, unsigned int flags)
-+{
-+	struct set_affinity_pending my_pending = { }, *pending = NULL;
-+	struct migration_arg arg = {
-+		.task = p,
-+		.dest_cpu = dest_cpu,
-+	};
-+	bool complete = false;
-+
-+	/* Can the task run on the task's current CPU? If so, we're done */
-+	if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask)) {
-+		struct task_struct *push_task = NULL;
-+
-+		if ((flags & SCA_MIGRATE_ENABLE) &&
-+		    (p->migration_flags & MDF_PUSH) && !rq->push_busy) {
-+			rq->push_busy = true;
-+			push_task = get_task_struct(p);
-+		}
-+
-+		pending = p->migration_pending;
-+		if (pending) {
-+			refcount_inc(&pending->refs);
-+			p->migration_pending = NULL;
-+			complete = true;
-+		}
-+		task_rq_unlock(rq, p, rf);
-+
-+		if (push_task) {
-+			stop_one_cpu_nowait(rq->cpu, push_cpu_stop,
-+					    p, &rq->push_work);
-+		}
-+
-+		if (complete)
-+			goto do_complete;
-+
-+		return 0;
-+	}
-+
-+	if (!(flags & SCA_MIGRATE_ENABLE)) {
-+		/* serialized by p->pi_lock */
-+		if (!p->migration_pending) {
-+			/* Install the request */
-+			refcount_set(&my_pending.refs, 1);
-+			init_completion(&my_pending.done);
-+			p->migration_pending = &my_pending;
-+		} else {
-+			pending = p->migration_pending;
-+			refcount_inc(&pending->refs);
-+		}
-+	}
-+	pending = p->migration_pending;
-+	/*
-+	 * - !MIGRATE_ENABLE:
-+	 *   we'll have installed a pending if there wasn't one already.
-+	 *
-+	 * - MIGRATE_ENABLE:
-+	 *   we're here because the current CPU isn't matching anymore,
-+	 *   the only way that can happen is because of a concurrent
-+	 *   set_cpus_allowed_ptr() call, which should then still be
-+	 *   pending completion.
-+	 *
-+	 * Either way, we really should have a @pending here.
-+	 */
-+	if (WARN_ON_ONCE(!pending)) {
-+		task_rq_unlock(rq, p, rf);
-+		return -EINVAL;
-+	}
-+
-+	if (flags & SCA_MIGRATE_ENABLE) {
-+
-+		refcount_inc(&pending->refs); /* pending->{arg,stop_work} */
-+		p->migration_flags &= ~MDF_PUSH;
-+		task_rq_unlock(rq, p, rf);
-+
-+		pending->arg = (struct migration_arg) {
-+			.task = p,
-+			.dest_cpu = -1,
-+			.pending = pending,
-+		};
-+
-+		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
-+				    &pending->arg, &pending->stop_work);
-+
-+		return 0;
-+	}
-+
-+	if (task_running(rq, p) || p->state == TASK_WAKING) {
-+		/*
-+		 * Lessen races (and headaches) by delegating
-+		 * is_migration_disabled(p) checks to the stopper, which will
-+		 * run on the same CPU as said p.
-+		 */
-+		task_rq_unlock(rq, p, rf);
-+		stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
-+
-+	} else {
-+
-+		if (!is_migration_disabled(p)) {
-+			if (task_on_rq_queued(p))
-+				rq = move_queued_task(rq, rf, p, dest_cpu);
-+
-+			p->migration_pending = NULL;
-+			complete = true;
-+		}
-+		task_rq_unlock(rq, p, rf);
-+
-+do_complete:
-+		if (complete)
-+			complete_all(&pending->done);
-+	}
-+
-+	wait_for_completion(&pending->done);
-+
-+	if (refcount_dec_and_test(&pending->refs))
-+		wake_up_var(&pending->refs);
-+
-+	/*
-+	 * Block the original owner of &pending until all subsequent callers
-+	 * have seen the completion and decremented the refcount
-+	 */
-+	wait_var_event(&my_pending.refs, !refcount_read(&my_pending.refs));
-+
-+	return 0;
-+}
-+
- /*
-  * Change a given task's CPU affinity. Migrate the thread to a
-  * proper CPU and schedule it away if the CPU it's executing on
-@@ -1869,7 +2313,8 @@ void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
-  * call is not atomic; no spinlocks may be held.
-  */
- static int __set_cpus_allowed_ptr(struct task_struct *p,
--				  const struct cpumask *new_mask, bool check)
-+				  const struct cpumask *new_mask,
-+				  u32 flags)
- {
- 	const struct cpumask *cpu_valid_mask = cpu_active_mask;
- 	unsigned int dest_cpu;
-@@ -1880,9 +2325,14 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
- 	rq = task_rq_lock(p, &rf);
- 	update_rq_clock(rq);
- 
--	if (p->flags & PF_KTHREAD) {
-+	if (p->flags & PF_KTHREAD || is_migration_disabled(p)) {
- 		/*
--		 * Kernel threads are allowed on online && !active CPUs
-+		 * Kernel threads are allowed on online && !active CPUs.
-+		 *
-+		 * Specifically, migration_disabled() tasks must not fail the
-+		 * cpumask_any_and_distribute() pick below, esp. so on
-+		 * SCA_MIGRATE_ENABLE, otherwise we'll not call
-+		 * set_cpus_allowed_common() and actually reset p->cpus_ptr.
- 		 */
- 		cpu_valid_mask = cpu_online_mask;
- 	}
-@@ -1891,13 +2341,22 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
- 	 * Must re-check here, to close a race against __kthread_bind(),
- 	 * sched_setaffinity() is not guaranteed to observe the flag.
- 	 */
--	if (check && (p->flags & PF_NO_SETAFFINITY)) {
-+	if ((flags & SCA_CHECK) && (p->flags & PF_NO_SETAFFINITY)) {
- 		ret = -EINVAL;
- 		goto out;
- 	}
- 
--	if (cpumask_equal(&p->cpus_mask, new_mask))
--		goto out;
-+	if (!(flags & SCA_MIGRATE_ENABLE)) {
-+		if (cpumask_equal(&p->cpus_mask, new_mask))
-+			goto out;
-+
-+		if (WARN_ON_ONCE(p == current &&
-+				 is_migration_disabled(p) &&
-+				 !cpumask_test_cpu(task_cpu(p), new_mask))) {
-+			ret = -EBUSY;
-+			goto out;
-+		}
-+	}
- 
- 	/*
- 	 * Picking a ~random cpu helps in cases where we are changing affinity
-@@ -1910,7 +2369,7 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
- 		goto out;
- 	}
- 
--	do_set_cpus_allowed(p, new_mask);
-+	__do_set_cpus_allowed(p, new_mask, flags);
- 
- 	if (p->flags & PF_KTHREAD) {
- 		/*
-@@ -1922,23 +2381,8 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
- 			p->nr_cpus_allowed != 1);
- 	}
- 
--	/* Can the task run on the task's current CPU? If so, we're done */
--	if (cpumask_test_cpu(task_cpu(p), new_mask))
--		goto out;
-+	return affine_move_task(rq, p, &rf, dest_cpu, flags);
- 
--	if (task_running(rq, p) || p->state == TASK_WAKING) {
--		struct migration_arg arg = { p, dest_cpu };
--		/* Need help from migration thread: drop lock and wait. */
--		task_rq_unlock(rq, p, &rf);
--		stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
--		return 0;
--	} else if (task_on_rq_queued(p)) {
--		/*
--		 * OK, since we're going to drop the lock immediately
--		 * afterwards anyway.
--		 */
--		rq = move_queued_task(rq, &rf, p, dest_cpu);
--	}
- out:
- 	task_rq_unlock(rq, p, &rf);
- 
-@@ -1947,7 +2391,7 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
- 
- int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask)
- {
--	return __set_cpus_allowed_ptr(p, new_mask, false);
-+	return __set_cpus_allowed_ptr(p, new_mask, 0);
- }
- EXPORT_SYMBOL_GPL(set_cpus_allowed_ptr);
- 
-@@ -1988,6 +2432,8 @@ void set_task_cpu(struct task_struct *p, unsigned int new_cpu)
- 	 * Clearly, migrating tasks to offline CPUs is a fairly daft thing.
- 	 */
- 	WARN_ON_ONCE(!cpu_online(new_cpu));
-+
-+	WARN_ON_ONCE(is_migration_disabled(p));
- #endif
- 
- 	trace_sched_migrate_task(p, new_cpu);
-@@ -2318,6 +2764,12 @@ static int select_fallback_rq(int cpu, struct task_struct *p)
- 			}
- 			fallthrough;
- 		case possible:
-+			/*
-+			 * XXX When called from select_task_rq() we only
-+			 * hold p->pi_lock and again violate locking order.
-+			 *
-+			 * More yuck to audit.
-+			 */
- 			do_set_cpus_allowed(p, cpu_possible_mask);
- 			state = fail;
- 			break;
-@@ -2348,12 +2800,12 @@ static int select_fallback_rq(int cpu, struct task_struct *p)
-  * The caller (fork, wakeup) owns p->pi_lock, ->cpus_ptr is stable.
-  */
- static inline
--int select_task_rq(struct task_struct *p, int cpu, int sd_flags, int wake_flags)
-+int select_task_rq(struct task_struct *p, int cpu, int wake_flags)
- {
- 	lockdep_assert_held(&p->pi_lock);
- 
--	if (p->nr_cpus_allowed > 1)
--		cpu = p->sched_class->select_task_rq(p, cpu, sd_flags, wake_flags);
-+	if (p->nr_cpus_allowed > 1 && !is_migration_disabled(p))
-+		cpu = p->sched_class->select_task_rq(p, cpu, wake_flags);
- 	else
- 		cpu = cpumask_any(p->cpus_ptr);
- 
-@@ -2375,6 +2827,7 @@ int select_task_rq(struct task_struct *p, int cpu, int sd_flags, int wake_flags)
- 
- void sched_set_stop_task(int cpu, struct task_struct *stop)
- {
-+	static struct lock_class_key stop_pi_lock;
- 	struct sched_param param = { .sched_priority = MAX_RT_PRIO - 1 };
- 	struct task_struct *old_stop = cpu_rq(cpu)->stop;
- 
-@@ -2390,6 +2843,20 @@ void sched_set_stop_task(int cpu, struct task_struct *stop)
- 		sched_setscheduler_nocheck(stop, SCHED_FIFO, &param);
- 
- 		stop->sched_class = &stop_sched_class;
-+
-+		/*
-+		 * The PI code calls rt_mutex_setprio() with ->pi_lock held to
-+		 * adjust the effective priority of a task. As a result,
-+		 * rt_mutex_setprio() can trigger (RT) balancing operations,
-+		 * which can then trigger wakeups of the stop thread to push
-+		 * around the current task.
-+		 *
-+		 * The stop task itself will never be part of the PI-chain, it
-+		 * never blocks, therefore that ->pi_lock recursion is safe.
-+		 * Tell lockdep about this by placing the stop->pi_lock in its
-+		 * own class.
-+		 */
-+		lockdep_set_class(&stop->pi_lock, &stop_pi_lock);
- 	}
- 
- 	cpu_rq(cpu)->stop = stop;
-@@ -2403,15 +2870,23 @@ void sched_set_stop_task(int cpu, struct task_struct *stop)
- 	}
- }
- 
--#else
-+#else /* CONFIG_SMP */
- 
- static inline int __set_cpus_allowed_ptr(struct task_struct *p,
--					 const struct cpumask *new_mask, bool check)
-+					 const struct cpumask *new_mask,
-+					 u32 flags)
- {
- 	return set_cpus_allowed_ptr(p, new_mask);
- }
- 
--#endif /* CONFIG_SMP */
-+static inline void migrate_disable_switch(struct rq *rq, struct task_struct *p) { }
-+
-+static inline bool rq_has_pinned_tasks(struct rq *rq)
-+{
-+	return false;
-+}
-+
-+#endif /* !CONFIG_SMP */
- 
- static void
- ttwu_stat(struct task_struct *p, int cpu, int wake_flags)
-@@ -2465,7 +2940,7 @@ static void ttwu_do_wakeup(struct rq *rq, struct task_struct *p, int wake_flags,
- #ifdef CONFIG_SMP
- 	if (p->sched_class->task_woken) {
- 		/*
--		 * Our task @p is fully woken up and running; so its safe to
-+		 * Our task @p is fully woken up and running; so it's safe to
- 		 * drop the rq->lock, hereafter rq is only used for statistics.
- 		 */
- 		rq_unpin_lock(rq, rf);
-@@ -2952,7 +3427,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
- 
- 	/*
- 	 * If the owning (remote) CPU is still in the middle of schedule() with
--	 * this task as prev, wait until its done referencing the task.
-+	 * this task as prev, wait until it's done referencing the task.
- 	 *
- 	 * Pairs with the smp_store_release() in finish_task().
- 	 *
-@@ -2961,7 +3436,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
- 	 */
- 	smp_cond_load_acquire(&p->on_cpu, !VAL);
- 
--	cpu = select_task_rq(p, p->wake_cpu, SD_BALANCE_WAKE, wake_flags);
-+	cpu = select_task_rq(p, p->wake_cpu, wake_flags | WF_TTWU);
- 	if (task_cpu(p) != cpu) {
- 		if (p->in_iowait) {
- 			delayacct_blkio_end(p);
-@@ -3103,6 +3578,7 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
- 	init_numa_balancing(clone_flags, p);
- #ifdef CONFIG_SMP
- 	p->wake_entry.u_flags = CSD_TYPE_TTWU;
-+	p->migration_pending = NULL;
- #endif
- }
- 
-@@ -3349,7 +3825,7 @@ void wake_up_new_task(struct task_struct *p)
- 	 */
- 	p->recent_used_cpu = task_cpu(p);
- 	rseq_migrate(p);
--	__set_task_cpu(p, select_task_rq(p, task_cpu(p), SD_BALANCE_FORK, 0));
-+	__set_task_cpu(p, select_task_rq(p, task_cpu(p), WF_FORK));
- #endif
- 	rq = __task_rq_lock(p, &rf);
- 	update_rq_clock(rq);
-@@ -3361,7 +3837,7 @@ void wake_up_new_task(struct task_struct *p)
- #ifdef CONFIG_SMP
- 	if (p->sched_class->task_woken) {
- 		/*
--		 * Nothing relies on rq->lock after this, so its fine to
-+		 * Nothing relies on rq->lock after this, so it's fine to
- 		 * drop it.
- 		 */
- 		rq_unpin_lock(rq, &rf);
-@@ -3490,6 +3966,90 @@ static inline void finish_task(struct task_struct *prev)
- #endif
- }
- 
-+#ifdef CONFIG_SMP
-+
-+static void do_balance_callbacks(struct rq *rq, struct callback_head *head)
-+{
-+	void (*func)(struct rq *rq);
-+	struct callback_head *next;
-+
-+	lockdep_assert_held(&rq->lock);
-+
-+	while (head) {
-+		func = (void (*)(struct rq *))head->func;
-+		next = head->next;
-+		head->next = NULL;
-+		head = next;
-+
-+		func(rq);
-+	}
-+}
-+
-+static inline struct callback_head *splice_balance_callbacks(struct rq *rq)
-+{
-+	struct callback_head *head = rq->balance_callback;
-+
-+	lockdep_assert_held(&rq->lock);
-+	if (head) {
-+		rq->balance_callback = NULL;
-+		rq->balance_flags &= ~BALANCE_WORK;
-+	}
-+
-+	return head;
-+}
-+
-+static void __balance_callbacks(struct rq *rq)
-+{
-+	do_balance_callbacks(rq, splice_balance_callbacks(rq));
-+}
-+
-+static inline void balance_callbacks(struct rq *rq, struct callback_head *head)
-+{
-+	unsigned long flags;
-+
-+	if (unlikely(head)) {
-+		raw_spin_lock_irqsave(&rq->lock, flags);
-+		do_balance_callbacks(rq, head);
-+		raw_spin_unlock_irqrestore(&rq->lock, flags);
-+	}
-+}
-+
-+static void balance_push(struct rq *rq);
-+
-+static inline void balance_switch(struct rq *rq)
-+{
-+	if (likely(!rq->balance_flags))
-+		return;
-+
-+	if (rq->balance_flags & BALANCE_PUSH) {
-+		balance_push(rq);
-+		return;
-+	}
-+
-+	__balance_callbacks(rq);
-+}
-+
-+#else
-+
-+static inline void __balance_callbacks(struct rq *rq)
-+{
-+}
-+
-+static inline struct callback_head *splice_balance_callbacks(struct rq *rq)
-+{
-+	return NULL;
-+}
-+
-+static inline void balance_callbacks(struct rq *rq, struct callback_head *head)
-+{
-+}
-+
-+static inline void balance_switch(struct rq *rq)
-+{
-+}
-+
-+#endif
-+
- static inline void
- prepare_lock_switch(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
- {
-@@ -3515,6 +4075,7 @@ static inline void finish_lock_switch(struct rq *rq)
- 	 * prev into current:
- 	 */
- 	spin_acquire(&rq->lock.dep_map, 0, 0, _THIS_IP_);
-+	balance_switch(rq);
- 	raw_spin_unlock_irq(&rq->lock);
- }
- 
-@@ -3656,43 +4217,6 @@ static struct rq *finish_task_switch(struct task_struct *prev)
- 	return rq;
- }
- 
--#ifdef CONFIG_SMP
--
--/* rq->lock is NOT held, but preemption is disabled */
--static void __balance_callback(struct rq *rq)
--{
--	struct callback_head *head, *next;
--	void (*func)(struct rq *rq);
--	unsigned long flags;
--
--	raw_spin_lock_irqsave(&rq->lock, flags);
--	head = rq->balance_callback;
--	rq->balance_callback = NULL;
--	while (head) {
--		func = (void (*)(struct rq *))head->func;
--		next = head->next;
--		head->next = NULL;
--		head = next;
--
--		func(rq);
--	}
--	raw_spin_unlock_irqrestore(&rq->lock, flags);
--}
--
--static inline void balance_callback(struct rq *rq)
--{
--	if (unlikely(rq->balance_callback))
--		__balance_callback(rq);
--}
--
--#else
--
--static inline void balance_callback(struct rq *rq)
--{
--}
--
--#endif
--
- /**
-  * schedule_tail - first thing a freshly forked thread must call.
-  * @prev: the thread we just switched away from.
-@@ -3712,7 +4236,6 @@ asmlinkage __visible void schedule_tail(struct task_struct *prev)
- 	 */
- 
- 	rq = finish_task_switch(prev);
--	balance_callback(rq);
- 	preempt_enable();
- 
- 	if (current->set_child_tid)
-@@ -3841,7 +4364,7 @@ unsigned long nr_iowait_cpu(int cpu)
- }
- 
- /*
-- * IO-wait accounting, and how its mostly bollocks (on SMP).
-+ * IO-wait accounting, and how it's mostly bollocks (on SMP).
-  *
-  * The idea behind IO-wait account is to account the idle time that we could
-  * have spend running if it were not for IO. That is, if we were to improve the
-@@ -3893,7 +4416,7 @@ void sched_exec(void)
- 	int dest_cpu;
- 
- 	raw_spin_lock_irqsave(&p->pi_lock, flags);
--	dest_cpu = p->sched_class->select_task_rq(p, task_cpu(p), SD_BALANCE_EXEC, 0);
-+	dest_cpu = p->sched_class->select_task_rq(p, task_cpu(p), WF_EXEC);
- 	if (dest_cpu == smp_processor_id())
- 		goto unlock;
- 
-@@ -4336,7 +4859,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 	/*
- 	 * Optimization: we know that if all tasks are in the fair class we can
- 	 * call that function directly, but only if the @prev task wasn't of a
--	 * higher scheduling class, because otherwise those loose the
-+	 * higher scheduling class, because otherwise those lose the
- 	 * opportunity to pull in more work from other CPUs.
- 	 */
- 	if (likely(prev->sched_class <= &fair_sched_class &&
-@@ -4520,6 +5043,7 @@ static void __sched notrace __schedule(bool preempt)
- 		 */
- 		++*switch_count;
- 
-+		migrate_disable_switch(rq, prev);
- 		psi_sched_switch(prev, next, !task_on_rq_queued(prev));
- 
- 		trace_sched_switch(preempt, prev, next);
-@@ -4528,10 +5052,11 @@ static void __sched notrace __schedule(bool preempt)
- 		rq = context_switch(rq, prev, next, &rf);
- 	} else {
- 		rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
--		rq_unlock_irq(rq, &rf);
--	}
- 
--	balance_callback(rq);
-+		rq_unpin_lock(rq, &rf);
-+		__balance_callbacks(rq);
-+		raw_spin_unlock_irq(&rq->lock);
-+	}
- }
- 
- void __noreturn do_task_dead(void)
-@@ -4857,7 +5382,7 @@ void rt_mutex_setprio(struct task_struct *p, struct task_struct *pi_task)
- 	 * right. rt_mutex_slowunlock()+rt_mutex_postunlock() work together to
- 	 * ensure a task is de-boosted (pi_task is set to NULL) before the
- 	 * task is allowed to run again (and can exit). This ensures the pointer
--	 * points to a blocked task -- which guaratees the task is present.
-+	 * points to a blocked task -- which guarantees the task is present.
- 	 */
- 	p->pi_top_task = pi_task;
- 
-@@ -4943,9 +5468,11 @@ void rt_mutex_setprio(struct task_struct *p, struct task_struct *pi_task)
- out_unlock:
- 	/* Avoid rq from going away on us: */
- 	preempt_disable();
--	__task_rq_unlock(rq, &rf);
- 
--	balance_callback(rq);
-+	rq_unpin_lock(rq, &rf);
-+	__balance_callbacks(rq);
-+	raw_spin_unlock(&rq->lock);
-+
- 	preempt_enable();
- }
- #else
-@@ -4974,7 +5501,7 @@ void set_user_nice(struct task_struct *p, long nice)
- 	/*
- 	 * The RT priorities are set via sched_setscheduler(), but we still
- 	 * allow the 'normal' nice value to be set - but as expected
--	 * it wont have any effect on scheduling until the task is
-+	 * it won't have any effect on scheduling until the task is
- 	 * SCHED_DEADLINE, SCHED_FIFO or SCHED_RR:
- 	 */
- 	if (task_has_dl_policy(p) || task_has_rt_policy(p)) {
-@@ -5219,6 +5746,7 @@ static int __sched_setscheduler(struct task_struct *p,
- 	int retval, oldprio, oldpolicy = -1, queued, running;
- 	int new_effective_prio, policy = attr->sched_policy;
- 	const struct sched_class *prev_class;
-+	struct callback_head *head;
- 	struct rq_flags rf;
- 	int reset_on_fork;
- 	int queue_flags = DEQUEUE_SAVE | DEQUEUE_MOVE | DEQUEUE_NOCLOCK;
-@@ -5457,6 +5985,7 @@ static int __sched_setscheduler(struct task_struct *p,
- 
- 	/* Avoid rq from going away on us: */
- 	preempt_disable();
-+	head = splice_balance_callbacks(rq);
- 	task_rq_unlock(rq, p, &rf);
- 
- 	if (pi) {
-@@ -5465,7 +5994,7 @@ static int __sched_setscheduler(struct task_struct *p,
- 	}
- 
- 	/* Run balance callbacks after we've adjusted the PI chain: */
--	balance_callback(rq);
-+	balance_callbacks(rq, head);
- 	preempt_enable();
- 
- 	return 0;
-@@ -5960,7 +6489,7 @@ long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
- 	}
- #endif
- again:
--	retval = __set_cpus_allowed_ptr(p, new_mask, true);
-+	retval = __set_cpus_allowed_ptr(p, new_mask, SCA_CHECK);
- 
- 	if (!retval) {
- 		cpuset_cpus_allowed(p, cpus_allowed);
-@@ -6082,14 +6611,6 @@ SYSCALL_DEFINE3(sched_getaffinity, pid_t, pid, unsigned int, len,
- 	return ret;
- }
- 
--/**
-- * sys_sched_yield - yield the current processor to other threads.
-- *
-- * This function yields the current CPU to other tasks. If there are no
-- * other threads running on this CPU then this function will return.
-- *
-- * Return: 0.
-- */
- static void do_sched_yield(void)
- {
- 	struct rq_flags rf;
-@@ -6100,17 +6621,21 @@ static void do_sched_yield(void)
- 	schedstat_inc(rq->yld_count);
- 	current->sched_class->yield_task(rq);
- 
--	/*
--	 * Since we are going to call schedule() anyway, there's
--	 * no need to preempt or enable interrupts:
--	 */
- 	preempt_disable();
--	rq_unlock(rq, &rf);
-+	rq_unlock_irq(rq, &rf);
- 	sched_preempt_enable_no_resched();
- 
- 	schedule();
- }
- 
-+/**
-+ * sys_sched_yield - yield the current processor to other threads.
-+ *
-+ * This function yields the current CPU to other tasks. If there are no
-+ * other threads running on this CPU then this function will return.
-+ *
-+ * Return: 0.
-+ */
- SYSCALL_DEFINE0(sched_yield)
- {
- 	do_sched_yield();
-@@ -6165,7 +6690,7 @@ EXPORT_SYMBOL(__cond_resched_lock);
-  *
-  * The scheduler is at all times free to pick the calling task as the most
-  * eligible task to run, if removing the yield() call from your code breaks
-- * it, its already broken.
-+ * it, it's already broken.
-  *
-  * Typical broken usage is:
-  *
-@@ -6453,6 +6978,7 @@ void sched_show_task(struct task_struct *p)
- 		(unsigned long)task_thread_info(p)->flags);
- 
- 	print_worker_info(KERN_INFO, p);
-+	print_stop_info(KERN_INFO, p);
- 	show_stack(p, NULL, KERN_INFO);
- 	put_task_stack(p);
- }
-@@ -6538,12 +7064,12 @@ void init_idle(struct task_struct *idle, int cpu)
- 
- #ifdef CONFIG_SMP
- 	/*
--	 * Its possible that init_idle() gets called multiple times on a task,
-+	 * It's possible that init_idle() gets called multiple times on a task,
- 	 * in that case do_set_cpus_allowed() will not do the right thing.
- 	 *
- 	 * And since this is boot we can forgo the serialization.
- 	 */
--	set_cpus_allowed_common(idle, cpumask_of(cpu));
-+	set_cpus_allowed_common(idle, cpumask_of(cpu), 0);
- #endif
- 	/*
- 	 * We're having a chicken and egg problem, even though we are
-@@ -6694,119 +7220,126 @@ void idle_task_exit(void)
- 	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
- }
- 
--/*
-- * Since this CPU is going 'away' for a while, fold any nr_active delta
-- * we might have. Assumes we're called after migrate_tasks() so that the
-- * nr_active count is stable. We need to take the teardown thread which
-- * is calling this into account, so we hand in adjust = 1 to the load
-- * calculation.
-- *
-- * Also see the comment "Global load-average calculations".
-- */
--static void calc_load_migrate(struct rq *rq)
-+static int __balance_push_cpu_stop(void *arg)
- {
--	long delta = calc_load_fold_active(rq, 1);
--	if (delta)
--		atomic_long_add(delta, &calc_load_tasks);
--}
-+	struct task_struct *p = arg;
-+	struct rq *rq = this_rq();
-+	struct rq_flags rf;
-+	int cpu;
- 
--static struct task_struct *__pick_migrate_task(struct rq *rq)
--{
--	const struct sched_class *class;
--	struct task_struct *next;
-+	raw_spin_lock_irq(&p->pi_lock);
-+	rq_lock(rq, &rf);
- 
--	for_each_class(class) {
--		next = class->pick_next_task(rq);
--		if (next) {
--			next->sched_class->put_prev_task(rq, next);
--			return next;
--		}
-+	update_rq_clock(rq);
-+
-+	if (task_rq(p) == rq && task_on_rq_queued(p)) {
-+		cpu = select_fallback_rq(rq->cpu, p);
-+		rq = __migrate_task(rq, &rf, p, cpu);
- 	}
- 
--	/* The idle class should always have a runnable task */
--	BUG();
-+	rq_unlock(rq, &rf);
-+	raw_spin_unlock_irq(&p->pi_lock);
-+
-+	put_task_struct(p);
-+
-+	return 0;
- }
- 
-+static DEFINE_PER_CPU(struct cpu_stop_work, push_work);
-+
- /*
-- * Migrate all tasks from the rq, sleeping tasks will be migrated by
-- * try_to_wake_up()->select_task_rq().
-- *
-- * Called with rq->lock held even though we'er in stop_machine() and
-- * there's no concurrency possible, we hold the required locks anyway
-- * because of lock validation efforts.
-+ * Ensure we only run per-cpu kthreads once the CPU goes !active.
-  */
--static void migrate_tasks(struct rq *dead_rq, struct rq_flags *rf)
-+static void balance_push(struct rq *rq)
- {
--	struct rq *rq = dead_rq;
--	struct task_struct *next, *stop = rq->stop;
--	struct rq_flags orf = *rf;
--	int dest_cpu;
-+	struct task_struct *push_task = rq->curr;
-+
-+	lockdep_assert_held(&rq->lock);
-+	SCHED_WARN_ON(rq->cpu != smp_processor_id());
- 
- 	/*
--	 * Fudge the rq selection such that the below task selection loop
--	 * doesn't get stuck on the currently eligible stop task.
--	 *
--	 * We're currently inside stop_machine() and the rq is either stuck
--	 * in the stop_machine_cpu_stop() loop, or we're executing this code,
--	 * either way we should never end up calling schedule() until we're
--	 * done here.
-+	 * Both the cpu-hotplug and stop task are in this case and are
-+	 * required to complete the hotplug process.
- 	 */
--	rq->stop = NULL;
-+	if (is_per_cpu_kthread(push_task) || is_migration_disabled(push_task)) {
-+		/*
-+		 * If this is the idle task on the outgoing CPU try to wake
-+		 * up the hotplug control thread which might wait for the
-+		 * last task to vanish. The rcuwait_active() check is
-+		 * accurate here because the waiter is pinned on this CPU
-+		 * and can't obviously be running in parallel.
-+		 *
-+		 * On RT kernels this also has to check whether there are
-+		 * pinned and scheduled out tasks on the runqueue. They
-+		 * need to leave the migrate disabled section first.
-+		 */
-+		if (!rq->nr_running && !rq_has_pinned_tasks(rq) &&
-+		    rcuwait_active(&rq->hotplug_wait)) {
-+			raw_spin_unlock(&rq->lock);
-+			rcuwait_wake_up(&rq->hotplug_wait);
-+			raw_spin_lock(&rq->lock);
-+		}
-+		return;
-+	}
- 
-+	get_task_struct(push_task);
- 	/*
--	 * put_prev_task() and pick_next_task() sched
--	 * class method both need to have an up-to-date
--	 * value of rq->clock[_task]
-+	 * Temporarily drop rq->lock such that we can wake-up the stop task.
-+	 * Both preemption and IRQs are still disabled.
- 	 */
--	update_rq_clock(rq);
-+	raw_spin_unlock(&rq->lock);
-+	stop_one_cpu_nowait(rq->cpu, __balance_push_cpu_stop, push_task,
-+			    this_cpu_ptr(&push_work));
-+	/*
-+	 * At this point need_resched() is true and we'll take the loop in
-+	 * schedule(). The next pick is obviously going to be the stop task
-+	 * which is_per_cpu_kthread() and will push this task away.
-+	 */
-+	raw_spin_lock(&rq->lock);
-+}
- 
--	for (;;) {
--		/*
--		 * There's this thread running, bail when that's the only
--		 * remaining thread:
--		 */
--		if (rq->nr_running == 1)
--			break;
-+static void balance_push_set(int cpu, bool on)
-+{
-+	struct rq *rq = cpu_rq(cpu);
-+	struct rq_flags rf;
- 
--		next = __pick_migrate_task(rq);
-+	rq_lock_irqsave(rq, &rf);
-+	if (on)
-+		rq->balance_flags |= BALANCE_PUSH;
-+	else
-+		rq->balance_flags &= ~BALANCE_PUSH;
-+	rq_unlock_irqrestore(rq, &rf);
-+}
- 
--		/*
--		 * Rules for changing task_struct::cpus_mask are holding
--		 * both pi_lock and rq->lock, such that holding either
--		 * stabilizes the mask.
--		 *
--		 * Drop rq->lock is not quite as disastrous as it usually is
--		 * because !cpu_active at this point, which means load-balance
--		 * will not interfere. Also, stop-machine.
--		 */
--		rq_unlock(rq, rf);
--		raw_spin_lock(&next->pi_lock);
--		rq_relock(rq, rf);
-+/*
-+ * Invoked from a CPUs hotplug control thread after the CPU has been marked
-+ * inactive. All tasks which are not per CPU kernel threads are either
-+ * pushed off this CPU now via balance_push() or placed on a different CPU
-+ * during wakeup. Wait until the CPU is quiescent.
-+ */
-+static void balance_hotplug_wait(void)
-+{
-+	struct rq *rq = this_rq();
- 
--		/*
--		 * Since we're inside stop-machine, _nothing_ should have
--		 * changed the task, WARN if weird stuff happened, because in
--		 * that case the above rq->lock drop is a fail too.
--		 */
--		if (WARN_ON(task_rq(next) != rq || !task_on_rq_queued(next))) {
--			raw_spin_unlock(&next->pi_lock);
--			continue;
--		}
-+	rcuwait_wait_event(&rq->hotplug_wait,
-+			   rq->nr_running == 1 && !rq_has_pinned_tasks(rq),
-+			   TASK_UNINTERRUPTIBLE);
-+}
- 
--		/* Find suitable destination for @next, with force if needed. */
--		dest_cpu = select_fallback_rq(dead_rq->cpu, next);
--		rq = __migrate_task(rq, rf, next, dest_cpu);
--		if (rq != dead_rq) {
--			rq_unlock(rq, rf);
--			rq = dead_rq;
--			*rf = orf;
--			rq_relock(rq, rf);
--		}
--		raw_spin_unlock(&next->pi_lock);
--	}
-+#else
-+
-+static inline void balance_push(struct rq *rq)
-+{
-+}
- 
--	rq->stop = stop;
-+static inline void balance_push_set(int cpu, bool on)
-+{
-+}
-+
-+static inline void balance_hotplug_wait(void)
-+{
- }
-+
- #endif /* CONFIG_HOTPLUG_CPU */
- 
- void set_rq_online(struct rq *rq)
-@@ -6892,6 +7425,8 @@ int sched_cpu_activate(unsigned int cpu)
- 	struct rq *rq = cpu_rq(cpu);
- 	struct rq_flags rf;
- 
-+	balance_push_set(cpu, false);
-+
- #ifdef CONFIG_SCHED_SMT
- 	/*
- 	 * When going up, increment the number of cores with SMT present.
-@@ -6927,6 +7462,8 @@ int sched_cpu_activate(unsigned int cpu)
- 
- int sched_cpu_deactivate(unsigned int cpu)
- {
-+	struct rq *rq = cpu_rq(cpu);
-+	struct rq_flags rf;
- 	int ret;
- 
- 	set_cpu_active(cpu, false);
-@@ -6939,6 +7476,16 @@ int sched_cpu_deactivate(unsigned int cpu)
- 	 */
- 	synchronize_rcu();
- 
-+	balance_push_set(cpu, true);
-+
-+	rq_lock_irqsave(rq, &rf);
-+	if (rq->rd) {
-+		update_rq_clock(rq);
-+		BUG_ON(!cpumask_test_cpu(cpu, rq->rd->span));
-+		set_rq_offline(rq);
-+	}
-+	rq_unlock_irqrestore(rq, &rf);
-+
- #ifdef CONFIG_SCHED_SMT
- 	/*
- 	 * When going down, decrement the number of cores with SMT present.
-@@ -6952,6 +7499,7 @@ int sched_cpu_deactivate(unsigned int cpu)
- 
- 	ret = cpuset_cpu_inactive(cpu);
- 	if (ret) {
-+		balance_push_set(cpu, false);
- 		set_cpu_active(cpu, true);
- 		return ret;
- 	}
-@@ -6975,6 +7523,41 @@ int sched_cpu_starting(unsigned int cpu)
- }
- 
- #ifdef CONFIG_HOTPLUG_CPU
-+
-+/*
-+ * Invoked immediately before the stopper thread is invoked to bring the
-+ * CPU down completely. At this point all per CPU kthreads except the
-+ * hotplug thread (current) and the stopper thread (inactive) have been
-+ * either parked or have been unbound from the outgoing CPU. Ensure that
-+ * any of those which might be on the way out are gone.
-+ *
-+ * If after this point a bound task is being woken on this CPU then the
-+ * responsible hotplug callback has failed to do it's job.
-+ * sched_cpu_dying() will catch it with the appropriate fireworks.
-+ */
-+int sched_cpu_wait_empty(unsigned int cpu)
-+{
-+	balance_hotplug_wait();
-+	return 0;
-+}
-+
-+/*
-+ * Since this CPU is going 'away' for a while, fold any nr_active delta we
-+ * might have. Called from the CPU stopper task after ensuring that the
-+ * stopper is the last running task on the CPU, so nr_active count is
-+ * stable. We need to take the teardown thread which is calling this into
-+ * account, so we hand in adjust = 1 to the load calculation.
-+ *
-+ * Also see the comment "Global load-average calculations".
-+ */
-+static void calc_load_migrate(struct rq *rq)
-+{
-+	long delta = calc_load_fold_active(rq, 1);
-+
-+	if (delta)
-+		atomic_long_add(delta, &calc_load_tasks);
-+}
-+
- int sched_cpu_dying(unsigned int cpu)
- {
- 	struct rq *rq = cpu_rq(cpu);
-@@ -6984,12 +7567,7 @@ int sched_cpu_dying(unsigned int cpu)
- 	sched_tick_stop(cpu);
- 
- 	rq_lock_irqsave(rq, &rf);
--	if (rq->rd) {
--		BUG_ON(!cpumask_test_cpu(cpu, rq->rd->span));
--		set_rq_offline(rq);
--	}
--	migrate_tasks(rq, &rf);
--	BUG_ON(rq->nr_running != 1);
-+	BUG_ON(rq->nr_running != 1 || rq_has_pinned_tasks(rq));
- 	rq_unlock_irqrestore(rq, &rf);
- 
- 	calc_load_migrate(rq);
-@@ -7194,7 +7772,10 @@ void __init sched_init(void)
- 		rq->last_blocked_load_update_tick = jiffies;
- 		atomic_set(&rq->nohz_flags, 0);
- 
--		rq_csd_init(rq, &rq->nohz_csd, nohz_csd_func);
-+		INIT_CSD(&rq->nohz_csd, nohz_csd_func, rq);
-+#endif
-+#ifdef CONFIG_HOTPLUG_CPU
-+		rcuwait_init(&rq->hotplug_wait);
- #endif
- #endif /* CONFIG_SMP */
- 		hrtick_rq_init(rq);
-@@ -7333,6 +7914,39 @@ void __cant_sleep(const char *file, int line, int preempt_offset)
- 	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
- }
- EXPORT_SYMBOL_GPL(__cant_sleep);
-+
-+#ifdef CONFIG_SMP
-+void __cant_migrate(const char *file, int line)
-+{
-+	static unsigned long prev_jiffy;
-+
-+	if (irqs_disabled())
-+		return;
-+
-+	if (is_migration_disabled(current))
-+		return;
-+
-+	if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
-+		return;
-+
-+	if (preempt_count() > 0)
-+		return;
-+
-+	if (time_before(jiffies, prev_jiffy + HZ) && prev_jiffy)
-+		return;
-+	prev_jiffy = jiffies;
-+
-+	pr_err("BUG: assuming non migratable context at %s:%d\n", file, line);
-+	pr_err("in_atomic(): %d, irqs_disabled(): %d, migration_disabled() %u pid: %d, name: %s\n",
-+	       in_atomic(), irqs_disabled(), is_migration_disabled(current),
-+	       current->pid, current->comm);
-+
-+	debug_show_held_locks(current);
-+	dump_stack();
-+	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
-+}
-+EXPORT_SYMBOL_GPL(__cant_migrate);
-+#endif
- #endif
- 
- #ifdef CONFIG_MAGIC_SYSRQ
-@@ -7666,7 +8280,7 @@ static int cpu_cgroup_can_attach(struct cgroup_taskset *tset)
- 			return -EINVAL;
- #endif
- 		/*
--		 * Serialize against wake_up_new_task() such that if its
-+		 * Serialize against wake_up_new_task() such that if it's
- 		 * running, we're sure to observe its full state.
- 		 */
- 		raw_spin_lock_irq(&task->pi_lock);
-diff --git a/kernel/sched/cpudeadline.c b/kernel/sched/cpudeadline.c
-index 8cb06c8c7eb1..ceb03d76c0cc 100644
---- a/kernel/sched/cpudeadline.c
-+++ b/kernel/sched/cpudeadline.c
-@@ -120,7 +120,7 @@ int cpudl_find(struct cpudl *cp, struct task_struct *p,
- 	const struct sched_dl_entity *dl_se = &p->dl;
- 
- 	if (later_mask &&
--	    cpumask_and(later_mask, cp->free_cpus, p->cpus_ptr)) {
-+	    cpumask_and(later_mask, cp->free_cpus, &p->cpus_mask)) {
- 		unsigned long cap, max_cap = 0;
- 		int cpu, max_cpu = -1;
- 
-@@ -151,7 +151,7 @@ int cpudl_find(struct cpudl *cp, struct task_struct *p,
- 
- 		WARN_ON(best_cpu != -1 && !cpu_present(best_cpu));
- 
--		if (cpumask_test_cpu(best_cpu, p->cpus_ptr) &&
-+		if (cpumask_test_cpu(best_cpu, &p->cpus_mask) &&
- 		    dl_time_before(dl_se->deadline, cp->elements[0].dl)) {
- 			if (later_mask)
- 				cpumask_set_cpu(best_cpu, later_mask);
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 97d318b0cd0c..d90cad7a374f 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -899,16 +899,9 @@ struct cpufreq_governor *cpufreq_default_governor(void)
- cpufreq_governor_init(schedutil_gov);
- 
- #ifdef CONFIG_ENERGY_MODEL
--extern bool sched_energy_update;
--extern struct mutex sched_energy_mutex;
--
- static void rebuild_sd_workfn(struct work_struct *work)
- {
--	mutex_lock(&sched_energy_mutex);
--	sched_energy_update = true;
--	rebuild_sched_domains();
--	sched_energy_update = false;
--	mutex_unlock(&sched_energy_mutex);
-+	rebuild_sched_domains_energy();
- }
- static DECLARE_WORK(rebuild_sd_work, rebuild_sd_workfn);
- 
-diff --git a/kernel/sched/cpupri.c b/kernel/sched/cpupri.c
-index 0033731a0797..ec9be789c7e2 100644
---- a/kernel/sched/cpupri.c
-+++ b/kernel/sched/cpupri.c
-@@ -11,7 +11,7 @@
-  *  This code tracks the priority of each CPU so that global migration
-  *  decisions are easy to calculate.  Each CPU can be in a state as follows:
-  *
-- *                 (INVALID), IDLE, NORMAL, RT1, ... RT99
-+ *                 (INVALID), NORMAL, RT1, ... RT99, HIGHER
-  *
-  *  going from the lowest priority to the highest.  CPUs in the INVALID state
-  *  are not eligible for routing.  The system maintains this state with
-@@ -19,24 +19,48 @@
-  *  in that class).  Therefore a typical application without affinity
-  *  restrictions can find a suitable CPU with O(1) complexity (e.g. two bit
-  *  searches).  For tasks with affinity restrictions, the algorithm has a
-- *  worst case complexity of O(min(102, nr_domcpus)), though the scenario that
-+ *  worst case complexity of O(min(101, nr_domcpus)), though the scenario that
-  *  yields the worst case search is fairly contrived.
-  */
- #include "sched.h"
- 
--/* Convert between a 140 based task->prio, and our 102 based cpupri */
-+/*
-+ * p->rt_priority   p->prio   newpri   cpupri
-+ *
-+ *				  -1       -1 (CPUPRI_INVALID)
-+ *
-+ *				  99        0 (CPUPRI_NORMAL)
-+ *
-+ *		1        98       98        1
-+ *	      ...
-+ *	       49        50       50       49
-+ *	       50        49       49       50
-+ *	      ...
-+ *	       99         0        0       99
-+ *
-+ *				 100	  100 (CPUPRI_HIGHER)
-+ */
- static int convert_prio(int prio)
- {
- 	int cpupri;
- 
--	if (prio == CPUPRI_INVALID)
--		cpupri = CPUPRI_INVALID;
--	else if (prio == MAX_PRIO)
--		cpupri = CPUPRI_IDLE;
--	else if (prio >= MAX_RT_PRIO)
--		cpupri = CPUPRI_NORMAL;
--	else
--		cpupri = MAX_RT_PRIO - prio + 1;
-+	switch (prio) {
-+	case CPUPRI_INVALID:
-+		cpupri = CPUPRI_INVALID;	/* -1 */
-+		break;
-+
-+	case 0 ... 98:
-+		cpupri = MAX_RT_PRIO-1 - prio;	/* 1 ... 99 */
-+		break;
-+
-+	case MAX_RT_PRIO-1:
-+		cpupri = CPUPRI_NORMAL;		/*  0 */
-+		break;
-+
-+	case MAX_RT_PRIO:
-+		cpupri = CPUPRI_HIGHER;		/* 100 */
-+		break;
-+	}
- 
- 	return cpupri;
- }
-@@ -73,11 +97,11 @@ static inline int __cpupri_find(struct cpupri *cp, struct task_struct *p,
- 	if (skip)
- 		return 0;
- 
--	if (cpumask_any_and(p->cpus_ptr, vec->mask) >= nr_cpu_ids)
-+	if (cpumask_any_and(&p->cpus_mask, vec->mask) >= nr_cpu_ids)
- 		return 0;
- 
- 	if (lowest_mask) {
--		cpumask_and(lowest_mask, p->cpus_ptr, vec->mask);
-+		cpumask_and(lowest_mask, &p->cpus_mask, vec->mask);
- 
- 		/*
- 		 * We have to ensure that we have at least one bit
-@@ -177,7 +201,7 @@ int cpupri_find_fitness(struct cpupri *cp, struct task_struct *p,
-  * cpupri_set - update the CPU priority setting
-  * @cp: The cpupri context
-  * @cpu: The target CPU
-- * @newpri: The priority (INVALID-RT99) to assign to this CPU
-+ * @newpri: The priority (INVALID,NORMAL,RT1-RT99,HIGHER) to assign to this CPU
-  *
-  * Note: Assumes cpu_rq(cpu)->lock is locked
-  *
-diff --git a/kernel/sched/cpupri.h b/kernel/sched/cpupri.h
-index efbb492bb94c..d6cba0020064 100644
---- a/kernel/sched/cpupri.h
-+++ b/kernel/sched/cpupri.h
-@@ -1,11 +1,11 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- 
--#define CPUPRI_NR_PRIORITIES	(MAX_RT_PRIO + 2)
-+#define CPUPRI_NR_PRIORITIES	(MAX_RT_PRIO+1)
- 
- #define CPUPRI_INVALID		-1
--#define CPUPRI_IDLE		 0
--#define CPUPRI_NORMAL		 1
--/* values 2-101 are RT priorities 0-99 */
-+#define CPUPRI_NORMAL		 0
-+/* values 1-99 are for RT1-RT99 priorities */
-+#define CPUPRI_HIGHER		100
- 
- struct cpupri_vec {
- 	atomic_t		count;
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 1d3c97268ec0..75686c6d4436 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -119,6 +119,17 @@ static inline unsigned long dl_bw_capacity(int i)
- 		return __dl_bw_capacity(i);
- 	}
- }
-+
-+static inline bool dl_bw_visited(int cpu, u64 gen)
-+{
-+	struct root_domain *rd = cpu_rq(cpu)->rd;
-+
-+	if (rd->visit_gen == gen)
-+		return true;
-+
-+	rd->visit_gen = gen;
-+	return false;
-+}
- #else
- static inline struct dl_bw *dl_bw_of(int i)
- {
-@@ -134,6 +145,11 @@ static inline unsigned long dl_bw_capacity(int i)
- {
- 	return SCHED_CAPACITY_SCALE;
- }
-+
-+static inline bool dl_bw_visited(int cpu, u64 gen)
-+{
-+	return false;
-+}
- #endif
- 
- static inline
-@@ -565,7 +581,7 @@ static int push_dl_task(struct rq *rq);
- 
- static inline bool need_pull_dl_task(struct rq *rq, struct task_struct *prev)
- {
--	return dl_task(prev);
-+	return rq->online && dl_task(prev);
- }
- 
- static DEFINE_PER_CPU(struct callback_head, dl_push_head);
-@@ -1397,6 +1413,8 @@ static void inc_dl_deadline(struct dl_rq *dl_rq, u64 deadline)
- 
- 	if (dl_rq->earliest_dl.curr == 0 ||
- 	    dl_time_before(deadline, dl_rq->earliest_dl.curr)) {
-+		if (dl_rq->earliest_dl.curr == 0)
-+			cpupri_set(&rq->rd->cpupri, rq->cpu, CPUPRI_HIGHER);
- 		dl_rq->earliest_dl.curr = deadline;
- 		cpudl_set(&rq->rd->cpudl, rq->cpu, deadline);
- 	}
-@@ -1414,6 +1432,7 @@ static void dec_dl_deadline(struct dl_rq *dl_rq, u64 deadline)
- 		dl_rq->earliest_dl.curr = 0;
- 		dl_rq->earliest_dl.next = 0;
- 		cpudl_clear(&rq->rd->cpudl, rq->cpu);
-+		cpupri_set(&rq->rd->cpupri, rq->cpu, rq->rt.highest_prio.curr);
- 	} else {
- 		struct rb_node *leftmost = dl_rq->root.rb_leftmost;
- 		struct sched_dl_entity *entry;
-@@ -1670,13 +1689,13 @@ static void yield_task_dl(struct rq *rq)
- static int find_later_rq(struct task_struct *task);
- 
- static int
--select_task_rq_dl(struct task_struct *p, int cpu, int sd_flag, int flags)
-+select_task_rq_dl(struct task_struct *p, int cpu, int flags)
- {
- 	struct task_struct *curr;
- 	bool select_rq;
- 	struct rq *rq;
- 
--	if (sd_flag != SD_BALANCE_WAKE)
-+	if (!(flags & WF_TTWU))
- 		goto out;
- 
- 	rq = cpu_rq(cpu);
-@@ -1918,7 +1937,7 @@ static void task_fork_dl(struct task_struct *p)
- static int pick_dl_task(struct rq *rq, struct task_struct *p, int cpu)
- {
- 	if (!task_running(rq, p) &&
--	    cpumask_test_cpu(cpu, p->cpus_ptr))
-+	    cpumask_test_cpu(cpu, &p->cpus_mask))
- 		return 1;
- 	return 0;
- }
-@@ -2008,8 +2027,8 @@ static int find_later_rq(struct task_struct *task)
- 				return this_cpu;
- 			}
- 
--			best_cpu = cpumask_first_and(later_mask,
--							sched_domain_span(sd));
-+			best_cpu = cpumask_any_and_distribute(later_mask,
-+							      sched_domain_span(sd));
- 			/*
- 			 * Last chance: if a CPU being in both later_mask
- 			 * and current sd span is valid, that becomes our
-@@ -2031,7 +2050,7 @@ static int find_later_rq(struct task_struct *task)
- 	if (this_cpu != -1)
- 		return this_cpu;
- 
--	cpu = cpumask_any(later_mask);
-+	cpu = cpumask_any_distribute(later_mask);
- 	if (cpu < nr_cpu_ids)
- 		return cpu;
- 
-@@ -2068,7 +2087,7 @@ static struct rq *find_lock_later_rq(struct task_struct *task, struct rq *rq)
- 		/* Retry if something changed. */
- 		if (double_lock_balance(rq, later_rq)) {
- 			if (unlikely(task_rq(task) != rq ||
--				     !cpumask_test_cpu(later_rq->cpu, task->cpus_ptr) ||
-+				     !cpumask_test_cpu(later_rq->cpu, &task->cpus_mask) ||
- 				     task_running(rq, task) ||
- 				     !dl_task(task) ||
- 				     !task_on_rq_queued(task))) {
-@@ -2135,6 +2154,9 @@ static int push_dl_task(struct rq *rq)
- 		return 0;
- 
- retry:
-+	if (is_migration_disabled(next_task))
-+		return 0;
-+
- 	if (WARN_ON(next_task == rq->curr))
- 		return 0;
- 
-@@ -2212,7 +2234,7 @@ static void push_dl_tasks(struct rq *rq)
- static void pull_dl_task(struct rq *this_rq)
- {
- 	int this_cpu = this_rq->cpu, cpu;
--	struct task_struct *p;
-+	struct task_struct *p, *push_task;
- 	bool resched = false;
- 	struct rq *src_rq;
- 	u64 dmin = LONG_MAX;
-@@ -2242,6 +2264,7 @@ static void pull_dl_task(struct rq *this_rq)
- 			continue;
- 
- 		/* Might drop this_rq->lock */
-+		push_task = NULL;
- 		double_lock_balance(this_rq, src_rq);
- 
- 		/*
-@@ -2273,17 +2296,27 @@ static void pull_dl_task(struct rq *this_rq)
- 					   src_rq->curr->dl.deadline))
- 				goto skip;
- 
--			resched = true;
--
--			deactivate_task(src_rq, p, 0);
--			set_task_cpu(p, this_cpu);
--			activate_task(this_rq, p, 0);
--			dmin = p->dl.deadline;
-+			if (is_migration_disabled(p)) {
-+				push_task = get_push_task(src_rq);
-+			} else {
-+				deactivate_task(src_rq, p, 0);
-+				set_task_cpu(p, this_cpu);
-+				activate_task(this_rq, p, 0);
-+				dmin = p->dl.deadline;
-+				resched = true;
-+			}
- 
- 			/* Is there any other task even earlier? */
- 		}
- skip:
- 		double_unlock_balance(this_rq, src_rq);
-+
-+		if (push_task) {
-+			raw_spin_unlock(&this_rq->lock);
-+			stop_one_cpu_nowait(src_rq->cpu, push_cpu_stop,
-+					    push_task, &src_rq->push_work);
-+			raw_spin_lock(&this_rq->lock);
-+		}
- 	}
- 
- 	if (resched)
-@@ -2307,7 +2340,8 @@ static void task_woken_dl(struct rq *rq, struct task_struct *p)
- }
- 
- static void set_cpus_allowed_dl(struct task_struct *p,
--				const struct cpumask *new_mask)
-+				const struct cpumask *new_mask,
-+				u32 flags)
- {
- 	struct root_domain *src_rd;
- 	struct rq *rq;
-@@ -2336,7 +2370,7 @@ static void set_cpus_allowed_dl(struct task_struct *p,
- 		raw_spin_unlock(&src_dl_b->lock);
- 	}
- 
--	set_cpus_allowed_common(p, new_mask);
-+	set_cpus_allowed_common(p, new_mask, flags);
- }
- 
- /* Assumes rq->lock is held */
-@@ -2509,8 +2543,8 @@ static void prio_changed_dl(struct rq *rq, struct task_struct *p,
- 	}
- }
- 
--const struct sched_class dl_sched_class
--	__section("__dl_sched_class") = {
-+DEFINE_SCHED_CLASS(dl) = {
-+
- 	.enqueue_task		= enqueue_task_dl,
- 	.dequeue_task		= dequeue_task_dl,
- 	.yield_task		= yield_task_dl,
-@@ -2529,6 +2563,7 @@ const struct sched_class dl_sched_class
- 	.rq_online              = rq_online_dl,
- 	.rq_offline             = rq_offline_dl,
- 	.task_woken		= task_woken_dl,
-+	.find_lock_rq		= find_lock_later_rq,
- #endif
- 
- 	.task_tick		= task_tick_dl,
-@@ -2541,33 +2576,39 @@ const struct sched_class dl_sched_class
- 	.update_curr		= update_curr_dl,
- };
- 
-+/* Used for dl_bw check and update, used under sched_rt_handler()::mutex */
-+static u64 dl_generation;
-+
- int sched_dl_global_validate(void)
- {
- 	u64 runtime = global_rt_runtime();
- 	u64 period = global_rt_period();
- 	u64 new_bw = to_ratio(period, runtime);
-+	u64 gen = ++dl_generation;
- 	struct dl_bw *dl_b;
--	int cpu, ret = 0;
-+	int cpu, cpus, ret = 0;
- 	unsigned long flags;
- 
- 	/*
- 	 * Here we want to check the bandwidth not being set to some
- 	 * value smaller than the currently allocated bandwidth in
- 	 * any of the root_domains.
--	 *
--	 * FIXME: Cycling on all the CPUs is overdoing, but simpler than
--	 * cycling on root_domains... Discussion on different/better
--	 * solutions is welcome!
- 	 */
- 	for_each_possible_cpu(cpu) {
- 		rcu_read_lock_sched();
-+
-+		if (dl_bw_visited(cpu, gen))
-+			goto next;
-+
- 		dl_b = dl_bw_of(cpu);
-+		cpus = dl_bw_cpus(cpu);
- 
- 		raw_spin_lock_irqsave(&dl_b->lock, flags);
--		if (new_bw < dl_b->total_bw)
-+		if (new_bw * cpus < dl_b->total_bw)
- 			ret = -EBUSY;
- 		raw_spin_unlock_irqrestore(&dl_b->lock, flags);
- 
-+next:
- 		rcu_read_unlock_sched();
- 
- 		if (ret)
-@@ -2593,6 +2634,7 @@ static void init_dl_rq_bw_ratio(struct dl_rq *dl_rq)
- void sched_dl_do_global(void)
- {
- 	u64 new_bw = -1;
-+	u64 gen = ++dl_generation;
- 	struct dl_bw *dl_b;
- 	int cpu;
- 	unsigned long flags;
-@@ -2603,11 +2645,14 @@ void sched_dl_do_global(void)
- 	if (global_rt_runtime() != RUNTIME_INF)
- 		new_bw = to_ratio(global_rt_period(), global_rt_runtime());
- 
--	/*
--	 * FIXME: As above...
--	 */
- 	for_each_possible_cpu(cpu) {
- 		rcu_read_lock_sched();
-+
-+		if (dl_bw_visited(cpu, gen)) {
-+			rcu_read_unlock_sched();
-+			continue;
-+		}
-+
- 		dl_b = dl_bw_of(cpu);
- 
- 		raw_spin_lock_irqsave(&dl_b->lock, flags);
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index ae7ceba8fd4f..04a3ce20da67 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -906,6 +906,15 @@ update_stats_wait_end(struct cfs_rq *cfs_rq, struct sched_entity *se)
- 	if (!schedstat_enabled())
- 		return;
- 
-+	/*
-+	 * When the sched_schedstat changes from 0 to 1, some sched se
-+	 * maybe already in the runqueue, the se->statistics.wait_start
-+	 * will be 0.So it will let the delta wrong. We need to avoid this
-+	 * scenario.
-+	 */
-+	if (unlikely(!schedstat_val(se->statistics.wait_start)))
-+		return;
-+
- 	delta = rq_clock(rq_of(cfs_rq)) - schedstat_val(se->statistics.wait_start);
- 
- 	if (entity_is_task(se)) {
-@@ -1550,7 +1559,8 @@ struct task_numa_env {
- static unsigned long cpu_load(struct rq *rq);
- static unsigned long cpu_runnable(struct rq *rq);
- static unsigned long cpu_util(int cpu);
--static inline long adjust_numa_imbalance(int imbalance, int nr_running);
-+static inline long adjust_numa_imbalance(int imbalance,
-+					int dst_running, int dst_weight);
- 
- static inline enum
- numa_type numa_classify(unsigned int imbalance_pct,
-@@ -1930,7 +1940,8 @@ static void task_numa_find_cpu(struct task_numa_env *env,
- 		src_running = env->src_stats.nr_running - 1;
- 		dst_running = env->dst_stats.nr_running + 1;
- 		imbalance = max(0, dst_running - src_running);
--		imbalance = adjust_numa_imbalance(imbalance, dst_running);
-+		imbalance = adjust_numa_imbalance(imbalance, dst_running,
-+							env->dst_stats.weight);
- 
- 		/* Use idle CPU if there is no imbalance */
- 		if (!imbalance) {
-@@ -4779,25 +4790,37 @@ static bool throttle_cfs_rq(struct cfs_rq *cfs_rq)
- 		struct cfs_rq *qcfs_rq = cfs_rq_of(se);
- 		/* throttled entity or throttle-on-deactivate */
- 		if (!se->on_rq)
--			break;
-+			goto done;
- 
--		if (dequeue) {
--			dequeue_entity(qcfs_rq, se, DEQUEUE_SLEEP);
--		} else {
--			update_load_avg(qcfs_rq, se, 0);
--			se_update_runnable(se);
--		}
-+		dequeue_entity(qcfs_rq, se, DEQUEUE_SLEEP);
- 
- 		qcfs_rq->h_nr_running -= task_delta;
- 		qcfs_rq->idle_h_nr_running -= idle_task_delta;
- 
--		if (qcfs_rq->load.weight)
--			dequeue = 0;
-+		if (qcfs_rq->load.weight) {
-+			/* Avoid re-evaluating load for this entity: */
-+			se = parent_entity(se);
-+			break;
-+		}
- 	}
- 
--	if (!se)
--		sub_nr_running(rq, task_delta);
-+	for_each_sched_entity(se) {
-+		struct cfs_rq *qcfs_rq = cfs_rq_of(se);
-+		/* throttled entity or throttle-on-deactivate */
-+		if (!se->on_rq)
-+			goto done;
- 
-+		update_load_avg(qcfs_rq, se, 0);
-+		se_update_runnable(se);
-+
-+		qcfs_rq->h_nr_running -= task_delta;
-+		qcfs_rq->idle_h_nr_running -= idle_task_delta;
-+	}
-+
-+	/* At this point se is NULL and we are at root level*/
-+	sub_nr_running(rq, task_delta);
-+
-+done:
- 	/*
- 	 * Note: distribution will already see us throttled via the
- 	 * throttled-list.  rq->lock protects completion.
-@@ -5105,9 +5128,6 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
- 		return;
- 
- 	distribute_cfs_runtime(cfs_b);
--
--	raw_spin_lock_irqsave(&cfs_b->lock, flags);
--	raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
- }
- 
- /*
-@@ -5805,6 +5825,9 @@ wake_affine_idle(int this_cpu, int prev_cpu, int sync)
- 	if (sync && cpu_rq(this_cpu)->nr_running == 1)
- 		return this_cpu;
- 
-+	if (available_idle_cpu(prev_cpu))
-+		return prev_cpu;
-+
- 	return nr_cpumask_bits;
- }
- 
-@@ -6063,10 +6086,11 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
- 				break;
- 			}
- 		}
--		cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
- 
- 		if (idle)
- 			return core;
-+
-+		cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
- 	}
- 
- 	/*
-@@ -6307,7 +6331,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- }
- 
- /**
-- * Amount of capacity of a CPU that is (estimated to be) used by CFS tasks
-+ * cpu_util - Estimates the amount of capacity of a CPU used by CFS tasks.
-  * @cpu: the CPU to get the utilization of
-  *
-  * The unit of the return value must be the one of capacity so we can compare
-@@ -6683,7 +6707,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
- 
- /*
-  * select_task_rq_fair: Select target runqueue for the waking task in domains
-- * that have the 'sd_flag' flag set. In practice, this is SD_BALANCE_WAKE,
-+ * that have the relevant SD flag set. In practice, this is SD_BALANCE_WAKE,
-  * SD_BALANCE_FORK, or SD_BALANCE_EXEC.
-  *
-  * Balances load by selecting the idlest CPU in the idlest group, or under
-@@ -6694,15 +6718,17 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
-  * preempt must be disabled.
-  */
- static int
--select_task_rq_fair(struct task_struct *p, int prev_cpu, int sd_flag, int wake_flags)
-+select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
- {
-+	int sync = (wake_flags & WF_SYNC) && !(current->flags & PF_EXITING);
- 	struct sched_domain *tmp, *sd = NULL;
- 	int cpu = smp_processor_id();
- 	int new_cpu = prev_cpu;
- 	int want_affine = 0;
--	int sync = (wake_flags & WF_SYNC) && !(current->flags & PF_EXITING);
-+	/* SD_flags and WF_flags share the first nibble */
-+	int sd_flag = wake_flags & 0xF;
- 
--	if (sd_flag & SD_BALANCE_WAKE) {
-+	if (wake_flags & WF_TTWU) {
- 		record_wakee(p);
- 
- 		if (sched_energy_enabled()) {
-@@ -6739,9 +6765,8 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int sd_flag, int wake_f
- 	if (unlikely(sd)) {
- 		/* Slow path */
- 		new_cpu = find_idlest_cpu(sd, p, cpu, prev_cpu, sd_flag);
--	} else if (sd_flag & SD_BALANCE_WAKE) { /* XXX always ? */
-+	} else if (wake_flags & WF_TTWU) { /* XXX always ? */
- 		/* Fast path */
--
- 		new_cpu = select_idle_sibling(p, prev_cpu, new_cpu);
- 
- 		if (want_affine)
-@@ -8757,6 +8782,16 @@ static bool update_pick_idlest(struct sched_group *idlest,
- 	return true;
- }
- 
-+/*
-+ * Allow a NUMA imbalance if busy CPUs is less than 25% of the domain.
-+ * This is an approximation as the number of running tasks may not be
-+ * related to the number of busy CPUs due to sched_setaffinity.
-+ */
-+static inline bool allow_numa_imbalance(int dst_running, int dst_weight)
-+{
-+	return (dst_running < (dst_weight >> 2));
-+}
-+
- /*
-  * find_idlest_group() finds and returns the least busy CPU group within the
-  * domain.
-@@ -8775,9 +8810,6 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 			.group_type = group_overloaded,
- 	};
- 
--	imbalance = scale_load_down(NICE_0_LOAD) *
--				(sd->imbalance_pct-100) / 100;
--
- 	do {
- 		int local_group;
- 
-@@ -8831,6 +8863,11 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 	switch (local_sgs.group_type) {
- 	case group_overloaded:
- 	case group_fully_busy:
-+
-+		/* Calculate allowed imbalance based on load */
-+		imbalance = scale_load_down(NICE_0_LOAD) *
-+				(sd->imbalance_pct-100) / 100;
-+
- 		/*
- 		 * When comparing groups across NUMA domains, it's possible for
- 		 * the local domain to be very lightly loaded relative to the
-@@ -8887,7 +8924,7 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
- 			 * a real need of migration, periodic load balance will
- 			 * take care of it.
- 			 */
--			if (local_sgs.idle_cpus)
-+			if (allow_numa_imbalance(local_sgs.sum_nr_running, sd->span_weight))
- 				return NULL;
- 		}
- 
-@@ -8989,16 +9026,19 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 	}
- }
- 
--static inline long adjust_numa_imbalance(int imbalance, int nr_running)
-+#define NUMA_IMBALANCE_MIN 2
-+
-+static inline long adjust_numa_imbalance(int imbalance,
-+				int dst_running, int dst_weight)
- {
--	unsigned int imbalance_min;
-+	if (!allow_numa_imbalance(dst_running, dst_weight))
-+		return imbalance;
- 
- 	/*
- 	 * Allow a small imbalance based on a simple pair of communicating
--	 * tasks that remain local when the source domain is almost idle.
-+	 * tasks that remain local when the destination is lightly loaded.
- 	 */
--	imbalance_min = 2;
--	if (nr_running <= imbalance_min)
-+	if (imbalance <= NUMA_IMBALANCE_MIN)
- 		return 0;
- 
- 	return imbalance;
-@@ -9101,9 +9141,10 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
- 		}
- 
- 		/* Consider allowing a small imbalance between NUMA groups */
--		if (env->sd->flags & SD_NUMA)
-+		if (env->sd->flags & SD_NUMA) {
- 			env->imbalance = adjust_numa_imbalance(env->imbalance,
--						busiest->sum_nr_running);
-+				busiest->sum_nr_running, busiest->group_weight);
-+		}
- 
- 		return;
- 	}
-@@ -10068,6 +10109,10 @@ static inline int find_new_ilb(void)
- 
- 	for_each_cpu_and(ilb, nohz.idle_cpus_mask,
- 			      housekeeping_cpumask(HK_FLAG_MISC)) {
-+
-+		if (ilb == smp_processor_id())
-+			continue;
-+
- 		if (idle_cpu(ilb))
- 			return ilb;
- 	}
-@@ -10505,7 +10550,7 @@ static inline void nohz_newidle_balance(struct rq *this_rq) { }
- #endif /* CONFIG_NO_HZ_COMMON */
- 
- /*
-- * idle_balance is called by schedule() if this_cpu is about to become
-+ * newidle_balance is called by schedule() if this_cpu is about to become
-  * idle. Attempts to pull tasks from other CPUs.
-  *
-  * Returns:
-@@ -11179,8 +11224,8 @@ static unsigned int get_rr_interval_fair(struct rq *rq, struct task_struct *task
- /*
-  * All the scheduling class methods:
-  */
--const struct sched_class fair_sched_class
--	__section("__fair_sched_class") = {
-+DEFINE_SCHED_CLASS(fair) = {
-+
- 	.enqueue_task		= enqueue_task_fair,
- 	.dequeue_task		= dequeue_task_fair,
- 	.yield_task		= yield_task_fair,
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 24d0ee26377d..df91b198a74c 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -338,6 +338,7 @@ void play_idle_precise(u64 duration_ns, u64 latency_ns)
- 	WARN_ON_ONCE(!(current->flags & PF_KTHREAD));
- 	WARN_ON_ONCE(!(current->flags & PF_NO_SETAFFINITY));
- 	WARN_ON_ONCE(!duration_ns);
-+	WARN_ON_ONCE(current->mm);
- 
- 	rcu_sleep_check();
- 	preempt_disable();
-@@ -375,7 +376,7 @@ void cpu_startup_entry(enum cpuhp_state state)
- 
- #ifdef CONFIG_SMP
- static int
--select_task_rq_idle(struct task_struct *p, int cpu, int sd_flag, int flags)
-+select_task_rq_idle(struct task_struct *p, int cpu, int flags)
- {
- 	return task_cpu(p); /* IDLE tasks as never migrated */
- }
-@@ -457,8 +458,8 @@ static void update_curr_idle(struct rq *rq)
- /*
-  * Simple, special scheduling class for the per-CPU idle tasks:
-  */
--const struct sched_class idle_sched_class
--	__section("__idle_sched_class") = {
-+DEFINE_SCHED_CLASS(idle) = {
-+
- 	/* no enqueue/yield_task for idle tasks */
- 
- 	/* dequeue is not valid, we print a debug message there: */
-diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
-index e23e74d52db5..5a40b3828ff2 100644
---- a/kernel/sched/membarrier.c
-+++ b/kernel/sched/membarrier.c
-@@ -6,6 +6,134 @@
-  */
- #include "sched.h"
- 
-+/*
-+ * For documentation purposes, here are some membarrier ordering
-+ * scenarios to keep in mind:
-+ *
-+ * A) Userspace thread execution after IPI vs membarrier's memory
-+ *    barrier before sending the IPI
-+ *
-+ * Userspace variables:
-+ *
-+ * int x = 0, y = 0;
-+ *
-+ * The memory barrier at the start of membarrier() on CPU0 is necessary in
-+ * order to enforce the guarantee that any writes occurring on CPU0 before
-+ * the membarrier() is executed will be visible to any code executing on
-+ * CPU1 after the IPI-induced memory barrier:
-+ *
-+ *         CPU0                              CPU1
-+ *
-+ *         x = 1
-+ *         membarrier():
-+ *           a: smp_mb()
-+ *           b: send IPI                       IPI-induced mb
-+ *           c: smp_mb()
-+ *         r2 = y
-+ *                                           y = 1
-+ *                                           barrier()
-+ *                                           r1 = x
-+ *
-+ *                     BUG_ON(r1 == 0 && r2 == 0)
-+ *
-+ * The write to y and load from x by CPU1 are unordered by the hardware,
-+ * so it's possible to have "r1 = x" reordered before "y = 1" at any
-+ * point after (b).  If the memory barrier at (a) is omitted, then "x = 1"
-+ * can be reordered after (a) (although not after (c)), so we get r1 == 0
-+ * and r2 == 0.  This violates the guarantee that membarrier() is
-+ * supposed by provide.
-+ *
-+ * The timing of the memory barrier at (a) has to ensure that it executes
-+ * before the IPI-induced memory barrier on CPU1.
-+ *
-+ * B) Userspace thread execution before IPI vs membarrier's memory
-+ *    barrier after completing the IPI
-+ *
-+ * Userspace variables:
-+ *
-+ * int x = 0, y = 0;
-+ *
-+ * The memory barrier at the end of membarrier() on CPU0 is necessary in
-+ * order to enforce the guarantee that any writes occurring on CPU1 before
-+ * the membarrier() is executed will be visible to any code executing on
-+ * CPU0 after the membarrier():
-+ *
-+ *         CPU0                              CPU1
-+ *
-+ *                                           x = 1
-+ *                                           barrier()
-+ *                                           y = 1
-+ *         r2 = y
-+ *         membarrier():
-+ *           a: smp_mb()
-+ *           b: send IPI                       IPI-induced mb
-+ *           c: smp_mb()
-+ *         r1 = x
-+ *         BUG_ON(r1 == 0 && r2 == 1)
-+ *
-+ * The writes to x and y are unordered by the hardware, so it's possible to
-+ * have "r2 = 1" even though the write to x doesn't execute until (b).  If
-+ * the memory barrier at (c) is omitted then "r1 = x" can be reordered
-+ * before (b) (although not before (a)), so we get "r1 = 0".  This violates
-+ * the guarantee that membarrier() is supposed to provide.
-+ *
-+ * The timing of the memory barrier at (c) has to ensure that it executes
-+ * after the IPI-induced memory barrier on CPU1.
-+ *
-+ * C) Scheduling userspace thread -> kthread -> userspace thread vs membarrier
-+ *
-+ *           CPU0                            CPU1
-+ *
-+ *           membarrier():
-+ *           a: smp_mb()
-+ *                                           d: switch to kthread (includes mb)
-+ *           b: read rq->curr->mm == NULL
-+ *                                           e: switch to user (includes mb)
-+ *           c: smp_mb()
-+ *
-+ * Using the scenario from (A), we can show that (a) needs to be paired
-+ * with (e). Using the scenario from (B), we can show that (c) needs to
-+ * be paired with (d).
-+ *
-+ * D) exit_mm vs membarrier
-+ *
-+ * Two thread groups are created, A and B.  Thread group B is created by
-+ * issuing clone from group A with flag CLONE_VM set, but not CLONE_THREAD.
-+ * Let's assume we have a single thread within each thread group (Thread A
-+ * and Thread B).  Thread A runs on CPU0, Thread B runs on CPU1.
-+ *
-+ *           CPU0                            CPU1
-+ *
-+ *           membarrier():
-+ *             a: smp_mb()
-+ *                                           exit_mm():
-+ *                                             d: smp_mb()
-+ *                                             e: current->mm = NULL
-+ *             b: read rq->curr->mm == NULL
-+ *             c: smp_mb()
-+ *
-+ * Using scenario (B), we can show that (c) needs to be paired with (d).
-+ *
-+ * E) kthread_{use,unuse}_mm vs membarrier
-+ *
-+ *           CPU0                            CPU1
-+ *
-+ *           membarrier():
-+ *           a: smp_mb()
-+ *                                           kthread_unuse_mm()
-+ *                                             d: smp_mb()
-+ *                                             e: current->mm = NULL
-+ *           b: read rq->curr->mm == NULL
-+ *                                           kthread_use_mm()
-+ *                                             f: current->mm = mm
-+ *                                             g: smp_mb()
-+ *           c: smp_mb()
-+ *
-+ * Using the scenario from (A), we can show that (a) needs to be paired
-+ * with (g). Using the scenario from (B), we can show that (c) needs to
-+ * be paired with (d).
-+ */
-+
- /*
-  * Bitmask made from a "or" of all commands within enum membarrier_cmd,
-  * except MEMBARRIER_CMD_QUERY.
-@@ -76,6 +204,18 @@ void membarrier_exec_mmap(struct mm_struct *mm)
- 	this_cpu_write(runqueues.membarrier_state, 0);
- }
- 
-+void membarrier_update_current_mm(struct mm_struct *next_mm)
-+{
-+	struct rq *rq = this_rq();
-+	int membarrier_state = 0;
-+
-+	if (next_mm)
-+		membarrier_state = atomic_read(&next_mm->membarrier_state);
-+	if (READ_ONCE(rq->membarrier_state) == membarrier_state)
-+		return;
-+	WRITE_ONCE(rq->membarrier_state, membarrier_state);
-+}
-+
- static int membarrier_global_expedited(void)
- {
- 	int cpu;
-@@ -114,12 +254,11 @@ static int membarrier_global_expedited(void)
- 			continue;
- 
- 		/*
--		 * Skip the CPU if it runs a kernel thread. The scheduler
--		 * leaves the prior task mm in place as an optimization when
--		 * scheduling a kthread.
-+		 * Skip the CPU if it runs a kernel thread which is not using
-+		 * a task mm.
- 		 */
- 		p = rcu_dereference(cpu_rq(cpu)->curr);
--		if (p->flags & PF_KTHREAD)
-+		if (!p->mm)
- 			continue;
- 
- 		__cpumask_set_cpu(cpu, tmpmask);
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 49ec096a8aa1..dbe4629cf7ba 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -89,8 +89,8 @@ void init_rt_rq(struct rt_rq *rt_rq)
- 	__set_bit(MAX_RT_PRIO, array->bitmap);
- 
- #if defined CONFIG_SMP
--	rt_rq->highest_prio.curr = MAX_RT_PRIO;
--	rt_rq->highest_prio.next = MAX_RT_PRIO;
-+	rt_rq->highest_prio.curr = MAX_RT_PRIO-1;
-+	rt_rq->highest_prio.next = MAX_RT_PRIO-1;
- 	rt_rq->rt_nr_migratory = 0;
- 	rt_rq->overloaded = 0;
- 	plist_head_init(&rt_rq->pushable_tasks);
-@@ -161,7 +161,7 @@ void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
- {
- 	struct rq *rq = cpu_rq(cpu);
- 
--	rt_rq->highest_prio.curr = MAX_RT_PRIO;
-+	rt_rq->highest_prio.curr = MAX_RT_PRIO-1;
- 	rt_rq->rt_nr_boosted = 0;
- 	rt_rq->rq = rq;
- 	rt_rq->tg = tg;
-@@ -265,7 +265,7 @@ static void pull_rt_task(struct rq *this_rq);
- static inline bool need_pull_rt_task(struct rq *rq, struct task_struct *prev)
- {
- 	/* Try to pull RT tasks here if we lower this rq's prio */
--	return rq->rt.highest_prio.curr > prev->prio;
-+	return rq->online && rq->rt.highest_prio.curr > prev->prio;
- }
- 
- static inline int rt_overloaded(struct rq *rq)
-@@ -393,8 +393,9 @@ static void dequeue_pushable_task(struct rq *rq, struct task_struct *p)
- 		p = plist_first_entry(&rq->rt.pushable_tasks,
- 				      struct task_struct, pushable_tasks);
- 		rq->rt.highest_prio.next = p->prio;
--	} else
--		rq->rt.highest_prio.next = MAX_RT_PRIO;
-+	} else {
-+		rq->rt.highest_prio.next = MAX_RT_PRIO-1;
-+	}
- }
- 
- #else
-@@ -1147,8 +1148,9 @@ dec_rt_prio(struct rt_rq *rt_rq, int prio)
- 				sched_find_first_bit(array->bitmap);
- 		}
- 
--	} else
--		rt_rq->highest_prio.curr = MAX_RT_PRIO;
-+	} else {
-+		rt_rq->highest_prio.curr = MAX_RT_PRIO-1;
-+	}
- 
- 	dec_rt_prio_smp(rt_rq, prio, prev_prio);
- }
-@@ -1428,14 +1430,14 @@ static void yield_task_rt(struct rq *rq)
- static int find_lowest_rq(struct task_struct *task);
- 
- static int
--select_task_rq_rt(struct task_struct *p, int cpu, int sd_flag, int flags)
-+select_task_rq_rt(struct task_struct *p, int cpu, int flags)
- {
- 	struct task_struct *curr;
- 	struct rq *rq;
- 	bool test;
- 
- 	/* For anything but wake ups, just return the task_cpu */
--	if (sd_flag != SD_BALANCE_WAKE && sd_flag != SD_BALANCE_FORK)
-+	if (!(flags & (WF_TTWU | WF_FORK)))
- 		goto out;
- 
- 	rq = cpu_rq(cpu);
-@@ -1658,7 +1660,7 @@ static void put_prev_task_rt(struct rq *rq, struct task_struct *p)
- static int pick_rt_task(struct rq *rq, struct task_struct *p, int cpu)
- {
- 	if (!task_running(rq, p) &&
--	    cpumask_test_cpu(cpu, p->cpus_ptr))
-+	    cpumask_test_cpu(cpu, &p->cpus_mask))
- 		return 1;
- 
- 	return 0;
-@@ -1752,8 +1754,8 @@ static int find_lowest_rq(struct task_struct *task)
- 				return this_cpu;
- 			}
- 
--			best_cpu = cpumask_first_and(lowest_mask,
--						     sched_domain_span(sd));
-+			best_cpu = cpumask_any_and_distribute(lowest_mask,
-+							      sched_domain_span(sd));
- 			if (best_cpu < nr_cpu_ids) {
- 				rcu_read_unlock();
- 				return best_cpu;
-@@ -1770,7 +1772,7 @@ static int find_lowest_rq(struct task_struct *task)
- 	if (this_cpu != -1)
- 		return this_cpu;
- 
--	cpu = cpumask_any(lowest_mask);
-+	cpu = cpumask_any_distribute(lowest_mask);
- 	if (cpu < nr_cpu_ids)
- 		return cpu;
- 
-@@ -1811,7 +1813,7 @@ static struct rq *find_lock_lowest_rq(struct task_struct *task, struct rq *rq)
- 			 * Also make sure that it wasn't scheduled on its rq.
- 			 */
- 			if (unlikely(task_rq(task) != rq ||
--				     !cpumask_test_cpu(lowest_rq->cpu, task->cpus_ptr) ||
-+				     !cpumask_test_cpu(lowest_rq->cpu, &task->cpus_mask) ||
- 				     task_running(rq, task) ||
- 				     !rt_task(task) ||
- 				     !task_on_rq_queued(task))) {
-@@ -1859,7 +1861,7 @@ static struct task_struct *pick_next_pushable_task(struct rq *rq)
-  * running task can migrate over to a CPU that is running a task
-  * of lesser priority.
-  */
--static int push_rt_task(struct rq *rq)
-+static int push_rt_task(struct rq *rq, bool pull)
- {
- 	struct task_struct *next_task;
- 	struct rq *lowest_rq;
-@@ -1873,6 +1875,34 @@ static int push_rt_task(struct rq *rq)
- 		return 0;
- 
- retry:
-+	if (is_migration_disabled(next_task)) {
-+		struct task_struct *push_task = NULL;
-+		int cpu;
-+
-+		if (!pull || rq->push_busy)
-+			return 0;
-+
-+		cpu = find_lowest_rq(rq->curr);
-+		if (cpu == -1 || cpu == rq->cpu)
-+			return 0;
-+
-+		/*
-+		 * Given we found a CPU with lower priority than @next_task,
-+		 * therefore it should be running. However we cannot migrate it
-+		 * to this other CPU, instead attempt to push the current
-+		 * running task on this CPU away.
-+		 */
-+		push_task = get_push_task(rq);
-+		if (push_task) {
-+			raw_spin_unlock(&rq->lock);
-+			stop_one_cpu_nowait(rq->cpu, push_cpu_stop,
-+					    push_task, &rq->push_work);
-+			raw_spin_lock(&rq->lock);
-+		}
-+
-+		return 0;
-+	}
-+
- 	if (WARN_ON(next_task == rq->curr))
- 		return 0;
- 
-@@ -1927,12 +1957,10 @@ static int push_rt_task(struct rq *rq)
- 	deactivate_task(rq, next_task, 0);
- 	set_task_cpu(next_task, lowest_rq->cpu);
- 	activate_task(lowest_rq, next_task, 0);
--	ret = 1;
--
- 	resched_curr(lowest_rq);
-+	ret = 1;
- 
- 	double_unlock_balance(rq, lowest_rq);
--
- out:
- 	put_task_struct(next_task);
- 
-@@ -1942,7 +1970,7 @@ static int push_rt_task(struct rq *rq)
- static void push_rt_tasks(struct rq *rq)
- {
- 	/* push_rt_task will return true if it moved an RT */
--	while (push_rt_task(rq))
-+	while (push_rt_task(rq, false))
- 		;
- }
- 
-@@ -2095,7 +2123,8 @@ void rto_push_irq_work_func(struct irq_work *work)
- 	 */
- 	if (has_pushable_tasks(rq)) {
- 		raw_spin_lock(&rq->lock);
--		push_rt_tasks(rq);
-+		while (push_rt_task(rq, true))
-+			;
- 		raw_spin_unlock(&rq->lock);
- 	}
- 
-@@ -2120,7 +2149,7 @@ static void pull_rt_task(struct rq *this_rq)
- {
- 	int this_cpu = this_rq->cpu, cpu;
- 	bool resched = false;
--	struct task_struct *p;
-+	struct task_struct *p, *push_task;
- 	struct rq *src_rq;
- 	int rt_overload_count = rt_overloaded(this_rq);
- 
-@@ -2167,6 +2196,7 @@ static void pull_rt_task(struct rq *this_rq)
- 		 * double_lock_balance, and another CPU could
- 		 * alter this_rq
- 		 */
-+		push_task = NULL;
- 		double_lock_balance(this_rq, src_rq);
- 
- 		/*
-@@ -2194,11 +2224,14 @@ static void pull_rt_task(struct rq *this_rq)
- 			if (p->prio < src_rq->curr->prio)
- 				goto skip;
- 
--			resched = true;
--
--			deactivate_task(src_rq, p, 0);
--			set_task_cpu(p, this_cpu);
--			activate_task(this_rq, p, 0);
-+			if (is_migration_disabled(p)) {
-+				push_task = get_push_task(src_rq);
-+			} else {
-+				deactivate_task(src_rq, p, 0);
-+				set_task_cpu(p, this_cpu);
-+				activate_task(this_rq, p, 0);
-+				resched = true;
-+			}
- 			/*
- 			 * We continue with the search, just in
- 			 * case there's an even higher prio task
-@@ -2208,6 +2241,13 @@ static void pull_rt_task(struct rq *this_rq)
- 		}
- skip:
- 		double_unlock_balance(this_rq, src_rq);
-+
-+		if (push_task) {
-+			raw_spin_unlock(&this_rq->lock);
-+			stop_one_cpu_nowait(src_rq->cpu, push_cpu_stop,
-+					    push_task, &src_rq->push_work);
-+			raw_spin_lock(&this_rq->lock);
-+		}
- 	}
- 
- 	if (resched)
-@@ -2429,8 +2469,8 @@ static unsigned int get_rr_interval_rt(struct rq *rq, struct task_struct *task)
- 		return 0;
- }
- 
--const struct sched_class rt_sched_class
--	__section("__rt_sched_class") = {
-+DEFINE_SCHED_CLASS(rt) = {
-+
- 	.enqueue_task		= enqueue_task_rt,
- 	.dequeue_task		= dequeue_task_rt,
- 	.yield_task		= yield_task_rt,
-@@ -2449,6 +2489,7 @@ const struct sched_class rt_sched_class
- 	.rq_offline             = rq_offline_rt,
- 	.task_woken		= task_woken_rt,
- 	.switched_from		= switched_from_rt,
-+	.find_lock_rq		= find_lock_lowest_rq,
- #endif
- 
- 	.task_tick		= task_tick_rt,
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index df80bfcea92e..f5acb6c5ce49 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -67,7 +67,6 @@
- #include <linux/tsacct_kern.h>
- 
- #include <asm/tlb.h>
--#include <asm-generic/vmlinux.lds.h>
- 
- #ifdef CONFIG_PARAVIRT
- # include <asm/paravirt.h>
-@@ -257,30 +256,6 @@ struct rt_bandwidth {
- 
- void __dl_clear_params(struct task_struct *p);
- 
--/*
-- * To keep the bandwidth of -deadline tasks and groups under control
-- * we need some place where:
-- *  - store the maximum -deadline bandwidth of the system (the group);
-- *  - cache the fraction of that bandwidth that is currently allocated.
-- *
-- * This is all done in the data structure below. It is similar to the
-- * one used for RT-throttling (rt_bandwidth), with the main difference
-- * that, since here we are only interested in admission control, we
-- * do not decrease any runtime while the group "executes", neither we
-- * need a timer to replenish it.
-- *
-- * With respect to SMP, the bandwidth is given on a per-CPU basis,
-- * meaning that:
-- *  - dl_bw (< 100%) is the bandwidth of the system (group) on each CPU;
-- *  - dl_total_bw array contains, in the i-eth element, the currently
-- *    allocated bandwidth on the i-eth CPU.
-- * Moreover, groups consume bandwidth on each CPU, while tasks only
-- * consume bandwidth on the CPU they're running on.
-- * Finally, dl_total_bw_cpu is used to cache the index of dl_total_bw
-- * that will be shown the next time the proc or cgroup controls will
-- * be red. It on its turn can be changed by writing on its own
-- * control.
-- */
- struct dl_bandwidth {
- 	raw_spinlock_t		dl_runtime_lock;
- 	u64			dl_runtime;
-@@ -292,6 +267,24 @@ static inline int dl_bandwidth_enabled(void)
- 	return sysctl_sched_rt_runtime >= 0;
- }
- 
-+/*
-+ * To keep the bandwidth of -deadline tasks under control
-+ * we need some place where:
-+ *  - store the maximum -deadline bandwidth of each cpu;
-+ *  - cache the fraction of bandwidth that is currently allocated in
-+ *    each root domain;
-+ *
-+ * This is all done in the data structure below. It is similar to the
-+ * one used for RT-throttling (rt_bandwidth), with the main difference
-+ * that, since here we are only interested in admission control, we
-+ * do not decrease any runtime while the group "executes", neither we
-+ * need a timer to replenish it.
-+ *
-+ * With respect to SMP, bandwidth is given on a per root domain basis,
-+ * meaning that:
-+ *  - bw (< 100%) is the deadline bandwidth of each CPU;
-+ *  - total_bw is the currently allocated bandwidth in each root domain;
-+ */
- struct dl_bw {
- 	raw_spinlock_t		lock;
- 	u64			bw;
-@@ -801,6 +794,15 @@ struct root_domain {
- 	struct dl_bw		dl_bw;
- 	struct cpudl		cpudl;
- 
-+	/*
-+	 * Indicate whether a root_domain's dl_bw has been checked or
-+	 * updated. It's monotonously increasing value.
-+	 *
-+	 * Also, some corner cases, like 'wrap around' is dangerous, but given
-+	 * that u64 is 'big enough'. So that shouldn't be a concern.
-+	 */
-+	u64 visit_gen;
-+
- #ifdef HAVE_RT_PUSH_IPI
- 	/*
- 	 * For IPI pull requests, loop across the rto_mask.
-@@ -973,6 +975,7 @@ struct rq {
- 	unsigned long		cpu_capacity_orig;
- 
- 	struct callback_head	*balance_callback;
-+	unsigned char		balance_flags;
- 
- 	unsigned char		nohz_idle_balance;
- 	unsigned char		idle_balance;
-@@ -1003,6 +1006,10 @@ struct rq {
- 
- 	/* This is used to determine avg_idle's max value */
- 	u64			max_idle_balance_cost;
-+
-+#ifdef CONFIG_HOTPLUG_CPU
-+	struct rcuwait		hotplug_wait;
-+#endif
- #endif /* CONFIG_SMP */
- 
- #ifdef CONFIG_IRQ_TIME_ACCOUNTING
-@@ -1048,6 +1055,12 @@ struct rq {
- 	/* Must be inspected within a rcu lock section */
- 	struct cpuidle_state	*idle_state;
- #endif
-+
-+#ifdef CONFIG_SMP
-+	unsigned int		nr_pinned;
-+#endif
-+	unsigned int		push_busy;
-+	struct cpu_stop_work	push_work;
- };
- 
- #ifdef CONFIG_FAIR_GROUP_SCHED
-@@ -1075,6 +1088,16 @@ static inline int cpu_of(struct rq *rq)
- #endif
- }
- 
-+#define MDF_PUSH	0x01
-+
-+static inline bool is_migration_disabled(struct task_struct *p)
-+{
-+#ifdef CONFIG_SMP
-+	return p->migration_disabled;
-+#else
-+	return false;
-+#endif
-+}
- 
- #ifdef CONFIG_SCHED_SMT
- extern void __update_idle_core(struct rq *rq);
-@@ -1221,6 +1244,9 @@ static inline void rq_pin_lock(struct rq *rq, struct rq_flags *rf)
- 	rq->clock_update_flags &= (RQCF_REQ_SKIP|RQCF_ACT_SKIP);
- 	rf->clock_update_flags = 0;
- #endif
-+#ifdef CONFIG_SMP
-+	SCHED_WARN_ON(rq->balance_callback);
-+#endif
- }
- 
- static inline void rq_unpin_lock(struct rq *rq, struct rq_flags *rf)
-@@ -1382,6 +1408,9 @@ init_numa_balancing(unsigned long clone_flags, struct task_struct *p)
- 
- #ifdef CONFIG_SMP
- 
-+#define BALANCE_WORK	0x01
-+#define BALANCE_PUSH	0x02
-+
- static inline void
- queue_balance_callback(struct rq *rq,
- 		       struct callback_head *head,
-@@ -1389,12 +1418,13 @@ queue_balance_callback(struct rq *rq,
- {
- 	lockdep_assert_held(&rq->lock);
- 
--	if (unlikely(head->next))
-+	if (unlikely(head->next || (rq->balance_flags & BALANCE_PUSH)))
- 		return;
- 
- 	head->func = (void (*)(struct callback_head *))func;
- 	head->next = rq->balance_callback;
- 	rq->balance_callback = head;
-+	rq->balance_flags |= BALANCE_WORK;
- }
- 
- #define rcu_dereference_check_sched_domain(p) \
-@@ -1714,13 +1744,20 @@ static inline int task_on_rq_migrating(struct task_struct *p)
- 	return READ_ONCE(p->on_rq) == TASK_ON_RQ_MIGRATING;
- }
- 
--/*
-- * wake flags
-- */
--#define WF_SYNC			0x01		/* Waker goes to sleep after wakeup */
--#define WF_FORK			0x02		/* Child wakeup after fork */
--#define WF_MIGRATED		0x04		/* Internal use, task got migrated */
--#define WF_ON_CPU		0x08		/* Wakee is on_cpu */
-+/* Wake flags. The first three directly map to some SD flag value */
-+#define WF_EXEC     0x02 /* Wakeup after exec; maps to SD_BALANCE_EXEC */
-+#define WF_FORK     0x04 /* Wakeup after fork; maps to SD_BALANCE_FORK */
-+#define WF_TTWU     0x08 /* Wakeup;            maps to SD_BALANCE_WAKE */
-+
-+#define WF_SYNC     0x10 /* Waker goes to sleep after wakeup */
-+#define WF_MIGRATED 0x20 /* Internal use, task got migrated */
-+#define WF_ON_CPU   0x40 /* Wakee is on_cpu */
-+
-+#ifdef CONFIG_SMP
-+static_assert(WF_EXEC == SD_BALANCE_EXEC);
-+static_assert(WF_FORK == SD_BALANCE_FORK);
-+static_assert(WF_TTWU == SD_BALANCE_WAKE);
-+#endif
- 
- /*
-  * To aid in avoiding the subversion of "niceness" due to uneven distribution
-@@ -1796,16 +1833,19 @@ struct sched_class {
- 
- #ifdef CONFIG_SMP
- 	int (*balance)(struct rq *rq, struct task_struct *prev, struct rq_flags *rf);
--	int  (*select_task_rq)(struct task_struct *p, int task_cpu, int sd_flag, int flags);
-+	int  (*select_task_rq)(struct task_struct *p, int task_cpu, int flags);
- 	void (*migrate_task_rq)(struct task_struct *p, int new_cpu);
- 
- 	void (*task_woken)(struct rq *this_rq, struct task_struct *task);
- 
- 	void (*set_cpus_allowed)(struct task_struct *p,
--				 const struct cpumask *newmask);
-+				 const struct cpumask *newmask,
-+				 u32 flags);
- 
- 	void (*rq_online)(struct rq *rq);
- 	void (*rq_offline)(struct rq *rq);
-+
-+	struct rq *(*find_lock_rq)(struct task_struct *p, struct rq *rq);
- #endif
- 
- 	void (*task_tick)(struct rq *rq, struct task_struct *p, int queued);
-@@ -1833,7 +1873,7 @@ struct sched_class {
- #ifdef CONFIG_FAIR_GROUP_SCHED
- 	void (*task_change_group)(struct task_struct *p, int type);
- #endif
--} __aligned(STRUCT_ALIGNMENT); /* STRUCT_ALIGN(), vmlinux.lds.h */
-+};
- 
- static inline void put_prev_task(struct rq *rq, struct task_struct *prev)
- {
-@@ -1847,6 +1887,20 @@ static inline void set_next_task(struct rq *rq, struct task_struct *next)
- 	next->sched_class->set_next_task(rq, next, false);
- }
- 
-+
-+/*
-+ * Helper to define a sched_class instance; each one is placed in a separate
-+ * section which is ordered by the linker script:
-+ *
-+ *   include/asm-generic/vmlinux.lds.h
-+ *
-+ * Also enforce alignment on the instance, not the type, to guarantee layout.
-+ */
-+#define DEFINE_SCHED_CLASS(name) \
-+const struct sched_class name##_sched_class \
-+	__aligned(__alignof__(struct sched_class)) \
-+	__section("__" #name "_sched_class")
-+
- /* Defined in include/asm-generic/vmlinux.lds.h */
- extern struct sched_class __begin_sched_classes[];
- extern struct sched_class __end_sched_classes[];
-@@ -1889,13 +1943,35 @@ static inline bool sched_fair_runnable(struct rq *rq)
- extern struct task_struct *pick_next_task_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf);
- extern struct task_struct *pick_next_task_idle(struct rq *rq);
- 
-+#define SCA_CHECK		0x01
-+#define SCA_MIGRATE_DISABLE	0x02
-+#define SCA_MIGRATE_ENABLE	0x04
-+
- #ifdef CONFIG_SMP
- 
- extern void update_group_capacity(struct sched_domain *sd, int cpu);
- 
- extern void trigger_load_balance(struct rq *rq);
- 
--extern void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask);
-+extern void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask, u32 flags);
-+
-+static inline struct task_struct *get_push_task(struct rq *rq)
-+{
-+	struct task_struct *p = rq->curr;
-+
-+	lockdep_assert_held(&rq->lock);
-+
-+	if (rq->push_busy)
-+		return NULL;
-+
-+	if (p->nr_cpus_allowed == 1)
-+		return NULL;
-+
-+	rq->push_busy = true;
-+	return get_task_struct(p);
-+}
-+
-+extern int push_cpu_stop(void *arg);
- 
- #endif
- 
-diff --git a/kernel/sched/stop_task.c b/kernel/sched/stop_task.c
-index ceb5b6b12561..55f39125c0e1 100644
---- a/kernel/sched/stop_task.c
-+++ b/kernel/sched/stop_task.c
-@@ -11,7 +11,7 @@
- 
- #ifdef CONFIG_SMP
- static int
--select_task_rq_stop(struct task_struct *p, int cpu, int sd_flag, int flags)
-+select_task_rq_stop(struct task_struct *p, int cpu, int flags)
- {
- 	return task_cpu(p); /* stop tasks as never migrate */
- }
-@@ -109,8 +109,7 @@ static void update_curr_stop(struct rq *rq)
- /*
-  * Simple, special scheduling class for the per-CPU stop tasks:
-  */
--const struct sched_class stop_sched_class
--	__section("__stop_sched_class") = {
-+DEFINE_SCHED_CLASS(stop) = {
- 
- 	.enqueue_task		= enqueue_task_stop,
- 	.dequeue_task		= dequeue_task_stop,
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index dd7770226086..5d3675c7a76b 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -211,6 +211,15 @@ unsigned int sysctl_sched_energy_aware = 1;
- DEFINE_MUTEX(sched_energy_mutex);
- bool sched_energy_update;
- 
-+void rebuild_sched_domains_energy(void)
-+{
-+	mutex_lock(&sched_energy_mutex);
-+	sched_energy_update = true;
-+	rebuild_sched_domains();
-+	sched_energy_update = false;
-+	mutex_unlock(&sched_energy_mutex);
-+}
-+
- #ifdef CONFIG_PROC_SYSCTL
- int sched_energy_aware_handler(struct ctl_table *table, int write,
- 		void *buffer, size_t *lenp, loff_t *ppos)
-@@ -223,13 +232,8 @@ int sched_energy_aware_handler(struct ctl_table *table, int write,
- 	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
- 	if (!ret && write) {
- 		state = static_branch_unlikely(&sched_energy_present);
--		if (state != sysctl_sched_energy_aware) {
--			mutex_lock(&sched_energy_mutex);
--			sched_energy_update = 1;
--			rebuild_sched_domains();
--			sched_energy_update = 0;
--			mutex_unlock(&sched_energy_mutex);
--		}
-+		if (state != sysctl_sched_energy_aware)
-+			rebuild_sched_domains_energy();
- 	}
- 
- 	return ret;
-@@ -324,6 +328,7 @@ static void sched_energy_set(bool has_eas)
-  *    3. no SMT is detected.
-  *    4. the EM complexity is low enough to keep scheduling overheads low;
-  *    5. schedutil is driving the frequency of all CPUs of the rd;
-+ *    6. frequency invariance support is present;
-  *
-  * The complexity of the Energy Model is defined as:
-  *
-@@ -372,6 +377,14 @@ static bool build_perf_domains(const struct cpumask *cpu_map)
- 		goto free;
- 	}
- 
-+	if (!arch_scale_freq_invariant()) {
-+		if (sched_debug()) {
-+			pr_warn("rd %*pbl: Disabling EAS: frequency-invariant load tracking not yet supported",
-+				cpumask_pr_args(cpu_map));
-+		}
-+		goto free;
-+	}
-+
- 	for_each_cpu(i, cpu_map) {
- 		/* Skip already covered CPUs. */
- 		if (find_pd(pd, i))
-@@ -516,6 +529,7 @@ static int init_rootdomain(struct root_domain *rd)
- 	init_irq_work(&rd->rto_push_work, rto_push_irq_work_func);
- #endif
- 
-+	rd->visit_gen = 0;
- 	init_dl_bw(&rd->dl_bw);
- 	if (cpudl_init(&rd->cpudl) != 0)
- 		goto free_rto_mask;
-@@ -674,6 +688,7 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
- {
- 	struct rq *rq = cpu_rq(cpu);
- 	struct sched_domain *tmp;
-+	int numa_distance = 0;
- 
- 	/* Remove the sched domains which do not contribute to scheduling. */
- 	for (tmp = sd; tmp; ) {
-@@ -705,6 +720,38 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
- 			sd->child = NULL;
- 	}
- 
-+	for (tmp = sd; tmp; tmp = tmp->parent)
-+		numa_distance += !!(tmp->flags & SD_NUMA);
-+
-+	/*
-+	 * FIXME: Diameter >=3 is misrepresented.
-+	 *
-+	 * Smallest diameter=3 topology is:
-+	 *
-+	 *   node   0   1   2   3
-+	 *     0:  10  20  30  40
-+	 *     1:  20  10  20  30
-+	 *     2:  30  20  10  20
-+	 *     3:  40  30  20  10
-+	 *
-+	 *   0 --- 1 --- 2 --- 3
-+	 *
-+	 * NUMA-3	0-3		N/A		N/A		0-3
-+	 *  groups:	{0-2},{1-3}					{1-3},{0-2}
-+	 *
-+	 * NUMA-2	0-2		0-3		0-3		1-3
-+	 *  groups:	{0-1},{1-3}	{0-2},{2-3}	{1-3},{0-1}	{2-3},{0-2}
-+	 *
-+	 * NUMA-1	0-1		0-2		1-3		2-3
-+	 *  groups:	{0},{1}		{1},{2},{0}	{2},{3},{1}	{3},{2}
-+	 *
-+	 * NUMA-0	0		1		2		3
-+	 *
-+	 * The NUMA-2 groups for nodes 0 and 3 are obviously buggered, as the
-+	 * group span isn't a subset of the domain span.
-+	 */
-+	WARN_ONCE(numa_distance > 2, "Shortest NUMA path spans too many nodes\n");
-+
- 	sched_domain_debug(sd, cpu);
- 
- 	rq_attach_root(rq, rd);
-diff --git a/kernel/smp.c b/kernel/smp.c
-index 4d17501433be..1b6070bf97bb 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -27,7 +27,7 @@
- #include "smpboot.h"
- #include "sched/smp.h"
- 
--#define CSD_TYPE(_csd)	((_csd)->flags & CSD_FLAG_TYPE_MASK)
-+#define CSD_TYPE(_csd)	((_csd)->node.u_flags & CSD_FLAG_TYPE_MASK)
- 
- struct call_function_data {
- 	call_single_data_t	__percpu *csd;
-@@ -130,7 +130,7 @@ static __always_inline int csd_lock_wait_getcpu(call_single_data_t *csd)
- 
- 	csd_type = CSD_TYPE(csd);
- 	if (csd_type == CSD_TYPE_ASYNC || csd_type == CSD_TYPE_SYNC)
--		return csd->dst; /* Other CSD_TYPE_ values might not have ->dst. */
-+		return csd->node.dst; /* Other CSD_TYPE_ values might not have ->dst. */
- 	return -1;
- }
- 
-@@ -146,7 +146,7 @@ static __always_inline bool csd_lock_wait_toolong(call_single_data_t *csd, u64 t
- 	bool firsttime;
- 	u64 ts2, ts_delta;
- 	call_single_data_t *cpu_cur_csd;
--	unsigned int flags = READ_ONCE(csd->flags);
-+	unsigned int flags = READ_ONCE(csd->node.u_flags);
- 
- 	if (!(flags & CSD_FLAG_LOCK)) {
- 		if (!unlikely(*bug_id))
-@@ -224,14 +224,14 @@ static void csd_lock_record(call_single_data_t *csd)
- 
- static __always_inline void csd_lock_wait(call_single_data_t *csd)
- {
--	smp_cond_load_acquire(&csd->flags, !(VAL & CSD_FLAG_LOCK));
-+	smp_cond_load_acquire(&csd->node.u_flags, !(VAL & CSD_FLAG_LOCK));
- }
- #endif
- 
- static __always_inline void csd_lock(call_single_data_t *csd)
- {
- 	csd_lock_wait(csd);
--	csd->flags |= CSD_FLAG_LOCK;
-+	csd->node.u_flags |= CSD_FLAG_LOCK;
- 
- 	/*
- 	 * prevent CPU from reordering the above assignment
-@@ -243,12 +243,12 @@ static __always_inline void csd_lock(call_single_data_t *csd)
- 
- static __always_inline void csd_unlock(call_single_data_t *csd)
- {
--	WARN_ON(!(csd->flags & CSD_FLAG_LOCK));
-+	WARN_ON(!(csd->node.u_flags & CSD_FLAG_LOCK));
- 
- 	/*
- 	 * ensure we're all done before releasing data:
- 	 */
--	smp_store_release(&csd->flags, 0);
-+	smp_store_release(&csd->node.u_flags, 0);
- }
- 
- static DEFINE_PER_CPU_SHARED_ALIGNED(call_single_data_t, csd_data);
-@@ -300,7 +300,7 @@ static int generic_exec_single(int cpu, call_single_data_t *csd)
- 		return -ENXIO;
- 	}
- 
--	__smp_call_single_queue(cpu, &csd->llist);
-+	__smp_call_single_queue(cpu, &csd->node.llist);
- 
- 	return 0;
- }
-@@ -353,7 +353,7 @@ static void flush_smp_call_function_queue(bool warn_cpu_offline)
- 		 * We don't have to use the _safe() variant here
- 		 * because we are not invoking the IPI handlers yet.
- 		 */
--		llist_for_each_entry(csd, entry, llist) {
-+		llist_for_each_entry(csd, entry, node.llist) {
- 			switch (CSD_TYPE(csd)) {
- 			case CSD_TYPE_ASYNC:
- 			case CSD_TYPE_SYNC:
-@@ -378,16 +378,16 @@ static void flush_smp_call_function_queue(bool warn_cpu_offline)
- 	 * First; run all SYNC callbacks, people are waiting for us.
- 	 */
- 	prev = NULL;
--	llist_for_each_entry_safe(csd, csd_next, entry, llist) {
-+	llist_for_each_entry_safe(csd, csd_next, entry, node.llist) {
- 		/* Do we wait until *after* callback? */
- 		if (CSD_TYPE(csd) == CSD_TYPE_SYNC) {
- 			smp_call_func_t func = csd->func;
- 			void *info = csd->info;
- 
- 			if (prev) {
--				prev->next = &csd_next->llist;
-+				prev->next = &csd_next->node.llist;
- 			} else {
--				entry = &csd_next->llist;
-+				entry = &csd_next->node.llist;
- 			}
- 
- 			csd_lock_record(csd);
-@@ -395,7 +395,7 @@ static void flush_smp_call_function_queue(bool warn_cpu_offline)
- 			csd_unlock(csd);
- 			csd_lock_record(NULL);
- 		} else {
--			prev = &csd->llist;
-+			prev = &csd->node.llist;
- 		}
- 	}
- 
-@@ -406,14 +406,14 @@ static void flush_smp_call_function_queue(bool warn_cpu_offline)
- 	 * Second; run all !SYNC callbacks.
- 	 */
- 	prev = NULL;
--	llist_for_each_entry_safe(csd, csd_next, entry, llist) {
-+	llist_for_each_entry_safe(csd, csd_next, entry, node.llist) {
- 		int type = CSD_TYPE(csd);
- 
- 		if (type != CSD_TYPE_TTWU) {
- 			if (prev) {
--				prev->next = &csd_next->llist;
-+				prev->next = &csd_next->node.llist;
- 			} else {
--				entry = &csd_next->llist;
-+				entry = &csd_next->node.llist;
- 			}
- 
- 			if (type == CSD_TYPE_ASYNC) {
-@@ -429,7 +429,7 @@ static void flush_smp_call_function_queue(bool warn_cpu_offline)
- 			}
- 
- 		} else {
--			prev = &csd->llist;
-+			prev = &csd->node.llist;
- 		}
- 	}
- 
-@@ -465,7 +465,7 @@ int smp_call_function_single(int cpu, smp_call_func_t func, void *info,
- {
- 	call_single_data_t *csd;
- 	call_single_data_t csd_stack = {
--		.flags = CSD_FLAG_LOCK | CSD_TYPE_SYNC,
-+		.node = { .u_flags = CSD_FLAG_LOCK | CSD_TYPE_SYNC, },
- 	};
- 	int this_cpu;
- 	int err;
-@@ -502,8 +502,8 @@ int smp_call_function_single(int cpu, smp_call_func_t func, void *info,
- 	csd->func = func;
- 	csd->info = info;
- #ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
--	csd->src = smp_processor_id();
--	csd->dst = cpu;
-+	csd->node.src = smp_processor_id();
-+	csd->node.dst = cpu;
- #endif
- 
- 	err = generic_exec_single(cpu, csd);
-@@ -544,12 +544,12 @@ int smp_call_function_single_async(int cpu, call_single_data_t *csd)
- 
- 	preempt_disable();
- 
--	if (csd->flags & CSD_FLAG_LOCK) {
-+	if (csd->node.u_flags & CSD_FLAG_LOCK) {
- 		err = -EBUSY;
- 		goto out;
- 	}
- 
--	csd->flags = CSD_FLAG_LOCK;
-+	csd->node.u_flags = CSD_FLAG_LOCK;
- 	smp_wmb();
- 
- 	err = generic_exec_single(cpu, csd);
-@@ -667,14 +667,14 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
- 
- 		csd_lock(csd);
- 		if (wait)
--			csd->flags |= CSD_TYPE_SYNC;
-+			csd->node.u_flags |= CSD_TYPE_SYNC;
- 		csd->func = func;
- 		csd->info = info;
- #ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
--		csd->src = smp_processor_id();
--		csd->dst = cpu;
-+		csd->node.src = smp_processor_id();
-+		csd->node.dst = cpu;
- #endif
--		if (llist_add(&csd->llist, &per_cpu(call_single_queue, cpu)))
-+		if (llist_add(&csd->node.llist, &per_cpu(call_single_queue, cpu)))
- 			__cpumask_set_cpu(cpu, cfd->cpumask_ipi);
- 	}
- 
-diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
-index 890b79cf0e7c..971d8acceaec 100644
---- a/kernel/stop_machine.c
-+++ b/kernel/stop_machine.c
-@@ -42,11 +42,27 @@ struct cpu_stopper {
- 	struct list_head	works;		/* list of pending works */
- 
- 	struct cpu_stop_work	stop_work;	/* for stop_cpus */
-+	unsigned long		caller;
-+	cpu_stop_fn_t		fn;
- };
- 
- static DEFINE_PER_CPU(struct cpu_stopper, cpu_stopper);
- static bool stop_machine_initialized = false;
- 
-+void print_stop_info(const char *log_lvl, struct task_struct *task)
-+{
-+	/*
-+	 * If @task is a stopper task, it cannot migrate and task_cpu() is
-+	 * stable.
-+	 */
-+	struct cpu_stopper *stopper = per_cpu_ptr(&cpu_stopper, task_cpu(task));
-+
-+	if (task != stopper->thread)
-+		return;
-+
-+	printk("%sStopper: %pS <- %pS\n", log_lvl, stopper->fn, (void *)stopper->caller);
-+}
-+
- /* static data for stop_cpus */
- static DEFINE_MUTEX(stop_cpus_mutex);
- static bool stop_cpus_in_progress;
-@@ -123,7 +139,7 @@ static bool cpu_stop_queue_work(unsigned int cpu, struct cpu_stop_work *work)
- int stop_one_cpu(unsigned int cpu, cpu_stop_fn_t fn, void *arg)
- {
- 	struct cpu_stop_done done;
--	struct cpu_stop_work work = { .fn = fn, .arg = arg, .done = &done };
-+	struct cpu_stop_work work = { .fn = fn, .arg = arg, .done = &done, .caller = _RET_IP_ };
- 
- 	cpu_stop_init_done(&done, 1);
- 	if (!cpu_stop_queue_work(cpu, &work))
-@@ -331,7 +347,8 @@ int stop_two_cpus(unsigned int cpu1, unsigned int cpu2, cpu_stop_fn_t fn, void *
- 	work1 = work2 = (struct cpu_stop_work){
- 		.fn = multi_cpu_stop,
- 		.arg = &msdata,
--		.done = &done
-+		.done = &done,
-+		.caller = _RET_IP_,
- 	};
- 
- 	cpu_stop_init_done(&done, 2);
-@@ -367,7 +384,7 @@ int stop_two_cpus(unsigned int cpu1, unsigned int cpu2, cpu_stop_fn_t fn, void *
- bool stop_one_cpu_nowait(unsigned int cpu, cpu_stop_fn_t fn, void *arg,
- 			struct cpu_stop_work *work_buf)
- {
--	*work_buf = (struct cpu_stop_work){ .fn = fn, .arg = arg, };
-+	*work_buf = (struct cpu_stop_work){ .fn = fn, .arg = arg, .caller = _RET_IP_, };
- 	return cpu_stop_queue_work(cpu, work_buf);
- }
- 
-@@ -487,6 +504,8 @@ static void cpu_stopper_thread(unsigned int cpu)
- 		int ret;
- 
- 		/* cpu stop callbacks must not sleep, make in_atomic() == T */
-+		stopper->caller = work->caller;
-+		stopper->fn = fn;
- 		preempt_count_inc();
- 		ret = fn(arg);
- 		if (done) {
-@@ -495,6 +514,8 @@ static void cpu_stopper_thread(unsigned int cpu)
- 			cpu_stop_signal_done(done);
- 		}
- 		preempt_count_dec();
-+		stopper->fn = NULL;
-+		stopper->caller = 0;
- 		WARN_ONCE(preempt_count(),
- 			  "cpu_stop: %ps(%p) leaked preempt count\n", fn, arg);
- 		goto repeat;
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 81632cd5e3b7..1b734070f028 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -243,10 +243,8 @@ static void nohz_full_kick_func(struct irq_work *work)
- 	/* Empty, the tick restart happens on tick_nohz_irq_exit() */
- }
- 
--static DEFINE_PER_CPU(struct irq_work, nohz_full_kick_work) = {
--	.func = nohz_full_kick_func,
--	.flags = ATOMIC_INIT(IRQ_WORK_HARD_IRQ),
--};
-+static DEFINE_PER_CPU(struct irq_work, nohz_full_kick_work) =
-+	IRQ_WORK_INIT_HARD(nohz_full_kick_func);
- 
- /*
-  * Kick this CPU if it's full dynticks in order to force it to
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 048c655315f1..818cf8ad6f76 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1096,7 +1096,7 @@ static int bpf_send_signal_common(u32 sig, enum pid_type type)
- 			return -EINVAL;
- 
- 		work = this_cpu_ptr(&send_signal_work);
--		if (atomic_read(&work->irq_work.flags) & IRQ_WORK_BUSY)
-+		if (irq_work_is_busy(&work->irq_work))
- 			return -EBUSY;
- 
- 		/* Add the current task, which is the target of sending signal,
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 437935e7a199..c71da2a59e12 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -4908,6 +4908,10 @@ static void unbind_workers(int cpu)
- 		pool->flags |= POOL_DISASSOCIATED;
- 
- 		raw_spin_unlock_irq(&pool->lock);
-+
-+		for_each_pool_worker(worker, pool)
-+			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_active_mask) < 0);
-+
- 		mutex_unlock(&wq_pool_attach_mutex);
- 
- 		/*
-diff --git a/lib/cpumask.c b/lib/cpumask.c
-index 85da6ab4fbb5..35924025097b 100644
---- a/lib/cpumask.c
-+++ b/lib/cpumask.c
-@@ -267,3 +267,21 @@ int cpumask_any_and_distribute(const struct cpumask *src1p,
- 	return next;
- }
- EXPORT_SYMBOL(cpumask_any_and_distribute);
-+
-+int cpumask_any_distribute(const struct cpumask *srcp)
-+{
-+	int next, prev;
-+
-+	/* NOTE: our first selection will skip 0. */
-+	prev = __this_cpu_read(distribute_cpu_mask_prev);
-+
-+	next = cpumask_next(prev, srcp);
-+	if (next >= nr_cpu_ids)
-+		next = cpumask_first(srcp);
-+
-+	if (next < nr_cpu_ids)
-+		__this_cpu_write(distribute_cpu_mask_prev, next);
-+
-+	return next;
-+}
-+EXPORT_SYMBOL(cpumask_any_distribute);
-diff --git a/lib/dump_stack.c b/lib/dump_stack.c
-index a00ee6eedc7c..f5a33b6f773f 100644
---- a/lib/dump_stack.c
-+++ b/lib/dump_stack.c
-@@ -12,6 +12,7 @@
- #include <linux/atomic.h>
- #include <linux/kexec.h>
- #include <linux/utsname.h>
-+#include <linux/stop_machine.h>
- 
- static char dump_stack_arch_desc_str[128];
- 
-@@ -57,6 +58,7 @@ void dump_stack_print_info(const char *log_lvl)
- 		       log_lvl, dump_stack_arch_desc_str);
- 
- 	print_worker_info(log_lvl, current);
-+	print_stop_info(log_lvl, current);
- }
- 
- /**
-diff --git a/lib/smp_processor_id.c b/lib/smp_processor_id.c
-index 525222e4f409..1c1dbd300325 100644
---- a/lib/smp_processor_id.c
-+++ b/lib/smp_processor_id.c
-@@ -26,6 +26,11 @@ unsigned int check_preemption_disabled(const char *what1, const char *what2)
- 	if (current->nr_cpus_allowed == 1)
- 		goto out;
- 
-+#ifdef CONFIG_SMP
-+	if (current->migration_disabled)
-+		goto out;
-+#endif
-+
- 	/*
- 	 * It is valid to assume CPU-locality during early bootup:
- 	 */
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 82dc6b48e45f..57352605f82c 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -11165,8 +11165,7 @@ static int __init net_dev_init(void)
- 		INIT_LIST_HEAD(&sd->poll_list);
- 		sd->output_queue_tailp = &sd->output_queue;
- #ifdef CONFIG_RPS
--		sd->csd.func = rps_trigger_softirq;
--		sd->csd.info = sd;
-+		INIT_CSD(&sd->csd, rps_trigger_softirq, sd);
- 		sd->cpu = i;
- #endif
- 
-
+TGludXMsCgpwbGVhc2UgcHVsbCB0aGUgbGF0ZXN0IHRpbWVycy9jb3JlIGJyYW5jaCBmcm9tOgoK
+ICAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RpcC90aXAu
+Z2l0IHRpbWVycy1jb3JlLTIwMjAtMTItMTQKCnVwIHRvOiAgM2NhYmNhODdiMzI5OiBudHA6IEZp
+eCBwcm90b3R5cGUgaW4gdGhlICFDT05GSUdfR0VORVJJQ19DTU9TX1VQREFURSBjYXNlCgoKdGlt
+ZXJzIGFuZCB0aW1la2VlcGluZyB1cGRhdGVzOgoKIENvcmU6CgogIC0gUm9idXN0bmVzcyBpbXBy
+b3ZlbWVudHMgZm9yIHRoZSBOT0haIHRpY2sgbWFuYWdlbWVudAoKICAtIEZpeGVzIGFuZCBjb25z
+b2xpZGF0aW9uIG9mIHRoZSBOVFAvUlRDIHN5bmNocm9uaXphdGlvbiBjb2RlCgogIC0gU21hbGwg
+Zml4ZXMgYW5kIGltcHJvdmVtZW50cyBpbiB2YXJpb3VzIHBsYWNlcwoKICAtIEEgc2V0IG9mIGZ1
+bmN0aW9uIGRvY3VtZW50YXRpb24gdWRwYXRlcyBhbmQgZml4ZXMKCiBEcml2ZXJzOgoKICAtIENs
+ZWFudXBzIGFuZCBpbXByb3ZlbWVudHMgaW4gdmFyaW91cyBjbG9ja3NvdXJlL2V2ZW50IGRyaXZl
+cnMKCiAgLSBSZW1vdmFsIG9mIHRoZSBFWkNoaXAgTlBTIGNsb2Nrc291cmNlIGRyaXZlciBhcyB0
+aGUgcGxhdGZyb20gc3VwcG9ydAogICAgd2FzIHJlbW92ZWQgZnJvbSBBUkMKCiAgLSBUaGUgdXN1
+YWwgc2V0IG9mIG5ldyBkZXZpY2UgdHJlZSBiaW5kaW5nIGFuZCBqc29uIGNvbnZlcnNpb25zCgog
+IC0gVGhlIFJUQyBkcml2ZXIgd2hpY2ggaGF2ZSBiZWVuIGFja2VkIGJ5IHRoZSBSVEMgbWFpbnRh
+aW5lcjoKCiAgICAtIEZpeCBhIGxvbmcgc3RhbmRpbmcgYnVnIGluIHRoZSBNQzE0NjgxOCBsaWJy
+YXJ5IGNvZGUgd2hpY2ggY2FuIGNhdXNlCiAgICAgIHJlYWRpbmcgZ2FyYmFnZSBkdXJpbmcgdGhl
+IFJUQyBpbnRlcm5hbCB1cGRhdGUuCgogICAgLSBUaGUgY2hhbmdlcyByZWxhdGVkIHRvIHRoZSBO
+VFAvUlRDIGNvbnNvbGlkYXRpb24gd29yay4KClRoYW5rcywKCgl0Z2x4CgotLS0tLS0tLS0tLS0t
+LS0tLS0+CkFsZXggU2hpICg2KToKICAgICAgdGltZTogQWRkIG1pc3NpbmcgY29sb25zIGZvciBw
+YXJhbWV0ZXIgZG9jdW1lbnRhdGlvbiBvZiB0aW1lNjRfdG9fdG0oKQogICAgICB0aW1la2VlcGlu
+ZzogUmVtb3ZlIHN0YXRpYyBmdW5jdGlvbnMgZnJvbSBrZXJuZWwtZG9jIG1hcmt1cAogICAgICB0
+aW1la2VlcGluZzogQWRkIG1pc3NpbmcgcGFyYW1ldGVyIGRvY3VtZW50YXRpb24gZm9yIHVwZGF0
+ZV9mYXN0X3RpbWVrZWVwZXIoKQogICAgICB0aW1la2VlcGluZzogQWRkIG1pc3NpbmcgcGFyYW1l
+dGVyIGRvY3MgZm9yIHB2Y2xvY2tfZ3RvZF9bdW5dcmVnaXN0ZXJfbm90aWZpZXIoKQogICAgICB0
+aW1la2VlcGluZzogRml4IHBhcmFtZXRlciBkb2NzIG9mIHJlYWRfcGVyc2lzdGVudF93YWxsX2Fu
+ZF9ib290X29mZnNldCgpCiAgICAgIHRpbWVrZWVwaW5nOiBBZGRyZXNzIHBhcmFtZXRlciBkb2N1
+bWVudGF0aW9uIGlzc3VlcyBmb3IgdmFyaW91cyBmdW5jdGlvbnMKCkRhbmllbCBMZXpjYW5vICgx
+KToKICAgICAgY2xvY2tzb3VyY2UvZHJpdmVycy9pbmdlbmljOiBGaXggc2VjdGlvbiBtaXNtYXRj
+aAoKRGF2aWRsb2hyIEJ1ZXNvICgxKToKICAgICAgdGltZWtlZXBpbmc6IENvbnZlcnQgamlmZmll
+c19zZXEgdG8gc2VxY291bnRfcmF3X3NwaW5sb2NrX3QKCkRpbmggTmd1eWVuICgxKToKICAgICAg
+Y2xvY2tzb3VyY2UvZHJpdmVycy9kd19hcGJfdGltZXJfb2Y6IEFkZCBlcnJvciBoYW5kbGluZyBp
+ZiBubyBjbG9jayBhdmFpbGFibGUKCkdlZXJ0IFV5dHRlcmhvZXZlbiAoMSk6CiAgICAgIGR0LWJp
+bmRpbmdzOiB0aW1lcjogcmVuZXNhczogdG11OiBDb252ZXJ0IHRvIGpzb24tc2NoZW1hCgpIZWxn
+ZSBEZWxsZXIgKDEpOgogICAgICB0aW1lcl9saXN0OiBVc2UgcHJpbnRrIGZvcm1hdCBpbnN0ZWFk
+IG9mIG9wZW4tY29kZWQgc3ltYm9sIGxvb2t1cAoKSW5nbyBNb2xuYXIgKDEpOgogICAgICBudHA6
+IEZpeCBwcm90b3R5cGUgaW4gdGhlICFDT05GSUdfR0VORVJJQ19DTU9TX1VQREFURSBjYXNlCgpL
+ZWZlbmcgV2FuZyAoNSk6CiAgICAgIGNsb2Nrc291cmNlL2RyaXZlcnMvc3A4MDQ6IE1ha2Ugc29t
+ZSBzeW1ib2wgc3RhdGljCiAgICAgIGNsb2Nrc291cmNlL2RyaXZlcnMvc3A4MDQ6IFVzZSBjbGtf
+cHJlcGFyZV9lbmFibGUgYW5kIGNsa19kaXNhYmxlX3VucHJlcGFyZQogICAgICBjbG9ja3NvdXJj
+ZS9kcml2ZXJzL3NwODA0OiBDb3JyZWN0IGNsa19nZXRfcmF0ZSBoYW5kbGUKICAgICAgY2xvY2tz
+b3VyY2UvZHJpdmVycy9zcDgwNDogVXNlIHByX2ZtdAogICAgICBjbG9ja3NvdXJjZS9kcml2ZXJz
+L3Jpc2N2OiBNYWtlIFJJU0NWX1RJTUVSIGRlcGVuZHMgb24gUklTQ1ZfU0JJCgpLZXFpYW4gWmh1
+ICgyKToKICAgICAgY2xvY2tzb3VyY2UvZHJpdmVycy9hcm1fYXJjaF90aW1lcjogVXNlIHN0YWJs
+ZSBjb3VudCByZWFkZXIgaW4gZXJyYXR1bSBzbmUKICAgICAgY2xvY2tzb3VyY2UvZHJpdmVycy9h
+cm1fYXJjaF90aW1lcjogQ29ycmVjdCBmYXVsdCBwcm9ncmFtbWluZyBvZiBDTlRLQ1RMX0VMMS5F
+Vk5USQoKTWFyaWFuLUNyaXN0aWFuIFJvdGFyaXUgKDEpOgogICAgICBkdC1iaW5kaW5nczogdGlt
+ZXI6IHJlbmVzYXM6IHRtdTogRG9jdW1lbnQgcjhhNzc0ZTEgYmluZGluZ3MKCk1hdXJvIENhcnZh
+bGhvIENoZWhhYiAoMSk6CiAgICAgIGhydGltZXI6IEZpeCBrZXJuZWwtZG9jIG1hcmt1cHMKCk5p
+a2xhcyBTw7ZkZXJsdW5kICgxKToKICAgICAgY2xvY2tzb3VyY2UvZHJpdmVycy9zaF9jbXQ6IEZp
+eCBwb3RlbnRpYWwgZGVhZGxvY2sgd2hlbiBjYWxsaW5nIHJ1bnRpbWUgUE0KClNlYmFzdGlhbiBB
+bmRyemVqIFNpZXdpb3IgKDEpOgogICAgICB0aW1lcnM6IERvbid0IGJsb2NrIG9uIC0+ZXhwaXJ5
+X2xvY2sgZm9yIFRJTUVSX0lSUVNBRkUgdGltZXJzCgpUaG9tYXMgR2xlaXhuZXIgKDE2KToKICAg
+ICAgdGltZWtlZXBpbmc6IEZpeCB1cCBmdW5jdGlvbiBkb2N1bWVudGF0aW9uIGZvciB0aGUgTk1J
+IHNhZmUgYWNjZXNzb3JzCiAgICAgIHRpbWVyczogTWFrZSBydW5fbG9jYWxfdGltZXJzKCkgc3Rh
+dGljCiAgICAgIHRpY2svYnJvYWRjYXN0OiBTZXJpYWxpemUgYWNjZXNzIHRvIHRpY2tfbmV4dF9w
+ZXJpb2QKICAgICAgdGljazogRG9jdW1lbnQgcHJvdGVjdGlvbnMgZm9yIHRpY2sgcmVsYXRlZCBk
+YXRhCiAgICAgIHRpY2svc2NoZWQ6IFVzZSB0aWNrX25leHRfcGVyaW9kIGZvciBsb2NrbGVzcyBx
+dWljayBjaGVjawogICAgICB0aWNrL3NjaGVkOiBPcHRpbWl6ZSB0aWNrX2RvX3VwZGF0ZV9qaWZm
+aWVzNjQoKSBmdXJ0aGVyCiAgICAgIHRpY2s6IEdldCByaWQgb2YgdGlja19wZXJpb2QKICAgICAg
+cnRjOiBtYzE0NjgxODogUHJldmVudCByZWFkaW5nIGdhcmJhZ2UKICAgICAgcnRjOiBtYzE0Njgx
+ODogUmVkdWNlIHNwaW5sb2NrIHNlY3Rpb24gaW4gbWMxNDY4MThfc2V0X3RpbWUoKQogICAgICBy
+dGM6IGNtb3M6IE1ha2UgcnRjX2Ntb3Mgc3luYyBvZmZzZXQgY29ycmVjdAogICAgICBydGM6IGNv
+cmU6IE1ha2UgdGhlIHN5bmMgb2Zmc2V0IGRlZmF1bHQgbW9yZSByZWFsaXN0aWMKICAgICAgbnRw
+OiBNYWtlIHRoZSBSVEMgc3luY2hyb25pemF0aW9uIG1vcmUgcmVsaWFibGUKICAgICAgbnRwLCBy
+dGM6IE1vdmUgcnRjX3NldF9udHBfdGltZSgpIHRvIG50cCBjb2RlCiAgICAgIG50cDogTWFrZSB0
+aGUgUlRDIHN5bmMgb2Zmc2V0IGxlc3Mgb2JzY3VyZQogICAgICBudHA6IENvbnNvbGlkYXRlIHRo
+ZSBSVEMgdXBkYXRlIGltcGxlbWVudGF0aW9uCiAgICAgIHRpY2svc2NoZWQ6IE1ha2UgamlmZmll
+cyB1cGRhdGUgcXVpY2sgY2hlY2sgbW9yZSByb2J1c3QKClZpbmVldCBHdXB0YSAoMSk6CiAgICAg
+IGNsb2Nrc291cmNlL2RyaXZlcnMvbnBzOiBSZW1vdmUgRVpDaGlwIE5QUyBjbG9ja3NvdXJjZSBk
+cml2ZXIKCllhbmcgWWluZ2xpYW5nICgxKToKICAgICAgY2xvY2tzb3VyY2UvZHJpdmVycy9vcmlv
+bjogQWRkIG1pc3NpbmcgY2xrX2Rpc2FibGVfdW5wcmVwYXJlKCkgb24gZXJyb3IgcGF0aAoKWXUg
+S3VhaSAoMSk6CiAgICAgIGNsb2Nrc291cmNlL2RyaXZlcnMvY2FkZW5jZV90dGM6IEZpeCBtZW1v
+cnkgbGVhayBpbiB0dGNfc2V0dXBfY2xvY2tldmVudCgpCgpZdW5mZW5nIFllICgyKToKICAgICAg
+dGljay9zY2hlZDogUmVkdWNlIHNlcWNvdW50IGhlbGQgc2NvcGUgaW4gdGlja19kb191cGRhdGVf
+amlmZmllczY0KCkKICAgICAgdGljay9zY2hlZDogUmVsZWFzZSBzZXFjb3VudCBiZWZvcmUgaW52
+b2tpbmcgY2FsY19sb2FkX2dsb2JhbCgpCgpaaGVuIExlaSAoMSk6CiAgICAgIGNsb2Nrc291cmNl
+L2RyaXZlcnMvc3A4MDQ6IEFkZCBzdGF0aWMgZm9yIGZ1bmN0aW9ucyBzdWNoIGFzIHNwODA0X2Ns
+b2NrZXZlbnRzX2luaXQoKQoK5ZGo55Cw5p2wIChaaG91IFlhbmppZSkgKDEpOgogICAgICBkdC1i
+aW5kaW5nczogdGltZXI6IEFkZCBuZXcgT1NUIHN1cHBvcnQgZm9yIHRoZSB1cGNvbWluZyBuZXcg
+ZHJpdmVyLgoKCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy90aW1lci9yZW5lc2FzLHRtdS50eHQg
+ICAgICB8ICA0OSAtLS0tCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy90aW1lci9yZW5lc2FzLHRt
+dS55YW1sICAgICB8ICA5OSArKysrKysrCiBkcml2ZXJzL2Nsb2Nrc291cmNlL0tjb25maWcgICAg
+ICAgICAgICAgICAgICAgICAgICB8ICAxMiArLQogZHJpdmVycy9jbG9ja3NvdXJjZS9NYWtlZmls
+ZSAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgLQogZHJpdmVycy9jbG9ja3NvdXJjZS9hcm1f
+YXJjaF90aW1lci5jICAgICAgICAgICAgICAgfCAgMjcgKy0KIGRyaXZlcnMvY2xvY2tzb3VyY2Uv
+ZHdfYXBiX3RpbWVyX29mLmMgICAgICAgICAgICAgIHwgIDU3ICsrKy0tCiBkcml2ZXJzL2Nsb2Nr
+c291cmNlL2luZ2VuaWMtdGltZXIuYyAgICAgICAgICAgICAgICB8ICAgMiArLQogZHJpdmVycy9j
+bG9ja3NvdXJjZS9zaF9jbXQuYyAgICAgICAgICAgICAgICAgICAgICAgfCAgMTggKy0KIGRyaXZl
+cnMvY2xvY2tzb3VyY2UvdGltZXItY2FkZW5jZS10dGMuYyAgICAgICAgICAgIHwgIDE4ICstCiBk
+cml2ZXJzL2Nsb2Nrc291cmNlL3RpbWVyLW5wcy5jICAgICAgICAgICAgICAgICAgICB8IDI4NCAt
+LS0tLS0tLS0tLS0tLS0tLS0tLS0KIGRyaXZlcnMvY2xvY2tzb3VyY2UvdGltZXItb3Jpb24uYyAg
+ICAgICAgICAgICAgICAgIHwgIDExICstCiBkcml2ZXJzL2Nsb2Nrc291cmNlL3RpbWVyLXNwODA0
+LmMgICAgICAgICAgICAgICAgICB8ICA0OSArKy0tCiBkcml2ZXJzL3J0Yy9NYWtlZmlsZSAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSAtCiBkcml2ZXJzL3J0Yy9jbGFzcy5jICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgOSArLQogZHJpdmVycy9ydGMvcnRjLWNt
+b3MuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDMgKwogZHJpdmVycy9ydGMvcnRj
+LW1jMTQ2ODE4LWxpYi5jICAgICAgICAgICAgICAgICAgICAgfCAgNzAgKystLS0KIGRyaXZlcnMv
+cnRjL3N5c3RvaGMuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDYxIC0tLS0tCiBp
+bmNsdWRlL2R0LWJpbmRpbmdzL2Nsb2NrL2luZ2VuaWMsc3lzb3N0LmggICAgICAgICB8ICAxMCAr
+LQogaW5jbHVkZS9saW51eC9ocnRpbWVyLmggICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+IDYgKy0KIGluY2x1ZGUvbGludXgvcnRjLmggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgIDY5ICsrKy0tCiBpbmNsdWRlL2xpbnV4L3RpbWVrZWVwaW5nLmggICAgICAgICAgICAgICAg
+ICAgICAgICB8ICAgMiArCiBpbmNsdWRlL2xpbnV4L3RpbWVyLmggICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICB8ICAgMSAtCiBpbmNsdWRlL2xpbnV4L3RpbWV4LmggICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICB8ICAgMSAtCiBrZXJuZWwvdGltZS9ocnRpbWVyLmMgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICB8ICAgMiArLQoga2VybmVsL3RpbWUvamlmZmllcy5jICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgfCAgIDMgKy0KIGtlcm5lbC90aW1lL250cC5jICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHwgMjI5ICsrKysrKysrKystLS0tLS0tCiBrZXJuZWwv
+dGltZS9udHBfaW50ZXJuYWwuaCAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNyArCiBrZXJu
+ZWwvdGltZS90aWNrLWJyb2FkY2FzdC5jICAgICAgICAgICAgICAgICAgICAgICB8ICAyNSArLQog
+a2VybmVsL3RpbWUvdGljay1jb21tb24uYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTIg
+Ky0KIGtlcm5lbC90aW1lL3RpY2staW50ZXJuYWwuaCAgICAgICAgICAgICAgICAgICAgICAgIHwg
+ICAxIC0KIGtlcm5lbC90aW1lL3RpY2stc2NoZWQuYyAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgMTIyICsrKysrKy0tLQoga2VybmVsL3RpbWUvdGltZWNvbnYuYyAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgIDYgKy0KIGtlcm5lbC90aW1lL3RpbWVrZWVwaW5nLmMgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHwgIDg1ICsrKy0tLQoga2VybmVsL3RpbWUvdGltZWtlZXBpbmcuaCAg
+ICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDIgKy0KIGtlcm5lbC90aW1lL3RpbWVyLmMgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDU3ICsrKy0tCiBrZXJuZWwvdGltZS90aW1l
+cl9saXN0LmMgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA2NiArKy0tLQogMzYgZmlsZXMg
+Y2hhbmdlZCwgNjY2IGluc2VydGlvbnMoKyksIDgxMSBkZWxldGlvbnMoLSkKIGRlbGV0ZSBtb2Rl
+IDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdGltZXIvcmVuZXNhcyx0
+bXUudHh0CiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL3RpbWVyL3JlbmVzYXMsdG11LnlhbWwKIGRlbGV0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2Ns
+b2Nrc291cmNlL3RpbWVyLW5wcy5jCiBkZWxldGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ydGMvc3lz
+dG9oYy5jCgpkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3Rp
+bWVyL3JlbmVzYXMsdG11LnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy90
+aW1lci9yZW5lc2FzLHRtdS50eHQKZGVsZXRlZCBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDI5MTU5
+ZjRlNjVhYi4uMDAwMDAwMDAwMDAwCi0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
+aW5ncy90aW1lci9yZW5lc2FzLHRtdS50eHQKKysrIC9kZXYvbnVsbApAQCAtMSw0OSArMCwwIEBA
+Ci0qIFJlbmVzYXMgUi1Nb2JpbGUvUi1DYXIgVGltZXIgVW5pdCAoVE1VKQotCi1UaGUgVE1VIGlz
+IGEgMzItYml0IHRpbWVyL2NvdW50ZXIgd2l0aCBjb25maWd1cmFibGUgY2xvY2sgaW5wdXRzIGFu
+ZAotcHJvZ3JhbW1hYmxlIGNvbXBhcmUgbWF0Y2guCi0KLUNoYW5uZWxzIHNoYXJlIGhhcmR3YXJl
+IHJlc291cmNlcyBidXQgdGhlaXIgY291bnRlciBhbmQgY29tcGFyZSBtYXRjaCB2YWx1ZQotYXJl
+IGluZGVwZW5kZW50LiBUaGUgVE1VIGhhcmR3YXJlIHN1cHBvcnRzIHVwIHRvIHRocmVlIGNoYW5u
+ZWxzLgotCi1SZXF1aXJlZCBQcm9wZXJ0aWVzOgotCi0gIC0gY29tcGF0aWJsZTogbXVzdCBjb250
+YWluIG9uZSBvciBtb3JlIG9mIHRoZSBmb2xsb3dpbmc6Ci0gICAgLSAicmVuZXNhcyx0bXUtcjhh
+Nzc0MCIgZm9yIHRoZSByOGE3NzQwIFRNVQotICAgIC0gInJlbmVzYXMsdG11LXI4YTc3NGExIiBm
+b3IgdGhlIHI4YTc3NEExIFRNVQotICAgIC0gInJlbmVzYXMsdG11LXI4YTc3NGIxIiBmb3IgdGhl
+IHI4YTc3NEIxIFRNVQotICAgIC0gInJlbmVzYXMsdG11LXI4YTc3NGMwIiBmb3IgdGhlIHI4YTc3
+NEMwIFRNVQotICAgIC0gInJlbmVzYXMsdG11LXI4YTc3NzgiIGZvciB0aGUgcjhhNzc3OCBUTVUK
+LSAgICAtICJyZW5lc2FzLHRtdS1yOGE3Nzc5IiBmb3IgdGhlIHI4YTc3NzkgVE1VCi0gICAgLSAi
+cmVuZXNhcyx0bXUtcjhhNzc5NzAiIGZvciB0aGUgcjhhNzc5NzAgVE1VCi0gICAgLSAicmVuZXNh
+cyx0bXUtcjhhNzc5ODAiIGZvciB0aGUgcjhhNzc5ODAgVE1VCi0gICAgLSAicmVuZXNhcyx0bXUi
+IGZvciBhbnkgVE1VLgotICAgICAgVGhpcyBpcyBhIGZhbGxiYWNrIGZvciB0aGUgYWJvdmUgcmVu
+ZXNhcyx0bXUtKiBlbnRyaWVzCi0KLSAgLSByZWc6IGJhc2UgYWRkcmVzcyBhbmQgbGVuZ3RoIG9m
+IHRoZSByZWdpc3RlcnMgYmxvY2sgZm9yIHRoZSB0aW1lciBtb2R1bGUuCi0KLSAgLSBpbnRlcnJ1
+cHRzOiBpbnRlcnJ1cHQtc3BlY2lmaWVyIGZvciB0aGUgdGltZXIsIG9uZSBwZXIgY2hhbm5lbC4K
+LQotICAtIGNsb2NrczogYSBsaXN0IG9mIHBoYW5kbGUgKyBjbG9jay1zcGVjaWZpZXIgcGFpcnMs
+IG9uZSBmb3IgZWFjaCBlbnRyeQotICAgIGluIGNsb2NrLW5hbWVzLgotICAtIGNsb2NrLW5hbWVz
+OiBtdXN0IGNvbnRhaW4gImZjayIgZm9yIHRoZSBmdW5jdGlvbmFsIGNsb2NrLgotCi1PcHRpb25h
+bCBQcm9wZXJ0aWVzOgotCi0gIC0gI3JlbmVzYXMsY2hhbm5lbHM6IG51bWJlciBvZiBjaGFubmVs
+cyBpbXBsZW1lbnRlZCBieSB0aGUgdGltZXIsIG11c3QgYmUgMgotICAgIG9yIDMgKGlmIG5vdCBz
+cGVjaWZpZWQgdGhlIHZhbHVlIGRlZmF1bHRzIHRvIDMpLgotCi0KLUV4YW1wbGU6IFI4QTc3Nzkg
+KFItQ2FyIEgxKSBUTVUwIG5vZGUKLQotCXRtdTA6IHRpbWVyQGZmZDgwMDAwIHsKLQkJY29tcGF0
+aWJsZSA9ICJyZW5lc2FzLHRtdS1yOGE3Nzc5IiwgInJlbmVzYXMsdG11IjsKLQkJcmVnID0gPDB4
+ZmZkODAwMDAgMHgzMD47Ci0JCWludGVycnVwdHMgPSA8MCAzMiBJUlFfVFlQRV9MRVZFTF9ISUdI
+PiwKLQkJCSAgICAgPDAgMzMgSVJRX1RZUEVfTEVWRUxfSElHSD4sCi0JCQkgICAgIDwwIDM0IElS
+UV9UWVBFX0xFVkVMX0hJR0g+OwotCQljbG9ja3MgPSA8Jm1zdHAwX2Nsa3MgUjhBNzc3OV9DTEtf
+VE1VMD47Ci0JCWNsb2NrLW5hbWVzID0gImZjayI7Ci0KLQkJI3JlbmVzYXMsY2hhbm5lbHMgPSA8
+Mz47Ci0JfTsKZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy90
+aW1lci9yZW5lc2FzLHRtdS55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L3RpbWVyL3JlbmVzYXMsdG11LnlhbWwKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAw
+MDAwMDAwLi5jNTQxODg3MzFhMWIKLS0tIC9kZXYvbnVsbAorKysgYi9Eb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3MvdGltZXIvcmVuZXNhcyx0bXUueWFtbApAQCAtMCwwICsxLDk5IEBA
+CisjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIuMC1vbmx5IE9SIEJTRC0yLUNsYXVz
+ZSkKKyVZQU1MIDEuMgorLS0tCiskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL3Rp
+bWVyL3JlbmVzYXMsdG11LnlhbWwjCiskc2NoZW1hOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvbWV0
+YS1zY2hlbWFzL2NvcmUueWFtbCMKKwordGl0bGU6IFJlbmVzYXMgUi1Nb2JpbGUvUi1DYXIgVGlt
+ZXIgVW5pdCAoVE1VKQorCittYWludGFpbmVyczoKKyAgLSBHZWVydCBVeXR0ZXJob2V2ZW4gPGdl
+ZXJ0K3JlbmVzYXNAZ2xpZGVyLmJlPgorICAtIExhdXJlbnQgUGluY2hhcnQgPGxhdXJlbnQucGlu
+Y2hhcnQrcmVuZXNhc0BpZGVhc29uYm9hcmQuY29tPgorCitkZXNjcmlwdGlvbjoKKyAgVGhlIFRN
+VSBpcyBhIDMyLWJpdCB0aW1lci9jb3VudGVyIHdpdGggY29uZmlndXJhYmxlIGNsb2NrIGlucHV0
+cyBhbmQKKyAgcHJvZ3JhbW1hYmxlIGNvbXBhcmUgbWF0Y2guCisKKyAgQ2hhbm5lbHMgc2hhcmUg
+aGFyZHdhcmUgcmVzb3VyY2VzIGJ1dCB0aGVpciBjb3VudGVyIGFuZCBjb21wYXJlIG1hdGNoIHZh
+bHVlCisgIGFyZSBpbmRlcGVuZGVudC4gVGhlIFRNVSBoYXJkd2FyZSBzdXBwb3J0cyB1cCB0byB0
+aHJlZSBjaGFubmVscy4KKworcHJvcGVydGllczoKKyAgY29tcGF0aWJsZToKKyAgICBpdGVtczoK
+KyAgICAgIC0gZW51bToKKyAgICAgICAgICAtIHJlbmVzYXMsdG11LXI4YTc3NDAgICMgUi1Nb2Jp
+bGUgQTEKKyAgICAgICAgICAtIHJlbmVzYXMsdG11LXI4YTc3NGExICMgUlovRzJNCisgICAgICAg
+ICAgLSByZW5lc2FzLHRtdS1yOGE3NzRiMSAjIFJaL0cyTgorICAgICAgICAgIC0gcmVuZXNhcyx0
+bXUtcjhhNzc0YzAgIyBSWi9HMkUKKyAgICAgICAgICAtIHJlbmVzYXMsdG11LXI4YTc3NGUxICMg
+UlovRzJICisgICAgICAgICAgLSByZW5lc2FzLHRtdS1yOGE3Nzc4ICAjIFItQ2FyIE0xQQorICAg
+ICAgICAgIC0gcmVuZXNhcyx0bXUtcjhhNzc3OSAgIyBSLUNhciBIMQorICAgICAgICAgIC0gcmVu
+ZXNhcyx0bXUtcjhhNzc5NzAgIyBSLUNhciBWM00KKyAgICAgICAgICAtIHJlbmVzYXMsdG11LXI4
+YTc3OTgwICMgUi1DYXIgVjNICisgICAgICAtIGNvbnN0OiByZW5lc2FzLHRtdQorCisgIHJlZzoK
+KyAgICBtYXhJdGVtczogMQorCisgIGludGVycnVwdHM6CisgICAgbWluSXRlbXM6IDIKKyAgICBt
+YXhJdGVtczogMworCisgIGNsb2NrczoKKyAgICBtYXhJdGVtczogMQorCisgIGNsb2NrLW5hbWVz
+OgorICAgIGNvbnN0OiBmY2sKKworICBwb3dlci1kb21haW5zOgorICAgIG1heEl0ZW1zOiAxCisK
+KyAgcmVzZXRzOgorICAgIG1heEl0ZW1zOiAxCisKKyAgJyNyZW5lc2FzLGNoYW5uZWxzJzoKKyAg
+ICBkZXNjcmlwdGlvbjoKKyAgICAgIE51bWJlciBvZiBjaGFubmVscyBpbXBsZW1lbnRlZCBieSB0
+aGUgdGltZXIuCisgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvdWlu
+dDMyCisgICAgZW51bTogWyAyLCAzIF0KKyAgICBkZWZhdWx0OiAzCisKK3JlcXVpcmVkOgorICAt
+IGNvbXBhdGlibGUKKyAgLSByZWcKKyAgLSBpbnRlcnJ1cHRzCisgIC0gY2xvY2tzCisgIC0gY2xv
+Y2stbmFtZXMKKyAgLSBwb3dlci1kb21haW5zCisKK2lmOgorICBub3Q6CisgICAgcHJvcGVydGll
+czoKKyAgICAgIGNvbXBhdGlibGU6CisgICAgICAgIGNvbnRhaW5zOgorICAgICAgICAgIGVudW06
+CisgICAgICAgICAgICAtIHJlbmVzYXMsdG11LXI4YTc3NDAKKyAgICAgICAgICAgIC0gcmVuZXNh
+cyx0bXUtcjhhNzc3OAorICAgICAgICAgICAgLSByZW5lc2FzLHRtdS1yOGE3Nzc5Cit0aGVuOgor
+ICByZXF1aXJlZDoKKyAgICAtIHJlc2V0cworCithZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UK
+KworZXhhbXBsZXM6CisgIC0gfAorICAgICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9jbG9jay9yOGE3
+Nzc5LWNsb2NrLmg+CisgICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2ludGVycnVwdC1jb250cm9s
+bGVyL2FybS1naWMuaD4KKyAgICAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvcG93ZXIvcjhhNzc3OS1z
+eXNjLmg+CisgICAgdG11MDogdGltZXJAZmZkODAwMDAgeworICAgICAgICAgICAgY29tcGF0aWJs
+ZSA9ICJyZW5lc2FzLHRtdS1yOGE3Nzc5IiwgInJlbmVzYXMsdG11IjsKKyAgICAgICAgICAgIHJl
+ZyA9IDwweGZmZDgwMDAwIDB4MzA+OworICAgICAgICAgICAgaW50ZXJydXB0cyA9IDxHSUNfU1BJ
+IDMyIElSUV9UWVBFX0xFVkVMX0hJR0g+LAorICAgICAgICAgICAgICAgICAgICAgICAgIDxHSUNf
+U1BJIDMzIElSUV9UWVBFX0xFVkVMX0hJR0g+LAorICAgICAgICAgICAgICAgICAgICAgICAgIDxH
+SUNfU1BJIDM0IElSUV9UWVBFX0xFVkVMX0hJR0g+OworICAgICAgICAgICAgY2xvY2tzID0gPCZt
+c3RwMF9jbGtzIFI4QTc3NzlfQ0xLX1RNVTA+OworICAgICAgICAgICAgY2xvY2stbmFtZXMgPSAi
+ZmNrIjsKKyAgICAgICAgICAgIHBvd2VyLWRvbWFpbnMgPSA8JnN5c2MgUjhBNzc3OV9QRF9BTFdB
+WVNfT04+OworICAgICAgICAgICAgI3JlbmVzYXMsY2hhbm5lbHMgPSA8Mz47CisgICAgfTsKZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvY2xvY2tzb3VyY2UvS2NvbmZpZyBiL2RyaXZlcnMvY2xvY2tzb3Vy
+Y2UvS2NvbmZpZwppbmRleCA2OGIwODdiZmY1OWMuLjlmMDBiODM4NWZkNCAxMDA2NDQKLS0tIGEv
+ZHJpdmVycy9jbG9ja3NvdXJjZS9LY29uZmlnCisrKyBiL2RyaXZlcnMvY2xvY2tzb3VyY2UvS2Nv
+bmZpZwpAQCAtMjc1LDE2ICsyNzUsNiBAQCBjb25maWcgQ0xLU1JDX1RJXzMySwogCSAgVGhpcyBv
+cHRpb24gZW5hYmxlcyBzdXBwb3J0IGZvciBUZXhhcyBJbnN0cnVtZW50cyAzMi43NjggSHogY2xv
+Y2tzb3VyY2UKIAkgIGF2YWlsYWJsZSBvbiBtYW55IE9NQVAtbGlrZSBwbGF0Zm9ybXMuCiAKLWNv
+bmZpZyBDTEtTUkNfTlBTCi0JYm9vbCAiTlBTNDAwIGNsb2Nrc291cmNlIGRyaXZlciIgaWYgQ09N
+UElMRV9URVNUCi0JZGVwZW5kcyBvbiAhUEhZU19BRERSX1RfNjRCSVQKLQlzZWxlY3QgQ0xLU1JD
+X01NSU8KLQlzZWxlY3QgVElNRVJfT0YgaWYgT0YKLQloZWxwCi0JICBOUFM0MDAgY2xvY2tzb3Vy
+Y2Ugc3VwcG9ydC4KLQkgIEl0IGhhcyBhIDY0LWJpdCBjb3VudGVyIHdpdGggdXBkYXRlIHJhdGUg
+dXAgdG8gMTAwME1Iei4KLQkgIFRoaXMgY291bnRlciBpcyBhY2Nlc3NlZCB2aWEgY291cGxlIG9m
+IDMyLWJpdCBtZW1vcnktbWFwcGVkIHJlZ2lzdGVycy4KLQogY29uZmlnIENMS1NSQ19TVE0zMgog
+CWJvb2wgIkNsb2Nrc291cmNlIGZvciBTVE0zMiBTb0NzIiBpZiAhQVJDSF9TVE0zMgogCWRlcGVu
+ZHMgb24gT0YgJiYgQVJNICYmIChBUkNIX1NUTTMyIHx8IENPTVBJTEVfVEVTVCkKQEAgLTY1NCw3
+ICs2NDQsNyBAQCBjb25maWcgQVRDUElUMTAwX1RJTUVSCiAKIGNvbmZpZyBSSVNDVl9USU1FUgog
+CWJvb2wgIlRpbWVyIGZvciB0aGUgUklTQy1WIHBsYXRmb3JtIiBpZiBDT01QSUxFX1RFU1QKLQlk
+ZXBlbmRzIG9uIEdFTkVSSUNfU0NIRURfQ0xPQ0sgJiYgUklTQ1YKKwlkZXBlbmRzIG9uIEdFTkVS
+SUNfU0NIRURfQ0xPQ0sgJiYgUklTQ1YgJiYgUklTQ1ZfU0JJCiAJc2VsZWN0IFRJTUVSX1BST0JF
+CiAJc2VsZWN0IFRJTUVSX09GCiAJaGVscApkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbG9ja3NvdXJj
+ZS9NYWtlZmlsZSBiL2RyaXZlcnMvY2xvY2tzb3VyY2UvTWFrZWZpbGUKaW5kZXggMWM0NDRjYzNi
+YjQ0Li4zYzc1Y2JiZjg1MzMgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvY2xvY2tzb3VyY2UvTWFrZWZp
+bGUKKysrIGIvZHJpdmVycy9jbG9ja3NvdXJjZS9NYWtlZmlsZQpAQCAtNTYsNyArNTYsNiBAQCBv
+YmotJChDT05GSUdfQ0xLU1JDX1FDT00pCSs9IHRpbWVyLXFjb20ubwogb2JqLSQoQ09ORklHX01U
+S19USU1FUikJCSs9IHRpbWVyLW1lZGlhdGVrLm8KIG9iai0kKENPTkZJR19DTEtTUkNfUElTVEFD
+SElPKQkrPSB0aW1lci1waXN0YWNoaW8ubwogb2JqLSQoQ09ORklHX0NMS1NSQ19USV8zMkspCSs9
+IHRpbWVyLXRpLTMyay5vCi1vYmotJChDT05GSUdfQ0xLU1JDX05QUykJKz0gdGltZXItbnBzLm8K
+IG9iai0kKENPTkZJR19PWE5BU19SUFNfVElNRVIpCSs9IHRpbWVyLW94bmFzLXJwcy5vCiBvYmot
+JChDT05GSUdfT1dMX1RJTUVSKQkJKz0gdGltZXItb3dsLm8KIG9iai0kKENPTkZJR19NSUxCRUFV
+VF9USU1FUikJKz0gdGltZXItbWlsYmVhdXQubwpkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbG9ja3Nv
+dXJjZS9hcm1fYXJjaF90aW1lci5jIGIvZHJpdmVycy9jbG9ja3NvdXJjZS9hcm1fYXJjaF90aW1l
+ci5jCmluZGV4IDZjM2U4NDE4MDE0Ni4uZDAxNzc4MjRjNTE4IDEwMDY0NAotLS0gYS9kcml2ZXJz
+L2Nsb2Nrc291cmNlL2FybV9hcmNoX3RpbWVyLmMKKysrIGIvZHJpdmVycy9jbG9ja3NvdXJjZS9h
+cm1fYXJjaF90aW1lci5jCkBAIC0zOTYsMTAgKzM5NiwxMCBAQCBzdGF0aWMgdm9pZCBlcnJhdHVt
+X3NldF9uZXh0X2V2ZW50X3R2YWxfZ2VuZXJpYyhjb25zdCBpbnQgYWNjZXNzLCB1bnNpZ25lZCBs
+b25nCiAJY3RybCAmPSB+QVJDSF9USU1FUl9DVFJMX0lUX01BU0s7CiAKIAlpZiAoYWNjZXNzID09
+IEFSQ0hfVElNRVJfUEhZU19BQ0NFU1MpIHsKLQkJY3ZhbCA9IGV2dCArIGFyY2hfY291bnRlcl9n
+ZXRfY250cGN0KCk7CisJCWN2YWwgPSBldnQgKyBhcmNoX2NvdW50ZXJfZ2V0X2NudHBjdF9zdGFi
+bGUoKTsKIAkJd3JpdGVfc3lzcmVnKGN2YWwsIGNudHBfY3ZhbF9lbDApOwogCX0gZWxzZSB7Ci0J
+CWN2YWwgPSBldnQgKyBhcmNoX2NvdW50ZXJfZ2V0X2NudHZjdCgpOworCQljdmFsID0gZXZ0ICsg
+YXJjaF9jb3VudGVyX2dldF9jbnR2Y3Rfc3RhYmxlKCk7CiAJCXdyaXRlX3N5c3JlZyhjdmFsLCBj
+bnR2X2N2YWxfZWwwKTsKIAl9CiAKQEAgLTgyMiwxNSArODIyLDI0IEBAIHN0YXRpYyB2b2lkIGFy
+Y2hfdGltZXJfZXZ0c3RybV9lbmFibGUoaW50IGRpdmlkZXIpCiAKIHN0YXRpYyB2b2lkIGFyY2hf
+dGltZXJfY29uZmlndXJlX2V2dHN0cmVhbSh2b2lkKQogewotCWludCBldnRfc3RyZWFtX2Rpdiwg
+cG9zOworCWludCBldnRfc3RyZWFtX2RpdiwgbHNiOworCisJLyoKKwkgKiBBcyB0aGUgZXZlbnQg
+c3RyZWFtIGNhbiBhdCBtb3N0IGJlIGdlbmVyYXRlZCBhdCBoYWxmIHRoZSBmcmVxdWVuY3kKKwkg
+KiBvZiB0aGUgY291bnRlciwgdXNlIGhhbGYgdGhlIGZyZXF1ZW5jeSB3aGVuIGNvbXB1dGluZyB0
+aGUgZGl2aWRlci4KKwkgKi8KKwlldnRfc3RyZWFtX2RpdiA9IGFyY2hfdGltZXJfcmF0ZSAvIEFS
+Q0hfVElNRVJfRVZUX1NUUkVBTV9GUkVRIC8gMjsKKworCS8qCisJICogRmluZCB0aGUgY2xvc2Vz
+dCBwb3dlciBvZiB0d28gdG8gdGhlIGRpdmlzb3IuIElmIHRoZSBhZGphY2VudCBiaXQKKwkgKiBv
+ZiBsc2IgKGxhc3Qgc2V0IGJpdCwgc3RhcnRzIGZyb20gMCkgaXMgc2V0LCB0aGVuIHdlIHVzZSAo
+bHNiICsgMSkuCisJICovCisJbHNiID0gZmxzKGV2dF9zdHJlYW1fZGl2KSAtIDE7CisJaWYgKGxz
+YiA+IDAgJiYgKGV2dF9zdHJlYW1fZGl2ICYgQklUKGxzYiAtIDEpKSkKKwkJbHNiKys7CiAKLQkv
+KiBGaW5kIHRoZSBjbG9zZXN0IHBvd2VyIG9mIHR3byB0byB0aGUgZGl2aXNvciAqLwotCWV2dF9z
+dHJlYW1fZGl2ID0gYXJjaF90aW1lcl9yYXRlIC8gQVJDSF9USU1FUl9FVlRfU1RSRUFNX0ZSRVE7
+Ci0JcG9zID0gZmxzKGV2dF9zdHJlYW1fZGl2KTsKLQlpZiAocG9zID4gMSAmJiAhKGV2dF9zdHJl
+YW1fZGl2ICYgKDEgPDwgKHBvcyAtIDIpKSkpCi0JCXBvcy0tOwogCS8qIGVuYWJsZSBldmVudCBz
+dHJlYW0gKi8KLQlhcmNoX3RpbWVyX2V2dHN0cm1fZW5hYmxlKG1pbihwb3MsIDE1KSk7CisJYXJj
+aF90aW1lcl9ldnRzdHJtX2VuYWJsZShtYXgoMCwgbWluKGxzYiwgMTUpKSk7CiB9CiAKIHN0YXRp
+YyB2b2lkIGFyY2hfY291bnRlcl9zZXRfdXNlcl9hY2Nlc3Modm9pZCkKZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvY2xvY2tzb3VyY2UvZHdfYXBiX3RpbWVyX29mLmMgYi9kcml2ZXJzL2Nsb2Nrc291cmNl
+L2R3X2FwYl90aW1lcl9vZi5jCmluZGV4IGFiM2RkZWJlODM0NC4uNDJlN2U0M2I4ZmNkIDEwMDY0
+NAotLS0gYS9kcml2ZXJzL2Nsb2Nrc291cmNlL2R3X2FwYl90aW1lcl9vZi5jCisrKyBiL2RyaXZl
+cnMvY2xvY2tzb3VyY2UvZHdfYXBiX3RpbWVyX29mLmMKQEAgLTE0LDEyICsxNCwxMyBAQAogI2lu
+Y2x1ZGUgPGxpbnV4L3Jlc2V0Lmg+CiAjaW5jbHVkZSA8bGludXgvc2NoZWRfY2xvY2suaD4KIAot
+c3RhdGljIHZvaWQgX19pbml0IHRpbWVyX2dldF9iYXNlX2FuZF9yYXRlKHN0cnVjdCBkZXZpY2Vf
+bm9kZSAqbnAsCitzdGF0aWMgaW50IF9faW5pdCB0aW1lcl9nZXRfYmFzZV9hbmRfcmF0ZShzdHJ1
+Y3QgZGV2aWNlX25vZGUgKm5wLAogCQkJCSAgICB2b2lkIF9faW9tZW0gKipiYXNlLCB1MzIgKnJh
+dGUpCiB7CiAJc3RydWN0IGNsayAqdGltZXJfY2xrOwogCXN0cnVjdCBjbGsgKnBjbGs7CiAJc3Ry
+dWN0IHJlc2V0X2NvbnRyb2wgKnJzdGM7CisJaW50IHJldDsKIAogCSpiYXNlID0gb2ZfaW9tYXAo
+bnAsIDApOwogCkBAIC00Niw1NSArNDcsNjcgQEAgc3RhdGljIHZvaWQgX19pbml0IHRpbWVyX2dl
+dF9iYXNlX2FuZF9yYXRlKHN0cnVjdCBkZXZpY2Vfbm9kZSAqbnAsCiAJCQlwcl93YXJuKCJwY2xr
+IGZvciAlcE9GbiBpcyBwcmVzZW50LCBidXQgY291bGQgbm90IGJlIGFjdGl2YXRlZFxuIiwKIAkJ
+CQlucCk7CiAKKwlpZiAoIW9mX3Byb3BlcnR5X3JlYWRfdTMyKG5wLCAiY2xvY2stZnJlcSIsIHJh
+dGUpICYmCisJICAgICFvZl9wcm9wZXJ0eV9yZWFkX3UzMihucCwgImNsb2NrLWZyZXF1ZW5jeSIs
+IHJhdGUpKQorCQlyZXR1cm4gMDsKKwogCXRpbWVyX2NsayA9IG9mX2Nsa19nZXRfYnlfbmFtZShu
+cCwgInRpbWVyIik7CiAJaWYgKElTX0VSUih0aW1lcl9jbGspKQotCQlnb3RvIHRyeV9jbG9ja19m
+cmVxOworCQlyZXR1cm4gUFRSX0VSUih0aW1lcl9jbGspOwogCi0JaWYgKCFjbGtfcHJlcGFyZV9l
+bmFibGUodGltZXJfY2xrKSkgewotCQkqcmF0ZSA9IGNsa19nZXRfcmF0ZSh0aW1lcl9jbGspOwot
+CQlyZXR1cm47Ci0JfQorCXJldCA9IGNsa19wcmVwYXJlX2VuYWJsZSh0aW1lcl9jbGspOworCWlm
+IChyZXQpCisJCXJldHVybiByZXQ7CisKKwkqcmF0ZSA9IGNsa19nZXRfcmF0ZSh0aW1lcl9jbGsp
+OworCWlmICghKCpyYXRlKSkKKwkJcmV0dXJuIC1FSU5WQUw7CiAKLXRyeV9jbG9ja19mcmVxOgot
+CWlmIChvZl9wcm9wZXJ0eV9yZWFkX3UzMihucCwgImNsb2NrLWZyZXEiLCByYXRlKSAmJgotCSAg
+ICBvZl9wcm9wZXJ0eV9yZWFkX3UzMihucCwgImNsb2NrLWZyZXF1ZW5jeSIsIHJhdGUpKQotCQlw
+YW5pYygiTm8gY2xvY2sgbm9yIGNsb2NrLWZyZXF1ZW5jeSBwcm9wZXJ0eSBmb3IgJXBPRm4iLCBu
+cCk7CisJcmV0dXJuIDA7CiB9CiAKLXN0YXRpYyB2b2lkIF9faW5pdCBhZGRfY2xvY2tldmVudChz
+dHJ1Y3QgZGV2aWNlX25vZGUgKmV2ZW50X3RpbWVyKQorc3RhdGljIGludCBfX2luaXQgYWRkX2Ns
+b2NrZXZlbnQoc3RydWN0IGRldmljZV9ub2RlICpldmVudF90aW1lcikKIHsKIAl2b2lkIF9faW9t
+ZW0gKmlvYmFzZTsKIAlzdHJ1Y3QgZHdfYXBiX2Nsb2NrX2V2ZW50X2RldmljZSAqY2VkOwogCXUz
+MiBpcnEsIHJhdGU7CisJaW50IHJldCA9IDA7CiAKIAlpcnEgPSBpcnFfb2ZfcGFyc2VfYW5kX21h
+cChldmVudF90aW1lciwgMCk7CiAJaWYgKGlycSA9PSAwKQogCQlwYW5pYygiTm8gSVJRIGZvciBj
+bG9jayBldmVudCB0aW1lciIpOwogCi0JdGltZXJfZ2V0X2Jhc2VfYW5kX3JhdGUoZXZlbnRfdGlt
+ZXIsICZpb2Jhc2UsICZyYXRlKTsKKwlyZXQgPSB0aW1lcl9nZXRfYmFzZV9hbmRfcmF0ZShldmVu
+dF90aW1lciwgJmlvYmFzZSwgJnJhdGUpOworCWlmIChyZXQpCisJCXJldHVybiByZXQ7CiAKIAlj
+ZWQgPSBkd19hcGJfY2xvY2tldmVudF9pbml0KC0xLCBldmVudF90aW1lci0+bmFtZSwgMzAwLCBp
+b2Jhc2UsIGlycSwKIAkJCQkgICAgIHJhdGUpOwogCWlmICghY2VkKQotCQlwYW5pYygiVW5hYmxl
+IHRvIGluaXRpYWxpc2UgY2xvY2tldmVudCBkZXZpY2UiKTsKKwkJcmV0dXJuIC1FSU5WQUw7CiAK
+IAlkd19hcGJfY2xvY2tldmVudF9yZWdpc3RlcihjZWQpOworCisJcmV0dXJuIDA7CiB9CiAKIHN0
+YXRpYyB2b2lkIF9faW9tZW0gKnNjaGVkX2lvX2Jhc2U7CiBzdGF0aWMgdTMyIHNjaGVkX3JhdGU7
+CiAKLXN0YXRpYyB2b2lkIF9faW5pdCBhZGRfY2xvY2tzb3VyY2Uoc3RydWN0IGRldmljZV9ub2Rl
+ICpzb3VyY2VfdGltZXIpCitzdGF0aWMgaW50IF9faW5pdCBhZGRfY2xvY2tzb3VyY2Uoc3RydWN0
+IGRldmljZV9ub2RlICpzb3VyY2VfdGltZXIpCiB7CiAJdm9pZCBfX2lvbWVtICppb2Jhc2U7CiAJ
+c3RydWN0IGR3X2FwYl9jbG9ja3NvdXJjZSAqY3M7CiAJdTMyIHJhdGU7CisJaW50IHJldDsKIAot
+CXRpbWVyX2dldF9iYXNlX2FuZF9yYXRlKHNvdXJjZV90aW1lciwgJmlvYmFzZSwgJnJhdGUpOwor
+CXJldCA9IHRpbWVyX2dldF9iYXNlX2FuZF9yYXRlKHNvdXJjZV90aW1lciwgJmlvYmFzZSwgJnJh
+dGUpOworCWlmIChyZXQpCisJCXJldHVybiByZXQ7CiAKIAljcyA9IGR3X2FwYl9jbG9ja3NvdXJj
+ZV9pbml0KDMwMCwgc291cmNlX3RpbWVyLT5uYW1lLCBpb2Jhc2UsIHJhdGUpOwogCWlmICghY3Mp
+Ci0JCXBhbmljKCJVbmFibGUgdG8gaW5pdGlhbGlzZSBjbG9ja3NvdXJjZSBkZXZpY2UiKTsKKwkJ
+cmV0dXJuIC1FSU5WQUw7CiAKIAlkd19hcGJfY2xvY2tzb3VyY2Vfc3RhcnQoY3MpOwogCWR3X2Fw
+Yl9jbG9ja3NvdXJjZV9yZWdpc3Rlcihjcyk7CkBAIC0xMDYsNiArMTE5LDggQEAgc3RhdGljIHZv
+aWQgX19pbml0IGFkZF9jbG9ja3NvdXJjZShzdHJ1Y3QgZGV2aWNlX25vZGUgKnNvdXJjZV90aW1l
+cikKIAkgKi8KIAlzY2hlZF9pb19iYXNlID0gaW9iYXNlICsgMHgwNDsKIAlzY2hlZF9yYXRlID0g
+cmF0ZTsKKworCXJldHVybiAwOwogfQogCiBzdGF0aWMgdTY0IG5vdHJhY2UgcmVhZF9zY2hlZF9j
+bG9jayh2b2lkKQpAQCAtMTQ2LDEwICsxNjEsMTQgQEAgc3RhdGljIHN0cnVjdCBkZWxheV90aW1l
+ciBkd19hcGJfZGVsYXlfdGltZXIgPSB7CiBzdGF0aWMgaW50IG51bV9jYWxsZWQ7CiBzdGF0aWMg
+aW50IF9faW5pdCBkd19hcGJfdGltZXJfaW5pdChzdHJ1Y3QgZGV2aWNlX25vZGUgKnRpbWVyKQog
+eworCWludCByZXQgPSAwOworCiAJc3dpdGNoIChudW1fY2FsbGVkKSB7CiAJY2FzZSAxOgogCQlw
+cl9kZWJ1ZygiJXM6IGZvdW5kIGNsb2Nrc291cmNlIHRpbWVyXG4iLCBfX2Z1bmNfXyk7Ci0JCWFk
+ZF9jbG9ja3NvdXJjZSh0aW1lcik7CisJCXJldCA9IGFkZF9jbG9ja3NvdXJjZSh0aW1lcik7CisJ
+CWlmIChyZXQpCisJCQlyZXR1cm4gcmV0OwogCQlpbml0X3NjaGVkX2Nsb2NrKCk7CiAjaWZkZWYg
+Q09ORklHX0FSTQogCQlkd19hcGJfZGVsYXlfdGltZXIuZnJlcSA9IHNjaGVkX3JhdGU7CkBAIC0x
+NTgsNyArMTc3LDkgQEAgc3RhdGljIGludCBfX2luaXQgZHdfYXBiX3RpbWVyX2luaXQoc3RydWN0
+IGRldmljZV9ub2RlICp0aW1lcikKIAkJYnJlYWs7CiAJZGVmYXVsdDoKIAkJcHJfZGVidWcoIiVz
+OiBmb3VuZCBjbG9ja2V2ZW50IHRpbWVyXG4iLCBfX2Z1bmNfXyk7Ci0JCWFkZF9jbG9ja2V2ZW50
+KHRpbWVyKTsKKwkJcmV0ID0gYWRkX2Nsb2NrZXZlbnQodGltZXIpOworCQlpZiAocmV0KQorCQkJ
+cmV0dXJuIHJldDsKIAkJYnJlYWs7CiAJfQogCmRpZmYgLS1naXQgYS9kcml2ZXJzL2Nsb2Nrc291
+cmNlL2luZ2VuaWMtdGltZXIuYyBiL2RyaXZlcnMvY2xvY2tzb3VyY2UvaW5nZW5pYy10aW1lci5j
+CmluZGV4IDU4ZmQ5MTg5ZmFiNy4uOTA1ZmQ2YjE2M2E4IDEwMDY0NAotLS0gYS9kcml2ZXJzL2Ns
+b2Nrc291cmNlL2luZ2VuaWMtdGltZXIuYworKysgYi9kcml2ZXJzL2Nsb2Nrc291cmNlL2luZ2Vu
+aWMtdGltZXIuYwpAQCAtMTI3LDcgKzEyNyw3IEBAIHN0YXRpYyBpcnFyZXR1cm5fdCBpbmdlbmlj
+X3RjdV9jZXZ0X2NiKGludCBpcnEsIHZvaWQgKmRldl9pZCkKIAlyZXR1cm4gSVJRX0hBTkRMRUQ7
+CiB9CiAKLXN0YXRpYyBzdHJ1Y3QgY2xrICogX19pbml0IGluZ2VuaWNfdGN1X2dldF9jbG9jayhz
+dHJ1Y3QgZGV2aWNlX25vZGUgKm5wLCBpbnQgaWQpCitzdGF0aWMgc3RydWN0IGNsayAqaW5nZW5p
+Y190Y3VfZ2V0X2Nsb2NrKHN0cnVjdCBkZXZpY2Vfbm9kZSAqbnAsIGludCBpZCkKIHsKIAlzdHJ1
+Y3Qgb2ZfcGhhbmRsZV9hcmdzIGFyZ3M7CiAKZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2xvY2tzb3Vy
+Y2Uvc2hfY210LmMgYi9kcml2ZXJzL2Nsb2Nrc291cmNlL3NoX2NtdC5jCmluZGV4IDc2MDc3NzQ1
+OGE5MC4uMTlmYTNlZjc1ZTNiIDEwMDY0NAotLS0gYS9kcml2ZXJzL2Nsb2Nrc291cmNlL3NoX2Nt
+dC5jCisrKyBiL2RyaXZlcnMvY2xvY2tzb3VyY2Uvc2hfY210LmMKQEAgLTMxOSw3ICszMTksNiBA
+QCBzdGF0aWMgaW50IHNoX2NtdF9lbmFibGUoc3RydWN0IHNoX2NtdF9jaGFubmVsICpjaCkKIHsK
+IAlpbnQgaywgcmV0OwogCi0JcG1fcnVudGltZV9nZXRfc3luYygmY2gtPmNtdC0+cGRldi0+ZGV2
+KTsKIAlkZXZfcG1fc3lzY29yZV9kZXZpY2UoJmNoLT5jbXQtPnBkZXYtPmRldiwgdHJ1ZSk7CiAK
+IAkvKiBlbmFibGUgY2xvY2sgKi8KQEAgLTM5NCw3ICszOTMsNiBAQCBzdGF0aWMgdm9pZCBzaF9j
+bXRfZGlzYWJsZShzdHJ1Y3Qgc2hfY210X2NoYW5uZWwgKmNoKQogCWNsa19kaXNhYmxlKGNoLT5j
+bXQtPmNsayk7CiAKIAlkZXZfcG1fc3lzY29yZV9kZXZpY2UoJmNoLT5jbXQtPnBkZXYtPmRldiwg
+ZmFsc2UpOwotCXBtX3J1bnRpbWVfcHV0KCZjaC0+Y210LT5wZGV2LT5kZXYpOwogfQogCiAvKiBw
+cml2YXRlIGZsYWdzICovCkBAIC01NjIsMTAgKzU2MCwxNiBAQCBzdGF0aWMgaW50IHNoX2NtdF9z
+dGFydChzdHJ1Y3Qgc2hfY210X2NoYW5uZWwgKmNoLCB1bnNpZ25lZCBsb25nIGZsYWcpCiAJaW50
+IHJldCA9IDA7CiAJdW5zaWduZWQgbG9uZyBmbGFnczsKIAorCWlmIChmbGFnICYgRkxBR19DTE9D
+S1NPVVJDRSkKKwkJcG1fcnVudGltZV9nZXRfc3luYygmY2gtPmNtdC0+cGRldi0+ZGV2KTsKKwog
+CXJhd19zcGluX2xvY2tfaXJxc2F2ZSgmY2gtPmxvY2ssIGZsYWdzKTsKIAotCWlmICghKGNoLT5m
+bGFncyAmIChGTEFHX0NMT0NLRVZFTlQgfCBGTEFHX0NMT0NLU09VUkNFKSkpCisJaWYgKCEoY2gt
+PmZsYWdzICYgKEZMQUdfQ0xPQ0tFVkVOVCB8IEZMQUdfQ0xPQ0tTT1VSQ0UpKSkgeworCQlpZiAo
+ZmxhZyAmIEZMQUdfQ0xPQ0tFVkVOVCkKKwkJCXBtX3J1bnRpbWVfZ2V0X3N5bmMoJmNoLT5jbXQt
+PnBkZXYtPmRldik7CiAJCXJldCA9IHNoX2NtdF9lbmFibGUoY2gpOworCX0KIAogCWlmIChyZXQp
+CiAJCWdvdG8gb3V0OwpAQCAtNTkwLDE0ICs1OTQsMjAgQEAgc3RhdGljIHZvaWQgc2hfY210X3N0
+b3Aoc3RydWN0IHNoX2NtdF9jaGFubmVsICpjaCwgdW5zaWduZWQgbG9uZyBmbGFnKQogCWYgPSBj
+aC0+ZmxhZ3MgJiAoRkxBR19DTE9DS0VWRU5UIHwgRkxBR19DTE9DS1NPVVJDRSk7CiAJY2gtPmZs
+YWdzICY9IH5mbGFnOwogCi0JaWYgKGYgJiYgIShjaC0+ZmxhZ3MgJiAoRkxBR19DTE9DS0VWRU5U
+IHwgRkxBR19DTE9DS1NPVVJDRSkpKQorCWlmIChmICYmICEoY2gtPmZsYWdzICYgKEZMQUdfQ0xP
+Q0tFVkVOVCB8IEZMQUdfQ0xPQ0tTT1VSQ0UpKSkgewogCQlzaF9jbXRfZGlzYWJsZShjaCk7CisJ
+CWlmIChmbGFnICYgRkxBR19DTE9DS0VWRU5UKQorCQkJcG1fcnVudGltZV9wdXQoJmNoLT5jbXQt
+PnBkZXYtPmRldik7CisJfQogCiAJLyogYWRqdXN0IHRoZSB0aW1lb3V0IHRvIG1heGltdW0gaWYg
+b25seSBjbG9ja3NvdXJjZSBsZWZ0ICovCiAJaWYgKChmbGFnID09IEZMQUdfQ0xPQ0tFVkVOVCkg
+JiYgKGNoLT5mbGFncyAmIEZMQUdfQ0xPQ0tTT1VSQ0UpKQogCQlfX3NoX2NtdF9zZXRfbmV4dChj
+aCwgY2gtPm1heF9tYXRjaF92YWx1ZSk7CiAKIAlyYXdfc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgm
+Y2gtPmxvY2ssIGZsYWdzKTsKKworCWlmIChmbGFnICYgRkxBR19DTE9DS1NPVVJDRSkKKwkJcG1f
+cnVudGltZV9wdXQoJmNoLT5jbXQtPnBkZXYtPmRldik7CiB9CiAKIHN0YXRpYyBzdHJ1Y3Qgc2hf
+Y210X2NoYW5uZWwgKmNzX3RvX3NoX2NtdChzdHJ1Y3QgY2xvY2tzb3VyY2UgKmNzKQpkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9jbG9ja3NvdXJjZS90aW1lci1jYWRlbmNlLXR0Yy5jIGIvZHJpdmVycy9j
+bG9ja3NvdXJjZS90aW1lci1jYWRlbmNlLXR0Yy5jCmluZGV4IDgwZTk2MDYwMjAzMC4uNGVmZDBj
+ZjNiNjAyIDEwMDY0NAotLS0gYS9kcml2ZXJzL2Nsb2Nrc291cmNlL3RpbWVyLWNhZGVuY2UtdHRj
+LmMKKysrIGIvZHJpdmVycy9jbG9ja3NvdXJjZS90aW1lci1jYWRlbmNlLXR0Yy5jCkBAIC00MTMs
+MTAgKzQxMyw4IEBAIHN0YXRpYyBpbnQgX19pbml0IHR0Y19zZXR1cF9jbG9ja2V2ZW50KHN0cnVj
+dCBjbGsgKmNsaywKIAl0dGNjZS0+dHRjLmNsayA9IGNsazsKIAogCWVyciA9IGNsa19wcmVwYXJl
+X2VuYWJsZSh0dGNjZS0+dHRjLmNsayk7Ci0JaWYgKGVycikgewotCQlrZnJlZSh0dGNjZSk7Ci0J
+CXJldHVybiBlcnI7Ci0JfQorCWlmIChlcnIpCisJCWdvdG8gb3V0X2tmcmVlOwogCiAJdHRjY2Ut
+PnR0Yy5jbGtfcmF0ZV9jaGFuZ2VfbmIubm90aWZpZXJfY2FsbCA9CiAJCXR0Y19yYXRlX2NoYW5n
+ZV9jbG9ja2V2ZW50X2NiOwpAQCAtNDI2LDcgKzQyNCw3IEBAIHN0YXRpYyBpbnQgX19pbml0IHR0
+Y19zZXR1cF9jbG9ja2V2ZW50KHN0cnVjdCBjbGsgKmNsaywKIAkJCQkgICAgJnR0Y2NlLT50dGMu
+Y2xrX3JhdGVfY2hhbmdlX25iKTsKIAlpZiAoZXJyKSB7CiAJCXByX3dhcm4oIlVuYWJsZSB0byBy
+ZWdpc3RlciBjbG9jayBub3RpZmllci5cbiIpOwotCQlyZXR1cm4gZXJyOworCQlnb3RvIG91dF9r
+ZnJlZTsKIAl9CiAKIAl0dGNjZS0+dHRjLmZyZXEgPSBjbGtfZ2V0X3JhdGUodHRjY2UtPnR0Yy5j
+bGspOwpAQCAtNDU1LDE1ICs0NTMsMTcgQEAgc3RhdGljIGludCBfX2luaXQgdHRjX3NldHVwX2Ns
+b2NrZXZlbnQoc3RydWN0IGNsayAqY2xrLAogCiAJZXJyID0gcmVxdWVzdF9pcnEoaXJxLCB0dGNf
+Y2xvY2tfZXZlbnRfaW50ZXJydXB0LAogCQkJICBJUlFGX1RJTUVSLCB0dGNjZS0+Y2UubmFtZSwg
+dHRjY2UpOwotCWlmIChlcnIpIHsKLQkJa2ZyZWUodHRjY2UpOwotCQlyZXR1cm4gZXJyOwotCX0K
+KwlpZiAoZXJyKQorCQlnb3RvIG91dF9rZnJlZTsKIAogCWNsb2NrZXZlbnRzX2NvbmZpZ19hbmRf
+cmVnaXN0ZXIoJnR0Y2NlLT5jZSwKIAkJCXR0Y2NlLT50dGMuZnJlcSAvIFBSRVNDQUxFLCAxLCAw
+eGZmZmUpOwogCiAJcmV0dXJuIDA7CisKK291dF9rZnJlZToKKwlrZnJlZSh0dGNjZSk7CisJcmV0
+dXJuIGVycjsKIH0KIAogc3RhdGljIGludCBfX2luaXQgdHRjX3RpbWVyX3Byb2JlKHN0cnVjdCBw
+bGF0Zm9ybV9kZXZpY2UgKnBkZXYpCmRpZmYgLS1naXQgYS9kcml2ZXJzL2Nsb2Nrc291cmNlL3Rp
+bWVyLW5wcy5jIGIvZHJpdmVycy9jbG9ja3NvdXJjZS90aW1lci1ucHMuYwpkZWxldGVkIGZpbGUg
+bW9kZSAxMDA2NDQKaW5kZXggN2I2YmIwZGY5NmFlLi4wMDAwMDAwMDAwMDAKLS0tIGEvZHJpdmVy
+cy9jbG9ja3NvdXJjZS90aW1lci1ucHMuYworKysgL2Rldi9udWxsCkBAIC0xLDI4NCArMCwwIEBA
+Ci0vKgotICogQ29weXJpZ2h0IChjKSAyMDE2LCBNZWxsYW5veCBUZWNobm9sb2dpZXMuIEFsbCBy
+aWdodHMgcmVzZXJ2ZWQuCi0gKgotICogVGhpcyBzb2Z0d2FyZSBpcyBhdmFpbGFibGUgdG8geW91
+IHVuZGVyIGEgY2hvaWNlIG9mIG9uZSBvZiB0d28KLSAqIGxpY2Vuc2VzLiAgWW91IG1heSBjaG9v
+c2UgdG8gYmUgbGljZW5zZWQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUKLSAqIEdlbmVyYWwg
+UHVibGljIExpY2Vuc2UgKEdQTCkgVmVyc2lvbiAyLCBhdmFpbGFibGUgZnJvbSB0aGUgZmlsZQot
+ICogQ09QWUlORyBpbiB0aGUgbWFpbiBkaXJlY3Rvcnkgb2YgdGhpcyBzb3VyY2UgdHJlZSwgb3Ig
+dGhlCi0gKiBPcGVuSUIub3JnIEJTRCBsaWNlbnNlIGJlbG93OgotICoKLSAqICAgICBSZWRpc3Ry
+aWJ1dGlvbiBhbmQgdXNlIGluIHNvdXJjZSBhbmQgYmluYXJ5IGZvcm1zLCB3aXRoIG9yCi0gKiAg
+ICAgd2l0aG91dCBtb2RpZmljYXRpb24sIGFyZSBwZXJtaXR0ZWQgcHJvdmlkZWQgdGhhdCB0aGUg
+Zm9sbG93aW5nCi0gKiAgICAgY29uZGl0aW9ucyBhcmUgbWV0OgotICoKLSAqICAgICAgLSBSZWRp
+c3RyaWJ1dGlvbnMgb2Ygc291cmNlIGNvZGUgbXVzdCByZXRhaW4gdGhlIGFib3ZlCi0gKiAgICAg
+ICAgY29weXJpZ2h0IG5vdGljZSwgdGhpcyBsaXN0IG9mIGNvbmRpdGlvbnMgYW5kIHRoZSBmb2xs
+b3dpbmcKLSAqICAgICAgICBkaXNjbGFpbWVyLgotICoKLSAqICAgICAgLSBSZWRpc3RyaWJ1dGlv
+bnMgaW4gYmluYXJ5IGZvcm0gbXVzdCByZXByb2R1Y2UgdGhlIGFib3ZlCi0gKiAgICAgICAgY29w
+eXJpZ2h0IG5vdGljZSwgdGhpcyBsaXN0IG9mIGNvbmRpdGlvbnMgYW5kIHRoZSBmb2xsb3dpbmcK
+LSAqICAgICAgICBkaXNjbGFpbWVyIGluIHRoZSBkb2N1bWVudGF0aW9uIGFuZC9vciBvdGhlciBt
+YXRlcmlhbHMKLSAqICAgICAgICBwcm92aWRlZCB3aXRoIHRoZSBkaXN0cmlidXRpb24uCi0gKgot
+ICogVEhFIFNPRlRXQVJFIElTIFBST1ZJREVEICJBUyBJUyIsIFdJVEhPVVQgV0FSUkFOVFkgT0Yg
+QU5ZIEtJTkQsCi0gKiBFWFBSRVNTIE9SIElNUExJRUQsIElOQ0xVRElORyBCVVQgTk9UIExJTUlU
+RUQgVE8gVEhFIFdBUlJBTlRJRVMgT0YKLSAqIE1FUkNIQU5UQUJJTElUWSwgRklUTkVTUyBGT1Ig
+QSBQQVJUSUNVTEFSIFBVUlBPU0UgQU5ECi0gKiBOT05JTkZSSU5HRU1FTlQuIElOIE5PIEVWRU5U
+IFNIQUxMIFRIRSBBVVRIT1JTIE9SIENPUFlSSUdIVCBIT0xERVJTCi0gKiBCRSBMSUFCTEUgRk9S
+IEFOWSBDTEFJTSwgREFNQUdFUyBPUiBPVEhFUiBMSUFCSUxJVFksIFdIRVRIRVIgSU4gQU4KLSAq
+IEFDVElPTiBPRiBDT05UUkFDVCwgVE9SVCBPUiBPVEhFUldJU0UsIEFSSVNJTkcgRlJPTSwgT1VU
+IE9GIE9SIElOCi0gKiBDT05ORUNUSU9OIFdJVEggVEhFIFNPRlRXQVJFIE9SIFRIRSBVU0UgT1Ig
+T1RIRVIgREVBTElOR1MgSU4gVEhFCi0gKiBTT0ZUV0FSRS4KLSAqLwotCi0jaW5jbHVkZSA8bGlu
+dXgvaW50ZXJydXB0Lmg+Ci0jaW5jbHVkZSA8bGludXgvY2xvY2tzb3VyY2UuaD4KLSNpbmNsdWRl
+IDxsaW51eC9jbG9ja2NoaXBzLmg+Ci0jaW5jbHVkZSA8bGludXgvY2xrLmg+Ci0jaW5jbHVkZSA8
+bGludXgvb2YuaD4KLSNpbmNsdWRlIDxsaW51eC9vZl9pcnEuaD4KLSNpbmNsdWRlIDxsaW51eC9j
+cHUuaD4KLSNpbmNsdWRlIDxzb2MvbnBzL2NvbW1vbi5oPgotCi0jZGVmaW5lIE5QU19NU1VfVElD
+S19MT1cJMHhDOAotI2RlZmluZSBOUFNfQ0xVU1RFUl9PRkZTRVQJOAotI2RlZmluZSBOUFNfQ0xV
+U1RFUl9OVU0JCTE2Ci0KLS8qIFRoaXMgYXJyYXkgaXMgcGVyIGNsdXN0ZXIgb2YgQ1BVcyAoRWFj
+aCBOUFM0MDAgY2x1c3RlciBnb3QgMjU2IENQVXMpICovCi1zdGF0aWMgdm9pZCAqbnBzX21zdV9y
+ZWdfbG93X2FkZHJbTlBTX0NMVVNURVJfTlVNXSBfX3JlYWRfbW9zdGx5OwotCi1zdGF0aWMgaW50
+IF9faW5pdCBucHNfZ2V0X3RpbWVyX2NsayhzdHJ1Y3QgZGV2aWNlX25vZGUgKm5vZGUsCi0JCQkg
+ICAgIHVuc2lnbmVkIGxvbmcgKnRpbWVyX2ZyZXEsCi0JCQkgICAgIHN0cnVjdCBjbGsgKipjbGsp
+Ci17Ci0JaW50IHJldDsKLQotCSpjbGsgPSBvZl9jbGtfZ2V0KG5vZGUsIDApOwotCXJldCA9IFBU
+Ul9FUlJfT1JfWkVSTygqY2xrKTsKLQlpZiAocmV0KSB7Ci0JCXByX2VycigidGltZXIgbWlzc2lu
+ZyBjbGtcbiIpOwotCQlyZXR1cm4gcmV0OwotCX0KLQotCXJldCA9IGNsa19wcmVwYXJlX2VuYWJs
+ZSgqY2xrKTsKLQlpZiAocmV0KSB7Ci0JCXByX2VycigiQ291bGRuJ3QgZW5hYmxlIHBhcmVudCBj
+bGtcbiIpOwotCQljbGtfcHV0KCpjbGspOwotCQlyZXR1cm4gcmV0OwotCX0KLQotCSp0aW1lcl9m
+cmVxID0gY2xrX2dldF9yYXRlKCpjbGspOwotCWlmICghKCp0aW1lcl9mcmVxKSkgewotCQlwcl9l
+cnIoIkNvdWxkbid0IGdldCBjbGsgcmF0ZVxuIik7Ci0JCWNsa19kaXNhYmxlX3VucHJlcGFyZSgq
+Y2xrKTsKLQkJY2xrX3B1dCgqY2xrKTsKLQkJcmV0dXJuIC1FSU5WQUw7Ci0JfQotCi0JcmV0dXJu
+IDA7Ci19Ci0KLXN0YXRpYyB1NjQgbnBzX2Nsa3NyY19yZWFkKHN0cnVjdCBjbG9ja3NvdXJjZSAq
+Y2xrc3JjKQotewotCWludCBjbHVzdGVyID0gcmF3X3NtcF9wcm9jZXNzb3JfaWQoKSA+PiBOUFNf
+Q0xVU1RFUl9PRkZTRVQ7Ci0KLQlyZXR1cm4gKHU2NClpb3JlYWQzMmJlKG5wc19tc3VfcmVnX2xv
+d19hZGRyW2NsdXN0ZXJdKTsKLX0KLQotc3RhdGljIGludCBfX2luaXQgbnBzX3NldHVwX2Nsb2Nr
+c291cmNlKHN0cnVjdCBkZXZpY2Vfbm9kZSAqbm9kZSkKLXsKLQlpbnQgcmV0LCBjbHVzdGVyOwot
+CXN0cnVjdCBjbGsgKmNsazsKLQl1bnNpZ25lZCBsb25nIG5wc190aW1lcjFfZnJlcTsKLQotCi0J
+Zm9yIChjbHVzdGVyID0gMDsgY2x1c3RlciA8IE5QU19DTFVTVEVSX05VTTsgY2x1c3RlcisrKQot
+CQlucHNfbXN1X3JlZ19sb3dfYWRkcltjbHVzdGVyXSA9Ci0JCQlucHNfaG9zdF9yZWcoKGNsdXN0
+ZXIgPDwgTlBTX0NMVVNURVJfT0ZGU0VUKSwKLQkJCQkgICAgIE5QU19NU1VfQkxLSUQsIE5QU19N
+U1VfVElDS19MT1cpOwotCi0JcmV0ID0gbnBzX2dldF90aW1lcl9jbGsobm9kZSwgJm5wc190aW1l
+cjFfZnJlcSwgJmNsayk7Ci0JaWYgKHJldCkKLQkJcmV0dXJuIHJldDsKLQotCXJldCA9IGNsb2Nr
+c291cmNlX21taW9faW5pdChucHNfbXN1X3JlZ19sb3dfYWRkciwgIm5wcy10aWNrIiwKLQkJCQkg
+ICAgbnBzX3RpbWVyMV9mcmVxLCAzMDAsIDMyLCBucHNfY2xrc3JjX3JlYWQpOwotCWlmIChyZXQp
+IHsKLQkJcHJfZXJyKCJDb3VsZG4ndCByZWdpc3RlciBjbG9jayBzb3VyY2UuXG4iKTsKLQkJY2xr
+X2Rpc2FibGVfdW5wcmVwYXJlKGNsayk7Ci0JfQotCi0JcmV0dXJuIHJldDsKLX0KLQotVElNRVJf
+T0ZfREVDTEFSRShlemNoaXBfbnBzNDAwX2Nsa3NyYywgImV6Y2hpcCxucHM0MDAtdGltZXIiLAot
+CQkgICAgICAgbnBzX3NldHVwX2Nsb2Nrc291cmNlKTsKLVRJTUVSX09GX0RFQ0xBUkUoZXpjaGlw
+X25wczQwMF9jbGtfc3JjLCAiZXpjaGlwLG5wczQwMC10aW1lcjEiLAotCQkgICAgICAgbnBzX3Nl
+dHVwX2Nsb2Nrc291cmNlKTsKLQotI2lmZGVmIENPTkZJR19FWk5QU19NVE1fRVhUCi0jaW5jbHVk
+ZSA8c29jL25wcy9tdG0uaD4KLQotLyogVGltZXIgcmVsYXRlZCBBdXggcmVnaXN0ZXJzICovCi0j
+ZGVmaW5lIE5QU19SRUdfVElNRVIwX1RTSQkweEZGRkZGODUwCi0jZGVmaW5lIE5QU19SRUdfVElN
+RVIwX0xJTUlUCTB4MjMKLSNkZWZpbmUgTlBTX1JFR19USU1FUjBfQ1RSTAkweDIyCi0jZGVmaW5l
+IE5QU19SRUdfVElNRVIwX0NOVAkweDIxCi0KLS8qCi0gKiBJbnRlcnJ1cHQgRW5hYmxlZCAoSUUp
+IC0gcmUtYXJtIHRoZSB0aW1lcgotICogTm90IEhhbHRlZCAoTkgpIC0gaXMgY2xlYXJlZCB3aGVu
+IHdvcmtpbmcgd2l0aCBKVEFHIChmb3IgZGVidWcpCi0gKi8KLSNkZWZpbmUgVElNRVIwX0NUUkxf
+SUUJCUJJVCgwKQotI2RlZmluZSBUSU1FUjBfQ1RSTF9OSAkJQklUKDEpCi0KLXN0YXRpYyB1bnNp
+Z25lZCBsb25nIG5wc190aW1lcjBfZnJlcTsKLXN0YXRpYyB1bnNpZ25lZCBsb25nIG5wc190aW1l
+cjBfaXJxOwotCi1zdGF0aWMgdm9pZCBucHNfY2xrZXZlbnRfcm1fdGhyZWFkKHZvaWQpCi17Ci0J
+aW50IHRocmVhZDsKLQl1bnNpZ25lZCBpbnQgY2ZsYWdzLCBlbmFibGVkX3RocmVhZHM7Ci0KLQlo
+d19zY2hkX3NhdmUoJmNmbGFncyk7Ci0KLQllbmFibGVkX3RocmVhZHMgPSByZWFkX2F1eF9yZWco
+TlBTX1JFR19USU1FUjBfVFNJKTsKLQotCS8qIHJlbW92ZSB0aHJlYWQgZnJvbSBUU0kxICovCi0J
+dGhyZWFkID0gcmVhZF9hdXhfcmVnKENUT1BfQVVYX1RIUkVBRF9JRCk7Ci0JZW5hYmxlZF90aHJl
+YWRzICY9IH4oMSA8PCB0aHJlYWQpOwotCXdyaXRlX2F1eF9yZWcoTlBTX1JFR19USU1FUjBfVFNJ
+LCBlbmFibGVkX3RocmVhZHMpOwotCi0JLyogQWNrbm93bGVkZ2UgYW5kIGlmIG5lZWRlZCByZS1h
+cm0gdGhlIHRpbWVyICovCi0JaWYgKCFlbmFibGVkX3RocmVhZHMpCi0JCXdyaXRlX2F1eF9yZWco
+TlBTX1JFR19USU1FUjBfQ1RSTCwgVElNRVIwX0NUUkxfTkgpOwotCWVsc2UKLQkJd3JpdGVfYXV4
+X3JlZyhOUFNfUkVHX1RJTUVSMF9DVFJMLAotCQkJICAgICAgVElNRVIwX0NUUkxfSUUgfCBUSU1F
+UjBfQ1RSTF9OSCk7Ci0KLQlod19zY2hkX3Jlc3RvcmUoY2ZsYWdzKTsKLX0KLQotc3RhdGljIHZv
+aWQgbnBzX2Nsa2V2ZW50X2FkZF90aHJlYWQodW5zaWduZWQgbG9uZyBkZWx0YSkKLXsKLQlpbnQg
+dGhyZWFkOwotCXVuc2lnbmVkIGludCBjZmxhZ3MsIGVuYWJsZWRfdGhyZWFkczsKLQotCWh3X3Nj
+aGRfc2F2ZSgmY2ZsYWdzKTsKLQotCS8qIGFkZCB0aHJlYWQgdG8gVFNJMSAqLwotCXRocmVhZCA9
+IHJlYWRfYXV4X3JlZyhDVE9QX0FVWF9USFJFQURfSUQpOwotCWVuYWJsZWRfdGhyZWFkcyA9IHJl
+YWRfYXV4X3JlZyhOUFNfUkVHX1RJTUVSMF9UU0kpOwotCWVuYWJsZWRfdGhyZWFkcyB8PSAoMSA8
+PCB0aHJlYWQpOwotCXdyaXRlX2F1eF9yZWcoTlBTX1JFR19USU1FUjBfVFNJLCBlbmFibGVkX3Ro
+cmVhZHMpOwotCi0JLyogc2V0IG5leHQgdGltZXIgZXZlbnQgKi8KLQl3cml0ZV9hdXhfcmVnKE5Q
+U19SRUdfVElNRVIwX0xJTUlULCBkZWx0YSk7Ci0Jd3JpdGVfYXV4X3JlZyhOUFNfUkVHX1RJTUVS
+MF9DTlQsIDApOwotCXdyaXRlX2F1eF9yZWcoTlBTX1JFR19USU1FUjBfQ1RSTCwKLQkJICAgICAg
+VElNRVIwX0NUUkxfSUUgfCBUSU1FUjBfQ1RSTF9OSCk7Ci0KLQlod19zY2hkX3Jlc3RvcmUoY2Zs
+YWdzKTsKLX0KLQotLyoKLSAqIFdoZW5ldmVyIGFueW9uZSB0cmllcyB0byBjaGFuZ2UgbW9kZXMs
+IHdlIGp1c3QgbWFzayBpbnRlcnJ1cHRzCi0gKiBhbmQgd2FpdCBmb3IgdGhlIG5leHQgZXZlbnQg
+dG8gZ2V0IHNldC4KLSAqLwotc3RhdGljIGludCBucHNfY2xrZXZlbnRfc2V0X3N0YXRlKHN0cnVj
+dCBjbG9ja19ldmVudF9kZXZpY2UgKmRldikKLXsKLQlucHNfY2xrZXZlbnRfcm1fdGhyZWFkKCk7
+Ci0JZGlzYWJsZV9wZXJjcHVfaXJxKG5wc190aW1lcjBfaXJxKTsKLQotCXJldHVybiAwOwotfQot
+Ci1zdGF0aWMgaW50IG5wc19jbGtldmVudF9zZXRfbmV4dF9ldmVudCh1bnNpZ25lZCBsb25nIGRl
+bHRhLAotCQkJCSAgICAgICBzdHJ1Y3QgY2xvY2tfZXZlbnRfZGV2aWNlICpkZXYpCi17Ci0JbnBz
+X2Nsa2V2ZW50X2FkZF90aHJlYWQoZGVsdGEpOwotCWVuYWJsZV9wZXJjcHVfaXJxKG5wc190aW1l
+cjBfaXJxLCBJUlFfVFlQRV9OT05FKTsKLQotCXJldHVybiAwOwotfQotCi1zdGF0aWMgREVGSU5F
+X1BFUl9DUFUoc3RydWN0IGNsb2NrX2V2ZW50X2RldmljZSwgbnBzX2Nsb2NrZXZlbnRfZGV2aWNl
+KSA9IHsKLQkubmFtZQkJCQk9CSJOUFMgVGltZXIwIiwKLQkuZmVhdHVyZXMJCQk9CUNMT0NLX0VW
+VF9GRUFUX09ORVNIT1QsCi0JLnJhdGluZwkJCQk9CTMwMCwKLQkuc2V0X25leHRfZXZlbnQJCQk9
+CW5wc19jbGtldmVudF9zZXRfbmV4dF9ldmVudCwKLQkuc2V0X3N0YXRlX29uZXNob3QJCT0JbnBz
+X2Nsa2V2ZW50X3NldF9zdGF0ZSwKLQkuc2V0X3N0YXRlX29uZXNob3Rfc3RvcHBlZAk9CW5wc19j
+bGtldmVudF9zZXRfc3RhdGUsCi0JLnNldF9zdGF0ZV9zaHV0ZG93bgkJPQlucHNfY2xrZXZlbnRf
+c2V0X3N0YXRlLAotCS50aWNrX3Jlc3VtZQkJCT0JbnBzX2Nsa2V2ZW50X3NldF9zdGF0ZSwKLX07
+Ci0KLXN0YXRpYyBpcnFyZXR1cm5fdCB0aW1lcl9pcnFfaGFuZGxlcihpbnQgaXJxLCB2b2lkICpk
+ZXZfaWQpCi17Ci0Jc3RydWN0IGNsb2NrX2V2ZW50X2RldmljZSAqZXZ0ID0gZGV2X2lkOwotCi0J
+bnBzX2Nsa2V2ZW50X3JtX3RocmVhZCgpOwotCWV2dC0+ZXZlbnRfaGFuZGxlcihldnQpOwotCi0J
+cmV0dXJuIElSUV9IQU5ETEVEOwotfQotCi1zdGF0aWMgaW50IG5wc190aW1lcl9zdGFydGluZ19j
+cHUodW5zaWduZWQgaW50IGNwdSkKLXsKLQlzdHJ1Y3QgY2xvY2tfZXZlbnRfZGV2aWNlICpldnQg
+PSB0aGlzX2NwdV9wdHIoJm5wc19jbG9ja2V2ZW50X2RldmljZSk7Ci0KLQlldnQtPmNwdW1hc2sg
+PSBjcHVtYXNrX29mKHNtcF9wcm9jZXNzb3JfaWQoKSk7Ci0KLQljbG9ja2V2ZW50c19jb25maWdf
+YW5kX3JlZ2lzdGVyKGV2dCwgbnBzX3RpbWVyMF9mcmVxLCAwLCBVTE9OR19NQVgpOwotCWVuYWJs
+ZV9wZXJjcHVfaXJxKG5wc190aW1lcjBfaXJxLCBJUlFfVFlQRV9OT05FKTsKLQotCXJldHVybiAw
+OwotfQotCi1zdGF0aWMgaW50IG5wc190aW1lcl9keWluZ19jcHUodW5zaWduZWQgaW50IGNwdSkK
+LXsKLQlkaXNhYmxlX3BlcmNwdV9pcnEobnBzX3RpbWVyMF9pcnEpOwotCXJldHVybiAwOwotfQot
+Ci1zdGF0aWMgaW50IF9faW5pdCBucHNfc2V0dXBfY2xvY2tldmVudChzdHJ1Y3QgZGV2aWNlX25v
+ZGUgKm5vZGUpCi17Ci0Jc3RydWN0IGNsayAqY2xrOwotCWludCByZXQ7Ci0KLQlucHNfdGltZXIw
+X2lycSA9IGlycV9vZl9wYXJzZV9hbmRfbWFwKG5vZGUsIDApOwotCWlmIChucHNfdGltZXIwX2ly
+cSA8PSAwKSB7Ci0JCXByX2VycigiY2xvY2tldmVudDogbWlzc2luZyBpcnFcbiIpOwotCQlyZXR1
+cm4gLUVJTlZBTDsKLQl9Ci0KLQlyZXQgPSBucHNfZ2V0X3RpbWVyX2Nsayhub2RlLCAmbnBzX3Rp
+bWVyMF9mcmVxLCAmY2xrKTsKLQlpZiAocmV0KQotCQlyZXR1cm4gcmV0OwotCi0JLyogTmVlZHMg
+YXByaW9yaSBpcnFfc2V0X3BlcmNwdV9kZXZpZCgpIGRvbmUgaW4gaW50YyBtYXAgZnVuY3Rpb24g
+Ki8KLQlyZXQgPSByZXF1ZXN0X3BlcmNwdV9pcnEobnBzX3RpbWVyMF9pcnEsIHRpbWVyX2lycV9o
+YW5kbGVyLAotCQkJCSAiVGltZXIwIChwZXItY3B1LXRpY2spIiwKLQkJCQkgJm5wc19jbG9ja2V2
+ZW50X2RldmljZSk7Ci0JaWYgKHJldCkgewotCQlwcl9lcnIoIkNvdWxkbid0IHJlcXVlc3QgaXJx
+XG4iKTsKLQkJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGNsayk7Ci0JCXJldHVybiByZXQ7Ci0JfQot
+Ci0JcmV0ID0gY3B1aHBfc2V0dXBfc3RhdGUoQ1BVSFBfQVBfQVJDX1RJTUVSX1NUQVJUSU5HLAot
+CQkJCSJjbG9ja2V2ZW50cy9ucHM6c3RhcnRpbmciLAotCQkJCW5wc190aW1lcl9zdGFydGluZ19j
+cHUsCi0JCQkJbnBzX3RpbWVyX2R5aW5nX2NwdSk7Ci0JaWYgKHJldCkgewotCQlwcl9lcnIoIkZh
+aWxlZCB0byBzZXR1cCBob3RwbHVnIHN0YXRlXG4iKTsKLQkJY2xrX2Rpc2FibGVfdW5wcmVwYXJl
+KGNsayk7Ci0JCWZyZWVfcGVyY3B1X2lycShucHNfdGltZXIwX2lycSwgJm5wc19jbG9ja2V2ZW50
+X2RldmljZSk7Ci0JCXJldHVybiByZXQ7Ci0JfQotCi0JcmV0dXJuIDA7Ci19Ci0KLVRJTUVSX09G
+X0RFQ0xBUkUoZXpjaGlwX25wczQwMF9jbGtfZXZ0LCAiZXpjaGlwLG5wczQwMC10aW1lcjAiLAot
+CQkgICAgICAgbnBzX3NldHVwX2Nsb2NrZXZlbnQpOwotI2VuZGlmIC8qIENPTkZJR19FWk5QU19N
+VE1fRVhUICovCmRpZmYgLS1naXQgYS9kcml2ZXJzL2Nsb2Nrc291cmNlL3RpbWVyLW9yaW9uLmMg
+Yi9kcml2ZXJzL2Nsb2Nrc291cmNlL3RpbWVyLW9yaW9uLmMKaW5kZXggZDAxZmY0MTgxODY3Li41
+MTAxZTgzNGQ3OGYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvY2xvY2tzb3VyY2UvdGltZXItb3Jpb24u
+YworKysgYi9kcml2ZXJzL2Nsb2Nrc291cmNlL3RpbWVyLW9yaW9uLmMKQEAgLTE0Myw3ICsxNDMs
+OCBAQCBzdGF0aWMgaW50IF9faW5pdCBvcmlvbl90aW1lcl9pbml0KHN0cnVjdCBkZXZpY2Vfbm9k
+ZSAqbnApCiAJaXJxID0gaXJxX29mX3BhcnNlX2FuZF9tYXAobnAsIDEpOwogCWlmIChpcnEgPD0g
+MCkgewogCQlwcl9lcnIoIiVwT0ZuOiB1bmFibGUgdG8gcGFyc2UgdGltZXIxIGlycVxuIiwgbnAp
+OwotCQlyZXR1cm4gLUVJTlZBTDsKKwkJcmV0ID0gLUVJTlZBTDsKKwkJZ290byBvdXRfdW5wcmVw
+X2NsazsKIAl9CiAKIAlyYXRlID0gY2xrX2dldF9yYXRlKGNsayk7CkBAIC0xNjAsNyArMTYxLDcg
+QEAgc3RhdGljIGludCBfX2luaXQgb3Jpb25fdGltZXJfaW5pdChzdHJ1Y3QgZGV2aWNlX25vZGUg
+Km5wKQogCQkJCSAgICBjbG9ja3NvdXJjZV9tbWlvX3JlYWRsX2Rvd24pOwogCWlmIChyZXQpIHsK
+IAkJcHJfZXJyKCJGYWlsZWQgdG8gaW5pdGlhbGl6ZSBtbWlvIHRpbWVyXG4iKTsKLQkJcmV0dXJu
+IHJldDsKKwkJZ290byBvdXRfdW5wcmVwX2NsazsKIAl9CiAKIAlzY2hlZF9jbG9ja19yZWdpc3Rl
+cihvcmlvbl9yZWFkX3NjaGVkX2Nsb2NrLCAzMiwgcmF0ZSk7CkBAIC0xNzAsNyArMTcxLDcgQEAg
+c3RhdGljIGludCBfX2luaXQgb3Jpb25fdGltZXJfaW5pdChzdHJ1Y3QgZGV2aWNlX25vZGUgKm5w
+KQogCQkJICAib3Jpb25fZXZlbnQiLCBOVUxMKTsKIAlpZiAocmV0KSB7CiAJCXByX2VycigiJXBP
+Rm46IHVuYWJsZSB0byBzZXR1cCBpcnFcbiIsIG5wKTsKLQkJcmV0dXJuIHJldDsKKwkJZ290byBv
+dXRfdW5wcmVwX2NsazsKIAl9CiAKIAl0aWNrc19wZXJfamlmZnkgPSAoY2xrX2dldF9yYXRlKGNs
+aykgKyBIWi8yKSAvIEhaOwpAQCAtMTgzLDUgKzE4NCw5IEBAIHN0YXRpYyBpbnQgX19pbml0IG9y
+aW9uX3RpbWVyX2luaXQoc3RydWN0IGRldmljZV9ub2RlICpucCkKIAlvcmlvbl9kZWxheV90aW1l
+cl9pbml0KHJhdGUpOwogCiAJcmV0dXJuIDA7CisKK291dF91bnByZXBfY2xrOgorCWNsa19kaXNh
+YmxlX3VucHJlcGFyZShjbGspOworCXJldHVybiByZXQ7CiB9CiBUSU1FUl9PRl9ERUNMQVJFKG9y
+aW9uX3RpbWVyLCAibWFydmVsbCxvcmlvbi10aW1lciIsIG9yaW9uX3RpbWVyX2luaXQpOwpkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9jbG9ja3NvdXJjZS90aW1lci1zcDgwNC5jIGIvZHJpdmVycy9jbG9j
+a3NvdXJjZS90aW1lci1zcDgwNC5jCmluZGV4IDZlOGFkNGE0ZWEzYy4uNDAxZDU5MmU4NWY1IDEw
+MDY0NAotLS0gYS9kcml2ZXJzL2Nsb2Nrc291cmNlL3RpbWVyLXNwODA0LmMKKysrIGIvZHJpdmVy
+cy9jbG9ja3NvdXJjZS90aW1lci1zcDgwNC5jCkBAIC01LDYgKzUsOSBAQAogICogIENvcHlyaWdo
+dCAoQykgMTk5OSAtIDIwMDMgQVJNIExpbWl0ZWQKICAqICBDb3B5cmlnaHQgKEMpIDIwMDAgRGVl
+cCBCbHVlIFNvbHV0aW9ucyBMdGQKICAqLworCisjZGVmaW5lIHByX2ZtdChmbXQpICAgIEtCVUlM
+RF9NT0ROQU1FICI6ICIgZm10CisKICNpbmNsdWRlIDxsaW51eC9jbGsuaD4KICNpbmNsdWRlIDxs
+aW51eC9jbG9ja3NvdXJjZS5oPgogI2luY2x1ZGUgPGxpbnV4L2Nsb2NrY2hpcHMuaD4KQEAgLTM0
+LDggKzM3LDcgQEAKICNkZWZpbmUgSElTSV9USU1FUl9CR0xPQUQJMHgyMAogI2RlZmluZSBISVNJ
+X1RJTUVSX0JHTE9BRF9ICTB4MjQKIAotCi1zdHJ1Y3Qgc3A4MDRfdGltZXIgX19pbml0ZGF0YSBh
+cm1fc3A4MDRfdGltZXIgPSB7CitzdGF0aWMgc3RydWN0IHNwODA0X3RpbWVyIGFybV9zcDgwNF90
+aW1lciBfX2luaXRkYXRhID0gewogCS5sb2FkCQk9IFRJTUVSX0xPQUQsCiAJLnZhbHVlCQk9IFRJ
+TUVSX1ZBTFVFLAogCS5jdHJsCQk9IFRJTUVSX0NUUkwsCkBAIC00NCw3ICs0Niw3IEBAIHN0cnVj
+dCBzcDgwNF90aW1lciBfX2luaXRkYXRhIGFybV9zcDgwNF90aW1lciA9IHsKIAkud2lkdGgJCT0g
+MzIsCiB9OwogCi1zdHJ1Y3Qgc3A4MDRfdGltZXIgX19pbml0ZGF0YSBoaXNpX3NwODA0X3RpbWVy
+ID0geworc3RhdGljIHN0cnVjdCBzcDgwNF90aW1lciBoaXNpX3NwODA0X3RpbWVyIF9faW5pdGRh
+dGEgPSB7CiAJLmxvYWQJCT0gSElTSV9USU1FUl9MT0FELAogCS5sb2FkX2gJCT0gSElTSV9USU1F
+Ul9MT0FEX0gsCiAJLnZhbHVlCQk9IEhJU0lfVElNRVJfVkFMVUUsCkBAIC01OSw0MCArNjEsMjMg
+QEAgc3RhdGljIHN0cnVjdCBzcDgwNF9jbGtldnQgc3A4MDRfY2xrZXZ0W05SX1RJTUVSU107CiAK
+IHN0YXRpYyBsb25nIF9faW5pdCBzcDgwNF9nZXRfY2xvY2tfcmF0ZShzdHJ1Y3QgY2xrICpjbGss
+IGNvbnN0IGNoYXIgKm5hbWUpCiB7Ci0JbG9uZyByYXRlOwogCWludCBlcnI7CiAKIAlpZiAoIWNs
+aykKIAkJY2xrID0gY2xrX2dldF9zeXMoInNwODA0IiwgbmFtZSk7CiAJaWYgKElTX0VSUihjbGsp
+KSB7Ci0JCXByX2Vycigic3A4MDQ6ICVzIGNsb2NrIG5vdCBmb3VuZDogJWxkXG4iLCBuYW1lLCBQ
+VFJfRVJSKGNsaykpOworCQlwcl9lcnIoIiVzIGNsb2NrIG5vdCBmb3VuZDogJWxkXG4iLCBuYW1l
+LCBQVFJfRVJSKGNsaykpOwogCQlyZXR1cm4gUFRSX0VSUihjbGspOwogCX0KIAotCWVyciA9IGNs
+a19wcmVwYXJlKGNsayk7Ci0JaWYgKGVycikgewotCQlwcl9lcnIoInNwODA0OiBjbG9jayBmYWls
+ZWQgdG8gcHJlcGFyZTogJWRcbiIsIGVycik7Ci0JCWNsa19wdXQoY2xrKTsKLQkJcmV0dXJuIGVy
+cjsKLQl9Ci0KLQllcnIgPSBjbGtfZW5hYmxlKGNsayk7CisJZXJyID0gY2xrX3ByZXBhcmVfZW5h
+YmxlKGNsayk7CiAJaWYgKGVycikgewotCQlwcl9lcnIoInNwODA0OiBjbG9jayBmYWlsZWQgdG8g
+ZW5hYmxlOiAlZFxuIiwgZXJyKTsKLQkJY2xrX3VucHJlcGFyZShjbGspOworCQlwcl9lcnIoImNs
+b2NrIGZhaWxlZCB0byBlbmFibGU6ICVkXG4iLCBlcnIpOwogCQljbGtfcHV0KGNsayk7CiAJCXJl
+dHVybiBlcnI7CiAJfQogCi0JcmF0ZSA9IGNsa19nZXRfcmF0ZShjbGspOwotCWlmIChyYXRlIDwg
+MCkgewotCQlwcl9lcnIoInNwODA0OiBjbG9jayBmYWlsZWQgdG8gZ2V0IHJhdGU6ICVsZFxuIiwg
+cmF0ZSk7Ci0JCWNsa19kaXNhYmxlKGNsayk7Ci0JCWNsa191bnByZXBhcmUoY2xrKTsKLQkJY2xr
+X3B1dChjbGspOwotCX0KLQotCXJldHVybiByYXRlOworCXJldHVybiBjbGtfZ2V0X3JhdGUoY2xr
+KTsKIH0KIAogc3RhdGljIHN0cnVjdCBzcDgwNF9jbGtldnQgKiBfX2luaXQgc3A4MDRfY2xrZXZ0
+X2dldCh2b2lkIF9faW9tZW0gKmJhc2UpCkBAIC0xMTcsMTAgKzEwMiwxMCBAQCBzdGF0aWMgdTY0
+IG5vdHJhY2Ugc3A4MDRfcmVhZCh2b2lkKQogCXJldHVybiB+cmVhZGxfcmVsYXhlZChzY2hlZF9j
+bGtldnQtPnZhbHVlKTsKIH0KIAotaW50IF9faW5pdCBzcDgwNF9jbG9ja3NvdXJjZV9hbmRfc2No
+ZWRfY2xvY2tfaW5pdCh2b2lkIF9faW9tZW0gKmJhc2UsCi0JCQkJCQkgIGNvbnN0IGNoYXIgKm5h
+bWUsCi0JCQkJCQkgIHN0cnVjdCBjbGsgKmNsaywKLQkJCQkJCSAgaW50IHVzZV9zY2hlZF9jbG9j
+aykKK3N0YXRpYyBpbnQgX19pbml0IHNwODA0X2Nsb2Nrc291cmNlX2FuZF9zY2hlZF9jbG9ja19p
+bml0KHZvaWQgX19pb21lbSAqYmFzZSwKKwkJCQkJCQkgY29uc3QgY2hhciAqbmFtZSwKKwkJCQkJ
+CQkgc3RydWN0IGNsayAqY2xrLAorCQkJCQkJCSBpbnQgdXNlX3NjaGVkX2Nsb2NrKQogewogCWxv
+bmcgcmF0ZTsKIAlzdHJ1Y3Qgc3A4MDRfY2xrZXZ0ICpjbGtldnQ7CkBAIC0yMTYsOCArMjAxLDgg
+QEAgc3RhdGljIHN0cnVjdCBjbG9ja19ldmVudF9kZXZpY2Ugc3A4MDRfY2xvY2tldmVudCA9IHsK
+IAkucmF0aW5nCQkJPSAzMDAsCiB9OwogCi1pbnQgX19pbml0IHNwODA0X2Nsb2NrZXZlbnRzX2lu
+aXQodm9pZCBfX2lvbWVtICpiYXNlLCB1bnNpZ25lZCBpbnQgaXJxLAotCQkJCSAgc3RydWN0IGNs
+ayAqY2xrLCBjb25zdCBjaGFyICpuYW1lKQorc3RhdGljIGludCBfX2luaXQgc3A4MDRfY2xvY2tl
+dmVudHNfaW5pdCh2b2lkIF9faW9tZW0gKmJhc2UsIHVuc2lnbmVkIGludCBpcnEsCisJCQkJCSBz
+dHJ1Y3QgY2xrICpjbGssIGNvbnN0IGNoYXIgKm5hbWUpCiB7CiAJc3RydWN0IGNsb2NrX2V2ZW50
+X2RldmljZSAqZXZ0ID0gJnNwODA0X2Nsb2NrZXZlbnQ7CiAJbG9uZyByYXRlOwpAQCAtMjM2LDcg
+KzIyMSw3IEBAIGludCBfX2luaXQgc3A4MDRfY2xvY2tldmVudHNfaW5pdCh2b2lkIF9faW9tZW0g
+KmJhc2UsIHVuc2lnbmVkIGludCBpcnEsCiAKIAlpZiAocmVxdWVzdF9pcnEoaXJxLCBzcDgwNF90
+aW1lcl9pbnRlcnJ1cHQsIElSUUZfVElNRVIgfCBJUlFGX0lSUVBPTEwsCiAJCQkidGltZXIiLCAm
+c3A4MDRfY2xvY2tldmVudCkpCi0JCXByX2VycigiJXM6IHJlcXVlc3RfaXJxKCkgZmFpbGVkXG4i
+LCAidGltZXIiKTsKKwkJcHJfZXJyKCJyZXF1ZXN0X2lycSgpIGZhaWxlZFxuIik7CiAJY2xvY2tl
+dmVudHNfY29uZmlnX2FuZF9yZWdpc3RlcihldnQsIHJhdGUsIDB4ZiwgMHhmZmZmZmZmZik7CiAK
+IAlyZXR1cm4gMDsKQEAgLTI5OCw3ICsyODMsNyBAQCBzdGF0aWMgaW50IF9faW5pdCBzcDgwNF9v
+Zl9pbml0KHN0cnVjdCBkZXZpY2Vfbm9kZSAqbnAsIHN0cnVjdCBzcDgwNF90aW1lciAqdGltZQog
+CWlmIChvZl9jbGtfZ2V0X3BhcmVudF9jb3VudChucCkgPT0gMykgewogCQljbGsyID0gb2ZfY2xr
+X2dldChucCwgMSk7CiAJCWlmIChJU19FUlIoY2xrMikpIHsKLQkJCXByX2Vycigic3A4MDQ6ICVw
+T0ZuIGNsb2NrIG5vdCBmb3VuZDogJWRcbiIsIG5wLAorCQkJcHJfZXJyKCIlcE9GbiBjbG9jayBu
+b3QgZm91bmQ6ICVkXG4iLCBucCwKIAkJCQkoaW50KVBUUl9FUlIoY2xrMikpOwogCQkJY2xrMiA9
+IE5VTEw7CiAJCX0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvcnRjL01ha2VmaWxlIGIvZHJpdmVycy9y
+dGMvTWFrZWZpbGUKaW5kZXggYmZiNTc0NjQxMThkLi5iYjhmMzE5YjA5ZmIgMTAwNjQ0Ci0tLSBh
+L2RyaXZlcnMvcnRjL01ha2VmaWxlCisrKyBiL2RyaXZlcnMvcnRjL01ha2VmaWxlCkBAIC02LDcg
+KzYsNiBAQAogY2NmbGFncy0kKENPTkZJR19SVENfREVCVUcpCTo9IC1EREVCVUcKIAogb2JqLSQo
+Q09ORklHX1JUQ19MSUIpCQkrPSBsaWIubwotb2JqLSQoQ09ORklHX1JUQ19TWVNUT0hDKQkrPSBz
+eXN0b2hjLm8KIG9iai0kKENPTkZJR19SVENfQ0xBU1MpCQkrPSBydGMtY29yZS5vCiBvYmotJChD
+T05GSUdfUlRDX01DMTQ2ODE4X0xJQikJKz0gcnRjLW1jMTQ2ODE4LWxpYi5vCiBydGMtY29yZS15
+CQkJOj0gY2xhc3MubyBpbnRlcmZhY2UubwpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ydGMvY2xhc3Mu
+YyBiL2RyaXZlcnMvcnRjL2NsYXNzLmMKaW5kZXggN2M4OGQxOTBjNTFmLi41ODU1YWEyZWVmNjIg
+MTAwNjQ0Ci0tLSBhL2RyaXZlcnMvcnRjL2NsYXNzLmMKKysrIGIvZHJpdmVycy9ydGMvY2xhc3Mu
+YwpAQCAtMjAwLDggKzIwMCwxMyBAQCBzdGF0aWMgc3RydWN0IHJ0Y19kZXZpY2UgKnJ0Y19hbGxv
+Y2F0ZV9kZXZpY2Uodm9pZCkKIAogCWRldmljZV9pbml0aWFsaXplKCZydGMtPmRldik7CiAKLQkv
+KiBEcml2ZXJzIGNhbiByZXZpc2UgdGhpcyBkZWZhdWx0IGFmdGVyIGFsbG9jYXRpbmcgdGhlIGRl
+dmljZS4gKi8KLQlydGMtPnNldF9vZmZzZXRfbnNlYyA9ICBOU0VDX1BFUl9TRUMgLyAyOworCS8q
+CisJICogRHJpdmVycyBjYW4gcmV2aXNlIHRoaXMgZGVmYXVsdCBhZnRlciBhbGxvY2F0aW5nIHRo
+ZSBkZXZpY2UuCisJICogVGhlIGRlZmF1bHQgaXMgd2hhdCBtb3N0IFJUQ3MgZG86IEluY3JlbWVu
+dCBzZWNvbmRzIGV4YWN0bHkgb25lCisJICogc2Vjb25kIGFmdGVyIHRoZSB3cml0ZSBoYXBwZW5l
+ZC4gVGhpcyBhZGRzIGEgZGVmYXVsdCB0cmFuc3BvcnQKKwkgKiB0aW1lIG9mIDVtcyB3aGljaCBp
+cyBhdCBsZWFzdCBoYWxmd2F5cyBjbG9zZSB0byByZWFsaXR5LgorCSAqLworCXJ0Yy0+c2V0X29m
+ZnNldF9uc2VjID0gTlNFQ19QRVJfU0VDICsgNSAqIE5TRUNfUEVSX01TRUM7CiAKIAlydGMtPmly
+cV9mcmVxID0gMTsKIAlydGMtPm1heF91c2VyX2ZyZXEgPSA2NDsKZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvcnRjL3J0Yy1jbW9zLmMgYi9kcml2ZXJzL3J0Yy9ydGMtY21vcy5jCmluZGV4IGM2MzMzMTlj
+ZGI5MS4uYzViY2QyYWRjOWZlIDEwMDY0NAotLS0gYS9kcml2ZXJzL3J0Yy9ydGMtY21vcy5jCisr
+KyBiL2RyaXZlcnMvcnRjL3J0Yy1jbW9zLmMKQEAgLTg2OCw2ICs4NjgsOSBAQCBjbW9zX2RvX3By
+b2JlKHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IHJlc291cmNlICpwb3J0cywgaW50IHJ0Y19p
+cnEpCiAJaWYgKHJldHZhbCkKIAkJZ290byBjbGVhbnVwMjsKIAorCS8qIFNldCB0aGUgc3luYyBv
+ZmZzZXQgZm9yIHRoZSBwZXJpb2RpYyAxMW1pbiB1cGRhdGUgY29ycmVjdCAqLworCWNtb3NfcnRj
+LnJ0Yy0+c2V0X29mZnNldF9uc2VjID0gTlNFQ19QRVJfU0VDIC8gMjsKKwogCS8qIGV4cG9ydCBh
+dCBsZWFzdCB0aGUgZmlyc3QgYmxvY2sgb2YgTlZSQU0gKi8KIAludm1lbV9jZmcuc2l6ZSA9IGFk
+ZHJlc3Nfc3BhY2UgLSBOVlJBTV9PRkZTRVQ7CiAJaWYgKHJ0Y19udm1lbV9yZWdpc3RlcihjbW9z
+X3J0Yy5ydGMsICZudm1lbV9jZmcpKQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ydGMvcnRjLW1jMTQ2
+ODE4LWxpYi5jIGIvZHJpdmVycy9ydGMvcnRjLW1jMTQ2ODE4LWxpYi5jCmluZGV4IDJlY2Q4NzUy
+YjA4OC4uOTcyYTViOWE2MjlkIDEwMDY0NAotLS0gYS9kcml2ZXJzL3J0Yy9ydGMtbWMxNDY4MTgt
+bGliLmMKKysrIGIvZHJpdmVycy9ydGMvcnRjLW1jMTQ2ODE4LWxpYi5jCkBAIC04LDQxICs4LDQx
+IEBACiAjaW5jbHVkZSA8bGludXgvYWNwaS5oPgogI2VuZGlmCiAKLS8qCi0gKiBSZXR1cm5zIHRy
+dWUgaWYgYSBjbG9jayB1cGRhdGUgaXMgaW4gcHJvZ3Jlc3MKLSAqLwotc3RhdGljIGlubGluZSB1
+bnNpZ25lZCBjaGFyIG1jMTQ2ODE4X2lzX3VwZGF0aW5nKHZvaWQpCi17Ci0JdW5zaWduZWQgY2hh
+ciB1aXA7Ci0JdW5zaWduZWQgbG9uZyBmbGFnczsKLQotCXNwaW5fbG9ja19pcnFzYXZlKCZydGNf
+bG9jaywgZmxhZ3MpOwotCXVpcCA9IChDTU9TX1JFQUQoUlRDX0ZSRVFfU0VMRUNUKSAmIFJUQ19V
+SVApOwotCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJnJ0Y19sb2NrLCBmbGFncyk7Ci0JcmV0dXJu
+IHVpcDsKLX0KLQogdW5zaWduZWQgaW50IG1jMTQ2ODE4X2dldF90aW1lKHN0cnVjdCBydGNfdGlt
+ZSAqdGltZSkKIHsKIAl1bnNpZ25lZCBjaGFyIGN0cmw7CiAJdW5zaWduZWQgbG9uZyBmbGFnczsK
+IAl1bnNpZ25lZCBjaGFyIGNlbnR1cnkgPSAwOworCWJvb2wgcmV0cnk7CiAKICNpZmRlZiBDT05G
+SUdfTUFDSF9ERUNTVEFUSU9OCiAJdW5zaWduZWQgaW50IHJlYWxfeWVhcjsKICNlbmRpZgogCith
+Z2FpbjoKKwlzcGluX2xvY2tfaXJxc2F2ZSgmcnRjX2xvY2ssIGZsYWdzKTsKIAkvKgotCSAqIHJl
+YWQgUlRDIG9uY2UgYW55IHVwZGF0ZSBpbiBwcm9ncmVzcyBpcyBkb25lLiBUaGUgdXBkYXRlCi0J
+ICogY2FuIHRha2UganVzdCBvdmVyIDJtcy4gV2Ugd2FpdCAyMG1zLiBUaGVyZSBpcyBubyBuZWVk
+IHRvCi0JICogdG8gcG9sbC13YWl0ICh1cCB0byAxcyAtIGVlY2NjaCkgZm9yIHRoZSBmYWxsaW5n
+IGVkZ2Ugb2YgUlRDX1VJUC4KLQkgKiBJZiB5b3UgbmVlZCB0byBrbm93ICpleGFjdGx5KiB3aGVu
+IGEgc2Vjb25kIGhhcyBzdGFydGVkLCBlbmFibGUKLQkgKiBwZXJpb2RpYyB1cGRhdGUgY29tcGxl
+dGUgaW50ZXJydXB0cywgKHZpYSBpb2N0bCkgYW5kIHRoZW4KLQkgKiBpbW1lZGlhdGVseSByZWFk
+IC9kZXYvcnRjIHdoaWNoIHdpbGwgYmxvY2sgdW50aWwgeW91IGdldCB0aGUgSVJRLgotCSAqIE9u
+Y2UgdGhlIHJlYWQgY2xlYXJzLCByZWFkIHRoZSBSVEMgdGltZSAoYWdhaW4gdmlhIGlvY3RsKS4g
+RWFzeS4KKwkgKiBDaGVjayB3aGV0aGVyIHRoZXJlIGlzIGFuIHVwZGF0ZSBpbiBwcm9ncmVzcyBk
+dXJpbmcgd2hpY2ggdGhlCisJICogcmVhZG91dCBpcyB1bnNwZWNpZmllZC4gVGhlIG1heGltdW0g
+dXBkYXRlIHRpbWUgaXMgfjJtcy4gUG9sbAorCSAqIGV2ZXJ5IG1zZWMgZm9yIGNvbXBsZXRpb24u
+CisJICoKKwkgKiBTdG9yZSB0aGUgc2Vjb25kIHZhbHVlIGJlZm9yZSBjaGVja2luZyBVSVAgc28g
+YSBsb25nIGxhc3RpbmcgTk1JCisJICogd2hpY2ggaGFwcGVucyB0byBoaXQgYWZ0ZXIgdGhlIFVJ
+UCBjaGVjayBjYW5ub3QgbWFrZSBhbiB1cGRhdGUKKwkgKiBjeWNsZSBpbnZpc2libGUuCiAJICov
+Ci0JaWYgKG1jMTQ2ODE4X2lzX3VwZGF0aW5nKCkpCi0JCW1kZWxheSgyMCk7CisJdGltZS0+dG1f
+c2VjID0gQ01PU19SRUFEKFJUQ19TRUNPTkRTKTsKKworCWlmIChDTU9TX1JFQUQoUlRDX0ZSRVFf
+U0VMRUNUKSAmIFJUQ19VSVApIHsKKwkJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmcnRjX2xvY2ss
+IGZsYWdzKTsKKwkJbWRlbGF5KDEpOworCQlnb3RvIGFnYWluOworCX0KKworCS8qIFJldmFsaWRh
+dGUgdGhlIGFib3ZlIHJlYWRvdXQgKi8KKwlpZiAodGltZS0+dG1fc2VjICE9IENNT1NfUkVBRChS
+VENfU0VDT05EUykpIHsKKwkJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmcnRjX2xvY2ssIGZsYWdz
+KTsKKwkJZ290byBhZ2FpbjsKKwl9CiAKIAkvKgogCSAqIE9ubHkgdGhlIHZhbHVlcyB0aGF0IHdl
+IHJlYWQgZnJvbSB0aGUgUlRDIGFyZSBzZXQuIFdlIGxlYXZlCkBAIC01MCw4ICs1MCw2IEBAIHVu
+c2lnbmVkIGludCBtYzE0NjgxOF9nZXRfdGltZShzdHJ1Y3QgcnRjX3RpbWUgKnRpbWUpCiAJICog
+UlRDIGhhcyBSVENfREFZX09GX1dFRUssIHdlIGlnbm9yZSBpdCwgYXMgaXQgaXMgb25seSB1cGRh
+dGVkCiAJICogYnkgdGhlIFJUQyB3aGVuIGluaXRpYWxseSBzZXQgdG8gYSBub24temVybyB2YWx1
+ZS4KIAkgKi8KLQlzcGluX2xvY2tfaXJxc2F2ZSgmcnRjX2xvY2ssIGZsYWdzKTsKLQl0aW1lLT50
+bV9zZWMgPSBDTU9TX1JFQUQoUlRDX1NFQ09ORFMpOwogCXRpbWUtPnRtX21pbiA9IENNT1NfUkVB
+RChSVENfTUlOVVRFUyk7CiAJdGltZS0+dG1faG91ciA9IENNT1NfUkVBRChSVENfSE9VUlMpOwog
+CXRpbWUtPnRtX21kYXkgPSBDTU9TX1JFQUQoUlRDX0RBWV9PRl9NT05USCk7CkBAIC02Niw4ICs2
+NCwyNCBAQCB1bnNpZ25lZCBpbnQgbWMxNDY4MThfZ2V0X3RpbWUoc3RydWN0IHJ0Y190aW1lICp0
+aW1lKQogCQljZW50dXJ5ID0gQ01PU19SRUFEKGFjcGlfZ2JsX0ZBRFQuY2VudHVyeSk7CiAjZW5k
+aWYKIAljdHJsID0gQ01PU19SRUFEKFJUQ19DT05UUk9MKTsKKwkvKgorCSAqIENoZWNrIGZvciB0
+aGUgVUlQIGJpdCBhZ2Fpbi4gSWYgaXQgaXMgc2V0IG5vdyB0aGVuCisJICogdGhlIGFib3ZlIHZh
+bHVlcyBtYXkgY29udGFpbiBnYXJiYWdlLgorCSAqLworCXJldHJ5ID0gQ01PU19SRUFEKFJUQ19G
+UkVRX1NFTEVDVCkgJiBSVENfVUlQOworCS8qCisJICogQSBOTUkgbWlnaHQgaGF2ZSBpbnRlcnJ1
+cHRlZCB0aGUgYWJvdmUgc2VxdWVuY2Ugc28gY2hlY2sgd2hldGhlcgorCSAqIHRoZSBzZWNvbmRz
+IHZhbHVlIGhhcyBjaGFuZ2VkIHdoaWNoIGluZGljYXRlcyB0aGF0IHRoZSBOTUkgdG9vaworCSAq
+IGxvbmdlciB0aGFuIHRoZSBVSVAgYml0IHdhcyBzZXQuIFVubGlrZWx5LCBidXQgcG9zc2libGUg
+YW5kCisJICogdGhlcmUgaXMgYWxzbyB2aXJ0Li4uCisJICovCisJcmV0cnkgfD0gdGltZS0+dG1f
+c2VjICE9IENNT1NfUkVBRChSVENfU0VDT05EUyk7CisKIAlzcGluX3VubG9ja19pcnFyZXN0b3Jl
+KCZydGNfbG9jaywgZmxhZ3MpOwogCisJaWYgKHJldHJ5KQorCQlnb3RvIGFnYWluOworCiAJaWYg
+KCEoY3RybCAmIFJUQ19ETV9CSU5BUlkpIHx8IFJUQ19BTFdBWVNfQkNEKQogCXsKIAkJdGltZS0+
+dG1fc2VjID0gYmNkMmJpbih0aW1lLT50bV9zZWMpOwpAQCAtMTIxLDcgKzEzNSw2IEBAIGludCBt
+YzE0NjgxOF9zZXRfdGltZShzdHJ1Y3QgcnRjX3RpbWUgKnRpbWUpCiAJaWYgKHlycyA+IDI1NSkJ
+LyogVGhleSBhcmUgdW5zaWduZWQgKi8KIAkJcmV0dXJuIC1FSU5WQUw7CiAKLQlzcGluX2xvY2tf
+aXJxc2F2ZSgmcnRjX2xvY2ssIGZsYWdzKTsKICNpZmRlZiBDT05GSUdfTUFDSF9ERUNTVEFUSU9O
+CiAJcmVhbF95cnMgPSB5cnM7CiAJbGVhcF95ciA9ICgoISgoeXJzICsgMTkwMCkgJSA0KSAmJiAo
+KHlycyArIDE5MDApICUgMTAwKSkgfHwKQEAgLTE1MCwxMCArMTYzLDggQEAgaW50IG1jMTQ2ODE4
+X3NldF90aW1lKHN0cnVjdCBydGNfdGltZSAqdGltZSkKIAkvKiBUaGVzZSBsaW1pdHMgYW5kIGFk
+anVzdG1lbnRzIGFyZSBpbmRlcGVuZGVudCBvZgogCSAqIHdoZXRoZXIgdGhlIGNoaXAgaXMgaW4g
+YmluYXJ5IG1vZGUgb3Igbm90LgogCSAqLwotCWlmICh5cnMgPiAxNjkpIHsKLQkJc3Bpbl91bmxv
+Y2tfaXJxcmVzdG9yZSgmcnRjX2xvY2ssIGZsYWdzKTsKKwlpZiAoeXJzID4gMTY5KQogCQlyZXR1
+cm4gLUVJTlZBTDsKLQl9CiAKIAlpZiAoeXJzID49IDEwMCkKIAkJeXJzIC09IDEwMDsKQEAgLTE2
+OSw2ICsxODAsNyBAQCBpbnQgbWMxNDY4MThfc2V0X3RpbWUoc3RydWN0IHJ0Y190aW1lICp0aW1l
+KQogCQljZW50dXJ5ID0gYmluMmJjZChjZW50dXJ5KTsKIAl9CiAKKwlzcGluX2xvY2tfaXJxc2F2
+ZSgmcnRjX2xvY2ssIGZsYWdzKTsKIAlzYXZlX2NvbnRyb2wgPSBDTU9TX1JFQUQoUlRDX0NPTlRS
+T0wpOwogCUNNT1NfV1JJVEUoKHNhdmVfY29udHJvbHxSVENfU0VUKSwgUlRDX0NPTlRST0wpOwog
+CXNhdmVfZnJlcV9zZWxlY3QgPSBDTU9TX1JFQUQoUlRDX0ZSRVFfU0VMRUNUKTsKZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvcnRjL3N5c3RvaGMuYyBiL2RyaXZlcnMvcnRjL3N5c3RvaGMuYwpkZWxldGVk
+IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggOGI3MGYwNTIwZTEzLi4wMDAwMDAwMDAwMDAKLS0tIGEv
+ZHJpdmVycy9ydGMvc3lzdG9oYy5jCisrKyAvZGV2L251bGwKQEAgLTEsNjEgKzAsMCBAQAotLy8g
+U1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKLSNpbmNsdWRlIDxsaW51eC9ydGMuaD4K
+LSNpbmNsdWRlIDxsaW51eC90aW1lLmg+Ci0KLS8qKgotICogcnRjX3NldF9udHBfdGltZSAtIFNh
+dmUgTlRQIHN5bmNocm9uaXplZCB0aW1lIHRvIHRoZSBSVEMKLSAqIEBub3c6IEN1cnJlbnQgdGlt
+ZSBvZiBkYXkKLSAqIEB0YXJnZXRfbnNlYzogcG9pbnRlciBmb3IgZGVzaXJlZCBub3ctPnR2X25z
+ZWMgdmFsdWUKLSAqCi0gKiBSZXBsYWNlbWVudCBmb3IgdGhlIE5UUCBwbGF0Zm9ybSBmdW5jdGlv
+biB1cGRhdGVfcGVyc2lzdGVudF9jbG9jazY0Ci0gKiB0aGF0IHN0b3JlcyB0aW1lIGZvciBsYXRl
+ciByZXRyaWV2YWwgYnkgcnRjX2hjdG9zeXMuCi0gKgotICogUmV0dXJucyAwIG9uIHN1Y2Nlc3Nm
+dWwgUlRDIHVwZGF0ZSwgLUVOT0RFViBpZiBhIFJUQyB1cGRhdGUgaXMgbm90Ci0gKiBwb3NzaWJs
+ZSBhdCBhbGwsIGFuZCB2YXJpb3VzIG90aGVyIC1lcnJubyBmb3Igc3BlY2lmaWMgdGVtcG9yYXJ5
+IGZhaWx1cmUKLSAqIGNhc2VzLgotICoKLSAqIC1FUFJPVE8gaXMgcmV0dXJuZWQgaWYgbm93LnR2
+X25zZWMgaXMgbm90IGNsb3NlIGVub3VnaCB0byAqdGFyZ2V0X25zZWMuCi0gKgotICogSWYgdGVt
+cG9yYXJ5IGZhaWx1cmUgaXMgaW5kaWNhdGVkIHRoZSBjYWxsZXIgc2hvdWxkIHRyeSBhZ2FpbiAn
+c29vbicKLSAqLwotaW50IHJ0Y19zZXRfbnRwX3RpbWUoc3RydWN0IHRpbWVzcGVjNjQgbm93LCB1
+bnNpZ25lZCBsb25nICp0YXJnZXRfbnNlYykKLXsKLQlzdHJ1Y3QgcnRjX2RldmljZSAqcnRjOwot
+CXN0cnVjdCBydGNfdGltZSB0bTsKLQlzdHJ1Y3QgdGltZXNwZWM2NCB0b19zZXQ7Ci0JaW50IGVy
+ciA9IC1FTk9ERVY7Ci0JYm9vbCBvazsKLQotCXJ0YyA9IHJ0Y19jbGFzc19vcGVuKENPTkZJR19S
+VENfU1lTVE9IQ19ERVZJQ0UpOwotCWlmICghcnRjKQotCQlnb3RvIG91dF9lcnI7Ci0KLQlpZiAo
+IXJ0Yy0+b3BzIHx8ICFydGMtPm9wcy0+c2V0X3RpbWUpCi0JCWdvdG8gb3V0X2Nsb3NlOwotCi0J
+LyogQ29tcHV0ZSB0aGUgdmFsdWUgb2YgdHZfbnNlYyB3ZSByZXF1aXJlIHRoZSBjYWxsZXIgdG8g
+c3VwcGx5IGluCi0JICogbm93LnR2X25zZWMuICBUaGlzIGlzIHRoZSB2YWx1ZSBzdWNoIHRoYXQg
+KG5vdyArCi0JICogc2V0X29mZnNldF9uc2VjKS50dl9uc2VjID09IDAuCi0JICovCi0Jc2V0X25v
+cm1hbGl6ZWRfdGltZXNwZWM2NCgmdG9fc2V0LCAwLCAtcnRjLT5zZXRfb2Zmc2V0X25zZWMpOwot
+CSp0YXJnZXRfbnNlYyA9IHRvX3NldC50dl9uc2VjOwotCi0JLyogVGhlIG50cCBjb2RlIG11c3Qg
+Y2FsbCB0aGlzIHdpdGggdGhlIGNvcnJlY3QgdmFsdWUgaW4gdHZfbnNlYywgaWYKLQkgKiBpdCBk
+b2VzIG5vdCB3ZSB1cGRhdGUgdGFyZ2V0X25zZWMgYW5kIHJldHVybiBFUFJPVE8gdG8gbWFrZSB0
+aGUgbnRwCi0JICogY29kZSB0cnkgYWdhaW4gbGF0ZXIuCi0JICovCi0Jb2sgPSBydGNfdHZfbnNl
+Y19vayhydGMtPnNldF9vZmZzZXRfbnNlYywgJnRvX3NldCwgJm5vdyk7Ci0JaWYgKCFvaykgewot
+CQllcnIgPSAtRVBST1RPOwotCQlnb3RvIG91dF9jbG9zZTsKLQl9Ci0KLQlydGNfdGltZTY0X3Rv
+X3RtKHRvX3NldC50dl9zZWMsICZ0bSk7Ci0KLQllcnIgPSBydGNfc2V0X3RpbWUocnRjLCAmdG0p
+OwotCi1vdXRfY2xvc2U6Ci0JcnRjX2NsYXNzX2Nsb3NlKHJ0Yyk7Ci1vdXRfZXJyOgotCXJldHVy
+biBlcnI7Ci19CmRpZmYgLS1naXQgYS9pbmNsdWRlL2R0LWJpbmRpbmdzL2Nsb2NrL2luZ2VuaWMs
+c3lzb3N0LmggYi9pbmNsdWRlL2R0LWJpbmRpbmdzL2Nsb2NrL2luZ2VuaWMsc3lzb3N0LmgKaW5k
+ZXggOWFjODhlOTBiYWJmLi4wNjM3OTFiMDFhYjMgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvZHQtYmlu
+ZGluZ3MvY2xvY2svaW5nZW5pYyxzeXNvc3QuaAorKysgYi9pbmNsdWRlL2R0LWJpbmRpbmdzL2Ns
+b2NrL2luZ2VuaWMsc3lzb3N0LmgKQEAgLTEsMTIgKzEsMTYgQEAKIC8qIFNQRFgtTGljZW5zZS1J
+ZGVudGlmaWVyOiBHUEwtMi4wICovCiAvKgotICogVGhpcyBoZWFkZXIgcHJvdmlkZXMgY2xvY2sg
+bnVtYmVycyBmb3IgdGhlIGluZ2VuaWMsdGN1IERUIGJpbmRpbmcuCisgKiBUaGlzIGhlYWRlciBw
+cm92aWRlcyBjbG9jayBudW1iZXJzIGZvciB0aGUgSW5nZW5pYyBPU1QgRFQgYmluZGluZy4KICAq
+LwogCiAjaWZuZGVmIF9fRFRfQklORElOR1NfQ0xPQ0tfSU5HRU5JQ19PU1RfSF9fCiAjZGVmaW5l
+IF9fRFRfQklORElOR1NfQ0xPQ0tfSU5HRU5JQ19PU1RfSF9fCiAKLSNkZWZpbmUgT1NUX0NMS19Q
+RVJDUFVfVElNRVIJMAotI2RlZmluZSBPU1RfQ0xLX0dMT0JBTF9USU1FUgkxCisjZGVmaW5lIE9T
+VF9DTEtfUEVSQ1BVX1RJTUVSCTEKKyNkZWZpbmUgT1NUX0NMS19HTE9CQUxfVElNRVIJMAorI2Rl
+ZmluZSBPU1RfQ0xLX1BFUkNQVV9USU1FUjAJMQorI2RlZmluZSBPU1RfQ0xLX1BFUkNQVV9USU1F
+UjEJMgorI2RlZmluZSBPU1RfQ0xLX1BFUkNQVV9USU1FUjIJMworI2RlZmluZSBPU1RfQ0xLX1BF
+UkNQVV9USU1FUjMJNAogCiAjZW5kaWYgLyogX19EVF9CSU5ESU5HU19DTE9DS19JTkdFTklDX09T
+VF9IX18gKi8KZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvaHJ0aW1lci5oIGIvaW5jbHVkZS9s
+aW51eC9ocnRpbWVyLmgKaW5kZXggMTA3Y2VkZDcwMTlhLi5iYjVlN2IwYTQyNzQgMTAwNjQ0Ci0t
+LSBhL2luY2x1ZGUvbGludXgvaHJ0aW1lci5oCisrKyBiL2luY2x1ZGUvbGludXgvaHJ0aW1lci5o
+CkBAIC00NDcsNiArNDQ3LDEwIEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBocnRpbWVyX3Jlc3RhcnQo
+c3RydWN0IGhydGltZXIgKnRpbWVyKQogLyogUXVlcnkgdGltZXJzOiAqLwogZXh0ZXJuIGt0aW1l
+X3QgX19ocnRpbWVyX2dldF9yZW1haW5pbmcoY29uc3Qgc3RydWN0IGhydGltZXIgKnRpbWVyLCBi
+b29sIGFkanVzdCk7CiAKKy8qKgorICogaHJ0aW1lcl9nZXRfcmVtYWluaW5nIC0gZ2V0IHJlbWFp
+bmluZyB0aW1lIGZvciB0aGUgdGltZXIKKyAqIEB0aW1lcjoJdGhlIHRpbWVyIHRvIHJlYWQKKyAq
+Lwogc3RhdGljIGlubGluZSBrdGltZV90IGhydGltZXJfZ2V0X3JlbWFpbmluZyhjb25zdCBzdHJ1
+Y3QgaHJ0aW1lciAqdGltZXIpCiB7CiAJcmV0dXJuIF9faHJ0aW1lcl9nZXRfcmVtYWluaW5nKHRp
+bWVyLCBmYWxzZSk7CkBAIC00NTgsNyArNDYyLDcgQEAgZXh0ZXJuIHU2NCBocnRpbWVyX25leHRf
+ZXZlbnRfd2l0aG91dChjb25zdCBzdHJ1Y3QgaHJ0aW1lciAqZXhjbHVkZSk7CiBleHRlcm4gYm9v
+bCBocnRpbWVyX2FjdGl2ZShjb25zdCBzdHJ1Y3QgaHJ0aW1lciAqdGltZXIpOwogCiAvKioKLSAq
+IGhydGltZXJfaXNfcXVldWVkID0gY2hlY2ssIHdoZXRoZXIgdGhlIHRpbWVyIGlzIG9uIG9uZSBv
+ZiB0aGUgcXVldWVzCisgKiBocnRpbWVyX2lzX3F1ZXVlZCAtIGNoZWNrLCB3aGV0aGVyIHRoZSB0
+aW1lciBpcyBvbiBvbmUgb2YgdGhlIHF1ZXVlcwogICogQHRpbWVyOglUaW1lciB0byBjaGVjawog
+ICoKICAqIFJldHVybnM6IFRydWUgaWYgdGhlIHRpbWVyIGlzIHF1ZXVlZCwgZmFsc2Ugb3RoZXJ3
+aXNlCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3J0Yy5oIGIvaW5jbHVkZS9saW51eC9ydGMu
+aAppbmRleCAyMmQxNTc1ZTQ5OTEuLmI4MjkzODJkZTZjMyAxMDA2NDQKLS0tIGEvaW5jbHVkZS9s
+aW51eC9ydGMuaAorKysgYi9pbmNsdWRlL2xpbnV4L3J0Yy5oCkBAIC0xMTAsMTMgKzExMCwzNiBA
+QCBzdHJ1Y3QgcnRjX2RldmljZSB7CiAJLyogU29tZSBoYXJkd2FyZSBjYW4ndCBzdXBwb3J0IFVJ
+RSBtb2RlICovCiAJaW50IHVpZV91bnN1cHBvcnRlZDsKIAotCS8qIE51bWJlciBvZiBuc2VjIGl0
+IHRha2VzIHRvIHNldCB0aGUgUlRDIGNsb2NrLiBUaGlzIGluZmx1ZW5jZXMgd2hlbgotCSAqIHRo
+ZSBzZXQgb3BzIGFyZSBjYWxsZWQuIEFuIG9mZnNldDoKLQkgKiAgIC0gb2YgMC41IHMgd2lsbCBj
+YWxsIFJUQyBzZXQgZm9yIHdhbGwgY2xvY2sgdGltZSAxMC4wIHMgYXQgOS41IHMKLQkgKiAgIC0g
+b2YgMS41IHMgd2lsbCBjYWxsIFJUQyBzZXQgZm9yIHdhbGwgY2xvY2sgdGltZSAxMC4wIHMgYXQg
+OC41IHMKLQkgKiAgIC0gb2YgLTAuNSBzIHdpbGwgY2FsbCBSVEMgc2V0IGZvciB3YWxsIGNsb2Nr
+IHRpbWUgMTAuMCBzIGF0IDEwLjUgcworCS8qCisJICogVGhpcyBvZmZzZXQgc3BlY2lmaWVzIHRo
+ZSB1cGRhdGUgdGltaW5nIG9mIHRoZSBSVEMuCisJICoKKwkgKiB0c2NoZWQgICAgIHQxIHdyaXRl
+KHQyLnR2X3NlYyAtIDFzZWMpKSAgdDIgUlRDIGluY3JlbWVudHMgc2Vjb25kcworCSAqCisJICog
+VGhlIG9mZnNldCBkZWZpbmVzIGhvdyB0c2NoZWQgaXMgY29tcHV0ZWQgc28gdGhhdCB0aGUgd3Jp
+dGUgdG8KKwkgKiB0aGUgUlRDICh0Mi50dl9zZWMgLSAxc2VjKSBpcyBjb3JyZWN0IHZlcnN1cyB0
+aGUgdGltZSByZXF1aXJlZAorCSAqIGZvciB0aGUgdHJhbnNwb3J0IG9mIHRoZSB3cml0ZSBhbmQg
+dGhlIHRpbWUgd2hpY2ggdGhlIFJUQyBuZWVkcworCSAqIHRvIGluY3JlbWVudCBzZWNvbmRzIHRo
+ZSBmaXJzdCB0aW1lIGFmdGVyIHRoZSB3cml0ZSAodDIpLgorCSAqCisJICogRm9yIGRpcmVjdCBh
+Y2Nlc3NpYmxlIFJUQ3MgdHNjaGVkIH49IHQxIGJlY2F1c2UgdGhlIHdyaXRlIHRpbWUKKwkgKiBp
+cyBuZWdsaWdpYmxlLiBGb3IgUlRDcyBiZWhpbmQgc2xvdyBidXNzZXMgdGhlIHRyYW5zcG9ydCB0
+aW1lIGlzCisJICogc2lnbmlmaWNhbnQgYW5kIGhhcyB0byBiZSB0YWtlbiBpbnRvIGFjY291bnQu
+CisJICoKKwkgKiBUaGUgdGltZSBiZXR3ZWVuIHRoZSB3cml0ZSAodDEpIGFuZCB0aGUgZmlyc3Qg
+aW5jcmVtZW50IGFmdGVyCisJICogdGhlIHdyaXRlICh0MikgaXMgUlRDIHNwZWNpZmljLiBGb3Ig
+YSBNQzE0NjgxOCBSVEMgaXQncyA1MDBtcywKKwkgKiBmb3IgbWFueSBvdGhlcnMgaXQncyBleGFj
+dGx5IDEgc2Vjb25kLiBDb25zdWx0IHRoZSBkYXRhc2hlZXQuCisJICoKKwkgKiBUaGUgdmFsdWUg
+b2YgdGhpcyBvZmZzZXQgaXMgYWxzbyB1c2VkIHRvIGNhbGN1bGF0ZSB0aGUgdG8gYmUKKwkgKiB3
+cml0dGVuIHZhbHVlICh0Mi50dl9zZWMgLSAxc2VjKSBhdCB0c2NoZWQuCisJICoKKwkgKiBUaGUg
+ZGVmYXVsdCB2YWx1ZSBmb3IgdGhpcyBpcyBOU0VDX1BFUl9TRUMgKyAxMCBtc2VjIGRlZmF1bHQK
+KwkgKiB0cmFuc3BvcnQgdGltZS4gVGhlIG9mZnNldCBjYW4gYmUgYWRqdXN0ZWQgYnkgZHJpdmVy
+cyBzbyB0aGUKKwkgKiBjYWxjdWxhdGlvbiBmb3IgdGhlIHRvIGJlIHdyaXR0ZW4gdmFsdWUgYXQg
+dHNjaGVkIGJlY29tZXMKKwkgKiBjb3JyZWN0OgorCSAqCisJICoJbmV3dmFsID0gdHNjaGVkICsg
+c2V0X29mZnNldF9uc2VjIC0gTlNFQ19QRVJfU0VDCisJICogYW5kICAodHNjaGVkICsgc2V0X29m
+ZnNldF9uc2VjKSAlIE5TRUNfUEVSX1NFQyA9PSAwCiAJICovCi0JbG9uZyBzZXRfb2Zmc2V0X25z
+ZWM7CisJdW5zaWduZWQgbG9uZyBzZXRfb2Zmc2V0X25zZWM7CiAKIAlib29sIHJlZ2lzdGVyZWQ7
+CiAKQEAgLTE2NSw3ICsxODgsNiBAQCBpbnQgX19ydGNfcmVnaXN0ZXJfZGV2aWNlKHN0cnVjdCBt
+b2R1bGUgKm93bmVyLCBzdHJ1Y3QgcnRjX2RldmljZSAqcnRjKTsKIAogZXh0ZXJuIGludCBydGNf
+cmVhZF90aW1lKHN0cnVjdCBydGNfZGV2aWNlICpydGMsIHN0cnVjdCBydGNfdGltZSAqdG0pOwog
+ZXh0ZXJuIGludCBydGNfc2V0X3RpbWUoc3RydWN0IHJ0Y19kZXZpY2UgKnJ0Yywgc3RydWN0IHJ0
+Y190aW1lICp0bSk7Ci1leHRlcm4gaW50IHJ0Y19zZXRfbnRwX3RpbWUoc3RydWN0IHRpbWVzcGVj
+NjQgbm93LCB1bnNpZ25lZCBsb25nICp0YXJnZXRfbnNlYyk7CiBpbnQgX19ydGNfcmVhZF9hbGFy
+bShzdHJ1Y3QgcnRjX2RldmljZSAqcnRjLCBzdHJ1Y3QgcnRjX3drYWxybSAqYWxhcm0pOwogZXh0
+ZXJuIGludCBydGNfcmVhZF9hbGFybShzdHJ1Y3QgcnRjX2RldmljZSAqcnRjLAogCQkJc3RydWN0
+IHJ0Y193a2Fscm0gKmFscm0pOwpAQCAtMjA1LDM5ICsyMjcsNiBAQCBzdGF0aWMgaW5saW5lIGJv
+b2wgaXNfbGVhcF95ZWFyKHVuc2lnbmVkIGludCB5ZWFyKQogCXJldHVybiAoISh5ZWFyICUgNCkg
+JiYgKHllYXIgJSAxMDApKSB8fCAhKHllYXIgJSA0MDApOwogfQogCi0vKiBEZXRlcm1pbmUgaWYg
+d2UgY2FuIGNhbGwgdG8gZHJpdmVyIHRvIHNldCB0aGUgdGltZS4gRHJpdmVycyBjYW4gb25seSBi
+ZQotICogY2FsbGVkIHRvIHNldCBhIHNlY29uZCBhbGlnbmVkIHRpbWUgdmFsdWUsIGFuZCB0aGUg
+ZmllbGQgc2V0X29mZnNldF9uc2VjCi0gKiBzcGVjaWZpZXMgaG93IGZhciBhd2F5IGZyb20gdGhl
+IHNlY29uZCBhbGlnbmVkIHRpbWUgdG8gY2FsbCB0aGUgZHJpdmVyLgotICoKLSAqIFRoaXMgYWxz
+byBjb21wdXRlcyAndG9fc2V0JyB3aGljaCBpcyB0aGUgdGltZSB3ZSBhcmUgdHJ5aW5nIHRvIHNl
+dCwgYW5kIGhhcwotICogYSB6ZXJvIGluIHR2X25zZWNzLCBzdWNoIHRoYXQ6Ci0gKiAgICB0b19z
+ZXQgLSBzZXRfZGVsYXlfbnNlYyA9PSBub3cgKy8tIEZVWloKLSAqCi0gKi8KLXN0YXRpYyBpbmxp
+bmUgYm9vbCBydGNfdHZfbnNlY19vayhzNjQgc2V0X29mZnNldF9uc2VjLAotCQkJCSAgc3RydWN0
+IHRpbWVzcGVjNjQgKnRvX3NldCwKLQkJCQkgIGNvbnN0IHN0cnVjdCB0aW1lc3BlYzY0ICpub3cp
+Ci17Ci0JLyogQWxsb3dlZCBlcnJvciBpbiB0dl9uc2VjLCBhcmJpdGFyaWx5IHNldCB0byA1IGpp
+ZmZpZXMgaW4gbnMuICovCi0JY29uc3QgdW5zaWduZWQgbG9uZyBUSU1FX1NFVF9OU0VDX0ZVWlog
+PSBUSUNLX05TRUMgKiA1OwotCXN0cnVjdCB0aW1lc3BlYzY0IGRlbGF5ID0gey50dl9zZWMgPSAw
+LAotCQkJCSAgIC50dl9uc2VjID0gc2V0X29mZnNldF9uc2VjfTsKLQotCSp0b19zZXQgPSB0aW1l
+c3BlYzY0X2FkZCgqbm93LCBkZWxheSk7Ci0KLQlpZiAodG9fc2V0LT50dl9uc2VjIDwgVElNRV9T
+RVRfTlNFQ19GVVpaKSB7Ci0JCXRvX3NldC0+dHZfbnNlYyA9IDA7Ci0JCXJldHVybiB0cnVlOwot
+CX0KLQotCWlmICh0b19zZXQtPnR2X25zZWMgPiBOU0VDX1BFUl9TRUMgLSBUSU1FX1NFVF9OU0VD
+X0ZVWlopIHsKLQkJdG9fc2V0LT50dl9zZWMrKzsKLQkJdG9fc2V0LT50dl9uc2VjID0gMDsKLQkJ
+cmV0dXJuIHRydWU7Ci0JfQotCXJldHVybiBmYWxzZTsKLX0KLQogI2RlZmluZSBydGNfcmVnaXN0
+ZXJfZGV2aWNlKGRldmljZSkgXAogCV9fcnRjX3JlZ2lzdGVyX2RldmljZShUSElTX01PRFVMRSwg
+ZGV2aWNlKQogCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3RpbWVrZWVwaW5nLmggYi9pbmNs
+dWRlL2xpbnV4L3RpbWVrZWVwaW5nLmgKaW5kZXggN2Y3ZTRhM2Y0Mzk0Li45MjlkM2YzOTM3YzAg
+MTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvdGltZWtlZXBpbmcuaAorKysgYi9pbmNsdWRlL2xp
+bnV4L3RpbWVrZWVwaW5nLmgKQEAgLTMwMyw2ICszMDMsOCBAQCBleHRlcm4gaW50IHBlcnNpc3Rl
+bnRfY2xvY2tfaXNfbG9jYWw7CiBleHRlcm4gdm9pZCByZWFkX3BlcnNpc3RlbnRfY2xvY2s2NChz
+dHJ1Y3QgdGltZXNwZWM2NCAqdHMpOwogdm9pZCByZWFkX3BlcnNpc3RlbnRfd2FsbF9hbmRfYm9v
+dF9vZmZzZXQoc3RydWN0IHRpbWVzcGVjNjQgKndhbGxfY2xvY2ssCiAJCQkJCSAgc3RydWN0IHRp
+bWVzcGVjNjQgKmJvb3Rfb2Zmc2V0KTsKKyNpZmRlZiBDT05GSUdfR0VORVJJQ19DTU9TX1VQREFU
+RQogZXh0ZXJuIGludCB1cGRhdGVfcGVyc2lzdGVudF9jbG9jazY0KHN0cnVjdCB0aW1lc3BlYzY0
+IG5vdyk7CisjZW5kaWYKIAogI2VuZGlmCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3RpbWVy
+LmggYi9pbmNsdWRlL2xpbnV4L3RpbWVyLmgKaW5kZXggZDEwYmM3ZTczYjQxLi5mZGExM2M5ZDEy
+NTYgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvdGltZXIuaAorKysgYi9pbmNsdWRlL2xpbnV4
+L3RpbWVyLmgKQEAgLTE5Myw3ICsxOTMsNiBAQCBleHRlcm4gaW50IHRyeV90b19kZWxfdGltZXJf
+c3luYyhzdHJ1Y3QgdGltZXJfbGlzdCAqdGltZXIpOwogI2RlZmluZSBkZWxfc2luZ2xlc2hvdF90
+aW1lcl9zeW5jKHQpIGRlbF90aW1lcl9zeW5jKHQpCiAKIGV4dGVybiB2b2lkIGluaXRfdGltZXJz
+KHZvaWQpOwotZXh0ZXJuIHZvaWQgcnVuX2xvY2FsX3RpbWVycyh2b2lkKTsKIHN0cnVjdCBocnRp
+bWVyOwogZXh0ZXJuIGVudW0gaHJ0aW1lcl9yZXN0YXJ0IGl0X3JlYWxfZm4oc3RydWN0IGhydGlt
+ZXIgKik7CiAKZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvdGltZXguaCBiL2luY2x1ZGUvbGlu
+dXgvdGltZXguaAppbmRleCBjZTA4NTk3NjM2NzAuLjljMmU1NGZhZjliNyAxMDA2NDQKLS0tIGEv
+aW5jbHVkZS9saW51eC90aW1leC5oCisrKyBiL2luY2x1ZGUvbGludXgvdGltZXguaApAQCAtMTU3
+LDcgKzE1Nyw2IEBAIGV4dGVybiBpbnQgZG9fY2xvY2tfYWRqdGltZShjb25zdCBjbG9ja2lkX3Qg
+d2hpY2hfY2xvY2ssIHN0cnVjdCBfX2tlcm5lbF90aW1leCAqCiBleHRlcm4gdm9pZCBoYXJkcHBz
+KGNvbnN0IHN0cnVjdCB0aW1lc3BlYzY0ICosIGNvbnN0IHN0cnVjdCB0aW1lc3BlYzY0ICopOwog
+CiBpbnQgcmVhZF9jdXJyZW50X3RpbWVyKHVuc2lnbmVkIGxvbmcgKnRpbWVyX3ZhbCk7Ci12b2lk
+IG50cF9ub3RpZnlfY21vc190aW1lcih2b2lkKTsKIAogLyogVGhlIGNsb2NrIGZyZXF1ZW5jeSBv
+ZiB0aGUgaTgyNTMvaTgyNTQgUElUICovCiAjZGVmaW5lIFBJVF9USUNLX1JBVEUgMTE5MzE4MnVs
+CmRpZmYgLS1naXQgYS9rZXJuZWwvdGltZS9ocnRpbWVyLmMgYi9rZXJuZWwvdGltZS9ocnRpbWVy
+LmMKaW5kZXggMzYyNGI5YjU4MzVkLi42MWMzOWZmNjg0MzkgMTAwNjQ0Ci0tLSBhL2tlcm5lbC90
+aW1lL2hydGltZXIuYworKysgYi9rZXJuZWwvdGltZS9ocnRpbWVyLmMKQEAgLTEyODksNyArMTI4
+OSw3IEBAIGludCBocnRpbWVyX2NhbmNlbChzdHJ1Y3QgaHJ0aW1lciAqdGltZXIpCiBFWFBPUlRf
+U1lNQk9MX0dQTChocnRpbWVyX2NhbmNlbCk7CiAKIC8qKgotICogaHJ0aW1lcl9nZXRfcmVtYWlu
+aW5nIC0gZ2V0IHJlbWFpbmluZyB0aW1lIGZvciB0aGUgdGltZXIKKyAqIF9faHJ0aW1lcl9nZXRf
+cmVtYWluaW5nIC0gZ2V0IHJlbWFpbmluZyB0aW1lIGZvciB0aGUgdGltZXIKICAqIEB0aW1lcjoJ
+dGhlIHRpbWVyIHRvIHJlYWQKICAqIEBhZGp1c3Q6CWFkanVzdCByZWxhdGl2ZSB0aW1lcnMgd2hl
+biBDT05GSUdfVElNRV9MT1dfUkVTPXkKICAqLwpkaWZmIC0tZ2l0IGEva2VybmVsL3RpbWUvamlm
+Zmllcy5jIGIva2VybmVsL3RpbWUvamlmZmllcy5jCmluZGV4IGVkZGNmNDk3MDQ0NC4uYTVjZmZl
+MmExNzcwIDEwMDY0NAotLS0gYS9rZXJuZWwvdGltZS9qaWZmaWVzLmMKKysrIGIva2VybmVsL3Rp
+bWUvamlmZmllcy5jCkBAIC01OSw3ICs1OSw4IEBAIHN0YXRpYyBzdHJ1Y3QgY2xvY2tzb3VyY2Ug
+Y2xvY2tzb3VyY2VfamlmZmllcyA9IHsKIH07CiAKIF9fY2FjaGVsaW5lX2FsaWduZWRfaW5fc21w
+IERFRklORV9SQVdfU1BJTkxPQ0soamlmZmllc19sb2NrKTsKLV9fY2FjaGVsaW5lX2FsaWduZWRf
+aW5fc21wIHNlcWNvdW50X3QgamlmZmllc19zZXE7CitfX2NhY2hlbGluZV9hbGlnbmVkX2luX3Nt
+cCBzZXFjb3VudF9yYXdfc3BpbmxvY2tfdCBqaWZmaWVzX3NlcSA9CisJU0VRQ05UX1JBV19TUElO
+TE9DS19aRVJPKGppZmZpZXNfc2VxLCAmamlmZmllc19sb2NrKTsKIAogI2lmIChCSVRTX1BFUl9M
+T05HIDwgNjQpCiB1NjQgZ2V0X2ppZmZpZXNfNjQodm9pZCkKZGlmZiAtLWdpdCBhL2tlcm5lbC90
+aW1lL250cC5jIGIva2VybmVsL3RpbWUvbnRwLmMKaW5kZXggMDY5Y2E3OGZiMGJmLi43NDA0ZDM4
+MzE1MjcgMTAwNjQ0Ci0tLSBhL2tlcm5lbC90aW1lL250cC5jCisrKyBiL2tlcm5lbC90aW1lL250
+cC5jCkBAIC00OTQsNjUgKzQ5NCw3NCBAQCBpbnQgc2Vjb25kX292ZXJmbG93KHRpbWU2NF90IHNl
+Y3MpCiAJcmV0dXJuIGxlYXA7CiB9CiAKKyNpZiBkZWZpbmVkKENPTkZJR19HRU5FUklDX0NNT1Nf
+VVBEQVRFKSB8fCBkZWZpbmVkKENPTkZJR19SVENfU1lTVE9IQykKIHN0YXRpYyB2b2lkIHN5bmNf
+aHdfY2xvY2soc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKTsKLXN0YXRpYyBERUNMQVJFX0RFTEFZ
+RURfV09SSyhzeW5jX3dvcmssIHN5bmNfaHdfY2xvY2spOwotCi1zdGF0aWMgdm9pZCBzY2hlZF9z
+eW5jX2h3X2Nsb2NrKHN0cnVjdCB0aW1lc3BlYzY0IG5vdywKLQkJCQl1bnNpZ25lZCBsb25nIHRh
+cmdldF9uc2VjLCBib29sIGZhaWwpCitzdGF0aWMgREVDTEFSRV9XT1JLKHN5bmNfd29yaywgc3lu
+Y19od19jbG9jayk7CitzdGF0aWMgc3RydWN0IGhydGltZXIgc3luY19ocnRpbWVyOworI2RlZmlu
+ZSBTWU5DX1BFUklPRF9OUyAoMTFVTCAqIDYwICogTlNFQ19QRVJfU0VDKQogCitzdGF0aWMgZW51
+bSBocnRpbWVyX3Jlc3RhcnQgc3luY190aW1lcl9jYWxsYmFjayhzdHJ1Y3QgaHJ0aW1lciAqdGlt
+ZXIpCiB7Ci0Jc3RydWN0IHRpbWVzcGVjNjQgbmV4dDsKLQotCWt0aW1lX2dldF9yZWFsX3RzNjQo
+Jm5leHQpOwotCWlmICghZmFpbCkKLQkJbmV4dC50dl9zZWMgPSA2NTk7Ci0JZWxzZSB7Ci0JCS8q
+Ci0JCSAqIFRyeSBhZ2FpbiBhcyBzb29uIGFzIHBvc3NpYmxlLiBEZWxheWluZyBsb25nIHBlcmlv
+ZHMKLQkJICogZGVjcmVhc2VzIHRoZSBhY2N1cmFjeSBvZiB0aGUgd29yayBxdWV1ZSB0aW1lci4g
+RHVlIHRvIHRoaXMKLQkJICogdGhlIGFsZ29yaXRobSBpcyB2ZXJ5IGxpa2VseSB0byByZXF1aXJl
+IGEgc2hvcnQtc2xlZXAgcmV0cnkKLQkJICogYWZ0ZXIgdGhlIGFib3ZlIGxvbmcgc2xlZXAgdG8g
+c3luY2hyb25pemUgdHNfbnNlYy4KLQkJICovCi0JCW5leHQudHZfc2VjID0gMDsKLQl9Ci0KLQkv
+KiBDb21wdXRlIHRoZSBuZWVkZWQgZGVsYXkgdGhhdCB3aWxsIGdldCB0byB0dl9uc2VjID09IHRh
+cmdldF9uc2VjICovCi0JbmV4dC50dl9uc2VjID0gdGFyZ2V0X25zZWMgLSBuZXh0LnR2X25zZWM7
+Ci0JaWYgKG5leHQudHZfbnNlYyA8PSAwKQotCQluZXh0LnR2X25zZWMgKz0gTlNFQ19QRVJfU0VD
+OwotCWlmIChuZXh0LnR2X25zZWMgPj0gTlNFQ19QRVJfU0VDKSB7Ci0JCW5leHQudHZfc2VjKys7
+Ci0JCW5leHQudHZfbnNlYyAtPSBOU0VDX1BFUl9TRUM7Ci0JfQorCXF1ZXVlX3dvcmsoc3lzdGVt
+X3Bvd2VyX2VmZmljaWVudF93cSwgJnN5bmNfd29yayk7CiAKLQlxdWV1ZV9kZWxheWVkX3dvcmso
+c3lzdGVtX3Bvd2VyX2VmZmljaWVudF93cSwgJnN5bmNfd29yaywKLQkJCSAgIHRpbWVzcGVjNjRf
+dG9famlmZmllcygmbmV4dCkpOworCXJldHVybiBIUlRJTUVSX05PUkVTVEFSVDsKIH0KIAotc3Rh
+dGljIHZvaWQgc3luY19ydGNfY2xvY2sodm9pZCkKK3N0YXRpYyB2b2lkIHNjaGVkX3N5bmNfaHdf
+Y2xvY2sodW5zaWduZWQgbG9uZyBvZmZzZXRfbnNlYywgYm9vbCByZXRyeSkKIHsKLQl1bnNpZ25l
+ZCBsb25nIHRhcmdldF9uc2VjOwotCXN0cnVjdCB0aW1lc3BlYzY0IGFkanVzdCwgbm93OwotCWlu
+dCByYzsKKwlrdGltZV90IGV4cCA9IGt0aW1lX3NldChrdGltZV9nZXRfcmVhbF9zZWNvbmRzKCks
+IDApOwogCi0JaWYgKCFJU19FTkFCTEVEKENPTkZJR19SVENfU1lTVE9IQykpCi0JCXJldHVybjsK
+KwlpZiAocmV0cnkpCisJCWV4cCA9IGt0aW1lX2FkZF9ucyhleHAsIDIgKiBOU0VDX1BFUl9TRUMg
+LSBvZmZzZXRfbnNlYyk7CisJZWxzZQorCQlleHAgPSBrdGltZV9hZGRfbnMoZXhwLCBTWU5DX1BF
+UklPRF9OUyAtIG9mZnNldF9uc2VjKTsKIAotCWt0aW1lX2dldF9yZWFsX3RzNjQoJm5vdyk7CisJ
+aHJ0aW1lcl9zdGFydCgmc3luY19ocnRpbWVyLCBleHAsIEhSVElNRVJfTU9ERV9BQlMpOworfQog
+Ci0JYWRqdXN0ID0gbm93OwotCWlmIChwZXJzaXN0ZW50X2Nsb2NrX2lzX2xvY2FsKQotCQlhZGp1
+c3QudHZfc2VjIC09IChzeXNfdHoudHpfbWludXRlc3dlc3QgKiA2MCk7CisvKgorICogQ2hlY2sg
+d2hldGhlciBAbm93IGlzIGNvcnJlY3QgdmVyc3VzIHRoZSByZXF1aXJlZCB0aW1lIHRvIHVwZGF0
+ZSB0aGUgUlRDCisgKiBhbmQgY2FsY3VsYXRlIHRoZSB2YWx1ZSB3aGljaCBuZWVkcyB0byBiZSB3
+cml0dGVuIHRvIHRoZSBSVEMgc28gdGhhdCB0aGUKKyAqIG5leHQgc2Vjb25kcyBpbmNyZW1lbnQg
+b2YgdGhlIFJUQyBhZnRlciB0aGUgd3JpdGUgaXMgYWxpZ25lZCB3aXRoIHRoZSBuZXh0CisgKiBz
+ZWNvbmRzIGluY3JlbWVudCBvZiBjbG9jayBSRUFMVElNRS4KKyAqCisgKiB0c2NoZWQgICAgIHQx
+IHdyaXRlKHQyLnR2X3NlYyAtIDFzZWMpKQl0MiBSVEMgaW5jcmVtZW50cyBzZWNvbmRzCisgKgor
+ICogdDIudHZfbnNlYyA9PSAwCisgKiB0c2NoZWQgPSB0MiAtIHNldF9vZmZzZXRfbnNlYworICog
+bmV3dmFsID0gdDIgLSBOU0VDX1BFUl9TRUMKKyAqCisgKiA9PT4gbmV2YWwgPSB0c2NoZWQgKyBz
+ZXRfb2Zmc2V0X25zZWMgLSBOU0VDX1BFUl9TRUMKKyAqCisgKiBBcyB0aGUgZXhlY3V0aW9uIG9m
+IHRoaXMgY29kZSBpcyBub3QgZ3VhcmFudGVlZCB0byBoYXBwZW4gZXhhY3RseSBhdAorICogdHNj
+aGVkIHRoaXMgYWxsb3dzIGl0IHRvIGhhcHBlbiB3aXRoaW4gYSBmdXp6eSByZWdpb246CisgKgor
+ICoJYWJzKG5vdyAtIHRzY2hlZCkgPCBGVVpaCisgKgorICogSWYgQG5vdyBpcyBub3QgaW5zaWRl
+IHRoZSBhbGxvd2VkIHdpbmRvdyB0aGUgZnVuY3Rpb24gcmV0dXJucyBmYWxzZS4KKyAqLworc3Rh
+dGljIGlubGluZSBib29sIHJ0Y190dl9uc2VjX29rKHVuc2lnbmVkIGxvbmcgc2V0X29mZnNldF9u
+c2VjLAorCQkJCSAgc3RydWN0IHRpbWVzcGVjNjQgKnRvX3NldCwKKwkJCQkgIGNvbnN0IHN0cnVj
+dCB0aW1lc3BlYzY0ICpub3cpCit7CisJLyogQWxsb3dlZCBlcnJvciBpbiB0dl9uc2VjLCBhcmJp
+dGFyaWx5IHNldCB0byA1IGppZmZpZXMgaW4gbnMuICovCisJY29uc3QgdW5zaWduZWQgbG9uZyBU
+SU1FX1NFVF9OU0VDX0ZVWlogPSBUSUNLX05TRUMgKiA1OworCXN0cnVjdCB0aW1lc3BlYzY0IGRl
+bGF5ID0gey50dl9zZWMgPSAtMSwKKwkJCQkgICAudHZfbnNlYyA9IHNldF9vZmZzZXRfbnNlY307
+CiAKLQkvKgotCSAqIFRoZSBjdXJyZW50IFJUQyBpbiB1c2Ugd2lsbCBwcm92aWRlIHRoZSB0YXJn
+ZXRfbnNlYyBpdCB3YW50cyB0byBiZQotCSAqIGNhbGxlZCBhdCwgYW5kIGRvZXMgcnRjX3R2X25z
+ZWNfb2sgaW50ZXJuYWxseS4KLQkgKi8KLQlyYyA9IHJ0Y19zZXRfbnRwX3RpbWUoYWRqdXN0LCAm
+dGFyZ2V0X25zZWMpOwotCWlmIChyYyA9PSAtRU5PREVWKQotCQlyZXR1cm47CisJKnRvX3NldCA9
+IHRpbWVzcGVjNjRfYWRkKCpub3csIGRlbGF5KTsKKworCWlmICh0b19zZXQtPnR2X25zZWMgPCBU
+SU1FX1NFVF9OU0VDX0ZVWlopIHsKKwkJdG9fc2V0LT50dl9uc2VjID0gMDsKKwkJcmV0dXJuIHRy
+dWU7CisJfQogCi0Jc2NoZWRfc3luY19od19jbG9jayhub3csIHRhcmdldF9uc2VjLCByYyk7CisJ
+aWYgKHRvX3NldC0+dHZfbnNlYyA+IE5TRUNfUEVSX1NFQyAtIFRJTUVfU0VUX05TRUNfRlVaWikg
+eworCQl0b19zZXQtPnR2X3NlYysrOworCQl0b19zZXQtPnR2X25zZWMgPSAwOworCQlyZXR1cm4g
+dHJ1ZTsKKwl9CisJcmV0dXJuIGZhbHNlOwogfQogCiAjaWZkZWYgQ09ORklHX0dFTkVSSUNfQ01P
+U19VUERBVEUKQEAgLTU2MCw0OCArNTY5LDQ3IEBAIGludCBfX3dlYWsgdXBkYXRlX3BlcnNpc3Rl
+bnRfY2xvY2s2NChzdHJ1Y3QgdGltZXNwZWM2NCBub3c2NCkKIHsKIAlyZXR1cm4gLUVOT0RFVjsK
+IH0KKyNlbHNlCitzdGF0aWMgaW5saW5lIGludCB1cGRhdGVfcGVyc2lzdGVudF9jbG9jazY0KHN0
+cnVjdCB0aW1lc3BlYzY0IG5vdzY0KQoreworCXJldHVybiAtRU5PREVWOworfQogI2VuZGlmCiAK
+LXN0YXRpYyBib29sIHN5bmNfY21vc19jbG9jayh2b2lkKQorI2lmZGVmIENPTkZJR19SVENfU1lT
+VE9IQworLyogU2F2ZSBOVFAgc3luY2hyb25pemVkIHRpbWUgdG8gdGhlIFJUQyAqLworc3RhdGlj
+IGludCB1cGRhdGVfcnRjKHN0cnVjdCB0aW1lc3BlYzY0ICp0b19zZXQsIHVuc2lnbmVkIGxvbmcg
+Km9mZnNldF9uc2VjKQogewotCXN0YXRpYyBib29sIG5vX2Ntb3M7Ci0Jc3RydWN0IHRpbWVzcGVj
+NjQgbm93OwotCXN0cnVjdCB0aW1lc3BlYzY0IGFkanVzdDsKLQlpbnQgcmMgPSAtRVBST1RPOwot
+CWxvbmcgdGFyZ2V0X25zZWMgPSBOU0VDX1BFUl9TRUMgLyAyOworCXN0cnVjdCBydGNfZGV2aWNl
+ICpydGM7CisJc3RydWN0IHJ0Y190aW1lIHRtOworCWludCBlcnIgPSAtRU5PREVWOwogCi0JaWYg
+KCFJU19FTkFCTEVEKENPTkZJR19HRU5FUklDX0NNT1NfVVBEQVRFKSkKLQkJcmV0dXJuIGZhbHNl
+OworCXJ0YyA9IHJ0Y19jbGFzc19vcGVuKENPTkZJR19SVENfU1lTVE9IQ19ERVZJQ0UpOworCWlm
+ICghcnRjKQorCQlyZXR1cm4gLUVOT0RFVjsKIAotCWlmIChub19jbW9zKQotCQlyZXR1cm4gZmFs
+c2U7CisJaWYgKCFydGMtPm9wcyB8fCAhcnRjLT5vcHMtPnNldF90aW1lKQorCQlnb3RvIG91dF9j
+bG9zZTsKIAotCS8qCi0JICogSGlzdG9yaWNhbGx5IHVwZGF0ZV9wZXJzaXN0ZW50X2Nsb2NrNjQo
+KSBoYXMgZm9sbG93ZWQgeDg2Ci0JICogc2VtYW50aWNzLCB3aGljaCBtYXRjaCB0aGUgTUMxNDY4
+MThBL2V0YyBSVEMuIFRoaXMgUlRDIHdpbGwgc3RvcmUKLQkgKiAnYWRqdXN0JyBhbmQgdGhlbiBp
+biAuNXMgaXQgd2lsbCBhZHZhbmNlIG9uY2Ugc2Vjb25kLgotCSAqCi0JICogQXJjaGl0ZWN0dXJl
+cyBhcmUgc3Ryb25nbHkgZW5jb3VyYWdlZCB0byB1c2UgcnRjbGliIGFuZCBub3QKLQkgKiBpbXBs
+ZW1lbnQgdGhpcyBsZWdhY3kgQVBJLgotCSAqLwotCWt0aW1lX2dldF9yZWFsX3RzNjQoJm5vdyk7
+Ci0JaWYgKHJ0Y190dl9uc2VjX29rKC0xICogdGFyZ2V0X25zZWMsICZhZGp1c3QsICZub3cpKSB7
+Ci0JCWlmIChwZXJzaXN0ZW50X2Nsb2NrX2lzX2xvY2FsKQotCQkJYWRqdXN0LnR2X3NlYyAtPSAo
+c3lzX3R6LnR6X21pbnV0ZXN3ZXN0ICogNjApOwotCQlyYyA9IHVwZGF0ZV9wZXJzaXN0ZW50X2Ns
+b2NrNjQoYWRqdXN0KTsKLQkJLyoKLQkJICogVGhlIG1hY2hpbmUgZG9lcyBub3Qgc3VwcG9ydCB1
+cGRhdGVfcGVyc2lzdGVudF9jbG9jazY0IGV2ZW4KLQkJICogdGhvdWdoIGl0IGRlZmluZXMgQ09O
+RklHX0dFTkVSSUNfQ01PU19VUERBVEUuCi0JCSAqLwotCQlpZiAocmMgPT0gLUVOT0RFVikgewot
+CQkJbm9fY21vcyA9IHRydWU7Ci0JCQlyZXR1cm4gZmFsc2U7Ci0JCX0KKwkvKiBGaXJzdCBjYWxs
+IG1pZ2h0IG5vdCBoYXZlIHRoZSBjb3JyZWN0IG9mZnNldCAqLworCWlmICgqb2Zmc2V0X25zZWMg
+PT0gcnRjLT5zZXRfb2Zmc2V0X25zZWMpIHsKKwkJcnRjX3RpbWU2NF90b190bSh0b19zZXQtPnR2
+X3NlYywgJnRtKTsKKwkJZXJyID0gcnRjX3NldF90aW1lKHJ0YywgJnRtKTsKKwl9IGVsc2Ugewor
+CQkvKiBTdG9yZSB0aGUgdXBkYXRlIG9mZnNldCBhbmQgbGV0IHRoZSBjYWxsZXIgdHJ5IGFnYWlu
+ICovCisJCSpvZmZzZXRfbnNlYyA9IHJ0Yy0+c2V0X29mZnNldF9uc2VjOworCQllcnIgPSAtRUFH
+QUlOOwogCX0KLQotCXNjaGVkX3N5bmNfaHdfY2xvY2sobm93LCB0YXJnZXRfbnNlYywgcmMpOwot
+CXJldHVybiB0cnVlOworb3V0X2Nsb3NlOgorCXJ0Y19jbGFzc19jbG9zZShydGMpOworCXJldHVy
+biBlcnI7Cit9CisjZWxzZQorc3RhdGljIGlubGluZSBpbnQgdXBkYXRlX3J0YyhzdHJ1Y3QgdGlt
+ZXNwZWM2NCAqdG9fc2V0LCB1bnNpZ25lZCBsb25nICpvZmZzZXRfbnNlYykKK3sKKwlyZXR1cm4g
+LUVOT0RFVjsKIH0KKyNlbmRpZgogCiAvKgogICogSWYgd2UgaGF2ZSBhbiBleHRlcm5hbGx5IHN5
+bmNocm9uaXplZCBMaW51eCBjbG9jaywgdGhlbiB1cGRhdGUgUlRDIGNsb2NrCkBAIC02MTMsMjQg
+KzYyMSw2NCBAQCBzdGF0aWMgYm9vbCBzeW5jX2Ntb3NfY2xvY2sodm9pZCkKICAqLwogc3RhdGlj
+IHZvaWQgc3luY19od19jbG9jayhzdHJ1Y3Qgd29ya19zdHJ1Y3QgKndvcmspCiB7Ci0JaWYgKCFu
+dHBfc3luY2VkKCkpCi0JCXJldHVybjsKKwkvKgorCSAqIFRoZSBkZWZhdWx0IHN5bmNocm9uaXph
+dGlvbiBvZmZzZXQgaXMgNTAwbXMgZm9yIHRoZSBkZXByZWNhdGVkCisJICogdXBkYXRlX3BlcnNp
+c3RlbnRfY2xvY2s2NCgpIHVuZGVyIHRoZSBhc3N1bXB0aW9uIHRoYXQgaXQgdXNlcworCSAqIHRo
+ZSBpbmZhbW91cyBDTU9TIGNsb2NrIChNQzE0NjgxOCkuCisJICovCisJc3RhdGljIHVuc2lnbmVk
+IGxvbmcgb2Zmc2V0X25zZWMgPSBOU0VDX1BFUl9TRUMgLyAyOworCXN0cnVjdCB0aW1lc3BlYzY0
+IG5vdywgdG9fc2V0OworCWludCByZXMgPSAtRUFHQUlOOwogCi0JaWYgKHN5bmNfY21vc19jbG9j
+aygpKQorCS8qCisJICogRG9uJ3QgdXBkYXRlIGlmIFNUQV9VTlNZTkMgaXMgc2V0IGFuZCBpZiBu
+dHBfbm90aWZ5X2Ntb3NfdGltZXIoKQorCSAqIG1hbmFnZWQgdG8gc2NoZWR1bGUgdGhlIHdvcmsg
+YmV0d2VlbiB0aGUgdGltZXIgZmlyaW5nIGFuZCB0aGUKKwkgKiB3b3JrIGJlaW5nIGFibGUgdG8g
+cmVhcm0gdGhlIHRpbWVyLiBXYWl0IGZvciB0aGUgdGltZXIgdG8gZXhwaXJlLgorCSAqLworCWlm
+ICghbnRwX3N5bmNlZCgpIHx8IGhydGltZXJfaXNfcXVldWVkKCZzeW5jX2hydGltZXIpKQogCQly
+ZXR1cm47CiAKLQlzeW5jX3J0Y19jbG9jaygpOworCWt0aW1lX2dldF9yZWFsX3RzNjQoJm5vdyk7
+CisJLyogSWYgQG5vdyBpcyBub3QgaW4gdGhlIGFsbG93ZWQgd2luZG93LCB0cnkgYWdhaW4gKi8K
+KwlpZiAoIXJ0Y190dl9uc2VjX29rKG9mZnNldF9uc2VjLCAmdG9fc2V0LCAmbm93KSkKKwkJZ290
+byByZWFybTsKKworCS8qIFRha2UgdGltZXpvbmUgYWRqdXN0ZWQgUlRDcyBpbnRvIGFjY291bnQg
+Ki8KKwlpZiAocGVyc2lzdGVudF9jbG9ja19pc19sb2NhbCkKKwkJdG9fc2V0LnR2X3NlYyAtPSAo
+c3lzX3R6LnR6X21pbnV0ZXN3ZXN0ICogNjApOworCisJLyogVHJ5IHRoZSBsZWdhY3kgUlRDIGZp
+cnN0LiAqLworCXJlcyA9IHVwZGF0ZV9wZXJzaXN0ZW50X2Nsb2NrNjQodG9fc2V0KTsKKwlpZiAo
+cmVzICE9IC1FTk9ERVYpCisJCWdvdG8gcmVhcm07CisKKwkvKiBUcnkgdGhlIFJUQyBjbGFzcyAq
+LworCXJlcyA9IHVwZGF0ZV9ydGMoJnRvX3NldCwgJm9mZnNldF9uc2VjKTsKKwlpZiAocmVzID09
+IC1FTk9ERVYpCisJCXJldHVybjsKK3JlYXJtOgorCXNjaGVkX3N5bmNfaHdfY2xvY2sob2Zmc2V0
+X25zZWMsIHJlcyAhPSAwKTsKIH0KIAogdm9pZCBudHBfbm90aWZ5X2Ntb3NfdGltZXIodm9pZCkK
+IHsKLQlpZiAoIW50cF9zeW5jZWQoKSkKLQkJcmV0dXJuOworCS8qCisJICogV2hlbiB0aGUgd29y
+ayBpcyBjdXJyZW50bHkgZXhlY3V0ZWQgYnV0IGhhcyBub3QgeWV0IHRoZSB0aW1lcgorCSAqIHJl
+YXJtZWQgdGhpcyBxdWV1ZXMgdGhlIHdvcmsgaW1tZWRpYXRlbHkgYWdhaW4uIE5vIGJpZyBpc3N1
+ZSwKKwkgKiBqdXN0IGEgcG9pbnRsZXNzIHdvcmsgc2NoZWR1bGVkLgorCSAqLworCWlmIChudHBf
+c3luY2VkKCkgJiYgIWhydGltZXJfaXNfcXVldWVkKCZzeW5jX2hydGltZXIpKQorCQlxdWV1ZV93
+b3JrKHN5c3RlbV9wb3dlcl9lZmZpY2llbnRfd3EsICZzeW5jX3dvcmspOworfQogCi0JaWYgKElT
+X0VOQUJMRUQoQ09ORklHX0dFTkVSSUNfQ01PU19VUERBVEUpIHx8Ci0JICAgIElTX0VOQUJMRUQo
+Q09ORklHX1JUQ19TWVNUT0hDKSkKLQkJcXVldWVfZGVsYXllZF93b3JrKHN5c3RlbV9wb3dlcl9l
+ZmZpY2llbnRfd3EsICZzeW5jX3dvcmssIDApOworc3RhdGljIHZvaWQgX19pbml0IG50cF9pbml0
+X2Ntb3Nfc3luYyh2b2lkKQoreworCWhydGltZXJfaW5pdCgmc3luY19ocnRpbWVyLCBDTE9DS19S
+RUFMVElNRSwgSFJUSU1FUl9NT0RFX0FCUyk7CisJc3luY19ocnRpbWVyLmZ1bmN0aW9uID0gc3lu
+Y190aW1lcl9jYWxsYmFjazsKIH0KKyNlbHNlIC8qIENPTkZJR19HRU5FUklDX0NNT1NfVVBEQVRF
+KSB8fCBkZWZpbmVkKENPTkZJR19SVENfU1lTVE9IQykgKi8KK3N0YXRpYyBpbmxpbmUgdm9pZCBf
+X2luaXQgbnRwX2luaXRfY21vc19zeW5jKHZvaWQpIHsgfQorI2VuZGlmIC8qICFDT05GSUdfR0VO
+RVJJQ19DTU9TX1VQREFURSkgfHwgZGVmaW5lZChDT05GSUdfUlRDX1NZU1RPSEMpICovCiAKIC8q
+CiAgKiBQcm9wYWdhdGUgYSBuZXcgdHhjLT5zdGF0dXMgdmFsdWUgaW50byB0aGUgTlRQIHN0YXRl
+OgpAQCAtMTA0NCw0ICsxMDkyLDUgQEAgX19zZXR1cCgibnRwX3RpY2tfYWRqPSIsIG50cF90aWNr
+X2Fkal9zZXR1cCk7CiB2b2lkIF9faW5pdCBudHBfaW5pdCh2b2lkKQogewogCW50cF9jbGVhcigp
+OworCW50cF9pbml0X2Ntb3Nfc3luYygpOwogfQpkaWZmIC0tZ2l0IGEva2VybmVsL3RpbWUvbnRw
+X2ludGVybmFsLmggYi9rZXJuZWwvdGltZS9udHBfaW50ZXJuYWwuaAppbmRleCA5MDhlY2FhNjVm
+YzMuLjIzZDFiNzRjMzA2NSAxMDA2NDQKLS0tIGEva2VybmVsL3RpbWUvbnRwX2ludGVybmFsLmgK
+KysrIGIva2VybmVsL3RpbWUvbnRwX2ludGVybmFsLmgKQEAgLTEyLDQgKzEyLDExIEBAIGV4dGVy
+biBpbnQgX19kb19hZGp0aW1leChzdHJ1Y3QgX19rZXJuZWxfdGltZXggKnR4YywKIAkJCSBjb25z
+dCBzdHJ1Y3QgdGltZXNwZWM2NCAqdHMsCiAJCQkgczMyICp0aW1lX3RhaSwgc3RydWN0IGF1ZGl0
+X250cF9kYXRhICphZCk7CiBleHRlcm4gdm9pZCBfX2hhcmRwcHMoY29uc3Qgc3RydWN0IHRpbWVz
+cGVjNjQgKnBoYXNlX3RzLCBjb25zdCBzdHJ1Y3QgdGltZXNwZWM2NCAqcmF3X3RzKTsKKworI2lm
+IGRlZmluZWQoQ09ORklHX0dFTkVSSUNfQ01PU19VUERBVEUpIHx8IGRlZmluZWQoQ09ORklHX1JU
+Q19TWVNUT0hDKQorZXh0ZXJuIHZvaWQgbnRwX25vdGlmeV9jbW9zX3RpbWVyKHZvaWQpOworI2Vs
+c2UKK3N0YXRpYyBpbmxpbmUgdm9pZCBudHBfbm90aWZ5X2Ntb3NfdGltZXIodm9pZCkgeyB9Cisj
+ZW5kaWYKKwogI2VuZGlmIC8qIF9MSU5VWF9OVFBfSU5URVJOQUxfSCAqLwpkaWZmIC0tZ2l0IGEv
+a2VybmVsL3RpbWUvdGljay1icm9hZGNhc3QuYyBiL2tlcm5lbC90aW1lL3RpY2stYnJvYWRjYXN0
+LmMKaW5kZXggMzZkNzQ2NGM4OTYyLi41YTIzODI5MzcyYzcgMTAwNjQ0Ci0tLSBhL2tlcm5lbC90
+aW1lL3RpY2stYnJvYWRjYXN0LmMKKysrIGIva2VybmVsL3RpbWUvdGljay1icm9hZGNhc3QuYwpA
+QCAtMzMxLDcgKzMzMSw3IEBAIHN0YXRpYyB2b2lkIHRpY2tfaGFuZGxlX3BlcmlvZGljX2Jyb2Fk
+Y2FzdChzdHJ1Y3QgY2xvY2tfZXZlbnRfZGV2aWNlICpkZXYpCiAJYmNfbG9jYWwgPSB0aWNrX2Rv
+X3BlcmlvZGljX2Jyb2FkY2FzdCgpOwogCiAJaWYgKGNsb2NrZXZlbnRfc3RhdGVfb25lc2hvdChk
+ZXYpKSB7Ci0JCWt0aW1lX3QgbmV4dCA9IGt0aW1lX2FkZChkZXYtPm5leHRfZXZlbnQsIHRpY2tf
+cGVyaW9kKTsKKwkJa3RpbWVfdCBuZXh0ID0ga3RpbWVfYWRkX25zKGRldi0+bmV4dF9ldmVudCwg
+VElDS19OU0VDKTsKIAogCQljbG9ja2V2ZW50c19wcm9ncmFtX2V2ZW50KGRldiwgbmV4dCwgdHJ1
+ZSk7CiAJfQpAQCAtODc3LDYgKzg3NywyMiBAQCBzdGF0aWMgdm9pZCB0aWNrX2Jyb2FkY2FzdF9p
+bml0X25leHRfZXZlbnQoc3RydWN0IGNwdW1hc2sgKm1hc2ssCiAJfQogfQogCitzdGF0aWMgaW5s
+aW5lIGt0aW1lX3QgdGlja19nZXRfbmV4dF9wZXJpb2Qodm9pZCkKK3sKKwlrdGltZV90IG5leHQ7
+CisKKwkvKgorCSAqIFByb3RlY3QgYWdhaW5zdCBjb25jdXJyZW50IHVwZGF0ZXMgKHN0b3JlIC9s
+b2FkIHRlYXJpbmcgb24KKwkgKiAzMmJpdCkuIEl0IGRvZXMgbm90IG1hdHRlciBpZiB0aGUgdGlt
+ZSBpcyBhbHJlYWR5IGluIHRoZQorCSAqIHBhc3QuIFRoZSBicm9hZGNhc3QgZGV2aWNlIHdoaWNo
+IGlzIGFib3V0IHRvIGJlIHByb2dyYW1tZWQgd2lsbAorCSAqIGZpcmUgaW4gYW55IGNhc2UuCisJ
+ICovCisJcmF3X3NwaW5fbG9jaygmamlmZmllc19sb2NrKTsKKwluZXh0ID0gdGlja19uZXh0X3Bl
+cmlvZDsKKwlyYXdfc3Bpbl91bmxvY2soJmppZmZpZXNfbG9jayk7CisJcmV0dXJuIG5leHQ7Cit9
+CisKIC8qKgogICogdGlja19icm9hZGNhc3Rfc2V0dXBfb25lc2hvdCAtIHNldHVwIHRoZSBicm9h
+ZGNhc3QgZGV2aWNlCiAgKi8KQEAgLTkwNSwxMCArOTIxLDExIEBAIHN0YXRpYyB2b2lkIHRpY2tf
+YnJvYWRjYXN0X3NldHVwX29uZXNob3Qoc3RydWN0IGNsb2NrX2V2ZW50X2RldmljZSAqYmMpCiAJ
+CQkgICB0aWNrX2Jyb2FkY2FzdF9vbmVzaG90X21hc2ssIHRtcG1hc2spOwogCiAJCWlmICh3YXNf
+cGVyaW9kaWMgJiYgIWNwdW1hc2tfZW1wdHkodG1wbWFzaykpIHsKKwkJCWt0aW1lX3QgbmV4dGV2
+dCA9IHRpY2tfZ2V0X25leHRfcGVyaW9kKCk7CisKIAkJCWNsb2NrZXZlbnRzX3N3aXRjaF9zdGF0
+ZShiYywgQ0xPQ0tfRVZUX1NUQVRFX09ORVNIT1QpOwotCQkJdGlja19icm9hZGNhc3RfaW5pdF9u
+ZXh0X2V2ZW50KHRtcG1hc2ssCi0JCQkJCQkgICAgICAgdGlja19uZXh0X3BlcmlvZCk7Ci0JCQl0
+aWNrX2Jyb2FkY2FzdF9zZXRfZXZlbnQoYmMsIGNwdSwgdGlja19uZXh0X3BlcmlvZCk7CisJCQl0
+aWNrX2Jyb2FkY2FzdF9pbml0X25leHRfZXZlbnQodG1wbWFzaywgbmV4dGV2dCk7CisJCQl0aWNr
+X2Jyb2FkY2FzdF9zZXRfZXZlbnQoYmMsIGNwdSwgbmV4dGV2dCk7CiAJCX0gZWxzZQogCQkJYmMt
+Pm5leHRfZXZlbnQgPSBLVElNRV9NQVg7CiAJfSBlbHNlIHsKZGlmZiAtLWdpdCBhL2tlcm5lbC90
+aW1lL3RpY2stY29tbW9uLmMgYi9rZXJuZWwvdGltZS90aWNrLWNvbW1vbi5jCmluZGV4IDZjOWMz
+NDJkZDBlNS4uYTAzNzY0ZGY1MzY2IDEwMDY0NAotLS0gYS9rZXJuZWwvdGltZS90aWNrLWNvbW1v
+bi5jCisrKyBiL2tlcm5lbC90aW1lL3RpY2stY29tbW9uLmMKQEAgLTI3LDEwICsyNywxMSBAQAog
+ICovCiBERUZJTkVfUEVSX0NQVShzdHJ1Y3QgdGlja19kZXZpY2UsIHRpY2tfY3B1X2RldmljZSk7
+CiAvKgotICogVGljayBuZXh0IGV2ZW50OiBrZWVwcyB0cmFjayBvZiB0aGUgdGljayB0aW1lCisg
+KiBUaWNrIG5leHQgZXZlbnQ6IGtlZXBzIHRyYWNrIG9mIHRoZSB0aWNrIHRpbWUuIEl0J3MgdXBk
+YXRlZCBieSB0aGUKKyAqIENQVSB3aGljaCBoYW5kbGVzIHRoZSB0aWNrIGFuZCBwcm90ZWN0ZWQg
+YnkgamlmZmllc19sb2NrLiBUaGVyZSBpcworICogbm8gcmVxdWlyZW1lbnQgdG8gd3JpdGUgaG9s
+ZCB0aGUgamlmZmllcyBzZXFjb3VudCBmb3IgaXQuCiAgKi8KIGt0aW1lX3QgdGlja19uZXh0X3Bl
+cmlvZDsKLWt0aW1lX3QgdGlja19wZXJpb2Q7CiAKIC8qCiAgKiB0aWNrX2RvX3RpbWVyX2NwdSBp
+cyBhIHRpbWVyIGNvcmUgaW50ZXJuYWwgdmFyaWFibGUgd2hpY2ggaG9sZHMgdGhlIENQVSBOUgpA
+QCAtODgsNyArODksNyBAQCBzdGF0aWMgdm9pZCB0aWNrX3BlcmlvZGljKGludCBjcHUpCiAJCXdy
+aXRlX3NlcWNvdW50X2JlZ2luKCZqaWZmaWVzX3NlcSk7CiAKIAkJLyogS2VlcCB0cmFjayBvZiB0
+aGUgbmV4dCB0aWNrIGV2ZW50ICovCi0JCXRpY2tfbmV4dF9wZXJpb2QgPSBrdGltZV9hZGQodGlj
+a19uZXh0X3BlcmlvZCwgdGlja19wZXJpb2QpOworCQl0aWNrX25leHRfcGVyaW9kID0ga3RpbWVf
+YWRkX25zKHRpY2tfbmV4dF9wZXJpb2QsIFRJQ0tfTlNFQyk7CiAKIAkJZG9fdGltZXIoMSk7CiAJ
+CXdyaXRlX3NlcWNvdW50X2VuZCgmamlmZmllc19zZXEpOwpAQCAtMTI3LDcgKzEyOCw3IEBAIHZv
+aWQgdGlja19oYW5kbGVfcGVyaW9kaWMoc3RydWN0IGNsb2NrX2V2ZW50X2RldmljZSAqZGV2KQog
+CQkgKiBTZXR1cCB0aGUgbmV4dCBwZXJpb2QgZm9yIGRldmljZXMsIHdoaWNoIGRvIG5vdCBoYXZl
+CiAJCSAqIHBlcmlvZGljIG1vZGU6CiAJCSAqLwotCQluZXh0ID0ga3RpbWVfYWRkKG5leHQsIHRp
+Y2tfcGVyaW9kKTsKKwkJbmV4dCA9IGt0aW1lX2FkZF9ucyhuZXh0LCBUSUNLX05TRUMpOwogCiAJ
+CWlmICghY2xvY2tldmVudHNfcHJvZ3JhbV9ldmVudChkZXYsIG5leHQsIGZhbHNlKSkKIAkJCXJl
+dHVybjsKQEAgLTE3Myw3ICsxNzQsNyBAQCB2b2lkIHRpY2tfc2V0dXBfcGVyaW9kaWMoc3RydWN0
+IGNsb2NrX2V2ZW50X2RldmljZSAqZGV2LCBpbnQgYnJvYWRjYXN0KQogCQlmb3IgKDs7KSB7CiAJ
+CQlpZiAoIWNsb2NrZXZlbnRzX3Byb2dyYW1fZXZlbnQoZGV2LCBuZXh0LCBmYWxzZSkpCiAJCQkJ
+cmV0dXJuOwotCQkJbmV4dCA9IGt0aW1lX2FkZChuZXh0LCB0aWNrX3BlcmlvZCk7CisJCQluZXh0
+ID0ga3RpbWVfYWRkX25zKG5leHQsIFRJQ0tfTlNFQyk7CiAJCX0KIAl9CiB9CkBAIC0yMjAsNyAr
+MjIxLDYgQEAgc3RhdGljIHZvaWQgdGlja19zZXR1cF9kZXZpY2Uoc3RydWN0IHRpY2tfZGV2aWNl
+ICp0ZCwKIAkJCXRpY2tfZG9fdGltZXJfY3B1ID0gY3B1OwogCiAJCQl0aWNrX25leHRfcGVyaW9k
+ID0ga3RpbWVfZ2V0KCk7Ci0JCQl0aWNrX3BlcmlvZCA9IE5TRUNfUEVSX1NFQyAvIEhaOwogI2lm
+ZGVmIENPTkZJR19OT19IWl9GVUxMCiAJCQkvKgogCQkJICogVGhlIGJvb3QgQ1BVIG1heSBiZSBu
+b2h6X2Z1bGwsIGluIHdoaWNoIGNhc2Ugc2V0CmRpZmYgLS1naXQgYS9rZXJuZWwvdGltZS90aWNr
+LWludGVybmFsLmggYi9rZXJuZWwvdGltZS90aWNrLWludGVybmFsLmgKaW5kZXggN2IyNDk2MTM2
+NzI5Li43YTk4MWM5ZTg3YTQgMTAwNjQ0Ci0tLSBhL2tlcm5lbC90aW1lL3RpY2staW50ZXJuYWwu
+aAorKysgYi9rZXJuZWwvdGltZS90aWNrLWludGVybmFsLmgKQEAgLTE1LDcgKzE1LDYgQEAKIAog
+REVDTEFSRV9QRVJfQ1BVKHN0cnVjdCB0aWNrX2RldmljZSwgdGlja19jcHVfZGV2aWNlKTsKIGV4
+dGVybiBrdGltZV90IHRpY2tfbmV4dF9wZXJpb2Q7Ci1leHRlcm4ga3RpbWVfdCB0aWNrX3Blcmlv
+ZDsKIGV4dGVybiBpbnQgdGlja19kb190aW1lcl9jcHUgX19yZWFkX21vc3RseTsKIAogZXh0ZXJu
+IHZvaWQgdGlja19zZXR1cF9wZXJpb2RpYyhzdHJ1Y3QgY2xvY2tfZXZlbnRfZGV2aWNlICpkZXYs
+IGludCBicm9hZGNhc3QpOwpkaWZmIC0tZ2l0IGEva2VybmVsL3RpbWUvdGljay1zY2hlZC5jIGIv
+a2VybmVsL3RpbWUvdGljay1zY2hlZC5jCmluZGV4IDgxNjMyY2Q1ZTNiNy4uYTllNjg5MzY4MjJk
+IDEwMDY0NAotLS0gYS9rZXJuZWwvdGltZS90aWNrLXNjaGVkLmMKKysrIGIva2VybmVsL3RpbWUv
+dGljay1zY2hlZC5jCkBAIC0yMCw2ICsyMCw3IEBACiAjaW5jbHVkZSA8bGludXgvc2NoZWQvY2xv
+Y2suaD4KICNpbmNsdWRlIDxsaW51eC9zY2hlZC9zdGF0Lmg+CiAjaW5jbHVkZSA8bGludXgvc2No
+ZWQvbm9oei5oPgorI2luY2x1ZGUgPGxpbnV4L3NjaGVkL2xvYWRhdmcuaD4KICNpbmNsdWRlIDxs
+aW51eC9tb2R1bGUuaD4KICNpbmNsdWRlIDxsaW51eC9pcnFfd29yay5oPgogI2luY2x1ZGUgPGxp
+bnV4L3Bvc2l4LXRpbWVycy5oPgpAQCAtNDQsNyArNDUsOSBAQCBzdHJ1Y3QgdGlja19zY2hlZCAq
+dGlja19nZXRfdGlja19zY2hlZChpbnQgY3B1KQogCiAjaWYgZGVmaW5lZChDT05GSUdfTk9fSFpf
+Q09NTU9OKSB8fCBkZWZpbmVkKENPTkZJR19ISUdIX1JFU19USU1FUlMpCiAvKgotICogVGhlIHRp
+bWUsIHdoZW4gdGhlIGxhc3QgamlmZnkgdXBkYXRlIGhhcHBlbmVkLiBQcm90ZWN0ZWQgYnkgamlm
+Zmllc19sb2NrLgorICogVGhlIHRpbWUsIHdoZW4gdGhlIGxhc3QgamlmZnkgdXBkYXRlIGhhcHBl
+bmVkLiBXcml0ZSBhY2Nlc3MgbXVzdCBob2xkCisgKiBqaWZmaWVzX2xvY2sgYW5kIGppZmZpZXNf
+c2VxLiB0aWNrX25vaHpfbmV4dF9ldmVudCgpIG5lZWRzIHRvIGdldCBhCisgKiBjb25zaXN0ZW50
+IHZpZXcgb2YgamlmZmllcyBhbmQgbGFzdF9qaWZmaWVzX3VwZGF0ZS4KICAqLwogc3RhdGljIGt0
+aW1lX3QgbGFzdF9qaWZmaWVzX3VwZGF0ZTsKIApAQCAtNTMsNTAgKzU2LDk3IEBAIHN0YXRpYyBr
+dGltZV90IGxhc3RfamlmZmllc191cGRhdGU7CiAgKi8KIHN0YXRpYyB2b2lkIHRpY2tfZG9fdXBk
+YXRlX2ppZmZpZXM2NChrdGltZV90IG5vdykKIHsKLQl1bnNpZ25lZCBsb25nIHRpY2tzID0gMDsK
+LQlrdGltZV90IGRlbHRhOworCXVuc2lnbmVkIGxvbmcgdGlja3MgPSAxOworCWt0aW1lX3QgZGVs
+dGEsIG5leHRwOwogCiAJLyoKLQkgKiBEbyBhIHF1aWNrIGNoZWNrIHdpdGhvdXQgaG9sZGluZyBq
+aWZmaWVzX2xvY2s6Ci0JICogVGhlIFJFQURfT05DRSgpIHBhaXJzIHdpdGggdHdvIHVwZGF0ZXMg
+ZG9uZSBsYXRlciBpbiB0aGlzIGZ1bmN0aW9uLgorCSAqIDY0Yml0IGNhbiBkbyBhIHF1aWNrIGNo
+ZWNrIHdpdGhvdXQgaG9sZGluZyBqaWZmaWVzIGxvY2sgYW5kCisJICogd2l0aG91dCBsb29raW5n
+IGF0IHRoZSBzZXF1ZW5jZSBjb3VudC4gVGhlIHNtcF9sb2FkX2FjcXVpcmUoKQorCSAqIHBhaXJz
+IHdpdGggdGhlIHVwZGF0ZSBkb25lIGxhdGVyIGluIHRoaXMgZnVuY3Rpb24uCisJICoKKwkgKiAz
+MmJpdCBjYW5ub3QgZG8gdGhhdCBiZWNhdXNlIHRoZSBzdG9yZSBvZiB0aWNrX25leHRfcGVyaW9k
+CisJICogY29uc2lzdHMgb2YgdHdvIDMyYml0IHN0b3JlcyBhbmQgdGhlIGZpcnN0IHN0b3JlIGNv
+dWxkIG1vdmUgaXQKKwkgKiB0byBhIHJhbmRvbSBwb2ludCBpbiB0aGUgZnV0dXJlLgogCSAqLwot
+CWRlbHRhID0ga3RpbWVfc3ViKG5vdywgUkVBRF9PTkNFKGxhc3RfamlmZmllc191cGRhdGUpKTsK
+LQlpZiAoZGVsdGEgPCB0aWNrX3BlcmlvZCkKLQkJcmV0dXJuOworCWlmIChJU19FTkFCTEVEKENP
+TkZJR182NEJJVCkpIHsKKwkJaWYgKGt0aW1lX2JlZm9yZShub3csIHNtcF9sb2FkX2FjcXVpcmUo
+JnRpY2tfbmV4dF9wZXJpb2QpKSkKKwkJCXJldHVybjsKKwl9IGVsc2UgeworCQl1bnNpZ25lZCBp
+bnQgc2VxOwogCi0JLyogUmVldmFsdWF0ZSB3aXRoIGppZmZpZXNfbG9jayBoZWxkICovCisJCS8q
+CisJCSAqIEF2b2lkIGNvbnRlbnRpb24gb24gamlmZmllc19sb2NrIGFuZCBwcm90ZWN0IHRoZSBx
+dWljaworCQkgKiBjaGVjayB3aXRoIHRoZSBzZXF1ZW5jZSBjb3VudC4KKwkJICovCisJCWRvIHsK
+KwkJCXNlcSA9IHJlYWRfc2VxY291bnRfYmVnaW4oJmppZmZpZXNfc2VxKTsKKwkJCW5leHRwID0g
+dGlja19uZXh0X3BlcmlvZDsKKwkJfSB3aGlsZSAocmVhZF9zZXFjb3VudF9yZXRyeSgmamlmZmll
+c19zZXEsIHNlcSkpOworCisJCWlmIChrdGltZV9iZWZvcmUobm93LCBuZXh0cCkpCisJCQlyZXR1
+cm47CisJfQorCisJLyogUXVpY2sgY2hlY2sgZmFpbGVkLCBpLmUuIHVwZGF0ZSBpcyByZXF1aXJl
+ZC4gKi8KIAlyYXdfc3Bpbl9sb2NrKCZqaWZmaWVzX2xvY2spOworCS8qCisJICogUmVldmFsdWF0
+ZSB3aXRoIHRoZSBsb2NrIGhlbGQuIEFub3RoZXIgQ1BVIG1pZ2h0IGhhdmUgZG9uZSB0aGUKKwkg
+KiB1cGRhdGUgYWxyZWFkeS4KKwkgKi8KKwlpZiAoa3RpbWVfYmVmb3JlKG5vdywgdGlja19uZXh0
+X3BlcmlvZCkpIHsKKwkJcmF3X3NwaW5fdW5sb2NrKCZqaWZmaWVzX2xvY2spOworCQlyZXR1cm47
+CisJfQorCiAJd3JpdGVfc2VxY291bnRfYmVnaW4oJmppZmZpZXNfc2VxKTsKIAotCWRlbHRhID0g
+a3RpbWVfc3ViKG5vdywgbGFzdF9qaWZmaWVzX3VwZGF0ZSk7Ci0JaWYgKGRlbHRhID49IHRpY2tf
+cGVyaW9kKSB7CisJZGVsdGEgPSBrdGltZV9zdWIobm93LCB0aWNrX25leHRfcGVyaW9kKTsKKwlp
+ZiAodW5saWtlbHkoZGVsdGEgPj0gVElDS19OU0VDKSkgeworCQkvKiBTbG93IHBhdGggZm9yIGxv
+bmcgaWRsZSBzbGVlcCB0aW1lcyAqLworCQlzNjQgaW5jciA9IFRJQ0tfTlNFQzsKIAotCQlkZWx0
+YSA9IGt0aW1lX3N1YihkZWx0YSwgdGlja19wZXJpb2QpOwotCQkvKiBQYWlycyB3aXRoIHRoZSBs
+b2NrbGVzcyByZWFkIGluIHRoaXMgZnVuY3Rpb24uICovCi0JCVdSSVRFX09OQ0UobGFzdF9qaWZm
+aWVzX3VwZGF0ZSwKLQkJCSAgIGt0aW1lX2FkZChsYXN0X2ppZmZpZXNfdXBkYXRlLCB0aWNrX3Bl
+cmlvZCkpOworCQl0aWNrcyArPSBrdGltZV9kaXZucyhkZWx0YSwgaW5jcik7CiAKLQkJLyogU2xv
+dyBwYXRoIGZvciBsb25nIHRpbWVvdXRzICovCi0JCWlmICh1bmxpa2VseShkZWx0YSA+PSB0aWNr
+X3BlcmlvZCkpIHsKLQkJCXM2NCBpbmNyID0ga3RpbWVfdG9fbnModGlja19wZXJpb2QpOworCQls
+YXN0X2ppZmZpZXNfdXBkYXRlID0ga3RpbWVfYWRkX25zKGxhc3RfamlmZmllc191cGRhdGUsCisJ
+CQkJCQkgICBpbmNyICogdGlja3MpOworCX0gZWxzZSB7CisJCWxhc3RfamlmZmllc191cGRhdGUg
+PSBrdGltZV9hZGRfbnMobGFzdF9qaWZmaWVzX3VwZGF0ZSwKKwkJCQkJCSAgIFRJQ0tfTlNFQyk7
+CisJfQogCi0JCQl0aWNrcyA9IGt0aW1lX2Rpdm5zKGRlbHRhLCBpbmNyKTsKKwkvKiBBZHZhbmNl
+IGppZmZpZXMgdG8gY29tcGxldGUgdGhlIGppZmZpZXNfc2VxIHByb3RlY3RlZCBqb2IgKi8KKwlq
+aWZmaWVzXzY0ICs9IHRpY2tzOwogCi0JCQkvKiBQYWlycyB3aXRoIHRoZSBsb2NrbGVzcyByZWFk
+IGluIHRoaXMgZnVuY3Rpb24uICovCi0JCQlXUklURV9PTkNFKGxhc3RfamlmZmllc191cGRhdGUs
+Ci0JCQkJICAga3RpbWVfYWRkX25zKGxhc3RfamlmZmllc191cGRhdGUsCi0JCQkJCQlpbmNyICog
+dGlja3MpKTsKLQkJfQotCQlkb190aW1lcigrK3RpY2tzKTsKKwkvKgorCSAqIEtlZXAgdGhlIHRp
+Y2tfbmV4dF9wZXJpb2QgdmFyaWFibGUgdXAgdG8gZGF0ZS4KKwkgKi8KKwluZXh0cCA9IGt0aW1l
+X2FkZF9ucyhsYXN0X2ppZmZpZXNfdXBkYXRlLCBUSUNLX05TRUMpOwogCi0JCS8qIEtlZXAgdGhl
+IHRpY2tfbmV4dF9wZXJpb2QgdmFyaWFibGUgdXAgdG8gZGF0ZSAqLwotCQl0aWNrX25leHRfcGVy
+aW9kID0ga3RpbWVfYWRkKGxhc3RfamlmZmllc191cGRhdGUsIHRpY2tfcGVyaW9kKTsKKwlpZiAo
+SVNfRU5BQkxFRChDT05GSUdfNjRCSVQpKSB7CisJCS8qCisJCSAqIFBhaXJzIHdpdGggc21wX2xv
+YWRfYWNxdWlyZSgpIGluIHRoZSBsb2NrbGVzcyBxdWljaworCQkgKiBjaGVjayBhYm92ZSBhbmQg
+ZW5zdXJlcyB0aGF0IHRoZSB1cGRhdGUgdG8gamlmZmllc182NCBpcworCQkgKiBub3QgcmVvcmRl
+cmVkIHZzLiB0aGUgc3RvcmUgdG8gdGlja19uZXh0X3BlcmlvZCwgbmVpdGhlcgorCQkgKiBieSB0
+aGUgY29tcGlsZXIgbm9yIGJ5IHRoZSBDUFUuCisJCSAqLworCQlzbXBfc3RvcmVfcmVsZWFzZSgm
+dGlja19uZXh0X3BlcmlvZCwgbmV4dHApOwogCX0gZWxzZSB7Ci0JCXdyaXRlX3NlcWNvdW50X2Vu
+ZCgmamlmZmllc19zZXEpOwotCQlyYXdfc3Bpbl91bmxvY2soJmppZmZpZXNfbG9jayk7Ci0JCXJl
+dHVybjsKKwkJLyoKKwkJICogQSBwbGFpbiBzdG9yZSBpcyBnb29kIGVub3VnaCBvbiAzMmJpdCBh
+cyB0aGUgcXVpY2sgY2hlY2sKKwkJICogYWJvdmUgaXMgcHJvdGVjdGVkIGJ5IHRoZSBzZXF1ZW5j
+ZSBjb3VudC4KKwkJICovCisJCXRpY2tfbmV4dF9wZXJpb2QgPSBuZXh0cDsKIAl9CisKKwkvKgor
+CSAqIFJlbGVhc2UgdGhlIHNlcXVlbmNlIGNvdW50LiBjYWxjX2dsb2JhbF9sb2FkKCkgYmVsb3cg
+aXMgbm90CisJICogcHJvdGVjdGVkIGJ5IGl0LCBidXQgamlmZmllc19sb2NrIG5lZWRzIHRvIGJl
+IGhlbGQgdG8gcHJldmVudAorCSAqIGNvbmN1cnJlbnQgaW52b2NhdGlvbnMuCisJICovCiAJd3Jp
+dGVfc2VxY291bnRfZW5kKCZqaWZmaWVzX3NlcSk7CisKKwljYWxjX2dsb2JhbF9sb2FkKCk7CisK
+IAlyYXdfc3Bpbl91bmxvY2soJmppZmZpZXNfbG9jayk7CiAJdXBkYXRlX3dhbGxfdGltZSgpOwog
+fQpAQCAtNjYxLDcgKzcxMSw3IEBAIHN0YXRpYyB2b2lkIHRpY2tfbm9oel9yZXN0YXJ0KHN0cnVj
+dCB0aWNrX3NjaGVkICp0cywga3RpbWVfdCBub3cpCiAJaHJ0aW1lcl9zZXRfZXhwaXJlcygmdHMt
+PnNjaGVkX3RpbWVyLCB0cy0+bGFzdF90aWNrKTsKIAogCS8qIEZvcndhcmQgdGhlIHRpbWUgdG8g
+ZXhwaXJlIGluIHRoZSBmdXR1cmUgKi8KLQlocnRpbWVyX2ZvcndhcmQoJnRzLT5zY2hlZF90aW1l
+ciwgbm93LCB0aWNrX3BlcmlvZCk7CisJaHJ0aW1lcl9mb3J3YXJkKCZ0cy0+c2NoZWRfdGltZXIs
+IG5vdywgVElDS19OU0VDKTsKIAogCWlmICh0cy0+bm9oel9tb2RlID09IE5PSFpfTU9ERV9ISUdI
+UkVTKSB7CiAJCWhydGltZXJfc3RhcnRfZXhwaXJlcygmdHMtPnNjaGVkX3RpbWVyLApAQCAtMTIz
+MCw3ICsxMjgwLDcgQEAgc3RhdGljIHZvaWQgdGlja19ub2h6X2hhbmRsZXIoc3RydWN0IGNsb2Nr
+X2V2ZW50X2RldmljZSAqZGV2KQogCWlmICh1bmxpa2VseSh0cy0+dGlja19zdG9wcGVkKSkKIAkJ
+cmV0dXJuOwogCi0JaHJ0aW1lcl9mb3J3YXJkKCZ0cy0+c2NoZWRfdGltZXIsIG5vdywgdGlja19w
+ZXJpb2QpOworCWhydGltZXJfZm9yd2FyZCgmdHMtPnNjaGVkX3RpbWVyLCBub3csIFRJQ0tfTlNF
+Qyk7CiAJdGlja19wcm9ncmFtX2V2ZW50KGhydGltZXJfZ2V0X2V4cGlyZXMoJnRzLT5zY2hlZF90
+aW1lciksIDEpOwogfQogCkBAIC0xMjY3LDcgKzEzMTcsNyBAQCBzdGF0aWMgdm9pZCB0aWNrX25v
+aHpfc3dpdGNoX3RvX25vaHoodm9pZCkKIAluZXh0ID0gdGlja19pbml0X2ppZmZ5X3VwZGF0ZSgp
+OwogCiAJaHJ0aW1lcl9zZXRfZXhwaXJlcygmdHMtPnNjaGVkX3RpbWVyLCBuZXh0KTsKLQlocnRp
+bWVyX2ZvcndhcmRfbm93KCZ0cy0+c2NoZWRfdGltZXIsIHRpY2tfcGVyaW9kKTsKKwlocnRpbWVy
+X2ZvcndhcmRfbm93KCZ0cy0+c2NoZWRfdGltZXIsIFRJQ0tfTlNFQyk7CiAJdGlja19wcm9ncmFt
+X2V2ZW50KGhydGltZXJfZ2V0X2V4cGlyZXMoJnRzLT5zY2hlZF90aW1lciksIDEpOwogCXRpY2tf
+bm9oel9hY3RpdmF0ZSh0cywgTk9IWl9NT0RFX0xPV1JFUyk7CiB9CkBAIC0xMzMzLDcgKzEzODMs
+NyBAQCBzdGF0aWMgZW51bSBocnRpbWVyX3Jlc3RhcnQgdGlja19zY2hlZF90aW1lcihzdHJ1Y3Qg
+aHJ0aW1lciAqdGltZXIpCiAJaWYgKHVubGlrZWx5KHRzLT50aWNrX3N0b3BwZWQpKQogCQlyZXR1
+cm4gSFJUSU1FUl9OT1JFU1RBUlQ7CiAKLQlocnRpbWVyX2ZvcndhcmQodGltZXIsIG5vdywgdGlj
+a19wZXJpb2QpOworCWhydGltZXJfZm9yd2FyZCh0aW1lciwgbm93LCBUSUNLX05TRUMpOwogCiAJ
+cmV0dXJuIEhSVElNRVJfUkVTVEFSVDsKIH0KQEAgLTEzNjcsMTMgKzE0MTcsMTMgQEAgdm9pZCB0
+aWNrX3NldHVwX3NjaGVkX3RpbWVyKHZvaWQpCiAKIAkvKiBPZmZzZXQgdGhlIHRpY2sgdG8gYXZl
+cnQgamlmZmllc19sb2NrIGNvbnRlbnRpb24uICovCiAJaWYgKHNjaGVkX3NrZXdfdGljaykgewot
+CQl1NjQgb2Zmc2V0ID0ga3RpbWVfdG9fbnModGlja19wZXJpb2QpID4+IDE7CisJCXU2NCBvZmZz
+ZXQgPSBUSUNLX05TRUMgPj4gMTsKIAkJZG9fZGl2KG9mZnNldCwgbnVtX3Bvc3NpYmxlX2NwdXMo
+KSk7CiAJCW9mZnNldCAqPSBzbXBfcHJvY2Vzc29yX2lkKCk7CiAJCWhydGltZXJfYWRkX2V4cGly
+ZXNfbnMoJnRzLT5zY2hlZF90aW1lciwgb2Zmc2V0KTsKIAl9CiAKLQlocnRpbWVyX2ZvcndhcmQo
+JnRzLT5zY2hlZF90aW1lciwgbm93LCB0aWNrX3BlcmlvZCk7CisJaHJ0aW1lcl9mb3J3YXJkKCZ0
+cy0+c2NoZWRfdGltZXIsIG5vdywgVElDS19OU0VDKTsKIAlocnRpbWVyX3N0YXJ0X2V4cGlyZXMo
+JnRzLT5zY2hlZF90aW1lciwgSFJUSU1FUl9NT0RFX0FCU19QSU5ORURfSEFSRCk7CiAJdGlja19u
+b2h6X2FjdGl2YXRlKHRzLCBOT0haX01PREVfSElHSFJFUyk7CiB9CmRpZmYgLS1naXQgYS9rZXJu
+ZWwvdGltZS90aW1lY29udi5jIGIva2VybmVsL3RpbWUvdGltZWNvbnYuYwppbmRleCA1ODllMGE1
+NTIxMjkuLjYyZTNiNDY3MTdhNiAxMDA2NDQKLS0tIGEva2VybmVsL3RpbWUvdGltZWNvbnYuYwor
+KysgYi9rZXJuZWwvdGltZS90aW1lY29udi5jCkBAIC03MCwxMCArNzAsMTAgQEAgc3RhdGljIGNv
+bnN0IHVuc2lnbmVkIHNob3J0IF9fbW9uX3lkYXlbMl1bMTNdID0gewogLyoqCiAgKiB0aW1lNjRf
+dG9fdG0gLSBjb252ZXJ0cyB0aGUgY2FsZW5kYXIgdGltZSB0byBsb2NhbCBicm9rZW4tZG93biB0
+aW1lCiAgKgotICogQHRvdGFsc2Vjcwl0aGUgbnVtYmVyIG9mIHNlY29uZHMgZWxhcHNlZCBzaW5j
+ZSAwMDowMDowMCBvbiBKYW51YXJ5IDEsIDE5NzAsCisgKiBAdG90YWxzZWNzOgl0aGUgbnVtYmVy
+IG9mIHNlY29uZHMgZWxhcHNlZCBzaW5jZSAwMDowMDowMCBvbiBKYW51YXJ5IDEsIDE5NzAsCiAg
+KgkJQ29vcmRpbmF0ZWQgVW5pdmVyc2FsIFRpbWUgKFVUQykuCi0gKiBAb2Zmc2V0CW9mZnNldCBz
+ZWNvbmRzIGFkZGluZyB0byB0b3RhbHNlY3MuCi0gKiBAcmVzdWx0CXBvaW50ZXIgdG8gc3RydWN0
+IHRtIHZhcmlhYmxlIHRvIHJlY2VpdmUgYnJva2VuLWRvd24gdGltZQorICogQG9mZnNldDoJb2Zm
+c2V0IHNlY29uZHMgYWRkaW5nIHRvIHRvdGFsc2Vjcy4KKyAqIEByZXN1bHQ6CXBvaW50ZXIgdG8g
+c3RydWN0IHRtIHZhcmlhYmxlIHRvIHJlY2VpdmUgYnJva2VuLWRvd24gdGltZQogICovCiB2b2lk
+IHRpbWU2NF90b190bSh0aW1lNjRfdCB0b3RhbHNlY3MsIGludCBvZmZzZXQsIHN0cnVjdCB0bSAq
+cmVzdWx0KQogewpkaWZmIC0tZ2l0IGEva2VybmVsL3RpbWUvdGltZWtlZXBpbmcuYyBiL2tlcm5l
+bC90aW1lL3RpbWVrZWVwaW5nLmMKaW5kZXggNjg1OGEzMTM2NGI2Li43NDUwM2MwMTUxZTUgMTAw
+NjQ0Ci0tLSBhL2tlcm5lbC90aW1lL3RpbWVrZWVwaW5nLmMKKysrIGIva2VybmVsL3RpbWUvdGlt
+ZWtlZXBpbmcuYwpAQCAtNDA3LDYgKzQwNyw3IEBAIHN0YXRpYyBpbmxpbmUgdTY0IHRpbWVrZWVw
+aW5nX2N5Y2xlc190b19ucyhjb25zdCBzdHJ1Y3QgdGtfcmVhZF9iYXNlICp0a3IsIHU2NCBjCiAv
+KioKICAqIHVwZGF0ZV9mYXN0X3RpbWVrZWVwZXIgLSBVcGRhdGUgdGhlIGZhc3QgYW5kIE5NSSBz
+YWZlIG1vbm90b25pYyB0aW1la2VlcGVyLgogICogQHRrcjogVGltZWtlZXBpbmcgcmVhZG91dCBi
+YXNlIGZyb20gd2hpY2ggd2UgdGFrZSB0aGUgdXBkYXRlCisgKiBAdGtmOiBQb2ludGVyIHRvIE5N
+SSBzYWZlIHRpbWVrZWVwZXIKICAqCiAgKiBXZSB3YW50IHRvIHVzZSB0aGlzIGZyb20gYW55IGNv
+bnRleHQgaW5jbHVkaW5nIE5NSSBhbmQgdHJhY2luZyAvCiAgKiBpbnN0cnVtZW50aW5nIHRoZSB0
+aW1la2VlcGluZyBjb2RlIGl0c2VsZi4KQEAgLTQzNiw2ICs0MzcsMjcgQEAgc3RhdGljIHZvaWQg
+dXBkYXRlX2Zhc3RfdGltZWtlZXBlcihjb25zdCBzdHJ1Y3QgdGtfcmVhZF9iYXNlICp0a3IsCiAJ
+bWVtY3B5KGJhc2UgKyAxLCBiYXNlLCBzaXplb2YoKmJhc2UpKTsKIH0KIAorc3RhdGljIF9fYWx3
+YXlzX2lubGluZSB1NjQgX19rdGltZV9nZXRfZmFzdF9ucyhzdHJ1Y3QgdGtfZmFzdCAqdGtmKQor
+eworCXN0cnVjdCB0a19yZWFkX2Jhc2UgKnRrcjsKKwl1bnNpZ25lZCBpbnQgc2VxOworCXU2NCBu
+b3c7CisKKwlkbyB7CisJCXNlcSA9IHJhd19yZWFkX3NlcWNvdW50X2xhdGNoKCZ0a2YtPnNlcSk7
+CisJCXRrciA9IHRrZi0+YmFzZSArIChzZXEgJiAweDAxKTsKKwkJbm93ID0ga3RpbWVfdG9fbnMo
+dGtyLT5iYXNlKTsKKworCQlub3cgKz0gdGltZWtlZXBpbmdfZGVsdGFfdG9fbnModGtyLAorCQkJ
+CWNsb2Nrc291cmNlX2RlbHRhKAorCQkJCQl0a19jbG9ja19yZWFkKHRrciksCisJCQkJCXRrci0+
+Y3ljbGVfbGFzdCwKKwkJCQkJdGtyLT5tYXNrKSk7CisJfSB3aGlsZSAocmVhZF9zZXFjb3VudF9s
+YXRjaF9yZXRyeSgmdGtmLT5zZXEsIHNlcSkpOworCisJcmV0dXJuIG5vdzsKK30KKwogLyoqCiAg
+KiBrdGltZV9nZXRfbW9ub19mYXN0X25zIC0gRmFzdCBOTUkgc2FmZSBhY2Nlc3MgdG8gY2xvY2sg
+bW9ub3RvbmljCiAgKgpAQCAtNDYyLDM5ICs0ODQsMjQgQEAgc3RhdGljIHZvaWQgdXBkYXRlX2Zh
+c3RfdGltZWtlZXBlcihjb25zdCBzdHJ1Y3QgdGtfcmVhZF9iYXNlICp0a3IsCiAgKgogICogU28g
+cmVhZGVyIDYgd2lsbCBvYnNlcnZlIHRpbWUgZ29pbmcgYmFja3dhcmRzIHZlcnN1cyByZWFkZXIg
+NS4KICAqCi0gKiBXaGlsZSBvdGhlciBDUFVzIGFyZSBsaWtlbHkgdG8gYmUgYWJsZSBvYnNlcnZl
+IHRoYXQsIHRoZSBvbmx5IHdheQorICogV2hpbGUgb3RoZXIgQ1BVcyBhcmUgbGlrZWx5IHRvIGJl
+IGFibGUgdG8gb2JzZXJ2ZSB0aGF0LCB0aGUgb25seSB3YXkKICAqIGZvciBhIENQVSBsb2NhbCBv
+YnNlcnZhdGlvbiBpcyB3aGVuIGFuIE5NSSBoaXRzIGluIHRoZSBtaWRkbGUgb2YKICAqIHRoZSB1
+cGRhdGUuIFRpbWVzdGFtcHMgdGFrZW4gZnJvbSB0aGF0IE5NSSBjb250ZXh0IG1pZ2h0IGJlIGFo
+ZWFkCiAgKiBvZiB0aGUgZm9sbG93aW5nIHRpbWVzdGFtcHMuIENhbGxlcnMgbmVlZCB0byBiZSBh
+d2FyZSBvZiB0aGF0IGFuZAogICogZGVhbCB3aXRoIGl0LgogICovCi1zdGF0aWMgX19hbHdheXNf
+aW5saW5lIHU2NCBfX2t0aW1lX2dldF9mYXN0X25zKHN0cnVjdCB0a19mYXN0ICp0a2YpCi17Ci0J
+c3RydWN0IHRrX3JlYWRfYmFzZSAqdGtyOwotCXVuc2lnbmVkIGludCBzZXE7Ci0JdTY0IG5vdzsK
+LQotCWRvIHsKLQkJc2VxID0gcmF3X3JlYWRfc2VxY291bnRfbGF0Y2goJnRrZi0+c2VxKTsKLQkJ
+dGtyID0gdGtmLT5iYXNlICsgKHNlcSAmIDB4MDEpOwotCQlub3cgPSBrdGltZV90b19ucyh0a3It
+PmJhc2UpOwotCi0JCW5vdyArPSB0aW1la2VlcGluZ19kZWx0YV90b19ucyh0a3IsCi0JCQkJY2xv
+Y2tzb3VyY2VfZGVsdGEoCi0JCQkJCXRrX2Nsb2NrX3JlYWQodGtyKSwKLQkJCQkJdGtyLT5jeWNs
+ZV9sYXN0LAotCQkJCQl0a3ItPm1hc2spKTsKLQl9IHdoaWxlIChyZWFkX3NlcWNvdW50X2xhdGNo
+X3JldHJ5KCZ0a2YtPnNlcSwgc2VxKSk7Ci0KLQlyZXR1cm4gbm93OwotfQotCiB1NjQga3RpbWVf
+Z2V0X21vbm9fZmFzdF9ucyh2b2lkKQogewogCXJldHVybiBfX2t0aW1lX2dldF9mYXN0X25zKCZ0
+a19mYXN0X21vbm8pOwogfQogRVhQT1JUX1NZTUJPTF9HUEwoa3RpbWVfZ2V0X21vbm9fZmFzdF9u
+cyk7CiAKKy8qKgorICoga3RpbWVfZ2V0X3Jhd19mYXN0X25zIC0gRmFzdCBOTUkgc2FmZSBhY2Nl
+c3MgdG8gY2xvY2sgbW9ub3RvbmljIHJhdworICoKKyAqIENvbnRyYXJ5IHRvIGt0aW1lX2dldF9t
+b25vX2Zhc3RfbnMoKSB0aGlzIGlzIGFsd2F5cyBjb3JyZWN0IGJlY2F1c2UgdGhlCisgKiBjb252
+ZXJzaW9uIGZhY3RvciBpcyBub3QgYWZmZWN0ZWQgYnkgTlRQL1BUUCBjb3JyZWN0aW9uLgorICov
+CiB1NjQga3RpbWVfZ2V0X3Jhd19mYXN0X25zKHZvaWQpCiB7CiAJcmV0dXJuIF9fa3RpbWVfZ2V0
+X2Zhc3RfbnMoJnRrX2Zhc3RfcmF3KTsKQEAgLTUyMSw2ICs1MjgsOSBAQCBFWFBPUlRfU1lNQk9M
+X0dQTChrdGltZV9nZXRfcmF3X2Zhc3RfbnMpOwogICogKDIpIE9uIDMyLWJpdCBzeXN0ZW1zLCB0
+aGUgNjQtYml0IGJvb3Qgb2Zmc2V0ICh0ay0+b2Zmc19ib290KSBtYXkgYmUKICAqIHBhcnRpYWxs
+eSB1cGRhdGVkLiAgU2luY2UgdGhlIHRrLT5vZmZzX2Jvb3QgdXBkYXRlIGlzIGEgcmFyZSBldmVu
+dCwgdGhpcwogICogc2hvdWxkIGJlIGEgcmFyZSBvY2N1cnJlbmNlIHdoaWNoIHBvc3Rwcm9jZXNz
+aW5nIHNob3VsZCBiZSBhYmxlIHRvIGhhbmRsZS4KKyAqCisgKiBUaGUgY2F2ZWF0cyB2cy4gdGlt
+ZXN0YW1wIG9yZGVyaW5nIGFzIGRvY3VtZW50ZWQgZm9yIGt0aW1lX2dldF9mYXN0X25zKCkKKyAq
+IGFwcGx5IGFzIHdlbGwuCiAgKi8KIHU2NCBub3RyYWNlIGt0aW1lX2dldF9ib290X2Zhc3RfbnMo
+dm9pZCkKIHsKQEAgLTUzMCw5ICs1NDAsNiBAQCB1NjQgbm90cmFjZSBrdGltZV9nZXRfYm9vdF9m
+YXN0X25zKHZvaWQpCiB9CiBFWFBPUlRfU1lNQk9MX0dQTChrdGltZV9nZXRfYm9vdF9mYXN0X25z
+KTsKIAotLyoKLSAqIFNlZSBjb21tZW50IGZvciBfX2t0aW1lX2dldF9mYXN0X25zKCkgdnMuIHRp
+bWVzdGFtcCBvcmRlcmluZwotICovCiBzdGF0aWMgX19hbHdheXNfaW5saW5lIHU2NCBfX2t0aW1l
+X2dldF9yZWFsX2Zhc3Qoc3RydWN0IHRrX2Zhc3QgKnRrZiwgdTY0ICptb25vKQogewogCXN0cnVj
+dCB0a19yZWFkX2Jhc2UgKnRrcjsKQEAgLTU1Nyw2ICs1NjQsOCBAQCBzdGF0aWMgX19hbHdheXNf
+aW5saW5lIHU2NCBfX2t0aW1lX2dldF9yZWFsX2Zhc3Qoc3RydWN0IHRrX2Zhc3QgKnRrZiwgdTY0
+ICptb25vKQogCiAvKioKICAqIGt0aW1lX2dldF9yZWFsX2Zhc3RfbnM6IC0gTk1JIHNhZmUgYW5k
+IGZhc3QgYWNjZXNzIHRvIGNsb2NrIHJlYWx0aW1lLgorICoKKyAqIFNlZSBrdGltZV9nZXRfZmFz
+dF9ucygpIGZvciBkb2N1bWVudGF0aW9uIG9mIHRoZSB0aW1lIHN0YW1wIG9yZGVyaW5nLgogICov
+CiB1NjQga3RpbWVfZ2V0X3JlYWxfZmFzdF9ucyh2b2lkKQogewpAQCAtNjU0LDYgKzY2Myw3IEBA
+IHN0YXRpYyB2b2lkIHVwZGF0ZV9wdmNsb2NrX2d0b2Qoc3RydWN0IHRpbWVrZWVwZXIgKnRrLCBi
+b29sIHdhc19zZXQpCiAKIC8qKgogICogcHZjbG9ja19ndG9kX3JlZ2lzdGVyX25vdGlmaWVyIC0g
+cmVnaXN0ZXIgYSBwdmNsb2NrIHRpbWVkYXRhIHVwZGF0ZSBsaXN0ZW5lcgorICogQG5iOiBQb2lu
+dGVyIHRvIHRoZSBub3RpZmllciBibG9jayB0byByZWdpc3RlcgogICovCiBpbnQgcHZjbG9ja19n
+dG9kX3JlZ2lzdGVyX25vdGlmaWVyKHN0cnVjdCBub3RpZmllcl9ibG9jayAqbmIpCiB7CkBAIC02
+NzMsNiArNjgzLDcgQEAgRVhQT1JUX1NZTUJPTF9HUEwocHZjbG9ja19ndG9kX3JlZ2lzdGVyX25v
+dGlmaWVyKTsKIC8qKgogICogcHZjbG9ja19ndG9kX3VucmVnaXN0ZXJfbm90aWZpZXIgLSB1bnJl
+Z2lzdGVyIGEgcHZjbG9jawogICogdGltZWRhdGEgdXBkYXRlIGxpc3RlbmVyCisgKiBAbmI6IFBv
+aW50ZXIgdG8gdGhlIG5vdGlmaWVyIGJsb2NrIHRvIHVucmVnaXN0ZXIKICAqLwogaW50IHB2Y2xv
+Y2tfZ3RvZF91bnJlZ2lzdGVyX25vdGlmaWVyKHN0cnVjdCBub3RpZmllcl9ibG9jayAqbmIpCiB7
+CkBAIC03NjMsNiArNzc0LDcgQEAgc3RhdGljIHZvaWQgdGltZWtlZXBpbmdfdXBkYXRlKHN0cnVj
+dCB0aW1la2VlcGVyICp0aywgdW5zaWduZWQgaW50IGFjdGlvbikKIAogLyoqCiAgKiB0aW1la2Vl
+cGluZ19mb3J3YXJkX25vdyAtIHVwZGF0ZSBjbG9jayB0byB0aGUgY3VycmVudCB0aW1lCisgKiBA
+dGs6CQlQb2ludGVyIHRvIHRoZSB0aW1la2VlcGVyIHRvIHVwZGF0ZQogICoKICAqIEZvcndhcmQg
+dGhlIGN1cnJlbnQgY2xvY2sgdG8gdXBkYXRlIGl0cyBzdGF0ZSBzaW5jZSB0aGUgbGFzdCBjYWxs
+IHRvCiAgKiB1cGRhdGVfd2FsbF90aW1lKCkuIFRoaXMgaXMgdXNlZnVsIGJlZm9yZSBzaWduaWZp
+Y2FudCBjbG9jayBjaGFuZ2VzLApAQCAtMTMzOSw3ICsxMzUxLDcgQEAgRVhQT1JUX1NZTUJPTChk
+b19zZXR0aW1lb2ZkYXk2NCk7CiAKIC8qKgogICogdGltZWtlZXBpbmdfaW5qZWN0X29mZnNldCAt
+IEFkZHMgb3Igc3VidHJhY3RzIGZyb20gdGhlIGN1cnJlbnQgdGltZS4KLSAqIEB0djoJCXBvaW50
+ZXIgdG8gdGhlIHRpbWVzcGVjIHZhcmlhYmxlIGNvbnRhaW5pbmcgdGhlIG9mZnNldAorICogQHRz
+OgkJUG9pbnRlciB0byB0aGUgdGltZXNwZWMgdmFyaWFibGUgY29udGFpbmluZyB0aGUgb2Zmc2V0
+CiAgKgogICogQWRkcyBvciBzdWJ0cmFjdHMgYW4gb2Zmc2V0IHZhbHVlIGZyb20gdGhlIGN1cnJl
+bnQgdGltZS4KICAqLwpAQCAtMTQxNSw5ICsxNDI3LDggQEAgdm9pZCB0aW1la2VlcGluZ193YXJw
+X2Nsb2NrKHZvaWQpCiAJfQogfQogCi0vKioKKy8qCiAgKiBfX3RpbWVrZWVwaW5nX3NldF90YWlf
+b2Zmc2V0IC0gU2V0cyB0aGUgVEFJIG9mZnNldCBmcm9tIFVUQyBhbmQgbW9ub3RvbmljCi0gKgog
+ICovCiBzdGF0aWMgdm9pZCBfX3RpbWVrZWVwaW5nX3NldF90YWlfb2Zmc2V0KHN0cnVjdCB0aW1l
+a2VlcGVyICp0aywgczMyIHRhaV9vZmZzZXQpCiB7CkBAIC0xNDI1LDcgKzE0MzYsNyBAQCBzdGF0
+aWMgdm9pZCBfX3RpbWVrZWVwaW5nX3NldF90YWlfb2Zmc2V0KHN0cnVjdCB0aW1la2VlcGVyICp0
+aywgczMyIHRhaV9vZmZzZXQpCiAJdGstPm9mZnNfdGFpID0ga3RpbWVfYWRkKHRrLT5vZmZzX3Jl
+YWwsIGt0aW1lX3NldCh0YWlfb2Zmc2V0LCAwKSk7CiB9CiAKLS8qKgorLyoKICAqIGNoYW5nZV9j
+bG9ja3NvdXJjZSAtIFN3YXBzIGNsb2Nrc291cmNlcyBpZiBhIG5ldyBvbmUgaXMgYXZhaWxhYmxl
+CiAgKgogICogQWNjdW11bGF0ZXMgY3VycmVudCB0aW1lIGludGVydmFsIGFuZCBpbml0aWFsaXpl
+cyBuZXcgY2xvY2tzb3VyY2UKQEAgLTE1NDgsNiArMTU1OSw3IEBAIHU2NCB0aW1la2VlcGluZ19t
+YXhfZGVmZXJtZW50KHZvaWQpCiAKIC8qKgogICogcmVhZF9wZXJzaXN0ZW50X2Nsb2NrNjQgLSAg
+UmV0dXJuIHRpbWUgZnJvbSB0aGUgcGVyc2lzdGVudCBjbG9jay4KKyAqIEB0czogUG9pbnRlciB0
+byB0aGUgc3RvcmFnZSBmb3IgdGhlIHJlYWRvdXQgdmFsdWUKICAqCiAgKiBXZWFrIGR1bW15IGZ1
+bmN0aW9uIGZvciBhcmNoZXMgdGhhdCBkbyBub3QgeWV0IHN1cHBvcnQgaXQuCiAgKiBSZWFkcyB0
+aGUgdGltZSBmcm9tIHRoZSBiYXR0ZXJ5IGJhY2tlZCBwZXJzaXN0ZW50IGNsb2NrLgpAQCAtMTU2
+Niw4ICsxNTc4LDkgQEAgdm9pZCBfX3dlYWsgcmVhZF9wZXJzaXN0ZW50X2Nsb2NrNjQoc3RydWN0
+IHRpbWVzcGVjNjQgKnRzKQogICogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgZnJvbSB0aGUgYm9vdC4KICAqCiAgKiBXZWFrIGR1bW15IGZ1bmN0aW9uIGZvciBhcmNoZXMg
+dGhhdCBkbyBub3QgeWV0IHN1cHBvcnQgaXQuCi0gKiB3YWxsX3RpbWUJLSBjdXJyZW50IHRpbWUg
+YXMgcmV0dXJuZWQgYnkgcGVyc2lzdGVudCBjbG9jawotICogYm9vdF9vZmZzZXQJLSBvZmZzZXQg
+dGhhdCBpcyBkZWZpbmVkIGFzIHdhbGxfdGltZSAtIGJvb3RfdGltZQorICogQHdhbGxfdGltZToJ
+LSBjdXJyZW50IHRpbWUgYXMgcmV0dXJuZWQgYnkgcGVyc2lzdGVudCBjbG9jaworICogQGJvb3Rf
+b2Zmc2V0OiAtIG9mZnNldCB0aGF0IGlzIGRlZmluZWQgYXMgd2FsbF90aW1lIC0gYm9vdF90aW1l
+CisgKgogICogVGhlIGRlZmF1bHQgZnVuY3Rpb24gY2FsY3VsYXRlcyBvZmZzZXQgYmFzZWQgb24g
+dGhlIGN1cnJlbnQgdmFsdWUgb2YKICAqIGxvY2FsX2Nsb2NrKCkuIFRoaXMgd2F5IGFyY2hpdGVj
+dHVyZXMgdGhhdCBzdXBwb3J0IHNjaGVkX2Nsb2NrKCkgYnV0IGRvbid0CiAgKiBzdXBwb3J0IGRl
+ZGljYXRlZCBib290IHRpbWUgY2xvY2sgd2lsbCBwcm92aWRlIHRoZSBiZXN0IGVzdGltYXRlIG9m
+IHRoZQpAQCAtMTY1Miw3ICsxNjY1LDggQEAgc3RhdGljIHN0cnVjdCB0aW1lc3BlYzY0IHRpbWVr
+ZWVwaW5nX3N1c3BlbmRfdGltZTsKIAogLyoqCiAgKiBfX3RpbWVrZWVwaW5nX2luamVjdF9zbGVl
+cHRpbWUgLSBJbnRlcm5hbCBmdW5jdGlvbiB0byBhZGQgc2xlZXAgaW50ZXJ2YWwKLSAqIEBkZWx0
+YTogcG9pbnRlciB0byBhIHRpbWVzcGVjIGRlbHRhIHZhbHVlCisgKiBAdGs6CQlQb2ludGVyIHRv
+IHRoZSB0aW1la2VlcGVyIHRvIGJlIHVwZGF0ZWQKKyAqIEBkZWx0YToJUG9pbnRlciB0byB0aGUg
+ZGVsdGEgdmFsdWUgaW4gdGltZXNwZWM2NCBmb3JtYXQKICAqCiAgKiBUYWtlcyBhIHRpbWVzcGVj
+IG9mZnNldCBtZWFzdXJpbmcgYSBzdXNwZW5kIGludGVydmFsIGFuZCBwcm9wZXJseQogICogYWRk
+cyB0aGUgc2xlZXAgb2Zmc2V0IHRvIHRoZSB0aW1la2VlcGluZyB2YXJpYWJsZXMuCkBAIC0yMDIz
+LDEzICsyMDM3LDEyIEBAIHN0YXRpYyB2b2lkIHRpbWVrZWVwaW5nX2FkanVzdChzdHJ1Y3QgdGlt
+ZWtlZXBlciAqdGssIHM2NCBvZmZzZXQpCiAJfQogfQogCi0vKioKKy8qCiAgKiBhY2N1bXVsYXRl
+X25zZWNzX3RvX3NlY3MgLSBBY2N1bXVsYXRlcyBuc2VjcyBpbnRvIHNlY3MKICAqCiAgKiBIZWxw
+ZXIgZnVuY3Rpb24gdGhhdCBhY2N1bXVsYXRlcyB0aGUgbnNlY3MgZ3JlYXRlciB0aGFuIGEgc2Vj
+b25kCiAgKiBmcm9tIHRoZSB4dGltZV9uc2VjIGZpZWxkIHRvIHRoZSB4dGltZV9zZWNzIGZpZWxk
+LgogICogSXQgYWxzbyBjYWxscyBpbnRvIHRoZSBOVFAgY29kZSB0byBoYW5kbGUgbGVhcHNlY29u
+ZCBwcm9jZXNzaW5nLgotICoKICAqLwogc3RhdGljIGlubGluZSB1bnNpZ25lZCBpbnQgYWNjdW11
+bGF0ZV9uc2Vjc190b19zZWNzKHN0cnVjdCB0aW1la2VlcGVyICp0aykKIHsKQEAgLTIwNzEsNyAr
+MjA4NCw3IEBAIHN0YXRpYyBpbmxpbmUgdW5zaWduZWQgaW50IGFjY3VtdWxhdGVfbnNlY3NfdG9f
+c2VjcyhzdHJ1Y3QgdGltZWtlZXBlciAqdGspCiAJcmV0dXJuIGNsb2NrX3NldDsKIH0KIAotLyoq
+CisvKgogICogbG9nYXJpdGhtaWNfYWNjdW11bGF0aW9uIC0gc2hpZnRlZCBhY2N1bXVsYXRpb24g
+b2YgY3ljbGVzCiAgKgogICogVGhpcyBmdW5jdGlvbnMgYWNjdW11bGF0ZXMgYSBzaGlmdGVkIGlu
+dGVydmFsIG9mIGN5Y2xlcyBpbnRvCkBAIC0yMzE0LDcgKzIzMjcsNyBAQCBrdGltZV90IGt0aW1l
+X2dldF91cGRhdGVfb2Zmc2V0c19ub3codW5zaWduZWQgaW50ICpjd3NzZXEsIGt0aW1lX3QgKm9m
+ZnNfcmVhbCwKIAlyZXR1cm4gYmFzZTsKIH0KIAotLyoqCisvKgogICogdGltZWtlZXBpbmdfdmFs
+aWRhdGVfdGltZXggLSBFbnN1cmVzIHRoZSB0aW1leCBpcyBvayBmb3IgdXNlIGluIGRvX2FkanRp
+bWV4CiAgKi8KIHN0YXRpYyBpbnQgdGltZWtlZXBpbmdfdmFsaWRhdGVfdGltZXgoY29uc3Qgc3Ry
+dWN0IF9fa2VybmVsX3RpbWV4ICp0eGMpCmRpZmYgLS1naXQgYS9rZXJuZWwvdGltZS90aW1la2Vl
+cGluZy5oIGIva2VybmVsL3RpbWUvdGltZWtlZXBpbmcuaAppbmRleCAwOTk3MzdmNmYxMGMuLjZj
+MmNiZDllZjk5OSAxMDA2NDQKLS0tIGEva2VybmVsL3RpbWUvdGltZWtlZXBpbmcuaAorKysgYi9r
+ZXJuZWwvdGltZS90aW1la2VlcGluZy5oCkBAIC0yNiw3ICsyNiw3IEBAIGV4dGVybiB2b2lkIGRv
+X3RpbWVyKHVuc2lnbmVkIGxvbmcgdGlja3MpOwogZXh0ZXJuIHZvaWQgdXBkYXRlX3dhbGxfdGlt
+ZSh2b2lkKTsKIAogZXh0ZXJuIHJhd19zcGlubG9ja190IGppZmZpZXNfbG9jazsKLWV4dGVybiBz
+ZXFjb3VudF90IGppZmZpZXNfc2VxOworZXh0ZXJuIHNlcWNvdW50X3Jhd19zcGlubG9ja190IGpp
+ZmZpZXNfc2VxOwogCiAjZGVmaW5lIENTX05BTUVfTEVOCTMyCiAKZGlmZiAtLWdpdCBhL2tlcm5l
+bC90aW1lL3RpbWVyLmMgYi9rZXJuZWwvdGltZS90aW1lci5jCmluZGV4IGRlMzdlMzNhODY4ZC4u
+ZWJmM2IyNmQyNTAxIDEwMDY0NAotLS0gYS9rZXJuZWwvdGltZS90aW1lci5jCisrKyBiL2tlcm5l
+bC90aW1lL3RpbWVyLmMKQEAgLTEyODgsNyArMTI4OCw3IEBAIHN0YXRpYyB2b2lkIGRlbF90aW1l
+cl93YWl0X3J1bm5pbmcoc3RydWN0IHRpbWVyX2xpc3QgKnRpbWVyKQogCXUzMiB0ZjsKIAogCXRm
+ID0gUkVBRF9PTkNFKHRpbWVyLT5mbGFncyk7Ci0JaWYgKCEodGYgJiBUSU1FUl9NSUdSQVRJTkcp
+KSB7CisJaWYgKCEodGYgJiAoVElNRVJfTUlHUkFUSU5HIHwgVElNRVJfSVJRU0FGRSkpKSB7CiAJ
+CXN0cnVjdCB0aW1lcl9iYXNlICpiYXNlID0gZ2V0X3RpbWVyX2Jhc2UodGYpOwogCiAJCS8qCkBA
+IC0xMzcyLDYgKzEzNzIsMTMgQEAgaW50IGRlbF90aW1lcl9zeW5jKHN0cnVjdCB0aW1lcl9saXN0
+ICp0aW1lcikKIAkgKi8KIAlXQVJOX09OKGluX2lycSgpICYmICEodGltZXItPmZsYWdzICYgVElN
+RVJfSVJRU0FGRSkpOwogCisJLyoKKwkgKiBNdXN0IGJlIGFibGUgdG8gc2xlZXAgb24gUFJFRU1Q
+VF9SVCBiZWNhdXNlIG9mIHRoZSBzbG93cGF0aCBpbgorCSAqIGRlbF90aW1lcl93YWl0X3J1bm5p
+bmcoKS4KKwkgKi8KKwlpZiAoSVNfRU5BQkxFRChDT05GSUdfUFJFRU1QVF9SVCkgJiYgISh0aW1l
+ci0+ZmxhZ3MgJiBUSU1FUl9JUlFTQUZFKSkKKwkJbG9ja2RlcF9hc3NlcnRfcHJlZW1wdGlvbl9l
+bmFibGVkKCk7CisKIAlkbyB7CiAJCXJldCA9IHRyeV90b19kZWxfdGltZXJfc3luYyh0aW1lcik7
+CiAKQEAgLTE2OTgsMjkgKzE3MDUsNiBAQCB2b2lkIHRpbWVyX2NsZWFyX2lkbGUodm9pZCkKIH0K
+ICNlbmRpZgogCi0vKgotICogQ2FsbGVkIGZyb20gdGhlIHRpbWVyIGludGVycnVwdCBoYW5kbGVy
+IHRvIGNoYXJnZSBvbmUgdGljayB0byB0aGUgY3VycmVudAotICogcHJvY2Vzcy4gIHVzZXJfdGlj
+ayBpcyAxIGlmIHRoZSB0aWNrIGlzIHVzZXIgdGltZSwgMCBmb3Igc3lzdGVtLgotICovCi12b2lk
+IHVwZGF0ZV9wcm9jZXNzX3RpbWVzKGludCB1c2VyX3RpY2spCi17Ci0Jc3RydWN0IHRhc2tfc3Ry
+dWN0ICpwID0gY3VycmVudDsKLQotCVBSQU5ET01fQUREX05PSVNFKGppZmZpZXMsIHVzZXJfdGlj
+aywgcCwgMCk7Ci0KLQkvKiBOb3RlOiB0aGlzIHRpbWVyIGlycSBjb250ZXh0IG11c3QgYmUgYWNj
+b3VudGVkIGZvciBhcyB3ZWxsLiAqLwotCWFjY291bnRfcHJvY2Vzc190aWNrKHAsIHVzZXJfdGlj
+ayk7Ci0JcnVuX2xvY2FsX3RpbWVycygpOwotCXJjdV9zY2hlZF9jbG9ja19pcnEodXNlcl90aWNr
+KTsKLSNpZmRlZiBDT05GSUdfSVJRX1dPUksKLQlpZiAoaW5faXJxKCkpCi0JCWlycV93b3JrX3Rp
+Y2soKTsKLSNlbmRpZgotCXNjaGVkdWxlcl90aWNrKCk7Ci0JaWYgKElTX0VOQUJMRUQoQ09ORklH
+X1BPU0lYX1RJTUVSUykpCi0JCXJ1bl9wb3NpeF9jcHVfdGltZXJzKCk7Ci19Ci0KIC8qKgogICog
+X19ydW5fdGltZXJzIC0gcnVuIGFsbCBleHBpcmVkIHRpbWVycyAoaWYgYW55KSBvbiB0aGlzIENQ
+VS4KICAqIEBiYXNlOiB0aGUgdGltZXIgdmVjdG9yIHRvIGJlIHByb2Nlc3NlZC4KQEAgLTE3NzAs
+NyArMTc1NCw3IEBAIHN0YXRpYyBfX2xhdGVudF9lbnRyb3B5IHZvaWQgcnVuX3RpbWVyX3NvZnRp
+cnEoc3RydWN0IHNvZnRpcnFfYWN0aW9uICpoKQogLyoKICAqIENhbGxlZCBieSB0aGUgbG9jYWws
+IHBlci1DUFUgdGltZXIgaW50ZXJydXB0IG9uIFNNUC4KICAqLwotdm9pZCBydW5fbG9jYWxfdGlt
+ZXJzKHZvaWQpCitzdGF0aWMgdm9pZCBydW5fbG9jYWxfdGltZXJzKHZvaWQpCiB7CiAJc3RydWN0
+IHRpbWVyX2Jhc2UgKmJhc2UgPSB0aGlzX2NwdV9wdHIoJnRpbWVyX2Jhc2VzW0JBU0VfU1REXSk7
+CiAKQEAgLTE3ODcsNiArMTc3MSwyOSBAQCB2b2lkIHJ1bl9sb2NhbF90aW1lcnModm9pZCkKIAly
+YWlzZV9zb2Z0aXJxKFRJTUVSX1NPRlRJUlEpOwogfQogCisvKgorICogQ2FsbGVkIGZyb20gdGhl
+IHRpbWVyIGludGVycnVwdCBoYW5kbGVyIHRvIGNoYXJnZSBvbmUgdGljayB0byB0aGUgY3VycmVu
+dAorICogcHJvY2Vzcy4gIHVzZXJfdGljayBpcyAxIGlmIHRoZSB0aWNrIGlzIHVzZXIgdGltZSwg
+MCBmb3Igc3lzdGVtLgorICovCit2b2lkIHVwZGF0ZV9wcm9jZXNzX3RpbWVzKGludCB1c2VyX3Rp
+Y2spCit7CisJc3RydWN0IHRhc2tfc3RydWN0ICpwID0gY3VycmVudDsKKworCVBSQU5ET01fQURE
+X05PSVNFKGppZmZpZXMsIHVzZXJfdGljaywgcCwgMCk7CisKKwkvKiBOb3RlOiB0aGlzIHRpbWVy
+IGlycSBjb250ZXh0IG11c3QgYmUgYWNjb3VudGVkIGZvciBhcyB3ZWxsLiAqLworCWFjY291bnRf
+cHJvY2Vzc190aWNrKHAsIHVzZXJfdGljayk7CisJcnVuX2xvY2FsX3RpbWVycygpOworCXJjdV9z
+Y2hlZF9jbG9ja19pcnEodXNlcl90aWNrKTsKKyNpZmRlZiBDT05GSUdfSVJRX1dPUksKKwlpZiAo
+aW5faXJxKCkpCisJCWlycV93b3JrX3RpY2soKTsKKyNlbmRpZgorCXNjaGVkdWxlcl90aWNrKCk7
+CisJaWYgKElTX0VOQUJMRUQoQ09ORklHX1BPU0lYX1RJTUVSUykpCisJCXJ1bl9wb3NpeF9jcHVf
+dGltZXJzKCk7Cit9CisKIC8qCiAgKiBTaW5jZSBzY2hlZHVsZV90aW1lb3V0KCkncyB0aW1lciBp
+cyBkZWZpbmVkIG9uIHRoZSBzdGFjaywgaXQgbXVzdCBzdG9yZQogICogdGhlIHRhcmdldCB0YXNr
+IG9uIHRoZSBzdGFjayBhcyB3ZWxsLgpkaWZmIC0tZ2l0IGEva2VybmVsL3RpbWUvdGltZXJfbGlz
+dC5jIGIva2VybmVsL3RpbWUvdGltZXJfbGlzdC5jCmluZGV4IGFjYjMyNmY1ZjUwYS4uNjkzOTE0
+MGFiN2M1IDEwMDY0NAotLS0gYS9rZXJuZWwvdGltZS90aW1lcl9saXN0LmMKKysrIGIva2VybmVs
+L3RpbWUvdGltZXJfbGlzdC5jCkBAIC00MiwyNCArNDIsMTEgQEAgc3RhdGljIHZvaWQgU0VRX3By
+aW50ZihzdHJ1Y3Qgc2VxX2ZpbGUgKm0sIGNvbnN0IGNoYXIgKmZtdCwgLi4uKQogCXZhX2VuZChh
+cmdzKTsKIH0KIAotc3RhdGljIHZvaWQgcHJpbnRfbmFtZV9vZmZzZXQoc3RydWN0IHNlcV9maWxl
+ICptLCB2b2lkICpzeW0pCi17Ci0JY2hhciBzeW1uYW1lW0tTWU1fTkFNRV9MRU5dOwotCi0JaWYg
+KGxvb2t1cF9zeW1ib2xfbmFtZSgodW5zaWduZWQgbG9uZylzeW0sIHN5bW5hbWUpIDwgMCkKLQkJ
+U0VRX3ByaW50ZihtLCAiPCVwSz4iLCBzeW0pOwotCWVsc2UKLQkJU0VRX3ByaW50ZihtLCAiJXMi
+LCBzeW1uYW1lKTsKLX0KLQogc3RhdGljIHZvaWQKIHByaW50X3RpbWVyKHN0cnVjdCBzZXFfZmls
+ZSAqbSwgc3RydWN0IGhydGltZXIgKnRhZGRyLCBzdHJ1Y3QgaHJ0aW1lciAqdGltZXIsCiAJICAg
+IGludCBpZHgsIHU2NCBub3cpCiB7Ci0JU0VRX3ByaW50ZihtLCAiICMlZDogIiwgaWR4KTsKLQlw
+cmludF9uYW1lX29mZnNldChtLCB0YWRkcik7Ci0JU0VRX3ByaW50ZihtLCAiLCAiKTsKLQlwcmlu
+dF9uYW1lX29mZnNldChtLCB0aW1lci0+ZnVuY3Rpb24pOworCVNFUV9wcmludGYobSwgIiAjJWQ6
+IDwlcEs+LCAlcHMiLCBpZHgsIHRhZGRyLCB0aW1lci0+ZnVuY3Rpb24pOwogCVNFUV9wcmludGYo
+bSwgIiwgUzolMDJ4IiwgdGltZXItPnN0YXRlKTsKIAlTRVFfcHJpbnRmKG0sICJcbiIpOwogCVNF
+UV9wcmludGYobSwgIiAjIGV4cGlyZXMgYXQgJUx1LSVMdSBuc2VjcyBbaW4gJUxkIHRvICVMZCBu
+c2Vjc11cbiIsCkBAIC0xMTYsOSArMTAzLDcgQEAgcHJpbnRfYmFzZShzdHJ1Y3Qgc2VxX2ZpbGUg
+Km0sIHN0cnVjdCBocnRpbWVyX2Nsb2NrX2Jhc2UgKmJhc2UsIHU2NCBub3cpCiAKIAlTRVFfcHJp
+bnRmKG0sICIgIC5yZXNvbHV0aW9uOiAldSBuc2Vjc1xuIiwgaHJ0aW1lcl9yZXNvbHV0aW9uKTsK
+IAotCVNFUV9wcmludGYobSwgICAiICAuZ2V0X3RpbWU6ICAgIik7Ci0JcHJpbnRfbmFtZV9vZmZz
+ZXQobSwgYmFzZS0+Z2V0X3RpbWUpOwotCVNFUV9wcmludGYobSwgICAiXG4iKTsKKwlTRVFfcHJp
+bnRmKG0sICAgIiAgLmdldF90aW1lOiAgICVwc1xuIiwgYmFzZS0+Z2V0X3RpbWUpOwogI2lmZGVm
+IENPTkZJR19ISUdIX1JFU19USU1FUlMKIAlTRVFfcHJpbnRmKG0sICIgIC5vZmZzZXQ6ICAgICAl
+THUgbnNlY3NcbiIsCiAJCSAgICh1bnNpZ25lZCBsb25nIGxvbmcpIGt0aW1lX3RvX25zKGJhc2Ut
+Pm9mZnNldCkpOwpAQCAtMjE4LDQyICsyMDMsMjkgQEAgcHJpbnRfdGlja2RldmljZShzdHJ1Y3Qg
+c2VxX2ZpbGUgKm0sIHN0cnVjdCB0aWNrX2RldmljZSAqdGQsIGludCBjcHUpCiAJU0VRX3ByaW50
+ZihtLCAiIG5leHRfZXZlbnQ6ICAgICAlTGQgbnNlY3NcbiIsCiAJCSAgICh1bnNpZ25lZCBsb25n
+IGxvbmcpIGt0aW1lX3RvX25zKGRldi0+bmV4dF9ldmVudCkpOwogCi0JU0VRX3ByaW50ZihtLCAi
+IHNldF9uZXh0X2V2ZW50OiAiKTsKLQlwcmludF9uYW1lX29mZnNldChtLCBkZXYtPnNldF9uZXh0
+X2V2ZW50KTsKLQlTRVFfcHJpbnRmKG0sICJcbiIpOworCVNFUV9wcmludGYobSwgIiBzZXRfbmV4
+dF9ldmVudDogJXBzXG4iLCBkZXYtPnNldF9uZXh0X2V2ZW50KTsKIAotCWlmIChkZXYtPnNldF9z
+dGF0ZV9zaHV0ZG93bikgewotCQlTRVFfcHJpbnRmKG0sICIgc2h1dGRvd246ICIpOwotCQlwcmlu
+dF9uYW1lX29mZnNldChtLCBkZXYtPnNldF9zdGF0ZV9zaHV0ZG93bik7Ci0JCVNFUV9wcmludGYo
+bSwgIlxuIik7Ci0JfQorCWlmIChkZXYtPnNldF9zdGF0ZV9zaHV0ZG93bikKKwkJU0VRX3ByaW50
+ZihtLCAiIHNodXRkb3duOiAgICAgICAlcHNcbiIsCisJCQlkZXYtPnNldF9zdGF0ZV9zaHV0ZG93
+bik7CiAKLQlpZiAoZGV2LT5zZXRfc3RhdGVfcGVyaW9kaWMpIHsKLQkJU0VRX3ByaW50ZihtLCAi
+IHBlcmlvZGljOiAiKTsKLQkJcHJpbnRfbmFtZV9vZmZzZXQobSwgZGV2LT5zZXRfc3RhdGVfcGVy
+aW9kaWMpOwotCQlTRVFfcHJpbnRmKG0sICJcbiIpOwotCX0KKwlpZiAoZGV2LT5zZXRfc3RhdGVf
+cGVyaW9kaWMpCisJCVNFUV9wcmludGYobSwgIiBwZXJpb2RpYzogICAgICAgJXBzXG4iLAorCQkJ
+ZGV2LT5zZXRfc3RhdGVfcGVyaW9kaWMpOwogCi0JaWYgKGRldi0+c2V0X3N0YXRlX29uZXNob3Qp
+IHsKLQkJU0VRX3ByaW50ZihtLCAiIG9uZXNob3Q6ICAiKTsKLQkJcHJpbnRfbmFtZV9vZmZzZXQo
+bSwgZGV2LT5zZXRfc3RhdGVfb25lc2hvdCk7Ci0JCVNFUV9wcmludGYobSwgIlxuIik7Ci0JfQor
+CWlmIChkZXYtPnNldF9zdGF0ZV9vbmVzaG90KQorCQlTRVFfcHJpbnRmKG0sICIgb25lc2hvdDog
+ICAgICAgICVwc1xuIiwKKwkJCWRldi0+c2V0X3N0YXRlX29uZXNob3QpOwogCi0JaWYgKGRldi0+
+c2V0X3N0YXRlX29uZXNob3Rfc3RvcHBlZCkgewotCQlTRVFfcHJpbnRmKG0sICIgb25lc2hvdCBz
+dG9wcGVkOiAiKTsKLQkJcHJpbnRfbmFtZV9vZmZzZXQobSwgZGV2LT5zZXRfc3RhdGVfb25lc2hv
+dF9zdG9wcGVkKTsKLQkJU0VRX3ByaW50ZihtLCAiXG4iKTsKLQl9CisJaWYgKGRldi0+c2V0X3N0
+YXRlX29uZXNob3Rfc3RvcHBlZCkKKwkJU0VRX3ByaW50ZihtLCAiIG9uZXNob3Qgc3RvcHBlZDog
+JXBzXG4iLAorCQkJZGV2LT5zZXRfc3RhdGVfb25lc2hvdF9zdG9wcGVkKTsKIAotCWlmIChkZXYt
+PnRpY2tfcmVzdW1lKSB7Ci0JCVNFUV9wcmludGYobSwgIiByZXN1bWU6ICAgIik7Ci0JCXByaW50
+X25hbWVfb2Zmc2V0KG0sIGRldi0+dGlja19yZXN1bWUpOwotCQlTRVFfcHJpbnRmKG0sICJcbiIp
+OwotCX0KKwlpZiAoZGV2LT50aWNrX3Jlc3VtZSkKKwkJU0VRX3ByaW50ZihtLCAiIHJlc3VtZTog
+ICAgICAgICAlcHNcbiIsCisJCQlkZXYtPnRpY2tfcmVzdW1lKTsKIAotCVNFUV9wcmludGYobSwg
+IiBldmVudF9oYW5kbGVyOiAgIik7Ci0JcHJpbnRfbmFtZV9vZmZzZXQobSwgZGV2LT5ldmVudF9o
+YW5kbGVyKTsKKwlTRVFfcHJpbnRmKG0sICIgZXZlbnRfaGFuZGxlcjogICVwc1xuIiwgZGV2LT5l
+dmVudF9oYW5kbGVyKTsKIAlTRVFfcHJpbnRmKG0sICJcbiIpOwogCVNFUV9wcmludGYobSwgIiBy
+ZXRyaWVzOiAgICAgICAgJWx1XG4iLCBkZXYtPnJldHJpZXMpOwogCVNFUV9wcmludGYobSwgIlxu
+Iik7Cgo=
