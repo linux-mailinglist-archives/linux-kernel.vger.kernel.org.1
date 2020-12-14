@@ -2,192 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192E82D9871
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 867762D9877
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 14:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439415AbgLNM5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 07:57:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439390AbgLNM5y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 07:57:54 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D7CC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 04:57:14 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id f9so11972411pfc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 04:57:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9TgwqK+6YHCGDt5sdTZEGgJJQwq7o9D8sbNO5uuAlB8=;
-        b=US6343rUbnXBSnK6v4im+jogHrt9LMQSEZkWdz8bceaE14KX06pP1AW3eogEfRbA1t
-         RBOh4PQu5QAENbJbCzsJSH3a5wa6k4WoHV0Ifc5OxbAvl3EokvEPlLDGt1mhhYzWL6ZG
-         PpJls9j4khO4ueX1atDWmzMYRV3+wmZGDO98M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9TgwqK+6YHCGDt5sdTZEGgJJQwq7o9D8sbNO5uuAlB8=;
-        b=lmx5GijtNt0Z6zR3GfSTS0V+T9gsFf/zik9gOmy1wLp31XnwVlxbMjy3Zguo44VPnB
-         89Q3r9a7X8tP16zllUEMEdI08p7qm42YA665MjI21YITF40FzbRIG3dQAupp3VeE7pK9
-         8HPSNoIV9jCiRLbeCnPQMa5J9vaxj1snoN/+/VMakV9lId3HJSgo1twbsmgXaCEJZjEA
-         edc8MJpJgzfM4lNIO9Q2zBoJdhZQfvP1wvI4qjFnv+oPh/FF6gKIKnMBQYw/sDlPVXa6
-         EXPht36xSC32rnKQkQgMWY9otp3kg+29Vak1wZbhY6YTvsKmCx90o6zvFUHsINYXmnbF
-         PemA==
-X-Gm-Message-State: AOAM532dy4Dc2tq/OROXdRLmpyyPfV6aq5Gj1xMk7evWAqFa/vFMmFvw
-        Tp+BPKIfFcpwV/1+Z29fjKpKfw==
-X-Google-Smtp-Source: ABdhPJxUwopXyMFYvpCFB3CfpluhEL9Lmg63a7Y4IEwV9vVitLFiUaU8PW7lyXPDsbBleIjxDe1UHw==
-X-Received: by 2002:a62:68c7:0:b029:197:c7e0:6d8f with SMTP id d190-20020a6268c70000b0290197c7e06d8fmr23802812pfc.74.1607950633633;
-        Mon, 14 Dec 2020 04:57:13 -0800 (PST)
-Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:eeb1:d7ff:fe57:b7e5])
-        by smtp.gmail.com with ESMTPSA id v6sm20943241pgk.2.2020.12.14.04.57.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 04:57:12 -0800 (PST)
-From:   Alexandre Courbot <acourbot@chromium.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Alexandre Courbot <acourbot@chromium.org>
-Subject: [PATCH] media: venus: use contig vb2 ops
-Date:   Mon, 14 Dec 2020 21:57:03 +0900
-Message-Id: <20201214125703.866998-1-acourbot@chromium.org>
-X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
+        id S2407879AbgLNM67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 07:58:59 -0500
+Received: from foss.arm.com ([217.140.110.172]:47126 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728559AbgLNM6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 07:58:38 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B58091FB;
+        Mon, 14 Dec 2020 04:57:52 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D7FE3F66B;
+        Mon, 14 Dec 2020 04:57:52 -0800 (PST)
+Date:   Mon, 14 Dec 2020 12:57:50 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 1/2] arm64: topology: Avoid the have_policy check
+Message-ID: <20201214125750.GA15405@arm.com>
+References: <5f85c2ddf7aa094d7d2ebebe8426f84fad0a99b7.1607617625.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f85c2ddf7aa094d7d2ebebe8426f84fad0a99b7.1607617625.git.viresh.kumar@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver uses the SG vb2 ops, but effectively only ever accesses the
-first entry of the SG table, indicating that it expects a flat layout.
-Switch it to use the contiguous ops to make sure this expected invariant
-is always enforced. Since the device is supposed to be behind an IOMMU
-this should have little to none practical consequences beyond making the
-driver not rely on a particular behavior of the SG implementation.
+On Thursday 10 Dec 2020 at 21:59:22 (+0530), Viresh Kumar wrote:
+> Every time I have stumbled upon this routine, I get confused with the
+> way 'have_policy' is used and I have to dig in to understand why is it
+> so. Here is an attempt to make it easier to understand, and hopefully it
+> is an improvement.
+> 
+> The 'have_policy' check was just an optimization to avoid writing
+> to amu_fie_cpus in case we don't have to, but that optimization itself
+> is creating more confusion than the real work. Lets just do that if all
+> the CPUs support AMUs. It is much cleaner that way.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+> V2:
+> - Skip the have_policy check altogether
+> - Updated subject and log
+> 
+>  arch/arm64/kernel/topology.c | 20 ++++++--------------
+>  1 file changed, 6 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> index f6faa697e83e..ebadc73449f9 100644
+> --- a/arch/arm64/kernel/topology.c
+> +++ b/arch/arm64/kernel/topology.c
+> @@ -199,14 +199,14 @@ static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
+>  	return 0;
+>  }
+>  
+> -static inline bool
+> +static inline void
+>  enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
+>  {
+>  	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
+>  
+>  	if (!policy) {
+>  		pr_debug("CPU%d: No cpufreq policy found.\n", cpu);
+> -		return false;
+> +		return;
+>  	}
+>  
+>  	if (cpumask_subset(policy->related_cpus, valid_cpus))
+> @@ -214,8 +214,6 @@ enable_policy_freq_counters(int cpu, cpumask_var_t valid_cpus)
+>  			   amu_fie_cpus);
+>  
+>  	cpufreq_cpu_put(policy);
+> -
+> -	return true;
+>  }
+>  
+>  static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
+> @@ -225,7 +223,6 @@ static int __init init_amu_fie(void)
+>  {
+>  	bool invariance_status = topology_scale_freq_invariant();
+>  	cpumask_var_t valid_cpus;
+> -	bool have_policy = false;
+>  	int ret = 0;
+>  	int cpu;
+>  
+> @@ -245,17 +242,12 @@ static int __init init_amu_fie(void)
+>  			continue;
+>  
+>  		cpumask_set_cpu(cpu, valid_cpus);
+> -		have_policy |= enable_policy_freq_counters(cpu, valid_cpus);
+> +		enable_policy_freq_counters(cpu, valid_cpus);
+>  	}
+>  
+> -	/*
+> -	 * If we are not restricted by cpufreq policies, we only enable
+> -	 * the use of the AMU feature for FIE if all CPUs support AMU.
+> -	 * Otherwise, enable_policy_freq_counters has already enabled
+> -	 * policy cpus.
+> -	 */
+> -	if (!have_policy && cpumask_equal(valid_cpus, cpu_present_mask))
+> -		cpumask_or(amu_fie_cpus, amu_fie_cpus, valid_cpus);
+> +	/* Overwrite amu_fie_cpus if all CPUs support AMU */
+> +	if (cpumask_equal(valid_cpus, cpu_present_mask))
+> +		cpumask_copy(amu_fie_cpus, cpu_present_mask);
+>  
+>  	if (!cpumask_empty(amu_fie_cpus)) {
+>  		pr_info("CPUs[%*pbl]: counters will be used for FIE.",
+> -- 
+> 2.25.0.rc1.19.g042ed3e048af
+> 
 
-Reported-by: Tomasz Figa <tfiga@chromium.org>
-Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
----
-Hi everyone,
+Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
 
-It probably doesn't hurt to fix this issue before some actual issue happens.
-I have tested this patch on Chrome OS and playback was just as fine as with
-the SG ops.
-
- drivers/media/platform/Kconfig              | 2 +-
- drivers/media/platform/qcom/venus/helpers.c | 9 ++-------
- drivers/media/platform/qcom/venus/vdec.c    | 6 +++---
- drivers/media/platform/qcom/venus/venc.c    | 6 +++---
- 4 files changed, 9 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-index 35a18d388f3f..d9d7954111f2 100644
---- a/drivers/media/platform/Kconfig
-+++ b/drivers/media/platform/Kconfig
-@@ -533,7 +533,7 @@ config VIDEO_QCOM_VENUS
- 	depends on INTERCONNECT || !INTERCONNECT
- 	select QCOM_MDT_LOADER if ARCH_QCOM
- 	select QCOM_SCM if ARCH_QCOM
--	select VIDEOBUF2_DMA_SG
-+	select VIDEOBUF2_DMA_CONTIG
- 	select V4L2_MEM2MEM_DEV
- 	help
- 	  This is a V4L2 driver for Qualcomm Venus video accelerator
-diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
-index 50439eb1ffea..859d260f002b 100644
---- a/drivers/media/platform/qcom/venus/helpers.c
-+++ b/drivers/media/platform/qcom/venus/helpers.c
-@@ -7,7 +7,7 @@
- #include <linux/mutex.h>
- #include <linux/slab.h>
- #include <linux/kernel.h>
--#include <media/videobuf2-dma-sg.h>
-+#include <media/videobuf2-dma-contig.h>
- #include <media/v4l2-mem2mem.h>
- #include <asm/div64.h>
- 
-@@ -1284,14 +1284,9 @@ int venus_helper_vb2_buf_init(struct vb2_buffer *vb)
- 	struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
- 	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
- 	struct venus_buffer *buf = to_venus_buffer(vbuf);
--	struct sg_table *sgt;
--
--	sgt = vb2_dma_sg_plane_desc(vb, 0);
--	if (!sgt)
--		return -EFAULT;
- 
- 	buf->size = vb2_plane_size(vb, 0);
--	buf->dma_addr = sg_dma_address(sgt->sgl);
-+	buf->dma_addr = vb2_dma_contig_plane_dma_addr(vb, 0);
- 
- 	if (vb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
- 		list_add_tail(&buf->reg_list, &inst->registeredbufs);
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index 8488411204c3..3fb277c81aca 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -13,7 +13,7 @@
- #include <media/v4l2-event.h>
- #include <media/v4l2-ctrls.h>
- #include <media/v4l2-mem2mem.h>
--#include <media/videobuf2-dma-sg.h>
-+#include <media/videobuf2-dma-contig.h>
- 
- #include "hfi_venus_io.h"
- #include "hfi_parser.h"
-@@ -1461,7 +1461,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
- 	src_vq->io_modes = VB2_MMAP | VB2_DMABUF;
- 	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
- 	src_vq->ops = &vdec_vb2_ops;
--	src_vq->mem_ops = &vb2_dma_sg_memops;
-+	src_vq->mem_ops = &vb2_dma_contig_memops;
- 	src_vq->drv_priv = inst;
- 	src_vq->buf_struct_size = sizeof(struct venus_buffer);
- 	src_vq->allow_zero_bytesused = 1;
-@@ -1475,7 +1475,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
- 	dst_vq->io_modes = VB2_MMAP | VB2_DMABUF;
- 	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
- 	dst_vq->ops = &vdec_vb2_ops;
--	dst_vq->mem_ops = &vb2_dma_sg_memops;
-+	dst_vq->mem_ops = &vb2_dma_contig_memops;
- 	dst_vq->drv_priv = inst;
- 	dst_vq->buf_struct_size = sizeof(struct venus_buffer);
- 	dst_vq->allow_zero_bytesused = 1;
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 1c61602c5de1..a09550cd1dba 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -10,7 +10,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/slab.h>
- #include <media/v4l2-mem2mem.h>
--#include <media/videobuf2-dma-sg.h>
-+#include <media/videobuf2-dma-contig.h>
- #include <media/v4l2-ioctl.h>
- #include <media/v4l2-event.h>
- #include <media/v4l2-ctrls.h>
-@@ -1001,7 +1001,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
- 	src_vq->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
- 	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
- 	src_vq->ops = &venc_vb2_ops;
--	src_vq->mem_ops = &vb2_dma_sg_memops;
-+	src_vq->mem_ops = &vb2_dma_contig_memops;
- 	src_vq->drv_priv = inst;
- 	src_vq->buf_struct_size = sizeof(struct venus_buffer);
- 	src_vq->allow_zero_bytesused = 1;
-@@ -1017,7 +1017,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
- 	dst_vq->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
- 	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
- 	dst_vq->ops = &venc_vb2_ops;
--	dst_vq->mem_ops = &vb2_dma_sg_memops;
-+	dst_vq->mem_ops = &vb2_dma_contig_memops;
- 	dst_vq->drv_priv = inst;
- 	dst_vq->buf_struct_size = sizeof(struct venus_buffer);
- 	dst_vq->allow_zero_bytesused = 1;
--- 
-2.29.2.684.gfbc64c5ab5-goog
-
+Thanks,
+Ionela.
