@@ -2,110 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CDF2D9A09
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3B52D9A10
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437928AbgLNOdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 09:33:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727309AbgLNOdI (ORCPT
+        id S2438018AbgLNOfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 09:35:36 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:41308 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437703AbgLNOff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 09:33:08 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55725C0613CF;
-        Mon, 14 Dec 2020 06:32:28 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id d17so22777219ejy.9;
-        Mon, 14 Dec 2020 06:32:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JtZlG2TMyR1uzxpDuh0ZpCaVmKX8ab8m6m4yiucXZd8=;
-        b=Jv71QX4cZGzIhCF0Z390WTp5fvzAKvcbvCTOr+y2l3q2sULpQ9ec5xz1oSlBR0sTkx
-         LX8U0KHNsDRNOmsWhKuYrsBp6OSq4WqTJlyEOCp63pLh9sC2fwc9xqS7o/I2BEclYGmD
-         rDcaR0XOrDfk1GvlbjnKJSKXLLn7qVmcXNxoED3BRHXMynUvQW7LyVKJXP1xsXt8KHRr
-         i3IOU6liXq7JLibfyPZ69FFgKdC3hnsIKTC53J74Zgdzq4V2K09XqjaSydY/Su8Y5RLQ
-         uyEYy5WyzrM71wtpTGJXVNpFAAk1aLc/C0IYkkRmV8GsKgfgKuMyVbH/emjXzqjJyQ/C
-         oiYA==
+        Mon, 14 Dec 2020 09:35:35 -0500
+Received: by mail-oi1-f195.google.com with SMTP id 15so19354551oix.8;
+        Mon, 14 Dec 2020 06:35:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JtZlG2TMyR1uzxpDuh0ZpCaVmKX8ab8m6m4yiucXZd8=;
-        b=Oh50dsZd2PL8gcflbelHdbA1HlXoqakVec/XUfiptM1+wTSOqJ/kyaHROXfzAPKsDD
-         AH7Ss41ueUT9rx+QI9gmi+TZw6fzTf/6Pvu3+dYkD6QFEZREZyxC2Po6oajb05XZLxay
-         gW8GMrhWmXbtMETNdQ58QFHr9SzOMI7xX9Kv0jVnCaV2zqxFUSEh85/AKPvoLQpcoQ/2
-         HGo1dVpKAQeByKnmUJ7+RfzKJrXJoDVP1nJGEioRDO1RW3KhsL0HYYQ9RZJlW12f9MMz
-         3WV78F5N0OAF78rA9PoKVfe0s4/Ohzi/+V52G57+L3h+WJn1HMK24I4DUvzEC6cklnKl
-         W+Dg==
-X-Gm-Message-State: AOAM530L8KkeIrvbCyEXMgahNkwOL7Qn/xqvoEfON2MGsK0PG2xs2zsh
-        e1cnbCUkETE+1Ulhpc4zl4A=
-X-Google-Smtp-Source: ABdhPJwngt/PUkO7jH32uLfB7mefD+T0aGNBldPv0GvFOwqdSOADN4LEBfFkz8dM5W00G+xdFGMn0Q==
-X-Received: by 2002:a17:906:dc1:: with SMTP id p1mr23191835eji.9.1607956347034;
-        Mon, 14 Dec 2020 06:32:27 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id h15sm14623665ejq.29.2020.12.14.06.32.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 14 Dec 2020 06:32:26 -0800 (PST)
-Message-ID: <7eb8f335f4eb85385f54c88952f7749750340320.camel@gmail.com>
-Subject: Re: [PATCH V2 1/1] scsi: ufs: Fix a possible NULL pointer issue
-From:   Bean Huo <huobean@gmail.com>
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Mon, 14 Dec 2020 15:32:25 +0100
-In-Reply-To: <1607917296-11735-1-git-send-email-cang@codeaurora.org>
-References: <1607917296-11735-1-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pmYimdHqPZCmGoKy+QfoCbZ6cMjYvJ9Ol9TiMKbqo5U=;
+        b=UGNT6S3ltcqpANs7rrVV3QG+UqBdrSA6wH6Qv5gq/Ik7TwlpBFuP7Sxc+EZP3og3ad
+         ARJjn0VmpHeDgwDoxW0FldQob7EXeUWCply30Zyd4MlYf0sRlBc7p4qga2fAcA0PeVGP
+         7bsaVmaJJOVWK6D4vqiZm2DZj8/k69C6KnMWOIOcDzIVOTFrsER3shotSzJ7THJM0jy7
+         tj28ecrm81HXEWAX40mp1Phrja/eQnd8Xn6T1omPJty4JAaZWG5EwUpm/ULJ2Ou0p8bd
+         NBT8iH93YaOf3jpqfANLrdYluPrWCYusn0MS/+Iaz0O3cydrG7MgvQyEyGi9cgPVhmJs
+         PcfQ==
+X-Gm-Message-State: AOAM533PUfsKZChFi/R7AsPd05lGxDy1+yMCUJxBfm4I95qPlS2r5FJU
+        c78kDNJeuvt1B5CQjpSH2azuvsfRuA==
+X-Google-Smtp-Source: ABdhPJxIZjyrGjwvcSupSDPeypUPaJjXZrJg/DEAYpaJ6OrhlsJtNXtsfhunBmocYWyjVbBoZqy2LQ==
+X-Received: by 2002:aca:bc41:: with SMTP id m62mr18229830oif.16.1607956494486;
+        Mon, 14 Dec 2020 06:34:54 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id d13sm4354186oti.74.2020.12.14.06.34.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 06:34:53 -0800 (PST)
+Received: (nullmailer pid 1883746 invoked by uid 1000);
+        Mon, 14 Dec 2020 14:34:52 -0000
+Date:   Mon, 14 Dec 2020 08:34:52 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, Jamie Iles <jamie@jamieiles.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>, soc@kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 4/4] dt-bindings: Remove PicoXcell bindings
+Message-ID: <20201214143452.GA1883626@robh.at.kernel.org>
+References: <20201210200315.2965567-1-robh@kernel.org>
+ <20201210200315.2965567-5-robh@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210200315.2965567-5-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-12-13 at 19:41 -0800, Can Guo wrote:
-> Fixes: 88a92d6ae4fe ("scsi: ufs: Serialize eh_work with system PM
-> events and async scan")
+On Thu, 10 Dec 2020 14:03:15 -0600, Rob Herring wrote:
+> PicoXcell has had nothing but treewide cleanups for at least the last 8
+> years and no signs of activity. The most recent activity is a yocto vendor
+> kernel based on v3.0 in 2015.
 > 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
+> Cc: Jamie Iles <jamie@jamieiles.com>
+> Cc: linux-crypto@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  drivers/scsi/ufs/ufshcd.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+> I'll take this via the DT tree.
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index c1c401b..ef155a9 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -8883,8 +8883,11 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
->         int ret = 0;
->         ktime_t start = ktime_get();
->  
-> +       if (!hba)
-> +               return 0;
-> +
->         down(&hba->eh_sem);
-> -       if (!hba || !hba->is_powered)
-> +       if (!hba->is_powered)
->                 return 0;
+>  .../devicetree/bindings/arm/picoxcell.txt     | 24 -------------------
+>  .../bindings/crypto/picochip-spacc.txt        | 21 ----------------
+>  .../devicetree/bindings/net/macb.txt          |  2 --
+>  .../bindings/timer/snps,dw-apb-timer.yaml     |  7 ------
+>  4 files changed, 54 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/arm/picoxcell.txt
+>  delete mode 100644 Documentation/devicetree/bindings/crypto/picochip-spacc.txt
+> 
 
-
-Can,
-
-why not moving down(&hba->eh_sem) after "return 0;"?
-
-
-
-
-
-
+Applied, thanks!
