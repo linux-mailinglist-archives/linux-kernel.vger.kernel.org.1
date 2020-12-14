@@ -2,193 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64DA2DA2FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8E32DA30A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:12:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440655AbgLNWGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 17:06:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27997 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2440148AbgLNWGK (ORCPT
+        id S2440936AbgLNWKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 17:10:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388570AbgLNWHO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 17:06:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607983483;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=fW75B8TuuWSO4pQv9VG4aA61uFDavRGNu4wKmT1MNjY=;
-        b=aoBZuab0hxhxIYXDcusu+VYEXR7qW1vvQIDGxc7EOL/hQ36B15D3m3qLalmDc1mlj/lWw0
-        KjJ2VaBDv5CQcYIKWmk7V5R4LiwPWB91a/CP4yUVz0m6EeJRwBL5UoN6hg728e+c4gwWjC
-        SmtgyGpkyM6f/bM8E/Mi0w0vI+KzdmQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-B38apv-TNfmiwQxh6Kf2wA-1; Mon, 14 Dec 2020 17:04:40 -0500
-X-MC-Unique: B38apv-TNfmiwQxh6Kf2wA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F1B188049C1;
-        Mon, 14 Dec 2020 22:04:38 +0000 (UTC)
-Received: from treble.redhat.com (ovpn-112-170.rdu2.redhat.com [10.10.112.170])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D13955D9DC;
-        Mon, 14 Dec 2020 22:04:37 +0000 (UTC)
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        clang-built-linux@googlegroups.com,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH] objtool: Fix seg fault with Clang non-section symbols
-Date:   Mon, 14 Dec 2020 16:04:20 -0600
-Message-Id: <ba6b6c0f0dd5acbba66e403955a967d9fdd1726a.1607983452.git.jpoimboe@redhat.com>
+        Mon, 14 Dec 2020 17:07:14 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFDBC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:06:34 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id w124so17875652oia.6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:06:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TioJ54MwoOBl3527ANOnyxS74LZ7YJDGg6Bxg5BT6t4=;
+        b=ep9LmuoRvelKqFMmJl7zY9YinpnIw3guIE9pqIRfE2Sp8fstB0ilYhT4wEejm49oLF
+         h77YBcZnrd+Od29emHIXTPXcqvrRBmXp3NX+MAc8njCtVKsqGXim/0+T0iTSS1DZhJgh
+         B0Zfnv2LppP6V6zp84OqynAE/SlsGwIhXw3Ww=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TioJ54MwoOBl3527ANOnyxS74LZ7YJDGg6Bxg5BT6t4=;
+        b=FlRmXJG36ryOXgOawOGbp8Kc7zfetQNfYEZlYMr5JceUg49MKy31OudoQEp3CN5qPl
+         SFEEMQ7YYrkyGP3wIRI+ApLbDpCknY0uXRIXNgelWmrmgUHUK/YKnmUA1kBpJRwTJEwN
+         z71o5JfeSVmCNRUPxa5FiKwNy4fQa0Dzph9F873zbxRZMIDGi6zqnd0uODjFqR6yXFRx
+         GlG6K/sKZ88w+ZBLq2+5baOx3CXcONq9l+RFvb6JvnRvg4Ax2ibGjIhIZ+A1IE8473Ai
+         SCJnv+WVgmbGQBIMAmzvedkjeFzUqtxHs1trIGOQhTvVFInSldVziDBZndPCOBI+pqRn
+         DuMA==
+X-Gm-Message-State: AOAM53147EfGDfkl8vPxl5sdXxHDF5LseJWePX8MfAWEpInJiUHGOF41
+        Hohs37oCID23QDRYncJakUpREZIlr5x8Brrr5RdEWw==
+X-Google-Smtp-Source: ABdhPJwhzKvE4mBskBLmEgKAxAg0xTWC4IgdCL3u6BqBGHzIi74HQjkpI4J3OWgQv7EJm2JwYPGyc+SXk65dEaPKGBQ=
+X-Received: by 2002:aca:bf0b:: with SMTP id p11mr14799853oif.6.1607983593983;
+ Mon, 14 Dec 2020 14:06:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20201214213044.27252-1-linux@roeck-us.net>
+In-Reply-To: <20201214213044.27252-1-linux@roeck-us.net>
+From:   Paul Barker <pbarker@konsulko.com>
+Date:   Mon, 14 Dec 2020 22:06:23 +0000
+Message-ID: <CAM9ZRVs3gBoYYQ+M1qUiLpuFTD0c_vxdNgDTXoXisne-Y8ZwQg@mail.gmail.com>
+Subject: Re: [GIT PULL] hwmon updates for v5.11
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-hwmon@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Clang assembler likes to strip section symbols, which means objtool
-can't reference some text code by its section.  This confuses objtool
-greatly, causing it to seg fault.
+On Mon, 14 Dec 2020 at 21:32, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> Hi Linus,
+>
+> Please pull hwmon updates for Linux v5.11 from signed tag:
+>
+>     git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.11
+>
+> Thanks,
+> Guenter
+> ------
+>
+> The following changes since commit b65054597872ce3aefbc6a666385eabdf9e288da:
+>
+>   Linux 5.10-rc6 (2020-11-29 15:50:50 -0800)
+>
+> are available in the Git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git tags/hwmon-for-v5.11
+>
+> for you to fetch changes up to 1a033769a4fe9a86ee791fd553b6a996dd76e026:
+>
+>   dt-bindings: (hwmon/sbtsi_temp) Add SB-TSI hwmon driver bindings (2020-12-12 08:36:09 -0800)
+>
+> ----------------------------------------------------------------
+> hwmon patches for v5.11
+>
+> - Driver for SB-TSI sensors
+> - Add support for P10 to fsi/occ
+> - Driver for LTC2992
+> - Driver for Delta power supplies Q54SJ108A2
+> - Support for NCT6687D added to nct6883 driver
+> - Support for Intel-based Xserves added to applesmc driver
+> - Driver for  Maxim MAX127
+> - Support for  AMD family 19h model 01h added to amd_energy driver
+> - Driver to support Corsair PSU
+> - Driver for STMicroelectronics PM6764 Voltage Regulator
+> - Various minor bug fixes and improvements
+>
+> ----------------------------------------------------------------
+> Alexandru Tachici (3):
+>       hwmon: (ltc2992) Add support
+>       hwmon: (ltc2992) Add support for GPIOs.
+>       dt-bindings: hwmon: Add documentation for ltc2992
+>
+> Bartosz Golaszewski (1):
+>       hwmon: (pmbus) shrink code and remove pmbus_do_remove()
+>
+> Charles (1):
+>       hwmon: Add driver for STMicroelectronics PM6764 Voltage Regulator
+>
+> Chris Packham (1):
+>       hwmon: (adt7470) Create functions for updating readings and limits
+>
+> Colin Ian King (2):
+>       hwmon: (corsair-psu) fix unintentional sign extension issue
+>       hwmon: (ltc2992) Fix less than zero comparisons with an unsigned integer
+>
+> Corentin Labbe (1):
+>       hwmon: drivetemp: fix typo temperatire => temperature
+>
+> Dan Carpenter (2):
+>       hwmon: (acpi_power_meter) clean up freeing code
+>       hwmon: (pmbus/max20730) delete some dead code
+>
+> David Bartley (1):
+>       hwmon: (nct6683) Support NCT6687D.
+>
+> Eddie James (3):
+>       dt-bindings: fsi: Add P10 OCC device documentation
+>       fsi: occ: Add support for P10
+>       hwmon: (occ) Add new temperature sensor type
+>
+> Geert Uytterhoeven (2):
+>       hwmon: (xgene) Drop bogus __refdata annotation
+>       hwmon: (iio_hwmon) Drop bogus __refdata annotation
+>
+> Joe Jamison (1):
+>       hwmon: (applesmc) Add DMI product matches for Intel-based Xserves (non-RackMac*)
+>
+> Krzysztof Kozlowski (4):
+>       dt-bindings: hwmon: convert TI INA2xx bindings to dt-schema
+>       dt-bindings: hwmon: convert AD AD741x bindings to dt-schema
+>       dt-bindings: hwmon: convert TI ADS7828 bindings to dt-schema
+>       dt-bindings: hwmon: convert AD ADM1275 bindings to dt-schema
+>
+> Kun Yi (3):
+>       hwmon: (sbtsi) Add basic support for SB-TSI sensors
+>       hwmon: (sbtsi) Add documentation
+>       dt-bindings: (hwmon/sbtsi_temp) Add SB-TSI hwmon driver bindings
+>
+> Lee Jones (3):
+>       hwmon: (adm1177) Fix kerneldoc attribute formatting
+>       hwmon: (ina3221) Demote seemingly unintentional kerneldoc header
+>       hwmon: (ibmpowernv) Silence strncpy() warning
+>
+> Lukas Bulwahn (1):
+>       hwmon: (pmbus/q54sj108a2) Correct title underline length
+>
+> Naveen Krishna Chatradhi (2):
+>       hwmon: (amd_energy) Add AMD family 19h model 01h x86 match
+>       docs: hwmon: (amd_energy) update documentation
+>
+> Paul Barker (3):
+>       dt-bindings: hwmon: pwm-fan: Support multiple fan tachometer inputs
 
-The fix is similar to what was done before, for ORC reloc generation:
+Should this one go in at this stage? The patches to implement support
+for multiple fan tachometer inputs are still outstanding. So the
+dt-binding will be left documenting a feature which isn't yet
+supported.
 
-  e81e07244325 ("objtool: Support Clang non-section symbols in ORC generation")
+>       hwmon: pwm-fan: Refactor pwm_fan_probe
+>       hwmon: (pwm-fan) Convert to hwmon_device_register_with_info API
+>
+> Tao Ren (2):
+>       hwmon: (max127) Add Maxim MAX127 hardware monitoring driver
+>       docs: hwmon: Document max127 driver
+>
+> Tian Tao (1):
+>       hwmon: (abx500) Switch to using the new API kobj_to_dev()
+>
+> Wilken Gottwalt (2):
+>       hwmon: add Corsair PSU HID controller driver
+>       hwmon: (corsair-psu) Fix fan rpm calculation
+>
+> Zhang Qilong (1):
+>       hwmon: (ina3221) Fix PM usage counter unbalance in ina3221_write_enable
+>
+> xiao.ma (1):
+>       hwmon: (pmbus) Driver for Delta power supplies Q54SJ108A2
+>
+>  .../devicetree/bindings/fsi/ibm,p9-occ.txt         |  12 +-
+>  Documentation/devicetree/bindings/hwmon/ad741x.txt |  15 -
+>  .../devicetree/bindings/hwmon/adi,ad741x.yaml      |  39 +
+>  .../devicetree/bindings/hwmon/adi,adm1275.yaml     |  57 ++
+>  .../devicetree/bindings/hwmon/adi,ltc2992.yaml     |  80 ++
+>  .../devicetree/bindings/hwmon/adm1275.txt          |  25 -
+>  .../devicetree/bindings/hwmon/ads7828.txt          |  25 -
+>  .../devicetree/bindings/hwmon/amd,sbtsi.yaml       |  54 ++
+>  Documentation/devicetree/bindings/hwmon/ina2xx.txt |  24 -
+>  .../devicetree/bindings/hwmon/pwm-fan.txt          |  28 +-
+>  .../devicetree/bindings/hwmon/ti,ads7828.yaml      |  57 ++
+>  .../devicetree/bindings/hwmon/ti,ina2xx.yaml       |  55 ++
+>  .../devicetree/bindings/trivial-devices.yaml       |   4 -
+>  Documentation/hwmon/adm1275.rst                    |   2 +-
+>  Documentation/hwmon/amd_energy.rst                 |   7 +-
+>  Documentation/hwmon/corsair-psu.rst                |  82 ++
+>  Documentation/hwmon/index.rst                      |   6 +
+>  Documentation/hwmon/ltc2992.rst                    |  56 ++
+>  Documentation/hwmon/max127.rst                     |  45 +
+>  Documentation/hwmon/nct6683.rst                    |   3 +-
+>  Documentation/hwmon/pm6764tr.rst                   |  32 +
+>  Documentation/hwmon/pmbus-core.rst                 |   6 -
+>  Documentation/hwmon/pmbus.rst                      |   6 -
+>  Documentation/hwmon/q54sj108a2.rst                 |  54 ++
+>  Documentation/hwmon/sbtsi_temp.rst                 |  42 +
+>  MAINTAINERS                                        |  16 +-
+>  drivers/fsi/fsi-occ.c                              | 125 ++-
+>  drivers/hwmon/Kconfig                              |  44 +
+>  drivers/hwmon/Makefile                             |   4 +
+>  drivers/hwmon/abx500.c                             |   2 +-
+>  drivers/hwmon/acpi_power_meter.c                   |   9 +-
+>  drivers/hwmon/adm1177.c                            |  10 +-
+>  drivers/hwmon/adt7470.c                            | 154 +++-
+>  drivers/hwmon/amd_energy.c                         |   1 +
+>  drivers/hwmon/applesmc.c                           |   4 +
+>  drivers/hwmon/corsair-psu.c                        | 600 +++++++++++++
+>  drivers/hwmon/drivetemp.c                          |   2 +-
+>  drivers/hwmon/ibmpowernv.c                         |   2 +-
+>  drivers/hwmon/iio_hwmon.c                          |   2 +-
+>  drivers/hwmon/ina3221.c                            |   4 +-
+>  drivers/hwmon/ltc2992.c                            | 971 +++++++++++++++++++++
+>  drivers/hwmon/max127.c                             | 352 ++++++++
+>  drivers/hwmon/nct6683.c                            |  14 +-
+>  drivers/hwmon/occ/common.c                         |  75 ++
+>  drivers/hwmon/pmbus/Kconfig                        |  18 +
+>  drivers/hwmon/pmbus/Makefile                       |   2 +
+>  drivers/hwmon/pmbus/adm1266.c                      |   1 -
+>  drivers/hwmon/pmbus/adm1275.c                      |   1 -
+>  drivers/hwmon/pmbus/bel-pfe.c                      |   1 -
+>  drivers/hwmon/pmbus/ibm-cffps.c                    |   1 -
+>  drivers/hwmon/pmbus/inspur-ipsps.c                 |   1 -
+>  drivers/hwmon/pmbus/ir35221.c                      |   1 -
+>  drivers/hwmon/pmbus/ir38064.c                      |   1 -
+>  drivers/hwmon/pmbus/irps5401.c                     |   1 -
+>  drivers/hwmon/pmbus/isl68137.c                     |   1 -
+>  drivers/hwmon/pmbus/lm25066.c                      |   1 -
+>  drivers/hwmon/pmbus/ltc2978.c                      |   1 -
+>  drivers/hwmon/pmbus/ltc3815.c                      |   1 -
+>  drivers/hwmon/pmbus/max16064.c                     |   1 -
+>  drivers/hwmon/pmbus/max16601.c                     |   1 -
+>  drivers/hwmon/pmbus/max20730.c                     |   3 -
+>  drivers/hwmon/pmbus/max20751.c                     |   1 -
+>  drivers/hwmon/pmbus/max31785.c                     |   1 -
+>  drivers/hwmon/pmbus/max34440.c                     |   1 -
+>  drivers/hwmon/pmbus/max8688.c                      |   1 -
+>  drivers/hwmon/pmbus/mp2975.c                       |   1 -
+>  drivers/hwmon/pmbus/pm6764tr.c                     |  75 ++
+>  drivers/hwmon/pmbus/pmbus.c                        |   1 -
+>  drivers/hwmon/pmbus/pmbus.h                        |   1 -
+>  drivers/hwmon/pmbus/pmbus_core.c                   |  20 +-
+>  drivers/hwmon/pmbus/pxe1610.c                      |   1 -
+>  drivers/hwmon/pmbus/q54sj108a2.c                   | 422 +++++++++
+>  drivers/hwmon/pmbus/tps40422.c                     |   1 -
+>  drivers/hwmon/pmbus/tps53679.c                     |   1 -
+>  drivers/hwmon/pmbus/ucd9000.c                      |   1 -
+>  drivers/hwmon/pmbus/ucd9200.c                      |   1 -
+>  drivers/hwmon/pmbus/xdpe12284.c                    |   1 -
+>  drivers/hwmon/pmbus/zl6100.c                       |   1 -
+>  drivers/hwmon/pwm-fan.c                            | 164 ++--
+>  drivers/hwmon/sbtsi_temp.c                         | 250 ++++++
+>  drivers/hwmon/xgene-hwmon.c                        |   2 +-
+>  81 files changed, 3875 insertions(+), 316 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/hwmon/ad741x.txt
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/adi,ad741x.yaml
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/adi,adm1275.yaml
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/adi,ltc2992.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/hwmon/adm1275.txt
+>  delete mode 100644 Documentation/devicetree/bindings/hwmon/ads7828.txt
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/amd,sbtsi.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/hwmon/ina2xx.txt
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/ti,ads7828.yaml
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/ti,ina2xx.yaml
+>  create mode 100644 Documentation/hwmon/corsair-psu.rst
+>  create mode 100644 Documentation/hwmon/ltc2992.rst
+>  create mode 100644 Documentation/hwmon/max127.rst
+>  create mode 100644 Documentation/hwmon/pm6764tr.rst
+>  create mode 100644 Documentation/hwmon/q54sj108a2.rst
+>  create mode 100644 Documentation/hwmon/sbtsi_temp.rst
+>  create mode 100644 drivers/hwmon/corsair-psu.c
+>  create mode 100644 drivers/hwmon/ltc2992.c
+>  create mode 100644 drivers/hwmon/max127.c
+>  create mode 100644 drivers/hwmon/pmbus/pm6764tr.c
+>  create mode 100644 drivers/hwmon/pmbus/q54sj108a2.c
+>  create mode 100644 drivers/hwmon/sbtsi_temp.c
 
-Factor out that code into a common helper and use it for static call
-reloc generation as well.
 
-Reported-by: Arnd Bergmann <arnd@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1207
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- tools/objtool/check.c   | 11 +++++++++--
- tools/objtool/elf.c     | 26 ++++++++++++++++++++++++++
- tools/objtool/elf.h     |  2 ++
- tools/objtool/orc_gen.c | 29 +++++------------------------
- 4 files changed, 42 insertions(+), 26 deletions(-)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index c6ab44543c92..5f8d3eed78a1 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -467,13 +467,20 @@ static int create_static_call_sections(struct objtool_file *file)
- 
- 		/* populate reloc for 'addr' */
- 		reloc = malloc(sizeof(*reloc));
-+
- 		if (!reloc) {
- 			perror("malloc");
- 			return -1;
- 		}
- 		memset(reloc, 0, sizeof(*reloc));
--		reloc->sym = insn->sec->sym;
--		reloc->addend = insn->offset;
-+
-+		insn_to_reloc_sym_addend(insn->sec, insn->offset, reloc);
-+		if (!reloc->sym) {
-+			WARN_FUNC("static call tramp: missing containing symbol",
-+				  insn->sec, insn->offset);
-+			return -1;
-+		}
-+
- 		reloc->type = R_X86_64_PC32;
- 		reloc->offset = idx * sizeof(struct static_call_site);
- 		reloc->sec = reloc_sec;
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index 4e1d7460574b..be89c741ba9a 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -262,6 +262,32 @@ struct reloc *find_reloc_by_dest(const struct elf *elf, struct section *sec, uns
- 	return find_reloc_by_dest_range(elf, sec, offset, 1);
- }
- 
-+void insn_to_reloc_sym_addend(struct section *sec, unsigned long offset,
-+			      struct reloc *reloc)
-+{
-+	if (sec->sym) {
-+		reloc->sym = sec->sym;
-+		reloc->addend = offset;
-+		return;
-+	}
-+
-+	/*
-+	 * The Clang assembler strips section symbols, so we have to reference
-+	 * the function symbol instead:
-+	 */
-+	reloc->sym = find_symbol_containing(sec, offset);
-+	if (!reloc->sym) {
-+		/*
-+		 * Hack alert.  This happens when we need to reference the NOP
-+		 * pad insn immediately after the function.
-+		 */
-+		reloc->sym = find_symbol_containing(sec, offset - 1);
-+	}
-+
-+	if (reloc->sym)
-+		reloc->addend = offset - reloc->sym->offset;
-+}
-+
- static int read_sections(struct elf *elf)
- {
- 	Elf_Scn *s = NULL;
-diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
-index 807f8c670097..e6890cc70a25 100644
---- a/tools/objtool/elf.h
-+++ b/tools/objtool/elf.h
-@@ -140,6 +140,8 @@ struct reloc *find_reloc_by_dest(const struct elf *elf, struct section *sec, uns
- struct reloc *find_reloc_by_dest_range(const struct elf *elf, struct section *sec,
- 				     unsigned long offset, unsigned int len);
- struct symbol *find_func_containing(struct section *sec, unsigned long offset);
-+void insn_to_reloc_sym_addend(struct section *sec, unsigned long offset,
-+			      struct reloc *reloc);
- int elf_rebuild_reloc_section(struct elf *elf, struct section *sec);
- 
- #define for_each_sec(file, sec)						\
-diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
-index 235663b96adc..9ce68b385a1b 100644
---- a/tools/objtool/orc_gen.c
-+++ b/tools/objtool/orc_gen.c
-@@ -105,30 +105,11 @@ static int create_orc_entry(struct elf *elf, struct section *u_sec, struct secti
- 	}
- 	memset(reloc, 0, sizeof(*reloc));
- 
--	if (insn_sec->sym) {
--		reloc->sym = insn_sec->sym;
--		reloc->addend = insn_off;
--	} else {
--		/*
--		 * The Clang assembler doesn't produce section symbols, so we
--		 * have to reference the function symbol instead:
--		 */
--		reloc->sym = find_symbol_containing(insn_sec, insn_off);
--		if (!reloc->sym) {
--			/*
--			 * Hack alert.  This happens when we need to reference
--			 * the NOP pad insn immediately after the function.
--			 */
--			reloc->sym = find_symbol_containing(insn_sec,
--							   insn_off - 1);
--		}
--		if (!reloc->sym) {
--			WARN("missing symbol for insn at offset 0x%lx\n",
--			     insn_off);
--			return -1;
--		}
--
--		reloc->addend = insn_off - reloc->sym->offset;
-+	insn_to_reloc_sym_addend(insn_sec, insn_off, reloc);
-+	if (!reloc->sym) {
-+		WARN("missing symbol for insn at offset 0x%lx",
-+		     insn_off);
-+		return -1;
- 	}
- 
- 	reloc->type = R_X86_64_PC32;
 -- 
-2.26.2
-
+Paul Barker
+Konsulko Group
