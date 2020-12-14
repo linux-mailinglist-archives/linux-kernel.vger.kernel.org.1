@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031192D9DED
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:39:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8B62D9DBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502380AbgLNRjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:39:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47838 "EHLO mail.kernel.org"
+        id S2502057AbgLNR3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:29:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408598AbgLNRhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:37:20 -0500
+        id S2440440AbgLNR2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:28:46 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dany Madden <drt@linux.ibm.com>,
-        Lijun Pan <ljp@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 017/105] ibmvnic: avoid memset null scrq msgs
-Date:   Mon, 14 Dec 2020 18:27:51 +0100
-Message-Id: <20201214172556.101359881@linuxfoundation.org>
+Subject: [PATCH 5.4 08/36] arm64: dts: broadcom: clear the warnings caused by empty dma-ranges
+Date:   Mon, 14 Dec 2020 18:27:52 +0100
+Message-Id: <20201214172543.724590092@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201214172555.280929671@linuxfoundation.org>
-References: <20201214172555.280929671@linuxfoundation.org>
+In-Reply-To: <20201214172543.302523401@linuxfoundation.org>
+References: <20201214172543.302523401@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,57 +33,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dany Madden <drt@linux.ibm.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 9281cf2d584083a450fd65fd27cc5f0e692f6e30 ]
+[ Upstream commit 2013a4b684b6eb614ee5c9a3c07b0ae6f5ca96d9 ]
 
-scrq->msgs could be NULL during device reset, causing Linux to crash.
-So, check before memset scrq->msgs.
+The scripts/dtc/checks.c requires that the node have empty "dma-ranges"
+property must have the same "#address-cells" and "#size-cells" values as
+the parent node. Otherwise, the following warnings is reported:
 
-Fixes: c8b2ad0a4a901 ("ibmvnic: Sanitize entire SCRQ buffer on reset")
-Signed-off-by: Dany Madden <drt@linux.ibm.com>
-Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
+(dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
+its #address-cells (1) differs from / (2)
+arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
+(dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
+its #size-cells (1) differs from / (2)
+
+Arnd Bergmann figured out why it's necessary:
+Also note that the #address-cells=<1> means that any device under
+this bus is assumed to only support 32-bit addressing, and DMA will
+have to go through a slow swiotlb in the absence of an IOMMU.
+
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20201016090833.1892-2-thunder.leizhen@huawei.com'
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ .../dts/broadcom/stingray/stingray-usb.dtsi   | 20 +++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 32fc0266d99b1..f892cb4a08f4e 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -2857,15 +2857,26 @@ static int reset_one_sub_crq_queue(struct ibmvnic_adapter *adapter,
- {
- 	int rc;
+diff --git a/arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi b/arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi
+index 55259f973b5a9..aef8f2b00778d 100644
+--- a/arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi
++++ b/arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi
+@@ -5,20 +5,20 @@
+ 	usb {
+ 		compatible = "simple-bus";
+ 		dma-ranges;
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-		ranges = <0x0 0x0 0x68500000 0x00400000>;
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges = <0x0 0x0 0x0 0x68500000 0x0 0x00400000>;
  
-+	if (!scrq) {
-+		netdev_dbg(adapter->netdev,
-+			   "Invalid scrq reset. irq (%d) or msgs (%p).\n",
-+			   scrq->irq, scrq->msgs);
-+		return -EINVAL;
-+	}
-+
- 	if (scrq->irq) {
- 		free_irq(scrq->irq, scrq);
- 		irq_dispose_mapping(scrq->irq);
- 		scrq->irq = 0;
- 	}
--
--	memset(scrq->msgs, 0, 4 * PAGE_SIZE);
--	atomic_set(&scrq->used, 0);
--	scrq->cur = 0;
-+	if (scrq->msgs) {
-+		memset(scrq->msgs, 0, 4 * PAGE_SIZE);
-+		atomic_set(&scrq->used, 0);
-+		scrq->cur = 0;
-+	} else {
-+		netdev_dbg(adapter->netdev, "Invalid scrq reset\n");
-+		return -EINVAL;
-+	}
+ 		usbphy0: usb-phy@0 {
+ 			compatible = "brcm,sr-usb-combo-phy";
+-			reg = <0x00000000 0x100>;
++			reg = <0x0 0x00000000 0x0 0x100>;
+ 			#phy-cells = <1>;
+ 			status = "disabled";
+ 		};
  
- 	rc = h_reg_sub_crq(adapter->vdev->unit_address, scrq->msg_token,
- 			   4 * PAGE_SIZE, &scrq->crq_num, &scrq->hw_irq);
+ 		xhci0: usb@1000 {
+ 			compatible = "generic-xhci";
+-			reg = <0x00001000 0x1000>;
++			reg = <0x0 0x00001000 0x0 0x1000>;
+ 			interrupts = <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>;
+ 			phys = <&usbphy0 1>, <&usbphy0 0>;
+ 			phy-names = "phy0", "phy1";
+@@ -28,7 +28,7 @@
+ 
+ 		bdc0: usb@2000 {
+ 			compatible = "brcm,bdc-v0.16";
+-			reg = <0x00002000 0x1000>;
++			reg = <0x0 0x00002000 0x0 0x1000>;
+ 			interrupts = <GIC_SPI 259 IRQ_TYPE_LEVEL_HIGH>;
+ 			phys = <&usbphy0 0>, <&usbphy0 1>;
+ 			phy-names = "phy0", "phy1";
+@@ -38,21 +38,21 @@
+ 
+ 		usbphy1: usb-phy@10000 {
+ 			compatible = "brcm,sr-usb-combo-phy";
+-			reg = <0x00010000 0x100>;
++			reg = <0x0 0x00010000 0x0 0x100>;
+ 			#phy-cells = <1>;
+ 			status = "disabled";
+ 		};
+ 
+ 		usbphy2: usb-phy@20000 {
+ 			compatible = "brcm,sr-usb-hs-phy";
+-			reg = <0x00020000 0x100>;
++			reg = <0x0 0x00020000 0x0 0x100>;
+ 			#phy-cells = <0>;
+ 			status = "disabled";
+ 		};
+ 
+ 		xhci1: usb@11000 {
+ 			compatible = "generic-xhci";
+-			reg = <0x00011000 0x1000>;
++			reg = <0x0 0x00011000 0x0 0x1000>;
+ 			interrupts = <GIC_SPI 263 IRQ_TYPE_LEVEL_HIGH>;
+ 			phys = <&usbphy1 1>, <&usbphy2>, <&usbphy1 0>;
+ 			phy-names = "phy0", "phy1", "phy2";
+@@ -62,7 +62,7 @@
+ 
+ 		bdc1: usb@21000 {
+ 			compatible = "brcm,bdc-v0.16";
+-			reg = <0x00021000 0x1000>;
++			reg = <0x0 0x00021000 0x0 0x1000>;
+ 			interrupts = <GIC_SPI 266 IRQ_TYPE_LEVEL_HIGH>;
+ 			phys = <&usbphy2>;
+ 			phy-names = "phy0";
 -- 
 2.27.0
 
