@@ -2,26 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A392D9E84
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 514B52D9FCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408607AbgLNRjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:39:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47556 "EHLO mail.kernel.org"
+        id S2408770AbgLNS7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 13:59:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502189AbgLNRhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:37:25 -0500
+        id S2502221AbgLNRh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:37:29 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Sperbeck <jsperbeck@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Namhyung Kim <namhyung@kernel.org>,
+        stable@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 034/105] perf/x86/intel: Fix a warning on x86_pmu_stop() with large PEBS
-Date:   Mon, 14 Dec 2020 18:28:08 +0100
-Message-Id: <20201214172556.924588371@linuxfoundation.org>
+Subject: [PATCH 5.9 035/105] usb: ohci-omap: Fix descriptor conversion
+Date:   Mon, 14 Dec 2020 18:28:09 +0100
+Message-Id: <20201214172556.969079739@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201214172555.280929671@linuxfoundation.org>
 References: <20201214172555.280929671@linuxfoundation.org>
@@ -33,52 +32,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Namhyung Kim <namhyung@kernel.org>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit 5debf02131227d39988e44adf5090fb796fa8466 ]
+[ Upstream commit 45c5775460f32ed8cdb7c16986ae1a2c254346b3 ]
 
-The commit 3966c3feca3f ("x86/perf/amd: Remove need to check "running"
-bit in NMI handler") introduced this.  It seems x86_pmu_stop can be
-called recursively (like when it losts some samples) like below:
+There were a bunch of issues with the patch converting the
+OMAP1 OSK board to use descriptors for controlling the USB
+host:
 
-  x86_pmu_stop
-    intel_pmu_disable_event  (x86_pmu_disable)
-      intel_pmu_pebs_disable
-        intel_pmu_drain_pebs_nhm  (x86_pmu_drain_pebs_buffer)
-          x86_pmu_stop
+- The chip label was incorrect
+- The GPIO offset was off-by-one
+- The code should use sleeping accessors
 
-While commit 35d1ce6bec13 ("perf/x86/intel/ds: Fix x86_pmu_stop
-warning for large PEBS") fixed it for the normal cases, there's
-another path to call x86_pmu_stop() recursively when a PEBS error was
-detected (like two or more counters overflowed at the same time).
+This patch tries to fix all issues at the same time.
 
-Like in the Kan's previous fix, we can skip the interrupt accounting
-for large PEBS, so check the iregs which is set for PMI only.
-
-Fixes: 3966c3feca3f ("x86/perf/amd: Remove need to check "running" bit in NMI handler")
-Reported-by: John Sperbeck <jsperbeck@google.com>
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201126110922.317681-1-namhyung@kernel.org
+Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
+Reported-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+Fixes: 15d157e87443 ("usb: ohci-omap: Convert to use GPIO descriptors")
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/20201130083033.29435-1-linus.walleij@linaro.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/intel/ds.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/mach-omap1/board-osk.c | 2 +-
+ drivers/usb/host/ohci-omap.c    | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index 404315df1e167..4c84b87904930 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -1937,7 +1937,7 @@ static void intel_pmu_drain_pebs_nhm(struct pt_regs *iregs)
- 		if (error[bit]) {
- 			perf_log_lost_samples(event, error[bit]);
+diff --git a/arch/arm/mach-omap1/board-osk.c b/arch/arm/mach-omap1/board-osk.c
+index 144b9caa935c4..a720259099edf 100644
+--- a/arch/arm/mach-omap1/board-osk.c
++++ b/arch/arm/mach-omap1/board-osk.c
+@@ -288,7 +288,7 @@ static struct gpiod_lookup_table osk_usb_gpio_table = {
+ 	.dev_id = "ohci",
+ 	.table = {
+ 		/* Power GPIO on the I2C-attached TPS65010 */
+-		GPIO_LOOKUP("i2c-tps65010", 1, "power", GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("tps65010", 0, "power", GPIO_ACTIVE_HIGH),
+ 		GPIO_LOOKUP(OMAP_GPIO_LABEL, 9, "overcurrent",
+ 			    GPIO_ACTIVE_HIGH),
+ 	},
+diff --git a/drivers/usb/host/ohci-omap.c b/drivers/usb/host/ohci-omap.c
+index 9ccdf2c216b51..6374501ba1390 100644
+--- a/drivers/usb/host/ohci-omap.c
++++ b/drivers/usb/host/ohci-omap.c
+@@ -91,14 +91,14 @@ static int omap_ohci_transceiver_power(struct ohci_omap_priv *priv, int on)
+ 				| ((1 << 5/*usb1*/) | (1 << 3/*usb2*/)),
+ 			       INNOVATOR_FPGA_CAM_USB_CONTROL);
+ 		else if (priv->power)
+-			gpiod_set_value(priv->power, 0);
++			gpiod_set_value_cansleep(priv->power, 0);
+ 	} else {
+ 		if (machine_is_omap_innovator() && cpu_is_omap1510())
+ 			__raw_writeb(__raw_readb(INNOVATOR_FPGA_CAM_USB_CONTROL)
+ 				& ~((1 << 5/*usb1*/) | (1 << 3/*usb2*/)),
+ 			       INNOVATOR_FPGA_CAM_USB_CONTROL);
+ 		else if (priv->power)
+-			gpiod_set_value(priv->power, 1);
++			gpiod_set_value_cansleep(priv->power, 1);
+ 	}
  
--			if (perf_event_account_interrupt(event))
-+			if (iregs && perf_event_account_interrupt(event))
- 				x86_pmu_stop(event, 0);
- 		}
- 
+ 	return 0;
 -- 
 2.27.0
 
