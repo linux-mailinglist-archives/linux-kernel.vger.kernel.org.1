@@ -2,26 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F972DA034
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:22:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 424E12DA000
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:13:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502663AbgLNTHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 14:07:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47736 "EHLO mail.kernel.org"
+        id S2440957AbgLNTKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 14:10:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408592AbgLNRhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:37:13 -0500
+        id S2408541AbgLNRgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:36:55 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dany Madden <drt@linux.ibm.com>,
-        Lijun Pan <ljp@linux.ibm.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 015/105] ibmvnic: handle inconsistent login with reset
-Date:   Mon, 14 Dec 2020 18:27:49 +0100
-Message-Id: <20201214172556.004392623@linuxfoundation.org>
+Subject: [PATCH 5.9 016/105] ibmvnic: stop free_all_rwi on failed reset
+Date:   Mon, 14 Dec 2020 18:27:50 +0100
+Message-Id: <20201214172556.052856619@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201214172555.280929671@linuxfoundation.org>
 References: <20201214172555.280929671@linuxfoundation.org>
@@ -35,35 +34,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dany Madden <drt@linux.ibm.com>
 
-[ Upstream commit 31d6b4036098f6b59bcfa20375626b500c7d7417 ]
+[ Upstream commit 18f141bf97d42f65abfdf17fd93fb3a0dac100e7 ]
 
-Inconsistent login with the vnicserver is causing the device to be
-removed. This does not give the device a chance to recover from error
-state. This patch schedules a FATAL reset instead to bring the adapter
-up.
+When ibmvnic fails to reset, it breaks out of the reset loop and frees
+all of the remaining resets from the workqueue. Doing so prevents the
+adapter from recovering if no reset is scheduled after that. Instead,
+have the driver continue to process resets on the workqueue.
 
-Fixes: 032c5e82847a2 ("Driver for IBM System i/p VNIC protocol")
+Remove the no longer need free_all_rwi().
+
+Fixes: ed651a10875f1 ("ibmvnic: Updated reset handling")
 Signed-off-by: Dany Madden <drt@linux.ibm.com>
-Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/ibm/ibmvnic.c | 22 +++-------------------
+ 1 file changed, 3 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 3654be5772c85..85c54c061ed91 100644
+index 85c54c061ed91..32fc0266d99b1 100644
 --- a/drivers/net/ethernet/ibm/ibmvnic.c
 +++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -4400,7 +4400,7 @@ static int handle_login_rsp(union ibmvnic_crq *login_rsp_crq,
- 	     adapter->req_rx_add_queues !=
- 	     be32_to_cpu(login_rsp->num_rxadd_subcrqs))) {
- 		dev_err(dev, "FATAL: Inconsistent login and login rsp\n");
--		ibmvnic_remove(adapter->vdev);
-+		ibmvnic_reset(adapter, VNIC_RESET_FATAL);
- 		return -EIO;
+@@ -2186,17 +2186,6 @@ static struct ibmvnic_rwi *get_next_rwi(struct ibmvnic_adapter *adapter)
+ 	return rwi;
+ }
+ 
+-static void free_all_rwi(struct ibmvnic_adapter *adapter)
+-{
+-	struct ibmvnic_rwi *rwi;
+-
+-	rwi = get_next_rwi(adapter);
+-	while (rwi) {
+-		kfree(rwi);
+-		rwi = get_next_rwi(adapter);
+-	}
+-}
+-
+ static void __ibmvnic_reset(struct work_struct *work)
+ {
+ 	struct ibmvnic_rwi *rwi;
+@@ -2265,9 +2254,9 @@ static void __ibmvnic_reset(struct work_struct *work)
+ 			else
+ 				adapter->state = reset_state;
+ 			rc = 0;
+-		} else if (rc && rc != IBMVNIC_INIT_FAILED &&
+-		    !adapter->force_reset_recovery)
+-			break;
++		}
++		if (rc)
++			netdev_dbg(adapter->netdev, "Reset failed, rc=%d\n", rc);
+ 
+ 		rwi = get_next_rwi(adapter);
+ 
+@@ -2281,11 +2270,6 @@ static void __ibmvnic_reset(struct work_struct *work)
+ 		complete(&adapter->reset_done);
  	}
- 	release_login_buffer(adapter);
+ 
+-	if (rc) {
+-		netdev_dbg(adapter->netdev, "Reset failed\n");
+-		free_all_rwi(adapter);
+-	}
+-
+ 	clear_bit_unlock(0, &adapter->resetting);
+ }
+ 
 -- 
 2.27.0
 
