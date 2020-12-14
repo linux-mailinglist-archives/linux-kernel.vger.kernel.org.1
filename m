@@ -2,34 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0AE2D9DD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 468A82D9FE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:07:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502208AbgLNRgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:36:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45998 "EHLO mail.kernel.org"
+        id S2502343AbgLNTGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 14:06:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502079AbgLNRfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:35:51 -0500
+        id S2502194AbgLNRh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:37:29 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Kees Cook <keescook@chromium.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 29/36] kbuild: avoid static_assert for genksyms
-Date:   Mon, 14 Dec 2020 18:28:13 +0100
-Message-Id: <20201214172544.733028722@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 040/105] iwlwifi: pcie: limit memory read spin time
+Date:   Mon, 14 Dec 2020 18:28:14 +0100
+Message-Id: <20201214172557.208545474@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201214172543.302523401@linuxfoundation.org>
-References: <20201214172543.302523401@linuxfoundation.org>
+In-Reply-To: <20201214172555.280929671@linuxfoundation.org>
+References: <20201214172555.280929671@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,48 +34,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 14dc3983b5dff513a90bd5a8cc90acaf7867c3d0 upstream.
+[ Upstream commit 04516706bb99889986ddfa3a769ed50d2dc7ac13 ]
 
-genksyms does not know or care about the _Static_assert() built-in, and
-sometimes falls back to ignoring the later symbols, which causes
-undefined behavior such as
+When we read device memory, we lock a spinlock, write the address we
+want to read from the device and then spin in a loop reading the data
+in 32-bit quantities from another register.
 
-  WARNING: modpost: EXPORT symbol "ethtool_set_ethtool_phy_ops" [vmlinux] version generation failed, symbol will not be versioned.
-  ld: net/ethtool/common.o: relocation R_AARCH64_ABS32 against `__crc_ethtool_set_ethtool_phy_ops' can not be used when making a shared object
-  net/ethtool/common.o:(_ftrace_annotated_branch+0x0): dangerous relocation: unsupported relocation
+As the description makes clear, this is rather inefficient, incurring
+a PCIe bus transaction for every read. In a typical device today, we
+want to read 786k SMEM if it crashes, leading to 192k register reads.
+Occasionally, we've seen the whole loop take over 20 seconds and then
+triggering the soft lockup detector.
 
-Redefine static_assert for genksyms to avoid that.
+Clearly, it is unreasonable to spin here for such extended periods of
+time.
 
-Link: https://lkml.kernel.org/r/20201203230955.1482058-1-arnd@kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Michal Marek <michal.lkml@markovi.net>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc: Marco Elver <elver@google.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To fix this, break the loop down into an outer and an inner loop, and
+break out of the inner loop if more than half a second elapsed. To
+avoid too much overhead, check for that only every 128 reads, though
+there's no particular reason for that number. Then, unlock and relock
+to obtain NIC access again, reprogram the start address and continue.
 
+This will keep (interrupt) latencies on the CPU down to a reasonable
+time.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20201022165103.45878a7e49aa.I3b9b9c5a10002915072312ce75b68ed5b3dc6e14@changeid
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/build_bug.h |    5 +++++
- 1 file changed, 5 insertions(+)
+ .../net/wireless/intel/iwlwifi/pcie/trans.c   | 36 ++++++++++++++-----
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
---- a/include/linux/build_bug.h
-+++ b/include/linux/build_bug.h
-@@ -77,4 +77,9 @@
- #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
- #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+index e5160d6208688..6393e895f95c6 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+@@ -2155,18 +2155,36 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
+ 				   void *buf, int dwords)
+ {
+ 	unsigned long flags;
+-	int offs, ret = 0;
++	int offs = 0;
+ 	u32 *vals = buf;
  
-+#ifdef __GENKSYMS__
-+/* genksyms gets confused by _Static_assert */
-+#define _Static_assert(expr, ...)
-+#endif
+-	if (iwl_trans_grab_nic_access(trans, &flags)) {
+-		iwl_write32(trans, HBUS_TARG_MEM_RADDR, addr);
+-		for (offs = 0; offs < dwords; offs++)
+-			vals[offs] = iwl_read32(trans, HBUS_TARG_MEM_RDAT);
+-		iwl_trans_release_nic_access(trans, &flags);
+-	} else {
+-		ret = -EBUSY;
++	while (offs < dwords) {
++		/* limit the time we spin here under lock to 1/2s */
++		ktime_t timeout = ktime_add_us(ktime_get(), 500 * USEC_PER_MSEC);
 +
- #endif	/* _LINUX_BUILD_BUG_H */
++		if (iwl_trans_grab_nic_access(trans, &flags)) {
++			iwl_write32(trans, HBUS_TARG_MEM_RADDR,
++				    addr + 4 * offs);
++
++			while (offs < dwords) {
++				vals[offs] = iwl_read32(trans,
++							HBUS_TARG_MEM_RDAT);
++				offs++;
++
++				/* calling ktime_get is expensive so
++				 * do it once in 128 reads
++				 */
++				if (offs % 128 == 0 && ktime_after(ktime_get(),
++								   timeout))
++					break;
++			}
++			iwl_trans_release_nic_access(trans, &flags);
++		} else {
++			return -EBUSY;
++		}
+ 	}
+-	return ret;
++
++	return 0;
+ }
+ 
+ static int iwl_trans_pcie_write_mem(struct iwl_trans *trans, u32 addr,
+-- 
+2.27.0
+
 
 
