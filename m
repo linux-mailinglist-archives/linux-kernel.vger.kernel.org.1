@@ -2,119 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093F22DA2A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0E42DA2AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408489AbgLNVlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 16:41:36 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:50579 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406807AbgLNVlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 16:41:36 -0500
+        id S2437317AbgLNVnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 16:43:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392109AbgLNVnq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 16:43:46 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18277C0613D3;
+        Mon, 14 Dec 2020 13:43:06 -0800 (PST)
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvvvV00l7z9s0b;
-        Tue, 15 Dec 2020 08:40:37 +1100 (AEDT)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvvyG1V2zz9s0b;
+        Tue, 15 Dec 2020 08:43:01 +1100 (AEDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607982046;
-        bh=3JjwU9FMTSysTsKbEoxAhXtb46+VKMMyJV4VwIySsK8=;
+        s=201702; t=1607982182;
+        bh=9zZ4CaJ1f9yKLix26zpf+IqButEHk07/UblP1CruQGc=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=REfdSlWuUXlbrEy9wNC7xeUA389v3fyMhH+YczsFqIsexBekVy60lA0NLu+dQA5br
-         WUn5xQ6fDTiGyPVUK8tY5RQrF28LCjPE3RK8akrHH8aib+sWbgui62plDcsZVGHAYe
-         kAOMwVjBIn0THee9OXpGWzOcGNxF7jCCGLm6mUrYq17aVNHF+5lx7tlGger6vyfQpR
-         NJP/OIgufaOy2EH0nt5Nw+WCGsx/B9BxWWziu5BAEWpUNz+jPK1IG8XNzo++X+UB0G
-         9dJta20ibHjRehKUEuUCybDkxcK4+bsKk2Yn32GDmQImlWdqAezetKsSz++R6tR+xv
-         daB9VNl+1cxDg==
-Date:   Tue, 15 Dec 2020 08:40:37 +1100
+        b=b4mnC5oIz14QoU6jId/JtbDuMe3QiiUOgA//4uhZK4fzI/Chn0GElyK0t+q0fNNrW
+         e6AppecIgxshLXVCFBg6017mH8SABibD2B+tzk5/F/d/QVuqyAukAp/wxnfpkHg6u5
+         AESmYw431tOcc+bAGzFa93Z0HhGVn2BvyBSuLp5z/Q5Fz39ncThG1u8ejtzTes8Xn6
+         NkYIY1xedppB0OnztVQS6om0GwdR4MkP1F22u+K7CXZoC9fkD2nfMcoW57OkyCtuL1
+         8o1i8R9BvNnKolrRkxWj4Zai6HuA2CtBM2VOPwsPuZYg3XSN2rll0TR+fjilemDubn
+         16Clny3iNcTug==
+Date:   Tue, 15 Dec 2020 08:43:00 +1100
 From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Ben Boeckel <mathstuf@gmail.com>,
-        Denis Efremov <efremov@linux.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Jann Horn <jannh@google.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Tom Rix <trix@redhat.com>, YueHaibing <yuehaibing@huawei.com>,
-        keyrings@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Christoph Hellwig <hch@lst.de>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Subject: Re: [GIT PULL] keys: Collected minor fixes and cleanups
-Message-ID: <20201215084037.76dd4c98@canb.auug.org.au>
-In-Reply-To: <CAADWXX83JC0oSVoDxOwsLE1DPm8r6JLWcAsP0UyCLO_X544pkQ@mail.gmail.com>
-References: <2659836.1607940186@warthog.procyon.org.uk>
-        <CAHk-=wido5stGfFtRzmW19bB1w2XQAuY8oxUtFN2ZWdk2Grq-w@mail.gmail.com>
-        <CAADWXX83JC0oSVoDxOwsLE1DPm8r6JLWcAsP0UyCLO_X544pkQ@mail.gmail.com>
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the block tree
+Message-ID: <20201215084300.3543c433@canb.auug.org.au>
+In-Reply-To: <20201214213612.GS6430@suse.cz>
+References: <20201202150149.42543862@canb.auug.org.au>
+        <20201215070956.6852e939@canb.auug.org.au>
+        <25c43226-f937-0866-9c0b-46867bd04cc7@kernel.dk>
+        <20201214213612.GS6430@suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/u0N.9FFRBQ5prXVibfV=Cb0";
+Content-Type: multipart/signed; boundary="Sig_/yP56w+C5xgj2Oxokg8e0qTf";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/u0N.9FFRBQ5prXVibfV=Cb0
+--Sig_/yP56w+C5xgj2Oxokg8e0qTf
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+Hi David,
 
-On Mon, 14 Dec 2020 13:05:51 -0800 Linus Torvalds <torvalds@linux-foundatio=
-n.org> wrote:
+On Mon, 14 Dec 2020 22:36:12 +0100 David Sterba <dsterba@suse.cz> wrote:
 >
-> On Mon, Dec 14, 2020 at 12:49 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > I suspect the fix is trivial (change the "," to "|"), but I will not
-> > be pulling this - or anything else that hasn't been in linux-next -
-> > from you this merge window. =20
+> On Mon, Dec 14, 2020 at 01:12:46PM -0700, Jens Axboe wrote:
+> > On 12/14/20 1:09 PM, Stephen Rothwell wrote: =20
+> > > Just a reminder that I am still applying the above merge fix. =20
+> >=20
+> > I sent in my core changes, but they haven't been pulled yet. So I guess
+> > we're dealing with a timing situation... David, did you send in the btr=
+fs
+> > pull yet? =20
 >=20
-> It looks like Stephen Rothwell saw it in next yesterday, and fixed it
-> up there in his merge.
->=20
-> So somebody was aware of the problem. But unlike Stephen, I don't take
-> broken code and just silently fix it up in the merge.
->=20
-> I suspect Stephen might have thought it was a merge conflict fix,
-> rather than just a broken branch.
->=20
-> Stephen: that makes linux-next test coverage kind of pointless, if you
-> just fix bugs in the branches you merge. You should reject things more
-> aggressively, rather than make them "pass" in Linux-next.
+> Yes
+> https://lore.kernel.org/lkml/cover.1607955523.git.dsterba@suse.com/
 
-I also reported it last Friday
-(https://lore.kernel.org/lkml/20201211155031.0e35abf2@canb.auug.org.au/)
-and so assumed it would be fixed before being sent to you ... I
-sometimes fix simple things up but mostly reject them - clearly that
-would not have made a difference here.
+I would expect you *both* to at least mention this conflict to Linus ...
 
 --=20
 Cheers,
 Stephen Rothwell
 
---Sig_/u0N.9FFRBQ5prXVibfV=Cb0
+--Sig_/yP56w+C5xgj2Oxokg8e0qTf
 Content-Type: application/pgp-signature
 Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/X29UACgkQAVBC80lX
-0GzRywf/TUfUtDuvxp4LbMQJ8kjHjmCm97z+Owe85JLyLp/OUf8AE0mh+Cx6kbEB
-KvpBwSaQ5c3x4FyOeUbOXVCdn7r1hGy6+tttnurK5cbtAza6U7U19MGcu7oI1ii1
-2VFDwMun1dGrJt78apl/F47icTL6TwkW0IX2SYErXh09Roi4x8C4Hy0hJ2PBnb49
-BWpTaUwa1zwv5bVbb+iHmh6nc652ahMqJ7bLaEpt+TEbDHm9q9TNBtZv/8EIDh3e
-gNN2DVDjBx7HeQD3Y16WSezLth1D7I6clxxAS550E+qdKgeOaxs/XxVhgQMuBEUH
-5nGAA4KtqRTKyiH8dgW3gAkwR6652A==
-=rGZ4
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/X3GQACgkQAVBC80lX
+0GwUOAf7BCupZhrH2m2TJVGAUKCPwPHu4YXNRd6qZwz5TD6ZnwIh9coLFVzi8DaO
+ReDNKTw1vJDUK8x5Aa+J4AWvsRIZehVTjX1b7l0TMizYHLL/6xR+GUEBauaIUjmE
+z4T/vheB0eP+hfqvOdOhAe6YKoODs9ShXzQyHZNPPaG6YY91qjhwLYVmqE3HpLdl
+ScOH8T8PvuafJMbKaJoDGUHI5Tn39NiP4poo06mKQzD0ssAkm0YRrTklQnCjUe8n
+bpM2h0G+n7vuq3il6uMCRtciu0Z5pNUuCrbv3fWrZqPxAGEBWvEITMb4lYcx4CA5
+nTEUUH3aSi40uo3kCrZ5v9R1XlslJQ==
+=A+gw
 -----END PGP SIGNATURE-----
 
---Sig_/u0N.9FFRBQ5prXVibfV=Cb0--
+--Sig_/yP56w+C5xgj2Oxokg8e0qTf--
