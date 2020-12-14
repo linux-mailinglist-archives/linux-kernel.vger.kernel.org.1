@@ -2,67 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933202D9DAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66EFE2D9DB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502073AbgLNR3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:29:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41306 "EHLO mail.kernel.org"
+        id S2440472AbgLNRak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:30:40 -0500
+Received: from mga02.intel.com ([134.134.136.20]:10234 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440445AbgLNR2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:28:51 -0500
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pankaj Sharma <pankj.sharma@samsung.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 22/36] can: m_can: m_can_dev_setup(): add support for bosch mcan version 3.3.0
-Date:   Mon, 14 Dec 2020 18:28:06 +0100
-Message-Id: <20201214172544.387643853@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201214172543.302523401@linuxfoundation.org>
-References: <20201214172543.302523401@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2440371AbgLNRaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:30:22 -0500
+IronPort-SDR: PVLZGPFdq4PJf412lWWdnix0NxdteFphUlCx9TvlIcyqUgRSBP22vyHVzvvYyiu+2A7TrnJV7n
+ /41niS17b8RA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9834"; a="161795988"
+X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
+   d="scan'208";a="161795988"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2020 09:29:37 -0800
+IronPort-SDR: D7pm080c5efPDR/a8PvPUF0giaJs4ugzNWCeyNqrCQ2Enl67OQUgyIgQ0AgmjwiZLYvrfprUlS
+ r8BgWXEtOd/w==
+X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
+   d="scan'208";a="411343436"
+Received: from davidjor-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.136.237])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2020 09:29:36 -0800
+Date:   Mon, 14 Dec 2020 09:29:35 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 09/14] cxl/mem: Add basic IOCTL interface
+Message-ID: <20201214172935.efknefvqthp7ohcz@intel.com>
+References: <20201209002418.1976362-1-ben.widawsky@intel.com>
+ <20201209002418.1976362-10-ben.widawsky@intel.com>
+ <8a252085-9dd9-6cf0-afad-a3ff63cf00d8@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a252085-9dd9-6cf0-afad-a3ff63cf00d8@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pankaj Sharma <pankj.sharma@samsung.com>
+On 20-12-09 19:32:19, Randy Dunlap wrote:
+> On 12/8/20 4:24 PM, Ben Widawsky wrote:
+> > +
+> > +#define CXL_MEM_QUERY_COMMANDS _IOR('C', 1, struct cxl_mem_query_commands)
+> 
+> Hi,
+> I could have missed it, but IOCTL major "numbers" (like 'C') should be
+> listed in Documentation/userspace-api/ioctl/ioctl-number.rst.
+> 
+> 
+> thanks.
 
-[ Upstream commit 5c7d55bded77da6db7c5d249610e3a2eed730b3c ]
+I was unaware of this. Fixing for v3 without conflict.
 
-Add support for mcan bit timing and control mode according to bosch mcan IP
-version 3.3.0. The mcan version read from the Core Release field of CREL
-register would be 33. Accordingly the properties are to be set for mcan v3.3.0
-
-Signed-off-by: Pankaj Sharma <pankj.sharma@samsung.com>
-Link: https://lore.kernel.org/r/1606366302-5520-1-git-send-email-pankj.sharma@samsung.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/can/m_can/m_can.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index f9a2a9ecbac9e..c84114b44ee07 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -1337,6 +1337,8 @@ static int m_can_dev_setup(struct m_can_classdev *m_can_dev)
- 						&m_can_data_bittiming_const_31X;
- 		break;
- 	case 32:
-+	case 33:
-+		/* Support both MCAN version v3.2.x and v3.3.0 */
- 		m_can_dev->can.bittiming_const = m_can_dev->bit_timing ?
- 			m_can_dev->bit_timing : &m_can_bittiming_const_31X;
- 
--- 
-2.27.0
-
-
-
+Thanks.
+Ben
