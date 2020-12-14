@@ -2,97 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D41CE2D9A48
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:50:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 064AC2D9A4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731272AbgLNOtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 09:49:04 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:33921 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393878AbgLNOso (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 09:48:44 -0500
-Received: by mail-il1-f198.google.com with SMTP id c72so13614311ila.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 06:48:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=iQ6osCsvX+pY/vfkv46SyLKYoeGekDUy36uAE1KOgCg=;
-        b=TdUcrYWSJbWDEwmsVlPi7Fovf65oePygjvEqoo0+OGE5vk0ncPNalW2bOHLsNdSs8X
-         w5JQE2xmlIF65xwb7p/7TSyZ3XQdwghJq/4EKIg8BQ6y7YfInk1T/U01AmUQwpuudr8A
-         U4vxJT1PfjMZXX/Iw5/thg9FOP5wmLSAd9I+7xKjQJxZElWFUb6b22Ipy72haQmPFTR4
-         OewGOVZZw9f9aK6y8uaHzi6q7ZKVXJ1ySbkNqIZpt4TQuKAUo0BaMWSp1oU5HOSEk/8s
-         wHnKbb0HfsWY63CywQ7CA9ajvV5NjQEIyTOXjhKlW3LROBXz6A1TO3jNq7HF8HgcMF4Y
-         zodQ==
-X-Gm-Message-State: AOAM531dQbf7QVjpNUqDU5GcLNwieRcgzzeagS3PsuglPQBLyIxNtFEY
-        wzTUzDBsx0Yd3x1n6OdN/EExVE++f6zx9yR6TRCRIzvQH9L8
-X-Google-Smtp-Source: ABdhPJz28Thz98ZstaRTtBcqoDH1wBs/0lpdWE4sqhgOspe3Gbbh81ljfM/ufnBNe/VaLL39+qX70TVdWDE+mtKr9roulJUOiqCb
-MIME-Version: 1.0
-X-Received: by 2002:a02:b02:: with SMTP id 2mr33587692jad.15.1607957283301;
- Mon, 14 Dec 2020 06:48:03 -0800 (PST)
-Date:   Mon, 14 Dec 2020 06:48:03 -0800
-In-Reply-To: <X9dDkwlOTFeo9eZ6@localhost>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000af6ec005b66dbaa2@google.com>
-Subject: Re: WARNING in yurex_write/usb_submit_urb
-From:   syzbot <syzbot+e87ebe0f7913f71f2ea5@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, gregkh@linuxfoundation.org,
-        johan@kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, stable@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S2438559AbgLNOuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 09:50:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43264 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2408255AbgLNOtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 09:49:16 -0500
+From:   Mark Brown <broonie@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] SPI updates for v5.11
+Date:   Mon, 14 Dec 2020 14:48:10 +0000
+Message-Id: <20201214144830.39E172253A@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The following changes since commit b65054597872ce3aefbc6a666385eabdf9e288da:
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in yurex_write/usb_submit_urb
+  Linux 5.10-rc6 (2020-11-29 15:50:50 -0800)
 
-------------[ cut here ]------------
-URB 00000000d1c13d63 submitted while active
-WARNING: CPU: 1 PID: 12383 at drivers/usb/core/urb.c:378 usb_submit_urb+0x1228/0x14e0 drivers/usb/core/urb.c:378
-Modules linked in:
-CPU: 1 PID: 12383 Comm: syz-executor.2 Not tainted 5.10.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:usb_submit_urb+0x1228/0x14e0 drivers/usb/core/urb.c:378
-Code: 89 de e8 1b cd 3b fc 84 db 0f 85 da f4 ff ff e8 fe d4 3b fc 4c 89 fe 48 c7 c7 20 59 e1 89 c6 05 14 8c a4 07 01 e8 a4 b3 78 03 <0f> 0b e9 b8 f4 ff ff c7 44 24 14 01 00 00 00 e9 6f f5 ff ff 41 bd
-RSP: 0018:ffffc90001c9fcb8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff888020788000 RSI: ffffffff8158c835 RDI: fffff52000393f89
-RBP: 1ffff92000393fa9 R08: 0000000000000001 R09: ffff8880b9f30627
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880276ea400
-R13: 00000000fffffff0 R14: ffff8880276ea4e8 R15: ffff888012dca100
-FS:  00007fad9e6f7700(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005587bf0f4160 CR3: 00000000252a1000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- yurex_write+0x3f4/0x840 drivers/usb/misc/yurex.c:494
- vfs_write+0x28e/0xa30 fs/read_write.c:603
- ksys_write+0x12d/0x250 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e159
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fad9e6f6c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e159
-RDX: 0000000000000001 RSI: 0000000020000740 RDI: 0000000000000004
-RBP: 000000000119bfc0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
-R13: 00007ffc9fc101ef R14: 00007fad9e6f79c0 R15: 000000000119bf8c
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-v5.11
 
-Tested on:
+for you to fetch changes up to 3e98a021cc85e7d52acdd1eae8a988e975ec5bf9:
 
-commit:         a256e240 usb: phy: convert comma to semicolon
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=17357137500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4536e7f93c2bc8e9
-dashboard link: https://syzkaller.appspot.com/bug?extid=e87ebe0f7913f71f2ea5
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+  Merge remote-tracking branch 'spi/for-5.11' into spi-next (2020-12-11 17:49:01 +0000)
 
+----------------------------------------------------------------
+spi: Updates for v5.11
+
+The big change this release has been some excellent work from Lukas
+Wunner which closes a bunch of holes in the cleanup paths for drivers,
+mainly introduced as a result of devm conversions causing bad
+interactions with the support SPI has for allocating the bus and driver
+data together.  Together with some of the other work done it feels like
+we've turned the corner on several long standing pain points with the
+API.
+
+ - Many cleanups around probe/remove and error handling from Lukas
+   Wunner and Uwe Kleine-König, and further fixes around PM from Zhang
+   Qilong.
+ - Provide a mask for which bits of the mode can safely be configured by
+   drivers and use that to fix an issue with the ADS7846 driver.
+ - Documentation of the expected interactions between SPI and GPIO level
+   chip select polarity configuration from H. Nikolaus Schaller,
+   hopefully we're pretty much at the end of sorting out the
+   interactions there.  Thanks to Nikolaus, Sven Van Asbroeck and Linus
+   Walleij for this.
+ - DMA support for Allwinner sun6i controllers.
+ - Support for Canaan K210 Designware implementations and Intel Adler Lake.
+
+----------------------------------------------------------------
+Alexander Kochetkov (3):
+      spi: spi-sun6i: implement DMA-based transfer mode
+      spi: rockchip: enable autosuspend feature
+      spi: spi-sun6i: enable autosuspend feature
+
+Damien Le Moal (3):
+      dt-bindings: spi: dw-apb-ssi: Add Canaan K210 SPI controller
+      spi: dw: Add support for 32-bits max xfer size
+      spi: dw: Add support for the Canaan K210 SoC SPI
+
+Fabio Estevam (1):
+      spi: imx: Remove unused .id_table support
+
+H. Nikolaus Schaller (1):
+      spi: dt-bindings: clarify CS behavior for spi-cs-high and gpio descriptors
+
+Jarkko Nikula (1):
+      spi: pxa2xx: Add support for Intel Alder Lake PCH-S
+
+Lukas Wunner (21):
+      spi: atmel-quadspi: Disable clock in probe error path
+      spi: synquacer: Disable clock in probe error path
+      spi: pic32: Don't leak DMA channels in probe error path
+      spi: st-ssc4: Fix unbalanced pm_runtime_disable() in probe error path
+      spi: davinci: Fix use-after-free on unbind
+      spi: spi-geni-qcom: Fix use-after-free on unbind
+      spi: spi-qcom-qspi: Fix use-after-free on unbind
+      spi: spi-sh: Fix use-after-free on unbind
+      spi: pxa2xx: Fix use-after-free on unbind
+      spi: rpc-if: Fix use-after-free on unbind
+      spi: mxic: Don't leak SPI master in probe error path
+      spi: spi-mtk-nor: Don't leak SPI master in probe error path
+      spi: gpio: Don't leak SPI master in probe error path
+      spi: rb4xx: Don't leak SPI master in probe error path
+      spi: sc18is602: Don't leak SPI master in probe error path
+      media: netup_unidvb: Don't leak SPI master in probe error path
+      spi: mt7621: Disable clock in probe error path
+      spi: mt7621: Don't leak SPI master in probe error path
+      spi: ar934x: Don't leak SPI master in probe error path
+      spi: npcm-fiu: Disable clock in probe error path
+      spi: atmel-quadspi: Fix use-after-free on unbind
+
+Marek Szyprowski (1):
+      spi: Fix potential NULL pointer dereference in spi_shutdown()
+
+Mark Brown (9):
+      Merge existing fixes from spi/for-5.10
+      Merge series "SPI/ Input: ads7846: properly handle spi->mode flags" from Oleksij Rempel <o.rempel@pengutronix.de>:
+      Merge series "add axi clock control for MT8192 spi-nor" from Bayi Cheng <bayi.cheng@mediatek.com>:
+      Merge branch 'for-5.10' of https://git.kernel.org/.../broonie/spi into spi-5.11
+      Merge series "spi: atmel-quadspi: Fix AHB memory accesses" from Tudor Ambarus <tudor.ambarus@microchip.com>:
+      Merge series "spi: spi-geni-qcom: Use gpio descriptors for CS" from Stephen Boyd <swboyd@chromium.org>:
+      Merge remote-tracking branch 'spi/for-5.9' into spi-linus
+      Merge remote-tracking branch 'spi/for-5.10' into spi-linus
+      Merge remote-tracking branch 'spi/for-5.11' into spi-next
+
+Mauro Carvalho Chehab (1):
+      spi: fix a typo inside a kernel-doc markup
+
+Maxim Kochetkov (1):
+      spi: spi-fsl-dspi: Use max_native_cs instead of num_chipselect to set SPI_MCR
+
+Oleksij Rempel (2):
+      spi: introduce SPI_MODE_X_MASK macro
+      Input: ads7846: do not overwrite spi->mode flags set by spi framework
+
+Qing Zhang (1):
+      spi: amd: Use devm_platform_ioremap_resource() in amd_spi_probe
+
+Qinglang Miao (2):
+      spi: mt7621: fix missing clk_disable_unprepare() on error in mt7621_spi_probe
+      spi: bcm63xx-hsspi: fix missing clk_disable_unprepare() on error in bcm63xx_hsspi_resume
+
+Randy Dunlap (1):
+      spi: dw: fix build error by selecting MULTIPLEXER
+
+Rasmus Villemoes (1):
+      spi: fsl: fix use of spisel_boot signal on MPC8309
+
+Serge Semin (1):
+      spi: dw-bt1: Fix undefined devm_mux_control_get symbol
+
+Stephen Boyd (3):
+      platform/chrome: cros_ec_spi: Don't overwrite spi::mode
+      platform/chrome: cros_ec_spi: Drop bits_per_word assignment
+      spi: spi-geni-qcom: Use the new method of gpio CS control
+
+Tian Tao (1):
+      spi: dw: fixed missing resource_size
+
+Tudor Ambarus (6):
+      spi: atmel: Downgrade to dev_dbg when dma_request_chan() fails
+      spi: atmel-quadspi: Fix AHB memory accesses
+      spi: atmel-quadspi: Drop superfluous set of QSPI_IFR_APBTFRTYP_READ
+      spi: atmel-quadspi: Write QSPI_IAR only when needed
+      spi: atmel-quadspi: Move common code outside of if else
+      spi: Limit the spi device max speed to controller's max speed
+
+Uwe Kleine-König (3):
+      spi: fix resource leak for drivers without .remove callback
+      spi: Use bus_type functions for probe, remove and shutdown
+      spi: Warn when a driver's remove callback returns an error
+
+Yash Shah (1):
+      spi: Update DT binding docs to support SiFive FU740 SoC
+
+YueHaibing (1):
+      spi: spi-mem: Fix passing zero to 'PTR_ERR' warning
+
+Zhang Changzhong (1):
+      spi: dw: Fix error return code in dw_spi_bt1_probe()
+
+Zhang Qilong (11):
+      spi: img-spfi: fix reference leak in img_spfi_resume
+      spi: spi-mem: fix reference leak in spi_mem_access_start
+      spi: stm32: fix reference leak in stm32_spi_resume
+      spi: stm32-qspi: fix reference leak in stm32 qspi operations
+      spi: spi-ti-qspi: fix reference leak in ti_qspi_setup
+      spi: tegra20-slink: fix reference leak in slink ops of tegra20
+      spi: tegra20-sflash: fix reference leak in tegra_sflash_resume
+      spi: tegra114: fix reference leak in tegra spi ops
+      spi: imx: fix reference leak in two imx operations
+      spi: sprd: fix reference leak in sprd_spi_remove
+      spi: mxs: fix reference leak in mxs_spi_probe
+
+bayi cheng (1):
+      spi: spi-mtk-nor: add axi clock control for MT8192 spi-nor
+
+ .../devicetree/bindings/spi/snps,dw-apb-ssi.yaml   |   2 +
+ .../devicetree/bindings/spi/spi-controller.yaml    |  27 +++
+ .../devicetree/bindings/spi/spi-sifive.yaml        |  10 +-
+ drivers/input/touchscreen/ads7846.c                |   3 +-
+ drivers/media/pci/netup_unidvb/netup_unidvb_spi.c  |   5 +-
+ drivers/platform/chrome/cros_ec_spi.c              |   2 -
+ drivers/spi/Kconfig                                |   4 +-
+ drivers/spi/atmel-quadspi.c                        |  42 ++---
+ drivers/spi/spi-amd.c                              |   5 +-
+ drivers/spi/spi-ar934x.c                           |  14 +-
+ drivers/spi/spi-atmel.c                            |   6 +-
+ drivers/spi/spi-bcm63xx-hsspi.c                    |   4 +-
+ drivers/spi/spi-davinci.c                          |   2 +-
+ drivers/spi/spi-dw-bt1.c                           |   6 +-
+ drivers/spi/spi-dw-core.c                          |  44 ++++-
+ drivers/spi/spi-dw-mmio.c                          |  16 ++
+ drivers/spi/spi-dw.h                               |   5 +
+ drivers/spi/spi-fsl-dspi.c                         |   6 +-
+ drivers/spi/spi-fsl-spi.c                          |  11 +-
+ drivers/spi/spi-geni-qcom.c                        |   4 +-
+ drivers/spi/spi-gpio.c                             |  15 +-
+ drivers/spi/spi-img-spfi.c                         |   4 +-
+ drivers/spi/spi-imx.c                              |  33 +---
+ drivers/spi/spi-mem.c                              |   3 +-
+ drivers/spi/spi-mt7621.c                           |  11 +-
+ drivers/spi/spi-mtk-nor.c                          |  18 +-
+ drivers/spi/spi-mxic.c                             |  10 +-
+ drivers/spi/spi-mxs.c                              |   1 +
+ drivers/spi/spi-npcm-fiu.c                         |   8 +-
+ drivers/spi/spi-pic32.c                            |   1 +
+ drivers/spi/spi-pxa2xx.c                           |  10 +-
+ drivers/spi/spi-qcom-qspi.c                        |  42 ++---
+ drivers/spi/spi-rb4xx.c                            |   2 +-
+ drivers/spi/spi-rockchip.c                         |   4 +
+ drivers/spi/spi-rpc-if.c                           |   9 +-
+ drivers/spi/spi-sc18is602.c                        |  13 +-
+ drivers/spi/spi-sh.c                               |  13 +-
+ drivers/spi/spi-sprd.c                             |   1 +
+ drivers/spi/spi-st-ssc4.c                          |   5 +-
+ drivers/spi/spi-stm32-qspi.c                       |   8 +-
+ drivers/spi/spi-stm32.c                            |   1 +
+ drivers/spi/spi-sun6i.c                            | 199 +++++++++++++++++++--
+ drivers/spi/spi-synquacer.c                        |  15 +-
+ drivers/spi/spi-tegra114.c                         |   2 +
+ drivers/spi/spi-tegra20-sflash.c                   |   1 +
+ drivers/spi/spi-tegra20-slink.c                    |   2 +
+ drivers/spi/spi-ti-qspi.c                          |   1 +
+ drivers/spi/spi.c                                  |  70 ++++----
+ include/linux/spi/spi.h                            |   1 +
+ 49 files changed, 482 insertions(+), 239 deletions(-)
