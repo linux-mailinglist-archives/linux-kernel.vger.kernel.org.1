@@ -2,51 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6BA2DA34D
+	by mail.lfdr.de (Postfix) with ESMTP id E712D2DA34F
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438659AbgLNWVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 17:21:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388490AbgLNWVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 17:21:18 -0500
-Date:   Mon, 14 Dec 2020 14:20:36 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1607984437;
-        bh=PRJyZ67a4idxIi4AVLyTc0cHwcEG1KvkNVoRG0c5U2c=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Zn6fduMLvc5aaO12mILA+BdbJMvoycSn8ryx62HqddkgMaI7Jh7+kScQE/w8pGJb9
-         u/jyN5EhAqQx8UYNWosknL/+OUQxnlUlP7l7hMVLfV1tDIQ5ZZwd8kfup+NfWsuX0h
-         TYSKeNb+iatczidVKlCYHFIv3iVtDVI1PX6nFccY=
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Rik van Riel <riel@surriel.com>, xuyu@linux.alibaba.com,
-        mgorman@suse.de, aarcange@redhat.com, willy@infradead.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        linux-mm@kvack.org, vbabka@suse.cz, mhocko@suse.com
-Subject: Re: [PATCH v6 0/3] mm,thp,shm: limit shmem THP alloc gfp_mask
-Message-Id: <20201214142036.28dfa428d3713a5ebcf58a59@linux-foundation.org>
-In-Reply-To: <alpine.LSU.2.11.2012141226350.1925@eggly.anvils>
-References: <20201124194925.623931-1-riel@surriel.com>
-        <alpine.LSU.2.11.2012141226350.1925@eggly.anvils>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S2438996AbgLNWVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 17:21:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438675AbgLNWVU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 17:21:20 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96550C061793
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:20:40 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id z136so18519979iof.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:20:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QRlSeeT9Km7abG56Ccl3cXJFJk9i8/zfSmnWV1GsI4o=;
+        b=LkvPM2V3qkclDXWi447dJmcqtjfISVZd+Dct/HUg9FOmd5KXSfBVShx3pYhXLqfyke
+         F+vOUajwl25Cq5jBUW9ZaDBbWLDUn6dOW0Reb0rL382aG6at1Z1yTzgd2H1mSGoYYbd6
+         2JrvgTGCdXmpKdICg/nSXIe7H6rmBopyM4vIw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QRlSeeT9Km7abG56Ccl3cXJFJk9i8/zfSmnWV1GsI4o=;
+        b=bppmKY09XC5AEwruDcwxGntM8iAFd402+O/c160oziAFKk3EfAXxrfUTzudASpmNPp
+         X3x0RkuxgcWtWYceRp0CYSJ/j79GW+0CLzZwAnoThvtuMayWY0VNkLVU5h91VYibCx4I
+         Yq7KndKsRMf5TBbrlJCUVDlZdVRYqskawNIi20MqWuKHoujdBQ1Q/RpdJIGqBa8sFeJV
+         LYq7HFNLlrSE2pTokBAj9PU1quXvRtUUMvCP1892uVuUCTbNxQL3yQTvkCVHfsqk7vz4
+         ICc1mY/lpqsLRzTirpW7LnL4Vwq1tZAeGXhG3xqY6lJPPw8Z6L+1xggV1M9RlHLkFZCp
+         fb2w==
+X-Gm-Message-State: AOAM532TKuiYKEZ4nEt+XFS+14WT7U18LyG21VnF9FqW/GAtIKSoMhnT
+        mLCOTcJUNt8j8DOWdQVYtvbT1w==
+X-Google-Smtp-Source: ABdhPJzdy7PSlZ9vv/WN2maOBUGmltupBCk1Uv3uW0CSwFhTVrjwCt3yV8rTMfAcr6Ql+3YbHU3gTw==
+X-Received: by 2002:a05:6602:14ca:: with SMTP id b10mr34853162iow.40.1607984439842;
+        Mon, 14 Dec 2020 14:20:39 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id k23sm12502242ilg.57.2020.12.14.14.20.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Dec 2020 14:20:38 -0800 (PST)
+Subject: Re: [PATCH 5.10 0/2] 5.10.1-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20201214170452.563016590@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <89f51647-625f-5319-24ed-60e538a32f13@linuxfoundation.org>
+Date:   Mon, 14 Dec 2020 15:20:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20201214170452.563016590@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 13:16:39 -0800 (PST) Hugh Dickins <hughd@google.com> wrote:
-
-> Andrew, please don't rush
+On 12/14/20 10:06 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.1 release.
+> There are 2 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> mmthpshmem-limit-shmem-thp-alloc-gfp_mask.patch
-> mmthpshm-limit-gfp-mask-to-no-more-than-specified.patch
-> mmthpshmem-make-khugepaged-obey-tmpfs-mount-flags.patch
+> Responses should be made by Monday, 14 Dec 2020 18:04:42 +0000.
+> Anything received after that time might be too late.
 > 
-> to Linus in your first wave of mmotm->5.11 sendings.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.1-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-No probs - I'll park them until all this is sorted out.  Thanks for
-letting us know, and for your diligence ;)
+Compiled and booted on my test system. No dmesg regressions.
+
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
