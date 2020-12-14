@@ -2,126 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3C82D9AE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B051D2D9AF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391257AbgLNPZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 10:25:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54792 "EHLO mail.kernel.org"
+        id S2407422AbgLNP2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 10:28:19 -0500
+Received: from elvis.franken.de ([193.175.24.41]:40266 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405383AbgLNPZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 10:25:05 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD59222A99;
-        Mon, 14 Dec 2020 15:24:23 +0000 (UTC)
-Date:   Mon, 14 Dec 2020 10:24:22 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, Ingo Molnar <mingo@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-Subject: Re: [PATCH] blktrace: fix 'BUG: sleeping function called from
- invalid context' in case of PREEMPT_RT
-Message-ID: <20201214102422.2d84035d@gandalf.local.home>
-In-Reply-To: <20201214022217.1754273-1-ming.lei@redhat.com>
-References: <20201214022217.1754273-1-ming.lei@redhat.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2406208AbgLNP2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 10:28:06 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kopkv-0006Cf-02; Mon, 14 Dec 2020 16:27:21 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 60377C037B; Mon, 14 Dec 2020 16:24:47 +0100 (CET)
+Date:   Mon, 14 Dec 2020 16:24:47 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     natechancellor@gmail.com, ndesaulniers@google.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] mips: lib: uncached: fix non-standard usage of
+ variable 'sp'
+Message-ID: <20201214152447.GC9149@alpha.franken.de>
+References: <20201211102437.3929348-1-anders.roxell@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211102437.3929348-1-anders.roxell@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 10:22:17 +0800
-Ming Lei <ming.lei@redhat.com> wrote:
-
-> trace_note_tsk() is called by __blk_add_trace(), which is covered by RCU read lock.
-> So in case of PREEMPT_RT, warning of 'BUG: sleeping function called from invalid context'
-> will be triggered because spin lock is converted to rtmutex.
-
-The RCU read_lock() can not be the cause of this issue, because under
-PREEMPT_RT, rcu_read_lock() can be preempted.
-
-What was the full back trace of this problem?
-
+On Fri, Dec 11, 2020 at 11:24:37AM +0100, Anders Roxell wrote:
+> When building mips tinyconfig with clang the following warning show up:
 > 
-> Fix the issue by converting running_trace_lock into raw_spin_lock().
+> arch/mips/lib/uncached.c:45:6: warning: variable 'sp' is uninitialized when used here [-Wuninitialized]
+>         if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
+>             ^~
+> arch/mips/lib/uncached.c:40:18: note: initialize the variable 'sp' to silence this warning
+>         register long sp __asm__("$sp");
+>                         ^
+>                          = 0
+> 1 warning generated.
 > 
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> Rework to make an explicit inline move, instead of the non-standard use
+> of specifying registers for local variables. This is what's written
+> from the gcc-10 manual [1] about specifying registers for local
+> variables:
+> 
+> "6.47.5.2 Specifying Registers for Local Variables
+> .................................................
+> [...]
+> 
+> "The only supported use for this feature is to specify registers for
+> input and output operands when calling Extended 'asm' (*note Extended
+> Asm::).  [...]".
+> 
+> [1] https://docs.w3cub.com/gcc~10/local-register-variables
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 > ---
->  kernel/trace/blktrace.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-> index 2c5b3c5317c2..53dc876d669d 100644
-> --- a/kernel/trace/blktrace.c
-> +++ b/kernel/trace/blktrace.c
-> @@ -34,7 +34,7 @@ static struct trace_array *blk_tr;
->  static bool blk_tracer_enabled __read_mostly;
->  
->  static LIST_HEAD(running_trace_list);
-> -static __cacheline_aligned_in_smp DEFINE_SPINLOCK(running_trace_lock);
-> +static __cacheline_aligned_in_smp DEFINE_RAW_SPINLOCK(running_trace_lock);
->  
->  /* Select an alternative, minimalistic output than the original one */
->  #define TRACE_BLK_OPT_CLASSIC	0x1
-> @@ -121,12 +121,12 @@ static void trace_note_tsk(struct task_struct *tsk)
->  	struct blk_trace *bt;
->  
->  	tsk->btrace_seq = blktrace_seq;
-> -	spin_lock_irqsave(&running_trace_lock, flags);
-> +	raw_spin_lock_irqsave(&running_trace_lock, flags);
->  	list_for_each_entry(bt, &running_trace_list, running_list) {
->  		trace_note(bt, tsk->pid, BLK_TN_PROCESS, tsk->comm,
->  			   sizeof(tsk->comm), 0);
->  	}
+>  arch/mips/lib/uncached.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-How big is this running_trace_list? May not be something we want raw locks
-around.
+applied to mips-next.
 
-Please understand that converting locks to raw should be the last resort.
-One should always look at the reason for a spin lock in a preempt disabled
-area and see if there's other means of solving it before simply switch a
-lock to raw, as each raw spinlock makes PREEMPT_RT less real time.
+Thomas.
 
--- Steve
-
-
-> -	spin_unlock_irqrestore(&running_trace_lock, flags);
-> +	raw_spin_unlock_irqrestore(&running_trace_lock, flags);
->  }
->  
->  static void trace_note_time(struct blk_trace *bt)
-> @@ -669,9 +669,9 @@ static int __blk_trace_startstop(struct request_queue *q, int start)
->  			blktrace_seq++;
->  			smp_mb();
->  			bt->trace_state = Blktrace_running;
-> -			spin_lock_irq(&running_trace_lock);
-> +			raw_spin_lock_irq(&running_trace_lock);
->  			list_add(&bt->running_list, &running_trace_list);
-> -			spin_unlock_irq(&running_trace_lock);
-> +			raw_spin_unlock_irq(&running_trace_lock);
->  
->  			trace_note_time(bt);
->  			ret = 0;
-> @@ -679,9 +679,9 @@ static int __blk_trace_startstop(struct request_queue *q, int start)
->  	} else {
->  		if (bt->trace_state == Blktrace_running) {
->  			bt->trace_state = Blktrace_stopped;
-> -			spin_lock_irq(&running_trace_lock);
-> +			raw_spin_lock_irq(&running_trace_lock);
->  			list_del_init(&bt->running_list);
-> -			spin_unlock_irq(&running_trace_lock);
-> +			raw_spin_unlock_irq(&running_trace_lock);
->  			relay_flush(bt->rchan);
->  			ret = 0;
->  		}
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
