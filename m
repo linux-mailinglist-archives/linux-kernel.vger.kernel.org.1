@@ -2,113 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE31D2D9D5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:15:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E836A2D9D71
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:18:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408414AbgLNRNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:13:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408413AbgLNRNN (ORCPT
+        id S2408453AbgLNRRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:17:25 -0500
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:44445 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408437AbgLNRRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:13:13 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED87C0613D3;
-        Mon, 14 Dec 2020 09:12:33 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id 82so9252658yby.6;
-        Mon, 14 Dec 2020 09:12:33 -0800 (PST)
+        Mon, 14 Dec 2020 12:17:24 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6rKntWAzezKQY6iRUqQwhm52Tcc3Is8F5R6X0L2T4x0=;
-        b=aeBQBa2+tSZ5IwKLmky59/317du25kb5QvdC9TIwDci6aoupzBEyy0TJWD23cZbZpF
-         FCLyMLzHRAX3P5Z7NxUChIi374ZZENIny2AKBbunXKVNy6DzhXMgMh7TN6FO4ro5ZcY3
-         R5RRQIkjF4/1PiU2BZORpSsOzq7qi2OjkmiuSssrk2EzVILNXwzCj1Xn0b6BPH21y1fP
-         NstTfcQ+kIy7CTI0Cw3NpZYysrZyPyfe3eo2Tw9/QzmIwcusOC9Kr3CJ+N+zog7Klj/n
-         L0UpRvL69C4gv37lyjwfCuQwFFsM/YkZqfPnLb/4wRodAzYUhgFAxa1U6OdFQFHveYpe
-         L9Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6rKntWAzezKQY6iRUqQwhm52Tcc3Is8F5R6X0L2T4x0=;
-        b=U5eXP1VXeg87W0QtoPpQ2LNheUq0us8LTfbrgpJ2/DZOPRYwPnifMf8FfVHOvdSHlf
-         T8zkhwPS0gZO/nwLgnik5VDExl6BvNXsZKsUNvkPez5jAojCJ/uI9DiiBGOHe3wPWC5D
-         r8Sbj+KvXB1RxmJNGEYcwMZ2pX3Lgj1jk30DTgEDR/EWao1RKWHrz/mA739sfQP68OAs
-         31d3bQ8DJhfc6Kar58OHIdz6pzP+ejbPMkToEeNkF344kQQvjkH5TS6YeNQ4yOoR1pFY
-         BpoU5eQCY7vWtVfs8m+o9SduzPRz8MjhJfcKBMapb4l1NW1fRqkpcENAl4/aJgfRUeMy
-         fnvA==
-X-Gm-Message-State: AOAM533Pfw4xfePqJugC0jaJDAleyFXw351/DPV/0T2hjKcyfP6m/5a9
-        MZb1EONLWDIYS5JQPB0LeTH+Pzdq+ZzclbB6vZA=
-X-Google-Smtp-Source: ABdhPJwmepRzWIWkCfUMN5Kbq6U3QkiOKjfBZudMDR1drxErt8YUn0ov9ksl8/hO4b05XcLvCKm9aVC8DsljRQN2Pl0=
-X-Received: by 2002:a25:f02:: with SMTP id 2mr36268254ybp.500.1607965948994;
- Mon, 14 Dec 2020 09:12:28 -0800 (PST)
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1607966243; x=1639502243;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=CQGamH5EYsnyVqy9qJ/OP61I+HLUicTHXTVqOFab65M=;
+  b=NlHDFh7sfZed7QMgOrOeI9gW503fgeL3R6HBmt0gz/msPZ2GBwmkN6fl
+   Vkg9/xuu9A7gT7dmVSLm6Fuocb2S+m2EChOkrWx8k45KZiwEU1JITSbni
+   eEjLznBchHVki1JjLnlL0afCGmNsWzBZ1WPMCkoTX99WylGsm/NuoIuEE
+   4=;
+X-IronPort-AV: E=Sophos;i="5.78,420,1599523200"; 
+   d="scan'208";a="72514614"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-af6a10df.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 14 Dec 2020 17:16:42 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-af6a10df.us-east-1.amazon.com (Postfix) with ESMTPS id 7F641A198E;
+        Mon, 14 Dec 2020 17:16:39 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 14 Dec 2020 17:16:38 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.161.223) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 14 Dec 2020 17:16:34 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <kafai@fb.com>
+CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <davem@davemloft.net>,
+        <edumazet@google.com>, <eric.dumazet@gmail.com>, <kuba@kernel.org>,
+        <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v1 bpf-next 03/11] tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+Date:   Tue, 15 Dec 2020 02:16:30 +0900
+Message-ID: <20201214171630.62542-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
+In-Reply-To: <20201210193340.x6qdykdalhdebxv3@kafai-mbp.dhcp.thefacebook.com>
+References: <20201210193340.x6qdykdalhdebxv3@kafai-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <CADxRZqzXQRYgKc=y-KV=S_yHL+Y8Ay2mh5ezeZUnpRvg+syWKw@mail.gmail.com>
- <20201214111512.415717ac@gandalf.local.home> <20201214112629.3cf6f240@gandalf.local.home>
-In-Reply-To: <20201214112629.3cf6f240@gandalf.local.home>
-From:   Anatoly Pugachev <matorola@gmail.com>
-Date:   Mon, 14 Dec 2020 20:12:18 +0300
-Message-ID: <CADxRZqwDAZK3s2jjavUKunvbE3jux=yNfPQFRwvMZRjqqS_6cw@mail.gmail.com>
-Subject: Re: [sparc64] ftrace: kernel startup-tests unaligned access
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.223]
+X-ClientProxiedBy: EX13D45UWA003.ant.amazon.com (10.43.160.92) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 7:26 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> On Mon, 14 Dec 2020 11:15:12 -0500 Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> > Does sparc64 require 8 byte alignment for 8 byte words?
-> >
->
-> In other words, does this patch fix anything?
->
-> -- Steve
->
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 56b6ccc0e32d..fa716994f77e 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -143,6 +143,22 @@ config UPROBES
->             managed by the kernel and kept transparent to the probed
->             application. )
->
-> +config HAVE_64BIT_ALIGNED_ACCESS
-...
+From:   Martin KaFai Lau <kafai@fb.com>
+Date:   Thu, 10 Dec 2020 11:33:40 -0800
+> On Thu, Dec 10, 2020 at 02:58:10PM +0900, Kuniyuki Iwashima wrote:
+> 
+> [ ... ]
+> 
+> > > > I've implemented one-by-one migration only for the accept queue for now.
+> > > > In addition to the concern about TFO queue,
+> > > You meant this queue:  queue->fastopenq.rskq_rst_head?
+> > 
+> > Yes.
+> > 
+> > 
+> > > Can "req" be passed?
+> > > I did not look up the lock/race in details for that though.
+> > 
+> > I think if we rewrite freeing TFO requests part like one of accept queue
+> > using reqsk_queue_remove(), we can also migrate them.
+> > 
+> > In this patchset, selecting a listener for accept queue, the TFO queue of
+> > the same listener is also migrated to another listener in order to prevent
+> > TFO spoofing attack.
+> > 
+> > If the request in the accept queue is migrated one by one, I am wondering
+> > which should the request in TFO queue be migrated to prevent attack or
+> > freed.
+> > 
+> > I think user need not know about keeping such requests in kernel to prevent
+> > attacks, so passing them to eBPF prog is confusing. But, redistributing
+> > them randomly without user's intention can make some irrelevant listeners
+> > unnecessarily drop new TFO requests, so this is also bad. Moreover, freeing
+> > such requests seems not so good in the point of security.
+> The current behavior (during process restart) is also not carrying this
+> security queue.  Not carrying them in this patch will make it
+> less secure than the current behavior during process restart?
 
-Steven,
+No, I thought I could make it more secure.
 
-yes, this patch fully fixes ftrace sparc64 "unaligned access". Thanks!
 
-$ journalctl -b -k --no-hostname -o short-monotonic | grep -c unaligned
-0
+> Do you need it now or it is something that can be considered for later
+> without changing uapi bpf.h?
 
-$ diff -u <(gzip -dc ~/dmesg/config-5.10.0.gz) <(gzip -dc /proc/config.gz)
---- /dev/fd/63  2020-12-14 20:11:10.442415669 +0300
-+++ /dev/fd/62  2020-12-14 20:11:10.438415619 +0300
-@@ -305,6 +305,7 @@
- CONFIG_JUMP_LABEL=y
- # CONFIG_STATIC_KEYS_SELFTEST is not set
- CONFIG_UPROBES=y
-+CONFIG_HAVE_64BIT_ALIGNED_ACCESS=y
- CONFIG_KRETPROBES=y
- CONFIG_HAVE_KPROBES=y
- CONFIG_HAVE_KRETPROBES=y
-@@ -2842,7 +2843,10 @@
- # CONFIG_TRACEPOINT_BENCHMARK is not set
- # CONFIG_RING_BUFFER_BENCHMARK is not set
- # CONFIG_TRACE_EVAL_MAP_FILE is not set
--# CONFIG_FTRACE_STARTUP_TEST is not set
-+CONFIG_FTRACE_SELFTEST=y
-+CONFIG_FTRACE_STARTUP_TEST=y
-+CONFIG_EVENT_TRACE_STARTUP_TEST=y
-+# CONFIG_EVENT_TRACE_TEST_SYSCALLS is not set
- # CONFIG_RING_BUFFER_STARTUP_TEST is not set
- # CONFIG_PREEMPTIRQ_DELAY_TEST is not set
- # CONFIG_KPROBE_EVENT_GEN_TEST is not set
+No, I do not need it for any other reason, so I will simply free the
+requests in TFO queue.
+Thank you.
+
+
+> > > > ---8<---
+> > > > diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+> > > > index a82fd4c912be..d0ddd3cb988b 100644
+> > > > --- a/net/ipv4/inet_connection_sock.c
+> > > > +++ b/net/ipv4/inet_connection_sock.c
+> > > > @@ -1001,6 +1001,29 @@ struct sock *inet_csk_reqsk_queue_add(struct sock *sk,
+> > > >  }
+> > > >  EXPORT_SYMBOL(inet_csk_reqsk_queue_add);
+> > > >  
+> > > > +static bool inet_csk_reqsk_queue_migrate(struct sock *sk, struct sock *nsk, struct request_sock *req)
+> > > > +{
+> > > > +       struct request_sock_queue *queue = &inet_csk(nsk)->icsk_accept_queue;
+> > > > +       bool migrated = false;
+> > > > +
+> > > > +       spin_lock(&queue->rskq_lock);
+> > > > +       if (likely(nsk->sk_state == TCP_LISTEN)) {
+> > > > +               migrated = true;
+> > > > +
+> > > > +               req->dl_next = NULL;
+> > > > +               if (queue->rskq_accept_head == NULL)
+> > > > +                       WRITE_ONCE(queue->rskq_accept_head, req);
+> > > > +               else
+> > > > +                       queue->rskq_accept_tail->dl_next = req;
+> > > > +               queue->rskq_accept_tail = req;
+> > > > +               sk_acceptq_added(nsk);
+> > > > +               inet_csk_reqsk_queue_migrated(sk, nsk, req);
+> > > need to first resolve the question raised in patch 5 regarding
+> > > to the update on req->rsk_listener though.
+> > 
+> > In the unhash path, it is also safe to call sock_put() for the old listner.
+> > 
+> > In inet_csk_listen_stop(), the sk_refcnt of the listener >= 1. If the
+> > listener does not have immature requests, sk_refcnt is 1 and freed in
+> > __tcp_close().
+> > 
+> >   sock_hold(sk) in __tcp_close()
+> >   sock_put(sk) in inet_csk_destroy_sock()
+> >   sock_put(sk) in __tcp_clsoe()
+> I don't see how it is different here than in patch 5.
+> I could be missing something.
+> 
+> Lets contd the discussion on the other thread (patch 5) first.
+
+The listening socket has two kinds of refcounts for itself(1) and
+requests(n). I think the listener has its own refcount at least in
+inet_csk_listen_stop(), so sock_put() here never free the listener.
