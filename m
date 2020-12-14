@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3E82D9F8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E7F2DA079
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727867AbgLNSuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 13:50:08 -0500
+        id S2440811AbgLNT3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 14:29:30 -0500
 Received: from mail.kernel.org ([198.145.29.99]:45998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502265AbgLNRhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:37:45 -0500
+        id S2502212AbgLNRgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:36:55 -0500
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jeroen Hofstee <jhofstee@victronenergy.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 025/105] can: sja1000: sja1000_err(): dont count arbitration lose as an error
-Date:   Mon, 14 Dec 2020 18:27:59 +0100
-Message-Id: <20201214172556.489074286@linuxfoundation.org>
+Subject: [PATCH 5.4 16/36] arm64: tegra: Disable the ACONNECT for Jetson TX2
+Date:   Mon, 14 Dec 2020 18:28:00 +0100
+Message-Id: <20201214172544.105222494@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201214172555.280929671@linuxfoundation.org>
-References: <20201214172555.280929671@linuxfoundation.org>
+In-Reply-To: <20201214172543.302523401@linuxfoundation.org>
+References: <20201214172543.302523401@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -33,38 +32,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeroen Hofstee <jhofstee@victronenergy.com>
+From: Jon Hunter <jonathanh@nvidia.com>
 
-[ Upstream commit bd0ccb92efb09c7da5b55162b283b42a93539ed7 ]
+[ Upstream commit fb319496935b7475a863a00c76895e8bb3216704 ]
 
-Losing arbitration is normal in a CAN-bus network, it means that a higher
-priority frame is being send and the pending message will be retried later.
-Hence most driver only increment arbitration_lost, but the sja1000 driver also
-incremeants tx_error, causing errors to be reported on a normal functioning
-CAN-bus. So stop counting them as errors.
+Commit ff4c371d2bc0 ("arm64: defconfig: Build ADMA and ACONNECT driver")
+enable the Tegra ADMA and ACONNECT drivers and this is causing resume
+from system suspend to fail on Jetson TX2. Resume is failing because the
+ACONNECT driver is being resumed before the BPMP driver, and the ACONNECT
+driver is attempting to power on a power-domain that is provided by the
+BPMP. While a proper fix for the resume sequencing problem is identified,
+disable the ACONNECT for Jetson TX2 temporarily to avoid breaking system
+suspend.
 
-Fixes: 8935f57e68c4 ("can: sja1000: fix network statistics update")
-Signed-off-by: Jeroen Hofstee <jhofstee@victronenergy.com>
-Link: https://lore.kernel.org/r/20201127095941.21609-1-jhofstee@victronenergy.com
-[mkl: split into two seperate patches]
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Please note that ACONNECT driver is used by the Audio Processing Engine
+(APE) on Tegra, but because there is no mainline support for APE on
+Jetson TX2 currently, disabling the ACONNECT does not disable any useful
+feature at the moment.
+
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/sja1000/sja1000.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index 9f107798f904b..25a4d7d0b3498 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -474,7 +474,6 @@ static int sja1000_err(struct net_device *dev, uint8_t isrc, uint8_t status)
- 		netdev_dbg(dev, "arbitration lost interrupt\n");
- 		alc = priv->read_reg(priv, SJA1000_ALC);
- 		priv->can.can_stats.arbitration_lost++;
--		stats->tx_errors++;
- 		cf->can_id |= CAN_ERR_LOSTARB;
- 		cf->data[0] = alc & 0x1f;
- 	}
+diff --git a/arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts b/arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts
+index bdace01561bab..9df4782c90f35 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts
++++ b/arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts
+@@ -10,18 +10,6 @@
+ 	model = "NVIDIA Jetson TX2 Developer Kit";
+ 	compatible = "nvidia,p2771-0000", "nvidia,tegra186";
+ 
+-	aconnect {
+-		status = "okay";
+-
+-		dma-controller@2930000 {
+-			status = "okay";
+-		};
+-
+-		interrupt-controller@2a40000 {
+-			status = "okay";
+-		};
+-	};
+-
+ 	i2c@3160000 {
+ 		power-monitor@42 {
+ 			compatible = "ti,ina3221";
 -- 
 2.27.0
 
