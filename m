@@ -2,92 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E7C2D97C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A755B2D97BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438794AbgLNL4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 06:56:07 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:38486 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730991AbgLNL4G (ORCPT
+        id S2407773AbgLNLy5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Dec 2020 06:54:57 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:44073 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407754AbgLNLym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:56:06 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BEBnkCS140859;
-        Mon, 14 Dec 2020 11:55:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=0iQky8MTG41IHzMruSm4cjXNdRJ2e3+bpUkzpXJ92nE=;
- b=FnHJ72xajo+S4PlY3l+8P11GTbZVZqK+WzeVb+7a582juCZ5c50eNYicd7SGpxUiBGow
- lM1Bc9vf8kXFUFwMDD6AuTyHmIDC5O8p/wbDrkm/2GYIQlDxgJ6HpS8AngDxucBq1yJU
- UjZQv9WhjXETotIQvTtPM1F3yBFQAmIBU7140OEKl0BCrgk6LGqXruQaweTeEpkaWYHF
- hfLxnVavDWUJrhZTTQcGzXoxEN8rlxYZBq+pM1RQcG8J2h6Hzz4OAeNTGdZ8edawTHQK
- gU4osp5yY40kMeLoMEfy19RMyYp6PdQTKcPqw5XHhsFyPZH2ud3t/zqDZH8ssgDdsG+F 2Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 35cntkvr25-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Dec 2020 11:55:11 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BEBp9Dr012697;
-        Mon, 14 Dec 2020 11:53:10 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 35d7ekcetr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Dec 2020 11:53:10 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BEBr7s5006091;
-        Mon, 14 Dec 2020 11:53:10 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 14 Dec 2020 03:53:06 -0800
-Date:   Mon, 14 Dec 2020 14:52:58 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Russell King <rmk+kernel@armlinux.org.uk>
-Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] fs/adfs: bigdir: Fix another error code in adfs_fplus_read()
-Message-ID: <X9dSGhuIWbOfmp7I@mwanda>
+        Mon, 14 Dec 2020 06:54:42 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-57-NlvEctBAMaCvCybvQIbvtA-1; Mon, 14 Dec 2020 11:53:03 +0000
+X-MC-Unique: NlvEctBAMaCvCybvQIbvtA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 14 Dec 2020 11:53:04 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 14 Dec 2020 11:53:04 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Philipp Gerlesberger' <Philipp.Gerlesberger@fau.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "ij72uhux@stud.informatik.uni-erlangen.de" 
+        <ij72uhux@stud.informatik.uni-erlangen.de>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "linux-kernel@i4.cs.fau.de" <linux-kernel@i4.cs.fau.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>
+Subject: RE: [PATCH v2 12/12] media: atomisp: Fix LOGICAL_CONTINUATIONS
+Thread-Topic: [PATCH v2 12/12] media: atomisp: Fix LOGICAL_CONTINUATIONS
+Thread-Index: AQHW0gocnJO7wsTYYEGwNcWFQ1O+9qn2emzA
+Date:   Mon, 14 Dec 2020 11:53:04 +0000
+Message-ID: <4eef67d66b0b48feba474906431daa30@AcuMS.aculab.com>
+References: <20201214110156.6152-1-Philipp.Gerlesberger@fau.de>
+ <20201214110156.6152-13-Philipp.Gerlesberger@fau.de>
+In-Reply-To: <20201214110156.6152-13-Philipp.Gerlesberger@fau.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 bulkscore=0
- suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012140084
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 priorityscore=1501 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012140084
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This should return -EINVAL if the checkbyte is wrong instead of success.
+From: Philipp Gerlesberger
+> Sent: 14 December 2020 11:02
+>
+> Logical continuations should be on the previous line
+> 
+> Co-developed-by: Andrey Khlopkov <ij72uhux@stud.informatik.uni-erlangen.de>
+> Signed-off-by: Andrey Khlopkov <ij72uhux@stud.informatik.uni-erlangen.de>
+> Signed-off-by: Philipp Gerlesberger <Philipp.Gerlesberger@fau.de>
+> ---
+>  drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
+> b/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
+> index 2f1c2df59f71..7d44070c7114 100644
+> --- a/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
+> +++ b/drivers/staging/media/atomisp/pci/runtime/queue/src/queue.c
+> @@ -24,8 +24,8 @@
+>   *****************************************************************************/
+>  int ia_css_queue_local_init(ia_css_queue_t *qhandle, ia_css_queue_local_t *desc)
+>  {
+> -	if (NULL == qhandle || NULL == desc
+> -	    || NULL == desc->cb_elems || NULL == desc->cb_desc) {
+> +	if (NULL == qhandle || NULL == desc ||
+> +	    NULL == desc->cb_elems || NULL == desc->cb_desc) {
+>  		/* Invalid parameters, return error*/
+>  		return -EINVAL;
 
-Fixes: d79288b4f61b ("fs/adfs: bigdir: calculate and validate directory checkbyte")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-Sorry for not catching this one last time.  :/
+Get rid of the obnoxious backwards tests and it probably fits in 80 columns.
 
- fs/adfs/dir_fplus.c | 1 +
- 1 file changed, 1 insertion(+)
+	if (!qhandle || !desc || !desc->cb_elems || !desc->desc) {
+		...
 
-diff --git a/fs/adfs/dir_fplus.c b/fs/adfs/dir_fplus.c
-index 4a15924014da..a5e47c94a5b9 100644
---- a/fs/adfs/dir_fplus.c
-+++ b/fs/adfs/dir_fplus.c
-@@ -143,6 +143,7 @@ static int adfs_fplus_read(struct super_block *sb, u32 indaddr,
- 
- 	if (adfs_fplus_checkbyte(dir) != t->bigdircheckbyte) {
- 		adfs_error(sb, "dir %06x checkbyte mismatch\n", indaddr);
-+		ret = -EINVAL;
- 		goto out;
- 	}
- 
--- 
-2.29.2
+OTOH if it isn't expected that any of these might be NULL just delete
+the test.
+If they ever are 'accidentally' NULL it is usually easier to debug
+the NULL pointer dereference than an obscure error return.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
