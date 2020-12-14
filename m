@@ -2,245 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA6A2DA45A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D962DA45D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728200AbgLNXqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 18:46:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53010 "EHLO mail.kernel.org"
+        id S1727294AbgLNXrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 18:47:21 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:45813 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728112AbgLNXqE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 18:46:04 -0500
-Date:   Mon, 14 Dec 2020 23:45:18 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607989523;
-        bh=nmVeZbOM6GWp/MXK73GTwAScW4A9C2OsxbBerJBRXas=;
-        h=From:To:Cc:Subject:From;
-        b=FdUBnG1NApEfaJr5cv6kBs6jNS711Qv5k1lQt/6T9JMtcxqZKXg30CN7TKkzynr9S
-         qDsXOmfuo9F7n+Y2qA+ARBVrS+q3QWIsCunKpl36tG6W0Nmh18GatjkhxtOLnioddV
-         YjMHhnzum23SJozCcYl/UWimaqnB5vNxvZYIPPy9Ywy8DeEF5TIXWj3OGwYx4JLxMa
-         CXtG3y80bdPwjyBqhIHcZPL86QfeAGlPizyrHdgrNvEkoYY/lPOZxIYKBGIr7q6Lzv
-         LGnB01nvtXDGTkzRPw/iJyHoV0Wx0sMpqUm98bC+o6+FOgpa+AJBsV98RB1GRtTnnu
-         gmtafSxcrJn9w==
-From:   Will Deacon <will@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>, kernel-team@android.com
-Subject: [GIT PULL] IOMMU updates for 5.11
-Message-ID: <20201214234518.GA14575@willie-the-truck>
+        id S1727300AbgLNXrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 18:47:09 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cvyhf0k3xz9sRK;
+        Tue, 15 Dec 2020 10:46:26 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607989587;
+        bh=+zLolRCIT4qpIfZSJNjSg4Xw4U1OY+fGl+wCDLOzkjg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cnKfDbOMM3mjDgexqgrr1T84BKlaYj6kaGYaJkGTotX1LnyZyGvv3/2as5aZ7/qNC
+         Iv9IL7pJtNm28c/DXH8TfeWvVxmASFpJITza20lNZu8U32BxtBD1GsPF9NI01xDpAe
+         y3vMuHAff5Zyn3ArYWSybNgkWQmCcazV7KHvHDfTH9VOpRxJd5r/brUoNGtDlPw5L8
+         MIZ4RV/N0Y3mq78q2VjnwEWK/rfV7iXxnNkHSEp1Odphs5cvn364b13NtJyE1hCfRK
+         K6uj2aCFB/5bNbZwVCDydR05sUvwJfw+PQ/G4Y1sW0bjHA3xcMaJysoNJxqnccLeUI
+         FR+PVB0YOR01g==
+Date:   Tue, 15 Dec 2020 10:46:24 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>
+Cc:     Eric Biggers <ebiggers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the ceph tree
+Message-ID: <20201215104624.603c75da@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/ZCBAKa_hl0AZPkIEEKSZPi8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+--Sig_/ZCBAKa_hl0AZPkIEEKSZPi8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Please pull these IOMMU updates for 5.11: there's a good mixture of
-improvements to the core code and driver changes across the board.
-Summary in the tag and merge commits.
+Hi all,
 
-One thing worth pointing out is that this includes a quirk to work
-around behaviour in the i915 driver (see 65f746e8285f ("iommu: Add quirk
-for Intel graphic devices in map_sg")), which otherwise interacts badly
-with the conversion of the intel IOMMU driver over to the DMA-IOMMU APU
-but has being fixed properly in the DRM tree. We'll revert the quirk
-later this cycle once we've confirmed that things don't fall apart
-without it.
+After merging the ceph tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
+net/ceph/messenger_v2.c:13:10: fatal error: crypto/sha.h: No such file or d=
+irectory
+   13 | #include <crypto/sha.h>
+      |          ^~~~~~~~~~~~~~
+
+Caused by commit
+
+  cd1a677cad99 ("libceph, ceph: implement msgr2.1 protocol (crc and secure =
+modes)")
+
+interacting with commit
+
+  a24d22b225ce ("crypto: sha - split sha.h into sha1.h and sha2.h")
+
+from the crypto tree (and now in Linus' tree).
+
+I have applied the following merge fix patch:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 15 Dec 2020 10:40:58 +1100
+Subject: [PATCH] fixup for "crypto: sha - split sha.h into sha1.h and sha2.=
+h"
+
+conflicting with
+
+"libceph, ceph: implement msgr2.1 protocol (crc and secure modes)"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ net/ceph/messenger_v2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/ceph/messenger_v2.c b/net/ceph/messenger_v2.c
+index 5e38c847317b..c1ebb2aa08b5 100644
+--- a/net/ceph/messenger_v2.c
++++ b/net/ceph/messenger_v2.c
+@@ -10,7 +10,7 @@
+ #include <crypto/aead.h>
+ #include <crypto/algapi.h>  /* for crypto_memneq() */
+ #include <crypto/hash.h>
+-#include <crypto/sha.h>
++#include <crypto/sha2.h>
+ #include <linux/bvec.h>
+ #include <linux/crc32c.h>
+ #include <linux/net.h>
+--=20
+2.29.2
+
+--=20
 Cheers,
+Stephen Rothwell
 
-Will
+--Sig_/ZCBAKa_hl0AZPkIEEKSZPi8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
---->8
+-----BEGIN PGP SIGNATURE-----
 
-The following changes since commit 4165bf015ba9454f45beaad621d16c516d5c5afe:
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/X+VAACgkQAVBC80lX
+0Gz6mgf/XJ06Oo1tsJeiQa8ZiqjyuvOOt6mNgqoe6KyFrgKFDUS83t4TDbMiJlKa
+5O9bavpKw0Sv8SdmB2mo0T4OLqtOcjQQSxsGHOw3XO/KkKECIePOVg6rYHSdIC4+
+Dl19BKXNm+IbjgyYlnVAAYEbwZr0PVK9TzStMkRRcWgu6VK4rivprihIPTBbJL9W
+UWpQRMd3/jRNsj+HQTUq/1DM8DQ40EMNb7GNFoks2Ia4zAYSILa2796FCPHNI98q
+paBRqQtA9gfnAT8ZsAIDic5Ytn5L3vc+1yoVPBuOdBCbLjHuNREWqMy04dmfQj4K
+bBvkbY+IOK0aKX200DGPXS4P1G6uhQ==
+=FYzZ
+-----END PGP SIGNATURE-----
 
-  iommu/amd: Set DTE[IntTabLen] to represent 512 IRTEs (2020-12-07 11:00:24 +0000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/iommu-updates-v5.11
-
-for you to fetch changes up to 5ae9a046a452d60b6a6c076f6df7e3f8e34f918f:
-
-  iommu/amd: Add sanity check for interrupt remapping table length macros (2020-12-11 12:47:22 +0000)
-
-----------------------------------------------------------------
-IOMMU updates for 5.11
-
-- IOVA allocation optimisations and removal of unused code
-
-- Introduction of DOMAIN_ATTR_IO_PGTABLE_CFG for parameterising the
-  page-table of an IOMMU domain
-
-- Support for changing the default domain type in sysfs
-
-- Optimisation to the way in which identity-mapped regions are created
-
-- Driver updates:
-  * Arm SMMU updates, including continued work on Shared Virtual Memory
-  * Tegra SMMU updates, including support for PCI devices
-  * Intel VT-D updates, including conversion to the IOMMU-DMA API
-
-- Cleanup, kerneldoc and minor refactoring
-
-----------------------------------------------------------------
-Bjorn Andersson (3):
-      iommu/arm-smmu: Allow implementation specific write_s2cr
-      iommu/arm-smmu-qcom: Read back stream mappings
-      iommu/arm-smmu-qcom: Implement S2CR quirk
-
-Chen Jun (1):
-      iommu: Modify the description of iommu_sva_unbind_device
-
-Christoph Hellwig (1):
-      dma-iommu: remove __iommu_dma_mmap
-
-Christophe JAILLET (1):
-      iommu/vt-d: Avoid GFP_ATOMIC where it is not needed
-
-Cong Wang (1):
-      iommu: avoid taking iova_rbtree_lock twice
-
-Jean-Philippe Brucker (4):
-      iommu/ioasid: Add ioasid references
-      iommu/sva: Add PASID helpers
-      iommu/arm-smmu-v3: Implement iommu_sva_bind/unbind()
-      iommu/arm-smmu-v3: Hook up ATC invalidation to mm ops
-
-John Garry (3):
-      iommu: Delete split_and_remove_iova()
-      iommu: Stop exporting alloc_iova_mem()
-      iommu: Stop exporting free_iova_mem()
-
-Jordan Crouse (2):
-      iommu/arm-smmu-qcom: Add implementation for the adreno GPU SMMU
-      dt-bindings: arm-smmu: Add compatible string for Adreno GPU SMMU
-
-Kaixu Xia (1):
-      iommu/arm-smmu-v3: Assign boolean values to a bool variable
-
-Keqian Zhu (1):
-      iommu: Defer the early return in arm_(v7s/lpae)_map
-
-Kunkun Jiang (1):
-      iommu/io-pgtable-arm: Remove unused 'level' parameter from iopte_type() macro
-
-Lu Baolu (6):
-      iommu: Add quirk for Intel graphic devices in map_sg
-      iommu/vt-d: Update domain geometry in iommu_ops.at(de)tach_dev
-      iommu/vt-d: Cleanup after converting to dma-iommu ops
-      iommu: Move def_domain type check for untrusted device into core
-      iommu: Fix htmldocs warnings in sysfs-kernel-iommu_groups
-      iommu/vt-d: Remove set but not used variable
-
-Lukas Bulwahn (1):
-      iommu/vt-d: include conditionally on CONFIG_INTEL_IOMMU_SVM
-
-Nicolin Chen (5):
-      iommu/tegra-smmu: Unwrap tegra_smmu_group_get
-      iommu/tegra-smmu: Expand mutex protection range
-      iommu/tegra-smmu: Use fwspec in tegra_smmu_(de)attach_dev
-      iommu/tegra-smmu: Rework tegra_smmu_probe_device()
-      iommu/tegra-smmu: Add PCI support
-
-Rob Clark (1):
-      iommu/arm-smmu: Add a way for implementations to influence SCTLR
-
-Robin Murphy (2):
-      iommu/arm-smmu: Use new devm_krealloc()
-      iommu/io-pgtable: Remove tlb_flush_leaf
-
-Sai Prakash Ranjan (4):
-      iommu/arm-smmu: Add support for pagetable config domain attribute
-      iommu/arm-smmu: Move non-strict mode to use io_pgtable_domain_attr
-      iommu: arm-smmu-impl: Use table to list QCOM implementations
-      iommu: arm-smmu-impl: Add a space before open parenthesis
-
-Sai Praneeth Prakhya (3):
-      iommu: Add support to change default domain of an iommu group
-      iommu: Take lock before reading iommu group default domain type
-      iommu: Document usage of "/sys/kernel/iommu_groups/<grp_id>/type" file
-
-Suravee Suthikulpanit (1):
-      iommu/amd: Add sanity check for interrupt remapping table length macros
-
-Tom Murphy (4):
-      iommu: Handle freelists when using deferred flushing in iommu drivers
-      iommu: Add iommu_dma_free_cpu_cached_iovas()
-      iommu: Allow the dma-iommu api to use bounce buffers
-      iommu/vt-d: Convert intel iommu driver to the iommu ops
-
-Vijayanand Jitta (2):
-      iommu/iova: Retry from last rb tree node if iova search fails
-      iommu/iova: Free global iova rcache on iova alloc failure
-
-Will Deacon (10):
-      Merge branch 'stable/for-linus-5.10-rc2' of git://git.kernel.org/.../konrad/swiotlb into for-next/iommu/vt-d
-      Merge branch 'for-next/iommu/io-pgtable-domain-attr' into for-next/iommu/arm-smmu
-      Merge branch 'for-next/iommu/arm-smmu' into for-next/iommu/core
-      Merge branch 'for-next/iommu/default-domains' into for-next/iommu/core
-      Merge branch 'for-next/iommu/iova' into for-next/iommu/core
-      Merge branch 'for-next/iommu/misc' into for-next/iommu/core
-      Merge branch 'for-next/iommu/svm' into for-next/iommu/core
-      Merge branch 'for-next/iommu/tegra-smmu' into for-next/iommu/core
-      Merge branch 'for-next/iommu/vt-d' into for-next/iommu/core
-      Merge branch 'for-next/iommu/fixes' into for-next/iommu/core
-
-Yang Yingliang (1):
-      iommu: return error code when it can't get group
-
-Yong Wu (1):
-      iommu: Improve the performance for direct_mapping
-
- .../ABI/testing/sysfs-kernel-iommu_groups          |  30 +
- Documentation/admin-guide/kernel-parameters.txt    |   5 -
- .../devicetree/bindings/iommu/arm,smmu.yaml        |   9 +-
- drivers/gpu/drm/msm/msm_iommu.c                    |   1 -
- drivers/gpu/drm/panfrost/panfrost_mmu.c            |   7 -
- drivers/iommu/Kconfig                              |   7 +
- drivers/iommu/Makefile                             |   1 +
- drivers/iommu/amd/amd_iommu_types.h                |  19 +-
- drivers/iommu/amd/init.c                           |   6 +-
- drivers/iommu/amd/iommu.c                          |   2 +-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c    | 244 +++++-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c        |  59 +-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h        |  30 +
- drivers/iommu/arm/arm-smmu/arm-smmu-impl.c         |  13 +-
- drivers/iommu/arm/arm-smmu/arm-smmu-nvidia.c       |  17 +-
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c         | 270 +++++-
- drivers/iommu/arm/arm-smmu/arm-smmu.c              |  76 +-
- drivers/iommu/arm/arm-smmu/arm-smmu.h              |   5 +-
- drivers/iommu/arm/arm-smmu/qcom_iommu.c            |   8 -
- drivers/iommu/dma-iommu.c                          | 244 +++++-
- drivers/iommu/intel/Kconfig                        |   1 +
- drivers/iommu/intel/iommu.c                        | 919 +++------------------
- drivers/iommu/intel/svm.c                          |   6 +-
- drivers/iommu/io-pgtable-arm-v7s.c                 |  11 +-
- drivers/iommu/io-pgtable-arm.c                     |  29 +-
- drivers/iommu/ioasid.c                             |  38 +-
- drivers/iommu/iommu-sva-lib.c                      |  86 ++
- drivers/iommu/iommu-sva-lib.h                      |  15 +
- drivers/iommu/iommu.c                              | 276 ++++++-
- drivers/iommu/iova.c                               | 100 ++-
- drivers/iommu/ipmmu-vmsa.c                         |   1 -
- drivers/iommu/msm_iommu.c                          |   7 -
- drivers/iommu/mtk_iommu.c                          |   1 -
- drivers/iommu/tegra-smmu.c                         | 240 ++----
- drivers/xen/swiotlb-xen.c                          |   3 +-
- include/linux/dma-iommu.h                          |   8 +
- include/linux/io-pgtable.h                         |  19 +-
- include/linux/ioasid.h                             |  10 +-
- include/linux/iommu.h                              |   2 +
- include/linux/iova.h                               |  21 -
- include/linux/swiotlb.h                            |  10 +-
- kernel/dma/swiotlb.c                               |  22 +-
- 42 files changed, 1613 insertions(+), 1265 deletions(-)
- create mode 100644 drivers/iommu/iommu-sva-lib.c
- create mode 100644 drivers/iommu/iommu-sva-lib.h
+--Sig_/ZCBAKa_hl0AZPkIEEKSZPi8--
