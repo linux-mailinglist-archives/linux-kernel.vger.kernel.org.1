@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765972D9381
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 08:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 630E92D9389
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 08:10:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438853AbgLNHGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 02:06:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392940AbgLNHGB (ORCPT
+        id S2438889AbgLNHJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 02:09:23 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:42392 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438873AbgLNHJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 02:06:01 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841C1C0613CF;
-        Sun, 13 Dec 2020 23:05:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=11D97b/WzRvk1qsJoszULXXa+WJR+vJxLMi5GNzHEEQ=; b=WLHgQn2cE+BA9xy+NIPDUPOgv+
-        432s5Ln61W039LzswQHoMLWquHa6/jqpfuQRqVxcEmqKfCnT+hkyE2CVHUXEEwGFKO1rVcBaYcp2v
-        VgFeeiJSLzFVu1Y1h5t/GYvGmjCuiU42tK3GgcekfVC3HgHgzpGhSjcFV539rGgs7W20DF1ny1CRM
-        P0vKv8xRNXt7bKxZlPip3dAfRRPuGInt42pYGnkuNSaxpSLJjiVndJ7776L02vNwfaBO0N8ceXAIL
-        BSAzbFybWkME+Cwljjsm5Gr3vyhTGhN0DfKLztgnP5ozDHK8k3ktyjeW5elwtQW+wuZdrQ1TYP64o
-        Rn9HK7OQ==;
-Received: from [2601:1c0:6280:3f0::1494]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kohun-0005qn-Bh; Mon, 14 Dec 2020 07:05:01 +0000
-Subject: Re: [PATCH v2 3/5] lazy tlb: shoot lazies, a non-refcounting lazy tlb
- option
-To:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mm@kvack.org, Anton Blanchard <anton@ozlabs.org>,
-        Andy Lutomirski <luto@kernel.org>
-References: <20201214065312.270062-1-npiggin@gmail.com>
- <20201214065312.270062-4-npiggin@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <de068125-7d95-b3f0-2de9-71923e3c3651@infradead.org>
-Date:   Sun, 13 Dec 2020 23:04:55 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 14 Dec 2020 02:09:02 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BE73rXZ144743;
+        Mon, 14 Dec 2020 07:08:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=s7FDTZIBJKNR9KDMY14+lIuuYdlKTv9NS+Ix6giURYQ=;
+ b=SderraMcfpBBIcxAUzDxRWv1UO4RERr989Qzya0I5vquPqCY9fO2FvaPbm7J6185El8J
+ yMbTl5SNmKPLIomee1H0V6eMsg7fHOPVNIFz4J3vfyvA8fntIIDsgGSyhxzq/y48eUeJ
+ Ko0uYi73QvLi/09rao+PAOE6pt16dIb+LZsQn1WjW4BNJjAbN8qjZ5u89lLkD0rLE97T
+ WC8DBGJG1qSkr29qNk7JQJeDhPrxR5M/K2frSslz3lep8tmpGcvj1ZYcLRsYccSCKLQU
+ Izp7kGwV3qnn8KEHKF74la2b677ZY9GBIfF+Px3X31hGn/iBR2exUuB6nQoe70szV8EI fQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 35cntkuna2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 14 Dec 2020 07:08:04 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BE7628B185250;
+        Mon, 14 Dec 2020 07:06:04 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 35d7su3kyx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Dec 2020 07:06:03 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BE75lhQ014580;
+        Mon, 14 Dec 2020 07:05:47 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 13 Dec 2020 23:05:46 -0800
+Date:   Mon, 14 Dec 2020 10:05:36 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     kernel-janitors@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Colin Ian King <colin.king@canonical.com>
+Subject: Re: mmc: atmel-mci: Reduce =?utf-8?Q?scope?=
+ =?utf-8?Q?_for_the_variable_=E2=80=9Cslot=E2=80=9D?= in atmci_request_end()
+Message-ID: <20201214070536.GB2809@kadam>
+References: <466b4c6d-032f-fbcc-58ac-75f6f39d734f@web.de>
+ <20201210151035.GC1578121@piout.net>
+ <20201211083731.GP2789@kadam>
+ <e7910b04-4c4a-567b-d87d-d12352a48cfc@web.de>
 MIME-Version: 1.0
-In-Reply-To: <20201214065312.270062-4-npiggin@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e7910b04-4c4a-567b-d87d-d12352a48cfc@web.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0
+ mlxlogscore=917 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012140053
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9834 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ mlxlogscore=934 impostorscore=0 priorityscore=1501 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012140053
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/13/20 10:53 PM, Nicholas Piggin wrote:
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 84faaba66364..e69c974369cc 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -443,9 +443,22 @@ config MMU_LAZY_TLB
->  config MMU_LAZY_TLB_REFCOUNT
->  	def_bool y
->  	depends on MMU_LAZY_TLB
-> +	depends on !MMU_LAZY_TLB_SHOOTDOWN
->  	help
-> -	  This must be enabled if MMU_LAZY_TLB is enabled until the next
-> -	  patch.
-> +	  This refcounts the mm that is used as the lazy TLB mm when switching
-> +	  switching to a kernel thread.
+On Fri, Dec 11, 2020 at 10:08:54AM +0100, Markus Elfring wrote:
+> > This makes it hard to review any patches or follow discussion...
+> 
+> You shared also special software development opinions about extra variable
+> initialisations occasionally, didn't you?
 
-duplicate "switching".
+I generally put everything at the top of the function...  I don't have
+a well developed philosophy for when variables should be declared with
+a smaller scope.
 
-> +
-> +config MMU_LAZY_TLB_SHOOTDOWN
-> +	bool
-> +	depends on MMU_LAZY_TLB
-> +	help
-> +	  Instead of refcounting the "lazy tlb" mm struct, which can cause
-> +	  contention with multi-threaded apps on large multiprocessor systems,
-> +	  this option causes __mmdrop to IPI all CPUs in the mm_cpumask and
-> +	  switch to init_mm if they were using the to-be-freed mm as the lazy
-> +	  tlb. To implement this, architectures must use _lazy_tlb variants of
-> +	  mm refcounting, and mm_cpumask must include at least all possible
-> +	  CPUs in which mm might be lazy.
->  
->  config ARCH_HAVE_NMI_SAFE_CMPXCHG
->  	bool
+	int ret;  <-- this should always be function scope
 
+Probably the other people are right that making scopes shorter is more
+important when the function is very long.
 
--- 
-
+regards,
+dan carpenter
