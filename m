@@ -2,210 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022A02D9655
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:33:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B93F32D9660
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405524AbgLNKdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 05:33:05 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:26336 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725798AbgLNKdF (ORCPT
+        id S2436975AbgLNKeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 05:34:24 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:50787 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436630AbgLNKdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 05:33:05 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1607941965; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=yiNSB5/kL+ebilHZGKTlYMi4SWyHcjVUGoOqsM+QGwk=; b=tHXtdfoU61TYe931pmMU54/xtPlp7imFuNFVDLeHY0VHaxABVWBfVOpTs0Kp/GVU5eECCcQq
- X1jcXtJagk21P4+B3UiUXnSca+JvZ5l5j2zy3stUYIdMADjduEonorvdfSfh5tb6QU8hGhhn
- VDQ17MA0bdtYavQb5fi9qVye/OY=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5fd73f4c63480bb0d291aaee (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Dec 2020 10:32:44
- GMT
-Sender: vjitta=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2A972C43463; Mon, 14 Dec 2020 10:32:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.105] (unknown [182.18.191.136])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vjitta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9FB00C433C6;
-        Mon, 14 Dec 2020 10:32:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9FB00C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
-Subject: Re: [PATCH v3] lib: stackdepot: Add support to configure
- STACK_HASH_SIZE
-To:     Alexander Potapenko <glider@google.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        dan.j.williams@intel.com, broonie@kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@google.com>, qcai@redhat.com,
-        ylal@codeaurora.org, vinmenon@codeaurora.org
-References: <1607576401-25609-1-git-send-email-vjitta@codeaurora.org>
- <CAG_fn=VKsrYx+YOGPnZw_Q5t6Fx7B59FSUuphj7Ou+DDFKQ+8Q@mail.gmail.com>
- <77e98f0b-c9c3-9380-9a57-ff1cd4022502@codeaurora.org>
- <CAG_fn=WbN6unD3ASkLUcEmZvALOj=dvC0yp6CcJFkV+3mmhwxw@mail.gmail.com>
- <6cc89f7b-bf40-2fd3-96ce-2a02d7535c91@codeaurora.org>
- <CAG_fn=VOHag5AUwFbOj_cV+7RDAk8UnjjqEtv2xmkSDb_iTYcQ@mail.gmail.com>
-From:   Vijayanand Jitta <vjitta@codeaurora.org>
-Message-ID: <255400db-67d5-7f42-8dcb-9a440e006b9d@codeaurora.org>
-Date:   Mon, 14 Dec 2020 16:02:35 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Mon, 14 Dec 2020 05:33:53 -0500
+Received: by mail-il1-f200.google.com with SMTP id t8so13086663ils.17
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 02:33:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=xBOPoqrXHLeRKmnn2H4OYIta3b1Of/o2WJC8PPktQGg=;
+        b=t68FA6ekk2P/q73q61cmLERIiDb4cz7oyrV6Nhr95Fys6uZh4VC2hEhTzAbOer9aDs
+         2EwVQpvFpwAH0CMkA54aY/+3eN+BDWnbZv0JhTzHEn0Lrhu3QUdpSFr5+R02cA1MdfPr
+         oLESGW+JAxHByjh8ZKeuIcPBG1DMrsMkb3fe2T+Bi6aNa1Pz6erCo5Pgx38oM/EJ2+Lq
+         VqsPD8amtMe6OQ1hziWAS/cKSGsvVAKJx0iqTqMqunhxzhnzLyhZ+QLZm/dkZTC6wF7T
+         IxUlpGSN1ifzsksvg5pmVZWNtvaEpQNXEY207949AiE4SGAaGW0MTwqHYHjXShWuxShY
+         T5qQ==
+X-Gm-Message-State: AOAM530B1O71zD0NZtuk1s5gW+9NL1deowuHmzPd72sd14B2Hn5YISQX
+        JpuZ1ZXphJeFewv2qKUXIonYYHDwDwyd850E66EARit5zPeX
+X-Google-Smtp-Source: ABdhPJw4v3PL31sL6fEocTznjZ4TgrcB/+sm1loq2bUIkg/qJ+mY8o37FzED+RkXSt5I7N5MyUmy2aJD0daPkexRVtjKsAdvA9ek
 MIME-Version: 1.0
-In-Reply-To: <CAG_fn=VOHag5AUwFbOj_cV+7RDAk8UnjjqEtv2xmkSDb_iTYcQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a5d:83c8:: with SMTP id u8mr31506109ior.160.1607941991216;
+ Mon, 14 Dec 2020 02:33:11 -0800 (PST)
+Date:   Mon, 14 Dec 2020 02:33:11 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000034b9aa05b66a2b25@google.com>
+Subject: INFO: task hung in cfg80211_event_work
+From:   syzbot <syzbot+84fea7179610ae50a9c7@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    a68a0262 mm/madvise: remove racy mm ownership check
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15bb9413500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=59df2a4dced5f928
+dashboard link: https://syzkaller.appspot.com/bug?extid=84fea7179610ae50a9c7
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1169fa13500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1240f123500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+84fea7179610ae50a9c7@syzkaller.appspotmail.com
+
+INFO: task kworker/u4:2:58 blocked for more than 161 seconds.
+      Not tainted 5.10.0-rc7-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/u4:2    state:D stack:23600 pid:   58 ppid:     2 flags:0x00004000
+Workqueue: cfg80211 cfg80211_event_work
+Call Trace:
+ context_switch kernel/sched/core.c:3779 [inline]
+ __schedule+0x893/0x2130 kernel/sched/core.c:4528
+ schedule+0xcf/0x270 kernel/sched/core.c:4606
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4665
+ __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
+ __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
+ cfg80211_event_work+0xe/0x20 net/wireless/core.c:321
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Showing all locks held in the system:
+2 locks held by kworker/0:0/5:
+ #0: ffff888010066538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010066538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888010066538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888010066538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888010066538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888010066538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc90000ca7da8 ((work_completion)(&rew.rew_work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+3 locks held by kworker/1:0/17:
+3 locks held by kworker/u4:2/58:
+ #0: ffff888141147138 ((wq_completion)cfg80211){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888141147138 ((wq_completion)cfg80211){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888141147138 ((wq_completion)cfg80211){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888141147138 ((wq_completion)cfg80211){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888141147138 ((wq_completion)cfg80211){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888141147138 ((wq_completion)cfg80211){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc90000f2fda8 ((work_completion)(&rdev->event_work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+ #2: ffffffff8c927908 (rtnl_mutex){+.+.}-{3:3}, at: cfg80211_event_work+0xe/0x20 net/wireless/core.c:321
+1 lock held by khungtaskd/1657:
+ #0: ffffffff8b3378e0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6254
+1 lock held by khugepaged/1664:
+ #0: ffffffff8b4062a8 (lock#5){+.+.}-{3:3}, at: lru_add_drain_all+0x5f/0x6f0 mm/swap.c:801
+1 lock held by in:imklog/8161:
+ #0: ffff88801c8459f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
+2 locks held by syz-executor702/8473:
+ #0: ffffffff8c9aec50 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:810
+ #1: ffffffff8c927908 (rtnl_mutex){+.+.}-{3:3}, at: nl80211_pre_doit+0x34f/0x630 net/wireless/nl80211.c:14579
+2 locks held by syz-executor702/8474:
+ #0: ffffffff8c9aec50 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:810
+ #1: ffffffff8c9aed08 (genl_mutex){+.+.}-{3:3}, at: genl_lock net/netlink/genetlink.c:33 [inline]
+ #1: ffffffff8c9aed08 (genl_mutex){+.+.}-{3:3}, at: genl_rcv_msg+0x3e0/0x580 net/netlink/genetlink.c:798
+2 locks held by syz-executor702/8476:
+ #0: ffffffff8c9aec50 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:810
+ #1: ffffffff8c9aed08 (genl_mutex){+.+.}-{3:3}, at: genl_lock net/netlink/genetlink.c:33 [inline]
+ #1: ffffffff8c9aed08 (genl_mutex){+.+.}-{3:3}, at: genl_rcv_msg+0x3e0/0x580 net/netlink/genetlink.c:798
+3 locks held by syz-executor702/8477:
+ #0: ffff888021e90460 (sb_writers#4){.+.+}-{0:0}, at: do_unlinkat+0x190/0x660 fs/namei.c:3879
+ #1: ffff888031258488 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff888031258488 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: do_unlinkat+0x27d/0x660 fs/namei.c:3883
+ #2: ffff88803125a288 (&sb->s_type->i_mutex_key#9){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:774 [inline]
+ #2: ffff88803125a288 (&sb->s_type->i_mutex_key#9){+.+.}-{3:3}, at: vfs_unlink+0xcd/0x600 fs/namei.c:3824
+3 locks held by syz-executor702/8478:
+ #0: ffffffff8c9aec50 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:810
+ #1: ffffffff8c9aed08 (genl_mutex){+.+.}-{3:3}, at: genl_lock net/netlink/genetlink.c:33 [inline]
+ #1: ffffffff8c9aed08 (genl_mutex){+.+.}-{3:3}, at: genl_rcv_msg+0x3e0/0x580 net/netlink/genetlink.c:798
+ #2: ffffffff8c927908 (rtnl_mutex){+.+.}-{3:3}, at: ieee80211_register_hw+0x1782/0x3b60 net/mac80211/main.c:1222
+5 locks held by kworker/u4:0/8484:
+ #0: ffff88801303f938 ((wq_completion)phy3){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88801303f938 ((wq_completion)phy3){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff88801303f938 ((wq_completion)phy3){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88801303f938 ((wq_completion)phy3){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff88801303f938 ((wq_completion)phy3){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff88801303f938 ((wq_completion)phy3){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc900016ffda8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+ #2: ffff888013f78d00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
+ #2: ffff888013f78d00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x93/0xe80 net/mac80211/ibss.c:1683
+ #3: ffff888013921548 (&local->sta_mtx){+.+.}-{3:3}, at: ieee80211_ibss_sta_expire net/mac80211/ibss.c:1262 [inline]
+ #3: ffff888013921548 (&local->sta_mtx){+.+.}-{3:3}, at: ieee80211_sta_merge_ibss net/mac80211/ibss.c:1305 [inline]
+ #3: ffff888013921548 (&local->sta_mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x481/0xe80 net/mac80211/ibss.c:1711
+ #4: ffffffff8b33ffa8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:290 [inline]
+ #4: ffffffff8b33ffa8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x4f2/0x610 kernel/rcu/tree_exp.h:836
+5 locks held by kworker/u4:1/8965:
+ #0: ffff888027081138 ((wq_completion)phy5){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888027081138 ((wq_completion)phy5){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888027081138 ((wq_completion)phy5){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888027081138 ((wq_completion)phy5){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888027081138 ((wq_completion)phy5){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888027081138 ((wq_completion)phy5){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc90002eefda8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+ #2: ffff888025bd8d00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
+ #2: ffff888025bd8d00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_rx_queued_mgmt+0xe9/0x1870 net/mac80211/ibss.c:1631
+ #3: ffff888014bb9548 (&local->sta_mtx){+.+.}-{3:3}, at: sta_info_destroy_addr+0x48/0xe0 net/mac80211/sta_info.c:1127
+ #4: ffffffff8b33ffa8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:322 [inline]
+ #4: ffffffff8b33ffa8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x27e/0x610 kernel/rcu/tree_exp.h:836
+3 locks held by syz-executor702/9802:
+4 locks held by kworker/u4:4/9815:
+ #0: ffff88802c99c938 ((wq_completion)phy4){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88802c99c938 ((wq_completion)phy4){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff88802c99c938 ((wq_completion)phy4){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88802c99c938 ((wq_completion)phy4){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff88802c99c938 ((wq_completion)phy4){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff88802c99c938 ((wq_completion)phy4){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc9000a91fda8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+ #2: ffff88801459cd00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
+ #2: ffff88801459cd00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x93/0xe80 net/mac80211/ibss.c:1683
+ #3: ffff888013f71548 (&local->sta_mtx){+.+.}-{3:3}, at: ieee80211_ibss_sta_expire net/mac80211/ibss.c:1262 [inline]
+ #3: ffff888013f71548 (&local->sta_mtx){+.+.}-{3:3}, at: ieee80211_sta_merge_ibss net/mac80211/ibss.c:1305 [inline]
+ #3: ffff888013f71548 (&local->sta_mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x481/0xe80 net/mac80211/ibss.c:1711
+4 locks held by kworker/u4:5/9825:
+ #0: ffff888026e79138 ((wq_completion)phy7){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888026e79138 ((wq_completion)phy7){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888026e79138 ((wq_completion)phy7){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888026e79138 ((wq_completion)phy7){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888026e79138 ((wq_completion)phy7){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888026e79138 ((wq_completion)phy7){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc9000aa0fda8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+ #2: ffff8880275acd00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
+ #2: ffff8880275acd00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_rx_queued_mgmt+0xe9/0x1870 net/mac80211/ibss.c:1631
+ #3: ffff888017fc9548 (&local->sta_mtx){+.+.}-{3:3}, at: sta_info_destroy_addr+0x48/0xe0 net/mac80211/sta_info.c:1127
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 1657 Comm: khungtaskd Not tainted 5.10.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
+ watchdog+0xd43/0xfa0 kernel/hung_task.c:294
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 9802 Comm: syz-executor702 Not tainted 5.10.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:check_kcov_mode kernel/kcov.c:163 [inline]
+RIP: 0010:__sanitizer_cov_trace_pc+0x19/0x60 kernel/kcov.c:197
+Code: 8b 54 24 08 48 8b 34 24 e9 a1 fd ff ff 0f 1f 40 00 65 48 8b 14 25 00 f0 01 00 65 8b 05 40 eb 91 7e a9 00 01 ff 00 48 8b 34 24 <74> 0f f6 c4 01 74 35 8b 82 5c 14 00 00 85 c0 74 2b 8b 82 38 14 00
+RSP: 0018:ffffc90000d90028 EFLAGS: 00000006
+RAX: 0000000000010101 RBX: ffffc90000d90120 RCX: ffffffff818ed219
+RDX: ffff8880328ccec0 RSI: ffffffff818ed227 RDI: 0000000000000007
+RBP: ffffc90000d90280 R08: 0000000000000000 R09: ffffffff8ebaf667
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff888032b13000 R14: 0000000000000000 R15: ffffc90000d90120
+FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f5ba2697710 CR3: 0000000012582000 CR4: 0000000000350ee0
+Call Trace:
+ <IRQ>
+ perf_prepare_sample+0x817/0x1d40 kernel/events/core.c:7136
+ __perf_event_output kernel/events/core.c:7191 [inline]
+ perf_event_output_forward+0xf3/0x270 kernel/events/core.c:7211
+ __perf_event_overflow+0x13c/0x370 kernel/events/core.c:8867
+ perf_swevent_hrtimer+0x37c/0x3f0 kernel/events/core.c:10267
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x1ce/0xea0 kernel/time/hrtimer.c:1583
+ hrtimer_interrupt+0x334/0x940 kernel/time/hrtimer.c:1645
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x540 arch/x86/kernel/apic/apic.c:1097
+ run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:91 [inline]
+ sysvec_apic_timer_interrupt+0x48/0x100 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:lock_release+0x3d5/0x710 kernel/locking/lockdep.c:5445
+Code: 15 02 00 00 48 c7 c7 40 5f 4b 89 e8 c5 6b 8f 07 b8 ff ff ff ff 65 0f c1 05 58 d8 ab 7e 83 f8 01 0f 85 67 01 00 00 ff 34 24 9d <48> b8 00 00 00 00 00 fc ff df 48 01 c5 48 c7 45 00 00 00 00 00 c7
+RSP: 0018:ffffc90000d906d0 EFLAGS: 00000246
+RAX: 0000000000000001 RBX: 02e61d1879d3e8c2 RCX: ffffc90000d90720
+RDX: 1ffff11006519af9 RSI: 0000000000000101 RDI: 0000000000000000
+RBP: 1ffff920001b20dc R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000001
+R13: 0000000000000002 R14: ffff8880328cd7d0 R15: ffff8880328ccec0
+ rcu_lock_release include/linux/rcupdate.h:253 [inline]
+ rcu_read_unlock include/linux/rcupdate.h:695 [inline]
+ is_bpf_text_address+0xcb/0x160 kernel/bpf/core.c:710
+ kernel_text_address kernel/extable.c:151 [inline]
+ kernel_text_address+0xbd/0xf0 kernel/extable.c:120
+ __kernel_text_address+0x9/0x30 kernel/extable.c:105
+ unwind_get_return_address arch/x86/kernel/unwind_orc.c:318 [inline]
+ unwind_get_return_address+0x51/0x90 arch/x86/kernel/unwind_orc.c:313
+ arch_stack_walk+0x93/0xe0 arch/x86/kernel/stacktrace.c:26
+ stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:121
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:535 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ __kmalloc_node_track_caller+0x1e0/0x3e0 mm/slub.c:4495
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0xae/0x550 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1094 [inline]
+ ndisc_alloc_skb+0x134/0x320 net/ipv6/ndisc.c:420
+ ndisc_send_rs+0x388/0x700 net/ipv6/ndisc.c:686
+ addrconf_rs_timer+0x3f2/0x820 net/ipv6/addrconf.c:3873
+ call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1410
+ expire_timers kernel/time/timer.c:1455 [inline]
+ __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1747
+ __run_timers kernel/time/timer.c:1728 [inline]
+ run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1760
+ __do_softirq+0x2a0/0x9f6 kernel/softirq.c:298
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu kernel/softirq.c:423 [inline]
+ irq_exit_rcu+0x132/0x200 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x4d/0x100 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:schedule_debug kernel/sched/core.c:4278 [inline]
+RIP: 0010:__schedule+0x12c/0x2130 kernel/sched/core.c:4423
+Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 7d 1a 00 00 48 ba 00 00 00 00 00 fc ff df 49 8b 45 18 48 89 c1 48 c1 e9 03 80 3c 11 00 <0f> 85 43 1a 00 00 48 81 38 9d 6e ac 57 0f 85 c5 1f 00 00 49 8d 45
+RSP: 0018:ffffc9000a94f8e0 EFLAGS: 00000246
+RAX: ffffc9000a948000 RBX: 0000000000000001 RCX: 1ffff92001529000
+RDX: dffffc0000000000 RSI: 0000000000000001 RDI: ffff8880328cced8
+RBP: ffffc9000a94f9a8 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880b9f34940
+R13: ffff8880328ccec0 R14: ffff8880b9f34940 R15: 0000000000034940
+ preempt_schedule_irq+0x4e/0x90 kernel/sched/core.c:4789
+ irqentry_exit_cond_resched kernel/entry/common.c:357 [inline]
+ irqentry_exit_cond_resched kernel/entry/common.c:349 [inline]
+ irqentry_exit+0x7a/0xa0 kernel/entry/common.c:387
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+RIP: 0010:get_freepointer mm/slub.c:278 [inline]
+RIP: 0010:slab_free_freelist_hook+0x8b/0x150 mm/slub.c:1562
+Code: 8b 43 28 49 8b 55 00 48 89 54 05 00 48 8b 04 24 49 89 6d 00 48 83 38 00 0f 84 8d 00 00 00 4c 39 f5 0f 84 90 00 00 00 8b 43 28 <4c> 89 e5 4d 8b 24 04 0f 1f 44 00 00 9c 41 5f fa 41 f7 c7 00 02 00
+RSP: 0018:ffffc9000a94fa80 EFLAGS: 00000246
+RAX: 0000000000000038 RBX: ffff888010f21500 RCX: ffffffff8130c470
+RDX: ffffc9000a94fac8 RSI: ffffc9000a94fac0 RDI: ffff888010f21500
+RBP: ffff888010f21500 R08: 0000000000000001 R09: ffff888031f4f13f
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880211a8000
+R13: ffffc9000a94fac0 R14: ffff8880211a8000 R15: ffffffff8b460f60
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x82/0x350 mm/slub.c:3158
+ free_mm_slot mm/khugepaged.c:414 [inline]
+ __khugepaged_exit+0x2b8/0x3f0 mm/khugepaged.c:531
+ khugepaged_exit include/linux/khugepaged.h:52 [inline]
+ __mmput+0x389/0x470 kernel/fork.c:1078
+ mmput+0x53/0x60 kernel/fork.c:1100
+ exit_mm kernel/exit.c:486 [inline]
+ do_exit+0xa72/0x29b0 kernel/exit.c:796
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ get_signal+0x42a/0x1f10 kernel/signal.c:2758
+ arch_do_signal+0x82/0x2390 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0x100/0x1a0 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x38/0x260 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x44a3e9
+Code: Unable to access opcode bytes at RIP 0x44a3bf.
+RSP: 002b:00007fa491ecadb8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 00000000006e0c38 RCX: 000000000044a3e9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00000000006e0c38
+RBP: 00000000006e0c30 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006e0c3c
+R13: 00007fffc6dec0df R14: 00007fa491ecb9c0 R15: 0000000000000005
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.207 msecs
 
 
-On 12/14/2020 3:04 PM, Alexander Potapenko wrote:
-> On Mon, Dec 14, 2020 at 5:02 AM Vijayanand Jitta <vjitta@codeaurora.org> wrote:
->>
->>
->>
->> On 12/11/2020 6:55 PM, Alexander Potapenko wrote:
->>> On Fri, Dec 11, 2020 at 1:45 PM Vijayanand Jitta <vjitta@codeaurora.org> wrote:
->>>>
->>>>
->>>>
->>>> On 12/11/2020 2:06 PM, Alexander Potapenko wrote:
->>>>> On Thu, Dec 10, 2020 at 6:01 AM <vjitta@codeaurora.org> wrote:
->>>>>>
->>>>>> From: Yogesh Lal <ylal@codeaurora.org>
->>>>>>
->>>>>> Add a kernel parameter stack_hash_order to configure STACK_HASH_SIZE.
->>>>>>
->>>>>> Aim is to have configurable value for STACK_HASH_SIZE, so that one
->>>>>> can configure it depending on usecase there by reducing the static
->>>>>> memory overhead.
->>>>>>
->>>>>> One example is of Page Owner, default value of STACK_HASH_SIZE lead
->>>>>> stack depot to consume 8MB of static memory. Making it configurable
->>>>>> and use lower value helps to enable features like CONFIG_PAGE_OWNER
->>>>>> without any significant overhead.
->>>>>
->>>>> Can we go with a static CONFIG_ parameter instead?
->>>>> Guess most users won't bother changing the default anyway, and for
->>>>> CONFIG_PAGE_OWNER users changing the size at boot time is not strictly
->>>>> needed.
->>>>>
->>>> Thanks for review.
->>>>
->>>> One advantage of having run time parameter is we can simply set it to a
->>>> lower value at runtime if page_owner=off thereby reducing the memory
->>>> usage or use default value if we want to use page owner so, we have some
->>>> some flexibility here. This is not possible with static parameter as we
->>>> have to have some predefined value.
->>>
->>> If we are talking about a configuration in which page_owner is the
->>> only stackdepot user in the system, then for page_owner=off it
->>> probably makes more sense to disable stackdepot completely instead of
->>> setting it to a lower value. This is a lot easier to do in terms of
->>> correctness.
->>> But if there are other users (e.g. KASAN), their stackdepot usage may
->>> actually dominate that of page_owner.
->>>
->>>>>> -static struct stack_record *stack_table[STACK_HASH_SIZE] = {
->>>>>> -       [0 ...  STACK_HASH_SIZE - 1] = NULL
->>>>>> +static unsigned int stack_hash_order = 20;
->>>>>
->>>>> Please initialize with MAX_STACK_HASH_ORDER instead.
->>>>>
->>>>
->>>> Sure, will update this.
->>>>
->>>
->>>
->>>>>> +
->>>>>> +static int __init init_stackdepot(void)
->>>>>> +{
->>>>>> +       size_t size = (STACK_HASH_SIZE * sizeof(struct stack_record *));
->>>>>> +
->>>>>> +       stack_table = vmalloc(size);
->>>>>> +       memcpy(stack_table, stack_table_def, size);
->>>>>
->>>>> Looks like you are assuming stack_table_def already contains some data
->>>>> by this point.
->>>>> But if STACK_HASH_SIZE shrinks this memcpy() above will just copy some
->>>>> part of the table, whereas the rest will be lost.
->>>>> We'll need to:
->>>>> - either explicitly decide we can afford losing this data (no idea how
->>>>> bad this can potentially be),
->>>>> - or disallow storing anything prior to full stackdepot initialization
->>>>> (then we don't need stack_table_def),
->>>>> - or carefully move all entries to the first part of the table.
->>>>>
->>>>> Alex
->>>>>
->>>>
->>>> The hash for stack_table_def is computed using the run time parameter
->>>> stack_hash_order, though stack_table_def is a bigger array it will only
->>>> use the entries that are with in the run time configured STACK_HASH_SIZE
->>>> range. so, there will be no data loss during copy.
->>>
->>> Do we expect any data to be stored into stack_table_def before
->>> setup_stack_hash_order() is called?
->>> If the answer is no, then we could probably drop stack_table_def and
->>> allocate the table right in setup_stack_hash_order()?
->>>
->>
->> Yes, we do see an allocation from stack depot even before init is called
->> from kasan, thats the reason for having stack_table_def.
->> This is the issue reported due to that on v2, so i added stack_table_def.
->> https://lkml.org/lkml/2020/12/3/839
-> 
-> But at that point STACK_HASH_SIZE is still equal to 1L <<
-> MAX_STACK_HASH_ORDER, isn't it?
-> Then we still need to take care of the records that fit into the
-> bigger array, but not the smaller one.
-> 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-At this point early_param is already called which sets stack_hash_order.
-So, STACK_HASH_SIZE will be set to this updated value and not
-MAX_STACK_HASH_SIZE.So, no additional entires in the bigger array.
-
-Thanks,
-Vijay
-
->> Thanks,
->> Vijay
->>
->>>> Thanks,
->>>> Vijay
->>>>
->>>> --
->>>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
->>>> member of Code Aurora Forum, hosted by The Linux Foundation
->>>
->>>
->>>
->>
->> --
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
->> member of Code Aurora Forum, hosted by The Linux Foundation
-> 
-> 
-> 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of Code Aurora Forum, hosted by The Linux Foundation
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
