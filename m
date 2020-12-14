@@ -2,207 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B752A2D9EA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A64C2D9EB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440226AbgLNSN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 13:13:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408769AbgLNSNa (ORCPT
+        id S2440390AbgLNSPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 13:15:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26019 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391382AbgLNSPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 13:13:30 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47573C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:12:50 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id c7so16496418qke.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:12:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rm4wqlJULF+NlJEFHfiTTvuJBxgZ42cRvycevuPF0mI=;
-        b=VV5LL8V8wOaRvyJSnhQbDpQC922VD5IFhrTjogTdvvl8vUZW6v2azjBKXMubI0pkPq
-         D34oMiuYiGbVrLUdB3HFjfjNdYDUEcGkXnM7eopRYPeEWO0Lu+Z98N9dNFMshkab7J5Y
-         L/YNGBLVWmvsEbazkVmQ/cnTc/WmL8FI2NgXs=
+        Mon, 14 Dec 2020 13:15:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607969615;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AwwzZdDyF1r6qcS1a83NpXAsbn9SW/LPeb1RFJju/b4=;
+        b=ORK/hdJv2KLSE7P0fTClKEl14It18qK3jwu3CpI6x59RZ0qAc3zm6brJ8u3YScTHoYb7F3
+        6cV0UgjAFTJhli6uaOSjzyfByUwzSXMde6MNOZzvQEfjDeEC418erR1o/k4PB7uH4vNauU
+        8t5KaEdUWuGC/GmxndB7uhEWK7TdEkQ=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169--PXK4H4dO3epZdSEM4PDGA-1; Mon, 14 Dec 2020 13:13:24 -0500
+X-MC-Unique: -PXK4H4dO3epZdSEM4PDGA-1
+Received: by mail-wm1-f69.google.com with SMTP id k128so7088817wme.7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:13:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rm4wqlJULF+NlJEFHfiTTvuJBxgZ42cRvycevuPF0mI=;
-        b=USPfDkh6UarA41jRuJliuoLjBYFIWFvN+f/okLXrXkYBVt+2Yf8u68ENm4K3kV+EUB
-         aW5QdieCn6SDjCPe2iw0eW42XhD2pNJPLLSTrFxsPpwACdeSnyV/dSrAUduo2iKY4R59
-         D2Txk8kLqPlxxZnQfstzH8BFs+ekWok6t0nTVD0TdJT8a3sDe2XwC2cvzhQ+JI/NwO1k
-         1cyKFd+GC095rp4Fd5W5yWzrzzb83vyZjQGiPN5Y440gg9VIZ+RgVn04DhbcEdxqcHKM
-         sUunTeDQGPErGf5YueSyYfi6wwor3a80PBdXsbqVv2ywSlteJi+L/5YKI2dGyJ8kysMN
-         F+PQ==
-X-Gm-Message-State: AOAM531CDl/U6QXYXTrv3J7/ms3D0O4YKu23xe4U4UQh/8S4yG68g/8k
-        MhY9a9vTt1HtR9uQ/TstOO86NQ==
-X-Google-Smtp-Source: ABdhPJzJed+QyxLT+ufQeC55sEUyuEuvVmrcTP/FD49slGt2QthGSeVIAQODGzyhf7eKZWhcsdFvfg==
-X-Received: by 2002:a37:a3c1:: with SMTP id m184mr33461272qke.203.1607969569437;
-        Mon, 14 Dec 2020 10:12:49 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id f59sm14640891qtd.84.2020.12.14.10.12.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 10:12:48 -0800 (PST)
-Date:   Mon, 14 Dec 2020 13:12:48 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Energy-efficiency options within RCU
-Message-ID: <X9erIC8Sbf3ybvHC@google.com>
-References: <20201210183737.GA12900@paulmck-ThinkPad-P72>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AwwzZdDyF1r6qcS1a83NpXAsbn9SW/LPeb1RFJju/b4=;
+        b=hJxTfW3SEvs3GeUXRQqmZRnZIA3l+sSNw70D1Gt4DovP189JTZJKH6eOyTbRwPDc3o
+         u9YW8t+WYgao7sY/nr+rV/zo2i7ZK+exL2v/Lc5myyMQn7K7T71URJi9E3nYzD9MVGj4
+         sZUQEX+JP2MK5ufQkPvLaLfipIOe6M8rzgnao1kEmMr6sMjhd3jd2k8gc2za9bldOAtt
+         KkOSCEQzYlkqtI6dMC6q1P2zY5gmnScsyvpYC2NQ1L28DFYQdfFFkWXr7zOZiy+lfgCr
+         dlghz2AEnLZtgvWTidHJ5IPOCIcgVslFIJjVC7EoFh0LGsTiUFSn4Iu3t/UtbyxZtidF
+         1EfQ==
+X-Gm-Message-State: AOAM530088SPJuvjHevnReLnEzj5JXA8LxAzJxSmmysrsExD/fjGZMTL
+        y2DLCo8FLiCx87IpB3xej22RK/DoX0aGvzeZDetGGP9OZhcV/MofO8WEAssCSEmCtTO77+G1Xjl
+        d9e4tvuqC7t5M3wyeDPbYXqaZ
+X-Received: by 2002:a1c:6008:: with SMTP id u8mr28240640wmb.173.1607969603260;
+        Mon, 14 Dec 2020 10:13:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyuUM/UOHcT7yv0tgDWk8gjs5bzu4UDZt8mSBTZrr1Gppa0JPSQqRDV8wZEKahD+QUrFaqO9g==
+X-Received: by 2002:a1c:6008:: with SMTP id u8mr28240616wmb.173.1607969602964;
+        Mon, 14 Dec 2020 10:13:22 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j59sm4170676wrj.13.2020.12.14.10.13.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Dec 2020 10:13:22 -0800 (PST)
+Subject: Re: [PATCH v5 00/34] SEV-ES hypervisor support
+To:     Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1607620209.git.thomas.lendacky@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e348086e-1ca1-9020-7c0f-421768a96944@redhat.com>
+Date:   Mon, 14 Dec 2020 19:13:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210183737.GA12900@paulmck-ThinkPad-P72>
+In-Reply-To: <cover.1607620209.git.thomas.lendacky@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 10:37:37AM -0800, Paul E. McKenney wrote:
-> Hello, Joel,
+On 10/12/20 18:09, Tom Lendacky wrote:
+> From: Tom Lendacky <thomas.lendacky@amd.com>
 > 
-> In case you are -seriously- interested...  ;-)
+> This patch series provides support for running SEV-ES guests under KVM.
+> 
+> Secure Encrypted Virtualization - Encrypted State (SEV-ES) expands on the
+> SEV support to protect the guest register state from the hypervisor. See
+> "AMD64 Architecture Programmer's Manual Volume 2: System Programming",
+> section "15.35 Encrypted State (SEV-ES)" [1].
+> 
+> In order to allow a hypervisor to perform functions on behalf of a guest,
+> there is architectural support for notifying a guest's operating system
+> when certain types of VMEXITs are about to occur. This allows the guest to
+> selectively share information with the hypervisor to satisfy the requested
+> function. The notification is performed using a new exception, the VMM
+> Communication exception (#VC). The information is shared through the
+> Guest-Hypervisor Communication Block (GHCB) using the VMGEXIT instruction.
+> The GHCB format and the protocol for using it is documented in "SEV-ES
+> Guest-Hypervisor Communication Block Standardization" [2].
+> 
+> Under SEV-ES, a vCPU save area (VMSA) must be encrypted. SVM is updated to
+> build the initial VMSA and then encrypt it before running the guest. Once
+> encrypted, it must not be modified by the hypervisor. Modification of the
+> VMSA will result in the VMRUN instruction failing with a SHUTDOWN exit
+> code. KVM must support the VMGEXIT exit code in order to perform the
+> necessary functions required of the guest. The GHCB is used to exchange
+> the information needed by both the hypervisor and the guest.
+> 
+> Register data from the GHCB is copied into the KVM register variables and
+> accessed as usual during handling of the exit. Upon return to the guest,
+> updated registers are copied back to the GHCB for the guest to act upon.
+> 
+> There are changes to some of the intercepts that are needed under SEV-ES.
+> For example, CR0 writes cannot be intercepted, so the code needs to ensure
+> that the intercept is not enabled during execution or that the hypervisor
+> does not try to read the register as part of exit processing. Another
+> example is shutdown processing, where the vCPU cannot be directly reset.
+> 
+> Support is added to handle VMGEXIT events and implement the GHCB protocol.
+> This includes supporting standard exit events, like a CPUID instruction
+> intercept, to new support, for things like AP processor booting. Much of
+> the existing SVM intercept support can be re-used by setting the exit
+> code information from the VMGEXIT and calling the appropriate intercept
+> handlers.
+> 
+> Finally, to launch and run an SEV-ES guest requires changes to the vCPU
+> initialization, loading and execution.
+> 
+> [1] https://www.amd.com/system/files/TechDocs/24593.pdf
+> [2] https://developer.amd.com/wp-content/resources/56421.pdf
+> 
+> ---
+> 
+> These patches are based on the KVM queue branch:
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git queue
+> 
+> dc924b062488 ("KVM: SVM: check CR4 changes against vcpu->arch")
+> 
+> A version of the tree can also be found at:
+> https://github.com/AMDESE/linux/tree/sev-es-v5
+>   This tree has one addition patch that is not yet part of the queue
+>   tree that is required to run any SEV guest:
+>   [PATCH] KVM: x86: adjust SEV for commit 7e8e6eed75e
+>   https://lore.kernel.org/kvm/20201130143959.3636394-1-pbonzini@redhat.com/
+> 
+> Changes from v4:
+> - Updated the tracking support for CR0/CR4
+> 
+> Changes from v3:
+> - Some krobot fixes.
+> - Some checkpatch cleanups.
+> 
+> Changes from v2:
+> - Update the freeing of the VMSA page to account for the encrypted memory
+>    cache coherency feature as well as the VM page flush feature.
+> - Update the GHCB dump function with a bit more detail.
+> - Don't check for RAX being present as part of a string IO operation.
+> - Include RSI when syncing from GHCB to support KVM hypercall arguments.
+> - Add GHCB usage field validation check.
+> 
+> Changes from v1:
+> - Removed the VMSA indirection support:
+>    - On LAUNCH_UPDATE_VMSA, sync traditional VMSA over to the new SEV-ES
+>      VMSA area to be encrypted.
+>    - On VMGEXIT VMEXIT, directly copy valid registers into vCPU arch
+>      register array from GHCB. On VMRUN (following a VMGEXIT), directly
+>      copy dirty vCPU arch registers to GHCB.
+>    - Removed reg_read_override()/reg_write_override() KVM ops.
+> - Added VMGEXIT exit-reason validation.
+> - Changed kvm_vcpu_arch variable vmsa_encrypted to guest_state_protected
+> - Updated the tracking support for EFER/CR0/CR4/CR8 to minimize changes
+>    to the x86.c code
+> - Updated __set_sregs to not set any register values (previously supported
+>    setting the tracked values of EFER/CR0/CR4/CR8)
+> - Added support for reporting SMM capability at the VM-level. This allows
+>    an SEV-ES guest to indicate SMM is not supported
+> - Updated FPU support to check for a guest FPU save area before using it.
+>    Updated SVM to free guest FPU for an SEV-ES guest during KVM create_vcpu
+>    op.
+> - Removed changes to the kvm_skip_emulated_instruction()
+> - Added VMSA validity checks before invoking LAUNCH_UPDATE_VMSA
+> - Minor code restructuring in areas for better readability
+> 
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Sean Christopherson <sean.j.christopherson@intel.com>
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Cc: Wanpeng Li <wanpengli@tencent.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
 
-I am always seriously interested :-). The issue becomes when life throws me a
-curveball. This was the year of curveballs :-)
+I'm queuing everything except patch 27, there's time to include it later 
+in 5.11.
 
-Thank you for your reply and I have added it to my list to investigate how we
-are configuring nocb on our systems. I don't think anyone over here has given
-these RCU issues a serious look over here.
+Regarding MSRs, take a look at the series I'm sending shortly (or 
+perhaps in a couple hours).  For now I'll keep it in kvm/queue, but the 
+plan is to get acks quickly and/or just include it in 5.11.  Please try 
+the kvm/queue branch to see if I screwed up anything.
 
-thanks,
+Paolo
 
- - Joel
-
-
-
-> 						Thanx, Paul
-> 
-> rcu_nocbs=
-> 
-> 	Adding a CPU to this list offloads RCU callback invocation from
-> 	that CPU's softirq handler to a kthread.  In big.LITTLE systems,
-> 	this kthread can be placed on a LITTLE CPU, which has been
-> 	demonstrated to save significant energy in benchmarks.
-> 	http://www.rdrop.com/users/paulmck/realtime/paper/AMPenergy.2013.04.19a.pdf
-> 
-> nohz_full=
-> 
-> 	Any CPU specified by this boot parameter is handled as if it was
-> 	specified by rcu_nocbs=.
-> 
-> rcutree.jiffies_till_first_fqs=
-> 
-> 	Increasing this will decrease wakeup frequency to the grace-period
-> 	kthread for the first FQS scan.  And increase grace-period
-> 	latency.
-> 
-> rcutree.jiffies_till_next_fqs=
-> 
-> 	Ditto, but for the second and subsequent FQS scans.
-> 
-> 	My guess is that neither of these makes much difference.  But if
-> 	they do, maybe some sort of backoff scheme for FQS scans?
-> 
-> rcutree.jiffies_till_sched_qs=
-> 
-> 	Increasing this will delay RCU's getting excited about CPUs and
-> 	tasks not responding with quiescent states.  This excitement
-> 	can cause extra overhead.
-> 
-> 	No idea whether adjusting this would help.  But if you increase
-> 	rcutree.jiffies_till_first_fqs or rcutree.jiffies_till_next_fqs,
-> 	you might need to increase this one accordingly.
-> 
-> rcutree.qovld=
-> 
-> 	Increasing this will increase the grace-period duration at which
-> 	RCU starts sending IPIs, thus perhaps reducing the total number
-> 	of IPIs that RCU sends.  The destination CPUs are unlikely to be
-> 	idle, so it is not clear to me that this would help much.  But
-> 	perhaps I am wrong about them being mostly non-idle, who knows?
-> 
-> rcupdate.rcu_cpu_stall_timeout=
-> 
-> 	If you get overly zealous about the earlier kernel boot parameters,
-> 	you might need to increase this one as well.  Or instead use the
-> 	rcupdate.rcu_cpu_stall_suppress= kernel boot parameter to suppress
-> 	RCU CPU stall warnings entirely.
-> 
-> rcutree.rcu_nocb_gp_stride=
-> 
-> 	Increasing this might reduce grace-period work somewhat.  I don't
-> 	see why a (say) 16-CPU system really needs to have more than one
-> 	rcuog kthread, so if this does help it might be worthwhile setting
-> 	a lower limit to this kernel parameter.
-> 
-> rcutree.rcu_idle_gp_delay=  (Only CONFIG_RCU_FAST_NO_HZ=y kernels.)
-> 
-> 	This defaults to four jiffies on the theory that grace periods
-> 	tend to last about that long.  If grace periods tend to take
-> 	longer, then it makes a lot of sense to increase this.	And maybe
-> 	battery-powered devices would rather have it be about 2x or 3x
-> 	the expected grace-period duration, who knows?
-> 
-> 	I would keep it to a power of two, but the code should work with
-> 	other numbers.  Except that I don't know that this has ever been
-> 	tested.  ;-)
-> 
-> srcutree.exp_holdoff=
-> 
-> 	Increasing this decreases the number of SRCU grace periods that
-> 	are treated as expedited.  But you have to have closely-spaced
-> 	SRCU grace periods for this to matter.	(These do happen at least
-> 	sometimes because I added this only because someone complained
-> 	about the performance regression from the earlier non-tree SRCU.)
-> 
-> rcupdate.rcu_task_ipi_delay=
-> 
-> 	This kernel parameter delays sending IPIs for RCU Tasks Trace,
-> 	which is used by sleepable BPF programs.  Increasing it can
-> 	reduce overhead, but can also increase the latency of removing
-> 	sleepable BPF programs.
-> 
-> rcupdate.rcu_task_stall_timeout=
-> 
-> 	If you slow down RCU Tasks Trace too much, you may need this.
-> 	But then again, the default 10-minute value should suffice.
-> 
-> CONFIG_RCU_FAST_NO_HZ=y
-> 
-> 	This only has effect on CPUs not specified by rcu_nocbs, and thus
-> 	might be useful on systems that offload RCU callbacks only on
-> 	some of the CPUs.  For example, a big.LITTLE system might offload
-> 	only the big CPUs.  This Kconfig option reduces the frequency of
-> 	timer interrupts (and thus of RCU-related softirq processing)
-> 	on idle CPUs.  This has been shown to save significant energy
-> 	in benchmarks:
-> 	http://www.rdrop.com/users/paulmck/realtime/paper/AMPenergy.2013.04.19a.pdf
-> 
-> CONFIG_RCU_STRICT_GRACE_PERIOD=y
-> 
-> 	This works hard (as in burns CPU) to sharply reduce grace-period
-> 	latency.  The effect is probably to greatly increase power
-> 	consumption, but there might well be workloads where the shorter
-> 	grace periods more than make up for the extra CPU time.  Or not.
-> 
-> CONFIG_HZ=
-> 
-> 	Reducing the scheduler-clock interrupt frequency has the opposite
-> 	effect, namely of increasing RCU grace-period latency, but while
-> 	also reducing RCU's CPU utilization.
-> 
-> CONFIG_TASKS_TRACE_RCU_READ_MB=y
-> 
-> 	Reduce the need to IPI RCU Tasks Trace holdout tasks, but at the
-> 	expense of an increase in to/from idle overhead.  This Kconfig
-> 	option also slows down the rate at which RCU Tasks Trace polls
-> 	for holdout tasks.  This polling rate cannot be separately
-> 	specified, but if changing the initial source-code values of
-> 	either rcu_tasks_trace.gp_sleep or rcu_tasks_trace.init_fract
-> 	proves useful, kernel boot parameters could be created.
-> 
-> 	That said, automatic initialization heuristics are more
-> 	convenient.  When they work, anyway.
