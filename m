@@ -2,64 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C944B2D9425
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 09:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4DBE2D9430
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 09:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439264AbgLNIZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 03:25:12 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9437 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439217AbgLNIY5 (ORCPT
+        id S2439240AbgLNIeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 03:34:12 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:49962 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726596AbgLNIeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 03:24:57 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CvZD32ZsrzhsZq;
-        Mon, 14 Dec 2020 16:23:47 +0800 (CST)
-Received: from huawei.com (10.69.192.56) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Mon, 14 Dec 2020
- 16:24:05 +0800
-From:   Luo Jiaxing <luojiaxing@huawei.com>
-To:     <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <andy.shevchenko@gmail.com>, <andriy.shevchenko@linux.intel.com>
-CC:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <john.garry@huawei.com>, <linuxarm@huawei.com>
-Subject: [PATCH v2 3/3] arm64: defconfig: enable GPIO_HISI
-Date:   Mon, 14 Dec 2020 16:24:15 +0800
-Message-ID: <1607934255-52544-4-git-send-email-luojiaxing@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1607934255-52544-1-git-send-email-luojiaxing@huawei.com>
-References: <1607934255-52544-1-git-send-email-luojiaxing@huawei.com>
+        Mon, 14 Dec 2020 03:34:08 -0500
+Date:   Mon, 14 Dec 2020 09:33:25 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607934806;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mAdcvyzooTiVtSTt964I3eOn5LXhfT43CQeldzY51Us=;
+        b=UA9/MGO02EnLuwks3Fig0ypLwA0o1YyzvnJDPOPJEYIhf+RXi1U9+S9RAaGkqeujuTQpLQ
+        GsFVYToobXGwWKxnzjBAUrvwMD9mcW5b7FS9nRLcfVtEYrPYWroukr6yVtxM/b+VVq11BJ
+        Xca+JSWX4nPzlsy2fZaxfMeRbHPeILPaY7YS6dRr6QElMRrqW3UOGo6Y7yOFsYBXLUOsRF
+        tth8D0rAcD4Kf5vtQ2JJOjj6Bu2sDL2lNw5/7VrmhEYOmDniGfA9kIo7ggL3w1vNvOWrUb
+        MknTQBjm0rK/Y0YBH1VBYwMzJziajeQwvyPrRuGIdxvC48zatzVxd/bDBcwwZA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607934806;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mAdcvyzooTiVtSTt964I3eOn5LXhfT43CQeldzY51Us=;
+        b=UXrS1Pc6htHKbbkoWddvBNKc0b70HnXoH7L8JY6Pe8OVv+lTTUC92l4auPw7ljUaVTNTFi
+        UA/zBam+xDoDsjBw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Subject: Re: [PATCH RT 2/4] Revert "hrtimer: Allow raw wakeups during boot"
+Message-ID: <20201214083325.mtk4yib3ulikbso3@linutronix.de>
+References: <20201211214103.954245915@goodmis.org>
+ <20201211214130.387508159@goodmis.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201211214130.387508159@goodmis.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable GPIO controller for HiSilicon's ARM SoC.
+On 2020-12-11 16:41:05 [-0500], Steven Rostedt wrote:
+> 5.4.82-rt46-rc1 stable review patch.
+> If anyone has any objections, please let me know.
+> 
+> ------------------
+> 
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> 
+> This change is no longer needed since commit
+>    26c7295be0c5e ("kthread: Do not preempt current task if it is going to call schedule()")
 
-GPIO is common driver for HiSilicon's ARM SoC and it provide support for
-some function of I2C and SPI.
+This patch has been integrated in v5.7-rc1 and it made its way into
+v5.4.61. Okay, why not.
 
-Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 5cfe3cf..b5cdf5e 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -498,6 +498,7 @@ CONFIG_PINCTRL_SM8150=y
- CONFIG_PINCTRL_SM8250=y
- CONFIG_GPIO_ALTERA=m
- CONFIG_GPIO_DWAPB=y
-+CONFIG_GPIO_HISI=y
- CONFIG_GPIO_MB86S7X=y
- CONFIG_GPIO_MPC8XXX=y
- CONFIG_GPIO_MXC=y
--- 
-2.7.4
-
+Sebastian
