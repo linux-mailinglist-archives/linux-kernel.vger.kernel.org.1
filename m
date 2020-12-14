@@ -2,176 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FA22D9EA3
+	by mail.lfdr.de (Postfix) with ESMTP id B752A2D9EA4
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408612AbgLNSNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 13:13:17 -0500
-Received: from vps-vb.mhejs.net ([37.28.154.113]:46006 "EHLO vps-vb.mhejs.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440734AbgLNSMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 13:12:43 -0500
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.93.0.4)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1kosK4-0000TN-Ti; Mon, 14 Dec 2020 19:11:48 +0100
-To:     Ignat Korchagin <ignat@cloudflare.com>
-Cc:     agk@redhat.com, snitzer@redhat.com, dm-devel@redhat.com,
-        dm-crypt@saout.de, linux-kernel@vger.kernel.org,
-        ebiggers@kernel.org, Damien.LeMoal@wdc.com, mpatocka@redhat.com,
-        herbert@gondor.apana.org.au, kernel-team@cloudflare.com,
-        nobuto.murata@canonical.com, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: dm-crypt with no_read_workqueue and no_write_workqueue + btrfs scrub
- = BUG()
-Message-ID: <16ffadab-42ba-f9c7-8203-87fda3dc9b44@maciej.szmigiero.name>
-Date:   Mon, 14 Dec 2020 19:11:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S2440226AbgLNSN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 13:13:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408769AbgLNSNa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 13:13:30 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47573C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:12:50 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id c7so16496418qke.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:12:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Rm4wqlJULF+NlJEFHfiTTvuJBxgZ42cRvycevuPF0mI=;
+        b=VV5LL8V8wOaRvyJSnhQbDpQC922VD5IFhrTjogTdvvl8vUZW6v2azjBKXMubI0pkPq
+         D34oMiuYiGbVrLUdB3HFjfjNdYDUEcGkXnM7eopRYPeEWO0Lu+Z98N9dNFMshkab7J5Y
+         L/YNGBLVWmvsEbazkVmQ/cnTc/WmL8FI2NgXs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Rm4wqlJULF+NlJEFHfiTTvuJBxgZ42cRvycevuPF0mI=;
+        b=USPfDkh6UarA41jRuJliuoLjBYFIWFvN+f/okLXrXkYBVt+2Yf8u68ENm4K3kV+EUB
+         aW5QdieCn6SDjCPe2iw0eW42XhD2pNJPLLSTrFxsPpwACdeSnyV/dSrAUduo2iKY4R59
+         D2Txk8kLqPlxxZnQfstzH8BFs+ekWok6t0nTVD0TdJT8a3sDe2XwC2cvzhQ+JI/NwO1k
+         1cyKFd+GC095rp4Fd5W5yWzrzzb83vyZjQGiPN5Y440gg9VIZ+RgVn04DhbcEdxqcHKM
+         sUunTeDQGPErGf5YueSyYfi6wwor3a80PBdXsbqVv2ywSlteJi+L/5YKI2dGyJ8kysMN
+         F+PQ==
+X-Gm-Message-State: AOAM531CDl/U6QXYXTrv3J7/ms3D0O4YKu23xe4U4UQh/8S4yG68g/8k
+        MhY9a9vTt1HtR9uQ/TstOO86NQ==
+X-Google-Smtp-Source: ABdhPJzJed+QyxLT+ufQeC55sEUyuEuvVmrcTP/FD49slGt2QthGSeVIAQODGzyhf7eKZWhcsdFvfg==
+X-Received: by 2002:a37:a3c1:: with SMTP id m184mr33461272qke.203.1607969569437;
+        Mon, 14 Dec 2020 10:12:49 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id f59sm14640891qtd.84.2020.12.14.10.12.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 10:12:48 -0800 (PST)
+Date:   Mon, 14 Dec 2020 13:12:48 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Energy-efficiency options within RCU
+Message-ID: <X9erIC8Sbf3ybvHC@google.com>
+References: <20201210183737.GA12900@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210183737.GA12900@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Dec 10, 2020 at 10:37:37AM -0800, Paul E. McKenney wrote:
+> Hello, Joel,
+> 
+> In case you are -seriously- interested...  ;-)
 
-I hit a reproducible BUG() when scrubbing a btrfs fs on top of
-a dm-crypt device with no_read_workqueue and no_write_workqueue
-flags enabled.
+I am always seriously interested :-). The issue becomes when life throws me a
+curveball. This was the year of curveballs :-)
 
-Steps to reproduce:
-1) cryptsetup create -c aes -d /dev/urandom test /dev/vdb1
-2) dmsetup table test --showkeys | sed 's/$/ 2 no_read_workqueue no_write_workqueue/' | dmsetup reload test
-3) dmsetup suspend test && dmsetup resume test
-4) mkfs.btrfs /dev/mapper/test
-5) mkdir /tmp/test; mount -t btrfs /dev/mapper/test /tmp/test/
-6) dd if=/dev/zero of=/tmp/test/test bs=1M count=900; sync
-7) btrfs scrub start /tmp/test
+Thank you for your reply and I have added it to my list to investigate how we
+are configuring nocb on our systems. I don't think anyone over here has given
+these RCU issues a serious look over here.
 
-The result is:
-[ 2965.025717][    C0] BUG: sleeping function called from invalid context at mm/mempool.c:381
-[ 2965.025721][    C0] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 2848, name: kworker/u4:0
-[ 2965.025726][    C0] CPU: 0 PID: 2848 Comm: kworker/u4:0 Tainted: G                T 5.10.0-rc3+ #278
-[ 2965.025727][    C0] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-[ 2965.025735][    C0] Workqueue: btrfs-scrub btrfs_work_helper
-[ 2965.025738][    C0] Call Trace:
-[ 2965.025759][    C0]  <IRQ>
-[ 2965.025766][    C0]  dump_stack+0x57/0x6a
-[ 2965.025771][    C0]  ___might_sleep.cold+0x8a/0x97
-[ 2965.025776][    C0]  mempool_alloc+0xcb/0x1b0
-[ 2965.025781][    C0]  ? crypto_skcipher_decrypt+0x5c/0x80
-[ 2965.025786][    C0]  crypt_convert+0xdf0/0xfa0
-[ 2965.025793][    C0]  ? update_load_avg+0x92/0x650
-[ 2965.025798][    C0]  kcryptd_crypt_read_convert+0xc5/0x100
-[ 2965.025802][    C0]  tasklet_action_common.constprop.0+0xfa/0x120
-[ 2965.025807][    C0]  __do_softirq+0xc4/0x2a8
-[ 2965.025811][    C0]  asm_call_irq_on_stack+0x12/0x20
-[ 2965.025814][    C0]  </IRQ>
-[ 2965.025818][    C0]  do_softirq_own_stack+0x36/0x40
-[ 2965.025821][    C0]  irq_exit_rcu+0x8d/0xc0
-[ 2965.025825][    C0]  sysvec_call_function_single+0x36/0x80
-[ 2965.025829][    C0]  asm_sysvec_call_function_single+0x12/0x20
-[ 2965.025833][    C0] RIP: 0010:crc_18+0xa/0x1e
-[ 2965.025837][    C0] Code: ff ff f2 4c 0f 38 f1 81 68 ff ff ff f2 4c 0f 38 f1 8a 68 ff ff ff f2 4d 0f 38 f1 93 68 ff ff ff f2 4c 0f 38 f1 81 70 ff ff ff <f2> 4c 0f 38 f1 8a 70 ff ff ff f2 4d 0f 38 f1 93 70 ff ff ff f2 4c
-[ 2965.025839][    C0] RSP: 0018:ffffa2d04023bbf0 EFLAGS: 00000246
-[ 2965.025842][    C0] RAX: 0000000000000080 RBX: 0000000000001000 RCX: ffff96e1851ef400
-[ 2965.025844][    C0] RDX: ffff96e1851ef800 RSI: 0000000000001000 RDI: 0000000000000000
-[ 2965.025845][    C0] RBP: ffff96e1851ef000 R08: 000000000ae37425 R09: 0000000000000000
-[ 2965.025847][    C0] R10: 0000000000000000 R11: ffff96e1851efc00 R12: 0000000000001000
-[ 2965.025848][    C0] R13: ffff96e18e9a6a80 R14: fffff68440000000 R15: ffff96e184d73c00
-[ 2965.025854][    C0]  ? crc32c_pcl_intel_digest+0xa0/0xc0
-[ 2965.025857][    C0]  ? scrub_checksum_data+0x126/0x180
-[ 2965.025861][    C0]  ? update_load_avg+0x92/0x650
-[ 2965.025863][    C0]  ? cpuacct_charge+0x35/0x80
-[ 2965.025867][    C0]  ? check_preempt_wakeup+0xef/0x260
-[ 2965.025872][    C0]  ? radix_tree_gang_lookup+0xa1/0xd0
-[ 2965.025875][    C0]  ? __wake_up_common_lock+0x8a/0xc0
-[ 2965.025878][    C0]  ? scrub_block_put+0x5c/0xa0
-[ 2965.025880][    C0]  ? scrub_bio_end_io_worker+0x52/0x220
-[ 2965.025884][    C0]  ? kfree+0x3ec/0x450
-[ 2965.025887][    C0]  ? scrub_bio_end_io_worker+0xd7/0x220
-[ 2965.025890][    C0]  ? btrfs_work_helper+0xdb/0x350
-[ 2965.025893][    C0]  ? __schedule+0x275/0x8c0
-[ 2965.025897][    C0]  ? process_one_work+0x1d6/0x3b0
-[ 2965.025901][    C0]  ? worker_thread+0x53/0x400
-[ 2965.025904][    C0]  ? rescuer_thread+0x440/0x440
-[ 2965.025907][    C0]  ? kthread+0x13f/0x160
-[ 2965.025910][    C0]  ? __kthread_bind_mask+0xa0/0xa0
-[ 2965.025913][    C0]  ? ret_from_fork+0x22/0x30
+thanks,
 
-Additionally, here is a similar BUG() backtrace I've hit on
-another system, while scrubbing a btrfs fs on dm-crypt devs
-with these flags enabled, the BUG() hit here was actually
-scheduling while atomic:
-  <IRQ>
-  dump_stack+0x57/0x6a
-  __schedule_bug.cold+0x47/0x53
-  __schedule+0x643/0x7d0
-  schedule+0x62/0xd0
-  schedule_timeout+0x135/0x180
-  ? cryptd_enqueue_request+0x5e/0xd0
-  wait_for_completion+0x84/0xe0
-  crypt_convert.constprop.0+0x7a7/0xf60
-  ? crypt_endio+0x2d/0x90
-  ? kmem_cache_free+0x416/0x470
-  ? ktime_get+0x4a/0xc0
-  kcryptd_crypt_read_convert+0xbe/0x100
-  blk_update_request+0x229/0x3d0
-  scsi_end_request+0x40/0x200
-  scsi_io_completion+0x8e/0x5b0
-  blk_done_softirq+0x87/0xb0
-  __do_softirq+0xd3/0x2ed
-  asm_call_irq_on_stack+0x12/0x20
-  </IRQ>
-  do_softirq_own_stack+0x36/0x40
-  irq_exit_rcu+0x8d/0xc0
-  common_interrupt+0x87/0x160
-  asm_common_interrupt+0x1e/0x40
-RIP: 0010:_aesni_dec4+0x2f/0x190
-Code: fa 66 0f ef c2 66 0f ef e2 66 0f ef ea 66 0f ef f2 49 83 c2 30 41 83 f9 18 72 70 4d 8d 52 20 74 36 49 83 c2 20 41 0f 28 52 a0 <66> 0f 38 de c2 66 0f 38 de e2 66 0f 3
-  ? _aesni_dec1+0xb0/0xb0
-  ? _aesni_dec1+0xb0/0xb0
-  ? aesni_xts_crypt8+0xe0/0x240
-  ? __glue_xts_req_128bit+0x8f/0xc0
-  ? glue_xts_req_128bit+0xc1/0x400
-  ? aesni_set_key+0x1e0/0x1e0
-  ? ttwu_queue_wakelist+0xb9/0xe0
-  ? kcryptd_async_done+0xa6/0x210
-  ? kcryptd_async_done+0xa6/0x210
-  ? kfree+0x401/0x460
-  ? kcryptd_async_done+0xa6/0x210
-  ? crypto_skcipher_decrypt+0x4b/0x80
-  ? cryptd_skcipher_decrypt+0xa6/0x130
-  ? update_load_avg+0x7e/0x660
-  ? set_next_entity+0xcd/0x240
-  ? __switch_to_asm+0x3f/0x60
-  ? finish_task_switch+0x87/0x280
-  ? __schedule+0x263/0x7d0
-  ? preempt_schedule+0x32/0x50
-  ? preempt_schedule_thunk+0x16/0x18
-  ? cryptd_queue_worker+0x8b/0xe0
-  ? process_one_work+0x1d4/0x3d0
-  ? worker_thread+0x50/0x3f0
-  ? rescuer_thread+0x420/0x420
-  ? kthread+0x134/0x160
-  ? __kthread_bind_mask+0xa0/0xa0
-  ? ret_from_fork+0x22/0x30
+ - Joel
 
-It looks like to me that the dm-crypt code in kcryptd_queue_crypt()
-checks for a hard IRQ context via in_irq() before deciding whether to
-offload processing to a tasklet or proceed directly, but it probably
-should check for any interrupt context via in_interrupt() or similar
-and then proceed with using a workqueue, as the ordinary code flow
-does.
 
-CC'ing btrfs folks in case it is actually a btrfs-specific issue.
 
-Thanks,
-Maciej
-
+> 						Thanx, Paul
+> 
+> rcu_nocbs=
+> 
+> 	Adding a CPU to this list offloads RCU callback invocation from
+> 	that CPU's softirq handler to a kthread.  In big.LITTLE systems,
+> 	this kthread can be placed on a LITTLE CPU, which has been
+> 	demonstrated to save significant energy in benchmarks.
+> 	http://www.rdrop.com/users/paulmck/realtime/paper/AMPenergy.2013.04.19a.pdf
+> 
+> nohz_full=
+> 
+> 	Any CPU specified by this boot parameter is handled as if it was
+> 	specified by rcu_nocbs=.
+> 
+> rcutree.jiffies_till_first_fqs=
+> 
+> 	Increasing this will decrease wakeup frequency to the grace-period
+> 	kthread for the first FQS scan.  And increase grace-period
+> 	latency.
+> 
+> rcutree.jiffies_till_next_fqs=
+> 
+> 	Ditto, but for the second and subsequent FQS scans.
+> 
+> 	My guess is that neither of these makes much difference.  But if
+> 	they do, maybe some sort of backoff scheme for FQS scans?
+> 
+> rcutree.jiffies_till_sched_qs=
+> 
+> 	Increasing this will delay RCU's getting excited about CPUs and
+> 	tasks not responding with quiescent states.  This excitement
+> 	can cause extra overhead.
+> 
+> 	No idea whether adjusting this would help.  But if you increase
+> 	rcutree.jiffies_till_first_fqs or rcutree.jiffies_till_next_fqs,
+> 	you might need to increase this one accordingly.
+> 
+> rcutree.qovld=
+> 
+> 	Increasing this will increase the grace-period duration at which
+> 	RCU starts sending IPIs, thus perhaps reducing the total number
+> 	of IPIs that RCU sends.  The destination CPUs are unlikely to be
+> 	idle, so it is not clear to me that this would help much.  But
+> 	perhaps I am wrong about them being mostly non-idle, who knows?
+> 
+> rcupdate.rcu_cpu_stall_timeout=
+> 
+> 	If you get overly zealous about the earlier kernel boot parameters,
+> 	you might need to increase this one as well.  Or instead use the
+> 	rcupdate.rcu_cpu_stall_suppress= kernel boot parameter to suppress
+> 	RCU CPU stall warnings entirely.
+> 
+> rcutree.rcu_nocb_gp_stride=
+> 
+> 	Increasing this might reduce grace-period work somewhat.  I don't
+> 	see why a (say) 16-CPU system really needs to have more than one
+> 	rcuog kthread, so if this does help it might be worthwhile setting
+> 	a lower limit to this kernel parameter.
+> 
+> rcutree.rcu_idle_gp_delay=  (Only CONFIG_RCU_FAST_NO_HZ=y kernels.)
+> 
+> 	This defaults to four jiffies on the theory that grace periods
+> 	tend to last about that long.  If grace periods tend to take
+> 	longer, then it makes a lot of sense to increase this.	And maybe
+> 	battery-powered devices would rather have it be about 2x or 3x
+> 	the expected grace-period duration, who knows?
+> 
+> 	I would keep it to a power of two, but the code should work with
+> 	other numbers.  Except that I don't know that this has ever been
+> 	tested.  ;-)
+> 
+> srcutree.exp_holdoff=
+> 
+> 	Increasing this decreases the number of SRCU grace periods that
+> 	are treated as expedited.  But you have to have closely-spaced
+> 	SRCU grace periods for this to matter.	(These do happen at least
+> 	sometimes because I added this only because someone complained
+> 	about the performance regression from the earlier non-tree SRCU.)
+> 
+> rcupdate.rcu_task_ipi_delay=
+> 
+> 	This kernel parameter delays sending IPIs for RCU Tasks Trace,
+> 	which is used by sleepable BPF programs.  Increasing it can
+> 	reduce overhead, but can also increase the latency of removing
+> 	sleepable BPF programs.
+> 
+> rcupdate.rcu_task_stall_timeout=
+> 
+> 	If you slow down RCU Tasks Trace too much, you may need this.
+> 	But then again, the default 10-minute value should suffice.
+> 
+> CONFIG_RCU_FAST_NO_HZ=y
+> 
+> 	This only has effect on CPUs not specified by rcu_nocbs, and thus
+> 	might be useful on systems that offload RCU callbacks only on
+> 	some of the CPUs.  For example, a big.LITTLE system might offload
+> 	only the big CPUs.  This Kconfig option reduces the frequency of
+> 	timer interrupts (and thus of RCU-related softirq processing)
+> 	on idle CPUs.  This has been shown to save significant energy
+> 	in benchmarks:
+> 	http://www.rdrop.com/users/paulmck/realtime/paper/AMPenergy.2013.04.19a.pdf
+> 
+> CONFIG_RCU_STRICT_GRACE_PERIOD=y
+> 
+> 	This works hard (as in burns CPU) to sharply reduce grace-period
+> 	latency.  The effect is probably to greatly increase power
+> 	consumption, but there might well be workloads where the shorter
+> 	grace periods more than make up for the extra CPU time.  Or not.
+> 
+> CONFIG_HZ=
+> 
+> 	Reducing the scheduler-clock interrupt frequency has the opposite
+> 	effect, namely of increasing RCU grace-period latency, but while
+> 	also reducing RCU's CPU utilization.
+> 
+> CONFIG_TASKS_TRACE_RCU_READ_MB=y
+> 
+> 	Reduce the need to IPI RCU Tasks Trace holdout tasks, but at the
+> 	expense of an increase in to/from idle overhead.  This Kconfig
+> 	option also slows down the rate at which RCU Tasks Trace polls
+> 	for holdout tasks.  This polling rate cannot be separately
+> 	specified, but if changing the initial source-code values of
+> 	either rcu_tasks_trace.gp_sleep or rcu_tasks_trace.init_fract
+> 	proves useful, kernel boot parameters could be created.
+> 
+> 	That said, automatic initialization heuristics are more
+> 	convenient.  When they work, anyway.
