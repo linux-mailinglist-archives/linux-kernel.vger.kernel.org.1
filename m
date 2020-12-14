@@ -2,80 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24162D9AB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E4B2D9ABD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438560AbgLNPRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 10:17:14 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:37111 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407158AbgLNPRN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 10:17:13 -0500
-Received: by mail-ot1-f66.google.com with SMTP id o11so16009456ote.4;
-        Mon, 14 Dec 2020 07:16:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ySr/Vl2ci/XujLZBu5wQq6kxGRFqMO/2YetNSvkqjAc=;
-        b=hwvRFzCMkmLAyumcEZ+x5HoxioVtQ55fkctIIb046RV+u8UCTXuqzd6bJKNbLgMMZ6
-         FFu5CAVC8RUDt8DL7XB91o5m/lRsY/jiIWgZhuH/5Rp1JqtAeyMfsWlFZdlqq3sRcDR7
-         K33Xy/kUSfDCSfstiTPCkNv/oCsX7+cqGqOg+HvLB8VTHt9ttTrKkblKvTbRP/uxxSzJ
-         opGumD1/5OrVCnGhDLbtmfNrZ7rjHFdzg86o/mWdc/B9htfIrTqRTsdSb1QcxIKLYenR
-         CVV4bGEjCKhhGEvP874Fv3tlIsmqm4HnTr6v2quUkrOC4POptoVpPeD5+4jiGqSpX26K
-         ZGUw==
-X-Gm-Message-State: AOAM533gYfvudEV3h/0pxvOPA3y/9nfPQhTy1oanaWUNzKEthW/YZVzz
-        MNFJmtdqxNGjlBtAcgT/SQ==
-X-Google-Smtp-Source: ABdhPJwvWfFei+PUOgunAnO1jgcQwKu4UbC3ifUNhnnCaKcRLPgKg6n6i+c4oz1Hvoc/6ZSzcE5ltA==
-X-Received: by 2002:a9d:2d84:: with SMTP id g4mr20059505otb.212.1607958992340;
-        Mon, 14 Dec 2020 07:16:32 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y8sm4027679oix.43.2020.12.14.07.16.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 07:16:31 -0800 (PST)
-Received: (nullmailer pid 1938534 invoked by uid 1000);
-        Mon, 14 Dec 2020 15:16:30 -0000
-Date:   Mon, 14 Dec 2020 09:16:30 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Wolfram Sang <wsa@kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>
-Subject: Re: [PATCH v2 1/1] dt-bindings: i2c: dw: cancel mandatory
- requirements for "#address-cells" and "#size-cells"
-Message-ID: <20201214151630.GA1938499@robh.at.kernel.org>
-References: <20201214124347.2120-1-thunder.leizhen@huawei.com>
- <20201214124347.2120-2-thunder.leizhen@huawei.com>
+        id S2438668AbgLNPRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 10:17:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2438598AbgLNPRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 10:17:31 -0500
+Date:   Mon, 14 Dec 2020 10:16:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607959007;
+        bh=7DxumA/ic+kumc6ZLIwtVEMav+wzV5ZcKzAQRwtusEc=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q7nMV1CyVP9j8gaJIkuSReysJTiVYNArDkOpi/nKAZQ+AdVDFyVtPsifGG3RIqG5R
+         XH72esxCzGcFwcxEJZN+/Uoni3hcoAptCxLugqwM1hAQNB4YxXMvnrYnRI9NfT0E2s
+         QnrXPbgQljc2HkMtByGHtFqTxkCw4S7pHmezVEBFXAMw/D1fS7F1OeXIIR9jXZbpsu
+         WWJ6CeIZaeK1Oj3HwaP0roscAhXapzwNDozyqxwgFXGF2GgA1tH5Y5iw2w+OGMm30t
+         vylINlj5nYvxosPJxIWnq7WVglPJX2uEGTpak/Mq4F1pWymkFhNw90BCr3lVNljBtX
+         KRmX56BDxLzjA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Mark Hounschell <markh@compro.net>,
+        Karol Herbst <kherbst@redhat.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH AUTOSEL 4.14 2/8] drm/nouveau: make sure ret is
+ initialized in nouveau_ttm_io_mem_reserve
+Message-ID: <20201214151646.GT643756@sasha-vm>
+References: <20201212160859.2335412-1-sashal@kernel.org>
+ <20201212160859.2335412-2-sashal@kernel.org>
+ <642b5479-d4d9-37a7-3b14-3162374829d5@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201214124347.2120-2-thunder.leizhen@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <642b5479-d4d9-37a7-3b14-3162374829d5@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 20:43:47 +0800, Zhen Lei wrote:
-> The "#address-cells" and "#size-cells" are required only when the I2C
-> controller has subnodes. However, some I2C controllers defined in
-> "arch/arm64/boot/dts/amd/" and "arch/arm64/boot/dts/hisilicon/"
-> directories do not have child nodes. So they don't need these two
-> properties and don't write them explicitly.
-> 
-> Therefore, setting properties "#address-cells" and "#size-cells" as
-> "required" in this yaml file causes the following warnings:
-> /root/linux-next/arch/arm64/boot/dts/hisilicon/hi6220-hikey.dt.yaml: \
-> i2c@f7100000: '#address-cells' is a required property
-> /root/linux-next/arch/arm64/boot/dts/hisilicon/hi6220-hikey.dt.yaml: \
-> i2c@f7100000: '#size-cells' is a required property
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml | 8 --------
->  1 file changed, 8 deletions(-)
-> 
+On Mon, Dec 14, 2020 at 10:49:55AM +0100, Christian König wrote:
+>Hi Sasha,
+>
+>please don't apply this patch to any older kernel.
+>
+>The fix was only needed for a patch which went in with the 5.10 pull 
+>request.
 
-Applied, thanks!
+I'll drop it, thanks!
+
+-- 
+Thanks,
+Sasha
