@@ -2,44 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3452DA248
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A96152DA25C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503681AbgLNVGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 16:06:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39944 "EHLO mail.kernel.org"
+        id S2503687AbgLNVJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 16:09:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503637AbgLNVGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 16:06:41 -0500
-Date:   Mon, 14 Dec 2020 22:05:54 +0100
+        id S2503643AbgLNVJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 16:09:15 -0500
+Date:   Mon, 14 Dec 2020 13:08:32 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607979959;
-        bh=kYxvt5XZtu8HNBuiKTDtgnZwS6o+QdAyk43mKWgewHs=;
+        s=k20201202; t=1607980115;
+        bh=oJ27S4rXf3axNcP3I2hRPI6vvzuXz2pgxoYgd3q43CE=;
         h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cV75mcLMKa3HOy8fqzFsLZl77OILwX/xz2P1qGMyIJ6cmwhQra5MgCVN+r6qp60ny
-         oUSFDG1SPh5soSckVEI6xaFvHJdSKr/CDi0Sq8ll3iHoJkqKDCifSHUZRb7erIHpby
-         khiga1bN4KBYuDMfAhCoL8dYq6BLshY65UGA5sfVwLJaWpTFyOBrTuOUf3FfGtSo8M
-         wL7dXpLGLnscYC55g9bxT8MHqbrvPQxOTMwkiii1mPA2L3Tfumgr9H7Lti+Pvb8aVy
-         OZLxofGZwnE9EzRSDUrbI/kL65Mxi+GnDWy4uf1/FwZ+nMwPEwyog+8RI1/YhNFcxO
-         ta/Rolcmigheg==
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>
-Cc:     ARM <linux-arm-kernel@lists.infradead.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Martin Cerveny <m.cerveny@computer.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: Re: linux-next: manual merge of the v4l-dvb tree with the arm-soc
- tree
-Message-ID: <20201214220554.47a3709f@coco.lan>
-In-Reply-To: <20201215073037.5bb96437@canb.auug.org.au>
-References: <20201208110413.04400395@canb.auug.org.au>
-        <20201215073037.5bb96437@canb.auug.org.au>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        b=rxoyujSyScMV6kejxAqO2iQfCAr8Kygj+g7tlUqAtjcWj/LenSSQHYoHArSyc3Gbn
+         MVdUkWwHyvbhP49G42xAU7vkrGzbJ09HPdEV5VYilMH3RBJJ3ewpTIzx9ORfPytXsf
+         +oP7SFcEC4uv0JtLcVHMjhuWmjywKFVxMbc5ozl49ZRYMpWzcIyrpsch6z0myA+i8S
+         7D4P1X3NeAeNkITvD9O/clGyWBReX3Isb9WvdyZvCxSxH8ctuwj7NoSNW/umI0eNiK
+         6eujU3cdvFddrZNNrWxStOS6zQ8pphrTnSxEDv6GgOV2yUQek4v9jVyxv5xTqiOiig
+         wTzVKyzH1xY2Q==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Julian Wiedmann <jwi@linux.ibm.com>
+Cc:     Vincent =?UTF-8?B?U3RlaGzDqQ==?= <vincent.stehle@laposte.net>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Florian Fainelli <florian.fainelli@telecomint.eu>
+Subject: Re: [PATCH] net: korina: remove busy skb free
+Message-ID: <20201214130832.7bedb230@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <ecd7900f-8b54-23e2-2537-033237e08597@linux.ibm.com>
+References: <20201213172052.12433-1-vincent.stehle@laposte.net>
+        <ecd7900f-8b54-23e2-2537-033237e08597@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -47,76 +40,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Stephen/Arnd/Olof,
-
-Em Tue, 15 Dec 2020 07:30:37 +1100
-Stephen Rothwell <sfr@canb.auug.org.au> escreveu:
-
-> Hi all,
-> 
-> On Tue, 8 Dec 2020 11:04:13 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Today's linux-next merge of the v4l-dvb tree got a conflict in:
-> > 
-> >   drivers/staging/media/sunxi/cedrus/cedrus.c
-> > 
-> > between commit:
-> > 
-> >   c6e95daab1cc ("media: cedrus: Remove the MBUS quirks")
-> > 
-> > from the arm-soc tree and commits:
-> > 
-> >   503dab0b8a56 ("media: cedrus: Register all codecs as capability")
-> >   68b4a01f88af ("media: cedrus: Make VP8 codec as capability")
-> > 
-> > from the v4l-dvb tree.
-> > 
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> > 
-> > -- 
-> > Cheers,
-> > Stephen Rothwell
-> > 
-> > diff --cc drivers/staging/media/sunxi/cedrus/cedrus.c
-> > index d5fca10ea5b4,18d54f9fd715..000000000000
-> > --- a/drivers/staging/media/sunxi/cedrus/cedrus.c
-> > +++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
-> > @@@ -522,7 -584,11 +584,10 @@@ static const struct cedrus_variant sun5
+On Mon, 14 Dec 2020 11:03:12 +0100 Julian Wiedmann wrote:
+> > diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
+> > index bf48f0ded9c7d..9d84191de6824 100644
+> > --- a/drivers/net/ethernet/korina.c
+> > +++ b/drivers/net/ethernet/korina.c
+> > @@ -216,7 +216,6 @@ static int korina_send_packet(struct sk_buff *skb, struct net_device *dev)
+> >  			netif_stop_queue(dev);
+> >  		else {
+> >  			dev->stats.tx_dropped++;
+> > -			dev_kfree_skb_any(skb);
+> >  			spin_unlock_irqrestore(&lp->lock, flags);
+> >  
+> >  			return NETDEV_TX_BUSY;
 > >   
-> >   static const struct cedrus_variant sun50i_h6_cedrus_variant = {
-> >   	.capabilities	= CEDRUS_CAPABILITY_UNTILED |
-> > - 			  CEDRUS_CAPABILITY_H265_DEC,
-> > + 			  CEDRUS_CAPABILITY_MPEG2_DEC |
-> > + 			  CEDRUS_CAPABILITY_H264_DEC |
-> > + 			  CEDRUS_CAPABILITY_H265_DEC |
-> > + 			  CEDRUS_CAPABILITY_VP8_DEC,
-> >  -	.quirks		= CEDRUS_QUIRK_NO_DMA_OFFSET,
-> >   	.mod_rate	= 600000000,
-> >   };
-> >     
 > 
-> Just a reminder that this conflict still exists.
+> As this skb is returned to the stack (and not dropped), the tx_dropped
+> statistics increment looks bogus too.
 
-Thanks for the reminder! I ended forgetting about it.
-Last week was hard for me, as I had several things to solve
-before taking some vacations, including preparing for a talk on
-an user's group that happened last Saturday.
-
-In any case, Linus already pulled from my tree:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fab0fca1da5cdc48be051715cd9787df04fdce3a
-
-So, I guess the best would be to either let Linus know about that
-when he would be pulling from arm-soc, or to solve such conflict 
-between upstream and arm-soc.
-
-As I'm in PTO those days, in order to avoid further conflicts with
-linux-next, I'll pull from Linus tree today.
-
-Thanks,
-Mauro
+Since this is clearly an ugly use after free, and nobody complained we
+can assume that the driver correctly stops its TX queue ahead of time.
+So perhaps we can change the return value to NETDEV_TX_OK instead.
