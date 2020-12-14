@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF982D9F45
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 892AA2D9F1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440903AbgLNSeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 13:34:20 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:33583 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440895AbgLNSdz (ORCPT
+        id S2440928AbgLNSe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 13:34:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40636 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2440918AbgLNSea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 13:33:55 -0500
-Received: from mail-ej1-f72.google.com ([209.85.218.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <guilherme.piccoli@canonical.com>)
-        id 1kosem-0007v5-13
-        for linux-kernel@vger.kernel.org; Mon, 14 Dec 2020 18:33:12 +0000
-Received: by mail-ej1-f72.google.com with SMTP id a8so4851972ejc.19
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:33:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vC5rTts+mOzcrtivhr5wMtWrTwvDKun97Izjg1g5DwM=;
-        b=fmDHYPwJW82aHXOJyDDLHpXlG3ZBSbI6pTRAkeqUuezfVdTIuDhM+E7rncCXweEloS
-         AhB2ejsUl8gTrII6pjJeP7oLWxiGdYLMN5pLJCc8L6qLuGbiINpfilq62CtqnUwSp/rt
-         1Rf80nd/Otl0qZh/PH5Q1/m++CWXrTWlmrKQrzyITaBx8DsQ+Z5tG9c/nzBQZDgyEvQr
-         VLUXESCCcbkBt0xSeenaxjjNj+xjRRTVI8WgyF9g9W/fNL5IV9OI+jcC1ELd5+LSt1Rz
-         IGii4FVPFeESlArvzck7Ce2Ynof0etL5fpydob+nkQM58N8i6XKSzKqZyQw9UqtD//xI
-         nPCQ==
-X-Gm-Message-State: AOAM530ltjr+2OyX/K8eOZ3nogvjyQQkuO5/oMPVZyGYDfaXGewqT3eF
-        OTqpyFQac/V5+yVfXcq63ovbyeyBob6UpOvBv9zIjLcGhhO2VS8miCfu564crmlVkKPcUiIE7V2
-        nl+u3QQuYPC1CYDvbqGabk4eDcKV2SikpDmREkOI1S81hpiYJF0ikcs/odg==
-X-Received: by 2002:a50:ed04:: with SMTP id j4mr26821208eds.84.1607970791740;
-        Mon, 14 Dec 2020 10:33:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxKhS9zZJoH5y+WjTKhFM+13gIWs9+51ExLKCSPqVyqui+xXMHuPFwo81j9PBZsvzg/q2ofOvchb4pAtUadEkg=
-X-Received: by 2002:a50:ed04:: with SMTP id j4mr26821177eds.84.1607970791542;
- Mon, 14 Dec 2020 10:33:11 -0800 (PST)
+        Mon, 14 Dec 2020 13:34:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607970784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xkuYtdLf6aD5g/AJsimLnGfHqBLSAGTfbX/Ao9PPeSQ=;
+        b=VQk6eYgo+G3drawbIbMSyALRgx0T29+BngPdDDhlqnONza1nR90Dmuf+dy8055moaM4Fp8
+        7rGdsjh0WI2C1p2p79H3q4KaQcN0FtOrrOuoH+M0nTWkEiLMA5rnyeRsjRJANH0RfIsPwm
+        MPSO0FB6tE1OweXlSCUBYoJVmeEZUmg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-323-xMThsjC3OO66Xqsd14h6wA-1; Mon, 14 Dec 2020 13:32:53 -0500
+X-MC-Unique: xMThsjC3OO66Xqsd14h6wA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 005D6180A0AA;
+        Mon, 14 Dec 2020 18:32:52 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 67D73100AE36;
+        Mon, 14 Dec 2020 18:32:51 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Alexander Graf <graf@amazon.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: [PATCH 0/3] KVM: x86: MSR completion refactoring for SEV-ES
+Date:   Mon, 14 Dec 2020 13:32:47 -0500
+Message-Id: <20201214183250.1034541-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <CAHD1Q_yfFYrfAEHTA3mW25hK9DFFYnKQ2_1HCEnL4m=bc=rLfg@mail.gmail.com>
- <20201130202021.GA1106292@bjorn-Precision-5520>
-In-Reply-To: <20201130202021.GA1106292@bjorn-Precision-5520>
-From:   Guilherme Piccoli <gpiccoli@canonical.com>
-Date:   Mon, 14 Dec 2020 15:32:35 -0300
-Message-ID: <CAHD1Q_zKmQawrOQrR3DM0nnBF06nO=L_PcMEQMBvZA6xKMxtWw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] x86/quirks: Scan all busses for early PCI quirks
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>, lukas@wunner.de,
-        linux-pci@vger.kernel.org, Pingfan Liu <kernelfans@gmail.com>,
-        andi@firstfloor.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Baoquan He <bhe@redhat.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Sinan Kaya <okaya@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>,
-        Dave Young <dyoung@redhat.com>,
-        Gavin Guo <gavin.guo@canonical.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Guowen Shan <gshan@redhat.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Guilherme G. Piccoli" <kernel@gpiccoli.net>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dan Streetman <ddstreet@canonical.com>,
-        Vivek Goyal <vgoyal@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for the clarification Bjorn! I was on vacation..sorry for my delay.
+These patches remove kvm_inject_gp from the RDMSR/WRMSR emulation
+path, with the purpose of letting SEV-ES inject the #GP through
+the GHCB instead.
 
-Closing the loop here, I understand we're not getting this patch
-merged (due to its restriction to domain 0) and there was a suggestion
-in the thread of trying to block MSIs from the IOMMU init code (which
-also have the restriction of only working in iommu-enabled systems).
-Hope the thread is helpful and if somebody faces this issue, can
-comment here and at least find this approach, maybe test the patch.
+The main idea is to introduce a complete_emulated_msr callback
+that is call-compatible with kvm_complete_insn_gp, so that svm.c
+can just call kvm_complete_insn_gp in the common case.
 
-Thanks to all involved!
+I have more patches to use kvm_complete_insn_gp instead of
+kvm_inject_gp in other paths, but they are not necessary for
+SEV-ES so they can be delayed to 5.12.
+
+Paolo
+
+Paolo Bonzini (3):
+  KVM: x86: remove bogus #GP injection
+  KVM: x86: use kvm_complete_insn_gp in emulating RDMSR/WRMSR
+  KVM: x86: introduce complete_emulated_msr callback
+
+ arch/x86/include/asm/kvm_host.h |  1 +
+ arch/x86/kvm/mtrr.c             |  6 +----
+ arch/x86/kvm/svm/svm.c          |  1 +
+ arch/x86/kvm/vmx/vmx.c          |  1 +
+ arch/x86/kvm/x86.c              | 42 +++++++++++++--------------------
+ 5 files changed, 20 insertions(+), 31 deletions(-)
+
+-- 
+2.26.2
+
