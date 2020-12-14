@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B672DA19A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 327BF2DA1A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503350AbgLNUbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:31:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503343AbgLNUbX (ORCPT
+        id S2503398AbgLNUes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:34:48 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:61792 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503353AbgLNUeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:31:23 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1110C0613D6;
-        Mon, 14 Dec 2020 12:30:43 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvtLk10y1z9sS8;
-        Tue, 15 Dec 2020 07:30:38 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607977841;
-        bh=/s2WPvDJ27wPzNAJfhUULDr9Sv85rl1/IxJ0YMrcCA8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gdiHp/PWMNs6ECEuVxcIc7eXKPreghrv2N7c1Ve6xb2oH7t4aqyAI0teiIKlEofNt
-         FjbB0DauEZY39ntfTTz1ttRb3WgpGKMCoRmgzbfzi/LFClOAhvpX0g8VmzurTKcFef
-         XddZQj5/NBP3G8WDLJcq/JNxY57CI1HPQZOLWQIE4h54Ibeag7+66Ypou4LFzK1KMs
-         X/boeStrRgrRJV6bGy9QunKZDcVnBA4TfJYyczXx4CoXa+05vO8oF8SomaJ6nLf7ur
-         NbsTqSjL8MBcGvZEWtCOL4CYwfmLs3lJI2ufWFWYt++hO14Y/coOI5QHhAo40YAHm5
-         Z6dcmQd5kb8vA==
-Date:   Tue, 15 Dec 2020 07:30:37 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Martin Cerveny <m.cerveny@computer.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: Re: linux-next: manual merge of the v4l-dvb tree with the arm-soc
- tree
-Message-ID: <20201215073037.5bb96437@canb.auug.org.au>
-In-Reply-To: <20201208110413.04400395@canb.auug.org.au>
-References: <20201208110413.04400395@canb.auug.org.au>
+        Mon, 14 Dec 2020 15:34:31 -0500
+Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
+ id 9c0cdc76c89b6df9; Mon, 14 Dec 2020 21:33:39 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Hans De Goede <hdegoede@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [RFT][PATCH v1 3/3] ACPI: scan: Avoid unnecessary second pass in acpi_bus_scan()
+Date:   Mon, 14 Dec 2020 21:32:44 +0100
+Message-ID: <1954514.xqII67ylRR@kreacher>
+In-Reply-To: <1646930.v2jOOB1UEN@kreacher>
+References: <1646930.v2jOOB1UEN@kreacher>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0VqBaD1pA7DIpvY0Y=8=wM5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0VqBaD1pA7DIpvY0Y=8=wM5
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Hi all,
+If there are no devices whose enumeration has been deferred after
+the first pass in acpi_bus_scan(), the second pass is not necssary,
+so avoid it with the help of a new static variable.
 
-On Tue, 8 Dec 2020 11:04:13 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> Today's linux-next merge of the v4l-dvb tree got a conflict in:
->=20
->   drivers/staging/media/sunxi/cedrus/cedrus.c
->=20
-> between commit:
->=20
->   c6e95daab1cc ("media: cedrus: Remove the MBUS quirks")
->=20
-> from the arm-soc tree and commits:
->=20
->   503dab0b8a56 ("media: cedrus: Register all codecs as capability")
->   68b4a01f88af ("media: cedrus: Make VP8 codec as capability")
->=20
-> from the v4l-dvb tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> --=20
-> Cheers,
-> Stephen Rothwell
->=20
-> diff --cc drivers/staging/media/sunxi/cedrus/cedrus.c
-> index d5fca10ea5b4,18d54f9fd715..000000000000
-> --- a/drivers/staging/media/sunxi/cedrus/cedrus.c
-> +++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
-> @@@ -522,7 -584,11 +584,10 @@@ static const struct cedrus_variant sun5
->  =20
->   static const struct cedrus_variant sun50i_h6_cedrus_variant =3D {
->   	.capabilities	=3D CEDRUS_CAPABILITY_UNTILED |
-> - 			  CEDRUS_CAPABILITY_H265_DEC,
-> + 			  CEDRUS_CAPABILITY_MPEG2_DEC |
-> + 			  CEDRUS_CAPABILITY_H264_DEC |
-> + 			  CEDRUS_CAPABILITY_H265_DEC |
-> + 			  CEDRUS_CAPABILITY_VP8_DEC,
->  -	.quirks		=3D CEDRUS_QUIRK_NO_DMA_OFFSET,
->   	.mod_rate	=3D 600000000,
->   };
->  =20
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/scan.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-Just a reminder that this conflict still exists.
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -1910,6 +1910,8 @@ static void acpi_scan_dep_init(struct ac
+ 	mutex_unlock(&acpi_dep_list_lock);
+ }
+ 
++static bool acpi_bus_scan_second_pass;
++
+ static acpi_status acpi_bus_check_add(acpi_handle handle, bool check_dep,
+ 				      struct acpi_device **adev_p)
+ {
+@@ -1934,8 +1936,10 @@ static acpi_status acpi_bus_check_add(ac
+ 	if (type == ACPI_BUS_TYPE_DEVICE && check_dep) {
+ 		u32 count = acpi_scan_check_dep(handle);
+ 		/* Bail out if the number of recorded dependencies is not 0. */
+-		if (count > 0)
++		if (count > 0) {
++			acpi_bus_scan_second_pass = true;
+ 			return AE_CTRL_DEPTH;
++		}
+ 	}
+ 
+ 	acpi_add_single_object(&device, handle, type, sta);
+@@ -2136,6 +2140,8 @@ int acpi_bus_scan(acpi_handle handle)
+ {
+ 	struct acpi_device *device = NULL;
+ 
++	acpi_bus_scan_second_pass = false;
++
+ 	/* Pass 1: Avoid enumerating devices with missing dependencies. */
+ 
+ 	if (ACPI_SUCCESS(acpi_bus_check_add(handle, true, &device)))
+@@ -2148,6 +2154,9 @@ int acpi_bus_scan(acpi_handle handle)
+ 
+ 	acpi_bus_attach(device, true);
+ 
++	if (!acpi_bus_scan_second_pass)
++		return 0;
++
+ 	/* Pass 2: Enumerate all of the remaining devices. */
+ 
+ 	device = NULL;
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/0VqBaD1pA7DIpvY0Y=8=wM5
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Xy20ACgkQAVBC80lX
-0GxD+AgAkoniNsSje1GKDmeTzhWU/P6h9lax50ZAoOUqaSBten7vfx0EhOhVfTfs
-+EmfiSoLXq2KNiNdMfpARwFCYTBa1GBbpH4wwogjMjl39FFsc2uX/Y3/EL/sTNvW
-2h94FSGLbhl9q8cpo47gTi2GOa06NXyz5X+afQRxIugWkG1WnuEm41QktPaqEjSf
-NKMR7iNT0twvE6z5ryAKoFFe4FhE8aE995/fBnpE7XTTeq22sLfbdbzMcD3m4xOM
-18vB0b62GdSRqhbTKgIklQk8qbtlOINioKETfPsP5FjJQY0w1V58HvZW/jbN1So3
-yf1VksxR+khrGZhSL3/YL6XYnkx58A==
-=7/OA
------END PGP SIGNATURE-----
-
---Sig_/0VqBaD1pA7DIpvY0Y=8=wM5--
