@@ -2,235 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1735A2D914B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 01:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A64B2D9159
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 01:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406972AbgLNAGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 19:06:50 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:48103 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727178AbgLNAGe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 19:06:34 -0500
-X-Greylist: delayed 639 seconds by postgrey-1.27 at vger.kernel.org; Sun, 13 Dec 2020 19:06:33 EST
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 3900758031E;
-        Sun, 13 Dec 2020 18:55:10 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Sun, 13 Dec 2020 18:55:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=Me9oM9C7gnSn/
-        bA00pvi332g4ULeBtBRmI4/Jx5+WEQ=; b=gXa30+dBr8ufc2i05s4lmoVnr2ywy
-        KbppxPWMHR4+KAiurzY5e/tUw/g7Os5y206E0tNeoOTCT5S4hKmomdOoQSAZwnzL
-        KA2i2gTAkeToLGK5dNfElkSwEzvElLKZK7c65R3cDvULSRDFJ6OcuDPvcewYkmoz
-        bixlShUDlz6afyf2ff2rp8KQegIg2jpBd4jh3SARGweRm+I5yFTNjqBdW1iXGgPe
-        SG/LIBR0nVueB21Jp8d1Xlrj5Z4kNUIBSkh0o8us2UwHcYy+wXAQ2OHJuPeqAVQv
-        HyJP0D+bGSvyxm7bLBCI5/iCQrFl/f/ZKBp7l6n3b7pksYy2uWFjOJu1g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=Me9oM9C7gnSn/bA00pvi332g4ULeBtBRmI4/Jx5+WEQ=; b=mDwfNPpT
-        LNtriOV2SrX4lcB0j0r7z4dQZ/BmLbYQbJDRoimbu+L1aPw3L6cIcEu9wzosaljm
-        AgyK1gEk3V9zFZdXHaUy1p0C816+7nKYvGBzHurHwwfA628nkBreA+d//WGXbOFs
-        u8a8MmjHiPYmZSFDfMqB7aMCdj8wssPuPdo96I19lrJLEU3DCjtBxyjrdQLQxZPr
-        4f83iHUPxV5M5QHKwFatmhqK3snr6TzybYL33Wp7fzKr92LZV9cu+Q7ArAeDFqOi
-        wvhWRGlHc4k7Wh6ekTyQoXfVlpJJz1WMgSU/oo1m+rc4X7ERRsFdNSg6Yy7M8uA9
-        ZwWyZQH/OoZxRw==
-X-ME-Sender: <xms:3qnWX7M0ruqg3dxx2gUCfHe55I6qaseudMGEJRi2VqMW3MjoT-IfHw>
-    <xme:3qnWX7LQx2YgkQw4jfLOIflPa3fkAPpUt2E3KUMN1lUrrsCd2Q8t6VgS2MkrWMj1b
-    rvwohUIF-IVsPgPDQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekiedgudektdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheej
-    vdfgjeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
-    hiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
-    nhgurdhorhhg
-X-ME-Proxy: <xmx:3qnWX7LFY-kwwbVukB4BRsZK8mBUFAoBrPwd_ClKvOVwyCpUPNMBsw>
-    <xmx:3qnWX15p9CHpn6VN-E39D-T4ridUKjjFDCfAzvV09oQEWDgT8ziKjQ>
-    <xmx:3qnWX1cxF-U8hUTSgwZ9D7aOf79EX34GekClvJ6ssoeUOVHDLo56JA>
-    <xmx:3qnWX1tviz8pX_qbDPqH6dDFkMnyivo_Xr6s3_WCKGOQ-0yytCk6bw>
-Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8A12D1080057;
-        Sun, 13 Dec 2020 18:55:09 -0500 (EST)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        Samuel Holland <samuel@sholland.org>
-Subject: [PATCH 4/4] arm64: dts: allwinner: h6: Use RSB for AXP805 PMIC connection
-Date:   Sun, 13 Dec 2020 17:55:06 -0600
-Message-Id: <20201213235506.25201-5-samuel@sholland.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201213235506.25201-1-samuel@sholland.org>
-References: <20201213235506.25201-1-samuel@sholland.org>
+        id S2406966AbgLNAK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 19:10:29 -0500
+Received: from vern.gendns.com ([98.142.107.122]:57140 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726594AbgLNAK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 19:10:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=5X4s94Fdl2oC6xR+328R3HW3pc42D0Tcrv4mtJNgo08=; b=OffSPz4X4fzdjmBlcKgtyMMwsA
+        QZAoiGSK/drwS32qpcmbOAb91BIAlKuto4z8nwvpIDB5HOKbciFg65Wfu+sfvxqAjtwQ00Ape7wi9
+        XVzUS4ePov5LxfFAmTxYwbetTZN+P11fkar9B8IbRe61Hf3oYZVgyBYlx7OEOeD/2tuv434yspepB
+        l1l1lh2oDncTI0LRDBW/g/DjCDzrC2E9RHW4PodT0h3tctql92VEswVaZYZfpSCvFItfUyYHwGILq
+        XwfkDSDqRtkYyCGgdvvbSkbuwu1OzeiWJC3xCXK86iOux3dVWuVcN7eI8Ig5f+kTl3+0aSMD4sg5k
+        xDbj4lCw==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:39336 helo=freyr.lechnology.com)
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1kobQw-0005rC-1J; Sun, 13 Dec 2020 19:09:46 -0500
+From:   David Lechner <david@lechnology.com>
+To:     linux-iio@vger.kernel.org
+Cc:     David Lechner <david@lechnology.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] counter:ti-eqep: remove floor
+Date:   Sun, 13 Dec 2020 18:09:27 -0600
+Message-Id: <20201214000927.1793062-1-david@lechnology.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On boards where the only peripheral connected to PL0/PL1 is an X-Powers
-PMIC, configure the connection to use the RSB bus rather than the I2C
-bus. Compared to the I2C controller that shares the pins, the RSB
-controller allows a higher bus frequency, and it is more CPU-efficient.
+The hardware doesn't support this. QPOSINIT is an initialization value
+that is triggered by other things. When the counter overflows, it
+always wraps around to zero.
 
-Signed-off-by: Samuel Holland <samuel@sholland.org>
+Fixes: f213729f6796 "counter: new TI eQEP driver"
+Signed-off-by: David Lechner <david@lechnology.com>
 ---
- .../dts/allwinner/sun50i-h6-beelink-gs1.dts   | 38 +++++++++----------
- .../dts/allwinner/sun50i-h6-orangepi-3.dts    | 14 +++----
- .../dts/allwinner/sun50i-h6-orangepi.dtsi     | 22 +++++------
- 3 files changed, 37 insertions(+), 37 deletions(-)
+ drivers/counter/ti-eqep.c | 35 -----------------------------------
+ 1 file changed, 35 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-index 416e0fa76ba7..8a95abfc2ebb 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-@@ -158,12 +158,28 @@ &pio {
- 	vcc-pg-supply = <&reg_aldo1>;
- };
+diff --git a/drivers/counter/ti-eqep.c b/drivers/counter/ti-eqep.c
+index a60aee1a1a29..65df9ef5b5bc 100644
+--- a/drivers/counter/ti-eqep.c
++++ b/drivers/counter/ti-eqep.c
+@@ -235,36 +235,6 @@ static ssize_t ti_eqep_position_ceiling_write(struct counter_device *counter,
+ 	return len;
+ }
  
--&r_i2c {
-+&r_ir {
-+	linux,rc-map-name = "rc-beelink-gs1";
-+	status = "okay";
-+};
-+
-+&r_pio {
-+	/*
-+	 * FIXME: We can't add that supply for now since it would
-+	 * create a circular dependency between pinctrl, the regulator
-+	 * and the RSB Bus.
-+	 *
-+	 * vcc-pl-supply = <&reg_aldo1>;
-+	 */
-+	vcc-pm-supply = <&reg_aldo1>;
-+};
-+
-+&r_rsb {
- 	status = "okay";
- 
--	axp805: pmic@36 {
-+	axp805: pmic@745 {
- 		compatible = "x-powers,axp805", "x-powers,axp806";
--		reg = <0x36>;
-+		reg = <0x745>;
- 		interrupt-parent = <&r_intc>;
- 		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
-@@ -281,22 +297,6 @@ sw {
- 	};
- };
- 
--&r_ir {
--	linux,rc-map-name = "rc-beelink-gs1";
--	status = "okay";
--};
+-static ssize_t ti_eqep_position_floor_read(struct counter_device *counter,
+-					   struct counter_count *count,
+-					   void *ext_priv, char *buf)
+-{
+-	struct ti_eqep_cnt *priv = counter->priv;
+-	u32 qposinit;
 -
--&r_pio {
--	/*
--	 * PL0 and PL1 are used for PMIC I2C
--	 * don't enable the pl-supply else
--	 * it will fail at boot
--	 *
--	 * vcc-pl-supply = <&reg_aldo1>;
--	 */
--	vcc-pm-supply = <&reg_aldo1>;
--};
+-	regmap_read(priv->regmap32, QPOSINIT, &qposinit);
 -
- &rtc {
- 	clocks = <&ext_osc32k>;
- };
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
-index 8a8d1a608e30..e86360ea022e 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
-@@ -222,12 +222,16 @@ &pio {
- 	vcc-pg-supply = <&reg_vcc_wifi_io>;
- };
- 
--&r_i2c {
-+&r_ir {
-+	status = "okay";
-+};
-+
-+&r_rsb {
- 	status = "okay";
- 
--	axp805: pmic@36 {
-+	axp805: pmic@745 {
- 		compatible = "x-powers,axp805", "x-powers,axp806";
--		reg = <0x36>;
-+		reg = <0x745>;
- 		interrupt-parent = <&r_intc>;
- 		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
-@@ -339,10 +343,6 @@ sw {
- 	};
- };
- 
--&r_ir {
--	status = "okay";
--};
+-	return sprintf(buf, "%u\n", qposinit);
+-}
 -
- &rtc {
- 	clocks = <&ext_osc32k>;
- };
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
-index 0d5f9aeb96d0..96635588e9a6 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
-@@ -128,12 +128,20 @@ &pio {
- 	vcc-pg-supply = <&reg_aldo1>;
- };
- 
--&r_i2c {
-+&r_ir {
-+	status = "okay";
-+};
-+
-+&r_pio {
-+	vcc-pm-supply = <&reg_bldo3>;
-+};
-+
-+&r_rsb {
- 	status = "okay";
- 
--	axp805: pmic@36 {
-+	axp805: pmic@745 {
- 		compatible = "x-powers,axp805", "x-powers,axp806";
--		reg = <0x36>;
-+		reg = <0x745>;
- 		interrupt-parent = <&r_intc>;
- 		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
-@@ -248,14 +256,6 @@ sw {
- 	};
- };
- 
--&r_ir {
--	status = "okay";
--};
+-static ssize_t ti_eqep_position_floor_write(struct counter_device *counter,
+-					    struct counter_count *count,
+-					    void *ext_priv, const char *buf,
+-					    size_t len)
+-{
+-	struct ti_eqep_cnt *priv = counter->priv;
+-	int err;
+-	u32 res;
 -
--&r_pio {
--	vcc-pm-supply = <&reg_bldo3>;
--};
+-	err = kstrtouint(buf, 0, &res);
+-	if (err < 0)
+-		return err;
 -
- &rtc {
- 	clocks = <&ext_osc32k>;
- };
+-	regmap_write(priv->regmap32, QPOSINIT, res);
+-
+-	return len;
+-}
+-
+ static ssize_t ti_eqep_position_enable_read(struct counter_device *counter,
+ 					    struct counter_count *count,
+ 					    void *ext_priv, char *buf)
+@@ -301,11 +271,6 @@ static struct counter_count_ext ti_eqep_position_ext[] = {
+ 		.read	= ti_eqep_position_ceiling_read,
+ 		.write	= ti_eqep_position_ceiling_write,
+ 	},
+-	{
+-		.name	= "floor",
+-		.read	= ti_eqep_position_floor_read,
+-		.write	= ti_eqep_position_floor_write,
+-	},
+ 	{
+ 		.name	= "enable",
+ 		.read	= ti_eqep_position_enable_read,
 -- 
-2.26.2
+2.25.1
 
