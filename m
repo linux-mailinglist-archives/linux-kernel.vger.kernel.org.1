@@ -2,145 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8072D91EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 03:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2E62D91ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 03:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438135AbgLNCz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 21:55:58 -0500
-Received: from ozlabs.org ([203.11.71.1]:50019 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726867AbgLNCzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 21:55:41 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvQwb3PhQz9sRR;
-        Mon, 14 Dec 2020 13:54:54 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607914498;
-        bh=lCODkhvBcMAzJ2JraOyKtROTbpTLOwTpUeDgzVZ/WRM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Lq0kS14Z9K5kg/7Ulx/AT1LTd8ZyCMaty5dD+SUh4y74I2umSRDhCHP5liqXOFyY8
-         0U/U4151W4P1mj2EL+3ywuuJSijuyvj5rjyXdf+thNGWoxyfncmnfXadOs0OX3yjSm
-         aiotfihN/PqbwNseEQo6tpxBFEYHoJFFXIBTTd/oWDGMlJZxVLhyoOLpFkqDdNJ19K
-         +CJh+KLTivNH8vJp2V10IBnn6jxT0THTJoIiid/C3LGsdrdymKuk2wevrKhmY9jYmu
-         YvGclKVB+KcVPJq99ukGSW/Sb0wTZw3/3tYvMhhn7wORlMAHahoDxPPLYp7cRc/cf9
-         Gai4LPLahKYBg==
-Date:   Mon, 14 Dec 2020 13:54:53 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto List <linux-crypto@vger.kernel.org>
-Cc:     Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mike Healy <mikex.healy@intel.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Subject: linux-next: manual merge of the drm tree with the crypto tree
-Message-ID: <20201214135453.16e76e9d@canb.auug.org.au>
+        id S2438257AbgLNC5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 21:57:33 -0500
+Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:54338 "EHLO
+        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1726867AbgLNC5d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 21:57:33 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id D0F7920138C7;
+        Mon, 14 Dec 2020 10:56:31 +0800 (HKT)
+X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
+Received: from mail.gtsys.com.hk ([127.0.0.1])
+        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id sDG8LkYOmztR; Mon, 14 Dec 2020 10:56:31 +0800 (HKT)
+Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id AB2F420138C6;
+        Mon, 14 Dec 2020 10:56:31 +0800 (HKT)
+Received: from [10.128.2.32] (unknown [124.217.189.105])
+        by s01.gtsys.com.hk (Postfix) with ESMTPSA id 2E953C01FAD;
+        Mon, 14 Dec 2020 10:56:31 +0800 (HKT)
+Subject: Re: [PATCH 0/3] rockchip: emmc: rk3399 add vendor prefix
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+References: <20201214024720.24656-1-chris.ruehl@gtsys.com.hk>
+From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Message-ID: <3de52cae-f790-9881-b540-328118de45cc@gtsys.com.hk>
+Date:   Mon, 14 Dec 2020 10:56:29 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8qi0JHtIjRjh.eFSKzZUn+z";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201214024720.24656-1-chris.ruehl@gtsys.com.hk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8qi0JHtIjRjh.eFSKzZUn+z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On 14/12/2020 10:47 am, Chris Ruehl wrote:
+> This patchset follow up with commit
+> Following the reference in vendor-prefixes.yaml, update implementation,
+> devicetree binding dtsi and documentation for the phy-rockchip-emmc.
+> 
+> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+> ---
+> Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt | 19 ++++++++++---------
+> arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi               |  2 +-
+> arch/arm64/boot/dts/rockchip/rk3399.dtsi                    |  2 +-
+> drivers/phy/rockchip/phy-rockchip-emmc.c                    |  6 +++---
+> 4 files changed, 15 insertions(+), 14 deletions(-)
+> 
 
-Today's linux-next merge of the drm tree got a conflict in:
+Sorry send incomplete patch-set accidentally
 
-  MAINTAINERS
+v1 follow.
 
-between commit:
-
-  885743324513 ("crypto: keembay - Add support for Keem Bay OCS AES/SM4")
-
-from the crypto tree and commit:
-
-  ed794057b052 ("drm/kmb: Build files for KeemBay Display driver")
-
-from the drm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc MAINTAINERS
-index 3b358262de8f,eb18459c1d16..000000000000
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@@ -6932,11 -6913,16 +6941,10 @@@ S:	Maintaine
-  W:	http://floatingpoint.sourceforge.net/emulator/index.html
-  F:	arch/x86/math-emu/
- =20
- -FRAME RELAY DLCI/FRAD (Sangoma drivers too)
- -L:	netdev@vger.kernel.org
- -S:	Orphan
- -F:	drivers/net/wan/dlci.c
- -F:	drivers/net/wan/sdla.c
- -
-  FRAMEBUFFER LAYER
-- M:	Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-  L:	dri-devel@lists.freedesktop.org
-  L:	linux-fbdev@vger.kernel.org
-- S:	Maintained
-+ S:	Orphan
-  Q:	http://patchwork.kernel.org/project/linux-fbdev/list/
-  T:	git git://anongit.freedesktop.org/drm/drm-misc
-  F:	Documentation/fb/
-@@@ -8985,16 -8962,13 +8993,23 @@@ M:	Deepak Saxena <dsaxena@plexity.net
-  S:	Maintained
-  F:	drivers/char/hw_random/ixp4xx-rng.c
- =20
-+ INTEL KEEMBAY DRM DRIVER
-+ M:	Anitha Chrisanthus <anitha.chrisanthus@intel.com>
-+ M:	Edmund Dea <edmund.j.dea@intel.com>
-+ S:	Maintained
-+ F:	Documentation/devicetree/bindings/display/intel,kmb_display.yaml
-+ F:	drivers/gpu/drm/kmb/
-+=20
- +INTEL KEEM BAY OCS AES/SM4 CRYPTO DRIVER
- +M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
- +S:	Maintained
- +F:	Documentation/devicetree/bindings/crypto/intel,keembay-ocs-aes.yaml
- +F:	drivers/crypto/keembay/Kconfig
- +F:	drivers/crypto/keembay/Makefile
- +F:	drivers/crypto/keembay/keembay-ocs-aes-core.c
- +F:	drivers/crypto/keembay/ocs-aes.c
- +F:	drivers/crypto/keembay/ocs-aes.h
- +
-  INTEL MANAGEMENT ENGINE (mei)
-  M:	Tomas Winkler <tomas.winkler@intel.com>
-  L:	linux-kernel@vger.kernel.org
-
---Sig_/8qi0JHtIjRjh.eFSKzZUn+z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/W0/0ACgkQAVBC80lX
-0GyRRQf+JhtIB4eEMtaUN1EiCWo8HsYmi9p1zRP+Q5EYizSxggmTQZ8uR/ySfD0w
-YIrgTLwACjuq7xLQddaZNEW9X2sV8r0D61ax1d7hvYftYwQWF5zYHuqdTj99sfgm
-xCpxvpWdTG/AIXUG8EqzRYPWFLYaD/FgiMiNxp5EvVHqCty4DrxOQ47AdRJXTduF
-06C65eJ+RU2jKjtraoWLB6wQh22wzeQ2cUGYObP4AJdfannoDEz4Kw8CWHvFq/1P
-wkmnJt8eX0xSkXOx2is/Vem5ckLyfvnUsWu3yG60syYlTF/FE1NXofsZw3SPlLn5
-RIZKggHKvxU0LKkhfnWcZ0C5wPrsSg==
-=PC48
------END PGP SIGNATURE-----
-
---Sig_/8qi0JHtIjRjh.eFSKzZUn+z--
+Chris
