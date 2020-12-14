@@ -2,103 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF382D9CC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A02902D9CD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440236AbgLNQcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:32:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39340 "EHLO mail.kernel.org"
+        id S2440183AbgLNQhe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Dec 2020 11:37:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727024AbgLNQcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:32:06 -0500
+        id S2440068AbgLNQhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 11:37:34 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53A2B2074B;
-        Mon, 14 Dec 2020 16:31:25 +0000 (UTC)
-Date:   Mon, 14 Dec 2020 11:31:23 -0500
+        by mail.kernel.org (Postfix) with ESMTPSA id F364222286;
+        Mon, 14 Dec 2020 16:36:52 +0000 (UTC)
+Date:   Mon, 14 Dec 2020 11:36:51 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jessica Clarke <jrtc27@jrtc27.com>
-Cc:     Anatoly Pugachev <matorola@gmail.com>,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [sparc64] ftrace: kernel startup-tests unaligned access
-Message-ID: <20201214113123.0b44e35e@gandalf.local.home>
-In-Reply-To: <20201214162804.GA27786@Jessicas-MacBook.local>
-References: <CADxRZqzXQRYgKc=y-KV=S_yHL+Y8Ay2mh5ezeZUnpRvg+syWKw@mail.gmail.com>
-        <20201214111512.415717ac@gandalf.local.home>
-        <20201214162804.GA27786@Jessicas-MacBook.local>
+To:     "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
+        <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+        <huawei.libin@huawei.com>, <cj.chengjian@huawei.com>
+Subject: Re: [PATCH] kretprobe: avoid re-registration of the same kretprobe
+ earlier
+Message-ID: <20201214113651.04e550f6@gandalf.local.home>
+In-Reply-To: <9dff21f8-4ab9-f9b2-64fd-cc8c5f731932@huawei.com>
+References: <20201124115719.11799-1-bobo.shaobowang@huawei.com>
+        <20201130161850.34bcfc8a@gandalf.local.home>
+        <20201202083253.9dbc76704149261e131345bf@kernel.org>
+        <9dff21f8-4ab9-f9b2-64fd-cc8c5f731932@huawei.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 16:28:04 +0000
-Jessica Clarke <jrtc27@jrtc27.com> wrote:
+On Wed, 2 Dec 2020 09:23:35 +0800
+"Wangshaobo (bobo)" <bobo.shaobowang@huawei.com> wrote:
 
-> On Mon, Dec 14, 2020 at 11:15:12AM -0500, Steven Rostedt wrote:
-> > On Mon, 14 Dec 2020 18:59:02 +0300
-> > Anatoly Pugachev <matorola@gmail.com> wrote:
-> >   
-> > > Hello!
-> > > 
-> > > Enabled ftrace startup tests on a sparc64 test VM/LDOM:
-> > > 
-> > > $ diff -u <(gzip -dc ~/dmesg/config-5.10.0.gz) <(gzip -dc /proc/config.gz)
-> > > --- /dev/fd/63  2020-12-14 16:19:38.239372599 +0300
-> > > +++ /dev/fd/62  2020-12-14 16:19:38.235372433 +0300
-> > > @@ -2842,7 +2842,10 @@
-> > >  # CONFIG_TRACEPOINT_BENCHMARK is not set
-> > >  # CONFIG_RING_BUFFER_BENCHMARK is not set
-> > >  # CONFIG_TRACE_EVAL_MAP_FILE is not set
-> > > -# CONFIG_FTRACE_STARTUP_TEST is not set
-> > > +CONFIG_FTRACE_SELFTEST=y
-> > > +CONFIG_FTRACE_STARTUP_TEST=y
-> > > +CONFIG_EVENT_TRACE_STARTUP_TEST=y
-> > > +# CONFIG_EVENT_TRACE_TEST_SYSCALLS is not set
-> > >  # CONFIG_RING_BUFFER_STARTUP_TEST is not set
-> > >  # CONFIG_PREEMPTIRQ_DELAY_TEST is not set
-> > >  # CONFIG_KPROBE_EVENT_GEN_TEST is not set
-> > > 
-> > > 
-> > > Got the following results with kernel boot logs:
-> > > 
-> > > Dec 14 13:48:15 kernel: clocksource: jiffies: mask: 0xffffffff
-> > > max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
-> > > Dec 14 13:48:15 kernel: futex hash table entries: 65536 (order: 9,
-> > > 4194304 bytes, linear)
-> > > Dec 14 13:48:15 kernel: Running postponed tracer tests:
-> > > Dec 14 13:48:15 kernel: Testing tracer function:
-> > > Dec 14 13:48:15 kernel: Kernel unaligned access at TPC[552a20]
-> > > trace_function+0x40/0x140
-> > > Dec 14 13:48:15 kernel: Kernel unaligned access at TPC[552a24]
-> > > trace_function+0x44/0x140
-> > > Dec 14 13:48:15 kernel: Kernel unaligned access at TPC[552a20]
-> > > trace_function+0x40/0x140
-> > > Dec 14 13:48:15 kernel: Kernel unaligned access at TPC[552a24]
-> > > trace_function+0x44/0x140
-> > > Dec 14 13:48:15 kernel: Kernel unaligned access at TPC[552a20]
-> > > trace_function+0x40/0x140  
-> > 
-> > Does sparc64 require 8 byte alignment for 8 byte words?  
+> Hi steve, Masami,
 > 
-> Yes, SPARC requires natural alignment for all primitive types (and that
-> even includes 8-byte alignment for 8-byte types on 32-bit SPARC as it
-> has load/store pair instructions the compiler is free to use).
+> Thanks for your works, i will check code again and modify properly 
+> according to steve's suggestion.
 > 
+> -- ShaoBo
 > 
 
-OK, that means I was misinformed about reverting the patch that forced
-alignment (and the patch I posted in reply to my email, is the revert of
-the revert).
-
-If the patch I just posted works, then I'll get it ready for mainline and
-stable.
-
-Thanks!
+Anything happen with this? 
 
 -- Steve
+
+
+> 在 2020/12/2 7:32, Masami Hiramatsu 写道:
+> > On Mon, 30 Nov 2020 16:18:50 -0500
+> > Steven Rostedt <rostedt@goodmis.org> wrote:
+> >  
+> >> Masami,
+> >>
+> >> Can you review this patch, and also, should this go to -rc and stable?
+> >>
+> >> -- Steve  
+> > Thanks for ping me!
+> >  
+> >> On Tue, 24 Nov 2020 19:57:19 +0800
+> >> Wang ShaoBo <bobo.shaobowang@huawei.com> wrote:
+> >>  
+> >>> Our system encountered a re-init error when re-registering same kretprobe,
+> >>> where the kretprobe_instance in rp->free_instances is illegally accessed
+> >>> after re-init.  
+> > Ah, OK. Anyway if re-register happens on kretprobe, it must lose instances
+> > on the list before checking re-register in register_kprobe().
+> > So the idea looks good to me.
+> >
+> >  
+> >>> Implementation to avoid re-registration has been introduced for kprobe
+> >>> before, but lags for register_kretprobe(). We must check if kprobe has
+> >>> been re-registered before re-initializing kretprobe, otherwise it will
+> >>> destroy the data struct of kretprobe registered, which can lead to memory
+> >>> leak, system crash, also some unexpected behaviors.
+> >>>
+> >>> we use check_kprobe_rereg() to check if kprobe has been re-registered
+> >>> before calling register_kretprobe(), for giving a warning message and
+> >>> terminate registration process.
+> >>>
+> >>> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+> >>> Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
+> >>> ---
+> >>>   kernel/kprobes.c | 8 ++++++++
+> >>>   1 file changed, 8 insertions(+)
+> >>>
+> >>> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> >>> index 41fdbb7953c6..7f54a70136f3 100644
+> >>> --- a/kernel/kprobes.c
+> >>> +++ b/kernel/kprobes.c
+> >>> @@ -2117,6 +2117,14 @@ int register_kretprobe(struct kretprobe *rp)
+> >>>   		}
+> >>>   	}
+> >>>   
+> >>> +	/*
+> >>> +	 * Return error if it's being re-registered,
+> >>> +	 * also give a warning message to the developer.
+> >>> +	 */
+> >>> +	ret = check_kprobe_rereg(&rp->kp);
+> >>> +	if (WARN_ON(ret))
+> >>> +		return ret;  
+> > If you call this here, you must make sure kprobe_addr() is called on rp->kp.
+> > But if kretprobe_blacklist_size == 0, kprobe_addr() is not called before
+> > this check. So it should be in between kprobe_on_func_entry() and
+> > kretprobe_blacklist_size check, like this
+> >
+> > 	if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
+> > 		return -EINVAL;
+> >
+> > 	addr = kprobe_addr(&rp->kp);
+> > 	if (IS_ERR(addr))
+> > 		return PTR_ERR(addr);
+> > 	rp->kp.addr = addr;
+> >
+> > 	ret = check_kprobe_rereg(&rp->kp);
+> > 	if (WARN_ON(ret))
+> > 		return ret;
+> >
+> >          if (kretprobe_blacklist_size) {
+> > 		for (i = 0; > > +	ret = check_kprobe_rereg(&rp->kp);
+> >
+> >
+> > Thank you,
+> >
+> >  
+
