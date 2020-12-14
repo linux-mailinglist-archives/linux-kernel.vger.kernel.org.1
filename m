@@ -2,124 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821EE2D978D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5B62D9792
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407893AbgLNLkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 06:40:23 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:48725 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405769AbgLNLkD (ORCPT
+        id S2437860AbgLNLmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 06:42:25 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:14087 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730875AbgLNLmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:40:03 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 6835658050A;
-        Mon, 14 Dec 2020 06:39:07 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 14 Dec 2020 06:39:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=h4tM2jXirOMSD1zihxUdk1ovjF7
-        7z3fxMQ6d0RdoD6U=; b=dnK/868K+AwJSo/XNIzQU3gx7WvJii+Kqa+LkfMPs3c
-        k2c93fyxmID2AQ9fldvzOrSMt8Z+iZ8/1InI2Z5GzAGwROKnb7ntgDuVAWOT63Pi
-        s99kRahpymSFdJJeUdk64Cy42AH80JsC32dcH8umMQxgxfnHdFlVOsj6ZkpwoBda
-        0PGtwrqSKemuaDtCzZ16QyI4BNeLk+5PKIXtFckdujss5RPOI/dn4DeKUYAMMoRF
-        NXJCIOMyCVXwMnaNc2bJs2LPhFF6fIYoLL3Qaln8fXwh+NQDLSmHq/J6bDV0lC45
-        ZZm5i7lRmcwnwrpiki7w4ocQCM0VUteiqzl/GPbBg0w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=h4tM2j
-        XirOMSD1zihxUdk1ovjF77z3fxMQ6d0RdoD6U=; b=oihxjcjdoq3Jzfhaj+oXBh
-        iaGzQXVDw4Zr+3Y0EZMEiAo4BG4KHr+3knuM1Xvs3ofwsWxXhlPgELTaiDhLYrpt
-        06NeFUrmbP943F74mDf11H+pPXJJ3skA2g9YT60WI/5nwyvg7RRbSRFAZRDpuFVS
-        XPmg6KuNNPDaxysf7dfjWIBMjOpvWLv9Glb5HCzAURmC1Gj9bOog4JC3IGPo6ScF
-        77ZH0h8QdGVcJXD7Mz1pD8HzT/Bk6r4ALL8jOOJ93wtkOCEjy/PWjXFVG9DArpWK
-        Q29bUpwm8whZklbpkL13xc1ib8/VztcmO9N43KifVvk5JvzmE/fTD0ErSlfAf8og
-        ==
-X-ME-Sender: <xms:2U7XX17PrusISI2vTBDlszYpD73ByMV7lO5aDvjOOvLDNqzNac7bbQ>
-    <xme:2U7XXy7bWl6za7LBTLLMsJm4u6HQprgH98JLa-sXv1vbbrnWseBc4HXoj4SjIs4hy
-    IjHfux80LiakpDJ5_Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgfeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:2U7XX8f-Yrf0UDyuPgz811tNXopvYhY5bSb75X8XWRSLTkwq_u8PBA>
-    <xmx:2U7XX-KwZLxn1UhudSfy2gEn66zk_foLQeRyf8scz2J7dIBE0ggPUw>
-    <xmx:2U7XX5IgZvZfLb_QSTZh-FJeNuT4abvYf-MTohbv7i3wUf87jY4uPA>
-    <xmx:207XXyiNkmiAohPwgcoqt3e7CETdME3A2QVJeinyzxqStxG9_RkUaA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E40A7108005C;
-        Mon, 14 Dec 2020 06:39:04 -0500 (EST)
-Date:   Mon, 14 Dec 2020 12:39:04 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-sunxi@googlegroups.com, Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        kevin.lhopital@hotmail.com
-Subject: Re: [PATCH v3 09/15] media: sunxi: Add support for the A31 MIPI
- CSI-2 controller
-Message-ID: <20201214113904.v6j7z3yrvjv74dcd@gilmour>
-References: <20201211155708.154710-1-paul.kocialkowski@bootlin.com>
- <20201211155708.154710-10-paul.kocialkowski@bootlin.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wl35bqlaasqbg43y"
-Content-Disposition: inline
-In-Reply-To: <20201211155708.154710-10-paul.kocialkowski@bootlin.com>
+        Mon, 14 Dec 2020 06:42:24 -0500
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 14 Dec 2020 03:41:43 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 14 Dec 2020 03:41:41 -0800
+X-QCInternal: smtphost
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 14 Dec 2020 17:11:13 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id 297D23F37; Mon, 14 Dec 2020 03:41:12 -0800 (PST)
+From:   Kalyan Thota <kalyan_t@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        seanpaul@chromium.org, hoegsberg@chromium.org,
+        dianders@chromium.org, mkrishn@codeaurora.org, swboyd@chromium.org,
+        abhinavk@codeaurora.org, ddavenport@chromium.org
+Subject: [v1] drm/msm/disp/dpu1: turn off vblank irqs aggressively in dpu driver
+Date:   Mon, 14 Dec 2020 03:41:06 -0800
+Message-Id: <1607946066-16276-1-git-send-email-kalyan_t@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Turn off vblank irqs immediately as soon as drm_vblank_put is
+requested so that there are no irqs triggered during idle state.
 
---wl35bqlaasqbg43y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This will reduce cpu wakeups and help in power saving. The change
+also enable driver timestamp for vblanks.
 
-On Fri, Dec 11, 2020 at 04:57:02PM +0100, Paul Kocialkowski wrote:
-> +#define sun6i_mipi_csi2_subdev_video(subdev) \
-> +	container_of(subdev, struct sun6i_mipi_csi2_video, subdev)
-> +
-> +#define sun6i_mipi_csi2_video_dev(video) \
-> +	container_of(video, struct sun6i_mipi_csi2_dev, video)
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c    | 69 +++++++++++++++++++++++++++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 15 +++++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h |  6 +++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c     |  4 ++
+ 4 files changed, 94 insertions(+)
 
-Isn't it a bit unsafe?
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+index d4662e8..a4a5733 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+@@ -65,6 +65,73 @@ static void dpu_crtc_destroy(struct drm_crtc *crtc)
+ 	kfree(dpu_crtc);
+ }
+ 
++static struct drm_encoder *get_encoder_from_crtc(struct drm_crtc *crtc)
++{
++	struct drm_device *dev = crtc->dev;
++	struct drm_encoder *encoder;
++
++	drm_for_each_encoder(encoder, dev)
++		if (encoder->crtc == crtc)
++			return encoder;
++
++	return NULL;
++}
++
++static bool dpu_crtc_get_scanout_position(struct drm_crtc *crtc,
++					   bool in_vblank_irq,
++					   int *vpos, int *hpos,
++					   ktime_t *stime, ktime_t *etime,
++					   const struct drm_display_mode *mode)
++{
++	unsigned int pipe = crtc->index;
++	struct drm_encoder *encoder;
++	int line, vsw, vbp, vactive_start, vactive_end, vfp_end;
++
++
++	encoder = get_encoder_from_crtc(crtc);
++	if (!encoder) {
++		DRM_ERROR("no encoder found for crtc %d\n", pipe);
++		return false;
++	}
++
++	vsw = mode->crtc_vsync_end - mode->crtc_vsync_start;
++	vbp = mode->crtc_vtotal - mode->crtc_vsync_end;
++
++	/*
++	 * the line counter is 1 at the start of the VSYNC pulse and VTOTAL at
++	 * the end of VFP. Translate the porch values relative to the line
++	 * counter positions.
++	 */
++
++	vactive_start = vsw + vbp + 1;
++
++	vactive_end = vactive_start + mode->crtc_vdisplay;
++
++	/* last scan line before VSYNC */
++	vfp_end = mode->crtc_vtotal;
++
++	if (stime)
++		*stime = ktime_get();
++
++	line = dpu_encoder_get_linecount(encoder);
++
++	if (line < vactive_start)
++		line -= vactive_start;
++	else if (line > vactive_end)
++		line = line - vfp_end - vactive_start;
++	else
++		line -= vactive_start;
++
++	*vpos = line;
++	*hpos = 0;
++
++	if (etime)
++		*etime = ktime_get();
++
++	return true;
++}
++
++
+ static void _dpu_crtc_setup_blend_cfg(struct dpu_crtc_mixer *mixer,
+ 		struct dpu_plane_state *pstate, struct dpu_format *format)
+ {
+@@ -1243,6 +1310,7 @@ static const struct drm_crtc_funcs dpu_crtc_funcs = {
+ 	.early_unregister = dpu_crtc_early_unregister,
+ 	.enable_vblank  = msm_crtc_enable_vblank,
+ 	.disable_vblank = msm_crtc_disable_vblank,
++	.get_vblank_timestamp = drm_crtc_vblank_helper_get_vblank_timestamp,
+ };
+ 
+ static const struct drm_crtc_helper_funcs dpu_crtc_helper_funcs = {
+@@ -1251,6 +1319,7 @@ static const struct drm_crtc_helper_funcs dpu_crtc_helper_funcs = {
+ 	.atomic_check = dpu_crtc_atomic_check,
+ 	.atomic_begin = dpu_crtc_atomic_begin,
+ 	.atomic_flush = dpu_crtc_atomic_flush,
++	.get_scanout_position = dpu_crtc_get_scanout_position,
+ };
+ 
+ /* initialize crtc */
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+index f7f5c25..6c7c7fd 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+@@ -425,6 +425,21 @@ int dpu_encoder_helper_unregister_irq(struct dpu_encoder_phys *phys_enc,
+ 	return 0;
+ }
+ 
++int dpu_encoder_get_linecount(struct drm_encoder *drm_enc)
++{
++	struct dpu_encoder_virt *dpu_enc = NULL;
++	struct dpu_encoder_phys *phys = NULL;
++	int linecount = 0;
++
++	dpu_enc = to_dpu_encoder_virt(drm_enc);
++	phys = dpu_enc ? dpu_enc->cur_master : NULL;
++
++	if (phys && phys->ops.get_line_count)
++		linecount = phys->ops.get_line_count(phys);
++
++	return linecount;
++}
++
+ void dpu_encoder_get_hw_resources(struct drm_encoder *drm_enc,
+ 				  struct dpu_encoder_hw_resources *hw_res)
+ {
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
+index b491346..2c4804c 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
+@@ -156,5 +156,11 @@ void dpu_encoder_prepare_commit(struct drm_encoder *drm_enc);
+  */
+ void dpu_encoder_set_idle_timeout(struct drm_encoder *drm_enc,
+ 							u32 idle_timeout);
++/**
++ * dpu_encoder_get_linecount - get interface line count for the encoder.
++ * @drm_enc:    Pointer to previously created drm encoder structure
++ */
++
++int dpu_encoder_get_linecount(struct drm_encoder *drm_enc);
+ 
+ #endif /* __DPU_ENCODER_H__ */
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+index 374b0e8..49bd0729 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+@@ -14,6 +14,7 @@
+ 
+ #include <drm/drm_crtc.h>
+ #include <drm/drm_file.h>
++#include <drm/drm_vblank.h>
+ 
+ #include "msm_drv.h"
+ #include "msm_mmu.h"
+@@ -1020,6 +1021,9 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
+ 	 */
+ 	dev->mode_config.allow_fb_modifiers = true;
+ 
++	/* Disable vblank irqs aggressively for power-saving */
++	dev->vblank_disable_immediate = true;
++
+ 	/*
+ 	 * _dpu_kms_drm_obj_init should create the DRM related objects
+ 	 * i.e. CRTCs, planes, encoders, connectors and so forth
+-- 
+2.7.4
 
-The second subdev and video here is not the variable passed in the macro
-but the field in the structure, so any attempt at using those two macros
-with anything but a variable named subdev or video will result in a
-compilation issue?
-
-Maxime
-
---wl35bqlaasqbg43y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9dO1wAKCRDj7w1vZxhR
-xb8UAQCe9ql3Nxn0nlTSWUSqxoplbpYkA5kmXzAwghQIyaX20wD+LX4lxWJ1O67c
-MOXxx+Pku4au4HcY56vDu0LAhVu1ZQc=
-=6qDt
------END PGP SIGNATURE-----
-
---wl35bqlaasqbg43y--
