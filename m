@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1222D9C54
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:20:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7072D9C67
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440206AbgLNQPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:15:54 -0500
-Received: from foss.arm.com ([217.140.110.172]:49578 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439785AbgLNQPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:15:38 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A862630E;
-        Mon, 14 Dec 2020 08:14:52 -0800 (PST)
-Received: from localhost (unknown [10.1.198.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4097C3F66B;
-        Mon, 14 Dec 2020 08:14:52 -0800 (PST)
-Date:   Mon, 14 Dec 2020 16:14:50 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: topology: Cleanup init_amu_fie() a bit
-Message-ID: <20201214161450.GA20030@arm.com>
-References: <5594c7d6756a47b473ceb6f48cc217458db32ab0.1607584435.git.viresh.kumar@linaro.org>
- <20201210103815.GA3313@arm.com>
- <20201211110555.ht3stotrpbkkdxju@vireshk-i7>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211110555.ht3stotrpbkkdxju@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S2502044AbgLNQTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 11:19:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440214AbgLNQQJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 11:16:09 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B42C0613D3;
+        Mon, 14 Dec 2020 08:15:28 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id b73so17696451edf.13;
+        Mon, 14 Dec 2020 08:15:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=vXJYk1sYt5MnW2qjVCNzPOZOPPYy5lNnvQwIx2hLAi8=;
+        b=afw5ng7ISHEBh1H2Mp6fdH8KTcbpxWvMnlFQWWizwUr965g5XSyvSouqIWRPjFmGu1
+         E02ER9J6y6wLX9C8AkjU2hw+xceMkHbApwtSK50RvITVp2R0Vi6X1XFQheO8QqjuGAyT
+         7043ObGhn6VUUFzMELmdLB2FYlIjCafsDByTz9rlrjxZ+/khn8jFfMxWBk0v6eN3SLuI
+         n9ro/50RaEW0DMBPOWE5YRmc2LDvNZVUB/dFqgnXhVBSj7TVoUrGQemrS89vBzGkwBbd
+         rL9OyjB57jWVFTZQXkZDLTLRnw2yQXcluSAMvods+blYcjdigZJIYdv3J8SP3pCC8hUX
+         kJVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vXJYk1sYt5MnW2qjVCNzPOZOPPYy5lNnvQwIx2hLAi8=;
+        b=gOY5Jw9TmbLnyZuIO0CQnH4WLvTQ9szNRMHAf2TXtG2shNH5l8wYaZcMHrM3YOnXBm
+         rMLKck4jJOqF092mMzNj7L7BscYTvqB2P9+o/HYr7OM3icBvu/VEKq2Y+f7LFIk3SHmy
+         bzhMEpzjBUEstAsCK22u/gTIcb0DRhuMG5JdCJQyP6AT43/N+sm/aaeVoeO0sFcHE6/U
+         1L3voIeobn517fNhxFQgTUh+B2Ig0VOPfCH4V6WmvbAbYvDWP+NIjDMMdeeM1LGRWd2C
+         WrlkUL+mhFohHVt3qznOZsT8m6tPP/7Mj2Pd/H3sgiaohONlVuTwEyLQfS3mjoujfMtc
+         TIPQ==
+X-Gm-Message-State: AOAM530c27U1GdEkxqYl2XPekyI5mgcCEMV20Z/CWD2ZupgT4gHcsQLV
+        Xe+R9357vKk7tRLRR2b3GrQ=
+X-Google-Smtp-Source: ABdhPJw9pRKSZ3/vKqQA8zaFmdzSG3scbpzu2FMa0zbiVm5gq0BDrWLSKFSMAgqweH+2hdEof7WykA==
+X-Received: by 2002:aa7:c3d3:: with SMTP id l19mr26084730edr.366.1607962527256;
+        Mon, 14 Dec 2020 08:15:27 -0800 (PST)
+Received: from localhost.localdomain (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.gmail.com with ESMTPSA id i13sm6646056edu.22.2020.12.14.08.15.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 08:15:26 -0800 (PST)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org, rostedt@goodmis.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/6] Several changes for the UPIU trace
+Date:   Mon, 14 Dec 2020 17:14:56 +0100
+Message-Id: <20201214161502.13440-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Bean Huo <beanhuo@micron.com>
 
-Sorry, I missed this.
+Changelog:
 
-On Friday 11 Dec 2020 at 16:35:55 (+0530), Viresh Kumar wrote:
-> On 10-12-20, 10:38, Ionela Voinescu wrote:
-> > Basically, that's functions purpose is only to make sure that invariance
-> > at the level of the policy is consistent: either all CPUs in a policy
-> > support counters and counters will be used for the scale factor, or
-> > either none or only some support counters and therefore the default
-> > cpufreq implementation will be used (arch_set_freq_scale()) for all CPUs
-> > in a policy.
-> 
-> Why is it important to have this thing at policy level ? If we are
-> okay with only one policy having AMUs and not the other one, then what
-> about only some CPUs of both the policies having it. Does it break
-> anything ?
-> 
+V1--V2:
+  1. Convert __get_str(str) to __print_symbolic()
+  2. Add new patches 1/6, 2/6,3/6
+  3. Use __print_symbolic() in patch 6/6
 
-First of all, in order for a single CPU in a policy to use AMUs for FIE,
-when the others do not support AMUs, we'd have to modify
-arch_set_freq_scale() which otherwise would uniformly set its own
-computed scale factor for all related CPUs.
+Bean Huo (6):
+  scsi: ufs: Remove stringize operator '#' restriction
+  scsi: ufs: Use __print_symbolic() for UFS trace string print
+  scsi: ufs: Don't call trace_ufshcd_upiu() in case trace poit is
+    disabled
+  scsi: ufs: Distinguish between query REQ and query RSP in query trace
+  scsi: ufs: Distinguish between TM request UPIU and response UPIU in TM
+    UPIU trace
+  scsi: ufs: Make UPIU trace easier differentiate among CDB, OSF, and TM
 
-Beyond this, it's very likely that CPUs in the same policy have the same
-uarch and therefore either all or none in the policy would support AMUs.
-The check here is just to make sure of that and then ensure that
-arch_set_freq_scale() and arch_scale_freq_tick() do not clash with each
-other.
+ drivers/scsi/ufs/ufs.h     |  17 ++++++
+ drivers/scsi/ufs/ufshcd.c  |  72 ++++++++++++++++---------
+ include/trace/events/ufs.h | 108 +++++++++++++++++++++++--------------
+ 3 files changed, 131 insertions(+), 66 deletions(-)
 
-Beyond this, it's difficult to say how important it is to have the same
-scale for all CPUs in a policy. AMUs would give you a scale based on an
-average frequency between ticks, and more importantly it would be based
-on the actual core frequency, not on what software requested. Cpufreq
-would give you the scale obtained using the frequency that the OS
-requested. Therefore, the two scale values could end up being quite
-different, and therefore can result in quite different utilization
-values for CPUs doing the same work.
+-- 
+2.17.1
 
-An alternative would be to apply the AMU computed scale to all CPUs
-although not all CPUs in a policy might support AMUs. But given that
-this scenario is unlikely, the added hassle in arch_scale_freq_tick()
-which would involve getting information on related CPUs from policies
-was not worth it, in my opionion.
-
-Thanks,
-Ionela.
-
-> -- 
-> viresh
