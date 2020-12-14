@@ -2,83 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1E12D9F0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8B92D9F13
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:32:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440839AbgLNSaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 13:30:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440449AbgLNS34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 13:29:56 -0500
-Date:   Mon, 14 Dec 2020 13:29:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607970555;
-        bh=20HnP498QOKwNnxWdPlKAsPzoUCM0IYYFMY4LLh9MJM=;
-        h=From:To:Subject:References:In-Reply-To:From;
-        b=Ft7j2cmhQBm7VNzDX/4P6KXE0oL9bjVwbakggglxnBx6L10lgufIK6QP2f7O1MnCV
-         7zaujoRkYdSZk6Y+7OF0Fcseb1kHGY6XW8EaGXm8gzc6A5KjI+chl3fEomaFKEuaf0
-         aHiFAtqlnmj13nikLkNa5lmdv8Wl/7vBMvs53mF/Ui60pHdkPbhhkfZtB6T5iyasnX
-         DtdJNcxxS4erE2b6xnazCalcKxyuaG/l4sU13jE4FOuBy3FDgmwJOdgSicG1tEfiTV
-         vLmTi+qVx//uSLshdF0au4BqRSEu17DvbzDdzqkKf2oaXNo/uzevwhxkw8VfyFHWjy
-         oUPvy5inQxrwg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        devel@linuxdriverproject.org,
-        Saruhan Karademir <skarade@microsoft.com>
-Subject: Re: [PATCH AUTOSEL 5.9 15/23] scsi: storvsc: Validate length of
- incoming packet in storvsc_on_channel_callback()
-Message-ID: <20201214182914.GU643756@sasha-vm>
-References: <20201212160804.2334982-1-sashal@kernel.org>
- <20201212160804.2334982-15-sashal@kernel.org>
- <20201212180901.GA19225@andrea>
- <20201214110711.GB2831@kadam>
- <20201214130625.x2v53xhx5xw6jp4o@chatter.i7.local>
+        id S2440877AbgLNScM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 13:32:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22732 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2440849AbgLNSbt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 13:31:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607970622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EIf2JCGI48rPFPz2gsh8ftUao4WBFY/XukAB4tvlgxs=;
+        b=jVIFvmqupbj9zPiKp2j4WXSFmAJoUXyIAbIP6TQ2SI7kBXCq3WhUKYloi7JITwllhuPbtb
+        VJB7NeFUN5OkQFsFJPMAjFXNQCsS5uIor7WoUd88zraW/7kErNy6h8JUC3E2fIyhrnLe8a
+        h3sgzVfYCbaa4krGyBBXVIJw5tuiYKE=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-438-vUKxnDRwP5S6dLeHXD6znw-1; Mon, 14 Dec 2020 13:30:14 -0500
+X-MC-Unique: vUKxnDRwP5S6dLeHXD6znw-1
+Received: by mail-ed1-f70.google.com with SMTP id r16so8684362eds.13
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:30:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EIf2JCGI48rPFPz2gsh8ftUao4WBFY/XukAB4tvlgxs=;
+        b=DL95vJ1Eso+ZdffN2ImSOPskZom+9lIehHcumPSCTfZ6UTJU8MmADdiJzwwwsd9f3b
+         Gea1KiL7TubyPv6jSXESSFtRim1FyLfssfHpABWn7X5UCSGecPYJk2NUEmwJKBj/wlpH
+         1hRHM7NzgkCpKtZ4k5fFJhqLNTgcD0dAId6SaQUXHTiDxPiv/ivXzIz+sFf3bwrcN5fF
+         bnR1uN5SAk/8TnCCmjn/wmKMCN9qgLDwZYHtJqnygp86KzPyuugPgRYS0iZwH0tVGEvB
+         xSl3zHf9ge+0lL5vCFFEYj8pXJbBOg2oMzfCbJri9eUmFiS6XDp4K4K6eWDoONRLftIF
+         7+lQ==
+X-Gm-Message-State: AOAM531emILTfiTilUORW6vmkgcg1PO9HaKCQ3pSuh9f9aahw24he+0N
+        OYGKOYZm/VMMHKOrsbuusJRFpFyUUW5auExqT6d1Lj2LrqfGoNf60dWIlw6cqb4J75PjSORqXyU
+        lix54lNa6Ahm33NuVvjTL4r7Y
+X-Received: by 2002:a17:906:30d2:: with SMTP id b18mr23540989ejb.109.1607970612141;
+        Mon, 14 Dec 2020 10:30:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzrhhybisEbWGtsbchj7dNQJwp8o+r2Tv+BWCOW7oS8uIStKg3KikoBxJYSRM7V9w9VPWCN4w==
+X-Received: by 2002:a17:906:30d2:: with SMTP id b18mr23540936ejb.109.1607970611727;
+        Mon, 14 Dec 2020 10:30:11 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id ho34sm2716312ejc.13.2020.12.14.10.30.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Dec 2020 10:30:11 -0800 (PST)
+From:   Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 4/4] e1000e: Export S0ix flags to ethtool
+To:     Mario Limonciello <mario.limonciello@dell.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        David Miller <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Netfin <sasha.neftin@intel.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Stefan Assmann <sassmann@redhat.com>, darcari@redhat.com,
+        Yijun.Shen@dell.com, Perry.Yuan@dell.com,
+        anthony.wong@canonical.com
+References: <20201214153450.874339-1-mario.limonciello@dell.com>
+ <20201214153450.874339-5-mario.limonciello@dell.com>
+Message-ID: <015f0d3c-57fa-06bc-4139-e4512201eb92@redhat.com>
+Date:   Mon, 14 Dec 2020 19:30:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201214130625.x2v53xhx5xw6jp4o@chatter.i7.local>
+In-Reply-To: <20201214153450.874339-5-mario.limonciello@dell.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 08:06:25AM -0500, Konstantin Ryabitsev wrote:
->On Mon, Dec 14, 2020 at 02:07:11PM +0300, Dan Carpenter wrote:
->> On Sat, Dec 12, 2020 at 07:09:01PM +0100, Andrea Parri wrote:
->> > Hi Sasha,
->> >
->> > On Sat, Dec 12, 2020 at 11:07:56AM -0500, Sasha Levin wrote:
->> > > From: "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
->> > >
->> > > [ Upstream commit 3b8c72d076c42bf27284cda7b2b2b522810686f8 ]
->> >
->> > FYI, we found that this commit introduced a regression and posted a
->> > revert:
->> >
->> >   https://lkml.kernel.org/r/20201211131404.21359-1-parri.andrea@gmail.com
->> >
->> > Same comment for the AUTOSEL 5.4, 4.19 and 4.14 you've just posted.
->> >
->>
->> Konstantin, is there anyway we could make searching lore.kernel.org
->> search all the mailing lists?  Right now we can only search one mailing
->> list at a time.
->
->This functionality is coming in the next version of public-inbox and
->should be available on lore.kernel.org within the next little while.
+Hi,
 
-That's a good idea Dan; I had something running on linux-next, but I
-guess it's not enough and cases such as these sneak in.
+On 12/14/20 4:34 PM, Mario Limonciello wrote:
+> This flag can be used by an end user to disable S0ix flows on a
+> buggy system or by an OEM for development purposes.
+> 
+> If you need this flag to be persisted across reboots, it's suggested
+> to use a udev rule to call adjust it until the kernel could have your
+> configuration in a disallow list.
+> 
+> Signed-off-by: Mario Limonciello <mario.limonciello@dell.com>
+> ---
+>  drivers/net/ethernet/intel/e1000e/e1000.h   |  1 +
+>  drivers/net/ethernet/intel/e1000e/ethtool.c | 40 +++++++++++++++++++++
+>  drivers/net/ethernet/intel/e1000e/netdev.c  |  9 ++---
+>  3 files changed, 46 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/e1000e/e1000.h b/drivers/net/ethernet/intel/e1000e/e1000.h
+> index ba7a0f8f6937..5b2143f4b1f8 100644
+> --- a/drivers/net/ethernet/intel/e1000e/e1000.h
+> +++ b/drivers/net/ethernet/intel/e1000e/e1000.h
+> @@ -436,6 +436,7 @@ s32 e1000e_get_base_timinca(struct e1000_adapter *adapter, u32 *timinca);
+>  #define FLAG2_DFLT_CRC_STRIPPING          BIT(12)
+>  #define FLAG2_CHECK_RX_HWTSTAMP           BIT(13)
+>  #define FLAG2_CHECK_SYSTIM_OVERFLOW       BIT(14)
+> +#define FLAG2_ENABLE_S0IX_FLOWS           BIT(15)
+>  
+>  #define E1000_RX_DESC_PS(R, i)	    \
+>  	(&(((union e1000_rx_desc_packet_split *)((R).desc))[i]))
+> diff --git a/drivers/net/ethernet/intel/e1000e/ethtool.c b/drivers/net/ethernet/intel/e1000e/ethtool.c
+> index 03215b0aee4b..eb683949ebfe 100644
+> --- a/drivers/net/ethernet/intel/e1000e/ethtool.c
+> +++ b/drivers/net/ethernet/intel/e1000e/ethtool.c
+> @@ -23,6 +23,13 @@ struct e1000_stats {
+>  	int stat_offset;
+>  };
+>  
+> +static const char e1000e_priv_flags_strings[][ETH_GSTRING_LEN] = {
+> +#define E1000E_PRIV_FLAGS_S0IX_ENABLED	BIT(0)
+> +	"s0ix-enabled",
+> +};
+> +
+> +#define E1000E_PRIV_FLAGS_STR_LEN ARRAY_SIZE(e1000e_priv_flags_strings)
+> +
+>  #define E1000_STAT(str, m) { \
+>  		.stat_string = str, \
+>  		.type = E1000_STATS, \
+> @@ -1776,6 +1783,8 @@ static int e1000e_get_sset_count(struct net_device __always_unused *netdev,
+>  		return E1000_TEST_LEN;
+>  	case ETH_SS_STATS:
+>  		return E1000_STATS_LEN;
+> +	case ETH_SS_PRIV_FLAGS:
+> +		return E1000E_PRIV_FLAGS_STR_LEN;
+>  	default:
+>  		return -EOPNOTSUPP;
+>  	}
+> @@ -2097,6 +2106,10 @@ static void e1000_get_strings(struct net_device __always_unused *netdev,
+>  			p += ETH_GSTRING_LEN;
+>  		}
+>  		break;
+> +	case ETH_SS_PRIV_FLAGS:
+> +		memcpy(data, e1000e_priv_flags_strings,
+> +		       E1000E_PRIV_FLAGS_STR_LEN * ETH_GSTRING_LEN);
+> +		break;
+>  	}
+>  }
+>  
+> @@ -2305,6 +2318,31 @@ static int e1000e_get_ts_info(struct net_device *netdev,
+>  	return 0;
+>  }
+>  
+> +static u32 e1000e_get_priv_flags(struct net_device *netdev)
+> +{
+> +	struct e1000_adapter *adapter = netdev_priv(netdev);
+> +	u32 priv_flags = 0;
+> +
+> +	if (adapter->flags2 & FLAG2_ENABLE_S0IX_FLOWS)
+> +		priv_flags |= E1000E_PRIV_FLAGS_S0IX_ENABLED;
+> +
+> +	return priv_flags;
+> +}
+> +
+> +static int e1000e_set_priv_flags(struct net_device *netdev, u32 priv_flags)
+> +{
+> +	struct e1000_adapter *adapter = netdev_priv(netdev);
+> +	unsigned int flags2 = adapter->flags2;
+> +
+> +	flags2 &= ~FLAG2_ENABLE_S0IX_FLOWS;
+> +	if (priv_flags & E1000E_PRIV_FLAGS_S0IX_ENABLED)
+> +		flags2 |= FLAG2_ENABLE_S0IX_FLOWS;
+> +	if (flags2 != adapter->flags2)
+> +		adapter->flags2 = flags2;
 
-I wrote a script to do what you've suggested by simply cloning the repos
-on erol.kernel.org locally and then doing a simple search for the
-"Fixes:" and revert patterns.
 
--- 
-Thanks,
-Sasha
+This will allow ethtool to enable the s0ix code on hw which does not
+support this. I believe that this needs a
+
+	if (hw->mac.type >= e1000_pch_cnp)
+
+Check to avoid this scenario. And probably return -EINVAL when
+a user tries to enable this on hw where it is not supported.
+
+Regards,
+
+Hans
+
+
+
+
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct ethtool_ops e1000_ethtool_ops = {
+>  	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS,
+>  	.get_drvinfo		= e1000_get_drvinfo,
+> @@ -2336,6 +2374,8 @@ static const struct ethtool_ops e1000_ethtool_ops = {
+>  	.set_eee		= e1000e_set_eee,
+>  	.get_link_ksettings	= e1000_get_link_ksettings,
+>  	.set_link_ksettings	= e1000_set_link_ksettings,
+> +	.get_priv_flags		= e1000e_get_priv_flags,
+> +	.set_priv_flags		= e1000e_set_priv_flags,
+>  };
+>  
+>  void e1000e_set_ethtool_ops(struct net_device *netdev)
+> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+> index b9800ba2006c..e9b82c209c2d 100644
+> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
+> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+> @@ -6923,7 +6923,6 @@ static __maybe_unused int e1000e_pm_suspend(struct device *dev)
+>  	struct net_device *netdev = pci_get_drvdata(to_pci_dev(dev));
+>  	struct e1000_adapter *adapter = netdev_priv(netdev);
+>  	struct pci_dev *pdev = to_pci_dev(dev);
+> -	struct e1000_hw *hw = &adapter->hw;
+>  	int rc;
+>  
+>  	e1000e_flush_lpic(pdev);
+> @@ -6935,7 +6934,7 @@ static __maybe_unused int e1000e_pm_suspend(struct device *dev)
+>  		e1000e_pm_thaw(dev);
+>  	} else {
+>  		/* Introduce S0ix implementation */
+> -		if (hw->mac.type >= e1000_pch_cnp)
+> +		if (adapter->flags2 & FLAG2_ENABLE_S0IX_FLOWS)
+>  			e1000e_s0ix_entry_flow(adapter);
+>  	}
+>  
+> @@ -6947,11 +6946,10 @@ static __maybe_unused int e1000e_pm_resume(struct device *dev)
+>  	struct net_device *netdev = pci_get_drvdata(to_pci_dev(dev));
+>  	struct e1000_adapter *adapter = netdev_priv(netdev);
+>  	struct pci_dev *pdev = to_pci_dev(dev);
+> -	struct e1000_hw *hw = &adapter->hw;
+>  	int rc;
+>  
+>  	/* Introduce S0ix implementation */
+> -	if (hw->mac.type >= e1000_pch_cnp)
+> +	if (adapter->flags2 & FLAG2_ENABLE_S0IX_FLOWS)
+>  		e1000e_s0ix_exit_flow(adapter);
+>  
+>  	rc = __e1000_resume(pdev);
+> @@ -7615,6 +7613,9 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  	if (!(adapter->flags & FLAG_HAS_AMT))
+>  		e1000e_get_hw_control(adapter);
+>  
+> +	if (hw->mac.type >= e1000_pch_cnp)
+> +		adapter->flags2 |= FLAG2_ENABLE_S0IX_FLOWS;
+> +
+>  	strlcpy(netdev->name, "eth%d", sizeof(netdev->name));
+>  	err = register_netdev(netdev);
+>  	if (err)
+> 
+
