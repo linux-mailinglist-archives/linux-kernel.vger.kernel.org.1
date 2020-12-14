@@ -2,84 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5AD2D9543
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85BB32D954C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393102AbgLNJ3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 04:29:47 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:44593 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726289AbgLNJ3k (ORCPT
+        id S1729420AbgLNJay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 04:30:54 -0500
+Received: from ns2.baikalelectronics.ru ([94.125.187.42]:46158 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2407403AbgLNJRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 04:29:40 -0500
-X-UUID: 6a9b6ff6c833496cabda8d49bc852a5c-20201214
-X-UUID: 6a9b6ff6c833496cabda8d49bc852a5c-20201214
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1082158233; Mon, 14 Dec 2020 17:28:52 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 14 Dec 2020 17:28:50 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 14 Dec 2020 17:28:50 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <mark.rutland@arm.com>
-CC:     <catalin.marinas@arm.com>, <lecopzer.chen@mediatek.com>,
+        Mon, 14 Dec 2020 04:17:10 -0500
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Joao Pinto <jpinto@synopsys.com>,
+        Lars Persson <larper@axis.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
-        <will@kernel.org>, <yj.chiang@mediatek.com>
-Subject: Re: [PATCH] arm64: Kconfig: Add SYS_SUPPORTS_APM_EMULATION
-Date:   Mon, 14 Dec 2020 17:28:51 +0800
-Message-ID: <20201214092851.16741-1-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201125103637.GC70906@C02TD0UTHF1T.local>
-References: <20201125103637.GC70906@C02TD0UTHF1T.local>
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 01/25] dt-bindings: net: dwmac: Validate PBL for all IP-cores
+Date:   Mon, 14 Dec 2020 12:15:51 +0300
+Message-ID: <20201214091616.13545-2-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20201214091616.13545-1-Sergey.Semin@baikalelectronics.ru>
+References: <20201214091616.13545-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Indeed the maximum DMA burst length can be programmed not only for DW
+xGMACs, Allwinner EMACs and Spear SoC GMAC, but in accordance with [1]
+for Generic DW *MAC IP-cores. Moreover the STMMAC set of drivers parse
+the property and then apply the configuration for all supported DW MAC
+devices. All of that makes the property being available for all IP-cores
+the bindings supports. Let's make sure the PBL-related properties are
+validated for all of them by the common DW MAC DT schema.
 
-Could any maintainer help review this?
+[1] DesignWare Cores Ethernet MAC Universal Databook, Revision 3.73a,
+    October 2013, p. 380.
 
-Thanks a lot for your help,
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+---
+ .../devicetree/bindings/net/snps,dwmac.yaml   | 69 +++++++------------
+ 1 file changed, 26 insertions(+), 43 deletions(-)
 
-BRs,
-Lecopzer
-
-
-> Although most of modern devices use ACPI, there still has combination
-> of APM + ARM64.
-> 
-> In order to select CONFIG_APM_EMULATION, make SYS_SUPPORTS_APM_EMULATION
-> default is y if ACPI isn't configured.
-> 
-> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> Suggested-by: YJ Chiang <yj.chiang@mediatek.com>
-> ---
->  arch/arm64/Kconfig | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 1515f6f153a0..5e9e3694015a 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -260,6 +260,9 @@ config NO_IOPORT_MAP
->  config STACKTRACE_SUPPORT
->  	def_bool y
->  
-> +config SYS_SUPPORTS_APM_EMULATION
-> +	def_bool y if !ACPI
-> +
->  config ILLEGAL_POINTER_VALUE
->  	hex
->  	default 0xdead000000000000
-
-
+diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+index 11a6fdb657c9..4b672499f20d 100644
+--- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+@@ -262,6 +262,32 @@ properties:
+       is supported. For example, this is used in case of SGMII and
+       MAC2MAC connection.
+ 
++  snps,pbl:
++    description:
++      Programmable Burst Length (tx and rx)
++    $ref: /schemas/types.yaml#definitions/uint32
++    enum: [2, 4, 8]
++
++  snps,txpbl:
++    description:
++      Tx Programmable Burst Length. If set, DMA tx will use this
++      value rather than snps,pbl.
++    $ref: /schemas/types.yaml#definitions/uint32
++    enum: [2, 4, 8]
++
++  snps,rxpbl:
++    description:
++      Rx Programmable Burst Length. If set, DMA rx will use this
++      value rather than snps,pbl.
++    $ref: /schemas/types.yaml#definitions/uint32
++    enum: [2, 4, 8]
++
++  snps,no-pbl-x8:
++    $ref: /schemas/types.yaml#definitions/flag
++    description:
++      Don\'t multiply the pbl/txpbl/rxpbl values by 8. For core
++      rev < 3.50, don\'t multiply the values by 4.
++
+   mdio:
+     type: object
+     description:
+@@ -287,49 +313,6 @@ dependencies:
+ 
+ allOf:
+   - $ref: "ethernet-controller.yaml#"
+-  - if:
+-      properties:
+-        compatible:
+-          contains:
+-            enum:
+-              - allwinner,sun7i-a20-gmac
+-              - allwinner,sun8i-a83t-emac
+-              - allwinner,sun8i-h3-emac
+-              - allwinner,sun8i-r40-emac
+-              - allwinner,sun8i-v3s-emac
+-              - allwinner,sun50i-a64-emac
+-              - snps,dwxgmac
+-              - snps,dwxgmac-2.10
+-              - st,spear600-gmac
+-
+-    then:
+-      properties:
+-        snps,pbl:
+-          description:
+-            Programmable Burst Length (tx and rx)
+-          $ref: /schemas/types.yaml#definitions/uint32
+-          enum: [2, 4, 8]
+-
+-        snps,txpbl:
+-          description:
+-            Tx Programmable Burst Length. If set, DMA tx will use this
+-            value rather than snps,pbl.
+-          $ref: /schemas/types.yaml#definitions/uint32
+-          enum: [2, 4, 8]
+-
+-        snps,rxpbl:
+-          description:
+-            Rx Programmable Burst Length. If set, DMA rx will use this
+-            value rather than snps,pbl.
+-          $ref: /schemas/types.yaml#definitions/uint32
+-          enum: [2, 4, 8]
+-
+-        snps,no-pbl-x8:
+-          $ref: /schemas/types.yaml#definitions/flag
+-          description:
+-            Don\'t multiply the pbl/txpbl/rxpbl values by 8. For core
+-            rev < 3.50, don\'t multiply the values by 4.
+-
+   - if:
+       properties:
+         compatible:
+-- 
+2.29.2
 
