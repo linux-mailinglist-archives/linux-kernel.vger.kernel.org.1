@@ -2,109 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1EB2D9CC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0B52D9CC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:32:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440291AbgLNQ2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:28:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45673 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729598AbgLNQ2W (ORCPT
+        id S2440295AbgLNQ3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 11:29:14 -0500
+Received: from bmail1.ministro.hu ([5.249.150.236]:49876 "EHLO
+        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439386AbgLNQ21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:28:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607963214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3bgu5oUmviCE7krtx2hLwhZvOZ7S3CVoweAA9rCSIXM=;
-        b=PpAc71rOrc06uIOko2oxPAdkjD2Wohj00/2kn3D5e3aDfbiWFXnVyhAgeBTLZBvT8WZsFd
-        aMrBC13LAYG9iQP0GYY7SAFgozoMiq2j/otAQolNyoycCfVJC77Hl1c81xYwarQrdLG4ld
-        +cCEESu99JrbszH5ARqcW0VyYRMBxBw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-AJFvYHPqMs65Yq98KNISGw-1; Mon, 14 Dec 2020 11:26:50 -0500
-X-MC-Unique: AJFvYHPqMs65Yq98KNISGw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 60A261014E79;
-        Mon, 14 Dec 2020 16:26:32 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id ECEA87DDF8;
-        Mon, 14 Dec 2020 16:26:31 +0000 (UTC)
-Date:   Mon, 14 Dec 2020 11:26:31 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Dave Jones <davej@codemonkey.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        axboe@kernel.dk, linux-block@vger.kernel.org, dm-devel@redhat.com
-Subject: Re: Linux 5.10
-Message-ID: <20201214162631.GA2290@redhat.com>
-References: <CAHk-=whCKhxNyKn1Arut8xUDKTwp3fWcCj_jbL5dbzkUmo45gQ@mail.gmail.com>
- <20201214053147.GA24093@codemonkey.org.uk>
- <X9b9ujh5T6U5+aBY@kroah.com>
- <20201214160247.GA2090@redhat.com>
+        Mon, 14 Dec 2020 11:28:27 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTP id 4459D123B40;
+        Mon, 14 Dec 2020 17:27:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1607963254;
+        bh=hu9iB9JUGNU/0E24WGPhmjcNTO4ODbRItq6MiPJhM44=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=y88L057RazIJRKp6wPqHe4gJ63jVhm+zybppiwdzP5ZOunqfFy3FX22vA+mW7PNSG
+         +Tu7PIAqVnw+psnFroOuaz9D22CSU6RTEkZ4VCjTKUK0M/+g8jGrSDcx9obsREGkFr
+         U0n55BnkfCWHNJ7+7MxYaE8R+SnwOGjX5g/BO55buVqwS7Ux47oklQnUYAXZe225gW
+         JzyMDF7ShOXopg0qGNqykzMduKn0GYlh1VQjq2MdvATPBHIwbE6M/u9nkTeXcvCLdW
+         Pc7JglveHkZdgOt0myFw4laehp0If/ccXq9eII/TN5ZXlV0OH0Xq/4VR6Rd0SvxO1h
+         hU678uHaPYYPQ==
+X-Virus-Scanned: Debian amavisd-new at ministro.hu
+Received: from bmail1.ministro.hu ([127.0.0.1])
+        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id bBFepFV1-_aB; Mon, 14 Dec 2020 17:27:04 +0100 (CET)
+Received: from dev (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTPSA id E347E123B3D;
+        Mon, 14 Dec 2020 17:27:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1607963224;
+        bh=hu9iB9JUGNU/0E24WGPhmjcNTO4ODbRItq6MiPJhM44=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=9e4c25+ZX1pZdQmfIddhggMvDPyXadCj5KilaWVtnzhMe47XYsvn3NxOcH0VybpB8
+         Ru2RqZryK8RmPqrRP+6gdKUDqzIzl/QD2CIhW+HsEAJLdDtfJcRKN3hxgQQmSroD+l
+         KD6YZA8YfquIE7H90/X+dr+Jjcp34cp0s1zNrY+PXtwC6HHTuXp9RDUCxvXxyPxYQ1
+         RGwiA862/PUu7q6P3pRPQ615s6NGHQr0Q/lsrThd89Mkty8+IFLIpgo6Pabcfn79+X
+         8x4dqLBf2Fbqz+a3TSQNo0/xHqxPiT2t8+dl2RodWBipa+kpGY8gGkVv6jUBAoJo4m
+         pdHADZjZZINsw==
+Date:   Mon, 14 Dec 2020 16:27:02 +0000
+From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
+        'Rob Herring' <robh+dt@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] Serial: silabs si4455 serial driver
+Message-ID: <20201214162701.GA32214@dev>
+References: <20201212070944.GA13909@dincontrollerdev>
+ <2855efaf-79a5-f43b-ff8c-9c01a3f14df7@kernel.org>
+ <20201214123519.GA10229@dev>
+ <77bb5835-b1f2-125a-d2d1-ad67612b164d@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201214160247.GA2090@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <77bb5835-b1f2-125a-d2d1-ad67612b164d@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14 2020 at 11:02am -0500,
-Mike Snitzer <snitzer@redhat.com> wrote:
-
-> On Mon, Dec 14 2020 at 12:52am -0500,
-> Greg KH <gregkh@linuxfoundation.org> wrote:
+On Mon, Dec 14, 2020 at 01:39:09PM +0100, Jiri Slaby wrote:
+> On 14. 12. 20, 13:35, József Horváth wrote:
+> > I'm in trouble with the device tree binding schema of this driver too.
 > 
-> > On Mon, Dec 14, 2020 at 12:31:47AM -0500, Dave Jones wrote:
-> > > On Sun, Dec 13, 2020 at 03:03:29PM -0800, Linus Torvalds wrote:
-> > >  > Ok, here it is - 5.10 is tagged and pushed out.
-> > >  > 
-> > >  > I pretty much always wish that the last week was even calmer than it
-> > >  > was, and that's true here too. There's a fair amount of fixes in here,
-> > >  > including a few last-minute reverts for things that didn't get fixed,
-> > >  > but nothing makes me go "we need another week".
-> > > 
-> > > ...
-> > > 
-> > >  > Mike Snitzer (1):
-> > >  >       md: change mddev 'chunk_sectors' from int to unsigned
-> > > 
-> > > Seems to be broken.  This breaks mounting my raid6 partition:
-> > > 
-> > > [   87.290698] attempt to access beyond end of device
-> > >                md0: rw=4096, want=13996467328, limit=6261202944
-> > > [   87.293371] attempt to access beyond end of device
-> > >                md0: rw=4096, want=13998564480, limit=6261202944
-> > > [   87.296045] BTRFS warning (device md0): couldn't read tree root
-> > > [   87.300056] BTRFS error (device md0): open_ctree failed
-> > > 
-> > > Reverting it goes back to the -rc7 behaviour where it mounts fine.
-> > 
-> > If the developer/maintainer(s) agree, I can revert this and push out a
-> > 5.10.1, just let me know.
+> Sorry, someone else has to help you who actually masters DT details.
 > 
-> Yes, these should be reverted from 5.10 via 5.10.1:
-> 
-> e0910c8e4f87 dm raid: fix discard limits for raid1 and raid10
-> f075cfb1dc59 md: change mddev 'chunk_sectors' from int to unsigned
+> -- 
+> js
 
-Sorry, f075cfb1dc59 was my local commit id, the corresponding upstream
-commit as staged by Jens is:
+I have answer. I forgot read before write...
+The silabs,si4455.yaml was in wrong place, the good place is
+ Documentation/devicetree/bindings/serial/silabs,si4455.yaml as Rob wrote earlier.
+Everything is fine now with it.
 
-6ffeb1c3f82 md: change mddev 'chunk_sectors' from int to unsigned
+Sorry for this.
 
-So please revert:
-6ffeb1c3f822 md: change mddev 'chunk_sectors' from int to unsigned
-and then revert:
-e0910c8e4f87 dm raid: fix discard limits for raid1 and raid10
+Üdvözlettel / Best regards:
+József Horváth
 
-Thanks,
-Mike
+
 
