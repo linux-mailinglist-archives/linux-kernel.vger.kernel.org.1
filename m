@@ -2,115 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5152D95C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E742D95CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406040AbgLNKEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 05:04:41 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35258 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405695AbgLNKE3 (ORCPT
+        id S2406618AbgLNKFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 05:05:33 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:34197 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727959AbgLNKEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 05:04:29 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BEA3a1B125086;
-        Mon, 14 Dec 2020 05:03:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Mu1kM1nFbeH7kmD6u8671jmJLXquVY5VCm/mIxZHOiE=;
- b=DGHjF35m7qyiO5Y3FUFKeFE8VVpywtvTduFuMKrKpiHjXceiyEEmiNHs/O6mxLGf+LPI
- 4YTB7uICfzszhsvyRbxhqD9Pb41I/WNgPMj7TKb9DaNjmxyENOkrx9T1GV9oTmqp0ab7
- UPVhfUX81QOAhrwTmDMSHGsoW54h4J5thqiYMxm3ICFfSCgqo9XzDZZK7AT1ik+DICsW
- 774FO+buaVt5wU8hRQzzQ8frd3WaB3ldrBXm1DpEeFp1mQ1LfIlcaGm3uysBwkNwi+4A
- QTOHbm0KV1H7xf/9dNwpjnIG7ZevX/JRSDjS15ySe3H8KqokiGvkIKkph9KlwNUz7bTT pg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35e4syj4fj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 05:03:40 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BEA3diL125254;
-        Mon, 14 Dec 2020 05:03:39 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35e4syj48r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 05:03:39 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BEA1ocj019148;
-        Mon, 14 Dec 2020 10:03:15 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 35cng8a0ed-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 10:03:15 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BEA3D0r33096008
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Dec 2020 10:03:13 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 02CB1A4054;
-        Mon, 14 Dec 2020 10:03:13 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B3AEFA405B;
-        Mon, 14 Dec 2020 10:03:12 +0000 (GMT)
-Received: from [9.145.176.172] (unknown [9.145.176.172])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 14 Dec 2020 10:03:12 +0000 (GMT)
-Subject: Re: [PATCH] net: korina: remove busy skb free
-To:     =?UTF-8?Q?Vincent_Stehl=c3=a9?= <vincent.stehle@laposte.net>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Florian Fainelli <florian.fainelli@telecomint.eu>
-References: <20201213172052.12433-1-vincent.stehle@laposte.net>
-From:   Julian Wiedmann <jwi@linux.ibm.com>
-Message-ID: <ecd7900f-8b54-23e2-2537-033237e08597@linux.ibm.com>
-Date:   Mon, 14 Dec 2020 11:03:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Mon, 14 Dec 2020 05:04:55 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 220505C00D4;
+        Mon, 14 Dec 2020 05:04:09 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 14 Dec 2020 05:04:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=C8RetmLmqcDdToUcR6GaNwlQHeI
+        55zHmNEuTFJfNQGM=; b=kXSjxHwJY6J+vyejKZGn7cyuM+YGb3GIvz65HJVF1ex
+        AlW33R9xnTkrZm5fJL52ls+Z1spVRgfUpCNl7qdrfyM6o41vPmBjGYCCSMkQbnXg
+        28dkuHIG3PsxoOqXPDGVqVcoVVRYvhfZd5Ymngz8SLIzyAqAXEwc4NYtOsq0u4Ar
+        eo4l0XYbA35ZaAqPNy3alFPRf/wmz0FwUXZ1lqcWJU1O39E6iVmYpiNjLP20tRdW
+        M2iFmYKxUkXkDXMli9eSm0K7fJgjNq+lIbKC5EuDt4/UOecnSZgy+9/uzVbJjcOO
+        AnvazrQlxJeFZMCO87Z24aYYcvSYsau4uqr2fTqxTKg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=C8Retm
+        LmqcDdToUcR6GaNwlQHeI55zHmNEuTFJfNQGM=; b=OhnU8749mvcSo8JczLQtpj
+        PmjhA5yR0T4a0gHvFEP5SJCS/2ZdveuAsP5g/fpCA1rJBq8DpsnvIyHEM4wP1ZsE
+        7419t3cof+NXG1eNZF+8Hu3bianJDuLNUi1RGbvvhhXBU2HasPQlmlkE8qv2dkbC
+        ZTDQYzlbmSiot2Sxp2dMK9zNX/mG1EQ72VU9NDVaj6ZNq1JdvOCKQq2nTUMZrv2H
+        p60r66Bbi+mkkuhc0bdNR4yb9ESHrxE361MKqjK/ZRSY98VeTFtvOczINqCIz59z
+        1XpXeAI5MQsJe8JEUc08nVRO2ie9D5ZPY51Wqv2M3pwyfhoo8bCwXY65dKEOtvPQ
+        ==
+X-ME-Sender: <xms:lzjXX0rSpWCYoMPji4YN4AgG-5DRSQyYz2bUktScyQd-2wf1xOG7aA>
+    <xme:lzjXX6oht3F4W3zisETAPMXAMDDq6A6BVAvqNi2MD22ChLje5ZcwD7BWCP_rqgzaL
+    _zBsbolTCgvQSX1hps>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepffetteevieejteeuhfffgeektefghfeileehhedtuddutefhhfejtddvtddu
+    ledvnecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdrohhrghenucfkphepledtrdekle
+    drieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
+    ohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:lzjXX5NpUF-IaVqQSUo_VDkCL4fJwb1M7AOyAhtCMW35xH4dx3rhtw>
+    <xmx:lzjXX75xfuawgoNj-fJsHMQevlWojgsYx_GAZqPSGTVjhlQRQ6cyAg>
+    <xmx:lzjXXz7mcpmXFq6mgRQohgBhAw1VtDlqLuf0cnpjOYFFmAnE85Pr3g>
+    <xmx:mTjXX5SWxUXHHbMoJ1Xhsf3NDyhIUtNq3624II6WIACfIsqbk_DhKA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id EFCF6240066;
+        Mon, 14 Dec 2020 05:04:06 -0500 (EST)
+Date:   Mon, 14 Dec 2020 11:04:05 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
+Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH v4 1/2] dt-bindings: hwlock: add sun8i_hwspinlock
+Message-ID: <20201214100405.ajvwiw4dxaqjgaor@gilmour>
+References: <cover.1607674518.git.wilken.gottwalt@posteo.net>
+ <8b0c0b80bfc2dbb9010bac00fe0c90493ad8db09.1607674518.git.wilken.gottwalt@posteo.net>
+ <20201211085757.faumhyto7akeayeg@gilmour>
+ <20201211101311.654ac449@monster.powergraphx.local>
 MIME-Version: 1.0
-In-Reply-To: <20201213172052.12433-1-vincent.stehle@laposte.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-14_04:2020-12-11,2020-12-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- spamscore=0 clxscore=1011 malwarescore=0 impostorscore=0 suspectscore=0
- adultscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012140071
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="v3hk2ivwl2kkfhgs"
+Content-Disposition: inline
+In-Reply-To: <20201211101311.654ac449@monster.powergraphx.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.12.20 18:20, Vincent Stehlé wrote:
-> The ndo_start_xmit() method must not attempt to free the skb to transmit
-> when returning NETDEV_TX_BUSY. Fix the korina_send_packet() function
-> accordingly.
-> 
-> Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MAC")
-> Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Florian Fainelli <florian.fainelli@telecomint.eu>
-> ---
->  drivers/net/ethernet/korina.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
-> index bf48f0ded9c7d..9d84191de6824 100644
-> --- a/drivers/net/ethernet/korina.c
-> +++ b/drivers/net/ethernet/korina.c
-> @@ -216,7 +216,6 @@ static int korina_send_packet(struct sk_buff *skb, struct net_device *dev)
->  			netif_stop_queue(dev);
->  		else {
->  			dev->stats.tx_dropped++;
-> -			dev_kfree_skb_any(skb);
->  			spin_unlock_irqrestore(&lp->lock, flags);
->  
->  			return NETDEV_TX_BUSY;
-> 
 
-As this skb is returned to the stack (and not dropped), the tx_dropped
-statistics increment looks bogus too.
+--v3hk2ivwl2kkfhgs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Dec 11, 2020 at 10:13:11AM +0100, Wilken Gottwalt wrote:
+> On Fri, 11 Dec 2020 09:57:57 +0100
+> Maxime Ripard <maxime@cerno.tech> wrote:
+>=20
+> > Hi,
+> >=20
+> > On Fri, Dec 11, 2020 at 09:23:48AM +0100, Wilken Gottwalt wrote:
+> > > Adds documentation on how to use the sun8i_hwspinlock driver for sun8i
+> > > compatible SoCs.
+> > >=20
+> > > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+> > > ---
+> > > Changes in v4:
+> > >   - changed binding to sun8i-a33-hwpinlock
+> > >   - added changes suggested by Maxime Ripard
+> > >=20
+> > > Changes in v3:
+> > >   - changed symbols from sunxi to sun8i
+> > >=20
+> > > Changes in v2:
+> > >   - fixed memory ranges
+> > > ---
+> > >  .../bindings/hwlock/sun8i-hwspinlock.yaml     | 56 +++++++++++++++++=
+++
+> > >  1 file changed, 56 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/hwlock/sun8i-hw=
+spinlock.yaml
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/hwlock/sun8i-hwspinloc=
+k.yaml
+> > > b/Documentation/devicetree/bindings/hwlock/sun8i-hwspinlock.yaml new =
+file mode 100644
+> > > index 000000000000..76963d8abd5f
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/hwlock/sun8i-hwspinlock.yaml
+> >=20
+> > We usually have the schemas with the same name than the compatible=20
+> >=20
+> > > @@ -0,0 +1,56 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/hwlock/sun8i-hwspinlock.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: SUN8I hardware spinlock driver for Allwinner sun8i compatible=
+ SoCs
+> > > +
+> > > +maintainers:
+> > > +  - Wilken Gottwalt <wilken.gottwalt@posteo.net>
+> > > +
+> > > +description:
+> > > +  The hardware unit provides sempahores between the ARM cores and th=
+e embedded
+> >=20
+> >                                 ^ typo
+>=20
+> Hmm, you are right. This is odd, the patch checking script didn't catch t=
+hat one.
+>=20
+> > > +  OpenRisc core on the SoC.
+> >=20
+> > It's not just OpenRisc: there's some SoC that will have an xtensa core.=
+ Maybe we can replace
+> > openrisc by secondary?
+> =20
+> So there are actually different embedded cores? What about embedded
+> companion core?
+
+Companion core works for me
+
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: allwinner,sun8i-a33-hwspinlock
+> > > +
+> > > +    reg:
+> > > +      maxItems: 1
+> > > +
+> > > +    clocks:
+> > > +      maxItems: 1
+> > > +
+> > > +    clock-names:
+> > > +      items:
+> > > +        - const: ahb
+> >=20
+> > clock-names is useless when you have a single clock
+> >=20
+> > > +
+> > > +    resets:
+> > > +      maxItems: 1
+> > > +
+> > > +    reset-names:
+> > > +      items:
+> > > +        - const: ahb
+> >=20
+> > and reset-names is useless as well when there's a single reset line
+>=20
+> So just drop the reset-names lines? I'm still a bit unsure about this dt
+> yaml documentation format. I try to learn from the existing bindings, but
+> the quality seems a bit mixed. So thank you for your patience.
+
+Yeah, drop the reset-names and clock-names properties from the
+properties section, required enum and your example
+
+Maxime
+
+--v3hk2ivwl2kkfhgs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9c4lQAKCRDj7w1vZxhR
+xTWEAP4qqfMWlCYuuDd1JE6/KS2fcKqf8SI2gkG0dBc/yFKNmAD/UL+pVIfqRhYf
+ZmI03AEZ3cLCGxhu3tMrUU69tnnWGA4=
+=CuUq
+-----END PGP SIGNATURE-----
+
+--v3hk2ivwl2kkfhgs--
