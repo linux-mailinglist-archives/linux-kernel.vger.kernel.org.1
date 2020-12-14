@@ -2,172 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7122D919F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 02:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4840F2D91A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 03:05:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437769AbgLNBqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 20:46:54 -0500
-Received: from mga12.intel.com ([192.55.52.136]:7890 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726222AbgLNBqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 20:46:53 -0500
-IronPort-SDR: HEffXPGPj2y3d2V2xMmR0J9ZelLbnQ8FXlJrvkWflI++5yeadK29tmzjvhpCWAajtWyabWhbhn
- mmjKC/ecn9rg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9834"; a="153873908"
-X-IronPort-AV: E=Sophos;i="5.78,417,1599548400"; 
-   d="scan'208";a="153873908"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2020 17:46:11 -0800
-IronPort-SDR: YWsLJ7zClpv/o4hUTEcUWofZ6xu3Z2XoDlQmvp4pq8O8BLsuj8I6m0PNraRSVTkR3TaTNN9j55
- UqIuPWghf6KQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,417,1599548400"; 
-   d="scan'208";a="410825542"
-Received: from lkp-server02.sh.intel.com (HELO a947d92d0467) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 13 Dec 2020 17:46:09 -0800
-Received: from kbuild by a947d92d0467 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kocwD-00004B-8m; Mon, 14 Dec 2020 01:46:09 +0000
-Date:   Mon, 14 Dec 2020 09:45:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 68ae68af2ba73b2969f2ce617b09b25bcbd74dd8
-Message-ID: <5fd6c3b7.p/Cnger+OK5Hihzw%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2437864AbgLNCEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 21:04:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730596AbgLNCEj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 21:04:39 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F601C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 18:03:59 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id 7so10949439qtp.1
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 18:03:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3joCMQEgMYTRWtwvNU8XfkRxQvl1XcPWoJqmHhlAjNg=;
+        b=jIFuMyW0CXPwPbzjytq1fyl28f5h7j18cK1dq9/kuoMitNcBn2VPPr+iiAdwiyshf8
+         Sass69snymAmlv2w9RPxsB1q6+LKmXCPfpDzo0XV15UccAlREbVBq+V+jHCI6ci5QwI2
+         xW3KXMx8jhphyq6rezDemv6LqKppWr9EI6OjM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3joCMQEgMYTRWtwvNU8XfkRxQvl1XcPWoJqmHhlAjNg=;
+        b=gh1stiZl8dKKQZyEwxOwL+dKil3RmnUu5gdhjU2sgTHCBRT05fy8Qoo00AiAyATan9
+         brropX+pCLdK1TmD1XVANh1qgB5L7pdOZt1CNJVbMQXb9vsq8u3PilXDDsxImDaiSLgl
+         bi99EMkhsK4hHcg8IcEJtdjjvEZhoh6ARwaH8f8FnVjUR0cIf1fiD2gvJk+8fHwvlDc8
+         79bKCNAmsZo4tjf2sS1yTnHO776a4kBmCRiiMAE2JNWfXy0NkXsyN//yfaA5jfUatGSA
+         VLixFeeMMosj+i0pS4ZWXvbGHZ+0P8vmt1QTZUDh1vRxn+dOeamkAqdBn/cw3OxX5r/J
+         +Hmg==
+X-Gm-Message-State: AOAM533BfTTlusKkM2pTDX0jdRMmeGwC8Op+0Z8chInf57SY+P3wpPyo
+        aExa4475c4jLIQBlDrIXDsrXvQ==
+X-Google-Smtp-Source: ABdhPJyNrnChYZI79mij49ui4I23lfJGjf54I4Witq/Vsja69LURczot4O1GWdNPlqyHDHsWm5RREQ==
+X-Received: by 2002:ac8:6758:: with SMTP id n24mr29731870qtp.258.1607911438765;
+        Sun, 13 Dec 2020 18:03:58 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id g63sm13912475qkf.80.2020.12.13.18.03.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Dec 2020 18:03:57 -0800 (PST)
+Date:   Sun, 13 Dec 2020 21:03:56 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Chinwen Chang <chinwen.chang@mediatek.com>
+Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
+        Haiyan Song <haiyanx.song@intel.com>,
+        akpm@linux-foundation.org, mhocko@kernel.org, peterz@infradead.org,
+        kirill@shutemov.name, ak@linux.intel.com, dave@stgolabs.net,
+        jack@suse.cz, Matthew Wilcox <willy@infradead.org>,
+        aneesh.kumar@linux.ibm.com, benh@kernel.crashing.org,
+        mpe@ellerman.id.au, paulus@samba.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, hpa@zytor.com,
+        Will Deacon <will.deacon@arm.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        sergey.senozhatsky.work@gmail.com,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        kemi.wang@intel.com, Daniel Jordan <daniel.m.jordan@oracle.com>,
+        David Rientjes <rientjes@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ganesh Mahendran <opensource.ganesh@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Punit Agrawal <punitagrawal@gmail.com>,
+        vinayak menon <vinayakm.list@gmail.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        zhong jiang <zhongjiang@huawei.com>,
+        Balbir Singh <bsingharora@gmail.com>, sj38.park@gmail.com,
+        Michel Lespinasse <walken@google.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        haren@linux.vnet.ibm.com, npiggin@gmail.com,
+        paulmck@linux.vnet.ibm.com, Tim Chen <tim.c.chen@linux.intel.com>,
+        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
+        miles.chen@mediatek.com
+Subject: Re: [PATCH v12 00/31] Speculative page faults
+Message-ID: <X9bIDHZbe4MB+BAg@google.com>
+References: <20190416134522.17540-1-ldufour@linux.ibm.com>
+ <20190606065129.d5s3534p23twksgp@haiyan.sh.intel.com>
+ <3d3cefa2-0ebb-e86d-b060-7ba67c48a59f@linux.ibm.com>
+ <1c412ebe-c213-ee67-d261-c70ddcd34b79@linux.ibm.com>
+ <20190620081945.hwj6ruqddefnxg6z@haiyan.sh.intel.com>
+ <1594027500.30360.32.camel@mtkswgap22>
+ <490c0811-50cd-0802-2cbc-9c031ef309f6@linux.ibm.com>
+ <1594099897.30360.58.camel@mtkswgap22>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <1594099897.30360.58.camel@mtkswgap22>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: 68ae68af2ba73b2969f2ce617b09b25bcbd74dd8  Merge branch 'timers/core'
+On Tue, Jul 07, 2020 at 01:31:37PM +0800, Chinwen Chang wrote:
+[..]
+> > > Hi Laurent,
+> > > 
+> > > We merged SPF v11 and some patches from v12 into our platforms. After
+> > > several experiments, we observed SPF has obvious improvements on the
+> > > launch time of applications, especially for those high-TLP ones,
+> > > 
+> > > # launch time of applications(s):
+> > > 
+> > > package           version      w/ SPF      w/o SPF      improve(%)
+> > > ------------------------------------------------------------------
+> > > Baidu maps        10.13.3      0.887       0.98         9.49
+> > > Taobao            8.4.0.35     1.227       1.293        5.10
+> > > Meituan           9.12.401     1.107       1.543        28.26
+> > > WeChat            7.0.3        2.353       2.68         12.20
+> > > Honor of Kings    1.43.1.6     6.63        6.713        1.24
+> > 
+> > That's great news, thanks for reporting this!
+> > 
+> > > 
+> > > By the way, we have verified our platforms with those patches and
+> > > achieved the goal of mass production.
+> > 
+> > Another good news!
+> > For my information, what is your targeted hardware?
+> > 
+> > Cheers,
+> > Laurent.
+> 
+> Hi Laurent,
+> 
+> Our targeted hardware belongs to ARM64 multi-core series.
 
-elapsed time: 723m
+Hello!
 
-configs tested: 110
-configs skipped: 2
+I was trying to develop an intuition about why does SPF give improvement for
+you on small CPU systems. This is just a high-level theory but:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+1. Assume the improvement is because of elimination of "blocking" on
+mmap_sem.
+Could it be that the mmap_sem is acquired in write-mode unnecessarily in some
+places, thus causing blocking on mmap_sem in other paths? If so, is it
+feasible to convert such usages to acquiring them in read-mode?
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                          axs101_defconfig
-sh                          urquell_defconfig
-sh                        dreamcast_defconfig
-sh                           se7206_defconfig
-mips                     decstation_defconfig
-arm                           omap1_defconfig
-powerpc                       holly_defconfig
-arc                           tb10x_defconfig
-powerpc                         ps3_defconfig
-i386                             alldefconfig
-arm                       imx_v6_v7_defconfig
-powerpc                      ppc40x_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                 mpc85xx_cds_defconfig
-powerpc                   motionpro_defconfig
-arm                        shmobile_defconfig
-nds32                             allnoconfig
-powerpc                      obs600_defconfig
-sh                               j2_defconfig
-arm                            u300_defconfig
-mips                malta_kvm_guest_defconfig
-c6x                        evmc6678_defconfig
-mips                        bcm63xx_defconfig
-h8300                       h8s-sim_defconfig
-nios2                            allyesconfig
-powerpc                mpc7448_hpc2_defconfig
-mips                      loongson3_defconfig
-microblaze                      mmu_defconfig
-arm                     eseries_pxa_defconfig
-m68k                        m5307c3_defconfig
-powerpc                         wii_defconfig
-sh                           se7780_defconfig
-powerpc                       ebony_defconfig
-sh                         apsh4a3a_defconfig
-m68k                          sun3x_defconfig
-m68k                       m5275evb_defconfig
-xtensa                  audio_kc705_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-c6x                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20201213
-x86_64               randconfig-a006-20201213
-x86_64               randconfig-a002-20201213
-x86_64               randconfig-a005-20201213
-x86_64               randconfig-a004-20201213
-x86_64               randconfig-a001-20201213
-i386                 randconfig-a001-20201213
-i386                 randconfig-a004-20201213
-i386                 randconfig-a003-20201213
-i386                 randconfig-a002-20201213
-i386                 randconfig-a005-20201213
-i386                 randconfig-a006-20201213
-i386                 randconfig-a014-20201213
-i386                 randconfig-a013-20201213
-i386                 randconfig-a012-20201213
-i386                 randconfig-a011-20201213
-i386                 randconfig-a016-20201213
-i386                 randconfig-a015-20201213
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+2. Assume the improvement is because of lesser read-side contention on
+mmap_sem.
+On small CPU systems, I would not expect reducing cache-line bouncing to give
+such a dramatic improvement in performance as you are seeing.
 
-clang tested configs:
-x86_64               randconfig-a016-20201213
-x86_64               randconfig-a012-20201213
-x86_64               randconfig-a013-20201213
-x86_64               randconfig-a015-20201213
-x86_64               randconfig-a014-20201213
-x86_64               randconfig-a011-20201213
+Thanks for any insight on this!
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+- Joel
+
