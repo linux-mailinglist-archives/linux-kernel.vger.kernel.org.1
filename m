@@ -2,67 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037C92D9755
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DEF2D9759
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:30:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407700AbgLNLXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 06:23:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38846 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407371AbgLNLXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:23:11 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D30B0B72E;
-        Mon, 14 Dec 2020 11:22:28 +0000 (UTC)
-Date:   Mon, 14 Dec 2020 12:22:29 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/microcode update for v5.11
-Message-ID: <20201214112229.GC26358@zn.tnic>
+        id S2407371AbgLNL2B convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Dec 2020 06:28:01 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:26169 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728291AbgLNL2A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 06:28:00 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-188-DWJ8HiZYMiWHqblbGK4I2A-1; Mon, 14 Dec 2020 11:26:21 +0000
+X-MC-Unique: DWJ8HiZYMiWHqblbGK4I2A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 14 Dec 2020 11:26:22 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 14 Dec 2020 11:26:22 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Pawel Laszczak' <pawell@cadence.com>,
+        "peter.chen@nxp.com" <peter.chen@nxp.com>
+CC:     "rogerq@ti.com" <rogerq@ti.com>,
+        "a-govindraju@ti.com" <a-govindraju@ti.com>,
+        "nsekhar@ti.com" <nsekhar@ti.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kurahul@cadence.com" <kurahul@cadence.com>
+Subject: RE: [PATCH] usb: cdns3: Fixes for sparse warnings
+Thread-Topic: [PATCH] usb: cdns3: Fixes for sparse warnings
+Thread-Index: AQHW0glE/oEkG/UXeU6lduWcFnIHxKn2cwTQ
+Date:   Mon, 14 Dec 2020 11:26:22 +0000
+Message-ID: <d232a54761a7473692976188aba0a5f6@AcuMS.aculab.com>
+References: <20201214110433.19461-1-pawell@cadence.com>
+In-Reply-To: <20201214110433.19461-1-pawell@cadence.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+From: Pawel Laszczak
+> Sent: 14 December 2020 11:05
+> 
+> Patch fixes the following warnings:
+...
+> cdns3-ep0.c:367: sparse: warning: restricted __le16 degrades to integer
+...
+> diff --git a/drivers/usb/cdns3/cdns3-ep0.c b/drivers/usb/cdns3/cdns3-ep0.c
+> index b0390fe9a396..9a17802275d5 100644
+> --- a/drivers/usb/cdns3/cdns3-ep0.c
+> +++ b/drivers/usb/cdns3/cdns3-ep0.c
+> @@ -364,7 +364,7 @@ static int cdns3_ep0_feature_handle_endpoint(struct cdns3_device *priv_dev,
+>  	if (le16_to_cpu(ctrl->wValue) != USB_ENDPOINT_HALT)
+>  		return -EINVAL;
+> 
+> -	if (!(ctrl->wIndex & ~USB_DIR_IN))
+> +	if (!(le16_to_cpu(ctrl->wIndex) & ~USB_DIR_IN))
+>  		return 0;
 
-this one wins the award for most boring pull request ever. But that's a
-good thing - this is how I like 'em and the microcode loader *should* be
-boring. :-)
+It's generally best to byteswap the constant.
 
-Pls pull,
-thx.
+	David
 
----
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_microcode_update_for_v5.11
-
-for you to fetch changes up to 880396c86a1f3663c22b74fef34353f05a1263ec:
-
-  x86/microcode/amd: Remove unneeded break (2020-10-26 12:18:22 +0100)
-
-----------------------------------------------------------------
-- A single cleanup removing "break" after a return statement (Tom Rix)
-
-----------------------------------------------------------------
-Tom Rix (1):
-      x86/microcode/amd: Remove unneeded break
-
- arch/x86/kernel/cpu/microcode/amd.c | 1 -
- 1 file changed, 1 deletion(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
