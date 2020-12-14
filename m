@@ -2,166 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE172D9D4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A18212D9D51
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408368AbgLNRLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:11:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48630 "EHLO
+        id S2408386AbgLNRL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:11:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49092 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2408350AbgLNRKm (ORCPT
+        by vger.kernel.org with ESMTP id S2408381AbgLNRLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:10:42 -0500
+        Mon, 14 Dec 2020 12:11:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607965754;
+        s=mimecast20190719; t=1607965792;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IkmRUwZkoKac7j9Lc1ZXrNGcPMOHDTcvYr7T0GXLDnU=;
-        b=LAL9exUw8jOb382KcRloFua+P6lvayBo//9bXualFG6BEogspJ81i9+ETBzt6T0NBIenXj
-        JZF2bs/UJ8oNWVSFv7FaecJnxWnInpEA4sjCFWV5rd9wo3dHvA2Mr2iq3F3zEQSrPjh7XJ
-        hRfLLpjJweaxIUpCuSt+Zw31S3pxcug=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-411-mX1chBklMnKwAd7Ig-fUSw-1; Mon, 14 Dec 2020 12:09:10 -0500
-X-MC-Unique: mX1chBklMnKwAd7Ig-fUSw-1
-Received: by mail-wm1-f70.google.com with SMTP id g82so1694269wmg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:09:10 -0800 (PST)
+        bh=bfJv7pyU3y1plqcZLspvJWWR6I6MIq6AZVeJWdRv7rM=;
+        b=b+fjcCglgypxga5/c6i6CzWRcgtpphn+YeVj6Lc3Lv/ak2uQc7sRuNf6/kNuvlTJJsOMYx
+        w8Zi0+qfUDfzjtB0HZl0dIi9IBo+Q9gbU8V70BrqfNHb7Nc0LHNm4eZR/SbV0lo47xeTOp
+        MWIyppE4t26EV6c7dLK/suLNEpdZVQQ=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-536-yuEih19FNOiogAMVtr6huw-1; Mon, 14 Dec 2020 12:09:51 -0500
+X-MC-Unique: yuEih19FNOiogAMVtr6huw-1
+Received: by mail-wr1-f69.google.com with SMTP id v1so6895581wri.16
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:09:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IkmRUwZkoKac7j9Lc1ZXrNGcPMOHDTcvYr7T0GXLDnU=;
-        b=d+RRUoJ0PwOq/X/o5UrUbIyyFcWH+H4zwv97Vory7uvrmaogBTqEjGfrayWkGu6hRZ
-         K7LXHRgj9Io1Dt9lT1jcpX9U+JZV7m95jl0cWis/Vy3lX11aIEDwgkwcQXJ/YY2d2STh
-         4dp9UQbH2GSimVuIcPF6yLOkGenyGe1vpV5K4ANN9A/TvB7ZYT7m7BJBH9bKT2A1g0XA
-         sTbHLiKdhWG60Asc6hom+5Kqvq8ufe1wCR15fGyhjhLMP6thVsYvQQfx/Yg4A6SeZQcp
-         i35ClSlcKt6J+k8dQePZ5cW+35ZMOVD+KGCMpDVnc9jh5GsTdDoy0Nn7peSy35hyP+17
-         OEdw==
-X-Gm-Message-State: AOAM531WkGglDvdJPdPTp1g/FzmLrwZOJYr9Co/tB6os0mNX6Rf017l6
-        g8BNhkGsJEBBkjp2JctC+VY4iJWxg/c5qcxifWb8jhY+S2d3HSGIxgij7rd4cIOE9QH7nZCbChK
-        ArmoqdXg706Qb0sjwszCM92YV
-X-Received: by 2002:adf:decb:: with SMTP id i11mr9158219wrn.26.1607965749319;
-        Mon, 14 Dec 2020 09:09:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzYDD9g1nTbZzKv9XgeGtvqcR1Qu1XGxdSb++vsOVou/vm9BP1hzrCmM4+KZX55whhKotKJmw==
-X-Received: by 2002:adf:decb:: with SMTP id i11mr9158191wrn.26.1607965749103;
-        Mon, 14 Dec 2020 09:09:09 -0800 (PST)
-Received: from steredhat (host-79-13-204-15.retail.telecomitalia.it. [79.13.204.15])
-        by smtp.gmail.com with ESMTPSA id u85sm30786999wmu.43.2020.12.14.09.09.07
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=bfJv7pyU3y1plqcZLspvJWWR6I6MIq6AZVeJWdRv7rM=;
+        b=ZFsCnWvvMfXH90lcAuZjY6ooxb5M5CaVtaAcPGYnVtF/Yejs4LvniAOnYdsE2nBG/L
+         zOV3rrG1IJuukBN6z0J24PtRthYpgrRlJFhNOJ2B/idt0Ded7yBaTWajCBKS9r9bsMr4
+         aAGrqSixUWt27QqIHwrRTBjE1i/qF7u01rCsxImnDYDFGpG6AbW9FljIJJuaZrq+6ESa
+         06p+qV31sMYv86A/QJF8SGlC4/lPNvMMiz0bCrFU9tJvl+v6uu7P+nqShgJhyXPCFkBG
+         opmpD3FSRDQX+oHEqT7I8Id+OOc5A5wWGkZgRXa7VPnG9cEcWctTLgF4ujBGN01bIe+Y
+         WOfg==
+X-Gm-Message-State: AOAM532EYqULCwfbRuhAKW+lb7gynsjY7Zomiqa8wl1bMj6CAfuqxvPh
+        DjW1DeyLwNrC4CgZGkldujNeyauAQkaQxLOJi4sslNx65roZ8QgK5ChLDAy+yzYMxuFCNWo3Nor
+        aUF2cE6bWoiUDpFxYeA6ssK0x
+X-Received: by 2002:a1c:1fc4:: with SMTP id f187mr28784528wmf.107.1607965789305;
+        Mon, 14 Dec 2020 09:09:49 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxRVXsSXqA3sY4VvpK70uLZVdAE7dFO3NJoxd/7i8PSqwKK7XsINKbTuV+o1EUCRA8cYqOwUg==
+X-Received: by 2002:a1c:1fc4:: with SMTP id f187mr28784511wmf.107.1607965789070;
+        Mon, 14 Dec 2020 09:09:49 -0800 (PST)
+Received: from linux.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
+        by smtp.gmail.com with ESMTPSA id y6sm32273563wmg.39.2020.12.14.09.09.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 09:09:08 -0800 (PST)
-Date:   Mon, 14 Dec 2020 18:09:04 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Andra Paraschiv <andraprs@amazon.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        David Duncan <davdunc@amazon.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Alexander Graf <graf@amazon.de>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH net-next v4 0/5] vsock: Add flags field in the vsock
- address
-Message-ID: <20201214170904.wwirjp7ujxrast43@steredhat>
-References: <20201214161122.37717-1-andraprs@amazon.com>
+        Mon, 14 Dec 2020 09:09:48 -0800 (PST)
+Date:   Mon, 14 Dec 2020 18:09:46 +0100
+From:   Guillaume Nault <gnault@redhat.com>
+To:     Martin Zaharinov <micron10@gmail.com>
+Cc:     "linux-kernel@vger kernel. org" <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>, netdev@vger.kernel.org
+Subject: Re: Urgent: BUG: PPP ioctl Transport endpoint is not connected
+Message-ID: <20201214170946.GB8350@linux.home>
+References: <83C781EB-5D66-426E-A216-E1B846A3EC8A@gmail.com>
+ <20201209164013.GA21199@linux.home>
+ <1E49F9F8-0325-439E-B200-17C8CB6A3CBE@gmail.com>
+ <20201209181033.GB21199@linux.home>
+ <B70AAB31-B656-43B4-97B6-6E0FA0E1E680@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201214161122.37717-1-andraprs@amazon.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <B70AAB31-B656-43B4-97B6-6E0FA0E1E680@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 06:11:17PM +0200, Andra Paraschiv wrote:
->vsock enables communication between virtual machines and the host they are
->running on. Nested VMs can be setup to use vsock channels, as the multi
->transport support has been available in the mainline since the v5.5 Linux kernel
->has been released.
->
->Implicitly, if no host->guest vsock transport is loaded, all the vsock packets
->are forwarded to the host. This behavior can be used to setup communication
->channels between sibling VMs that are running on the same host. One example can
->be the vsock channels that can be established within AWS Nitro Enclaves
->(see Documentation/virt/ne_overview.rst).
->
->To be able to explicitly mark a connection as being used for a certain use case,
->add a flags field in the vsock address data structure. The value of the flags
->field is taken into consideration when the vsock transport is assigned. This way
->can distinguish between different use cases, such as nested VMs / local
->communication and sibling VMs.
->
->The flags field can be set in the user space application connect logic. On the
->listen path, the field can be set in the kernel space logic.
+On Wed, Dec 09, 2020 at 09:12:18PM +0200, Martin Zaharinov wrote:
+> 
+> 
+> > On 9 Dec 2020, at 20:10, Guillaume Nault <gnault@redhat.com> wrote:
+> > 
+> > On Wed, Dec 09, 2020 at 06:57:44PM +0200, Martin Zaharinov wrote:
+> >>> On 9 Dec 2020, at 18:40, Guillaume Nault <gnault@redhat.com> wrote:
+> >>> On Wed, Dec 09, 2020 at 04:47:52PM +0200, Martin Zaharinov wrote:
+> >>>> Hi All
+> >>>> 
+> >>>> I have problem with latest kernel release 
+> >>>> And the problem is base on this late problem :
+> >>>> 
+> >>>> 
+> >>>> https://www.mail-archive.com/search?l=netdev@vger.kernel.org&q=subject:%22Re%5C%3A+ppp%5C%2Fpppoe%2C+still+panic+4.15.3+in+ppp_push%22&o=newest&f=1
+> >>>> 
+> >>>> I have same problem in kernel 5.6 > now I use kernel 5.9.13 and have same problem.
+> >>>> 
+> >>>> 
+> >>>> In kernel 5.9.13 now don’t have any crashes in dimes but in one moment accel service stop with defunct and in log have many of this line :
+> >>>> 
+> >>>> 
+> >>>> error: vlan608: ioctl(PPPIOCCONNECT): Transport endpoint is not connected
+> >>>> error: vlan617: ioctl(PPPIOCCONNECT): Transport endpoint is not connected
+> >>>> error: vlan679: ioctl(PPPIOCCONNECT): Transport endpoint is not connected
+> >>>> 
+> >>>> In one moment connected user bump double or triple and after that service defunct and need wait to drop all session to start .
+> >>>> 
+> >>>> I talk with accel-ppp team and they said this is kernel related problem and to back to kernel 4.14 there is not this problem.
+> >>>> 
+> >>>> Problem is come after kernel 4.15 > and not have solution to this moment.
+> >>> 
+> >>> I'm sorry, I don't understand.
+> >>> Do you mean that v4.14 worked fine (no crash, no ioctl() error)?
+> >>> Did the problem start appearing in v4.15? Or did v4.15 work and the
+> >>> problem appeared in v4.16?
+> >> 
+> >> In Telegram group I talk with Sergey and Dimka and told my the problem is come after changes from 4.14 to 4.15 
+> >> Sergey write this : "as I know, there was a similar issue in kernel 4.15 so maybe it is still not fixed"
+> > 
+> > Ok, but what is your experience? Do you have a kernel version where
+> > accel-ppp reports no ioctl() error and doesn't crash the kernel?
+> Reported by Sergey and Dimka  version 4.14 < don’t have this problem,
+> Only version after 4.15.0 > have problem and with patch only fix to don’t put crash log in dimes and freeze system.
 
-I reviewed and tested all the patches, great job!
+If they know about some regressions, please tell them to report them
+(either to the list or directly to me). Because I'm not aware of
+anything that broke with 4.15.
 
-Thanks,
-Stefano
-
->
->Thank you.
->
->Andra
->
->---
->
->Patch Series Changelog
->
->The patch series is built on top of v5.10.
->
->GitHub repo branch for the latest version of the patch series:
->
->* https://github.com/andraprs/linux/tree/vsock-flag-sibling-comm-v4
->
->v3 -> v4
->
->* Rebase on top of v5.10.
->* Add check for supported flag values.
->* Update the "svm_flags" field to be 1 byte instead of 2 bytes.
->* v3: https://lore.kernel.org/lkml/20201211103241.17751-1-andraprs@amazon.com/
->
->v2 -> v3
->
->* Rebase on top of v5.10-rc7.
->* Add "svm_flags" as a new field, not reusing "svm_reserved1".
->* Update comments to mention when the "VMADDR_FLAG_TO_HOST" flag is set in the
->  connect and listen paths.
->* Update bitwise check logic to not compare result to the flag value.
->* v2: https://lore.kernel.org/lkml/20201204170235.84387-1-andraprs@amazon.com/
->
->v1 -> v2
->
->* Update the vsock flag naming to "VMADDR_FLAG_TO_HOST".
->* Use bitwise operators to setup and check the vsock flag.
->* Set the vsock flag on the receive path in the vsock transport assignment
->  logic.
->* Merge the checks for the g2h transport assignment in one "if" block.
->* v1: https://lore.kernel.org/lkml/20201201152505.19445-1-andraprs@amazon.com/
->
->---
->
->Andra Paraschiv (5):
->  vm_sockets: Add flags field in the vsock address data structure
->  vm_sockets: Add VMADDR_FLAG_TO_HOST vsock flag
->  vsock_addr: Check for supported flag values
->  af_vsock: Set VMADDR_FLAG_TO_HOST flag on the receive path
->  af_vsock: Assign the vsock transport considering the vsock address
->    flags
->
-> include/uapi/linux/vm_sockets.h | 26 +++++++++++++++++++++++++-
-> net/vmw_vsock/af_vsock.c        | 21 +++++++++++++++++++--
-> net/vmw_vsock/vsock_addr.c      |  4 +++-
-> 3 files changed, 47 insertions(+), 4 deletions(-)
->
->-- 
->2.20.1 (Apple Git-117)
->
->
->
->
->Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
->
+> > 
+> > There wasn't a lot of changes between 4.14 and 4.15 for PPP.
+> > The only PPP patch I can see that might have been risky is commit
+> > 0171c4183559 ("ppp: unlock all_ppp_mutex before registering device").
+> 
+> For my changes is a atomic and skb kfree .
+> > 
+> >> I don’t have options to test with this old kernel 4.14.xxx i don’t have support for them.
+> >> 
+> >> 
+> >>> 
+> >>>> Please help to find the problem.
+> >>>> 
+> >>>> Last time in link I see is make changes in ppp_generic.c 
+> >>>> 
+> >>>> ppp_lock(ppp);
+> >>>>       spin_lock_bh(&pch->downl);
+> >>>>       if (!pch->chan) {
+> >>>>               /* Don't connect unregistered channels */
+> >>>>               spin_unlock_bh(&pch->downl);
+> >>>>               ppp_unlock(ppp);
+> >>>>               ret = -ENOTCONN;
+> >>>>               goto outl;
+> >>>>       }
+> >>>>       spin_unlock_bh(&pch->downl);
+> >>>> 
+> >>>> 
+> >>>> But this fix only to don’t display error and freeze system 
+> >>>> The problem is stay and is to big.
+> >>> 
+> >>> Do you use accel-ppp's unit-cache option? Does the problem go away if
+> >>> you stop using it?
+> >>> 
+> >> 
+> >> No I don’t use unit-cache , if I set unit-cache accel-ppp defunct same but user Is connect and disconnet more fast.
+> >> 
+> >> The problem is same with unit and without . 
+> >> Only after this patch I don’t see error in dimes but this is not solution.
+> > 
+> > Soryy, what's "in dimes"?
+> > Do you mean that reverting commit 77f840e3e5f0 ("ppp: prevent
+> > unregistered channels from connecting to PPP units") fixes your problem?
+> Sorry text correct in dmesg*
+> 
+> I don’t make any changes of ppp part of kernel 5.9.13 I use clean build for ppp .
+> > 
+> >> In network have customer what have power cut problem, when drop 600 user and back Is normal but in this moment kernel is locking and start to make this : 
+> >> sessions:
+> >>  starting: 4235
+> >>  active: 3882
+> >>  finishing: 378
+> >> The problem is starting session is not real user normal user in this server is ~4k customers .
+> > 
+> > What type of session is it? L2TP, PPPoE, PPTP?
+> > 
+> Session is PPPoE only with radius auth
+> 
+> >> I use pppd_compat .
+> >> 
+> >> Any idea ?
+> >> 
+> >>>> 
+> >>>> Please help to fix.
+> >> Martin
+> 
 
