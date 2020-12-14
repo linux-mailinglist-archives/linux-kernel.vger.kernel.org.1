@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B3B2DA256
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 22:10:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6062DA205
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:55:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503536AbgLNU6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:58:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503517AbgLNU5z (ORCPT
+        id S2503262AbgLNUvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:51:48 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:54308 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503007AbgLNUvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:57:55 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B5DC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 12:57:15 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id 23so33724203lfg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 12:57:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yjX3o6xsyCaRUXsi679rrY59nTFovxClxEsS5QsmetY=;
-        b=XjtwLkAai12lTlnZPVGu410mAuM6h7pvrrsWQtnfyC+fVZDlR06SHMnbqxBQ7mlCD2
-         O5QFsMoATEz1Fg1a2rba6L5kRW7vKfPSB+6Y8bNbfs6TnHzYFEiYTpk0nFnuKI8a/45V
-         EP/9F3u3S9UlH8OTDO0A6KqVZinxKJN52Ny+s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yjX3o6xsyCaRUXsi679rrY59nTFovxClxEsS5QsmetY=;
-        b=S1t2LdFdV9eKg2BpJHfpTsODoUBM/58DEY4/ZOJm+S7qqfOjUdJiWMD6HkGYOGrjcU
-         +4dd9WL70L3BGj8s58dM5sWKQxSKb6HYMIKWmHe/mjZ0bHpuAHCeraY9PJ30O+6PT2j8
-         xcejzp+8yId+CT8jtZ2WzKMgC/OcuVRoPe7ILzd8Ai8zpTD4ssMngEAcrRf6gsLsss2A
-         3o1J2AnHYlbZg/gXA6QEiMLepnZsJDr/TC0FT4ZDbYKkMYXjVM50eHDiO/7I+I0+a6PC
-         ooAN0JZWUor+qPCIZuJf640hVkv/0XlqMa1JG7+gNSFJheGUnL8ZZsk+0H1EEGNz/G2y
-         +6WQ==
-X-Gm-Message-State: AOAM532yYFNrgvk4UdGi46BgEdQIlSEl43RNyDFqhxgxV7/i7RVT4g8/
-        O+bLiTMQRyHJPCs4581lrKvC2wTBCsOUmA==
-X-Google-Smtp-Source: ABdhPJx1UwjqqeCTMetJI80o+pjmQZYRKadqHhIYxMf9VvqRpV0yrohqT73Ljejv+hlYmah4PT8sfQ==
-X-Received: by 2002:ac2:51ab:: with SMTP id f11mr11485788lfk.510.1607979433181;
-        Mon, 14 Dec 2020 12:57:13 -0800 (PST)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id y23sm2464227ljc.119.2020.12.14.12.57.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Dec 2020 12:57:12 -0800 (PST)
-Received: by mail-lf1-f46.google.com with SMTP id a9so33737676lfh.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 12:57:12 -0800 (PST)
-X-Received: by 2002:a2e:b4af:: with SMTP id q15mr11323303ljm.507.1607978983041;
- Mon, 14 Dec 2020 12:49:43 -0800 (PST)
-MIME-Version: 1.0
-References: <2659836.1607940186@warthog.procyon.org.uk>
-In-Reply-To: <2659836.1607940186@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 14 Dec 2020 12:49:27 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wido5stGfFtRzmW19bB1w2XQAuY8oxUtFN2ZWdk2Grq-w@mail.gmail.com>
-Message-ID: <CAHk-=wido5stGfFtRzmW19bB1w2XQAuY8oxUtFN2ZWdk2Grq-w@mail.gmail.com>
-Subject: Re: [GIT PULL] keys: Collected minor fixes and cleanups
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Ben Boeckel <mathstuf@gmail.com>,
-        Denis Efremov <efremov@linux.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Jann Horn <jannh@google.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Tom Rix <trix@redhat.com>, YueHaibing <yuehaibing@huawei.com>,
-        keyrings@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Mon, 14 Dec 2020 15:51:21 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1607979038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rCTymTmGA50gQnjmXjjE3tYEWOtqBAP2ro0QHEwDggU=;
+        b=V/q6uvSATT0S/zhZEKyvbc7RJCrESaCbuKVOpCds9/+uZ5FjF6I8Z0B4N4LQC3lp/W0d3w
+        eatD2q7laGkCQa2PrKIBa+Ab5k12S6oz0Rga2O/fcOzCBXp1ne9NnMpZs1gx/rcBkw2PtX
+        L7jg7uGksdeYlGkDpmOGIRaqYO/C2LDIQbXtXU5Np4IMPI7vSEDGzLrf343CDOyP7cp58C
+        CmLJmWZ48na1LD4/m8GtuAzv0GUl7ELEbWlYN8ePLnTP9dPJp78gj/0UCdUP6mV75gkxGc
+        yOUwaOr+AalO1AhWVD1q1KlQ7HY6YKXeEMj4uMwH1xVKT2q/Hs1pK2KExj27Dg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1607979038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rCTymTmGA50gQnjmXjjE3tYEWOtqBAP2ro0QHEwDggU=;
+        b=2Ud7M09oHpq5AxnJVNSI20Xes1xUZQttHrJtZxb3dgET3a7FJX0HLVKZKKTl4tZeL9NicA
+        FUi2Jr3IDlmsfRAg==
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     "x86\@kernel.org" <x86@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: common_interrupt: No irq handler for vector
+In-Reply-To: <87lfe0dst1.fsf@nanos.tec.linutronix.de>
+References: <9741d93c-3cd1-c4ef-74bb-7f635231c778@linuxfoundation.org> <87im96g6ox.fsf@nanos.tec.linutronix.de> <3630fe3f-0dff-e21e-17a8-ed251df81fbc@linuxfoundation.org> <87lfe0dst1.fsf@nanos.tec.linutronix.de>
+Date:   Mon, 14 Dec 2020 21:50:38 +0100
+Message-ID: <87im94dsdd.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 2:04 AM David Howells <dhowells@redhat.com> wrote:
+On Mon, Dec 14 2020 at 21:41, Thomas Gleixner wrote:
+> On Mon, Dec 14 2020 at 09:11, Shuah Khan wrote:
+>> On 12/12/20 12:33 PM, Thomas Gleixner wrote:
+>>> On Fri, Dec 11 2020 at 13:41, Shuah Khan wrote:
+>>> 
+>>>> I am debugging __common_interrupt: 1.55 No irq handler for vector
+>>>> messages and noticed comments and code don't agree:
+>>> 
+>>> I bet that's on an AMD system with broken AGESA BIOS.... Good luck
+>>> debugging it :) BIOS updates are on the way so I'm told.
+>>> 
+>> Interesting. The behavior I am seeing doesn't seem to be consistent
+>> with BIOS problem. I don't see these messages on 5.10-rc7. I started
+>> seeing them on stable releases. It started right around 5.9.9 and
+>> not present on 5.9.7.
 >
-> Here's a set of minor fixes/cleanups that I've collected from various
-> people for the next merge window.
+> What kind of machine?
+>
+>> I am bisecting to isolate. Same issue on all stables 5.4, 4.19 and
+>> so on. If it is BIOS problem I would expect to see it on 5.10-rc7
+>> and wouldn't have expected to start seeing it 5.9.9.
+>
+> Can you provide some more details, e.g. dmesg please?
+>
+>>> No. It's perfectly correct in the MSI code. See further down.
+>>> 
+>>> 	if (IS_ERR_OR_NULL(this_cpu_read(vector_irq[cfg->vector])))
+>>> 		this_cpu_write(vector_irq[cfg->vector], VECTOR_RETRIGGERED);
+>>> 
+>>
+>> I am asking about inconsistent comments and the actual message as the
+>> comment implies if vector is VECTOR_UNUSED state, this message won't
+>> be triggered in common_interrupt. Based on that my read is the comment
+>> might be wrong if the code is correct as you are saying.
+>
+> The comment says:
+>
+>   >>    * anyway. If the vector is unused, then it is marked so it won't
+>   >>    * trigger the 'No irq handler for vector' warning in
+>   >>    * common_interrupt().
+>
+>   If the vector is unused, then it is _marked_ so ....
+>
+> It perhaps should explicitely say 'is marked as VECTOR_RETRIGGERED' to make
+> it clear.
 
-This doesn't even build.
+And it's only marked for this particular case to prevent the message
+from being shown. Because the insanities we need to do to migrate
+unmaskable (*sigh*) MSI interrupts can trigger that warning which would
+be just wrong and confusing. You warning is _not_ coming from a broken
+MSI migration attempt, believe me.
 
-And no, that's not because of some merge error on my part. Just to
-verify, I tried to build the head of what you sent me (commit
-1b91ea77dfeb: "certs: Replace K{U,G}IDT_INIT() with
-GLOBAL_ROOT_{U,G}ID") and it fails the same way.
+Thanks,
 
-  In file included from ./include/linux/cred.h:13,
-                   from security/integrity/ima/ima_mok.c:12:
-  security/integrity/ima/ima_mok.c: In function =E2=80=98ima_mok_init=E2=80=
-=99:
-  ./include/linux/key.h:292:29: warning: passing argument 7 of
-=E2=80=98keyring_alloc=E2=80=99 makes pointer from integer without a cast
-[-Wint-conversion]
-  .. ten more lines of warnings..
-  security/integrity/ima/ima_mok.c:36:26: error: too many arguments to
-function =E2=80=98keyring_alloc=E2=80=99
-     36 |  ima_blacklist_keyring =3D keyring_alloc(".ima_blacklist",
-        |                          ^~~~~~~~~~~~~
-
-so these "fixes" have clearly had absolutely zero testing, haven't
-been in linux-next, and are completely broken.
-
-The bug was introduced by commit 33c36b2053de ("certs: Fix blacklist
-flag type confusion"), which changed the IMA code without actually
-testing it.
-
-I suspect the fix is trivial (change the "," to "|"), but I will not
-be pulling this - or anything else that hasn't been in linux-next -
-from you this merge window.
-
-The pain just isn't worth it, but more importantly, you simply need to
-get your workflow in order, and not send me completely untested
-garbage that hasn't even been compiled.
-
-               Linus
+        tglx
