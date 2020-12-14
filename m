@@ -2,133 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C7E2D9B09
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:33:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C63CC2D9B39
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407837AbgLNPcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 10:32:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731495AbgLNP21 (ORCPT
+        id S2439070AbgLNPgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 10:36:53 -0500
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:49045 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392934AbgLNPgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 10:28:27 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F4CC0613D6;
-        Mon, 14 Dec 2020 07:27:46 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id hk16so6743130pjb.4;
-        Mon, 14 Dec 2020 07:27:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zod9g0ucmYQBVnFLZZB9W/Bw5VKVjG5oSiWxDHXjy38=;
-        b=bXYK1ZSyjNXW0Qh+M9C2SfRd7r1pKszYRp26r4cxtylix/RS6bG6mpeRD/E372JTD1
-         fpf3a9iiJOOsh7SqakQ+H8POqiWMeQcZiG8AmdC4579fLMnqSZfsTnxPhfMxxOpa51RG
-         qpMDgefR5lpG1xShf/T5e4KxPLleWKU7IA4YW887h+maYDZ5D3rbuom7R5EIQcugIuJT
-         9iEKkKyT8hb+IZft0m4ruG5SFBGxdEnIYo3i5wGvHdMSyHFVIKYM2XD6LK1t8dppU9Te
-         fothtOHrTonFpS2q4LQMU/mMZ9DQKY9xzGGdlldZmSkUtx/JIaG/9cyri9dK4l8BruQm
-         3ayA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zod9g0ucmYQBVnFLZZB9W/Bw5VKVjG5oSiWxDHXjy38=;
-        b=Kab0BzRD3svqrL0nprzClwpPVDaIg4ovkD23pNTJonIReZXyggMFuVZmKIfO5/QFio
-         67qBmQ2387+GnNmlMy4lAxNobCQeW7ISc+Vq6Zf9nKGx76BqtdTOwv2t1CdhxFgTMMwl
-         5GEgHkqkGrRNUduNIX3jlWGwS1LfLREVxD8dP7wpXzogjiVSkAnq/ZugAwexiJZ4AN1T
-         uGh19DZeG/9PH3lYcIn2oGaFUUgpe4XLXQXluf+LvXvpb1kfAaWZ7W8jw10h8aoTN1CF
-         GMMsThm3ETlQDnSvmvwGFtYFf7jh4TnzgNXxd6weiG2CjBK1H9Ob8Bc8DWEG054ik/g4
-         WdJg==
-X-Gm-Message-State: AOAM531fbWY0nddzxWQ9XeO1U3x/klSPyMAtY3ummaIO2tbgpmdYg2nQ
-        bzSXHscr/z4pYgo4B3aLAkWlkVfgmm55/3cI
-X-Google-Smtp-Source: ABdhPJwg6z41nULlj+fBpHui3mHcsEEdsSWv2Url9DdIMk0b8MqzGdSGYGJWk/tDMRfFUjVbLs5lpw==
-X-Received: by 2002:a17:902:8f94:b029:da:d168:4443 with SMTP id z20-20020a1709028f94b02900dad1684443mr22760620plo.57.1607959666413;
-        Mon, 14 Dec 2020 07:27:46 -0800 (PST)
-Received: from localhost.localdomain ([124.253.101.135])
-        by smtp.googlemail.com with ESMTPSA id y6sm19656391pjl.0.2020.12.14.07.27.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 07:27:45 -0800 (PST)
-From:   Puranjay Mohan <puranjay12@gmail.com>
-To:     bjorn@helgaas.com, linux-pci@vger.kernel.org,
-        Damien.LeMoal@wdc.com, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Puranjay Mohan <puranjay12@gmail.com>
-Subject: [PATCH v1] drivers: block: skd: remove skd_pci_info()
-Date:   Mon, 14 Dec 2020 20:57:20 +0530
-Message-Id: <20201214152720.11922-1-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 14 Dec 2020 10:36:50 -0500
+X-Greylist: delayed 481 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Dec 2020 10:36:49 EST
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id 141647BD;
+        Mon, 14 Dec 2020 10:27:38 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 14 Dec 2020 10:27:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=ntJmrGCcAbQquVvbRfQicceFKNU
+        MSarHFqhD8v0/wxE=; b=PAELf08UrchWI/nqe6Gr4rBvBrMK9IeIszHQoK5oIEZ
+        bsZaoisXh7mjmUWFznWynkUZZvvlY2lFvBWKmu787Timhbe2KuVK8rHH1SxYKf52
+        XA3OBqEodCpYELSQYmFCPjqAKUBIxBOn1pJBtzQfWbWB71RGaljwZCZQ8PlgtiRZ
+        zhlbvgaPtsg+5idSo3TkaeX+yF5fUW8ugFZ/Z+MD5DNRlg/fNKsGy+Cis4ODfKZz
+        7lcaOpsUrw2mYHWpER90yuwi3GtUT8ZohH6ViYhjgOrSmdAj/cYCJ626IOY4vV1j
+        YkaDn8fGRr8sdTd62V5BNZu4EdU71VJrL6MK1lqCngw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ntJmrG
+        CcAbQquVvbRfQicceFKNUMSarHFqhD8v0/wxE=; b=d+ljFMqQxFAuI3rRYc+7nO
+        Hq5jd85qB4R83rnfYOfw7VV1TgDOX3WEhSdZm8wLmuI7g+vfyU9QOHI0p2rMDgaL
+        LdPhty83TxbWu44q4CzOpjNKN4lfdth379+D49/JHw0bSlqSN3JZn582Hz97KA0S
+        qSnyRZqoE/gS8Quzbjcft9pmqp4TrU4yzBNxYJUQ9ivU4fq58i/j3pihEycoS317
+        fiYb0aT3d8gRqJisyzkS3mGRmI6cBoirH5eCha3OWURU0WaUDm+hOHXR2CAREMPZ
+        /YfNslYQH83gEXbmpzuugGKuxRS97/r3Arrq3w9c930rNQC+WoWwpEQ4DzzmAZhQ
+        ==
+X-ME-Sender: <xms:ZoTXX0oF7-4eVD8WVuPp5f6zuoxr4BxQGwx6fT3rhdBVUqjXiUg1Sw>
+    <xme:ZoTXX6rYs847KgWSjV8miZEkU_2XN9b3a5qYs9fXn1AS48OtnYbY33cckhr1_chXT
+    oKihsvPiqTUZ_fpfFA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgjeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:ZoTXX5NUVLegLe3lOJZzvLzo1uB0wkuxppo62sdmZPa-_RO5HGDM3w>
+    <xmx:ZoTXX76AS4nA1n5XIwSz6PSdSkwaaTUqt_B0vqGwdkZmTKS_6CcFgA>
+    <xmx:ZoTXXz5JPPqjPoRnCF60l9j4-OhZq8W2vyogWYqWGpKZu3Zot_s9uQ>
+    <xmx:aYTXX6IxlKBR1KIubJHXRVyPbRSlP9DE0bYwvrc6ww69d-V0YLVKCuU0juA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7B74E1080064;
+        Mon, 14 Dec 2020 10:27:33 -0500 (EST)
+Date:   Mon, 14 Dec 2020 16:27:31 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 01/15] irqchip: Allow to compile bcmstb on other platforms
+Message-ID: <20201214152731.mgoo2hvlu6uoi5md@gilmour>
+References: <20201210134648.272857-1-maxime@cerno.tech>
+ <20201210134648.272857-2-maxime@cerno.tech>
+ <e0f1aed2b0007eab6e9192ac73fd411f@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jdibhl3czonwcpge"
+Content-Disposition: inline
+In-Reply-To: <e0f1aed2b0007eab6e9192ac73fd411f@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the call to skd_pci_info() to pcie_print_link_status().
-pcie_print_link_status() can be used to print the link speed and
-the link width, skd_pci_info() does the same and hence it is removed.
 
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
-v1 - Add call to pcie_print_link_status()
----
- drivers/block/skd_main.c | 33 +--------------------------------
- 1 file changed, 1 insertion(+), 32 deletions(-)
+--jdibhl3czonwcpge
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/block/skd_main.c b/drivers/block/skd_main.c
-index a962b4551bed..efd69f349043 100644
---- a/drivers/block/skd_main.c
-+++ b/drivers/block/skd_main.c
-@@ -3134,40 +3134,10 @@ static const struct pci_device_id skd_pci_tbl[] = {
- 
- MODULE_DEVICE_TABLE(pci, skd_pci_tbl);
- 
--static char *skd_pci_info(struct skd_device *skdev, char *str)
--{
--	int pcie_reg;
--
--	strcpy(str, "PCIe (");
--	pcie_reg = pci_find_capability(skdev->pdev, PCI_CAP_ID_EXP);
--
--	if (pcie_reg) {
--
--		char lwstr[6];
--		uint16_t pcie_lstat, lspeed, lwidth;
--
--		pcie_reg += 0x12;
--		pci_read_config_word(skdev->pdev, pcie_reg, &pcie_lstat);
--		lspeed = pcie_lstat & (0xF);
--		lwidth = (pcie_lstat & 0x3F0) >> 4;
--
--		if (lspeed == 1)
--			strcat(str, "2.5GT/s ");
--		else if (lspeed == 2)
--			strcat(str, "5.0GT/s ");
--		else
--			strcat(str, "<unknown> ");
--		snprintf(lwstr, sizeof(lwstr), "%dX)", lwidth);
--		strcat(str, lwstr);
--	}
--	return str;
--}
--
- static int skd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- {
- 	int i;
- 	int rc = 0;
--	char pci_str[32];
- 	struct skd_device *skdev;
- 
- 	dev_dbg(&pdev->dev, "vendor=%04X device=%04x\n", pdev->vendor,
-@@ -3201,8 +3171,7 @@ static int skd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto err_out_regions;
- 	}
- 
--	skd_pci_info(skdev, pci_str);
--	dev_info(&pdev->dev, "%s 64bit\n", pci_str);
-+	pcie_print_link_status(pdev);
- 
- 	pci_set_master(pdev);
- 	rc = pci_enable_pcie_error_reporting(pdev);
--- 
-2.27.0
+Hi Marc,
 
+On Thu, Dec 10, 2020 at 05:59:09PM +0000, Marc Zyngier wrote:
+> On 2020-12-10 13:46, Maxime Ripard wrote:
+> > The BCM2711 uses a number of instances of the bcmstb-l2 controller in
+> > its
+> > display engine. Let's allow the driver to be enabled through KConfig.
+> >=20
+> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > ---
+> >  drivers/irqchip/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> > index c6098eee0c7c..f1e58de117dc 100644
+> > --- a/drivers/irqchip/Kconfig
+> > +++ b/drivers/irqchip/Kconfig
+> > @@ -131,7 +131,7 @@ config BCM7120_L2_IRQ
+> >  	select IRQ_DOMAIN
+> >=20
+> >  config BRCMSTB_L2_IRQ
+> > -	bool
+> > +	bool "Broadcom STB L2 Interrupt Controller"
+> >  	select GENERIC_IRQ_CHIP
+> >  	select IRQ_DOMAIN
+>=20
+> I'm always sceptical of making interrupt controllers user-selectable.
+> Who is going to know that they need to pick that one?
+>=20
+> I'd be much more in favour of directly selecting this symbol
+> from DRM_VC4_HDMI_CEC, since there is an obvious dependency.
+
+It's a bit weird to me that the HDMI CEC support selects it, since that
+interrupt controller is external and here no matter what. Would
+selecting it from the ARCH_* Kconfig option work for you?
+
+Thanks!
+Maxime
+
+--jdibhl3czonwcpge
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9eEYwAKCRDj7w1vZxhR
+xWdKAP9HIP+OMr/KnqPVosdzxr1LAk22AajNLnBMwtjovde35AD/QxAm/KxE2Ja3
+qr3tvsmhqVBZ1mRShJTfY0ZkqKT4ZgA=
+=199y
+-----END PGP SIGNATURE-----
+
+--jdibhl3czonwcpge--
