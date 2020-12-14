@@ -2,77 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0779C2DA3B9
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8C12DA3BA
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439147AbgLNWzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 17:55:22 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:46593 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728003AbgLNWzL (ORCPT
+        id S2439890AbgLNWzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 17:55:44 -0500
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:46509 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439348AbgLNWzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 17:55:11 -0500
-Received: by mail-ot1-f68.google.com with SMTP id w3so17475365otp.13;
-        Mon, 14 Dec 2020 14:54:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0ut1HVPfxFOmF1kHVSLkpJ8rWOwr6YvEtHr1rA6tOms=;
-        b=qk/PBbmLxBTCk1G0RlISH78PuB22LT6K5Z+Z2I89QaQTOGS9bWinV5aM8pKZBS0zVB
-         jvfrrcWu7NISB5lfxocIiPGSbHqyPNvKymPxkRs/VnALZ1gdOIMQe6jKSZOEvFaCOQfI
-         9kq8EjIni9k9+wfL8SyPw6HcrakgGjCXtsF6pLBGX570PKIjcqgk9nxaQc+AxU0xZdCX
-         gl1M9ZY5V3Yo76nzvLpTxpXqyXSPsEBAv74sSkGGCj0TM4KLqlgUzNIYiIiQXMN4ioi2
-         lTh25JAqjJgCRylHm1AGbUc2oY75c2FbWMWD7cYRLYQ4wm7BoHQsZUkb1r+eqvpBr6OO
-         2enA==
-X-Gm-Message-State: AOAM5332MVd8NEV51rB10jUDQERkWg2kjL04AQLym4G+KeCnCOUCC/N/
-        AxzvWyuUftCvUwx9YOfhjw==
-X-Google-Smtp-Source: ABdhPJy9rlqlL3LdQVGCXeYNExhK8vF0KeUrCXlvt2WtgTl82VL9MOdcvL5gHeL71L0XKnGOtGb9aw==
-X-Received: by 2002:a9d:63cd:: with SMTP id e13mr21720551otl.37.1607986470679;
-        Mon, 14 Dec 2020 14:54:30 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a15sm4605369oii.50.2020.12.14.14.54.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 14:54:29 -0800 (PST)
-Received: (nullmailer pid 2534026 invoked by uid 1000);
-        Mon, 14 Dec 2020 22:54:28 -0000
-Date:   Mon, 14 Dec 2020 16:54:28 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-sunxi@googlegroups.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Icenowy Zheng <icenowy@aosc.xyz>, devicetree@vger.kernel.org,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>
-Subject: Re: [PATCH v2 08/21] dt-bindings: mmc: sunxi: Add Allwinner A100 and
- H616 compatibles
-Message-ID: <20201214225428.GA2533994@robh.at.kernel.org>
-References: <20201211011934.6171-1-andre.przywara@arm.com>
- <20201211011934.6171-9-andre.przywara@arm.com>
+        Mon, 14 Dec 2020 17:55:24 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 6DC6620006;
+        Mon, 14 Dec 2020 22:54:38 +0000 (UTC)
+Date:   Mon, 14 Dec 2020 23:54:38 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     UNGLinuxDriver@microchip.com, vladimir.oltean@nxp.com,
+        claudiu.manoil@nxp.com, davem@davemloft.net, kuba@kernel.org,
+        andrew@lunn.ch, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] net: mscc: ocelot: Fix a resource leak in the error
+ handling path of the probe function
+Message-ID: <20201214225438.GY1781038@piout.net>
+References: <20201213114838.126922-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201211011934.6171-9-andre.przywara@arm.com>
+In-Reply-To: <20201213114838.126922-1-christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 01:19:21 +0000, Andre Przywara wrote:
-> From: Yangtao Li <frank@allwinnertech.com>
+On 13/12/2020 12:48:38+0100, Christophe JAILLET wrote:
+> In case of error after calling 'ocelot_init()', it must be undone by a
+> corresponding 'ocelot_deinit()' call, as already done in the remove
+> function.
 > 
-> Add binding for A100's and H616's mmc and emmc controller.
-> 
-> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> Fixes: a556c76adc05 ("net: mscc: Add initial Ocelot switch support")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+
 > ---
->  .../devicetree/bindings/mmc/allwinner,sun4i-a10-mmc.yaml  | 8 ++++++++
->  1 file changed, 8 insertions(+)
+>  drivers/net/ethernet/mscc/ocelot_vsc7514.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mscc/ocelot_vsc7514.c b/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+> index 1e7729421a82..9cf2bc5f4289 100644
+> --- a/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+> +++ b/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+> @@ -1267,7 +1267,7 @@ static int mscc_ocelot_probe(struct platform_device *pdev)
+>  
+>  	err = mscc_ocelot_init_ports(pdev, ports);
+>  	if (err)
+> -		goto out_put_ports;
+> +		goto out_ocelot_deinit;
+>  
+>  	if (ocelot->ptp) {
+>  		err = ocelot_init_timestamp(ocelot, &ocelot_ptp_clock_info);
+> @@ -1282,8 +1282,14 @@ static int mscc_ocelot_probe(struct platform_device *pdev)
+>  	register_switchdev_notifier(&ocelot_switchdev_nb);
+>  	register_switchdev_blocking_notifier(&ocelot_switchdev_blocking_nb);
+>  
+> +	of_node_put(ports);
+> +
+>  	dev_info(&pdev->dev, "Ocelot switch probed\n");
+>  
+> +	return 0;
+> +
+> +out_ocelot_deinit:
+> +	ocelot_deinit(ocelot);
+>  out_put_ports:
+>  	of_node_put(ports);
+>  	return err;
+> -- 
+> 2.27.0
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
