@@ -2,84 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123412D97FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2A12D97FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407779AbgLNM3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 07:29:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
+        id S2438295AbgLNMab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 07:30:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731433AbgLNM3A (ORCPT
+        with ESMTP id S2407783AbgLNMaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 07:29:00 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3841C0613CF;
-        Mon, 14 Dec 2020 04:28:34 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id y8so8518677plp.8;
-        Mon, 14 Dec 2020 04:28:34 -0800 (PST)
+        Mon, 14 Dec 2020 07:30:21 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B3FC0613CF;
+        Mon, 14 Dec 2020 04:29:40 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id q75so15038497wme.2;
+        Mon, 14 Dec 2020 04:29:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=07u9K7qAejnZ1AxQEPtLr06bSZi6WWdia77VeMAOMaQ=;
-        b=JcEyTWu2UOHibV9usPkBnZgqxc6g0lA6QrFTY24VeoqEAidkt/WdGG+XbslL0jPO/H
-         l5g0bt/7Me4Jt/SMbugHdEjgVMOju/eDaTGDs5ESL7Wy5c5PVPsIgoGgpv0zyOTgMvYD
-         pN/ZttlxrNTaQNStVjOvNDyf5m0+vjv/wTgMBtItvnh5jwYI773m0YxikZfaFuRun98K
-         yl/T74D/N1kemj6hLvl2usJAMZKu0CEZevKGQDEYaVwexhH6AHbhXlRi1YeoqwLoaPAv
-         G5aFhrGzXZy/6LM39akORWCqnpJ86b18LMsTTdTf2TXJXjXv8eHePKBKpruh2hwLu8Ro
-         xYPw==
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vBsPBj7XChs5jMSzaw4CDdV6qviOpQdMX+GGrGqpZSg=;
+        b=rh6U9xNW1uMYHWJF5UiHIyJgznNtRGWnxTy4VTIiZz+3g1rjxHy6U/pGvJo35wpQns
+         JeAIujuyCU2IvtOdlRIqNHc+VHoi0/kww6NhBpV3yKY5xzduBJ9U7oM3STFKUNTJMv/S
+         grhShVzSTGRenfjnRZdaaAaBqJe79OoQ+beq1F+PAX0QybGCX6YtOFFmGft5AckQH8OX
+         3zZ4pAstfD1YkcXPcUQ5HgiZ3T4v9ab5N2wUNMkigsWaurRzpUCAP+FKbRgYDIl0DCVA
+         +9T2Ylfmc2wHOaZxETRDIp0WjpO5KS7q6ckid4sMqC9PMoOxchgyTwdlK8Y0JBr2eSQW
+         zWfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=07u9K7qAejnZ1AxQEPtLr06bSZi6WWdia77VeMAOMaQ=;
-        b=USZsaVovCK4bI+Hfc+PG0fjV/4rav5HPsvT+lwn1mbeuDul8t3gSD0JGd28cUcNVva
-         TiZ+YzBFQ8Fo5Km6dedDskqQRVqqnynftAltpO1nFgaRALSMFxEf7yFOVBXURp1g2r0f
-         Pj0NAOaQThy3M+zy4Qq7qOwvu/oblaORCGgVZdiiirYVQfgGACkuE8gpfJ9hVLKZyEap
-         gpkGBQp7aI7QTFiNdNjnMQjF6jc0aafSE4fVBwyoOREqP7PhbZYSfNGwF6dcRtesy/Iz
-         g+vuHoIsmc7nlFPzrdq9CtCstypedYu8NRtlRPPMzMSfv1hlh1jk40XS7muoiFY9EcpB
-         Qghw==
-X-Gm-Message-State: AOAM530cJ6YfuTBmhGyp5VTr5kjZ7r1qZIcYdH6bEpuaRBft5ESH/tPR
-        Wnh15RjOZ+z0jpYIQ2e7tVFp8fEg1yg=
-X-Google-Smtp-Source: ABdhPJxvFyea72ZXOadXN6hiQN2xi1NxMm3ERgg4Kc38UImajV8HVri2OqtZkR8lGNCqQsmQ7AphMQ==
-X-Received: by 2002:a17:90a:a58f:: with SMTP id b15mr17964901pjq.17.1607948914220;
-        Mon, 14 Dec 2020 04:28:34 -0800 (PST)
-Received: from localhost.localdomain ([182.226.226.37])
-        by smtp.googlemail.com with ESMTPSA id i2sm18938458pjd.21.2020.12.14.04.28.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 04:28:33 -0800 (PST)
-From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
-X-Google-Original-From: Bongsu Jeon
-To:     krzk@kernel.org
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
-Subject: [PATCH net-next] MAINTAINERS: Update maintainer for SAMSUNG S3FWRN5 NFC
-Date:   Mon, 14 Dec 2020 21:28:23 +0900
-Message-Id: <20201214122823.2061-1-bongsu.jeon@samsung.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vBsPBj7XChs5jMSzaw4CDdV6qviOpQdMX+GGrGqpZSg=;
+        b=KNubvL3/zGolKivULB2Zt5jLacStLTOF8G1y0oKb7Xmro70IhfvBeHGsPuAFc40aNl
+         i1HobJwo8XbGYMPmyfjtVBiCi+DeJbOJNaIJ3mLWI5jA+4t4qcsgLIRKyki9d/YSfst/
+         qEQMRDcXeotQVEoLtAkq9hz5aSwxYQTBxvMgMoc/a0EUzmTM9KXhPyrC09UFTtSOG2H8
+         T3hWmk0KovtyRjOs4TvDlHfDKHFFql4xh+0F7f2yg8OtY9Agw9wzUuRgGLj2WFoRiCZ8
+         LBCJnYONLwRx1LkZZcrAa4v0tknZTbe90LcpGdetHuvSqjtehLcqBb5l35FmT1VjEHYD
+         yVTQ==
+X-Gm-Message-State: AOAM532ZjJGmSTixGZslLxyQ82ZssNrcZDaGEpUNZLDq647gW0MQixE2
+        p3+ZacxQgPpvQd8yE0svaLI=
+X-Google-Smtp-Source: ABdhPJwevGJaa5n7bLmMFg4hJP6T213os41e/1qetovZlAQlxveMZialFBqcmxIBOldhKnfBsr5o6Q==
+X-Received: by 2002:a1c:bd43:: with SMTP id n64mr27702089wmf.169.1607948976057;
+        Mon, 14 Dec 2020 04:29:36 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.googlemail.com with ESMTPSA id d15sm31048563wrx.93.2020.12.14.04.29.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Dec 2020 04:29:35 -0800 (PST)
+Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <cover.1607620209.git.thomas.lendacky@amd.com>
+ <618380488358b56af558f2682203786f09a49483.1607620209.git.thomas.lendacky@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v5 02/34] KVM: SVM: Remove the call to
+ sev_platform_status() during setup
+Message-ID: <a1a912c7-b2f8-561b-c569-d74ff946c9f5@redhat.com>
+Date:   Mon, 14 Dec 2020 13:29:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <618380488358b56af558f2682203786f09a49483.1607620209.git.thomas.lendacky@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bongsu Jeon <bongsu.jeon@samsung.com>
+On 10/12/20 18:09, Tom Lendacky wrote:
+> From: Tom Lendacky <thomas.lendacky@amd.com>
+> 
+> When both KVM support and the CCP driver are built into the kernel instead
+> of as modules, KVM initialization can happen before CCP initialization. As
+> a result, sev_platform_status() will return a failure when it is called
+> from sev_hardware_setup(), when this isn't really an error condition.
+> 
+> Since sev_platform_status() doesn't need to be called at this time anyway,
+> remove the invocation from sev_hardware_setup().
+> 
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> ---
+>   arch/x86/kvm/svm/sev.c | 22 +---------------------
+>   1 file changed, 1 insertion(+), 21 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index c0b14106258a..a4ba5476bf42 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1127,9 +1127,6 @@ void sev_vm_destroy(struct kvm *kvm)
+>   
+>   int __init sev_hardware_setup(void)
+>   {
+> -	struct sev_user_data_status *status;
+> -	int rc;
+> -
+>   	/* Maximum number of encrypted guests supported simultaneously */
+>   	max_sev_asid = cpuid_ecx(0x8000001F);
+>   
+> @@ -1148,26 +1145,9 @@ int __init sev_hardware_setup(void)
+>   	if (!sev_reclaim_asid_bitmap)
+>   		return 1;
+>   
+> -	status = kmalloc(sizeof(*status), GFP_KERNEL);
+> -	if (!status)
+> -		return 1;
+> -
+> -	/*
+> -	 * Check SEV platform status.
+> -	 *
+> -	 * PLATFORM_STATUS can be called in any state, if we failed to query
+> -	 * the PLATFORM status then either PSP firmware does not support SEV
+> -	 * feature or SEV firmware is dead.
+> -	 */
+> -	rc = sev_platform_status(status, NULL);
+> -	if (rc)
+> -		goto err;
+> -
+>   	pr_info("SEV supported\n");
+>   
+> -err:
+> -	kfree(status);
+> -	return rc;
+> +	return 0;
+>   }
+>   
+>   void sev_hardware_teardown(void)
+> 
 
-add an email to look after the SAMSUNG NFC driver.
+Queued with Cc: stable.
 
-Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Note that sev_platform_status now can become static within 
+drivers/crypto/ccp/sev-dev.c.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5c1a6ba5ef26..cb1634eb010d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15425,6 +15425,7 @@ F:	include/media/drv-intf/s3c_camif.h
- SAMSUNG S3FWRN5 NFC DRIVER
- M:	Krzysztof Kozlowski <krzk@kernel.org>
- M:	Krzysztof Opasiak <k.opasiak@samsung.com>
-+M:	Bongsu Jeon <bongsu.jeon@samsung.com>
- L:	linux-nfc@lists.01.org (moderated for non-subscribers)
- S:	Maintained
- F:	Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
--- 
-2.17.1
-
+Paolo
