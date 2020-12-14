@@ -2,170 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B0D2DA12E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:14:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 935A82DA152
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:18:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502780AbgLNULR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:11:17 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:49690 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388148AbgLNUK0 (ORCPT
+        id S2503124AbgLNURW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:17:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729523AbgLNUKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:10:26 -0500
-Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
- id ab5e17d3a5fb2745; Mon, 14 Dec 2020 21:09:37 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        Giovanni Gherdovich <ggherdovich@suse.com>
-Subject: [PATCH v2 3/3] cpufreq: intel_pstate: Implement the ->adjust_perf() callback
-Date:   Mon, 14 Dec 2020 21:09:26 +0100
-Message-ID: <1770942.kMzID5dSeU@kreacher>
-In-Reply-To: <3827230.0GnL3RTcl1@kreacher>
-References: <20360841.iInq7taT2Z@kreacher> <3827230.0GnL3RTcl1@kreacher>
+        Mon, 14 Dec 2020 15:10:47 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CF4C0613D3;
+        Mon, 14 Dec 2020 12:10:00 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cvsts4m7Dz9sTX;
+        Tue, 15 Dec 2020 07:09:57 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607976598;
+        bh=bOGZIK/EC9dOWE8oJ5/EF1E5GiCSPIErQvZ4/oVKtHk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZH6JVIgfgS5BqpFH6DYnnCcxYmySaWdzxYDUB7ubFw7A4JeioJko7wED2SyY7Y3xs
+         beCWzatZoHKsF0BJou/BJKd1zB9/RS3U7XGlvFuqgjo5tGlQgvGFlO2JP66hF9iYtJ
+         uLtyGZ/XXmWE4YYn846uyLdXV4BJ7xUlFhstdCJnfoLj7BRP1HgsdhXBIGswJRnyXN
+         ie8el/QzC2hBUx3fsrRHAyqNyGuvlkZkTcR5W+MxzPXUv4Xd/K44T1fLu5bZYFRWTK
+         83l3TDD937xlIwnE5mkK+zkaHUDYZOH0+Fl2V3CSyaOfsjYJ8ZyzLm5K/CAdk8eew6
+         s6YvfS/Mlmw4w==
+Date:   Tue, 15 Dec 2020 07:09:56 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.com>
+Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the block tree
+Message-ID: <20201215070956.6852e939@canb.auug.org.au>
+In-Reply-To: <20201202150149.42543862@canb.auug.org.au>
+References: <20201202150149.42543862@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; boundary="Sig_/V+8HwfLtgijqLM864dR=WCo";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+--Sig_/V+8HwfLtgijqLM864dR=WCo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Make intel_pstate expose the ->adjust_perf() callback when it
-operates in the passive mode with HWP enabled which causes the
-schedutil governor to use that callback instead of ->fast_switch().
+Hi all,
 
-The minimum and target performance-level values passed by the
-governor to ->adjust_perf() are converted to HWP.REQ.MIN and
-HWP.REQ.DESIRED, respectively, which allows the processor to
-adjust its configuration to maximize energy-efficiency while
-providing sufficient capacity.
+On Wed, 2 Dec 2020 15:01:49 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> Hi all,
+>=20
+> After merging the block tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>=20
+> fs/btrfs/zoned.c: In function 'btrfs_get_dev_zone_info':
+> fs/btrfs/zoned.c:168:21: error: 'struct block_device' has no member named=
+ 'bd_part'; did you mean 'bd_partno'?
+>   168 |  nr_sectors =3D bdev->bd_part->nr_sects;
+>       |                     ^~~~~~~
+>       |                     bd_partno
+> fs/btrfs/zoned.c: In function 'btrfs_sb_log_location_bdev':
+> fs/btrfs/zoned.c:508:21: error: 'struct block_device' has no member named=
+ 'bd_part'; did you mean 'bd_partno'?
+>   508 |  nr_sectors =3D bdev->bd_part->nr_sects;
+>       |                     ^~~~~~~
+>       |                     bd_partno
+> fs/btrfs/zoned.c: In function 'btrfs_reset_sb_log_zones':
+> fs/btrfs/zoned.c:606:21: error: 'struct block_device' has no member named=
+ 'bd_part'; did you mean 'bd_partno'?
+>   606 |  nr_sectors =3D bdev->bd_part->nr_sects;
+>       |                     ^~~~~~~
+>       |                     bd_partno
+>=20
+> Caused by commits
+>=20
+>   a782483cc1f8 ("block: remove the nr_sects field in struct hd_struct")
+>   0d02129e76ed ("block: merge struct block_device and struct hd_struct")
+>=20
+> interacting with commits
+>=20
+>   ab3ea6d0e65c ("btrfs: get zone information of zoned block devices")
+>   1a4b440a1c2b ("btrfs: implement log-structured superblock for ZONED mod=
+e")
+>=20
+> from the btrfs tree.
+>=20
+> I applied the following merge fix patch (which may, or may not, be
+> correct but fixes the build).
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Wed, 2 Dec 2020 14:55:04 +1100
+> Subject: [PATCH] fixup for "block: merge struct block_device and struct
+>  hd_struct"
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  fs/btrfs/zoned.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index 155545180046..c38846659019 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -165,7 +165,7 @@ int btrfs_get_dev_zone_info(struct btrfs_device *devi=
+ce)
+>  	if (!zone_info)
+>  		return -ENOMEM;
+> =20
+> -	nr_sectors =3D bdev->bd_part->nr_sects;
+> +	nr_sectors =3D bdev_nr_sectors(bdev);
+>  	zone_sectors =3D bdev_zone_sectors(bdev);
+>  	/* Check if it's power of 2 (see is_power_of_2) */
+>  	ASSERT(zone_sectors !=3D 0 && (zone_sectors & (zone_sectors - 1)) =3D=
+=3D 0);
+> @@ -505,7 +505,7 @@ int btrfs_sb_log_location_bdev(struct block_device *b=
+dev, int mirror, int rw,
+>  		return -EINVAL;
+>  	zone_size =3D zone_sectors << SECTOR_SHIFT;
+>  	zone_sectors_shift =3D ilog2(zone_sectors);
+> -	nr_sectors =3D bdev->bd_part->nr_sects;
+> +	nr_sectors =3D bdev_nr_sectors(bdev);
+>  	nr_zones =3D nr_sectors >> zone_sectors_shift;
+> =20
+>  	sb_zone =3D sb_zone_number(zone_sectors_shift + SECTOR_SHIFT, mirror);
+> @@ -603,7 +603,7 @@ int btrfs_reset_sb_log_zones(struct block_device *bde=
+v, int mirror)
+> =20
+>  	zone_sectors =3D bdev_zone_sectors(bdev);
+>  	zone_sectors_shift =3D ilog2(zone_sectors);
+> -	nr_sectors =3D bdev->bd_part->nr_sects;
+> +	nr_sectors =3D bdev_nr_sectors(bdev);
+>  	nr_zones =3D nr_sectors >> zone_sectors_shift;
+> =20
+>  	sb_zone =3D sb_zone_number(zone_sectors_shift + SECTOR_SHIFT, mirror);
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+Just a reminder that I am still applying the above merge fix.
 
-v1 -> v2:
- - No changes.
+--=20
+Cheers,
+Stephen Rothwell
 
----
- drivers/cpufreq/intel_pstate.c |   70 +++++++++++++++++++++++++++++++++--------
- 1 file changed, 58 insertions(+), 12 deletions(-)
+--Sig_/V+8HwfLtgijqLM864dR=WCo
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Index: linux-pm/drivers/cpufreq/intel_pstate.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/intel_pstate.c
-+++ linux-pm/drivers/cpufreq/intel_pstate.c
-@@ -2526,20 +2526,19 @@ static void intel_cpufreq_trace(struct c
- 		fp_toint(cpu->iowait_boost * 100));
- }
- 
--static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 target_pstate,
--				     bool strict, bool fast_switch)
-+static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 min, u32 max,
-+				     u32 desired, bool fast_switch)
- {
- 	u64 prev = READ_ONCE(cpu->hwp_req_cached), value = prev;
- 
- 	value &= ~HWP_MIN_PERF(~0L);
--	value |= HWP_MIN_PERF(target_pstate);
-+	value |= HWP_MIN_PERF(min);
- 
--	/*
--	 * The entire MSR needs to be updated in order to update the HWP min
--	 * field in it, so opportunistically update the max too if needed.
--	 */
- 	value &= ~HWP_MAX_PERF(~0L);
--	value |= HWP_MAX_PERF(strict ? target_pstate : cpu->max_perf_ratio);
-+	value |= HWP_MAX_PERF(max);
-+
-+	value &= ~HWP_DESIRED_PERF(~0L);
-+	value |= HWP_DESIRED_PERF(desired);
- 
- 	if (value == prev)
- 		return;
-@@ -2569,11 +2568,15 @@ static int intel_cpufreq_update_pstate(s
- 	int old_pstate = cpu->pstate.current_pstate;
- 
- 	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
--	if (hwp_active)
--		intel_cpufreq_adjust_hwp(cpu, target_pstate,
--					 policy->strict_target, fast_switch);
--	else if (target_pstate != old_pstate)
-+	if (hwp_active) {
-+		int max_pstate = policy->strict_target ?
-+					target_pstate : cpu->max_perf_ratio;
-+
-+		intel_cpufreq_adjust_hwp(cpu, target_pstate, max_pstate, 0,
-+					 fast_switch);
-+	} else if (target_pstate != old_pstate) {
- 		intel_cpufreq_adjust_perf_ctl(cpu, target_pstate, fast_switch);
-+	}
- 
- 	cpu->pstate.current_pstate = target_pstate;
- 
-@@ -2634,6 +2637,47 @@ static unsigned int intel_cpufreq_fast_s
- 	return target_pstate * cpu->pstate.scaling;
- }
- 
-+static void intel_cpufreq_adjust_perf(unsigned int cpunum,
-+				      unsigned long min_perf,
-+				      unsigned long target_perf,
-+				      unsigned long capacity)
-+{
-+	struct cpudata *cpu = all_cpu_data[cpunum];
-+	int old_pstate = cpu->pstate.current_pstate;
-+	int cap_pstate, min_pstate, max_pstate, target_pstate;
-+
-+	update_turbo_state();
-+	cap_pstate = global.turbo_disabled ? cpu->pstate.max_pstate :
-+					     cpu->pstate.turbo_pstate;
-+
-+	/* Optimization: Avoid unnecessary divisions. */
-+
-+	target_pstate = cap_pstate;
-+	if (target_perf < capacity)
-+		target_pstate = DIV_ROUND_UP(cap_pstate * target_perf, capacity);
-+
-+	min_pstate = cap_pstate;
-+	if (min_perf < capacity)
-+		min_pstate = DIV_ROUND_UP(cap_pstate * min_perf, capacity);
-+
-+	if (min_pstate < cpu->pstate.min_pstate)
-+		min_pstate = cpu->pstate.min_pstate;
-+
-+	if (min_pstate < cpu->min_perf_ratio)
-+		min_pstate = cpu->min_perf_ratio;
-+
-+	max_pstate = min(cap_pstate, cpu->max_perf_ratio);
-+	if (max_pstate < min_pstate)
-+		max_pstate = min_pstate;
-+
-+	target_pstate = clamp_t(int, target_pstate, min_pstate, max_pstate);
-+
-+	intel_cpufreq_adjust_hwp(cpu, min_pstate, max_pstate, target_pstate, true);
-+
-+	cpu->pstate.current_pstate = target_pstate;
-+	intel_cpufreq_trace(cpu, INTEL_PSTATE_TRACE_FAST_SWITCH, old_pstate);
-+}
-+
- static int intel_cpufreq_cpu_init(struct cpufreq_policy *policy)
- {
- 	int max_state, turbo_max, min_freq, max_freq, ret;
-@@ -3032,6 +3076,8 @@ static int __init intel_pstate_init(void
- 			intel_pstate.attr = hwp_cpufreq_attrs;
- 			intel_cpufreq.attr = hwp_cpufreq_attrs;
- 			intel_cpufreq.flags |= CPUFREQ_NEED_UPDATE_LIMITS;
-+			intel_cpufreq.fast_switch = NULL;
-+			intel_cpufreq.adjust_perf = intel_cpufreq_adjust_perf;
- 			if (!default_driver)
- 				default_driver = &intel_pstate;
- 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/XxpQACgkQAVBC80lX
+0GxhNwgAhiawlO9QrGibxvUMdbTgEUUrZd+IUONEPsj8nwuflNiyn3wDnIEwetlS
+9eF4TbD47ETTC588SASuLdfyOwDuC8VzbW570n6wzk6qNrtsYha0Uq4w2Ye+SC9n
+lrCYhYlRXySq9YajvAGaS+uUJkVd2O5nhqXbQVfj4dFAmL4Q6I3BP2Ln8k+RZYUl
+KjJpLFHpOCemUGdiEc+HxQlb8gI+cjhLvT5ttLzVGUBmIZsH98MvjsIcGfV3NeBp
+UH2U2sPxZwD6EzwLlhALDKjaK/oV2LMNmBd6svf5R7QSbuhPXqJ4yh4nwZGC4o43
+HnxWCKVTF5El1ZDz8QluIA0Mp8HyYg==
+=OCtM
+-----END PGP SIGNATURE-----
 
-
+--Sig_/V+8HwfLtgijqLM864dR=WCo--
