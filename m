@@ -2,105 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 573302D9BFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7082D9BFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440112AbgLNQKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:10:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439397AbgLNQJy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:09:54 -0500
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA457C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:09:09 -0800 (PST)
-Received: by mail-vs1-xe42.google.com with SMTP id q10so9218887vsr.13
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:09:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t2aQQjeTAClD8BnlUklr8QIojrz0VDK1/YhYYkZp+14=;
-        b=kIZlPMONz6lBq/gIOydcXGUjcQ0cvnJfuO8mypCn3kXK71AWGykGUryj8sLmqsAdFI
-         ZUJzP+cGLH/fV3IW7Je5UBQzqFi7Be020MjYizulu8XR/il87US8F0Cbs4ZPNqvxhzl1
-         oMJBu2XlH9E252F3Bb3qbUdtEo+LtrF9WOVHU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t2aQQjeTAClD8BnlUklr8QIojrz0VDK1/YhYYkZp+14=;
-        b=FsJzGUxwl+U1gKfZ7RXsZsU+65IWBZufH/1Goa1Hhy8VtANjDjxqJB9BMLAsUqeElo
-         CLZVWg6ozqci34K+cAETK5Y8RCBV5sxUVxpnhk7ob+mh+yRzJBGXO+vgVnarDqBMR7+S
-         44re4loEpc/su8KWmRBCETW1bp8tyMUml4YKdBOZlbtUpudTdn5kNhr4lGi5sBgIzEwq
-         frdYDcRcmgOJ7PCkuLvhfyHct8D8Mq8fChZyHW7g3cBcZeZzYqShs0ru54G8wkeDu8xG
-         ht7ucKoDuUdV+oVEaUk+kc0GO4D/4buBmjRtISdcl+Pv7P5VY9BeNrg5ghs1KST1ludi
-         BlEA==
-X-Gm-Message-State: AOAM5307swk950zs7jZLRms9U7KMkaz0orKx6d+sravEhfZxERJwam6/
-        M3xkfN9LjyLUAf5GjUb7ADlyGmeR3B1SfQ==
-X-Google-Smtp-Source: ABdhPJz69tripr9tmxI8gTbliFn0/R9bsypAwkG/k+EJv+UL1zh1UzFkrhZ6fRWNeoRNVop4zaZx2A==
-X-Received: by 2002:a67:e409:: with SMTP id d9mr7291557vsf.52.1607962148595;
-        Mon, 14 Dec 2020 08:09:08 -0800 (PST)
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
-        by smtp.gmail.com with ESMTPSA id z10sm2218872vsf.26.2020.12.14.08.09.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Dec 2020 08:09:07 -0800 (PST)
-Received: by mail-ua1-f42.google.com with SMTP id 17so5283317uaq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 08:09:07 -0800 (PST)
-X-Received: by 2002:ab0:2e99:: with SMTP id f25mr23719280uaa.104.1607962147154;
- Mon, 14 Dec 2020 08:09:07 -0800 (PST)
+        id S2440090AbgLNQKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 11:10:06 -0500
+Received: from mail.pqgruber.com ([52.59.78.55]:52848 "EHLO mail.pqgruber.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439348AbgLNQJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 11:09:55 -0500
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id 4BBA2C89267;
+        Mon, 14 Dec 2020 17:09:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1607962146;
+        bh=G9Z4MsYhqRoB5YjLUrciZJYEuLucfTov5ztQjtq513Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ob7jByr7eJOKnTIA7SJFIt9OpHQvU8lmnDfCZngfqThvvVY+J1aIkZBzRmM31AchI
+         9Q7NSBJcVWvFgMkL6lGcep5dDT46qvvClA/pz6l2fT6ELW/XmqT4rCVN3NxBUI7dB8
+         +DVlJsEPuHb2V4KByzAiKmlgTNdK1gPrQRXlm+wc=
+Date:   Mon, 14 Dec 2020 17:09:05 +0100
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        linux-pwm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v4 1/4] pwm: pca9685: Switch to atomic API
+Message-ID: <X9eOIfixWlsE1JWC@workstation.tuxnet>
+References: <CAGngYiXgVbEXj-yR=DTeA4pO-N3=WhiHjQhknFsbfXBeD_yRbw@mail.gmail.com>
+ <X8+waLH58pOaMI06@ulmo>
+ <20201208182637.hm5uzuw5ueelo26k@pengutronix.de>
+ <X9EDGHySNYb7CxcW@ulmo>
+ <20201210090124.rfswkrcttsg5gszp@pengutronix.de>
+ <X9JWlVPb9ZGdB4q9@ulmo>
+ <20201210203926.ouzrq3ff5k6zhlvt@pengutronix.de>
+ <X9Mu8zrJjFTe6fJq@ulmo>
+ <20201211103454.tqcfzy3ayn2gz7k4@pengutronix.de>
+ <X9d2iFCzSkqLu8zR@ulmo>
 MIME-Version: 1.0
-References: <20201213052948.308263-1-swboyd@chromium.org>
-In-Reply-To: <20201213052948.308263-1-swboyd@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 14 Dec 2020 08:08:55 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WWe-0v1=kzw4XGQ9TFUkFcf2nAx0so6TFBg74JH6bVmw@mail.gmail.com>
-Message-ID: <CAD=FV=WWe-0v1=kzw4XGQ9TFUkFcf2nAx0so6TFBg74JH6bVmw@mail.gmail.com>
-Subject: Re: [PATCH] spi: spi-qcom-qspi: Use irq trigger flags from firmware
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Mukesh Kumar Savaliya <msavaliy@codeaurora.org>,
-        Akash Asthana <akashast@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <X9d2iFCzSkqLu8zR@ulmo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Dec 14, 2020 at 03:28:24PM +0100, Thierry Reding wrote:
+> On Fri, Dec 11, 2020 at 11:34:54AM +0100, Uwe Kleine-König wrote:
+> > Hello Thierry,
+> > 
+> > On Fri, Dec 11, 2020 at 09:33:55AM +0100, Thierry Reding wrote:
+> > > On Thu, Dec 10, 2020 at 09:39:26PM +0100, Uwe Kleine-König wrote:
+> > > > On Thu, Dec 10, 2020 at 06:10:45PM +0100, Thierry Reding wrote:
+> > > > > Like I said, that's not what I was saying. I was merely saying that if
+> > > > > there aren't any use-cases that current users rely on that would be
+> > > > > broken by using this simpler implementation, then I'm okay with it, even
+> > > > > if it's less flexible than a more complicated implementation. It should
+> > > > > be possible to determine what the current users are by inspecting device
+> > > > > trees present in the kernel. Anything outside the kernel isn't something
+> > > > > we need to consider, as usual.
+> > > > 
+> > > > If "users in mainline" is the criteria that's a word.
+> > > 
+> > > I didn't say "users in mainline", I said "use-cases". What I don't want
+> > > to happen is for this change under discussion to break any existing use-
+> > > cases of any existing users in the kernel. I said that we can determine
+> > > what the existing users are by looking at which device trees use the
+> > > compatible strings that the driver matches on.
+> > > 
+> > > > So you agree we remove the following drivers?:
+> > > > 
+> > > >  - pwm-hibvt.c
+> > > >    Last driver specific change in Feb 2019, no mainline user
+> > > >  - pwm-sprd.c
+> > > >    Last driver specific change in Aug 2019, no mainline user
+> > > 
+> > > No, that's an extrapolation of what I was saying above. Drivers with no
+> > > apparent users are a separate topic, so don't conflate it with the issue
+> > > at hand.
+> > 
+> > I cannot follow (and I think that's the problem between us and why those
+> > conflicts happen between us). For me it's a logic consequence of
+> > "Anything outside the kernel isn't something we need to consider, as
+> > usual." that drivers that are untouched for some period and have no
+> > mainline users can/should go away. (Is "extrapolation" as strong as
+> > "implication", or has it subjective interpretation added? My dictionary
+> > isn't accurate enough for that question.) But it seems there is
+> > something with my logic or you not saying exactly what you actually
+> > mean. (Did I miss any option? If yes it might be covered by a problem in
+> > my logic.)
+> 
+> To me this is not as black and white as it seems to be for you. First I
+> wasn't talking about unused drivers, but about use-cases that are not
+> represented in mainline. Secondly I didn't say anything about removing
+> support for use-cases that weren't in use upstream. All I said was that
+> I didn't want any changes to regress existing use-cases.
+> 
+> "Guessing" how that statement reflects on my thoughts about unused
+> drivers is extrapolation. Your logic implication could've been correct,
+> but in this case it wasn't because I consider a driver that was
+> upstreamed to be part of the kernel, and people invested a fair amount
+> of work to get it to that point, so I'm in no hurry to get rid of them.
+> Instead, I prefer to give people the benefit of the doubt and assume
+> that they had planned to get users upstream and for some reason just
+> haven't gotten around to it.
+> 
+> On the other hand, almost 18-24 months without activity is quite long. A
+> compromise that works well for me is to keep drivers, even unused ones,
+> as long as they're not getting in the way.
+> 
+> > Having said that, even in the question at hand (i.e. what is the better
+> > compromise for mapping the inter-channel hardware limitations to
+> > software policy in the pac9685 driver) the idea "let's inspecting device
+> > trees present in the kernel" doesn't work, because for this driver there
+> > are none, too. (It might be used by a mainline machine via ACPI, but
+> > this is even less possible to consider for our judgements than a device
+> > tree with such a device and no user but the sysfs PWM interface.)
+> 
+> Perhaps Clemens and Sven can shed some light into how this driver is
+> being used. There clearly seem to be people interested in this driver,
+> so why are there no consumers of this upstream. What's keeping people
+> from upstreaming device trees that make use of this?
 
-On Sat, Dec 12, 2020 at 9:29 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> We don't need to force this to be trigger high here, as the firmware
-> properly configures the irq flags already. Drop it to save a line.
->
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Rajendra Nayak <rnayak@codeaurora.org>
-> Cc: Mukesh Kumar Savaliya <msavaliy@codeaurora.org>
-> Cc: Akash Asthana <akashast@codeaurora.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  drivers/spi/spi-qcom-qspi.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/spi/spi-qcom-qspi.c b/drivers/spi/spi-qcom-qspi.c
-> index 5eed88af6899..8e70f5e63e0b 100644
-> --- a/drivers/spi/spi-qcom-qspi.c
-> +++ b/drivers/spi/spi-qcom-qspi.c
-> @@ -516,8 +516,7 @@ static int qcom_qspi_probe(struct platform_device *pdev)
->         ret = platform_get_irq(pdev, 0);
->         if (ret < 0)
->                 goto exit_probe_master_put;
-> -       ret = devm_request_irq(dev, ret, qcom_qspi_irq,
-> -                       IRQF_TRIGGER_HIGH, dev_name(dev), ctrl);
-> +       ret = devm_request_irq(dev, ret, qcom_qspi_irq, 0, dev_name(dev), ctrl);
+Our DT using the pca9685 is for an embedded board within a product and
+that board within is not sold alone.
+That's the reason why I did not upstream it yet, because I did not know
+if it is acceptable to upstream DTs for boards that are not really of
+great use to other people, because they can't (easily) get the hardware,
+unless they buy a big beer dispensing system.
+If that's not an issue then I am willig to upstream it of course.
 
-I don't feel that the old code is really wrong, but I guess it is
-weird that it's double-specified (both in the code and in the dts).
-...so this is OK w/ me.
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Clemens
