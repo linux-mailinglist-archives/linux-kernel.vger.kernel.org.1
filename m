@@ -2,117 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270C62D958B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF5C2D9593
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 10:56:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729001AbgLNJx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 04:53:56 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:39819 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726216AbgLNJxm (ORCPT
+        id S2392576AbgLNJzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 04:55:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729399AbgLNJzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 04:53:42 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 8E60E580248;
-        Mon, 14 Dec 2020 04:52:36 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 14 Dec 2020 04:52:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=OrY8HhQn+4QD7YB2uLYluM8SGzm
-        bRX6vUSKW+v+/3kE=; b=re6P5xH4O2aCB8IFgs0VuxmQ4xIFnuPQBsu1a9AOB1O
-        /iefy+L6JzbYZ/linXtnXs53rvcg4YA0kY0UprtUpLjRdIrznmDa7BOVF/N/iQGA
-        HyriJvFbRsUdNvENcCqcfYBoMrn7mKfCTdDXuoB8Ngi/v48+JnMGIEKlTxTjrfdd
-        Ovq2fHXhrCUIgsz1/3SQsnvM9t6xs1Oi82WgsBqMQ/SOLIJ7OgIzVayvQ8yjVwHd
-        U7xxmcwIKLFEHZhqLoAKj+EGMLbdGvakzvBnFKnyReTV2QtTqTWcQLG1CedF6Yym
-        lsKM6GM90fEsKZBdrMO2FkKhaBgMEbz5mxylUuz8LNQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=OrY8Hh
-        Qn+4QD7YB2uLYluM8SGzmbRX6vUSKW+v+/3kE=; b=qCJ3lvPztFhEXcJo8qTeiZ
-        8zr/f8AIFjpUF1hJXayvYBCIjBFbagpcI518Aa5j8LN6huz2MS2B47VPnReZc/ik
-        k2TK6TTEz5a7blQYyzpgajoHCY6pS5UYkWad9ImlkZvBTrxy/yJzOINJ6jlzi+ZE
-        /7Bdg/Xzu8pNBozAYkm8GGE4ZNigJ7XkoA/qUb+SPRVfZ7ojbct+NvI8W6MRx/CJ
-        Qi3sozaXvTzLkACFmbKYDvGkDr4sV3iZpMAR1B0qZ9Th0ZD0Q88r4oxCPewD6dIZ
-        dRUjiMf5VWM3ae26/o2OSXG6FoX7IY5OZVwnIbWEGjhLHEkP3BQ6YQ5oV4cjBKMQ
-        ==
-X-ME-Sender: <xms:4jXXX-19vytQozBf_m7-rNESyX0E-1jzcFN2b6hAS5E5yG1avG6I6Q>
-    <xme:4jXXXxGoHZCxfrNmRPe4GU4k-amffjPrKgcdFjZ53UZ307mOPguOEumjcAXfiQPkM
-    -cxoFraLjo2-OmzR7k>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekkedgtdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:4jXXX24trKYxGV4XEEpWSRR7s_jK0XT2InWnssJfSAZCkmLnyI9A_g>
-    <xmx:4jXXX_2XazKLEuVyJrsxhhVwjdW0XTmf0LUUE_kz6Tw4oedhlA6ikw>
-    <xmx:4jXXXxHJ3OExOtwxNem680REY2YTSMGjs8JzErRNQnNow0cKxRoR7w>
-    <xmx:5DXXXw9T-FoJLGJfvTMRuruLJUZrSsfaj78qMcL8-ODYkzfZpMx8CQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 16B3B1080059;
-        Mon, 14 Dec 2020 04:52:34 -0500 (EST)
-Date:   Mon, 14 Dec 2020 10:52:32 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.xyz>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v2 15/21] phy: sun4i-usb: Add support for the H616 USB PHY
-Message-ID: <20201214095232.xgclim6ssrd4ngyv@gilmour>
-References: <20201211011934.6171-1-andre.przywara@arm.com>
- <20201211011934.6171-16-andre.przywara@arm.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="imxvm4zbeobw63ig"
-Content-Disposition: inline
-In-Reply-To: <20201211011934.6171-16-andre.przywara@arm.com>
+        Mon, 14 Dec 2020 04:55:13 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7838C0613D3;
+        Mon, 14 Dec 2020 01:54:32 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id q22so3943992eja.2;
+        Mon, 14 Dec 2020 01:54:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=+TLqkNu+h8gO95ZaplkB/B/fxqrw+QmRfatUThxlnac=;
+        b=pA2b4V26JigMdUJ9g3xzRZKQqhWaOOWSKkyTku3KsiSyBxRN8c3oCSOr/XnVZR0JM9
+         /sMVjJxQp/4KvDXARAwx+xTDXe4tMmM8EB5Nblp5gSSb3+xbtw2wOephhVWbptsYZ9xl
+         4mKsE86ExOV90EV/GLsaIu/d6zxKXZzrMWSwXDLz+Z2hNmtqiqD35bgCbKq9XV9dAml2
+         /vzh8kGui8ZkL8NJ7fHq37+zUa88BsiRbCJn74V5KKYX2/DBvG2Jek0ol1+PjEcuKNTf
+         YXbJACqjP230Y05RBCwxUtRjzbbeGSTlGz2YqkzspKiCz5oYKzfhWH1AFbvzLv3d9hi3
+         pFKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+TLqkNu+h8gO95ZaplkB/B/fxqrw+QmRfatUThxlnac=;
+        b=i1brFsqzqRy3VZH4mnOC5DNf9YMzoat/kTx2BvcC3O40hSK2kygCT7l+BeI3nEUywp
+         wCn8c/a2OGWuVFjhV1+KLEQEOxIOXWQQ9CDo+bo11ms0cnnEjcey02lPVwb5gR4hfmgg
+         ys4+L8eKptKeBXgepECGQGWHWEPFXd6c3XCyRWp1WfcaFmjypLKB4tvyTJ3tZpi1HtJF
+         iW774Q03Mzw0GQMp1sUNCtAF+grlYUSo75dqWQiavejXsCoVTZtUMpR1m7H/INCbPOcD
+         c0tZpa/FzACqqlPx19+hN2BVB7EUD8Xi1YNqQrxzU0L0zWte1p3WCZkMiZZzD5N9yToC
+         Gg3A==
+X-Gm-Message-State: AOAM5314W4NmcZVUUlD9zNy+k3sE1UM/if8WO8Z/mSBDv0n7a3CkEeG6
+        3d+hotztDeGI6tyN7uF3taU=
+X-Google-Smtp-Source: ABdhPJx2BLvNpvotfHBPfnyEpidTSKq9CyRpYFMgbp28a/tT4rvBmhwGk1WP3mEUKpiXqgxkXWlu1Q==
+X-Received: by 2002:a17:906:7687:: with SMTP id o7mr22009036ejm.209.1607939671569;
+        Mon, 14 Dec 2020 01:54:31 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2dd4:5300:de8:a057:1d20:a710])
+        by smtp.gmail.com with ESMTPSA id d14sm16140932edn.31.2020.12.14.01.54.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 01:54:30 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH v2] scsi: sd: remove obsolete variable in sd_remove()
+Date:   Mon, 14 Dec 2020 10:54:24 +0100
+Message-Id: <20201214095424.12479-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 140ea3bbf39a ("sd: use __register_blkdev to avoid a modprobe for an
+unregistered dev_t") removed blk_register_region(devt, ...) in sd_remove()
+and since then, devt is unused in sd_remove().
 
---imxvm4zbeobw63ig
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hence, make W=1 warns:
 
-On Fri, Dec 11, 2020 at 01:19:28AM +0000, Andre Przywara wrote:
-> The USB PHY used in the Allwinner H616 SoC inherits some traits from its
-> various predecessors: it has four full PHYs like the H3, needs some
-> extra bits to be set like the H6, and clears a different bit in the
-> PMU_UNK1 register like the A100.
->=20
-> Name all those properties in a new config struct and assign a new
-> compatible name to it.
->=20
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+  drivers/scsi/sd.c:3516:8:
+      warning: variable 'devt' set but not used [-Wunused-but-set-variable]
 
-It looks like you forgot the binding for that one?
+Simply remove this obsolete variable.
 
-Maxime
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on current master and next-20201113, next-20201211
 
---imxvm4zbeobw63ig
-Content-Type: application/pgp-signature; name="signature.asc"
+The patch was submitted for inclusion in scsi:
 
------BEGIN PGP SIGNATURE-----
+  https://lore.kernel.org/lkml/20201116070035.11870-1-lukas.bulwahn@gmail.com/
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9c14AAKCRDj7w1vZxhR
-xRhLAP9uUe47JO49+zYAi2qHvQofZPaV4bW5UWMOmHnxKoCK2QEAznzuW9uBXRQa
-Z7B2iWnSGkCXa3o2CSlKrZA4+LSM4AU=
-=h2MY
------END PGP SIGNATURE-----
+v1 -> v2:
 
---imxvm4zbeobw63ig--
+Christoph and Nathan reviewed, and I added the tags here.
+Martin asked the patch to go through block.
+
+Jens, can you please pick this minor non-urgent clean-up patch?
+
+ drivers/scsi/sd.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index 679c2c025047..21675a98620d 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -3510,10 +3510,8 @@ static int sd_probe(struct device *dev)
+ static int sd_remove(struct device *dev)
+ {
+ 	struct scsi_disk *sdkp;
+-	dev_t devt;
+ 
+ 	sdkp = dev_get_drvdata(dev);
+-	devt = disk_devt(sdkp->disk);
+ 	scsi_autopm_get_device(sdkp->device);
+ 
+ 	async_synchronize_full_domain(&scsi_sd_pm_domain);
+-- 
+2.17.1
+
