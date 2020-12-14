@@ -2,74 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A365A2DA379
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA532DA37F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502064AbgLNWgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 17:36:32 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:39541 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439277AbgLNWg2 (ORCPT
+        id S2502184AbgLNWhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 17:37:25 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:39868 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441166AbgLNWhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 17:36:28 -0500
-Received: from cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net ([80.193.200.194] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kowRQ-0007kT-F7; Mon, 14 Dec 2020 22:35:40 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] selftests/bpf: fix spelling mistake "tranmission" -> "transmission"
-Date:   Mon, 14 Dec 2020 22:35:39 +0000
-Message-Id: <20201214223539.83168-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 14 Dec 2020 17:37:04 -0500
+Received: by mail-ot1-f67.google.com with SMTP id d8so17458471otq.6;
+        Mon, 14 Dec 2020 14:36:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=muRKuV6p86ck6Xh8iJfHfvWMBV8uDpANRpY7OayqqoY=;
+        b=NnWqV7pGuSUIvi4oDYNEPVuR9RV4/q3zTye4hhykcUv6RNPWxbM9dN4SozG18M/yQZ
+         VMkIIX0TmN+F0smdcXf0q1YHjgVQ3UtGM15EllhTK0RmfnWMqaxUTkNI9yZBOGg0KmRW
+         K/PKyJ2pgaZuNqdJhlVdK3h6N0PO4GIPL9ihEhI29d7h8CTwTaUPXFm29XQlRHLJ54D7
+         54IUww/axtQ+/9q/1gemgXX1KpnERj8X7digEFx8uwu53Tv5Gw1hTnHgMlReEm3+BbqS
+         dUa2cgTmSRJMPTyZFqV5gxxX8DiKs8YZXtM29XZkhQVJXTODwv4Z6ZkTfExF0tVl8LIT
+         Lc2g==
+X-Gm-Message-State: AOAM532RzR9b7IdfzFxctTImJWYimvqD5J92Sj3CkW+/u4QY4+oHTU9O
+        lJM7JX6a8JgO6Uh2ls2ciA==
+X-Google-Smtp-Source: ABdhPJyhS6m8TRT1cXi677SphG9iioyteB4JQ+m46tBfZpNxy4D7/3LPFPEzKarrgDjh4d0erS/9UA==
+X-Received: by 2002:a9d:4e87:: with SMTP id v7mr11804853otk.302.1607985383468;
+        Mon, 14 Dec 2020 14:36:23 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id o49sm4649683ota.51.2020.12.14.14.36.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 14:36:22 -0800 (PST)
+Received: (nullmailer pid 2509929 invoked by uid 1000);
+        Mon, 14 Dec 2020 22:36:21 -0000
+Date:   Mon, 14 Dec 2020 16:36:21 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     jacek.anaszewski@gmail.com, pavel@ucw.cz, dmurphy@ti.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org, thunder.leizhen@huawei.com
+Subject: Re: [PATCH v2] dt-bindings: leds: Document commonly used LED triggers
+Message-ID: <20201214223621.GA2493849@robh.at.kernel.org>
+References: <20201210082449.30586-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210082449.30586-1-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, Dec 10, 2020 at 01:54:49PM +0530, Manivannan Sadhasivam wrote:
+> This commit documents the LED triggers used commonly in the SoCs. Not
+> all triggers are documented as some of them are very application specific.
+> Most of the triggers documented here are currently used in devicetrees
+> of many SoCs.
 
-There are two spelling mistakes in output messages. Fix these.
+The idea with recent LED binding changes is to move away from 
+'linux,default-trigger' to 'function' and 'trigger-sources' and to have 
+some sort of standardized names.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- tools/testing/selftests/bpf/xdpxceiver.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> While at it, let's also sort the triggers in ascending order.
 
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index 014dedaa4dd2..1e722ee76b1f 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.c
-+++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -715,7 +715,7 @@ static void worker_pkt_dump(void)
- 		int payload = *((uint32_t *)(pkt_buf[iter]->payload + PKT_HDR_SIZE));
- 
- 		if (payload == EOT) {
--			ksft_print_msg("End-of-tranmission frame received\n");
-+			ksft_print_msg("End-of-transmission frame received\n");
- 			fprintf(stdout, "---------------------------------------\n");
- 			break;
- 		}
-@@ -747,7 +747,7 @@ static void worker_pkt_validate(void)
- 			}
- 
- 			if (payloadseqnum == EOT) {
--				ksft_print_msg("End-of-tranmission frame received: PASS\n");
-+				ksft_print_msg("End-of-transmission frame received: PASS\n");
- 				sigvar = 1;
- 				break;
- 			}
--- 
-2.29.2
+I'm not sure we want that. Probably better to keep related functions 
+together.
 
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+> 
+> Changes in v2:
+> 
+> * Added more triggers, fixed the regex
+> * Sorted triggers in ascending order
+> 
+>  .../devicetree/bindings/leds/common.yaml      | 78 ++++++++++++++-----
+>  1 file changed, 60 insertions(+), 18 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
+> index f1211e7045f1..3c2e2208c1da 100644
+> --- a/Documentation/devicetree/bindings/leds/common.yaml
+> +++ b/Documentation/devicetree/bindings/leds/common.yaml
+> @@ -79,24 +79,66 @@ properties:
+>        the LED.
+>      $ref: /schemas/types.yaml#definitions/string
+>  
+> -    enum:
+> -        # LED will act as a back-light, controlled by the framebuffer system
+> -      - backlight
+> -        # LED will turn on (but for leds-gpio see "default-state" property in
+> -        # Documentation/devicetree/bindings/leds/leds-gpio.yaml)
+> -      - default-on
+> -        # LED "double" flashes at a load average based rate
+> -      - heartbeat
+> -        # LED indicates disk activity
+> -      - disk-activity
+> -        # LED indicates IDE disk activity (deprecated), in new implementations
+> -        # use "disk-activity"
+> -      - ide-disk
+> -        # LED flashes at a fixed, configurable rate
+> -      - timer
+> -        # LED alters the brightness for the specified duration with one software
+> -        # timer (requires "led-pattern" property)
+> -      - pattern
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +                # LED indicates mic mute state
+> +              - audio-micmute
+> +                # LED indicates audio mute state
+> +              - audio-mute
+> +                # LED will act as a back-light, controlled by the framebuffer system
+> +              - backlight
+> +                # LED indicates bluetooth power state
+> +              - bluetooth-power
+> +                # LED indicates activity of all CPUs
+> +              - cpu
+> +                # LED will turn on (but for leds-gpio see "default-state" property in
+> +                # Documentation/devicetree/bindings/leds/leds-gpio.yaml)
+> +              - default-on
+> +                # LED indicates disk activity
+> +              - disk-activity
+> +                # LED indicates disk read activity
+> +              - disk-read
+> +                # LED indicates disk write activity
+> +              - disk-write
+> +                # LED indicates camera flash state
+> +              - flash
+> +                # LED "double" flashes at a load average based rate
+> +              - heartbeat
+> +                # LED indicates IDE disk activity (deprecated), in new implementations
+> +                # use "disk-activity"
+> +              - ide-disk
+> +                # LED indicates MTD memory activity
+> +              - mtd
+> +                # LED indicates NAND memory activity (deprecated),
+> +                # in new implementations use "mtd"
+> +              - nand-disk
+> +                # No trigger assigned to the LED. This is the default mode
+> +                # if trigger is absent
+> +              - none
+> +                # LED alters the brightness for the specified duration with one software
+> +                # timer (requires "led-pattern" property)
+> +              - pattern
+> +                # LED flashes at a fixed, configurable rate
+> +              - timer
+> +                # LED indicates camera torch state
+> +              - torch
+> +                # LED indicates USB gadget activity
+> +              - usb-gadget
+> +                # LED indicates USB host activity
+> +              - usb-host
+> +      - items:
+> +            # LED indicates activity of [N]th CPU
+> +          - pattern: "^cpu[0-9]{1,2}$"
+> +      - items:
+> +            # LED indicates power status of [N]th Bluetooth HCI device
+> +          - pattern: "^hci[0-9]{1,2}-power$"
+> +      - items:
+> +            # LED indicates [N]th MMC storage activity
+> +          - pattern: "^mmc[0-9]{1,2}$"
+> +      - items:
+> +            # LED indicates [N]th WLAN Tx activity
+> +          - pattern: "^phy[0-9]{1,2}tx$"
+>  
+>    led-pattern:
+>      description: |
+> -- 
+> 2.25.1
+> 
