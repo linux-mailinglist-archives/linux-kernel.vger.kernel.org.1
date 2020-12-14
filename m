@@ -2,92 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E92F2D9363
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 07:55:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EB32D9369
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 07:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438801AbgLNGyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 01:54:39 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:41440 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728171AbgLNGyW (ORCPT
+        id S2438822AbgLNG6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 01:58:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727672AbgLNG63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 01:54:22 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BE6rJLs044767;
-        Mon, 14 Dec 2020 00:53:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607928799;
-        bh=fjMxuww0pI6MgGW3bPWunKl2njfFRpIUYB2BKc1LH+k=;
-        h=From:To:CC:Subject:Date;
-        b=sMP5NYwsVFA0Mgnuq4fje42VbNYMVRZa1xiKSw5AWmy25+W5Fx+8ek+Iz4uIjNrqc
-         JyP2q99M3ACpN95rEzoun/GeSE7XUJ7Bx/AVjPIjMHILN6DgkiAbaCYWjKNTWpNMDP
-         ea7lwgE9YSrQsr4GveWcOclqaq6T3xzuACMEM+Cw=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BE6rJUa068701
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Dec 2020 00:53:19 -0600
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 14
- Dec 2020 00:53:19 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 14 Dec 2020 00:53:19 -0600
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BE6rGWS050104;
-        Mon, 14 Dec 2020 00:53:17 -0600
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <vkoul@kernel.org>, <nm@ti.com>, <ssantosh@kernel.org>
-CC:     <dan.j.williams@intel.com>, <t-kristo@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <vigneshr@ti.com>, <grygorii.strashko@ti.com>
-Subject: [PATCH] soc: ti: k3-ringacc: Use correct error casting in k3_ringacc_dmarings_init
-Date:   Mon, 14 Dec 2020 08:54:21 +0200
-Message-ID: <20201214065421.5138-1-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 14 Dec 2020 01:58:29 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66581C0613CF;
+        Sun, 13 Dec 2020 22:57:49 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id u19so16016238edx.2;
+        Sun, 13 Dec 2020 22:57:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SBDQ/ozr1+cMGjDjwKraN3A/q+s0aVrfJg3tJsBwW/c=;
+        b=QvmF/vu64Ei8tR6QADdulsd7lyo1cn3N/x/le8e6+ICWMme6u7X1yVHpDnKhVV1PQu
+         Ci3yOVEl0AVBmWSoyDWaBpd//YjERpJdy+Bni0re0LDz8TAHm7NrDKOPmoKrubq5MZ+2
+         toB9XQXCemEc1yBiPwEk7S21aNkH6ZTAb0+Qdefdy/w44TZf5ag9SPLvrPnkPgoyTqV2
+         PIC04Jaoe0g/SfzCNn6CzA2xcaLGe8ZkWY4AwmrvC2uixpwrStNMvX+2I1aMwGYmmUyQ
+         Oh73T2RxBcRhpKRTo1ilj0rxuYeNHGtGyCU3rzgQ0obM6wvNwAxtLFDXLAXD5eTagEIL
+         sIFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SBDQ/ozr1+cMGjDjwKraN3A/q+s0aVrfJg3tJsBwW/c=;
+        b=F+VCFJj3a8m+gOzPRsSrRgmlEDvnkVUPtccUIjm9setfiGUDnFgy2okwBMRddFVXPT
+         WhLOpVPdNhfRAjOBIepwptS0Kj3a9CtAA+DK3Ea5gfT7wtubPpYpv2sztqem2CStNzGm
+         TieCktatzOeqbqeLheJtufNOHX9SPcDkWdO25vb1jYIKgNykOSHP/jl7HiKZoIFUL3Ae
+         3lTgljLdMrY2JdxppO5BPdJi4lMqn8jA94HFApJs7nRqM8rbtAL/32u7qJKj4aPD3IZ7
+         tx55Q5b6WUwW4pvfWzHa9P0ac4FpxF9BYAmvgsRG63fCfxdLoDRxMQ2L82bikNhBXUzk
+         HnXA==
+X-Gm-Message-State: AOAM531G9c1GHBR2j3mfQgxdkE9zSk2Mf4N8fGHAXjnkAA3FHOcsonOg
+        /WMvDtzeLd5EEzFrggnrBX1b8zxHd9mYkqs2MYo=
+X-Google-Smtp-Source: ABdhPJy9fRCeat4gb5XKvmqoE7tXBBH2nVrfV3qBRQb1jokU/DqVjpgFa/P//03AdoLMtwqozlQM7SSYPoT/nhq5KVs=
+X-Received: by 2002:a05:6402:17a3:: with SMTP id j3mr23295833edy.333.1607929067913;
+ Sun, 13 Dec 2020 22:57:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20201211135139.49232-1-selvakuma.s1@samsung.com>
+ <CGME20201211135200epcas5p217eaa00b35a59b3468c198d85309fd7d@epcas5p2.samsung.com>
+ <20201211135139.49232-2-selvakuma.s1@samsung.com> <20201211180451.GA9103@redsun51.ssa.fujisawa.hgst.com>
+In-Reply-To: <20201211180451.GA9103@redsun51.ssa.fujisawa.hgst.com>
+From:   Selva Jove <selvajove@gmail.com>
+Date:   Mon, 14 Dec 2020 12:27:32 +0530
+Message-ID: <CAHqX9vYFudV1WX-R0oRBW7rKpCJzt_DgmW9FWZdDzOwMoCxfCw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 1/2] block: add simple copy support
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     SelvaKumar S <selvakuma.s1@samsung.com>,
+        linux-nvme@lists.infradead.org, axboe@kernel.dk,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, hch@lst.de,
+        sagi@grimberg.me, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, bvanassche@acm.org,
+        mpatocka@redhat.com, hare@suse.de, dm-devel@redhat.com,
+        snitzer@redhat.com, nj.shetty@samsung.com, joshi.k@samsung.com,
+        javier.gonz@samsung.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use ERR_CAST() when devm_ioremap_resource() fails.
+On Fri, Dec 11, 2020 at 11:35 PM Keith Busch <kbusch@kernel.org> wrote:
+>
+> On Fri, Dec 11, 2020 at 07:21:38PM +0530, SelvaKumar S wrote:
+> > +int blk_copy_emulate(struct block_device *bdev, struct blk_copy_payload *payload,
+> > +             gfp_t gfp_mask)
+> > +{
+> > +     struct request_queue *q = bdev_get_queue(bdev);
+> > +     struct bio *bio;
+> > +     void *buf = NULL;
+> > +     int i, nr_srcs, max_range_len, ret, cur_dest, cur_size;
+> > +
+> > +     nr_srcs = payload->copy_range;
+> > +     max_range_len = q->limits.max_copy_range_sectors << SECTOR_SHIFT;
+>
+> The default value for this limit is 0, and this is the function for when
+> the device doesn't support copy. Are we expecting drivers to set this
+> value to something else for that case?
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
-Hi Vinod,
+Sorry. Missed that. Will add a fix.
 
-it came to my attention too late. This patch fixes the sparse warnig introduced
-by the AM64 support in
-https://lore.kernel.org/lkml/20201208090440.31792-1-peter.ujfalusi@ti.com/
+>
+> > +     cur_dest = payload->dest;
+> > +     buf = kvmalloc(max_range_len, GFP_ATOMIC);
+> > +     if (!buf)
+> > +             return -ENOMEM;
+> > +
+> > +     for (i = 0; i < nr_srcs; i++) {
+> > +             bio = bio_alloc(gfp_mask, 1);
+> > +             bio->bi_iter.bi_sector = payload->range[i].src;
+> > +             bio->bi_opf = REQ_OP_READ;
+> > +             bio_set_dev(bio, bdev);
+> > +
+> > +             cur_size = payload->range[i].len << SECTOR_SHIFT;
+> > +             ret = bio_add_page(bio, virt_to_page(buf), cur_size,
+> > +                                                offset_in_page(payload));
+>
+> 'buf' is vmalloc'ed, so we don't necessarily have congituous pages. I
+> think you need to allocate the bio with bio_map_kern() or something like
+> that instead with that kind of memory.
+>
 
-Regards,
-Peter
+Sure. Will use bio_map_kern().
 
- drivers/soc/ti/k3-ringacc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > +             if (ret != cur_size) {
+> > +                     ret = -ENOMEM;
+> > +                     goto out;
+> > +             }
+> > +
+> > +             ret = submit_bio_wait(bio);
+> > +             bio_put(bio);
+> > +             if (ret)
+> > +                     goto out;
+> > +
+> > +             bio = bio_alloc(gfp_mask, 1);
+> > +             bio_set_dev(bio, bdev);
+> > +             bio->bi_opf = REQ_OP_WRITE;
+> > +             bio->bi_iter.bi_sector = cur_dest;
+> > +             ret = bio_add_page(bio, virt_to_page(buf), cur_size,
+> > +                                                offset_in_page(payload));
+> > +             if (ret != cur_size) {
+> > +                     ret = -ENOMEM;
+> > +                     goto out;
+> > +             }
+> > +
+> > +             ret = submit_bio_wait(bio);
+> > +             bio_put(bio);
+> > +             if (ret)
+> > +                     goto out;
+> > +
+> > +             cur_dest += payload->range[i].len;
+> > +     }
+>
+> I think this would be a faster implementation if the reads were
+> asynchronous with a payload buffer allocated specific to that read, and
+> the callback can enqueue the write part. This would allow you to
+> accumulate all the read data and write it in a single call.
 
-diff --git a/drivers/soc/ti/k3-ringacc.c b/drivers/soc/ti/k3-ringacc.c
-index c88c305ba367..b495b0d5d0fa 100644
---- a/drivers/soc/ti/k3-ringacc.c
-+++ b/drivers/soc/ti/k3-ringacc.c
-@@ -1476,7 +1476,7 @@ struct k3_ringacc *k3_ringacc_dmarings_init(struct platform_device *pdev,
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ringrt");
- 	base_rt = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(base_rt))
--		return base_rt;
-+		return ERR_CAST(base_rt);
- 
- 	ringacc->rings = devm_kzalloc(dev,
- 				      sizeof(*ringacc->rings) *
--- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
+Sounds like a better approach. Will add this implementation in v4.
