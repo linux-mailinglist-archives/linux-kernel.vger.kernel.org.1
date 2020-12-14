@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F1A2D9703
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:08:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 023FB2D9717
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407705AbgLNLIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 06:08:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42276 "EHLO
+        id S2407676AbgLNLH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 06:07:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730020AbgLNLIC (ORCPT
+        with ESMTP id S1726289AbgLNLHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:08:02 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0420DC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 03:07:22 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id p18so648321pgm.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 03:07:21 -0800 (PST)
+        Mon, 14 Dec 2020 06:07:12 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5496CC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 03:06:32 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id r24so29103410lfm.8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 03:06:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nhvczI875RAqYozQmX6a4KjWPjocOe6JQuYZD7+5AbY=;
-        b=a59rYTd34IN0283Kz0g5E3Dac35Dk/rAaqo7/ZxKc8hDqNM93JEihIaHgJg9dyYZQ5
-         6alyoRFrLGHkpdU0OxqB0SH6BTcbh6a97Bxbi/nSX0EASaowqfmxHeptaQ9WS3yULUVF
-         kIHy6iK7yZz9MK7fC4ej6vFReon7ppo13rIckXDGSpK3stREcfBatHkIwfJtxvvnwmQx
-         EPdd0gERHndsau6Pe2wblaLOK+MnqBplB1kCAQJLhl9fzlA5XSd0Pk/fXDxGdKbW+vCm
-         2oQVp6CEUIZC6bRYDR4TybwwN+v7bezqT/1DPq7f7DgpQ2cbcA1yN8xnsoQEWGxqyAp3
-         sr2g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dV2ATFpp82f3puHBoSuNF7OINlKucj96jVBrKaQtfvk=;
+        b=f2zr68kFm8jY1AIIkhcI8flmhCXrjq8nD+QkC+7U9EqeZLFcIbySZOo2BHAk3hD8fG
+         K79sb/0u402Nept/UUANSfr21h7AQ0SvB0wJatlEOIHVLZs84k61wEkTujTjGJyBF55O
+         xGLXiRw3UYofkjx+JYBbpzVtNwldfIrCdSHVAQi72Oxstvl6cKnAbzzc/oXyoL97/wiR
+         KDhnDlUg2r+K7NrLy+RHpWt205dAPg+Wb6gX5w2f39V+TmM9UGM/3/2+yGf/PANppb5V
+         PNet7nk22ZsNj7P32cgfSwDu9qsdliNpz7qUY2bu5O8RXZiqNEJERRtKsKQigM1v+Dye
+         8omA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nhvczI875RAqYozQmX6a4KjWPjocOe6JQuYZD7+5AbY=;
-        b=DtBRdyx3PFW7ryuSQd60wHTM6g8VcHKtSBGYtSmCkV7VRHPZ+js+v+ETsTdZqRA1c9
-         7pFmfvQ6jITLapHrXCZg4BA3NwKfW7WZr22d//5tauoMipJaJ+pUq8VC0Znq2bk9Gc9G
-         z8y0mtfc9GNRE2ngfVFEFPoIZy6AS8DR5EtCo4OpBodG9qyDlKEV0yY1WaZtYMAPIDGT
-         s53xxaxx9QEbsIpkbnlTV2IM2TYOxYL2UYwMcJPowp6mttYOzC8Yf9NzujpPQbbahtNp
-         395ZZCPxtml2NCbq4ETL7P0t68UFsnffyaQ71NgI4Q8uLtKcR5us6fBzYU0mHq2JCEuI
-         4dcA==
-X-Gm-Message-State: AOAM531RoFz4JmZEiJTo49T9yQbNSSrlI/UZi47WW2O5pkD1kklyhTd3
-        +T5I8cuJp5ui/5rx0ZH3FfIouA==
-X-Google-Smtp-Source: ABdhPJyj5LiZDZBmokWfP7RHGIp0ZCkGV97YY5y91duF0GaYeFoq/e/d5l1YcsPJCwj51i2gL+JqzQ==
-X-Received: by 2002:a63:4f4c:: with SMTP id p12mr20929161pgl.432.1607944041554;
-        Mon, 14 Dec 2020 03:07:21 -0800 (PST)
-Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id k15sm19067997pfh.40.2020.12.14.03.07.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 14 Dec 2020 03:07:20 -0800 (PST)
-Date:   Mon, 14 Dec 2020 16:37:17 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        Giovanni Gherdovich <ggherdovich@suse.com>
-Subject: Re: [PATCH v1 2/4] cpufreq: schedutil: Adjust utilization instead of
- frequency
-Message-ID: <20201214110717.boz634eih2ymjtju@vireshk-i7>
-References: <20360841.iInq7taT2Z@kreacher>
- <1916732.tSaCp9PeQq@kreacher>
- <20201208085146.pzem6t3mt44xwxkm@vireshk-i7>
- <CAJZ5v0idoNOPU5-toOw+uTRvjJz60Ddc2xV7rMQeufY_EW58uQ@mail.gmail.com>
- <20201209051642.ddwgds4gznxt3lfn@vireshk-i7>
- <CAJZ5v0iOvG0PNQDXN00oKCzyZmaF71UB+DJ+zHL5P3xRCAk1tQ@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dV2ATFpp82f3puHBoSuNF7OINlKucj96jVBrKaQtfvk=;
+        b=izDx7Buo4HKX8NAxB1WTmchwfJHWTD2G34xv1MBpmzYEBd1Put3qTBZ3QeBtgmZFN1
+         orrt8d2bdRUYjWg6qJTdrwjPmGzlEdy2ouiqzh3J6m582xCbNXawCBdG6nlh5/OPYRCb
+         pwSMJZY4KXfkh1xy4OY75X3M2btXAyzlL2ERtErAQNRjE6he29TF03YOnE03nFxSYD2x
+         9u5n47bOEruNYg4fu0AU1dmyYdDp8EOBtD9IWb7eCD93ou+C9JGbeLzwr0OZqPs+VsjX
+         WWustcvXMoquQ6WtCr4KqskBZ5eoYjhAlmXAEGXVcgZKkEOkTJvZ4saTvcaMTqk/vAeR
+         04iQ==
+X-Gm-Message-State: AOAM530LyOIIcGOtniJkwoaEMZ/wVPLrVpDBg1u2nSyWhuhIcpwUDOFn
+        +LXclcVJksJJBTuWM6SJfUVLIA==
+X-Google-Smtp-Source: ABdhPJx9dYzZhY3Lo8Qf63HhlVJtwo0GTXla3Lptn2PZGE9qiNMUMosq3WfCQtTZfSv1N5pNNiAAhw==
+X-Received: by 2002:a19:ed6:: with SMTP id 205mr9757848lfo.159.1607943990877;
+        Mon, 14 Dec 2020 03:06:30 -0800 (PST)
+Received: from localhost ([31.134.121.151])
+        by smtp.gmail.com with ESMTPSA id h21sm183488lji.89.2020.12.14.03.06.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 03:06:30 -0800 (PST)
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+To:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v4 0/2] usb: dwc3: drd: Check graph presence for extcon
+Date:   Mon, 14 Dec 2020 13:07:39 +0200
+Message-Id: <20201214110741.8512-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0iOvG0PNQDXN00oKCzyZmaF71UB+DJ+zHL5P3xRCAk1tQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-12-20, 16:32, Rafael J. Wysocki wrote:
-> So I have misunderstood your example.
-> 
-> In the non-invariant case (which is or shortly will be relevant for
-> everybody interested) cpuinfo.max_freq goes into the calculation
-> instead of the current frequency and the mapping between util and freq
-> is linear.  In the freq-dependent case it is not linear, of course.
-> 
-> So I guess the concern is that this changes the behavior in the
-> freq-dependent case which may not be desirable.
+dwc3 shows error message on probe if port node wasn't found in PHY
+controller node. But that is actually a valid case for the role switch
+mode and OTG mode. This patch series makes sure to hide that error
+message and also does a bit of refactoring for that code. Similar patch
+(for different subsystem) already exists in kernel tree:
+commit ea5bc3b15e0f ("drm/of: Make drm_of_find_panel_or_bridge() to
+check graph's presence"), and the whole `of_graph_is_present()' function
+was implemented exactly for this kind of situation.
 
-Right and we end up increasing the frequency here..
+In v2 submission this was a single patch. But in offline discussion with
+Andy Shevchenko it was decided it's better to split it into two patches
+in order to provide the minimal change for further possible backporting,
+and then do all style related changes on top of it in the second patch.
 
-> Fair enough, but I'm not sure if that is enough of a reason to avoid
-> sharing the code between the "perf" and "freq" paths.
+Sam Protsenko (2):
+  usb: dwc3: drd: Avoid error when extcon is missing
+  usb: dwc3: drd: Improve dwc3_get_extcon() style
 
-Sure, I am not against sharing the code path, but all we need is
-something like this here:
-
-     if (sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
-             sg_cpu->util = prev_util;
-     else
-             next_f = get_next_freq(sg_policy, sg_cpu->util, sg_cpu->max);
-
-i.e. we don't need to call get_next_freq() in this case at all.
+ drivers/usb/dwc3/drd.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
 -- 
-viresh
+2.29.2
+
