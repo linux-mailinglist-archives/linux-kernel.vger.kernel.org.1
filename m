@@ -2,93 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 788882D96A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C65D42D96AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730488AbgLNKvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 05:51:47 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:45035 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726237AbgLNKvr (ORCPT
+        id S1731284AbgLNKyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 05:54:53 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:55846 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725944AbgLNKyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 05:51:47 -0500
-Received: by mail-lf1-f68.google.com with SMTP id m25so28965401lfc.11;
-        Mon, 14 Dec 2020 02:51:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SWhRX/NAZKOA9RtVoo0gk8MZ4dLnq8xQ/S9pdibaYEk=;
-        b=gy+bbSQm1srTUlSiW0bUZ3ELb6/QYReNjf66JcFXP2/ckmacnhQiVvUFQUns5SlUe9
-         4D8d8qePgW8p3r6VDaE5yvKFImBsTcx3ZWUDj3jl2g+8BB6gun9B92IeFy1gknnaHHtN
-         rYJouUhJ8ezoSuqN7HURjlkE3V7t1lZx8r7eRhp+oFkJh/0iUZntzVg8vxbJSPDLwnhI
-         i6lbzrFsMKQ8jZxea3hthFVKMQjGItqb6jzXf9SEBa3Ab/TWaFUhoNfk65os27PSBdL8
-         TDecA0r1Qj2r6rvvgaINVP10+1M+2UWFmDObJ8GuFWIccBSEhjiR9HNgqgKA0cLzbAB+
-         KTvQ==
-X-Gm-Message-State: AOAM531ViIndBzM9tz/5qTB+OF03NG56RKS5vQywgttIzFDqmNtF3F4P
-        CKrXy9jzwBx78d2Saw+1PqclpLjvm4ZcEQ==
-X-Google-Smtp-Source: ABdhPJymF8WJboilYFyBUUptp8FxMj8aIncNP75EjAKJMVbZZpYOJqxhUdTVDXGh4l6NGCuHFeDPNg==
-X-Received: by 2002:a2e:9ace:: with SMTP id p14mr4685863ljj.439.1607943064652;
-        Mon, 14 Dec 2020 02:51:04 -0800 (PST)
-Received: from xi.terra (c-b3cbe455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.203.179])
-        by smtp.gmail.com with ESMTPSA id p24sm1845434lfh.70.2020.12.14.02.51.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 02:51:03 -0800 (PST)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kolRT-0007RK-OH; Mon, 14 Dec 2020 11:50:59 +0100
-Date:   Mon, 14 Dec 2020 11:50:59 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        syzbot+e87ebe0f7913f71f2ea5@syzkaller.appspotmail.com,
-        stable <stable@vger.kernel.org>, linux-usb@vger.kernel.org
-Subject: Re: [PATCH] USB: yurex: fix control-URB timeout handling
-Message-ID: <X9dDkwlOTFeo9eZ6@localhost>
-References: <000000000000e2186705b65e671f@google.com>
- <20201214104444.28386-1-johan@kernel.org>
+        Mon, 14 Dec 2020 05:54:53 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BEArEQ8024102;
+        Mon, 14 Dec 2020 11:53:53 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=swqwm3JkRg58N/8FNiszAxWvcaShbbL+jaO0DhWTrwQ=;
+ b=qu8AThVi1YT9cKAJL7iwXdkN/01zWOdfyb86Ovnbt0ncrxHEGRAr7/OAAHXUaelr9bfA
+ rT7XWI+oprt57DUEkLBD/hm88AoVbfCw++FCtr72LdI3WtIRQvNhEGE0Cp0I8YVW9wag
+ YMKIlZ7VoIEEiQt99BaDMGd5vzqbt2wYvH+dI1yfBHklQ78tmLf6J3lX5YPwqbRUrFRr
+ e8Gq7ce3ZXtohEWLLFHgPm2xzSMtERMVHionoKoiDJLJQWoz0iIjf2fWE0STyCaMS+Jv
+ xt9cC6UI83vSqQ2G3IVSXAIy2KgWOXVP2lKrHf+DJ1IiBG71FuDtG0h1gjLwes5p0WyM 7w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 35cpwdtm62-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Dec 2020 11:53:53 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DA2AC100039;
+        Mon, 14 Dec 2020 11:53:50 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9F10324C9E2;
+        Mon, 14 Dec 2020 11:53:50 +0100 (CET)
+Received: from lmecxl0912.lme.st.com (10.75.127.47) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 14 Dec
+ 2020 11:53:50 +0100
+Subject: Re: [RFC] net: stmmac: Problem with adding the native GPIOs support
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20201214092516.lmbezb6hrbda6hzo@mobilestation>
+From:   Alexandre Torgue <alexandre.torgue@st.com>
+Message-ID: <8477f6be-eb8d-6b6f-33f2-835819542045@st.com>
+Date:   Mon, 14 Dec 2020 11:52:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201214104444.28386-1-johan@kernel.org>
+In-Reply-To: <20201214092516.lmbezb6hrbda6hzo@mobilestation>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-14_04:2020-12-11,2020-12-14 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 11:44:44AM +0100, Johan Hovold wrote:
-> Make sure to always cancel the control URB in write() so that it can be
-> reused after a timeout or spurious CMD_ACK.
+Hi Serge,
+
+Sorry I never used GPIO provided by DWMAC IP. Obviously, I think is to 
+late for you to use GPIOs provided by your SoC directly. Unfortunately, 
+it seems to be a "perfect" chicken and eggs problem :(.
+
+Do you have possibilty to "play" with gpio setting. I mean change 
+configuration of them (at least for reset one) before perform a DMA 
+reset: If you have a pull-up on RST line and you could "disconnect" GPO 
+inside GMAC then your PHY should remain on during DMA reset phase.
+
+regards
+Alex
+
+On 12/14/20 10:25 AM, Serge Semin wrote:
+> Hello folks,
 > 
-> Currently any further write requests after a timeout would fail after
-> triggering a WARN() in usb_submit_urb() when attempting to submit the
-> already active URB.
+> I've got a problem, which has been blowing by head up for more than three
+> weeks now, and I'm desperately need your help in that matter. See our
+> Baikal-T1 SoC is created with two DW GMAC v3.73a IP-cores. Each core
+> has been synthesized with two GPIOs: one as GPI and another as GPO. There
+> are multiple Baikal-T1-based devices have been created so far with active
+> GMAC interface usage and each of them has been designed like this:
 > 
-> Reported-by: syzbot+e87ebe0f7913f71f2ea5@syzkaller.appspotmail.com
-> Fixes: 6bc235a2e24a ("USB: add driver for Meywa-Denki & Kayac YUREX")
-> Cc: stable <stable@vger.kernel.org>     # 2.6.37
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> ---
-
-Forgot linux-usb...
-
-Let's try this too:
-
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-
->  drivers/usb/misc/yurex.c | 3 +++
->  1 file changed, 3 insertions(+)
+>   +------------------------+
+>   | Baikal-T1 +------------+       +------------+
+>   |   SoC     | DW GMAC    |       |   Some PHY |
+>   |           |      Rx-clk+<------+Rx-clk      |
+>   |           |            |       |            |
+>   |           |         GPI+<------+#IRQ        |
+>   |           |            |       |            |
+>   |           |       RGMII+<----->+RGMII       |
+>   |           |        MDIO+<----->+MDIO        |
+>   |           |            |       |            |
+>   |           |         GPO+------>+#RST        |
+>   |           |            |       |            |
+>   |           |      Tx-clk+------>+Tx-clk      |
+>   |           |            |       |            |
+>   |           +------------+       +------------+
+>   +------------------------+
 > 
-> diff --git a/drivers/usb/misc/yurex.c b/drivers/usb/misc/yurex.c
-> index 73ebfa6e9715..c640f98d20c5 100644
-> --- a/drivers/usb/misc/yurex.c
-> +++ b/drivers/usb/misc/yurex.c
-> @@ -496,6 +496,9 @@ static ssize_t yurex_write(struct file *file, const char __user *user_buffer,
->  		timeout = schedule_timeout(YUREX_WRITE_TIMEOUT);
->  	finish_wait(&dev->waitq, &wait);
->  
-> +	/* make sure URB is idle after timeout or (spurious) CMD_ACK */
-> +	usb_kill_urb(dev->cntl_urb);
-> +
->  	mutex_unlock(&dev->io_mutex);
->  
->  	if (retval < 0) {
+> Each of such devices has got en external RGMII-PHY attached configured via the
+> MDIO bus with Rx-clock supplied by the PHY and Tx-clock consumed by it. The
+> main peculiarity of such configuration is that the DW GMAC GPIOs have been used
+> to catch the PHY IRQs and to reset the PHY. Seeing the GPIOs support hasn't
+> been added to the STMMAC driver it's the very first setup for now, which has
+> been using them. Anyway the hardware setup depicted above doesn't seem
+> problematic at the first glance, but in fact it is. See, the DW *MAC driver
+> (STMMAC ethernet driver) is doing the MAC reset each time it performs the
+> device open or resume by means of the call-chain:
+> 
+>    stmmac_open()---+
+>                    +->stmmac_hw_setup()->stmmac_init_dma_engine()->stmmac_reset().
+>    stmmac_resume()-+
+> 
+> Such reset causes the whole interface reset: MAC, DMA and, what is more
+> important, GPIOs as being exposed as part of the MAC registers. That
+> in our case automatically causes the external PHY reset, what neither
+> the STTMAC driver nor the PHY subsystem expect at all.
+> 
+> Moreover the stmmac_reset() method polls the DMA_BUS_MODE.SFT_RESET flag
+> state to be sure the MAC is successfully completed. But since the external
+> PHY has got in reset state it doesn't generate the Rx-clk signal. Due to
+> that the MAC-DMA won't get out of the reset state so the stmmac_reset()
+> method will return timeout error. Of course I could manually restore the
+> GPIOs state in the stmmac_reset() before start to poll the SFT_RESET flag,
+> which may release the PHY reset. But that seems more like a workaround,
+> because the PHY still has been in reset and need to be reinitialized
+> anyway. Moreover some PHY may need to have more complicated reset cycle
+> with certain delays between RST assertion/de-assertion, so the workaround
+> won't work well for them.
+> 
+> To sum it up my question is what is the right way to resolve the problem
+> described above? My first idea was to just move the MAC reset from the
+> net-device open()/close() callbacks to the
+> stmmac_dvr_probe()/stmmac_dvr_remove() functions and don't reset the whole
+> interface on each device open. The problems we may have in that case is
+> due to the suspend/resume procedures, which for some reason require the
+> MAC reset too. That's why I need your help in this matter. Do you have any
+> idea how to gently add the GPIOs support and don't break the STMMAC
+> driver?
+> 
+> One more tiny question regarding the DW *MAC drivers available in kernel.
+> Aside of the DW GMAC Baikal-T1 SoC has also got DW xGMAC v2.11a embedded
+> with XPCS PHY attached. My question is what driver should we better use to
+> handle our xGMAC interface? AFAICS there are three DW *MAC-related drivers
+> the kernel currently provides:
+> 1) drivers/net/ethernet/stmicro/stmmac
+> 2) drivers/net/ethernet/amd/
+> 3) drivers/net/ethernet/synopsys/
+> xGBE interface is supported by the drivers 1) and 2). In accordance with
+> https://www.spinics.net/lists/netdev/msg414148.html all xGMAC related
+> parts should have been added to 2), but recently the XGMAC support has
+> been added to 1). So I am confused what driver is now supposed to be used
+> for new xGMACs?
+> 
+> Regards,
+> -Sergey
+> 
