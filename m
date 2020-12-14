@@ -2,50 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177152D9C7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 946A02D9C7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 17:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440221AbgLNQVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 11:21:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
+        id S2440188AbgLNQVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 11:21:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440133AbgLNQUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 11:20:52 -0500
-From:   Oded Gabbay <ogabbay@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-kernel@vger.kernel.org
-Cc:     SW_Drivers@habana.ai
-Subject: [PATCH] habanalabs: register to pci shutdown callback
-Date:   Mon, 14 Dec 2020 18:20:07 +0200
-Message-Id: <20201214162007.29651-1-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S2440140AbgLNQVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 11:21:19 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D69A2225AB;
+        Mon, 14 Dec 2020 16:20:38 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1koqaS-001DWu-Nn; Mon, 14 Dec 2020 16:20:36 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 14 Dec 2020 16:20:36 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 01/15] irqchip: Allow to compile bcmstb on other platforms
+In-Reply-To: <20201214152731.mgoo2hvlu6uoi5md@gilmour>
+References: <20201210134648.272857-1-maxime@cerno.tech>
+ <20201210134648.272857-2-maxime@cerno.tech>
+ <e0f1aed2b0007eab6e9192ac73fd411f@kernel.org>
+ <20201214152731.mgoo2hvlu6uoi5md@gilmour>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <05aff5990faee6060696e98afb8b3a27@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: maxime@cerno.tech, eric@anholt.net, maarten.lankhorst@linux.intel.com, tzimmermann@suse.de, daniel.vetter@intel.com, airlied@linux.ie, bcm-kernel-feedback-list@broadcom.com, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl, linux-kernel@vger.kernel.org, mchehab@kernel.org, tglx@linutronix.de, dave.stevenson@raspberrypi.com, linux-rpi-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need to make sure our device is idle when rebooting a virtual
-machine. This is done in the driver level.
+Hi Maxime,
 
-The firmware will later handle FLR but we want to be extra safe and
-stop the devices until the FLR is handled.
+On 2020-12-14 15:27, Maxime Ripard wrote:
+> Hi Marc,
+> 
+> On Thu, Dec 10, 2020 at 05:59:09PM +0000, Marc Zyngier wrote:
 
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/common/habanalabs_drv.c | 1 +
- 1 file changed, 1 insertion(+)
+[...]
 
-diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
-index 6bbb6bca6860..032d114f01ea 100644
---- a/drivers/misc/habanalabs/common/habanalabs_drv.c
-+++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
-@@ -544,6 +544,7 @@ static struct pci_driver hl_pci_driver = {
- 	.id_table = ids,
- 	.probe = hl_pci_probe,
- 	.remove = hl_pci_remove,
-+	.shutdown = hl_pci_remove,
- 	.driver.pm = &hl_pm_ops,
- 	.err_handler = &hl_pci_err_handler,
- };
+>> I'm always sceptical of making interrupt controllers user-selectable.
+>> Who is going to know that they need to pick that one?
+>> 
+>> I'd be much more in favour of directly selecting this symbol
+>> from DRM_VC4_HDMI_CEC, since there is an obvious dependency.
+> 
+> It's a bit weird to me that the HDMI CEC support selects it, since that
+> interrupt controller is external and here no matter what.
+
+ From glancing at the series, I was under the impression that these
+controllers were there for the sole benefit of the HDMI controllers.
+Is there anything else connected to them?
+
+> Would selecting it from the ARCH_* Kconfig option work for you?
+
+Sure. My only ask is that the low level plumbing is selected without
+requiring any user guesswork.
+
+Thanks,
+
+         M.
 -- 
-2.17.1
-
+Jazz is not dead. It just smells funny...
