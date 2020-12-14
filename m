@@ -2,159 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7563D2D9238
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 05:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5F02D923C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 05:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438547AbgLNEP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 23:15:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
+        id S2438568AbgLNESr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 23:18:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgLNEPz (ORCPT
+        with ESMTP id S1725911AbgLNESr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 23:15:55 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F816C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 20:15:15 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id n1so8895133pge.8
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 20:15:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=IzItAb+/ARuy43MHZHytVoSiTjlxsOWc+L7HYoQ10Rk=;
-        b=sKJgfr148BjRYzX/HwC2xkFZ/0a4TrXgBfen9ZN7lMaB7SW+itnsNCLU5d5WxIzZKl
-         kwewH+B/EglrOnw8364mXmCmlESywVsBZn47nEoggNeEIwqyeoIQRpvlItqsgt5BDygy
-         /dXfwAKnD3GaI+f9n+q+YAwYnJJDiXtatldgOufQJnvB8u1gDNb3Gtnav0ozT96zps19
-         Q4mpXyjS94Mkjp7DcfEUhjkvGqmfg5SdCEpblMmXy+XbEYFPUSbJGuYPI5htzzEK3tS5
-         1KCdV3Vt7wXNb2B5be0n6lSrozvn+VwrxAqGKSt9wLA+Gfm+fH9Dmb2cDf+Mxzy9CTv4
-         vbkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=IzItAb+/ARuy43MHZHytVoSiTjlxsOWc+L7HYoQ10Rk=;
-        b=hw33JL75l3Y2HN4OZoRcA80yQNKbQsS1KMayiZrjK8+4JQPZXiSnX+67Sy2y+NGzI0
-         dtHQndtcj2vTrq8TGk46Tat3RVFkSAb3XtPtWD1n3g1HjIjhxBro6UPB0AJPuJGzPr8+
-         YtG2r9cK6Hd+SMqdfW5xQ3iKtn5p5KPaEcwHtHv3/osoReMBjJX+DaOg+/XqTRuP7Zo1
-         APBdDTB+4jsJcT2+Ktv5NzveURktiKUUFvfQJSp0CXkC6h2gkufXMsAUEwkUdZD9o06h
-         aUcYAdv5L3F2YZkXzhZ0uZk2ppizWTEKseG3l81+b+sOWvgGN/poeXwu8amwv1YBxskO
-         fedA==
-X-Gm-Message-State: AOAM530JRRlTLQfnVXGeXCvGXTM1E046nGefNfiqxCIBU0Bhydb4IjG1
-        aQLA4G9Q7SDdQcTVn25ELDo=
-X-Google-Smtp-Source: ABdhPJwLQFbwEuJx28XaT9yTVmY+be361/iJueWiQXXjL88/5Em8DZdjWZlNmRscq1PPBt2c5dGrKg==
-X-Received: by 2002:a63:5d5f:: with SMTP id o31mr19870693pgm.295.1607919310176;
-        Sun, 13 Dec 2020 20:15:10 -0800 (PST)
-Received: from localhost ([220.240.228.148])
-        by smtp.gmail.com with ESMTPSA id ft19sm7668399pjb.44.2020.12.13.20.15.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Dec 2020 20:15:09 -0800 (PST)
-Date:   Mon, 14 Dec 2020 14:15:04 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 2/2] powerpc/64s: Trim offlined CPUs from mm_cpumasks
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Anton Vorontsov <anton.vorontsov@linaro.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Sun, 13 Dec 2020 23:18:47 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9555C0613CF;
+        Sun, 13 Dec 2020 20:18:06 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvSmX4mstz9sT6;
+        Mon, 14 Dec 2020 15:18:04 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607919484;
+        bh=Ap4veYE6g8S6YKlenbtrX+KmmgQamRiHcRuH1VqFN+s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=V1vNNohqhMdlrFbS4ZZYvngSMFee7gyh97cqz97pWhDiVPHQ3W+37m+OicYCvzBNs
+         35VbiBgIa3+H60yTvjMsoCIiVHvSTKHJAcmG9uJ8PpHA8bwQCYXW+IjLbB4AbdsjLm
+         QknQECl8GNvV+myaxH/3ynDOt84b/mqtmGNx2mqCXF0Za7CEKE8hoKOxW6rCr8GACg
+         ClQLit/z1Q9nsseSvLo0/nqHxrWTW+0zZ+bqIDKARFShx3dWmSqppmiFQhyuesnW64
+         URNx8PH32Zdhk0GhODELBUFxdWyUjxXWG0pcGTo5c3vZxgJoorV0SU3F1OQJyhFaWx
+         e0pnOjUbqO0Sw==
+Date:   Mon, 14 Dec 2020 15:18:03 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Christoph Hellwig <hch@lst.de>, Song Liu <songliubraving@fb.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20201120025757.325930-1-npiggin@gmail.com>
-        <20201120025757.325930-3-npiggin@gmail.com>
-        <CAMuHMdUdorW03=mipgm92SXNPBZO5owW1Wp6_SacRDZ7fOe9gw@mail.gmail.com>
-In-Reply-To: <CAMuHMdUdorW03=mipgm92SXNPBZO5owW1Wp6_SacRDZ7fOe9gw@mail.gmail.com>
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the block tree
+Message-ID: <20201214151803.411b3b41@canb.auug.org.au>
 MIME-Version: 1.0
-Message-Id: <1607919238.kj439g85v5.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/rgN3xbXPFOB5eCTLP4HJp/x";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Geert Uytterhoeven's message of December 10, 2020 7:06 pm:
-> Hi Nicholas,
->=20
-> On Fri, Nov 20, 2020 at 4:01 AM Nicholas Piggin <npiggin@gmail.com> wrote=
-:
->>
->> When offlining a CPU, powerpc/64s does not flush TLBs, rather it just
->> leaves the CPU set in mm_cpumasks, so it continues to receive TLBIEs
->> to manage its TLBs.
->>
->> However the exit_flush_lazy_tlbs() function expects that after
->> returning, all CPUs (except self) have flushed TLBs for that mm, in
->> which case TLBIEL can be used for this flush. This breaks for offline
->> CPUs because they don't get the IPI to flush their TLB. This can lead
->> to stale translations.
->>
->> Fix this by clearing the CPU from mm_cpumasks, then flushing all TLBs
->> before going offline.
->>
->> These offlined CPU bits stuck in the cpumask also prevents the cpumask
->> from being trimmed back to local mode, which means continual broadcast
->> IPIs or TLBIEs are needed for TLB flushing. This patch prevents that
->> situation too.
->>
->> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
->=20
-> Thanks for your patch!
->=20
->> --- a/arch/powerpc/platforms/powermac/smp.c
->> +++ b/arch/powerpc/platforms/powermac/smp.c
->> @@ -911,6 +911,8 @@ static int smp_core99_cpu_disable(void)
->>
->>         mpic_cpu_set_priority(0xf);
->>
->> +       cleanup_cpu_mmu_context();
->> +
->=20
-> I guess this change broke pmac32_defconfig+SMP in v5.10-rc7?
->=20
-> arch/powerpc/platforms/powermac/smp.c: error: implicit
-> declaration of function 'cleanup_cpu_mmu_context'
-> [-Werror=3Dimplicit-function-declaration]:  =3D> 914:2
->=20
-> http://kisskb.ellerman.id.au/kisskb/buildresult/14423174/
+--Sig_/rgN3xbXPFOB5eCTLP4HJp/x
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hey, yeah it does thanks for catching it. This patch fixes it for me
+Hi all,
 
+After merging the block tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
+
+drivers/md/raid0.c: In function 'raid0_handle_discard':
+drivers/md/raid0.c:511:26: error: passing argument 1 of 'trace_block_bio_re=
+map' from incompatible pointer type [-Werror=3Dincompatible-pointer-types]
+  511 |    trace_block_bio_remap(bdev_get_queue(rdev->bdev),
+      |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                          |
+      |                          struct request_queue *
+In file included from include/trace/events/block.h:11,
+                 from drivers/md/raid0.c:17:
+include/trace/events/block.h:458:23: note: expected 'struct bio *' but argu=
+ment is of type 'struct request_queue *'
+  458 |  TP_PROTO(struct bio *bio, dev_t dev, sector_t from),
+      |           ~~~~~~~~~~~~^~~
+include/linux/tracepoint.h:238:34: note: in definition of macro '__DECLARE_=
+TRACE'
+  238 |  static inline void trace_##name(proto)    \
+      |                                  ^~~~~
+include/linux/tracepoint.h:411:24: note: in expansion of macro 'PARAMS'
+  411 |  __DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),  \
+      |                        ^~~~~~
+include/linux/tracepoint.h:547:2: note: in expansion of macro 'DECLARE_TRAC=
+E'
+  547 |  DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+      |  ^~~~~~~~~~~~~
+include/linux/tracepoint.h:547:22: note: in expansion of macro 'PARAMS'
+  547 |  DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+      |                      ^~~~~~
+include/trace/events/block.h:456:1: note: in expansion of macro 'TRACE_EVEN=
+T'
+  456 | TRACE_EVENT(block_bio_remap,
+      | ^~~~~~~~~~~
+include/trace/events/block.h:458:2: note: in expansion of macro 'TP_PROTO'
+  458 |  TP_PROTO(struct bio *bio, dev_t dev, sector_t from),
+      |  ^~~~~~~~
+drivers/md/raid0.c:512:5: warning: passing argument 2 of 'trace_block_bio_r=
+emap' makes integer from pointer without a cast [-Wint-conversion]
+  512 |     discard_bio, disk_devt(mddev->gendisk),
+      |     ^~~~~~~~~~~
+      |     |
+      |     struct bio *
+In file included from include/trace/events/block.h:11,
+                 from drivers/md/raid0.c:17:
+include/trace/events/block.h:458:34: note: expected 'dev_t' {aka 'unsigned =
+int'} but argument is of type 'struct bio *'
+  458 |  TP_PROTO(struct bio *bio, dev_t dev, sector_t from),
+      |                            ~~~~~~^~~
+include/linux/tracepoint.h:238:34: note: in definition of macro '__DECLARE_=
+TRACE'
+  238 |  static inline void trace_##name(proto)    \
+      |                                  ^~~~~
+include/linux/tracepoint.h:411:24: note: in expansion of macro 'PARAMS'
+  411 |  __DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),  \
+      |                        ^~~~~~
+include/linux/tracepoint.h:547:2: note: in expansion of macro 'DECLARE_TRAC=
+E'
+  547 |  DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+      |  ^~~~~~~~~~~~~
+include/linux/tracepoint.h:547:22: note: in expansion of macro 'PARAMS'
+  547 |  DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+      |                      ^~~~~~
+include/trace/events/block.h:456:1: note: in expansion of macro 'TRACE_EVEN=
+T'
+  456 | TRACE_EVENT(block_bio_remap,
+      | ^~~~~~~~~~~
+include/trace/events/block.h:458:2: note: in expansion of macro 'TP_PROTO'
+  458 |  TP_PROTO(struct bio *bio, dev_t dev, sector_t from),
+      |  ^~~~~~~~
+drivers/md/raid0.c:511:4: error: too many arguments to function 'trace_bloc=
+k_bio_remap'
+  511 |    trace_block_bio_remap(bdev_get_queue(rdev->bdev),
+      |    ^~~~~~~~~~~~~~~~~~~~~
+In file included from include/trace/events/block.h:11,
+                 from drivers/md/raid0.c:17:
+include/linux/tracepoint.h:238:21: note: declared here
+  238 |  static inline void trace_##name(proto)    \
+      |                     ^~~~~~
+include/linux/tracepoint.h:411:2: note: in expansion of macro '__DECLARE_TR=
+ACE'
+  411 |  __DECLARE_TRACE(name, PARAMS(proto), PARAMS(args),  \
+      |  ^~~~~~~~~~~~~~~
+include/linux/tracepoint.h:547:2: note: in expansion of macro 'DECLARE_TRAC=
+E'
+  547 |  DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
+      |  ^~~~~~~~~~~~~
+include/trace/events/block.h:456:1: note: in expansion of macro 'TRACE_EVEN=
+T'
+  456 | TRACE_EVENT(block_bio_remap,
+      | ^~~~~~~~~~~
+
+Caused by commit
+
+  1c02fca620f7 ("block: remove the request_queue argument to the block_bio_=
+remap tracepoint")
+
+interacting with commit
+
+  57a0f3a81ef2 ("Revert "md: add md_submit_discard_bio() for submitting dis=
+card bio"")
+
+from Linus' tree.
+
+I have applied the following merge fix:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 14 Dec 2020 15:14:26 +1100
+Subject: [PATCH] fixup for "block: remove the request_queue argument to the=
+ block_bio_remap tracepoint"
+
+conflicting with
+
+"Revert "md: add md_submit_discard_bio() for submitting discard bio""
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
-From a9b5ec92ffac975e81c6d7db6ff2b1486b2723f7 Mon Sep 17 00:00:00 2001
-From: Nicholas Piggin <npiggin@gmail.com>
-Date: Mon, 14 Dec 2020 13:52:39 +1000
-Subject: [PATCH] powerpc/32s: Fix cleanup_cpu_mmu_context() compile bug
+ drivers/md/raid0.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-32s has no tlbiel_all() defined, so just disable the cleanup with a
-comment.
-
-Fixes: 01b0f0eae081 ("powerpc/64s: Trim offlined CPUs from mm_cpumasks")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
- arch/powerpc/platforms/powermac/smp.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/arch/powerpc/platforms/powermac/smp.c b/arch/powerpc/platforms=
-/powermac/smp.c
-index adae2a6712e1..66ef5f8f4445 100644
---- a/arch/powerpc/platforms/powermac/smp.c
-+++ b/arch/powerpc/platforms/powermac/smp.c
-@@ -911,7 +911,16 @@ static int smp_core99_cpu_disable(void)
-=20
- 	mpic_cpu_set_priority(0xf);
-=20
-+	/*
-+	 * Would be nice for consistency if all platforms clear mm_cpumask and
-+	 * flush TLBs on unplug, but the TLB invalidation bug described in
-+	 * commit 01b0f0eae081 ("powerpc/64s: Trim offlined CPUs from
-+	 * mm_cpumasks") only applies to 64s and for now we only have the TLB
-+	 * flush code for that platform.
-+	 */
-+#ifdef CONFIG_PPC64
- 	cleanup_cpu_mmu_context();
-+#endif
-=20
- 	return 0;
- }
+diff --git a/drivers/md/raid0.c b/drivers/md/raid0.c
+index 8f5b0143d8c6..67f157f2525d 100644
+--- a/drivers/md/raid0.c
++++ b/drivers/md/raid0.c
+@@ -508,8 +508,8 @@ static void raid0_handle_discard(struct mddev *mddev, s=
+truct bio *bio)
+ 		bio_chain(discard_bio, bio);
+ 		bio_clone_blkg_association(discard_bio, bio);
+ 		if (mddev->gendisk)
+-			trace_block_bio_remap(bdev_get_queue(rdev->bdev),
+-				discard_bio, disk_devt(mddev->gendisk),
++			trace_block_bio_remap(discard_bio,
++				disk_devt(mddev->gendisk),
+ 				bio->bi_iter.bi_sector);
+ 		submit_bio_noacct(discard_bio);
+ 	}
 --=20
-2.23.0
+2.29.2
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/rgN3xbXPFOB5eCTLP4HJp/x
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/W53sACgkQAVBC80lX
+0GwR3wf/VaRztQkjmysC3E5kSROkNLTnSAoLIAi6it6wcBMXe0I+SK5E+DJK/pOt
+QMVrL2Xx235qjTU3Zuqjr470XVtvrTX8PfBZnLOeiIqZ0IpyZ8xdbWyyQLWwc2O/
+t621f+alBHBW0Q9F+YwuL6CQY0PV3S9Pw+9OJ+Q12VQ9niyRQXecrNfr9yJnJJxj
+Msp0KdhKuNRqzGZmtjn+gFUkmIDyAVVCboKgr5CwnwQsdqzyfScuwnJiKWiCGtqm
+ewdk2HwlqgA6PuKoeTGTbJ66x7bSQ7sPt6uRpeQmaXnaWSH5N9XUX4S1v91OtSvs
+ZUdg+A6TMqMZXmFncMjaW88mPf7f9A==
+=QpF7
+-----END PGP SIGNATURE-----
+
+--Sig_/rgN3xbXPFOB5eCTLP4HJp/x--
