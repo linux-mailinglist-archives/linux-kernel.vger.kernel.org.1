@@ -2,95 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F24612DA356
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:25:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6A52DA35D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388348AbgLNWYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 17:24:35 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:41641 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388259AbgLNWYW (ORCPT
+        id S2440175AbgLNW1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 17:27:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729522AbgLNW1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 17:24:22 -0500
-Received: by mail-ot1-f66.google.com with SMTP id x13so17438694oto.8;
-        Mon, 14 Dec 2020 14:24:07 -0800 (PST)
+        Mon, 14 Dec 2020 17:27:40 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D21FC0613D6;
+        Mon, 14 Dec 2020 14:27:00 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id p22so18874050edu.11;
+        Mon, 14 Dec 2020 14:27:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9luV3WbxPFSpfKcSxGTt+i2DTKMuuCfUMkAWdvBYnQ8=;
+        b=kS2Adh400G0tNs14Wunz/+BXHNaef+bplNXckFElS9vOk/aIbsMpN13Mw5YX8ss1Zf
+         HkPwcQ3iL4qsP9iS1TWHQs6C0rtfeppvo0iyni++sLkPyVSLTGyfgvGaqkvsJ7y4Ini/
+         LHCDmTHdVhGA/JWaYzLffVJAU+gfUp7n2csFcazC+hk5HzkikOo26nO7pTwUyhJafwKU
+         9mlE0uZGsYpJlbD0U9lan0Os7AN9ViFsB4PyovJYjpNrKgS5eFNzXP8ZF1bR9OSZDBHi
+         3dcfBDWSe1G/4vsxLHZREus7Ffz51YLJ29KZd/vjPrkiZOXCbxvGpa8r4UQQ3taAR2oZ
+         3Wgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OrNz2hwsU06c3PuGss1E/QBGUDqYdE0+stQHNjTmEF0=;
-        b=CZHI9O8vnjPlVgFiHAkyfmhz72O+wr7T5vrRkhigotXyJiA1QcbkZaK972E/HdGAnu
-         00jDG573RcknDZ66NKvp0uc3e4S1AOGpzB4UNujJAIHQ3/CMOVJKLoG8Es8Tps7+5nt2
-         EGK4j2Ccbzhvw1P4P+bUwAu8AtOYrk3PO9NIWuik4chiebhHQXck9N7IphD/pJAVnBm1
-         ZnLl4hdq6fAa/zTFAHdKMB1nmJDk5RTuSD1OzK4HJsgBxiS/KCIwS9h6lgrZBfi1KYQx
-         MVnwZU9KJAzQvE4EBEhhl+YSxAu3KvB5MT3SnqExGPN7D/lpl1xn4JMcICNvj9ucF4ml
-         SuLg==
-X-Gm-Message-State: AOAM530qmYa3ck+FAfXeCu92Qr6kmDJP41oYfUbeS8jgGUBTOtxT2PWX
-        fJy2tGEh2YwdQA9N+T8YpWteijyoMQ==
-X-Google-Smtp-Source: ABdhPJx3RDNbVhXJglqZJpbqIq6emTGk8OSz3s6JsLztPU1NdhY8gF90dy0DrBxWP4RDzNUek0hvpA==
-X-Received: by 2002:a05:6830:30a8:: with SMTP id g8mr15557189ots.291.1607984621501;
-        Mon, 14 Dec 2020 14:23:41 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i25sm4652825oto.56.2020.12.14.14.23.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 14:23:40 -0800 (PST)
-Received: (nullmailer pid 2493705 invoked by uid 1000);
-        Mon, 14 Dec 2020 22:23:39 -0000
-Date:   Mon, 14 Dec 2020 16:23:39 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [PATCH RFC 1/2] Documentation: devicetree: Add property for
- ignoring the dummy bits sent before read transfer
-Message-ID: <20201214222339.GA2471866@robh.at.kernel.org>
-References: <20201209175708.16252-1-a-govindraju@ti.com>
- <20201209175708.16252-2-a-govindraju@ti.com>
- <20201211033301.GA3581630@robh.at.kernel.org>
- <70d6c152-5d8d-9ad6-ce06-95a9f599c492@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <70d6c152-5d8d-9ad6-ce06-95a9f599c492@ti.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9luV3WbxPFSpfKcSxGTt+i2DTKMuuCfUMkAWdvBYnQ8=;
+        b=Nj+Kg4RoP2nHN7RxgV/AQXAkY+DgFx3+8CZKiifdZqL3lUER/H1ViEhX3cqXEnEdrx
+         Q+T9bkY6QoTswZy7ns2YmsTf/IYbGm2tRrPZFR9DI+4Dd+rRtKV120majMuflGQ32YjP
+         0CAbCA5pl+0V2fFqHEnAe8t/Q2YbN68Eej7dkbSkEZy601nG6+8+5dhXqmBW+4iOUX4g
+         WUhh8G8qDp2pr5/i1o2uXxe7BfIZfF70zKvSMw2SfyqLo5Pv9j3QU0vIkp7ObAru/UF/
+         0EJQHudAKV4aA6Zh/Hn1ICskJceCyHVKATjdOMjbTFmJBQtE0xWmbmCWKcGBcx+Cdn/V
+         JEgw==
+X-Gm-Message-State: AOAM531YT+jXMEoqYQAl/No3Iwsainxxmj6IHnC/m5i/+ZRVzABZQiXC
+        zUD1FvmqEUth2i8kMVxJvg8=
+X-Google-Smtp-Source: ABdhPJwHL6hPC8jxHxTuBp6MbCoN3XRzcPwg8KD/sr7DdnkrTpxZ3otko5xBe0AQ37OFk09V8Ma/Eg==
+X-Received: by 2002:a50:d757:: with SMTP id i23mr27217416edj.116.1607984819259;
+        Mon, 14 Dec 2020 14:26:59 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id b14sm11072712edu.3.2020.12.14.14.26.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 14 Dec 2020 14:26:58 -0800 (PST)
+Message-ID: <f0bc0bd63c712db452d0204220d53c4bf7101c79.camel@gmail.com>
+Subject: Re: [PATCH v3 1/6] scsi: ufs: Remove stringize operator '#'
+ restriction
+From:   Bean Huo <huobean@gmail.com>
+To:     Joe Perches <joe@perches.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org, rostedt@goodmis.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 14 Dec 2020 23:26:57 +0100
+In-Reply-To: <f9017bc73dadfb84366734062d93722d8d7ecc59.camel@perches.com>
+References: <20201214202014.13835-1-huobean@gmail.com>
+         <20201214202014.13835-2-huobean@gmail.com>
+         <f9017bc73dadfb84366734062d93722d8d7ecc59.camel@perches.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 08:34:57PM +0530, Aswath Govindraju wrote:
-> Hi,
-> On 11/12/20 9:03 am, Rob Herring wrote:
-> > On Wed, Dec 09, 2020 at 11:27:07PM +0530, Aswath Govindraju wrote:
-> >> Dummy zero bits are sent before data during a read transfer. This causes
-> >> the data read to be shifted to the right. To fix this send zero bits after
-> >> the address during a read transfer.
-> >>
-> >> Add property to send zero bits after the address during a read transfer.
+On Mon, 2020-12-14 at 13:23 -0800, Joe Perches wrote:
+> > From: Bean Huo <beanhuo@micron.com>
 > > 
-> > When is this necessary? Why can't it be implied by the compatible 
-> > string which should be specific to the chip model?
+> > Current EM macro definition, we use stringize operator '#', which
+> > turns
+> > the argument it precedes into a quoted string. Thus requires the
+> > symbol
+> > of __print_symbolic() should be the string corresponding to the
+> > name of
+> > the enum.
 > > 
+> > However, we have other cases, the symbol and enum name are not the
+> > same,
+> > we can redefine EM/EMe, but there will introduce some redundant
+> > codes.
+> > This patch is to remove this restriction, let others reuse the
+> > current
+> > EM/EMe definition.
 > 
-> This is necessary for 93AA46A/B/C, 93LC46A/B/C, 93C46A/B/C eeproms, as
-> it can be seen in section 2.7 of [1]. We were not sure if these were the
-> only devices supported by the driver(eeprom_93xx46.c). So, in order to
-> apply this only to the above listed devices, we thought that it would be
-> better to apply this change when required by introducing a DT property.
+> While this version doesn't have the copy/paste typo,
+> I fail to see value in defining EMe as a trailing comma
+> in an array declaration isn't meaningful and doesn't emit
+> any error or warning.
 > 
-> May I know how has this case been handled till now ??
-> 
+> Maybe all the uses of EMe can be converted to EM and the
+> macro definitions removed.
 
-No idea. From the at93c46d (which has a compatible string) datasheet it 
-looks like it has the same thing.
+Hi Joe
+I removed EMe, but there is this error:
 
-> If this is required by all the devices then we can drop the property and
-> include the zero bit by default.
+./include/trace/trace_events.h:300:18: error: initializer element is
+not constant
+    { symbol_array, { -1, NULL }};   \
 
-Looks like you need a combination of compatible strings for the above 
-devices and a property for the ORG pin state on the C devices. I assume 
-s/w needs to know if x8 or x16?
+./include/trace/trace_events.h:300:18: error: expected expression
+before ‘,’ token
+    { symbol_array, { -1, NULL }};   \
 
-Rob
+
+did you choose kernel trace and event trace before compiling?
+
+
+Thanks,
+Bean
+
