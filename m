@@ -2,97 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8118B2D99D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438122D99EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440176AbgLNOYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 09:24:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48153 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2440155AbgLNOXG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 09:23:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607955700;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uU+yqo3wknHZeTv4aPn0OoA1AQ4Jcrayd5ahcgSPHMs=;
-        b=OH5jgKJ/BBDmFaBfWrkBPQlD9mmLCEKUHcwvxZTvZrVte5ztEjb0jtHeXqgt+gnMp4gsWR
-        c5Fy9Gr+yOCfbfN05v5OAMCLDAGVqTAy/8yW66QNlWxHGPSt1/Hxy7Eg5jciYxZuvqK6Fm
-        XZdNm5bNT9GeZEOe8MnubJ+3zNlikEQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-84-bGxr5615MoeqRRjCl0rFOA-1; Mon, 14 Dec 2020 09:21:36 -0500
-X-MC-Unique: bGxr5615MoeqRRjCl0rFOA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6198D100B717;
-        Mon, 14 Dec 2020 14:21:27 +0000 (UTC)
-Received: from [10.36.114.184] (ovpn-114-184.ams2.redhat.com [10.36.114.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D197018F0A;
-        Mon, 14 Dec 2020 14:21:22 +0000 (UTC)
-Subject: Re: [PATCH v3 5/6] mm/gup: migrate pinned pages out of movable zone
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-References: <20201211235005.GE5487@ziepe.ca>
- <2D10D596-3159-483C-81B4-CD187806ED46@redhat.com>
- <20201214133603.GF5487@ziepe.ca>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <69beec6b-8518-aa47-5a08-fd5f85cf9430@redhat.com>
-Date:   Mon, 14 Dec 2020 15:21:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S2407468AbgLNO1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 09:27:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2440152AbgLNOXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 09:23:01 -0500
+Date:   Mon, 14 Dec 2020 08:22:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607955741;
+        bh=OW1ezYqM9kcEmxofilnAS3iGMDuyI8QhL2vTf1Mndak=;
+        h=From:To:Cc:Subject:From;
+        b=jiWsXS5XoFVSoq9opSwCW4YMO/fxMp2T5K9p1zZmAU61E16mqf7j2GrOFojeVg4XW
+         ARFfz8uIWIug6GsPC0CN5hn2W1gkzx7MQApwmpn9cP6R/rr6eZot6V9ObQ8uhQYXjm
+         qsS8BvfOPDw0TQRPpJuDEXyP3yJhv4A9wWsvNqb4yYy8QMYrNRsFT4ncXBI4lZc+1y
+         sf3k1lh9F1t7DnvUNVVSA7oV9gbHLY/c/SxSN8Jj7Pz9RrTB9n9Pmvdedg8wtkbSl1
+         /cqyL8Nlwvkx9NH6QvJOvFgFZLniNSYYrSrGFW7zvi3YnZAGxNB1cDcKe9RglnqssR
+         J/A72tbt1K8dw==
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [GIT PULL] fallthrough fixes for Clang for 5.11-rc1
+Message-ID: <20201214142200.GA1062@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20201214133603.GF5487@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.12.20 14:36, Jason Gunthorpe wrote:
-> On Sat, Dec 12, 2020 at 08:29:11AM +0100, David Hildenbrand wrote:
-> 
->>> Racing with another GUP in another thread is also not reasonable, so
->>> failing to isolate can't be a failure
->>
->> Having VMs with multiple vfio containers is certainly realistic, and
->> optimizing in user space to do vfio mappings concurrently doesn‘t
->> sound too crazy to me. But I haven‘t checked if vfio common code
->> already handles such concurrency.
-> 
-> There is a lot more out there than vfio.. RDMA already does concurrent
-> pin_user_pages in real apps
+The following changes since commit 09162bc32c880a791c6c0668ce0745cf7958f576:
 
-I actually misread your comment. I think we both agree that temporary
-isolation failures must not lead to a failure.
+  Linux 5.10-rc4 (2020-11-15 16:44:31 -0800)
 
--- 
-Thanks,
+are available in the Git repository at:
 
-David / dhildenb
+  git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/fallthrough-fixes-clang-5.11-rc1
 
+for you to fetch changes up to 36f9ff9e03de89691274a6aec45aa079bd3ae405:
+
+  lib: Fix fall-through warnings for Clang (2020-11-19 07:23:47 -0600)
+
+----------------------------------------------------------------
+fallthrough fixes for Clang for 5.11-rc1
+
+Hi Linus,
+
+Please, pull the following patches that fix many fall-through warnings
+when building with Clang 12.0.0 and this[1] change reverted. Notice
+that in order to enable -Wimplicit-fallthrough for Clang, such change[1]
+is meant to be reverted at some point. So, these patches help to move
+in that direction.
+
+- powerpc: boot: include compiler_attributes.h (Nick Desaulniers)
+- Revert "lib: Revert use of fallthrough pseudo-keyword in lib/" (Nick Desaulniers)
+- powerpc: fix -Wimplicit-fallthrough (Nick Desaulniers)
+- lib: Fix fall-through warnings for Clang (Gustavo A. R. Silva)
+
+Thanks!
+
+[1] commit e2079e93f562c ("kbuild: Do not enable -Wimplicit-fallthrough for clang for now")
+
+----------------------------------------------------------------
+Gustavo A. R. Silva (1):
+      lib: Fix fall-through warnings for Clang
+
+Nick Desaulniers (3):
+      powerpc: boot: include compiler_attributes.h
+      Revert "lib: Revert use of fallthrough pseudo-keyword in lib/"
+      powerpc: fix -Wimplicit-fallthrough
+
+ arch/powerpc/boot/Makefile      |  1 +
+ arch/powerpc/boot/decompress.c  |  1 -
+ arch/powerpc/kernel/prom_init.c |  1 +
+ arch/powerpc/kernel/uprobes.c   |  1 +
+ arch/powerpc/perf/imc-pmu.c     |  1 +
+ lib/asn1_decoder.c              |  4 ++--
+ lib/assoc_array.c               |  2 +-
+ lib/bootconfig.c                |  4 ++--
+ lib/cmdline.c                   | 11 ++++++-----
+ lib/dim/net_dim.c               |  2 +-
+ lib/dim/rdma_dim.c              |  4 ++--
+ lib/glob.c                      |  2 +-
+ lib/kstrtox.c                   |  1 +
+ lib/nlattr.c                    |  2 +-
+ lib/siphash.c                   | 36 ++++++++++++++++++------------------
+ lib/ts_fsm.c                    |  2 +-
+ lib/vsprintf.c                  | 15 ++++++++-------
+ lib/xz/xz_dec_lzma2.c           |  4 ++--
+ lib/xz/xz_dec_stream.c          | 16 ++++++++--------
+ lib/zlib_inflate/inflate.c      | 24 ++++++++++++------------
+ lib/zstd/bitstream.h            | 11 ++++++-----
+ lib/zstd/compress.c             |  2 +-
+ lib/zstd/decompress.c           | 12 ++++++------
+ lib/zstd/huf_compress.c         |  5 +++--
+ 24 files changed, 86 insertions(+), 78 deletions(-)
