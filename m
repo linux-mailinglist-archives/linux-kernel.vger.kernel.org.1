@@ -2,98 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF0B2D9361
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 07:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E92F2D9363
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 07:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438734AbgLNGyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 01:54:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438682AbgLNGyC (ORCPT
+        id S2438801AbgLNGyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 01:54:39 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:41440 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728171AbgLNGyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 01:54:02 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 569A4C0613CF;
-        Sun, 13 Dec 2020 22:53:22 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id lb18so5736780pjb.5;
-        Sun, 13 Dec 2020 22:53:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=836ueWsqhXJFS2jsaV/+MeW0snlTaUrAFFynrxAzOKk=;
-        b=q6GEshR5RFezy4+EprhXJG3fpkvIJHTaEh/EvfhfVA5FfUUDnQ3+4cDCpIRFRC/Mm2
-         ZbtvniEPDGviRpZFiQEw8za5h5Z+oWiIlhCu6JBrMnylhIiZhpvC1s1wknSQzDFn0sBw
-         8JBT7WhTHfWQfd/wi8sI02TaNRGE436yalS6VtVi39Gml2AGcKkbCiNmqS+4M4ZvGaeu
-         xyWfWZoDpWHAvjMESrmKu4FJkOpTQ9ExYrWUgUdh4fCFUa3xeWlwuMz2sCEkKblW5gxy
-         +XHxC0WI5idDR3jZr0BQTqsOClCl3URK8jdwMk8i0+K2wgfBGhE4DdSap9b1vIhgbLvC
-         7w7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=836ueWsqhXJFS2jsaV/+MeW0snlTaUrAFFynrxAzOKk=;
-        b=fyYTfwzmEaZEOzHspzBi7tjrG/WkkNw7reR7XDe5PJAFbAw+eC63soyt59Rb5CuWsL
-         IiyjrpnfKnHNYmznNHVlAk8z4uFZpg90f+GtmwIgzoOLm9y4Faj/cNJAScM/FiaHfoLu
-         H1AMyVHZFGCdRInoFdSt8Ouf9cp0pA58c1R1xoUmVXYoReGxC+JyLN6spJptrWcD08g2
-         81yfJmVChwf4lxqLPbeIKeUAeaSbBO5ZDXMukO0N24j4M9xQdOTTQy7noh6BtRC6BSO4
-         5QuOOIizYDnuW0+80EVSEfpPU3dlUwmsaaQFDPrzQHp8Ofl1HFhg1eYqHqglNIqY7N7R
-         S8jw==
-X-Gm-Message-State: AOAM533YMPxdFvNc5vYgRf0VgrpCS0QxtmpcoEMiko7BeFOYis6BS1Tu
-        AhunRdHth/GJYOnglJega80DR+a6pxc=
-X-Google-Smtp-Source: ABdhPJyoH0x/t5iFpjCJhCQTVS//5zozzcYJHAEPewzZkngQ9RzGM8cWtjfAj/AvxA1N7fuXpEPEMA==
-X-Received: by 2002:a17:90a:a45:: with SMTP id o63mr24426408pjo.146.1607928801482;
-        Sun, 13 Dec 2020 22:53:21 -0800 (PST)
-Received: from bobo.ozlabs.ibm.com ([220.240.228.148])
-        by smtp.gmail.com with ESMTPSA id 84sm19570018pfy.9.2020.12.13.22.53.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Dec 2020 22:53:20 -0800 (PST)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-arch@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-        Anton Blanchard <anton@ozlabs.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v2 0/5] shoot lazy tlbs
-Date:   Mon, 14 Dec 2020 16:53:07 +1000
-Message-Id: <20201214065312.270062-1-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
+        Mon, 14 Dec 2020 01:54:22 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BE6rJLs044767;
+        Mon, 14 Dec 2020 00:53:19 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1607928799;
+        bh=fjMxuww0pI6MgGW3bPWunKl2njfFRpIUYB2BKc1LH+k=;
+        h=From:To:CC:Subject:Date;
+        b=sMP5NYwsVFA0Mgnuq4fje42VbNYMVRZa1xiKSw5AWmy25+W5Fx+8ek+Iz4uIjNrqc
+         JyP2q99M3ACpN95rEzoun/GeSE7XUJ7Bx/AVjPIjMHILN6DgkiAbaCYWjKNTWpNMDP
+         ea7lwgE9YSrQsr4GveWcOclqaq6T3xzuACMEM+Cw=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BE6rJUa068701
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 14 Dec 2020 00:53:19 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 14
+ Dec 2020 00:53:19 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 14 Dec 2020 00:53:19 -0600
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BE6rGWS050104;
+        Mon, 14 Dec 2020 00:53:17 -0600
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <vkoul@kernel.org>, <nm@ti.com>, <ssantosh@kernel.org>
+CC:     <dan.j.williams@intel.com>, <t-kristo@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <vigneshr@ti.com>, <grygorii.strashko@ti.com>
+Subject: [PATCH] soc: ti: k3-ringacc: Use correct error casting in k3_ringacc_dmarings_init
+Date:   Mon, 14 Dec 2020 08:54:21 +0200
+Message-ID: <20201214065421.5138-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is another rebase, on top of mainline now (don't need the
-asm-generic tree), and without any x86 or membarrier changes.
-This makes the series far smaller and more manageable and
-without the controversial bits.
+Use ERR_CAST() when devm_ioremap_resource() fails.
 
-Thanks,
-Nick
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+Hi Vinod,
 
-Nicholas Piggin (5):
-  lazy tlb: introduce lazy mm refcount helper functions
-  lazy tlb: allow lazy tlb mm switching to be configurable
-  lazy tlb: shoot lazies, a non-refcounting lazy tlb option
-  powerpc: use lazy mm refcount helper functions
-  powerpc/64s: enable MMU_LAZY_TLB_SHOOTDOWN
+it came to my attention too late. This patch fixes the sparse warnig introduced
+by the AM64 support in
+https://lore.kernel.org/lkml/20201208090440.31792-1-peter.ujfalusi@ti.com/
 
- arch/Kconfig                         | 30 ++++++++++
- arch/arm/mach-rpc/ecard.c            |  2 +-
- arch/powerpc/Kconfig                 |  1 +
- arch/powerpc/kernel/smp.c            |  2 +-
- arch/powerpc/mm/book3s64/radix_tlb.c |  4 +-
- fs/exec.c                            |  4 +-
- include/linux/sched/mm.h             | 20 +++++++
- kernel/cpu.c                         |  2 +-
- kernel/exit.c                        |  2 +-
- kernel/fork.c                        | 52 ++++++++++++++++
- kernel/kthread.c                     | 11 ++--
- kernel/sched/core.c                  | 88 ++++++++++++++++++++--------
- kernel/sched/sched.h                 |  4 +-
- 13 files changed, 184 insertions(+), 38 deletions(-)
+Regards,
+Peter
 
+ drivers/soc/ti/k3-ringacc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/soc/ti/k3-ringacc.c b/drivers/soc/ti/k3-ringacc.c
+index c88c305ba367..b495b0d5d0fa 100644
+--- a/drivers/soc/ti/k3-ringacc.c
++++ b/drivers/soc/ti/k3-ringacc.c
+@@ -1476,7 +1476,7 @@ struct k3_ringacc *k3_ringacc_dmarings_init(struct platform_device *pdev,
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ringrt");
+ 	base_rt = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(base_rt))
+-		return base_rt;
++		return ERR_CAST(base_rt);
+ 
+ 	ringacc->rings = devm_kzalloc(dev,
+ 				      sizeof(*ringacc->rings) *
 -- 
-2.23.0
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
