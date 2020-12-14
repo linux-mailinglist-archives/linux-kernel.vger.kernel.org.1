@@ -2,251 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913522D9694
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 788882D96A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:52:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731312AbgLNKsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 05:48:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728644AbgLNKsO (ORCPT
+        id S1730488AbgLNKvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 05:51:47 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:45035 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726237AbgLNKvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 05:48:14 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD7AC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 02:47:30 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id u12so15314932ilv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 02:47:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lJf+Nuf+vnBQvlctVA1K2dzXXhoYpId3vCRXQhhXb6k=;
-        b=F6QEEXJ9y1/ZV7n3R2dUidFRCH3PeI1cjbJkLzBA5nSFilw+IX7YCrJiDKSWDM4Szu
-         47sXjUOSHYJBizPjuLH2KfyaFAXaPW1TtCzfl+nGyaujMPkqad2UdEvkVDnO5hMjzZ3H
-         HWxLGGF5RytF85YsIYsIhlduAuFeJI7BgvPGZ5IMDdJ4Bm85iZ9GD9ocfql/ORvOwNMA
-         84h4uA/Y0na6Qc+gYFRYUqfOYMQ51UtqgIbG/A0wRN8fO2dVScnraMKdsX03Hv1pkCeo
-         ObVAXjpbvKGiRZh1MMudDN6kgsnYjC+rr1YVI1CIvTEox83hRw4QJ9fvKWFPZRlrdt21
-         8cLQ==
+        Mon, 14 Dec 2020 05:51:47 -0500
+Received: by mail-lf1-f68.google.com with SMTP id m25so28965401lfc.11;
+        Mon, 14 Dec 2020 02:51:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lJf+Nuf+vnBQvlctVA1K2dzXXhoYpId3vCRXQhhXb6k=;
-        b=L/fKeHQs6796VLPxc6nvxt5z5uTCVbgD8rrctrjbEskLhhXwG5MMTNapiymav/RtPm
-         85kPL3hkq/71xYLgdlR6524To8+TpeKipJznk45tKev60uaacePjHMSoK0ChaatW56QB
-         SfYQyuooZZnzjYPVJTCv0RTnc5bz3HTCysUY14OQODVM1QUlsV0uCOj4LhFpSg9Cb4pR
-         TuzXqwEGiLA5xzn/uNz2e/js9wNEay6tMPC7svE0Z0qQoYny+hhMzud7VqKmeXkldLbK
-         7RENWLYR1f61NwHWsjD9QTHZi563nKVyu5EU4Lz9qKAEtSX0ETqLRgaJXC/RL1IlPxuF
-         pbdQ==
-X-Gm-Message-State: AOAM532b2LofJo6/dExfmMNtpA1DALAy2FHJH/qznjyUDB3Z4M313o2b
-        tGtVjbxfyux7DDWYkkT5JlhZcmgvmiPHGyvVC6aZog==
-X-Google-Smtp-Source: ABdhPJz/OGnB4BQ0Sx3eDPVIeXsIzoDeoT9XSlSx+Q4Aaa2M4IThyTU9N+cW8fb6d5tNUToqttb8mhvjrmX9XPMKaz4=
-X-Received: by 2002:a05:6e02:1a6d:: with SMTP id w13mr9273294ilv.69.1607942849290;
- Mon, 14 Dec 2020 02:47:29 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SWhRX/NAZKOA9RtVoo0gk8MZ4dLnq8xQ/S9pdibaYEk=;
+        b=gy+bbSQm1srTUlSiW0bUZ3ELb6/QYReNjf66JcFXP2/ckmacnhQiVvUFQUns5SlUe9
+         4D8d8qePgW8p3r6VDaE5yvKFImBsTcx3ZWUDj3jl2g+8BB6gun9B92IeFy1gknnaHHtN
+         rYJouUhJ8ezoSuqN7HURjlkE3V7t1lZx8r7eRhp+oFkJh/0iUZntzVg8vxbJSPDLwnhI
+         i6lbzrFsMKQ8jZxea3hthFVKMQjGItqb6jzXf9SEBa3Ab/TWaFUhoNfk65os27PSBdL8
+         TDecA0r1Qj2r6rvvgaINVP10+1M+2UWFmDObJ8GuFWIccBSEhjiR9HNgqgKA0cLzbAB+
+         KTvQ==
+X-Gm-Message-State: AOAM531ViIndBzM9tz/5qTB+OF03NG56RKS5vQywgttIzFDqmNtF3F4P
+        CKrXy9jzwBx78d2Saw+1PqclpLjvm4ZcEQ==
+X-Google-Smtp-Source: ABdhPJymF8WJboilYFyBUUptp8FxMj8aIncNP75EjAKJMVbZZpYOJqxhUdTVDXGh4l6NGCuHFeDPNg==
+X-Received: by 2002:a2e:9ace:: with SMTP id p14mr4685863ljj.439.1607943064652;
+        Mon, 14 Dec 2020 02:51:04 -0800 (PST)
+Received: from xi.terra (c-b3cbe455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.203.179])
+        by smtp.gmail.com with ESMTPSA id p24sm1845434lfh.70.2020.12.14.02.51.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 02:51:03 -0800 (PST)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kolRT-0007RK-OH; Mon, 14 Dec 2020 11:50:59 +0100
+Date:   Mon, 14 Dec 2020 11:50:59 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        syzbot+e87ebe0f7913f71f2ea5@syzkaller.appspotmail.com,
+        stable <stable@vger.kernel.org>, linux-usb@vger.kernel.org
+Subject: Re: [PATCH] USB: yurex: fix control-URB timeout handling
+Message-ID: <X9dDkwlOTFeo9eZ6@localhost>
+References: <000000000000e2186705b65e671f@google.com>
+ <20201214104444.28386-1-johan@kernel.org>
 MIME-Version: 1.0
-References: <000000000000b4862805b54ef573@google.com> <X8kLG5D+j4rT6L7A@elver.google.com>
- <CANn89iJWD5oXPLgtY47umTgo3gCGBaoy+XJfXnw1ecES_EXkCw@mail.gmail.com>
- <CANpmjNOaWbGJQ5Y=qC3cA31-R-Jy4Fbe+p=OBG5O2Amz8dLtLA@mail.gmail.com>
- <CANn89iKWf1EVZUuAHup+5ndhxvOqGopq53=vZ9yeok=DnRjggg@mail.gmail.com>
- <X8kjPIrLJUd8uQIX@elver.google.com> <af884a0e-5d4d-f71b-4821-b430ac196240@gmail.com>
- <CANpmjNNDKm_ObRnO_b3gH6wDYjb6_ex-KhZA5q5BRzEMgo+0xg@mail.gmail.com>
- <X9DHa2OG6lewtfPQ@elver.google.com> <X9JR/J6dMMOy1obu@elver.google.com>
- <CANn89i+2mAu_srdvefKLDY23HvrbOG1aMfj5uwvk6tYZ9uBtMA@mail.gmail.com>
- <CANpmjNMdgX1H=ztDH5cpmmZJ3duL4M8Vn9Ty-XzNpsrhx0h4sA@mail.gmail.com> <CANpmjNPdK3rRF5eJM5uZ-8wJDp_8TF1P3jOvAo8kqu4YDDJtGQ@mail.gmail.com>
-In-Reply-To: <CANpmjNPdK3rRF5eJM5uZ-8wJDp_8TF1P3jOvAo8kqu4YDDJtGQ@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 14 Dec 2020 11:47:17 +0100
-Message-ID: <CANn89iJeS+WBB7=OvrRE1pbdYtxx4Oe7MYN3vCefZj3gO8AoYg@mail.gmail.com>
-Subject: Re: WARNING in sk_stream_kill_queues (5)
-To:     Marco Elver <elver@google.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Jann Horn <jannh@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Willem de Bruijn <willemb@google.com>,
-        syzbot <syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201214104444.28386-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 11:09 AM Marco Elver <elver@google.com> wrote:
->
-> On Thu, 10 Dec 2020 at 20:01, Marco Elver <elver@google.com> wrote:
-> > On Thu, 10 Dec 2020 at 18:14, Eric Dumazet <edumazet@google.com> wrote:
-> > > On Thu, Dec 10, 2020 at 5:51 PM Marco Elver <elver@google.com> wrote:
-> > [...]
-> > > > So I started putting gdb to work, and whenever I see an allocation
-> > > > exactly like the above that goes through tso_fragment() a warning
-> > > > immediately follows.
-> > > >
-> > > > Long story short, I somehow synthesized this patch that appears to fix
-> > > > things, but I can't explain why exactly:
-> > > >
-> > > > | --- a/net/core/skbuff.c
-> > > > | +++ b/net/core/skbuff.c
-> > > > | @@ -1679,13 +1679,6 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
-> > > > |
-> > > > |       skb_metadata_clear(skb);
-> > > > |
-> > > > | -     /* It is not generally safe to change skb->truesize.
-> > > > | -      * For the moment, we really care of rx path, or
-> > > > | -      * when skb is orphaned (not attached to a socket).
-> > > > | -      */
-> > > > | -     if (!skb->sk || skb->destructor == sock_edemux)
-> > > > | -             skb->truesize += size - osize;
-> > > > | -
-> > > > |       return 0;
-> > > > |
-> > > > |  nofrags:
-> > > >
-> > > > Now, here are the breadcrumbs I followed:
-> > > >
-> > > >
-> > > > 1.      Breakpoint on kfence_ksize() -- first allocation that matches the above:
-> > > >
-> > > >         | #0  __kfence_ksize (s=18446612700164612096) at mm/kfence/core.c:726
-> > > >         | #1  0xffffffff816fbf30 in kfence_ksize (addr=0xffff888436856000) at mm/kfence/core.c:737
-> > > >         | #2  0xffffffff816217cf in ksize (objp=0xffff888436856000) at mm/slab_common.c:1178
-> > > >         | #3  0xffffffff84896911 in __alloc_skb (size=914710528, gfp_mask=2592, flags=0, node=-1) at net/core/skbuff.c:217
-> > > >         | #4  0xffffffff84d0ba73 in alloc_skb_fclone (priority=<optimized out>, size=<optimized out>) at ./include/linux/skbuff.h:1144
-> > > >         | #5  sk_stream_alloc_skb (sk=0xffff8881176cc000, size=0, gfp=2592, force_schedule=232) at net/ipv4/tcp.c:888
-> > > >         | #6  0xffffffff84d41c36 in tso_fragment (gfp=<optimized out>, mss_now=<optimized out>, len=<optimized out>,
-> > > >         |     skb=<optimized out>, sk=<optimized out>) at net/ipv4/tcp_output.c:2124
-> > > >         | #7  tcp_write_xmit (sk=0xffff8881176cc000, mss_now=21950, nonagle=3096, push_one=-1996874776, gfp=0)
-> > > >         |     at net/ipv4/tcp_output.c:2674
-> > > >         | #8  0xffffffff84d43e48 in __tcp_push_pending_frames (sk=0xffff8881176cc000, cur_mss=337, nonagle=0)
-> > > >         |     at ./include/net/sock.h:918
-> > > >         | #9  0xffffffff84d3259c in tcp_push_pending_frames (sk=<optimized out>) at ./include/net/tcp.h:1864
-> > > >         | #10 tcp_data_snd_check (sk=<optimized out>) at net/ipv4/tcp_input.c:5374
-> > > >         | #11 tcp_rcv_established (sk=0xffff8881176cc000, skb=0x0 <fixed_percpu_data>) at net/ipv4/tcp_input.c:5869
-> > > >         | #12 0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f52ea0) at net/ipv4/tcp_ipv4.c:1668
-> > > >         | [...]
-> > > >
-> > > >         Set watchpoint on skb->truesize:
-> > > >
-> > > >         | (gdb) frame 3
-> > > >         | #3  0xffffffff84896911 in __alloc_skb (size=914710528, gfp_mask=2592, flags=0, node=-1) at net/core/skbuff.c:217
-> > > >         | 217             size = SKB_WITH_OVERHEAD(ksize(data));
-> > > >         | (gdb) p &skb->truesize
-> > > >         | $5 = (unsigned int *) 0xffff888117f55f90
-> > > >         | (gdb) awatch *0xffff888117f55f90
-> > > >         | Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
-> > > >
-> > > > 2.      Some time later, we see that the skb with kfence-allocated data
-> > > >         is cloned:
-> > > >
-> > > >         | Thread 7 hit Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
-> > > >         |
-> > > >         | Value = 1570
-> > > >         | 0xffffffff84886947 in __skb_clone (n=0xffff888117f55fa0, skb=0xffff888117f55ec0) at net/core/skbuff.c:1002
-> > > >         | 1002            C(truesize);
-> > > >         | (gdb) bt
-> > > >         | #0  0xffffffff84886947 in __skb_clone (n=0xffff888117f55fa0, skb=0xffff888117f55ec0) at net/core/skbuff.c:1002
-> > > >         | #1  0xffffffff8488bfb9 in skb_clone (skb=0xffff888117f55ec0, gfp_mask=2592) at net/core/skbuff.c:1454
-> > > >         | #2  0xffffffff84d3cd1c in __tcp_transmit_skb (sk=0xffff8881176cc000, skb=0xffff888117f55ec0, clone_it=0, gfp_mask=2592,
-> > > >         |     rcv_nxt=0) at net/ipv4/tcp_output.c:1267
-> > > >         | #3  0xffffffff84d4125b in tcp_transmit_skb (gfp_mask=<optimized out>, clone_it=<optimized out>, skb=<optimized out>,
-> > > >         |     sk=<optimized out>) at ./include/linux/tcp.h:439
-> > > >         | #4  tcp_write_xmit (sk=0xffff8881176cc000, mss_now=392485600, nonagle=1326, push_one=-1996875104, gfp=0)
-> > > >         |     at net/ipv4/tcp_output.c:2688
-> > > >         | #5  0xffffffff84d43e48 in __tcp_push_pending_frames (sk=0xffff8881176cc000, cur_mss=337, nonagle=0)
-> > > >         |     at ./include/net/sock.h:918
-> > > >         | #6  0xffffffff84d3259c in tcp_push_pending_frames (sk=<optimized out>) at ./include/net/tcp.h:1864
-> > > >         | #7  tcp_data_snd_check (sk=<optimized out>) at net/ipv4/tcp_input.c:5374
-> > > >         | #8  tcp_rcv_established (sk=0xffff8881176cc000, skb=0x0 <fixed_percpu_data>) at net/ipv4/tcp_input.c:5869
-> > > >         | #9  0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f57820) at net/ipv4/tcp_ipv4.c:1668
-> > > >         | #10 0xffffffff8487bf67 in sk_backlog_rcv (skb=<optimized out>, sk=<optimized out>) at ./include/net/sock.h:1010
-> > > >         [...]
-> > > >
-> > > >
-> > > > 3.      The original skb (that was cloned) has its truesize adjusted
-> > > >         after a pskb_expand_head():
-> > > >
-> > > >         | Thread 2 hit Hardware access (read/write) watchpoint 6: *0xffff888117f55f90
-> > > >         |
-> > > >         | Old value = 1570
-> > > >         | New value = 1954
-> > > >
-> > > >         ^^ the difference between the old and the new value is exactly
-> > > >         384, which is also the final underflow of the sk_wmem_queued
-> > > >         that triggers the warning. Presumably if the original allocation
-> > > >         had been through kmalloc-1k and not KFENCE, the difference here
-> > > >         would have been 0, since ksize() of the original allocation in
-> > > >         step (1) would have been 1024, and not 640 (difference of 384).
-> > > >
-> > > >         | 0xffffffff8488d84b in pskb_expand_head (skb=0xffff888117f55ec0, nhead=401956752, ntail=1954, gfp_mask=2298092192)
-> > > >         |     at net/core/skbuff.c:1687
-> > > >         | 1687                    skb->truesize += size - osize;
-> > > >         | (gdb) bt
-> > > >         | #0  0xffffffff8488d84b in pskb_expand_head (skb=0xffff888117f55ec0, nhead=401956752, ntail=1954, gfp_mask=2298092192)
-> > > >         |     at net/core/skbuff.c:1687
-> > > >         | #1  0xffffffff8488de01 in skb_prepare_for_shift (skb=<optimized out>) at ./arch/x86/include/asm/atomic.h:29
-> > > >         | #2  skb_prepare_for_shift (skb=0xffff888117f55ec0) at net/core/skbuff.c:3276
-> > > >         | #3  0xffffffff848936b1 in skb_shift (tgt=0xffff888117f549c0, skb=0xffff888117f55ec0, shiftlen=674) at net/core/skbuff.c:3351
-> > > >         | #4  0xffffffff84d264de in tcp_skb_shift (shiftlen=<optimized out>, pcount=<optimized out>, from=<optimized out>,
-> > > >         |     to=<optimized out>) at net/ipv4/tcp_input.c:1497
-> > > >         | #5  tcp_shift_skb_data (dup_sack=<optimized out>, end_seq=<optimized out>, start_seq=<optimized out>, state=<optimized out>,
-> > > >         |     skb=<optimized out>, sk=<optimized out>) at net/ipv4/tcp_input.c:1605
-> > > >         | #6  tcp_sacktag_walk (skb=0xffff888117f55ec0, sk=0xffff8881176cc000, next_dup=0x894,
-> > > >         |     state=0xffffffff88fa1aa0 <watchpoints+192>, start_seq=0, end_seq=401956752, dup_sack_in=false)
-> > > >         |     at net/ipv4/tcp_input.c:1670
-> > > >         | #7  0xffffffff84d276de in tcp_sacktag_write_queue (sk=0xffff888117f55f90, ack_skb=0x1888117f55f90, prior_snd_una=2196,
-> > > >         |     state=0xffffffff88fa1aa0 <watchpoints+192>) at net/ipv4/tcp_input.c:1931
-> > > >         | #8  0xffffffff84d2ca1d in tcp_ack (sk=0xffff8881176cc000, skb=0x1888117f55f90, flag=16643) at net/ipv4/tcp_input.c:3758
-> > > >         | #9  0xffffffff84d32387 in tcp_rcv_established (sk=0xffff8881176cc000, skb=0xffff888117f54020) at net/ipv4/tcp_input.c:5858
-> > > >         | #10 0xffffffff84d56731 in tcp_v4_do_rcv (sk=0xffff8881176cc000, skb=0xffff888117f54020) at net/ipv4/tcp_ipv4.c:1668
-> > > >         [...]
-> > > >
-> > > >
-> > > > Any of this make sense?
-> > >
-> > > Very nice debugging !
-> > >
-> > > I guess we could fix this in skb_prepare_for_shift(), eventually
-> > > caring for the truesize manipulation
-> > > (or reverting the change done in pskb_expand_head(), since only kfence
-> > > is having this issue.
-> >
-> > Phew, good to hear I finally got lucky. :-)
-> >
-> > Either option is fine, as long as it avoids this problem in future.
-> > Hopefully it can be fixed for 5.11.
-> >
-> > > (All TCP skbs in output path have the same allocation size for skb->head)
-> > >
-> > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > > index e578544b2cc7110ec2f6bcf4c29d93e4b4b1ad14..798b51eeeaa4fbed65d41d9eab207dbbf438dab3
-> > > 100644
-> > > --- a/net/core/skbuff.c
-> > > +++ b/net/core/skbuff.c
-> > > @@ -3270,7 +3270,14 @@ EXPORT_SYMBOL(skb_split);
-> > >   */
-> > >  static int skb_prepare_for_shift(struct sk_buff *skb)
-> > >  {
-> > > -       return skb_cloned(skb) && pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
-> > > +       unsigned int ret = 0, save;
-> > > +
-> > > +       if (skb_cloned(skb)) {
-> > > +               save = skb->truesize;
-> > > +               ret = pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
-> > > +               skb->truesize = save;
-> > > +       }
-> > > +       return ret;
-> > >  }
-> >
-> > FWIW,
-> >
-> >     Tested-by: Marco Elver <elver@google.com>
->
-> Has this patch, or similar, already been sent?
+On Mon, Dec 14, 2020 at 11:44:44AM +0100, Johan Hovold wrote:
+> Make sure to always cancel the control URB in write() so that it can be
+> reused after a timeout or spurious CMD_ACK.
+> 
+> Currently any further write requests after a timeout would fail after
+> triggering a WARN() in usb_submit_urb() when attempting to submit the
+> already active URB.
+> 
+> Reported-by: syzbot+e87ebe0f7913f71f2ea5@syzkaller.appspotmail.com
+> Fixes: 6bc235a2e24a ("USB: add driver for Meywa-Denki & Kayac YUREX")
+> Cc: stable <stable@vger.kernel.org>     # 2.6.37
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
 
+Forgot linux-usb...
 
-Not yet, we have few weeks left before 5.11 is released ;)
+Let's try this too:
+
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+
+>  drivers/usb/misc/yurex.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/usb/misc/yurex.c b/drivers/usb/misc/yurex.c
+> index 73ebfa6e9715..c640f98d20c5 100644
+> --- a/drivers/usb/misc/yurex.c
+> +++ b/drivers/usb/misc/yurex.c
+> @@ -496,6 +496,9 @@ static ssize_t yurex_write(struct file *file, const char __user *user_buffer,
+>  		timeout = schedule_timeout(YUREX_WRITE_TIMEOUT);
+>  	finish_wait(&dev->waitq, &wait);
+>  
+> +	/* make sure URB is idle after timeout or (spurious) CMD_ACK */
+> +	usb_kill_urb(dev->cntl_urb);
+> +
+>  	mutex_unlock(&dev->io_mutex);
+>  
+>  	if (retval < 0) {
