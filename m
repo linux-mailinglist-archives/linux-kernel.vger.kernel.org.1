@@ -2,185 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E752DA20C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:55:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A182DA213
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503428AbgLNUxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:53:13 -0500
-Received: from mail-bn7nam10on2059.outbound.protection.outlook.com ([40.107.92.59]:3456
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2502900AbgLNUxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:53:04 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YEQxxCfJjHZEyPCVahI/6zRT6PmtNFZj5wZk2zVVXFHzYVDjpFENpsAtwIh5c9Chvyt+H6ki7xkgXr42EZvKh0RBJiizu7ft0g5ROZMbN9vg7TP3bGF3/l6odiLTIZfPPpI6SkAplK82EPjODA1qB7dBDyS46UAc1w5/Jf6Th5pohZoPWFTB45kUr9sZur00rakcf9zk/CqtwvEUQVXVuILUgeznQao/F2Qfn2jq1JrbY/E/oRKCvFWJ0yQVEZ6JJTHOknjxZbd+CKgUp60v5RrJTepXa7oh/4iiFNp1pUAG9H8jCVKlMGpA8V45S7QxF1MobA7443aoRGmvgxPlgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rMo4VTHk5ROGoxlHBxCAzZwwTSxjT5eWhNd9gUHtfX4=;
- b=jV78hUSX0wuhyQmUxARGYjLWIhfgiUQKXN+h2q3iujAq6Pmin1AvrNkjQVrDLREcwCEFizxmfeoZC31n4gL1SwU4m3XBUHhWe3WINWuY0qHua7OCRLL00PlvcPP9TjKj8fmKTSmB9qpE3SveTwP0QRiyvj+0ePQCX+dSPtz4h+/ODJHxmNi6qhnhI6hS4AeG0RJuu4FsGXMTPr/aMI5Gkl/a3fvCag3qS8PV04Vf2+5Vj9wfBg8/M1daguAsZUpSVfsiTZVi6Vn03TVYqf+DT0q3ZR+7cT1o1HuJDuYlIMny8VVAQ1DNmvvparFP8FRNPoo7Qo0EUH8NpQfIEQ4kpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S2502841AbgLNUyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:54:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503436AbgLNUxs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 15:53:48 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C44C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 12:53:08 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id a6so15004345wmc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 12:53:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rMo4VTHk5ROGoxlHBxCAzZwwTSxjT5eWhNd9gUHtfX4=;
- b=uLFMEzblHSB9whKLOzwpweIg9Uvymn5ekh69QHWWhSvKkpbKWTGktUBvIW9ymr/ez5+ACbCCjrvHBrrufUFwLAJRiwsbIRf9FW9ey9oww0dpgbhcQWlw1mVb9FlAbqtiZtTDJ2np6f2/5hAzuHFeA7hfjtJ8oyXL1oCg1N3m9qg=
-Authentication-Results: amazon.com; dkim=none (message not signed)
- header.d=none;amazon.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM5PR12MB1164.namprd12.prod.outlook.com (2603:10b6:3:77::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.17; Mon, 14 Dec 2020 20:52:11 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::d95e:b9d:1d6a:e845]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::d95e:b9d:1d6a:e845%12]) with mapi id 15.20.3654.024; Mon, 14 Dec 2020
- 20:52:11 +0000
-Subject: Re: [PATCH 2/3] KVM: x86: use kvm_complete_insn_gp in emulating
- RDMSR/WRMSR
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Alexander Graf <graf@amazon.com>
-References: <20201214183250.1034541-1-pbonzini@redhat.com>
- <20201214183250.1034541-3-pbonzini@redhat.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <bc04f9a7-cc26-2347-58ae-bcbc024d996d@amd.com>
-Date:   Mon, 14 Dec 2020 14:52:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20201214183250.1034541-3-pbonzini@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: CH2PR04CA0018.namprd04.prod.outlook.com
- (2603:10b6:610:52::28) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=1r8mWX3dO5bIXJteVLwnQJfsBR/x5H9vpG4TpnJRsTM=;
+        b=emsdinqsft+oUmZgElqgUrxICpGBt4a4re39vhYVYex9X1twjpZUmJDg9YBvHQ20Mz
+         mmFLLRkIEAoFzuFaJCqXB7WHsUF3AX1hpvpqq/SgtPwuDGCiCjYGvQaYLo2lQcWZrSb2
+         MqVll5pxr+2M/2jUBTK9UkLEcDTC3uABbvqSDp8vurJW1OfIo/SIhmceaJI+Rably4hi
+         +FtZCer88GS1OpmfWidseaUNZlHAGL8z5CFr5XlrNgvz2fmbC/ayOMoiKm55aWlBWyVR
+         4uq6lJT4MfaRRhLyIoeKz9zPTEklqpBDjgj2Sq/KsUTPz/ROMJYLFmClwGhIzrWZvHiO
+         6wyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=1r8mWX3dO5bIXJteVLwnQJfsBR/x5H9vpG4TpnJRsTM=;
+        b=XXVY6pZxuuSowqmfSITlvp0Chyo/JIM9aqpWWlpjqkg+PzFRnm1/wdjAIBl7VV3IN2
+         fJnzeQJrmUIdAvmFIHV2frve+RuNokCEKK8/yMTSHYwHBZiLcjIlk1BDdtSMXBCLCKw5
+         DWh/TqBfrCaZ11FMOfYjv5GNS0qrwJk5o7GWp64KX69UcuC0jQfVcVMDnQpbC/uOlGSY
+         xomguggHgtHC+yqBQgWJE9KuDuY1ZIkn8VZBkjv21c9eyjyW1TdRbkg1j3BkKFGGCw6C
+         zVa9pUaeWBiZdTdF2HAgmdzEDITTle6ngjLeGyjNPpX6drppg1pX9g8TUYlVqt4y3pno
+         vVpQ==
+X-Gm-Message-State: AOAM531UHjFiF6BK83t73Qjqp6Ocp+fC2xryGXPlU+3Odntg1DHfNcai
+        Vb/QHoz7D57uK6+C7LJgKQAKOY4pIDo9a9HhwLZCTA==
+X-Google-Smtp-Source: ABdhPJyvVs4v89b/SyxICWRDRZG8sXVVnHPGF2JCyUroyIb4NQ0+nWAl3nWKfUtOU73TUYtqQv3Orx5/yy2kX9MV8/I=
+X-Received: by 2002:a7b:cc12:: with SMTP id f18mr30013651wmh.110.1607979186711;
+ Mon, 14 Dec 2020 12:53:06 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.118] (165.204.77.1) by CH2PR04CA0018.namprd04.prod.outlook.com (2603:10b6:610:52::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Mon, 14 Dec 2020 20:52:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: f476310c-8903-4cfd-ee72-08d8a07220d0
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1164:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1164599CC6654CA5DA272F03ECC70@DM5PR12MB1164.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Himnx7vcIhPHacfCeDmeE7U+Ah68ZUHxZZaQS5Rnapr70iSBdAp7n2Lgg5YMw4WIV/tq2Di8aEifj7n23P4kCu+kUf3YLdu4IXk8i/LrzTD7n4OK4V6DC58HATrUyRTHa58/ry+/YVRaUBm3VZrzeTkhGxaaZdkBxg+ApY7gSWyA25yCLNU9rLdvTi1ocrH7m5oOkAuWmrEuqE8inq/t6nwpKjO8DaTpxu9xDj5fX5wn+NSBLTGySeV31lcbi1uucJv2ucfxU9WwJJE+/VJ4ddngFKbXakVlONyPRUcnSTnJxatKpvtZHv6qh6LTGYgnDEAEkla892Mqsw4VkqHXIRBLBTTDF/6nZ0KU6vw3WGn6E7ulihLXHRaWP8VdoM5rJd2aPnZ1H5b9EPFT0KsjWsGdZZJDcXlMTocdjChcQDL/U97b8uY0ZyCHABbwqZe/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(376002)(508600001)(53546011)(16576012)(8936002)(4326008)(956004)(66946007)(8676002)(26005)(5660300002)(52116002)(2906002)(86362001)(16526019)(83380400001)(186003)(36756003)(2616005)(31686004)(34490700003)(31696002)(66556008)(54906003)(6486002)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eTRQQWxDRjNlandVd25KVUFGUm9YZVoxaG5WditSTkxhbzNNT01wMjBXVE9t?=
- =?utf-8?B?emxObDJWKzNWaFhCOU00cWR5SFkrODg1TWJNZ0d1cCtaUTh2ZnJ5bTk3ZVN4?=
- =?utf-8?B?VGVFaTBEanFUL21WV2dCT05EYlBGNlUwQlNYeCs1dUI2V2pxWGhOeVNrcmQ1?=
- =?utf-8?B?bjUvTHY0V0VZR3RvUm1CdUUwQ0Jjcm5zakVTdkVMMkhWOU1kcEZyVzN4a0V1?=
- =?utf-8?B?aUZYTjlMVDFtMTQvNjVuN0lMVEExWEd4YTdhb0xRWDJCUFNHOEhoeDRVdHFR?=
- =?utf-8?B?QzNBTlVySDVIME9NZkJzeE0zSnE2R1JpK013RkhPRm5vRm5nSWROUDZYeXBM?=
- =?utf-8?B?OW5zSnJCRE9tcm5GMURkUTdtNzJlT0FYNWdUN0NHU0RSL1F5M3djejVyZVIv?=
- =?utf-8?B?SGZubnBjYUI1bGY1b0UwQ3VvWWJEYWlpR2IxMVZJY1N4emhWWk9sMWMrckUv?=
- =?utf-8?B?MzZVMGN4Wm8yempjcW5LWjlFemNWVHBLZnRuRFhWZmxMV2x5Vk9BZEV3K2xI?=
- =?utf-8?B?WTRvQjhaUk52TktEQWZ1YkQ3ZURiSG9WZVVjN1FVRjBMZGI1bzVUdjNqZWZu?=
- =?utf-8?B?UWUxUEFKTDg1Zlc0Znd4cWJFeUI3dUlqblFXZGl4RXdGYjgxZXdjQ0NWSENN?=
- =?utf-8?B?M09IZE5PTzVGN016ZGp1K1cyM1pyVk9ncENpUkNXemswRmJwRUFwOFBWUWFw?=
- =?utf-8?B?R1djdXFWc0sxUERxT21PMTNXNS9mTklENGVSWkFMTmdjVkc5cUU3TTdvc2px?=
- =?utf-8?B?RlVsdFMyN0FmQWEvdXk2K0RNblFVSWlQRmttbGQzbUpCMnMydnh1TEFiRFZz?=
- =?utf-8?B?VUI4RUJSZ0E2R092S3BHU1l5VGFOSGx0ZW5kNXJza0hTZlptVHNPcy84YlNR?=
- =?utf-8?B?dEtmKzhjQjZ4UEhuQUJqRVRKSEh3NmhKd0o2K0xTdVd4bjBBTGhlMk1hcFg4?=
- =?utf-8?B?Qi90cXZUVXhTTUR5ZzNuWmxQSm1PeExGdFdRNk9zMGZyMTF1RkNTamRCTVR5?=
- =?utf-8?B?UWxBVGZGdzNnMVpSS0dTU0tJeXFpZkFYTTUvR3FMdkx5KzJ3SDZpYVFrR2RQ?=
- =?utf-8?B?NnNXL29vNE5CSENnK1dQbVNZTVk5SlRNSWpQdUtkOE1CcHBQbmpvUDY1S0xh?=
- =?utf-8?B?WDEyZ1dHQVJjSzRiVlE0WFRUeEh2RDlMakFIWHlWZFM4V3JHZDNTRS9mdHM0?=
- =?utf-8?B?Q3p6cjVrbUY2N01yM2ZPbVlOK21nVzZCTlB4djF2bUJiQ3c1SUZLK3RzUU9I?=
- =?utf-8?B?d2w0aG5vTmNQdThUVXZjV21qYnVEVGZvNTFybFBlVlorR0RRVnFmUTVQWTUz?=
- =?utf-8?Q?CC3o0P+K5d3cLfa4CtTnDi9AOQxkbFChg2?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2020 20:52:10.9694
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: f476310c-8903-4cfd-ee72-08d8a07220d0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mPSCeGXj5xsSbvvvraS2sdeub/wMxlLIPUuoVqTvNWi1IkIFoMztUAJHQrrMOC92FxpYoK0X3A3EhyGlobNwAw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1164
+From:   "Hyunwook (Wooky) Baek" <baekhw@google.com>
+Date:   Mon, 14 Dec 2020 12:52:55 -0800
+Message-ID: <CABMWKFCCd=DiruUr3W8DGGozexW-gmeFWVEg2OmuJLuTJXFr_g@mail.gmail.com>
+Subject: MOK variable config table: Kernel Panic in SEV-enabled VMs
+To:     Lenny Szubowicz <lszubowi@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+Cc:     pjones@redhat.com, dhowells@redhat.com, prarit@redhat.com,
+        Peter Gonda <pgonda@google.com>,
+        Rachit Mathur <rachitmathur@google.com>,
+        Zach Marano <zmarano@google.com>,
+        Jianxiong Gao <jxgao@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        David Rientjes <rientjes@google.com>, keescook@chromium.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/14/20 12:32 PM, Paolo Bonzini wrote:
-> Simplify the four functions that handle {kernel,user} {rd,wr}msr, there
-> is still some repetition between the two instances of rdmsr but the
-> whole business of calling kvm_inject_gp and kvm_skip_emulated_instruction
-> can be unified nicely.
-> 
-> Because complete_emulated_wrmsr now becomes essentially a call to
-> kvm_complete_insn_gp, remove complete_emulated_msr.
-> 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Hello,
 
-Just two minor nits below.
+We found SEV-enabled VMs crash with the latest CentOS and Rhel images in Google
+Cloud (centos-8-v20201112 and rhel-8-v20201112), because the MOK var table patch
+(https://lkml.org/lkml/2020/8/25/1344) is making a #GP with SEV-enabled VMs,
+but the patch is backported to those images. It looks like the patch
+is also included in
+the v5.10 release candidate.
 
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+The SEV-enabled VMs work fine with the previous Rhel-8 and Centos-8 images
+(centos-8-v20201014 and rhel-8-v20201014).
 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index a3fdc16cfd6f..2f1bc52e70c0 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1634,27 +1634,20 @@ int kvm_set_msr(struct kvm_vcpu *vcpu, u32 index, u64 data)
->  }
->  EXPORT_SYMBOL_GPL(kvm_set_msr);
->  
->  
->  	/* MSR read failed? Inject a #GP */
+The following is the kernel log messages that show the VM crashes while
+running efi_mokvar_sysfs_init() with the rhel image (the centos kernel log is
+almost identical):
 
-This comment isn't accurate any more, maybe just delete it?
+[    1.720049] EFI Variables Facility v0.08 2004-May-17
+[    1.943612] input: AT Translated Set 2 keyboard as
+/devices/platform/i8042/serio0/input/input2
+[    2.480607] general protection fault: 0000 [#1] SMP NOPTI
+[    2.481549] CPU: 1 PID: 1 Comm: swapper/0 Not tainted
+4.18.0-193.28.1.el8_2.x86_64 #1
+[    2.481549] Hardware name: Google Google Compute Engine/Google
+Compute Engine, BIOS Google 01/01/2011
+[    2.481549] RIP: 0010:efi_mokvar_sysfs_init+0xa9/0x19d
+[    2.481549] Code: 4b 00 48 85 c0 0f 85 be 00 00 00 48 c7 c7 d8 a8
+12 9b bd f4 ff ff ff e8 a4 ba 73 fe e9 f0 00 00 00 48 85 d2 0f 85 b1
+00 00 00 <41> 80 3c 24 00 0f 84 bf 00 00 00 4d 85 e4 0f 84 b6 00 00 00
+48 8b
+[    2.481549] RSP: 0018:ffffa6d7c0c67df8 EFLAGS: 00010282
+[    2.481549] RAX: 0df68117d0b79f0b RBX: ffff96fe32837720 RCX: 0000000000000000
+[    2.481549] RDX: ffffa6d7c0c81000 RSI: ffffffff9b3934c0 RDI: ffff96fe32837758
+[    2.481549] RBP: ffffffff9b3934c0 R08: ffffffff9b3934c0 R09: 0000000000000228
+[    2.481549] R10: 0000000000000007 R11: 0000000000000008 R12: 0df627ef917fb013
+[    2.481549] R13: ffffffff9b3934c0 R14: ffffffff9a6b3da0 R15: ffff96fe32837758
+[    2.481549] FS:  0000000000000000(0000) GS:ffff96fe37b00000(0000)
+knlGS:0000000000000000
+[    2.481549] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    2.481549] CR2: 00007f0508d7c000 CR3: 0000800232ff8000 CR4: 0000000000340ee0
+[    2.481549] Call Trace:
+[    2.481549]  ? efi_rci2_sysfs_init+0x26d/0x26d
+[    2.481549]  ? do_early_param+0x91/0x91
+[    2.481549]  do_one_initcall+0x46/0x1c3
+[    2.481549]  ? do_early_param+0x91/0x91
+[    2.481549]  kernel_init_freeable+0x1af/0x258
+[    2.481549]  ? rest_init+0xaa/0xaa
+[    2.481549]  kernel_init+0xa/0xff
+[    2.481549]  ret_from_fork+0x22/0x40
+[    2.481549] Modules linked in:
+[    2.511520] ---[ end trace 24709f23c20e9cd9 ]---
+[    2.512376] RIP: 0010:efi_mokvar_sysfs_init+0xa9/0x19d
+[    2.513249] Code: 4b 00 48 85 c0 0f 85 be 00 00 00 48 c7 c7 d8 a8
+12 9b bd f4 ff ff ff e8 a4 ba 73 fe e9 f0 00 00 00 48 85 d2 0f 85 b1
+00 00 00 <41> 80 3c 24 00 0f 84 bf 00 00 00 4d 85 e4 0f 84 b6 00 00 00
+48 8b
+[    2.516876] RSP: 0018:ffffa6d7c0c67df8 EFLAGS: 00010282
+[    2.517844] RAX: 0df68117d0b79f0b RBX: ffff96fe32837720 RCX: 0000000000000000
+[    2.519128] RDX: ffffa6d7c0c81000 RSI: ffffffff9b3934c0 RDI: ffff96fe32837758
+[    2.520328] RBP: ffffffff9b3934c0 R08: ffffffff9b3934c0 R09: 0000000000000228
+[    2.521771] R10: 0000000000000007 R11: 0000000000000008 R12: 0df627ef917fb013
+[    2.523025] R13: ffffffff9b3934c0 R14: ffffffff9a6b3da0 R15: ffff96fe32837758
+[    2.524218] FS:  0000000000000000(0000) GS:ffff96fe37b00000(0000)
+knlGS:0000000000000000
+[    2.525591] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    2.528401] CR2: 00007f0508d7c000 CR3: 0000800232ff8000 CR4: 0000000000340ee0
+[    2.530155] Kernel panic - not syncing: Fatal exception
+[    2.531145] Kernel Offset: 0x19000000 from 0xffffffff81000000
+(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+[    2.531145] ---[ end Kernel panic - not syncing: Fatal exception ]---
 
-> -	if (r) {
-> +	if (!r) {
-> +		trace_kvm_msr_read(ecx, data);
-> +
-> +		kvm_rax_write(vcpu, data & -1u);
-> +		kvm_rdx_write(vcpu, (data >> 32) & -1u);
-> +	} else {
->  		trace_kvm_msr_read_ex(ecx);
-> -		kvm_inject_gp(vcpu, 0);
-> -		return 1;
->  	}
->  
-> -	trace_kvm_msr_read(ecx, data);
-> -
-> -	kvm_rax_write(vcpu, data & -1u);
-> -	kvm_rdx_write(vcpu, (data >> 32) & -1u);
-> -	return kvm_skip_emulated_instruction(vcpu);
-> +	return kvm_complete_insn_gp(vcpu, r);
->  }
->  EXPORT_SYMBOL_GPL(kvm_emulate_rdmsr);
->  
-> @@ -1750,14 +1742,12 @@ int kvm_emulate_wrmsr(struct kvm_vcpu *vcpu)
->  		return r;
->  
->  	/* MSR write failed? Inject a #GP */
-
-Ditto on this comment.
-
-Thanks,
-Tom
-
-> -	if (r > 0) {
-> +	if (!r)
-> +		trace_kvm_msr_write(ecx, data);
-> +	else
->  		trace_kvm_msr_write_ex(ecx, data);
-> -		kvm_inject_gp(vcpu, 0);
-> -		return 1;
-> -	}
->  
-> -	trace_kvm_msr_write(ecx, data);
-> -	return kvm_skip_emulated_instruction(vcpu);
-> +	return kvm_complete_insn_gp(vcpu, r);
->  }
->  EXPORT_SYMBOL_GPL(kvm_emulate_wrmsr);
->  
-> 
+Regards,
+Wooky
