@@ -2,134 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B270F2D9243
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 05:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7CB62D9247
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 05:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438588AbgLNEXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 23:23:13 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:32938 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbgLNEWr (ORCPT
+        id S2438602AbgLNEaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 23:30:52 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:47696 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726929AbgLNEav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 23:22:47 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BE4L2rL006453;
-        Sun, 13 Dec 2020 22:21:02 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1607919662;
-        bh=SmX+/KcHIUjmfa1cMOr9m4Aiifj00xIx9O09s77Qhj4=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=KjqzVeICD0QxOKJLmjnB/qg4zHDsNagEE2KW4sxShuCF0egKN+TnNZwcoIAJdHrUn
-         AfldAI0pdywfm2dwAiNpec+nYYji94G5CtHa41oFl+Tt/dBzMIPu4gcCF0zftkmITo
-         DNazBwM+INrOhIE+S7ET8pNxIdror8Dz3FORzSZY=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BE4L2gJ094630
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 13 Dec 2020 22:21:02 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 13
- Dec 2020 22:21:01 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Sun, 13 Dec 2020 22:21:02 -0600
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BE4Kvw9034513;
-        Sun, 13 Dec 2020 22:20:58 -0600
-Subject: Re: [PATCH v4 1/2] dt-bindings: pci: Retrain Link to work around Gen2
- training defect.
-To:     Athani Nadeem Ladkhan <nadeem@cadence.com>,
-        Rob Herring <robh@kernel.org>
-CC:     Tom Joseph <tjoseph@cadence.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Milind Parab <mparab@cadence.com>,
-        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
-        Parshuram Raju Thombare <pthombar@cadence.com>
-References: <20201211144236.3825-1-nadeem@cadence.com>
- <20201211144236.3825-2-nadeem@cadence.com>
- <CAL_JsqLTz2k03gzrjDqi2d1NHQV+3pXxg6OqwcJ17CmfGYMf-A@mail.gmail.com>
- <SN2PR07MB2557145EE4C4E9C50A16CF64D8C90@SN2PR07MB2557.namprd07.prod.outlook.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <912c1efa-6c25-9e5d-5094-6c9dd8e3755d@ti.com>
-Date:   Mon, 14 Dec 2020 09:50:56 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 13 Dec 2020 23:30:51 -0500
+Received: by mail-il1-f200.google.com with SMTP id s23so12556656ilk.14
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 20:30:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=EyD6Xv8yPnw7Cjs0n0W7ffYeZrQMhBdBo2hV0DWduyU=;
+        b=ria6y16ev+yO1IlZkjDhq5b/99w+6LFBNvZoJ6Bgfd+gXptwGC0KORZo0UZHNluPCQ
+         a9drSCQL/mo3eqp/GRIx86si/eFHRDJjflihDnSwwEDFujOmzo1gS//V+JVY5f3zbUqe
+         GYd+sqeyKTxInNidAsJNf4ujL7Qd92ZXXyCI5PT/9WhXJ1leVQAbW1SGoAqOTsrN3k8b
+         VYeMC3gvqmCW2dvYJu19A64XyhcTJ9TEWpt3hxEqMODhHHPgv8UY/xEaclTWZ7IMlRJ7
+         5u9QGPdgCAbZHJMreKmbd0N78M3LzXh2UzR4EM40jSRO1kPXS9ftkV1sOI8jsglMeD4Q
+         dFSg==
+X-Gm-Message-State: AOAM530JQV2tAOMunuRlq/b545qKXJeR+9rT4wJmWe6NJc1gYp74OTFA
+        qqnw2KZvLvDFfiJe14RpLtqpj5+IkK8DjMBdhD7D9fbvKzhX
+X-Google-Smtp-Source: ABdhPJyesbPFPvzVPrqNA5vKUwZ8MPUpJMdiIIXET/pC2sHiNwQEajk+jEUTpNqY8ayX6qWyxzaJkFQSYwjBWXLPxybcPTpnNAvl
 MIME-Version: 1.0
-In-Reply-To: <SN2PR07MB2557145EE4C4E9C50A16CF64D8C90@SN2PR07MB2557.namprd07.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Received: by 2002:a6b:b8d6:: with SMTP id i205mr29780200iof.135.1607920210664;
+ Sun, 13 Dec 2020 20:30:10 -0800 (PST)
+Date:   Sun, 13 Dec 2020 20:30:10 -0800
+In-Reply-To: <0000000000007f73da05b64bfe7c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fbe5aa05b6651891@google.com>
+Subject: Re: WARNING in yurex_write/usb_submit_urb
+From:   syzbot <syzbot+e87ebe0f7913f71f2ea5@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, gregkh@linuxfoundation.org,
+        gustavoars@kernel.org, hdanton@sina.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com,
+        vulab@iscas.ac.cn
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nadeem,
+syzbot has found a reproducer for the following issue on:
 
-On 12/12/20 12:37 pm, Athani Nadeem Ladkhan wrote:
-> Hi Rob / Kishon,
-> 
->> -----Original Message-----
->> From: Rob Herring <robh@kernel.org>
->> Sent: Friday, December 11, 2020 10:32 PM
->> To: Athani Nadeem Ladkhan <nadeem@cadence.com>
->> Cc: Tom Joseph <tjoseph@cadence.com>; Lorenzo Pieralisi
->> <lorenzo.pieralisi@arm.com>; Bjorn Helgaas <bhelgaas@google.com>; PCI
->> <linux-pci@vger.kernel.org>; linux-kernel@vger.kernel.org; Kishon Vijay
->> Abraham I <kishon@ti.com>; devicetree@vger.kernel.org; Milind Parab
->> <mparab@cadence.com>; Swapnil Kashinath Jakhade
->> <sjakhade@cadence.com>; Parshuram Raju Thombare
->> <pthombar@cadence.com>
->> Subject: Re: [PATCH v4 1/2] dt-bindings: pci: Retrain Link to work around
->> Gen2 training defect.
->>
->> EXTERNAL MAIL
->>
->>
->> On Fri, Dec 11, 2020 at 9:03 AM Nadeem Athani <nadeem@cadence.com>
->> wrote:
->>>
->>> Cadence controller will not initiate autonomous speed change if
->>> strapped as Gen2. The Retrain Link bit is set as quirk to enable this speed
->> change.
->>> Adding a quirk flag based on a new compatible string.
->>>
->>> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
->>> ---
->>>  Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml | 4
->>> +++-
->>>  1 file changed, 3 insertions(+), 1 deletion(-)
->>>
->>> diff --git
->>> a/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
->>> b/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
->>> index 293b8ec318bc..204d78f9efe3 100644
->>> --- a/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
->>> +++ b/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
->>> @@ -15,7 +15,9 @@ allOf:
->>>
->>>  properties:
->>>    compatible:
->>> -    const: cdns,cdns-pcie-host
->>> +    enum:
->>> +        - cdns,cdns-pcie-host
->>> +        - cdns,cdns-pcie-host-quirk-retrain
->>
->> So, we'll just keep adding quirk strings on to the compatible? I don't think so.
->> Compatible strings should map to a specific implementation/platform and
->> quirks can then be implied from them. This is the only way we can implement
->> quirks in the OS without firmware
->> (DT) changes.
-> Ok, I will change the compatible string to " ti,j721e-pcie-host" in place of  " cdns,cdns-pcie-host-quirk-retrain" .
-> @Kishon Vijay Abraham I: Is this fine? Or will you suggest an appropriate name?
+HEAD commit:    6bff9bb8 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10937c5b500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3416bb960d5c705d
+dashboard link: https://syzkaller.appspot.com/bug?extid=e87ebe0f7913f71f2ea5
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1583cf17500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11825413500000
 
-IMHO it should be something like "cdns,cdns-pcie-host-vX", since the
-quirk itself is not specific to TI platform rather Cadence IP version.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e87ebe0f7913f71f2ea5@syzkaller.appspotmail.com
 
-Thank You,
-Kishon
+------------[ cut here ]------------
+URB 0000000091a49304 submitted while active
+WARNING: CPU: 0 PID: 8533 at drivers/usb/core/urb.c:378 usb_submit_urb+0x1228/0x14e0 drivers/usb/core/urb.c:378
+Modules linked in:
+CPU: 0 PID: 8533 Comm: syz-executor014 Not tainted 5.10.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:usb_submit_urb+0x1228/0x14e0 drivers/usb/core/urb.c:378
+Code: 89 de e8 eb c8 3b fc 84 db 0f 85 da f4 ff ff e8 ce d0 3b fc 4c 89 fe 48 c7 c7 40 58 e1 89 c6 05 62 6d a4 07 01 e8 74 4f 78 03 <0f> 0b e9 b8 f4 ff ff c7 44 24 14 01 00 00 00 e9 6f f5 ff ff 41 bd
+RSP: 0018:ffffc9000187fcb8 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff888015e73480 RSI: ffffffff8158c835 RDI: fffff5200030ff89
+RBP: 1ffff9200030ffa9 R08: 0000000000000001 R09: ffff8880b9e30627
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff888017a40c00
+R13: 00000000fffffff0 R14: ffff888017a40ce8 R15: ffff888011521a00
+FS:  00000000025f8880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe0726b3000 CR3: 000000001c29c000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ yurex_write+0x3f4/0x840 drivers/usb/misc/yurex.c:493
+ vfs_write+0x28e/0xa30 fs/read_write.c:603
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x445809
+Code: e8 8c e8 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 6b cc fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffe3d547598 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000445809
+RDX: 0000000000000001 RSI: 0000000020000740 RDI: 0000000000000004
+RBP: 000000000000edca R08: 000000000000000f R09: 00000000004002e0
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402900
+R13: 0000000000402990 R14: 0000000000000000 R15: 0000000000000000
+
