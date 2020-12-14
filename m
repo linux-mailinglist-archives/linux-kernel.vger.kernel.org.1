@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03862DA3D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABBC2DA3D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441323AbgLNW5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 17:57:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731662AbgLNW4l (ORCPT
+        id S2441341AbgLNW5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 17:57:22 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:34485 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441315AbgLNW44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 17:56:41 -0500
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF8FC061793
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:56:01 -0800 (PST)
-Received: by mail-oo1-xc32.google.com with SMTP id x203so4364294ooa.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:56:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tNau0dbi4wX2OHDWsJ2tCzSDPVLgYMIigq5L3bsc4IM=;
-        b=hcZq/jeJbG+jFKN0wf5cZQX8wLrcXucGkUHnaHHWeZkoXGdMkDEfWIIIWCzwmAzeVI
-         3vjSkcZk7XoSutwHWNBS8PWhxl47K4ZBFRjcz6K6C4NRuqZCdq1bGqrYigwx2HVUrkVG
-         vd0f6pCHZ2opFzDboxv+pzkdkfRJoNe8EMgONgQsKeqiissl1iGqfZqI2X847yn+84TS
-         NZmordXIRLClHLCjINtXRwOQHy4PqwIgP17eh8HPKj8OASXqw539KajCMThqSZkDH+7j
-         3pUcY6rxFbUvjUb7Q6v31zG93ML6se5UYAulUzoYfT9zgIf8cSnn1RgkSxxMVFbLqeU2
-         F71g==
+        Mon, 14 Dec 2020 17:56:56 -0500
+Received: by mail-ot1-f65.google.com with SMTP id a109so17486403otc.1;
+        Mon, 14 Dec 2020 14:56:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tNau0dbi4wX2OHDWsJ2tCzSDPVLgYMIigq5L3bsc4IM=;
-        b=EUXrXpZtXDl8UqSkgxqzHZgx63cS9LV11vL92Z1tkVoOQwi2+suvY8aX7USmQayf6I
-         pnWe3Dwl93lCR2gvK2nAMw+2bLzrwji8pRkEwYJx0X7lw1boWe5IAnkqmg6/QsndupdK
-         951F6gzd129legOCeJ7i1h5BOA0mRc8IOmQC15to0IYRoaKkdsyunQzNetGSP4LREO8i
-         9EFDZaDgkcl0dQbbLf7LUR+Bg6lS6+W8XRvt1dWy5fKkT12va6APU7tqzdjde3+PQ+XH
-         dJRLhAyOq0esLxQlh3/rcH5MqgIbs0mViKCS5E+/UIwu97nmzR4zTtD90jhC0ILUmJC7
-         XC9Q==
-X-Gm-Message-State: AOAM533TV5vq6TKyEXZDLKbLdTJZxmq6PN8oeHZx3Q3U5Ag9oqnm9pFU
-        97DdWt/9L6UbN0Edz2KeR4jeFm+RutmygJXgd9I=
-X-Google-Smtp-Source: ABdhPJyXJPbohMAfZ08TLI7HABFoYsQBf66s4eNe4tSNa6zhO+7/c8xdBPW0S2evG8DXLzhOCXJCYUFOyz3Hy+zsNFA=
-X-Received: by 2002:a4a:330b:: with SMTP id q11mr20518037ooq.90.1607986560917;
- Mon, 14 Dec 2020 14:56:00 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6eV+/H1+wuql5Xj175B7CxNiRq52AmncCnPannTivxU=;
+        b=n3W4VjXTlZqubB9cX6CaLRjRvKNvwDkeqODi6O2W5sgAyiunW5ufkPn2UNhK1B6vB+
+         uzRrh2Y44HMqPdKkzPaaXVVms8nLXjsvyhxgJ2hpYH1Bj/1wCg/9f5L6r4/iMEDU9NH3
+         9MXZ/W18UXJG4MImvnqHGXgbm7Uqw0+h3j2N8gJptb+EvSVd+1QszMFrcfjPHnDWUTl4
+         A0m96F3SboloSzencuzWvF858q4y/jyNSymlvWQdljC9IvPJt/xOqVVoYuN/8wkyxWOL
+         SIQnp7irm44iosmy2wFjIebeTNu7PIUCfTdJh5qGzqTvwy7SPLL7mQPHHKI4zPbZ+Zov
+         nXtQ==
+X-Gm-Message-State: AOAM533qpBFBQe+443otamBeX+Cqs3NabILLTvTzkUzD+zB0199bWgO3
+        +FwRDyWSGnHxQkAgZY6nDA==
+X-Google-Smtp-Source: ABdhPJwDM6U4udpEYiXAy2gSlbztGdngQOcnWX4uPjrYbFwopnc0V36ZUTQRqWQ5M1hiz15LkX+/Lw==
+X-Received: by 2002:a05:6830:4b9:: with SMTP id l25mr20777707otd.218.1607986575094;
+        Mon, 14 Dec 2020 14:56:15 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a18sm4611657oia.29.2020.12.14.14.56.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 14:56:14 -0800 (PST)
+Received: (nullmailer pid 2536446 invoked by uid 1000);
+        Mon, 14 Dec 2020 22:56:12 -0000
+Date:   Mon, 14 Dec 2020 16:56:12 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     linux-media@vger.kernel.org, linux-rtc@vger.kernel.org,
+        =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-sunxi@googlegroups.com, Chen-Yu Tsai <wens@csie.org>,
+        Icenowy Zheng <icenowy@aosc.xyz>, linux-i2c@vger.kernel.org,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-arm-kernel@lists.infradead.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-spi@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH v2 18/21] dt-bindings: allwinner: Add H616 compatible
+ strings
+Message-ID: <20201214225612.GA2536414@robh.at.kernel.org>
+References: <20201211011934.6171-1-andre.przywara@arm.com>
+ <20201211011934.6171-19-andre.przywara@arm.com>
 MIME-Version: 1.0
-References: <CAPM=9tyNrbap4FG6qstkC5YTznqVebD=ye+4+Z+t42yQnL325A@mail.gmail.com>
- <CAHk-=wjue4aOyQQq+C6SEurwe6XABhMyNtsfn1goU==Hf_QUqA@mail.gmail.com>
- <CADnq5_MyMm+FmmbKHccDDOBryEdgbQHdw3rtuhUv=cvJrirHFg@mail.gmail.com> <CAHk-=wgLKJ6S0V0YgVWdcXVH9Zh8CEV5xPBUSFkJ7fywNLtqeg@mail.gmail.com>
-In-Reply-To: <CAHk-=wgLKJ6S0V0YgVWdcXVH9Zh8CEV5xPBUSFkJ7fywNLtqeg@mail.gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 14 Dec 2020 17:55:49 -0500
-Message-ID: <CADnq5_OV4UqGLTsPnWij=eQYYxGf57mY8Nr34s5Y=jQiG9ZYLw@mail.gmail.com>
-Subject: Re: [git pull] drm for 5.11-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211011934.6171-19-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 5:45 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Mon, Dec 14, 2020 at 2:29 PM Alex Deucher <alexdeucher@gmail.com> wrote:
-> >
-> > The relevant fixes are:
->
-> Ok, I can confirm that applying those two patches gets my workstation
-> working properly again.
->
-> Would it be possible to get those submitted properly (or I can just
-> take them as-is, but would like to get a "please just pick them
-> directly")?
->
-> I don't like to continue to do merges during the merge windows with a
-> known broken base - it makes for a nightmare of bisection when you
-> have multiple independent problems, and I assume this hits not just me
-> but a lot of people with radeon/amdgpu graphics?
+On Fri, 11 Dec 2020 01:19:31 +0000, Andre Przywara wrote:
+> Add simple "allwinner,sun50i-h616-xxx" compatible names to existing
+> bindings, and pair them with an existing fallback compatible string,
+> as the devices are compatible.
+> This covers I2C, infrared, RTC and SPI.
+> 
+> Use enums to group all compatible devices together.
+> 
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> ---
+>  .../bindings/i2c/marvell,mv64xxx-i2c.yaml     | 21 +++++++------------
+>  .../media/allwinner,sun4i-a10-ir.yaml         | 16 ++++++--------
+>  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml |  3 +++
+>  .../bindings/spi/allwinner,sun6i-a31-spi.yaml |  1 +
+>  4 files changed, 17 insertions(+), 24 deletions(-)
+> 
 
-Yes, anyone using AMD GPUs will be affected.  The patches are already
-in drm-misc, so they should show up in the next drm -fixes PR, but I
-think it would be fine to pick them directly to fix support for
-everyone using your tree.
-
-Alex
+Acked-by: Rob Herring <robh@kernel.org>
