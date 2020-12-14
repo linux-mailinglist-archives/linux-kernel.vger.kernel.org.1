@@ -2,140 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CEAE2D9F81
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43B62D9F82
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440993AbgLNSqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 13:46:50 -0500
-Received: from sonic316-26.consmr.mail.ne1.yahoo.com ([66.163.187.152]:34843
-        "EHLO sonic316-26.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2408047AbgLNSqf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 13:46:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1607971548; bh=P6YkrPT5uA6xxgGjT0j4A8luoT/rgVDj8d9AKZCndQQ=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=gD0EJfovHcz3qsa8+eMNJjx2drp3AU3Ina1cfHT/ks9Z3TgN6gysHm2SJasEDSEDBGP4rghDCFh02O3VaSYG7BMG80JfWDgIFAo2lxTvj7ELCq/rGZUcylHNZN9Mh5QflD2sL4AN3/a/TrO/jeRRsnTtmCLbEs+BvazHmvS1WxD5/4GXIn6bm0etONuNL4Nmcrl+VhcJ1tNcZpTb6kVJAk0MFWb3dVjy1dYbjXCy2h02Su/99rLDD0dHqKsZlRiKGkPoTqZ9bXf89oqowQzSK+fjZ3lhp9uFgk0J66QmkKRH22Q12hOM188XbiEJwhvNEDYcqP0/RCBjhVw2ZR/mog==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1607971548; bh=/OBwNzribKawewf0yP0CIZX3lxcW2uBUaR/pqPx9HA4=; h=Subject:To:From:Date:From:Subject; b=Ns/217mmg0911FZ8WbHOLCfklwn84GUbN9Z0eyynGv2VJZqeFY3ZmRxet7g7w/QwMCDnYsqyrApgE30nYR4l5VVIhAPd5f16S5WE9kxjqlNOWQORFtx1nXci3/BxSw6DyiLWcP6P58lfWj4ne2nyiD+12JPkdIzeAqIar9DEXkfUDnVE5EtJbkci27+gi/XiC+7xiLzs+NiTtta+JJnidQFXsbZhHMWFItCEtINHkqAZTPui59QxVGCn0ogPjt5qV93f/r5p3I/LLXcOEcZTKB4Q2VjMO90SWxkt2ip4UI3NMK/Dlpynwd5Eo4BvOVcHd9XAXjwK4CFiBVq5Wnwu0A==
-X-YMail-OSG: Ami_UT0VM1mwjRcaCIpKoS.69wE7nLWXyDrJXY0HjBrmScQMO1VcC6VBLEb.JZp
- 1ontZBpTvmrmQsCc6QSdWdAtt4Vzux5VH1PwBvSAiRGm.lYtswn1H9455Ic9.sjMyZ_YUSGVl6Cw
- Gv_U4rZ3ugCc0RU6LlttMn.5PXRZXM0n9b07BlBndx.7mVKdISsKRzMhbz9mLzO9.UNxK_pqA5_z
- J40QI2uisbtT.m4Eh2XO7cKxTk1v6lCMeIvHZralisHeduDXZf.5a24rPICDQBUZ7REnYkXv250j
- 6fLbukJcJaEhGau6TE2M3x9RS66kp9UqAzHZO.lgghZpg..KItGXuKNyhD09dpHni0jNVWmpMTok
- UtHCW_GiuQStF84fUQd09VsMVZIb47auyMqiOHm6d7_Ahe5mmpVab.1kGs9yeaVJXNsHxHFv6lbe
- JICKoiUNN02lsRsZgWDl5J6bbTtAVHQpWMdjy5ejoJmiyFw3KwkXwc2BXv7CirfWY0B9Syu82kVP
- QDPyqkCJm0jA9UzROEAUiC6rMEZGfxDQA3x.X7USr7rTdsG6p8G21Bfyv4hNucXvWFHduHahRs7w
- JZgIvJ0O31d2Ey1Bfqlo1NsRhL8fD62uG7Lzy8tPCOgE7g3328f54TuaylGDGqu1tsGptlEQaDT2
- e.MnwERS5Wh7iAPt6xvzBJraAoqqSjwMYWw.N7mtWthjO6Y0j6dr6S4hDdGWTqUcLB17_SRQnfhV
- Vz_N_ifbyFxnv4Va5YZlO5oSWedq4F3TLIqpGXx3Ly55ccdSevtfc7XRuyDlkVTwRwCXK_4NZvS_
- 0XcZFfQoUXbFDlSqv0Ujaba_csQeZhJAnvYUUYz1EF18MXDnGPKSJzDaT_9FsL83K64_xdxu4yxw
- nJ3OcptX.HrwlNogXgM9GVjs4_4YszqPndMuMWuBju1Nq2wkJvg33HMegOsGASGUpwLc8nvQTbKT
- Dkg28imXBzuqqKJAoCq8KfDC.3OBgNOhblYxAwc76HOet23Z29Yr16qxacjUQeeDunRj2yrnro7x
- sazeXF3CzLZz4bH6ldWjyj1TUT7Ge7DIiirjVFbjUd6u.PupElOmwdJELOUpSea8jPhO7XuvXLVM
- NYa3GwScpSi2O7d3XdWHB6Jcz5WSy34MBMrlcu_aKr_f_DeP8rtZ81NSEMyX.A.CSJ21R5L09goK
- vajyYoQ8Fc0hG5GLYPExGRWJ53KDAPPyju_r73Pirdh4bOXMbM7_JhJC2k.EnrBtPol40hk7rzlt
- YbUJouqEe6.fR8_2eYpjGNjlQNLTn.AadXhNFNS6gaPqN4OP3SLvmUo4ELRdDgMim9_C5JO1GFAW
- 6GxILaDWcNYQ7C92_4u3uKCCHzDpOGo_jLF6WIHZXR8qLRgRGI0C.Oc.9VVFg1F_4fOgEpLoKhqC
- a9w1yxY1SLdsdXG0DjS1mfNntBA.S.iPKvT2UFHIZGdQg4mUC4RFsJVsx9msW_S1Vz0fBm59NocE
- j0hoUA9x2T9ujYRZ5w_GrKoxupLYODRZvNXQfOvDL1lGo0vCFympYQwh5zniLqiXONoqAQ7vQGKE
- jdgou53ZX0vJVo2Ag2toXvvdG.zerCjxFFkuVTGYOWm7kFbK0umJaipIqXYiNhC_6p8mWHsonSNH
- wmxZgGo5UjCTw2P_BhRCI4qDEyJu8NkB217ryTGtHNpXfgpXgm43f6n6ZAJocQm10FqzYLDlnj8f
- pD6bizUHUKatuqjUbHLxPS6X969MVK63mJLfGlPND0z80.s.tdv8LGB4OOwJH0ykyhJbjEzgst6t
- vA.SZ8c0kvEO5.uGYYdzNIpkySFf4tlvZYWSyagttXM0THsJXj4FZSUiFu38klQcrklGmQxGCMRl
- 2GbP3iP9P7D0HfI6jnW87wOUbuYNtrlRyuVlwsAjA.gnQXNfsomSrNVycqCZI0jzmvg8m8Jr5fxl
- _P72hg4DbicrNmj9VFwIa9f0s6UMTEhvefw1S3iPt75a.0mRJ4XkHyL036bjodpfJqM56xFvAA8T
- RT2DZp62EBCUYTQEg9bbdPi3nohUdcLNqBngYknLxIHd0OEAbDjSRMkmLKSK8lBCaTBSH7pFnA9s
- n0pnsBMYvhXexVq.PnpuxHholxZTshW6Bw.eQjf_HHwN3Tu042GJRp5MYEMbr5pv9WqQ3WlJHu6O
- zUWLM0pNtHVycn9HWgSz5Zkh2wRKValrPofeWyBiY6yq11fvocL9iOa60jtY8KJSooOH936rfzD_
- c1oVnTGluaUJarDjLTrMRQ_SNrtIDDASqASFrZNOWbS0WMUOSCTyV6Ak9NQGHlF8vFX_eHjBL6TJ
- 0WigKWF5Z_X0kY5GgiVWVeKuSUDQT9xEm7nabAkdjy.TqLC2uNQpCAdzU12_p3xSfaBK3pXbf2g8
- Jyd9bxougExI6nwXS6RAfrHGi0LHIdyvvQ6Qgsn.POa6oLOZDkkPETpo47twE01Rz2RUY2QdBpQx
- 1ZmiCBBHSZQJpJbicDeJoZ_K2Cf_cMU_cERI8gFFTilemVm1VcR6YoaBjSIir5dLCJRAdCCwQs8F
- ujcnmtW6q0mCQh2h1CwHnOQnW5ZKj2zqT.IBhTGBwHO3BbtIz8zER4p9ADhD_bLOfyRDMXXx9EK.
- a5CQuJc3aL3ZCcgKvqL4xGsKxb2baopvAJtqctybdHa9mFDut7Vq8OdGFv_qyNBHjNGJPnaP4Bqf
- tDGUZ4Rw0XJefh.RQZD4.OhSyLOKZZ1vmD5tfylrWIRAUEl5pv2gzKDGpn3IWV7rGBtIqcoZEUZm
- bV9V.CG9u2awDNQuq3s2bUifgEjmguco_zJlthKOTBeqfDJqLwQhvIHFX2vC0.DkOgBqzwGi9k5d
- DpYVYxf3rP_hIc.9uBxBm4y6Z7PDlKY2mbXS90U8tjz6Eh1Pfzn_qSD2XAx9_nDC5HMiAa9B1jIm
- mIXtgFhmP_cqAHx2CauOpE2DvpUslIf0wrILC2FXT_k3VgUyatIzne6fDFrhn3.9EF_BHPbMEcSY
- llOBN1YPYQhK1WJV5O.Pq22VaRnINyniEgqcRr1A0LoeWaA0I.nDFeplhqMVcm8ub79idJ8NjiQu
- PtJ3YkOBXnV_kyGkw_.vuWrEk2B5taXRhJkoerjVu_0Wtywyw69RBQXPQCm.PTXbqULsFqQcyUhA
- atlMObue3yMeHjUGxxzxRrAWPwyWLabHJG36uRrZZ7NDpf3T60gBngiNStknY1GkfeQ6xOhY9R_0
- 7W38F6LU2PouU0Hv1gpYoJKx3TN7A_E0cWG2N_WfFCr7h00.CIpaa15UdPcJIrjUZdN3b.XunU06
- maVk_HJkVtxgt1iWnrXal5VDejcm4wFPTqjGzR6KiT0PEokiiZ52S2YLG8YlPFbYASnvKm3Ap0s2
- b7KoqixbyjctTxLxp4OmA_snkxK4Yu8KvL2y8lFezdq47m3yF9l99pT3wkY9BIibKRbe91a2SLu8
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Mon, 14 Dec 2020 18:45:48 +0000
-Received: by smtp411.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 5cc7bf86203920dd4d4da35148d929fe;
-          Mon, 14 Dec 2020 18:45:44 +0000 (UTC)
-Subject: Re: [PATCH v2] proc: Allow pid_revalidate() during LOOKUP_RCU
-To:     Matthew Wilcox <willy@infradead.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     Stephen Brennan <stephen.s.brennan@oracle.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20201204000212.773032-1-stephen.s.brennan@oracle.com>
- <20201212205522.GF2443@casper.infradead.org>
- <877dpln5uf.fsf@x220.int.ebiederm.org>
- <20201213162941.GG2443@casper.infradead.org>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <b18f4448-d31f-c4a7-ffea-e4cf2587b78b@schaufler-ca.com>
-Date:   Mon, 14 Dec 2020 10:45:43 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S2441015AbgLNSrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 13:47:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:51770 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2440537AbgLNSrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 13:47:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 40A8B1FB;
+        Mon, 14 Dec 2020 10:46:21 -0800 (PST)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DD3C23F66E;
+        Mon, 14 Dec 2020 10:46:17 -0800 (PST)
+Subject: Re: [PATCH] fair/util_est: Separate util_est_dequeue() for
+ cfs_rq_util_change
+To:     Ryan Y <xuewen.yan94@gmail.com>
+Cc:     patrick.bellasi@arm.com,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
+        rostedt@goodmis.org, Benjamin Segall <bsegall@google.com>,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
+        Xuewen Yan <Xuewen.Yan@unisoc.com>,
+        Ryan Y <xuewyan@foxmail.com>, zhang.lyra@gmail.com,
+        Ke.Wang@unisoc.com
+References: <1607510656-22990-1-git-send-email-xuewen.yan@unisoc.com>
+ <2edefcc7-ccea-5665-728e-5b86ac413629@arm.com>
+ <CAB8ipk-z0e5XnkR__vW9+NAz_rFDpC3odLnPEthWZoHKVRSYWg@mail.gmail.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <f7eb8636-2c15-58ef-d328-f879f16f498b@arm.com>
+Date:   Mon, 14 Dec 2020 19:46:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201213162941.GG2443@casper.infradead.org>
+In-Reply-To: <CAB8ipk-z0e5XnkR__vW9+NAz_rFDpC3odLnPEthWZoHKVRSYWg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-Mailer: WebService/1.1.17278 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.8)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/13/2020 8:29 AM, Matthew Wilcox wrote:
-> On Sun, Dec 13, 2020 at 08:22:32AM -0600, Eric W. Biederman wrote:
->> Matthew Wilcox <willy@infradead.org> writes:
+On 11/12/2020 13:03, Ryan Y wrote:
+> Hi Dietmar,
+> 
+> Yes! That's exactly what I meant.
+> 
+>> The issue is that sugov_update_[shared\|single] -> sugov_get_util() ->
+>> cpu_util_cfs() operates on an old  cfs_rq->avg.util_est.enqueued value?
+> 
+> well, because of this, when the p dequeued, _task_util_est(p) should be
+> subtracted before cfs_rq_util_change().
+> however, the original util_est_dequeue() dequeue the util_est and update
+> the
+> p->se.avg.util_est together.
+> so I separate the original util_est_dequeue() to deal with the issue.
+
+OK, I see.
+
+I ran a testcase '50% periodic task 'task0-0' (8ms/16ms)' with
+PELT + proprietary trace events within dequeue_task_fair() call:
+
+task0-0-1710 [002] 218.215535: sched_pelt_se:      cpu=2 path=(null) comm=task0-0 pid=1710 load=596 runnable=597 util=597 update_time=218123022336
+task0-0-1710 [002] 218.215536: sched_pelt_cfs:     cpu=2 path=/ load=597 runnable=597 util=597 update_time=218123022336
+task0-0-1710 [002] 218.215538: bprint:             sugov_get_util: CPU2 rq->cfs.avg.util_avg=597 rq->cfs.avg.util_est.enqueued=601
+task0-0-1710 [002] 218.215540: sched_util_est_cfs: cpu=2 path=/ enqueued=0 ewma=0 util=597
+task0-0-1710 [002] 218.215542: bprint:             dequeue_task_fair: CPU2 [task0-0 1710] rq->cfs.avg.util_avg=[576->597] rq->cfs.avg.util_est.enqueued=[601->0]
+
+It's true that 'sugov_get_util() -> cpu_util_cfs()' can use
+rq->cfs.avg.util_est.enqueued before _task_util_est(p) is subtracted
+from it.
+
+But isn't rq->cfs.avg.util_est.enqueued (in this case 601) always close
+to rq->cfs.avg.util_avg (597) since the task was just running?
+The cfs_rq utilization contains a blocked (sleeping) task.
+
+If I would run with your patch cpu_util_cfs() would chose between 597 and 0
+whereas without it does between 597 and 601.
+
+Do you have a specific use case in mind? Or even test results showing a benefit
+of your patch?
+
+> Dietmar Eggemann <dietmar.eggemann@arm.com> 于2020年12月11日周五 下午7:30写道：
+> 
+>> Hi Yan,
 >>
->>> On Thu, Dec 03, 2020 at 04:02:12PM -0800, Stephen Brennan wrote:
->>>> -void pid_update_inode(struct task_struct *task, struct inode *inode)
->>>> +static int do_pid_update_inode(struct task_struct *task, struct inode *inode,
->>>> +			       unsigned int flags)
->>> I'm really nitpicking here, but this function only _updates_ the inode
->>> if flags says it should.  So I was thinking something like this
->>> (compile tested only).
+>> On 09/12/2020 11:44, Xuewen Yan wrote:
+>>> when a task dequeued, it will update it's util, and cfs_rq_util_change
+>>> would check rq's util, if the cfs_rq->avg.util_est.enqueued is bigger
+>>> than  cfs_rq->avg.util_avg, but because the cfs_rq->avg.util_est.enqueued
+>>> didn't be decreased, this would cause bigger cfs_rq_util by mistake,
+>>> as a result, cfs_rq_util_change may change freq unreasonablely.
 >>>
->>> I'd really appreocate feedback from someone like Casey or Stephen on
->>> what they need for their security modules.
->> Just so we don't have security module questions confusing things
->> can we please make this a 2 patch series?  With the first
->> patch removing security_task_to_inode?
+>>> separate the util_est_dequeue() into util_est_dequeue() and
+>>> util_est_update(), and dequeue the _task_util_est(p) before update util.
 >>
->> The justification for the removal is that all security_task_to_inode
->> appears to care about is the file type bits in inode->i_mode.  Something
->> that never changes.  Having this in a separate patch would make that
->> logical change easier to verify.
-> I don't think that's right, which is why I keep asking Stephen & Casey
-> for their thoughts.  For example,
->
->  * Sets the smack pointer in the inode security blob
->  */
-> static void smack_task_to_inode(struct task_struct *p, struct inode *inode)
-> {
->         struct inode_smack *isp = smack_inode(inode);
->         struct smack_known *skp = smk_of_task_struct(p);
->
->         isp->smk_inode = skp;
->         isp->smk_flags |= SMK_INODE_INSTANT;
-> }
->
-> That seems to do rather more than checking the file type bits.
-
-I'm going to have to bring myself up to speed on the
-discussion before I say anything dumb. I'm supposed to
-be Not! Working! today. I will get on it as permitted.
-
+>> The issue is that sugov_update_[shared\|single] -> sugov_get_util() ->
+>> cpu_util_cfs() operates on an old  cfs_rq->avg.util_est.enqueued value?
+>>
+>> cpu_util_cfs()
+>>
+>>     if (sched_feat(UTIL_EST))
+>>         util = max_t(util, READ_ONCE(rq->cfs.avg.util_est.enqueued))
+>>                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>>
+>> dequeue_task_fair() (w/ your patch, moving (1) before (2))
+>>
+>>     /* (1) update cfs_rq->avg.util_est.enqueued */
+>>     util_est_dequeue()
+>>
+>>     /* (2) potential p->se.avg.util_avg update */
+>>     /* 2 for loops */
+>>     for_each_sched_entity()
+>>
+>>         /* this can only lead to a freq change for a root cfs_rq */
+>>         (dequeue_entity() ->) update_load_avg() -> cfs_rq_util_change()
+>>          -> cpufreq_update_util() ->...-> sugov_update_[shared\|single]
+>>
+>>     /* (3) potential update p->se.avg.util_est */
+>>     util_est_update()
+>>
+>>
+>> We do need (3) after (2) because of:
+>>
+>> util_est_update()
+>>     ...
+>>     ue.enqueued = (task_util(p) | UTIL_AVG_UNCHANGED); task_util
+>>     ...           ^^^^^^^^^^^^^
+>>                   p->se.avg.util_avg
+>>
+>>
+>> Did I get this right?
+>>
+>> [...]
