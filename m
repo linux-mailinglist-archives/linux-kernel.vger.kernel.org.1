@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BC82DA0BF
+	by mail.lfdr.de (Postfix) with ESMTP id 29A652DA0BE
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 20:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502622AbgLNTnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 14:43:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439971AbgLNTnB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 14:43:01 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61032C0613D3;
-        Mon, 14 Dec 2020 11:42:20 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id u18so33184702lfd.9;
-        Mon, 14 Dec 2020 11:42:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/t4z4WwZ36NZTAJ5eyPXe30LddGYenvCpdMm+/jg/bY=;
-        b=gOLbBg/EeBwd1LNpx+M7RmO7pYnBO/wrdsnLLt3FIFWQQCaWRGiNmo798ODVMN+ju/
-         BCKdxlGkURm+U65VzYk+PxltxNiTy1JtSRU1rUO+jgFM5uptlRPp2HgyafRukDrP0UFJ
-         UwKM5A0N5jc/w/cxis53KlRETa7z8F/ZsXYSBh+W/7DGkxpf0wSoTi9B/Ng7hd2tYbOn
-         Lc7wUBIVhRuQM/SQI3So7FBZ4QIQM9xcENQHfdAPP3s3Bkv4eersCN+yN9hVRDQxxopV
-         zFvEMewtOzgLTL3nAoI2UGRqm+psl8EHMVmUh7P+1QnZJmpR8JkEKvF5MsfikyoYSsNI
-         M2hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/t4z4WwZ36NZTAJ5eyPXe30LddGYenvCpdMm+/jg/bY=;
-        b=fZzUx+qKn4FNx3ZNGLKgpN6yKhCf9JrVaNjc3lze3jO4asEv4Dbe3n7gBPS7V3RY7M
-         CQXtetFRSxgBmzOv6M7y12t0uWnC60aaQL+GF4OQXJqUkmbLTyEvnUtcia0xDAhsrXgw
-         uuT2YJgpt07nZTmOxyM8d1K44N14CfYkYVhahFG36xLtbtuoc0R/xT+PNuMeqPtmT604
-         jdQ2RLXA3x/Q+aMZkm4CgNAjw1MRxvB+peudPS95xMA5jQjSJvXp7wWILV6ujeP4mzQo
-         ndgYtoZ58DTqkxUjS9LWxIICBf0xpstJbvpAZisLRRgS1rm9MNvyDmT+ds9Jo5GtZ8mf
-         q7ZQ==
-X-Gm-Message-State: AOAM530uloYreivA1mJsiaji+ord24ia0qqV2kATTzNsVMdD04EEsOut
-        dOZ166xB1BWHg14FQqvRFLvB3rAkzChbKMSfa8MpSQg1wZ4=
-X-Google-Smtp-Source: ABdhPJxbRo8k+1r98gg2svxCgmwQqePl6KchVviBdtK329G2One8zxj8IDdilsVFDLjCKZUAtLuYbd1T11aaBUFsuGY=
-X-Received: by 2002:ac2:5689:: with SMTP id 9mr10826067lfr.175.1607974938823;
- Mon, 14 Dec 2020 11:42:18 -0800 (PST)
+        id S2502187AbgLNTnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 14:43:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732829AbgLNTnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 14:43:02 -0500
+Date:   Mon, 14 Dec 2020 20:43:20 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1607974935;
+        bh=76g58O1X4x9xdjWgejC9uD2yLlTe//IJxSjzdnkLsgQ=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yktp8A1Kb9o6Dy8etBiaKLmGDvb1EFFWP/9XSyymRnSz5M6mYdji5GemTz4zsEU9K
+         97EpI+0Zv+/H/yfZQlwv258B033Vd3XSxAtdQit5UCnaHLvk98Q86udU62bMJ/tudv
+         Coii2E714zRgzYMa66Ncg04j5OhiMfR8CgKiu7s0=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, stable@vger.kernel.org, sashal@kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
+        pbonzini@redhat.com, alex.williamson@redhat.com,
+        pasic@linux.vnet.ibm.com
+Subject: Re: [PATCH v3] s390/vfio-ap: clean up vfio_ap resources when KVM
+ pointer invalidated
+Message-ID: <X9fAWD/k9Wbp7Rac@kroah.com>
+References: <20201214165617.28685-1-akrowiak@linux.ibm.com>
+ <X9ebwKJSSyVP/M9H@kroah.com>
+ <237fe6d3-ebcc-1046-b295-a0154ce1158e@linux.ibm.com>
 MIME-Version: 1.0
-References: <20201215063243.236b2a60@canb.auug.org.au>
-In-Reply-To: <20201215063243.236b2a60@canb.auug.org.au>
-From:   Steve French <smfrench@gmail.com>
-Date:   Mon, 14 Dec 2020 13:42:07 -0600
-Message-ID: <CAH2r5mvbBjDQiaT9RPzkyUmmXeT5tAukrCvrrzDej3F592fx+A@mail.gmail.com>
-Subject: Re: linux-next: Signed-off-by missing for commit in the cifs tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <237fe6d3-ebcc-1046-b295-a0154ce1158e@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fixed
+On Mon, Dec 14, 2020 at 02:39:17PM -0500, Tony Krowiak wrote:
+> 
+> 
+> On 12/14/20 12:07 PM, Greg KH wrote:
+> > On Mon, Dec 14, 2020 at 11:56:17AM -0500, Tony Krowiak wrote:
+> > > The vfio_ap device driver registers a group notifier with VFIO when the
+> > > file descriptor for a VFIO mediated device for a KVM guest is opened to
+> > > receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
+> > > event). When the KVM pointer is set, the vfio_ap driver takes the
+> > > following actions:
+> > > 1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
+> > >     of the mediated device.
+> > > 2. Calls the kvm_get_kvm() function to increment its reference counter.
+> > > 3. Sets the function pointer to the function that handles interception of
+> > >     the instruction that enables/disables interrupt processing.
+> > > 4. Sets the masks in the KVM guest's CRYCB to pass AP resources through to
+> > >     the guest.
+> > > 
+> > > In order to avoid memory leaks, when the notifier is called to receive
+> > > notification that the KVM pointer has been set to NULL, the vfio_ap device
+> > > driver should reverse the actions taken when the KVM pointer was set.
+> > > 
+> > > Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+> > > Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> > > ---
+> > >   drivers/s390/crypto/vfio_ap_ops.c | 29 ++++++++++++++++++++---------
+> > >   1 file changed, 20 insertions(+), 9 deletions(-)
+> > <formletter>
+> > 
+> > This is not the correct way to submit patches for inclusion in the
+> > stable kernel tree.  Please read:
+> >      https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> > for how to do this properly.
+> > 
+> > </formletter>
+> 
+> I read the document on the correct way to submit patches for inclusion in
+> the stable kernel. I apologize for my ignorance, but I don't see the
+> problem. Can you help me out here? Does a patch that fixes a memory leak
+> not qualify or is it something else?
 
-On Mon, Dec 14, 2020 at 1:32 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Commits
->
->   425f40482491 ("cifs: fix uninitialized variable in smb3_fs_context_parse_param")
->   8cc9a66ea70e ("cifs: update mnt_cifs_flags during reconfigure")
->
-> are missing a Signed-off-by from their committer.
->
-> --
-> Cheers,
-> Stephen Rothwell
+You forgot to put "Cc: stable..." in the signed-off-by area.
 
+thanks,
 
-
--- 
-Thanks,
-
-Steve
+greg k-h
