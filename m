@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287682D978A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:42:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA712D9785
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 12:42:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407874AbgLNLkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 06:40:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47174 "EHLO
+        id S2407865AbgLNLjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 06:39:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390134AbgLNLjj (ORCPT
+        with ESMTP id S1730191AbgLNLi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:39:39 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6BBC0613D6;
-        Mon, 14 Dec 2020 03:38:59 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id o19so3722417lfo.1;
-        Mon, 14 Dec 2020 03:38:59 -0800 (PST)
+        Mon, 14 Dec 2020 06:38:59 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F03BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 03:38:19 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id k12so2126383qth.23
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 03:38:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wyanV3OD/vmZQFo0fBeUL6ZC0A4CxUv9H3iKrx2fgN0=;
-        b=GUzMGcUabkpWvZceMy2irnTVWGX1IbJQtr8dAkOwo214EcGn4KxrFc/vVBWbx9DLO4
-         K02Z0IPrQv54EHXhZf7Szd4jP3D4oH+QMm+9NkCjz8Gtne8Jy8nycGZrnozR8MJLW/Sb
-         Z5pfGn2zlK2yF2F1cGDYLznLOUH37kV3ZCV726UsyyEHfx7wuVgtGuCHf6Uuq8BtiL2l
-         6MtIK1VjfOkFfbHjfZtMeql7abfpaYqGfhsg2YSRgo9bI+THbK77N9pgUUigeQE0PWYo
-         UKr2yxc7bvJU55JboF9QpPakSIylJsfYmTv/BLtCui8nr4bIIJopz3iuQINcnr9tqxNN
-         hyfg==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=uG9hUyn2l1hT7e+Msb6nBQLe6pVUc/Tidhzusbc3Z5E=;
+        b=ZTznCCQdNCgK7E2pAMIcNbbA7wJKQTUvxOpa22aA1+jPwk96Q6ybn5x0Hlewl1BV+M
+         rdm2A5IYo22MuIYm2ayvtprzP14QUHxfL2YaEuKws1KAxNUZKm+sb0p6O++oaRNlltYl
+         9fJru+O7IVxaWdY7nsTgVYiaano6f3uFs1K8qvLOEWXkwm1MrQjDj9azwrQIsONxou1C
+         HGAMcoq5m53BjAIoHoGl/dCrsQzpuCUhwTjSEklHB4K9EQb3Ly94fkYQy9fb8fUALq5w
+         od0leQyMDFwrwzbMMVf1xlNh1t4EPwBdnDZsw7MrtVu57cDs653DfJXbUMb1WPPrQh60
+         Qomg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wyanV3OD/vmZQFo0fBeUL6ZC0A4CxUv9H3iKrx2fgN0=;
-        b=QFHdI+bEVQ1rsrgNjuGZNR3gM9f3B31CjLVVeB3WfB5IytAY8sdtNYOEzEx78JdSYi
-         Q2Lh6yb7PEwfupFVaWPu1cs0ti8kTZiKmb2eBBn8E1AbsSP26ZJFg0EJIikdHPyemF3c
-         dPOuZaq0gdsj219cngrfT/zC+5qBL8tQe7LDqSTKnzAHGUfyxCkaredOWT0qlItHCv2/
-         74w67n+omaU59q2AW6D0Cd9i7XhaR0abs5jTzYPsC+N/Xn5rlXCWR1qP4vfPv8WrsE9J
-         9qq7C3eQodrWSfm6oJq5Zj+tlRN/caVx4ekHbIrglrkkcrsdBMK8HnRiKQSBgmT0Ptu0
-         2Ciw==
-X-Gm-Message-State: AOAM5332YVBV29cwaw9xRKc7gGpqTvhvv0bpoUt6Qlx42anbSaQcBwFm
-        Soz4W/izYPl/AbgRBGk62VoD1Rgnqzo=
-X-Google-Smtp-Source: ABdhPJw9goUNMusTW3LnjziUAi8F9Dn2a3gvhLw5Phy451txKKGJx4E2IkdyuIFfKQJd58CHpH6GNg==
-X-Received: by 2002:a2e:9006:: with SMTP id h6mr10248999ljg.268.1607945937902;
-        Mon, 14 Dec 2020 03:38:57 -0800 (PST)
-Received: from localhost.localdomain (109-252-193-205.dynamic.spd-mgts.ru. [109.252.193.205])
-        by smtp.gmail.com with ESMTPSA id t21sm1031686lfl.124.2020.12.14.03.38.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 03:38:57 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Steve French <sfrench@samba.org>,
-        Ronnie Sahlberg <lsahlber@redhat.com>
-Cc:     linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] cifs: Add missing sentinel to smb3_fs_parameters
-Date:   Mon, 14 Dec 2020 14:37:45 +0300
-Message-Id: <20201214113745.7909-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=uG9hUyn2l1hT7e+Msb6nBQLe6pVUc/Tidhzusbc3Z5E=;
+        b=Y1QHxcsTGVeDS2x4t4J3yyPgqJ+7nlxcZlAI0I8vaoVaUW8jzNX4AHj3aabCSVXvRG
+         +krTn5I3Pj2MyPYEwTzSuKZgsG8Y/U37XxcqRGUCncrICnoc8y1IfbJ5SUsWgWS7xlZ4
+         Br0O33MUXOGBcouuG+dFOCbJjvjzHhBT0nEqRRACXNkAZk8i9RP25vpU2N7Qdo2D5fKc
+         Mw9eH2j+oWVPDXAufYYyFS3AqOrNwZWAlb59a3DVdxJR7KV4iP++1YBfsctngO1068zM
+         moHR0IrLpi+Z8QxsxMdNiqJhpwr96Qlq/32Tpn4/+5dXp2/0VXWnFpCS23PCUdqu33Ne
+         0zqA==
+X-Gm-Message-State: AOAM533b+ngj5k4Ot7Dn0QbkbElaYAT4esIAyjcAfz59v+3V3bd5caE/
+        1nRoW4bEn7Y0nytZFCLSoGonfEPYXyVXFw==
+X-Google-Smtp-Source: ABdhPJxHwGmlZQ28Xrpp+ClKhqzlEFvlg574xO6+LQM9eMJO9G054bEQyV8VMrMOXnK4L4JwkFMWXhYkqJ8pkQ==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a05:6214:302:: with SMTP id
+ i2mr15763177qvu.14.1607945898242; Mon, 14 Dec 2020 03:38:18 -0800 (PST)
+Date:   Mon, 14 Dec 2020 11:38:12 +0000
+Message-Id: <20201214113812.305274-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH bpf-next v2] libbpf: Expose libbpf ringbufer epoll_fd
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing sentinel to smb3_fs_parameters. This fixes ARM32 kernel
-crashing once CIFS is registered.
+This provides a convenient perf ringbuf -> libbpf ringbuf migration
+path for users of external polling systems. It is analogous to
+perf_buffer__epoll_fd.
 
- Unable to handle kernel paging request at virtual address 33626d73
-...
- (strcmp) from (fs_validate_description)
- (fs_validate_description) from (register_filesystem)
- (register_filesystem) from (init_cifs [cifs])
- (init_cifs [cifs]) from (do_one_initcall)
- (do_one_initcall) from (do_init_module)
- (do_init_module) from (load_module)
- (load_module) from (sys_finit_module)
- (sys_finit_module) from (ret_fast_syscal)
-
-Fixes: e07724d1cf38 ("cifs: switch to new mount api")
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- fs/cifs/fs_context.c | 1 +
- 1 file changed, 1 insertion(+)
+Difference from v1: Added entry to libbpf.map.
 
-diff --git a/fs/cifs/fs_context.c b/fs/cifs/fs_context.c
-index fe5cc60f4393..c41e87af77b6 100644
---- a/fs/cifs/fs_context.c
-+++ b/fs/cifs/fs_context.c
-@@ -173,6 +173,7 @@ const struct fs_parameter_spec smb3_fs_parameters[] = {
- 	fsparam_flag_no("mand", Opt_ignore),
- 	fsparam_string("cred", Opt_ignore),
- 	fsparam_string("credentials", Opt_ignore),
-+	{}
- };
- 
- int
--- 
-2.29.2
+ tools/lib/bpf/libbpf.h   | 1 +
+ tools/lib/bpf/libbpf.map | 1 +
+ tools/lib/bpf/ringbuf.c  | 6 ++++++
+ 3 files changed, 8 insertions(+)
+
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 6909ee81113a..cde07f64771e 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -536,6 +536,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
+ 				ring_buffer_sample_fn sample_cb, void *ctx);
+ LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
+ LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
++LIBBPF_API int ring_buffer__epoll_fd(struct ring_buffer *rb);
+
+ /* Perf buffer APIs */
+ struct perf_buffer;
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 7c4126542e2b..7be850271be6 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -348,4 +348,5 @@ LIBBPF_0.3.0 {
+ 		btf__new_split;
+ 		xsk_setup_xdp_prog;
+ 		xsk_socket__update_xskmap;
++                ring_buffer__epoll_fd;
+ } LIBBPF_0.2.0;
+diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+index 5c6522c89af1..45a36648b403 100644
+--- a/tools/lib/bpf/ringbuf.c
++++ b/tools/lib/bpf/ringbuf.c
+@@ -282,3 +282,9 @@ int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
+ 	}
+ 	return cnt < 0 ? -errno : res;
+ }
++
++/* Get an fd that can be used to sleep until data is available in the ring(s) */
++int ring_buffer__epoll_fd(struct ring_buffer *rb)
++{
++	return rb->epoll_fd;
++}
+
+base-commit: b4fe9fec51ef48011f11c2da4099f0b530449c92
+--
+2.29.2.576.ga3fc446d84-goog
 
