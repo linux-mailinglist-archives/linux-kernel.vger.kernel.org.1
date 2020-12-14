@@ -2,124 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAD32D9812
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A5F2D9814
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389638AbgLNMgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 07:36:32 -0500
-Received: from bmail1.ministro.hu ([5.249.150.236]:35998 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727437AbgLNMgc (ORCPT
+        id S1727338AbgLNMhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 07:37:55 -0500
+Received: from outbound-smtp02.blacknight.com ([81.17.249.8]:49781 "EHLO
+        outbound-smtp02.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726381AbgLNMha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 07:36:32 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id AA554123B3B;
-        Mon, 14 Dec 2020 13:35:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607949349;
-        bh=z1o91ipcko8gQeyW2F+RhK2XI913BoAYPZf1nyvexD8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0UzOO3DnH0xfIvVl0lEOJNjD4SW+FOHwETCI8CCrz9ZUeJuVtyAujjHU1Mm1Ivyzk
-         CRlA0l9b3VvmpM9LgBIlsXyNstyhjKYuXoyLfrpHJ2GUxK9FH8rTaOcQjNjLGm528x
-         lOsbJ4sBo1xcBGeSY1yO8IfGqPPxkwWHyaCSbfoqpp09Yvs5CHyi5d7uDe0DwEUm71
-         f5PKvacaPXR6xGAA1rT2Gj6k5gH5FAcvTeECggaS0UPmk12p1M2hkhdP0y1sTGoRJs
-         mp3JwMXMGWb28NRYPTkz+VmrAwVhh3MObSx3q6sJ5GKMLuIhyqunJnhAB4fhf5kAiq
-         A6hIaQ0jqTwZg==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3pmV4oLaPgFt; Mon, 14 Dec 2020 13:35:23 +0100 (CET)
-Received: from dev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id 28FFA123B38;
-        Mon, 14 Dec 2020 13:35:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607949323;
-        bh=z1o91ipcko8gQeyW2F+RhK2XI913BoAYPZf1nyvexD8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RlASKX8xx+q+UECjBiX4GzhiHZeBCnQhwDNmx6XYJDUasUBFH09BDgWqDsYr22ewo
-         mAjIMld5uSWuz0aTwqYEUffUfe3vfp36D4TSiP6nDpXoaorcOm3AqdAQAysTc8qxgW
-         +gXx8sjSq6p3hQhLRnxUhqcAOoNHalNW+5TlfHxCbo9TfZfkW1oXTvYhXKRZE+eZG8
-         u4bzlh7y/Zahv2MdVK5IJAeVzzMfbDoCJi7XRSGiwdjNo/lRDBFDsFFaUQGAFf3iUe
-         vLyrkOM2RhUHFIUf8nZfPCWk+wF9Q8mSPg4YOYCNw9mxYs5TAKDz/3wHYyiJs8e338
-         jtgYacrhqWxkA==
-Date:   Mon, 14 Dec 2020 12:35:20 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
-        'Rob Herring' <robh+dt@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] Serial: silabs si4455 serial driver
-Message-ID: <20201214123519.GA10229@dev>
-References: <20201212070944.GA13909@dincontrollerdev>
- <2855efaf-79a5-f43b-ff8c-9c01a3f14df7@kernel.org>
+        Mon, 14 Dec 2020 07:37:30 -0500
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp02.blacknight.com (Postfix) with ESMTPS id 52019BAAA3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 12:36:34 +0000 (GMT)
+Received: (qmail 20736 invoked from network); 14 Dec 2020 12:36:33 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 14 Dec 2020 12:36:33 -0000
+Date:   Mon, 14 Dec 2020 12:36:32 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        "Li, Aubrey" <aubrey.li@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
+Subject: Re: [RFC PATCH v7] sched/fair: select idle cpu from idle cpumask for
+ task wakeup
+Message-ID: <20201214123632.GZ3371@techsingularity.net>
+References: <3802e27a-56ed-9495-21b9-7c4277065155@linux.intel.com>
+ <20201210113441.GS3371@techsingularity.net>
+ <31308700-aa28-b1f7-398e-ee76772b6b87@linux.intel.com>
+ <20201210125833.GT3371@techsingularity.net>
+ <20201211174442.GU3040@hirez.programming.kicks-ass.net>
+ <20201211204337.GX3371@techsingularity.net>
+ <20201211221905.GV3040@hirez.programming.kicks-ass.net>
+ <20201211225002.GY3371@techsingularity.net>
+ <CAKfTPtDBX+scBZiYtDSkXYn7SKDoGYWJiMpCiUvdW1XFz-Fb-Q@mail.gmail.com>
+ <20201214093122.GX3040@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2855efaf-79a5-f43b-ff8c-9c01a3f14df7@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201214093122.GX3040@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 09:04:13AM +0100, Jiri Slaby wrote:
-> On 12. 12. 20, 8:09, József Horváth wrote:
-> > This is a serial port driver for
-> >   Silicon Labs Si4455 Sub-GHz transciver.
+On Mon, Dec 14, 2020 at 10:31:22AM +0100, Peter Zijlstra wrote:
+> On Mon, Dec 14, 2020 at 09:11:29AM +0100, Vincent Guittot wrote:
+> > On Fri, 11 Dec 2020 at 23:50, Mel Gorman <mgorman@techsingularity.net> wrote:
+> 
+> > > I originally did something like that on purpose too but Vincent called
+> > > it out so it is worth mentioning now to avoid surprises. That said, I'm
+> > > at the point where anything SIS-related simply needs excessive exposure
+> > > because no matter what it does, someone is unhappy with it.
 > > 
-> > The goal of this driver is to removing wires
-> >   between central(linux) device and remote serial devices/sensors,
-> >   but keeping the original user software.
-> >   It represents regular serial interface for the user space.
-> > 
-> > Datasheet: https://www.silabs.com/documents/public/data-sheets/Si4455.pdf
+> > Yeah, I don't like extending the idle core search loop for something
+> > that is not related to the idle core search. This adds more work out
+> > of  control of the sis_prop. So I'm still against hiding some idle cpu
+> > search in idle core search.
 > 
-> A description of changes between v1..v4 here, please.
+> The idea, of course, is to do less. The current code is pretty crap in
+> that it will do a whole bunch of things multiple times.
 > 
-> > Signed-off-by: József Horváth <info@ministro.hu>
-> ...
+
+^^^ this
+
+While there is some overhead when searching for an idle core to track
+an idle sibling, it's better than double scanning when test_idle_cores()
+returns a false positive (or it races with a parallel search that takes
+the last idle core).
+
+> Also, a possible follow up, would be something like the below (and
+> remove all the sds->has_idle_cores crud), which brings core scanning
+> under SIS_PROP.
 > 
-> spi_register_driver can fail too.
-> 
-> > +
-> > +	return 0;
-> > +}
-> 
-> regards,
-> -- 
-> js
 
-Thank you for your suggestions.
+I'm less confident about this this but admit I have no data. test_idle_core
+becomes critical for hackbench once it saturates the machine as it'll
+generally return a true positive.
 
-I'm in trouble with the device tree binding schema of this driver too.
+Where test_idle_cores causes problems is when domains are over 50%
+busy and returns false positives due to races and the work to find an
+idle core is wasted. The flip side is that updating the has_idle_core
+information is also expensive in this case as it causes lots of dirty
+cache line bouncing so maybe in practice it might be ok. It definitely
+should be a separate patch that is tested on top of your first prototype
+with the p->cpus_ptr check when picking an idle candidate.
 
-When I run "make dt_binding_check" with $id: "http://devicetree.org/schemas/serial/silabs,si4455.yaml#" in schema,
- and silabs,si4455.yaml is under Documentation/devicetree/bindings/serial/,
- it completes successfully.
+The other side-effect is that with this patch that the scan cost is
+*always* accounted for. While this makes intuitive sense as it was never
+clear to me why it was only accounted with scan failures. When I had tested
+something like this, it was a mix of wins and losses. At minimum, a patch
+that always accounts for scan cost and one the removes the test_idle_core
+should be separate patches for bisection purposes at the very least.
 
-When I run "make dt_binding_check" with $id: "http://devicetree.org/schemas/staging/serial/silabs,si4455.yaml#" in schema,
- and silabs,si4455.yaml is under Documentation/devicetree/bindings/staging/serial/,
- the make dt_binding_check output:
+This is the current set of results I have for your prototype plus the
+fixes I suggested on top
 
-	Unknown file referenced: [Errno 2] No such file or directory: '/home/administrator/.local/lib/python3.6/site-packages/dtschema/schemas/staging/serial/serial.yaml'
-	xargs: dt-doc-validate: exited with status 255; aborting
-	Documentation/devicetree/bindings/Makefile:59: recipe for target 'Documentation/devicetree/bindings/processed-schema-examples.json' failed
-	make[1]: *** [Documentation/devicetree/bindings/processed-schema-examples.json] Error 124
-	Makefile:1364: recipe for target 'dt_binding_check' failed
-	make: *** [dt_binding_check] Error 2
+http://www.skynet.ie/~mel/postings/peterz-20201214/dashboard.html
 
-When I run "make dt_binding_check" with $id: "http://devicetree.org/schemas/staging/serial/silabs,si4455.yaml#" in schema,
- and silabs,si4455.yaml is under Documentation/devicetree/bindings/staging/serial/,
- and removed $ref: "serial.yaml#".
- The make dt_binding_check completes successfully, but this is not a good solution.
+It's not a universal win but appears to win more than it loses
 
-My question is, how can I use $ref: "serial.yaml" dependency in silabs,si4455.yaml, while my schema is under staging?
-        allOf:
-          - $ref: "serial.yaml#"
+The biggest loss is dbench on EPYC 2
 
-If you have any suggestion that brings me to the right direction it would be great. 
+http://www.skynet.ie/~mel/postings/peterz-20201214/io-dbench4-async-xfs/romulus/index.html#dbench4
 
-Üdvözlettel / Best regards:
-József Horváth
+It's not at clear why it was so badly affected but in general, EPYC can
+be problematic as it has multiple small LLCs. The same machine for specjvm
+showed large gains.
 
+http://www.skynet.ie/~mel/postings/peterz-20201214/jvm-specjbb2005-multi/romulus/index.html#specjbb
+
+There are a lot of results to trawl through but mostly it shows that
+it's a mix of wins and losses and it's both workload and machine
+dependant which is generally true for anything select_idle_sibling
+related.
+
+As the merge window is open, it's inevitable that this will need to be
+evaluated against 5.11-rc1 when all the current batch of scheduler code
+has been merged. Do you mind splitting your prototype into three patches
+and slap some sort of changlog on them? I'll run them through the grid
+with p->recent_used_cpu changes on top to use recent_use_cpu as a search
+hint instead of an idle candidate so that it scans for a core. They'll
+take a while to run but it's automated and some people are going to be
+dropping off for holidays relatively soon anyway. I can test on arm too
+but as it does not have SMT enabled, it'll be less useful.
+
+-- 
+Mel Gorman
+SUSE Labs
