@@ -2,176 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDE72D9E9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FA22D9EA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408617AbgLNSL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 13:11:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408612AbgLNSLM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 13:11:12 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D27C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:10:23 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id 22so6252692qkf.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 10:10:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=80A3v/WEjVbaiRbX2zqJ242KMRN7qmG3DpyY691VhNU=;
-        b=IrTGKI/n7ayvbWMN0a7X/KHMS9wogZpz8jXczVP3WHMLZ2OioqQf8rwZllbIOzir+t
-         sEehucHHdhqGg1HiD4LHnj3oQN1C+HBI6SoP8p8tqD+mZQ5fFFEKtrGaaBMzERcJdPvM
-         9bIFtqhqJVo8i4kNOZFi0T7+9sY9Rwpb/0OIw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=80A3v/WEjVbaiRbX2zqJ242KMRN7qmG3DpyY691VhNU=;
-        b=beNyYqGPwWVGtAniyoZIYS/t7HhOup+txO5Vs/SfwIVnXXOH34BiSySG0y+pLyS23b
-         1tfInfmvL8RHdc2PSey/ARQyh1UxYRVO243ZpgtNb9G91ZuDRDp+14D3K5DI9Vt1Gv2E
-         O4HaZv5r28WlJMFtCIeKEb8axZU4LJc4vTNBpWkq/NxQnwV61d+VV8xG8/vxMgSe+l4c
-         cx57gijB6gXDowWD31Bx8Vkt/2eTYnKmf0HmNWBUOfylqaZEUEdy2c3+SS4yhaU5BxmX
-         E9Rf3uFVcVbsDNxpFXawB2/2PPRhAlAKZsHbxdih0UmLqVTXj1TcoAnwF4WGgvl2/XRw
-         9bTg==
-X-Gm-Message-State: AOAM5320LzaSsjfndYD8P+5HWLB6qO4ucmoGLdTdaZKZLwryJSD4JzaB
-        vpFW58LzT6q5HS/2aco3gU68sQ==
-X-Google-Smtp-Source: ABdhPJyfBtJ7ukfd4lWK/6JV64PA0nYgtm5rutT93yEigIeKNLOh4kyhUcVeIWDo3MK9DwEflPfRgw==
-X-Received: by 2002:ae9:e10d:: with SMTP id g13mr33504576qkm.444.1607969422214;
-        Mon, 14 Dec 2020 10:10:22 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id i13sm5321115qkk.83.2020.12.14.10.10.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 10:10:20 -0800 (PST)
-Date:   Mon, 14 Dec 2020 13:10:20 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     Chinwen Chang <chinwen.chang@mediatek.com>,
-        Haiyan Song <haiyanx.song@intel.com>,
-        akpm@linux-foundation.org, mhocko@kernel.org, peterz@infradead.org,
-        kirill@shutemov.name, ak@linux.intel.com, dave@stgolabs.net,
-        jack@suse.cz, Matthew Wilcox <willy@infradead.org>,
-        aneesh.kumar@linux.ibm.com, benh@kernel.crashing.org,
-        mpe@ellerman.id.au, paulus@samba.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, hpa@zytor.com,
-        Will Deacon <will.deacon@arm.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        sergey.senozhatsky.work@gmail.com,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        kemi.wang@intel.com, Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Rientjes <rientjes@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Ganesh Mahendran <opensource.ganesh@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Punit Agrawal <punitagrawal@gmail.com>,
-        vinayak menon <vinayakm.list@gmail.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        zhong jiang <zhongjiang@huawei.com>,
-        Balbir Singh <bsingharora@gmail.com>, sj38.park@gmail.com,
-        Michel Lespinasse <walken@google.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        haren@linux.vnet.ibm.com, npiggin@gmail.com,
-        paulmck@linux.vnet.ibm.com, Tim Chen <tim.c.chen@linux.intel.com>,
-        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
-        miles.chen@mediatek.com
-Subject: Re: [PATCH v12 00/31] Speculative page faults
-Message-ID: <X9eqjA8rNsQ91sg3@google.com>
-References: <20190416134522.17540-1-ldufour@linux.ibm.com>
- <20190606065129.d5s3534p23twksgp@haiyan.sh.intel.com>
- <3d3cefa2-0ebb-e86d-b060-7ba67c48a59f@linux.ibm.com>
- <1c412ebe-c213-ee67-d261-c70ddcd34b79@linux.ibm.com>
- <20190620081945.hwj6ruqddefnxg6z@haiyan.sh.intel.com>
- <1594027500.30360.32.camel@mtkswgap22>
- <490c0811-50cd-0802-2cbc-9c031ef309f6@linux.ibm.com>
- <1594099897.30360.58.camel@mtkswgap22>
- <X9bIDHZbe4MB+BAg@google.com>
- <b256e5ed-0d4c-4baf-16a6-f32f122e344f@linux.ibm.com>
+        id S2408612AbgLNSNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 13:13:17 -0500
+Received: from vps-vb.mhejs.net ([37.28.154.113]:46006 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2440734AbgLNSMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 13:12:43 -0500
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1kosK4-0000TN-Ti; Mon, 14 Dec 2020 19:11:48 +0100
+To:     Ignat Korchagin <ignat@cloudflare.com>
+Cc:     agk@redhat.com, snitzer@redhat.com, dm-devel@redhat.com,
+        dm-crypt@saout.de, linux-kernel@vger.kernel.org,
+        ebiggers@kernel.org, Damien.LeMoal@wdc.com, mpatocka@redhat.com,
+        herbert@gondor.apana.org.au, kernel-team@cloudflare.com,
+        nobuto.murata@canonical.com, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: dm-crypt with no_read_workqueue and no_write_workqueue + btrfs scrub
+ = BUG()
+Message-ID: <16ffadab-42ba-f9c7-8203-87fda3dc9b44@maciej.szmigiero.name>
+Date:   Mon, 14 Dec 2020 19:11:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b256e5ed-0d4c-4baf-16a6-f32f122e344f@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 10:36:29AM +0100, Laurent Dufour wrote:
-> Le 14/12/2020 à 03:03, Joel Fernandes a écrit :
-> > On Tue, Jul 07, 2020 at 01:31:37PM +0800, Chinwen Chang wrote:
-> > [..]
-> > > > > Hi Laurent,
-> > > > > 
-> > > > > We merged SPF v11 and some patches from v12 into our platforms. After
-> > > > > several experiments, we observed SPF has obvious improvements on the
-> > > > > launch time of applications, especially for those high-TLP ones,
-> > > > > 
-> > > > > # launch time of applications(s):
-> > > > > 
-> > > > > package           version      w/ SPF      w/o SPF      improve(%)
-> > > > > ------------------------------------------------------------------
-> > > > > Baidu maps        10.13.3      0.887       0.98         9.49
-> > > > > Taobao            8.4.0.35     1.227       1.293        5.10
-> > > > > Meituan           9.12.401     1.107       1.543        28.26
-> > > > > WeChat            7.0.3        2.353       2.68         12.20
-> > > > > Honor of Kings    1.43.1.6     6.63        6.713        1.24
-> > > > 
-> > > > That's great news, thanks for reporting this!
-> > > > 
-> > > > > 
-> > > > > By the way, we have verified our platforms with those patches and
-> > > > > achieved the goal of mass production.
-> > > > 
-> > > > Another good news!
-> > > > For my information, what is your targeted hardware?
-> > > > 
-> > > > Cheers,
-> > > > Laurent.
-> > > 
-> > > Hi Laurent,
-> > > 
-> > > Our targeted hardware belongs to ARM64 multi-core series.
-> > 
-> > Hello!
-> > 
-> > I was trying to develop an intuition about why does SPF give improvement for
-> > you on small CPU systems. This is just a high-level theory but:
-> > 
-> > 1. Assume the improvement is because of elimination of "blocking" on
-> > mmap_sem.
-> > Could it be that the mmap_sem is acquired in write-mode unnecessarily in some
-> > places, thus causing blocking on mmap_sem in other paths? If so, is it
-> > feasible to convert such usages to acquiring them in read-mode?
-> 
-> That's correct, and the goal of this series is to try not holding the
-> mmap_sem in read mode during page fault processing.
-> 
-> Converting mmap_sem holder from write to read mode is not so easy and that
-> work as already been done in some places. If you think there are areas where
-> this could be done, you're welcome to send patches fixing that.
-> 
-> > 2. Assume the improvement is because of lesser read-side contention on
-> > mmap_sem.
-> > On small CPU systems, I would not expect reducing cache-line bouncing to give
-> > such a dramatic improvement in performance as you are seeing.
-> 
-> I don't think cache line bouncing reduction is the main sourcec of
-> performance improvement, I would rather think this is the lower part here.
-> I guess this is mainly because during loading time a lot of page fault is
-> occuring and thus SPF is reducing the contention on the mmap_sem.
+Hi,
 
-Thanks for the reply. I think I also wrongly assumed that acquiring mmap
-rwsem in write mode in a syscall makes SPF moot. Peter explained to me on IRC
-that tere's still perf improvement in write mode if an unrelated VMA is
-modified while another VMA is faulting.  CMIIW - not an mm expert by any
-stretch.
+I hit a reproducible BUG() when scrubbing a btrfs fs on top of
+a dm-crypt device with no_read_workqueue and no_write_workqueue
+flags enabled.
 
-Thanks!
+Steps to reproduce:
+1) cryptsetup create -c aes -d /dev/urandom test /dev/vdb1
+2) dmsetup table test --showkeys | sed 's/$/ 2 no_read_workqueue no_write_workqueue/' | dmsetup reload test
+3) dmsetup suspend test && dmsetup resume test
+4) mkfs.btrfs /dev/mapper/test
+5) mkdir /tmp/test; mount -t btrfs /dev/mapper/test /tmp/test/
+6) dd if=/dev/zero of=/tmp/test/test bs=1M count=900; sync
+7) btrfs scrub start /tmp/test
 
- - Joel
+The result is:
+[ 2965.025717][    C0] BUG: sleeping function called from invalid context at mm/mempool.c:381
+[ 2965.025721][    C0] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 2848, name: kworker/u4:0
+[ 2965.025726][    C0] CPU: 0 PID: 2848 Comm: kworker/u4:0 Tainted: G                T 5.10.0-rc3+ #278
+[ 2965.025727][    C0] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+[ 2965.025735][    C0] Workqueue: btrfs-scrub btrfs_work_helper
+[ 2965.025738][    C0] Call Trace:
+[ 2965.025759][    C0]  <IRQ>
+[ 2965.025766][    C0]  dump_stack+0x57/0x6a
+[ 2965.025771][    C0]  ___might_sleep.cold+0x8a/0x97
+[ 2965.025776][    C0]  mempool_alloc+0xcb/0x1b0
+[ 2965.025781][    C0]  ? crypto_skcipher_decrypt+0x5c/0x80
+[ 2965.025786][    C0]  crypt_convert+0xdf0/0xfa0
+[ 2965.025793][    C0]  ? update_load_avg+0x92/0x650
+[ 2965.025798][    C0]  kcryptd_crypt_read_convert+0xc5/0x100
+[ 2965.025802][    C0]  tasklet_action_common.constprop.0+0xfa/0x120
+[ 2965.025807][    C0]  __do_softirq+0xc4/0x2a8
+[ 2965.025811][    C0]  asm_call_irq_on_stack+0x12/0x20
+[ 2965.025814][    C0]  </IRQ>
+[ 2965.025818][    C0]  do_softirq_own_stack+0x36/0x40
+[ 2965.025821][    C0]  irq_exit_rcu+0x8d/0xc0
+[ 2965.025825][    C0]  sysvec_call_function_single+0x36/0x80
+[ 2965.025829][    C0]  asm_sysvec_call_function_single+0x12/0x20
+[ 2965.025833][    C0] RIP: 0010:crc_18+0xa/0x1e
+[ 2965.025837][    C0] Code: ff ff f2 4c 0f 38 f1 81 68 ff ff ff f2 4c 0f 38 f1 8a 68 ff ff ff f2 4d 0f 38 f1 93 68 ff ff ff f2 4c 0f 38 f1 81 70 ff ff ff <f2> 4c 0f 38 f1 8a 70 ff ff ff f2 4d 0f 38 f1 93 70 ff ff ff f2 4c
+[ 2965.025839][    C0] RSP: 0018:ffffa2d04023bbf0 EFLAGS: 00000246
+[ 2965.025842][    C0] RAX: 0000000000000080 RBX: 0000000000001000 RCX: ffff96e1851ef400
+[ 2965.025844][    C0] RDX: ffff96e1851ef800 RSI: 0000000000001000 RDI: 0000000000000000
+[ 2965.025845][    C0] RBP: ffff96e1851ef000 R08: 000000000ae37425 R09: 0000000000000000
+[ 2965.025847][    C0] R10: 0000000000000000 R11: ffff96e1851efc00 R12: 0000000000001000
+[ 2965.025848][    C0] R13: ffff96e18e9a6a80 R14: fffff68440000000 R15: ffff96e184d73c00
+[ 2965.025854][    C0]  ? crc32c_pcl_intel_digest+0xa0/0xc0
+[ 2965.025857][    C0]  ? scrub_checksum_data+0x126/0x180
+[ 2965.025861][    C0]  ? update_load_avg+0x92/0x650
+[ 2965.025863][    C0]  ? cpuacct_charge+0x35/0x80
+[ 2965.025867][    C0]  ? check_preempt_wakeup+0xef/0x260
+[ 2965.025872][    C0]  ? radix_tree_gang_lookup+0xa1/0xd0
+[ 2965.025875][    C0]  ? __wake_up_common_lock+0x8a/0xc0
+[ 2965.025878][    C0]  ? scrub_block_put+0x5c/0xa0
+[ 2965.025880][    C0]  ? scrub_bio_end_io_worker+0x52/0x220
+[ 2965.025884][    C0]  ? kfree+0x3ec/0x450
+[ 2965.025887][    C0]  ? scrub_bio_end_io_worker+0xd7/0x220
+[ 2965.025890][    C0]  ? btrfs_work_helper+0xdb/0x350
+[ 2965.025893][    C0]  ? __schedule+0x275/0x8c0
+[ 2965.025897][    C0]  ? process_one_work+0x1d6/0x3b0
+[ 2965.025901][    C0]  ? worker_thread+0x53/0x400
+[ 2965.025904][    C0]  ? rescuer_thread+0x440/0x440
+[ 2965.025907][    C0]  ? kthread+0x13f/0x160
+[ 2965.025910][    C0]  ? __kthread_bind_mask+0xa0/0xa0
+[ 2965.025913][    C0]  ? ret_from_fork+0x22/0x30
+
+Additionally, here is a similar BUG() backtrace I've hit on
+another system, while scrubbing a btrfs fs on dm-crypt devs
+with these flags enabled, the BUG() hit here was actually
+scheduling while atomic:
+  <IRQ>
+  dump_stack+0x57/0x6a
+  __schedule_bug.cold+0x47/0x53
+  __schedule+0x643/0x7d0
+  schedule+0x62/0xd0
+  schedule_timeout+0x135/0x180
+  ? cryptd_enqueue_request+0x5e/0xd0
+  wait_for_completion+0x84/0xe0
+  crypt_convert.constprop.0+0x7a7/0xf60
+  ? crypt_endio+0x2d/0x90
+  ? kmem_cache_free+0x416/0x470
+  ? ktime_get+0x4a/0xc0
+  kcryptd_crypt_read_convert+0xbe/0x100
+  blk_update_request+0x229/0x3d0
+  scsi_end_request+0x40/0x200
+  scsi_io_completion+0x8e/0x5b0
+  blk_done_softirq+0x87/0xb0
+  __do_softirq+0xd3/0x2ed
+  asm_call_irq_on_stack+0x12/0x20
+  </IRQ>
+  do_softirq_own_stack+0x36/0x40
+  irq_exit_rcu+0x8d/0xc0
+  common_interrupt+0x87/0x160
+  asm_common_interrupt+0x1e/0x40
+RIP: 0010:_aesni_dec4+0x2f/0x190
+Code: fa 66 0f ef c2 66 0f ef e2 66 0f ef ea 66 0f ef f2 49 83 c2 30 41 83 f9 18 72 70 4d 8d 52 20 74 36 49 83 c2 20 41 0f 28 52 a0 <66> 0f 38 de c2 66 0f 38 de e2 66 0f 3
+  ? _aesni_dec1+0xb0/0xb0
+  ? _aesni_dec1+0xb0/0xb0
+  ? aesni_xts_crypt8+0xe0/0x240
+  ? __glue_xts_req_128bit+0x8f/0xc0
+  ? glue_xts_req_128bit+0xc1/0x400
+  ? aesni_set_key+0x1e0/0x1e0
+  ? ttwu_queue_wakelist+0xb9/0xe0
+  ? kcryptd_async_done+0xa6/0x210
+  ? kcryptd_async_done+0xa6/0x210
+  ? kfree+0x401/0x460
+  ? kcryptd_async_done+0xa6/0x210
+  ? crypto_skcipher_decrypt+0x4b/0x80
+  ? cryptd_skcipher_decrypt+0xa6/0x130
+  ? update_load_avg+0x7e/0x660
+  ? set_next_entity+0xcd/0x240
+  ? __switch_to_asm+0x3f/0x60
+  ? finish_task_switch+0x87/0x280
+  ? __schedule+0x263/0x7d0
+  ? preempt_schedule+0x32/0x50
+  ? preempt_schedule_thunk+0x16/0x18
+  ? cryptd_queue_worker+0x8b/0xe0
+  ? process_one_work+0x1d4/0x3d0
+  ? worker_thread+0x50/0x3f0
+  ? rescuer_thread+0x420/0x420
+  ? kthread+0x134/0x160
+  ? __kthread_bind_mask+0xa0/0xa0
+  ? ret_from_fork+0x22/0x30
+
+It looks like to me that the dm-crypt code in kcryptd_queue_crypt()
+checks for a hard IRQ context via in_irq() before deciding whether to
+offload processing to a tasklet or proceed directly, but it probably
+should check for any interrupt context via in_interrupt() or similar
+and then proceed with using a workqueue, as the ordinary code flow
+does.
+
+CC'ing btrfs folks in case it is actually a btrfs-specific issue.
+
+Thanks,
+Maciej
 
