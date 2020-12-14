@@ -2,87 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E722D93A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 08:33:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1612D93B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 08:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439031AbgLNHdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 02:33:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57876 "EHLO mail.kernel.org"
+        id S2391285AbgLNHzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 02:55:05 -0500
+Received: from mga09.intel.com ([134.134.136.24]:7244 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439019AbgLNHcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 02:32:53 -0500
-X-Gm-Message-State: AOAM532P/Jx5HQ8zHZnzdJSXIXRord0FpeZ6O9YjSF0H6+Y7xmL01VSa
-        DF928zR9jDZl7jBE6T0CY4A69UAlXiNwmlGfJZ4=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607931132;
-        bh=B2/NH6QzCAvUVo+NfGwDUvirnlGhp4a3QWT1Pn51uwc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=S4c9Kw3VFdY1ieTdCvu5Gh2HDvGwx5EukY7CMRW4PeXP8Ehx5SpLtxiqjEf0Jtbry
-         g3qRBpHQ6lSQHWUiqTtMGlkUV00lDoSXVf1BlMHLOW4zz6u6bGPac+5RWfm/nxMnqA
-         hxJZgDmnuAFtDr6QUGoOCehPk6PTplk1hj6JeNuOLJ27eNmjU2xmm226jJoHGmLVtR
-         hOJm2n0OjHxyz3j/hC1woSYpN0gVd1RFF/+kGYfIky/Kwh1JtYbU47KpimeZ0WegyH
-         ilcfP7H4uDjiMD9bOVb4EtPgKUxvPgLoZJuJesvPdhxZQ5jK7el5fJstDCtQIpiEs0
-         fssxMneVRKdeQ==
-X-Google-Smtp-Source: ABdhPJxhkJKxgWYA3DE8Y2xrY2FcYqWHlZDBZvTu1/6D/ZL/XRSVdmCzFSsBvv0qJHjyBJ9uupZJWukaFYbw0YQPd1g=
-X-Received: by 2002:a9d:12c:: with SMTP id 41mr18568064otu.77.1607931131884;
- Sun, 13 Dec 2020 23:32:11 -0800 (PST)
+        id S1726330AbgLNHzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 02:55:05 -0500
+IronPort-SDR: l8COn/hs1cqVWoeaP9z3u19qA3G+tkHInrj80EvonYX7FPu8VG9umN53gL3AAwXezD2IkGXgLy
+ bI12oQS0agqg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9834"; a="174813728"
+X-IronPort-AV: E=Sophos;i="5.78,417,1599548400"; 
+   d="scan'208";a="174813728"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2020 23:53:18 -0800
+IronPort-SDR: m1i8tifOhS0xowL/qHCwQZ10Mq7PqULQdjgeRL/nXsGcHI6NIXSOkaERjxslQfsQKnfkXfjGQ1
+ 7+G+73/qf2vA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,417,1599548400"; 
+   d="scan'208";a="381213435"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Dec 2020 23:53:15 -0800
+Subject: Re: [RFC PATCH v7] sched/fair: select idle cpu from idle cpumask for
+ task wakeup
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, valentin.schneider@arm.com,
+        qais.yousef@arm.com, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+        bsegall@google.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, Mel Gorman <mgorman@suse.de>,
+        Jiang Biao <benbjiang@gmail.com>
+References: <20201209062404.175565-1-aubrey.li@linux.intel.com>
+ <20201209143510.GO3371@techsingularity.net>
+ <3802e27a-56ed-9495-21b9-7c4277065155@linux.intel.com>
+ <20201210113441.GS3371@techsingularity.net>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <0c81e6f1-b017-89fb-35a8-65c9b3f96a1c@linux.intel.com>
+Date:   Mon, 14 Dec 2020 15:53:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20201214164836.0d73cf9a@canb.auug.org.au>
-In-Reply-To: <20201214164836.0d73cf9a@canb.auug.org.au>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 14 Dec 2020 08:32:00 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFmRTLfyfF_pkkwNzDnvz6ra2_RYan8UJUzSXYmjKEZRg@mail.gmail.com>
-Message-ID: <CAMj1kXFmRTLfyfF_pkkwNzDnvz6ra2_RYan8UJUzSXYmjKEZRg@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the tip tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201210113441.GS3371@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 at 06:48, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the tip tree, today's linux-next build (arm
-> multi_v7_defconfig) produced this warning:
->
-> In file included from include/linux/kernel.h:14,
->                  from include/linux/list.h:9,
->                  from include/linux/wait.h:7,
->                  from include/linux/wait_bit.h:8,
->                  from include/linux/fs.h:6,
->                  from include/linux/proc_fs.h:10,
->                  from include/linux/efi.h:19,
->                  from drivers/firmware/efi/libstub/arm32-stub.c:5:
-> drivers/firmware/efi/libstub/arm32-stub.c: In function 'handle_kernel_image':
-> include/linux/minmax.h:18:28: warning: comparison of distinct pointer types lacks a cast
->    18 |  (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
->       |                            ^~
-> include/linux/minmax.h:32:4: note: in expansion of macro '__typecheck'
->    32 |   (__typecheck(x, y) && __no_side_effects(x, y))
->       |    ^~~~~~~~~~~
-> include/linux/minmax.h:42:24: note: in expansion of macro '__safe_cmp'
->    42 |  __builtin_choose_expr(__safe_cmp(x, y), \
->       |                        ^~~~~~~~~~
-> include/linux/minmax.h:58:19: note: in expansion of macro '__careful_cmp'
->    58 | #define max(x, y) __careful_cmp(x, y, >)
->       |                   ^~~~~~~~~~~~~
-> arch/arm/include/asm/efi.h:74:25: note: in expansion of macro 'max'
->    74 | #define EFI_PHYS_ALIGN  max(SZ_2M, roundup_pow_of_two(TEXT_OFFSET))
->       |                         ^~~
-> drivers/firmware/efi/libstub/arm32-stub.c:123:44: note: in expansion of macro 'EFI_PHYS_ALIGN'
->   123 |  int alloc_size = MAX_UNCOMP_KERNEL_SIZE + EFI_PHYS_ALIGN;
->       |                                            ^~~~~~~~~~~~~~
-...
+On 2020/12/10 19:34, Mel Gorman wrote:
+> On Thu, Dec 10, 2020 at 04:23:47PM +0800, Li, Aubrey wrote:
+>>> I ran this patch with tbench on top of of the schedstat patches that
+>>> track SIS efficiency. The tracking adds overhead so it's not a perfect
+>>> performance comparison but the expectation would be that the patch reduces
+>>> the number of runqueues that are scanned
+>>
+>> Thanks for the measurement! I don't play with tbench so may need a while
+>> to digest the data.
+>>
+> 
+> They key point is that it appears the idle mask was mostly equivalent to
+> the full domain mask, at least for this test.
+> 
+>>>
+>>> tbench4
+>>>                           5.10.0-rc6             5.10.0-rc6
+>>>                       schedstat-v1r1          idlemask-v7r1
+>>> Hmean     1        504.76 (   0.00%)      500.14 *  -0.91%*
+>>> Hmean     2       1001.22 (   0.00%)      970.37 *  -3.08%*
+>>> Hmean     4       1930.56 (   0.00%)     1880.96 *  -2.57%*
+>>> Hmean     8       3688.05 (   0.00%)     3537.72 *  -4.08%*
+>>> Hmean     16      6352.71 (   0.00%)     6439.53 *   1.37%*
+>>> Hmean     32     10066.37 (   0.00%)    10124.65 *   0.58%*
 
 
-Thanks for the report. I actually spotted this and sent a fix
-yesterday [0]. I'll send it to -tip today.
+>>> Hmean     64     12846.32 (   0.00%)    11627.27 *  -9.49%*
 
-[0] https://lore.kernel.org/linux-efi/20201213151306.73558-1-ardb@kernel.org/
+I focused on this case and run it 5 times, and here is the data on my side.
+5 times x 600s tbench, thread number is 153(80% x 192(h/w thread num)).
+
+Hmean 153		v5.9.12			v5.9.12
+			schedstat-v1		idlemask-v8(with schedstat)
+Round 1			15717.3			15608.1
+Round 2			14856.9			15642.5
+Round 3			14856.7			15782.1
+Round 4			15408.9			15912.9
+Round 5			15436.6			15927.7
+
+From tbench throughput data, bigger is better, it looks like idlemask wins
+
+And here is SIS_scanned data:
+
+Hmean 153		v5.9.12			v5.9.12
+			schedstat-v1		idlemask-v8(with schedstat)
+Round 1			22562490432		21894932302
+Round 2			21288529957		21693722629
+Round 3			20657521771		21268308377
+Round 4			21868486414		22289128955
+Round 5			21859614988		22214740417
+
+From SIS_scanned data, less is better, it looks like the default one is better.
+
+But combined with throughput data, this can be explained as bigger throughput
+performs more SIS_scanned.
+
+So at least, there is no regression of this case.
+
+Thanks,
+-Aubrey
