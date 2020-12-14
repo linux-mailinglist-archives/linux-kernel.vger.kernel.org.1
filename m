@@ -2,135 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFC82DA437
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:38:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3772DA43A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728934AbgLNXh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 18:37:56 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27896 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728481AbgLNXhy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 18:37:54 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BENW5mi097437;
-        Mon, 14 Dec 2020 18:37:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=83PhmHXQK3GmlVP6IBkwIiEPFyrpXVbAGOgJ0k9Roc0=;
- b=ELsG8Vs/wTDb07n55bHQo6LZCPz5YVYJPHPee8SItaO4i01dYRlTVdWtdS3/puuLaYA/
- 2UxOIHxfni3d65nmgTHnlWNpy3PkGquIN5qxA8t+HsaMCEx8QbTpCPxaxpcnZZ89mm8m
- KgdhpgHF5Fuzm7s9B7sT+PvvnLsWQkgW0r/7cyccWZ3NmVBiQWvPGO7iytV71pVO4mP/
- 3UmjUdQKNEpbkH0dPbTVJ2ij84tn9OA2nzhuJy4a7wa0Ch1EYVA4Z4PpQzyeMyFnLF8M
- I32AqvUg+yyfB5u7EiT1N/0D/Bt/sH7ndzINhJ169Y7J9J7Dmw4OStt9pDOsJY6gMm2i 6w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35eg1datpe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 18:37:13 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BENX3w0101612;
-        Mon, 14 Dec 2020 18:37:13 -0500
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35eg1datp1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 18:37:13 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BENMEMQ003451;
-        Mon, 14 Dec 2020 23:37:12 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma04wdc.us.ibm.com with ESMTP id 35cng8ufqd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Dec 2020 23:37:12 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BENb9oQ35980018
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Dec 2020 23:37:10 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DFF93AE060;
-        Mon, 14 Dec 2020 23:37:09 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 20DE9AE05F;
-        Mon, 14 Dec 2020 23:37:09 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.193.150])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 14 Dec 2020 23:37:09 +0000 (GMT)
-Subject: Re: [PATCH v12 05/17] s390/vfio-ap: manage link between queue struct
- and matrix mdev
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-References: <20201124214016.3013-1-akrowiak@linux.ibm.com>
- <20201124214016.3013-6-akrowiak@linux.ibm.com>
- <20201126150828.78776e62.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <eac90113-4c68-a42f-cbfa-41e6b2780380@linux.ibm.com>
-Date:   Mon, 14 Dec 2020 18:37:08 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1729229AbgLNXim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 18:38:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49938 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728198AbgLNXij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 18:38:39 -0500
+Date:   Mon, 14 Dec 2020 17:37:57 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607989078;
+        bh=fnAS6MkH1ixn2rQeMGUq7HxFriFYnNoItGMTUmcfAig=;
+        h=From:To:Cc:Subject:In-Reply-To:From;
+        b=NHw1acSvYZ19g8mfuNopLwS2bQt5oSFyC46FGYyUO3UAvqfbu51zueYVR7bamJaYH
+         6q/4ZPZeEX3gvTgOP2DRJ8sTQveOxjhnubSEDtK4vtyr52jbHLyjdZahO/J2md7iXG
+         JfDrQ6flgqlfYEsgV4OwXIrHEg8p9uWc5U5LOTwuF2wQFx0UJrir4NtER0mcJCEWJM
+         qgSrF4VoMOSvXUcQWFkdMsbLjy5MEkvKlMzJBGeAdpcP6WUfQdawbxZ6RZ8XKILD/Y
+         Z1s5Sw/vOYFMiRXslqhaIHYBDOtmgxVFPcBKbYCzVyeGKrtVO3kmeVZ/65vNZ+RY9w
+         f4i8b3jL803Qw==
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Jay Vosburgh <jay.vosburgh@canonical.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sean V Kelley <sean.v.kelley@intel.com>
+Subject: Re: linux-next: manual merge of the amdgpu tree with the pci tree
+Message-ID: <20201214233757.GA276422@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20201126150828.78776e62.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-14_12:2020-12-11,2020-12-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 mlxlogscore=999 impostorscore=0 mlxscore=0 spamscore=0
- priorityscore=1501 clxscore=1015 suspectscore=0 adultscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012140153
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADnq5_MM3y9XWcSBSbm23yv6=wM=egvU-RvD9HReaLzo56J35w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 14, 2020 at 06:18:54PM -0500, Alex Deucher wrote:
+> On Mon, Dec 14, 2020 at 6:16 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Tue, Dec 15, 2020 at 07:34:31AM +1100, Stephen Rothwell wrote:
+> > > Hi all,
+> > >
+> > > On Tue, 8 Dec 2020 13:56:20 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > > >
+> > > > Today's linux-next merge of the amdgpu tree got a conflict in:
+> > > >
+> > > >   drivers/pci/pcie/err.c
+> > > >
+> > > > between commits:
+> > > >
+> > > >   8f1bbfbc3596 ("PCI/ERR: Rename reset_link() to reset_subordinates()")
+> > > >   0791721d8007 ("PCI/ERR: Use "bridge" for clarity in pcie_do_recovery()")
+> > > >   05e9ae19ab83 ("PCI/ERR: Add pci_walk_bridge() to pcie_do_recovery()")
+> > > >
+> > > > from the pci tree and commit:
+> > > >
+> > > >   36a8901e900a ("PCI/ERR: Fix reset logic in pcie_do_recovery() call")
+> > > >
+> > > > from the amdgpu tree.
+> > > >
+> > > > I fixed it up (I think - see below) and can carry the fix as
+> > > > necessary. This is now fixed as far as linux-next is concerned, but any
+> > > > non trivial conflicts should be mentioned to your upstream maintainer
+> > > > when your tree is submitted for merging.  You may also want to consider
+> > > > cooperating with the maintainer of the conflicting tree to minimise any
+> > > > particularly complex conflicts.
+> >
+> > Huh.  It's sub-optimal to change this core code via both the PCI and
+> > the amdgpu tree, with no heads-up to me.
+> >
+> > 400b308d388a ("PCI/ERR: Fix reset logic in pcie_do_recovery() call")
+> > (apparently in the amdgpu tree) doesn't have a Link: tag to the
+> > posting of the patch, where there was quite a lot of useful discussion
+> > that should be connected somehow.
+> >
+> > I think the posting was
+> > https://lore.kernel.org/r/cbba08a5e9ca62778c8937f44eda2192a2045da7.1595617529.git.sathyanarayanan.kuppuswamy@linux.intel.com
+> >
+> > I had deferred merging this patch so I could merge Sean's RCEC work
+> > first, and then resolve the conflict when merging *this* patch.
+> 
+> I don't plan to merge this upstream via my tree.  I was just carrying
+> it in my drm-next branch because we have a number of users that depend
+> on it for working DPC and a number of people use this branch for
+> testing.
 
+OK, thanks.  FWIW, it's currently marked "Changes Requested" in
+patchwork, so it isn't really going anywhere right now:
 
-On 11/26/20 9:08 AM, Halil Pasic wrote:
-> On Tue, 24 Nov 2020 16:40:04 -0500
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> @@ -1155,6 +1243,11 @@ static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev)
->>   			     matrix_mdev->matrix.apm_max + 1) {
->>   		for_each_set_bit_inv(apqi, matrix_mdev->matrix.aqm,
->>   				     matrix_mdev->matrix.aqm_max + 1) {
->> +			q = vfio_ap_mdev_get_queue(matrix_mdev,
->> +						   AP_MKQID(apid, apqi));
->> +			if (!q)
->> +				continue;
->> +
->>   			ret = vfio_ap_mdev_reset_queue(apid, apqi, 1);
->>   			/*
->>   			 * Regardless whether a queue turns out to be busy, or
->> @@ -1164,9 +1257,7 @@ static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev)
->>   			if (ret)
->>   				rc = ret;
->>   
->> -			q = vfio_ap_get_queue(matrix_mdev, AP_MKQID(apid, apqi);
->> -			if (q)
->> -				vfio_ap_free_aqic_resources(q);
->> +			vfio_ap_free_aqic_resources(q);
->>   		}
->>   	}
-> During the review of v11 we discussed this. Introducing this the one
-> way around, just to change it in the next patch, which should deal
-> with something different makes no sense to me.
+https://patchwork.kernel.org/project/linux-pci/patch/cbba08a5e9ca62778c8937f44eda2192a2045da7.1595617529.git.sathyanarayanan.kuppuswamy@linux.intel.com/
 
-This is handled by the vfio_ap_mdev_reset_queue() function in the
-next version.
-
->
-> BTW I've provided a ton of feedback for '[PATCH v11 03/14]
-> s390/vfio-ap: manage link between queue struct and matrix mdev', but I
-> can't find your response to that. Some of the things resurface here, and
-> I don't feel like repeating myself. Can you provide me an answer to
-> the v11 version?
-
-I can.
-
-
+I have merged Sean's series, so this would be a good time to try to
+move this one forward.
