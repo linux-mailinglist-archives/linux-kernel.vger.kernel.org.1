@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D4F2D96B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 322E02D96B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407483AbgLNK6K convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Dec 2020 05:58:10 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:39348 "EHLO
+        id S2407502AbgLNK6f convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Dec 2020 05:58:35 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:59819 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725905AbgLNK5M (ORCPT
+        by vger.kernel.org with ESMTP id S2387992AbgLNK53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 05:57:12 -0500
+        Mon, 14 Dec 2020 05:57:29 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-535-MhS6hHyYMiS1hb3VZEW9XA-1; Mon, 14 Dec 2020 05:56:17 -0500
-X-MC-Unique: MhS6hHyYMiS1hb3VZEW9XA-1
+ us-mta-8-6M7ZtOBKOxCSQCglRUd00A-1; Mon, 14 Dec 2020 05:56:32 -0500
+X-MC-Unique: 6M7ZtOBKOxCSQCglRUd00A-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C8FE1005D53;
-        Mon, 14 Dec 2020 10:56:15 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 77D29809DC9;
+        Mon, 14 Dec 2020 10:56:30 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.194.107])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8387F70498;
-        Mon, 14 Dec 2020 10:56:04 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B0E187047D;
+        Mon, 14 Dec 2020 10:56:15 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        lkml <linux-kernel@vger.kernel.org>,
+Cc:     lkml <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Ingo Molnar <mingo@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -35,13 +34,14 @@ Cc:     Ian Rogers <irogers@google.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Michael Petlan <mpetlan@redhat.com>,
         Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Alexei Budankov <abudankov@huawei.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 11/15] perf tools: Add support to display build id for mmap2 events
-Date:   Mon, 14 Dec 2020 11:54:53 +0100
-Message-Id: <20201214105457.543111-12-jolsa@kernel.org>
+Subject: [PATCH 12/15] perf buildid-cache: Add support to add build ids from perf data
+Date:   Mon, 14 Dec 2020 11:54:54 +0100
+Message-Id: <20201214105457.543111-13-jolsa@kernel.org>
 In-Reply-To: <20201214105457.543111-1-jolsa@kernel.org>
 References: <20201214105457.543111-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -56,80 +56,345 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding support to display build id in mmap2 events:
+Adding support to specify perf data file as -a option file
+argument.
 
-  $ perf script --show-mmap-events | head -4
-  swapper ... @ 0xffffffff81000000 <ff1969b3ba5e43911208bb46fa7d5b1eb809e422>]: ---p [kernel.kallsyms]_text
-  swapper ... @ 0 <5f62adb730272c9417883ae8b8a8ec224df8cddd>]: ---p /lib/modules/5.9.0-rc5buildid+/kernel/drivers/firmware/qemu_fw_cfg.ko
-  swapper ... @ 0 <c9ac6e1dafc1ebdadb048f967854e810706c8bab>]: ---p /lib/modules/5.9.0-rc5buildid+/kernel/drivers/char/virtio_console.ko
-  swapper ... @ 0 <86441a4c5b2c2ff5b440682f4c612bd4b426eb5c>]: ---p /lib/modules/5.9.0-rc5buildid+/kernel/lib/libcrc32c.ko
+Examples below assume debuginfod daemon is running on
+192.168.122.174, like:
 
-  $ perf report -D | grep MMAP2 | head -4
-  0 0 ... @ 0xffffffff81000000 <ff1969b3ba5e43911208bb46fa7d5b1eb809e422>]: ---p [kernel.kallsyms]_text
-  0 0 ... @ 0 <5f62adb730272c9417883ae8b8a8ec224df8cddd>]: ---p /lib/modules/5.9.0-rc5buildid+/kernel/drivers/firmware/qemu_fw_cfg.ko
-  0 0 ... @ 0 <c9ac6e1dafc1ebdadb048f967854e810706c8bab>]: ---p /lib/modules/5.9.0-rc5buildid+/kernel/drivers/char/virtio_console.ko
-  0 0 ... @ 0 <86441a4c5b2c2ff5b440682f4c612bd4b426eb5c>]: ---p /lib/modules/5.9.0-rc5buildid+/kernel/lib/libcrc32c.ko
+  # debuginfod -F /
 
-Adding build id data into <> brackets.
+If the file is detected to be perf data file, it is processed
+and all dso objects with sample hit are stored to the build
+id cache.
 
-Acked-by: Ian Rogers <irogers@google.com>
+  $ DEBUGINFOD_URLS=http://192.168.122.174:8002 perf buildid-cache -a perf.data
+  OK   5dcec522abf136fcfd3128f47e131f2365834dd7 /home/jolsa/.debug/.build-id/5d/cec522abf136fcfd3128f47e131f2365834dd7/elf
+  OK   5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
+
+By default we store only dso with hits, but it's possible to
+specify 'all' to store all dso objects, like:
+    -a perf.data,all
+
+  $ DEBUGINFOD_URLS=http://192.168.122.174:8002 perf buildid-cache -a perf.data,all
+  OK   5dcec522abf136fcfd3128f47e131f2365834dd7 /home/jolsa/.debug/.build-id/5d/cec522abf136fcfd3128f47e131f2365834dd7/elf
+  OK   6ce92dc7c31f12fe5b7775a2bb8b14a3546ce2cd /lib/modules/5.10.0-rc2speed+/kernel/drivers/firmware/qemu_fw_cfg.ko
+  OK   bf3f6d32dccc159f841fc3658c241d0e74c61fbb /lib/modules/5.10.0-rc2speed+/kernel/drivers/block/virtio_blk.ko
+  OK   e896b4329cf9f190f1a0fae933f425ff8f71b052 /lib/modules/5.10.0-rc2speed+/kernel/drivers/char/virtio_console.ko
+  OK   5bedc933cb59e053ecb472f327bd73c548364479 /lib/modules/5.10.0-rc2speed+/kernel/drivers/input/serio/serio_raw.ko
+  OK   cecc506368a8b7a473a5f900d26f0d3d914a9c23 /lib/modules/5.10.0-rc2speed+/kernel/arch/x86/crypto/crc32c-intel.ko
+  OK   91076fb3646d061a0a42cf7bddb339a665ee4f80 /lib/modules/5.10.0-rc2speed+/kernel/arch/x86/crypto/ghash-clmulni-intel.ko
+  OK   4e2a304d788bb8e2e950bc82a5944e042afa0bf2 /lib/modules/5.10.0-rc2speed+/kernel/drivers/media/cec/core/cec.ko
+  OK   31ab0da5ad81e6803280177f507a95f3053d585e /lib/modules/5.10.0-rc2speed+/kernel/lib/libcrc32c.ko
+  OK   f6154bca47c149f48c942fcc3d653041dd285c65 /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/ttm/ttm.ko
+  OK   723f5852de81590d54b23b38c160d3618b41951b /lib/modules/5.10.0-rc2speed+/kernel/arch/x86/crypto/crct10dif-pclmul.ko
+  OK   06b1eab7f141cbc3e5a5db47909c8ab5cb242e40 /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/drm_ttm_helper.ko
+  OK   38292b862cf3ff87489508fdb4895efa45780813 /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/qxl/qxl.ko
+  OK   cdf51e58609bf2ce4837a7b195e0ccae0a930907 /lib/modules/5.10.0-rc2speed+/kernel/arch/x86/crypto/crc32-pclmul.ko
+  OK   5ca8958388f6688452ecc2cb83d6031394c659ad /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/drm.ko
+  OK   236bc4e4f38bf3559007566cb32b3dcc1bc28d2d /lib/modules/5.10.0-rc2speed+/kernel/drivers/gpu/drm/drm_kms_helper.ko
+  OK   5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
+  OK   66db2be3efaa43bb5a5c481986e9554e1885cc69 /usr/lib/systemd/systemd
+  OK   7db607d9f2de89860d9639712da64c8bacd31e4b /usr/lib64/libm-2.30.so
+  OK   55b5f9652e1d17c1dd58f62628d5063428e5db91 /usr/lib64/libudev.so.1.6.15
+  OK   63b97070bf097130713bb6c89cf7100b5f3c9b17 /usr/lib64/libunistring.so.2.1.0
+  ...
+
+Once perf data is specified, no other file can be specified in
+the option, otherwise it causes syntax error.
+
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/util/event.c | 41 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 11 deletions(-)
+ .../perf/Documentation/perf-buildid-cache.txt |  12 +-
+ tools/perf/builtin-buildid-cache.c            | 213 +++++++++++++++++-
+ tools/perf/util/probe-event.c                 |   6 +-
+ 3 files changed, 225 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
-index 05616d4138a9..fbe8578e4c47 100644
---- a/tools/perf/util/event.c
-+++ b/tools/perf/util/event.c
-@@ -288,17 +288,36 @@ size_t perf_event__fprintf_mmap(union perf_event *event, FILE *fp)
+diff --git a/tools/perf/Documentation/perf-buildid-cache.txt b/tools/perf/Documentation/perf-buildid-cache.txt
+index f6de0952ff3c..b77da5138bca 100644
+--- a/tools/perf/Documentation/perf-buildid-cache.txt
++++ b/tools/perf/Documentation/perf-buildid-cache.txt
+@@ -23,7 +23,17 @@ OPTIONS
+ -------
+ -a::
+ --add=::
+-        Add specified file to the cache.
++        Add specified file or perf.data binaries to the cache.
++
++        If the file is detected to be perf data file, it is processed
++        and all dso objects with sample hit are stored to the cache.
++
++        It's possible to specify 'all' to store all dso objects, like:
++            -a perf.data,all
++
++        Once perf data is specified, no other file can be specified in
++        the option, otherwise it causes syntax error.
++
+ -f::
+ --force::
+ 	Don't complain, do it.
+diff --git a/tools/perf/builtin-buildid-cache.c b/tools/perf/builtin-buildid-cache.c
+index a25411926e48..f0afb2c89e03 100644
+--- a/tools/perf/builtin-buildid-cache.c
++++ b/tools/perf/builtin-buildid-cache.c
+@@ -29,6 +29,11 @@
+ #include "util/probe-file.h"
+ #include <linux/string.h>
+ #include <linux/err.h>
++#include <linux/zalloc.h>
++#include <sys/stat.h>
++#ifdef HAVE_DEBUGINFOD_SUPPORT
++#include <elfutils/debuginfod.h>
++#endif
  
- size_t perf_event__fprintf_mmap2(union perf_event *event, FILE *fp)
+ static int build_id_cache__kcore_buildid(const char *proc_dir, char *sbuildid)
  {
--	return fprintf(fp, " %d/%d: [%#" PRI_lx64 "(%#" PRI_lx64 ") @ %#" PRI_lx64
--			   " %02x:%02x %"PRI_lu64" %"PRI_lu64"]: %c%c%c%c %s\n",
--		       event->mmap2.pid, event->mmap2.tid, event->mmap2.start,
--		       event->mmap2.len, event->mmap2.pgoff, event->mmap2.maj,
--		       event->mmap2.min, event->mmap2.ino,
--		       event->mmap2.ino_generation,
--		       (event->mmap2.prot & PROT_READ) ? 'r' : '-',
--		       (event->mmap2.prot & PROT_WRITE) ? 'w' : '-',
--		       (event->mmap2.prot & PROT_EXEC) ? 'x' : '-',
--		       (event->mmap2.flags & MAP_SHARED) ? 's' : 'p',
--		       event->mmap2.filename);
-+	if (event->header.misc & PERF_RECORD_MISC_MMAP_BUILD_ID) {
-+		char sbuild_id[SBUILD_ID_SIZE];
-+		struct build_id bid;
-+
-+		build_id__init(&bid, event->mmap2.build_id,
-+			       event->mmap2.build_id_size);
-+		build_id__sprintf(&bid, sbuild_id);
-+
-+		return fprintf(fp, " %d/%d: [%#" PRI_lx64 "(%#" PRI_lx64 ") @ %#" PRI_lx64
-+				   " <%s>]: %c%c%c%c %s\n",
-+			       event->mmap2.pid, event->mmap2.tid, event->mmap2.start,
-+			       event->mmap2.len, event->mmap2.pgoff, sbuild_id,
-+			       (event->mmap2.prot & PROT_READ) ? 'r' : '-',
-+			       (event->mmap2.prot & PROT_WRITE) ? 'w' : '-',
-+			       (event->mmap2.prot & PROT_EXEC) ? 'x' : '-',
-+			       (event->mmap2.flags & MAP_SHARED) ? 's' : 'p',
-+			       event->mmap2.filename);
-+	} else {
-+		return fprintf(fp, " %d/%d: [%#" PRI_lx64 "(%#" PRI_lx64 ") @ %#" PRI_lx64
-+				   " %02x:%02x %"PRI_lu64" %"PRI_lu64"]: %c%c%c%c %s\n",
-+			       event->mmap2.pid, event->mmap2.tid, event->mmap2.start,
-+			       event->mmap2.len, event->mmap2.pgoff, event->mmap2.maj,
-+			       event->mmap2.min, event->mmap2.ino,
-+			       event->mmap2.ino_generation,
-+			       (event->mmap2.prot & PROT_READ) ? 'r' : '-',
-+			       (event->mmap2.prot & PROT_WRITE) ? 'w' : '-',
-+			       (event->mmap2.prot & PROT_EXEC) ? 'x' : '-',
-+			       (event->mmap2.flags & MAP_SHARED) ? 's' : 'p',
-+			       event->mmap2.filename);
-+	}
+@@ -348,6 +353,203 @@ static int build_id_cache__show_all(void)
+ 	return 0;
  }
  
- size_t perf_event__fprintf_thread_map(union perf_event *event, FILE *fp)
++#ifdef HAVE_DEBUGINFOD_SUPPORT
++static int call_debuginfod(const char *sbuild_id, char **path, bool debuginfo)
++{
++	debuginfod_client *c;
++	int fd;
++
++	c = debuginfod_begin();
++	if (c == NULL)
++		return -1;
++
++	pr_debug("trying debuginfod for executable <%s> ... ", sbuild_id);
++
++	if (debuginfo) {
++		fd = debuginfod_find_debuginfo(c, (const unsigned char *) sbuild_id,
++					       0, path);
++	} else {
++		fd = debuginfod_find_executable(c, (const unsigned char *) sbuild_id,
++						0, path);
++	}
++	if (fd >= 0)
++		close(fd); /* retaining reference by realname */
++
++	debuginfod_end(c);
++	pr_debug("%s%s\n", *path ? "OK " : "FAILED", *path ? *path : "");
++	return *path ? 0 : -1;
++}
++#else
++static int call_debuginfod(const char *sbuild_id __maybe_unused,
++			   char **path __maybe_unused,
++			   bool debuginfo __maybe_unused)
++{
++	return -1;
++}
++#endif
++
++struct dso_store_data {
++	bool	 hits;
++};
++
++static int dso_store(struct dso *dso, struct machine *machine, void *priv)
++{
++	struct dso_store_data *data = priv;
++	char sbuild_id[SBUILD_ID_SIZE];
++	struct build_id bid;
++	char *path = NULL, *link = NULL;
++	bool is_kallsyms;
++	int err = -1;
++
++	/*
++	 * There's no build id in dso, nothing to do..
++	 */
++	if (!dso->has_build_id || !build_id__is_defined(&dso->bid))
++		return 0;
++
++	if (data->hits && !dso->hit)
++		return 0;
++
++	/*
++	 * The storing process is:
++	 *   - get build id of the dso
++	 *   - check if it is already in cache
++	 *   - check if it matches provided build id from mmap2 event
++	 *   - if not, try debuginfod to download the binary
++	 *   - store binary to build id database
++	 */
++	is_kallsyms = !strcmp(machine->mmap_name, dso->short_name);
++	build_id__sprintf(&dso->bid, sbuild_id);
++
++	link = build_id_cache__linkname(sbuild_id, NULL, 0);
++	if (!link)
++		return -ENOMEM;
++
++	if (!access(link, X_OK)) {
++		pr_debug("already in cache - %s <%s>\n", dso->long_name, sbuild_id);
++		err = 0;
++		goto out;
++	}
++
++	path = strdup(dso->long_name);
++	if (!path)
++		goto out;
++
++	if (is_kallsyms) {
++		/*
++		 * Find out if we are on the same kernel as perf.data
++		 * and store kallsyms in that case.
++		 */
++		err = sysfs__read_build_id("/sys/kernel/notes", &bid);
++		if (err < 0)
++			goto out;
++	} else {
++		struct nscookie nsc;
++		struct stat st;
++
++		nsinfo__mountns_enter(dso->nsinfo, &nsc);
++
++		/*
++		 * Does the file exists in the first place, if it does,
++		 * resolve path and read the build id.
++		 */
++		if (stat(dso->long_name, &st)) {
++			nsinfo__mountns_exit(&nsc);
++			zfree(&path);
++			goto try_download;
++		}
++
++		err = filename__read_build_id(dso->long_name, &bid);
++		nsinfo__mountns_exit(&nsc);
++
++		if (err <= 0)
++			goto out;
++	}
++
++	/*
++	 * If we match, then what we want in mmap2 event
++	 * is what we got in the binary,
++	 */
++	if (bid.size != dso->bid.size || memcmp(&bid, &dso->bid, bid.size)) {
++		char sbid[SBUILD_ID_SIZE];
++
++		build_id__sprintf(&bid, sbid);
++		pr_debug("mmap build id <%s> does not match for %s <%s>\n",
++			 sbuild_id, path, sbid);
++		zfree(&path);
++	}
++
++try_download:
++	/*
++	 * We did not match build id or did not find the
++	 * binary - try debuginfod as last resort.
++	 */
++	if (!path) {
++		bool debuginfo;
++		char *tmp = NULL;
++
++		/*
++		 * The debuginfo retrieval for standard binaries
++		 * is handled within build_id_cache__add function.
++		 *
++		 * For kernel and kernel modules we have to ask
++		 * for debuginfo directly, because debuginfod
++		 * does not treat them as binaries.
++		 */
++		debuginfo = is_kallsyms ||
++			    is_kernel_module(dso->long_name, PERF_RECORD_MISC_CPUMODE_UNKNOWN);
++
++		if (call_debuginfod(sbuild_id, &tmp, debuginfo)) {
++			err = -1;
++			goto out;
++		}
++
++		path = tmp;
++
++		/*
++		 * The kernel dso is now elf binary, so disable is_kallsyms
++		 * so build_id_cache__add can prepare proper file names.
++		 */
++		is_kallsyms = false;
++	}
++
++	pr_debug("linking %s %s <%s>\n", dso->short_name, path, sbuild_id);
++
++	err = build_id_cache__add(sbuild_id, path, path,
++				  dso->nsinfo, is_kallsyms, false);
++out:
++	free(path);
++	fprintf(stderr, "%s %s %s\n", err ? "FAIL" : "OK  ", sbuild_id, dso->long_name);
++	return 0;
++}
++
++static int
++build_id_cache__add_perf_data(const char *path, bool all)
++{
++	struct perf_session *session;
++	struct dso_store_data priv = {
++		.hits = !all,
++	};
++	struct perf_data data = {
++		.path  = path,
++		.mode  = PERF_DATA_MODE_READ,
++	};
++	int err;
++
++	session = perf_session__new(&data, false, &build_id__mark_dso_hit_ops);
++	if (IS_ERR(session))
++		return PTR_ERR(session);
++
++	err = perf_session__process_events(session);
++	if (err)
++		goto out;
++
++	err = __perf_session__cache_build_ids(session, dso_store, &priv);
++out:
++	perf_session__delete(session);
++	return err;
++}
++
+ int cmd_buildid_cache(int argc, const char **argv)
+ {
+ 	struct strlist *list;
+@@ -440,7 +642,15 @@ int cmd_buildid_cache(int argc, const char **argv)
+ 		list = strlist__new(add_name_list_str, NULL);
+ 		if (list) {
+ 			strlist__for_each_entry(pos, list)
+-				if (build_id_cache__add_file(pos->s, nsi)) {
++				if (is_perf_data(pos->s)) {
++					struct str_node *all_pos = strlist__next(pos);
++					bool all = !strcmp("all", all_pos ? all_pos->s : "");
++
++					if (build_id_cache__add_perf_data(pos->s, all))
++						pr_warning("Couldn't add build ids from %s\n", pos->s);
++					if (all)
++						pos = all_pos;
++				} else if (build_id_cache__add_file(pos->s, nsi)) {
+ 					if (errno == EEXIST) {
+ 						pr_debug("%s already in the cache\n",
+ 							 pos->s);
+@@ -449,7 +659,6 @@ int cmd_buildid_cache(int argc, const char **argv)
+ 					pr_warning("Couldn't add %s: %s\n",
+ 						   pos->s, str_error_r(errno, sbuf, sizeof(sbuf)));
+ 				}
+-
+ 			strlist__delete(list);
+ 		}
+ 	}
+diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+index 8eae2afff71a..e821bb977c9b 100644
+--- a/tools/perf/util/probe-event.c
++++ b/tools/perf/util/probe-event.c
+@@ -1616,9 +1616,9 @@ static int parse_perf_probe_point(char *arg, struct perf_probe_event *pev)
+ 		return -EINVAL;
+ 	}
+ 
+-	pr_debug("symbol:%s file:%s line:%d offset:%lu return:%d lazy:%s\n",
+-		 pp->function, pp->file, pp->line, pp->offset, pp->retprobe,
+-		 pp->lazy_line);
++	pr_debug2("symbol:%s file:%s line:%d offset:%lu return:%d lazy:%s\n",
++		  pp->function, pp->file, pp->line, pp->offset, pp->retprobe,
++		  pp->lazy_line);
+ 	return 0;
+ }
+ 
 -- 
 2.26.2
 
