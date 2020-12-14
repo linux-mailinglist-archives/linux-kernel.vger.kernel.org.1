@@ -2,180 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267FF2D9B70
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77AA82D9B73
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:51:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438438AbgLNPuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 10:50:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732513AbgLNPuN (ORCPT
+        id S2439370AbgLNPvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 10:51:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59467 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2439036AbgLNPuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 10:50:13 -0500
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A5CCC061793
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 07:49:33 -0800 (PST)
-Received: by mail-vs1-xe43.google.com with SMTP id b23so9187862vsp.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 07:49:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KvO0sb07TDmRwegOoF9S5e6D5LMN7XTNc/ZFX2Y5vi4=;
-        b=e31mRl3iGwwoztxn7fB1r+7GX+JZDHiFrSDXcuX2noyakj/Rsa2UQvMZSgpkHhDQhz
-         /OhDQiCjCYyTS8VKtZPO51Rgh7Qhva7khKek+vh24xQuYnVwLPv79B9BbyCFMu2t9tk7
-         9Di2/3UEkPhrsYi5JUKM3sWSJYVOz9n6B+nSrb2CKYY05eOhx8u9eVLPyDizCsz1hZ28
-         b5a2lFQN84VYht8a7ZIAyBWqL2voWZ0secptdIDU2brkyUl/fujqriiBs/hPmah1OkR4
-         Hipxd9oLz3IIZNxqdFOkWE5EctlepAr41yu5ofxtmW0LMJWSdxmcYjv/iFjIf9AbABPh
-         Duhw==
+        Mon, 14 Dec 2020 10:50:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607960954;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hPVMdkrOLjH4YG0WvH2MD8or3IV6IeS+xhG/nPpSr6k=;
+        b=JfKFymRNRR9vxcbMP7rA7pEhpdYANkd+0oSRqc67ejJz6h0pGWUIgUgklb9Kos7ooUMeUi
+        DCVfOiVAl11l4FzWx9+rKzSMaBZpvpUGeJ9Vl/CiMNw9ucf0i1c3YQXwJKmoZwIsZeaAoI
+        YmBwYZwo9GJ76ppl8imzkt5vZkUWIhg=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-388-_5NvHFPcM0yIIV65NjKJWQ-1; Mon, 14 Dec 2020 10:49:12 -0500
+X-MC-Unique: _5NvHFPcM0yIIV65NjKJWQ-1
+Received: by mail-ed1-f69.google.com with SMTP id i15so8468241edx.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 07:49:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KvO0sb07TDmRwegOoF9S5e6D5LMN7XTNc/ZFX2Y5vi4=;
-        b=ZFT8jO057Ivkv3x0PYpzN3VOzrIVzfNLBkB6H3r0vMTG11yp90jQiT9SIdv6kxU6+a
-         RaLGqdQSa4i0FLS1Ergx6UA+S7IQPuRiMJ5PCvHzNazq/0OF0pveFDGVE4mY0JPCEoJx
-         728hjRxELF3WgaaXk43kb05tXgnO9itXyHlDe3l0SO1YGLBc2zfy5lyJfxJZaygQS1Rc
-         30OCcWhpg1uejKa6KZfWG1Y6svszEuVj1SJeZYrl/ng4OwkDCno+OnRhnNv7eCotQTLt
-         0KSSYVgxQ5Sifecbjl/zxE6HAt8F0hyBlBIZIuNbbdU0oAKiTh+gzb1QoShsQPxwr1sS
-         9MvQ==
-X-Gm-Message-State: AOAM531Y7tmu8cUGny1rpfMEBPREgcW+xw/WCXHoDuHc0pTthCL9ah4l
-        zHBvSAwbP/taUAuGkDeIoaIs/OUCgiE4jCGmTMWn0Q==
-X-Google-Smtp-Source: ABdhPJxYosNVAKN1SQj4JiAthUoa5PPHeE6hBjmZW96vQQzREIo27iOk/lOij7ngld6+k7N2O0c2NCLcmIebOV2zyTQ=
-X-Received: by 2002:a67:70c6:: with SMTP id l189mr23767784vsc.34.1607960971339;
- Mon, 14 Dec 2020 07:49:31 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hPVMdkrOLjH4YG0WvH2MD8or3IV6IeS+xhG/nPpSr6k=;
+        b=qHWskOgymTTOqlUkdlOhIUliRjpBJiFiYfAVPB0SWVJTDc1Bjpodsw6L45cmuNifjO
+         8muvOqbS4IMvPOyUp0BIcBVgQHJiNCLdpthFp+3av7dh24gAmrHzahNwfrX+7gcMTaPL
+         9EoZJTYT6Jdm7Iqip/5cLxh+MiGeW9SS1ls6+4KvydDkQTEI9PpPspNPUT3kcNuiFwXz
+         2mlWSyjhmVPbEql+zHc/5pveAj88cbYeeWq2CzlV8gN1F+44vl9/rBfbeyccYyQlFePV
+         UyshjOsxLVkkc99zQmg+5bMCVznbOIolRlkUifwUWVB/AH20aM+j+H7thcE7mExESig2
+         GBbw==
+X-Gm-Message-State: AOAM530bwU2EUecf3yQ4bGS2XA2gXG0VF4gk/MZyGTs7FKhUgzJO++Qd
+        hbuhzAAp+UmnyJ1BRVnidUaL60PMLMDgI7/8E0g8a2YcCJRlPwRfsiI+5lNUCgOFdDgQcypV/1A
+        BdugFDOd5tjor95XoABn1zObW
+X-Received: by 2002:a17:906:d28f:: with SMTP id ay15mr22034668ejb.327.1607960951339;
+        Mon, 14 Dec 2020 07:49:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyegjkkEcKatjPQPai67p6kOlbtipYi2XTi51XfOn3SGzvO1att8O9MxSTgI2mBCc3mR7Fg+A==
+X-Received: by 2002:a17:906:d28f:: with SMTP id ay15mr22034648ejb.327.1607960951141;
+        Mon, 14 Dec 2020 07:49:11 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id t19sm11726057ejc.62.2020.12.14.07.49.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Dec 2020 07:49:10 -0800 (PST)
+Subject: Re: [PATCH v5 16/34] KVM: SVM: Add support for SEV-ES GHCB MSR
+ protocol function 0x100
+To:     Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <cover.1607620209.git.thomas.lendacky@amd.com>
+ <f3a1f7850c75b6ea4101e15bbb4a3af1a203f1dc.1607620209.git.thomas.lendacky@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <1907a448-3fa6-70c6-e162-cb42ab79a95e@redhat.com>
+Date:   Mon, 14 Dec 2020 16:49:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201208012615.2717412-1-andrew@aj.id.au> <20201208012615.2717412-2-andrew@aj.id.au>
-In-Reply-To: <20201208012615.2717412-2-andrew@aj.id.au>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 14 Dec 2020 16:48:54 +0100
-Message-ID: <CAPDyKFrceNPNz9+88p+mzbYEo-ZqWOwTBWaqycxPr3MQEFtbaA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/6] mmc: core: Add helper for parsing clock phase properties
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        ryan_chen@aspeedtech.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f3a1f7850c75b6ea4101e15bbb4a3af1a203f1dc.1607620209.git.thomas.lendacky@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 at 02:26, Andrew Jeffery <andrew@aj.id.au> wrote:
->
-> Drivers for MMC hosts that accept phase corrections can take advantage
-> of the helper by embedding a mmc_clk_phase_map_t object in their
-> private data and invoking mmc_of_parse_clk_phase() to extract phase
-> parameters. It is the responsibility of the host driver to translate and
-> apply the extracted values to hardware as required.
->
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> ---
->  drivers/mmc/core/host.c  | 44 ++++++++++++++++++++++++++++++++++++++++
->  include/linux/mmc/host.h | 17 ++++++++++++++++
->  2 files changed, 61 insertions(+)
->
-> diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-> index 96b2ca1f1b06..b1697f00c4b5 100644
-> --- a/drivers/mmc/core/host.c
-> +++ b/drivers/mmc/core/host.c
-> @@ -163,6 +163,50 @@ static void mmc_retune_timer(struct timer_list *t)
->         mmc_retune_needed(host);
->  }
->
-> +static void mmc_of_parse_timing_phase(struct device *dev, const char *prop,
-> +                                     struct mmc_clk_phase *phase)
-> +{
-> +       int degrees[2] = {0};
-> +       int rc;
-> +
-> +       rc = device_property_read_u32_array(dev, prop, degrees, 2);
-> +       phase->valid = !rc;
-> +       if (phase->valid) {
-> +               phase->in_deg = degrees[0];
-> +               phase->out_deg = degrees[1];
-> +       }
-> +}
-> +
-> +void
-> +mmc_of_parse_clk_phase(struct mmc_host *host, mmc_clk_phase_map_t map)
+On 10/12/20 18:09, Tom Lendacky wrote:
+> +		pr_info("SEV-ES guest requested termination: %#llx:%#llx\n",
+> +			reason_set, reason_code);
+> +		fallthrough;
+> +	}
 
-Would you mind to change to pass a "struct mmc_clk_phase_map *map" to this?
+It would be nice to send these to userspace instead as a follow-up.
 
-See more comments below.
+Paolo
 
-> +{
-> +       struct device *dev = host->parent;
-> +
-> +       mmc_of_parse_timing_phase(dev, "clk-phase-legacy",
-> +                                 &map[MMC_TIMING_LEGACY]);
-> +       mmc_of_parse_timing_phase(dev, "clk-phase-mmc-hs",
-> +                                 &map[MMC_TIMING_MMC_HS]);
-> +       mmc_of_parse_timing_phase(dev, "clk-phase-sd-hs",
-> +                                 &map[MMC_TIMING_SD_HS]);
-> +       mmc_of_parse_timing_phase(dev, "clk-phase-uhs-sdr12",
-> +                                 &map[MMC_TIMING_UHS_SDR12]);
-> +       mmc_of_parse_timing_phase(dev, "clk-phase-uhs-sdr25",
-> +                                 &map[MMC_TIMING_UHS_SDR25]);
-> +       mmc_of_parse_timing_phase(dev, "clk-phase-uhs-sdr50",
-> +                                 &map[MMC_TIMING_UHS_SDR50]);
-> +       mmc_of_parse_timing_phase(dev, "clk-phase-uhs-sdr104",
-> +                                 &map[MMC_TIMING_UHS_SDR104]);
-> +       mmc_of_parse_timing_phase(dev, "clk-phase-uhs-ddr50",
-> +                                 &map[MMC_TIMING_UHS_DDR50]);
-> +       mmc_of_parse_timing_phase(dev, "clk-phase-mmc-ddr52",
-> +                                 &map[MMC_TIMING_MMC_DDR52]);
-> +       mmc_of_parse_timing_phase(dev, "clk-phase-mmc-hs200",
-> +                                 &map[MMC_TIMING_MMC_HS200]);
-> +       mmc_of_parse_timing_phase(dev, "clk-phase-mmc-hs400",
-> +                                 &map[MMC_TIMING_MMC_HS400]);
-> +}
-> +EXPORT_SYMBOL(mmc_of_parse_clk_phase);
-> +
->  /**
->   *     mmc_of_parse() - parse host's device-tree node
->   *     @host: host whose node should be parsed.
-> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-> index 01bba36545c5..bc4731c9738f 100644
-> --- a/include/linux/mmc/host.h
-> +++ b/include/linux/mmc/host.h
-> @@ -79,6 +79,22 @@ struct mmc_ios {
->         bool enhanced_strobe;                   /* hs400es selection */
->  };
->
-> +struct mmc_clk_phase {
-> +       bool valid;
-> +       u16 in_deg;
-> +       u16 out_deg;
-> +};
-> +
-> +/*
-> + * Define a type to map between bus timings and phase correction values. To
-> + * avoid bloat in struct mmc_host we leave it to the host driver to define the
-> + * phase map object in its private data if it supports phase correction.
-> + * However, mmc_of_parse_clk_phase() is provided by the mmc core and needs the
-> + * provided array to be correctly sized, so typedef an appropriately sized
-> + * array to minimise the chance that the wrong size object is passed.
-> + */
-> +typedef struct mmc_clk_phase mmc_clk_phase_map_t[MMC_TIMING_MMC_HS400 + 1];
-> +
-
-Nitpick: I would appreciate if we could avoid using "typedefs", as I
-think they in many cases makes the code harder to read. How about
-doing this instead?
-
-#define MMC_NUM_CLK_PHASES (MMC_TIMING_MMC_HS400 + 1)
-
-struct mmc_clk_phase_map {
-        struct mmc_clk_phase phase[MMC_NUM_CLK_PHASES];
-};
-
-[...]
-
-Kind regards
-Uffe
