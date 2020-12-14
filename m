@@ -2,64 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F271D2D9B83
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C9C2D9B8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:56:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438921AbgLNPwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 10:52:45 -0500
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:33393 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439518AbgLNPw2 (ORCPT
+        id S2439036AbgLNPzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 10:55:47 -0500
+Received: from out28-122.mail.aliyun.com ([115.124.28.122]:58442 "EHLO
+        out28-122.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729091AbgLNPzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 10:52:28 -0500
-Received: by mail-ej1-f65.google.com with SMTP id b9so23192362ejy.0;
-        Mon, 14 Dec 2020 07:52:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eUUzZ3vVO1OOxq0lP4QkRTp4abvgiVw9uyvagV8zpRw=;
-        b=PHvFPzMHY2qN0pGxtGXfAVuW/2vIhj3dm4ubh7vaQ8TLQ/+g5JcSEcgecSc6lBKQ3b
-         8E8ALWZrFThe/f4rDt2TZSYw8aHWupuyZRUHNyUG9VQCajiNwp/+iXwG2R2ctpVxiysX
-         627alguko9b7es59wesAIPFBjGGpn0ZZdXVATNBFswU/dM87/A+aeR4aaFwkSeLY+gmk
-         mmePDoFFwnksu7Ouy1u6vRFV9sL58Bbcp+0sgBxjG9+A6kD2bYA9yALOFWPFWShOnP9e
-         uFnPvbomK2YZERAIucvpta+66zU/7Ur8LWS4iYhuhQ05iXuNTaEM5g8YBB4tNBtMG6CT
-         Z86w==
-X-Gm-Message-State: AOAM533yyFaeahiwcOIHo7Jg1EVycsuvwrdi5knczrLSJbnBTC8V1upN
-        j8zIc4EowwoKe+6UXKANUKaDwacJKSY=
-X-Google-Smtp-Source: ABdhPJxxb97fPDcZnskh2hpG0wg+EQcwXlYxQlOL8+qWuGIXGQbXxsAk++b3V32wkLIHGZ3jteoypA==
-X-Received: by 2002:a17:907:40f0:: with SMTP id nn24mr22482714ejb.233.1607961106635;
-        Mon, 14 Dec 2020 07:51:46 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id lr24sm13926950ejb.41.2020.12.14.07.51.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 07:51:45 -0800 (PST)
-Date:   Mon, 14 Dec 2020 16:51:43 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
-Subject: Re: [PATCH net-next] nfc: s3fwrn5: Remove the delay for nfc sleep
-Message-ID: <20201214155143.GC2493@kozik-lap>
-References: <20201213101238.28373-1-bongsu.jeon@samsung.com>
+        Mon, 14 Dec 2020 10:55:46 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07439697|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0789955-0.000352892-0.920652;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.J733Ogu_1607961298;
+Received: from 192.168.10.152(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.J733Ogu_1607961298)
+          by smtp.aliyun-inc.com(10.147.40.2);
+          Mon, 14 Dec 2020 23:54:59 +0800
+Subject: Re: [PATCH] MIPS: Ingenic: Disable HPTLB for D0 XBurst CPUs too
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Zhou Yanjie <zhouyanjie@zoho.com>, od@zcrc.me,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20201212000354.291665-1-paul@crapouillou.net>
+ <b5c0677a-fb8c-f5e8-b0f5-5bcaab00d921@wanyeetech.com>
+ <PFNALQ.MDZT5ZA4HQDS3@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <353d36d6-0aae-6dfa-dbf3-60552cf46d12@wanyeetech.com>
+Date:   Mon, 14 Dec 2020 23:54:58 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201213101238.28373-1-bongsu.jeon@samsung.com>
+In-Reply-To: <PFNALQ.MDZT5ZA4HQDS3@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 07:12:38PM +0900, Bongsu Jeon wrote:
-> From: Bongsu Jeon <bongsu.jeon@samsung.com>
-> 
-> remove the delay for nfc sleep because nfc doesn't need the sleep delay.
+Hi Paul,
 
-Please start sentences with capital letter.
-s/nfc/NFC/ (here and in subject)
+On 2020/12/14 上午3:57, Paul Cercueil wrote:
+> Hi Zhou,
+>
+> Le lun. 14 déc. 2020 à 3:12, Zhou Yanjie <zhouyanjie@wanyeetech.com> a 
+> écrit :
+>> Hi Paul,
+>>
+>> On 2020/12/12 上午8:03, Paul Cercueil wrote:
+>>> The JZ4760 has the HPTLB as well, but has a XBurst CPU with a D0 CPUID.
+>>>
+>>> Disable the HPTLB for all XBurst CPUs with a D0 CPUID. In the case 
+>>> where
+>>> there is no HPTLB (e.g. for older SoCs), this won't have any side
+>>> effect.
+>>>
+>>> Fixes: b02efeb05699 ("MIPS: Ingenic: Disable abandoned HPTLB 
+>>> function.")
+>>> Cc: <stable@vger.kernel.org> # 5.4
+>>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>> ---
+>>>   arch/mips/kernel/cpu-probe.c | 15 ++++++++-------
+>>>   1 file changed, 8 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/arch/mips/kernel/cpu-probe.c 
+>>> b/arch/mips/kernel/cpu-probe.c
+>>> index e6853697a056..31cb9199197c 100644
+>>> --- a/arch/mips/kernel/cpu-probe.c
+>>> +++ b/arch/mips/kernel/cpu-probe.c
+>>> @@ -1830,16 +1830,17 @@ static inline void cpu_probe_ingenic(struct 
+>>> cpuinfo_mips *c, unsigned int cpu)
+>>>            */
+>>>           case PRID_COMP_INGENIC_D0:
+>>>               c->isa_level &= ~MIPS_CPU_ISA_M32R2;
+>>> -            break;
+>>> +            fallthrough;
+>>>             /*
+>>>            * The config0 register in the XBurst CPUs with a 
+>>> processor ID of
+>>> -         * PRID_COMP_INGENIC_D1 has an abandoned huge page tlb 
+>>> mode, this
+>>> -         * mode is not compatible with the MIPS standard, it will 
+>>> cause
+>>> -         * tlbmiss and into an infinite loop (line 21 in the 
+>>> tlb-funcs.S)
+>>> -         * when starting the init process. After chip reset, the 
+>>> default
+>>> -         * is HPTLB mode, Write 0xa9000000 to cp0 register 5 sel 4 to
+>>
+>>
+>> I just noticed that I mistakenly wrote a capital 'W' in the original 
+>> version.
+>>
+>> with that fixed:
+>>
+>> Reviewed-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>
+> Sure, thanks.
+>
+> If both D0 and D1 CPUs need the fix then I probably should move it 
+> outside the switch, that would make the code a bit cleaner. I'll V2.
+>
 
-This explanation is very vague. Please rephrase it.
+This is a good idea, but it should be noted that it still needs to be 
+placed in XBURST_REV1, because XBURST_REV2 processors (such as X1830) 
+also use the ID of D0, but they do not have the problem of HPTLB.
 
-Best regards,
-Krzysztof
 
+>> BTW: Are you planning to add support for JZ4760 recently? I am 
+>> currently writing the CGU driver for JZ4775 and X2000. If you plan to 
+>> add support for JZ4760, I can also write the CGU driver for JZ4760 by 
+>> the way.
+>
+> Yes, we're working on it, all the core drivers are working (CGU, 
+> pinctrl, timers, display, USB), it boots to userspace and allows to 
+> telnet. The actual diff is very small, most of the changes were the 
+> addition of the ingenic,jz4760-* compatible strings.
+>
+
+Good to hear that.
+
+Thanks and best regards!
+
+
+> Cheers,
+> -Paul
+>
+>>> -         * switch back to VTLB mode to prevent getting stuck.
+>>> +         * PRID_COMP_INGENIC_D0 or PRID_COMP_INGENIC_D1 has an 
+>>> abandoned
+>>> +         * huge page tlb mode, this mode is not compatible with the 
+>>> MIPS
+>>> +         * standard, it will cause tlbmiss and into an infinite loop
+>>> +         * (line 21 in the tlb-funcs.S) when starting the init 
+>>> process.
+>>> +         * After chip reset, the default is HPTLB mode, Write 
+>>> 0xa9000000
+>>> +         * to cp0 register 5 sel 4 to switch back to VTLB mode to 
+>>> prevent
+>>> +         * getting stuck.
+>>>            */
+>>>           case PRID_COMP_INGENIC_D1:
+>>>               write_c0_page_ctrl(XBURST_PAGECTRL_HPTLB_DIS);
+>
