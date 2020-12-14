@@ -2,109 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA782DA36A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B06B2DA39D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 23:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408793AbgLNWaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 17:30:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
+        id S2441217AbgLNWpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 17:45:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390134AbgLNW3j (ORCPT
+        with ESMTP id S2441218AbgLNWoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 17:29:39 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BCDC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:28:59 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id w3so17412838otp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:28:59 -0800 (PST)
+        Mon, 14 Dec 2020 17:44:39 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8557EC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:43:59 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id v29so13754547pgk.12
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 14:43:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lQJ31nxgRFNp8EZMZx7FpPO6Zey0SIdb/j3Aj9RQw50=;
-        b=k5EFIvrMkJbEa+nK4q3JlJtULb4oIuWXZdnkEt4LnpFVI+TxG2Jnfz0fPBbLKC5eu9
-         6RbYVvc6lMGoLbEJi9s8qKo+dXDFtWvsS/B25mqkuJC9hvnLqxZZbjirD+PJznv/f9Ve
-         GIlFqFYORvcO4RSSbWHaHryZm/j4P+dYbBzeB8D7rvtGAV2pEWnrKVwG4gAwbPR9cahs
-         54Jw5pZi/XPWQH/nbj9N5wVXCOk0mdQLMtPP/vc93QpVAZS+bM3lisrJrD/RukYnhOyJ
-         yFR6Ms38ryp/uevoKuiskLbkORJZfXnHCSyFGuoc21ippsVhFurKa0cE3IBd7HaiPMBP
-         zSug==
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:mime-version:subject:from:in-reply-to:cc
+         :date:message-id:references:to;
+        bh=d1RpYyJlLKZ1G7PiLxEKJrkYECxvaeYUzXG4j/stqFQ=;
+        b=vkQF46i4pBr/22TElfK3oU3WZtmYA344Kt6QcRF4U5wvApHLN910+V5HeQydHVtDxk
+         crj3iaiy/4HTDDKR3PCessAM+F1NBasKB5HRwRypZlTHTzYcCQYgFR1HYMdiv9SCOz9O
+         FswlJP63/zm7GWnpYu48cDG69NMrQSI6jYPuOac4jZKrSKzzpxd0Mdm0eeT8ytkHngH/
+         MXC1G164JVhlfPBx2KNDUo2oK5FRM73eJKcehPpvkgE2QIPbfksRSQMx0LK6reldMqlB
+         2/H4kZpPd7FDoYI1hbvJMt1kU2jcEvQSVzOKhV6V128ZbWx85guvLPzU6XZ2qai3VBYl
+         hGtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lQJ31nxgRFNp8EZMZx7FpPO6Zey0SIdb/j3Aj9RQw50=;
-        b=pI3G3+eFGttUQH7DEer7wPUVTiJaPonI1sXp3e1D3x4xo2c6HMT7qhyOEP1oGCP8no
-         8dt8ycCROJhsVnVg6d2Xqgap7CQWeXECA/JZ+V+tRb3zkkI5I9ZsY/1zQ8cm5lU2LHsb
-         2vSnwEdcIsPzvI8SE+WNmJzEK2upjQkBmM9OW6nmxo8AenhLHk2wse7uQsa/j/LJtIQX
-         kn21xB4FN//GIjtUOYHkAiOGADyOBd1mu/QwjU8tWWL+AwISHCicR8JXlM52d82vfkaQ
-         4ERaGgMuc8GLSjsvhHtQ3R+Gp8THrgh3wyGd880SP1IjZJKMZVfp91b73bRLuz4QDAZf
-         NyKg==
-X-Gm-Message-State: AOAM5324PTjUB2aYYEobtVcoCT9iB+rWT2JEIeO6QBkHheL0d/NWN3Tp
-        ZYKRlQVJuJeR2A4FYvAwrgdPoZ0/DicH0ga4HSA=
-X-Google-Smtp-Source: ABdhPJz4xCYDEx6ZevgUKDDg/umaaRlXBpiemsW3Y0HOAK/v6cPBraxTcPoES/oo9oSLJyGxEDM5dvWueoFZRAehe8I=
-X-Received: by 2002:a05:6830:1d66:: with SMTP id l6mr4788158oti.23.1607984939076;
- Mon, 14 Dec 2020 14:28:59 -0800 (PST)
-MIME-Version: 1.0
-References: <CAPM=9tyNrbap4FG6qstkC5YTznqVebD=ye+4+Z+t42yQnL325A@mail.gmail.com>
- <CAHk-=wjue4aOyQQq+C6SEurwe6XABhMyNtsfn1goU==Hf_QUqA@mail.gmail.com>
-In-Reply-To: <CAHk-=wjue4aOyQQq+C6SEurwe6XABhMyNtsfn1goU==Hf_QUqA@mail.gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 14 Dec 2020 17:28:48 -0500
-Message-ID: <CADnq5_MyMm+FmmbKHccDDOBryEdgbQHdw3rtuhUv=cvJrirHFg@mail.gmail.com>
-Subject: Re: [git pull] drm for 5.11-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:content-transfer-encoding:mime-version:subject
+         :from:in-reply-to:cc:date:message-id:references:to;
+        bh=d1RpYyJlLKZ1G7PiLxEKJrkYECxvaeYUzXG4j/stqFQ=;
+        b=rHBrdYbz5D8+oDmXuh+wud/P5KW/eAqEUfDNZneh3FzQH+OI392gISQCJ2J8rdJrm/
+         8Rr7EhddqWkt2iHjhBPmggu+SEGaA1ZCbjxCqc/0Wr0A1tgYeQ8ddZXWWPKNdkPxTqWM
+         thKGCLI0tMEyRmGGJNl2XdHJIfHslEZVSS1x5g4zDzOG6G6eeUF61hOLWQD6ASHcigLi
+         mPEahOKq75i3WjUaWaB5GErx7zLPXfFuEsUQmQxeXSfuNYUgdKXmxUgMOXpmbZiKMbMC
+         i8CgammLco2Jys4SvlV7Ey658HvkeF+QQnXMF9cYVx5T2LxnuqhdhErc/UPNwEgZOExz
+         qm/w==
+X-Gm-Message-State: AOAM531P8gFQdFXhOHSZPq6GRtxDkUaxXHS6sw/mSjE6/DcxrFMO4z1F
+        PMG3YfapjTle6NQJwf9K+ac8zw==
+X-Google-Smtp-Source: ABdhPJxj963by90RFaoNCtlLJHMnbw7gJis5f7Cm1kDhLiYHFQBUkOSAniZ1BAdaJaS+hbHxsAPyDw==
+X-Received: by 2002:a63:5114:: with SMTP id f20mr24115206pgb.5.1607985838832;
+        Mon, 14 Dec 2020 14:43:58 -0800 (PST)
+Received: from ?IPv6:2600:1010:b003:ccf3:e5ce:e2e9:721a:7c07? ([2600:1010:b003:ccf3:e5ce:e2e9:721a:7c07])
+        by smtp.gmail.com with ESMTPSA id i184sm2431706pfe.126.2020.12.14.14.43.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Dec 2020 14:43:58 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2] KVM: SVM: use vmsave/vmload for saving/restoring additional host state
+From:   Andy Lutomirski <luto@amacapital.net>
+In-Reply-To: <20201214220213.np7ytcxmm6xcyllm@amd.com>
+Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 14 Dec 2020 14:29:46 -0800
+Message-Id: <98F09A9A-A768-4B01-A1FA-5EE681146BC5@amacapital.net>
+References: <20201214220213.np7ytcxmm6xcyllm@amd.com>
+To:     Michael Roth <michael.roth@amd.com>
+X-Mailer: iPhone Mail (18B121)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 5:21 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Thu, Dec 10, 2020 at 7:52 PM Dave Airlie <airlied@gmail.com> wrote:
-> >
-> > This is an early pull request for drm for 5.11 merge window. I'm going
-> > to be out for most of the first week of the merge window so thought
-> > I'd just preempt things and send this early.
->
-> Ok, I've merged this, and Dave is likely gone already, but it _looks_
-> like there's a problem with the drm tree on my Radeon workstation.
->
-> It works fine on my i915 laptop.
->
-> The symptoms are that the boot just hangs after
->
->    fb0: switching to amdgpudrmfb from EFI VGA
->
-> when on a working kernel the next lines are
->
->   amdgpu 0000:49:00.0: vgaarb: deactivate vga console
->   [drm] initializing kernel modesetting (POLARIS10 0x1002:0x67DF
-> 0x1DA2:0xE353 0xE7).
->   amdgpu 0000:49:00.0: amdgpu: Trusted Memory Zone (TMZ) feature not supported
->   [drm] register mmio base: 0xE1C00000
->   [drm] register mmio size: 262144
->
-> I'm bisecting for more details, but it might take a while, and I
-> thought I'd start the ball rolling with this initial report in case
-> somebody goes "Aahh.., we know about that case already, the fix is
-> XYZ"...
->
-
-The relevant fixes are:
-https://cgit.freedesktop.org/drm/drm-misc/commit/?h=drm-misc-next-fixes&id=aefec40938e4a0e1214f9121520aba4d51697cd9
-https://cgit.freedesktop.org/drm/drm-misc/commit/?h=drm-misc-next-fixes&id=95e3d610d35c9c5b51e12c5c8ac18061ae08cf97
-
-Alex
 
 
+> On Dec 14, 2020, at 2:02 PM, Michael Roth <michael.roth@amd.com> wrote:
+>=20
+> =EF=BB=BFOn Mon, Dec 14, 2020 at 11:38:23AM -0800, Sean Christopherson wro=
+te:
+>> +Andy, who provided a lot of feedback on v1.
+>> On Mon, Dec 14, 2020, Michael Roth wrote:
+>> Cc: Andy Lutomirski <luto@kernel.org>
+>>> Suggested-by: Tom Lendacky <thomas.lendacky@amd.com>
+>>> Signed-off-by: Michael Roth <michael.roth@amd.com>
+>>> ---
+>>> v2:
+>>> * rebase on latest kvm/next
+>>> * move VMLOAD to just after vmexit so we can use it to handle all FS/GS
+>>> host state restoration and rather than relying on loadsegment() and
+>>> explicit write to MSR_GS_BASE (Andy)
+>>> * drop 'host' field from struct vcpu_svm since it is no longer needed
+>>> for storing FS/GS/LDT state (Andy)
+>>> ---
+>>> arch/x86/kvm/svm/svm.c | 44 ++++++++++++++++--------------------------
+>>> arch/x86/kvm/svm/svm.h | 14 +++-----------
+>>> 2 files changed, 20 insertions(+), 38 deletions(-)
+>>> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+>>> index 0e52fac4f5ae..fb15b7bd461f 100644
+>>> --- a/arch/x86/kvm/svm/svm.c
+>>> +++ b/arch/x86/kvm/svm/svm.c
+>>> @@ -1367,15 +1367,19 @@ static void svm_vcpu_load(struct kvm_vcpu *vcpu,=
+ int cpu)
+>>>       vmcb_mark_all_dirty(svm->vmcb);
+>>>   }
+>>> -#ifdef CONFIG_X86_64
+>>> -    rdmsrl(MSR_GS_BASE, to_svm(vcpu)->host.gs_base);
+>>> -#endif
+>>> -    savesegment(fs, svm->host.fs);
+>>> -    savesegment(gs, svm->host.gs);
+>>> -    svm->host.ldt =3D kvm_read_ldt();
+>>> -
+>>> -    for (i =3D 0; i < NR_HOST_SAVE_USER_MSRS; i++)
+>>> +    for (i =3D 0; i < NR_HOST_SAVE_USER_MSRS; i++) {
+>>>       rdmsrl(host_save_user_msrs[i], svm->host_user_msrs[i]);
+>>> +    }
+>=20
+> Hi Sean,
+>=20
+> Hopefully I've got my email situation sorted out now...
+>=20
+>> Unnecessary change that violates preferred coding style.  Checkpatch expl=
+icitly
+>> complains about this.
+>> WARNING: braces {} are not necessary for single statement blocks
+>> #132: FILE: arch/x86/kvm/svm/svm.c:1370:
+>> +    for (i =3D 0; i < NR_HOST_SAVE_USER_MSRS; i++) {
+>>       rdmsrl(host_save_user_msrs[i], svm->host_user_msrs[i]);
+>> +
+>=20
+> Sorry, that was an artifact from an earlier version of the patch that I
+> failed to notice. I'll make sure to run everything through checkpatch
+> going forward.
+>=20
+>>> +
+>>> +    asm volatile(__ex("vmsave")
+>>> +             : : "a" (page_to_pfn(sd->save_area) << PAGE_SHIFT)
+>> I'm pretty sure this can be page_to_phys().
+>>> +             : "memory");
+>> I think we can defer this until we're actually planning on running the gu=
+est,
+>> i.e. put this in svm_prepare_guest_switch().
+>=20
+> One downside to that is that we'd need to do the VMSAVE on every
+> iteration of vcpu_run(), as opposed to just once when we enter from
+> userspace via KVM_RUN. It ends up being a similar situation to Andy's
+> earlier suggestion of moving VMLOAD just after vmexit, but in that case
+> we were able to remove an MSR write to MSR_GS_BASE, which cancelled out
+> the overhead, but in this case I think it could only cost us extra.
 
->               Linus
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+If you want to micro-optimize, there is a trick you could play: use WRGSBASE=
+ if available.  If X86_FEATURE_GSBASE is available, you could use WRGSBASE t=
+o restore GSBASE and defer VMLOAD to vcpu_put().  This would need benchmarki=
+ng on Zen 3 to see if it=E2=80=99s worthwhile.
+
+
