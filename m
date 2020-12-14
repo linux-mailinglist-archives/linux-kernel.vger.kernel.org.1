@@ -2,107 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858B62D999D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:19:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2E82D99B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 15:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439739AbgLNOSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 09:18:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439156AbgLNOSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 09:18:09 -0500
-X-Gm-Message-State: AOAM531lIkxewA9BovAnIlo4+Au62ebp07CxVhEIMAZ+zXPsjotv4XkY
-        mWAzVpcVRibYU803TN/PuPyf+QP2HZSF4idmgg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607955448;
-        bh=vgF8+AK6GkBkQYu4wyAk0STQnnPO354gKvQ6xqwdcfA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UmexIdARMA6NpqX5l/Ll1YH7GxF2bLQRdPOHD/ZZIUFm5MJNvSr2lKR1TSEU0DJGj
-         6l7ix120lUgWQu482Ycgcty7yW3BRqOatZsrfTlM5v65GdoRdrkXX2aywlRUziM3cZ
-         qodmZ0IwyS5ZXX1829JWd3FEkE3IP9G+T3diDYTe2wafs3ufzRLzb38pHXL3w05pyl
-         5urYUo3XBlIiDijQ+p4vvKG9HNiT6hY+a5Q3xrL4lYRTtiZfwPwyOHs1QbcTvPR81+
-         OUPNQzjxhLDJCm56ps8uqr6NkD6bkLaB5W8pFjGl5B2StUSP5umPrtlWGRSfA5Le86
-         TqzRm9q75FaQA==
-X-Google-Smtp-Source: ABdhPJzYRe4IfcaOp8gXNnir2xIHkexB7fAKbIAKD+/2t8UmLHcMcL+EMxw9BMGG2PCerqzkxj+BwlEdA4xVCD10jVg=
-X-Received: by 2002:aa7:d154:: with SMTP id r20mr26170869edo.258.1607955447089;
- Mon, 14 Dec 2020 06:17:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20201118071724.4866-1-wens@kernel.org> <20201118071724.4866-2-wens@kernel.org>
- <CAL_JsqJphYYUsQR_kLH_y1gOArTifpEVUiTJfDpDsL8WjGxRfA@mail.gmail.com> <CAGb2v6409SeptNUvMnpozriZ-L7iFCFFoG+=fJrtohxezDrEDQ@mail.gmail.com>
-In-Reply-To: <CAGb2v6409SeptNUvMnpozriZ-L7iFCFFoG+=fJrtohxezDrEDQ@mail.gmail.com>
+        id S2440055AbgLNOUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 09:20:48 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:33034 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407340AbgLNOUP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 09:20:15 -0500
+Received: by mail-oi1-f196.google.com with SMTP id d27so19311563oic.0;
+        Mon, 14 Dec 2020 06:19:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UkqOBpA+sobRPXScoDiP93aXuuhd73OJoAjrBbb2oRc=;
+        b=WbGfhx9J1iYdnX13FVNZqmCMry4LyONB9mP6fduff1MGXwygV95Izimwex8xJLpOkL
+         Uv1Nra74xHqOfoAcYlohWKxHflHWXxJQ0BA72p3cFFmzefv6XlKhzVJ+VZlhxzhjD7iq
+         TIBqbJrLxF45vOc1naCqJw9YejxCbUHKkPu0Olont6WDJ7NeBBjmBDqmhhPpQas4dcvl
+         6/hlzaunm6q3VOhCZhBodNrWAaooCTTu+y6gJa8BwNgBEcr8n5WJ6H+asNN+cxc+ET5M
+         e1SCAPXqHE36osnYVAXwq38WAo6v3VuKrxlAsEAMXj+Sk0b9G/o6L9gP5qjbnHPynkIY
+         ks6A==
+X-Gm-Message-State: AOAM533IBTmkqe2MFqv9zVbQgyiuFFolAUsnOd6D5eqvjMfzpNMdEO1v
+        oXG/vTOI0xu2n5zVCWjNCQnAbLI57A==
+X-Google-Smtp-Source: ABdhPJxyzh/YrQ01yKXST7BML6rMasRDeuvVag4QpD/e6yEYZ0MNub6bub+8QAkiHqjZq/nBjlGLYg==
+X-Received: by 2002:aca:47cb:: with SMTP id u194mr18668701oia.63.1607955574495;
+        Mon, 14 Dec 2020 06:19:34 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id w8sm3942426oos.37.2020.12.14.06.19.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 06:19:33 -0800 (PST)
+Received: (nullmailer pid 1862084 invoked by uid 1000);
+        Mon, 14 Dec 2020 14:19:32 -0000
+Date:   Mon, 14 Dec 2020 08:19:32 -0600
 From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 14 Dec 2020 08:17:15 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+0fMQkqYZ0W0eqnB+J016n-VnBm0TM2Hv1nqhO8_yUbQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+0fMQkqYZ0W0eqnB+J016n-VnBm0TM2Hv1nqhO8_yUbQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] PCI: rockchip: Make 'ep-gpios' DT property optional
-To:     Chen-Yu Tsai <wens@kernel.org>
-Cc:     Shawn Lin <shawn.lin@rock-chips.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     devicetree@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-arm-kernel@lists.infradead.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [RFC PATCH 06/12] dt-bindings: rtc: sun6i: add compatible string
+ for V831/V833 RTC
+Message-ID: <20201214141932.GA1861466@robh.at.kernel.org>
+References: <20201212040157.3639864-1-icenowy@aosc.io>
+ <20201212040641.3640916-1-icenowy@aosc.io>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201212040641.3640916-1-icenowy@aosc.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 9:18 AM Chen-Yu Tsai <wens@kernel.org> wrote:
->
-> On Mon, Dec 7, 2020 at 10:11 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Wed, Nov 18, 2020 at 1:17 AM Chen-Yu Tsai <wens@kernel.org> wrote:
-> > >
-> > > From: Chen-Yu Tsai <wens@csie.org>
-> > >
-> > > The Rockchip PCIe controller DT binding clearly states that 'ep-gpios' is
-> > > an optional property. And indeed there are boards that don't require it.
-> > >
-> > > Make the driver follow the binding by using devm_gpiod_get_optional()
-> > > instead of devm_gpiod_get().
-> > >
-> > > Fixes: e77f847df54c ("PCI: rockchip: Add Rockchip PCIe controller support")
-> > > Fixes: 956cd99b35a8 ("PCI: rockchip: Separate common code from RC driver")
-> > > Fixes: 964bac9455be ("PCI: rockchip: Split out rockchip_pcie_parse_dt() to parse DT")
-> > > Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-> > > ---
-> > > Changes since v1:
-> > >
-> > >   - Rewrite subject to match existing convention and reference
-> > >     'ep-gpios' DT property instead of the 'ep_gpio' field
-> > > ---
-> > >  drivers/pci/controller/pcie-rockchip.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/pci/controller/pcie-rockchip.c b/drivers/pci/controller/pcie-rockchip.c
-> > > index 904dec0d3a88..c95950e9004f 100644
-> > > --- a/drivers/pci/controller/pcie-rockchip.c
-> > > +++ b/drivers/pci/controller/pcie-rockchip.c
-> > > @@ -118,7 +118,7 @@ int rockchip_pcie_parse_dt(struct rockchip_pcie *rockchip)
-> > >         }
-> > >
-> > >         if (rockchip->is_rc) {
-> > > -               rockchip->ep_gpio = devm_gpiod_get(dev, "ep", GPIOD_OUT_HIGH);
-> > > +               rockchip->ep_gpio = devm_gpiod_get_optional(dev, "ep", GPIOD_OUT_HIGH);
-> > >                 if (IS_ERR(rockchip->ep_gpio)) {
-> > >                         dev_err(dev, "missing ep-gpios property in node\n");
-> >
-> > You should drop the error message. What it says is now never the
-> > reason for the error and it could most likely be a deferred probe
-> > which you don't want an error message for.
->
-> What about switching to dev_err_probe() instead?
->
-> That way deferred probe errors get silenced (or get a better debug message),
-> and error messages for other issues, such as miswritten gpio properties are
-> still produced.
+On Sat, 12 Dec 2020 12:06:35 +0800, Icenowy Zheng wrote:
+> V831/V833 SoCs (the same die) have a RTC block similar to the one in H6,
+> but allow to generate the osc32k clock from osc24M.
+> 
+> Add a new compatible string for that.
+> 
+> The functionality of dividing osc24M to generate osc32k is still TODO.
+> 
+> Cc: Alessandro Zummo <a.zummo@towertech.it>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: linux-rtc@vger.kernel.org
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+> ---
+>  .../devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml        | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-I guess, but those errors should be in the subsystem code IMO rather
-than every driver.
 
-Rob
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml:102:13: [error] duplication of key "const" in mapping (key-duplicates)
+
+dtschema/dtc warnings/errors:
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.example.dts'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 113, in get_single_data
+    return self.construct_document(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 123, in construct_document
+    for _dummy in generator:
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 723, in construct_yaml_map
+    value = self.construct_mapping(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 440, in construct_mapping
+    return BaseConstructor.construct_mapping(self, node, deep=deep)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 257, in construct_mapping
+    if self.check_mapping_key(node, key_node, mapping, key, value):
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
+    raise DuplicateKeyError(*args)
+ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
+  in "<unicode string>", line 101, column 13
+found duplicate key "const" with value "allwinner,sun50i-h6-rtc" (original value: "allwinner,sun8i-v831-rtc")
+  in "<unicode string>", line 102, column 13
+
+To suppress this check see:
+    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
+
+Duplicate keys will become an error in future releases, and are errors
+by default when using the new API.
+
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make[1]: *** [Documentation/devicetree/bindings/Makefile:59: Documentation/devicetree/bindings/processed-schema-examples.json] Error 123
+make: *** [Makefile:1364: dt_binding_check] Error 2
+
+
+See https://patchwork.ozlabs.org/patch/1415362
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
