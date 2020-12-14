@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C8E2D921F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 04:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 821232D9227
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 05:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438461AbgLND5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 22:57:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438400AbgLND5M (ORCPT
+        id S2438501AbgLNEBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 23:01:00 -0500
+Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:36303 "EHLO
+        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727093AbgLNEAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 22:57:12 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0311C0613CF;
-        Sun, 13 Dec 2020 19:56:31 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvSHc0cQkz9sT6;
-        Mon, 14 Dec 2020 14:56:27 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607918188;
-        bh=A9a1+hVQ78tmjI7qC70Ny7zpbZPeedgfTn567KznCZk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=VQvQ/RLynV3VanaebXXvFl/yR32wUHa2mDO9u5gof4h4AVcXRvkA19SUaHdOc9eGg
-         dx7CYMQDG6bvmD6MMi34oqNSWvvJUBX/5NrBprQoJEIqE1dIxlyeB13WI9de2ZscxW
-         40kMGHQIgj2dmO+4Me6B+8y6ow738tXfGrZPV86L5VkKYKESTTVJLvjOK8/6PLlqGp
-         usEpJeRaFAyS39pBC3Jo9QvPep/beqd5W1ozjwYJkH1J8vOPpCb/B5WUgBbXdaoFhQ
-         KqU3sL9xKp6vzwnE46FJnhxCZR344UZ/mF8S1g4eSGB06lC9xdhlAUiiI7WJPrytDM
-         yY2PZqf0tzFZA==
-Date:   Mon, 14 Dec 2020 14:56:25 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: linux-next: manual merge of the block tree with Linus' tree
-Message-ID: <20201214145625.0af40a87@canb.auug.org.au>
+        Sun, 13 Dec 2020 23:00:42 -0500
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS1.zhaoxin.com
+ (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Mon, 14 Dec
+ 2020 11:59:56 +0800
+Received: from tony-HX002EA.zhaoxin.com (10.32.56.37) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Mon, 14 Dec
+ 2020 11:59:54 +0800
+From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <x86@kernel.org>, <hpa@zytor.com>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <TimGuo-oc@zhaoxin.com>, <CooperYan@zhaoxin.com>,
+        <QiyuanWang@zhaoxin.com>, <HerryYang@zhaoxin.com>,
+        <CobeChen@zhaoxin.com>, <SilviaZhao@zhaoxin.com>
+Subject: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
+Date:   Mon, 14 Dec 2020 11:59:52 +0800
+Message-ID: <1607918392-19171-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Q4IYx7eh76.4W5XfQATSv=O";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Originating-IP: [10.32.56.37]
+X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Q4IYx7eh76.4W5XfQATSv=O
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
+On platforms with Zhaoxin CPUs supporting this X86 feature, when
+crc32c-intel and crc32c-generic are both registered, system will
+use crc32c-intel because its .cra_priority is greater than
+crc32c-generic.
 
-Hi all,
+When doing lmbench3 Create and Delete file test on partitions with
+ext4 enabling metadata checksum, found using crc32c-generic driver
+could get about 20% performance gain than using the driver crc32c-intel
+on some Zhaoxin CPUs.
 
-Today's linux-next merge of the block tree got a conflict in:
+This case expect to use crc32c-generic driver for these Zhaoxin CPUs
+to get performance gain, so remove these Zhaoxin CPUs support from
+crc32c-intel.
 
-  drivers/md/md.c
+Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+---
+ arch/x86/crypto/crc32c-intel_glue.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-between commit:
+diff --git a/arch/x86/crypto/crc32c-intel_glue.c b/arch/x86/crypto/crc32c-intel_glue.c
+index feccb52..2cbbdde 100644
+--- a/arch/x86/crypto/crc32c-intel_glue.c
++++ b/arch/x86/crypto/crc32c-intel_glue.c
+@@ -215,6 +215,12 @@ static struct shash_alg alg = {
+ };
+ 
+ static const struct x86_cpu_id crc32c_cpu_id[] = {
++	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 0x6, X86_FEATURE_XMM4_2, 1),
++	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x1b, X86_FEATURE_XMM4_2, 1),
++	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x3b, X86_FEATURE_XMM4_2, 1),
++	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 0x6, X86_FEATURE_XMM4_2, 1),
++	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x1b, X86_FEATURE_XMM4_2, 1),
++	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x3b, X86_FEATURE_XMM4_2, 1),
+ 	X86_MATCH_FEATURE(X86_FEATURE_XMM4_2, NULL),
+ 	{}
+ };
+@@ -222,7 +228,9 @@ MODULE_DEVICE_TABLE(x86cpu, crc32c_cpu_id);
+ 
+ static int __init crc32c_intel_mod_init(void)
+ {
+-	if (!x86_match_cpu(crc32c_cpu_id))
++	const struct x86_cpu_id *m = x86_match_cpu(crc32c_cpu_id);
++
++	if (!m || m->driver_data)
+ 		return -ENODEV;
+ #ifdef CONFIG_X86_64
+ 	if (boot_cpu_has(X86_FEATURE_PCLMULQDQ)) {
+-- 
+2.7.4
 
-  57a0f3a81ef2 ("Revert "md: add md_submit_discard_bio() for submitting dis=
-card bio"")
-
-from Linus' tree and commit:
-
-  1c02fca620f7 ("block: remove the request_queue argument to the block_bio_=
-remap tracepoint")
-
-from the block tree.
-
-I fixed it up (the former removed the code modified by the latter) and
-can carry the fix as necessary. This is now fixed as far as linux-next
-is concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Q4IYx7eh76.4W5XfQATSv=O
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/W4mkACgkQAVBC80lX
-0GwHGQf/Xhg3J+DSKqLSyWzpG7GlpQ/WrqnXNmQXazVYXMDnZvGR6dNHexr//aw2
-xNNeSnmDYJ3M6RgBlVJLiTYyNXjiePRyYBkwlWcEgcuj4xY9o667aE37kKPVp/uX
-Fjlras1xOLaX8WAsIuwMxaHZ5C7WP8KfID4zRt6Eb2PEdrTeRfCgWQiOKJ6q/8ue
-GSxH6sgCgDU/2YGaBfSNtYBu94eF9a/yVDQ8f/7q57QAZh42KVW9YxCzO9kNa2wK
-OsMFmsFBmVvTrISaFRyBLzz+dxmoAdWwqt80W/pGbMBziq2wmok2502vNOfjWRK6
-/bbBiqayuY9viWRr+fdcdg4wrFhhPg==
-=6bmh
------END PGP SIGNATURE-----
-
---Sig_/Q4IYx7eh76.4W5XfQATSv=O--
