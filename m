@@ -2,154 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513202D95BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F64A2D9651
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:33:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404665AbgLNKCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 05:02:39 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9440 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731412AbgLNJ60 (ORCPT
+        id S2407093AbgLNKa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 05:30:29 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:43946 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725798AbgLNKaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 04:58:26 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CvcHr4g5Dzhsfw;
-        Mon, 14 Dec 2020 17:57:12 +0800 (CST)
-Received: from huawei.com (10.151.151.249) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Mon, 14 Dec 2020
- 17:57:34 +0800
-From:   Dongjiu Geng <gengdongjiu@huawei.com>
-To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <robh+dt@kernel.org>, <vkoul@kernel.org>,
-        <dan.j.williams@intel.com>, <p.zabel@pengutronix.de>,
-        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <gengdongjiu@huawei.com>
-Subject: [PATCH v7 3/4] dt: bindings: dma: Add DT bindings for HiSilicon Hiedma Controller
-Date:   Tue, 15 Dec 2020 11:09:46 +0000
-Message-ID: <20201215110947.41268-4-gengdongjiu@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201215110947.41268-1-gengdongjiu@huawei.com>
-References: <20201215110947.41268-1-gengdongjiu@huawei.com>
+        Mon, 14 Dec 2020 05:30:10 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-55-50EQHyNGNHiW9NdgJgIL1Q-1; Mon, 14 Dec 2020 10:28:24 +0000
+X-MC-Unique: 50EQHyNGNHiW9NdgJgIL1Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 14 Dec 2020 10:28:25 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 14 Dec 2020 10:28:25 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Pavel Begunkov' <asml.silence@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+CC:     Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 2/2] iov_iter: optimise iter type checking
+Thread-Topic: [PATCH 2/2] iov_iter: optimise iter type checking
+Thread-Index: AQHW0aC/wcpmi7SVjkSsjWABD6g0gan2YYKw
+Date:   Mon, 14 Dec 2020 10:28:24 +0000
+Message-ID: <b0e01a4dc3fc4afeb95b7be826ff2375@AcuMS.aculab.com>
+References: <cover.1605799583.git.asml.silence@gmail.com>
+ <9bc27cb3ef6ab49b6b2ccee3db6613838aee17af.1605799583.git.asml.silence@gmail.com>
+ <20201119170340.GA6179@infradead.org>
+ <ce79f47e-2ec0-ba29-a991-c537a8990dee@gmail.com>
+ <20201211020100.GB107834@ZenIV.linux.org.uk>
+ <857a3161-fbd5-5ff8-d733-ca57923302b5@gmail.com>
+In-Reply-To: <857a3161-fbd5-5ff8-d733-ca57923302b5@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.151.151.249]
-X-CFilter-Loop: Reflected
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Hiedma Controller v310 Provides eight DMA channels, each
-channel can be configured for one-way transfer. The data can
-be transferred in 8-bit, 16-bit, 32-bit, or 64-bit mode. This
-documentation describes DT bindings of this controller.
-
-Signed-off-by: Dongjiu Geng <gengdongjiu@huawei.com>
----
- .../bindings/dma/hisilicon,hiedmacv310.yaml   | 94 +++++++++++++++++++
- 1 file changed, 94 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/dma/hisilicon,hiedmacv310.yaml
-
-diff --git a/Documentation/devicetree/bindings/dma/hisilicon,hiedmacv310.yaml b/Documentation/devicetree/bindings/dma/hisilicon,hiedmacv310.yaml
-new file mode 100644
-index 000000000000..06a1ebe76360
---- /dev/null
-+++ b/Documentation/devicetree/bindings/dma/hisilicon,hiedmacv310.yaml
-@@ -0,0 +1,94 @@
-+# SPDX-License-Identifier:  GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/dma/hisilicon,hiedmacv310.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: HiSilicon Hiedma Controller v310 Device Tree Bindings
-+
-+description: |
-+  These bindings describe the DMA engine included in the HiSilicon Hiedma
-+  Controller v310 Device.
-+
-+maintainers:
-+  - Dongjiu Geng <gengdongjiu@huawei.com>
-+
-+allOf:
-+  - $ref: "dma-controller.yaml#"
-+
-+properties:
-+  "#dma-cells":
-+    const: 2
-+
-+  compatible:
-+    const: hisilicon,hiedmacv310
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  hisilicon,misc-control:
-+    $ref: /schemas/types.yaml#definitions/phandle-array
-+    description: phandle pointing to the misc controller provider node and base register.
-+
-+  clocks:
-+    items:
-+      - description: apb clock
-+      - description: axi clock
-+
-+  clock-names:
-+    items:
-+      - const: apb_pclk
-+      - const: axi_aclk
-+
-+  resets:
-+    description: phandle pointing to the dma reset controller provider node.
-+
-+  reset-names:
-+    items:
-+      - const: dma-reset
-+
-+  dma-requests:
-+    maximum: 32
-+
-+  dma-channels:
-+    maximum: 8
-+
-+
-+required:
-+  - "#dma-cells"
-+  - compatible
-+  - hisilicon,misc-control
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - resets
-+  - reset-names
-+  - dma-requests
-+  - dma-channels
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/hi3559av100-clock.h>
-+
-+    dma: dma-controller@10040000 {
-+      compatible = "hisilicon,hiedmacv310";
-+      reg = <0x10040000 0x1000>;
-+      hisilicon,misc-control = <&misc_ctrl 0x144>;
-+      interrupts = <0 82 4>;
-+      clocks = <&clock HI3559AV100_EDMAC1_CLK>, <&clock HI3559AV100_EDMAC1_AXICLK>;
-+      clock-names = "apb_pclk", "axi_aclk";
-+      resets = <&clock 0x16c 7>;
-+      reset-names = "dma-reset";
-+      dma-requests = <32>;
-+      dma-channels = <8>;
-+      #dma-cells = <2>;
-+    };
-+
-+...
--- 
-2.17.1
+RnJvbTogUGF2ZWwgQmVndW5rb3YNCj4gU2VudDogMTMgRGVjZW1iZXIgMjAyMCAyMjozMw0KPiAN
+Cj4gT24gMTEvMTIvMjAyMCAwMjowMSwgQWwgVmlybyB3cm90ZToNCj4gPiBPbiBUaHUsIE5vdiAx
+OSwgMjAyMCBhdCAwNToxMjo0NFBNICswMDAwLCBQYXZlbCBCZWd1bmtvdiB3cm90ZToNCj4gPj4g
+T24gMTkvMTEvMjAyMCAxNzowMywgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6DQo+ID4+PiBPbiBU
+aHUsIE5vdiAxOSwgMjAyMCBhdCAwMzoyOTo0M1BNICswMDAwLCBQYXZlbCBCZWd1bmtvdiB3cm90
+ZToNCj4gPj4+PiBUaGUgcHJvYmxlbSBoZXJlIGlzIHRoYXQgaW92X2l0ZXJfaXNfKigpIGhlbHBl
+cnMgY2hlY2sgdHlwZXMgZm9yDQo+ID4+Pj4gZXF1YWxpdHksIGJ1dCBhbGwgaXRlcmF0ZV8qIGhl
+bHBlcnMgZG8gYml0d2lzZSBhbmRzLiBUaGlzIGNvbmZ1c2VzDQo+ID4+Pj4gYSBjb21waWxlciwg
+c28gZXZlbiBpZiBzb21lIGNhc2VzIHdlcmUgaGFuZGxlZCBzZXBhcmF0ZWx5IHdpdGgNCj4gPj4+
+PiBpb3ZfaXRlcl9pc18qKCksIGl0IGNhbid0IGVsaW1pbmF0ZSBhbmQgc2tpcCB1bnJlYWNoYWJs
+ZSBicmFuY2hlcyBpbg0KPiA+Pj4+IGZvbGxvd2luZyBpdGVyYXRlKigpLg0KPiA+Pj4NCj4gPj4+
+IEkgdGhpbmsgd2UgbmVlZCB0byBraWxsIHRoZSBpb3ZfaXRlcl9pc18qIGhlbHBlcnMsIHJlbnVt
+YmVyIHRvIG5vdCBkbw0KPiA+Pj4gdGhlIHBvaW50bGVzcyBiaXRtYXNrIGFuZCBqdXN0IGNoZWNr
+IGZvciBlcXVhbGl0eSAobWlnaHQgdHVybiBpbnRvIGENCj4gPj4+IGJ1bmNoIG9mIG5pY2Ugc3dp
+dGNoIHN0YXRlbWVudHMgYWN0dWFsbHkpLg0KPiA+Pg0KPiA+PiBUaGVyZSBhcmUgdXNlcyBsaWtl
+IGJlbG93IHRob3VnaCwgYW5kIHRoYXQgd291bGQgYWxzbyBhZGQgc29tZSBvdmVyaGVhZA0KPiA+
+PiBvbiBpb3ZfaXRlcl90eXBlKCksIHNvIGl0J3Mgbm90IGFwcGFyZW50IHRvIG1lIHdoaWNoIHZl
+cnNpb24gd291bGQgYmUNCj4gPj4gY2xlYW5lci9mYXN0ZXIgaW4gdGhlIGVuZC4gQnV0IHllYWgs
+IHdlIGNhbiBleHBlcmltZW50IGFmdGVyIGxhbmRpbmcNCj4gPj4gdGhpcyBwYXRjaC4NCj4gPj4N
+Cj4gPj4gaWYgKHR5cGUgJiAoSVRFUl9CVkVDfElURVJfS1ZFQykpDQo+ID4NCj4gPiBUaGVyZSBh
+cmUgZXhhY3RseSAzIHN1Y2ggcGxhY2VzLCBhbmQgYWxsIG9mIHRoZW0gd291bGQndmUgYmVlbiBq
+dXN0IGFzIHdlbGwNCj4gPiB3aXRoIGNhc2UgSVRFUl9CVkVDOiBjYXNlIElURVJfS1ZFQzogLi4u
+IGluIGEgc3dpdGNoLg0KPiA+DQo+ID4gSG1tLi4uICBJIHdvbmRlciB3aGljaCB3b3VsZCB3b3Jr
+IGJldHRlcjoNCj4gPg0KPiA+IGVudW0gaXRlcl90eXBlIHsNCj4gPiAgICAgICAgIElURVJfSU9W
+RUMgPSAwLA0KPiA+ICAgICAgICAgSVRFUl9LVkVDID0gMiwNCj4gPiAgICAgICAgIElURVJfQlZF
+QyA9IDQsDQo+ID4gICAgICAgICBJVEVSX1BJUEUgPSA2LA0KPiA+ICAgICAgICAgSVRFUl9ESVND
+QVJEID0gOCwNCj4gPiB9Ow0KPiA+IGlvdl9pdGVyX3R5cGUoaXRlcikJKCgoaXRlciktPnR5cGUp
+ICYgfjEpDQo+ID4gaW92X2l0ZXJfcncoaXRlcikJKCgoaXRlciktPnR5cGUpICYgMSkNCj4gPg0K
+PiA+IG9yDQo+ID4NCj4gPiBlbnVtIGl0ZXJfdHlwZSB7DQo+ID4gICAgICAgICBJVEVSX0lPVkVD
+LA0KPiA+ICAgICAgICAgSVRFUl9LVkVDLA0KPiA+ICAgICAgICAgSVRFUl9CVkVDLA0KPiA+ICAg
+ICAgICAgSVRFUl9QSVBFLA0KPiA+ICAgICAgICAgSVRFUl9ESVNDQVJELA0KPiA+IH07DQo+ID4g
+aW92X2l0ZXJfdHlwZShpdGVyKQkoKChpdGVyKS0+dHlwZSkgJiAofjBVPj4xKSkNCj4gPiAvLyBj
+YWxsZXJzIG9mIGlvdl9pdGVyX3J3KCkgYXJlIGFsbW9zdCBhbGwgY29tcGFyaW5nIHdpdGggZXhw
+bGljaXQgUkVBRCBvciBXUklURQ0KPiA+IGlvdl9pdGVyX3J3KGl0ZXIpCSgoKGl0ZXIpLT50eXBl
+KSAmIH4ofjBVPj4xKSA/IFdSSVRFIDogUkVBRCkNCj4gPiB3aXRoIHBsYWNlcyBsaWtlIGlvdl9p
+dGVyX2t2ZWMoKSBkb2luZw0KPiA+IAlpLT50eXBlID0gSVRFUl9LVkVDIHwgKChkaXJlY3Rpb24g
+PT0gV1JJVEUpID8gQklUKDMxKSA6IDApOw0KPiA+DQo+ID4gUHJlZmVyZW5jZXM/DQo+IA0KPiBG
+b3IgdGhlIGJpdG1hc2sgdmVyc2lvbiAod2l0aCB0aGlzIHBhdGNoKSB3ZSBoYXZlIG1vc3Qgb2YN
+Cj4gaW92X2l0ZXJfdHlwZSgpIGNvbXBsZXRlbHkgb3B0aW1pc2VkIG91dC4gRS5nLiBpZGVudGlj
+YWwNCj4gDQo+IGlvdl9pdGVyX3R5cGUoaSkgJiBJVEVSX0lPVkVDIDw9PiBpdGVyLT50eXBlICYg
+SVRFUl9JT1ZFQw0KPiANCj4gSXQncyBhbHNvIG5pY2UgdG8gaGF2ZSBpb3ZfaXRlcl9ydygpIHRv
+IGJlIGp1c3QNCj4gKHR5cGUgJiAxKSwgb3BlcmF0aW9ucyB3aXRoIHdoaWNoIGNhbiBiZSBvcHRp
+bWlzZWQgaW4gYSBoYW5kZnVsIG9mIHdheXMuDQo+IA0KPiBVbmxlc3MgdGhlIGNvbXBpbGVyIHdv
+dWxkIGJlIGFibGUgdG8gaGVhdmlseSBvcHRpbWlzZSBzd2l0Y2hlcywNCj4gZS5nLiB0byBvdXQt
+b2YtbWVtb3J5L2NhbGN1bGF0aW9uLWJhc2VkIGp1bXAgdGFibGVzLCB0aGF0IEkgZG91YnQsDQo+
+IEknZCBwZXJzb25hbGx5IGxlYXZlIGl0IGJlLiBUaG91Z2gsIG5vdCBsaWtlIGl0IHNob3VsZCBt
+YXR0ZXIgbXVjaC4NCg0KVGhlIGFkdmFudGFnZSBvZiB0aGUgYml0LW1hc2tzIGlzIHRoYXQgdGhl
+ICd1c3VhbCcgb3B0aW9ucyBjYW4NCmJlIHRlc3RlZCBmb3IgdG9nZXRoZXIuIFNvIHRoZSBjb2Rl
+IGNhbiBiZSAoZm9yIGV4YW1wbGUpOg0KCWlmIChsaWtlbHkoaXRlci0+dHlwZSAmIChJVEVSX0lP
+VkVDIHwgSVRFUl9QSVBFKSB7DQoJCWlmIChsaWtlbHkoKGl0ZXItPnR5cGUgJiBJVEVSX0lPVkVD
+KSkgew0KCQkJLi4uIGNvZGUgZm9yIGlvdmVjDQoJCX0gZWxzZSBbDQoJCQkuLi4gY29kZSBmb3Ig
+cGlwZQ0KCQl9DQoJfSBlbHNlIGlmIChpdGVyLT50eXBlICYgSVRFUl9CVkVDKSB7DQoJCS4uLiBj
+b2RlIGZvciBidmVjDQoJfSBlbHNlIGlmIChpdGVyLT50eXBlICYgSVRFUl9LVkVDKSB7DQoJCS4u
+IGNvZGUgZm9yIGt2ZWMNCgl9IGVsc2Ugew0KCQkuLiBtdXN0IGJlIGRpc2NhcmQNCgl9DQoNCkkn
+bSBub3Qgc3VyZSBvZiB0aGUgYmVzdCBvcmRlciB0aG91Z2guDQpZb3UgbWlnaHQgd2FudCAzIGJp
+dHMgaW4gdGhlIGZpcnN0IHRlc3QuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3Mg
+TGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQ
+VCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
