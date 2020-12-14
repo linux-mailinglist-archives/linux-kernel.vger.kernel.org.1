@@ -2,92 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327BF2DA1A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8352DA1A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 21:36:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503398AbgLNUes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 15:34:48 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:61792 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503353AbgLNUeb (ORCPT
+        id S2502969AbgLNUe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 15:34:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503248AbgLNUdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:34:31 -0500
-Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.530)
- id 9c0cdc76c89b6df9; Mon, 14 Dec 2020 21:33:39 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Hans De Goede <hdegoede@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [RFT][PATCH v1 3/3] ACPI: scan: Avoid unnecessary second pass in acpi_bus_scan()
-Date:   Mon, 14 Dec 2020 21:32:44 +0100
-Message-ID: <1954514.xqII67ylRR@kreacher>
-In-Reply-To: <1646930.v2jOOB1UEN@kreacher>
-References: <1646930.v2jOOB1UEN@kreacher>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        Mon, 14 Dec 2020 15:33:43 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03290C0613D6;
+        Mon, 14 Dec 2020 12:33:01 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id b9so24471222ejy.0;
+        Mon, 14 Dec 2020 12:33:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=XGRbUsgrZUCddja/BqC2r/x11/O5f/TK7TN/AMbIvbY=;
+        b=llIvmbDLbvM4qJ+0lVfbuG0zz2bRdzjLnxOmu1rJwjTbbatJq/1npwWlgepvHS5W7M
+         RgEvyq4z2fTu+0pdYtVWlISqDRrOS7NiHQEu7eTzyVUBp7VSCDM4dBBixHpUls7ptBfp
+         UIWOkBhs5Jjx47VkO/0N4tDsAGUrwKUgO8/GuW26IBvip0BokUr1GhRKKR6Xrnwd8M/1
+         ghXSQym0zsSEuRISFCMgcB5QvahYfQP+3ggtKDjlTlegUnuiaHkYqsI8lSgB/w9VwAnX
+         4gWcR0S9ZAPWFUEsw26rVXbNJM7XaBhU2fDb5qUtzvWa+ilvb7DiLnxOAnXRPO3bqhVE
+         0XLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XGRbUsgrZUCddja/BqC2r/x11/O5f/TK7TN/AMbIvbY=;
+        b=syniTbVMRvhL+2u1oH507DNuYUmnFj+RlPs3qtIAetenXlvR/+PIiQEepQnrrBuOAP
+         eKXlAvcCQYZ7qy4ORzjVFl3zrGNIRG1F5txKcdoet86djwq3I1WEgrspTFAxzWQRaFrj
+         8LuBzXc2ph348EQVU09Z5bPV/DjRUZvyP6bmZp62oD1zhyHTKkoQXwKzU8LOjoUfXUXc
+         02oCeD6gnj1yCfvjQ6EaLmm1a58L98Aa96LtV1VHieryjcGLt14M0atiEsReuWF0yS6e
+         xvsisLL7qG0ItWa+7MVsVW09KomwCoz5/bzeSjZ4574H7WDfHIKKj+MhZYaYomZbKpGD
+         SBOA==
+X-Gm-Message-State: AOAM533ZwTaGqmETKcx1kv3JAPbnt56jvjgWCQVEo3I6fQjKC1QYxosZ
+        dY+ZQbhYyPV5Cti+gJTZdvQ=
+X-Google-Smtp-Source: ABdhPJzfzL20bcd7uCQoX39BGGgmI/+CETD/bRgLdpMhgNaXSl0//iyJF23APVGECsCEWmyWh6Pofg==
+X-Received: by 2002:a17:906:da08:: with SMTP id fi8mr23885831ejb.517.1607977979727;
+        Mon, 14 Dec 2020 12:32:59 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id c11sm16850719edx.38.2020.12.14.12.32.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 14 Dec 2020 12:32:59 -0800 (PST)
+Message-ID: <53cf543b503900847ea776aa3edd24cc33252501.camel@gmail.com>
+Subject: Re: [PATCH v2 1/2] scsi: ufs: Re-enable WriteBooster after device
+ reset
+From:   Bean Huo <huobean@gmail.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
+        beanhuo@micron.com, asutoshd@codeaurora.org, cang@codeaurora.org,
+        matthias.bgg@gmail.com, bvanassche@acm.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nguyenb@codeaurora.org, bjorn.andersson@linaro.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
+        jiajie.hao@mediatek.com, alice.chao@mediatek.com
+Date:   Mon, 14 Dec 2020 21:32:57 +0100
+In-Reply-To: <1607476170.3580.29.camel@mtkswgap22>
+References: <20201208135635.15326-1-stanley.chu@mediatek.com>
+         <20201208135635.15326-2-stanley.chu@mediatek.com>
+         <970af8b1abf565184bf37c3c055bf42ad760201a.camel@gmail.com>
+         <1607476170.3580.29.camel@mtkswgap22>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Wed, 2020-12-09 at 09:09 +0800, Stanley Chu wrote:
+> > >   
+> > > -               if (!err)
+> > > +               if (!err) {
+> > >                          ufshcd_set_ufs_dev_active(hba);
+> > > +                       if (ufshcd_is_wb_allowed(hba)) {
+> > > +                               hba->wb_enabled = false;
+> > > +                               hba->wb_buf_flush_enabled =
+> > > false;
+> > > +                       }
+> > > +               }
+> > 
+> > Stanley,
+> > how do you think group wb_buf_flush_enabled and wb_enabled to the
+> > dev_info, since they are UFS device attributes. means they are set
+> > only
+> > when UFS device flags being set.
+> 
+> Hi Bean,
+> 
+> Thanks for your review.
+> 
+> Yes, I agreed that wb related variables is a mess currently. I would
+> like to clean them up once I have time. Feel free to post your patch
+> if
+> you want to take it up : )
+> 
 
-If there are no devices whose enumeration has been deferred after
-the first pass in acpi_bus_scan(), the second pass is not necssary,
-so avoid it with the help of a new static variable.
+Hi Stanley
+I updated this change in my new "Several changes for UFS WriteBooster"
+series patch, are you interested in reviewing that? to help Martin
+easier pick up the changes.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/scan.c |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-Index: linux-pm/drivers/acpi/scan.c
-===================================================================
---- linux-pm.orig/drivers/acpi/scan.c
-+++ linux-pm/drivers/acpi/scan.c
-@@ -1910,6 +1910,8 @@ static void acpi_scan_dep_init(struct ac
- 	mutex_unlock(&acpi_dep_list_lock);
- }
- 
-+static bool acpi_bus_scan_second_pass;
-+
- static acpi_status acpi_bus_check_add(acpi_handle handle, bool check_dep,
- 				      struct acpi_device **adev_p)
- {
-@@ -1934,8 +1936,10 @@ static acpi_status acpi_bus_check_add(ac
- 	if (type == ACPI_BUS_TYPE_DEVICE && check_dep) {
- 		u32 count = acpi_scan_check_dep(handle);
- 		/* Bail out if the number of recorded dependencies is not 0. */
--		if (count > 0)
-+		if (count > 0) {
-+			acpi_bus_scan_second_pass = true;
- 			return AE_CTRL_DEPTH;
-+		}
- 	}
- 
- 	acpi_add_single_object(&device, handle, type, sta);
-@@ -2136,6 +2140,8 @@ int acpi_bus_scan(acpi_handle handle)
- {
- 	struct acpi_device *device = NULL;
- 
-+	acpi_bus_scan_second_pass = false;
-+
- 	/* Pass 1: Avoid enumerating devices with missing dependencies. */
- 
- 	if (ACPI_SUCCESS(acpi_bus_check_add(handle, true, &device)))
-@@ -2148,6 +2154,9 @@ int acpi_bus_scan(acpi_handle handle)
- 
- 	acpi_bus_attach(device, true);
- 
-+	if (!acpi_bus_scan_second_pass)
-+		return 0;
-+
- 	/* Pass 2: Enumerate all of the remaining devices. */
- 
- 	device = NULL;
-
+Thanks,
+Bean
 
 
