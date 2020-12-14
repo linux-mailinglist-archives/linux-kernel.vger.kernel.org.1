@@ -2,163 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFB32D9EA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B36B2D9E47
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440737AbgLNSMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 13:12:41 -0500
-Received: from 108.78.124.78.rev.sfr.net ([78.124.78.108]:38296 "EHLO
-        legeek.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439865AbgLNSMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 13:12:09 -0500
-X-Greylist: delayed 1009 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Dec 2020 13:12:08 EST
-From:   sylvain.bertrand@legeek.net
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH] unlock patched C gccs
+        id S2502481AbgLNRzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:55:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408047AbgLNRzK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:55:10 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59FB1C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:54:28 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id o19so6728718lfo.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:54:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3LqrgkPy+zCNpdGlJy55sEFO1oQMSaaqQeWb7wVUwHM=;
+        b=hmuyZCwirZ2/zGJKCeArmXdo6mSFxQOCOGuqa/Ao64WDftm8tQ/xhZi5Sc8oANDJ0g
+         rQ6KOrZY7kx8LiaWvmMMd/x7m5erN8vLQcKKFxMz15g/biusPM3Dwscs2gXIuRKCVkkF
+         9HTacsBGIwnx354xB5tyw1XD0oJ05atjrlfoQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3LqrgkPy+zCNpdGlJy55sEFO1oQMSaaqQeWb7wVUwHM=;
+        b=Vslyeko1nz1e3lDCFmsHzjKrnysTYaYylKWAwHYW8xlTd3WDcS2PZ3k0isHwtKuJyi
+         BGRtDJaLp/LqJpfcHmgr2LlZwGIvojv1xd8G++4TGj5bBFmJxjSRFD39E8BPOSfXF5op
+         /Hgiu7NotqlKT3rBfvDqoTAvEP4lqyzB4sQz4h8Ojqwqjsguu+04jiHHQ7wExHVWQlBn
+         FGF5xeoPbafVMSDOd4kUB83IkSBu0S/j56+jF6EDrETy4P0tx6iGs/fXFrNXj7M+l2yG
+         gGojNwJ5yevbTCmnJU+5rn263s+p+6VYQXses3GCLTuU14+pcgLu6eDU6mWnIN/eTjQw
+         MQ/A==
+X-Gm-Message-State: AOAM531OrzydNmIgV5tdt5sW3FzixJWWs7TLAO4+v+ysU2vHCxVhQuuj
+        UPX674C90GJEO/NxK3v0C2TG2zB89OsYjw==
+X-Google-Smtp-Source: ABdhPJzhIIgg8G/0H0shebnkYAf131KQXeQh0pYQcGTNidqpj6vfWz5NcI+XSPG00GAtGXzlmQKqQw==
+X-Received: by 2002:a05:6512:110a:: with SMTP id l10mr9729341lfg.167.1607968465218;
+        Mon, 14 Dec 2020 09:54:25 -0800 (PST)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id z7sm2454191ljm.126.2020.12.14.09.54.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Dec 2020 09:54:23 -0800 (PST)
+Received: by mail-lf1-f46.google.com with SMTP id x20so12816220lfe.12
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:54:22 -0800 (PST)
+X-Received: by 2002:a19:8557:: with SMTP id h84mr9392758lfd.201.1607968462385;
+ Mon, 14 Dec 2020 09:54:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Mutt-Fcc: =mail
-message-id: <48937guecrhuc8g89g8gqjk89jqkgrcg98g@freedom>
-Date:   Mon, 14 Dec 2020 17:51:36 +0000
+References: <20201209163950.8494-1-will@kernel.org> <20201209163950.8494-2-will@kernel.org>
+ <CAHk-=wgos=vgteG52=J=rVSeq6-Y2g2+Kn1=xV=wYjVzM6O9UQ@mail.gmail.com>
+ <20201209184049.GA8778@willie-the-truck> <CAHk-=wgVqGh402dxfhR=bx2QSH=+4kq9doarNmD77baqDKdiUg@mail.gmail.com>
+ <20201210150828.4b7pg5lx666r7l2u@black.fi.intel.com> <CAHk-=wiU8ktvak2hCj2TWJ6wMSwVsUSvi5Bjf4i1JGvpGmyUZw@mail.gmail.com>
+ <20201214160724.ewhjqoi32chheone@box>
+In-Reply-To: <20201214160724.ewhjqoi32chheone@box>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 14 Dec 2020 09:54:06 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi80Qp6nZC0yyewhnqvrmPx2h_yWvfq4A25ONb7z9BywQ@mail.gmail.com>
+Message-ID: <CAHk-=wi80Qp6nZC0yyewhnqvrmPx2h_yWvfq4A25ONb7z9BywQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries when prefaulting
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sylvain BERTRAND <sylvain.bertrand@legeek.net>
+On Mon, Dec 14, 2020 at 8:07 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
+>
+> Here it is. Still barely tested.
 
-unlock the usage of patched gccs with proper warnings and fix the
-blocking usage of c11 _Generic by using builtins available on
-much more C and CXX gccs
+Ok, from looking at the patch (not applying it and looking at the end
+result), I think the locking - at least for the filemap_map_pages()
+case - is a lot easier to understand.
 
-Signed-off-by: Sylvain BERTRAND <sylvain.bertrand@legeek.net>
----
- tested on mainline 2c85ebc57b3e1817b6ce1a6b703928e113a90442 building
-    a running kernel.
- include/linux/compiler-gcc.h: unlock blocking macros with warnings.
- include/linux/compiler_types.h: use a __generic() wrapper macro
-    with common builtins instead of c11 _Generic. 
- include/linux/seqlock.h use the: __generic() macro instead of c11
-    _Generic.
- Makefile: benign blocking gcc option.
+So you seem to have fixed the thing I personally found most confusing. Thanks.
 
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -10,9 +10,30 @@
- 		     + __GNUC_MINOR__ * 100	\
- 		     + __GNUC_PATCHLEVEL__)
- 
-+#if GCC_VERSION < 40800
-+#define GCC_C
-+/* comment out/patch out to acknowledge the following warning message */
-+# warning you need to patch gcc:
-+# warning "gcc 4.7.x would need:"
-+# warning "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58145"
-+# warning "https://gcc.gnu.org/legacy-ml/gcc-patches/2012-04/msg00452.html"
-+#elif GCC_VERSION < 40900
- /* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58145 */
--#if GCC_VERSION < 40900
--# error Sorry, your version of GCC is too old - please use 4.9 or newer.
-+# error Sorry, your version of GCC misses some bug fixes and features - please use 4.9 or patch your GCC.
-+#else
-+#define GCC_CXX
-+#endif
-+
-+/* help prevent planned obsolescence due to the use of recent c11 _Generic */
-+#if GCC_VERSION >= 40900
-+#define __generic(expr, t, yes, no)                                     \
-+        _Generic(expr, t: yes, default: no)
-+#elif GCC_VERSION >= 30100
-+#define __generic(expr, t, yes, no)                                     \
-+        __builtin_choose_expr(                                          \
-+            __builtin_types_compatible_p(__typeof(expr), t), yes, no)
-+#else
-+# error your gcc compiler cannot support the __generic macro
- #endif
- 
- /*
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -254,23 +254,19 @@
-  * __unqual_scalar_typeof(x) - Declare an unqualified scalar type, leaving
-  *			       non-scalar types unchanged.
-  */
--/*
-- * Prefer C11 _Generic for better compile-times and simpler code. Note: 'char'
-- * is not type-compatible with 'signed char', and we define a separate case.
-- */
--#define __scalar_type_to_expr_cases(type)				\
--		unsigned type:	(unsigned type)0,			\
--		signed type:	(signed type)0
--
- #define __unqual_scalar_typeof(x) typeof(				\
--		_Generic((x),						\
--			 char:	(char)0,				\
--			 __scalar_type_to_expr_cases(char),		\
--			 __scalar_type_to_expr_cases(short),		\
--			 __scalar_type_to_expr_cases(int),		\
--			 __scalar_type_to_expr_cases(long),		\
--			 __scalar_type_to_expr_cases(long long),	\
--			 default: (x)))
-+	__generic((x), char, (char)0,					\
-+	__generic((x), unsigned char, (unsigned char)0,			\
-+	__generic((x), signed char, (unsigned char)0,			\
-+	__generic((x), unsigned short, (unsigned short)0,		\
-+	__generic((x), signed short, (signed short)0,			\
-+	__generic((x), unsigned int, (unsigned int)0,			\
-+	__generic((x), signed int, (signed int)0,			\
-+	__generic((x), unsigned long, (unsigned long)0,			\
-+	__generic((x), signed long, (signed long)0,			\
-+	__generic((x), unsigned long long, (unsigned long long)0,	\
-+	__generic((x), signed long long, (signed long long)0,		\
-+	(x)))))))))))))
- 
- /* Is this type a native word size -- useful for atomic operations */
- #define __native_word(t) \
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -296,17 +296,20 @@
- #define SEQCNT_MUTEX_ZERO(name, lock)		SEQCOUNT_LOCKNAME_ZERO(name, lock)
- #define SEQCNT_WW_MUTEX_ZERO(name, lock) 	SEQCOUNT_LOCKNAME_ZERO(name, lock)
- 
--#define __seqprop_case(s, lockname, prop)				\
--	seqcount_##lockname##_t: __seqprop_##lockname##_##prop((void *)(s))
--
--#define __seqprop(s, prop) _Generic(*(s),				\
--	seqcount_t:		__seqprop_##prop((void *)(s)),		\
--	__seqprop_case((s),	raw_spinlock,	prop),			\
--	__seqprop_case((s),	spinlock,	prop),			\
--	__seqprop_case((s),	rwlock,		prop),			\
--	__seqprop_case((s),	mutex,		prop),			\
--	__seqprop_case((s),	ww_mutex,	prop))
--
-+#define __seqprop(s, prop) 						\
-+	__generic(*(s), seqcount_t, __seqprop_##prop((void *)(s)),	\
-+	__generic(*(s), seqcount_raw_spinlock_t,			\
-+			__seqprop_raw_spinlock_##prop((void *)(s)),	\
-+	__generic(*(s), seqcount_spinlock_t,				\
-+			__seqprop_spinlock_##prop((void *)(s)),		\
-+	__generic(*(s), seqcount_rwlock_t,				\
-+			__seqprop_rwlock_##prop((void *)(s)),		\
-+	__generic(*(s), seqcount_mutex_t,				\
-+			__seqprop_mutex_##prop((void *)(s)),		\
-+	__generic(*(s), seqcount_ww_mutex_t,				\
-+			__seqprop_ww_mutex_##prop((void *)(s)),		\
-+	panic("seqlock:__seqprop:unsupported type")))))))
-+	
- #define __seqcount_ptr(s)		__seqprop(s, ptr)
- #define __seqcount_sequence(s)		__seqprop(s, sequence)
- #define __seqcount_lock_preemptible(s)	__seqprop(s, preemptible)
---- a/Makefile
-+++ b/Makefile
-@@ -936,9 +936,6 @@
- # conserve stack if available
- KBUILD_CFLAGS   += $(call cc-option,-fconserve-stack)
- 
--# Prohibit date/time macros, which would make the build non-deterministic
--KBUILD_CFLAGS   += -Werror=date-time
--
- # enforce correct pointer usage
- KBUILD_CFLAGS   += $(call cc-option,-Werror=incompatible-pointer-types)
- 
+> I expected to hate it more, but it looks reasonable. Opencoded
+> xas_for_each() smells bad, but...
 
+I think the open-coded xas_for_each() per se isn't a problem, but I
+agree that the startup condition is a bit ugly. And I'm actually
+personally more confused by why xas_retry() is needed here, bit not in
+many other places. That is perhaps more obvious now that it shows up
+twice.
+
+Adding Willy to the cc in case he has comments on that, and can
+explain it to me in small words.
+
+[ https://lore.kernel.org/lkml/20201214160724.ewhjqoi32chheone@box/
+for context ]
+
+And I actually think it might make even more sense if you moved more
+of the pmd handling into "filemap_map_pages_pmd()".
+
+Now it's a bit odd, with filemap_map_pages() containing part of the
+pmd handling, and then part being in filemap_map_pages_pmd().
+
+Could we have a "filemap_map_pmd()" that does it all, and then the
+filemap_map_pages() logic would be more along the lines of
+
+    if (filemap_map_pmd(vmf, xas)) {
+            rcu_read_unlock();
+            return;
+    }
+
+    ... then handle pte's ...
+
+Hmm?
+
+There may be some shared state thing why you didn't do it, the above
+is mostly a syntactic issue.
+
+Thanks,
+
+              Linus
