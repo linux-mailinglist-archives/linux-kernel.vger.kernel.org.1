@@ -2,122 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E3C2D9685
+	by mail.lfdr.de (Postfix) with ESMTP id F1EB02D9686
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 11:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393956AbgLNKo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 05:44:28 -0500
-Received: from ozlabs.org ([203.11.71.1]:39793 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726889AbgLNKoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 05:44:17 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CvdK64kD7z9sS8;
-        Mon, 14 Dec 2020 21:43:22 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1607942615;
-        bh=BB2LOk7BKcW3B/GcIKz5tJ5Ofvtcaljnfs+I+V1L2/k=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ojL3aBq9/eqFTY8e6grdkwE7Jw724cR+F6DZIuBDgyzJJWG/V3XZZA4dmxJEOnmeP
-         20A7tPpO36rq75nNkv3QTE5C4JPGc/TF7rCeOF4qhgpJ3WQnfNgjn1UVgDKUebOJNZ
-         VY/WUU+XeHRPOVsDwi0cqRElFAAsNH4GEJOivhpnc5K8vTf5OrZsgtNcQZk/NZelWF
-         PL0OtQFVWKxVMoORiBPq7Etg3MoHei2W+oNifrM1p4D2w44hWK5fyRA8VoVxegYkZH
-         yN0mxWjO/HDU0oCYUo+FQwZJKZvIClQuuO5nrY3q2VFejCPX7OwCIpW52hVFj6+Ho4
-         h/WvrGyvKt3uw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Anton Vorontsov <anton.vorontsov@linaro.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        id S2407225AbgLNKo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 05:44:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729223AbgLNKoW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 05:44:22 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5D7C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 02:43:42 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id q75so14823753wme.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 02:43:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gPCYc+i9Iy87r57uStW+ARtubvlgXBH6jVAjmF4IhnU=;
+        b=brfsj5+b+IqlJui0vPdCHYpYP2bFYzO+1JlWfKz1weffGaprU8OkE8dqZ9gA8Ypm/0
+         v6+grN5KbiSQRACrcBWw1asFdDFVqF9nBu3Oa0GUPYv5yBkX67nd1ntfLcAJg0zP6PdE
+         xlq10No04/AwJLV6O3ydkHlsjEAP4HvjVzoA+aYzj43B5E2rQHWk/Z7UGIyKRfSzOZGq
+         LSBaHiBg/MvYDr977DGjKw/verW1+v2Q4CYL/idPu8LHXXM/r9HzNyp7TPbAOeKFlyOV
+         7pCIn4oa/HWqnDFni36IPva5UF+BAQ+YUV6hhDKYRIcADocHuV2u230LRwac34Cs6XGF
+         Q/Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gPCYc+i9Iy87r57uStW+ARtubvlgXBH6jVAjmF4IhnU=;
+        b=atkI0pjSzsFf3a8l0fik5zGnYAngphHJwUX1j60G6zEGkzfi3O8NQ6dCMPoiQR5bFK
+         svKrChYTb57LPY00Hf1Ap859DOeudKWVHuHSKDYVFuPwpAiHEGrNBi1EtN+YxnPPMUnS
+         AVw493DgbizEFnGorBPa7Exi1zT7XSHUHdbUJMpzkqHHnNst2U/p9t4lYF5nROkLr0Pu
+         Z8EUXZSnIEbB4lxqLKs9AKOIJyaaAjaPYJxzDPEpseI1bzc0HWyNChQ7Xj4jch3hwiIk
+         MpKy5lFEFSHolrc3N7ywWFfBI+rSfjk2a7ZC0WLDglSGxITyizrb3zjCgDD16ff7ZDNO
+         0r3w==
+X-Gm-Message-State: AOAM533ghi0j3usF3+P5ilYZvMGiRPUbKwu2L6q02j37fPn4VRQAeLsO
+        L1hPo1N4DsnYYjQoJWw7QGd8CSulGnTyJ2nf
+X-Google-Smtp-Source: ABdhPJyQXVJMnqfLrDR2gjT3sPvs5VM6+4B7QNqCQiLsarQ76jozBbecP92kWQZKTuGAqkMV/ku7Vw==
+X-Received: by 2002:a1c:bc57:: with SMTP id m84mr26948837wmf.163.1607942619946;
+        Mon, 14 Dec 2020 02:43:39 -0800 (PST)
+Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id w189sm18608037wmg.31.2020.12.14.02.43.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 02:43:39 -0800 (PST)
+Date:   Mon, 14 Dec 2020 10:43:37 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jon Nettleton <jon@solid-run.com>,
         linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 2/2] powerpc/64s: Trim offlined CPUs from mm_cpumasks
-In-Reply-To: <1607919238.kj439g85v5.astroid@bobo.none>
-References: <20201120025757.325930-1-npiggin@gmail.com> <20201120025757.325930-3-npiggin@gmail.com> <CAMuHMdUdorW03=mipgm92SXNPBZO5owW1Wp6_SacRDZ7fOe9gw@mail.gmail.com> <1607919238.kj439g85v5.astroid@bobo.none>
-Date:   Mon, 14 Dec 2020 21:43:21 +1100
-Message-ID: <87h7oozn06.fsf@mpe.ellerman.id.au>
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linaro Patches <patches@linaro.org>
+Subject: Re: [RFC HACK PATCH] PCI: dwc: layerscape: Hack around enumeration
+ problems with Honeycomb LX2K
+Message-ID: <20201214104337.wbvq2gvj3wi6bvzc@holly.lan>
+References: <20201211121507.28166-1-daniel.thompson@linaro.org>
+ <CAL_JsqKQxFvkFtph1BZD2LKdZjboxhMTWkZe_AWS-vMD9y0pMw@mail.gmail.com>
+ <20201211170558.clfazgoetmery6u3@holly.lan>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211170558.clfazgoetmery6u3@holly.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nicholas Piggin <npiggin@gmail.com> writes:
-> Excerpts from Geert Uytterhoeven's message of December 10, 2020 7:06 pm:
->> Hi Nicholas,
->> 
->> On Fri, Nov 20, 2020 at 4:01 AM Nicholas Piggin <npiggin@gmail.com> wrote:
->>>
->>> When offlining a CPU, powerpc/64s does not flush TLBs, rather it just
->>> leaves the CPU set in mm_cpumasks, so it continues to receive TLBIEs
->>> to manage its TLBs.
->>>
->>> However the exit_flush_lazy_tlbs() function expects that after
->>> returning, all CPUs (except self) have flushed TLBs for that mm, in
->>> which case TLBIEL can be used for this flush. This breaks for offline
->>> CPUs because they don't get the IPI to flush their TLB. This can lead
->>> to stale translations.
->>>
->>> Fix this by clearing the CPU from mm_cpumasks, then flushing all TLBs
->>> before going offline.
->>>
->>> These offlined CPU bits stuck in the cpumask also prevents the cpumask
->>> from being trimmed back to local mode, which means continual broadcast
->>> IPIs or TLBIEs are needed for TLB flushing. This patch prevents that
->>> situation too.
->>>
->>> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
->> 
->> Thanks for your patch!
->> 
->>> --- a/arch/powerpc/platforms/powermac/smp.c
->>> +++ b/arch/powerpc/platforms/powermac/smp.c
->>> @@ -911,6 +911,8 @@ static int smp_core99_cpu_disable(void)
->>>
->>>         mpic_cpu_set_priority(0xf);
->>>
->>> +       cleanup_cpu_mmu_context();
->>> +
->> 
->> I guess this change broke pmac32_defconfig+SMP in v5.10-rc7?
->> 
->> arch/powerpc/platforms/powermac/smp.c: error: implicit
->> declaration of function 'cleanup_cpu_mmu_context'
->> [-Werror=implicit-function-declaration]:  => 914:2
->> 
->> http://kisskb.ellerman.id.au/kisskb/buildresult/14423174/
->
-> Hey, yeah it does thanks for catching it. This patch fixes it for me
->
-> ---
-> From a9b5ec92ffac975e81c6d7db6ff2b1486b2723f7 Mon Sep 17 00:00:00 2001
-> From: Nicholas Piggin <npiggin@gmail.com>
-> Date: Mon, 14 Dec 2020 13:52:39 +1000
-> Subject: [PATCH] powerpc/32s: Fix cleanup_cpu_mmu_context() compile bug
->
-> 32s has no tlbiel_all() defined, so just disable the cleanup with a
-> comment.
+On Fri, Dec 11, 2020 at 05:05:58PM +0000, Daniel Thompson wrote:
+> On Fri, Dec 11, 2020 at 08:37:40AM -0600, Rob Herring wrote:
+> > On Fri, Dec 11, 2020 at 6:15 AM Daniel Thompson
+> > >     BTW I noticed many other pcie-designware drivers take advantage
+> > >     of a function called dw_pcie_wait_for_link() in their init paths...
+> > >     but my naive attempts to add it to the layerscape driver results
+> > >     in non-booting systems so I haven't embarrassed myself by including
+> > >     that in the patch!
+> > 
+> > You need to look at what's pending for v5.11, because I reworked this
+> > to be more unified. The ordering of init is also possibly changed. The
+> > sequence is now like this:
+> > 
+> >         dw_pcie_setup_rc(pp);
+> >         dw_pcie_msi_init(pp);
+> > 
+> >         if (!dw_pcie_link_up(pci) && pci->ops->start_link) {
+> >                 ret = pci->ops->start_link(pci);
+> >                 if (ret)
+> >                         goto err_free_msi;
+> >         }
+> > 
+> >         /* Ignore errors, the link may come up later */
+> >         dw_pcie_wait_for_link(pci);
+> 
+> Thanks. That looks likely to fix it since IIUC dw_pcie_wait_for_link()
+> will end up waiting somewhat like the double check I added to
+> ls_pcie_link_up().
+> 
+> I'll take a look at let you know.
 
-Or what about just:
+Yes. These changes have fixed the enumeration problems for me.
 
-diff --git a/arch/powerpc/include/asm/book3s/32/mmu-hash.h b/arch/powerpc/include/asm/book3s/32/mmu-hash.h
-index 331187661236..685c589e723f 100644
---- a/arch/powerpc/include/asm/book3s/32/mmu-hash.h
-+++ b/arch/powerpc/include/asm/book3s/32/mmu-hash.h
-@@ -94,6 +94,7 @@ typedef struct {
- } mm_context_t;
+I tested pci/next and I cherry picked your patch series onto v5.10 and
+both are working well.
 
- void update_bats(void);
-+static inline void cleanup_cpu_mmu_context(void) { };
-
- /* patch sites */
- extern s32 patch__hash_page_A0, patch__hash_page_A1, patch__hash_page_A2;
+Given this fixes a bug for me, do you think there is any scope for me
+to whittle down your series into patches for the stable kernels or am
+I likely to find too many extra bits being pulled in?
 
 
-cheers
-
+Daniel.
