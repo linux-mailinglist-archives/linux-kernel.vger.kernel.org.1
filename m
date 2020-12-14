@@ -2,102 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CC22D9A7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C7E2D9B09
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 16:33:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408354AbgLNO7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 09:59:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
+        id S2407837AbgLNPcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 10:32:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404621AbgLNOzR (ORCPT
+        with ESMTP id S1731495AbgLNP21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 09:55:17 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894C0C06179C
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 06:54:37 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id p18so1003642pgm.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 06:54:37 -0800 (PST)
+        Mon, 14 Dec 2020 10:28:27 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F4CC0613D6;
+        Mon, 14 Dec 2020 07:27:46 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id hk16so6743130pjb.4;
+        Mon, 14 Dec 2020 07:27:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=70DmXMFO8WtEsHFOyCOXvT+D0jJZ3ogxX44fJ4QAe5w=;
-        b=SYP8sxemV3XRo4qiF+Nf2xj9Mbsk4Lp9TcBrYqoOOFNQptxNipSffAXFYx0n641gpK
-         vFf9QjRp5v6blzfq28g1EKtBQY5PQLkY5RiX35NXtxOXYVTEP0PLBdM7Rmv/KVkI0Ci5
-         hly2zQQudRqaTw+fmmDXXsF8/8Iov7SQhUs2pORaa/UvqDyFFNK6WwydNBlVySV/AV6M
-         Cqr9nJtL8EpfPxU7uicM2VJjuJxNEQ12wxpCl4rBopodpJgOaI9Hs3TKGwc5ROD49wvU
-         IbE1/LT7cqtqGpMwaQkQWQoMWSj+ArzOw4tFDvCkqX1RFpoGQawJg29L0NhXFZAiBoAZ
-         swHw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zod9g0ucmYQBVnFLZZB9W/Bw5VKVjG5oSiWxDHXjy38=;
+        b=bXYK1ZSyjNXW0Qh+M9C2SfRd7r1pKszYRp26r4cxtylix/RS6bG6mpeRD/E372JTD1
+         fpf3a9iiJOOsh7SqakQ+H8POqiWMeQcZiG8AmdC4579fLMnqSZfsTnxPhfMxxOpa51RG
+         qpMDgefR5lpG1xShf/T5e4KxPLleWKU7IA4YW887h+maYDZ5D3rbuom7R5EIQcugIuJT
+         9iEKkKyT8hb+IZft0m4ruG5SFBGxdEnIYo3i5wGvHdMSyHFVIKYM2XD6LK1t8dppU9Te
+         fothtOHrTonFpS2q4LQMU/mMZ9DQKY9xzGGdlldZmSkUtx/JIaG/9cyri9dK4l8BruQm
+         3ayA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=70DmXMFO8WtEsHFOyCOXvT+D0jJZ3ogxX44fJ4QAe5w=;
-        b=DRL0w+nGT8aUgfzGYy1N8auj+PwONJNVEK3/CWeCc5Ap6sW4d5/Q7M4as426LcULZc
-         uXFytpVbDUukvmSv28rZbi7uaubmIppv2UxyUle6dS9GjtpA5+jgsXKCwwwkzEJoYGO7
-         PyfzSgAB1OVnyV2A9zpyYqKoiqZxSBI8HoKGepdaK3z0b3y+Mazg4WhI2M3FeexYsoT1
-         WxZR736Ie/X9+U+TGrnDVPcqdhG2wEE3u8ISpC4awg21SwtJrLdAR8eG4Wy9p387z0hg
-         DWtuujs42hZlVx4fd+sGoq+7VCrw1KLBj427Vwu6MzVvJ3c9TeWJKfV+Z7ecKofsnSn4
-         0DvA==
-X-Gm-Message-State: AOAM530VW8bfVtqLmlMFgsecQnSLulAgaIu/mRjRQBQLnw2jaYy/2SD4
-        B6PyRuMy8CEiEvDDS3u1JRSZJXlan+PF8w==
-X-Google-Smtp-Source: ABdhPJxfCv3x2k3xLGn5iBOODuJQMUhyXxBtOCWchPMEfPXEDSlwvVgigpxjMza7TNjMnc5AmFYn9A==
-X-Received: by 2002:a63:e0f:: with SMTP id d15mr23986777pgl.310.1607957676988;
-        Mon, 14 Dec 2020 06:54:36 -0800 (PST)
-Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id x15sm15281752pfi.184.2020.12.14.06.54.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 14 Dec 2020 06:54:36 -0800 (PST)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: [PATCH 04/10] workqueue: don't set the worker's cpumask when kthread_bind_mask()
-Date:   Mon, 14 Dec 2020 23:54:51 +0800
-Message-Id: <20201214155457.3430-5-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20201214155457.3430-1-jiangshanlai@gmail.com>
-References: <20201214155457.3430-1-jiangshanlai@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zod9g0ucmYQBVnFLZZB9W/Bw5VKVjG5oSiWxDHXjy38=;
+        b=Kab0BzRD3svqrL0nprzClwpPVDaIg4ovkD23pNTJonIReZXyggMFuVZmKIfO5/QFio
+         67qBmQ2387+GnNmlMy4lAxNobCQeW7ISc+Vq6Zf9nKGx76BqtdTOwv2t1CdhxFgTMMwl
+         5GEgHkqkGrRNUduNIX3jlWGwS1LfLREVxD8dP7wpXzogjiVSkAnq/ZugAwexiJZ4AN1T
+         uGh19DZeG/9PH3lYcIn2oGaFUUgpe4XLXQXluf+LvXvpb1kfAaWZ7W8jw10h8aoTN1CF
+         GMMsThm3ETlQDnSvmvwGFtYFf7jh4TnzgNXxd6weiG2CjBK1H9Ob8Bc8DWEG054ik/g4
+         WdJg==
+X-Gm-Message-State: AOAM531fbWY0nddzxWQ9XeO1U3x/klSPyMAtY3ummaIO2tbgpmdYg2nQ
+        bzSXHscr/z4pYgo4B3aLAkWlkVfgmm55/3cI
+X-Google-Smtp-Source: ABdhPJwg6z41nULlj+fBpHui3mHcsEEdsSWv2Url9DdIMk0b8MqzGdSGYGJWk/tDMRfFUjVbLs5lpw==
+X-Received: by 2002:a17:902:8f94:b029:da:d168:4443 with SMTP id z20-20020a1709028f94b02900dad1684443mr22760620plo.57.1607959666413;
+        Mon, 14 Dec 2020 07:27:46 -0800 (PST)
+Received: from localhost.localdomain ([124.253.101.135])
+        by smtp.googlemail.com with ESMTPSA id y6sm19656391pjl.0.2020.12.14.07.27.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 07:27:45 -0800 (PST)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     bjorn@helgaas.com, linux-pci@vger.kernel.org,
+        Damien.LeMoal@wdc.com, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Puranjay Mohan <puranjay12@gmail.com>
+Subject: [PATCH v1] drivers: block: skd: remove skd_pci_info()
+Date:   Mon, 14 Dec 2020 20:57:20 +0530
+Message-Id: <20201214152720.11922-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+Change the call to skd_pci_info() to pcie_print_link_status().
+pcie_print_link_status() can be used to print the link speed and
+the link width, skd_pci_info() does the same and hence it is removed.
 
-There might be no online cpu in the pool->attrs->cpumask.
-We will set the worker's cpumask later in worker_attach_to_pool().
-
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
 ---
- kernel/workqueue.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+v1 - Add call to pcie_print_link_status()
+---
+ drivers/block/skd_main.c | 33 +--------------------------------
+ 1 file changed, 1 insertion(+), 32 deletions(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 1f6cb83e0bc5..f679c599a70b 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1945,7 +1945,15 @@ static struct worker *create_worker(struct worker_pool *pool)
- 		goto fail;
+diff --git a/drivers/block/skd_main.c b/drivers/block/skd_main.c
+index a962b4551bed..efd69f349043 100644
+--- a/drivers/block/skd_main.c
++++ b/drivers/block/skd_main.c
+@@ -3134,40 +3134,10 @@ static const struct pci_device_id skd_pci_tbl[] = {
  
- 	set_user_nice(worker->task, pool->attrs->nice);
--	kthread_bind_mask(worker->task, pool->attrs->cpumask);
-+
-+	/*
-+	 * Set PF_NO_SETAFFINITY via kthread_bind_mask().  We use
-+	 * cpu_possible_mask other than pool->attrs->cpumask, because
-+	 * there might be no online cpu in the pool->attrs->cpumask.
-+	 * The cpumask of the worker will be set properly later in
-+	 * worker_attach_to_pool().
-+	 */
-+	kthread_bind_mask(worker->task, cpu_possible_mask);
+ MODULE_DEVICE_TABLE(pci, skd_pci_tbl);
  
- 	/* successful, attach the worker to the pool */
- 	worker_attach_to_pool(worker, pool);
+-static char *skd_pci_info(struct skd_device *skdev, char *str)
+-{
+-	int pcie_reg;
+-
+-	strcpy(str, "PCIe (");
+-	pcie_reg = pci_find_capability(skdev->pdev, PCI_CAP_ID_EXP);
+-
+-	if (pcie_reg) {
+-
+-		char lwstr[6];
+-		uint16_t pcie_lstat, lspeed, lwidth;
+-
+-		pcie_reg += 0x12;
+-		pci_read_config_word(skdev->pdev, pcie_reg, &pcie_lstat);
+-		lspeed = pcie_lstat & (0xF);
+-		lwidth = (pcie_lstat & 0x3F0) >> 4;
+-
+-		if (lspeed == 1)
+-			strcat(str, "2.5GT/s ");
+-		else if (lspeed == 2)
+-			strcat(str, "5.0GT/s ");
+-		else
+-			strcat(str, "<unknown> ");
+-		snprintf(lwstr, sizeof(lwstr), "%dX)", lwidth);
+-		strcat(str, lwstr);
+-	}
+-	return str;
+-}
+-
+ static int skd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ {
+ 	int i;
+ 	int rc = 0;
+-	char pci_str[32];
+ 	struct skd_device *skdev;
+ 
+ 	dev_dbg(&pdev->dev, "vendor=%04X device=%04x\n", pdev->vendor,
+@@ -3201,8 +3171,7 @@ static int skd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		goto err_out_regions;
+ 	}
+ 
+-	skd_pci_info(skdev, pci_str);
+-	dev_info(&pdev->dev, "%s 64bit\n", pci_str);
++	pcie_print_link_status(pdev);
+ 
+ 	pci_set_master(pdev);
+ 	rc = pci_enable_pcie_error_reporting(pdev);
 -- 
-2.19.1.6.gb485710b
+2.27.0
 
