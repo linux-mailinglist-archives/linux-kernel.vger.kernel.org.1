@@ -2,138 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E43B62D9F82
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:49:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 301542D9FA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 19:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441015AbgLNSrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 13:47:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:51770 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440537AbgLNSrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 13:47:12 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 40A8B1FB;
-        Mon, 14 Dec 2020 10:46:21 -0800 (PST)
-Received: from [192.168.178.2] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DD3C23F66E;
-        Mon, 14 Dec 2020 10:46:17 -0800 (PST)
-Subject: Re: [PATCH] fair/util_est: Separate util_est_dequeue() for
- cfs_rq_util_change
-To:     Ryan Y <xuewen.yan94@gmail.com>
-Cc:     patrick.bellasi@arm.com,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
-        rostedt@goodmis.org, Benjamin Segall <bsegall@google.com>,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        Xuewen Yan <Xuewen.Yan@unisoc.com>,
-        Ryan Y <xuewyan@foxmail.com>, zhang.lyra@gmail.com,
-        Ke.Wang@unisoc.com
-References: <1607510656-22990-1-git-send-email-xuewen.yan@unisoc.com>
- <2edefcc7-ccea-5665-728e-5b86ac413629@arm.com>
- <CAB8ipk-z0e5XnkR__vW9+NAz_rFDpC3odLnPEthWZoHKVRSYWg@mail.gmail.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <f7eb8636-2c15-58ef-d328-f879f16f498b@arm.com>
-Date:   Mon, 14 Dec 2020 19:46:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAB8ipk-z0e5XnkR__vW9+NAz_rFDpC3odLnPEthWZoHKVRSYWg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S2502241AbgLNSxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 13:53:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731829AbgLNSwi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 13:52:38 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6300C0613D3;
+        Mon, 14 Dec 2020 10:51:57 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id d17so24016372ejy.9;
+        Mon, 14 Dec 2020 10:51:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=kmEWL9N858FqTq18xXGT1VCd7aIAPnn5gZrMzk+8WhI=;
+        b=Afo/cIHYdCXKfH752KDHu2O8NkEAZVkf5WOf6ECkwK6ARDFUB9yPT62H0/v8tHgR61
+         xevdbRVodazqrMPywJcq0YpH6GAk0IBsIBbAhWWqt9ZMLBqKJ6a9hLu/PipJmUyfGTPo
+         Abtg9nUqww/AxeLq/yWXA+dVCSXjo/w6S3SRRs1iXQqrqXPDtKhg1/ET/sIw1wiEq0ZW
+         8QKetn2wA0RdciaRs+/YQmdpA6LHbt84IdWgBoWFF/o/lW5ASQssnMQiBqM5PjbMgPh4
+         ec4PusS/fQfZ4OjwHcIGGAX00j+4UJPzU7p++7M5Zqc5naun3uQUz+YC2pdd2zVCQL4O
+         RbVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kmEWL9N858FqTq18xXGT1VCd7aIAPnn5gZrMzk+8WhI=;
+        b=CuFahRSrWno3ZCr8AEge5PGnT6iH0DLkZng9NWHwkfzdM5ZzCF+hpzlTxqAjZDV8vL
+         GrDOnirnC3qZLTZNhCWrdQ0CpSbZKLFPsEsTf1VCrrTvV9oYqgvws/8xzgwm8mGCaZGk
+         fK/4p3hk9u/8mRTgKEJTYY38YCcHpBUAB9PWqzlhHJxr/EflEpB2z8YLG8KocYENcS5i
+         cE2KO8aiJamF44bf9cpvTw9jiqUEzofE9a6UoVEwTiyVPAERXVKla94nXpdaj4HXUJA5
+         sWjHW+czeL44uHNkt/mcgQu8XPtdCHTLFYCtrpFHg68lpTk51NxbKLMZG34gcxoVI+jM
+         AkzA==
+X-Gm-Message-State: AOAM532iX1sLMkEhNOxq9aD4dd0h+3rLm+SFMnftxKcx+pOr2w13u028
+        oEaXDsj6Urp38f2jghsn7Jo=
+X-Google-Smtp-Source: ABdhPJxrxN33uribVUjiZKJXkD851HxLdfh1YJ77xbUmPGGGbrrluHT7/CfnPcd+aN6YyEq31DBpFQ==
+X-Received: by 2002:a17:907:4271:: with SMTP id nq1mr19563127ejb.358.1607971916648;
+        Mon, 14 Dec 2020 10:51:56 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id h23sm14154997ejg.37.2020.12.14.10.51.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 14 Dec 2020 10:51:56 -0800 (PST)
+Message-ID: <f23cea390a812f5126dbb232b1944e5499cc40dc.camel@gmail.com>
+Subject: Re: [PATCH v2 1/6] scsi: ufs: Remove stringize operator '#'
+ restriction
+From:   Bean Huo <huobean@gmail.com>
+To:     Joe Perches <joe@perches.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org, rostedt@goodmis.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 14 Dec 2020 19:51:55 +0100
+In-Reply-To: <ade665cbfa138d1851343576caad84a61e904c46.camel@perches.com>
+References: <20201214161502.13440-1-huobean@gmail.com>
+         <20201214161502.13440-2-huobean@gmail.com>
+         <ade665cbfa138d1851343576caad84a61e904c46.camel@perches.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/2020 13:03, Ryan Y wrote:
-> Hi Dietmar,
+On Mon, 2020-12-14 at 08:46 -0800, Joe Perches wrote:
+> > However, we have other cases, the symbol and enum name are not the
+> > same,
+> > we can redefine EM/EMe, but there will introduce some redundant
+> > codes.
+> > This patch is to remove this restriction, let others reuse the
+> > current
+> > EM/EMe definition.
 > 
-> Yes! That's exactly what I meant.
+> I think the other way (adding new definitions for the cases when the
+> name and string are different) is less error prone.
 > 
->> The issue is that sugov_update_[shared\|single] -> sugov_get_util() ->
->> cpu_util_cfs() operates on an old  cfs_rq->avg.util_est.enqueued value?
+yes, agree with you, but here it is ok, it is not too much copy/paste.
+
+> > diff --git a/include/trace/events/ufs.h
+> > b/include/trace/events/ufs.h
 > 
-> well, because of this, when the p dequeued, _task_util_est(p) should be
-> subtracted before cfs_rq_util_change().
-> however, the original util_est_dequeue() dequeue the util_est and update
-> the
-> p->se.avg.util_est together.
-> so I separate the original util_est_dequeue() to deal with the issue.
-
-OK, I see.
-
-I ran a testcase '50% periodic task 'task0-0' (8ms/16ms)' with
-PELT + proprietary trace events within dequeue_task_fair() call:
-
-task0-0-1710 [002] 218.215535: sched_pelt_se:      cpu=2 path=(null) comm=task0-0 pid=1710 load=596 runnable=597 util=597 update_time=218123022336
-task0-0-1710 [002] 218.215536: sched_pelt_cfs:     cpu=2 path=/ load=597 runnable=597 util=597 update_time=218123022336
-task0-0-1710 [002] 218.215538: bprint:             sugov_get_util: CPU2 rq->cfs.avg.util_avg=597 rq->cfs.avg.util_est.enqueued=601
-task0-0-1710 [002] 218.215540: sched_util_est_cfs: cpu=2 path=/ enqueued=0 ewma=0 util=597
-task0-0-1710 [002] 218.215542: bprint:             dequeue_task_fair: CPU2 [task0-0 1710] rq->cfs.avg.util_avg=[576->597] rq->cfs.avg.util_est.enqueued=[601->0]
-
-It's true that 'sugov_get_util() -> cpu_util_cfs()' can use
-rq->cfs.avg.util_est.enqueued before _task_util_est(p) is subtracted
-from it.
-
-But isn't rq->cfs.avg.util_est.enqueued (in this case 601) always close
-to rq->cfs.avg.util_avg (597) since the task was just running?
-The cfs_rq utilization contains a blocked (sleeping) task.
-
-If I would run with your patch cpu_util_cfs() would chose between 597 and 0
-whereas without it does between 597 and 601.
-
-Do you have a specific use case in mind? Or even test results showing a benefit
-of your patch?
-
-> Dietmar Eggemann <dietmar.eggemann@arm.com> 于2020年12月11日周五 下午7:30写道：
+> []
+> > +#define
+> > UFS_LINK_STATES                                              \
+> > +     EM(UIC_LINK_OFF_STATE, "UIC_LINK_OFF_STATE")            \
+> > +     EM(UIC_LINK_ACTIVE_STATE, "UIC_LINK_ACTIVE_STATE,")     \
 > 
->> Hi Yan,
->>
->> On 09/12/2020 11:44, Xuewen Yan wrote:
->>> when a task dequeued, it will update it's util, and cfs_rq_util_change
->>> would check rq's util, if the cfs_rq->avg.util_est.enqueued is bigger
->>> than  cfs_rq->avg.util_avg, but because the cfs_rq->avg.util_est.enqueued
->>> didn't be decreased, this would cause bigger cfs_rq_util by mistake,
->>> as a result, cfs_rq_util_change may change freq unreasonablely.
->>>
->>> separate the util_est_dequeue() into util_est_dequeue() and
->>> util_est_update(), and dequeue the _task_util_est(p) before update util.
->>
->> The issue is that sugov_update_[shared\|single] -> sugov_get_util() ->
->> cpu_util_cfs() operates on an old  cfs_rq->avg.util_est.enqueued value?
->>
->> cpu_util_cfs()
->>
->>     if (sched_feat(UTIL_EST))
->>         util = max_t(util, READ_ONCE(rq->cfs.avg.util_est.enqueued))
->>                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->>
->> dequeue_task_fair() (w/ your patch, moving (1) before (2))
->>
->>     /* (1) update cfs_rq->avg.util_est.enqueued */
->>     util_est_dequeue()
->>
->>     /* (2) potential p->se.avg.util_avg update */
->>     /* 2 for loops */
->>     for_each_sched_entity()
->>
->>         /* this can only lead to a freq change for a root cfs_rq */
->>         (dequeue_entity() ->) update_load_avg() -> cfs_rq_util_change()
->>          -> cpufreq_update_util() ->...-> sugov_update_[shared\|single]
->>
->>     /* (3) potential update p->se.avg.util_est */
->>     util_est_update()
->>
->>
->> We do need (3) after (2) because of:
->>
->> util_est_update()
->>     ...
->>     ue.enqueued = (task_util(p) | UTIL_AVG_UNCHANGED); task_util
->>     ...           ^^^^^^^^^^^^^
->>                   p->se.avg.util_avg
->>
->>
->> Did I get this right?
->>
->> [...]
+> For instance:
+> 
+> Like here where you added an unnecessary and unwanted comma
+
+Thanks, I will fix it in next version.
+
+Bean
+
+
