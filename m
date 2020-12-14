@@ -2,109 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491052D91E7
+	by mail.lfdr.de (Postfix) with ESMTP id B7F0B2D91E8
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 03:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438014AbgLNCy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Dec 2020 21:54:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438112AbgLNCyi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Dec 2020 21:54:38 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB4CC0617A7
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 18:53:15 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id n10so3489941pgl.10
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Dec 2020 18:53:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NXvCHpzC4yHknkYUeuKH4ChAz6pAIcFQihq+5IBCqGs=;
-        b=Fddofxw8GEI7/ddW41jojqQlbr3awy3c+LUjmqsgXOgCU2mPSYisSbooN9UQ5+XovY
-         ltcvS+KRyuLoQImh7pI1I2alBShPFBH8Nn6NEqRAeZ8ZKd0SZBD7cDvs3ECeNhHf2Fnk
-         vI45LPU46Kzcz4bMBPws1Os8P04vvjvgIz9UI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NXvCHpzC4yHknkYUeuKH4ChAz6pAIcFQihq+5IBCqGs=;
-        b=GYyNyEzXlAXz/LV6qgZAzQw3gTFkBnPevpA09hEsO6aZX9LrvD2hJJK5KTJ8fIEd6G
-         phMv0j6lTqnzA1btvqWYYf7KANZS9D7UnnX5aGGyk1Scmu+7MiYzNenQUfeXaoLrlFrY
-         lHGx5S1HzhmRZIorQ/3qTdjnP+sYKxnQ8/h/vW2skOsrppYP8ptocRUKI64W7syYmrXv
-         /COWrX5qtDpLBq92BgLzmIs2CDIjxO2MDmkD8XkJyJ6BVVplzLQvWwkNDcYo2Rml5gYQ
-         SvhtIAYraH1NJwWt8INLNqhz91H1rfD/Yz+c7Wu7EgZlwppSiE6ZG+D1RPzGAxbQTrZ5
-         igrg==
-X-Gm-Message-State: AOAM531QI5nWH7gMlt1QL+I8H2FJOjF5Z4kAYCvEGk7dk58mjjoumOrm
-        82Uz3WYR1KYEv4VdOvKWxb9/fw==
-X-Google-Smtp-Source: ABdhPJximX80fxcq78BYwz5TJQ7tu7BbHSoBKBAOFQVEsxp9XuCENYTJEgjWvZOnf0LPVObh619vHQ==
-X-Received: by 2002:a63:4d12:: with SMTP id a18mr22071092pgb.17.1607914394956;
-        Sun, 13 Dec 2020 18:53:14 -0800 (PST)
-Received: from ubuntu.netflix.com (203.20.25.136.in-addr.arpa. [136.25.20.203])
-        by smtp.gmail.com with ESMTPSA id h20sm17102713pgv.23.2020.12.13.18.53.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Dec 2020 18:53:14 -0800 (PST)
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <schumaker.anna@gmail.com>,
-        "J . Bruce Fields" <bfields@fieldses.org>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        David Howells <dhowells@redhat.com>, linux-nfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mauricio@kinvolk.io, Alban Crequy <alban.crequy@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH RESEND v5 2/2] NFSv4: Refactor to use user namespaces for nfs4idmap
-Date:   Sun, 13 Dec 2020 18:53:05 -0800
-Message-Id: <20201214025305.25984-3-sargun@sargun.me>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201214025305.25984-1-sargun@sargun.me>
-References: <20201214025305.25984-1-sargun@sargun.me>
+        id S2438123AbgLNCzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Dec 2020 21:55:36 -0500
+Received: from mga05.intel.com ([192.55.52.43]:39178 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726867AbgLNCzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Dec 2020 21:55:36 -0500
+IronPort-SDR: lkf3SNpL/q7m11VzAreQNAQ+xjDkfaU9Udl5KP9eGuB0juA3XSW8aPEJpoM1GqpkfMPg5PQfbG
+ Ulhzj7Uefg+w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9834"; a="259372351"
+X-IronPort-AV: E=Sophos;i="5.78,417,1599548400"; 
+   d="scan'208";a="259372351"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2020 18:54:52 -0800
+IronPort-SDR: xlRut6PSb/7PvRgbse2l5QRFPa2urVkOtb+RmBpop9tCNdLRxzIUSw5Qv6bZMlbJYz1ZRyFtXL
+ pUBZlIYxh//g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,417,1599548400"; 
+   d="scan'208";a="331660700"
+Received: from lkp-server02.sh.intel.com (HELO a947d92d0467) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 13 Dec 2020 18:54:51 -0800
+Received: from kbuild by a947d92d0467 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1koe0g-00007E-FD; Mon, 14 Dec 2020 02:54:50 +0000
+Date:   Mon, 14 Dec 2020 10:54:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/core] BUILD REGRESSION
+ 3bda84519c6c2d57e7378417ac116f61d50abae1
+Message-ID: <5fd6d3f8.gEmff2CDu9zPTszN%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In several patches work has been done to enable NFSv4 to use user
-namespaces:
-58002399da65: NFSv4: Convert the NFS client idmapper to use the container user namespace
-3b7eb5e35d0f: NFS: When mounting, don't share filesystems between different user namespaces
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  irq/core
+branch HEAD: 3bda84519c6c2d57e7378417ac116f61d50abae1  genirq: Reexport irq_to_desc() for PPC KVM
 
-Unfortunately, the userspace APIs were only such that the userspace facing
-side of the filesystem (superblock s_user_ns) could be set to a non init
-user namespace. This furthers the fs_context related refactoring, and
-piggybacks on top of that logic, so the superblock user namespace, and the
-NFS user namespace are the same.
+Error/Warning reports:
 
-Users can still use rpc.idmapd if they choose to, but there are complexities
-with user namespaces and request-key that have yet to be addresssed.
+https://lore.kernel.org/lkml/202012140602.BCg2ue7N-lkp@intel.com
 
-Eventually, we will need to at least:
-  * Separate out the keyring cache by namespace
-  * Come up with an upcall mechanism that can be triggered inside of the container,
-    or safely triggered outside, with the requisite context to do the right
-    mapping. * Handle whatever refactoring needs to be done in net/sunrpc.
+Error/Warning in current branch:
 
-Signed-off-by: Sargun Dhillon <sargun@sargun.me>
-Tested-by: Alban Crequy <alban.crequy@gmail.com>
+ERROR: modpost: ".irq_to_desc" [arch/powerpc/kvm/kvm-hv.ko] undefined!
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+`-- powerpc-allmodconfig
+    `-- ERROR:irq_to_desc-arch-powerpc-kvm-kvm-hv.ko-undefined
+
+elapsed time: 772m
+
+configs tested: 104
+configs skipped: 2
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                 kfr2r09-romimage_defconfig
+sh                         microdev_defconfig
+mips                        bcm47xx_defconfig
+powerpc                mpc7448_hpc2_defconfig
+sh                          lboxre2_defconfig
+arm                           h3600_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                        sh7785lcr_defconfig
+arm                              alldefconfig
+arc                          axs101_defconfig
+sh                          urquell_defconfig
+sh                        dreamcast_defconfig
+arm                  colibri_pxa300_defconfig
+sh                         apsh4a3a_defconfig
+c6x                         dsk6455_defconfig
+powerpc                     sbc8548_defconfig
+sparc                       sparc64_defconfig
+powerpc                     sequoia_defconfig
+mips                malta_kvm_guest_defconfig
+c6x                        evmc6678_defconfig
+mips                        bcm63xx_defconfig
+arm                     eseries_pxa_defconfig
+m68k                        m5307c3_defconfig
+powerpc                         wii_defconfig
+sh                           se7780_defconfig
+powerpc                       ebony_defconfig
+m68k                          sun3x_defconfig
+m68k                       m5275evb_defconfig
+xtensa                  audio_kc705_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20201213
+i386                 randconfig-a004-20201213
+i386                 randconfig-a003-20201213
+i386                 randconfig-a002-20201213
+i386                 randconfig-a005-20201213
+i386                 randconfig-a006-20201213
+x86_64               randconfig-a003-20201213
+x86_64               randconfig-a006-20201213
+x86_64               randconfig-a002-20201213
+x86_64               randconfig-a005-20201213
+x86_64               randconfig-a004-20201213
+x86_64               randconfig-a001-20201213
+i386                 randconfig-a014-20201213
+i386                 randconfig-a013-20201213
+i386                 randconfig-a012-20201213
+i386                 randconfig-a011-20201213
+i386                 randconfig-a016-20201213
+i386                 randconfig-a015-20201213
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                                  kexec
+x86_64                               rhel-8.3
+
+clang tested configs:
+x86_64               randconfig-a016-20201213
+x86_64               randconfig-a012-20201213
+x86_64               randconfig-a013-20201213
+x86_64               randconfig-a015-20201213
+x86_64               randconfig-a014-20201213
+x86_64               randconfig-a011-20201213
+
 ---
- fs/nfs/nfs4client.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/nfs/nfs4client.c b/fs/nfs/nfs4client.c
-index be7915c861ce..86acffe7335c 100644
---- a/fs/nfs/nfs4client.c
-+++ b/fs/nfs/nfs4client.c
-@@ -1153,7 +1153,7 @@ struct nfs_server *nfs4_create_server(struct fs_context *fc)
- 	if (!server)
- 		return ERR_PTR(-ENOMEM);
- 
--	server->cred = get_cred(current_cred());
-+	server->cred = get_cred(fc->cred);
- 
- 	auth_probe = ctx->auth_info.flavor_len < 1;
- 
--- 
-2.25.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
