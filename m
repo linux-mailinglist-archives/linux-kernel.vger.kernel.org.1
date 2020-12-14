@@ -2,143 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA852D9E48
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 512932D9E54
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 18:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502491AbgLNR4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 12:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48620 "EHLO
+        id S2502508AbgLNR5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 12:57:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502436AbgLNRzE (ORCPT
+        with ESMTP id S2502252AbgLNR50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:55:04 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5067DC0613D3;
-        Mon, 14 Dec 2020 09:54:24 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id p18so1396381pgm.11;
-        Mon, 14 Dec 2020 09:54:24 -0800 (PST)
+        Mon, 14 Dec 2020 12:57:26 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B5EC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:56:45 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id w13so32374707lfd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 09:56:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y4OYtfMZ2K4JBiXVgvri6qdCRzrXhV7GNsl1P8DU6OY=;
-        b=EiicOxwiEwHVWdr7gf4zPmzQAO8KNK1cZoS4wLniUM+K7hPK7ptvrO8Ou4eXgvHmQk
-         dWvWqpo3IOx0Yp4GqJNB+7AMnm7tO/QlPhhPD36Yv1xb+qbQkz+BonbT9TAmvrdevolm
-         2NxSBrcIkuREzr9piI3iROS0meXenStOYMNYkRs9FwIBVkwSX3zFDc6zGOJ4vH5EMJb4
-         qs1CT44ohrLggc6RIyVsb3ONIaQPmXynSDpED5IiqMkb6DDsrHCEvSOeDXJXy0nqVw7f
-         OSD75fr3rm67onFok/tv07nym4qmoY0WtJAyPqncBt61bOylOyl+OxYJktbuAHBlcYvW
-         V1+w==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=n/xl4by6+eYZFV8jX1Ip9klc0UXtRF7DjSdo0OyWa/w=;
+        b=hP9aflRoAJ61k2p4avc/qYNUA2xAkRKfYdFRCKKTiXdM2FNBxQS6nOfc4VWxBxSbv4
+         A8bk5sgKX76NK34bp52OYxtvMC0dwnc+ISbEBr4QVbVWpW2cSisxRRmZ1j6b8xlCQZwb
+         GVnK/5ZrzoRmldqy7DGTSoLdYHONXoe6FoEYbPInGSLeuIhoIVMcOYtdfAyrN1WLxVIR
+         8iaYwB0s6vxUGOV9Akh4TfobmGlkjuFClzXlvfyz/gx7Lg0FJRn4LRu/I+q4K9jrkXWT
+         B29HcliA0o05YSv9l9xb+3IJdYOAAzFjXplv36NTrSr+YwtYtLUkvloUIZC+xh2C0YqS
+         UKIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y4OYtfMZ2K4JBiXVgvri6qdCRzrXhV7GNsl1P8DU6OY=;
-        b=eUCqzCAKCvcGhTLPABtcGfrlFqhgQQv4BCpZ8XaPGLT50GU7TYpIo+7BWLxTreDodS
-         3+tutKH8igbj7Mbktydbx/gW8Sk6slFbCc1Fsli67xOW7jihzgwDxwlw40Zg7aqPJUzL
-         +4Zd4tgiMhuYmquAvyX0LEKvKDo2wVnKl+5bPYXdNtMKYyyEkoQ9+DskB7fEC/hUhPQ0
-         t9WaaQzHAmmGYtPIl/AvHvXVe+/+yYYLJ/IuvQY2SioZUv20CWk00d+7bcagP0OeKr2d
-         94sxF5FbmRy0W45lkN1BqP4seYTTohxLp0YjIhmbUDeAxRaR99bZhnLBG8FeCJ9maR74
-         sSjQ==
-X-Gm-Message-State: AOAM533rmB34eT+5QKtdBQsBFnwp5jiygcOvPFfgJE8s73ImzxHleeXN
-        P3ieFdZCBwBLIQii107yUd30XFhoFb+ebSly6BthxPsFY7A=
-X-Google-Smtp-Source: ABdhPJxWhrMA20bv+G9Pm0/5nVz3ofkooo6Xmq49SWViDFHg+N7BhSEuraHzjokkjvI3798fa9btDLQY/77VJip5SHU=
-X-Received: by 2002:a63:b1e:: with SMTP id 30mr25347309pgl.203.1607968463784;
- Mon, 14 Dec 2020 09:54:23 -0800 (PST)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=n/xl4by6+eYZFV8jX1Ip9klc0UXtRF7DjSdo0OyWa/w=;
+        b=kMe9r5DcQ3nG1lYahh3hv2i8uNHhMomuh0sN2CXSMR4nUAdWOEdUdV1jgxxe1UxNep
+         jAa7QCUYh4Wa3tXTE77JNsbKUJkrHE+zFY5CZjWrU2RGLlBM702hZHcvzk+sCFJ2mj1O
+         mzGMPIQg4gNmUssejcXknQA4UKmhh1kDB2XXH9pDACcAO/Y6FOTsLD81j+BoHKzSwKUF
+         5ov/6jHBx8t6L55uozHlFemoepalJQSo5vkQkC8yIabcktEFrAgh3SQ1HSfw5PZglCGM
+         ouHsXYj3CJTV3RuCk7LhoFUqWHoyuD+o/N/gE5fYUvGchppxRjNahHW5X6wygq5DH/jv
+         /y3Q==
+X-Gm-Message-State: AOAM532QyjjNlhRl5ai9WPw5i4M1xP2zJbr9xIQ0TvavNXsMqDOj06AD
+        qyuzfCobFGDd73xazgFsXxk=
+X-Google-Smtp-Source: ABdhPJzRsjXCHsoBhA0/V84jQrcsqboEiVjrUBPEahPtLUl6Nc2PWaWTtx/pi12wRoGzAJpdn+3jog==
+X-Received: by 2002:a05:651c:101:: with SMTP id a1mr8855332ljb.277.1607968603168;
+        Mon, 14 Dec 2020 09:56:43 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id b5sm2180283lfg.13.2020.12.14.09.56.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 09:56:42 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 14 Dec 2020 18:56:40 +0100
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Waiman Long <longman@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/vmalloc: Fix unlock order in s_stop()
+Message-ID: <20201214175640.GA20756@pc638.lan>
+References: <20201213180843.16938-1-longman@redhat.com>
+ <20201213183936.GA20007@pc636>
+ <20201213215134.GI2443@casper.infradead.org>
+ <20201214151128.GA2094@pc638.lan>
+ <20201214153746.GK2443@casper.infradead.org>
 MIME-Version: 1.0
-References: <20201211042625.129255-1-drew@beagleboard.org> <CAHp75VcAbdrSnb_ag9Rc0tny3Vtqjs1if+ahk7U36V2eaKMpSw@mail.gmail.com>
- <20201211234304.GA189853@x1>
-In-Reply-To: <20201211234304.GA189853@x1>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 14 Dec 2020 19:55:12 +0200
-Message-ID: <CAHp75Vf-=nM-M2K-v_8iyME4t6ZF-gvSZ5ePsxQFhObJ_0YHsw@mail.gmail.com>
-Subject: Re: [RFC PATCH] pinctrl: add helper to expose pinctrl state in debugfs
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201214153746.GK2443@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 1:43 AM Drew Fustini <drew@beagleboard.org> wrote:
-> On Fri, Dec 11, 2020 at 11:15:21PM +0200, Andy Shevchenko wrote:
-> > On Fri, Dec 11, 2020 at 1:54 PM Drew Fustini <drew@beagleboard.org> wrote:
-> > >
-> > > BeagleBoard.org [0] currently uses an out-of-tree driver called
-> > > bone-pinmux-helper [1] developed by Pantelis Antoniou [2] back in 2013.
+On Mon, Dec 14, 2020 at 03:37:46PM +0000, Matthew Wilcox wrote:
+> On Mon, Dec 14, 2020 at 04:11:28PM +0100, Uladzislau Rezki wrote:
+> > On Sun, Dec 13, 2020 at 09:51:34PM +0000, Matthew Wilcox wrote:
+> > > If we need to iterate the list efficiently, i'd suggest getting rid of
+> > > the list and using an xarray instead.  maybe a maple tree, once that code
+> > > is better exercised.
 > >
-> > And it looks like it's still using APIs from 2013.
-> > Needs quite a clean up.
+> > Not really efficiently. We need just a full scan of it propagating the
+> > information about mapped and un-purged areas to user space applications.
+> > 
+> > For example RCU-safe list is what we need, IMHO. From the other hand i
+> > am not sure if xarray is RCU safe in a context of concurrent removing/adding
+> > an element(xa_remove()/xa_insert()) and scanning like xa_for_each_XXX().
+> 
+> It's as RCU safe as an RCU-safe list.  Specifically, it guarantees:
+> 
+>  - If an element is present at all times between the start and the
+>    end of the iteration, it will appear in the iteration.
+>  - No element will appear more than once.
+>  - No element will appear in the iteration that was never present.
+>  - The iteration will terminate.
+> 
+> If an element is added or removed between the start and end of the
+> iteration, it may or may not appear.  Causality is not guaranteed (eg
+> if modification A is made before modification B, modification B may
+> be reflected in the iteration while modification A is not).
 >
-> Thanks for taking a look at my RFC and responding. It is good to know
-> that it is using out-dated APIs. Would you be able to elaborate?
->
-> It interacts with pinctrl core through devm_pinctrl_get(),
-> pinctrl_lookup_state() and pinctrl_select_state(). Is there newer way of
-> doing that?
+Thank you for information! To make use of xarray it would require a migration
+from our current vmap_area_root RB-tree to xaarray. It probably makes sense   
+if there are performance benefits of such migration work. Apparently running
+the vmalloc benchmark shows a quite big degrade:
 
-No. I'm talking mostly about FS callbacks where some relatively old
-new APIs can be used, such as kasprintf().
+# X-array
+urezki@pc638:~$ time sudo ./test_vmalloc.sh run_test_mask=31 single_cpu_test=1
+Run the test with following parameters: run_test_mask=31 single_cpu_test=1
+Done.
+Check the kernel ring buffer to see the summary.
 
-...
+real    0m18.928s
+user    0m0.017s
+sys     0m0.004s
+urezki@pc638:~$
+[   90.103768] Summary: fix_size_alloc_test passed: 1 failed: 0 repeat: 1 loops: 1000000 avg: 1275773 usec
+[   90.103771] Summary: full_fit_alloc_test passed: 1 failed: 0 repeat: 1 loops: 1000000 avg: 1439371 usec
+[   90.103772] Summary: long_busy_list_alloc_test passed: 1 failed: 0 repeat: 1 loops: 1000000 avg: 9138051 usec
+[   90.103773] Summary: random_size_alloc_test passed: 1 failed: 0 repeat: 1 loops: 1000000 avg: 4821400 usec
+[   90.103774] Summary: fix_align_alloc_test passed: 1 failed: 0 repeat: 1 loops: 1000000 avg: 2181207 usec
+[   90.103775] All test took CPU0=69774784667 cycles
 
-> > > I used the compatible string "pinctrl,state-helper" but would appreciate
-> > > advice on how to best name this. Should I create a new vendor prefix?
-> >
-> > Since it's BB specific, it should have file name and compatible string
-> > accordingly.
->
-> At first, I was thinking about this as a beaglebone specific solution
-> and had bone in the driver name and compatible string. But then I
-> realized it could used in other situations where it is beneficial to
-> to read and select a pinctrl state through debugfs.
->
-> I'm happy to rebrand the naming as beaglebone if that would be more
-> acceptable.
+# RB-tree
+urezki@pc638:~$ time sudo ./test_vmalloc.sh run_test_mask=31 single_cpu_test=1
+Run the test with following parameters: run_test_mask=31 single_cpu_test=1
+Done.
+Check the kernel ring buffer to see the summary.
 
-See below.
+real    0m13.975s
+user    0m0.013s
+sys     0m0.010s
+urezki@pc638:~$ 
+[   26.633372] Summary: fix_size_alloc_test passed: 1 failed: 0 repeat: 1 loops: 1000000 avg: 429836 usec
+[   26.633375] Summary: full_fit_alloc_test passed: 1 failed: 0 repeat: 1 loops: 1000000 avg: 566042 usec
+[   26.633377] Summary: long_busy_list_alloc_test passed: 1 failed: 0 repeat: 1 loops: 1000000 avg: 7663974 usec
+[   26.633378] Summary: random_size_alloc_test passed: 1 failed: 0 repeat: 1 loops: 1000000 avg: 3853388 usec
+[   26.633379] Summary: fix_align_alloc_test passed: 1 failed: 0 repeat: 1 loops: 1000000 avg: 1370097 usec
+[   26.633380] All test took CPU0=51370095742 cycles
 
-> > But I'm wondering, why it requires this kind of thing and can't be
-> > simply always part of the kernel based on configuration option?
->
-> Do you mean not having a new CONFIG option for this driver and just have
-> it be enabled by CONFIG_PINCTRL?
+I suspect xa_load() does provide O(log(n)) search time?
 
-No, configuration option stays, but no compatible strings no nothing
-like that. Just probed always when loaded.
-Actually not even sure we want to have it as a module.
-
-...
-
-> > > The P9_14_pinmux entry would cause pinctrl-state-helper to be probed.
-> > > The driver would create the corresponding pinctrl state file in debugfs
-> > > for the pin.  Here is an example of how the state can be read and
-> > > written from userspace:
-> > >
-> > > root@beaglebone:~# cat /sys/kernel/debug/ocp\:P9_14_pinmux/state
-> > > default
-> > > root@beaglebone:~# echo pwm > /sys/kernel/debug/ocp\:P9_14_pinmux/state
-> > > root@beaglebone:~# cat /sys/kernel/debug/ocp\:P9_14_pinmux/state
-> > > pwm
-> >
-> > Shouldn't it be rather a part of a certain pin control folder:
-> > debug/pinctrl/.../mux/...
-> > ?
->
-> Yes, I think that would make sense, but I was struggling to figure out
-> how to do that. pinctrl_init_debugfs() in pinctrl/core.c does create the
-> "pinctrl" directory, but I could not figure out how to use this as the
-> parent dir when calling debugfs_create_dir() in this driver's probe().
->
-> I thought there might be a way in debugfs API to use existing directory
-> path as a parent but I couldn't figure anything like that. I would
-> appreciate any advice.
-
-If the option is boolean from the beginning then you just call it from
-the corresponding pin control instantiation chain.
-
--- 
-With Best Regards,
-Andy Shevchenko
+--
+Vlad Rezki
