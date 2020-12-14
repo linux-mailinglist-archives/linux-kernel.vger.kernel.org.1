@@ -2,80 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2AD2D986A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 13:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 088272D9876
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Dec 2020 14:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439357AbgLNM4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 07:56:22 -0500
-Received: from bmail1.ministro.hu ([5.249.150.236]:40048 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731990AbgLNM4W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 07:56:22 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id DF4ED123B3D;
-        Mon, 14 Dec 2020 13:55:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607950539;
-        bh=8V5E5Pu+o3YKcYQ76fndo/VtVVHwpALTJPhg7qg6B+s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K6bkd2eqmEsiIl9LyvZIJgP0NrWyUpfwvkTzhqC2IUjI/dZtwKGDoi9gKsp3IOwDQ
-         dc09vOQUhINlHSoJ4Tmc3R0Gd5lXbzEvN2pY1kvJkzsr4CTMmiTLY6MCrfag/UlIXr
-         VWf7swjObjft4NLoTfpcZH2i7pdr30bS7IueC3AtvDdHZmsuzwCtf+vJdeU0WWfhID
-         NTLDZhzErrcaJenoGcQ7q2r3mwJDxSIKZnInoelPCYG9TsvPiVFkaxeWDbk345TdeB
-         r6I1XBsIUKu9nnFJykWf03EgsOLHytHkxJrtsWhr8mB8P2W6s0EhljDFLLfYineCMn
-         ADc+atE7cBlNg==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id hGhxen1l195o; Mon, 14 Dec 2020 13:55:12 +0100 (CET)
-Received: from dev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id 4D548123B3B;
-        Mon, 14 Dec 2020 13:55:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1607950512;
-        bh=8V5E5Pu+o3YKcYQ76fndo/VtVVHwpALTJPhg7qg6B+s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1Ayq8EgrfFLIoSfgP/H3sScDMb8tz3KOToy2iwXBAd+q51nLgow5wMMzXnh3rI19X
-         wh0sRq0p727Hbm4bsF4P8pxsTRJKas3oLGL+MraGPHFm3Jt2oK0Fy9V6I9LZHMaOC4
-         tQIz24pWstxZcKsVEms5Z61lc8n89RaY3exU8zv7BTMuuLJZvngsAsQ19zHzx88Jhd
-         Bgp3aEDgYTn6g3F0R6YZVi+hEZaVBN5CoCdbYCNZ3MSQtrjsFUggrbUtec6w93fxw7
-         Ov/clsnpQqMTKzJDeTWie8DjE8okNfJ2v7YCfyp75TJdoTzNqNOlCnW4FkQzSE66JT
-         0HTq6WpTwF3Hg==
-Date:   Mon, 14 Dec 2020 12:55:10 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
-        'Rob Herring' <robh+dt@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] Serial: silabs si4455 serial driver
-Message-ID: <20201214125510.GA21614@dev>
-References: <20201212070944.GA13909@dincontrollerdev>
- <2855efaf-79a5-f43b-ff8c-9c01a3f14df7@kernel.org>
- <20201214123519.GA10229@dev>
- <77bb5835-b1f2-125a-d2d1-ad67612b164d@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <77bb5835-b1f2-125a-d2d1-ad67612b164d@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S2407839AbgLNM6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 07:58:18 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:50526 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2439411AbgLNM56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 07:57:58 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxNuAaYddf1yUAAA--.556S2;
+        Mon, 14 Dec 2020 20:56:58 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH] perf callchain: Return directly when use '--call-graph dwarf' under !CONFIG_DWARF
+Date:   Mon, 14 Dec 2020 20:56:55 +0800
+Message-Id: <1607950615-11825-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxNuAaYddf1yUAAA--.556S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFW3ZF4DAr1xXrWDZrW5KFg_yoW8ZrWfpa
+        1DCryftrsYqr1F93ZF9FySgFy5WrykXryY9ryUAw1Y9ws7Wr97Jr4Iq3WFg345Xwn5ta10
+        v3ZxWr1rGrW5ZF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW5JwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjq2NtUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 01:39:09PM +0100, Jiri Slaby wrote:
-> On 14. 12. 20, 13:35, József Horváth wrote:
-> > I'm in trouble with the device tree binding schema of this driver too.
-> 
-> Sorry, someone else has to help you who actually masters DT details.
-> 
-> -- 
-> js
+DWARF register mappings have not been defined for some architectures,
+at least for mips, so we can print an error message and then return
+directly when use '--call-graph dwarf'.
 
-Thank you anyway.
+E.g. without this patch:
 
-Üdvözlettel / Best regards:
-József Horváth
+[root@linux perf]# ./perf record --call-graph dwarf cd
+Error:
+The sys_perf_event_open() syscall returned with 89 (Function not implemented) for event (cycles).
+/bin/dmesg | grep -i perf may provide additional information.
+
+With this patch:
+
+[root@linux perf]# ./perf record --call-graph dwarf cd
+DWARF is not supported for architecture mips64
+
+ Usage: perf record [<options>] [<command>]
+    or: perf record [<options>] -- <command> [<options>]
+
+        --call-graph <record_mode[,record_size]>
+                          setup and enables call-graph (stack chain/backtrace):
+
+				record_mode:	call graph recording mode (fp|dwarf|lbr)
+				record_size:	if record_mode is 'dwarf', max size of stack recording (<bytes>)
+						default: 8192 (bytes)
+
+				Default: fp
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ tools/perf/util/callchain.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
+index 1b60985..a8cf456 100644
+--- a/tools/perf/util/callchain.c
++++ b/tools/perf/util/callchain.c
+@@ -18,6 +18,7 @@
+ #include <math.h>
+ #include <linux/string.h>
+ #include <linux/zalloc.h>
++#include <sys/utsname.h>
+ 
+ #include "asm/bug.h"
+ 
+@@ -278,6 +279,16 @@ int parse_callchain_record(const char *arg, struct callchain_param *param)
+ 		} else if (!strncmp(name, "dwarf", sizeof("dwarf"))) {
+ 			const unsigned long default_stack_dump_size = 8192;
+ 
++			if (system("grep -q 'CONFIG_DWARF=y' .config-detected") != 0) {
++				struct utsname uts;
++
++				ret = uname(&uts);
++				pr_err("DWARF is not supported for architecture %s\n",
++					ret ? "unknown" : uts.machine);
++
++				return -ENOTSUP;
++			}
++
+ 			ret = 0;
+ 			param->record_mode = CALLCHAIN_DWARF;
+ 			param->dump_size = default_stack_dump_size;
+-- 
+2.1.0
 
