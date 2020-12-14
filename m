@@ -2,120 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FF62DA434
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFC82DA437
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 00:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgLNXev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 18:34:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726769AbgLNXep (ORCPT
+        id S1728934AbgLNXh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 18:37:56 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27896 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728481AbgLNXhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 18:34:45 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4626C0617A7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 15:34:05 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id w6so13298280pfu.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 15:34:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vTHaU4vUZHFQDmOjKt/sYCJqlEwq0LLonv48w3qyuBE=;
-        b=N2wdFH+342WgC1guNDProwMAfn7J5UJjpaNyTzCy66PIcspTEqZ549DIMM9pU/nDC1
-         YU5Di/J1EUBxGMgrQuvQL2BDkgZZAROss0/kHbxVZa4ZIf/GlN9wzhXga+U9Xrs94ZJf
-         TZaJZcnzHgATuiEfNdYFhyhnwLBICTrs67JKVvQFCrag47JgQi/isccG3II47J2UshMd
-         fGkjGN4alzgKn5qqz5ZJlD3+r3UGsbeCBRLywalzEouM0sGkSMuRg+tnyt0Ly3kTnnE3
-         xawDxHiWmzELNSAmhUzNbSJssithYKdwAa0CfUJP/lv5gn6KymdDBsPlI5P7BAnhC2Af
-         0LzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vTHaU4vUZHFQDmOjKt/sYCJqlEwq0LLonv48w3qyuBE=;
-        b=RyNdlRQt/bdH986cu564Ham0HjjgqkP3fU/M8uY2QpP2kKCDEAuieAxJAxBlg/KTkX
-         GLhap7cdZLRriCQO046bUW7wro3/tr5DGYks2jTwu6vT/eaw0RV/TjINjRF1a0BYtwW1
-         Lv/nNrYOwJEo5uidrnBccRRsM0hIdkodD4AT7rVqxdJr+ZvqG90YbzLpyckru7nU368E
-         5RMshqtxf/8PZfA189jbc+6TI/0C9NTs6HKDmmvkz4YmCAStg1RYIhQyNo/UDPXLImDE
-         PrL+u3bup2GSv396b+GO8AFI8lDYSvWJuWHft4lNARpIZd0OPMLihJKWShbXPle2CNen
-         TpGA==
-X-Gm-Message-State: AOAM533rRtnXbeHDxMoitFf2xx2RyJ3WTTM6WAiyOFXcRafH79+0eP0v
-        XKyRnUxTncNX+s642rICUtPKlHIW8/Aa0Os8gomqCw==
-X-Google-Smtp-Source: ABdhPJxO+hPY5ifRP2HkdWoETy9hGtGoERGqaJZFlIZNWC8SrpsXDahAgArhyqKk2/38fn53m6OoMpQh2wR12Qr307c=
-X-Received: by 2002:a63:a902:: with SMTP id u2mr26905202pge.263.1607988845055;
- Mon, 14 Dec 2020 15:34:05 -0800 (PST)
+        Mon, 14 Dec 2020 18:37:54 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BENW5mi097437;
+        Mon, 14 Dec 2020 18:37:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=83PhmHXQK3GmlVP6IBkwIiEPFyrpXVbAGOgJ0k9Roc0=;
+ b=ELsG8Vs/wTDb07n55bHQo6LZCPz5YVYJPHPee8SItaO4i01dYRlTVdWtdS3/puuLaYA/
+ 2UxOIHxfni3d65nmgTHnlWNpy3PkGquIN5qxA8t+HsaMCEx8QbTpCPxaxpcnZZ89mm8m
+ KgdhpgHF5Fuzm7s9B7sT+PvvnLsWQkgW0r/7cyccWZ3NmVBiQWvPGO7iytV71pVO4mP/
+ 3UmjUdQKNEpbkH0dPbTVJ2ij84tn9OA2nzhuJy4a7wa0Ch1EYVA4Z4PpQzyeMyFnLF8M
+ I32AqvUg+yyfB5u7EiT1N/0D/Bt/sH7ndzINhJ169Y7J9J7Dmw4OStt9pDOsJY6gMm2i 6w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35eg1datpe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Dec 2020 18:37:13 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BENX3w0101612;
+        Mon, 14 Dec 2020 18:37:13 -0500
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35eg1datp1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Dec 2020 18:37:13 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BENMEMQ003451;
+        Mon, 14 Dec 2020 23:37:12 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma04wdc.us.ibm.com with ESMTP id 35cng8ufqd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Dec 2020 23:37:12 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BENb9oQ35980018
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Dec 2020 23:37:10 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DFF93AE060;
+        Mon, 14 Dec 2020 23:37:09 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 20DE9AE05F;
+        Mon, 14 Dec 2020 23:37:09 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.193.150])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 14 Dec 2020 23:37:09 +0000 (GMT)
+Subject: Re: [PATCH v12 05/17] s390/vfio-ap: manage link between queue struct
+ and matrix mdev
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+References: <20201124214016.3013-1-akrowiak@linux.ibm.com>
+ <20201124214016.3013-6-akrowiak@linux.ibm.com>
+ <20201126150828.78776e62.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <eac90113-4c68-a42f-cbfa-41e6b2780380@linux.ibm.com>
+Date:   Mon, 14 Dec 2020 18:37:08 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20201016175339.2429280-1-ndesaulniers@google.com>
- <160319373854.2175971.17968938488121846972.b4-ty@kernel.org>
- <CAKwvOdnYcff_bcWZYkUC5qKso6EPRWrDgMAdn1KE1_YMCTy__A@mail.gmail.com> <20201214231827.GG8873@bubble.grove.modra.org>
-In-Reply-To: <20201214231827.GG8873@bubble.grove.modra.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 14 Dec 2020 15:33:53 -0800
-Message-ID: <CAKwvOdkP8vHidFPWczC24XwNHhQaXovQiQ43Yb6Csp_+kPR9XQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: link with -z norelro regardless of CONFIG_RELOCATABLE
-To:     Alan Modra <amodra@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        kernel-team <kernel-team@android.com>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Smith <Peter.Smith@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        Quentin Perret <qperret@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201126150828.78776e62.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-14_12:2020-12-11,2020-12-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 mlxlogscore=999 impostorscore=0 mlxscore=0 spamscore=0
+ priorityscore=1501 clxscore=1015 suspectscore=0 adultscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012140153
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 3:18 PM Alan Modra <amodra@gmail.com> wrote:
+
+
+On 11/26/20 9:08 AM, Halil Pasic wrote:
+> On Tue, 24 Nov 2020 16:40:04 -0500
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 >
-> On Mon, Dec 14, 2020 at 01:44:06PM -0800, Nick Desaulniers wrote:
-> > aarch64-linux-gnu-ld: warning: -z norelro ignored
-> >
-> > So we set the emulation mode via -maarch64elf, and our preprocessed
+>> @@ -1155,6 +1243,11 @@ static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev)
+>>   			     matrix_mdev->matrix.apm_max + 1) {
+>>   		for_each_set_bit_inv(apqi, matrix_mdev->matrix.aqm,
+>>   				     matrix_mdev->matrix.aqm_max + 1) {
+>> +			q = vfio_ap_mdev_get_queue(matrix_mdev,
+>> +						   AP_MKQID(apid, apqi));
+>> +			if (!q)
+>> +				continue;
+>> +
+>>   			ret = vfio_ap_mdev_reset_queue(apid, apqi, 1);
+>>   			/*
+>>   			 * Regardless whether a queue turns out to be busy, or
+>> @@ -1164,9 +1257,7 @@ static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev)
+>>   			if (ret)
+>>   				rc = ret;
+>>   
+>> -			q = vfio_ap_get_queue(matrix_mdev, AP_MKQID(apid, apqi);
+>> -			if (q)
+>> -				vfio_ap_free_aqic_resources(q);
+>> +			vfio_ap_free_aqic_resources(q);
+>>   		}
+>>   	}
+> During the review of v11 we discussed this. Introducing this the one
+> way around, just to change it in the next patch, which should deal
+> with something different makes no sense to me.
+
+This is handled by the vfio_ap_mdev_reset_queue() function in the
+next version.
+
 >
-> The default linker emulation for an aarch64-linux ld.bfd is
-> -maarch64linux, the default for an aarch64-elf linker is
-> -maarch64elf.  They are not equivalent.  If you choose -maarch64elf
-> you get an emulation that doesn't support -z relro.
->
-> Now I don't know why the kernel uses -maarch64elf so you shouldn't
-> interpret my comment as a recommendation to use -maarch64linux
-> instead.  That may have other unwanted effects.
+> BTW I've provided a ton of feedback for '[PATCH v11 03/14]
+> s390/vfio-ap: manage link between queue struct and matrix mdev', but I
+> can't find your response to that. Some of the things resurface here, and
+> I don't feel like repeating myself. Can you provide me an answer to
+> the v11 version?
 
-Cool, thanks for the context.  The kernel currently has:
+I can.
 
-arch/arm64/Makefile:
-...
-ifeq ($(CONFIG_CPU_BIG_ENDIAN), y)
-...
-# Prefer the baremetal ELF build target, but not all toolchains include
-# it so fall back to the standard linux version if needed.
-LDFLAGS                += -EB $(call ld-option, -maarch64elfb, -maarch64linuxb)
-...
-else
-...
-# Same as above, prefer ELF but fall back to linux target if needed.
-LDFLAGS                += -EL $(call ld-option, -maarch64elf, -maarch64linux)
-...
 
-Then
-$ git log -S maarch64elf arch/arm64/Makefile
-provides more context:
-1. https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c931d34ea0853d41349e93f871bd3f17f1c03a6b
-2. https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=96f95a17c1cfe65a002e525114d96616e91a8f2d
-3. https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=38fc4248677552ce35efc09902fdcb06b61d7ef9
-
-So it seems more that the kernel is relying on whichever emulation
-targets are supported in local distros, not necessarily the semantic
-differences between the two.  Since the kernel might be linked as
-either, I'll send the patch described in my last post to add `-z
-norelro` just when linking with LLD, since it sounds like it's only
-possible to specify when -maarch64linux/-maarch64linuxb is used, which
-is unlikely.
--- 
-Thanks,
-~Nick Desaulniers
