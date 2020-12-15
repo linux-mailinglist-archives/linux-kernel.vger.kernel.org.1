@@ -2,148 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0262DAC84
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:02:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B08882DAC93
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:02:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbgLOL63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 06:58:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728351AbgLOL6K (ORCPT
+        id S1728727AbgLOMBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 07:01:31 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:23578 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728743AbgLOMAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 06:58:10 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F020C06179C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:57:30 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id k10so16637688wmi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:57:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QoOPRl84dn2oKZTg+ZEq0t+AX/2LfZIV7tg2IP07IX4=;
-        b=J1rTQ06yt+iQ25tLOMNHttJ09Z8xx8DNTvFK1z4BLc89vzZuLGMWt5B0Ph4cFTSjg+
-         tnCfpVYNb/sDPw2CakPfq6GI4szOwjfnCGW4l+2ZuHVpr4KhKvCb2FOZKqIoR7hK1DdY
-         22mA+odPuF0d9JzuR0408JDknj1khQP2OkIrQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=QoOPRl84dn2oKZTg+ZEq0t+AX/2LfZIV7tg2IP07IX4=;
-        b=T8VeEn5gVKIMtcBVf7r09V90rrWABgxENTwHOVMgUtoAHM2s6ZqoBjGdV9pAn2y72C
-         MLJfI3xyzmD0exYTSHtLmpcyil3L2zmLSZkSxA3GuPcal0eIahFHMJ0jsurDxY0DdweZ
-         FJjF+nTmlHeDboYDLJz1nrt7e6d5o4Eh0QHi4IzRpw+iOFYxXnI/hXj+d0TykcOU/J0h
-         bh50WpaxXM9HQ4d+y1opPBPK8Lrj0TtnZyU63rD+lX4xRyAlESSs5PHxu3erYeUPY1nT
-         hft6oUx3G+zPjbjvn5A/SUCnRk3v6tZbK+A0shAu2V2itWMAWxf+ZVDLNSZa8k6919PD
-         obrg==
-X-Gm-Message-State: AOAM530LlDlcsT+D5Nd+nWkKWY0P3xbPMQOCY/mo/1El/UkmNB5br2/X
-        OFRUn4AWlHW/MNytZ7FUBIkOKw==
-X-Google-Smtp-Source: ABdhPJxLhg5oDzaChXMtbZz1Fc1+4sstZfmn90NRubflR2wQ4hp27VDpAP4boTlNgJs3aXwIOEod2g==
-X-Received: by 2002:a1c:2d92:: with SMTP id t140mr9936339wmt.114.1608033449070;
-        Tue, 15 Dec 2020 03:57:29 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m17sm40710713wrn.0.2020.12.15.03.57.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 03:57:28 -0800 (PST)
-Date:   Tue, 15 Dec 2020 12:57:26 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     airlied@linux.ie, daniel@ffwll.ch, tzimmermann@suse.de,
-        kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
-        dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm/hisilicon 1/2] drm/irq: Add the new api to enable pci
- msi
-Message-ID: <X9ikpqdJDgfulvL+@phenom.ffwll.local>
-Mail-Followup-To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
-        tzimmermann@suse.de, kraxel@redhat.com, alexander.deucher@amd.com,
-        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
-        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
-References: <1608032933-50187-1-git-send-email-tiantao6@hisilicon.com>
- <1608032933-50187-2-git-send-email-tiantao6@hisilicon.com>
+        Tue, 15 Dec 2020 07:00:49 -0500
+X-IronPort-AV: E=Sophos;i="5.78,420,1599494400"; 
+   d="scan'208";a="102419797"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 15 Dec 2020 20:00:29 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 928374CE600B;
+        Tue, 15 Dec 2020 20:00:26 +0800 (CST)
+Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
+ (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 15 Dec
+ 2020 20:00:25 +0800
+Subject: Re: [RFC PATCH v2 0/6] fsdax: introduce fs query to support reflink
+To:     Jane Chu <jane.chu@oracle.com>, <linux-kernel@vger.kernel.org>,
+        <linux-xfs@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
+        <linux-mm@kvack.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-raid@vger.kernel.org>,
+        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <david@fromorbit.com>, <hch@lst.de>, <song@kernel.org>,
+        <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
+References: <20201123004116.2453-1-ruansy.fnst@cn.fujitsu.com>
+ <89ab4ec4-e4f0-7c17-6982-4f55bb40f574@oracle.com>
+From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Message-ID: <bb699996-ddc8-8f3a-dc8f-2422bf990b06@cn.fujitsu.com>
+Date:   Tue, 15 Dec 2020 19:58:36 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1608032933-50187-2-git-send-email-tiantao6@hisilicon.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <89ab4ec4-e4f0-7c17-6982-4f55bb40f574@oracle.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.167.225.141]
+X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
+X-yoursite-MailScanner-ID: 928374CE600B.AB884
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 07:48:52PM +0800, Tian Tao wrote:
-> Add new api devm_drm_msi_install() to register interrupts,
-> no need to call pci_disable_msi() when the drm module is removed.
-> 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> ---
->  drivers/gpu/drm/drm_irq.c | 33 +++++++++++++++++++++++++++++++++
->  include/drm/drm_irq.h     |  1 +
->  2 files changed, 34 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/drm_irq.c b/drivers/gpu/drm/drm_irq.c
-> index 803af4b..da58b2c 100644
-> --- a/drivers/gpu/drm/drm_irq.c
-> +++ b/drivers/gpu/drm/drm_irq.c
-> @@ -246,6 +246,39 @@ int devm_drm_irq_install(struct drm_device *dev, int irq)
->  }
->  EXPORT_SYMBOL(devm_drm_irq_install);
->  
-> +static void devm_drm_msi_uninstall(void *data)
-> +{
-> +	struct drm_device *dev = (struct drm_device *)data;
-> +
-> +	pci_disable_msi(dev->pdev);
+Hi Jane
 
-This should be in the pci core, not in drm.
--Daniel
+On 2020/12/15 上午4:58, Jane Chu wrote:
+> Hi, Shiyang,
+> 
+> On 11/22/2020 4:41 PM, Shiyang Ruan wrote:
+>> This patchset is a try to resolve the problem of tracking shared page
+>> for fsdax.
+>>
+>> Change from v1:
+>>    - Intorduce ->block_lost() for block device
+>>    - Support mapped device
+>>    - Add 'not available' warning for realtime device in XFS
+>>    - Rebased to v5.10-rc1
+>>
+>> This patchset moves owner tracking from dax_assocaite_entry() to pmem
+>> device, by introducing an interface ->memory_failure() of struct
+>> pagemap.  The interface is called by memory_failure() in mm, and
+>> implemented by pmem device.  Then pmem device calls its ->block_lost()
+>> to find the filesystem which the damaged page located in, and call
+>> ->storage_lost() to track files or metadata assocaited with this page.
+>> Finally we are able to try to fix the damaged data in filesystem and do
+> 
+> Does that mean clearing poison? if so, would you mind to elaborate 
+> specifically which change does that?
 
-> +}
-> +
-> +/**
-> + * devm_drm_msi_install - install IRQ handler
-> + * @dev: DRM device
-> + *
-> + * devm_drm_msi_install is a  help function of pci_enable_msi.
-> + *
-> + * if the driver uses devm_drm_msi_install, there is no need
-> + * to call pci_disable_msi when the drm module get unloaded,
-> + * as this will done automagically.
-> + *
-> + * Returns:
-> + * Zero on success or a negative error code on failure.
-> + */
-> +int devm_drm_msi_install(struct drm_device *dev)
-> +{
-> +	int ret;
-> +
-> +	ret = pci_enable_msi(dev->pdev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return devm_add_action_or_reset(dev->dev,
-> +					devm_drm_msi_uninstall, dev);
-> +}
-> +EXPORT_SYMBOL(devm_drm_msi_install);
-> +
->  #if IS_ENABLED(CONFIG_DRM_LEGACY)
->  int drm_legacy_irq_control(struct drm_device *dev, void *data,
->  			   struct drm_file *file_priv)
-> diff --git a/include/drm/drm_irq.h b/include/drm/drm_irq.h
-> index 631b22f..c8dff45 100644
-> --- a/include/drm/drm_irq.h
-> +++ b/include/drm/drm_irq.h
-> @@ -29,4 +29,5 @@ struct drm_device;
->  int drm_irq_install(struct drm_device *dev, int irq);
->  int drm_irq_uninstall(struct drm_device *dev);
->  int devm_drm_irq_install(struct drm_device *dev, int irq);
-> +int devm_drm_msi_install(struct drm_device *dev);
->  #endif
-> -- 
-> 2.7.4
+Recovering data for filesystem (or pmem device) has not been done in 
+this patchset...  I just triggered the handler for the files sharing the 
+corrupted page here.
+
+
+--
+Thanks,
+Ruan Shiyang.
+
+> 
+> Thanks!
+> -jane
+> 
+>> other necessary processing, such as killing processes who are using the
+>> files affected.
+> 
 > 
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+
