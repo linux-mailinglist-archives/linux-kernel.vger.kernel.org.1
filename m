@@ -2,147 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C5C2DB6B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 708C02DB6BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729807AbgLOW4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 17:56:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
+        id S1730269AbgLOW73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 17:59:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728489AbgLOWzq (ORCPT
+        with ESMTP id S1730074AbgLOW71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 17:55:46 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C946AC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:55:05 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id x13so21097081oto.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:55:05 -0800 (PST)
+        Tue, 15 Dec 2020 17:59:27 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43EDBC06138C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:58:37 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id a12so21380316wrv.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:58:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WfTxGeZcQbEkDfESo7Zide/rgubu463P4yV1OlAr/Es=;
-        b=wvVXfUa/Q1rbsphDSY8y1GB2Fih6ml2zI7YmbQnNhd9+P9IFpx2LKDa+2kiTnL4W0a
-         3pFRWyvZODNQcP77Fkddq3FXpfJFgzUPIssb6f/9UN4ToMmjbTAmrrTuQIYTDbBAZ8kU
-         a/eqVE0xDKBdUF/8DbxjOHJTByS2R0oofrA2U99bRvw3ZoNWRnhkcK497qXbKRUbFP4g
-         B7TOMZi6sWBMyjGkEmO7x1eGGc21/elGiRWWqH0Neoyg/e6rv8YlOKKhAzQKWrQtZXiE
-         fpeqkTuFFjKQuzF1xTpaIiHLYzVZ6LrZDt2DWu/ZfMCAQPaqs8/7z09BCmuYLEEPyGBe
-         I5Dg==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=S4/ArqoyhM6R2IAWg2ouJlOV41Dq/1z4QTe3XTdQngE=;
+        b=XgUtemt7u7kpgcD8bks8ksl/53beQQmR3zAfJWl1PB+4OuvLHyBXcROwXia6ohjhJk
+         OrqiJGR25c9nL0FlW8UOLqn/wpYdHH2rcQ2QdbWXeiYmOYYRtgiyHtqPisQl5hxyd3Rc
+         n0ZzptJbGWYLgbFGuNcTlgxoVqLExFn0TQAu26J48CVg8LDRUAgtaTp5No0k6Kp9sjl4
+         OKNaTCO1aZICVLEd3pWsGCjXJC4vXKffZQVSHdTwRRrVLe9TH9dbZuJADiSt5DRb4pII
+         zXpIaREccXPg3RONSCzCjGXZH+3A8YQlfQiNBFuQcSqopRwT8FYdwUcLQAyXCEHOmc5E
+         myqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WfTxGeZcQbEkDfESo7Zide/rgubu463P4yV1OlAr/Es=;
-        b=nINkh1lVHl2qa3Orq5XF/OV7VmAV/eHjrFDAQmwngjFK+cD9yKo95ysYx+E/quAKVi
-         Pk/qWnRWyrX49NEfz0P2IXr1oHKmY7xLMawERV/K8CGj2jK+NYkmsvteIp4Bifir1Nkx
-         zS19XipACogdHxDNrcCdN8pbrgL+4RMFyu1y+XGTiND5TOmm1tEnQVHYWdv9knNE6Knh
-         r/h5OhKKzl7iHCexBGBgGquSGYbE9bBap5U61L1uBzpf1UJ+tlAW2xnlyY3x9L3T78lz
-         K3I+k0gFsiOVAdrEEQfUZnyg7oZSc5Z3xOmBct8T+iMplSM13fQh4mNPAem5e/pQcJhF
-         vaXg==
-X-Gm-Message-State: AOAM5313icgO5h7cvRASQCPwdMAbbyNENDr0ze9rneg1PBD/kh0ixSL8
-        AoZ2wm6Hg4J1OjH55LY+R0/JBw==
-X-Google-Smtp-Source: ABdhPJwkom0uuTtRSsvlyvDYFUcA87mN0YNXvKqstkNhDakeOds/pc5oYPozNb5OSZl9bi8HHhWbZQ==
-X-Received: by 2002:a9d:27a7:: with SMTP id c36mr24529265otb.59.1608072905203;
-        Tue, 15 Dec 2020 14:55:05 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 8sm58567oii.45.2020.12.15.14.55.04
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=S4/ArqoyhM6R2IAWg2ouJlOV41Dq/1z4QTe3XTdQngE=;
+        b=jctPuhfGPYObSgGW8N93KUbJ/x+yMCqDUj0LF4qUC35q5uyYQJgZnxSpQti8inWVqa
+         7MIo/mMDv3eEa0FgI+cf3I47Xtl3sEft6DEYDpCNndb4wQIdWF26HN5g0cJ1tjQ9oUg5
+         svtus69VkuWJaBNO3k9tt6/RyDUWohgflvIf6k+Q5UV0LsXNxcwsLqZwdqq1Aq7I1kj9
+         ldzQQv28sQxa4lC1UKux+U9kGbh4UTRtdH5QOGy9Ve+cmRQW4STZVqZXZfjygSGrNVsj
+         wsYgppurmsJ3XXoVqWRSzzo6vsWdQysG92X8Tx1NcAp8Q0EqWcKXWk95D591uc1WKOsd
+         QzFg==
+X-Gm-Message-State: AOAM532SJYqIzh15WYhKkvZZmCXTOHS2a2A6Mj9o5zIf8U0sgbhzL66a
+        rDnD8N19bFLb5+YFlNSh20iGtQ==
+X-Google-Smtp-Source: ABdhPJzN+VdxNoGz5CCRLdungxTDGe3IPh+5/50yEjoJhTIvajc8CLWn1+HPO2cFAFPRxOGqY6emOQ==
+X-Received: by 2002:a05:6000:14b:: with SMTP id r11mr36427160wrx.53.1608073115832;
+        Tue, 15 Dec 2020 14:58:35 -0800 (PST)
+Received: from linaro.org ([2a01:e34:ed2f:f020:1dbc:8063:5912:c6b3])
+        by smtp.gmail.com with ESMTPSA id t1sm83494wro.27.2020.12.15.14.58.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 14:55:04 -0800 (PST)
-Date:   Tue, 15 Dec 2020 16:55:02 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, elder@linaro.org
-Subject: Re: [PATCH] remoteproc: Create a separate workqueue for recovery
- tasks
-Message-ID: <X9k+xmg9SULEbJXe@builder.lan>
-References: <1607806087-27244-1-git-send-email-rishabhb@codeaurora.org>
+        Tue, 15 Dec 2020 14:58:35 -0800 (PST)
+Date:   Tue, 15 Dec 2020 23:58:32 +0100
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     rui.zhang@intel.com, amitk@kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 2/4] thermal/core: Precompute the jiffies
+Message-ID: <20201215225832.GB3581@linaro.org>
+References: <20201202120657.1969-1-daniel.lezcano@linaro.org>
+ <20201202120657.1969-2-daniel.lezcano@linaro.org>
+ <1c909a38-1777-556d-fe87-29394a1b1d56@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1607806087-27244-1-git-send-email-rishabhb@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1c909a38-1777-556d-fe87-29394a1b1d56@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 12 Dec 14:48 CST 2020, Rishabh Bhatnagar wrote:
-
-> Create an unbound high priority workqueue for recovery tasks.
-
-This simply repeats $subject
-
-> Recovery time is an important parameter for a subsystem and there
-> might be situations where multiple subsystems crash around the same
-> time.  Scheduling into an unbound workqueue increases parallelization
-> and avoids time impact.
-
-You should be able to write this more succinctly. The important part is
-that you want an unbound work queue to allow recovery to happen in
-parallel - which naturally implies that you care about recovery latency.
-
-> Also creating a high priority workqueue
-> will utilize separate worker threads with higher nice values than
-> normal ones.
+On Tue, Dec 15, 2020 at 09:38:06AM -0500, Thara Gopinath wrote:
+> Hi Daniel,
 > 
-
-This doesn't describe why you need the higher priority.
-
-
-I believe, and certainly with the in-line coredump, that we're running
-our recovery work for way too long to be queued on the system_wq. As
-such the content of the patch looks good!
-
-Regards,
-Bjorn
-
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> ---
->  drivers/remoteproc/remoteproc_core.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+> On 12/2/20 7:06 AM, Daniel Lezcano wrote:
+> > The delays are stored in ms units and when the polling function is
+> > called this delay is converted into jiffies at each call.
+> > 
+> > Instead of doing the conversion again and again, compute the jiffies
+> > at init time and use the value directly when setting the polling.
 > 
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index 46c2937..8fd8166 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -48,6 +48,8 @@ static DEFINE_MUTEX(rproc_list_mutex);
->  static LIST_HEAD(rproc_list);
->  static struct notifier_block rproc_panic_nb;
->  
-> +static struct workqueue_struct *rproc_wq;
-> +
->  typedef int (*rproc_handle_resource_t)(struct rproc *rproc,
->  				 void *, int offset, int avail);
->  
-> @@ -2475,7 +2477,7 @@ void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type)
->  		rproc->name, rproc_crash_to_string(type));
->  
->  	/* create a new task to handle the error */
-> -	schedule_work(&rproc->crash_handler);
-> +	queue_work(rproc_wq, &rproc->crash_handler);
->  }
->  EXPORT_SYMBOL(rproc_report_crash);
->  
-> @@ -2520,6 +2522,10 @@ static void __exit rproc_exit_panic(void)
->  
->  static int __init remoteproc_init(void)
->  {
-> +	rproc_wq = alloc_workqueue("rproc_wq", WQ_UNBOUND | WQ_HIGHPRI, 0);
-> +	if (!rproc_wq)
-> +		return -ENOMEM;
-> +
->  	rproc_init_sysfs();
->  	rproc_init_debugfs();
->  	rproc_init_cdev();
-> @@ -2536,6 +2542,7 @@ static void __exit remoteproc_exit(void)
->  	rproc_exit_panic();
->  	rproc_exit_debugfs();
->  	rproc_exit_sysfs();
-> +	destroy_workqueue(rproc_wq);
->  }
->  module_exit(remoteproc_exit);
->  
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+> A generic comment. You can avoid patch 1 of this series and directly
+> have patch 2 , right? There is no need to rename polling_delay/passive_delay
+> to *_delay_ms and then remove it again?
+
+Yes, I can simplify that.
+
+> > 
+> > Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> > ---
+
+[ ... ]
+
+> > +static inline void thermal_zone_set_polling_delay(
+> > +	struct thermal_zone_device *tz, int delay_ms)
+> > +{
+> > +	tz->polling_delay_ms = delay_ms;
+> > +	tz->polling_delay_jiffies = msecs_to_jiffies(delay_ms);
+> > +	if (delay_ms > 1000)
+> > +		tz->polling_delay_jiffies = round_jiffies(tz->polling_delay_jiffies);
+> > +}
 > 
+> How about one function instead?
+> static inline void thermal_zone_set_delay_jiffies(int *delay_jiffes, int
+> delay_ms)
+> {
+> 	*delay_jiffies = msecs_to_jiffies(delay_ms);
+> 	if (delay_ms > 1000)
+> 		*delay_jiffies = round_jiffies(*delay_jiffies);
+> }
+> 
+> And then calling thermal_zone_set_delay_jiffies(&tz->passive_delay_jiffies,
+> passive_delay)..
+ 
+Yes, agree. I'll do this change.
+
+Thanks for the review
+
+  -- Daniel
+
+-- 
+
+ <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
