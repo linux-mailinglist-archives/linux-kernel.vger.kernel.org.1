@@ -2,86 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2370E2DACD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2EBB2DAD4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727486AbgLOMO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 07:14:57 -0500
-Received: from mga09.intel.com ([134.134.136.24]:46563 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726156AbgLOMO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 07:14:56 -0500
-IronPort-SDR: eJHLkP9lExaywZucswweuThWNZWESlDy92wjQG8UuwGgTkVu/16yRj+KlqyptAwsxv9AquyVw+
- lpytWFnmDgoQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="175011333"
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="175011333"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 04:13:10 -0800
-IronPort-SDR: IFxsBVE6eMXGs+O+Ka4TEF45X9NKcB0cm+3+OfxpQy73jlEnTwolO/ucKXXv+fV62Xs0Myonlw
- sZY3FtFFncSA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="383513847"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Dec 2020 04:13:07 -0800
-Subject: Re: [RFC][PATCH 1/5] sched/fair: Fix select_idle_cpu()s cost
- accounting
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mgorman@techsingularity.net, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        juri.lelli@redhat.com, valentin.schneider@arm.com,
-        qais.yousef@arm.com, dietmar.eggemann@arm.com, rostedt@goodmis.org,
-        bsegall@google.com, tim.c.chen@linux.intel.com, benbjiang@gmail.com
-References: <20201214164822.402812729@infradead.org>
- <20201214170017.877557652@infradead.org>
- <c4e31235-e1fb-52ac-99a8-ae943ee0de54@linux.intel.com>
- <20201215075911.GA3040@hirez.programming.kicks-ass.net>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <ec2e0453-9fab-f7ac-effe-f64601806595@linux.intel.com>
-Date:   Tue, 15 Dec 2020 20:13:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728653AbgLOMPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 07:15:48 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:22820 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726156AbgLOMPU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 07:15:20 -0500
+X-IronPort-AV: E=Sophos;i="5.78,420,1599494400"; 
+   d="scan'208";a="102420175"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 15 Dec 2020 20:14:30 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 649AF4CE5CCA;
+        Tue, 15 Dec 2020 20:14:29 +0800 (CST)
+Received: from G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) by
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Tue, 15 Dec 2020 20:14:28 +0800
+Received: from localhost.localdomain (10.167.225.141) by
+ G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Tue, 15 Dec 2020 20:14:28 +0800
+From:   Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-raid@vger.kernel.org>,
+        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <david@fromorbit.com>, <hch@lst.de>, <song@kernel.org>,
+        <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
+Subject: [RFC PATCH v3 0/9] fsdax: introduce fs query to support reflink
+Date:   Tue, 15 Dec 2020 20:14:05 +0800
+Message-ID: <20201215121414.253660-1-ruansy.fnst@cn.fujitsu.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201215075911.GA3040@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 649AF4CE5CCA.AE812
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/15 15:59, Peter Zijlstra wrote:
-> On Tue, Dec 15, 2020 at 11:36:35AM +0800, Li, Aubrey wrote:
->> On 2020/12/15 0:48, Peter Zijlstra wrote:
->>> We compute the average cost of the total scan, but then use it as a
->>> per-cpu scan cost when computing the scan proportion. Fix this by
->>> properly computing a per-cpu scan cost.
->>>
->>> This also fixes a bug where we would terminate early (!--nr, case) and
->>> not account that cost at all.
->>
->> I'm a bit worried this may introduce a regression under heavy load.
->> The overhead of adding another cpu_clock() and calculation becomes 
->> significant when sis_scan is throttled by nr.
-> 
-> The thing is, the code as it exists today makes no sense what so ever.
-> It's plain broken batshit.
-> 
-> We calculate the total scanning time (irrespective of how many CPUs we
-> touched), and then use that calculate the number of cpus to scan. That's
-> just daft.
-> 
-> After this patch we calculate the avg cost of scanning 1 cpu and use
-> that to calculate how many cpus to scan. Which is coherent and sane.
+This patchset is a try to resolve the problem of tracking shared page
+for fsdax.
 
-I see and all of these make sense to me.
+Change from v2:
+  - Adjust the order of patches
+  - Divide the infrastructure and the drivers that use it
+  - Rebased to v5.10
 
-> 
-> Maybe it can be improved, but that's a completely different thing.
-> 
+Change from v1:
+  - Introduce ->block_lost() for block device
+  - Support mapped device
+  - Add 'not available' warning for realtime device in XFS
+  - Rebased to v5.10-rc1
 
-OK, I'll go through the workloads in hand and paste the data here.
+This patchset moves owner tracking from dax_assocaite_entry() to pmem
+device driver, by introducing an interface ->memory_failure() of struct
+pagemap.  This interface is called by memory_failure() in mm, and
+implemented by pmem device.  Then pmem device calls its ->corrupted_range()
+to find the filesystem which the corrupted data located in, and call
+filesystem handler to track files or metadata assocaited with this page.
+Finally we are able to try to fix the corrupted data in filesystem and do
+other necessary processing, such as killing processes who are using the
+files affected.
 
-Thanks,
--Aubrey
+The call trace is like this:
+memory_failure()
+ pgmap->ops->memory_failure()      => pmem_pgmap_memory_failure()
+  gendisk->fops->corrupted_range() => - pmem_corrupted_range()
+                                      - md_blk_corrupted_range()
+   sb->s_ops->currupted_range()    => xfs_fs_corrupted_range()
+    xfs_rmap_query_range()
+     xfs_currupt_helper()
+      * corrupted on metadata
+          try to recover data, call xfs_force_shutdown()
+      * corrupted on file data 
+          try to recover data, call mf_dax_mapping_kill_procs()
+
+The fsdax & reflink support for XFS is not contained in this patchset.
+
+(Rebased on v5.10)
+--
+
+Shiyang Ruan (9):
+  pagemap: Introduce ->memory_failure()
+  blk: Introduce ->corrupted_range() for block device
+  fs: Introduce ->corrupted_range() for superblock
+  mm, fsdax: Refactor memory-failure handler for dax mapping
+  mm, pmem: Implement ->memory_failure() in pmem driver
+  pmem: Implement ->corrupted_range() for pmem driver
+  dm: Introduce ->rmap() to find bdev offset
+  md: Implement ->corrupted_range()
+  xfs: Implement ->corrupted_range() for XFS
+
+ block/genhd.c                 |  12 +++
+ drivers/md/dm-linear.c        |   8 ++
+ drivers/md/dm.c               |  66 +++++++++++++++
+ drivers/nvdimm/pmem.c         |  51 ++++++++++++
+ fs/block_dev.c                |  21 +++++
+ fs/dax.c                      |  24 +++---
+ fs/xfs/xfs_fsops.c            |  10 +++
+ fs/xfs/xfs_mount.h            |   2 +
+ fs/xfs/xfs_super.c            |  93 +++++++++++++++++++++
+ include/linux/blkdev.h        |   2 +
+ include/linux/dax.h           |   5 +-
+ include/linux/device-mapper.h |   2 +
+ include/linux/fs.h            |   2 +
+ include/linux/genhd.h         |   8 ++
+ include/linux/memremap.h      |   8 ++
+ include/linux/mm.h            |   9 ++
+ mm/memory-failure.c           | 150 +++++++++++++++++++---------------
+ 17 files changed, 391 insertions(+), 82 deletions(-)
+
+-- 
+2.29.2
+
+
+
