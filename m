@@ -2,110 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6FB2DA66C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:49:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 314122DA66E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726059AbgLOCsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:48:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgLOCru (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:47:50 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0706EC061793;
-        Mon, 14 Dec 2020 18:47:10 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cw2j404Flz9s1l;
-        Tue, 15 Dec 2020 13:47:03 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1608000428;
-        bh=KZgrX3Svat5vQenpVlJt3m8LE64eIbU2SMKOm1f4eqw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mgm/IBpG59UpDk+tbrszWnNzkj94drwh7QLU0axkmc6WEPr5D6ku3bhwseNxU6nmr
-         4n+VGLRdYj9N1XxfOGbVJlGB8RV5kStd0XD+y/xZ8L/LKUWjdtCwQ6YzePiaw58fja
-         hTrydH0FRTrv0Vu+NnYFKZxvdcbQzp01g2LzBPR7G9YqZ3+QeXYnhTNQ7PuuLqkFx7
-         WHp5Dfk9xgh0YOFGKVdp3k0MW/6RnHpMubdk/7kx6LewNsHWZFSPmpz5ohwhd2cm62
-         xyNry6rdEVbdvJW4ovizoGfO2zCRdX9La/t/PXxjL7hEq1ahJbZgsgfdztbzlznn82
-         JlIIqeE0K6dXg==
-Date:   Tue, 15 Dec 2020 13:47:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the drm tree
-Message-ID: <20201215134702.37a12a03@canb.auug.org.au>
-In-Reply-To: <20201215065045.66421c34@canb.auug.org.au>
-References: <20201105175031.00e0b081@canb.auug.org.au>
-        <20201116104444.044486ea@canb.auug.org.au>
-        <20201215065045.66421c34@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6exDK=Qk6gCjsZQ=Od9rDCZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1726423AbgLOCtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:49:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726144AbgLOCsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:48:31 -0500
+Subject: Re: [GIT pull] sched/core for v5.11-rc1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608000471;
+        bh=1vUJwMcDMnCoWmzodaSxOqBj4FRYhA4Zi0tFcHUAhWM=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=EBIFbmoxwIOG/N/ijJYEzpHjAOcOD+kra3KSeDe/Bx9d9w3jik2/mjJdw0O/Pco/2
+         FQovmRTxrgvXbgcA9B2QrTMdi6t9+363O9dreBOfyd6nIDK+dxdZRxBD2CV/z2/qXh
+         dg5cWfREac8je46jVXDt9/THhKtQol+RSFCQ/D7MawdhrhKFeQGq36lTeJO3P+mXXu
+         giDQaSr99R5hXr5zWx2p4OLyqxsKy4BbucPfubDXSPWyS5z/IDUjNIrwQqxnFa9kYg
+         KEqKqgBxHds6VeW/yF1M+VHzKhBckLxDaBUe/LxDXNvZmn4OEny6aoaEj2+Fs0x40E
+         tmQGuqZjYOE6Q==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <160797733789.10793.18065892325435860673.tglx@nanos>
+References: <160797732939.10793.9152151866806316627.tglx@nanos> <160797733789.10793.18065892325435860673.tglx@nanos>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <160797733789.10793.18065892325435860673.tglx@nanos>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-core-2020-12-14
+X-PR-Tracked-Commit-Id: 5b78f2dc315354c05300795064f587366a02c6ff
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: adb35e8dc98ba9bda99ff79ac6a05b8fcde2a762
+Message-Id: <160800047084.6499.16690395975758946045.pr-tracker-bot@kernel.org>
+Date:   Tue, 15 Dec 2020 02:47:50 +0000
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6exDK=Qk6gCjsZQ=Od9rDCZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The pull request you sent on Mon, 14 Dec 2020 20:22:17 -0000:
 
-Hi all,
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-core-2020-12-14
 
-On Tue, 15 Dec 2020 06:50:45 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Mon, 16 Nov 2020 10:44:44 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > On Thu, 5 Nov 2020 17:50:31 +1100 Stephen Rothwell <sfr@canb.auug.org.a=
-u> wrote: =20
-> > >
-> > > After merging the drm tree, today's linux-next build (htmldocs) produ=
-ced
-> > > these warnings:
-> > >=20
-> > > include/linux/dma-buf-map.h:106: warning: Excess function parameter '=
-vaddr' description in 'DMA_BUF_MAP_INIT_VADDR'
-> > > include/linux/dma-buf-map.h:106: warning: Function parameter or membe=
-r 'vaddr_' not described in 'DMA_BUF_MAP_INIT_VADDR'
-> > > include/linux/dma-buf-map.h:106: warning: Excess function parameter '=
-vaddr' description in 'DMA_BUF_MAP_INIT_VADDR'
-> > >=20
-> > > Introduced by commit
-> > >=20
-> > >   20e76f1a7059 ("dma-buf: Use struct dma_buf_map in dma_buf_vunmap() =
-interfaces")   =20
-> >=20
-> > I am still getting these warnings. =20
->=20
-> I am still getting these warnings.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/adb35e8dc98ba9bda99ff79ac6a05b8fcde2a762
 
-These warnings are now from Linus' tree.
+Thank you!
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/6exDK=Qk6gCjsZQ=Od9rDCZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/YI6YACgkQAVBC80lX
-0Gzy9ggAo6DY0cMD+RSQKBQKQJibhAuPuHpnjBz2rRm5hbrs7EU5s2sq7KyWy9Ch
-Qsamkx4S0lcFNQI4JkMjq4Tc3okBiPwozew7KR08sldQzJTIsaf7w/JiTWb4Llbq
-wONTdWYKRwA34CusGe8QZytvLTtlKYef/xr+E4Oog3wKtO7k/QYK7+GCRXjmZMGF
-NGKZgZzzV7g1zPzvPx0ekCMGi6vHb2SsWa2QLEoRFHlUeUFa8bU9TCPu1cB47lSC
-NlSmdMjYT/kwsSDihlfX0sSjRUtVKS+BYNeqxDUcJlAihZxasCu7iukIUCWFbryo
-tJNjx5L4z3LlTTOZHYTHL00ad2iyQg==
-=+tga
------END PGP SIGNATURE-----
-
---Sig_/6exDK=Qk6gCjsZQ=Od9rDCZ--
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
