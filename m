@@ -2,133 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058DE2DAC27
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:39:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 968C32DAB95
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728574AbgLOLgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 06:36:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34867 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728113AbgLOLgk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 06:36:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608032113;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fHDy6tJb7RYpPzJn6EeCeZW9kiSrKc2JfgDfxvwFlAk=;
-        b=Zq7nNDBH4B8Tvoxw+WTYZjjZgzM04ZpGJ7oAFb2pTK3q6tHTtUANfnYCG23YEmgmndcoKR
-        qjujfgeZyfYfLznJZd4GAkMuFuqaS+c55WBxQ23l+PJkaD8XpYTzMp+Yih8jPyies/H22o
-        oVMcnnwPRqaPeHcfXv/UUPo6iRshZWQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-586-CSk_adk_PgiG3AJ3UeaTzw-1; Tue, 15 Dec 2020 06:35:10 -0500
-X-MC-Unique: CSk_adk_PgiG3AJ3UeaTzw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F238B80ED8A;
-        Tue, 15 Dec 2020 11:35:07 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E055C710DB;
-        Tue, 15 Dec 2020 11:35:05 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 777A9417F260; Tue, 15 Dec 2020 07:59:27 -0300 (-03)
-Date:   Tue, 15 Dec 2020 07:59:27 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-Message-ID: <20201215105927.GA3321@fuller.cnet>
-References: <875z5c2db8.fsf@nanos.tec.linutronix.de>
- <20201209163434.GA22851@fuller.cnet>
- <87r1nyzogg.fsf@nanos.tec.linutronix.de>
- <20201210152618.GB23951@fuller.cnet>
- <87zh2lib8l.fsf@nanos.tec.linutronix.de>
- <20201211002703.GA47016@fuller.cnet>
- <87v9d8h3lx.fsf@nanos.tec.linutronix.de>
- <20201211141822.GA67764@fuller.cnet>
- <87k0togikr.fsf@nanos.tec.linutronix.de>
- <d9063c37-a965-d5cf-e923-c0c9f6ddc044@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d9063c37-a965-d5cf-e923-c0c9f6ddc044@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        id S1728353AbgLOLDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 06:03:02 -0500
+Received: from ozlabs.org ([203.11.71.1]:59401 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727807AbgLOLCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 06:02:35 -0500
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4CwFh153ckz9sRR; Tue, 15 Dec 2020 22:01:53 +1100 (AEDT)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Nicholas Piggin <npiggin@gmail.com>, linuxppc-dev@lists.ozlabs.org
+Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-arch@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+In-Reply-To: <20201111110723.3148665-1-npiggin@gmail.com>
+References: <20201111110723.3148665-1-npiggin@gmail.com>
+Subject: Re: [PATCH 0/3] powerpc: convert to use ARCH_ATOMIC
+Message-Id: <160803006828.517022.11653746040201770780.b4-ty@ellerman.id.au>
+Date:   Tue, 15 Dec 2020 22:01:53 +1100 (AEDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 10:59:59PM +0100, Paolo Bonzini wrote:
-> On 11/12/20 22:04, Thomas Gleixner wrote:
-> > > Its 100ms off with migration, and can be reduced further (customers
-> > > complained about 5 seconds but seem happy with 0.1ms).
-> > What is 100ms? Guaranteed maximum migration time?
+On Wed, 11 Nov 2020 21:07:20 +1000, Nicholas Piggin wrote:
+> This conversion seems to require generic atomic64 changes, looks
+> like nothing else uses ARCH_ATOMIC and GENERIC_ATOMIC64 yet.
 > 
-> I suppose it's the length between the time from KVM_GET_CLOCK and
-> KVM_GET_MSR(IA32_TSC) to KVM_SET_CLOCK and KVM_SET_MSR(IA32_TSC).  But the
-> VM is paused for much longer, the sequence for the non-live part of the
-> migration (aka brownout) is as follows:
+> Thanks,
+> Nick
 > 
->     pause
->     finish sending RAM            receive RAM               ~1 sec
->     send paused-VM state          finish receiving RAM     \
->                                   receive paused-VM state   ) 0.1 sec
->                                   restart                  /
+> Nicholas Piggin (3):
+>   asm-generic/atomic64: Add support for ARCH_ATOMIC
+>   powerpc/64s/iommu: don't use atomic_ function on atomic64_t type
+>   powerpc: rewrite atomics to use ARCH_ATOMIC
 > 
-> The nanosecond and TSC times are sent as part of the paused-VM state at the
-> very end of the live migration process.
-> 
-> So it's still true that the time advances during live migration brownout;
-> 0.1 seconds is just the final part of the live migration process.  But for
-> _live_ migration there is no need to design things according to "people are
-> happy if their clock is off by 0.1 seconds only".  
+> [...]
 
-Agree. What would be a good way to fix this? 
+Patch 2 applied to powerpc/next.
 
-It seems to me using CLOCK_REALTIME as in the interface Maxim is
-proposing is prone to difference in CLOCK_REALTIME itself.
+[2/3] powerpc/64s/iommu: Don't use atomic_ function on atomic64_t type
+      https://git.kernel.org/powerpc/c/c33cd1ed60013ec2ae50f91fed260def5f1d9851
 
-Perhaps there is another way to measure that 0.1 sec which is
-independent of the clock values of the source and destination hosts
-(say by sending a packet once the clock stops counting).
-
-Then on destination measure delta = clock_restart_time - packet_receival
-and increase clock by that amount.
-
-
-
-> Again, save-to-disk,
-> reverse debugging and the like are a different story, which is why KVM
-> should delegate policy to userspace (while documenting how to do it right).
-> 
-> Paolo
-> 
-> > CLOCK_REALTIME and CLOCK_TAI are off by the time the VM is paused and
-> > this state persists up to the point where NTP corrects it with a time
-> > jump.
-> > 
-> > So if migration takes 5 seconds then CLOCK_REALTIME is not off by 100ms
-> > it's off by 5 seconds.
-> > 
-> > CLOCK_MONOTONIC/BOOTTIME might be off by 100ms between pause and resume.
-> > 
-
+cheers
