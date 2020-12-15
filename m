@@ -2,198 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38E22DB693
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2824C2DB698
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729506AbgLOWic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 17:38:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728002AbgLOWia (ORCPT
+        id S1730990AbgLOWky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 17:40:54 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:60444 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729802AbgLOWkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 17:38:30 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C68FC061793
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:37:50 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id lj6so398091pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:37:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0adbEDIlGgsdZMwpeHsz68fadhy77HxizGrK/I/zuAw=;
-        b=q29BeMk/EX9TIUtaX+v7VZEkfnWRuK6tLcFjPrUlsn4jSjyLKB2EhYxqP8D8b8+C0P
-         HU87AVsEQS9XBhz0h0FGL7Kom4UCSsadGv75EWksBjE4l0TYdhHB37cV/kT2UqwnrSF3
-         nRPYNZHjFZwDKUC2ADQRY6rBKcJI8QT0Bvv94dqaI7BxPBJBIeDGmTS33hWUh2ju/tF3
-         emUqHpd13OToX3LyN44KZ0XHRbt8SJwNal5enRDCY8mt+Wqn/b+ahiUJBf37a1ExTjSW
-         5Tz/wNxgkmxyHf3+GPdv8hnX8yuwJ6mhseFYhp2p2tpQs12UX6rxLFJtALQvKGogwYzB
-         KWWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0adbEDIlGgsdZMwpeHsz68fadhy77HxizGrK/I/zuAw=;
-        b=m6YmC0MCD45tHGQBk5vZ0ZniJOUGkToOSNUNyXHbTeLcSNsvQxH3caq51VuhaDH2W4
-         AY+AU1Gna3/ArkKbayeB4Pfb9eJVIatv/YPnvwSggB0NsSraZvfNzOIyoEEt7H08kB+C
-         J8eSwLQXjvpQWzmDBKFy9XD7ZOG/6+koCeH7oiryXU0WUz8QDGi97oh78trQKgNAiuij
-         LkOgJtqiSmZ9ImGWhLIh2F0aM2DGyM9YfotRNl5jezF5EZyP8/AzCHrm0mVmeYgiTuSn
-         Y3oxwtXV8fZmqhohQ0rz5HfefDPplpeJLf0RMWcjTX0UdlXkczkxHXTa9jgW7gQbRFzN
-         EhNQ==
-X-Gm-Message-State: AOAM531PObnSLCvlFVBD0+l0TpqfvmL7DGMQn8GZ3cPY4tk5PFwWMVV3
-        xlhsZ1169dDZXt+q9G2/5xOYEw==
-X-Google-Smtp-Source: ABdhPJzf1RUU5/LobL4l5O9iJtGdS8KcqS4MZKuYB06hGDDZLYO1Had9z9as4MCu4QwuBY8yUe5ynQ==
-X-Received: by 2002:a17:90a:5894:: with SMTP id j20mr682847pji.107.1608071869691;
-        Tue, 15 Dec 2020 14:37:49 -0800 (PST)
-Received: from x1 ([2601:1c0:4701:ae70:d679:3889:5fae:ca68])
-        by smtp.gmail.com with ESMTPSA id m77sm136746pfd.105.2020.12.15.14.37.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 14:37:48 -0800 (PST)
-Date:   Tue, 15 Dec 2020 14:37:47 -0800
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>
-Subject: Re: [RFC PATCH] pinctrl: add helper to expose pinctrl state in
- debugfs
-Message-ID: <20201215223747.GA2086329@x1>
-References: <20201211042625.129255-1-drew@beagleboard.org>
- <CAHp75VcAbdrSnb_ag9Rc0tny3Vtqjs1if+ahk7U36V2eaKMpSw@mail.gmail.com>
- <20201211234304.GA189853@x1>
- <CAHp75Vf-=nM-M2K-v_8iyME4t6ZF-gvSZ5ePsxQFhObJ_0YHsw@mail.gmail.com>
- <20201214214419.GA1196223@x1>
- <CAHp75VeN9xLUKFBXZfo=XzNkdv=BSRJW59=cUjyY0TekF1JONA@mail.gmail.com>
+        Tue, 15 Dec 2020 17:40:39 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFMdiZa029726;
+        Tue, 15 Dec 2020 22:39:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=4QmLHvrBsUjuL3+RI0Oe/61V/03hxVujeNXABHfcE0o=;
+ b=Ior35owJr+CojS017WWvxv8+zJmD6vCYdLLf+IXdOLWTEq1kTyQorwv/iE6eWDB9PQ7m
+ pGXzPr6Z9CLjd1nznbBieapqUTO7/zp5hTyQvUZMTbcJIvYndAGgrBYXdVZ9MiNAXNKg
+ LcN1C6IKc1UyGrVpdaD1+AJ8Kb8ihV5vZsNi5x8bqSuxsStv7YFUiWWk7QpZX00QVeJW
+ c7Mg2AqZ25E0C6whxhLQjeHupHCnwKHIOnBT53PeeBPlZL9/qHWO0gJmTl/WF23ZE7gj
+ nmjXi0FXtE/ifenrZ7kBjorLmAvPTXtTWeqVPLIDbawg/zQgikYK44/CTQ7qccrQWRCA 7g== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 35ckcbdbxc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Dec 2020 22:39:44 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFMa8GH168241;
+        Tue, 15 Dec 2020 22:39:43 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 35d7swwaum-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Dec 2020 22:39:42 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BFMdd00000864;
+        Tue, 15 Dec 2020 22:39:39 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 15 Dec 2020 14:39:39 -0800
+Subject: Re: [PATCH] mm/hugetlb: fix deadlock in hugetlb_cow error path
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Cc:     Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        syzbot+5eee4145df3c15e96625@syzkaller.appspotmail.com,
+        stable@vger.kernel.org
+References: <20201215010611.181063-1-mike.kravetz@oracle.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <4c5781b8-3b00-761e-c0c7-c5edebb6ec1a@oracle.com>
+Date:   Tue, 15 Dec 2020 14:39:38 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VeN9xLUKFBXZfo=XzNkdv=BSRJW59=cUjyY0TekF1JONA@mail.gmail.com>
+In-Reply-To: <20201215010611.181063-1-mike.kravetz@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012150152
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ priorityscore=1501 mlxscore=0 suspectscore=0 adultscore=0 phishscore=0
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012150153
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 09:36:33PM +0200, Andy Shevchenko wrote:
-> On Mon, Dec 14, 2020 at 11:44 PM Drew Fustini <drew@beagleboard.org> wrote:
-> > On Mon, Dec 14, 2020 at 07:55:12PM +0200, Andy Shevchenko wrote:
-> > > On Sat, Dec 12, 2020 at 1:43 AM Drew Fustini <drew@beagleboard.org> wrote:
-> > > > On Fri, Dec 11, 2020 at 11:15:21PM +0200, Andy Shevchenko wrote:
-> > > > > On Fri, Dec 11, 2020 at 1:54 PM Drew Fustini <drew@beagleboard.org> wrote:
-> 
-> ...
-> 
-> > > > > But I'm wondering, why it requires this kind of thing and can't be
-> > > > > simply always part of the kernel based on configuration option?
-> > > >
-> > > > Do you mean not having a new CONFIG option for this driver and just have
-> > > > it be enabled by CONFIG_PINCTRL?
-> > >
-> > > No, configuration option stays, but no compatible strings no nothing
-> > > like that. Just probed always when loaded.
-> >
-> > I first started down the route of implementing this inside of
-> > pinctrl-single.  I found it didn't work because devm_pinctrl_get() would
-> > fail.  I think was because it was happening too early for pinctrl to be
-> > ready.
-> >
-> > I do think it seems awkward to have to add this to dts and have the
-> > driver get probed for each entry:
-> >
-> >         P1_04_pinmux {
-> >                 compatible = "pinctrl,state-helper";
-> >                 status = "okay";
-> >                 pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "gpio_input", "pruout", "pruin";
-> >                 pinctrl-0 = <&P1_04_default_pin>;
-> >                 pinctrl-1 = <&P1_04_gpio_pin>;
-> >                 pinctrl-2 = <&P1_04_gpio_pu_pin>;
-> >                 pinctrl-3 = <&P1_04_gpio_pd_pin>;
-> >                 pinctrl-4 = <&P1_04_gpio_input_pin>;
-> >                 pinctrl-5 = <&P1_04_pruout_pin>;
-> >                 pinctrl-6 = <&P1_04_pruin_pin>;
-> >         };
-> >
-> > But I am having a hard time figuring out another way of doing it.
-> 
-> I'm not a DT expert and I have no clue why you need all this. To me it
-> looks over engineered to engage DT for debugging things. OTOH, you may
-> add a property to allow debug mux (but it prevent ACPI enabled
-> platforms to utilize this).
+On 12/14/20 5:06 PM, Mike Kravetz wrote:
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index d029d938d26d..8713f8ef0f4c 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -4106,10 +4106,30 @@ static vm_fault_t hugetlb_cow(struct mm_struct *mm, struct vm_area_struct *vma,
+>  		 * may get SIGKILLed if it later faults.
+>  		 */
+>  		if (outside_reserve) {
+> +			struct address_space *mapping = vma->vm_file->f_mapping;
+> +			pgoff_t idx;
+> +			u32 hash;
+> +
+>  			put_page(old_page);
+>  			BUG_ON(huge_pte_none(pte));
+> +			/*
+> +			 * Drop hugetlb_fault_mutex and i_mmap_rwsem before
+> +			 * unmapping.  unmapping needs to hold i_mmap_rwsem
+> +			 * in write mode.  Dropping i_mmap_rwsem in read mode
+> +			 * here is OK as COW mappings do not interact with
+> +			 * PMD sharing.
+> +			 *
+> +			 * Reacquire both after unmap operation.
+> +			 */
+> +			idx = vma_hugecache_offset(h, vma, haddr);
+> +			hash = hugetlb_fault_mutex_hash(mapping, idx);
+> +			mutex_unlock(&hugetlb_fault_mutex_table[hash]);
+> +			i_mmap_unlock_read(vma->vm_file->f_mapping);
 
-There needs to be some mechanism through which to list the possible
-valid pinctrl states for each pin on the expansion connectors (P1/P2 for
-PocketBeagle and P8/P9 for BeagleBones).  For these ARM boards, device
-tree pinctrl bindings are the only way I can see to do this.  I am not
-familiar enough with ACPI to understand if this needs to be extended for
-boards without device tree.
+The assignment 'mapping = vma->vm_file->f_mapping' is done at the beginning
+of this block.  Silly that it is not used here.
 
-> 
-> ...
-> 
-> > Any ideas as to what would trigger the probe() if there was not a match
-> > on a compatible like "pinctrl,state-helper"?
-> >
-> > > Actually not even sure we want to have it as a module.
-> >
-> > And have just be a part of one of the existing pinctrl files like core.c?
-> 
-> Separate file, but in conjunction with core.c and pinmux and so on.
-> 
-> ...
-> 
-> > > > > Shouldn't it be rather a part of a certain pin control folder:
-> > > > > debug/pinctrl/.../mux/...
-> > > > > ?
-> > > >
-> > > > Yes, I think that would make sense, but I was struggling to figure out
-> > > > how to do that. pinctrl_init_debugfs() in pinctrl/core.c does create the
-> > > > "pinctrl" directory, but I could not figure out how to use this as the
-> > > > parent dir when calling debugfs_create_dir() in this driver's probe().
-> > > >
-> > > > I thought there might be a way in debugfs API to use existing directory
-> > > > path as a parent but I couldn't figure anything like that. I would
-> > > > appreciate any advice.
-> > >
-> > > If the option is boolean from the beginning then you just call it from
-> > > the corresponding pin control instantiation chain.
-> >
-> > Sorry, I am not sure I understand what you mean here.  What does
-> > "option" mean in this context?  I don't think there is any value that is
-> > boolean invovled.  The pinctrl states are strings.
-> 
-> config PINMUX_DEBUG
->  bool "..."
->  depends on PINMUX
+> +
+>  			unmap_ref_private(mm, vma, old_page, haddr);
+> -			BUG_ON(huge_pte_none(pte));
+> +
+> +			i_mmap_lock_read(vma->vm_file->f_mapping);
 
-Okay, thanks for califying.
+and here.
 
-There is already DEBUG_PINCTRL which just adds -DDEBUG compile option.
-The existing debugfs logic in pinctrl core and drivers is gated by
-CONFIG_DEBUG_FS.
-
-It seems for this new capability to expose pinctrl state in debugfs that
-I should use something like:
-
-#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_PINMUX_DEBUG)
-
-Does that seem reasonable?
-
+> +			mutex_lock(&hugetlb_fault_mutex_table[hash]);
+>  			spin_lock(ptl);
+>  			ptep = huge_pte_offset(mm, haddr, huge_page_size(h));
+>  			if (likely(ptep &&
 > 
-> 
-> 
-> >
-> > With regards to parent directory, I did discover there is
-> > debugfs_lookup(), so I can get the dentry for "pinctrl" and create new
-> > subdirectory inside of it.  This is the structure now:
-> >
-> > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_35_pinmux/state
-> > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_34_pinmux/state
-> > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_33_pinmux/state
-> > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_32_pinmux/state
-> > etc..
-> 
-> 
-> --
-> With Best Regards,
-> Andy Shevchenko
 
-thanks,
-drew
+Updated patch to use block local variable mapping.
+
+From aa450d80a63dc4533b2eca9f61c1acfb37587c06 Mon Sep 17 00:00:00 2001
+From: Mike Kravetz <mike.kravetz@oracle.com>
+Date: Mon, 14 Dec 2020 16:26:32 -0800
+Subject: [PATCH v2] mm/hugetlb: fix deadlock in hugetlb_cow error path
+
+syzbot reported the deadlock here [1].  The issue is in hugetlb cow
+error handling when there are not enough huge pages for the faulting
+task which took the original reservation.  It is possible that other
+(child) tasks could have consumed pages associated with the reservation.
+In this case, we want the task which took the original reservation to
+succeed.  So, we unmap any associated pages in children so that they
+can be used by the faulting task that owns the reservation.
+
+The unmapping code needs to hold i_mmap_rwsem in write mode.  However,
+due to commit c0d0381ade79 ("hugetlbfs: use i_mmap_rwsem for more pmd
+sharing synchronization") we are already holding i_mmap_rwsem in read
+mode when hugetlb_cow is called.  Technically, i_mmap_rwsem does not
+need to be held in read mode for COW mappings as they can not share
+pmd's.  Modifying the fault code to not take i_mmap_rwsem in read mode
+for COW (and other non-sharable) mappings is too involved for a stable
+fix.  Instead, we simply drop the hugetlb_fault_mutex and i_mmap_rwsem
+before unmapping.  This is OK as it is technically not needed.  They
+are reacquired after unmapping as expected by calling code.  Since this
+is done in an uncommon error path, the overhead of dropping and
+reacquiring mutexes is acceptable.
+
+While making changes, remove redundant BUG_ON after unmap_ref_private.
+
+[1] https://lkml.kernel.org/r/000000000000b73ccc05b5cf8558@google.com
+
+Reported-by: syzbot+5eee4145df3c15e96625@syzkaller.appspotmail.com
+Fixes: c0d0381ade79 ("hugetlbfs: use i_mmap_rwsem for more pmd sharing synchronization")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+---
+ mm/hugetlb.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index d029d938d26d..7e89f31d7ef8 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4106,10 +4106,30 @@ static vm_fault_t hugetlb_cow(struct mm_struct *mm, struct vm_area_struct *vma,
+ 		 * may get SIGKILLed if it later faults.
+ 		 */
+ 		if (outside_reserve) {
++			struct address_space *mapping = vma->vm_file->f_mapping;
++			pgoff_t idx;
++			u32 hash;
++
+ 			put_page(old_page);
+ 			BUG_ON(huge_pte_none(pte));
++			/*
++			 * Drop hugetlb_fault_mutex and i_mmap_rwsem before
++			 * unmapping.  unmapping needs to hold i_mmap_rwsem
++			 * in write mode.  Dropping i_mmap_rwsem in read mode
++			 * here is OK as COW mappings do not interact with
++			 * PMD sharing.
++			 *
++			 * Reacquire both after unmap operation.
++			 */
++			idx = vma_hugecache_offset(h, vma, haddr);
++			hash = hugetlb_fault_mutex_hash(mapping, idx);
++			mutex_unlock(&hugetlb_fault_mutex_table[hash]);
++			i_mmap_unlock_read(mapping);
++
+ 			unmap_ref_private(mm, vma, old_page, haddr);
+-			BUG_ON(huge_pte_none(pte));
++
++			i_mmap_lock_read(mapping);
++			mutex_lock(&hugetlb_fault_mutex_table[hash]);
+ 			spin_lock(ptl);
+ 			ptep = huge_pte_offset(mm, haddr, huge_page_size(h));
+ 			if (likely(ptep &&
+-- 
+2.29.2
+
