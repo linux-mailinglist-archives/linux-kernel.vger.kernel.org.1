@@ -2,70 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A36572DB124
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1F42DB128
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730800AbgLOQTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:19:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59236 "EHLO
+        id S1730757AbgLOQTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:19:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730307AbgLOQSe (ORCPT
+        with ESMTP id S1730744AbgLOQSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:18:34 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27D5C06179C;
-        Tue, 15 Dec 2020 08:17:53 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id y19so40760986lfa.13;
-        Tue, 15 Dec 2020 08:17:53 -0800 (PST)
+        Tue, 15 Dec 2020 11:18:42 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDA0C0617A7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 08:18:02 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id r17so19693191ilo.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 08:18:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JKu6z7NvvAuTLT8o5ljUyycVpd5OzgaPv+CEb+i0K+A=;
-        b=bCSFK+tZpE0bdvLBfj/yd2zfR6T5Fc/sBcFZodedew5LNAwBM2pFToiw+M75lsHxAn
-         63eFoOwQgyrCsA8TUTSg54bO6ZdkTKyz526lbi1mDThCai7FDwMU4mF0btegErHhQ2OD
-         rIVsiB24fLW5GaI6rRIzuekhDVa+289aklCmHCrxnYkVzB0dkjlJZanAqeOozNnVcAy+
-         hYGDtlH7IoHy87NOrYHsk2h8Sf4PLAW8vtmFFO0fnDlW7bKJNuTPwMqoQi6sxDuGpYzG
-         n+IuCg9+DdTAjoo7WTnCmXqsQ1pUEW4SnClUmfe+obcRlNQVMH0rwY3l60jRbCt8wb2J
-         Uysg==
+        bh=diFiOdC7jji4ApRY/TN7q4luYnhO42+izDOiqW6c7fQ=;
+        b=hQiDU6yz9paRrn/W1FNtwDtULkqHPLtXCn25y/0+TcdmbJHBjmxRjJooAwo88AHHYo
+         GWlaKO9W1fmFP2jWgFhgh4aQn4igIqu5dcHf8kKhQsjTs5XaojT6fB0kfy5cCsjqBkMX
+         DaloqW6SHdXcFPT4+53Lv3NRDvv4kU6HfwNkKxQZASOb6WE2dhRYTCkZX3zaXwZu52oi
+         yu3YAcsq4yBnKbC9SYeQXEDN10LS7Kx7SjI4AH68SEWC93LRAX6hd4u4ZVTUHBWuJC3U
+         4zrCQ5SexpPVD8VIH+gae+aCEby/KtQ8ozpGagIWTz5lECzsZTv8IMfuw1M/BA+JcOqL
+         kb8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=JKu6z7NvvAuTLT8o5ljUyycVpd5OzgaPv+CEb+i0K+A=;
-        b=liJBXdehqRTohg3bS5eVBiTyQXTQgYkBFqHZiqvvNdE4nTznlfUFXW8tGmk8jG//0Y
-         qLNzZY3ZgZbPYWCmbCdO6FN4k805XczRgEuChdKx+hSCdsutqw2Kg7EjD4f+TZplixSq
-         yzZhJmJpvi/xD30/5JmnOyoMHL+9Gqc9Knnzyx/4q3qrNFouS3sRuv+f0Yy1PjSKrhGQ
-         wb8qGslkF13/0B5m4Dmq4KQD+ruMhXCiY3Eg7OLSvDr9gM0o0PeVEqVcSdRvHpmofeXb
-         S84sOLI7BD9lt3o64C6FVLB4h7dndhIZSZMvCU7irP9+ClBdNPNGlEOp8/iqGWJ8bGLE
-         musQ==
-X-Gm-Message-State: AOAM530ubCZLGdxQN8JZ+9HfQ2XDNmtnNagmDgqUuiN6xwCfnC4QGWL1
-        uy1fJ6sJLsYurnrM2At4VDKiu1v1IZ4=
-X-Google-Smtp-Source: ABdhPJxmQMg6xPxUrGAAOy91XZzRwL2vYqnlHRJQ+1sMwHxmFIsRMxfehhnkhsPTkri9L+uOek7dDQ==
-X-Received: by 2002:a19:4c84:: with SMTP id z126mr10856664lfa.69.1608049072238;
-        Tue, 15 Dec 2020 08:17:52 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id b141sm253909lfd.148.2020.12.15.08.17.51
+        bh=diFiOdC7jji4ApRY/TN7q4luYnhO42+izDOiqW6c7fQ=;
+        b=cgRszZ+PfOgUcLWY9izEBF7g95Ln2cPEusi7iFzat4ALYnNCEfoY9pDQq8D4v4hKMX
+         lF0rywDAhVi3w7J4f+vmiEup0pkXbsorExPCqe8YFUQgVe42eCFfLRroBu4kGZSSfqQM
+         akTriobKjXATRiuov3yAaonSWN+ibIcdxNWdm6ZQ8R8/Nf/BNe7TxY9a3jdHNDcKJlxm
+         TwsSI1PZrU+jkbYX8IdanUBuS+EdUzVfUr9rTFi1s/AIpsqmuhzB9WArX74DgY0luRoM
+         J0knXTvRfDu82GFVHyTmzden6NJJdcdH0LCJiJBYZIdXVfF6Gpux1D9YZCBxeFG1HVzP
+         DHrA==
+X-Gm-Message-State: AOAM532drUkA193rbM2AbgSsqCjqZHG3Y2JxheRcV8UObVPA8nHht2kA
+        Tn4fs+Z9Yue8T8Shb4R2/60ZJV6hfgZ60g==
+X-Google-Smtp-Source: ABdhPJyha0KEja10VFJnNgShAOa3IQYWTiFNHSiERzn5YuU3MU0Ys3JRHhSfLDy5+rZySGnWYXS+uw==
+X-Received: by 2002:a05:6e02:1185:: with SMTP id y5mr42582830ili.119.1608049081777;
+        Tue, 15 Dec 2020 08:18:01 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id r5sm13084632ile.80.2020.12.15.08.18.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 08:17:51 -0800 (PST)
-Subject: Re: [PATCH v1] ARM: tegra: Fix misplaced tegra_uart_config in
- decompressor
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20201215135222.6899-1-digetx@gmail.com>
- <980f70c6-8967-c110-1699-cb0da2f46cc0@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <5b01ce96-5f8b-dfcb-accd-2ba29f34947f@gmail.com>
-Date:   Tue, 15 Dec 2020 19:17:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Tue, 15 Dec 2020 08:18:01 -0800 (PST)
+Subject: Re: Lockdep warning on io_file_data_ref_zero() with 5.10-rc5
+To:     Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Nadav Amit <nadav.amit@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+References: <C3012989-5B09-4A88-B271-542C1ED91ABE@gmail.com>
+ <c16232dd-5841-6e87-bbd0-0c18f0fc982b@gmail.com>
+ <13baf2c4-a403-41fc-87ca-6f5cb7999692@kernel.dk>
+ <e9f232a9-f28e-a987-c971-d8185c0060f5@linux.alibaba.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <8bb82057-1fdf-cb99-0549-2a1a27600d15@kernel.dk>
+Date:   Tue, 15 Dec 2020 09:18:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <980f70c6-8967-c110-1699-cb0da2f46cc0@gmail.com>
+In-Reply-To: <e9f232a9-f28e-a987-c971-d8185c0060f5@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -73,25 +74,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.12.2020 19:04, Florian Fainelli пишет:
+On 12/14/20 11:58 PM, Xiaoguang Wang wrote:
+> hi,
 > 
-> 
-> On 12/15/2020 5:52 AM, Dmitry Osipenko wrote:
->> The tegra_uart_config of the DEBUG_LL code is now placed right at the
->> start of the .text section after commit which enabled debug output in the
->> decompressor. Tegra devices are not booting anymore if DEBUG_LL is enabled
->> since tegra_uart_config data is executes as a code. Fix the misplaced
->> tegra_uart_config storage by embedding it into the code.
+>> On 11/28/20 5:13 PM, Pavel Begunkov wrote:
+>>> On 28/11/2020 23:59, Nadav Amit wrote:
+>>>> Hello Pavel,
+>>>>
+>>>> I got the following lockdep splat while rebasing my work on 5.10-rc5 on the
+>>>> kernel (based on 5.10-rc5+).
+>>>>
+>>>> I did not actually confirm that the problem is triggered without my changes,
+>>>> as my iouring workload requires some kernel changes (not iouring changes),
+>>>> yet IMHO it seems pretty clear that this is a result of your commit
+>>>> e297822b20e7f ("io_uring: order refnode recycling”), that acquires a lock in
+>>>> io_file_data_ref_zero() inside a softirq context.
+>>>
+>>> Yeah, that's true. It was already reported by syzkaller and fixed by Jens, but
+>>> queued for 5.11. Thanks for letting know anyway!
+>>>
+>>> https://lore.kernel.org/io-uring/948d2d3b-5f36-034d-28e6-7490343a5b59@kernel.dk/T/#t
+>>>
+>>>
+>>> Jens, I think it's for the best to add it for 5.10, at least so that lockdep
+>>> doesn't complain.
 >>
->> Cc: stable@vger.kernel.org
->> Fixes: 2596a72d3384 ("ARM: 9009/1: uncompress: Enable debug in head.S")
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  arch/arm/include/debug/tegra.S | 54 +++++++++++++++++-----------------
->>  1 file changed, 27 insertions(+), 27 deletions(-)
-> 
-> Looks like arch/arm/include/debug/brcmstb.S would need the same
-> treatment since the implementation was copied from tegra.S.
-> 
+>> Yeah maybe, though it's "just" a lockdep issue, it can't trigger any
+>> deadlocks. I'd rather just keep it in 5.11 and ensure it goes to stable.
+>> This isn't new in this series.
+> Sorry, I'm not familiar with lockdep implementation, here I wonder why you say
+> it can't trigger any deadlocks, looking at that the syzbot report, seems that
+> the deadlock may happen.
 
-Good catch, will you be able to test the brcm and make a patch?
+Because the only time the lock is actually grabbed in bh context is when
+it has dropped to zero and is no longer used. The classic deadlock for this
+is if regular use has both contexts, so you can get:
+
+CPU0			CPU1
+grab_lock()
+			bh context, grab_lock()
+
+deadlock. But this simply cannot happen here, as by the time we get to
+grabbing it from bh context, there can by definition be no other users
+of it left (or new ones).
+
+-- 
+Jens Axboe
+
