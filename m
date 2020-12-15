@@ -2,231 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74982DB112
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:15:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BB62DB113
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:15:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730423AbgLOQOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:14:22 -0500
-Received: from mail-oo1-f66.google.com ([209.85.161.66]:34565 "EHLO
-        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730422AbgLOQNs (ORCPT
+        id S1730934AbgLOQOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:14:24 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:44058 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730836AbgLOQN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:13:48 -0500
-Received: by mail-oo1-f66.google.com with SMTP id x23so1760125oop.1;
-        Tue, 15 Dec 2020 08:13:31 -0800 (PST)
+        Tue, 15 Dec 2020 11:13:57 -0500
+Received: by mail-ot1-f68.google.com with SMTP id f16so19853623otl.11;
+        Tue, 15 Dec 2020 08:13:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iJZnRtX3sbuHq49+KxzSlxIlH2YFeZZTDaGKbhkXMPc=;
-        b=T4A9W5ccVotMK6lIUNKrcjflr8XbJSKy8S+YGUt+DvrSggSzWPlZ9vqib0NCrGCnWM
-         YlmUvWw/LtQN/uTU8kBqGm6dbaYRA+HBgSx78Ik8o65pyOGzklhwiEDbQYbw8OpkBzV2
-         cAzDkfIiAp8K+1yef2M7OmPHKXJ8vEWjwHSL0NGlbCpUbyaOkD8oFd+63qsF6xgFrnZA
-         jzlDdt0OH/oSw6F3/Y/NFgpWgvHx5cKEqkcUdPQiWlPUQv82Y/RSP3iSORX8M4LH3eZn
-         hwysXj9+VwHOyuyexL7Jr3FndyXTaF5PRbvG9IE0VhJOUlnC8wl19XA76d2ogjzSI9rZ
-         bXDg==
-X-Gm-Message-State: AOAM531ksb4cTppqHAJywceCRDfL5aT8OV0/vHT5ehjnw9BFl7OXgaBd
-        njBGSrHJHXu2hPJXG3MpbA==
-X-Google-Smtp-Source: ABdhPJx2AG7yR79xBmnEKYChigB3jUkSqzlHLc2xAzoccoZHSNNlTwnG2/qBh7in6d5DkM1o/KLg1g==
-X-Received: by 2002:a4a:2f91:: with SMTP id p139mr23199961oop.0.1608048785972;
-        Tue, 15 Dec 2020 08:13:05 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n3sm509358otj.46.2020.12.15.08.13.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 08:13:05 -0800 (PST)
-Received: (nullmailer pid 3949669 invoked by uid 1000);
-        Tue, 15 Dec 2020 16:13:04 -0000
-Date:   Tue, 15 Dec 2020 10:13:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com, broonie@kernel.org,
-        lukas@wunner.de, bbrezillon@kernel.org, p.yadav@ti.com,
-        tudor.ambarus@microchip.com, linux-spi@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 2/9] dt-bindings: spi: Add Tegra Quad SPI device tree
- binding
-Message-ID: <20201215161304.GA3935217@robh.at.kernel.org>
-References: <1607721363-8879-1-git-send-email-skomatineni@nvidia.com>
- <1607721363-8879-3-git-send-email-skomatineni@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9dZX+PfojFjy0yr/TmFs/HzJ4t9P2vdOR9k+xSuXgLY=;
+        b=N/1h9mtEJK6vrFkHLzMjWqj8F0f4bkNbZBEBG6jUqOCV8UVKn1TGhEtohC/KXVtp+D
+         4jYg1RqzIcXEuCf7i4Cuj6nAWTrtSs1cwv4leJ90gUpWlaXhz+bqoFikDgVDqVboTYpq
+         FudRYnFUcF1P4qGiiBhg3aSGbFR6W/xR38g5HITGWH9PMwv5y+74KxniNcTwYTjSOSwn
+         T3lX3aKX0i2RGgnxk06J+rY5ho+a5dx5Ur/HmlNq30L4dCdixwN3t1LULhKC6HHVJBlW
+         4JxurqUIAK2JxqH+gi/fOIPNWtYTQrCgeJAksYc7ouOcmD3+G7VCULY56VizEvQLyR+L
+         bERg==
+X-Gm-Message-State: AOAM533tjXeDjGEwOHmnTQ9I+eVf1oP8ZzsMDcAvjsRcs+rGknOEu2EL
+        v5sxPuvwbVR2nbagK+XhPk1ZPuVF4j6n+9d33EQ=
+X-Google-Smtp-Source: ABdhPJyC2szoZZ+v8jYR7I278WqnNNwChldmp+LkfpuiP5UwaBBNwF+INcv0fWL6Lqi8IvXQS8/A5cHxtcYWfik1H0M=
+X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr23721855oth.250.1608048796742;
+ Tue, 15 Dec 2020 08:13:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1607721363-8879-3-git-send-email-skomatineni@nvidia.com>
+References: <1607686060-17448-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1607686060-17448-4-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <cbb8c9b1884ea5e535bcafda1218b941bd665c21.camel@fi.rohmeurope.com> <CAMuHMdVgo1fuY9jPpxUJiCOmN4Ahs7YXddzUfKH+4106i1xiuA@mail.gmail.com>
+In-Reply-To: <CAMuHMdVgo1fuY9jPpxUJiCOmN4Ahs7YXddzUfKH+4106i1xiuA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 15 Dec 2020 17:13:05 +0100
+Message-ID: <CAMuHMdWuoRMsNMPKgni3HENRT7RnCTyEjs5Zy2r4gw9f2B0Cng@mail.gmail.com>
+Subject: Re: [PATCH v2 03/10] regulator: bd9571mwv: rid of using struct bd9571mwv
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "marek.vasut+renesas@gmail.com" <marek.vasut+renesas@gmail.com>,
+        "yoshihiro.shimoda.uh@renesas.com" <yoshihiro.shimoda.uh@renesas.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "khiem.nguyen.xt@renesas.com" <khiem.nguyen.xt@renesas.com>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 01:15:56PM -0800, Sowjanya Komatineni wrote:
-> This patch adds YAML based device tree binding document for Tegra
-> Quad SPI driver.
-> 
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> ---
->  .../bindings/spi/nvidia,tegra210-quad.yaml         | 130 +++++++++++++++++++++
->  1 file changed, 130 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml b/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
-> new file mode 100644
-> index 0000000..0b5fea6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
-> @@ -0,0 +1,130 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/nvidia,tegra210-quad.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Tegra Quad SPI Controller
-> +
-> +maintainers:
-> +  - Thierry Reding <thierry.reding@gmail.com>
-> +  - Jonathan Hunter <jonathanh@nvidia.com>
+On Tue, Dec 15, 2020 at 5:02 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Fri, Dec 11, 2020 at 3:03 PM Vaittinen, Matti
+> <Matti.Vaittinen@fi.rohmeurope.com> wrote:
+> > On Fri, 2020-12-11 at 20:27 +0900, Yoshihiro Shimoda wrote:
+> > > To simplify this driver, use dev_get_regmap() and
+> > > rid of using struct bd9571mwv.
+> > >
+> > > Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> > > ---
+> > >  drivers/regulator/bd9571mwv-regulator.c | 49 +++++++++++++++++----
+> > > ------------
+> > >  1 file changed, 26 insertions(+), 23 deletions(-)
+> > >
+> > > diff --git a/drivers/regulator/bd9571mwv-regulator.c
+> > > b/drivers/regulator/bd9571mwv-regulator.c
+> > > index e690c2c..02120b0 100644
+> > > --- a/drivers/regulator/bd9571mwv-regulator.c
+> > > +++ b/drivers/regulator/bd9571mwv-regulator.c
+> > > @@ -17,7 +17,7 @@
+> > >  #include <linux/mfd/bd9571mwv.h>
+> > >
+> > >  struct bd9571mwv_reg {
+> > > -     struct bd9571mwv *bd;
+> > > +     struct regmap *regmap;
+> >
+> > As a 'nit':
+> > I might consider adding the dev pointer here to avoid extra argument
+> > with all the bkup_mode functions below. (just pass this struct and
+> > mode). But that's only my preference - feel free to ignore this comment
+> > if patch is Ok to Mark, Marek & Others :)
+>
+> Struct regmap already contains a struct device pointer, but that's internal
+> to regmap.
+>
+> Perhaps adding a regmap_device() helper to retrieve the device pointer
+> might be worthwhile?
 
-allOf:
-  - $ref: spi-controller.yaml#
+-EEXISTS ;-)
 
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - nvidia,tegra210-qspi
-> +      - nvidia,tegra186-qspi
-> +      - nvidia,tegra194-qspi
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: qspi
-> +      - const: qspi_out
-> +
-> +  clocks:
-> +    maxItems: 2
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  dmas:
-> +    maxItems: 2
-> +
-> +  dma-names:
-> +    items:
-> +      - const: rx
-> +      - const: tx
-> +
-> +patternProperties:
-> +  "^.*@[0-9a-f]+":
+struct device *regmap_get_device(struct regmap *map)
 
-You can drop '^.*'.
+Gr{oetje,eeting}s,
 
-> +    type: object
-> +
-> +    properties:
-> +      compatible:
-> +        description:
-> +          Compatible of the SPI device.
-> +
-> +      reg:
-> +        maxItems: 1
-> +
-> +      spi-max-frequency:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description:
-> +          Maximum Quad SPI clocking speed of the device in Hz.
-> +
-> +      spi-rx-bus-width:
-> +        description:
-> +          Bus width to the Quad SPI bus used for read transfers.
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        enum: [1, 2, 4]
-> +
-> +      spi-tx-bus-width:
-> +        description:
-> +          Bus width to the Quad SPI bus used for write transfers.
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        enum: [1, 2, 4]
+                        Geert
 
-All of the above 5 properties are covered by spi-controller.yaml. You 
-only need additional constraints here. As 8-bit mode is not supported, 
-you need:
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-spi-tx-bus-width:
-  enum: [1, 2, 4]
-
-> +
-> +      nvidia,tx-clk-tap-delay:
-> +        description:
-> +          Delays the clock going out to device with this tap value.
-> +          Tap value varies based on platform design trace lengths from Tegra
-> +          QSPI to corresponding slave device.
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        minimum: 0
-> +        maximum: 31
-> +
-> +      nvidia,rx-clk-tap-delay:
-> +        description:
-> +          Delays the clock coming in from the device with this tap value.
-> +          Tap value varies based on platform design trace lengths from Tegra
-> +          QSPI to corresponding slave device.
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        minimum: 0
-> +        maximum: 255
-
-Please include these properties in your example.
-
-> +
-> +    required:
-> +      - reg
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clock-names
-> +  - clocks
-> +  - resets
-> +
-> +additionalProperties: true
-
-That's generally wrong unless it's a schema to be included by other 
-schemas.
-
-unevaluatedProperties: false
-
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/tegra210-car.h>
-> +    #include <dt-bindings/reset/tegra210-car.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    spi@70410000 {
-> +            compatible = "nvidia,tegra210-qspi";
-> +            reg = <0x70410000 0x1000>;
-> +            interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            clocks = <&tegra_car TEGRA210_CLK_QSPI>,
-> +                     <&tegra_car TEGRA210_CLK_QSPI_PM>;
-> +            clock-names = "qspi", "qspi_out";
-> +            resets = <&tegra_car 211>;
-> +            dmas = <&apbdma 5>, <&apbdma 5>;
-> +            dma-names = "rx", "tx";
-> +
-> +            flash@0 {
-> +                    compatible = "spi-nor";
-> +                    reg = <0>;
-> +                    spi-max-frequency = <104000000>;
-> +                    spi-tx-bus-width = <2>;
-> +                    spi-rx-bus-width = <2>;
-> +            };
-> +    };
-> -- 
-> 2.7.4
-> 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
