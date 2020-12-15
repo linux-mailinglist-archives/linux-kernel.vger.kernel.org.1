@@ -2,157 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 147ED2DB77A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5F22DB77C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727235AbgLPAAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:00:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgLOXX7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 18:23:59 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56BEC0611D0;
-        Tue, 15 Dec 2020 15:23:18 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id c5so17799197wrp.6;
-        Tue, 15 Dec 2020 15:23:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=61PAjCXFHe5f5EcDUVPOcNlP6sUU3yiMXGUtuTt/E+Y=;
-        b=R4oJ9kSQl0d2mbbf9PVGl433U8hFUw5CPYbNAF8fRLy27kKJ9/WxY+EPMqpkiI0aMb
-         3X0C3Ecn343cSrbOQHoYO78J038cKundWzb4AJBsID/u5XQ7puUvlmDZVIpOCyCHd93M
-         1bFoEHRqr8Gju9ZWFhwvUWJclH9ib/vpBrA8tpikVQ6+sv3pAY2lFzWajZ+MOFS629jY
-         ogc/zujpBc7dvuvbnE+z5ovAU+qxCGCwMpu9NCTn888Z0LeEBMdflyI/gzKjMiByZ9N2
-         UL1gN/XcXEdL6MFiETA15IBm9h5RolTEUCWr43z+PCij1p4+bw79LK4bb1qG8WB/lWvm
-         RVKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=61PAjCXFHe5f5EcDUVPOcNlP6sUU3yiMXGUtuTt/E+Y=;
-        b=DR+X843HV0YT7mjpTycnNF0NevP62pynCvhIOuaGRsBgXV2BPZ5bNxDzcNsO/U5ZJ+
-         XotjiKtdDwFShFOHzXCl1Smb/+K8SrNjWHu5VF84ACzmsnbUi3daAGvujfOj9JBERclM
-         oKqHxtHx+uO6oF+Z6JkRfO+671i9o4hAj3nOmepgWEYjMcer3iJl4w0FNQ0YRgqPBrAb
-         A2yisbP4+Xn11hi13iqlqD631lf1RptrmfgKCer0KQKffT0RxWSJ4vhtu3BnRY6V4ohs
-         ejSCimmbk0RlXpRVouLceexSHS870bloMaQdf2NZUk33+BHZXBq0Jab+sU779JQAGH2e
-         UGBQ==
-X-Gm-Message-State: AOAM530nHf7pCHEq1a3j3MvK7Wx8IPveagtVm5uKZGrfzOKspURW+o+C
-        larHya8CJ8647gphzGFFsYc=
-X-Google-Smtp-Source: ABdhPJxNBUV4IChsZr31aAboHMmayJq7o6p55Y5QHVjoTrwPMGTKz8HcqTCA5WqNYwYP1w+e6ej9gg==
-X-Received: by 2002:adf:d0c6:: with SMTP id z6mr4584043wrh.10.1608074597737;
-        Tue, 15 Dec 2020 15:23:17 -0800 (PST)
-Received: from [192.168.0.160] ([170.253.49.0])
-        by smtp.gmail.com with ESMTPSA id p19sm323115wrg.18.2020.12.15.15.23.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 15:23:17 -0800 (PST)
-Subject: Re: [Bug 210655] ptrace.2: documentation is incorrect about access
- checking threads in same thread group
-To:     Jann Horn <jann@thejh.net>
-Cc:     Pavel Emelyanov <xemul@openvz.org>,
-        Oleg Nesterov <oleg@tv-sign.ru>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ted Estes <ted@softwarecrafters.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jann Horn <jannh@google.com>
-References: <feef4f9a-4ed8-8a2e-d330-88e7f516faae@gmail.com>
- <X9lBp3BHbwcTmDqb@pc.thejh.net>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <0e5189c0-9e9b-ac34-825c-619a9a6ef682@gmail.com>
-Date:   Wed, 16 Dec 2020 00:23:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727300AbgLPAAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:00:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730147AbgLOX2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 18:28:13 -0500
+X-Gm-Message-State: AOAM531/H7pDPWSXuGnSA+UkFoaK4Bo908RGj1yZCjOUv3Lw7UkG/YMA
+        2D0TfukSsL3qmeYbOgffS/Gewtxd2TO71yEFZCY=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608074705;
+        bh=Yek6HG48EL+fBxIl/n3oPNvuVpQoWA77lJXD5WjiI9Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OXiXAijrTa58QSy8Hn4Q0b3hdD2jgwIRoLmtDqwg/MPYV+x+/pyUW3AbpOjuV+nB6
+         qHbSrFKdTAC1m0NcEbvtYljyHA1Zv6nyt6mmLr4bYwvpPyFiyCUHn4CnIK8/cBSc0E
+         EYjofvBG3KtB7FlpeBmxHXvvJmHvJe3WKC6LfFjRhhPmTisypkx78haSU7XGGrPorE
+         3ccgTkYkfLW05m1Rj6N7U3TPsHcORlASXLxejCT1VrKCp1ImslMHIzW7NpCoESfP0I
+         62gQP4OWlFeRISBJ9icDmjEWn2VN2Tgc2qYhihJtakC4Gutsd58WlpC+7MIqSCVJwH
+         T0Oa101XVRWAw==
+X-Google-Smtp-Source: ABdhPJxH866216C7G/BMIMBE230x06G3zn+SdnjshW+g3sn46anBomdPBt+CWfMoRqv5Aq9onCCRAb9k2ZkZw+XIpKg=
+X-Received: by 2002:aca:44d:: with SMTP id 74mr659088oie.4.1608074704756; Tue,
+ 15 Dec 2020 15:25:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <X9lBp3BHbwcTmDqb@pc.thejh.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20190307091514.2489338-1-arnd@arndb.de> <X9S28TcEXd2zghzp@elver.google.com>
+ <87czzeg5ep.fsf@nanos.tec.linutronix.de> <CAK8P3a0LWjNgwm605TM4dKCsn078X7NC3sEfdBSgcMNEocQ5iA@mail.gmail.com>
+ <CAJF2gTRLEbBfZJ7Y6UNOMq-cwG5OYRW=+8Pfauz6v6R8ntBjYA@mail.gmail.com>
+ <CAK8P3a3+WaQNyJ6Za2qfu6=0mBgU1hApnRXrdp1b1=P7wwyRUg@mail.gmail.com> <20201215193800.GA1098247@ravnborg.org>
+In-Reply-To: <20201215193800.GA1098247@ravnborg.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 16 Dec 2020 00:24:48 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a24eAYjPTw_GvEC5H9nGODjeKCVLSmfpoNSvrzew5BX4Q@mail.gmail.com>
+Message-ID: <CAK8P3a24eAYjPTw_GvEC5H9nGODjeKCVLSmfpoNSvrzew5BX4Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] futex: mark futex_detect_cmpxchg() as 'noinline'
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Guo Ren <guoren@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jann,
+On Tue, Dec 15, 2020 at 8:38 PM Sam Ravnborg <sam@ravnborg.org> wrote:
+> On Tue, Dec 15, 2020 at 12:26:10PM +0100, Arnd Bergmann wrote:
+> >
+> > - Disable SMP support for sun4m/sun4d. From the historic git
+> >   tree, it's unclear how well this ever worked, and very few machines
+> >   of this class ever existed
+> Yeah, I have collection of sparc32 machines that I played around with
+> once. Including one sun4d that I brought from a friendly Linux fellow in
+> the UK. But somehow I lost interest as this is all very nice machines
+> but not useful for anything real work.
+>
+> I think we would be better served dropping support for sun4m and sun4d
+> from the kernel.
 
-On 12/16/20 12:07 AM, Jann Horn wrote:
-> Am Tue, Dec 15, 2020 at 06:01:25PM +0100 schrieb Alejandro Colomar (man-pages):
->> Hi,
->>
->> There's a bug report: https://bugzilla.kernel.org/show_bug.cgi?id=210655
->>
->> [[
->> Under "Ptrace access mode checking", the documentation states:
->>   "1. If the calling thread and the target thread are in the same thread
->> group, access is always allowed."
->>
->> This is incorrect. A thread may never attach to another in the same group.
-> 
-> No, that is correct. ptrace-mode access checks do always short-circuit for
-> tasks in the same thread group:
-> 
-> /* Returns 0 on success, -errno on denial. */
-> static int __ptrace_may_access(struct task_struct *task, unsigned int mode)
-> {
-> [...]
->         /* May we inspect the given task?
->          * This check is used both for attaching with ptrace
->          * and for allowing access to sensitive information in /proc.
->          *
->          * ptrace_attach denies several cases that /proc allows
->          * because setting up the necessary parent/child relationship
->          * or halting the specified task is impossible.
->          */
-> 
->         /* Don't let security modules deny introspection */
->         if (same_thread_group(task, current))
->                 return 0;
-> [...]
-> }
+This seems appropriate as well to me.
 
-AFAICS, that code always returns non-zero,
-at least when called from ptrace_attach().
+> Last I suggested deleting sun4m/sun4d the argument to keep sun4m was that
+> QEMU supports sun4m - which is a good argument for sun4m. I dunno what
+> would be needed to migrate QEMU to LEON, see below.
 
-As you can see below,
-__ptrace_may_access() is called some lines after
-the code pointed to by the bug report.
+"qemu-system-sparc -M help" shows a "leon3_generic" platform, apparently
+added in 2013. Do you think that would be sufficient?
 
+> > - Mark SMP for LEON as temporarily broken. As I see in the LEON
+> >   patch set, they have changes to enable compare-and-swap-atomic
+> >   instructions unconditionally, as all SMP Leons have those and
+> >   seem to require this support already for other things.
+> LEON on the other hand could have some nice future. They are right now
+> stuck on an older kernel and someone that was motivated should be able
+> to get LEON4 running on latest upstream.
+> We had it working in the past - but is was around the time I lost my
+> sparc interest and no-one jumped in to move it much more forward.
 
-static int ptrace_attach(struct task_struct *task, long request,
-			 unsigned long addr,
-			 unsigned long flags)
-{
-[...]
-	if (same_thread_group(task, current))
-		goto out;
+My best guess from the public information I could find on LEON is that
+it keeps shifting away from Linux on LEON to other OSs, and to
+and to Linux on NOEL-V.
 
-	/*
-	 * Protect exec's credential calculations against our interference;
-	 * SUID, SGID and LSM creds get determined differently
-	 * under ptrace.
-	 */
-	retval = -ERESTARTNOINTR;
-	if (mutex_lock_interruptible(&task->signal->cred_guard_mutex))
-		goto out;
+So even though the CPU itself will likely have a long life ahead of it
+with LEON5 only a year old, it's unclear how many more updates
+we'll see to the kernel from the current 4.9 based release.
 
-	task_lock(task);
-	retval = __ptrace_may_access(task, PTRACE_MODE_ATTACH_REALCREDS);
-[...]
-}
+> So in other words - no complains for the plan you outline.
 
+Thanks. I'd probably queue up a patch in my asm-generic tree for
+v5.12 to disable SMP on all SPARC32, add the helpers for C-Sky
+once Guo Ren has tested a patch, and clean up the futex code based
+on this. I guess we want the one-line fix for Arm that Thomas suggested
+for v5.10 and backports anyway, The sun4m/sun4d removal should
+clearly be discussed separately and go through the sparc tree, to see
+if anyone has objections, or if we want to remove other obsolete
+platforms (sun3?) along with it.
 
-Thanks,
-
-Alex
-
-> 
-> As the comment explains, you can't actually *attach*
-> to another task in the same thread group; but that's
-> not because of the ptrace-style access check rules,
-> but because specifically *attaching* to another task
-> in the same thread group doesn't work.
-> 
+      Arnd
