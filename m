@@ -2,203 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C4A2DB3B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7EC2DB3CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:34:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731460AbgLOSZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:25:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731331AbgLOSZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:25:01 -0500
-Date:   Tue, 15 Dec 2020 10:24:19 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608056660;
-        bh=GDa3319reRuboH7I5cHX8dT94Nl+12UYMZ0JqdyQZPA=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=M8X5oJz2ki6Brx2TMGHqkOKMuXxiDOminJZhY9P/OPDAziafR0MU66M7d3jOGv+kJ
-         lGsL7zZiZvvNJgZ1ZSbCMYai67t4LANTCcsQ4q04miK+/cyC5WuoN6S1hgVPvGQ62L
-         kgedjTMiegBNs1FQiXGaPzvKI5EeivL2izmp6G/E7MVRevfuhZmTBg7KftBrQYFH6y
-         f0kMeo6DbW35RrxPWqXHqEiW0Evh73hgw0oi6ifplrkFe8KUZbj9VqC/GMyzUphK1Z
-         wUnZBW1aCzfyWpQ5U/TXPXEOGVUDPzhb0v/jaTamR6d0oEu5D0NJN63sFOZCElM2HL
-         sVBLDv1ayiETw==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S1731664AbgLOScl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 13:32:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731227AbgLOS3a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 13:29:30 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0B2C061257;
+        Tue, 15 Dec 2020 10:28:16 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id w1so24451436ejf.11;
+        Tue, 15 Dec 2020 10:28:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j5Nx3QP2QUef7kqAsxxArhCJKbbh/sB4VAtuIgHpzAY=;
+        b=Gt7wfw6zKOz9640y+Pkyf7QD3YEYbL7AQxcBqBO+4SznKXSUJ40g+lwnP5nWJwL2gr
+         vWCstbyjibsJ8zQNhOazJEfK2f5z18NyuSluEErqBgrAv/3/4RZ/ZWP8XqNHszdV0Xkn
+         cd44ru/YuoUualt+VyBZIoC6mpTMCYHyeygE5SN4ltcm6YMbvHIvA3pHEWankX8GZRmM
+         cZJMljLFsGlnnaUhVSFQFz+uUEcpoVQKYFohpydv5SosJh7S/5pXymYeJW8mgYQE/0+X
+         0PHOpoMPxSRr3qtOVxjIUZmtfLLGRiLl4Irv1THjXn0SHQDPNvxPs+JPO27jzgW4pb/T
+         54vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j5Nx3QP2QUef7kqAsxxArhCJKbbh/sB4VAtuIgHpzAY=;
+        b=I9SXv/yUbLFn9yya9or8VVc7yB6BBB4K+A+gg/WREW0slRuLaBc9LTT24Msz2S6Ssg
+         YaKr/4NBdoCPsqEMzSWps49/WZ9gIh5d5K2sDUDNBXlc6xT3OZSnWbSIfpxB1Fu+faA7
+         Ap2xxxzdcJ8uT0j/1Qn9xgU3tvdpxRfRyyFgHANKuw8Gm3OVx0It2NhvRv89CXJJuBgs
+         Bc2xBuwRDFTQlntZCNgdSWUPJTvppsopwWZb49+2u3Q4lj7+JADrpalA5RAqC6gzKS5u
+         xv6VszMbJ8W7YmZ5LjPLJXf3em0Qn7w1ub5825tlszbJiFwaT50qCCwqwDi7XyrWf0tz
+         bbgg==
+X-Gm-Message-State: AOAM532ssfylyL7gxnMhjwBoEoXs1I7tmS9/AHu5f8wNDe/xjorOnqoX
+        ytmkUZuu36vVsR82vVC8rTE=
+X-Google-Smtp-Source: ABdhPJzgkJG3I3krAxjW5y1BK0JBdUBsjzDb5RiaXrUm2dscx5+KLiZP/Q5jBAn6KDXflPv29Viqdg==
+X-Received: by 2002:a17:906:ce21:: with SMTP id sd1mr27506527ejb.396.1608056894785;
+        Tue, 15 Dec 2020 10:28:14 -0800 (PST)
+Received: from localhost.localdomain (93-103-18-160.static.t-2.net. [93.103.18.160])
+        by smtp.gmail.com with ESMTPSA id r21sm7369228eds.91.2020.12.15.10.28.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 10:28:14 -0800 (PST)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>, Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH tip/core/rcu 3/4] rcutorture: Make grace-period kthread
- report match RCU flavor being tested
-Message-ID: <20201215182419.GD2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201105233900.GA20676@paulmck-ThinkPad-P72>
- <20201105233933.20748-3-paulmck@kernel.org>
- <CAMuHMdXjUxfp0h=TiwNoZJUHrSD4sDwYEbuqNR4rcWSRFCjUtw@mail.gmail.com>
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH 0/3] x86/KVM/VMX: Introduce and use try_cmpxchg64()
+Date:   Tue, 15 Dec 2020 19:28:02 +0100
+Message-Id: <20201215182805.53913-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXjUxfp0h=TiwNoZJUHrSD4sDwYEbuqNR4rcWSRFCjUtw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 09:40:26AM +0100, Geert Uytterhoeven wrote:
-> Hi Paul,
+This patch series introduces try_cmpxchg64() atomic locking function.
 
-Hello, Geert, and thank you for looking this over!
+try_cmpxchg64() provides the same interface for 64 bit and 32 bit targets,
+emits CMPXCHGQ for 64 bit targets and CMPXCHG8B for 32 bit targets,
+and provides appropriate fallbacks when CMPXCHG8B is unavailable.
 
-> On Fri, Nov 6, 2020 at 12:40 AM <paulmck@kernel.org> wrote:
-> >
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> >
-> > At the end of the test and after rcu_torture_writer() stalls, rcutorture
-> > invokes show_rcu_gp_kthreads() in order to dump out information on the
-> > RCU grace-period kthread.  This makes a lot of sense when testing vanilla
-> > RCU, but not so much for the other flavors.  This commit therefore allows
-> > per-flavor kthread-dump functions to be specified.
-> >
-> > [ paulmck: Apply feedback from kernel test robot <lkp@intel.com>. ]
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> Thanks for your patch, which is now commit 27c0f1448389baf7
-> ("rcutorture: Make grace-period kthread report match RCU flavor being
-> tested").
-> 
-> > --- a/kernel/rcu/rcu.h
-> > +++ b/kernel/rcu/rcu.h
-> > @@ -533,4 +533,20 @@ static inline bool rcu_is_nocb_cpu(int cpu) { return false; }
-> >  static inline void rcu_bind_current_to_nocb(void) { }
-> >  #endif
-> >
-> > +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RCU)
-> > +void show_rcu_tasks_classic_gp_kthread(void);
-> > +#else
-> > +static inline void show_rcu_tasks_classic_gp_kthread(void) {}
-> > +#endif
-> > +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
-> > +void show_rcu_tasks_rude_gp_kthread(void);
-> > +#else
-> > +static inline void show_rcu_tasks_rude_gp_kthread(void) {}
-> > +#endif
-> 
-> The #ifdef expression does not match the one for the implementation
-> below.
+try_cmpxchg64() reuses flags from CMPXCHGQ/CMPXCHG8B instructions and
+avoids unneeded CMP for 64 bit targets or XOR/XOR/OR sequence for
+32 bit targets.
 
-That does sound like something I would do...
+Cc: Will Deacon <will@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Wanpeng Li <wanpengli@tencent.com>
+Cc: Jim Mattson <jmattson@google.com>
+Cc: Joerg Roedel <joro@8bytes.org>
 
-The definition of show_rcu_tasks_rude_gp_kthread() must be provided
-elsewhere if !TINY_RCU && TASKS_RUDE_RCU, correct?
+Uros Bizjak (3):
+  asm-generic/atomic: Add try_cmpxchg64() instrumentation
+  locking/atomic/x86: Introduce arch_try_cmpxchg64()
+  KVM/VMX: Use try_cmpxchg64() in posted_intr.c
 
-> > --- a/kernel/rcu/rcutorture.c
-> > +++ b/kernel/rcu/rcutorture.c
-> 
-> > @@ -762,6 +765,7 @@ static struct rcu_torture_ops tasks_rude_ops = {
-> >         .exp_sync       = synchronize_rcu_tasks_rude,
-> >         .call           = call_rcu_tasks_rude,
-> >         .cb_barrier     = rcu_barrier_tasks_rude,
-> > +       .gp_kthread_dbg = show_rcu_tasks_rude_gp_kthread,
-> 
-> Perhaps you just want to have a NULL pointer for the dummy case, instead
-> of instantiating a dummy static inline function and taking its address?
+ arch/x86/include/asm/cmpxchg_32.h         | 62 +++++++++++++++++++----
+ arch/x86/include/asm/cmpxchg_64.h         |  6 +++
+ arch/x86/kvm/vmx/posted_intr.c            |  9 ++--
+ include/asm-generic/atomic-instrumented.h | 46 ++++++++++++++++-
+ scripts/atomic/gen-atomic-instrumented.sh |  2 +-
+ 5 files changed, 108 insertions(+), 17 deletions(-)
 
-You mean something like this in kernel/rcu/rcu.h?
+-- 
+2.26.2
 
-#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
-void show_rcu_tasks_rude_gp_kthread(void);
-#else
-#define show_rcu_tasks_rude_gp_kthread NULL
-#endif
-
-This does looks better to me, and at first glance would work.
-
-This patch is already in mainline, but if the second approach above
-works, I would welcome a patch making that change.
-
-> >         .fqs            = NULL,
-> >         .stats          = NULL,
-> >         .irq_capable    = 1,
-> 
-> 
-> > --- a/kernel/rcu/tasks.h
-> > +++ b/kernel/rcu/tasks.h
-> 
-> > @@ -696,16 +696,14 @@ static int __init rcu_spawn_tasks_rude_kthread(void)
-> >  }
-> >  core_initcall(rcu_spawn_tasks_rude_kthread);
-> >
-> > -#ifndef CONFIG_TINY_RCU
-> > -static void show_rcu_tasks_rude_gp_kthread(void)
-> > +#if !defined(CONFIG_TINY_RCU)
-> 
-> Different #ifdef expression.
-
-I don't believe that it is.  The above supplies the !TINY_RCU, and a
-prior #ifdef supplies the TASKS_RUDE_RCU.  So what am I missing here?
-
-> > +void show_rcu_tasks_rude_gp_kthread(void)
-> 
-> Do you really want to define a non-static function...
-
-Yes, because its user is in kernel/rcu/rcutorture.c, which is in
-a separate translation unit, so it must be non-static.  The earlier
-version instead only called it from this file, but that turned out to
-produce confusing output containing information for flavors of RCU that
-were not under test.  So this commit exported it to allow rcutorture to
-complain about only that RCU flavor being tested.
-
-> >  {
-> >         show_rcu_tasks_generic_gp_kthread(&rcu_tasks_rude, "");
-> >  }
-> > -#endif /* #ifndef CONFIG_TINY_RCU */
-> > -
-> > -#else /* #ifdef CONFIG_TASKS_RUDE_RCU */
-> > -static void show_rcu_tasks_rude_gp_kthread(void) {}
-> > -#endif /* #else #ifdef CONFIG_TASKS_RUDE_RCU */
-> > +EXPORT_SYMBOL_GPL(show_rcu_tasks_rude_gp_kthread);
-> 
-> ... and export its symbol, from a header file?
-> I know the file is included only once.
-
-Because kernel/rcu/rcutorture.c can be built as a module, it must be
-exported.  I agree that it is unusual to export from a .h file, but the
-single inclusion is intentional.  There are several other .h files in
-kernel/rcu that are also split out to group similar functionality while
-still allowing the compiler to inline to its heart's content.
-
-Yes, this is a bit unconventional, but it has been this way for more
-than a decade, at least for tree_plugin.h.
-
-Again, please let me know if I am missing something.
-
-							Thanx, Paul
-
-> > +#endif // !defined(CONFIG_TINY_RCU)
-> > +#endif /* #ifdef CONFIG_TASKS_RUDE_RCU */
-> >
-> >  ////////////////////////////////////////////////////////////////////////
-> >  //
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
