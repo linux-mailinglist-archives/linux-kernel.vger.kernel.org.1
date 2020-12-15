@@ -2,112 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638312DA95F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EE52DA96C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727553AbgLOImV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:42:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726883AbgLOImC (ORCPT
+        id S1727426AbgLOIqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:46:18 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39098 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727328AbgLOIp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:42:02 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26F4C06179C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 00:41:21 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id w5so15238464wrm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 00:41:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GbEzlI33OGU2m93piMSf4kBL+lR5zxOJKf2VeMLoEIE=;
-        b=yCuexCqgQRrHyuPvGukIq9TNU/xW0HW9gQQ3S8iCnSnrXJYAl925lc9udtiq/mYlf9
-         AQzIl6bb1OCTt/r39DssvnP/xtSQLc9HhcU3kVE6fiqHFemMiM5/jvIdK+vAXZOZttUh
-         9AEdnJ2P0COYe/9b6MYcwZEWVDKwJF1EL76vqi/5IBaSkNK9QwbFDqzn9ToR1OX3J3+O
-         efJ6mcmgAi2+Cjk12dwpgZz03VHQiN+QXfIyQxT4Tz+FBrx8kVfsLkIVEG+flcSYH92e
-         R5ZGI95tV1tCw/hz9kSRxAnBrJ5tquJn1EUdGE9ANCC+dcdz6NTn9xt1CkdPqb3OB1WD
-         JOmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GbEzlI33OGU2m93piMSf4kBL+lR5zxOJKf2VeMLoEIE=;
-        b=ETOZB9Bium20qYptThIutF9AqE1Iuhk+b2iJUFuEJXliN2s4Xg6En+I2yVJK6ECUOw
-         wOHcnK6qJ1IvYVoicKc/JpP1tGZ5P6I2XGSbE/BrhzmSkmP0rwVqK92uCMpsDgcG77h/
-         5bZn7bZo1eZ8J6zl0w4pBwHFCXuo9KT4lh4o5daNopMdvmF8s666uoW/71wHGD2V+INu
-         N2nnq08KtlDRPfPDgiWT6ExuViJPyV2W/t7xv052UdFaoXjnuOtTr57N22MAVGYoS8jA
-         CNtLoxXlxBYrIOWtn6H9cZnSrRJDVeXETxkx1jpjzWmO/olLTr2vUKNB0dlA4PBnmGr2
-         BTTg==
-X-Gm-Message-State: AOAM530qjEByxRfOAuPvBi6xiMkI/HTgNdVWX3Zcu4adHdpH7mkWJaP/
-        bUgJUQPy6XBiE9y+5g0vKigWYw==
-X-Google-Smtp-Source: ABdhPJzBNEtjk59mcpfwSNW8Qzw6ooxHFo5FWxuFpo6rL/Za+fg5OV/zUyaEaZ0WNX4Z4qYdYvXKGw==
-X-Received: by 2002:a5d:4bc2:: with SMTP id l2mr17095662wrt.204.1608021680445;
-        Tue, 15 Dec 2020 00:41:20 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:e842:4086:6f24:55a6? ([2a01:e34:ed2f:f020:e842:4086:6f24:55a6])
-        by smtp.googlemail.com with ESMTPSA id l16sm37134641wrx.5.2020.12.15.00.41.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 00:41:19 -0800 (PST)
-Subject: Re: [PATCH] thermal/drivers/devfreq: Fix missing dependency with the
- energy model
-To:     rui.zhang@intel.com, lukasz.luba@arm.com
-Cc:     sfr@canb.auug.org.au, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org,
-        Arnd Bergmann <arnd.bergmann@linaro.org>
-References: <20201215125806.31495950@canb.auug.org.au>
- <20201215083520.601988-1-daniel.lezcano@linaro.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <657f28a7-fc75-06ae-a96c-d2ef0485e4bc@linaro.org>
-Date:   Tue, 15 Dec 2020 09:41:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 15 Dec 2020 03:45:57 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BF8VxPl054053;
+        Tue, 15 Dec 2020 03:45:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=62y8F1wzuApBXMtYojRbu3go0n4QGqDm4b54V/GvRWQ=;
+ b=apFGuXzx6+eQMNfgYbo4yLP+0aQwcZ9y9xAJ0oeTd56/Z1mrJi+qqPIaCoOco+S41v/O
+ dEl/pcAAnCw+ogqVGSOEFer0AzZiMSEVSYj0rYAgiZanq+6XNmywfDjAb68QMJHTqtuT
+ 4Na/szUfna9lxION6qExtbM8yo+6ARgWcbbWETcTdZNP0FQA1FszndQjZgiPMoxMjxDA
+ FjqWJrJPNxQu0ZlxvSmJM9iMJYrnkU9qDrivKg/MrBNknZSgp5ATOxbIVIZbY1jMX1jH
+ kqEOGlY9EybnkfURNnLuBcq48jFs5ipUGaJSeY03aPZ45coQ2BRrChGqGEuE9il1Key1 dw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35esptras5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Dec 2020 03:45:06 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BF8WaTs056253;
+        Tue, 15 Dec 2020 03:45:05 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35esptraq9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Dec 2020 03:45:05 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BF8h0gG001041;
+        Tue, 15 Dec 2020 08:45:02 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03fra.de.ibm.com with ESMTP id 35cng8cgrs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Dec 2020 08:45:01 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BF8gTWG24314112
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Dec 2020 08:42:29 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 56DBDA405F;
+        Tue, 15 Dec 2020 08:42:29 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 46909A4054;
+        Tue, 15 Dec 2020 08:42:27 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue, 15 Dec 2020 08:42:27 +0000 (GMT)
+Date:   Tue, 15 Dec 2020 14:12:26 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+Cc:     Anton Blanchard <anton@ozlabs.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/5] powerpc/smp: Parse ibm,thread-groups with
+ multiple properties
+Message-ID: <20201215084226.GA1239129@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <1607596739-32439-1-git-send-email-ego@linux.vnet.ibm.com>
+ <1607596739-32439-2-git-send-email-ego@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201215083520.601988-1-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <1607596739-32439-2-git-send-email-ego@linux.vnet.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-15_04:2020-12-11,2020-12-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 mlxscore=0 suspectscore=0 bulkscore=0 clxscore=1015
+ phishscore=0 mlxlogscore=889 priorityscore=1501 impostorscore=0
+ spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012150055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Gautham R. Shenoy <ego@linux.vnet.ibm.com> [2020-12-10 16:08:55]:
 
-A separate patch should add the select ENERGY_MODEL in the
-multi_v7_defconfig so the devfreq cooling device continues to build by
-default as before.
-
-Arnd?
-
-On 15/12/2020 09:35, Daniel Lezcano wrote:
-> The devfreq cooling device has been converted to use the energy model.
+> From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
 > 
-> Add the dependency on the ENERGY_MODEL option to reflect this change
-> and prevent build failure if the option is not set.
-> 
-> Fixes: 615510fe13bd2 ("thermal: devfreq_cooling: remove old power model and use EM")
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->  drivers/thermal/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
-> index 7edc8dc6bbab..ee62d51ef351 100644
-> --- a/drivers/thermal/Kconfig
-> +++ b/drivers/thermal/Kconfig
-> @@ -193,6 +193,7 @@ config DEVFREQ_THERMAL
->  	bool "Generic device cooling support"
->  	depends on PM_DEVFREQ
->  	depends on PM_OPP
-> +	depends on ENERGY_MODEL
->  	help
->  	  This implements the generic devfreq cooling mechanism through
->  	  frequency reduction for devices using devfreq.
+> The "ibm,thread-groups" device-tree property is an array that is used
+> to indicate if groups of threads within a core share certain
+> properties. It provides details of which property is being shared by
+> which groups of threads. This array can encode information about
+> multiple properties being shared by different thread-groups within the
+> core.
 > 
 
+Looks good to me.
+
+Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Thanks and Regards
+Srikar Dronamraju
