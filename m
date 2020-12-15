@@ -2,97 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374842DB455
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 593902DB459
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731978AbgLOTMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 14:12:20 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:51355 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731862AbgLOTL7 (ORCPT
+        id S1731055AbgLOTN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 14:13:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39749 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731286AbgLOTNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 14:11:59 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 0B1145C006C;
-        Tue, 15 Dec 2020 14:11:09 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 15 Dec 2020 14:11:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        date:from:to:subject:message-id:mime-version:content-type; s=
-        fm3; bh=EK1QHIxkYbOgCW7uVGbCDZ1p8urBhqb2EMvSkYyJh1I=; b=VTd9Ql3r
-        7Hs5X4kzL3m4qvz+JA+Lp5ERIv65XIt7VKF9rRSiFKv90r+HqV1KGYvlgltIU9zN
-        1yOmGHIFXg099MLL7W0pQH0Z9NfL2fDiuBY5wTWltS8Fcp9o0S1fy1Kf+EYU4vK0
-        8k5oLzC2gUSXlNUZ9Fsfw6+U71iGEeKbAfhrrxa5KSBKsPIhU4yRmXO10/XOP2wY
-        8U20H1laILDRo7aS6i57Z7aZPIKcdhALKf5Pitx3Hx7MlsoXo6HG4ISq09sFas98
-        k2ZboyN2E3QYYgdHJuy8yTkRD7gelGiCFeJW/XlNCQDUxB5dYwHpp1+6IAwLHdFI
-        tdFN14DcehMIZQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:message-id
-        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm1; bh=EK1QHIxkYbOgCW7uVGbCDZ1p8urBh
-        qb2EMvSkYyJh1I=; b=n6hbQ1YlpZ4mN+Gu7XUcDJmdf3K50wWTGVDNGV/DhNnzl
-        ksjD61E8+UVt4LmfV4BNEXXgmQ3hWxEL0fl5uQ6AF0z6NoOPWCtRLU6aJJbeBcsx
-        Xj0iEZBlrj+6qjXoY5c1nnTDd+qgs61aroSuxVoyF599+x9DdDWcfri0L/akDep5
-        JOjPwiOI3kCGrGcQT8mxR3KY7chI3WgwOVwf9yS/gINnHK6KMgv6Yc05n9g7CtPh
-        LKhZaMuDD29JXeCvFWISxyI0yN3BejfNoovoqd4WmyXsE/JhdgX/vXTebEKEcy9x
-        J1VH+zK6QchXtxRK+s+zt8xKI5+n34b17k2N4+mOA==
-X-ME-Sender: <xms:TArZX5BwyYEx-b2yFMUK77BK3SqR0kMvB_KmlHru6KN6v99rm6b35Q>
-    <xme:TArZX1VbxrtUt5uSv0PY2tCGMUIddeAZE8Vi-O9X5kN4n92WtytowuEpmygOktXz6
-    32YzPa-1-FN5HXUdg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeltddguddvgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkgggtugesthdtredttddtvdenucfhrhhomheptehnughrvghs
-    ucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrfgrth
-    htvghrnhepiedvieelgeeuuedtfeduhfefteehhfevvdeljeetgfeugfdtledtudetvdeh
-    keffnecukfhppeeijedrudeitddrvddujedrvdehtdenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvshesrghnrghrrgiivghlrdgu
-    vg
-X-ME-Proxy: <xmx:TArZX_B2IL9n5RHgmlzHTQlRZWnyJQrBmkoDNoZYa-p3coXLeS1CHw>
-    <xmx:TArZXw-ShJ9YkntHHDfPgFJiVAnBk053Bi4qTy5MkFkEtkWlLIaUtw>
-    <xmx:TArZX-G9ajaaDJ3eY276Xv54S0sztIJM4P_oisQ6-W5v2OFUvk6SMw>
-    <xmx:TQrZXzPUcWwQxRIv0afCncI2EBJgumAwQFcZXfhjAxKfKJfdBb0xOg>
-Received: from intern.anarazel.de (c-67-160-217-250.hsd1.ca.comcast.net [67.160.217.250])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 518D424005A;
-        Tue, 15 Dec 2020 14:11:08 -0500 (EST)
-Date:   Tue, 15 Dec 2020 11:11:06 -0800
-From:   Andres Freund <andres@anarazel.de>
-To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Allow use of fua to be disabled on per-device basis?
-Message-ID: <20201215191106.egw3nitgmbhvgqxs@alap3.anarazel.de>
+        Tue, 15 Dec 2020 14:13:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608059493;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KDxaVLnu+Ra7ZR1VIVx9OBXM3C80P+ELcOBEFimcNF8=;
+        b=EEGQ6hviHHCZkvnq8IJ+rtwZb4nK+QK5bUvijDNfBj/AtuusCNfVm7y+8TzLAGce5QOtcD
+        H3/fB/NfjDRpL8AOpG9GVWEsNwMwO5n77Vws03lJ/izwNFP6km8Oww9XPEMn3zrQ0gs9kF
+        0d+oYLsJwwovbBPO+uTa5ZdZT/q3ogY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-499-n72XWx6kORCPNukNjzC2vA-1; Tue, 15 Dec 2020 14:11:29 -0500
+X-MC-Unique: n72XWx6kORCPNukNjzC2vA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A6BC410054FF;
+        Tue, 15 Dec 2020 19:11:27 +0000 (UTC)
+Received: from krava (ovpn-112-106.ams2.redhat.com [10.36.112.106])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 2D49719C47;
+        Tue, 15 Dec 2020 19:11:24 +0000 (UTC)
+Date:   Tue, 15 Dec 2020 20:11:24 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCH 3/8] perf tools: Add config set interface
+Message-ID: <20201215191124.GD698181@krava>
+References: <20201212104358.412065-1-jolsa@kernel.org>
+ <20201212104358.412065-4-jolsa@kernel.org>
+ <20201215154118.GD258566@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20201215154118.GD258566@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Dec 15, 2020 at 12:41:18PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Sat, Dec 12, 2020 at 11:43:53AM +0100, Jiri Olsa escreveu:
+> > Add interface to load config set from custom file
+> > by using perf_config_set__new_file function.
+> > 
+> > It will be used in perf daemon command to process
+> > custom config file.
+> 
+> The naming may be misleading, as this is not _setting_ the perf config
+> to be that one, but to apply a set of changes to whatever is the current
+> configuration, right?
+> 
+> Perhaps 'perf_config_set__load_file()'
 
-I have a few Samsung NVMe SSDs where FUA (i.e. REQ_FUA) is a slower than
-full device cache flushes (i.e. REQ_PREFLUSH). I would like to be able
-to disable use of FUA for those.
+yep, it's actually loading, will change
 
-As a first step, would it make sense to add write support to
-/sys/block/*/queue/fua?
+thanks,
+jirka
 
-The biggest issue with that is that it seems like it'd be preferrable to
-only allow enabling fua if the underlying device supports that, and that
-that information isn't currently stored anywhere but QUEUE_FLAG_FUA.
+> 
+> There is value in _resetting_ the config to some configuration, i.e.
+> moving everything to the strict defaults and then loading a file that
+> sets the configuration to a state similar to what perf does when it
+> first starts.
+> 
+> - Arnaldo
+>  
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/perf/util/config.c | 28 +++++++++++++++++++++++-----
+> >  tools/perf/util/config.h |  3 +++
+> >  2 files changed, 26 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
+> > index 6969f82843ee..dc3f03f8bbf5 100644
+> > --- a/tools/perf/util/config.c
+> > +++ b/tools/perf/util/config.c
+> > @@ -738,6 +738,18 @@ struct perf_config_set *perf_config_set__new(void)
+> >  	return set;
+> >  }
+> >  
+> > +struct perf_config_set *perf_config_set__new_file(const char *file)
+> > +{
+> > +	struct perf_config_set *set = zalloc(sizeof(*set));
+> > +
+> > +	if (set) {
+> > +		INIT_LIST_HEAD(&set->sections);
+> > +		perf_config_from_file(collect_config, file, set);
+> > +	}
+> > +
+> > +	return set;
+> > +}
+> > +
+> >  static int perf_config__init(void)
+> >  {
+> >  	if (config_set == NULL)
+> > @@ -746,17 +758,15 @@ static int perf_config__init(void)
+> >  	return config_set == NULL;
+> >  }
+> >  
+> > -int perf_config(config_fn_t fn, void *data)
+> > +int perf_config_set(struct perf_config_set *set,
+> > +		    config_fn_t fn, void *data)
+> >  {
+> >  	int ret = 0;
+> >  	char key[BUFSIZ];
+> >  	struct perf_config_section *section;
+> >  	struct perf_config_item *item;
+> >  
+> > -	if (config_set == NULL && perf_config__init())
+> > -		return -1;
+> > -
+> > -	perf_config_set__for_each_entry(config_set, section, item) {
+> > +	perf_config_set__for_each_entry(set, section, item) {
+> >  		char *value = item->value;
+> >  
+> >  		if (value) {
+> > @@ -778,6 +788,14 @@ int perf_config(config_fn_t fn, void *data)
+> >  	return ret;
+> >  }
+> >  
+> > +int perf_config(config_fn_t fn, void *data)
+> > +{
+> > +	if (config_set == NULL && perf_config__init())
+> > +		return -1;
+> > +
+> > +	return perf_config_set(config_set, fn, data);
+> > +}
+> > +
+> >  void perf_config__exit(void)
+> >  {
+> >  	perf_config_set__delete(config_set);
+> > diff --git a/tools/perf/util/config.h b/tools/perf/util/config.h
+> > index 8c881e3a3ec3..f58b457e7e5f 100644
+> > --- a/tools/perf/util/config.h
+> > +++ b/tools/perf/util/config.h
+> > @@ -30,6 +30,8 @@ typedef int (*config_fn_t)(const char *, const char *, void *);
+> >  int perf_config_from_file(config_fn_t fn, const char *filename, void *data);
+> >  int perf_default_config(const char *, const char *, void *);
+> >  int perf_config(config_fn_t fn, void *);
+> > +int perf_config_set(struct perf_config_set *set,
+> > +		    config_fn_t fn, void *data);
+> >  int perf_config_int(int *dest, const char *, const char *);
+> >  int perf_config_u8(u8 *dest, const char *name, const char *value);
+> >  int perf_config_u64(u64 *dest, const char *, const char *);
+> > @@ -38,6 +40,7 @@ int config_error_nonbool(const char *);
+> >  const char *perf_etc_perfconfig(void);
+> >  
+> >  struct perf_config_set *perf_config_set__new(void);
+> > +struct perf_config_set *perf_config_set__new_file(const char *file);
+> >  void perf_config_set__delete(struct perf_config_set *set);
+> >  int perf_config_set__collect(struct perf_config_set *set, const char *file_name,
+> >  			     const char *var, const char *value);
+> > -- 
+> > 2.26.2
+> > 
+> 
+> -- 
+> 
+> - Arnaldo
+> 
 
-The easiest way to deal with that would be to split QUEUE_FLAG_FUA into
-QUEUE_FLAG_FUA_HW and QUEUE_FLAG_FUA_ENABLED, and have
-blk_queue_write_cache() set QUEUE_FLAG_FUA_ENABLED to
-QUEUE_FLAG_FUA_HW. Then the new blk-sysfs.c queue_fua_set() would only
-allow setting QUEUE_FLAG_FUA_ENABLED if QUEUE_FLAG_FUA_HW is availabl.e
-
-Does that roughly make sense?
-
-
-In a second step it could be reasonable to add an nvme quirks indicating
-slow FUA for those devices? But I'll leave that for later...
-
-Greetings,
-
-Andres Freund
