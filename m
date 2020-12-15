@@ -2,169 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523312DA906
+	by mail.lfdr.de (Postfix) with ESMTP id BE56F2DA907
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:12:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgLOIKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:10:47 -0500
-Received: from mga05.intel.com ([192.55.52.43]:56362 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726217AbgLOIK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:10:29 -0500
-IronPort-SDR: /taIdlDZrkWXUJj1ECS6Syfg04UDhUEb3hETU9dL44fOqZzzLTBkkD2tkKXg9MgnmlRhB9+QLA
- SC3cH83W9z8g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="259570030"
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="259570030"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 00:09:48 -0800
-IronPort-SDR: xYk8ORQflqIE+wMI1hsjP0QAsQmrM0hDKbDmG2NlUwmApiTI4Ll1W1t/mY7RJRgyGhhw8JhiVQ
- c8LNJAEx0ypQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="450975558"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga001.fm.intel.com with ESMTP; 15 Dec 2020 00:09:48 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 15 Dec 2020 00:09:48 -0800
-Received: from fmsmsx606.amr.corp.intel.com (10.18.126.86) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 15 Dec 2020 00:09:48 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 15 Dec 2020 00:09:48 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.45) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Tue, 15 Dec 2020 00:09:48 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iKB+qi3/eUtPq3+9tR7NJB9RhBpCwuoqXWqQKRet/8eukeL63IY7DpRf0S8fpgxgcgqkQAHwW8LIneHTeviOk6TbDQFDDkkKz9KPdxfiE5hK62+59t55g2avMXymya/D2zyLnKtewepz7vbw66IZUB1WmKU1lYenZzXwSQGZzjbRLdgbBWCg9uKcRa3Ukl8LCH4Qlsu+zOAxbfTworCd4i/c2IP9KfAB0SFkU9MIxmFC01Q5bAg7GN2zw6S0FpvLcS7PxUfvS8U+0mFFd38aUMhL8U+zHPJkOfXqru12sfXautjbPQs5tr/rPrjUudOEjSj7gxzqzmDfuGEzi8NCqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YIQzTDdMODJhAbNg8auyIY4EoWL8S1d2Jd4C46gPk/k=;
- b=ERjrdpq8GIuMrVEEy6OISKWxo931f5OHGhIvx5mqrXftvkE1B2Udz/djvqizoWcMtM9s0R2Lbagr8qoIOpOwmJf9fRSLMUtNwiP+4Eq64pmsNgDcDiGr8GYZgUOpRzGjtvO3VeaN6worimPUEGL/njJeTYujNI0d3KB3+tww4RN1nC38P1EML/isxLzqxokM6f1/uOIhBe4Ah4581xMtpqI4BwCIvgE8m+Za90hJtDQumKbFazZ1ZJ5T4sVBnayWQqFaAo8KXWKnuJsQRgkhUotV1IBj004gBQZjkqL/wz4vHBrbpooul62mgwFhWJcFq0eOH9ZLvwLPWSdjFY/QIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YIQzTDdMODJhAbNg8auyIY4EoWL8S1d2Jd4C46gPk/k=;
- b=Pq+BNPmEwAWzcwxdHrGqorVz4XfbqCRIZcmM+eKDGXQwa3/+NHFnWVsn3TpPLG6KW/ti2lRRaQ8trQQB4M3v+7NxwPSJL5EdnPULrfX/nsxyuQyaZnLzSdAqefaq8nTokWAjcSB8Fg9zBa37bocnDOzJo/4cT1nmp4gnP6ulpYA=
-Received: from CO1PR11MB5026.namprd11.prod.outlook.com (2603:10b6:303:9c::13)
- by MWHPR1101MB2208.namprd11.prod.outlook.com (2603:10b6:301:4d::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.14; Tue, 15 Dec
- 2020 08:09:47 +0000
-Received: from CO1PR11MB5026.namprd11.prod.outlook.com
- ([fe80::4820:6e90:3d0e:3b5f]) by CO1PR11MB5026.namprd11.prod.outlook.com
- ([fe80::4820:6e90:3d0e:3b5f%4]) with mapi id 15.20.3654.025; Tue, 15 Dec 2020
- 08:09:47 +0000
-From:   "Sia, Jee Heng" <jee.heng.sia@intel.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Eugeniy.Paltsev@synopsys.com" <Eugeniy.Paltsev@synopsys.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH v6 10/16] dt-binding: dma: dw-axi-dmac: Add support for
- Intel KeemBay AxiDMA
-Thread-Topic: [PATCH v6 10/16] dt-binding: dma: dw-axi-dmac: Add support for
- Intel KeemBay AxiDMA
-Thread-Index: AQHW0mvc6aoO4dGCnkyozignSSXE7an3zkVw
-Date:   Tue, 15 Dec 2020 08:09:46 +0000
-Message-ID: <CO1PR11MB50266EC86067669AE02047C5DAC60@CO1PR11MB5026.namprd11.prod.outlook.com>
-References: <20201211004642.25393-1-jee.heng.sia@intel.com>
- <20201211004642.25393-11-jee.heng.sia@intel.com>
- <20201214225239.GA2531399@robh.at.kernel.org>
-In-Reply-To: <20201214225239.GA2531399@robh.at.kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.198.147.218]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 60f74aef-df48-44d1-fda0-08d8a0d0c9b9
-x-ms-traffictypediagnostic: MWHPR1101MB2208:
-x-microsoft-antispam-prvs: <MWHPR1101MB2208CFEBBF488D4B1054B71CDAC60@MWHPR1101MB2208.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2449;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +JShYASy3Zp4/QYM7VOp0sGLA/rMf41B28D6tGT9C2bu+eV6SV5wjjbKPBFUVk0EeY2pOXNjPjFqivlt5KZifrrFF5nIS2o6T8mGu7umWw82FV/TJFyA8WEF0S5KlJsYZT3StVTWg2m3Mea81frHASFaAMBvWKkNo8k1cv+kqyIXh/hQkcOewfqPZwpw1cNJ822Qpq1dtk5U8qBD/odBJshfA0bM9veD9CfkoVA0qgyTFbDI0+wrNeHk9iq/7RPWv7Day/vmtJurA1WkWgnDjBfbOeCAASsRY34N6YxSeRFrS9W2zE8qhPJp0NYTd4Iw9sAH7vKKsod9IQ5k7SyFlQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5026.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(376002)(186003)(66476007)(26005)(53546011)(86362001)(6506007)(9686003)(7696005)(508600001)(55016002)(52536014)(33656002)(71200400001)(76116006)(2906002)(5660300002)(64756008)(4326008)(66946007)(83380400001)(66446008)(8676002)(54906003)(66556008)(4744005)(8936002)(6916009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?wS9GXyU4amxeBhHXqyqwiIDFidhfYsisV1QVUJrJ58YLDOzn+xv+mbim1Mmj?=
- =?us-ascii?Q?smu844BUKGZi1RXPlZuu2tq5oncuBD5A/F1eMlLmsApyCepnCo3wAWnsJ69F?=
- =?us-ascii?Q?LHDY0t4d05xBmmTSuEwvLDiTV+D/s0DefQi7krRMVktO5lRkjRsylizEzTLD?=
- =?us-ascii?Q?/r4DY0GLp3ldqo6jNwe9KeAli6AaA5+2T9/Z8CH9IacmG/hkRG+jCs3knPjF?=
- =?us-ascii?Q?bJ8DqRVmp350vf5a7W60DqBhBHdqWXI7PGauxPc12bd5BSrMHAa5W+ROJK+w?=
- =?us-ascii?Q?lA11IRIhKhUJiR1ksdo3fcomXADdBIFsp42ajvJmRmrFdFPXSxESToiCCztz?=
- =?us-ascii?Q?jlMQ7hnF0QLmQAcYOP2qMn/MeIsNNmWhL5STZEyBvXE+fUI78EPOJ0PbDFnp?=
- =?us-ascii?Q?YvhpfVkbOQCWa3EHubawhKH4gTq1Jvji15cvvJ80aBN4Cq0ff6V2moGYT3Qs?=
- =?us-ascii?Q?Yo2NuqM5I6SZj+U7pvbQhm/GIf45Jy8XETgumtoVx3VWEghik8xEZkJMU7jR?=
- =?us-ascii?Q?R9VdIBXJDrcPyH1h7LelSb1eb0LyzNgZSOtDgRxaAAgU8uYxqUCyLWe75KKp?=
- =?us-ascii?Q?bBtfHDo+8z1NqpDrpfnHhpAVGwmqEvZBZnjMnXMI1kZLrd5FMBrm/CLlpy8F?=
- =?us-ascii?Q?WM9Ur3nnCpHpwrHWMQwUQzcF0frZwDQ+ahx1cXgd95ZAR6e5N9K7hdTIXewG?=
- =?us-ascii?Q?UftJxESAthWAAWNG/uyUDpxKg5f7GKKPIXhSdSIpIoyqmjlrJOexWQ2uI3a6?=
- =?us-ascii?Q?lJ2fj//jzCRYS3VEXBgBGy7GJ7+pJ9+qmMitiVcfYNBcepODbGvcAaZMqoY5?=
- =?us-ascii?Q?kIBLTWzgd4PNqCPDT4LZTZuFByJ0+C3BMAPIX5evhogkvYkKkYfDcjOCmOlL?=
- =?us-ascii?Q?QYAIRBFQuSHUpCBZNFUuVx0kmVpq+iYP+bWFXXr76fPqL+mMMFm9bCXdLXth?=
- =?us-ascii?Q?FsuneUw4BktcIKOdF/mbvV/Ll+ER44gf88cAWqCB9gI=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726803AbgLOILi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:11:38 -0500
+Received: from mx.baikalelectronics.com ([94.125.187.42]:50018 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725907AbgLOILh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 03:11:37 -0500
+Date:   Tue, 15 Dec 2020 11:10:50 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Alexandre Torgue <alexandre.torgue@st.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] net: stmmac: Problem with adding the native GPIOs support
+Message-ID: <20201215081050.bewvzcykueem76w7@mobilestation>
+References: <20201214092516.lmbezb6hrbda6hzo@mobilestation>
+ <8477f6be-eb8d-6b6f-33f2-835819542045@st.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5026.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60f74aef-df48-44d1-fda0-08d8a0d0c9b9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Dec 2020 08:09:47.0060
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yZVCsxM7u+dt3GLCgH8f3MC4OWkC/xpdMpq9vrhuQJczCQyq1JcHbNOLNyCCkChsOLukIN/qRtrF693TkEfKlA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2208
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <8477f6be-eb8d-6b6f-33f2-835819542045@st.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Alexandre,
 
+Thanks for the response. My comments are below.
 
-> -----Original Message-----
-> From: Rob Herring <robh@kernel.org>
-> Sent: 15 December 2020 6:53 AM
-> To: Sia, Jee Heng <jee.heng.sia@intel.com>
-> Cc: andriy.shevchenko@linux.intel.com; robh+dt@kernel.org; linux-
-> kernel@vger.kernel.org; Eugeniy.Paltsev@synopsys.com;
-> dmaengine@vger.kernel.org; vkoul@kernel.org;
-> devicetree@vger.kernel.org
-> Subject: Re: [PATCH v6 10/16] dt-binding: dma: dw-axi-dmac: Add
-> support for Intel KeemBay AxiDMA
->=20
-> On Fri, 11 Dec 2020 08:46:36 +0800, Sia Jee Heng wrote:
-> > Add support for Intel KeemBay AxiDMA to the dw-axi-dmac Schemas
-> DT
-> > binding.
-> >
-> > Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
-> > ---
-> >  Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml |
-> 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
->=20
-> Reviewed-by: Rob Herring <robh@kernel.org>
-[>>] Thanks. Will include your Reviewed-by tag in the next release.
+On Mon, Dec 14, 2020 at 11:52:14AM +0100, Alexandre Torgue wrote:
+> Hi Serge,
+> 
+
+> Sorry I never used GPIO provided by DWMAC IP. Obviously, I think is to late
+> for you to use GPIOs provided by your SoC directly. Unfortunately, it seems
+> to be a "perfect" chicken and eggs problem :(.
+
+If you meant the problem that the PHY is getting reset together with
+the MAC reset, then at some extent it's indeed the chicken-eggs
+problem, but it affects the STMMAC driver only due to the
+stmmac_reset() procedure implementation (it waits for the SWR flag
+being cleared right in the same method, but the flag won't be cleared
+until all the clocks are ready, which isn't possible until PHY reset
+isn't cleared, so it causes the DMA-reset timeout). The solution of
+that is simple. If we first performed the reset procedure, then
+initialized/attached the PHY and after that would have made sure the
+DMA_BUS_MODE.SFT_RESET flag was cleared, then the problem wouldn't be
+even noticeable. But still that would have solved just a part of the
+problem. The driver would still perform the MAC reset in the PM
+resume() callback, which in my case will automatically reset the PHY,
+while the PHY subsystem doesn't expect that.
+
+So in order to make the driver properly working for any situation we
+either need to take the possible PHY reset into account in both open()
+and PM-resume() callbacks, or get rid of the reset completely there.
+
+The perfect solution would be not to reset the MAC all the time on the
+network device open and resume procedures. In that case we could have
+reset the controller in the stmmac_dvr_probe() just once, then
+register the GPIO interface and use it for the MDIO-bus, whatever with
+no problems. What do you think of that? Is that even possible seeing,
+for example, AMD xGBE driver doesn't reset the MAC on network dev
+open?  Yeah, the GMAC manual states, that the DMA initialization needs
+to start with the GMAC reset, but in fact do we really need to do that
+all the time on the device open/resume? Wouldn't that be enough to
+reset the device just on probe?
+
+> 
+> Do you have possibilty to "play" with gpio setting. I mean change
+> configuration of them (at least for reset one) before perform a DMA reset:
+> If you have a pull-up on RST line and you could "disconnect" GPO inside GMAC
+> then your PHY should remain on during DMA reset phase.
+
+Alas no. It is impossible to do anything with hardware now. We need to
+deal with what we currently have. The GPO lane is externally
+pulled-down to GND on all the Baikal-T1 SoC-based hardware and these
+are not a single type of device, but multiple of them, which have been
+produced for more than three years now. We also can't somehow
+detach/disconnect GPO inside the GMAC or somehow else, because the SoC
+has already been synthesized with no such feature. So when the GPIO
+register is reset or the GPIO.GPO field is cleared PHY gets to be in
+reset state, and it concerns all the devices.(
+
+-Sergey
+
+> 
+> regards
+> Alex
+> 
+> On 12/14/20 10:25 AM, Serge Semin wrote:
+> > Hello folks,
+> > 
+> > I've got a problem, which has been blowing by head up for more than three
+> > weeks now, and I'm desperately need your help in that matter. See our
+> > Baikal-T1 SoC is created with two DW GMAC v3.73a IP-cores. Each core
+> > has been synthesized with two GPIOs: one as GPI and another as GPO. There
+> > are multiple Baikal-T1-based devices have been created so far with active
+> > GMAC interface usage and each of them has been designed like this:
+> > 
+> >   +------------------------+
+> >   | Baikal-T1 +------------+       +------------+
+> >   |   SoC     | DW GMAC    |       |   Some PHY |
+> >   |           |      Rx-clk+<------+Rx-clk      |
+> >   |           |            |       |            |
+> >   |           |         GPI+<------+#IRQ        |
+> >   |           |            |       |            |
+> >   |           |       RGMII+<----->+RGMII       |
+> >   |           |        MDIO+<----->+MDIO        |
+> >   |           |            |       |            |
+> >   |           |         GPO+------>+#RST        |
+> >   |           |            |       |            |
+> >   |           |      Tx-clk+------>+Tx-clk      |
+> >   |           |            |       |            |
+> >   |           +------------+       +------------+
+> >   +------------------------+
+> > 
+> > Each of such devices has got en external RGMII-PHY attached configured via the
+> > MDIO bus with Rx-clock supplied by the PHY and Tx-clock consumed by it. The
+> > main peculiarity of such configuration is that the DW GMAC GPIOs have been used
+> > to catch the PHY IRQs and to reset the PHY. Seeing the GPIOs support hasn't
+> > been added to the STMMAC driver it's the very first setup for now, which has
+> > been using them. Anyway the hardware setup depicted above doesn't seem
+> > problematic at the first glance, but in fact it is. See, the DW *MAC driver
+> > (STMMAC ethernet driver) is doing the MAC reset each time it performs the
+> > device open or resume by means of the call-chain:
+> > 
+> >    stmmac_open()---+
+> >                    +->stmmac_hw_setup()->stmmac_init_dma_engine()->stmmac_reset().
+> >    stmmac_resume()-+
+> > 
+> > Such reset causes the whole interface reset: MAC, DMA and, what is more
+> > important, GPIOs as being exposed as part of the MAC registers. That
+> > in our case automatically causes the external PHY reset, what neither
+> > the STTMAC driver nor the PHY subsystem expect at all.
+> > 
+> > Moreover the stmmac_reset() method polls the DMA_BUS_MODE.SFT_RESET flag
+> > state to be sure the MAC is successfully completed. But since the external
+> > PHY has got in reset state it doesn't generate the Rx-clk signal. Due to
+> > that the MAC-DMA won't get out of the reset state so the stmmac_reset()
+> > method will return timeout error. Of course I could manually restore the
+> > GPIOs state in the stmmac_reset() before start to poll the SFT_RESET flag,
+> > which may release the PHY reset. But that seems more like a workaround,
+> > because the PHY still has been in reset and need to be reinitialized
+> > anyway. Moreover some PHY may need to have more complicated reset cycle
+> > with certain delays between RST assertion/de-assertion, so the workaround
+> > won't work well for them.
+> > 
+> > To sum it up my question is what is the right way to resolve the problem
+> > described above? My first idea was to just move the MAC reset from the
+> > net-device open()/close() callbacks to the
+> > stmmac_dvr_probe()/stmmac_dvr_remove() functions and don't reset the whole
+> > interface on each device open. The problems we may have in that case is
+> > due to the suspend/resume procedures, which for some reason require the
+> > MAC reset too. That's why I need your help in this matter. Do you have any
+> > idea how to gently add the GPIOs support and don't break the STMMAC
+> > driver?
+> > 
+> > One more tiny question regarding the DW *MAC drivers available in kernel.
+> > Aside of the DW GMAC Baikal-T1 SoC has also got DW xGMAC v2.11a embedded
+> > with XPCS PHY attached. My question is what driver should we better use to
+> > handle our xGMAC interface? AFAICS there are three DW *MAC-related drivers
+> > the kernel currently provides:
+> > 1) drivers/net/ethernet/stmicro/stmmac
+> > 2) drivers/net/ethernet/amd/
+> > 3) drivers/net/ethernet/synopsys/
+> > xGBE interface is supported by the drivers 1) and 2). In accordance with
+> > https://www.spinics.net/lists/netdev/msg414148.html all xGMAC related
+> > parts should have been added to 2), but recently the XGMAC support has
+> > been added to 1). So I am confused what driver is now supposed to be used
+> > for new xGMACs?
+> > 
+> > Regards,
+> > -Sergey
+> > 
