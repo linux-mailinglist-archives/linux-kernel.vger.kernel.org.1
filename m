@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0142DB794
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CCC2DB792
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727620AbgLPABG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727705AbgLPABG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 15 Dec 2020 19:01:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725960AbgLOXss (ORCPT
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:57275 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725962AbgLOXsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 18:48:48 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84153C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 15:48:06 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id m12so43880268lfo.7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 15:48:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rA8LT3qUkWd0k1wXY1hka6HeU3KJbONc0lhdJ7FR81I=;
-        b=GJ0NPhCDbhcFKzWiFORq+0REow2ggwYdGqObnZxfrrrWy4MD39DKOYH3of+d1OjHlz
-         oq7rqK6ReOuMThpI3w6PKlVhqcHtYJdjmQ9afOczz16kK3e2YgoOO9R3lsq0uJ9P2Ul0
-         4Dn4M0/TIMwSjZvRmykpxL2xC2sqtcRsE7jzk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rA8LT3qUkWd0k1wXY1hka6HeU3KJbONc0lhdJ7FR81I=;
-        b=HX/EBPS5tWTuoaL1zOhEF4XyxsfMJWCbbPwXHw9X7SoH048FoQnA4ayaFCx2kVum56
-         ZhHwe10vry9ws7xIpesGqzrEtrbWPmBwofAHYT/9jd/a+LVRHMcTxcj4LagwJI/Kpkfd
-         PnQJivE1ymuF1eJ68kQj0/aQWir3PFVJFGT1uusOv1ShkaRp2x3Oi2uK2YhxJy+CwT1S
-         B0tJ/R3nnmj3TQ56Csl5reUFenVsliFWLFlMwMmAhvgooKosMcCvwJCeuKR7FuX9qfnD
-         3Pb6yfZSOPjBh43h9gACYMKne1rqSHBrfjIy7FevfZSkCe5sWK//6Od3wE3V/I+oN9st
-         Hn2A==
-X-Gm-Message-State: AOAM532/rAvatl25TGMrwiPMcotAvXiUyF7tI5Dwlbw6b0WYTk8WHMPB
-        9tehtuY4KkScvJksHYpYbQwPcFAdvpiENA==
-X-Google-Smtp-Source: ABdhPJxlzI9JlCILhwyX0bkx5GzxzzHtSo43oKBB/bt5etEUKjdb4WEsqpXKVbmjz96jV+pVUR+QHA==
-X-Received: by 2002:a19:f203:: with SMTP id q3mr327828lfh.166.1608076084716;
-        Tue, 15 Dec 2020 15:48:04 -0800 (PST)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id q21sm47169ljj.31.2020.12.15.15.48.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 15:48:03 -0800 (PST)
-Received: by mail-lf1-f53.google.com with SMTP id x20so24313978lfe.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 15:48:03 -0800 (PST)
-X-Received: by 2002:a2e:6f17:: with SMTP id k23mr13647767ljc.411.1608076083339;
- Tue, 15 Dec 2020 15:48:03 -0800 (PST)
+        Tue, 15 Dec 2020 18:48:52 -0500
+Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 6D656766CFF;
+        Wed, 16 Dec 2020 10:48:02 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kpK2z-004Ncx-TW; Wed, 16 Dec 2020 10:48:01 +1100
+Date:   Wed, 16 Dec 2020 10:48:01 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [v2 PATCH 6/9] mm: vmscan: use per memcg nr_deferred of shrinker
+Message-ID: <20201215234801.GT3913616@dread.disaster.area>
+References: <20201214223722.232537-1-shy828301@gmail.com>
+ <20201214223722.232537-7-shy828301@gmail.com>
+ <20201215024637.GM3913616@dread.disaster.area>
+ <CAHbLzkpgFO_WmxRwmSa_eb4KrQ3WXmHT0kOfn85HJAsfqvyC1Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201214144753.1DA3B22B4B@mail.kernel.org>
-In-Reply-To: <20201214144753.1DA3B22B4B@mail.kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 15 Dec 2020 15:47:47 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whOwGP7G-6rn8ZPwQJHhGiS1MxW06n7YY0TO=P8xHwf8A@mail.gmail.com>
-Message-ID: <CAHk-=whOwGP7G-6rn8ZPwQJHhGiS1MxW06n7YY0TO=P8xHwf8A@mail.gmail.com>
-Subject: Re: [GIT PULL] regmap updates for v5.11
-To:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHbLzkpgFO_WmxRwmSa_eb4KrQ3WXmHT0kOfn85HJAsfqvyC1Q@mail.gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
+        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
+        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=7-415B0cAAAA:8 a=pGLkceISAAAA:8
+        a=5GS3g15B5MoVROEbUKkA:9 a=CjuIK1q_8ugA:10 a=-RoEEKskQ1sA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 6:47 AM Mark Brown <broonie@kernel.org> wrote:
->
-> There was also an addition and revert of use of the new Soundwire
-> support for RT715 due to build issues with the driver built in, my tests
-> only covered building it as a module, the patch wasn't just dropped as
-> it had already been merged elsewhere.
+On Tue, Dec 15, 2020 at 02:27:18PM -0800, Yang Shi wrote:
+> On Mon, Dec 14, 2020 at 6:46 PM Dave Chinner <david@fromorbit.com> wrote:
+> >
+> > On Mon, Dec 14, 2020 at 02:37:19PM -0800, Yang Shi wrote:
+> > > Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
+> > > will be used in the following cases:
+> > >     1. Non memcg aware shrinkers
+> > >     2. !CONFIG_MEMCG
+> > >     3. memcg is disabled by boot parameter
+> > >
+> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> >
+> > Lots of lines way over 80 columns.
+> 
+> I thought that has been lifted to 100 columns.
 
-Ok, this made my diffstat look very odd and very different from yours
-- because I had already gotten that driver from the sound tree, so my
-diffstat looked very different from the one you have - and instead of
-being the no-op that it was for you (add and then delete), it showed
-up as just a delete for me.
+Documentation/process/coding-style.rst still says:
 
-I assume you've synchronized with Takashi so that this isn't a big
-surprise for him..
+"The preferred limit on the length of a single line is 80 columns."
 
-              Linus
+checkpatch might not warn about > 80 columns anymore, but if the
+file you are modifying is almost entirely 80 columns in width, then
+by default changes to that file should also stay within 80 columns.
+
+I mostly consider using checkpatch to enforce coding styles to be
+harmful....
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
