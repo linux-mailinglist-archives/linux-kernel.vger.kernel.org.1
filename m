@@ -2,132 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D562DA9CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:10:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFE12DA9D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727441AbgLOJK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 04:10:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727621AbgLOJKF (ORCPT
+        id S1728151AbgLOJMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 04:12:07 -0500
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:41308 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727998AbgLOJMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 04:10:05 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71BF8C0617B0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 01:09:25 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id h6so10580148vsr.6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 01:09:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=luMq81MiEGmCMgx54RC3ze837GBAAVGMy04eT0X8dS8=;
-        b=lHaL17ncW3LPegqE6xpy/hFHjDpE+0ds0dJUUIPJXUk7h7LmL+GCvaHQzevNSsP/tN
-         eg6Pc6wZxxe+L1NYSULSO5i8HmQNKrBLyVWTQvU4DOIii+ZjzOcvWKuNbUE9Gd8zWrxo
-         KS6gktAV7O7Aha1f82qKQp1QYeXDeSwGdYiK1tmFHlAZvFNa/kxUDHw2rJllzhR8jOo6
-         ST1+ymvEqbzgYNQwTmSdH6iaVWSTLiNb4a3TJLWNjO3UL6Js8jITIYkZakas4E3n9QoO
-         PdRTKAM8gc/V07cRimmBswXx0LoHAjP41wuQXYUPe5y+PB+ppzlr1727ggbW2CXjRmny
-         ixvg==
+        Tue, 15 Dec 2020 04:12:05 -0500
+Received: by mail-ed1-f65.google.com with SMTP id i24so20151339edj.8;
+        Tue, 15 Dec 2020 01:11:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=luMq81MiEGmCMgx54RC3ze837GBAAVGMy04eT0X8dS8=;
-        b=f30WU8ISPNMDRjl7lgZQ92WMIpx529MNyiJL2z6mb2tq3dKGm9YGkBdpcdO6mXYeS/
-         Skak2balIPwj/OgzPUOzcgDRFhOZvBKITCWp3nF4RciYGW1pUWYTURBC0XxpJBVPLMNw
-         K9kd+uO6/0rMCom8ObOWJDo9EwQ/s3UCe8NiVg9wfL9vc6aNqrMQrJmxf8JuH4cWi3+t
-         qFV/IgNFGnfG5ISalNEmo7nXxr1Lb2630x4x4UPt0KgOtBKe0xAnTw6m3uDZnSgNd2WZ
-         LXqLJDvJrsF+sIs/QydpO7djeD77qAzitIPWlpKR+2WX0rI9g0YCaYs22Q+Xt50YH8f+
-         12+w==
-X-Gm-Message-State: AOAM530URA+PtoCO7I7S5dubvw37SVWnwTngT/X1s3nmF/X+CZUvvGhY
-        hjL1fTpO7NezdwtKs/5Ymu+MNVNQLp8aMxDxYdE=
-X-Google-Smtp-Source: ABdhPJxb77wnwRDv3GcVuR8gNw6CTKKseol5oiTXQnSZ2UuQDmn9FvE5iUQWKvSHNLCozcDjInpJNWqtWdc1y4vlhtU=
-X-Received: by 2002:a67:d20e:: with SMTP id y14mr15228493vsi.11.1608023364037;
- Tue, 15 Dec 2020 01:09:24 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=76YNNvedxwQavmwaTRQKT3yfhwPKPqBSFxsGhUfBxyc=;
+        b=NKIQoT9DpTCaUXTaOxSi0JzurYt/hqac+5vIy6US5UOkgLJC7LNWWjfaXj6fEuTu+P
+         h1CnDD3q7Ddo3S6ZspSugdHPjAY9eujQHI0NbMWv/L+fhiYKZ47YSP6OfbB3AAix6zoA
+         Ktv2+UhmKTLbvKp7PUhvc/fMNCvOP1aiibHS3HS3bbDi+w22rQABk4jDyUgn2QksVD2v
+         7H2xZnX3bZSLy/28pGIis07tTnM02n709IisVKJ/S4ichpi+X0pWGo1bCL6zV0MW0U76
+         +ypBuPgPlr2HM+vWA0pHqVpdHkmbK963hWLoH/bt8Fbnv93Qi89lWE8QIai/Nhjq93gX
+         +cVQ==
+X-Gm-Message-State: AOAM531pL8zlRhHZRbViA80u0idfwROqIWge2ukBf0I1fAWnmwzqKUc9
+        k9dc6yhJsiCSkiI1iV/NKiA=
+X-Google-Smtp-Source: ABdhPJxiThtphqQmSV9KKflcAj0vuSGsG4tG5fs8gYfwTz2ko3RETBBR9qsNQj6TcljGF9n3m7sdfA==
+X-Received: by 2002:aa7:d6d8:: with SMTP id x24mr29163229edr.105.1608023480321;
+        Tue, 15 Dec 2020 01:11:20 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id d8sm14289205edm.75.2020.12.15.01.11.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 01:11:19 -0800 (PST)
+Date:   Tue, 15 Dec 2020 10:11:18 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com
+Subject: Re: [PATCH v7 1/4] dt-bindings: soc: imx8m: add DT Binding doc for
+ soc unique ID
+Message-ID: <20201215091118.GB9386@kozik-lap>
+References: <20201215083551.6067-1-alice.guo@oss.nxp.com>
 MIME-Version: 1.0
-Reply-To: kipkalyamissharrita@gmail.com
-Sender: mrs.latifakoumbousi4@gmail.com
-Received: by 2002:ab0:650a:0:0:0:0:0 with HTTP; Tue, 15 Dec 2020 01:09:23
- -0800 (PST)
-From:   "Miss.Harrita Kipkalya" <kipkalyamissharrita@gmail.com>
-Date:   Tue, 15 Dec 2020 01:09:23 -0800
-X-Google-Sender-Auth: 1j178MDrkViP5BwkeNV5rRx6KHw
-Message-ID: <CANg70n+AAm7Tj4F2CNV2WYJyOMxL8r2rh1Ohg0nW89Ow9W5gsQ@mail.gmail.com>
-Subject: My Dearest,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201215083551.6067-1-alice.guo@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dearest,
+On Tue, Dec 15, 2020 at 04:35:48PM +0800, Alice Guo (OSS) wrote:
+> From: Alice Guo <alice.guo@nxp.com>
+> 
+> Add DT Binding doc for the Unique ID of i.MX 8M series.
+> 
+> Signed-off-by: Alice Guo <alice.guo@nxp.com>
+> ---
+> 
+> Changes for v7:
+>  - change to a separate schema file
+> Changes for v6:
+>  - none
+> Changes for v5:
+>  - correct the error of using allOf
+> Changes for v4:
+>  - use allOf to limit new version DTS files for i.MX8M to include
+>    "fsl,imx8m*-soc", nvmem-cells and nvmem-cells-names
+> Changes for v3:
+>  - put it into Documentation/devicetree/bindings/arm/fsl.yaml
+>  - modify the description of nvmem-cells
+>  - use "make ARCH=arm64 dtbs_check" to make sure it is right
+> Changes for v2:
+>  - remove the subject prefix "LF-2571-1"
+> 
+>  .../bindings/soc/imx/imx8m-soc.yaml           | 54 +++++++++++++++++++
+>  1 file changed, 54 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml b/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
+> new file mode 100644
+> index 000000000000..a2f7dc0c9b35
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
+> @@ -0,0 +1,54 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/imx/imx8m-soc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP i.MX8M Series SoC
+> +
+> +maintainers:
+> +  - Alice Guo <alice.guo@nxp.com>
+> +
+> +description: |
+> +  NXP i.MX8M series SoCs contain fuse entries from which SoC Unique ID can be
+> +  obtained.
+> +
+> +select:
 
-I am writing this mail to you with tears and sorrow from my heart.
-With due respect, trust and humanity, i appeal to you to exercise a
-little patience and read through my letter i feel quite safe dealing
-with you in this important business having gone through your
-remarkable profile, honestly i am writing this email to you with
-pains, tears and sorrow from my heart, i will really like to have a
-good relationship with you and i have a special reason why I decided
-to contact you. I decided to contact you due to the urgency of my
-situation.
+Mhm, there are other compatibles here so indeed, select is needed.
 
-My name is Miss.Harrita Kipkalya, 23yrs old female and i am from Kenya
-in East Africa. Light in complexion, single (never married) but
-presently i am residing here in Ouagadougou, Burkina Faso refugee
-camp. My father Late Dr Kipkalya Kones was the former Kenyan road
-Minister. He and Assistant Minister of Home Affairs Lorna Laboso had
-been on board the Cessna 210, which was headed to Kericho and crashed
-in a remote area called Kajong'a, in western Kenya. The plane crashed
-on the Tuesday 10th, June, 2008. You can read more about the crash
-through the below site:
-http://edition.cnn.com/2008/WORLD/africa/06/10/kenya.crash/index.html?iref=
-=3Dnextin
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        enum:
+> +          - fsl,imx8mm
+> +          - fsl,imx8mn
+> +          - fsl,imx8mp
+> +          - fsl,imx8mq
+> +  required:
+> +    - compatible
 
-After the burial of my father, my Fathers brother conspired and sold
-my father' s property to an Italian Expert rate which they shared the
-money among themselves and live nothing for me. One faithful morning,
-I opened my father's briefcase and found out the documents which he
-have deposited huge amount of money in one bank in Burkina Faso with
-my name as the next of kin because when he was alive he deposited some
-amount of money in a Bank in Burkina Faso which he used my name as the
-next of kin. The amount in question is $4.7Million.
+This does not work - does not match anything. It seems you missed proper
+"required" for the matched node.
 
-I have informed the bank about claiming this money and the only thing
-they told me is to look for a foreign partner who will assist me in
-the transfer due to my refugee status here in Burkina Faso. God told
-me that you are the honest and reliable person who will help me and
-stand as my trustee so that I will present you to the Bank for
-transferring of my father=E2=80=99s money to your bank account in overseas.=
-I
-have chosen to contact you after my prayers and I believe that you
-will not betray my trust. But rather take me as your own biological
-sister or daughter which I will be coming to your country as soon as
-this money is transferred to your account.
+Provide also an example.
 
-My dearest, things are very bad for me here in the refugee camp where
-i am living today. People are dying here day after day because of lack
-of food and poor medical treatment. Even one of us died last night and
-was buried this morning. I am afraid of what i am seeing here. I don't
-know who it will be her turn tomorrow, I was planning to read law in
-my life before the ugly incident that killed my parents that put me in
-this horrible place i found myself toady. This place is like a prison
-as we are only allowed to go out on Monday and Friday of the week as
-given by the united nation rules and regulation here in Burkina Faso.
-It=E2=80=99s in this refugee we are only allowed to go out two times in a w=
-eek
-it=E2=80=99s just like one staying in the prison and i hope by Gods grace i
-will come out here soon. I don' t have any relatives now whom i can go
-to and the only person i have now is Rev Isaac Ambrose who is the
-pastor of the (Christ for all Churches) here in the refugee he has
-been very nice to me since i came here but i am not living with him
-rather i am leaving in the women's hostel because the refugee have two
-hostels one for men the other for women, so you can always contact me
-through this my both email address here
-(kipkalyamissharrita@gmail.com) thanks and am waiting for your reply.
-Please if you want to help me out of this situation respond back so
-that i will tell you more about me.
+Best regards,
+Krzysztof
 
-Yours faithful
-Miss.Harrita Kipkalya
+
+> +
+> +properties:
+> +  soc:
+> +    type: object
+> +    properties:
+> +      compatible:
+> +        items:
+> +          - enum:
+> +              - fsl,imx8mm-soc
+> +              - fsl,imx8mn-soc
+> +              - fsl,imx8mp-soc
+> +              - fsl,imx8mq-soc
+> +          - const: simple-bus
+> +
+> +      nvmem-cells:
+> +        maxItems: 1
+> +        description: Phandle to the SOC Unique ID provided by a nvmem node
+> +
+> +      nvmem-cells-names:
+> +        const: soc_unique_id
+> +
+> +    required:
+> +      - compatible
+> +      - nvmem-cells
+> +      - nvmem-cell-names
+> +
+> +additionalProperties: true
+> +...
+> --
+> 2.17.1
+> 
