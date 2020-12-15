@@ -2,151 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D832DAE56
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 945062DAE62
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728634AbgLONyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:54:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36860 "EHLO
+        id S1729100AbgLON5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:57:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727348AbgLONyT (ORCPT
+        with ESMTP id S1728975AbgLON4i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:54:19 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B032C06179C;
-        Tue, 15 Dec 2020 05:53:38 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id a12so39530542lfl.6;
-        Tue, 15 Dec 2020 05:53:38 -0800 (PST)
+        Tue, 15 Dec 2020 08:56:38 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76579C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 05:55:57 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id cm17so21122111edb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 05:55:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gDzaS/pPeZh5EiQsya+W0nBISDtLWznXodq8DvMAkkc=;
-        b=JQJYWAVAr9iF6vLnV7Wck1vs/TRGHWt5u2TbU/e6BR6bgmNodpmNt4jlM9WG1krWPW
-         KVDiUAY7zRS0McEaur8CLPcLsH2SokbFWqpFrF+ZewYhUXL3q6BeRgb9Ns5CysAHCh1h
-         +ik4nHs0o6P2Znww+lg1qdl48fYwQPEv05ZOZHg0cfhw6d3XNCb+NNs+TtB3QJmBMsu3
-         vHk6jZJlfTfnWl44J3sbwNHvTMEHQfsqtuSwNMmSH7I4Azj4qMkMUXvw+luTJLkO8fjs
-         Q+abUGxFXxD/HB9EvH4qMzxTj0nPopLWA7h+3Kg9d+TT9PDbmvgi7r8+B8I4XhGkhqJO
-         Z/6A==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=28yftlhd5Mm7TNEoJztkfUFW7tsicxqlvZ58WZP092o=;
+        b=q8hRvO8FBlmEVVvGDqqdPymPT2VZCrOP6sdFOK85a8fzhGrEA+VPk8dRAl38JbXfAb
+         pENLRXdI7wPSCGKgFbDvGVqnbbRQ1YJqOZGobDdUJevwJgsecLQ0xYQyU1R7BaKyJOAm
+         aU8bjNtF5rSo+WjA633Q3G4UZXiJdP0mgMratYIzEVUbz4Yd3ALFdCr3qnjEbsQ7KGLI
+         gl3imdIUYwv7AEAmQMNJsX0f1SFP7S+DAL7TLK0FN0FaOdsxR875O0AgQ0WZrUXnMyu3
+         DYN8kHD7MtuD2z7RUKB5HUtduTjGtX3FHHdlziaVIJaOq47v8MTpI4KmaMgWA4Y5/SWe
+         RpNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gDzaS/pPeZh5EiQsya+W0nBISDtLWznXodq8DvMAkkc=;
-        b=H7gvTjt0CCF6vtgfzFcuk8+2iNM3TsRo6axlW6vdYuEX1nUN+XEpC3iicxODF49vre
-         hjlBuHpMEy+XCNttnkU1XxHgoL9FCiAdHyCM9e1XKDntUn4SXM5QD3U428YLG/wcRDId
-         7C2tpEk+o/ahp4TGUjOk0xBVvUXllYnkKztEh69yday0ODy5BbFy4MgQ19nWRstTtSAe
-         SkBbhLxmvBVLrGRrCq0vQfIzzjahLBGvAK2gxfPDX4oRkzT5jWrFAr3zT6eRN5urEM2S
-         q5AQI6g/7S6HACGyEO4Po1u9Tnr+RWKGMjXSo4edxXQ2GHXwISzYOoOXFYZHjmIaxHD/
-         WJag==
-X-Gm-Message-State: AOAM532oa3LX416NUCER+jqh9bYUiGR7ORuaqCtoWLiXCPkbs8zEjr6I
-        LuWXttxhz1JSbpQc7lygcZTMWEvfEas=
-X-Google-Smtp-Source: ABdhPJyoiFDi6yirdb/3UJoHXAC3ipvpCvxxsUUnB7EAzueDX1L1rTCpMDe2+omlMJYQvtJi4D6OBw==
-X-Received: by 2002:a2e:a584:: with SMTP id m4mr3656220ljp.247.1608040417011;
-        Tue, 15 Dec 2020 05:53:37 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id v7sm214842lfg.9.2020.12.15.05.53.35
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=28yftlhd5Mm7TNEoJztkfUFW7tsicxqlvZ58WZP092o=;
+        b=lyRtK7HutDcwDViL4Dc2wfr2x8DWKAChj44J1tvUxlLZZSagx2M39li4TD4i1ri0a4
+         jfCwCB6jXHSCYx4s0mqbPSebV3rfDSm6MAKg2qSUDdRx72jttxDb6/VKDeSdQiyy9tYM
+         cwOgcxA10j3t2LrJXJA606DA7paWL+wNV5DAdLZeTBTj4x4akyF04So3ATgUG6DAfaa7
+         nC8PLH686Dh5EYdIsERNugvCNL+iDclvoRSvtYn+5VLWawhlsaW+F2mZdcuB44Li1Usl
+         6Jmi0494Hhb5b4H4uWRDOPtTAIUYV2Ik/E4249td8XTPofN8MZzCTTpgC36FO/NcbZHb
+         6j5g==
+X-Gm-Message-State: AOAM532Sc7/1zlToQs49Pqjwn+svdZkc+fF6jsarYVNPN8lR5IghrFpA
+        ptlYuOj+lF5xprSbmGF44Phn4A==
+X-Google-Smtp-Source: ABdhPJyuNO0PF0kKJURjwb9+E/B+40e84QEC1lprj6xFNjGqXis995/63N/Dg86zVL7idzJQzFY5Fw==
+X-Received: by 2002:a05:6402:2066:: with SMTP id bd6mr29548060edb.211.1608040556150;
+        Tue, 15 Dec 2020 05:55:56 -0800 (PST)
+Received: from localhost ([2620:10d:c093:400::5:d6dd])
+        by smtp.gmail.com with ESMTPSA id b21sm18147895edr.53.2020.12.15.05.55.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 05:53:36 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Tue, 15 Dec 2020 05:55:55 -0800 (PST)
+Date:   Tue, 15 Dec 2020 14:53:48 +0100
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Yang Shi <shy828301@gmail.com>, guro@fb.com, ktkhai@virtuozzo.com,
+        shakeelb@google.com, mhocko@suse.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v1] ARM: tegra: Fix misplaced tegra_uart_config in decompressor
-Date:   Tue, 15 Dec 2020 16:52:22 +0300
-Message-Id: <20201215135222.6899-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
+Subject: Re: [v2 PATCH 2/9] mm: memcontrol: use shrinker_rwsem to protect
+ shrinker_maps allocation
+Message-ID: <20201215135348.GC379720@cmpxchg.org>
+References: <20201214223722.232537-1-shy828301@gmail.com>
+ <20201214223722.232537-3-shy828301@gmail.com>
+ <20201215020957.GK3913616@dread.disaster.area>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215020957.GK3913616@dread.disaster.area>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tegra_uart_config of the DEBUG_LL code is now placed right at the
-start of the .text section after commit which enabled debug output in the
-decompressor. Tegra devices are not booting anymore if DEBUG_LL is enabled
-since tegra_uart_config data is executes as a code. Fix the misplaced
-tegra_uart_config storage by embedding it into the code.
+On Tue, Dec 15, 2020 at 01:09:57PM +1100, Dave Chinner wrote:
+> On Mon, Dec 14, 2020 at 02:37:15PM -0800, Yang Shi wrote:
+> > Since memcg_shrinker_map_size just can be changd under holding shrinker_rwsem
+> > exclusively, the read side can be protected by holding read lock, so it sounds
+> > superfluous to have a dedicated mutex.
+> 
+> I'm not sure this is a good idea. This couples the shrinker
+> infrastructure to internal details of how cgroups are initialised
+> and managed. Sure, certain operations might be done in certain
+> shrinker lock contexts, but that doesn't mean we should share global
+> locks across otherwise independent subsystems....
 
-Cc: stable@vger.kernel.org
-Fixes: 2596a72d3384 ("ARM: 9009/1: uncompress: Enable debug in head.S")
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/include/debug/tegra.S | 54 +++++++++++++++++-----------------
- 1 file changed, 27 insertions(+), 27 deletions(-)
+They're not independent subsystems. Most of the memory controller is
+an extension of core VM operations that is fairly difficult to
+understand outside the context of those operations. Then there are a
+limited number of entry points from the cgroup interface. We used to
+have our own locks for core VM structures (private page lock e.g.) to
+coordinate VM and cgroup, and that was mostly unintelligble.
 
-diff --git a/arch/arm/include/debug/tegra.S b/arch/arm/include/debug/tegra.S
-index 98daa7f48314..7267516db0ba 100644
---- a/arch/arm/include/debug/tegra.S
-+++ b/arch/arm/include/debug/tegra.S
-@@ -149,7 +149,34 @@
- 
- 		.align
- 99:		.word	.
-+#if defined(ZIMAGE)
-+		.word	. + 4
-+/*
-+ * Storage for the state maintained by the macro.
-+ *
-+ * In the kernel proper, this data is located in arch/arm/mach-tegra/tegra.c.
-+ * That's because this header is included from multiple files, and we only
-+ * want a single copy of the data. In particular, the UART probing code above
-+ * assumes it's running using physical addresses. This is true when this file
-+ * is included from head.o, but not when included from debug.o. So we need
-+ * to share the probe results between the two copies, rather than having
-+ * to re-run the probing again later.
-+ *
-+ * In the decompressor, we put the storage right here, since common.c
-+ * isn't included in the decompressor build. This storage data gets put in
-+ * .text even though it's really data, since .data is discarded from the
-+ * decompressor. Luckily, .text is writeable in the decompressor, unless
-+ * CONFIG_ZBOOT_ROM. That dependency is handled in arch/arm/Kconfig.debug.
-+ */
-+		/* Debug UART initialization required */
-+		.word 1
-+		/* Debug UART physical address */
-+		.word 0
-+		/* Debug UART virtual address */
-+		.word 0
-+#else
- 		.word	tegra_uart_config
-+#endif
- 		.ltorg
- 
- 		/* Load previously selected UART address */
-@@ -189,30 +216,3 @@
- 
- 		.macro	waituarttxrdy,rd,rx
- 		.endm
--
--/*
-- * Storage for the state maintained by the macros above.
-- *
-- * In the kernel proper, this data is located in arch/arm/mach-tegra/tegra.c.
-- * That's because this header is included from multiple files, and we only
-- * want a single copy of the data. In particular, the UART probing code above
-- * assumes it's running using physical addresses. This is true when this file
-- * is included from head.o, but not when included from debug.o. So we need
-- * to share the probe results between the two copies, rather than having
-- * to re-run the probing again later.
-- *
-- * In the decompressor, we put the symbol/storage right here, since common.c
-- * isn't included in the decompressor build. This symbol gets put in .text
-- * even though it's really data, since .data is discarded from the
-- * decompressor. Luckily, .text is writeable in the decompressor, unless
-- * CONFIG_ZBOOT_ROM. That dependency is handled in arch/arm/Kconfig.debug.
-- */
--#if defined(ZIMAGE)
--tegra_uart_config:
--	/* Debug UART initialization required */
--	.word 1
--	/* Debug UART physical address */
--	.word 0
--	/* Debug UART virtual address */
--	.word 0
--#endif
--- 
-2.29.2
+We have since established that those two components coordinate with
+native VM locking and lifetime management. If you need to lock the
+page, you lock the page - instead of having all VM paths that already
+hold the page lock acquire a nested lock to exclude one cgroup path.
 
+In this case, we have auxiliary shrinker data, subject to shrinker
+lifetime and exclusion rules. It's much easier to understand that
+cgroup creation needs a stable shrinker list (shrinker_rwsem) to
+manage this data, than having an aliased lock that is private to the
+memcg callbacks and obscures this real interdependency.
