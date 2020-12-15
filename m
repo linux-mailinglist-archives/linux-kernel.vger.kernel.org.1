@@ -2,90 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E272DB6A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A94532DB6A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:49:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730179AbgLOWt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 17:49:29 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:34961 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730015AbgLOWtG (ORCPT
+        id S1730048AbgLOWs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 17:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727068AbgLOWs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 17:49:06 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7F9265C0043;
-        Tue, 15 Dec 2020 17:47:58 -0500 (EST)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Tue, 15 Dec 2020 17:47:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=QWzDvy6drK5slTeHs2rtc/DTIJ65yki
-        vR5Tsxc+1DFI=; b=MXcvFzCLfwAyH3Lw6LehPx4X5BX7ctYKM8XVoHx8tHMaZTj
-        FP1vr39w8LtlM2HIkpYmXlsGaZ0XpU3wbuutdM6FNaJc5aC+uoNldplUat685jeM
-        DOHj3CW+nykIXuSnccUGfNWLOs4SUUoZEXtpFJINmcrgNQnBEHQcKUl5hh1/yNOp
-        FSEanvh57wmqBhlWrO8+bDCAVqcPdMzJdW8Sa6zjhVE0jum/+tMLi5jJVh12TOxj
-        DSCjdpOmhr50C5KYMlZTztX+6TY8DAQbRcpnNQ7mt5h9UosYJ2JKJ2JdRW71GITX
-        e2Rz8EHjYw3ax/y49FvLvr+MVh+3hPqKK5IknCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=QWzDvy
-        6drK5slTeHs2rtc/DTIJ65ykivR5Tsxc+1DFI=; b=b2m8f3Vjtzqu8X/XEbzq+0
-        HmMV87aFW6WeQFE9tbZXMhxd8NG6NcMqvaE7dztb0w7vSPCHQ0Z4QhRSqPMplIUc
-        maicbeHqdFxA49VEEnhdkSYlBJhEgx+jU9vZiJSJ7DxdMvq8YQ8OW8Y5QwQjfgAw
-        wb4hkv0jcvmlCfPtLLPtedAG3aXxHUbq7t2wb+nuoTafMLdqcP4bnRFNofr+1yVe
-        P0imvSsCeQ4BAp8YXN5nSssqaQrqRdGThACikQNbBX2ql7GXCuDAD5GDTBIP2RHl
-        TE2S0/ZktXihYxo6cP7SADF1H+F9o4sGncczaGgmUJeDU/rU8AvLhSqlXUfwoA/Q
-        ==
-X-ME-Sender: <xms:HT3ZX7aNro-4wU3wDkCkJFE76CkjCxEwLz62YTO0p52slosxMUSkfQ>
-    <xme:HT3ZX6b2YcD6NWfbvx79P2VKs-EnRrO_UpYj39x4lzdOy2gv3WOHf0SZ4o_Vqso9y
-    gFvwZs6rYfuG95dSg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeluddgtdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
-    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:HT3ZX9-Atzm4CVQb1f6jHivdEBhJRZB9WWPruxvYH_lfajRtaIaNvw>
-    <xmx:HT3ZXxqlYeVRsnLpVk5vG_QNnJtdPUkfoWtG5ICz7yE1asOirJ-mVg>
-    <xmx:HT3ZX2psJGGzlbneb3VW5U-9LTqbqhIC5KpHUaksjdT10Q0mksMa_w>
-    <xmx:Hj3ZX_lJn_UKAy5nC6MlUiDepiktkmzMyTmbuIqPb90ATNd7UqcHOw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 9D6A9E0504; Tue, 15 Dec 2020 17:47:55 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.1-61-gb52c239-fm-20201210.001-gb52c2396
-Mime-Version: 1.0
-Message-Id: <0a513b26-a4e4-4808-a02a-eb6ffc84f5ba@www.fastmail.com>
-In-Reply-To: <20201215192323.24359-2-hongweiz@ami.com>
-References: <20201215192323.24359-1-hongweiz@ami.com>
- <20201215192323.24359-2-hongweiz@ami.com>
-Date:   Wed, 16 Dec 2020 09:17:36 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Hongwei Zhang" <hongweiz@ami.com>, linux-aspeed@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "David Miller" <davem@davemloft.net>
-Cc:     "Joel Stanley" <joel@jms.id.au>
-Subject: =?UTF-8?Q?Re:_[Aspeed,ncsi-rx,_v1_1/1]_net:_ftgmac100:_Fix_AST2600_EVB_N?=
- =?UTF-8?Q?CSI_RX_issue?=
-Content-Type: text/plain
+        Tue, 15 Dec 2020 17:48:56 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D05C0613D3;
+        Tue, 15 Dec 2020 14:48:15 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id g25so789661wmh.1;
+        Tue, 15 Dec 2020 14:48:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RWTdo7l7B/SOH7EWwFmGvBqYnRSrVGaVN94yY6EDipE=;
+        b=M2hjolxQdQNzwTd38OCRE2DXoCSXTFZ+aZBAesh1bVtg62r7MQw9KErIw8fm0+8aN5
+         dcvtsLlB7xoSImuq2yPH6uHKK9Kd1yjAU+/90JAdmjybC2g2rccIZeag4+041RZN2cCG
+         uFO72ex3HO5T6HN8auWXlQ/ZK+LvZ8GzaxQWApSFEIDfy7XFSt7yLaotuOZ38tro4T1J
+         7ksNvdgd/WEZM1FyC9sSY7Q0TvvnLg6WqDyjXmymifD+L4sWSK/Y0ftVics4ZFwA/jQ6
+         ajshzUnmTy4mqzs+3s/FZnwN8dmdKaUchqe1waNlTKe0gCmPs7PzhRboJRHIptDT5Dy4
+         6bNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RWTdo7l7B/SOH7EWwFmGvBqYnRSrVGaVN94yY6EDipE=;
+        b=JHxTPG5U4J3Kt8TK/JnsC0lXVgfQwgyNUuUGKBCl89/qXmH4cXHdT4h8Qkmau91xOW
+         SY+ijZ66yH7iORaQ/TzPfj6hgEn/PL8c5PUdVY9W+1z0eL01ZAxSnLj8WrLZHgpuZlMJ
+         qFtOuPkeJTzl5lYxA0sI+NWZ+4PWqS2XIXE4eB7nk6paKqw8/iO13PQjruRVqbSoay5X
+         8l051FRmf6sqlBRh1G09H8fEokkxQ3XIcJHSzy/oGY6ooY7O1xL5B9KHjKd5ZrkCbs1f
+         Tpa87JspRFyU36O1jzBZOI3j21wOc0ayY/DhOkgxJtZan7SAoyS6HrtkAh/u8wT132Ja
+         8bWw==
+X-Gm-Message-State: AOAM530PRYS4SOLve3eaR5hFjIMYnpUFv60p5Poxbt3U+xS0BTmCH2mm
+        z8KX/4QEAevckOo9gCAtCPU=
+X-Google-Smtp-Source: ABdhPJy/UuePFsjcKAdx4K0/aoI7VhC9302B/Ve9JgzUYrV8vNVofyLWmTZbX4SCSfIy6j/4A7rXzA==
+X-Received: by 2002:a1c:6283:: with SMTP id w125mr665100wmb.155.1608072494168;
+        Tue, 15 Dec 2020 14:48:14 -0800 (PST)
+Received: from [192.168.0.160] ([170.253.49.0])
+        by smtp.gmail.com with ESMTPSA id t13sm5739wrs.26.2020.12.15.14.48.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 14:48:13 -0800 (PST)
+Subject: Re: [Bug 210655] ptrace.2: documentation is incorrect about access
+ checking threads in same thread group
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+To:     Ted Estes <ted@softwarecrafters.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Oleg Nesterov <oleg@tv-sign.ru>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Kees Cook <keescook@chromium.org>, Jann Horn <jann@thejh.net>
+Cc:     linux-man <linux-man@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Markus Gutschke <markus@google.com>,
+        Roland McGrath <roland@redhat.com>,
+        Andreas Hobein <ah2@delair.de>
+References: <feef4f9a-4ed8-8a2e-d330-88e7f516faae@gmail.com>
+ <b416e106-c11d-1471-de3d-fb9d5b1b6747@softwarecrafters.com>
+ <223477a0-0b92-3a01-46bb-c06f7d5d5901@gmail.com>
+Message-ID: <0df0ac9e-e881-88c7-cea9-5154077c95a9@gmail.com>
+Date:   Tue, 15 Dec 2020 23:48:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <223477a0-0b92-3a01-46bb-c06f7d5d5901@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[CC += Andreas, Linus, Roland, Markus; fixed Oleg]
 
+On 12/15/20 7:34 PM, Alejandro Colomar (man-pages) wrote:
+> Hi Ted,
+>
+> On 12/15/20 7:31 PM, Ted Estes wrote:
+>> Per my research on the topic, the error is in the manual page.  The
+>> behavior of ptrace(2) was intentionally changed to prohibit attaching to
+>> a thread in the same group.  Apparently, there were a number of
+>> ill-behaved edge cases.
+>>
+>> I found this email thread on the subject:
+>> https://lkml.org/lkml/2006/8/31/241
 
-On Wed, 16 Dec 2020, at 05:53, Hongwei Zhang wrote:
-> Fix AST2600 EVB NCSI RX timeout issue by removing FTGMAC100_RXDES0_RX_ERR bit
-> from macro RXDES0_ANY_ERROR.
+Okay, after reading the LKML thread,
+the old behavior was removed because it was very buggy.
 
-But why? What is wrong with the EVB that this change resolves? Which revision 
-of the EVB?
+We have two options now:
 
-The change affects all designs using the MAC, not just the AST2600 EVB. Why is 
-this patch an appropriate course of action? Can we not add a quirk targeting the
-specific board (e.g. a devicetree property)?
+1) Remove that paragraph, as if that behavior had never existed.
 
-Andrew
+   If we do this, not much is lost:
+   Only _very_ old kernels had that behavior,
+   and it's not even advisable to make use of it on those, AFAICS.
+
+2) Add a note to that paragraph, saying that since kernel 2.X.Y?
+   the calling thread and the target thread can't be in the same group.
+
+   Cons: That info is unlikely to be useful, and will only add
+   a few more lines to a page that is already very long.
+
+3) Suggestions?
+
+I prefer option 1.
+
+I'll add a larger screenshot of the manual page below,
+so that readers don't need to read 'man 2 ptrace':
+
+[[
+	...
+
+       The algorithm employed for ptrace access mode  checking  deter‐
+       mines  whether  the  calling  process is allowed to perform the
+       corresponding action on the target process.  (In  the  case  of
+       opening  /proc/[pid]  files,  the  "calling process" is the one
+       opening the file, and the process with the corresponding PID is
+       the "target process".)  The algorithm is as follows:
+
+       1. If  the calling thread and the target thread are in the same
+          thread group, access is always allowed.
+
+       2. If the access mode specifies PTRACE_MODE_FSCREDS, then,  for
+          the  check  in the next step, employ the caller's filesystem
+          UID and GID.  (As noted in  credentials(7),  the  filesystem
+          UID and GID almost always have the same values as the corre‐
+          sponding effective IDs.)
+
+          Otherwise, the access mode specifies  PTRACE_MODE_REALCREDS,
+          so  use  the caller's real UID and GID for the checks in the
+          next step.  (Most APIs that check the caller's UID  and  GID
+          use   the   effective  IDs.   For  historical  reasons,  the
+          PTRACE_MODE_REALCREDS check uses the real IDs instead.)
+
+	...
+]]
+
+Any thoughts before I write the patch?
+
+Thanks,
+
+Alex
+
+>
+> Thank you for all the details and links!
+> I'll fix the page.
+>
+> Thanks,
+>
+> Alex
+>
+>>
+>> Thank you.
+>> --Ted Estes
+>>
+>> On 12/15/2020 11:01 AM, Alejandro Colomar (man-pages) wrote:
+>>> Hi,
+>>>
+>>> There's a bug report: https://bugzilla.kernel.org/show_bug.cgi?id=210655
+>>>
+>>> [[
+>>> Under "Ptrace access mode checking", the documentation states:
+>>>    "1. If the calling thread and the target thread are in the same
+thread
+>>> group, access is always allowed."
+>>>
+>>> This is incorrect. A thread may never attach to another in the same
+>>> group.
+>>>
+>>> Reference, ptrace_attach()
+>>>
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/kernel/ptrace.c?h=v5.9.14#n380
+>>>
+>>> ]]
+>>>
+>>> I just wanted to make sure that it is a bug in the manual page, and not
+>>> in the implementation.
+>>>
+>>>
+>>> Thanks,
+>>>
+>>> Alex
+>>>
+>>
+>
