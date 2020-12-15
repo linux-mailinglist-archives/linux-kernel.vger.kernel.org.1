@@ -2,136 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFEC2DAE8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C90112DAEA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727876AbgLOOHc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Dec 2020 09:07:32 -0500
-Received: from smtp.asem.it ([151.1.184.197]:60365 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728369AbgLOOGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:06:55 -0500
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000670569.MSG 
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 15:06:12 +0100S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
- Dec 2020 15:06:09 +0100
-Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
- mapi id 15.01.1979.003; Tue, 15 Dec 2020 15:06:09 +0100
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Jiri Slaby <jirislaby@kernel.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Ji-Ze Hong <hpeter@gmail.com>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: R: R: [PATCH v1] serial: 8250_fintek: Print Fintek chip name
-Thread-Topic: R: [PATCH v1] serial: 8250_fintek: Print Fintek chip name
-Thread-Index: AQHW0hsm4LBjpzgBaEuoNhCE3PXG1an2iQoAgAGZwAD///h9AIAAFBzA
-Date:   Tue, 15 Dec 2020 14:06:09 +0000
-Message-ID: <178bf34c76184d39b6b17d5e54133821@asem.it>
-References: <20201214131445.954822-1-f.suligoi@asem.it>
- <X9dr2IvOgPyhsalE@kroah.com> <ff8f6af85d27448d93d1220545f163be@asem.it>
- <X9i9RKAbpoR0F7Y+@kroah.com>
-In-Reply-To: <X9i9RKAbpoR0F7Y+@kroah.com>
-Accept-Language: it-IT, en-US
-Content-Language: it-IT
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.17.208]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1729368AbgLOOLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 09:11:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728648AbgLOOKp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 09:10:45 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A00C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:10:03 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id 6so13248875ejz.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:10:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NO1cdDn3rveUCdkxTy4K6Bz123za1ZPbmRLXpINNXFQ=;
+        b=Cj5TDFrP2UXo3tmwVUdTH7+GGb5RV0uPmO3jFGipk9hla1suqNd371yVeP25Rb7d8R
+         95thK+Kh0JbtyxNnRkK1QRrqiZ6+aDvVemT0KoFkKgrhdDhdeIjuWDIIBY1fJxz/XCAD
+         5GZ+TCH1ctDULr82sPdO6oNK483aeK/vBbo5gKWwqupJhRnSgpppS20wv5YTPvbMj/Ks
+         oeCMBtDzYPiSCngc2EEZ7N5Qv1l88T9Ndv4Df6mkbk9phQGuT+4qPHBxfWzfQG2sW5Ra
+         ipaEaUl9qeKnOtRDEfXw3a1Y+gzWybJBjz8NjbwoO4TpGQhICs7CJx6+gWBEE/GzU6JV
+         jk6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NO1cdDn3rveUCdkxTy4K6Bz123za1ZPbmRLXpINNXFQ=;
+        b=GJ2yN/gQGgYktmnl3Ga2fh7AEqZ2WeBc+LC4zW6fTug+9rTTtX3Cne/YxOZEIOL1UG
+         JEr8/C+jQ0wowoZaic/n9vG+/wP12z4yAcZAWksRSxDC7sG1/MzeDoaTgcuEeWdTXmrl
+         HyZ4SSt9QUXIQxQLd/TOz39msMRGVqLHHjeVjxfejFMREdYjbO9n/AfwuXurX50sX5J/
+         2GH7EoT0mA7cKojDcffQJASq9dpPMUtIgh//bKkwX1YwqZvOlcJzHaRweuQuLS6bv9wx
+         +yVpMmzfpjoyit9wU9h7Eik0kZ6NoVisd4p4zt7PUqWMd2npZhjOihzWCxdWp5+YX5wY
+         vU0g==
+X-Gm-Message-State: AOAM531wxsylSgT1zEfMqJf4j5oUJnv80aMP/rX2CtkWcHtXauIJVn5w
+        19z4tL57k1GubYWC5HUEcPBjhg==
+X-Google-Smtp-Source: ABdhPJzPRYE9A5cY1G5sZnG6cPGdS4cAxTTw3KczQzQ73+UAxRhdd0rjjZ9pos0m/8EZVDC0oufo1A==
+X-Received: by 2002:a17:906:8587:: with SMTP id v7mr26396217ejx.381.1608041402353;
+        Tue, 15 Dec 2020 06:10:02 -0800 (PST)
+Received: from localhost ([2620:10d:c093:400::5:d6dd])
+        by smtp.gmail.com with ESMTPSA id d4sm19109737edq.36.2020.12.15.06.10.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 06:10:01 -0800 (PST)
+Date:   Tue, 15 Dec 2020 15:07:54 +0100
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     guro@fb.com, ktkhai@virtuozzo.com, shakeelb@google.com,
+        david@fromorbit.com, mhocko@suse.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [v2 PATCH 2/9] mm: memcontrol: use shrinker_rwsem to protect
+ shrinker_maps allocation
+Message-ID: <20201215140754.GD379720@cmpxchg.org>
+References: <20201214223722.232537-1-shy828301@gmail.com>
+ <20201214223722.232537-3-shy828301@gmail.com>
 MIME-Version: 1.0
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A782F23.5FD8C2D3.0065,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201214223722.232537-3-shy828301@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-
-> > > > +		chip_name = "F81216H";
-> > > > +		break;
-> > > >  	case CHIP_ID_F81216:
-> > > > +		chip_name = "F81216";
-> > > >  		break;
-> > > >  	default:
-> > > >  		return -ENODEV;
-> > > >  	}
-> > > >
-> > > >  	pdata->pid = chip;
-> > > > +
-> > > > +	pr_info("%s%s%s Fintek %s\n",
-> > > > +		uart->port.dev ? dev_name(uart->port.dev) : "",
-> > > > +		uart->port.dev ? ": " : "",
-> > > > +		uart->port.name,
-> > > > +		chip_name);
-> > >
-> > > Drivers, if all goes well, should not print anything to the kernel
-> log.
-> > > This isn't ok.
-> > >
-> > > And even if it was, dev_info() would be the correct thing to do...
-> >
-> > Ok, too many information in the driver.
-> >
-> > But what do you think about the possibility to introduce
-> > a new additional field, in "serial8250_config" structure,
-> > such as "extra_name" or something like this:
-> >
-> > struct serial8250_config {
-> > 	const char		*name;
-> > 	const char		*extra_name;
-> > 	unsigned short	fifo_size;
-> > 	unsigned short	tx_loadsz;
-> > 	unsigned char	fcr;
-> > 	unsigned char	rxtrig_bytes[UART_FCR_R_TRIG_MAX_STATE];
-> > 	unsigned int	flags;
-> > };
-> >
-> > In this way, if required, each driver can fill this
-> > additional field, for example adding the name of
-> > the particular uart chip or other useful info.
-> >
-> > As result, for example, the "uart_report_port" function output
-> > could be something like this:
-> >
-> > 00:01: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A -
-> Fintek F81216AD
-> > 00:02: ttyS3 at I/O 0x2e8 (irq = 11, base_baud = 115200) is a 16550A -
-> Fintek F81216AD
-> >
-> > where the "extra_name", if not empty, is printed
-> > at the end of the line.
-> > For practical space reasons, the "extra_name" length
-> > can be limited to 16 chars.
+On Mon, Dec 14, 2020 at 02:37:15PM -0800, Yang Shi wrote:
+> Since memcg_shrinker_map_size just can be changd under holding shrinker_rwsem
+> exclusively, the read side can be protected by holding read lock, so it sounds
+> superfluous to have a dedicated mutex.  This should not exacerbate the contention
+> to shrinker_rwsem since just one read side critical section is added.
 > 
-> Why?  What tool will use this, and why would userspace care about it?
-> 
-> What problem are you trying to solve here?
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
 
-I try to explain my requirement:
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-we produce some x86 boards with multistandard RS232/422/485 ports
-and, to have this feature, in some of these boards, we use a
-Fintek uart or superIO.
-So this additional info "extra_name" can be useful for
-a quick check if the serial ports are multistandard or not,
-without any other investigations, but using only a simple command
-like:
-
-dmesg| grep ttyS
-
-> 
-> thanks,
-> 
-> greg k-h
-
-Thanks and best regards,
-Flavio
+Thanks Yang, this is a step in the right direction. It would still be
+nice to also drop memcg_shrinker_map_size and (trivially) derive that
+value from shrinker_nr_max where necessary. It is duplicate state.
