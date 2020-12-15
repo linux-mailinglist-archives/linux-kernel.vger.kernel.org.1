@@ -2,102 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088122DB639
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F382C2DB63E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728174AbgLOWCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 17:02:55 -0500
-Received: from www62.your-server.de ([213.133.104.62]:37772 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727453AbgLOWCs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 17:02:48 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kpIOG-000EHG-IF; Tue, 15 Dec 2020 23:01:52 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kpIOG-000M2l-7T; Tue, 15 Dec 2020 23:01:52 +0100
-Subject: Re: [PATCH 03/15] perf: Add build id data in mmap2 event
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-References: <20201214105457.543111-1-jolsa@kernel.org>
- <20201214105457.543111-4-jolsa@kernel.org>
- <20201215155226.GK258566@kernel.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <30ef464f-fc0b-bf5b-33e0-e207b754199d@iogearbox.net>
-Date:   Tue, 15 Dec 2020 23:01:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1729047AbgLOWEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 17:04:50 -0500
+Received: from mga03.intel.com ([134.134.136.65]:63171 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727704AbgLOWEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 17:04:47 -0500
+IronPort-SDR: ZRwVvvkwg6+13uGvURCrJJ3sHmz3f9BtmJ5jMCa00OFqdnsJZRn0H/nNMp8BoXhpsuxR7VR5F2
+ uHZHcyG4mvJA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="175066824"
+X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; 
+   d="scan'208";a="175066824"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 14:02:59 -0800
+IronPort-SDR: 3k+W1bsmGCEDFS/ev7nhXCUu9Im+pNFC6hVZwG2WORMezjAFKRDwNlW+hUsdVmQTiPPQ9r3IYa
+ faUukrNiGjZA==
+X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; 
+   d="scan'208";a="384001989"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 14:02:52 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id D88CF2063B; Wed, 16 Dec 2020 00:02:49 +0200 (EET)
+Date:   Wed, 16 Dec 2020 00:02:49 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Sakari Ailus <sakari.ailus@iki.fi>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@acpica.org, rjw@rjwysocki.net, lenb@kernel.org,
+        gregkh@linuxfoundation.org, mika.westerberg@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        heikki.krogerus@linux.intel.com
+Subject: Re: [PATCH 13/18] ipu3-cio2: Add functionality allowing
+ software_node connections to sensors on platforms designed for Windows
+Message-ID: <20201215220249.GG26370@paasikivi.fi.intel.com>
+References: <20201130133129.1024662-1-djrscally@gmail.com>
+ <20201130133129.1024662-14-djrscally@gmail.com>
+ <20201130203551.GP4351@valkosipuli.retiisi.org.uk>
+ <5238fc28-350b-a785-0a33-edeba9dfb096@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201215155226.GK258566@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26018/Tue Dec 15 15:37:09 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5238fc28-350b-a785-0a33-edeba9dfb096@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Arnaldo,
+Hi Daniel,
 
-On 12/15/20 4:52 PM, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Dec 14, 2020 at 11:54:45AM +0100, Jiri Olsa escreveu:
->> Adding support to carry build id data in mmap2 event.
->>
->> The build id data replaces maj/min/ino/ino_generation
->> fields, which are also used to identify map's binary,
->> so it's ok to replace them with build id data:
->>
->>    union {
->>            struct {
->>                    u32       maj;
->>                    u32       min;
->>                    u64       ino;
->>                    u64       ino_generation;
->>            };
->>            struct {
->>                    u8        build_id_size;
->>                    u8        __reserved_1;
->>                    u16       __reserved_2;
->>                    u8        build_id[20];
->>            };
->>    };
+On Tue, Dec 15, 2020 at 10:28:59AM +0000, Daniel Scally wrote:
+> Morning Sakari
 > 
-> Alexei/Daniel, this one depends on BPFs build id routines to be exported
-> for use by the perf kernel subsys, PeterZ already acked this, so can you
-> guys consider getting the first three patches in this series via the bpf
-> tree?
+> On 30/11/2020 20:35, Sakari Ailus wrote:
+> >> +/*
+> >> + * Extend this array with ACPI Hardware ID's of devices known to be working.
+> >> + * Do not add a HID for a sensor that is not actually supported.
+> >> + */
+> >> +static const char * const cio2_supported_devices[] = {
+> >> +	"INT33BE",
+> >> +	"OVTI2680",
+> > 
+> > I guess we don't have the known-good frequencies for the CSI-2 bus in
+> > firmware?
+> > 
+> > One option would be to put there what the drivers currently use. This
+> > assumes the support for these devices is, well, somewhat opportunistic but
+> > I guess there's no way around that right now at least.
+> > 
+> > As the systems are laptops, they're likely somewhat less prone to EMI
+> > issues to begin with than mobile phones anyway.
 > 
-> The BPF bits were acked by Song.
+> Just looking at this; we're currently using this with the ov2680 driver
+> that's in mainline currently (with very minor tweaks) plus a
+> hacked-into-roughly-working version of the atomisp-ov5693 driver (ACPI
+> ID INT33BE = ov5693 physical device). Neither of those drivers lists any
+> link frequencies, nor provides a link frequency control for v4l2 to work
+> with.
+> 
+> On the other hand, the ov5648 [1] and ov8865 [2] drivers which Paul has
+> submitted recently, which we also want to be able to support, _do_
+> include that. I can register the frequencies Paul's defined there as a
+> link-frequencies property but this gives rise to two questions:
+> 
+> 
+> 1. Is this _mandatory_? Do I need to be finding the link-frequencies for
+> the OV2680 and OV5693 drivers too? Or can I skip that property where the
+> driver doesn't handle it anyway. Seems to be working fine without
+> controlling it in driver.
 
-All the net-next and therefore also bpf-next bits for 5.11 were just merged
-by Linus into his tree. If you need the first 3 from [0] to land for this merge
-window, it's probably easiest if you take them in and send them via perf tree
-directly in case you didn't send out a pull-req yet.. (alternatively I'll ping
-David/Jakub if they plan to make a 2nd net-next pull-req end of this week).
+Receiver drivers generally need the information to program the receiver
+timing. It may work for you without using the correct frequency, but the
+risk of failure on another unit increases.
 
-Thanks,
-Daniel
+> 2. Can I trust all the values in the drivers to be available on each
+> platform? For example for the ov5648 Paul lists these as available:
+> 
+>  938static const s64 ov5648_link_freq_menu[] = {
+> 
+> 
+>  939        210000000,
+> 
+> 
+>  940        168000000,
+> 
+> 
+>  941};
+> 
+> But can I safely register a link-frequencies property for both of those
+> and trust that that'll work on all IPU3 platforms with an ov5648 in them?
 
-  [0] https://lore.kernel.org/lkml/20201214105457.543111-1-jolsa@kernel.org/
+Ideally we'd know which frequency Windows uses, and use the same.
+
+Using another frequency may have adverse effects elsewhere in the system.
+AFAIU mostly this concerns radios of all sorts.
+
+Now that this is in the kernel in any case, it can be fixed later on so I'm
+not too worried about it. Having still a comment there that the
+configuration is opportunistic would be nice.
+
+-- 
+Kind regards,
+
+Kind regards,
+
+Sakari Ailus
