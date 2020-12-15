@@ -2,386 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC222DB001
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9F82DAFFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:25:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729331AbgLOPZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:25:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729158AbgLOPY1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:24:27 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15B6C06179C;
-        Tue, 15 Dec 2020 07:23:46 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id d203so2521573oia.0;
-        Tue, 15 Dec 2020 07:23:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sbMWcTQyWkGJvWDuPZ0Gn2+/ErMccWD0rQzIUhFGMZM=;
-        b=btzwLYjJqCzx6+g7fmhyO27nlvvEE743MQhqch/VK+QGuuljslVX1agZCXzZOfmxLu
-         Iz5hZ4cgVoWcPgH0BSlKXllBm8WaAEuecDwBJeBQ90BUFWwp3vTfto2C2/TEUPUjXC8E
-         AoyZV4KZ6Vttq7p+d9NHfNbbfqQ/QQ5pN9JkAbowoj1vx4UkiBcfeHgePPuUo/4w3v6z
-         ioeen4oQBinfCmmCzginO2ikwhnrIyWKey200km908PaXERYW1xgP4pUF5R8maHYMOkP
-         Cfhc6bYEYuBy2SQB4yidmgFKmLqnwdeWOy6S42iXHQ/lxj79zrfwQ4SIMXTY7DYLhCsP
-         Cttg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sbMWcTQyWkGJvWDuPZ0Gn2+/ErMccWD0rQzIUhFGMZM=;
-        b=CCs9LCmHUMCV+b1fa3Ri96c5qWkTJg2n5x9PNUuGKPe5esv55DrvNU11e2daMc+uiC
-         sXuu+Q6XBgxGOnoLeC6PqoXX/QMIG1lIU3uOWQiLihv8Uv9JBblgofwTdf31+DYZbU2u
-         MbCwH1NI3kqC64D6N7fm4FPgAT8ZUmvHRarrxTbVn6ubqn3JjGHviA2NMeP6Vu3r8yKH
-         Z7Nv5+Sjv3fG91/sy2kIvdYUb3LFaXYR0aBhiUHCDjTSP6zlq+tnD/eTkhZTekd4wM75
-         7UT6gDv0gbPtxxFqna4aLVd+bGDc4COh502dXQIuoWeRZi7KYnbQ2pEMoNxBON1T8ra2
-         Vajw==
-X-Gm-Message-State: AOAM531ogYpDIuQTqgsg5LG6RBExUnf950fajmNEb6RN0Biy41xXUa8b
-        iWxAy6TyRWKnEehlziCyA6OFKyguXr9fl1GWUpU=
-X-Google-Smtp-Source: ABdhPJxjePvL27Y4vHLOHz0YPcLo3lFdmj9/FyuS6F4ZlEWyH32kvS6VFOFsZadVb864yd+8b3c6RxQ/Xb+E9mI/zr4=
-X-Received: by 2002:a54:4083:: with SMTP id i3mr21585468oii.120.1608045826096;
- Tue, 15 Dec 2020 07:23:46 -0800 (PST)
+        id S1729619AbgLOPY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:24:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726844AbgLOPYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:24:12 -0500
+Date:   Tue, 15 Dec 2020 12:23:43 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608045810;
+        bh=Zn30Kj6lieu/m+TmuMKs6jU4G27N8gVd119f6G7fIsw=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ff/yq/dRsRPS3TNWpKiz8Fkx6WBGAeu4Kis4smmrh4BC8QfBe6p3DhqmTRIQKy52D
+         DwbjIelMLw4ypmACFzmENCG8LZ0s1uCh0ZAE5vF73gy03JIkf3Rjh11GKbSgst4Q8i
+         Hhdzu9vjYCHPkLbxm8a5qb+1PavIkd6469XQM79gIXojYAbRVbvUIWJHDCceuXzD6z
+         oD1e3hdg6NGA4P0TACUSpTVhg2fiml78ChrviWzTIkYSVjXe8J7zLqkeL4Wj1PNOSn
+         DHpGgGVE6P7OJTUrZ0JmfSdCKgqMyDh6xlczmRsId8nhaWvLWM9akiynz/oEFJrVCr
+         26WmLYzHpw9/w==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCH 3/3] perf tools: Add evlist/evlist-verbose control
+ commands
+Message-ID: <20201215152343.GG252952@kernel.org>
+References: <20201210204330.233864-1-jolsa@kernel.org>
+ <20201210204330.233864-4-jolsa@kernel.org>
 MIME-Version: 1.0
-References: <1606722505-16194-1-git-send-email-wendy.liang@xilinx.com>
- <CADnq5_NZrqkouXCFKWc2wv483nc=x4cXXjFCqcEmkUYZpNeMUQ@mail.gmail.com>
- <CAKMK7uFjwmm9W3RFVdQ=EOqHvWeD5ZPA7zP86O_sxxBv3n4jjw@mail.gmail.com> <b0d41bb6-0347-24f5-7a2d-a3b41d5444c9@xilinx.com>
-In-Reply-To: <b0d41bb6-0347-24f5-7a2d-a3b41d5444c9@xilinx.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 15 Dec 2020 10:23:34 -0500
-Message-ID: <CADnq5_N7Q_6jfghWQGs17gzT2Ucj_19v9V4s7G0wPStVn+mftQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/9] Xilinx AI engine kernel driver
-To:     Jiaying Liang <wendy.liang@xilinx.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, tejas.patel@xilinx.com,
-        ravi.patel@xilinx.com, rajan.vaja@xilinx.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Rob Herring <robh+dt@kernel.org>, manish.narani@xilinx.com,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210204330.233864-4-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 7:24 PM Jiaying Liang <wendy.liang@xilinx.com> wrote:
->
->
-> On 12/11/20 11:39 AM, Daniel Vetter wrote:
-> > Hi all
-> >
-> > On Fri, Dec 11, 2020 at 8:03 PM Alex Deucher<alexdeucher@gmail.com>  wrote:
-> >> On Mon, Nov 30, 2020 at 3:25 AM Wendy Liang<wendy.liang@xilinx.com>  wrote:
-> >>> AI engine is the acceleration engine provided by Xilinx. These engines
-> >>> provide high compute density for vector-based algorithms, and flexible
-> >>> custom compute and data movement. It has core tiles for compute and
-> >>> shim tiles to interface the FPGA fabric.
-> >>>
-> >>> You can check the AI engine architecture document for more hardware details:
-> >>> https://www.xilinx.com/support/documentation/architecture-manuals/am009-versal-ai-engine.pdf
-> >>>
-> >>> This patch series adds a Linux kernel driver to manage the Xilinx AI
-> >>> engine array device and AI engine partitions (groups of AI engine tiles
-> >>> dedicated to an application).
-> >> Hi Wendy,
-> >>
-> >> I think it would be good to provide an overview of how your stack
-> >> works in general.  That would give reviewers a better handle on how
-> >> all of this fits together.  I'd suggest including an overview in the
-> >> cover letter and also in the commit message and/or as a comment in the
-> >> code in one of the patches.  I'm not really an expert when it comes to
-> >> FPGAs, but this basically looks like a pretty low level interface to
-> >> set up the data fabric for a kernel that will run on the soft logic or
-> >> maybe the microcontroller on the board.  It doesn't have to be super
-> >> detailed, just a nice flow for how you might use this.  E.g.,
-> >>
-> >> Userspace uses ioctls X, Y, Z to configure the data fabric for the
-> >> FPGA kernel.  The kernels can run on... .  DMA access to system memory
-> >> for data sets can be allocated using ioctl A.  DMA access is limited
-> >> by... . The user can then load the FPGA kernel on to one of the
-> >> engines using ioctl B and finally they can kick off the whole thing
-> >> using ioctl C.  FPGA kernels are compiled using YYY toolchain and use
-> >> use the following runtime (link to runtime) to configure the data
-> >> fabric using ioctls X, Y, Z.
-> > At least for drm drivers we ideally have that as a .rst file in
-> > Documentation/. With that you can even do full svg graphs, or just dot
-> > graphs, of the overall stack if you really want to go overboard :-)
-> >
-> >> It would also be good to go over the security implications of the
-> >> design.  E.g., can the FPGA kernel(s) access the DMA engine directly,
-> >> or is it limited to just the DMA regions set up by the ioctls?  Also,
-> >> does the hardware and software design allow for multiple users?  If
-> >> so, how does that work?
-> > I've also seen indications that there's some on-chip or on-card
-> > memory. How that's planned to be used and whether we want to manage
-> > this (maybe even with something like ttm) would be good to understand.
-> >
-> > All excellent questions from Alex, just figured I add some more.
-> >
-> > Cheers, Daniel
->
-> Hi Alex, Daniel,
->
-> Below is an overview of the driver.
->
-> AI engine kernel driver manages Xilinx AI engine device. An AI engine device
-> contains cores tiles and SHIM tiles. Core tiles are the computation tiles
-> , the SHIM tiles are the tiles interfacing to external components.
->
->            +--------+--------+--------+--------+
->             | Core        | Core        | Core        | Core | ...
->             |                |                | |                |
->            +-----------------------------------+
->             | Core        | Core        | Core        | Core     | ...
->             |                |                | |             |
->            +--------+--------+--------+---------
->             ...
->            +--------+--------+-----------------+
->            | SHIM        | SHIM       | SHIM       |SHIM        |
->            | PL            | PL           | PL            |PL | NOC  |
->            +---+----+---+----+---+-----+-------+
->    AXI Streams   |        |                |              |    |AXI MM
->                         |        |                | |    |
-> Events Singals |        |                |              |    |
->                         |        |                | |    |
->                         |        |                | |    |
->            +---+--------+--------+-----+ +--+------+
->            |       FPGA                                        | |
-> NOC        |
->            | | |                  |
->            +---------------------------+ +--+-------+
->                                             |
->                                             |
->                                         +---+------+
->                                         |   DDR           |
->                                         +----------+
->
-> Each Core tile contains computing module, local memory and DMA module. The
-> local memory DMA module takes data from or to the AXI streams and writes
-> it to or reads it from the local memory. The computing module can also
-> directly get/put data from/to the AXI stream. The AIE SHIM enables AIE tiles
-> to get/put data from/to AXI streams from FPGA, enables external master to
-> access AI engine address space through AXI MM. SHIM NoC module has DMA
-> engine,
-> which can access extern memory though AXI MM and push it to internal AXI
-> streams.
->
-> At runtime, the AI engine tiles interconnection needs to be configured
-> so that
-> it can get fetch data from external components or adjacent tiles, and AI
-> engine
-> core program needs to be loaded. And then user application can push data
-> to the
-> AI engine array and start/stop AI engine core. AI engine device errors
-> can be
-> raised as events, the AI engine kernel driver listens to the events
-> interrupt
-> to monitor runtime async device errors.
->
-> Instead of application directly interacting with the AI engine kernel
-> APIs, user
-> application/libraries interacts with AI engine userspace library:
-> https://github.com/Xilinx/embeddedsw/tree/master/XilinxProcessorIPLib/drivers/aienginev2
-> It provides cross OSes low level functional abstraction such as how to
-> connect one
-> stream port to another stream port, how to configure core tile local DMA.
->
-> The AI engine library can be used by other runtime libraries such as
-> Xilinx runtime (XRT)
-> library: https://xilinx.github.io/XRT/master/html/index.html,
-> which provides acceleration abstraction for Xilinx accelerators, it has
-> extensions
-> to interface to other acceleration framework such as OpenCL.
-> XRT provides buffer handling abstractions for user application to share
-> data between
-> applicaiton and devices.
->
-> Here is an example of application runtime stack:
->
->              +----------------------------+
->              |      Application                              |
->              | |
->              +----------------------------+
->              |       XRT                                        |
->              | |
->              +----------------------------+
->              |      AIE Library                               |
->              | |
->             +----------------------------+
->      +----------------------------------------+
-> Kern    +----------------------------+
->              |         AIE Partition                        +--+
->             +----------------------------+    |
->                    |----------------------------+
->              +----------------------------+
->               |         AIE Device                           |
->               | |
->              +----------------------------+
->
->
->
-> The AI engine kernel driver provides the following user interfaces:
->   * AIE device driver is the root device driver to manage the partitions of
->     of the AI engine device array. AI engine array can be partitioned into
->     column wised isolated partitions. Each applicaiton can only access its
->     own partitions.
->   * AIE device driver monitors the interrupt from the AI enigne device. All
->     AI engine tiles shared the same interrupt for error events.
->   * AIE partition driver controls address mapping and access of the
->     registers/local memories of the tiles within a partition.
->     * It provides mmap operation to enable application to direclty
-> access the
->       tiles local memories for small data update such as parameter
-> update for
->       performance.
->     * It provides mmap operatio to map all the registers as readonly for
->       application to poll registers efficiently to check status.
->     * It provides ioctl for userspace to pass I/O commands to write/mask
-> write
->       the registers. How to configure is defined by userspace. Userspace
-> will
->       pass the I/O commands sequence to the kernel driver, and kernel driver
->       will validate the commands before it writes to the registers.
->     * It provides ioctl to import dmabuf and ioctl to configure the the
-> DMA module
->       in the SHIM tile which can access memory outside AI engine array.
->
-> The buffer management is out of this driver. In the above example, user
-> application
-> uses Xilinx runtime(XRT), XRT is the one to manage the buffers.
->
+Em Thu, Dec 10, 2020 at 09:43:30PM +0100, Jiri Olsa escreveu:
+> Adding new control events to display all evlist events.
+> 
+> The interface string for control file is 'evlist' and
+> 'evlist-verbose'.
 
-So if I understand this correctly, this driver handles the resource
-management for the AI engines, PLs (programmable logic), and DMA
-streams.  I think it's important to understand that there are multiple
-address spaces here.  Normally when we talk about DMA in the kernel we
-are referring to devices accessing an external resource like system
-memory on the host CPU or another device's MMIO space (e.g., another
-PCIe device).  It would be good to clarify which address spaces the
-DMAs in your diagram refer to.  I think the DMAs in the AI engines are
-specifically for DMAs within the AI engine logic (e.g., between AIs in
-a partition).  How is DMA to system memory handled?  What about
-dedicated memory on the FPGA (e.g., HBM or DDR on the FPGA itself)?
-Is that what you are exposing as DMA bufs?  When you allocate a
-DMA-buf for a partition, is that partition only allowed to access
-memory that is part of that DMA buf?  I presume there is some
-scatter/gather table that sets up the DMA range that the partition can
-access?  Who loads the soft logic (Is that the PL or some other IP)?
-Is the soft logic partitioned as well?  If I had some soft logic I
-wanted to run on the FPGA, what would the kernel driver interaction
-sequence look like?  Maybe using the OpenCL soft logic would be a good
-example.  E.g.,
+Can't we pass args to such commands?
 
-1. user has soft logic blob generated by their soft logic compiler (is
-this compiler open source?)
-2. user calls AI engine kernel driver to allocate the required
-resources (AI engines, AI engine DMAs, doorbells of some sort?  etc.)
-3. user calls AI engine kernel driver to allocate system memory and/or
-FGPA memory that can be used by the soft logic blob
-4. user calls AI engine kernel driver to load soft logic
-5. user interfaces with soft logic (how? presumably via some memory
-resource allocated in 2 and 3?)
+Then its just one event, i.e. "evlist", and -v can be passed to it.
 
-Thanks,
+i.e.:
 
-Alex
+The commands would be:
+
+evlist
+
+That produces:
+
+ 
+   terminal 2:
+     # echo evlist > control
+ 
+   terminal 1:
+     # perf record --control=fifo:control,ack -e 'sched:*'
+     ...
+     sched:sched_kthread_stop
+     sched:sched_kthread_stop_ret
+     sched:sched_waking
+
+And 'evlist -v', that produces:
+
+   terminal 2:
+     # echo "evlist -v" > control
+ 
+   terminal 1:
+     ...
+     sched:sched_kthread_stop: type: 2, size: 120, config: 0x145,      \
+     { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|CPU   \
+     |PERIOD|RAW|IDENTIFIER, read_format: ID, disabled: 1, inherit:    \
+     1, sample_id_all: 1, exclude_guest: 1
+     sched:sched_kthread_stop_ret: type: 2, size: 120, config: 0x144   \
+     , { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|CPU \
+     |PERIOD|RAW|IDENTIFIER, read_format: ID, disabled: 1, inherit: 1, \
+     sample_id_all: 1, exclude_guest: 1
+     ...
+
+I think we could even change things such that we pass a file descriptor
+for cmd_evlist to use, passing the argv received from the control file,
+etc.
+
+With this in place we could reuse more stuff and allow using this
+control file to obtain information such as 'perf report --header-only',
+etc.
+
+echo "report --header-only" > control would get us the same thing as
+'perf report --header-only' for an existing perf.data file:
 
 
->
-> Best Regards,
->
-> Wendy
->
-> >
-> >> Thanks,
-> >>
-> >> Alex
-> >>
-> >>
-> >>> v3:
-> >>> * unlock AIE dev mutex after failed to gain the partition lock in
-> >>>    errors handing
-> >>> * replace pointer with __u64 and enum with __u32 in ioctl
-> >>>
-> >>> v2:
-> >>> * Fix dtschema check errors
-> >>> * Fix test bot warning on interrupt implementation. Removed set but
-> >>>    unused  varaible.
-> >>> * Fix compilation unused function warning of firmware change in case
-> >>>    ZynqMP firmware is not configured
-> >>> * There are other warning on ZynqMP firmware reported from testbot
-> >>>    which is not introduced by this patch set.
-> >>>    "[PATCH] firmware: xlnx-zynqmp: fix compilation warning" is submitted
-> >>>    for those fixes.
-> >>>
-> >>>
-> >>> Izhar Ameer Shaikh (1):
-> >>>    firmware: xilinx: Add IOCTL support for AIE ISR Clear
-> >>>
-> >>> Nishad Saraf (2):
-> >>>    misc: xilinx-ai-engine: Add support to request device management
-> >>>      services
-> >>>    misc: xilinx-ai-engine: Add support for servicing error interrupts
-> >>>
-> >>> Wendy Liang (6):
-> >>>    dt-binding: soc: xilinx: ai-engine: Add AI engine binding
-> >>>    misc: Add Xilinx AI engine device driver
-> >>>    misc: xilinx-ai-engine: Implement AI engine cleanup sequence
-> >>>    misc: xilinx-ai-engine: expose AI engine tile memories to userspace
-> >>>    misc: xilinx-ai-engine: add setting shim dma bd operation
-> >>>    misc: xilinx-ai-engine: add request and release tiles
-> >>>
-> >>>   .../bindings/soc/xilinx/xlnx,ai-engine.yaml        | 126 ++++
-> >>>   MAINTAINERS                                        |   8 +
-> >>>   drivers/firmware/xilinx/zynqmp.c                   |  14 +
-> >>>   drivers/misc/Kconfig                               |  12 +
-> >>>   drivers/misc/Makefile                              |   1 +
-> >>>   drivers/misc/xilinx-ai-engine/Makefile             |  16 +
-> >>>   drivers/misc/xilinx-ai-engine/ai-engine-aie.c      | 608 +++++++++++++++++++
-> >>>   drivers/misc/xilinx-ai-engine/ai-engine-clock.c    | 245 ++++++++
-> >>>   drivers/misc/xilinx-ai-engine/ai-engine-dev.c      | 496 ++++++++++++++++
-> >>>   drivers/misc/xilinx-ai-engine/ai-engine-dma.c      | 481 +++++++++++++++
-> >>>   drivers/misc/xilinx-ai-engine/ai-engine-internal.h | 519 ++++++++++++++++
-> >>>   .../misc/xilinx-ai-engine/ai-engine-interrupt.c    | 659 +++++++++++++++++++++
-> >>>   drivers/misc/xilinx-ai-engine/ai-engine-mem.c      | 275 +++++++++
-> >>>   drivers/misc/xilinx-ai-engine/ai-engine-part.c     | 635 ++++++++++++++++++++
-> >>>   drivers/misc/xilinx-ai-engine/ai-engine-res.c      | 219 +++++++
-> >>>   drivers/misc/xilinx-ai-engine/ai-engine-reset.c    | 159 +++++
-> >>>   include/linux/firmware/xlnx-zynqmp.h               |   8 +
-> >>>   include/uapi/linux/xlnx-ai-engine.h                | 238 ++++++++
-> >>>   18 files changed, 4719 insertions(+)
-> >>>   create mode 100644 Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml
-> >>>   create mode 100644 drivers/misc/xilinx-ai-engine/Makefile
-> >>>   create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-aie.c
-> >>>   create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-clock.c
-> >>>   create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-dev.c
-> >>>   create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-dma.c
-> >>>   create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-internal.h
-> >>>   create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-interrupt.c
-> >>>   create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-mem.c
-> >>>   create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-part.c
-> >>>   create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-res.c
-> >>>   create mode 100644 drivers/misc/xilinx-ai-engine/ai-engine-reset.c
-> >>>   create mode 100644 include/uapi/linux/xlnx-ai-engine.h
-> >>>
-> >>> --
-> >>> 2.7.4
-> >>>
-> >>> _______________________________________________
-> >>> dri-devel mailing list
-> >>> dri-devel@lists.freedesktop.org
-> >>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> >> _______________________________________________
-> >> dri-devel mailing list
-> >> dri-devel@lists.freedesktop.org
-> >> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+# perf report --header-only
+# ========
+# captured on    : Tue Dec 15 12:21:23 2020
+# header version : 1
+# data offset    : 432
+# data size      : 1648
+# feat offset    : 2080
+# hostname : five
+# os release : 5.10.0-rc7+
+# perf version : 5.10.rc6.gc56d2601b5d0
+# arch : x86_64
+# nrcpus online : 24
+# nrcpus avail : 24
+# cpudesc : AMD Ryzen 9 3900X 12-Core Processor
+# cpuid : AuthenticAMD,23,113,0
+# total memory : 32884432 kB
+# cmdline : /home/acme/bin/perf record ls 
+# event : name = cycles:u, , id = { 85540, 85541, 85542, 85543, 85544, 85545, 85546, 85547, 85548, 85549, 85550, 85551, 85552, 85553, 85554, 85555, 85556, 85557, 85558, 85559, 85560, 85561, 85562, 85563 }, size = 120, { sample_period, sample_freq } = 4000, sample_type = IP|TID|TIME|PERIOD, read_format = ID, disabled = 1, inherit = 1, exclude_kernel = 1, mmap = 1, comm = 1, freq = 1, enable_on_exec = 1, task = 1, sample_id_all = 1, exclude_guest = 1, mmap2 = 1, comm_exec = 1, ksymbol = 1, bpf_event = 1
+# CPU_TOPOLOGY info available, use -I to display
+# NUMA_TOPOLOGY info available, use -I to display
+# pmu mappings: amd_df = 8, software = 1, ibs_op = 11, power = 14, ibs_fetch = 10, uprobe = 7, cpu = 4, amd_iommu_0 = 12, breakpoint = 5, amd_l3 = 9, tracepoint = 2, kprobe = 6, msr = 13
+# CACHE info available, use -I to display
+# time of first sample : 12184.494971
+# time of last sample : 12184.495496
+# sample duration :      0.525 ms
+# MEM_TOPOLOGY info available, use -I to display
+# cpu pmu capabilities: max_precise=0
+# missing features: TRACING_DATA BRANCH_STACK GROUP_DESC AUXTRACE STAT CLOCKID DIR_FORMAT COMPRESSED CLOCK_DATA 
+# ========
+#
+
+I.e. users would discover that using this control file is as easy as
+working with perf.data files or with the pipe mode, all the three ways
+of interacting with perf would use the same command interface arguments.
+
+- Arnaldo
+ 
+> When evlist is received, perf will scan and print current
+> evlist into perf record terminal.
+> 
+> When evlist-verbose is received perf will scan and print
+> current evlist details (like perf evlist -v) into perf
+> record terminal.
+> 
+> Example session:
+> 
+>   terminal 1:
+>     # mkfifo control ack perf.pipe
+>     # perf record --control=fifo:control,ack -e 'sched:*'
+> 
+>   terminal 2:
+>     # echo evlist > control
+> 
+>   terminal 1:
+>     # perf record --control=fifo:control,ack -e 'sched:*'
+>     ...
+>     sched:sched_kthread_stop
+>     sched:sched_kthread_stop_ret
+>     sched:sched_waking
+>     sched:sched_wakeup
+>     sched:sched_wakeup_new
+>     sched:sched_switch
+>     sched:sched_migrate_task
+>     sched:sched_process_free
+>     sched:sched_process_exit
+>     ...
+> 
+>   terminal 2:
+>     # echo evlist-vebose > control
+> 
+>   terminal 1:
+>     ...
+>     sched:sched_kthread_stop: type: 2, size: 120, config: 0x145,      \
+>     { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|CPU   \
+>     |PERIOD|RAW|IDENTIFIER, read_format: ID, disabled: 1, inherit:    \
+>     1, sample_id_all: 1, exclude_guest: 1
+>     sched:sched_kthread_stop_ret: type: 2, size: 120, config: 0x144   \
+>     , { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|CPU \
+>     |PERIOD|RAW|IDENTIFIER, read_format: ID, disabled: 1, inherit: 1, \
+>     sample_id_all: 1, exclude_guest: 1
+>     ...
+> 
+> This new evlist command is handy to get real event names when
+> wildcards are used.
+> 
+> The evlist-verbose is handy to check on actually enabled perf_event_attr
+> values.
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/builtin-record.c |  2 ++
+>  tools/perf/builtin-stat.c   |  2 ++
+>  tools/perf/util/evlist.c    | 15 +++++++++++++++
+>  tools/perf/util/evlist.h    |  4 ++++
+>  4 files changed, 23 insertions(+)
+> 
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index 582b8fba012c..d40406880722 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -1951,6 +1951,8 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>  			case EVLIST_CTL_CMD_UNSUPPORTED:
+>  			case EVLIST_CTL_CMD_ENABLE_EVSEL:
+>  			case EVLIST_CTL_CMD_DISABLE_EVSEL:
+> +			case EVLIST_CTL_CMD_EVLIST:
+> +			case EVLIST_CTL_CMD_EVLIST_VERBOSE:
+>  			default:
+>  				break;
+>  			}
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index 6a21fb665008..425e2a8ebde6 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -592,6 +592,8 @@ static void process_evlist(struct evlist *evlist, unsigned int interval)
+>  		case EVLIST_CTL_CMD_UNSUPPORTED:
+>  		case EVLIST_CTL_CMD_ENABLE_EVSEL:
+>  		case EVLIST_CTL_CMD_DISABLE_EVSEL:
+> +		case EVLIST_CTL_CMD_EVLIST:
+> +		case EVLIST_CTL_CMD_EVLIST_VERBOSE:
+>  		default:
+>  			break;
+>  		}
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index 729c98d10628..571d2ad61f4a 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -24,6 +24,7 @@
+>  #include "bpf-event.h"
+>  #include "util/string2.h"
+>  #include "util/perf_api_probe.h"
+> +#include "util/evsel_fprintf.h"
+>  #include <signal.h>
+>  #include <unistd.h>
+>  #include <sched.h>
+> @@ -1931,6 +1932,12 @@ static int evlist__ctlfd_recv(struct evlist *evlist, enum evlist_ctl_cmd *cmd,
+>  				    (sizeof(EVLIST_CTL_CMD_SNAPSHOT_TAG)-1))) {
+>  			*cmd = EVLIST_CTL_CMD_SNAPSHOT;
+>  			pr_debug("is snapshot\n");
+> +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_EVLIST_VERBOSE_TAG,
+> +				    (sizeof(EVLIST_CTL_CMD_EVLIST_VERBOSE_TAG)-1))) {
+> +			*cmd = EVLIST_CTL_CMD_EVLIST_VERBOSE;
+> +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_EVLIST_TAG,
+> +				    (sizeof(EVLIST_CTL_CMD_EVLIST_TAG)-1))) {
+> +			*cmd = EVLIST_CTL_CMD_EVLIST;
+>  		}
+>  	}
+>  
+> @@ -1954,6 +1961,7 @@ int evlist__ctlfd_ack(struct evlist *evlist)
+>  
+>  int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+>  {
+> +	struct perf_attr_details details = { .verbose = false, };
+>  	int err = 0;
+>  	char cmd_data[EVLIST_CTL_CMD_MAX_LEN];
+>  	int ctlfd_pos = evlist->ctl_fd.pos;
+> @@ -1995,6 +2003,13 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+>  					pr_info("failed: can't find '%s' event\n", evsel_name);
+>  				}
+>  				break;
+> +			case EVLIST_CTL_CMD_EVLIST_VERBOSE:
+> +				details.verbose = true;
+> +				__fallthrough;
+> +			case EVLIST_CTL_CMD_EVLIST:
+> +				evlist__for_each_entry(evlist, evsel)
+> +					evsel__fprintf(evsel, &details, stderr);
+> +				break;
+>  			case EVLIST_CTL_CMD_SNAPSHOT:
+>  				break;
+>  			case EVLIST_CTL_CMD_ACK:
+> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+> index e4e8ff8831a3..7892f084632d 100644
+> --- a/tools/perf/util/evlist.h
+> +++ b/tools/perf/util/evlist.h
+> @@ -332,6 +332,8 @@ struct evsel *evlist__reset_weak_group(struct evlist *evlist, struct evsel *evse
+>  #define EVLIST_CTL_CMD_SNAPSHOT_TAG "snapshot"
+>  #define EVLIST_CTL_CMD_ENABLE_EVSEL_TAG "enable-"
+>  #define EVLIST_CTL_CMD_DISABLE_EVSEL_TAG "disable-"
+> +#define EVLIST_CTL_CMD_EVLIST_TAG "evlist"
+> +#define EVLIST_CTL_CMD_EVLIST_VERBOSE_TAG "evlist-verbose"
+>  
+>  #define EVLIST_CTL_CMD_MAX_LEN 64
+>  
+> @@ -343,6 +345,8 @@ enum evlist_ctl_cmd {
+>  	EVLIST_CTL_CMD_DISABLE_EVSEL,
+>  	EVLIST_CTL_CMD_ACK,
+>  	EVLIST_CTL_CMD_SNAPSHOT,
+> +	EVLIST_CTL_CMD_EVLIST,
+> +	EVLIST_CTL_CMD_EVLIST_VERBOSE,
+>  };
+>  
+>  int evlist__parse_control(const char *str, int *ctl_fd, int *ctl_fd_ack, bool *ctl_fd_close);
+> -- 
+> 2.26.2
+> 
+
+-- 
+
+- Arnaldo
