@@ -2,124 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 563982DB4B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B752DB4B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727382AbgLOT4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 14:56:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
+        id S1728878AbgLOT5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 14:57:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbgLOT4h (ORCPT
+        with ESMTP id S1725850AbgLOT5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 14:56:37 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B05DC06179C;
-        Tue, 15 Dec 2020 11:55:56 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id n26so29458972eju.6;
-        Tue, 15 Dec 2020 11:55:56 -0800 (PST)
+        Tue, 15 Dec 2020 14:57:08 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A4DC0617B0;
+        Tue, 15 Dec 2020 11:56:27 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id qw4so29419681ejb.12;
+        Tue, 15 Dec 2020 11:56:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hgbpczhIgWcJ9kOmJE2lzKhI3+pU/J6Ah3rCJFwnT/Y=;
-        b=IqwmJpwZ5jYDClMOQqOWIPApxnNEK2fsdac6O5WqsZx8sFJU1gwBYMHKPrzInF7drE
-         jfQPwixTKwA1kyv2nBnj6h9LZ4kEdQlCfw1BEsgMV0pbc1o/DUNbcS0zSk2EdZWLf6Gk
-         NOvu+0/KycCPMjPf4hyZOdKNw7TK3c8HH+HQIIx/IJlXjQerv+3cX9/s7qW/qxxl232b
-         U/encgjr3nvds77wreBOHfdmmHoTMmuUGI1JeliaGzArTloFrp0QMX4YYhtzTSZxnUhA
-         Pv0O4m3DMy7IdQMAUcUwaC8ZEwuLEEZrSHm81yRGN+t6nC/1cBZZXYBUjiWtbEtWoqmD
-         LgQQ==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=h7llLjIqukhexaM6P3uzsRtzcHeGFXmJ3btWwPtFpC8=;
+        b=NMfK9jPX/CUL9vuin1R4cgxj2dLIkSRTiBCLGH2+sVxD+YGKTh7sn4LV/THdDqQMPw
+         i2DwBc4GZPoht1a8mVkmNRn4zeOCiTQyfB3WUHnNqIg0Uq6hlGvNsSu4UmFKFqFSCIvg
+         CQCSJ3lkJLmW6FYRX+iANcSOCI9JPIANnmCqnrg+XyaJrLY2oWh4EsSBZDkfduhMADAt
+         JG9QWWRrIDAuiXNcUOmtB9c3p9AdBcsrGCwIXqI8lta/Lmw08IWNghAwSTTl2NWKI7Av
+         LnwPTLucZ7c5KmdllFWcIdE/HPJXFrOr6938z5B2DYBDjOIKSXC3a2RpBHsGfReNXKpv
+         VN/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hgbpczhIgWcJ9kOmJE2lzKhI3+pU/J6Ah3rCJFwnT/Y=;
-        b=Hrmy+C/8h3mOX+hFzdqbn4raWKloITFVckkCd+Kq2/wbByPCBpHYQMeVC1Du1zNTN1
-         liJ6i8YX3kP8V+GfMDhj0V/A1iOM4to9X8qbEHW5YxQlojhXzBa8sQWV1v+epIZRFI+P
-         pm6fXFl+7eK/XKCDPyRIyAayOrm32LAGbQhj3vy82a1r7Xgg5lzztSz9FhBmWg3XxkTA
-         uLvuSls0AZdCg0keVix0Rrh1X+48OWZKybtHGrZxEZQNjQJ0Zh59800d6jh20yIPflrY
-         E92NGT+vVzt9nGJTCjYa0SpjFk920awxd++jS0lN7rEHgsUp6tFUaKGwr3vxbuhFRXd7
-         9j3A==
-X-Gm-Message-State: AOAM5329UAH1FlOzmm/jiqU0xM1bN5UHRy7lOsctg5DTTaKtkRlyolN2
-        CDj2YkW/GOvC6LAT2jPFUp7SDxlPESkXVw==
-X-Google-Smtp-Source: ABdhPJxtMaw1aQXNeyC3jAQyljCTgGN2KiTagUSIRKg0rzT0SCXxyJXclp9JCDz8X23CnrmupFScYQ==
-X-Received: by 2002:a17:906:7b8d:: with SMTP id s13mr28093936ejo.479.1608062154895;
-        Tue, 15 Dec 2020 11:55:54 -0800 (PST)
-Received: from [192.168.2.202] (pd9e5a7aa.dip0.t-ipconnect.de. [217.229.167.170])
-        by smtp.gmail.com with ESMTPSA id a6sm19209575edv.74.2020.12.15.11.55.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 11:55:53 -0800 (PST)
-Subject: Re: [PATCH v2 -next] platform: surface: fix non-PM_SLEEP build
- warnings
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        platform-driver-x86@vger.kernel.org
-References: <20201214233336.19782-1-rdunlap@infradead.org>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <5fd70f29-2795-5b46-4bc9-e60a26efee88@gmail.com>
-Date:   Tue, 15 Dec 2020 20:55:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
-MIME-Version: 1.0
-In-Reply-To: <20201214233336.19782-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=h7llLjIqukhexaM6P3uzsRtzcHeGFXmJ3btWwPtFpC8=;
+        b=GAK44uzn0Oy9y7iuIwSaagLYFWz+QN/BIL7egfOY62fRARkAVddUMAw0E+PUbjL3Vy
+         Bz36N/sdZdTC3e3nPCE5t5Hqz5P57lb4arxneuK/xBlLRb7dnw8hkejKJ9MHTNzes/CJ
+         32wwGFo6qOTRZdG3NWR8xw9VlSOtBcHba4VULHZjjwpc5DWlhgbBwUEs2bjZXnCD4OSt
+         yk1WJLIlF+0D7+sCyIrfTyis2uU6J8sXTFxbPfJtcVg5ehlBnJwB0KovOxd2hvvAAytC
+         1r40UBbR9yotFELXr8Xzwz9cI6SEprhV+hK/6erJSlD2BBpYut5FgRWoYusGDFj5DeQu
+         pFWw==
+X-Gm-Message-State: AOAM533xSZLfrlzX5sYETn5tmT+JJNvwTRyrEdnADngcpEvOJBmbuX5p
+        ooKBhxQtYYzdYgx1FQddRKo=
+X-Google-Smtp-Source: ABdhPJyasmOMsF35ZElg1o5hLIdXcmFKi48nidSeARBcBqRjoZhApccNBJrUWuy9iPFKyTNiLVzUmQ==
+X-Received: by 2002:a17:906:94d4:: with SMTP id d20mr8313357ejy.475.1608062186101;
+        Tue, 15 Dec 2020 11:56:26 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id z24sm19204048edr.9.2020.12.15.11.56.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 15 Dec 2020 11:56:25 -0800 (PST)
+Message-ID: <f5c930c3e30f3279f5920d673f6d5bc169e6cfa3.camel@gmail.com>
+Subject: Re: [PATCH v4 1/6] scsi: ufs: Add "wb_on" sysfs node to control WB
+ on/off
+From:   Bean Huo <huobean@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 15 Dec 2020 20:56:24 +0100
+In-Reply-To: <X9iQoIpL48yQyr7D@kroah.com>
+References: <20201211140035.20016-1-huobean@gmail.com>
+         <20201211140035.20016-2-huobean@gmail.com> <X9iQoIpL48yQyr7D@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/15/20 12:33 AM, Randy Dunlap wrote:
-> Fix build warnings when CONFIG_PM_SLEEP is not enabled and these
-> functions are not used:
+Greg k-h,
+
+> >  
+> > +static ssize_t wb_on_show(struct device *dev, struct
+> > device_attribute *attr,
+> > +			  char *buf)
+> > +{
+> > +	struct ufs_hba *hba = dev_get_drvdata(dev);
+> > +
+> > +	return scnprintf(buf, PAGE_SIZE, "%d\n", hba->wb_enabled);
 > 
-> ../drivers/platform/surface/surface_gpe.c:189:12: warning: ‘surface_gpe_resume’ defined but not used [-Wunused-function]
->   static int surface_gpe_resume(struct device *dev)
->              ^~~~~~~~~~~~~~~~~~
-> ../drivers/platform/surface/surface_gpe.c:184:12: warning: ‘surface_gpe_suspend’ defined but not used [-Wunused-function]
->   static int surface_gpe_suspend(struct device *dev)
->              ^~~~~~~~~~~~~~~~~~~
+> Please just use sysfs_emit().
+
+thanks, will be changed in next version.
 > 
-> Fixes: 274335f1c557 ("platform/surface: Add Driver to set up lid GPEs on MS Surface device")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Maximilian Luz <luzmaximilian@gmail.com>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: platform-driver-x86@vger.kernel.org
-> ---
-> v2: dropped Maximilian's RVB tag since the patch changed
->      use preferred __maybe_unused instead of ifdeffery:
->        https://lore.kernel.org/patchwork/patch/732981/
+> > +}
+> > +
+> > +static ssize_t wb_on_store(struct device *dev, struct
+> > device_attribute *attr,
+> > +			   const char *buf, size_t count)
+> > +{
+> > +	struct ufs_hba *hba = dev_get_drvdata(dev);
+> > +	unsigned int wb_enable;
+> > +	ssize_t res;
+> > +
+> > +	if (ufshcd_is_clkscaling_supported(hba)) {
+> > +		/*
+> > +		 * If the platform supports
+> > UFSHCD_CAP_AUTO_BKOPS_SUSPEND,
+> > +		 * turn WB on/off will be done while clock scaling
+> > up/down.
+> > +		 */
+> > +		dev_warn(dev, "To control WB through wb_on is not
+> > allowed!\n");
+> > +		return -EOPNOTSUPP;
+> > +	}
+> > +	if (!ufshcd_is_wb_allowed(hba))
+> > +		return -EOPNOTSUPP;
+> > +
+> > +	if (kstrtouint(buf, 0, &wb_enable))
+> > +		return -EINVAL;
+> > +
+> > +	if (wb_enable != 0 && wb_enable != 1)
+> > +		return -EINVAL;
+> > +
+> > +	pm_runtime_get_sync(hba->dev);
+> > +	res = ufshcd_wb_ctrl(hba, wb_enable);
+> > +	pm_runtime_put_sync(hba->dev);
+> > +
+> > +	return res < 0 ? res : count;
+> > +}
 > 
->   drivers/platform/surface/surface_gpe.c |    4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> --- linux-next-20201214.orig/drivers/platform/surface/surface_gpe.c
-> +++ linux-next-20201214/drivers/platform/surface/surface_gpe.c
-> @@ -181,12 +181,12 @@ static int surface_lid_enable_wakeup(str
->   	return 0;
->   }
->   
-> -static int surface_gpe_suspend(struct device *dev)
-> +static int __maybe_unused surface_gpe_suspend(struct device *dev)
->   {
->   	return surface_lid_enable_wakeup(dev, true);
->   }
->   
-> -static int surface_gpe_resume(struct device *dev)
-> +static int __maybe_unused surface_gpe_resume(struct device *dev)
->   {
->   	return surface_lid_enable_wakeup(dev, false);
->   }
+> Where is the new Documentation/ABI/ update for this new sysfs file
+> you
+> are adding?
 > 
 
-Code looks good to me.
+It is missing, and will add it.
 
-Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
+thanks.
+Bean
 
-As already mentioned before, I'd prefer the subject line to be
-"platform/surface: gpe: ...", or at least "platform/surface: ..." for
-consistency with other commits. May just be a personal preference
-though, so nothing that should prevent it from being applied.
 
-Thanks,
-Max
