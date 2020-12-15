@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECAA72DB28F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BDD2DB29D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730604AbgLOR2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 12:28:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41716 "EHLO
+        id S1730679AbgLOR3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 12:29:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726431AbgLOR2C (ORCPT
+        with ESMTP id S1730557AbgLOR3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 12:28:02 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736BEC06179C;
-        Tue, 15 Dec 2020 09:27:22 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id lj6so1613629pjb.0;
-        Tue, 15 Dec 2020 09:27:22 -0800 (PST)
+        Tue, 15 Dec 2020 12:29:45 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62239C0617A7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 09:29:05 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id q16so21874029edv.10
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 09:29:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=soleen.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YLQe1sM4Ge2CHlLzOz2p/trhD+G58BxTmNBt25LRZ8A=;
-        b=mtRXacPgffa47mMHg0mb+jE2Uic1s/vh3S7sCBxhHYjvzthmVLzIhwhGpfUGV8suE/
-         ZaaYyacg7kpzmnlJoPPBkhXEOr4rxWuWZi9VhRYODw5JLp6LKb4rzi9AH6D23jG7wB7y
-         iJHSSQ/bc+Ub7HIbwibushpozgI25EwzwGOYpEXNi0+Uux/Cz7F2ownzUE6Yqygbg/3r
-         N2Ei0jsQOvWH8mwF3Sj/1OGcFltg2PkPFsPZqNBUKrJy2zM/kc1giBz4cnnHrLEYL5Dn
-         qpo2qAZqzNZxWJK6JavzI4QkjrnyhwK3AHbgjuVs5VX1/g4sDRRPcIOhF30E7IPup6IY
-         W8lg==
+        bh=VeOwIZnD1d1CtAtOQLOWOLhM2A2wCecJ+qK1dyLboTU=;
+        b=I96T4pSs/iDVCNO7aKjW2AuZwWdxEU4n91uXkED0FYIBHx0CVqEOOvQXv4kyHisS+A
+         gnUtMYosW3bZnF2XVpR+v4DZTcvdLJC3svqRUoIJYTCHB5iE37EAGzkWAWhYaQpy3/Sv
+         m96dzGoXG6KSM79QFPjc6zvwIu6CJA7IXqKG0ZnS0D/3pUm8IbEWu46Zs+kc1ktqd4Bw
+         gbaxJoc/+fwc7jzPPY1ZRrYpVboVgiSrJ2HG0KqeEI6jSQhXxYxow+OQSOeJVd3wBwza
+         h1uBgBabe/R5P5ARfZ9aOAcrr7JWNJOcSYdiOSlzuB7XwH7wZjoKzJKfbwV7tYH66HKG
+         uVcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YLQe1sM4Ge2CHlLzOz2p/trhD+G58BxTmNBt25LRZ8A=;
-        b=IUaJ/yiRiZU8dlBmmBHB3LY52Xq+73SPQoBMXnSwfo6+QQVnCHIYB46v3nUTAlHVDV
-         2PpUIw+vD34tPNYbM67TE/NmgpgpvJxucw3jDtHAF6G34IiWKisC5Ue47PDPZilk03vb
-         EGTOLYAQoYJTL0f3WUd8AiO+wKDY1ZARy6MxjnkqaEUa5wal+IzLRgQsXzxITaeFCf4P
-         uJaoYrr8VecO8D3uyrj1CHl9uHkILUZ7YtL+GW3Z6pwhzm96Dhn12rh0BoacXm/Ir5Kc
-         epWkp/h99M+0pU9t2iabij994aQAHSFrtMOhyYwcXHdl5LWw5JcVrI+dmYTyYBqrgPJD
-         thNQ==
-X-Gm-Message-State: AOAM5333pbtRq99mXuuK3U2Ki1pQfhoqO+0ta9CmIg2tXKsErVIkzMu9
-        KOhOWaOX2d5jDDRlBGZDZ/xP0ISRz6dl6fBBTvI=
-X-Google-Smtp-Source: ABdhPJyD+yx+eQaFiZVDFvolPHHBDMQn/csck7cKFaQIPdyK4pVw193xnlm+vbAxPWLqoWx3okwRpAgzBq0zXmYooFg=
-X-Received: by 2002:a17:90a:c592:: with SMTP id l18mr31159805pjt.228.1608053241871;
- Tue, 15 Dec 2020 09:27:21 -0800 (PST)
+        bh=VeOwIZnD1d1CtAtOQLOWOLhM2A2wCecJ+qK1dyLboTU=;
+        b=BOgkRwnBnPFGLQuxt3sz2z68s4l9hoqWaQYS7fxmuhXx/YDPg1VB4jpIfIItYBa/3f
+         EwohoVleIQvuUrH4BsiEgauZyfXgeLBpXd0XTn7fmZSAFmBYBZlWcnB18pu3OqL4Gy6K
+         kR9UAdY0x6r+2zrUSwOL5ufLLzJWLzVoJOCZW8sqWZMNkNMeyg14Nqfzg90ACxxeSTBM
+         XjL2FLhEHtwwHMwM50DmJDL6i0BSxdGi6u1BvC+3IJNnPlutKSxzqkwCvFK+PgLnrkqV
+         XzpsUCXlfbwJd3mx26JWXVLOJw5t9bgeKRFtnJFrIp9Lb5913l4/Ml9xLNfCk11rN7O4
+         NpLw==
+X-Gm-Message-State: AOAM530CrKbGv2STHz5kwJO21jWAT4V1GrY7YjcVesruB3Bf7kwosM9R
+        7RddZm13mXwO0qMyDLIYvZiwzxdQ4uDFcJjji6wfuA==
+X-Google-Smtp-Source: ABdhPJwO7x4LC0rkTRzmFQ3G3z7COZCV+iAl/I4ipG0U3kkQDJA750UT3AF9UiLPI5TShsk8sR9viFmJkSFFwZNTOsM=
+X-Received: by 2002:a50:f404:: with SMTP id r4mr3451244edm.62.1608053343982;
+ Tue, 15 Dec 2020 09:29:03 -0800 (PST)
 MIME-Version: 1.0
-References: <20201215164315.3666-1-calvin.johnson@oss.nxp.com> <20201215164315.3666-5-calvin.johnson@oss.nxp.com>
-In-Reply-To: <20201215164315.3666-5-calvin.johnson@oss.nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 15 Dec 2020 19:28:10 +0200
-Message-ID: <CAHp75VcHrBtAY3KDugBYEo9=YuDwbh+QLdOU8yiKb2VyaU2x9A@mail.gmail.com>
-Subject: Re: [net-next PATCH v2 04/14] net: phy: Introduce fwnode_get_phy_id()
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, "linux.cj" <linux.cj@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
+References: <20201211202140.396852-1-pasha.tatashin@soleen.com>
+ <20201211202140.396852-5-pasha.tatashin@soleen.com> <20201214141715.GF32193@dhcp22.suse.cz>
+ <CA+CK2bCWkPDw-Aif6iXHq15Dpa+50hmrcAk_LpMCMk30zY5aFw@mail.gmail.com> <20201215082748.GL32193@dhcp22.suse.cz>
+In-Reply-To: <20201215082748.GL32193@dhcp22.suse.cz>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Tue, 15 Dec 2020 12:28:28 -0500
+Message-ID: <CA+CK2bA3B=Awh2BK=jwZX39PTeQ9=O5tD0ohNCyL_Lf3LQwfog@mail.gmail.com>
+Subject: Re: [PATCH v3 4/6] mm: honor PF_MEMALLOC_PIN for all movable pages
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 6:44 PM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
->
-> Extract phy_id from compatible string. This will be used by
-> fwnode_mdiobus_register_phy() to create phy device using the
-> phy_id.
+> Fair enough. I still dislike cma being called out explicitly because
+> that is slightly misleading as well. gpf_to_alloc_flags would be more
+> explicit I believe. But I do not want to bikeshed this to death.
 
-...
+Sounds good, I renamed it to gpf_to_alloc_flags.
 
-> +       if (sscanf(cp, "ethernet-phy-id%4x.%4x", &upper, &lower) == 2) {
-> +               *phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
-> +               return 0;
-> +       }
-> +       return -EINVAL;
-
-Perhaps traditional pattern, i.e.
-       if (sscanf(cp, "ethernet-phy-id%4x.%4x", &upper, &lower) != 2)
-               return -EINVAL;
-
-       *phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
-       return 0;
-
-And perhaps GENMASK() ?
-
--- 
-With Best Regards,
-Andy Shevchenko
+Thank you,
+Pasha
