@@ -2,57 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE642DA619
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1E32DA61C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgLOCR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:17:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726551AbgLOCQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:16:31 -0500
-Date:   Mon, 14 Dec 2020 18:15:48 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607998549;
-        bh=x6Jepcwui9w7+y0mUDCKGKpZYi/QMQ3PRhwL9AvtwC0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lxlgVKFo3LFGnr+AmngcOXWBUXt4/jMvq+hzDWJ8IcFus4Mnvrk4R66NPA2ZenMFD
-         46BpNWqDIsQfsAs7VRRjJP6BSqQLVi6x3WwiXZS717fwf5ObfNx3rTR1JD8iuzTu+P
-         f0kYPXqYFfW8GqwzuS+z+B9VwDahcIcFnATpPb+tLuL+VTsK2GulKgLrk371V3BTRz
-         8/ooZREkN+o3Ni82675TWwlsq3JU6IOMCtffybo28rO4FccImdCFDcZYIScp4j/sIA
-         SioLjB/TXdB62nCHwUcOHzHrx+0X+8s3voPmSSiTjn2IsaVJrcVONJSmZ5JR9MYDMa
-         wrYxVFq6S12NA==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2] net: dsa: mv88e6xxx: don't set non-existing
- learn2all bit for 6220/6250
-Message-ID: <20201214181548.5eaea143@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201210110645.27765-1-rasmus.villemoes@prevas.dk>
-References: <20201208090109.363-1-rasmus.villemoes@prevas.dk>
-        <20201210110645.27765-1-rasmus.villemoes@prevas.dk>
+        id S1726878AbgLOCSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:18:05 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9887 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726763AbgLOCQt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:16:49 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cw20f10jMz7DLk;
+        Tue, 15 Dec 2020 10:15:30 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 15 Dec 2020 10:16:02 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <mripard@kernel.org>, <wens@csie.org>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <jernej.skrabec@siol.net>
+CC:     <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/sun4i: hdmi: Use PTR_ERR_OR_ZERO() to simplify code
+Date:   Tue, 15 Dec 2020 10:16:11 +0800
+Message-ID: <1607998571-59729-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 12:06:44 +0100 Rasmus Villemoes wrote:
-> The 6220 and 6250 switches do not have a learn2all bit in global1, ATU
-> control register; bit 3 is reserverd.
-> 
-> On the switches that do have that bit, it is used to control whether
-> learning frames are sent out the ports that have the message_port bit
-> set. So rather than adding yet another chip method, use the existence
-> of the ->port_setup_message_port method as a proxy for determining
-> whether the learn2all bit exists (and should be set).
-> 
-> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Fixes coccicheck warning:
+drivers/gpu/drm/sun4i/sun4i_hdmi_i2c.c:281:1-3: WARNING: PTR_ERR_OR_ZERO
+can be used
 
-Applied.
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/gpu/drm/sun4i/sun4i_hdmi_i2c.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_i2c.c b/drivers/gpu/drm/sun4i/sun4i_hdmi_i2c.c
+index b66fa27..12a7b7b 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_hdmi_i2c.c
++++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_i2c.c
+@@ -278,10 +278,8 @@ static int sun4i_hdmi_init_regmap_fields(struct sun4i_hdmi *hdmi)
+ 	hdmi->field_ddc_sck_en =
+ 		devm_regmap_field_alloc(hdmi->dev, hdmi->regmap,
+ 					hdmi->variant->field_ddc_sck_en);
+-	if (IS_ERR(hdmi->field_ddc_sck_en))
+-		return PTR_ERR(hdmi->field_ddc_sck_en);
+ 
+-	return 0;
++	return PTR_ERR_OR_ZERO(hdmi->field_ddc_sck_en);
+ }
+ 
+ int sun4i_hdmi_i2c_create(struct device *dev, struct sun4i_hdmi *hdmi)
+-- 
+2.7.4
+
