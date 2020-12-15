@@ -2,754 +2,519 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6E52DAC3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F03062DAC3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728444AbgLOLng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 06:43:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51012 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728153AbgLOLng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 06:43:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608032567; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8JgTs45MuhZxp31unKb1wCSq9R0yfQ1p132Smb6fNbE=;
-        b=eJxV41g0cLnyuFzF7+jvLZgSq72DDtjDi69jcCuJm38/OdETrwGMcJmFBHJXr7D/bpNwDc
-        XnlFiyx38G3FK0y/VWeDFQjNYzetAYxoLQfYVHbu+aVmvayMvPLUXHVc2GG7X6zsMhGIU+
-        N5elEp2XyFiRMzWokHOth1GTVb1gs9c=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 88697AE47;
-        Tue, 15 Dec 2020 11:42:47 +0000 (UTC)
-Subject: Re: [PATCH v2 00/12] x86: major paravirt cleanup
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org, luto@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120125342.GC3040@hirez.programming.kicks-ass.net>
- <20201123134317.GE3092@hirez.programming.kicks-ass.net>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <6771a12c-051d-1655-fb3a-cc45a3c82e29@suse.com>
-Date:   Tue, 15 Dec 2020 12:42:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1728489AbgLOLo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 06:44:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728488AbgLOLoQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 06:44:16 -0500
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0C8C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:43:36 -0800 (PST)
+Received: by mail-vs1-xe42.google.com with SMTP id x26so10818621vsq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:43:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a+lesXEsKnL/xary5x7l0PUuenJwrHm/9MaXt8QXqxg=;
+        b=dIgBUr4xY2AgyQmfoaB/j+SROeZJSXmaAwA5393uB/IHiWKp3/9NDUj4yfykUavb+T
+         n/M0xSENw9pLvuGmloIcSYCo4Oh+Ig8glke7/5D6aWb/4HWIMW5UH5OVJoY/t7mXbS6/
+         UHIz7NXmu7UupCaPy8uO/UvCfMzfFOI3QbQtx8RYEC6zIGl9ypldG3dxcGcHKjPl6GP6
+         bmRrbEAqSHZ7kOfFZlJ7IxbZMF2xjOMgbCy7Pl5gLKZc2RTj6/gw4NX3vOofJJ/lpqDZ
+         W9J1pTNsZ/6fLaPQOyinOoJ75JrVP8bI2i94OXsfebLwe+pjETjnggHn0whMKw8iCdJg
+         5l/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a+lesXEsKnL/xary5x7l0PUuenJwrHm/9MaXt8QXqxg=;
+        b=ZDel137I6SvkFjL+To0UUaW/04z3wRP2/RqRWnoIOsdiM9ln4fwjI0hGgX2y4NYjqc
+         dr8ISqf+XAfPxDpnqJSyhRWw8zq5VqVtekUbudrT8K9UqlELE4SdLFz6PRcmV6NYqXDg
+         wp8Tn2lAd/b98Nox0yMpGxfR+FoeRXPC37hd2zyEkjKdCO80q9nFv8P567wopTqlafa6
+         /MU1XSAg3ZkFa5w28OL2bvEPAmWc9g3os+zVpO42V7Ai1jI6HTjvA35lqLoEPviogW19
+         slsn2C4WFS1+8G2+DECI72x6zOkWbjqlsu8gRDutYYczTrCrWhSStDcEeEmZ+zK9tJA3
+         2QeA==
+X-Gm-Message-State: AOAM531wOVgHsNxmBHSnFndYpKETvIYtbQRBlvrnIXTFsaS70/kpIIxH
+        fvBJlhs+pUTkUnGWWG4KAfUPKYIaadYPRTOzUQzad7FOKJskmQ==
+X-Google-Smtp-Source: ABdhPJwkh31u995oKKYNv2mpJWbEL2YvaEcfDAM/xL/xWqn6gqitCOD/h962ZKUAiOprZVECjkqjAO2zb7b8NkNqhq4=
+X-Received: by 2002:a67:fe85:: with SMTP id b5mr25888435vsr.19.1608032615785;
+ Tue, 15 Dec 2020 03:43:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201123134317.GE3092@hirez.programming.kicks-ass.net>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="H2kwefz8uIE15eQoOkpjLVA8XJ0Q8kIsD"
+References: <20201207115753.21728-1-bbudiredla@marvell.com>
+ <20201207115753.21728-2-bbudiredla@marvell.com> <CAPDyKFqQwvG6vkwqPZutXjdV0hVrKp3MiqRRMZZ4C8Zr2Of9rg@mail.gmail.com>
+ <CY4PR1801MB2070FD9FB1AB7166651198D1DEC60@CY4PR1801MB2070.namprd18.prod.outlook.com>
+In-Reply-To: <CY4PR1801MB2070FD9FB1AB7166651198D1DEC60@CY4PR1801MB2070.namprd18.prod.outlook.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 15 Dec 2020 12:42:58 +0100
+Message-ID: <CAPDyKFqMsMdqw=Uwzby0tNNvPieRT2i6PAmHu_9XRRVy1MykuQ@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH 1/2] mmc: Support kmsg dumper based on pstore/blk
+To:     Bhaskara Budiredla <bbudiredla@marvell.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---H2kwefz8uIE15eQoOkpjLVA8XJ0Q8kIsD
-Content-Type: multipart/mixed; boundary="eJf0I1odMv2scnFFsZ16khArxsjn0GCwk";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: xen-devel@lists.xenproject.org, x86@kernel.org,
- linux-kernel@vger.kernel.org, virtualization@lists.linux-foundation.org,
- linux-hyperv@vger.kernel.org, kvm@vger.kernel.org, luto@kernel.org,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>, Deep Shah <sdeep@vmware.com>,
- "VMware, Inc." <pv-drivers@vmware.com>, "K. Y. Srinivasan"
- <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
- Stephen Hemminger <sthemmin@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Paolo Bonzini <pbonzini@redhat.com>,
- Sean Christopherson <sean.j.christopherson@intel.com>,
- Vitaly Kuznetsov <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>,
- Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
- <bristot@redhat.com>, Josh Poimboeuf <jpoimboe@redhat.com>
-Message-ID: <6771a12c-051d-1655-fb3a-cc45a3c82e29@suse.com>
-Subject: Re: [PATCH v2 00/12] x86: major paravirt cleanup
-References: <20201120114630.13552-1-jgross@suse.com>
- <20201120125342.GC3040@hirez.programming.kicks-ass.net>
- <20201123134317.GE3092@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201123134317.GE3092@hirez.programming.kicks-ass.net>
+On Tue, 15 Dec 2020 at 07:52, Bhaskara Budiredla <bbudiredla@marvell.com> wrote:
+>
+>
+>
+> >-----Original Message-----
+> >From: Ulf Hansson <ulf.hansson@linaro.org>
+> >Sent: Friday, December 11, 2020 5:02 PM
+> >To: Bhaskara Budiredla <bbudiredla@marvell.com>
+> >Cc: Kees Cook <keescook@chromium.org>; Colin Cross
+> ><ccross@android.com>; Tony Luck <tony.luck@intel.com>; Sunil Kovvuri
+> >Goutham <sgoutham@marvell.com>; linux-mmc@vger.kernel.org; Linux
+> >Kernel Mailing List <linux-kernel@vger.kernel.org>; Christoph Hellwig
+> ><hch@lst.de>
+> >Subject: [EXT] Re: [PATCH 1/2] mmc: Support kmsg dumper based on
+> >pstore/blk
+> >
+> >External Email
+> >
+> >----------------------------------------------------------------------
+> >+ Christoph
+> >
+> >On Mon, 7 Dec 2020 at 12:58, Bhaskara Budiredla <bbudiredla@marvell.com>
+> >wrote:
+> >>
+> >> This patch introduces to mmcpstore. The functioning of mmcpstore is
+> >> similar to mtdpstore. mmcpstore works on FTL based flash devices
+> >> whereas mtdpstore works on raw flash devices. When the system crashes,
+> >> mmcpstore stores the kmsg panic and oops logs to a user specified MMC
+> >> device.
+> >>
+> >> It collects the details about the host MMC device through pstore/blk
+> >> "blkdev" parameter. The user can specify the MMC device in many ways
+> >> by checking in Documentation/admin-guide/pstore-blk.rst.
+> >>
+> >> The individual mmc host drivers have to define suitable polling and
+> >> cleanup subroutines to write kmsg panic/oops logs through mmcpstore.
+> >> These new host operations are needed as pstore panic write runs with
+> >> interrupts disabled.
+> >
+> >Apologies for the delay. I have tried to give this some more thinking, more
+> >comments below.
+> >
+> >[...]
+> >
+> >> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c index
+> >> d42037f0f10d..7682b267f1d5 100644
+> >> --- a/drivers/mmc/core/core.c
+> >> +++ b/drivers/mmc/core/core.c
+> >> @@ -569,6 +569,30 @@ int mmc_cqe_recovery(struct mmc_host *host)  }
+> >> EXPORT_SYMBOL(mmc_cqe_recovery);
+> >>
+> >> +#if IS_ENABLED(CONFIG_MMC_PSTORE)
+> >> +/**
+> >> + *     mmc_wait_for_pstore_req - initiate a blocking mmc request
+> >> + *     @host: MMC host to start command
+> >> + *     @mrq: MMC request to start
+> >> + *
+> >> + *     Start a blocking MMC request for a host and wait for the request
+> >> + *     to complete that is based on polling and timeout.
+> >> + */
+> >> +void mmc_wait_for_pstore_req(struct mmc_host *host, struct
+> >> +mmc_request *mrq) {
+> >> +       unsigned int timeout;
+> >> +
+> >> +       host->ops->req_cleanup_pending(host);
+> >
+> >So, the host driver should through this callback, be able to terminate any
+> >ongoing requests/commands - and also try to make sure that the (e)MMC/SD
+> >card remains in the data transfer state. Moreover, no locks and no IRQs must
+> >be used to manage this, right?
+> >
+>
+> Yes, that's correct.
+>
+> >Have you really tried if this works for real?
+> >
+>
+> Yes, it's a working solution. Patch were submitted after testing.
+>
+> >> +       mmc_start_request(host, mrq);
+> >
+> >This looks like the wrong approach to me, as it will try to re-use the regular
+> >request based path, where the host driver is allowed to use locks, IRQs,
+> >DMAs, etc, etc.
+> >
+>
+> No. The locks on host driver will be dropped in CONFIG_MMC_PSTORE path.
+> Similarly, the IRQs will be replaced with polling subroutines during panic
+> write. Please take a look at patch 2/2 which does this for cavium host driver.
 
---eJf0I1odMv2scnFFsZ16khArxsjn0GCwk
-Content-Type: multipart/mixed;
- boundary="------------F4E81710D117794268EEB261"
-Content-Language: en-US
+Yes, but why is removing the locks okay for the other regular request case?
 
-This is a multi-part message in MIME format.
---------------F4E81710D117794268EEB261
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+I assume the locks are there for a reason, right?
 
-Peter,
+>
+> >I would suggest inventing a new separate request path and a new host ops, to
+> >deal with these kinds of requests.
+> >
+>
+> The polling and cleanup host operations are the ones invented for this purpose.
+> Polling to replace IRQs and cleanup to terminate ongoing requests/commands.
 
-On 23.11.20 14:43, Peter Zijlstra wrote:
-> On Fri, Nov 20, 2020 at 01:53:42PM +0100, Peter Zijlstra wrote:
->> On Fri, Nov 20, 2020 at 12:46:18PM +0100, Juergen Gross wrote:
->>>   30 files changed, 325 insertions(+), 598 deletions(-)
->>
->> Much awesome ! I'll try and get that objtool thing sorted.
->=20
-> This seems to work for me. It isn't 100% accurate, because it doesn't
-> know about the direct call instruction, but I can either fudge that or
-> switching to static_call() will cure that.
->=20
-> It's not exactly pretty, but it should be straight forward.
+I understand the approach you have taken, but what I am saying is that
+I don't think it is the best one to choose.
 
-Are you planning to send this out as an "official" patch, or should I
-include it in my series (in this case I'd need a variant with a proper
-commit message)?
+Then I think it's better to invent an entirely new path, rather than
+trying to tweak the existing one. For example, in your case you could
+leave the lock to be used (in patch2) for the existing regular request
+path, but bypass the locks and use polling in the new one.
 
-I'd like to have this settled soon, as I'm going to send V2 of my
-series hopefully this week.
+>
+> >In this way, the below part with host->ops->req_completion_poll, can
+> >probably be removed. Instead we may just wait for the request to return
+> >from the new request path.
+> >
+>
+> This is not possible unless CPU itself does the mmc write (through some block interface?).
+> If the answer is block interface, sleeping cannot be avoided as part of it.
 
+I wasn't thinking of the block interface, but rather of the internal
+behavior of an mmc host driver.
 
-Juergen
+For data transfers, it's common to use DMA when that is supported. If
+DMA doesn't work, it's probably a FIFO being read/written to based
+upon some IRQs telling when read/write should be done. Of course,
+there are other cases as well.
 
->=20
-> Index: linux-2.6/tools/objtool/check.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.orig/tools/objtool/check.c
-> +++ linux-2.6/tools/objtool/check.c
-> @@ -1090,6 +1090,32 @@ static int handle_group_alt(struct objto
->   		return -1;
->   	}
->  =20
-> +	/*
-> +	 * Add the filler NOP, required for alternative CFI.
-> +	 */
-> +	if (special_alt->group && special_alt->new_len < special_alt->orig_le=
-n) {
-> +		struct instruction *nop =3D malloc(sizeof(*nop));
-> +		if (!nop) {
-> +			WARN("malloc failed");
-> +			return -1;
-> +		}
-> +		memset(nop, 0, sizeof(*nop));
-> +		INIT_LIST_HEAD(&nop->alts);
-> +		INIT_LIST_HEAD(&nop->stack_ops);
-> +		init_cfi_state(&nop->cfi);
-> +
-> +		nop->sec =3D last_new_insn->sec;
-> +		nop->ignore =3D last_new_insn->ignore;
-> +		nop->func =3D last_new_insn->func;
-> +		nop->alt_group =3D alt_group;
-> +		nop->offset =3D last_new_insn->offset + last_new_insn->len;
-> +		nop->type =3D INSN_NOP;
-> +		nop->len =3D special_alt->orig_len - special_alt->new_len;
-> +
-> +		list_add(&nop->list, &last_new_insn->list);
-> +		last_new_insn =3D nop;
-> +	}
-> +
->   	if (fake_jump)
->   		list_add(&fake_jump->list, &last_new_insn->list);
->  =20
-> @@ -2190,18 +2216,12 @@ static int handle_insn_ops(struct instru
->   	struct stack_op *op;
->  =20
->   	list_for_each_entry(op, &insn->stack_ops, list) {
-> -		struct cfi_state old_cfi =3D state->cfi;
->   		int res;
->  =20
->   		res =3D update_cfi_state(insn, &state->cfi, op);
->   		if (res)
->   			return res;
->  =20
-> -		if (insn->alt_group && memcmp(&state->cfi, &old_cfi, sizeof(struct c=
-fi_state))) {
-> -			WARN_FUNC("alternative modifies stack", insn->sec, insn->offset);
-> -			return -1;
-> -		}
-> -
->   		if (op->dest.type =3D=3D OP_DEST_PUSHF) {
->   			if (!state->uaccess_stack) {
->   				state->uaccess_stack =3D 1;
-> @@ -2399,19 +2419,137 @@ static int validate_return(struct symbol
->    * unreported (because they're NOPs), such holes would result in CFI_=
-UNDEFINED
->    * states which then results in ORC entries, which we just said we di=
-dn't want.
->    *
-> - * Avoid them by copying the CFI entry of the first instruction into t=
-he whole
-> - * alternative.
-> + * Avoid them by copying the CFI entry of the first instruction into t=
-he hole.
->    */
-> -static void fill_alternative_cfi(struct objtool_file *file, struct ins=
-truction *insn)
-> +static void __fill_alt_cfi(struct objtool_file *file, struct instructi=
-on *insn)
->   {
->   	struct instruction *first_insn =3D insn;
->   	int alt_group =3D insn->alt_group;
->  =20
-> -	sec_for_each_insn_continue(file, insn) {
-> +	sec_for_each_insn_from(file, insn) {
->   		if (insn->alt_group !=3D alt_group)
->   			break;
-> -		insn->cfi =3D first_insn->cfi;
-> +
-> +		if (!insn->visited)
-> +			insn->cfi =3D first_insn->cfi;
-> +	}
-> +}
-> +
-> +static void fill_alt_cfi(struct objtool_file *file, struct instruction=
- *alt_insn)
-> +{
-> +	struct alternative *alt;
-> +
-> +	__fill_alt_cfi(file, alt_insn);
-> +
-> +	list_for_each_entry(alt, &alt_insn->alts, list)
-> +		__fill_alt_cfi(file, alt->insn);
-> +}
-> +
-> +static struct instruction *
-> +__find_unwind(struct objtool_file *file,
-> +	      struct instruction *insn, unsigned long offset)
-> +{
-> +	int alt_group =3D insn->alt_group;
-> +	struct instruction *next;
-> +	unsigned long off =3D 0;
-> +
-> +	while ((off + insn->len) <=3D offset) {
-> +		next =3D next_insn_same_sec(file, insn);
-> +		if (next && next->alt_group !=3D alt_group)
-> +			next =3D NULL;
-> +
-> +		if (!next)
-> +			break;
-> +
-> +		off +=3D insn->len;
-> +		insn =3D next;
->   	}
-> +
-> +	return insn;
-> +}
-> +
-> +struct instruction *
-> +find_alt_unwind(struct objtool_file *file,
-> +		struct instruction *alt_insn, unsigned long offset)
-> +{
-> +	struct instruction *fit;
-> +	struct alternative *alt;
-> +	unsigned long fit_off;
-> +
-> +	fit =3D __find_unwind(file, alt_insn, offset);
-> +	fit_off =3D (fit->offset - alt_insn->offset);
-> +
-> +	list_for_each_entry(alt, &alt_insn->alts, list) {
-> +		struct instruction *x;
-> +		unsigned long x_off;
-> +
-> +		x =3D __find_unwind(file, alt->insn, offset);
-> +		x_off =3D (x->offset - alt->insn->offset);
-> +
-> +		if (fit_off < x_off) {
-> +			fit =3D x;
-> +			fit_off =3D x_off;
-> +
-> +		} else if (fit_off =3D=3D x_off &&
-> +			   memcmp(&fit->cfi, &x->cfi, sizeof(struct cfi_state))) {
-> +
-> +			char *_str1 =3D offstr(fit->sec, fit->offset);
-> +			char *_str2 =3D offstr(x->sec, x->offset);
-> +			WARN("%s: equal-offset incompatible alternative: %s\n", _str1, _str=
-2);
-> +			free(_str1);
-> +			free(_str2);
-> +			return fit;
-> +		}
-> +	}
-> +
-> +	return fit;
-> +}
-> +
-> +static int __validate_unwind(struct objtool_file *file,
-> +			     struct instruction *alt_insn,
-> +			     struct instruction *insn)
-> +{
-> +	int alt_group =3D insn->alt_group;
-> +	struct instruction *unwind;
-> +	unsigned long offset =3D 0;
-> +
-> +	sec_for_each_insn_from(file, insn) {
-> +		if (insn->alt_group !=3D alt_group)
-> +			break;
-> +
-> +		unwind =3D find_alt_unwind(file, alt_insn, offset);
-> +
-> +		if (memcmp(&insn->cfi, &unwind->cfi, sizeof(struct cfi_state))) {
-> +
-> +			char *_str1 =3D offstr(insn->sec, insn->offset);
-> +			char *_str2 =3D offstr(unwind->sec, unwind->offset);
-> +			WARN("%s: unwind incompatible alternative: %s (%ld)\n",
-> +			     _str1, _str2, offset);
-> +			free(_str1);
-> +			free(_str2);
-> +			return 1;
-> +		}
-> +
-> +		offset +=3D insn->len;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int validate_alt_unwind(struct objtool_file *file,
-> +			       struct instruction *alt_insn)
-> +{
-> +	struct alternative *alt;
-> +
-> +	if (__validate_unwind(file, alt_insn, alt_insn))
-> +		return 1;
-> +
-> +	list_for_each_entry(alt, &alt_insn->alts, list) {
-> +		if (__validate_unwind(file, alt_insn, alt->insn))
-> +			return 1;
-> +	}
-> +
-> +	return 0;
->   }
->  =20
->   /*
-> @@ -2423,9 +2561,10 @@ static void fill_alternative_cfi(struct
->   static int validate_branch(struct objtool_file *file, struct symbol *=
-func,
->   			   struct instruction *insn, struct insn_state state)
->   {
-> +	struct instruction *next_insn, *alt_insn =3D NULL;
->   	struct alternative *alt;
-> -	struct instruction *next_insn;
->   	struct section *sec;
-> +	int alt_group =3D 0;
->   	u8 visited;
->   	int ret;
->  =20
-> @@ -2480,8 +2619,10 @@ static int validate_branch(struct objtoo
->   				}
->   			}
->  =20
-> -			if (insn->alt_group)
-> -				fill_alternative_cfi(file, insn);
-> +			if (insn->alt_group) {
-> +				alt_insn =3D insn;
-> +				alt_group =3D insn->alt_group;
-> +			}
->  =20
->   			if (skip_orig)
->   				return 0;
-> @@ -2613,6 +2754,17 @@ static int validate_branch(struct objtoo
->   		}
->  =20
->   		insn =3D next_insn;
-> +
-> +		if (alt_insn && insn->alt_group !=3D alt_group) {
-> +			alt_insn->alt_end =3D insn;
-> +
-> +			fill_alt_cfi(file, alt_insn);
-> +
-> +			if (validate_alt_unwind(file, alt_insn))
-> +				return 1;
-> +
-> +			alt_insn =3D NULL;
-> +		}
->   	}
->  =20
->   	return 0;
-> Index: linux-2.6/tools/objtool/check.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.orig/tools/objtool/check.h
-> +++ linux-2.6/tools/objtool/check.h
-> @@ -40,6 +40,7 @@ struct instruction {
->   	struct instruction *first_jump_src;
->   	struct reloc *jump_table;
->   	struct list_head alts;
-> +	struct instruction *alt_end;
->   	struct symbol *func;
->   	struct list_head stack_ops;
->   	struct cfi_state cfi;
-> @@ -54,6 +55,10 @@ static inline bool is_static_jump(struct
->   	       insn->type =3D=3D INSN_JUMP_UNCONDITIONAL;
->   }
->  =20
-> +struct instruction *
-> +find_alt_unwind(struct objtool_file *file,
-> +		struct instruction *alt_insn, unsigned long offset);
-> +
->   struct instruction *find_insn(struct objtool_file *file,
->   			      struct section *sec, unsigned long offset);
->  =20
-> Index: linux-2.6/tools/objtool/orc_gen.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.orig/tools/objtool/orc_gen.c
-> +++ linux-2.6/tools/objtool/orc_gen.c
-> @@ -12,75 +12,86 @@
->   #include "check.h"
->   #include "warn.h"
->  =20
-> -int create_orc(struct objtool_file *file)
-> +static int create_orc_insn(struct objtool_file *file, struct instructi=
-on *insn)
->   {
-> -	struct instruction *insn;
-> +	struct orc_entry *orc =3D &insn->orc;
-> +	struct cfi_reg *cfa =3D &insn->cfi.cfa;
-> +	struct cfi_reg *bp =3D &insn->cfi.regs[CFI_BP];
-> +
-> +	orc->end =3D insn->cfi.end;
-> +
-> +	if (cfa->base =3D=3D CFI_UNDEFINED) {
-> +		orc->sp_reg =3D ORC_REG_UNDEFINED;
-> +		return 0;
-> +	}
->  =20
-> -	for_each_insn(file, insn) {
-> -		struct orc_entry *orc =3D &insn->orc;
-> -		struct cfi_reg *cfa =3D &insn->cfi.cfa;
-> -		struct cfi_reg *bp =3D &insn->cfi.regs[CFI_BP];
-> +	switch (cfa->base) {
-> +	case CFI_SP:
-> +		orc->sp_reg =3D ORC_REG_SP;
-> +		break;
-> +	case CFI_SP_INDIRECT:
-> +		orc->sp_reg =3D ORC_REG_SP_INDIRECT;
-> +		break;
-> +	case CFI_BP:
-> +		orc->sp_reg =3D ORC_REG_BP;
-> +		break;
-> +	case CFI_BP_INDIRECT:
-> +		orc->sp_reg =3D ORC_REG_BP_INDIRECT;
-> +		break;
-> +	case CFI_R10:
-> +		orc->sp_reg =3D ORC_REG_R10;
-> +		break;
-> +	case CFI_R13:
-> +		orc->sp_reg =3D ORC_REG_R13;
-> +		break;
-> +	case CFI_DI:
-> +		orc->sp_reg =3D ORC_REG_DI;
-> +		break;
-> +	case CFI_DX:
-> +		orc->sp_reg =3D ORC_REG_DX;
-> +		break;
-> +	default:
-> +		WARN_FUNC("unknown CFA base reg %d",
-> +			  insn->sec, insn->offset, cfa->base);
-> +		return -1;
-> +	}
->  =20
-> -		if (!insn->sec->text)
-> -			continue;
-> +	switch(bp->base) {
-> +	case CFI_UNDEFINED:
-> +		orc->bp_reg =3D ORC_REG_UNDEFINED;
-> +		break;
-> +	case CFI_CFA:
-> +		orc->bp_reg =3D ORC_REG_PREV_SP;
-> +		break;
-> +	case CFI_BP:
-> +		orc->bp_reg =3D ORC_REG_BP;
-> +		break;
-> +	default:
-> +		WARN_FUNC("unknown BP base reg %d",
-> +			  insn->sec, insn->offset, bp->base);
-> +		return -1;
-> +	}
->  =20
-> -		orc->end =3D insn->cfi.end;
-> +	orc->sp_offset =3D cfa->offset;
-> +	orc->bp_offset =3D bp->offset;
-> +	orc->type =3D insn->cfi.type;
->  =20
-> -		if (cfa->base =3D=3D CFI_UNDEFINED) {
-> -			orc->sp_reg =3D ORC_REG_UNDEFINED;
-> -			continue;
-> -		}
-> +	return 0;
-> +}
->  =20
-> -		switch (cfa->base) {
-> -		case CFI_SP:
-> -			orc->sp_reg =3D ORC_REG_SP;
-> -			break;
-> -		case CFI_SP_INDIRECT:
-> -			orc->sp_reg =3D ORC_REG_SP_INDIRECT;
-> -			break;
-> -		case CFI_BP:
-> -			orc->sp_reg =3D ORC_REG_BP;
-> -			break;
-> -		case CFI_BP_INDIRECT:
-> -			orc->sp_reg =3D ORC_REG_BP_INDIRECT;
-> -			break;
-> -		case CFI_R10:
-> -			orc->sp_reg =3D ORC_REG_R10;
-> -			break;
-> -		case CFI_R13:
-> -			orc->sp_reg =3D ORC_REG_R13;
-> -			break;
-> -		case CFI_DI:
-> -			orc->sp_reg =3D ORC_REG_DI;
-> -			break;
-> -		case CFI_DX:
-> -			orc->sp_reg =3D ORC_REG_DX;
-> -			break;
-> -		default:
-> -			WARN_FUNC("unknown CFA base reg %d",
-> -				  insn->sec, insn->offset, cfa->base);
-> -			return -1;
-> -		}
-> +int create_orc(struct objtool_file *file)
-> +{
-> +	struct instruction *insn;
->  =20
-> -		switch(bp->base) {
-> -		case CFI_UNDEFINED:
-> -			orc->bp_reg =3D ORC_REG_UNDEFINED;
-> -			break;
-> -		case CFI_CFA:
-> -			orc->bp_reg =3D ORC_REG_PREV_SP;
-> -			break;
-> -		case CFI_BP:
-> -			orc->bp_reg =3D ORC_REG_BP;
-> -			break;
-> -		default:
-> -			WARN_FUNC("unknown BP base reg %d",
-> -				  insn->sec, insn->offset, bp->base);
-> -			return -1;
-> -		}
-> +	for_each_insn(file, insn) {
-> +		int ret;
-> +=09
-> +		if (!insn->sec->text)
-> +			continue;
->  =20
-> -		orc->sp_offset =3D cfa->offset;
-> -		orc->bp_offset =3D bp->offset;
-> -		orc->type =3D insn->cfi.type;
-> +		ret =3D create_orc_insn(file, insn);
-> +		if (ret)
-> +			return ret;
->   	}
->  =20
->   	return 0;
-> @@ -166,6 +177,28 @@ int create_orc_sections(struct objtool_f
->  =20
->   		prev_insn =3D NULL;
->   		sec_for_each_insn(file, sec, insn) {
-> +
-> +			if (insn->alt_end) {
-> +				unsigned int offset, alt_len;
-> +				struct instruction *unwind;
-> +
-> +				alt_len =3D insn->alt_end->offset - insn->offset;
-> +				for (offset =3D 0; offset < alt_len; offset++) {
-> +					unwind =3D find_alt_unwind(file, insn, offset);
-> +					/* XXX: skipped earlier ! */
-> +					create_orc_insn(file, unwind);
-> +					if (!prev_insn ||
-> +					    memcmp(&unwind->orc, &prev_insn->orc,
-> +						   sizeof(struct orc_entry))) {
-> +						idx++;
-> +//						WARN_FUNC("ORC @ %d/%d", sec, insn->offset+offset, offset, alt=
-_len);
-> +					}
-> +					prev_insn =3D unwind;
-> +				}
-> +
-> +				insn =3D insn->alt_end;
-> +			}
-> +
->   			if (!prev_insn ||
->   			    memcmp(&insn->orc, &prev_insn->orc,
->   				   sizeof(struct orc_entry))) {
-> @@ -203,6 +236,31 @@ int create_orc_sections(struct objtool_f
->  =20
->   		prev_insn =3D NULL;
->   		sec_for_each_insn(file, sec, insn) {
-> +
-> +			if (insn->alt_end) {
-> +				unsigned int offset, alt_len;
-> +				struct instruction *unwind;
-> +
-> +				alt_len =3D insn->alt_end->offset - insn->offset;
-> +				for (offset =3D 0; offset < alt_len; offset++) {
-> +					unwind =3D find_alt_unwind(file, insn, offset);
-> +					if (!prev_insn ||
-> +					    memcmp(&unwind->orc, &prev_insn->orc,
-> +						   sizeof(struct orc_entry))) {
-> +
-> +						if (create_orc_entry(file->elf, u_sec, ip_relocsec, idx,
-> +								     insn->sec, insn->offset + offset,
-> +								     &unwind->orc))
-> +							return -1;
-> +
-> +						idx++;
-> +					}
-> +					prev_insn =3D unwind;
-> +				}
-> +
-> +				insn =3D insn->alt_end;
-> +			}
-> +
->   			if (!prev_insn || memcmp(&insn->orc, &prev_insn->orc,
->   						 sizeof(struct orc_entry))) {
->  =20
->=20
+For commands, I expect those to be managed through IRQs.
 
+That said, all these things are preferably managed through a polling
+based method instead, when doing the panic writes, correct?
 
---------------F4E81710D117794268EEB261
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+> Do you really think DMA can be avoided for MMC panic writes?
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+That depends on the HW.
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+Certainly there are lots of cases where DMA isn't the only way, but
+instead it's perfectly possible to fall back to polling based mode.
 
---------------F4E81710D117794268EEB261--
+>
+> >> +
+> >> +       if (mrq->data) {
+> >> +               timeout = mrq->data->timeout_ns / NSEC_PER_MSEC;
+> >> +               host->ops->req_completion_poll(host, timeout);
+> >> +       }
+> >> +}
+> >> +EXPORT_SYMBOL(mmc_wait_for_pstore_req);
+> >> +#endif
+> >> +
+> >>  /**
+> >>   *     mmc_is_req_done - Determine if a 'cap_cmd_during_tfr' request is
+> >done
+> >>   *     @host: MMC host
+> >> diff --git a/drivers/mmc/core/mmcpstore.c
+> >> b/drivers/mmc/core/mmcpstore.c new file mode 100644 index
+> >> 000000000000..1113eae0756c
+> >> --- /dev/null
+> >> +++ b/drivers/mmc/core/mmcpstore.c
+> >> @@ -0,0 +1,302 @@
+> >> +// SPDX-License-Identifier: GPL-2.0
+> >> +/*
+> >> + * MMC pstore support based on pstore/blk
+> >> + *
+> >> + * Copyright (c) 2020 Marvell.
+> >> + * Author: Bhaskara Budiredla <bbudiredla@marvell.com>  */
+> >> +
+> >> +#define pr_fmt(fmt) "mmcpstore: " fmt
+> >> +
+> >> +#include <linux/kernel.h>
+> >> +#include <linux/module.h>
+> >> +#include <linux/pstore_blk.h>
+> >> +#include <linux/blkdev.h>
+> >> +#include <linux/mount.h>
+> >> +#include <linux/slab.h>
+> >> +#include <linux/mmc/mmc.h>
+> >> +#include <linux/mmc/host.h>
+> >> +#include <linux/mmc/card.h>
+> >> +#include <linux/scatterlist.h>
+> >> +#include "block.h"
+> >> +#include "card.h"
+> >> +#include "core.h"
+> >> +
+> >> +static struct mmcpstore_context {
+> >> +       char dev_name[BDEVNAME_SIZE];
+> >> +       int partno;
+> >> +       sector_t start_sect;
+> >> +       sector_t size;
+> >> +       struct pstore_device_info dev;
+> >> +       struct pstore_blk_config conf;
+> >> +       struct pstore_blk_info info;
+> >> +
+> >> +       char *sub;
+> >> +       struct mmc_card *card;
+> >> +       struct mmc_request *mrq;
+> >> +} oops_cxt;
+> >> +
+> >> +static void mmc_prep_req(struct mmc_request *mrq,
+> >> +               unsigned int sect_offset, unsigned int nsects,
+> >> +               struct scatterlist *sg, u32 opcode, unsigned int
+> >> +flags) {
+> >> +       mrq->cmd->opcode = opcode;
+> >> +       mrq->cmd->arg = sect_offset;
+> >> +       mrq->cmd->flags = MMC_RSP_R1 | MMC_CMD_ADTC;
+> >> +
+> >> +       if (nsects == 1) {
+> >> +               mrq->stop = NULL;
+> >> +       } else {
+> >> +               mrq->stop->opcode = MMC_STOP_TRANSMISSION;
+> >> +               mrq->stop->arg = 0;
+> >> +               mrq->stop->flags = MMC_RSP_R1B | MMC_CMD_AC;
+> >> +       }
+> >> +
+> >> +       mrq->data->blksz = SECTOR_SIZE;
+> >> +       mrq->data->blocks = nsects;
+> >> +       mrq->data->flags = flags;
+> >> +       mrq->data->sg = sg;
+> >> +       mrq->data->sg_len = 1;
+> >> +}
+> >> +
+> >> +static int mmcpstore_rdwr_req(const char *buf, unsigned int nsects,
+> >> +                       unsigned int sect_offset, unsigned int flags)
+> >> +{
+> >> +       struct mmcpstore_context *cxt = &oops_cxt;
+> >> +       struct mmc_request *mrq = cxt->mrq;
+> >> +       struct mmc_card *card = cxt->card;
+> >> +       struct mmc_host *host = card->host;
+> >> +       struct scatterlist sg;
+> >> +       u32 opcode;
+> >> +
+> >> +       if (flags == MMC_DATA_READ)
+> >> +               opcode  = (nsects > 1) ?
+> >> +                       MMC_READ_MULTIPLE_BLOCK : MMC_READ_SINGLE_BLOCK;
+> >> +       else
+> >> +               opcode = (nsects > 1) ?
+> >> +                       MMC_WRITE_MULTIPLE_BLOCK : MMC_WRITE_BLOCK;
+> >> +
+> >> +       mmc_prep_req(mrq, sect_offset, nsects, &sg, opcode, flags);
+> >> +       sg_init_one(&sg, buf, (nsects << SECTOR_SHIFT));
+> >> +       mmc_set_data_timeout(mrq->data, cxt->card);
+> >> +
+> >> +       mmc_claim_host(host);
+> >> +       mmc_wait_for_req(host, mrq);
+> >> +       mdelay(mrq->data->timeout_ns / NSEC_PER_MSEC);
+> >> +       mmc_release_host(host);
+> >> +
+> >> +       if (mrq->cmd->error) {
+> >> +               pr_err("Cmd error: %d\n", mrq->cmd->error);
+> >> +               return mrq->cmd->error;
+> >> +       }
+> >> +       if (mrq->data->error) {
+> >> +               pr_err("Data error: %d\n", mrq->data->error);
+> >> +               return mrq->data->error;
+> >> +       }
+> >> +
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +static ssize_t mmcpstore_write(const char *buf, size_t size, loff_t
+> >> +off) {
+> >> +       struct mmcpstore_context *cxt = &oops_cxt;
+> >> +       int ret;
+> >> +
+> >> +       ret = mmcpstore_rdwr_req(buf, (size >> SECTOR_SHIFT),
+> >> +               cxt->start_sect + (off >> SECTOR_SHIFT), MMC_DATA_WRITE);
+> >> +       if (ret)
+> >> +               return ret;
+> >> +
+> >> +       return size;
+> >> +}
+> >> +
+> >> +static ssize_t mmcpstore_read(char *buf, size_t size, loff_t off) {
+> >> +       struct mmcpstore_context *cxt = &oops_cxt;
+> >> +       unsigned int sect_off = cxt->start_sect  + (off >> SECTOR_SHIFT);
+> >> +       unsigned long sects = (cxt->conf.kmsg_size >> SECTOR_SHIFT);
+> >> +       int ret;
+> >> +
+> >> +       if (unlikely(!buf || !size))
+> >> +               return -EINVAL;
+> >> +
+> >> +       ret = mmcpstore_rdwr_req(cxt->sub, sects, sect_off,
+> >MMC_DATA_READ);
+> >> +       if (ret)
+> >> +               return ret;
+> >> +       memcpy(buf, cxt->sub, size);
+> >> +
+> >> +       return size;
+> >> +}
+> >
+> >It looks like the above I/O read/write interface for pstore is intended to be
+> >used when the platform is up and running and not during a panic, correct?
+> >
+> >If so, I don't get why it can't use the regular block interface, as any other file
+> >system does, for example?
+> >
+>
+> The pstore read and write operations are used as part of pstore file system mounting
+> to retrieve the stored logs from MMC platform backend and to manage pstore read/write
+> counters. Sleeping would be allowed during this time. Whereas, pstore PANIC write will be
+> called if there happens a crash in the system. Sleeping is NOT allowed at this time.
+>
+> It seems you are mixing the sleeping paths of the mmcpstore with that of atomic path.
 
---eJf0I1odMv2scnFFsZ16khArxsjn0GCwk--
+No, I am not mixing them, but questioning them.
 
---H2kwefz8uIE15eQoOkpjLVA8XJ0Q8kIsD
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+For the non atomic path, I don't understand why the pstore file system
+mounting, etc, deserves to be managed through its own specific ops?
+Are there any specific reasons for this that I am missing?
 
------BEGIN PGP SIGNATURE-----
+In principle, for non atomic path, I would rather see that the pstore
+file system should be able to be mounted on top of any generic block
+device partition - without requiring the block device driver to
+implement specific pstore ops.
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/YoTUFAwAAAAAACgkQsN6d1ii/Ey8c
-4Af9EPguE36mExOqZBOb5ZgFrhbSqrWQDZmE1KbHgbM1ziiQCfiXQD6+EBEmtuQ0oUDN8hJc/CIg
-f0IHhweVykhon4Z9R3Fv9q6z3ZryFRzygP14ZNye2GW6cspH0bp8c2v9vG+0dQKxAUee3cS2hJVn
-XHeibQug+fGgdI2D90U6xryasC5CgTFYEttF/tEJNMGbVsZyTzQHHbWtPf93baVeEBfjd2cPe54R
-Asv8rjRxGivpEtCA8+mK7Up57mLT6oLLX9CBzpzvfoMz7iQI8tj9gP5WO8NLcqGLF0K4PxREJEzC
-UD6+h6ew8YijxTQPm3EL8bqbOZQT5pL+DHnrUoVMcQ==
-=Kt/D
------END PGP SIGNATURE-----
+>
+>
+> >> +
+> >> +static void mmcpstore_panic_write_req(const char *buf,
+> >> +               unsigned int nsects, unsigned int sect_offset) {
+> >> +       struct mmcpstore_context *cxt = &oops_cxt;
+> >> +       struct mmc_request *mrq = cxt->mrq;
+> >> +       struct mmc_card *card = cxt->card;
+> >> +       struct mmc_host *host = card->host;
+> >> +       struct scatterlist sg;
+> >> +       u32 opcode;
+> >> +
+> >> +       opcode = (nsects > 1) ? MMC_WRITE_MULTIPLE_BLOCK :
+> >MMC_WRITE_BLOCK;
+> >> +       mmc_prep_req(mrq, sect_offset, nsects, &sg, opcode,
+> >MMC_DATA_WRITE);
+> >> +       sg_init_one(&sg, buf, (nsects << SECTOR_SHIFT));
+> >> +       mmc_set_data_timeout(mrq->data, cxt->card);
+> >> +
+> >> +       mmc_claim_host(host);
+> >
+> >So, this will use several locks, which may be a problem, right?
+> >
+>
+> No, as said above locks are present on host driver will be dropped
+> in CONFIG_MMC_PSTORE path.
 
---H2kwefz8uIE15eQoOkpjLVA8XJ0Q8kIsD--
+Please have a look at the code implementing mmc_claim_host(). It's not
+just a simple spin_lock, but there is also a wait_queue and runtime PM
+being managed from there.
+
+>
+> >Moreover, if there is an ongoing I/O request (or any other active
+> >command/request for that matter), then the host is already claimed by the
+> >mmc core. Normally, we would then wait for that request to be completed, to
+> >trigger the release of the host and then allow us to claim it here.
+> >
+> >However, because of the kernel panic, I assume it's quite likely that any
+> >ongoing request will not be completed at all, as IRQs may not work, for
+> >example.
+> >
+> >In other words, we may be hanging here forever waiting to claim the host.
+> >Unless we are lucky, because of no ongoing request, although we would still
+> >have to succeed walking through all the locking, etc, in mmc_claim_host().
+> >
+>
+> host->ops->req_cleanup_pending(host) was introduced to clean up the queued
+> and ongoing requests/commands. Terminating ongoing requests is not a complicated
+> thing for the host drivers.
+
+Well, I don't agree. Resetting the host controller should not be a big
+problem, but I am more worried about what state this will bring the
+eMMC/SD card in.
+
+It sounds to me that the only option is to try to rely on the
+mmc_claim_host() to actually succeed. This makes it certain that there
+is no ongoing request that needs to be terminated. Otherwise, things
+will just fall apart.
+
+The question is, can/should we rely on mmc_claim_host() to succeed in
+this path? Maybe it will work, in cases when there is no ongoing
+request, as it means the host should be available to be immediately
+claimed. Although, then the problem ends up with runtime PM, as if the
+host is available for claiming, it's likely that the host is runtime
+suspended...
+
+>
+>
+> >Do note, as part of the mmc_claim_host() we may also runtime resume the
+> >host, if it was runtime suspended (which is quite likely). To runtime resume a
+> >host via runtime PM, we may end up ungating device clocks, power on
+> >corresponding PM domains, run a so called re-tuning sequence to restore
+> >communication with the card, etc, etc. The point is, all these things must also
+> >be possible to do, without locks and by using a polling based "mode"...
+> >
+> >> +       mmc_wait_for_pstore_req(host, mrq);
+> >
+> >Okay, so let's assume that we are lucky and succeed to claim and runtime
+> >resume the host above.
+> >
+> >Then we also need to runtime resume the card, as it may be runtime
+> >suspended. In the "worst case", runtime resuming the card means a complete
+> >re-initialization of it, covering a series of commands and turning on regulators,
+> >for example.
+> >
+> >> +       mmc_release_host(card->host);
+> >> +}
+>
+>
+> All the above said things (runtime resuming host, clocks being updated, restoring
+> communication with host) are valid even for the newly asked request path. They cannot
+> be avoided as we have to terminate the ongoing requests to complete the panic write.
+
+Exactly. That's why I wonder if it's really worth it to support the
+panic writes at all.
+
+I realize that the host driver you are working on doesn't support
+runtime PM, so it's not a problem for you, but for many other cases I
+assume it would be.
+
+Perhaps we could check that runtime PM is disabled for the mmc host as
+a pre-condition to support this feature?
+
+>
+> >> +
+> >> +static ssize_t mmcpstore_panic_write(const char *buf, size_t size,
+> >> +loff_t off) {
+> >> +       struct mmcpstore_context *cxt = &oops_cxt;
+> >> +
+> >> +       mmcpstore_panic_write_req(buf, (size >> SECTOR_SHIFT),
+> >> +                       cxt->start_sect + (off >> SECTOR_SHIFT));
+> >> +       return size;
+> >> +}
+> >
+> >[...]
+> >
+> >Having said the above, I am not entirely convinced that it makes sense to
+> >support this, at all.
+> >
+> >Not only, will the support be highly fragile from the mmc core point of view,
+> >but there is also a significant complexity for an mmc host driver to support this
+> >(at least in general).
+> >
+>
+> I am not sure if the comments on host driver complexity is true. Terminating
+> ongoing requests and introducing polling functions on host drivers should be
+> straight forward. None those would disturb the core functionality. They are
+> completely independent.
+
+I think you are underestimating the part with terminating ongoing
+requests. It sounds to me that you really haven't been terminating any
+requests at all, but rather just doing a reset of the mmc controller
+(which is what I observed in patch2).
+
+When it comes to adding the new host ops to support the polling
+functions, I have in principle no objections to that.
+
+Kind regards
+Uffe
