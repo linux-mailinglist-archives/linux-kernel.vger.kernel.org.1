@@ -2,81 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16BC72DADE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC46B2DADEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:23:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727227AbgLONVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:21:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726959AbgLONU4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:20:56 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D561BC06138C;
-        Tue, 15 Dec 2020 05:20:15 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id w13so39226746lfd.5;
-        Tue, 15 Dec 2020 05:20:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sOTNS1adPzkjd18NAGlnFfcMu9FiOR4jPybdIj8V52A=;
-        b=QzoagYajrS7uM4QhWkUMg3UPeK94F6r3Th5zNpGdydo4CaXBDGSJhKeHrNRbulKU5U
-         QGMdGA1IbHo1GvDvu66sYVf9vCFWzIRMt1btwVSxH8asyuWDroPxhST2ZEPZ+/7xC8CN
-         puKi6KzGAhcrVWxNPIFOOWIm8Escv6IWSr7v1+nhoed1mE+sQZcbH+1hpVFD/5ee/dDN
-         ASKcf+QNR2kayArHG9qOKSNnrSqouxZL7CiX6HxRz8xYW5NrikF08r6iiQEekC1fllzs
-         n6D9R3SK6kiCY4Dfe2zbBGFAF8VKthnuNwc8ubEnm4jS/J86BW2OaRUPV0AfUGF5c5Gr
-         e5Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sOTNS1adPzkjd18NAGlnFfcMu9FiOR4jPybdIj8V52A=;
-        b=SuCcKYZ92W4rvMWWQtNvWpg4n7bkUHUmEvvYvogkEQn7kILqVfTck1boawVyDYzlmv
-         eD1K2r+hGDLq4y2Ci8o3kQ6rqnRsPu+4N8qF8UKA4larS0lcIIUWEsvglLDH4scTLUKz
-         QDK9rIV+fJUuX+AqrzPafftM9Gx8l4xGZQaprN913S/Q8sbz450sMT76P3lnDhk4oYAQ
-         cjS9Cj03b0JzbnaQDt1UZfBAirQnwD5dEqR9ZUkWEle0/ciuudKOA4gjUDQaaWV1wcym
-         aD9TOozd1maa7TaGltMCN/R6fm6yY6s4HT1cgQmu4UdCrmW3stM3aighe4D+M1165P0t
-         eCpg==
-X-Gm-Message-State: AOAM5310Deg43YsJcDI18bYt/DbFGlhdl23KJXz8gCXJk7Qh2XTyIjI0
-        xZBOZaiJJfYvdF603gEjVVrBz9oeHlrWzYt+/1E=
-X-Google-Smtp-Source: ABdhPJzJp7Yq5xVPxVXkqKyZQAg2hSchnL13OBIdipOtaWfun3XG3Oodczt84lms0OlsIi0DkgpmkaPjkJlWdmXWt2I=
-X-Received: by 2002:a2e:bc05:: with SMTP id b5mr13202203ljf.444.1608038414254;
- Tue, 15 Dec 2020 05:20:14 -0800 (PST)
-MIME-Version: 1.0
-References: <20201214225851.23342-1-adrien.grassein@gmail.com>
- <20201215130622.GD4738@sirena.org.uk> <CABkfQAEAe0XGj16CkmH7xMNxgdQ+SRq0BYzvP+V5PdDqVbyAAw@mail.gmail.com>
-In-Reply-To: <CABkfQAEAe0XGj16CkmH7xMNxgdQ+SRq0BYzvP+V5PdDqVbyAAw@mail.gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 15 Dec 2020 10:20:02 -0300
-Message-ID: <CAOMZO5A_Gtwn=AFwJXf_wpC4k902Hg=tCMWpcFUGNWOg9me6_w@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] Add support of nxp pf8x00 regulator
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Troy Kisky <troy.kisky@boundarydevices.com>,
-        Gary Bisson <gary.bisson@boundarydevices.com>,
+        id S1727685AbgLONVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:21:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726861AbgLONVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 08:21:30 -0500
+From:   Mark Brown <broonie@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     Adrien Grassein <adrien.grassein@gmail.com>,
         Jagan Teki <jagan@amarulasolutions.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH] regulator: pf8x00: Use specific compatible strings for devices
+Date:   Tue, 15 Dec 2020 13:20:24 +0000
+Message-Id: <20201215132024.13356-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+X-Patch-Hashes: v=1; h=sha256; i=iFPmsa3+jnoQAinLCLIyJYrJYVQ0K71zonFwtGd5EuE=; m=wb+pZI7xM+FR+JNfGwZpv0zbVDoPhtbL9e93YelLGuA=; p=HciRgTybYC14UMhoVbWDEyRjUGLc8P1po22O0WJcF7s=; g=2d9d2c6a6c375e43d76a5a3ddf0571f7565bdeba
+X-Patch-Sig: m=pgp; i=broonie@kernel.org; s=0xC3F436CA30F5D8EB; b=iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/YtwwACgkQJNaLcl1Uh9BuBQgAgEu 02tONuxW1LaE6GX9LyGK1zX/sFsJQFtoUvFyeppPnwEs/Ie/wcowd1XD8bJ/GtdeWY40TrLyA6b6w 7XvwEFkNheIXFWykhTjkfyOiL/XaQgmHh+I9CxmkV0RFCfLcAf28RIELTmWyxAjQMxIcSrzgA4zx3 UnUlXHB78i0a2XTAxs0zeXVGeNsUtbzrQxsQ+HBRXSv1NGpT16fM22MsPWlJQeR/yKNd/t5+XFKmp 6+fT4QKNMJyQ2f5udfQjLR7D+NMjuxHZQQQzL8Mvlzqh+AKFXu13x9+KftI6pqA8DC1l7tkTgeBWR fXISfx62GumcMBTLWRVUT6f91vAFVFw==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrien,
+The pf8x00 driver supports three devices, the DT compatible strings
+and I2C IDs should enumerate these specifically rather than using a
+wildcard so that we don't collide with anything incompatible in the
+same ID range in the future and so that we can handle any software
+visible differences between the variants we find.
 
-On Tue, Dec 15, 2020 at 10:16 AM Adrien Grassein
-<adrien.grassein@gmail.com> wrote:
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../bindings/regulator/nxp,pf8x00-regulator.yaml          | 6 ++++--
+ drivers/regulator/pf8x00-regulator.c                      | 8 ++++++--
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-> Could you please tell me where this driver was merged?
-> I checked the main kernel Linux and I can find out this one.
+diff --git a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+index a6c259ce9785..956156fe52a3 100644
+--- a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+@@ -19,7 +19,9 @@ description: |
+ properties:
+   compatible:
+     enum:
+-      - nxp,pf8x00
++      - nxp,pf8100
++      - nxp,pf8121a
++      - nxp,pf8200
+ 
+   reg:
+     maxItems: 1
+@@ -118,7 +120,7 @@ examples:
+         #size-cells = <0>;
+ 
+         pmic@8 {
+-            compatible = "nxp,pf8x00";
++            compatible = "nxp,pf8100";
+             reg = <0x08>;
+ 
+             regulators {
+diff --git a/drivers/regulator/pf8x00-regulator.c b/drivers/regulator/pf8x00-regulator.c
+index 308c27fa6ea8..af9918cd27aa 100644
+--- a/drivers/regulator/pf8x00-regulator.c
++++ b/drivers/regulator/pf8x00-regulator.c
+@@ -469,13 +469,17 @@ static int pf8x00_i2c_probe(struct i2c_client *client)
+ }
+ 
+ static const struct of_device_id pf8x00_dt_ids[] = {
+-	{ .compatible = "nxp,pf8x00",},
++	{ .compatible = "nxp,pf8100",},
++	{ .compatible = "nxp,pf8121a",},
++	{ .compatible = "nxp,pf8200",},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, pf8x00_dt_ids);
+ 
+ static const struct i2c_device_id pf8x00_i2c_id[] = {
+-	{ "pf8x00", 0 },
++	{ "pf8100", 0 },
++	{ "pf8121a", 0 },
++	{ "pf8200", 0 },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(i2c, pf8x00_i2c_id);
+-- 
+2.20.1
 
-It is in the linux-next tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers?h=next-20201215&id=d3795d6321ecaa55d94dc24c3b1e3cce608aabd6
-
-Regards,
-
-Fabio Estevam
