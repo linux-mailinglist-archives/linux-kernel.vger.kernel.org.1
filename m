@@ -2,146 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107322DA6B9
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9132DA6BA
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727639AbgLODWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 22:22:17 -0500
-Received: from mout.gmx.net ([212.227.15.19]:42695 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727517AbgLODV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 22:21:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608002367;
-        bh=1R3VTzNtmLt4a1ey+tM18AI2OSxI2AuI9oIlNEoUEck=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=O2qngto/NvDxHYjS6dnNq0FqPELy2iatowwl4bnoKqOdx+ClIfoz2kOmO3/mrewco
-         aJ6RaMg1uS7IZaCCZYo895KXn6/P6/2dGhSB0NaoIYnrG9DhfQ8rmeN3oHe+3o4Ln0
-         9967gLaK0RQMAcrojnojamnrxCS74qjiNmw0p7mQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.217.61]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MmULr-1kOzZm2y37-00iSJG; Tue, 15
- Dec 2020 04:19:27 +0100
-Message-ID: <6307cab9d73d88b16e1e87ddb273a7b27d3e51f6.camel@gmx.de>
-Subject: Re: sched: exporting linux-rt migrate_disable for ZFS
-From:   Mike Galbraith <efault@gmx.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Orivej Desh <c@orivej.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-rt-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Brian Behlendorf <behlendorf1@llnl.gov>
-Date:   Tue, 15 Dec 2020 04:19:23 +0100
-In-Reply-To: <20201214123302.w2bem7tlb664jdvx@linutronix.de>
-References: <20201208212841.694b3022@orivej.orivej.org>
-         <20201214123302.w2bem7tlb664jdvx@linutronix.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yKjNETWY0HsaZY6T2BYLNDCWN9rc7CA0Ir+tsxvYfkwSRIj9we1
- lSqn8le7LxhHY1xMBgpOdVJNzqig9RMDeMeWQr+V0jWj+4C1Y2s366y1qTaWwK26fJaTJ9a
- qkHoHHQckM3ELhtsxYgteIbjhZ3GIdo18d03KkawLBSohNbTrGv3DhADpK5T+0pKHRWRy/x
- zB7p9RX7vgTpx4D1z/DBg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:okDZ+/oZF+8=:oYnUGi0+EsXs0GblwtEAPy
- 6QauqZKM7GdFYoGaT/JSGLyGsacqVSKNMLSbnum75Eo0L2GEJIxFvFgqUsZTS3+3IV2yjjVad
- S0gBZ7HLwzbnWaN0AOSovdMkBHjQzsbIYP5qb29afRFSCTSOAUhSqH9h/7jBJ9eYRYTI1Yqp0
- n+sRScN8ZP00KphPqzVl6H7xNs9QQmHMDAkp0ohndpF3Fsb/8freO6f5elJUlTwBBitF+k8Sc
- ONLSgnBrYSjIlbXfmJv9xUkGBI4Ur7tahA+sMJFbmBcfiS4oq4GRp+E66mMPU4Og+dTKaWRGO
- YSQGS/8ZzkfqjaRAEqPG3bNeq2ri3ndQqAhOvlpJvh4dWlfeggMLXBtthJNQPVVN84rFDnGyL
- 1FJnqjKohPCxg+nSLDd6cXtFDmmyhA2ODMcST1tCVTdmcn9hsMg929bRLHtRvCt3BJlofhk9i
- ixPu297u5yOXGp4FT2JFVr2QfNx/rGYcRGy6bsIVeUWlIm0lilVykaZ7ZThHsZoTXyw6b1Fml
- 6bKbd3WOClbnOIYydlAfyeh71VnBJ1AECMpPCdtKWSDWRTQ5+LuW9wp36bN6oQR+fNycszbAO
- uCyCs9o66ZnfOLiRZMtVsaWPvJNC97UZ6ioeTgWC0s05UcHqij+9CN8X3CUm0gsA3kkWVMK87
- I6aAwZGtEWtJhdY8eLtotMv4rMSfkRYQPzyaq0S0rQ2FBdIsRfHpNJ72pZkX5hJuTqlzBrtrv
- WFMbOFInQEQm0j8i2G6jRd52Ag/ELPEGT4Ke35nT/yKZOayZ9Bgaw7SjV3E6JBK48G14Q26k0
- IpDZIj97QOHZ318WEo1Mkfd+Z83qkH07GDmJMFdIDSdXVaJbIqYAJqpXAoSoQiYRbuPYAFB6e
- NFnktWKWnrKGtWkhzdYw==
+        id S1727677AbgLODWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 22:22:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727482AbgLODVy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 22:21:54 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1945AC06179C
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 19:21:14 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id r4so10198616pls.11
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 19:21:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raydium-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=z3HadxZMMXHx5HALdRJ2q0xWXavqTdJ5JWmtMfG9Cpo=;
+        b=oq/LojT2JKKS6Edaakm/tIyMXaB785z3aBnJuiP2VDWxTAF6Fq4SZZSMPYvyw0nezy
+         I2kc5xLwpWnd4tDA+84E/AR4KPQURF1GS1E3TNw+5jT3y5RuN32CJHJlDBiEIl5ENVKo
+         tnsP5M/y0HXhtkWE1vwrEc1GuzuDQ0+D1Ybutq+8NaD2a5dOXgcNKDcbEptN5QNPbr9U
+         3MWtc4ia9fi9AMLYPJgJkiXG+PdmrRWSZZFRIET1vME3oVJtW2xPvsKwi56iLJANfDkX
+         tVPZ7peT/uVirCmtgHoyhJInOjl2uEgiWIX0FI99CSLkgYddRDJ3XzU4HJyDdSFR93A8
+         Bbow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=z3HadxZMMXHx5HALdRJ2q0xWXavqTdJ5JWmtMfG9Cpo=;
+        b=nEOgy4bWzwXdVZEibflQlO8v1YxV+Z9AsI3RJnwKyPs7pKZa+UyAZ8UmwsDMxHdvo/
+         D1CeQH9U1an0gUwLu0Dfl1IFZonohQkF3gR7uUVqtUqRAd/i5QXLU1OAtzvrApiksWci
+         Q77jSOkzlB1F7VxOMm/yaX5Evo+kWldsJ/DL7XdyTgHlpfysoKsANyJA/SOjEnt/6DTX
+         49nBGaA+92x07YV7j2Yb3EgBdgHxFqEURWULbOpcFJzpCwmlmEmkLMp2zLhqXkNeOEoJ
+         W2xOondA7W0FuYi2a8zOoq1IKeH5WOi5iBdceBA2ioWO6b9IZQ+Vw6BKnxkzdrcMYBQ5
+         IN8g==
+X-Gm-Message-State: AOAM533ijwi0aCOiJNyMLnsC1+VCmBnEEQ1Bvef9QytmJCboXxY2Mvsw
+        N0egl0HAGwVcSw9yI5OLRepz5A==
+X-Google-Smtp-Source: ABdhPJwgyVuT3xAmaj+S8U/UcaSwI21pR5mHBW+ILJzbipzSqAtEqOgLtCCdLtwCYa5FkbUt/6btMQ==
+X-Received: by 2002:a17:902:7b84:b029:da:60e0:9d38 with SMTP id w4-20020a1709027b84b02900da60e09d38mr25750106pll.55.1608002473520;
+        Mon, 14 Dec 2020 19:21:13 -0800 (PST)
+Received: from localhost.localdomain (2001-b400-e3d9-619c-a02e-47f2-1ebf-215e.emome-ip6.hinet.net. [2001:b400:e3d9:619c:a02e:47f2:1ebf:215e])
+        by smtp.gmail.com with ESMTPSA id h17sm20445579pfo.220.2020.12.14.19.21.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 14 Dec 2020 19:21:12 -0800 (PST)
+From:   "jeffrey.lin" <jeffrey.lin@raydium.corp-partner.google.com>
+To:     dmitry.torokhov@gmail.com, furquan@google.com,
+        seanpaul@chromium.org, rrangel@chromium.org,
+        dan.carpenter@oracle.com
+Cc:     jeffrey.lin@rad-ic.com, KP.li@rad-ic.com,
+        jeffrey.lin@raydium.corp-partner.google.com,
+        calvin.tseng@rad-ic.com, simba.hsu@rad-ic.com,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: [PATCH] Input: raydium_ts_i2c: Do not send zero length 
+Date:   Tue, 15 Dec 2020 11:21:06 +0800
+Message-Id: <1608002466-9263-1-git-send-email-jeffrey.lin@raydium.corp-partner.google.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-14 at 13:33 +0100, Sebastian Andrzej Siewior wrote:
-> On 2020-12-08 23:58:27 [+0000], Orivej Desh wrote:
-> > Greetings!
-> Hi,
->
-> > With sched-Add-migrate_disable.patch first released in v5.9-rc8-rt14 [=
-1]
-> > linux-rt defines functions migrate_disable and migrate_enable.
-> > They are used in linux headers in various macros and static inline
-> > functions, and in particular in kmap_atomic and kunmap_atomic.
-> > The latter are needed by ZFS which currently fails to build against
-> > 5.9-rt [2] because these functions are exported with EXPORT_SYMBOL_GPL=
-.
-> > Could you export them with EXPORT_SYMBOL instead?
->
-> This is out of my jurisdiction, so just a few notes:
-> - v5.9 is out of maintenance. Be careful.
-> - We don't export symbols for out-of-tree modules.
+Add default write command package to prevent i2c quirk error of zero
+data length as Raydium touch firmware update is executed.
 
-Hm, dejavu all over again.  I recall this issue long ago having been
-resolved in favor of exporting via plain EXPORT_SYMBOL.
+Signed-off-by: jeffrey.lin <jeffrey.lin@rad-ic.com>
+BUG=b:174207906
+TEST=Successfully tested update Raydium touch firmware over 100 times
+Change-Id: I311b0d26d7642bb800547cd0e87013be17cb7e1b
+---
+ drivers/input/touchscreen/raydium_i2c_ts.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-https://lore.kernel.org/linux-rt-users/1321359802.4181.1.camel@frodo/
-
-=46rom 859a31c5ec958326dd046f4e41f6fa0db0ce98c3 Mon Sep 17 00:00:00 2001
-From: Steven Rostedt <srostedt@redhat.com>
-Date: Mon, 16 Apr 2012 21:51:54 -0400
-Subject: rt: Make migrate_disable/enable() and __rt_mutex_init non-GPL onl=
-y
-
-Modules that load on the normal vanilla kernel should also load on
-an -rt kernel as well. This does not mean we condone non-GPL modules,
-we are only being consistent.
-
-Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
-=2D--
- kernel/rtmutex.c | 2 +-
- kernel/sched.c   | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/rtmutex.c b/kernel/rtmutex.c
-index a02fbd9f9583..d58db993f5cd 100644
-=2D-- a/kernel/rtmutex.c
-+++ b/kernel/rtmutex.c
-@@ -1282,7 +1282,7 @@ void __rt_mutex_init(struct rt_mutex *lock, const ch=
-ar *name)
-
- 	debug_rt_mutex_init(lock, name);
- }
--EXPORT_SYMBOL_GPL(__rt_mutex_init);
-+EXPORT_SYMBOL(__rt_mutex_init);
-
- /**
-  * rt_mutex_init_proxy_locked - initialize and lock a rt_mutex on behalf =
-of a
-diff --git a/kernel/sched.c b/kernel/sched.c
-index df3048139d1b..ed3433573641 100644
-=2D-- a/kernel/sched.c
-+++ b/kernel/sched.c
-@@ -4255,7 +4255,7 @@ void migrate_disable(void)
- 	p->migrate_disable =3D 1;
- 	preempt_enable();
- }
--EXPORT_SYMBOL_GPL(migrate_disable);
-+EXPORT_SYMBOL(migrate_disable);
-
- void migrate_enable(void)
+diff --git a/drivers/input/touchscreen/raydium_i2c_ts.c b/drivers/input/touchscreen/raydium_i2c_ts.c
+index 603a948460d64..4d2d22a869773 100644
+--- a/drivers/input/touchscreen/raydium_i2c_ts.c
++++ b/drivers/input/touchscreen/raydium_i2c_ts.c
+@@ -445,6 +445,7 @@ static int raydium_i2c_write_object(struct i2c_client *client,
+ 				    enum raydium_bl_ack state)
  {
-@@ -4307,7 +4307,7 @@ void migrate_enable(void)
- 	unpin_current_cpu();
- 	preempt_enable();
- }
--EXPORT_SYMBOL_GPL(migrate_enable);
-+EXPORT_SYMBOL(migrate_enable);
- #else
- static inline void update_migrate_disable(struct task_struct *p) { }
- #define migrate_disabled_updated(p)		0
-=2D-
-2.29.2
-
+ 	int error;
++	static const u8 cmd[] = { 0xFF, 0x39 };
+ 
+ 	error = raydium_i2c_send(client, RM_CMD_BOOT_WRT, data, len);
+ 	if (error) {
+@@ -453,7 +454,7 @@ static int raydium_i2c_write_object(struct i2c_client *client,
+ 		return error;
+ 	}
+ 
+-	error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, NULL, 0);
++	error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, cmd, sizeof(cmd));
+ 	if (error) {
+ 		dev_err(&client->dev, "Ack obj command failed: %d\n", error);
+ 		return error;
+-- 
+2.26.2
 
