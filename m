@@ -2,162 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AFF32DB363
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B39522DB366
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731146AbgLOSMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:12:31 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33002 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729543AbgLOSMa (ORCPT
+        id S1730604AbgLOSNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 13:13:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727655AbgLOSNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:12:30 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BFI5snt112884;
-        Tue, 15 Dec 2020 13:11:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=FQb2/87IfrMSQ8h9JJ7+NwekAItOHcn2U0Ghsiz07tU=;
- b=JNRK57bVnCiS0aLyT9LaTF2jN6HamccjpjKAam3gIW2uq82+24NaFBgXoOUcvqZxThbA
- M+l7Z8uuykloMZbarY0NUNHlUtp81A1xjmzA51YYeIr0aQo5v0npFIwmUKraunv4h2uq
- qdW2PRLdqhU5NJ032s5uX4TRO70USRHqntLAuPbMz97QKt6TSTWCZx67lTdOxKzLUyUe
- qdvbzRbVtEbZQiYh8oYLHB6nprW5QnNjbY0K61pE2TL43LsWE7EDpr+mgVc6F3fLSnRv
- iEXQYgpEC/BcX1SF+e5Hc2+AWSji7Mo7TZMpimOfyqm6DloXPLofthncQnsrz71+VUXi eg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35f1ar1uwg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Dec 2020 13:11:42 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BFIAFZc129446;
-        Tue, 15 Dec 2020 13:11:42 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35f1ar1uvs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Dec 2020 13:11:42 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BFHv63o022104;
-        Tue, 15 Dec 2020 18:11:40 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03fra.de.ibm.com with ESMTP id 35cng8d7ch-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Dec 2020 18:11:40 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BFIAMwu30736664
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Dec 2020 18:10:22 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E32EFA406D;
-        Tue, 15 Dec 2020 18:10:21 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5383DA4069;
-        Tue, 15 Dec 2020 18:10:21 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.18.42])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 15 Dec 2020 18:10:21 +0000 (GMT)
-Subject: Re: [PATCH v3] s390/vfio-ap: clean up vfio_ap resources when KVM
- pointer invalidated
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org,
-        gregkh@linuxfoundation.org, sashal@kernel.org, cohuck@redhat.com,
-        kwankhede@nvidia.com, pbonzini@redhat.com,
-        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com
-References: <20201214165617.28685-1-akrowiak@linux.ibm.com>
- <20201215115746.3552e873.pasic@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <44ffb312-964a-95c3-d691-38221cee2c0a@de.ibm.com>
-Date:   Tue, 15 Dec 2020 19:10:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 15 Dec 2020 13:13:20 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6A7C06179C;
+        Tue, 15 Dec 2020 10:12:39 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id n3so285287pjm.1;
+        Tue, 15 Dec 2020 10:12:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=WQapZIoz6pQlYWlJ8bxYqKs2bC0a07eICFhrlfIpXYs=;
+        b=uU5/faAi3balQ222wBULAQQnmY1RyQwzOaqZ/ViZy4F8NaqRJWUxINaEmG4V2klTw2
+         NF2q8e2QYBqC+S8SOR7K/abzH4YxjHVopYcLDe21zB21LWTq7VCbTavBH89RLvBXcXNw
+         ukIAUr2SZXx8Pi9olVE8tCdEKu+wOfssCsQ5oqhURE4rhDnk86grm4GfmaK2kfL+dqfa
+         4uu9ex/MmPYjiX/FLUCkMn84YTavbjueX3ClRqcYE79HR3HPXJgCPcM9az+DaRzFd6qB
+         TTOwHUwbsfeq4r2NST/Oxp2kOO/pWJ8Vbnm4JOH4ssf6je3HiXbxY1nA/jrm2wiQmwzo
+         Wz7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=WQapZIoz6pQlYWlJ8bxYqKs2bC0a07eICFhrlfIpXYs=;
+        b=aDu+wVzrpo9VJwn5LuGfvzu4cjL78QGpLzeCOAbLwyaJgpNlM+ERIiZRZy0BOWjHVa
+         KmjinJyL1jHTIkT79WTCG/kWOq23psuYks2ZcSgf+7i5gtrK81waRswPwjD8XWYx9unx
+         tayDKb4nIvNji0AiXNcv4sA75UXZJgPQIxgTRmq8siC4bfJ3hvbqxU3wHKOFLaFzwB88
+         erZpMEfhPlWUthTtg47J2lZBqvUPkVdVQjuiBYvbDCrFsvOvej67IRexbP0olNW72BzP
+         eK6GFUs6VugCdsFORA6M8EBovW78PvpgdAvfNre8Gwew2WbXsikOWmOEz+uzd58jVTDe
+         z6fw==
+X-Gm-Message-State: AOAM533e2ozS7SpZgsteoOmQSxY7Rj4dgdCevwU2IAhIIkOoAhJbKF2K
+        kMHDQmXOr9mcp8AaH+IKhYw=
+X-Google-Smtp-Source: ABdhPJwD1h5ZLQfjouy+Har5VJ1CdOVn0wSHC2eyvc6BxrXgzdx3pZ4or7NCmW8xq5suv9Nkp0RSqQ==
+X-Received: by 2002:a17:902:eb54:b029:da:29d7:cffd with SMTP id i20-20020a170902eb54b02900da29d7cffdmr29067032pli.28.1608055959225;
+        Tue, 15 Dec 2020 10:12:39 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id p15sm25273822pgi.40.2020.12.15.10.12.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 10:12:38 -0800 (PST)
+Date:   Tue, 15 Dec 2020 10:12:36 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Roy Im <roy.im.opensource@diasemi.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: da7280 - fix missing error test
+Message-ID: <X9j8lGFgijzHyYZZ@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201215115746.3552e873.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-15_12:2020-12-15,2020-12-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 phishscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0
- malwarescore=0 clxscore=1011 adultscore=0 bulkscore=0 mlxlogscore=999
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012150118
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+An "if" testing for error condition has accidentally been dropped from
+the code.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: cd3f609823a5 ("Input: new da7280 haptic driver")
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ drivers/input/misc/da7280.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/input/misc/da7280.c b/drivers/input/misc/da7280.c
+index 37568b00873d..2f698a8c1d65 100644
+--- a/drivers/input/misc/da7280.c
++++ b/drivers/input/misc/da7280.c
+@@ -863,6 +863,7 @@ static void da7280_parse_properties(struct device *dev,
+ 		gpi_str3[7] = '0' + i;
+ 		haptics->gpi_ctl[i].polarity = 0;
+ 		error = device_property_read_string(dev, gpi_str3, &str);
++		if (!error)
+ 			haptics->gpi_ctl[i].polarity =
+ 				da7280_haptic_of_gpi_pol_str(dev, str);
+ 	}
+-- 
+2.29.2.684.gfbc64c5ab5-goog
 
 
-On 15.12.20 11:57, Halil Pasic wrote:
-> On Mon, 14 Dec 2020 11:56:17 -0500
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-> 
->> The vfio_ap device driver registers a group notifier with VFIO when the
->> file descriptor for a VFIO mediated device for a KVM guest is opened to
->> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
->> event). When the KVM pointer is set, the vfio_ap driver takes the
->> following actions:
->> 1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
->>    of the mediated device.
->> 2. Calls the kvm_get_kvm() function to increment its reference counter.
->> 3. Sets the function pointer to the function that handles interception of
->>    the instruction that enables/disables interrupt processing.
->> 4. Sets the masks in the KVM guest's CRYCB to pass AP resources through to
->>    the guest.
->>
->> In order to avoid memory leaks, when the notifier is called to receive
->> notification that the KVM pointer has been set to NULL, the vfio_ap device
->> driver should reverse the actions taken when the KVM pointer was set.
->>
->> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->> ---
->>  drivers/s390/crypto/vfio_ap_ops.c | 29 ++++++++++++++++++++---------
->>  1 file changed, 20 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
->> index e0bde8518745..cd22e85588e1 100644
->> --- a/drivers/s390/crypto/vfio_ap_ops.c
->> +++ b/drivers/s390/crypto/vfio_ap_ops.c
->> @@ -1037,8 +1037,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
->>  {
->>  	struct ap_matrix_mdev *m;
->>
->> -	mutex_lock(&matrix_dev->lock);
->> -
->>  	list_for_each_entry(m, &matrix_dev->mdev_list, node) {
->>  		if ((m != matrix_mdev) && (m->kvm == kvm)) {
->>  			mutex_unlock(&matrix_dev->lock);
->> @@ -1049,7 +1047,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
->>  	matrix_mdev->kvm = kvm;
->>  	kvm_get_kvm(kvm);
->>  	kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
->> -	mutex_unlock(&matrix_dev->lock);
->>
->>  	return 0;
->>  }
->> @@ -1083,35 +1080,49 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
->>  	return NOTIFY_DONE;
->>  }
->>
->> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
->> +{
->> +	kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
->> +	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-> 
-> 
-> This patch LGTM. The only concern I have with it is whether a
-> different cpu is guaranteed to observe the above assignment as
-> an atomic operation. I think we didn't finish this discussion
-> at v1, or did we?
-
-You mean just this assigment:
->> +	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-should either have the old or the new value, but not halve zero halve old?
-
-Normally this should be ok (and I would consider this a compiler bug if
-this is split into 2 32 bit zeroes) But if you really want to be sure then we
-can use WRITE_ONCE.
-I think we take this via the s390 tree? I can add the WRITE_ONCE when applying?
+-- 
+Dmitry
