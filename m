@@ -2,326 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10B02DB1D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 611B92DB1E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731184AbgLOQrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:47:41 -0500
-Received: from mail-eopbgr20074.outbound.protection.outlook.com ([40.107.2.74]:21124
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731124AbgLOQrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:47:17 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J4RhQTziVVhMWQUJTXnNcZVOAwLh92ixgpBde/b+wKb0ULJ1vjF37JC6BGZ7KJRA0s5oei4C8JTFfP2iZmr4ld96dd7HcXFrd3Tr5fFZ+VyfsuPdgW4NWt6hgnlbLyVlJh+tzf4tx4duMuWQCXd5/tytBUMrk5bP/SxqExSj+tiaWJIgTIjCqqNJzKud9iKCcZNOzCTtKIvoLolHSJWb6Fr+imnhw4cXc3X71MqBzzqdra9HapdNHf6Nbk7Eax9ctgHhaIxuYSGno2u/lrHNwJCNQPMDJANOlZhCy4iGpq4hdIP7UDoGcWgJqY4Tsg/OHhWYK6qRS2ti1MIsADqNIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xMRbpQD0LVMf6T7TrGvafn1q8NLPEbIyAAG44pHcTDk=;
- b=b2JkVvdJz/AgJ451vS4FBbuucrA8HFLRn7XDyZKHgk1qv7pnnKzj69gZ0W1VU1Ru7GDUJ+5kTs+C/2jU1XMUQlYT8qlCFqY7wdBrNJOgyAlgtWVB0IpTOjIqiTsB5F922+TO1fOBK57FO4SfWJGSvO0w4fvcqoke+PiA/m1QKxF+VjqkgvlM0fiNovSqEdMn7F8KClkrBPAqhqwtoi4J8oVFIJhMoRjBSecJhomoAaeVi0O+aO0RKsYtXkNqRlN3v5UYpII/n8fT0IEdDjf94S50o14KH59fyg41w4Mx2vy3bTdcuo2JFb0c1EdKsVfPKXoz23NzohDeXnKoqb2JKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xMRbpQD0LVMf6T7TrGvafn1q8NLPEbIyAAG44pHcTDk=;
- b=gQsqxxG2KgNDFf2atX344OaqJn2STyyT/09V2u7AOj8YwcaWfJKgItxhzoBmuGSVLIzGGcyK5saKX4ZxYBk1YV7Il+9bO3n/TsbC+37MTVMy0U7yjRT5fiikl3K3+VR0LKRQHlaljJpV/3JKZAc6IfQFZlHn9tRIwMVWNcppOcU=
-Authentication-Results: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
- by AM0PR04MB6963.eurprd04.prod.outlook.com (2603:10a6:208:18b::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.13; Tue, 15 Dec
- 2020 16:45:22 +0000
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::a891:518d:935c:30dd]) by AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::a891:518d:935c:30dd%6]) with mapi id 15.20.3654.020; Tue, 15 Dec 2020
- 16:45:21 +0000
-From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
-To:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>
-Cc:     linux.cj@gmail.com, Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [net-next PATCH v2 14/14] net: dpaa2-mac: Add ACPI support for DPAA2 MAC driver
-Date:   Tue, 15 Dec 2020 22:13:15 +0530
-Message-Id: <20201215164315.3666-15-calvin.johnson@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201215164315.3666-1-calvin.johnson@oss.nxp.com>
-References: <20201215164315.3666-1-calvin.johnson@oss.nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [14.142.151.118]
-X-ClientProxiedBy: SG2PR06CA0152.apcprd06.prod.outlook.com
- (2603:1096:1:1f::30) To AM0PR04MB5636.eurprd04.prod.outlook.com
- (2603:10a6:208:130::22)
+        id S1729453AbgLOQvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:51:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgLOQrC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 11:47:02 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CA2C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 08:46:21 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id g20so28677985ejb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 08:46:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Nw8qJctXIvsPyQDncdd+p7Hbk4k+GUcjFuipoh6BEs4=;
+        b=0R0b5iOpq46F/ltkqP5QUZtIM2vKLRP3r8+5Fw6C7tXoQFcZhivRhlMfBDF2uIfHR9
+         ciTSidoRlUqKtNVf7Y1vOFeoushrB+SrI9Oqph290PQicm2d8z2Yu8bTMfyk3RtIA5uE
+         qaw8fswZRGA3gEnZjS0BAuIziHW4h5sh46iKfUfI5ORZiCWvqbjRoNVEs7OQ3CFLcV1Z
+         pAAJUIW02QC0RyvGMtvFk87LTsPrAb9InBUIOkgqr71ZEARJ36hjGS+HsihZb+KMAM6p
+         d3YMtLURwEHhU7ThUVpwsqnyYI+PTz7YSICpImA5XGYMMvm0X1CC//XOh0kctyLNO2Yq
+         wCDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Nw8qJctXIvsPyQDncdd+p7Hbk4k+GUcjFuipoh6BEs4=;
+        b=nqaCL/kYAf+PtWwN5VmNzXmiGtyt+UYzlxwbCpzK/xJ9DBVs9eYEiyxj4iv5tU90fV
+         PrFfSw6Eyo7FUp5D+iAzXqwizi+g2mOBv6s6FnVcHiIYFZMyutMcgQPV/IfqZi7Zc4Gl
+         4viA5aEddLgfWV5gA/sD3EgYDI+f0GNiOjJn7DU5+2DYfCLU8RiM5KHJGxnaa8RM22xz
+         bWTRmI1P425xM1BZINaeFPM3Ga7e/jwJViyZyo4urJA0o01zf7EF/p7cp4yrffVDiZ4K
+         U4icfwPrimPOS2hNnxUEiPsA5iXWfwR6ECFV/ABgO0XjG22lX4JxI+R6UQyTYRg9bSKf
+         nCRA==
+X-Gm-Message-State: AOAM5316W+H6kLF05K0JIcmDE/W0WpD1yo4/vhYkDTti68ePIbEEHEdu
+        VR+uxzUOkBrX4Liz6JeCmaRpig==
+X-Google-Smtp-Source: ABdhPJzXBrdogiiXI+Aubbw34P37afkwkySvpYIYVZdjbxX3UHqiyoshLsRXNbgF83diYQGkkMczJQ==
+X-Received: by 2002:a17:906:27c2:: with SMTP id k2mr6901718ejc.211.1608050780506;
+        Tue, 15 Dec 2020 08:46:20 -0800 (PST)
+Received: from localhost ([2620:10d:c093:400::5:d6dd])
+        by smtp.gmail.com with ESMTPSA id e3sm1764803ejq.96.2020.12.15.08.46.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 08:46:19 -0800 (PST)
+Date:   Tue, 15 Dec 2020 17:44:12 +0100
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc:     Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 6/9] mm: vmscan: use per memcg nr_deferred of shrinker
+Message-ID: <20201215164412.GA385334@cmpxchg.org>
+References: <20201202182725.265020-1-shy828301@gmail.com>
+ <20201202182725.265020-7-shy828301@gmail.com>
+ <49464720-675d-5144-043c-eba6852a9c06@virtuozzo.com>
+ <CAHbLzkoiTmNLXj1Tx0-PggEdcYQ6nj71DUX3ya6mj3VNZ5ho4A@mail.gmail.com>
+ <d5454f6d-6739-3252-fba0-ac39c6c526c4@virtuozzo.com>
+ <CAHbLzkqu5X-kFKt1vWYc8U=fK=NBWauP-=Kz+A9=GUuQ32+gAQ@mail.gmail.com>
+ <20201210151331.GD264602@cmpxchg.org>
+ <6ffd6aa1-2c55-f4d3-a60a-56786d40531a@virtuozzo.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR06CA0152.apcprd06.prod.outlook.com (2603:1096:1:1f::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Tue, 15 Dec 2020 16:45:16 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d06ff694-e5f6-49be-72c4-08d8a118d05d
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6963:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB6963F7AAD14BEBA0282638FED2C60@AM0PR04MB6963.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1850;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: elnx3THHH3+kCoIf8Q6bUaXuGyQ0ubTUroN5ZKf2RGU3qVzna2xy0/UuFaFUyROMNGc5HV3xyGBy5RYP2FKd9hTCYFFC31hWE/FCO+K110MReXx7cI9e6XpcCT0Xpayd2FfOo68HPnjTFW+XRO+ADZu6nacTpGEZXaBfMIBIfTXb2mQIP5mRQcJtdSo/UAIMEbdTCrESfBoJ0uXnUakrPw9+LdwbILrDhCmmsI6W7b8mK12gz9RCWheRDfv6M25cp17XZ3seJo3faTqImaznRb4VPJGFYAZ+gsT9kBvtJa3J8oLQAN0pVVBnhKjAlQcSzB7V79JcCxk/bT45OmJ5Wyh0mMPjwmUvsFz5pWpxPqr1KQFdl4pZGPSbhC+DJ9BH3yYdDMjIjdLzZC46sBs7Fw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(8936002)(4326008)(6506007)(498600001)(83380400001)(66946007)(921005)(2616005)(956004)(86362001)(52116002)(16526019)(8676002)(2906002)(26005)(6512007)(44832011)(7416002)(186003)(5660300002)(55236004)(1006002)(1076003)(66476007)(110136005)(6486002)(66556008)(110426006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?y3vF0z4qAYuJ2t3Ox2z83vYXumT2Yja6sh8CVKoIj+GKOjEL6C4nI94jzMkm?=
- =?us-ascii?Q?FqkRWyRhIsfs9IPSXQg6kK4B8pwin8goXKhoxuT3kOi10egVagdeO4jMz8F5?=
- =?us-ascii?Q?4fy7v/ngSY/ufhhfVfJZgYKkAqkUR/jGO2vEGaW4MmO38/rnoM9BCDJXgcas?=
- =?us-ascii?Q?5o3F0jTxQouQJMPZ1ikW3tTC1bvtiyxdakDwLgvmWZn7g/qd4oFqAjUbM5PS?=
- =?us-ascii?Q?ASY3HyShJ4oRDhcBQzqLbz3SbvSi4qsBBX1lBzoWIqqNTAxh4xmLUDrQ3zPx?=
- =?us-ascii?Q?BZj3SI9XiDKDF7EwooC0NdgTNfijM0IDLyG0G8Sn0oYaPipTjWTXri4oZqUI?=
- =?us-ascii?Q?rXSPbNIAg0BRO09jv1BCU55TsVQ0VygK1mX1NSdd7bA5GuUZPiLOx1AdZ07K?=
- =?us-ascii?Q?ZRhjLURm0W/2U0dMqaepifPt9hvdtBMW+bPTueuyJ4oey1VqXYPf7KSGhwpk?=
- =?us-ascii?Q?AdTreY9XG+x89HoWI7gTCToYZL0yR8zFr8rnqrJnpfOBQKLbEpuJmPi4T/Ko?=
- =?us-ascii?Q?olOCz2+t2Zf4GUy2Nf38k0+/pX9gVlgiXsmLHcqDWmHiyGR21PO637L7wOQb?=
- =?us-ascii?Q?lVrZcDanFiKxAkm0DH3c2JFJejc0qzNVSYwr0VCVneOMtWuoKIrzrz59sYwg?=
- =?us-ascii?Q?MU6k9ZF4MBu9EUrSppvuPs+vxzgFkm3fj3CvVEZeUUjA9wnmRdpei/lxeD4y?=
- =?us-ascii?Q?j83GPlOsmiuhXLoud2/J0jrotCbHieQErFvZXxxtxWZZ4SqQs/XIp4LP6pNA?=
- =?us-ascii?Q?VERwvgYpupubjvYtv/cUgFK79iKx+htquSyD96m4jJUDX64use/kJty079QF?=
- =?us-ascii?Q?/yNv8rkuTU2oI4VFrrnC93zcASOKkO3180Ex1DOUbowyj8vb9v8usjpEdTKe?=
- =?us-ascii?Q?63ZoYGE6ZcdJghaBlVB7elrZ/GkL5K69UgcFs7Wd9X/UmXoitK2xUdL9qASh?=
- =?us-ascii?Q?fqFSASFSjJY0F0OTJAHr04QOEppg/hoxPkTPu6bwuSNZsJl9oEn8aOy6iPeM?=
- =?us-ascii?Q?T6nN?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2020 16:45:21.9287
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: d06ff694-e5f6-49be-72c4-08d8a118d05d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: u+agCN1c9BAEgW5I4ygxpXc8o7GDd+ys6xTqx/1oPQDtUTJv+xcAIw7LtL3qxlSv8GWtZ2sr76JGp8RShcPdxg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6963
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6ffd6aa1-2c55-f4d3-a60a-56786d40531a@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify dpaa2_mac_connect() to support ACPI along with DT.
-Modify dpaa2_mac_get_node() to get the dpmac fwnode from either
-DT or ACPI.
+On Thu, Dec 10, 2020 at 06:17:54PM +0300, Kirill Tkhai wrote:
+> On 10.12.2020 18:13, Johannes Weiner wrote:
+> > On Wed, Dec 09, 2020 at 09:32:37AM -0800, Yang Shi wrote:
+> >> On Wed, Dec 9, 2020 at 7:42 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+> >>>
+> >>> On 08.12.2020 20:13, Yang Shi wrote:
+> >>>> On Thu, Dec 3, 2020 at 3:40 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+> >>>>>
+> >>>>> On 02.12.2020 21:27, Yang Shi wrote:
+> >>>>>> Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
+> >>>>>> will be used in the following cases:
+> >>>>>>     1. Non memcg aware shrinkers
+> >>>>>>     2. !CONFIG_MEMCG
+> >>>>>>     3. memcg is disabled by boot parameter
+> >>>>>>
+> >>>>>> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> >>>>>> ---
+> >>>>>>  mm/vmscan.c | 88 +++++++++++++++++++++++++++++++++++++++++++++++++----
+> >>>>>>  1 file changed, 82 insertions(+), 6 deletions(-)
+> >>>>>>
+> >>>>>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> >>>>>> index cba0bc8d4661..d569fdcaba79 100644
+> >>>>>> --- a/mm/vmscan.c
+> >>>>>> +++ b/mm/vmscan.c
+> >>>>>> @@ -203,6 +203,12 @@ static DECLARE_RWSEM(shrinker_rwsem);
+> >>>>>>  static DEFINE_IDR(shrinker_idr);
+> >>>>>>  static int shrinker_nr_max;
+> >>>>>>
+> >>>>>> +static inline bool is_deferred_memcg_aware(struct shrinker *shrinker)
+> >>>>>> +{
+> >>>>>> +     return (shrinker->flags & SHRINKER_MEMCG_AWARE) &&
+> >>>>>> +             !mem_cgroup_disabled();
+> >>>>>> +}
+> >>>>>> +
+> >>>>>>  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+> >>>>>>  {
+> >>>>>>       int id, ret = -ENOMEM;
+> >>>>>> @@ -271,7 +277,58 @@ static bool writeback_throttling_sane(struct scan_control *sc)
+> >>>>>>  #endif
+> >>>>>>       return false;
+> >>>>>>  }
+> >>>>>> +
+> >>>>>> +static inline long count_nr_deferred(struct shrinker *shrinker,
+> >>>>>> +                                  struct shrink_control *sc)
+> >>>>>> +{
+> >>>>>> +     bool per_memcg_deferred = is_deferred_memcg_aware(shrinker) && sc->memcg;
+> >>>>>> +     struct memcg_shrinker_deferred *deferred;
+> >>>>>> +     struct mem_cgroup *memcg = sc->memcg;
+> >>>>>> +     int nid = sc->nid;
+> >>>>>> +     int id = shrinker->id;
+> >>>>>> +     long nr;
+> >>>>>> +
+> >>>>>> +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+> >>>>>> +             nid = 0;
+> >>>>>> +
+> >>>>>> +     if (per_memcg_deferred) {
+> >>>>>> +             deferred = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_deferred,
+> >>>>>> +                                                  true);
+> >>>>>
+> >>>>> My comment is about both 5/9 and 6/9 patches.
+> >>>>
+> >>>> Sorry for the late reply, I don't know why Gmail filtered this out to spam.
+> >>>>
+> >>>>>
+> >>>>> shrink_slab_memcg() races with mem_cgroup_css_online(). A visibility of CSS_ONLINE flag
+> >>>>> in shrink_slab_memcg()->mem_cgroup_online() does not guarantee that you will see
+> >>>>> memcg->nodeinfo[nid]->shrinker_deferred != NULL in count_nr_deferred(). This may occur
+> >>>>> because of processor reordering on !x86 (there is no a common lock or memory barriers).
+> >>>>>
+> >>>>> Regarding to shrinker_map this is not a problem due to map check in shrink_slab_memcg().
+> >>>>> The map can't be NULL there.
+> >>>>>
+> >>>>> Regarding to shrinker_deferred you should prove either this is not a problem too,
+> >>>>> or to add proper synchronization (maybe, based on barriers) or to add some similar check
+> >>>>> (maybe, in shrink_slab_memcg() too).
+> >>>>
+> >>>> It seems shrink_slab_memcg() might see shrinker_deferred as NULL
+> >>>> either due to the same reason. I don't think there is a guarantee it
+> >>>> won't happen.
+> >>>>
+> >>>> We just need guarantee CSS_ONLINE is seen after shrinker_maps and
+> >>>> shrinker_deferred are allocated, so I'm supposed barriers before
+> >>>> "css->flags |= CSS_ONLINE" should work.
+> >>>>
+> >>>> So the below patch may be ok:
+> >>>>
+> >>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> >>>> index df128cab900f..9f7fb0450d69 100644
+> >>>> --- a/mm/memcontrol.c
+> >>>> +++ b/mm/memcontrol.c
+> >>>> @@ -5539,6 +5539,12 @@ static int mem_cgroup_css_online(struct
+> >>>> cgroup_subsys_state *css)
+> >>>>                 return -ENOMEM;
+> >>>>         }
+> >>>>
+> >>>>
+> >>>> +       /*
+> >>>> +        * Barrier for CSS_ONLINE, so that shrink_slab_memcg() sees
+> >>>> shirnker_maps
+> >>>> +        * and shrinker_deferred before CSS_ONLINE.
+> >>>> +        */
+> >>>> +       smp_mb();
+> >>>> +
+> >>>>         /* Online state pins memcg ID, memcg ID pins CSS */
+> >>>>         refcount_set(&memcg->id.ref, 1);
+> >>>>         css_get(css);
+> >>>
+> >>> smp barriers synchronize data access from different cpus. They should go in a pair.
+> >>> In case of you add the smp barrier into mem_cgroup_css_online(), we should also
+> >>> add one more smp barrier in another place, which we want to synchonize with this.
+> >>> Also, every place should contain a comment referring to its pair: "Pairs with...".
+> >>
+> >> Thanks, I think you are correct. Looked into it further, it seems the
+> >> race pattern looks like:
+> >>
+> >> CPU A                                                                  CPU B
+> >> store shrinker_maps pointer                      load CSS_ONLINE
+> >> store CSS_ONLINE                                   load shrinker_maps pointer
+> >>
+> >> By checking the memory-barriers document, it seems we need write
+> >> barrier/read barrier pair as below:
+> >>
+> >> CPU A                                                                  CPU B
+> >> store shrinker_maps pointer                       load CSS_ONLINE
+> >> <write barrier>                                             <read barrier>
+> >> store CSS_ONLINE                                    load shrinker_maps pointer
+> >>
+> >>
+> >> So, the patch should look like:
+> >>
+> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> >> index df128cab900f..489c0a84f82b 100644
+> >> --- a/mm/memcontrol.c
+> >> +++ b/mm/memcontrol.c
+> >> @@ -5539,6 +5539,13 @@ static int mem_cgroup_css_online(struct
+> >> cgroup_subsys_state *css)
+> >>                 return -ENOMEM;
+> >>         }
+> >>
+> >> +       /*
+> >> +        * Barrier for CSS_ONLINE, so that shrink_slab_memcg() sees
+> >> shirnker_maps
+> >> +        * and shrinker_deferred before CSS_ONLINE. It pairs with the
+> >> read barrier
+> >> +        * in shrink_slab_memcg().
+> >> +        */
+> >> +       smp_wmb();
+> > 
+> > Is there a reason why the shrinker allocations aren't done in
+> > .css_alloc()? That would take care of all necessary ordering:
+> 
+> The reason is that allocations have to be made in a place, where
+> mem-cgroup_iter() can't miss it, since memcg_expand_shrinker_maps()
+> shouldn't miss allocated shrinker maps.
 
-Replace of_get_phy_mode with fwnode_get_phy_mode to get
-phy-mode for a dpmac_node.
+I see, because we could have this:
 
-Use helper function phylink_fwnode_phy_connect() to find phy_dev and
-connect to mac->phylink.
+.css_alloc()
+  memcg_alloc_shrinker_maps()
+    down_read(&shrinker_sem)
+    map = alloc(shrinker_nr_max * sizeof(long));
+    rcu_assign_pointer(memcg->...->shrinker_map = map);
+    up_read(&shrinker_sem);
+                                                            register_shrinker()
+                                                              down_write(&shrinker_sem)
+                                                              shrinker_nr_max = id + 1;
+                                                              memcg_expand_shrinker_maps()
+                                                                for_each_mem_cgroup()
+                                                                  realloc
+                                                              up_write(&shrinker_sem)
+  list_add_tail_rcu(&css->sibling, &parent->children);
 
-Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
----
+  /* boom: missed new shrinker, map too small */
 
-Changes in v2:
-- Refactor OF functions to use fwnode functions
-
- .../net/ethernet/freescale/dpaa2/dpaa2-mac.c  | 86 +++++++++++--------
- 1 file changed, 50 insertions(+), 36 deletions(-)
-
-diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c
-index 828c177df03d..c242d5c2a9ed 100644
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c
-@@ -1,6 +1,9 @@
- // SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
- /* Copyright 2019 NXP */
- 
-+#include <linux/acpi.h>
-+#include <linux/property.h>
-+
- #include "dpaa2-eth.h"
- #include "dpaa2-mac.h"
- 
-@@ -34,39 +37,47 @@ static int phy_mode(enum dpmac_eth_if eth_if, phy_interface_t *if_mode)
- 	return 0;
- }
- 
--/* Caller must call of_node_put on the returned value */
--static struct device_node *dpaa2_mac_get_node(u16 dpmac_id)
-+static struct fwnode_handle *dpaa2_mac_get_node(struct device *dev,
-+						u16 dpmac_id)
- {
--	struct device_node *dpmacs, *dpmac = NULL;
--	u32 id;
-+	struct device_node *dpmacs = NULL;
-+	struct fwnode_handle *parent, *child  = NULL;
- 	int err;
-+	u32 id;
- 
--	dpmacs = of_find_node_by_name(NULL, "dpmacs");
--	if (!dpmacs)
--		return NULL;
-+	if (is_of_node(dev->parent->fwnode)) {
-+		dpmacs = of_find_node_by_name(NULL, "dpmacs");
-+		if (!dpmacs)
-+			return NULL;
-+		parent = of_fwnode_handle(dpmacs);
-+	} else if (is_acpi_node(dev->parent->fwnode)) {
-+		parent = dev->parent->fwnode;
-+	}
- 
--	while ((dpmac = of_get_next_child(dpmacs, dpmac)) != NULL) {
--		err = of_property_read_u32(dpmac, "reg", &id);
--		if (err)
-+	fwnode_for_each_child_node(parent, child) {
-+		err = fwnode_get_id(child, &id);
-+		if (err) {
- 			continue;
--		if (id == dpmac_id)
--			break;
-+		} else if (id == dpmac_id) {
-+			if (is_of_node(dev->parent->fwnode))
-+				of_node_put(dpmacs);
-+			return child;
-+		}
- 	}
--
--	of_node_put(dpmacs);
--
--	return dpmac;
-+	if (is_of_node(dev->parent->fwnode))
-+		of_node_put(dpmacs);
-+	return NULL;
- }
- 
--static int dpaa2_mac_get_if_mode(struct device_node *node,
-+static int dpaa2_mac_get_if_mode(struct fwnode_handle *dpmac_node,
- 				 struct dpmac_attr attr)
- {
- 	phy_interface_t if_mode;
- 	int err;
- 
--	err = of_get_phy_mode(node, &if_mode);
--	if (!err)
--		return if_mode;
-+	err = fwnode_get_phy_mode(dpmac_node);
-+	if (err > 0)
-+		return err;
- 
- 	err = phy_mode(attr.eth_if, &if_mode);
- 	if (!err)
-@@ -255,26 +266,27 @@ bool dpaa2_mac_is_type_fixed(struct fsl_mc_device *dpmac_dev,
- }
- 
- static int dpaa2_pcs_create(struct dpaa2_mac *mac,
--			    struct device_node *dpmac_node, int id)
-+			    struct fwnode_handle *dpmac_node,
-+			    int id)
- {
- 	struct mdio_device *mdiodev;
--	struct device_node *node;
-+	struct fwnode_handle *node;
- 
--	node = of_parse_phandle(dpmac_node, "pcs-handle", 0);
--	if (!node) {
-+	node = fwnode_find_reference(dpmac_node, "pcs-handle", 0);
-+	if (IS_ERR(node)) {
- 		/* do not error out on old DTS files */
- 		netdev_warn(mac->net_dev, "pcs-handle node not found\n");
- 		return 0;
- 	}
- 
--	if (!of_device_is_available(node)) {
-+	if (!of_device_is_available(to_of_node(node))) {
- 		netdev_err(mac->net_dev, "pcs-handle node not available\n");
--		of_node_put(node);
-+		of_node_put(to_of_node(node));
- 		return -ENODEV;
- 	}
- 
--	mdiodev = of_mdio_find_device(node);
--	of_node_put(node);
-+	mdiodev = fwnode_mdio_find_device(node);
-+	fwnode_handle_put(node);
- 	if (!mdiodev)
- 		return -EPROBE_DEFER;
- 
-@@ -304,7 +316,7 @@ int dpaa2_mac_connect(struct dpaa2_mac *mac)
- {
- 	struct fsl_mc_device *dpmac_dev = mac->mc_dev;
- 	struct net_device *net_dev = mac->net_dev;
--	struct device_node *dpmac_node;
-+	struct fwnode_handle *dpmac_node = NULL;
- 	struct phylink *phylink;
- 	struct dpmac_attr attr;
- 	int err;
-@@ -324,7 +336,7 @@ int dpaa2_mac_connect(struct dpaa2_mac *mac)
- 
- 	mac->if_link_type = attr.link_type;
- 
--	dpmac_node = dpaa2_mac_get_node(attr.id);
-+	dpmac_node = dpaa2_mac_get_node(&mac->mc_dev->dev, attr.id);
- 	if (!dpmac_node) {
- 		netdev_err(net_dev, "No dpmac@%d node found.\n", attr.id);
- 		err = -ENODEV;
-@@ -342,7 +354,7 @@ int dpaa2_mac_connect(struct dpaa2_mac *mac)
- 	 * error out if the interface mode requests them and there is no PHY
- 	 * to act upon them
- 	 */
--	if (of_phy_is_fixed_link(dpmac_node) &&
-+	if (of_phy_is_fixed_link(to_of_node(dpmac_node)) &&
- 	    (mac->if_mode == PHY_INTERFACE_MODE_RGMII_ID ||
- 	     mac->if_mode == PHY_INTERFACE_MODE_RGMII_RXID ||
- 	     mac->if_mode == PHY_INTERFACE_MODE_RGMII_TXID)) {
-@@ -362,7 +374,7 @@ int dpaa2_mac_connect(struct dpaa2_mac *mac)
- 	mac->phylink_config.type = PHYLINK_NETDEV;
- 
- 	phylink = phylink_create(&mac->phylink_config,
--				 of_fwnode_handle(dpmac_node), mac->if_mode,
-+				 dpmac_node, mac->if_mode,
- 				 &dpaa2_mac_phylink_ops);
- 	if (IS_ERR(phylink)) {
- 		err = PTR_ERR(phylink);
-@@ -373,13 +385,14 @@ int dpaa2_mac_connect(struct dpaa2_mac *mac)
- 	if (mac->pcs)
- 		phylink_set_pcs(mac->phylink, &mac->pcs->pcs);
- 
--	err = phylink_of_phy_connect(mac->phylink, dpmac_node, 0);
-+	err = phylink_fwnode_phy_connect(mac->phylink, dpmac_node, 0);
- 	if (err) {
--		netdev_err(net_dev, "phylink_of_phy_connect() = %d\n", err);
-+		netdev_err(net_dev, "phylink_fwnode_phy_connect() = %d\n", err);
- 		goto err_phylink_destroy;
- 	}
- 
--	of_node_put(dpmac_node);
-+	if (is_of_node(dpmac_node))
-+		fwnode_handle_put(dpmac_node);
- 
- 	return 0;
- 
-@@ -388,7 +401,8 @@ int dpaa2_mac_connect(struct dpaa2_mac *mac)
- err_pcs_destroy:
- 	dpaa2_pcs_destroy(mac);
- err_put_node:
--	of_node_put(dpmac_node);
-+	if (is_of_node(dpmac_node))
-+		fwnode_handle_put(dpmac_node);
- err_close_dpmac:
- 	dpmac_close(mac->mc_io, 0, dpmac_dev->mc_handle);
- 	return err;
--- 
-2.17.1
-
+Thanks for the clarification.
