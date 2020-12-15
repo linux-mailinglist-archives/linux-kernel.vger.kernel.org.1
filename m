@@ -2,119 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6352A2DADE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16BC72DADE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727200AbgLONTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:19:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725890AbgLONTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:19:18 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D3D722225;
-        Tue, 15 Dec 2020 13:18:37 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kpADr-001URY-9d; Tue, 15 Dec 2020 13:18:35 +0000
+        id S1727227AbgLONVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:21:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726959AbgLONU4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 08:20:56 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D561BC06138C;
+        Tue, 15 Dec 2020 05:20:15 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id w13so39226746lfd.5;
+        Tue, 15 Dec 2020 05:20:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sOTNS1adPzkjd18NAGlnFfcMu9FiOR4jPybdIj8V52A=;
+        b=QzoagYajrS7uM4QhWkUMg3UPeK94F6r3Th5zNpGdydo4CaXBDGSJhKeHrNRbulKU5U
+         QGMdGA1IbHo1GvDvu66sYVf9vCFWzIRMt1btwVSxH8asyuWDroPxhST2ZEPZ+/7xC8CN
+         puKi6KzGAhcrVWxNPIFOOWIm8Escv6IWSr7v1+nhoed1mE+sQZcbH+1hpVFD/5ee/dDN
+         ASKcf+QNR2kayArHG9qOKSNnrSqouxZL7CiX6HxRz8xYW5NrikF08r6iiQEekC1fllzs
+         n6D9R3SK6kiCY4Dfe2zbBGFAF8VKthnuNwc8ubEnm4jS/J86BW2OaRUPV0AfUGF5c5Gr
+         e5Jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sOTNS1adPzkjd18NAGlnFfcMu9FiOR4jPybdIj8V52A=;
+        b=SuCcKYZ92W4rvMWWQtNvWpg4n7bkUHUmEvvYvogkEQn7kILqVfTck1boawVyDYzlmv
+         eD1K2r+hGDLq4y2Ci8o3kQ6rqnRsPu+4N8qF8UKA4larS0lcIIUWEsvglLDH4scTLUKz
+         QDK9rIV+fJUuX+AqrzPafftM9Gx8l4xGZQaprN913S/Q8sbz450sMT76P3lnDhk4oYAQ
+         cjS9Cj03b0JzbnaQDt1UZfBAirQnwD5dEqR9ZUkWEle0/ciuudKOA4gjUDQaaWV1wcym
+         aD9TOozd1maa7TaGltMCN/R6fm6yY6s4HT1cgQmu4UdCrmW3stM3aighe4D+M1165P0t
+         eCpg==
+X-Gm-Message-State: AOAM5310Deg43YsJcDI18bYt/DbFGlhdl23KJXz8gCXJk7Qh2XTyIjI0
+        xZBOZaiJJfYvdF603gEjVVrBz9oeHlrWzYt+/1E=
+X-Google-Smtp-Source: ABdhPJzJp7Yq5xVPxVXkqKyZQAg2hSchnL13OBIdipOtaWfun3XG3Oodczt84lms0OlsIi0DkgpmkaPjkJlWdmXWt2I=
+X-Received: by 2002:a2e:bc05:: with SMTP id b5mr13202203ljf.444.1608038414254;
+ Tue, 15 Dec 2020 05:20:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 15 Dec 2020 13:18:35 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     "wangyanan (Y)" <wangyanan55@huawei.com>
-Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
-        zhukeqian1@huawei.com, yuzenghui@huawei.com,
-        jiangkunkun@huawei.com, wangjingyi11@huawei.com,
-        lushenming@huawei.com
-Subject: Re: [RFC PATCH] KVM: arm64: Add prejudgement for relaxing permissions
- only case in stage2 translation fault handler
-In-Reply-To: <2ab9323a-40a1-d223-f692-0a19207e16a9@huawei.com>
-References: <20201211080115.21460-1-wangyanan55@huawei.com>
- <20201211080115.21460-2-wangyanan55@huawei.com>
- <8d006755e5afce7e49b03993316c4fcc@kernel.org>
- <20201211100026.GA11352@willie-the-truck>
- <2ab9323a-40a1-d223-f692-0a19207e16a9@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <9a3bd48c4e69946bc4ade274ce2cc318@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: wangyanan55@huawei.com, will@kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, gshan@redhat.com, qperret@google.com, wanghaibin.wang@huawei.com, yezengruan@huawei.com, zhukeqian1@huawei.com, yuzenghui@huawei.com, jiangkunkun@huawei.com, wangjingyi11@huawei.com, lushenming@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201214225851.23342-1-adrien.grassein@gmail.com>
+ <20201215130622.GD4738@sirena.org.uk> <CABkfQAEAe0XGj16CkmH7xMNxgdQ+SRq0BYzvP+V5PdDqVbyAAw@mail.gmail.com>
+In-Reply-To: <CABkfQAEAe0XGj16CkmH7xMNxgdQ+SRq0BYzvP+V5PdDqVbyAAw@mail.gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 15 Dec 2020 10:20:02 -0300
+Message-ID: <CAOMZO5A_Gtwn=AFwJXf_wpC4k902Hg=tCMWpcFUGNWOg9me6_w@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] Add support of nxp pf8x00 regulator
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Troy Kisky <troy.kisky@boundarydevices.com>,
+        Gary Bisson <gary.bisson@boundarydevices.com>,
+        Jagan Teki <jagan@amarulasolutions.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yanan,
+Hi Adrien,
 
-On 2020-12-14 07:20, wangyanan (Y) wrote:
+On Tue, Dec 15, 2020 at 10:16 AM Adrien Grassein
+<adrien.grassein@gmail.com> wrote:
 
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c 
-> b/arch/arm64/kvm/hyp/pgtable.c
-> index a74a62283012..e3c6133567c4 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -45,6 +45,10 @@
-> 
->  #define KVM_PTE_LEAF_ATTR_HI_S2_XN     BIT(54)
-> 
-> +#define KVM_PTE_LEAF_ATTR_S2_PERMS (KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R | \
-> +        KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W | \
-> + KVM_PTE_LEAF_ATTR_HI_S2_XN)
-> +
->  struct kvm_pgtable_walk_data {
->         struct kvm_pgtable                   *pgt;
->         struct kvm_pgtable_walker       *walker;
-> @@ -473,8 +477,13 @@ static bool stage2_map_walker_try_leaf(u64 addr,
-> u64 end, u32 level,
-> 
->         new = kvm_init_valid_leaf_pte(phys, data->attr, level);
->         if (kvm_pte_valid(old)) {
-> -               /* Tolerate KVM recreating the exact same mapping. */
-> -               if (old == new)
-> +               /*
-> +                * Skip updating the PTE with break-before-make if we 
-> are trying
-> +                * to recreate the exact same mapping or only change 
-> the access
-> +                * permissions. Actually, change of permissions will be 
-> handled
-> +                * through the relax_perms path next time if necessary.
-> +                */
-> +               if (!((old ^ new) & (~KVM_PTE_LEAF_ATTR_S2_PERMS)))
->                         goto out;
-> 
->                 /* There's an existing different valid leaf entry, so 
-> perform
+> Could you please tell me where this driver was merged?
+> I checked the main kernel Linux and I can find out this one.
 
-I think there is a bit more work to do on this.
+It is in the linux-next tree:
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers?h=next-20201215&id=d3795d6321ecaa55d94dc24c3b1e3cce608aabd6
 
-One obvious issue is that we currently flag a page as dirty before 
-handling
-the fault. With an early exit, we end-up having spurious dirty pages.
+Regards,
 
-It's not a big deal, but I'd rather mark the page dirty after the 
-mapping
-or the permission update having been successful (at the moment, it 
-cannot
-fails).
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Fabio Estevam
