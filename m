@@ -2,1385 +2,1737 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFA42DB159
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B032DB168
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:30:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730981AbgLOQ0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:26:36 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:51286 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729805AbgLOQ0f (ORCPT
+        id S1730726AbgLOQ2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:28:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33300 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729543AbgLOQ1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:26:35 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFGJfuL039003;
-        Tue, 15 Dec 2020 16:23:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=RFgz5gdsfGSGfkvvXHo0wyCBpvOexkJuekCEDYd7CuA=;
- b=cTtm0CwCv69rInKfvJRijAqxICZWGSEFBL/dEaqFQoFZbMrKMeF+1fafdfvjZPi2hcwu
- g966y9HBpPH9t+oYfzdGDIhbP8DbgnAByMa4a+5jcR//yvI5GKQpw+7wRzPYeoeEAywC
- S5HuIMmkdaeDdMXyNh7lo6MbpKWJnlg1hP5o1kfuuhsEemkzVT3lhi4tdPT1Z/wa4IV0
- TPRn6ImFJSi9nfpBxNrWnHPyLZpt5UGOQvzK/kMtipnlc0m2iM54NVMc5+ttrrKZuBcM
- +Mt8k1toKg6TuzSUHhngQas6llUC0Zo7ekxSIzrOsY2DDd4nJZ8VSyR5EvLx8WOfF2ym Kg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 35ckcbbn36-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Dec 2020 16:23:45 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFGK9uu191760;
-        Tue, 15 Dec 2020 16:23:44 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 35d7swf7r0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Dec 2020 16:23:43 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BFGNZGt004047;
-        Tue, 15 Dec 2020 16:23:38 GMT
-Received: from [192.168.0.193] (/69.207.174.138)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Dec 2020 08:23:34 -0800
-Subject: Re: [PATCH -tip 23/32] sched: Add a per-thread core scheduling
- interface
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Tim Chen <tim.c.chen@intel.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-24-joel@joelfernandes.org>
- <20201202214717.GA27531@chyser-vm-1.appad1iad.osdevelopmeniad.oraclevcn.com>
- <20201206173418.GC201514@google.com>
- <20201209185203.GC6876@chyser-vm-1.appad1iad.osdevelopmeniad.oraclevcn.com>
- <X9e9dcLMrMJThZs+@google.com>
- <16a390e4-b44d-b0eb-1df6-6e56d78d009f@oracle.com>
- <20201214232541.GF201514@google.com>
-From:   chris hyser <chris.hyser@oracle.com>
-Message-ID: <388901d9-d464-fe66-5880-5af0a0ad2001@oracle.com>
-Date:   Tue, 15 Dec 2020 11:23:25 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Tue, 15 Dec 2020 11:27:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608049561;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=phJeP9gzHOom4d0Xxo+0F9PEfG5sl8vyCFrt7a63d10=;
+        b=WkhCupm1+2EnYWXvD863wOoI+Wa0On7rhPQsvc6WgyubDSD3hJTluwi0h5jLTY/IUzr9Nk
+        vO9inUCzSBvxj7CFI57PLqnJyuCtRpkO4UB9+M36kmER+IvbvJ0Mkus3l93pfc7wiZQ8pe
+        HsWyNSdq/5AiK0qvG20X9+CZ5BWHJ+I=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-DSW7CzJuNMOElK0ce4tT5A-1; Tue, 15 Dec 2020 11:25:48 -0500
+X-MC-Unique: DSW7CzJuNMOElK0ce4tT5A-1
+Received: by mail-ej1-f69.google.com with SMTP id u25so6222827ejf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 08:25:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=phJeP9gzHOom4d0Xxo+0F9PEfG5sl8vyCFrt7a63d10=;
+        b=NCUXiPR1yqEdq0aOnHMlkjio6aWBITTGR/AjCANnF6Pw5MEZe57ZkdRLptKyVVVDlF
+         s2AGcr3JgJRm1jWftZScUO3cZUOzwc4Pk4LDS46YZFJZ7d9zbrvCpVkdxdUPzvWPGP+t
+         muxXAxmrUyTzZvrmY2Wodg+owVe0or22vCLt1Ni4YdulJRZ1Vrq8zPNt/+jgkV14KBlh
+         2PphqZ7xFIp4MNGo13lCe3uFMbx5/3OBu2wb3wmRG6cX3cOgmMr4hxwPoz33rgOviUoH
+         8arH0LEWFre+W17bO3bcelE5r0cnm1/gR5dEqg8pdi+UWJoV+tNUKG8Qs3T3jq8MguiE
+         B4Vw==
+X-Gm-Message-State: AOAM533C6oCJiAmeYfaNnNS0OXSv5JVWFokuQAgrvk2CueDPGu8iilvz
+        ExZtAFYyrIe7gFjUHpFG20ydoZ3QiyzkuDnkSfq5jU+3v5Ms5jHGOfN449dh0riwWQzPJ4iD0nz
+        TSQ/1FWtpG5Z1jQORVFSEpn0r
+X-Received: by 2002:a17:906:d0c2:: with SMTP id bq2mr27556314ejb.1.1608049545868;
+        Tue, 15 Dec 2020 08:25:45 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyLspfCt04XOa1D+BpNQVP2wErDeOWPozZ5W7g2j8VvQ6neAelvpeim/Q0bk6o+Y1LF5M9ONw==
+X-Received: by 2002:a17:906:d0c2:: with SMTP id bq2mr27556183ejb.1.1608049544191;
+        Tue, 15 Dec 2020 08:25:44 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id e27sm1762627ejm.60.2020.12.15.08.25.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 08:25:43 -0800 (PST)
+Subject: Re: [PATCH v2 7/9] docs: driver-api: Add Surface Aggregator subsystem
+ documentation
+To:     Maximilian Luz <luzmaximilian@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        platform-driver-x86@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20201203212640.663931-1-luzmaximilian@gmail.com>
+ <20201203212640.663931-8-luzmaximilian@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a5702769-5c07-a8df-ea3b-1850403ccf39@redhat.com>
+Date:   Tue, 15 Dec 2020 17:25:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201214232541.GF201514@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201203212640.663931-8-luzmaximilian@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012150111
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 mlxscore=0 suspectscore=0 adultscore=0 phishscore=0
- malwarescore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012150111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/14/20 6:25 PM, Joel Fernandes wrote:
-> On Mon, Dec 14, 2020 at 02:44:09PM -0500, chris hyser wrote:
->> On 12/14/20 2:31 PM, Joel Fernandes wrote:
->>>> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
->>>> index cffdfab..50c31f3 100644
->>>> --- a/kernel/sched/debug.c
->>>> +++ b/kernel/sched/debug.c
->>>> @@ -1030,6 +1030,7 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
->>>>    #ifdef CONFIG_SCHED_CORE
->>>>    	__PS("core_cookie", p->core_cookie);
->>>> +	__PS("core_task_cookie", p->core_task_cookie);
->>>>    #endif
->>>
->>> Hmm, so the final cookie of the task is always p->core_cookie. This is what
->>> the scheduler uses. All other fields are ingredients to derive the final
->>> cookie value.
->>>
->>> I will drop this hunk from your overall diff, but let me know if you
->>> disagree!
->>
->>
->> No problem. That was there primarily for debugging.
+Hi,
+
+On 12/3/20 10:26 PM, Maximilian Luz wrote:
+> Add documentation for the Surface Aggregator subsystem and its client
+> drivers, giving an overview of the subsystem, its use-cases, its
+> internal structure and internal API, as well as its external API for
+> writing client drivers.
 > 
-> Ok. I squashed Josh's changes into this patch and several of my fixups. So
-> there'll be 3 patches:
-> 1. CGroup + prctl  (single patch as it is hell to split it)
-> 2. Documentation
-> 3. ksefltests
+> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+
+Thanks, patch looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
+
+> ---
 > 
-> Below is the diff of #1. I still have to squash in the stop_machine removal
-> and some more review changes. But other than that, please take a look and let
-> me know anything that's odd.  I will test further as well.
+> Changes in v1 (from RFC):
+>  - change SPDX identifier to GPL-2.0+ (was GPL-2.0-or-later)
+>  - fix typos
 > 
-> Also next series will only be interface as I want to see if I can get lucky
-> enough to have Peter look at it before he leaves for PTO next week.
-> For the other features, I will post different series as I prepare them. One
-> series for interface, and another for kernel protection / migration changes.
+> Changes in v2:
+>  - add architectural overview for core driver internals
+>  - reorder chapters
+>  - improve wording
 > 
-> ---8<-----------------------
+> ---
+>  Documentation/driver-api/index.rst            |   1 +
+>  .../surface_aggregator/client-api.rst         |  38 ++
+>  .../driver-api/surface_aggregator/client.rst  | 393 ++++++++++++
+>  .../surface_aggregator/clients/index.rst      |  10 +
+>  .../driver-api/surface_aggregator/index.rst   |  21 +
+>  .../surface_aggregator/internal-api.rst       |  67 ++
+>  .../surface_aggregator/internal.rst           | 577 ++++++++++++++++++
+>  .../surface_aggregator/overview.rst           |  77 +++
+>  .../driver-api/surface_aggregator/ssh.rst     | 344 +++++++++++
+>  MAINTAINERS                                   |   1 +
+>  10 files changed, 1529 insertions(+)
+>  create mode 100644 Documentation/driver-api/surface_aggregator/client-api.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/client.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/clients/index.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/index.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/internal-api.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/internal.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/overview.rst
+>  create mode 100644 Documentation/driver-api/surface_aggregator/ssh.rst
 > 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index a60868165590..73baca11d743 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -688,6 +688,8 @@ struct task_struct {
->   #ifdef CONFIG_SCHED_CORE
->   	struct rb_node			core_node;
->   	unsigned long			core_cookie;
-> +	unsigned long			core_task_cookie;
-> +	unsigned long			core_group_cookie;
->   	unsigned int			core_occupation;
->   #endif
->   
-> @@ -2081,11 +2083,15 @@ void sched_core_unsafe_enter(void);
->   void sched_core_unsafe_exit(void);
->   bool sched_core_wait_till_safe(unsigned long ti_check);
->   bool sched_core_kernel_protected(void);
-> +int sched_core_share_pid(unsigned long flags, pid_t pid);
-> +void sched_tsk_free(struct task_struct *tsk);
->   #else
->   #define sched_core_unsafe_enter(ignore) do { } while (0)
->   #define sched_core_unsafe_exit(ignore) do { } while (0)
->   #define sched_core_wait_till_safe(ignore) do { } while (0)
->   #define sched_core_kernel_protected(ignore) do { } while (0)
-> +#define sched_core_share_pid(flags, pid) do { } while (0)
-> +#define sched_tsk_free(tsk) do { } while (0)
->   #endif
->   
->   #endif
-> diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-> index c334e6a02e5f..3752006842e1 100644
-> --- a/include/uapi/linux/prctl.h
-> +++ b/include/uapi/linux/prctl.h
-> @@ -248,4 +248,10 @@ struct prctl_mm_map {
->   #define PR_SET_IO_FLUSHER		57
->   #define PR_GET_IO_FLUSHER		58
->   
-> +/* Request the scheduler to share a core */
-> +#define PR_SCHED_CORE_SHARE		59
-> +#define PR_SCHED_CORE_CLEAR		0  /* clear core_sched cookie of pid */
-> +#define PR_SCHED_CORE_SHARE_FROM	1  /* get core_sched cookie from pid */
-> +#define PR_SCHED_CORE_SHARE_TO		2  /* push core_sched cookie to pid */
-> +
->   #endif /* _LINUX_PRCTL_H */
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 7199d359690c..5468c93829c5 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -736,6 +736,7 @@ void __put_task_struct(struct task_struct *tsk)
->   	exit_creds(tsk);
->   	delayacct_tsk_free(tsk);
->   	put_signal_struct(tsk->signal);
-> +	sched_tsk_free(tsk);
->   
->   	if (!profile_handoff_task(tsk))
->   		free_task(tsk);
-> diff --git a/kernel/sched/Makefile b/kernel/sched/Makefile
-> index 5fc9c9b70862..c526c20adf9d 100644
-> --- a/kernel/sched/Makefile
-> +++ b/kernel/sched/Makefile
-> @@ -36,3 +36,4 @@ obj-$(CONFIG_CPU_FREQ_GOV_SCHEDUTIL) += cpufreq_schedutil.o
->   obj-$(CONFIG_MEMBARRIER) += membarrier.o
->   obj-$(CONFIG_CPU_ISOLATION) += isolation.o
->   obj-$(CONFIG_PSI) += psi.o
-> +obj-$(CONFIG_SCHED_CORE) += coretag.o
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 7f807a84cc30..80daca9c5930 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -157,7 +157,33 @@ static inline bool __sched_core_less(struct task_struct *a, struct task_struct *
->   	return false;
->   }
->   
-> -static void sched_core_enqueue(struct rq *rq, struct task_struct *p)
-> +static bool sched_core_empty(struct rq *rq)
-> +{
-> +	return RB_EMPTY_ROOT(&rq->core_tree);
-> +}
-> +
-> +static struct task_struct *sched_core_first(struct rq *rq)
-> +{
-> +	struct task_struct *task;
-> +
-> +	task = container_of(rb_first(&rq->core_tree), struct task_struct, core_node);
-> +	return task;
-> +}
-> +
-> +static void sched_core_flush(int cpu)
-> +{
-> +	struct rq *rq = cpu_rq(cpu);
-> +	struct task_struct *task;
-> +
-> +	while (!sched_core_empty(rq)) {
-> +		task = sched_core_first(rq);
-> +		rb_erase(&task->core_node, &rq->core_tree);
-> +		RB_CLEAR_NODE(&task->core_node);
-> +	}
-> +	rq->core->core_task_seq++;
-> +}
-> +
-> +void sched_core_enqueue(struct rq *rq, struct task_struct *p)
->   {
->   	struct rb_node *parent, **node;
->   	struct task_struct *node_task;
-> @@ -184,14 +210,15 @@ static void sched_core_enqueue(struct rq *rq, struct task_struct *p)
->   	rb_insert_color(&p->core_node, &rq->core_tree);
->   }
->   
-> -static void sched_core_dequeue(struct rq *rq, struct task_struct *p)
-> +void sched_core_dequeue(struct rq *rq, struct task_struct *p)
->   {
->   	rq->core->core_task_seq++;
->   
-> -	if (!p->core_cookie)
-> +	if (!sched_core_enqueued(p))
->   		return;
->   
->   	rb_erase(&p->core_node, &rq->core_tree);
-> +	RB_CLEAR_NODE(&p->core_node);
->   }
->   
->   /*
-> @@ -255,8 +282,24 @@ static int __sched_core_stopper(void *data)
->   	bool enabled = !!(unsigned long)data;
->   	int cpu;
->   
-> -	for_each_possible_cpu(cpu)
-> -		cpu_rq(cpu)->core_enabled = enabled;
-> +	for_each_possible_cpu(cpu) {
-> +		struct rq *rq = cpu_rq(cpu);
-> +
-> +		WARN_ON_ONCE(enabled == rq->core_enabled);
-> +
-> +		if (!enabled || (enabled && cpumask_weight(cpu_smt_mask(cpu)) >= 2)) {
-> +			/*
-> +			 * All active and migrating tasks will have already
-> +			 * been removed from core queue when we clear the
-> +			 * cgroup tags. However, dying tasks could still be
-> +			 * left in core queue. Flush them here.
-> +			 */
-> +			if (!enabled)
-> +				sched_core_flush(cpu);
-> +
-> +			rq->core_enabled = enabled;
-> +		}
-> +	}
->   
->   	return 0;
->   }
-> @@ -266,7 +309,11 @@ static int sched_core_count;
->   
->   static void __sched_core_enable(void)
->   {
-> -	// XXX verify there are no cookie tasks (yet)
-> +	int cpu;
-> +
-> +	/* verify there are no cookie tasks (yet) */
-> +	for_each_online_cpu(cpu)
-> +		BUG_ON(!sched_core_empty(cpu_rq(cpu)));
->   
->   	static_branch_enable(&__sched_core_enabled);
->   	stop_machine(__sched_core_stopper, (void *)true, NULL);
-> @@ -274,8 +321,6 @@ static void __sched_core_enable(void)
->   
->   static void __sched_core_disable(void)
->   {
-> -	// XXX verify there are no cookie tasks (left)
-> -
->   	stop_machine(__sched_core_stopper, (void *)false, NULL);
->   	static_branch_disable(&__sched_core_enabled);
->   }
-> @@ -295,12 +340,6 @@ void sched_core_put(void)
->   		__sched_core_disable();
->   	mutex_unlock(&sched_core_mutex);
->   }
-> -
-> -#else /* !CONFIG_SCHED_CORE */
-> -
-> -static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
-> -static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
-> -
->   #endif /* CONFIG_SCHED_CORE */
->   
->   /*
-> @@ -3779,6 +3818,9 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
->   	p->capture_control = NULL;
->   #endif
->   	init_numa_balancing(clone_flags, p);
-> +#ifdef CONFIG_SCHED_CORE
-> +	p->core_task_cookie = 0;
-> +#endif
->   #ifdef CONFIG_SMP
->   	p->wake_entry.u_flags = CSD_TYPE_TTWU;
->   	p->migration_pending = NULL;
-> @@ -3903,6 +3945,7 @@ static inline void init_schedstats(void) {}
->   int sched_fork(unsigned long clone_flags, struct task_struct *p)
->   {
->   	unsigned long flags;
-> +	int __maybe_unused ret;
->   
->   	__sched_fork(clone_flags, p);
->   	/*
-> @@ -3978,6 +4021,13 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
->   #ifdef CONFIG_SMP
->   	plist_node_init(&p->pushable_tasks, MAX_PRIO);
->   	RB_CLEAR_NODE(&p->pushable_dl_tasks);
-> +#endif
-> +#ifdef CONFIG_SCHED_CORE
-> +	RB_CLEAR_NODE(&p->core_node);
-> +
-> +	ret = sched_core_fork(p, clone_flags);
-> +	if (ret)
-> +		return ret;
->   #endif
->   	return 0;
->   }
-> @@ -7979,6 +8029,9 @@ void init_idle(struct task_struct *idle, int cpu)
->   #ifdef CONFIG_SMP
->   	sprintf(idle->comm, "%s/%d", INIT_TASK_COMM, cpu);
->   #endif
-> +#ifdef CONFIG_SCHED_CORE
-> +	RB_CLEAR_NODE(&idle->core_node);
-> +#endif
->   }
->   
->   #ifdef CONFIG_SMP
-> @@ -8983,6 +9036,9 @@ void sched_offline_group(struct task_group *tg)
->   	spin_unlock_irqrestore(&task_group_lock, flags);
->   }
->   
-> +void cpu_core_get_group_cookie(struct task_group *tg,
-> +			       unsigned long *group_cookie_ptr);
-> +
->   static void sched_change_group(struct task_struct *tsk, int type)
->   {
->   	struct task_group *tg;
-> @@ -8995,6 +9051,11 @@ static void sched_change_group(struct task_struct *tsk, int type)
->   	tg = container_of(task_css_check(tsk, cpu_cgrp_id, true),
->   			  struct task_group, css);
->   	tg = autogroup_task_group(tsk, tg);
-> +
-> +#ifdef CONFIG_SCHED_CORE
-> +	sched_core_change_group(tsk, tg);
-> +#endif
-> +
->   	tsk->sched_task_group = tg;
->   
->   #ifdef CONFIG_FAIR_GROUP_SCHED
-> @@ -9047,11 +9108,6 @@ void sched_move_task(struct task_struct *tsk)
->   	task_rq_unlock(rq, tsk, &rf);
->   }
->   
-> -static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
-> -{
-> -	return css ? container_of(css, struct task_group, css) : NULL;
-> -}
-> -
->   static struct cgroup_subsys_state *
->   cpu_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
->   {
-> @@ -9087,6 +9143,18 @@ static int cpu_cgroup_css_online(struct cgroup_subsys_state *css)
->   	return 0;
->   }
->   
-> +static void cpu_cgroup_css_offline(struct cgroup_subsys_state *css)
-> +{
-> +#ifdef CONFIG_SCHED_CORE
-> +	struct task_group *tg = css_tg(css);
-> +
-> +	if (tg->core_tagged) {
-> +		sched_core_put();
-> +		tg->core_tagged = 0;
-> +	}
-> +#endif
-> +}
-> +
->   static void cpu_cgroup_css_released(struct cgroup_subsys_state *css)
->   {
->   	struct task_group *tg = css_tg(css);
-> @@ -9688,6 +9756,22 @@ static struct cftype cpu_legacy_files[] = {
->   		.write_u64 = cpu_rt_period_write_uint,
->   	},
->   #endif
-> +#ifdef CONFIG_SCHED_CORE
-> +	{
-> +		.name = "core_tag",
-> +		.flags = CFTYPE_NOT_ON_ROOT,
-> +		.read_u64 = cpu_core_tag_read_u64,
-> +		.write_u64 = cpu_core_tag_write_u64,
-> +	},
-> +#ifdef CONFIG_SCHED_DEBUG
-> +	/* Read the group cookie. */
-> +	{
-> +		.name = "core_group_cookie",
-> +		.flags = CFTYPE_NOT_ON_ROOT,
-> +		.read_u64 = cpu_core_group_cookie_read_u64,
-> +	},
-> +#endif
-> +#endif
->   #ifdef CONFIG_UCLAMP_TASK_GROUP
->   	{
->   		.name = "uclamp.min",
-> @@ -9861,6 +9945,22 @@ static struct cftype cpu_files[] = {
->   		.write_s64 = cpu_weight_nice_write_s64,
->   	},
->   #endif
-> +#ifdef CONFIG_SCHED_CORE
-> +	{
-> +		.name = "core_tag",
-> +		.flags = CFTYPE_NOT_ON_ROOT,
-> +		.read_u64 = cpu_core_tag_read_u64,
-> +		.write_u64 = cpu_core_tag_write_u64,
-> +	},
-> +#ifdef CONFIG_SCHED_DEBUG
-> +	/* Read the group cookie. */
-> +	{
-> +		.name = "core_group_cookie",
-> +		.flags = CFTYPE_NOT_ON_ROOT,
-> +		.read_u64 = cpu_core_group_cookie_read_u64,
-> +	},
-> +#endif
-> +#endif
->   #ifdef CONFIG_CFS_BANDWIDTH
->   	{
->   		.name = "max",
-> @@ -9889,6 +9989,7 @@ static struct cftype cpu_files[] = {
->   struct cgroup_subsys cpu_cgrp_subsys = {
->   	.css_alloc	= cpu_cgroup_css_alloc,
->   	.css_online	= cpu_cgroup_css_online,
-> +	.css_offline	= cpu_cgroup_css_offline,
->   	.css_released	= cpu_cgroup_css_released,
->   	.css_free	= cpu_cgroup_css_free,
->   	.css_extra_stat_show = cpu_extra_stat_show,
-> diff --git a/kernel/sched/coretag.c b/kernel/sched/coretag.c
+> diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
+> index f357f3eb400c..699dc7cac0fb 100644
+> --- a/Documentation/driver-api/index.rst
+> +++ b/Documentation/driver-api/index.rst
+> @@ -97,6 +97,7 @@ available subsections can be seen below.
+>     rfkill
+>     serial/index
+>     sm501
+> +   surface_aggregator/index
+>     switchtec
+>     sync_file
+>     vfio-mediated-device
+> diff --git a/Documentation/driver-api/surface_aggregator/client-api.rst b/Documentation/driver-api/surface_aggregator/client-api.rst
 > new file mode 100644
-> index 000000000000..4eeb956382ee
+> index 000000000000..8e0b000d0e64
 > --- /dev/null
-> +++ b/kernel/sched/coretag.c
-> @@ -0,0 +1,734 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * kernel/sched/core-tag.c
-> + *
-> + * Core-scheduling tagging interface support.
-> + *
-> + * Copyright(C) 2020, Joel Fernandes.
-> + * Initial interfacing code  by Peter Ziljstra.
-> + */
-> +
-> +#include <linux/prctl.h>
-> +#include "sched.h"
-> +
-> +/*
-> + * Wrapper representing a complete cookie. The address of the cookie is used as
-> + * a unique identifier. Each cookie has a unique permutation of the internal
-> + * cookie fields.
-> + */
-> +struct sched_core_cookie {
-> +	unsigned long task_cookie;
-> +	unsigned long group_cookie;
-> +
-> +	struct rb_node node;
-> +	refcount_t refcnt;
-> +};
-> +
-> +/*
-> + * A simple wrapper around refcount. An allocated sched_core_task_cookie's
-> + * address is used to compute the cookie of the task.
-> + */
-> +struct sched_core_task_cookie {
-> +	refcount_t refcnt;
-> +	struct work_struct work; /* to free in WQ context. */;
-> +};
-> +
-> +static DEFINE_MUTEX(sched_core_tasks_mutex);
-> +
-> +/* All active sched_core_cookies */
-> +static struct rb_root sched_core_cookies = RB_ROOT;
-> +static DEFINE_RAW_SPINLOCK(sched_core_cookies_lock);
-> +
-> +/*
-> + * Returns the following:
-> + * a < b  => -1
-> + * a == b => 0
-> + * a > b  => 1
-> + */
-> +static int sched_core_cookie_cmp(const struct sched_core_cookie *a,
-> +				 const struct sched_core_cookie *b)
-> +{
-> +#define COOKIE_CMP_RETURN(field) do {		\
-> +	if (a->field < b->field)		\
-> +		return -1;			\
-> +	else if (a->field > b->field)		\
-> +		return 1;			\
-> +} while (0)					\
-> +
-> +	COOKIE_CMP_RETURN(task_cookie);
-> +	COOKIE_CMP_RETURN(group_cookie);
-> +
-> +	/* all cookie fields match */
-> +	return 0;
-> +
-> +#undef COOKIE_CMP_RETURN
-> +}
-> +
-> +static inline void __sched_core_erase_cookie(struct sched_core_cookie *cookie)
-> +{
-> +	lockdep_assert_held(&sched_core_cookies_lock);
-> +
-> +	/* Already removed */
-> +	if (RB_EMPTY_NODE(&cookie->node))
-> +		return;
-> +
-> +	rb_erase(&cookie->node, &sched_core_cookies);
-> +	RB_CLEAR_NODE(&cookie->node);
-> +}
-> +
-> +/* Called when a task no longer points to the cookie in question */
-> +static void sched_core_put_cookie(struct sched_core_cookie *cookie)
-> +{
-> +	unsigned long flags;
-> +
-> +	if (!cookie)
-> +		return;
-> +
-> +	if (refcount_dec_and_test(&cookie->refcnt)) {
-> +		raw_spin_lock_irqsave(&sched_core_cookies_lock, flags);
-> +		__sched_core_erase_cookie(cookie);
-> +		raw_spin_unlock_irqrestore(&sched_core_cookies_lock, flags);
-> +		kfree(cookie);
-> +	}
-> +}
-> +
-> +/*
-> + * A task's core cookie is a compound structure composed of various cookie
-> + * fields (task_cookie, group_cookie). The overall core_cookie is
-> + * a pointer to a struct containing those values. This function either finds
-> + * an existing core_cookie or creates a new one, and then updates the task's
-> + * core_cookie to point to it. Additionally, it handles the necessary reference
-> + * counting.
-> + *
-> + * REQUIRES: task_rq(p) lock or called from cpu_stopper.
-> + * Doing so ensures that we do not cause races/corruption by modifying/reading
-> + * task cookie fields.
-> + */
-> +static void __sched_core_update_cookie(struct task_struct *p)
-> +{
-> +	struct rb_node *parent, **node;
-> +	struct sched_core_cookie *node_core_cookie, *match;
-> +	static const struct sched_core_cookie zero_cookie;
-> +	struct sched_core_cookie temp = {
-> +		.task_cookie	= p->core_task_cookie,
-> +		.group_cookie	= p->core_group_cookie,
-> +	};
-> +	const bool is_zero_cookie =
-> +		(sched_core_cookie_cmp(&temp, &zero_cookie) == 0);
-> +	struct sched_core_cookie *const curr_cookie =
-> +		(struct sched_core_cookie *)p->core_cookie;
-> +	unsigned long flags;
-> +
-> +	/*
-> +	 * Already have a cookie matching the requested settings? Nothing to
-> +	 * do.
-> +	 */
-> +	if ((curr_cookie && sched_core_cookie_cmp(curr_cookie, &temp) == 0) ||
-> +	    (!curr_cookie && is_zero_cookie))
-> +		return;
-> +
-> +	raw_spin_lock_irqsave(&sched_core_cookies_lock, flags);
-> +
-> +	if (is_zero_cookie) {
-> +		match = NULL;
-> +		goto finish;
-> +	}
-> +
-> +retry:
-> +	match = NULL;
-> +
-> +	node = &sched_core_cookies.rb_node;
-> +	parent = *node;
-> +	while (*node) {
-> +		int cmp;
-> +
-> +		node_core_cookie =
-> +			container_of(*node, struct sched_core_cookie, node);
-> +		parent = *node;
-> +
-> +		cmp = sched_core_cookie_cmp(&temp, node_core_cookie);
-> +		if (cmp < 0) {
-> +			node = &parent->rb_left;
-> +		} else if (cmp > 0) {
-> +			node = &parent->rb_right;
-> +		} else {
-> +			match = node_core_cookie;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (!match) {
-> +		/* No existing cookie; create and insert one */
-> +		match = kmalloc(sizeof(struct sched_core_cookie), GFP_ATOMIC);
-> +
-> +		/* Fall back to zero cookie */
-> +		if (WARN_ON_ONCE(!match))
-> +			goto finish;
-> +
-> +		match->task_cookie = temp.task_cookie;
-> +		match->group_cookie = temp.group_cookie;
-> +		refcount_set(&match->refcnt, 1);
-> +
-> +		rb_link_node(&match->node, parent, node);
-> +		rb_insert_color(&match->node, &sched_core_cookies);
-> +	} else {
-> +		/*
-> +		 * Cookie exists, increment refcnt. If refcnt is currently 0,
-> +		 * we're racing with a put() (refcnt decremented but cookie not
-> +		 * yet removed from the tree). In this case, we can simply
-> +		 * perform the removal ourselves and retry.
-> +		 * sched_core_put_cookie() will still function correctly.
-> +		 */
-> +		if (unlikely(!refcount_inc_not_zero(&match->refcnt))) {
-> +			__sched_core_erase_cookie(match);
-> +			goto retry;
-> +		}
-> +	}
-> +
-> +finish:
-> +	/*
-> +	 * Set the core_cookie under the cookies lock. This guarantees that
-> +	 * p->core_cookie cannot be freed while the cookies lock is held in
-> +	 * sched_core_fork().
-> +	 */
-> +	p->core_cookie = (unsigned long)match;
-> +
-> +	raw_spin_unlock_irqrestore(&sched_core_cookies_lock, flags);
-> +
-> +	sched_core_put_cookie(curr_cookie);
-> +}
-> +
-> +/*
-> + * sched_core_update_cookie - Common helper to update a task's core cookie. This
-> + * updates the selected cookie field and then updates the overall cookie.
-> + * @p: The task whose cookie should be updated.
-> + * @cookie: The new cookie.
-> + * @cookie_type: The cookie field to which the cookie corresponds.
-> + *
-> + * REQUIRES: either task_rq(p)->lock held or called from a stop-machine handler.
-> + * Doing so ensures that we do not cause races/corruption by modifying/reading
-> + * task cookie fields.
-> + */
-> +static void sched_core_update_cookie(struct task_struct *p, unsigned long cookie,
-> +				     enum sched_core_cookie_type cookie_type)
-> +{
-> +	if (!p)
-> +		return;
-> +
-> +	switch (cookie_type) {
-> +	case sched_core_no_update:
-> +		break;
-> +	case sched_core_task_cookie_type:
-> +		p->core_task_cookie = cookie;
-> +		break;
-> +	case sched_core_group_cookie_type:
-> +		p->core_group_cookie = cookie;
-> +		break;
-> +	default:
-> +		WARN_ON_ONCE(1);
-> +	}
-> +
-> +	/* Set p->core_cookie, which is the overall cookie */
-> +	__sched_core_update_cookie(p);
-> +
-> +	if (sched_core_enqueued(p)) {
-> +		sched_core_dequeue(task_rq(p), p);
-> +		if (!p->core_cookie)
-> +			return;
-> +	}
-> +
-> +	if (sched_core_enabled(task_rq(p)) &&
-> +	    p->core_cookie && task_on_rq_queued(p))
-> +		sched_core_enqueue(task_rq(p), p);
-> +}
-> +
-> +#ifdef CONFIG_CGROUP_SCHED
-> +void cpu_core_get_group_cookie(struct task_group *tg,
-> +			       unsigned long *group_cookie_ptr);
-> +
-> +void sched_core_change_group(struct task_struct *p, struct task_group *new_tg)
-> +{
-> +	unsigned long new_group_cookie;
-> +
-> +	cpu_core_get_group_cookie(new_tg, &new_group_cookie);
-> +
-> +	if (p->core_group_cookie == new_group_cookie)
-> +		return;
-> +
-> +	p->core_group_cookie = new_group_cookie;
-> +
-> +	__sched_core_update_cookie(p);
-> +}
-> +#endif
-> +
-> +/* Per-task interface: Used by fork(2) and prctl(2). */
-> +static void sched_core_put_cookie_work(struct work_struct *ws);
-> +
-> +/* Caller has to call sched_core_get() if non-zero value is returned. */
-> +static unsigned long sched_core_alloc_task_cookie(void)
-> +{
-> +	struct sched_core_task_cookie *ck =
-> +		kmalloc(sizeof(struct sched_core_task_cookie), GFP_KERNEL);
-> +
-> +	if (!ck)
-> +		return 0;
-> +	refcount_set(&ck->refcnt, 1);
-> +	INIT_WORK(&ck->work, sched_core_put_cookie_work);
-> +
-> +	return (unsigned long)ck;
-> +}
-> +
-> +static void sched_core_get_task_cookie(unsigned long cookie)
-> +{
-> +	struct sched_core_task_cookie *ptr =
-> +		(struct sched_core_task_cookie *)cookie;
-> +
-> +	refcount_inc(&ptr->refcnt);
-> +}
-> +
-> +static void sched_core_put_task_cookie(unsigned long cookie)
-> +{
-> +	struct sched_core_task_cookie *ptr =
-> +		(struct sched_core_task_cookie *)cookie;
-> +
-> +	if (refcount_dec_and_test(&ptr->refcnt))
-> +		kfree(ptr);
-> +}
-> +
-> +static void sched_core_put_cookie_work(struct work_struct *ws)
-> +{
-> +	struct sched_core_task_cookie *ck =
-> +		container_of(ws, struct sched_core_task_cookie, work);
-> +
-> +	sched_core_put_task_cookie((unsigned long)ck);
-> +	sched_core_put();
-> +}
-> +
-> +struct sched_core_task_write_tag {
-> +	struct task_struct *tasks[2];
-> +	unsigned long cookies[2];
-> +};
-> +
-> +/*
-> + * Ensure that the task has been requeued. The stopper ensures that the task cannot
-> + * be migrated to a different CPU while its core scheduler queue state is being updated.
-> + * It also makes sure to requeue a task if it was running actively on another CPU.
-> + */
-> +static int sched_core_task_join_stopper(void *data)
-> +{
-> +	struct sched_core_task_write_tag *tag = (struct sched_core_task_write_tag *)data;
-> +	int i;
-> +
-> +	for (i = 0; i < 2; i++)
-> +		sched_core_update_cookie(tag->tasks[i], tag->cookies[i],
-> +					 sched_core_task_cookie_type);
-> +
-> +	return 0;
-> +}
-> +
-> +int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
-> +{
-> +	struct sched_core_task_write_tag wr = {}; /* for stop machine. */
-> +	bool sched_core_put_after_stopper = false;
-> +	unsigned long cookie;
-> +	int ret = -ENOMEM;
-> +
-> +	mutex_lock(&sched_core_tasks_mutex);
-> +
-> +	if (!t2) {
-> +		if (t1->core_task_cookie) {
-> +			sched_core_put_task_cookie(t1->core_task_cookie);
-> +			sched_core_put_after_stopper = true;
-> +			wr.tasks[0] = t1; /* Keep wr.cookies[0] reset for t1. */
-> +		}
-> +	} else if (t1 == t2) {
-> +		/* Assign a unique per-task cookie solely for t1. */
-> +
-> +		cookie = sched_core_alloc_task_cookie();
-> +		if (!cookie)
-> +			goto out_unlock;
-> +		sched_core_get();
-> +
-> +		if (t1->core_task_cookie) {
-> +			sched_core_put_task_cookie(t1->core_task_cookie);
-> +			sched_core_put_after_stopper = true;
-> +		}
-> +		wr.tasks[0] = t1;
-> +		wr.cookies[0] = cookie;
-> +	} else if (!t1->core_task_cookie && !t2->core_task_cookie) {
-> +		/*
-> +		 * 		t1		joining		t2
-> +		 * CASE 1:
-> +		 * before	0				0
-> +		 * after	new cookie			new cookie
-> +		 *
-> +		 * CASE 2:
-> +		 * before	X (non-zero)			0
-> +		 * after	0				0
-> +		 *
-> +		 * CASE 3:
-> +		 * before	0				X (non-zero)
-> +		 * after	X				X
-> +		 *
-> +		 * CASE 4:
-> +		 * before	Y (non-zero)			X (non-zero)
-> +		 * after	X				X
-> +		 */
-> +
-> +		/* CASE 1. */
-> +		cookie = sched_core_alloc_task_cookie();
-> +		if (!cookie)
-> +			goto out_unlock;
-> +		sched_core_get(); /* For the alloc. */
-> +
-> +		/* Add another reference for the other task. */
-> +		sched_core_get_task_cookie(cookie);
-> +		sched_core_get(); /* For the other task. */
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.tasks[1] = t2;
-> +		wr.cookies[0] = wr.cookies[1] = cookie;
-> +
-> +	} else if (t1->core_task_cookie && !t2->core_task_cookie) {
-> +		/* CASE 2. */
-> +		sched_core_put_task_cookie(t1->core_task_cookie);
-> +		sched_core_put_after_stopper = true;
-> +
-> +		wr.tasks[0] = t1; /* Reset cookie for t1. */
-> +
-> +	} else if (!t1->core_task_cookie && t2->core_task_cookie) {
-> +		/* CASE 3. */
-> +		sched_core_get_task_cookie(t2->core_task_cookie);
-> +		sched_core_get();
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.cookies[0] = t2->core_task_cookie;
-> +
-> +	} else {
-> +		/* CASE 4. */
-> +		sched_core_get_task_cookie(t2->core_task_cookie);
-> +		sched_core_get();
-> +
-> +		sched_core_put_task_cookie(t1->core_task_cookie);
-> +		sched_core_put_after_stopper = true;
-> +
-> +		wr.tasks[0] = t1;
-> +		wr.cookies[0] = t2->core_task_cookie;
-> +	}
-> +
-> +	stop_machine(sched_core_task_join_stopper, (void *)&wr, NULL);
-> +
-> +	if (sched_core_put_after_stopper)
-> +		sched_core_put();
-> +
-> +	ret = 0;
-> +out_unlock:
-> +	mutex_unlock(&sched_core_tasks_mutex);
-> +	return ret;
-> +}
-> +
-> +/* Called from prctl interface: PR_SCHED_CORE_SHARE */
-> +int sched_core_share_pid(unsigned long flags, pid_t pid)
-> +{
-> +	struct task_struct *to;
-> +	struct task_struct *from;
-> +	struct task_struct *task;
-> +	int err;
-> +
-> +	rcu_read_lock();
-> +	task = find_task_by_vpid(pid);
-> +	if (!task) {
-> +		rcu_read_unlock();
-> +		return -ESRCH;
-> +	}
-> +
-> +	get_task_struct(task);
-> +
-> +	/*
-> +	 * Check if this process has the right to modify the specified
-> +	 * process. Use the regular "ptrace_may_access()" checks.
-> +	 */
-> +	if (!ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS)) {
-> +		rcu_read_unlock();
-> +		err = -EPERM;
-> +		goto out;
-> +	}
-> +	rcu_read_unlock();
-> +
-> +	if (flags == PR_SCHED_CORE_CLEAR) {
-> +		to = task;
-> +		from = NULL;
-> +	} else if (flags == PR_SCHED_CORE_SHARE_TO) {
-> +		to = task;
-> +		from = current;
-> +	} else if (flags == PR_SCHED_CORE_SHARE_FROM) {
-> +		to = current;
-> +		from = task;
-> +	} else {
-> +		err = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	err = sched_core_share_tasks(to, from);
-> +out:
-> +	if (task)
-> +		put_task_struct(task);
-> +	return err;
-> +}
-> +
-> +/* CGroup core-scheduling interface support. */
-> +#ifdef CONFIG_CGROUP_SCHED
-> +/*
-> + * Helper to get the group cookie in a hierarchy. Any ancestor can have a
-> + * cookie.
-> + *
-> + * Sets *group_cookie_ptr to the hierarchical group cookie.
-> + */
-> +void cpu_core_get_group_cookie(struct task_group *tg,
-> +			       unsigned long *group_cookie_ptr)
-> +{
-> +	unsigned long group_cookie = 0UL;
-> +
-> +	if (!tg)
-> +		goto out;
-> +
-> +	for (; tg; tg = tg->parent) {
-> +
-> +		if (tg->core_tagged) {
-> +			group_cookie = (unsigned long)tg;
-> +			break;
-> +		}
-> +	}
-> +
-> +out:
-> +	*group_cookie_ptr = group_cookie;
-> +}
-> +
-> +/* Determine if any group in @tg's children are tagged. */
-> +static bool cpu_core_check_descendants(struct task_group *tg, bool check_tag)
-> +{
-> +	struct task_group *child;
-> +
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(child, &tg->children, siblings) {
-> +		if ((child->core_tagged && check_tag)) {
-> +			rcu_read_unlock();
-> +			return true;
-> +		}
-> +
-> +		rcu_read_unlock();
-> +		return cpu_core_check_descendants(child, check_tag);
-> +	}
-> +
-> +	rcu_read_unlock();
-> +	return false;
-> +}
-> +
-> +u64 cpu_core_tag_read_u64(struct cgroup_subsys_state *css,
-> +			  struct cftype *cft)
-> +{
-> +	struct task_group *tg = css_tg(css);
-> +
-> +	return !!tg->core_tagged;
-> +}
-> +
-> +#ifdef CONFIG_SCHED_DEBUG
-> +u64 cpu_core_group_cookie_read_u64(struct cgroup_subsys_state *css,
-> +				   struct cftype *cft)
-> +{
-> +	unsigned long group_cookie;
-> +
-> +	cpu_core_get_group_cookie(css_tg(css), &group_cookie);
-> +
-> +	return group_cookie;
-> +}
-> +#endif
-> +
-> +struct write_core_tag {
-> +	struct cgroup_subsys_state *css;
-> +	unsigned long cookie;
-> +	enum sched_core_cookie_type cookie_type;
-> +};
-> +
-> +static int __sched_write_tag(void *data)
-> +{
-> +	struct write_core_tag *tag = (struct write_core_tag *)data;
-> +	struct task_struct *p;
-> +	struct cgroup_subsys_state *css;
-> +
-> +	rcu_read_lock();
-> +	css_for_each_descendant_pre(css, tag->css) {
-> +		struct css_task_iter it;
-> +
-> +		css_task_iter_start(css, 0, &it);
-> +		/*
-> +		 * Note: css_task_iter_next will skip dying tasks.
-> +		 * There could still be dying tasks left in the core queue
-> +		 * when we set cgroup tag to 0 when the loop is done below.
-> +		 */
-> +		while ((p = css_task_iter_next(&it)))
-> +			sched_core_update_cookie(p, tag->cookie,
-> +						 tag->cookie_type);
-> +
-> +		css_task_iter_end(&it);
-> +	}
-> +	rcu_read_unlock();
-> +
-> +	return 0;
-> +}
-> +
-> +int cpu_core_tag_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
-> +			   u64 val)
-> +{
-> +	struct task_group *tg = css_tg(css);
-> +	struct write_core_tag wtag;
-> +	unsigned long group_cookie;
-> +
-> +	if (val > 1)
-> +		return -ERANGE;
-> +
-> +	if (!static_branch_likely(&sched_smt_present))
-> +		return -EINVAL;
-> +
-> +	if (!tg->core_tagged && val) {
-> +		/* Tag is being set. Check ancestors and descendants. */
-> +		cpu_core_get_group_cookie(tg, &group_cookie);
-> +		if (group_cookie ||
-> +		    cpu_core_check_descendants(tg, true /* tag */))
-> +			return -EBUSY;
-> +	} else if (tg->core_tagged && !val) {
-> +		/* Tag is being reset. Check descendants. */
-> +		if (cpu_core_check_descendants(tg, true /* tag */))
-> +			return -EBUSY;
-> +	} else {
-> +		return 0;
-> +	}
-> +
-> +	if (!!val)
-> +		sched_core_get();
-> +
-> +	wtag.css = css;
-> +	wtag.cookie = (unsigned long)tg;
-> +	wtag.cookie_type = sched_core_group_cookie_type;
-> +
-> +	tg->core_tagged = val;
-> +
-> +	stop_machine(__sched_write_tag, (void *)&wtag, NULL);
-> +	if (!val)
-> +		sched_core_put();
-> +
-> +	return 0;
-> +}
-> +#endif
-> +
-> +/*
-> + * Tagging support when fork(2) is called:
-> + * If it is a CLONE_THREAD fork, share parent's tag. Otherwise assign a unique per-task tag.
-> + */
-> +static int sched_update_core_tag_stopper(void *data)
-> +{
-> +	struct task_struct *p = (struct task_struct *)data;
-> +
-> +	/* Recalculate core cookie */
-> +	sched_core_update_cookie(p, 0, sched_core_no_update);
-> +
-> +	return 0;
-> +}
-> +
-> +/* Called from sched_fork() */
-> +int sched_core_fork(struct task_struct *p, unsigned long clone_flags)
-> +{
-> +	struct sched_core_cookie *parent_cookie =
-> +		(struct sched_core_cookie *)current->core_cookie;
-> +
-> +	/*
-> +	 * core_cookie is ref counted; avoid an uncounted reference.
-> +	 * If p should have a cookie, it will be set below.
-> +	 */
-> +	p->core_cookie = 0UL;
-> +
-> +	/*
-> +	 * If parent is tagged via per-task cookie, tag the child (either with
-> +	 * the parent's cookie, or a new one).
-> +	 *
-> +	 * We can return directly in this case, because sched_core_share_tasks()
-> +	 * will set the core_cookie (so there is no need to try to inherit from
-> +	 * the parent). The cookie will have the proper sub-fields (ie. group
-> +	 * cookie, etc.), because these come from p's task_struct, which is
-> +	 * dup'd from the parent.
-> +	 */
-> +	if (current->core_task_cookie) {
-> +		int ret;
-> +
-> +		/* If it is not CLONE_THREAD fork, assign a unique per-task tag. */
-> +		if (!(clone_flags & CLONE_THREAD)) {
-> +			ret = sched_core_share_tasks(p, p);
-> +		} else {
-> +			/* Otherwise share the parent's per-task tag. */
-> +			ret = sched_core_share_tasks(p, current);
-> +		}
-> +
-> +		if (ret)
-> +			return ret;
-> +
-> +		/*
-> +		 * We expect sched_core_share_tasks() to always update p's
-> +		 * core_cookie.
-> +		 */
-> +		WARN_ON_ONCE(!p->core_cookie);
-> +
-> +		return 0;
-> +	}
-> +
-> +	/*
-> +	 * If parent is tagged, inherit the cookie and ensure that the reference
-> +	 * count is updated.
-> +	 *
-> +	 * Technically, we could instead zero-out the task's group_cookie and
-> +	 * allow sched_core_change_group() to handle this post-fork, but
-> +	 * inheriting here has a performance advantage, since we don't
-> +	 * need to traverse the core_cookies RB tree and can instead grab the
-> +	 * parent's cookie directly.
-> +	 */
-> +	if (parent_cookie) {
-> +		bool need_stopper = false;
-> +		unsigned long flags;
-> +
-> +		/*
-> +		 * cookies lock prevents task->core_cookie from changing or
-> +		 * being freed
-> +		 */
-> +		raw_spin_lock_irqsave(&sched_core_cookies_lock, flags);
-> +
-> +		if (likely(refcount_inc_not_zero(&parent_cookie->refcnt))) {
-> +			p->core_cookie = (unsigned long)parent_cookie;
-> +		} else {
-> +			/*
-> +			 * Raced with put(). We'll use stop_machine to get
-> +			 * a core_cookie
-> +			 */
-> +			need_stopper = true;
-> +		}
-> +
-> +		raw_spin_unlock_irqrestore(&sched_core_cookies_lock, flags);
-> +
-> +		if (need_stopper)
-> +			stop_machine(sched_update_core_tag_stopper,
-> +				     (void *)p, NULL);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +void sched_tsk_free(struct task_struct *tsk)
-> +{
-> +	struct sched_core_task_cookie *ck;
-> +
-> +	sched_core_put_cookie((struct sched_core_cookie *)tsk->core_cookie);
-> +
-> +	if (!tsk->core_task_cookie)
-> +		return;
-> +
-> +	ck = (struct sched_core_task_cookie *)tsk->core_task_cookie;
-> +	queue_work(system_wq, &ck->work);
-> +}
-> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-> index 60a922d3f46f..8c452b8010ad 100644
-> --- a/kernel/sched/debug.c
-> +++ b/kernel/sched/debug.c
-> @@ -1024,6 +1024,10 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
->   		__PS("clock-delta", t1-t0);
->   	}
->   
-> +#ifdef CONFIG_SCHED_CORE
-> +	__PS("core_cookie", p->core_cookie);
-> +#endif
-> +
->   	sched_show_numa(p, m);
->   }
->   
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index b03f261b95b3..94e07c271528 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -377,6 +377,10 @@ struct cfs_bandwidth {
->   struct task_group {
->   	struct cgroup_subsys_state css;
->   
-> +#ifdef CONFIG_SCHED_CORE
-> +	int			core_tagged;
-> +#endif
-> +
->   #ifdef CONFIG_FAIR_GROUP_SCHED
->   	/* schedulable entities of this group on each CPU */
->   	struct sched_entity	**se;
-> @@ -425,6 +429,11 @@ struct task_group {
->   
->   };
->   
-> +static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
-> +{
-> +	return css ? container_of(css, struct task_group, css) : NULL;
-> +}
-> +
->   #ifdef CONFIG_FAIR_GROUP_SCHED
->   #define ROOT_TASK_GROUP_LOAD	NICE_0_LOAD
->   
-> @@ -1127,6 +1136,12 @@ static inline bool is_migration_disabled(struct task_struct *p)
->   DECLARE_STATIC_KEY_FALSE(__sched_core_enabled);
->   static inline struct cpumask *sched_group_span(struct sched_group *sg);
->   
-> +enum sched_core_cookie_type {
-> +	sched_core_no_update = 0,
-> +	sched_core_task_cookie_type,
-> +	sched_core_group_cookie_type,
-> +};
-> +
->   static inline bool sched_core_enabled(struct rq *rq)
->   {
->   	return static_branch_unlikely(&__sched_core_enabled) && rq->core_enabled;
-> @@ -1197,12 +1212,53 @@ static inline bool sched_group_cookie_match(struct rq *rq,
->   	return false;
->   }
->   
-> -extern void queue_core_balance(struct rq *rq);
-> +void sched_core_change_group(struct task_struct *p, struct task_group *new_tg);
-> +int sched_core_fork(struct task_struct *p, unsigned long clone_flags);
-> +
-> +static inline bool sched_core_enqueued(struct task_struct *task)
-> +{
-> +	return !RB_EMPTY_NODE(&task->core_node);
-> +}
-> +
-> +void queue_core_balance(struct rq *rq);
-> +
-> +void sched_core_enqueue(struct rq *rq, struct task_struct *p);
-> +void sched_core_dequeue(struct rq *rq, struct task_struct *p);
-> +void sched_core_get(void);
-> +void sched_core_put(void);
-> +
-> +int sched_core_share_pid(unsigned long flags, pid_t pid);
-> +int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2);
-> +
-> +#ifdef CONFIG_CGROUP_SCHED
-> +u64 cpu_core_tag_read_u64(struct cgroup_subsys_state *css,
-> +			  struct cftype *cft);
-> +
-> +#ifdef CONFIG_SCHED_DEBUG
-> +u64 cpu_core_group_cookie_read_u64(struct cgroup_subsys_state *css,
-> +				   struct cftype *cft);
-> +#endif
-> +
-> +int cpu_core_tag_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
-> +			   u64 val);
-> +#endif
-> +
-> +#ifndef TIF_UNSAFE_RET
-> +#define TIF_UNSAFE_RET (0)
-> +#endif
->   
->   bool cfs_prio_less(struct task_struct *a, struct task_struct *b, bool fi);
->   
->   #else /* !CONFIG_SCHED_CORE */
->   
-> +static inline bool sched_core_enqueued(struct task_struct *task) { return false; }
-> +static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
-> +static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
-> +static inline int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
-> +{
-> +	return -ENOTSUPP;
-> +}
-> +
->   static inline bool sched_core_enabled(struct rq *rq)
->   {
->   	return false;
-> @@ -2899,7 +2955,4 @@ void swake_up_all_locked(struct swait_queue_head *q);
->   void __prepare_to_swait(struct swait_queue_head *q, struct swait_queue *wait);
->   
->   #ifdef CONFIG_SCHED_CORE
-> -#ifndef TIF_UNSAFE_RET
-> -#define TIF_UNSAFE_RET (0)
-> -#endif
->   #endif
-> diff --git a/kernel/sys.c b/kernel/sys.c
-> index a730c03ee607..da52a0da24ef 100644
-> --- a/kernel/sys.c
-> +++ b/kernel/sys.c
-> @@ -2530,6 +2530,13 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
->   
->   		error = (current->flags & PR_IO_FLUSHER) == PR_IO_FLUSHER;
->   		break;
-> +#ifdef CONFIG_SCHED_CORE
-> +	case PR_SCHED_CORE_SHARE:
-> +		if (arg4 || arg5)
-> +			return -EINVAL;
-> +		error = sched_core_share_pid(arg2, arg3);
-> +		break;
-> +#endif
->   	default:
->   		error = -EINVAL;
->   		break;
-> diff --git a/tools/include/uapi/linux/prctl.h b/tools/include/uapi/linux/prctl.h
-> index 7f0827705c9a..8fbf9d164ec4 100644
-> --- a/tools/include/uapi/linux/prctl.h
-> +++ b/tools/include/uapi/linux/prctl.h
-> @@ -247,4 +247,10 @@ struct prctl_mm_map {
->   #define PR_SET_IO_FLUSHER		57
->   #define PR_GET_IO_FLUSHER		58
->   
-> +/* Request the scheduler to share a core */
-> +#define PR_SCHED_CORE_SHARE		59
-> +#define PR_SCHED_CORE_CLEAR		0  /* clear core_sched cookie of pid */
-> +#define PR_SCHED_CORE_SHARE_FROM	1  /* get core_sched cookie from pid */
-> +#define PR_SCHED_CORE_SHARE_TO		2  /* push core_sched cookie to pid */
-
-My original patch had this:
-
-# define PR_SCHED_CORE_CLEAR            0  /* clear core_sched cookie of pid */
-# define PR_SCHED_CORE_SHARE_FROM       1  /* get core_sched cookie from pid */
-# define PR_SCHED_CORE_SHARE_TO         2  /* push core_sched cookie to pid */
-
-The space between the '#' and 'define' is the trick apparently used to prevent a script run during 'perf' build that 
-pulls options out of this file to generate a 'beauty' array. Without the space, you can't build perf.
-
--chrish
-
-> +
->   #endif /* _LINUX_PRCTL_H */
+> +++ b/Documentation/driver-api/surface_aggregator/client-api.rst
+> @@ -0,0 +1,38 @@
+> +.. SPDX-License-Identifier: GPL-2.0+
+> +
+> +===============================
+> +Client Driver API Documentation
+> +===============================
+> +
+> +.. contents::
+> +    :depth: 2
+> +
+> +
+> +Serial Hub Communication
+> +========================
+> +
+> +.. kernel-doc:: include/linux/surface_aggregator/serial_hub.h
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/ssh_packet_layer.c
+> +    :export:
+> +
+> +
+> +Controller and Core Interface
+> +=============================
+> +
+> +.. kernel-doc:: include/linux/surface_aggregator/controller.h
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/controller.c
+> +    :export:
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/core.c
+> +    :export:
+> +
+> +
+> +Client Bus and Client Device API
+> +================================
+> +
+> +.. kernel-doc:: include/linux/surface_aggregator/device.h
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/bus.c
+> +    :export:
+> diff --git a/Documentation/driver-api/surface_aggregator/client.rst b/Documentation/driver-api/surface_aggregator/client.rst
+> new file mode 100644
+> index 000000000000..26d13085a117
+> --- /dev/null
+> +++ b/Documentation/driver-api/surface_aggregator/client.rst
+> @@ -0,0 +1,393 @@
+> +.. SPDX-License-Identifier: GPL-2.0+
+> +
+> +.. |ssam_controller| replace:: :c:type:`struct ssam_controller <ssam_controller>`
+> +.. |ssam_device| replace:: :c:type:`struct ssam_device <ssam_device>`
+> +.. |ssam_device_driver| replace:: :c:type:`struct ssam_device_driver <ssam_device_driver>`
+> +.. |ssam_client_bind| replace:: :c:func:`ssam_client_bind`
+> +.. |ssam_client_link| replace:: :c:func:`ssam_client_link`
+> +.. |ssam_get_controller| replace:: :c:func:`ssam_get_controller`
+> +.. |ssam_controller_get| replace:: :c:func:`ssam_controller_get`
+> +.. |ssam_controller_put| replace:: :c:func:`ssam_controller_put`
+> +.. |ssam_device_alloc| replace:: :c:func:`ssam_device_alloc`
+> +.. |ssam_device_add| replace:: :c:func:`ssam_device_add`
+> +.. |ssam_device_remove| replace:: :c:func:`ssam_device_remove`
+> +.. |ssam_device_driver_register| replace:: :c:func:`ssam_device_driver_register`
+> +.. |ssam_device_driver_unregister| replace:: :c:func:`ssam_device_driver_unregister`
+> +.. |module_ssam_device_driver| replace:: :c:func:`module_ssam_device_driver`
+> +.. |SSAM_DEVICE| replace:: :c:func:`SSAM_DEVICE`
+> +.. |ssam_notifier_register| replace:: :c:func:`ssam_notifier_register`
+> +.. |ssam_notifier_unregister| replace:: :c:func:`ssam_notifier_unregister`
+> +.. |ssam_request_sync| replace:: :c:func:`ssam_request_sync`
+> +.. |ssam_event_mask| replace:: :c:type:`enum ssam_event_mask <ssam_event_mask>`
+> +
+> +
+> +======================
+> +Writing Client Drivers
+> +======================
+> +
+> +For the API documentation, refer to:
+> +
+> +.. toctree::
+> +   :maxdepth: 2
+> +
+> +   client-api
+> +
+> +
+> +Overview
+> +========
+> +
+> +Client drivers can be set up in two main ways, depending on how the
+> +corresponding device is made available to the system. We specifically
+> +differentiate between devices that are presented to the system via one of
+> +the conventional ways, e.g. as platform devices via ACPI, and devices that
+> +are non-discoverable and instead need to be explicitly provided by some
+> +other mechanism, as discussed further below.
+> +
+> +
+> +Non-SSAM Client Drivers
+> +=======================
+> +
+> +All communication with the SAM EC is handled via the |ssam_controller|
+> +representing that EC to the kernel. Drivers targeting a non-SSAM device (and
+> +thus not being a |ssam_device_driver|) need to explicitly establish a
+> +connection/relation to that controller. This can be done via the
+> +|ssam_client_bind| function. Said function returns a reference to the SSAM
+> +controller, but, more importantly, also establishes a device link between
+> +client device and controller (this can also be done separate via
+> +|ssam_client_link|). It is important to do this, as it, first, guarantees
+> +that the returned controller is valid for use in the client driver for as
+> +long as this driver is bound to its device, i.e. that the driver gets
+> +unbound before the controller ever becomes invalid, and, second, as it
+> +ensures correct suspend/resume ordering. This setup should be done in the
+> +driver's probe function, and may be used to defer probing in case the SSAM
+> +subsystem is not ready yet, for example:
+> +
+> +.. code-block:: c
+> +
+> +   static int client_driver_probe(struct platform_device *pdev)
+> +   {
+> +           struct ssam_controller *ctrl;
+> +
+> +           ctrl = ssam_client_bind(&pdev->dev);
+> +           if (IS_ERR(ctrl))
+> +                   return PTR_ERR(ctrl) == -ENODEV ? -EPROBE_DEFER : PTR_ERR(ctrl);
+> +
+> +           // ...
+> +
+> +           return 0;
+> +   }
+> +
+> +The controller may be separately obtained via |ssam_get_controller| and its
+> +lifetime be guaranteed via |ssam_controller_get| and |ssam_controller_put|.
+> +Note that none of these functions, however, guarantee that the controller
+> +will not be shut down or suspended. These functions essentially only operate
+> +on the reference, i.e. only guarantee a bare minimum of accessibility
+> +without any guarantees at all on practical operability.
+> +
+> +
+> +Adding SSAM Devices
+> +===================
+> +
+> +If a device does not already exist/is not already provided via conventional
+> +means, it should be provided as |ssam_device| via the SSAM client device
+> +hub. New devices can be added to this hub by entering their UID into the
+> +corresponding registry. SSAM devices can also be manually allocated via
+> +|ssam_device_alloc|, subsequently to which they have to be added via
+> +|ssam_device_add| and eventually removed via |ssam_device_remove|. By
+> +default, the parent of the device is set to the controller device provided
+> +for allocation, however this may be changed before the device is added. Note
+> +that, when changing the parent device, care must be taken to ensure that the
+> +controller lifetime and suspend/resume ordering guarantees, in the default
+> +setup provided through the parent-child relation, are preserved. If
+> +necessary, by use of |ssam_client_link| as is done for non-SSAM client
+> +drivers and described in more detail above.
+> +
+> +A client device must always be removed by the party which added the
+> +respective device before the controller shuts down. Such removal can be
+> +guaranteed by linking the driver providing the SSAM device to the controller
+> +via |ssam_client_link|, causing it to unbind before the controller driver
+> +unbinds. Client devices registered with the controller as parent are
+> +automatically removed when the controller shuts down, but this should not be
+> +relied upon, especially as this does not extend to client devices with a
+> +different parent.
+> +
+> +
+> +SSAM Client Drivers
+> +===================
+> +
+> +SSAM client device drivers are, in essence, no different than other device
+> +driver types. They are represented via |ssam_device_driver| and bind to a
+> +|ssam_device| via its UID (:c:type:`struct ssam_device.uid <ssam_device>`)
+> +member and the match table
+> +(:c:type:`struct ssam_device_driver.match_table <ssam_device_driver>`),
+> +which should be set when declaring the driver struct instance. Refer to the
+> +|SSAM_DEVICE| macro documentation for more details on how to define members
+> +of the driver's match table.
+> +
+> +The UID for SSAM client devices consists of a ``domain``, a ``category``,
+> +a ``target``, an ``instance``, and a ``function``. The ``domain`` is used
+> +differentiate between physical SAM devices
+> +(:c:type:`SSAM_DOMAIN_SERIALHUB <ssam_device_domain>`), i.e. devices that can
+> +be accessed via the Surface Serial Hub, and virtual ones
+> +(:c:type:`SSAM_DOMAIN_VIRTUAL <ssam_device_domain>`), such as client-device
+> +hubs, that have no real representation on the SAM EC and are solely used on
+> +the kernel/driver-side. For physical devices, ``category`` represents the
+> +target category, ``target`` the target ID, and ``instance`` the instance ID
+> +used to access the physical SAM device. In addition, ``function`` references
+> +a specific device functionality, but has no meaning to the SAM EC. The
+> +(default) name of a client device is generated based on its UID.
+> +
+> +A driver instance can be registered via |ssam_device_driver_register| and
+> +unregistered via |ssam_device_driver_unregister|. For convenience, the
+> +|module_ssam_device_driver| macro may be used to define module init- and
+> +exit-functions registering the driver.
+> +
+> +The controller associated with a SSAM client device can be found in its
+> +:c:type:`struct ssam_device.ctrl <ssam_device>` member. This reference is
+> +guaranteed to be valid for at least as long as the client driver is bound,
+> +but should also be valid for as long as the client device exists. Note,
+> +however, that access outside of the bound client driver must ensure that the
+> +controller device is not suspended while making any requests or
+> +(un-)registering event notifiers (and thus should generally be avoided). This
+> +is guaranteed when the controller is accessed from inside the bound client
+> +driver.
+> +
+> +
+> +Making Synchronous Requests
+> +===========================
+> +
+> +Synchronous requests are (currently) the main form of host-initiated
+> +communication with the EC. There are a couple of ways to define and execute
+> +such requests, however, most of them boil down to something similar as shown
+> +in the example below. This example defines a write-read request, meaning
+> +that the caller provides an argument to the SAM EC and receives a response.
+> +The caller needs to know the (maximum) length of the response payload and
+> +provide a buffer for it.
+> +
+> +Care must be taken to ensure that any command payload data passed to the SAM
+> +EC is provided in little-endian format and, similarly, any response payload
+> +data received from it is converted from little-endian to host endianness.
+> +
+> +.. code-block:: c
+> +
+> +   int perform_request(struct ssam_controller *ctrl, u32 arg, u32 *ret)
+> +   {
+> +           struct ssam_request rqst;
+> +           struct ssam_response resp;
+> +           int status;
+> +
+> +           /* Convert request argument to little-endian. */
+> +           __le32 arg_le = cpu_to_le32(arg);
+> +           __le32 ret_le = cpu_to_le32(0);
+> +
+> +           /*
+> +            * Initialize request specification. Replace this with your values.
+> +            * The rqst.payload field may be NULL if rqst.length is zero,
+> +            * indicating that the request does not have any argument.
+> +            *
+> +            * Note: The request parameters used here are not valid, i.e.
+> +            *       they do not correspond to an actual SAM/EC request.
+> +            */
+> +           rqst.target_category = SSAM_SSH_TC_SAM;
+> +           rqst.target_id = 0x01;
+> +           rqst.command_id = 0x02;
+> +           rqst.instance_id = 0x03;
+> +           rqst.flags = SSAM_REQUEST_HAS_RESPONSE;
+> +           rqst.length = sizeof(arg_le);
+> +           rqst.payload = (u8 *)&arg_le;
+> +
+> +           /* Initialize request response. */
+> +           resp.capacity = sizeof(ret_le);
+> +           resp.length = 0;
+> +           resp.pointer = (u8 *)&ret_le;
+> +
+> +           /*
+> +            * Perform actual request. The response pointer may be null in case
+> +            * the request does not have any response. This must be consistent
+> +            * with the SSAM_REQUEST_HAS_RESPONSE flag set in the specification
+> +            * above.
+> +            */
+> +           status = ssam_request_sync(ctrl, &rqst, &resp);
+> +
+> +           /*
+> +            * Alternatively use
+> +            *
+> +            *   ssam_request_sync_onstack(ctrl, &rqst, &resp, sizeof(arg_le));
+> +            *
+> +            * to perform the request, allocating the message buffer directly
+> +            * on the stack as opposed to allocation via kzalloc().
+> +            */
+> +
+> +           /*
+> +            * Convert request response back to native format. Note that in the
+> +            * error case, this value is not touched by the SSAM core, i.e.
+> +            * 'ret_le' will be zero as specified in its initialization.
+> +            */
+> +           *ret = le32_to_cpu(ret_le);
+> +
+> +           return status;
+> +   }
+> +
+> +Note that |ssam_request_sync| in its essence is a wrapper over lower-level
+> +request primitives, which may also be used to perform requests. Refer to its
+> +implementation and documentation for more details.
+> +
+> +An arguably more user-friendly way of defining such functions is by using
+> +one of the generator macros, for example via:
+> +
+> +.. code-block:: c
+> +
+> +   SSAM_DEFINE_SYNC_REQUEST_W(__ssam_tmp_perf_mode_set, __le32, {
+> +           .target_category = SSAM_SSH_TC_TMP,
+> +           .target_id       = 0x01,
+> +           .command_id      = 0x03,
+> +           .instance_id     = 0x00,
+> +   });
+> +
+> +This example defines a function
+> +
+> +.. code-block:: c
+> +
+> +   int __ssam_tmp_perf_mode_set(struct ssam_controller *ctrl, const __le32 *arg);
+> +
+> +executing the specified request, with the controller passed in when calling
+> +said function. In this example, the argument is provided via the ``arg``
+> +pointer. Note that the generated function allocates the message buffer on
+> +the stack. Thus, if the argument provided via the request is large, these
+> +kinds of macros should be avoided. Also note that, in contrast to the
+> +previous non-macro example, this function does not do any endianness
+> +conversion, which has to be handled by the caller. Apart from those
+> +differences the function generated by the macro is similar to the one
+> +provided in the non-macro example above.
+> +
+> +The full list of such function-generating macros is
+> +
+> +- :c:func:`SSAM_DEFINE_SYNC_REQUEST_N` for requests without return value and
+> +  without argument.
+> +- :c:func:`SSAM_DEFINE_SYNC_REQUEST_R` for requests with return value but no
+> +  argument.
+> +- :c:func:`SSAM_DEFINE_SYNC_REQUEST_W` for requests without return value but
+> +  with argument.
+> +
+> +Refer to their respective documentation for more details. For each one of
+> +these macros, a special variant is provided, which targets request types
+> +applicable to multiple instances of the same device type:
+> +
+> +- :c:func:`SSAM_DEFINE_SYNC_REQUEST_MD_N`
+> +- :c:func:`SSAM_DEFINE_SYNC_REQUEST_MD_R`
+> +- :c:func:`SSAM_DEFINE_SYNC_REQUEST_MD_W`
+> +
+> +The difference of those macros to the previously mentioned versions is, that
+> +the device target and instance IDs are not fixed for the generated function,
+> +but instead have to be provided by the caller of said function.
+> +
+> +Additionally, variants for direct use with client devices, i.e.
+> +|ssam_device|, are also provided. These can, for example, be used as
+> +follows:
+> +
+> +.. code-block:: c
+> +
+> +   SSAM_DEFINE_SYNC_REQUEST_CL_R(ssam_bat_get_sta, __le32, {
+> +           .target_category = SSAM_SSH_TC_BAT,
+> +           .command_id      = 0x01,
+> +   });
+> +
+> +This invocation of the macro defines a function
+> +
+> +.. code-block:: c
+> +
+> +   int ssam_bat_get_sta(struct ssam_device *sdev, __le32 *ret);
+> +
+> +executing the specified request, using the device IDs and controller given
+> +in the client device. The full list of such macros for client devices is:
+> +
+> +- :c:func:`SSAM_DEFINE_SYNC_REQUEST_CL_N`
+> +- :c:func:`SSAM_DEFINE_SYNC_REQUEST_CL_R`
+> +- :c:func:`SSAM_DEFINE_SYNC_REQUEST_CL_W`
+> +
+> +
+> +Handling Events
+> +===============
+> +
+> +To receive events from the SAM EC, an event notifier must be registered for
+> +the desired event via |ssam_notifier_register|. The notifier must be
+> +unregistered via |ssam_notifier_unregister| once it is not required any
+> +more.
+> +
+> +Event notifiers are registered by providing (at minimum) a callback to call
+> +in case an event has been received, the registry specifying how the event
+> +should be enabled, an event ID specifying for which target category and,
+> +optionally and depending on the registry used, for which instance ID events
+> +should be enabled, and finally, flags describing how the EC will send these
+> +events. If the specific registry does not enable events by instance ID, the
+> +instance ID must be set to zero. Additionally, a priority for the respective
+> +notifier may be specified, which determines its order in relation to any
+> +other notifier registered for the same target category.
+> +
+> +By default, event notifiers will receive all events for the specific target
+> +category, regardless of the instance ID specified when registering the
+> +notifier. The core may be instructed to only call a notifier if the target
+> +ID or instance ID (or both) of the event match the ones implied by the
+> +notifier IDs (in case of target ID, the target ID of the registry), by
+> +providing an event mask (see |ssam_event_mask|).
+> +
+> +In general, the target ID of the registry is also the target ID of the
+> +enabled event (with the notable exception being keyboard input events on the
+> +Surface Laptop 1 and 2, which are enabled via a registry with target ID 1,
+> +but provide events with target ID 2).
+> +
+> +A full example for registering an event notifier and handling received
+> +events is provided below:
+> +
+> +.. code-block:: c
+> +
+> +   u32 notifier_callback(struct ssam_event_notifier *nf,
+> +                         const struct ssam_event *event)
+> +   {
+> +           int status = ...
+> +
+> +           /* Handle the event here ... */
+> +
+> +           /* Convert return value and indicate that we handled the event. */
+> +           return ssam_notifier_from_errno(status) | SSAM_NOTIF_HANDLED;
+> +   }
+> +
+> +   int setup_notifier(struct ssam_device *sdev,
+> +                      struct ssam_event_notifier *nf)
+> +   {
+> +           /* Set priority wrt. other handlers of same target category. */
+> +           nf->base.priority = 1;
+> +
+> +           /* Set event/notifier callback. */
+> +           nf->base.fn = notifier_callback;
+> +
+> +           /* Specify event registry, i.e. how events get enabled/disabled. */
+> +           nf->event.reg = SSAM_EVENT_REGISTRY_KIP;
+> +
+> +           /* Specify which event to enable/disable */
+> +           nf->event.id.target_category = sdev->uid.category;
+> +           nf->event.id.instance = sdev->uid.instance;
+> +
+> +           /*
+> +            * Specify for which events the notifier callback gets executed.
+> +            * This essentially tells the core if it can skip notifiers that
+> +            * don't have target or instance IDs matching those of the event.
+> +            */
+> +           nf->event.mask = SSAM_EVENT_MASK_STRICT;
+> +
+> +           /* Specify event flags. */
+> +           nf->event.flags = SSAM_EVENT_SEQUENCED;
+> +
+> +           return ssam_notifier_register(sdev->ctrl, nf);
+> +   }
+> +
+> +Multiple event notifiers can be registered for the same event. The event
+> +handler core takes care of enabling and disabling events when notifiers are
+> +registered and unregistered, by keeping track of how many notifiers for a
+> +specific event (combination of registry, event target category, and event
+> +instance ID) are currently registered. This means that a specific event will
+> +be enabled when the first notifier for it is being registered and disabled
+> +when the last notifier for it is being unregistered. Note that the event
+> +flags are therefore only used on the first registered notifier, however, one
+> +should take care that notifiers for a specific event are always registered
+> +with the same flag and it is considered a bug to do otherwise.
+> diff --git a/Documentation/driver-api/surface_aggregator/clients/index.rst b/Documentation/driver-api/surface_aggregator/clients/index.rst
+> new file mode 100644
+> index 000000000000..31e026d96102
+> --- /dev/null
+> +++ b/Documentation/driver-api/surface_aggregator/clients/index.rst
+> @@ -0,0 +1,10 @@
+> +.. SPDX-License-Identifier: GPL-2.0+
+> +
+> +===========================
+> +Client Driver Documentation
+> +===========================
+> +
+> +This is the documentation for client drivers themselves. Refer to
+> +:doc:`../client` for documentation on how to write client drivers.
+> +
+> +.. Place documentation for individual client drivers here.
+> diff --git a/Documentation/driver-api/surface_aggregator/index.rst b/Documentation/driver-api/surface_aggregator/index.rst
+> new file mode 100644
+> index 000000000000..6f3e1094904d
+> --- /dev/null
+> +++ b/Documentation/driver-api/surface_aggregator/index.rst
+> @@ -0,0 +1,21 @@
+> +.. SPDX-License-Identifier: GPL-2.0+
+> +
+> +=======================================
+> +Surface System Aggregator Module (SSAM)
+> +=======================================
+> +
+> +.. toctree::
+> +   :maxdepth: 2
+> +
+> +   overview
+> +   client
+> +   clients/index
+> +   ssh
+> +   internal
+> +
+> +.. only::  subproject and html
+> +
+> +   Indices
+> +   =======
+> +
+> +   * :ref:`genindex`
+> diff --git a/Documentation/driver-api/surface_aggregator/internal-api.rst b/Documentation/driver-api/surface_aggregator/internal-api.rst
+> new file mode 100644
+> index 000000000000..639a67b5a392
+> --- /dev/null
+> +++ b/Documentation/driver-api/surface_aggregator/internal-api.rst
+> @@ -0,0 +1,67 @@
+> +.. SPDX-License-Identifier: GPL-2.0+
+> +
+> +==========================
+> +Internal API Documentation
+> +==========================
+> +
+> +.. contents::
+> +    :depth: 2
+> +
+> +
+> +Packet Transport Layer
+> +======================
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/ssh_parser.h
+> +    :internal:
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/ssh_parser.c
+> +    :internal:
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/ssh_msgb.h
+> +    :internal:
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/ssh_packet_layer.h
+> +    :internal:
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/ssh_packet_layer.c
+> +    :internal:
+> +
+> +
+> +Request Transport Layer
+> +=======================
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/ssh_request_layer.h
+> +    :internal:
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/ssh_request_layer.c
+> +    :internal:
+> +
+> +
+> +Controller
+> +==========
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/controller.h
+> +    :internal:
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/controller.c
+> +    :internal:
+> +
+> +
+> +Client Device Bus
+> +=================
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/bus.c
+> +    :internal:
+> +
+> +
+> +Core
+> +====
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/core.c
+> +    :internal:
+> +
+> +
+> +Trace Helpers
+> +=============
+> +
+> +.. kernel-doc:: drivers/platform/surface/aggregator/trace.h
+> diff --git a/Documentation/driver-api/surface_aggregator/internal.rst b/Documentation/driver-api/surface_aggregator/internal.rst
+> new file mode 100644
+> index 000000000000..72704734982a
+> --- /dev/null
+> +++ b/Documentation/driver-api/surface_aggregator/internal.rst
+> @@ -0,0 +1,577 @@
+> +.. SPDX-License-Identifier: GPL-2.0+
+> +
+> +.. |ssh_ptl| replace:: :c:type:`struct ssh_ptl <ssh_ptl>`
+> +.. |ssh_ptl_submit| replace:: :c:func:`ssh_ptl_submit`
+> +.. |ssh_ptl_cancel| replace:: :c:func:`ssh_ptl_cancel`
+> +.. |ssh_ptl_shutdown| replace:: :c:func:`ssh_ptl_shutdown`
+> +.. |ssh_ptl_rx_rcvbuf| replace:: :c:func:`ssh_ptl_rx_rcvbuf`
+> +.. |ssh_rtl| replace:: :c:type:`struct ssh_rtl <ssh_rtl>`
+> +.. |ssh_rtl_submit| replace:: :c:func:`ssh_rtl_submit`
+> +.. |ssh_rtl_cancel| replace:: :c:func:`ssh_rtl_cancel`
+> +.. |ssh_rtl_shutdown| replace:: :c:func:`ssh_rtl_shutdown`
+> +.. |ssh_packet| replace:: :c:type:`struct ssh_packet <ssh_packet>`
+> +.. |ssh_packet_get| replace:: :c:func:`ssh_packet_get`
+> +.. |ssh_packet_put| replace:: :c:func:`ssh_packet_put`
+> +.. |ssh_packet_ops| replace:: :c:type:`struct ssh_packet_ops <ssh_packet_ops>`
+> +.. |ssh_packet_base_priority| replace:: :c:type:`enum ssh_packet_base_priority <ssh_packet_base_priority>`
+> +.. |ssh_packet_flags| replace:: :c:type:`enum ssh_packet_flags <ssh_packet_flags>`
+> +.. |SSH_PACKET_PRIORITY| replace:: :c:func:`SSH_PACKET_PRIORITY`
+> +.. |ssh_frame| replace:: :c:type:`struct ssh_frame <ssh_frame>`
+> +.. |ssh_command| replace:: :c:type:`struct ssh_command <ssh_command>`
+> +.. |ssh_request| replace:: :c:type:`struct ssh_request <ssh_request>`
+> +.. |ssh_request_get| replace:: :c:func:`ssh_request_get`
+> +.. |ssh_request_put| replace:: :c:func:`ssh_request_put`
+> +.. |ssh_request_ops| replace:: :c:type:`struct ssh_request_ops <ssh_request_ops>`
+> +.. |ssh_request_init| replace:: :c:func:`ssh_request_init`
+> +.. |ssh_request_flags| replace:: :c:type:`enum ssh_request_flags <ssh_request_flags>`
+> +.. |ssam_controller| replace:: :c:type:`struct ssam_controller <ssam_controller>`
+> +.. |ssam_device| replace:: :c:type:`struct ssam_device <ssam_device>`
+> +.. |ssam_device_driver| replace:: :c:type:`struct ssam_device_driver <ssam_device_driver>`
+> +.. |ssam_client_bind| replace:: :c:func:`ssam_client_bind`
+> +.. |ssam_client_link| replace:: :c:func:`ssam_client_link`
+> +.. |ssam_request_sync| replace:: :c:type:`struct ssam_request_sync <ssam_request_sync>`
+> +.. |ssam_event_registry| replace:: :c:type:`struct ssam_event_registry <ssam_event_registry>`
+> +.. |ssam_event_id| replace:: :c:type:`struct ssam_event_id <ssam_event_id>`
+> +.. |ssam_nf| replace:: :c:type:`struct ssam_nf <ssam_nf>`
+> +.. |ssam_nf_refcount_inc| replace:: :c:func:`ssam_nf_refcount_inc`
+> +.. |ssam_nf_refcount_dec| replace:: :c:func:`ssam_nf_refcount_dec`
+> +.. |ssam_notifier_register| replace:: :c:func:`ssam_notifier_register`
+> +.. |ssam_notifier_unregister| replace:: :c:func:`ssam_notifier_unregister`
+> +.. |ssam_cplt| replace:: :c:type:`struct ssam_cplt <ssam_cplt>`
+> +.. |ssam_event_queue| replace:: :c:type:`struct ssam_event_queue <ssam_event_queue>`
+> +.. |ssam_request_sync_submit| replace:: :c:func:`ssam_request_sync_submit`
+> +
+> +=====================
+> +Core Driver Internals
+> +=====================
+> +
+> +Architectural overview of the Surface System Aggregator Module (SSAM) core
+> +and Surface Serial Hub (SSH) driver. For the API documentation, refer to:
+> +
+> +.. toctree::
+> +   :maxdepth: 2
+> +
+> +   internal-api
+> +
+> +
+> +Overview
+> +========
+> +
+> +The SSAM core implementation is structured in layers, somewhat following the
+> +SSH protocol structure:
+> +
+> +Lower-level packet transport is implemented in the *packet transport layer
+> +(PTL)*, directly building on top of the serial device (serdev)
+> +infrastructure of the kernel. As the name indicates, this layer deals with
+> +the packet transport logic and handles things like packet validation, packet
+> +acknowledgment (ACKing), packet (retransmission) timeouts, and relaying
+> +packet payloads to higher-level layers.
+> +
+> +Above this sits the *request transport layer (RTL)*. This layer is centered
+> +around command-type packet payloads, i.e. requests (sent from host to EC),
+> +responses of the EC to those requests, and events (sent from EC to host).
+> +It, specifically, distinguishes events from request responses, matches
+> +responses to their corresponding requests, and implements request timeouts.
+> +
+> +The *controller* layer is building on top of this and essentially decides
+> +how request responses and, especially, events are dealt with. It provides an
+> +event notifier system, handles event activation/deactivation, provides a
+> +workqueue for event and asynchronous request completion, and also manages
+> +the message counters required for building command messages (``SEQ``,
+> +``RQID``). This layer basically provides a fundamental interface to the SAM
+> +EC for use in other kernel drivers.
+> +
+> +While the controller layer already provides an interface for other kernel
+> +drivers, the client *bus* extends this interface to provide support for
+> +native SSAM devices, i.e. devices that are not defined in ACPI and not
+> +implemented as platform devices, via |ssam_device| and |ssam_device_driver|
+> +simplify management of client devices and client drivers.
+> +
+> +Refer to :doc:`client` for documentation regarding the client device/driver
+> +API and interface options for other kernel drivers. It is recommended to
+> +familiarize oneself with that chapter and the :doc:`ssh` before continuing
+> +with the architectural overview below.
+> +
+> +
+> +Packet Transport Layer
+> +======================
+> +
+> +The packet transport layer is represented via |ssh_ptl| and is structured
+> +around the following key concepts:
+> +
+> +Packets
+> +-------
+> +
+> +Packets are the fundamental transmission unit of the SSH protocol. They are
+> +managed by the packet transport layer, which is essentially the lowest layer
+> +of the driver and is built upon by other components of the SSAM core.
+> +Packets to be transmitted by the SSAM core are represented via |ssh_packet|
+> +(in contrast, packets received by the core do not have any specific
+> +structure and are managed entirely via the raw |ssh_frame|).
+> +
+> +This structure contains the required fields to manage the packet inside the
+> +transport layer, as well as a reference to the buffer containing the data to
+> +be transmitted (i.e. the message wrapped in |ssh_frame|). Most notably, it
+> +contains an internal reference count, which is used for managing its
+> +lifetime (accessible via |ssh_packet_get| and |ssh_packet_put|). When this
+> +counter reaches zero, the ``release()`` callback provided to the packet via
+> +its |ssh_packet_ops| reference is executed, which may then deallocate the
+> +packet or its enclosing structure (e.g. |ssh_request|).
+> +
+> +In addition to the ``release`` callback, the |ssh_packet_ops| reference also
+> +provides a ``complete()`` callback, which is run once the packet has been
+> +completed and provides the status of this completion, i.e. zero on success
+> +or a negative errno value in case of an error. Once the packet has been
+> +submitted to the packet transport layer, the ``complete()`` callback is
+> +always guaranteed to be executed before the ``release()`` callback, i.e. the
+> +packet will always be completed, either successfully, with an error, or due
+> +to cancellation, before it will be released.
+> +
+> +The state of a packet is managed via its ``state`` flags
+> +(|ssh_packet_flags|), which also contains the packet type. In particular,
+> +the following bits are noteworthy:
+> +
+> +* ``SSH_PACKET_SF_LOCKED_BIT``: This bit is set when completion, either
+> +  through error or success, is imminent. It indicates that no further
+> +  references of the packet should be taken and any existing references
+> +  should be dropped as soon as possible. The process setting this bit is
+> +  responsible for removing any references to this packet from the packet
+> +  queue and pending set.
+> +
+> +* ``SSH_PACKET_SF_COMPLETED_BIT``: This bit is set by the process running the
+> +  ``complete()`` callback and is used to ensure that this callback only runs
+> +  once.
+> +
+> +* ``SSH_PACKET_SF_QUEUED_BIT``: This bit is set when the packet is queued on
+> +  the packet queue and cleared when it is dequeued.
+> +
+> +* ``SSH_PACKET_SF_PENDING_BIT``: This bit is set when the packet is added to
+> +  the pending set and cleared when it is removed from it.
+> +
+> +Packet Queue
+> +------------
+> +
+> +The packet queue is the first of the two fundamental collections in the
+> +packet transport layer. It is a priority queue, with priority of the
+> +respective packets based on the packet type (major) and number of tries
+> +(minor). See |SSH_PACKET_PRIORITY| for more details on the priority value.
+> +
+> +All packets to be transmitted by the transport layer must be submitted to
+> +this queue via |ssh_ptl_submit|. Note that this includes control packets
+> +sent by the transport layer itself. Internally, data packets can be
+> +re-submitted to this queue due to timeouts or NAK packets sent by the EC.
+> +
+> +Pending Set
+> +-----------
+> +
+> +The pending set is the second of the two fundamental collections in the
+> +packet transport layer. It stores references to packets that have already
+> +been transmitted, but wait for acknowledgment (e.g. the corresponding ACK
+> +packet) by the EC.
+> +
+> +Note that a packet may both be pending and queued if it has been
+> +re-submitted due to a packet acknowledgment timeout or NAK. On such a
+> +re-submission, packets are not removed from the pending set.
+> +
+> +Transmitter Thread
+> +------------------
+> +
+> +The transmitter thread is responsible for most of the actual work regarding
+> +packet transmission. In each iteration, it (waits for and) checks if the
+> +next packet on the queue (if any) can be transmitted and, if so, removes it
+> +from the queue and increments its counter for the number of transmission
+> +attempts, i.e. tries. If the packet is sequenced, i.e. requires an ACK by
+> +the EC, the packet is added to the pending set. Next, the packet's data is
+> +submitted to the serdev subsystem. In case of an error or timeout during
+> +this submission, the packet is completed by the transmitter thread with the
+> +status value of the callback set accordingly. In case the packet is
+> +unsequenced, i.e. does not require an ACK by the EC, the packet is completed
+> +with success on the transmitter thread.
+> +
+> +Transmission of sequenced packets is limited by the number of concurrently
+> +pending packets, i.e. a limit on how many packets may be waiting for an ACK
+> +from the EC in parallel. This limit is currently set to one (see :doc:`ssh`
+> +for the reasoning behind this). Control packets (i.e. ACK and NAK) can
+> +always be transmitted.
+> +
+> +Receiver Thread
+> +---------------
+> +
+> +Any data received from the EC is put into a FIFO buffer for further
+> +processing. This processing happens on the receiver thread. The receiver
+> +thread parses and validates the received message into its |ssh_frame| and
+> +corresponding payload. It prepares and submits the necessary ACK (and on
+> +validation error or invalid data NAK) packets for the received messages.
+> +
+> +This thread also handles further processing, such as matching ACK messages
+> +to the corresponding pending packet (via sequence ID) and completing it, as
+> +well as initiating re-submission of all currently pending packets on
+> +receival of a NAK message (re-submission in case of a NAK is similar to
+> +re-submission due to timeout, see below for more details on that). Note that
+> +the successful completion of a sequenced packet will always run on the
+> +receiver thread (whereas any failure-indicating completion will run on the
+> +process where the failure occurred).
+> +
+> +Any payload data is forwarded via a callback to the next upper layer, i.e.
+> +the request transport layer.
+> +
+> +Timeout Reaper
+> +--------------
+> +
+> +The packet acknowledgment timeout is a per-packet timeout for sequenced
+> +packets, started when the respective packet begins (re-)transmission (i.e.
+> +this timeout is armed once per transmission attempt on the transmitter
+> +thread). It is used to trigger re-submission or, when the number of tries
+> +has been exceeded, cancellation of the packet in question.
+> +
+> +This timeout is handled via a dedicated reaper task, which is essentially a
+> +work item (re-)scheduled to run when the next packet is set to time out. The
+> +work item then checks the set of pending packets for any packets that have
+> +exceeded the timeout and, if there are any remaining packets, re-schedules
+> +itself to the next appropriate point in time.
+> +
+> +If a timeout has been detected by the reaper, the packet will either be
+> +re-submitted if it still has some remaining tries left, or completed with
+> +``-ETIMEDOUT`` as status if not. Note that re-submission, in this case and
+> +triggered by receival of a NAK, means that the packet is added to the queue
+> +with a now incremented number of tries, yielding a higher priority. The
+> +timeout for the packet will be disabled until the next transmission attempt
+> +and the packet remains on the pending set.
+> +
+> +Note that due to transmission and packet acknowledgment timeouts, the packet
+> +transport layer is always guaranteed to make progress, if only through
+> +timing out packets, and will never fully block.
+> +
+> +Concurrency and Locking
+> +-----------------------
+> +
+> +There are two main locks in the packet transport layer: One guarding access
+> +to the packet queue and one guarding access to the pending set. These
+> +collections may only be accessed and modified under the respective lock. If
+> +access to both collections is needed, the pending lock must be acquired
+> +before the queue lock to avoid deadlocks.
+> +
+> +In addition to guarding the collections, after initial packet submission
+> +certain packet fields may only be accessed under one of the locks.
+> +Specifically, the packet priority must only be accessed while holding the
+> +queue lock and the packet timestamp must only be accessed while holding the
+> +pending lock.
+> +
+> +Other parts of the packet transport layer are guarded independently. State
+> +flags are managed by atomic bit operations and, if necessary, memory
+> +barriers. Modifications to the timeout reaper work item and expiration date
+> +are guarded by their own lock.
+> +
+> +The reference of the packet to the packet transport layer (``ptl``) is
+> +somewhat special. It is either set when the upper layer request is submitted
+> +or, if there is none, when the packet is first submitted. After it is set,
+> +it will not change its value. Functions that may run concurrently with
+> +submission, i.e. cancellation, can not rely on the ``ptl`` reference to be
+> +set. Access to it in these functions is guarded by ``READ_ONCE()``, whereas
+> +setting ``ptl`` is equally guarded with ``WRITE_ONCE()`` for symmetry.
+> +
+> +Some packet fields may be read outside of the respective locks guarding
+> +them, specifically priority and state for tracing. In those cases, proper
+> +access is ensured by employing ``WRITE_ONCE()`` and ``READ_ONCE()``. Such
+> +read-only access is only allowed when stale values are not critical.
+> +
+> +With respect to the interface for higher layers, packet submission
+> +(|ssh_ptl_submit|), packet cancellation (|ssh_ptl_cancel|), data receival
+> +(|ssh_ptl_rx_rcvbuf|), and layer shutdown (|ssh_ptl_shutdown|) may always be
+> +executed concurrently with respect to each other. Note that packet
+> +submission may not run concurrently with itself for the same packet.
+> +Equally, shutdown and data receival may also not run concurrently with
+> +themselves (but may run concurrently with each other).
+> +
+> +
+> +Request Transport Layer
+> +=======================
+> +
+> +The request transport layer is represented via |ssh_rtl| and builds on top
+> +of the packet transport layer. It deals with requests, i.e. SSH packets sent
+> +by the host containing a |ssh_command| as frame payload. This layer
+> +separates responses to requests from events, which are also sent by the EC
+> +via a |ssh_command| payload. While responses are handled in this layer,
+> +events are relayed to the next upper layer, i.e. the controller layer, via
+> +the corresponding callback. The request transport layer is structured around
+> +the following key concepts:
+> +
+> +Request
+> +-------
+> +
+> +Requests are packets with a command-type payload, sent from host to EC to
+> +query data from or trigger an action on it (or both simultaneously). They
+> +are represented by |ssh_request|, wrapping the underlying |ssh_packet|
+> +storing its message data (i.e. SSH frame with command payload). Note that
+> +all top-level representations, e.g. |ssam_request_sync| are built upon this
+> +struct.
+> +
+> +As |ssh_request| extends |ssh_packet|, its lifetime is also managed by the
+> +reference counter inside the packet struct (which can be accessed via
+> +|ssh_request_get| and |ssh_request_put|). Once the counter reaches zero, the
+> +``release()`` callback of the |ssh_request_ops| reference of the request is
+> +called.
+> +
+> +Requests can have an optional response that is equally sent via a SSH
+> +message with command-type payload (from EC to host). The party constructing
+> +the request must know if a response is expected and mark this in the request
+> +flags provided to |ssh_request_init|, so that the request transport layer
+> +can wait for this response.
+> +
+> +Similar to |ssh_packet|, |ssh_request| also has a ``complete()`` callback
+> +provided via its request ops reference and is guaranteed to be completed
+> +before it is released once it has been submitted to the request transport
+> +layer via |ssh_rtl_submit|. For a request without a response, successful
+> +completion will occur once the underlying packet has been successfully
+> +transmitted by the packet transport layer (i.e. from within the packet
+> +completion callback). For a request with response, successful completion
+> +will occur once the response has been received and matched to the request
+> +via its request ID (which happens on the packet layer's data-received
+> +callback running on the receiver thread). If the request is completed with
+> +an error, the status value will be set to the corresponding (negative) errno
+> +value.
+> +
+> +The state of a request is again managed via its ``state`` flags
+> +(|ssh_request_flags|), which also encode the request type. In particular,
+> +the following bits are noteworthy:
+> +
+> +* ``SSH_REQUEST_SF_LOCKED_BIT``: This bit is set when completion, either
+> +  through error or success, is imminent. It indicates that no further
+> +  references of the request should be taken and any existing references
+> +  should be dropped as soon as possible. The process setting this bit is
+> +  responsible for removing any references to this request from the request
+> +  queue and pending set.
+> +
+> +* ``SSH_REQUEST_SF_COMPLETED_BIT``: This bit is set by the process running the
+> +  ``complete()`` callback and is used to ensure that this callback only runs
+> +  once.
+> +
+> +* ``SSH_REQUEST_SF_QUEUED_BIT``: This bit is set when the request is queued on
+> +  the request queue and cleared when it is dequeued.
+> +
+> +* ``SSH_REQUEST_SF_PENDING_BIT``: This bit is set when the request is added to
+> +  the pending set and cleared when it is removed from it.
+> +
+> +Request Queue
+> +-------------
+> +
+> +The request queue is the first of the two fundamental collections in the
+> +request transport layer. In contrast to the packet queue of the packet
+> +transport layer, it is not a priority queue and the simple first come first
+> +serve principle applies.
+> +
+> +All requests to be transmitted by the request transport layer must be
+> +submitted to this queue via |ssh_rtl_submit|. Once submitted, requests may
+> +not be re-submitted, and will not be re-submitted automatically on timeout.
+> +Instead, the request is completed with a timeout error. If desired, the
+> +caller can create and submit a new request for another try, but it must not
+> +submit the same request again.
+> +
+> +Pending Set
+> +-----------
+> +
+> +The pending set is the second of the two fundamental collections in the
+> +request transport layer. This collection stores references to all pending
+> +requests, i.e. requests awaiting a response from the EC (similar to what the
+> +pending set of the packet transport layer does for packets).
+> +
+> +Transmitter Task
+> +----------------
+> +
+> +The transmitter task is scheduled when a new request is available for
+> +transmission. It checks if the next request on the request queue can be
+> +transmitted and, if so, submits its underlying packet to the packet
+> +transport layer. This check ensures that only a limited number of
+> +requests can be pending, i.e. waiting for a response, at the same time. If
+> +the request requires a response, the request is added to the pending set
+> +before its packet is submitted.
+> +
+> +Packet Completion Callback
+> +--------------------------
+> +
+> +The packet completion callback is executed once the underlying packet of a
+> +request has been completed. In case of an error completion, the
+> +corresponding request is completed with the error value provided in this
+> +callback.
+> +
+> +On successful packet completion, further processing depends on the request.
+> +If the request expects a response, it is marked as transmitted and the
+> +request timeout is started. If the request does not expect a response, it is
+> +completed with success.
+> +
+> +Data-Received Callback
+> +----------------------
+> +
+> +The data received callback notifies the request transport layer of data
+> +being received by the underlying packet transport layer via a data-type
+> +frame. In general, this is expected to be a command-type payload.
+> +
+> +If the request ID of the command is one of the request IDs reserved for
+> +events (one to ``SSH_NUM_EVENTS``, inclusively), it is forwarded to the
+> +event callback registered in the request transport layer. If the request ID
+> +indicates a response to a request, the respective request is looked up in
+> +the pending set and, if found and marked as transmitted, completed with
+> +success.
+> +
+> +Timeout Reaper
+> +--------------
+> +
+> +The request-response-timeout is a per-request timeout for requests expecting
+> +a response. It is used to ensure that a request does not wait indefinitely
+> +on a response from the EC and is started after the underlying packet has
+> +been successfully completed.
+> +
+> +This timeout is, similar to the packet acknowledgment timeout on the packet
+> +transport layer, handled via a dedicated reaper task. This task is
+> +essentially a work-item (re-)scheduled to run when the next request is set
+> +to time out. The work item then scans the set of pending requests for any
+> +requests that have timed out and completes them with ``-ETIMEDOUT`` as
+> +status. Requests will not be re-submitted automatically. Instead, the issuer
+> +of the request must construct and submit a new request, if so desired.
+> +
+> +Note that this timeout, in combination with packet transmission and
+> +acknowledgment timeouts, guarantees that the request layer will always make
+> +progress, even if only through timing out packets, and never fully block.
+> +
+> +Concurrency and Locking
+> +-----------------------
+> +
+> +Similar to the packet transport layer, there are two main locks in the
+> +request transport layer: One guarding access to the request queue and one
+> +guarding access to the pending set. These collections may only be accessed
+> +and modified under the respective lock.
+> +
+> +Other parts of the request transport layer are guarded independently. State
+> +flags are (again) managed by atomic bit operations and, if necessary, memory
+> +barriers. Modifications to the timeout reaper work item and expiration date
+> +are guarded by their own lock.
+> +
+> +Some request fields may be read outside of the respective locks guarding
+> +them, specifically the state for tracing. In those cases, proper access is
+> +ensured by employing ``WRITE_ONCE()`` and ``READ_ONCE()``. Such read-only
+> +access is only allowed when stale values are not critical.
+> +
+> +With respect to the interface for higher layers, request submission
+> +(|ssh_rtl_submit|), request cancellation (|ssh_rtl_cancel|), and layer
+> +shutdown (|ssh_rtl_shutdown|) may always be executed concurrently with
+> +respect to each other. Note that request submission may not run concurrently
+> +with itself for the same request (and also may only be called once per
+> +request). Equally, shutdown may also not run concurrently with itself.
+> +
+> +
+> +Controller Layer
+> +================
+> +
+> +The controller layer extends on the request transport layer to provide an
+> +easy-to-use interface for client drivers. It is represented by
+> +|ssam_controller| and the SSH driver. While the lower level transport layers
+> +take care of transmitting and handling packets and requests, the controller
+> +layer takes on more of a management role. Specifically, it handles device
+> +initialization, power management, and event handling, including event
+> +delivery and registration via the (event) completion system (|ssam_cplt|).
+> +
+> +Event Registration
+> +------------------
+> +
+> +In general, an event (or rather a class of events) has to be explicitly
+> +requested by the host before the EC will send it (HID input events seem to
+> +be the exception). This is done via an event-enable request (similarly,
+> +events should be disabled via an event-disable request once no longer
+> +desired).
+> +
+> +The specific request used to enable (or disable) an event is given via an
+> +event registry, i.e. the governing authority of this event (so to speak),
+> +represented by |ssam_event_registry|. As parameters to this request, the
+> +target category and, depending on the event registry, instance ID of the
+> +event to be enabled must be provided. This (optional) instance ID must be
+> +zero if the registry does not use it. Together, target category and instance
+> +ID form the event ID, represented by |ssam_event_id|. In short, both, event
+> +registry and event ID, are required to uniquely identify a respective class
+> +of events.
+> +
+> +Note that a further *request ID* parameter must be provided for the
+> +enable-event request. This parameter does not influence the class of events
+> +being enabled, but instead is set as the request ID (RQID) on each event of
+> +this class sent by the EC. It is used to identify events (as a limited
+> +number of request IDs is reserved for use in events only, specifically one
+> +to ``SSH_NUM_EVENTS`` inclusively) and also map events to their specific
+> +class. Currently, the controller always sets this parameter to the target
+> +category specified in |ssam_event_id|.
+> +
+> +As multiple client drivers may rely on the same (or overlapping) classes of
+> +events and enable/disable calls are strictly binary (i.e. on/off), the
+> +controller has to manage access to these events. It does so via reference
+> +counting, storing the counter inside an RB-tree based mapping with event
+> +registry and ID as key (there is no known list of valid event registry and
+> +event ID combinations). See |ssam_nf|, |ssam_nf_refcount_inc|, and
+> +|ssam_nf_refcount_dec| for details.
+> +
+> +This management is done together with notifier registration (described in
+> +the next section) via the top-level |ssam_notifier_register| and
+> +|ssam_notifier_unregister| functions.
+> +
+> +Event Delivery
+> +--------------
+> +
+> +To receive events, a client driver has to register an event notifier via
+> +|ssam_notifier_register|. This increments the reference counter for that
+> +specific class of events (as detailed in the previous section), enables the
+> +class on the EC (if it has not been enabled already), and installs the
+> +provided notifier callback.
+> +
+> +Notifier callbacks are stored in lists, with one (RCU) list per target
+> +category (provided via the event ID; NB: there is a fixed known number of
+> +target categories). There is no known association from the combination of
+> +event registry and event ID to the command data (target ID, target category,
+> +command ID, and instance ID) that can be provided by an event class, apart
+> +from target category and instance ID given via the event ID.
+> +
+> +Note that due to the way notifiers are (or rather have to be) stored, client
+> +drivers may receive events that they have not requested and need to account
+> +for them. Specifically, they will, by default, receive all events from the
+> +same target category. To simplify dealing with this, filtering of events by
+> +target ID (provided via the event registry) and instance ID (provided via
+> +the event ID) can be requested when registering a notifier. This filtering
+> +is applied when iterating over the notifiers at the time they are executed.
+> +
+> +All notifier callbacks are executed on a dedicated workqueue, the so-called
+> +completion workqueue. After an event has been received via the callback
+> +installed in the request layer (running on the receiver thread of the packet
+> +transport layer), it will be put on its respective event queue
+> +(|ssam_event_queue|). From this event queue the completion work item of that
+> +queue (running on the completion workqueue) will pick up the event and
+> +execute the notifier callback. This is done to avoid blocking on the
+> +receiver thread.
+> +
+> +There is one event queue per combination of target ID and target category.
+> +This is done to ensure that notifier callbacks are executed in sequence for
+> +events of the same target ID and target category. Callbacks can be executed
+> +in parallel for events with a different combination of target ID and target
+> +category.
+> +
+> +Concurrency and Locking
+> +-----------------------
+> +
+> +Most of the concurrency related safety guarantees of the controller are
+> +provided by the lower-level request transport layer. In addition to this,
+> +event (un-)registration is guarded by its own lock.
+> +
+> +Access to the controller state is guarded by the state lock. This lock is a
+> +read/write semaphore. The reader part can be used to ensure that the state
+> +does not change while functions depending on the state to stay the same
+> +(e.g. |ssam_notifier_register|, |ssam_notifier_unregister|,
+> +|ssam_request_sync_submit|, and derivatives) are executed and this guarantee
+> +is not already provided otherwise (e.g. through |ssam_client_bind| or
+> +|ssam_client_link|). The writer part guards any transitions that will change
+> +the state, i.e. initialization, destruction, suspension, and resumption.
+> +
+> +The controller state may be accessed (read-only) outside the state lock for
+> +smoke-testing against invalid API usage (e.g. in |ssam_request_sync_submit|).
+> +Note that such checks are not supposed to (and will not) protect against all
+> +invalid usages, but rather aim to help catch them. In those cases, proper
+> +variable access is ensured by employing ``WRITE_ONCE()`` and ``READ_ONCE()``.
+> +
+> +Assuming any preconditions on the state not changing have been satisfied,
+> +all non-initialization and non-shutdown functions may run concurrently with
+> +each other. This includes |ssam_notifier_register|, |ssam_notifier_unregister|,
+> +|ssam_request_sync_submit|, as well as all functions building on top of those.
+> diff --git a/Documentation/driver-api/surface_aggregator/overview.rst b/Documentation/driver-api/surface_aggregator/overview.rst
+> new file mode 100644
+> index 000000000000..1e9d57e50063
+> --- /dev/null
+> +++ b/Documentation/driver-api/surface_aggregator/overview.rst
+> @@ -0,0 +1,77 @@
+> +.. SPDX-License-Identifier: GPL-2.0+
+> +
+> +========
+> +Overview
+> +========
+> +
+> +The Surface/System Aggregator Module (SAM, SSAM) is an (arguably *the*)
+> +embedded controller (EC) on Microsoft Surface devices. It has been originally
+> +introduced on 4th generation devices (Surface Pro 4, Surface Book 1), but
+> +its responsibilities and feature-set have since been expanded significantly
+> +with the following generations.
+> +
+> +
+> +Features and Integration
+> +========================
+> +
+> +Not much is currently known about SAM on 4th generation devices (Surface Pro
+> +4, Surface Book 1), due to the use of a different communication interface
+> +between host and EC (as detailed below). On 5th (Surface Pro 2017, Surface
+> +Book 2, Surface Laptop 1) and later generation devices, SAM is responsible
+> +for providing battery information (both current status and static values,
+> +such as maximum capacity etc.), as well as an assortment of temperature
+> +sensors (e.g. skin temperature) and cooling/performance-mode setting to the
+> +host. On the Surface Book 2, specifically, it additionally provides an
+> +interface for properly handling clipboard detachment (i.e. separating the
+> +display part from the keyboard part of the device), on the Surface Laptop 1
+> +and 2 it is required for keyboard HID input. This HID subsystem has been
+> +restructured for 7th generation devices and on those, specifically Surface
+> +Laptop 3 and Surface Book 3, is responsible for all major HID input (i.e.
+> +keyboard and touchpad).
+> +
+> +While features have not changed much on a coarse level since the 5th
+> +generation, internal interfaces have undergone some rather large changes. On
+> +5th and 6th generation devices, both battery and temperature information is
+> +exposed to ACPI via a shim driver (referred to as Surface ACPI Notify, or
+> +SAN), translating ACPI generic serial bus write-/read-accesses to SAM
+> +requests. On 7th generation devices, this additional layer is gone and these
+> +devices require a driver hooking directly into the SAM interface. Equally,
+> +on newer generations, less devices are declared in ACPI, making them a bit
+> +harder to discover and requiring us to hard-code a sort of device registry.
+> +Due to this, a SSAM bus and subsystem with client devices
+> +(:c:type:`struct ssam_device <ssam_device>`) has been implemented.
+> +
+> +
+> +Communication
+> +=============
+> +
+> +The type of communication interface between host and EC depends on the
+> +generation of the Surface device. On 4th generation devices, host and EC
+> +communicate via HID, specifically using a HID-over-I2C device, whereas on
+> +5th and later generations, communication takes place via a USART serial
+> +device. In accordance to the drivers found on other operating systems, we
+> +refer to the serial device and its driver as Surface Serial Hub (SSH). When
+> +needed, we differentiate between both types of SAM by referring to them as
+> +SAM-over-SSH and SAM-over-HID.
+> +
+> +Currently, this subsystem only supports SAM-over-SSH. The SSH communication
+> +interface is described in more detail below. The HID interface has not been
+> +reverse engineered yet and it is, at the moment, unclear how many (and
+> +which) concepts of the SSH interface detailed below can be transferred to
+> +it.
+> +
+> +Surface Serial Hub
+> +------------------
+> +
+> +As already elaborated above, the Surface Serial Hub (SSH) is the
+> +communication interface for SAM on 5th- and all later-generation Surface
+> +devices. On the highest level, communication can be separated into two main
+> +types: Requests, messages sent from host to EC that may trigger a direct
+> +response from the EC (explicitly associated with the request), and events
+> +(sometimes also referred to as notifications), sent from EC to host without
+> +being a direct response to a previous request. We may also refer to requests
+> +without response as commands. In general, events need to be enabled via one
+> +of multiple dedicated requests before they are sent by the EC.
+> +
+> +See :doc:`ssh` for a more technical protocol documentation and
+> +:doc:`internal` for an overview of the internal driver architecture.
+> diff --git a/Documentation/driver-api/surface_aggregator/ssh.rst b/Documentation/driver-api/surface_aggregator/ssh.rst
+> new file mode 100644
+> index 000000000000..bf007d6c9873
+> --- /dev/null
+> +++ b/Documentation/driver-api/surface_aggregator/ssh.rst
+> @@ -0,0 +1,344 @@
+> +.. SPDX-License-Identifier: GPL-2.0+
+> +
+> +.. |u8| replace:: :c:type:`u8 <u8>`
+> +.. |u16| replace:: :c:type:`u16 <u16>`
+> +.. |TYPE| replace:: ``TYPE``
+> +.. |LEN| replace:: ``LEN``
+> +.. |SEQ| replace:: ``SEQ``
+> +.. |SYN| replace:: ``SYN``
+> +.. |NAK| replace:: ``NAK``
+> +.. |ACK| replace:: ``ACK``
+> +.. |DATA| replace:: ``DATA``
+> +.. |DATA_SEQ| replace:: ``DATA_SEQ``
+> +.. |DATA_NSQ| replace:: ``DATA_NSQ``
+> +.. |TC| replace:: ``TC``
+> +.. |TID| replace:: ``TID``
+> +.. |IID| replace:: ``IID``
+> +.. |RQID| replace:: ``RQID``
+> +.. |CID| replace:: ``CID``
+> +
+> +===========================
+> +Surface Serial Hub Protocol
+> +===========================
+> +
+> +The Surface Serial Hub (SSH) is the central communication interface for the
+> +embedded Surface Aggregator Module controller (SAM or EC), found on newer
+> +Surface generations. We will refer to this protocol and interface as
+> +SAM-over-SSH, as opposed to SAM-over-HID for the older generations.
+> +
+> +On Surface devices with SAM-over-SSH, SAM is connected to the host via UART
+> +and defined in ACPI as device with ID ``MSHW0084``. On these devices,
+> +significant functionality is provided via SAM, including access to battery
+> +and power information and events, thermal read-outs and events, and many
+> +more. For Surface Laptops, keyboard input is handled via HID directed
+> +through SAM, on the Surface Laptop 3 and Surface Book 3 this also includes
+> +touchpad input.
+> +
+> +Note that the standard disclaimer for this subsystem also applies to this
+> +document: All of this has been reverse-engineered and may thus be erroneous
+> +and/or incomplete.
+> +
+> +All CRCs used in the following are two-byte ``crc_ccitt_false(0xffff, ...)``.
+> +All multi-byte values are little-endian, there is no implicit padding between
+> +values.
+> +
+> +
+> +SSH Packet Protocol: Definitions
+> +================================
+> +
+> +The fundamental communication unit of the SSH protocol is a frame
+> +(:c:type:`struct ssh_frame <ssh_frame>`). A frame consists of the following
+> +fields, packed together and in order:
+> +
+> +.. flat-table:: SSH Frame
+> +   :widths: 1 1 4
+> +   :header-rows: 1
+> +
+> +   * - Field
+> +     - Type
+> +     - Description
+> +
+> +   * - |TYPE|
+> +     - |u8|
+> +     - Type identifier of the frame.
+> +
+> +   * - |LEN|
+> +     - |u16|
+> +     - Length of the payload associated with the frame.
+> +
+> +   * - |SEQ|
+> +     - |u8|
+> +     - Sequence ID (see explanation below).
+> +
+> +Each frame structure is followed by a CRC over this structure. The CRC over
+> +the frame structure (|TYPE|, |LEN|, and |SEQ| fields) is placed directly
+> +after the frame structure and before the payload. The payload is followed by
+> +its own CRC (over all payload bytes). If the payload is not present (i.e.
+> +the frame has ``LEN=0``), the CRC of the payload is still present and will
+> +evaluate to ``0xffff``. The |LEN| field does not include any of the CRCs, it
+> +equals the number of bytes inbetween the CRC of the frame and the CRC of the
+> +payload.
+> +
+> +Additionally, the following fixed two-byte sequences are used:
+> +
+> +.. flat-table:: SSH Byte Sequences
+> +   :widths: 1 1 4
+> +   :header-rows: 1
+> +
+> +   * - Name
+> +     - Value
+> +     - Description
+> +
+> +   * - |SYN|
+> +     - ``[0xAA, 0x55]``
+> +     - Synchronization bytes.
+> +
+> +A message consists of |SYN|, followed by the frame (|TYPE|, |LEN|, |SEQ| and
+> +CRC) and, if specified in the frame (i.e. ``LEN > 0``), payload bytes,
+> +followed finally, regardless if the payload is present, the payload CRC. The
+> +messages corresponding to an exchange are, in part, identified by having the
+> +same sequence ID (|SEQ|), stored inside the frame (more on this in the next
+> +section). The sequence ID is a wrapping counter.
+> +
+> +A frame can have the following types
+> +(:c:type:`enum ssh_frame_type <ssh_frame_type>`):
+> +
+> +.. flat-table:: SSH Frame Types
+> +   :widths: 1 1 4
+> +   :header-rows: 1
+> +
+> +   * - Name
+> +     - Value
+> +     - Short Description
+> +
+> +   * - |NAK|
+> +     - ``0x04``
+> +     - Sent on error in previously received message.
+> +
+> +   * - |ACK|
+> +     - ``0x40``
+> +     - Sent to acknowledge receival of |DATA| frame.
+> +
+> +   * - |DATA_SEQ|
+> +     - ``0x80``
+> +     - Sent to transfer data. Sequenced.
+> +
+> +   * - |DATA_NSQ|
+> +     - ``0x00``
+> +     - Same as |DATA_SEQ|, but does not need to be ACKed.
+> +
+> +Both |NAK|- and |ACK|-type frames are used to control flow of messages and
+> +thus do not carry a payload. |DATA_SEQ|- and |DATA_NSQ|-type frames on the
+> +other hand must carry a payload. The flow sequence and interaction of
+> +different frame types will be described in more depth in the next section.
+> +
+> +
+> +SSH Packet Protocol: Flow Sequence
+> +==================================
+> +
+> +Each exchange begins with |SYN|, followed by a |DATA_SEQ|- or
+> +|DATA_NSQ|-type frame, followed by its CRC, payload, and payload CRC. In
+> +case of a |DATA_NSQ|-type frame, the exchange is then finished. In case of a
+> +|DATA_SEQ|-type frame, the receiving party has to acknowledge receival of
+> +the frame by responding with a message containing an |ACK|-type frame with
+> +the same sequence ID of the |DATA| frame. In other words, the sequence ID of
+> +the |ACK| frame specifies the |DATA| frame to be acknowledged. In case of an
+> +error, e.g. an invalid CRC, the receiving party responds with a message
+> +containing an |NAK|-type frame. As the sequence ID of the previous data
+> +frame, for which an error is indicated via the |NAK| frame, cannot be relied
+> +upon, the sequence ID of the |NAK| frame should not be used and is set to
+> +zero. After receival of an |NAK| frame, the sending party should re-send all
+> +outstanding (non-ACKed) messages.
+> +
+> +Sequence IDs are not synchronized between the two parties, meaning that they
+> +are managed independently for each party. Identifying the messages
+> +corresponding to a single exchange thus relies on the sequence ID as well as
+> +the type of the message, and the context. Specifically, the sequence ID is
+> +used to associate an ``ACK`` with its ``DATA_SEQ``-type frame, but not
+> +``DATA_SEQ``- or ``DATA_NSQ``-type frames with other ``DATA``- type frames.
+> +
+> +An example exchange might look like this:
+> +
+> +::
+> +
+> +    tx: -- SYN FRAME(D) CRC(F) PAYLOAD CRC(P) -----------------------------
+> +    rx: ------------------------------------- SYN FRAME(A) CRC(F) CRC(P) --
+> +
+> +where both frames have the same sequence ID (``SEQ``). Here, ``FRAME(D)``
+> +indicates a |DATA_SEQ|-type frame, ``FRAME(A)`` an ``ACK``-type frame,
+> +``CRC(F)`` the CRC over the previous frame, ``CRC(P)`` the CRC over the
+> +previous payload. In case of an error, the exchange would look like this:
+> +
+> +::
+> +
+> +    tx: -- SYN FRAME(D) CRC(F) PAYLOAD CRC(P) -----------------------------
+> +    rx: ------------------------------------- SYN FRAME(N) CRC(F) CRC(P) --
+> +
+> +upon which the sender should re-send the message. ``FRAME(N)`` indicates an
+> +|NAK|-type frame. Note that the sequence ID of the |NAK|-type frame is fixed
+> +to zero. For |DATA_NSQ|-type frames, both exchanges are the same:
+> +
+> +::
+> +
+> +    tx: -- SYN FRAME(DATA_NSQ) CRC(F) PAYLOAD CRC(P) ----------------------
+> +    rx: -------------------------------------------------------------------
+> +
+> +Here, an error can be detected, but not corrected or indicated to the
+> +sending party. These exchanges are symmetric, i.e. switching ``rx`` and
+> +``tx`` results again in a valid exchange. Currently, no longer exchanges are
+> +known.
+> +
+> +
+> +Commands: Requests, Responses, and Events
+> +=========================================
+> +
+> +Commands are sent as payload inside a data frame. Currently, this is the
+> +only known payload type of |DATA| frames, with a payload-type value of
+> +``0x80`` (:c:type:`SSH_PLD_TYPE_CMD <ssh_payload_type>`).
+> +
+> +The command-type payload (:c:type:`struct ssh_command <ssh_command>`)
+> +consists of an eight-byte command structure, followed by optional and
+> +variable length command data. The length of this optional data is derived
+> +from the frame payload length given in the corresponding frame, i.e. it is
+> +``frame.len - sizeof(struct ssh_command)``. The command struct contains the
+> +following fields, packed together and in order:
+> +
+> +.. flat-table:: SSH Command
+> +   :widths: 1 1 4
+> +   :header-rows: 1
+> +
+> +   * - Field
+> +     - Type
+> +     - Description
+> +
+> +   * - |TYPE|
+> +     - |u8|
+> +     - Type of the payload. For commands always ``0x80``.
+> +
+> +   * - |TC|
+> +     - |u8|
+> +     - Target category.
+> +
+> +   * - |TID| (out)
+> +     - |u8|
+> +     - Target ID for outgoing (host to EC) commands.
+> +
+> +   * - |TID| (in)
+> +     - |u8|
+> +     - Target ID for incoming (EC to host) commands.
+> +
+> +   * - |IID|
+> +     - |u8|
+> +     - Instance ID.
+> +
+> +   * - |RQID|
+> +     - |u16|
+> +     - Request ID.
+> +
+> +   * - |CID|
+> +     - |u8|
+> +     - Command ID.
+> +
+> +The command struct and data, in general, does not contain any failure
+> +detection mechanism (e.g. CRCs), this is solely done on the frame level.
+> +
+> +Command-type payloads are used by the host to send commands and requests to
+> +the EC as well as by the EC to send responses and events back to the host.
+> +We differentiate between requests (sent by the host), responses (sent by the
+> +EC in response to a request), and events (sent by the EC without a preceding
+> +request).
+> +
+> +Commands and events are uniquely identified by their target category
+> +(``TC``) and command ID (``CID``). The target category specifies a general
+> +category for the command (e.g. system in general, vs. battery and AC, vs.
+> +temperature, and so on), while the command ID specifies the command inside
+> +that category. Only the combination of |TC| + |CID| is unique. Additionally,
+> +commands have an instance ID (``IID``), which is used to differentiate
+> +between different sub-devices. For example ``TC=3`` ``CID=1`` is a
+> +request to get the temperature on a thermal sensor, where |IID| specifies
+> +the respective sensor. If the instance ID is not used, it should be set to
+> +zero. If instance IDs are used, they, in general, start with a value of one,
+> +whereas zero may be used for instance independent queries, if applicable. A
+> +response to a request should have the same target category, command ID, and
+> +instance ID as the corresponding request.
+> +
+> +Responses are matched to their corresponding request via the request ID
+> +(``RQID``) field. This is a 16 bit wrapping counter similar to the sequence
+> +ID on the frames. Note that the sequence ID of the frames for a
+> +request-response pair does not match. Only the request ID has to match.
+> +Frame-protocol wise these are two separate exchanges, and may even be
+> +separated, e.g. by an event being sent after the request but before the
+> +response. Not all commands produce a response, and this is not detectable by
+> +|TC| + |CID|. It is the responsibility of the issuing party to wait for a
+> +response (or signal this to the communication framework, as is done in
+> +SAN/ACPI via the ``SNC`` flag).
+> +
+> +Events are identified by unique and reserved request IDs. These IDs should
+> +not be used by the host when sending a new request. They are used on the
+> +host to, first, detect events and, second, match them with a registered
+> +event handler. Request IDs for events are chosen by the host and directed to
+> +the EC when setting up and enabling an event source (via the
+> +enable-event-source request). The EC then uses the specified request ID for
+> +events sent from the respective source. Note that an event should still be
+> +identified by its target category, command ID, and, if applicable, instance
+> +ID, as a single event source can send multiple different event types. In
+> +general, however, a single target category should map to a single reserved
+> +event request ID.
+> +
+> +Furthermore, requests, responses, and events have an associated target ID
+> +(``TID``). This target ID is split into output (host to EC) and input (EC to
+> +host) fields, with the respecting other field (e.g. output field on incoming
+> +messages) set to zero. Two ``TID`` values are known: Primary (``0x01``) and
+> +secondary (``0x02``). In general, the response to a request should have the
+> +same ``TID`` value, however, the field (output vs. input) should be used in
+> +accordance to the direction in which the response is sent (i.e. on the input
+> +field, as responses are generally sent from the EC to the host).
+> +
+> +Note that, even though requests and events should be uniquely identifiable
+> +by target category and command ID alone, the EC may require specific
+> +target ID and instance ID values to accept a command. A command that is
+> +accepted for ``TID=1``, for example, may not be accepted for ``TID=2``
+> +and vice versa.
+> +
+> +
+> +Limitations and Observations
+> +============================
+> +
+> +The protocol can, in theory, handle up to ``U8_MAX`` frames in parallel,
+> +with up to ``U16_MAX`` pending requests (neglecting request IDs reserved for
+> +events). In practice, however, this is more limited. From our testing
+> +(although via a python and thus a user-space program), it seems that the EC
+> +can handle up to four requests (mostly) reliably in parallel at a certain
+> +time. With five or more requests in parallel, consistent discarding of
+> +commands (ACKed frame but no command response) has been observed. For five
+> +simultaneous commands, this reproducibly resulted in one command being
+> +dropped and four commands being handled.
+> +
+> +However, it has also been noted that, even with three requests in parallel,
+> +occasional frame drops happen. Apart from this, with a limit of three
+> +pending requests, no dropped commands (i.e. command being dropped but frame
+> +carrying command being ACKed) have been observed. In any case, frames (and
+> +possibly also commands) should be re-sent by the host if a certain timeout
+> +is exceeded. This is done by the EC for frames with a timeout of one second,
+> +up to two re-tries (i.e. three transmissions in total). The limit of
+> +re-tries also applies to received NAKs, and, in a worst case scenario, can
+> +lead to entire messages being dropped.
+> +
+> +While this also seems to work fine for pending data frames as long as no
+> +transmission failures occur, implementation and handling of these seems to
+> +depend on the assumption that there is only one non-acknowledged data frame.
+> +In particular, the detection of repeated frames relies on the last sequence
+> +number. This means that, if a frame that has been successfully received by
+> +the EC is sent again, e.g. due to the host not receiving an |ACK|, the EC
+> +will only detect this if it has the sequence ID of the last frame received
+> +by the EC. As an example: Sending two frames with ``SEQ=0`` and ``SEQ=1``
+> +followed by a repetition of ``SEQ=0`` will not detect the second ``SEQ=0``
+> +frame as such, and thus execute the command in this frame each time it has
+> +been received, i.e. twice in this example. Sending ``SEQ=0``, ``SEQ=1`` and
+> +then repeating ``SEQ=1`` will detect the second ``SEQ=1`` as repetition of
+> +the first one and ignore it, thus executing the contained command only once.
+> +
+> +In conclusion, this suggests a limit of at most one pending un-ACKed frame
+> +(per party, effectively leading to synchronous communication regarding
+> +frames) and at most three pending commands. The limit to synchronous frame
+> +transfers seems to be consistent with behavior observed on Windows.
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 64730461f4df..ff5d60875cec 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -11697,6 +11697,7 @@ M:	Maximilian Luz <luzmaximilian@gmail.com>
+>  S:	Maintained
+>  W:	https://github.com/linux-surface/surface-aggregator-module
+>  C:	irc://chat.freenode.net/##linux-surface
+> +F:	Documentation/driver-api/surface_aggregator/
+>  F:	drivers/platform/surface/aggregator/
+>  F:	include/linux/surface_aggregator/
 > 
+> --
+> 2.29.2
+> 
+
