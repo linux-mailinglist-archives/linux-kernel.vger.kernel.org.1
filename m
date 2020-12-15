@@ -2,100 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B902DB1FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:58:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F7E2DB2DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:42:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729341AbgLOQ4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:56:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729665AbgLOQ4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:56:08 -0500
-X-Gm-Message-State: AOAM531hqTOMYM5zJ0Y32R+Jjvb4lbp7aFiM3Gqh59RZS6Z2hI6v8+BU
-        SAW8psa7OIta17po8Ys7Po2q9N8i8Ms1OKg6T6YiKA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608051328;
-        bh=wxgX7rhYWEdaXnSJ6bJp8xImT47Xo70cIxCVXhRWJMk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bKx5sHyUxlKUO5O1VSKvYl+KlaKh1xk5TM0+wfneX+9+TIBF2Ie4C+vqt8p2kpB3X
-         CK624/Y76U1sBgrmcfi9FCN5fcukZN45Lozelv3Ea3HzoxndJlYYC5+FfQulzZuYrN
-         Pvj8RGFxAewuiKi2Wg7CczDgRFskM9e+OZWs/SX0PoGuSI0wPr+kvIVzKZ4UoU2BcC
-         nTdolSOetdQAWReQbNu/yqGiSiJ/Q73LRR/2qzl8i57W/cmJxFNNCI/vQRq92AKEgc
-         ZtCO8fqfbsYDLZpZ7/FWmhc94qBXM4EIVTO/xtLEhZSwreSN1H61I3dOjCj25I7bKK
-         rUViwgN8UvXhA==
-X-Google-Smtp-Source: ABdhPJw+VfdnYClq2C1NfMWCzjVSwytcRYUNwbuO86jDcwu7QTrd/YpYWhMAV2WfVcfj0qIb+FX0haGZwRfdhSVCd1Y=
-X-Received: by 2002:a5d:4905:: with SMTP id x5mr19403633wrq.75.1608051326140;
- Tue, 15 Dec 2020 08:55:26 -0800 (PST)
+        id S1731240AbgLORkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 12:40:31 -0500
+Received: from correo.inac.gob.ve ([201.248.73.218]:59068 "EHLO
+        st2apzmtai.inac.gob.ve" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731029AbgLORkR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 12:40:17 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by st2apzmtai.inac.gob.ve (Postfix) with ESMTP id 43C1B8732F;
+        Tue, 15 Dec 2020 13:08:16 -0400 (-04)
+Received: from st2apzmtai.inac.gob.ve ([127.0.0.1])
+        by localhost (st2apzmtai.inac.gob.ve [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id sZMFquvXGelh; Tue, 15 Dec 2020 13:08:15 -0400 (-04)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by st2apzmtai.inac.gob.ve (Postfix) with ESMTP id DE4C284681;
+        Tue, 15 Dec 2020 13:02:48 -0400 (-04)
+DKIM-Filter: OpenDKIM Filter v2.10.3 st2apzmtai.inac.gob.ve DE4C284681
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inac.gob.ve;
+        s=F05F55CC-4103-11E8-9A0D-8F69A16C2019; t=1608051769;
+        bh=TpLu9xQ7aqYszn1uee2jGpF/XUIli9UO9LLYMuERD7w=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=aYOKPDHW8JJw5gpRPnSrCRQ883n/Qr6Dln+T39h6YHcbHb68Wp+nlSvY/wcW/RR1E
+         8ax1FsSArqo3+4nLySyA3YuM01GBjztrz+iVnIGnDBsUjfJSh7D2DqiB7orqxZDbkG
+         gNjVKhEeXYcNe6YwqgoCdzBVyZWl5WEOLzVDU3KmhvGVSmO3Vzq1lZF5tHAeo/QSBY
+         Q6OImPZJGnadEl+bIlA6qt05eIxOWHZSQpnLMvwjpT30i9HUcch0tsY54WQRPc7Dh+
+         ZPKeXYi8EPs1YLOBaHPbx0HfJt1mS6Yyo/maUqTU8Ogau63EMeBsf/1FVeLwSQcLcB
+         M6nCtot0Y2OzA==
+X-Virus-Scanned: amavisd-new at 
+Received: from st2apzmtai.inac.gob.ve ([127.0.0.1])
+        by localhost (st2apzmtai.inac.gob.ve [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 3qnLh49UytLt; Tue, 15 Dec 2020 13:02:48 -0400 (-04)
+Received: from [100.124.3.74] (188-207-74-187.mobile.kpn.net [188.207.74.187])
+        by st2apzmtai.inac.gob.ve (Postfix) with ESMTPSA id 6829286506;
+        Tue, 15 Dec 2020 12:55:48 -0400 (-04)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <875z5c2db8.fsf@nanos.tec.linutronix.de> <20201209163434.GA22851@fuller.cnet>
- <87r1nyzogg.fsf@nanos.tec.linutronix.de> <20201210152618.GB23951@fuller.cnet>
- <87zh2lib8l.fsf@nanos.tec.linutronix.de> <20201211002703.GA47016@fuller.cnet>
- <87v9d8h3lx.fsf@nanos.tec.linutronix.de> <20201211141822.GA67764@fuller.cnet>
- <87k0togikr.fsf@nanos.tec.linutronix.de> <d9063c37-a965-d5cf-e923-c0c9f6ddc044@redhat.com>
- <20201215105927.GA3321@fuller.cnet>
-In-Reply-To: <20201215105927.GA3321@fuller.cnet>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 15 Dec 2020 08:55:15 -0800
-X-Gmail-Original-Message-ID: <CALCETrWSnMm-mfC5LjzsFLk6Tt_40Udrif-Kh34TTj6fp_8ZLw@mail.gmail.com>
-Message-ID: <CALCETrWSnMm-mfC5LjzsFLk6Tt_40Udrif-Kh34TTj6fp_8ZLw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: {Spam?} YOU HAVE WON
+To:     Recipients <juan.arias@inac.gob.ve>
+From:   juan.arias@inac.gob.ve
+Date:   Tue, 15 Dec 2020 17:55:40 +0100
+Reply-To: johnsonwilson389@gmail.com
+Message-Id: <20201215165549.6829286506@st2apzmtai.inac.gob.ve>
+X-inac-MailScanner: Found to be clean, Found to be clean
+X-inac-MailScanner-SpamCheck: spam, SPAMHAUS, SpamAssassin (almacenado,
+        puntaje=7.644, requerido 4, ADVANCE_FEE_4_NEW_MONEY 0.12,
+        ALL_TRUSTED -1.00, FREEMAIL_FORGED_REPLYTO 2.50,
+        FREEMAIL_REPLYTO_END_DIGIT 0.25, HK_LOTTO 0.29, HK_WIN 1.00,
+        LOTS_OF_MONEY 0.00, LOTTO_AGENT 1.50, MONEY_FRAUD_5 0.00,
+        MONEY_FREEMAIL_REPTO 1.22, MONEY_NOHTML 1.27, SUBJ_ALL_CAPS 0.50,
+        URIBL_BLOCKED 0.00), spam, SpamAssassin (almacenado, puntaje=6.045,
+        requerido 4, ADVANCE_FEE_3_NEW_MONEY 0.32, ALL_TRUSTED -1.00,
+        DKIM_INVALID 0.10, DKIM_SIGNED 0.10, FREEMAIL_FORGED_REPLYTO 2.50,
+        FREEMAIL_REPLYTO_END_DIGIT 0.25, HK_LOTTO 0.29, HK_WIN 1.00,
+        LOTS_OF_MONEY 0.00, MONEY_FREEMAIL_REPTO 1.22, MONEY_NOHTML 1.27,
+        URIBL_BLOCKED 0.00)
+X-inac-MailScanner-SpamScore: sssssss, ssssss
+X-inac-MailScanner-Information: Please contact the ISP for more information
+X-inac-MailScanner-ID: DE4C284681.A167F
+X-inac-MailScanner-From: juan.arias@inac.gob.ve
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 3:35 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
->
-> On Fri, Dec 11, 2020 at 10:59:59PM +0100, Paolo Bonzini wrote:
-> > On 11/12/20 22:04, Thomas Gleixner wrote:
-> > > > Its 100ms off with migration, and can be reduced further (customers
-> > > > complained about 5 seconds but seem happy with 0.1ms).
-> > > What is 100ms? Guaranteed maximum migration time?
-> >
-> > I suppose it's the length between the time from KVM_GET_CLOCK and
-> > KVM_GET_MSR(IA32_TSC) to KVM_SET_CLOCK and KVM_SET_MSR(IA32_TSC).  But the
-> > VM is paused for much longer, the sequence for the non-live part of the
-> > migration (aka brownout) is as follows:
-> >
-> >     pause
-> >     finish sending RAM            receive RAM               ~1 sec
-> >     send paused-VM state          finish receiving RAM     \
-> >                                   receive paused-VM state   ) 0.1 sec
-> >                                   restart                  /
-> >
-> > The nanosecond and TSC times are sent as part of the paused-VM state at the
-> > very end of the live migration process.
-> >
-> > So it's still true that the time advances during live migration brownout;
-> > 0.1 seconds is just the final part of the live migration process.  But for
-> > _live_ migration there is no need to design things according to "people are
-> > happy if their clock is off by 0.1 seconds only".
->
-> Agree. What would be a good way to fix this?
->
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-Could you implement the Hyper-V clock interface?  It's much, much
-simpler than the kvmclock interface.  It has the downside that
-CLOCK_BOOTTIME won't do what you want, but I'm not really convinced
-that's a problem, and you could come up with a minimal extension to
-fix that.
+Sir/Madam,
+
+CONGRATULATIONS!!!
+
+We are pleased to inform you of the result of the Lotto NL Winners Internat=
+ional programs held on the 13th of December 2020.  Your e-mail address atta=
+ched to ticket #: 00903228100 with prize # 778009/UK drew =E2=82=AC1,000,00=
+0.00 which was first in the 2nd class of the draws. you are to receive =E2=
+=82=AC1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until =
+your money (=E2=82=AC1,000,000.00) has been fully remitted to you by our ac=
+credited pay-point bank. =
+
+
+This measure must be adhere to  avoid loss of your cash prize-winners of ou=
+r cash prizes are advised to adhere to these instructions to forestall the =
+abuse of this program by other participants.  =
+
+
+It's important to note that this draws were conducted formally, and winners=
+ are selected through an internet ballot system from 60,000 individual and =
+companies e-mail addresses - the draws are conducted around the world throu=
+gh our internet based ballot system. The promotion is sponsored and promote=
+d Lotto NL. =
+
+
+We congratulate you once again. We hope you will use part of it in our next=
+ draws; the jackpot winning is =E2=82=AC85million.  Remember, all winning m=
+ust be claimed not later than 20 days. After this date all unclaimed cash p=
+rize will be forfeited and included in the next sweepstake.  Please, in ord=
+er to avoid unnecessary delays and complications remember to quote personal=
+ and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for bein=
+g part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Fore=
+ign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
