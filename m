@@ -2,221 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48252DB0F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CB62DB106
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730574AbgLOQKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:10:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728591AbgLOQKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:10:03 -0500
-Date:   Tue, 15 Dec 2020 13:09:33 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608048562;
-        bh=G8LauUBDTHOQ67ExcgtNj04kVKPB3Yunn3AUUi+zP98=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cJjLsEBMwHUelWhtzSm6XNEsUkVhAN0mgGb+E9tXSu7y+SVEyOZrZukTiQvYELuna
-         8obEnLQfJ8FZZwTfjiFKPL8OKpTwxmO6uJDUwkvz0t5ViO847XXVBwPq3hzjxQLTrR
-         /vN7SUDt14cKT5SPBmB9A0ZsDxVdOBxUK+iQ581NvP6QQIBSd72UJtmMBZXn4mTuvs
-         gZIgLylRpKqWfhkDN+NlLyJ4oq92jvPDyM99bf1wMJ2NvTr44l/AwRkCw6SuvE23bt
-         uDajBt37N/JGQCeauaYy4FP8UfJX/fzjH1aM2EE/D1id/7D5yaWw4O9hVME/oKMb9V
-         rp9FvvGWwBm/g==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCH 3/3] perf tools: Add evlist/evlist-verbose control
- commands
-Message-ID: <20201215160933.GO258566@kernel.org>
-References: <20201210204330.233864-1-jolsa@kernel.org>
- <20201210204330.233864-4-jolsa@kernel.org>
- <20201215152343.GG252952@kernel.org>
- <20201215155911.GD658008@krava>
-MIME-Version: 1.0
+        id S1730578AbgLOQMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:12:34 -0500
+Received: from mail-bn8nam11on2056.outbound.protection.outlook.com ([40.107.236.56]:55356
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730596AbgLOQM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 11:12:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T9NzcuGSxCOqo0O1746JXz62wf+YyeTtoaQx64ODkr68LTtsoV3hex7hw8Y1pnm44vXf4oH4XadJATUrcpcSOkJnGFuSRV82qmLzCUF66cVO+QsBdEi5tO/dgIqjfLW5JRpXRLCwgJcL6hRN5TQoWXkeCiz/2H6UKx8oiEGP0+3eUMcace4ramwnlQSG2noRYk6AbM7CkvJIfZsVVPEi8A3NIGY6EhpIB6g3F0BdnzFbn4f4hnWL++7/brZPVM24oieOILEM2AKMJUPtBPa83WQPEQUqM484RyNyxIe6Qy7fMx//x+H/QO/wu9IuTismyjoL0R/lznFU3l0kEH3EAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=30kS/RNfXTpJcP3lp2YzN9M4t1jcgbpCzbZV46qBVmQ=;
+ b=JpSCmuLA/S7M2IprfqXSD5IPONQvXa9AhfFew/1gMhWytG4C6Sf9Yof8oTLde6dTDRpw/bg9C5kSpR+IKSjI3St8R4dEXRoaaggl6vSmtqHCGkGQx/3JbO9U0JCd9qkk9ml2IZc4SXtVB4iojriQSZWpwMsqUrLBCAn6+Sv1tJVHTkDyDmlSn7GHDNsaMIW+ZqgEUFGIYBrma3bUW3axNAnUuvahUiGk2RFTPKIbwxrkst75BiBrQz5xjoe+Ty5OWBvzU138R3jCsZ75/6vds/ESDuMnPApcaF4mGIJDu3U9xskGusDaZOUG8D+USbx8UD9SbvBjltAr6zEUtrMjWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=30kS/RNfXTpJcP3lp2YzN9M4t1jcgbpCzbZV46qBVmQ=;
+ b=xSurqDwOWVrBFmd/S5EStTYgmJiXx4+UDIC2m6T5NrilY1qLZOKrINfFbNP4OoSHyLCtoeeDugDI8TMpzJNxwE1aqav5zqv4W8P+LI0mkS2jNxqoLllrPl9eNPDRpVrgJp49Zh/WgYYunP+8ekjoNkHHWBi4pvFnijdwHYGPP4A=
+Authentication-Results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BN6PR12MB1379.namprd12.prod.outlook.com (2603:10b6:404:20::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.14; Tue, 15 Dec
+ 2020 16:11:23 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::9df4:880c:f3f2:679d]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::9df4:880c:f3f2:679d%5]) with mapi id 15.20.3654.025; Tue, 15 Dec 2020
+ 16:11:23 +0000
+Date:   Tue, 15 Dec 2020 10:11:20 -0600
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-edac <linux-edac@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] EDAC/amd64: Merge error injection sysfs facilities
+Message-ID: <20201215161120.GB2122783@yaz-nikka.amd.com>
+References: <20201215110517.5215-1-bp@alien8.de>
+ <20201215110517.5215-2-bp@alien8.de>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201215155911.GD658008@krava>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20201215110517.5215-2-bp@alien8.de>
+X-Originating-IP: [165.204.78.2]
+X-ClientProxiedBy: CH0PR04CA0120.namprd04.prod.outlook.com
+ (2603:10b6:610:75::35) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from yaz-nikka.amd.com (165.204.78.2) by CH0PR04CA0120.namprd04.prod.outlook.com (2603:10b6:610:75::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21 via Frontend Transport; Tue, 15 Dec 2020 16:11:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 5012c0a9-0bc9-41a1-991c-08d8a1141132
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1379:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB1379543A83AD341EEA1EF99EF8C60@BN6PR12MB1379.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fWcLoHCOJevUR3PaesfTiOcEYF3h5WMm3IqrvoJeQSLBQTgief0uioai7J/jl1ASivSIPxh07CFMfmgupSZDnvd5EV2huhxhaEnrrxnyenw4tx+9V7NUGfhvMSSjVii7rMPYkornfrhiI4uuLTUZQChRzen3KA6jAltPT3NNOWUsutEY9yHUZuG+vRUbqG22EBg5lSo2h7viZ28v/a0wxiR+BNAst0BgkInhi8aJbL5GBR+01pZhhjgWYqAaI3flGMBcX4xMiIggXZF8cLc/H07lPJP+/CZH88MyhefCvVKO0ciuYfc3AkvTLKanKnqA5kwOU+3SufQZOIN+Oj84ma55GkikpW4ZWATE1mBMHrVhAoM09daKvNI6yWRmFS7q
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(136003)(66556008)(66946007)(16526019)(186003)(6916009)(66476007)(26005)(8936002)(86362001)(54906003)(4326008)(956004)(8676002)(44832011)(5660300002)(508600001)(2906002)(52116002)(33656002)(34490700003)(83380400001)(7696005)(1076003)(55016002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?6aseLHWEoEk6OQUDLxdiedm2t7RB9bh9tbyK47XBur0XOcw62S1pYySyaqGu?=
+ =?us-ascii?Q?3jc0neKIGqxIdzuWpxysGHJ3Ir/z3rOg1R7xjZrToXe2bVmhD+qHjnpEWjej?=
+ =?us-ascii?Q?gyL6wIcpaOPW+rRd0cemmQpWafe6H4zZ2hkilusQLeRHy82j1odJgea4Z/Zw?=
+ =?us-ascii?Q?2U0XVoBoM+BvC6cl2GWIhekpDR6OMm0W0aNBjOTPFj7A2RFrcPNotIVceA7S?=
+ =?us-ascii?Q?dxZGpnSU2UVMOL8j4bTcmOV3uoaI+xMhurYrbW4jjp3027+ry6gEMW6KXY9O?=
+ =?us-ascii?Q?eyYZda33C4F/jtNyqVWTy7DboEVAodq8cw9MYaxKDlFiOdnXqjsmnJfv1z42?=
+ =?us-ascii?Q?pWeKTupOzivy3d8UQ4l5QOPQcOVVX37vO4gyM74JCXXpsJz+YqCOTE6bgyAl?=
+ =?us-ascii?Q?irhH8VxBAg0mjJhbK84wh4z8XYd0AjUruyVRrRZsx7AZLoD/he0jkwB8NJZ7?=
+ =?us-ascii?Q?rdzKOMTlAsw56AlOBZa52t1FWGGUaRHAKd6HBX2IQNUuY9Wna7a2PGjjXvQJ?=
+ =?us-ascii?Q?2+Ebp2YdH87xGCxgqwOcGwAjztOjyNCdh0IlffsOrCYPeq8csXH4UIUZUPHa?=
+ =?us-ascii?Q?gZBK+8wyn11UMr/oxwo8xAr/Xa62ljTsnUq51J/sx6mpbvT3NdiXwcL7KyyL?=
+ =?us-ascii?Q?VvTs99UZJuAlVzlpLI/Uvo3S9veRoRPrndBuxQHx021SbmYShhoaLnu9y3JW?=
+ =?us-ascii?Q?N7LChih/lk44Z2FvPSFIVBt6+yUogNKuWigXfMPOoFSV+ZoaphF2wrvA0s9P?=
+ =?us-ascii?Q?kkY2ejU3us67oS/ENSlBNgpw8azJN7SEgJnBTML18iSteE0iqORec0TxU6P7?=
+ =?us-ascii?Q?VJoVrf/+JGKeFd29IEGWjXAkiTuR0w8MykqbK4FAqg1TYVv/xOUXgsUT/ERK?=
+ =?us-ascii?Q?4lhQwW8o2+SAHMVzso0t6QgNh0S50Ul24tDwTEPotZVWRQz3JuZAeQO7Dm+a?=
+ =?us-ascii?Q?Bt44lN45rFhB4dIMlHEUzmGCmS7ZTdXNvDbIG6cBdiMVFSRol/yVlaSUlwvP?=
+ =?us-ascii?Q?ycun?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2020 16:11:23.2132
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5012c0a9-0bc9-41a1-991c-08d8a1141132
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0BvODaHiII+gsh414QnnIsx8WgkTAMx6FJyEW9BMnxHvSFg373k9hRuq58LcM4WhW+twtXDPJrWJYSE03cd/Rg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1379
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Dec 15, 2020 at 04:59:11PM +0100, Jiri Olsa escreveu:
-> On Tue, Dec 15, 2020 at 12:23:43PM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Thu, Dec 10, 2020 at 09:43:30PM +0100, Jiri Olsa escreveu:
-> > > Adding new control events to display all evlist events.
-> > > 
-> > > The interface string for control file is 'evlist' and
-> > > 'evlist-verbose'.
-> > 
-> > Can't we pass args to such commands?
-> > 
-> > Then its just one event, i.e. "evlist", and -v can be passed to it.
+On Tue, Dec 15, 2020 at 12:05:17PM +0100, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
 > 
-> it's possible but it adds another processing to the single record thread
-> where we want to be fast
-
-> but I agree it could be helpful to get the other output that evsel__fprintf
-> can print, and we already call evsel__fprintf, so it's just a matter of
-> setting 'struct perf_attr_details' properly
- 
-> I need to check, but perhaps we could use ' ' instead of '-' and have:
+> Merge them into the main driver and put them inside an EDAC_DEBUG
+> ifdeffery to simplify the driver and have all debugging/injection stuff
+> behind a debug build-time switch.
 > 
->   echo 'evlist -v' > control
->   echo 'evlist -g' > control
->   echo 'evlist -F' > control
- 
-> and have:
- 
->   echo 'enable cycles' > control
- 
-> instead of:
- 
->   echo 'enable-cycles' > control
- 
-> I'd like to avoid any elaborate parsing logic..
- 
-> how about that?
-
-Use space to separate command from its arguments, keep the same
-experience as:
-
-[acme@quaco ~]$ perf evlist -h
-
- Usage: perf evlist [<options>]
-
-    -f, --force           don't complain, do it
-    -F, --freq            Show the sample frequency
-    -g, --group           Show event group information
-    -i, --input <file>    Input file name
-    -v, --verbose         Show all event attr details
-        --trace-fields    Show tracepoint fields
-
-[acme@quaco ~]$
-
-and:
-
-echo "evlist arguments"
-
-?
-
-Fits the bill :-)
-
-The experience users have on existing commands, the same arguments, etc.
-
-Even -h can have its uses, i.e. has this daemon support for some option
-or is it an old version?
-
-- Arnaldo
- 
-> > 
-> > i.e.:
-> > 
-> > The commands would be:
-> > 
-> > evlist
-> > 
-> > That produces:
-> > 
-> >  
-> >    terminal 2:
-> >      # echo evlist > control
-> >  
-> >    terminal 1:
-> >      # perf record --control=fifo:control,ack -e 'sched:*'
-> >      ...
-> >      sched:sched_kthread_stop
-> >      sched:sched_kthread_stop_ret
-> >      sched:sched_waking
-> > 
-> > And 'evlist -v', that produces:
-> > 
-> >    terminal 2:
-> >      # echo "evlist -v" > control
-> >  
-> >    terminal 1:
-> >      ...
-> >      sched:sched_kthread_stop: type: 2, size: 120, config: 0x145,      \
-> >      { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|CPU   \
-> >      |PERIOD|RAW|IDENTIFIER, read_format: ID, disabled: 1, inherit:    \
-> >      1, sample_id_all: 1, exclude_guest: 1
-> >      sched:sched_kthread_stop_ret: type: 2, size: 120, config: 0x144   \
-> >      , { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|CPU \
-> >      |PERIOD|RAW|IDENTIFIER, read_format: ID, disabled: 1, inherit: 1, \
-> >      sample_id_all: 1, exclude_guest: 1
-> >      ...
-> > 
-> > I think we could even change things such that we pass a file descriptor
-> > for cmd_evlist to use, passing the argv received from the control file,
-> > etc.
+> No functional changes.
 > 
-> hum, so perf evlist opens/reads perf.data, which we do not have ready
-> at that point in perf record
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> ---
+>  drivers/edac/Kconfig          |   7 +-
+>  drivers/edac/Makefile         |   6 +-
+>  drivers/edac/amd64_edac.c     | 237 +++++++++++++++++++++++++++++++++-
+>  drivers/edac/amd64_edac.h     |   8 --
+>  drivers/edac/amd64_edac_inj.c | 235 ---------------------------------
+>  5 files changed, 236 insertions(+), 257 deletions(-)
+>  delete mode 100644 drivers/edac/amd64_edac_inj.c
 > 
-> > 
-> > With this in place we could reuse more stuff and allow using this
-> > control file to obtain information such as 'perf report --header-only',
-> > etc.
-> > 
-> > echo "report --header-only" > control would get us the same thing as
-> > 'perf report --header-only' for an existing perf.data file:
-> 
-> all those header data are written when record is exiting or dumped
-> for switch output, so we don't have that data at that moment control
-> command is received
-> 
-> > 
-> > 
-> > # perf report --header-only
-> > # ========
-> > # captured on    : Tue Dec 15 12:21:23 2020
-> > # header version : 1
-> > # data offset    : 432
-> > # data size      : 1648
-> > # feat offset    : 2080
-> > # hostname : five
-> > # os release : 5.10.0-rc7+
-> > # perf version : 5.10.rc6.gc56d2601b5d0
-> > # arch : x86_64
-> > # nrcpus online : 24
-> > # nrcpus avail : 24
-> > # cpudesc : AMD Ryzen 9 3900X 12-Core Processor
-> > # cpuid : AuthenticAMD,23,113,0
-> > # total memory : 32884432 kB
-> > # cmdline : /home/acme/bin/perf record ls 
-> > # event : name = cycles:u, , id = { 85540, 85541, 85542, 85543, 85544, 85545, 85546, 85547, 85548, 85549, 85550, 85551, 85552, 85553, 85554, 85555, 85556, 85557, 85558, 85559, 85560, 85561, 85562, 85563 }, size = 120, { sample_period, sample_freq } = 4000, sample_type = IP|TID|TIME|PERIOD, read_format = ID, disabled = 1, inherit = 1, exclude_kernel = 1, mmap = 1, comm = 1, freq = 1, enable_on_exec = 1, task = 1, sample_id_all = 1, exclude_guest = 1, mmap2 = 1, comm_exec = 1, ksymbol = 1, bpf_event = 1
-> > # CPU_TOPOLOGY info available, use -I to display
-> > # NUMA_TOPOLOGY info available, use -I to display
-> > # pmu mappings: amd_df = 8, software = 1, ibs_op = 11, power = 14, ibs_fetch = 10, uprobe = 7, cpu = 4, amd_iommu_0 = 12, breakpoint = 5, amd_l3 = 9, tracepoint = 2, kprobe = 6, msr = 13
-> > # CACHE info available, use -I to display
-> > # time of first sample : 12184.494971
-> > # time of last sample : 12184.495496
-> > # sample duration :      0.525 ms
-> > # MEM_TOPOLOGY info available, use -I to display
-> > # cpu pmu capabilities: max_precise=0
-> > # missing features: TRACING_DATA BRANCH_STACK GROUP_DESC AUXTRACE STAT CLOCKID DIR_FORMAT COMPRESSED CLOCK_DATA 
-> > # ========
-> > #
-> > 
-> > I.e. users would discover that using this control file is as easy as
-> > working with perf.data files or with the pipe mode, all the three ways
-> > of interacting with perf would use the same command interface arguments.
-> 
-> yep, I agree we can mimic the similar arguments, but I doubt we
-> can easily reuse the same code for that
-> 
-> jirka
-> 
+> diff --git a/drivers/edac/Kconfig b/drivers/edac/Kconfig
+> index 7a47680d6f07..9c2e719cb86a 100644
+> --- a/drivers/edac/Kconfig
+> +++ b/drivers/edac/Kconfig
+> @@ -81,10 +81,9 @@ config EDAC_AMD64
+>  	  Support for error detection and correction of DRAM ECC errors on
+>  	  the AMD64 families (>= K8) of memory controllers.
+>  
+> -config EDAC_AMD64_ERROR_INJECTION
+> -	bool "Sysfs HW Error injection facilities"
+> -	depends on EDAC_AMD64
+> -	help
+> +	  When EDAC_DEBUG is enabled, hardware error injection facilities
+> +	  through sysfs are available:
+> +
+>  	  Recent Opterons (Family 10h and later) provide for Memory Error
 
--- 
+Can we say "Opterons (Family 10h to Family 15h)"? It may also apply to
+Family 16h, but I don't know if they were branded as Opterons.
 
-- Arnaldo
+The injection code in this module doesn't apply to Family 17h and later.
+
+Also, Family 17h and later doesn't allow the OS direct access to the error
+injection registers. They're locked down by security policy, etc.
+
+>  	  Injection into the ECC detection circuits. The amd64_edac module
+>  	  allows the operator/user to inject Uncorrectable and Correctable
+
+...
+
+> +
+> +static umode_t inj_is_visible(struct kobject *kobj, struct attribute *attr, int idx)
+> +{
+> +	struct device *dev = kobj_to_dev(kobj);
+> +	struct mem_ctl_info *mci = container_of(dev, struct mem_ctl_info, dev);
+> +	struct amd64_pvt *pvt = mci->pvt_info;
+> +
+> +	if (pvt->fam < 0x10)
+
+Related to the comment above, can this be changed to the following?
+
+	if (pvt->fam < 0x10 || pvt->fam >= 0x17)
+
+> +		return 0;
+> +	return attr->mode;
+> +}
+> +
+
+Everything else looks good to me.
+
+Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+
+Thanks,
+Yazen
