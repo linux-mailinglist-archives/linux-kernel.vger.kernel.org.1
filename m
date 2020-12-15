@@ -2,92 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8492DADEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E28C2DADEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:21:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727200AbgLONW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:22:57 -0500
-Received: from elvis.franken.de ([193.175.24.41]:42248 "EHLO elvis.franken.de"
+        id S1727321AbgLONVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:21:07 -0500
+Received: from mga03.intel.com ([134.134.136.65]:21857 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726580AbgLONW5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:22:57 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kpAHO-0001tH-00; Tue, 15 Dec 2020 14:22:14 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id DA36FC0386; Tue, 15 Dec 2020 14:21:23 +0100 (CET)
-Date:   Tue, 15 Dec 2020 14:21:23 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Youling Tang <tangyouling@loongson.cn>,
-        Jinyang He <hejinyang@loongson.cn>
-Subject: Re: [PATCH] MIPS: Loongson64: Give chance to build under
- !CONFIG_NUMA and !CONFIG_SMP
-Message-ID: <20201215132123.GA9201@alpha.franken.de>
-References: <1606998772-5904-1-git-send-email-yangtiezhu@loongson.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1606998772-5904-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726431AbgLONVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 08:21:03 -0500
+IronPort-SDR: PQrBzB5z7mlpB+e/YBxznJFyZ3krR+/9Aj01hmEXoJTOUXX4bHpx6Hf76/gPNi6XEmi9Zj63BJ
+ MIjDFg3glqHA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="174983530"
+X-IronPort-AV: E=Sophos;i="5.78,421,1599548400"; 
+   d="scan'208";a="174983530"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 05:20:20 -0800
+IronPort-SDR: dBtNgZkVJFbGNgvyaqbW9BHLS7xzgSLyrRvZT9PTD25l132ycU4QQLAFqmxkhgOSPtEFYRedUr
+ qGHUfjMKw0GA==
+X-IronPort-AV: E=Sophos;i="5.78,421,1599548400"; 
+   d="scan'208";a="368214715"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 05:20:16 -0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Mathias Nyman <mathias.nyman@intel.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Muchowski, MaciejX" <maciejx.muchowski@intel.com>,
+        "Paczynski, Lukasz" <lukasz.paczynski@intel.com>,
+        Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH] xhci: Introduce max wait timeout in xhci_handshake()
+Date:   Tue, 15 Dec 2020 21:22:40 +0800
+Message-Id: <20201215132240.4094-1-yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 08:32:52PM +0800, Tiezhu Yang wrote:
-> In the current code, we can not build under !CONFIG_NUMA and !CONFIG_SMP
-> on the Loongson64 platform, it seems bad for the users who just want to
-> use pure single core (not nosmp) to debug, so do the following things to
-> give them a chance:
-> 
-> (1) Do not select NUMA and SMP for MACH_LOONGSON64 in Kconfig, make NUMA
-> depends on SMP, and then just set them in the loongson3_defconfig.
-> (2) Move szmem() from numa.c to init.c and add prom_init_memory() under
-> !CONFIG_NUMA.
-> (3) Clean up szmem() due to the statements of case SYSTEM_RAM_LOW and
-> SYSTEM_RAM_HIGH are the same.
-> (4) Remove the useless declaration of prom_init_memory() and add the
-> declaration of szmem() in loongson.h to avoid build error.
-> 
-> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
-> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  arch/mips/Kconfig                                |  3 +-
->  arch/mips/configs/loongson3_defconfig            |  2 +
->  arch/mips/include/asm/mach-loongson64/loongson.h |  2 +-
->  arch/mips/loongson64/init.c                      | 49 ++++++++++++++++++++++
->  arch/mips/loongson64/numa.c                      | 52 +-----------------------
->  5 files changed, 54 insertions(+), 54 deletions(-)
-> 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index 44a47ad..2034c66 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -490,8 +490,6 @@ config MACH_LOONGSON64
->  	select SYS_SUPPORTS_ZBOOT
->  	select SYS_SUPPORTS_RELOCATABLE
->  	select ZONE_DMA32
-> -	select NUMA
-> -	select SMP
->  	select COMMON_CLK
->  	select USE_OF
->  	select BUILTIN_DTB
-> @@ -2755,6 +2753,7 @@ config ARCH_SPARSEMEM_ENABLE
->  config NUMA
->  	bool "NUMA Support"
->  	depends on SYS_SUPPORTS_NUMA
-> +	depends on SMP
+The time to finish a xhci_handshake() is platform specific
+and sometimes during suspend resume test the followng
+errors were encountered:
+[53455.418330] ACPI: Waking up from system sleep state S4
+[66838.490856] xhci_hcd 0000:00:14.0: xHCI dying, ignoring interrupt.
+               Shouldn't IRQs be disabled?
+After changing the poll time granularity from 1 usec to 20 usec in
+xhci_handshake() this issue was not reproduced. While tuning on the
+poll time granularity might be painful on different platforms, it is
+applicable to introduce a module parameter to allow the xhci driver to wait
+for at max 16 ms.
 
-can you solve your problem without this hunk ? I don't want to make NUMA
-depeding on SMP. NUMA just selects memory archtitecture.
+Reported-by: "Muchowski, MaciejX" <maciejx.muchowski@intel.com>
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+ drivers/usb/host/xhci.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Thomas.
-
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index d4a8d0efbbc4..b8be9f3cc987 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -38,6 +38,10 @@ static unsigned long long quirks;
+ module_param(quirks, ullong, S_IRUGO);
+ MODULE_PARM_DESC(quirks, "Bit flags for quirks to be enabled as default");
+ 
++static int wait_handshake;
++module_param(wait_handshake, int, 0644);
++MODULE_PARM_DESC(wait_handshake, "Force wait for completion of handshake");
++
+ static bool td_on_ring(struct xhci_td *td, struct xhci_ring *ring)
+ {
+ 	struct xhci_segment *seg = ring->first_seg;
+@@ -74,7 +78,7 @@ int xhci_handshake(void __iomem *ptr, u32 mask, u32 done, int usec)
+ 	ret = readl_poll_timeout_atomic(ptr, result,
+ 					(result & mask) == done ||
+ 					result == U32_MAX,
+-					1, usec);
++					1, wait_handshake ? XHCI_MAX_HALT_USEC : usec);
+ 	if (result == U32_MAX)		/* card removed */
+ 		return -ENODEV;
+ 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.17.1
+
