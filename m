@@ -2,140 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E072DB0AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD812DB0B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730771AbgLOP6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:58:25 -0500
-Received: from mx4.veeam.com ([104.41.138.86]:51820 "EHLO mx4.veeam.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730697AbgLOP5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:57:53 -0500
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx4.veeam.com (Postfix) with ESMTPS id E19C7B21B0;
-        Tue, 15 Dec 2020 18:57:00 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
-        t=1608047821; bh=xGX6r6A8Hjl7MCNVKGqT3FZ7eubP6L89FA+xBv0u2dU=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-        b=Kmgx22+3snq91e1HH7f8cZ8yFER5ispuPCYFsol/fkmNAycaJmMtni9q3Lp35OBw8
-         rbQIoC0V6QmSvIxdkBMzyiWkCfyAgvoAQzRbxCCaXZzSxmuG27m0wHj+u03TpH/O+H
-         LuTESvkS3LSH3WET7pOpkhwb++9NSnWJZ0HwrwqE=
-Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Tue, 15 Dec 2020
- 16:56:59 +0100
-Date:   Tue, 15 Dec 2020 18:57:15 +0300
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     Bob Liu <bob.liu@oracle.com>
-CC:     Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        Mike Snitzer <snitzer@redhat.com>, "hch@lst.de" <hch@lst.de>,
-        "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
-        "koct9i@gmail.com" <koct9i@gmail.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "steve@sk2.org" <steve@sk2.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Pavel Tide <Pavel.TIde@veeam.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>
-Subject: Re: [PATCH 0/3] block: blk_interposer - Block Layer Interposer
-Message-ID: <20201215155715.GA2541@veeam.com>
-References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
- <20201209135148.GA32720@redhat.com>
- <20201210145814.GA31521@veeam.com>
- <20201210163222.GB10239@redhat.com>
- <20201211163049.GC16168@redhat.com>
- <1ee7652e-b77f-6fa4-634c-ff6639037321@kernel.dk>
- <208edf35-ecdc-2d73-4c48-0424943a78c0@suse.de>
- <cdc3c792-17ac-de61-12ae-74691769fc3c@oracle.com>
+        id S1728747AbgLOP7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:59:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730274AbgLOP6j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:58:39 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD074C0617A6;
+        Tue, 15 Dec 2020 07:57:58 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id w127so19396604ybw.8;
+        Tue, 15 Dec 2020 07:57:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C5gWEJwzHXn1ShMFhu2t6H+9GWvdz1kML7Fx1lY6PKE=;
+        b=Ld4HmbckjgNstSvqbLYzX5xzjzj7U3E+UXqv2D9TmeEn96ssBFVZn2OJUipNkuy38c
+         tJjAG60RBXgCz+fYDbWEyoIupDAfPkKMDrZWnsi9Ydsc/iwhJlcoBSk8jWNxC5nGvsHD
+         +0i2YKg+OdbDvw/Z1/iq6v2qMsCuSAztHoYzvTeIq71apOCH6tNoXdV9S/stASGk4Txo
+         03VuNcKN+n0nBTwBqoBuuTLmy3Se5ISU1xeGsqbFThtOSzcIyiIw55SSG4NiXQFBxWQr
+         90WGlX/rycXGm6K9w6T+84oFYUGkB2jHettCzWoFsFuN/dJapAccbbEv3MTGz9OF19vh
+         o0IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C5gWEJwzHXn1ShMFhu2t6H+9GWvdz1kML7Fx1lY6PKE=;
+        b=hijOGpIqmvk3qSpSLpz6FAyskFaw4mbToWh2BsExjbrc4/2HiUdeM7P6vJXzFFXm4D
+         CN/hYbSUeWA88oM/kmQL2hyTd7Yb+RgA4ubaGYXh6hJxsr+u3gpZJhBqF83m/pCZPt6H
+         OiBS1eJxotxqvLhRtRbLShLRCMoa1Je1fUgp3V4aLFdrfVn18zrQAzHRaj6gPrmsWL0N
+         wyEf/9ZNkxB/us11xFxGSB5tNr1uaYZtUK8SFuid7tlBdj8O6O8JiToWLcwaK2H2m/Ic
+         9dB22nOYU9LE8FKl3QWcStOHl3OTxcxAFJ1IcHGtZrO5xH6+JNASceNrMPNpZXVdhW6/
+         IGzA==
+X-Gm-Message-State: AOAM533TGWfrH47/2Y1osMcCYtS7p2b7TAFx7+/TfdjtjxyBaPVl/+je
+        RLrVdkuLcbjfi02Wxf936/MqaYCAGU3ASkdebWk=
+X-Google-Smtp-Source: ABdhPJyfclnkTaENRLirConWIoOx+piMmLPYv6J/hmXVCzXRS6L+s5el1GwyYb9LXWOsq8WxGKWm4C8wY+86Y9SzZe0=
+X-Received: by 2002:a25:3a86:: with SMTP id h128mr42666689yba.401.1608047878198;
+ Tue, 15 Dec 2020 07:57:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <cdc3c792-17ac-de61-12ae-74691769fc3c@oracle.com>
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx01.amust.local (172.24.0.171) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29C604D26A6D756B
-X-Veeam-MMEX: True
+References: <20201126103053.29881-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20201126103053.29881-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <20201215114949.teyhlmyhejck7jw2@uno.localdomain>
+In-Reply-To: <20201215114949.teyhlmyhejck7jw2@uno.localdomain>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 15 Dec 2020 15:57:32 +0000
+Message-ID: <CA+V-a8sTXULENp+prOd10vEwYz9wiKkAhyaEPf79QGGvtLc2hQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] ARM: dts: r8a7742-iwg21d-q7-dbcm-ca: Add support
+ for 8-bit ov7725 sensors
+To:     Jacopo Mondi <jacopo@jmondi.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 12/15/2020 09:51, Bob Liu wrote:
-> Hi Folks,
-> 
-> On 12/12/20 12:56 AM, Hannes Reinecke wrote:
-> > On 12/11/20 5:33 PM, Jens Axboe wrote:
-> >> On 12/11/20 9:30 AM, Mike Snitzer wrote:
-> >>> While I still think there needs to be a proper _upstream_ consumer of
-> >>> blk_interposer as a condition of it going in.. I'll let others make the
-> >>> call.
-> >>
-> >> That's an unequivocal rule.
-> >>
-> >>> As such, I'll defer to Jens, Christoph and others on whether your
-> >>> minimalist blk_interposer hook is acceptable in the near-term.
-> >>
-> >> I don't think so, we don't do short term bandaids just to plan on
-> >> ripping that out when the real functionality is there. IMHO, the dm
-> >> approach is the way to go - it provides exactly the functionality that
-> >> is needed in an appropriate way, instead of hacking some "interposer"
-> >> into the core block layer.
-> >>
-> > Which is my plan, too.
-> > 
-> > I'll be working with the Veeam folks to present a joint patchset (including the DM bits) for the next round.
-> > 
-> 
-> Besides the dm approach, do you think Veeam's original requirement is a good
-> use case of "block/bpf: add eBPF based block layer IO filtering"?
-> https://lwn.net/ml/bpf/20200812163305.545447-1-leah.rumancik@gmail.com/
-> 
-> Thanks,
-> Bob
+Hi Jacopo,
 
-Hi Bob.
-Thank you for your message.
+Thank you for the review.
 
-I looked at your patch - it's interesting, but I have a few comments.
+On Tue, Dec 15, 2020 at 11:49 AM Jacopo Mondi <jacopo@jmondi.org> wrote:
+>
+> Hello,
+>
+> On Thu, Nov 26, 2020 at 10:30:53AM +0000, Lad Prabhakar wrote:
+> > The 8-bit ov7725 sensors can also be connected to the camera daughter
+> > board.
+> >
+> > This patch creates a separate dtsi file for ov7725 sensors and is included
+> > in r8a7742-iwg21d-q7-dbcm-ca.dts. The user can set VINx_SENSOR depending
+> > on the cameras connected.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > ---
+> >  .../boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts    |   7 ++
+> >  .../dts/r8a7742-iwg21d-q7-dbcm-ov7725.dtsi    | 112 ++++++++++++++++++
+> >  2 files changed, 119 insertions(+)
+> >  create mode 100644 arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ov7725.dtsi
+> >
+> > diff --git a/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
+> > index 1ab4f9771a34..915ff5fd437c 100644
+> > --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
+> > +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
+> > @@ -11,6 +11,7 @@
+> >
+> >  #define SENSOR_NONE          1
+> >  #define SENSOR_OV5640                2
+> > +#define SENSOR_OV7725                3
+> >
+> >  /* 8bit CMOS Camera 1 (J13) */
+> >  #define CAM1_PARENT_I2C              i2c0
+> > @@ -40,6 +41,11 @@
+> >   * VIN2 interface and also the ov5640 node connected to it)
+> >   *      #define VIN2_SENSOR          SENSOR_NONE
+> >   *
+> > + * To tie VINx endpoints to ov7725_x endpoints set VINx_SENSOR to
+> > + * SENSOR_OV7725 for example if ov7725_3 is connected to the VIN3
+> > + * interface set the below (this disables the ov5640_3)
+> > + *      #define VIN3_SENSOR          SENSOR_OV7725
+> > + *
+> >   */
+> >  #define VIN0_SENSOR          SENSOR_OV5640
+> >  #define VIN1_SENSOR          SENSOR_OV5640
+> > @@ -47,6 +53,7 @@
+> >  #define VIN3_SENSOR          SENSOR_OV5640
+> >
+> >  #include "r8a7742-iwg21d-q7-dbcm-ov5640.dtsi"
+> > +#include "r8a7742-iwg21d-q7-dbcm-ov7725.dtsi"
+>
+> Mmm, can't we alternatively include one .dtsi or the other depending
+> on a define symbol ? The .dtsi describe pluggable expansion boards,
+> they cannot be mixed, right ?
+>
+Since the cameras on the daughter can be mixed and matched a much
+better version of the patches [1] which handle this case elegantly has
+been posted by Geert.
 
-1.
-#ifdef CONFIG_BPF_IO_FILTER
-	struct bpf_prog_array __rcu *progs;
-	struct mutex io_filter_lock;
-#endif
-For DM and blk-snap to work, it is necessary that there is always
-the possibility of interception.
+[1] https://patchwork.kernel.org/project/linux-renesas-soc/cover/20201126134031.4115211-1-geert@linux-m68k.org/
 
-2.
-We could get rid of the io_filter_lock lock if we do attach/detach while
-the queue is stopped. And __rcu for *progs, can not use either.
-
-3.
-int io_filter_bpf_run(struct bio *bio)
-{
-	struct bpf_io_request io_req = {
-		.sector_start = bio->bi_iter.bi_sector,
-		.sector_cnt = bio_sectors(bio),
-		.opf = bio->bi_opf,
-	};
-	return BPF_PROG_RUN_ARRAY_CHECK(bio->bi_disk->progs, &io_req, BPF_PROG_RUN);
-}
-Allows to get little information. It will not allow to work with the bios`s data.
-blk_interposer allows to get full access to bio.
-For use in the DM, we must also be able to add new bio's.
-
-Summary:
-For device-mapper purposes, bpf_io_filter is not suitable.
-bpf_io_filter in this form is probably convenient to use for monitoring and
-studying the block layer.
-For the security task, I would suggest making a separate module and using
-blk_interposer to intercept bio requests. This will give more flexible
-functionality and better performance.
-
---
-Sergei Shtepa
-Veeam Software developer.
+Cheers,
+Prabhakar
