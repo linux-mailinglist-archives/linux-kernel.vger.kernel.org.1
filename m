@@ -2,157 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564602DB09D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:56:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C8C2DB0A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729735AbgLOPzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:55:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730304AbgLOPzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:55:31 -0500
-Date:   Tue, 15 Dec 2020 12:55:03 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608047690;
-        bh=sLW8lkGW0vdMuvlBeUnMF+afEVxJHcmfdiN4oFuShVU=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dWpcVdZCft9LReyaAAncJweB9qsYbYOLamLRgDFlmj3vhXvnh47ijCGuNIsu75K9Q
-         n6NO5mVXYobMqwrUEby1GGL0yIrWPl4bxnAoPSH5lFwKAANGXcImfDoctIBrNZKBq+
-         TiFqJr3bH63rA4b5GcdxNiDuH5kK/1nF5oPap000AOEMMI47xMqsDel8AY8CoKqBU+
-         xSqeIgK+vO/7BzBL3cBLK4LJ5TZ0sv3gvlTo7bxUWb4ujz3IA6SPWz8ckQDSWu3zYj
-         mRHsb7dyKovbCf05vXj1Ls0xaquRWjEFF7TDB3TInTCbxhghZoHF2ErLtAciTpK2P+
-         JjL8VAphtYHig==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 06/15] perf tools: Add support to read build id from
- compressed elf
-Message-ID: <20201215155503.GM258566@kernel.org>
-References: <20201214105457.543111-1-jolsa@kernel.org>
- <20201214105457.543111-7-jolsa@kernel.org>
+        id S1730597AbgLOP6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:58:01 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58024 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730483AbgLOP5E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:57:04 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BFFmkTC125611;
+        Tue, 15 Dec 2020 10:56:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=pzIRFRpjyESY6LaUi9tJzCmYrWeI4uwEo5FPUXif2pU=;
+ b=jd+CePVpv2uPJXznHXm9UHEcMws3U6C8OMlZlUAmnjObn8J4tLbNdZDuEaEi5zcfzgdy
+ NH8s2f9auQE8SpkgY6ofPJQxPwZE5V2Yw6v4WCbBdO2dKtfESg2nCsKaWS32c9Uc3AEr
+ +G18zFB52y9QeU/x5+3sz5/Jv+EzFt10pOCCSFxn15BIQNBxkNfUQKzeqSjY5OPYohtF
+ exh7RPLFlc+ZzX7KNn67067Ija8AlsBcktcNX6nO7ABV6Epc25QHNY8WxLJyZD1vGPbP
+ Ep6s8UlNequfOtKlQmzCW8YZL5HWb5qZVpnZ7xOOvvTiE3ksBEpGDoLjHDD9NJ4E85fl HA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35etrq93qj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Dec 2020 10:56:18 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BFFVqcD014304;
+        Tue, 15 Dec 2020 15:56:06 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 35cn4hbee7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Dec 2020 15:56:05 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BFFu0Yh19595642
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Dec 2020 15:56:01 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C11D952052;
+        Tue, 15 Dec 2020 15:56:00 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.2.72])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 5E43252065;
+        Tue, 15 Dec 2020 15:56:00 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Mikhail Zaslonko <zaslonko@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH] lib/zlib: fix inflating zlib streams on s390
+Date:   Tue, 15 Dec 2020 16:55:51 +0100
+Message-Id: <20201215155551.894884-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201214105457.543111-7-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-15_12:2020-12-15,2020-12-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=747 adultscore=0 bulkscore=0 clxscore=1015 suspectscore=0
+ mlxscore=0 spamscore=0 priorityscore=1501 impostorscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012150109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Dec 14, 2020 at 11:54:48AM +0100, Jiri Olsa escreveu:
-> Adding support to decompress file before reading build id.
-> 
-> Adding filename__read_build_id and change its current
-> versions to read_build_id.
-> 
-> Shutting down stderr output of perf list in the shell test:
->   82: Check open filename arg using perf trace + vfs_getname          : Ok
+Decompressing zlib streams on s390 fails with "incorrect data check"
+error.
 
-Tentatively cherry picking this one.
+Userspace zlib checks inflate_state.flags in order to byteswap checksums
+only for zlib streams, and s390 hardware inflate code, which was ported
+from there, tries to match this behavior. At the same time, kernel zlib
+does not use inflate_state.flags, so it contains essentially random
+values. For many use cases either zlib stream is zeroed out or checksum
+is not used, so this problem is masked, but at least SquashFS is still
+affected.
 
-- Arnaldo
+Fix by always passing a checksum to and from the hardware as is, which
+matches zlib_inflate()'s expectations.
+
+Fixes: 126196100063 ("lib/zlib: add s390 hardware support for kernel zlib_inflate")
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ lib/zlib_dfltcc/dfltcc_inflate.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/zlib_dfltcc/dfltcc_inflate.c b/lib/zlib_dfltcc/dfltcc_inflate.c
+index db107016d29b..fb60b5a6a1cb 100644
+--- a/lib/zlib_dfltcc/dfltcc_inflate.c
++++ b/lib/zlib_dfltcc/dfltcc_inflate.c
+@@ -125,7 +125,7 @@ dfltcc_inflate_action dfltcc_inflate(
+     param->ho = (state->write - state->whave) & ((1 << HB_BITS) - 1);
+     if (param->hl)
+         param->nt = 0; /* Honor history for the first block */
+-    param->cv = state->flags ? REVERSE(state->check) : state->check;
++    param->cv = state->check;
  
-> because with decompression code in the place we the
-> filename__read_build_id function is more verbose in case
-> of error and the test did not account for that.
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  .../tests/shell/trace+probe_vfs_getname.sh    |  2 +-
->  tools/perf/util/symbol-elf.c                  | 37 ++++++++++++++++++-
->  2 files changed, 36 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/tests/shell/trace+probe_vfs_getname.sh b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
-> index 11cc2af13f2b..3d31c1d560d6 100755
-> --- a/tools/perf/tests/shell/trace+probe_vfs_getname.sh
-> +++ b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
-> @@ -20,7 +20,7 @@ skip_if_no_perf_trace || exit 2
->  file=$(mktemp /tmp/temporary_file.XXXXX)
->  
->  trace_open_vfs_getname() {
-> -	evts=$(echo $(perf list syscalls:sys_enter_open* 2>&1 | egrep 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/') | sed 's/ /,/')
-> +	evts=$(echo $(perf list syscalls:sys_enter_open* 2>/dev/null | egrep 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/') | sed 's/ /,/')
->  	perf trace -e $evts touch $file 2>&1 | \
->  	egrep " +[0-9]+\.[0-9]+ +\( +[0-9]+\.[0-9]+ ms\): +touch\/[0-9]+ open(at)?\((dfd: +CWD, +)?filename: +${file}, +flags: CREAT\|NOCTTY\|NONBLOCK\|WRONLY, +mode: +IRUGO\|IWUGO\) += +[0-9]+$"
->  }
-> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
-> index 44dd86a4f25f..f3577f7d72fe 100644
-> --- a/tools/perf/util/symbol-elf.c
-> +++ b/tools/perf/util/symbol-elf.c
-> @@ -534,7 +534,7 @@ static int elf_read_build_id(Elf *elf, void *bf, size_t size)
->  
->  #ifdef HAVE_LIBBFD_BUILDID_SUPPORT
->  
-> -int filename__read_build_id(const char *filename, struct build_id *bid)
-> +static int read_build_id(const char *filename, struct build_id *bid)
->  {
->  	size_t size = sizeof(bid->data);
->  	int err = -1;
-> @@ -563,7 +563,7 @@ int filename__read_build_id(const char *filename, struct build_id *bid)
->  
->  #else // HAVE_LIBBFD_BUILDID_SUPPORT
->  
-> -int filename__read_build_id(const char *filename, struct build_id *bid)
-> +static int read_build_id(const char *filename, struct build_id *bid)
->  {
->  	size_t size = sizeof(bid->data);
->  	int fd, err = -1;
-> @@ -595,6 +595,39 @@ int filename__read_build_id(const char *filename, struct build_id *bid)
->  
->  #endif // HAVE_LIBBFD_BUILDID_SUPPORT
->  
-> +int filename__read_build_id(const char *filename, struct build_id *bid)
-> +{
-> +	struct kmod_path m = { .name = NULL, };
-> +	char path[PATH_MAX];
-> +	int err;
-> +
-> +	if (!filename)
-> +		return -EFAULT;
-> +
-> +	err = kmod_path__parse(&m, filename);
-> +	if (err)
-> +		return -1;
-> +
-> +	if (m.comp) {
-> +		int error = 0, fd;
-> +
-> +		fd = filename__decompress(filename, path, sizeof(path), m.comp, &error);
-> +		if (fd < 0) {
-> +			pr_debug("Failed to decompress (error %d) %s\n",
-> +				 error, filename);
-> +			return -1;
-> +		}
-> +		close(fd);
-> +		filename = path;
-> +	}
-> +
-> +	err = read_build_id(filename, bid);
-> +
-> +	if (m.comp)
-> +		unlink(filename);
-> +	return err;
-> +}
-> +
->  int sysfs__read_build_id(const char *filename, struct build_id *bid)
->  {
->  	size_t size = sizeof(bid->data);
-> -- 
-> 2.26.2
-> 
-
+     /* Inflate */
+     do {
+@@ -138,7 +138,7 @@ dfltcc_inflate_action dfltcc_inflate(
+     state->bits = param->sbb;
+     state->whave = param->hl;
+     state->write = (param->ho + param->hl) & ((1 << HB_BITS) - 1);
+-    state->check = state->flags ? REVERSE(param->cv) : param->cv;
++    state->check = param->cv;
+     if (cc == DFLTCC_CC_OP2_CORRUPT && param->oesc != 0) {
+         /* Report an error if stream is corrupted */
+         state->mode = BAD;
 -- 
+2.25.4
 
-- Arnaldo
