@@ -2,110 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F3E2DA5E5
+	by mail.lfdr.de (Postfix) with ESMTP id C352B2DA5E6
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbgLOB7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 20:59:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
+        id S1725970AbgLOB7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 20:59:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725957AbgLOB6w (ORCPT
+        with ESMTP id S1725904AbgLOB6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 20:58:52 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E13C061793
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 17:58:11 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id w1so20707189ejf.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 17:58:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=BWor9jDGgk/8IhRKUrohi4NuTLT40ILHKt+r7aTsdEU=;
-        b=ss9oQqNKTkQLfrgs7Ya1jqrhIOlLZTNk42ulfhz+/qBHu81Nl+dch1TpSZyjTPScOj
-         GJetmz6N2n8ilXEoNbfLt5Jzd6BAgVhMVMRCt+LByLqQMGqgBjE+K+mxaK+x2Q8Q4yJX
-         3EeJuAVHMCs12E8bt5RQNzemg+U3KH1SvP65QsY1TqWYuvTm9HmUZXb4K/8nlD2AiiW0
-         6lQ007jN1kyYusb2O0dI7YFv5fg1swJfleG+9fVrimKOjd6RNVIvcdoc8XUHiYW9ay4l
-         1jY4Za2xSvwKDGc08+gA2oMd5AtGuNTX9rD3+raEoTLMhitLUnx5g1bUyDwSZ6jjngAZ
-         cRXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=BWor9jDGgk/8IhRKUrohi4NuTLT40ILHKt+r7aTsdEU=;
-        b=ccnH2GisealD5xaDjuP4a9fy4r5uLTabcJBgPiiDWEJLuLS5SGTbWFzrNCTFjJ/yq8
-         AKz27Dcxbx/6P/KvDO+EykRVJY8WVSK1oz+Bax6mJ0GozcDt7GJdy0CqTC7PbCA8YLfF
-         Kxf9X3RBhdXjLe3Ut+rjxmd7Z2fyl30vWSNRQwx8qEk3SnZ25HhRcfq+xNMVnLvlqEXt
-         39xiumyZCqKD7IGffLrMvQcw4nofjdYio0KkLnVTA2SAwqfZhzv5Gxbh4joAfUycfDTC
-         vg2Wpcu9KgYbxIKQMNFPkahyhODj8+29dEBV80I/ycEP51jgL0NQLb2+qXFaIbVtNs/p
-         UjuQ==
-X-Gm-Message-State: AOAM531gBaPbOD0Edv7mzCsbjzCpe4XPl4MDrAGPv0KcIyGk/c3VmRUT
-        VSVwX6yjkI7/ziepbIeu/colghreFPtJT2RutKIA2elnoi04
-X-Google-Smtp-Source: ABdhPJwHqjyHQjik6xtuRcSclby847RqniajM+UtDbYwuM4gvAH+K1vb86g3lQoxYhtSa2gi9e/13jJ8Y7cs/5O0xHg=
-X-Received: by 2002:a17:906:2e82:: with SMTP id o2mr4625104eji.106.1607997490305;
- Mon, 14 Dec 2020 17:58:10 -0800 (PST)
+        Mon, 14 Dec 2020 20:58:55 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 198A2C06179C;
+        Mon, 14 Dec 2020 17:58:15 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cw1cf3nxlz9sRR;
+        Tue, 15 Dec 2020 12:58:10 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607997491;
+        bh=WTFqMmXXO/0Vfo/XBPOXoPt6icOOhuG/JmtxAhijXAo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cy/3OlAxSAWvIwd3QvFGtwM+qDiPKzJTxrGsIBWiMfA9ep7ClFdV23H9odWTkjwtb
+         TQt0gzmZOpE9I8vLB72ipCO30Q01nfdgZydeH+rBc2A7tLyAEWvCRsMYz+/17e52nF
+         fCWg5XmZSjdh+fcHtMfyAN51NX6P7Rt9164x+dsJH39DDNx4YNGirTfUjtJnmhOBHH
+         cuhVQBfa7tME3OealJSOXJJmm7B0gxLDL5xuy38y/j9qwt1w6iQM/vfmpWXcB1fdta
+         fE4KohV4wLf40/p8134wtAp2ba4Jshpz9fV/h7EW01TTR1izNUwGllFYV87SHdkZ+f
+         879z4kBnK4QCg==
+Date:   Tue, 15 Dec 2020 12:58:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     Lukasz Luba <lukasz.luba@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the thermal tree
+Message-ID: <20201215125806.31495950@canb.auug.org.au>
 MIME-Version: 1.0
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 14 Dec 2020 20:57:59 -0500
-Message-ID: <CAHC9VhT5ZQaz48+DNLTKqA5x1yMQL65iQyMW7=Qby5toyc2_0w@mail.gmail.com>
-Subject: [GIT PULL] Audit patches for v5.11
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-audit@redhat.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/WrgKM2096NiRV.VN3owNqVg";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+--Sig_/WrgKM2096NiRV.VN3owNqVg
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-A small set of audit patches for v5.11 with four patches in total and
-only one of any real significance.  Richard's patch to trigger
-accompanying records causes the kernel to emit additional related
-records when an audit event occurs; helping provide some much needed
-context to events in the audit log.  It is also worth mentioning that
-this is a revised patch based on an earlier attempt that had to be
-reverted in the v5.8 time frame.
+Hi all,
 
-Everything passes our test suite, and with no problems reported please
-merge this for v5.11.
+After merging the thermal tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
-Thanks,
--Paul
+drivers/thermal/devfreq_cooling.c: In function 'devfreq_cooling_set_cur_sta=
+te':
+drivers/thermal/devfreq_cooling.c:102:9: error: 'struct device' has no memb=
+er named 'em_pd'
+  102 |  if (dev->em_pd) {
+      |         ^~
+drivers/thermal/devfreq_cooling.c:104:13: error: 'struct device' has no mem=
+ber named 'em_pd'
+  104 |   freq =3D dev->em_pd->table[perf_idx].frequency * 1000;
+      |             ^~
+drivers/thermal/devfreq_cooling.c: In function 'devfreq_cooling_get_request=
+ed_power':
+drivers/thermal/devfreq_cooling.c:207:23: error: 'struct device' has no mem=
+ber named 'em_pd'
+  207 |    dfc->res_util =3D dev->em_pd->table[state].power;
+      |                       ^~
+drivers/thermal/devfreq_cooling.c:217:30: error: 'struct device' has no mem=
+ber named 'em_pd'
+  217 |   perf_idx =3D get_perf_idx(dev->em_pd, freq / 1000);
+      |                              ^~
+drivers/thermal/devfreq_cooling.c:226:15: error: 'struct device' has no mem=
+ber named 'em_pd'
+  226 |   *power =3D dev->em_pd->table[perf_idx].power;
+      |               ^~
+drivers/thermal/devfreq_cooling.c: In function 'devfreq_cooling_state2power=
+':
+drivers/thermal/devfreq_cooling.c:252:14: error: 'struct device' has no mem=
+ber named 'em_pd'
+  252 |  *power =3D dev->em_pd->table[perf_idx].power;
+      |              ^~
+drivers/thermal/devfreq_cooling.c: In function 'devfreq_cooling_power2state=
+':
+drivers/thermal/devfreq_cooling.c:290:23: error: 'struct device' has no mem=
+ber named 'em_pd'
+  290 |   if (est_power >=3D dev->em_pd->table[i].power)
+      |                       ^~
+drivers/thermal/devfreq_cooling.c: In function 'of_devfreq_cooling_register=
+_power':
+drivers/thermal/devfreq_cooling.c:377:9: error: 'struct device' has no memb=
+er named 'em_pd'
+  377 |  if (dev->em_pd) {
+      |         ^~
+drivers/thermal/devfreq_cooling.c:385:38: error: 'struct device' has no mem=
+ber named 'em_pd'
+  385 |   num_opps =3D em_pd_nr_perf_states(dev->em_pd);
+      |                                      ^~
 
---
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+Caused by commit
 
- Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+  615510fe13bd ("thermal: devfreq_cooling: remove old power model and use E=
+M")
 
-are available in the Git repository at:
+em_pd is only available when CONFIG_ENERGY_MODEL is set.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/audit.git
-   tags/audit-pr-20201214
+I have used the thermal tree from next-20201214 for today.
 
-for you to fetch changes up to 6b3211842a115d697fbf78d09f3e83852200e413:
+--=20
+Cheers,
+Stephen Rothwell
 
- audit: replace atomic_add_return() (2020-12-02 22:52:16 -0500)
+--Sig_/WrgKM2096NiRV.VN3owNqVg
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-----------------------------------------------------------------
-audit/stable-5.11 PR 20201214
+-----BEGIN PGP SIGNATURE-----
 
-----------------------------------------------------------------
-Alex Shi (1):
-     audit: fix macros warnings
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/YGC4ACgkQAVBC80lX
+0Gyvhwf/VAdWGJyY6NwcE7/kVhqfefBKnjGHoP1h+Vj1/mn+Bsj1WQTq7o5ucpd6
+/5/guAZWhNuC+EeoZDHwGBeqYRtz+rvoDlClX1YUv9R8LCY9o6egqTt/G/1RpMR7
+Xl7VWtuCBwbZ8D2veOYCZtGQ4Z913yqiv/o8sOLQ8/1J/OhFCziIVs8844yKaVBJ
+B7nBXXek0ZTy+MBrcYj8Rf+UqWomU6KLG+wcjTcqzdMq85u6272PQfQpntR7OP0U
+XIS9oPfKdc96M7i4b3PdAE31BF7pqqkt+x8HPJSy+kI6jPxc7g3OCXsomlDVvrPK
+iWKS4VgLmlGOED5PqvhbJpt9jXbfGA==
+=6aop
+-----END PGP SIGNATURE-----
 
-Mauro Carvalho Chehab (1):
-     audit: fix a kernel-doc markup
-
-Richard Guy Briggs (1):
-     audit: trigger accompanying records when no rules present
-
-Yejune Deng (1):
-     audit: replace atomic_add_return()
-
-include/linux/audit.h |  8 --------
-kernel/audit.c        |  9 ++++++---
-kernel/auditsc.c      | 38 ++++++++++++--------------------------
-security/lsm_audit.c  |  5 -----
-4 files changed, 18 insertions(+), 42 deletions(-)
-
--- 
-paul moore
-www.paul-moore.com
+--Sig_/WrgKM2096NiRV.VN3owNqVg--
