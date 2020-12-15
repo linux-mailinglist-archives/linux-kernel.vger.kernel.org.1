@@ -2,156 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E034E2DB038
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D830E2DB03A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729555AbgLOPiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:38:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729699AbgLOPhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:37:54 -0500
-Date:   Tue, 15 Dec 2020 12:37:26 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608046633;
-        bh=J8zqJOxQ4Lq9nBsEUhBucV5x8iBjEoIHADNoS7phfj8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ENwaXYM+yONzJfHp2sPqFjgQDeTwtJITIrzxuoocrVpGX7lUGcXx91s9VC4pr2kTI
-         wP7irzcGQDVHO7+1BYwNDf40Irzqw7nNvP0Azmk42TY+mAXLFfxj7uiQnzvpw4eUb1
-         vM5mXdylbwX1WTkn2Tmjmf2vfzmUL4EXnSzEzrhC9Py6xVwLkg03z2VFs4xVJC5wH4
-         ghC5BOBFiMwO0T3OmfQzlXa6M41WuH6qoSgC4ZlKt5ERoA+zLrEaxvW7z1oqiS0WM5
-         dlqbHY3auV2U60ikMCn3V7egh3jgXfQFhQKsHHm+gUWOg+bJ12xDxxq2Xyw2uMCazG
-         7oHwSKxkj58EQ==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCH 2/8] perf tools: Add debug_set_display_time function
-Message-ID: <20201215153726.GC258566@kernel.org>
-References: <20201212104358.412065-1-jolsa@kernel.org>
- <20201212104358.412065-3-jolsa@kernel.org>
+        id S1730064AbgLOPjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:39:10 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:46235 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729389AbgLOPjJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:39:09 -0500
+Received: by mail-ot1-f68.google.com with SMTP id w3so19724302otp.13;
+        Tue, 15 Dec 2020 07:38:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hqd4yxV9bNWLklx7MUA8d0AV28BGHOGA0Jz2gfaRP9w=;
+        b=Kz87IhZRtdB6bEZn1ErC6/YpL9tjlawlyN2AJCEdXX0761WPD2divB0lrkdzmZBl03
+         ggoCWjWim1S8iazYEPeoCn7PN43vXjqHcuB44WH8bK7aGXvHmVF/Z4X5eiOQVwZCHBDM
+         3fEAOKFdcbPxVXmOFxjQtcE0mDh1OW0xzunU5nTFV6Mydms5Gv/S4hlZuZNxrfVs/AuD
+         wI6WaNVePGfSeQmw8ItZcwqrAnKlcSffooSnO/Fg5oY/E6KH9WyXnh1zmJh+Eew+F2W8
+         X2gm7aj15oAfuARnC759T9Kh8FiN87svMCEQ7Obw36ykRAmnxCJe/288yK51aohZQT2Q
+         AxRA==
+X-Gm-Message-State: AOAM533VHmZ7SrTDH47O/DRCqlMGOGiqxvdCiVrszxPmYoUyaN3oxa6m
+        wQEyogbOpImIeIzIEdlbTr0DcaZT6I+22LaZsuQ=
+X-Google-Smtp-Source: ABdhPJzSW9IdJA8pduGO8EinZhKo9k4mgoV2r11qrVuGbaTGG1Zg96X4H9auxyJMn4Arg5yprwBSpvJGSi768ydXiyU=
+X-Received: by 2002:a9d:208a:: with SMTP id x10mr21697142ota.260.1608046708570;
+ Tue, 15 Dec 2020 07:38:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201212104358.412065-3-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20360841.iInq7taT2Z@kreacher> <146138074.tjdImvNTH2@kreacher>
+ <20201208090207.sz4v43bwvm7yugrb@vireshk-i7> <20201215041636.yfgyswqjslg4hlff@vireshk-i7>
+In-Reply-To: <20201215041636.yfgyswqjslg4hlff@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 15 Dec 2020 16:38:08 +0100
+Message-ID: <CAJZ5v0jz4=nCfn8+UyR_2PKpL5hNKe8EpamWBjyxmGxwSdzs3w@mail.gmail.com>
+Subject: Re: [PATCH v1 3/4] cpufreq: Add special-purpose fast-switching
+ callback for drivers
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Dec 12, 2020 at 11:43:52AM +0100, Jiri Olsa escreveu:
-> Allow to display time in perf debug output via new
-> debug_set_display_time function.
-> 
-> It will be used in perf daemon command to get verbose
-> output into log file.
-> 
-> The debug time format is:
-> 
->   [2020-12-03 18:25:31.822152] affinity: SYS
->   [2020-12-03 18:25:31.822164] mmap flush: 1
->   [2020-12-03 18:25:31.822175] comp level: 0
->   [2020-12-03 18:25:32.002047] mmap size 528384B
+On Tue, Dec 15, 2020 at 5:17 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 08-12-20, 14:32, Viresh Kumar wrote:
+> > On 07-12-20, 17:35, Rafael J. Wysocki wrote:
+> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >
+> > > First off, some cpufreq drivers (eg. intel_pstate) can pass hints
+> > > beyond the current target frequency to the hardware and there are no
+> > > provisions for doing that in the cpufreq framework.  In particular,
+> > > today the driver has to assume that it should not allow the frequency
+> > > to fall below the one requested by the governor (or the required
+> > > capacity may not be provided) which may not be the case and which may
+> > > lead to excessive energy usage in some scenarios.
+> > >
+> > > Second, the hints passed by these drivers to the hardware need not be
+> > > in terms of the frequency, so representing the utilization numbers
+> > > coming from the scheduler as frequency before passing them to those
+> > > drivers is not really useful.
+> > >
+> > > Address the two points above by adding a special-purpose replacement
+> > > for the ->fast_switch callback, called ->adjust_perf, allowing the
+> > > governor to pass abstract performance level (rather than frequency)
+> > > values for the minimum (required) and target (desired) performance
+> > > along with the CPU capacity to compare them to.
+> > >
+> > > Also update the schedutil governor to use the new callback instead
+> > > of ->fast_switch if present.
+> > >
+> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > ---
+> > >
+> > > Changes with respect to the RFC:
+> > >  - Don't pass "busy" to ->adjust_perf().
+> > >  - Use a special 'update_util' hook for the ->adjust_perf() case in
+> > >    schedutil (this still requires an additional branch because of the
+> > >    shared common code between this case and the "frequency" one, but
+> > >    IMV this version is cleaner nevertheless).
+> > >
+> > > ---
+> > >  drivers/cpufreq/cpufreq.c        |   40 ++++++++++++++++++++++++++++++++
+> > >  include/linux/cpufreq.h          |   14 +++++++++++
+> > >  include/linux/sched/cpufreq.h    |    5 ++++
+> > >  kernel/sched/cpufreq_schedutil.c |   48 +++++++++++++++++++++++++++++++--------
+> > >  4 files changed, 98 insertions(+), 9 deletions(-)
+> > >
+> > > Index: linux-pm/include/linux/cpufreq.h
+> > > ===================================================================
+> > > --- linux-pm.orig/include/linux/cpufreq.h
+> > > +++ linux-pm/include/linux/cpufreq.h
+> > > @@ -320,6 +320,15 @@ struct cpufreq_driver {
+> > >                                     unsigned int index);
+> > >     unsigned int    (*fast_switch)(struct cpufreq_policy *policy,
+> > >                                    unsigned int target_freq);
+> > > +   /*
+> > > +    * ->fast_switch() replacement for drivers that use an internal
+> > > +    * representation of performance levels and can pass hints other than
+> > > +    * the target performance level to the hardware.
+> > > +    */
+> > > +   void            (*adjust_perf)(unsigned int cpu,
+> > > +                                  unsigned long min_perf,
+> > > +                                  unsigned long target_perf,
+> > > +                                  unsigned long capacity);
+> >
+> > With this callback in place, do we still need to keep the other stuff we
+> > introduced recently, like CPUFREQ_NEED_UPDATE_LIMITS ?
+>
+> Ping
 
-Thanks, applied.
+Missed this one, sorry.
 
-- Arnaldo
-
- 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/util/debug.c | 34 +++++++++++++++++++++++++++++++---
->  tools/perf/util/debug.h |  1 +
->  2 files changed, 32 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/util/debug.c b/tools/perf/util/debug.c
-> index 50fd6a4be4e0..dc148b08814b 100644
-> --- a/tools/perf/util/debug.c
-> +++ b/tools/perf/util/debug.c
-> @@ -10,6 +10,7 @@
->  #include <api/debug.h>
->  #include <linux/kernel.h>
->  #include <linux/time64.h>
-> +#include <sys/time.h>
->  #ifdef HAVE_BACKTRACE_SUPPORT
->  #include <execinfo.h>
->  #endif
-> @@ -31,21 +32,48 @@ int debug_ordered_events;
->  static int redirect_to_stderr;
->  int debug_data_convert;
->  static FILE *debug_file;
-> +bool debug_display_time;
->  
->  void debug_set_file(FILE *file)
->  {
->  	debug_file = file;
->  }
->  
-> +void debug_set_display_time(bool set)
-> +{
-> +	debug_display_time = set;
-> +}
-> +
-> +static int fprintf_time(FILE *file)
-> +{
-> +	struct timeval tod;
-> +	struct tm ltime;
-> +	char date[64];
-> +
-> +	if (!debug_display_time)
-> +		return 0;
-> +
-> +	if (gettimeofday(&tod, NULL) != 0)
-> +		return 0;
-> +
-> +	if (localtime_r(&tod.tv_sec, &ltime) == NULL)
-> +		return 0;
-> +
-> +	strftime(date, sizeof(date),  "%F %H:%M:%S", &ltime);
-> +	return fprintf(file, "[%s.%06lu] ", date, tod.tv_usec);
-> +}
-> +
->  int veprintf(int level, int var, const char *fmt, va_list args)
->  {
->  	int ret = 0;
->  
->  	if (var >= level) {
-> -		if (use_browser >= 1 && !redirect_to_stderr)
-> +		if (use_browser >= 1 && !redirect_to_stderr) {
->  			ui_helpline__vshow(fmt, args);
-> -		else
-> -			ret = vfprintf(debug_file, fmt, args);
-> +		} else {
-> +			ret = fprintf_time(debug_file);
-> +			ret += vfprintf(debug_file, fmt, args);
-> +		}
->  	}
->  
->  	return ret;
-> diff --git a/tools/perf/util/debug.h b/tools/perf/util/debug.h
-> index 43f712295645..48f631966067 100644
-> --- a/tools/perf/util/debug.h
-> +++ b/tools/perf/util/debug.h
-> @@ -64,6 +64,7 @@ int veprintf(int level, int var, const char *fmt, va_list args);
->  
->  int perf_debug_option(const char *str);
->  void debug_set_file(FILE *file);
-> +void debug_set_display_time(bool set);
->  void perf_debug_setup(void);
->  int perf_quiet_option(void);
->  
-> -- 
-> 2.26.2
-> 
-
--- 
-
-- Arnaldo
+We still need those things for the other governors.
