@@ -2,203 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112232DAF1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 150F62DAF21
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:41:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729331AbgLOOjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 09:39:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728830AbgLOOit (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:38:49 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD394C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:38:08 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id 2so4792499qtt.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:38:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=w7jpjH1Jbgu804AfDst7MSgkMyAd/mh6khKgn3kKLTc=;
-        b=V7w0ZMkw6xKCNSAW0VAuR5Un2XMk0yafWlbkOSxQg9JutJyIkRrSdKarM3+gXZDsLL
-         Q4DeWWqB9ClfoNf5b/4ZNZjc9AXNbIP6pbD/QtKLLYo0IVdQTcPod/SZ9uuiW56WV+6V
-         sMu/V8FKT3H2mCxUui5QXGzTGG+rm1XGBfAeKjGCxSaUOmFlbpVkxrEIRNVlEpSQn2n3
-         YVZolF7bq5CzyfqlOXce/eIMcQeyejqThqZj1KH4tB9zPFYiPfKRVcl7O12/jHa4Kt4/
-         k0CjorpVWkFzFHeerJgdIAAa9H2zM/nqDjLaB2cHtQyzGnoKTD5iWw+C6C1RplvYSZye
-         Wu1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=w7jpjH1Jbgu804AfDst7MSgkMyAd/mh6khKgn3kKLTc=;
-        b=eCjPMnTTfSdHLBxGK/NammvRLcYkRgQPSilwNtI519TXRB8KLoKQj9l68fc42OtaUR
-         9pBx6xQafnKQt0T9ayKOHkpILagAC49LwXOA+47HHjDgZ5whNOyzIWMPrQybXsOEcnxa
-         b90IzmJAycZHfyOkpCMf4WZZ7BQcPfP3tVUpwIkWykRswYUtE5Md7Nz6udTEjg7FUmSK
-         rg3lRyspOKnsQbUY2vFfE3ibhdiEdpokF/2nC1AOMhWkADyPjI81hKk+CxygAecLZaDG
-         bhTZFnYa3tWyalxZWepBoDRcTXcxTqRKSq+I7JfJ8loYsqSBiorS6I0B5sh1MS+V3wwC
-         xfWA==
-X-Gm-Message-State: AOAM532dIUMQO13BRaXvPRRE8pQq7V2ge6avKPFdkBrm+wGgSS6ll7gF
-        ZMOfT3cHdhfwPGvLJi64zGuu7w==
-X-Google-Smtp-Source: ABdhPJxOaC0n7+XXIS6ZI6MMKP5M3A+89QYy4enzXD/zj/tBM8VS5Ef0yLT4wL0rsaH7vRoK7kZbuA==
-X-Received: by 2002:ac8:5a95:: with SMTP id c21mr37113165qtc.115.1608043087777;
-        Tue, 15 Dec 2020 06:38:07 -0800 (PST)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id r128sm17235414qke.94.2020.12.15.06.38.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 06:38:07 -0800 (PST)
-Subject: Re: [PATCH 2/4] thermal/core: Precompute the jiffies
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rui.zhang@intel.com
-Cc:     amitk@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20201202120657.1969-1-daniel.lezcano@linaro.org>
- <20201202120657.1969-2-daniel.lezcano@linaro.org>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <1c909a38-1777-556d-fe87-29394a1b1d56@linaro.org>
-Date:   Tue, 15 Dec 2020 09:38:06 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729561AbgLOOjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 09:39:37 -0500
+Received: from correo.us.es ([193.147.175.20]:46484 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729440AbgLOOjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 09:39:17 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id BF5E61E2C74
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 15:38:17 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id B14FFDA73D
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 15:38:17 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id AD25CDA791; Tue, 15 Dec 2020 15:38:17 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
+        autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 5232ADA78A;
+        Tue, 15 Dec 2020 15:38:15 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 15 Dec 2020 15:38:15 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 2A5954265A5A;
+        Tue, 15 Dec 2020 15:38:15 +0100 (CET)
+Date:   Tue, 15 Dec 2020 15:38:30 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] netfilter: nftables: fix incorrect increment of
+ loop counter
+Message-ID: <20201215143830.GA10086@salvia>
+References: <20201214234015.85072-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20201202120657.1969-2-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201214234015.85072-1-colin.king@canonical.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Hi,
 
-On 12/2/20 7:06 AM, Daniel Lezcano wrote:
-> The delays are stored in ms units and when the polling function is
-> called this delay is converted into jiffies at each call.
+On Mon, Dec 14, 2020 at 11:40:15PM +0000, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Instead of doing the conversion again and again, compute the jiffies
-> at init time and use the value directly when setting the polling.
-
-A generic comment. You can avoid patch 1 of this series and directly
-have patch 2 , right? There is no need to rename 
-polling_delay/passive_delay to *_delay_ms and then remove it again?
-
+> The intention of the err_expr cleanup path is to iterate over the
+> allocated expr_array objects and free them, starting from i - 1 and
+> working down to the start of the array. Currently the loop counter
+> is being incremented instead of decremented and also the index i is
+> being used instead of k, repeatedly destroying the same expr_array
+> element.  Fix this by decrementing k and using k as the index into
+> expr_array.
 > 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Addresses-Coverity: ("Infinite loop")
+> Fixes: 8cfd9b0f8515 ("netfilter: nftables: generalize set expressions support")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Reviewed-by: Pablo Neira Ayuso <pablo@netfilter.org>
+
+@Jakub: Would you please take this one into net-next? Thanks!
+
 > ---
->   drivers/thermal/thermal_core.c  |  5 +++--
->   drivers/thermal/thermal_core.h  | 18 ++++++++++++++++++
->   drivers/thermal/thermal_sysfs.c |  4 ++--
->   include/linux/thermal.h         |  7 +++++++
->   4 files changed, 30 insertions(+), 4 deletions(-)
+>  net/netfilter/nf_tables_api.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-> index 53f55ceca220..3111ca2c87a1 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -1340,8 +1340,9 @@ thermal_zone_device_register(const char *type, int trips, int mask,
->   	tz->device.class = &thermal_class;
->   	tz->devdata = devdata;
->   	tz->trips = trips;
-> -	tz->passive_delay_ms = passive_delay;
-> -	tz->polling_delay_ms = polling_delay;
-> +
-> +	thermal_zone_set_passive_delay(tz, passive_delay);
-> +	thermal_zone_set_polling_delay(tz, polling_delay);
->   
->   	/* sys I/F */
->   	/* Add nodes that are always present via .groups */
-> diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
-> index 8df600fa7b79..2c9551ed5ef8 100644
-> --- a/drivers/thermal/thermal_core.h
-> +++ b/drivers/thermal/thermal_core.h
-> @@ -128,6 +128,24 @@ int thermal_build_list_of_policies(char *buf);
->   /* Helpers */
->   void thermal_zone_set_trips(struct thermal_zone_device *tz);
->   
-> +static inline void thermal_zone_set_passive_delay(
-> +	struct thermal_zone_device *tz, int delay_ms)
-> +{
-> +	tz->passive_delay_ms = delay_ms;
-> +	tz->passive_delay_jiffies = msecs_to_jiffies(delay_ms);
-> +	if (delay_ms > 1000)
-> +		tz->passive_delay_jiffies = round_jiffies(tz->passive_delay_jiffies);
-> +}
-> +
-> +static inline void thermal_zone_set_polling_delay(
-> +	struct thermal_zone_device *tz, int delay_ms)
-> +{
-> +	tz->polling_delay_ms = delay_ms;
-> +	tz->polling_delay_jiffies = msecs_to_jiffies(delay_ms);
-> +	if (delay_ms > 1000)
-> +		tz->polling_delay_jiffies = round_jiffies(tz->polling_delay_jiffies);
-> +}
-
-How about one function instead?
-static inline void thermal_zone_set_delay_jiffies(int *delay_jiffes, int 
-delay_ms)
-{
-	*delay_jiffies = msecs_to_jiffies(delay_ms);
-	if (delay_ms > 1000)
-		*delay_jiffies = round_jiffies(*delay_jiffies);
-}
-
-And then calling 
-thermal_zone_set_delay_jiffies(&tz->passive_delay_jiffies, passive_delay)..
-
-Regards
-Thara
-> +
->   /* sysfs I/F */
->   int thermal_zone_create_device_groups(struct thermal_zone_device *, int);
->   void thermal_zone_destroy_device_groups(struct thermal_zone_device *);
-> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-> index f465462d8aa1..9598b288a0a1 100644
-> --- a/drivers/thermal/thermal_sysfs.c
-> +++ b/drivers/thermal/thermal_sysfs.c
-> @@ -234,11 +234,11 @@ passive_store(struct device *dev, struct device_attribute *attr,
->   
->   	if (state && !tz->forced_passive) {
->   		if (!tz->passive_delay_ms)
-> -			tz->passive_delay_ms = 1000;
-> +			thermal_zone_set_passive_delay(tz, 1000);
->   		thermal_zone_device_rebind_exception(tz, "Processor",
->   						     sizeof("Processor"));
->   	} else if (!state && tz->forced_passive) {
-> -		tz->passive_delay_ms = 0;
-> +		thermal_zone_set_passive_delay(tz, 0);
->   		thermal_zone_device_unbind_exception(tz, "Processor",
->   						     sizeof("Processor"));
->   	}
-> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> index 230d451bf335..5dd9bdb6c6ad 100644
-> --- a/include/linux/thermal.h
-> +++ b/include/linux/thermal.h
-> @@ -118,9 +118,14 @@ struct thermal_cooling_device {
->    * @trips_disabled;	bitmap for disabled trips
->    * @passive_delay_ms:	number of milliseconds to wait between polls when
->    *			performing passive cooling.
-> + * @passive_delay_jiffies: number of jiffies to wait between polls when
-> + *			performing passive cooling.
->    * @polling_delay_ms:	number of milliseconds to wait between polls when
->    *			checking whether trip points have been crossed (0 for
->    *			interrupt driven systems)
-> + * @polling_delay_jiffies: number of jiffies to wait between polls when
-> + *			checking whether trip points have been crossed (0 for
-> + *			interrupt driven systems)
->    * @temperature:	current temperature.  This is only for core code,
->    *			drivers should use thermal_zone_get_temp() to get the
->    *			current temperature
-> @@ -161,6 +166,8 @@ struct thermal_zone_device {
->   	unsigned long trips_disabled;	/* bitmap for disabled trips */
->   	int passive_delay_ms;
->   	int polling_delay_ms;
-> +	int passive_delay_jiffies;
-> +	int polling_delay_jiffies;
->   	int temperature;
->   	int last_temperature;
->   	int emul_temperature;
+> diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+> index 8d5aa0ac45f4..4186b1e52d58 100644
+> --- a/net/netfilter/nf_tables_api.c
+> +++ b/net/netfilter/nf_tables_api.c
+> @@ -5254,8 +5254,8 @@ static int nft_set_elem_expr_clone(const struct nft_ctx *ctx,
+>  	return 0;
+>  
+>  err_expr:
+> -	for (k = i - 1; k >= 0; k++)
+> -		nft_expr_destroy(ctx, expr_array[i]);
+> +	for (k = i - 1; k >= 0; k--)
+> +		nft_expr_destroy(ctx, expr_array[k]);
+>  
+>  	return -ENOMEM;
+>  }
+> -- 
+> 2.29.2
 > 
-
--- 
-Warm Regards
-Thara
