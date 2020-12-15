@@ -2,153 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AA62DB533
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 21:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6832DB539
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 21:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729409AbgLOUei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 15:34:38 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:33927 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727915AbgLOUdV (ORCPT
+        id S1727873AbgLOUgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 15:36:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728575AbgLOUdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 15:33:21 -0500
-Received: by mail-oi1-f193.google.com with SMTP id s75so24835962oih.1;
-        Tue, 15 Dec 2020 12:33:06 -0800 (PST)
+        Tue, 15 Dec 2020 15:33:46 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9663C06179C;
+        Tue, 15 Dec 2020 12:33:05 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id j16so57922edr.0;
+        Tue, 15 Dec 2020 12:33:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HnIdZIbHofYFRuQmYpMAr+KqMcOINorVtwHcWuXO3CQ=;
+        b=vDDe57R6klgFWHuh2HY3lU9Hse+4YOXW6G9FHSpk+R5Lwu/ePxlIzV1os6OnNraZat
+         SHKaGNazTQ5cC/mxyhdKG4wReYKGicHSCkJm88LAtkC48osuGOT0i3+FWdnJaB47leHf
+         iIou1yz7C33S5szb4x/1A93NvladUYWe8TP90XdAEjt/JP3inQ1f42Mj7UcTjXgqE6Ys
+         FB3npC0z5IlASmY3btmSIe2+wY36PWxNHyPbLT8qaAf0nbaFUsPPR+XGLGM5cZBCj2go
+         udW7rKICgaS0Ev69TvKLtrEporbt7P+6bRV6nbJjZI9p7UvPnonjSZhENKRZEPBvEzGM
+         /ahA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EtjKKd4TCSJPpocIsePkm7hGwgQtFCBsVHbK3e4JQ/A=;
-        b=VcuD3vaUZPC+IIXogl2f1jR4o/6DqsylYeo1qc5TUG9dxWOUeauLt5O/L2nz/EfxCR
-         FGovX2ZjjamcNiOR4gzORK8tZQWJ9RUTLT5Ca+CZL212CohjJT4A2hPRX9m3q9DcLa+b
-         0Swpd0oXkws5zlr1CLArODVpX0Gz8+JmE1PDYtSon6dm+/3wrVIt/gGQ9gZaM81oBBo/
-         jYG7GwefjnrdmLDLnTDA1b2FaeK4rgRO9Vn+Ju//miWJ+DdN+6GqwOVdw8QG4NFvzt8h
-         38Co/bE2fTDU8TxrnTcFaCFEpwn6veGVUCKJ3HNFciFNZ/uK+BDDusgVCVr9tuWZMDLp
-         tMkw==
-X-Gm-Message-State: AOAM530oQCuDaNfV4abbSv40d6pBf6131oKu84S2aAcwSvucysp7oHXF
-        /gMZPcsUA+KRVvuDbmCxp+PmArnauw==
-X-Google-Smtp-Source: ABdhPJw1zNChVh3D0wCKjqWgGzDn+PAXtuD5gGraAOcBX5mba70IZ51cdakGWx1H4k8v2DDA3f6NKg==
-X-Received: by 2002:aca:bdc4:: with SMTP id n187mr417086oif.154.1608064360624;
-        Tue, 15 Dec 2020 12:32:40 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r204sm5056833oif.0.2020.12.15.12.32.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 12:32:39 -0800 (PST)
-Received: (nullmailer pid 165386 invoked by uid 1000);
-        Tue, 15 Dec 2020 20:32:38 -0000
-Date:   Tue, 15 Dec 2020 14:32:38 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, krzk@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com
-Subject: Re: [PATCH v7 1/4] dt-bindings: soc: imx8m: add DT Binding doc for
- soc unique ID
-Message-ID: <20201215203238.GA118912@robh.at.kernel.org>
-References: <20201215083551.6067-1-alice.guo@oss.nxp.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HnIdZIbHofYFRuQmYpMAr+KqMcOINorVtwHcWuXO3CQ=;
+        b=esoodBaVRRplqM6imea1OODvuyupweNfGJkhmiEJ4YI6CBhzu4HyvBpDhzpVDMPDbo
+         SEyCMjWhUF8FrL36Q5bTByOMoLFcB0N+q1ktIEXFvK+hiXT5xTZcpMKULZffl5VEPDSo
+         C6thwjTyBnsJ/qmawoe4dExOjYO4E7pYZL78KceYkAUiEwboCA8WpXY5OZRObsGHMtH3
+         Ly0l/5wTOPGnq5DGExSItFSnDGrvBDtAxPojgl8M3asPbumazjOC36mN2w/DAcntAHiu
+         0EeuWC7GbQ8gPZPXQy4EqxyPlN36G7Iqv5RcB8R8Ye9HQ5H+knoRcafS3zaem2AbYqhE
+         SZlQ==
+X-Gm-Message-State: AOAM530pCkbsmHKsZD1IQ3Hm6N8zwP6v6ql3PN8E42aL91iAfvNfAjib
+        qchd4nKoqKTfuTlg1DDN/p1y3z2Sw7ceq8W6+ss=
+X-Google-Smtp-Source: ABdhPJzE/1t6NIjK7mvndb9OLxuvHdPZBWjgVPmyEBbMEyqiMi0B4DCaqEcPB8RGlchQ26lbTIqTqt55O1D6B3ysHWY=
+X-Received: by 2002:a05:6402:c95:: with SMTP id cm21mr31133119edb.294.1608064384485;
+ Tue, 15 Dec 2020 12:33:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201215083551.6067-1-alice.guo@oss.nxp.com>
+References: <20201214223722.232537-1-shy828301@gmail.com> <20201214223722.232537-3-shy828301@gmail.com>
+ <20201215140754.GD379720@cmpxchg.org>
+In-Reply-To: <20201215140754.GD379720@cmpxchg.org>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 15 Dec 2020 12:32:52 -0800
+Message-ID: <CAHbLzkpVk3uHO+g=iQLavRJ1c96FuaKTKVz0pUUHSk1L2rJcfQ@mail.gmail.com>
+Subject: Re: [v2 PATCH 2/9] mm: memcontrol: use shrinker_rwsem to protect
+ shrinker_maps allocation
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 04:35:48PM +0800, Alice Guo (OSS) wrote:
-> From: Alice Guo <alice.guo@nxp.com>
-> 
-> Add DT Binding doc for the Unique ID of i.MX 8M series.
-> 
-> Signed-off-by: Alice Guo <alice.guo@nxp.com>
-> ---
-> 
-> Changes for v7:
->  - change to a separate schema file
-> Changes for v6:
->  - none
-> Changes for v5:
->  - correct the error of using allOf
-> Changes for v4:
->  - use allOf to limit new version DTS files for i.MX8M to include
->    "fsl,imx8m*-soc", nvmem-cells and nvmem-cells-names
-> Changes for v3:
->  - put it into Documentation/devicetree/bindings/arm/fsl.yaml
->  - modify the description of nvmem-cells
->  - use "make ARCH=arm64 dtbs_check" to make sure it is right
-> Changes for v2:
->  - remove the subject prefix "LF-2571-1"
-> 
->  .../bindings/soc/imx/imx8m-soc.yaml           | 54 +++++++++++++++++++
->  1 file changed, 54 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml b/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
-> new file mode 100644
-> index 000000000000..a2f7dc0c9b35
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/imx/imx8m-soc.yaml
-> @@ -0,0 +1,54 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/soc/imx/imx8m-soc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP i.MX8M Series SoC
-> +
-> +maintainers:
-> +  - Alice Guo <alice.guo@nxp.com>
-> +
-> +description: |
-> +  NXP i.MX8M series SoCs contain fuse entries from which SoC Unique ID can be
-> +  obtained.
-> +
-> +select:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        enum:
-> +          - fsl,imx8mm
-> +          - fsl,imx8mn
-> +          - fsl,imx8mp
-> +          - fsl,imx8mq
-> +  required:
-> +    - compatible
-> +
-> +properties:
-> +  soc:
-> +    type: object
-> +    properties:
-> +      compatible:
-> +        items:
-> +          - enum:
-> +              - fsl,imx8mm-soc
-> +              - fsl,imx8mn-soc
-> +              - fsl,imx8mp-soc
-> +              - fsl,imx8mq-soc
-> +          - const: simple-bus
-> +
-> +      nvmem-cells:
-> +        maxItems: 1
-> +        description: Phandle to the SOC Unique ID provided by a nvmem node
-> +
-> +      nvmem-cells-names:
-> +        const: soc_unique_id
-> +
-> +    required:
-> +      - compatible
-> +      - nvmem-cells
-> +      - nvmem-cell-names
+On Tue, Dec 15, 2020 at 6:10 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Mon, Dec 14, 2020 at 02:37:15PM -0800, Yang Shi wrote:
+> > Since memcg_shrinker_map_size just can be changd under holding shrinker_rwsem
+> > exclusively, the read side can be protected by holding read lock, so it sounds
+> > superfluous to have a dedicated mutex.  This should not exacerbate the contention
+> > to shrinker_rwsem since just one read side critical section is added.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>
+> Thanks Yang, this is a step in the right direction. It would still be
+> nice to also drop memcg_shrinker_map_size and (trivially) derive that
+> value from shrinker_nr_max where necessary. It is duplicate state.
 
-Anything else should be a node, so:
-
-       additionalProperties:
-         type: object
-
-> +
-> +additionalProperties: true
-> +...
-> --
-> 2.17.1
-> 
+Thanks! I will take a further look at it.
