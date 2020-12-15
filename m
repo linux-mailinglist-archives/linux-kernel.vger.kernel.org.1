@@ -2,83 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D492DB02A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:35:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2FF32DB031
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729970AbgLOPej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:34:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729798AbgLOPeX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:34:23 -0500
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C287DC0617A6;
-        Tue, 15 Dec 2020 07:33:42 -0800 (PST)
-Received: by mail-ua1-x942.google.com with SMTP id y26so6827291uan.5;
-        Tue, 15 Dec 2020 07:33:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CbSdNNYxeT6yqsudAjr7+iL0pQVPFdjuCIlK0EsWHU4=;
-        b=Fwff4bYbl6xo3/Z+UeecGMQsCX5k205QvfZ+A0vxJGPj2+7mJmwk0XqRV89Z31WJD5
-         JbGJYjQrBHiApB9GrFFeloPOFPq9bmHAacQ2UVL2+J0QvWsCrjHSwhQ8vOg6nbNjiEW5
-         Rd3dbSrPDRUzGO/DnSZzG/VsLB2gn1nuL2jX38FcT+iq181W1BZvn0JVrWff4rDPxHy7
-         Uz/bKP3++9iF8Bga9cYTM+xXvaBEzkdBHkdCS0RjTQWRKgp6Sh0QAJvbaZm6ZrpgIvBB
-         e1YwdhNttt8cTH8yahuQuxUMRBjT4xEhiWZ14EGD29paUjsX3uw3Z95vx7bIE7uTLOa6
-         vhCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CbSdNNYxeT6yqsudAjr7+iL0pQVPFdjuCIlK0EsWHU4=;
-        b=HngiBTazB2S8W/hRjTy6HwAwK05jVqqwPqg4jWkDr/JW//8uDzDefAyczOU+VfM1Pw
-         lBddO/tU8QauyNi3s/+WbxV6KI4EeB+NnIN4CVdFKNFlm53zuusx51pmQTx1M+t/f/nB
-         vLZJqFATlEs3aYqgie3WBE1+Mf8VYX6BXKdoiOvut3ai1FUh2CeZuJpkwY9KRpMmEhTR
-         Fx4NEdhpNsSuVDo2ZyHtrO9ReFu+L4FX0ADldbQd28iPhzaWkMqZuZmEdiT5Znqw8Vqz
-         vWoeGLrqMlgHRYCuoa5EG+6Lk2CawlRIqZy6VXFqnoPO9P3FC01xq6rlkTfVgsu4ljWh
-         f95A==
-X-Gm-Message-State: AOAM533xFkOKu6AzsRlLerH4AYOX1bRvsFQoFD/RtLTO8h4PBbDUpgD6
-        bU9zE26IaSs0KJMfO+KejLnSqpHsvyyqdo5cgM0=
-X-Google-Smtp-Source: ABdhPJzOaAX6k5+L9+tvWa1R7tcpUWi4JNDyuQT/a2MeCpLJOxyiJNoR1JIYZFTwogHElX0eucap8vxSZbmuCztYP9Q=
-X-Received: by 2002:ab0:2a1a:: with SMTP id o26mr28642075uar.101.1608046421829;
- Tue, 15 Dec 2020 07:33:41 -0800 (PST)
+        id S1730037AbgLOPfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:35:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729723AbgLOPf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:35:26 -0500
+Date:   Tue, 15 Dec 2020 12:34:48 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608046476;
+        bh=52A4ekBlPoxabGGEHzBDiC3rCXzZ5CrR7GUKzWMiBHs=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ojTqYk0a8J2vXMXc7L/cIs8bYOvF+eiHlWQVneN8dCUhUUqzf32813BCfcJUfh6e6
+         MJ5lDkyU6uurS8rf5vIXa0Y9u/9k3cxJkdUNgZuDGiqm2idYdfxzB6ETx2Fd35co8J
+         98YUsk4atCti3ArXWVK1enMWLmGcbYI74lP/HWtv64s93xgG3+2yiilrcbMjUl08fE
+         vogE1iVsC8I1J3I5P+QSCmzu3mJ9TxE/t/zXrJ8lsSv86B3mcIButCybtO3hXwMljN
+         OuG0Uld+OiNgX7mAC8riPutfrUdzmZ5ugptbvQ6SZk1PIeKctDGzooBGEA1sG6uodf
+         H5+FpOBhS8hpQ==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v2] perf callchain: Return directly when use
+ '--call-graph dwarf' under !HAVE_DWARF_SUPPORT
+Message-ID: <20201215153448.GA258566@kernel.org>
+References: <1607996131-9340-1-git-send-email-yangtiezhu@loongson.cn>
+ <CAM9d7chMkKBschy=abDqyOBg8_jxXBXhSN30k2m+MhPca_g2ig@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201211143758.28528-1-TheSven73@gmail.com>
-In-Reply-To: <20201211143758.28528-1-TheSven73@gmail.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Tue, 15 Dec 2020 10:33:30 -0500
-Message-ID: <CAGngYiVmTU2U1b7qv+oFXi927z6pEw5H6tsBjGDT4HJeHK5DGQ@mail.gmail.com>
-Subject: Re: [PATCH net v3] lan743x: fix rx_napi_poll/interrupt ping-pong
-To:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7chMkKBschy=abDqyOBg8_jxXBXhSN30k2m+MhPca_g2ig@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub,
+Em Tue, Dec 15, 2020 at 10:49:59PM +0900, Namhyung Kim escreveu:
+> Hello,
+> 
+> On Tue, Dec 15, 2020 at 10:35 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+> >
+> > DWARF register mappings have not been defined for some architectures,
+> > at least for mips, so we can print an error message and then return
+> > directly when use '--call-graph dwarf'.
+> >
+> > E.g. without this patch:
+> >
+> > [root@linux perf]# ./perf record --call-graph dwarf cd
+> > Error:
+> > The sys_perf_event_open() syscall returned with 89 (Function not implemented) for event (cycles).
+> > /bin/dmesg | grep -i perf may provide additional information.
+> >
+> > With this patch:
+> >
+> > [root@linux perf]# ./perf record --call-graph dwarf cd
+> > DWARF is not supported for architecture mips64
+> >
+> >  Usage: perf record [<options>] [<command>]
+> >     or: perf record [<options>] -- <command> [<options>]
+> >
+> >         --call-graph <record_mode[,record_size]>
+> >                           setup and enables call-graph (stack chain/backtrace):
+> >
+> >                                 record_mode:    call graph recording mode (fp|dwarf|lbr)
+> >                                 record_size:    if record_mode is 'dwarf', max size of stack recording (<bytes>)
+> >                                                 default: 8192 (bytes)
+> >
+> >                                 Default: fp
+> >
+> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> > ---
+> >
+> > v2: Use HAVE_DWARF_SUPPORT to check
+> 
+> I'm not sure whether this is because of lack of dwarf library or kernel support.
+> Based on the error message, I guess it's from the kernel.  Then I think this
+> patch won't be sufficient..
 
-On Fri, Dec 11, 2020 at 9:38 AM Sven Van Asbroeck <thesven73@gmail.com> wrote:
->
-> From: Sven Van Asbroeck <thesven73@gmail.com>
->
-> Even if there is more rx data waiting on the chip, the rx napi poll fn
-> will never run more than once - it will always read a few buffers, then
-> bail out and re-arm interrupts. Which results in ping-pong between napi
-> and interrupt.
->
-> This defeats the purpose of napi, and is bad for performance.
->
-> Fix by making the rx napi poll behave identically to other ethernet
-> drivers:
+tools/perf/Makefile.config
 
-I was wondering if maybe you had any lingering doubts about this patch?
-Is there anything I can do to address these?
+  ifndef NO_DWARF
+    ifeq ($(origin PERF_HAVE_DWARF_REGS), undefined)
+      msg := $(warning DWARF register mappings have not been defined for architecture $(SRCARCH), DWARF support disabled);
+      NO_DWARF := 1
+    else
+      CFLAGS += -DHAVE_DWARF_SUPPORT $(LIBDW_CFLAGS)
+      LDFLAGS += $(LIBDW_LDFLAGS)
+      EXTLIBS += ${DWARFLIBS}
+      $(call detected,CONFIG_DWARF)
+    endif # PERF_HAVE_DWARF_REGS
+  endif # NO_DWARF
+
+[acme@five perf]$ find tools/perf -type f | xargs grep PERF_HAVE_DWARF_REGS
+tools/perf/arch/xtensa/Makefile:PERF_HAVE_DWARF_REGS := 1
+tools/perf/arch/x86/Makefile:PERF_HAVE_DWARF_REGS := 1
+tools/perf/arch/arm64/Makefile:PERF_HAVE_DWARF_REGS := 1
+tools/perf/arch/arm/Makefile:PERF_HAVE_DWARF_REGS := 1
+tools/perf/arch/s390/Makefile:PERF_HAVE_DWARF_REGS := 1
+tools/perf/arch/powerpc/Makefile:PERF_HAVE_DWARF_REGS := 1
+tools/perf/arch/sh/Makefile:PERF_HAVE_DWARF_REGS := 1
+tools/perf/arch/riscv/Makefile:PERF_HAVE_DWARF_REGS := 1
+tools/perf/arch/sparc/Makefile:PERF_HAVE_DWARF_REGS := 1
+tools/perf/arch/csky/Makefile:PERF_HAVE_DWARF_REGS := 1
+tools/perf/Makefile.config:    ifeq ($(origin PERF_HAVE_DWARF_REGS), undefined)
+tools/perf/Makefile.config:    endif # PERF_HAVE_DWARF_REGS
+[acme@five perf]$
+
+Ouch:
+
+[acme@five perf]$ cat tools/perf/arch/xtensa/Makefile
+# SPDX-License-Identifier: GPL-2.0-only
+ifndef NO_DWARF
+PERF_HAVE_DWARF_REGS := 1
+endif
+[acme@five perf]$
+
+So you have a point, only if NO_DWARF is not defined, then
+PERF_HAVE_DWARF_REGS is can be used to define HAVE_DWARF_SUPPORT, too
+clumsy.
+
+So probably my hunch that this should be done at
+evsel__open_strerror() and use perf_missing_features.dwarf_regs is
+what we should go...
+
+I'm removing this patch from my current tree, please take a look at:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/commit/?h=tmp.perf/core&id=f55c66234c1967f6e56e56c3e084f80b417c124b
+
+For how I did this for another feature that the kernel may or not
+support, perf_event_open() fails, it notices that in
+perf_missing_features and then later evsel__open_strerror() returns a
+sensible warning, reacting to something the running kernel returned.
+
+- Arnaldo
