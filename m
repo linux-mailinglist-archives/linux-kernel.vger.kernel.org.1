@@ -2,92 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601A82DB598
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC25D2DB59B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:09:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbgLOVHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 16:07:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47776 "EHLO
+        id S1728261AbgLOVIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 16:08:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727687AbgLOVHs (ORCPT
+        with ESMTP id S1727653AbgLOVIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 16:07:48 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0955EC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 13:07:08 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id qw4so29674168ejb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 13:07:07 -0800 (PST)
+        Tue, 15 Dec 2020 16:08:20 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D94CC0617B0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 13:07:40 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id s75so24953268oih.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 13:07:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5oyP6mvBrvE3aEYFhLfs2RYWHj0K8mQLLM6Luko/efo=;
-        b=del9jE5SOnMZt6v3+c7d+G/TxIN3JzQQaLdEu/P/mWpV1LqwThTlFgRGPPh7HyeAVH
-         JDrbSeo5jQNYKIxUcBS4lME2fzO1FieKxP/gopAy3MPqExnhHza1QJHU/LbujshLUV03
-         tLIUVYkyVUb2qUN09S38om1HeQMcNu+KdL8Io=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PCqia07Ooz7sYMF7O1542JXQArNsUHqtaZkvNIl8vvA=;
+        b=kBziQZsMw0pBIeQGW6Xi4A6IYIfyNt1oM/ivHMIcItUBjEmLJWrEM2Mf7Qf65pEMrd
+         qVXmPk0/YFtWilBq5Yg4MrJ127J95EW6BcZ2l6DBf+dZiiePHIp9l+TL6cx8Gn+XF1V+
+         tW6YNhUALkmGxftYQ8eaR2baeQYIyughhxaeGk/Spb06+DqjPo2KhvvbArGjTg4FfEJd
+         6EAmipIylFMEzHV0nwwQbhdywFIdmnraLOObzPlNm7EJTpoLCrO2RkpSET6aCNojfP7M
+         OtqjVDLv3sNc0DXpUM9EztHyHSrZuw5LH9WskPT+yXPc+4uIzKTXE/v4wRr81CVVW2vZ
+         SvCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5oyP6mvBrvE3aEYFhLfs2RYWHj0K8mQLLM6Luko/efo=;
-        b=KtggqaEWky2owG/0ko890SCAMVMq1gLq5c5Lbrc4byduyn2HcR8mxOJw9fijS90eQW
-         DTQl5gy5YFPQlTm/cL7Wzp22jskLU9UsQ+9hpFuMsM4/66QWz8YGxyH5DNNZsZO6LudJ
-         03RCnBpKobe1+E80h+rvUOlQ+Tzm0pAXsmVjhTcB+tJvMX8uCU/7Unrp1m2sqRYY6r5B
-         aL9q1SddHQK8G4Sm2U8eM93qsMQIQ2AxpOMK1OdbZORe6YFdaoIIVYFHB1Sf/Cm5dgFN
-         HAdG1XrBkNs724inmgM0NhCV4m3RCRsr37E6hrr1KKzt3j1QgNi3uTJHKVSsxC7BXTWv
-         G9EA==
-X-Gm-Message-State: AOAM533d3cJmf/zxWSXEFjXqMk2KgqmrjkqploguEe9GSh35WDmFsahZ
-        g4dplMvQol8jCIOpWt7+1XDK5/MthlbPfjhPZiPjoA==
-X-Google-Smtp-Source: ABdhPJzWwlcPoqKhjHTrI6zoBOxh/CVBgBRXg6QTI1801GgWXVReiXUxUyJ9HY6W6Y/LCE22kPBK9M045rauq7GzpII=
-X-Received: by 2002:a17:906:4ec7:: with SMTP id i7mr6677702ejv.252.1608066426798;
- Tue, 15 Dec 2020 13:07:06 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PCqia07Ooz7sYMF7O1542JXQArNsUHqtaZkvNIl8vvA=;
+        b=p5SPz+RKwry6o5MVd583d/uV92fA/QuXJffuQ9n4Dai72F8B8EnKedRQEL+pSSq1tk
+         VBo8spIrmA0YT44fr4NfVUrk+RdcUND4XgqzeY110SpkdeXREA9TOAvju5y6Vs+2ETMn
+         poaneUKLqcL0PBmG+8zNMiHMG9SroSFN2dFRj5Qrz93KQRc9OO3xpIzn9WAUhBpaLuyg
+         HnEGRNww0QqMMQSGrxox2Q0bDfRZq9/d4UvL9b1ViiNQ7pRnM9mq6F8NjsKGThT1unE3
+         xwjeJ9DU68+vlzH/XGoTr9b5EqKEnWewj3EG96sF7VKk991h1dlD1m3kqUgTGQk1MSf7
+         AnNQ==
+X-Gm-Message-State: AOAM530oKoyoH+BOsOiahB/gfC1NN0op/bff/N1KjNNjOeS5xPVMgmTs
+        a1/Y7yChe+POND6eQC4/AKcy5w==
+X-Google-Smtp-Source: ABdhPJz4LIkqYEzr2F3FudmlHrVdy2N26fYQqwfQ1PlIw9sogsSJc7nLVpgAJ8cbRrQs5n/mChnqqQ==
+X-Received: by 2002:aca:fd0d:: with SMTP id b13mr481161oii.27.1608066459834;
+        Tue, 15 Dec 2020 13:07:39 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j8sm5390755oif.55.2020.12.15.13.07.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 13:07:39 -0800 (PST)
+Date:   Tue, 15 Dec 2020 15:07:37 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mailbox: qcom-apcs-ipc: use PLATFORM_DEVID_AUTO to
+ register device
+Message-ID: <X9klmVX576ePRiAr@builder.lan>
+References: <20201013021241.5656-1-shawn.guo@linaro.org>
+ <X9LyqlcDVsfBY1lm@builder.lan>
+ <CAAQ0ZWRgEGuUbLd7cnMqPh+BY45Cn0eSsNtku6GrGiC5NiyT1A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201215204858.8186-1-adrien.grassein@gmail.com> <20201215204858.8186-4-adrien.grassein@gmail.com>
-In-Reply-To: <20201215204858.8186-4-adrien.grassein@gmail.com>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Wed, 16 Dec 2020 02:36:54 +0530
-Message-ID: <CAMty3ZD2WsFeuCnt4DEL87Ou-sxHPYiBVu1n-LoK2gEzgO3XwQ@mail.gmail.com>
-Subject: Re: [PATCH 3/6] regulator: dt-bindings: pf8x00: fix nxp,phase-shift doc
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Troy Kisky <troy.kisky@boundarydevices.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAQ0ZWRgEGuUbLd7cnMqPh+BY45Cn0eSsNtku6GrGiC5NiyT1A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 2:19 AM Adrien Grassein
-<adrien.grassein@gmail.com> wrote:
->
-> nxp,phase-shift is an enum so use enum format to describe it.
-> Minimum and maximum values are also wrong.
->
-> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> ---
->  .../bindings/regulator/nxp,pf8x00-regulator.yaml | 16 ++++------------
->  1 file changed, 4 insertions(+), 12 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
-> index 913532d0532e..1da724c6e2ba 100644
-> --- a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
-> +++ b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
-> @@ -60,21 +60,13 @@ properties:
->
->            nxp,phase-shift:
->              $ref: "/schemas/types.yaml#/definitions/uint32"
-> -            minimum: 45
-> -            maximum: 0
-> +            minimum: 0
-> +            maximum: 315
-> +            default: 0
-> +            enum: [ 0, 45, 90, 135, 180, 225, 270, 315 ]
+On Fri 11 Dec 08:12 CST 2020, Shawn Guo wrote:
 
-Do you mean 0 is the minimum or starting value? I can see Table 48.
-SWx phase configuration with minimum and maximum values are starting
-from 45, 90, 135, 180, 225, 270, 315, 0 with phase bits as 0x0 to 0x7
+> On Fri, Dec 11, 2020 at 12:16 PM Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
+> >
+> > On Mon 12 Oct 21:12 CDT 2020, Shawn Guo wrote:
+> >
+> > > On MSM8916, only one qcom-apcs-msm8916-clk device is needed, as there is
+> > > only one APCS clock.  However, on MSM8939 three APCS clocks need to be
+> > > registered for cluster0 (little cores), cluster1 (big cores) and CCI
+> > > (Cache Coherent Interconnect).  That said, we will need to register 3
+> > > qcom-apcs-msm8916-clk devices.  Let's use PLATFORM_DEVID_AUTO rather
+> > > than PLATFORM_DEVID_NONE for platform_device_register_data() call.
+> > > Otherwise, the second APCS clock registration will fail due to duplicate
+> > > device name.
+> > >
+> > > [    0.519657] sysfs: cannot create duplicate filename '/bus/platform/devices/qcom-apcs-msm8916-clk'
+> > > ...
+> > > [    0.661158] qcom_apcs_ipc b111000.mailbox: failed to register APCS clk
+> > >
+> >
+> > Spotted this as I was looking for another patch, hence the late reply.
+> > But it seems this was never reviewed or merged.
+> >
+> > What does the bigger picture look like? Do we have 3 APCS global, or
+> > it's a single memory region that provides the 3 clocks? How does the
+> > qcom-apcs-msm8916-clk with it's hard coded offset of 0x50 deal with
+> > this? (Is this a single qcom-apcs-msm8939-clk that registers 3 clocks
+> > instead? Making this patch unnecessary?)
+> 
+> We have 3 APCS global instances.  I haven't got time to send out other
+> related patches, but the DT for these 3 APCS global looks like below.
+> 
+>                 apcs2: mailbox@b1d1000 {
+>                         compatible = "qcom,msm8916-apcs-kpss-global", "syscon";
+>                         reg = <0xb1d1000 0x1000>;
+>                         #mbox-cells = <1>;
 
-Jagan.
+The thing at 0xb1d1000 does not have the IPC bits, so this shouldn't
+have the #mbox-cells.
+
+Other than that, this seems to be correct. Please do add the msm8939
+compatible as you send this out.
+
+Regards,
+Bjorn
+
+>                         clocks = <&a53pll_cci>, <&gcc GPLL0_VOTE>;
+>                         clock-names = "pll", "aux";
+>                         #clock-cells = <0>;
+>                         clock-output-names = "a53mux_cci";
+>                 };
+> 
+>                 apcs1: mailbox@b011000 {
+>                         compatible = "qcom,msm8916-apcs-kpss-global", "syscon";
+>                         reg = <0xb011000 0x1000>;
+>                         #mbox-cells = <1>;
+>                         clocks = <&a53pll_c1>, <&gcc GPLL0_VOTE>;
+>                         clock-names = "pll", "aux";
+>                         #clock-cells = <0>;
+>                         clock-output-names = "a53mux_c1";
+>                 };
+> 
+>                 apcs0: mailbox@b111000 {
+>                         compatible = "qcom,msm8916-apcs-kpss-global", "syscon";
+>                         reg = <0xb111000 0x1000>;
+>                         #mbox-cells = <1>;
+>                         clocks = <&a53pll_c0>, <&gcc GPLL0_VOTE>;
+>                         clock-names = "pll", "aux";
+>                         #clock-cells = <0>;
+>                         clock-output-names = "a53mux_c0";
+>                 };
+> 
+> Shawn
