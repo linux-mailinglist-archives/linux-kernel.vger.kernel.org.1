@@ -2,187 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06312DB663
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C04582DB66D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729800AbgLOWNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 17:13:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
+        id S1729467AbgLOWSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 17:18:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727841AbgLOWNX (ORCPT
+        with ESMTP id S1727841AbgLOWSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 17:13:23 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9658AC0613D6;
-        Tue, 15 Dec 2020 14:12:42 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608070360;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IXES4CJtys4C59hgPJOT9TUKf5MwFxNN9K1OfuDE6aE=;
-        b=vBEo+9C8S5e36A6ZGMNwl9+qyBXpIMgQ73CsLa5aPY+OCBVBtZKxT0GaEioe4c1jH6dTgO
-        PWTpNKS/UWyIrl1BexTEcsYPsFrt+YimFT53OCFmpHBSXw+7upJ7GElMnSMHqndtWENlq8
-        K5+/nu9pCTl3TyMBERLahJiuday7tibC+tt/VBoK9GhqQvZgdqHt8JO3+gir1fif9zDbDc
-        4dUz0mBiU5rxw4Fzmep5Bik8DuG06tJjZuAKTuyNb1S+e6k9i8ihwtlqCooazYwUJH7a4+
-        DbvtDc3IFoAHhz/SZ7xFa+/wbHuREZUFRwvUcE2BTG3nO6JijxwQ7Fvmz5zrsg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608070360;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IXES4CJtys4C59hgPJOT9TUKf5MwFxNN9K1OfuDE6aE=;
-        b=DDmz+6YvLnFwKnkzWLg65QmW9e/zDO4pgrEpgkoou8XgDn5Hxh2FPHaqr5kVtgRHrWRL2t
-        mgxTM11UDl1A8lBw==
-To:     "Enrico Weigelt\, metux IT consult" <lkml@metux.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Enrico Weigelt\, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org
-Cc:     James.Bottomley@HansenPartnership.com, deller@gmx.de,
-        benh@kernel.crashing.org, paulus@samba.org, jdike@addtoit.com,
-        richard@nod.at, anton.ivanov@cambridgegreys.com, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-um@lists.infradead.org
-Subject: Re: [PATCH] arch: fix 'unexpected IRQ trap at vector' warnings
-In-Reply-To: <33001e60-cbfc-f114-55bf-f347f21fee9b@metux.net>
-References: <20201207143146.30021-1-info@metux.net> <877dptt5av.fsf@mpe.ellerman.id.au> <87y2i7298s.fsf@nanos.tec.linutronix.de> <33001e60-cbfc-f114-55bf-f347f21fee9b@metux.net>
-Date:   Tue, 15 Dec 2020 23:12:40 +0100
-Message-ID: <87a6ueu3af.fsf@nanos.tec.linutronix.de>
+        Tue, 15 Dec 2020 17:18:24 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5E2C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:17:35 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id t16so21343574wra.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:17:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=2WAtyH/h8YJYHOGr/C+Qo9+OJ3Kr2EO8OXwRFWCRBrE=;
+        b=PdZKNQW8zERGU9kHLf5x9fdEMpEyC9HTa1l85T5+T5iiQ8UWM5IQVniVBx9768+UvV
+         CI0NpiqQMGYTxW2/9r2IY5+YUHj/T1B5dEuzfuZrd+wV3b9L1ts1O9n7uTx9+SpfRtLg
+         46DzAaDo+HnIj8g1LOdegS2wlDuaif9uPbBiFp/Pa7AODPOWxvk7+2nKke/Gwl1C2Aup
+         zg2wgm3xDZlRw5LH6baG/e21uQjoEpyhtiKRluuTe0TAlY8MxyzLPtomVpdALRoI9F+K
+         OAtv7qcG3ueqNJM5dpPs+KbelLbIC23kb/n2LdZHkg9wiZsV90a89LPKocfWatfOuSb7
+         2RfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=2WAtyH/h8YJYHOGr/C+Qo9+OJ3Kr2EO8OXwRFWCRBrE=;
+        b=L03p2tWFR2cnNSJkwZG3ZHvndsiIMfOiL3muJ1wclXlioPyEjC8XLtAEQ5QD4Nm9Hw
+         UBSJr+uCYgOTB3uOldDOGdib7zHCoYTcUimUh34wSmXzypwBlkxasnEyPZD5i76P/Ls+
+         dJvUAyNtb7f3mMU5H/Jesdm6UZ3ZoqeSK08LwrmYZ3PCMRuBsNMSA3OY/ClRvicyWZmH
+         LHQUAvLckwMJZjOb+l6WYU/wJW/W1yHKxxi/Q282vOqpM4aQ9xwbXb3wSq1Rk7wR4ErN
+         pbYXwivT/je/BRMSt8obeRyPnHxUUTurqxOjvKJMQFpx4e6NV9otICr8NqDrAtzM6X3P
+         sg3w==
+X-Gm-Message-State: AOAM532CTzGfpa1coxtXwDImCMRbgOnvdhPa21GwNGlSa6YhP7Ao/GSu
+        wG0nG22qCgq3ajwgKmgVUYPO+Q==
+X-Google-Smtp-Source: ABdhPJxK1xsP6H2KYU4UGYruK6E/A7qoNO6jsE8PahNgQaWl3Lg6Mm55nmgsjg3RVarHrfKxR7L0Xw==
+X-Received: by 2002:a05:6000:1043:: with SMTP id c3mr4469753wrx.34.1608070654063;
+        Tue, 15 Dec 2020 14:17:34 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:1dbc:8063:5912:c6b3? ([2a01:e34:ed2f:f020:1dbc:8063:5912:c6b3])
+        by smtp.googlemail.com with ESMTPSA id w21sm85148wmi.45.2020.12.15.14.17.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 14:17:33 -0800 (PST)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM mailing list <linux-pm@vger.kernel.org>,
+        "michael.kao" <Michael.Kao@mediatek.com>,
+        Lukasz Luba <Lukasz.Luba@arm.com>,
+        Tian Tao <tiantao6@hisilicon.com>, Bernard <bernard@vivo.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Zhuguangqing <zhuguangqing@xiaomi.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Andres Freund <andres@anarazel.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        rikard.falkeborn@gmail.com,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Fabio Estevam <fabio.estevam@nxp.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>,
+        zhengyongjun3@huawei.com
+Subject: [GIT PULL] thermal for v5.11
+Message-ID: <9a2b3f9e-458a-bb66-2c38-db6cbf5a6c73@linaro.org>
+Date:   Tue, 15 Dec 2020 23:17:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15 2020 at 21:12, Enrico Weigelt wrote:
-> On 09.12.20 00:01, Thomas Gleixner wrote:
->>   3) It's invoked from __handle_domain_irq() when the 'hwirq' which is
->>      handed in by the caller does not resolve to a mapped Linux
->>      interrupt which is pretty much the same as the x86 situation above
->>      in #1, but it prints useless data.
->> 
->>      It prints 'irq' which is invalid but it does not print the really
->>      interesting 'hwirq' which was handed in by the caller and did
->>      not resolve.
->
-> I wouldn't say the irq-nr isn't interesting. In my particular case it
-> was quite what I've been looking for. But you're right, hwirq should
-> also be printed.
 
-The number is _not_ interesting in this case. It's useless because the
-function does:
+Hi Linus,
 
-    irq = hwirq;
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
 
-    if (lookup)
-        irq = find_mapping(hwirq);
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
 
-    if (!irq || irq >= nr_irqs)
-       -> BAD
+are available in the Git repository at:
 
-So irq is completely useless because find_mapping() returns 0 if there
-is no mapping and if irq >= nr_irqs then there was no lookup and the
-hwirq number is bogus.
 
-In both cases the only interesting information is that hwirq does not
-resolve to a valid Linux interrupt number and which hwirq number caused
-that.
+ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
+tags/thermal-v5.11-rc1
 
->>      In this case the Linux irq number is uninteresting as it is known
->>      to be invalid and simply is not mapped and therefore does not
->>      exist.
->
-> In my case it came in from generic_handle_irq(), and in this case this
-> irq number (IMHO) has been valid, but nobody handled it, so it went to
-> ack_bad_irq.
+for you to fetch changes up to 4401117bf7fc11dc738c0963fa0c94814abc8dcd:
 
-generic_handle_irq() _is_ a different function which is only invoked
-when there is a valid Linux interrupt number and then the ack_bad_irq()
-is invoked from a different place. See below.
+  thermal/drivers/devfreq_cooling: Fix the build when !ENERGY_MODEL
+(2020-12-15 17:03:56 +0100)
 
-> Of course, if this function is meant as a fallback to ack some not
-> otherwise handled IRQ on the hw, the linux irq number indeed isn't quite
-> helpful (unless we expect that code to do a lookup to the hw irq).
+----------------------------------------------------------------
+- Add upper and lower limits clamps for the cooling device state in
+  the power allocator governor (Michael Kao)
 
-If there is no valid linux irq number then there is no lookup. And you
-can't look it up from the hardware either.
+- Add upper and lower limits support for the power allocator governor
+  (Lukasz Luba)
 
-If you look really then you find out that there is exactly _ONE_
-architecture which does anything else than incrementing a counter and/or
-printing stuff: X86, which has a big fat comment explaining why. The
-only way to ack an interrupt on X86 is to issue EOI on the local APIC,
-i.e. it does _not_ need any further information.
+- Optimize conditions testing for the trip points (Bernard Zhao)
 
-> ... rethinking this further ... shouldn't we also pass in even more data
-> (eg. irq_desc, irqchip, ...), so this function can check which hw to
-> actually talk to ?
+- Replace spin_lock_irqsave by spin_lock in hard IRQ on the rcar
+  driver (Tian Tao)
 
-There are 3 ways to get there:
+- Add MT8516 dt-bindings and device reset optional support (Fabien
+  Parent)
 
-      1) via dummy chip which obviously has no hardware associated
+- Add a quiescent period to cool down the PCH when entering S0iX
+  (Sumeet Pawnikar)
 
-      2) via handle_bad_irq() which prints the info already
+- Use bitmap API instead of re-inventing the wheel on sun8i (Yangtao
+  Li)
 
-      3) __handle_domain_irq() which cannot print anything and obviously
-         cannot figure out the hw to talk to because there is no irq
-         descriptor associated.
+- Remove useless NULL check in the hwmon driver (Bernard Zhao)
 
->>   4) It's invoked from the dummy irq chip which is installed for a
->>      couple of truly virtual interrupts where the invocation of
->>      dummy_irq_chip::irq_ack() is indicating wreckage.
->> 
->>      In that case the Linux irq number is the thing which is printed.
->> 
->> So no. It's not just inconsistent it's in some places outright
->> wrong. What we really want is:
->> 
->> ack_bad_irq(int hwirq, int virq)
->
-> is 'int' correct here ?
+- Update the current state in the cpufreq cooling device only if the
+  frequency change is effective (Zhuguangqing)
 
-This was just for illustration.
+- Improve the schema validation for the rcar DT bindings (Geert
+  Uytterhoeven)
 
-> BTW: I also wonder why the virq is unsigned int, while hwirq (eg. in
-> struct irq_data) is unsigned long. shouldn't the virtual number space
-> be at least as big (or even bigger) than the hw one ?
+- Fix the user time unit in the documentation (Viresh Kumar)
 
-Only if there are no irqdomain mappings and the virq space is 1:1 mapped
-to the hwirq space. Systems with > 4G interrupts are pretty unlikely.
+- Add PCI ids for Lewisburg PCH (Andres Freund)
 
-Also hwirq can be completely artificial and encode information about
-interrupts which are composed, i.e. PCI/MSI. See pci_msi_domain_calc_hwirq().
+- Add hwmon support on amlogic (Martin Blumenstingl)
 
->  {
->>         if (hwirq >= 0)
->>            print_useful_info(hwirq);
->>         if (virq > 0)
->>            print_useful_info(virq);
->>         arch_try_to_ack(hwirq, virq);
->> }
->>     
->> for this to make sense. Just fixing the existing printk() to be less
->> wrong is not really an improvement.
->
-> Okay, makes sense.
->
-> OTOH: since both callers (dummychip.c, handle.c) already dump out before
-> ack_bad_irq(), do we need to print out anything at all ?
+- Fix build failure for PCH entering on in S0iX (Randy Dunlap)
 
-Not all callers print something, but yes this could do with some general
-cleanup.
+- Improve the k_* coefficient for the power allocator governor (Lukasz
+  Luba)
 
-> I've also seen that many archs increase a counter (some use long, others
-> atomic_t) - should we also consolidate this in an arch-independent way
-> in handle.c (or does kstat_incr_irqs_this_cpu already do this) ?
+- Fix missing const on a sysfs attribute (Rikard Falkeborn)
 
-kstat_incr_irqs_this_cpu(desc) operates on the irq descriptor which
-requires that an irq descriptor exists in the first place.
+- Remove broken interrupt support on rcar to be replaced by a new one
+  (Niklas Söderlund)
 
-The error counter is independent of that, but yes there is room for
-consolidation.
+- Improve the error code handling at init time on imx8mm (Fabio
+  Estevam)
 
-Thanks,
+- Compute interval validity once instead at each temperature reading
+  iteration on acerhdf (Daniel Lezcano)
 
-        tglx
+- Add r8a779a0 support (Niklas Söderlund)
+
+- Add PCI ids for AlderLake PCH and mmio refactoring (Srinivas
+  Pandruvada)
+
+- Add RFIM and mailbox support on int340x (Srinivas Pandruvada)
+
+- Use macro for temperature calculation on PCH (Sumeet Pawnikar)
+
+- Simplify return conditions at probe time on Broadcom (Zheng Yongjun)
+
+- Fix workload name on PCH (Srinivas Pandruvada)
+
+- Migrate the devfreq cooling device code to the energy model API
+  (Lukasz Luba)
+
+- Emit a warning if the thermal_zone_device_update is called without
+  the .get_temp() ops (Daniel Lezcano)
+
+- Add critical and hot ops for the thermal zone (Daniel Lezcano)
+
+- Remove notification usage when critical is reached on rcar (Daniel
+  Lezcano)
+
+- Fix devfreq build when ENERGY_MODEL is not set (Lukasz Luba)
+
+----------------------------------------------------------------
+Andres Freund (1):
+      thermal: intel_pch_thermal: Add PCI ids for Lewisburg PCH.
+
+Bernard Zhao (2):
+      drivers/thermal/core: Optimize trip points check
+      thermal/drivers/hwmon: Cleanup coding style a bit
+
+Daniel Lezcano (5):
+      platform/x86/drivers/acerhdf: Use module_param_cb to set/get
+polling interval
+      platform/x86/drivers/acerhdf: Check the interval value when it is set
+      thermal/core: Emit a warning if the thermal zone is updated
+without ops
+      thermal/core: Add critical and hot ops
+      thermal/drivers/rcar: Remove notification usage
+
+Fabien Parent (3):
+      dt-bindings: thermal: mediatek: make resets property optional
+      dt-bindings: thermal: mediatek: add documentation for MT8516 SoC
+      thermal: mtk_thermal: make device_reset optional
+
+Fabio Estevam (2):
+      thermal: imx8mm: Print the correct error code
+      thermal: imx8mm: Disable the clock on probe failure
+
+Geert Uytterhoeven (1):
+      dt-bindings: thermal: rcar-thermal: Improve schema validation
+
+Lukasz Luba (12):
+      thermal: power_allocator: Respect upper and lower bounds for
+cooling device
+      thermal: core: Remove unused functions in power actor section
+      thermal: core: Move power_actor_set_power into IPA
+      thermal: power allocator: change the 'k_i' coefficient estimation
+      thermal: power allocator: refactor sustainable power estimation
+      thermal: power allocator: change the 'k_*' always in
+estimate_pid_constants()
+      thermal: devfreq_cooling: change tracing function and arguments
+      thermal: devfreq_cooling: use a copy of device status
+      thermal: devfreq_cooling: add new registration functions with
+Energy Model
+      thermal: devfreq_cooling: remove old power model and use EM
+      drm/panfrost: Register devfreq cooling and attempt to add Energy Model
+      thermal/drivers/devfreq_cooling: Fix the build when !ENERGY_MODEL
+
+Martin Blumenstingl (1):
+      thermal: amlogic: Add hwmon support
+
+Michael Kao (1):
+      thermal: core: Add upper and lower limits to power_actor_set_power
+
+Niklas Söderlund (3):
+      thermal: rcar_gen3_thermal: Do not use interrupts for normal operation
+      dt-bindings: thermal: rcar-gen3-thermal: Add r8a779a0 support
+      thermal: rcar_gen3_thermal: Add r8a779a0 support
+
+Randy Dunlap (1):
+      thermal: intel_pch_thermal: fix build for ACPI not enabled
+
+Rikard Falkeborn (1):
+      thermal: core: Constify static attribute_group structs
+
+Srinivas Pandruvada (5):
+      thermal: int340x: processor_thermal: Refactor MMIO interface
+      thermal: int340x: processor_thermal: Add AlderLake PCI device id
+      thermal: int340x: processor_thermal: Add RFIM driver
+      thermal: int340x: processor_thermal: Add mailbox driver
+      thermal: int340x: processor_thermal: Correct workload type name
+
+Sumeet Pawnikar (2):
+      thermal: intel: pch: fix S0ix failure due to PCH temperature above
+threshold
+      thermal: intel: pch: use macro for temperature calculation
+
+Tian Tao (1):
+      thermal/drivers/rcar: Replace spin_lock_irqsave by spin_lock in
+hard IRQ
+
+Viresh Kumar (1):
+      docs: thermal: time_in_state is displayed in msec and not usertime
+
+Yangtao Li (1):
+      thermal: sun8i: Use bitmap API instead of open code
+
+Zheng Yongjun (1):
+      thermal: broadcom: simplify the return expression of
+bcm2711_thermal_probe()
+
+Zhuguangqing (1):
+      thermal/drivers/cpufreq_cooling: Update cpufreq_state only if
+state has changed
+
+ .../bindings/thermal/mediatek-thermal.txt          |   3 +-
+ .../bindings/thermal/rcar-gen3-thermal.yaml        |  17 +-
+ .../devicetree/bindings/thermal/rcar-thermal.yaml  |  48 ++-
+ Documentation/driver-api/thermal/sysfs-api.rst     |   3 +-
+ drivers/gpu/drm/panfrost/panfrost_devfreq.c        |   2 +-
+ drivers/platform/x86/acerhdf.c                     |  30 +-
+ drivers/thermal/amlogic_thermal.c                  |   4 +
+ drivers/thermal/broadcom/bcm2711_thermal.c         |   6 +-
+ drivers/thermal/cpufreq_cooling.c                  |   4 +-
+ drivers/thermal/devfreq_cooling.c                  | 390
+++++++++++-----------
+ drivers/thermal/gov_power_allocator.c              | 116 ++++--
+ drivers/thermal/imx8mm_thermal.c                   |   7 +-
+ drivers/thermal/intel/int340x_thermal/Kconfig      |   6 +-
+ drivers/thermal/intel/int340x_thermal/Makefile     |   3 +
+ .../int340x_thermal/processor_thermal_device.c     | 282 +++++----------
+ .../int340x_thermal/processor_thermal_device.h     |  82 +++++
+ .../intel/int340x_thermal/processor_thermal_mbox.c | 212 +++++++++++
+ .../intel/int340x_thermal/processor_thermal_rapl.c | 134 +++++++
+ .../intel/int340x_thermal/processor_thermal_rfim.c | 244 +++++++++++++
+ drivers/thermal/intel/intel_pch_thermal.c          | 103 +++++-
+ drivers/thermal/mtk_thermal.c                      |   2 +-
+ drivers/thermal/rcar_gen3_thermal.c                | 115 +-----
+ drivers/thermal/rcar_thermal.c                     |  24 +-
+ drivers/thermal/sun8i_thermal.c                    |  33 +-
+ drivers/thermal/thermal_core.c                     | 143 ++------
+ drivers/thermal/thermal_core.h                     |   6 -
+ drivers/thermal/thermal_hwmon.c                    |   3 +-
+ drivers/thermal/thermal_sysfs.c                    |   6 +-
+ include/linux/devfreq_cooling.h                    |  27 +-
+ include/linux/thermal.h                            |   3 +
+ include/trace/events/thermal.h                     |  19 +-
+ 31 files changed, 1278 insertions(+), 799 deletions(-)
+ create mode 100644
+drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
+ create mode 100644
+drivers/thermal/intel/int340x_thermal/processor_thermal_mbox.c
+ create mode 100644
+drivers/thermal/intel/int340x_thermal/processor_thermal_rapl.c
+ create mode 100644
+drivers/thermal/intel/int340x_thermal/processor_thermal_rfim.c
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
