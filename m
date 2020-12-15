@@ -2,54 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8092DA6D5
+	by mail.lfdr.de (Postfix) with ESMTP id 9C33F2DA6D6
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727247AbgLODGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 22:06:31 -0500
-Received: from mga17.intel.com ([192.55.52.151]:59812 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727117AbgLODGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 22:06:24 -0500
-IronPort-SDR: 8tuSL5WBaqMMDsB6QK95dBTDqU5EmSUn37lTrv1kelGjyp7zZPwGKLJ4pEIPl93VfFLhZseDYq
- deYF98z2Z9tA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="154624703"
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="154624703"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2020 19:04:37 -0800
-IronPort-SDR: OBx9BH69m3buB8B65e+f+nLR2l0HRicswvCjMZ8hHOAm4x9V/TmNgfJr5uiC3fGsUGk32FP4FO
- 767boOWhdxlQ==
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="450169499"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2020 19:04:37 -0800
-Date:   Mon, 14 Dec 2020 19:04:30 -0800
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Alexander Antonov <alexander.antonov@linux.intel.com>,
-        linux-kernel@vger.kernel.org, jolsa@redhat.com,
-        alexander.shishkin@linux.intel.com, mark.rutland@arm.com,
-        namhyung@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH 0/5] perf stat: Introduce --iiostat mode to provide I/O
- performance metrics
-Message-ID: <20201215030430.GA1538637@tassilo.jf.intel.com>
-References: <20201210090340.14358-1-alexander.antonov@linux.intel.com>
- <20201214132828.GD238399@kernel.org>
+        id S1727280AbgLODGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 22:06:25 -0500
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:41330 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727090AbgLODGP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 22:06:15 -0500
+Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 60AA458C677;
+        Tue, 15 Dec 2020 14:05:29 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kp0eW-00454U-Mx; Tue, 15 Dec 2020 14:05:28 +1100
+Date:   Tue, 15 Dec 2020 14:05:28 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     guro@fb.com, ktkhai@virtuozzo.com, shakeelb@google.com,
+        hannes@cmpxchg.org, mhocko@suse.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [v2 PATCH 7/9] mm: vmscan: don't need allocate
+ shrinker->nr_deferred for memcg aware shrinkers
+Message-ID: <20201215030528.GN3913616@dread.disaster.area>
+References: <20201214223722.232537-1-shy828301@gmail.com>
+ <20201214223722.232537-8-shy828301@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201214132828.GD238399@kernel.org>
+In-Reply-To: <20201214223722.232537-8-shy828301@gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
+        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
+        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=pGLkceISAAAA:8 a=7-415B0cAAAA:8
+        a=HoWvQtbgcFNr9bk3r4sA:9 a=CjuIK1q_8ugA:10 a=-RoEEKskQ1sA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> My first thought was: Why not have a 'perf iiostat' subcommand?
+On Mon, Dec 14, 2020 at 02:37:20PM -0800, Yang Shi wrote:
+> Now nr_deferred is available on per memcg level for memcg aware shrinkers, so don't need
+> allocate shrinker->nr_deferred for such shrinkers anymore.
+> 
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> ---
+>  mm/vmscan.c | 28 ++++++++++++++--------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index bce8cf44eca2..8d5bfd818acd 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -420,7 +420,15 @@ unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone
+>   */
+>  int prealloc_shrinker(struct shrinker *shrinker)
+>  {
+> -	unsigned int size = sizeof(*shrinker->nr_deferred);
+> +	unsigned int size;
+> +
+> +	if (is_deferred_memcg_aware(shrinker)) {
+> +		if (prealloc_memcg_shrinker(shrinker))
+> +			return -ENOMEM;
+> +		return 0;
+> +	}
+> +
+> +	size = sizeof(*shrinker->nr_deferred);
+>  
+>  	if (shrinker->flags & SHRINKER_NUMA_AWARE)
+>  		size *= nr_node_ids;
+> @@ -429,26 +437,18 @@ int prealloc_shrinker(struct shrinker *shrinker)
+>  	if (!shrinker->nr_deferred)
+>  		return -ENOMEM;
+>  
+> -	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
+> -		if (prealloc_memcg_shrinker(shrinker))
+> -			goto free_deferred;
+> -	}
+> -
+>  	return 0;
+> -
+> -free_deferred:
+> -	kfree(shrinker->nr_deferred);
+> -	shrinker->nr_deferred = NULL;
+> -	return -ENOMEM;
+>  }
 
-Same would apply to a lot of options in perf stat.
+I'm trying to put my finger on it, but this seems wrong to me. If
+memcgs are disabled, then prealloc_memcg_shrinker() needs to fail.
+The preallocation code should not care about internal memcg details
+like this.
 
-I guess you could add some aliases to "perf" that give shortcuts
-for common perf stat command lines.
+	/*
+	 * If the shrinker is memcg aware and memcgs are not
+	 * enabled, clear the MEMCG flag and fall back to non-memcg
+	 * behaviour for the shrinker.
+	 */
+	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
+		error = prealloc_memcg_shrinker(shrinker);
+		if (!error)
+			return 0;
+		if (error != -ENOSYS)
+			return error;
 
--Andi
+		/* memcgs not enabled! */
+		shrinker->flags &= ~SHRINKER_MEMCG_AWARE;
+	}
+
+	size = sizeof(*shrinker->nr_deferred);
+	....
+	return 0;
+}
+
+This guarantees that only the shrinker instances taht have a
+correctly set up memcg attached to them will have the
+SHRINKER_MEMCG_AWARE flag set. Hence in all the rest of the shrinker
+code, we only ever need to check for SHRINKER_MEMCG_AWARE to
+determine what we should do....
+
+>  void free_prealloced_shrinker(struct shrinker *shrinker)
+>  {
+> -	if (!shrinker->nr_deferred)
+> +	if (is_deferred_memcg_aware(shrinker)) {
+> +		unregister_memcg_shrinker(shrinker);
+>  		return;
+> +	}
+>  
+> -	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+> -		unregister_memcg_shrinker(shrinker);
+> +	if (!shrinker->nr_deferred)
+> +		return;
+>  
+>  	kfree(shrinker->nr_deferred);
+>  	shrinker->nr_deferred = NULL;
+
+e.g. then this function can simply do:
+
+{
+	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+		return unregister_memcg_shrinker(shrinker);
+	kfree(shrinker->nr_deferred);
+	shrinker->nr_deferred = NULL;
+}
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
