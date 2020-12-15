@@ -2,195 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC5E2DA96A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDCD2DA974
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727292AbgLOIpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:45:49 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:32192 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgLOIpi (ORCPT
+        id S1727656AbgLOIs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727216AbgLOIs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:45:38 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608021920; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=i2jmGc0B2v0Eml1asqQ1vn5E/wwWvXhDr3Rak4MLjh8=; b=eU1rFcwP7QAAho3Df1W5fsGHyX3u2963GlN/ifOdRHFH29BA2TtPY5Ftmc2A5rD+OiloP0C7
- zsZJmKjX56pp01QQ4a/GhLSg8iMF6RrZ9UZCl9FFZJF03WT/LYf+3QH61KaKBpw0RFw7CVno
- ixPpO7JKtOBuwV1EK489DZOXeOs=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5fd87781cb227bb0c5ab0a4c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Dec 2020 08:44:49
- GMT
-Sender: vbadigan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 84365C43461; Tue, 15 Dec 2020 08:44:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.105] (unknown [49.205.247.211])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Tue, 15 Dec 2020 03:48:58 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88FFC06179C;
+        Tue, 15 Dec 2020 00:48:17 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: vbadigan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E9F0C433C6;
-        Tue, 15 Dec 2020 08:44:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6E9F0C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vbadigan@codeaurora.org
-Subject: Re: [PATCH v5 2/2] mmc: sdhci-msm: Actually set the actual clock
-To:     Douglas Anderson <dianders@chromium.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Taniya Das <tdas@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-References: <20201214092048.v5.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
- <20201214092048.v5.2.I7564620993acd4baa63fa0e3925ca879a86d3ee3@changeid>
-From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Message-ID: <bbe73a29-74ec-fc73-5771-96e9d7156f7c@codeaurora.org>
-Date:   Tue, 15 Dec 2020 14:14:41 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CwBjn6Dhxz9sRK;
+        Tue, 15 Dec 2020 19:48:13 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1608022094;
+        bh=G0nGMqIjphRDmGVeKwaLlJ3hIUON42JkRDTZccfldkk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Q5tsSbuW3LrNHRPBzqZlO7mqkBGcbZuhpoLEQ2emJCa37QdPWZepR7W9FLCpFS1dn
+         w8h0FZJxmrzNCmh7AwLTypOg8Q2OcB/FwU/JyoUwhwfvjOyD7S3m4UmtFBSmWpOvIp
+         Wa8xXkuAFgmb10zmZSF1X5/0XOyZzUJo2QR4JOURUuklQZVJsCpWMck4oVoyGrOrol
+         Xw4/9rYmJIlzbq9DW3WRM6IXk4+Dc+OJ8RSRSuaEJ2dTlE6ZmRYc4u/IyH4sjvRHxW
+         BrRRkaEV9F75jWMQLTqpeI0zRxXHkkLqrhY2K+5XzYSzxuwksqO6XLT0ermIa9CelZ
+         sQTzriD2GOiYA==
+Date:   Tue, 15 Dec 2020 19:48:11 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rui.zhang@intel.com, lukasz.luba@arm.com,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
+Subject: Re: [PATCH] thermal/drivers/devfreq: Fix missing dependency with
+ the energy model
+Message-ID: <20201215194811.0505c1c5@canb.auug.org.au>
+In-Reply-To: <20201215083520.601988-1-daniel.lezcano@linaro.org>
+References: <20201215125806.31495950@canb.auug.org.au>
+        <20201215083520.601988-1-daniel.lezcano@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20201214092048.v5.2.I7564620993acd4baa63fa0e3925ca879a86d3ee3@changeid>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="Sig_/yhLX/en6_+M.90HcJ1WJD60";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/yhLX/en6_+M.90HcJ1WJD60
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 12/14/2020 10:51 PM, Douglas Anderson wrote:
-> The MSM SDHCI driver always set the "actual_clock" field to 0.  It had
-> a comment about it not being needed because we weren't using the
-> standard SDHCI divider mechanism and we'd just fallback to
-> "host->clock".  However, it's still better to provide the actual
-> clock.  Why?
->
-> 1. It will make timeout calculations slightly better.  On one system I
->     have, the eMMC requets 200 MHz (for HS400-ES) but actually gets 192
->     MHz.  These are close, but why not get the more accurate one.
->
-> 2. If things are seriously off in the clock driver and it's missing
->     rates or picking the wrong rate (maybe it's rounding up instead of
->     down), this will make it much more obvious what's going on.
->
-> NOTE: we have to be a little careful here because the "actual_clock"
-> field shouldn't include the multiplier that sdhci-msm needs
-> internally.
->
-> Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Hi Daniel,
 
-Reviewed-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+On Tue, 15 Dec 2020 09:35:20 +0100 Daniel Lezcano <daniel.lezcano@linaro.or=
+g> wrote:
+>
+> The devfreq cooling device has been converted to use the energy model.
+>=20
+> Add the dependency on the ENERGY_MODEL option to reflect this change
+> and prevent build failure if the option is not set.
+>=20
+> Fixes: 615510fe13bd2 ("thermal: devfreq_cooling: remove old power model a=
+nd use EM")
 
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 > ---
->
-> Changes in v5:
-> - Remove unused clock parameter.
-> - Add a comment that we're stashing the requested rate.
->
-> Changes in v4:
-> - ("mmc: sdhci-msm: Actually set the actual clock") new for v4.
->
->   drivers/mmc/host/sdhci-msm.c | 35 ++++++++++++++++-------------------
->   1 file changed, 16 insertions(+), 19 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-> index 50beb407dbe9..f5669dc858d0 100644
-> --- a/drivers/mmc/host/sdhci-msm.c
-> +++ b/drivers/mmc/host/sdhci-msm.c
-> @@ -328,8 +328,7 @@ static void sdhci_msm_v5_variant_writel_relaxed(u32 val,
->   	writel_relaxed(val, host->ioaddr + offset);
->   }
->   
-> -static unsigned int msm_get_clock_rate_for_bus_mode(struct sdhci_host *host,
-> -						    unsigned int clock)
-> +static unsigned int msm_get_clock_mult_for_bus_mode(struct sdhci_host *host)
->   {
->   	struct mmc_ios ios = host->mmc->ios;
->   	/*
-> @@ -342,8 +341,8 @@ static unsigned int msm_get_clock_rate_for_bus_mode(struct sdhci_host *host,
->   	    ios.timing == MMC_TIMING_MMC_DDR52 ||
->   	    ios.timing == MMC_TIMING_MMC_HS400 ||
->   	    host->flags & SDHCI_HS400_TUNING)
-> -		clock *= 2;
-> -	return clock;
-> +		return 2;
-> +	return 1;
->   }
->   
->   static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
-> @@ -354,14 +353,16 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
->   	struct mmc_ios curr_ios = host->mmc->ios;
->   	struct clk *core_clk = msm_host->bulk_clks[0].clk;
->   	unsigned long achieved_rate;
-> +	unsigned int desired_rate;
-> +	unsigned int mult;
->   	int rc;
->   
-> -	clock = msm_get_clock_rate_for_bus_mode(host, clock);
-> -	rc = dev_pm_opp_set_rate(mmc_dev(host->mmc), clock);
-> +	mult = msm_get_clock_mult_for_bus_mode(host);
-> +	desired_rate = clock * mult;
-> +	rc = dev_pm_opp_set_rate(mmc_dev(host->mmc), desired_rate);
->   	if (rc) {
->   		pr_err("%s: Failed to set clock at rate %u at timing %d\n",
-> -		       mmc_hostname(host->mmc), clock,
-> -		       curr_ios.timing);
-> +		       mmc_hostname(host->mmc), desired_rate, curr_ios.timing);
->   		return;
->   	}
->   
-> @@ -371,11 +372,14 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
->   	 * encounter it.
->   	 */
->   	achieved_rate = clk_get_rate(core_clk);
-> -	if (achieved_rate > clock)
-> +	if (achieved_rate > desired_rate)
->   		pr_warn("%s: Card appears overclocked; req %u Hz, actual %lu Hz\n",
-> -			mmc_hostname(host->mmc), clock, achieved_rate);
-> +			mmc_hostname(host->mmc), desired_rate, achieved_rate);
-> +	host->mmc->actual_clock = achieved_rate / mult;
-> +
-> +	/* Stash the rate we requested to use in sdhci_msm_runtime_resume() */
-> +	msm_host->clk_rate = desired_rate;
->   
-> -	msm_host->clk_rate = clock;
->   	pr_debug("%s: Setting clock at rate %lu at timing %d\n",
->   		 mmc_hostname(host->mmc), achieved_rate, curr_ios.timing);
->   }
-> @@ -1756,13 +1760,6 @@ static unsigned int sdhci_msm_get_min_clock(struct sdhci_host *host)
->   static void __sdhci_msm_set_clock(struct sdhci_host *host, unsigned int clock)
->   {
->   	u16 clk;
-> -	/*
-> -	 * Keep actual_clock as zero -
-> -	 * - since there is no divider used so no need of having actual_clock.
-> -	 * - MSM controller uses SDCLK for data timeout calculation. If
-> -	 *   actual_clock is zero, host->clock is taken for calculation.
-> -	 */
-> -	host->mmc->actual_clock = 0;
->   
->   	sdhci_writew(host, 0, SDHCI_CLOCK_CONTROL);
->   
-> @@ -1785,7 +1782,7 @@ static void sdhci_msm_set_clock(struct sdhci_host *host, unsigned int clock)
->   	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
->   
->   	if (!clock) {
-> -		msm_host->clk_rate = clock;
-> +		host->mmc->actual_clock = msm_host->clk_rate = 0;
->   		goto out;
->   	}
->   
+>  drivers/thermal/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
+> index 7edc8dc6bbab..ee62d51ef351 100644
+> --- a/drivers/thermal/Kconfig
+> +++ b/drivers/thermal/Kconfig
+> @@ -193,6 +193,7 @@ config DEVFREQ_THERMAL
+>  	bool "Generic device cooling support"
+>  	depends on PM_DEVFREQ
+>  	depends on PM_OPP
+> +	depends on ENERGY_MODEL
+>  	help
+>  	  This implements the generic devfreq cooling mechanism through
+>  	  frequency reduction for devices using devfreq.
+
+Looks good to me.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/yhLX/en6_+M.90HcJ1WJD60
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/YeEwACgkQAVBC80lX
+0GzzTwf+P86BZpvRvRkz2tH+fw3Nkq1/eUBcdUthFdXzxOLx3O7t+V5ZGp3594A5
+I+l9KFrHZ5MsJfAQCGHPKBxxgQqrKJBpYwA3sP9VXNpx1CaBezpSreQ1/A++rnkW
+sLXe/k716T6bWweH+evliHbdOPqk54EQchmXPgBqhj5daevYqsBdolAWur45JAyk
+cHmFkoEfjn8xit0/R2jevGTJiHhnJ0/4FgGm6a1S3ow5BFrcu0710k+GupU5IacN
+zcm1tBB/cQfjsjPMlTDFwMYJRONfesV+LXupOrSmzILkocczTa/6kifZEndcshYO
+/B8IgVTOO8J+Xs0ABl4clPvPxaTTww==
+=KIAA
+-----END PGP SIGNATURE-----
+
+--Sig_/yhLX/en6_+M.90HcJ1WJD60--
