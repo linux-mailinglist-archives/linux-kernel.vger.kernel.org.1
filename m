@@ -2,235 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B88A2DB63C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:04:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB6D2DB658
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:11:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgLOWEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 17:04:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56718 "EHLO
+        id S1729472AbgLOWFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 17:05:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727354AbgLOWDy (ORCPT
+        with ESMTP id S1729453AbgLOWE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 17:03:54 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC2EC061793
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:03:13 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id i24so22665771edj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:03:13 -0800 (PST)
+        Tue, 15 Dec 2020 17:04:59 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE22C061793
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:04:18 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id k65so5863413pgk.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:04:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=88RfhIDxtWsqTLkiq1JeMI1Yvs1fSb9kN7oNIhvQbgA=;
-        b=c+D1Xm89PUqaTKVmB5h/KRlIEekcdwXVwvbs0vyshWdvFbROH0cEwDHdR2ONzjbQq4
-         NuD68AnSe2jHsL/5o0U1AUhFpWo/83V8uFGx0dvwGJ2ORea21WcN9yecwNjwcxBJXuq0
-         QRzVBuvTSu2bNvB7PhfORsZOmOg2+Lq48MjqmtqWAX3Obz4xHhOxY0dRBsCendpFAYY8
-         M6LcJevzPqFNPps4jT48omK3TyJwOKSUsCsoeu3F6qq9HSOdiQwfnQrFBU0WkM4Ge9Mf
-         kJcM9mkMNQQFYk2saouAPgZpJo24LiKmRo3AHzngUxPJz2EQ+2fpuydFz2ManYNmgq2R
-         rUqw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=syHwQU1H+sMHPHpfstRHv+eAt3C5whQf9ZSlLwH7JxU=;
+        b=oX11CLnoAq++KQ7G4SymkguARAazqb67nDAy2gjvtAYi9uTGod9FcokqnGEAwfZSDN
+         W9fgOp5cW/a+8cMp9SHnVyIzL+f0QxN//Qc9+/AHft7zEmaJq2+rr44B0dn82sK/nJsV
+         pm0WbkmbWuWvIJzEC5DVJyrQzKKHno9f6oaTGMGOXka/cbsXSQhJNZ+tbT7QgIbnCD83
+         JbASkxLIHrGlMisZXjG3FA9qBWJ+eV1VQYSTueGZGXuxso6fyl33LbkLtOhSes2bOosz
+         uXS2bb6YRQ6HOUcqjLVtrPMhLiCBldRo+7FiYiHYirObKkRJXQhOUTOpVD7hEEm6nDN1
+         IHJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=88RfhIDxtWsqTLkiq1JeMI1Yvs1fSb9kN7oNIhvQbgA=;
-        b=koByfuOChHyISyvYP8x4FAKcmWHKvP/3dcQPdhNrI2liBbac4+qJC5FOZYyM5vtyZl
-         PfZSpD/2mUOtvwhb+RrlKKpKhR2qB/m8qm0AThQvHPl6H2xZVMsSKtprzRpaCHcqOwf0
-         iSAwhK5yB6yKDVu4o3soCI9ayUIuR8GqvZD1WiXNrvl3EkrWqVwvc8t/hfacqp2P7W7H
-         2W/V3Zx987UvJ6gOZ3qf3tWQLYAIUQMBEkAHPmUyqq5zD7+05WiICEXAV/0B32i//NbG
-         LJdRaZc3ycOU4lY6rzhPrHtM9We+cjCTYeajTIBNtfjR6Vob0YyV/3Z86pjylUfHQRij
-         KXlA==
-X-Gm-Message-State: AOAM530aN2dcvglNz1fB7lzehzfwT6YhvLOmeZy2ZlNS0S+dmdTE40sw
-        GUvav08ZHX6MzBtpxRQIA0y3ThBajMMvNlv2dHD49w==
-X-Google-Smtp-Source: ABdhPJyLfWo4AriZfgQWLPGpkmCgFQjjZY0qZa/g6CcWLjjnAFNuuVMcU8MCSfVn8uq7EQRsHe2hVjGYMFKplEL5cjo=
-X-Received: by 2002:aa7:cdc3:: with SMTP id h3mr4224123edw.52.1608069792396;
- Tue, 15 Dec 2020 14:03:12 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=syHwQU1H+sMHPHpfstRHv+eAt3C5whQf9ZSlLwH7JxU=;
+        b=f91PsKZMYvnp8LiokEU289qGN6ExLNNQOq9AS/FK3Kd3ybbCpB+QtGkmCLsh6/wxxH
+         NLRqUzl9nOd0IlJYCpBJbeTg4jf+FSyo4MRuTMLBd5m+xjfPdJYW1F/xTbrJY63deNWG
+         C9SYWc/0Ut1MVipP4IHoU9j1CbtiDHWezJBYXOfRCzaUR49m7yPf3Wrd32eGJzwIQRyE
+         ITsPfx+jqR34Z/aE5G2Geb05V5V6ySf9SDn834ocYkqR0OpAEOgymOtu4UrCHvGLLI9l
+         M3T05PB6a0p+m2WqB45TSB88VFaH4uY2I/ruIAKTwcMfb4lgqsmxWfj+o/pFm8sNMbKI
+         eQAw==
+X-Gm-Message-State: AOAM530C1/jEPgI+kHQvmW/I1PNJY4RwxonFAaNn6v7lDBOZe7McI7gp
+        zE6XAWvU2ix/Z1Nta2yXwvYTuw==
+X-Google-Smtp-Source: ABdhPJwVg6fGCwFbSZdMD5V+YrVt3Ug2/gYblGulFInW2CamLlD603kpf2piGiJVLBLbRPFEF8KNVg==
+X-Received: by 2002:aa7:9d81:0:b029:19d:ca64:3c62 with SMTP id f1-20020aa79d810000b029019dca643c62mr29969751pfq.16.1608069857667;
+        Tue, 15 Dec 2020 14:04:17 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id y1sm92868pff.17.2020.12.15.14.04.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 14:04:16 -0800 (PST)
+Date:   Tue, 15 Dec 2020 14:04:10 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-sgx@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
+Message-ID: <X9ky2n7VcGEGmODx@google.com>
+References: <20201211113230.28909-1-jarkko@kernel.org>
+ <X9e2jOWz1hfXVpQ5@google.com>
+ <20201215055556.GA28278@kernel.org>
 MIME-Version: 1.0
-References: <20201209002418.1976362-1-ben.widawsky@intel.com>
- <20201209002418.1976362-11-ben.widawsky@intel.com> <CAPcyv4j+ixVgEo5q2OhV4kdkBZbnohZj3KDovReQJjPBsREugw@mail.gmail.com>
- <20201215214351.jvxk32gfa44buvcy@intel.com>
-In-Reply-To: <20201215214351.jvxk32gfa44buvcy@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 15 Dec 2020 14:03:00 -0800
-Message-ID: <CAPcyv4hVnz14rHLfA9f1Y0V=U96dYJ8i9+Z+ht=+kNG5aCrgeg@mail.gmail.com>
-Subject: Re: [RFC PATCH 10/14] cxl/mem: Add send command
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215055556.GA28278@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 1:44 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
-[..]
-> > > +static int handle_mailbox_cmd_from_user(struct cxl_memdev *cxlmd,
-> > > +                                       const struct cxl_mem_command *cmd,
-> > > +                                       struct cxl_send_command __user *u)
-> > > +{
-> > > +       struct mbox_cmd mbox_cmd;
-> > > +       ssize_t payload_size;
-> > > +       void *payload;
-> > > +       u32 size_out;
-> > > +       int rc;
-> > > +
-> > > +       if (get_user(size_out, &u->size_out))
-> > > +               return -EFAULT;
-> > > +
-> > > +       payload_size = max_t(ssize_t, cmd->info.size_in, size_out);
-> > > +       if (payload_size) {
-> > > +               payload =
-> > > +                       memdup_user(u64_to_user_ptr(u->payload), payload_size);
-> >
-> > Me thinks this should be vmemdup_user() for payloads that exceed the
-> > kmalloc() max, and I think it would be worthwhile to clamp @size_out
-> > to some maximum and not let userspace ask for gigantic payloads.
-> > Return EINVAL for payloads greater than... 4MB? At least 4MB is the
-> > arbitrary max that libnvdimm picked.
-> >
->
-> This is handled in cxl_validate_cmd_from_user() currently. The current API
-> allows the user to specify as large as they like with @size_out but the kernel
-> only writes out as much as the hardware returns.... More on this below [1].
-[..]
-> > > + *  * %-EPERM  - Protected command used by the RAW interface.
-> > > + *  * %-ENOMEM - Input or output buffer wasn't large enough.
-> > > + *
-> > > + */
-> > > +static int cxl_validate_cmd_from_user(struct cxl_send_command __user *user_cmd,
-> > > +                                     struct cxl_mem_command *out_cmd)
-> > > +{
-> > > +       const struct cxl_command_info *info;
-> > > +       struct cxl_send_command cmd;
-> > > +       struct cxl_mem_command *c;
-> > > +
-> > > +       if (copy_from_user(&cmd, user_cmd, sizeof(cmd)))
-> > > +               return -EFAULT;
-> > > +
-> > > +       if (cmd.id == 0 || cmd.id >= CXL_MEM_COMMAND_ID_MAX)
-> > > +               return -EINVAL;
-> >
-> > I wonder if the "cmd.id >= CXL_MEM_COMMAND_ID_MAX" case should return
-> > -ENOTTY. The command might be perfectly valid, just the kernel does
-> > not have that command specified which would be the case with older
-> > kernel with newer userspace.
-> >
->
-> I think ENOTTY could be a bit confusing here as it could be confused for the
-> SEND ioctl not being present.
->
-> What about ENOENT, or something else?
+On Tue, Dec 15, 2020, Jarkko Sakkinen wrote:
+> On Mon, Dec 14, 2020 at 11:01:32AM -0800, Sean Christopherson wrote:
+> > Haitao reported the bug, and for all intents and purposes provided the fix.  I
+> > just did the analysis to verify that there was a legitimate bug and that the
+> > synchronization in sgx_encl_release() was indeed necessary.
+> 
+> Good and valid point. The way I see it, the tags should be:
+> 
+> Reported-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> 
+> Haitao pointed out the bug but from your analysis I could resolve that
+> this is the fix to implement, and was able to write the long
+> description for the commit.
+> 
+> Does this make sense to you?
 
-"No such file or directory" seems more confusing to me than
-"Inappropriate I/O control operation". What version of this driver,
-once it's upstream, will not support the SEND ioctl? I think it is
-safe to assume that the mere fact that the driver is attached means
-SEND is present.
-
-> > > +
-> > > +       c = &mem_commands[cmd.id];
-> > > +       info = &c->info;
-> > > +
-> > > +       if (cmd.flags & CXL_MEM_COMMAND_FLAG_MASK)
-> > > +               return -EINVAL;
-> > > +
-> > > +       if (cmd.rsvd)
-> > > +               return -EINVAL;
-> > > +
-> > > +       /* Check the input buffer is the expected size */
-> > > +       if (info->size_in >= 0 && info->size_in != cmd.size_in)
-> > > +               return -ENOMEM;
-> > > +
-> > > +       /* Check the output buffer is at least large enough */
-> > > +       if (info->size_out >= 0 && cmd.size_out < info->size_out)
-> > > +               return -ENOMEM;
-> > > +
-> > > +       memcpy(out_cmd, c, sizeof(*c));
-> >
-> > Why not do the copy_from_user() directly into out_cmd to save a copy operation?
-> >
->
-> [1]
-> cxl_validate_cmd_from_user() essentially translates a user's command into the
-> internal kernel representation of the command via the lookup into the array.
-> This will do things like adjust the output size or flags, to prevent userspace
-> from doing nefarious things. An actual command, especially now that you had me
-> remove the name[32] will be relatively small and I see the extra copy as being
-> well worth being able to isolate this command sanitization.
-
-I can buy that, but it does not answer my other question above about
-cases where a valid command has size_{in,out} larger than the kmalloc
-max. vmemdup_user() lets you support arbitrary command payload sizes
-larger than KMALLOC_MAX_SIZE. For example, I might want to overwrite
-the entire label area at once in a single write.
-
->
-> > > +
-> > > +       return 0;
-> > >  }
-> > >
-> > >  static long cxl_mem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-> > > @@ -357,6 +471,19 @@ static long cxl_mem_ioctl(struct file *file, unsigned int cmd, unsigned long arg
-> > >
-> > >                         j++;
-> > >                 }
-> > > +
-> > > +               return 0;
-> > > +       } else if (cmd == CXL_MEM_SEND_COMMAND) {
-> > > +               struct cxl_send_command __user *u = (void __user *)arg;
-> > > +               struct cxl_memdev *cxlmd = file->private_data;
-> > > +               struct cxl_mem_command c;
-> > > +               int rc;
-> > > +
-> > > +               rc = cxl_validate_cmd_from_user(u, &c);
-> > > +               if (rc)
-> > > +                       return rc;
-> > > +
-> > > +               return handle_mailbox_cmd_from_user(cxlmd, &c, u);
-> > >         }
-> > >
-> > >         return -ENOTTY;
-> > > diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
-> > > index 1d1e143f98ec..189d86a13637 100644
-> > > --- a/include/uapi/linux/cxl_mem.h
-> > > +++ b/include/uapi/linux/cxl_mem.h
-> > > @@ -19,6 +19,7 @@ extern "C" {
-> > >   */
-> > >
-> > >  #define CXL_MEM_QUERY_COMMANDS _IOR('C', 1, struct cxl_mem_query_commands)
-> > > +#define CXL_MEM_SEND_COMMAND _IOWR('C', 2, struct cxl_send_command)
-> > >
-> > >  #define CXL_MEM_COMMAND_NAME_LENGTH 32
-> > >
-> > > @@ -48,10 +49,12 @@ extern "C" {
-> > >  struct cxl_command_info {
-> > >         __u32 id;
-> > >  #define CXL_MEM_COMMAND_ID_INVALID 0
-> > > +#define CXL_MEM_COMMAND_ID_MAX (CXL_MEM_COMMAND_ID_INVALID + 1)
-> > >
-> > >         __u32 flags;
-> > >  #define CXL_MEM_COMMAND_FLAG_NONE 0
-> > >  #define CXL_MEM_COMMAND_FLAG_TAINT BIT(0)
-> >
-> > I guess I missed this in the last patch, why would userspace specify a
-> > taint flag? @flags is an output parameter?
-> >
->
-> The flag is from the kernel to userspace to let them know that using the command
-> would taint the kernel.
-
-...but they should know that by the fact that they are using the RAW
-send. I.e. document it once rather than include it in the ABI. I think
-a more useful flag would be to identify which commands may be blocked
-because they are exclusively owned by the kernel.
+Yep, works for me.
