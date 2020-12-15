@@ -2,121 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6DE2DB315
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:55:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 154552DB31F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:58:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731302AbgLORzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 12:55:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45904 "EHLO
+        id S1731373AbgLOR5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 12:57:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725973AbgLORyx (ORCPT
+        with ESMTP id S1731088AbgLOR5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 12:54:53 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478CBC06179C;
-        Tue, 15 Dec 2020 09:54:13 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id v3so11422061plz.13;
-        Tue, 15 Dec 2020 09:54:13 -0800 (PST)
+        Tue, 15 Dec 2020 12:57:07 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35213C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 09:56:27 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id n142so19993725qkn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 09:56:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Imm3qTkuoDk7CQF3C2jQl/pGCHvRyWbGvp5H8N4iN3o=;
-        b=vHZrgEGJHh/22GCAt73JD6CLGnlrkFlwoF/Nvnh1Rx1k/74QEBbQoOXXeb4yYITNDM
-         Mzy3FUS8e+etYpgCZ2n4aP1R8JjTVnV/QlHXa5jwnwh2BZdV0eRaDL4KJEPgNTv2ixoo
-         VCTjBM9cD25taOOJQldrnDK8bw6AeLYi00tiskafi9VpuqXDssSE/PCIBogBEve/RkBi
-         vCH16c/GXjzk85CA5BCJ08U8SFOdJ8iXLM+sWlO7LtQaUo7hVjH9cwkYbraHQ6s+2ZSR
-         xBXRZxRKqvC47sO2sILhomBGtfgoEwO07T49bzxmezasRXIucbNEERX9WO7vMoLMRG12
-         2k3A==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=m5cvA/6InFp5aAA23Q5ITLBKdhHOwJrGQylrn66gwqQ=;
+        b=SLI3UgiCpV3KdNFEC6KqQ8xrFFDbbxRu3Hz6X5XkxwJ0NuuRulGSiGBbeUdCyhVwq1
+         KmPDAAciX8EEp73Z6jvrcSYSbUdimDMRzQfP+nguVbhRlYuo68UJa9MGw+/L3leIh5Ib
+         204hoxLIuGX/VkHFStwlqoHYKztKyKpn7/vs+1ibQlpLx63ZwvXX6udNfIiWiM16mjTb
+         KpPaP0qDJ2AJudFt6PoxAC3uur0Zq60S688F89lSR5JBtwK3prXK7Cafoynp/A+TyIEF
+         X0kbbm14dQT+5o2Xq8pbERVW7QY7rTRZuwrNWjDCtn5Z07KMAOlfSH9QHXHLxKsblPvK
+         J+oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Imm3qTkuoDk7CQF3C2jQl/pGCHvRyWbGvp5H8N4iN3o=;
-        b=lf4ue0UYvQGPvrP7siBTezB997kV6IHc7sZhSbzZyXBWlX8k7rMmilRS0ByeUMcNC2
-         gA1RQz5tBvEC67fx0ZQHANLt0c9FdXw4ur9t0PaAvTbXsQkShX/dvwL0xNnWrIDG9XJS
-         eQH9yGTNFBpW0lahy+/Qb/iksFNKXQbw8l+UWjfU5VnS7ZApChKmG8e6TSHH8WZUYD/m
-         ki2LKSynRNL4uxY0Ppi7SciUiEKkaJbDO2tcSFEHf5qsk3SPPHCn2gKWskJ3Tab+O8LU
-         K/gzpFEIErKp9nq+yU29ZU/c7OpVyKdRCykUpSGzJVclbzstdfkxka8msBedA0i5zLEt
-         yaLQ==
-X-Gm-Message-State: AOAM533P2yt5f3TPblIv1tID8dqzYY+/vqO3HBR4qd+kEpFi7sKB+iHz
-        fMDCwCc/T2wBZAWVTEET6AJn1rbayF+y3IGJQUQ=
-X-Google-Smtp-Source: ABdhPJwub519C6COC+xUOfBDKNnTtjj4F8G3dk+pPzgjeNH2EtNKhkRk1+UGRjj9xodbX0Xs0OGbqZ+431AbEsjjLG4=
-X-Received: by 2002:a17:902:b7c3:b029:da:76bc:2aa9 with SMTP id
- v3-20020a170902b7c3b02900da76bc2aa9mr28627847plz.21.1608054852814; Tue, 15
- Dec 2020 09:54:12 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m5cvA/6InFp5aAA23Q5ITLBKdhHOwJrGQylrn66gwqQ=;
+        b=Lu44/IxXh63BrdSPbUVEI0rvx9sc8FkUHgW4dzWn4wEL7nTsjEGHeFKEPv2Rv1eeLl
+         i8vQOeCjOI20sR7qNSTuznyoa8901UsDM9HTu+nB+vb8fCBqg1GSyG2ZzKtr2a8KfO23
+         QmR73UzYNROFsBvqyuG2ih3VChEMZ8PXWSLVMmeDPElbPuHLMEqQQ5uDsAfSBw7GB4k0
+         CoO+7gmspXBxYfLjQZOjeUibvkUf/8sCu2Oe0PW6Mnxpwtj3PvF1IEug7sH+9etCdBwc
+         jLSeRV+Hxr6i1pInRRymejjSrRuAIF3legh79PnkmfR4A40KZK6ePqS5k0BSP8a/D1E/
+         4Xvw==
+X-Gm-Message-State: AOAM532U44QsRPWdu15XxGKHCmNJejawQ2qh7Kk/Cm5v833acplEVns6
+        /ZhFuTRkIjnOLpbs+bIknzF0Lg==
+X-Google-Smtp-Source: ABdhPJz1O3y+aqloEGrkdeSRfpXq4APJu5IurHGwqsdVLTIHUZWl7wZztRHcUqAJvRqbGBnr7KlaKg==
+X-Received: by 2002:a05:620a:2148:: with SMTP id m8mr37680243qkm.213.1608054986450;
+        Tue, 15 Dec 2020 09:56:26 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id p23sm16490530qtu.53.2020.12.15.09.56.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 09:56:25 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kpEYi-00Azxw-SR; Tue, 15 Dec 2020 13:56:24 -0400
+Date:   Tue, 15 Dec 2020 13:56:24 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Sergey Temerkhanov <s.temerkhanov@gmail.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] tpm: Rework open/close/shutdown to avoid races
+Message-ID: <20201215175624.GG5487@ziepe.ca>
+References: <20201215133801.546207-1-s.temerkhanov@gmail.com>
 MIME-Version: 1.0
-References: <20201215164315.3666-1-calvin.johnson@oss.nxp.com> <20201215164315.3666-10-calvin.johnson@oss.nxp.com>
-In-Reply-To: <20201215164315.3666-10-calvin.johnson@oss.nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 15 Dec 2020 19:55:01 +0200
-Message-ID: <CAHp75Vc19QCqYpp12Q3ofzXCVsujc0qVuhtQo5LhDJqiy+JNpw@mail.gmail.com>
-Subject: Re: [net-next PATCH v2 09/14] net/fsl: Use fwnode_mdiobus_register()
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, "linux.cj" <linux.cj@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamie Iles <jamie@nuviainc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215133801.546207-1-s.temerkhanov@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 6:44 PM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
+On Tue, Dec 15, 2020 at 04:38:01PM +0300, Sergey Temerkhanov wrote:
+> Avoid race condition at shutdown by shutting downn the TPM 2.0
+> devices synchronously. This eliminates the condition when the
+> shutdown sequence sets chip->ops to NULL leading to the following:
+> 
+> [ 1586.593561][ T8669] tpm2_del_space+0x28/0x73
+> [ 1586.598718][ T8669] tpmrm_release+0x27/0x33wq
+> [ 1586.603774][ T8669] __fput+0x109/0x1d
+> [ 1586.608380][ T8669] task_work_run+0x7c/0x90
+> [ 1586.613414][ T8669] prepare_exit_to_usermode+0xb8/0x128
+> [ 1586.619522][ T8669] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [ 1586.626068][ T8669] RIP: 0033:0x4cb4bb
+> 
+> Signed-off-by: Sergey Temerkhanov <s.temerkhanov@gmail.com>
+>  drivers/char/tpm/tpm-chip.c  |  2 ++
+>  drivers/char/tpm/tpm-dev.c   | 20 +++++++++++++-------
+>  drivers/char/tpm/tpmrm-dev.c |  3 +++
+>  include/linux/tpm.h          |  6 ++++--
+>  4 files changed, 22 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> index ddaeceb7e109..e94148b8e180 100644
+> +++ b/drivers/char/tpm/tpm-chip.c
+> @@ -295,6 +295,7 @@ static int tpm_class_shutdown(struct device *dev)
+>  {
+>  	struct tpm_chip *chip = container_of(dev, struct tpm_chip, dev);
+>  
+> +	wait_event_idle(chip->waitq, !atomic_read(&chip->refcount));
+>  	down_write(&chip->ops_sem);
+>  	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
+>  		if (!tpm_chip_start(chip)) {
+> @@ -330,6 +331,7 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
+>  
+>  	mutex_init(&chip->tpm_mutex);
+>  	init_rwsem(&chip->ops_sem);
+> +	init_waitqueue_head(&chip->waitq);
+>  
+>  	chip->ops = ops;
+>  
+> diff --git a/drivers/char/tpm/tpm-dev.c b/drivers/char/tpm/tpm-dev.c
+> index e2c0baa69fef..8558f0f7382c 100644
+> +++ b/drivers/char/tpm/tpm-dev.c
+> @@ -19,27 +19,32 @@ static int tpm_open(struct inode *inode, struct file *file)
+>  {
+>  	struct tpm_chip *chip;
+>  	struct file_priv *priv;
+> +	int ret = 0;
+>  
+>  	chip = container_of(inode->i_cdev, struct tpm_chip, cdev);
+>  
+>  	/* It's assured that the chip will be opened just once,
+> -	 * by the check of is_open variable, which is protected
+> -	 * by driver_lock. */
+> -	if (test_and_set_bit(0, &chip->is_open)) {
+> +	 * by the check of the chip reference count.
+> +	 */
+> +	if (atomic_fetch_inc(&chip->refcount)) {
+
+Use a refcount_t for all this
+
+> @@ -39,6 +40,8 @@ static int tpmrm_release(struct inode *inode, struct file *file)
 >
-> fwnode_mdiobus_register() internally takes care of both DT
-> and ACPI cases to register mdiobus. Replace existing
-> of_mdiobus_register() with fwnode_mdiobus_register().
->
-> Note: For both ACPI and DT cases, endianness of MDIO controller
-> need to be specified using "little-endian" property.
+>  	tpm_common_release(file, fpriv);
+>  	tpm2_del_space(fpriv->chip, &priv->space);
+> +	atomic_dec(&fpriv->chip->refcount);
+> +	wake_up_all(&fpriv->chip->waitq);
 
-...
+The usual pattern is
 
-> @@ -2,6 +2,7 @@
->   * QorIQ 10G MDIO Controller
->   *
->   * Copyright 2012 Freescale Semiconductor, Inc.
-> + * Copyright 2020 NXP
->   *
->   * Authors: Andy Fleming <afleming@freescale.com>
->   *          Timur Tabi <timur@freescale.com>
-> @@ -11,6 +12,7 @@
+        if (refcount_dec_and_test(&fpriv->chip->refcount))
+	   wake_up_all(&fpriv->chip->waitq);
 
-I guess this...
+But this seems like madness, this blocks tpm_class_shutdown until
+userspace closes a file descriptor, can't do it.
 
->         priv->is_little_endian = device_property_read_bool(&pdev->dev,
->                                                            "little-endian");
-> -
->         priv->has_a011043 = device_property_read_bool(&pdev->dev,
->                                                       "fsl,erratum-a011043");
+You need to have tpm_class_shutdown() remove the ops from the still
+open FD and have that FD start returning -EIO when the ops are gone,
+which is what the ops lock is already for.
 
-...this...
-
-> -
-
-...and this changes can go to a separate patch.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Jason
