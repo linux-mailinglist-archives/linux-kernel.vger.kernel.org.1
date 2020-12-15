@@ -2,246 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37CE2DB48E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FAD2DB485
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:36:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727749AbgLOThi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 14:37:38 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15690 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727352AbgLOThG (ORCPT
+        id S1727172AbgLOTg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 14:36:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbgLOTg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 14:37:06 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 0BFJXcaP015429
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 11:36:23 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=XiyLS6boex6NduO3Y3HlXsJcjGSnFa1JrSnocOQadMg=;
- b=UgOwBbqxibA3GU5iadoMx1tYi3LO/XUT4tVj5ZOKe6XVk9NxlroegagZFsBrMfYzhhAW
- 4xdYhf9yJOePsPc4+wwhCV7M+SKP6ly189HFhGM8UISbmVycDipdpVy/wcwxk5k3UqoE
- e/sO6MoYQhR9+na3fJ0d6kLh8XWtHfUrnXw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 35ctdv87yw-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 11:36:23 -0800
-Received: from intmgw001.41.prn1.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 15 Dec 2020 11:36:20 -0800
-Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id AC6701FE954D; Tue, 15 Dec 2020 11:36:16 -0800 (PST)
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>, <linux-mm@kvack.org>
-CC:     Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Rik van Riel <riel@surriel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH] mm: cma: allocate cma areas bottom-up
-Date:   Tue, 15 Dec 2020 11:36:15 -0800
-Message-ID: <20201215193615.1867115-1-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
+        Tue, 15 Dec 2020 14:36:26 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEB6C0617A6;
+        Tue, 15 Dec 2020 11:35:45 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id c79so15109654pfc.2;
+        Tue, 15 Dec 2020 11:35:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rIUIK9INOglYEzmX/Zz+55Q7G2LAk+CSP61LkLziHqA=;
+        b=VQY9TAJ7DAX0eQxmJacQ6m9PqU1dnF85l77LpcIGDBdqYVZOhFPLRa4CyFlTEo++aI
+         wQ1X00XUWSaQRn6apwW9MnX1XCaT01LkBQa1n0gEfaIRCFMZBTjVY5FryyNLakbBO49/
+         J1JJgN87a9rmjlBM48reuRwsLNqj0gLT9Te7sfqEwaCjkccklD1CWp5NytMcnV1gzJk8
+         dYdCkRSXbDi4tBjVOwiJfNDBmnOrLzz08dEwx/W1zNs6kFyObkoTh7IcybfXT/tpwFfY
+         Wmu2S84Z3UFjZp/tE/zIzQ1K4ZVx+fV6S/LZRA2UNGAtJmhNP7+PN/T3aEvAgP/bdVVI
+         vacQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rIUIK9INOglYEzmX/Zz+55Q7G2LAk+CSP61LkLziHqA=;
+        b=JV1X7pk2leo3uS6wbYhXllum7Ou+YJaqpuUPamZZgWg73F8y/12Ci0ieYkCrYR++Xu
+         zmc5qwFLMIDETa6Shz6qp29eeWQhNo63GmTgcwKgoQH7U4O1Ugs7fa3ZEI0hzqseKxTl
+         HikJL2RwVPdFkaqRpKzNTleRxocHj7PwFooTUHtOPNhrpMwhQuz4IWXXcPY54cSZQjNm
+         vUQ+EKd2zcAZJQlZKD1Fy2T3cHW3N6khDVf1c2Z39mzdpa71QI1YefuwNzyeaCV9UHnd
+         VpWFjRzEY3NNvGihdhLY3SPrfj9ffgpho4dnIyM64/+C5G8fIyK/qTLtdutM6f29fHaN
+         P17A==
+X-Gm-Message-State: AOAM532dLmEIXrimohrvlthWw6kACTVwM+0r/NMiylhoFoZEiwG7qv9Y
+        ZaL5kIkZACn5PMGdHu1Chnemp5GkitkAkr8hk8U=
+X-Google-Smtp-Source: ABdhPJy3DfdAQETUz7knHlF2dUZ3lq9KcFbWDfLpycxarRn0iyyFGP+IPIFOPaoix8NbP5ynq/i5TI76NzWyzOzaj1Q=
+X-Received: by 2002:a62:19cc:0:b029:19e:321b:a22e with SMTP id
+ 195-20020a6219cc0000b029019e321ba22emr22730420pfz.73.1608060945226; Tue, 15
+ Dec 2020 11:35:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-15_12:2020-12-15,2020-12-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 mlxscore=0
- malwarescore=0 spamscore=0 mlxlogscore=999 lowpriorityscore=0
- suspectscore=0 phishscore=0 priorityscore=1501 impostorscore=0
- adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012150130
-X-FB-Internal: deliver
+References: <20201211042625.129255-1-drew@beagleboard.org> <CAHp75VcAbdrSnb_ag9Rc0tny3Vtqjs1if+ahk7U36V2eaKMpSw@mail.gmail.com>
+ <20201211234304.GA189853@x1> <CAHp75Vf-=nM-M2K-v_8iyME4t6ZF-gvSZ5ePsxQFhObJ_0YHsw@mail.gmail.com>
+ <20201214214419.GA1196223@x1>
+In-Reply-To: <20201214214419.GA1196223@x1>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 15 Dec 2020 21:36:33 +0200
+Message-ID: <CAHp75VeN9xLUKFBXZfo=XzNkdv=BSRJW59=cUjyY0TekF1JONA@mail.gmail.com>
+Subject: Re: [RFC PATCH] pinctrl: add helper to expose pinctrl state in debugfs
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently cma areas without a fixed base address are allocated
-close to the end of the node. This placement is sub-optimal because
-of how the compaction works: it effectively moves pages into
-the cma area. In particular, it often brings in hot executable pages,
-even if there is a plenty of free memory on the machine.
-This results in more cma allocation failures.
+On Mon, Dec 14, 2020 at 11:44 PM Drew Fustini <drew@beagleboard.org> wrote:
+> On Mon, Dec 14, 2020 at 07:55:12PM +0200, Andy Shevchenko wrote:
+> > On Sat, Dec 12, 2020 at 1:43 AM Drew Fustini <drew@beagleboard.org> wrote:
+> > > On Fri, Dec 11, 2020 at 11:15:21PM +0200, Andy Shevchenko wrote:
+> > > > On Fri, Dec 11, 2020 at 1:54 PM Drew Fustini <drew@beagleboard.org> wrote:
 
-Instead let's place cma areas close to the beginning of a node.
-Cma first tries to start with highmem_start, so we shouldn't mess
-up with DMA32. In this case the compaction will help to free cma
-areas, resulting in better cma allocation success rates.
+...
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
----
- include/linux/memblock.h |  5 +++--
- mm/cma.c                 |  4 ++--
- mm/memblock.c            | 26 +++++++++++++++-----------
- 3 files changed, 20 insertions(+), 15 deletions(-)
+> > > > But I'm wondering, why it requires this kind of thing and can't be
+> > > > simply always part of the kernel based on configuration option?
+> > >
+> > > Do you mean not having a new CONFIG option for this driver and just have
+> > > it be enabled by CONFIG_PINCTRL?
+> >
+> > No, configuration option stays, but no compatible strings no nothing
+> > like that. Just probed always when loaded.
+>
+> I first started down the route of implementing this inside of
+> pinctrl-single.  I found it didn't work because devm_pinctrl_get() would
+> fail.  I think was because it was happening too early for pinctrl to be
+> ready.
+>
+> I do think it seems awkward to have to add this to dts and have the
+> driver get probed for each entry:
+>
+>         P1_04_pinmux {
+>                 compatible = "pinctrl,state-helper";
+>                 status = "okay";
+>                 pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "gpio_input", "pruout", "pruin";
+>                 pinctrl-0 = <&P1_04_default_pin>;
+>                 pinctrl-1 = <&P1_04_gpio_pin>;
+>                 pinctrl-2 = <&P1_04_gpio_pu_pin>;
+>                 pinctrl-3 = <&P1_04_gpio_pd_pin>;
+>                 pinctrl-4 = <&P1_04_gpio_input_pin>;
+>                 pinctrl-5 = <&P1_04_pruout_pin>;
+>                 pinctrl-6 = <&P1_04_pruin_pin>;
+>         };
+>
+> But I am having a hard time figuring out another way of doing it.
 
-diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-index 9c5cc95c7cee..698188066450 100644
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -384,8 +384,9 @@ static inline int memblock_get_region_node(const stru=
-ct memblock_region *r)
- phys_addr_t memblock_phys_alloc_range(phys_addr_t size, phys_addr_t alig=
-n,
- 				      phys_addr_t start, phys_addr_t end);
- phys_addr_t memblock_alloc_range_nid(phys_addr_t size,
--				      phys_addr_t align, phys_addr_t start,
--				      phys_addr_t end, int nid, bool exact_nid);
-+				     phys_addr_t align, phys_addr_t start,
-+				     phys_addr_t end, int nid, bool exact_nid,
-+				     bool bottom_up);
- phys_addr_t memblock_phys_alloc_try_nid(phys_addr_t size, phys_addr_t al=
-ign, int nid);
-=20
- static inline phys_addr_t memblock_phys_alloc(phys_addr_t size,
-diff --git a/mm/cma.c b/mm/cma.c
-index 20c4f6f40037..1b42be6d059b 100644
---- a/mm/cma.c
-+++ b/mm/cma.c
-@@ -332,13 +332,13 @@ int __init cma_declare_contiguous_nid(phys_addr_t b=
-ase,
- 		 */
- 		if (base < highmem_start && limit > highmem_start) {
- 			addr =3D memblock_alloc_range_nid(size, alignment,
--					highmem_start, limit, nid, true);
-+					highmem_start, limit, nid, true, true);
- 			limit =3D highmem_start;
- 		}
-=20
- 		if (!addr) {
- 			addr =3D memblock_alloc_range_nid(size, alignment, base,
--					limit, nid, true);
-+					limit, nid, true, true);
- 			if (!addr) {
- 				ret =3D -ENOMEM;
- 				goto err;
-diff --git a/mm/memblock.c b/mm/memblock.c
-index b8b7be0561c4..c334b401fe16 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -272,6 +272,7 @@ __memblock_find_range_top_down(phys_addr_t start, phy=
-s_addr_t end,
-  *       %MEMBLOCK_ALLOC_ACCESSIBLE
-  * @nid: nid of the free area to find, %NUMA_NO_NODE for any node
-  * @flags: pick from blocks based on memory attributes
-+ * @bottom_up: force bottom-up allocation
-  *
-  * Find @size free area aligned to @align in the specified range and nod=
-e.
-  *
-@@ -289,7 +290,8 @@ __memblock_find_range_top_down(phys_addr_t start, phy=
-s_addr_t end,
- static phys_addr_t __init_memblock memblock_find_in_range_node(phys_addr=
-_t size,
- 					phys_addr_t align, phys_addr_t start,
- 					phys_addr_t end, int nid,
--					enum memblock_flags flags)
-+					enum memblock_flags flags,
-+					bool bottom_up)
- {
- 	phys_addr_t kernel_end, ret;
-=20
-@@ -305,9 +307,10 @@ static phys_addr_t __init_memblock memblock_find_in_=
-range_node(phys_addr_t size,
-=20
- 	/*
- 	 * try bottom-up allocation only when bottom-up mode
--	 * is set and @end is above the kernel image.
-+	 * is set and @end is above the kernel image or
-+	 * the bottom-up mode is enforced.
- 	 */
--	if (memblock_bottom_up() && end > kernel_end) {
-+	if ((memblock_bottom_up() && end > kernel_end) || bottom_up) {
- 		phys_addr_t bottom_up_start;
-=20
- 		/* make sure we will allocate above the kernel */
-@@ -359,7 +362,7 @@ phys_addr_t __init_memblock memblock_find_in_range(ph=
-ys_addr_t start,
-=20
- again:
- 	ret =3D memblock_find_in_range_node(size, align, start, end,
--					    NUMA_NO_NODE, flags);
-+					  NUMA_NO_NODE, flags, false);
-=20
- 	if (!ret && (flags & MEMBLOCK_MIRROR)) {
- 		pr_warn("Could not allocate %pap bytes of mirrored memory\n",
-@@ -1331,6 +1334,7 @@ __next_mem_pfn_range_in_zone(u64 *idx, struct zone =
-*zone,
-  * @end: the upper bound of the memory region to allocate (phys address)
-  * @nid: nid of the free area to find, %NUMA_NO_NODE for any node
-  * @exact_nid: control the allocation fall back to other nodes
-+ * @bottom_up: force bottom-up allocation
-  *
-  * The allocation is performed from memory region limited by
-  * memblock.current_limit if @end =3D=3D %MEMBLOCK_ALLOC_ACCESSIBLE.
-@@ -1351,7 +1355,7 @@ __next_mem_pfn_range_in_zone(u64 *idx, struct zone =
-*zone,
- phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
- 					phys_addr_t align, phys_addr_t start,
- 					phys_addr_t end, int nid,
--					bool exact_nid)
-+					bool exact_nid, bool bottom_up)
- {
- 	enum memblock_flags flags =3D choose_memblock_flags();
- 	phys_addr_t found;
-@@ -1367,14 +1371,14 @@ phys_addr_t __init memblock_alloc_range_nid(phys_=
-addr_t size,
-=20
- again:
- 	found =3D memblock_find_in_range_node(size, align, start, end, nid,
--					    flags);
-+					    flags, bottom_up);
- 	if (found && !memblock_reserve(found, size))
- 		goto done;
-=20
- 	if (nid !=3D NUMA_NO_NODE && !exact_nid) {
- 		found =3D memblock_find_in_range_node(size, align, start,
- 						    end, NUMA_NO_NODE,
--						    flags);
-+						    flags, bottom_up);
- 		if (found && !memblock_reserve(found, size))
- 			goto done;
- 	}
-@@ -1423,7 +1427,7 @@ phys_addr_t __init memblock_phys_alloc_range(phys_a=
-ddr_t size,
- 		     __func__, (u64)size, (u64)align, &start, &end,
- 		     (void *)_RET_IP_);
- 	return memblock_alloc_range_nid(size, align, start, end, NUMA_NO_NODE,
--					false);
-+					false, false);
- }
-=20
- /**
-@@ -1442,7 +1446,7 @@ phys_addr_t __init memblock_phys_alloc_range(phys_a=
-ddr_t size,
- phys_addr_t __init memblock_phys_alloc_try_nid(phys_addr_t size, phys_ad=
-dr_t align, int nid)
- {
- 	return memblock_alloc_range_nid(size, align, 0,
--					MEMBLOCK_ALLOC_ACCESSIBLE, nid, false);
-+					MEMBLOCK_ALLOC_ACCESSIBLE, nid, false, false);
- }
-=20
- /**
-@@ -1484,12 +1488,12 @@ static void * __init memblock_alloc_internal(
- 		max_addr =3D memblock.current_limit;
-=20
- 	alloc =3D memblock_alloc_range_nid(size, align, min_addr, max_addr, nid=
-,
--					exact_nid);
-+					exact_nid, false);
-=20
- 	/* retry allocation without lower limit */
- 	if (!alloc && min_addr)
- 		alloc =3D memblock_alloc_range_nid(size, align, 0, max_addr, nid,
--						exact_nid);
-+						exact_nid, false);
-=20
- 	if (!alloc)
- 		return NULL;
---=20
-2.26.2
+I'm not a DT expert and I have no clue why you need all this. To me it
+looks over engineered to engage DT for debugging things. OTOH, you may
+add a property to allow debug mux (but it prevent ACPI enabled
+platforms to utilize this).
 
+...
+
+> Any ideas as to what would trigger the probe() if there was not a match
+> on a compatible like "pinctrl,state-helper"?
+>
+> > Actually not even sure we want to have it as a module.
+>
+> And have just be a part of one of the existing pinctrl files like core.c?
+
+Separate file, but in conjunction with core.c and pinmux and so on.
+
+...
+
+> > > > Shouldn't it be rather a part of a certain pin control folder:
+> > > > debug/pinctrl/.../mux/...
+> > > > ?
+> > >
+> > > Yes, I think that would make sense, but I was struggling to figure out
+> > > how to do that. pinctrl_init_debugfs() in pinctrl/core.c does create the
+> > > "pinctrl" directory, but I could not figure out how to use this as the
+> > > parent dir when calling debugfs_create_dir() in this driver's probe().
+> > >
+> > > I thought there might be a way in debugfs API to use existing directory
+> > > path as a parent but I couldn't figure anything like that. I would
+> > > appreciate any advice.
+> >
+> > If the option is boolean from the beginning then you just call it from
+> > the corresponding pin control instantiation chain.
+>
+> Sorry, I am not sure I understand what you mean here.  What does
+> "option" mean in this context?  I don't think there is any value that is
+> boolean invovled.  The pinctrl states are strings.
+
+config PINMUX_DEBUG
+ bool "..."
+ depends on PINMUX
+
+
+
+>
+> With regards to parent directory, I did discover there is
+> debugfs_lookup(), so I can get the dentry for "pinctrl" and create new
+> subdirectory inside of it.  This is the structure now:
+>
+> /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_35_pinmux/state
+> /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_34_pinmux/state
+> /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_33_pinmux/state
+> /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_32_pinmux/state
+> etc..
+
+
+--
+With Best Regards,
+Andy Shevchenko
