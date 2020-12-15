@@ -2,137 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43A92DADDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:15:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B2A2DADDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727069AbgLONOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:14:01 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:33790 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727053AbgLONNo (ORCPT
+        id S1727407AbgLONPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:15:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726844AbgLONPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:13:44 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BFDCuOB055970;
-        Tue, 15 Dec 2020 07:12:56 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608037976;
-        bh=fflVV2euO6GX3p6e7gjWU0e5OJmiwk+o75/SeXICdqY=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Itqw8bJIWMQQvNcKS6etI7VOGKWZXkcVT36/MJAeBJkDYvisTHPvNGEvCV5tlVfMx
-         InFbUsZQPtYEVdPeh7LCwjtugVQhiEkf2d4qQvGcRjjYWIMgu18iDdW3rzfuU91BW+
-         vkETEc7iccaVCTrF3Fu+61UIQ2LXJ0SybBLsU2pI=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BFDCtFj099693
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Dec 2020 07:12:55 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
- Dec 2020 07:12:55 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 15 Dec 2020 07:12:55 -0600
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BFDCjkv037808;
-        Tue, 15 Dec 2020 07:12:52 -0600
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <vkoul@kernel.org>, <robh+dt@kernel.org>,
-        <peter.ujfalusi@gmail.com>
-CC:     <dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <vigneshr@ti.com>,
-        <grygorii.strashko@ti.com>, <devicetree@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>, <tony@atomide.com>,
-        <linux@armlinux.org.uk>, <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 2/2] dt-bindings: dma: ti: Update maintainer and author information
-Date:   Tue, 15 Dec 2020 15:13:48 +0200
-Message-ID: <20201215131348.11282-3-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201215131348.11282-1-peter.ujfalusi@ti.com>
-References: <20201215131348.11282-1-peter.ujfalusi@ti.com>
+        Tue, 15 Dec 2020 08:15:15 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF14C0617A6;
+        Tue, 15 Dec 2020 05:14:34 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id ga15so27605747ejb.4;
+        Tue, 15 Dec 2020 05:14:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mv8PeOrcfK/msUcUWlX+I7EMcnD/0TTIDrC/nTcaRwk=;
+        b=acoN0lkkxRDrJ2MhS+T7pMghrhbE72m6fH46Ka6gAdWAWdzXhqJfuYo6ct0LzBbmgo
+         265yBe5XQq2Gj37IrDw99vcrXxmBycCf1NwZlW4lrCmgCUGqVZL6WhDJdfPqVug244LL
+         DeyNY4gF4hUAE6UtjvDsBghm+TTsvf/Ri7yxfCf9Aqjk2Jnp3b/Mbv4Z/RkTyPnhzQid
+         cK3KdDUhpSrAUhmUt3tjYmlhqAcx83nOs2P3HL5KPClfeBwW2W33BsG35ahrhTFVIBM3
+         +e1Rudd4QgrqRYGkjrBjtvfmRxRK47042ZEndRcD6LWtIH85Q5mt65myBFz3pyKYFyOx
+         LHSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mv8PeOrcfK/msUcUWlX+I7EMcnD/0TTIDrC/nTcaRwk=;
+        b=uRzM29cVDqO8ismP64EzDfa3o3v9u3LRa5Qm52aFEcgodm1e4IJd40556pTqowiUFb
+         yFdCXYQjLzxbjqj4YxR0vWVWeuq0DdE07OSaFs7Gc6msUR6gDFvY4Am8/H9ockahn7Xf
+         eNjstciR7RU+128/CSHXiOl8GvmQVE6aNfF8efUfUndAc32wNFvQ0hnCt25LvJnGbqP4
+         OQfryXj2FSlziQ+HAD/hayxakmRKfe7VAZQluIZXiPox6nDwPoY1bJzj8UNUV8EWZYkW
+         qJntpKZDFkAuQIYrX/iOSRqjn8xVG5XQVe+RslaMyp7uYcOBbAxZOXsa7gt0ow4H1sPc
+         xhLw==
+X-Gm-Message-State: AOAM531SlTbtdvWyow/kWhiP98hOccliA3wMair39cyoeKp6x+V0cAi+
+        qm8S6ki3pWQBvcAMwnBGuivjrqMsZwngXStv/V0=
+X-Google-Smtp-Source: ABdhPJwq346DJ84gtq4kEAbErht/H3gGqWGfg0wF2YshoTnovg8lpk3couRtBc2Fir7zFbyu1sxJossrZBIisaBYZpA=
+X-Received: by 2002:a17:906:4d17:: with SMTP id r23mr28106943eju.87.1608038073275;
+ Tue, 15 Dec 2020 05:14:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20201214225851.23342-1-adrien.grassein@gmail.com> <20201215130622.GD4738@sirena.org.uk>
+In-Reply-To: <20201215130622.GD4738@sirena.org.uk>
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Date:   Tue, 15 Dec 2020 14:14:22 +0100
+Message-ID: <CABkfQAEAe0XGj16CkmH7xMNxgdQ+SRq0BYzvP+V5PdDqVbyAAw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] Add support of nxp pf8x00 regulator
+To:     Mark Brown <broonie@kernel.org>
+Cc:     lgirdwood@gmail.com, Rob Herring <robh+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
+        troy.kisky@boundarydevices.com,
+        Gary Bisson <gary.bisson@boundarydevices.com>,
+        Jagan Teki <jagan@amarulasolutions.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My employment with TI is coming to an end, add the copyright and author comments
-as they due and change the maintainer mail address.
+Le mar. 15 d=C3=A9c. 2020 =C3=A0 14:06, Mark Brown <broonie@kernel.org> a =
+=C3=A9crit :
+>
+> On Mon, Dec 14, 2020 at 11:58:49PM +0100, Adrien Grassein wrote:
+>
+> > this set of patch intends to add the support of the pf8x00 PMIC
+> > regulators. This family of PMIC contains 12 regulators (7 bucks
+> > converters, 4 LDO, 1 RTC supply). All these 12 regulators are
+> > configurable via an OTP memory and by i2c at runtime for some
+> > specific properties.
+>
+> This looks to have raced with the addition of support for the same
+> device by Jagan Teki - unfortunately I didn't register that I'd seen
+> other patches for the same driver go past so I applied Jagan's version
+> (both look to be based on original work by Troy), sorry about that.
+> Could you please take a look at what got merged and send incremental
+> improvements on top of it - I do notice that I missed the use of the
+> wildcard compatible in there so that needs fixing at least.  :/
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
----
- Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml  | 4 +++-
- Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml | 4 +++-
- Documentation/devicetree/bindings/dma/ti/k3-udma.yaml   | 4 +++-
- 3 files changed, 9 insertions(+), 3 deletions(-)
+No problem for me, I learned many things about trying to upstream this driv=
+er :)
 
-diff --git a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
-index b15f68c499cb..df29d59d13a8 100644
---- a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
-+++ b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
-@@ -1,4 +1,6 @@
- # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright (C) 2020 Texas Instruments Incorporated
-+# Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
- %YAML 1.2
- ---
- $id: http://devicetree.org/schemas/dma/ti/k3-bcdma.yaml#
-@@ -7,7 +9,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Texas Instruments K3 DMSS BCDMA Device Tree Bindings
- 
- maintainers:
--  - Peter Ujfalusi <peter.ujfalusi@ti.com>
-+  - Peter Ujfalusi <peter.ujfalusi@gmail.com>
- 
- description: |
-   The Block Copy DMA (BCDMA) is intended to perform similar functions as the TR
-diff --git a/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml b/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml
-index b13ab60cd740..ea19d12a9337 100644
---- a/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml
-+++ b/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml
-@@ -1,4 +1,6 @@
- # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright (C) 2020 Texas Instruments Incorporated
-+# Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
- %YAML 1.2
- ---
- $id: http://devicetree.org/schemas/dma/ti/k3-pktdma.yaml#
-@@ -7,7 +9,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Texas Instruments K3 DMSS PKTDMA Device Tree Bindings
- 
- maintainers:
--  - Peter Ujfalusi <peter.ujfalusi@ti.com>
-+  - Peter Ujfalusi <peter.ujfalusi@gmail.com>
- 
- description: |
-   The Packet DMA (PKTDMA) is intended to perform similar functions as the packet
-diff --git a/Documentation/devicetree/bindings/dma/ti/k3-udma.yaml b/Documentation/devicetree/bindings/dma/ti/k3-udma.yaml
-index 9a87fd9041eb..6a09bbf83d46 100644
---- a/Documentation/devicetree/bindings/dma/ti/k3-udma.yaml
-+++ b/Documentation/devicetree/bindings/dma/ti/k3-udma.yaml
-@@ -1,4 +1,6 @@
- # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright (C) 2019 Texas Instruments Incorporated
-+# Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
- %YAML 1.2
- ---
- $id: http://devicetree.org/schemas/dma/ti/k3-udma.yaml#
-@@ -7,7 +9,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Texas Instruments K3 NAVSS Unified DMA Device Tree Bindings
- 
- maintainers:
--  - Peter Ujfalusi <peter.ujfalusi@ti.com>
-+  - Peter Ujfalusi <peter.ujfalusi@gmail.com>
- 
- description: |
-   The UDMA-P is intended to perform similar (but significantly upgraded)
--- 
-Peter
+Could you please tell me where this driver was merged?
+I checked the main kernel Linux and I can find out this one.
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
+
+Thanks again,
+Adrien
