@@ -2,102 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B282DA51E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 01:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 023972DA524
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 02:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729900AbgLOA54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 19:57:56 -0500
-Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:35785 "EHLO
-        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728773AbgLOA5z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 19:57:55 -0500
-Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
-        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id 0B3671B3D05;
-        Tue, 15 Dec 2020 11:57:00 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1koyeB-00438t-3k; Tue, 15 Dec 2020 11:56:59 +1100
-Date:   Tue, 15 Dec 2020 11:56:59 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v1 4/6] block/psi: remove PSI annotations from direct IO
-Message-ID: <20201215005659.GF632069@dread.disaster.area>
-References: <cover.1607976425.git.asml.silence@gmail.com>
- <1d3cf86668e44b3a3d35b5dbe759a086a157e434.1607976425.git.asml.silence@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1d3cf86668e44b3a3d35b5dbe759a086a157e434.1607976425.git.asml.silence@gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
-        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
-        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=JfrnYn6hAAAA:8 a=ufHFDILaAAAA:8
-        a=pGLkceISAAAA:8 a=7-415B0cAAAA:8 a=x5prtoG_kTW6hDg4jekA:9
-        a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22 a=ZmIg1sZ3JBWsdXgziEIF:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+        id S1728910AbgLOA7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 19:59:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727705AbgLOA7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 19:59:19 -0500
+Subject: Re: [GIT PULL] Documentation for 5.11
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607993915;
+        bh=+d7xrwOPNAVjED83bK8UhCp6Iibux1t31cCBlnv2hig=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=gLKUpREKd3wK6dVyC0IqWtFN5XOomsJm1l2cbWPd0fiEUHdqpLcMjDklxqEGy9vLQ
+         WyuSDdGLc2GbYXnBGu3F7JMZvZ5taUH0Ru6HzWn/JO1ph24WjWDVeGaRlb6FlXovzs
+         R+sWFVhiacm2ITeyuwiY0cYNz5CcrZA7A08o3vjBKGqwLKEHRRfLkLdFL6ZHxk2P1w
+         Pj9BdDIDtqt4WID+0saEO+jQDQYOe0M903vw8HAJGJncSJhSMTjt2qMmvq1YqS6ajo
+         /l01qLopUaK+q35lD3yXUdydNfv5NO7dDJTp5acttFpeB3bjo5NqqbAmt8AXHri1k7
+         Yeh08/wAhzW+g==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201214132843.5dd09ec3@lwn.net>
+References: <20201214132843.5dd09ec3@lwn.net>
+X-PR-Tracked-List-Id: <linux-doc.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201214132843.5dd09ec3@lwn.net>
+X-PR-Tracked-Remote: git://git.lwn.net/linux.git tags/docs-5.11
+X-PR-Tracked-Commit-Id: 47e44ed01434e51e2e42b188482d837c01e5d16e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ff6135959a9150ad45cb92ca38da270903a74343
+Message-Id: <160799391504.14662.9176855098333293438.pr-tracker-bot@kernel.org>
+Date:   Tue, 15 Dec 2020 00:58:35 +0000
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 12:20:23AM +0000, Pavel Begunkov wrote:
-> As reported, we must not do pressure stall information accounting for
-> direct IO, because otherwise it tells that it's thrashing a page when
-> actually doing IO on hot data.
-> 
-> Apparently, bio_iov_iter_get_pages() is used only by paths doing direct
-> IO, so just make it avoid setting BIO_WORKINGSET, it also saves us CPU
-> cycles on doing that. For fs/direct-io.c just clear the flag before
-> submit_bio(), it's not of much concern performance-wise.
-> 
-> Reported-by: Christoph Hellwig <hch@infradead.org>
-> Suggested-by: Christoph Hellwig <hch@infradead.org>
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> ---
->  block/bio.c    | 25 ++++++++++++++++---------
->  fs/direct-io.c |  2 ++
->  2 files changed, 18 insertions(+), 9 deletions(-)
-.....
-> @@ -1099,6 +1103,9 @@ static int __bio_iov_append_get_pages(struct bio *bio, struct iov_iter *iter)
->   * fit into the bio, or are requested in @iter, whatever is smaller. If
->   * MM encounters an error pinning the requested pages, it stops. Error
->   * is returned only if 0 pages could be pinned.
-> + *
-> + * It also doesn't set BIO_WORKINGSET, so is intended for direct IO. If used
-> + * otherwise the caller is responsible to do that to keep PSI happy.
->   */
->  int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
->  {
-> diff --git a/fs/direct-io.c b/fs/direct-io.c
-> index d53fa92a1ab6..914a7f600ecd 100644
-> --- a/fs/direct-io.c
-> +++ b/fs/direct-io.c
-> @@ -426,6 +426,8 @@ static inline void dio_bio_submit(struct dio *dio, struct dio_submit *sdio)
->  	unsigned long flags;
->  
->  	bio->bi_private = dio;
-> +	/* PSI is only for paging IO */
-> +	bio_clear_flag(bio, BIO_WORKINGSET);
+The pull request you sent on Mon, 14 Dec 2020 13:28:43 -0700:
 
-Why only do this for the old direct IO path? Why isn't this
-necessary for the iomap DIO path?
+> git://git.lwn.net/linux.git tags/docs-5.11
 
-Cheers,
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ff6135959a9150ad45cb92ca38da270903a74343
 
-Dave.
+Thank you!
+
 -- 
-Dave Chinner
-david@fromorbit.com
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
