@@ -2,95 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67AC42DABDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6654C2DABF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728865AbgLOLVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 06:21:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41350 "EHLO
+        id S1728933AbgLOLYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 06:24:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728560AbgLOLVH (ORCPT
+        with ESMTP id S1728854AbgLOLYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 06:21:07 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE07C06179C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:20:27 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id f17so15011937pge.6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:20:27 -0800 (PST)
+        Tue, 15 Dec 2020 06:24:19 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C620C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:23:39 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id a12so19458152wrv.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:23:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raydium-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=KDZfAWhL7geC34mCQgWIQj/onDO2eDN30FnzkR+Q6bc=;
-        b=O4b2knP7K/egh01xp4fqwR+sJ/EO41cfefyFMIe/IQx4HYw0cG27crJKB/zj6D4E1a
-         JWeoTCQW3B6a4sF4zGZEPLzq5LTwfR6i5KOYKOfuJPQuxNMDvMH0YKLrAUWNrOS7asbC
-         Axl4bQPVmCPRXhzFDUOK7roHxg0lM0VIf/aBeSEejbXJloibJsSkYQGxltX5RPCooKTO
-         bjzq17o7MA055ytS9wXcSi3Fm86Aa7yEDwIdk5Tmmwox0Ib2YBRgBenRluBpmmEct5cA
-         L505ktLqAnfG1GY9tNuZvR3LF/dLYxDI0U/wKgMZS5vZXjhzIwG26QWn9eRy+olBP0DK
-         4S/w==
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EfMSQatGMWNZ2UIzROdV1pX/rfI9pwbGhSWYVlJrJZE=;
+        b=eXE+Lb4dOZbQV4Mve43qbM4rizFy7cQaqgbo9Sd7txHpXvnvKlsSwuS31p4dUt3g8l
+         TY3A5NbK0k+xkwNjyzP36ek+RmXOTppJsTgpEBkdidDJ4Y/gC6k8qL5F3T5ck+3kti35
+         tGgnqHmmOMCTtdJV8eSX4EwlxPBd9yK7CNhn+abP3TuwP0EhoRP3IKB7Vt/Hbof/elpP
+         WiF+a0xQrLncak0A9c5ijvEEeeNYVGUsT9Sa7lrLjSrfaI/adqRARKGxBLa5YZqG7l+M
+         X5fp0UKriviDiWVmxgGunA/ylIAXMF59Ahka6iyGuuRHzednnNENC+Eb5oHwKMQIXFgF
+         /zRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=KDZfAWhL7geC34mCQgWIQj/onDO2eDN30FnzkR+Q6bc=;
-        b=s+Tr9c2k041S1I9P2tusUj5TYktn7kbJvHxOqBO9DUjG/ZDcgGylR6WTMIL1sNnFB1
-         3MdiI9I/XtazII4skmGGfE6IwzvK3sX2gXdPvn0fvDj7DqRuJu4pc3hdpG1wKFPvk0qD
-         51bfsN0JqkDgvIw+GlTdVomvuzc9gx+0YgiKf2Qkg5j7Je2vAjWjeB37NFXN11umJGPZ
-         t9TUv0ePqwlZpH4aTAqS7IyQz4UgnEwYySAsoKC3OyduS4ddjrwPY/a9dFhkXFg/GgiD
-         zzRI8kZZOyKQp10qhDnZ8MeQ7tkXqnHYwY5wPzOpdP2JyZbTcKIk9eHQKyrzRpX0wr8e
-         hLVw==
-X-Gm-Message-State: AOAM532sUihAFXmoLRSursWFvDfJU9CfLlZ6GHd/wuhcWzOXFox4ZZfh
-        K9CpLuaK8zuB2yVu8T8rWLS/6A==
-X-Google-Smtp-Source: ABdhPJyfTJX2ErQFQxFsZ2dXXpe3NpYKKXcM7xEBfup4cFAXfAWfHDoBlyNy91SM3W7S17aip26voQ==
-X-Received: by 2002:a65:6145:: with SMTP id o5mr28765400pgv.186.1608031226856;
-        Tue, 15 Dec 2020 03:20:26 -0800 (PST)
-Received: from localhost.localdomain (2001-b400-e3d9-619c-a02e-47f2-1ebf-215e.emome-ip6.hinet.net. [2001:b400:e3d9:619c:a02e:47f2:1ebf:215e])
-        by smtp.gmail.com with ESMTPSA id p15sm23195094pgl.19.2020.12.15.03.20.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Dec 2020 03:20:26 -0800 (PST)
-From:   "jeffrey.lin" <jeffrey.lin@raydium.corp-partner.google.com>
-To:     dmitry.torokhov@gmail.com, furquan@google.com,
-        seanpaul@chromium.org, rrangel@chromium.org,
-        dan.carpenter@oracle.com
-Cc:     jeffrey.lin@rad-ic.com, KP.li@rad-ic.com,
-        jeffrey.lin@raydium.corp-partner.google.com,
-        calvin.tseng@rad-ic.com, simba.hsu@rad-ic.com,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [PATCH] Input: raydium_ts_i2c: Do not send zero length 
-Date:   Tue, 15 Dec 2020 19:20:17 +0800
-Message-Id: <1608031217-7247-1-git-send-email-jeffrey.lin@raydium.corp-partner.google.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EfMSQatGMWNZ2UIzROdV1pX/rfI9pwbGhSWYVlJrJZE=;
+        b=WfLkSX1t3Nca5ikyG4nA3RAGdmn2lXo6O63CLZ9KUY8ZgKI0V4+MMNUy89K77YSMRY
+         Erbaj+OFTDh+D/NBbk5/8u+wynd0TgK9YqvzpImIjbpdN/NOJMY5oAVL/hVLwSkrkfzw
+         cVGd6iQINtCRrSrmjq01fKiSTtOdWU/fIXROWENZPtGPG/yKYOODbe78yk8XC+NHb2it
+         MUuvkrNzcIOG8Ppid5srJyEPiOalIKwfV5oxiaW3/A5y8g1LW0XH80LXLy5x68c4OIEN
+         ujAqYH0CildRO9BYEVjQ1mmqCIVaG6Vta+bg1KXFyeUScZzpwaoZbKHAy51678G4ktpz
+         r86w==
+X-Gm-Message-State: AOAM532dzub2wE64m1m5F16QZXwaqqWiVlWnGBk0zxtjy1PVTsTDCEys
+        tJp1ElO60hpHsFkZqviRj/aL5BIvjxOfoPeHL7fO9A==
+X-Google-Smtp-Source: ABdhPJx+sM7fMbriohJGobmth2ydPm3qvpHoTFwjRws9SUq0A20IN0zEsSlLodomgkvY6en9cyG7kd2SKzCFtcfG9e8=
+X-Received: by 2002:adf:f7d2:: with SMTP id a18mr11821446wrq.47.1608031418169;
+ Tue, 15 Dec 2020 03:23:38 -0800 (PST)
+MIME-Version: 1.0
+References: <20201210134648.272857-1-maxime@cerno.tech> <20201210134648.272857-4-maxime@cerno.tech>
+In-Reply-To: <20201210134648.272857-4-maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Tue, 15 Dec 2020 11:23:22 +0000
+Message-ID: <CAPY8ntAijv1qdOz8qWkofXSpCa85cEOPSiuUacLrM2xOSkjWYw@mail.gmail.com>
+Subject: Re: [PATCH 03/15] drm/vc4: hdmi: Fix register offset with longer CEC messages
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jason Cooper <jason@lakedaemon.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rpi-kernel@lists.infradead.org,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Dom Cobley <popcornmix@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add default write command package to prevent i2c quirk error of zero
-data length as Raydium touch firmware update is executed.
+Hi Dom & Maxime
 
-Signed-off-by: jeffrey.lin <jeffrey.lin@rad-ic.com>
----
- drivers/input/touchscreen/raydium_i2c_ts.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On Thu, 10 Dec 2020 at 13:46, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> From: Dom Cobley <popcornmix@gmail.com>
+>
+> The code prior to 311e305fdb4e ("drm/vc4: hdmi: Implement a register
+> layout abstraction") was relying on the fact that the register offset
+> was incremented by 4 for each readl call. That worked since the register
+> width is 4 bytes.
+>
+> However, since that commit the HDMI_READ macro is now taking an enum,
+> and the offset doesn't increment by 4 but 1 now. Divide the index by 4
+> to fix this.
+>
+> Fixes: 311e305fdb4e ("drm/vc4: hdmi: Implement a register layout abstraction")
+> Signed-off-by: Dom Cobley <popcornmix@gmail.com>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-diff --git a/drivers/input/touchscreen/raydium_i2c_ts.c b/drivers/input/touchscreen/raydium_i2c_ts.c
-index 603a948460d64..4d2d22a869773 100644
---- a/drivers/input/touchscreen/raydium_i2c_ts.c
-+++ b/drivers/input/touchscreen/raydium_i2c_ts.c
-@@ -445,6 +445,7 @@ static int raydium_i2c_write_object(struct i2c_client *client,
- 				    enum raydium_bl_ack state)
- {
- 	int error;
-+	static const u8 cmd[] = { 0xFF, 0x39 };
- 
- 	error = raydium_i2c_send(client, RM_CMD_BOOT_WRT, data, len);
- 	if (error) {
-@@ -453,7 +454,7 @@ static int raydium_i2c_write_object(struct i2c_client *client,
- 		return error;
- 	}
- 
--	error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, NULL, 0);
-+	error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, cmd, sizeof(cmd));
- 	if (error) {
- 		dev_err(&client->dev, "Ack obj command failed: %d\n", error);
- 		return error;
--- 
-2.26.2
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
+> ---
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 17 +++++++++++++++--
+>  1 file changed, 15 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index 3df1747dd917..28b78ea885ea 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -1434,13 +1434,20 @@ static irqreturn_t vc4_cec_irq_handler_thread(int irq, void *priv)
+>
+>  static void vc4_cec_read_msg(struct vc4_hdmi *vc4_hdmi, u32 cntrl1)
+>  {
+> +       struct drm_device *dev = vc4_hdmi->connector.dev;
+>         struct cec_msg *msg = &vc4_hdmi->cec_rx_msg;
+>         unsigned int i;
+>
+>         msg->len = 1 + ((cntrl1 & VC4_HDMI_CEC_REC_WRD_CNT_MASK) >>
+>                                         VC4_HDMI_CEC_REC_WRD_CNT_SHIFT);
+> +
+> +       if (msg->len > 16) {
+> +               drm_err(dev, "Attempting to read too much data (%d)\n", msg->len);
+> +               return;
+> +       }
+> +
+>         for (i = 0; i < msg->len; i += 4) {
+> -               u32 val = HDMI_READ(HDMI_CEC_RX_DATA_1 + i);
+> +               u32 val = HDMI_READ(HDMI_CEC_RX_DATA_1 + (i >> 2));
+>
+>                 msg->msg[i] = val & 0xff;
+>                 msg->msg[i + 1] = (val >> 8) & 0xff;
+> @@ -1533,11 +1540,17 @@ static int vc4_hdmi_cec_adap_transmit(struct cec_adapter *adap, u8 attempts,
+>                                       u32 signal_free_time, struct cec_msg *msg)
+>  {
+>         struct vc4_hdmi *vc4_hdmi = cec_get_drvdata(adap);
+> +       struct drm_device *dev = vc4_hdmi->connector.dev;
+>         u32 val;
+>         unsigned int i;
+>
+> +       if (msg->len > 16) {
+> +               drm_err(dev, "Attempting to transmit too much data (%d)\n", msg->len);
+> +               return -ENOMEM;
+> +       }
+> +
+>         for (i = 0; i < msg->len; i += 4)
+> -               HDMI_WRITE(HDMI_CEC_TX_DATA_1 + i,
+> +               HDMI_WRITE(HDMI_CEC_TX_DATA_1 + (i >> 2),
+>                            (msg->msg[i]) |
+>                            (msg->msg[i + 1] << 8) |
+>                            (msg->msg[i + 2] << 16) |
+> --
+> 2.28.0
+>
