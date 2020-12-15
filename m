@@ -2,109 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442232DB2CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CCC2DB2CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731331AbgLORhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 12:37:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731320AbgLORhq (ORCPT
+        id S1731350AbgLORjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 12:39:02 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:53280 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729671AbgLORin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 12:37:46 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08D9C06179C;
-        Tue, 15 Dec 2020 09:37:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OpLblT8P1Hbc/QDHxOcAOdfaojoLZC8gmneeEU8P1oA=; b=Zq90lByVQFOlblPa+1n23PFbSz
-        zlDzGPVyXT2+SJ/VlKY6GGI3QQV9XloT+gcykGnLvf91P4/NuR+Wo9T9ifxki47g0RPayNF3x0hnh
-        tairrq14GdttYSRGdfkFoK6qHlRbF5ezrqA3tiOyd3t+yo9Vq4NPu56/hpquGbRTDKhOP+WoHwqGh
-        JdY1uRJSadgYCgyW/pJAadoc4M2pQGPRTw96t94xlZ3B9sazpi3QOGkikQIRROkEsshqdIh/WmSjF
-        jXsN1kuCvgdMS4qdGb7EJS008M2/VIeKiFLXGzNbav5BGmuiPouOE/rm8HQpcrGWM1RFLTJN+OeNe
-        DNuXTc+Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kpEFk-0006vz-KL; Tue, 15 Dec 2020 17:36:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6B6BD3070AB;
-        Tue, 15 Dec 2020 18:36:45 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4F432203EE86F; Tue, 15 Dec 2020 18:36:45 +0100 (CET)
-Date:   Tue, 15 Dec 2020 18:36:45 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v5 00/15] An alternative series for asymmetric AArch32
- systems
-Message-ID: <20201215173645.GJ3040@hirez.programming.kicks-ass.net>
-References: <20201208132835.6151-1-will@kernel.org>
+        Tue, 15 Dec 2020 12:38:43 -0500
+Received: by mail-il1-f197.google.com with SMTP id q2so17065988ilt.20
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 09:38:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=0OLNIQyK8a72e/CXENRYrk13L6iFjI2wtKw1eTofk+Q=;
+        b=qD6qE5N/OsBb8HAEvDDBsSueoCAsddF8O/2AEpTqP9XEx9yUzDuyyhNjaoD/5p/5IQ
+         HFqPjbH+aPvrjCWhVKKG3dd47204rt3pg8ibkzvDg7EhsP49AFNVuZtpN2z3cIXO4zkE
+         5h5/5iXwRBp0CFIgXc/e9sNYILoryybB5TsuWdeH/M0a8t63ZZF7RuaaiQFw8o1azHZ2
+         pYhu4hh5EFalF/RtroBRs8FHmIIFBI6knDxpZXSdkLJSOj45EfA5VeKcrqvdstFzLa6o
+         Xho/oEHIAmOer8puQGrgRTnSjYOnJJY0tF/lbMIT4NtR0anm7yBodKXGdv5ZGXdz0q14
+         hYig==
+X-Gm-Message-State: AOAM531TUEIHY55YIS/Fwb9N5b6AG80gcQCbR++TBCZPhM+0V4ZFBHqz
+        dESSC3UCTDsna3d1voR6l/PZuP3zb5ivk6tHrUvq0porfTzD
+X-Google-Smtp-Source: ABdhPJz79w/Ax+6EdXIoCXGIwQP1O5JGuVGnUMkE31v73NzNq2fiI6IerHlZnSlI9W+AYO0hQI+5T3uSDxZ6mhsb4jAfKLHLZIPS
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208132835.6151-1-will@kernel.org>
+X-Received: by 2002:a6b:3b92:: with SMTP id i140mr38166000ioa.49.1608053882696;
+ Tue, 15 Dec 2020 09:38:02 -0800 (PST)
+Date:   Tue, 15 Dec 2020 09:38:02 -0800
+In-Reply-To: <000000000000bd226505b67d9989@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000753add05b6843897@google.com>
+Subject: Re: general protection fault in taprio_dequeue_soft
+From:   syzbot <syzbot+8971da381fb5a31f542d@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        vinicius.gomes@intel.com, xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 01:28:20PM +0000, Will Deacon wrote:
-> The aim of this series is to allow 32-bit ARM applications to run on
-> arm64 SoCs where not all of the CPUs support the 32-bit instruction set.
-> Unfortunately, such SoCs are real and will continue to be productised
-> over the next few years at least. I can assure you that I'm not just
-> doing this for fun.
-> 
-> Changes in v5 include:
-> 
->   * Teach cpuset_cpus_allowed() about task_cpu_possible_mask() so that
->     we can avoid returning incompatible CPUs for a given task. This
->     means that sched_setaffinity() can be used with larger masks (like
->     the online mask) from userspace and also allows us to take into
->     account the cpuset hierarchy when forcefully overriding the affinity
->     for a task on execve().
-> 
->   * Honour task_cpu_possible_mask() when attaching a task to a cpuset,
->     so that the resulting affinity mask does not contain any incompatible
->     CPUs (since it would be rejected by set_cpus_allowed_ptr() otherwise).
-> 
->   * Moved overriding of the affinity mask into the scheduler core rather
->     than munge affinity masks directly in the architecture backend.
+syzbot has bisected this issue to:
 
-Hurmph... so if I can still read, this thing will auto truncate the
-affinity mask to something that only contains compatible CPUs, right?
+commit b5b73b26b3ca34574124ed7ae9c5ba8391a7f176
+Author: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Date:   Thu Sep 10 00:03:11 2020 +0000
 
-Assuming our system has 8 CPUs (0xFF), half of which are 32bit capable
-(0x0F), then, when our native task (with affinity 0x3c) does a
-fork()+execve() of a 32bit thingy the resulting task has 0x0c.
+    taprio: Fix allowing too small intervals
 
-If that in turn does fork()+execve() of a native task, it will retain
-the trucated affinity mask (0x0c), instead of returning to the wider
-mask (0x3c).
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13c8eadf500000
+start commit:   7f376f19 Merge tag 'mtd/fixes-for-5.10-rc8' of git://git.k..
+git tree:       net
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1028eadf500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17c8eadf500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3416bb960d5c705d
+dashboard link: https://syzkaller.appspot.com/bug?extid=8971da381fb5a31f542d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=128c5745500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17a1f123500000
 
-IOW, any (accidental or otherwise) trip through a 32bit helper, will
-destroy user state (the affinity mask: 0x3c).
+Reported-by: syzbot+8971da381fb5a31f542d@syzkaller.appspotmail.com
+Fixes: b5b73b26b3ca ("taprio: Fix allowing too small intervals")
 
-
-Should we perhaps split task_struct::cpus_mask, one to keep an original
-copy of the user state, and one to be an effective cpumask for the task?
-That way, the moment a task constricts or widens it's
-task_cpu_possible_mask() we can re-compute the effective mask without
-loss of information.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
