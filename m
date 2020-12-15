@@ -2,78 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426542DA6ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDCD2DA6F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:47:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726163AbgLODmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 22:42:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726302AbgLODln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 22:41:43 -0500
-Date:   Mon, 14 Dec 2020 19:41:01 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608003662;
-        bh=BZ6+L14BALEBlEZN5aclup/NhEsGHeAS59yIV8zfbe8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hC7chYTiroyWToVwiWV7C4BQjbJztHO5cQY94LcrJoWL0TaN3KVLvd9TjC2qWgAbi
-         6jX7Vq52uQlhiFIxI+NEOrEoATNzN5iVweALtJQrttTxtTN6ez1QA4QuMIYWKD0BIk
-         RR8UJteZrX8IG5k4tMAhp1PSmDFS4reT4zBOTASqwFy23g90rudHIRYiJ5iBpcOz+0
-         L8IGomzskBKf+gxgBs92Kqf+UpavZFhPPqe3uvLTO2yrD46AUDpITCKCOazvI/n63x
-         lEKN/qmXc3Cjh+TKd4VW3LAyIWX8Midmwxb9nypKv9KHMp39Z32B4xYMIgl2rDJRtp
-         r09mJ2TSHcEuQ==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yonatan Linik <yonatanlinik@gmail.com>
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, willemb@google.com,
-        john.ogness@linutronix.de, arnd@arndb.de, maowenan@huawei.com,
-        colin.king@canonical.com, orcohen@paloaltonetworks.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] net: Fix use of proc_fs
-Message-ID: <20201214194101.789109bd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201214202550.3693-2-yonatanlinik@gmail.com>
-References: <20201214202550.3693-1-yonatanlinik@gmail.com>
-        <20201214202550.3693-2-yonatanlinik@gmail.com>
+        id S1726406AbgLODrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 22:47:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725850AbgLODrZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 22:47:25 -0500
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AF0C061793
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 19:46:44 -0800 (PST)
+Received: by mail-qt1-x844.google.com with SMTP id j26so13505562qtq.8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 19:46:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cs.unc.edu; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NYojc7vmSWu8GGbZzz8wSzFwi9UD9yKVFssMaSFOz4E=;
+        b=cxNYjJg+7NdMB14Z5XtqPZXDK0od69p7qRpGSar5CDZ4xRFqrvT9q/JwvFWV0DfIlQ
+         vwwEK4brInRkmfIZfVveyRgV8eilKm1nXctMpFDiqG5YYHS8tKGqfppFBnrkCbkZBQlk
+         f+z/pf/k82MvH5iFJvM68J3yNIIsBmhmzdLLs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NYojc7vmSWu8GGbZzz8wSzFwi9UD9yKVFssMaSFOz4E=;
+        b=jevLvs8joE7hxf4lrfqCTwZq6/37hB3CISD+4Ueyf9zlo/SptEwTgtPLmqL3nJXIJA
+         acGl5pQA7+6GfKC2s8VvxdodllvaNUPzc4zxgC6OPOyhKtCmRj3enVaxSKVpy592J2Gv
+         TEgChs38dZRM9B3BipQWAv3u+lWrDDmNvXumsOihANrHU38SE2kguNG6jf0aM2Zo+uDj
+         B9hrbBDTj5TSxHd5XhJn5a3dUe/lEMeMJFfN0u7TOUO7WoB4jdB2vIMOclTlXcSoiQWb
+         0yce3EqFV3BspxnX57E+y/WmUHW6fOSTSLZln4/7BpBazu8uM2PcCnCQNqJwzskLD6F0
+         8nZg==
+X-Gm-Message-State: AOAM532jND35Vh2iQNDPEokvEcQkoHAl0/S6ADbNMUCb1Z7CyMKbXyTb
+        9g6nTvpDtTMVcCnnK+hpRnf25A==
+X-Google-Smtp-Source: ABdhPJxPf19Kdr4KFMfSV7jHvy20v0SozN5vkifuDIFXKJf6B5W/YIDAhY7HdABYJ4kBx1+oDz7xEA==
+X-Received: by 2002:ac8:4553:: with SMTP id z19mr15025033qtn.278.1608004003819;
+        Mon, 14 Dec 2020 19:46:43 -0800 (PST)
+Received: from yamaha.cs.unc.edu (yamaha.cs.unc.edu. [152.2.129.229])
+        by smtp.gmail.com with ESMTPSA id v128sm16199511qkc.126.2020.12.14.19.46.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 19:46:43 -0800 (PST)
+From:   Joshua Bakita <jbakita@cs.unc.edu>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joshua Bakita <jbakita@cs.unc.edu>
+Subject: [RESEND,PATCH] fs/binfmt_elf: Fix regression limiting ELF program header size
+Date:   Mon, 14 Dec 2020 22:46:24 -0500
+Message-Id: <20201215034624.1887447-1-jbakita@cs.unc.edu>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 22:25:50 +0200 Yonatan Linik wrote:
-> proc_fs was used, in af_packet, without a surrounding #ifdef,
-> although there is no hard dependency on proc_fs.
-> That caused the initialization of the af_packet module to fail
-> when CONFIG_PROC_FS=n.
-> 
-> Specifically, proc_create_net() was used in af_packet.c,
-> and when it fails, packet_net_init() returns -ENOMEM.
-> It will always fail when the kernel is compiled without proc_fs,
-> because, proc_create_net() for example always returns NULL.
-> 
-> The calling order that starts in af_packet.c is as follows:
-> packet_init()
-> register_pernet_subsys()
-> register_pernet_operations()
-> __register_pernet_operations()
-> ops_init()
-> ops->init() (packet_net_ops.init=packet_net_init())
-> proc_create_net()
-> 
-> It worked in the past because register_pernet_subsys()'s return value
-> wasn't checked before this Commit 36096f2f4fa0 ("packet: Fix error path in
-> packet_init.").
-> It always returned an error, but was not checked before, so everything
-> was working even when CONFIG_PROC_FS=n.
-> 
-> The fix here is simply to add the necessary #ifdef.
-> 
-> This also fixes a similar error in tls_proc.c, that was found by Jakub
-> Kicinski.
-> 
-> Signed-off-by: Yonatan Linik <yonatanlinik@gmail.com>
+Commit 6a8d38945cf4 ("binfmt_elf: Hoist ELF program header loading to a
+function") merged load_elf_binary and load_elf_interp into
+load_elf_phdrs. This change imposed a limit that the program headers of
+all ELF binaries are smaller than ELF_MIN_ALIGN. This is a mistake for
+two reasons:
+1. load_elf_binary previously had no such constraint, meaning that
+   previously valid ELF program headers are now rejected by the kernel as
+   oversize and invalid.
+2. The ELF interpreter's program headers should never have been limited to
+   ELF_MIN_ALIGN (and previously PAGE_SIZE) in the first place. Commit
+   057f54fbba73 ("Import 1.1.54") introduced this limit to the ELF
+   interpreter alongside the initial ELF parsing support without any
+   explanation.
+This patch removes the ELF_MIN_ALIGN size constraint in favor of only
+relying on an earlier check that the allocation will be less than 64KiB.
+(It's worth mentioning that the 64KiB limit is also unnecessarily strict,
+but that's not addressed here for simplicity. The ELF manpage says that
+the program header size is supposed to have at most 64 thousand entries,
+not less than 64 thousand bytes.)
 
-Applied, and queued for stable, thanks!
+Fixes: 6a8d38945cf4 ("binfmt_elf: Hoist ELF program header loading to a function")
+Signed-off-by: Joshua Bakita <jbakita@cs.unc.edu>
+---
+ fs/binfmt_elf.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 2472af2798c7..55162056590f 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -412,15 +412,11 @@ static struct elf_phdr *load_elf_phdrs(struct elfhdr *elf_ex,
+ 	/* Sanity check the number of program headers... */
+ 	if (elf_ex->e_phnum < 1 ||
+ 		elf_ex->e_phnum > 65536U / sizeof(struct elf_phdr))
+ 		goto out;
+ 
+-	/* ...and their total size. */
+ 	size = sizeof(struct elf_phdr) * elf_ex->e_phnum;
+-	if (size > ELF_MIN_ALIGN)
+-		goto out;
+-
+ 	elf_phdata = kmalloc(size, GFP_KERNEL);
+ 	if (!elf_phdata)
+ 		goto out;
+ 
+ 	/* Read in the program headers */
+-- 
+2.25.1
+
