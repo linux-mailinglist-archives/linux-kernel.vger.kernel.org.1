@@ -2,103 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A87D2DA58A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 02:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E21232DA592
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 02:30:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729509AbgLOB04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 20:26:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34772 "EHLO
+        id S1727184AbgLOBaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 20:30:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726580AbgLOB0p (ORCPT
+        with ESMTP id S1726580AbgLOBaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 20:26:45 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E0FC061793
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 17:26:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=hmZnhIYLcuy3j4UsuWnrlAWdET4FNutJx46YotKNVgY=; b=MK5eUcYknU902DpB/sOFcYXmeJ
-        jT2xvynlVUi0Vtn1B6Em/hny725pQcsEyh4JEz/NxEJ+tiiucH2GSSc79d0nqhOydrsD9O3xWssX4
-        44UGDw8DkVLGZwEjxdb+tdL+lpswEZnrNAQ2ofHa8CwLUama3trmuvVUWvV6a0yOiqJTy2+OyTV6L
-        bHOe6JZnHe6iAQRA6+1QbbBmtrCCKnRPyDaQBP+7v3YGybdV/eYblTTyuteEn9tlfe2RxZ3bJhiig
-        Vny1OW+4isTih+gkN3wf0chduU309HeCtirsqlgHFHM+cuQiS7iK8t5/BNiOIQ7eB38dTL0uegeTW
-        Q12sY1GQ==;
-Received: from [2601:1c0:6280:3f0::1494] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1koz6H-0004aM-2u; Tue, 15 Dec 2020 01:26:01 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH] arm: OABI compat: fix build when EPOLL is not enabled
-Date:   Mon, 14 Dec 2020 17:25:56 -0800
-Message-Id: <20201215012556.27476-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Mon, 14 Dec 2020 20:30:00 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F86BC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 17:29:15 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id g18so14147041pgk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 17:29:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GxBZCxQsCUdkzL0jmb2W+BSX0fHFGApzy9UYWSaFsfA=;
+        b=wjrGi6EXmsLALW5JV6tz8QuKrCuTGVWBMU/hzrdlhG63jR18/Vd8fRj8J7KZKAjyuv
+         mnRv+LieMrPvP4LCHvTZpHJY4VLWuw2XrgN8Q2N/02Dxdw8tM3aLb+5Qk7dFtNMt62Vo
+         TAkCngSA/CKFArV1JIisQLFUReL0gdWL9DXlc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GxBZCxQsCUdkzL0jmb2W+BSX0fHFGApzy9UYWSaFsfA=;
+        b=e2AXl0cJg3yxY8SX/qAOnVE7XqE8bq5GAjqaUQdZd53J8+zZx/7Mx00XV4WcDNz6RD
+         QyhXjjBD/KBVtY0tRy6HE+drz+q5/gyX9EHV08xuTu+33fyvHlxMcB/nGYZv82CbHk1/
+         kFsNfP1L1rfUutTfmAHNfp0+T+T1nPv+vlHeTDmrZtk4p0A/ZadbcBxiJwMlpaBGNjjT
+         IEf0w9MIvw3+vddCFjKPxAUkGf49q9X9Soh7VDHoxFCF+K8aH+/VP6LL/Hjsfab305m0
+         826jHRKEbdEYqc50tEUtBog3RQOgnm8jiG8PgiN0lOzpESMCUW8jTFiw2EirEI0/sqZ5
+         aRiw==
+X-Gm-Message-State: AOAM530X1hb/qGa5pcUyKqO9E5Dr6FG+/MiQqUe2GQ5MRv176pPhWkCM
+        fvaMDiXRbsHMn8Gbaw/aobO17A==
+X-Google-Smtp-Source: ABdhPJx5mCCcBAJLDU2y8yQ8N0q0MRiR8OrRtxCB1D6VDzQCvUrT7XHyDru0fzg43laSJ3o4t8s9hA==
+X-Received: by 2002:aa7:8b15:0:b029:196:59ad:ab93 with SMTP id f21-20020aa78b150000b029019659adab93mr25916535pfd.16.1607995755061;
+        Mon, 14 Dec 2020 17:29:15 -0800 (PST)
+Received: from localhost ([2604:5500:c29c:d401:f5da:c0a7:bcba:f83c])
+        by smtp.gmail.com with ESMTPSA id a29sm21100906pfr.73.2020.12.14.17.29.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 17:29:13 -0800 (PST)
+From:   Ivan Babrou <ivan@cloudflare.com>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@cloudflare.com, Ivan Babrou <ivan@cloudflare.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: [PATCH net-next] sfc: reduce the number of requested xdp ev queues
+Date:   Mon, 14 Dec 2020 17:29:06 -0800
+Message-Id: <20201215012907.3062-1-ivan@cloudflare.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_EPOLL is not set/enabled, sys_oabi-compat.c has build
-errors. Fix these by surrounding them with ifdef CONFIG_EPOLL/endif
-and providing stubs for the "EPOLL is not set" case.
+Without this change the driver tries to allocate too many queues,
+breaching the number of available msi-x interrupts on machines
+with many logical cpus and default adapter settings:
 
-../arch/arm/kernel/sys_oabi-compat.c: In function 'sys_oabi_epoll_ctl':
-../arch/arm/kernel/sys_oabi-compat.c:257:6: error: implicit declaration of function 'ep_op_has_event' [-Werror=implicit-function-declaration]
-  257 |  if (ep_op_has_event(op) &&
-      |      ^~~~~~~~~~~~~~~
-../arch/arm/kernel/sys_oabi-compat.c:264:9: error: implicit declaration of function 'do_epoll_ctl'; did you mean 'sys_epoll_ctl'? [-Werror=implicit-function-declaration]
-  264 |  return do_epoll_ctl(epfd, op, fd, &kernel, false);
-      |         ^~~~~~~~~~~~
+Insufficient resources for 12 XDP event queues (24 other channels, max 32)
 
-Fixes: 687ad0191488 ("[ARM] 3109/1: old ABI compat: syscall wrappers for ABI impedance matching")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com> # from an lkp .config file
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: Nicolas Pitre <nico@fluxnic.net>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Which in turn triggers EINVAL on XDP processing:
+
+sfc 0000:86:00.0 ext0: XDP TX failed (-22)
+
+Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
 ---
-or does OABI require epoll? how is that enforced?
+ drivers/net/ethernet/sfc/efx_channels.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
- arch/arm/kernel/sys_oabi-compat.c |   15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
---- linux-next-20201214.orig/arch/arm/kernel/sys_oabi-compat.c
-+++ linux-next-20201214/arch/arm/kernel/sys_oabi-compat.c
-@@ -248,6 +248,7 @@ struct oabi_epoll_event {
- 	__u64 data;
- } __attribute__ ((packed,aligned(4)));
+diff --git a/drivers/net/ethernet/sfc/efx_channels.c b/drivers/net/ethernet/sfc/efx_channels.c
+index a4a626e9cd9a..1bfeee283ea9 100644
+--- a/drivers/net/ethernet/sfc/efx_channels.c
++++ b/drivers/net/ethernet/sfc/efx_channels.c
+@@ -17,6 +17,7 @@
+ #include "rx_common.h"
+ #include "nic.h"
+ #include "sriov.h"
++#include "workarounds.h"
  
-+#ifdef CONFIG_EPOLL
- asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
- 				   struct oabi_epoll_event __user *event)
+ /* This is the first interrupt mode to try out of:
+  * 0 => MSI-X
+@@ -137,6 +138,7 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
  {
-@@ -298,6 +299,20 @@ asmlinkage long sys_oabi_epoll_wait(int
- 	kfree(kbuf);
- 	return err ? -EFAULT : ret;
- }
-+#else
-+asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
-+				   struct oabi_epoll_event __user *event)
-+{
-+	return -EINVAL;
-+}
-+
-+asmlinkage long sys_oabi_epoll_wait(int epfd,
-+				    struct oabi_epoll_event __user *events,
-+				    int maxevents, int timeout)
-+{
-+	return -EINVAL;
-+}
-+#endif
+ 	unsigned int n_channels = parallelism;
+ 	int vec_count;
++	int tx_per_ev;
+ 	int n_xdp_tx;
+ 	int n_xdp_ev;
  
- struct oabi_sembuf {
- 	unsigned short	sem_num;
+@@ -149,9 +151,9 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
+ 	 * multiple tx queues, assuming tx and ev queues are both
+ 	 * maximum size.
+ 	 */
+-
++	tx_per_ev = EFX_MAX_EVQ_SIZE / EFX_TXQ_MAX_ENT(efx);
+ 	n_xdp_tx = num_possible_cpus();
+-	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, EFX_MAX_TXQ_PER_CHANNEL);
++	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, tx_per_ev);
+ 
+ 	vec_count = pci_msix_vec_count(efx->pci_dev);
+ 	if (vec_count < 0)
+-- 
+2.29.2
+
