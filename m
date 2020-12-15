@@ -2,95 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96932DAE88
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFEC2DAE8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgLOOGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 09:06:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727876AbgLOOGa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:06:30 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2ECBC06179C;
-        Tue, 15 Dec 2020 06:05:49 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id c5so16323486wrp.6;
-        Tue, 15 Dec 2020 06:05:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gK+9YqVJCbtE3lQ5Don8jQgcKt63bQ7YNsENkuEVRUE=;
-        b=qPV3HGsEfqw5c3jtXuS+vSjHNl8VETOoc3VbCRnTuxTLnre2GeankDt5kkgTHBlOJJ
-         zniL7Vhb0Z53drb6aw0O8UcvwXDy1N43yBXb0FZ4MtEaVzo8XCedNKEi0BadQubgcFWs
-         6bKMbvnDHi3/PeCKtvOYIrjE5kdFbchptbAyMPdhzAYpiGEb6uwJxSjZ3+93ipxfLoqc
-         JiQqsDmsEkkdfLfsNDvjYdXiDj1X0mg/dn3sPMNtOQxy/BxRikgrr3iFc5po2UP+DFtj
-         z/hvy+14U11M8J0D03oFSDyI09TWP5d2Aw5A69gmWPDmAcRgTqcaMtlisi9857V5NCns
-         S0Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gK+9YqVJCbtE3lQ5Don8jQgcKt63bQ7YNsENkuEVRUE=;
-        b=aaMyhKsv+ij2r/QxXyoR2shQ+o7hhs2zqcn0EnJ8cXPV524km2CYfkNh0GJX27ppaW
-         GmNLqh2jGD9uUQi18WKNSsWcsZpyctOW5NJMFAHzzquSJv3kNYT2yyM3uU5RcZvXuef3
-         eZ6vfmnEYrWU8K5sf4kyL2/MCL6/jh5BPZY8HDTP3cD2+R94L/lTdSmPsO7uymXw2z+3
-         VOZB0TR4JwRgRfFwj5/PcWxSdPhoys+wsuWGOG5A3QG13Kejfohd49Qqprkp/vUd3kK/
-         i2PUhluH4EaHwq4N5eOMZLntgLGqZ3rQQ0dEfS+zr/3v96kD21E33uRBwnZ3d/xAUrfW
-         Sn0w==
-X-Gm-Message-State: AOAM531Ak9Ga877IuJ1qq4QJUy0sOKSGevC9A6GUsMpMjOCwpLg0tsRn
-        7hb0948pNpLmrqUbw5I0ODh9OfwsPy3mGRd6NKk=
-X-Google-Smtp-Source: ABdhPJw0TvI/84WJdHKHkNLWAhh5uOLOg15l6fjsw9HoAXZZUKlCeo2D9tqXJksK271XP8S7Hvm3c1VEcbd1aeQtdyM=
-X-Received: by 2002:adf:e512:: with SMTP id j18mr2954037wrm.52.1608041148627;
- Tue, 15 Dec 2020 06:05:48 -0800 (PST)
+        id S1727876AbgLOOHc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Dec 2020 09:07:32 -0500
+Received: from smtp.asem.it ([151.1.184.197]:60365 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728369AbgLOOGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 09:06:55 -0500
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000670569.MSG 
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 15:06:12 +0100S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
+ Dec 2020 15:06:09 +0100
+Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
+ mapi id 15.01.1979.003; Tue, 15 Dec 2020 15:06:09 +0100
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Jiri Slaby <jirislaby@kernel.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Ji-Ze Hong <hpeter@gmail.com>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: R: R: [PATCH v1] serial: 8250_fintek: Print Fintek chip name
+Thread-Topic: R: [PATCH v1] serial: 8250_fintek: Print Fintek chip name
+Thread-Index: AQHW0hsm4LBjpzgBaEuoNhCE3PXG1an2iQoAgAGZwAD///h9AIAAFBzA
+Date:   Tue, 15 Dec 2020 14:06:09 +0000
+Message-ID: <178bf34c76184d39b6b17d5e54133821@asem.it>
+References: <20201214131445.954822-1-f.suligoi@asem.it>
+ <X9dr2IvOgPyhsalE@kroah.com> <ff8f6af85d27448d93d1220545f163be@asem.it>
+ <X9i9RKAbpoR0F7Y+@kroah.com>
+In-Reply-To: <X9i9RKAbpoR0F7Y+@kroah.com>
+Accept-Language: it-IT, en-US
+Content-Language: it-IT
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.16.17.208]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20201215121816.1048557-1-jackmanb@google.com> <20201215121816.1048557-6-jackmanb@google.com>
-In-Reply-To: <20201215121816.1048557-6-jackmanb@google.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 15 Dec 2020 15:05:36 +0100
-Message-ID: <CAJ+HfNieDqvamAzZfp36_yZHzsnwkeaARwedQaiFjaEu5Cn1tQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 04/11] bpf: Rename BPF_XADD and prepare to
- encode other atomics in .imm
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A782F23.5FD8C2D3.0065,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 at 13:25, Brendan Jackman <jackmanb@google.com> wrote:
->
-> A subsequent patch will add additional atomic operations. These new
-> operations will use the same opcode field as the existing XADD, with
-> the immediate discriminating different operations.
->
-> In preparation, rename the instruction mode BPF_ATOMIC and start
-> calling the zero immediate BPF_ADD.
->
-> This is possible (doesn't break existing valid BPF progs) because the
-> immediate field is currently reserved MBZ and BPF_ADD is zero.
->
-> All uses are removed from the tree but the BPF_XADD definition is
-> kept around to avoid breaking builds for people including kernel
-> headers.
->
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
->  Documentation/networking/filter.rst           | 30 +++++++-----
->  arch/arm/net/bpf_jit_32.c                     |  7 ++-
->  arch/arm64/net/bpf_jit_comp.c                 | 16 +++++--
->  arch/mips/net/ebpf_jit.c                      | 11 +++--
->  arch/powerpc/net/bpf_jit_comp64.c             | 25 ++++++++--
->  arch/riscv/net/bpf_jit_comp32.c               | 20 ++++++--
->  arch/riscv/net/bpf_jit_comp64.c               | 16 +++++--
+Hi Greg,
 
-For RISC-V:
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
+> > > > +		chip_name = "F81216H";
+> > > > +		break;
+> > > >  	case CHIP_ID_F81216:
+> > > > +		chip_name = "F81216";
+> > > >  		break;
+> > > >  	default:
+> > > >  		return -ENODEV;
+> > > >  	}
+> > > >
+> > > >  	pdata->pid = chip;
+> > > > +
+> > > > +	pr_info("%s%s%s Fintek %s\n",
+> > > > +		uart->port.dev ? dev_name(uart->port.dev) : "",
+> > > > +		uart->port.dev ? ": " : "",
+> > > > +		uart->port.name,
+> > > > +		chip_name);
+> > >
+> > > Drivers, if all goes well, should not print anything to the kernel
+> log.
+> > > This isn't ok.
+> > >
+> > > And even if it was, dev_info() would be the correct thing to do...
+> >
+> > Ok, too many information in the driver.
+> >
+> > But what do you think about the possibility to introduce
+> > a new additional field, in "serial8250_config" structure,
+> > such as "extra_name" or something like this:
+> >
+> > struct serial8250_config {
+> > 	const char		*name;
+> > 	const char		*extra_name;
+> > 	unsigned short	fifo_size;
+> > 	unsigned short	tx_loadsz;
+> > 	unsigned char	fcr;
+> > 	unsigned char	rxtrig_bytes[UART_FCR_R_TRIG_MAX_STATE];
+> > 	unsigned int	flags;
+> > };
+> >
+> > In this way, if required, each driver can fill this
+> > additional field, for example adding the name of
+> > the particular uart chip or other useful info.
+> >
+> > As result, for example, the "uart_report_port" function output
+> > could be something like this:
+> >
+> > 00:01: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A -
+> Fintek F81216AD
+> > 00:02: ttyS3 at I/O 0x2e8 (irq = 11, base_baud = 115200) is a 16550A -
+> Fintek F81216AD
+> >
+> > where the "extra_name", if not empty, is printed
+> > at the end of the line.
+> > For practical space reasons, the "extra_name" length
+> > can be limited to 16 chars.
+> 
+> Why?  What tool will use this, and why would userspace care about it?
+> 
+> What problem are you trying to solve here?
+
+I try to explain my requirement:
+
+we produce some x86 boards with multistandard RS232/422/485 ports
+and, to have this feature, in some of these boards, we use a
+Fintek uart or superIO.
+So this additional info "extra_name" can be useful for
+a quick check if the serial ports are multistandard or not,
+without any other investigations, but using only a simple command
+like:
+
+dmesg| grep ttyS
+
+> 
+> thanks,
+> 
+> greg k-h
+
+Thanks and best regards,
+Flavio
