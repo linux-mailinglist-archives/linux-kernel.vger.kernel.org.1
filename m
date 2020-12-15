@@ -2,86 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044842DA69D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:03:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C68B2DA69C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgLODC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 22:02:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbgLODC1 (ORCPT
+        id S1726605AbgLODCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 22:02:45 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9446 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbgLODCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 22:02:27 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2D3C061793;
-        Mon, 14 Dec 2020 19:01:47 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id s26so895748lfc.8;
-        Mon, 14 Dec 2020 19:01:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2v5zQ4ASqwUEaImz7xFZXnky0JeRmzUKfNWkHn9qJfM=;
-        b=GFwc/SmQThkfuiijlhBZC/sL7/Mh9X0gSRoxzCiFmWN7uXQlyORRlUa8F7MVTsRLZw
-         MjvFn/0ePlj1h79IHnldGV0sRP89Z7tc8ECMEVBv3B8zKqD5dD5GyuoDkqL8onj8GKHX
-         9SoUFrxHFWczz56aY67YAu5OK4hK/FlcV0cOA70tnjbu5uYzXZmLz/Eq8imDs6iG4jvh
-         rw0PA24KGL2yjKHXkdJiTYfjwp8qwuQvFqtLLErxpApES3wLwrdNyjRgPFn8nV+VCRwp
-         v+XZvTQdfADTHOrUd7f+A913L32vYpDFsP7PpzizvOApaQbT2yHGn/fSNZIK6UkanxTw
-         NYYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2v5zQ4ASqwUEaImz7xFZXnky0JeRmzUKfNWkHn9qJfM=;
-        b=LyPUccTQJkRZT9CgOiU1Y0H699q/j9+LXZnQUxyxrWgu3VRO/dKJj9DCoCsivaKHCN
-         c8F4p56J9u2I65DU4bDvty4f20spgY7yU+AXYPm0MM6+1fsyy9cpkB8XTsMHJ1OXNkgc
-         H1VzMz8QrWRNj5/vB0tzHCFC5TcL7486uuXjixyx689YC5A3c846Hiz6velplYTGiDyT
-         azNcr8MaoDOAtoIu+wPNTZU9LefTQ9hwbYjqX9fNENC701+lqvSkOANwUJS4saDhGzQn
-         tPyZCS+VKK8J6rYOI8/yU57B/DQEfGzyon2hmHKXTtIln+Qhhp4Sv8Ui4lI3DWvYDBJ0
-         Ckiw==
-X-Gm-Message-State: AOAM531v7XfueNafOFOzFQh4D/QiqvztDk1Y4IY+W98mYxnkt01B5ZDc
-        Z5rsSEHH6qBpf+JPUzUqtr68hukCqENu3YKio4J8rV85
-X-Google-Smtp-Source: ABdhPJzb2LVI/Hael6CXe7Dd9N0jB+vHDofiXD9LcZUelPja+WQVgBFG0Fb0ZKnSnTDR/IdvA1iYa1tHnAMmK+oBzSQ=
-X-Received: by 2002:a05:651c:1255:: with SMTP id h21mr12465905ljh.8.1608001306008;
- Mon, 14 Dec 2020 19:01:46 -0800 (PST)
+        Mon, 14 Dec 2020 22:02:21 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cw31D2XWXzhs5l;
+        Tue, 15 Dec 2020 11:01:04 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 15 Dec 2020 11:01:29 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
+        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
+        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
+        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/hisilicon: Fix rmmod hibmc_drm failed
+Date:   Tue, 15 Dec 2020 11:01:39 +0800
+Message-ID: <1608001299-7237-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20201214122823.2061-1-bongsu.jeon@samsung.com> <20201214154444.GA2493@kozik-lap>
-In-Reply-To: <20201214154444.GA2493@kozik-lap>
-From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
-Date:   Tue, 15 Dec 2020 12:01:34 +0900
-Message-ID: <CACwDmQA5xVvyyO21t5meyJr7fbTa4sFwMR-dECJ01Cb6qrh5OA@mail.gmail.com>
-Subject: Re: [linux-nfc] [PATCH net-next] MAINTAINERS: Update maintainer for
- SAMSUNG S3FWRN5 NFC
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 12:44 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On Mon, Dec 14, 2020 at 09:28:23PM +0900, Bongsu Jeon wrote:
-> > From: Bongsu Jeon <bongsu.jeon@samsung.com>
-> >
-> > add an email to look after the SAMSUNG NFC driver.
->
-> Hi Bongsu,
->
-> Review and testing is always appreciated. However before adding an entry
-> to Maintainers, I would prefer to see some activity in maintainer-like
-> tasks. So far there are none:
-> https://lore.kernel.org/lkml/?q=f%3A%22Bongsu+Jeon%22
->
-> Contributing patches is not the same as maintenance. Please subscribe to
-> relevant mailing lists and devote effort for improving other people
-> code.
->
-> We had too many maintainers from many companies which did not perform
-> actual maintainership for long time and clearly that's not the point.
->
-> Best regards,
-> Krzysztof
+drm_irq_uninstall should be called before pci_disable_msi, if use
+devm_drm_irq_install to register the interrupt, the system will
+call pci_disable_msi first and then call drm_irq_uninstall, which
+ will result in the following callstack.
 
-Ok, I  understand it.
+kernel BUG at drivers/pci/msi.c:376!
+Internal error: Oops - BUG: 0 [#1] SMP
+CPU: 93 PID: 173814 Comm: rmmod Tainted:
+pstate: a0400009 (NzCv daif +PAN -UAO -TCO BTYPE=--)
+pc : free_msi_irqs+0x17c/0x1a0
+lr : free_msi_irqs+0x16c/0x1a0
+sp : ffff2028157f7bd0
+x29: ffff2028157f7bd0 x28: ffff202849edab00
+x27: 0000000000000000 x26: 0000000000000000
+x25: 0000000000000000 x24: 0000000000000000
+x23: ffff0020851da000 x22: ffff0020851da2d8
+x21: ffff0020cc829000 x20: 0000000000000000
+x19: ffff0020d6714800 x18: 0000000000000010
+x17: 0000000000000000 x16: 0000000000000000
+x15: ffffffffffffffff x14: ffff2028957f77df
+x13: ffff2028157f77ed x12: 0000000000000000
+x11: 0000000000000040 x10: ffff800011b2f8e0
+x9 : ffff800011b2f8d8 x8 : ffff2020203fc458
+x7 : 0000000000000000 x6 : 0000000000000000
+x5 : ffff2020203fc430 x4 : ffff2020203fc4a0
+x3 : 0000000000000000 x2 : 0000000000000000
+x1 : 00000000000002c9 x0 : ffff0020d6719500
+Call trace:
+ free_msi_irqs+0x17c/0x1a0
+ pci_disable_msi+0xe4/0x118
+ hibmc_unload+0x44/0x80 [hibmc_drm]
+ hibmc_pci_remove+0x2c/0x38 [hibmc_drm]
+ pci_device_remove+0x48/0x108
+ device_release_driver_internal+0x118/0x1f0
+ driver_detach+0x6c/0xe0
+ bus_remove_driver+0x74/0x100
+ driver_unregister+0x34/0x60
+ pci_unregister_driver+0x24/0xd8
+ hibmc_pci_driver_exit+0x14/0xe768 [hibmc_drm]
+ __arm64_sys_delete_module+0x1fc/0x2d0
+ el0_svc_common.constprop.3+0xa8/0x188
+ do_el0_svc+0x80/0xa0
+ el0_sync_handler+0x8c/0xb0
+ el0_sync+0x15c/0x180
+Code: f940b400 b4ffff00 a903e7b8 f90013b5 (d4210000)
+---[ end trace 310d94ee8abef44f ]---
+Kernel panic - not syncing: Oops - BUG: Fatal exception
+
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+index e3ab765b..02f3bd1 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+@@ -251,6 +251,10 @@ static int hibmc_hw_init(struct hibmc_drm_private *priv)
+ static int hibmc_unload(struct drm_device *dev)
+ {
+ 	drm_atomic_helper_shutdown(dev);
++
++	if (dev->irq_enabled)
++		drm_irq_uninstall(dev);
++
+ 	pci_disable_msi(dev->pdev);
+ 
+ 	return 0;
+@@ -286,7 +290,7 @@ static int hibmc_load(struct drm_device *dev)
+ 	if (ret) {
+ 		drm_warn(dev, "enabling MSI failed: %d\n", ret);
+ 	} else {
+-		ret = devm_drm_irq_install(dev, dev->pdev->irq);
++		ret = drm_irq_install(dev, dev->pdev->irq);
+ 		if (ret)
+ 			drm_warn(dev, "install irq failed: %d\n", ret);
+ 	}
+-- 
+2.7.4
+
