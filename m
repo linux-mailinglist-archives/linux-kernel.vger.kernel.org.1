@@ -2,111 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F682DB2B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 272272DB2CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbgLORda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 12:33:30 -0500
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:46068 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731297AbgLORbt (ORCPT
+        id S1731097AbgLORbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 12:31:38 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:46112 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730031AbgLORbW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 12:31:49 -0500
-Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id DE665C04DA;
-        Tue, 15 Dec 2020 17:30:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1608053449; bh=ZCFeUiaOqr6nmVdSrA/yeLCZ+L/gs597171/4LwdJCg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=ZaoDvg8wbB8lCJwqvd7TcwYJEpkV+2//cfQTiz+RHVEC+jMYRlc+izTY8ju7EOoA0
-         Ucu4KqBspALgJaI821QKEyJNXNFci8CobzLMbon9298Yco7m+SocDx7HrN8/stwnF9
-         xDA7cekeWAmWICbA87U5jAqTYKd4TbS65SXnZNgMSdCWKefnN4twArukNMdYzgfH+2
-         +E5h93VzSXxiIg26AarKgzS5hgY3P1xNPQeBTQ8SnIeLnVAub7p+2akL1jOK0BdcvI
-         jrfCyWa+S7jeNAGeMQ2M8AUgCDjDOnzE8O2rcqq5X1lgDjEihfB+RnCXPniIlRpozk
-         p0KIKYv9dCBcg==
-Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 73759A024A;
-        Tue, 15 Dec 2020 17:30:47 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 15/15] dmaengine: dw-edma: Add pcim_iomap_table return checker
-Date:   Tue, 15 Dec 2020 18:30:24 +0100
-Message-Id: <6df68db09ac19b2be8559e848497714ee763d5bd.1608053262.git.gustavo.pimentel@synopsys.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1608053262.git.gustavo.pimentel@synopsys.com>
-References: <cover.1608053262.git.gustavo.pimentel@synopsys.com>
-In-Reply-To: <cover.1608053262.git.gustavo.pimentel@synopsys.com>
-References: <cover.1608053262.git.gustavo.pimentel@synopsys.com>
+        Tue, 15 Dec 2020 12:31:22 -0500
+Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 15 Dec 2020 09:30:42 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 15 Dec 2020 09:30:40 -0800
+X-QCInternal: smtphost
+Received: from youghand-linux.qualcomm.com ([10.206.66.115])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 15 Dec 2020 23:00:38 +0530
+Received: by youghand-linux.qualcomm.com (Postfix, from userid 2370257)
+        id 45E3A20F17; Tue, 15 Dec 2020 23:00:37 +0530 (IST)
+From:   Youghandhar Chintala <youghand@codeaurora.org>
+To:     johannes@sipsolutions.net, ath10k@lists.infradead.org
+Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kuabhs@chromium.org,
+        dianders@chromium.org, briannorris@chromium.org,
+        pillair@codeaurora.org
+Subject: [PATCH 0/3] mac80211: Trigger disconnect for STA during recovery
+Date:   Tue, 15 Dec 2020 23:00:34 +0530
+Message-Id: <20201215173034.5939-1-youghand@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Detected by CoverityScan CID 16555 ("Dereference null return")
+From: Rakesh Pillai <pillair@codeaurora.org>
 
-Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
----
- drivers/dma/dw-edma/dw-edma-pcie.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Currently in case of target hardware restart ,we just reconfig and
+re-enable the security keys and enable the network queues to start
+data traffic back from where it was interrupted.
 
-diff --git a/drivers/dma/dw-edma/dw-edma-pcie.c b/drivers/dma/dw-edma/dw-edma-pcie.c
-index 1fa43e3..b759796 100644
---- a/drivers/dma/dw-edma/dw-edma-pcie.c
-+++ b/drivers/dma/dw-edma/dw-edma-pcie.c
-@@ -238,6 +238,9 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
- 	dw->rd_ch_cnt = vsec_data.rd_ch_cnt;
- 
- 	dw->rg_region.vaddr = pcim_iomap_table(pdev)[vsec_data.rg.bar];
-+	if (!dw->rg_region.vaddr)
-+		return -ENOMEM;
-+
- 	dw->rg_region.vaddr += vsec_data.rg.off;
- 	dw->rg_region.paddr = pdev->resource[vsec_data.rg.bar].start;
- 	dw->rg_region.paddr += vsec_data.rg.off;
-@@ -250,12 +253,18 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
- 		struct dw_edma_block *dt_block = &vsec_data.dt_wr[i];
- 
- 		ll_region->vaddr = pcim_iomap_table(pdev)[ll_block->bar];
-+		if (!ll_region->vaddr)
-+			return -ENOMEM;
-+
- 		ll_region->vaddr += ll_block->off;
- 		ll_region->paddr = pdev->resource[ll_block->bar].start;
- 		ll_region->paddr += ll_block->off;
- 		ll_region->sz = ll_block->sz;
- 
- 		dt_region->vaddr = pcim_iomap_table(pdev)[dt_block->bar];
-+		if (!dt_region->vaddr)
-+			return -ENOMEM;
-+
- 		dt_region->vaddr += dt_block->off;
- 		dt_region->paddr = pdev->resource[dt_block->bar].start;
- 		dt_region->paddr += dt_block->off;
-@@ -269,12 +278,18 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
- 		struct dw_edma_block *dt_block = &vsec_data.dt_rd[i];
- 
- 		ll_region->vaddr = pcim_iomap_table(pdev)[ll_block->bar];
-+		if (!ll_region->vaddr)
-+			return -ENOMEM;
-+
- 		ll_region->vaddr += ll_block->off;
- 		ll_region->paddr = pdev->resource[ll_block->bar].start;
- 		ll_region->paddr += ll_block->off;
- 		ll_region->sz = ll_block->sz;
- 
- 		dt_region->vaddr = pcim_iomap_table(pdev)[dt_block->bar];
-+		if (!dt_region->vaddr)
-+			return -ENOMEM;
-+
- 		dt_region->vaddr += dt_block->off;
- 		dt_region->paddr = pdev->resource[dt_block->bar].start;
- 		dt_region->paddr += dt_block->off;
+Many ath10k wifi chipsets have sequence numbers for the data
+packets assigned by firmware and the mac sequence number will
+restart from zero after target hardware restart leading to mismatch
+in the sequence number expected by the remote peer vs the sequence
+number of the frame sent by the target firmware.
+
+This mismatch in sequence number will cause out-of-order packets
+on the remote peer and all the frames sent by the device are dropped
+until we reach the sequence number which was sent before we restarted
+the target hardware
+
+In order to fix this, we trigger a disconnect in case of hardware
+restart. After this there will be a fresh connection and thereby
+avoiding the dropping of frames by remote peer.
+
+The right fix would be to pull the entire data path into the host
+which is not feasible or would need lots of complex/inefficient
+datapath changes.
+
+Rakesh Pillai (1):
+  ath10k: Set wiphy flag to trigger sta disconnect on hardware restart
+
+Youghandhar Chintala (2):
+  cfg80211: Add wiphy flag to trigger STA disconnect after hardware
+    restart
+  mac80211: Add support to trigger sta disconnect on hardware restart
+
+ drivers/net/wireless/ath/ath10k/core.c | 15 +++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
+ drivers/net/wireless/ath/ath10k/mac.c  |  3 +++
+ include/net/cfg80211.h                 |  4 ++++
+ net/mac80211/ieee80211_i.h             |  3 +++
+ net/mac80211/mlme.c                    |  9 +++++++++
+ net/mac80211/util.c                    | 22 +++++++++++++++++++---
+ 7 files changed, 56 insertions(+), 3 deletions(-)
+
 -- 
 2.7.4
 
