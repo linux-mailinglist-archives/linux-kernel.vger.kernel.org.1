@@ -2,164 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DFF2DB09E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:56:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3682DB0AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730392AbgLOP4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:56:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26158 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730456AbgLOPzk (ORCPT
+        id S1730753AbgLOP6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:58:24 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:57078 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730393AbgLOP5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:55:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608047651;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tPEqUf9K/9QpL3MMNAVvudGcFr4JwyB646HzAagpF+Q=;
-        b=aS95BRmN62TySJIblZRYPGlFEMwqIDRr1LfzD8/6l1Rng4f4kAE3grU7ee2W2dRN/o8WNm
-        qz+De8UqC6WIMZMeTm49+I31qRnWZ00MSaBGxhV9BGmX7gZKyuQjij+DfKBfe40dc336pj
-        vUsWQ+whTwKsmC6z5t6q5ff45OcH2WA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-441-XRpPflBjPsmL5JDWg5sD-Q-1; Tue, 15 Dec 2020 10:54:06 -0500
-X-MC-Unique: XRpPflBjPsmL5JDWg5sD-Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C2A7192CC41;
-        Tue, 15 Dec 2020 15:54:03 +0000 (UTC)
-Received: from x1.home (ovpn-112-193.phx2.redhat.com [10.3.112.193])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 917E81962E;
-        Tue, 15 Dec 2020 15:54:00 +0000 (UTC)
-Date:   Tue, 15 Dec 2020 08:53:59 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     zhukeqian <zhukeqian1@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, Cornelia Huck <cohuck@redhat.com>,
-        "Marc Zyngier" <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-Subject: Re: [PATCH 4/7] vfio: iommu_type1: Fix missing dirty page when
- promote pinned_scope
-Message-ID: <20201215085359.053e73ed@x1.home>
-In-Reply-To: <d2073c05-b6c9-04b4-782c-b89680834633@huawei.com>
-References: <20201210073425.25960-1-zhukeqian1@huawei.com>
-        <20201210073425.25960-5-zhukeqian1@huawei.com>
-        <20201214170459.50cb8729@omen.home>
-        <d2073c05-b6c9-04b4-782c-b89680834633@huawei.com>
-Organization: Red Hat
+        Tue, 15 Dec 2020 10:57:38 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFFrfvK097745;
+        Tue, 15 Dec 2020 15:56:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=X8cotNVRvYPO4IUOxh1+ibuoxANk5xMy4g8PWcjkYoE=;
+ b=uQkiV4fE+2HBOEJy8GroAMsRbXPEt3PQWq3I+2AMzVlpAgSx4iXcx6agTNNTvqb+Zmaw
+ vuMB6MV0DAysMk3FrYS5Feffd5nVdd29LdVmt6sSZ7+G13qTFh4B/akcjbkTyu2hH4ST
+ F7X65wMVrer3eACpMcb/bNGkqAN8NB0/lLvgw9qjmykCAhyqLo2Tisnkt5EzeasR77YG
+ GXnrqBI6qFMKO9nTK+5cvTDE1tSH2JFU0U31lDSXShordCZF+OrYp5HFDSiLE2115A2H
+ QwE4oBsKmMX05MrI3qWH2XKFKm9N53TrNdc+P+8pd/u9UkfeRYlFQXBKSMH2wo7bEVRw Lw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 35cntm38p0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Dec 2020 15:56:48 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFFVEoe135187;
+        Tue, 15 Dec 2020 15:54:48 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 35d7en7ewk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Dec 2020 15:54:48 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BFFsl7A019173;
+        Tue, 15 Dec 2020 15:54:47 GMT
+Received: from revolver.jebus.ca (/23.233.25.87)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 15 Dec 2020 07:54:47 -0800
+From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@google.com>
+Subject: [PATCH v2] mm/mmap: Don't unlock VMAs in remap_file_pages()
+Date:   Tue, 15 Dec 2020 10:54:41 -0500
+Message-Id: <20201215155441.1497432-1-Liam.Howlett@Oracle.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012150109
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ mlxlogscore=999 impostorscore=0 priorityscore=1501 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012150110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 17:37:11 +0800
-zhukeqian <zhukeqian1@huawei.com> wrote:
+do_mmap() will unlock the necessary VMAs.  There is also a bug in the
+loop which will evaluate as false and not unlock any VMAs anyways.
 
-> Hi Alex,
-> 
-> On 2020/12/15 8:04, Alex Williamson wrote:
-> > On Thu, 10 Dec 2020 15:34:22 +0800
-> > Keqian Zhu <zhukeqian1@huawei.com> wrote:
-> >   
-> >> When we pin or detach a group which is not dirty tracking capable,
-> >> we will try to promote pinned_scope of vfio_iommu.
-> >>
-> >> If we succeed to do so, vfio only report pinned_scope as dirty to
-> >> userspace next time, but these memory written before pin or detach
-> >> is missed.
-> >>
-> >> The solution is that we must populate all dma range as dirty before
-> >> promoting pinned_scope of vfio_iommu.  
-> > 
-> > Please don't bury fixes patches into a series with other optimizations
-> > and semantic changes.  Send it separately.
-> >   
-> OK, I will.
-> 
-> >>
-> >> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> >> ---
-> >>  drivers/vfio/vfio_iommu_type1.c | 18 ++++++++++++++++++
-> >>  1 file changed, 18 insertions(+)
-> >>
-> >> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> >> index bd9a94590ebc..00684597b098 100644
-> >> --- a/drivers/vfio/vfio_iommu_type1.c
-> >> +++ b/drivers/vfio/vfio_iommu_type1.c
-> >> @@ -1633,6 +1633,20 @@ static struct vfio_group *vfio_iommu_find_iommu_group(struct vfio_iommu *iommu,
-> >>  	return group;
-> >>  }
-> >>  
-> >> +static void vfio_populate_bitmap_all(struct vfio_iommu *iommu)
-> >> +{
-> >> +	struct rb_node *n;
-> >> +	unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
-> >> +
-> >> +	for (n = rb_first(&iommu->dma_list); n; n = rb_next(n)) {
-> >> +		struct vfio_dma *dma = rb_entry(n, struct vfio_dma, node);
-> >> +		unsigned long nbits = dma->size >> pgshift;
-> >> +
-> >> +		if (dma->iommu_mapped)
-> >> +			bitmap_set(dma->bitmap, 0, nbits);
-> >> +	}
-> >> +}  
-> > 
-> > 
-> > If we detach a group which results in only non-IOMMU backed mdevs,
-> > don't we also clear dma->iommu_mapped as part of vfio_unmap_unpin()
-> > such that this test is invalid?  Thanks,  
-> 
-> Good spot :-). The code will skip bitmap_set under this situation.
-> 
-> We should set the bitmap unconditionally when vfio_iommu is promoted,
-> as we must have IOMMU backed domain before promoting the vfio_iommu.
-> 
-> Besides, I think we should also mark dirty in vfio_remove_dma if dirty
-> tracking is active. Right?
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+---
+ mm/mmap.c | 18 +-----------------
+ 1 file changed, 1 insertion(+), 17 deletions(-)
 
-There's no remaining bitmap to mark dirty if the vfio_dma is removed.
-In this case it's the user's responsibility to collect remaining dirty
-pages using the VFIO_DMA_UNMAP_FLAG_GET_DIRTY_BITMAP support in the
-VFIO_IOMMU_UNMAP_DMA ioctl.  Thanks,
-
-Alex
-
-> >> +
-> >>  static void promote_pinned_page_dirty_scope(struct vfio_iommu *iommu)
-> >>  {
-> >>  	struct vfio_domain *domain;
-> >> @@ -1657,6 +1671,10 @@ static void promote_pinned_page_dirty_scope(struct vfio_iommu *iommu)
-> >>  	}
-> >>  
-> >>  	iommu->pinned_page_dirty_scope = true;
-> >> +
-> >> +	/* Set all bitmap to avoid missing dirty page */
-> >> +	if (iommu->dirty_page_tracking)
-> >> +		vfio_populate_bitmap_all(iommu);
-> >>  }
-> >>  
-> >>  static bool vfio_iommu_has_sw_msi(struct list_head *group_resv_regions,  
-> > 
-> > .
-> >   
-> 
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 5c8b4485860de..f7fecb77f84fd 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -3025,25 +3025,9 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
+ 
+ 	flags &= MAP_NONBLOCK;
+ 	flags |= MAP_SHARED | MAP_FIXED | MAP_POPULATE;
+-	if (vma->vm_flags & VM_LOCKED) {
+-		struct vm_area_struct *tmp;
++	if (vma->vm_flags & VM_LOCKED)
+ 		flags |= MAP_LOCKED;
+ 
+-		/* drop PG_Mlocked flag for over-mapped range */
+-		for (tmp = vma; tmp->vm_start >= start + size;
+-				tmp = tmp->vm_next) {
+-			/*
+-			 * Split pmd and munlock page on the border
+-			 * of the range.
+-			 */
+-			vma_adjust_trans_huge(tmp, start, start + size, 0);
+-
+-			munlock_vma_pages_range(tmp,
+-					max(tmp->vm_start, start),
+-					min(tmp->vm_end, start + size));
+-		}
+-	}
+-
+ 	file = get_file(vma->vm_file);
+ 	ret = do_mmap(vma->vm_file, start, size,
+ 			prot, flags, pgoff, &populate, NULL);
+-- 
+2.28.0
 
