@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADB52DB2AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6062DB2A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730620AbgLORc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 12:32:29 -0500
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:46030 "EHLO
+        id S1730608AbgLORcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 12:32:11 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:54420 "EHLO
         smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731099AbgLORbk (ORCPT
+        by vger.kernel.org with ESMTP id S1731108AbgLORbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Dec 2020 12:31:40 -0500
 Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 1B761C04D1;
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id ABEF240442;
         Tue, 15 Dec 2020 17:30:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1608053439; bh=QhfdybhEKKsdh03ZRqoA38J1K4xZmvB7mprbfS+QAtg=;
+        t=1608053439; bh=1ivAVxpeQx5tfOmUaqDB9DxxCl8IL2EkAl3Vm7KC/wc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
          References:From;
-        b=lpnzoeb3aLciSQsSXIEOo5WyivchZBcY7eFPXAXiyeo5ld/YAXbjJnLbkzxjU9yQZ
-         Xqt+rYXYGRYjQRQB8wt7XDjlp4GlambRN8YRHJWIBJ2/pnrvKRqDCaptShfTOc8d+o
-         W2zO5h/ZbIIBiOqmQyulAPYhR7VnVTbNtHZA5FvMWVDSb7f5mZlRI8vlry4CVFy+Xv
-         WUv3cWPaZRhhqjdta62qM27tBaELCUeMPRCuXsTj71FBTWsm3Z5TUOdwSHj4GuE7MN
-         780h1sqWS6ZXIS1MlOCiqES27O2yeKCm52DCgNnnAlpGIhD/ROgkq0g6+qflb1WAkC
-         V6G3Hkp2xTgpQ==
+        b=d8tZNL7H/LgC3jxg0ljNYwGn7GOmYBjAwM+/27ntmxz0E/0XFfMq3Q7zMllqIJZT4
+         LLcDPqHbC+3FKyBKcUyh3/WSSUC/XPdyzfh5FcXQAnrfl8uVK5s84i7iIV7QmUrYJu
+         gapxrYH4m9j2SCgGP1oRfgIMyHzeo1sIB6zBV50/65pp0VXzy9Z2k0l5hY5p4mGmiq
+         r0ycdiOWYqVvZbBE/TcW/YlVe7bFr/2hcklDDu+PccoiIi/zJEDlAminbLIHEaaYWs
+         iUZ61wIkwl3HU1+ga4qzsuXmisEr11ZkMikdWr+NlTpv/eqsg+lptJf0ipQb0DFMiT
+         +8emZ6Dhtfuiw==
 Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 9F3D5A005C;
-        Tue, 15 Dec 2020 17:30:37 +0000 (UTC)
+        by mailhost.synopsys.com (Postfix) with ESMTP id 89959A024B;
+        Tue, 15 Dec 2020 17:30:38 +0000 (UTC)
 X-SNPS-Relay: synopsys.com
 From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 04/15] PCI: Add pci_find_vsec_capability() to find a specific VSEC
-Date:   Tue, 15 Dec 2020 18:30:13 +0100
-Message-Id: <cc4b62f333342df8e029b175079203cfe2bd095c.1608053262.git.gustavo.pimentel@synopsys.com>
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 05/15] dmaengine: dw-edma: Add PCIe VSEC data retrieval support
+Date:   Tue, 15 Dec 2020 18:30:14 +0100
+Message-Id: <ab4adcfaaf24999a52b9c79399390630098898f9.1608053262.git.gustavo.pimentel@synopsys.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1608053262.git.gustavo.pimentel@synopsys.com>
 References: <cover.1608053262.git.gustavo.pimentel@synopsys.com>
@@ -47,89 +48,237 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pci_find_vsec_capability() that crawls through the device config
-space searching in all Vendor-Specific Extended Capabilities for a
-particular capability ID.
-
-Vendor-Specific Extended Capability (VSEC) is a PCIe capability (acts
-like a wrapper) specified by PCI-SIG that allows the vendor to create
-their own and specific capability in the device config space.
+The latest eDMA IP development implements a Vendor-Specific Extended
+Capability that contains the eDMA BAR, offset, map format, and the
+number of read/write channels available.
 
 Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
 ---
- drivers/pci/pci.c             | 29 +++++++++++++++++++++++++++++
- include/linux/pci.h           |  1 +
- include/uapi/linux/pci_regs.h |  5 +++++
- 3 files changed, 35 insertions(+)
+ drivers/dma/dw-edma/dw-edma-core.c |  20 ++++---
+ drivers/dma/dw-edma/dw-edma-pcie.c | 114 ++++++++++++++++++++++++++++---------
+ 2 files changed, 99 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 6d4d5a2..235d0b2 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -623,6 +623,35 @@ u64 pci_get_dsn(struct pci_dev *dev)
- }
- EXPORT_SYMBOL_GPL(pci_get_dsn);
+diff --git a/drivers/dma/dw-edma/dw-edma-core.c b/drivers/dma/dw-edma/dw-edma-core.c
+index b971505..b65c32e1 100644
+--- a/drivers/dma/dw-edma/dw-edma-core.c
++++ b/drivers/dma/dw-edma/dw-edma-core.c
+@@ -863,15 +863,19 @@ int dw_edma_probe(struct dw_edma_chip *chip)
  
-+/**
-+ * pci_find_vsec_capability - Find a vendor-specific extended capability
-+ * @dev: PCI device to query
-+ * @cap: vendor-specific capability id code
-+ *
-+ * Returns the address of the vendor-specific structure that matches the
-+ * requested capability id code within the device's PCI configuration space
-+ * or 0 if it does not find a match.
-+ */
-+int pci_find_vsec_capability(struct pci_dev *dev, int vsec_cap_id)
-+{
-+	u32 header;
-+	int vsec;
-+
-+	vsec = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_VNDR);
-+	while (vsec) {
-+		if (pci_read_config_dword(dev, vsec + 0x4,
-+					  &header) == PCIBIOS_SUCCESSFUL &&
-+		    PCI_VSEC_CAP_ID(header) == vsec_cap_id)
-+			break;
-+
-+		vsec = pci_find_next_ext_capability(dev, vsec,
-+						    PCI_EXT_CAP_ID_VNDR);
+ 	raw_spin_lock_init(&dw->lock);
+ 
+-	/* Find out how many write channels are supported by hardware */
+-	dw->wr_ch_cnt = dw_edma_v0_core_ch_count(dw, EDMA_DIR_WRITE);
+-	if (!dw->wr_ch_cnt)
+-		return -EINVAL;
++	if (!dw->wr_ch_cnt) {
++		/* Find out how many write channels are supported by hardware */
++		dw->wr_ch_cnt = dw_edma_v0_core_ch_count(dw, EDMA_DIR_WRITE);
++		if (!dw->wr_ch_cnt)
++			return -EINVAL;
 +	}
-+
-+	return vsec;
-+}
-+EXPORT_SYMBOL_GPL(pci_find_vsec_capability);
-+
- static int __pci_find_next_ht_cap(struct pci_dev *dev, int pos, int ht_cap)
- {
- 	int rc, ttl = PCI_FIND_CAP_TTL;
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 22207a7..effecb0 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -1067,6 +1067,7 @@ int pci_find_capability(struct pci_dev *dev, int cap);
- int pci_find_next_capability(struct pci_dev *dev, u8 pos, int cap);
- int pci_find_ext_capability(struct pci_dev *dev, int cap);
- int pci_find_next_ext_capability(struct pci_dev *dev, int pos, int cap);
-+int pci_find_vsec_capability(struct pci_dev *dev, int vsec_cap_id);
- int pci_find_ht_capability(struct pci_dev *dev, int ht_cap);
- int pci_find_next_ht_capability(struct pci_dev *dev, int pos, int ht_cap);
- struct pci_bus *pci_find_next_bus(const struct pci_bus *from);
-diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-index a95d55f..f5d17be 100644
---- a/include/uapi/linux/pci_regs.h
-+++ b/include/uapi/linux/pci_regs.h
-@@ -730,6 +730,11 @@
- #define PCI_EXT_CAP_DSN_SIZEOF	12
- #define PCI_EXT_CAP_MCAST_ENDPOINT_SIZEOF 40
  
-+/* Vendor-Specific Extended Capabilities */
-+#define PCI_VSEC_CAP_ID(header)		(header & 0x0000ffff)
-+#define PCI_VSEC_CAP_REV(header)	((header >> 16) & 0xf)
-+#define PCI_VSEC_CAP_LEN(header)	((header >> 20) & 0xffc)
+-	/* Find out how many read channels are supported by hardware */
+-	dw->rd_ch_cnt = dw_edma_v0_core_ch_count(dw, EDMA_DIR_READ);
+-	if (!dw->rd_ch_cnt)
+-		return -EINVAL;
++	if (!dw->rd_ch_cnt) {
++		/* Find out how many read channels are supported by hardware */
++		dw->rd_ch_cnt = dw_edma_v0_core_ch_count(dw, EDMA_DIR_READ);
++		if (!dw->rd_ch_cnt)
++			return -EINVAL;
++	}
+ 
+ 	dev_vdbg(dev, "Channels:\twrite=%d, read=%d\n",
+ 		 dw->wr_ch_cnt, dw->rd_ch_cnt);
+diff --git a/drivers/dma/dw-edma/dw-edma-pcie.c b/drivers/dma/dw-edma/dw-edma-pcie.c
+index c130549..2bd31b0 100644
+--- a/drivers/dma/dw-edma/dw-edma-pcie.c
++++ b/drivers/dma/dw-edma/dw-edma-pcie.c
+@@ -13,9 +13,16 @@
+ #include <linux/dma/edma.h>
+ #include <linux/pci-epf.h>
+ #include <linux/msi.h>
++#include <linux/bitfield.h>
+ 
+ #include "dw-edma-core.h"
+ 
++#define DW_PCIE_VSEC_DMA_ID			0x6
++#define DW_PCIE_VSEC_DMA_BAR			GENMASK(10, 8)
++#define DW_PCIE_VSEC_DMA_MAP			GENMASK(2, 0)
++#define DW_PCIE_VSEC_DMA_RD_CH			GENMASK(25, 16)
++#define DW_PCIE_VSEC_DMA_WR_CH			GENMASK(9, 0)
 +
- /* Advanced Error Reporting */
- #define PCI_ERR_UNCOR_STATUS	4	/* Uncorrectable Error Status */
- #define  PCI_ERR_UNC_UND	0x00000001	/* Undefined */
+ struct dw_edma_pcie_data {
+ 	/* eDMA registers location */
+ 	enum pci_barno			rg_bar;
+@@ -32,6 +39,8 @@ struct dw_edma_pcie_data {
+ 	/* Other */
+ 	enum dw_edma_map_format		mf;
+ 	u8				irqs;
++	u16				rd_ch_cnt;
++	u16				wr_ch_cnt;
+ };
+ 
+ static const struct dw_edma_pcie_data snps_edda_data = {
+@@ -50,6 +59,8 @@ static const struct dw_edma_pcie_data snps_edda_data = {
+ 	/* Other */
+ 	.mf				= EDMA_MF_EDMA_UNROLL,
+ 	.irqs				= 1,
++	.rd_ch_cnt			= 0,
++	.wr_ch_cnt			= 0,
+ };
+ 
+ static int dw_edma_pcie_irq_vector(struct device *dev, unsigned int nr)
+@@ -61,10 +72,49 @@ static const struct dw_edma_core_ops dw_edma_pcie_core_ops = {
+ 	.irq_vector = dw_edma_pcie_irq_vector,
+ };
+ 
++static void dw_edma_pcie_get_vsec_dma_data(struct pci_dev *pdev,
++					   struct dw_edma_pcie_data *pdata)
++{
++	u32 val, map;
++	int vsec;
++	u64 off;
++
++	vsec = pci_find_vsec_capability(pdev, DW_PCIE_VSEC_DMA_ID);
++	if (!vsec)
++		return;
++
++	pci_read_config_dword(pdev, vsec + 0x4, &val);
++	if (PCI_VSEC_CAP_REV(val) != 0x00 || PCI_VSEC_CAP_LEN(val) != 0x18)
++		return;
++
++	pci_dbg(pdev, "Detected PCIe Vendor-Specific Extended Capability DMA\n");
++	pci_read_config_dword(pdev, vsec + 0x8, &val);
++	map = FIELD_GET(DW_PCIE_VSEC_DMA_MAP, val);
++	if (map != EDMA_MF_EDMA_LEGACY &&
++	    map != EDMA_MF_EDMA_UNROLL &&
++	    map != EDMA_MF_HDMA_COMPAT)
++		return;
++
++	pdata->mf = map;
++	pdata->rg_bar = FIELD_GET(DW_PCIE_VSEC_DMA_BAR, val);
++
++	pci_read_config_dword(pdev, vsec + 0xc, &val);
++	pdata->rd_ch_cnt = FIELD_GET(DW_PCIE_VSEC_DMA_RD_CH, val);
++	pdata->wr_ch_cnt = FIELD_GET(DW_PCIE_VSEC_DMA_WR_CH, val);
++
++	pci_read_config_dword(pdev, vsec + 0x14, &val);
++	off = val;
++	pci_read_config_dword(pdev, vsec + 0x10, &val);
++	off <<= 32;
++	off |= val;
++	pdata->rg_off = off;
++}
++
+ static int dw_edma_pcie_probe(struct pci_dev *pdev,
+ 			      const struct pci_device_id *pid)
+ {
+-	const struct dw_edma_pcie_data *pdata = (void *)pid->driver_data;
++	struct dw_edma_pcie_data *pdata = (void *)pid->driver_data;
++	struct dw_edma_pcie_data vsec_data;
+ 	struct device *dev = &pdev->dev;
+ 	struct dw_edma_chip *chip;
+ 	struct dw_edma *dw;
+@@ -77,10 +127,18 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
+ 		return err;
+ 	}
+ 
++	memcpy(&vsec_data, pdata, sizeof(struct dw_edma_pcie_data));
++
++	/*
++	 * Tries to find if exists a PCIe Vendor-Specific Extended Capability
++	 * for the DMA, if exists one, then reconfigures with the new data
++	 */
++	dw_edma_pcie_get_vsec_dma_data(pdev, &vsec_data);
++
+ 	/* Mapping PCI BAR regions */
+-	err = pcim_iomap_regions(pdev, BIT(pdata->rg_bar) |
+-				       BIT(pdata->ll_bar) |
+-				       BIT(pdata->dt_bar),
++	err = pcim_iomap_regions(pdev, BIT(vsec_data.rg_bar) |
++				       BIT(vsec_data.ll_bar) |
++				       BIT(vsec_data.dt_bar),
+ 				 pci_name(pdev));
+ 	if (err) {
+ 		pci_err(pdev, "eDMA BAR I/O remapping failed\n");
+@@ -123,7 +181,7 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
+ 		return -ENOMEM;
+ 
+ 	/* IRQs allocation */
+-	nr_irqs = pci_alloc_irq_vectors(pdev, 1, pdata->irqs,
++	nr_irqs = pci_alloc_irq_vectors(pdev, 1, vsec_data.irqs,
+ 					PCI_IRQ_MSI | PCI_IRQ_MSIX);
+ 	if (nr_irqs < 1) {
+ 		pci_err(pdev, "fail to alloc IRQ vector (number of IRQs=%u)\n",
+@@ -137,27 +195,29 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
+ 	chip->id = pdev->devfn;
+ 	chip->irq = pdev->irq;
+ 
+-	dw->rg_region.vaddr = pcim_iomap_table(pdev)[pdata->rg_bar];
+-	dw->rg_region.vaddr += pdata->rg_off;
+-	dw->rg_region.paddr = pdev->resource[pdata->rg_bar].start;
+-	dw->rg_region.paddr += pdata->rg_off;
+-	dw->rg_region.sz = pdata->rg_sz;
+-
+-	dw->ll_region.vaddr = pcim_iomap_table(pdev)[pdata->ll_bar];
+-	dw->ll_region.vaddr += pdata->ll_off;
+-	dw->ll_region.paddr = pdev->resource[pdata->ll_bar].start;
+-	dw->ll_region.paddr += pdata->ll_off;
+-	dw->ll_region.sz = pdata->ll_sz;
+-
+-	dw->dt_region.vaddr = pcim_iomap_table(pdev)[pdata->dt_bar];
+-	dw->dt_region.vaddr += pdata->dt_off;
+-	dw->dt_region.paddr = pdev->resource[pdata->dt_bar].start;
+-	dw->dt_region.paddr += pdata->dt_off;
+-	dw->dt_region.sz = pdata->dt_sz;
+-
+-	dw->mf = pdata->mf;
++	dw->rg_region.vaddr = pcim_iomap_table(pdev)[vsec_data.rg_bar];
++	dw->rg_region.vaddr += vsec_data.rg_off;
++	dw->rg_region.paddr = pdev->resource[vsec_data.rg_bar].start;
++	dw->rg_region.paddr += vsec_data.rg_off;
++	dw->rg_region.sz = vsec_data.rg_sz;
++
++	dw->ll_region.vaddr = pcim_iomap_table(pdev)[vsec_data.ll_bar];
++	dw->ll_region.vaddr += vsec_data.ll_off;
++	dw->ll_region.paddr = pdev->resource[vsec_data.ll_bar].start;
++	dw->ll_region.paddr += vsec_data.ll_off;
++	dw->ll_region.sz = vsec_data.ll_sz;
++
++	dw->dt_region.vaddr = pcim_iomap_table(pdev)[vsec_data.dt_bar];
++	dw->dt_region.vaddr += vsec_data.dt_off;
++	dw->dt_region.paddr = pdev->resource[vsec_data.dt_bar].start;
++	dw->dt_region.paddr += vsec_data.dt_off;
++	dw->dt_region.sz = vsec_data.dt_sz;
++
++	dw->mf = vsec_data.mf;
+ 	dw->nr_irqs = nr_irqs;
+ 	dw->ops = &dw_edma_pcie_core_ops;
++	dw->rd_ch_cnt = vsec_data.rd_ch_cnt;
++	dw->wr_ch_cnt = vsec_data.wr_ch_cnt;
+ 
+ 	/* Debug info */
+ 	if (dw->mf == EDMA_MF_EDMA_LEGACY)
+@@ -170,15 +230,15 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
+ 		pci_dbg(pdev, "Version:\tUnknown (0x%x)\n", dw->mf);
+ 
+ 	pci_dbg(pdev, "Registers:\tBAR=%u, off=0x%.8lx, sz=0x%zx bytes, addr(v=%p, p=%pa)\n",
+-		pdata->rg_bar, pdata->rg_off, pdata->rg_sz,
++		vsec_data.rg_bar, vsec_data.rg_off, vsec_data.rg_sz,
+ 		dw->rg_region.vaddr, &dw->rg_region.paddr);
+ 
+ 	pci_dbg(pdev, "L. List:\tBAR=%u, off=0x%.8lx, sz=0x%zx bytes, addr(v=%p, p=%pa)\n",
+-		pdata->ll_bar, pdata->ll_off, pdata->ll_sz,
++		vsec_data.ll_bar, vsec_data.ll_off, vsec_data.ll_sz,
+ 		dw->ll_region.vaddr, &dw->ll_region.paddr);
+ 
+ 	pci_dbg(pdev, "Data:\tBAR=%u, off=0x%.8lx, sz=0x%zx bytes, addr(v=%p, p=%pa)\n",
+-		pdata->dt_bar, pdata->dt_off, pdata->dt_sz,
++		vsec_data.dt_bar, vsec_data.dt_off, vsec_data.dt_sz,
+ 		dw->dt_region.vaddr, &dw->dt_region.paddr);
+ 
+ 	pci_dbg(pdev, "Nr. IRQs:\t%u\n", dw->nr_irqs);
 -- 
 2.7.4
 
