@@ -2,251 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565362DAC5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3074C2DAC63
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:52:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728859AbgLOLtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 06:49:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgLOLsy (ORCPT
+        id S1728878AbgLOLuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 06:50:15 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9447 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726544AbgLOLuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 06:48:54 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACE9C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:48:14 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id g20so27277300ejb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:48:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VY9C6dKzDaM57v3JdSf9JJx6SvlGxl+IBr0BX0RagYY=;
-        b=N9uyguSnGB+JUEvy3Zokm/wwWmOPeKisc2thcMEVjc8JqPOw4S+qpWc7TN43mrmb/R
-         atMsEGLUAf0pEj1yDu/bUT5OE9UTG3bwoMph8vSrfnTxCEKSqrfU2I8yHFt6MhZZpc8g
-         jeS5KYLTnisHoG+YLt8S3bJH5lgv8pMMa+MJU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VY9C6dKzDaM57v3JdSf9JJx6SvlGxl+IBr0BX0RagYY=;
-        b=gJJEW+BvxZ4dqyxUsT99hPZwLbjc0Muex67dOYL7fxUIN4e1zz8r07k6JLsX5mFhuW
-         PcfQazVfNeEe2tje+HvjMLWaTsHTf0hBuZ+gr9ipoivYsxUP3vcLVGZyB2XQS0+WIm4B
-         xwrJI+0AWsK/vSyJtOqY7yq5PbJQp8qHBwUHy8I9nZ2NDaKIt2zqkAbIDhbiqMl/lmyU
-         vwMZYhvmaCTVvUsS+Q2bCi6Qr/0L2+6HnCt/FqvrRhw6yH2mZqN1K0K3PafeGHRWv80c
-         C3fOFW+W6WDtkSgfgUq+op732wMGZXxMQ0XLoeS4DSv5N27Yovmma863HUd9D/JjJ4Xb
-         eDSQ==
-X-Gm-Message-State: AOAM533zsqPJB8bLsgvJwfZfdERV45SMGoObkA1ieNG2Yu/W18uIM0nT
-        1rtvRqmsTYSwdBdiYCbF5hyt6kjILCyOkA==
-X-Google-Smtp-Source: ABdhPJxuFuP6kNgQ4sKOwd23ZO7nR6avMVToDCI/C9PNA1OPNtgPfPhRMjMMBfdYIzOfh6WVIV8wXA==
-X-Received: by 2002:a17:906:add7:: with SMTP id lb23mr27847909ejb.352.1608032892948;
-        Tue, 15 Dec 2020 03:48:12 -0800 (PST)
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com. [209.85.221.46])
-        by smtp.gmail.com with ESMTPSA id z26sm18205323edl.71.2020.12.15.03.48.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 03:48:12 -0800 (PST)
-Received: by mail-wr1-f46.google.com with SMTP id d26so6323167wrb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:48:12 -0800 (PST)
-X-Received: by 2002:a5d:6209:: with SMTP id y9mr6274395wru.197.1608032891619;
- Tue, 15 Dec 2020 03:48:11 -0800 (PST)
+        Tue, 15 Dec 2020 06:50:00 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CwGjd67mFzhsGB;
+        Tue, 15 Dec 2020 19:48:21 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 15 Dec 2020 19:48:44 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
+        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
+        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
+        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
+CC:     Tian Tao <tiantao6@hisilicon.com>
+Subject: [PATCH drm/hisilicon 0/2] Add the new api to enable msi
+Date:   Tue, 15 Dec 2020 19:48:51 +0800
+Message-ID: <1608032933-50187-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20201214125703.866998-1-acourbot@chromium.org> <5319c101-f4a4-9c99-b15d-4999366f7a63@linaro.org>
-In-Reply-To: <5319c101-f4a4-9c99-b15d-4999366f7a63@linaro.org>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Tue, 15 Dec 2020 20:47:59 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5AQ8VHiRYkzkd5ZJBPT5_5WO0tyQrwqBEfnMVKYiTugTA@mail.gmail.com>
-Message-ID: <CAAFQd5AQ8VHiRYkzkd5ZJBPT5_5WO0tyQrwqBEfnMVKYiTugTA@mail.gmail.com>
-Subject: Re: [PATCH] media: venus: use contig vb2 ops
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 8:16 PM Stanimir Varbanov
-<stanimir.varbanov@linaro.org> wrote:
->
-> Hi,
->
-> Cc: Robin
->
-> On 12/14/20 2:57 PM, Alexandre Courbot wrote:
-> > This driver uses the SG vb2 ops, but effectively only ever accesses the
-> > first entry of the SG table, indicating that it expects a flat layout.
-> > Switch it to use the contiguous ops to make sure this expected invariant
->
-> Under what circumstances the sg table will has nents > 1? I came down to
-> [1] but not sure I got it right.
->
-> I'm afraid that for systems with low amount of system memory and when
-> the memory become fragmented, the driver will not work. That's why I
-> started with sg allocator.
+patch #1 add the new api to enable pci mis.
+patch #2 is hibmc driver uses the newly added api to enable msi.
 
-It is exactly the opposite. The vb2-dma-contig allocator is "contig"
-in terms of the DMA (aka IOVA) address space. In other words, it
-guarantees that having one DMA address and length fully describes the
-buffer. This seems to be the requirement of the hardware/firmware
-handled by the venus driver. If the device is behind an IOMMU, which
-is the case for the SoCs in question, the underlying DMA ops will
-actually allocate a discontiguous set of pages, so it has nothing to
-do to system memory amount or fragmentation. If for some reason the
-IOMMU can't be used, there is no way around, the memory needs to be
-contiguous because of the hardware/firmware/driver expectation.
+Tian Tao (2):
+  drm/irq: Add the new api to enable pci msi
+  drm/hisilicon: Use the new api devm_drm_msi_install
 
-On the other hand, the vb2-dma-sg allocator doesn't have any
-continuity guarantees for the DMA, or any other, address space. The
-current code works fine, because it calls dma_map_sg() on the whole
-set of pages and that ends up mapping it contiguously in the IOVA
-space, but that's just an implementation detail, not an API guarantee.
+ drivers/gpu/drm/drm_irq.c                       | 33 +++++++++++++++++++++++++
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c |  3 +--
+ include/drm/drm_irq.h                           |  1 +
+ 3 files changed, 35 insertions(+), 2 deletions(-)
 
-Best regards,
-Tomasz
+-- 
+2.7.4
 
->
-> [1]
-> https://elixir.bootlin.com/linux/v5.10.1/source/drivers/iommu/dma-iommu.c#L782
->
-> > is always enforced. Since the device is supposed to be behind an IOMMU
-> > this should have little to none practical consequences beyond making the
-> > driver not rely on a particular behavior of the SG implementation.
-> >
-> > Reported-by: Tomasz Figa <tfiga@chromium.org>
-> > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> > ---
-> > Hi everyone,
-> >
-> > It probably doesn't hurt to fix this issue before some actual issue happens.
-> > I have tested this patch on Chrome OS and playback was just as fine as with
-> > the SG ops.
-> >
-> >  drivers/media/platform/Kconfig              | 2 +-
-> >  drivers/media/platform/qcom/venus/helpers.c | 9 ++-------
-> >  drivers/media/platform/qcom/venus/vdec.c    | 6 +++---
-> >  drivers/media/platform/qcom/venus/venc.c    | 6 +++---
-> >  4 files changed, 9 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-> > index 35a18d388f3f..d9d7954111f2 100644
-> > --- a/drivers/media/platform/Kconfig
-> > +++ b/drivers/media/platform/Kconfig
-> > @@ -533,7 +533,7 @@ config VIDEO_QCOM_VENUS
-> >       depends on INTERCONNECT || !INTERCONNECT
-> >       select QCOM_MDT_LOADER if ARCH_QCOM
-> >       select QCOM_SCM if ARCH_QCOM
-> > -     select VIDEOBUF2_DMA_SG
-> > +     select VIDEOBUF2_DMA_CONTIG
-> >       select V4L2_MEM2MEM_DEV
-> >       help
-> >         This is a V4L2 driver for Qualcomm Venus video accelerator
-> > diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
-> > index 50439eb1ffea..859d260f002b 100644
-> > --- a/drivers/media/platform/qcom/venus/helpers.c
-> > +++ b/drivers/media/platform/qcom/venus/helpers.c
-> > @@ -7,7 +7,7 @@
-> >  #include <linux/mutex.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/kernel.h>
-> > -#include <media/videobuf2-dma-sg.h>
-> > +#include <media/videobuf2-dma-contig.h>
-> >  #include <media/v4l2-mem2mem.h>
-> >  #include <asm/div64.h>
-> >
-> > @@ -1284,14 +1284,9 @@ int venus_helper_vb2_buf_init(struct vb2_buffer *vb)
-> >       struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
-> >       struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-> >       struct venus_buffer *buf = to_venus_buffer(vbuf);
-> > -     struct sg_table *sgt;
-> > -
-> > -     sgt = vb2_dma_sg_plane_desc(vb, 0);
-> > -     if (!sgt)
-> > -             return -EFAULT;
-> >
-> >       buf->size = vb2_plane_size(vb, 0);
-> > -     buf->dma_addr = sg_dma_address(sgt->sgl);
->
-> Can we do it:
->
->         if (WARN_ON(sgt->nents > 1))
->                 return -EFAULT;
->
-> I understand that logically using dma-sg when the flat layout is
-> expected by the hardware is wrong, but I haven't seen issues until now.
->
-> > +     buf->dma_addr = vb2_dma_contig_plane_dma_addr(vb, 0);
-> >
-> >       if (vb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
-> >               list_add_tail(&buf->reg_list, &inst->registeredbufs);
-> > diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-> > index 8488411204c3..3fb277c81aca 100644
-> > --- a/drivers/media/platform/qcom/venus/vdec.c
-> > +++ b/drivers/media/platform/qcom/venus/vdec.c
-> > @@ -13,7 +13,7 @@
-> >  #include <media/v4l2-event.h>
-> >  #include <media/v4l2-ctrls.h>
-> >  #include <media/v4l2-mem2mem.h>
-> > -#include <media/videobuf2-dma-sg.h>
-> > +#include <media/videobuf2-dma-contig.h>
-> >
-> >  #include "hfi_venus_io.h"
-> >  #include "hfi_parser.h"
-> > @@ -1461,7 +1461,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
-> >       src_vq->io_modes = VB2_MMAP | VB2_DMABUF;
-> >       src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> >       src_vq->ops = &vdec_vb2_ops;
-> > -     src_vq->mem_ops = &vb2_dma_sg_memops;
-> > +     src_vq->mem_ops = &vb2_dma_contig_memops;
-> >       src_vq->drv_priv = inst;
-> >       src_vq->buf_struct_size = sizeof(struct venus_buffer);
-> >       src_vq->allow_zero_bytesused = 1;
-> > @@ -1475,7 +1475,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
-> >       dst_vq->io_modes = VB2_MMAP | VB2_DMABUF;
-> >       dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> >       dst_vq->ops = &vdec_vb2_ops;
-> > -     dst_vq->mem_ops = &vb2_dma_sg_memops;
-> > +     dst_vq->mem_ops = &vb2_dma_contig_memops;
-> >       dst_vq->drv_priv = inst;
-> >       dst_vq->buf_struct_size = sizeof(struct venus_buffer);
-> >       dst_vq->allow_zero_bytesused = 1;
-> > diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-> > index 1c61602c5de1..a09550cd1dba 100644
-> > --- a/drivers/media/platform/qcom/venus/venc.c
-> > +++ b/drivers/media/platform/qcom/venus/venc.c
-> > @@ -10,7 +10,7 @@
-> >  #include <linux/pm_runtime.h>
-> >  #include <linux/slab.h>
-> >  #include <media/v4l2-mem2mem.h>
-> > -#include <media/videobuf2-dma-sg.h>
-> > +#include <media/videobuf2-dma-contig.h>
-> >  #include <media/v4l2-ioctl.h>
-> >  #include <media/v4l2-event.h>
-> >  #include <media/v4l2-ctrls.h>
-> > @@ -1001,7 +1001,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
-> >       src_vq->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
-> >       src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> >       src_vq->ops = &venc_vb2_ops;
-> > -     src_vq->mem_ops = &vb2_dma_sg_memops;
-> > +     src_vq->mem_ops = &vb2_dma_contig_memops;
-> >       src_vq->drv_priv = inst;
-> >       src_vq->buf_struct_size = sizeof(struct venus_buffer);
-> >       src_vq->allow_zero_bytesused = 1;
-> > @@ -1017,7 +1017,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
-> >       dst_vq->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
-> >       dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> >       dst_vq->ops = &venc_vb2_ops;
-> > -     dst_vq->mem_ops = &vb2_dma_sg_memops;
-> > +     dst_vq->mem_ops = &vb2_dma_contig_memops;
-> >       dst_vq->drv_priv = inst;
-> >       dst_vq->buf_struct_size = sizeof(struct venus_buffer);
-> >       dst_vq->allow_zero_bytesused = 1;
-> >
->
-> --
-> regards,
-> Stan
