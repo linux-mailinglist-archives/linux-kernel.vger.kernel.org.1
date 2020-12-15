@@ -2,148 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F8C2DA694
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 044842DA69D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgLODBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 22:01:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49400 "EHLO
+        id S1726725AbgLODC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 22:02:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726493AbgLODBj (ORCPT
+        with ESMTP id S1725876AbgLODC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 22:01:39 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01A7C0617A7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 19:00:58 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id t22so4192600pfl.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 19:00:58 -0800 (PST)
+        Mon, 14 Dec 2020 22:02:27 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2D3C061793;
+        Mon, 14 Dec 2020 19:01:47 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id s26so895748lfc.8;
+        Mon, 14 Dec 2020 19:01:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=b9Yyd2SJUpD5M0JEcQPm/jMQVqbJpky9fEX60fZ5oLU=;
-        b=kLw7ncveXiHBEXRnq/Rpd6ap9lA+qdSTsgLkFTS/JvrCkCMRcl5Hdug//D/YdTxLmI
-         /VemLoljIXXAX1Q0ZZ2QRoNoZ2FZNrdJM0/ny6LBW2KFcrCipDHF6i5Kk1XJ/6gQdo9P
-         qg8xZ1oSEuq1yblAWKoTuwLg6DdnUs9cfx3P12lSZg+ANqreHdnJcLvUPQQjFHWvJeD4
-         ZOci35AXKZDqTeIlq3Vzz2AQ2lrFMdgF2qG69BY8WEYoB8f2IuDIwihht0LTM05NFhsr
-         V0Qn4UHbznj8X/kqmP9KXBqWnn7AJGPO2o4hAMOWhrjgAqstMoRBceFSPHr8eIRBulmu
-         ZoHg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2v5zQ4ASqwUEaImz7xFZXnky0JeRmzUKfNWkHn9qJfM=;
+        b=GFwc/SmQThkfuiijlhBZC/sL7/Mh9X0gSRoxzCiFmWN7uXQlyORRlUa8F7MVTsRLZw
+         MjvFn/0ePlj1h79IHnldGV0sRP89Z7tc8ECMEVBv3B8zKqD5dD5GyuoDkqL8onj8GKHX
+         9SoUFrxHFWczz56aY67YAu5OK4hK/FlcV0cOA70tnjbu5uYzXZmLz/Eq8imDs6iG4jvh
+         rw0PA24KGL2yjKHXkdJiTYfjwp8qwuQvFqtLLErxpApES3wLwrdNyjRgPFn8nV+VCRwp
+         v+XZvTQdfADTHOrUd7f+A913L32vYpDFsP7PpzizvOApaQbT2yHGn/fSNZIK6UkanxTw
+         NYYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=b9Yyd2SJUpD5M0JEcQPm/jMQVqbJpky9fEX60fZ5oLU=;
-        b=b067Vfkfdz8zAKoRzW+2x85BvbY5ZnqgEgqBx7wSTnHxYsg6eNIHEMUpR3T0MnMpvk
-         rEJUnOn1XcutNEaENzUyrh/Muw1lVSrxHnljMvNY+wR9D7/GUP+TvMKgz8YW/VIRBPVm
-         Ciauj1jv5hMk2MclXZk7zUyoXgcHZb8QcxmrUeD0C0UUlw3Hzc9qJ/cYgj9F90AfVgEN
-         MovF/ZSrCflkMpwDjKDUsL39lSdGQn2xO4UD4g2+vt131bnJRstryET3Zeih9lFqu70q
-         n7HDBjkAJuYfchmCohINljzcXs7nvInGzih52WgQM+3D22UKGdHvSx9tsWkYwYbCDguj
-         bhoQ==
-X-Gm-Message-State: AOAM5318wok40Y5bvz11NIZ1joWOQmlX3S6jWZcAD92B7UvxsDUixU+l
-        u0Uaj8M+yLiQR8urbBqO0W1rpA==
-X-Google-Smtp-Source: ABdhPJyKCn7Z6PEeIJzplurcW2m8m7LJC9wdzi2X3lcSQ1bxIAbeSMiqO89ZdyZdyMq5hexNtN0JQw==
-X-Received: by 2002:a05:6a00:80b:b029:198:124a:d58a with SMTP id m11-20020a056a00080bb0290198124ad58amr25719514pfk.56.1608001258225;
-        Mon, 14 Dec 2020 19:00:58 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id c199sm23127946pfb.108.2020.12.14.19.00.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 19:00:57 -0800 (PST)
-Date:   Mon, 14 Dec 2020 19:00:57 -0800 (PST)
-X-Google-Original-Date: Mon, 14 Dec 2020 19:00:53 PST (-0800)
-Subject:     Re: [dm-devel] [PATCH v1 0/5] dm: dm-user: New target that proxies BIOs to userspace
-In-Reply-To: <30d39293-80a4-9ef5-92bb-6b6dec464be3@toxicpanda.com>
-CC:     bvanassche@acm.org, Christoph Hellwig <hch@infradead.org>,
-        snitzer@redhat.com, corbet@lwn.net, kernel-team@android.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, song@kernel.org, dm-devel@redhat.com,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org, agk@redhat.com,
-        michael.christie@oracle.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     josef@toxicpanda.com
-Message-ID: <mhng-2da5b1a2-20f9-4b0e-9ffd-7f60a161ebf0@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2v5zQ4ASqwUEaImz7xFZXnky0JeRmzUKfNWkHn9qJfM=;
+        b=LyPUccTQJkRZT9CgOiU1Y0H699q/j9+LXZnQUxyxrWgu3VRO/dKJj9DCoCsivaKHCN
+         c8F4p56J9u2I65DU4bDvty4f20spgY7yU+AXYPm0MM6+1fsyy9cpkB8XTsMHJ1OXNkgc
+         H1VzMz8QrWRNj5/vB0tzHCFC5TcL7486uuXjixyx689YC5A3c846Hiz6velplYTGiDyT
+         azNcr8MaoDOAtoIu+wPNTZU9LefTQ9hwbYjqX9fNENC701+lqvSkOANwUJS4saDhGzQn
+         tPyZCS+VKK8J6rYOI8/yU57B/DQEfGzyon2hmHKXTtIln+Qhhp4Sv8Ui4lI3DWvYDBJ0
+         Ckiw==
+X-Gm-Message-State: AOAM531v7XfueNafOFOzFQh4D/QiqvztDk1Y4IY+W98mYxnkt01B5ZDc
+        Z5rsSEHH6qBpf+JPUzUqtr68hukCqENu3YKio4J8rV85
+X-Google-Smtp-Source: ABdhPJzb2LVI/Hael6CXe7Dd9N0jB+vHDofiXD9LcZUelPja+WQVgBFG0Fb0ZKnSnTDR/IdvA1iYa1tHnAMmK+oBzSQ=
+X-Received: by 2002:a05:651c:1255:: with SMTP id h21mr12465905ljh.8.1608001306008;
+ Mon, 14 Dec 2020 19:01:46 -0800 (PST)
+MIME-Version: 1.0
+References: <20201214122823.2061-1-bongsu.jeon@samsung.com> <20201214154444.GA2493@kozik-lap>
+In-Reply-To: <20201214154444.GA2493@kozik-lap>
+From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
+Date:   Tue, 15 Dec 2020 12:01:34 +0900
+Message-ID: <CACwDmQA5xVvyyO21t5meyJr7fbTa4sFwMR-dECJ01Cb6qrh5OA@mail.gmail.com>
+Subject: Re: [linux-nfc] [PATCH net-next] MAINTAINERS: Update maintainer for
+ SAMSUNG S3FWRN5 NFC
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Dec 2020 09:03:21 PST (-0800), josef@toxicpanda.com wrote:
-> On 12/9/20 10:38 PM, Bart Van Assche wrote:
->> On 12/7/20 10:55 AM, Palmer Dabbelt wrote:
->>> All in all, I've found it a bit hard to figure out what sort of interest
->>> people
->>> have in dm-user: when I bring this up I seem to run into people who've done
->>> similar things before and are vaguely interested, but certainly nobody is
->>> chomping at the bit.  I'm sending it out in this early state to try and
->>> figure
->>> out if it's interesting enough to keep going.
->>
->> Cc-ing Josef and Mike since their nbd contributions make me wonder
->> whether this new driver could be useful to their use cases?
->>
+On Tue, Dec 15, 2020 at 12:44 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
 >
-> Sorry gmail+imap sucks and I can't get my email client to get at the original
-> thread.  However here is my take.
-
-and I guess I then have to apoligize for missing your email ;).  Hopefully that
-was the problem, but who knows.
-
-> 1) The advantages of using dm-user of NBD that you listed aren't actually
-> problems for NBD.  We have NBD working in production where you can hand off the
-> sockets for the server without ending in timeouts, it was actually the main
-> reason we wrote our own server so we could use the FD transfer stuff to restart
-> the server without impacting any clients that had the device in use.
-
-OK.  So you just send the FD around using one of the standard mechanisms to
-orchestrate the handoff?  I guess that might work for our use case, assuming
-whatever the security side of things was doing was OK with the old FD.  TBH I'm
-not sure how all that works and while we thought about doing that sort of
-transfer scheme we decided to just open it again -- not sure how far we were
-down the dm-user rabbit hole at that point, though, as this sort of arose out
-of some other ideas.
-
-> 2) The extra copy is a big deal, in fact we already have too many copies in our
-> existing NBD setup and are actively looking for ways to avoid those.
+> On Mon, Dec 14, 2020 at 09:28:23PM +0900, Bongsu Jeon wrote:
+> > From: Bongsu Jeon <bongsu.jeon@samsung.com>
+> >
+> > add an email to look after the SAMSUNG NFC driver.
 >
-> Don't take this as I don't think dm-user is a good idea, but I think at the very
-> least it should start with the very best we have to offer, starting with as few
-> copies as possible.
+> Hi Bongsu,
+>
+> Review and testing is always appreciated. However before adding an entry
+> to Maintainers, I would prefer to see some activity in maintainer-like
+> tasks. So far there are none:
+> https://lore.kernel.org/lkml/?q=f%3A%22Bongsu+Jeon%22
+>
+> Contributing patches is not the same as maintenance. Please subscribe to
+> relevant mailing lists and devote effort for improving other people
+> code.
+>
+> We had too many maintainers from many companies which did not perform
+> actual maintainership for long time and clearly that's not the point.
+>
+> Best regards,
+> Krzysztof
 
-I was really experting someone to say that.  It does seem kind of silly to build
-out the new interface, but not go all the way to a ring buffer.  We just didn't
-really have any way to justify the extra complexity as our use cases aren't
-that high performance.   I kind of like to have benchmarks for this sort of
-thing, though, and I didn't have anyone who had bothered avoiding the last copy
-to compare against.
-
-> If you are using it currently in production then cool, there's clearly a usecase
-> for it.  Personally as I get older and grouchier I want less things in the
-> kernel, so if this enables us to eventually do everything NBD related in
-> userspace with no performance drop then I'd be down.  I don't think you need to
-> make that your primary goal, but at least polishing this up so it could
-> potentially be abused in the future would make it more compelling for merging.
-> Thanks,
-
-Ya, it's in Android already and we'll be shipping it as part of the new OTA
-flow for the next release.  The rules on deprecation are a bit different over
-there, though, so it's not like we're wed to it.  The whole point of bringing
-this up here was to try and get something usable by everyone, and while I'd
-eventually like to get whatever's in Android into the kernel proper we'd really
-planned on supporting an extra Android-only ABI for a cycle at least.  
-
-I'm kind of inclined to take a crack at the extra copy, to at least see if
-building something that eliminates it is viable.  I'm not really sure if it is
-(or at least, if it'll net us a meaningful amount of performance), but it'd at
-least be interesting to try.
-
-It'd be nice to have some benchmark target, though, as otherwise this stuff
-hangs on forever.  My workloads are in selftests later on in the patch set, but
-I'm essentially using tmpfs as a baseline to compare against ext4+dm-user with
-some FIO examples as workloads.  Our early benchmark numbers indicated this was
-way faster than we needed, so I didn't even bother putting together a proper
-system to run on so I don't really have any meaningful numbers there.  Is there
-an NBD server that's fast that I should be comparing against?
-
-I haven't gotten a whole lot of feedback, so I'm inclined to at least have some
-reasonable performance numbers before bothering with a v2.
+Ok, I  understand it.
