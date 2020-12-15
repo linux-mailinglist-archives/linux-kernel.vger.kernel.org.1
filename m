@@ -2,65 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117072DA528
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 02:03:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EA22DA525
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 02:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730608AbgLOBBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 20:01:51 -0500
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:44978 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730152AbgLOBBc (ORCPT
+        id S1730191AbgLOBBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 20:01:04 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9176 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730037AbgLOBBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 20:01:32 -0500
-Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 8A91C767651;
-        Tue, 15 Dec 2020 12:00:23 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1koyhT-0043Dr-1k; Tue, 15 Dec 2020 12:00:23 +1100
-Date:   Tue, 15 Dec 2020 12:00:23 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v1 5/6] bio: add a helper calculating nr segments to alloc
-Message-ID: <20201215010023.GG632069@dread.disaster.area>
-References: <cover.1607976425.git.asml.silence@gmail.com>
- <94b6f76d2d47569742ee47caede1504926f9807a.1607976425.git.asml.silence@gmail.com>
+        Mon, 14 Dec 2020 20:01:03 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cw0K836Pqz15dSh;
+        Tue, 15 Dec 2020 08:59:40 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 15 Dec 2020 09:00:14 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <sre@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] power: supply: ds2780: Switch to using the new API kobj_to_dev()
+Date:   Tue, 15 Dec 2020 09:00:24 +0800
+Message-ID: <1607994024-32199-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <94b6f76d2d47569742ee47caede1504926f9807a.1607976425.git.asml.silence@gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
-        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
-        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=7-415B0cAAAA:8
-        a=PygYhtxudd0edJU1dj0A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 12:20:24AM +0000, Pavel Begunkov wrote:
-> A preparation patch. It adds a simple helper which abstracts out number
-> of segments we're allocating for a bio from iov_iter_npages().
+fixed the following coccicheck:
+drivers/power/supply/ds2780_battery.c:627:60-61: WARNING opportunity for
+kobj_to_dev()
+drivers/power/supply/ds2780_battery.c:672:60-61: WARNING opportunity for
+kobj_to_dev()
+drivers/power/supply/ds2780_battery.c:640:60-61: WARNING opportunity for
+kobj_to_dev()
+drivers/power/supply/ds2780_battery.c:685:60-61: WARNING opportunity for
+kobj_to_dev()
 
-Preparation for what? bio_iov_vecs_to_alloc() doesn't seem to be
-used outside this specific patch, so it's not clear what it's
-actually needed for...
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/power/supply/ds2780_battery.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Cheers,
-
-Dave.
+diff --git a/drivers/power/supply/ds2780_battery.c b/drivers/power/supply/ds2780_battery.c
+index dd57a47..2b8c90d 100644
+--- a/drivers/power/supply/ds2780_battery.c
++++ b/drivers/power/supply/ds2780_battery.c
+@@ -624,7 +624,7 @@ static ssize_t ds2780_read_param_eeprom_bin(struct file *filp,
+ 				struct bin_attribute *bin_attr,
+ 				char *buf, loff_t off, size_t count)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct power_supply *psy = to_power_supply(dev);
+ 	struct ds2780_device_info *dev_info = to_ds2780_device_info(psy);
+ 
+@@ -637,7 +637,7 @@ static ssize_t ds2780_write_param_eeprom_bin(struct file *filp,
+ 				struct bin_attribute *bin_attr,
+ 				char *buf, loff_t off, size_t count)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct power_supply *psy = to_power_supply(dev);
+ 	struct ds2780_device_info *dev_info = to_ds2780_device_info(psy);
+ 	int ret;
+@@ -669,7 +669,7 @@ static ssize_t ds2780_read_user_eeprom_bin(struct file *filp,
+ 				struct bin_attribute *bin_attr,
+ 				char *buf, loff_t off, size_t count)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct power_supply *psy = to_power_supply(dev);
+ 	struct ds2780_device_info *dev_info = to_ds2780_device_info(psy);
+ 
+@@ -682,7 +682,7 @@ static ssize_t ds2780_write_user_eeprom_bin(struct file *filp,
+ 				struct bin_attribute *bin_attr,
+ 				char *buf, loff_t off, size_t count)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct power_supply *psy = to_power_supply(dev);
+ 	struct ds2780_device_info *dev_info = to_ds2780_device_info(psy);
+ 	int ret;
 -- 
-Dave Chinner
-david@fromorbit.com
+2.7.4
+
