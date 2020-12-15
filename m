@@ -2,126 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5792DA4FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 01:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B46A92DA502
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 01:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgLOAkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 19:40:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725806AbgLOAkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 19:40:47 -0500
-Date:   Mon, 14 Dec 2020 18:40:04 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607992806;
-        bh=vYzB5Bh2gjJmR+HAPUYeomnVTXQmhB/jJBx2y7DbXeo=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=jQUvwXxYDu5SKP/A+dyoyRW29wX3IPVvnREKIErgNy6/qIXo0xiuPh8rgU+m8KLG4
-         UWVqN6qXpxRzznGDBbh+3JBeGmE94kSgBPP0Dv6a1TZZb8pPu9y3Ifx7ZzXLnd2USd
-         LkEyvCWm5TWIdi/Hj5kKweAB8GrnrZneVo7sbCuaiUo86LmlKfrHiZDdlPHzHcTA4j
-         VNx2qMtwvXp8sH5MgK6u1ZjUGU11lLZW8rOkefVgwi+4maFkHTurVkGlrpeo4ZSAkk
-         G1Cl9CEy01MXqdQpYMdo2jGWDb1lCZsV7e2Zkbe+LYBDt+SRflUv3rgBfEs60JbIe3
-         +VfBXq4Zo0dhQ==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Ian Kumlien <ian.kumlien@gmail.com>
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] PCI/ASPM: Use the path max in L1 ASPM latency check
-Message-ID: <20201215004004.GA280628@bjorn-Precision-5520>
+        id S1727689AbgLOAmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 19:42:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726662AbgLOAme (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 19:42:34 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82035C061793;
+        Mon, 14 Dec 2020 16:41:54 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cvzwb3cX5z9sS8;
+        Tue, 15 Dec 2020 11:41:51 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607992912;
+        bh=tFsLCWwh3QzSl5KeZYlYwup8Yu2gSsI2i52/STkGCgk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Lw1XfjDAaUdRsaQdV0atep4cSMmu+1kqRpZgblFHWxmxXfx16fVFWlvhSKildFXvs
+         D/FgCSofOSij64MOYuR0mYFW15N88t8Syw2IKZ5798EML57NKNztEf50wtbV9MiFPc
+         jegbAA1hRfM2op3UXWoFmLnydia+vUlqwWdZc2RsF12+saPSYcIzuP5FYnEaQ5rMHd
+         oGYmA9sfOyvpjrim5tXpRAKzG072zAAIUvilr7rJxloAew7TSQ5EKosuZELeH8heNH
+         tfRiS0JJGXXjLqls2vfhF0Jyi444qhJPMc+Oct0vFh4lIDxi3d9A8DbTHa5SnWkORw
+         cFwgSoG7SmYgw==
+Date:   Tue, 15 Dec 2020 11:41:50 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trondmy@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: linux-next: manual merge of the cel tree with the nfs tree
+Message-ID: <20201215114150.61178713@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA85sZs8Li7+8BQWj0e+Qrxes1VF6K_Ukqrqgs1E3hHmaXqsbQ@mail.gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/MIfDz=mEtixrl8pMHI/nfeA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 11:56:31PM +0100, Ian Kumlien wrote:
-> On Mon, Dec 14, 2020 at 8:19 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+--Sig_/MIfDz=mEtixrl8pMHI/nfeA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> > If you're interested, you could probably unload the Realtek drivers,
-> > remove the devices, and set the PCI_EXP_LNKCTL_LD (Link Disable) bit
-> > in 02:04.0, e.g.,
-> >
-> >   # RT=/sys/devices/pci0000:00/0000:00:01.2/0000:01:00.0/0000:02:04.0
-> >   # echo 1 > $RT/0000:04:00.0/remove
-> >   # echo 1 > $RT/0000:04:00.1/remove
-> >   # echo 1 > $RT/0000:04:00.2/remove
-> >   # echo 1 > $RT/0000:04:00.4/remove
-> >   # echo 1 > $RT/0000:04:00.7/remove
-> >   # setpci -s02:04.0 CAP_EXP+0x10.w=0x0010
-> >
-> > That should take 04:00.x out of the picture.
-> 
-> Didn't actually change the behaviour, I'm suspecting an errata for AMD pcie...
-> 
-> So did this, with unpatched kernel:
-> [ ID] Interval           Transfer     Bitrate         Retr  Cwnd
-> [  5]   0.00-1.00   sec  4.56 MBytes  38.2 Mbits/sec    0   67.9 KBytes
-> [  5]   1.00-2.00   sec  4.47 MBytes  37.5 Mbits/sec    0   96.2 KBytes
-> [  5]   2.00-3.00   sec  4.85 MBytes  40.7 Mbits/sec    0   50.9 KBytes
-> [  5]   3.00-4.00   sec  4.23 MBytes  35.4 Mbits/sec    0   70.7 KBytes
-> [  5]   4.00-5.00   sec  4.23 MBytes  35.4 Mbits/sec    0   48.1 KBytes
-> [  5]   5.00-6.00   sec  4.23 MBytes  35.4 Mbits/sec    0   45.2 KBytes
-> [  5]   6.00-7.00   sec  4.23 MBytes  35.4 Mbits/sec    0   36.8 KBytes
-> [  5]   7.00-8.00   sec  3.98 MBytes  33.4 Mbits/sec    0   36.8 KBytes
-> [  5]   8.00-9.00   sec  4.23 MBytes  35.4 Mbits/sec    0   36.8 KBytes
-> [  5]   9.00-10.00  sec  4.23 MBytes  35.4 Mbits/sec    0   48.1 KBytes
-> - - - - - - - - - - - - - - - - - - - - - - - - -
-> [ ID] Interval           Transfer     Bitrate         Retr
-> [  5]   0.00-10.00  sec  43.2 MBytes  36.2 Mbits/sec    0             sender
-> [  5]   0.00-10.00  sec  42.7 MBytes  35.8 Mbits/sec                  receiver
-> 
-> and:
-> echo 0 > /sys/devices/pci0000:00/0000:00:01.2/0000:01:00.0/link/l1_aspm
+Hi all,
 
-BTW, thanks a lot for testing out the "l1_aspm" sysfs file.  I'm very
-pleased that it seems to be working as intended.
+Today's linux-next merge of the cel tree got a conflict in:
 
-> and:
-> [ ID] Interval           Transfer     Bitrate         Retr  Cwnd
-> [  5]   0.00-1.00   sec   113 MBytes   951 Mbits/sec  153    772 KBytes
-> [  5]   1.00-2.00   sec   109 MBytes   912 Mbits/sec  276    550 KBytes
-> [  5]   2.00-3.00   sec   111 MBytes   933 Mbits/sec  123    625 KBytes
-> [  5]   3.00-4.00   sec   111 MBytes   933 Mbits/sec   31    687 KBytes
-> [  5]   4.00-5.00   sec   110 MBytes   923 Mbits/sec    0    679 KBytes
-> [  5]   5.00-6.00   sec   110 MBytes   923 Mbits/sec  136    577 KBytes
-> [  5]   6.00-7.00   sec   110 MBytes   923 Mbits/sec  214    645 KBytes
-> [  5]   7.00-8.00   sec   110 MBytes   923 Mbits/sec   32    628 KBytes
-> [  5]   8.00-9.00   sec   110 MBytes   923 Mbits/sec   81    537 KBytes
-> [  5]   9.00-10.00  sec   110 MBytes   923 Mbits/sec   10    577 KBytes
-> - - - - - - - - - - - - - - - - - - - - - - - - -
-> [ ID] Interval           Transfer     Bitrate         Retr
-> [  5]   0.00-10.00  sec  1.08 GBytes   927 Mbits/sec  1056             sender
-> [  5]   0.00-10.00  sec  1.07 GBytes   923 Mbits/sec                  receiver
-> 
-> But this only confirms that the fix i experience is a side effect.
-> 
-> The original code is still wrong :)
+  include/linux/sunrpc/xdr.h
 
-What exactly is this machine?  Brand, model, config?  Maybe you could
-add this and a dmesg log to the buzilla?  It seems like other people
-should be seeing the same problem, so I'm hoping to grub around on the
-web to see if there are similar reports involving these devices.
+between commits:
 
-https://bugzilla.kernel.org/show_bug.cgi?id=209725
+  9a20f6f4e6ba ("SUNRPC: Fixes for xdr_align_data()")
+  c4f2f591f02c ("SUNRPC: Fix xdr_expand_hole()")
+  f8d0e60f1056 ("SUNRPC: Cleanup - constify a number of xdr_buf helpers")
 
-Here's one that is superficially similar:
-https://linux-hardware.org/index.php?probe=e5f24075e5&log=lspci_all
-in that it has a RP -- switch -- I211 path.  Interestingly, the switch
-here advertises <64us L1 exit latency instead of the <32us latency
-your switch advertises.  Of course, I can't tell if it's exactly the
-same switch.
+from the nfs tree and commits:
 
-Bjorn
+  5a7e702670ad ("SUNRPC: Adjust synopsis of xdr_buf_subsegment()")
+  c1346a1216ab ("NFSD: Replace the internals of the READ_BUF() macro")
+
+from the cel tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/sunrpc/xdr.h
+index 68d49fdc4ee9,9b35ce50cf2b..000000000000
+--- a/include/linux/sunrpc/xdr.h
++++ b/include/linux/sunrpc/xdr.h
+@@@ -182,14 -182,15 +182,15 @@@ xdr_adjust_iovec(struct kvec *iov, __be
+   * XDR buffer helper functions
+   */
+  extern void xdr_shift_buf(struct xdr_buf *, size_t);
+ -extern void xdr_buf_from_iov(struct kvec *, struct xdr_buf *);
+ +extern void xdr_buf_from_iov(const struct kvec *, struct xdr_buf *);
+- extern int xdr_buf_subsegment(const struct xdr_buf *, struct xdr_buf *, u=
+nsigned int, unsigned int);
++ extern int xdr_buf_subsegment(const struct xdr_buf *buf, struct xdr_buf *=
+subbuf,
++ 			      unsigned int base, unsigned int len);
+  extern void xdr_buf_trim(struct xdr_buf *, unsigned int);
+ -extern int read_bytes_from_xdr_buf(struct xdr_buf *, unsigned int, void *=
+, unsigned int);
+ -extern int write_bytes_to_xdr_buf(struct xdr_buf *, unsigned int, void *,=
+ unsigned int);
+ +extern int read_bytes_from_xdr_buf(const struct xdr_buf *, unsigned int, =
+void *, unsigned int);
+ +extern int write_bytes_to_xdr_buf(const struct xdr_buf *, unsigned int, v=
+oid *, unsigned int);
+ =20
+ -extern int xdr_encode_word(struct xdr_buf *, unsigned int, u32);
+ -extern int xdr_decode_word(struct xdr_buf *, unsigned int, u32 *);
+ +extern int xdr_encode_word(const struct xdr_buf *, unsigned int, u32);
+ +extern int xdr_decode_word(const struct xdr_buf *, unsigned int, u32 *);
+ =20
+  struct xdr_array2_desc;
+  typedef int (*xdr_xcode_elem_t)(struct xdr_array2_desc *desc, void *elem);
+@@@ -250,10 -251,54 +251,54 @@@ extern void xdr_init_decode_pages(struc
+  extern __be32 *xdr_inline_decode(struct xdr_stream *xdr, size_t nbytes);
+  extern unsigned int xdr_read_pages(struct xdr_stream *xdr, unsigned int l=
+en);
+  extern void xdr_enter_page(struct xdr_stream *xdr, unsigned int len);
+ -extern int xdr_process_buf(struct xdr_buf *buf, unsigned int offset, unsi=
+gned int len, int (*actor)(struct scatterlist *, void *), void *data);
+ -extern uint64_t xdr_align_data(struct xdr_stream *, uint64_t, uint32_t);
+ -extern uint64_t xdr_expand_hole(struct xdr_stream *, uint64_t, uint64_t);
+ +extern int xdr_process_buf(const struct xdr_buf *buf, unsigned int offset=
+, unsigned int len, int (*actor)(struct scatterlist *, void *), void *data);
+ +extern unsigned int xdr_align_data(struct xdr_stream *, unsigned int offs=
+et, unsigned int length);
+ +extern unsigned int xdr_expand_hole(struct xdr_stream *, unsigned int off=
+set, unsigned int length);
++ extern bool xdr_stream_subsegment(struct xdr_stream *xdr, struct xdr_buf =
+*subbuf,
++ 				  unsigned int len);
++=20
++ /**
++  * xdr_set_scratch_buffer - Attach a scratch buffer for decoding data.
++  * @xdr: pointer to xdr_stream struct
++  * @buf: pointer to an empty buffer
++  * @buflen: size of 'buf'
++  *
++  * The scratch buffer is used when decoding from an array of pages.
++  * If an xdr_inline_decode() call spans across page boundaries, then
++  * we copy the data into the scratch buffer in order to allow linear
++  * access.
++  */
++ static inline void
++ xdr_set_scratch_buffer(struct xdr_stream *xdr, void *buf, size_t buflen)
++ {
++ 	xdr->scratch.iov_base =3D buf;
++ 	xdr->scratch.iov_len =3D buflen;
++ }
++=20
++ /**
++  * xdr_set_scratch_page - Attach a scratch buffer for decoding data
++  * @xdr: pointer to xdr_stream struct
++  * @page: an anonymous page
++  *
++  * See xdr_set_scratch_buffer().
++  */
++ static inline void
++ xdr_set_scratch_page(struct xdr_stream *xdr, struct page *page)
++ {
++ 	xdr_set_scratch_buffer(xdr, page_address(page), PAGE_SIZE);
++ }
++=20
++ /**
++  * xdr_reset_scratch_buffer - Clear scratch buffer information
++  * @xdr: pointer to xdr_stream struct
++  *
++  * See xdr_set_scratch_buffer().
++  */
++ static inline void
++ xdr_reset_scratch_buffer(struct xdr_stream *xdr)
++ {
++ 	xdr_set_scratch_buffer(xdr, NULL, 0);
++ }
+ =20
+  /**
+   * xdr_stream_remaining - Return the number of bytes remaining in the str=
+eam
+
+--Sig_/MIfDz=mEtixrl8pMHI/nfeA
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/YBk4ACgkQAVBC80lX
+0GywNgf+MLBf4WVGaRXl/xQRYrxL7YLs2N/zac9iWsJAiJ1olDsvToAqtLiVLK+k
+q9AnN3syswawVeJZxe2K+T5fs7aooNQTD+BGbAxQKN94VHzT0rzIPsAs72ccmw++
+6pGEW7orjuK0gpufV8mjGIO08IdA6x+4h4KsT4INrMXqDfbvr97P5Z714+ArBigK
+cKWww2Fud+65vHEgzYUPclfO026Q25UAqI/DNLOEPHaWUTMfwusH7opm5o53cuJ1
+ldz2nZJwLC2wRU/j+diA2dwqNzmMsCl9yDSCGYplCIW95oaqAvpu8X3sVvpk28o1
+Z8EShzmYFGLd/mxgxAKxb0fkiqV7cw==
+=G2vE
+-----END PGP SIGNATURE-----
+
+--Sig_/MIfDz=mEtixrl8pMHI/nfeA--
