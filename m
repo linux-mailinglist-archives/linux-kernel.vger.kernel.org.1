@@ -2,266 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C8F2DA57A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 02:18:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4DC32DA610
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729473AbgLOBRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 20:17:19 -0500
-Received: from mga06.intel.com ([134.134.136.31]:53817 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727177AbgLOBRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 20:17:18 -0500
-IronPort-SDR: t6L3YDp24vlHPHPz24ZTrAplmVg58hs1gV7Z72wlJSKa4gX5hRs2rdK6fNzKvEasJl130i+VJY
- iYBBhiR/H36w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="236394535"
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="236394535"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2020 17:16:37 -0800
-IronPort-SDR: cIxPpg8N60+qSxoQBv40l1ccthRuudQqFyIlhzE5VdbQbOpHB7J3ij32NVYVorztehSuhAmScZ
- sUDzSZU+tEog==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="411506562"
-Received: from unknown (HELO [10.239.160.30]) ([10.239.160.30])
-  by orsmga001.jf.intel.com with ESMTP; 14 Dec 2020 17:16:36 -0800
-Reply-To: Colin.Xu@intel.com
-Subject: Re: [RFC PATCH] vfio/pci: Allow force needs_pm_restore as specified
- by device:vendor
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        id S1726281AbgLOCQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:16:11 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:27111 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726518AbgLOCPt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:15:49 -0500
+Received: from epcas3p1.samsung.com (unknown [182.195.41.19])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201215021502epoutp02e5d2bca41145d267194f01178873ac14~Qwh5ZNG9H0146501465epoutp02K
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:15:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201215021502epoutp02e5d2bca41145d267194f01178873ac14~Qwh5ZNG9H0146501465epoutp02K
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1607998502;
+        bh=pcC2PQMP9bt3FdLJNAF3fHamBXjvHzwuPrb469EWMu0=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=Dvrlri8W+kUqznhIhCs2cPBL1nEPOsHEreXYl7H3tLKHrRsOjFDzGMA4zYDQl1jjm
+         75CYaDDwerV7mYO0GEHuJ4U3LDO5u1zvaeB1U84fZuLI2/JTb83wx2zWuTPXiD0Dht
+         ZE9FMjJmR1lSE4dGxPfSkPm+svQejKnvKo5W7wx0=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas3p4.samsung.com (KnoxPortal) with ESMTP id
+        20201215021501epcas3p4a714181132f086ecb396377e37262dd5~Qwh4xwPzm0984009840epcas3p4O;
+        Tue, 15 Dec 2020 02:15:01 +0000 (GMT)
+Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp2.localdomain
+        (Postfix) with ESMTP id 4Cw205685cz4x9Q5; Tue, 15 Dec 2020 02:15:01 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v13 1/3] scsi: ufs: Introduce HPB feature
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "gregkh@google.com" <gregkh@google.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Fonn, Swee Yee" <swee.yee.fonn@intel.com>
-References: <20201125021824.27411-1-colin.xu@intel.com>
- <20201125085312.63510f9f@w520.home>
- <7e7a83ca-8530-1afa-4b85-2ef76fb99a5c@intel.com>
- <20201127083529.6c4a780c@x1.home>
- <29124528-f02a-008e-fab1-60f6b6e643b7@intel.com>
- <20201209100901.174a73db@omen.home>
-From:   Colin Xu <Colin.Xu@intel.com>
-Message-ID: <ed3816dc-38fd-5569-093e-5030d7db057c@intel.com>
-Date:   Tue, 15 Dec 2020 09:16:35 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
-MIME-Version: 1.0
-In-Reply-To: <20201209100901.174a73db@omen.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <X85uqapxck6tfrgQ@kroah.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1891546521.01607998501831.JavaMail.epsvc@epcpadp3>
+Date:   Tue, 15 Dec 2020 10:24:52 +0900
+X-CMS-MailID: 20201215012452epcms2p7c51767569cd5fc9550664a5026e72f38
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20201103044021epcms2p8f1556853fc23414442b9e958f20781ce
+References: <X85uqapxck6tfrgQ@kroah.com>
+        <2038148563.21604378702426.JavaMail.epsvc@epcpadp3>
+        <1796371666.41604379003890.JavaMail.epsvc@epcpadp3>
+        <CGME20201103044021epcms2p8f1556853fc23414442b9e958f20781ce@epcms2p7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
-On 12/10/20 1:09 AM, Alex Williamson wrote:
-> On Wed, 9 Dec 2020 13:14:00 +0800
-> Colin Xu <Colin.Xu@intel.com> wrote:
->
->> On 11/27/20 11:35 PM, Alex Williamson wrote:
->>> On Fri, 27 Nov 2020 11:53:39 +0800
->>> Colin Xu <Colin.Xu@intel.com> wrote:
->>>   
->>>> On 11/25/20 11:53 PM, Alex Williamson wrote:
->>>>> On Wed, 25 Nov 2020 10:18:24 +0800
->>>>> Colin Xu <colin.xu@intel.com> wrote:
->>>>>      
->>>>>> Force specific device listed in params pm_restore_ids to follow
->>>>>> device state save/restore as needs_pm_restore.
->>>>>> Some device has NoSoftRst so will skip current state save/restore enabled
->>>>>> by needs_pm_restore. However once the device experienced power state
->>>>>> D3<->D0 transition, either by idle_d3 or the guest driver changes PM_CTL,
->>>>>> the guest driver won't get correct devie state although the configure
->>>>>> space doesn't change.
->>>>> It sounds like you're describing a device that incorrectly exposes
->>>>> NoSoftRst when there is in fact some sort of internal reset that
->>>>> requires reprogramming config space.  What device requires this?  How
->>>>> is a user to know when this option is required?  It seems like this
->>>>> would be better handled via a quirk in PCI core that sets a device flag
->>>>> that the NoSoftRst value is incorrect for the specific affected
->>>>> devices.  Thanks,
->>>>>
->>>>> Alex
->>>> Thanks for the feedback.
->>>>
->>>> The device found are: Comet Lake PCH Serial IO I2C Controller
->>>> [8086:06e8]
->>>> [8086:06e9]
->>>>
->>>> Yes you're right, there is no straight way for user to know the device.
->>>> The above device I found is during pass through them to VM. Although
->>>> adding such param may help in certain scenario, it still too
->>>> device-specific but not common in most cases.
->>> The chipset i2c controller seems like a pretty suspicious device for
->>> Intel to advocate assigning to a VM.  Are you assigning this to satisfy
->>> the isolation issue that we often see where a device like a NIC is
->>> grouped together with platform management devices due to lack of
->>> multifunction ACS?  If that's the case, I would think it would make
->>> more sense to investigate from the perspective of whether there is
->>> actually DMA isolation between those integrated, multifunction devices
->>> and if so, implement ACS quirks to expose that isolation.  Thanks,
->>>
->>> Alex
->> Hi Alex,
->>
->> Sorry for late reply. E-mail incorrectly filtered so didn't see this one
->> until manual search.
->>
->> The mentioned two I2C controller are in same iommu group and there is NO
->> other device in the same group. The I2C controller is integrated in PCH
->> chipset and there are other devices integrated too, but in different
->> group. When assigning them to a VM, both are assigned, and function 0 is
->> set with multifunction=on. If iommu driver group no other device in the
->> same group, could we assume there is no DMA isolation issue?
->
-> Yes, we should always have DMA isolation between IOMMU groups.  My
-> concern is that I understand these i2c devices to generally provide
-> access to system/chipset management features, therefore by assigning
-> them to a VM you're granting that VM not only access to a single
-> device, but potentially management features which can affect the host
-> system.  This would generally not be advised for security reasons, so
-> these configurations are usually only created due to IOMMU grouping
-> restrictions.  It seems here that you're intentionally assigning these
-> devices to a VM.  Why?  If this is a development exercise to support
-> creation of drivers for these devices in a VM, great!  I'm just trying
-> to figure out if Intel is endorsing this configuration for some
-> generally useful purpose.  Thanks,
->
-> Alex
->   
+> > This is a patch for the HPB feature.
+> > This patch adds HPB function calls to UFS core driver.
+> 
+> Ok, I asked if there was anything left to do, and I see some stuff here.
+> 
+> First off, this changelog is really really sparse.  It needs to be much
+> more detailed, saying what HPB is, where in the specification it is
+> defined, and why Linux needs to support it.
+> 
+> Please fill all of that out, otherwise people that do not follow UFS do
+> not know what this is.
 
-No, passing through such device is not for some common purpose. The 
-using scenario is a single VM case. Like iGFX via VT-d, only one VM will 
-use that device and host won't use it. As you mentioned if there are 
-multiple VMs, pass through chipset device to one VM could affect other 
-system resource. If above scenario there should be no such concern.
+OK, I will add the following description in this patch comment.
 
-Back to the original question there are no other VMs nor host system 
-could affect the I2C device state. In native environment the i2c 
-controller driver (intel-lpss) doesn't have to save/restore the device. 
-However in VT-d case, once vfio-pci or intel-lpss in guest did the power 
-state transition, the state is lost unless save/restore in vfio-pci. It 
-may be related to iommu, also may related to some ACPI methods of the 
-I2C. When passing through it, I didn't duplicate all ACPI methods of the 
-I2C to guest, only expose necessary resource so that the I2C device in 
-guest could find it. Still doesn't have clue yet. I think I'll check if 
-some missing _PS0/_PS3 method implementation in guest ACPI could cause this.
+===
+This is a patch for the HPB initialization and adds HPB function calls to
+UFS core driver.
 
->>>>>> Cc: Swee Yee Fonn <swee.yee.fonn@intel.com>
->>>>>> Signed-off-by: Colin Xu <colin.xu@intel.com>
->>>>>> ---
->>>>>>     drivers/vfio/pci/vfio_pci.c | 66 ++++++++++++++++++++++++++++++++++++-
->>>>>>     1 file changed, 65 insertions(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
->>>>>> index e6190173482c..50a4141c9e1d 100644
->>>>>> --- a/drivers/vfio/pci/vfio_pci.c
->>>>>> +++ b/drivers/vfio/pci/vfio_pci.c
->>>>>> @@ -34,6 +34,15 @@
->>>>>>     #define DRIVER_AUTHOR   "Alex Williamson <alex.williamson@redhat.com>"
->>>>>>     #define DRIVER_DESC     "VFIO PCI - User Level meta-driver"
->>>>>>     
->>>>>> +#define VFIO_MAX_PM_DEV 32
->>>>>> +struct vfio_pm_devs {
->>>>>> +	struct {
->>>>>> +		unsigned short  vendor;
->>>>>> +		unsigned short  device;
->>>>>> +	} ids[VFIO_MAX_PM_DEV];
->>>>>> +	u32 count;
->>>>>> +};
->>>>>> +
->>>>>>     static char ids[1024] __initdata;
->>>>>>     module_param_string(ids, ids, sizeof(ids), 0);
->>>>>>     MODULE_PARM_DESC(ids, "Initial PCI IDs to add to the vfio driver, format is \"vendor:device[:subvendor[:subdevice[:class[:class_mask]]]]\" and multiple comma separated entries can be specified");
->>>>>> @@ -64,6 +73,10 @@ static bool disable_denylist;
->>>>>>     module_param(disable_denylist, bool, 0444);
->>>>>>     MODULE_PARM_DESC(disable_denylist, "Disable use of device denylist. Disabling the denylist allows binding to devices with known errata that may lead to exploitable stability or security issues when accessed by untrusted users.");
->>>>>>     
->>>>>> +static char pm_restore_ids[1024] __initdata;
->>>>>> +module_param_string(pm_restore_ids, pm_restore_ids, sizeof(pm_restore_ids), 0);
->>>>>> +MODULE_PARM_DESC(pm_restore_ids, "comma separated device in format of \"vendor:device\"");
->>>>>> +
->>>>>>     static inline bool vfio_vga_disabled(void)
->>>>>>     {
->>>>>>     #ifdef CONFIG_VFIO_PCI_VGA
->>>>>> @@ -260,10 +273,50 @@ static bool vfio_pci_nointx(struct pci_dev *pdev)
->>>>>>     	return false;
->>>>>>     }
->>>>>>     
->>>>>> +static struct vfio_pm_devs pm_devs = {0};
->>>>>> +static void __init vfio_pci_fill_pm_ids(void)
->>>>>> +{
->>>>>> +	char *p, *id;
->>>>>> +	int idx = 0;
->>>>>> +
->>>>>> +	/* no ids passed actually */
->>>>>> +	if (pm_restore_ids[0] == '\0')
->>>>>> +		return;
->>>>>> +
->>>>>> +	/* add ids specified in the module parameter */
->>>>>> +	p = pm_restore_ids;
->>>>>> +	while ((id = strsep(&p, ","))) {
->>>>>> +		unsigned int vendor, device = PCI_ANY_ID;
->>>>>> +		int fields;
->>>>>> +
->>>>>> +		if (!strlen(id))
->>>>>> +			continue;
->>>>>> +
->>>>>> +		fields = sscanf(id, "%x:%x", &vendor, &device);
->>>>>> +
->>>>>> +		if (fields != 2) {
->>>>>> +			pr_warn("invalid vendor:device string \"%s\"\n", id);
->>>>>> +			continue;
->>>>>> +		}
->>>>>> +
->>>>>> +		if (idx < VFIO_MAX_PM_DEV) {
->>>>>> +			pm_devs.ids[idx].vendor = vendor;
->>>>>> +			pm_devs.ids[idx].device = device;
->>>>>> +			pm_devs.count++;
->>>>>> +			idx++;
->>>>>> +			pr_info("add [%04x:%04x] for needs_pm_restore\n",
->>>>>> +				vendor, device);
->>>>>> +		} else {
->>>>>> +			pr_warn("Exceed maximum %d, skip adding [%04x:%04x] for needs_pm_restore\n",
->>>>>> +				VFIO_MAX_PM_DEV, vendor, device);
->>>>>> +		}
->>>>>> +	}
->>>>>> +}
->>>>>> +
->>>>>>     static void vfio_pci_probe_power_state(struct vfio_pci_device *vdev)
->>>>>>     {
->>>>>>     	struct pci_dev *pdev = vdev->pdev;
->>>>>> -	u16 pmcsr;
->>>>>> +	u16 pmcsr, idx;
->>>>>>     
->>>>>>     	if (!pdev->pm_cap)
->>>>>>     		return;
->>>>>> @@ -271,6 +324,16 @@ static void vfio_pci_probe_power_state(struct vfio_pci_device *vdev)
->>>>>>     	pci_read_config_word(pdev, pdev->pm_cap + PCI_PM_CTRL, &pmcsr);
->>>>>>     
->>>>>>     	vdev->needs_pm_restore = !(pmcsr & PCI_PM_CTRL_NO_SOFT_RESET);
->>>>>> +
->>>>>> +	for (idx = 0; idx < pm_devs.count; idx++) {
->>>>>> +		if (vdev->pdev->vendor == pm_devs.ids[idx].vendor &&
->>>>>> +		    vdev->pdev->device == pm_devs.ids[idx].device) {
->>>>>> +			vdev->needs_pm_restore = true;
->>>>>> +			pr_info("force [%04x:%04x] to needs_pm_restore\n",
->>>>>> +				vdev->pdev->vendor, vdev->pdev->device);
->>>>>> +			break;
->>>>>> +		}
->>>>>> +	}
->>>>>>     }
->>>>>>     
->>>>>>     /*
->>>>>> @@ -2423,6 +2486,7 @@ static int __init vfio_pci_init(void)
->>>>>>     		goto out_driver;
->>>>>>     
->>>>>>     	vfio_pci_fill_ids();
->>>>>> +	vfio_pci_fill_pm_ids();
->>>>>>     
->>>>>>     	if (disable_denylist)
->>>>>>     		pr_warn("device denylist disabled.\n");
+NAND flash-based storage devices, including UFS, have mechanisms to
+translate logical addresses of IO requests to the corresponding physical
+addresses of the flash storage.
+In UFS, Logical-address-to-Physical-address (L2P) map data, which is
+required to identify the physical address for the requested IOs, can only
+be partially stored in SRAM from NAND flash. Due to this partial loading, 
+accessing the flash address area where the L2P information for that address
+is not loaded in the SRAM can result in serious performance degradation.
 
--- 
-Best Regards,
-Colin Xu
+The basic concept of HPB is to cache L2P mapping entries in host system
+memory so that both physical block address (PBA) and logical block address
+(LBA) can be delivered in HPB read command.
+The HPB READ command allows to read data faster than a read command in UFS
+since it provides the physical address (HPB Entry) of the desired logical
+block in addition to its logical address. The UFS device can access the
+physical block in NAND directly without searching and uploading L2P mapping
+table. This improves read performance because the NAND read operation for
+uploading L2P mapping table is removed.
 
+In HPB initialization, the host checks if the UFS device supports HPB
+feature and retrieves related device capabilities. Then, some HPB
+parameters are configured in the device.
+===
+> > 
+> > Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> > Acked-by: Avri Altman <Avri.Altman@wdc.com>
+> > Tested-by: Bean Huo <beanhuo@micron.com>
+> > Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+> > ---
+> >  drivers/scsi/ufs/Kconfig     |   9 +
+> >  drivers/scsi/ufs/Makefile    |   1 +
+> >  drivers/scsi/ufs/ufs-sysfs.c |  18 ++
+> >  drivers/scsi/ufs/ufs.h       |  13 +
+> >  drivers/scsi/ufs/ufshcd.c    |  48 +++
+> >  drivers/scsi/ufs/ufshcd.h    |  23 +-
+> >  drivers/scsi/ufs/ufshpb.c    | 583 +++++++++++++++++++++++++++++++++++
+> >  drivers/scsi/ufs/ufshpb.h    | 167 ++++++++++
+> >  8 files changed, 861 insertions(+), 1 deletion(-)
+> >  create mode 100644 drivers/scsi/ufs/ufshpb.c
+> >  create mode 100644 drivers/scsi/ufs/ufshpb.h
+> > 
+> > diff --git a/drivers/scsi/ufs/Kconfig b/drivers/scsi/ufs/Kconfig
+> > index dcdb4eb1f90b..fd1cf7bc0eca 100644
+> > --- a/drivers/scsi/ufs/Kconfig
+> > +++ b/drivers/scsi/ufs/Kconfig
+> > @@ -181,3 +181,12 @@ config SCSI_UFS_CRYPTO
+> >  	  Enabling this makes it possible for the kernel to use the crypto
+> >  	  capabilities of the UFS device (if present) to perform crypto
+> >  	  operations on data being transferred to/from the device.
+> > +
+> > +config SCSI_UFS_HPB
+> > +	bool "Support UFS Host Performance Booster"
+> > +	depends on SCSI_UFSHCD
+> > +	help
+> > +	  The UFS HPB feature improves random read performance. It caches
+> > +	  L2P (logical to physical) map of UFS to host DRAM. The driver uses HPB
+> > +	  read command by piggybacking physical page number for bypassing FTL (flash
+> > +	  translation layer)'s L2P address translation.
+> > diff --git a/drivers/scsi/ufs/Makefile b/drivers/scsi/ufs/Makefile
+> > index 4679af1b564e..663e17cee359 100644
+> > --- a/drivers/scsi/ufs/Makefile
+> > +++ b/drivers/scsi/ufs/Makefile
+> > @@ -11,6 +11,7 @@ obj-$(CONFIG_SCSI_UFSHCD) += ufshcd-core.o
+> >  ufshcd-core-y				+= ufshcd.o ufs-sysfs.o
+> >  ufshcd-core-$(CONFIG_SCSI_UFS_BSG)	+= ufs_bsg.o
+> >  ufshcd-core-$(CONFIG_SCSI_UFS_CRYPTO) += ufshcd-crypto.o
+> > +ufshcd-core-$(CONFIG_SCSI_UFS_HPB) += ufshpb.o
+> >  obj-$(CONFIG_SCSI_UFSHCD_PCI) += ufshcd-pci.o
+> >  obj-$(CONFIG_SCSI_UFSHCD_PLATFORM) += ufshcd-pltfrm.o
+> >  obj-$(CONFIG_SCSI_UFS_HISI) += ufs-hisi.o
+> > diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
+> > index bdcd27faa054..6ccda6e57c7f 100644
+> > --- a/drivers/scsi/ufs/ufs-sysfs.c
+> > +++ b/drivers/scsi/ufs/ufs-sysfs.c
+> > @@ -284,6 +284,8 @@ UFS_DEVICE_DESC_PARAM(device_version, _DEV_VER, 2);
+> >  UFS_DEVICE_DESC_PARAM(number_of_secure_wpa, _NUM_SEC_WPA, 1);
+> >  UFS_DEVICE_DESC_PARAM(psa_max_data_size, _PSA_MAX_DATA, 4);
+> >  UFS_DEVICE_DESC_PARAM(psa_state_timeout, _PSA_TMT, 1);
+> > +UFS_DEVICE_DESC_PARAM(hpb_version, _HPB_VER, 2);
+> > +UFS_DEVICE_DESC_PARAM(hpb_control, _HPB_CONTROL, 1);
+> >  UFS_DEVICE_DESC_PARAM(ext_feature_sup, _EXT_UFS_FEATURE_SUP, 4);
+> >  UFS_DEVICE_DESC_PARAM(wb_presv_us_en, _WB_PRESRV_USRSPC_EN, 1);
+> >  UFS_DEVICE_DESC_PARAM(wb_type, _WB_TYPE, 1);
+> > @@ -316,6 +318,8 @@ static struct attribute *ufs_sysfs_device_descriptor[] = {
+> >  	&dev_attr_number_of_secure_wpa.attr,
+> >  	&dev_attr_psa_max_data_size.attr,
+> >  	&dev_attr_psa_state_timeout.attr,
+> > +	&dev_attr_hpb_version.attr,
+> > +	&dev_attr_hpb_control.attr,
+> 
+> You add a bunch of new sysfs attributes, but I do not see any
+> Documentation/ABI/ entries for them.  Why not?  Those are required for
+> any new sysfs files added to the kernel.  Please fix that up when you
+> resend this.
+
+I will add ABI entries for them.
+
+> > --- /dev/null
+> > +++ b/drivers/scsi/ufs/ufshpb.c
+> > @@ -0,0 +1,583 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> 
+> Do you really mean "or later"?  I have to ask, sorry.
+
+I will change this: "// SPDX-License-Identifier: GPL-2.0"
+
+> > +/*
+> > + * Universal Flash Storage Host Performance Booster
+> > + *
+> > + * Copyright (C) 2017-2018 Samsung Electronics Co., Ltd.
+> 
+> This has not been touched since 2018?  I somehow doubt that :(
+> 
+
+It will be changed to "2017-2020".
+
+> > +static void ufshpb_lu_parameter_init(struct ufs_hba *hba,
+> > +				     struct ufshpb_lu *hpb,
+> > +				     struct ufshpb_dev_info *hpb_dev_info,
+> > +				     struct ufshpb_lu_info *hpb_lu_info)
+> > +{
+> > +	u32 entries_per_rgn;
+> > +	u64 rgn_mem_size, tmp;
+> > +
+> > +	hpb->lu_pinned_start = hpb_lu_info->pinned_start;
+> > +	hpb->lu_pinned_end = hpb_lu_info->num_pinned ?
+> > +		(hpb_lu_info->pinned_start + hpb_lu_info->num_pinned - 1)
+> > +		: PINNED_NOT_SET;
+> > +
+> > +	rgn_mem_size = (1ULL << hpb_dev_info->rgn_size) * HPB_RGN_SIZE_UNIT
+> > +			* HPB_ENTRY_SIZE;
+> > +	do_div(rgn_mem_size, HPB_ENTRY_BLOCK_SIZE);
+> > +	hpb->srgn_mem_size = (1ULL << hpb_dev_info->srgn_size)
+> > +		* HPB_RGN_SIZE_UNIT / HPB_ENTRY_BLOCK_SIZE * HPB_ENTRY_SIZE;
+> > +
+> > +	tmp = rgn_mem_size;
+> > +	do_div(tmp, HPB_ENTRY_SIZE);
+> > +	entries_per_rgn = (u32)tmp;
+> > +	hpb->entries_per_rgn_shift = ilog2(entries_per_rgn);
+> > +	hpb->entries_per_rgn_mask = entries_per_rgn - 1;
+> > +
+> > +	hpb->entries_per_srgn = hpb->srgn_mem_size / HPB_ENTRY_SIZE;
+> > +	hpb->entries_per_srgn_shift = ilog2(hpb->entries_per_srgn);
+> > +	hpb->entries_per_srgn_mask = hpb->entries_per_srgn - 1;
+> > +
+> > +	tmp = rgn_mem_size;
+> > +	do_div(tmp, hpb->srgn_mem_size);
+> > +	hpb->srgns_per_rgn = (int)tmp;
+> > +
+> > +	hpb->rgns_per_lu = DIV_ROUND_UP(hpb_lu_info->num_blocks,
+> > +				entries_per_rgn);
+> > +	hpb->srgns_per_lu = DIV_ROUND_UP(hpb_lu_info->num_blocks,
+> > +				(hpb->srgn_mem_size / HPB_ENTRY_SIZE));
+> > +
+> > +	hpb->pages_per_srgn = DIV_ROUND_UP(hpb->srgn_mem_size, PAGE_SIZE);
+> > +
+> > +	dev_info(hba->dev, "ufshpb(%d): region memory size - %llu (bytes)\n",
+> > +		 hpb->lun, rgn_mem_size);
+> > +	dev_info(hba->dev, "ufshpb(%d): subregion memory size - %u (bytes)\n",
+> > +		 hpb->lun, hpb->srgn_mem_size);
+> > +	dev_info(hba->dev, "ufshpb(%d): total blocks per lu - %d\n",
+> > +		 hpb->lun, hpb_lu_info->num_blocks);
+> > +	dev_info(hba->dev, "ufshpb(%d): subregions per region - %d, regions per lu - %u\n",
+> > +		 hpb->lun, hpb->srgns_per_rgn, hpb->rgns_per_lu);
+> 
+> Why all the kernel log spam for when things are working?  Shouldn't
+> drivers, if all is working properly, be totally silent?  Who will do
+> anything with this?  Worst case, make it dev_dbg(), right?
+
+I will delete these message because it is used for debugging.
+
+> > +/* SYSFS functions */
+> > +#define ufshpb_sysfs_attr_show_func(__name)				\
+> > +static ssize_t __name##_show(struct device *dev,			\
+> > +	struct device_attribute *attr, char *buf)			\
+> > +{									\
+> > +	struct scsi_device *sdev = to_scsi_device(dev);			\
+> > +	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);		\
+> > +									\
+> > +	if (!hpb)							\
+> > +		return -ENOENT;						\
+> 
+> How can this ever be true?
+
+I think it can be removed.
+
+> > +	return snprintf(buf, PAGE_SIZE, "%d\n",				\
+> > +			atomic_read(&hpb->stats.__name));		\
+> 
+> sysfs_emit() is nicer to use now, please use that.
+
+OK,
+
+> And why are your stats atomic variables?  That feels like a waste and a
+> slow-down just for debugging stuff.  What's wrong with a simple u64?
+
+OK, I will change these variables as simple u64.
+
+> > +void ufshpb_reset_host(struct ufs_hba *hba)
+> > +{
+> > +	struct ufshpb_lu *hpb;
+> > +	struct scsi_device *sdev;
+> > +
+> > +	dev_dbg(hba->dev, "ufshpb run reset_host\n");
+> 
+> This is what ftrace is for, no need for this here, or in many other
+> places you have added it, please remove.
+
+OK, I will remove.
+
+> > +void ufshpb_remove(struct ufs_hba *hba)
+> > +{
+> > +}
+> 
+> An empty remove function?  Are you _SURE_ that is ok?  That always is a
+> huge red flag to me...
+
+OK, I will remove it.
+
+> > diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+> > new file mode 100644
+> > index 000000000000..6fa5db94bcae
+> > --- /dev/null
+> > +++ b/drivers/scsi/ufs/ufshpb.h
+> > @@ -0,0 +1,167 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> 
+> Same license question as before.
+
+OK,
+
+> > +/*
+> > + * Universal Flash Storage Host Performance Booster
+> > + *
+> > + * Copyright (C) 2017-2018 Samsung Electronics Co., Ltd.
+> 
+> Again, date?
+
+OK,
+
+> > + *
+> > + * Authors:
+> > + *	Yongmyung Lee <ymhungry.lee@samsung.com>
+> > + *	Jinyoung Choi <j-young.choi@samsung.com>
+> > + */
+> > +
+> > +#ifndef _UFSHPB_H_
+> > +#define _UFSHPB_H_
+> > +
+> > +/* hpb response UPIU macro */
+> > +#define HPB_RSP_NONE				0x0
+> > +#define	HPB_RSP_REQ_REGION_UPDATE		0x1
+> 
+> Why a tab after "define" on only 1 line?
+
+I will fix it.
+
+Thanks,
+Daejun
