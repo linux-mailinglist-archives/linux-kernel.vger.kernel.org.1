@@ -2,83 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE2D2DB3AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 470202DB3A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731155AbgLOSXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:23:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729576AbgLOSW5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:22:57 -0500
-Date:   Tue, 15 Dec 2020 12:22:11 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608056533;
-        bh=jqSIrJHJj7MsgySqZ9za+C23pQD6c/5BB+/am0txRHg=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=el+wdHoFIUr+RwiQmkHzykih212NTlfIjbQbVtfum6PdX71LxjHIClxu9eKZq/S0L
-         NM4dG1Lylb26SW/AmqYovlvCnWKNlaoeiwv2ODdozi6451c6SsEIqWvVze1pVpIz2j
-         yZUlMF0gvmmf2+4y4IAE8RVwX/T9y6EK5gb0o5o8vxiby8RMbPI738xB7KuI+k5x+L
-         AUyfMxo7waA99aUj9tzV48PAdvRqxO0NP4AsAgfZ3f+eceoI+kTFhzJ7M+G2QZE2cy
-         /+xV4AGoZ8CCyCL6n8igj2p1dw1D1kgNPnu/5cKAOkdxJbGX+MR8hLWspRTFKynd/E
-         lQ7bEb7H2yVmQ==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: Re: linux-next: manual merge of the amdgpu tree with the pci tree
-Message-ID: <20201215182211.GA315827@bjorn-Precision-5520>
+        id S1731525AbgLOSXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 13:23:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729389AbgLOSXB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 13:23:01 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AC7C06179C;
+        Tue, 15 Dec 2020 10:22:20 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id t22so5604499pfl.3;
+        Tue, 15 Dec 2020 10:22:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=je+ZmrwiUCXiuvPD1/Wb1EkZ6uMhA2JOKTB9txP5oCc=;
+        b=PwUFNwTEuTjHERr607ESaHNJhHkaKE7DFFLXUYzHmmUH5D8Ws62qqcoJ+y9y0lygJv
+         OPgG6eUFpK1V1NGYOaiJjkW7BX072KReb3Y/vEAOIdbtdtH+icRDyc6L43iPbk7dPLX3
+         u/5NEdhVHctBXoilS97r62sSaV08duvXc1O3sivGZUJMseZhUdGoqrvt5ZZp8RzussVf
+         iZ8cAFJ7v9o0XL6OqHd5o3mUagCsLXaHXTni6ziDLQIPnzggyY3sUKqXxXYtlWWK1Y1c
+         T4NThc+WUuVcEUgpjjjuU6iPfgCv4V3xm3e7gu5v4tac+c6KBc3OU12O5QplVPpOcsHN
+         GocQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=je+ZmrwiUCXiuvPD1/Wb1EkZ6uMhA2JOKTB9txP5oCc=;
+        b=AA9PrlXaFfcmy2UpFyce7yBxxYMtHteV94ZcHmPKn8U0Kp7wWcbnAyQKcchjaPVvYW
+         dhgQL7NmISAm4dZeRNUBc9CKfcIeqrKwrC5UxEyknQW+Ewrj/OYfhuvNUAWq30L0An2e
+         djCA/y+lHY/klCJy4EOR5qw+5LLP3v5U+pmeyA8bPDQb5oAd3E5Klnv0omLKh8yfp47P
+         CV98/STpJHm7n/yea3Ui6zbSjVlhTK5WioNIBYdKvO35Ot1vNg606ReJYSFTt0qgaHZF
+         /V93YCHZwVbymbwB1Umzkg6ZWssrad9HfpwBPPuLHkEtRBjNDD/eXAX7sRV2T9sHBnvR
+         TZkg==
+X-Gm-Message-State: AOAM533jcledk8nDmMVnAZDcJ1Slajw2Ou7yOfeL8x0o6sh/Fm7tlStq
+        IqPCcniYq0Y98ySGO5TVMzycHbTngGY=
+X-Google-Smtp-Source: ABdhPJzwo4fl5drkLZWEjXdYFdT6NJWksqohzDb+uPzvErFRAgw+ei95XVaVk2HG7eHpS2Q8eb01vw==
+X-Received: by 2002:a63:d005:: with SMTP id z5mr30197428pgf.296.1608056539706;
+        Tue, 15 Dec 2020 10:22:19 -0800 (PST)
+Received: from [10.230.29.166] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id o22sm17846643pgv.9.2020.12.15.10.22.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 10:22:18 -0800 (PST)
+Subject: Re: [PATCH v1] ARM: tegra: Fix misplaced tegra_uart_config in
+ decompressor
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20201215135222.6899-1-digetx@gmail.com>
+ <980f70c6-8967-c110-1699-cb0da2f46cc0@gmail.com>
+ <5b01ce96-5f8b-dfcb-accd-2ba29f34947f@gmail.com>
+ <5853b349-562c-3b6a-33d6-49516553dad8@gmail.com>
+ <b115f985-b27b-bbcd-fc42-d9e357ecf46a@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <b8de29b7-b0f6-5b2b-6ab2-f4399bc241fc@gmail.com>
+Date:   Tue, 15 Dec 2020 10:22:16 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADnq5_Pp08peDVs6U6V4PqBYVdUgLp-pvrFzFOf8OjbGHO6Z4g@mail.gmail.com>
+In-Reply-To: <b115f985-b27b-bbcd-fc42-d9e357ecf46a@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 01:04:25PM -0500, Alex Deucher wrote:
-> On Tue, Dec 15, 2020 at 12:25 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> >
-> > On Mon, Dec 14, 2020 at 10:52:26PM -0800, Kuppuswamy, Sathyanarayanan wrote:
-> > > On 12/14/20 3:37 PM, Bjorn Helgaas wrote:
-> > > > On Mon, Dec 14, 2020 at 06:18:54PM -0500, Alex Deucher wrote:
-> > > > > On Mon, Dec 14, 2020 at 6:16 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > > > On Tue, Dec 15, 2020 at 07:34:31AM +1100, Stephen Rothwell wrote:
-> > > > > > > Hi all,
-> > > > > > >
-> > > > > > > On Tue, 8 Dec 2020 13:56:20 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > > > > > > >
-> > >
-> > > > >
-> > > > > I don't plan to merge this upstream via my tree.  I was just carrying
-> > > > > it in my drm-next branch because we have a number of users that depend
-> > > > > on it for working DPC and a number of people use this branch for
-> > > > > testing.
-> > > >
-> > > > OK, thanks.  FWIW, it's currently marked "Changes Requested" in
-> > > > patchwork, so it isn't really going anywhere right now:
-> > > >
-> > > > https://patchwork.kernel.org/project/linux-pci/patch/cbba08a5e9ca62778c8937f44eda2192a2045da7.1595617529.git.sathyanarayanan.kuppuswamy@linux.intel.com/
-> > >
-> > > There is a newer version of this patch set. Please use it when
-> > > merging this patch.
-> > > https://patchwork.kernel.org/project/linux-pci/list/?series=370855
-> >
-> > That one is still pending.  I haven't had a chance to look at it yet,
-> > but seems like there's no point in carrying the superseded version in
-> > drm-next.
+
+
+On 12/15/2020 8:53 AM, Dmitry Osipenko wrote:
+> 15.12.2020 19:40, Florian Fainelli пишет:
+>>
+>>
+>> On 12/15/2020 8:17 AM, Dmitry Osipenko wrote:
+>>> 15.12.2020 19:04, Florian Fainelli пишет:
+>>>>
+>>>>
+>>>> On 12/15/2020 5:52 AM, Dmitry Osipenko wrote:
+>>>>> The tegra_uart_config of the DEBUG_LL code is now placed right at the
+>>>>> start of the .text section after commit which enabled debug output in the
+>>>>> decompressor. Tegra devices are not booting anymore if DEBUG_LL is enabled
+>>>>> since tegra_uart_config data is executes as a code. Fix the misplaced
+>>>>> tegra_uart_config storage by embedding it into the code.
+>>>>>
+>>>>> Cc: stable@vger.kernel.org
+>>>>> Fixes: 2596a72d3384 ("ARM: 9009/1: uncompress: Enable debug in head.S")
+>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>>> ---
+>>>>>  arch/arm/include/debug/tegra.S | 54 +++++++++++++++++-----------------
+>>>>>  1 file changed, 27 insertions(+), 27 deletions(-)
+>>>>
+>>>> Looks like arch/arm/include/debug/brcmstb.S would need the same
+>>>> treatment since the implementation was copied from tegra.S.
+>>>>
+>>>
+>>> Good catch, will you be able to test the brcm and make a patch?
+>>
+>> Yes, absolutely, building a kernel to test right now.
+>>
 > 
-> I'll go ahead and drop it.
+> Thank you.
+> 
+> BTW, I noticed that the problem is more visible on a thumb2 kernel
+> build, i.e. you should get a more reliable hang on boot. On a non-thumb2
+> kernel the hanging behaviour seems depends on a device / bootloader. I
+> haven't tried to figure out what exactly makes the difference, perhaps
+> it should be a memory layout / state.
 
-Or pick up the newer version.  You probably still have users that
-depend on it, and I think it's too late for me to merge the new one for
-this cycle.
+To build with a CONFIG_THUMB2_KERNEL I had to fetch:
 
-Bjorn
+https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9018/2
+
+to avoid a build error, too bad this missed v5.10 final but hopefully it
+can make it soon.
+
+With CONFIG_THUMB2_KERNEL=y, I am not getting the head.S output where it
+prints the start/end of the compressed kernel:
+
+C:0x420800C0-0x4321B0E0->0x4212AB00-0x432C5B20
+Uncompressing Linux... done, booting the kernel.
+[    0.000000] Booting Linux on physical CPU 0x0
+[    0.000000] Linux version 5.10.0-g148842c98a24
+(fainelli@fainelli-desktop) (arm-linux-gcc (GCC) 8.3.0, GNU ld (GNU
+Binutils) 2.32) #71 SMP Tue Dec 15 09:53:09 PST 2020
+
+I am only getting:
+
+Uncompressing Linux... done, booting the kernel.
+
+Is that the same for you?
+
+Looking at the disassembly of head.o it definitively has
+brcmstb_uart_config in the .text section as the beginning just like you
+mentioned in your commit message.
+
+Disassembly of section .text:
+
+00000000 <brcmstb_uart_config>:
+   0:   00000001        andeq   r0, r0, r1
+        ...
+   c:   467c            mov     r4, pc
+   e:   f004 4478       and.w   r4, r4, #4160749568     ; 0xf8000000
+  12:   f504 4400       add.w   r4, r4, #32768  ; 0x8000
+  16:   4678            mov     r0, pc
+  18:   42a0            cmp     r0, r4
+  1a:   bf3f            itttt   cc
+  1c:   48d4            ldrcc   r0, [pc, #848]  ; (370 <LC1+0x8>)
+  1e:   4478            addcc   r0, pc
+  20:   4284            cmpcc   r4, r0
+  22:   f044 0401       orrcc.w r4, r4, #1
+  26:   bf28            it      cs
+  28:   f000 f9aa       blcs    380 <cache_on>
+
+however after applying a fix similar to yours, we do end-up with the
+expected data embedded within the code and given brcmstb.S would be
+subject to the same issue as tegra.S, it would not hurt.
+-- 
+Florian
