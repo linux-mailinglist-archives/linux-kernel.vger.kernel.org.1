@@ -2,112 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5901C2DB5F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2C92DB5F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730672AbgLOViD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 16:38:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53704 "EHLO mail.kernel.org"
+        id S1731124AbgLOViz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 16:38:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730925AbgLOVht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 16:37:49 -0500
-Date:   Tue, 15 Dec 2020 23:35:17 +0200
+        id S1730910AbgLOVio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 16:38:44 -0500
+Date:   Tue, 15 Dec 2020 23:36:23 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608068122;
-        bh=daQ7JY6RGAinkPHSEdtUu/joFw7XtCW9w4kbcG7I978=;
+        s=k20201202; t=1608068192;
+        bh=WXJEAsSSv2rb8O0YZZ7a0XhkvqleMfeSyUDQxxsIO10=;
         h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KuRH7cU+01g2lLwopcJkGnjGD2697P2LEYQ8b19K4VIsz976zjHLqwh6YGVnM6/RJ
-         tCN2UkH1sSOqIM+vudhyF5kI0GSjqRbcIey22k63GKu/KzWKyEsFELCKieulPvts8P
-         dZXqqbHXO0Z1w5dT0CFbsgS69pB/fRMf54SpA2M+x/L9MFXogQLeeSdGo6ZClXpgz4
-         YNLSEfp79j+5qbUGfFMX2Pp7BBje09ML9+DRM5kmQnRREiBi0V6sThk1r3RIqF4kZz
-         yPvJ4/8P4jcaNF3u3kzaoKjcFTDcTUlukjvf3su4bP2IWWOZvns0N/TTS0TdwRZh1b
-         UHatDNUqtQIRA==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Haitao Huang <haitao.huang@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
-Message-ID: <20201215213517.GA34761@kernel.org>
-References: <20201211113230.28909-1-jarkko@kernel.org>
- <X9e2jOWz1hfXVpQ5@google.com>
- <20201215055556.GA28278@kernel.org>
- <20201215055955.GA28511@kernel.org>
- <op.0vogfzwvwjvjmi@fgctuval.land.test>
+        b=LzpPp3+mtdRO7vqF5bb36AKDWDPObTF5K8X337ScZa6uU9AOakWcs5rvi8qdoDp4D
+         tFSb3bTotgN9ZWbtfPkTJoRvBizmlaGFLw8AOz9oT8pxG1y4jQ9s7NzFiOFa7wpYfB
+         J3/DzTUeuHzHVa7xYf20EQyBnBQtEpgLikh3K6M06Uub5MCWMnWDCSjCMHjpS5HpHY
+         Gh95QWNoZfSJQmGbG/7aXakMr1v6Wkr0YixupIWwJsIneR6KSfuMmP9kr/ePQjy3d8
+         l0n7F9JyvUA8PK22d97LUyL3jgM/mvdsrQ9t6RRVUYDssuyNUPzx1XKj5J2/5EUqrk
+         HkcKv8B6eBmMA==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Rik van Riel <riel@surriel.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: cma: allocate cma areas bottom-up
+Message-ID: <20201215213623.GB247200@kernel.org>
+References: <20201215193615.1867115-1-guro@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <op.0vogfzwvwjvjmi@fgctuval.land.test>
+In-Reply-To: <20201215193615.1867115-1-guro@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 11:34:37AM -0600, Haitao Huang wrote:
-> On Mon, 14 Dec 2020 23:59:55 -0600, Jarkko Sakkinen <jarkko@kernel.org>
-> wrote:
+Hi Roman,
+
+On Tue, Dec 15, 2020 at 11:36:15AM -0800, Roman Gushchin wrote:
+> Currently cma areas without a fixed base address are allocated
+> close to the end of the node. This placement is sub-optimal because
+> of how the compaction works: it effectively moves pages into
+> the cma area. In particular, it often brings in hot executable pages,
+> even if there is a plenty of free memory on the machine.
+> This results in more cma allocation failures.
 > 
-> > On Tue, Dec 15, 2020 at 07:56:01AM +0200, Jarkko Sakkinen wrote:
-> > > On Mon, Dec 14, 2020 at 11:01:32AM -0800, Sean Christopherson wrote:
-> > > > On Fri, Dec 11, 2020, Jarkko Sakkinen wrote:
-> > > > > Each sgx_mmun_notifier_release() starts a grace period, which
-> > > means that
-> > > >
-> > > > Should be sgx_mmu_notifier_release(), here and in the comment.
-> > > 
-> > > Thanks.
-> > > 
-> > > > > one extra synchronize_rcu() in sgx_encl_release(). Add it there.
-> > > > >
-> > > > > sgx_release() has the loop that drains the list but with bad
-> > > luck the
-> > > > > entry is already gone from the list before that loop processes it.
-> > > >
-> > > > Why not include the actual analysis that "proves" the bug?  The
-> > > splat that
-> > > > Haitao reported would also be useful info.
-> > > 
-> > > True. I can include a snippet of dmesg to the commit message.
-> > > 
-> > > > > Fixes: 1728ab54b4be ("x86/sgx: Add a page reclaimer")
-> > > > > Cc: Borislav Petkov <bp@alien8.de>
-> > > > > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > > > > Reported-by: Sean Christopherson <seanjc@google.com>
-> > > >
-> > > > Haitao reported the bug, and for all intents and purposes provided
-> > > the fix.  I
-> > > > just did the analysis to verify that there was a legitimate bug
-> > > and that the
-> > > > synchronization in sgx_encl_release() was indeed necessary.
-> > > 
-> > > Good and valid point. The way I see it, the tags should be:
-> > > 
-> > > Reported-by: Haitao Huang <haitao.huang@linux.intel.com>
-> > > Suggested-by: Sean Christopherson <seanjc@google.com>
-> > > 
-> > > Haitao pointed out the bug but from your analysis I could resolve that
-> > > this is the fix to implement, and was able to write the long
-> > > description for the commit.
-> > > 
-> > > Does this make sense to you?
-> > 
-> > I'm sending v2 next week (this week on vacation).
-> > 
-> > /Jarkko
+> Instead let's place cma areas close to the beginning of a node.
+> Cma first tries to start with highmem_start, so we shouldn't mess
+> up with DMA32. In this case the compaction will help to free cma
+> areas, resulting in better cma allocation success rates.
 > 
-> I don't mind either how tags are assigned. But our testing reveals
-> significant latency introduced in scenarios of heavy loading/unloading
-> enclaves. synchronize_srcu_expedited fixed the issue. Please analyze and
-> confirm if that's more appropriate than synchronize_srcu here.
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> ---
+>  include/linux/memblock.h |  5 +++--
+>  mm/cma.c                 |  4 ++--
+>  mm/memblock.c            | 26 +++++++++++++++-----------
+>  3 files changed, 20 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index 9c5cc95c7cee..698188066450 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -384,8 +384,9 @@ static inline int memblock_get_region_node(const struct memblock_region *r)
+>  phys_addr_t memblock_phys_alloc_range(phys_addr_t size, phys_addr_t align,
+>  				      phys_addr_t start, phys_addr_t end);
+>  phys_addr_t memblock_alloc_range_nid(phys_addr_t size,
+> -				      phys_addr_t align, phys_addr_t start,
+> -				      phys_addr_t end, int nid, bool exact_nid);
+> +				     phys_addr_t align, phys_addr_t start,
+> +				     phys_addr_t end, int nid, bool exact_nid,
+> +				     bool bottom_up);
+>  phys_addr_t memblock_phys_alloc_try_nid(phys_addr_t size, phys_addr_t align, int nid);
+>  
+>  static inline phys_addr_t memblock_phys_alloc(phys_addr_t size,
+> diff --git a/mm/cma.c b/mm/cma.c
+> index 20c4f6f40037..1b42be6d059b 100644
+> --- a/mm/cma.c
+> +++ b/mm/cma.c
+> @@ -332,13 +332,13 @@ int __init cma_declare_contiguous_nid(phys_addr_t base,
+>  		 */
+>  		if (base < highmem_start && limit > highmem_start) {
+>  			addr = memblock_alloc_range_nid(size, alignment,
+> -					highmem_start, limit, nid, true);
+> +					highmem_start, limit, nid, true, true);
+>  			limit = highmem_start;
+>  		}
+>  
+>  		if (!addr) {
+>  			addr = memblock_alloc_range_nid(size, alignment, base,
+> -					limit, nid, true);
+> +					limit, nid, true, true);
+>  			if (!addr) {
+>  				ret = -ENOMEM;
+>  				goto err;
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index b8b7be0561c4..c334b401fe16 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -272,6 +272,7 @@ __memblock_find_range_top_down(phys_addr_t start, phys_addr_t end,
+>   *       %MEMBLOCK_ALLOC_ACCESSIBLE
+>   * @nid: nid of the free area to find, %NUMA_NO_NODE for any node
+>   * @flags: pick from blocks based on memory attributes
+> + * @bottom_up: force bottom-up allocation
 
-I don't see any obvious reason why *_expedited could not be used here,
-as most of the time sync's are taken care of sgx_release() loop, and the
-final sync is with sgx_mmu_notifier_release(). More aggressive spinning
-should not do any harm here.
+Why wouldn't you use memblock_set_bottom_up() around the allocations in
+CMA, e.g.
 
-About the tags. I just try to get them right, and it is sometimes not
-straight-forward. So I guess, with all things considered, I'll put
-suggested-by from you. Once I get a refined patch out, try it out with
-your workloads and provide me tested-by, if it is working for you.
+	bool bottom_up = memblock_bottom_up();
 
-/Jarkko
+	if (!bottom_up)
+		memblock_set_bottom_up(true);
+
+	/* allocate memory */
+
+	memblock_set_bottom_up(bottom_up);
+
+>   *
+>   * Find @size free area aligned to @align in the specified range and node.
+>   *
+> @@ -289,7 +290,8 @@ __memblock_find_range_top_down(phys_addr_t start, phys_addr_t end,
+
+-- 
+Sincerely yours,
+Mike.
