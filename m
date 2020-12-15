@@ -2,197 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ADC52DA49A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 01:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A772DA4A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 01:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728643AbgLOASD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 19:18:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22354 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727174AbgLOASA (ORCPT
+        id S1727413AbgLOAYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 19:24:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725976AbgLOAYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 19:18:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607991393;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+KH49WHOC8U/vy7q7vIiLi7+DPF7822/r/b8oPP/btI=;
-        b=eEFc6JrPa7iXH/eDmnj0bI3EVJ6ICdPc5JSoKVjk8q+vBEGtaGAHO8Q8ljRZN/55mWAR2I
-        1HkMzyB4sNSK7bEbtjH5mV9Fp7Cx7qGklyKlhOMJ1b2XPFsR0A4RjS/npMRWFGhJ9lnBp5
-        PA8HFZznpbDPWvNua9JWs7nuyTb/KpM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-291-aQP1cyCSMyiy2PSi3XYmag-1; Mon, 14 Dec 2020 19:16:29 -0500
-X-MC-Unique: aQP1cyCSMyiy2PSi3XYmag-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AC33E1922960;
-        Tue, 15 Dec 2020 00:16:25 +0000 (UTC)
-Received: from omen.home (ovpn-112-193.phx2.redhat.com [10.3.112.193])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C55F510023B8;
-        Tue, 15 Dec 2020 00:16:23 +0000 (UTC)
-Date:   Mon, 14 Dec 2020 17:16:23 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     zhukeqian <zhukeqian1@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, Cornelia Huck <cohuck@redhat.com>,
-        "Marc Zyngier" <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-Subject: Re: [PATCH 1/7] vfio: iommu_type1: Clear added dirty bit when
- unwind pin
-Message-ID: <20201214171623.6e909138@omen.home>
-In-Reply-To: <aaba64dd-a038-2cb7-8874-e7aed19511c3@huawei.com>
-References: <20201210073425.25960-1-zhukeqian1@huawei.com>
-        <20201210073425.25960-2-zhukeqian1@huawei.com>
-        <20201210121646.24fb3cd8@omen.home>
-        <aaba64dd-a038-2cb7-8874-e7aed19511c3@huawei.com>
+        Mon, 14 Dec 2020 19:24:44 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961A6C061793;
+        Mon, 14 Dec 2020 16:24:03 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id q75so16855449wme.2;
+        Mon, 14 Dec 2020 16:24:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8jc3AIzkIPReSThseVXRAPm4odmJMoGYu8KGcGUo5xA=;
+        b=UdWHcglApp9RdDZeyVfl7LsJgdxW48tzLbgNRju6ud80NwZdq8pS6rNA48XayxnD2y
+         gxp99ju2U22s0IgeHpYxNkwEmEsSWmjKvkDVgboRjCL0u2BjvWzJuRm3fQuna6NzrVJX
+         tY83rFJle/+8UqxI4cOpq7ZEPwQanA4rNBX48zfg4PVtL5ODTFYQfgYr+oKNqJ85Y/gd
+         599roSuL8vkZuUsB+DMvesJq5/Qay+HaVljVBmkn57M9MaFlDCjvpgkaWPWHAqXbqbH5
+         awkn32y9RHX7Bg8npAuH4ig4MoKopNAyVbodgQEudUlOhmPl/5BfCRzLw7S/Tb6KT7TR
+         Av8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8jc3AIzkIPReSThseVXRAPm4odmJMoGYu8KGcGUo5xA=;
+        b=JjH7Xp3ZjrUPqt0bm0f52mOdf+VEv41WWJNFd5zZmerIWueDZ4ud/4wCS4AHQn//KP
+         yz7xTY1dr+tIjnd+qTmFJ3C8nmB3UamvlZyBkQqVebySh2wZ7ewMbhPSKjjTN2EbMXMm
+         pkC+c6B1isPYgjQ+jgRfaH7J1mErUMrdZm4DAm6L3PzHI5i73sKrY0tNM94kJ21aQudX
+         2X8qjebGo3JUPuKZCgEGC7yLidNoK82iGc5aof7gyDw7T7mtssCSujCHcaBFbXw5zbef
+         DS0ix2m5rk6/U7dFwwfw66FJlxh4HHAiJlOkZrAUc6Rnyv0gvC0RpdiRGewsAWPI9Ett
+         +nVQ==
+X-Gm-Message-State: AOAM531NvqE4EFF++ZUDnUIa/hgiy0BnypCXAdurAe2lnojwulERxGBs
+        wUMdrDWQkqSSQVRaFCw/5r8V+SagMKvQzKLc
+X-Google-Smtp-Source: ABdhPJwGNnrKGp65JFv4dDtyk0FguiKKzh1xTxkYj/G+sMLant4a7Rnm4MCbD8CKdIpwjoDGsmxiog==
+X-Received: by 2002:a05:600c:258:: with SMTP id 24mr30918877wmj.16.1607991842015;
+        Mon, 14 Dec 2020 16:24:02 -0800 (PST)
+Received: from localhost.localdomain ([85.255.232.163])
+        by smtp.gmail.com with ESMTPSA id b19sm5362012wmj.37.2020.12.14.16.24.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 16:24:01 -0800 (PST)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     linux-block@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH v1 0/6] no-copy bvec
+Date:   Tue, 15 Dec 2020 00:20:19 +0000
+Message-Id: <cover.1607976425.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 14:51:47 +0800
-zhukeqian <zhukeqian1@huawei.com> wrote:
+Instead of creating a full copy of iter->bvec into bio in direct I/O,
+the patchset makes use of the one provided. It changes semantics and
+obliges users of asynchronous kiocb to track bvec lifetime, and [1/6]
+converts the only place that doesn't.
 
-> On 2020/12/11 3:16, Alex Williamson wrote:
-> > On Thu, 10 Dec 2020 15:34:19 +0800
-> > Keqian Zhu <zhukeqian1@huawei.com> wrote:
-> >   
-> >> Currently we do not clear added dirty bit of bitmap when unwind
-> >> pin, so if pin failed at halfway, we set unnecessary dirty bit
-> >> in bitmap. Clearing added dirty bit when unwind pin, userspace
-> >> will see less dirty page, which can save much time to handle them.
-> >>
-> >> Note that we should distinguish the bits added by pin and the bits
-> >> already set before pin, so introduce bitmap_added to record this.
-> >>
-> >> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> >> ---
-> >>  drivers/vfio/vfio_iommu_type1.c | 33 ++++++++++++++++++++++-----------
-> >>  1 file changed, 22 insertions(+), 11 deletions(-)
-> >>
-> >> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> >> index 67e827638995..f129d24a6ec3 100644
-> >> --- a/drivers/vfio/vfio_iommu_type1.c
-> >> +++ b/drivers/vfio/vfio_iommu_type1.c
-> >> @@ -637,7 +637,11 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
-> >>  	struct vfio_iommu *iommu = iommu_data;
-> >>  	struct vfio_group *group;
-> >>  	int i, j, ret;
-> >> +	unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
-> >>  	unsigned long remote_vaddr;
-> >> +	unsigned long bitmap_offset;
-> >> +	unsigned long *bitmap_added;
-> >> +	dma_addr_t iova;
-> >>  	struct vfio_dma *dma;
-> >>  	bool do_accounting;
-> >>  
-> >> @@ -650,6 +654,12 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
-> >>  
-> >>  	mutex_lock(&iommu->lock);
-> >>  
-> >> +	bitmap_added = bitmap_zalloc(npage, GFP_KERNEL);
-> >> +	if (!bitmap_added) {
-> >> +		ret = -ENOMEM;
-> >> +		goto pin_done;
-> >> +	}  
-> > 
-> > 
-> > This is allocated regardless of whether dirty tracking is enabled, so
-> > this adds overhead to the common case in order to reduce user overhead
-> > (not correctness) in the rare condition that dirty tracking is enabled,
-> > and the even rarer condition that there's a fault during that case.
-> > This is not a good trade-off.  Thanks,  
-> 
-> Hi Alex,
-> 
-> We can allocate the bitmap when dirty tracking is active, do you accept this?
-> Or we can set the dirty bitmap after all pins succeed, but this costs cpu time
-> to locate vfio_dma with iova.
+bio_iov_iter_get_pages() is still does iov_iter_advance(), which is
+not great, but neccessary for revert to work. It's desirable to have
+a fast version of iov_iter_advance(i, i->count), so we may want to
+hack something up for that. E.g. allow to not keep it consistent
+in some cases when i->count==0. Also we can add a separate bio pool
+without inlined bvec. Very easy to do and shrinks bios from 3 to 2
+cachelines.
 
-TBH I don't see this as a terribly significant problem, in the rare
-event of an error with dirty tracking enabled, the user might see some
-pages marked dirty that were not successfully pinned by the mdev vendor
-driver.  The solution shouldn't impose more overhead than the original
-issue.  Thanks,
+Also as suggested it removes BIO_WORKINGSET from direct paths: blkdev,
+iomap, fs/direct-io. Even though the last one is not very important as
+more filesystems are converted to iomap, but still looks hacky. Maybe,
+as Johannes mentioned in another thread, moving it to the writeback
+code (or other option) would be better in the end. Afterwards?
 
-Alex
+since RFC:
+- add target_core_file patch by Christoph
+- make no-copy default behaviour, remove iter flag
+- iter_advance() instead of hacks to revert to work
+- add bvec iter_advance() optimisation patch
+- remove PSI annotations from direct IO (iomap, block and fs/direct)
+- note in d/f/porting
 
-> >> +
-> >>  	/* Fail if notifier list is empty */
-> >>  	if (!iommu->notifier.head) {
-> >>  		ret = -EINVAL;
-> >> @@ -664,7 +674,6 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
-> >>  	do_accounting = !IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu);
-> >>  
-> >>  	for (i = 0; i < npage; i++) {
-> >> -		dma_addr_t iova;
-> >>  		struct vfio_pfn *vpfn;
-> >>  
-> >>  		iova = user_pfn[i] << PAGE_SHIFT;
-> >> @@ -699,14 +708,10 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
-> >>  		}
-> >>  
-> >>  		if (iommu->dirty_page_tracking) {
-> >> -			unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
-> >> -
-> >> -			/*
-> >> -			 * Bitmap populated with the smallest supported page
-> >> -			 * size
-> >> -			 */
-> >> -			bitmap_set(dma->bitmap,
-> >> -				   (iova - dma->iova) >> pgshift, 1);
-> >> +			/* Populated with the smallest supported page size */
-> >> +			bitmap_offset = (iova - dma->iova) >> pgshift;
-> >> +			if (!test_and_set_bit(bitmap_offset, dma->bitmap))
-> >> +				set_bit(i, bitmap_added);
-> >>  		}
-> >>  	}
-> >>  	ret = i;
-> >> @@ -722,14 +727,20 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
-> >>  pin_unwind:
-> >>  	phys_pfn[i] = 0;
-> >>  	for (j = 0; j < i; j++) {
-> >> -		dma_addr_t iova;
-> >> -
-> >>  		iova = user_pfn[j] << PAGE_SHIFT;
-> >>  		dma = vfio_find_dma(iommu, iova, PAGE_SIZE);
-> >>  		vfio_unpin_page_external(dma, iova, do_accounting);
-> >>  		phys_pfn[j] = 0;
-> >> +
-> >> +		if (test_bit(j, bitmap_added)) {
-> >> +			bitmap_offset = (iova - dma->iova) >> pgshift;
-> >> +			clear_bit(bitmap_offset, dma->bitmap);
-> >> +		}
-> >>  	}
-> >>  pin_done:
-> >> +	if (bitmap_added)
-> >> +		bitmap_free(bitmap_added);
-> >> +
-> >>  	mutex_unlock(&iommu->lock);
-> >>  	return ret;
-> >>  }  
-> > 
-> > .
-> >   
-> 
+Christoph Hellwig (1):
+  target/file: allocate the bvec array as part of struct
+    target_core_file_cmd
+
+Pavel Begunkov (5):
+  iov_iter: optimise bvec iov_iter_advance()
+  bio: deduplicate adding a page into bio
+  block/psi: remove PSI annotations from direct IO
+  bio: add a helper calculating nr segments to alloc
+  block/iomap: don't copy bvec for direct IO
+
+ Documentation/filesystems/porting.rst |   9 +++
+ block/bio.c                           | 103 ++++++++++++--------------
+ drivers/target/target_core_file.c     |  20 ++---
+ fs/block_dev.c                        |   7 +-
+ fs/direct-io.c                        |   2 +
+ fs/iomap/direct-io.c                  |   9 +--
+ include/linux/bio.h                   |   9 +++
+ lib/iov_iter.c                        |  19 +++++
+ 8 files changed, 102 insertions(+), 76 deletions(-)
+
+-- 
+2.24.0
 
