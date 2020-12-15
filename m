@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4432DAEDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:26:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F92E2DAEDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729442AbgLOOY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 09:24:27 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:60150 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728981AbgLOOYV (ORCPT
+        id S1729470AbgLOOZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 09:25:38 -0500
+Received: from mail-oo1-f65.google.com ([209.85.161.65]:37806 "EHLO
+        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728541AbgLOOZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:24:21 -0500
-Date:   Tue, 15 Dec 2020 15:23:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608042219;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=73SDa5ZqZDS3/s/9JXLAnXy+Sn7Tzs1/CqwdLDxnyLI=;
-        b=XlAL0eJrC+WtYVOunzt/UV3fZiNs3eUEzEwbronKsJVabta3LCXMkfKYaBOuVfugob3Tk/
-        T/A3E3OiwUan+tpXbeqbwQOSfsuVElGnJf5uT5vp9giTIGfdA1d3j3pmAV1fWgrOjxJDBm
-        W50f6rCNq1jffaFWwugon0b2JRHMBQXLoPKWpey8cyPkK3HCsZ4hLaZOFc28Yw/hLAJZUu
-        SzKbfqA8snFmG/rjJJA6oHqR/N7m1mSTrrWtwj9KW3KRsrcI7Wqsv3/l1q0FhMf5h5unjX
-        ka2KuSQcMtmN6TS1cVNIeiCrEJV4R6JiJjFySj7xFFl63lsjBM06Oe8NbUATkg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608042219;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=73SDa5ZqZDS3/s/9JXLAnXy+Sn7Tzs1/CqwdLDxnyLI=;
-        b=j51a577PWjQ2hVJcjVXEox96ZClrO5b1lbgrHlrXP+ESxw2j1nPlfjtfjAruk36pMGxI8q
-        lihpgzmxJzAUPxDA==
-From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] sched: Prevent raising SCHED_SOFTIRQ when CPU is
- !active
-In-Reply-To: <20201215111806.GF3040@hirez.programming.kicks-ass.net>
-Message-ID: <alpine.DEB.2.21.2012151449260.1448@somnus>
-References: <20201215104400.9435-1-anna-maria@linutronix.de> <20201215111806.GF3040@hirez.programming.kicks-ass.net>
+        Tue, 15 Dec 2020 09:25:02 -0500
+Received: by mail-oo1-f65.google.com with SMTP id t23so4850187oov.4;
+        Tue, 15 Dec 2020 06:24:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xplhcJRnAFV/vFSVrr3RUhdg47pJr9DfaTlDdw77pbg=;
+        b=uSELKtd5LiYfjl++n6DAQgRn1S5gQMi2YLf9PyyyEN55nE682S2zLHtbbQT10kqWEc
+         LcOMkMPGQxUZ9tLZaNS/eokjEO9ZQqUjXz3RouILwuuJc2UWANUJJVH4OpozkVqbDtuH
+         vtcGghBykIsuDjvZtTswL0fYzqluqka25etP7fXKfK3TJ5G/Lj9C8inOr28/P3oJ3Unk
+         37EpKHxhU3ZPeXeE0/4hSggJty2nlXTLh3dAxdEbZAKDsT2+rWPVgBaheuZnns7D5tz1
+         jWvl6eqQ+KcD/eT1aygDBZ9H0fNvzyl/d0k05pH/SJ8c5x0SC+1tsuTfdYVJsiXMSUV+
+         8GVg==
+X-Gm-Message-State: AOAM530UqOXx/lSdyieP5FjnAL8QAIe3Hxo7rP/gYNqOrvgqv+jUqfJc
+        d2j7QSs0bdbi7qHhz7vFPqAoO36NHs9WkHO2ffQ=
+X-Google-Smtp-Source: ABdhPJx99G0pO5eRD+TaWgFfACFxu36ZlLFdPXPVDL2FP9V14NON6TFl0YuJ6SJSExB/w5w21W+sIPZAzNBK9odLtu8=
+X-Received: by 2002:a4a:ca14:: with SMTP id w20mr22668283ooq.11.1608042256623;
+ Tue, 15 Dec 2020 06:24:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20201209173514.93328-1-tudor.ambarus@microchip.com> <160770909978.26609.5466191880976694172.b4-ty@kernel.org>
+In-Reply-To: <160770909978.26609.5466191880976694172.b4-ty@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 15 Dec 2020 15:24:04 +0100
+Message-ID: <CAMuHMdU+heMQKLZR15g5s5Ad-H8cDeFeM+7Wh=45PFqQhyfjOA@mail.gmail.com>
+Subject: Re: [PATCH] spi: Limit the spi device max speed to controller's max speed
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020, Peter Zijlstra wrote:
+Hi Mark, Tudor,
 
-> On Tue, Dec 15, 2020 at 11:44:00AM +0100, Anna-Maria Behnsen wrote:
-> > SCHED_SOFTIRQ is raised to trigger periodic load balancing. When CPU is not
-> > active, CPU should not participate in load balancing.
-> > 
-> > The scheduler uses nohz.idle_cpus_mask to keep track of the CPUs which can
-> > do idle load balancing. When bringing a CPU up the CPU is added to the mask
-> > when it reaches the active state, but on teardown the CPU stays in the mask
-> > until it goes offline and invokes sched_cpu_dying().
-> > 
-> > When SCHED_SOFTIRQ is raised on a !active CPU, there might be a pending
-> > softirq when stopping the tick which triggers a warning in NOHZ code. The
-> > SCHED_SOFTIRQ can also be raised by the scheduler tick which has the same
-> > issue.
-> > 
-> > Therefore remove the CPU from nohz.idle_cpus_mask when it is marked
-> > inactive and also prevent the scheduler_tick() from raising SCHED_SOFTIRQ
-> > after this point.
-> > 
-> > Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> > ---
-> >  kernel/sched/core.c | 7 ++++++-
-> >  kernel/sched/fair.c | 7 +++++--
-> >  2 files changed, 11 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 21b548b69455..69284dc121d3 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -7492,6 +7492,12 @@ int sched_cpu_deactivate(unsigned int cpu)
-> >  	struct rq_flags rf;
-> >  	int ret;
-> >  
-> > +	/*
-> > +	 * Remove CPU from nohz.idle_cpus_mask to prevent participating in
-> > +	 * load balancing when not active
-> > +	 */
-> > +	nohz_balance_exit_idle(rq);
-> > +
-> >  	set_cpu_active(cpu, false);
-> >  	/*
-> >  	 * We've cleared cpu_active_mask, wait for all preempt-disabled and RCU
-> 
-> OK, so we must clear the state before !active, because getting an
-> interrupt/softirq after would trigger the badness. And we're guaranteed
-> nothing blocks between them to re-set it.
+On Fri, Dec 11, 2020 at 8:02 PM Mark Brown <broonie@kernel.org> wrote:
+> On Wed, 9 Dec 2020 19:35:14 +0200, Tudor Ambarus wrote:
+> > Make sure the max_speed_hz of spi_device does not override
+> > the max_speed_hz of controller.
+>
+> Applied to
+>
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+>
+> Thanks!
+>
+> [1/1] spi: Limit the spi device max speed to controller's max speed
+>       commit: 9326e4f1e5dd1a4410c429638d3c412b6fc17040
 
-As far as I understood, it is not a problem whether the delete is before or
-after !active. When it is deleted after, the remote CPU will return in
-kick_ilb() because cpu is not idle, because it is running the hotplug
-thread.
+> -       if (!spi->max_speed_hz)
+> +       if (!spi->max_speed_hz ||
+> +           spi->max_speed_hz > spi->controller->max_speed_hz)
+>                 spi->max_speed_hz = spi->controller->max_speed_hz;
 
-Thanks,
+If spi->controller->max_speed_hz is zero, a non-zero spi->max_speed_hz
+will be overwritten by zero.
 
-	Anna-Maria
+Hence this broke spi-sh-msiof, which has the following check in
+sh_msiof_spi_set_clk_regs():
+
+        if (!spi_hz || !parent_rate) {
+                WARN(1, "Invalid clock rate parameters %lu and %u\n",
+                     parent_rate, spi_hz);
+                return;
+        }
+
+Without this, the driver would trigger a division-by-zero later...
+
+Arguably all SPI controller drivers should fill in
+spi_controller.{min,max}_speed_hz, but as long as that is not the case,
+I think this patch should be reverted, or the check should be enhanced
+to make sure spi->controller->max_speed_hz is non-zero.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
