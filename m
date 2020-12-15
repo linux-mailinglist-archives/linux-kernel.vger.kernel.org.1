@@ -2,172 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5442DAAD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EEEF2DAAD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:27:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728034AbgLOKZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:25:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24451 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727378AbgLOKZ0 (ORCPT
+        id S1727770AbgLOKZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:25:09 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:53226 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727285AbgLOKYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:25:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608027836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1GIdHGO3VDUt7FjZGS2sawfNSbB/YdQ7Ov2GGs7wu1Q=;
-        b=W2Ef109mrhDK+CN0g6S1jMfQMcPApLjS33pkcJtHJ8yuxfCXuicPUkgBB6cLf/qZtDBudQ
-        +xWGvWdbl2zyAVL7fjakTTF9SBUXd8+6mseW+NaefnQqfE2CFZyWDLQf1gpQDl6RhXXsKP
-        jCQkc0r93GdfYgNC1ZbAvowkJfqrnVM=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-548--w9RYDCQMmuIWBG07oca6w-1; Tue, 15 Dec 2020 05:23:55 -0500
-X-MC-Unique: -w9RYDCQMmuIWBG07oca6w-1
-Received: by mail-ed1-f71.google.com with SMTP id z20so9702256edl.21
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:23:54 -0800 (PST)
+        Tue, 15 Dec 2020 05:24:52 -0500
+Received: by mail-io1-f72.google.com with SMTP id b136so13258254iof.19
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:24:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1GIdHGO3VDUt7FjZGS2sawfNSbB/YdQ7Ov2GGs7wu1Q=;
-        b=fULE3kiDLRZFkhoW8ebEO+82apDlMAbLesMnQ/7nkPPz5Lg/DJcQNZ3xw0iLOvdBJF
-         o/99tS1RqPMBZiDm9mg5wnZg/di/7hTJismG/xOldH+N0aaHQOu4g3pI2mqp7DjaWsQw
-         hEwyoKvJILFz5cVQEzaiuXBxRTC0lRsXLulgchGl0CXvD9kpx7M/PjloYsRJoks7IbnN
-         gpgym89QhEDTzXJfe7hrI8OOGRxUSWetp0ym1iEyIi0CK9etdC1VixTnOesaWfL5RQPt
-         E4tQoWpEqT1T+qD50BsvDZmzgXExGRMq55qpRFPj1nURf34jXOsvl6+0YkaGOlDsrB0G
-         l2bw==
-X-Gm-Message-State: AOAM533O8QZQksoxczQmEceCM+lH4pLSIvb9bfFLXMQmR90D8Xmk3zNB
-        zlYAc0jSJ7l6SEKNL5B3pYbESiXC/B36ul7Z7Jq4XGLZifnH9jeaJ4XNH+DYj36dAJ0K9OowZxA
-        Hj+PlWW76ljhnt6hv9RN/0E8f
-X-Received: by 2002:a50:9354:: with SMTP id n20mr29398135eda.231.1608027833513;
-        Tue, 15 Dec 2020 02:23:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx1c6r8g0j8NSpDIKdTq6bNjySPfZpzsD+RZRAPpqqrKRVkAJsMtO0GWz1rDgtoVga3KcnJbA==
-X-Received: by 2002:a50:9354:: with SMTP id n20mr29398104eda.231.1608027832902;
-        Tue, 15 Dec 2020 02:23:52 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id oq27sm1037911ejb.108.2020.12.15.02.23.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 02:23:51 -0800 (PST)
-Subject: Re: [PATCH 3/3] KVM: x86: introduce complete_emulated_msr callback
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Alexander Graf <graf@amazon.com>
-References: <20201214183250.1034541-1-pbonzini@redhat.com>
- <20201214183250.1034541-4-pbonzini@redhat.com>
- <da346203-7465-dcc8-9ed3-7e92aa136e62@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <1b16db2f-cf95-b433-73fc-ad6ccb2740ae@redhat.com>
-Date:   Tue, 15 Dec 2020 11:23:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=0qYa0dsPMP7tmde6ntcVuGWaHNVgAG/+qCsZ5UYMglA=;
+        b=demXbHpvQBLj/duMCpK10MSY/0gyMNGFdkAxLQyokxZPogrV8eGRxJRa1z2I10X2Nc
+         70OthzE1W1a5DW4czmNfrLwkxacG5cItnoUgXji6LaOhGnAdygwXTDZdY73csCc8n2sz
+         578Fic3UQiuxVBdfJvQubLvOZSDIzJM+YZlCmxSLAOCA0bIbNbTy7WQF4zg0pj0WZWdK
+         OMDrA3EBb9ZhjgSpgEPj6oRxERUZS5+DTMWlHkublMIJGye96UwMhAcbTkkydfvkMJyx
+         mGmVE48fHLLyaj9iCjAvmEcJdIQHnS4EpcAhHsydCEHylFSa7YodIu1g3NrGotsrCAEV
+         FHDg==
+X-Gm-Message-State: AOAM532Fh+uXttLT+dSni3K6sUNv+q8dE/6Kxtj7vf3KygpQKeidhaCM
+        MvoLPnWcXxiEPAB/ZdA2Ae9+nLwj5fHjcG8vVqt9FLXWF2H6
+X-Google-Smtp-Source: ABdhPJxxohlQ3B+YU2w+xW9BNn1uL9NYPvq1Vh698TyAU4Sv8vBCGpnnXaCjJAI7K/WQcAX8b0ZLOdRbBe52sFwV2S+MqzzRSKT1
 MIME-Version: 1.0
-In-Reply-To: <da346203-7465-dcc8-9ed3-7e92aa136e62@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a02:1007:: with SMTP id 7mr39330981jay.73.1608027851046;
+ Tue, 15 Dec 2020 02:24:11 -0800 (PST)
+Date:   Tue, 15 Dec 2020 02:24:11 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d9c89b05b67e2803@google.com>
+Subject: WARNING: suspicious RCU usage in nf_ct_iterate_cleanup
+From:   syzbot <syzbot+dced7c2d89dde957f7dd@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+        kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/12/20 21:55, Tom Lendacky wrote:
-> On 12/14/20 12:32 PM, Paolo Bonzini wrote:
->> This will be used by SEV-ES to inject MSR failure via the GHCB.
->>
->> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> 
-> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-> 
-> (Changed Sean's email on this reply, but missed the others...)
+Hello,
 
-Thanks for the review, I pushed to kvm/queue now.
+syzbot found the following issue on:
 
-Paolo
+HEAD commit:    33dc9614 Merge tag 'ktest-v5.10-rc6' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1200a46b500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5ed9af1b47477866
+dashboard link: https://syzkaller.appspot.com/bug?extid=dced7c2d89dde957f7dd
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
->> ---
->>   arch/x86/include/asm/kvm_host.h | 1 +
->>   arch/x86/kvm/svm/svm.c          | 1 +
->>   arch/x86/kvm/vmx/vmx.c          | 1 +
->>   arch/x86/kvm/x86.c              | 8 ++++----
->>   4 files changed, 7 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
->> index 8cf6b0493d49..18aa15e6fadd 100644
->> --- a/arch/x86/include/asm/kvm_host.h
->> +++ b/arch/x86/include/asm/kvm_host.h
->> @@ -1285,6 +1285,7 @@ struct kvm_x86_ops {
->>   
->>   	void (*migrate_timers)(struct kvm_vcpu *vcpu);
->>   	void (*msr_filter_changed)(struct kvm_vcpu *vcpu);
->> +	int (*complete_emulated_msr)(struct kvm_vcpu *vcpu, int err);
->>   };
->>   
->>   struct kvm_x86_nested_ops {
->> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
->> index 801e0a641258..4067d511be08 100644
->> --- a/arch/x86/kvm/svm/svm.c
->> +++ b/arch/x86/kvm/svm/svm.c
->> @@ -4306,6 +4306,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
->>   	.apic_init_signal_blocked = svm_apic_init_signal_blocked,
->>   
->>   	.msr_filter_changed = svm_msr_filter_changed,
->> +	.complete_emulated_msr = kvm_complete_insn_gp,
->>   };
->>   
->>   static struct kvm_x86_init_ops svm_init_ops __initdata = {
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index 849be2a9f260..55fa51c0cd9d 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -7701,6 +7701,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
->>   	.migrate_timers = vmx_migrate_timers,
->>   
->>   	.msr_filter_changed = vmx_msr_filter_changed,
->> +	.complete_emulated_msr = kvm_complete_insn_gp,
->>   	.cpu_dirty_log_size = vmx_cpu_dirty_log_size,
->>   };
->>   
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index 2f1bc52e70c0..6c4482b97c91 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -1642,12 +1642,12 @@ static int complete_emulated_rdmsr(struct kvm_vcpu *vcpu)
->>   		kvm_rdx_write(vcpu, vcpu->run->msr.data >> 32);
->>   	}
->>   
->> -	return kvm_complete_insn_gp(vcpu, err);
->> +	return kvm_x86_ops.complete_emulated_msr(vcpu, err);
->>   }
->>   
->>   static int complete_emulated_wrmsr(struct kvm_vcpu *vcpu)
->>   {
->> -	return kvm_complete_insn_gp(vcpu, vcpu->run->msr.error);
->> +	return kvm_x86_ops.complete_emulated_msr(vcpu, vcpu->run->msr.error);
->>   }
->>   
->>   static u64 kvm_msr_reason(int r)
->> @@ -1720,7 +1720,7 @@ int kvm_emulate_rdmsr(struct kvm_vcpu *vcpu)
->>   		trace_kvm_msr_read_ex(ecx);
->>   	}
->>   
->> -	return kvm_complete_insn_gp(vcpu, r);
->> +	return kvm_x86_ops.complete_emulated_msr(vcpu, r);
->>   }
->>   EXPORT_SYMBOL_GPL(kvm_emulate_rdmsr);
->>   
->> @@ -1747,7 +1747,7 @@ int kvm_emulate_wrmsr(struct kvm_vcpu *vcpu)
->>   	else
->>   		trace_kvm_msr_write_ex(ecx, data);
->>   
->> -	return kvm_complete_insn_gp(vcpu, r);
->> +	return kvm_x86_ops.complete_emulated_msr(vcpu, r);
->>   }
->>   EXPORT_SYMBOL_GPL(kvm_emulate_wrmsr);
->>   
->>
-> 
+Unfortunately, I don't have any reproducer for this issue yet.
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dced7c2d89dde957f7dd@syzkaller.appspotmail.com
+
+=============================
+WARNING: suspicious RCU usage
+5.10.0-rc7-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+2 locks held by kworker/1:8/18355:
+ #0: ffff888010063d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010063d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888010063d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888010063d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888010063d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888010063d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc90002a6fda8 ((work_completion)(&w->work)#2){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+
+stack backtrace:
+CPU: 1 PID: 18355 Comm: kworker/1:8 Not tainted 5.10.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events iterate_cleanup_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x220/0x2b0 kernel/sched/core.c:7270
+ get_next_corpse net/netfilter/nf_conntrack_core.c:2222 [inline]
+ nf_ct_iterate_cleanup+0x132/0x400 net/netfilter/nf_conntrack_core.c:2244
+ nf_ct_iterate_cleanup_net net/netfilter/nf_conntrack_core.c:2329 [inline]
+ nf_ct_iterate_cleanup_net+0x113/0x170 net/netfilter/nf_conntrack_core.c:2314
+ iterate_cleanup_work+0x45/0x130 net/netfilter/nf_nat_masquerade.c:216
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
