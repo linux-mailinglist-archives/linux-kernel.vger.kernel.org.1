@@ -2,139 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC482DAAA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5352DAAA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:10:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgLOKLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:11:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32592 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725535AbgLOKKm (ORCPT
+        id S1726092AbgLOKKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:10:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726820AbgLOKKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:10:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608026951;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=D+6s0jfbb+iw290X2QFg1tX1hHyRCtrb4U7UKAwjZ6Q=;
-        b=Ck3MXqFi2Xi7xQ+YtyVKZpYsObjcvTTdGrvFQPMFZSR9cwcB0DxB4ZTeLrr0v/Byyv6UPk
-        BfyaVYGzNjG2SNTGvGTYX1BcdUPxtVcVSJCjJzPuSHajTENDj+osXUcL8Q3Ccn40BbA6gD
-        j75L5SOXZDDUCerK/egs1QEwer/YlOw=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-87bdv_gaOYy4jsMOZ-ttSw-1; Tue, 15 Dec 2020 05:09:09 -0500
-X-MC-Unique: 87bdv_gaOYy4jsMOZ-ttSw-1
-Received: by mail-pj1-f70.google.com with SMTP id bj5so6248187pjb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:09:09 -0800 (PST)
+        Tue, 15 Dec 2020 05:10:10 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06027C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:09:29 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id h4so13597477qkk.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:09:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oFXoGhP33Z2M+MhFYkiIX03ainL8Vg+7xHv22X3m6As=;
+        b=l6ZST4+2Om881OA76+doSDEegDBXsgmQzFKU3jIWkNLbcAfxxZXy+eBoPXhUrmv5q8
+         lLp95Ih8Ukds9mkI+60a8sWLS5G4sldp5+95jJtxyvw11sGIL075WGeRV/EHzUKog1z9
+         b6cuA8RHJWnCQjt+mN9LhTuA2st0kWU0/lDmWw9BsKUmy4vgUEzK+JD9hIcfwyu+j91z
+         YKKCbydUyTKKswqwx9WQRGXwwJvDtK98sZ8q48dxUaBfWnaVTfMlaw2et+KSzD4iUBHM
+         hxuEJB2kd6CdD2FYfQ+WUNxAcJSwoZnkkOD07AjZfavEA7bPQ2BsBEqttZxAScKcULJZ
+         cOiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=D+6s0jfbb+iw290X2QFg1tX1hHyRCtrb4U7UKAwjZ6Q=;
-        b=r4lnwuwr99FPLFbFjA3S+IzJGPbqROPbvKilhu6o9UI5AqmpzZqV1zSFzcKL1eFgKb
-         0NyIW28sEdCiNln+CdpOFa6Z+pjNQ8c88rwrP3cHsJ+zO+qHO4aAMjzkiPm3oqbv0qaT
-         bJBTGWyS9CBoNv/8pwJADOwIp8KCPp/BJEfFTS+DOFTj4mZVicul7lY2e74j/Z595AIl
-         SY3HUWjKh+BAAjy2jCJQi5iZ0Oy5PMdbzYMjL2sTy7LqAxtpLxGsgb8UUkzynX/9Pevi
-         Jd9JL7bEoxM8VXGLFQPMZ63JkDru778UhsKS5yeqt13+nS2eIp+Bg3lmKeE1AmIf1QYD
-         ChEA==
-X-Gm-Message-State: AOAM530yN90UF+vGL3xyfOpufc36ZsCdDEID2y+LBptwxy1B970XcD7f
-        j2OIokuLjiVZ1rYzzyyeXg3i6IMygsNwF9rWm7cIAFbV0RdBk1gV2exioJIjrPRRrcgfWb/LCI+
-        o4IzqUebh7j1Hiq0fMa+Ji3GU
-X-Received: by 2002:a17:90b:14d3:: with SMTP id jz19mr29645896pjb.196.1608026948330;
-        Tue, 15 Dec 2020 02:09:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxJ+QJQeZhC7fWPHn8H4CTLpBoBip5gubOtmctdcTGKI/LOLgvsGcRi1coYDETI/ag/8TCvFg==
-X-Received: by 2002:a17:90b:14d3:: with SMTP id jz19mr29645882pjb.196.1608026948125;
-        Tue, 15 Dec 2020 02:09:08 -0800 (PST)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id b4sm20887252pju.33.2020.12.15.02.09.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 02:09:07 -0800 (PST)
-Date:   Tue, 15 Dec 2020 18:08:55 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miao Xie <miaoxie@huawei.com>, Chao Yu <yuchao0@huawei.com>,
-        Fang Wei <fangwei1@huawei.com>,
-        Li Guifu <bluce.liguifu@huawei.com>,
-        Gao Xiang <hsiangkao@redhat.com>
-Subject: [GIT PULL] erofs update for 5.11-rc1
-Message-ID: <20201215100855.GA581189@xiangao.remote.csb>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oFXoGhP33Z2M+MhFYkiIX03ainL8Vg+7xHv22X3m6As=;
+        b=sZeTee+0QwT+09GgWhDzuHiip8YryTjT8J/C3atsGAIuNnuvEWOW9lW32HRWMxVccz
+         LBAiyNBneIctjD3WdouB5C0oYMT1DFkpqOG5LbPwiWGjAoHrumlrl5MHV04zy7Btyvtb
+         n4ozQJ8L6uUB3VcN5egXWwLv2fvt7B3LnI24Xy5GFzxLlmfGgWGvNUuAiYwkzJ9Fmpi8
+         j6TpNXpIVooBrvKp+7Si9utwTNFOmFev53KuKx+L+8Q3bMPG9iESRbEe2GMZQVUtDn5j
+         47fGSXTMSQKWBd9EArsqUU80KIPrVrZTJCjHQpcwJkBA7oqWiCaFG7Qs74OALgqyOHWd
+         JJVQ==
+X-Gm-Message-State: AOAM531GJpH3of7hR71s1VtVsFpmcIhADiyklUVJgDR32dbKb3LwHwrQ
+        DM7ROQId1J2XP0Ruql19/20GAK+W/WtxFauLIt5NLg==
+X-Google-Smtp-Source: ABdhPJxGRDn6odzvgqZ4+O0zDko/8Ht2aWnT4kFyzwruF1B8at/WUTExCMI0nPRahusDqGUGZTY2JnAio6lsHrtpsXo=
+X-Received: by 2002:a37:56c6:: with SMTP id k189mr36569594qkb.501.1608026968905;
+ Tue, 15 Dec 2020 02:09:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201210023638.GP52960@mit.edu> <00000000000024030c05b61412e6@google.com>
+ <CACT4Y+bkaVq1RzONGuPJxu-pSyCSRrEs7xV0sa2n0oLNkicHQQ@mail.gmail.com>
+ <20201210182821.GS52960@mit.edu> <CACT4Y+bqDdidJpYimvzY5UkrXzw7JuefHndOM0+c6Y8e56vBjQ@mail.gmail.com>
+ <20201214203608.GJ575698@mit.edu>
+In-Reply-To: <20201214203608.GJ575698@mit.edu>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 15 Dec 2020 11:09:17 +0100
+Message-ID: <CACT4Y+Yz+zahS-7OjcYvn9a1RWsW4XJ7-_HWPcd4PR8mrMSajg@mail.gmail.com>
+Subject: Re: UBSAN: shift-out-of-bounds in ext4_fill_super
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Dec 14, 2020 at 9:36 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
+>
+> (Dropping off-topic lists)
+>
+> On Mon, Dec 14, 2020 at 03:37:37PM +0100, Dmitry Vyukov wrote:
+> > > It's going to make everyone else's tags who pull from ext4.git messy,
+> > > though, with gobs of tags that probably won't be of use to them.  It
+> > > does avoid the need to use git fetch --tags --force, and I guess
+> > > people are used to the need to GC tags with the linux-repo.
+>
+> (I had meant to say linux-next repo above.)
+>
+> > syzbot is now prepared and won't fail next time, nor on other similar
+> > trees. Which is good.
+> > So it's really up to you.
+>
+> I'm curious --- are you having to do anything special in terms of
+> deleting old tags to keep the size of the repo under control?  Git
+> will keep a tag around indefinitely, so if you have huge numbers of
+> next-YYYYMMDD tags in your repo, the size will grow without bound.
+> Are you doing anything to automatically garbage collect tags to preven
+> this from being a problem?
+>
+> (I am not pulling linux-next every day; only when I need to debug a
+> bug reported against the -next tree, so I just manually delete the
+> tags as necessary.  So I'm curious what folks who are following
+> linux-next are doing, and whether they have something specific for
+> linux-next tags, or whether they have a more general solution.)
+>
+> Cheers,
+>
+>                                         - Ted
 
-Could you consider this pull request for 5.11-rc1?
 
-This cycle we'd like to get rid of magical page->mapping type marks
-for temporary pages which had some concern before, now such usage
-is replaced with specific page->private. Also switch to inplace I/O
-instead of allocating extra cached pages to avoid direct reclaim
-under low memory scenario. There are some bmap bugfix and minor
-cleanups as well.
+syzbot does not do anything special here, it just polls/fetches always.
 
-All commits have been tested and have been in linux-next for a while.
-This merges cleanly with master.
+Here are sizes of checkouts that it has now, these also include
+in-tree builds, that may explain larger differences. They don't look
+too bad.
 
-[ Additionally, there is another lz4 inplace decompression fix [1] due
-  to some different overlapped memcpy() implementation which was reviewed
-  and added to akpm tree, hopefully upstream for this 5.11 cycle too. ]
+2.8G upstream-bpf-kasan-gce/kernel
+3.1G upstream-bpf-next-kasan-gce/kernel
+5.1G upstream-gce-leak/kernel
+6.3G upstream-kasan-gce/kernel
+6.3G upstream-kasan-gce-386/kernel
+6.3G upstream-kasan-gce-root/kernel
+6.3G upstream-kasan-gce-selinux-root/kernel
+9.3G upstream-kasan-gce-smack-root/kernel
+2.8G upstream-kmsan-gce/kernel
+2.8G upstream-kmsan-gce-386/kernel
+2.9G upstream-linux-next-kasan-gce-root/kernel
+6.3G upstream-net-kasan-gce/kernel
+2.7G upstream-net-this-kasan-gce/kernel
+5.5G android-414-kasan-gce-root/kernel
+6.5G android-44-kasan-gce/kernel
+6.5G android-44-kasan-gce-386/kernel
+6.0G android-49-kasan-gce/kernel
+6.0G android-49-kasan-gce-386/kernel
+6.1G android-49-kasan-gce-root/kernel
 
-Thanks,
-Gao Xiang
+And the one is used for all patch testing on random trees is 5.2G, it has:
 
-[1] https://lore.kernel.org/r/20201122030749.2698994-1-hsiangkao@redhat.com 
-
-The following changes since commit 0477e92881850d44910a7e94fc2c46f96faa131f:
-
-  Linux 5.10-rc7 (2020-12-06 14:25:12 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-5.11-rc1
-
-for you to fetch changes up to d8b3df8b1048405e73558b88cba2adf29490d468:
-
-  erofs: avoid using generic_block_bmap (2020-12-10 11:07:40 +0800)
-
-----------------------------------------------------------------
-Changes since last update:
-
- - get rid of magical page->mapping type marks;
-
- - switch to inplace I/O under low memory scenario;
-
- - return the correct block number for bmap();
-
- - some minor cleanups.
-
-----------------------------------------------------------------
-Gao Xiang (4):
-      erofs: get rid of magical Z_EROFS_MAPPING_STAGING
-      erofs: insert to managed cache after adding to pcl
-      erofs: simplify try_to_claim_pcluster()
-      erofs: force inplace I/O under low memory scenario
-
-Huang Jianan (1):
-      erofs: avoid using generic_block_bmap
-
-Vladimir Zapolskiy (1):
-      erofs: remove a void EROFS_VERSION macro set in Makefile
-
- fs/erofs/Makefile       |   5 --
- fs/erofs/compress.h     |  54 +++++++++++----
- fs/erofs/data.c         |  26 ++------
- fs/erofs/decompressor.c |   2 +-
- fs/erofs/zdata.c        | 172 ++++++++++++++++++++++++++++--------------------
- fs/erofs/zdata.h        |   1 +
- 6 files changed, 149 insertions(+), 111 deletions(-)
-
+kernel$ git remote -v | wc -l
+60
+kernel$ git tag -l  | wc -l
+7544
