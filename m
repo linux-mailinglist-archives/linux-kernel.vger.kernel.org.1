@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F92E2DAEDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AD82DAEEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729470AbgLOOZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 09:25:38 -0500
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:37806 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728541AbgLOOZC (ORCPT
+        id S1729527AbgLOO0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 09:26:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20832 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728910AbgLOOZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:25:02 -0500
-Received: by mail-oo1-f65.google.com with SMTP id t23so4850187oov.4;
-        Tue, 15 Dec 2020 06:24:46 -0800 (PST)
+        Tue, 15 Dec 2020 09:25:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608042260;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Lh128b+GziqgEpkmwjasFVDKfPVvlVtz7J92RBggGoE=;
+        b=WzOutTaqCKQFN9jeuhGu9S9p+Xd4kybUneez8I38F1YPIBid7m+mxJadre04CvEhd//HPE
+        VnG4RxplGF+A23c46uboGt+pzrSGsZ/erIbvS7DsaubAdTpj3wgzuSDOIO4n0qU9uMRue9
+        loAT84aNefOLBgKgg5DmmD/TtF6a5OM=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-148-_va5Q0zhMGuC9sEx0FL_BA-1; Tue, 15 Dec 2020 09:24:19 -0500
+X-MC-Unique: _va5Q0zhMGuC9sEx0FL_BA-1
+Received: by mail-qk1-f198.google.com with SMTP id g26so7632380qkk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:24:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xplhcJRnAFV/vFSVrr3RUhdg47pJr9DfaTlDdw77pbg=;
-        b=uSELKtd5LiYfjl++n6DAQgRn1S5gQMi2YLf9PyyyEN55nE682S2zLHtbbQT10kqWEc
-         LcOMkMPGQxUZ9tLZaNS/eokjEO9ZQqUjXz3RouILwuuJc2UWANUJJVH4OpozkVqbDtuH
-         vtcGghBykIsuDjvZtTswL0fYzqluqka25etP7fXKfK3TJ5G/Lj9C8inOr28/P3oJ3Unk
-         37EpKHxhU3ZPeXeE0/4hSggJty2nlXTLh3dAxdEbZAKDsT2+rWPVgBaheuZnns7D5tz1
-         jWvl6eqQ+KcD/eT1aygDBZ9H0fNvzyl/d0k05pH/SJ8c5x0SC+1tsuTfdYVJsiXMSUV+
-         8GVg==
-X-Gm-Message-State: AOAM530UqOXx/lSdyieP5FjnAL8QAIe3Hxo7rP/gYNqOrvgqv+jUqfJc
-        d2j7QSs0bdbi7qHhz7vFPqAoO36NHs9WkHO2ffQ=
-X-Google-Smtp-Source: ABdhPJx99G0pO5eRD+TaWgFfACFxu36ZlLFdPXPVDL2FP9V14NON6TFl0YuJ6SJSExB/w5w21W+sIPZAzNBK9odLtu8=
-X-Received: by 2002:a4a:ca14:: with SMTP id w20mr22668283ooq.11.1608042256623;
- Tue, 15 Dec 2020 06:24:16 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lh128b+GziqgEpkmwjasFVDKfPVvlVtz7J92RBggGoE=;
+        b=qjfSsgx5II+kkObIrzWRxhPwQIP+z8gg5N/TtjSqVi/5+Wbcdyvk2k0Z804v81D5BN
+         38u513Y4y/37xWuq+clJb4VZwdjHj8pgpqlbf2LZTxajNp9OBulF0hFnchF69S6Xp8bm
+         i72uxPK3mlR4yykQwo2t0VuV6j2dhL8ZOi47ODuaTVerR3GjAkoHA8X9nARnr5e6Nsyp
+         NiR7iglbbApcKLzwWvOpoQXipfQVHxctMr0u0mReSVXEdLKu6Aj1Xz8mIGOHWUFp6TJF
+         /oliV36jMFqSs8pRqSPJJkCo41p2+/iTSrdXqpbwj758knIFR/b1/I+Q7hccTUior2fI
+         vi/A==
+X-Gm-Message-State: AOAM533QddrqISW681LEFaXjnQYSEDVAthJJi3YOb0cxweJ65yiBvOQ1
+        I8dU6lE5lWdAnKtRFc0DU7TUa+6Kji9uAfEOMH5q+bcJ5/lMiZmOXaJjMCIBVQfiP+MjEID9oKM
+        MZjGaViuy4AItmOGJ6UlKr9Dr
+X-Received: by 2002:a05:620a:6a1:: with SMTP id i1mr39446583qkh.136.1608042258786;
+        Tue, 15 Dec 2020 06:24:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzWmKJHnnQzZgr/qkxUxr+klrMzu+hmua4q2p786ygMY1gwah6mebFalpf0oQfexXhmxd5Zdw==
+X-Received: by 2002:a05:620a:6a1:: with SMTP id i1mr39446569qkh.136.1608042258627;
+        Tue, 15 Dec 2020 06:24:18 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id i4sm15342556qti.78.2020.12.15.06.24.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 06:24:18 -0800 (PST)
+From:   trix@redhat.com
+To:     3chas3@gmail.com
+Cc:     linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] atm: horizon: remove h from printk format specifier
+Date:   Tue, 15 Dec 2020 06:24:13 -0800
+Message-Id: <20201215142413.1850207-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201209173514.93328-1-tudor.ambarus@microchip.com> <160770909978.26609.5466191880976694172.b4-ty@kernel.org>
-In-Reply-To: <160770909978.26609.5466191880976694172.b4-ty@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 15 Dec 2020 15:24:04 +0100
-Message-ID: <CAMuHMdU+heMQKLZR15g5s5Ad-H8cDeFeM+7Wh=45PFqQhyfjOA@mail.gmail.com>
-Subject: Re: [PATCH] spi: Limit the spi device max speed to controller's max speed
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark, Tudor,
+From: Tom Rix <trix@redhat.com>
 
-On Fri, Dec 11, 2020 at 8:02 PM Mark Brown <broonie@kernel.org> wrote:
-> On Wed, 9 Dec 2020 19:35:14 +0200, Tudor Ambarus wrote:
-> > Make sure the max_speed_hz of spi_device does not override
-> > the max_speed_hz of controller.
->
-> Applied to
->
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
->
-> Thanks!
->
-> [1/1] spi: Limit the spi device max speed to controller's max speed
->       commit: 9326e4f1e5dd1a4410c429638d3c412b6fc17040
+See Documentation/core-api/printk-formats.rst.
+h should no longer be used in the format specifier for printk.
 
-> -       if (!spi->max_speed_hz)
-> +       if (!spi->max_speed_hz ||
-> +           spi->max_speed_hz > spi->controller->max_speed_hz)
->                 spi->max_speed_hz = spi->controller->max_speed_hz;
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/atm/horizon.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-If spi->controller->max_speed_hz is zero, a non-zero spi->max_speed_hz
-will be overwritten by zero.
-
-Hence this broke spi-sh-msiof, which has the following check in
-sh_msiof_spi_set_clk_regs():
-
-        if (!spi_hz || !parent_rate) {
-                WARN(1, "Invalid clock rate parameters %lu and %u\n",
-                     parent_rate, spi_hz);
-                return;
-        }
-
-Without this, the driver would trigger a division-by-zero later...
-
-Arguably all SPI controller drivers should fill in
-spi_controller.{min,max}_speed_hz, but as long as that is not the case,
-I think this patch should be reverted, or the check should be enhanced
-to make sure spi->controller->max_speed_hz is non-zero.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/atm/horizon.c b/drivers/atm/horizon.c
+index 4f2951cbe69c..e110c305fc9c 100644
+--- a/drivers/atm/horizon.c
++++ b/drivers/atm/horizon.c
+@@ -1609,7 +1609,7 @@ static int hrz_send (struct atm_vcc * atm_vcc, struct sk_buff * skb) {
+     if (*s++ == 'D') {
+ 	for (i = 0; i < 4; ++i)
+ 		d = (d << 4) | hex_to_bin(*s++);
+-      PRINTK (KERN_INFO, "debug bitmap is now %hx", debug = d);
++      PRINTK (KERN_INFO, "debug bitmap is now %x", debug = d);
+     }
+   }
+ #endif
+@@ -2675,7 +2675,7 @@ static int hrz_probe(struct pci_dev *pci_dev,
+ 		       "changing", lat, pci_lat);
+ 		pci_write_config_byte(pci_dev, PCI_LATENCY_TIMER, pci_lat);
+ 	} else if (lat < MIN_PCI_LATENCY) {
+-		PRINTK(KERN_INFO, "%s PCI latency timer from %hu to %hu",
++		PRINTK(KERN_INFO, "%s PCI latency timer from %u to %u",
+ 		       "increasing", lat, MIN_PCI_LATENCY);
+ 		pci_write_config_byte(pci_dev, PCI_LATENCY_TIMER, MIN_PCI_LATENCY);
+ 	}
+@@ -2777,7 +2777,7 @@ static void hrz_remove_one(struct pci_dev *pci_dev)
+ 
+ static void __init hrz_check_args (void) {
+ #ifdef DEBUG_HORIZON
+-  PRINTK (KERN_NOTICE, "debug bitmap is %hx", debug &= DBG_MASK);
++  PRINTK (KERN_NOTICE, "debug bitmap is %x", debug &= DBG_MASK);
+ #else
+   if (debug)
+     PRINTK (KERN_NOTICE, "no debug support in this image");
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.27.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
