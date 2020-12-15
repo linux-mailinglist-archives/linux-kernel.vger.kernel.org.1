@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64ECD2DB5EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E64802DB5EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730061AbgLOVcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 16:32:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34133 "EHLO
+        id S1730129AbgLOVdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 16:33:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35880 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730338AbgLOVb5 (ORCPT
+        by vger.kernel.org with ESMTP id S1730266AbgLOVdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 16:31:57 -0500
+        Tue, 15 Dec 2020 16:33:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608067830;
+        s=mimecast20190719; t=1608067894;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding;
-        bh=sKWEPlpfqqNs/xMqW8/R+pszI1KfgsclH0Gpy5tp2fw=;
-        b=POku6Sn0Tf5B/9B6tAvQpQ+lMSzFMd7JuGn6UHWeQZfT1eAzWLyZIJXp/dsbfpKTte3udm
-        1BfErTU25uknchO9vsb2RYCSVUTpplx53F0xhFNqDqUp1EeMb0StCAfdK0Mk7voPu3Rk0y
-        87Tc1Vww7A5oBR8ZQq2weudt8A4lgJ8=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-55-svuMdSZcNKSwvYY06yNVLQ-1; Tue, 15 Dec 2020 16:30:28 -0500
-X-MC-Unique: svuMdSZcNKSwvYY06yNVLQ-1
-Received: by mail-oi1-f198.google.com with SMTP id v5so11399151oig.21
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 13:30:28 -0800 (PST)
+        bh=O3IlA/EtAmqXa16y6q/aKRAMxC9/cCCbF/diJvoK8Qk=;
+        b=VdYXsquq0aoNiQ60IafyMBDjVORAKJYWNdNJlotjy1BnQNvSy+qRy9N/JWPkeFdsuRhQZx
+        VSDi8OaWQW/6qoIBYkRAYXcLB35HuVWknLHVQhM+RySBaKxeNjmDU6bYpCJTOkk7XlrsyG
+        NfWf6ZRLu1YM6ZECGZO9L/nAT/F78+I=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-344-ioq3Q99XNbW-piBB2NF9TQ-1; Tue, 15 Dec 2020 16:31:31 -0500
+X-MC-Unique: ioq3Q99XNbW-piBB2NF9TQ-1
+Received: by mail-oo1-f70.google.com with SMTP id a29so9913983ook.10
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 13:31:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=sKWEPlpfqqNs/xMqW8/R+pszI1KfgsclH0Gpy5tp2fw=;
-        b=sOq7HSOXBcrsGRKJqqGnBN7KFHKY41RjjBW0+WGgqx7B8Q8of5kENoRVjtntz/RXqB
-         lkm1Nmr3qhmergUKzib/pO2O9MJDSlYh2bRDiGZUnp6qUPc2Z7UOswJ9SOA9M3VqbuvV
-         +Bh0x5Szom0RxjNUxgCBTDN2eGd+JGr535xKjbMCUCY5i5APtOFhQsTiC+xLeoSZxtjr
-         Rk4B6WIH1iq9Yp7Xzp8OT2EsC2phYQS1vLsZz+wDmGg6QzykxHX0es8+r2Kan0dh3Mpz
-         60IckdZSpBrmc4RDfj3aBKr6fputytyiyIO/YYsQGttfHW72Z5IG8axMDeoBg7sI2Ymw
-         xl/g==
-X-Gm-Message-State: AOAM531DfMzXs/sEUPozNxTcgWYdeNmsklM9Iv1HSt9CRdM0Jx3v5kj4
-        SZP6UvoxT+hesrXeg4fkUcmcvgrCB75rLj6Cg5wO7PUA13fnFA6tcwESzBdR1CWfbuJ8KCX0qqL
-        FTWVgfrGS8q/KiLE69MT+rPja
-X-Received: by 2002:aca:5302:: with SMTP id h2mr516959oib.41.1608067827513;
-        Tue, 15 Dec 2020 13:30:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyUbMaBbz+Q+s6nSnnX7/fbpUAEuSAv3937HDnTFQ8Q64p/+7jni7utLN8iMALVXuc/xMW/9Q==
-X-Received: by 2002:aca:5302:: with SMTP id h2mr516954oib.41.1608067827373;
-        Tue, 15 Dec 2020 13:30:27 -0800 (PST)
+        bh=O3IlA/EtAmqXa16y6q/aKRAMxC9/cCCbF/diJvoK8Qk=;
+        b=rn3dtBkg3AQArE0kx8+uSEvMz+u0x+f7v5vNcyLsatErvY8JEftV2MFKzT6CLvVvNZ
+         u3dylvT6kD39pJaK4uUkMSFrpTWWy1CVJsUqX2S+6P8AEWvgbY67qTBVpnzd5Cz1Wqg/
+         kRyyHWeB+GpEKRH7vEIWJ7nhbTP0F71UUZLGouePLzzjAo7L1F99uDQoP4Pro3D40Kiv
+         cHckNQKiS4nqLuQfNPIWaRsJx+YqQ6+ETV0ZX5pIInEc9m+Iz5wtcAdC2ZAziLqLJQ86
+         Wr35QaeJsU80UxNS3KOPx+3ofh731rCzYOMlK9HMiyVTtGgRxXyLPl6iANvIKDUuBi9k
+         aGbg==
+X-Gm-Message-State: AOAM531aN7ePzEbje8AZ9WOxG0aXacl3IYf+Pn6Dtm1lu+s4xBJdvUKk
+        n8I8tZ/cLVUDSDLZM4yRZWNFf//OD1gHG7pk28RlVWyPjCRBAfraPHCl0B0L0ovW3yY0BzI8uG2
+        TvsuCetmEqQF2Q7rMQCtKUr5F
+X-Received: by 2002:aca:4ec9:: with SMTP id c192mr521527oib.115.1608067890592;
+        Tue, 15 Dec 2020 13:31:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyTT2aSnaexWFHSJF1Kr3v1WMGB3hbglFJ56ittyEcYbw0OmkvxZUnHYk32RyC9b3ZpJV17pw==
+X-Received: by 2002:aca:4ec9:: with SMTP id c192mr521525oib.115.1608067890449;
+        Tue, 15 Dec 2020 13:31:30 -0800 (PST)
 Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id v207sm5425284oif.58.2020.12.15.13.30.25
+        by smtp.gmail.com with ESMTPSA id h2sm23776otn.15.2020.12.15.13.31.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 13:30:26 -0800 (PST)
+        Tue, 15 Dec 2020 13:31:29 -0800 (PST)
 From:   trix@redhat.com
-To:     joro@8bytes.org, will@kernel.org
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+To:     agk@redhat.com, snitzer@redhat.com
+Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
         Tom Rix <trix@redhat.com>
-Subject: [PATCH] iommu/amd: remove h from printk format specifier
-Date:   Tue, 15 Dec 2020 13:30:21 -0800
-Message-Id: <20201215213021.2090698-1-trix@redhat.com>
+Subject: [PATCH] dm dust: remove h from printk format specifier
+Date:   Tue, 15 Dec 2020 13:31:25 -0800
+Message-Id: <20201215213125.2091089-1-trix@redhat.com>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -75,22 +75,22 @@ so do not encourage the use of %hh[xudi] or %h[xudi].
 
 Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- drivers/iommu/amd/init.c | 2 +-
+ drivers/md/dm-dust.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index 5ff5687a87c7..eb17fb4ba67c 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -1883,7 +1883,7 @@ static void print_iommu_info(void)
- 		struct pci_dev *pdev = iommu->dev;
- 		int i;
+diff --git a/drivers/md/dm-dust.c b/drivers/md/dm-dust.c
+index 072ea913cebc..cbe1058ee589 100644
+--- a/drivers/md/dm-dust.c
++++ b/drivers/md/dm-dust.c
+@@ -130,7 +130,7 @@ static int dust_add_block(struct dust_device *dd, unsigned long long block,
  
--		pci_info(pdev, "Found IOMMU cap 0x%hx\n", iommu->cap_ptr);
-+		pci_info(pdev, "Found IOMMU cap 0x%x\n", iommu->cap_ptr);
- 
- 		if (iommu->cap & (1 << IOMMU_CAP_EFR)) {
- 			pci_info(pdev, "Extended features (%#llx):",
+ 	dd->badblock_count++;
+ 	if (!dd->quiet_mode) {
+-		DMINFO("%s: badblock added at block %llu with write fail count %hhu",
++		DMINFO("%s: badblock added at block %llu with write fail count %u",
+ 		       __func__, block, wr_fail_cnt);
+ 	}
+ 	spin_unlock_irqrestore(&dd->dust_lock, flags);
 -- 
 2.27.0
 
