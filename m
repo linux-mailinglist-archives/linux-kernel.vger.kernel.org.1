@@ -2,120 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE402DAD69
+	by mail.lfdr.de (Postfix) with ESMTP id 050422DAD68
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgLOMnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 07:43:19 -0500
-Received: from mga17.intel.com ([192.55.52.151]:9726 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726156AbgLOMnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 07:43:19 -0500
-IronPort-SDR: sN/E17DB0Ubawkb+N2ehUyS0ruFr0X4gOaZY7PeJ/YevAaafmwdU7CLrBCct3F+dNOprNh6WT3
- LFVu6u13AFkA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="154676546"
-X-IronPort-AV: E=Sophos;i="5.78,421,1599548400"; 
-   d="scan'208";a="154676546"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 04:41:33 -0800
-IronPort-SDR: JQH/VKg4GHrjW4sezgAupb89KUGTgyJWtElAGFvuzhZJlE5SwXipLWkPTBiBB66s2Nk6M7db2e
- qt9tJSYCbWGQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,421,1599548400"; 
-   d="scan'208";a="383522124"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Dec 2020 04:41:30 -0800
-Subject: Re: [RFC PATCH v8] sched/fair: select idle cpu from idle cpumask for
- task wakeup
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Jiang Biao <benbjiang@gmail.com>
-References: <20201210014359.183771-1-aubrey.li@linux.intel.com>
- <CAKfTPtAVC-ZJYexcYvVdO5gOJ2aXKzRpjLC797xoh5n4TWGU=Q@mail.gmail.com>
- <26c69935-e53d-32dc-0366-a1fb7f3c3d56@linux.intel.com>
- <CAKfTPtCrMAft5t8BrLxgLVoaLHoAmhTp3zgeB8Cu-7+fMSd2zw@mail.gmail.com>
- <698a61bf-6eea-8725-95c0-a5ea811e2bb4@linux.intel.com>
- <121565627e944f8e9dde4080d19d5b02@hisilicon.com>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <d3184ead-b82f-f784-4c07-9e36d4cc630c@linux.intel.com>
-Date:   Tue, 15 Dec 2020 20:41:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728786AbgLOMnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 07:43:24 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:56060 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726156AbgLOMnX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 07:43:23 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BFCfS2t045638;
+        Tue, 15 Dec 2020 06:41:28 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1608036088;
+        bh=LzfI5xS58ddpJd1dJCTni8TPFW8o/CWU0g/78oxWrVA=;
+        h=From:To:CC:Subject:Date;
+        b=bEN645C76AqczgrGW0AGdXf7+CtkF8ZoswpbFh4lnsIc2YQWal3ZzlUoK7e5PgAiO
+         k8gMctd6bXPfOUkm3bvgrCPtUS5qKmztowPi34DO8mMP3RHGOjevuYLBzx4TANUsSr
+         tORMRQTFB5QEo8br+fBtPBfcoBlbyc+eYbc/z+b0=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BFCfSVF055830
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Dec 2020 06:41:28 -0600
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
+ Dec 2020 06:41:27 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 15 Dec 2020 06:41:27 -0600
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BFCfP2I072404;
+        Tue, 15 Dec 2020 06:41:25 -0600
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <robh+dt@kernel.org>,
+        <a.hajda@samsung.com>, <narmstrong@baylibre.com>
+CC:     <Laurent.pinchart@ideasonboard.com>, <jonas@kwiboo.se>,
+        <jernej.skrabec@siol.net>, <dri-devel@lists.freedesktop.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] dt-bindings: display: bridge: tc358768: Remove maintainer information
+Date:   Tue, 15 Dec 2020 14:42:27 +0200
+Message-ID: <20201215124227.1872-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <121565627e944f8e9dde4080d19d5b02@hisilicon.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bao Hua,
+My employment with TI is coming to an end and I will not have access to
+the board where this bridge is connected to.
 
-Sorry I almost missed this message, :(
+It is better to remove a soon bouncing email address.
 
-On 2020/12/14 7:29, Song Bao Hua (Barry Song) wrote:
-> 
-> Hi Aubrey,
-> 
-> The patch looks great. But I didn't find any hackbench improvement
-> on kunpeng 920 which has 24 cores for each llc span. Llc span is also
-> one numa node. The topology is like:
-> # numactl --hardware
-> available: 4 nodes (0-3)
-> node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
-> node 0 size: 128669 MB
-> node 0 free: 126995 MB
-> node 1 cpus: 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42
-> 43 44 45 46 47
-> node 1 size: 128997 MB
-> node 1 free: 127539 MB
-> node 2 cpus: 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66
-> 67 68 69 70 71
-> node 2 size: 129021 MB
-> node 2 free: 127106 MB
-> node 3 cpus: 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90
-> 91 92 93 94 95
-> node 3 size: 127993 MB
-> node 3 free: 126739 MB
-> node distances:
-> node   0   1   2   3
->   0:  10  12  20  22
->   1:  12  10  22  24
->   2:  20  22  10  12
->   3:  22  24  12  10
-> 
-> Benchmark command:
-> numactl -N 0-1 hackbench -p -T -l 20000 -g $1
-> 
-> for each g, I ran 10 times to get the average time. And I tested
-> g from 1 to 10.
-> 
-> g     1      2      3      4      5      6       7     8        9       10
-> w/o   1.4733 1.5992 1.9353 2.1563 2.8448 3.3305 3.9616 4.4870 5.0786 5.6983
-> w/    1.4709 1.6152 1.9474 2.1512 2.8298 3.2998 3.9472 4.4803 5.0462 5.6505
-> 
-> Is it because the core number is small in llc span in my test?
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ .../devicetree/bindings/display/bridge/toshiba,tc358768.yaml   | 3 ---
+ 1 file changed, 3 deletions(-)
 
-I guess it is with SIS_PROP, when the system is very busy that idle cpu scan
-loop is throttled by nr(4). The patch actually reduces 4 times scan so the
-data change looks marginal. Vincent mentioned a notable change at here:
-	
-	https://lkml.org/lkml/2020/12/14/109
+diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml
+index c036a75db8f7..454ab8032b97 100644
+--- a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml
+@@ -6,9 +6,6 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: Toschiba TC358768/TC358778 Parallel RGB to MIPI DSI bridge
+ 
+-maintainers:
+-  - Peter Ujfalusi <peter.ujfalusi@ti.com>
+-
+ description: |
+   The TC358768/TC358778 is bridge device which converts RGB to DSI.
+ 
+-- 
+Peter
 
-Maybe you can increase the group number to see if it can be reproduced on
-your side.
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
-Thanks,
--Aubrey
