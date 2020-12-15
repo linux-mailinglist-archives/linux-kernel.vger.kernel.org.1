@@ -2,65 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866D62DA7E3
+	by mail.lfdr.de (Postfix) with ESMTP id 195912DA7E2
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 06:59:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbgLOF5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 00:57:34 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:58117 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726176AbgLOF4n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 00:56:43 -0500
-X-UUID: ae992032e7e349888f38e9bc98d40e7f-20201215
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=CYiOZ6PdNxQ0j+f8JPGmAHyNbWoWuF7ovz3Dtyhtmk8=;
-        b=SuI65ctyGlnxgCCu+cQ1MFtmO+P0mcW6ExMirH/b3OZwaDmpHbDOHoHOb+02WvH07JvKi+7KT0RX4eRZXTNKWO526OxG5jLXQV/JQX5F+dnSwy0fzuCI7vA7qY6oImxWf6QDDFbFtrf81yvu46eU+bdSq2xAFz3bY5TyIXj79Is=;
-X-UUID: ae992032e7e349888f38e9bc98d40e7f-20201215
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 852235717; Tue, 15 Dec 2020 13:55:54 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 15 Dec 2020 13:55:53 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 15 Dec 2020 13:55:53 +0800
-Message-ID: <1608011753.10163.10.camel@mtkswgap22>
-Subject: Re: [PATCH v4 2/3] scsi: ufs: Clean up
- ufshcd_exit_clk_scaling/gating()
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
-        <hongwus@codeaurora.org>, <rnayak@codeaurora.org>,
-        <linux-scsi@vger.kernel.org>, <kernel-team@android.com>,
-        <saravanak@google.com>, <salyzyn@google.com>,
-        "Alim Akhtar" <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "Bart Van Assche" <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Tue, 15 Dec 2020 13:55:53 +0800
-In-Reply-To: <1607877104-8916-3-git-send-email-cang@codeaurora.org>
-References: <1607877104-8916-1-git-send-email-cang@codeaurora.org>
-         <1607877104-8916-3-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1726330AbgLOF5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 00:57:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725975AbgLOF4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 00:56:42 -0500
+Date:   Tue, 15 Dec 2020 07:55:56 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608011761;
+        bh=29DhGnONxd3yOTjMJ+gkCB6gIxRn2Yv71AJpDeVqDXs=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rqB9tWg6o/Aejc5yFI3FCsc0OI48RWQX2KjbpbgB8ti14i5UeH1/vSSut2AQ4rpJa
+         WlAHIBK9+AUsQXELV4ERIyd8WH0odau0/f3H4kKabpLQYFbASM5VYDSCIiz8TWgsGP
+         aoCO6K/nIHPImw4lJhzb6KEPvthlwXAbK1ndVbHsBkvnDJ5nov72EvhEOm/MSUm+8D
+         7dHdai9qltW2R4us+T6xK/1BwBpo4t//RUIzBZRoWhrT9RU0gRsZdcq3nkjeh85AAO
+         GnaxpXZTnrT3AO9mvIdYjeRTR5agD8aZLBlx5XYfhBvJRGV0RFCK/Fm4MyzvGICheJ
+         nsGliDfFeGHhw==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-sgx@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
+Message-ID: <20201215055556.GA28278@kernel.org>
+References: <20201211113230.28909-1-jarkko@kernel.org>
+ <X9e2jOWz1hfXVpQ5@google.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X9e2jOWz1hfXVpQ5@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU3VuLCAyMDIwLTEyLTEzIGF0IDA4OjMxIC0wODAwLCBDYW4gR3VvIHdyb3RlOg0KPiB1ZnNo
-Y2RfaGJhX2V4aXQoKSBpcyBhbHdheXMgY2FsbGVkIGFmdGVyIHVmc2hjZF9leGl0X2Nsa19zY2Fs
-aW5nKCkgYW5kDQo+IHVmc2hjZF9leGl0X2Nsa19nYXRpbmcoKSwgc28gbW92ZSB1ZnNoY2RfZXhp
-dF9jbGtfc2NhbGluZy9nYXRpbmcoKSB0bw0KPiB1ZnNoY2RfaGJhX2V4aXQoKS4NCj4gDQo+IFNp
-Z25lZC1vZmYtYnk6IENhbiBHdW8gPGNhbmdAY29kZWF1cm9yYS5vcmc+DQoNClJldmlld2VkLWJ5
-OiBTdGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KDQoNCg==
+On Mon, Dec 14, 2020 at 11:01:32AM -0800, Sean Christopherson wrote:
+> On Fri, Dec 11, 2020, Jarkko Sakkinen wrote:
+> > Each sgx_mmun_notifier_release() starts a grace period, which means that
+> 
+> Should be sgx_mmu_notifier_release(), here and in the comment.
 
+Thanks.
+
+> > one extra synchronize_rcu() in sgx_encl_release(). Add it there.
+> > 
+> > sgx_release() has the loop that drains the list but with bad luck the
+> > entry is already gone from the list before that loop processes it.
+> 
+> Why not include the actual analysis that "proves" the bug?  The splat that
+> Haitao reported would also be useful info.
+
+True. I can include a snippet of dmesg to the commit message.
+
+> > Fixes: 1728ab54b4be ("x86/sgx: Add a page reclaimer")
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > Reported-by: Sean Christopherson <seanjc@google.com>
+> 
+> Haitao reported the bug, and for all intents and purposes provided the fix.  I
+> just did the analysis to verify that there was a legitimate bug and that the
+> synchronization in sgx_encl_release() was indeed necessary.
+
+Good and valid point. The way I see it, the tags should be:
+
+Reported-by: Haitao Huang <haitao.huang@linux.intel.com>
+Suggested-by: Sean Christopherson <seanjc@google.com>
+
+Haitao pointed out the bug but from your analysis I could resolve that
+this is the fix to implement, and was able to write the long
+description for the commit.
+
+Does this make sense to you?
+
+/Jarkko
