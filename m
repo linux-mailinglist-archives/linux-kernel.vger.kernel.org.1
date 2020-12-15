@@ -2,103 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926052DA765
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 06:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 492A22DA769
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 06:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726115AbgLOFTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 00:19:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725864AbgLOFTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 00:19:22 -0500
-Date:   Tue, 15 Dec 2020 07:18:38 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608009522;
-        bh=sYVoD9fQ4iG/h+hSNQcInrv0UeUccJHoIREfTQfxY7c=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LoYz2VkhmecU0TapvJ/75sQjoZEdfvX/S4P55adPRt2I1DmlSA/FEyEi1pVtS4mJ7
-         RZUlxKtZTfFY+wCMdaNBL5bfZ1qPi2QeIxaeMTyo3i8F0yoSLL8auWElbfhQySjuQF
-         LoG/UhPIjgEE4zNWy55kNrt7C+bmitx0RsRRIUNTkzOocCeOjpDrIcc6mLbvdIy9li
-         5cB7x+6EAWKAHLXB4oHAZOAqgdr3dv7gbbC1t86sv7BgXHTs67elMd6JZfaSnf9cQw
-         KxUTRiF0PaltqTsAZQ8xnt6INwHW40Dn0TxBLuMA+xenGgl6QYGCXHcEfNM1rkVWhT
-         cGQR6CdYFWnlQ==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Vasyl Gomonovych <gomonovych@gmail.com>, tariqt@nvidia.com,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net/mlx4: Use true,false for bool variable
-Message-ID: <20201215051838.GH5005@unreal>
-References: <20201212090234.0362d64f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201214103008.14783-1-gomonovych@gmail.com>
- <20201214111608.GE5005@unreal>
- <20201214110351.29ae7abb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <1113d2d634d46adb9384e09c3f70cb8376a815c4.camel@perches.com>
+        id S1726244AbgLOFWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 00:22:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726212AbgLOFV5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 00:21:57 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13897C0617A7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 21:21:17 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id dk8so19662357edb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 21:21:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DtoFrDGyRzomOBINo4k6/LLWjzIuvMntHICBSDufujU=;
+        b=JccyEeDCqJGvzrnf2MTHV8vENXCE6EcEbKHITxFkBO6S45+kn+osTIpTjWRM3JtZzb
+         vPNNdbh5S1JVM6LI9b4DAi1HSURysZF24us8TaPcZPi4KFLMvmggU5+OyCQKe8XTQsAc
+         33BL/38GifT8ctNK9/YkhL2cd4BcyB0koGRZHwFnm8E6zJWZ2ODFlYlUqZxwvLxgedwT
+         PJKUgrfIFKkNGGBF7KS7nYRoNQznH13b87lhRhv3fJymmBExXI74BqviWJOlMg02DfSB
+         mqjs+rdiet8J7N3eIxlNMVG7tLXZZIZGnLNjjC7+UaB3cYlooKmKrAG1qCFKu2x4n5U+
+         Nwvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DtoFrDGyRzomOBINo4k6/LLWjzIuvMntHICBSDufujU=;
+        b=Is7NUx3gW72G4LT19WhdtMtbz+4IshDsi27QbAJ8ZvLWlY0ga1UE68q61muD/a/Byj
+         ha1QfXqD3+bmJVEVSR+SVl22SHV16zyPV1ehFlzCxXpk76MowYfoDTbGpZFZX4+Lwkxo
+         lZe+1W2IFw7SsETCD2rhvuNqmgw8iTXimc2Dd6FDFx61gkqDT7WGvl9uYxRAmnV8VYtR
+         fVFED8qiJ+VDPtWmZhXTYR7lvxjzsvqEH+oBvms7GTXNO66dcCg9cLfTgel0bWoWpGw8
+         NvklEm3334kYRBldCcm/XvxkLnj7Ho6zYuc5lslMf4cOPjcA++s8obGrI6qWiZVAtiv8
+         O8WQ==
+X-Gm-Message-State: AOAM531kqgahZGiNdRGZ9luLoW1nBPr7xkd+IpUkhgxzTl+yejHBRSYd
+        pZb04pJoarbqyG+vPKdvw1dUIxyoZq1SNq44+AIiUg==
+X-Google-Smtp-Source: ABdhPJymYnD0yKSOBXxwE4d162v7Rhh7achqxetqFLI95KAw3f9XowfmwGq2H2/sTiKf/Lsn8U2gqBc4k8RGnx9uCRI=
+X-Received: by 2002:a05:6402:95c:: with SMTP id h28mr853886edz.26.1608009675762;
+ Mon, 14 Dec 2020 21:21:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1113d2d634d46adb9384e09c3f70cb8376a815c4.camel@perches.com>
+References: <20201211202140.396852-1-pasha.tatashin@soleen.com>
+ <20201211202140.396852-4-pasha.tatashin@soleen.com> <20201214140912.GE32193@dhcp22.suse.cz>
+In-Reply-To: <20201214140912.GE32193@dhcp22.suse.cz>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Tue, 15 Dec 2020 00:20:39 -0500
+Message-ID: <CA+CK2bA9u_ZUosha0JvW6ezs-h95UBHZztoFojMyFbC791ximw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/6] mm: apply per-task gfp constraints in fast path
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 11:15:01AM -0800, Joe Perches wrote:
-> On Mon, 2020-12-14 at 11:03 -0800, Jakub Kicinski wrote:
-> > On Mon, 14 Dec 2020 13:16:08 +0200 Leon Romanovsky wrote:
-> > > On Mon, Dec 14, 2020 at 11:30:08AM +0100, Vasyl Gomonovych wrote:
-> > > > It is fix for semantic patch warning available in
-> > > > scripts/coccinelle/misc/boolinit.cocci
-> > > > Fix en_rx.c:687:1-17: WARNING: Assignment of 0/1 to bool variable
-> > > > Fix main.c:4465:5-13: WARNING: Comparison of 0/1 to bool variable
-> > > >
-> > > > Signed-off-by: Vasyl Gomonovych <gomonovych@gmail.com>
-> > > > ---
-> > > >  - Add coccicheck script name
-> > > >  - Simplify if condition
-> > > > ---
-> > > >  drivers/net/ethernet/mellanox/mlx4/en_rx.c | 2 +-
-> > > >  drivers/net/ethernet/mellanox/mlx4/main.c  | 2 +-
-> > > >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > >
-> > > Please refrain from sending new version of patches as reply-to to
-> > > previous variants. It makes to appear previous patches out-of-order
-> > > while viewing in threaded mode.
+> Ack to this.
+
+Thank you.
+
+>
+> But I do not really understand this. All allocation contexts should have
+> a proper gfp mask so why do we have to call current_gfp_context here?
+> In fact moving the current_gfp_context in the allocator path should have
+> made all this games unnecessary. Memcg reclaim path might need some
+> careful check because gfp mask is used more creative there but the
+> general reclaim paths should be ok.
+>
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+>
+> Again, why do we need this when the gfp_mask
+> >       };
 > >
-> > Yes, please! I'm glad I'm not the only one who feels this way! :)
->
-> I'm the other way.
->
-> I prefer revisions to single patches (as opposed to large patch series)
-> in the same thread.
+--
 
-It depends which side you are in that game. From the reviewer point of
-view, such submission breaks flow very badly. It unfolds the already
-reviewed thread, messes with the order and many more little annoying
-things.
+Hi Michal,
 
->
-> There is no other easy way for changes to a patch to be tracked AFAIK.
+Beside from __alloc_pages_nodemask(), the current_gfp_context() is
+called from the following six functions:
 
-Not really,  I'm using very simple convention to keep tracking of
-changes. The changelog together with lorifier does the trick.
+try_to_free_pages()
+try_to_free_mem_cgroup_pages()
+__node_reclaim()
+__need_fs_reclaim()
+alloc_contig_range()
+pcpu_alloc()
 
-https://github.com/danrue/lorifier
-https://lore.kernel.org/linux-rdma/20201125064628.8431-1-leon@kernel.org/
+As I understand, the idea is that because the allocator now honors
+gfp_context values for all paths, the call can be removed from some of
+the above functions. I think you are correct. But, at least from a
+quick glance, this is not obvious, and is not the case for all of the
+above functions.
 
-So I'm simply adding link to the previous version when sending new one.
+For example:
 
->
-> Most email clients use both In-Reply-To: and References: headers as
-> the mechanism to thread replies.
+alloc_contig_range()
+  __alloc_contig_migrate_range
+   isolate_migratepages_range
+     isolate_migratepages_block
+        /*
+         * Only allow to migrate anonymous pages in GFP_NOFS context
+         * because those do not depend on fs locks.
+         */
+       if (!(cc->gfp_mask & __GFP_FS) && page_mapping(page))
+          goto isolate_fail;
 
-Right, and this is exactly what we don't want for vX patches.
-
->
-> Keeping the latest messages at the bottom of a thread works well
-> to see revision sequences.
-
-I have a different workflow.
-
-Thanks
+If we remove current_gfp_context() from alloc_contig_range(), the
+cc->gfp_mask will not be updated with proper __GFP_FS flag.
+I have studied some other paths, and they are also convoluted.
+Therefore, I am worried about performing this optimization in this
+series.
