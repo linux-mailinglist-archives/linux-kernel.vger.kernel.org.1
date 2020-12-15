@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5542DB42D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FC52DB41D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731740AbgLOTBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 14:01:14 -0500
-Received: from mout.kundenserver.de ([212.227.126.134]:47655 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731768AbgLOTA4 (ORCPT
+        id S1731717AbgLOS7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 13:59:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730744AbgLOS6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 14:00:56 -0500
-Received: from orion.localdomain ([95.118.67.37]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1Md6hP-1kGSfL2vJL-00aC59; Tue, 15 Dec 2020 19:57:52 +0100
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     luto@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com
-Subject: [PATCH v2] arch: x86: entry: vdso: fix type conversion on printf() call
-Date:   Tue, 15 Dec 2020 19:57:51 +0100
-Message-Id: <20201215185751.14384-1-info@metux.net>
-X-Mailer: git-send-email 2.11.0
-X-Provags-ID: V03:K1:G3CmrqdUmfEWhtR0G/ykp2FC0koTsURzyQESHLIoxvEkL0lYkPE
- x9b9E9xa5vWYhlkw2mJKBapIgSoC2or6atWZ3K3Fut9bzVSKKkCNum7i/2zNZ2djq3F2GPe
- wNpb9/QQXJ29enuiqPnAx1ID6mfbVSILqrGeUBF1zd6678mEgqmNTXEKveiVEUwfap2ZoP7
- L9VKq3UNpZYY+tnxtoXWA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:avHAVr0/hXw=:zUGnc41SOQQp+wiU2gyTUY
- E1r1xJjVV2OLwmU4424tPkRzr/D2QnjAktV5LoGJnMut/+SnNq0C7TikmEUh16xotLoM/AjN4
- TcMR71rosg5Zy8hkBRhIdSVCsCQlpB+2ApgB9w7OYWkWgBtg0xQMGfUomJMzYLpF9tv4fuLAu
- B4xTEBwuFw01WA8AkBAukBBmPpULo/UqMIsewhi8L393PjqJKkyvF3sSl7+KBstyXQH8C2rvd
- 6mQ8k3gwoqVqLla5S4VcwbCurjmHx+xtYVgSY6G2TULGWTUaVWyazpTTEtlJB28R/+xpPR4pP
- KG7FB+GSm5syA//MEOvor92q1NFzGBJV5bKEhZuGQEhpmZ7wu5z6zNINssDstIM/KomLNIrq5
- 2rWNB4VoU+ixC/dzBFHoWCqEQs3hLGVrxLhwS6GJw5BaK0az5JuwxeIz2qkyM
+        Tue, 15 Dec 2020 13:58:55 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690BDC06179C;
+        Tue, 15 Dec 2020 10:58:15 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0f9e009c14e1abc4cc14de.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:9e00:9c14:e1ab:c4cc:14de])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D0CE71EC04DF;
+        Tue, 15 Dec 2020 19:58:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1608058693;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=BZwPR5IScj0YRL8ObZ/33FAKWJRNV1DEIVj6adoM+1Y=;
+        b=e0mhnX0mZE69wKAOLYDmzK0yX0J1vlqODsFRR7/se6as9cOnrzOsp+wggjsC8GNeieMX+q
+        Joj8GPTFScVXb0n2scjgpJt5S+EcSsMaB5OF5cEk+izW04AcJJL5NBcs2XRAtifmL208Eo
+        fv6VvkWHAN0g/EJz9I0i9lNkCZonw1Q=
+Date:   Tue, 15 Dec 2020 19:58:08 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     linux-edac <linux-edac@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] EDAC/amd64: Merge error injection sysfs facilities
+Message-ID: <20201215185808.GE9817@zn.tnic>
+References: <20201215110517.5215-1-bp@alien8.de>
+ <20201215110517.5215-2-bp@alien8.de>
+ <20201215161120.GB2122783@yaz-nikka.amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201215161120.GB2122783@yaz-nikka.amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixing the following compiler warning by explicit conversion to long:
+On Tue, Dec 15, 2020 at 10:11:20AM -0600, Yazen Ghannam wrote:
+> Can we say "Opterons (Family 10h to Family 15h)"? It may also apply to
+> Family 16h, but I don't know if they were branded as Opterons.
+> 
+> The injection code in this module doesn't apply to Family 17h and later.
+> 
+> Also, Family 17h and later doesn't allow the OS direct access to the error
+> injection registers. They're locked down by security policy, etc.
 
-In file included from /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.c:162:0:
-/home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h: In function 'extract64':
-/home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t {aka unsigned int}' [-Wformat=]
-  fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
-                                                    ^
-  CC      mm/filemap.o
-In file included from /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.c:166:0:
-/home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h: In function 'extract32':
-/home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t {aka unsigned int}' [-Wformat=]
-  fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
+Yeah, figured as much after I started getting all 0s while poking at
+them with setpci...
 
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+Ok, I'll fix that ontop - this patch should be only code movement and
+trivial cleanups, functionality changes ontop.
 
----
+> Related to the comment above, can this be changed to the following?
+> 
+> 	if (pvt->fam < 0x10 || pvt->fam >= 0x17)
 
-changes v2: using %zu instead of %lu, which is the preferred conversion
-            for size_t - the line break isn't needed anymore
----
- arch/x86/entry/vdso/vdso2c.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Right.
 
-diff --git a/arch/x86/entry/vdso/vdso2c.h b/arch/x86/entry/vdso/vdso2c.h
-index 1c7cfac7e64a..5264daa8859f 100644
---- a/arch/x86/entry/vdso/vdso2c.h
-+++ b/arch/x86/entry/vdso/vdso2c.h
-@@ -35,7 +35,7 @@ static void BITSFUNC(extract)(const unsigned char *data, size_t data_len,
- 	if (offset + len > data_len)
- 		fail("section to extract overruns input data");
- 
--	fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
-+	fprintf(outfile, "static const unsigned char %s[%zu] = {", name, len);
- 	BITSFUNC(copy)(outfile, data + offset, len);
- 	fprintf(outfile, "\n};\n\n");
- }
+> Everything else looks good to me.
+> 
+> Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+
+Thx.
+
 -- 
-2.11.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
