@@ -2,120 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F126A2DAA93
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 310CA2DAA96
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:05:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727714AbgLOKDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:03:33 -0500
-Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:35729 "EHLO
-        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgLOKDc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:03:32 -0500
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS1.zhaoxin.com
- (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 15 Dec
- 2020 18:02:44 +0800
-Received: from [10.32.56.37] (10.32.56.37) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 15 Dec
- 2020 18:02:43 +0800
-Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <hpa@zytor.com>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <TimGuo-oc@zhaoxin.com>,
-        <CooperYan@zhaoxin.com>, <QiyuanWang@zhaoxin.com>,
-        <HerryYang@zhaoxin.com>, <CobeChen@zhaoxin.com>,
-        <SilviaZhao@zhaoxin.com>
-References: <1607918392-19171-1-git-send-email-TonyWWang-oc@zhaoxin.com>
- <20201215085819.GE3040@hirez.programming.kicks-ass.net>
-From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Message-ID: <07c55c37-1ae6-f2c1-e85c-53bb61c77c43@zhaoxin.com>
-Date:   Tue, 15 Dec 2020 18:02:39 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728103AbgLOKDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:03:51 -0500
+Received: from mga06.intel.com ([134.134.136.31]:60201 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727775AbgLOKDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 05:03:38 -0500
+IronPort-SDR: HNQ4VniQ3OWYdHUvJn0BU0kqUY0k9JtpMYV71u+s5r6LY/G2sLm2MKYEtRGWCd2rckjpUPaHQp
+ tTkzLa446SKw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="236438936"
+X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
+   d="scan'208";a="236438936"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 02:02:57 -0800
+IronPort-SDR: kf3DdIWK+rgepPVqlwoLtQ75J1eGvlJMSYmVIQN0V1mKdeIzzjEP23WELo20Vjt0tJKCImKhH+
+ 3em0Hb8jnCow==
+X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
+   d="scan'208";a="368142989"
+Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 02:02:53 -0800
+Date:   Tue, 15 Dec 2020 18:02:51 +0800
+From:   Shuo A Liu <shuo.a.liu@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v6 06/18] virt: acrn: Introduce VM management interfaces
+Message-ID: <20201215100251.GO17702@shuo-intel.sh.intel.com>
+References: <20201201093853.12070-1-shuo.a.liu@intel.com>
+ <20201201093853.12070-7-shuo.a.liu@intel.com>
+ <X8YWa8IUCgOARYMS@kroah.com>
+ <20201202021429.GL17702@shuo-intel.sh.intel.com>
+ <20201215095259.GN17702@shuo-intel.sh.intel.com>
+ <X9iJWXaIUpUq2qia@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20201215085819.GE3040@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.32.56.37]
-X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <X9iJWXaIUpUq2qia@kroah.com>
+User-Agent: Mutt/1.8.3 (2017-05-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 15.Dec'20 at 11:00:57 +0100, Greg Kroah-Hartman wrote:
+>On Tue, Dec 15, 2020 at 05:52:59PM +0800, Shuo A Liu wrote:
+>> On Wed  2.Dec'20 at 10:14:29 +0800, Shuo A Liu wrote:
+>> > On Tue  1.Dec'20 at 11:09:47 +0100, Greg Kroah-Hartman wrote:
+>> > > On Tue, Dec 01, 2020 at 05:38:41PM +0800, shuo.a.liu@intel.com wrote:
+>> > > > +		vm_param->reserved0 = 0;
+>> > > > +		vm_param->reserved1 = 0;
+>> > >
+>> > > NO!
+>> > >
+>> > > This means that userspace can put whatever crud they want in those
+>> > > fields, and you will happily zero it out.  Then, when those reserved
+>> > > fields are wanted to be used in the future, you will take those values
+>> > > from userspace and accept them as a valid value.  But, since userspace
+>> > > was sending crud before, now you will take that crud and do something
+>> > > with it.
+>> > >
+>> > > TEST IT to verify that it is zero, that way userspace gets it right the
+>> > > first time, and you don't get it wrong later, as you can not change it
+>> > > later.
+>> >
+>> > OK. Thanks for the elaboration. I will test it and return -EINVAL if
+>> > it is not zero.
+>> >
+>>
+>> Hi Greg,
+>>
+>> Would you like to review other patches in this series on this version?
+>
+>Nope, it's the middle of the merge window, I can't do anything with any
+>new patches until after 5.11-rc1 is out.  So I suggest you fix up the
+>current issues and send a new patch series once 5.11-rc1 is released.
 
-On 15/12/2020 16:58, Peter Zijlstra wrote:
-> On Mon, Dec 14, 2020 at 11:59:52AM +0800, Tony W Wang-oc wrote:
-> 
-> Didn't I mention something about a comment?
-> 
-Really sorry for this.
-
->>  static const struct x86_cpu_id crc32c_cpu_id[] = {
->> +	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 0x6, X86_FEATURE_XMM4_2, 1),
->> +	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x1b, X86_FEATURE_XMM4_2, 1),
->> +	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x3b, X86_FEATURE_XMM4_2, 1),
->> +	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 0x6, X86_FEATURE_XMM4_2, 1),
->> +	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x1b, X86_FEATURE_XMM4_2, 1),
->> +	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x3b, X86_FEATURE_XMM4_2, 1),
->>  	X86_MATCH_FEATURE(X86_FEATURE_XMM4_2, NULL),
->>  	{}
-> 
-> Also, the above is weird in that is has the negative entries marked
-> positive, and 1/NULL are inconsistent.
-> 
-> Something like so then?
-> That's better!
-
-> ---
-> 
-> diff --git a/arch/x86/crypto/crc32c-intel_glue.c b/arch/x86/crypto/crc32c-intel_glue.c
-> index feccb5254c7e..f6e6669a5102 100644
-> --- a/arch/x86/crypto/crc32c-intel_glue.c
-> +++ b/arch/x86/crypto/crc32c-intel_glue.c
-> @@ -215,14 +215,31 @@ static struct shash_alg alg = {
->  };
->  
->  static const struct x86_cpu_id crc32c_cpu_id[] = {
-> -	X86_MATCH_FEATURE(X86_FEATURE_XMM4_2, NULL),
-> +	/*
-> +	 * Negative entries; exclude these chips from using this driver.
-> +	 * They match the positive rule below, but their CRC32 instruction
-> +	 * implementation is so slow, it doesn't merrit use.
-Will fix the typo merrit -> merit and resend the patch.
-
-Sincerely
-Tony
-
-> +	 */
-> +	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 0x6, X86_FEATURE_XMM4_2, false),
-> +	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x1b, X86_FEATURE_XMM4_2, false),
-> +	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x3b, X86_FEATURE_XMM4_2, false),
-> +	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 0x6, X86_FEATURE_XMM4_2, false),
-> +	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x1b, X86_FEATURE_XMM4_2, false),
-> +	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x3b, X86_FEATURE_XMM4_2, false),
-> +	/*
-> +	 * Positive entry; SSE-4.2 instructions include special purpose CRC32
-> +	 * instructions.
-> +	 */
-> +	X86_MATCH_FEATURE(X86_FEATURE_XMM4_2, true),
->  	{}
->  };
->  MODULE_DEVICE_TABLE(x86cpu, crc32c_cpu_id);
->  
->  static int __init crc32c_intel_mod_init(void)
->  {
-> -	if (!x86_match_cpu(crc32c_cpu_id))
-> +	const struct x86_cpu_id *m = x86_match_cpu(crc32c_cpu_id);
-> +
-> +	if (!m || !m->driver_data)
->  		return -ENODEV;
->  #ifdef CONFIG_X86_64
->  	if (boot_cpu_has(X86_FEATURE_PCLMULQDQ)) {
-> .
-> 
+Got it, thanks!
