@@ -2,120 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4196E2DAE49
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E97E2DAE4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728392AbgLONuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:50:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726844AbgLONuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:50:13 -0500
-X-Gm-Message-State: AOAM530/lLb4vZRsy2dfnBxZoELggSFnMR20RXD79GLrHmjGs0GxUhKb
-        0yrYa/K1Wxxuyqux384jkXfin7V9nxjmEYxS5Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608040171;
-        bh=1IMbW6DcnKL8W48aPBvi3J2CKA3F7ooAmZekZr9m+L0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HTlC43YJ+fLFivFeqZJrNSvXJmIwUuO2fDRjtyPCJ7F+4WTLxZxKq9aBQrwKiTcc3
-         NuRf3//DqITqA9N/Dcp1Z5lr04c8E860zj0NyMXmaicXuFXS27x6fqvFyQKc1GOru3
-         2SXE4QzUrrj9cBmjoXKcph0b4L9xCCOGdjpo+mDXm6SqABTnxhZ7f5RqzuWxVcnagj
-         sBLadlh0rhr+AAwfDKWmlxp+ySzujgV/bGGlAY5d/JpOvvnu1GyjcwDSvx6XUKrvlW
-         7cCni0zV9BU2tqKf9cjeV8Rd9E3HQuZbnLMDFuwnlGGQs+9ZiuZmhWYvG7PWiRHxEP
-         aXPaULd7uU9Fw==
-X-Google-Smtp-Source: ABdhPJxeSn5V2lNIzJOznNBcsMQo5d0IxoNQaeQ4VnHLUv/oXb7MgUGmNleynG5tLxUE24Cj719pHTH+rRKYuDU0dKQ=
-X-Received: by 2002:a05:6214:c23:: with SMTP id a3mr37646233qvd.4.1608040170394;
- Tue, 15 Dec 2020 05:49:30 -0800 (PST)
+        id S1728496AbgLONvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:51:18 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:35184 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726819AbgLONux (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 08:50:53 -0500
+Received: by mail-lf1-f68.google.com with SMTP id a9so39495248lfh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 05:50:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cCVaoJFKEtI7Btpypz1Lyb8fOWukXtArgLnLgeKjRr0=;
+        b=Uk3NSzsXKnursyDjV7JY81ItOuHjMH0LHFcX8psXcegaYlTBNJnzoDQMafBAvHmO8+
+         59IycVJgNdH+KUPWW98ss9JeSbffRjK392vzLT7Xxfigb6fO2gBFQsOgKixNyyp+ZAoz
+         Wponr9UKun2cqLRP/So/umQhYleFWy/eiTfkKeVcf7/YqYz69DPVJms7B24D2a/LGu5M
+         zakkCEEIwWeekRfV8amhHHNnSwCgz9Nnw0q5tmH72FmgwnYxagHL9ogChNOGunUS+WN0
+         VcCaultugf1S0WnDIfegGUj28zG6Cs2b2UglGUnZyU6k+WawSNy8Kh3/zLk/Fgya+WjU
+         S3Mw==
+X-Gm-Message-State: AOAM531MS8iddsmgLY519rmcgXcPv9nAIPi9etglsHZ20QPfYGgM3koU
+        oydmQ/54QmYpq0tc2vR36WIAwMAYme+pJ3uMQuh5PifN
+X-Google-Smtp-Source: ABdhPJyIkEcLpcR50ld+Qzx6yGLoJGSl76WmdOZRMpcoMAilWdvJLDFwidd0ZGeMKqgHHtgeJmevUeMXDdpsr3XRXSk=
+X-Received: by 2002:a19:cc10:: with SMTP id c16mr11048202lfg.112.1608040210893;
+ Tue, 15 Dec 2020 05:50:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20201116135305.81319-1-jacopo+renesas@jmondi.org>
- <20201116135305.81319-3-jacopo+renesas@jmondi.org> <20201130220048.GA3104550@robh.at.kernel.org>
- <20201215111420.zpc67jkary3l5j4z@uno.localdomain> <CAMuHMdX1bzRqZEvXod3QNx+SNybP85wpQ66=bxyQJ4kAoo6X1g@mail.gmail.com>
- <20201215120809.l4qrwdfoq5jpsfi5@uno.localdomain>
-In-Reply-To: <20201215120809.l4qrwdfoq5jpsfi5@uno.localdomain>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 15 Dec 2020 07:49:18 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+u4tqxdWGvSFu+SiuM3dA1g0tpWZHnnz0zSjoMnhPWXA@mail.gmail.com>
-Message-ID: <CAL_Jsq+u4tqxdWGvSFu+SiuM3dA1g0tpWZHnnz0zSjoMnhPWXA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/8] dt-bindings: media: max9286: Document 'maxim,initial-reverse-channel-mV'
-To:     Jacopo Mondi <jacopo@jmondi.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+References: <1607996131-9340-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1607996131-9340-1-git-send-email-yangtiezhu@loongson.cn>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 15 Dec 2020 22:49:59 +0900
+Message-ID: <CAM9d7chMkKBschy=abDqyOBg8_jxXBXhSN30k2m+MhPca_g2ig@mail.gmail.com>
+Subject: Re: [PATCH v2] perf callchain: Return directly when use '--call-graph
+ dwarf' under !HAVE_DWARF_SUPPORT
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 6:08 AM Jacopo Mondi <jacopo@jmondi.org> wrote:
->
-> Hi Geert,
->
-> On Tue, Dec 15, 2020 at 12:44:17PM +0100, Geert Uytterhoeven wrote:
-> > Hi Jacopo,
-> >
-> > On Tue, Dec 15, 2020 at 12:14 PM Jacopo Mondi <jacopo@jmondi.org> wrote:
-> > > On Mon, Nov 30, 2020 at 03:00:48PM -0700, Rob Herring wrote:
-> > > > On Mon, Nov 16, 2020 at 02:52:59PM +0100, Jacopo Mondi wrote:
-> > > > > Document the 'initial-reverse-channel-mV' vendor property in the
-> > > > > bindings document of the max9286 driver.
-> > > > >
-> > > > > The newly introduced property allows to specifying the initial
-> > > > > configuration of the GMSL reverse control channel to accommodate
-> > > > > remote serializers pre-programmed with the high threshold power
-> > > > > supply noise immunity enabled.
-> > > > >
-> > > > > Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> > > > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > > > > ---
-> > > > >  .../bindings/media/i2c/maxim,max9286.yaml     | 23 +++++++++++++++++++
-> > > > >  1 file changed, 23 insertions(+)
-> > > > >
-> > > > > diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> > > > > index 9ea827092fdd..f61234d204fa 100644
-> > > > > --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> > > > > +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> > > > > @@ -51,6 +51,26 @@ properties:
-> > > > >    '#gpio-cells':
-> > > > >      const: 2
-> > > > >
-> > > > > +  maxim,initial-reverse-channel-mV:
-> > > >
-> > > > Use standard unit suffix.
-> > > >
-> > >
-> > > Which one ? :)
-> >
-> > Documentation/devicetree/bindings/property-units.txt
-> >
->
-> Oh, I had no idea we have this.
-> It's been here since a long time it seems, my bad
->         Date:   Mon Feb 8 10:55:55 2016
->
-> > > I see in v5.10 one 'mV', three 'mv', one 'millivolts', several
-> > > 'microvolts'.
-> > >
-> > > I'll go with the majority and make this
-> > > 'maxim,initial-reverse-channel-mv'
-> >
-> > Wrong guess ;-)
-> >
->
-> Maybe a stupid question, but the fact only 'microvolts' is listed, is
-> an implied suggestion to use 'millivolts' for simmetry or to express
-> the value in micro volts ?
+Hello,
 
-Use microvolts. Not having every possible unit is on purpose.
+On Tue, Dec 15, 2020 at 10:35 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>
+> DWARF register mappings have not been defined for some architectures,
+> at least for mips, so we can print an error message and then return
+> directly when use '--call-graph dwarf'.
+>
+> E.g. without this patch:
+>
+> [root@linux perf]# ./perf record --call-graph dwarf cd
+> Error:
+> The sys_perf_event_open() syscall returned with 89 (Function not implemented) for event (cycles).
+> /bin/dmesg | grep -i perf may provide additional information.
+>
+> With this patch:
+>
+> [root@linux perf]# ./perf record --call-graph dwarf cd
+> DWARF is not supported for architecture mips64
+>
+>  Usage: perf record [<options>] [<command>]
+>     or: perf record [<options>] -- <command> [<options>]
+>
+>         --call-graph <record_mode[,record_size]>
+>                           setup and enables call-graph (stack chain/backtrace):
+>
+>                                 record_mode:    call graph recording mode (fp|dwarf|lbr)
+>                                 record_size:    if record_mode is 'dwarf', max size of stack recording (<bytes>)
+>                                                 default: 8192 (bytes)
+>
+>                                 Default: fp
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>
+> v2: Use HAVE_DWARF_SUPPORT to check
 
-Rob
+I'm not sure whether this is because of lack of dwarf library or kernel support.
+Based on the error message, I guess it's from the kernel.  Then I think this
+patch won't be sufficient..
+
+Thanks,
+Namhyung
+
+
+>
+>  tools/perf/util/callchain.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
+> index 1b60985..ad08554 100644
+> --- a/tools/perf/util/callchain.c
+> +++ b/tools/perf/util/callchain.c
+> @@ -18,6 +18,7 @@
+>  #include <math.h>
+>  #include <linux/string.h>
+>  #include <linux/zalloc.h>
+> +#include <sys/utsname.h>
+>
+>  #include "asm/bug.h"
+>
+> @@ -276,6 +277,7 @@ int parse_callchain_record(const char *arg, struct callchain_param *param)
+>
+>                 /* Dwarf style */
+>                 } else if (!strncmp(name, "dwarf", sizeof("dwarf"))) {
+> +#ifdef HAVE_DWARF_SUPPORT
+>                         const unsigned long default_stack_dump_size = 8192;
+>
+>                         ret = 0;
+> @@ -290,6 +292,15 @@ int parse_callchain_record(const char *arg, struct callchain_param *param)
+>                                 ret = get_stack_size(tok, &size);
+>                                 param->dump_size = size;
+>                         }
+> +#else
+> +                       struct utsname uts;
+> +
+> +                       ret = uname(&uts);
+> +                       pr_err("DWARF is not supported for architecture %s\n",
+> +                               ret ? "unknown" : uts.machine);
+> +
+> +                       return -ENOTSUP;
+> +#endif
+>                 } else if (!strncmp(name, "lbr", sizeof("lbr"))) {
+>                         if (!strtok_r(NULL, ",", &saveptr)) {
+>                                 param->record_mode = CALLCHAIN_LBR;
+> --
+> 2.1.0
+>
