@@ -2,115 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84AD2DA715
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 05:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB4F2DA727
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 05:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726029AbgLOERv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 23:17:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725385AbgLOERm (ORCPT
+        id S1725917AbgLOEgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 23:36:32 -0500
+Received: from bee.birch.relay.mailchannels.net ([23.83.209.14]:11267 "EHLO
+        bee.birch.relay.mailchannels.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725440AbgLOEgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 23:17:42 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0930EC0617A7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 20:16:56 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id w1so360490pjc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 20:16:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CqQxEjBsAi+jtGHEEbw5bAKcGSsoEFK1eZykSZqb/as=;
-        b=IIyUsOKveGEHhLShknJRFtJYnFflnuy9g9DTmJ973OzdLTEUpFXGgFoEmjX7sNw/EE
-         f510xfphwQnV5Bf4yk0bJMBjLO/LDjVCTMQDR0o10z6sZCn7FpTwMkaXjfbppB7DNZAm
-         Ru+9gu8Pm3DueFvB7ealoarROnht3SeCBh59V3awVNezmntSAiebv2eFZiUdVQ0AjjoR
-         h8SBlJWj+n0FzJAPZ1niSkGTqzjqDv/NG3/iTDS4ViDiAGsnvBsiIf5ygHL5rdyKzTGm
-         UWwNViAG4cIk33U+0n1q8RGQDo9Wyn3HvH1xY0bHoeHJd+n3/HdwcQOOpB1q97k0xEiu
-         ZcWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CqQxEjBsAi+jtGHEEbw5bAKcGSsoEFK1eZykSZqb/as=;
-        b=IMu9JUwuMHAsePzFOMdRhm/TRtzIPcbMUlGSd6YO5+8eUDplHuMo9iz/Txu+OdVWWV
-         N4eWOUO7Fv+Q2lHZ3yvAZor0jiHGca+X3X8M0NyOtZA+mHGE7R/W1C+l1Hp8QuYWXrqk
-         WGGLd5OXUL0mG4BV9BlVohnMjoV9dZt/Q4XYmBZbDqZhkHy1KLSVAVdmmXOWqlVoMqR8
-         ZPYsyI5dxV0MKy/L/79Y1w9WnSC3QDCZLHfPZjvX6AUFh9/jSGfQWGpWxc8U56atu/Ww
-         cXoWo647C/HjSMsjxt+S/xhHUGXCgUl1uOdaY0kjtrQtBYgm4vVjZtC0GNLr6BQALfOk
-         MNxQ==
-X-Gm-Message-State: AOAM5315FiWdD2V1dMrazxZiyQjjlwKJJN/4DtWZC4AhEzBbvVUNFHeh
-        mI0lhAqexUkkwPRlqZsJwtpoUw==
-X-Google-Smtp-Source: ABdhPJx+XW/JUUiHTjIt8y4pIoEu/plQ+uULj22e0xTKX5ITGVNEciIgWwT6kr5UBAZP+sCS+GddsQ==
-X-Received: by 2002:a17:90a:fd08:: with SMTP id cv8mr27831626pjb.29.1608005815515;
-        Mon, 14 Dec 2020 20:16:55 -0800 (PST)
-Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id y6sm252212pjl.0.2020.12.14.20.16.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 14 Dec 2020 20:16:54 -0800 (PST)
-Date:   Tue, 15 Dec 2020 09:46:51 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        Giovanni Gherdovich <ggherdovich@suse.com>
-Subject: Re: [PATCH v2 0/3] cpufreq: Allow drivers to receive more
- information from the governor
-Message-ID: <20201215041651.da3ii74xuc5orddp@vireshk-i7>
-References: <20360841.iInq7taT2Z@kreacher>
- <3827230.0GnL3RTcl1@kreacher>
+        Mon, 14 Dec 2020 23:36:32 -0500
+X-Greylist: delayed 637 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Dec 2020 23:36:31 EST
+X-Sender-Id: dreamhost|x-authsender|siddhesh@gotplt.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id EE9F722D2E;
+        Tue, 15 Dec 2020 04:25:08 +0000 (UTC)
+Received: from pdx1-sub0-mail-a35.g.dreamhost.com (100-96-5-83.trex.outbound.svc.cluster.local [100.96.5.83])
+        (Authenticated sender: dreamhost)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 7D6C222CCA;
+        Tue, 15 Dec 2020 04:25:07 +0000 (UTC)
+X-Sender-Id: dreamhost|x-authsender|siddhesh@gotplt.org
+Received: from pdx1-sub0-mail-a35.g.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384)
+        by 0.0.0.0:2500 (trex/5.18.11);
+        Tue, 15 Dec 2020 04:25:08 +0000
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|siddhesh@gotplt.org
+X-MailChannels-Auth-Id: dreamhost
+X-Tasty-Whimsical: 1303ce682a4e49a4_1608006308182_2923774275
+X-MC-Loop-Signature: 1608006308182:4266427354
+X-MC-Ingress-Time: 1608006308182
+Received: from pdx1-sub0-mail-a35.g.dreamhost.com (localhost [127.0.0.1])
+        by pdx1-sub0-mail-a35.g.dreamhost.com (Postfix) with ESMTP id 24F3C7F506;
+        Mon, 14 Dec 2020 20:25:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=gotplt.org; h=from:to:cc
+        :subject:date:message-id:mime-version:content-transfer-encoding;
+         s=gotplt.org; bh=XxVgTsIsaC/4TT1Y2yUHz6XqLMo=; b=T48VCwHTvTeh/0
+        NL2dSUsirgs6OM+jeAJZM8FGmjLaA2q/SCqM7N5n/YLgjS7F0k2I13VIXSfDn8XY
+        0eAPrADbe0CRKpopPJuGBP9hZ5/G5EUnSsglzGPnbSALWdLYwuO/qFFvwK40zcKM
+        bwhIdOjE30Et0jCVzOMPKbJPoURfo=
+Received: from rhbox.redhat.com (unknown [1.186.101.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: siddhesh@gotplt.org)
+        by pdx1-sub0-mail-a35.g.dreamhost.com (Postfix) with ESMTPSA id C56857E63B;
+        Mon, 14 Dec 2020 20:25:03 -0800 (PST)
+X-DH-BACKEND: pdx1-sub0-mail-a35
+From:   Siddhesh Poyarekar <siddhesh@gotplt.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Florian Weimer <fweimer@redhat.com>
+Subject: [PATCH] proc: Escape more characters in /proc/mounts output
+Date:   Tue, 15 Dec 2020 09:54:54 +0530
+Message-Id: <20201215042454.998361-1-siddhesh@gotplt.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3827230.0GnL3RTcl1@kreacher>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-12-20, 21:01, Rafael J. Wysocki wrote:
-> Hi,
-> 
-> The timing of this is not perfect (sorry about that), but here's a refresh
-> of this series.
-> 
-> The majority of the previous cover letter still applies:
-> 
-> On Monday, December 7, 2020 5:25:38 PM CET Rafael J. Wysocki wrote:
-> > 
-> > This is based on the RFC posted a few days ago:
-> > 
-> > https://lore.kernel.org/linux-pm/1817571.2o5Kk4Ohv2@kreacher/
-> > 
-> >  Using intel_pstate in the passive mode with HWP enabled, in particular under
-> >  the schedutil governor, is still kind of problematic, because it has to assume
-> >  that it should not allow the frequency to fall below the one requested by the
-> >  governor.  For this reason, it translates the target frequency into HWP.REQ.MIN
-> >  which generally causes the processor to run a bit too fast.
-> > 
-> >  Moreover, this allows the HWP algorithm to use any frequency between the target
-> >  one and HWP.REQ.MAX that corresponds to the policy max limit and some workloads
-> >  cause it to go for the max turbo frequency prematurely which hurts energy-
-> >  efficiency without improving performance, even though the schedutil governor
-> >  itself would not allow the frequency to ramp up so fast.
-> > 
-> >  This patch series attempts to improve the situation by introducing a new driver
-> >  callback allowing the driver to receive more information from the governor.  In
-> >  particular, this allows the min (required) and target (desired) performance
-> >  levels to be passed to it and those can be used to give better hints to the
-> >  hardware.
-> 
-> In this second revision there are three patches (one preparatory patch for
-> schedutil that hasn't changed since the v1, the introduction of the new
-> callback and schedutil changes in patch [2/3] and the intel_pstate changes
-> in patch [3/3] that are the same as before.
-> 
-> Please see patch changelogs for details.
+When a filesystem is mounted with a blank name like so:
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+ # mount '' bad -t tmpfs
 
--- 
-viresh
+its name entry in /proc/mounts is blank causing the line to start
+with a space.
+
+ /mnt/bad tmpfs rw,seclabel,relatime,inode64 0 0
+
+Further, the name could start with a hash, causing the entry to look
+like this (leading space added so that git does not strip it out):
+
+ # /mnt/bad tmpfs rw,seclabel,relatime,inode64 0 0
+
+This breaks getmntent and any code that aims to parse fstab as well as
+/proc/mounts with the same logic since they need to strip leading
+spaces or skip over comments, due to which they report incorrect
+output or skip over the line respectively.
+
+This fix resolves both issues by (1) treating blank names the same way
+as not having a name and (2) by escaping the hash character into its
+octal encoding, which getmntent can then decode and print correctly.
+As far as file parsing is concerned, these are the only additional
+cases to cater for since they cover all characters that have a special
+meaning in that context.
+
+Signed-off-by: Siddhesh Poyarekar <siddhesh@gotplt.org>
+Cc: Florian Weimer <fweimer@redhat.com>
+---
+ fs/namespace.c      | 8 +++++++-
+ fs/proc_namespace.c | 2 +-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/fs/namespace.c b/fs/namespace.c
+index cebaa3e81794..68bd5a814a2a 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -3110,7 +3110,13 @@ static void *copy_mount_options(const void __user =
+* data)
+=20
+ static char *copy_mount_string(const void __user *data)
+ {
+-	return data ? strndup_user(data, PATH_MAX) : NULL;
++	char byte;
++	if (data =3D=3D NULL)
++	  return NULL;
++
++	get_user(byte, (const char __user *)data);
++
++	return byte ? strndup_user(data, PATH_MAX) : NULL;
+ }
+=20
+ /*
+diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
+index e59d4bb3a89e..090b53120b7a 100644
+--- a/fs/proc_namespace.c
++++ b/fs/proc_namespace.c
+@@ -83,7 +83,7 @@ static void show_mnt_opts(struct seq_file *m, struct vf=
+smount *mnt)
+=20
+ static inline void mangle(struct seq_file *m, const char *s)
+ {
+-	seq_escape(m, s, " \t\n\\");
++	seq_escape(m, s, " \t\n\\#");
+ }
+=20
+ static void show_type(struct seq_file *m, struct super_block *sb)
+--=20
+2.29.2
+
