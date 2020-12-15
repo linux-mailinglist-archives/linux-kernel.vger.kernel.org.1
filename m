@@ -2,77 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7162DB4F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 21:22:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5142DB528
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 21:32:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727349AbgLOUU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 15:20:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40316 "EHLO
+        id S1726365AbgLOUbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 15:31:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgLOUUw (ORCPT
+        with ESMTP id S1727650AbgLOUW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 15:20:52 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84EC5C0611C5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 12:20:10 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id h19so15610934qtq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 12:20:10 -0800 (PST)
+        Tue, 15 Dec 2020 15:22:26 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3458CC06179C;
+        Tue, 15 Dec 2020 12:21:46 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id 23so42734268lfg.10;
+        Tue, 15 Dec 2020 12:21:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i8ZGaSrR1BfUaJWas0Ys/1ejHT5BAdJYhFIQ4DVbHAQ=;
-        b=WOekxWNcUDXH9d0xrrNdLIwgr7eTQf2BjBlxs1cY86mrh0cFUT3XozUrtugVygXSLh
-         Paj7cDEFmqMmR2z6CGhKwYhnEJmUiBGWwfGT6p4jo5N4NTi2+cSod6rd057GBgyDhraH
-         iI0cbCVcvWhFAYMKnmDDfjK4ZErypAxxJAGiE=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MazWmRH0RBhpM5nyt8u1lPJS49rqRNCrHfemkU4WKcE=;
+        b=RgdkIsgZHTa6lyAzAcJ19sU+Wxb44VlsrjznHVWljCtqySjZF1kwlyTCABVqFjXqBX
+         mdz02bdTgQIUpKQbHFuFuDfalFOizwCdKano1GH4gWx1pWeucW45Nhg+mgvc85RyLMSA
+         Z1oKC1gefElynYb6fm0VUHCATiohvj4aJFMUApgBwFn1c/5luODgJdDtWoLbZnYUTpAY
+         BpRhkskhpZgwBtxt7gr+zUDr2isK9jTAM9cdrxRVOtd7Ju5BseDQ9JLlRwJlvqu0fUuW
+         +LGpYlbIMSSkcXDM5uxrNP2V/rTpI9P26ylMqqHl+UyzDjVLzXxR2A83UikRbG2egZSN
+         AsGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i8ZGaSrR1BfUaJWas0Ys/1ejHT5BAdJYhFIQ4DVbHAQ=;
-        b=dmEuY79Z7BUVhFqowcJsVv2u8QCbG0Dviv9I+cm7IypDrEYfPwd51ErkpRSvXY6XJe
-         3yy8FhJ7RmzHx+1XR79gZc8HmOQo4xi4sZysD/Z/0jggTuR1/rJL/IMcZe089CZFTeGF
-         lVFoPctwbaoM2vtCUxdCBSbNwDLyvmn4+Qmbk4HXFXlbqdQQCP5o8v5F+1HvWDeKrfiQ
-         TpIpNvG/w9NXAUnbmQDzhfTV4doWLirs4VwsU2SGb6VV7FRL5CXbRNjZqj0l6zn8EqvE
-         1sktUqJmTh8KUxU+26hIKiLaBs0qw06H0aniWwLgJHafTDcv+sTWs02U07kOf/PJ8s6y
-         l45A==
-X-Gm-Message-State: AOAM532XgwpygYk9g1XmOfO3su0wsiS05lXVC1KrHGIiSf0hnZh8VaZd
-        3I3dOMD6rdvZiF3oKnU3mLyA0U9goST8p+lqbkuTuA==
-X-Google-Smtp-Source: ABdhPJzOQqCtqr//vCV3NGWMhK5oN0kSJ7tiYFivZcl/0pwk6gVVGudHENRuV1PRjXQBhBjsLwynmU2D/ny3cDrLPh8=
-X-Received: by 2002:ac8:1386:: with SMTP id h6mr39463029qtj.95.1608063609754;
- Tue, 15 Dec 2020 12:20:09 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MazWmRH0RBhpM5nyt8u1lPJS49rqRNCrHfemkU4WKcE=;
+        b=uRK3MCduVtjUz8hQTVFgX7Gfyq3g62ktp9JuerFpztR4/eN2r4RmJ5ZI9tQCEQ+7K2
+         oUNSecWxo39Bx18gP8yDyBL68sf5/iAXZPvwIbagw7pAwS5qdON5ZT6CASmJgJhI/HyS
+         RYQx9vzmLhy9DImfXVJO9eeM8V3EpykdEBfq+E8qL0FaNFXfnOIYt/ACPIJtv7jzUQRd
+         ICWOLHXaPccjgvQigwgrZ41aMKWWIu2yh1AVG1G9dwunDPWBthcIFCc1BsJG1QstRf4c
+         +mwK3uLO+zO3n1VzFzLxQKJLSCZpfVOA+x5M1q/QevGphgsQAer2blK4gUp0j75VV+Fz
+         SFQA==
+X-Gm-Message-State: AOAM532GvqdvLyWThrbCIkhSqQHlGhf9Bn8tVGqWQ8QUZaPZZzNSXvlz
+        EozlFBwjpeSBsf8nI+id6aVgV0FSFcg=
+X-Google-Smtp-Source: ABdhPJxS2NaeXz7sDiu37rL+KyWdCQjarNtgSXsPfY0tHJ9nICGZBZJXEluP/zWGJEzOh8g5sLIZsQ==
+X-Received: by 2002:a2e:712:: with SMTP id 18mr7318969ljh.165.1608063704756;
+        Tue, 15 Dec 2020 12:21:44 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id f3sm2873711ljp.114.2020.12.15.12.21.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 12:21:43 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/8] Support Runtime PM and host mode by Tegra ChipIdea USB driver
+Date:   Tue, 15 Dec 2020 23:21:05 +0300
+Message-Id: <20201215202113.30394-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201215132024.13356-1-broonie@kernel.org>
-In-Reply-To: <20201215132024.13356-1-broonie@kernel.org>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Wed, 16 Dec 2020 01:49:58 +0530
-Message-ID: <CAMty3ZDBWAJG3cPYnYtZY4ReOEO6iF5gscs+BLJEQ5WftawmQw@mail.gmail.com>
-Subject: Re: [PATCH] regulator: pf8x00: Use specific compatible strings for devices
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Adrien Grassein <adrien.grassein@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 6:50 PM Mark Brown <broonie@kernel.org> wrote:
->
-> The pf8x00 driver supports three devices, the DT compatible strings
-> and I2C IDs should enumerate these specifically rather than using a
-> wildcard so that we don't collide with anything incompatible in the
-> same ID range in the future and so that we can handle any software
-> visible differences between the variants we find.
+This series implements Runtime PM support for the Tegra ChipIdea USB driver.
+It also squashes the older ehci-tegra driver into the ChipIdea driver, hence
+the RPM is supported by both UDC and host controllers, secondly this opens
+opportunity for implementing OTG support in the future.
 
-Thanks for the patch.
+Patchset was tested on various Tegra20, Tegra30 and Tegra124 devices.
+Thanks to Peter Geis, Matt Merhar and Nicolas Chauvet for helping with
+the extensive and productive testing!
 
->
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  .../bindings/regulator/nxp,pf8x00-regulator.yaml          | 6 ++++--
->  drivers/regulator/pf8x00-regulator.c                      | 8 ++++++--
+Dmitry Osipenko (7):
+  usb: phy: tegra: Add delay after power up
+  usb: phy: tegra: Support waking up from a low power mode
+  usb: chipidea: tegra: Remove MODULE_ALIAS
+  usb: chipidea: tegra: Rename UDC to USB
+  usb: chipidea: tegra: Support runtime PM
+  usb: host: ehci-tegra: Remove the driver
+  ARM: tegra_defconfig: Enable USB_CHIPIDEA and remove USB_EHCI_TEGRA
 
-I think the bindings patch would be separate? otherwise,
+Peter Geis (1):
+  usb: chipidea: tegra: Support host mode
 
-Reviewed-by: Jagan Teki <jagan@amarulasolutions.com>
+ arch/arm/configs/tegra_defconfig     |   3 +-
+ drivers/usb/chipidea/Kconfig         |   3 +-
+ drivers/usb/chipidea/ci_hdrc_tegra.c | 327 +++++++++++++--
+ drivers/usb/chipidea/core.c          |  10 +-
+ drivers/usb/chipidea/host.c          | 103 ++++-
+ drivers/usb/host/Kconfig             |   9 -
+ drivers/usb/host/Makefile            |   1 -
+ drivers/usb/host/ehci-tegra.c        | 604 ---------------------------
+ drivers/usb/phy/phy-tegra-usb.c      |  82 +++-
+ include/linux/usb/chipidea.h         |   6 +
+ include/linux/usb/tegra_usb_phy.h    |   2 +
+ 11 files changed, 481 insertions(+), 669 deletions(-)
+ delete mode 100644 drivers/usb/host/ehci-tegra.c
+
+-- 
+2.29.2
+
