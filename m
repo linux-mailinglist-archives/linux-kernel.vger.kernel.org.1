@@ -2,151 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809302DB4A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA18A2DB4A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727661AbgLOTpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 14:45:13 -0500
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:40054 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725850AbgLOTpD (ORCPT
+        id S1725901AbgLOTsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 14:48:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728336AbgLOTry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 14:45:03 -0500
-Received: by mail-oi1-f177.google.com with SMTP id p126so24644764oif.7;
-        Tue, 15 Dec 2020 11:44:48 -0800 (PST)
+        Tue, 15 Dec 2020 14:47:54 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE08C0617A6;
+        Tue, 15 Dec 2020 11:47:13 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id 23so42490928lfg.10;
+        Tue, 15 Dec 2020 11:47:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3A6CDXSH+vJBbeg+vruqLPWO3m3JGaTS3T7HZ1Nlumo=;
+        b=bZHtPkI45bDNaBdWxSEBmEXfkhUhET45w0D2M+oxvx5jxsWo2HOmvwZrBsLaFUDDYN
+         uxvEXpR/idKhsz/wjaowEeTLqWuGhhXskr+b+uxd6t38j5osy/V3o+3xXqhVwxXf3hH+
+         RdAs0c+wqVkntfNmY8zQ8nLdK+lOKId/2u4VRuNNdT/YKjuq6DCTvNmPVxBMeZ3E309r
+         i2I6Fj/lvK4qQ1bkBh3pO1C7fPHTPTdy3ktt6OcQjdysgYoTUZmmh/AUu+V9CLfcmZxn
+         mv41xrQYsE2iyNo4L77kaxTD65OoY6n18PoueVC+lTh2Asmm+5GD3Ri5sj0SvYWsq4q+
+         cHcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kNsHOYW0/K8Iw/DPKmzJWiiK5sZoFhksoB+F202yDgI=;
-        b=EQSxl5+uN4JwLCQkIzY59sOry9wKt+MyiCS8mVRVqAGLFN+SzUO9ehvz5VOb6AX8wU
-         BTQtHe86j9JS1LkPd+p08ndIkDUtbT57NPjbLARmOM3XYY24rxdz1vhoGLurciEipiM7
-         TRdr0ssxbIREpBgteqyXwj8ZWfV3Y+Vd46aGQs1iagXvX9tFhwi/bx4hqHcqI0bYQ2aG
-         mbpagDclUxFydedgdG0H93xrq44d6kSN5AM1H2PLKQuLXrZXyAoyotil/UNCsmQh1M1g
-         bM5xcFihDq3ePyIXZEUfWOO1jMGD93VkREyGWpFKtF5bsEW9lDhwONOLSxMez6OIP7PH
-         Sa7A==
-X-Gm-Message-State: AOAM5312k+JSN5+4+mpylp+Q+Kzus0/Rtb1KuDzv27lwjq5kpFa93Gih
-        4qkuSm1RGn+q4T33Kqt4rg==
-X-Google-Smtp-Source: ABdhPJzyGPCRd6aOPZ84yOBugaetfFJzJ9XfDKDIGiN1+6b1Q2T76Wz5FwpgJzcjgEdf477sKwU+Ww==
-X-Received: by 2002:aca:4989:: with SMTP id w131mr297784oia.83.1608061462761;
-        Tue, 15 Dec 2020 11:44:22 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t72sm5240241oie.47.2020.12.15.11.44.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 11:44:21 -0800 (PST)
-Received: (nullmailer pid 91098 invoked by uid 1000);
-        Tue, 15 Dec 2020 19:44:21 -0000
-Date:   Tue, 15 Dec 2020 13:44:21 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Mian Yousaf Kaukab <ykaukab@suse.de>
-Cc:     Vidya Sagar <vidyas@nvidia.com>, lorenzo.pieralisi@arm.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3A6CDXSH+vJBbeg+vruqLPWO3m3JGaTS3T7HZ1Nlumo=;
+        b=k7wgufYxjXdSpI1fNec26drpER7zG08msloXX/erjr6Xfk0aJTl4s1iDpBAoz1Jui5
+         73gHaWI7HO7uFUCCV/D0VBmbXjZPr5OtetpyU9xerHqUou3EDC7HvfMmRIj9lEMA59AA
+         yY1flJrAtvIkjo8xB+I9USjqGWBrZ0/cCm2orfFmtLZO90VORUpF26hkE3d6xhyFTtEc
+         DPZqGzS3vM82K/OOTjhjYUykUGmA6ZHe04HwYuwC/WN9MoPWaNMTqbJNzlQySmChJkAZ
+         jLfp6uJYhrIAExCFIiceSo55xif2AdJsVnk2B1EbGO817geG0GzCEqF/41p38OEDKt3x
+         7lOw==
+X-Gm-Message-State: AOAM531fF5LrOpxUsYtW4CJ+VvcJ8qB0798nrv8/WiKnNHg4EKTm0fiB
+        awbqtsNPSlVohoFUkzaVD8XeYAmzGHI=
+X-Google-Smtp-Source: ABdhPJzy2XRxYzV7WdNff9pQdbYOlZvid9eVlCyWElunz0K8pe498HJjiTW9U5bA8VdwqlRg6O8Zvg==
+X-Received: by 2002:a2e:6c03:: with SMTP id h3mr6005597ljc.360.1608061632135;
+        Tue, 15 Dec 2020 11:47:12 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id 6sm2842692ljq.69.2020.12.15.11.47.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 11:47:11 -0800 (PST)
+Subject: Re: [PATCH v1] ARM: tegra: Fix misplaced tegra_uart_config in
+ decompressor
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: dwc: tegra194: issue with card containing a bridge
-Message-ID: <20201215194421.GA89317@robh.at.kernel.org>
-References: <20201215102442.GA20517@suse.de>
- <9a8abc90-cf18-b0c8-3bcb-efbe03f0ca4c@nvidia.com>
- <20201215132504.GA20914@suse.de>
- <20201215154147.GA3885265@robh.at.kernel.org>
+References: <20201215135222.6899-1-digetx@gmail.com>
+ <980f70c6-8967-c110-1699-cb0da2f46cc0@gmail.com>
+ <5b01ce96-5f8b-dfcb-accd-2ba29f34947f@gmail.com>
+ <5853b349-562c-3b6a-33d6-49516553dad8@gmail.com>
+ <b115f985-b27b-bbcd-fc42-d9e357ecf46a@gmail.com>
+ <b8de29b7-b0f6-5b2b-6ab2-f4399bc241fc@gmail.com>
+ <604dd2ea-d813-fa3f-3e2f-4d66175162b3@gmail.com>
+ <8ddd0072-e5bd-a035-b782-bf1ca88eebc2@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <d4a4b200-ede7-0fab-8317-38abb677e5f5@gmail.com>
+Date:   Tue, 15 Dec 2020 22:47:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201215154147.GA3885265@robh.at.kernel.org>
+In-Reply-To: <8ddd0072-e5bd-a035-b782-bf1ca88eebc2@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 09:41:47AM -0600, Rob Herring wrote:
-> On Tue, Dec 15, 2020 at 02:25:04PM +0100, Mian Yousaf Kaukab wrote:
-> > On Tue, Dec 15, 2020 at 05:45:59PM +0530, Vidya Sagar wrote:
-> > > Thanks Mian for bringing it to our notice.
-> > > Have you tried removing the dw_pcie_setup_rc(pp); call from pcie-tegra194.c
-> > > file on top of linux-next? and does that solve the issue?
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c
-> > > b/drivers/pci/controller/dwc/pcie-tegra194.c
-> > > index 5597b2a49598..1c9e9c054592 100644
-> > > --- a/drivers/pci/controller/dwc/pcie-tegra194.c
-> > > +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-> > > @@ -907,7 +907,7 @@ static void tegra_pcie_prepare_host(struct pcie_port
-> > > *pp)
-> > >                 dw_pcie_writel_dbi(pci, CFG_TIMER_CTRL_MAX_FUNC_NUM_OFF,
-> > > val);
-> > >         }
-> > > 
-> > > -       dw_pcie_setup_rc(pp);
-> > > +       //dw_pcie_setup_rc(pp);
-> > I still see the same issue with this change.
-> > Reverting b9ac0f9dc8ea works though.
-> > > 
-> > >         clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
-> > > 
-> > > I took a quick look at the dw_pcie_setup_rc() implementation and I'm not
-> > > sure why calling it second time should create any issue for the enumeration
-> > > of devices behind a switch. Perhaps I need to spend more time to debug that
-> > > part.
-> > > In any case, since dw_pcie_setup_rc() is already part of
-> > > dw_pcie_host_init(), I think it can be removed from
-> > > tegra_pcie_prepare_host() implemention.
+15.12.2020 22:20, Florian Fainelli пишет:
 > 
-> I think the 2nd time is making the link go down is my guess. Tegra was 
-> odd in that its start/stop link functions don't do link handling, so I 
-> didn't implement those functions and left the link handling in the Tegra 
-> driver.
 > 
-> Can you try the below patch. It needs some more work as it breaks 
-> endpoint mode.
+> On 12/15/2020 10:56 AM, Dmitry Osipenko wrote:
+>> 15.12.2020 21:22, Florian Fainelli пишет:
+>>>
+>>>
+>>> On 12/15/2020 8:53 AM, Dmitry Osipenko wrote:
+>>>> 15.12.2020 19:40, Florian Fainelli пишет:
+>>>>>
+>>>>>
+>>>>> On 12/15/2020 8:17 AM, Dmitry Osipenko wrote:
+>>>>>> 15.12.2020 19:04, Florian Fainelli пишет:
+>>>>>>>
+>>>>>>>
+>>>>>>> On 12/15/2020 5:52 AM, Dmitry Osipenko wrote:
+>>>>>>>> The tegra_uart_config of the DEBUG_LL code is now placed right at the
+>>>>>>>> start of the .text section after commit which enabled debug output in the
+>>>>>>>> decompressor. Tegra devices are not booting anymore if DEBUG_LL is enabled
+>>>>>>>> since tegra_uart_config data is executes as a code. Fix the misplaced
+>>>>>>>> tegra_uart_config storage by embedding it into the code.
+>>>>>>>>
+>>>>>>>> Cc: stable@vger.kernel.org
+>>>>>>>> Fixes: 2596a72d3384 ("ARM: 9009/1: uncompress: Enable debug in head.S")
+>>>>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>>>>>> ---
+>>>>>>>>  arch/arm/include/debug/tegra.S | 54 +++++++++++++++++-----------------
+>>>>>>>>  1 file changed, 27 insertions(+), 27 deletions(-)
+>>>>>>>
+>>>>>>> Looks like arch/arm/include/debug/brcmstb.S would need the same
+>>>>>>> treatment since the implementation was copied from tegra.S.
+>>>>>>>
+>>>>>>
+>>>>>> Good catch, will you be able to test the brcm and make a patch?
+>>>>>
+>>>>> Yes, absolutely, building a kernel to test right now.
+>>>>>
+>>>>
+>>>> Thank you.
+>>>>
+>>>> BTW, I noticed that the problem is more visible on a thumb2 kernel
+>>>> build, i.e. you should get a more reliable hang on boot. On a non-thumb2
+>>>> kernel the hanging behaviour seems depends on a device / bootloader. I
+>>>> haven't tried to figure out what exactly makes the difference, perhaps
+>>>> it should be a memory layout / state.
+>>>
+>>> To build with a CONFIG_THUMB2_KERNEL I had to fetch:
+>>>
+>>> https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9018/2
+>>>
+>>> to avoid a build error, too bad this missed v5.10 final but hopefully it
+>>> can make it soon.
+>>
+>> The VFP fix was applied to the -next very recently, it should propagate
+>> to v5.10 eventually.
+>>
+>>> With CONFIG_THUMB2_KERNEL=y, I am not getting the head.S output where it
+>>> prints the start/end of the compressed kernel:
+>>>
+>>> C:0x420800C0-0x4321B0E0->0x4212AB00-0x432C5B20
+>>> Uncompressing Linux... done, booting the kernel.
+>>> [    0.000000] Booting Linux on physical CPU 0x0
+>>> [    0.000000] Linux version 5.10.0-g148842c98a24
+>>> (fainelli@fainelli-desktop) (arm-linux-gcc (GCC) 8.3.0, GNU ld (GNU
+>>> Binutils) 2.32) #71 SMP Tue Dec 15 09:53:09 PST 2020
+>>>
+>>> I am only getting:
+>>>
+>>> Uncompressing Linux... done, booting the kernel.
+>>>
+>>> Is that the same for you?
+>>
+>> No, start/end are printed for both THUMB2 and ARM kernels here.
+>>
+>>> Looking at the disassembly of head.o it definitively has
+>>> brcmstb_uart_config in the .text section as the beginning just like you
+>>> mentioned in your commit message.
+>>>
+>>> Disassembly of section .text:
+>>>
+>>> 00000000 <brcmstb_uart_config>:
+>>>    0:   00000001        andeq   r0, r0, r1
+>>>         ...
+>>>    c:   467c            mov     r4, pc
+>>>    e:   f004 4478       and.w   r4, r4, #4160749568     ; 0xf8000000
+>>>   12:   f504 4400       add.w   r4, r4, #32768  ; 0x8000
+>>>   16:   4678            mov     r0, pc
+>>>   18:   42a0            cmp     r0, r4
+>>>   1a:   bf3f            itttt   cc
+>>>   1c:   48d4            ldrcc   r0, [pc, #848]  ; (370 <LC1+0x8>)
+>>>   1e:   4478            addcc   r0, pc
+>>>   20:   4284            cmpcc   r4, r0
+>>>   22:   f044 0401       orrcc.w r4, r4, #1
+>>>   26:   bf28            it      cs
+>>>   28:   f000 f9aa       blcs    380 <cache_on>
+>>>
+>>> however after applying a fix similar to yours, we do end-up with the
+>>> expected data embedded within the code and given brcmstb.S would be
+>>> subject to the same issue as tegra.S, it would not hurt.
+>>>
+>>
+>> Have you checked whether start/end printed after applying the fix?
+> 
+> Yes I did, it is not printed when CONFIG_THUMB2_KERNEL=y, but it is when
+> CONFIG_THUMB2_KERNEL=n. I don't have a JTAG adapter on this board right
+> now to single step.
+> 
 
-That one missed some re-init. Try this one instead
+Okay, I don't know what's wrong there.
 
-8<--------------------------------------------------------------------
-
-diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-index 5597b2a49598..d8fed3561e91 100644
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -933,14 +933,24 @@ static void tegra_pcie_prepare_host(struct pcie_port *pp)
- 
- static int tegra_pcie_dw_host_init(struct pcie_port *pp)
- {
--	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
--	struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
--	u32 val, tmp, offset, speed;
--
- 	pp->bridge->ops = &tegra_pci_ops;
- 
- 	tegra_pcie_prepare_host(pp);
- 
-+	return 0;
-+}
-+
-+static int tegra_pcie_dw_start_link(struct dw_pcie *pci)
-+{
-+	u32 val, offset, speed, tmp;
-+	struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
-+	struct pcie_port *pp = &pci->pp;
-+
-+	if (pcie->mode == DW_PCIE_EP_TYPE) {
-+		enable_irq(pcie->pex_rst_irq);
-+		return 0;
-+	}
-+
- 	if (dw_pcie_wait_for_link(pci)) {
- 		/*
- 		 * There are some endpoints which can't get the link up if
-@@ -998,15 +1008,6 @@ static int tegra_pcie_dw_link_up(struct dw_pcie *pci)
- 	return !!(val & PCI_EXP_LNKSTA_DLLLA);
- }
- 
--static int tegra_pcie_dw_start_link(struct dw_pcie *pci)
--{
--	struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
--
--	enable_irq(pcie->pex_rst_irq);
--
--	return 0;
--}
--
- static void tegra_pcie_dw_stop_link(struct dw_pcie *pci)
- {
- 	struct tegra_pcie_dw *pcie = to_tegra_pcie(pci);
+I also noticed that brcmstb doesn't check whether UART address is 0x0 in
+senduart / busyuart, perhaps this needs to be fixed too.
