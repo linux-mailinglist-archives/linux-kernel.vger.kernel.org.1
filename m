@@ -2,74 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850EC2DB1A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 732EC2DB1A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727724AbgLOQkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:40:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725878AbgLOQkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:40:02 -0500
-X-Gm-Message-State: AOAM532MYCdpsvaXj6xz8GaeKabHyqi6QaGxf7Ot35fOSF2gVD3zwwz2
-        t6ykJH/ZkgjSoPcCU5CeneVgT+h+eXrQ1bBCnPki7w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608050361;
-        bh=Rpvrhq1xN8ArrcBIuLot/raa13aSOrd6TedvRdYIdSg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JeAaiZotbdEwCWKbacduHYOzbclUnRdd3z2Dne7cvVRTFOEg9aj0Lu2RTwJsvZF9y
-         hdSSmWbV4Pl/VbiKdbHutPZgib1yrxmaTdTZtGMXQP7jIAz4GsPK6gXDAhor07hu7P
-         B5Z1Wlgmaez9K6j8XkFaan8YBYPjkXoXZDS5MxOa9kL96QCFOgzab58kyuVkoNkAy2
-         /Z50ePo4uOoklvG24jRG8Btjhe953XihQUDMj3k+kmPd0OC45eR9lOEyeIu3xyYLbq
-         veHiRZY+hsdJw8/wZ8TeHr3GlQUlqsRi6rD4guwvP9Mkb4eB4fF83KjRw/WK1krLjl
-         bj+AkanLfFq8g==
-X-Google-Smtp-Source: ABdhPJxGzJ5uANh25SZiAoS17gIhmCnzN82kxV4jhfhZfhhOiszaP48nEWqbPQRmbl9KeEIG6fDCET+FfjNqswOCphQ=
-X-Received: by 2002:a5d:43c3:: with SMTP id v3mr10425647wrr.184.1608050359907;
- Tue, 15 Dec 2020 08:39:19 -0800 (PST)
+        id S1728433AbgLOQlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:41:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgLOQku (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 11:40:50 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308C9C06179C;
+        Tue, 15 Dec 2020 08:40:10 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id c79so14822511pfc.2;
+        Tue, 15 Dec 2020 08:40:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TqfKHpZl1Ix0Kc5okq3jsiMoMVUdYzdMq5tsEYnmWAg=;
+        b=jkeKfD2WijsXZ0hkNjt9AoisQAMAnf8E0TrHNd92Bh1FrQ1yM92dpEfO0kF7p/3rXP
+         8mQCnPScPzqgJbyhyZAuABWfphXXMRmU01GH5c6eCSG/Ii4cUssoZyGU+WC2XMIGFXy3
+         1LMysU0Q9HLc6XyAhsKGaAB/DpbWCtgzdvcUx94l1NWK3LREMCH+/69Ms2IY+v1NUmdg
+         rkIPStYjJybOaKTg5QyC30nBq0ch7lCJZfsBSl/Caa1r6mjGD82/nuhw4xgstA8tRFfN
+         BxENAH1cFe6eqUGqXe1ViTlUu5qrgFPaZXxp70o1uUmOktSZhaE2EiuJnJ/jBx42F7vP
+         lS2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TqfKHpZl1Ix0Kc5okq3jsiMoMVUdYzdMq5tsEYnmWAg=;
+        b=FHyLNcvw8/tdd5ptB94bwESypSmF1cm5kUAdw9t2K3bsEnQxgUCoXSIrSsP1PI0oDO
+         dNWBxkUPuPGG4MJv3R6b7kvsfPlT350o4r1zCalkLV8L0Xdu787pIEn9zT6hzwobUoma
+         jNr9stflrxtPKAd+PxyW+wpGdI629aZlcsR6pCRTCPz5XnkiLyH5qH+dcs9KLHa3hhZC
+         OuPiEPx+58Q9a8GEU/8ciE2Rlt1fIv8dFVjgCjTu2GGCcULfsskXmBpdxwwsI/W2NgOV
+         cF8ZxhnAjLCUUSZcWJsSQjrQHYh4f0jCLOskkN+yDqHWSS48p3hmbQGMoqMzG0nfIjxS
+         eZZQ==
+X-Gm-Message-State: AOAM532wgIYYCmrXIp42g4cwAlnrLmH6/Gw+uBF8I2ae1KvAkJt8MTUV
+        xWSx+yccHUOXCSh1kb2ZPuVxAAOC3CE=
+X-Google-Smtp-Source: ABdhPJxqvdirPQ59IYTx85fUXiGlu05ZCkTtPl5ujgMs153lmNMh+D85Qudyi0R77xVHXEIQLFhA1w==
+X-Received: by 2002:aa7:8499:0:b029:19e:6c5:b103 with SMTP id u25-20020aa784990000b029019e06c5b103mr1617386pfn.13.1608050408979;
+        Tue, 15 Dec 2020 08:40:08 -0800 (PST)
+Received: from [10.230.29.166] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id h20sm23784577pgv.23.2020.12.15.08.40.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 08:40:08 -0800 (PST)
+Subject: Re: [PATCH v1] ARM: tegra: Fix misplaced tegra_uart_config in
+ decompressor
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20201215135222.6899-1-digetx@gmail.com>
+ <980f70c6-8967-c110-1699-cb0da2f46cc0@gmail.com>
+ <5b01ce96-5f8b-dfcb-accd-2ba29f34947f@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <5853b349-562c-3b6a-33d6-49516553dad8@gmail.com>
+Date:   Tue, 15 Dec 2020 08:40:06 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201215160314.18773-1-info@metux.net> <41ef1cd1-017d-a0d4-91d3-a1183bd2ab01@infradead.org>
-In-Reply-To: <41ef1cd1-017d-a0d4-91d3-a1183bd2ab01@infradead.org>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 15 Dec 2020 08:39:09 -0800
-X-Gmail-Original-Message-ID: <CALCETrXhZxyPUcrBaO=mzvANC72uXNBrivo7hGmdkV2bgdFxjw@mail.gmail.com>
-Message-ID: <CALCETrXhZxyPUcrBaO=mzvANC72uXNBrivo7hGmdkV2bgdFxjw@mail.gmail.com>
-Subject: Re: [PATCH] arch: x86: entry: vdso: fix type conversion on printf() call
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5b01ce96-5f8b-dfcb-accd-2ba29f34947f@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 8:32 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 12/15/20 8:03 AM, Enrico Weigelt, metux IT consult wrote:
-> > Fixing the following compiler warning by explicit conversion to long:
-> >
-> > In file included from /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.c:162:0:
-> > /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h: In function 'extract64':
-> > /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t {aka unsigned int}' [-Wformat=]
-> >   fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
-> >                                                     ^
-> >   CC      mm/filemap.o
-> > In file included from /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.c:166:0:
-> > /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h: In function 'extract32':
-> > /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t {aka unsigned int}' [-Wformat=]
-> >   fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
-> >
-> > Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
-> > ---
-> >  arch/x86/entry/vdso/vdso2c.h | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> Hi,
->
-> size_t is normally printed with %zu.
-> Is there some reason that isn't being used here?
 
-No.  Want to send a patch?
+
+On 12/15/2020 8:17 AM, Dmitry Osipenko wrote:
+> 15.12.2020 19:04, Florian Fainelli пишет:
+>>
+>>
+>> On 12/15/2020 5:52 AM, Dmitry Osipenko wrote:
+>>> The tegra_uart_config of the DEBUG_LL code is now placed right at the
+>>> start of the .text section after commit which enabled debug output in the
+>>> decompressor. Tegra devices are not booting anymore if DEBUG_LL is enabled
+>>> since tegra_uart_config data is executes as a code. Fix the misplaced
+>>> tegra_uart_config storage by embedding it into the code.
+>>>
+>>> Cc: stable@vger.kernel.org
+>>> Fixes: 2596a72d3384 ("ARM: 9009/1: uncompress: Enable debug in head.S")
+>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>> ---
+>>>  arch/arm/include/debug/tegra.S | 54 +++++++++++++++++-----------------
+>>>  1 file changed, 27 insertions(+), 27 deletions(-)
+>>
+>> Looks like arch/arm/include/debug/brcmstb.S would need the same
+>> treatment since the implementation was copied from tegra.S.
+>>
+> 
+> Good catch, will you be able to test the brcm and make a patch?
+
+Yes, absolutely, building a kernel to test right now.
+-- 
+Florian
