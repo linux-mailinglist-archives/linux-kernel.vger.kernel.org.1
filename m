@@ -2,72 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BD52DAAD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F7E2DAAE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgLOK0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:26:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728344AbgLOK0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:26:52 -0500
-Date:   Tue, 15 Dec 2020 11:27:09 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1608027966;
-        bh=zGYbq+RDghEu+OWjtEcowOB/HGN126cSLD2pWbCec6Q=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GS0XeDv1kAcL4MYklVy5dScdyauFsNjGonCtLl8goHs2Iy3DjDpaR3nnws1xQdjBT
-         TNjFXwOkHjncr1B7yPjD3yOU5CjRWvAnoV5ruBOTpmkGIcKfYhCXP4MV1khofEjCzd
-         73H64Df8akC7BsTmPHDqTp4b7/6Y2FEEbE9ktq/U=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 5.10 0/2] 5.10.1-rc1 review
-Message-ID: <X9iPfX8CtjOoWF7u@kroah.com>
-References: <20201214170452.563016590@linuxfoundation.org>
- <CA+G9fYvanzter2c+H8HH=_PCYgf6DHHKihD2SwzG2+P+yGpz_g@mail.gmail.com>
+        id S1727985AbgLOK3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:29:42 -0500
+Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:38297 "EHLO
+        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727340AbgLOK3I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 05:29:08 -0500
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS1.zhaoxin.com
+ (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 15 Dec
+ 2020 18:28:16 +0800
+Received: from tony-HX002EA.zhaoxin.com (10.32.56.37) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 15 Dec
+ 2020 18:28:14 +0800
+From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <x86@kernel.org>, <hpa@zytor.com>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <TimGuo-oc@zhaoxin.com>, <CooperYan@zhaoxin.com>,
+        <QiyuanWang@zhaoxin.com>, <HerryYang@zhaoxin.com>,
+        <CobeChen@zhaoxin.com>, <SilviaZhao@zhaoxin.com>
+Subject: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
+Date:   Tue, 15 Dec 2020 18:28:11 +0800
+Message-ID: <1608028091-29439-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYvanzter2c+H8HH=_PCYgf6DHHKihD2SwzG2+P+yGpz_g@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.32.56.37]
+X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 03:50:57PM +0530, Naresh Kamboju wrote:
-> On Mon, 14 Dec 2020 at 22:35, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.10.1 release.
-> > There are 2 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Monday, 14 Dec 2020 18:04:42 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.1-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> Results from Linaro’s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
-> 
-> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
+On platforms with Zhaoxin CPUs supporting this X86 feature, when
+crc32c-intel and crc32c-generic are both registered, system will
+use crc32c-intel because its .cra_priority is greater than
+crc32c-generic.
 
-Thanks for testing this one!
+When doing lmbench3 Create and Delete file test on partitions with
+ext4 enabling metadata checksum, found using crc32c-generic driver
+could get about 20% performance gain than using the driver crc32c-intel
+on some Zhaoxin CPUs.
 
-greg k-h
+This case expect to use crc32c-generic driver for these Zhaoxin CPUs
+to get performance gain, so remove these Zhaoxin CPUs support from
+crc32c-intel.
+
+Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+---
+ arch/x86/crypto/crc32c-intel_glue.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/crypto/crc32c-intel_glue.c b/arch/x86/crypto/crc32c-intel_glue.c
+index feccb52..5171091 100644
+--- a/arch/x86/crypto/crc32c-intel_glue.c
++++ b/arch/x86/crypto/crc32c-intel_glue.c
+@@ -215,14 +215,31 @@ static struct shash_alg alg = {
+ };
+ 
+ static const struct x86_cpu_id crc32c_cpu_id[] = {
+-	X86_MATCH_FEATURE(X86_FEATURE_XMM4_2, NULL),
++	/*
++	 * Negative entries; exclude these chips from using this driver.
++	 * They match the positive rule below, but their CRC32 instruction
++	 * implementation is so slow, it doesn't merit use.
++	 */
++	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 0x6, X86_FEATURE_XMM4_2, false),
++	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x1b, X86_FEATURE_XMM4_2, false),
++	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x3b, X86_FEATURE_XMM4_2, false),
++	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 0x6, X86_FEATURE_XMM4_2, false),
++	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x1b, X86_FEATURE_XMM4_2, false),
++	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x3b, X86_FEATURE_XMM4_2, false),
++	/*
++	 * Positive entry; SSE-4.2 instructions include special purpose CRC32
++	 * instructions.
++	 */
++	X86_MATCH_FEATURE(X86_FEATURE_XMM4_2, true),
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(x86cpu, crc32c_cpu_id);
+ 
+ static int __init crc32c_intel_mod_init(void)
+ {
+-	if (!x86_match_cpu(crc32c_cpu_id))
++	const struct x86_cpu_id *m = x86_match_cpu(crc32c_cpu_id);
++
++	if (!m || !m->driver_data)
+ 		return -ENODEV;
+ #ifdef CONFIG_X86_64
+ 	if (boot_cpu_has(X86_FEATURE_PCLMULQDQ)) {
+-- 
+2.7.4
+
