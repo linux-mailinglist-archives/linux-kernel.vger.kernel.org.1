@@ -2,177 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3862DB41C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:59:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5542DB42D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731593AbgLOS6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:58:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731754AbgLOS5f (ORCPT
+        id S1731740AbgLOTBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 14:01:14 -0500
+Received: from mout.kundenserver.de ([212.227.126.134]:47655 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731768AbgLOTA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:57:35 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6B0C0617A6;
-        Tue, 15 Dec 2020 10:56:54 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id w13so42108008lfd.5;
-        Tue, 15 Dec 2020 10:56:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+i5bjad9QX6E3m5+IhhqYMH1QUZhoYEcJW2382imKTk=;
-        b=m2RZGxiuekpTbkPAgPnQNV+CPN9irjQoP63xr2BF8YvZENTID7/3a9g0WpCfD1Fwoi
-         Kff4ns67yZjRq+X7RyPqd6BkrIsCrw7bRZWSwu0kpjtZ0h5rU6/ap8cp39Kxl/wMIpLC
-         zlFxCxP7SAGEUqNtlVBkpSIDmCKCZ4JoqvQiE7Tp6Mjyvrm787W2ULDQs1HIyJeswCcc
-         tRbkiVKSzRwTKXBdTMK3Ib7e6JmDjD98qP/FxSwEizsiOXTDtI/tXXmgXbOb+E0Gxiv0
-         vZH9aN0KxC6Y7Tn+q/CeXN0rb1TopxbdgeMlqhLQr2nncsuo+jrT0wIb9n1eB/ZHpQ3l
-         2ZKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+i5bjad9QX6E3m5+IhhqYMH1QUZhoYEcJW2382imKTk=;
-        b=akJe6vRe2CYhnRDrWYokwGNM/wOOEVmOb+0NgvFbbWb7YQb7JTcTyirav8cJ5cZIm7
-         YJmcA3aobTLi2IyxBNco4efim1ygvBPPwgpMS0gZ3ten5LoYTSxsKnaohwXcFzTFsQ5v
-         9SuYZOkAcyTpWMj97sPObs6U0T605GCqUr4AYiMjCZWfGHQxcv7NjeauUCkN7X9BwA6p
-         0JrKRRxOW67dmZ3tYMc9pzVCl53laGRjr0/64HVrO2Y1jkL8MaOLnBBGe9xCMqiz31cf
-         fj38p4807D3/aQ9E2z2kDmjuVU4aywSP+ZUBO24k4dnloSmoBsoTncQfFCd0sZqdMKOK
-         lppA==
-X-Gm-Message-State: AOAM530cgvSqKN34xO4sZ5CbmuX8ioDmaEMtGTm1kPB6OBN41CD/yzVq
-        8QpwH9E/UhTWZx9XxO3vqI43LYCrENE=
-X-Google-Smtp-Source: ABdhPJy0sVfW67lV34+qhwsThCdopBt5g7fI4+SPn1QwqP6GwbVKYpYFk+yXjJWA3FaF2O1fwxKFmA==
-X-Received: by 2002:a19:cb05:: with SMTP id b5mr11311074lfg.61.1608058612809;
-        Tue, 15 Dec 2020 10:56:52 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id e1sm300729lfs.279.2020.12.15.10.56.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 10:56:52 -0800 (PST)
-Subject: Re: [PATCH v1] ARM: tegra: Fix misplaced tegra_uart_config in
- decompressor
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20201215135222.6899-1-digetx@gmail.com>
- <980f70c6-8967-c110-1699-cb0da2f46cc0@gmail.com>
- <5b01ce96-5f8b-dfcb-accd-2ba29f34947f@gmail.com>
- <5853b349-562c-3b6a-33d6-49516553dad8@gmail.com>
- <b115f985-b27b-bbcd-fc42-d9e357ecf46a@gmail.com>
- <b8de29b7-b0f6-5b2b-6ab2-f4399bc241fc@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <604dd2ea-d813-fa3f-3e2f-4d66175162b3@gmail.com>
-Date:   Tue, 15 Dec 2020 21:56:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
-MIME-Version: 1.0
-In-Reply-To: <b8de29b7-b0f6-5b2b-6ab2-f4399bc241fc@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Tue, 15 Dec 2020 14:00:56 -0500
+Received: from orion.localdomain ([95.118.67.37]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1Md6hP-1kGSfL2vJL-00aC59; Tue, 15 Dec 2020 19:57:52 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     luto@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com
+Subject: [PATCH v2] arch: x86: entry: vdso: fix type conversion on printf() call
+Date:   Tue, 15 Dec 2020 19:57:51 +0100
+Message-Id: <20201215185751.14384-1-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+X-Provags-ID: V03:K1:G3CmrqdUmfEWhtR0G/ykp2FC0koTsURzyQESHLIoxvEkL0lYkPE
+ x9b9E9xa5vWYhlkw2mJKBapIgSoC2or6atWZ3K3Fut9bzVSKKkCNum7i/2zNZ2djq3F2GPe
+ wNpb9/QQXJ29enuiqPnAx1ID6mfbVSILqrGeUBF1zd6678mEgqmNTXEKveiVEUwfap2ZoP7
+ L9VKq3UNpZYY+tnxtoXWA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:avHAVr0/hXw=:zUGnc41SOQQp+wiU2gyTUY
+ E1r1xJjVV2OLwmU4424tPkRzr/D2QnjAktV5LoGJnMut/+SnNq0C7TikmEUh16xotLoM/AjN4
+ TcMR71rosg5Zy8hkBRhIdSVCsCQlpB+2ApgB9w7OYWkWgBtg0xQMGfUomJMzYLpF9tv4fuLAu
+ B4xTEBwuFw01WA8AkBAukBBmPpULo/UqMIsewhi8L393PjqJKkyvF3sSl7+KBstyXQH8C2rvd
+ 6mQ8k3gwoqVqLla5S4VcwbCurjmHx+xtYVgSY6G2TULGWTUaVWyazpTTEtlJB28R/+xpPR4pP
+ KG7FB+GSm5syA//MEOvor92q1NFzGBJV5bKEhZuGQEhpmZ7wu5z6zNINssDstIM/KomLNIrq5
+ 2rWNB4VoU+ixC/dzBFHoWCqEQs3hLGVrxLhwS6GJw5BaK0az5JuwxeIz2qkyM
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.12.2020 21:22, Florian Fainelli пишет:
-> 
-> 
-> On 12/15/2020 8:53 AM, Dmitry Osipenko wrote:
->> 15.12.2020 19:40, Florian Fainelli пишет:
->>>
->>>
->>> On 12/15/2020 8:17 AM, Dmitry Osipenko wrote:
->>>> 15.12.2020 19:04, Florian Fainelli пишет:
->>>>>
->>>>>
->>>>> On 12/15/2020 5:52 AM, Dmitry Osipenko wrote:
->>>>>> The tegra_uart_config of the DEBUG_LL code is now placed right at the
->>>>>> start of the .text section after commit which enabled debug output in the
->>>>>> decompressor. Tegra devices are not booting anymore if DEBUG_LL is enabled
->>>>>> since tegra_uart_config data is executes as a code. Fix the misplaced
->>>>>> tegra_uart_config storage by embedding it into the code.
->>>>>>
->>>>>> Cc: stable@vger.kernel.org
->>>>>> Fixes: 2596a72d3384 ("ARM: 9009/1: uncompress: Enable debug in head.S")
->>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>>>> ---
->>>>>>  arch/arm/include/debug/tegra.S | 54 +++++++++++++++++-----------------
->>>>>>  1 file changed, 27 insertions(+), 27 deletions(-)
->>>>>
->>>>> Looks like arch/arm/include/debug/brcmstb.S would need the same
->>>>> treatment since the implementation was copied from tegra.S.
->>>>>
->>>>
->>>> Good catch, will you be able to test the brcm and make a patch?
->>>
->>> Yes, absolutely, building a kernel to test right now.
->>>
->>
->> Thank you.
->>
->> BTW, I noticed that the problem is more visible on a thumb2 kernel
->> build, i.e. you should get a more reliable hang on boot. On a non-thumb2
->> kernel the hanging behaviour seems depends on a device / bootloader. I
->> haven't tried to figure out what exactly makes the difference, perhaps
->> it should be a memory layout / state.
-> 
-> To build with a CONFIG_THUMB2_KERNEL I had to fetch:
-> 
-> https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9018/2
-> 
-> to avoid a build error, too bad this missed v5.10 final but hopefully it
-> can make it soon.
+Fixing the following compiler warning by explicit conversion to long:
 
-The VFP fix was applied to the -next very recently, it should propagate
-to v5.10 eventually.
+In file included from /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.c:162:0:
+/home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h: In function 'extract64':
+/home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t {aka unsigned int}' [-Wformat=]
+  fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
+                                                    ^
+  CC      mm/filemap.o
+In file included from /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.c:166:0:
+/home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h: In function 'extract32':
+/home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t {aka unsigned int}' [-Wformat=]
+  fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
 
-> With CONFIG_THUMB2_KERNEL=y, I am not getting the head.S output where it
-> prints the start/end of the compressed kernel:
-> 
-> C:0x420800C0-0x4321B0E0->0x4212AB00-0x432C5B20
-> Uncompressing Linux... done, booting the kernel.
-> [    0.000000] Booting Linux on physical CPU 0x0
-> [    0.000000] Linux version 5.10.0-g148842c98a24
-> (fainelli@fainelli-desktop) (arm-linux-gcc (GCC) 8.3.0, GNU ld (GNU
-> Binutils) 2.32) #71 SMP Tue Dec 15 09:53:09 PST 2020
-> 
-> I am only getting:
-> 
-> Uncompressing Linux... done, booting the kernel.
-> 
-> Is that the same for you?
+Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
 
-No, start/end are printed for both THUMB2 and ARM kernels here.
+---
 
-> Looking at the disassembly of head.o it definitively has
-> brcmstb_uart_config in the .text section as the beginning just like you
-> mentioned in your commit message.
-> 
-> Disassembly of section .text:
-> 
-> 00000000 <brcmstb_uart_config>:
->    0:   00000001        andeq   r0, r0, r1
->         ...
->    c:   467c            mov     r4, pc
->    e:   f004 4478       and.w   r4, r4, #4160749568     ; 0xf8000000
->   12:   f504 4400       add.w   r4, r4, #32768  ; 0x8000
->   16:   4678            mov     r0, pc
->   18:   42a0            cmp     r0, r4
->   1a:   bf3f            itttt   cc
->   1c:   48d4            ldrcc   r0, [pc, #848]  ; (370 <LC1+0x8>)
->   1e:   4478            addcc   r0, pc
->   20:   4284            cmpcc   r4, r0
->   22:   f044 0401       orrcc.w r4, r4, #1
->   26:   bf28            it      cs
->   28:   f000 f9aa       blcs    380 <cache_on>
-> 
-> however after applying a fix similar to yours, we do end-up with the
-> expected data embedded within the code and given brcmstb.S would be
-> subject to the same issue as tegra.S, it would not hurt.
-> 
+changes v2: using %zu instead of %lu, which is the preferred conversion
+            for size_t - the line break isn't needed anymore
+---
+ arch/x86/entry/vdso/vdso2c.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Have you checked whether start/end printed after applying the fix?
+diff --git a/arch/x86/entry/vdso/vdso2c.h b/arch/x86/entry/vdso/vdso2c.h
+index 1c7cfac7e64a..5264daa8859f 100644
+--- a/arch/x86/entry/vdso/vdso2c.h
++++ b/arch/x86/entry/vdso/vdso2c.h
+@@ -35,7 +35,7 @@ static void BITSFUNC(extract)(const unsigned char *data, size_t data_len,
+ 	if (offset + len > data_len)
+ 		fail("section to extract overruns input data");
+ 
+-	fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
++	fprintf(outfile, "static const unsigned char %s[%zu] = {", name, len);
+ 	BITSFUNC(copy)(outfile, data + offset, len);
+ 	fprintf(outfile, "\n};\n\n");
+ }
+-- 
+2.11.0
+
