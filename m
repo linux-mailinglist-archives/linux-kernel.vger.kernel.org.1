@@ -2,91 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892712DB0AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5022DB0BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730733AbgLOP6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:58:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730481AbgLOP5K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:57:10 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0349C06179C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 07:56:29 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0f9e00f1a225f790dae810.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:9e00:f1a2:25f7:90da:e810])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 74CF01EC052C;
-        Tue, 15 Dec 2020 16:56:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1608047786;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=jo3x3cAXCEFcVh/x07VCfdFGsck/d89LJzeAOW0iS4k=;
-        b=X5ENld1jV1a5fXRQaZ6bkmGIUHUoQPDXB4a9GjpjYIBRi2ly5nR1A9epDHqoPaFOGsipxL
-        UL+c73vyIEv1VjPpNKMRzc1WtYacolOgTo8VdU11ZOLa00IgxS1IQ0zHLo9LaSYR/Kd1BZ
-        pbkmNGNtyAMSZ9XBDsA1yrnVmdW/o7k=
+        id S1730739AbgLOP6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:58:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60844 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730661AbgLOP5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:57:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 532BFAD0E;
+        Tue, 15 Dec 2020 15:56:42 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     srinivas.kandagatla@linaro.org,
+        Saenz Julienne <nsaenzjulienne@suse.de>,
+        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, will@kernel.org, robh+dt@kernel.org,
+        tim.gover@raspberrypi.com, phil@raspberrypi.com
+Subject: [PATCH 2/6] nvmem: Add driver to expose reserved memory as nvmem
 Date:   Tue, 15 Dec 2020 16:56:22 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc:     Chiawen Huang <chiawen.huang@amd.com>,
-        Tony Cheng <Tony.Cheng@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: 8353d30e747f ("drm/amd/display: disable stream if pixel clock
- changed with link active")
-Message-ID: <20201215155622.GC9817@zn.tnic>
-References: <20201211155553.GC25974@zn.tnic>
- <20201215154703.6gwm2ew337pqysq4@outlook.office365.com>
+Message-Id: <20201215155627.2513-3-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201215155627.2513-1-nsaenzjulienne@suse.de>
+References: <20201215155627.2513-1-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201215154703.6gwm2ew337pqysq4@outlook.office365.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 10:47:03AM -0500, Rodrigo Siqueira wrote:
-> Hi Boris,
-> 
-> Could you check if your branch has this commit:
-> 
->  drm/amd/display: Fix module load hangs when connected to an eDP
-> 
-> If so, could you try this patch:
-> 
->  https://patchwork.freedesktop.org/series/84965/
+Firmware/co-processors might use reserved memory areas in order to pass
+data stemming from an nvmem device otherwise non accessible to Linux.
+For example an EEPROM memory only physically accessible to firmware, or
+data only accessible early at boot time.
 
-So I did a bisection between
+In order to expose this data to other drivers and user-space, the driver
+models the reserved memory area as an nvmem device.
 
-git bisect start
-# bad: [3650b228f83adda7e5ee532e2b90429c03f7b9ec] Linux 5.10-rc1
-git bisect bad 3650b228f83adda7e5ee532e2b90429c03f7b9ec
-# good: [bbf5c979011a099af5dc76498918ed7df445635b] Linux 5.9
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+---
+ drivers/nvmem/Kconfig  |  8 ++++
+ drivers/nvmem/Makefile |  2 +
+ drivers/nvmem/rmem.c   | 92 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 102 insertions(+)
+ create mode 100644 drivers/nvmem/rmem.c
 
-and the patch in $Subject came in in 5.10-rc1.
-
-I can test any tree you want me to so just tell me on which tree to
-apply this patch and I'll run it.
-
-In any case, it doesn't apply on v5.10 though:
-
-$ test-apply.sh /tmp/rodrigo.siqueira 
-checking file drivers/gpu/drm/amd/display/dc/dce/dce_link_encoder.c
-Hunk #1 FAILED at 120
-
-You can push a tree of yours somewhere which I can try directly,
-alternatively.
-
-Lemme know.
-
-Thx.
-
+diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
+index 954d3b4a52ab..fecc19b884bf 100644
+--- a/drivers/nvmem/Kconfig
++++ b/drivers/nvmem/Kconfig
+@@ -270,4 +270,12 @@ config SPRD_EFUSE
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called nvmem-sprd-efuse.
+ 
++config NVMEM_RMEM
++	tristate "Reserved Memory Based Driver Support"
++	help
++	  This drivers maps reserved memory into an nvmem device. It might be
++	  useful to expose information left by firmware in memory.
++
++	  This driver can also be built as a module. If so, the module
++	  will be called nvmem-rmem.
+ endif
+diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
+index a7c377218341..5376b8e0dae5 100644
+--- a/drivers/nvmem/Makefile
++++ b/drivers/nvmem/Makefile
+@@ -55,3 +55,5 @@ obj-$(CONFIG_NVMEM_ZYNQMP)	+= nvmem_zynqmp_nvmem.o
+ nvmem_zynqmp_nvmem-y		:= zynqmp_nvmem.o
+ obj-$(CONFIG_SPRD_EFUSE)	+= nvmem_sprd_efuse.o
+ nvmem_sprd_efuse-y		:= sprd-efuse.o
++obj-$(CONFIG_NVMEM_RMEM) 	+= nvmem-rmem.o
++nvmem-rmem-y			:= rmem.o
+diff --git a/drivers/nvmem/rmem.c b/drivers/nvmem/rmem.c
+new file mode 100644
+index 000000000000..d4fb36db0644
+--- /dev/null
++++ b/drivers/nvmem/rmem.c
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (C) 2020 Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
++ */
++
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/nvmem-provider.h>
++#include <linux/of_reserved_mem.h>
++#include <linux/platform_device.h>
++
++struct rmem {
++	struct device *dev;
++	struct nvmem_device *nvmem;
++	struct reserved_mem *rmem;
++
++	const void *base;
++	phys_addr_t size;
++};
++
++static int rmem_read(void *context, unsigned int offset,
++		     void *val, size_t bytes)
++{
++	struct rmem *priv = context;
++	loff_t off = offset;
++
++	return memory_read_from_buffer(val, bytes, &off, priv->base, priv->size);
++}
++
++static int rmem_probe(struct platform_device *pdev)
++{
++	struct nvmem_config config = { };
++	struct device *dev = &pdev->dev;
++	struct device_node *rmem_np;
++	struct reserved_mem *rmem;
++	struct rmem *priv;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++	priv->dev = dev;
++
++	rmem_np = of_parse_phandle(dev->of_node, "memory-region", 0);
++	if (!rmem_np) {
++		dev_err(dev, "Failed to lookup reserved memory phandle\n");
++		return -EINVAL;
++	}
++
++	rmem = of_reserved_mem_lookup(rmem_np);
++	of_node_put(rmem_np);
++	if (!rmem) {
++		dev_err(dev, "Failed to lookup reserved memory\n");
++		return -EINVAL;
++	}
++
++	priv->rmem = rmem;
++	priv->size = rmem->size;
++
++	priv->base = devm_memremap(dev, rmem->base, rmem->size, MEMREMAP_WB);
++	if (IS_ERR(priv->base)) {
++		dev_err(dev, "Failed to remap memory region\n");
++		return PTR_ERR(priv->base);
++	}
++
++	config.dev = dev;
++	config.priv = priv;
++	config.name = "rmem";
++	config.size = priv->size;
++	config.reg_read = rmem_read;
++
++	priv->nvmem = devm_nvmem_register(dev, &config);
++	return PTR_ERR_OR_ZERO(priv->nvmem);
++}
++
++static const struct of_device_id rmem_match[] = {
++	{ .compatible = "nvmem-rmem", },
++	{ /* sentinel */ },
++};
++MODULE_DEVICE_TABLE(of, rmem_match);
++
++static struct platform_driver rmem_driver = {
++	.probe = rmem_probe,
++	.driver = {
++		.name = "rmem",
++		.of_match_table = rmem_match,
++	},
++};
++module_platform_driver(rmem_driver);
++
++MODULE_AUTHOR("Nicolas Saenz Julienne <nsaenzjulienne@suse.de>");
++MODULE_DESCRIPTION("Reserved Memory Based nvmem Driver");
++MODULE_LICENSE("GPL");
 -- 
-Regards/Gruss,
-    Boris.
+2.29.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
