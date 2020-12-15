@@ -2,92 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1D62DAFA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0D02DAFA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729882AbgLOPBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:01:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34048 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727833AbgLOPBD (ORCPT
+        id S1729897AbgLOPBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:01:50 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:42860 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727833AbgLOPB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:01:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608044377;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=IKljx6FgCzdtloc3mc18Xk4cKwYG6+/P+prc9Q1mYZI=;
-        b=fk905x4PbiPLjLr8SvgfvTXnKLoX6pjp8/VaYp2oTJH2vPD8GtEzEOiJQ4bsm7rerrsVKy
-        atjfEbhCOe45IMedoUbKhe8oTR++C0aIJzrRG/s29zFzzGbKH6mFfmcaab6DiItnjSsw2u
-        92tSPc0YpksQuUD/t+GWvRiR39Pw0tI=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-176-UHQ3wQPpMo6m7eKFMQ00xw-1; Tue, 15 Dec 2020 09:59:35 -0500
-X-MC-Unique: UHQ3wQPpMo6m7eKFMQ00xw-1
-Received: by mail-qt1-f199.google.com with SMTP id c14so14506352qtn.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:59:35 -0800 (PST)
+        Tue, 15 Dec 2020 10:01:29 -0500
+Received: by mail-oi1-f194.google.com with SMTP id l200so23566695oig.9;
+        Tue, 15 Dec 2020 07:01:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IKljx6FgCzdtloc3mc18Xk4cKwYG6+/P+prc9Q1mYZI=;
-        b=RiRqpVNOwSqlbQHs8CE7HAIfy6EC5pNjvnXXDgrWJxy6SRris7cLmKHUhGdl2Khf18
-         eUw+YQD8G+VwZaXhw5mriEclZAAQ9bn2DWsu+NuVMBndzEV9jnGxNQsK5CzqY23F1mt/
-         VpPvtGTrd4CSX/kv6r74ENMBM5nbMbB9LEipoHjE6rfdXfcO4URg6GtYPFshqgNb3PSM
-         r2MAhGJhGQDqBWhhNON5p4TBQ4gmUM6cALk8pgJK/O/r6t7zMM8zGvNCWUlX/j9DTGVA
-         H8BEwau1Gl73yuAQoKjwRUhc0nrYVbVDoc1t2LmIrkKM+FUG+Ri9f+uJiXr6Csd0tB1D
-         QbPg==
-X-Gm-Message-State: AOAM533A8n0OgiTHbooP7VKpPchqP7gJG+/exgRb0qbbIIMtT3HMmquK
-        ICB45yUd0b1xOOBsTIkA2bMLuyKkUt8rbGK9HvId/Hbhdh+g9nQtMRLoY/mYovuzWdFlt401vwD
-        LrRikDoY5A52nc9ewPp9Aj5gG
-X-Received: by 2002:a37:9e43:: with SMTP id h64mr39977603qke.380.1608044375467;
-        Tue, 15 Dec 2020 06:59:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJycu6otuC4YO/BGyPd5ppmhTVfTafNZG9cE1BgzxMsc8XHugDuz4vdzli+bb/JCxJcj4P/10A==
-X-Received: by 2002:a37:9e43:: with SMTP id h64mr39977581qke.380.1608044375283;
-        Tue, 15 Dec 2020 06:59:35 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l1sm17648469qkj.101.2020.12.15.06.59.33
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=q/D2pluZ7I/am9iy0DWbgJXEYcE9L4zDkl0i5rNHerY=;
+        b=TYsshxVc088PBwqgItxWIzCPyDwLQvsPgis61FRfrDxJpdBE8J32TSK2UxJlQPLI4e
+         Dha0xcBDlYwLm9WXVgiVQw8QvPnKy+8WGcJZLX06+cbAvbggVMjQL3Pnikt12jaMJyCU
+         ivA1poHMcW3ZyI1dexEmu3VBC/a63OBE3BgDlW5xJzwxC6Okndv27RMXJHORqd+cZKIP
+         p+0NZaDQKwzhxviedb/ZV6bYIudnbtNIazr0WC+SS/YTGjZ+aZcKKbpk9NPZQPHrl6yH
+         zHkN1V2N/Pz7E6s/Dc1NQwF5cky9AiM8TWzz58ZZb9pUCNVKhBKFIlBKz/iVHKfD0msc
+         YMyw==
+X-Gm-Message-State: AOAM531T8A9ozl3U76mbh5h5GO8h3zSX5QGLokbsAtGxOk1VmZxBM/XG
+        yWPM++dggAoRloSAcuIamg==
+X-Google-Smtp-Source: ABdhPJx4lE7nEbnpKw5PeMU2z4n9r0AN+HlhQq5LR/rdIfF2+GwQ64GuPvmQ2p9iR8pYHXsY620XkQ==
+X-Received: by 2002:a05:6808:a90:: with SMTP id q16mr332468oij.107.1608044448318;
+        Tue, 15 Dec 2020 07:00:48 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m18sm4717473ooa.24.2020.12.15.07.00.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 06:59:34 -0800 (PST)
-From:   trix@redhat.com
-To:     david.rheinsberg@gmail.com, jikos@kernel.org,
-        benjamin.tissoires@redhat.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] HID: wiimote: remove h from printk format specifier
-Date:   Tue, 15 Dec 2020 06:59:28 -0800
-Message-Id: <20201215145928.1912641-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 15 Dec 2020 07:00:47 -0800 (PST)
+Received: (nullmailer pid 3830204 invoked by uid 1000);
+        Tue, 15 Dec 2020 15:00:46 -0000
+Date:   Tue, 15 Dec 2020 09:00:46 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, broonie@kernel.org,
+        gary.bisson@boundarydevices.com, lgirdwood@gmail.com,
+        troy.kisky@boundarydevices.com
+Subject: Re: [PATCH v3 1/2] dt-bindings: regulator: add pf8x00 PMIC
+Message-ID: <20201215150046.GA3829745@robh.at.kernel.org>
+References: <20201214225851.23342-1-adrien.grassein@gmail.com>
+ <20201214225851.23342-2-adrien.grassein@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201214225851.23342-2-adrien.grassein@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Mon, 14 Dec 2020 23:58:50 +0100, Adrien Grassein wrote:
+> Add a devicetree binding documentation for the pf8x00 regulator driver.
+> 
+> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+> ---
+>  .../regulator/nxp,pf8x00-regulator.yaml       | 220 ++++++++++++++++++
+>  MAINTAINERS                                   |   6 +
+>  2 files changed, 226 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+> 
 
-See Documentation/core-api/printk-formats.rst.
-h should no longer be used in the format specifier for printk.
+With the whitespace fixed,
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/hid/hid-wiimote-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/hid/hid-wiimote-core.c b/drivers/hid/hid-wiimote-core.c
-index 41012681cafd..4399d6c6afef 100644
---- a/drivers/hid/hid-wiimote-core.c
-+++ b/drivers/hid/hid-wiimote-core.c
-@@ -1482,7 +1482,7 @@ static void handler_return(struct wiimote_data *wdata, const __u8 *payload)
- 		wdata->state.cmd_err = err;
- 		wiimote_cmd_complete(wdata);
- 	} else if (err) {
--		hid_warn(wdata->hdev, "Remote error %hhu on req %hhu\n", err,
-+		hid_warn(wdata->hdev, "Remote error %u on req %u\n", err,
- 									cmd);
- 	}
- }
--- 
-2.27.0
-
+Reviewed-by: Rob Herring <robh@kernel.org>
