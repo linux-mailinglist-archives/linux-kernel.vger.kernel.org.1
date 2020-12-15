@@ -2,82 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90CDF2DA8D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CB92DA8DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbgLOIAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:00:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbgLOIAI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:00:08 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28260C06179C
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 23:59:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vlmMgAa2QEYiSS7lGJm7ACi0lKBxrujPFHmQpD6je1M=; b=bot1FTLv7CI6g/SdHWmN4+UEiU
-        4lA4xmxntvsiGdFRqt+lbUB6lK19Go/UrZCG61eNIzVrK88yr9K4sq8jOVhHs2p8Qvq1ZEpo/pQRp
-        NwgLCrBsD7zPm83HQyDIYRIQwjFaBVeKc78bjPiYwmxkh9i4WKefR7awvhtOrGOu39WfyzHdO7dJW
-        UUjZHsngiBhs3VIlu/caxkbdHn9XdJUtVB6pjjC5snihpIGJPcWIo86X4phMHenSUTSBn37T66Ta3
-        L2tfqcg2fcSqMHszcHK7klkh18YbjjpUd1hw/74nEs9NNBqsfWcZEHuvNRkabIZfaf+UF9CXQbjUd
-        2hqNJ2cQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kp5Eo-0006sr-21; Tue, 15 Dec 2020 07:59:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 93C18302753;
-        Tue, 15 Dec 2020 08:59:11 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 77BEE20D21018; Tue, 15 Dec 2020 08:59:11 +0100 (CET)
-Date:   Tue, 15 Dec 2020 08:59:11 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     mgorman@techsingularity.net, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        juri.lelli@redhat.com, valentin.schneider@arm.com,
-        qais.yousef@arm.com, dietmar.eggemann@arm.com, rostedt@goodmis.org,
-        bsegall@google.com, tim.c.chen@linux.intel.com, benbjiang@gmail.com
-Subject: Re: [RFC][PATCH 1/5] sched/fair: Fix select_idle_cpu()s cost
- accounting
-Message-ID: <20201215075911.GA3040@hirez.programming.kicks-ass.net>
-References: <20201214164822.402812729@infradead.org>
- <20201214170017.877557652@infradead.org>
- <c4e31235-e1fb-52ac-99a8-ae943ee0de54@linux.intel.com>
+        id S1726431AbgLOIFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:05:15 -0500
+Received: from mga17.intel.com ([192.55.52.151]:59479 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726249AbgLOIEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 03:04:47 -0500
+IronPort-SDR: iMSO8qop0vBUw73olcszh6hOc18CAY01VComXn0smvo87d8Ug3m1OvhAKLIXDByslBpwcQYLJz
+ a7hLZRnZ8gEA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="154649322"
+X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
+   d="scan'208";a="154649322"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 00:04:05 -0800
+IronPort-SDR: X7w60umHBYVcg81LO00WjKgRfF1of3r81LUUCqpVwXv7b2knWPLG8UHmjWQoo5S6v5+8SEv6ng
+ j9cPVQfU3mQQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
+   d="scan'208";a="558613651"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by fmsmga005.fm.intel.com with ESMTP; 15 Dec 2020 00:04:02 -0800
+Subject: Re: [PATCH] mmc: sdhci-xenon: fix 1.8v regulator stabilization
+To:     Marcin Wojtas <mw@semihalf.com>, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org
+Cc:     ulf.hansson@linaro.org, huziji@marvell.com, jaz@semihalf.com,
+        tn@semihalf.com, kostap@marvell.com,
+        Alex Leibovich <alexl@marvell.com>, stable@vger.kernel.org
+References: <20201211141656.24915-1-mw@semihalf.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <f6d0f22c-2a19-d1dc-b370-4238a7d2d9b3@intel.com>
+Date:   Tue, 15 Dec 2020 10:03:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c4e31235-e1fb-52ac-99a8-ae943ee0de54@linux.intel.com>
+In-Reply-To: <20201211141656.24915-1-mw@semihalf.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 11:36:35AM +0800, Li, Aubrey wrote:
-> On 2020/12/15 0:48, Peter Zijlstra wrote:
-> > We compute the average cost of the total scan, but then use it as a
-> > per-cpu scan cost when computing the scan proportion. Fix this by
-> > properly computing a per-cpu scan cost.
-> > 
-> > This also fixes a bug where we would terminate early (!--nr, case) and
-> > not account that cost at all.
+On 11/12/20 4:16 pm, Marcin Wojtas wrote:
+> From: Alex Leibovich <alexl@marvell.com>
 > 
-> I'm a bit worried this may introduce a regression under heavy load.
-> The overhead of adding another cpu_clock() and calculation becomes 
-> significant when sis_scan is throttled by nr.
+> Automatic Clock Gating is a feature used for the power
+> consumption optimisation. It turned out that
+> during early init phase it may prevent the stable voltage
+> switch to 1.8V - due to that on some platfroms an endless
 
-The thing is, the code as it exists today makes no sense what so ever.
-It's plain broken batshit.
+platfroms -> platforms
 
-We calculate the total scanning time (irrespective of how many CPUs we
-touched), and then use that calculate the number of cpus to scan. That's
-just daft.
+> printout in dmesg can be observed:
+> "mmc1: 1.8V regulator output did not became stable"
+> Fix the problem by disabling the ACG at very beginning
+> of the sdhci_init and let that be enabled later.
+> 
+> Fixes: 3a3748dba881 ("mmc: sdhci-xenon: Add Marvell Xenon SDHC core functionality")
+> Signed-off-by: Alex Leibovich <alexl@marvell.com>
+> Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+> Cc: stable@vger.kernel.org
 
-After this patch we calculate the avg cost of scanning 1 cpu and use
-that to calculate how many cpus to scan. Which is coherent and sane.
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Maybe it can be improved, but that's a completely different thing.
+> ---
+>  drivers/mmc/host/sdhci-xenon.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-xenon.c b/drivers/mmc/host/sdhci-xenon.c
+> index c67611fdaa8a..4b05f6fdefb4 100644
+> --- a/drivers/mmc/host/sdhci-xenon.c
+> +++ b/drivers/mmc/host/sdhci-xenon.c
+> @@ -168,7 +168,12 @@ static void xenon_reset_exit(struct sdhci_host *host,
+>  	/* Disable tuning request and auto-retuning again */
+>  	xenon_retune_setup(host);
+>  
+> -	xenon_set_acg(host, true);
+> +	/*
+> +	 * The ACG should be turned off at the early init time, in order
+> +	 * to solve a possile issues with the 1.8V regulator stabilization.
+
+a possile -> possible
+
+> +	 * The feature is enabled in later stage.
+> +	 */
+> +	xenon_set_acg(host, false);
+>  
+>  	xenon_set_sdclk_off_idle(host, sdhc_id, false);
+>  
+> 
+
