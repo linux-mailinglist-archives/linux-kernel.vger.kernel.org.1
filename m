@@ -2,117 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777D12DA6E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B6F2DA6EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:42:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726102AbgLODif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 22:38:35 -0500
-Received: from mga03.intel.com ([134.134.136.65]:20811 "EHLO mga03.intel.com"
+        id S1726709AbgLODlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 22:41:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725821AbgLODiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 22:38:25 -0500
-IronPort-SDR: zxaYf55MEynG2ESS5Cm1+u9Io0fRzn8GhxGcUiboorL7BMwKUkgWHwx357Yuk8dOEb4ZW/aqtb
- eV9JpubLPvuQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="174929745"
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="174929745"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2020 19:36:39 -0800
-IronPort-SDR: gA0/KtfqVgSUqvHYRUw0Hbv2zHiYM3zKDsZMvmi+fYGPoYKTBGH6ed4l0vLsnICWehndUpmNWI
- KgOrIlzwaqxQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="383023280"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Dec 2020 19:36:36 -0800
-Subject: Re: [RFC][PATCH 1/5] sched/fair: Fix select_idle_cpu()s cost
- accounting
-To:     Peter Zijlstra <peterz@infradead.org>, mgorman@techsingularity.net,
-        vincent.guittot@linaro.org
-Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
-        juri.lelli@redhat.com, valentin.schneider@arm.com,
-        qais.yousef@arm.com, dietmar.eggemann@arm.com, rostedt@goodmis.org,
-        bsegall@google.com, tim.c.chen@linux.intel.com, benbjiang@gmail.com
-References: <20201214164822.402812729@infradead.org>
- <20201214170017.877557652@infradead.org>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <c4e31235-e1fb-52ac-99a8-ae943ee0de54@linux.intel.com>
-Date:   Tue, 15 Dec 2020 11:36:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726302AbgLODk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 22:40:56 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608003608;
+        bh=AqPwIZHWsdYJUD36gvowxOXqZ3+JDD73X7E8ij57d1w=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=kOr01pI4vTXzrxbvMsO2oHCwvsw+bPitnaUGfjcjFVK+/+MTap2rxZohIl7y0CjCM
+         oujiqwzUC/ID7f/BvnuVk+fjvFl0J5A91gkYltiHKzBp7y4Prp6NTtOC9VecDcdLuX
+         SP86Y+Tfe+pSrJ1odDulBXGVYF0JKKSaouY5NKhUqzZyzuz6AJU+4Dl6wm1K5VSFbt
+         htmEOlc+yh2yYQ9xPYew/K5fqznC5UvLcki4H9d1d7bJtBz2VRhhZjMW+ijLc81KSR
+         rCqlEDxlUCpp8LH6oxgfdx+dgqCv9x1vDPemIihPdO0e7rSG9aAv/aWaXzHhgfaVcl
+         AHXFVdUQY2Xbw==
 MIME-Version: 1.0
-In-Reply-To: <20201214170017.877557652@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v4 0/5] vsock: Add flags field in the vsock address
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160800360863.3580.11859617867656861413.git-patchwork-notify@kernel.org>
+Date:   Tue, 15 Dec 2020 03:40:08 +0000
+References: <20201214161122.37717-1-andraprs@amazon.com>
+In-Reply-To: <20201214161122.37717-1-andraprs@amazon.com>
+To:     Paraschiv@ci.codeaurora.org, Andra-Irina <andraprs@amazon.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        davem@davemloft.net, davdunc@amazon.com, decui@microsoft.com,
+        graf@amazon.de, jhansen@vmware.com, kuba@kernel.org,
+        sgarzare@redhat.com, stefanha@redhat.com, vkuznets@redhat.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/12/15 0:48, Peter Zijlstra wrote:
-> We compute the average cost of the total scan, but then use it as a
-> per-cpu scan cost when computing the scan proportion. Fix this by
-> properly computing a per-cpu scan cost.
-> 
-> This also fixes a bug where we would terminate early (!--nr, case) and
-> not account that cost at all.
+Hello:
 
-I'm a bit worried this may introduce a regression under heavy load.
-The overhead of adding another cpu_clock() and calculation becomes 
-significant when sis_scan is throttled by nr.
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-I'm not sure if it's a good idea to not account the scan cost at all
-when sis_scan is throttled, that is, remove the first cpu_clock() as
-well. The avg scan cost remains the value when the system is not very
-busy, and when the load comes down and span avg idle > span avg cost,
-we account the cost again. This should make select_idle_cpu() a bit
-faster when the load is very high.
+On Mon, 14 Dec 2020 18:11:17 +0200 you wrote:
+> vsock enables communication between virtual machines and the host they are
+> running on. Nested VMs can be setup to use vsock channels, as the multi
+> transport support has been available in the mainline since the v5.5 Linux kernel
+> has been released.
+> 
+> Implicitly, if no host->guest vsock transport is loaded, all the vsock packets
+> are forwarded to the host. This behavior can be used to setup communication
+> channels between sibling VMs that are running on the same host. One example can
+> be the vsock channels that can be established within AWS Nitro Enclaves
+> (see Documentation/virt/ne_overview.rst).
+> 
+> [...]
 
-Thanks,
--Aubrey
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  kernel/sched/fair.c |   13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6144,10 +6144,10 @@ static inline int select_idle_smt(struct
->  static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int target)
->  {
->  	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
-> +	int cpu, loops = 1, nr = INT_MAX;
-> +	int this = smp_processor_id();
->  	struct sched_domain *this_sd;
->  	u64 time;
-> -	int this = smp_processor_id();
-> -	int cpu, nr = INT_MAX;
->  
->  	this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
->  	if (!this_sd)
-> @@ -6175,14 +6175,19 @@ static int select_idle_cpu(struct task_s
->  	}
->  
->  	for_each_cpu_wrap(cpu, cpus, target) {
-> -		if (!--nr)
-> -			return -1;
->  		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
->  			break;
-> +
-> +		if (loops >= nr) {
-> +			cpu = -1;
-> +			break;
-> +		}
-> +		loops++;
->  	}
->  
->  	if (sched_feat(SIS_PROP)) {
->  		time = cpu_clock(this) - time;
-> +		time = div_u64(time, loops);
->  		update_avg(&this_sd->avg_scan_cost, time);
->  	}
->  
-> 
-> 
+Here is the summary with links:
+  - [net-next,v4,1/5] vm_sockets: Add flags field in the vsock address data structure
+    https://git.kernel.org/netdev/net-next/c/dc8eeef73b63
+  - [net-next,v4,2/5] vm_sockets: Add VMADDR_FLAG_TO_HOST vsock flag
+    https://git.kernel.org/netdev/net-next/c/caaf95e0f23f
+  - [net-next,v4,3/5] vsock_addr: Check for supported flag values
+    https://git.kernel.org/netdev/net-next/c/cada7ccd9dc7
+  - [net-next,v4,4/5] af_vsock: Set VMADDR_FLAG_TO_HOST flag on the receive path
+    https://git.kernel.org/netdev/net-next/c/1b5f2ab98e7f
+  - [net-next,v4,5/5] af_vsock: Assign the vsock transport considering the vsock address flags
+    https://git.kernel.org/netdev/net-next/c/7f816984f439
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
