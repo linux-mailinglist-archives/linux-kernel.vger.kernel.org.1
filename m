@@ -2,136 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738FD2DB32D
+	by mail.lfdr.de (Postfix) with ESMTP id EBEEF2DB32E
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731122AbgLOSAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730726AbgLOSAM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:00:12 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A39C0617A7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 09:59:32 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id q25so24265882oij.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 09:59:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5MPpRk8V3g6PWN9LNQ99IKoF0RLFmkUnchrMF5LPWbo=;
-        b=Eas/6BiUtdkrhL31amEw8ijnAI4oee8wsNUo7jn8A75pk6Yq5m5jj2tVBH9o+OlLAc
-         eXuvKCiMkTVNMLo+EuseRRGOABLWbahzG9r+91blEKtO58y0htpOwsD+ylK+hHmh5TDV
-         zqYfTr4AKyfgcR6gD+nX789LQGDPoWsVjnpISf+8cVu2WwpMChVfLUNHH5fUWmI3QnwW
-         Iqc9N3M2F0/JE9g0Lda9u36EA/FOS3TF9kt5pPf26lshyfQQ+1Yq5R1clWqUf0lVc6bR
-         Pm1axbJALfeTLFBpwKVXaiIcOjyk39B/AVPCKjYSZnsmwPVPzKA+w27/hfxLqTuWtqKk
-         ctzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5MPpRk8V3g6PWN9LNQ99IKoF0RLFmkUnchrMF5LPWbo=;
-        b=IvnNJcrZHJm0c8bio9ENNYVHF6jjWXD1cDjVy4KWFpaBZK52EyIiApJg4S3dSklhd3
-         9vtjFj2pN7+8SMZtlu6KoRQ/2x+0TVRa+APizZyebWHAUgjczOQ2ISGgsu88z+yp2NnO
-         IWybmdTEFbkX1OFmwYDQzlzU1ixE0SSKxIMTPBNwVRK0/RGh/2slVM50tX0kysLdYg8A
-         1Qujc9z98kAU8sVUQ6W9VD9jC+C/2ZfpHL9E35AqMhNn5cneFxORXPtOwYyLNzVto/c+
-         f3KYwvZYSktg3DKDGpAg9WMM/MT7SXkhqptbPB4en/v3DPy7d2DjEMVITU7USntaYYaR
-         Ef5g==
-X-Gm-Message-State: AOAM531fNonn3rMg74NEnpvYhKEi9TC3zZ1KJrFouJm33GTkQ4ZtpJH/
-        ughxpZUfaUp4r9funeIsu7O5tg==
-X-Google-Smtp-Source: ABdhPJyr33uHvrCPUXmIi1TsGv9BH5HYf4rv6arsFlEhjL5js8MmNi/6+1l9iBLmn8WpYlNaXVjEQg==
-X-Received: by 2002:a05:6808:1c1:: with SMTP id x1mr38015oic.126.1608055171539;
-        Tue, 15 Dec 2020 09:59:31 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id d124sm1018978oib.54.2020.12.15.09.59.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 09:59:30 -0800 (PST)
-Date:   Tue, 15 Dec 2020 11:59:29 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH] gpiolib: Allow name duplicates of "" and "NC"
-Message-ID: <X9j5gdx1/WaCq54m@builder.lan>
-References: <20201215170308.2037624-1-bjorn.andersson@linaro.org>
- <CAMpxmJU0XWxiYr716MNGnORJJJ-czuBGWNnFTa5oBTUK4uVheQ@mail.gmail.com>
+        id S1730696AbgLOSAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 13:00:51 -0500
+Received: from foss.arm.com ([217.140.110.172]:55142 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725973AbgLOSAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 13:00:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F0BE830E;
+        Tue, 15 Dec 2020 09:59:45 -0800 (PST)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F1CE3F66E;
+        Tue, 15 Dec 2020 09:59:43 -0800 (PST)
+Subject: Re: [PATCH] fair/util_est: Separate util_est_dequeue() for
+ cfs_rq_util_change
+To:     Xuewen Yan <xuewen.yan94@gmail.com>, patrick.bellasi@arm.com,
+        vincent.guittot@linaro.org, peterz@infradead.org
+Cc:     mingo@redhat.com, juri.lelli@redhat.com, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        linux-kernel@vger.kernel.org, Xuewen.Yan@unisoc.com,
+        xuewyan@foxmail.com
+References: <1607510656-22990-1-git-send-email-xuewen.yan@unisoc.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <d79da8c3-4904-c21f-9c7a-190ab6d12948@arm.com>
+Date:   Tue, 15 Dec 2020 18:59:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJU0XWxiYr716MNGnORJJJ-czuBGWNnFTa5oBTUK4uVheQ@mail.gmail.com>
+In-Reply-To: <1607510656-22990-1-git-send-email-xuewen.yan@unisoc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15 Dec 11:42 CST 2020, Bartosz Golaszewski wrote:
-
-> On Tue, Dec 15, 2020 at 6:02 PM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > Not all GPIO pins are exposed to the world and this is typically
-> > described by not giving these lines particular names, commonly "" or
-> > "NC".
-> >
-> > With the recent introduction of '2cd64ae98f35 ("gpiolib: Disallow
-> > identical line names in the same chip")' any gpiochip with multiple such
-> > pins will refuse to probe.
-> >
-> > Fix this by treating "" and "NC" as "no name specified" in
-> > gpio_name_to_desc()
-> >
-> > Fixes: 2cd64ae98f35 ("gpiolib: Disallow identical line names in the same chip")
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> >
-> > The introduction of 2cd64ae98f35 breaks pretty much all Qualcomm boards and
-> > grepping the DT tree indicates that other vendors will have the same problem.
-> >
-> > In addition to this the am335x-* boards will also needs "[NC]", "[ethernet]",
-> > "[emmc"], "[i2c0]", "[SYSBOOT]" and "[JTAG]" added to this list to allow
-> > booting v5.11 with the past and present dtb/dts files.
-> >
-> >  drivers/gpio/gpiolib.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> > index b3340ba68471..407ba79ae571 100644
-> > --- a/drivers/gpio/gpiolib.c
-> > +++ b/drivers/gpio/gpiolib.c
-> > @@ -302,7 +302,7 @@ static struct gpio_desc *gpio_name_to_desc(const char * const name)
-> >         struct gpio_device *gdev;
-> >         unsigned long flags;
-> >
-> > -       if (!name)
-> > +       if (!name || !strcmp(name, "") || !strcmp(name, "NC"))
-> >                 return NULL;
-> >
-> >         spin_lock_irqsave(&gpio_lock, flags);
-> > --
-> > 2.29.2
-> >
+On 09/12/2020 11:44, Xuewen Yan wrote:
+> when a task dequeued, it will update it's util, and cfs_rq_util_change
+> would check rq's util, if the cfs_rq->avg.util_est.enqueued is bigger
+> than  cfs_rq->avg.util_avg, but because the cfs_rq->avg.util_est.enqueued
+> didn't be decreased, this would cause bigger cfs_rq_util by mistake,
+> as a result, cfs_rq_util_change may change freq unreasonablely.
 > 
-> I have a bad feeling about this. This opens the door for all kinds of
-> exceptions: "N/A", "none" etc. Depending on whose boards are getting
-> broken.
+> separate the util_est_dequeue() into util_est_dequeue() and
+> util_est_update(), and dequeue the _task_util_est(p) before update util.
+
+I assume this patch header needs a little more substance so that less
+involved folks understand the issue as well. Describing the testcase
+which reveals the problem would help here too. 
+
+> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> ---
+>  kernel/sched/fair.c | 24 +++++++++++++++++++-----
+>  1 file changed, 19 insertions(+), 5 deletions(-)
 > 
-> If non-uniqueness of names is needed then let's better revert 2cd64ae98f35.
-> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index ae7ceba..20ecfd5 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -3946,11 +3946,9 @@ static inline bool within_margin(int value, int margin)
+>  }
+>  
+>  static void
+> -util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
+> +util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p)
 
-I like the intent of 2cd64ae98f35, but even if we decide what the
-"unconnected" name should be we have a slew of boards that won't boot
-v5.11-rc1 (or with any pre-v5.11 DTBs).
+Not sure why util_est_enqueue is inline and util_est_dequeue() and
+util_est_update() aren't?
 
-As such I think we need to revert the "return -EEXIST" part of the
-patch.
+>  {
+> -	long last_ewma_diff;
+>  	struct util_est ue;
 
+You would just need a 'unsigned int enqueued' here, like in util_est_enqueue().
 
-Looking forward perhaps we should define "" to be the "not a gpio"-name,
-revise my patch and fix up the DTs accordingly? And keep the dev_err()
-as it currently is?
+> -	int cpu;
+>  
+>  	if (!sched_feat(UTIL_EST))
+>  		return;
+> @@ -3961,6 +3959,17 @@ static inline bool within_margin(int value, int margin)
+>  	WRITE_ONCE(cfs_rq->avg.util_est.enqueued, ue.enqueued);
+>  
+>  	trace_sched_util_est_cfs_tp(cfs_rq);
+> +}
+> +
+> +static void
+> +util_est_update(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
+> +{
+> +	long last_ewma_diff;
+> +	struct util_est ue;
+> +	int cpu;
 
-Regards,
-Bjorn
+Nitpick: 'int cpu' not needed
+
+---8<---
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index c3685a743a76..53dfb20d101e 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3956,28 +3956,28 @@ static inline bool within_margin(int value, int margin)
+ 	return ((unsigned int)(value + margin - 1) < (2 * margin - 1));
+ }
+ 
+-static void
+-util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p)
++static inline void util_est_dequeue(struct cfs_rq *cfs_rq,
++				    struct task_struct *p)
+ {
+-	struct util_est ue;
++	unsigned int enqueued;
+ 
+ 	if (!sched_feat(UTIL_EST))
+ 		return;
+ 
+ 	/* Update root cfs_rq's estimated utilization */
+-	ue.enqueued  = cfs_rq->avg.util_est.enqueued;
+-	ue.enqueued -= min_t(unsigned int, ue.enqueued, _task_util_est(p));
+-	WRITE_ONCE(cfs_rq->avg.util_est.enqueued, ue.enqueued);
++	enqueued  = cfs_rq->avg.util_est.enqueued;
++	enqueued -= min_t(unsigned int, enqueued, _task_util_est(p));
++	WRITE_ONCE(cfs_rq->avg.util_est.enqueued, enqueued);
+ 
+ 	trace_sched_util_est_cfs_tp(cfs_rq);
+ }
+ 
+-static void
+-util_est_update(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
++static inline void util_est_update(struct cfs_rq *cfs_rq,
++				   struct task_struct *p,
++				   bool task_sleep)
+ {
+ 	long last_ewma_diff;
+ 	struct util_est ue;
+-	int cpu;
+ 
+ 	if (!sched_feat(UTIL_EST))
+ 		return;
+@@ -4021,8 +4021,7 @@ util_est_update(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
+ 	 * To avoid overestimation of actual task utilization, skip updates if
+ 	 * we cannot grant there is idle time in this CPU.
+ 	 */
+-	cpu = cpu_of(rq_of(cfs_rq));
+-	if (task_util(p) > capacity_orig_of(cpu))
++	if (task_util(p) > capacity_orig_of(cpu_of(rq_of(cfs_rq))))
+ 		return;
+ 
+ 	/*
+-- 
+2.17.1
