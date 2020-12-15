@@ -2,112 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499582DB3CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5F82DB3D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:36:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731645AbgLOScJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:32:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731270AbgLOSbz (ORCPT
+        id S1731420AbgLOSeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 13:34:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34006 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730744AbgLOSeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:31:55 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84BFC06179C;
-        Tue, 15 Dec 2020 10:31:14 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id c18so20126551iln.10;
-        Tue, 15 Dec 2020 10:31:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=80RJxbQMOWLHkkl6CJsCFQ4rANpuWFNmSrNeM4HB1fw=;
-        b=bUtBr5cevI/l5LV/ZBfKYF58sEpIKiCy5T/1v1WcpEEMew3TURVj8wyftPOGgvYC6F
-         5mZ19VPq3sKyJ53SLCOK/qB4Iaz+4n7C+X4dMte61gPa7cBJlZTW9Jrk+tBDsCwqvtGF
-         de/5Siy9GXFZ8HU4iR1AdMK2lqPz1PnUmeEB8REl/15gEs4TavqfPYyGV2o0SYqRERVl
-         p3WCC0Bxp8deuomUmGq4bYQlDjgCqKcRWSdHEyEPlmdZif23PGhWLrByKj2DkWJLZfrR
-         T2owm6rfMPAmSrbLN+PdcREDRYMC/9TM6gXqrUyV8cTrCaGNppK/5HNx2sWZbE2YETen
-         tAfg==
+        Tue, 15 Dec 2020 13:34:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608057165;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=V0mOKUC1c9jIdmBHrE2UTrYyCPIaALN4ciYRI/jsXN4=;
+        b=TzvsO85l2m6SITXAHqTbsA3sztrVTZwuA6QSLnc4s9otpnNjt5wRzGffGm9S96Na1ey/1h
+        FQkcYKmJ1Q9KLfGftUazgYlq17BbiWsxZIK32dfw0fTqXsEo6fmtMLIJm6H0Ze1sKFIHhd
+        RDy4CofcaWX0nNvH1u3tUvd0tJTURSw=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-KXc-RTjhNiWG-vCXrRlMqg-1; Tue, 15 Dec 2020 13:32:44 -0500
+X-MC-Unique: KXc-RTjhNiWG-vCXrRlMqg-1
+Received: by mail-qv1-f72.google.com with SMTP id b9so14825919qvj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 10:32:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=80RJxbQMOWLHkkl6CJsCFQ4rANpuWFNmSrNeM4HB1fw=;
-        b=AZ01SJhD0v080Dp/Jk5Vvh5zKB+/M1f+fidirpLzkutkeTP7cJqiSRs+/jibrSc2be
-         lRcWQYRiM3BjyXdyHSDfGgPGB4Y1shjuowLmICAWZXFE2Gd6Z3tCTrkLuq57GSFgOS3y
-         ug8UNljGRO7tO0P9wDM4MqfGC3h1NSaCmyCmSNzZvVoZke3DbPeweX2QABRee40S1s11
-         /2iz6TX2HwrrtHjiZ4uwib0CN9k+ejHoZSh9r+ywuBogNzng6Vq2yNhZCqN940yTvJIF
-         mPEdVkXkCgkM1ZAKZnzxOruQZz/JUXQ/1InGFQmi0M+gjZ2uq4abOfROnMUX1cPV2br1
-         04KQ==
-X-Gm-Message-State: AOAM5333uujsh7835/2mkDAvYkvkHICRsZboqthZsxmkyIAI9UL1C78e
-        OpgxB0Y5kkrtkYfGUFZRdynHmEmBVCMeUA==
-X-Google-Smtp-Source: ABdhPJxrofK2XBG/kg3g0F9pgVWJr3e/4K4JeQr7liyPb6XpNRd6E5COwXCToYHGlFjjxWuOaFUD/Q==
-X-Received: by 2002:a05:6e02:10c2:: with SMTP id s2mr42658951ilj.290.1608057074053;
-        Tue, 15 Dec 2020 10:31:14 -0800 (PST)
-Received: from [192.168.1.124] (d53-64-28-168.nap.wideopenwest.com. [64.53.168.28])
-        by smtp.gmail.com with ESMTPSA id l16sm11317094ioj.52.2020.12.15.10.31.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 10:31:13 -0800 (PST)
-Sender: Ted Estes <check.switch.26@gmail.com>
-Subject: Re: [Bug 210655] ptrace.2: documentation is incorrect about access
- checking threads in same thread group
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Oleg Nesterov <oleg@tv-sign.ru>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Kees Cook <keescook@chromium.org>, Jann Horn <jann@thejh.net>
-Cc:     linux-man <linux-man@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <feef4f9a-4ed8-8a2e-d330-88e7f516faae@gmail.com>
-From:   Ted Estes <ted@softwarecrafters.com>
-Message-ID: <b416e106-c11d-1471-de3d-fb9d5b1b6747@softwarecrafters.com>
-Date:   Tue, 15 Dec 2020 12:31:11 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V0mOKUC1c9jIdmBHrE2UTrYyCPIaALN4ciYRI/jsXN4=;
+        b=o4LOsXE9sCjztnymiKsrDyxX//6O94cMuAbw34b6bhogoFylvEiXE++uTCSaOcsQn/
+         EnrHxo6Ico9j8AMrbOPdZamkzeSAffpON/Fqy1+Cw7IsPPE77J29GkYKFXVg1NFgtX+s
+         UdXLvP7ygkBwA3bBaUbowTbHvfBRWr610wklCfEwEh26N45RlvBkwTYfCqM9SqtJl4ro
+         O8oLSFIFhXY1QuQYVRGyNnFH2ZQOMXRpop/alhEZHKMqVVB2l2kFkxgP9pHtRQDv27wb
+         G4gi32M9HpUxNIGwSurXSFWSZroBnY9C8ChRaG3yeiiSyfb7iBglUsRxJLYsgGodG9bI
+         wlWQ==
+X-Gm-Message-State: AOAM530cp/Vd0feBEGPrcDgW1uK92wQhGsTpMrDw79j0HMf+EBwQtTxQ
+        PPV83CupTjNyczRUCLGpSrjHUagoKe7eX16UIbWzgNtLH9PExB6rDhzuMY6aLEiY+yMWvDz0Tma
+        fXEPA4fhWOija2meHh1s+3Y9Y
+X-Received: by 2002:a37:a309:: with SMTP id m9mr39408170qke.477.1608057163625;
+        Tue, 15 Dec 2020 10:32:43 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyc5XN+2gohiXP7OSbNvjdyFmfV9/NJ44oCCK6YQmcFB2K7lGIoz9MSF/0FEVZdBB17AZAOCQ==
+X-Received: by 2002:a37:a309:: with SMTP id m9mr39408149qke.477.1608057163421;
+        Tue, 15 Dec 2020 10:32:43 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 6sm17779099qko.3.2020.12.15.10.32.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 10:32:42 -0800 (PST)
+From:   trix@redhat.com
+To:     jdelvare@suse.com, linux@roeck-us.net
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] hwmon: remove h from printk format specifier
+Date:   Tue, 15 Dec 2020 10:32:37 -0800
+Message-Id: <20201215183237.2071770-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <feef4f9a-4ed8-8a2e-d330-88e7f516faae@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Per my research on the topic, the error is in the manual page.  The 
-behavior of ptrace(2) was intentionally changed to prohibit attaching to 
-a thread in the same group.  Apparently, there were a number of 
-ill-behaved edge cases.
+From: Tom Rix <trix@redhat.com>
 
-I found this email thread on the subject: 
-https://lkml.org/lkml/2006/8/31/241
+See Documentation/core-api/printk-formats.rst.
+h should no longer be used in the format specifier for printk.
 
-Thank you.
---Ted Estes
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/hwmon/smsc47m1.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 12/15/2020 11:01 AM, Alejandro Colomar (man-pages) wrote:
-> Hi,
->
-> There's a bug report: https://bugzilla.kernel.org/show_bug.cgi?id=210655
->
-> [[
-> Under "Ptrace access mode checking", the documentation states:
->    "1. If the calling thread and the target thread are in the same thread
-> group, access is always allowed."
->
-> This is incorrect. A thread may never attach to another in the same group.
->
-> Reference, ptrace_attach()
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/kernel/ptrace.c?h=v5.9.14#n380
-> ]]
->
-> I just wanted to make sure that it is a bug in the manual page, and not
-> in the implementation.
->
->
-> Thanks,
->
-> Alex
->
+diff --git a/drivers/hwmon/smsc47m1.c b/drivers/hwmon/smsc47m1.c
+index b637836b58a1..37531b5c8254 100644
+--- a/drivers/hwmon/smsc47m1.c
++++ b/drivers/hwmon/smsc47m1.c
+@@ -682,7 +682,7 @@ static int __init smsc47m1_handle_resources(unsigned short address,
+ 			/* Request the resources */
+ 			if (!devm_request_region(dev, start, len, DRVNAME)) {
+ 				dev_err(dev,
+-					"Region 0x%hx-0x%hx already in use!\n",
++					"Region 0x%x-0x%x already in use!\n",
+ 					start, start + len);
+ 				return -EBUSY;
+ 			}
+-- 
+2.27.0
 
