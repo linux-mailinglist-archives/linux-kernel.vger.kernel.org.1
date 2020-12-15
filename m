@@ -2,169 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470202DB3A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7782DB3AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731525AbgLOSXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:23:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729389AbgLOSXB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:23:01 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AC7C06179C;
-        Tue, 15 Dec 2020 10:22:20 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id t22so5604499pfl.3;
-        Tue, 15 Dec 2020 10:22:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=je+ZmrwiUCXiuvPD1/Wb1EkZ6uMhA2JOKTB9txP5oCc=;
-        b=PwUFNwTEuTjHERr607ESaHNJhHkaKE7DFFLXUYzHmmUH5D8Ws62qqcoJ+y9y0lygJv
-         OPgG6eUFpK1V1NGYOaiJjkW7BX072KReb3Y/vEAOIdbtdtH+icRDyc6L43iPbk7dPLX3
-         u/5NEdhVHctBXoilS97r62sSaV08duvXc1O3sivGZUJMseZhUdGoqrvt5ZZp8RzussVf
-         iZ8cAFJ7v9o0XL6OqHd5o3mUagCsLXaHXTni6ziDLQIPnzggyY3sUKqXxXYtlWWK1Y1c
-         T4NThc+WUuVcEUgpjjjuU6iPfgCv4V3xm3e7gu5v4tac+c6KBc3OU12O5QplVPpOcsHN
-         GocQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=je+ZmrwiUCXiuvPD1/Wb1EkZ6uMhA2JOKTB9txP5oCc=;
-        b=AA9PrlXaFfcmy2UpFyce7yBxxYMtHteV94ZcHmPKn8U0Kp7wWcbnAyQKcchjaPVvYW
-         dhgQL7NmISAm4dZeRNUBc9CKfcIeqrKwrC5UxEyknQW+Ewrj/OYfhuvNUAWq30L0An2e
-         djCA/y+lHY/klCJy4EOR5qw+5LLP3v5U+pmeyA8bPDQb5oAd3E5Klnv0omLKh8yfp47P
-         CV98/STpJHm7n/yea3Ui6zbSjVlhTK5WioNIBYdKvO35Ot1vNg606ReJYSFTt0qgaHZF
-         /V93YCHZwVbymbwB1Umzkg6ZWssrad9HfpwBPPuLHkEtRBjNDD/eXAX7sRV2T9sHBnvR
-         TZkg==
-X-Gm-Message-State: AOAM533jcledk8nDmMVnAZDcJ1Slajw2Ou7yOfeL8x0o6sh/Fm7tlStq
-        IqPCcniYq0Y98ySGO5TVMzycHbTngGY=
-X-Google-Smtp-Source: ABdhPJzwo4fl5drkLZWEjXdYFdT6NJWksqohzDb+uPzvErFRAgw+ei95XVaVk2HG7eHpS2Q8eb01vw==
-X-Received: by 2002:a63:d005:: with SMTP id z5mr30197428pgf.296.1608056539706;
-        Tue, 15 Dec 2020 10:22:19 -0800 (PST)
-Received: from [10.230.29.166] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id o22sm17846643pgv.9.2020.12.15.10.22.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 10:22:18 -0800 (PST)
-Subject: Re: [PATCH v1] ARM: tegra: Fix misplaced tegra_uart_config in
- decompressor
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20201215135222.6899-1-digetx@gmail.com>
- <980f70c6-8967-c110-1699-cb0da2f46cc0@gmail.com>
- <5b01ce96-5f8b-dfcb-accd-2ba29f34947f@gmail.com>
- <5853b349-562c-3b6a-33d6-49516553dad8@gmail.com>
- <b115f985-b27b-bbcd-fc42-d9e357ecf46a@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <b8de29b7-b0f6-5b2b-6ab2-f4399bc241fc@gmail.com>
-Date:   Tue, 15 Dec 2020 10:22:16 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.5.1
+        id S1731567AbgLOSYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 13:24:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731534AbgLOSX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 13:23:29 -0500
+Date:   Tue, 15 Dec 2020 10:22:46 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608056568;
+        bh=QPrErB5DMDQIIkF9V+Ie0fJXxDat+232EdenUKSeBSs=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KWuMsYDIjqWHsxQvud7m9sdHgw7mSYKUSIbCUKHAlV19RXkHQcf4T7UbUy0HQYAll
+         sBwOzEGkQcL8NDxf4qhZSUDzjmbpilZbZKOKTjSYifH7Z67MiN522UA3h0c8sUKJLr
+         CP9NP4X8FQHU36xrIufIUx1pZaP/f/5lw7IsuzxCYGaldU57gdoKaq9b9MA/2iK0dx
+         VrDsJz+nBpR5GGNS8n0gCfwOCqd+DcmynZEnF/0nGMtDMJQJRComYTZdwqhi9mMIk7
+         V0xo/LGcsBYLAaqPl/Nbg5vjaMFaxbWdIZE/abIoworzR88qT2XpI/sXmfOLGDfgkl
+         zm5GECZO0ya6Q==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>, rcu@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lkft-triage@lists.linaro.org, Netdev <netdev@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [stabe-rc 5.9 ] sched: core.c:7270 Illegal context switch in
+ RCU-bh read-side critical section!
+Message-ID: <20201215102246.4bdca3d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201215144531.GZ2657@paulmck-ThinkPad-P72>
+References: <CA+G9fYtu1zOz8ErUzftNG4Dc9=cv1grsagBojJraGhm4arqXyw@mail.gmail.com>
+        <20201215144531.GZ2657@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <b115f985-b27b-bbcd-fc42-d9e357ecf46a@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/15/2020 8:53 AM, Dmitry Osipenko wrote:
-> 15.12.2020 19:40, Florian Fainelli пишет:
->>
->>
->> On 12/15/2020 8:17 AM, Dmitry Osipenko wrote:
->>> 15.12.2020 19:04, Florian Fainelli пишет:
->>>>
->>>>
->>>> On 12/15/2020 5:52 AM, Dmitry Osipenko wrote:
->>>>> The tegra_uart_config of the DEBUG_LL code is now placed right at the
->>>>> start of the .text section after commit which enabled debug output in the
->>>>> decompressor. Tegra devices are not booting anymore if DEBUG_LL is enabled
->>>>> since tegra_uart_config data is executes as a code. Fix the misplaced
->>>>> tegra_uart_config storage by embedding it into the code.
->>>>>
->>>>> Cc: stable@vger.kernel.org
->>>>> Fixes: 2596a72d3384 ("ARM: 9009/1: uncompress: Enable debug in head.S")
->>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>>> ---
->>>>>  arch/arm/include/debug/tegra.S | 54 +++++++++++++++++-----------------
->>>>>  1 file changed, 27 insertions(+), 27 deletions(-)
->>>>
->>>> Looks like arch/arm/include/debug/brcmstb.S would need the same
->>>> treatment since the implementation was copied from tegra.S.
->>>>
->>>
->>> Good catch, will you be able to test the brcm and make a patch?
->>
->> Yes, absolutely, building a kernel to test right now.
->>
+On Tue, 15 Dec 2020 06:45:31 -0800 Paul E. McKenney wrote:
+> > Crash log:
+> > --------------
+> > # selftests: bpf: test_tc_edt.sh
+> > [  503.796362]
+> > [  503.797960] =============================
+> > [  503.802131] WARNING: suspicious RCU usage
+> > [  503.806232] 5.9.15-rc1 #1 Tainted: G        W
+> > [  503.811358] -----------------------------
+> > [  503.815444] /usr/src/kernel/kernel/sched/core.c:7270 Illegal
+> > context switch in RCU-bh read-side critical section!
+> > [  503.825858]
+> > [  503.825858] other info that might help us debug this:
+> > [  503.825858]
+> > [  503.833998]
+> > [  503.833998] rcu_scheduler_active = 2, debug_locks = 1
+> > [  503.840981] 3 locks held by kworker/u12:1/157:
+> > [  503.845514]  #0: ffff0009754ed538
+> > ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x208/0x768
+> > [  503.855048]  #1: ffff800013e63df0 (net_cleanup_work){+.+.}-{0:0},
+> > at: process_one_work+0x208/0x768
+> > [  503.864201]  #2: ffff8000129fe3f0 (pernet_ops_rwsem){++++}-{3:3},
+> > at: cleanup_net+0x64/0x3b8
+> > [  503.872786]
+> > [  503.872786] stack backtrace:
+> > [  503.877229] CPU: 1 PID: 157 Comm: kworker/u12:1 Tainted: G        W
+> >         5.9.15-rc1 #1
+> > [  503.885433] Hardware name: ARM Juno development board (r2) (DT)
+> > [  503.891382] Workqueue: netns cleanup_net
+> > [  503.895324] Call trace:
+> > [  503.897786]  dump_backtrace+0x0/0x1f8
+> > [  503.901464]  show_stack+0x2c/0x38
+> > [  503.904796]  dump_stack+0xec/0x158
+> > [  503.908215]  lockdep_rcu_suspicious+0xd4/0xf8
+> > [  503.912591]  ___might_sleep+0x1e4/0x208  
 > 
-> Thank you.
+> You really are forbidden to invoke ___might_sleep() while in a BH-disable
+> region of code, whether due to rcu_read_lock_bh(), local_bh_disable(),
+> or whatever else.
 > 
-> BTW, I noticed that the problem is more visible on a thumb2 kernel
-> build, i.e. you should get a more reliable hang on boot. On a non-thumb2
-> kernel the hanging behaviour seems depends on a device / bootloader. I
-> haven't tried to figure out what exactly makes the difference, perhaps
-> it should be a memory layout / state.
+> I do see the cond_resched() in inet_twsk_purge(), but I don't immediately
+> see a BH-disable region of code.  Maybe someone more familiar with this
+> code would have some ideas.
+> 
+> Or you could place checks for being in a BH-disable further up in
+> the code.  Or build with CONFIG_DEBUG_INFO=y to allow more precise
+> interpretation of this stack trace.
 
-To build with a CONFIG_THUMB2_KERNEL I had to fetch:
-
-https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9018/2
-
-to avoid a build error, too bad this missed v5.10 final but hopefully it
-can make it soon.
-
-With CONFIG_THUMB2_KERNEL=y, I am not getting the head.S output where it
-prints the start/end of the compressed kernel:
-
-C:0x420800C0-0x4321B0E0->0x4212AB00-0x432C5B20
-Uncompressing Linux... done, booting the kernel.
-[    0.000000] Booting Linux on physical CPU 0x0
-[    0.000000] Linux version 5.10.0-g148842c98a24
-(fainelli@fainelli-desktop) (arm-linux-gcc (GCC) 8.3.0, GNU ld (GNU
-Binutils) 2.32) #71 SMP Tue Dec 15 09:53:09 PST 2020
-
-I am only getting:
-
-Uncompressing Linux... done, booting the kernel.
-
-Is that the same for you?
-
-Looking at the disassembly of head.o it definitively has
-brcmstb_uart_config in the .text section as the beginning just like you
-mentioned in your commit message.
-
-Disassembly of section .text:
-
-00000000 <brcmstb_uart_config>:
-   0:   00000001        andeq   r0, r0, r1
-        ...
-   c:   467c            mov     r4, pc
-   e:   f004 4478       and.w   r4, r4, #4160749568     ; 0xf8000000
-  12:   f504 4400       add.w   r4, r4, #32768  ; 0x8000
-  16:   4678            mov     r0, pc
-  18:   42a0            cmp     r0, r4
-  1a:   bf3f            itttt   cc
-  1c:   48d4            ldrcc   r0, [pc, #848]  ; (370 <LC1+0x8>)
-  1e:   4478            addcc   r0, pc
-  20:   4284            cmpcc   r4, r0
-  22:   f044 0401       orrcc.w r4, r4, #1
-  26:   bf28            it      cs
-  28:   f000 f9aa       blcs    380 <cache_on>
-
-however after applying a fix similar to yours, we do end-up with the
-expected data embedded within the code and given brcmstb.S would be
-subject to the same issue as tegra.S, it would not hurt.
--- 
-Florian
+My money would be on the option that whatever run on this workqueue
+before forgot to re-enable BH, but we already have a check for that...
+Naresh, do you have the full log? Is there nothing like "BUG: workqueue
+leaked lock" above the splat?
