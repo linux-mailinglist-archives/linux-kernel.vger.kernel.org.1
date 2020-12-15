@@ -2,72 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A222DB289
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECAA72DB28F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:29:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731021AbgLOR0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 12:26:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729673AbgLOR0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 12:26:34 -0500
-Date:   Tue, 15 Dec 2020 11:25:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608053153;
-        bh=32+bL+GQpDgEOQNB7TiigXJBGuTJfVnYj0Ea8NfaoBc=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=uVdNlx/moYtZZ+HLjk36KTRFSzrz3RvqJUBOD7WpB01d8BBuGcTyL2ahimDw5a6fu
-         Nmo/BjpVEhqZ3cNfZpBNzWZZALtGPk9zlGPJgdSLih/ZREsZ3XB7CdxfVp8bJW/5qO
-         hJdyEK+KWPjxsRkYCId92wQ98aXi7Er5XxuiSUUdQtb7weUwwfPf+fs0gOvOQiRJaq
-         yaItN2Z+KpWyXp6mwk+eaah/CfzsYqpEaxQMGcY3Ur1on0GoXr0eOqTxRsSVuq7OcI
-         PvKRoLy87+bwuS2sc0O4ZkIwdlAbkcT9jKeGxNTVlRwJs74E+N1eNlHxsriOwIXpER
-         ovQ7/lsvoSi7A==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: Re: linux-next: manual merge of the amdgpu tree with the pci tree
-Message-ID: <20201215172552.GA310296@bjorn-Precision-5520>
+        id S1730604AbgLOR2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 12:28:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726431AbgLOR2C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 12:28:02 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736BEC06179C;
+        Tue, 15 Dec 2020 09:27:22 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id lj6so1613629pjb.0;
+        Tue, 15 Dec 2020 09:27:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YLQe1sM4Ge2CHlLzOz2p/trhD+G58BxTmNBt25LRZ8A=;
+        b=mtRXacPgffa47mMHg0mb+jE2Uic1s/vh3S7sCBxhHYjvzthmVLzIhwhGpfUGV8suE/
+         ZaaYyacg7kpzmnlJoPPBkhXEOr4rxWuWZi9VhRYODw5JLp6LKb4rzi9AH6D23jG7wB7y
+         iJHSSQ/bc+Ub7HIbwibushpozgI25EwzwGOYpEXNi0+Uux/Cz7F2ownzUE6Yqygbg/3r
+         N2Ei0jsQOvWH8mwF3Sj/1OGcFltg2PkPFsPZqNBUKrJy2zM/kc1giBz4cnnHrLEYL5Dn
+         qpo2qAZqzNZxWJK6JavzI4QkjrnyhwK3AHbgjuVs5VX1/g4sDRRPcIOhF30E7IPup6IY
+         W8lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YLQe1sM4Ge2CHlLzOz2p/trhD+G58BxTmNBt25LRZ8A=;
+        b=IUaJ/yiRiZU8dlBmmBHB3LY52Xq+73SPQoBMXnSwfo6+QQVnCHIYB46v3nUTAlHVDV
+         2PpUIw+vD34tPNYbM67TE/NmgpgpvJxucw3jDtHAF6G34IiWKisC5Ue47PDPZilk03vb
+         EGTOLYAQoYJTL0f3WUd8AiO+wKDY1ZARy6MxjnkqaEUa5wal+IzLRgQsXzxITaeFCf4P
+         uJaoYrr8VecO8D3uyrj1CHl9uHkILUZ7YtL+GW3Z6pwhzm96Dhn12rh0BoacXm/Ir5Kc
+         epWkp/h99M+0pU9t2iabij994aQAHSFrtMOhyYwcXHdl5LWw5JcVrI+dmYTyYBqrgPJD
+         thNQ==
+X-Gm-Message-State: AOAM5333pbtRq99mXuuK3U2Ki1pQfhoqO+0ta9CmIg2tXKsErVIkzMu9
+        KOhOWaOX2d5jDDRlBGZDZ/xP0ISRz6dl6fBBTvI=
+X-Google-Smtp-Source: ABdhPJyD+yx+eQaFiZVDFvolPHHBDMQn/csck7cKFaQIPdyK4pVw193xnlm+vbAxPWLqoWx3okwRpAgzBq0zXmYooFg=
+X-Received: by 2002:a17:90a:c592:: with SMTP id l18mr31159805pjt.228.1608053241871;
+ Tue, 15 Dec 2020 09:27:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bebf5028-9a3e-59fe-ea70-c5e5e61fcb72@linux.intel.com>
+References: <20201215164315.3666-1-calvin.johnson@oss.nxp.com> <20201215164315.3666-5-calvin.johnson@oss.nxp.com>
+In-Reply-To: <20201215164315.3666-5-calvin.johnson@oss.nxp.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 15 Dec 2020 19:28:10 +0200
+Message-ID: <CAHp75VcHrBtAY3KDugBYEo9=YuDwbh+QLdOU8yiKb2VyaU2x9A@mail.gmail.com>
+Subject: Re: [net-next PATCH v2 04/14] net: phy: Introduce fwnode_get_phy_id()
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, "linux.cj" <linux.cj@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 10:52:26PM -0800, Kuppuswamy, Sathyanarayanan wrote:
-> On 12/14/20 3:37 PM, Bjorn Helgaas wrote:
-> > On Mon, Dec 14, 2020 at 06:18:54PM -0500, Alex Deucher wrote:
-> > > On Mon, Dec 14, 2020 at 6:16 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > On Tue, Dec 15, 2020 at 07:34:31AM +1100, Stephen Rothwell wrote:
-> > > > > Hi all,
-> > > > > 
-> > > > > On Tue, 8 Dec 2020 13:56:20 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > > > > > 
-> 
-> > > 
-> > > I don't plan to merge this upstream via my tree.  I was just carrying
-> > > it in my drm-next branch because we have a number of users that depend
-> > > on it for working DPC and a number of people use this branch for
-> > > testing.
-> > 
-> > OK, thanks.  FWIW, it's currently marked "Changes Requested" in
-> > patchwork, so it isn't really going anywhere right now:
-> > 
-> > https://patchwork.kernel.org/project/linux-pci/patch/cbba08a5e9ca62778c8937f44eda2192a2045da7.1595617529.git.sathyanarayanan.kuppuswamy@linux.intel.com/
+On Tue, Dec 15, 2020 at 6:44 PM Calvin Johnson
+<calvin.johnson@oss.nxp.com> wrote:
 >
-> There is a newer version of this patch set. Please use it when
-> merging this patch.
-> https://patchwork.kernel.org/project/linux-pci/list/?series=370855
+> Extract phy_id from compatible string. This will be used by
+> fwnode_mdiobus_register_phy() to create phy device using the
+> phy_id.
 
-That one is still pending.  I haven't had a chance to look at it yet,
-but seems like there's no point in carrying the superseded version in
-drm-next.
+...
+
+> +       if (sscanf(cp, "ethernet-phy-id%4x.%4x", &upper, &lower) == 2) {
+> +               *phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
+> +               return 0;
+> +       }
+> +       return -EINVAL;
+
+Perhaps traditional pattern, i.e.
+       if (sscanf(cp, "ethernet-phy-id%4x.%4x", &upper, &lower) != 2)
+               return -EINVAL;
+
+       *phy_id = ((upper & 0xFFFF) << 16) | (lower & 0xFFFF);
+       return 0;
+
+And perhaps GENMASK() ?
+
+-- 
+With Best Regards,
+Andy Shevchenko
