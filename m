@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C544C2DB7A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7BD2DB7AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgLPABQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:01:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
+        id S1727808AbgLPABU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:01:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725766AbgLOX5u (ORCPT
+        with ESMTP id S1725808AbgLOX57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 18:57:50 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7BF5C0613D3;
-        Tue, 15 Dec 2020 15:57:09 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id y17so21469094wrr.10;
-        Tue, 15 Dec 2020 15:57:09 -0800 (PST)
+        Tue, 15 Dec 2020 18:57:59 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432CAC061794;
+        Tue, 15 Dec 2020 15:57:19 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id g25so867152wmh.1;
+        Tue, 15 Dec 2020 15:57:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+PwNZTg9LKWSdxdKsvEzj/MNEwX1EMlLrbEaIJnpo7o=;
-        b=P8yULOSUCS1hNrt1IF0H0hEmCw9Y3Fq1SOD3wDbGd+G7J20rundflaBIJOShHB7M9Z
-         4qru4LCz/69pBMpf+uOXyE16s/KEcr6ZWhQS02oeTXya1LjNeXMk330NY3lC08GzsW1A
-         HwgNw98Fp3VR1UfWP6ysX7qv6lu2XOvqcm+/wt1cH1qTm+6JVPjxqFitfu3RhFsXAQn8
-         gaOOgo7GeRQ1KH5Wu7F/SDNjwbv/Web5dLJDPb8HCRSyRsxRSzonMka2VexKVZT3VqDr
-         qWpH/S7WZLMVVaJ97zaqY78o1UVvy1aOo6jxVBOBUACTqex/Cb5XA1d5YPnMofvgvaex
-         EDNg==
+        bh=9VTRHWDF/2KFgz+UyGUwNoRUZJFyka0YQ/YywpJD5p8=;
+        b=dBA6fWPWMNAwgaevOTUZw8nmjr+yECDlOnqFLRrntM4nXNkH2WJggWqWxwJDVyIzoE
+         BiIj3bvHoAoycxej5Kw3m9Zp4AJ5J0JYgkTWhdm9pJDLpYMaHWd4nOeqKmeY6Lat2EDU
+         8p42PoMbqxc5AmTVCIIOr6s6kCmrpWxGVCRb5kZVi4oSlLyPSaDQwL/oG2m22xScpMHR
+         m4FJJ+PPoPVPIC20NxP8VQgWIjcQXnATiezxPm4zM0/gdfdRHbPkonwQK/BgiX+zrja9
+         dmW1QEV+dThWsisF4/9DR170hr4mRNRur+3O4DgunEJc+LHBXNDRWLC2Lv+nkJHxkBkM
+         kv0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+PwNZTg9LKWSdxdKsvEzj/MNEwX1EMlLrbEaIJnpo7o=;
-        b=Y8LtRgJMObfnxNZNUlIa5KAI3It7xRAdQ3fU8G7MoArJe5Na8rC6k/f1HY2caoosiT
-         amF3Z17frptRN62b98svJ49raDeqas+SoG4oMsXdH9YaJabPZ9vEfDXh8pGAeWT2C0XM
-         hjy2BOgJYWcGrlRP8mVg42buIURa23387A7pxM0WC2dLlbqbTdUwPuWS9I1SNIRQe8Er
-         ms5vKiguqE6xBiMnhUJjPXppLb6kHDGrdlJ+unzY7jftoWOPlhjK/GLTozC4sR4Fl99i
-         15v0mfvstvSWuCm+ExljkvW3Ycgt1PvoKvSdJH5ENl4J3C+7i5Zdkje9b9xVkL2HxrfN
-         4hug==
-X-Gm-Message-State: AOAM533KpE/4Btfs+RMBMyFdqPHwNVaMAylP9auJpqXcR77//En+dpJs
-        LVP6qgo7cm1TwUmN7oXrjn8=
-X-Google-Smtp-Source: ABdhPJyuC7lr1pGWXcEnDUcwWt5qbLChqyxbux0HocSSi1K14HODn7vYa5f3Qp4RS1RzxjqDpctSrg==
-X-Received: by 2002:adf:916e:: with SMTP id j101mr36041850wrj.55.1608076628675;
-        Tue, 15 Dec 2020 15:57:08 -0800 (PST)
+        bh=9VTRHWDF/2KFgz+UyGUwNoRUZJFyka0YQ/YywpJD5p8=;
+        b=kdyyoa509Iywl0Pvy2NVbBgmg8Qd65Zdh2FoZzp1vLfl3kU11K1ARBCLZs5CxcvrfX
+         JtDGqXrge7LIRoOqbuktsE+sLwSHiIAeqby4PQEoT2TOK7PVvS26W1yd2OaSSovgeElw
+         xQIrMH8KbuZggmnC1TjgWDyzkVii4MB9nbuzjgXh3a+32tpOtqm/tdftA84RgdEFKa1s
+         D3fFSDoYb3beEi9ZDyDZPQ66mLajZUTE26159+eXLvL9i1V2Eht+B0Y4KUYskrpw6rt3
+         glRR/ygrmb423hfxVwC3N9r8RXdupkjpSQsM8+VOUR36iQLPSTR7eusE2Z20JLWtERm2
+         cXTQ==
+X-Gm-Message-State: AOAM531WIo2I4iPCliL/mf8l0s6ef3Mi9XwE4Hhkf9pC0IpJvubY06nY
+        gqTjVEJGT8K9qcqJWuLTf3Y=
+X-Google-Smtp-Source: ABdhPJyo9tc2O4SNvpKV6vYv7g3YRUn1zOLcY9RcMdiwSbpEsHkhWaEvLjOsJ2ocBu8oU08INFQ8iQ==
+X-Received: by 2002:a7b:c45a:: with SMTP id l26mr818996wmi.91.1608076638066;
+        Tue, 15 Dec 2020 15:57:18 -0800 (PST)
 Received: from adgra-XPS-15-9570.home (lfbn-idf1-1-1007-144.w86-238.abo.wanadoo.fr. [86.238.83.144])
-        by smtp.gmail.com with ESMTPSA id c10sm204160wrb.92.2020.12.15.15.57.08
+        by smtp.gmail.com with ESMTPSA id c10sm204160wrb.92.2020.12.15.15.57.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 15:57:08 -0800 (PST)
+        Tue, 15 Dec 2020 15:57:17 -0800 (PST)
 From:   Adrien Grassein <adrien.grassein@gmail.com>
 Cc:     broonie@kernel.org, jagan@amarulasolutions.com,
         lgirdwood@gmail.com, robh+dt@kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         troy.kisky@boundarydevices.com,
         Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH v2 2/7] regulator: pf8x00: add a doc for the module
-Date:   Wed, 16 Dec 2020 00:56:34 +0100
-Message-Id: <20201215235639.31516-3-adrien.grassein@gmail.com>
+Subject: [PATCH v2 3/7] regulator: dt-bindings: pf8x00: fix nxp,phase-shift doc
+Date:   Wed, 16 Dec 2020 00:56:35 +0100
+Message-Id: <20201215235639.31516-4-adrien.grassein@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201215235639.31516-1-adrien.grassein@gmail.com>
 References: <20201215235639.31516-1-adrien.grassein@gmail.com>
@@ -67,28 +67,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pf8x00 module build was not documented.
+nxp,phase-shift is an enum so use enum format to describe it.
+Minimum and maximum values are also wrong.
 
 Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
 ---
- drivers/regulator/Kconfig | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../bindings/regulator/nxp,pf8x00-regulator.yaml | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 53fa84f4d1e1..9c6508e99fdd 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -828,6 +828,10 @@ config REGULATOR_PF8X00
- 	  Say y here to support the regulators found on the NXP
- 	  PF8100/PF8121A/PF8200 PMIC.
+diff --git a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+index 913532d0532e..1da724c6e2ba 100644
+--- a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+@@ -60,21 +60,13 @@ properties:
  
-+	  Say M here if you want to support for the regulators found
-+	  on the NXP PF8100/PF8121A/PF8200 PMIC. The module will be named
-+	  "pf8x00-regulator".
-+
- config REGULATOR_PFUZE100
- 	tristate "Freescale PFUZE100/200/3000/3001 regulator driver"
- 	depends on I2C && OF
+           nxp,phase-shift:
+             $ref: "/schemas/types.yaml#/definitions/uint32"
+-            minimum: 45
+-            maximum: 0
++            minimum: 0
++            maximum: 315
++            default: 0
++            enum: [ 0, 45, 90, 135, 180, 225, 270, 315 ]
+             description:
+               BUCK regulators phase shift control in degrees.
+ 
+-              Listed phase shift control values in degrees are,
+-              45
+-              90
+-              135
+-              180
+-              225
+-              270
+-              315
+-              0 (default)
+-
+         unevaluatedProperties: false
+ 
+       "^vsnvs$":
 -- 
 2.20.1
 
