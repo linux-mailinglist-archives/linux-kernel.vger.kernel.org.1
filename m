@@ -2,140 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11DA2DA863
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 08:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A142DA865
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 08:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726195AbgLOHIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 02:08:36 -0500
-Received: from mail-co1nam11on2056.outbound.protection.outlook.com ([40.107.220.56]:65280
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726072AbgLOHIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 02:08:16 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=As0m6NpjF2zXmP4Ld5k46Fv2xo1VQefdOGlCgPwCCX+yavJWrgvBXxhr9abjw+vKx+vJ24sLXhG9FF/3Fwde47X3J4Cn0og9kuQyodbeW7hMBCDDgWZL2pCz8Z0Sm5HC6MegiB1pb20vwo+AocmHWLkRK6Q6TenbUZ9IvBIVEITU2eLYCE8wmii03pks4DXtkSgeJDwNFeH3k9CUjKgHD32N6qB/w7LvvsmHG5IV8niiQEjYc438IAlH0has0t3P8NiImbdDYCLD151nwpdX5mGnIyJ/Uy2Ei36tBC4fpuT2KBcwL0FfVt8eQN+IcTV+CHDqfwgn2FxYaxGWyjGfqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=niQbZCeCUeeryXYP+UvJZTD5g5xoLwHvMLWVJztO2N0=;
- b=CVCaIWsLsiAQk51zy7Xusi17GZa3sbI8ksI71sy6fiZ/ct0nU8MWVP5HcPG7yvjP7pFM5sQK9W0POW8Bo6cphttI+kvEE2hlnlGy7M8fxZKPcHH4RQGJfly1Q5CaT37WxJuYX3f/uMVq22YSry26e8GFozwEN74RK/C3J8kDJ2LAH5vuQIdp5nzfH3qXi+onuYsJsykE/qoBEifyIBEW92+a6sVJF//qBVbPTWVrntqn+W6UqGWuyfEN7lMwv3aLPA/l4PpjyQYFIk9Rdz2fN7ECQxMukfTwUEyYc8CAtwZwqL+zY1IB/zrjqlc+gB2y2v2uZK95JmSAvRkQ0zwYrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=niQbZCeCUeeryXYP+UvJZTD5g5xoLwHvMLWVJztO2N0=;
- b=yj+ZoecnHnpy0C2MQmMrTJgXDk1YLOIpKr2nqi8TeDULptWLFMjgLlONUZQ4TLKrOaRgO102pERpnNmk1fJZJbqQLwuZAWzI98zazI0tL0GwZqMsYROJwmjZLQeqkMEO2gWDgjbB5jp2NTNNfaBnWD2FvKHFde8zUhcMyzNH6F0=
-Authentication-Results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none header.from=amd.com;
-Received: from BY5PR12MB4163.namprd12.prod.outlook.com (2603:10b6:a03:202::18)
- by BY5PR12MB4306.namprd12.prod.outlook.com (2603:10b6:a03:206::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.26; Tue, 15 Dec
- 2020 07:07:19 +0000
-Received: from BY5PR12MB4163.namprd12.prod.outlook.com
- ([fe80::e920:46d3:92b:9450]) by BY5PR12MB4163.namprd12.prod.outlook.com
- ([fe80::e920:46d3:92b:9450%7]) with mapi id 15.20.3654.025; Tue, 15 Dec 2020
- 07:07:18 +0000
-From:   Ying-Tsun Huang <ying-tsun.huang@amd.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Ying-Tsun Huang <ying-tsun.huang@amd.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Toshi Kani <toshi.kani@hp.com>, linux-kernel@vger.kernel.org
-Cc:     Dmitry Lapik <dmitry.kolyadintsev@nyriad.com>,
-        James Lee <James.Lee@amd.com>
-Subject: [PATCH v2] x86/mtrr: Correct the returned MTRR type of mtrr_type_lookup.
-Date:   Tue, 15 Dec 2020 15:07:20 +0800
-Message-Id: <20201215070721.4349-1-ying-tsun.huang@amd.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [165.204.134.251]
-X-ClientProxiedBy: HK2PR02CA0211.apcprd02.prod.outlook.com
- (2603:1096:201:20::23) To BY5PR12MB4163.namprd12.prod.outlook.com
- (2603:10b6:a03:202::18)
+        id S1726300AbgLOHKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 02:10:51 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51360 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725975AbgLOHKv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 02:10:51 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BF799Zu047587;
+        Tue, 15 Dec 2020 01:09:09 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1608016149;
+        bh=fNRq+gOfrdMwuLy2nUKc+a0umMFiha80ZqqipUQ7GjI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=nIfK4UmtJX+4YT+uFZjIfdGIROvpQMEUPq69q+VnzUUNKEv6l1ZqiFK+mYyHP+B71
+         oKzNXVzg6crDJV+KpHJwRsR+chryLG6CDGMfKQwzO8xwQXpyc3Wck+2s483ZUcP+Ap
+         jhRRefqu1yf5pLoXhzIovUwX6KB1ZJNJhT5UaUQc=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BF799k0063765
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Dec 2020 01:09:09 -0600
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
+ Dec 2020 01:09:08 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 15 Dec 2020 01:09:08 -0600
+Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BF794NZ109620;
+        Tue, 15 Dec 2020 01:09:05 -0600
+Subject: Re: [PATCH v4 1/2] dt-bindings: pci: Retrain Link to work around Gen2
+ training defect.
+To:     Rob Herring <robh@kernel.org>
+CC:     Athani Nadeem Ladkhan <nadeem@cadence.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Milind Parab <mparab@cadence.com>,
+        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        Parshuram Raju Thombare <pthombar@cadence.com>
+References: <20201211144236.3825-1-nadeem@cadence.com>
+ <20201211144236.3825-2-nadeem@cadence.com>
+ <CAL_JsqLTz2k03gzrjDqi2d1NHQV+3pXxg6OqwcJ17CmfGYMf-A@mail.gmail.com>
+ <SN2PR07MB2557145EE4C4E9C50A16CF64D8C90@SN2PR07MB2557.namprd07.prod.outlook.com>
+ <912c1efa-6c25-9e5d-5094-6c9dd8e3755d@ti.com>
+ <CAL_JsqLEmb4N6AKWpJmh9mGkE3QWsgABUqcH4Zvb5CiSMe_Zvg@mail.gmail.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <95f35432-3360-c855-9f87-cec4e3f57282@ti.com>
+Date:   Tue, 15 Dec 2020 12:38:58 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ytubuntu20.amd.com (165.204.134.251) by HK2PR02CA0211.apcprd02.prod.outlook.com (2603:1096:201:20::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Tue, 15 Dec 2020 07:07:16 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 84ee7e4a-1c2d-4e4a-1980-08d8a0c80fa5
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4306:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR12MB43064BCBDDAC72515113A498AEC60@BY5PR12MB4306.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7SDG8sOt2RtoUcNXugq0QgpMMlqfJmo9+k0SgN1XrxeEbowhbDsXtfcR/QMOUW1Y2cw93DaDlRWEkZJJZj8TbbI2MjOZO9u8RfxYkR8wPdfaevhBs6JdJ032XsesZhhczNxRYG0HTjgu0I4qcLjywQA4S9qpJgH/oZWBwRkaCs+LBiggXb6l33EOiGyUfxssuxsS3ELwDy1A83Cnr9IjuvoeeEFtNGr9M5gnHqrPr5T0wnQVRsAeNkFqTrR8DXDJkCK86IxExIU1f0M3w4SkyosmrFoEgZ51+m0kwXl2exCYav//YLxKDiYw95OK1LwGExP3Ru50b0cUuJrouYcRfwf4Dpu8StrELqaYQG5cHmHWL9cFxOpFXTzx99m5laQNuWcp26PjLNCraMYOV80fpg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(186003)(6666004)(83380400001)(86362001)(4326008)(7416002)(956004)(2906002)(921005)(2616005)(66946007)(52116002)(7696005)(66476007)(16526019)(8676002)(36756003)(8936002)(26005)(34490700003)(6486002)(5660300002)(110136005)(66556008)(54906003)(1076003)(508600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Ers5p/9bz38k4fsnDW8/prsoF5TqFuSaa5RlXRFibpGflRezjlWsvr528GWdaxeDN4ZF2G8rNngRwLoCIxLdbmWmBytf9C6OU8frpYFuI35RONIIusJDnRGrjaGvr7Mp2qt4i1qdevxPi3yOAKURmcrKC7l+Xf4BrA0sCNfHGmSOgSkboyh8SKT7M2PyB0r5jPMH/rvj0WFQL+fe6lq7b89X/YpJ/HBaHU6XOgw0mJ7aNoXx+Svv/oviPZb6EDnGwzSkeodJPa76+tcGKfjeUKDX18F4tHbmSHY7BKkn1QVhvzwS5kn7i0aC5mLhAGCGY4qx7TBnv++VlPUbOwIz+pxVahLJEeiXPbmNOwQFsJcFyNOZ4GmPD2tU51NE91JNeZHCQT9BG9eP5JcAAV417arrMnwFeoQxGRZBXuMpv9w5SwFC16Hg3/Kbu8dRH4xP4IFA4OWQ2+HehutEftVUSfZKhpBphwBavd5/lSXo6BQ438n64z7QPjy7S3ldCjhTbgLMraHtQneN+myGQUccRIwIwDCMqhNtFSfPVQYQQ6D1zi5a/lePBv1Q+M63r5xK/R3k94HPIg8D3hC1iODh0app8fOdMy0+xz5lSd1qbjDabqu1BTE2IvTuO34bS+3x6Szu5VKUX4E+mgPB8ifxedlxqEPsKc3imaDKY0+s3LTbWAYGz+Fz/00gKvERpkC06RQsdrReQkA0QBH6WlYL8U51Kh4UizTcO4Ie16DL2sesSa3Ad0yAqLXTuSgBE9nE
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4163.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2020 07:07:18.7434
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84ee7e4a-1c2d-4e4a-1980-08d8a0c80fa5
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CdDeAP3cks0MiheAvnRuJG+WEx1pKJsz9+AEx8zpqKSGcKRbl/Cx/NvrUcAZStKy6JKyaASbWMAegOComjHhzA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4306
+In-Reply-To: <CAL_JsqLEmb4N6AKWpJmh9mGkE3QWsgABUqcH4Zvb5CiSMe_Zvg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In mtrr_type_lookup, if the input memory address region is not in the
-MTRR, over 4GB, and not over the top of memory, write-back attribute
-is returned. These condition checks are for ensuring the input memory
-address region is mapped to the physical memory actually.
+Hi,
 
-However, if the end address is just aligned with the top of memory,
-the condition check treats the address is over the top of memory, and
-write-back attribute is not returned.
+On 14/12/20 8:35 pm, Rob Herring wrote:
+> On Sun, Dec 13, 2020 at 10:21 PM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>>
+>> Hi Nadeem,
+>>
+>> On 12/12/20 12:37 pm, Athani Nadeem Ladkhan wrote:
+>>> Hi Rob / Kishon,
+>>>
+>>>> -----Original Message-----
+>>>> From: Rob Herring <robh@kernel.org>
+>>>> Sent: Friday, December 11, 2020 10:32 PM
+>>>> To: Athani Nadeem Ladkhan <nadeem@cadence.com>
+>>>> Cc: Tom Joseph <tjoseph@cadence.com>; Lorenzo Pieralisi
+>>>> <lorenzo.pieralisi@arm.com>; Bjorn Helgaas <bhelgaas@google.com>; PCI
+>>>> <linux-pci@vger.kernel.org>; linux-kernel@vger.kernel.org; Kishon Vijay
+>>>> Abraham I <kishon@ti.com>; devicetree@vger.kernel.org; Milind Parab
+>>>> <mparab@cadence.com>; Swapnil Kashinath Jakhade
+>>>> <sjakhade@cadence.com>; Parshuram Raju Thombare
+>>>> <pthombar@cadence.com>
+>>>> Subject: Re: [PATCH v4 1/2] dt-bindings: pci: Retrain Link to work around
+>>>> Gen2 training defect.
+>>>>
+>>>> EXTERNAL MAIL
+>>>>
+>>>>
+>>>> On Fri, Dec 11, 2020 at 9:03 AM Nadeem Athani <nadeem@cadence.com>
+>>>> wrote:
+>>>>>
+>>>>> Cadence controller will not initiate autonomous speed change if
+>>>>> strapped as Gen2. The Retrain Link bit is set as quirk to enable this speed
+>>>> change.
+>>>>> Adding a quirk flag based on a new compatible string.
+>>>>>
+>>>>> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
+>>>>> ---
+>>>>>  Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml | 4
+>>>>> +++-
+>>>>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git
+>>>>> a/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+>>>>> b/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+>>>>> index 293b8ec318bc..204d78f9efe3 100644
+>>>>> --- a/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+>>>>> +++ b/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
+>>>>> @@ -15,7 +15,9 @@ allOf:
+>>>>>
+>>>>>  properties:
+>>>>>    compatible:
+>>>>> -    const: cdns,cdns-pcie-host
+>>>>> +    enum:
+>>>>> +        - cdns,cdns-pcie-host
+>>>>> +        - cdns,cdns-pcie-host-quirk-retrain
+>>>>
+>>>> So, we'll just keep adding quirk strings on to the compatible? I don't think so.
+>>>> Compatible strings should map to a specific implementation/platform and
+>>>> quirks can then be implied from them. This is the only way we can implement
+>>>> quirks in the OS without firmware
+>>>> (DT) changes.
+>>> Ok, I will change the compatible string to " ti,j721e-pcie-host" in place of  " cdns,cdns-pcie-host-quirk-retrain" .
+>>> @Kishon Vijay Abraham I: Is this fine? Or will you suggest an appropriate name?
+>>
+>> IMHO it should be something like "cdns,cdns-pcie-host-vX", since the
+>> quirk itself is not specific to TI platform rather Cadence IP version.
+> 
+> That's fine if Cadence has a need for it, but for TI platforms use the
+> TI compatible string. ECOs on version X IP without changing X is not
+> uncommon.
 
-There is a real case of NVDIMM. The nd_pmem module tries to map
-NVDIMMs as cacheable memories when NVDIMMs are connected. If a NVDIMM
-is the last of the DIMMs, the performance of this NVDIMM becomes very
-low since it aligned with the top of memory and its memory type is
-uncached-minus.
+Okay. I re-worked the patch to be applicable only to TI's J721E SoC
+http://lore.kernel.org/r/20201215070009.27937-1-kishon@ti.com
 
-The input end address should be changed to inclusive to be checked
-for the top of memory.
-
-Fixes: 0cc705f56e40 ("x86/mm/mtrr: Clean up mtrr_type_lookup()")
-Signed-off-by: Ying-Tsun Huang <ying-tsun.huang@amd.com>
----
- arch/x86/kernel/cpu/mtrr/generic.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/mtrr/generic.c b/arch/x86/kernel/cpu/mtrr/generic.c
-index 23ad8e953dfb..a29997e6cf9e 100644
---- a/arch/x86/kernel/cpu/mtrr/generic.c
-+++ b/arch/x86/kernel/cpu/mtrr/generic.c
-@@ -167,9 +167,6 @@ static u8 mtrr_type_lookup_variable(u64 start, u64 end, u64 *partial_end,
- 	*repeat = 0;
- 	*uniform = 1;
- 
--	/* Make end inclusive instead of exclusive */
--	end--;
--
- 	prev_match = MTRR_TYPE_INVALID;
- 	for (i = 0; i < num_var_ranges; ++i) {
- 		unsigned short start_state, end_state, inclusive;
-@@ -261,6 +258,9 @@ u8 mtrr_type_lookup(u64 start, u64 end, u8 *uniform)
- 	int repeat;
- 	u64 partial_end;
- 
-+	/* Make end inclusive instead of exclusive */
-+	end--;
-+
- 	if (!mtrr_state_set)
- 		return MTRR_TYPE_INVALID;
- 
--- 
-2.25.1
-
+Thank You,
+Kishon
