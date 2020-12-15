@@ -2,137 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5F92DB355
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A552DB358
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730526AbgLOSJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:09:59 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:44072 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727664AbgLOSJf (ORCPT
+        id S1730585AbgLOSKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 13:10:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730483AbgLOSJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:09:35 -0500
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 15 Dec 2020 10:08:54 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 15 Dec 2020 10:08:52 -0800
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 15 Dec 2020 23:38:39 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 10A7421427; Tue, 15 Dec 2020 23:38:37 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v5] venus: core: add support to dump FW region
-Date:   Tue, 15 Dec 2020 23:38:36 +0530
-Message-Id: <1608055716-14796-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 15 Dec 2020 13:09:49 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490C8C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 10:09:09 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id w1so24369488ejf.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 10:09:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=B6qNOoqltxeloTXeSJiHEsnoejIa/iODS20XwCdkukE=;
+        b=I06WjCTXP6nt0NcJ4l9hrmmdC4x5Wr3mD7g/3+g47lfmJROVVwEqeSAEdsgVyJGHHI
+         Joq9c5J2ASwOvmK4fiiXF75pCyJOBnQLfppU3RuX0fNdixt8ycqBEZHd/c5qJWz4nX0Q
+         EDvPaZkFNo+g6+4Vo7ksT55RaAahBTObBDJZdsX6lGM+H9c8bCnzDDiRcQ4ODHwR6R0v
+         pnnCXmUG7PP3L09bd4VyyOvk7BRIuylgd6muDn4XC/HndhFZme50cP9Ur4gkg0qgXDq8
+         GAsbP8eLfJkX3ur0v9XMU0qDL91hS5HjE9f5zTlWscdZST7f9pEqNSv/UsdBbkaPcQ9h
+         rMDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=B6qNOoqltxeloTXeSJiHEsnoejIa/iODS20XwCdkukE=;
+        b=buTyxGV7FHd8QqcKBdyi3hJxcXUAnCNlrW8EF3Rc8oS6L6jpNkkl2kYlXDhVKLNmVB
+         tRLqDjFWgcsYmnyYC7cluzEAjOdGXauGDwF5iwdP+BqVN2z5VeEoehj9hhQrLBnBO8rO
+         irBGURs0sr+Kj5vh63wuj70kILbBG8ZeKyjdl+eJ05MMg+dCwV4Bu1mGhRevdhHjA1HD
+         nqw9f/33wM2iFbYaGJ+yei+uFnCps8k5jQX7uWpiwwBrv3V+5VtwFXdkVYTd20+tvxHD
+         X2Yx0Ov4EfnYK3O8GLd/UJHB/uxMDW35neBTcWRVTHat9DLYa83qu8VxN+m4Bkar8h6Y
+         /qPQ==
+X-Gm-Message-State: AOAM530eIfF6Shj5eBOLd2bopnFDOrvJn6UfcdmiFvHHwIEJYmeDn20n
+        OwMhec31rELO74kpRXUA4mQ=
+X-Google-Smtp-Source: ABdhPJz2IO79O71SXC9aCfFIDMOxVeNrshREHXMOkjWqAkXsEWBqIPfft4fwsgVURupKoiNMMTxNVA==
+X-Received: by 2002:a17:906:4304:: with SMTP id j4mr27386530ejm.304.1608055748031;
+        Tue, 15 Dec 2020 10:09:08 -0800 (PST)
+Received: from ryzen.localdomain (89-212-27-98.dynamic.t-2.net. [89.212.27.98])
+        by smtp.gmail.com with ESMTPSA id n2sm1924842ejj.24.2020.12.15.10.09.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 10:09:07 -0800 (PST)
+Date:   Tue, 15 Dec 2020 19:09:05 +0100
+From:   Amadej Kastelic <amadejkastelic7@gmail.com>
+To:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/01] Add VID to support native DSD reproduction on FiiO
+ devices.
+Message-ID: <X9j7wdXSr4XyK7Bd@ryzen.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to dump video FW region during FW crash
-using devcoredump helpers.
+Message-Id: <c759bc50134ea434bfed0a183e0ce72984f5b609.camel@gmail.com>
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Add VID to support native DSD reproduction on FiiO devices.
 
-Major changes since v1:
-- update the name of function (Stephen)
-- store start address and size in resource structure during
-  probe and reuse while dumping (Stephen, Stanimir)
+Tested-by: Amadej Kastelic <amadejkastelic7@gmail.com>
+Signed-off-by: Emilio Moretti <emilio.moretti@gmail.com>
 ---
- drivers/media/platform/qcom/venus/core.c     | 30 ++++++++++++++++++++++++++++
- drivers/media/platform/qcom/venus/core.h     |  2 ++
- drivers/media/platform/qcom/venus/firmware.c |  3 +++
- 3 files changed, 35 insertions(+)
+ sound/usb/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-index bdd293f..1cc57ee 100644
---- a/drivers/media/platform/qcom/venus/core.c
-+++ b/drivers/media/platform/qcom/venus/core.c
-@@ -7,6 +7,7 @@
- #include <linux/interconnect.h>
- #include <linux/ioctl.h>
- #include <linux/delay.h>
-+#include <linux/devcoredump.h>
- #include <linux/list.h>
- #include <linux/module.h>
- #include <linux/of_device.h>
-@@ -22,6 +23,33 @@
- #include "firmware.h"
- #include "pm_helpers.h"
- 
-+static void venus_coredump(struct venus_core *core)
-+{
-+	struct device *dev;
-+	phys_addr_t mem_phys;
-+	size_t mem_size;
-+	void *mem_va;
-+	void *data;
-+
-+	dev = core->dev;
-+	mem_phys = core->fw.mem_phys;
-+	mem_size = core->fw.mem_size;
-+
-+	mem_va = memremap(mem_phys, mem_size, MEMREMAP_WC);
-+	if (!mem_va)
-+		return;
-+
-+	data = vmalloc(mem_size);
-+	if (!data) {
-+		memunmap(mem_va);
-+		return;
-+	}
-+
-+	memcpy(data, mem_va, mem_size);
-+	memunmap(mem_va);
-+	dev_coredumpv(dev, data, mem_size, GFP_KERNEL);
-+}
-+
- static void venus_event_notify(struct venus_core *core, u32 event)
- {
- 	struct venus_inst *inst;
-@@ -67,6 +95,8 @@ static void venus_sys_error_handler(struct work_struct *work)
- 
- 	venus_shutdown(core);
- 
-+	venus_coredump(core);
-+
- 	pm_runtime_put_sync(core->dev);
- 
- 	while (core->pmdomains[0] && pm_runtime_active(core->pmdomains[0]))
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 3a477fc..b37de95 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -178,6 +178,8 @@ struct venus_core {
- 		struct device *dev;
- 		struct iommu_domain *iommu_domain;
- 		size_t mapped_mem_size;
-+		phys_addr_t mem_phys;
-+		size_t mem_size;
- 	} fw;
- 	struct mutex lock;
- 	struct list_head instances;
-diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
-index d03e2dd..89defc2 100644
---- a/drivers/media/platform/qcom/venus/firmware.c
-+++ b/drivers/media/platform/qcom/venus/firmware.c
-@@ -201,6 +201,9 @@ int venus_boot(struct venus_core *core)
- 		return -EINVAL;
- 	}
- 
-+	core->fw.mem_size = mem_size;
-+	core->fw.mem_phys = mem_phys;
-+
- 	if (core->use_tz)
- 		ret = qcom_scm_pas_auth_and_reset(VENUS_PAS_ID);
- 	else
--- 
-2.7.4
-
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 349e1e52996d..f5fc65aef628 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1658,6 +1658,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 	case 0x25ce:  /* Mytek devices */
+ 	case 0x278b:  /* Rotel? */
+ 	case 0x292b:  /* Gustard/Ess based devices */
++	case 0x2972:  /* FiiO devices */
+ 	case 0x2ab6:  /* T+A devices */
+ 	case 0x3842:  /* EVGA */
+ 	case 0xc502:  /* HiBy devices */
+--
+2.20.1
