@@ -2,72 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B6F2DA6EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5EE2DA6F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgLODlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 22:41:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47036 "EHLO mail.kernel.org"
+        id S1726935AbgLODnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 22:43:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726302AbgLODk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726283AbgLODk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Dec 2020 22:40:56 -0500
 Content-Type: text/plain; charset="utf-8"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1608003608;
-        bh=AqPwIZHWsdYJUD36gvowxOXqZ3+JDD73X7E8ij57d1w=;
+        bh=Rq63vfGZKoinRw+btLa60qWLU6anZcR4B/wpKsmY9WA=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=kOr01pI4vTXzrxbvMsO2oHCwvsw+bPitnaUGfjcjFVK+/+MTap2rxZohIl7y0CjCM
-         oujiqwzUC/ID7f/BvnuVk+fjvFl0J5A91gkYltiHKzBp7y4Prp6NTtOC9VecDcdLuX
-         SP86Y+Tfe+pSrJ1odDulBXGVYF0JKKSaouY5NKhUqzZyzuz6AJU+4Dl6wm1K5VSFbt
-         htmEOlc+yh2yYQ9xPYew/K5fqznC5UvLcki4H9d1d7bJtBz2VRhhZjMW+ijLc81KSR
-         rCqlEDxlUCpp8LH6oxgfdx+dgqCv9x1vDPemIihPdO0e7rSG9aAv/aWaXzHhgfaVcl
-         AHXFVdUQY2Xbw==
+        b=l+/aMBLOb7eilKN0L0sQ0UztENgJrNa/LYesCc7v4z6P15p7hFV7AWkfa7dzNWj7v
+         Wg3hOMiLNHCYJCBv344Eo5SbrZRbz4VAt9cjJA/vfedaVOqoLLIa/+HB7xaP0Eeke1
+         2TbJstIQz0eadPn3L+BPf3u5N0kOvkyCEO+t/7VA+2I/pDrFncRf9pHYFkfVEHQeOa
+         o23STjdyiSXfmDAZa3eqo9iyvpv9s/KbAh6vE5rMXESSyREIhsvqAKScf69il3D0nT
+         BvmYIIThd7X03VQfPGd7LuRQo0/mEnDvtFJokVozi5XN0USZLfb6XCA1psjTzVmAk8
+         dwvoTNReNLY5A==
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v4 0/5] vsock: Add flags field in the vsock address
+Subject: Re: [net-next PATCH v3] tcp: Add logic to check for SYN w/ data in
+ tcp_simple_retransmit
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160800360863.3580.11859617867656861413.git-patchwork-notify@kernel.org>
+Message-Id: <160800360859.3580.14122715935384328144.git-patchwork-notify@kernel.org>
 Date:   Tue, 15 Dec 2020 03:40:08 +0000
-References: <20201214161122.37717-1-andraprs@amazon.com>
-In-Reply-To: <20201214161122.37717-1-andraprs@amazon.com>
-To:     Paraschiv@ci.codeaurora.org, Andra-Irina <andraprs@amazon.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, davdunc@amazon.com, decui@microsoft.com,
-        graf@amazon.de, jhansen@vmware.com, kuba@kernel.org,
-        sgarzare@redhat.com, stefanha@redhat.com, vkuznets@redhat.com
+References: <160780498125.3272.15437756269539236825.stgit@localhost.localdomain>
+In-Reply-To: <160780498125.3272.15437756269539236825.stgit@localhost.localdomain>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     edumazet@google.com, davem@davemloft.net, kuba@kernel.org,
+        ycheng@google.com, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kafai@fb.com,
+        kernel-team@fb.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 14 Dec 2020 18:11:17 +0200 you wrote:
-> vsock enables communication between virtual machines and the host they are
-> running on. Nested VMs can be setup to use vsock channels, as the multi
-> transport support has been available in the mainline since the v5.5 Linux kernel
-> has been released.
+On Sat, 12 Dec 2020 12:31:24 -0800 you wrote:
+> From: Alexander Duyck <alexanderduyck@fb.com>
 > 
-> Implicitly, if no host->guest vsock transport is loaded, all the vsock packets
-> are forwarded to the host. This behavior can be used to setup communication
-> channels between sibling VMs that are running on the same host. One example can
-> be the vsock channels that can be established within AWS Nitro Enclaves
-> (see Documentation/virt/ne_overview.rst).
+> There are cases where a fastopen SYN may trigger either a ICMP_TOOBIG
+> message in the case of IPv6 or a fragmentation request in the case of
+> IPv4. This results in the socket stalling for a second or more as it does
+> not respond to the message by retransmitting the SYN frame.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,v4,1/5] vm_sockets: Add flags field in the vsock address data structure
-    https://git.kernel.org/netdev/net-next/c/dc8eeef73b63
-  - [net-next,v4,2/5] vm_sockets: Add VMADDR_FLAG_TO_HOST vsock flag
-    https://git.kernel.org/netdev/net-next/c/caaf95e0f23f
-  - [net-next,v4,3/5] vsock_addr: Check for supported flag values
-    https://git.kernel.org/netdev/net-next/c/cada7ccd9dc7
-  - [net-next,v4,4/5] af_vsock: Set VMADDR_FLAG_TO_HOST flag on the receive path
-    https://git.kernel.org/netdev/net-next/c/1b5f2ab98e7f
-  - [net-next,v4,5/5] af_vsock: Assign the vsock transport considering the vsock address flags
-    https://git.kernel.org/netdev/net-next/c/7f816984f439
+  - [net-next,v3] tcp: Add logic to check for SYN w/ data in tcp_simple_retransmit
+    https://git.kernel.org/netdev/net-next/c/c31b70c9968f
 
 You are awesome, thank you!
 --
