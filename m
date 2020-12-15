@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CC22DB1F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:56:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B902DB1FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgLOQyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:54:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729034AbgLOQyJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:54:09 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA16C06179C;
-        Tue, 15 Dec 2020 08:53:28 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id u18so41119801lfd.9;
-        Tue, 15 Dec 2020 08:53:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pxeVgBdXnubjTRFQd0+NlLArU4xAtaXKirsAqdyxekE=;
-        b=g/QXdvRanunUTVHdHt+xpME9JFqppjt5zPsBpEIz5opFniHQBSeW91QbCkQ+Buc+Ih
-         mBSJvakBfP8HEuamk8by8pY54TZncjMKhLGL1/M+R1VEnqI9aNO1nu/bXry5U4NCrgg8
-         JiStNm6wNkN1IvfzLgtayx3z05oSXi6OqbXFR/U86bs+0DYNokBd3f8qRgTJJRevDz4H
-         jjn+HArZ5KJVUb6rrdX1eA7icrZgG1zJcuTZIKey/7kZPRUQyVVPBrFIXwpl+lM2X/iL
-         B23EvKOPi/DJZoAWmEM8VWkgOnKSk9aZ/9PeC+6yGRcvz7IY/+ClY65iiYjAgj+fd60f
-         2WAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pxeVgBdXnubjTRFQd0+NlLArU4xAtaXKirsAqdyxekE=;
-        b=itfuw9yfQcEyFd0upbJWdnTWfvGes0CpC/tJid5wxjDXqWi4+GXFsGpIZNhIZaZhJz
-         ScEwz2+DGPiMKDUoMZYMDrok5kryZiZtojxpBskvHWSBQlpylURPP7zdV4gIl3IzKghp
-         8DRW0B+nKpj1QhCbsCdTXkIQNsiRxNE+iH+OgPBCOjJvUbUFuToQRi9ZVEAvp3aDPgQZ
-         zTrd3jMfOvIumSgjyjn/Ccp3OHvk7/xbOOJx6SOnCJ1EsGdghCKDAgwcQyN4AW0f5Ekv
-         FdrJKzQzQp/37omJdMxxwdFbmMgFylDGJbe8i1x3NJd/gnmgaiuAQBEqeVMl2tGlCb+n
-         Y+pw==
-X-Gm-Message-State: AOAM530sTNlO0z51KuqIsscSjbgUnW3jjEyZPx6B1bNhjrxCNVbW4ivF
-        o3booFDMVQnbFEpTeHa9eFD6jw8P9Bo=
-X-Google-Smtp-Source: ABdhPJytRvdtoyKfXnHKYJjSsmqkno61EmGwKKCsIGWQ69fOQu1anWU/K/BDatzwykMLDkfAX2qWyQ==
-X-Received: by 2002:a2e:b047:: with SMTP id d7mr8202005ljl.467.1608051207079;
-        Tue, 15 Dec 2020 08:53:27 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id d12sm2797400ljl.111.2020.12.15.08.53.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 08:53:26 -0800 (PST)
-Subject: Re: [PATCH v1] ARM: tegra: Fix misplaced tegra_uart_config in
- decompressor
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20201215135222.6899-1-digetx@gmail.com>
- <980f70c6-8967-c110-1699-cb0da2f46cc0@gmail.com>
- <5b01ce96-5f8b-dfcb-accd-2ba29f34947f@gmail.com>
- <5853b349-562c-3b6a-33d6-49516553dad8@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b115f985-b27b-bbcd-fc42-d9e357ecf46a@gmail.com>
-Date:   Tue, 15 Dec 2020 19:53:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1729341AbgLOQ4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:56:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729665AbgLOQ4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 11:56:08 -0500
+X-Gm-Message-State: AOAM531hqTOMYM5zJ0Y32R+Jjvb4lbp7aFiM3Gqh59RZS6Z2hI6v8+BU
+        SAW8psa7OIta17po8Ys7Po2q9N8i8Ms1OKg6T6YiKA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608051328;
+        bh=wxgX7rhYWEdaXnSJ6bJp8xImT47Xo70cIxCVXhRWJMk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bKx5sHyUxlKUO5O1VSKvYl+KlaKh1xk5TM0+wfneX+9+TIBF2Ie4C+vqt8p2kpB3X
+         CK624/Y76U1sBgrmcfi9FCN5fcukZN45Lozelv3Ea3HzoxndJlYYC5+FfQulzZuYrN
+         Pvj8RGFxAewuiKi2Wg7CczDgRFskM9e+OZWs/SX0PoGuSI0wPr+kvIVzKZ4UoU2BcC
+         nTdolSOetdQAWReQbNu/yqGiSiJ/Q73LRR/2qzl8i57W/cmJxFNNCI/vQRq92AKEgc
+         ZtCO8fqfbsYDLZpZ7/FWmhc94qBXM4EIVTO/xtLEhZSwreSN1H61I3dOjCj25I7bKK
+         rUViwgN8UvXhA==
+X-Google-Smtp-Source: ABdhPJw+VfdnYClq2C1NfMWCzjVSwytcRYUNwbuO86jDcwu7QTrd/YpYWhMAV2WfVcfj0qIb+FX0haGZwRfdhSVCd1Y=
+X-Received: by 2002:a5d:4905:: with SMTP id x5mr19403633wrq.75.1608051326140;
+ Tue, 15 Dec 2020 08:55:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <5853b349-562c-3b6a-33d6-49516553dad8@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <875z5c2db8.fsf@nanos.tec.linutronix.de> <20201209163434.GA22851@fuller.cnet>
+ <87r1nyzogg.fsf@nanos.tec.linutronix.de> <20201210152618.GB23951@fuller.cnet>
+ <87zh2lib8l.fsf@nanos.tec.linutronix.de> <20201211002703.GA47016@fuller.cnet>
+ <87v9d8h3lx.fsf@nanos.tec.linutronix.de> <20201211141822.GA67764@fuller.cnet>
+ <87k0togikr.fsf@nanos.tec.linutronix.de> <d9063c37-a965-d5cf-e923-c0c9f6ddc044@redhat.com>
+ <20201215105927.GA3321@fuller.cnet>
+In-Reply-To: <20201215105927.GA3321@fuller.cnet>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 15 Dec 2020 08:55:15 -0800
+X-Gmail-Original-Message-ID: <CALCETrWSnMm-mfC5LjzsFLk6Tt_40Udrif-Kh34TTj6fp_8ZLw@mail.gmail.com>
+Message-ID: <CALCETrWSnMm-mfC5LjzsFLk6Tt_40Udrif-Kh34TTj6fp_8ZLw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: implement KVM_{GET|SET}_TSC_STATE
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.12.2020 19:40, Florian Fainelli пишет:
-> 
-> 
-> On 12/15/2020 8:17 AM, Dmitry Osipenko wrote:
->> 15.12.2020 19:04, Florian Fainelli пишет:
->>>
->>>
->>> On 12/15/2020 5:52 AM, Dmitry Osipenko wrote:
->>>> The tegra_uart_config of the DEBUG_LL code is now placed right at the
->>>> start of the .text section after commit which enabled debug output in the
->>>> decompressor. Tegra devices are not booting anymore if DEBUG_LL is enabled
->>>> since tegra_uart_config data is executes as a code. Fix the misplaced
->>>> tegra_uart_config storage by embedding it into the code.
->>>>
->>>> Cc: stable@vger.kernel.org
->>>> Fixes: 2596a72d3384 ("ARM: 9009/1: uncompress: Enable debug in head.S")
->>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>> ---
->>>>  arch/arm/include/debug/tegra.S | 54 +++++++++++++++++-----------------
->>>>  1 file changed, 27 insertions(+), 27 deletions(-)
->>>
->>> Looks like arch/arm/include/debug/brcmstb.S would need the same
->>> treatment since the implementation was copied from tegra.S.
->>>
->>
->> Good catch, will you be able to test the brcm and make a patch?
-> 
-> Yes, absolutely, building a kernel to test right now.
-> 
+On Tue, Dec 15, 2020 at 3:35 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
+>
+> On Fri, Dec 11, 2020 at 10:59:59PM +0100, Paolo Bonzini wrote:
+> > On 11/12/20 22:04, Thomas Gleixner wrote:
+> > > > Its 100ms off with migration, and can be reduced further (customers
+> > > > complained about 5 seconds but seem happy with 0.1ms).
+> > > What is 100ms? Guaranteed maximum migration time?
+> >
+> > I suppose it's the length between the time from KVM_GET_CLOCK and
+> > KVM_GET_MSR(IA32_TSC) to KVM_SET_CLOCK and KVM_SET_MSR(IA32_TSC).  But the
+> > VM is paused for much longer, the sequence for the non-live part of the
+> > migration (aka brownout) is as follows:
+> >
+> >     pause
+> >     finish sending RAM            receive RAM               ~1 sec
+> >     send paused-VM state          finish receiving RAM     \
+> >                                   receive paused-VM state   ) 0.1 sec
+> >                                   restart                  /
+> >
+> > The nanosecond and TSC times are sent as part of the paused-VM state at the
+> > very end of the live migration process.
+> >
+> > So it's still true that the time advances during live migration brownout;
+> > 0.1 seconds is just the final part of the live migration process.  But for
+> > _live_ migration there is no need to design things according to "people are
+> > happy if their clock is off by 0.1 seconds only".
+>
+> Agree. What would be a good way to fix this?
+>
 
-Thank you.
-
-BTW, I noticed that the problem is more visible on a thumb2 kernel
-build, i.e. you should get a more reliable hang on boot. On a non-thumb2
-kernel the hanging behaviour seems depends on a device / bootloader. I
-haven't tried to figure out what exactly makes the difference, perhaps
-it should be a memory layout / state.
+Could you implement the Hyper-V clock interface?  It's much, much
+simpler than the kvmclock interface.  It has the downside that
+CLOCK_BOOTTIME won't do what you want, but I'm not really convinced
+that's a problem, and you could come up with a minimal extension to
+fix that.
