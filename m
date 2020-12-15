@@ -2,132 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2505D2DA764
+	by mail.lfdr.de (Postfix) with ESMTP id 926052DA765
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 06:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbgLOFSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 00:18:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgLOFR4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 00:17:56 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA85DC0617A7;
-        Mon, 14 Dec 2020 21:17:15 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id 23so36109373lfg.10;
-        Mon, 14 Dec 2020 21:17:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QYK3/QIGX/PdeJs4r8UYSQRr0m3A4G8axIc8eAE272c=;
-        b=BKDmhZkm4AqGvi4OYCwgVb04oqDpY+IzrMaIZPpOh/uneUD9yvvwwRotQrnlf7glp1
-         GUXlFrXkBBbqQbKErgABUqnXAshCb+f+906j+ZKrjetzWlC/vEmYKegVdcrVqlJS1HSM
-         A/nVLnCgycOSvDMFgJMjL1ARrufeOKPPNiWH3l6t955gFTF5TkHPoYc9AmpQYJRY00Hy
-         muPMgUsYFQScWIYy1xYIPLL2oOHXhdrkSYQBj53sY0dTgQSB392MtcnRnZthjsOqtwUt
-         tql7vfFk9wcpVi8h7etoLIU+qjwX42mOlT0vB1gFR2qzNZAo+ydLm1eHWienLKEo8RuK
-         lGkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QYK3/QIGX/PdeJs4r8UYSQRr0m3A4G8axIc8eAE272c=;
-        b=T66ECnXscBdOvBQC1EAwSS6pLvYNMKXujyfiDysDtZ2GWn11ULsTV5N4rC8VuyzLLh
-         10SKQYsw1PicP1JVQUB8SAOPssYfDB/UyrUtfkvKaTW4kNRc0Hi1wSK7pvYPocF9Drll
-         BBXYQLpJyIXEuyz6C4F0nTwXB2xLC2rcYZy9EoDqmXRKMpC10RNo4U9wZbasXOYFVo9i
-         JHfHi5V9xnlBvmKqfh5ADcKQVjCsnfEX0dHH02eJDXp4snvenezHgSeWisajfk6oylzG
-         7iQ2BDRawfrXg1ub7FX7zSsUdBpY4pvafyyG4mJm6wpnrbEqJlq6t09pyMerl4nw2399
-         +srg==
-X-Gm-Message-State: AOAM5333ZONJDVCifmLNe4aYhQKpavmQsHVbb5qHb+M/VXPmc612+wf4
-        BfQ7rGYumftN10teaPvyl73bwn5rgOCvuWtcjYw=
-X-Google-Smtp-Source: ABdhPJw7FGd3wzHxzyItMvzbE82I1vUgMOy9JepPEmkrZc9v8moDWWdVeFwWcZp66PeWjlZUGC5DAut0NfoUrr9wOUI=
-X-Received: by 2002:a2e:7607:: with SMTP id r7mr11391137ljc.168.1608009434372;
- Mon, 14 Dec 2020 21:17:14 -0800 (PST)
+        id S1726115AbgLOFTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 00:19:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35754 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725864AbgLOFTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 00:19:22 -0500
+Date:   Tue, 15 Dec 2020 07:18:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608009522;
+        bh=sYVoD9fQ4iG/h+hSNQcInrv0UeUccJHoIREfTQfxY7c=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LoYz2VkhmecU0TapvJ/75sQjoZEdfvX/S4P55adPRt2I1DmlSA/FEyEi1pVtS4mJ7
+         RZUlxKtZTfFY+wCMdaNBL5bfZ1qPi2QeIxaeMTyo3i8F0yoSLL8auWElbfhQySjuQF
+         LoG/UhPIjgEE4zNWy55kNrt7C+bmitx0RsRRIUNTkzOocCeOjpDrIcc6mLbvdIy9li
+         5cB7x+6EAWKAHLXB4oHAZOAqgdr3dv7gbbC1t86sv7BgXHTs67elMd6JZfaSnf9cQw
+         KxUTRiF0PaltqTsAZQ8xnt6INwHW40Dn0TxBLuMA+xenGgl6QYGCXHcEfNM1rkVWhT
+         cGQR6CdYFWnlQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Vasyl Gomonovych <gomonovych@gmail.com>, tariqt@nvidia.com,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] net/mlx4: Use true,false for bool variable
+Message-ID: <20201215051838.GH5005@unreal>
+References: <20201212090234.0362d64f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201214103008.14783-1-gomonovych@gmail.com>
+ <20201214111608.GE5005@unreal>
+ <20201214110351.29ae7abb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <1113d2d634d46adb9384e09c3f70cb8376a815c4.camel@perches.com>
 MIME-Version: 1.0
-References: <1607704424-16223-1-git-send-email-u0084500@gmail.com>
- <1607704424-16223-2-git-send-email-u0084500@gmail.com> <20201214095916.4g47zlueng4wa3hv@holly.lan>
- <CADiBU38wZ+yrfjbggJyY7BHc5-tdV-KWVgWBmZn-q3EY99=PPg@mail.gmail.com>
- <20201214231743.GA2560842@robh.at.kernel.org> <1608008909.2963.7.camel@richtek.com>
-In-Reply-To: <1608008909.2963.7.camel@richtek.com>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Tue, 15 Dec 2020 13:17:02 +0800
-Message-ID: <CADiBU3-AFfso3EyzoTxhnuLfM=6YJEyesgnkPcj8y-7qKhHHnw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] backlight: rt4831: Adds DT binding document for
- Richtek RT4831 backlight
-To:     =?UTF-8?B?Y3lfaHVhbmco6buD5ZWf5Y6fKQ==?= <cy_huang@richtek.com>
-Cc:     "robh@kernel.org" <robh@kernel.org>,
-        "daniel.thompson@linaro.org" <daniel.thompson@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1113d2d634d46adb9384e09c3f70cb8376a815c4.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cy_huang(=E9=BB=83=E5=95=9F=E5=8E=9F) <cy_huang@richtek.com> =E6=96=BC 2020=
-=E5=B9=B412=E6=9C=8815=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=881:08=
-=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Mon, Dec 14, 2020 at 10:40:55PM +0800, ChiYuan Huang wrote:
-> >
-> > Hi,
-> >
-> > Daniel Thompson <daniel.thompson@linaro.org> =E6=96=BC 2020=E5=B9=B412=
-=E6=9C=8814=E6=97=A5 =E9=80=B1=E4=B8=80
-> > =E4=B8=8B=E5=8D=885:59=E5=AF=AB=E9=81=93=EF=BC=9A
-> > >
-> > >
-> > > Hi CY
-> > >
-> > > On Sat, Dec 12, 2020 at 12:33:43AM +0800, cy_huang wrote:
+On Mon, Dec 14, 2020 at 11:15:01AM -0800, Joe Perches wrote:
+> On Mon, 2020-12-14 at 11:03 -0800, Jakub Kicinski wrote:
+> > On Mon, 14 Dec 2020 13:16:08 +0200 Leon Romanovsky wrote:
+> > > On Mon, Dec 14, 2020 at 11:30:08AM +0100, Vasyl Gomonovych wrote:
+> > > > It is fix for semantic patch warning available in
+> > > > scripts/coccinelle/misc/boolinit.cocci
+> > > > Fix en_rx.c:687:1-17: WARNING: Assignment of 0/1 to bool variable
+> > > > Fix main.c:4465:5-13: WARNING: Comparison of 0/1 to bool variable
 > > > >
-> > > > From: ChiYuan Huang <cy_huang@richtek.com>
-> > > >
-> > > > Adds DT binding document for Richtek RT4831 backlight.
-> > > >
-> > > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > > This patch got keyword filtered and brought to my attention
-> > > but the rest of the series did not.
+> > > > Signed-off-by: Vasyl Gomonovych <gomonovych@gmail.com>
+> > > > ---
+> > > >  - Add coccicheck script name
+> > > >  - Simplify if condition
+> > > > ---
+> > > >  drivers/net/ethernet/mellanox/mlx4/en_rx.c | 2 +-
+> > > >  drivers/net/ethernet/mellanox/mlx4/main.c  | 2 +-
+> > > >  2 files changed, 2 insertions(+), 2 deletions(-)
 > > >
-> > > If it was a backlight patch series you need to send it To: the
-> > > all the backlight maintainers.
-> > >
-> > Yes, I'm waiting for mfd reviewing.
-> > Due to mfd patch, I need to add backlight dt-binding patch prior to
-> > backlight source code.
-> > Or autobuild robot will said mfd dt-binding build fail from Rob.
-> > That's why I send the backlight dt-binding prior to the source code.
+> > > Please refrain from sending new version of patches as reply-to to
+> > > previous variants. It makes to appear previous patches out-of-order
+> > > while viewing in threaded mode.
 > >
-> > I still have backlight/regulator source code patch after mfd
-> > reviewing.
-> > Do you want me to send all the patches without waiting for mfd
-> > reviewing?
-> What happened to the regulator part of the binding? I said you could
-> merge it into the mfd schema, not drop it. Bindings should be complete
-> so we get a full picture of a device.
+> > Yes, please! I'm glad I'm not the only one who feels this way! :)
 >
-Sorry I found the gmail account already loop in. Just my gmail problem.
-I cannot see the email in it.....
-The reply is below.
-Yes, I remove the regulator dt-binding and directly merge into mfd
-schema. Could you check the v4 3/3 patch?
-Or you just want me to remove regulator dt-binding example, not whole
-dt-binding file?
+> I'm the other way.
 >
-> Rob
-> ************* Email Confidentiality Notice ********************
+> I prefer revisions to single patches (as opposed to large patch series)
+> in the same thread.
+
+It depends which side you are in that game. From the reviewer point of
+view, such submission breaks flow very badly. It unfolds the already
+reviewed thread, messes with the order and many more little annoying
+things.
+
 >
-> The information contained in this e-mail message (including any attachmen=
-ts) may be confidential, proprietary, privileged, or otherwise exempt from =
-disclosure under applicable laws. It is intended to be conveyed only to the=
- designated recipient(s). Any use, dissemination, distribution, printing, r=
-etaining or copying of this e-mail (including its attachments) by unintende=
-d recipient(s) is strictly prohibited and may be unlawful. If you are not a=
-n intended recipient of this e-mail, or believe that you have received this=
- e-mail in error, please notify the sender immediately (by replying to this=
- e-mail), delete any and all copies of this e-mail (including any attachmen=
-ts) from your system, and do not disclose the content of this e-mail to any=
- other person. Thank you!
+> There is no other easy way for changes to a patch to be tracked AFAIK.
+
+Not really,  I'm using very simple convention to keep tracking of
+changes. The changelog together with lorifier does the trick.
+
+https://github.com/danrue/lorifier
+https://lore.kernel.org/linux-rdma/20201125064628.8431-1-leon@kernel.org/
+
+So I'm simply adding link to the previous version when sending new one.
+
+>
+> Most email clients use both In-Reply-To: and References: headers as
+> the mechanism to thread replies.
+
+Right, and this is exactly what we don't want for vX patches.
+
+>
+> Keeping the latest messages at the bottom of a thread works well
+> to see revision sequences.
+
+I have a different workflow.
+
+Thanks
