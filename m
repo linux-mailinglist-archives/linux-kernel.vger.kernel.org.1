@@ -2,132 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6170D2DB6A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E272DB6A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729861AbgLOWpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 17:45:25 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:49082 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729791AbgLOWpI (ORCPT
+        id S1730179AbgLOWt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 17:49:29 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:34961 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730015AbgLOWtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 17:45:08 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kpJ3S-00CpT4-RA; Tue, 15 Dec 2020 15:44:26 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kpJ3S-0002Bn-4w; Tue, 15 Dec 2020 15:44:26 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     <linux-kernel@vger.kernel.org>
-Date:   Tue, 15 Dec 2020 16:43:41 -0600
-Message-ID: <87bleubsgy.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
+        Tue, 15 Dec 2020 17:49:06 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7F9265C0043;
+        Tue, 15 Dec 2020 17:47:58 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Tue, 15 Dec 2020 17:47:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=QWzDvy6drK5slTeHs2rtc/DTIJ65yki
+        vR5Tsxc+1DFI=; b=MXcvFzCLfwAyH3Lw6LehPx4X5BX7ctYKM8XVoHx8tHMaZTj
+        FP1vr39w8LtlM2HIkpYmXlsGaZ0XpU3wbuutdM6FNaJc5aC+uoNldplUat685jeM
+        DOHj3CW+nykIXuSnccUGfNWLOs4SUUoZEXtpFJINmcrgNQnBEHQcKUl5hh1/yNOp
+        FSEanvh57wmqBhlWrO8+bDCAVqcPdMzJdW8Sa6zjhVE0jum/+tMLi5jJVh12TOxj
+        DSCjdpOmhr50C5KYMlZTztX+6TY8DAQbRcpnNQ7mt5h9UosYJ2JKJ2JdRW71GITX
+        e2Rz8EHjYw3ax/y49FvLvr+MVh+3hPqKK5IknCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=QWzDvy
+        6drK5slTeHs2rtc/DTIJ65ykivR5Tsxc+1DFI=; b=b2m8f3Vjtzqu8X/XEbzq+0
+        HmMV87aFW6WeQFE9tbZXMhxd8NG6NcMqvaE7dztb0w7vSPCHQ0Z4QhRSqPMplIUc
+        maicbeHqdFxA49VEEnhdkSYlBJhEgx+jU9vZiJSJ7DxdMvq8YQ8OW8Y5QwQjfgAw
+        wb4hkv0jcvmlCfPtLLPtedAG3aXxHUbq7t2wb+nuoTafMLdqcP4bnRFNofr+1yVe
+        P0imvSsCeQ4BAp8YXN5nSssqaQrqRdGThACikQNbBX2ql7GXCuDAD5GDTBIP2RHl
+        TE2S0/ZktXihYxo6cP7SADF1H+F9o4sGncczaGgmUJeDU/rU8AvLhSqlXUfwoA/Q
+        ==
+X-ME-Sender: <xms:HT3ZX7aNro-4wU3wDkCkJFE76CkjCxEwLz62YTO0p52slosxMUSkfQ>
+    <xme:HT3ZX6b2YcD6NWfbvx79P2VKs-EnRrO_UpYj39x4lzdOy2gv3WOHf0SZ4o_Vqso9y
+    gFvwZs6rYfuG95dSg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeluddgtdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:HT3ZX9-Atzm4CVQb1f6jHivdEBhJRZB9WWPruxvYH_lfajRtaIaNvw>
+    <xmx:HT3ZXxqlYeVRsnLpVk5vG_QNnJtdPUkfoWtG5ICz7yE1asOirJ-mVg>
+    <xmx:HT3ZX2psJGGzlbneb3VW5U-9LTqbqhIC5KpHUaksjdT10Q0mksMa_w>
+    <xmx:Hj3ZX_lJn_UKAy5nC6MlUiDepiktkmzMyTmbuIqPb90ATNd7UqcHOw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 9D6A9E0504; Tue, 15 Dec 2020 17:47:55 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.1-61-gb52c239-fm-20201210.001-gb52c2396
+Mime-Version: 1.0
+Message-Id: <0a513b26-a4e4-4808-a02a-eb6ffc84f5ba@www.fastmail.com>
+In-Reply-To: <20201215192323.24359-2-hongweiz@ami.com>
+References: <20201215192323.24359-1-hongweiz@ami.com>
+ <20201215192323.24359-2-hongweiz@ami.com>
+Date:   Wed, 16 Dec 2020 09:17:36 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Hongwei Zhang" <hongweiz@ami.com>, linux-aspeed@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "David Miller" <davem@davemloft.net>
+Cc:     "Joel Stanley" <joel@jms.id.au>
+Subject: =?UTF-8?Q?Re:_[Aspeed,ncsi-rx,_v1_1/1]_net:_ftgmac100:_Fix_AST2600_EVB_N?=
+ =?UTF-8?Q?CSI_RX_issue?=
 Content-Type: text/plain
-X-XM-SPF: eid=1kpJ3S-0002Bn-4w;;;mid=<87bleubsgy.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19HxtS8hHnLlEoclg7VYSAxKAkqnUV2i4U=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TooManySym_01,XMSubMetaSxObfu_03,XMSubMetaSx_00
-        autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4208]
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 XMSubMetaSx_00 1+ Sexy Words
-        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 366 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.7 (1.0%), b_tie_ro: 2.5 (0.7%), parse: 0.60
-        (0.2%), extract_message_metadata: 2.8 (0.8%), get_uri_detail_list:
-        1.42 (0.4%), tests_pri_-1000: 2.4 (0.7%), tests_pri_-950: 1.02 (0.3%),
-        tests_pri_-900: 0.80 (0.2%), tests_pri_-90: 89 (24.3%), check_bayes:
-        87 (23.9%), b_tokenize: 6 (1.5%), b_tok_get_all: 6 (1.5%),
-        b_comp_prob: 1.56 (0.4%), b_tok_touch_all: 72 (19.6%), b_finish: 0.64
-        (0.2%), tests_pri_0: 252 (68.9%), check_dkim_signature: 0.37 (0.1%),
-        check_dkim_adsp: 2.00 (0.5%), poll_dns_idle: 0.65 (0.2%),
-        tests_pri_10: 1.78 (0.5%), tests_pri_500: 6 (1.7%), rewrite_mail: 0.00
-        (0.0%)
-Subject: [GIT PULL] signal enhancements for v5.11-rc1
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Please pull the signal-for-v5.11 branch from the git tree:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git signal-for-v5.11
+On Wed, 16 Dec 2020, at 05:53, Hongwei Zhang wrote:
+> Fix AST2600 EVB NCSI RX timeout issue by removing FTGMAC100_RXDES0_RX_ERR bit
+> from macro RXDES0_ANY_ERROR.
 
-   HEAD: bc54a5cda97917155b8da0d99afe1dc0ed0b30db signal/parisc: Remove parisc specific definition of __ARCH_UAPI_SA_FLAGS
+But why? What is wrong with the EVB that this change resolves? Which revision 
+of the EVB?
 
-This is the work from Peter Collingbourne to add an new signal action
-flag SA_EXPOSE_TAGBITS on arm64.  There was a lot of discussion leading
-up to this and ultimately we were able to channel the original proposal
-into something that is much more maintainable than an arm64 specific
-hack.
+The change affects all designs using the MAC, not just the AST2600 EVB. Why is 
+this patch an appropriate course of action? Can we not add a quirk targeting the
+specific board (e.g. a devicetree property)?
 
-Most of this I believe has already come in through Catalin Marinas pull
-request "arm64 updates for 5.11".  As I took the generic bits of the
-cleanup and place it in a non-rebasing branch.  There is a compile fix
-for parisc that was caught late that I don't believe Catalin picked up.
-
-The generic changes are mostly about removing never used HP-UX
-compatibility from parisc headers and consolidating the SA_* flags
-definitions into a generic header as much as possible.  We only have 32
-SA_* flag bits total, so we need to be careful.  But as this is the
-first addition in a decade or so I think we are fine for the forseeable
-future.
-
-Eric W. Biederman (1):
-      signal/parisc: Remove parisc specific definition of __ARCH_UAPI_SA_FLAGS
-
-Helge Deller (1):
-      parisc: Drop parisc special case for __sighandler_t
-
-Peter Collingbourne (6):
-      parisc: start using signal-defs.h
-      arch: move SA_* definitions to generic headers
-      signal: clear non-uapi flag bits when passing/returning sa_flags
-      arch: provide better documentation for the arch-specific SA_* flags
-      signal: define the SA_UNSUPPORTED bit in sa_flags
-      signal: define the SA_EXPOSE_TAGBITS bit in sa_flags
-
- arch/alpha/include/uapi/asm/signal.h   | 14 --------
- arch/arm/include/asm/signal.h          |  2 ++
- arch/arm/include/uapi/asm/signal.h     | 27 ++-------------
- arch/h8300/include/uapi/asm/signal.h   | 24 -------------
- arch/ia64/include/uapi/asm/signal.h    | 24 -------------
- arch/m68k/include/uapi/asm/signal.h    | 24 -------------
- arch/mips/include/uapi/asm/signal.h    | 12 -------
- arch/parisc/include/uapi/asm/signal.h  | 34 +-----------------
- arch/powerpc/include/uapi/asm/signal.h | 24 -------------
- arch/s390/include/uapi/asm/signal.h    | 24 -------------
- arch/sparc/include/uapi/asm/signal.h   |  4 +--
- arch/x86/include/uapi/asm/signal.h     | 24 -------------
- arch/x86/kernel/signal_compat.c        |  7 ----
- arch/xtensa/include/uapi/asm/signal.h  | 24 -------------
- include/linux/signal.h                 | 14 ++++++++
- include/linux/signal_types.h           | 12 +++++++
- include/uapi/asm-generic/signal-defs.h | 63 ++++++++++++++++++++++++++++++++++
- include/uapi/asm-generic/signal.h      | 29 ----------------
- kernel/signal.c                        | 40 +++++++++++++++++++++
- 19 files changed, 136 insertions(+), 290 deletions(-)
-
-Eric
+Andrew
