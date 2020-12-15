@@ -2,80 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4372DB653
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 431212DB65B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730318AbgLOWIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 17:08:15 -0500
-Received: from smtprelay0179.hostedemail.com ([216.40.44.179]:43102 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730127AbgLOWHx (ORCPT
+        id S1730109AbgLOWJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 17:09:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729643AbgLOWJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 17:07:53 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 55B5F18224D65;
-        Tue, 15 Dec 2020 22:07:08 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3873:4321:5007:6119:6235:7557:7576:7902:7903:8784:10004:10400:10848:11026:11232:11473:11657:11658:11914:12043:12294:12297:12679:12740:12895:13069:13311:13357:13439:13894:13972:14181:14659:14721:21080:21451:21627:21740:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: jar17_620022f27427
-X-Filterd-Recvd-Size: 2324
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 15 Dec 2020 22:07:07 +0000 (UTC)
-Message-ID: <75eb199376d65f2c2b4c746ca9be8cfc9f774453.camel@perches.com>
-Subject: Re: [PATCH] [media] radio-si470x: remove h from printk format
- specifier
-From:   Joe Perches <joe@perches.com>
-To:     trix@redhat.com, hverkuil@xs4all.nl, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 15 Dec 2020 14:07:05 -0800
-In-Reply-To: <20201215213327.2091597-1-trix@redhat.com>
-References: <20201215213327.2091597-1-trix@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Tue, 15 Dec 2020 17:09:27 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE739C061793;
+        Tue, 15 Dec 2020 14:08:46 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id x2so20428297ybt.11;
+        Tue, 15 Dec 2020 14:08:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K+meQSK5y9qFjU0IVa/sjRpmfQw/UHOCMf8neqJsCwc=;
+        b=ScAFix3LX8mpD7II5FEshYNaPedEgvPMfvZF9bjyNcg5mK6daWykDKpDEtPw8rVqqE
+         rJVWpQDiHJ7vlBxnwgxJZrybCl/DkD9TZ955mXRrvv6T1JF+GGxRFbUvqeTaRJjd32aT
+         Ei3zNzCsoRM50GyWHuMiHuIvHsiPdBGbOMSgJmVFePPp1KHh6taBl/2e/nSrxHR33XmF
+         qrEwFAgEtjRQxY09BnsDE48nsWB/ZBtW8fcHokGvXeRsx8xFHmb3AYeP7QcGK4gkg5mc
+         mOoRdLvs3WG3Px3wcbazcULZ2hnvhh2b49dqOo3LrLl9Rbs18xdbH98DBpksRi4IfXpX
+         pF9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K+meQSK5y9qFjU0IVa/sjRpmfQw/UHOCMf8neqJsCwc=;
+        b=JoWZF87kMymO4vQ20zf74GBGARE7VPsNAZFbXu2HpQL5ptNFC7486Gdseq2+wxRviK
+         DYrG4nYScoN9JrZNG3y8LTZRLP1w48V4lvBJRYiAb+Yzvuhki+SP55nQjYG9k9qDwsFA
+         cjnRyl+YDCEQrLKyO0D0NIK0DlAeqpuMyCzUDk58LzIwIVxdamZFSAcHbY4Q/Bo9Qfpt
+         1GudLC2xep66uSxI5tGiVVREro6cqR2zFmmQo54zoppkJOi/xC++m8GNZA0lLx4c+Rcp
+         CNk1XHKmygamFdBN7Cz+AjXLaXN23VXa4FOhO/QcGWMgAXm7s5rvQo4zP9GLTPxzZCmZ
+         XIrQ==
+X-Gm-Message-State: AOAM531OzCXlwUjyB6ToMVzDq9rQD55uJFmQXea4m0lJBI+0oUC3nRb0
+        ZveoB1//Vzvn0iOJxaSpUaD3gov8seVAHslOjSg=
+X-Google-Smtp-Source: ABdhPJx/+vzbubEMXooBZvcExdybR+/KKe6C/v9lElIpugl0LMt4IfZCnq+zbJdoB2w671rn/0PsvvhEGZOGAIrsvJg=
+X-Received: by 2002:a25:d44:: with SMTP id 65mr46756516ybn.260.1608070126094;
+ Tue, 15 Dec 2020 14:08:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201214105654.5048-1-teawater@gmail.com>
+In-Reply-To: <20201214105654.5048-1-teawater@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 15 Dec 2020 14:08:34 -0800
+Message-ID: <CAEf4BzaQ9PsMrxwP2WW2eTDZ6LLYZRFUwJUa2xpFAPhBJu01PQ@mail.gmail.com>
+Subject: Re: [PATCH] samples/bpf/Makefile: Create tools/testing/selftests/bpf dir
+To:     Hui Zhu <teawater@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hui Zhu <teawaterz@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-15 at 13:33 -0800, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> See Documentation/core-api/printk-formats.rst.
-> 
-> commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of unnecessary %h[xudi] and %hh[xudi]")
-> 
-> Standard integer promotion is already done and %hx and %hhx is useless
-> so do not encourage the use of %hh[xudi] or %h[xudi].
-[]
-> diff --git a/drivers/media/radio/si470x/radio-si470x-i2c.c b/drivers/media/radio/si470x/radio-si470x-i2c.c
-[]
-> @@ -410,7 +410,7 @@ static int si470x_i2c_probe(struct i2c_client *client)
->  			radio->registers[DEVICEID], radio->registers[SI_CHIPID]);
->  	if ((radio->registers[SI_CHIPID] & SI_CHIPID_FIRMWARE) < RADIO_FW_VERSION) {
->  		dev_warn(&client->dev,
-> -			"This driver is known to work with firmware version %hu,\n",
-> +			"This driver is known to work with firmware version %u,\n",
->  			RADIO_FW_VERSION);
->  		dev_warn(&client->dev,
->  			"but the device has firmware version %hu.\n",
+On Mon, Dec 14, 2020 at 2:57 AM Hui Zhu <teawater@gmail.com> wrote:
+>
+> From: Hui Zhu <teawaterz@linux.alibaba.com>
+>
+> Got an error when I built samples/bpf in a separate directory:
+> make O=../bk/ defconfig
+> make -j64 bzImage
+> make headers_install
+> make V=1 M=samples/bpf
+> ...
+> ...
+> make -C /home/teawater/kernel/linux/samples/bpf/../..//tools/build
+> CFLAGS= LDFLAGS= fixdep
+> make -f
+> /home/teawater/kernel/linux/samples/bpf/../..//tools/build/Makefile.build
+> dir=. obj=fixdep
+> make all_cmd
+> Warning: Kernel ABI header at 'tools/include/uapi/linux/netlink.h'
+> differs from latest version at 'include/uapi/linux/netlink.h'
+> Warning: Kernel ABI header at 'tools/include/uapi/linux/if_link.h'
+> differs from latest version at 'include/uapi/linux/if_link.h'
+>   gcc
+> -Wp,-MD,samples/bpf/../../tools/testing/selftests/bpf/.cgroup_helpers.o.d
+> -Wall -O2 -Wmissing-prototypes -Wstrict-prototypes -I./usr/include
+> -I/home/teawater/kernel/linux/tools/testing/selftests/bpf/
+> -I/home/teawater/kernel/linux/tools/lib/
+> -I/home/teawater/kernel/linux/tools/include
+> -I/home/teawater/kernel/linux/tools/perf -DHAVE_ATTR_TEST=0  -c -o
+> samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.o
+> /home/teawater/kernel/linux/samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.c
+> /home/teawater/kernel/linux/samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.c:315:1:
+> fatal error: opening dependency file
+> samples/bpf/../../tools/testing/selftests/bpf/.cgroup_helpers.o.d: No
+> such file or directory
+>
+> ls -al samples/bpf/../../tools/testing/selftests/bpf/
+> ls: cannot access 'samples/bpf/../../tools/testing/selftests/bpf/': No
+> such file or directory
+>
+> There is no samples/bpf/../../tools/testing/selftests/bpf/ causing a
+> compilation error.
+>
+> This commit add a "make -p" before build files in
+> samples/bpf/../../tools/testing/selftests/bpf/ to handle the issue.
+>
+> Signed-off-by: Hui Zhu <teawaterz@linux.alibaba.com>
+> ---
+>  samples/bpf/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> index aeebf5d12f32..5b940eedf2e8 100644
+> --- a/samples/bpf/Makefile
+> +++ b/samples/bpf/Makefile
+> @@ -262,6 +262,7 @@ clean:
+>
+>  $(LIBBPF): FORCE
+>  # Fix up variables inherited from Kbuild that tools/ build system won't like
+> +       mkdir -p $(obj)/../../tools/testing/selftests/bpf/
 
-Tom?  Do you know why your script missed this %hu?
-
-btw: this would probably better as a single line something like:
-
-		dev_warn(&client->dev,
-			 "Firmware version: %u is older than known working version %u\n",
-			 radio->registers[SI_CHIPID] & SI_CHIPID_FIRMWARE
-			 RADIO_FW_VERSION);
-
-Also a few lines above is:
-
-	dev_info(&client->dev, "DeviceID=0x%4.4hx ChipID=0x%4.4hx\n",
-			radio->registers[DEVICEID], radio->registers[SI_CHIPID])
-
-and these %4.4hx uses are also not changed by this patch.
+This is not a real fix, rather ad-hoc work-around. Let's try to
+understand why this path is necessary and do adjustments to either
+samples' or libbpf's Makefile to work in such cases.
 
 
+>         $(MAKE) -C $(dir $@) RM='rm -rf' EXTRA_CFLAGS="$(TPROGS_CFLAGS)" \
+>                 LDFLAGS=$(TPROGS_LDFLAGS) srctree=$(BPF_SAMPLES_PATH)/../../ O=
+>
+> --
+> 2.17.1
+>
