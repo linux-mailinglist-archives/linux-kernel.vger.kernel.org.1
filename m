@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F272DB004
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B8A2DB020
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729539AbgLOP1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:27:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729979AbgLOP0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:26:54 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8FBEA224B8;
-        Tue, 15 Dec 2020 15:26:13 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kpCDL-001WLP-CX; Tue, 15 Dec 2020 15:26:11 +0000
+        id S1729683AbgLOPcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:32:32 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:39653 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726844AbgLOPcb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:32:31 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein.fritz.box)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kpCIn-0001FF-Hu; Tue, 15 Dec 2020 15:31:49 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] close_range()/openat2() v5.11
+Date:   Tue, 15 Dec 2020 16:31:25 +0100
+Message-Id: <20201215153125.199021-1-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 15 Dec 2020 15:26:10 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Scott Branden <sbranden@broadcom.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Subject: Re: [PATCH 3/5] irqchip/bcm2836: Make IPIs use
- handle_percpu_devid_irq()
-In-Reply-To: <1795afb5-a4fd-3a90-99c4-71373476ad65@roeck-us.net>
-References: <20201109094121.29975-1-valentin.schneider@arm.com>
- <20201109094121.29975-4-valentin.schneider@arm.com>
- <20201215002134.GA182208@roeck-us.net>
- <38f8fbe9ceb7a0adb47e62d62260b297@kernel.org>
- <1795afb5-a4fd-3a90-99c4-71373476ad65@roeck-us.net>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <9007dd8a0d5334141d083b14121ba11c@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: linux@roeck-us.net, valentin.schneider@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, andrew@lunn.ch, Lorenzo.Pieralisi@arm.com, jason@lakedaemon.net, sbranden@broadcom.com, gregory.clement@bootlin.com, f.fainelli@gmail.com, rjui@broadcom.com, tglx@linutronix.de, sebastian.hesselbarth@gmail.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-15 15:21, Guenter Roeck wrote:
-> Hi Marc,
-> 
-> On 12/15/20 2:19 AM, Marc Zyngier wrote:
->> Hi Gunter,
->> 
->> On 2020-12-15 00:21, Guenter Roeck wrote:
->>> On Mon, Nov 09, 2020 at 09:41:19AM +0000, Valentin Schneider wrote:
->>>> As done for the Arm GIC irqchips, move IPIs to 
->>>> handle_percpu_devid_irq() as
->>>> handle_percpu_devid_fasteoi_ipi() isn't actually required.
->>>> 
->>>> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
->>> 
->>> This patch results in boot failures (silent stall) for the qemu
->>> raspi2 emulation. Unfortunately it can not be reverted because
->>> handle_percpu_devid_fasteoi_ipi no longer exists in next-20201214,
->>> so I don't know if it is the only problem.
->> 
->> This is odd. This works just fine for me on both the RPi2 and 3
->> emulation, running a full Debian userspace. Could this be caused
->> by the version of QEMU you are using? Here's what I have:
->> 
->> $ qemu-system-arm --version
->> QEMU emulator version 5.1.0 (Debian 1:5.1+dfsg-4+b1)
->> 
-> 
-> I used qemu 5.0 which - up to now - worked fine. Let me try with
-> 5.1 and 5.2. Sorry, I should have tried first before bothering you.
+Hi Linus,
 
-No bother at all. If this works for you on more recent versions of
-QEMU, that'd be an interesting data point. I'm also interested in
-the result of the patch either way.
+/* Summary */
+This contains a fix for openat2() to make RESOLVE_BENEATH and
+RESOLVE_IN_ROOT mutually exclusive. It doesn't make sense to specify both
+at the same time. The openat2() selftests have been extended to verify
+that these two flags can't be specified together.
 
-Thanks,
+This also adds the CLOSE_RANGE_CLOEXEC flag to close_range() which allows
+to mark a range of file descriptors as close-on-exec without actually
+closing them. This is useful in general but the use-case that triggered the
+patch is installing a seccomp profile in the calling task before exec. If
+the seccomp profile wants to block the close_range() syscall it obviously
+can't use it to close all fds before exec. If it calls close_range() before
+installing the seccomp profile it needs to take care not to close fds that
+it will still need before the exec meaning it would have to call
+close_range() multiple times on different ranges and then still fall back
+to closing fds one by one right before the exec. CLOSE_RANGE_CLOEXEC allows
+to solve this problem relying on the exec codepath to get rid of the
+unwanted fds. The close_range() tests have been expanded to verify that
+CLOSE_RANGE_CLOEXEC works.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Note, I had picked up the openat2() and close_range() right after -rc6
+since they were close to missing the merge window and I wanted to have them
+in -next for a little bit.
+I've coordinatd this with Al and made extra sure yesterday that he's fine
+with me sending this. He's ack on the openat2() change (I couldn't add the
+ack anymore since that would've meant rebasing). He hasn't commented on the
+close_range() extension. In case you'd prefer to only pull the openat2()
+fix you can pull from the
+
+openat2-v5.11
+
+tag instead of the close-range-openat2-v5.11 tag here.
+
+The following changes since commit b65054597872ce3aefbc6a666385eabdf9e288da:
+
+  Linux 5.10-rc6 (2020-11-29 15:50:50 -0800)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/close-range-openat2-v5.11
+
+for you to fetch changes up to 23afeaeff3d985b07abf2c76fd12b8c548da8367:
+
+  selftests: core: add tests for CLOSE_RANGE_CLOEXEC (2020-12-04 12:06:16 +0100)
+
+/* Testing */
+The patches are based on v5.10-rc6 since I had waited pretty late for them to
+be picked up. No build failures or warnings were observed. All old and new
+tests are passing.
+
+/* Conflicts */
+At the time of creating this PR no merge conflicts were reported from
+linux-next and no merge conflict with 2c85ebc57b3e ("Linux 5.10") when
+pulling the tag.
+
+Please consider pulling these changes from the signed close-range-openat2-v5.11 tag.
+
+Thanks!
+Christian
+
+----------------------------------------------------------------
+close-range-openat2-v5.11
+
+----------------------------------------------------------------
+Aleksa Sarai (2):
+      openat2: reject RESOLVE_BENEATH|RESOLVE_IN_ROOT
+      selftests: openat2: add RESOLVE_ conflict test
+
+Giuseppe Scrivano (2):
+      fs, close_range: add flag CLOSE_RANGE_CLOEXEC
+      selftests: core: add tests for CLOSE_RANGE_CLOEXEC
+
+ fs/file.c                                       | 44 +++++++++++----
+ fs/open.c                                       |  4 ++
+ include/uapi/linux/close_range.h                |  3 +
+ tools/testing/selftests/core/close_range_test.c | 74 +++++++++++++++++++++++++
+ tools/testing/selftests/openat2/openat2_test.c  |  8 ++-
+ 5 files changed, 122 insertions(+), 11 deletions(-)
