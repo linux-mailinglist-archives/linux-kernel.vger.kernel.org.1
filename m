@@ -2,179 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3D92DB058
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB462DB05A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730321AbgLOPnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:43:49 -0500
-Received: from foss.arm.com ([217.140.110.172]:47670 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730315AbgLOPne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:43:34 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 523271FB;
-        Tue, 15 Dec 2020 07:42:48 -0800 (PST)
-Received: from e123648.arm.com (unknown [10.57.22.20])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9DA613F66B;
-        Tue, 15 Dec 2020 07:42:46 -0800 (PST)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
-        sfr@canb.auug.org.au
-Cc:     linux-next@vger.kernel.org, rui.zhang@intel.com,
-        lukasz.luba@arm.com
-Subject: [PATCH] thermal: devfreq_cooling: fix the build when !ENERGY_MODEL
-Date:   Tue, 15 Dec 2020 15:42:21 +0000
-Message-Id: <20201215154221.8828-1-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201215125806.31495950@canb.auug.org.au>
-References: <20201215125806.31495950@canb.auug.org.au>
+        id S1730338AbgLOPoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:44:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730308AbgLOPnc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:43:32 -0500
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B573C0617A7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 07:42:52 -0800 (PST)
+Received: by mail-ua1-x941.google.com with SMTP id s23so6821506uaq.10
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 07:42:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CmsUX0s95ydXWZbyak8VMyE/dxsCO/YhYqW3BW3PGXY=;
+        b=EM+cWPNF7BpAlMNl5IqVB6YXP5Yt2mjNaCDGRnga6SX3e3b9pObq7FB/BmYN5yX48y
+         tCaYvUNte4AHGzcz7iLohWil9pKhgPiaALLYCjOYDLQ4slVmuwOuc/W2KyOyuZap0UPY
+         qKQ7htVixW9yVzOa6KqE/L420vQ4oBg9fmCM0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CmsUX0s95ydXWZbyak8VMyE/dxsCO/YhYqW3BW3PGXY=;
+        b=EfX8bnlRTSRULjMcWy1BE+wOviKETSCzefTQUeqPphr+tjP6e1kuKUU6OW5YsvwmXn
+         VESAYdioRezRPwS4IU4DdOTxIoZVSoj0KcWCr05CeDglulTIxpVnkiD7GiFB5Nzjy9Fs
+         lBOu2qHJshdCpdDRWrz1HZaJl+2sZczZVLWTtDJKYFJETdA38ZWNvtfqA4LIKnz9Eif9
+         5eg2OaumhX1bApG43VSwRKrljd0mc3akcBAdmZx05jcZW+qe7F0Gw1KWXIDetKyFjK4D
+         mLvx6DZQDoCsXrbwPiMnIGyW8ZKDEO7kULUMiXoGf/6jWzy/7uHakLNFFXVFLCReRVuh
+         zN6Q==
+X-Gm-Message-State: AOAM531HkNL1d7vMRcer+bt2HjhAYSq7O+qz6YkCv3iCiCCxIGMXcjtA
+        zj5Zp0RH2Jwc2bhU8JuR8tQqlqNtqWRHCg==
+X-Google-Smtp-Source: ABdhPJzl4ZmKzD45o+UpJ1kEvdsVXjgL8NNwQLEKjlp0M6IK4kBM1wJCpBYasYz6FINCzQ3E8o3GIQ==
+X-Received: by 2002:ab0:65cc:: with SMTP id n12mr29304783uaq.99.1608046970663;
+        Tue, 15 Dec 2020 07:42:50 -0800 (PST)
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
+        by smtp.gmail.com with ESMTPSA id f23sm1164971vsk.8.2020.12.15.07.42.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 07:42:49 -0800 (PST)
+Received: by mail-vs1-f43.google.com with SMTP id j140so11201115vsd.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 07:42:49 -0800 (PST)
+X-Received: by 2002:a67:bd01:: with SMTP id y1mr21909045vsq.49.1608046969145;
+ Tue, 15 Dec 2020 07:42:49 -0800 (PST)
+MIME-Version: 1.0
+References: <1608025150-10779-1-git-send-email-manafm@codeaurora.org>
+In-Reply-To: <1608025150-10779-1-git-send-email-manafm@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 15 Dec 2020 07:42:37 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=U0cVz6XgFnctGHcu1sNABAJsnBy8PPYjOSO5wKQGR7RQ@mail.gmail.com>
+Message-ID: <CAD=FV=U0cVz6XgFnctGHcu1sNABAJsnBy8PPYjOSO5wKQGR7RQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Enable passive polling for cpu
+ thermal zones
+To:     Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prevent build failure if the option CONFIG_ENERGY_MODEL is not set. The
-devfreq cooling is able to operate without the Energy Model.
-Don't use dev->em_pd directly and use local pointer.
+Hi,
 
-Fixes: 615510fe13bd2 ("thermal: devfreq_cooling: remove old power model and use EM")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
-Hi Daniel,
+On Tue, Dec 15, 2020 at 1:39 AM Manaf Meethalavalappu Pallikunhi
+<manafm@codeaurora.org> wrote:
+>
+> Enable passive polling delay for cpu thermal zone for sc7180. It
+> enables periodic thermal zone re-evaluation on post first trip
+> temperature violation.
+>
+> Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> index 98050b3..79d0747 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -4355,7 +4355,7 @@
+>
+>         thermal-zones {
+>                 cpu0-thermal {
+> -                       polling-delay-passive = <0>;
+> +                       polling-delay-passive = <50>;
 
-The devfreq cooling implementation can work without the EM and it has been
-design to handle it. There is only one bit that needs to be changed and
-used as in v2 (where there was this 'em' private field).
-Implementation is similar to the cpufreq cooling.
-We don't need to put the ENERGY_MODEL dependency in Kconfig.
+Matthias already landed a similar patch, see:
 
-Regards,
-Lukasz
+https://lore.kernel.org/r/20201111120334.1.Ifc04ea235c3c370e3b21ec3b4d5dead83cc403b4@changeid
 
+I guess the question is whether 50 is better or 250 is better.  Is
+this just a finger in the wind estimate or do you have data showing
+that 50 is better than 250?
 
- drivers/thermal/devfreq_cooling.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-index df1049a34777..fed3121ff2a1 100644
---- a/drivers/thermal/devfreq_cooling.c
-+++ b/drivers/thermal/devfreq_cooling.c
-@@ -48,6 +48,7 @@ static DEFINE_IDA(devfreq_ida);
-  * @capped_state:	index to cooling state with in dynamic power budget
-  * @req_max_freq:	PM QoS request for limiting the maximum frequency
-  *			of the devfreq device.
-+ * @em_pd:		Energy Model for the associated Devfreq device
-  */
- struct devfreq_cooling_device {
- 	int id;
-@@ -60,6 +61,7 @@ struct devfreq_cooling_device {
- 	u32 res_util;
- 	int capped_state;
- 	struct dev_pm_qos_request req_max_freq;
-+	struct em_perf_domain *em_pd;
- };
- 
- static int devfreq_cooling_get_max_state(struct thermal_cooling_device *cdev,
-@@ -99,9 +101,9 @@ static int devfreq_cooling_set_cur_state(struct thermal_cooling_device *cdev,
- 	if (state > dfc->max_state)
- 		return -EINVAL;
- 
--	if (dev->em_pd) {
-+	if (dfc->em_pd) {
- 		perf_idx = dfc->max_state - state;
--		freq = dev->em_pd->table[perf_idx].frequency * 1000;
-+		freq = dfc->em_pd->table[perf_idx].frequency * 1000;
- 	} else {
- 		freq = dfc->freq_table[state];
- 	}
-@@ -181,7 +183,6 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
- {
- 	struct devfreq_cooling_device *dfc = cdev->devdata;
- 	struct devfreq *df = dfc->devfreq;
--	struct device *dev = df->dev.parent;
- 	struct devfreq_dev_status status;
- 	unsigned long state;
- 	unsigned long freq;
-@@ -204,7 +205,7 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
- 		res = dfc->power_ops->get_real_power(df, power, freq, voltage);
- 		if (!res) {
- 			state = dfc->capped_state;
--			dfc->res_util = dev->em_pd->table[state].power;
-+			dfc->res_util = dfc->em_pd->table[state].power;
- 			dfc->res_util *= SCALE_ERROR_MITIGATION;
- 
- 			if (*power > 1)
-@@ -214,7 +215,7 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
- 		}
- 	} else {
- 		/* Energy Model frequencies are in kHz */
--		perf_idx = get_perf_idx(dev->em_pd, freq / 1000);
-+		perf_idx = get_perf_idx(dfc->em_pd, freq / 1000);
- 		if (perf_idx < 0) {
- 			res = -EAGAIN;
- 			goto fail;
-@@ -223,7 +224,7 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
- 		_normalize_load(&status);
- 
- 		/* Scale power for utilization */
--		*power = dev->em_pd->table[perf_idx].power;
-+		*power = dfc->em_pd->table[perf_idx].power;
- 		*power *= status.busy_time;
- 		*power >>= 10;
- 	}
-@@ -241,15 +242,13 @@ static int devfreq_cooling_state2power(struct thermal_cooling_device *cdev,
- 				       unsigned long state, u32 *power)
- {
- 	struct devfreq_cooling_device *dfc = cdev->devdata;
--	struct devfreq *df = dfc->devfreq;
--	struct device *dev = df->dev.parent;
- 	int perf_idx;
- 
- 	if (state > dfc->max_state)
- 		return -EINVAL;
- 
- 	perf_idx = dfc->max_state - state;
--	*power = dev->em_pd->table[perf_idx].power;
-+	*power = dfc->em_pd->table[perf_idx].power;
- 
- 	return 0;
- }
-@@ -259,7 +258,6 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
- {
- 	struct devfreq_cooling_device *dfc = cdev->devdata;
- 	struct devfreq *df = dfc->devfreq;
--	struct device *dev = df->dev.parent;
- 	struct devfreq_dev_status status;
- 	unsigned long freq;
- 	s32 est_power;
-@@ -287,7 +285,7 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
- 	 * budget. The EM power table is sorted ascending.
- 	 */
- 	for (i = dfc->max_state; i > 0; i--)
--		if (est_power >= dev->em_pd->table[i].power)
-+		if (est_power >= dfc->em_pd->table[i].power)
- 			break;
- 
- 	*state = dfc->max_state - i;
-@@ -374,7 +372,8 @@ of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
- 
- 	dfc->devfreq = df;
- 
--	if (dev->em_pd) {
-+	dfc->em_pd = em_pd_get(dev);
-+	if (dfc->em_pd) {
- 		devfreq_cooling_ops.get_requested_power =
- 			devfreq_cooling_get_requested_power;
- 		devfreq_cooling_ops.state2power = devfreq_cooling_state2power;
-@@ -382,7 +381,7 @@ of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
- 
- 		dfc->power_ops = dfc_power;
- 
--		num_opps = em_pd_nr_perf_states(dev->em_pd);
-+		num_opps = em_pd_nr_perf_states(dfc->em_pd);
- 	} else {
- 		/* Backward compatibility for drivers which do not use IPA */
- 		dev_dbg(dev, "missing EM for cooling device\n");
--- 
-2.17.1
-
+-Doug
