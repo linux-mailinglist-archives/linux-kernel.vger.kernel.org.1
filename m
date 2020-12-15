@@ -2,134 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD812DB0B3
+	by mail.lfdr.de (Postfix) with ESMTP id BBC642DB0B4
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728747AbgLOP7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:59:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730274AbgLOP6j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:58:39 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD074C0617A6;
-        Tue, 15 Dec 2020 07:57:58 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id w127so19396604ybw.8;
-        Tue, 15 Dec 2020 07:57:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C5gWEJwzHXn1ShMFhu2t6H+9GWvdz1kML7Fx1lY6PKE=;
-        b=Ld4HmbckjgNstSvqbLYzX5xzjzj7U3E+UXqv2D9TmeEn96ssBFVZn2OJUipNkuy38c
-         tJjAG60RBXgCz+fYDbWEyoIupDAfPkKMDrZWnsi9Ydsc/iwhJlcoBSk8jWNxC5nGvsHD
-         +0i2YKg+OdbDvw/Z1/iq6v2qMsCuSAztHoYzvTeIq71apOCH6tNoXdV9S/stASGk4Txo
-         03VuNcKN+n0nBTwBqoBuuTLmy3Se5ISU1xeGsqbFThtOSzcIyiIw55SSG4NiXQFBxWQr
-         90WGlX/rycXGm6K9w6T+84oFYUGkB2jHettCzWoFsFuN/dJapAccbbEv3MTGz9OF19vh
-         o0IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C5gWEJwzHXn1ShMFhu2t6H+9GWvdz1kML7Fx1lY6PKE=;
-        b=hijOGpIqmvk3qSpSLpz6FAyskFaw4mbToWh2BsExjbrc4/2HiUdeM7P6vJXzFFXm4D
-         CN/hYbSUeWA88oM/kmQL2hyTd7Yb+RgA4ubaGYXh6hJxsr+u3gpZJhBqF83m/pCZPt6H
-         OiBS1eJxotxqvLhRtRbLShLRCMoa1Je1fUgp3V4aLFdrfVn18zrQAzHRaj6gPrmsWL0N
-         wyEf/9ZNkxB/us11xFxGSB5tNr1uaYZtUK8SFuid7tlBdj8O6O8JiToWLcwaK2H2m/Ic
-         9dB22nOYU9LE8FKl3QWcStOHl3OTxcxAFJ1IcHGtZrO5xH6+JNASceNrMPNpZXVdhW6/
-         IGzA==
-X-Gm-Message-State: AOAM533TGWfrH47/2Y1osMcCYtS7p2b7TAFx7+/TfdjtjxyBaPVl/+je
-        RLrVdkuLcbjfi02Wxf936/MqaYCAGU3ASkdebWk=
-X-Google-Smtp-Source: ABdhPJyfclnkTaENRLirConWIoOx+piMmLPYv6J/hmXVCzXRS6L+s5el1GwyYb9LXWOsq8WxGKWm4C8wY+86Y9SzZe0=
-X-Received: by 2002:a25:3a86:: with SMTP id h128mr42666689yba.401.1608047878198;
- Tue, 15 Dec 2020 07:57:58 -0800 (PST)
+        id S1730571AbgLOP7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:59:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730358AbgLOP7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:59:13 -0500
+Date:   Tue, 15 Dec 2020 17:58:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608047912;
+        bh=tAjNgpJY4PkAjhuu5UfgtKhkfiF5jynWaqKRdXT8BPE=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mqa8WmM/tsEzWHx8onwjz99VZnQDaxYwqJnFunMBlxgS5WpP2+tpsX2bgwsmUOfwd
+         WhbNHGoY65HC3uoEJA5HqDB5/1AHwMJMoedpy/kvan2xHgHUaBsk5L0YS1lx7UBEMD
+         p9wTN0akouI1Tu7V8iIFGe2DJHNfJZGb2FWbYQqcf7kZTjaB9Aciv9aTrTcuO26ViG
+         c/pLTvfa99f8WyYtGJFEAPNUkQ1gvH9xO+Flqfk0aZ5Ng/Gt7lTPsL0VgTC+u9NIJN
+         68kDrv2svpZv7nyYeuMWSVEWnOT1BbEpiSsBWQfBz7aNQh3GJ4CSfoj3nYn198psc2
+         WO8cuX391aaBQ==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     "Hui, Chunyang" <sanqian.hcy@antgroup.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v41 00/24] Intel SGX foundations
+Message-ID: <20201215155824.GA34260@kernel.org>
+References: <20201112220135.165028-1-jarkko@kernel.org>
+ <20201215054313.GA522982@sanqian-occlum-dev-ubuntu>
 MIME-Version: 1.0
-References: <20201126103053.29881-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201126103053.29881-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <20201215114949.teyhlmyhejck7jw2@uno.localdomain>
-In-Reply-To: <20201215114949.teyhlmyhejck7jw2@uno.localdomain>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 15 Dec 2020 15:57:32 +0000
-Message-ID: <CA+V-a8sTXULENp+prOd10vEwYz9wiKkAhyaEPf79QGGvtLc2hQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] ARM: dts: r8a7742-iwg21d-q7-dbcm-ca: Add support
- for 8-bit ov7725 sensors
-To:     Jacopo Mondi <jacopo@jmondi.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215054313.GA522982@sanqian-occlum-dev-ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+On Tue, Dec 15, 2020 at 01:43:22PM +0800, Hui, Chunyang wrote:
+> Tested-by: Chunyang Hui <sanqian.hcy@antfin.com>
+> 
+> The Occlum project (https://occlum.io/) is a libOS built on top of Intel
+> SGX feature. We ran Occlum tests using v5.10 kernel with SGX patch v41 on
+> SGX hardware with the Flexible Launch Control (FLC) feature and didn't
+> find any problems. As Occlum core developers, we would like these patches
+> to be merged.
 
-Thank you for the review.
+The patches and some fixes on top of them were pulled on Monday into
+mainline tree. I advice you to test v5.11-rc's when they become
+available and report any issues you might encounter.
 
-On Tue, Dec 15, 2020 at 11:49 AM Jacopo Mondi <jacopo@jmondi.org> wrote:
->
-> Hello,
->
-> On Thu, Nov 26, 2020 at 10:30:53AM +0000, Lad Prabhakar wrote:
-> > The 8-bit ov7725 sensors can also be connected to the camera daughter
-> > board.
-> >
-> > This patch creates a separate dtsi file for ov7725 sensors and is included
-> > in r8a7742-iwg21d-q7-dbcm-ca.dts. The user can set VINx_SENSOR depending
-> > on the cameras connected.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > ---
-> >  .../boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts    |   7 ++
-> >  .../dts/r8a7742-iwg21d-q7-dbcm-ov7725.dtsi    | 112 ++++++++++++++++++
-> >  2 files changed, 119 insertions(+)
-> >  create mode 100644 arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ov7725.dtsi
-> >
-> > diff --git a/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
-> > index 1ab4f9771a34..915ff5fd437c 100644
-> > --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
-> > +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
-> > @@ -11,6 +11,7 @@
-> >
-> >  #define SENSOR_NONE          1
-> >  #define SENSOR_OV5640                2
-> > +#define SENSOR_OV7725                3
-> >
-> >  /* 8bit CMOS Camera 1 (J13) */
-> >  #define CAM1_PARENT_I2C              i2c0
-> > @@ -40,6 +41,11 @@
-> >   * VIN2 interface and also the ov5640 node connected to it)
-> >   *      #define VIN2_SENSOR          SENSOR_NONE
-> >   *
-> > + * To tie VINx endpoints to ov7725_x endpoints set VINx_SENSOR to
-> > + * SENSOR_OV7725 for example if ov7725_3 is connected to the VIN3
-> > + * interface set the below (this disables the ov5640_3)
-> > + *      #define VIN3_SENSOR          SENSOR_OV7725
-> > + *
-> >   */
-> >  #define VIN0_SENSOR          SENSOR_OV5640
-> >  #define VIN1_SENSOR          SENSOR_OV5640
-> > @@ -47,6 +53,7 @@
-> >  #define VIN3_SENSOR          SENSOR_OV5640
-> >
-> >  #include "r8a7742-iwg21d-q7-dbcm-ov5640.dtsi"
-> > +#include "r8a7742-iwg21d-q7-dbcm-ov7725.dtsi"
->
-> Mmm, can't we alternatively include one .dtsi or the other depending
-> on a define symbol ? The .dtsi describe pluggable expansion boards,
-> they cannot be mixed, right ?
->
-Since the cameras on the daughter can be mixed and matched a much
-better version of the patches [1] which handle this case elegantly has
-been posted by Geert.
-
-[1] https://patchwork.kernel.org/project/linux-renesas-soc/cover/20201126134031.4115211-1-geert@linux-m68k.org/
-
-Cheers,
-Prabhakar
+/Jarkko
