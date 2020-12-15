@@ -2,93 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BA12DB3DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 768932DB3D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731685AbgLOSg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:36:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25651 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731593AbgLOSgn (ORCPT
+        id S1731617AbgLOSgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 13:36:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731444AbgLOSgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:36:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608057317;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=r5Ua4K+Dl4WllndwRBRRza/dPsX4LUO4Xube6WLkAV4=;
-        b=HRvwmX+8Y81VK0fZPcrYGyzJK4qe1HzEVIN2eKaLsqi7WlW0VPuAltgDGdPMkMFw5N+NZ3
-        7dy80+CKb6bLZCOK+mg01hE1kxgi+2FzmTgq5XbVmQBIzC6vi91GSKLkPEwnPsltMwMLVr
-        ecZJf/bVgvWPFIsSuvf43d+m2uh0l6g=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-127-so-yKJpXNeq-PGW_IqfgnA-1; Tue, 15 Dec 2020 13:35:15 -0500
-X-MC-Unique: so-yKJpXNeq-PGW_IqfgnA-1
-Received: by mail-qk1-f199.google.com with SMTP id a17so15859179qko.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 10:35:15 -0800 (PST)
+        Tue, 15 Dec 2020 13:36:09 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E37AC0617A6;
+        Tue, 15 Dec 2020 10:35:29 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id x2so19893179ybt.11;
+        Tue, 15 Dec 2020 10:35:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I1WWEUvnMjs5fUymJpL74+Mkojs1oxn/NtiIZL/uohY=;
+        b=lAR/gkidY3WSAoyBwj/99CU/bROfG4oB6YtdT9F/qSbQb+wFQcZppSTgO5q5pIGINV
+         P0cEoUBrko0baGhgqKAald4iGzEMyeCAYSyjUx9xlRjaI5dYmNagiX2cLewFTE1qd+0z
+         hIJy4qfOAr+yGOKao/9bIDG1fBg3OY+vWf9Oy40jD5Yuue8WJhjld4OR4l7gIZbLqkY+
+         YJtlwPmW0ITh8miz7gnbkWz84syT0C9Wzhua8jiTh+QSGNnObCoRLEp97Q7hZ5Jk+8CS
+         HpO2D3Argl9l5qPMKi3OnzXRm2L4xWbtehCypZa5Be2PJZES4IfjgUi4VBUWlng65mw8
+         8FUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r5Ua4K+Dl4WllndwRBRRza/dPsX4LUO4Xube6WLkAV4=;
-        b=hKg+Wp4MYMJrjL43S5IEihsGGLMyZwnmxIrb5O0TQpOsqLF6xU2V1HczED1s84TQ9q
-         YT8PhV5LEYLP5hi7WGC7FJrZPSr/n7l+B3hR/2zyEVY2UCcbvWbUPEo6Gvg7J+fg9iVH
-         3PFSnJ6yd4NEwI+jZGUV+t0RdmLM+FgfA1lvGpZuItt+cV9YjFYa57hQBzHWNOiSPCDj
-         O2QreBbxKkgOZoK78SaOvSeRMOEPGDtjrtuDpaweFW2T0H0PIfLtd8z/qXdF6lhFMkRa
-         uVUwngS4MRkbAr+i1IWfVkpfsVzz5+BU6JB0QXNUxRQ+akCpkUh1sUQZueZnf82fBksf
-         f2Pw==
-X-Gm-Message-State: AOAM530NWVtkMtVpSEHI5sgOXa8EXWbwx86fFt8mOo5iZzXCtQGq5YyT
-        /VzfbwOXzPP3ip40mk5JrdsE06q+ozkMqNf7B3ufDUTccy5/zk7mZbLSoV7Y0hanIq5sQzrahvb
-        oITFzCq0GbCNcnC2yO8neU9oN
-X-Received: by 2002:ac8:1282:: with SMTP id y2mr37404264qti.283.1608057314763;
-        Tue, 15 Dec 2020 10:35:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzODCFZoEuN9HB288V4BnrbsFQcDXsYbbD0gwq0gP+q+tY0nHu32XRnRCz5Xrr5a8X5/pyb+A==
-X-Received: by 2002:ac8:1282:: with SMTP id y2mr37404250qti.283.1608057314580;
-        Tue, 15 Dec 2020 10:35:14 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id p15sm17116316qke.11.2020.12.15.10.35.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 10:35:13 -0800 (PST)
-From:   trix@redhat.com
-To:     mike.marciniszyn@cornelisnetworks.com,
-        dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] IB/hfi1: remove h from printk format specifier
-Date:   Tue, 15 Dec 2020 10:35:09 -0800
-Message-Id: <20201215183509.2072517-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I1WWEUvnMjs5fUymJpL74+Mkojs1oxn/NtiIZL/uohY=;
+        b=IRSgw8JhRas3hQRZyRWHRDooHC17EsmdBp31qKBvp3VcVs1/aMfNpY7wynHSYLbiPm
+         cGVUmt1IkRPHE7vCNY1PR64sHbvDaHWL+0JjLonZORi8HUSWznCjWg+vT/DY5fNtKr+L
+         Z1R0BmSYYIXEg765IUNTiZvL01uvi/scoRYW8NT3thzqIgZBG0GDJkru8nX8q94yEBTx
+         ImJMX4fgliX8vpPeDLzny30Hlm0fdjwm/xS7a8LrMAc4yTsYjp7H3UNE8a2GOv8JvVoB
+         rYOtX2a2oqlUPV723iGzY62IuGTCKDIq9V6lBFbRjHxAIOYlHuVKA3fPPQRhim92H9hE
+         NQmQ==
+X-Gm-Message-State: AOAM530ufwhr/lV8QHVN/fXbkLNeIefhRH+DG6mGgPufOcFm+gSQ3g91
+        P3H8q3TS3qVc4PdkTg1+t1Ibd68uT6GDFmN60Ak=
+X-Google-Smtp-Source: ABdhPJzFuTXAo1E3eKRHHyiwE36Wh7a/y1HISuCLneF2Up/eJieZSttT24z0f7GIVKgELfCkfZlBR4kcr+vBx7XQ+Ds=
+X-Received: by 2002:a25:4107:: with SMTP id o7mr2644943yba.459.1608057328878;
+ Tue, 15 Dec 2020 10:35:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201215121816.1048557-1-jackmanb@google.com> <20201215121816.1048557-3-jackmanb@google.com>
+In-Reply-To: <20201215121816.1048557-3-jackmanb@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 15 Dec 2020 10:35:18 -0800
+Message-ID: <CAEf4BzaaasZkYK6NtXytoY7gGjbeMi93FyKUpV4OvjqSm4P9tg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] libbpf: Expose libbpf ringbufer epoll_fd
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Tue, Dec 15, 2020 at 4:18 AM Brendan Jackman <jackmanb@google.com> wrote:
+>
+> This provides a convenient perf ringbuf -> libbpf ringbuf migration
+> path for users of external polling systems. It is analogous to
+> perf_buffer__epoll_fd.
+>
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
+> Difference from v1: Added entry to libbpf.map.
+>
 
-See Documentation/core-api/printk-formats.rst.
-h should no longer be used in the format specifier for printk.
+I've already applied this yesterday as a4d2a7ad8683 ("libbpf: Expose
+libbpf ring_buffer epoll_fd"), no need to re-send.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/infiniband/hw/hfi1/sdma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>  tools/lib/bpf/libbpf.h   | 1 +
+>  tools/lib/bpf/libbpf.map | 1 +
+>  tools/lib/bpf/ringbuf.c  | 6 ++++++
+>  3 files changed, 8 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 6909ee81113a..cde07f64771e 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -536,6 +536,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
+>                                 ring_buffer_sample_fn sample_cb, void *ctx);
+>  LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
+>  LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
+> +LIBBPF_API int ring_buffer__epoll_fd(struct ring_buffer *rb);
+>
+>  /* Perf buffer APIs */
+>  struct perf_buffer;
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 7c4126542e2b..7be850271be6 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -348,4 +348,5 @@ LIBBPF_0.3.0 {
+>                 btf__new_split;
+>                 xsk_setup_xdp_prog;
+>                 xsk_socket__update_xskmap;
+> +                ring_buffer__epoll_fd;
 
-diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
-index a307d4c8b15a..27ec2851160a 100644
---- a/drivers/infiniband/hw/hfi1/sdma.c
-+++ b/drivers/infiniband/hw/hfi1/sdma.c
-@@ -1740,7 +1740,7 @@ static inline u16 sdma_gethead(struct sdma_engine *sde)
- 			sane = (hwhead == swhead);
- 
- 		if (unlikely(!sane)) {
--			dd_dev_err(dd, "SDMA(%u) bad head (%s) hwhd=%hu swhd=%hu swtl=%hu cnt=%hu\n",
-+			dd_dev_err(dd, "SDMA(%u) bad head (%s) hwhd=%u swhd=%u swtl=%u cnt=%u\n",
- 				   sde->this_idx,
- 				   use_dmahead ? "dma" : "kreg",
- 				   hwhead, swhead, swtail, cnt);
--- 
-2.27.0
+I've put this in the alphabetic order...
 
+>  } LIBBPF_0.2.0;
+> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> index 5c6522c89af1..45a36648b403 100644
+> --- a/tools/lib/bpf/ringbuf.c
+> +++ b/tools/lib/bpf/ringbuf.c
+> @@ -282,3 +282,9 @@ int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
+>         }
+>         return cnt < 0 ? -errno : res;
+>  }
+> +
+> +/* Get an fd that can be used to sleep until data is available in the ring(s) */
+> +int ring_buffer__epoll_fd(struct ring_buffer *rb)
+
+... and also added const here, btw.
+
+> +{
+> +       return rb->epoll_fd;
+> +}
+>
+> base-commit: b4fe9fec51ef48011f11c2da4099f0b530449c92
+> --
+> 2.29.2.576.ga3fc446d84-goog
+>
