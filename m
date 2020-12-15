@@ -2,54 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023972DA524
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 02:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 117072DA528
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 02:03:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728910AbgLOA7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 19:59:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727705AbgLOA7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 19:59:19 -0500
-Subject: Re: [GIT PULL] Documentation for 5.11
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607993915;
-        bh=+d7xrwOPNAVjED83bK8UhCp6Iibux1t31cCBlnv2hig=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=gLKUpREKd3wK6dVyC0IqWtFN5XOomsJm1l2cbWPd0fiEUHdqpLcMjDklxqEGy9vLQ
-         WyuSDdGLc2GbYXnBGu3F7JMZvZ5taUH0Ru6HzWn/JO1ph24WjWDVeGaRlb6FlXovzs
-         R+sWFVhiacm2ITeyuwiY0cYNz5CcrZA7A08o3vjBKGqwLKEHRRfLkLdFL6ZHxk2P1w
-         Pj9BdDIDtqt4WID+0saEO+jQDQYOe0M903vw8HAJGJncSJhSMTjt2qMmvq1YqS6ajo
-         /l01qLopUaK+q35lD3yXUdydNfv5NO7dDJTp5acttFpeB3bjo5NqqbAmt8AXHri1k7
-         Yeh08/wAhzW+g==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201214132843.5dd09ec3@lwn.net>
-References: <20201214132843.5dd09ec3@lwn.net>
-X-PR-Tracked-List-Id: <linux-doc.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201214132843.5dd09ec3@lwn.net>
-X-PR-Tracked-Remote: git://git.lwn.net/linux.git tags/docs-5.11
-X-PR-Tracked-Commit-Id: 47e44ed01434e51e2e42b188482d837c01e5d16e
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ff6135959a9150ad45cb92ca38da270903a74343
-Message-Id: <160799391504.14662.9176855098333293438.pr-tracker-bot@kernel.org>
-Date:   Tue, 15 Dec 2020 00:58:35 +0000
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org
+        id S1730608AbgLOBBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 20:01:51 -0500
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:44978 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730152AbgLOBBc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 20:01:32 -0500
+Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 8A91C767651;
+        Tue, 15 Dec 2020 12:00:23 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1koyhT-0043Dr-1k; Tue, 15 Dec 2020 12:00:23 +1100
+Date:   Tue, 15 Dec 2020 12:00:23 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v1 5/6] bio: add a helper calculating nr segments to alloc
+Message-ID: <20201215010023.GG632069@dread.disaster.area>
+References: <cover.1607976425.git.asml.silence@gmail.com>
+ <94b6f76d2d47569742ee47caede1504926f9807a.1607976425.git.asml.silence@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <94b6f76d2d47569742ee47caede1504926f9807a.1607976425.git.asml.silence@gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
+        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
+        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=7-415B0cAAAA:8
+        a=PygYhtxudd0edJU1dj0A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 14 Dec 2020 13:28:43 -0700:
+On Tue, Dec 15, 2020 at 12:20:24AM +0000, Pavel Begunkov wrote:
+> A preparation patch. It adds a simple helper which abstracts out number
+> of segments we're allocating for a bio from iov_iter_npages().
 
-> git://git.lwn.net/linux.git tags/docs-5.11
+Preparation for what? bio_iov_vecs_to_alloc() doesn't seem to be
+used outside this specific patch, so it's not clear what it's
+actually needed for...
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ff6135959a9150ad45cb92ca38da270903a74343
+Cheers,
 
-Thank you!
-
+Dave.
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Dave Chinner
+david@fromorbit.com
