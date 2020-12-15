@@ -2,125 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2172DA9C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:09:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D562DA9CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728115AbgLOJIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 04:08:22 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:39400 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728025AbgLOJIA (ORCPT
+        id S1727441AbgLOJK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 04:10:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727621AbgLOJKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 04:08:00 -0500
-X-UUID: 3aab9b74a18b41ca9c509e553360c48a-20201215
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=6+6qWJDCVaZdwd7LAQOA4ZmsvGIVsQDay04mR778FEQ=;
-        b=KjkxxdVjwhYTX1g+1KYyZlJq6dSHYg0wT851Ln9QMZqUcj+CbZSA6jEuU60AsM8UHWqwcCNgvbORQtjMFR619wuFp5rduGbKwE9RahuIsg7AIgoGZWBOONxUVsN7fHB5qGFBpJMuzKcEnqiDTsFhn4uiv4g5w3WdVRQUz4hDCWk=;
-X-UUID: 3aab9b74a18b41ca9c509e553360c48a-20201215
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1538017907; Tue, 15 Dec 2020 17:07:16 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 15 Dec 2020 17:07:15 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 15 Dec 2020 17:07:15 +0800
-Message-ID: <1608023234.10163.19.camel@mtkswgap22>
-Subject: Re: [PATCH v4 5/6] scsi: ufs: Cleanup WB buffer flush toggle
- implementation
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Bean Huo <huobean@gmail.com>
-CC:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <asutoshd@codeaurora.org>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <beanhuo@micron.com>,
-        <bvanassche@acm.org>, <tomas.winkler@intel.com>,
-        <cang@codeaurora.org>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Date:   Tue, 15 Dec 2020 17:07:14 +0800
-In-Reply-To: <20201211140035.20016-6-huobean@gmail.com>
-References: <20201211140035.20016-1-huobean@gmail.com>
-         <20201211140035.20016-6-huobean@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 15 Dec 2020 04:10:05 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71BF8C0617B0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 01:09:25 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id h6so10580148vsr.6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 01:09:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=luMq81MiEGmCMgx54RC3ze837GBAAVGMy04eT0X8dS8=;
+        b=lHaL17ncW3LPegqE6xpy/hFHjDpE+0ds0dJUUIPJXUk7h7LmL+GCvaHQzevNSsP/tN
+         eg6Pc6wZxxe+L1NYSULSO5i8HmQNKrBLyVWTQvU4DOIii+ZjzOcvWKuNbUE9Gd8zWrxo
+         KS6gktAV7O7Aha1f82qKQp1QYeXDeSwGdYiK1tmFHlAZvFNa/kxUDHw2rJllzhR8jOo6
+         ST1+ymvEqbzgYNQwTmSdH6iaVWSTLiNb4a3TJLWNjO3UL6Js8jITIYkZakas4E3n9QoO
+         PdRTKAM8gc/V07cRimmBswXx0LoHAjP41wuQXYUPe5y+PB+ppzlr1727ggbW2CXjRmny
+         ixvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=luMq81MiEGmCMgx54RC3ze837GBAAVGMy04eT0X8dS8=;
+        b=f30WU8ISPNMDRjl7lgZQ92WMIpx529MNyiJL2z6mb2tq3dKGm9YGkBdpcdO6mXYeS/
+         Skak2balIPwj/OgzPUOzcgDRFhOZvBKITCWp3nF4RciYGW1pUWYTURBC0XxpJBVPLMNw
+         K9kd+uO6/0rMCom8ObOWJDo9EwQ/s3UCe8NiVg9wfL9vc6aNqrMQrJmxf8JuH4cWi3+t
+         qFV/IgNFGnfG5ISalNEmo7nXxr1Lb2630x4x4UPt0KgOtBKe0xAnTw6m3uDZnSgNd2WZ
+         LXqLJDvJrsF+sIs/QydpO7djeD77qAzitIPWlpKR+2WX0rI9g0YCaYs22Q+Xt50YH8f+
+         12+w==
+X-Gm-Message-State: AOAM530URA+PtoCO7I7S5dubvw37SVWnwTngT/X1s3nmF/X+CZUvvGhY
+        hjL1fTpO7NezdwtKs/5Ymu+MNVNQLp8aMxDxYdE=
+X-Google-Smtp-Source: ABdhPJxb77wnwRDv3GcVuR8gNw6CTKKseol5oiTXQnSZ2UuQDmn9FvE5iUQWKvSHNLCozcDjInpJNWqtWdc1y4vlhtU=
+X-Received: by 2002:a67:d20e:: with SMTP id y14mr15228493vsi.11.1608023364037;
+ Tue, 15 Dec 2020 01:09:24 -0800 (PST)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Reply-To: kipkalyamissharrita@gmail.com
+Sender: mrs.latifakoumbousi4@gmail.com
+Received: by 2002:ab0:650a:0:0:0:0:0 with HTTP; Tue, 15 Dec 2020 01:09:23
+ -0800 (PST)
+From:   "Miss.Harrita Kipkalya" <kipkalyamissharrita@gmail.com>
+Date:   Tue, 15 Dec 2020 01:09:23 -0800
+X-Google-Sender-Auth: 1j178MDrkViP5BwkeNV5rRx6KHw
+Message-ID: <CANg70n+AAm7Tj4F2CNV2WYJyOMxL8r2rh1Ohg0nW89Ow9W5gsQ@mail.gmail.com>
+Subject: My Dearest,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQmVhbiwNCg0KT24gRnJpLCAyMDIwLTEyLTExIGF0IDE1OjAwICswMTAwLCBCZWFuIEh1byB3
-cm90ZToNCj4gRnJvbTogQmVhbiBIdW8gPGJlYW5odW9AbWljcm9uLmNvbT4NCj4gDQo+IERlbGV0
-ZSB1ZnNoY2Rfd2JfYnVmX2ZsdXNoX2VuYWJsZSgpIGFuZCB1ZnNoY2Rfd2JfYnVmX2ZsdXNoX2Rp
-c2FibGUoKSwNCj4gbW92ZSB0aGUgaW1wbGVtZW50YXRpb24gaW50byB1ZnNoY2Rfd2JfdG9nZ2xl
-X2ZsdXNoKCkuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBCZWFuIEh1byA8YmVhbmh1b0BtaWNyb24u
-Y29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMgfCA2OSArKysrKysrKysr
-KysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAyNCBpbnNl
-cnRpb25zKCspLCA0NSBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Nj
-c2kvdWZzL3Vmc2hjZC5jIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KPiBpbmRleCAwOTk4
-ZTYxMDNjZDcuLmZiM2M5ODcyNDAwNSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9zY3NpL3Vmcy91
-ZnNoY2QuYw0KPiArKysgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+IEBAIC0yNDQsMTAg
-KzI0NCw4IEBAIHN0YXRpYyBpbnQgdWZzaGNkX3NldHVwX3ZyZWcoc3RydWN0IHVmc19oYmEgKmhi
-YSwgYm9vbCBvbik7DQo+ICBzdGF0aWMgaW5saW5lIGludCB1ZnNoY2RfY29uZmlnX3ZyZWdfaHBt
-KHN0cnVjdCB1ZnNfaGJhICpoYmEsDQo+ICAJCQkJCSBzdHJ1Y3QgdWZzX3ZyZWcgKnZyZWcpOw0K
-PiAgc3RhdGljIGludCB1ZnNoY2RfdHJ5X3RvX2Fib3J0X3Rhc2soc3RydWN0IHVmc19oYmEgKmhi
-YSwgaW50IHRhZyk7DQo+IC1zdGF0aWMgaW50IHVmc2hjZF93Yl9idWZfZmx1c2hfZW5hYmxlKHN0
-cnVjdCB1ZnNfaGJhICpoYmEpOw0KPiAtc3RhdGljIGludCB1ZnNoY2Rfd2JfYnVmX2ZsdXNoX2Rp
-c2FibGUoc3RydWN0IHVmc19oYmEgKmhiYSk7DQo+ICBzdGF0aWMgaW50IHVmc2hjZF93Yl90b2dn
-bGVfZmx1c2hfZHVyaW5nX2g4KHN0cnVjdCB1ZnNfaGJhICpoYmEsIGJvb2wgc2V0KTsNCj4gLXN0
-YXRpYyBpbmxpbmUgdm9pZCB1ZnNoY2Rfd2JfdG9nZ2xlX2ZsdXNoKHN0cnVjdCB1ZnNfaGJhICpo
-YmEsIGJvb2wgZW5hYmxlKTsNCj4gK3N0YXRpYyBpbmxpbmUgaW50IHVmc2hjZF93Yl90b2dnbGVf
-Zmx1c2goc3RydWN0IHVmc19oYmEgKmhiYSwgYm9vbCBlbmFibGUpOw0KPiAgc3RhdGljIHZvaWQg
-dWZzaGNkX2hiYV92cmVnX3NldF9scG0oc3RydWN0IHVmc19oYmEgKmhiYSk7DQo+ICBzdGF0aWMg
-dm9pZCB1ZnNoY2RfaGJhX3ZyZWdfc2V0X2hwbShzdHJ1Y3QgdWZzX2hiYSAqaGJhKTsNCj4gIA0K
-PiBAQCAtNTM5OCw2MCArNTM5Niw0MSBAQCBzdGF0aWMgaW50IHVmc2hjZF93Yl90b2dnbGVfZmx1
-c2hfZHVyaW5nX2g4KHN0cnVjdCB1ZnNfaGJhICpoYmEsIGJvb2wgc2V0KQ0KPiAgCQkJCWluZGV4
-LCBOVUxMKTsNCj4gIH0NCj4gIA0KPiAtc3RhdGljIGlubGluZSB2b2lkIHVmc2hjZF93Yl90b2dn
-bGVfZmx1c2goc3RydWN0IHVmc19oYmEgKmhiYSwgYm9vbCBlbmFibGUpDQo+IC17DQo+IC0JaWYg
-KGhiYS0+cXVpcmtzICYgVUZTSENJX1FVSVJLX1NLSVBfTUFOVUFMX1dCX0ZMVVNIX0NUUkwpDQo+
-IC0JCXJldHVybjsNCj4gLQ0KPiAtCWlmIChlbmFibGUpDQo+IC0JCXVmc2hjZF93Yl9idWZfZmx1
-c2hfZW5hYmxlKGhiYSk7DQo+IC0JZWxzZQ0KPiAtCQl1ZnNoY2Rfd2JfYnVmX2ZsdXNoX2Rpc2Fi
-bGUoaGJhKTsNCj4gLQ0KPiAtfQ0KPiAtDQo+IC1zdGF0aWMgaW50IHVmc2hjZF93Yl9idWZfZmx1
-c2hfZW5hYmxlKHN0cnVjdCB1ZnNfaGJhICpoYmEpDQo+ICtzdGF0aWMgaW5saW5lIGludCB1ZnNo
-Y2Rfd2JfdG9nZ2xlX2ZsdXNoKHN0cnVjdCB1ZnNfaGJhICpoYmEsIGJvb2wgZW5hYmxlKQ0KPiAg
-ew0KPiAgCWludCByZXQ7DQo+ICAJdTggaW5kZXg7DQo+ICsJZW51bSBxdWVyeV9vcGNvZGUgb3Bj
-b2RlOw0KPiAgDQo+IC0JaWYgKCF1ZnNoY2RfaXNfd2JfYWxsb3dlZChoYmEpIHx8IGhiYS0+ZGV2
-X2luZm8ud2JfYnVmX2ZsdXNoX2VuYWJsZWQpDQo+ICsJaWYgKGhiYS0+cXVpcmtzICYgVUZTSENJ
-X1FVSVJLX1NLSVBfTUFOVUFMX1dCX0ZMVVNIX0NUUkwpDQo+ICAJCXJldHVybiAwOw0KPiAgDQo+
-IC0JaW5kZXggPSB1ZnNoY2Rfd2JfZ2V0X3F1ZXJ5X2luZGV4KGhiYSk7DQo+IC0JcmV0ID0gdWZz
-aGNkX3F1ZXJ5X2ZsYWdfcmV0cnkoaGJhLCBVUElVX1FVRVJZX09QQ09ERV9TRVRfRkxBRywNCj4g
-LQkJCQkgICAgICBRVUVSWV9GTEFHX0lETl9XQl9CVUZGX0ZMVVNIX0VOLA0KPiAtCQkJCSAgICAg
-IGluZGV4LCBOVUxMKTsNCj4gLQlpZiAocmV0KQ0KPiAtCQlkZXZfZXJyKGhiYS0+ZGV2LCAiJXMg
-V0IgLSBidWYgZmx1c2ggZW5hYmxlIGZhaWxlZCAlZFxuIiwNCj4gLQkJCV9fZnVuY19fLCByZXQp
-Ow0KPiAtCWVsc2UNCj4gLQkJaGJhLT5kZXZfaW5mby53Yl9idWZfZmx1c2hfZW5hYmxlZCA9IHRy
-dWU7DQo+IC0NCj4gLQlkZXZfZGJnKGhiYS0+ZGV2LCAiV0IgLSBGbHVzaCBlbmFibGVkOiAlZFxu
-IiwgcmV0KTsNCj4gLQlyZXR1cm4gcmV0Ow0KPiAtfQ0KPiAtDQo+IC1zdGF0aWMgaW50IHVmc2hj
-ZF93Yl9idWZfZmx1c2hfZGlzYWJsZShzdHJ1Y3QgdWZzX2hiYSAqaGJhKQ0KPiAtew0KPiAtCWlu
-dCByZXQ7DQo+IC0JdTggaW5kZXg7DQo+IC0NCj4gLQlpZiAoIXVmc2hjZF9pc193Yl9hbGxvd2Vk
-KGhiYSkgfHwgIWhiYS0+ZGV2X2luZm8ud2JfYnVmX2ZsdXNoX2VuYWJsZWQpDQo+ICsJaWYgKCF1
-ZnNoY2RfaXNfd2JfYWxsb3dlZChoYmEpIHx8DQo+ICsJICAgIGhiYS0+ZGV2X2luZm8ud2JfYnVm
-X2ZsdXNoX2VuYWJsZWQgPT0gZW5hYmxlKQ0KPiAgCQlyZXR1cm4gMDsNCj4gIA0KPiArCWlmIChl
-bmFibGUpDQo+ICsJCW9wY29kZSA9IFVQSVVfUVVFUllfT1BDT0RFX1NFVF9GTEFHOw0KPiArCWVs
-c2UNCj4gKwkJb3Bjb2RlID0gVVBJVV9RVUVSWV9PUENPREVfQ0xFQVJfRkxBRzsNCj4gKw0KPiAg
-CWluZGV4ID0gdWZzaGNkX3diX2dldF9xdWVyeV9pbmRleChoYmEpOw0KPiAtCXJldCA9IHVmc2hj
-ZF9xdWVyeV9mbGFnX3JldHJ5KGhiYSwgVVBJVV9RVUVSWV9PUENPREVfQ0xFQVJfRkxBRywNCj4g
-LQkJCQkgICAgICBRVUVSWV9GTEFHX0lETl9XQl9CVUZGX0ZMVVNIX0VOLA0KPiAtCQkJCSAgICAg
-IGluZGV4LCBOVUxMKTsNCj4gKwlyZXQgPSB1ZnNoY2RfcXVlcnlfZmxhZ19yZXRyeShoYmEsIG9w
-Y29kZSwNCj4gKwkJCQkgICAgICBRVUVSWV9GTEFHX0lETl9XQl9CVUZGX0ZMVVNIX0VOLCBpbmRl
-eCwNCj4gKwkJCQkgICAgICBOVUxMKTsNCj4gIAlpZiAocmV0KSB7DQo+IC0JCWRldl93YXJuKGhi
-YS0+ZGV2LCAiJXM6IFdCIC0gYnVmIGZsdXNoIGRpc2FibGUgZmFpbGVkICVkXG4iLA0KPiAtCQkJ
-IF9fZnVuY19fLCByZXQpOw0KPiAtCX0gZWxzZSB7DQo+IC0JCWhiYS0+ZGV2X2luZm8ud2JfYnVm
-X2ZsdXNoX2VuYWJsZWQgPSBmYWxzZTsNCj4gLQkJZGV2X2RiZyhoYmEtPmRldiwgIldCIC0gRmx1
-c2ggZGlzYWJsZWQ6ICVkXG4iLCByZXQpOw0KPiArCQlkZXZfZXJyKGhiYS0+ZGV2LCAiJXMgV0It
-QnVmIEZsdXNoICVzIGZhaWxlZCAlZFxuIiwgX19mdW5jX18sDQo+ICsJCQllbmFibGUgPyAiZW5h
-YmxlIiA6ICJkaXNhYmxlIiwgcmV0KTsNCj4gKwkJZ290byBvdXQ7DQo+ICAJfQ0KPiAgDQo+ICsJ
-aWYgKGVuYWJsZSkNCj4gKwkJaGJhLT5kZXZfaW5mby53Yl9idWZfZmx1c2hfZW5hYmxlZCA9IHRy
-dWU7DQo+ICsJZWxzZQ0KPiArCQloYmEtPmRldl9pbmZvLndiX2J1Zl9mbHVzaF9lbmFibGVkID0g
-ZmFsc2U7DQoNClBlcmhhcHMgdGhpcyBjb3VsZCBiZSBzaW1wbGVyIGFzIGJlbG93Pw0KDQpoYmEt
-PmRldl9pbmZvLndiX2J1Zl9mbHVzaF9lbmFibGVkID0gZW5hYmxlOw0KDQpUaGFua3MsDQpTdGFu
-bGV5IENodQ0KDQo+ICsNCj4gKwlkZXZfZGJnKGhiYS0+ZGV2LCAiV0ItQnVmIEZsdXNoICVzXG4i
-LCBlbmFibGUgPyAiZW5hYmxlZCIgOiAiZGlzYWJsZWQiKTsNCj4gK291dDoNCj4gIAlyZXR1cm4g
-cmV0Ow0KPiAgfQ0KPiAgDQoNCg==
+My Dearest,
 
+I am writing this mail to you with tears and sorrow from my heart.
+With due respect, trust and humanity, i appeal to you to exercise a
+little patience and read through my letter i feel quite safe dealing
+with you in this important business having gone through your
+remarkable profile, honestly i am writing this email to you with
+pains, tears and sorrow from my heart, i will really like to have a
+good relationship with you and i have a special reason why I decided
+to contact you. I decided to contact you due to the urgency of my
+situation.
+
+My name is Miss.Harrita Kipkalya, 23yrs old female and i am from Kenya
+in East Africa. Light in complexion, single (never married) but
+presently i am residing here in Ouagadougou, Burkina Faso refugee
+camp. My father Late Dr Kipkalya Kones was the former Kenyan road
+Minister. He and Assistant Minister of Home Affairs Lorna Laboso had
+been on board the Cessna 210, which was headed to Kericho and crashed
+in a remote area called Kajong'a, in western Kenya. The plane crashed
+on the Tuesday 10th, June, 2008. You can read more about the crash
+through the below site:
+http://edition.cnn.com/2008/WORLD/africa/06/10/kenya.crash/index.html?iref=
+=3Dnextin
+
+After the burial of my father, my Fathers brother conspired and sold
+my father' s property to an Italian Expert rate which they shared the
+money among themselves and live nothing for me. One faithful morning,
+I opened my father's briefcase and found out the documents which he
+have deposited huge amount of money in one bank in Burkina Faso with
+my name as the next of kin because when he was alive he deposited some
+amount of money in a Bank in Burkina Faso which he used my name as the
+next of kin. The amount in question is $4.7Million.
+
+I have informed the bank about claiming this money and the only thing
+they told me is to look for a foreign partner who will assist me in
+the transfer due to my refugee status here in Burkina Faso. God told
+me that you are the honest and reliable person who will help me and
+stand as my trustee so that I will present you to the Bank for
+transferring of my father=E2=80=99s money to your bank account in overseas.=
+I
+have chosen to contact you after my prayers and I believe that you
+will not betray my trust. But rather take me as your own biological
+sister or daughter which I will be coming to your country as soon as
+this money is transferred to your account.
+
+My dearest, things are very bad for me here in the refugee camp where
+i am living today. People are dying here day after day because of lack
+of food and poor medical treatment. Even one of us died last night and
+was buried this morning. I am afraid of what i am seeing here. I don't
+know who it will be her turn tomorrow, I was planning to read law in
+my life before the ugly incident that killed my parents that put me in
+this horrible place i found myself toady. This place is like a prison
+as we are only allowed to go out on Monday and Friday of the week as
+given by the united nation rules and regulation here in Burkina Faso.
+It=E2=80=99s in this refugee we are only allowed to go out two times in a w=
+eek
+it=E2=80=99s just like one staying in the prison and i hope by Gods grace i
+will come out here soon. I don' t have any relatives now whom i can go
+to and the only person i have now is Rev Isaac Ambrose who is the
+pastor of the (Christ for all Churches) here in the refugee he has
+been very nice to me since i came here but i am not living with him
+rather i am leaving in the women's hostel because the refugee have two
+hostels one for men the other for women, so you can always contact me
+through this my both email address here
+(kipkalyamissharrita@gmail.com) thanks and am waiting for your reply.
+Please if you want to help me out of this situation respond back so
+that i will tell you more about me.
+
+Yours faithful
+Miss.Harrita Kipkalya
