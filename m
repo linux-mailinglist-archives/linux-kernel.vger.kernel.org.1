@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC2A2DAEEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:28:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 501A52DAEF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729497AbgLOO0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 09:26:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729462AbgLOOZ2 (ORCPT
+        id S1729314AbgLOO12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 09:27:28 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:41904 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728934AbgLOO0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:25:28 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71E9C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:24:47 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id r5so21176435eda.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:24:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fLpk+0c6FuyfGY/ZPM8JLqZ7uOu3TenhRTPoyAvYEGM=;
-        b=bABxRUzF+8ZxeFd1UT+nifMCe3/bsD9P1eGnnGbiecDth0Z+o1KFOGVsOSoJ/piXIE
-         XuPG61GuEQqe6Aj6eaw2SVpZksUBg/Lwlnn6cj3T3k4/vYkSc4lQ9aS0MaleRSWwJxzZ
-         YN1WSdUWqWQ9ZF1GQZr3iWhRwlLS8GC/VMBnStAjmbf6tVtHOVzlEXIG5fbMs3KNOeWx
-         Bhe27fsPeeGf3azCz14n3Ffgo6h9BzitvM30sWW/KDyLWI25oguqYTE/tAmntQSV8I9H
-         c86KYGKniC3UIEXndhgW+GbHFhdYDLiWcrNDYijoLsQnGwSDgskTvdztQpUm7lF4HjJu
-         unZg==
+        Tue, 15 Dec 2020 09:26:51 -0500
+Received: by mail-ot1-f68.google.com with SMTP id x13so19510097oto.8;
+        Tue, 15 Dec 2020 06:26:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fLpk+0c6FuyfGY/ZPM8JLqZ7uOu3TenhRTPoyAvYEGM=;
-        b=tdFIaapms6LwUJGg5auXbbkhlwptypk1Bq1W4Ewlssi1ZfGyw2HrO7jRyYukAjNAl+
-         tMb2EOLnFwZ8H/MhXKmviy9QxFWN4iV43YZ3c5cqsUV9tEc2l/Cj/4lyrIQkNeH4WhK/
-         WN1Gp8Tq15tnq5eEdHvlDMVtnE84T9sQ6Mow7YjAU80Z98l3NsKirt8hY39z3DhkgzQB
-         Deo+bvw2VL797LNqItCwTqj8mOC8nLX1ob6ctrN6UL0miZMYQFNe+55vdI9+KhZ4N1dS
-         suDktyL1E24oSZ2gV65SQBhFXINzQYw+e2ZinKk9InurJ/8mn7BwqkRAPYdwA7+nSAho
-         D0Mg==
-X-Gm-Message-State: AOAM530Y5M+w5Y++yoUg4m3nQhiklLLLbXj9F55x8G8kbY3U6SsPwhBJ
-        jcBm/0So9QU1VxXBGx+qcpgQl/r+5uG9h9ZkpM4n3pu+aW9ipot9
-X-Google-Smtp-Source: ABdhPJzHxKob1ssLVm6vrZLfegboHmbPniBwBbz7OSz4o9b90xXM3Bo0HfSHJ1jAtKSRAuumlFWY6EGplsEYfGteu/g=
-X-Received: by 2002:a05:6402:229b:: with SMTP id cw27mr29522993edb.23.1608042286116;
- Tue, 15 Dec 2020 06:24:46 -0800 (PST)
-MIME-Version: 1.0
-References: <20201126130606.2290438-1-anders.roxell@linaro.org>
- <8affd609-f037-8b21-853a-8b87299db044@gmx.de> <CADYN=9+pSK2SHY4ncFaseT9qz6BoTCUxi0e3poTDao4v=S_84g@mail.gmail.com>
- <CA+G9fYtNgeOgymsVwj423eXOFP1B=mS4KKvy+1Bu3tUapXyxDA@mail.gmail.com>
-In-Reply-To: <CA+G9fYtNgeOgymsVwj423eXOFP1B=mS4KKvy+1Bu3tUapXyxDA@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 15 Dec 2020 19:54:32 +0530
-Message-ID: <CA+G9fYtgKFUsiY2x8Ue-cnO2Jr1+teQZ_3TbKC+eD9c6OpkPGg@mail.gmail.com>
-Subject: Re: [PATCH] parisc: signal: remove _SA_SIGGFAULT
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     Helge Deller <deller@gmx.de>,
-        James.Bottomley@hansenpartnership.com,
-        linux-parisc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=Di6e3zk8oS0etbJqpgGcmuo1HcvG/3ApCGRJweCbZeQ=;
+        b=NwvoqpQo6gWeiIcAPpTZiPjoqprQcc1trchiKZu4GPTA4QX6PZyJeI3u5WCBVA8Fld
+         D/tSGxaPFkmYdI/h+tLjKhSKcMPPZ5+yUbjymy4Egp+ndruLXjeUJxTw7DBqwUk/CXhs
+         GeP+HqYlO6YZL4rx9PGTRk/nFseP/7+pXswfBg1Td1XgfgkDYkTLawPu1InODD9P0zw8
+         66ynynj0AGjzRnF5n5j1jn+PZE0G6Q+o35yzIHZkaOuf27sfQUJHVlNnhWklYaZ/lTWs
+         V1cX1Mpj9/4MCaLbqIEUu/+FdPq5pEZoYVofrGqmsu3rFEoueYIjuntxOAVt/fR4U9NR
+         /N8w==
+X-Gm-Message-State: AOAM533wkWD9eqzCsysx9ozvoo7nF5lZukGmAZ2qZRgyJW2Y3HgO0Ju9
+        c4a4hEF04uFQO/oxhbUNcA==
+X-Google-Smtp-Source: ABdhPJw8GOO5HxCZiUJSYpWvX2zTLsjXdnSUVTmlo5MeXq8qJNOimO3I5K6K1qJBB+tvfodBRdF1Og==
+X-Received: by 2002:a9d:4c8d:: with SMTP id m13mr21008336otf.229.1608042370869;
+        Tue, 15 Dec 2020 06:26:10 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z6sm4690069ooz.17.2020.12.15.06.26.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 06:26:09 -0800 (PST)
+Received: (nullmailer pid 3775382 invoked by uid 1000);
+        Tue, 15 Dec 2020 14:26:07 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     robh+dt@kernel.org, a.hajda@samsung.com, jonas@kwiboo.se,
+        narmstrong@baylibre.com, airlied@linux.ie, jernej.skrabec@siol.net,
+        linux-kernel@vger.kernel.org, Laurent.pinchart@ideasonboard.com,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+In-Reply-To: <20201215124227.1872-1-peter.ujfalusi@ti.com>
+References: <20201215124227.1872-1-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] dt-bindings: display: bridge: tc358768: Remove maintainer information
+Date:   Tue, 15 Dec 2020 08:26:07 -0600
+Message-Id: <1608042367.307112.3775381.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Anders,
+On Tue, 15 Dec 2020 14:42:27 +0200, Peter Ujfalusi wrote:
+> My employment with TI is coming to an end and I will not have access to
+> the board where this bridge is connected to.
+> 
+> It is better to remove a soon bouncing email address.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+>  .../devicetree/bindings/display/bridge/toshiba,tc358768.yaml   | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
 
-On Wed, 2 Dec 2020 at 13:31, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> Anders,
->
-> On Fri, 27 Nov 2020 at 04:10, Anders Roxell <anders.roxell@linaro.org> wrote:
-> >
-> > On Thu, 26 Nov 2020 at 15:46, Helge Deller <deller@gmx.de> wrote:
-> > >
-> > > On 11/26/20 2:06 PM, Anders Roxell wrote:
-> > > > When building tinyconfig on parisc the following error shows up:
-> > > >
-> > > > /tmp/kernel/signal.c: In function 'do_sigaction':
-> > > > /tmp/arch/parisc/include/asm/signal.h:24:30: error: '_SA_SIGGFAULT' undeclared (first use in this function); did you mean 'SIL_FAULT'?
-> > > >  #define __ARCH_UAPI_SA_FLAGS _SA_SIGGFAULT
-> > > >                               ^~~~~~~~~~~~~
+My bot found errors running 'make dt_binding_check' on your patch:
 
-I see these build failures on Linux mainline.
+yamllint warnings/errors:
 
-ref:
-https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline/-/jobs/911416687
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml: 'maintainers' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml
 
-Steps to reproduce:
------------------------------
-# TuxMake is a command line tool and Python library that provides
-# portable and repeatable Linux kernel builds across a variety of
-# architectures, toolchains, kernel configurations, and make targets.
-#
-# TuxMake supports the concept of runtimes.
-# See https://docs.tuxmake.org/runtimes/, for that to work it requires
-# that you install podman or docker on your system.
-#
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
+See https://patchwork.ozlabs.org/patch/1416419
 
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
-tuxmake --runtime docker --target-arch parisc --toolchain gcc-9
---kconfig defconfig
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
+pip3 install dtschema --upgrade
 
-- Naresh
+Please check and re-submit.
+
