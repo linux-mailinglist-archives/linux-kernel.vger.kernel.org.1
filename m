@@ -2,147 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD332DAF97
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1D62DAFA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729845AbgLOPAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:00:02 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:54260 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729708AbgLOO74 (ORCPT
+        id S1729882AbgLOPBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:01:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34048 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727833AbgLOPBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:59:56 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFEtqDl048242;
-        Tue, 15 Dec 2020 14:57:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=+EM7jbZkICVrB62xTbpxTrFzsL7ejuGbgzgUDh1wIpc=;
- b=KoJgMJEITXdSU6QBpyK1itjyJSZWZSIzwk/SIdIM5T/iTF4kP+jV4yKmyLqsq1iqS4Uz
- Rr7K8AIQvrSmQj14KAzgICsWEoProAHx8rjDu06w5hvCU9RgUSy8EAUWhVyFP9rzDeyY
- lN2y25b6qlQYvBKsWvrlO+XX+558GNVihAc5Y1Ep5cvEnpGlp1c6BUORWduemydXHp2v
- +vw31KOCcqC3To/eCmnvOIkmAT2wxPceiKDHDlws0juxk8z1RPEOzMVZ5DsJ/4B7pFrl
- cvweYaLUVGX1+IYQ9KSw9CB1zgjbvG6eYywXtE0KTHz5DFruoSxQ7foPUaZyOjrYye99 Vw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 35ckcbb4k8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Dec 2020 14:57:00 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFEtPHS029883;
-        Tue, 15 Dec 2020 14:56:59 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 35e6jr7p1n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Dec 2020 14:56:59 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BFEulno012932;
-        Tue, 15 Dec 2020 14:56:49 GMT
-Received: from [192.168.0.193] (/69.207.174.138)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Dec 2020 06:56:46 -0800
-Subject: Re: [PATCH -tip 23/32] sched: Add a per-thread core scheduling
- interface
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Tim Chen <tim.c.chen@intel.com>
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-24-joel@joelfernandes.org>
- <20201202214717.GA27531@chyser-vm-1.appad1iad.osdevelopmeniad.oraclevcn.com>
- <20201206173418.GC201514@google.com>
- <20201209185203.GC6876@chyser-vm-1.appad1iad.osdevelopmeniad.oraclevcn.com>
- <X9e9dcLMrMJThZs+@google.com>
- <16a390e4-b44d-b0eb-1df6-6e56d78d009f@oracle.com>
- <20201214232541.GF201514@google.com>
-From:   chris hyser <chris.hyser@oracle.com>
-Message-ID: <56050aff-fde9-621a-9f6d-87e4bcdd87fa@oracle.com>
-Date:   Tue, 15 Dec 2020 09:56:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Tue, 15 Dec 2020 10:01:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608044377;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=IKljx6FgCzdtloc3mc18Xk4cKwYG6+/P+prc9Q1mYZI=;
+        b=fk905x4PbiPLjLr8SvgfvTXnKLoX6pjp8/VaYp2oTJH2vPD8GtEzEOiJQ4bsm7rerrsVKy
+        atjfEbhCOe45IMedoUbKhe8oTR++C0aIJzrRG/s29zFzzGbKH6mFfmcaab6DiItnjSsw2u
+        92tSPc0YpksQuUD/t+GWvRiR39Pw0tI=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-176-UHQ3wQPpMo6m7eKFMQ00xw-1; Tue, 15 Dec 2020 09:59:35 -0500
+X-MC-Unique: UHQ3wQPpMo6m7eKFMQ00xw-1
+Received: by mail-qt1-f199.google.com with SMTP id c14so14506352qtn.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:59:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IKljx6FgCzdtloc3mc18Xk4cKwYG6+/P+prc9Q1mYZI=;
+        b=RiRqpVNOwSqlbQHs8CE7HAIfy6EC5pNjvnXXDgrWJxy6SRris7cLmKHUhGdl2Khf18
+         eUw+YQD8G+VwZaXhw5mriEclZAAQ9bn2DWsu+NuVMBndzEV9jnGxNQsK5CzqY23F1mt/
+         VpPvtGTrd4CSX/kv6r74ENMBM5nbMbB9LEipoHjE6rfdXfcO4URg6GtYPFshqgNb3PSM
+         r2MAhGJhGQDqBWhhNON5p4TBQ4gmUM6cALk8pgJK/O/r6t7zMM8zGvNCWUlX/j9DTGVA
+         H8BEwau1Gl73yuAQoKjwRUhc0nrYVbVDoc1t2LmIrkKM+FUG+Ri9f+uJiXr6Csd0tB1D
+         QbPg==
+X-Gm-Message-State: AOAM533A8n0OgiTHbooP7VKpPchqP7gJG+/exgRb0qbbIIMtT3HMmquK
+        ICB45yUd0b1xOOBsTIkA2bMLuyKkUt8rbGK9HvId/Hbhdh+g9nQtMRLoY/mYovuzWdFlt401vwD
+        LrRikDoY5A52nc9ewPp9Aj5gG
+X-Received: by 2002:a37:9e43:: with SMTP id h64mr39977603qke.380.1608044375467;
+        Tue, 15 Dec 2020 06:59:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJycu6otuC4YO/BGyPd5ppmhTVfTafNZG9cE1BgzxMsc8XHugDuz4vdzli+bb/JCxJcj4P/10A==
+X-Received: by 2002:a37:9e43:: with SMTP id h64mr39977581qke.380.1608044375283;
+        Tue, 15 Dec 2020 06:59:35 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id l1sm17648469qkj.101.2020.12.15.06.59.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 06:59:34 -0800 (PST)
+From:   trix@redhat.com
+To:     david.rheinsberg@gmail.com, jikos@kernel.org,
+        benjamin.tissoires@redhat.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] HID: wiimote: remove h from printk format specifier
+Date:   Tue, 15 Dec 2020 06:59:28 -0800
+Message-Id: <20201215145928.1912641-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20201214232541.GF201514@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9835 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 bulkscore=0
- malwarescore=0 adultscore=0 mlxlogscore=999 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012150106
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9835 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 mlxscore=0 suspectscore=0 adultscore=0 phishscore=0
- malwarescore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012150106
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tom Rix <trix@redhat.com>
 
+See Documentation/core-api/printk-formats.rst.
+h should no longer be used in the format specifier for printk.
 
-On 12/14/20 6:25 PM, Joel Fernandes wrote:
-> On Mon, Dec 14, 2020 at 02:44:09PM -0500, chris hyser wrote:
->> On 12/14/20 2:31 PM, Joel Fernandes wrote:
->>>> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
->>>> index cffdfab..50c31f3 100644
->>>> --- a/kernel/sched/debug.c
->>>> +++ b/kernel/sched/debug.c
->>>> @@ -1030,6 +1030,7 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
->>>>    #ifdef CONFIG_SCHED_CORE
->>>>    	__PS("core_cookie", p->core_cookie);
->>>> +	__PS("core_task_cookie", p->core_task_cookie);
->>>>    #endif
->>>
->>> Hmm, so the final cookie of the task is always p->core_cookie. This is what
->>> the scheduler uses. All other fields are ingredients to derive the final
->>> cookie value.
->>>
->>> I will drop this hunk from your overall diff, but let me know if you
->>> disagree!
->>
->>
->> No problem. That was there primarily for debugging.
-> 
-> Ok. I squashed Josh's changes into this patch and several of my fixups. So
-> there'll be 3 patches:
-> 1. CGroup + prctl  (single patch as it is hell to split it)
-> 2. Documentation
-> 3. ksefltests
-> 
-> Below is the diff of #1. I still have to squash in the stop_machine removal
-> and some more review changes. But other than that, please take a look and let
-> me know anything that's odd.  I will test further as well.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/hid/hid-wiimote-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Will do. Looking at it now and just started a build.
-
--chrish
+diff --git a/drivers/hid/hid-wiimote-core.c b/drivers/hid/hid-wiimote-core.c
+index 41012681cafd..4399d6c6afef 100644
+--- a/drivers/hid/hid-wiimote-core.c
++++ b/drivers/hid/hid-wiimote-core.c
+@@ -1482,7 +1482,7 @@ static void handler_return(struct wiimote_data *wdata, const __u8 *payload)
+ 		wdata->state.cmd_err = err;
+ 		wiimote_cmd_complete(wdata);
+ 	} else if (err) {
+-		hid_warn(wdata->hdev, "Remote error %hhu on req %hhu\n", err,
++		hid_warn(wdata->hdev, "Remote error %u on req %u\n", err,
+ 									cmd);
+ 	}
+ }
+-- 
+2.27.0
 
