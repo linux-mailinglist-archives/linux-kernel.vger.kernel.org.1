@@ -2,137 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACFCA2DAA83
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:00:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDE32DAA8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727670AbgLOJ7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 04:59:45 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:37170 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727075AbgLOJ7o (ORCPT
+        id S1727874AbgLOKBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:01:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726995AbgLOKAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 04:59:44 -0500
-Received: by mail-ot1-f68.google.com with SMTP id o11so18759415ote.4;
-        Tue, 15 Dec 2020 01:59:29 -0800 (PST)
+        Tue, 15 Dec 2020 05:00:35 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3BFC06179C;
+        Tue, 15 Dec 2020 01:59:49 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id b9so1847109ejy.0;
+        Tue, 15 Dec 2020 01:59:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9VWi9lvVrtm8vqGMgMBrAESVz3nZujJvYtHJX+Z95Jw=;
+        b=BU3TGKZo/XOQEoIXFdM1P4n5pKuFdlZOTA9L9qx7LtQH7SwLjsIr91Lh2D62rpj55c
+         EWPTM+17jHVlpH03T1FiYVU3aoB0qGWcmgcMddTsRXfGOCiAqmHatqHekDpHGRZNuhZ9
+         ZIdWBfa0eyefu6LwH14DJ32NYmYNTP5d5mCH6/Q6iV6FV2CBMiQ6+Ane2hUIkbfiFMuZ
+         rChIQhdBPXgco3juca1zpha87LxNHpOxgRP5j/Pg/zZ6Wp+Cx9aSZOxaDrMA5SLfDXej
+         1VW3cEqVlPzc8GlE77ozLxNuwDZkpquc2fsN/5b7jxvHsUjtLJldTeHNwPpNjH9gSwVP
+         tf8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2tYDUx6SI753W7Hldtg8DzizZYg8W92/yzDFr2NF0Jc=;
-        b=FrW/FBtfpz6KgzpY+die90Y4luCoSgmkVqYbkVRwSvSM38dHi7N8bvZOEYVj+ssfmH
-         dj/2xxh2vm2Yt5D31r2hIJBPwdIYI3j6dklXN5OjDwyPqbRJ3Lh5Ff0X2226dBMNPp9p
-         VxKr3XqDgVXNm97xfAArqZq311Im5vvcPtkA/7/3TOyW5oh5Fp6csD462grUikbpmnBp
-         h+ys4owE4tmnSm2YMhUu9Bw8GUaX+alF3O6UIOhr1qqf5cvvuKDCUcYII9D8aoa4TKGA
-         6NhUEm7GH3mlwwKuc4PoCNoJWhMByuCrrpVniEqI7cSkH2GAskzPmfSYwQSfpQbQ9J5M
-         hfJQ==
-X-Gm-Message-State: AOAM532CBwsLvcSIHBgpVkZXWjAwA2TSUf1mwV5kOD8EeUJi4qX5m1GO
-        HZ/VfnYW2uifztU3YmgleT9CMuZRlnxJVEaytv3jb304irM=
-X-Google-Smtp-Source: ABdhPJyyNRhC2Vw49xndoQcAupIZbC+RrIVipadrop2ecq63H3T7mySSTLO496si4WWnsrh5cgZ2HmOOGuWj5wTt9T0=
-X-Received: by 2002:a9d:2203:: with SMTP id o3mr22660508ota.107.1608026343634;
- Tue, 15 Dec 2020 01:59:03 -0800 (PST)
-MIME-Version: 1.0
-References: <20201214135453.16e76e9d@canb.auug.org.au>
-In-Reply-To: <20201214135453.16e76e9d@canb.auug.org.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 15 Dec 2020 10:58:52 +0100
-Message-ID: <CAMuHMdWYBLqUVRyNRbOZm=oxv+_uLJ9FK6ebPPvgHcN4Y-YUSQ@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the drm tree with the crypto tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto List <linux-crypto@vger.kernel.org>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mike Healy <mikex.healy@intel.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "Paul J. Murphy" <paul.j.murphy@intel.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9VWi9lvVrtm8vqGMgMBrAESVz3nZujJvYtHJX+Z95Jw=;
+        b=fee8ny3n+TUXSvDILpT+cD8JdU3sPdEoNCrg1HHhIuOmO/k5GVMsM0hZi/GoTdCAdV
+         Hz8ck95AdCO5ZEdGY8sgXtlIgIWt/R03vMdnuC41QfbZvumZg+s9q+AFXuFcdOyQrY+8
+         E2L5BksHIot0sSjNPCwhpQZ4KuNpd4fiVC+A//dGOo3IUfNRYOzsy4ET2TtIcHaTLmRU
+         1IvROr7fK82Wi0N12EIbpS7dl9wNqe7BZI8+pomVG36YtFV+v3wJMbLiGkp1CsKx84wv
+         TY7hW09jOyQ8zRnx7owiwKSeTXsuynC29GOXkA35my3d6g2PO1ELHmMNhGl841ttN1BE
+         rmWw==
+X-Gm-Message-State: AOAM532UiTLXFHVSNsn3S/SiS6szrcEWPHG7/sk/ZsNKwWjh580AMxop
+        ieH7iCRRYnv3d933YeQCV8Q=
+X-Google-Smtp-Source: ABdhPJwCxl4PpHeih2wMXniKYALjSkU03AHuXby+xZvV9XFwppfN4g9J2/HbB6WB4YNYszHZSJp3zw==
+X-Received: by 2002:a17:906:8587:: with SMTP id v7mr25524315ejx.381.1608026388125;
+        Tue, 15 Dec 2020 01:59:48 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id r24sm17708914edo.4.2020.12.15.01.59.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 15 Dec 2020 01:59:47 -0800 (PST)
+Message-ID: <277a6fd2dd3b3e70a0caeda6283214ed5152aa65.camel@gmail.com>
+Subject: Re: [PATCH v4 4/6] scsi: ufs: Remove d_wb_alloc_units from struct
+ ufs_dev_info
+From:   Bean Huo <huobean@gmail.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
+        tomas.winkler@intel.com, cang@codeaurora.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 15 Dec 2020 10:59:46 +0100
+In-Reply-To: <1608022638.10163.14.camel@mtkswgap22>
+References: <20201211140035.20016-1-huobean@gmail.com>
+         <20201211140035.20016-5-huobean@gmail.com>
+         <1608022638.10163.14.camel@mtkswgap22>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 2:44 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> Today's linux-next merge of the drm tree got a conflict in:
->
->   MAINTAINERS
->
-> between commit:
->
->   885743324513 ("crypto: keembay - Add support for Keem Bay OCS AES/SM4")
->
-> from the crypto tree and commit:
->
->   ed794057b052 ("drm/kmb: Build files for KeemBay Display driver")
->
-> from the drm tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->
-> --
-> Cheers,
-> Stephen Rothwell
->
-> diff --cc MAINTAINERS
-> index 3b358262de8f,eb18459c1d16..000000000000
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
+On Tue, 2020-12-15 at 16:57 +0800, Stanley Chu wrote:
+> >        u8      b_wb_buffer_type;
+> > -     u32     d_wb_alloc_units;
+> 
+> Perhaps below two fields could be also removed from struct
+> ufs_dev_info
+> for the same reason?
+> 
+> u32 d_ext_ufs_feature_sup;
+I thought twice before this patch. maybe will be used in near future,
+so I keep d_ext_ufs_feature_sup. Now that you suggest, we can remove it
+as well. 
 
-> @@@ -8985,16 -8962,13 +8993,23 @@@ M:   Deepak Saxena <dsaxena@plexity.net
->   S:    Maintained
->   F:    drivers/char/hw_random/ixp4xx-rng.c
->
-> + INTEL KEEMBAY DRM DRIVER
+> u32 d_wb_alloc_units;
+This patch is to remove it.
 
-Is it KEEMBAY?
+Thanks,
+Bean
 
-> + M:    Anitha Chrisanthus <anitha.chrisanthus@intel.com>
-> + M:    Edmund Dea <edmund.j.dea@intel.com>
-> + S:    Maintained
-> + F:    Documentation/devicetree/bindings/display/intel,kmb_display.yaml
-
-I was just going to comment about "intel,kmb_*" vs. "intel,keembay-*", until
-I noticed intel,kmb_display.yaml does not exist, but is called
-Documentation/devicetree/bindings/display/intel,keembay-display.yaml
-in next-20201214.
-
-> + F:    drivers/gpu/drm/kmb/
-> +
->  +INTEL KEEM BAY OCS AES/SM4 CRYPTO DRIVER
-
-or KEEM BAY?
-
-Or Keem Bay? Keembay? KeemBay?
-
-All of them are present in next-20201214.
-
->  +M:    Daniele Alessandrelli <daniele.alessandrelli@intel.com>
->  +S:    Maintained
->  +F:    Documentation/devicetree/bindings/crypto/intel,keembay-ocs-aes.yaml
->  +F:    drivers/crypto/keembay/Kconfig
->  +F:    drivers/crypto/keembay/Makefile
->  +F:    drivers/crypto/keembay/keembay-ocs-aes-core.c
->  +F:    drivers/crypto/keembay/ocs-aes.c
->  +F:    drivers/crypto/keembay/ocs-aes.h
->  +
->   INTEL MANAGEMENT ENGINE (mei)
->   M:    Tomas Winkler <tomas.winkler@intel.com>
->   L:    linux-kernel@vger.kernel.org
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
