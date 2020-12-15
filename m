@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEFE2DB34A
+	by mail.lfdr.de (Postfix) with ESMTP id 507E02DB349
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730307AbgLOSJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730422AbgLOSJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 15 Dec 2020 13:09:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47974 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727337AbgLOSIS (ORCPT
+        with ESMTP id S1729561AbgLOSI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:08:18 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10247C0617B0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 10:07:38 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id q25so24296882oij.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 10:07:38 -0800 (PST)
+        Tue, 15 Dec 2020 13:08:57 -0500
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E10C061282
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 10:07:51 -0800 (PST)
+Received: by mail-oo1-xc41.google.com with SMTP id j8so5052092oon.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 10:07:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=aWT20cxGDnE+dNIxUaJWQEqPNcNAaFYi+yHn0ak9yqY=;
-        b=Ar1Etn1abBefJjCVtgl/nkMWVHndI9Y5bRpOMmsPzFda+OV4u8idKMnl3Pe96J0oEH
-         NkcTwp4VZsR+CS3U3fP4isewKiQb6ybba7QUc7WG41QpkaAV19YS9+/1+KDvwaXu+uPp
-         /PVWZ0dDWJ7ZY4vTmVFsyMVuCdKfnX3mi3GEvGH/PZs1HUv6gYwIMnOmYtYZIc9/yJOG
-         G0Y8SUs71CEw7Db+OFiAjrvS+kptYuRLVAtGjb1iJou4SJYSlnXQtzj2111O3gcaJ1Fe
-         FXY1WROoZBw66i48Q9JT11gN20E7qafrBDBa/D6mxHl6V+HFHSCh/FzUFeiZAqbZCTJO
-         AjYg==
+        bh=awpfnaoCuOfpiA9hFwy8M6uoUGEHYcKA+Gcyax3vkEU=;
+        b=SLdbi27kWMyEok3alqZe20qkyd4B3CnVaAdIyEDPHD2vz0Gv0dwKJ1Gm6MFxx1DDSM
+         xncXwtmCZPUcRw17HtC/OXEwXsiw/QOPLw37/d14RQHEO3Z0H6hRPFdfOhaQ45GmZrwf
+         tztIUBHriOjGYSSWbU++5Qm1xQdFd/AkinC0U+ggnaoYezEIq2YYUYCw9RRltVip/+HX
+         lhMeZd1XZ+t529RAHdoZJU3ubhgmeqA2qqM+QrBVNNJyq6wsSThMWO1B2NKXgOML8LBc
+         T8mtEvl9YkZFt4yh/mOYFTMO3Vi5+ulrXmqmGJx3Gy82+FzLc3bK9up90bEBVBtk/40X
+         2L5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=aWT20cxGDnE+dNIxUaJWQEqPNcNAaFYi+yHn0ak9yqY=;
-        b=rv6hwloztTWAXXG8gLjfQs1LmTs1ytEfSSTqoBuoxBOjKtLf0vhxrbfnW5PdRHRNOl
-         wpVqo33Mc+hYAqxCzl7cbK4WOmn5wm6lP49SdVRSdYQuvaLQ1u4hUnhh736WTC79SToJ
-         vm5BXHKhm5dOXaJTsoD1kQNdy8YEFCIR9hmrdq71k2A5elr+xKRAcwDB/7tcpXnr7eP9
-         4WIboBf0lWivB3j6EIa2ZmiLwlR2bJzeTk5FysbRRut9C3yLuWCTi8aJyiLtFKP5a+Yc
-         NJaj6jpmHxcb2tiUX709/YwHEw1pQ8Iagul6x/icTz83Qrav0maO9WinGxiTU++w9dzZ
-         f5Bg==
-X-Gm-Message-State: AOAM5301+OimscRuOjizaUFoY3XShebyfPopvrIJJE1kTgr+/gjSsjOO
-        ANyo+SMxR6/uaS9jxJzBOq3/cw==
-X-Google-Smtp-Source: ABdhPJwK+5A9TPLHf3urLGkpH6nkUE2PbxcaEVEGg6uBnCbM+6OjzkKh518fON34xzTwLrjfQMvRQw==
-X-Received: by 2002:aca:ed51:: with SMTP id l78mr65136oih.144.1608055657471;
-        Tue, 15 Dec 2020 10:07:37 -0800 (PST)
+        bh=awpfnaoCuOfpiA9hFwy8M6uoUGEHYcKA+Gcyax3vkEU=;
+        b=Ba53Fw1v7F5K9EBKHvQ3CLnvRB53i+disrdk4cMD7e4AzyBlH5pSbOxUYYJUKc1qgp
+         etHA01ZmCQ6IjwzZptf2JaQvnKkT7qakgY6zrktofIf/Ng/7794vjuWRLsV8TeepcqN+
+         rfPtBAehltyryM1fkGg7+MXkrt2D7cOBJbk7lIGZtowjAcG1rbMZxi3JTdVZeFgSs5OJ
+         g/vIySQxH9NUn2/N6Fdp+LAsT6fTt0hIZJ2wRBzuJpFdEWWrLm32c771DYtJHqfq1Nvr
+         93hlClzwxPsIWnxw/FrWe28Y0TiKAd6pnGCIDklSfXHYzwTtXtdryZGphGorOnCT1rZa
+         8ctw==
+X-Gm-Message-State: AOAM530UAUC93xVal5KKpsdiPRXy13ybmPWpj14ClGuC4WdYuIladNGX
+        3Vz5rX8gPb87GBXiD+v0C2aaVA==
+X-Google-Smtp-Source: ABdhPJwTB7icEqbXpYRJR956FFUcB0QEiMvrok0dKNuzUQl6DCJ4w/MCFiEArZdT1/cuajSh7cNQXQ==
+X-Received: by 2002:a4a:97a3:: with SMTP id w32mr5262043ooi.81.1608055670983;
+        Tue, 15 Dec 2020 10:07:50 -0800 (PST)
 Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id s26sm585458otd.8.2020.12.15.10.07.36
+        by smtp.gmail.com with ESMTPSA id z38sm4437434ooi.34.2020.12.15.10.07.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 10:07:36 -0800 (PST)
+        Tue, 15 Dec 2020 10:07:50 -0800 (PST)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Ohad Ben-Cohen <ohad@wizery.com>, linux-remoteproc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>
-Subject: [GIT PULL] hwspinlock updates for v5.11
-Date:   Tue, 15 Dec 2020 12:07:35 -0600
-Message-Id: <20201215180735.1528535-1-bjorn.andersson@linaro.org>
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Subject: [GIT PULL] rpmsg updates for v5.11
+Date:   Tue, 15 Dec 2020 12:07:49 -0600
+Message-Id: <20201215180749.1528593-1-bjorn.andersson@linaro.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -71,27 +70,44 @@ The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
 
 are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/hwlock-v5.11
+  https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rpmsg-v5.11
 
-for you to fetch changes up to c3e9b463b41b45c4556a13043265097e2184226e:
+for you to fetch changes up to 950a7388f02bf775515d13dc508cb9d749bd6d91:
 
-  hwspinlock: sirf: Remove the redundant 'of_match_ptr' (2020-12-10 13:34:40 -0600)
-
-----------------------------------------------------------------
-hwspinlock updates for v5.11
-
-This contains a few minor cleanups and build warning fixes for the sprd
-and sirf hwspinlock drivers.
+  rpmsg: Turn name service into a stand alone driver (2020-11-24 10:11:59 -0600)
 
 ----------------------------------------------------------------
-Baolin Wang (2):
-      hwspinlock: sprd: Remove redundant header files
-      hwspinlock: sirf: Remove the redundant 'of_match_ptr'
+rpmsg updates for v5.11
 
-Chunyan Zhang (2):
-      hwspinlock: sprd: use module_platform_driver() instead postcore initcall
-      hwspinlock: sprd: fixed warning of unused variable 'sprd_hwspinlock_of_match'
+This extracts the "nameserver" previoiusly used only by the virtio rpmsg
+transport to work ontop of any rpmsg implementation and clarifies the
+endianness of the data types used in rpmsg.
 
- drivers/hwspinlock/sirf_hwspinlock.c |  2 +-
- drivers/hwspinlock/sprd_hwspinlock.c | 17 ++---------------
- 2 files changed, 3 insertions(+), 16 deletions(-)
+----------------------------------------------------------------
+Arnaud Pouliquen (4):
+      rpmsg: virtio: Rename rpmsg_create_channel
+      rpmsg: core: Add channel creation internal API
+      rpmsg: virtio: Add rpmsg channel device ops
+      rpmsg: Turn name service into a stand alone driver
+
+Mathieu Poirier (4):
+      rpmsg: Introduce __rpmsg{16|32|64} types
+      rpmsg: virtio: Move from virtio to rpmsg byte conversion
+      rpmsg: Move structure rpmsg_ns_msg to header file
+      rpmsg: Make rpmsg_{register|unregister}_device() public
+
+ drivers/rpmsg/Kconfig            |   9 ++
+ drivers/rpmsg/Makefile           |   1 +
+ drivers/rpmsg/rpmsg_core.c       |  44 +++++++++
+ drivers/rpmsg/rpmsg_internal.h   |  14 ++-
+ drivers/rpmsg/rpmsg_ns.c         | 126 ++++++++++++++++++++++++++
+ drivers/rpmsg/virtio_rpmsg_bus.c | 186 ++++++++++++++-------------------------
+ include/linux/rpmsg.h            |  63 ++++++++++++-
+ include/linux/rpmsg/byteorder.h  |  67 ++++++++++++++
+ include/linux/rpmsg/ns.h         |  45 ++++++++++
+ include/uapi/linux/rpmsg_types.h |  11 +++
+ 10 files changed, 439 insertions(+), 127 deletions(-)
+ create mode 100644 drivers/rpmsg/rpmsg_ns.c
+ create mode 100644 include/linux/rpmsg/byteorder.h
+ create mode 100644 include/linux/rpmsg/ns.h
+ create mode 100644 include/uapi/linux/rpmsg_types.h
