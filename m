@@ -2,193 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA18A2DB4A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B6B2DB4A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725901AbgLOTsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 14:48:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728336AbgLOTry (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 14:47:54 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE08C0617A6;
-        Tue, 15 Dec 2020 11:47:13 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id 23so42490928lfg.10;
-        Tue, 15 Dec 2020 11:47:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3A6CDXSH+vJBbeg+vruqLPWO3m3JGaTS3T7HZ1Nlumo=;
-        b=bZHtPkI45bDNaBdWxSEBmEXfkhUhET45w0D2M+oxvx5jxsWo2HOmvwZrBsLaFUDDYN
-         uxvEXpR/idKhsz/wjaowEeTLqWuGhhXskr+b+uxd6t38j5osy/V3o+3xXqhVwxXf3hH+
-         RdAs0c+wqVkntfNmY8zQ8nLdK+lOKId/2u4VRuNNdT/YKjuq6DCTvNmPVxBMeZ3E309r
-         i2I6Fj/lvK4qQ1bkBh3pO1C7fPHTPTdy3ktt6OcQjdysgYoTUZmmh/AUu+V9CLfcmZxn
-         mv41xrQYsE2iyNo4L77kaxTD65OoY6n18PoueVC+lTh2Asmm+5GD3Ri5sj0SvYWsq4q+
-         cHcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3A6CDXSH+vJBbeg+vruqLPWO3m3JGaTS3T7HZ1Nlumo=;
-        b=k7wgufYxjXdSpI1fNec26drpER7zG08msloXX/erjr6Xfk0aJTl4s1iDpBAoz1Jui5
-         73gHaWI7HO7uFUCCV/D0VBmbXjZPr5OtetpyU9xerHqUou3EDC7HvfMmRIj9lEMA59AA
-         yY1flJrAtvIkjo8xB+I9USjqGWBrZ0/cCm2orfFmtLZO90VORUpF26hkE3d6xhyFTtEc
-         DPZqGzS3vM82K/OOTjhjYUykUGmA6ZHe04HwYuwC/WN9MoPWaNMTqbJNzlQySmChJkAZ
-         jLfp6uJYhrIAExCFIiceSo55xif2AdJsVnk2B1EbGO817geG0GzCEqF/41p38OEDKt3x
-         7lOw==
-X-Gm-Message-State: AOAM531fF5LrOpxUsYtW4CJ+VvcJ8qB0798nrv8/WiKnNHg4EKTm0fiB
-        awbqtsNPSlVohoFUkzaVD8XeYAmzGHI=
-X-Google-Smtp-Source: ABdhPJzy2XRxYzV7WdNff9pQdbYOlZvid9eVlCyWElunz0K8pe498HJjiTW9U5bA8VdwqlRg6O8Zvg==
-X-Received: by 2002:a2e:6c03:: with SMTP id h3mr6005597ljc.360.1608061632135;
-        Tue, 15 Dec 2020 11:47:12 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id 6sm2842692ljq.69.2020.12.15.11.47.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 11:47:11 -0800 (PST)
-Subject: Re: [PATCH v1] ARM: tegra: Fix misplaced tegra_uart_config in
- decompressor
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20201215135222.6899-1-digetx@gmail.com>
- <980f70c6-8967-c110-1699-cb0da2f46cc0@gmail.com>
- <5b01ce96-5f8b-dfcb-accd-2ba29f34947f@gmail.com>
- <5853b349-562c-3b6a-33d6-49516553dad8@gmail.com>
- <b115f985-b27b-bbcd-fc42-d9e357ecf46a@gmail.com>
- <b8de29b7-b0f6-5b2b-6ab2-f4399bc241fc@gmail.com>
- <604dd2ea-d813-fa3f-3e2f-4d66175162b3@gmail.com>
- <8ddd0072-e5bd-a035-b782-bf1ca88eebc2@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <d4a4b200-ede7-0fab-8317-38abb677e5f5@gmail.com>
-Date:   Tue, 15 Dec 2020 22:47:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1727778AbgLOTsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 14:48:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728222AbgLOTsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 14:48:13 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2194622B2C;
+        Tue, 15 Dec 2020 19:47:26 +0000 (UTC)
+Date:   Tue, 15 Dec 2020 14:47:24 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
+Subject: Re: __local_bh_enable_ip() vs lockdep
+Message-ID: <20201215144724.40ab7612@gandalf.local.home>
+In-Reply-To: <20201215190152.GA22285@osiris>
+References: <20201215190152.GA22285@osiris>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <8ddd0072-e5bd-a035-b782-bf1ca88eebc2@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.12.2020 22:20, Florian Fainelli пишет:
-> 
-> 
-> On 12/15/2020 10:56 AM, Dmitry Osipenko wrote:
->> 15.12.2020 21:22, Florian Fainelli пишет:
->>>
->>>
->>> On 12/15/2020 8:53 AM, Dmitry Osipenko wrote:
->>>> 15.12.2020 19:40, Florian Fainelli пишет:
->>>>>
->>>>>
->>>>> On 12/15/2020 8:17 AM, Dmitry Osipenko wrote:
->>>>>> 15.12.2020 19:04, Florian Fainelli пишет:
->>>>>>>
->>>>>>>
->>>>>>> On 12/15/2020 5:52 AM, Dmitry Osipenko wrote:
->>>>>>>> The tegra_uart_config of the DEBUG_LL code is now placed right at the
->>>>>>>> start of the .text section after commit which enabled debug output in the
->>>>>>>> decompressor. Tegra devices are not booting anymore if DEBUG_LL is enabled
->>>>>>>> since tegra_uart_config data is executes as a code. Fix the misplaced
->>>>>>>> tegra_uart_config storage by embedding it into the code.
->>>>>>>>
->>>>>>>> Cc: stable@vger.kernel.org
->>>>>>>> Fixes: 2596a72d3384 ("ARM: 9009/1: uncompress: Enable debug in head.S")
->>>>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>>>>>> ---
->>>>>>>>  arch/arm/include/debug/tegra.S | 54 +++++++++++++++++-----------------
->>>>>>>>  1 file changed, 27 insertions(+), 27 deletions(-)
->>>>>>>
->>>>>>> Looks like arch/arm/include/debug/brcmstb.S would need the same
->>>>>>> treatment since the implementation was copied from tegra.S.
->>>>>>>
->>>>>>
->>>>>> Good catch, will you be able to test the brcm and make a patch?
->>>>>
->>>>> Yes, absolutely, building a kernel to test right now.
->>>>>
->>>>
->>>> Thank you.
->>>>
->>>> BTW, I noticed that the problem is more visible on a thumb2 kernel
->>>> build, i.e. you should get a more reliable hang on boot. On a non-thumb2
->>>> kernel the hanging behaviour seems depends on a device / bootloader. I
->>>> haven't tried to figure out what exactly makes the difference, perhaps
->>>> it should be a memory layout / state.
->>>
->>> To build with a CONFIG_THUMB2_KERNEL I had to fetch:
->>>
->>> https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9018/2
->>>
->>> to avoid a build error, too bad this missed v5.10 final but hopefully it
->>> can make it soon.
->>
->> The VFP fix was applied to the -next very recently, it should propagate
->> to v5.10 eventually.
->>
->>> With CONFIG_THUMB2_KERNEL=y, I am not getting the head.S output where it
->>> prints the start/end of the compressed kernel:
->>>
->>> C:0x420800C0-0x4321B0E0->0x4212AB00-0x432C5B20
->>> Uncompressing Linux... done, booting the kernel.
->>> [    0.000000] Booting Linux on physical CPU 0x0
->>> [    0.000000] Linux version 5.10.0-g148842c98a24
->>> (fainelli@fainelli-desktop) (arm-linux-gcc (GCC) 8.3.0, GNU ld (GNU
->>> Binutils) 2.32) #71 SMP Tue Dec 15 09:53:09 PST 2020
->>>
->>> I am only getting:
->>>
->>> Uncompressing Linux... done, booting the kernel.
->>>
->>> Is that the same for you?
->>
->> No, start/end are printed for both THUMB2 and ARM kernels here.
->>
->>> Looking at the disassembly of head.o it definitively has
->>> brcmstb_uart_config in the .text section as the beginning just like you
->>> mentioned in your commit message.
->>>
->>> Disassembly of section .text:
->>>
->>> 00000000 <brcmstb_uart_config>:
->>>    0:   00000001        andeq   r0, r0, r1
->>>         ...
->>>    c:   467c            mov     r4, pc
->>>    e:   f004 4478       and.w   r4, r4, #4160749568     ; 0xf8000000
->>>   12:   f504 4400       add.w   r4, r4, #32768  ; 0x8000
->>>   16:   4678            mov     r0, pc
->>>   18:   42a0            cmp     r0, r4
->>>   1a:   bf3f            itttt   cc
->>>   1c:   48d4            ldrcc   r0, [pc, #848]  ; (370 <LC1+0x8>)
->>>   1e:   4478            addcc   r0, pc
->>>   20:   4284            cmpcc   r4, r0
->>>   22:   f044 0401       orrcc.w r4, r4, #1
->>>   26:   bf28            it      cs
->>>   28:   f000 f9aa       blcs    380 <cache_on>
->>>
->>> however after applying a fix similar to yours, we do end-up with the
->>> expected data embedded within the code and given brcmstb.S would be
->>> subject to the same issue as tegra.S, it would not hurt.
->>>
->>
->> Have you checked whether start/end printed after applying the fix?
-> 
-> Yes I did, it is not printed when CONFIG_THUMB2_KERNEL=y, but it is when
-> CONFIG_THUMB2_KERNEL=n. I don't have a JTAG adapter on this board right
-> now to single step.
-> 
+On Tue, 15 Dec 2020 20:01:52 +0100
+Heiko Carstens <hca@linux.ibm.com> wrote:
 
-Okay, I don't know what's wrong there.
+> Hello,
+> 
+> the ftrace stack tracer kernel selftest is able to trigger the warning
+> below from time to time. This looks like there is an ordering problem
+> in __local_bh_enable_ip():
+> first there is a call to lockdep_softirqs_on() and afterwards
+> preempt_count_sub() is ftraced before it was able to modify
+> preempt_count:
 
-I also noticed that brcmstb doesn't check whether UART address is 0x0 in
-senduart / busyuart, perhaps this needs to be fixed too.
+Don't run ftrace stack tracer when debugging lockdep. ;-)
+
+  /me runs!
+
+-- Steve
+
+> 
+> [ 1016.245418] ------------[ cut here ]------------
+> [ 1016.245428] DEBUG_LOCKS_WARN_ON(current->softirqs_enabled)
+> [ 1016.245441] WARNING: CPU: 8 PID: 8300 at kernel/locking/lockdep.c:5298 check_flags.part.0+0x196/0x208
+> [ 1016.245580] CPU: 8 PID: 8300 Comm: sshd Not tainted 5.11.0-20201215.rc0.git0.d33ce49dca6c.300.fc33.s390x+debug #1
+> ...
+> [ 1016.245691] Call Trace:
+> [ 1016.245698]  [<000000004c1537fa>] check_flags.part.0+0x19a/0x208
+> [ 1016.245705] ([<000000004c1537f6>] check_flags.part.0+0x196/0x208)
+> [ 1016.245711]  [<000000004cced786>] lock_is_held_type+0x8e/0x1b8
+> [ 1016.245716]  [<000000004c172924>] rcu_read_lock_sched_held+0x64/0xb8
+> [ 1016.245724]  [<000000004c1b151c>] module_assert_mutex_or_preempt+0x34/0x68
+> [ 1016.245730]  [<000000004c1b2e04>] __module_address.part.0+0x2c/0x118
+> [ 1016.245735]  [<000000004c1b9dca>] __module_text_address+0x3a/0x90
+> [ 1016.245741]  [<000000004c1b9ed4>] is_module_text_address+0x34/0x78
+> [ 1016.245748]  [<000000004c0f9a1a>] kernel_text_address+0x5a/0x130
+> [ 1016.245752]  [<000000004c0f9b16>] __kernel_text_address+0x26/0x70
+> [ 1016.245757]  [<000000004c094038>] unwind_get_return_address+0x40/0x68
+> [ 1016.245763]  [<000000004c099dac>] arch_stack_walk+0xac/0xd0
+> [ 1016.245768]  [<000000004c18be10>] stack_trace_save+0x50/0x68
+> [ 1016.245774]  [<000000004c22d80c>] check_stack+0xc4/0x348
+> [ 1016.245780]  [<000000004c22db46>] stack_trace_call+0xb6/0xd0
+> [ 1016.245785]  [<000000004cd00082>] ftrace_caller+0x7a/0x7e
+> [ 1016.245791]  [<000000004c1081d6>] preempt_count_sub+0x6/0x138 <---
+> [ 1016.245795]  [<000000004c0d3d46>] __local_bh_enable_ip+0x13e/0x190 <---
+> [ 1016.245811]  [<000003ff8023c34c>] nft_update_chain_stats+0xdc/0x168 [nf_tables]
+> [ 1016.245820]  [<000003ff8023c916>] nft_do_chain+0x53e/0x550 [nf_tables]
+> [ 1016.245827]  [<000003ff80251974>] nft_do_chain_ipv4+0x6c/0x78 [nf_tables]
+> [ 1016.245833]  [<000000004cb0ab00>] nf_hook_slow+0x58/0xf8
+> [ 1016.245839]  [<000000004cb1dc24>] nf_hook.constprop.0+0xfc/0x1d0
+> [ 1016.245844]  [<000000004cb207b2>] __ip_local_out+0x92/0xe8
+> [ 1016.245848]  [<000000004cb20d00>] __ip_queue_xmit+0x1d8/0x640
+> [ 1016.245854]  [<000000004cb4578c>] __tcp_transmit_skb+0x3dc/0x770
+> [ 1016.245858]  [<000000004cb46e86>] tcp_write_xmit+0x38e/0x758
+> [ 1016.245863]  [<000000004cb47298>] __tcp_push_pending_frames+0x48/0x118
+> [ 1016.245868]  [<000000004cb2f604>] tcp_sendmsg_locked+0x95c/0xb78
+> [ 1016.245872]  [<000000004cb2f864>] tcp_sendmsg+0x44/0x68
+> [ 1016.245878]  [<000000004ca30c3c>] sock_sendmsg+0x64/0x78
+> [ 1016.245882]  [<000000004ca30cc2>] sock_write_iter+0x72/0x98
+> [ 1016.245887]  [<000000004c3dcfda>] new_sync_write+0x10a/0x198
+> [ 1016.245891]  [<000000004c3dd6a6>] vfs_write.part.0+0x196/0x290
+> [ 1016.245896]  [<000000004c3e0220>] ksys_write+0xb8/0xf8
+> [ 1016.245900]  [<000000004ccfd326>] system_call+0xe2/0x29c
+> [ 1016.245904] INFO: lockdep is turned off.
+
