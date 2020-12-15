@@ -2,174 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9412DA621
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:19:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F2C2DA627
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgLOCTX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Dec 2020 21:19:23 -0500
-Received: from mail-eopbgr1300117.outbound.protection.outlook.com ([40.107.130.117]:8992
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725964AbgLOCTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:19:10 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dXkNSDFvjX2n1P/7afZESx7Ps1NnouDyhTwjyxp2EkkhCYd8BsnNyNBuBVDtfjS7n9c9x8kfbdgrRhdGuZvxzT7DXcErpjcoeGdW7kq/66cUebAo34XW8zAy1BsEC19kGkEt9Y1LwF+LMD2vbla2WfdrVZplpAqVDzeNTBX+gwGpAvQ8bpjGy1T/vlzxUb4SiIRnLSrR8orZX9QgOZuwFn8UCAmjgNLozimSIKg7kpJ4oNgVAmK03sOb7WQwSlpJhAuUF6LY61WensVsYmVft1OhDM+loO3zM2s5KmZTok3R5cVa7nrakepJjXRBlPXwJR8RM72nxoZLJJJkmTURyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W2JzpdwsQ+lymTROqoPmN4oGjYldJY2LJQchGDNxzlg=;
- b=JAihtzjFujwmsrHdZf3BHoyHHhDKj4l2+ofcjs/5WXqSOMpwgXPRBG2+Jg/uq5bFLRgs2IMnURfS6xsHEE8+brRCsZUVuY/hG+qc3O2EnoNdlF+C0iN3ENX+eNQA4V9yUAH5UQU02KGuEwfNNZ/xB2q9TxGSt+E36Nx408ydfB9Ia53qENEo9nCOIPvm0B4lZ+IjOzdA7pT+s3ICNjZm34YLpAAExLc9Bw9sogcadJLHQWyasFtuTehQEN44JYSK58ydf9g6Mo7yu70Y0lotiCja8jA7Pcro0N480sDF21A5ZGd1pTymjfhyFBddoOSwJKL4BJUARxhjwU5c0rQ8DA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
- by HK0PR06MB2996.apcprd06.prod.outlook.com (2603:1096:203:8d::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.20; Tue, 15 Dec
- 2020 02:17:35 +0000
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::7061:73d9:50ae:b35e]) by HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::7061:73d9:50ae:b35e%7]) with mapi id 15.20.3654.025; Tue, 15 Dec 2020
- 02:17:34 +0000
-From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
-To:     Andrew Jeffery <andrew@aj.id.au>, Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>
-CC:     Ryan Chen <ryan_chen@aspeedtech.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Corey Minyard <minyard@acm.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Haiyue Wang <haiyue.wang@linux.intel.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-Subject: RE: [PATCH v2 5/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
-Thread-Topic: [PATCH v2 5/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
-Thread-Index: AQHWq0XpiGvCIQ3se0K0W53Se1w+kan2LtDggAFodoCAABp7gA==
-Date:   Tue, 15 Dec 2020 02:17:34 +0000
-Message-ID: <HK0PR06MB3779995E6FA5D6B2DE16F73D91C60@HK0PR06MB3779.apcprd06.prod.outlook.com>
-References: <20201005082806.28899-1-chiawei_wang@aspeedtech.com>
- <20201005082806.28899-6-chiawei_wang@aspeedtech.com>
- <2e2d3a02-6677-4b0e-b538-d3130a3b20d1@www.fastmail.com>
- <HK0PR06MB3779F5B4B9629909DDF441F091C70@HK0PR06MB3779.apcprd06.prod.outlook.com>
- <d6f83615-c9d1-4906-81e7-10528e963c94@www.fastmail.com>
-In-Reply-To: <d6f83615-c9d1-4906-81e7-10528e963c94@www.fastmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: aj.id.au; dkim=none (message not signed)
- header.d=none;aj.id.au; dmarc=none action=none header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4b63b2cb-3fc0-48f4-6e10-08d8a09f95da
-x-ms-traffictypediagnostic: HK0PR06MB2996:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HK0PR06MB2996DDF4AC793C7D0DFEF02B91C60@HK0PR06MB2996.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eTLJCBKnWoFoQ2C2Qc6E+d2i4ueZnZeOJLqciWCiNTKaLGQLhspTtjsAEEPJOP1B9ZILEjEiY8JLuHkpmI1AHalV2SHgtUdz5zzwkhmjPkcnjPBEINkPU9LzdN9gmGHbGhfn38ipwZmzDZQQR/DZlcm1YLqQ4qhIR7E4HRrLlAISCbM+j4tiF+t4e3q8YG0YZ47H1vlTlTltIJ5ZU1wQv1nT71cbLxDa/4MAE2tSh4qJW/YL7tzmQRc41hrj9fAF+7YzRnOVThXBoG8P0/P/FXaPBHIeaxklKmFIUuvtQsYtwAsNXIDM4Yqff/hbwzq9Fzo4LPijkcfXo+q4EzkCLw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(39840400004)(346002)(136003)(376002)(7696005)(55016002)(478600001)(8936002)(110136005)(316002)(71200400001)(6506007)(9686003)(4326008)(76116006)(54906003)(2906002)(86362001)(53546011)(66446008)(186003)(66556008)(5660300002)(26005)(55236004)(66946007)(64756008)(66476007)(33656002)(52536014)(7416002)(83380400001)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?4lbLBdfw7UmF1iZadqdTk3ZK+/Y/TEeUDf1Z5wBsJDktUR/zHWX2cpBWCe9h?=
- =?us-ascii?Q?sxCz1mjsz/6RPPBZcCd2R/I3VT/bnBYDTCJ9pWtn5dZMWkHlQF0N0lXCYjlF?=
- =?us-ascii?Q?gQvovQ27cF+vcvcfajafErcNjXCMr3Ah2KidMsBah8P35fx4L53HeM84O8yG?=
- =?us-ascii?Q?exvUGX3nJZhKrdQN1LlV2h02a2/IH+3eddqQBx/WrJMFEN+e5SceNB8MU81g?=
- =?us-ascii?Q?rJNQJ+DFvuP0AF44sJKmdAPLjEBfOr/iZbIKVfGcnHFgI/BLLFy9COmdzX5I?=
- =?us-ascii?Q?/XRBWHx1eclgxqsy9lpHkwk5/vMTUU8vJgD1ZfeS7/WJZD7lFAC65/S5eBHY?=
- =?us-ascii?Q?PMbFAx/tdFcwfEvDPNUPIBora24SIvjkpIeQE1ZIx0upoguv68U0ucC4jt/z?=
- =?us-ascii?Q?sNE2gpgrZOyrj3otVL32i+olqWy3dHjUlU8io7bJXfvwnU1ZUKlgRK1gOFcZ?=
- =?us-ascii?Q?iQcmXN8rBRtnk7MaN19VtVH80xuE0RbzjKcJnR59keQc7TRKnxsd1T2k+cUr?=
- =?us-ascii?Q?Fv+yFDiMsB9q/8C2edhaMQ0Y796z5RVi1zWdV0TsvjndCMbT+CXSWKpFW+6A?=
- =?us-ascii?Q?cBeRwmNBCQ8s9Uz6F1bXhjMTAMbnh7a3+wu80DA+6t2YOkXnRCL+CgXsVg9k?=
- =?us-ascii?Q?GJmNtMPuIMzTecs3edJFGSL0XFS8kV80H5Rro4rjC9fNEc+piXDPoPMnVhMN?=
- =?us-ascii?Q?avE8h85K0pw6C3HNuHwQGOjqLCaA1FETVWPoWQh1Mu5+xyqrR6Vnm4CP7lA/?=
- =?us-ascii?Q?1D3QyUBnloE/b+FE4rtZZbgC/+u2ypiBTqT2/MyrBu5W8o8qDgJhFTkaWrBH?=
- =?us-ascii?Q?33G6cMM2WO7B2lw2C5R/1l4ej11IOjsdsABZhraGHTa0ivOyjUll/gbvwjZU?=
- =?us-ascii?Q?ywsrZctfplJpUc7ZueI2wTyBhgF0DpR02DQlmtpbglbxvumAgrja3pv0nRPS?=
- =?us-ascii?Q?TL2YFdC+QSxPcjQv2J0gtZwS9wVpb1bef0beAbvF8Fg=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726901AbgLOCUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:20:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726700AbgLOCTN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:19:13 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A9CC0617A7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:18:32 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id x16so25423648ejj.7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:18:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=epG8wiJEk1ZMX2bNaXtx4G2PAZzvvEvXiU4VYVabbH0=;
+        b=UDsWdaFAysTob03FiK+EApVxXkCX+rRhlkA9bnaihv6Y03By2IpV1OjJpvTBg6Yquf
+         0CIIvtiajxrLuO776i3rhBnZfS/Pyl0TUIyNBb6hnRhaay4QoUAVhcRv5oQNVAqdZbwu
+         w5eKz9fqgLvOlvBuj9r6z1lrk3m3tVC3VnpTzcIvbY8IvQzZr/S0dekG/C0TAoqpbGN3
+         mV3YZBgtx54LyqOEDnO6qveWVlI8Hs40RppalkzHd17Dy2tC/EpTihEOL1efih+CirxR
+         erZ09FaAxP5FhymaqG7wTZBWDzhuMmnFBjC+CpItQsieELQjFcHIfPoR9N2BFZIKuNn+
+         EXfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=epG8wiJEk1ZMX2bNaXtx4G2PAZzvvEvXiU4VYVabbH0=;
+        b=uNC/In/pd6xaTNkmTWweAAyuBCQ1Nblu75V/rlymmtU9xsK6ely2AzFvQQRwIMHGST
+         9o2jW41k/Clwzca1nriPdZBk7pvWIKhn7vjSSh2BcG7MmXaPh31EHue2Cd9Mxfmv5MMo
+         JgO71UhsRcuwYQYY6713SvJ+FlY4GiUsYePFyO3xaofcaqSSRWZ+S4pEiNXs8U9a4DoB
+         P59uieaP+0a6tprXzu5uqU3pcFm9g1r684XtSTNAPYDhD7a9NJq+E1lVFJ9nf3pnFjwY
+         vPd2AYe0J8a3hslXSaNjIzneh+gOtV2mCz6yHYj5b25Vs4JFhQFeUdCD90S83jmQj4Q/
+         UTGg==
+X-Gm-Message-State: AOAM533EYVfAC2cXJ8xyVio1hF7zOzlBgjOApZ8xop/JjOrmXtx1Rzij
+        MMyKPTopPmu+ukVGvXGEmP8OZo0Jq3oBRXInfn8T
+X-Google-Smtp-Source: ABdhPJx4iUs+6Y7IRmemoXw4+mMYFmBN/WiDklGS3zYLAkW2tX/fmAKWtv6YilHMABA3Ss08dKEAollknAt58WSzqpQ=
+X-Received: by 2002:a17:906:aec6:: with SMTP id me6mr6267598ejb.542.1607998711594;
+ Mon, 14 Dec 2020 18:18:31 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b63b2cb-3fc0-48f4-6e10-08d8a09f95da
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Dec 2020 02:17:34.4741
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uqeRg7NZpe8ch3INpnUgmbC7UdNSbzH+YTjYkE1aBzQ5diaq+abROxkpPI+ef0N8PbAomSvh18jYi7oCmJQTII+VZ+nhyWc06biuGLaBk5Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2996
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 14 Dec 2020 21:18:20 -0500
+Message-ID: <CAHC9VhT85MwDwrB_pAvU+g12SnGZ1g9Tvqr4nJqBpZfEw1GAdg@mail.gmail.com>
+Subject: [GIT PULL] SELinux patches for v5.11
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+Hi Linus,
 
-> -----Original Message-----
-> From: Andrew Jeffery <andrew@aj.id.au>
-> Sent: Tuesday, December 15, 2020 8:12 AM
-> To: ChiaWei Wang <chiawei_wang@aspeedtech.com>; Rob Herring
-> <robh+dt@kernel.org>; Joel Stanley <joel@jms.id.au>
-> Cc: Ryan Chen <ryan_chen@aspeedtech.com>; Lee Jones
-> <lee.jones@linaro.org>; Corey Minyard <minyard@acm.org>; Arnd Bergmann
-> <arnd@arndb.de>; Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Linus
-> Walleij <linus.walleij@linaro.org>; Haiyue Wang
-> <haiyue.wang@linux.intel.com>; linux-arm-kernel@lists.infradead.org;
-> linux-aspeed@lists.ozlabs.org; linux-kernel@vger.kernel.org;
-> openbmc@lists.ozlabs.org; linux-gpio@vger.kernel.org
-> Subject: Re: [PATCH v2 5/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
-> 
-> Hi Chiawei,
-> 
-> On Mon, 14 Dec 2020, at 13:14, ChiaWei Wang wrote:
-> > Hi Andrew & Rob,
-> >
-> > Do you have any suggestion on this patch?
-> 
-> Rob hasn't responded, but I think it will be easier to get an Ack out of him if we
-> do a v2 of the binding so we're not breaking backwards-compatibility with the
-> current definition. Concretely:
-> 
-> - compatible:   One of:
->                 "aspeed,ast2400-lpc", "simple-mfd"
->                 "aspeed,ast2500-lpc", "simple-mfd"
-> 
-> Becomes something like:
-> 
-> - compatible:   One of:
->                 "aspeed,ast2400-lpc-v2", "simple-mfd"
->                 "aspeed,ast2500-lpc-v2", "simple-mfd"
-> 
-> We can convert the in-tree devicetrees, immediately drop support for the
-> current binding in the drivers, and _only_ support v2 of the binding going
-> forward. That way your patches stay largely the same, the binding isn't
-> hamstrung as it is currently, and we're not trying to maintain code to support
-> the current binding definition - but we're also not pretending that old
-> devicetrees will work with newer kernels that only support the new binding
-> definition (which is the problem with your current patch series).
-> 
-> How does that sound?
-Sounds good. The v2 binding string should be a notification to sync both the new device tree and the new drivers.
-I will prepare a v3 patch with this change and the commit reordering suggested.
+While we have a small number of SELinux patches for v5.11, there are a
+few changes worth highlighting:
+
+- Change the LSM network hooks to pass flowi_common structs instead of
+the parent flowi struct as the LSMs do not currently need the full
+flowi struct and they do not have enough information to use it safely
+(missing information on the address family).  This patch was discussed
+both with Herbert Xu (representing team netdev) and James Morris
+(representing team LSMs-other-than-SELinux).
+
+- Fix how we handle errors in inode_doinit_with_dentry() so that we
+attempt to properly label the inode on following lookups instead of
+continuing to treat it as unlabeled.
+
+- Tweak the kernel logic around allowx, auditallowx, and dontauditx
+SELinux policy statements such that the auditx/dontauditx are
+effective even without the allowx statement.
+
+Everything passes our test suite and as of an hour or two ago it
+applies cleanly to your tree; please merge for v5.11.
 
 Thanks,
-Chiawei
+-Paul
 
-> 
-> As to how to implement this, I think we'll need to add some
-> of_device_is_compatible() checks in the relevant drivers to make sure that
-> they're using the new LPC binding, such as in
-> drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c before we fetch the regmap on line
-> 2657.
-> 
-> Sorry that this is dragging out a bit (and for the mess I made).
-> 
-> Cheers,
-> 
-> Andrew
+--
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+
+ Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
+   tags/selinux-pr-20201214
+
+for you to fetch changes up to 3df98d79215ace13d1e91ddfc5a67a0f5acbd83f:
+
+ lsm,selinux: pass flowi_common instead of flowi to the LSM hooks
+   (2020-11-23 18:36:21 -0500)
+
+----------------------------------------------------------------
+selinux/stable-5.11 PR 20201214
+
+----------------------------------------------------------------
+Gustavo A. R. Silva (1):
+     selinux: Fix fall-through warnings for Clang
+
+Ondrej Mosnacek (1):
+     selinux: drop super_block backpointer from superblock_security_struct
+
+Paul Moore (2):
+     selinux: fix inode_doinit_with_dentry() LABEL_INVALID error handling
+     lsm,selinux: pass flowi_common instead of flowi to the LSM hooks
+
+Tianyue Ren (1):
+     selinux: fix error initialization in inode_doinit_with_dentry()
+
+bauen1 (1):
+     selinux: allow dontauditx and auditallowx rules to take effect without
+       allowx
+
+.../chelsio/inline_crypto/chtls/chtls_cm.c         |  2 +-
+drivers/net/wireguard/socket.c                     |  4 ++--
+include/linux/lsm_hook_defs.h                      |  4 ++--
+include/linux/lsm_hooks.h                          |  2 +-
+include/linux/security.h                           | 23 +++++++++-------
+include/net/flow.h                                 | 10 +++++++++
+include/net/route.h                                |  6 ++---
+net/dccp/ipv4.c                                    |  2 +-
+net/dccp/ipv6.c                                    |  6 ++---
+net/ipv4/icmp.c                                    |  4 ++--
+net/ipv4/inet_connection_sock.c                    |  4 ++--
+net/ipv4/ip_output.c                               |  2 +-
+net/ipv4/ping.c                                    |  2 +-
+net/ipv4/raw.c                                     |  2 +-
+net/ipv4/syncookies.c                              |  2 +-
+net/ipv4/udp.c                                     |  2 +-
+net/ipv6/af_inet6.c                                |  2 +-
+net/ipv6/datagram.c                                |  2 +-
+net/ipv6/icmp.c                                    |  6 ++---
+net/ipv6/inet6_connection_sock.c                   |  4 ++--
+net/ipv6/netfilter/nf_reject_ipv6.c                |  2 +-
+net/ipv6/ping.c                                    |  2 +-
+net/ipv6/raw.c                                     |  2 +-
+net/ipv6/syncookies.c                              |  2 +-
+net/ipv6/tcp_ipv6.c                                |  4 ++--
+net/ipv6/udp.c                                     |  2 +-
+net/l2tp/l2tp_ip6.c                                |  2 +-
+net/netfilter/nf_synproxy_core.c                   |  2 +-
+net/xfrm/xfrm_state.c                              |  6 +++--
+security/security.c                                | 17 +++++++-------
+security/selinux/hooks.c                           | 26 ++++++++++++------
+security/selinux/include/objsec.h                  |  1 -
+security/selinux/include/xfrm.h                    |  2 +-
+security/selinux/ss/services.c                     |  4 +---
+security/selinux/xfrm.c                            | 13 ++++++-----
+35 files changed, 101 insertions(+), 77 deletions(-)
+
+-- 
+paul moore
+www.paul-moore.com
