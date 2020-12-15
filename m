@@ -2,96 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1282DAA56
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:45:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953B92DAA51
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:44:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728429AbgLOJnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 04:43:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
+        id S1728405AbgLOJnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 04:43:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727182AbgLOJnd (ORCPT
+        with ESMTP id S1726810AbgLOJnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 04:43:33 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279E9C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 01:42:47 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id j12so18719802ota.7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 01:42:47 -0800 (PST)
+        Tue, 15 Dec 2020 04:43:18 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62113C06179C;
+        Tue, 15 Dec 2020 01:42:38 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id ga15so26710773ejb.4;
+        Tue, 15 Dec 2020 01:42:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nrfZzU8i2XI5TReL11FPZCA/DbKh6MmkKEx+RvfbNo0=;
-        b=dLTcIZbmqXjw8OiNhLJT1Ued66pU3oyhulfg+tGUp4w/1OLIaRLdvkLDV73Dh6gWu/
-         6nRHfpqmnVVihgRe5iyrDWu3KY3QX72LyXXg7naKkSCK6vf0EYcpPipqwbpul7mILvbw
-         6RfB7mRva/KJopM6kHFoYfm2Zt10K8sGCjrsk=
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=sbp7bazvQ/Kg/Kx4Lh7f+HzqSKdsXL4CqYh5zWYbn/Q=;
+        b=t6rETd8BKnh9JPwR+wiUit332ATV4QQgbXbdlcS7VK4HhpteabSiMrJPrQWZUc1bxk
+         rgUgKkfy+CX8IGNZj4ONxneMVg0rL9NbDNXk6Lnf0D3D/37hRX+YgUgLAKowX3F6WN9s
+         W2Dobap8Dn0UQiYkgW2MS0yqPIabGP7XcEfRvHjyfcdFkRF/J+z9C4rW9UMteWErlRH/
+         fLxUnkCaQsFKEAqf6Ew7IxigWuaaUBMiAKesebEitcTO+lCBkJuTgQ9DBLWH/Bjl0egY
+         7vdSqWtWoHdebps5n9yqHUAZ2YPgTErQZjHp+1DMubGJUFGznL9hRAstABRDYqimsMyc
+         xKSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nrfZzU8i2XI5TReL11FPZCA/DbKh6MmkKEx+RvfbNo0=;
-        b=QGdZg3fofIWFU1Cv3raudvo4ptRFEUAHTDTYOES9VcK6NEdrgEJkt+JJIoEP9VcZz3
-         jPyZdDzmlsxA14w6VX2so6W0DLpWSneFPszs6xXiW8koG/NxbER4gIZB+8zUYLguZbEq
-         fcDemTrqcgQSt+X6RhR+P1Cea2482Px3SOvf+LDReJN7rrl2vspJKrlGAcqW5X4YZAP3
-         8Lwtj1fLZW8S46++gP7Znf/ldeRfi6vKhBvyvtdL4cxg3KC41/RfSrfUqMm4Mo2O5pmV
-         5ANWQxa7cA308vhlm9GgXftANmECHuyXG6+o5zTUlQ3AIQ9v9IyZNeBvXCh9/cdDQxLh
-         rFgA==
-X-Gm-Message-State: AOAM531eGZaY+3SdkpfFQCR1hNzXtkCWLgHQTANyJnKP9+6q8/cGy4xV
-        ODvK63tGRq34ajkhtr0322aw097ULlb7c4Wfyhbseg==
-X-Google-Smtp-Source: ABdhPJzqz52kCcy3Sd/fp9IWZ2qXtHhaK/T3eI017Kprgk6vEXCoVAsTgaMPPVLtQ2gCS/U3TYMOqnT0/0cx+e7+SLU=
-X-Received: by 2002:a9d:23ca:: with SMTP id t68mr22774532otb.281.1608025366091;
- Tue, 15 Dec 2020 01:42:46 -0800 (PST)
-MIME-Version: 1.0
-References: <20201105175031.00e0b081@canb.auug.org.au> <20201116104444.044486ea@canb.auug.org.au>
- <20201215065045.66421c34@canb.auug.org.au> <20201215134702.37a12a03@canb.auug.org.au>
-In-Reply-To: <20201215134702.37a12a03@canb.auug.org.au>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 15 Dec 2020 10:42:34 +0100
-Message-ID: <CAKMK7uECzCHd-q5T4P8F02jppLP+kuMWc9Nznp-65kgKBGPSEg@mail.gmail.com>
-Subject: Re: linux-next: build warnings after merge of the drm tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=sbp7bazvQ/Kg/Kx4Lh7f+HzqSKdsXL4CqYh5zWYbn/Q=;
+        b=XQkwoOn0RUGYd2GIvZoEmy8ZUckhVrLCOO6DOAHSVsu9OdImgCUDK5mAU6hK2YMHjo
+         v5g3GVZQ0GxryJbpKJlPoh1M5hvICa0EWK6/gWDcNRBRPCacVCjefmkjm3TBpaqauqjV
+         1pNoc65+43L7VpWJ7YWsd0cN6kiUfAFpLe9Q/+LL0A6VEptT3+XnxQjfb/6qModzAxgs
+         +5IIgXvqibhnL04a22NB1F1sjCXVO3zRXFTidCWv1xlFff9Wm6kbx4uCLufggPg2+ORq
+         qk4x26xsgCMInxwNmKd71AdKQm3cABwiXtidsOgpwWglYRfnRSstzFMqkAWllcUWj17G
+         FXBA==
+X-Gm-Message-State: AOAM531Vdfw7cpR9FNL9vi8PWJ+ZWg09XgB0rSVblmMR83dgrTGgVLdG
+        Wz0sT6lSAs/MKMUTDLESFiE=
+X-Google-Smtp-Source: ABdhPJx6kGVuVXxkYSZKFdzdahp4EjS2CrcsC3/+ew4xrg1WGte4KZ/gpGX/T8bK/uxCyJFaM2JHuQ==
+X-Received: by 2002:a17:906:a29a:: with SMTP id i26mr25934867ejz.45.1608025357153;
+        Tue, 15 Dec 2020 01:42:37 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id m7sm943808ejo.125.2020.12.15.01.42.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 15 Dec 2020 01:42:36 -0800 (PST)
+Message-ID: <615bb13dc394dac2b56fa60787e1841d2db12462.camel@gmail.com>
+Subject: Re: [PATCH v4 3/6] scsi: ufs: Group UFS WB related flags to struct
+ ufs_dev_info
+From:   Bean Huo <huobean@gmail.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 15 Dec 2020 10:42:36 +0100
+In-Reply-To: <1608022873.10163.17.camel@mtkswgap22>
+References: <20201211140035.20016-1-huobean@gmail.com>
+         <20201211140035.20016-4-huobean@gmail.com>
+         <1608022873.10163.17.camel@mtkswgap22>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 3:47 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> On Tue, 15 Dec 2020 06:50:45 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > On Mon, 16 Nov 2020 10:44:44 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > On Thu, 5 Nov 2020 17:50:31 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > > >
-> > > > After merging the drm tree, today's linux-next build (htmldocs) produced
-> > > > these warnings:
-> > > >
-> > > > include/linux/dma-buf-map.h:106: warning: Excess function parameter 'vaddr' description in 'DMA_BUF_MAP_INIT_VADDR'
-> > > > include/linux/dma-buf-map.h:106: warning: Function parameter or member 'vaddr_' not described in 'DMA_BUF_MAP_INIT_VADDR'
-> > > > include/linux/dma-buf-map.h:106: warning: Excess function parameter 'vaddr' description in 'DMA_BUF_MAP_INIT_VADDR'
-> > > >
-> > > > Introduced by commit
-> > > >
-> > > >   20e76f1a7059 ("dma-buf: Use struct dma_buf_map in dma_buf_vunmap() interfaces")
-> > >
-> > > I am still getting these warnings.
-> >
-> > I am still getting these warnings.
->
-> These warnings are now from Linus' tree.
+On Tue, 2020-12-15 at 17:01 +0800, Stanley Chu wrote:
+> > +     bool    wb_buf_flush_enabled;
+> > +     u8      wb_dedicated_lu;
+> > +     u8      b_wb_buffer_type;
+> > +     u32     d_wb_alloc_units;
+> > +
+> > +     bool    b_rpm_dev_flush_capable;
+> > +     u8      b_presrv_uspc_en;
+> 
+> Perhaps we could unify the style of these WB related stuff to wb_* ?
 
-We had a stuck pull request which should have been included in the
-main merge pull. This should be fixed now in drm-next. Well in a few
-minutes when the compile testing is done.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+yes, agree. I will change them.
+
+> 
+> Besides, I am not sure if using tab instead space between the type
+> and
+> name in this struct is a good idea.
+> 
+using space, in addition single space, type and parameter names are
+mixed. 
+
+
+use space:
+
+ /* UFS WB related flags */
+bool wb_enabled;
+bool wb_buf_flush_enabled;
+u8
+wb_dedicated_lu;
+u8 b_wb_buffer_type;
+u32 d_wb_alloc_units;
+
+use table:
+
+ /* UFS WB related flags */
+bool    wb_enabled;
+bool    wb_buf_flush_enabled;
+u8      wb_dedicated_lu;
+u8      b_wb_buffer_type;
+u32     d_wb_alloc_units;
+
+I think, the result is very clear comparing above two examples. yes,
+there is no explicit stipulation that we must use space or tab. Both
+styles exist in Linux. Maybe this is just matter of personal interest.
+
+
+Bean
+
+> Thanks,
+> Stanley Chu
+
