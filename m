@@ -2,205 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB872DAC1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:36:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1FD2DAC2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728540AbgLOLfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 06:35:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:35446 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726176AbgLOLfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 06:35:25 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C642D1FB;
-        Tue, 15 Dec 2020 03:34:39 -0800 (PST)
-Received: from [10.57.34.90] (unknown [10.57.34.90])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 857D33F66E;
-        Tue, 15 Dec 2020 03:34:38 -0800 (PST)
-Subject: Re: [PATCH] media: venus: use contig vb2 ops
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20201214125703.866998-1-acourbot@chromium.org>
- <5319c101-f4a4-9c99-b15d-4999366f7a63@linaro.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <20d8bf0e-c15a-ffc8-4bcc-376dc5f6e414@arm.com>
-Date:   Tue, 15 Dec 2020 11:34:34 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1728629AbgLOLiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 06:38:20 -0500
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:60585 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728153AbgLOLiT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 06:38:19 -0500
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5371A580397;
+        Tue, 15 Dec 2020 06:37:13 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Tue, 15 Dec 2020 06:37:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=AFuIKgjw3WQKcS4EGTNGDedZlPw
+        i+JZ5/cwhmXUQG3o=; b=WUkXbOedEpV8dAFGuREzjepXVrcDhZVExqGy1m5ttCI
+        bwpO7qdL/dGLJh2DU9hjqyCEwB1aWMNRpHj+2dpvNVeCen3gD9RIAWYLsRAvfFrG
+        cRwGH0Qg1ZwwaFXuHajTFtKx4T2rT1h7ewenLiJIM3BcJUGaKWeE1dg+rrpG8MlN
+        0XXltan4TaUWaUvDXE4qUvuH4ZDiSJIa8rXm1AtogOl2ZIT45q4wXJXO/cR/tpqw
+        zRQCp2HDwi7lJs9hHdCVMSYy1sXg9Mg+IbMqh4ks8UEMxIkIXv5UAMNY2wb/0VxY
+        /A878nE31KqgB+IFtvEEDFlLPd2ecJImpc2TlDMDMdA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=AFuIKg
+        jw3WQKcS4EGTNGDedZlPwi+JZ5/cwhmXUQG3o=; b=f9S7kxHEYpCdmnSvZBuQhD
+        87kV0YBwQyoWt7zomfzEmARxlaxPJ49EKzmLodh6wGEEn+MSmOT4mJ62VeFWmCNs
+        7iVK1pnRJZkF+ivl5wre8j1LkcBdfmbh3Pe+jS/IUCURyo6lT1KHB+BUpSiu4n6E
+        VQYYTI5j9Iek9DFduMuWoHja7LKn7RvvmweNAi/8wt9+6PCtqZxxfxo8cQo6ekVu
+        pphqro4Y8IBk0nW2KilobmYLatY4uTwwzOp5UMhr1KvQHWbo5s5adknHw9oq2G6g
+        3weZK6pfefvNWryvyhpfuk2yAhg/Oj1cZNSyp51zOOi3FjpLWpg2RNI9HPc1GkmQ
+        ==
+X-ME-Sender: <xms:55_YX5f1uKhCu56Y0ngVe5i-ahM42v2ZydGG8Eltm9QOTXKf2HsrLA>
+    <xme:55_YX8dEmWu574qhQng5KVbB8LSwDVW6QgRGhX2BZ5N5L_9TxJTE6jibE_wtkx8r8
+    aGl2-g3uzcxm2oeXvo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeltddgfeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:55_YX0OyFFbMBxpeIViMmsm2umf673uJEMqKmQu44mjA8oD8FMWCSQ>
+    <xmx:55_YX7IOBeNB0Gi1cesJ5_Fve0qr3kHrQMSEPjaeAyLAYb6whmjGDg>
+    <xmx:55_YX9F2TUSKM0JRMtTFHldH8s2Wt9n988T0vov75o7_FrnbYVncLg>
+    <xmx:6Z_YX5l1ml92QtphuwX0y2pfzP7Fb_rRPzMRvS43Q55xC_L_cNmaJg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 805E71080064;
+        Tue, 15 Dec 2020 06:37:11 -0500 (EST)
+Date:   Tue, 15 Dec 2020 12:37:10 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        davem@davemloft.net, kuba@kernel.org, wens@csie.org,
+        jernej.skrabec@siol.net, timur@kernel.org,
+        song.bao.hua@hisilicon.com, f.fainelli@gmail.com, leon@kernel.org,
+        hkallweit1@gmail.com, wangyunjian@huawei.com, sr@denx.de,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] net: allwinner: Fix some resources leak in the error
+ handling path of the probe and in the remove function
+Message-ID: <20201215113710.wh4ezrvmqbpxd5yi@gilmour>
+References: <20201214202117.146293-1-christophe.jaillet@wanadoo.fr>
+ <20201215085655.ddacjfvogc3e33vz@gilmour>
+ <20201215091153.GH2809@kadam>
 MIME-Version: 1.0
-In-Reply-To: <5319c101-f4a4-9c99-b15d-4999366f7a63@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3jnlnqak5zfuvw2l"
+Content-Disposition: inline
+In-Reply-To: <20201215091153.GH2809@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-15 11:16, Stanimir Varbanov wrote:
-> Hi,
-> 
-> Cc: Robin
-> 
-> On 12/14/20 2:57 PM, Alexandre Courbot wrote:
->> This driver uses the SG vb2 ops, but effectively only ever accesses the
->> first entry of the SG table, indicating that it expects a flat layout.
->> Switch it to use the contiguous ops to make sure this expected invariant
-> 
-> Under what circumstances the sg table will has nents > 1? I came down to
-> [1] but not sure I got it right.
-> 
-> I'm afraid that for systems with low amount of system memory and when
-> the memory become fragmented, the driver will not work. That's why I
-> started with sg allocator.
 
-Despite what videobuf-dma-contig seems to assume, dma_alloc_coherent() 
-makes no guarantee of providing physically contiguous memory. What it 
-provides is *DMA contiguous* memory, i.e. from the point of view of the 
-device. When an IOMMU is present and managed by the DMA API, such 
-buffers may be assembled out of physically-scattered pages (particularly 
-under memory pressure/fragmentation).
+--3jnlnqak5zfuvw2l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Robin.
+On Tue, Dec 15, 2020 at 12:11:53PM +0300, Dan Carpenter wrote:
+> On Tue, Dec 15, 2020 at 09:56:55AM +0100, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > On Mon, Dec 14, 2020 at 09:21:17PM +0100, Christophe JAILLET wrote:
+> > > 'irq_of_parse_and_map()' should be balanced by a corresponding
+> > > 'irq_dispose_mapping()' call. Otherwise, there is some resources leak=
+s.
+> >=20
+> > Do you have a source to back that? It's not clear at all from the
+> > documentation for those functions, and couldn't find any user calling it
+> > from the ten-or-so random picks I took.
+>=20
+> It looks like irq_create_of_mapping() needs to be freed with
+> irq_dispose_mapping() so this is correct.
 
-> 
-> [1]
-> https://elixir.bootlin.com/linux/v5.10.1/source/drivers/iommu/dma-iommu.c#L782
-> 
->> is always enforced. Since the device is supposed to be behind an IOMMU
->> this should have little to none practical consequences beyond making the
->> driver not rely on a particular behavior of the SG implementation.
->>
->> Reported-by: Tomasz Figa <tfiga@chromium.org>
->> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
->> ---
->> Hi everyone,
->>
->> It probably doesn't hurt to fix this issue before some actual issue happens.
->> I have tested this patch on Chrome OS and playback was just as fine as with
->> the SG ops.
->>
->>   drivers/media/platform/Kconfig              | 2 +-
->>   drivers/media/platform/qcom/venus/helpers.c | 9 ++-------
->>   drivers/media/platform/qcom/venus/vdec.c    | 6 +++---
->>   drivers/media/platform/qcom/venus/venc.c    | 6 +++---
->>   4 files changed, 9 insertions(+), 14 deletions(-)
->>
->> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
->> index 35a18d388f3f..d9d7954111f2 100644
->> --- a/drivers/media/platform/Kconfig
->> +++ b/drivers/media/platform/Kconfig
->> @@ -533,7 +533,7 @@ config VIDEO_QCOM_VENUS
->>   	depends on INTERCONNECT || !INTERCONNECT
->>   	select QCOM_MDT_LOADER if ARCH_QCOM
->>   	select QCOM_SCM if ARCH_QCOM
->> -	select VIDEOBUF2_DMA_SG
->> +	select VIDEOBUF2_DMA_CONTIG
->>   	select V4L2_MEM2MEM_DEV
->>   	help
->>   	  This is a V4L2 driver for Qualcomm Venus video accelerator
->> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
->> index 50439eb1ffea..859d260f002b 100644
->> --- a/drivers/media/platform/qcom/venus/helpers.c
->> +++ b/drivers/media/platform/qcom/venus/helpers.c
->> @@ -7,7 +7,7 @@
->>   #include <linux/mutex.h>
->>   #include <linux/slab.h>
->>   #include <linux/kernel.h>
->> -#include <media/videobuf2-dma-sg.h>
->> +#include <media/videobuf2-dma-contig.h>
->>   #include <media/v4l2-mem2mem.h>
->>   #include <asm/div64.h>
->>   
->> @@ -1284,14 +1284,9 @@ int venus_helper_vb2_buf_init(struct vb2_buffer *vb)
->>   	struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
->>   	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
->>   	struct venus_buffer *buf = to_venus_buffer(vbuf);
->> -	struct sg_table *sgt;
->> -
->> -	sgt = vb2_dma_sg_plane_desc(vb, 0);
->> -	if (!sgt)
->> -		return -EFAULT;
->>   
->>   	buf->size = vb2_plane_size(vb, 0);
->> -	buf->dma_addr = sg_dma_address(sgt->sgl);
-> 
-> Can we do it:
-> 
-> 	if (WARN_ON(sgt->nents > 1))
-> 		return -EFAULT;
-> 
-> I understand that logically using dma-sg when the flat layout is
-> expected by the hardware is wrong, but I haven't seen issues until now.
-> 
->> +	buf->dma_addr = vb2_dma_contig_plane_dma_addr(vb, 0);
->>   
->>   	if (vb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
->>   		list_add_tail(&buf->reg_list, &inst->registeredbufs);
->> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
->> index 8488411204c3..3fb277c81aca 100644
->> --- a/drivers/media/platform/qcom/venus/vdec.c
->> +++ b/drivers/media/platform/qcom/venus/vdec.c
->> @@ -13,7 +13,7 @@
->>   #include <media/v4l2-event.h>
->>   #include <media/v4l2-ctrls.h>
->>   #include <media/v4l2-mem2mem.h>
->> -#include <media/videobuf2-dma-sg.h>
->> +#include <media/videobuf2-dma-contig.h>
->>   
->>   #include "hfi_venus_io.h"
->>   #include "hfi_parser.h"
->> @@ -1461,7 +1461,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
->>   	src_vq->io_modes = VB2_MMAP | VB2_DMABUF;
->>   	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
->>   	src_vq->ops = &vdec_vb2_ops;
->> -	src_vq->mem_ops = &vb2_dma_sg_memops;
->> +	src_vq->mem_ops = &vb2_dma_contig_memops;
->>   	src_vq->drv_priv = inst;
->>   	src_vq->buf_struct_size = sizeof(struct venus_buffer);
->>   	src_vq->allow_zero_bytesused = 1;
->> @@ -1475,7 +1475,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
->>   	dst_vq->io_modes = VB2_MMAP | VB2_DMABUF;
->>   	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
->>   	dst_vq->ops = &vdec_vb2_ops;
->> -	dst_vq->mem_ops = &vb2_dma_sg_memops;
->> +	dst_vq->mem_ops = &vb2_dma_contig_memops;
->>   	dst_vq->drv_priv = inst;
->>   	dst_vq->buf_struct_size = sizeof(struct venus_buffer);
->>   	dst_vq->allow_zero_bytesused = 1;
->> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
->> index 1c61602c5de1..a09550cd1dba 100644
->> --- a/drivers/media/platform/qcom/venus/venc.c
->> +++ b/drivers/media/platform/qcom/venus/venc.c
->> @@ -10,7 +10,7 @@
->>   #include <linux/pm_runtime.h>
->>   #include <linux/slab.h>
->>   #include <media/v4l2-mem2mem.h>
->> -#include <media/videobuf2-dma-sg.h>
->> +#include <media/videobuf2-dma-contig.h>
->>   #include <media/v4l2-ioctl.h>
->>   #include <media/v4l2-event.h>
->>   #include <media/v4l2-ctrls.h>
->> @@ -1001,7 +1001,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
->>   	src_vq->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
->>   	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
->>   	src_vq->ops = &venc_vb2_ops;
->> -	src_vq->mem_ops = &vb2_dma_sg_memops;
->> +	src_vq->mem_ops = &vb2_dma_contig_memops;
->>   	src_vq->drv_priv = inst;
->>   	src_vq->buf_struct_size = sizeof(struct venus_buffer);
->>   	src_vq->allow_zero_bytesused = 1;
->> @@ -1017,7 +1017,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
->>   	dst_vq->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
->>   	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
->>   	dst_vq->ops = &venc_vb2_ops;
->> -	dst_vq->mem_ops = &vb2_dma_sg_memops;
->> +	dst_vq->mem_ops = &vb2_dma_contig_memops;
->>   	dst_vq->drv_priv = inst;
->>   	dst_vq->buf_struct_size = sizeof(struct venus_buffer);
->>   	dst_vq->allow_zero_bytesused = 1;
->>
-> 
+The doc should be updated first to make that clear then, otherwise we're
+going to fix one user while multiples will have poped up
+
+Maxime
+
+--3jnlnqak5zfuvw2l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9if5gAKCRDj7w1vZxhR
+xcrsAQCAqxdmtzOx5x2uljGYBPES+hoL5VtWTPYJ7galIKwmeQD9FLlD8pXyN4+t
+mmaQfNPJYJvD1vLewe+K5RjOzDRO3wA=
+=v6FU
+-----END PGP SIGNATURE-----
+
+--3jnlnqak5zfuvw2l--
