@@ -2,91 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC722DA63D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:31:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B87F2DA63B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727362AbgLOCYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:24:24 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:59811 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727175AbgLOCXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:23:49 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cw29Q0XTWz9s1l;
-        Tue, 15 Dec 2020 13:23:06 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1607998987;
-        bh=eId5oZC52tK4KiejMx9Sb2FQbEe9Ct3l7rQSdlOZqZI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=B+GwPaLP+AS428yj6TRvCsk23N31ZI061I9CDIiRXm2p9xXO//VB5W6EL5EYWEzKl
-         WlA71rSp7RINIqr5rMSf5VbjcOgwTvhmxGzUtSD/6Pb/gTVLwgTcuQzR5shjuXwHJS
-         dsMJNBoGdu29sGGeEAFQenMykY3cHb1tDSGoSniDOE5PMhVjnWkxTwOjQYTyfAGsfm
-         kwx13YQkyuQmJTIkS5DZ5bp2GOyLOri4fkNuHIEHsnEXwQ1SQmEtB84yJh5bb0DzFR
-         GaeCnqCO/IyyNcsvW9uL/RL/nmuNwH4zii0DWypiK9KEqcN8PHxJby60wcqwO4xH+U
-         BkQePURGuMMjQ==
-Date:   Tue, 15 Dec 2020 13:23:05 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Shakeel Butt <shakeelb@google.com>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- bpf-next tree
-Message-ID: <20201215132305.5f5a1c2b@canb.auug.org.au>
-In-Reply-To: <20201214180629.4fee48ae@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20201204202005.3fb1304f@canb.auug.org.au>
-        <20201215072156.1988fabe@canb.auug.org.au>
-        <20201215012943.GA3079589@carbon.DHCP.thefacebook.com>
-        <20201214174021.2dfc2fbd99ca3e72b3e4eb02@linux-foundation.org>
-        <20201214180629.4fee48ae@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1727670AbgLOCZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:25:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727677AbgLOCZb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:25:31 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474B8C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:24:51 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id v14so15482175wml.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:24:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OE9Bb/mebGq5IQ0pCbTX8QkKgB3rp/03lLTqI0xRKXs=;
+        b=aRJ8lCanJ+XgPi264EPRH8ikBySk1KRXkEP+4pqT257TrDqvg0P0BLjyx8UI1KOa6H
+         arfSX+iKDTpsyBHWViuh9chb79KswbRPtTNr2Cf7qtDkPnEXp9wZow00eemuTIGZbRvm
+         ss5IHW0OQEO5ZJhRjVamy0bgWebWVzkM1KJrrKiF7hfFaKvrpDgHKkQmt9SBd5/GkV08
+         0lPO6DNlOPMQlI1z1OBN9MtXumSiFLYeTPdf2wN/otpQk5OT2EJjq/BOFBHWiVUEGbzW
+         vJKYfRvq3LMoR6oG2sm480rHk6aYiXZPoKs/eqz/kQNy8vBYpAuSDhiiOry87KQT0TEq
+         BZ7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OE9Bb/mebGq5IQ0pCbTX8QkKgB3rp/03lLTqI0xRKXs=;
+        b=noyWWvaim6CNfpZgYvOfNLNcpr5eK6f+lWZUWWOot9U9DIAg4TE6bprR69r61m275K
+         U/voYrsySaFwfn9E9pJSAeDeUN/DamNE9dbkx/x8DUiHvonjg7t5Kij/JbrVUgUVxsim
+         OeSlb0IjmV0A+bijjfofCiBwiq76ueaoJfj5SRIKT/+ID2sEKq+Eq1E5Kv78cHLxNqay
+         +HU/NXHYBPgWDrvDyQXlwef9Fq1QlxmMTlH99txNRH4pS/AEsj9An4e1leNxmQ1M/0E0
+         pbdaMLJjJRk454Ke+HCidCEFVNko9X9CjLRVrpw/SrOJ3289O13IbiVj1/w9R5yk+Jiw
+         Yv8w==
+X-Gm-Message-State: AOAM531pYtJFSyM3oWG0DEyTMmRP2yKVCysNK9+HXlx1i4kEVVyuDCzE
+        nEcR1z5OmXmZL+rr7REhdnFfdg==
+X-Google-Smtp-Source: ABdhPJzxESi1Dzn7QiARQDqrwlrdGaBjrqFs3Y+/9wqhxrhVtvYm/i7hQVccloHVnB4CnbG3xA9FvQ==
+X-Received: by 2002:a05:600c:274d:: with SMTP id 13mr30751217wmw.77.1607999089909;
+        Mon, 14 Dec 2020 18:24:49 -0800 (PST)
+Received: from [192.168.0.3] (hst-208-199.medicom.bg. [84.238.208.199])
+        by smtp.googlemail.com with ESMTPSA id 89sm36734823wre.51.2020.12.14.18.24.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Dec 2020 18:24:49 -0800 (PST)
+Subject: Re: [PATCH v4] venus: core: add support to dump FW region
+To:     Dikshita Agarwal <dikshita@codeaurora.org>,
+        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org
+References: <1607951031-12980-1-git-send-email-dikshita@codeaurora.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <3afbf03a-50ec-9b00-d11b-574ce9c05bb3@linaro.org>
+Date:   Tue, 15 Dec 2020 04:24:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Y._2ICox=dBWFXc9VQNNpAE";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <1607951031-12980-1-git-send-email-dikshita@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Y._2ICox=dBWFXc9VQNNpAE
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi Jakub,
 
-On Mon, 14 Dec 2020 18:06:29 -0800 Jakub Kicinski <kuba@kernel.org> wrote:
->
-> AFAIU all we can do is tell Linus about the merge issue, and point=20
-> at Stephen's resolution.
+On 12/14/20 3:03 PM, Dikshita Agarwal wrote:
+> Add support to dump video FW region during FW crash
+> using devcoredump helpers.
+> 
+> Major changes since v1:
+> - update the name of function (Stephen)
+> - store start address and size in resource structure during
+>   probe and reuse while dumping (Stephen, Stanimir)
 
-This is the correct response.
+The changes should go to ...
 
---=20
-Cheers,
-Stephen Rothwell
+> 
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> ---
 
---Sig_/Y._2ICox=dBWFXc9VQNNpAE
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+... here
 
------BEGIN PGP SIGNATURE-----
+>  drivers/media/platform/qcom/venus/core.c     | 31 ++++++++++++++++++++++++++++
+>  drivers/media/platform/qcom/venus/core.h     |  2 ++
+>  drivers/media/platform/qcom/venus/firmware.c |  3 +++
+>  3 files changed, 36 insertions(+)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+> index bdd293f..2ddbd36 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -7,8 +7,10 @@
+>  #include <linux/interconnect.h>
+>  #include <linux/ioctl.h>
+>  #include <linux/delay.h>
+> +#include <linux/devcoredump.h>
+>  #include <linux/list.h>
+>  #include <linux/module.h>
+> +#include <linux/of_address.h>
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/YHgkACgkQAVBC80lX
-0Gw4pAgAi4awFlvffFlzIO8jDZlNVtxte5b/dM4GOGRk0QS/qSUswgO4sWKgY53a
-6gWS8iQ2QmS9kiwUTU2jcojiq23YzWPQuaiw1C/DiZTg5ALZFFTrgy3ne3svvTh6
-MGkwPOo5HxL5eDeCDA+IU2jVMaqOCfKEVQdMnOY1i5m5OVcVYVzd2Bp/HxCHr07H
-q9+S052sbcdgBQcm/yUJqwZFn4pxCk8Xs61YqX5oq/9hGJbzB5I4SMdSwuUbo6GO
-f6UIobubXpEHbRhAc2omI7gD+3Vf8XxdVitRllZKIXaYXSO4sEAvxXcCMCcKZtZQ
-TNipvxwef437z5RCnfAxyBkRGBmy/A==
-=AN7C
------END PGP SIGNATURE-----
+drop this leftover.
 
---Sig_/Y._2ICox=dBWFXc9VQNNpAE--
+>  #include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/slab.h>
+> @@ -22,6 +24,33 @@
+>  #include "firmware.h"
+>  #include "pm_helpers.h"
+>  
+> +static void venus_coredump(struct venus_core *core)
+> +{
+> +	struct device *dev;
+> +	phys_addr_t mem_phys;
+> +	size_t mem_size;
+> +	void *mem_va;
+> +	void *data;
+> +
+> +	dev = core->dev;
+> +	mem_phys = core->fw.mem_phys;
+> +	mem_size = core->fw.mem_size;
+> +
+> +	mem_va = memremap(mem_phys, mem_size, MEMREMAP_WC);
+> +	if (!mem_va)
+> +		return;
+> +
+> +	data = vmalloc(mem_size);
+> +	if (!data) {
+> +		memunmap(mem_va);
+> +		return;
+> +	}
+> +
+> +	memcpy(data, mem_va, mem_size);
+> +	memunmap(mem_va);
+> +	dev_coredumpv(dev, data, mem_size, GFP_KERNEL);
+> +}
+> +
+>  static void venus_event_notify(struct venus_core *core, u32 event)
+>  {
+>  	struct venus_inst *inst;
+> @@ -67,6 +96,8 @@ static void venus_sys_error_handler(struct work_struct *work)
+>  
+>  	venus_shutdown(core);
+>  
+> +	venus_coredump(core);
+> +
+>  	pm_runtime_put_sync(core->dev);
+>  
+>  	while (core->pmdomains[0] && pm_runtime_active(core->pmdomains[0]))
+> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+> index 3a477fc..b37de95 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -178,6 +178,8 @@ struct venus_core {
+>  		struct device *dev;
+>  		struct iommu_domain *iommu_domain;
+>  		size_t mapped_mem_size;
+> +		phys_addr_t mem_phys;
+> +		size_t mem_size;
+>  	} fw;
+>  	struct mutex lock;
+>  	struct list_head instances;
+> diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
+> index d03e2dd..89defc2 100644
+> --- a/drivers/media/platform/qcom/venus/firmware.c
+> +++ b/drivers/media/platform/qcom/venus/firmware.c
+> @@ -201,6 +201,9 @@ int venus_boot(struct venus_core *core)
+>  		return -EINVAL;
+>  	}
+>  
+> +	core->fw.mem_size = mem_size;
+> +	core->fw.mem_phys = mem_phys;
+> +
+>  	if (core->use_tz)
+>  		ret = qcom_scm_pas_auth_and_reset(VENUS_PAS_ID);
+>  	else
+> 
+
+With those fixes:
+
+Reviewed-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+
+-- 
+regards,
+Stan
