@@ -2,82 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499652DB048
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA3A2DB055
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730256AbgLOPlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:41:47 -0500
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:48466 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730242AbgLOPlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:41:36 -0500
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 0BFFekxC005572;
-        Tue, 15 Dec 2020 16:40:46 +0100
-Date:   Tue, 15 Dec 2020 16:40:46 +0100
-From:   Willy Tarreau <w@1wt.eu>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: drivers/mtd/tests/subpagetest.c:426:1: error: could not split
- insn
-Message-ID: <20201215154046.GA5262@1wt.eu>
-References: <202012152318.bHtYzSWJ-lkp@intel.com>
+        id S1730303AbgLOPnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:43:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729735AbgLOPlp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:41:45 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22A0C06179C;
+        Tue, 15 Dec 2020 07:41:04 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id i7so3790766pgc.8;
+        Tue, 15 Dec 2020 07:41:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=80Mc7C15jdteQdkW+dQYgsQRU8zaIe7+K7tQO+Wn2Uo=;
+        b=UMXPSATLUcMYDaFa/nzhImtygo1tzlJtFDlArVQi6dkDKv3Rk9u3IpRMtQYea0FvWo
+         P3sLPlm79/m1f4ANvNak1mLcK9iHyRj1GXIp1yFimwccgXZbFAX9ZNfeSTj2uBzAGOwD
+         c1zSENzlgQ3Hob8dt4Wqqsh9qdkyKfEq7Q9g79Z97MQET2qjfgmnkoSYO9ITia6k9xYY
+         +nSbZ1VMP3hleX+wrap0Veuaz4j+q0wAxsUMtshyag3oi5ES9BWbbK3Lm2zNRyXr6SRs
+         tHGrF+LjB46+jJaX8yVVaF96rmcE2J+IepPIJlwX0Gb/PC1F8QQ1XJ+aBGgyur4f0Z3O
+         1eRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=80Mc7C15jdteQdkW+dQYgsQRU8zaIe7+K7tQO+Wn2Uo=;
+        b=oDPaxykHbtZLQbQXku589lcjfm9/YQ2GU9+tGyEmGeGPsbwBhwPGtiklsenHlRN7ON
+         wS4kd3xj4kJYmCbGsiIgAnhL12xzIgUZIZswvYp0zr39nrX5nQmfwRHD/sJNg/7sfETJ
+         64HOzpPOvusk104qmrxZEhPQ75liYTooREwgMV3erpwo8scioG1lgJ571C0I/56jKL5X
+         3W5NcrVY4/6W3Ems2JtmvRbfFPecWlsN8InOYOGLvtFDo2ATpp1dMxTfMeSDkqwdsrVm
+         b4pOL/DNUTphlu6GPvkI4OIgZa3BKnAnYpF9NBPonRAcxh3SSo/fzdxCmlqcRXRiap/R
+         VnUw==
+X-Gm-Message-State: AOAM532mFt6YTT6emfE6X/4vNXiFQfTRfk/s2E7AhrTqZZDOaM3VzRt7
+        nFomjBkP1dht/wiSX/12iRs=
+X-Google-Smtp-Source: ABdhPJxcseeiq3CDrKpwSFVjn61QO89iMzEYpkd1btbDilDv+PAHvzJRTefOOg9lEPZM1k8L1T1L0Q==
+X-Received: by 2002:a62:7a91:0:b029:19e:55db:9ddc with SMTP id v139-20020a627a910000b029019e55db9ddcmr28779638pfc.68.1608046864434;
+        Tue, 15 Dec 2020 07:41:04 -0800 (PST)
+Received: from [10.230.29.166] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id q12sm8295591pgj.24.2020.12.15.07.41.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 07:41:03 -0800 (PST)
+Subject: Re: [PATCH v2 1/2] arm64: dts: broadcom: clear the warnings caused by
+ empty dma-ranges
+To:     Bharat Gooty <bharat.gooty@broadcom.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Ray Jui <ray.jui@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Scott Branden <sbranden@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20201016090833.1892-1-thunder.leizhen@huawei.com>
+ <20201016090833.1892-2-thunder.leizhen@huawei.com>
+ <20201128045328.2411772-1-f.fainelli@gmail.com>
+ <CAK8P3a1_5RgcPz+bgo1bbUBk8NTJd=1-Y5-=CsQYkFgLfTE3_A@mail.gmail.com>
+ <9c6c6b7e-8c39-8c49-5c87-9b560c027841@broadcom.com>
+ <CAK8P3a2XYk8D80XARrpUSBHk1yye3KHXOdaQge4HNSZZOC=xKw@mail.gmail.com>
+ <CACvutz9v+TBUbrCo3X-u5ebbs04nR0y0yQN3qWfSAyZVy9RM2g@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <c38cf11a-ed1d-d150-52fb-e3b4a0a30712@gmail.com>
+Date:   Tue, 15 Dec 2020 07:41:00 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202012152318.bHtYzSWJ-lkp@intel.com>
-User-Agent: Mutt/1.6.1 (2016-04-27)
+In-Reply-To: <CACvutz9v+TBUbrCo3X-u5ebbs04nR0y0yQN3qWfSAyZVy9RM2g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Tue, Dec 15, 2020 at 11:05:28PM +0800, kernel test robot wrote:
-> Hi Willy,
-> 
-> FYI, the error/warning still remains.
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   148842c98a24e508aecb929718818fbf4c2a6ff3
-> commit: 3744741adab6d9195551ce30e65e726c7a408421 random32: add noise from network and scheduling activity
-(...)
 
-not sure why I'm assigned this, but the root cause is a compiler bug:
->    drivers/mtd/tests/subpagetest.c: In function 'mtd_subpagetest_init':
-> >> drivers/mtd/tests/subpagetest.c:426:1: error: could not split insn
->      426 | }
->          | ^
->    (insn:TI 453 2652 455 (set (reg/v:SI 3 a3 [orig:304 a ] [304])
->            (xor:SI (reg:SI 1 a1 [orig:717 net_rand_noise ] [717])
->                (const:SI (plus:SI (symbol_ref:SI ("*.LANCHOR0") [flags 0x182])
->                        (const_int 12 [0xc]))))) "include/linux/prandom.h":66:4 152 {cskyv2_xorsi3}
->         (expr_list:REG_DEAD (reg:SI 1 a1 [orig:717 net_rand_noise ] [717])
->            (nil)))
->    during RTL pass: final
->    drivers/mtd/tests/subpagetest.c:426:1: internal compiler error: in final_scan_insn_1, at final.c:3074
-                                            ^^^^^^^^^^^^^^^^^^^^^^^
+On 12/15/2020 5:19 AM, Bharat Gooty wrote:
+> Since the IOMMU is disabled and DMA engine is on 32-bit bus, We can not
+> give the complete DDR for the USB DMA.
+> So restricting the usable DAM size to 4GB.
 
->    0x510da0 _fatal_insn(char const*, rtx_def const*, char const*, int, char const*)
->    	/tmp/build-crosstools-xh-9.3.0-2.34/gcc/gcc-9.3.0/gcc/rtl-error.c:108
->    0x503d22 final_scan_insn_1
->    	/tmp/build-crosstools-xh-9.3.0-2.34/gcc/gcc-9.3.0/gcc/final.c:3074
->    0x73f8bf final_scan_insn(rtx_insn*, _IO_FILE*, int, int, int*)
->    	/tmp/build-crosstools-xh-9.3.0-2.34/gcc/gcc-9.3.0/gcc/final.c:3153
->    0x73fbac final_1
->    	/tmp/build-crosstools-xh-9.3.0-2.34/gcc/gcc-9.3.0/gcc/final.c:2021
->    0x740618 rest_of_handle_final
->    	/tmp/build-crosstools-xh-9.3.0-2.34/gcc/gcc-9.3.0/gcc/final.c:4659
->    0x740618 execute
->    	/tmp/build-crosstools-xh-9.3.0-2.34/gcc/gcc-9.3.0/gcc/final.c:4737
->    Please submit a full bug report,
->    with preprocessed source if appropriate.
->    Please include the complete backtrace with any bug report.
->    See <https://gcc.gnu.org/bugs/> for instructions.
-          ^^^^^^^^^^^^^^^^^^^^^^^^^
+Thanks, can you make this a proper patch submission along with a Fixes:
+tag that is:
 
-That's totally out of my scope. I suspect it might have broken a bisect
-operation.
-
-Regards,
-Willy
+Fixes: 2013a4b684b6 ("arm64: dts: broadcom: clear the warnings caused by
+empty dma-ranges")
+-- 
+Florian
