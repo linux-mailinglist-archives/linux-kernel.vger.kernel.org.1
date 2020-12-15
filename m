@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162CB2DB180
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2362DB17E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731018AbgLOQdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:33:32 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:35806 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729561AbgLOQcz (ORCPT
+        id S1731031AbgLOQdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:33:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730921AbgLOQdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:32:55 -0500
-Received: by mail-ot1-f67.google.com with SMTP id i6so19966096otr.2;
-        Tue, 15 Dec 2020 08:32:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7YAQAVt9xHPWfTAqPkRDtbeSmHmka4bZA5QuCv8X5zw=;
-        b=OLBLtfJRU17lty7kCH5DghkjJJpsP//I7IQ9w2oYUGwnSOkLiCokCgD/4Tz766TSD8
-         Mwe/VPrTij2WCzaOrpa78fLFuOjp+M3xjfq/zyZUVyxqA8jGQPHAtZyZzsZ7aWjRbdCf
-         uSPV84sKN9leBULmMkuebppS+oS6aVuVD7XREG8nD/3MaDWEF/2norWxZ9QuE8ss8S4L
-         MfsYpwFhj4tdDpX308/TC8hoXrXxSYa4CdX5t0phWEY+g3C2drNASRUoglYjxhb/LgHn
-         uEAitFl9WtBi139mW/boam6GY6xHZ+fFZmPmmZDSrAlVeCb/Iz7dMAXR+2IIh3W6TkDq
-         9cAQ==
-X-Gm-Message-State: AOAM5312n1lkyaeDE8HMZ2QKvnDzfT3eGNjcKHNSn3KPwzDvbqQDJX42
-        BY2VdmQjdH9r0iw9E+820A==
-X-Google-Smtp-Source: ABdhPJxuHLb1e0yz4x9X/eFcHxas2aAdH3/P0n37LQH1eEbsb1g0eOoptatCyZ7DZlJdcmpZxBvBfQ==
-X-Received: by 2002:a9d:6255:: with SMTP id i21mr24143646otk.346.1608049934531;
-        Tue, 15 Dec 2020 08:32:14 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r14sm523413ote.28.2020.12.15.08.32.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 08:32:13 -0800 (PST)
-Received: (nullmailer pid 3980195 invoked by uid 1000);
-        Tue, 15 Dec 2020 16:32:12 -0000
-Date:   Tue, 15 Dec 2020 10:32:12 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Icenowy Zheng <icenowy@aosc.io>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        linux-spi@vger.kernel.org
-Subject: Re: [RFC PATCH 10/12] dt-bindings: spi: sun6i: add compatible for
- V831 SPI
-Message-ID: <20201215163212.GA3972588@robh.at.kernel.org>
-References: <20201212040157.3639864-1-icenowy@aosc.io>
- <20201212051202.3645115-1-icenowy@aosc.io>
+        Tue, 15 Dec 2020 11:33:21 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72EEC06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 08:32:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=e9mj8fcSZI6Akj0xGwlMlxIYcxQ8rxTlgS6PlD6PZhY=; b=Ps2AqxrIyKLgfStTwZU714rDzn
+        lttO4U8XzgV7y6E+ek2dBC6c9F7yLJh6ezYFNacrWOCw/ieavHkwZUioYTDgePgwcc41hTJYGiP6p
+        O0a+T3ay2UTRnnTJRae41Odq3RGF2m5N6EPn3YZa+t5jDOxac2xgIRRjZouEzeCd2w/e7ZtMbItUx
+        dv7bO3fAnE3wJcA0MccgAGMLwHNaeMUJwX96haTwb6E0yaq1RX37S9dyLNk/EzWJGD/nEh8WP0BgB
+        jVqLd5KwXRx7QYEr+WMNeOrNw2+PX2ukWDbnITQG6YOl7SHNBBgcsKiI9W51IEff+b+dFXskLbi9r
+        eB9ZwDGQ==;
+Received: from [2601:1c0:6280:3f0::64ea]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kpDFT-0002nO-3e; Tue, 15 Dec 2020 16:32:27 +0000
+Subject: Re: [PATCH] arch: x86: entry: vdso: fix type conversion on printf()
+ call
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org
+Cc:     luto@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com
+References: <20201215160314.18773-1-info@metux.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <41ef1cd1-017d-a0d4-91d3-a1183bd2ab01@infradead.org>
+Date:   Tue, 15 Dec 2020 08:32:20 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201212051202.3645115-1-icenowy@aosc.io>
+In-Reply-To: <20201215160314.18773-1-info@metux.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 01:12:00PM +0800, Icenowy Zheng wrote:
-> V831 has a SPI controller similar to the H6 one.
+On 12/15/20 8:03 AM, Enrico Weigelt, metux IT consult wrote:
+> Fixing the following compiler warning by explicit conversion to long:
 > 
-> Add a compatible string for it.
+> In file included from /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.c:162:0:
+> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h: In function 'extract64':
+> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t {aka unsigned int}' [-Wformat=]
+>   fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
+>                                                     ^
+>   CC      mm/filemap.o
+> In file included from /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.c:166:0:
+> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h: In function 'extract32':
+> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t {aka unsigned int}' [-Wformat=]
+>   fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
 > 
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: linux-spi@vger.kernel.org
-> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
 > ---
-> H6 and V831 SPI controllers is not totally the same with H3: they have
-> QSPI support added. Here V831 compatible string is just added in
-> parallel with H6 one, but maybe we should make H6 SPI do not fallback to
-> H3 one, and add H6 one as fallback to V831?
+>  arch/x86/entry/vdso/vdso2c.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-A fallback is really only needed if there's a user you expect to work 
-unmodified. For example, say a new DMA mode is added, but that's 
-something a bootloader wouldn't use. Given QSPI mode is probably 
-fundamentally different?, then a fallback is probably not needed.
+Hi,
 
-> 
->  .../devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml         | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml b/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
-> index 7866a655d81c..a620ff30033e 100644
-> --- a/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
-> +++ b/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
-> @@ -24,6 +24,7 @@ properties:
->        - items:
->            - enum:
->                - allwinner,sun8i-r40-spi
-> +              - allwinner,sun8i-v831-spi
->                - allwinner,sun50i-h6-spi
->            - const: allwinner,sun8i-h3-spi
+size_t is normally printed with %zu.
+Is there some reason that isn't being used here?
+
+> diff --git a/arch/x86/entry/vdso/vdso2c.h b/arch/x86/entry/vdso/vdso2c.h
+> index 1c7cfac7e64a..5c6a4bbc63f9 100644
+> --- a/arch/x86/entry/vdso/vdso2c.h
+> +++ b/arch/x86/entry/vdso/vdso2c.h
+> @@ -35,7 +35,8 @@ static void BITSFUNC(extract)(const unsigned char *data, size_t data_len,
+>  	if (offset + len > data_len)
+>  		fail("section to extract overruns input data");
 >  
-> -- 
-> 2.28.0
+> -	fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
+> +	fprintf(outfile, "static const unsigned char %s[%lu] = {", name,
+> +		(unsigned long)len);
+>  	BITSFUNC(copy)(outfile, data + offset, len);
+>  	fprintf(outfile, "\n};\n\n");
+>  }
+> 
+
+thanks.
+-- 
+~Randy
+
