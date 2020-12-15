@@ -2,135 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B752DB4B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:58:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 946062DB4C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 21:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbgLOT5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 14:57:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36598 "EHLO
+        id S1727671AbgLOUBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 15:01:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725850AbgLOT5I (ORCPT
+        with ESMTP id S1725850AbgLOUBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 14:57:08 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A4DC0617B0;
-        Tue, 15 Dec 2020 11:56:27 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id qw4so29419681ejb.12;
-        Tue, 15 Dec 2020 11:56:27 -0800 (PST)
+        Tue, 15 Dec 2020 15:01:01 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE51C06179C;
+        Tue, 15 Dec 2020 12:00:20 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id ga15so29475413ejb.4;
+        Tue, 15 Dec 2020 12:00:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=h7llLjIqukhexaM6P3uzsRtzcHeGFXmJ3btWwPtFpC8=;
-        b=NMfK9jPX/CUL9vuin1R4cgxj2dLIkSRTiBCLGH2+sVxD+YGKTh7sn4LV/THdDqQMPw
-         i2DwBc4GZPoht1a8mVkmNRn4zeOCiTQyfB3WUHnNqIg0Uq6hlGvNsSu4UmFKFqFSCIvg
-         CQCSJ3lkJLmW6FYRX+iANcSOCI9JPIANnmCqnrg+XyaJrLY2oWh4EsSBZDkfduhMADAt
-         JG9QWWRrIDAuiXNcUOmtB9c3p9AdBcsrGCwIXqI8lta/Lmw08IWNghAwSTTl2NWKI7Av
-         LnwPTLucZ7c5KmdllFWcIdE/HPJXFrOr6938z5B2DYBDjOIKSXC3a2RpBHsGfReNXKpv
-         VN/w==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7Vz7t0MFC5aymielea2K5QZe7zJV0QES4cE9gABPJn8=;
+        b=Q4WCrOW0+BY8Ove2ALhxmDuJVAc1mFBZuFCThWib4oaGHMmFPkgDPObVMf76WTi07I
+         IhNCaPJm3waAuoEeTclzo/JBGEEa4WmyVEY+cDM15y+YgfNn33gVXL9f1Dskvk+Orddy
+         A68zbuF7OpPektmYs9hmJoQTK2bF+ZVxlxvjLcNIc/Y3xwhoOMf1GWhm14HugifuDgXn
+         uSIgFgDnktItru/DC/u+7vZYj8pRUKXhlLPvubwhdFgIQrkhBCYTww3cVPwOjHDHlwSq
+         Jj6U37dgXWwb5AzDNaGN0rlBcGylkAHmoDsdl9PzfU8KeWPDsVB6A7oB9EHQWv1OTuII
+         dnSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=h7llLjIqukhexaM6P3uzsRtzcHeGFXmJ3btWwPtFpC8=;
-        b=GAK44uzn0Oy9y7iuIwSaagLYFWz+QN/BIL7egfOY62fRARkAVddUMAw0E+PUbjL3Vy
-         Bz36N/sdZdTC3e3nPCE5t5Hqz5P57lb4arxneuK/xBlLRb7dnw8hkejKJ9MHTNzes/CJ
-         32wwGFo6qOTRZdG3NWR8xw9VlSOtBcHba4VULHZjjwpc5DWlhgbBwUEs2bjZXnCD4OSt
-         yk1WJLIlF+0D7+sCyIrfTyis2uU6J8sXTFxbPfJtcVg5ehlBnJwB0KovOxd2hvvAAytC
-         1r40UBbR9yotFELXr8Xzwz9cI6SEprhV+hK/6erJSlD2BBpYut5FgRWoYusGDFj5DeQu
-         pFWw==
-X-Gm-Message-State: AOAM533xSZLfrlzX5sYETn5tmT+JJNvwTRyrEdnADngcpEvOJBmbuX5p
-        ooKBhxQtYYzdYgx1FQddRKo=
-X-Google-Smtp-Source: ABdhPJyasmOMsF35ZElg1o5hLIdXcmFKi48nidSeARBcBqRjoZhApccNBJrUWuy9iPFKyTNiLVzUmQ==
-X-Received: by 2002:a17:906:94d4:: with SMTP id d20mr8313357ejy.475.1608062186101;
-        Tue, 15 Dec 2020 11:56:26 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id z24sm19204048edr.9.2020.12.15.11.56.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 15 Dec 2020 11:56:25 -0800 (PST)
-Message-ID: <f5c930c3e30f3279f5920d673f6d5bc169e6cfa3.camel@gmail.com>
-Subject: Re: [PATCH v4 1/6] scsi: ufs: Add "wb_on" sysfs node to control WB
- on/off
-From:   Bean Huo <huobean@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 15 Dec 2020 20:56:24 +0100
-In-Reply-To: <X9iQoIpL48yQyr7D@kroah.com>
-References: <20201211140035.20016-1-huobean@gmail.com>
-         <20201211140035.20016-2-huobean@gmail.com> <X9iQoIpL48yQyr7D@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7Vz7t0MFC5aymielea2K5QZe7zJV0QES4cE9gABPJn8=;
+        b=OccsZ+VD8MeEZUBY3xDnDbl8PNAGABGw1GC92nrQKy//iYL6zIXrQtL7+DmGgZXbY9
+         3+CbC8rapsiODVw6Q3FCtswCvAWirPSaM1xLy2zqbmbb2P/bG9x4cmB7FreCHukMA5D9
+         eFC/RYW8oI70u88Tg8HHeN6oHCHJMs5MYczaia/rKRWXgtzCuKqBO3S5q7HA4fJgOgFW
+         pSkSUIC3kQBMf0/2dlJB9n/h3MIDPTfHloh4HoUVSSLHAY+YsYxM+AuEuqWNQyVrOcV2
+         mtfNpYqq0rBXKqlMHMyOFyKIg5fgz7HCK2yJC/axUOxqX40g9M5O5o7KgjnRXNjv/3XK
+         t/Zg==
+X-Gm-Message-State: AOAM5331ERhOlnwjPFajXYIMhemxpKb27b6qvwXebqS2ETG7ke5b42Ex
+        wqH12PBkzkHwkot/q8XC+jEvwYbdo9K4Ag==
+X-Google-Smtp-Source: ABdhPJyE0ZZRr6wCpsJqhDlJwTci5gPOadVCpJgoWjoG3kVB+gBjuaIYxDhxfbFJJtDUPr9M+I2bfw==
+X-Received: by 2002:a17:906:7243:: with SMTP id n3mr27611178ejk.246.1608062419143;
+        Tue, 15 Dec 2020 12:00:19 -0800 (PST)
+Received: from [192.168.2.202] (pd9e5a7aa.dip0.t-ipconnect.de. [217.229.167.170])
+        by smtp.gmail.com with ESMTPSA id q5sm2117746ejr.89.2020.12.15.12.00.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 12:00:18 -0800 (PST)
+Subject: Re: [PATCH v2 8/9] platform/surface: Add Surface Aggregator
+ user-space interface
+To:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        platform-driver-x86@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20201203212640.663931-1-luzmaximilian@gmail.com>
+ <20201203212640.663931-9-luzmaximilian@gmail.com>
+ <13b24eb0-e60f-e1d6-fcea-a19f62c40b4f@redhat.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <a22def75-a4e5-4ae4-f527-7695630be1ee@gmail.com>
+Date:   Tue, 15 Dec 2020 21:00:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
+MIME-Version: 1.0
+In-Reply-To: <13b24eb0-e60f-e1d6-fcea-a19f62c40b4f@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg k-h,
-
-> >  
-> > +static ssize_t wb_on_show(struct device *dev, struct
-> > device_attribute *attr,
-> > +			  char *buf)
-> > +{
-> > +	struct ufs_hba *hba = dev_get_drvdata(dev);
-> > +
-> > +	return scnprintf(buf, PAGE_SIZE, "%d\n", hba->wb_enabled);
+On 12/15/20 5:35 PM, Hans de Goede wrote:
+> Hi,
 > 
-> Please just use sysfs_emit().
-
-thanks, will be changed in next version.
+> On 12/3/20 10:26 PM, Maximilian Luz wrote:
+>> Add a misc-device providing user-space access to the Surface Aggregator
+>> EC, mainly intended for debugging, testing, and reverse-engineering.
+>> This interface gives user-space applications the ability to send
+>> requests to the EC and receive the corresponding responses.
+>>
+>> The device-file is managed by a pseudo platform-device and corresponding
+>> driver to avoid dependence on the dedicated bus, allowing it to be
+>> loaded in a minimal configuration.
+>>
+>> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
 > 
-> > +}
-> > +
-> > +static ssize_t wb_on_store(struct device *dev, struct
-> > device_attribute *attr,
-> > +			   const char *buf, size_t count)
-> > +{
-> > +	struct ufs_hba *hba = dev_get_drvdata(dev);
-> > +	unsigned int wb_enable;
-> > +	ssize_t res;
-> > +
-> > +	if (ufshcd_is_clkscaling_supported(hba)) {
-> > +		/*
-> > +		 * If the platform supports
-> > UFSHCD_CAP_AUTO_BKOPS_SUSPEND,
-> > +		 * turn WB on/off will be done while clock scaling
-> > up/down.
-> > +		 */
-> > +		dev_warn(dev, "To control WB through wb_on is not
-> > allowed!\n");
-> > +		return -EOPNOTSUPP;
-> > +	}
-> > +	if (!ufshcd_is_wb_allowed(hba))
-> > +		return -EOPNOTSUPP;
-> > +
-> > +	if (kstrtouint(buf, 0, &wb_enable))
-> > +		return -EINVAL;
-> > +
-> > +	if (wb_enable != 0 && wb_enable != 1)
-> > +		return -EINVAL;
-> > +
-> > +	pm_runtime_get_sync(hba->dev);
-> > +	res = ufshcd_wb_ctrl(hba, wb_enable);
-> > +	pm_runtime_put_sync(hba->dev);
-> > +
-> > +	return res < 0 ? res : count;
-> > +}
+> 1 review comment inline:
+>
+
+[...]
+
+>> +static long ssam_cdev_request(struct ssam_cdev *cdev, unsigned long arg)
+>> +{
+>> +	struct ssam_cdev_request __user *r;
+>> +	struct ssam_cdev_request rqst;
+>> +	struct ssam_request spec;
+>> +	struct ssam_response rsp;
+>> +	const void __user *plddata;
+>> +	void __user *rspdata;
+>> +	int status = 0, ret = 0, tmp;
+>> +
+>> +	r = (struct ssam_cdev_request __user *)arg;
+>> +	ret = copy_struct_from_user(&rqst, sizeof(rqst), r, sizeof(*r));
+>> +	if (ret)
+>> +		goto out;
+>> +
+>> +	plddata = u64_to_user_ptr(rqst.payload.data);
+>> +	rspdata = u64_to_user_ptr(rqst.response.data);
+>> +
+>> +	/* Setup basic request fields. */
+>> +	spec.target_category = rqst.target_category;
+>> +	spec.target_id = rqst.target_id;
+>> +	spec.command_id = rqst.command_id;
+>> +	spec.instance_id = rqst.instance_id;
+>> +	spec.flags = rqst.flags;
+>> +	spec.length = rqst.payload.length;
+>> +	spec.payload = NULL;
+>> +
+>> +	rsp.capacity = rqst.response.length;
+>> +	rsp.length = 0;
+>> +	rsp.pointer = NULL;
+>> +
+>> +	/* Get request payload from user-space. */
+>> +	if (spec.length) {
+>> +		if (!plddata) {
+>> +			ret = -EINVAL;
+>> +			goto out;
+>> +		}
+>> +
+>> +		spec.payload = kzalloc(spec.length, GFP_KERNEL);
+>> +		if (!spec.payload) {
+>> +			status = -ENOMEM;
+>> +			ret = -EFAULT;
+>> +			goto out;
+>> +		}
+>> +
+>> +		if (copy_from_user((void *)spec.payload, plddata, spec.length)) {
+>> +			ret = -EFAULT;
+>> +			goto out;
+>> +		}
+>> +	}
+>> +
+>> +	/* Allocate response buffer. */
+>> +	if (rsp.capacity) {
+>> +		if (!rspdata) {
+>> +			ret = -EINVAL;
+>> +			goto out;
+>> +		}
+>> +
+>> +		rsp.pointer = kzalloc(rsp.capacity, GFP_KERNEL);
+>> +		if (!rsp.pointer) {
+>> +			status = -ENOMEM;
+>> +			ret = -EFAULT;
 > 
-> Where is the new Documentation/ABI/ update for this new sysfs file
-> you
-> are adding?
-> 
+> This is weird, -EFAULT should only be used if a SEGFAULT
+> would have been raised if the code was running in
+> userspace rather then in kernelspace, IOW if userspace
+> has provided an invalid pointer (or a too small buffer,
+> causing the pointer to become invalid at some point in
+> the buffer).
 
-It is missing, and will add it.
+Oh, right.
 
-thanks.
-Bean
+> IMHO you should simply do ret = -ENOMEM here.
 
+Yes. that looks better. I will change that as suggested.
+> Otherwise this looks good to me.
 
+Thanks,
+Max
