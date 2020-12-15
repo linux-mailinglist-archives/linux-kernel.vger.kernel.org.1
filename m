@@ -2,125 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0F12DA640
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26DD2DA65D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:42:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729596AbgLOCaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:30:08 -0500
-Received: from mga09.intel.com ([134.134.136.24]:8906 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729586AbgLOC3w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:29:52 -0500
-IronPort-SDR: QzVoCD7zGdUTyTZ4s69ZEmkCUEstOXscmYoeOef+zxGF7vXygs9cYXSBiZTOimR7jhMm8n3igV
- H15EKBxu4xYw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="174958079"
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="174958079"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2020 18:26:24 -0800
-IronPort-SDR: +Pr6ZxtUHdyPuB11s7UsWmSnQtSDhWPxNpJ+wd8iJ+/mNH4yEiWg0Eg5YzbipDoPrc3WiKeSNd
- 6FC0i8B89Vhw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="450162202"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga001.fm.intel.com with ESMTP; 14 Dec 2020 18:26:21 -0800
-Date:   Tue, 15 Dec 2020 10:22:06 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        lgoncalv@redhat.com, hao.wu@intel.com
-Subject: Re: [PATCH v2 2/2] Documentation: fpga: dfl: Add description for DFL
-  UIO support
-Message-ID: <20201215022206.GC14854@yilunxu-OptiPlex-7050>
-References: <1607916981-14782-1-git-send-email-yilun.xu@intel.com>
- <1607916981-14782-3-git-send-email-yilun.xu@intel.com>
- <4bbaa5ad-b0eb-8ea6-9dc6-c08060450e36@redhat.com>
+        id S1727187AbgLOCXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:23:48 -0500
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:51269 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727082AbgLOCXS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:23:18 -0500
+Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
+        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 6C7BB111056;
+        Tue, 15 Dec 2020 13:22:34 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kozyz-0044LU-Uq; Tue, 15 Dec 2020 13:22:33 +1100
+Date:   Tue, 15 Dec 2020 13:22:33 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     guro@fb.com, ktkhai@virtuozzo.com, shakeelb@google.com,
+        hannes@cmpxchg.org, mhocko@suse.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [v2 PATCH 5/9] mm: memcontrol: add per memcg shrinker nr_deferred
+Message-ID: <20201215022233.GL3913616@dread.disaster.area>
+References: <20201214223722.232537-1-shy828301@gmail.com>
+ <20201214223722.232537-6-shy828301@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4bbaa5ad-b0eb-8ea6-9dc6-c08060450e36@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201214223722.232537-6-shy828301@gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
+        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
+        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=pGLkceISAAAA:8 a=7-415B0cAAAA:8
+        a=H_gIHsiua904sXZxqn0A:9 a=CjuIK1q_8ugA:10 a=-RoEEKskQ1sA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 02:14:56PM -0800, Tom Rix wrote:
+On Mon, Dec 14, 2020 at 02:37:18PM -0800, Yang Shi wrote:
+> Currently the number of deferred objects are per shrinker, but some slabs, for example,
+> vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
 > 
-> On 12/13/20 7:36 PM, Xu Yilun wrote:
-> > This patch adds description for UIO support for dfl devices on DFL
-> > bus.
-> >
-> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > ---
-> > v2: no doc in v1, add it for v2.
-> > ---
-> >  Documentation/fpga/dfl.rst | 23 +++++++++++++++++++++++
-> >  1 file changed, 23 insertions(+)
-> Should add your self in the authors list.
-
-OK.
-
-> >
-> > diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-> > index 0404fe6..a15e81e 100644
-> > --- a/Documentation/fpga/dfl.rst
-> > +++ b/Documentation/fpga/dfl.rst
-> > @@ -502,6 +502,29 @@ FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
-> >  could be a reference.
-> >  
-> >  
-> > +UIO support for DFL devices
-> > +===========================
-> > +The FPGA is open for users to be reprogramed with newly developed hardware
+> The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
+> excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
+> may suffer from over shrink, excessive reclaim latency, etc.
 > 
-> The purpose of an FPGA is to be reprogrammed with newly developed hardware
+> For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
+> heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
+> might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
 > 
-> components.  New hardware can
-
-Will change it.
-
+> We observed this hit in our production environment which was running vfs heavy workload
+> shown as the below tracing log:
 > 
-> > +components. They could instantiate a new private feature in the DFL, and then
-> > +get a DFL device in their system. In some cases users may need a userspace
-> > +driver for the DFL device:
-> > +
-> > +* Users may need to run some diagnostic test for their hardwares.
-> * Users may prototype the kernel driver in user space.
+> <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
+> cache items 246404277 delta 31345 total_scan 123202138
+> <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
+> last shrinker return val 123186855
+> 
+> The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
+> This also resulted in significant amount of page caches were dropped due to inodes eviction.
+> 
+> Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
+> better isolation.
+> 
+> When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
+> would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
+> 
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> ---
+>  include/linux/memcontrol.h |   9 +++
+>  mm/memcontrol.c            | 110 ++++++++++++++++++++++++++++++++++++-
+>  mm/vmscan.c                |   4 ++
+>  3 files changed, 120 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 922a7f600465..1b343b268359 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -92,6 +92,13 @@ struct lruvec_stat {
+>  	long count[NR_VM_NODE_STAT_ITEMS];
+>  };
+>  
+> +
+> +/* Shrinker::id indexed nr_deferred of memcg-aware shrinkers. */
+> +struct memcg_shrinker_deferred {
+> +	struct rcu_head rcu;
+> +	atomic_long_t nr_deferred[];
+> +};
 
-Could we just add the line rather than replacing the previous line? I think this
-comment is describing a different usecase.
+So you're effectively copy and pasting the memcg_shrinker_map
+infrastructure and doubling the number of allocations/frees required
+to set up/tear down a memcg? Why not add it to the struct
+memcg_shrinker_map like this:
 
-> > +* Some hardware is designed for specific purposes and does not fit into one of
-> > +  the standard kernel subsystems.
-> > +
-> > +This requires the direct access to the MMIO space and interrupt handling in
-> > +userspace. We implemented a dfl-uio-pdev module which exposes the UIO device
-> The dfl-uio-pdev module exposes
+struct memcg_shrinker_map {
+        struct rcu_head	rcu;
+	unsigned long	*map;
+	atomic_long_t	*nr_deferred;
+};
 
-Will change it.
+And when you dynamically allocate the structure, set the map and
+nr_deferred pointers to the correct offset in the allocated range.
 
-> > +interfaces. It adds the uio_pdrv_genirq platform device with the resources of
-> > +the DFL device, and let the generic UIO platform device driver provide UIO
-> the DLF device, and lets
+Then this patch is really only changes to the size of the chunk
+being allocated, setting up the pointers and copying the relevant
+data from the old to new.
 
-Will change it.
+Cheers,
 
-> > +support to userspace.
-> Use FPGA_DFL_UIO_PDEV to enable this feature.
-
-I didn't get your idea for this.
-
-> > +
-> > +The DFL UIO driver has a special matching algorithem. It will match any DFL
-> > +device which could not be handled by other DFL drivers. In this way, it will
-> > +not impact the functionality of the features which are already supported by the
-> > +system.
-> (not sure if this section is needed)
-
-I think we may keep it.
-
-Thanks,
-Yilun
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
