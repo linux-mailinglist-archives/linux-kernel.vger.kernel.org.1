@@ -2,82 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F304D2DA5F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CA02DA5F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbgLOCDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:03:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbgLOCDD (ORCPT
+        id S1726124AbgLOCFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:05:06 -0500
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:52181 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726075AbgLOCFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:03:03 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB60C061793
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:02:23 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id w13so35291965lfd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:02:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w6VR7BMk8sGNVAqJdWbIyj8uJ/cTJrWrPZLJ1YvbN/4=;
-        b=f2A2ulXY38NAFQ+7xMPn25y/vehQjJbaaQEGIXwzDA/TJCPEyZaUBg3iH4bURFckTz
-         h3XsyBZwNUum3P/3tdJR+BniB7ld8LyjqCMCOazbbI2wTIvp2B9Es393YZlv47LiSjwV
-         LpEOzhYJZNpy/cX6nzyQyWXpBSHN+l26Jlazc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w6VR7BMk8sGNVAqJdWbIyj8uJ/cTJrWrPZLJ1YvbN/4=;
-        b=Dr1IeDhpJQ1eKDdnBNxcv99MNc9u+nCJ7rueGhicb0B08qQgThrp4U9yamje42HAF3
-         M49Nrp9z81hIQo2CerYZ9f9+HQvf21XAB2w19jZiHnwn4W+YYNlYJW0/RE6kHcyrUoLI
-         /3IyjsPJag/kmtcVAQGziMeqwWmMww72YXKRN1voC1yOS+zvfUVdHVRzzzmDu5U8AP+u
-         XAbeKuK4UC0aBBVaUD/kM0pImzB39tqxuejmO6T0dqzh5q6feKwlypTXXRX5yPCtpj0G
-         ++xdk4fmhuXqhc+HYqCNFRp8S0ng4Pa0e303bP9n7N0gPPG4q+CHdcokUwi1MZ9u8lU6
-         wFQw==
-X-Gm-Message-State: AOAM530aQ0e5ox1657KzEtiqIGFrtoHV8mHMFyY9QHay1XCEKiModZp8
-        flI+RVPlAorsgNMvMxORIKNEgI4dUwqpUA==
-X-Google-Smtp-Source: ABdhPJwqCMTV154AKj//Roc6h2qyg6rRM15hwBSI6QPWuRPr/lANgUSBPlxiRDF43bl8y1QKa/S3ag==
-X-Received: by 2002:a19:5f59:: with SMTP id a25mr11554250lfj.310.1607997741353;
-        Mon, 14 Dec 2020 18:02:21 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id b3sm34605lff.190.2020.12.14.18.02.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Dec 2020 18:02:20 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id o19so9678468lfo.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:02:19 -0800 (PST)
-X-Received: by 2002:a2e:6f17:: with SMTP id k23mr11842790ljc.411.1607997739622;
- Mon, 14 Dec 2020 18:02:19 -0800 (PST)
+        Mon, 14 Dec 2020 21:05:06 -0500
+Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
+        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id E4D9D10843D;
+        Tue, 15 Dec 2020 13:04:21 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kozhM-0044AH-VK; Tue, 15 Dec 2020 13:04:20 +1100
+Date:   Tue, 15 Dec 2020 13:04:20 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     guro@fb.com, ktkhai@virtuozzo.com, shakeelb@google.com,
+        hannes@cmpxchg.org, mhocko@suse.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [v2 PATCH 3/9] mm: vmscan: guarantee shrinker_slab_memcg() sees
+ valid shrinker_maps for online memcg
+Message-ID: <20201215020420.GJ3913616@dread.disaster.area>
+References: <20201214223722.232537-1-shy828301@gmail.com>
+ <20201214223722.232537-4-shy828301@gmail.com>
 MIME-Version: 1.0
-References: <160797732939.10793.9152151866806316627.tglx@nanos> <160797733303.10793.16327860918275449762.tglx@nanos>
-In-Reply-To: <160797733303.10793.16327860918275449762.tglx@nanos>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 14 Dec 2020 18:02:03 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wh-Br8BKJ3rfdq54HVYv30wjQeV63-k_9Q-j2FfwyzTHg@mail.gmail.com>
-Message-ID: <CAHk-=wh-Br8BKJ3rfdq54HVYv30wjQeV63-k_9Q-j2FfwyzTHg@mail.gmail.com>
-Subject: Re: [GIT pull] irq/core for v5.11-rc1
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201214223722.232537-4-shy828301@gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
+        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
+        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=7-415B0cAAAA:8
+        a=wdWbNfnXb-wgsad9dhsA:9 a=CjuIK1q_8ugA:10 a=-RoEEKskQ1sA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 12:25 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
->    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-core-2020-12-14
+On Mon, Dec 14, 2020 at 02:37:16PM -0800, Yang Shi wrote:
+> The shrink_slab_memcg() races with mem_cgroup_css_online(). A visibility of CSS_ONLINE flag
+> in shrink_slab_memcg()->mem_cgroup_online() does not guarantee that we will see
+> memcg->nodeinfo[nid]->shrinker_maps != NULL.  This may occur because of processor reordering
+> on !x86.
+> 
+> This seems like the below case:
+> 
+>            CPU A          CPU B
+> store shrinker_map      load CSS_ONLINE
+> store CSS_ONLINE        load shrinker_map
+> 
+> So the memory ordering could be guaranteed by smp_wmb()/smp_rmb() pair.
+> 
+> The memory barriers pair will guarantee the ordering between shrinker_deferred and CSS_ONLINE
+> for the following patches as well.
 
-What?
+This should not require memory barriers in the shrinker code.
 
-This is completely broken, and doesn't even build.
+The code that sets and checks the CSS_ONLINE flag should have the
+memory barriers to ensure that anything that sees an online CSS will
+see it completely set up.
 
-In particular, look at commit a07d244f00de ("genirq: Move
-irq_set_lockdep_class() to core"). Look at the EXPORT_SYMBOL_GPL().
+That is, the functions online_css() that set the CSS_ONLINE needs
+a memory barrier to ensure all previous writes are completed before
+the CSS_ONLINE flag is set, and the function mem_cgroup_online()
+needs a barrier to pair with that.
 
-How did this happen? Usually the -tip pull requests don't have glaring
-problems like this.
+This is the same existence issue that the superblock shrinkers have
+with the shrinkers being registered before the superblock is fully
+set up. The SB_BORN flag on the sueprblock indicates the superblock
+is now fully set up ("online" in CSS speak) and the registered
+shrinker can run. Please see the smp_wmb() before we set SB_BORN in
+vfs_get_tree(), and the big comment about the smp_rmb() -after- we
+check SB_BORN in super_cache_count() to understand the details of
+the data dependency between the flag and the structures being set up
+that the barriers enforce.
 
-               Linus
+IOWs, these memory barriers belong inside the cgroup code to
+guarantee anything that sees an online cgroup will always see the
+fully initialised cgroup structures. They do not belong in the
+shrinker infrastructure...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
