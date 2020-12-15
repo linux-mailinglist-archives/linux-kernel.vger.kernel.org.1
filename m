@@ -2,108 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EEEF2DAAD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A95FE2DAAD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727770AbgLOKZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:25:09 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:53226 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727285AbgLOKYw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:24:52 -0500
-Received: by mail-io1-f72.google.com with SMTP id b136so13258254iof.19
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:24:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0qYa0dsPMP7tmde6ntcVuGWaHNVgAG/+qCsZ5UYMglA=;
-        b=demXbHpvQBLj/duMCpK10MSY/0gyMNGFdkAxLQyokxZPogrV8eGRxJRa1z2I10X2Nc
-         70OthzE1W1a5DW4czmNfrLwkxacG5cItnoUgXji6LaOhGnAdygwXTDZdY73csCc8n2sz
-         578Fic3UQiuxVBdfJvQubLvOZSDIzJM+YZlCmxSLAOCA0bIbNbTy7WQF4zg0pj0WZWdK
-         OMDrA3EBb9ZhjgSpgEPj6oRxERUZS5+DTMWlHkublMIJGye96UwMhAcbTkkydfvkMJyx
-         mGmVE48fHLLyaj9iCjAvmEcJdIQHnS4EpcAhHsydCEHylFSa7YodIu1g3NrGotsrCAEV
-         FHDg==
-X-Gm-Message-State: AOAM532Fh+uXttLT+dSni3K6sUNv+q8dE/6Kxtj7vf3KygpQKeidhaCM
-        MvoLPnWcXxiEPAB/ZdA2Ae9+nLwj5fHjcG8vVqt9FLXWF2H6
-X-Google-Smtp-Source: ABdhPJxxohlQ3B+YU2w+xW9BNn1uL9NYPvq1Vh698TyAU4Sv8vBCGpnnXaCjJAI7K/WQcAX8b0ZLOdRbBe52sFwV2S+MqzzRSKT1
+        id S1728113AbgLOKZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:25:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41458 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727128AbgLOKZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 05:25:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F2B66ACA5;
+        Tue, 15 Dec 2020 10:24:47 +0000 (UTC)
+Date:   Tue, 15 Dec 2020 11:24:42 +0100
+From:   Mian Yousaf Kaukab <ykaukab@suse.de>
+To:     lorenzo.pieralisi@arm.com, vidyas@nvidia.com, robh@kernel.org
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: dwc: tegra194: issue with card containing a bridge
+Message-ID: <20201215102442.GA20517@suse.de>
 MIME-Version: 1.0
-X-Received: by 2002:a02:1007:: with SMTP id 7mr39330981jay.73.1608027851046;
- Tue, 15 Dec 2020 02:24:11 -0800 (PST)
-Date:   Tue, 15 Dec 2020 02:24:11 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d9c89b05b67e2803@google.com>
-Subject: WARNING: suspicious RCU usage in nf_ct_iterate_cleanup
-From:   syzbot <syzbot+dced7c2d89dde957f7dd@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
+I am seeing an issue with next-20201211 with USB3380[1] based PCIe card
+(vid:pid 10b5:3380) on Jetson AGX Xavier. Card doesn't show up in the
+lspci output.
 
-syzbot found the following issue on:
+In non working case (next-20201211):
+# lspci
+0001:00:00.0 PCI bridge: NVIDIA Corporation Device 1ad2 (rev a1)
+0001:01:00.0 SATA controller: Marvell Technology Group Ltd. Device 9171 (rev 13)
+0005:00:00.0 PCI bridge: NVIDIA Corporation Device 1ad0 (rev a1)
 
-HEAD commit:    33dc9614 Merge tag 'ktest-v5.10-rc6' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1200a46b500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5ed9af1b47477866
-dashboard link: https://syzkaller.appspot.com/bug?extid=dced7c2d89dde957f7dd
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+In working case (v5.10-rc7):
+# lspci
+0001:00:00.0 PCI bridge: Molex Incorporated Device 1ad2 (rev a1)
+0001:01:00.0 SATA controller: Marvell Technology Group Ltd. Device 9171 (rev 13)
+0005:00:00.0 PCI bridge: Molex Incorporated Device 1ad0 (rev a1)
+0005:01:00.0 PCI bridge: PLX Technology, Inc. Device 3380 (rev ab)
+0005:02:02.0 PCI bridge: PLX Technology, Inc. Device 3380 (rev ab)
+0005:03:00.0 USB controller: PLX Technology, Inc. Device 3380 (rev ab)
+# lspci -t
+-+-[0005:00]---00.0-[01-ff]----00.0-[02-03]----02.0-[03]----00.0
+ +-[0001:00]---00.0-[01-ff]----00.0
+ \-[0000:00]-
+#lspci -v
+https://paste.opensuse.org/87573209
 
-Unfortunately, I don't have any reproducer for this issue yet.
+git-bisect points to commit b9ac0f9dc8ea ("PCI: dwc: Move dw_pcie_setup_rc() to DWC common code").
+dw_pcie_setup_rc() is not removed from pcie-tegra194.c in this commit.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+dced7c2d89dde957f7dd@syzkaller.appspotmail.com
+Could the failure be caused because dw_pcie_setup_rc() is called twice now in case of tegra194?
 
-=============================
-WARNING: suspicious RCU usage
-5.10.0-rc7-syzkaller #0 Not tainted
------------------------------
-kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+BR,
+Yousaf
 
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 0
-2 locks held by kworker/1:8/18355:
- #0: ffff888010063d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888010063d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888010063d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888010063d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888010063d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888010063d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
- #1: ffffc90002a6fda8 ((work_completion)(&w->work)#2){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
-
-stack backtrace:
-CPU: 1 PID: 18355 Comm: kworker/1:8 Not tainted 5.10.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events iterate_cleanup_work
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- ___might_sleep+0x220/0x2b0 kernel/sched/core.c:7270
- get_next_corpse net/netfilter/nf_conntrack_core.c:2222 [inline]
- nf_ct_iterate_cleanup+0x132/0x400 net/netfilter/nf_conntrack_core.c:2244
- nf_ct_iterate_cleanup_net net/netfilter/nf_conntrack_core.c:2329 [inline]
- nf_ct_iterate_cleanup_net+0x113/0x170 net/netfilter/nf_conntrack_core.c:2314
- iterate_cleanup_work+0x45/0x130 net/netfilter/nf_nat_masquerade.c:216
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+[1]: https://www.broadcom.com/products/pcie-switches-bridges/usb-pci/usb-controllers/usb3380
