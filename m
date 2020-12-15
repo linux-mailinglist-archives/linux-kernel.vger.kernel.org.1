@@ -2,79 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AD02DABC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8172DABFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728656AbgLOLTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 06:19:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728574AbgLOLRp (ORCPT
+        id S1728936AbgLOLZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 06:25:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36927 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728652AbgLOLTI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 06:17:45 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7167DC0617B0;
-        Tue, 15 Dec 2020 03:17:04 -0800 (PST)
-Date:   Tue, 15 Dec 2020 11:17:01 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608031022;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Tue, 15 Dec 2020 06:19:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608031055;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=i/0rGN5F/05Z24k5Cr5f3SEE9oS86nFjhXC4QTU6TPA=;
-        b=KPeNKS/GUgn4qjOJPMP2nG8+e7mo6cjMFBvbUnNMGInI3G7e+lhW/HgH41M1bejEgl4oHR
-        LPUHUamiwpXcYhHrQBaPgf3scTXsuG6r6/nsWUyYeFDfZjC+5AUg9oZKWp9/oZ1ShYO0C7
-        seVVjpC0PeypHzbqoWbMGfuoTkEBaMPsik/PnTu3D4cO7zMLqCbLDj3evwWGIzM4bms7Vd
-        EpzuTd/Yd06kk79d3o2tCINium9faLzWBMrSohjS2YhBYQXLKWwG/P2EM+FuUm4KQBWziB
-        Snzo93ItVVhNsxjl177zYRb31Gb5fPEUb4ZzEYwdbc765XpVFiw0BcbCFf/7HQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608031022;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i/0rGN5F/05Z24k5Cr5f3SEE9oS86nFjhXC4QTU6TPA=;
-        b=llKlue3Xc2RJIVin0rcisq9DpIZln9G9zcx3Qw/7TXLsA6lS2ro5vp8p1TlP0b2LZXph0M
-        Z3UQU1U9y5wcORAQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/core] Merge tag 'efi-next-for-v5.11-3' of
- git://git.kernel.org/pub/scm/linux/kernel/git/efi/efi into efi/core
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20201215080144.17077-1-ardb@kernel.org>
-References: <20201215080144.17077-1-ardb@kernel.org>
+        bh=vaPBRIesr27IX6qkoAPHHZTgEVHDzEcMSMnvfR1oaMU=;
+        b=HFUdYgGDTxW9fBAdgg9FKEEz5KBdsYU3XKXZC+wdDi7lg8NFC3QNLpeUT6cd72vrfkmNm6
+        R2lEHuItX12Eeq/NKjxYrPBEDmKowVEh7C+RdEZhTO7rnXp7SRnl8xKTsXXazHsz8ozQFe
+        NGPzfk1ifcVjl1q1UjjoMXCm9wGiDek=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-348-w4kd6cPbNCyGB_IfAUMzzg-1; Tue, 15 Dec 2020 06:17:33 -0500
+X-MC-Unique: w4kd6cPbNCyGB_IfAUMzzg-1
+Received: by mail-ej1-f72.google.com with SMTP id gs3so3480402ejb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:17:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vaPBRIesr27IX6qkoAPHHZTgEVHDzEcMSMnvfR1oaMU=;
+        b=gbASfGFtBct9t3jOuNkeTcw/+CgSpn03UMhKO5uaAUze+CQvrASE7T89RfFa9maZr8
+         ywd4waG/jnNCvA14ruhfzFfxer9pa3SNTgINZkjmXU72dCO6NfdsXiqekR12GYjveEXA
+         zEbbARt6Ekdum0akEtmSXQkRl+Rb/rC9f+wIjJ4X3MeB7AoEClgxQgmZoDiaB2d14Whn
+         54+ldplucv3j6aWcZLlFkkeTw4XVguCQO6GQo5c2t+ao9XTBUS8Cm7RUNmiBlMPmznS1
+         AogUnAmcvHM3asy6mFhioXmFSQcLvsmPvxUuyc6SVvnIXGFz2pOMEZ98+HFudpYLIBn1
+         +tow==
+X-Gm-Message-State: AOAM530oLwu510eEVybflpahPQjF6IwIpwSlQG2KzLdcOx/tiBtyXmZ2
+        MVWPEwrDH3cno3fEMrWqEahmR5hoYbMrDGd7ppp+r/+/Q0RIMs7D2sXYNCbPOUZLzdXUcRIvdSl
+        nAFq09snN1Q7vOvMi2vw2ywsK
+X-Received: by 2002:a50:8004:: with SMTP id 4mr14732617eda.329.1608031052570;
+        Tue, 15 Dec 2020 03:17:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy8Ukb3b5sC/L9ddJO9dEIvpLc1T192z0TMMRjb3sOdjbu8IPQRItEeSkmUrx5lh7khNRbdFw==
+X-Received: by 2002:a50:8004:: with SMTP id 4mr14732609eda.329.1608031052383;
+        Tue, 15 Dec 2020 03:17:32 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id d13sm4370782edx.27.2020.12.15.03.17.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 03:17:31 -0800 (PST)
+Subject: Re: [RFT][PATCH v1 0/3] ACPI: scan: Defer enumeration of devices with
+ significant dependencies
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+References: <1646930.v2jOOB1UEN@kreacher>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <551a2185-bde5-3338-2d47-d2cf4b1c55f5@redhat.com>
+Date:   Tue, 15 Dec 2020 12:17:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Message-ID: <160803102189.3364.4923152997759150061.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <1646930.v2jOOB1UEN@kreacher>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the efi/core branch of tip:
+Hi,
 
-Commit-ID:     3dcb8b53cbd2cc5618863b19ef00f8ea82f27e83
-Gitweb:        https://git.kernel.org/tip/3dcb8b53cbd2cc5618863b19ef00f8ea82f27e83
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 15 Dec 2020 12:14:38 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 15 Dec 2020 12:14:38 +01:00
+On 12/14/20 9:23 PM, Rafael J. Wysocki wrote:
+> Hi,
+> 
+> This series addresses some enumeration ordering issues by using information
+> from _DEP to defer the enumeration of devices that are likely to depend on
+> operation region (OpRegion) handlers supplied by the drivers of other
+> devices.
+> 
+> This allows the OpRegion suppliers to be probed and start working before the
+> devices depending on them are enumerated.
+> 
+> Please see the patch changelogs for details.
+> 
+> Hans, please test this series on the system with OpRegion dependencies in
+> control methods used for device enumeration.
 
-Merge tag 'efi-next-for-v5.11-3' of git://git.kernel.org/pub/scm/linux/kernel/git/efi/efi into efi/core
+Thank you for you work on this!
 
-Pull followup fixes for EFI from Ard Biesheuvel:
+I started with reviewing the series so that I would know what to
+expect during testing. All 3 patches look good to me:
 
- - fix the build breakage on IA64 caused by recent capsule loader changes
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
- - suppress a type mismatch build warning in the expansion of
-   EFI_PHYS_ALIGN on ARM
+As is the series does not fix the Bluetooth HID misreporting on
+the system with OpRegion dependencies in its BT ACPI node's _HID,
+but ...
 
-Link: https://lore.kernel.org/r/20201215080144.17077-1-ardb@kernel.org
----
+This is expected because that _HID has a _DEP on the GPO1 GPIO
+controller, which in turn has a _DEP pointing to the
+"Intel Baytrail Mailbox Device" ("INT33BD")
+
+We (Linux) don't do anything with the INT33BD device, so it can
+simply be added to the acpi_ignore_dep_ids list. With this done the
+3 patches from this RFT fix the BT _HID issue. IOW everything works
+as expected / as we want.
+
+While at it I also booted the kernel with these patches on a
+Lenovo Yoga X1 Carbon 8th gen. I'm not seeing any adverse side
+effects there, so please add my tested-by to the entire series:
+
+Tested-by: Hans de Goede <hdegoede@redhat.com>
+
+I will send out a patch adding "INT33BD" to the
+acpi_ignore_dep_ids list (to be applied on top of this series)
+right away.
+
+Regards,
+
+Hans
+
