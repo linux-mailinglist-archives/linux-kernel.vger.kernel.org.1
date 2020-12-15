@@ -2,208 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332B82DA4F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 01:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 781382DA4EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 01:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727228AbgLOAco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 19:32:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgLOAcS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 19:32:18 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC14C0617B0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 16:31:38 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id x18so3882125pln.6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 16:31:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iHZzN7QnB+fG/aCQ4IcntNNXDnPGesYQj+tjiQUFpFA=;
-        b=CyxCwbcjcgYxxChvTPAi4Cp5pUrrvQM8W8jYk9w0SgcMS9Mu5nM23VmqYtNpOyjz1r
-         ajrYVJhi/uNpr/lUZTIy4NOiz/FACFF5gN7B+BNHvw44rDZDjR2xziV6THm49b9sHcXY
-         4b8enF8zT0YBnQqG3ZBF3F3gXjDPSdAs2hu8k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iHZzN7QnB+fG/aCQ4IcntNNXDnPGesYQj+tjiQUFpFA=;
-        b=msUvkpWAJm7o2ZJJQ/KiPP48gi8Ld1rvKGK3DgEiNs1gpGTUg8fMyS/7XeUn6Ql2HP
-         svD4en4GC3rSMM3U77Bb/pIksm2I66a56HSt12HLe0GlVb0xmGot++6GF8YvfguILv7U
-         ExBj1sswC7d94SXuHz/bu1Gq+hfJ1b/1jqngRWMVkWgnH67q09tE+VJw2spm8iN5hBWN
-         otH/ecZ4lvPkI6OtrLVqIsaPAq46w0Pvn5RaL123vcps3uGn1yFcorLuH64qug6B4W8p
-         NXahFN813G/1qeu/xsdSvQ7tHdnvNA8Q90uwGR/tmQ2m/yykqXJ1r50mPG65IEMMSrh0
-         YmoA==
-X-Gm-Message-State: AOAM531cIlBbato0XL4sIb35uzb+Tvc3dkPIMtafORkTWm/480vQiQ1x
-        efPtn2gHEWEAD1zbxpnUyqQsfg==
-X-Google-Smtp-Source: ABdhPJxux+79KiPAWCaarQKpR+hNGV+g1cx4l3hLlPUGCsF7voj6qS4lOmQ2WyDroYZZt+r1Am+iEg==
-X-Received: by 2002:a17:90b:4a10:: with SMTP id kk16mr27776109pjb.30.1607992297548;
-        Mon, 14 Dec 2020 16:31:37 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id 77sm20412834pfx.156.2020.12.14.16.31.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 16:31:37 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     msavaliy@qti.qualcomm.com, akashast@codeaurora.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Alok Chauhan <alokc@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dilip Kota <dkota@codeaurora.org>,
-        Girish Mahadevan <girishm@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Subject: [PATCH 2/2] spi: spi-geni-qcom: Really ensure the previous xfer is done before new one
-Date:   Mon, 14 Dec 2020 16:30:19 -0800
-Message-Id: <20201214162937.2.Ibade998ed587e070388b4bf58801f1107a40eb53@changeid>
-X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
-In-Reply-To: <20201214162937.1.I99ee04f0cb823415df59bd4f550d6ff5756e43d6@changeid>
-References: <20201214162937.1.I99ee04f0cb823415df59bd4f550d6ff5756e43d6@changeid>
+        id S1728100AbgLOAbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 19:31:46 -0500
+Received: from mail-bn8nam11on2101.outbound.protection.outlook.com ([40.107.236.101]:3937
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725993AbgLOAbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 19:31:38 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QbLzU0RpERZ9o3ipmyee+e4Akzm1P6OeHvCQyRvgvjxEqaz8rPuHDG47vXJQkbiyBBMKcs0nfcqByOKnSUUTlRmH4+kSfAMlCZsFrltETz+anNOBbvWf8FDCAZdncbHXJ8WRJB0PmbEyodloi2JSJ1WRWYx+YmZOkPGYMWYXzxHsJWvZUMgotl1FXvoMT9lsUeeUzztblGObLScVTh9WiVIwEErCvXJGwfj3yoEnXAy8IOq+rmpnyXtBSy/8HsfRjvQ0pLqBDbpS6u3Zoq00QLq1hECcEYDKoZ9y5JB/TGFvrR6GC0F+t8xtTaEr5flmNj+FX78znU6uA0620J1sSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/CE3L9FEjQW86EVySgl9RKqevgtonsOW274xICprf0w=;
+ b=eudH63+CU60LIjOo43t0McQYuoY4PUzQuqY814fmfHUTPeDKIzT/+QlHENCLC3Fu3b+0lfKVmVwhEiF7Tradl6Ir6Dkl1UoDKkyEkx1XXvmprqDezamT/+r7keLWIyigkCsgDx2VJiP8qspgmpvM1vXHW95vvY4VOTvs1uqmUHZFDGUa09bVKxaUjIOXgsTsG2Jmnuqjv5HGZOj2P3/iwMyjcDFi7OmMeN8mEUFLJD8rTBqCB2h1YRgCLrSo8HRQYrWREzeP7DHoJuAKvLrIShtwiLE7vBvXT7gGxMay1fioaUhUs0ACYq1YZ8Ad8C6CtojiQFoY48S5A+ecm3MYkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hammerspace.com; dmarc=pass action=none
+ header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/CE3L9FEjQW86EVySgl9RKqevgtonsOW274xICprf0w=;
+ b=ROKFP2rRV0U/jLFUvG/SIOTHtTo12VC/MThFvnwVjQDgCkpMORAdhUzzMGJCyaDTnDnbU7TNoHbi3V6+ky01vuP/bCgE2WQokGIOgXU4XJr/jo3Co8zw+M1/zGFwSzin9wxiQI8ajlq1LPf0tO5/4ogNOvnGMvBssLzK/4pnxZo=
+Received: from MN2PR13MB3957.namprd13.prod.outlook.com (2603:10b6:208:263::11)
+ by MN2PR13MB2926.namprd13.prod.outlook.com (2603:10b6:208:152::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.10; Tue, 15 Dec
+ 2020 00:30:45 +0000
+Received: from MN2PR13MB3957.namprd13.prod.outlook.com
+ ([fe80::e989:f666:131a:e210]) by MN2PR13MB3957.namprd13.prod.outlook.com
+ ([fe80::e989:f666:131a:e210%9]) with mapi id 15.20.3676.018; Tue, 15 Dec 2020
+ 00:30:44 +0000
+From:   Trond Myklebust <trondmy@hammerspace.com>
+To:     "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>
+CC:     "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+        "Anna.Schumaker@Netapp.com" <Anna.Schumaker@Netapp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the nfs tree with Linus' tree
+Thread-Topic: linux-next: manual merge of the nfs tree with Linus' tree
+Thread-Index: AQHW0ni9UwwfK5NcYkyBeCSi/48786n3ThmA
+Date:   Tue, 15 Dec 2020 00:30:44 +0000
+Message-ID: <11a80ced88ed4cd7adcc339c7b4bf7908dc19263.camel@hammerspace.com>
+References: <20201215112458.4081eb26@canb.auug.org.au>
+In-Reply-To: <20201215112458.4081eb26@canb.auug.org.au>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: canb.auug.org.au; dkim=none (message not signed)
+ header.d=none;canb.auug.org.au; dmarc=none action=none
+ header.from=hammerspace.com;
+x-originating-ip: [68.36.133.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e7ebe6a9-d178-465c-c6e9-08d8a090a956
+x-ms-traffictypediagnostic: MN2PR13MB2926:
+x-microsoft-antispam-prvs: <MN2PR13MB2926AF3D7B1D4FB483FFDC68B8C60@MN2PR13MB2926.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: rb9NrU1d1HMJlGOr6Zq0oxEqh8jm2cionw4R5iWZPOPqqFEFkXu18h/yiw/QbJOnSLw8bpKxbzBOe6dSfzHEaoB3xaaKDCk2gp5WWTczYlGP0KqsdfSx0fGoIRKjIXn3bSIFlsgiTzbjTThjWwbWSV/du54z0qtLJL3wEnbS2Pe5pDLcvQnBkccKM5Zegbz+HvdDbpxqHH6mYFnsnjbw3efiXwt4flgS1X7Sg182TuqK5a7h+6e7c9JW3NB6rdqjQz5HgQs2I3/uNewF28VEqBzCWErFrT2WC2QetKV44gQrIby1k0dDDKqzSy9hXQTGKm4Cckq/YFJOWmRY9WVQekWYYpTUxymJtwtrBCmEp+c=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR13MB3957.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(366004)(376002)(2906002)(54906003)(66476007)(64756008)(66556008)(66446008)(8936002)(6512007)(91956017)(76116006)(66946007)(2616005)(6916009)(71200400001)(6486002)(4326008)(508600001)(8676002)(186003)(26005)(5660300002)(86362001)(36756003)(4001150100001)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?MzhTUEZIOExSMmw1RHYzM2dwRGFtemxnRi9RejJsL1ZXeGFBMWRwUmM5R2Ny?=
+ =?utf-8?B?dFlZalhrVVpsM1FxVE9xYzA3bnVoTnBzTnFVM3dPNHJZNGtKNE5HWm5acnpu?=
+ =?utf-8?B?cVRjWTE3UEI1eXZWWmxia21JS1YxaWxpRkFpNUdXQmZkZHdrM1pEY0FPV0M3?=
+ =?utf-8?B?MExtWVZab1YyRXdkQkdWMm9QQkR3dG9lcVNxQnBuTVBYKzBNa0tZOGhoTWty?=
+ =?utf-8?B?bmtiMmp4Q0N4R212TTFXWWNtbmJaUEw4SU1FR05GalpoaDNEc1Q4L3NpUEFD?=
+ =?utf-8?B?aWJWL3hTVG5JWS81TTdMT2IyOUJqb1NGSXYxbVlCa1B1YzJsZGs3NWZZUGdq?=
+ =?utf-8?B?d28rNnpPT0xyY3R0WWpERWttOG50ZlFhcTlVcmdwSzBqMENhOWdSR2JnMjF6?=
+ =?utf-8?B?Zm5xeTBZbytSWmR1R2o4TXA3eWJzSTRaQkk3OG9SeWM5T2RjbGpvTVo3K0Nh?=
+ =?utf-8?B?MnBTMWFwNVJPdnFsclFsNVFFK2d3Q0RhanEreU5mMzZqRDY2SXFGZHFOVm40?=
+ =?utf-8?B?TVdYcmpCbmcyTk1Kb0hXYk9zVlQwSkI2ekwvcXRieTdTRUlnVnRRc1FMVm9X?=
+ =?utf-8?B?K2lOZXV5V1NQak53NEFBUytOZkNXM2lHcE1BbHpBdXFHNjZlUXZpRkJ0TlNQ?=
+ =?utf-8?B?SGNJVzdNVExuc1prRnRYcVBMOEt0c2tHVVh3V0dxcnlEQjhUYnNGZll3Rzk3?=
+ =?utf-8?B?ZVplemRrWFJ2TDM4Uk1WL01uV0RCdjlpWVhSZFpiYmNpeXFJVUhEWlNWa01o?=
+ =?utf-8?B?QXVsVklpNFZITXlSRXhBNnZTTmlPa1pLWi83SHE3azZmT0tEZkNqT3pvYllS?=
+ =?utf-8?B?U1hJSXFURDZwUUo0OUtDbnV1c2JqVHNOOW40VGJCSXFwcDhEYjBROWRGdnkw?=
+ =?utf-8?B?aFIwallXODhhZ2ZjbVFrL0RCWlBBVWJucXRmc2VwTndaMDRJVnVuZE03ZEhk?=
+ =?utf-8?B?TnN3TkQ4TlRuR0V1dTB0enF6RlluQWdWL2dXeC9VMXVhSEJwaW9nTDJiRHZ1?=
+ =?utf-8?B?WnorTDhDM3VjZXVFbG9UVVByQVFYemNIRWxNa3lramlvZ1UzK3FFbUhxNFhl?=
+ =?utf-8?B?ejAwMkgvZDdFdGFiZ1pTUU9lcCtjdFpYOEw5SzNFS2FuUHJwUHhNUWRhNHQ3?=
+ =?utf-8?B?aXZqL0V5OUw5elFmR1ZTQ2Flejd3d3NIMFoxdE03SEQySGljZWhXakhzTXZV?=
+ =?utf-8?B?S0dTQTliWU51Sm05ZDc5amdKRy9SRkZ4Uk5ST2U1V3RmdjZaZ0l6dS9GV29P?=
+ =?utf-8?B?Q0g2R0dzWXRUVUd1eTNOdHg2dm1kUVVGQzVtNnphcVVrNC9kMUplQjJ5MldB?=
+ =?utf-8?Q?HBJAQRXlg5PmBhrhkiseKrPOU5nGpTPLgS?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <51C604DB8A98B9478BC0279556E9D7CD@namprd13.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: hammerspace.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR13MB3957.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e7ebe6a9-d178-465c-c6e9-08d8a090a956
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Dec 2020 00:30:44.9009
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pJkpQIoKqEgVa9eRVY/s0GgsQRWhNPynI6QJISiw67XWLjWg2jxWDyRSmq3Kc0sHevMqJKuGEocshT8ap1LJPg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR13MB2926
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 2ee471a1e28e ("spi: spi-geni-qcom: Mo' betta locking") we
-added a dance in setup_fifo_xfer() to make sure that the previous
-transfer was really done before we setup the next one.  However, it
-wasn't enough.  Specifically, if we had a timeout it's possible that
-the previous transfer could still be pending.  This could happen if
-our interrupt handler was blocked for a long while (interrupt storm or
-someone disablng IRQs for a while).  This pending interrupt could
-throw off our logic.
-
-Let's really make sure that the previous interrupt isn't still pending
-before we start the next transfer.
-
-Fixes: 561de45f72bd ("spi: spi-geni-qcom: Add SPI driver support for GENI based QUP")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
- drivers/spi/spi-geni-qcom.c | 69 ++++++++++++++++++++++++++++---------
- 1 file changed, 53 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
-index 6f736e94e9f4..5ef2e9f38ac9 100644
---- a/drivers/spi/spi-geni-qcom.c
-+++ b/drivers/spi/spi-geni-qcom.c
-@@ -145,12 +145,49 @@ static void handle_fifo_timeout(struct spi_master *spi,
- 		dev_err(mas->dev, "Failed to cancel/abort m_cmd\n");
- }
- 
-+static int spi_geni_check_busy(struct spi_geni_master *mas)
-+{
-+	struct geni_se *se = &mas->se;
-+	u32 m_irq, m_irq_en;
-+
-+	/*
-+	 * We grab the spinlock so that if we raced really fast and the IRQ
-+	 * handler is still actually running we'll wait for it to exit.  This
-+	 * can happen because the IRQ handler may signal in the middle of the
-+	 * function and the next transfer can kick off right away.
-+	 *
-+	 * Once we have the spinlock, if we're starting a new transfer we
-+	 * expect nothing is pending.  We check this to handle the case where
-+	 * the previous transfer timed out and then handle_fifo_timeout() timed
-+	 * out.  This can happen if the interrupt handler was blocked for
-+	 * a long time and we don't want to start any new transfers until it's
-+	 * all done.
-+	 *
-+	 * We are OK releasing the spinlock after we're done here since (if
-+	 * we're returning 0 and going ahead with the transfer) we know that
-+	 * the SPI controller must be in a quiet state.
-+	 */
-+	spin_lock_irq(&mas->lock);
-+	m_irq = readl(se->base + SE_GENI_M_IRQ_STATUS);
-+	m_irq_en = readl(se->base + SE_GENI_M_IRQ_EN);
-+	spin_unlock_irq(&mas->lock);
-+
-+	if (m_irq & m_irq_en) {
-+		dev_err(mas->dev, "Busy, IRQs pending %#010x\n",
-+			m_irq & m_irq_en);
-+		return -EBUSY;
-+	}
-+
-+	return 0;
-+}
-+
- static void spi_geni_set_cs(struct spi_device *slv, bool set_flag)
- {
- 	struct spi_geni_master *mas = spi_master_get_devdata(slv->master);
- 	struct spi_master *spi = dev_get_drvdata(mas->dev);
- 	struct geni_se *se = &mas->se;
- 	unsigned long time_left;
-+	int ret;
- 
- 	if (!(slv->mode & SPI_CS_HIGH))
- 		set_flag = !set_flag;
-@@ -158,6 +195,12 @@ static void spi_geni_set_cs(struct spi_device *slv, bool set_flag)
- 	if (set_flag == mas->cs_flag)
- 		return;
- 
-+	ret = spi_geni_check_busy(mas);
-+	if (ret) {
-+		dev_err(mas->dev, "Can't set chip select\n");
-+		return;
-+	}
-+
- 	mas->cs_flag = set_flag;
- 
- 	pm_runtime_get_sync(mas->dev);
-@@ -277,8 +320,12 @@ static int setup_fifo_params(struct spi_device *spi_slv,
- static int spi_geni_prepare_message(struct spi_master *spi,
- 					struct spi_message *spi_msg)
- {
--	int ret;
- 	struct spi_geni_master *mas = spi_master_get_devdata(spi);
-+	int ret;
-+
-+	ret = spi_geni_check_busy(mas);
-+	if (ret)
-+		return ret;
- 
- 	ret = setup_fifo_params(spi_msg->spi, spi);
- 	if (ret)
-@@ -440,21 +487,6 @@ static void setup_fifo_xfer(struct spi_transfer *xfer,
- 	struct geni_se *se = &mas->se;
- 	int ret;
- 
--	/*
--	 * Ensure that our interrupt handler isn't still running from some
--	 * prior command before we start messing with the hardware behind
--	 * its back.  We don't need to _keep_ the lock here since we're only
--	 * worried about racing with out interrupt handler.  The SPI core
--	 * already handles making sure that we're not trying to do two
--	 * transfers at once or setting a chip select and doing a transfer
--	 * concurrently.
--	 *
--	 * NOTE: we actually _can't_ hold the lock here because possibly we
--	 * might call clk_set_rate() which needs to be able to sleep.
--	 */
--	spin_lock_irq(&mas->lock);
--	spin_unlock_irq(&mas->lock);
--
- 	if (xfer->bits_per_word != mas->cur_bits_per_word) {
- 		spi_setup_word_len(mas, mode, xfer->bits_per_word);
- 		mas->cur_bits_per_word = xfer->bits_per_word;
-@@ -511,6 +543,11 @@ static int spi_geni_transfer_one(struct spi_master *spi,
- 				struct spi_transfer *xfer)
- {
- 	struct spi_geni_master *mas = spi_master_get_devdata(spi);
-+	int ret;
-+
-+	ret = spi_geni_check_busy(mas);
-+	if (ret)
-+		return ret;
- 
- 	/* Terminate and return success for 0 byte length transfer */
- 	if (!xfer->len)
--- 
-2.29.2.684.gfbc64c5ab5-goog
-
+T24gVHVlLCAyMDIwLTEyLTE1IGF0IDExOjI0ICsxMTAwLCBTdGVwaGVuIFJvdGh3ZWxsIHdyb3Rl
+Og0KPiBIaSBhbGwsDQo+IA0KPiBUb2RheSdzIGxpbnV4LW5leHQgbWVyZ2Ugb2YgdGhlIG5mcyB0
+cmVlIGdvdCBhIGNvbmZsaWN0IGluOg0KPiANCj4gwqAgZnMvbmZzL25mczRwcm9jLmMNCj4gDQo+
+IGJldHdlZW4gY29tbWl0Og0KPiANCj4gwqAgMjFlMzE0MDFmYzQ1ICgiTkZTOiBEaXNhYmxlIFJF
+QURfUExVUyBieSBkZWZhdWx0IikNCj4gDQo+IGZyb20gTGludXMnIHRyZWUgYW5kIGNvbW1pdDoN
+Cj4gDQo+IMKgIDVjMzQ4NWJiMTJjOSAoIk5GU3Y0LjIvcG5mczogRG9uJ3QgdXNlIFJFQURfUExV
+UyB3aXRoIHBORlMgeWV0IikNCj4gDQo+IGZyb20gdGhlIG5mcyB0cmVlLg0KPiANCj4gSSBmaXhl
+ZCBpdCB1cCAoc2VlIGJlbG93KSBhbmQgY2FuIGNhcnJ5IHRoZSBmaXggYXMgbmVjZXNzYXJ5LiBU
+aGlzDQo+IGlzIG5vdyBmaXhlZCBhcyBmYXIgYXMgbGludXgtbmV4dCBpcyBjb25jZXJuZWQsIGJ1
+dCBhbnkgbm9uIHRyaXZpYWwNCj4gY29uZmxpY3RzIHNob3VsZCBiZSBtZW50aW9uZWQgdG8geW91
+ciB1cHN0cmVhbSBtYWludGFpbmVyIHdoZW4geW91cg0KPiB0cmVlDQo+IGlzIHN1Ym1pdHRlZCBm
+b3IgbWVyZ2luZy7CoCBZb3UgbWF5IGFsc28gd2FudCB0byBjb25zaWRlciBjb29wZXJhdGluZw0K
+PiB3aXRoIHRoZSBtYWludGFpbmVyIG9mIHRoZSBjb25mbGljdGluZyB0cmVlIHRvIG1pbmltaXNl
+IGFueQ0KPiBwYXJ0aWN1bGFybHkNCj4gY29tcGxleCBjb25mbGljdHMuDQo+IA0KDQpUaGFua3Mg
+U3RlcGhlbiENCg0KWWVzLCB0aGUgZml4ZXMgZm9yIHRoZSBjbGllbnQgc2lkZSBSRUFEX1BMVVMg
+Y29kZSBlbmRlZCB1cCBiZWluZyBhDQpsaXR0bGUgbW9yZSBleHRlbnNpdmUgdGhhbiBob3BlZCBm
+b3IgaW4gdGhlIGxhc3Qgd2VlayBvZiB0aGUgMi4xMA0KY3ljbGUsIGhlbmNlIHRoZSBuZWVkIGZv
+ciBhIEtjb25maWcgb3B0aW9uIHRvIGRpc2FibGUgaXQuIEFwb2xvZ2llcyBmb3INCnRoZSBleHRy
+YSB3b3JrIGl0IGNhdXNlZCB5b3UuDQoNCkNoZWVycw0KICBUcm9uZA0KDQotLSANClRyb25kIE15
+a2xlYnVzdA0KTGludXggTkZTIGNsaWVudCBtYWludGFpbmVyLCBIYW1tZXJzcGFjZQ0KdHJvbmQu
+bXlrbGVidXN0QGhhbW1lcnNwYWNlLmNvbQ0KDQoNCg==
