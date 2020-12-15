@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A5A2DA8A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 08:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C5D2DA89F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 08:38:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgLOHje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 02:39:34 -0500
-Received: from mail-bn7nam10on2074.outbound.protection.outlook.com ([40.107.92.74]:52750
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        id S1726849AbgLOHhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 02:37:06 -0500
+Received: from mail-eopbgr680050.outbound.protection.outlook.com ([40.107.68.50]:40678
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726734AbgLOHgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 02:36:08 -0500
+        id S1726736AbgLOHgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 02:36:10 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O69bnAqEyrfmAblAVcRPWoHUj+SLA6wPL4U5ZnmRF/L2W1Ml7l+jHG/EdL3t9jV5rbaHdrBnqDhUW9oP9741LwM5jANfPfIlQsUm7grBx4GIh61XLrle9tWDHRss1037o7J44kwbZzAmXLL9UPabY22iLiNa78hOobdKRazqmczDJcil5CbjOcAmO903+0X91Tg5EznUV+NROsLjpqBI/i4q3Mo95vE64sul3dAPHhUZT1JBvLQY//eXk9o7af9lHFMEABMBxSEjdT2PyOGI3GY2ZE9dD9KWTlz/rfBDRcH2yfQv6xhFHkMF7cPS43t/oqcSv3JcC7FNimJxJo310w==
+ b=EQafFmmuGJcqnQRCyodvHqxFfCuNvy/aXSx71Goy41Wr0u7Qo54fki9QinK/pbMFYHLCMRd6GDksdf7Z+xZiRAgwAHUZdHgHUODwix/QCGyqzUHF3gAAqrOtDKyGq0bcsNA//eULD79wWfjWOkydS484MKdmJ4e8zRUj+3DobiZY0x/kfKEGywNmoPyWWva67zj2Ghuma4wEyPqwYuVo2svVtDMkCgEE9TupHRo7/Sg+tp2VVBKR6gJfI2khFb0FEg+ym3TDMuB3tpV+hwLvZAXkG+AjiLoOMs7edaAmo2FB2GwbG6qN22vGHZ2zvNWLfaiQ6DlUia+q3QYKrZjzYA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m3goTFNqyZuMoSJtcY+jPdOd2fiBVYAz4XE6BC+anTM=;
- b=LjzADGvo/T760dNwQNdxr9tntDeuyYLlTrROp5MtBDcYXeqvte0PjXahMJ1qZB0QXf4vhgtKa4/zqsYgxYWxotW3UsV648p5QemYIv8V7yDQ2AOyMcM7trilFXPAUlaCUs1U6k158JxjZe+JruU6PlNPBPEFIiAZUbxaCLn8Q397YpQcBjrDuh/9HQhtECNSeobN37YTpB/KMI2qJ0rfQEOgQa6NUBK7HVaW+hAJGDU8m07lUjRHaAMtbud374/G1Fp/o4PFWpm9cBBBJdLmZc4akMMh5bX4wIK8HyMGAE5EvWgFaQJsOCnMiKQqHcX1Qtou7nsAgYfA2DbHXdVP9A==
+ bh=BsWgUNdpjsVLM8rtXnJ+3cNCPxgXfA+tG+jRSI/qRBU=;
+ b=NjfDhEKfh6KEWQUrDpE+x0iQNewsswMlkbUcpIw+8C6wGLOVA6ClfKvTHWExe1HCRoFg6o5PlgRGAp6bQRqKhyvqpiRPd57xisu84H9jXAJvrRcXfkfk3M62vQ497mKgtJ/l3uaCy+X0SPQk6JTrSHVkVCweRqnAjbEPmtwTbdfUKtMS6kVkwugxQKBKinxXvhUGF8cGUs2NpkA71Y2gjzY4A/4cqQFZu+lqy3rklx2Eka4BcMiPq0DPuq1a5GPKiRiQLNinrFgEvMx3/21GoiXn+2AhPCpApqQqEdz/uf/zUFZKhndLjwQkjmeZjdLnq+9Hkdp4QqPUFtXBTmW2YQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m3goTFNqyZuMoSJtcY+jPdOd2fiBVYAz4XE6BC+anTM=;
- b=30PZhAf+AWP85eRBJ+GqF2czs5IL9j13JFVrHQ+x+q/qAHNdDz4/GJfwZMvWhgqe9O4urZhVMyW7d0se1CU6a7czGMBa2RP4IWmt0qfQBuq8cXti72OsBT4UmEexolQwtfSQt6GmkewzyF458M2nFg01k9mc5ruJDM1Wa6p/33o=
+ bh=BsWgUNdpjsVLM8rtXnJ+3cNCPxgXfA+tG+jRSI/qRBU=;
+ b=UjqPvcis0QuLo8ma5/G/duUsPnWE21uw2tVTl2URe41AcmY+yZheYamEZpNRSMdqwXniTtdmcfT72AoFhT5+l3hv/TburJfvoJQtAvAXUMDN3bQSU9KmIvuLYvGbkdt+NtusplkonK2si/LyyzcJMFLPHS0HlJGsmC2AE/Ow6BQ=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
 Received: from BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
  by BYAPR12MB3127.namprd12.prod.outlook.com (2603:10b6:a03:d8::33) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.15; Tue, 15 Dec
- 2020 07:34:50 +0000
+ 2020 07:34:53 +0000
 Received: from BYAPR12MB4597.namprd12.prod.outlook.com
  ([fe80::dd10:efd2:e325:53c7]) by BYAPR12MB4597.namprd12.prod.outlook.com
  ([fe80::dd10:efd2:e325:53c7%3]) with mapi id 15.20.3654.021; Tue, 15 Dec 2020
- 07:34:50 +0000
+ 07:34:53 +0000
 From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
 Cc:     joro@8bytes.org, will@kernel.org,
         Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Subject: [PATCH v4 11/13] iommu/amd: Introduce iommu_v1_iova_to_phys
-Date:   Tue, 15 Dec 2020 01:37:03 -0600
-Message-Id: <20201215073705.123786-12-suravee.suthikulpanit@amd.com>
+Subject: [PATCH v4 12/13] iommu/amd: Introduce iommu_v1_map_page and iommu_v1_unmap_page
+Date:   Tue, 15 Dec 2020 01:37:04 -0600
+Message-Id: <20201215073705.123786-13-suravee.suthikulpanit@amd.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201215073705.123786-1-suravee.suthikulpanit@amd.com>
 References: <20201215073705.123786-1-suravee.suthikulpanit@amd.com>
@@ -54,128 +54,189 @@ X-ClientProxiedBy: SN2PR01CA0060.prod.exchangelabs.com (2603:10b6:800::28) To
  BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ethanolx5673host.amd.com (165.204.78.2) by SN2PR01CA0060.prod.exchangelabs.com (2603:10b6:800::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Tue, 15 Dec 2020 07:34:49 +0000
+Received: from ethanolx5673host.amd.com (165.204.78.2) by SN2PR01CA0060.prod.exchangelabs.com (2603:10b6:800::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Tue, 15 Dec 2020 07:34:51 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: cafd9b72-cbec-4285-16fe-08d8a0cbe813
+X-MS-Office365-Filtering-Correlation-Id: 722a5ec7-f56e-42e6-4630-08d8a0cbe9d5
 X-MS-TrafficTypeDiagnostic: BYAPR12MB3127:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR12MB31271ECB830EF9DE5F866FEDF3C60@BYAPR12MB3127.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-Microsoft-Antispam-PRVS: <BYAPR12MB31271FB9C918ADC9DBC08156F3C60@BYAPR12MB3127.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fIs1e/De00lrZ6jsPaM1C0TqZ9nNZgwkPe3ZZmKjp01sRC38DQZy8vmoSoKYvZnKfchHECeE22IFylRYbTMi16T67zhR8izQgG5rCT7WspywqxYvSyOExtLlBT1FKUGy/ilaVt4VGfkmoIiqMtg3ttgIhmvuM9F7VpIFSlmMEG50L2W5gbA7SGa2AG+S1vDTxceXmQptmOzCYLDtDViI8FnETJ8ZnHWjheGQhiGVvVgySWR0GZijXnvsFSFAIRuvk5rKJfw4A0kKOxCKiHGQtp2xSSi5Mp1ALwKU8mUqvOBF92W+qC/zw4PUdx4LzMftiVkoXOLNvFjo/eg+ihaZUYLD2IPZKZ+10UBjKqM4mgxtxpuzPs09Bt1ay3qy2a9/
+X-Microsoft-Antispam-Message-Info: wm/ejjcWQvmQLTEWxSV+1Z84TvZy23sSZtyU5q2SS/P1tZKUqNR4HKFmaqB8LXIzyIkaR50Jxday7piRct9OEYJdRYTB8KYiQIfKUqm4LX2wGVn1gywEyvGcX055+eni8s/JD36dagmV4uXDpA9+TyzqWIDcf9tpKy9x2bT8DrydgmdaVXLusPQ6mRsAEy10ZjJV5hh6rAOCqJIrxyIGV2xBiM8puuhkV1cJL2MQq/wB9kojZPTxuo9D5P78cMp6/PSXvX/x6ejoPLqQyhZAP5FHPCHqQxEJ1+w7Ou88iCk0KE2pNHn9p6DEsXbLhO5ZRXihxtqRgLJTbGI9+pHdbizGMaLIXRL1GyQr9vexAQYDrUjC56DeQgqUg/tK1ur2
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4597.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(66556008)(66476007)(66946007)(6486002)(34490700003)(2906002)(186003)(4326008)(508600001)(8676002)(956004)(6666004)(86362001)(2616005)(52116002)(7696005)(44832011)(36756003)(1076003)(5660300002)(16526019)(26005)(8936002)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?tbAvmBk7Jfz0qj0DTWOziScdzFy5ctbP42tyLkyAaQsaaMqG5wev5jXQS3eb?=
- =?us-ascii?Q?ScuiPpDfPlAq4OwHKWJ+QApqoNGxcuCt/of4fw4WjwO2cmX5s6dVlmdjgZDV?=
- =?us-ascii?Q?sQLlonIHu3k0FMRSv9skb6Qrg/xOySZHFwTjz7EQxcG1fRAM41y8kJGha0Lu?=
- =?us-ascii?Q?8k9PCzfIEQNpsAhGTAiMbFrNsquPvRsiU21vLTnr6Vbv862quzpu7ymJfFu/?=
- =?us-ascii?Q?qssA2x/+m2ZSrq6ROlgkuxPFE0ssvcOxKUbq4zX6X4YgBmAV4YhOpEx2ZS5F?=
- =?us-ascii?Q?v3Z1+tHg3u2KC3TfiOCa6icNfK2+cmgvhvly864tYKCUoTjsJFNeKN/otHhx?=
- =?us-ascii?Q?SeVuKZ4zLV4pPh8BbysN2IaxS5aDOg5f3oER2M7/Jp/Um5VtFhgkMUREkLuD?=
- =?us-ascii?Q?9pSxaKz/5llky9dYm7aGuLivEbVORGgWmR7Fv9L9eqiFP6msHX39bvKhTFBy?=
- =?us-ascii?Q?nXurpvQ7QeBzenu84iKTNZjkPPYMjZ8XoYsEVPsn1vm6++Og/VSlb44a9xbv?=
- =?us-ascii?Q?SISnxENmv02MCKqHdh0Aqj/q8EbwIxwEYftTGS08HDSKV81FlEXUIl/t0XUu?=
- =?us-ascii?Q?F/BuDxBXMxDTgplS09X7U0UQua2mats3MxjNTnGt75kE4ECLau1RptGWvks8?=
- =?us-ascii?Q?JIykNphSiATxMyj8VOdkZ2YcTqZjtZfe8FG6HJBNgllzmi2S6J64PZr6YuHk?=
- =?us-ascii?Q?1Ewk1WMB9VPDtBKYNfanRsB/iKR3diYaIch2i8qqjBupzRr3VVMnDIKJ8gYO?=
- =?us-ascii?Q?udr0uCRJxb8abJtGp3YiAX7ngIGQw/1dE9oeR1ZHaNv1i9hTyhSWqvE7JYW6?=
- =?us-ascii?Q?aKLPST4t93BzxItlY+R7Iq5cgRs9eWYWmGNJTeJMH+IFiFrGD39/l0/V3t8t?=
- =?us-ascii?Q?6cTl6b2fAWe9AlvvLrbLOcqe3u/HDdvrips6MymOpLGAiIjVS/ZluJdTS6P8?=
- =?us-ascii?Q?vqjFXAPBKS8zoYh2YZkac8LkxcFt2im4PcwQEQupQCiH1jlBxFh3kwHi8wxj?=
- =?us-ascii?Q?mu5Q?=
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?pJclH9+X5jYAUtQWLAjMYSYmOeKgzZvUGGzpl5vwL+lwWYgOTW8n2LCF8h3k?=
+ =?us-ascii?Q?FyTvOoWXws0fcS8Q9TYSpKIigkFvvmeUDtm4n2qvv9kQxVdMSqquD0815DVX?=
+ =?us-ascii?Q?ZHvcfscX7AQwoRV3jMPCfZ37kLjTdC0YynN28M5tnT+vWUlfJSgRez68DbKf?=
+ =?us-ascii?Q?YAWJMvrYI5gx0m1dg/ggeyKh6//vuMKdCxPFHsdxRCh4imMdUsvdBg4+rObS?=
+ =?us-ascii?Q?oaOwfkKI6YdsUSYUGzBpi2d5kwrZo2jsfealn69uHWNPehaBfWXq43ardTbm?=
+ =?us-ascii?Q?YQOOLA3yrBUt765O1juuCCng4fLWA0MdyvURfSCeApu5qqPKCWCPGkLaOkoA?=
+ =?us-ascii?Q?Zmx3MUYV0rv2qTqbp4IOKKQbVNvlFw8yPmwsctpNLS7ykL8KRkB7qDL9+yxH?=
+ =?us-ascii?Q?HxmH+NxiVmJtcCNU7lEw4OVqAyzfwbcoLjxa5C3SJCnUFmweHHAbcjp51m/2?=
+ =?us-ascii?Q?Xwy1nRe6w3FDCh/gVxwojH02oC3fdXhrqX8Cs+nxzdbvpmmr+P3BHnYTvMk0?=
+ =?us-ascii?Q?SsSRscB/+1imnkymprYeL2ka9K/UKC8nBxZISxTIFt/PESxt+mOvJoacxnRu?=
+ =?us-ascii?Q?+hQ8qsbAqmriqvPdbz6O1xZmSV/lHJxwbJ1yOuWZ8C6RYyLMxn8o5+ADtMG0?=
+ =?us-ascii?Q?S9DEp1Hrjkn+Zf/B6INPPPoJcW8T8IE8eY/ufqeLFc9Y4qvSZRiKQFO9UAR9?=
+ =?us-ascii?Q?iL6tuS7/ycC2RpIAV6f/rYg4Zdgr8x1jkuJZS7OspGkToaHW60Hx37sV50zb?=
+ =?us-ascii?Q?iDRhKEEVZ+knP2v4UCP1/h8ZaD7z9fs2nWBCKM82pGLViWvTK4+BSHOHVUFf?=
+ =?us-ascii?Q?tKP/3RnO9unQZZQgrnuVz2EfxxuA+k6RJW1paFROOlx0TcV//ZQ8CN+0gzhy?=
+ =?us-ascii?Q?xmD7PCS2GdJAX2d4w1+IVJwd4IO7KLhknuAjWbwi0D/FgjUAkRCLHm2Xn5Wh?=
+ =?us-ascii?Q?21T9O64Al5FHutkDG8qCV2zfkgdoOcPk+2gVzYxRPldp6MNkbyF+s3sL9UTE?=
+ =?us-ascii?Q?gA1d?=
 X-OriginatorOrg: amd.com
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4597.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2020 07:34:50.4615
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2020 07:34:53.2120
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: cafd9b72-cbec-4285-16fe-08d8a0cbe813
+X-MS-Exchange-CrossTenant-Network-Message-Id: 722a5ec7-f56e-42e6-4630-08d8a0cbe9d5
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hJz0SdJJHXCEskLABHYquQwfO7cbsdcjMPTN0ELrIAD8SdFKtIzwExL8DyQIQhQ2yt1XoXbmzMnSAGrZ64iG3g==
+X-MS-Exchange-CrossTenant-UserPrincipalName: bxDZdKtIKhDyW6qJ2ennYwhYBEjc4P1pPHQ0RBu8RAY0h0bNg6tF4tguX+b1oIiuoUYhCotohh+FYNZ2+fpiEQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3127
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This implements iova_to_phys for AMD IOMMU v1 pagetable,
-which will be used by the IO page table framework.
+These implement map and unmap for AMD IOMMU v1 pagetable, which
+will be used by the IO pagetable framework.
+
+Also clean up unused extern function declarations.
 
 Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 ---
- drivers/iommu/amd/io_pgtable.c | 22 ++++++++++++++++++++++
- drivers/iommu/amd/iommu.c      | 16 +---------------
- 2 files changed, 23 insertions(+), 15 deletions(-)
+ drivers/iommu/amd/amd_iommu.h  | 13 -------------
+ drivers/iommu/amd/io_pgtable.c | 25 ++++++++++++-------------
+ drivers/iommu/amd/iommu.c      | 13 ++++++++-----
+ 3 files changed, 20 insertions(+), 31 deletions(-)
 
+diff --git a/drivers/iommu/amd/amd_iommu.h b/drivers/iommu/amd/amd_iommu.h
+index 83ca822c5349..3770b1a4d51c 100644
+--- a/drivers/iommu/amd/amd_iommu.h
++++ b/drivers/iommu/amd/amd_iommu.h
+@@ -133,19 +133,6 @@ void amd_iommu_apply_ivrs_quirks(void);
+ static inline void amd_iommu_apply_ivrs_quirks(void) { }
+ #endif
+ 
+-/* TODO: These are temporary and will be removed once fully transition */
+-extern int iommu_map_page(struct protection_domain *dom,
+-			  unsigned long bus_addr,
+-			  unsigned long phys_addr,
+-			  unsigned long page_size,
+-			  int prot,
+-			  gfp_t gfp);
+-extern unsigned long iommu_unmap_page(struct protection_domain *dom,
+-				      unsigned long bus_addr,
+-				      unsigned long page_size);
+-extern u64 *fetch_pte(struct amd_io_pgtable *pgtable,
+-		      unsigned long address,
+-		      unsigned long *page_size);
+ extern void amd_iommu_domain_set_pgtable(struct protection_domain *domain,
+ 					 u64 *root, int mode);
+ #endif
 diff --git a/drivers/iommu/amd/io_pgtable.c b/drivers/iommu/amd/io_pgtable.c
-index 87184b6cee0f..a293b69b38b9 100644
+index a293b69b38b9..d91964e98d58 100644
 --- a/drivers/iommu/amd/io_pgtable.c
 +++ b/drivers/iommu/amd/io_pgtable.c
-@@ -494,6 +494,26 @@ unsigned long iommu_unmap_page(struct protection_domain *dom,
- 	return unmapped;
+@@ -317,9 +317,9 @@ static u64 *alloc_pte(struct protection_domain *domain,
+  * This function checks if there is a PTE for a given dma address. If
+  * there is one, it returns the pointer to it.
+  */
+-u64 *fetch_pte(struct amd_io_pgtable *pgtable,
+-	       unsigned long address,
+-	       unsigned long *page_size)
++static u64 *fetch_pte(struct amd_io_pgtable *pgtable,
++		      unsigned long address,
++		      unsigned long *page_size)
+ {
+ 	int level;
+ 	u64 *pte;
+@@ -392,13 +392,10 @@ static struct page *free_clear_pte(u64 *pte, u64 pteval, struct page *freelist)
+  * supporting all features of AMD IOMMU page tables like level skipping
+  * and full 64 bit address spaces.
+  */
+-int iommu_map_page(struct protection_domain *dom,
+-		   unsigned long iova,
+-		   unsigned long paddr,
+-		   unsigned long size,
+-		   int prot,
+-		   gfp_t gfp)
++static int iommu_v1_map_page(struct io_pgtable_ops *ops, unsigned long iova,
++			  phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
+ {
++	struct protection_domain *dom = io_pgtable_ops_to_domain(ops);
+ 	struct page *freelist = NULL;
+ 	bool updated = false;
+ 	u64 __pte, *pte;
+@@ -461,11 +458,11 @@ int iommu_map_page(struct protection_domain *dom,
+ 	return ret;
  }
  
-+static phys_addr_t iommu_v1_iova_to_phys(struct io_pgtable_ops *ops, unsigned long iova)
-+{
-+	struct amd_io_pgtable *pgtable = io_pgtable_ops_to_data(ops);
-+	unsigned long offset_mask, pte_pgsize;
-+	u64 *pte, __pte;
-+
-+	if (pgtable->mode == PAGE_MODE_NONE)
-+		return iova;
-+
-+	pte = fetch_pte(pgtable, iova, &pte_pgsize);
-+
-+	if (!pte || !IOMMU_PTE_PRESENT(*pte))
-+		return 0;
-+
-+	offset_mask = pte_pgsize - 1;
-+	__pte	    = __sme_clr(*pte & PM_ADDR_MASK);
-+
-+	return (__pte & ~offset_mask) | (iova & offset_mask);
-+}
-+
- /*
-  * ----------------------------------------------------
-  */
-@@ -534,6 +554,8 @@ static struct io_pgtable *v1_alloc_pgtable(struct io_pgtable_cfg *cfg, void *coo
+-unsigned long iommu_unmap_page(struct protection_domain *dom,
+-			       unsigned long iova,
+-			       unsigned long size)
++static unsigned long iommu_v1_unmap_page(struct io_pgtable_ops *ops,
++				      unsigned long iova,
++				      size_t size,
++				      struct iommu_iotlb_gather *gather)
+ {
+-	struct io_pgtable_ops *ops = &dom->iop.iop.ops;
+ 	struct amd_io_pgtable *pgtable = io_pgtable_ops_to_data(ops);
+ 	unsigned long long unmapped;
+ 	unsigned long unmap_size;
+@@ -554,6 +551,8 @@ static struct io_pgtable *v1_alloc_pgtable(struct io_pgtable_cfg *cfg, void *coo
  	cfg->oas            = IOMMU_OUT_ADDR_BIT_SIZE,
  	cfg->tlb            = &v1_flush_ops;
  
-+	pgtable->iop.ops.iova_to_phys = iommu_v1_iova_to_phys;
-+
- 	return &pgtable->iop;
- }
++	pgtable->iop.ops.map          = iommu_v1_map_page;
++	pgtable->iop.ops.unmap        = iommu_v1_unmap_page;
+ 	pgtable->iop.ops.iova_to_phys = iommu_v1_iova_to_phys;
  
+ 	return &pgtable->iop;
 diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 76f61dd6b89f..29b7fefc8485 100644
+index 29b7fefc8485..1f04b251f0c6 100644
 --- a/drivers/iommu/amd/iommu.c
 +++ b/drivers/iommu/amd/iommu.c
-@@ -2101,22 +2101,8 @@ static phys_addr_t amd_iommu_iova_to_phys(struct iommu_domain *dom,
+@@ -2066,8 +2066,9 @@ static int amd_iommu_map(struct iommu_domain *dom, unsigned long iova,
+ 			 gfp_t gfp)
  {
  	struct protection_domain *domain = to_pdomain(dom);
- 	struct io_pgtable_ops *ops = &domain->iop.iop.ops;
--	struct amd_io_pgtable *pgtable = io_pgtable_ops_to_data(ops);
--	unsigned long offset_mask, pte_pgsize;
--	u64 *pte, __pte;
++	struct io_pgtable_ops *ops = &domain->iop.iop.ops;
+ 	int prot = 0;
+-	int ret;
++	int ret = -EINVAL;
  
--	if (domain->iop.mode == PAGE_MODE_NONE)
--		return iova;
+ 	if (domain->iop.mode == PAGE_MODE_NONE)
+ 		return -EINVAL;
+@@ -2077,9 +2078,10 @@ static int amd_iommu_map(struct iommu_domain *dom, unsigned long iova,
+ 	if (iommu_prot & IOMMU_WRITE)
+ 		prot |= IOMMU_PROT_IW;
+ 
+-	ret = iommu_map_page(domain, iova, paddr, page_size, prot, gfp);
 -
--	pte = fetch_pte(pgtable, iova, &pte_pgsize);
--
--	if (!pte || !IOMMU_PTE_PRESENT(*pte))
--		return 0;
--
--	offset_mask = pte_pgsize - 1;
--	__pte	    = __sme_clr(*pte & PM_ADDR_MASK);
--
--	return (__pte & ~offset_mask) | (iova & offset_mask);
-+	return ops->iova_to_phys(ops, iova);
+-	domain_flush_np_cache(domain, iova, page_size);
++	if (ops->map) {
++		ret = ops->map(ops, iova, paddr, page_size, prot, gfp);
++		domain_flush_np_cache(domain, iova, page_size);
++	}
+ 
+ 	return ret;
+ }
+@@ -2089,11 +2091,12 @@ static size_t amd_iommu_unmap(struct iommu_domain *dom, unsigned long iova,
+ 			      struct iommu_iotlb_gather *gather)
+ {
+ 	struct protection_domain *domain = to_pdomain(dom);
++	struct io_pgtable_ops *ops = &domain->iop.iop.ops;
+ 
+ 	if (domain->iop.mode == PAGE_MODE_NONE)
+ 		return 0;
+ 
+-	return iommu_unmap_page(domain, iova, page_size);
++	return (ops->unmap) ? ops->unmap(ops, iova, page_size, gather) : 0;
  }
  
- static bool amd_iommu_capable(enum iommu_cap cap)
+ static phys_addr_t amd_iommu_iova_to_phys(struct iommu_domain *dom,
 -- 
 2.17.1
 
