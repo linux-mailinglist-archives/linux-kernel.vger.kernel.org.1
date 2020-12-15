@@ -2,112 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3422DB111
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:15:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13EA92DB108
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730898AbgLOQOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:14:22 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:49942 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729792AbgLOQNy (ORCPT
+        id S1729634AbgLOQNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:13:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730596AbgLOQMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:13:54 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BFGC8CF127517;
-        Tue, 15 Dec 2020 10:12:08 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608048728;
-        bh=ttnyMr3PlO1+hk5NmAEKzHi90iThMHE0scfvWZGu4mQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=glKV1FQmSfC2UT9JaYcida2Yp7Xhc55izx0bR85gjbh78PLb4Q+RKoG2FKEaN0n+P
-         t0Ba2L3ECfd2uaDXqYttD/IroP/suZ0TrmVwKx185RpyXBUs3iilRaJXCONpV1ptDy
-         rfM4GkVpPGrhZWQxlatjj5NtKn2xDnegbp0yhJ6Y=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BFGC8KM096619
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Dec 2020 10:12:08 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
- Dec 2020 10:12:06 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 15 Dec 2020 10:12:06 -0600
-Received: from [10.250.232.169] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BFGC1xD124122;
-        Tue, 15 Dec 2020 10:12:02 -0600
-Subject: Re: [PATCH RFC 1/2] Documentation: devicetree: Add property for
- ignoring the dummy bits sent before read transfer
-To:     Rob Herring <robh@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>
-References: <20201209175708.16252-1-a-govindraju@ti.com>
- <20201209175708.16252-2-a-govindraju@ti.com>
- <20201211033301.GA3581630@robh.at.kernel.org>
- <70d6c152-5d8d-9ad6-ce06-95a9f599c492@ti.com>
- <20201214222339.GA2471866@robh.at.kernel.org>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <76e73cc7-fdb7-45bb-6270-1f668969ad50@ti.com>
-Date:   Tue, 15 Dec 2020 21:42:01 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 15 Dec 2020 11:12:53 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7899C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 08:12:12 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id i18so21018971ioa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 08:12:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QhmvISH3RhqLy0sRhM87D2JxNop7NLF9/+aZn3veZTQ=;
+        b=AC+Zkdpv84wFo84wfo3TYDHsaO0C7PpqnsxAuvX9wBkVqKrg0I7h1Sj8u//yVOWbwa
+         huj5P1rtFjETXTh9bEFqO0Gdq1V22rAnHDv1GjZA1RA0rpgulPb3s4YLN0oDCuw/9bYQ
+         qrV8MD44N96xYUGsokv0kPIHfo8GilMG0zQS4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QhmvISH3RhqLy0sRhM87D2JxNop7NLF9/+aZn3veZTQ=;
+        b=QP8/L4RFKjTEvngVQm/FSjb5+DiLM7EpnZWvcT00o4bFPnMADGybDrOl10oY5ig86+
+         KndDZ3Pk3grVHj9Okny8e4cety6uBfC4yl0Mzmg1AGGu2QumnrRPxm6tgTTvIA0Tw8st
+         tcwiB3tX0q3Xh5UOueKHrO3wOeZ6eXdHwSBwg/RkF8dU6U9OEtlTeS3Jo2MC0SFimm2T
+         rQutvxy7vboZ0SXod6THf6nLMbQc7prUYQsgDh1cc2BtZ2WKniDgq5Ras9cak/A+B5MX
+         HQQN8cQ97C+g5Z2YomBpNGrq/FFaFMKhtdgRswsrgRHvvTX5bjAexo77lRzRbnbpMQXg
+         FJdw==
+X-Gm-Message-State: AOAM533RAMIQYY1IaycqfiodQ4tj3xPvb0rS4NJEOwG1LDHE3ivp8w46
+        MqgOsHRujr9VRvEIsao7qVulaA==
+X-Google-Smtp-Source: ABdhPJy0fBUADBT+e4wnn9htUjE1wXC64//qtCKtv6YNcCeFtmx4rLl55N/aBacc0D3mdMl2w6gM/w==
+X-Received: by 2002:a6b:b205:: with SMTP id b5mr37081694iof.190.1608048732136;
+        Tue, 15 Dec 2020 08:12:12 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id v23sm11092816iol.21.2020.12.15.08.12.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 08:12:11 -0800 (PST)
+Subject: Re: related to fixing depreciated api
+To:     Jeffrin Jose T <jeffrin@rajagiritech.edu.in>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <e479c654b6ca08057bf18a4e1c1d1ed3cdf8fdc8.camel@rajagiritech.edu.in>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <291555f8-ed17-5ed6-8ca4-42c8d5e13be9@linuxfoundation.org>
+Date:   Tue, 15 Dec 2020 09:12:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201214222339.GA2471866@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <e479c654b6ca08057bf18a4e1c1d1ed3cdf8fdc8.camel@rajagiritech.edu.in>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-On 15/12/20 3:53 am, Rob Herring wrote:
-> On Fri, Dec 11, 2020 at 08:34:57PM +0530, Aswath Govindraju wrote:
->> Hi,
->> On 11/12/20 9:03 am, Rob Herring wrote:
->>> On Wed, Dec 09, 2020 at 11:27:07PM +0530, Aswath Govindraju wrote:
->>>> Dummy zero bits are sent before data during a read transfer. This causes
->>>> the data read to be shifted to the right. To fix this send zero bits after
->>>> the address during a read transfer.
->>>>
->>>> Add property to send zero bits after the address during a read transfer.
->>>
->>> When is this necessary? Why can't it be implied by the compatible 
->>> string which should be specific to the chip model?
->>>
->>
->> This is necessary for 93AA46A/B/C, 93LC46A/B/C, 93C46A/B/C eeproms, as
->> it can be seen in section 2.7 of [1]. We were not sure if these were the
->> only devices supported by the driver(eeprom_93xx46.c). So, in order to
->> apply this only to the above listed devices, we thought that it would be
->> better to apply this change when required by introducing a DT property.
->>
->> May I know how has this case been handled till now ??
->>
+On 12/14/20 9:42 AM, Jeffrin Jose T wrote:
+> hello,
 > 
-> No idea. From the at93c46d (which has a compatible string) datasheet it 
-> looks like it has the same thing.
+> i have worked on to  fix  depreciated api issue from
+> tools/testing/selftests/intel_pstate/aerf.c
 > 
->> If this is required by all the devices then we can drop the property and
->> include the zero bit by default.
+> i met with the following error related...
 > 
-> Looks like you need a combination of compatible strings for the above  
-> devices and a property for the ORG pin state on the C devices. I assume 
-> s/w needs to know if x8 or x16?
+> --------------x------------------x----------------->
+> $pwd
+> /home/jeffrin/UP/linux-kselftest/tools/testing/selftests/intel_pstate
+> $make
+> gcc  -Wall -D_GNU_SOURCE    aperf.c /home/jeffrin/UP/linux-
+> kselftest/tools/testing/selftests/kselftest_harness.h
+> /home/jeffrin/UP/linux-kselftest/tools/testing/selftests/kselftest.h -
+> lm -o /home/jeffrin/UP/linux-
+> kselftest/tools/testing/selftests/intel_pstate/aperf
+> aperf.c: In function ‘main’:
+> aperf.c:58:2: warning: ‘ftime’ is deprecated [-Wdeprecated-
+> declarations]
+>     58 |  ftime(&before);
+>        |  ^~~~~
+> In file included from aperf.c:9:
+> /usr/include/x86_64-linux-gnu/sys/timeb.h:39:12: note: declared here
+>     39 | extern int ftime (struct timeb *__timebuf)
+>        |            ^~~~~
+> aperf.c:67:2: warning: ‘ftime’ is deprecated [-Wdeprecated-
+> declarations]
+>     67 |  ftime(&after);
+>        |  ^~~~~
+> In file included from aperf.c:9:
+> /usr/include/x86_64-linux-gnu/sys/timeb.h:39:12: note: declared here
+>     39 | extern int ftime (struct timeb *__timebuf)
+>        |            ^~~~~
+> $
+> ----------------x---------------x---------------------->
 > 
-Yes, there are separate properties for indicating different types of
-types of eeproms.
+> 
+> from ftime manual  i found that it is depreciated...
+> 
+> This  function is deprecated, and will be removed in a future version
+> of the GNU C library.  Use clock_gettime(2) instead.
+> 
+> 
+> now clock_gettime  gives  new data structure.
+> 
+>   struct timespec {
+>                 time_t   tv_sec;        /* seconds */
+>                 long     tv_nsec;       /* nanoseconds */
+>             };
+> 
+> 
+> i worked on with the new data structure and some errors that came
+> along.
+> typical final output looks good but  values of runtime and typical
+> frequency
+> does not look normal during "sudo bash run.sh".
+> 
+> output of "git diff" and  a  portion of output of   "sudo bash run.sh".
+> is attached.
+> 
 
-So, do you think that it is better to add it as a seperate property??
+Please send a proper patch to fix intel_pstate to use clock_gettime.
 
-Thanks,
-Aswath
-> Rob
-> 
+thanks,
+-- Shuah
 
