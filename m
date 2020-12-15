@@ -2,128 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F7E2DB2DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:42:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9194A2DB1FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731240AbgLORkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 12:40:31 -0500
-Received: from correo.inac.gob.ve ([201.248.73.218]:59068 "EHLO
-        st2apzmtai.inac.gob.ve" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731029AbgLORkR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 12:40:17 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by st2apzmtai.inac.gob.ve (Postfix) with ESMTP id 43C1B8732F;
-        Tue, 15 Dec 2020 13:08:16 -0400 (-04)
-Received: from st2apzmtai.inac.gob.ve ([127.0.0.1])
-        by localhost (st2apzmtai.inac.gob.ve [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id sZMFquvXGelh; Tue, 15 Dec 2020 13:08:15 -0400 (-04)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by st2apzmtai.inac.gob.ve (Postfix) with ESMTP id DE4C284681;
-        Tue, 15 Dec 2020 13:02:48 -0400 (-04)
-DKIM-Filter: OpenDKIM Filter v2.10.3 st2apzmtai.inac.gob.ve DE4C284681
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inac.gob.ve;
-        s=F05F55CC-4103-11E8-9A0D-8F69A16C2019; t=1608051769;
-        bh=TpLu9xQ7aqYszn1uee2jGpF/XUIli9UO9LLYMuERD7w=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=aYOKPDHW8JJw5gpRPnSrCRQ883n/Qr6Dln+T39h6YHcbHb68Wp+nlSvY/wcW/RR1E
-         8ax1FsSArqo3+4nLySyA3YuM01GBjztrz+iVnIGnDBsUjfJSh7D2DqiB7orqxZDbkG
-         gNjVKhEeXYcNe6YwqgoCdzBVyZWl5WEOLzVDU3KmhvGVSmO3Vzq1lZF5tHAeo/QSBY
-         Q6OImPZJGnadEl+bIlA6qt05eIxOWHZSQpnLMvwjpT30i9HUcch0tsY54WQRPc7Dh+
-         ZPKeXYi8EPs1YLOBaHPbx0HfJt1mS6Yyo/maUqTU8Ogau63EMeBsf/1FVeLwSQcLcB
-         M6nCtot0Y2OzA==
-X-Virus-Scanned: amavisd-new at 
-Received: from st2apzmtai.inac.gob.ve ([127.0.0.1])
-        by localhost (st2apzmtai.inac.gob.ve [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 3qnLh49UytLt; Tue, 15 Dec 2020 13:02:48 -0400 (-04)
-Received: from [100.124.3.74] (188-207-74-187.mobile.kpn.net [188.207.74.187])
-        by st2apzmtai.inac.gob.ve (Postfix) with ESMTPSA id 6829286506;
-        Tue, 15 Dec 2020 12:55:48 -0400 (-04)
-Content-Type: text/plain; charset="utf-8"
+        id S1730449AbgLOQ4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:56:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725878AbgLOQ4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 11:56:36 -0500
+X-Gm-Message-State: AOAM531i1/LeiuoBth6koZs1SH+rGoPeVe0BNip3I2wFgD1SXznAL7J8
+        ODfx/T+3xWjiRjgM2r6tUvUcorDrHmYNu/dIhNkPTA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608051356;
+        bh=4uuMed2I/qLEnHbSv6wWUwOGnvHF0OxMKguizkS23yI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bVoqSrDelDWBPDHOv9+fs6gCoEYXVVbFGBH2eskeTEJmi1q7p0dqcZdgheLK6ptXR
+         eEKa9wambtfj5vhwTrBzGPojwCQVAA1vHiucFfkK5PI71UNodJ2flVteeMIAy3R+YP
+         znIitRM4bRbMieYFJK6RPgUD0axy5GxENfdBIqegjqPbaeB5gA13J9QQQhJEuku933
+         C0kwh0FhRWjN06IMNedXXssRn1ddYIDpt74aGAw648DpmYOTVFMPA0n/uBebcjr/QJ
+         +uD1/XH/CtEYs4d+UpM26lVunJ9uaH5BwTRHnAw+utufKbuzvbKqBdpAn/mAxkQUh+
+         c5uDhSOaZSx7g==
+X-Google-Smtp-Source: ABdhPJy3uLVnrgt5O145ZtQDwnWF8UfntgkXUoP2och4htd4pb1jC4baZYahNKi6pDB0ebzd8HyoXw3tnxyh3qN8LcA=
+X-Received: by 2002:a1c:7e87:: with SMTP id z129mr2512517wmc.176.1608051354310;
+ Tue, 15 Dec 2020 08:55:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: {Spam?} YOU HAVE WON
-To:     Recipients <juan.arias@inac.gob.ve>
-From:   juan.arias@inac.gob.ve
-Date:   Tue, 15 Dec 2020 17:55:40 +0100
-Reply-To: johnsonwilson389@gmail.com
-Message-Id: <20201215165549.6829286506@st2apzmtai.inac.gob.ve>
-X-inac-MailScanner: Found to be clean, Found to be clean
-X-inac-MailScanner-SpamCheck: spam, SPAMHAUS, SpamAssassin (almacenado,
-        puntaje=7.644, requerido 4, ADVANCE_FEE_4_NEW_MONEY 0.12,
-        ALL_TRUSTED -1.00, FREEMAIL_FORGED_REPLYTO 2.50,
-        FREEMAIL_REPLYTO_END_DIGIT 0.25, HK_LOTTO 0.29, HK_WIN 1.00,
-        LOTS_OF_MONEY 0.00, LOTTO_AGENT 1.50, MONEY_FRAUD_5 0.00,
-        MONEY_FREEMAIL_REPTO 1.22, MONEY_NOHTML 1.27, SUBJ_ALL_CAPS 0.50,
-        URIBL_BLOCKED 0.00), spam, SpamAssassin (almacenado, puntaje=6.045,
-        requerido 4, ADVANCE_FEE_3_NEW_MONEY 0.32, ALL_TRUSTED -1.00,
-        DKIM_INVALID 0.10, DKIM_SIGNED 0.10, FREEMAIL_FORGED_REPLYTO 2.50,
-        FREEMAIL_REPLYTO_END_DIGIT 0.25, HK_LOTTO 0.29, HK_WIN 1.00,
-        LOTS_OF_MONEY 0.00, MONEY_FREEMAIL_REPTO 1.22, MONEY_NOHTML 1.27,
-        URIBL_BLOCKED 0.00)
-X-inac-MailScanner-SpamScore: sssssss, ssssss
-X-inac-MailScanner-Information: Please contact the ISP for more information
-X-inac-MailScanner-ID: DE4C284681.A167F
-X-inac-MailScanner-From: juan.arias@inac.gob.ve
+References: <20201215160314.18773-1-info@metux.net> <41ef1cd1-017d-a0d4-91d3-a1183bd2ab01@infradead.org>
+ <CALCETrXhZxyPUcrBaO=mzvANC72uXNBrivo7hGmdkV2bgdFxjw@mail.gmail.com> <1297989c-6a9e-0804-82a5-d55cc7502b77@infradead.org>
+In-Reply-To: <1297989c-6a9e-0804-82a5-d55cc7502b77@infradead.org>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 15 Dec 2020 08:55:42 -0800
+X-Gmail-Original-Message-ID: <CALCETrUgbz8LWraKyVFcVJik=d5zOJTeXHvm6oM9T4ym=66LcA@mail.gmail.com>
+Message-ID: <CALCETrUgbz8LWraKyVFcVJik=d5zOJTeXHvm6oM9T4ym=66LcA@mail.gmail.com>
+Subject: Re: [PATCH] arch: x86: entry: vdso: fix type conversion on printf() call
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On Tue, Dec 15, 2020 at 8:42 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 12/15/20 8:39 AM, Andy Lutomirski wrote:
+> > On Tue, Dec 15, 2020 at 8:32 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> >>
+> >> On 12/15/20 8:03 AM, Enrico Weigelt, metux IT consult wrote:
+> >>> Fixing the following compiler warning by explicit conversion to long:
+> >>>
+> >>> In file included from /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.c:162:0:
+> >>> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h: In function 'extract64':
+> >>> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t {aka unsigned int}' [-Wformat=]
+> >>>   fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
+> >>>                                                     ^
+> >>>   CC      mm/filemap.o
+> >>> In file included from /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.c:166:0:
+> >>> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h: In function 'extract32':
+> >>> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t {aka unsigned int}' [-Wformat=]
+> >>>   fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
+> >>>
+> >>> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+> >>> ---
+> >>>  arch/x86/entry/vdso/vdso2c.h | 3 ++-
+> >>>  1 file changed, 2 insertions(+), 1 deletion(-)
+> >>
+> >> Hi,
+> >>
+> >> size_t is normally printed with %zu.
+> >> Is there some reason that isn't being used here?
+> >
+> > No.  Want to send a patch?
+> >
+>
+> I was hoping that Enrico would fix this and maybe address your other comment,
+> although I'm not so sure that I agree with it.
 
-Sir/Madam,
+Using %zu would get rid of the line break entirely.  Enrico?
 
-CONGRATULATIONS!!!
-
-We are pleased to inform you of the result of the Lotto NL Winners Internat=
-ional programs held on the 13th of December 2020.  Your e-mail address atta=
-ched to ticket #: 00903228100 with prize # 778009/UK drew =E2=82=AC1,000,00=
-0.00 which was first in the 2nd class of the draws. you are to receive =E2=
-=82=AC1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until =
-your money (=E2=82=AC1,000,000.00) has been fully remitted to you by our ac=
-credited pay-point bank. =
-
-
-This measure must be adhere to  avoid loss of your cash prize-winners of ou=
-r cash prizes are advised to adhere to these instructions to forestall the =
-abuse of this program by other participants.  =
-
-
-It's important to note that this draws were conducted formally, and winners=
- are selected through an internet ballot system from 60,000 individual and =
-companies e-mail addresses - the draws are conducted around the world throu=
-gh our internet based ballot system. The promotion is sponsored and promote=
-d Lotto NL. =
-
-
-We congratulate you once again. We hope you will use part of it in our next=
- draws; the jackpot winning is =E2=82=AC85million.  Remember, all winning m=
-ust be claimed not later than 20 days. After this date all unclaimed cash p=
-rize will be forfeited and included in the next sweepstake.  Please, in ord=
-er to avoid unnecessary delays and complications remember to quote personal=
- and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for bein=
-g part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Fore=
-ign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+>
+> --
+> ~Randy
+>
