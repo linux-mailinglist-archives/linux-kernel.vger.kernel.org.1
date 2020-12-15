@@ -2,163 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B502DA733
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 05:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F26F2DA735
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 05:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725871AbgLOEnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 23:43:14 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:47884 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgLOEmv (ORCPT
+        id S1725976AbgLOEpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 23:45:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50449 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725798AbgLOEpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 23:42:51 -0500
-Received: by mail-io1-f70.google.com with SMTP id q21so5040536ios.14
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 20:42:35 -0800 (PST)
+        Mon, 14 Dec 2020 23:45:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608007418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WfuNulEUyZ4D9ITyUZwY93F2tD2DkQZvOHANb0nT6DU=;
+        b=NDuvgkNHu/In84ggqyBesw5ahF3Zz13JbCcL7FFb4zR+Q23uGCtoUL4O7pByzc5GQRBBSl
+        g7ATQAnXhatlJSES2c5PWyJ07E1Qie7+QpFax96Q+ZBJ3sdUbi5y+FfNL8hPOT+dRU7HYn
+        hYPlmI3PPP7MmybLrjNkoBQYrEvtd3A=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-101-Y_8XC7ByOUK9hhmHg7aL4w-1; Mon, 14 Dec 2020 23:43:34 -0500
+X-MC-Unique: Y_8XC7ByOUK9hhmHg7aL4w-1
+Received: by mail-qk1-f200.google.com with SMTP id l138so7966191qke.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 20:43:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=LqWaNQjCimm2ca6xInyGr6oMtdoqCwNA95xg3NR0eBs=;
-        b=VQdA+kkmYBsiCmMYFTYfAYG7H6cStFNzEDEXP/TmgO8fjZSAbbvFjPP4TkGyjgYwn+
-         ttuAh8DYHzszuagNuRveREdWrfeMNrmNimBMgUasoYg5jvX3KtmWeZB/Xp7daAQg5iAt
-         ynMlWTOTg1Cbq/3gAorRzkv2uAQwUW325Q/JU1nhwgpoxzNkA3+qAZmvgoEdomDlDnK3
-         2mnL5dh4YEJwKENmmgJthK8LoukzfeqvmlFi3oih7qoWb65QCRd1uLRc16Mzx16eNvHp
-         PryvFDyphBcVuFZfx+tNJI4r5/U3TuII6ZGBvqlFW+PDOOqfsRCeTq6vRLp5WbZFZmKX
-         ChTQ==
-X-Gm-Message-State: AOAM532xzVHfKU+VDe5Gzc1mAAwD/2PNan7k4luAXOoVCj+Lo0ZfLWQ1
-        41pHOLync1IQ1ClxZx3p+flyXi6pHZQBwCRZwQmh9QC+9ss1
-X-Google-Smtp-Source: ABdhPJyZaXjecLYYIfdizclwvPhLlMvic1ogV9rB8egV0WLu+dS+5IBDd8HMqFEYG5EComEOdlQBCvQG+YMg1T+r9Zc60hGQDfta
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=WfuNulEUyZ4D9ITyUZwY93F2tD2DkQZvOHANb0nT6DU=;
+        b=Qxkz9kkpxvvxhFa8YRuFHFAdoZhsXcHdJw9ID0x/kig6RdrvAcKZEQcGdnK4eWJPJD
+         YQgyaVvsddAn8DcyKB3Bi8WZngx7wchM5e0VoB0x7gWXD87+f2NcfpzXKSW6e2BB4ddP
+         kZZlr/vgOWe8Z0M2WADhZyJvT/ej22T12VHEqg0tXqz4l5UmUMRs+fdSABjUuSMkzYIE
+         pjA2PgMgpkkI/R2VBEb5t4lvwLSClMpquWpvmkwLqa9u5scdmpupLaZbcbDoucz6PZ8l
+         y9AotnYeMBpPZkEJMgJlQ+ZYXkKcThvVGyZzSHyqs5R4BAkbDvfrftOva7+OT1t1NYO5
+         6LyA==
+X-Gm-Message-State: AOAM531Xxfi21eEdb3iootE/ZvHxMmbifSFfKeuVviz5l+35h4lgqZqK
+        U7Pkh0+WGPz0VzuF7LZOuV1bZUXFRPS99lUtenk3ft4bsDUevUYHnlWGdyokRXiQMLGMpYq8/aO
+        EL5Ip24DkGhsM+/n8k5Rstl0H
+X-Received: by 2002:ac8:70cd:: with SMTP id g13mr33873537qtp.345.1608007414212;
+        Mon, 14 Dec 2020 20:43:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyw2Iqn6wYcAolL+BgzRwuOsAKOZ0vpMhN/4n3mV6+6pdjBPUafj7e7ZWksvdH3bY7lag+CjQ==
+X-Received: by 2002:ac8:70cd:: with SMTP id g13mr33873521qtp.345.1608007413979;
+        Mon, 14 Dec 2020 20:43:33 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id a1sm9973010qkn.104.2020.12.14.20.43.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Dec 2020 20:43:33 -0800 (PST)
+Subject: Re: [PATCH v2 2/2] Documentation: fpga: dfl: Add description for DFL
+ UIO support
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        lgoncalv@redhat.com, hao.wu@intel.com
+References: <1607916981-14782-1-git-send-email-yilun.xu@intel.com>
+ <1607916981-14782-3-git-send-email-yilun.xu@intel.com>
+ <4bbaa5ad-b0eb-8ea6-9dc6-c08060450e36@redhat.com>
+ <20201215022206.GC14854@yilunxu-OptiPlex-7050>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <97d06583-ca99-67ae-55e1-ff714b47f8cb@redhat.com>
+Date:   Mon, 14 Dec 2020 20:43:31 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:5ab:: with SMTP id k11mr32494608ils.189.1608007330245;
- Mon, 14 Dec 2020 20:42:10 -0800 (PST)
-Date:   Mon, 14 Dec 2020 20:42:10 -0800
-In-Reply-To: <00000000000056307e05b08a4693@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b7334f05b67961a3@google.com>
-Subject: Re: BUG: soft lockup in mac80211_hwsim_beacon
-From:   syzbot <syzbot+d6219cf21f26bdfcc22e@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net,
-        keescook@chromium.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        mingo@kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201215022206.GC14854@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
 
-HEAD commit:    2c85ebc5 Linux 5.10
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=148fcc13500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8aff533d6c635e6
-dashboard link: https://syzkaller.appspot.com/bug?extid=d6219cf21f26bdfcc22e
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1102527b500000
+On 12/14/20 6:22 PM, Xu Yilun wrote:
+> On Mon, Dec 14, 2020 at 02:14:56PM -0800, Tom Rix wrote:
+>> On 12/13/20 7:36 PM, Xu Yilun wrote:
+>>> This patch adds description for UIO support for dfl devices on DFL
+>>> bus.
+>>>
+>>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+>>> ---
+>>> v2: no doc in v1, add it for v2.
+>>> ---
+>>
+>>> +components. They could instantiate a new private feature in the DFL, and then
+>>> +get a DFL device in their system. In some cases users may need a userspace
+>>> +driver for the DFL device:
+>>> +
+>>> +* Users may need to run some diagnostic test for their hardwares.
+>> * Users may prototype the kernel driver in user space.
+> Could we just add the line rather than replacing the previous line? I think this
+> comment is describing a different usecase.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d6219cf21f26bdfcc22e@syzkaller.appspotmail.com
+Yes, this is what i ment, please use your original.
 
-watchdog: BUG: soft lockup - CPU#1 stuck for 134s! [syz-executor.4:10844]
-Modules linked in:
-irq event stamp: 16682675
-hardirqs last  enabled at (16682674): [<ffffffff89000d42>] asm_sysvec_irq_work+0x12/0x20 arch/x86/include/asm/idtentry.h:657
-hardirqs last disabled at (16682675): [<ffffffff88e55e2c>] sysvec_apic_timer_interrupt+0xc/0x100 arch/x86/kernel/apic/apic.c:1091
-softirqs last  enabled at (11305198): [<ffffffff89000eaf>] asm_call_irq_on_stack+0xf/0x20
-softirqs last disabled at (11305201): [<ffffffff89000eaf>] asm_call_irq_on_stack+0xf/0x20
-CPU: 1 PID: 10844 Comm: syz-executor.4 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__iterate_interfaces+0x14b/0x520 net/mac80211/util.c:786
-Code: 31 ff 44 89 fe e8 05 a8 1d f9 45 85 ff 0f 84 9a 01 00 00 e8 a7 af 1d f9 48 8d bb 50 06 00 00 48 89 f8 48 c1 e8 03 0f b6 04 28 <84> c0 74 08 3c 03 0f 8e a8 03 00 00 8b 83 50 06 00 00 31 ff 83 e0
-RSP: 0018:ffffc90000d90a68 EFLAGS: 00000212
-RAX: 0000000000000000 RBX: ffff8880276ccc00 RCX: ffffffff885254eb
-RDX: ffff8880213c3480 RSI: ffffffff885254f9 RDI: ffff8880276cd250
-RBP: dffffc0000000000 R08: 0000000000000000 R09: ffffffff8ebb0667
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880276cde18
-R13: 0000000000000000 R14: ffff88803d37a5b8 R15: 0000000000000002
-FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000016b9e60 CR3: 000000003ca03000 CR4: 0000000000350ee0
-Call Trace:
- <IRQ>
- ieee80211_iterate_active_interfaces_atomic+0x8d/0x170 net/mac80211/util.c:828
- mac80211_hwsim_addr_match+0x128/0x180 drivers/net/wireless/mac80211_hwsim.c:1060
- mac80211_hwsim_tx_frame_no_nl.isra.0+0xb3d/0x1330 drivers/net/wireless/mac80211_hwsim.c:1498
- mac80211_hwsim_tx_frame+0x14f/0x1e0 drivers/net/wireless/mac80211_hwsim.c:1705
- mac80211_hwsim_beacon_tx+0x4ba/0x910 drivers/net/wireless/mac80211_hwsim.c:1759
- __iterate_interfaces+0x1e5/0x520 net/mac80211/util.c:792
- ieee80211_iterate_active_interfaces_atomic+0x8d/0x170 net/mac80211/util.c:828
- mac80211_hwsim_beacon+0xd5/0x1a0 drivers/net/wireless/mac80211_hwsim.c:1782
- __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
- __hrtimer_run_queues+0x693/0xea0 kernel/time/hrtimer.c:1583
- hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1600
- __do_softirq+0x2a0/0x9f6 kernel/softirq.c:298
- asm_call_irq_on_stack+0xf/0x20
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:393 [inline]
- __irq_exit_rcu kernel/softirq.c:423 [inline]
- irq_exit_rcu+0x132/0x200 kernel/softirq.c:435
- sysvec_apic_timer_interrupt+0x4d/0x100 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
-RIP: 0010:mm_update_next_owner+0x432/0x7a0 kernel/exit.c:387
-Code: 8d ad 00 fc ff ff 48 81 fd 80 b3 09 8b 0f 84 65 01 00 00 e8 00 01 2e 00 48 8d bd 24 fc ff ff 48 89 f8 48 c1 e8 03 0f b6 14 18 <48> 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 b5 02 00 00 44
-RSP: 0018:ffffc90001bafb28 EFLAGS: 00000213
-RAX: 1ffff110035d4004 RBX: dffffc0000000000 RCX: ffffffff814203df
-RDX: 0000000000000000 RSI: ffffffff814203a0 RDI: ffff88801aea0024
-RBP: ffff88801aea0400 R08: 0000000000000001 R09: ffffffff8b00a083
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff88802f0c6c00
-R13: ffff88801aea0000 R14: 0000000000200000 R15: ffff888140758010
- exit_mm kernel/exit.c:485 [inline]
- do_exit+0xa6a/0x29b0 kernel/exit.c:796
- do_group_exit+0x125/0x310 kernel/exit.c:906
- get_signal+0x42a/0x1f10 kernel/signal.c:2758
- arch_do_signal+0x82/0x2390 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
- exit_to_user_mode_prepare+0x100/0x1a0 kernel/entry/common.c:191
- irqentry_exit_to_user_mode+0x5/0x30 kernel/entry/common.c:279
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
-RIP: 0033:0x45e159
-Code: Unable to access opcode bytes at RIP 0x45e12f.
-RSP: 002b:00007fabdf0dac68 EFLAGS: 00000246
-RAX: 0000000020ffc000 RBX: 0000000000000006 RCX: 000000000045e159
-RDX: 0000000000000000 RSI: 0000000000003000 RDI: 0000000020ffc000
-RBP: 000000000119c080 R08: 0000000000000004 R09: 0000000000000000
-R10: 0000000000000011 R11: 0000000000000246 R12: 000000000119c034
-R13: 00007ffd91092c1f R14: 00007fabdf0db9c0 R15: 000000000119c034
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 10837 Comm: syz-executor.0 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:queued_write_lock_slowpath+0x131/0x270 kernel/locking/qrwlock.c:77
-Code: 00 00 00 00 fc ff df 49 01 c7 41 83 c6 03 41 0f b6 07 41 38 c6 7c 08 84 c0 0f 85 fe 00 00 00 8b 03 3d 00 01 00 00 74 19 f3 90 <41> 0f b6 07 41 38 c6 7c ec 84 c0 74 e8 48 89 df e8 9a 9a 5a 00 eb
-RSP: 0018:ffffc90001b7fa48 EFLAGS: 00000006
-RAX: 0000000000000300 RBX: ffffffff8b00a080 RCX: ffffffff8156e6ba
-RDX: fffffbfff1601411 RSI: 0000000000000004 RDI: ffffffff8b00a080
-RBP: 00000000000000ff R08: 0000000000000001 R09: ffffffff8b00a083
-R10: fffffbfff1601410 R11: 0000000000000000 R12: 1ffff9200036ff4a
-R13: ffffffff8b00a084 R14: 0000000000000003 R15: fffffbfff1601410
-FS:  0000000002f56940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f29a5e6adb8 CR3: 0000000011697000 CR4: 0000000000350ef0
-Call Trace:
- queued_write_lock include/asm-generic/qrwlock.h:95 [inline]
- do_raw_write_lock+0x1ce/0x280 kernel/locking/spinlock_debug.c:207
- copy_process+0x3377/0x6e80 kernel/fork.c:2210
- kernel_clone+0xe7/0xab0 kernel/fork.c:2456
- __do_sys_clone+0xc8/0x110 kernel/fork.c:2573
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x460b29
-Code: ff 48 85 f6 0f 84 37 8a fb ff 48 83 ee 10 48 89 4e 08 48 89 3e 48 89 d7 4c 89 c2 4d 89 c8 4c 8b 54 24 08 b8 38 00 00 00 0f 05 <48> 85 c0 0f 8c 0e 8a fb ff 74 01 c3 31 ed 48 f7 c7 00 00 01 00 75
-RSP: 002b:00007ffdb57f41d8 EFLAGS: 00000202 ORIG_RAX: 0000000000000038
-RAX: ffffffffffffffda RBX: 00007f29a5e6b700 RCX: 0000000000460b29
-RDX: 00007f29a5e6b9d0 RSI: 00007f29a5e6adb0 RDI: 00000000003d0f00
-RBP: 00007ffdb57f43f0 R08: 00007f29a5e6b700 R09: 00007f29a5e6b700
-R10: 00007f29a5e6b9d0 R11: 0000000000000202 R12: 0000000000000000
-R13: 00007ffdb57f428f R14: 00007f29a5e6b9c0 R15: 000000000119c37c
+I am offering another usecase, one I will use.
+
+Add mine as well, if you want.
+
+>
+>>> +* Some hardware is designed for specific purposes and does not fit into one of
+>>> +  the standard kernel subsystems.
+>>> +
+>>> +This requires the direct access to the MMIO space and interrupt handling in
+>>> +userspace. We implemented a dfl-uio-pdev module which exposes the UIO device
+>> The dfl-uio-pdev module exposes
+> Will change it.
+>
+>>> +interfaces. It adds the uio_pdrv_genirq platform device with the resources of
+>>> +the DFL device, and let the generic UIO platform device driver provide UIO
+>> the DLF device, and lets
+> Will change it.
+>
+>>> +support to userspace.
+>> Use FPGA_DFL_UIO_PDEV to enable this feature.
+> I didn't get your idea for this.
+
+I wanted the user to know which kconfig controls this feature.
+
+Leave it out if you don't think it fits.
+
+>
+>>> +
+>>> +The DFL UIO driver has a special matching algorithem. It will match any DFL
+>>> +device which could not be handled by other DFL drivers. In this way, it will
+>>> +not impact the functionality of the features which are already supported by the
+>>> +system.
+>> (not sure if this section is needed)
+> I think we may keep it.
+
+Ok.
+
+Tom
+
+>
+> Thanks,
+> Yilun
+>
 
