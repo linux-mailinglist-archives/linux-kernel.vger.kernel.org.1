@@ -2,221 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88DE82DAC66
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:52:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4304C2DAC6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728905AbgLOLui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 06:50:38 -0500
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:55781 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728891AbgLOLu0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 06:50:26 -0500
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 66DF1FF812;
-        Tue, 15 Dec 2020 11:49:38 +0000 (UTC)
-Date:   Tue, 15 Dec 2020 12:49:49 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v3 2/2] ARM: dts: r8a7742-iwg21d-q7-dbcm-ca: Add support
- for 8-bit ov7725 sensors
-Message-ID: <20201215114949.teyhlmyhejck7jw2@uno.localdomain>
-References: <20201126103053.29881-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201126103053.29881-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1728562AbgLOLyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 06:54:09 -0500
+Received: from foss.arm.com ([217.140.110.172]:36430 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726156AbgLOLyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 06:54:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8682130E;
+        Tue, 15 Dec 2020 03:53:23 -0800 (PST)
+Received: from localhost (e108754-lin.cambridge.arm.com [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A8183F66E;
+        Tue, 15 Dec 2020 03:53:22 -0800 (PST)
+Date:   Tue, 15 Dec 2020 11:53:21 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 2/3] arm64: topology: Reorder init_amu_fie() a bit
+Message-ID: <20201215115321.GA25331@arm.com>
+References: <5ffc7b9ed03c6301ac2f710f609282959491b526.1608010334.git.viresh.kumar@linaro.org>
+ <87d517c24630494afd9ba5769c2e2b10ee1d3f5d.1608010334.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126103053.29881-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <87d517c24630494afd9ba5769c2e2b10ee1d3f5d.1608010334.git.viresh.kumar@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Thu, Nov 26, 2020 at 10:30:53AM +0000, Lad Prabhakar wrote:
-> The 8-bit ov7725 sensors can also be connected to the camera daughter
-> board.
->
-> This patch creates a separate dtsi file for ov7725 sensors and is included
-> in r8a7742-iwg21d-q7-dbcm-ca.dts. The user can set VINx_SENSOR depending
-> on the cameras connected.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+On Tuesday 15 Dec 2020 at 11:04:15 (+0530), Viresh Kumar wrote:
+> This patch does a couple of optimizations in init_amu_fie(), like early
+> exits from paths where we don't need to continue any further, avoid the
+> enable/disable dance, moving the calls to
+> topology_scale_freq_invariant() just when we need them, instead of at
+> the top of the routine, and avoiding calling it for the third time.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->  .../boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts    |   7 ++
->  .../dts/r8a7742-iwg21d-q7-dbcm-ov7725.dtsi    | 112 ++++++++++++++++++
->  2 files changed, 119 insertions(+)
->  create mode 100644 arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ov7725.dtsi
->
-> diff --git a/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
-> index 1ab4f9771a34..915ff5fd437c 100644
-> --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
-> +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
-> @@ -11,6 +11,7 @@
->
->  #define SENSOR_NONE		1
->  #define SENSOR_OV5640		2
-> +#define SENSOR_OV7725		3
->
->  /* 8bit CMOS Camera 1 (J13) */
->  #define CAM1_PARENT_I2C		i2c0
-> @@ -40,6 +41,11 @@
->   * VIN2 interface and also the ov5640 node connected to it)
->   *      #define VIN2_SENSOR		SENSOR_NONE
->   *
-> + * To tie VINx endpoints to ov7725_x endpoints set VINx_SENSOR to
-> + * SENSOR_OV7725 for example if ov7725_3 is connected to the VIN3
-> + * interface set the below (this disables the ov5640_3)
-> + *      #define VIN3_SENSOR		SENSOR_OV7725
-> + *
->   */
->  #define VIN0_SENSOR		SENSOR_OV5640
->  #define VIN1_SENSOR		SENSOR_OV5640
-> @@ -47,6 +53,7 @@
->  #define VIN3_SENSOR		SENSOR_OV5640
->
->  #include "r8a7742-iwg21d-q7-dbcm-ov5640.dtsi"
-> +#include "r8a7742-iwg21d-q7-dbcm-ov7725.dtsi"
+> V3:
+> - Skipped the enable/disable dance.
+> - No need to call topology_scale_freq_invariant() multiple times.
+> 
+>  arch/arm64/kernel/topology.c | 27 ++++++++++++++-------------
+>  1 file changed, 14 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> index ebadc73449f9..57267d694495 100644
+> --- a/arch/arm64/kernel/topology.c
+> +++ b/arch/arm64/kernel/topology.c
+> @@ -221,8 +221,8 @@ static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
+>  
+>  static int __init init_amu_fie(void)
+>  {
+> -	bool invariance_status = topology_scale_freq_invariant();
+>  	cpumask_var_t valid_cpus;
+> +	bool invariant;
+>  	int ret = 0;
+>  	int cpu;
+>  
+> @@ -249,18 +249,19 @@ static int __init init_amu_fie(void)
+>  	if (cpumask_equal(valid_cpus, cpu_present_mask))
+>  		cpumask_copy(amu_fie_cpus, cpu_present_mask);
+>  
+> -	if (!cpumask_empty(amu_fie_cpus)) {
+> -		pr_info("CPUs[%*pbl]: counters will be used for FIE.",
+> -			cpumask_pr_args(amu_fie_cpus));
+> -		static_branch_enable(&amu_fie_key);
+> -	}
+> +	if (cpumask_empty(amu_fie_cpus))
+> +		goto free_valid_mask;
+>  
+> -	/*
+> -	 * If the system is not fully invariant after AMU init, disable
+> -	 * partial use of counters for frequency invariance.
+> -	 */
+> -	if (!topology_scale_freq_invariant())
+> -		static_branch_disable(&amu_fie_key);
+> +	invariant = topology_scale_freq_invariant();
+> +
+> +	/* We aren't fully invariant yet */
+> +	if (!invariant && !cpumask_equal(amu_fie_cpus, cpu_present_mask))
+> +		goto free_valid_mask;
+> +
+> +	static_branch_enable(&amu_fie_key);
+> +
+> +	pr_info("CPUs[%*pbl]: counters will be used for FIE.",
+> +		cpumask_pr_args(amu_fie_cpus));
+>  
+>  	/*
+>  	 * Task scheduler behavior depends on frequency invariance support,
+> @@ -268,7 +269,7 @@ static int __init init_amu_fie(void)
+>  	 * a result of counter initialisation and use, retrigger the build of
+>  	 * scheduling domains to ensure the information is propagated properly.
+>  	 */
+> -	if (invariance_status != topology_scale_freq_invariant())
+> +	if (!invariant)
+>  		rebuild_sched_domains_energy();
+>  
+>  free_valid_mask:
+> -- 
+> 2.25.0.rc1.19.g042ed3e048af
+> 
 
-Mmm, can't we alternatively include one .dtsi or the other depending
-on a define symbol ? The .dtsi describe pluggable expansion boards,
-they cannot be mixed, right ?
+Looks good!
 
-Thanks
-  j
-
->
-
->  #if (VIN0_SENSOR == SENSOR_NONE)
->  #undef VIN0_REMOTE_EP
-> diff --git a/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ov7725.dtsi b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ov7725.dtsi
-> new file mode 100644
-> index 000000000000..054d0a7cc5ce
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ov7725.dtsi
-> @@ -0,0 +1,112 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * This include file ties VIN interfaces with ov7725 sensors on
-> + * iWave-RZ/G1H Qseven board development platform connected with
-> + * camera daughter board.
-> + *
-> + * Copyright (C) 2020 Renesas Electronics Corp.
-> + */
-> +
-> +#if (VIN0_SENSOR == SENSOR_OV7725)
-> +#define OV7725_0_STATUS		"okay"
-> +#define OV7725_0_REMOTE_EP	&VIN0_EP
-> +#define VIN0_REMOTE_EP		&ov7725_0
-> +#else
-> +#define OV7725_0_STATUS		"disabled"
-> +#define OV7725_0_REMOTE_EP	0
-> +#endif
-> +
-> +#if (VIN1_SENSOR == SENSOR_OV7725)
-> +#define OV7725_1_STATUS		"okay"
-> +#define OV7725_1_REMOTE_EP	&VIN1_EP
-> +#define VIN1_REMOTE_EP		&ov7725_1
-> +#else
-> +#define OV7725_1_STATUS		"disabled"
-> +#define OV7725_1_REMOTE_EP	0
-> +#endif
-> +
-> +#if (VIN2_SENSOR == SENSOR_OV7725)
-> +#define OV7725_2_STATUS		"okay"
-> +#define OV7725_2_REMOTE_EP	&VIN2_EP
-> +#define VIN2_REMOTE_EP		&ov7725_2
-> +#else
-> +#define OV7725_2_STATUS		"disabled"
-> +#define OV7725_2_REMOTE_EP	0
-> +#endif
-> +
-> +#if (VIN3_SENSOR == SENSOR_OV7725)
-> +#define OV7725_3_STATUS		"okay"
-> +#define OV7725_3_REMOTE_EP	&VIN3_EP
-> +#define VIN3_REMOTE_EP		&ov7725_3
-> +#else
-> +#define OV7725_3_STATUS		"disabled"
-> +#define OV7725_3_REMOTE_EP	0
-> +#endif
-> +
-> +&CAM1_PARENT_I2C {
-> +	ov7725@21 {
-> +		compatible = "ovti,ov7725";
-> +		reg = <0x21>;
-> +		clocks = <&MCLK_CAM1>;
-> +		status = OV7725_0_STATUS;
-> +
-> +		port {
-> +			ov7725_0: endpoint {
-> +				bus-width = <8>;
-> +				bus-type = <6>;
-> +				remote-endpoint = <OV7725_0_REMOTE_EP>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&CAM2_PARENT_I2C {
-> +	ov7725@21 {
-> +		compatible = "ovti,ov7725";
-> +		reg = <0x21>;
-> +		clocks = <&MCLK_CAM2>;
-> +		status = OV7725_1_STATUS;
-> +
-> +		port {
-> +			ov7725_1: endpoint {
-> +				bus-width = <8>;
-> +				bus-type = <6>;
-> +				remote-endpoint = <OV7725_1_REMOTE_EP>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&CAM3_PARENT_I2C {
-> +	ov7725@21 {
-> +		compatible = "ovti,ov7725";
-> +		reg = <0x21>;
-> +		clocks = <&MCLK_CAM3>;
-> +		status = OV7725_2_STATUS;
-> +
-> +		port {
-> +			ov7725_2: endpoint {
-> +				bus-width = <8>;
-> +				bus-type = <6>;
-> +				remote-endpoint = <OV7725_2_REMOTE_EP>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&CAM4_PARENT_I2C {
-> +	ov7725@21 {
-> +		compatible = "ovti,ov7725";
-> +		reg = <0x21>;
-> +		clocks = <&MCLK_CAM4>;
-> +		status = OV7725_3_STATUS;
-> +
-> +		port {
-> +			ov7725_3: endpoint {
-> +				bus-width = <8>;
-> +				bus-type = <6>;
-> +				remote-endpoint = <OV7725_3_REMOTE_EP>;
-> +			};
-> +		};
-> +	};
-> +};
-> --
-> 2.17.1
->
+Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
