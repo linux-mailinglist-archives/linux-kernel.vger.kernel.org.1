@@ -2,227 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B492DACF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B8C2DAD56
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729202AbgLOMS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 07:18:28 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:22826 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729036AbgLOMQt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 07:16:49 -0500
-X-IronPort-AV: E=Sophos;i="5.78,420,1599494400"; 
-   d="scan'208";a="102420208"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 15 Dec 2020 20:15:06 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id C54234CE5CCA;
-        Tue, 15 Dec 2020 20:15:00 +0800 (CST)
-Received: from G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 15 Dec 2020 20:15:00 +0800
-Received: from localhost.localdomain (10.167.225.141) by
- G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Tue, 15 Dec 2020 20:14:59 +0800
-From:   Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-raid@vger.kernel.org>,
-        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <david@fromorbit.com>, <hch@lst.de>, <song@kernel.org>,
-        <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
-Subject: [RFC PATCH v3 9/9] xfs: Implement ->corrupted_range() for XFS
-Date:   Tue, 15 Dec 2020 20:14:14 +0800
-Message-ID: <20201215121414.253660-10-ruansy.fnst@cn.fujitsu.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201215121414.253660-1-ruansy.fnst@cn.fujitsu.com>
-References: <20201215121414.253660-1-ruansy.fnst@cn.fujitsu.com>
+        id S1729311AbgLOMay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 07:30:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728439AbgLOMPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 07:15:33 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A53042078D;
+        Tue, 15 Dec 2020 12:14:52 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kp9EA-001TN0-IX; Tue, 15 Dec 2020 12:14:50 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: C54234CE5CCA.AAF1D
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 15 Dec 2020 12:14:50 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Andrew Lunn <andrew@lunn.ch>,
+        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Scott Branden <sbranden@broadcom.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: Re: [PATCH 3/5] irqchip/bcm2836: Make IPIs use
+ handle_percpu_devid_irq()
+In-Reply-To: <jhjim93tj6l.mognet@arm.com>
+References: <20201109094121.29975-1-valentin.schneider@arm.com>
+ <20201109094121.29975-4-valentin.schneider@arm.com>
+ <20201215002134.GA182208@roeck-us.net>
+ <38f8fbe9ceb7a0adb47e62d62260b297@kernel.org> <jhjim93tj6l.mognet@arm.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <cf5a56440a7d0162036a73438428256d@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, linux@roeck-us.net, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, andrew@lunn.ch, Lorenzo.Pieralisi@arm.com, jason@lakedaemon.net, sbranden@broadcom.com, gregory.clement@bootlin.com, f.fainelli@gmail.com, rjui@broadcom.com, tglx@linutronix.de, sebastian.hesselbarth@gmail.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function is used to handle errors which may cause data lost in
-filesystem.  Such as memory failure in fsdax mode.
+On 2020-12-15 11:14, Valentin Schneider wrote:
+> On 15/12/20 10:19, Marc Zyngier wrote:
+>> Hi Gunter,
+>> 
+>> On 2020-12-15 00:21, Guenter Roeck wrote:
+>>> On Mon, Nov 09, 2020 at 09:41:19AM +0000, Valentin Schneider wrote:
+>>>> As done for the Arm GIC irqchips, move IPIs to
+>>>> handle_percpu_devid_irq() as
+>>>> handle_percpu_devid_fasteoi_ipi() isn't actually required.
+>>>> 
+>>>> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+>>> 
+>>> This patch results in boot failures (silent stall) for the qemu
+>>> raspi2 emulation. Unfortunately it can not be reverted because
+>>> handle_percpu_devid_fasteoi_ipi no longer exists in next-20201214,
+>>> so I don't know if it is the only problem.
+>> 
+>> This is odd. This works just fine for me on both the RPi2 and 3
+>> emulation, running a full Debian userspace. Could this be caused
+>> by the version of QEMU you are using? Here's what I have:
+>> 
+>> $ qemu-system-arm --version
+>> QEMU emulator version 5.1.0 (Debian 1:5.1+dfsg-4+b1)
+>> 
+>> Could you try the following hack and let me know if that helps?
+>> 
+> 
+> Thanks for looking into this. It does look like I inverted the ordering 
+> of
+> that mailbox write vs the handling of the IPI. I don't see how the IPI
+> could mess with the mailbox (unless some creative use of irq_work /
+> smp_call), but in any case having the write in irq_ack() as you've done
+> below should restore said ordering.
 
-In XFS, it requires "rmapbt" feature in order to query for files or
-metadata which associated to the corrupted data.  Then we could call fs
-recover functions to try to repair the corrupted data.(did not
-implemented in this patchset)
+This hack indeed brings us back to the previous situation, where we
+allowed the interrupt to be re-generated while handling the IPI.
 
-After that, the memory failure also needs to notify the processes who
-are using those files.
+Still, that doesn't explain why I'm not experiencing any issue here.
+I hope that the various CI bots will let us know if anything is broken
+on real HW.
 
-Only support data device.  Realtime device is not supported for now.
-
-Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
----
- fs/xfs/xfs_fsops.c | 10 +++++
- fs/xfs/xfs_mount.h |  2 +
- fs/xfs/xfs_super.c | 93 ++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 105 insertions(+)
-
-diff --git a/fs/xfs/xfs_fsops.c b/fs/xfs/xfs_fsops.c
-index ef1d5bb88b93..0ec1b44bfe88 100644
---- a/fs/xfs/xfs_fsops.c
-+++ b/fs/xfs/xfs_fsops.c
-@@ -501,6 +501,16 @@ xfs_do_force_shutdown(
- "Corruption of in-memory data detected.  Shutting down filesystem");
- 		if (XFS_ERRLEVEL_HIGH <= xfs_error_level)
- 			xfs_stack_trace();
-+	} else if (flags & SHUTDOWN_CORRUPT_META) {
-+		xfs_alert_tag(mp, XFS_PTAG_SHUTDOWN_CORRUPT,
-+"Corruption of on-disk metadata detected.  Shutting down filesystem");
-+		if (XFS_ERRLEVEL_HIGH <= xfs_error_level)
-+			xfs_stack_trace();
-+	} else if (flags & SHUTDOWN_CORRUPT_DATA) {
-+		xfs_alert_tag(mp, XFS_PTAG_SHUTDOWN_CORRUPT,
-+"Corruption of on-disk file data detected.  Shutting down filesystem");
-+		if (XFS_ERRLEVEL_HIGH <= xfs_error_level)
-+			xfs_stack_trace();
- 	} else if (logerror) {
- 		xfs_alert_tag(mp, XFS_PTAG_SHUTDOWN_LOGERROR,
- 			"Log I/O Error Detected. Shutting down filesystem");
-diff --git a/fs/xfs/xfs_mount.h b/fs/xfs/xfs_mount.h
-index dfa429b77ee2..e36c07553486 100644
---- a/fs/xfs/xfs_mount.h
-+++ b/fs/xfs/xfs_mount.h
-@@ -274,6 +274,8 @@ void xfs_do_force_shutdown(struct xfs_mount *mp, int flags, char *fname,
- #define SHUTDOWN_LOG_IO_ERROR	0x0002	/* write attempt to the log failed */
- #define SHUTDOWN_FORCE_UMOUNT	0x0004	/* shutdown from a forced unmount */
- #define SHUTDOWN_CORRUPT_INCORE	0x0008	/* corrupt in-memory data structures */
-+#define SHUTDOWN_CORRUPT_META	0x0010  /* corrupt metadata on device */
-+#define SHUTDOWN_CORRUPT_DATA	0x0020  /* corrupt file data on device */
- 
- /*
-  * Flags for xfs_mountfs
-diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-index e3e229e52512..30202de7e89d 100644
---- a/fs/xfs/xfs_super.c
-+++ b/fs/xfs/xfs_super.c
-@@ -35,6 +35,11 @@
- #include "xfs_refcount_item.h"
- #include "xfs_bmap_item.h"
- #include "xfs_reflink.h"
-+#include "xfs_alloc.h"
-+#include "xfs_rmap.h"
-+#include "xfs_rmap_btree.h"
-+#include "xfs_rtalloc.h"
-+#include "xfs_bit.h"
- 
- #include <linux/magic.h>
- #include <linux/fs_context.h>
-@@ -1103,6 +1108,93 @@ xfs_fs_free_cached_objects(
- 	return xfs_reclaim_inodes_nr(XFS_M(sb), sc->nr_to_scan);
- }
- 
-+static int
-+xfs_corrupt_helper(
-+	struct xfs_btree_cur		*cur,
-+	struct xfs_rmap_irec		*rec,
-+	void				*data)
-+{
-+	struct xfs_inode		*ip;
-+	int				rc = 0;
-+	int				*flags = data;
-+
-+	if (XFS_RMAP_NON_INODE_OWNER(rec->rm_owner)) {
-+		// TODO check and try to fix metadata
-+		rc = -EFSCORRUPTED;
-+	} else {
-+		/*
-+		 * Get files that incore, filter out others that are not in use.
-+		 */
-+		rc = xfs_iget(cur->bc_mp, cur->bc_tp, rec->rm_owner,
-+			      XFS_IGET_INCORE, 0, &ip);
-+		if (rc || !ip)
-+			return rc;
-+		if (!VFS_I(ip)->i_mapping)
-+			goto out;
-+
-+		if (IS_DAX(VFS_I(ip)))
-+			rc = mf_dax_mapping_kill_procs(VFS_I(ip)->i_mapping,
-+						       rec->rm_offset, *flags);
-+
-+		// TODO try to fix data
-+out:
-+		xfs_irele(ip);
-+	}
-+
-+	return rc;
-+}
-+
-+static int
-+xfs_fs_corrupted_range(
-+	struct super_block	*sb,
-+	struct block_device	*bdev,
-+	loff_t			offset,
-+	size_t			len,
-+	void			*data)
-+{
-+	struct xfs_mount	*mp = XFS_M(sb);
-+	struct xfs_trans	*tp = NULL;
-+	struct xfs_btree_cur	*cur = NULL;
-+	struct xfs_rmap_irec	rmap_low, rmap_high;
-+	struct xfs_buf		*agf_bp = NULL;
-+	xfs_fsblock_t		fsbno = XFS_B_TO_FSB(mp, offset);
-+	xfs_filblks_t		bc = XFS_B_TO_FSB(mp, len);
-+	xfs_agnumber_t		agno = XFS_FSB_TO_AGNO(mp, fsbno);
-+	xfs_agblock_t		agbno = XFS_FSB_TO_AGBNO(mp, fsbno);
-+	int			rc = 0;
-+
-+	if (mp->m_rtdev_targp && mp->m_rtdev_targp->bt_bdev == bdev) {
-+		xfs_warn(mp, "storage lost support not available for realtime device!");
-+		return 0;
-+	}
-+
-+	rc = xfs_trans_alloc_empty(mp, &tp);
-+	if (rc)
-+		return rc;
-+
-+	rc = xfs_alloc_read_agf(mp, tp, agno, 0, &agf_bp);
-+	if (rc)
-+		return rc;
-+
-+	cur = xfs_rmapbt_init_cursor(mp, tp, agf_bp, agno);
-+
-+	/* Construct a range for rmap query */
-+	memset(&rmap_low, 0, sizeof(rmap_low));
-+	memset(&rmap_high, 0xFF, sizeof(rmap_high));
-+	rmap_low.rm_startblock = rmap_high.rm_startblock = agbno;
-+	rmap_low.rm_blockcount = rmap_high.rm_blockcount = bc;
-+
-+	rc = xfs_rmap_query_range(cur, &rmap_low, &rmap_high, xfs_corrupt_helper, data);
-+	if (rc == -ECANCELED)
-+		rc = 0;
-+	if (rc == -EFSCORRUPTED)
-+		xfs_force_shutdown(mp, SHUTDOWN_CORRUPT_META);
-+
-+	xfs_btree_del_cursor(cur, rc);
-+	xfs_trans_brelse(tp, agf_bp);
-+	return rc;
-+}
-+
- static const struct super_operations xfs_super_operations = {
- 	.alloc_inode		= xfs_fs_alloc_inode,
- 	.destroy_inode		= xfs_fs_destroy_inode,
-@@ -1116,6 +1208,7 @@ static const struct super_operations xfs_super_operations = {
- 	.show_options		= xfs_fs_show_options,
- 	.nr_cached_objects	= xfs_fs_nr_cached_objects,
- 	.free_cached_objects	= xfs_fs_free_cached_objects,
-+	.corrupted_range	= xfs_fs_corrupted_range,
- };
- 
- static int
+         M.
 -- 
-2.29.2
-
-
-
+Jazz is not dead. It just smells funny...
