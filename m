@@ -2,125 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D32B2DB110
+	by mail.lfdr.de (Postfix) with ESMTP id E74982DB112
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730399AbgLOQOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:14:02 -0500
-Received: from 95-31-39-132.broadband.corbina.ru ([95.31.39.132]:52684 "EHLO
-        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729766AbgLOQNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:13:47 -0500
-Received: from metamini.metanet (metamini.metanet [192.168.2.5])
-        by blackbox.su (Postfix) with ESMTP id EFE7F80496;
-        Tue, 15 Dec 2020 19:12:57 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blackbox.su; s=mail;
-        t=1608048778; bh=5K8IvY3lKlWHV9M2KlZ4zCcf8qQd74FViqIFuXxtE2g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RXyvlQFa5jJ0nR7HBWPd3x1zTFF06vBkAme89/jH0lgToGjFFo0b5JRz6OdukBrnD
-         7ECInII0HEoR8JlcJDpuacwG3Vrh3G1S9BIElJm7uMONzo3BGjLZyT3JtlQynMt2sF
-         EsmDuMiVocxKJdCzdEGX6M86eVmTVf+0VANmuRfPa7w9mJWRQYQbb7pIcs+RfQEB8c
-         jlzAZQNpWv3CMKEdimqPjrIJAyNIHWb+fDshlJ+Atmlai8hipbVyCRpawtv3uEqPLV
-         r/LaztjQ9DlmAvuCIyW7ZieTE1VbO3/yO+pUgjvS6l0R/csPldDhKOclVN5Rg768/7
-         gPAOvHW1/jtBA==
-From:   Sergej Bauer <sbauer@blackbox.su>
-Cc:     andrew@lunn.ch, Markus.Elfring@web.de, thesven73@gmail.com,
-        sbauer@blackbox.su, Jakub Kicinski <kuba@kernel.org>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] lan743x: fix for potential NULL pointer dereference with bare card
-Date:   Tue, 15 Dec 2020 19:12:45 +0300
-Message-Id: <20201215161252.8448-1-sbauer@blackbox.su>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201127083925.4813c57a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20201127083925.4813c57a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1730423AbgLOQOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:14:22 -0500
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:34565 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730422AbgLOQNs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 11:13:48 -0500
+Received: by mail-oo1-f66.google.com with SMTP id x23so1760125oop.1;
+        Tue, 15 Dec 2020 08:13:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iJZnRtX3sbuHq49+KxzSlxIlH2YFeZZTDaGKbhkXMPc=;
+        b=T4A9W5ccVotMK6lIUNKrcjflr8XbJSKy8S+YGUt+DvrSggSzWPlZ9vqib0NCrGCnWM
+         YlmUvWw/LtQN/uTU8kBqGm6dbaYRA+HBgSx78Ik8o65pyOGzklhwiEDbQYbw8OpkBzV2
+         cAzDkfIiAp8K+1yef2M7OmPHKXJ8vEWjwHSL0NGlbCpUbyaOkD8oFd+63qsF6xgFrnZA
+         jzlDdt0OH/oSw6F3/Y/NFgpWgvHx5cKEqkcUdPQiWlPUQv82Y/RSP3iSORX8M4LH3eZn
+         hwysXj9+VwHOyuyexL7Jr3FndyXTaF5PRbvG9IE0VhJOUlnC8wl19XA76d2ogjzSI9rZ
+         bXDg==
+X-Gm-Message-State: AOAM531ksb4cTppqHAJywceCRDfL5aT8OV0/vHT5ehjnw9BFl7OXgaBd
+        njBGSrHJHXu2hPJXG3MpbA==
+X-Google-Smtp-Source: ABdhPJx2AG7yR79xBmnEKYChigB3jUkSqzlHLc2xAzoccoZHSNNlTwnG2/qBh7in6d5DkM1o/KLg1g==
+X-Received: by 2002:a4a:2f91:: with SMTP id p139mr23199961oop.0.1608048785972;
+        Tue, 15 Dec 2020 08:13:05 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id n3sm509358otj.46.2020.12.15.08.13.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 08:13:05 -0800 (PST)
+Received: (nullmailer pid 3949669 invoked by uid 1000);
+        Tue, 15 Dec 2020 16:13:04 -0000
+Date:   Tue, 15 Dec 2020 10:13:04 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com, broonie@kernel.org,
+        lukas@wunner.de, bbrezillon@kernel.org, p.yadav@ti.com,
+        tudor.ambarus@microchip.com, linux-spi@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 2/9] dt-bindings: spi: Add Tegra Quad SPI device tree
+ binding
+Message-ID: <20201215161304.GA3935217@robh.at.kernel.org>
+References: <1607721363-8879-1-git-send-email-skomatineni@nvidia.com>
+ <1607721363-8879-3-git-send-email-skomatineni@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1607721363-8879-3-git-send-email-skomatineni@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the 4th revision of the patch fix for potential null pointer dereference
-with lan743x card.
+On Fri, Dec 11, 2020 at 01:15:56PM -0800, Sowjanya Komatineni wrote:
+> This patch adds YAML based device tree binding document for Tegra
+> Quad SPI driver.
+> 
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  .../bindings/spi/nvidia,tegra210-quad.yaml         | 130 +++++++++++++++++++++
+>  1 file changed, 130 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml b/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+> new file mode 100644
+> index 0000000..0b5fea6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+> @@ -0,0 +1,130 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/nvidia,tegra210-quad.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Tegra Quad SPI Controller
+> +
+> +maintainers:
+> +  - Thierry Reding <thierry.reding@gmail.com>
+> +  - Jonathan Hunter <jonathanh@nvidia.com>
 
-The simpliest way to reproduce: boot with bare lan743x and issue "ethtool ethN"
-command where ethN is the interface with lan743x card. Example:
+allOf:
+  - $ref: spi-controller.yaml#
 
-$ sudo ethtool eth7
-dmesg:
-[  103.510336] BUG: kernel NULL pointer dereference, address: 0000000000000340
-...
-[  103.510836] RIP: 0010:phy_ethtool_get_wol+0x5/0x30 [libphy]
-...
-[  103.511629] Call Trace:
-[  103.511666]  lan743x_ethtool_get_wol+0x21/0x40 [lan743x]
-[  103.511724]  dev_ethtool+0x1507/0x29d0
-[  103.511769]  ? avc_has_extended_perms+0x17f/0x440
-[  103.511820]  ? tomoyo_init_request_info+0x84/0x90
-[  103.511870]  ? tomoyo_path_number_perm+0x68/0x1e0
-[  103.511919]  ? tty_insert_flip_string_fixed_flag+0x82/0xe0
-[  103.511973]  ? inet_ioctl+0x187/0x1d0
-[  103.512016]  dev_ioctl+0xb5/0x560
-[  103.512055]  sock_do_ioctl+0xa0/0x140
-[  103.512098]  sock_ioctl+0x2cb/0x3c0
-[  103.512139]  __x64_sys_ioctl+0x84/0xc0
-[  103.512183]  do_syscall_64+0x33/0x80
-[  103.512224]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  103.512274] RIP: 0033:0x7f54a9cba427
-...
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - nvidia,tegra210-qspi
+> +      - nvidia,tegra186-qspi
+> +      - nvidia,tegra194-qspi
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: qspi
+> +      - const: qspi_out
+> +
+> +  clocks:
+> +    maxItems: 2
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  dmas:
+> +    maxItems: 2
+> +
+> +  dma-names:
+> +    items:
+> +      - const: rx
+> +      - const: tx
+> +
+> +patternProperties:
+> +  "^.*@[0-9a-f]+":
 
-Previous versions can be found at:
-v1:
-initial version
-    https://lkml.org/lkml/2020/10/28/921
+You can drop '^.*'.
 
-v2:
-do not return from lan743x_ethtool_set_wol if netdev->phydev == NULL, just skip
-the call of phy_ethtool_set_wol() instead.
-    https://lkml.org/lkml/2020/10/31/380
+> +    type: object
+> +
+> +    properties:
+> +      compatible:
+> +        description:
+> +          Compatible of the SPI device.
+> +
+> +      reg:
+> +        maxItems: 1
+> +
+> +      spi-max-frequency:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description:
+> +          Maximum Quad SPI clocking speed of the device in Hz.
+> +
+> +      spi-rx-bus-width:
+> +        description:
+> +          Bus width to the Quad SPI bus used for read transfers.
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        enum: [1, 2, 4]
+> +
+> +      spi-tx-bus-width:
+> +        description:
+> +          Bus width to the Quad SPI bus used for write transfers.
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        enum: [1, 2, 4]
 
-v3:
-in function lan743x_ethtool_set_wol:
-use ternary operator instead of if-else sentence (review by Markus Elfring)
-return -ENETDOWN instead of -EIO (review by Andrew Lunn)
+All of the above 5 properties are covered by spi-controller.yaml. You 
+only need additional constraints here. As 8-bit mode is not supported, 
+you need:
 
-v4:
-Sven Van Asbruck noticed that the patch was being applied cleanly to the 5.9
-branch, so the tag “Fixes” was added as Jakub suggested.
+spi-tx-bus-width:
+  enum: [1, 2, 4]
 
-Signed-off-by: Sergej Bauer <sbauer@blackbox.su>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-Fixes: 4d94282afd95 ("lan743x: Add power management support")
----
-diff --git a/drivers/net/ethernet/microchip/lan743x_ethtool.c b/drivers/net/ethernet/microchip/lan743x_ethtool.c
-index dcde496da7fb..c5de8f46cdd3 100644
---- a/drivers/net/ethernet/microchip/lan743x_ethtool.c
-+++ b/drivers/net/ethernet/microchip/lan743x_ethtool.c
-@@ -780,7 +780,9 @@ static void lan743x_ethtool_get_wol(struct net_device *netdev,
- 
- 	wol->supported = 0;
- 	wol->wolopts = 0;
--	phy_ethtool_get_wol(netdev->phydev, wol);
-+
-+	if (netdev->phydev)
-+		phy_ethtool_get_wol(netdev->phydev, wol);
- 
- 	wol->supported |= WAKE_BCAST | WAKE_UCAST | WAKE_MCAST |
- 		WAKE_MAGIC | WAKE_PHY | WAKE_ARP;
-@@ -809,9 +811,8 @@ static int lan743x_ethtool_set_wol(struct net_device *netdev,
- 
- 	device_set_wakeup_enable(&adapter->pdev->dev, (bool)wol->wolopts);
- 
--	phy_ethtool_set_wol(netdev->phydev, wol);
--
--	return 0;
-+	return netdev->phydev ? phy_ethtool_set_wol(netdev->phydev, wol)
-+			: -ENETDOWN;
- }
- #endif /* CONFIG_PM */
- 
+> +
+> +      nvidia,tx-clk-tap-delay:
+> +        description:
+> +          Delays the clock going out to device with this tap value.
+> +          Tap value varies based on platform design trace lengths from Tegra
+> +          QSPI to corresponding slave device.
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        minimum: 0
+> +        maximum: 31
+> +
+> +      nvidia,rx-clk-tap-delay:
+> +        description:
+> +          Delays the clock coming in from the device with this tap value.
+> +          Tap value varies based on platform design trace lengths from Tegra
+> +          QSPI to corresponding slave device.
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        minimum: 0
+> +        maximum: 255
+
+Please include these properties in your example.
+
+> +
+> +    required:
+> +      - reg
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clock-names
+> +  - clocks
+> +  - resets
+> +
+> +additionalProperties: true
+
+That's generally wrong unless it's a schema to be included by other 
+schemas.
+
+unevaluatedProperties: false
+
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/tegra210-car.h>
+> +    #include <dt-bindings/reset/tegra210-car.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    spi@70410000 {
+> +            compatible = "nvidia,tegra210-qspi";
+> +            reg = <0x70410000 0x1000>;
+> +            interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            clocks = <&tegra_car TEGRA210_CLK_QSPI>,
+> +                     <&tegra_car TEGRA210_CLK_QSPI_PM>;
+> +            clock-names = "qspi", "qspi_out";
+> +            resets = <&tegra_car 211>;
+> +            dmas = <&apbdma 5>, <&apbdma 5>;
+> +            dma-names = "rx", "tx";
+> +
+> +            flash@0 {
+> +                    compatible = "spi-nor";
+> +                    reg = <0>;
+> +                    spi-max-frequency = <104000000>;
+> +                    spi-tx-bus-width = <2>;
+> +                    spi-rx-bus-width = <2>;
+> +            };
+> +    };
+> -- 
+> 2.7.4
+> 
