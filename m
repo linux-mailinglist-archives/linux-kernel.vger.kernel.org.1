@@ -2,84 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC8A2DA8C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 08:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 804DF2DA8C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 08:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbgLOHuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 02:50:09 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2334 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726377AbgLOHuE (ORCPT
+        id S1726377AbgLOHvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 02:51:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725975AbgLOHvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 02:50:04 -0500
-Received: from dggeml405-hub.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Cw9Ng6lRgz13TtD;
-        Tue, 15 Dec 2020 15:48:19 +0800 (CST)
-Received: from DGGEML510-MBX.china.huawei.com ([169.254.2.9]) by
- dggeml405-hub.china.huawei.com ([10.3.17.49]) with mapi id 14.03.0487.000;
- Tue, 15 Dec 2020 15:49:15 +0800
-From:   wanghuiqiang <wanghuiqiang@huawei.com>
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-        "Ard Biesheuvel" <ardb@kernel.org>
-CC:     Marc Zyngier <maz@kernel.org>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>, "xuwei (O)" <xuwei5@huawei.com>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIGlycWNoaXAvZ2ljLXYzOiBDaGVjayBTUkUgYml0?=
- =?utf-8?Q?_for_GICv2_legacy_support?=
-Thread-Topic: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy support
-Thread-Index: AQHWxwN3YOmayqAkS0a1b5qHlXVEh6ngmnQAgAABpXCAACfogIAABzIwgAA00gCAAnf7sIAUZQBA
-Date:   Tue, 15 Dec 2020 07:49:15 +0000
-Message-ID: <07084A11A8AB5A40A40B0218FE6F1CCA0F59630F@dggeml510-mbx.china.huawei.com>
-References: <20201130102639.7504-1-shameerali.kolothum.thodi@huawei.com>
- <f8a97f360073fa495cae75acc11ecf4f@kernel.org>
- <85bb389a75f347d29ab3f75e4cfae060@huawei.com>
- <846387e4168f1a22638ad07ae670c531@kernel.org>
- <e93770e46c73413882584ebc3fe732e3@huawei.com>
- <CAMj1kXGdEbDzFN2cCNpCx_QJk3++v3zrWZ7Yw08Exrzyy_Q97w@mail.gmail.com>
- <931f76fa185e488fb9e942b2026ae7be@huawei.com>
-In-Reply-To: <931f76fa185e488fb9e942b2026ae7be@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.74.183.14]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 15 Dec 2020 02:51:42 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7167C06179C
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 23:51:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=T9Z9dav8OBy3YrDwSr+jZfoQ7XL/6/FhY0/QmV8BmJM=; b=n8Nn6u/Zon/79/Y9NT1stOvfZE
+        zo2cHmNiLjfcXJM6zEm+hiC2/drZrO+w+YUF8jXcx041Q2OsuZK4zR1nRaHi5mMYfpIq/TQxdwCbA
+        HLJ2VUl0nTTVOSO0RUQGWFTGfaZtRnMABiAkW2Ux1XE28OOrFMPAH/G0E2dqGFHUS1pAtoZEp89no
+        lX40T85JmtcvQ+knbcWVjb1VlrN+wMkbpYFHibMiovrNg52O+F5tn8DMocAtAJ008qkkuxB0QNnNx
+        KpaX3I+uH1lKMb5IxOeMV1BS4YWADxxQf//0PuUYxOCB1TeCVCoplgFcPQmnL2HdlMVvbwj0MTBaz
+        r0zoIzSg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kp56c-00010W-Jz; Tue, 15 Dec 2020 07:50:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F3397302753;
+        Tue, 15 Dec 2020 08:50:44 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C1FF220D21018; Tue, 15 Dec 2020 08:50:44 +0100 (CET)
+Date:   Tue, 15 Dec 2020 08:50:44 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 00/10] workqueue: break affinity initiatively
+Message-ID: <20201215075044.GZ3040@hirez.programming.kicks-ass.net>
+References: <20201214155457.3430-1-jiangshanlai@gmail.com>
+ <X9eirnnrD/+VqqEo@hirez.programming.kicks-ass.net>
+ <CAJhGHyDYbU2=dQyiyx-AC+wu9=B7mTvsbU=QYPyV4xTE8PFPog@mail.gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJhGHyDYbU2=dQyiyx-AC+wu9=B7mTvsbU=QYPyV4xTE8PFPog@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-U29ycnkgcmVzcG9uc2UgbGF0ZS4NCkhpIFNoYW1lZXIgJiBBcmQsDQoNCkNvdWxkIHlvdSBsZXQg
-bWUga25vdyB3aGljaCBmaXJtd2FyZSB5b3UgYXJlIHVzaW5nPyBJZiB0aGUgZGlmZmVyZW5jZSBp
-cyBNYWR0IHRhYmxlIHZHSUMgeW91ciBwb2ludGVkICwgdGhleSBhcmUgdGhlIHNhbWUuIFdlIGNo
-YW5nZWQgdGhlIHZHSUMgbWVtb3J5IGJhc2UgYWRkcmVzcyBhdCB2ZXJ5IGVhcmx5IGRlc2lnbiBz
-dGFnZS4NCg0KVGhhbmtz77yBIA0KDQotLS0tLemCruS7tuWOn+S7ti0tLS0tDQrlj5Hku7bkuro6
-IFNoYW1lZXJhbGkgS29sb3RodW0gVGhvZGkgDQrlj5HpgIHml7bpl7Q6IDIwMjDlubQxMuaciDLm
-l6UgMTY6MjMNCuaUtuS7tuS6ujogQXJkIEJpZXNoZXV2ZWwgPGFyZGJAa2VybmVsLm9yZz4NCuaK
-hOmAgTogTWFyYyBaeW5naWVyIDxtYXpAa2VybmVsLm9yZz47IGVyaWMuYXVnZXJAcmVkaGF0LmNv
-bTsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtYXJtLWtlcm5lbEBsaXN0cy5p
-bmZyYWRlYWQub3JnOyBMaW51eGFybSA8bGludXhhcm1AaHVhd2VpLmNvbT47IHdhbmdodWlxaWFu
-ZyA8d2FuZ2h1aXFpYW5nQGh1YXdlaS5jb20+OyB4dXdlaSAoTykgPHh1d2VpNUBodWF3ZWkuY29t
-Pg0K5Li76aKYOiBSRTogW1BBVENIXSBpcnFjaGlwL2dpYy12MzogQ2hlY2sgU1JFIGJpdCBmb3Ig
-R0lDdjIgbGVnYWN5IHN1cHBvcnQNCg0KWytdDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0t
-LS0NCj4gRnJvbTogQXJkIEJpZXNoZXV2ZWwgW21haWx0bzphcmRiQGtlcm5lbC5vcmddDQo+IFNl
-bnQ6IDMwIE5vdmVtYmVyIDIwMjAgMTg6MzINCj4gVG86IFNoYW1lZXJhbGkgS29sb3RodW0gVGhv
-ZGkgPHNoYW1lZXJhbGkua29sb3RodW0udGhvZGlAaHVhd2VpLmNvbT4NCj4gQ2M6IE1hcmMgWnlu
-Z2llciA8bWF6QGtlcm5lbC5vcmc+OyBlcmljLmF1Z2VyQHJlZGhhdC5jb207IA0KPiBsaW51eC1r
-ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5v
-cmc7IA0KPiBMaW51eGFybSA8bGludXhhcm1AaHVhd2VpLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQ
-QVRDSF0gaXJxY2hpcC9naWMtdjM6IENoZWNrIFNSRSBiaXQgZm9yIEdJQ3YyIGxlZ2FjeSANCj4g
-c3VwcG9ydA0KPiANCi4uLg0KDQo+IA0KPiBBbnkgY2x1ZSB3aHkgcHJvZHVjdGlvbiBEMDYgZmly
-bXdhcmUgZGV2aWF0ZXMgZnJvbSB0aGUgRDA2IHBvcnQgdGhhdCANCj4gZXhpc3RzIGluIFRpYW5v
-Y29yZSdzIGVkazItcGxhdGZvcm1zIHJlcG9zaXRvcnk/IEJlY2F1c2UgdGhhdCB2ZXJzaW9uIA0K
-PiBkb2VzIG5vdCBoYXZlIHRoaXMgYnVnLCBhbmQgSSB3b25kZXIgd2h5IHRoYXQgY29kZSB3YXMg
-dXBzdHJlYW1lZCBhdCANCj4gYWxsIGlmIGEgc3Vic3RhbnRpYWxseSBkaWZmZXJlbnQgdmVyc2lv
-biBnZXRzIHNoaXBwZWQgd2l0aCBwcm9kdWN0aW9uIA0KPiBoYXJkd2FyZS4NCg0KT2suIFRoYW5r
-cyBmb3IgcG9pbnRpbmcgdGhpcyBvdXQuIEkgaGF2ZSBpbmZvcm1lZCBvdXIgVUVGSSB0ZWFtIGFi
-b3V0IHRoaXMuDQpUaGV5IHdpbGwgY2hlY2sgSW50ZXJuYWxseSBhbmQgY2xhcmlmeS4NCg0KUmVn
-YXJkcywNClNoYW1lZXINCg==
+On Tue, Dec 15, 2020 at 01:44:53PM +0800, Lai Jiangshan wrote:
+> I don't know how the scheduler distinguishes all these
+> different cases under the "new assumption".
+
+The special case is:
+
+  (p->flags & PF_KTHREAD) && p->nr_cpus_allowed == 1
+
+
