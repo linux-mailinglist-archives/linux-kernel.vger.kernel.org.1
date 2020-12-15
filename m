@@ -2,111 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F3D2DB515
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 21:30:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EE72DB4EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 21:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728006AbgLOU3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 15:29:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727975AbgLOUYY (ORCPT
+        id S1726129AbgLOURp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 15:17:45 -0500
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:23859 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725826AbgLOURk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 15:24:24 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57653C0617B0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 12:15:38 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id hk16so240231pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 12:15:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=sKLqDNMUz4VYLd0zfng7nglh1BuTwEhYbBm9YL3/2so=;
-        b=a03DNyCkzpbW2CV134IeHXd1CSJ3OqdQ87GzXIr/1DDkn0rTKIxc+JLhFsSPQqekiQ
-         7dqL97XijFCfDKV/SyPRfYvO3tAXrqEMcpthxundUmxQMAcfsSWcec1HOVRaEYXndHcN
-         FalpxMgykvo53GHs0kWNdpA7L1Y2Vz6ufxu5g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=sKLqDNMUz4VYLd0zfng7nglh1BuTwEhYbBm9YL3/2so=;
-        b=DMUNm0Do8nKYtDYuwvGX17urpQs3/KhB1lP9Pul7ZY08nMceLT18baBaVGd7rINRWf
-         Ij14JX3ZzVlX+IuiBOEOXnM7G6TeqzrbMKWdgC8SNPtg4Y1EOw6glXy/lzF/oP2JaWwb
-         7Ot/bKMxoVMd0TkkPlh1ygJfmfUb5kuRauEPxcrYWHy7SdjOVmFLuHP8MI1JChL6ZODp
-         FH4yHc51IrHlBmgh1STLFxfjlwwcVA3GhxM9a3MaBPVJofjHtrP7kaKVRNSWcat8Kh4+
-         YQWYTTcUFn+lnk48hBWPZNJLN+x1uEPwFHr38scRjND5vCntaIHS5FekJxBWDECkisMK
-         lB8w==
-X-Gm-Message-State: AOAM53259nOOHdEnlLGnqI+ZMficdGz6sz0d+UkCewDX7ODvE9OULd/o
-        F4PHuKXJf1fwruRiNIWn3oiodA==
-X-Google-Smtp-Source: ABdhPJxv41JZVfwu2IMWDtnvRNIvTNDXlvJcoJ2V7EujYBTiC9wAPG5sRhpJmJHCfAhsIi1Qqny2kA==
-X-Received: by 2002:a17:90a:eacf:: with SMTP id ev15mr536439pjb.174.1608063337938;
-        Tue, 15 Dec 2020 12:15:37 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c199sm26688287pfb.108.2020.12.15.12.15.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 12:15:37 -0800 (PST)
-Date:   Tue, 15 Dec 2020 12:15:36 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [GIT PULL] gcc-plugins updates for v5.11-rc1
-Message-ID: <202012151215.E7AA7D6@keescook>
+        Tue, 15 Dec 2020 15:17:40 -0500
+Received: from [192.168.42.210] ([93.22.37.143])
+        by mwinf5d65 with ME
+        id 4kFl2400135JPTR03kFlJF; Tue, 15 Dec 2020 21:15:55 +0100
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 15 Dec 2020 21:15:55 +0100
+X-ME-IP: 93.22.37.143
+Subject: Re: [PATCH] net: allwinner: Fix some resources leak in the error
+ handling path of the probe and in the remove function
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     song.bao.hua@hisilicon.com, jernej.skrabec@siol.net,
+        f.fainelli@gmail.com, leon@kernel.org, timur@kernel.org,
+        netdev@vger.kernel.org, wangyunjian@huawei.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wens@csie.org, kuba@kernel.org, sr@denx.de, davem@davemloft.net,
+        linux-arm-kernel@lists.infradead.org, hkallweit1@gmail.com
+References: <20201214202117.146293-1-christophe.jaillet@wanadoo.fr>
+ <20201215085655.ddacjfvogc3e33vz@gilmour> <20201215091153.GH2809@kadam>
+ <20201215113710.wh4ezrvmqbpxd5yi@gilmour>
+ <54194e3e-5eb1-d10c-4294-bac8f3933f47@wanadoo.fr>
+ <20201215190815.6efzcqko55womf6b@gilmour> <20201215193545.GJ2809@kadam>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <cad6143c-a5bb-37a8-cff1-86b0fb7c8708@wanadoo.fr>
+Date:   Tue, 15 Dec 2020 21:15:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20201215193545.GJ2809@kadam>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Le 15/12/2020 à 20:35, Dan Carpenter a écrit :
+> On Tue, Dec 15, 2020 at 08:08:15PM +0100, Maxime Ripard wrote:
+>> On Tue, Dec 15, 2020 at 07:18:48PM +0100, Christophe JAILLET wrote:
+>>> Le 15/12/2020 à 12:37, Maxime Ripard a écrit :
+>>>> On Tue, Dec 15, 2020 at 12:11:53PM +0300, Dan Carpenter wrote:
+>>>>> On Tue, Dec 15, 2020 at 09:56:55AM +0100, Maxime Ripard wrote:
+>>>>>> Hi,
+>>>>>>
+>>>>>> On Mon, Dec 14, 2020 at 09:21:17PM +0100, Christophe JAILLET wrote:
+>>>>>>> 'irq_of_parse_and_map()' should be balanced by a corresponding
+>>>>>>> 'irq_dispose_mapping()' call. Otherwise, there is some resources leaks.
+>>>>>>
+>>>>>> Do you have a source to back that? It's not clear at all from the
+>>>>>> documentation for those functions, and couldn't find any user calling it
+>>>>>> from the ten-or-so random picks I took.
+>>>>>
+>>>>> It looks like irq_create_of_mapping() needs to be freed with
+>>>>> irq_dispose_mapping() so this is correct.
+>>>>
+>>>> The doc should be updated first to make that clear then, otherwise we're
+>>>> going to fix one user while multiples will have poped up
+>>>>
+>>>> Maxime
+>>>>
+>>>
+>>> Hi,
+>>>
+>>> as Dan explained, I think that 'irq_dispose_mapping()' is needed because of
+>>> the 'irq_create_of_mapping()" within 'irq_of_parse_and_map()'.
+>>>
+>>> As you suggest, I'll propose a doc update to make it clear and more future
+>>> proof.
+>>
+>> Thanks :)
+>>
+>> And if you feel like it, a coccinelle script would be awesome too so
+>> that other users get fixed over time
+>>
+>> Maxime
+> 
+> Smatch has a new check for resource leaks which hopefully people will
+> find useful.
+> 
+> https://github.com/error27/smatch/blob/master/check_unwind.c
 
-Please pull these gcc-plugins updates for v5.11-rc1.
+Nice :)
+I wasn't aware of it.
 
-Thanks!
+> 
+> To check for these I would need to add the following lines to the table:
+> 
+>          { "irq_of_parse_and_map", ALLOC, -1, "$", &int_one, &int_max},
+>          { "irq_create_of_mapping", ALLOC, -1, "$", &int_one, &int_max},
+>          { "irq_dispose_mapping", RELEASE, 0, "$"},
+> 
+> The '-1, "$"' means the returned value.  irq_of_parse_and_map() and
+> irq_create_of_mapping() return positive int on success.
+> 
+> The irq_dispose_mapping() frees its zeroth parameter so it's listed as
+> '0, "$"'.  We don't care about the returns from irq_dispose_mapping().
+> 
+> It doesn't apply in this case but if a function frees a struct member
+> then that's listed as '0, "$->member_name"'.
+> 
+> regards,
+> dan carpenter
+> 
 
--Kees
+The script I use to try to spot missing release function is:
+///
+@@
+expression  x, y;
+identifier f, l;
+@@
 
-The following changes since commit b65054597872ce3aefbc6a666385eabdf9e288da:
+*       x = irq_of_parse_and_map(...);
+         ... when any
+*       y = f(...);
+         ... when any
+*       if (<+... y ...+>)
+         {
+                 ...
+(
+*               goto l;
+|
+*               return ...;
+)
+                 ...
+         }
+         ... when any
+*l:
+         ... when != irq_dispose_mapping(...);
+*       return ...;
+///
 
-  Linux 5.10-rc6 (2020-11-29 15:50:50 -0800)
+It is likely that some improvement can be made, but it works pretty well 
+for what I want.
 
-are available in the Git repository at:
+And I have a collection of alloc/free functions that I manually put in 
+place of irq_of_parse_and_map and irq_dispose_mapping.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/gcc-plugins-v5.11-rc1
+Up to know, this list is:
 
-for you to fetch changes up to 53a57e60de74a3531ae769b3241cc5169e1431ac:
+// alloc_etherdev/alloc_etherdev_mq/alloc_etherdev_mqs - free_netdev
+// alloc_workqueue - destroy_workqueue
+// class_register - class_unregister
+// clk_get - clk_put
+// clk_prepare - clk_unprepare
+// create_workqueue - destroy_workqueue
+// create_singlethread_workqueue - destroy_workqueue
+// 
+dev_pm_domain_attach/dev_pm_domain_attach_by_id/dev_pm_domain_attach_by_name 
+- dev_pm_domain_detach
+// devres_alloc - devres_free
+// dma_alloc_coherent - dma_free_coherent
+// dma_map_resource - dma_unmap_resource
+// dma_map_single - dma_unmap_single
+// dma_request_slave_channel - dma_release_channel
+// dma_request_chan - dma_release_channel
+// framebuffer_alloc - framebuffer_release
+// get_device - put_device
+// iio_channel_get - iio_channel_release
+// ioremap - iounmap
+// input_allocate_device - input_free_device
+// input_register_handle - input_unregister_handle
+// irq_of_parse_and_map / irq_create_of_mapping - irq_dispose_mapping
+// kmalloc - kfree
+// mempool_alloc - mempool_free
+// of_node_get - of_node_put
+// of_reserved_mem_device_init - of_reserved_mem_device_release
+// pinctrl_register - pinctrl_unregister
+// request_irq - free_irq
+// request_region - release_region
+// request_mem_region - release_mem_region
+// reset_control_assert - reset_control_deassert
+// scsi_host_alloc - scsi_host_put
 
-  MAINTAINERS: Drop inactive gcc-plugins maintainer (2020-12-04 14:11:05 -0800)
+// pci_alloc_irq_vectors - pci_free_irq_vectors
+// pci_dev_get - pci_dev_put
+// pci_enable_device - pci_disable_device
+// pci_iomap - pci_iounmap
+// pci_request_region - pci_release_region
+// pci_request_regions - pci_release_regions
 
-----------------------------------------------------------------
-gcc-plugins updates for v5.11-rc1
+// alloc_skb/__alloc_skb - kfree_skb/__kfree_skb
+// dev_alloc_skb - dev_kfree_skb
 
-- Clean up gcc plugin builds now that GCC must be 4.9+ (Masahiro Yamada)
-- Update MAINTAINERS (Kees Cook)
-
-----------------------------------------------------------------
-Kees Cook (1):
-      MAINTAINERS: Drop inactive gcc-plugins maintainer
-
-Masahiro Yamada (2):
-      gcc-plugins: remove code for GCC versions older than 4.9
-      gcc-plugins: simplify GCC plugin-dev capability test
-
- MAINTAINERS                                        |   1 -
- scripts/gcc-plugin.sh                              |  19 -
- scripts/gcc-plugins/Kconfig                        |   2 +-
- scripts/gcc-plugins/gcc-common.h                   | 407 ---------------------
- scripts/gcc-plugins/gcc-generate-gimple-pass.h     |  12 -
- scripts/gcc-plugins/gcc-generate-ipa-pass.h        |  23 --
- scripts/gcc-plugins/gcc-generate-rtl-pass.h        |  17 -
- scripts/gcc-plugins/gcc-generate-simple_ipa-pass.h |  17 -
- scripts/gcc-plugins/latent_entropy_plugin.c        |  12 -
- scripts/gcc-plugins/randomize_layout_plugin.c      |   4 -
- scripts/gcc-plugins/sancov_plugin.c                |   6 -
- scripts/gcc-plugins/stackleak_plugin.c             |   4 +-
- scripts/gcc-plugins/structleak_plugin.c            |   4 -
- 13 files changed, 2 insertions(+), 526 deletions(-)
- delete mode 100755 scripts/gcc-plugin.sh
-
--- 
-Kees Cook
+// spi_dev_get - spi_dev_put
+// spi_message_alloc - spi_message_free
+// spi_register_master - spi_unregister_master
