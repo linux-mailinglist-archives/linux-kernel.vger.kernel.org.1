@@ -2,204 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2824C2DB698
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CC12DB69B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730990AbgLOWky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 17:40:54 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:60444 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729802AbgLOWkj (ORCPT
+        id S1728155AbgLOWmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 17:42:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727684AbgLOWmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 17:40:39 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFMdiZa029726;
-        Tue, 15 Dec 2020 22:39:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=4QmLHvrBsUjuL3+RI0Oe/61V/03hxVujeNXABHfcE0o=;
- b=Ior35owJr+CojS017WWvxv8+zJmD6vCYdLLf+IXdOLWTEq1kTyQorwv/iE6eWDB9PQ7m
- pGXzPr6Z9CLjd1nznbBieapqUTO7/zp5hTyQvUZMTbcJIvYndAGgrBYXdVZ9MiNAXNKg
- LcN1C6IKc1UyGrVpdaD1+AJ8Kb8ihV5vZsNi5x8bqSuxsStv7YFUiWWk7QpZX00QVeJW
- c7Mg2AqZ25E0C6whxhLQjeHupHCnwKHIOnBT53PeeBPlZL9/qHWO0gJmTl/WF23ZE7gj
- nmjXi0FXtE/ifenrZ7kBjorLmAvPTXtTWeqVPLIDbawg/zQgikYK44/CTQ7qccrQWRCA 7g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 35ckcbdbxc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Dec 2020 22:39:44 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFMa8GH168241;
-        Tue, 15 Dec 2020 22:39:43 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 35d7swwaum-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Dec 2020 22:39:42 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BFMdd00000864;
-        Tue, 15 Dec 2020 22:39:39 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Dec 2020 14:39:39 -0800
-Subject: Re: [PATCH] mm/hugetlb: fix deadlock in hugetlb_cow error path
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Cc:     Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        syzbot+5eee4145df3c15e96625@syzkaller.appspotmail.com,
-        stable@vger.kernel.org
-References: <20201215010611.181063-1-mike.kravetz@oracle.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <4c5781b8-3b00-761e-c0c7-c5edebb6ec1a@oracle.com>
-Date:   Tue, 15 Dec 2020 14:39:38 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Tue, 15 Dec 2020 17:42:55 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313EEC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:42:15 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id m5so416217pjv.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:42:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=amGTi8TGK9HfRVTaIVmXTcMq7K40buhHDFJsl3irODg=;
+        b=1Ijzlu0gtMYIteWfJlrGTqGxpFM8GeTtaw9Ixcz/738lfyFBAxmwgBbszSo07sGLLl
+         sta7WMs8zfp0VymA3y5ZnRkIIG70BGUiQtK67xUJ0SVmTLbbCK9jYaENPQ9Ff9Rhomv6
+         OV/d05mt1l9HBJDEqxs3RFNYla0TdQHbBIhkiEY6QqBsKoHoxSGxhRGf7UX2YX0c/Rbm
+         nI/pGFOpPdiM3vuqvSc4wmOvgN2YHY1D68+OXs3CZW8+MXvYKi+qpPnBRH/ky0KXVjer
+         uilLQsMnvgIfDxlAuc4gjIA1XM3pC3AdMKiBihppRs6yWhvsq1mUG5dbVPGZIgLZ01NJ
+         ySYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=amGTi8TGK9HfRVTaIVmXTcMq7K40buhHDFJsl3irODg=;
+        b=MvbSkoGjEGZKlakch+G8WWZVDhz4AyBP77dctwg8OMmwMNTredgHyow3AR5auLdTJ2
+         Oi3qJ3OGmWTwwBI5fOtGsO/gxhrdaYQTO9N85w4pRuoyWM1jwecMMwjND2RhTkqXYVa5
+         RMX8ddTWgJC0nxWTesMgMBqhyJmZELgUerPtJ0j4bNBYfFuUWNOAHUX93niZe+0vR3o1
+         mCOLWyLdCrwqRuvKOa+nikru2GfJlTqnqkbbR5MieeZO2Yym9IpofCL8YgzwMffLNO1o
+         AFzDhU8/owIqTFdY3CnEB16YSo0w6Rok7Wri4P7M0zvYwiwkUDhaQSFzQWLqGJYxck+u
+         nU7g==
+X-Gm-Message-State: AOAM531OGozVVEfcnv+ENGrxfrbxVCjcxzQunshZJpid7DC0RJvBO2kI
+        /ZyZ+ZewKXVZv4f6a7j25aXMCA==
+X-Google-Smtp-Source: ABdhPJwtM/eom2yB/vW9daC3eeFKepVZQGcXfavkriL1kADjXWBV83LABOQ8uduZVB3h30Krkq+F/Q==
+X-Received: by 2002:a17:90a:17e2:: with SMTP id q89mr662655pja.209.1608072134703;
+        Tue, 15 Dec 2020 14:42:14 -0800 (PST)
+Received: from x1 ([2601:1c0:4701:ae70:d679:3889:5fae:ca68])
+        by smtp.gmail.com with ESMTPSA id y5sm161913pfp.45.2020.12.15.14.42.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 14:42:14 -0800 (PST)
+Date:   Tue, 15 Dec 2020 14:42:12 -0800
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>
+Subject: Re: [RFC PATCH] pinctrl: add helper to expose pinctrl state in
+ debugfs
+Message-ID: <20201215224212.GB2086329@x1>
+References: <20201211042625.129255-1-drew@beagleboard.org>
+ <CAHp75VcAbdrSnb_ag9Rc0tny3Vtqjs1if+ahk7U36V2eaKMpSw@mail.gmail.com>
+ <20201211234304.GA189853@x1>
+ <CAHp75Vf-=nM-M2K-v_8iyME4t6ZF-gvSZ5ePsxQFhObJ_0YHsw@mail.gmail.com>
+ <20201214214419.GA1196223@x1>
+ <CAHp75VeN9xLUKFBXZfo=XzNkdv=BSRJW59=cUjyY0TekF1JONA@mail.gmail.com>
+ <CAHp75VdGEe9F69=uzaDiCf9C8byh6ThuCJLMch1dBXEH4MA2Sg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201215010611.181063-1-mike.kravetz@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012150152
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 mlxscore=0 suspectscore=0 adultscore=0 phishscore=0
- malwarescore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012150153
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VdGEe9F69=uzaDiCf9C8byh6ThuCJLMch1dBXEH4MA2Sg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/14/20 5:06 PM, Mike Kravetz wrote:
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index d029d938d26d..8713f8ef0f4c 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -4106,10 +4106,30 @@ static vm_fault_t hugetlb_cow(struct mm_struct *mm, struct vm_area_struct *vma,
->  		 * may get SIGKILLed if it later faults.
->  		 */
->  		if (outside_reserve) {
-> +			struct address_space *mapping = vma->vm_file->f_mapping;
-> +			pgoff_t idx;
-> +			u32 hash;
-> +
->  			put_page(old_page);
->  			BUG_ON(huge_pte_none(pte));
-> +			/*
-> +			 * Drop hugetlb_fault_mutex and i_mmap_rwsem before
-> +			 * unmapping.  unmapping needs to hold i_mmap_rwsem
-> +			 * in write mode.  Dropping i_mmap_rwsem in read mode
-> +			 * here is OK as COW mappings do not interact with
-> +			 * PMD sharing.
-> +			 *
-> +			 * Reacquire both after unmap operation.
-> +			 */
-> +			idx = vma_hugecache_offset(h, vma, haddr);
-> +			hash = hugetlb_fault_mutex_hash(mapping, idx);
-> +			mutex_unlock(&hugetlb_fault_mutex_table[hash]);
-> +			i_mmap_unlock_read(vma->vm_file->f_mapping);
-
-The assignment 'mapping = vma->vm_file->f_mapping' is done at the beginning
-of this block.  Silly that it is not used here.
-
-> +
->  			unmap_ref_private(mm, vma, old_page, haddr);
-> -			BUG_ON(huge_pte_none(pte));
-> +
-> +			i_mmap_lock_read(vma->vm_file->f_mapping);
-
-and here.
-
-> +			mutex_lock(&hugetlb_fault_mutex_table[hash]);
->  			spin_lock(ptl);
->  			ptep = huge_pte_offset(mm, haddr, huge_page_size(h));
->  			if (likely(ptep &&
+On Tue, Dec 15, 2020 at 09:39:18PM +0200, Andy Shevchenko wrote:
+> On Tue, Dec 15, 2020 at 9:36 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Mon, Dec 14, 2020 at 11:44 PM Drew Fustini <drew@beagleboard.org> wrote:
+> > > On Mon, Dec 14, 2020 at 07:55:12PM +0200, Andy Shevchenko wrote:
 > 
+> ...
+> 
+> > > With regards to parent directory, I did discover there is
+> > > debugfs_lookup(), so I can get the dentry for "pinctrl" and create new
+> > > subdirectory inside of it.  This is the structure now:
+> > >
+> > > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_35_pinmux/state
+> > > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_34_pinmux/state
+> > > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_33_pinmux/state
+> > > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_32_pinmux/state
+> > > etc..
+> 
+> Missed part to comment.
+> 
+> I was talking about
+> 
+> /sys/kernel/debug/pinctrl/<$PINCTRL>/mux/<$PIN> (maybe folder, maybe node)
 
-Updated patch to use block local variable mapping.
+Thanks for the example.
 
-From aa450d80a63dc4533b2eca9f61c1acfb37587c06 Mon Sep 17 00:00:00 2001
-From: Mike Kravetz <mike.kravetz@oracle.com>
-Date: Mon, 14 Dec 2020 16:26:32 -0800
-Subject: [PATCH v2] mm/hugetlb: fix deadlock in hugetlb_cow error path
+What would the value be "<$PINCTRL>"?  The name of the driver?
 
-syzbot reported the deadlock here [1].  The issue is in hugetlb cow
-error handling when there are not enough huge pages for the faulting
-task which took the original reservation.  It is possible that other
-(child) tasks could have consumed pages associated with the reservation.
-In this case, we want the task which took the original reservation to
-succeed.  So, we unmap any associated pages in children so that they
-can be used by the faulting task that owns the reservation.
+The "ocp:Px_yy_pinmux" directory name comes from dev_name(dev). Is that
+the name you were referencing in "<$PIN>"?
 
-The unmapping code needs to hold i_mmap_rwsem in write mode.  However,
-due to commit c0d0381ade79 ("hugetlbfs: use i_mmap_rwsem for more pmd
-sharing synchronization") we are already holding i_mmap_rwsem in read
-mode when hugetlb_cow is called.  Technically, i_mmap_rwsem does not
-need to be held in read mode for COW mappings as they can not share
-pmd's.  Modifying the fault code to not take i_mmap_rwsem in read mode
-for COW (and other non-sharable) mappings is too involved for a stable
-fix.  Instead, we simply drop the hugetlb_fault_mutex and i_mmap_rwsem
-before unmapping.  This is OK as it is technically not needed.  They
-are reacquired after unmapping as expected by calling code.  Since this
-is done in an uncommon error path, the overhead of dropping and
-reacquiring mutexes is acceptable.
 
-While making changes, remove redundant BUG_ON after unmap_ref_private.
-
-[1] https://lkml.kernel.org/r/000000000000b73ccc05b5cf8558@google.com
-
-Reported-by: syzbot+5eee4145df3c15e96625@syzkaller.appspotmail.com
-Fixes: c0d0381ade79 ("hugetlbfs: use i_mmap_rwsem for more pmd sharing synchronization")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
----
- mm/hugetlb.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
-
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index d029d938d26d..7e89f31d7ef8 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -4106,10 +4106,30 @@ static vm_fault_t hugetlb_cow(struct mm_struct *mm, struct vm_area_struct *vma,
- 		 * may get SIGKILLed if it later faults.
- 		 */
- 		if (outside_reserve) {
-+			struct address_space *mapping = vma->vm_file->f_mapping;
-+			pgoff_t idx;
-+			u32 hash;
-+
- 			put_page(old_page);
- 			BUG_ON(huge_pte_none(pte));
-+			/*
-+			 * Drop hugetlb_fault_mutex and i_mmap_rwsem before
-+			 * unmapping.  unmapping needs to hold i_mmap_rwsem
-+			 * in write mode.  Dropping i_mmap_rwsem in read mode
-+			 * here is OK as COW mappings do not interact with
-+			 * PMD sharing.
-+			 *
-+			 * Reacquire both after unmap operation.
-+			 */
-+			idx = vma_hugecache_offset(h, vma, haddr);
-+			hash = hugetlb_fault_mutex_hash(mapping, idx);
-+			mutex_unlock(&hugetlb_fault_mutex_table[hash]);
-+			i_mmap_unlock_read(mapping);
-+
- 			unmap_ref_private(mm, vma, old_page, haddr);
--			BUG_ON(huge_pte_none(pte));
-+
-+			i_mmap_lock_read(mapping);
-+			mutex_lock(&hugetlb_fault_mutex_table[hash]);
- 			spin_lock(ptl);
- 			ptep = huge_pte_offset(mm, haddr, huge_page_size(h));
- 			if (likely(ptep &&
--- 
-2.29.2
-
+thanks,
+drew
