@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009792DB530
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 21:33:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AB92DB506
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 21:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725776AbgLOUdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 15:33:00 -0500
-Received: from smtprelay0050.hostedemail.com ([216.40.44.50]:40640 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727900AbgLOUby (ORCPT
+        id S1728060AbgLOUZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 15:25:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727785AbgLOUYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 15:31:54 -0500
-X-Greylist: delayed 598 seconds by postgrey-1.27 at vger.kernel.org; Tue, 15 Dec 2020 15:31:49 EST
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave08.hostedemail.com (Postfix) with ESMTP id 6054618027F88;
-        Tue, 15 Dec 2020 20:13:54 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 357FE1802958B;
-        Tue, 15 Dec 2020 20:13:54 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,coupons@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2538:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:4250:4321:4605:5007:7576:7902:7903:7904:10004:10400:10848:11026:11232:11658:11783:11914:12043:12296:12297:12679:12740:12895:13069:13311:13357:13439:13894:14181:14347:14659:14721:21080:21627:21740:30054:30067:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: cave84_270289327426
-X-Filterd-Recvd-Size: 2059
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 15 Dec 2020 20:13:53 +0000 (UTC)
-Message-ID: <baa43defd49bb297cfb7772b999dbd9abf7f4c0d.camel@perches.com>
-Subject: Re: [PATCH] atm: horizon: remove h from printk format specifier
-From:   Joe Perches <coupons@perches.com>
-To:     trix@redhat.com, Chas Williams <3chas3@gmail.com>
-Cc:     linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        Tue, 15 Dec 2020 15:24:24 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991F4C0617A6;
+        Tue, 15 Dec 2020 12:14:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=N/1okadLW/1bioiLHBq8zQD0b+zBkavJlAW3LSyJkNk=; b=nppOdxK8/vMIEzYqVMVjlrVXrl
+        Lqp2DCPyIrJJnPtoZl1wCv0zPT/wQRlLYjrZaKhLvTvXGEmf0tqQAgMBiHQCKIspOx5UL99CVR1k2
+        pa/Kh+BKFxCkHW1z0jC9brjgyBIgvgtD+zbPMv0P2jARbf2SQJJi1RNkBYkIp3L89MvuAOy27/s4v
+        LWTT95yWaxd2NlVwoQ7mqeO3pketVmcT/N1FpYn0mBsBVszgUNTwQ3hE2ICHDn2dX70PeAn/L940S
+        qB+m3uxTzEwC+/dWzVE4RiFNFgdoYUcpN5uTepv96km/phH/r5s2jQUT0u02I9MOG/3M2tGIx//Il
+        wNli57sg==;
+Received: from [2601:1c0:6280:3f0::64ea]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kpGi3-0002z8-Kg; Tue, 15 Dec 2020 20:14:12 +0000
+Subject: Re: [PATCH v2 -next] platform: surface: fix non-PM_SLEEP build
+ warnings
+To:     Maximilian Luz <luzmaximilian@gmail.com>,
         linux-kernel@vger.kernel.org
-Date:   Tue, 15 Dec 2020 12:13:51 -0800
-In-Reply-To: <20201215142413.1850207-1-trix@redhat.com>
-References: <20201215142413.1850207-1-trix@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        platform-driver-x86@vger.kernel.org
+References: <20201214233336.19782-1-rdunlap@infradead.org>
+ <5fd70f29-2795-5b46-4bc9-e60a26efee88@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <266d2103-ae66-e216-1940-a16c4199aefb@infradead.org>
+Date:   Tue, 15 Dec 2020 12:14:06 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <5fd70f29-2795-5b46-4bc9-e60a26efee88@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-15 at 06:24 -0800, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+On 12/15/20 11:55 AM, Maximilian Luz wrote:
+> On 12/15/20 12:33 AM, Randy Dunlap wrote:
+>> Fix build warnings when CONFIG_PM_SLEEP is not enabled and these
+>> functions are not used:
+>>
+>> ../drivers/platform/surface/surface_gpe.c:189:12: warning: ‘surface_gpe_resume’ defined but not used [-Wunused-function]
+>>   static int surface_gpe_resume(struct device *dev)
+>>              ^~~~~~~~~~~~~~~~~~
+>> ../drivers/platform/surface/surface_gpe.c:184:12: warning: ‘surface_gpe_suspend’ defined but not used [-Wunused-function]
+>>   static int surface_gpe_suspend(struct device *dev)
+>>              ^~~~~~~~~~~~~~~~~~~
+>>
+>> Fixes: 274335f1c557 ("platform/surface: Add Driver to set up lid GPEs on MS Surface device")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Maximilian Luz <luzmaximilian@gmail.com>
+>> Cc: Hans de Goede <hdegoede@redhat.com>
+>> Cc: platform-driver-x86@vger.kernel.org
+>> ---
+>> v2: dropped Maximilian's RVB tag since the patch changed
+>>      use preferred __maybe_unused instead of ifdeffery:
+>>        https://lore.kernel.org/patchwork/patch/732981/
+>>
+>>   drivers/platform/surface/surface_gpe.c |    4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> --- linux-next-20201214.orig/drivers/platform/surface/surface_gpe.c
+>> +++ linux-next-20201214/drivers/platform/surface/surface_gpe.c
+>> @@ -181,12 +181,12 @@ static int surface_lid_enable_wakeup(str
+>>       return 0;
+>>   }
+>>   -static int surface_gpe_suspend(struct device *dev)
+>> +static int __maybe_unused surface_gpe_suspend(struct device *dev)
+>>   {
+>>       return surface_lid_enable_wakeup(dev, true);
+>>   }
+>>   -static int surface_gpe_resume(struct device *dev)
+>> +static int __maybe_unused surface_gpe_resume(struct device *dev)
+>>   {
+>>       return surface_lid_enable_wakeup(dev, false);
+>>   }
+>>
 > 
-> See Documentation/core-api/printk-formats.rst.
-> h should no longer be used in the format specifier for printk.
+> Code looks good to me.
 > 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
-> �drivers/atm/horizon.c | 6 +++---
+> Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
+> 
+> As already mentioned before, I'd prefer the subject line to be
+> "platform/surface: gpe: ...", or at least "platform/surface: ..." for
+> consistency with other commits. May just be a personal preference
+> though, so nothing that should prevent it from being applied.
+> 
 
-Chas?
-
-Madge has been out of business for a couple decades now.
-
-I doubt anyone does but does anyone actually use this driver or
-even have working hardware?
-
-If not, how about just deleting this driver altogether instead?
-
-from horizon.h:
-
-/*
-  Madge Horizon ATM Adapter driver.
-  Copyright (C) 1995-1999  Madge Networks Ltd.
-
-*/
-
-/*
-  IMPORTANT NOTE: Madge Networks no longer makes the adapters
-  supported by this driver and makes no commitment to maintain it.
-*/
+Ugh, sorry about that. I've changed that in the patch so if I ever
+resend it, it will be fixed.
 
 
-> diff --git a/drivers/atm/horizon.c b/drivers/atm/horizon.c
-[]
-> @@ -1609,7 +1609,7 @@ static int hrz_send (struct atm_vcc * atm_vcc, struct sk_buff * skb) {
-> �����if (*s++ == 'D') {
-> �	for (i = 0; i < 4; ++i)
-> �		d = (d << 4) | hex_to_bin(*s++);
-> -      PRINTK (KERN_INFO, "debug bitmap is now %hx", debug = d);
-> +      PRINTK (KERN_INFO, "debug bitmap is now %x", debug = d);
-
-An IMO ugly assignment in a printk too.
-
+-- 
+~Randy
 
