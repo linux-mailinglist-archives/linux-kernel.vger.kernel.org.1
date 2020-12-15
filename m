@@ -2,183 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610412DB74B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF482DB7B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbgLPAB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:01:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
+        id S1726317AbgLPAH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:07:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgLOX6i (ORCPT
+        with ESMTP id S1727439AbgLPAAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 18:58:38 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57867C0613D3;
-        Tue, 15 Dec 2020 15:57:58 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id 91so21484204wrj.7;
-        Tue, 15 Dec 2020 15:57:58 -0800 (PST)
+        Tue, 15 Dec 2020 19:00:53 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41EFC0613D3;
+        Tue, 15 Dec 2020 16:00:12 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id 6so15562070ejz.5;
+        Tue, 15 Dec 2020 16:00:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1I/x1exlJLsm3WeNJRlwrbpzwfSR6O258jSLiqBkyC4=;
-        b=kgAp2ZEQWXFQUErft2vomP9iqJ8qY1ouCvn68LzDjLKyQ0XbyrFtTOeC+xnsOX6zS+
-         ruuFijEoBpRX9z0EMFIFyTvQkAKETi5JG0tMkU/KvI5GO0CPoYS2Dqelf4D2dqQy1QAg
-         qa+kZVX8rgN+eAaO/eqk6v2+Mro/+VWZjemdmGQfJGHhUUZGGt0V6a6gdikIm1iUNhs+
-         neoSty3zzPS29tecbBH0qM16SZBw+CfYT2vdh+5Y1UTlJbE9sWBOxNcPoK/ukWhTAwaZ
-         +yIlWCCeHU7B1PNE3uZIKO973FK2NSEIIiDCzYocxpd+BlwczBb6wwEhLo8f5R/VQRI8
-         rWhg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oWNs84euS5+GSv9nRk8flYq+n+pWmoelKQH47Nr99CU=;
+        b=I/AuV4JDGG7VDvzUf1ACX4rHlnyKX8woLAg1gUm1neAgUHcC20JjUUqw3/OpuzbXTV
+         Ij5CYI4N5/4vrBX7jcmTyEGO9ju8njXHhcDjDGESneDsj8n0zfJGNF55/jgBmMUDIWuI
+         3Z8A670wDo/YgnlA8gdeGj1tfGk3MhZkrJ1SWBkC+rsp5qWK0RIWFj5KPLjt2spsBdZs
+         8sPNx2OhKTIkrqph4cwpG4OartZeCNifKv2WjeRzklU/fVVhdsP5ksUETdbLMYcLaxmV
+         2pLJpR2Lhfw6KY0egqc2JfBaAMxAXaiFgKl2wOU4bdwC9fEhb4OEbxFZAOSOgQuNP8Pw
+         FwNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1I/x1exlJLsm3WeNJRlwrbpzwfSR6O258jSLiqBkyC4=;
-        b=gchZESH35RcB7rH4je6HO7NUlIHDKMDk9BlfOuU+jIW9AVmybngyH7EUHJ2slLZxGS
-         fnLkBe6i76sy06UPVhI0v3I2VZRenauT8ngQ3eb8osHrNLyy7M1HAopEPG4xkKXCzQYL
-         pk+2waK7xW4Jl0TlC7DRfUjA9KTayPt0HdJ8QjHEb2r6cVME8XgovFne2ILWU+lJ/GvF
-         3KDY8+PNecMRkHuK7xHDQ88uunMT3WzFuSNiqojdonL9pFn11MfuOV3YPak0uy4DyEnm
-         4KQUT1SIOZWmRvgnovKpFngN7Am238+TS+WrQjVaZloQDJn3gLZ8D7WEdH9IRz5HRKP1
-         JqpA==
-X-Gm-Message-State: AOAM533ArtRGGb+oabkVEZzZ01TE7a6lVjA+jdhrnEyr6/yto+NgzgfV
-        uGiL7zzCc3u2Pv82gqdGZFM=
-X-Google-Smtp-Source: ABdhPJwPypN9h32sGAN0lqpW3qvgk90sap/+pSguIjFq2jay9rl9yUFUeNPSgGrOodaz77Z3yr3J2w==
-X-Received: by 2002:adf:c14d:: with SMTP id w13mr24944905wre.383.1608076677046;
-        Tue, 15 Dec 2020 15:57:57 -0800 (PST)
-Received: from adgra-XPS-15-9570.home (lfbn-idf1-1-1007-144.w86-238.abo.wanadoo.fr. [86.238.83.144])
-        by smtp.gmail.com with ESMTPSA id c10sm204160wrb.92.2020.12.15.15.57.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 15:57:56 -0800 (PST)
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     broonie@kernel.org, jagan@amarulasolutions.com,
-        lgirdwood@gmail.com, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        troy.kisky@boundarydevices.com,
-        Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH v2 7/7] regulator: pf8x00: fix nxp,phase-shift
-Date:   Wed, 16 Dec 2020 00:56:39 +0100
-Message-Id: <20201215235639.31516-8-adrien.grassein@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201215235639.31516-1-adrien.grassein@gmail.com>
-References: <20201215235639.31516-1-adrien.grassein@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oWNs84euS5+GSv9nRk8flYq+n+pWmoelKQH47Nr99CU=;
+        b=gBKPI1zdLl/SW3R9rToqqT+eCxiux5T6AbLp0v+e5IC/mm5K/n6+1pGu5CshRHHwJ1
+         406Epnyapbj9nXdsaIalv8PGH405oQ/LkiufdDzdGxK23cKSALApYWCVbLqYM+rXIEzH
+         ZuMSRaCgjC9qK/JMv2YTF9LKvxFNzcfjIjHxZL75//cVkuHoJUItrQcs/XWNBwZx+JzE
+         uymRwEEWOt85jjwPYOtFhyoxizhHwFXG5wleIoWV5D0D/zNNup4L5inoIIM7yf0+EuEc
+         GtYzyew0dzWeBUVxRs7FK7ovNPSbygBK6zzEMJDzZiqe47g1Cnf7o4oRyaVWxq6nUkRX
+         pouA==
+X-Gm-Message-State: AOAM533J1CuajIzFkarMapVA6Oqiry8cMfyQfpnDMyPor6hMaNlUpMTE
+        +QY0+5LMUn3UcEL1x+4pYnuKNOldRUEtpzPnybA=
+X-Google-Smtp-Source: ABdhPJxasHIw68sJydp5dBN/h2PRm+ei926F1sGziqBSdmJcWbqrJEocf2hXr7y33TE0K40Pt1NLsJngefAgGo1niUA=
+X-Received: by 2002:a17:906:cd06:: with SMTP id oz6mr29096141ejb.25.1608076811384;
+ Tue, 15 Dec 2020 16:00:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20201214223722.232537-1-shy828301@gmail.com> <20201214223722.232537-10-shy828301@gmail.com>
+ <20201215032337.GP3913616@dread.disaster.area>
+In-Reply-To: <20201215032337.GP3913616@dread.disaster.area>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 15 Dec 2020 15:59:59 -0800
+Message-ID: <CAHbLzkp20yNvQiknPM92DbdqYS03ZKcXwH1WQfsdnAC2TLRT0w@mail.gmail.com>
+Subject: Re: [v2 PATCH 9/9] mm: vmscan: shrink deferred objects proportional
+ to priority
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the ternary condition which is a bad coding style
-in the kernel
+On Mon, Dec 14, 2020 at 7:23 PM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Mon, Dec 14, 2020 at 02:37:22PM -0800, Yang Shi wrote:
+> > The number of deferred objects might get windup to an absurd number, and it results in
+> > clamp of slab objects.  It is undesirable for sustaining workingset.
+> >
+> > So shrink deferred objects proportional to priority and cap nr_deferred to twice of
+> > cache items.
+>
+> This completely changes the work accrual algorithm without any
+> explaination of how it works, what the theory behind the algorithm
+> is, what the work accrual ramp up and damp down curve looks like,
+> what workloads it is designed to benefit, how it affects page
+> cache vs slab cache balance and system performance, what OOM stress
+> testing has been done to ensure pure slab cache pressure workloads
+> don't easily trigger OOM kills, etc.
 
-I also remove the defering configuration of the nxp,phase-shift.
-The configuration is now done at parsing time. It save some memory
-and it's better for comprehension.
+Actually this patch does two things:
+1. Take nr_deferred into account priority.
+2. Cap nr_deferred to twice of freeable
 
-I also use the OTP default configuration when the paramater is wrong
-or not specified.
-I think that it's better to use the default configuration from the chip
-than an arbitrary value.
+Actually the idea is borrowed from you patch:
+https://lore.kernel.org/linux-xfs/20191031234618.15403-13-david@fromorbit.com/,
+the difference is that your patch restrains the change for kswapd
+only, but mine is extended to direct reclaim and limit reclaim.
 
-Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
----
- drivers/regulator/pf8x00-regulator.c | 45 +++++++++++++---------------
- 1 file changed, 20 insertions(+), 25 deletions(-)
+>
+> You're going to need a lot more supporting evidence that this is a
+> well thought out algorithm that doesn't obviously introduce
+> regressions. The current code might fall down in one corner case,
+> but there are an awful lot of corner cases where it does work.
+> Please provide some evidence that it not only works in your corner
+> case, but also doesn't introduce regressions for other slab cache
+> intensive and mixed cache intensive worklaods...
 
-diff --git a/drivers/regulator/pf8x00-regulator.c b/drivers/regulator/pf8x00-regulator.c
-index 5ad940b3db0a..b8b3ac393ee8 100644
---- a/drivers/regulator/pf8x00-regulator.c
-+++ b/drivers/regulator/pf8x00-regulator.c
-@@ -107,7 +107,6 @@ enum pf8x00_ldo_states {
- 
- #define PF8X00_SWXILIM_MASK		GENMASK(4, 3)
- #define PF8X00_SWXPHASE_MASK		GENMASK(2, 0)
--#define PF8X00_SWXPHASE_DEFAULT		0
- #define PF8X00_SWXPHASE_SHIFT		7
- 
- enum pf8x00_devid {
-@@ -121,7 +120,6 @@ enum pf8x00_devid {
- 
- struct pf8x00_regulator {
- 	struct regulator_desc desc;
--	u8 phase_shift;
- };
- 
- struct pf8x00_chip {
-@@ -167,17 +165,13 @@ static const int pf8x00_vsnvs_voltages[] = {
- 	0, 1800000, 3000000, 3300000,
- };
- 
--static struct pf8x00_regulator *desc_to_regulator(const struct regulator_desc *desc)
--{
--	return container_of(desc, struct pf8x00_regulator, desc);
--}
--
- static int pf8x00_of_parse_cb(struct device_node *np,
- 			      const struct regulator_desc *desc,
- 			      struct regulator_config *config)
- {
--	struct pf8x00_regulator *data = desc_to_regulator(desc);
- 	struct pf8x00_chip *chip = config->driver_data;
-+	unsigned char id = desc->id - PF8X00_LDO4;
-+	unsigned char reg = PF8X00_SW_BASE(id) + SW_CONFIG2;
- 	int phase;
- 	int val;
- 	int ret;
-@@ -185,21 +179,30 @@ static int pf8x00_of_parse_cb(struct device_node *np,
- 	ret = of_property_read_u32(np, "nxp,phase-shift", &val);
- 	if (ret) {
- 		dev_dbg(chip->dev,
--			"unspecified phase-shift for BUCK%d, use 0 degrees\n",
--			desc->id - PF8X00_LDO4);
--		val = PF8X00_SWXPHASE_DEFAULT;
-+			"unspecified phase-shift for BUCK%d, using OTP configuration\n",
-+			id);
-+		goto end;
- 	}
- 
--	phase = val / 45;
--	if ((phase * 45) != val) {
-+	if (val < 0 || val > 315 || val % 45 != 0) {
- 		dev_warn(config->dev,
--			 "invalid phase_shift %d for BUCK%d, use 0 degrees\n",
--			 (phase * 45), desc->id - PF8X00_LDO4);
--		phase = PF8X00_SWXPHASE_SHIFT;
-+			 "invalid phase_shift %d for BUCK%d, using OTP configuration\n",
-+			 val, id);
-+		goto end;
- 	}
- 
--	data->phase_shift = (phase >= 1) ? phase - 1 : PF8X00_SWXPHASE_SHIFT;
-+	phase = val / 45;
-+
-+	if (phase >= 1)
-+		phase -= 1;
-+	else
-+		phase = PF8X00_SWXPHASE_SHIFT;
-+
-+	regmap_update_bits(chip->regmap, reg,
-+			PF8X00_SWXPHASE_MASK,
-+			phase);
- 
-+end:
- 	return 0;
- }
- 
-@@ -432,14 +435,6 @@ static int pf8x00_i2c_probe(struct i2c_client *client)
- 				"failed to register %s regulator\n", data->desc.name);
- 			return PTR_ERR(rdev);
- 		}
--
--		if ((id >= PF8X00_BUCK1) && (id <= PF8X00_BUCK7)) {
--			u8 reg = PF8X00_SW_BASE(id) + SW_CONFIG2;
--
--			regmap_update_bits(chip->regmap, reg,
--					   PF8X00_SWXPHASE_MASK,
--					   data->phase_shift);
--		}
- 	}
- 
- 	return 0;
--- 
-2.20.1
+I agree the change may cause some workload regressed out of blue. I
+tested with kernel build and vfs metadata heavy workloads, I wish I
+could cover more. But I'm not filesystem developer, do you have any
+typical workloads that I could try to run to see if they have
+regression?
 
+>
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  mm/vmscan.c | 40 +++++-----------------------------------
+> >  1 file changed, 5 insertions(+), 35 deletions(-)
+> >
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 693a41e89969..58f4a383f0df 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -525,7 +525,6 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+> >        */
+> >       nr = count_nr_deferred(shrinker, shrinkctl);
+> >
+> > -     total_scan = nr;
+> >       if (shrinker->seeks) {
+> >               delta = freeable >> priority;
+> >               delta *= 4;
+> > @@ -539,37 +538,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+> >               delta = freeable / 2;
+> >       }
+> >
+> > +     total_scan = nr >> priority;
+>
+> When there is low memory pressure, this will throw away a large
+> amount of the work that is deferred. If we are not defering in
+> amounts larger than ~4000 items, every pass through this code will
+> zero the deferred work.
+>
+> Hence when we do get substantial pressure, that deferred work is no
+> longer being tracked. While it may help your specific corner case,
+> it's likely to significantly change the reclaim balance of slab
+> caches, especially under GFP_NOFS intensive workloads where we can
+> only defer the work to kswapd.
+>
+> Hence I think this is still a problematic approach as it doesn't
+> address the reason why deferred counts are increasing out of
+> control in the first place....
+
+For our workload the deferred counts are mainly contributed by
+multiple memcgs' limit reclaim per my analysis. So, the most crucial
+step is to make nr_deferred memcg aware so that the auxiliary memcgs
+won't have interference to the main workload.
+
+If the test may take too long I'd prefer drop this patch for now since
+it is not that critical to our workload, I really hope have
+nr_deferred memcg aware part get into upstream soon.
+
+>
+> Cheers,
+>
+> Dave.
+> --
+> Dave Chinner
+> david@fromorbit.com
