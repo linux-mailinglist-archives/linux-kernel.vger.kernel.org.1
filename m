@@ -2,54 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EAC32DA674
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B682DA671
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgLOCsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:48:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgLOCsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:48:32 -0500
-Subject: Re: [GIT pull] core/mm for v5.11-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608000471;
-        bh=WB5VARf9vWL1VNH/2pRozPjhsdUda/xUKk6NnlEDuqw=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=bcUhs+t6n0dr7lPLaYYxOVmF3RY/LXBpSP5iNwR8w1xoae9VAjZEtV338WsyhtDSV
-         mHPWLmYqD03AegyHmDfULXSKjBF6CwRp9ytynRSZ2eDukmPgLft0BPHB1yn0y47RWw
-         cs8MoDT6KwGqREftIkZgm4D/YyFWhUQ93Ur4ywD51XdXffJOtiWcmj+PzWzCh5O/cJ
-         I45YaeY3/516dfBxcFfzCMHh3i0YoXDLq1kwzN3QdazjKxiVW8DfLgCfxlCAmyOEam
-         UCKUSZ8Y0bQBEVoDqEv1FcEzA1YhBfmp8EpPlNmPu4zP/e6olaH7VMHDcueYa6D7Dx
-         8XNygyhcwRqLA==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <160797734275.10793.2956447277890639251.tglx@nanos>
-References: <160797732939.10793.9152151866806316627.tglx@nanos> <160797734275.10793.2956447277890639251.tglx@nanos>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <160797734275.10793.2956447277890639251.tglx@nanos>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-mm-2020-12-14
-X-PR-Tracked-Commit-Id: 68061c02bb295da4955f0d309b9459f0a7ba83dd
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: edd7ab76847442e299af64a761febd180d71f98d
-Message-Id: <160800047154.6499.8908343742978577206.pr-tracker-bot@kernel.org>
-Date:   Tue, 15 Dec 2020 02:47:51 +0000
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
+        id S1726347AbgLOCuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:50:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726302AbgLOCuD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:50:03 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1364CC061793;
+        Mon, 14 Dec 2020 18:49:23 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cw2lh6R39z9s1l;
+        Tue, 15 Dec 2020 13:49:20 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1608000561;
+        bh=8I3FxLXQ7qhVBbHNjn9cG+EGcaN4bW11ziSg4iW5eoI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=c8sqEosK2ygrrDFs+uXr/DpnDGeUC3IPwk0e1OSz+97OrpXMYF4e6+2TEAqL8i4gq
+         E4FeJ5uNieZBGTyFGAc6ufSpkWwqwM5+UJldUKdVbZOULmFR6yT1mWoh5NSUwEEPu3
+         HhSGxaVb3/JHh5iIhlOJwOJDbtvviKNuLNjtlLNmBZDhZWPcgL/6wZ4ZAhH72ttDwb
+         HjG6MDHrOwtZz5bp6hRmDX3DdCY9hmWwU2BWwFmYz2yTwns75TA2hgmtayZhzpOKOp
+         fk9y4O+qvazgUQDPeknP01nku/yGjkibSGuXec0P+K9/W35ZoJWQZe9ze28+q4tRgY
+         YLto6Cuj2ZmtA==
+Date:   Tue, 15 Dec 2020 13:49:19 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Alex Deucher <alexdeucher@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Wayne Lin <Wayne.Lin@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the amdgpu tree
+Message-ID: <20201215134919.3ac58796@canb.auug.org.au>
+In-Reply-To: <20201215065608.2dab9183@canb.auug.org.au>
+References: <20201117154514.2c378d99@canb.auug.org.au>
+        <20201215065608.2dab9183@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/c9im4qTPru9hrr7zn_VNE7g";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 14 Dec 2020 20:22:22 -0000:
+--Sig_/c9im4qTPru9hrr7zn_VNE7g
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-mm-2020-12-14
+Hi all,
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/edd7ab76847442e299af64a761febd180d71f98d
+On Tue, 15 Dec 2020 06:56:08 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> On Tue, 17 Nov 2020 15:45:14 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >
+> > After merging the amdgpu tree, today's linux-next build (htmldocs)
+> > produced this warning:
+> >=20
+> > drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:353: warning: Functio=
+n parameter or member 'crc_win_x_start_property' not described in 'amdgpu_d=
+isplay_manager'
+> > drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:353: warning: Functio=
+n parameter or member 'crc_win_y_start_property' not described in 'amdgpu_d=
+isplay_manager'
+> > drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:353: warning: Functio=
+n parameter or member 'crc_win_x_end_property' not described in 'amdgpu_dis=
+play_manager'
+> > drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:353: warning: Functio=
+n parameter or member 'crc_win_y_end_property' not described in 'amdgpu_dis=
+play_manager'
+> >=20
+> > Introduced by commit
+> >=20
+> >   c920888c604d ("drm/amd/display: Expose new CRC window property") =20
+>=20
+> I am still getting those warnings.  That commit is now in the drm tree.
 
-Thank you!
+These warnings are now from Linus' tree.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/c9im4qTPru9hrr7zn_VNE7g
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/YJDAACgkQAVBC80lX
+0GzqfQf/V+cejH0YOfBpCPjUFbZSFTyGj4Hd7ZdJv3QPuI1J5ELRBKZCGY+/cnQR
+qh+1WPHhACKlYYDKs9k2olkzSnGxJubQbkmPyLxQdyo7ZtEShgTVPYxoxA/FLxOp
+TGvy5FSJ9La7gynOhnur28gP+750wqcFi4Fjes3+3Hrt4Np9pvaItI0fKDCCsKM5
+jL40IuMpU8Ved8u+VqlnfAUzsPfTSoE74CYQEvgzq8TKXDhPdsoOk+11HPux4gTQ
+93LNsh5kB/paV2uXzMYLUKhgaN4QlikZTJ6MAOgT4JNOyKythTLQ7OCyro5edzSR
+JPy1LOlcbafKJ2FvyvjFPb7UIFDWSw==
+=YyMf
+-----END PGP SIGNATURE-----
+
+--Sig_/c9im4qTPru9hrr7zn_VNE7g--
