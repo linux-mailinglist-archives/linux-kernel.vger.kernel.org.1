@@ -2,126 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE60B2DADF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2B62DADF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgLONYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:24:22 -0500
-Received: from mga11.intel.com ([192.55.52.93]:26023 "EHLO mga11.intel.com"
+        id S1727536AbgLONZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:25:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727053AbgLONX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:23:58 -0500
-IronPort-SDR: D1TB2IlYX2ukQomyo9Fp+4yToc+A++0HKSVI3mTguG234eCaSgXyr8OfGdT35qpJVIwcZ9NOdX
- G3qe+hMHpy3g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="171364553"
-X-IronPort-AV: E=Sophos;i="5.78,421,1599548400"; 
-   d="scan'208";a="171364553"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 05:23:10 -0800
-IronPort-SDR: jYmIOmy2/eGcHbaXjy4lRHBnOB0tckkaipLHd0Uhi2AxjwWMckjQHd0e2mkTAObhyfwBpOvCJb
- mIkGOifN5KUg==
-X-IronPort-AV: E=Sophos;i="5.78,421,1599548400"; 
-   d="scan'208";a="411927717"
-Received: from sneftin-mobl.ger.corp.intel.com (HELO [10.214.238.87]) ([10.214.238.87])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 05:23:04 -0800
-Subject: Re: Fw: [External] Re: [PATCH v4 0/4] Improve s0ix flows for systems
- i219LM
-To:     Mark Pearson <markpearson@lenovo.com>,
-        Mario Limonciello <mario.limonciello@dell.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        David Miller <davem@davemloft.net>,
-        Aaron Ma <aaron.ma@canonical.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Aaron Brown <aaron.f.brown@intel.com>,
-        Stefan Assmann <sassmann@redhat.com>,
-        "darcari@redhat.com" <darcari@redhat.com>,
-        "Yijun.Shen@dell.com" <Yijun.Shen@dell.com>,
-        "Perry.Yuan@dell.com" <Perry.Yuan@dell.com>,
-        "anthony.wong@canonical.com" <anthony.wong@canonical.com>,
-        "Ruinskiy, Dima" <dima.ruinskiy@intel.com>,
-        "Efrati, Nir" <nir.efrati@intel.com>,
-        "Lifshits, Vitaly" <vitaly.lifshits@intel.com>,
-        "Neftin, Sasha" <sasha.neftin@intel.com>
-References: <20201214153450.874339-1-mario.limonciello@dell.com>
- <80862f70-18a4-4f96-1b96-e2fad7cc2b35@redhat.com>
- <PS2PR03MB37505A15D3C9B7505D679D7BBDC70@PS2PR03MB3750.apcprd03.prod.outlook.com>
- <ae436f90-45b8-ba70-be57-d17641c4f79d@lenovo.com>
-From:   "Neftin, Sasha" <sasha.neftin@intel.com>
-Message-ID: <18c1c152-9298-a4c5-c4ed-92c9fd91ea8a@intel.com>
-Date:   Tue, 15 Dec 2020 15:23:01 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1726266AbgLONYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 08:24:52 -0500
+Date:   Tue, 15 Dec 2020 13:24:00 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608038651;
+        bh=3qQoBFFuPirOF/52LC+83ykwfdKtbxAU+odgQo0yl0A=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aH9fhsJZqtPuEKdbu/mobNlP1qSJDVc2XDnAIIbV+WT6ACQQlP0w/UkjErAf+8MK3
+         NsR3dNNFL4LhlqHynl3VgHXZm0guI6OG2zhdZ/WTAP1VOUhdWqB8m0xdTcc1qqqoWi
+         rGAiKjcSXwuFWnvKcESkZVwi4CLzh5BNkHW1Q7x41PJm4Akzwyz2XQNjsaQDcTL3qo
+         JesHsvLA9NiVydZ/tah0sr3NaZDq+or6pqnROvWVy9dGgkP1zWt04Y2+Kird4xnZ+y
+         UBmUcn4nV8qAj3tBPdv0beY6NTIDUky8nI5orV3tyQVTV1MnpO+s8dn++0GlsjQqN4
+         lgf69sz0fD94Q==
+From:   Mark Brown <broonie@kernel.org>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Adrien Grassein <adrien.grassein@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Troy Kisky <troy.kisky@boundarydevices.com>,
+        Gary Bisson <gary.bisson@boundarydevices.com>,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: Re: [PATCH v3 0/2] Add support of nxp pf8x00 regulator
+Message-ID: <20201215132400.GE4738@sirena.org.uk>
+References: <20201214225851.23342-1-adrien.grassein@gmail.com>
+ <20201215130622.GD4738@sirena.org.uk>
+ <CABkfQAEAe0XGj16CkmH7xMNxgdQ+SRq0BYzvP+V5PdDqVbyAAw@mail.gmail.com>
+ <CAOMZO5A_Gtwn=AFwJXf_wpC4k902Hg=tCMWpcFUGNWOg9me6_w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <ae436f90-45b8-ba70-be57-d17641c4f79d@lenovo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jKBxcB1XkHIR0Eqt"
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5A_Gtwn=AFwJXf_wpC4k902Hg=tCMWpcFUGNWOg9me6_w@mail.gmail.com>
+X-Cookie: In specially marked packages only.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/14/2020 20:40, Mark Pearson wrote:
-> Thanks Hans
-> 
-> On 14/12/2020 13:31, Mark Pearson wrote:
->>
->>
->> ------------------------------------------------------------------------
->> *From:* Hans de Goede <hdegoede@redhat.com>
->> *Sent:* December 14, 2020 13:24
->> *To:* Mario Limonciello <mario.limonciello@dell.com>; Jeff Kirsher
->> <jeffrey.t.kirsher@intel.com>; Tony Nguyen <anthony.l.nguyen@intel.com>;
->> intel-wired-lan@lists.osuosl.org <intel-wired-lan@lists.osuosl.org>;
->> David Miller <davem@davemloft.net>; Aaron Ma <aaron.ma@canonical.com>;
->> Mark Pearson <mpearson@lenovo.com>
->> *Cc:* linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>;
->> Netdev <netdev@vger.kernel.org>; Alexander Duyck
->> <alexander.duyck@gmail.com>; Jakub Kicinski <kuba@kernel.org>; Sasha
->> Netfin <sasha.neftin@intel.com>; Aaron Brown <aaron.f.brown@intel.com>;
->> Stefan Assmann <sassmann@redhat.com>; darcari@redhat.com
->> <darcari@redhat.com>; Yijun.Shen@dell.com <Yijun.Shen@dell.com>;
->> Perry.Yuan@dell.com <Perry.Yuan@dell.com>; anthony.wong@canonical.com
->> <anthony.wong@canonical.com>
->> *Subject:* [External] Re: [PATCH v4 0/4] Improve s0ix flows for systems
->> i219LM
->>   
->> Hi All,
->>
-> <snip>
->>
->> ###
->>
->> I've added Mark Pearson from Lenovo to the Cc so that Lenovo
->> can investigate this issue further.
->>
->> Mark, this thread is about an issue with enabling S0ix support for
->> e1000e (i219lm) controllers. This was enabled in the kernel a
->> while ago, but then got disabled again on vPro / AMT enabled
->> systems because on some systems (Lenovo X1C7 and now also X1C8)
->> this lead to suspend/resume issues.
->>
->> When AMT is active then there is a handover handshake for the
->> OS to get access to the ethernet controller from the ME. The
->> Intel folks have checked and the Windows driver is using a timeout
->> of 1 second for this handshake, yet on Lenovo systems this is
->> taking 2 seconds. This likely has something to do with the
->> ME firmware on these Lenovo models, can you get the firmware
->> team at Lenovo to investigate this further ?
-> Absolutely - I'll ask them to look into this again.
-> 
-we need to explain why on Windows systems required 1s and on Linux 
-systems up to 2.5s - otherwise it is not reliable approach - you will 
-encounter others buggy system.
-(ME not POR on the Linux systems - is only one possible answer)
-> We did try to make progress with this previously - but it got a bit
-> stuck and hence the need for these patches....but I believe things may
-> have changed a bit so it's worth trying again
-> 
-> Mark
-> 
-Sasha
+
+--jKBxcB1XkHIR0Eqt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Dec 15, 2020 at 10:20:02AM -0300, Fabio Estevam wrote:
+> On Tue, Dec 15, 2020 at 10:16 AM Adrien Grassein
+> <adrien.grassein@gmail.com> wrote:
+
+> > Could you please tell me where this driver was merged?
+> > I checked the main kernel Linux and I can find out this one.
+
+> It is in the linux-next tree:
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers?h=next-20201215&id=d3795d6321ecaa55d94dc24c3b1e3cce608aabd6
+
+Coming to there from my for-next branch - it's also already been sent in
+a pull request to Linus so will hopefully be hitting his tree soonish.
+
+--jKBxcB1XkHIR0Eqt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/YuPAACgkQJNaLcl1U
+h9CPmAf/eKV2OidvhHUcIbNxUtY+hbuBOcTMkhaO1UXnfkmmNMFfOGRfD8mJpUaB
+XkK36q7TFoE/TxOdDHRH5wTA/hb7Y/dy28AaZqvGJjQr7D3g5D5cWVvEgK/yFZHE
+gjRt9GkyZGu8gFFGvGDcZzVA2br3PjAzZVS2w0gFWQAZECNTdxW9+DUJduRgCd71
+4C2tW08VIYouEoPuKNFhUlOuMEkSVtvoddTe5KvgwE1T9WX53Fi8w/koY0LfR5u4
+5KyMjKRQCZxw74sHOXs3OaINytshUlV4d2p+ddM2zPjOZl+za5P1LR/3ZkNr5lzN
+DF29tuAR+Hq1OQ7Gbj/jrmmWBUMq5g==
+=DXB3
+-----END PGP SIGNATURE-----
+
+--jKBxcB1XkHIR0Eqt--
