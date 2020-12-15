@@ -2,201 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE50D2DA650
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:38:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5D62DA652
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727886AbgLOCfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:35:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727535AbgLOCeX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:34:23 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3D2C06179C
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:27:21 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id d17so25466317ejy.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:27:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=I4O3WHYBU27kv8r3Q3lI0IyLOdhvpxutXMzDol4vSCg=;
-        b=KhWzVlWSyOs88yQhMHCDLSIVQ3xif/YPV7Jd7LbuTTykuExZgCpEqqVg8LfpoVDEsb
-         ARoxpeUC78vu6dzhdCzbi7RFzieuM+Jxf3YuBSccQ+MMwKqhR2b3lN+0ZbcHmfq+aLZn
-         eog0RaYKhhT74/Wy5RTeipeHaD66TfMyGk9n1rukP6Jk9Lna1zo5ter3zk0502G0d+OQ
-         ITtl2CEdLO1FGl9wNT8c3TGwcruUG6USEk1xgw6RzZx4oiisvM8zWULc233pcG/w+ejk
-         vQXVOsxoLxq+Kk8oe4ViqLENkvin7Y0x54o1IL21q0l94YAaD/lKLV2jvwNhZaT7RWfO
-         0GbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=I4O3WHYBU27kv8r3Q3lI0IyLOdhvpxutXMzDol4vSCg=;
-        b=BYWDhiduAEYXcjotGetXR7rXvubwE13XlFZ10HTBohz0XD7J+WOWK2GAX+CPdl3lrB
-         MHNYLIKZBL3urfATfpOa7kXXb2DwOGQjn2QOO/zxfe40LyT7a1r0z4JGEQPIEIzIR4cR
-         zvaWR5T8zypdpp7J+6jX4du+9sOns63waDeFNCK71utviCIyxLF7difvqidB7egwDqap
-         vBu+ZthVy4iOoX1K9J5zn0odo33U1Pi8TB5QQyHnvGF9ziwsfHWK8+z7GjiZqF7lvaoh
-         kCKfSknjettqn7l6o8k7Drk+XDxO0EgUB0HaOdjIKKaFe9bqNL3oCZm1I7P2SuQE+xeg
-         Rl2g==
-X-Gm-Message-State: AOAM533Zg1b3kqIZQ+00D9gniR9QGZ54Slu2TRGVjxP4VTqDKc5vRb8a
-        VzEg2JHenJgZeOFpnWMFF+Zc2bOA4bW93WfJ6XOf9w==
-X-Google-Smtp-Source: ABdhPJywOHSnUwWyG0v3cm6dkD0vz5G9XokMtjdBAUSQE+WYpEihqM+GVjVgVJ5EYhAcDwjEmN5zU6NB9/XwzM+4UeQ=
-X-Received: by 2002:a17:906:3499:: with SMTP id g25mr1216306ejb.18.1607999240315;
- Mon, 14 Dec 2020 18:27:20 -0800 (PST)
-MIME-Version: 1.0
-References: <20201214172555.280929671@linuxfoundation.org>
-In-Reply-To: <20201214172555.280929671@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 15 Dec 2020 07:57:08 +0530
-Message-ID: <CA+G9fYvMqG_ai-_sfPGuxxjyZ=3QiabPZhFFY=m_=Qa1aKAL+Q@mail.gmail.com>
-Subject: Re: [PATCH 5.9 000/105] 5.9.15-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1727883AbgLOCil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:38:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727876AbgLOCfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:35:09 -0500
+Date:   Mon, 14 Dec 2020 18:28:07 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1607999289;
+        bh=slstsyQ5JPFm4UzsTcoHM8XYj2Zgq9w2a6Y8T3mYAqA=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UPYRgmtHyTjcqK47L9AAX1Rfo31gdLIZ4tiG0cb061cd3YFgE/R/BgJQFQwWEmQcN
+         2ae/Ek+hZrOSyjmZCZJGB9CIFxjnS7JTD+rHgd321PxMMAAnBKJfejP68jMGLuz+HJ
+         t2POAUptSWQG/Uus0i74Ly4L3E6kAn9j7tnS5PKI=
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>, mgorman@techsingularity.net,
+        tj@kernel.org, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com
+Subject: Re: [PATCH v21 00/19] per memcg lru lock
+Message-Id: <20201214182807.b95df2cd4b22dba37e1f6ffa@linux-foundation.org>
+In-Reply-To: <alpine.LSU.2.11.2012141734060.3082@eggly.anvils>
+References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
+        <20201214164712.39da20f908c6199eb4cde961@linux-foundation.org>
+        <alpine.LSU.2.11.2012141734060.3082@eggly.anvils>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 at 23:06, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.9.15 release.
-> There are 105 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 16 Dec 2020 17:25:32 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.9.15-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Mon, 14 Dec 2020 18:16:34 -0800 (PST) Hugh Dickins <hughd@google.com> wrote:
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> On Mon, 14 Dec 2020, Andrew Morton wrote:
+> > On Thu,  5 Nov 2020 16:55:30 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
+> > 
+> > > This version rebase on next/master 20201104, with much of Johannes's
+> > > Acks and some changes according to Johannes comments. And add a new patch
+> > > v21-0006-mm-rmap-stop-store-reordering-issue-on-page-mapp.patch to support
+> > > v21-0007.
+> > 
+> > I assume the consensus on this series is 'not yet"?
+> 
+> Speaking for my part in the consensus: I don't share that assumption,
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-NOTE:
-Following warning(s) reported on arm64 Juno-r2 device.
-sched: core.c:7270 Illegal context switch in RCU-bh read-side critical sect=
-ion!
-https://lore.kernel.org/stable/CA+G9fYtu1zOz8ErUzftNG4Dc9=3Dcv1grsagBojJraG=
-hm4arqXyw@mail.gmail.com/T/#u
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.9.15-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.9.y
-git commit: 609d95a959259ea4ab7ecdc39c3151321a6a7032
-git describe: v5.9.14-106-g609d95a95925
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.=
-y/build/v5.9.14-106-g609d95a95925
-
-No regressions (compared to build v5.9.14)
-
-No fixes (compared to build v5.9.14)
-
-Ran 53718 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-sched-tests
-* v4l2-compliance
-* kvm-unit-tests
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* perf
-* ltp-controllers-tests
-* ltp-ipc-tests
-* ltp-open-posix-tests
-* ltp-tracing-tests
-* fwts
-* kunit
-* rcutorture
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+OK, thanks, I'll include it in patch-bomb #2, Tues or Weds.
