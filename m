@@ -2,158 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9502DA978
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A302DA979
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727099AbgLOItw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:49:52 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:35047 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727084AbgLOItX (ORCPT
+        id S1727179AbgLOIuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:50:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726385AbgLOItb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:49:23 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 00F0058031C;
-        Tue, 15 Dec 2020 03:48:27 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 15 Dec 2020 03:48:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=h3oX4m+4ODPAKvjAZ8mPFFy+Fof
-        Mm7MXA7iosatUhIk=; b=OgUjprAOYhN//F1okcQ4nTCrVhyxKU5xsiNau5e66qW
-        +t6CuLhGUWHyjZT74sUpzcUYijXl1OCN8EkrRIMRBdyAIS6olS/OI/d9+Blm5NaO
-        +hfQb13hDwGBq+I/g8cmhMA7992HQodZfGGG5sNm/qS7rLqSnKpgRKFDs0ND/ddI
-        9Yo2pZngYVlzLSaoTESBqLXmiUcvfEjH4VMFz0JR+rNhLDog8xFkfN799FNkAZJ7
-        571DCXHUNocasYuEA3x2hPCDOoQmMuw7V2iBJdNVw0MEAZBaurZI09eH/PcC/rI/
-        JyWJOEK+80iZtM8cqpMwjoQsoh2QXVE1EPQtHGLOv6A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=h3oX4m
-        +4ODPAKvjAZ8mPFFy+FofMm7MXA7iosatUhIk=; b=YhH7M/nmtAjifJbYmBndvn
-        omJdvYhisqniJaNBMDAWGVaSH0a+rsOsbEVV/7CVkbPPPEa9rjEHa+y3PPHQUsdi
-        GoGsvQTSpxJ+yNsiNwJqoLgYjRoLdDaZNNN1u39Wrh+VFdHXOxvpMV0p2FFtE8ut
-        ZaqGd6QlwtVtLYW1ylL7oHY80cf9ZXjQHyjteOCqyfFeNjWXxPUfLCB7rURL60QL
-        NyEM1Obo2sPRS4zlOZ5cplfLNyjXbL2F0QmY+zPDfnVSuuAryyTl4lw73B2qc9zh
-        g+UccDpWC3K2t3rrvLwkNJNIY5088ErTKQQHu4iHDs/tEDZNX20npkRPBIiVY5/w
-        ==
-X-ME-Sender: <xms:WXjYX3fdpxXJ8YSNybISgc0GBGBxSodmiGxScC4ptUBYShZwyQMmYw>
-    <xme:WXjYX9NRHK2DAhFy4in9fkw6TycHtX2m45zUim0eQIOOeNU8odjY_kwQ3anJnWH2q
-    yVkMt1GaIwH40g5_zI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekledguddviecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:WXjYXwjBdoZ8NLSK_XtDzWipTIm-TQsGSP4hkkyIFO0nOUDc8IDL7g>
-    <xmx:WXjYX4_MQBpmuUJkJXgPr-PjFqzgYD8qBqsQ0EvBQdOLH78qqNaGtA>
-    <xmx:WXjYXztXdzemIllbe0wdF5s4Ri5875dk-KSXtFYhpAaqzUrxuhsXYA>
-    <xmx:WnjYXxIv7pnco1dkdFFLXrdr3ShKE36Z1m-LgWRLq8AXGuqc03qS2A>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3744924005D;
-        Tue, 15 Dec 2020 03:48:25 -0500 (EST)
-Date:   Tue, 15 Dec 2020 09:48:23 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Wolfram Sang <wsa@the-dreams.de>
-Cc:     Julia Lawall <julia.lawall@inria.fr>, michal.lkml@markovi.net,
-        Gilles.Muller@lip6.fr, Mark Brown <broonie@kernel.org>,
-        nicolas.palix@imag.fr, linux-kernel@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Julia.Lawall@lip6.fr, Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        cocci@systeme.lip6.fr
-Subject: Re: [Cocci] [PATCH] coccinnelle: Remove ptr_ret script
-Message-ID: <20201215084823.towbaqay5tgdh7dw@gilmour>
-References: <20200107073629.325249-1-maxime@cerno.tech>
- <alpine.DEB.2.21.2001071106420.3004@hadrien>
- <20200107102954.GB1135@ninjato>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5hw66wsxl6qicpm2"
-Content-Disposition: inline
-In-Reply-To: <20200107102954.GB1135@ninjato>
+        Tue, 15 Dec 2020 03:49:31 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117BBC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 00:48:45 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id h186so3608199pfe.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 00:48:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=HasI2CekMBkNHFZsC56cHJTTs0fBRkP7/rNpMsSfsJs=;
+        b=k7f72TanMIO+DwCR2FUrZvraKgbs9OE61Q+aS4NCVgjs9ZBDhJK79sygLud2tXbB9/
+         R6ji1u68Ujz9hfwBEmamEi+p0ym5VxH9bKL1scMvJYt/ZyFPrrNsSj2yLjF/pu2/OCVw
+         7Dp0LUNvHo/6gealSmw1BqQJiki9BPgfn8wI0LosohMmEbhGV7MQPsGdVn05VkFnqHJa
+         J0r7+2FVI5Pi7NX/Lcas3DQRj0lSB9Dp+NT2YHo3q3J7dviDLCeaqPsAErTCFAz0sYd9
+         KvCdVyotUUPDDyH3m/R1Oyg+yIWDjUMCnUZCZV/OZ/j31BxzLKwjGjWD3YIbHnMn9mLf
+         BwgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HasI2CekMBkNHFZsC56cHJTTs0fBRkP7/rNpMsSfsJs=;
+        b=c5UhYFZqLRFuauusHLxz6iqyhygLzO5/wLIX+XKohmJJjz6Gz04PNkEO5gjBFNd9rh
+         OexxOoHqbeXEQiETbjvcecW2fhlt+h3Sp0J4dhrJe4zrFSBMhQub/+uL3blNK5uw2FM4
+         ydW2mgk6P/KfN319TSNLw6hmCxqIOWLZpRzBis8NfSELE8Y0TRVMg6hAyT0k47MRFVxr
+         idKLU8Y/2q7EakbFNtIupqJZKArgUbyiNop2nIMrQnP1FL31VCVDUoqmoJ3Fpd6xLgLH
+         ivn753nZAKcjzclgqnQx9JxTmbzjZ31lxQf6O2q+OrMvdiRO8H/M22f6fnT8wjAlrdVG
+         zmcw==
+X-Gm-Message-State: AOAM53177JH15qMCKINoYZxAq4fvsHl91NY1jUOfpuJAVU+zNPwY36+3
+        49ZXHZteAOF7uL/yJRlzi6U=
+X-Google-Smtp-Source: ABdhPJzX+WjD3pNJj07WHbyX7/pElTXxQWlY+O/u06bcjUTqkE6C2cGGdOyI4iDIH3OZXT1ipMw6nw==
+X-Received: by 2002:a63:338e:: with SMTP id z136mr27737698pgz.204.1608022124493;
+        Tue, 15 Dec 2020 00:48:44 -0800 (PST)
+Received: from bj03003pcul13.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id x18sm22831005pfr.158.2020.12.15.00.48.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Dec 2020 00:48:43 -0800 (PST)
+From:   Haidong Yao <yaohaidong369@gmail.com>
+To:     jassisinghbrar@gmail.com, natechancellor@gmail.com,
+        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, orsonzhai@gmail.com
+Cc:     zhang.lyra@gmail.com, Haidong Yao <haidong.yao@unisoc.com>
+Subject: [PATCH] add chan->cl check in mbox_chan_received_data()
+Date:   Tue, 15 Dec 2020 16:48:38 +0800
+Message-Id: <1608022118-29993-1-git-send-email-yaohaidong369@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Haidong Yao <haidong.yao@unisoc.com>
 
---5hw66wsxl6qicpm2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+mailbox outbox irq is coming, but mbox_request_channel
+is not be registered, so cl->rx_callback is NULL.
 
-Hi,
+panic log:
+[    9.852090]c0  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
+[    9.954634]c0  pstate: 60400089 (nZCv daIf +PAN -UAO)
+[    9.954651]c0  pc : mbox_chan_received_data+0x1c/0x88
+[    9.954666]c0  lr : sprd_mbox_outbox_isr+0x1d0/0x204 [sprd_mailbox]
+[    9.967439]c0  sp : ffffffc010003e10
+[    9.967443]c0  x29: ffffffc010003e20 x28: ffffffc011c2f6c0-
+[    9.984918]c0  x27: ffffffc010e92e08 x26: 0000000000000001-
+[   10.140344]c0  x25: 0000000000000378 x24: ffffff80f4064130-
+[   10.145880]c0  x23: 0000000000000001 x22: ffffffc0091072c7-
+[   10.151418]c0  x21: ffffffc009107212 x20: 0000000000000005-
+[   10.156957]c0  x19: ffffff80f4064080 x18: ffffffc010005038-
+[   10.162494]c0  x17: 0000000000000000 x16: ffffffc010e6f844-
+[   10.168033]c0  x15: ffffffc0117abac7 x14: 000000000000003f-
+[   10.173571]c0  x13: ffff0000ffffff00 x12: ffff0a01ffffff10-
+[   10.179110]c0  x11: 0000000000000001 x10: 00000000ffffffff-
+[   10.184649]c0  x9 : ffffff80f40644a8 x8 : c366877097809900-
+[   10.190187]c0  x7 : 207273695f786f62 x6 : ffffffc011d62231-
+[   10.195726]c0  x5 : 0000000000000034 x4 : 000000000000000c-
+[   10.201265]c0  x3 : ffffffc010e9842c x2 : 0000000000000001-
+[   10.206803]c0  x1 : ffffffc010003e40 x0 : 0000000000000000-
+[   10.212343]c0  Call trace:
+[   10.215029]c0   mbox_chan_received_data+0x1c/0x88
+[   10.219705]c0   sprd_mbox_outbox_isr+0x1d0/0x204 [sprd_mailbox]
+[   10.225590]c0   __handle_irq_event_percpu+0x164/0x358
+[   10.230604]c0   handle_irq_event+0x60/0xd8
+[   10.234675]c0   handle_fasteoi_irq+0x128/0x32c
+[   10.239086]c0   __handle_domain_irq+0xa0/0x100
+[   10.243502]c0   efi_header_end+0xb8/0x15c
+[   10.247478]c0   el1_irq+0x104/0x200
+[   10.250945]c0   cpuidle_enter_state+0x158/0x2d8
+[   10.255440]c0   cpuidle_enter+0x38/0x50
+[   10.259253]c0   do_idle.llvm.10091284334483161164+0x1a4/0x294
+[   10.264963]c0   cpu_startup_entry+0x24/0x28
+[   10.269120]c0   kernel_init+0x0/0x29c
+[   10.272752]c0   start_kernel+0x0/0x418
+[   10.276468]c0   start_kernel+0x3a0/0x418
+[   10.280371]c0  Code: f90013f3 910043fd aa0003e9 f9400800 (f9401008)-
+[   10.286684]c0  ---[ end trace b868997a960c667a ]---
 
-On Tue, Jan 07, 2020 at 11:29:54AM +0100, Wolfram Sang wrote:
-> On Tue, Jan 07, 2020 at 11:06:56AM +0100, Julia Lawall wrote:
-> >=20
-> >=20
-> > On Tue, 7 Jan 2020, Maxime Ripard wrote:
-> >=20
-> > > The ptr_ret script script addresses a number of situations where we e=
-nd up
-> > > testing an error pointer, and if it's an error returning it, or retur=
-n 0
-> > > otherwise to transform it into a PTR_ERR_OR_ZERO call.
-> > >
-> > > So it will convert a block like this:
-> > >
-> > > if (IS_ERR(err))
-> > >     return PTR_ERR(err);
-> > >
-> > > return 0;
-> > >
-> > > into
-> > >
-> > > return PTR_ERR_OR_ZERO(err);
-> > >
-> > > While this is technically correct, it has a number of drawbacks. Firs=
-t, it
-> > > merges the error and success path, which will make it harder for a re=
-viewer
-> > > or reader to grasp.
-> > >
-> > > It's also more difficult to extend if we were to add some code betwee=
-n the
-> > > error check and the function return, making the author essentially re=
-vert
-> > > that patch before adding new lines, while it would have been a trivial
-> > > addition otherwise for the rewiever.
-> > >
-> > > Therefore, since that script is only about cosmetic in the first plac=
-e,
-> > > let's remove it since it's not worth it.
-> > >
-> > > Cc: Jani Nikula <jani.nikula@linux.intel.com>
-> > > Cc: Thierry Reding <thierry.reding@gmail.com>
-> > > Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
-> > > Cc: Mark Brown <broonie@kernel.org>
-> > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> >=20
-> > Acked-by: Julia Lawall <julia.lawall@inria.fr>
->=20
-> Convincing patch description, good catch!
->=20
-> Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Signed-off-by: Haidong Yao <haidong.yao@unisoc.com>
+---
+ drivers/mailbox/mailbox.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It looks like this patch was never applied, whose tree should it go
-through?
+diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
+index 3e7d4b20ab34..58697298a95f 100644
+--- a/drivers/mailbox/mailbox.c
++++ b/drivers/mailbox/mailbox.c
+@@ -152,7 +152,7 @@ static enum hrtimer_restart txdone_hrtimer(struct hrtimer *hrtimer)
+ void mbox_chan_received_data(struct mbox_chan *chan, void *mssg)
+ {
+ 	/* No buffering the received data */
+-	if (chan->cl->rx_callback)
++	if (chan->cl && chan->cl->rx_callback)
+ 		chan->cl->rx_callback(chan->cl, mssg);
+ }
+ EXPORT_SYMBOL_GPL(mbox_chan_received_data);
+-- 
+2.28.0
 
-Thanks!
-Maxime
-
---5hw66wsxl6qicpm2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9h4VwAKCRDj7w1vZxhR
-xZ0BAQD1ZXa/ItFHIo5NWZRARYGbuSbkRWYbcCsQVw+HHg7aEQD/RquZR/W23qaA
-8bVm4Koy2o1u3VAH53EEpY7lm2cs9wY=
-=/ffb
------END PGP SIGNATURE-----
-
---5hw66wsxl6qicpm2--
