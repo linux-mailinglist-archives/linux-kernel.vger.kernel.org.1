@@ -2,115 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C23F2DAEAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF902DAEAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729375AbgLOOOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 09:14:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728893AbgLOOOK (ORCPT
+        id S1728806AbgLOONw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 09:13:52 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:57132 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725890AbgLOONv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:14:10 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE65BC0617A7;
-        Tue, 15 Dec 2020 06:13:29 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id r5so21134665eda.12;
-        Tue, 15 Dec 2020 06:13:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IJYSjx8moRh9VFGJMpbfz9SoxxxRTBulQgPkLgClyoQ=;
-        b=gKkDnioL4mB09Jcb2ubVk7FW0XEFNq0bRPUHe0X020/PSIVQs/kXcbe5sC2CAqctcQ
-         JNV2u31v75fMYDVcPsICIzBOXGMSTnKtjXLKyOGivvwlpGKXLogS79gi+StO866amoID
-         u3pn4ayXHSe92UCI0zfcrg95p7wS5D/aXinVn3F+3vQWJg/Q1Qsi1cpN7+KcV/cdlV1q
-         8IWqUPMzhiHEqUAxG7A71BbtBYe+EFATmqalbTKqZ4Mme4j/Ks17amilCzxZAkYh9bkG
-         rcmv74l8hvhGFjfs50JHjHE5oFO3+N5OAJc2XPrgCQMt9dpZd1XyxMLgjmjtA35MG9Gc
-         XorQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IJYSjx8moRh9VFGJMpbfz9SoxxxRTBulQgPkLgClyoQ=;
-        b=P5iDzGuf48hrIQ+YA92/ilWYqzWjBFkqY9DvKp4ewi2OJgN31cluH3Lceu9Qx7svmf
-         /GDLyJoBatShm5/sHWzhmtLp5cZvloOv3zjeoO+7B6bMK/KRWzJgN1mrE0SP4dw0vrCn
-         uO1iqUyETmOdUQ2EJmO31SMWwQNoSOD1Y+c6d7hNy1PL0cU+mAenx3w7Kn2FyJX77Pm9
-         Wj8tthgPoWyOV2ztSK1/uRxq4t+M4Urm4V/3t3ALK13q8Opy/KW1cIpchV5z0opmyg08
-         WZCTyAUTCrbh06MBypGRGazf9exbWcHfr7wsKO5klCZIdE3ZQWhS19VDWjbpuI6+5/OT
-         UDMA==
-X-Gm-Message-State: AOAM532EoHqAx3FHGfDcD1pID5CU67Nv9FKivGFYOD8Qyn7UYxQrYO2A
-        jiWbfTInzCbTMK0NBUJcAVUF0OGTkRpgXV+SgER+cdBuLthegg==
-X-Google-Smtp-Source: ABdhPJzM115PkKKUs4/mpIyUWyvmmILF+Y6Y7uxFpH7K51vgdsYhdly3ZL/p7FmwavBknIcM/id0h1DX2NYkBYC8bg0=
-X-Received: by 2002:aa7:cf8f:: with SMTP id z15mr29724056edx.17.1608041608598;
- Tue, 15 Dec 2020 06:13:28 -0800 (PST)
+        Tue, 15 Dec 2020 09:13:51 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFE4ZYZ174028;
+        Tue, 15 Dec 2020 14:13:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=hQZopvQ/2R5bSnNeMOXl1coVQ2s6ZfV7/1lCPOpAMAw=;
+ b=izzUehyiEZhxfmQwPvuFtsamc/STFyB4jIuANkVlBeLEXtHaaIfcvHMfeiAj9MVU/7cq
+ oyWGl9pFOswDg6zz/1GVJm3EvwdUlj8+qaB7DP20e5mKmME4TXqkre/Mfu2zCTMXx8g/
+ hTLkUzbsbNck7HzslNWcJQygJ3YhiDYlx4f3pJVTTa7/NEdxnqGc4ojVRz96Gt0clDP4
+ WmRgpYnMQ0aqseAgYFi+khxDVP1U3Nuh/Hb/y16WamSqHyIDhNdFXXDziD0CguZP7Pkl
+ 34tE/+O5KseMiEzfi02VhiyQgadnCQVuH19cIkCcTHWW5V8HgpckBYO/iPmEhCnaNxD4 JA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 35cn9raqpk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Dec 2020 14:13:07 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFE5CNV045124;
+        Tue, 15 Dec 2020 14:13:06 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 35d7en2fwa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Dec 2020 14:13:06 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BFED6FQ022201;
+        Tue, 15 Dec 2020 14:13:06 GMT
+Received: from revolver.jebus.ca (/23.233.25.87)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 15 Dec 2020 06:13:04 -0800
+From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@google.com>
+Subject: [PATCH] mm/mmap: Don't unlock VMAs in remap_file_pages()
+Date:   Tue, 15 Dec 2020 09:13:00 -0500
+Message-Id: <20201215141300.1436976-1-Liam.Howlett@Oracle.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <1595180527-11320-8-git-send-email-amittomer25@gmail.com> <1599802143-6218-1-git-send-email-amittomer25@gmail.com>
-In-Reply-To: <1599802143-6218-1-git-send-email-amittomer25@gmail.com>
-From:   Amit Tomer <amittomer25@gmail.com>
-Date:   Tue, 15 Dec 2020 19:42:52 +0530
-Message-ID: <CABHD4K_3huTchnJC9ZHK==25ePh6TOb8FgYGvWpievcwTaaWYQ@mail.gmail.com>
-Subject: Re: [PATCH v7 07/10] dt-bindings: reset: s700: Add binding constants
- for mmc
-To:     Andre Przywara <andre.przywara@arm.com>,
-        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, sboyd@kernel.org
-Cc:     cristian.ciocaltea@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9835 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012150101
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9835 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012150101
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen ,
+do_mmap() will unlock the necessary VMAs.  There is also a bug in the
+loop which will evaluate as false and not unlock any VMAs anyways.
 
-Could you please help get this merged ?
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+---
+ mm/mmap.c | 19 -------------------
+ 1 file changed, 19 deletions(-)
 
-Thanks
--Amit
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 5c8b4485860de..008adf20611e5 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -3025,25 +3025,6 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
+ 
+ 	flags &= MAP_NONBLOCK;
+ 	flags |= MAP_SHARED | MAP_FIXED | MAP_POPULATE;
+-	if (vma->vm_flags & VM_LOCKED) {
+-		struct vm_area_struct *tmp;
+-		flags |= MAP_LOCKED;
+-
+-		/* drop PG_Mlocked flag for over-mapped range */
+-		for (tmp = vma; tmp->vm_start >= start + size;
+-				tmp = tmp->vm_next) {
+-			/*
+-			 * Split pmd and munlock page on the border
+-			 * of the range.
+-			 */
+-			vma_adjust_trans_huge(tmp, start, start + size, 0);
+-
+-			munlock_vma_pages_range(tmp,
+-					max(tmp->vm_start, start),
+-					min(tmp->vm_end, start + size));
+-		}
+-	}
+-
+ 	file = get_file(vma->vm_file);
+ 	ret = do_mmap(vma->vm_file, start, size,
+ 			prot, flags, pgoff, &populate, NULL);
+-- 
+2.28.0
 
-On Fri, Sep 11, 2020 at 10:59 AM Amit Singh Tomar <amittomer25@gmail.com> wrote:
->
-> This commit adds device tree binding reset constants for mmc controller
-> present on Actions S700 Soc.
->
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
-> ---
-> Changes since v6:
->         * No change.
-> Changes since v5:
->         * Added Mani's Reviewed-by: tag.
-> Changes since v4:
->         * No change.
-> Changes since v3:
->         * No change.
-> Changes since v2:
->         * No change.
-> Changes since v1:
->         * No change.
-> Changes since RFC:
->         * added Rob's acked-by tag
-> ---
->  include/dt-bindings/reset/actions,s700-reset.h | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/include/dt-bindings/reset/actions,s700-reset.h b/include/dt-bindings/reset/actions,s700-reset.h
-> index 5e3b16b8ef53..a3118de6d7aa 100644
-> --- a/include/dt-bindings/reset/actions,s700-reset.h
-> +++ b/include/dt-bindings/reset/actions,s700-reset.h
-> @@ -30,5 +30,8 @@
->  #define RESET_UART4                            20
->  #define RESET_UART5                            21
->  #define RESET_UART6                            22
-> +#define RESET_SD0                              23
-> +#define RESET_SD1                              24
-> +#define RESET_SD2                              25
->
->  #endif /* __DT_BINDINGS_ACTIONS_S700_RESET_H */
-> --
-> 2.7.4
->
