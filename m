@@ -2,133 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D0C2DAA3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0252DAA44
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727536AbgLOJj5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Dec 2020 04:39:57 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:51496 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727135AbgLOJjb (ORCPT
+        id S1728243AbgLOJki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 04:40:38 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:12572 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727767AbgLOJkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 04:39:31 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-17-jpEXzE1ONrSs8CdvF1T67g-1; Tue, 15 Dec 2020 09:37:52 +0000
-X-MC-Unique: jpEXzE1ONrSs8CdvF1T67g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 15 Dec 2020 09:37:53 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 15 Dec 2020 09:37:53 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Pavel Begunkov' <asml.silence@gmail.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-CC:     Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: RE: [PATCH v1 2/6] iov_iter: optimise bvec iov_iter_advance()
-Thread-Topic: [PATCH v1 2/6] iov_iter: optimise bvec iov_iter_advance()
-Thread-Index: AQHW0njgRO60UNrAz0qHNwIRx20dYqn35EKA
-Date:   Tue, 15 Dec 2020 09:37:53 +0000
-Message-ID: <262132648a8f4e7a9d1c79003ea74b3f@AcuMS.aculab.com>
-References: <cover.1607976425.git.asml.silence@gmail.com>
- <5c9c22dbeecad883ca29b31896c262a8d2a77132.1607976425.git.asml.silence@gmail.com>
-In-Reply-To: <5c9c22dbeecad883ca29b31896c262a8d2a77132.1607976425.git.asml.silence@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        Tue, 15 Dec 2020 04:40:17 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608025198; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=DZiZhxU+QmjBSyrstkdH+KF2DMyVDP0z9SD2r4wUhaY=; b=cvwYSzXED3dEtbYw/adcn19d/bHsskaSkkqCY5HFjn+B9/bC22bO70uHo0WkI+9HqYDhbcVS
+ yo3MAp1jrh3mW3zJROpfHUpcOywLzvGPevlEF4pwcPkpi+3uRkwHtD+5YU8+pxhFXbWIWHMq
+ mNWH/mNi+7mdFcbu5Ig8zytuvH4=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5fd8844d7342d6edfd94d4e3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Dec 2020 09:39:25
+ GMT
+Sender: manafm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5D04AC43463; Tue, 15 Dec 2020 09:39:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: manafm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9B9DAC433ED;
+        Tue, 15 Dec 2020 09:39:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9B9DAC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=manafm@codeaurora.org
+From:   Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Doug Anderson <dianders@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+Subject: [PATCH] arm64: dts: qcom: sc7180: Enable passive polling for cpu thermal zones
+Date:   Tue, 15 Dec 2020 15:09:10 +0530
+Message-Id: <1608025150-10779-1-git-send-email-manafm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov
-> Sent: 15 December 2020 00:20
-> 
-> iov_iter_advance() is heavily used, but implemented through generic
-> iteration. As bvecs have a specifically crafted advance() function, i.e.
-> bvec_iter_advance(), which is faster and slimmer, use it instead.
-> 
-> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> ---
->  lib/iov_iter.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-> index 1635111c5bd2..5b186dc2c9ea 100644
-> --- a/lib/iov_iter.c
-> +++ b/lib/iov_iter.c
-> @@ -1067,6 +1067,21 @@ static void pipe_advance(struct iov_iter *i, size_t size)
->  	pipe_truncate(i);
->  }
-> 
-> +static void iov_iter_bvec_advance(struct iov_iter *i, size_t size)
-> +{
-> +	struct bvec_iter bi;
-> +
-> +	bi.bi_size = i->count;
-> +	bi.bi_bvec_done = i->iov_offset;
-> +	bi.bi_idx = 0;
-> +	bvec_iter_advance(i->bvec, &bi, size);
-> +
-> +	i->bvec += bi.bi_idx;
-> +	i->nr_segs -= bi.bi_idx;
-> +	i->count = bi.bi_size;
-> +	i->iov_offset = bi.bi_bvec_done;
-> +}
-> +
->  void iov_iter_advance(struct iov_iter *i, size_t size)
->  {
->  	if (unlikely(iov_iter_is_pipe(i))) {
-> @@ -1077,6 +1092,10 @@ void iov_iter_advance(struct iov_iter *i, size_t size)
->  		i->count -= size;
->  		return;
->  	}
-> +	if (iov_iter_is_bvec(i)) {
-> +		iov_iter_bvec_advance(i, size);
-> +		return;
-> +	}
->  	iterate_and_advance(i, size, v, 0, 0, 0)
->  }
+Enable passive polling delay for cpu thermal zone for sc7180. It
+enables periodic thermal zone re-evaluation on post first trip
+temperature violation.
 
-This seems to add yet another comparison before what is probably
-the common case on an IOVEC (ie normal userspace buffer).
+Signed-off-by: Manaf Meethalavalappu Pallikunhi <manafm@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-Can't the call to bver_iter_advance be dropped into the 'advance'
-path for BVEC's inside iterate_and_advance?
-
-iterate_and_advance itself has three 'unlikely' conditional tests
-that may be mis-predicted taken before the 'likely' path.
-One is for DISCARD which is checked twice on the object I just
-looked at - the test in iov_iter_advance() is pointless.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 98050b3..79d0747 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -4355,7 +4355,7 @@
+ 
+ 	thermal-zones {
+ 		cpu0-thermal {
+-			polling-delay-passive = <0>;
++			polling-delay-passive = <50>;
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 1>;
+@@ -4403,7 +4403,7 @@
+ 		};
+ 
+ 		cpu1-thermal {
+-			polling-delay-passive = <0>;
++			polling-delay-passive = <50>;
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 2>;
+@@ -4451,7 +4451,7 @@
+ 		};
+ 
+ 		cpu2-thermal {
+-			polling-delay-passive = <0>;
++			polling-delay-passive = <50>;
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 3>;
+@@ -4499,7 +4499,7 @@
+ 		};
+ 
+ 		cpu3-thermal {
+-			polling-delay-passive = <0>;
++			polling-delay-passive = <50>;
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 4>;
+@@ -4547,7 +4547,7 @@
+ 		};
+ 
+ 		cpu4-thermal {
+-			polling-delay-passive = <0>;
++			polling-delay-passive = <50>;
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 5>;
+@@ -4595,7 +4595,7 @@
+ 		};
+ 
+ 		cpu5-thermal {
+-			polling-delay-passive = <0>;
++			polling-delay-passive = <50>;
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 6>;
+@@ -4643,7 +4643,7 @@
+ 		};
+ 
+ 		cpu6-thermal {
+-			polling-delay-passive = <0>;
++			polling-delay-passive = <50>;
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 9>;
+@@ -4683,7 +4683,7 @@
+ 		};
+ 
+ 		cpu7-thermal {
+-			polling-delay-passive = <0>;
++			polling-delay-passive = <50>;
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 10>;
+@@ -4723,7 +4723,7 @@
+ 		};
+ 
+ 		cpu8-thermal {
+-			polling-delay-passive = <0>;
++			polling-delay-passive = <50>;
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 11>;
+@@ -4763,7 +4763,7 @@
+ 		};
+ 
+ 		cpu9-thermal {
+-			polling-delay-passive = <0>;
++			polling-delay-passive = <50>;
+ 			polling-delay = <0>;
+ 
+ 			thermal-sensors = <&tsens0 12>;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
