@@ -2,109 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE33D2DB4F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 21:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7162DB4F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 21:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727337AbgLOUUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 15:20:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
+        id S1727349AbgLOUU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 15:20:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbgLOUUc (ORCPT
+        with ESMTP id S1725776AbgLOUUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 15:20:32 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C19EC061257
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 12:19:52 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id bj5so11643409plb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 12:19:52 -0800 (PST)
+        Tue, 15 Dec 2020 15:20:52 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84EC5C0611C5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 12:20:10 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id h19so15610934qtq.13
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 12:20:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=fOdDDR9wzzDqp5Uo0kLupRw2fi7nNuys7Q0YoKhDgNU=;
-        b=mALWvE1c7elqMy6QvAPNVlcB92JxN5YoHlIpY5mdJdtsxE6Vk1lu0O5lQQoDndfpHV
-         C+ztrzX26LyiywLY3CjmQEakT5yC/k5JyXnASa8io27pjRf8ada55mWrgQVHmSffZjlv
-         wmpNUVrFM6zC+Atz2y+HDWiIHqPWXr7enIiAg=
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i8ZGaSrR1BfUaJWas0Ys/1ejHT5BAdJYhFIQ4DVbHAQ=;
+        b=WOekxWNcUDXH9d0xrrNdLIwgr7eTQf2BjBlxs1cY86mrh0cFUT3XozUrtugVygXSLh
+         Paj7cDEFmqMmR2z6CGhKwYhnEJmUiBGWwfGT6p4jo5N4NTi2+cSod6rd057GBgyDhraH
+         iI0cbCVcvWhFAYMKnmDDfjK4ZErypAxxJAGiE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=fOdDDR9wzzDqp5Uo0kLupRw2fi7nNuys7Q0YoKhDgNU=;
-        b=Bi4oYIqc5dVe8CbHSVC/SPDUO2wW4L2Tt1jOzqQyBpAGgULXRCalAftPSQ35ZSZIgO
-         /AZtTf0ubNiwLgvSg7AuHwLjrWQVoy1OV5xMsarH6NKPVm5bGeJeBVedACfQ9kmMtBTq
-         r3iCDFH9dC18gFd4JS/zmsWA0A1sxREtAoQo0g9Z0gfLs6tknskbTRloMx/yF02zagJZ
-         9krRjQFfQlCfCBrHqltjEM97pvHY92I4S/h3zAQgRlT5vpCt8+fG0+wNHeXbEwMSqdnY
-         K7mP7+IpPh/dabWSHS8U1HNYi9essJlTcD3f1h9B+/8CezsNXUMIykGCwU3t8dhrBaxt
-         epSw==
-X-Gm-Message-State: AOAM533WOFgyZLy8gCVtUUwPiCmWyPfBVMcZlW5+CIcUbtRM6i7t8Tn6
-        +5yMAYG9k54ZDqE67NsSQTOupQ==
-X-Google-Smtp-Source: ABdhPJwaRA0FFRlawRbz5DtEOLWO9wqdCR5Tz0VgkcJgaN7rnj7SzzxD0RIsqY8iltF+1sqYfO60XA==
-X-Received: by 2002:a17:90a:c592:: with SMTP id l18mr521766pjt.228.1608063591883;
-        Tue, 15 Dec 2020 12:19:51 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v6sm26579863pgk.2.2020.12.15.12.19.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 12:19:51 -0800 (PST)
-Date:   Tue, 15 Dec 2020 12:19:50 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Kees Cook <keescook@chromium.org>,
-        Vasile-Laurentiu Stanimir 
-        <vasile-laurentiu.stanimir@windriver.com>,
-        WeiXiong Liao <gmpy.liaowx@gmail.com>
-Subject: [GIT PULL] pstore updates for v5.11-rc1
-Message-ID: <202012151219.126DB90@keescook>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i8ZGaSrR1BfUaJWas0Ys/1ejHT5BAdJYhFIQ4DVbHAQ=;
+        b=dmEuY79Z7BUVhFqowcJsVv2u8QCbG0Dviv9I+cm7IypDrEYfPwd51ErkpRSvXY6XJe
+         3yy8FhJ7RmzHx+1XR79gZc8HmOQo4xi4sZysD/Z/0jggTuR1/rJL/IMcZe089CZFTeGF
+         lVFoPctwbaoM2vtCUxdCBSbNwDLyvmn4+Qmbk4HXFXlbqdQQCP5o8v5F+1HvWDeKrfiQ
+         TpIpNvG/w9NXAUnbmQDzhfTV4doWLirs4VwsU2SGb6VV7FRL5CXbRNjZqj0l6zn8EqvE
+         1sktUqJmTh8KUxU+26hIKiLaBs0qw06H0aniWwLgJHafTDcv+sTWs02U07kOf/PJ8s6y
+         l45A==
+X-Gm-Message-State: AOAM532XgwpygYk9g1XmOfO3su0wsiS05lXVC1KrHGIiSf0hnZh8VaZd
+        3I3dOMD6rdvZiF3oKnU3mLyA0U9goST8p+lqbkuTuA==
+X-Google-Smtp-Source: ABdhPJzOQqCtqr//vCV3NGWMhK5oN0kSJ7tiYFivZcl/0pwk6gVVGudHENRuV1PRjXQBhBjsLwynmU2D/ny3cDrLPh8=
+X-Received: by 2002:ac8:1386:: with SMTP id h6mr39463029qtj.95.1608063609754;
+ Tue, 15 Dec 2020 12:20:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20201215132024.13356-1-broonie@kernel.org>
+In-Reply-To: <20201215132024.13356-1-broonie@kernel.org>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Wed, 16 Dec 2020 01:49:58 +0530
+Message-ID: <CAMty3ZDBWAJG3cPYnYtZY4ReOEO6iF5gscs+BLJEQ5WftawmQw@mail.gmail.com>
+Subject: Re: [PATCH] regulator: pf8x00: Use specific compatible strings for devices
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Adrien Grassein <adrien.grassein@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, Dec 15, 2020 at 6:50 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> The pf8x00 driver supports three devices, the DT compatible strings
+> and I2C IDs should enumerate these specifically rather than using a
+> wildcard so that we don't collide with anything incompatible in the
+> same ID range in the future and so that we can handle any software
+> visible differences between the variants we find.
 
-Please pull these pstore updates for v5.11-rc1.
+Thanks for the patch.
 
-Thanks!
+>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  .../bindings/regulator/nxp,pf8x00-regulator.yaml          | 6 ++++--
+>  drivers/regulator/pf8x00-regulator.c                      | 8 ++++++--
 
--Kees
+I think the bindings patch would be separate? otherwise,
 
-The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
-
-  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/pstore-v5.11-rc1
-
-for you to fetch changes up to 26fecbf7602dd69b649914e61526bd67c557fece:
-
-  pstore: Move kmsg_bytes default into Kconfig (2020-12-01 12:09:17 -0800)
-
-----------------------------------------------------------------
-pstore updates for v5.11-rc1
-
-- Clean up unused but exposed API (Christoph Hellwig)
-- Provide KCONFIG for default size of kmsg buffer (Vasile-Laurentiu Stanimir)
-
-----------------------------------------------------------------
-Christoph Hellwig (3):
-      pstore/zone: cap the maximum device size
-      pstore/blk: update the command line example
-      pstore/blk: remove {un,}register_pstore_blk
-
-Vasile-Laurentiu Stanimir (1):
-      pstore: Move kmsg_bytes default into Kconfig
-
- Documentation/admin-guide/pstore-blk.rst |  7 +--
- fs/pstore/Kconfig                        |  8 +++
- fs/pstore/blk.c                          | 83 ++++----------------------------
- fs/pstore/inode.c                        |  2 +-
- fs/pstore/internal.h                     |  1 -
- fs/pstore/platform.c                     |  2 +-
- fs/pstore/zone.c                         |  4 ++
- include/linux/pstore_blk.h               | 42 ----------------
- 8 files changed, 26 insertions(+), 123 deletions(-)
-
--- 
-Kees Cook
+Reviewed-by: Jagan Teki <jagan@amarulasolutions.com>
