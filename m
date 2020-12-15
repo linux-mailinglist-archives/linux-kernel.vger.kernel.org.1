@@ -2,93 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6142DB3B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C4A2DB3B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731362AbgLOSZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:25:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731322AbgLOSYy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:24:54 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE35EC06179C;
-        Tue, 15 Dec 2020 10:24:13 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id g20so10647866plo.2;
-        Tue, 15 Dec 2020 10:24:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wyTce4BwMKT40r8Wh7Iv+0YuAsPNo6CPnJs7cfZJbrw=;
-        b=PqHkAGeC5Gq6KLzOEoBPEo8HkJEoQcZceYFAx2H5x7IgoeNZtsSjI8+jlUYJHJfvKF
-         rLUIfGxJnvHDkf8MLwUzfYvavd2MxCoSv0M111tZf63YyTZUBcyH52zNGZMHpaO+2GmZ
-         +VrrydM3s1B+0ltY/td8t8ns8i86/2lyNM9ahAoeaisH+PpP0eMX0yvyGMQPQMdloXJ4
-         US6p7nJjJeNCtGXHn3WEair0tpksDjiLidBPZ3ibNBDQZ1OGuzapuAOhkmUJwy4ZjpCx
-         sM0WgCD2hNdbxQO4pjN7+mhBMu8h/0EM/ZRGj1nX4M8BOKqa5SeLNavrfXMmmVg9gYnf
-         XxdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wyTce4BwMKT40r8Wh7Iv+0YuAsPNo6CPnJs7cfZJbrw=;
-        b=s6V2qoSahLEqb3eKGqcVWwhlQXWyteQmS/H2jmXF/kriCdgGNIn6sTTQLJN7UqyNpJ
-         zMmhTlwcO/Wjcii8z4bJ55rK2zCHU/Yz0QnOBvj+SvQWCOoKuYUfrytku5UoLPJxOu6Y
-         ZMQUBQXXgAwHKpm00ajBqlTBNAiQn3K78gyqAtIu14NweBelfqM92qRIQzXEKrWqHxle
-         P7PMJZzZqdpB3tyCCHwOIfnrUdbK+vxW3z0APQNxBbhgKyjJphjCsNzkmDetbWu+HwW6
-         RSUQ6jw+9z0i1snBskKOMYAOJisq6w3IwrI1OZUYjPgj+nWIcFVlF1/Uxspi1nd8vRaV
-         E9WQ==
-X-Gm-Message-State: AOAM533+gCGMS5st3CoD/VUMi3qLT6A4H8R8iK2dl4Eq2uXzzruXAsfa
-        cBgJbECpY9PrODms3tOOv3Z0bAy0eGg=
-X-Google-Smtp-Source: ABdhPJxx8zGOoao0n+Rf6TGxJgQdoQTLTClY1/O/Hv91zeCPGUY41/Oqqpsa0Kg6d+F+yy2tltxKGg==
-X-Received: by 2002:a17:90a:7c44:: with SMTP id e4mr154021pjl.138.1608056653515;
-        Tue, 15 Dec 2020 10:24:13 -0800 (PST)
-Received: from [10.230.29.166] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id m15sm25714105pfa.72.2020.12.15.10.24.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 10:24:12 -0800 (PST)
-Subject: Re: [PATCH V2 2/2] soc: bcm: add PM driver for Broadcom's PMB
-To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20201214180743.14584-1-zajec5@gmail.com>
- <20201214180743.14584-3-zajec5@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <4c80450f-cf38-190f-0a0f-83f8f116b373@gmail.com>
-Date:   Tue, 15 Dec 2020 10:24:10 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.5.1
+        id S1731460AbgLOSZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 13:25:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731331AbgLOSZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 13:25:01 -0500
+Date:   Tue, 15 Dec 2020 10:24:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608056660;
+        bh=GDa3319reRuboH7I5cHX8dT94Nl+12UYMZ0JqdyQZPA=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=M8X5oJz2ki6Brx2TMGHqkOKMuXxiDOminJZhY9P/OPDAziafR0MU66M7d3jOGv+kJ
+         lGsL7zZiZvvNJgZ1ZSbCMYai67t4LANTCcsQ4q04miK+/cyC5WuoN6S1hgVPvGQ62L
+         kgedjTMiegBNs1FQiXGaPzvKI5EeivL2izmp6G/E7MVRevfuhZmTBg7KftBrQYFH6y
+         f0kMeo6DbW35RrxPWqXHqEiW0Evh73hgw0oi6ifplrkFe8KUZbj9VqC/GMyzUphK1Z
+         wUnZBW1aCzfyWpQ5U/TXPXEOGVUDPzhb0v/jaTamR6d0oEu5D0NJN63sFOZCElM2HL
+         sVBLDv1ayiETw==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH tip/core/rcu 3/4] rcutorture: Make grace-period kthread
+ report match RCU flavor being tested
+Message-ID: <20201215182419.GD2657@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201105233900.GA20676@paulmck-ThinkPad-P72>
+ <20201105233933.20748-3-paulmck@kernel.org>
+ <CAMuHMdXjUxfp0h=TiwNoZJUHrSD4sDwYEbuqNR4rcWSRFCjUtw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201214180743.14584-3-zajec5@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXjUxfp0h=TiwNoZJUHrSD4sDwYEbuqNR4rcWSRFCjUtw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 15, 2020 at 09:40:26AM +0100, Geert Uytterhoeven wrote:
+> Hi Paul,
 
+Hello, Geert, and thank you for looking this over!
 
-On 12/14/2020 10:07 AM, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+> On Fri, Nov 6, 2020 at 12:40 AM <paulmck@kernel.org> wrote:
+> >
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> >
+> > At the end of the test and after rcu_torture_writer() stalls, rcutorture
+> > invokes show_rcu_gp_kthreads() in order to dump out information on the
+> > RCU grace-period kthread.  This makes a lot of sense when testing vanilla
+> > RCU, but not so much for the other flavors.  This commit therefore allows
+> > per-flavor kthread-dump functions to be specified.
+> >
+> > [ paulmck: Apply feedback from kernel test robot <lkp@intel.com>. ]
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > 
-> PMB originally comes from BCM63138 but can be also found on many other
-> chipsets (e.g. BCM4908). It's needed to power on and off SoC blocks like
-> PCIe, SATA, USB.
+> Thanks for your patch, which is now commit 27c0f1448389baf7
+> ("rcutorture: Make grace-period kthread report match RCU flavor being
+> tested").
 > 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> > --- a/kernel/rcu/rcu.h
+> > +++ b/kernel/rcu/rcu.h
+> > @@ -533,4 +533,20 @@ static inline bool rcu_is_nocb_cpu(int cpu) { return false; }
+> >  static inline void rcu_bind_current_to_nocb(void) { }
+> >  #endif
+> >
+> > +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RCU)
+> > +void show_rcu_tasks_classic_gp_kthread(void);
+> > +#else
+> > +static inline void show_rcu_tasks_classic_gp_kthread(void) {}
+> > +#endif
+> > +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
+> > +void show_rcu_tasks_rude_gp_kthread(void);
+> > +#else
+> > +static inline void show_rcu_tasks_rude_gp_kthread(void) {}
+> > +#endif
+> 
+> The #ifdef expression does not match the one for the implementation
+> below.
 
-From a driver perspective this looks good to me and thanks for putting
-it under drivers/soc/bcm/bcm63xx. Ulf, Kevin, I would need an Ack from
-you so I can carry this through the Broadcom SoCs pull requests for
-v5.12, thanks!
--- 
-Florian
+That does sound like something I would do...
+
+The definition of show_rcu_tasks_rude_gp_kthread() must be provided
+elsewhere if !TINY_RCU && TASKS_RUDE_RCU, correct?
+
+> > --- a/kernel/rcu/rcutorture.c
+> > +++ b/kernel/rcu/rcutorture.c
+> 
+> > @@ -762,6 +765,7 @@ static struct rcu_torture_ops tasks_rude_ops = {
+> >         .exp_sync       = synchronize_rcu_tasks_rude,
+> >         .call           = call_rcu_tasks_rude,
+> >         .cb_barrier     = rcu_barrier_tasks_rude,
+> > +       .gp_kthread_dbg = show_rcu_tasks_rude_gp_kthread,
+> 
+> Perhaps you just want to have a NULL pointer for the dummy case, instead
+> of instantiating a dummy static inline function and taking its address?
+
+You mean something like this in kernel/rcu/rcu.h?
+
+#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
+void show_rcu_tasks_rude_gp_kthread(void);
+#else
+#define show_rcu_tasks_rude_gp_kthread NULL
+#endif
+
+This does looks better to me, and at first glance would work.
+
+This patch is already in mainline, but if the second approach above
+works, I would welcome a patch making that change.
+
+> >         .fqs            = NULL,
+> >         .stats          = NULL,
+> >         .irq_capable    = 1,
+> 
+> 
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> 
+> > @@ -696,16 +696,14 @@ static int __init rcu_spawn_tasks_rude_kthread(void)
+> >  }
+> >  core_initcall(rcu_spawn_tasks_rude_kthread);
+> >
+> > -#ifndef CONFIG_TINY_RCU
+> > -static void show_rcu_tasks_rude_gp_kthread(void)
+> > +#if !defined(CONFIG_TINY_RCU)
+> 
+> Different #ifdef expression.
+
+I don't believe that it is.  The above supplies the !TINY_RCU, and a
+prior #ifdef supplies the TASKS_RUDE_RCU.  So what am I missing here?
+
+> > +void show_rcu_tasks_rude_gp_kthread(void)
+> 
+> Do you really want to define a non-static function...
+
+Yes, because its user is in kernel/rcu/rcutorture.c, which is in
+a separate translation unit, so it must be non-static.  The earlier
+version instead only called it from this file, but that turned out to
+produce confusing output containing information for flavors of RCU that
+were not under test.  So this commit exported it to allow rcutorture to
+complain about only that RCU flavor being tested.
+
+> >  {
+> >         show_rcu_tasks_generic_gp_kthread(&rcu_tasks_rude, "");
+> >  }
+> > -#endif /* #ifndef CONFIG_TINY_RCU */
+> > -
+> > -#else /* #ifdef CONFIG_TASKS_RUDE_RCU */
+> > -static void show_rcu_tasks_rude_gp_kthread(void) {}
+> > -#endif /* #else #ifdef CONFIG_TASKS_RUDE_RCU */
+> > +EXPORT_SYMBOL_GPL(show_rcu_tasks_rude_gp_kthread);
+> 
+> ... and export its symbol, from a header file?
+> I know the file is included only once.
+
+Because kernel/rcu/rcutorture.c can be built as a module, it must be
+exported.  I agree that it is unusual to export from a .h file, but the
+single inclusion is intentional.  There are several other .h files in
+kernel/rcu that are also split out to group similar functionality while
+still allowing the compiler to inline to its heart's content.
+
+Yes, this is a bit unconventional, but it has been this way for more
+than a decade, at least for tree_plugin.h.
+
+Again, please let me know if I am missing something.
+
+							Thanx, Paul
+
+> > +#endif // !defined(CONFIG_TINY_RCU)
+> > +#endif /* #ifdef CONFIG_TASKS_RUDE_RCU */
+> >
+> >  ////////////////////////////////////////////////////////////////////////
+> >  //
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
