@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A032DAA18
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E22C82DAA1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgLOJ3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 04:29:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726945AbgLOJ2p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 04:28:45 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE54C06179C;
-        Tue, 15 Dec 2020 01:28:05 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id jx16so26625853ejb.10;
-        Tue, 15 Dec 2020 01:28:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iYBE2cZXqVlKV0i+AsU6Eo5VZfZrVHQ68uczVmC/4KA=;
-        b=BD3UYVIFn+8VSuYngyVAd9DP8rpa7tMaMWToHZ5GGYXEeNGTYs6/3YSOJ0/BUR9KFs
-         OgjbtnfABGdR9TKMPEiKzDJrzMZi1hRV5a6rij83rAU50zU5HfhUyIpeTH1uRsL/xhjS
-         j372eGkNkWH9Z3ynBdzV8+V/6XjMt/prUBn1VXFcLJ6tkfdQxTfXNu5dLDJ5+Tnumqqb
-         mfAUJEG2aN6uBPjVWn/T2nUxq71A0lUnQLHgpKaPQW72uRj9uXHWi/EOvC03Gw0jDTPa
-         SiHqs1QodTSpSFZ8TzHaALPEOjC1pjkxWUcyEFshlik0l9TMP6faGqrKV1RHvcsB+RmI
-         9/hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iYBE2cZXqVlKV0i+AsU6Eo5VZfZrVHQ68uczVmC/4KA=;
-        b=Tsp1FIiEFApxc86oYAbCHkuSb33BoTo2jnyNgzWFbUmwqrzPsE6v7rhX51VtsytzV7
-         h+4jWJQg2nLp6zNm4ntKSlbKeAhPQ2jdDy+Ap/nmdcpGiEcAOdSKbwyQzdGYw8J0TxPQ
-         2OcS2c9S1XP+al45Oa6wGwMNRELWCHYpttdIXUqVVz54F1Itf80lR7thSqHs+G+NGAcR
-         /COhki8tquehKXvsUknOkLa6iubXSHhn2/o/2fDgLB4ZX9A9d0Es9Fe/1zmcIu9/XKEx
-         2Hsesg6iGIGQvSk4GGwry62GLLkZZECYiIcWQPfZrqYDSmbRq0hZf7NeDK1mbp8alvSw
-         JlGw==
-X-Gm-Message-State: AOAM530mO88n3KnLrW/PaOTyBLZrir14Em15T66tccfbGQH/USbLBQCi
-        5v8DLxC/+HWbc5Zq67pLijs=
-X-Google-Smtp-Source: ABdhPJzRShezHeWBdVSKEXASOHVJUSGh2GD3hSlsswKkuPss0Um9LKy3Fskmbzk1turFYU5FLGacfQ==
-X-Received: by 2002:a17:907:2131:: with SMTP id qo17mr25708954ejb.546.1608024484248;
-        Tue, 15 Dec 2020 01:28:04 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id f18sm17821450edt.60.2020.12.15.01.28.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 15 Dec 2020 01:28:03 -0800 (PST)
-Message-ID: <410bf2a27978abb74ba41bc9f9198dcf85636b3c.camel@gmail.com>
-Subject: Re: [PATCH v4 5/6] scsi: ufs: Cleanup WB buffer flush toggle
- implementation
-From:   Bean Huo <huobean@gmail.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
-        tomas.winkler@intel.com, cang@codeaurora.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 15 Dec 2020 10:28:02 +0100
-In-Reply-To: <1608023234.10163.19.camel@mtkswgap22>
-References: <20201211140035.20016-1-huobean@gmail.com>
-         <20201211140035.20016-6-huobean@gmail.com>
-         <1608023234.10163.19.camel@mtkswgap22>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1727783AbgLOJaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 04:30:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726901AbgLOJ25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 04:28:57 -0500
+Date:   Tue, 15 Dec 2020 10:29:19 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1608024495;
+        bh=4db6rhH1u24ZEgfMyj0jqs+mCmiFfyetZ+tSyhoTcdc=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uNSrTGjOxMdsPE5HyNBe/xi0pujkUPYLIB5WGHAOdac/ga6cLQ4hhYNTc1CEb5dek
+         tpxS4/Hm58aGU+3ilwPATiBdrcCZvpxfu+Rl2SGKzNWzZobBxAhY05JVWKVlzS2Aru
+         e9oY60D5EMtadt/c4dejaTOqJPPmEDlVKtb484CA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 0/2] 5.10.1-rc1 review
+Message-ID: <X9iB76jgh/WeLVDI@kroah.com>
+References: <20201214170452.563016590@linuxfoundation.org>
+ <a1bff7f4-f6e9-506c-2c9f-5e7feba90acb@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a1bff7f4-f6e9-506c-2c9f-5e7feba90acb@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-15 at 17:07 +0800, Stanley Chu wrote:
-> >        if (ret) {
-> > -             dev_warn(hba->dev, "%s: WB - buf flush disable failed
-> > %d\n",
-> > -                      __func__, ret);
-> > -     } else {
-> > -             hba->dev_info.wb_buf_flush_enabled = false;
-> > -             dev_dbg(hba->dev, "WB - Flush disabled: %d\n", ret);
-> > +             dev_err(hba->dev, "%s WB-Buf Flush %s failed %d\n",
-> > __func__,
-> > +                     enable ? "enable" : "disable", ret);
-> > +             goto out;
-> >        }
-> >   
-> > +     if (enable)
-> > +             hba->dev_info.wb_buf_flush_enabled = true;
-> > +     else
-> > +             hba->dev_info.wb_buf_flush_enabled = false;
+On Tue, Dec 15, 2020 at 09:20:26AM +0000, Jon Hunter wrote:
+> Hi Greg,
 > 
-> Perhaps this could be simpler as below?
+> On 14/12/2020 17:06, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.1 release.
+> > There are 2 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Monday, 14 Dec 2020 18:04:42 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.1-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
 > 
-> hba->dev_info.wb_buf_flush_enabled = enable;
+> 
+> Test results for stable-v5.10:
+>     15 builds:	15 pass, 0 fail
+>     26 boots:	26 pass, 0 fail
+>     64 tests:	63 pass, 1 fail
+> 
+> Linux version:	5.10.1-g841fca5a32cc
+> Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+>                 tegra194-p2972-0000, tegra20-ventana,
+>                 tegra210-p2371-2180, tegra210-p3450-0000,
+>                 tegra30-cardhu-a04
+> 
+> Test failures:	tegra194-p2972-0000: boot.py
+> 
+> 
+> Some changes in v5.10 exposed a minor issue in the kernel that can cause
+> a blank line warning to be seen. The above test is failing due to this
+> blank warning. Thierry has posted a fix for this [0] and should be
+> merged for v5.11. It was not tagged for stable, but if you OK to pull
+> this in once in the mainline I can send a request. Otherwise all looks
+> good, so ...
+> 
+> Tested-by: Jon Hunter <jonathanh@nvidia.com>
 
-Thanks, will be changed in next version.
+Thanks for testing this, and yes, I'll be glad to take this once it hits
+Linus's tree, just let me know the git commit id of it there.
 
-Bean
+thanks,
 
+greg k-h
