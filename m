@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81712DA5ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:01:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F304D2DA5F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbgLOCB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:01:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725812AbgLOCAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:00:48 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607997608;
-        bh=whyvOZa/FvuTZBvs1uWXg/cw/gD48NQTuy46h6DTxXw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=NCDMxWeXChalOpVpEPMaZjId6SAtoWEab33fp+o4nMbv1DRk2eAorcnQDFS6IQ6LQ
-         q7Wk43qaDk0rgsuvq9hp6wRTnvqkuNXmZ1AUTgAEM/G6ucwoed1cVFcS8GC7JtN6Ze
-         LovOoWySPgwhQCD9A2+XZdrZUBfeyt8nsmDcNleM7E9JGxVKSCU2Bkb93L2GFiGuGE
-         X+njbuyO9bqaQynzSzOjBGvnjiJyrCLtOKWOU9Z2Tpxfp+LqSyej4gt6D8uoNobAys
-         tyL1Kt3QIk+sCfpb9om8c1xEXPeWwtcUEAXuIozBvKS2sh7p3PMhkCiLXgPCrBjlbM
-         hK6qFFtzm8LYg==
+        id S1726062AbgLOCDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:03:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbgLOCDD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:03:03 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB60C061793
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:02:23 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id w13so35291965lfd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:02:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w6VR7BMk8sGNVAqJdWbIyj8uJ/cTJrWrPZLJ1YvbN/4=;
+        b=f2A2ulXY38NAFQ+7xMPn25y/vehQjJbaaQEGIXwzDA/TJCPEyZaUBg3iH4bURFckTz
+         h3XsyBZwNUum3P/3tdJR+BniB7ld8LyjqCMCOazbbI2wTIvp2B9Es393YZlv47LiSjwV
+         LpEOzhYJZNpy/cX6nzyQyWXpBSHN+l26Jlazc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w6VR7BMk8sGNVAqJdWbIyj8uJ/cTJrWrPZLJ1YvbN/4=;
+        b=Dr1IeDhpJQ1eKDdnBNxcv99MNc9u+nCJ7rueGhicb0B08qQgThrp4U9yamje42HAF3
+         M49Nrp9z81hIQo2CerYZ9f9+HQvf21XAB2w19jZiHnwn4W+YYNlYJW0/RE6kHcyrUoLI
+         /3IyjsPJag/kmtcVAQGziMeqwWmMww72YXKRN1voC1yOS+zvfUVdHVRzzzmDu5U8AP+u
+         XAbeKuK4UC0aBBVaUD/kM0pImzB39tqxuejmO6T0dqzh5q6feKwlypTXXRX5yPCtpj0G
+         ++xdk4fmhuXqhc+HYqCNFRp8S0ng4Pa0e303bP9n7N0gPPG4q+CHdcokUwi1MZ9u8lU6
+         wFQw==
+X-Gm-Message-State: AOAM530aQ0e5ox1657KzEtiqIGFrtoHV8mHMFyY9QHay1XCEKiModZp8
+        flI+RVPlAorsgNMvMxORIKNEgI4dUwqpUA==
+X-Google-Smtp-Source: ABdhPJwqCMTV154AKj//Roc6h2qyg6rRM15hwBSI6QPWuRPr/lANgUSBPlxiRDF43bl8y1QKa/S3ag==
+X-Received: by 2002:a19:5f59:: with SMTP id a25mr11554250lfj.310.1607997741353;
+        Mon, 14 Dec 2020 18:02:21 -0800 (PST)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id b3sm34605lff.190.2020.12.14.18.02.19
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Dec 2020 18:02:20 -0800 (PST)
+Received: by mail-lf1-f47.google.com with SMTP id o19so9678468lfo.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:02:19 -0800 (PST)
+X-Received: by 2002:a2e:6f17:: with SMTP id k23mr11842790ljc.411.1607997739622;
+ Mon, 14 Dec 2020 18:02:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCHv6 net-next 0/3] Add devlink and devlink health reporters to 
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160799760815.15807.11950025011847625319.git-patchwork-notify@kernel.org>
-Date:   Tue, 15 Dec 2020 02:00:08 +0000
-References: <20201211062526.2302643-1-george.cherian@marvell.com>
-In-Reply-To: <20201211062526.2302643-1-george.cherian@marvell.com>
-To:     George Cherian <george.cherian@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net, sgoutham@marvell.com,
-        lcherian@marvell.com, gakula@marvell.com,
-        willemdebruijn.kernel@gmail.com, saeed@kernel.org, jiri@resnulli.us
+References: <160797732939.10793.9152151866806316627.tglx@nanos> <160797733303.10793.16327860918275449762.tglx@nanos>
+In-Reply-To: <160797733303.10793.16327860918275449762.tglx@nanos>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 14 Dec 2020 18:02:03 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh-Br8BKJ3rfdq54HVYv30wjQeV63-k_9Q-j2FfwyzTHg@mail.gmail.com>
+Message-ID: <CAHk-=wh-Br8BKJ3rfdq54HVYv30wjQeV63-k_9Q-j2FfwyzTHg@mail.gmail.com>
+Subject: Re: [GIT pull] irq/core for v5.11-rc1
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Mon, Dec 14, 2020 at 12:25 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-core-2020-12-14
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+What?
 
-On Fri, 11 Dec 2020 11:55:23 +0530 you wrote:
-> Add basic devlink and devlink health reporters.
-> Devlink health reporters are added for NPA block.
-> 
-> Address Jakub's comment to add devlink support for error reporting.
-> https://www.spinics.net/lists/netdev/msg670712.html
-> 
-> For now, I have dropped the NIX block health reporters.
-> This series attempts to add health reporters only for the NPA block.
-> As per Jakub's suggestion separate reporters per event is used and also
-> got rid of the counters.
-> 
-> [...]
+This is completely broken, and doesn't even build.
 
-Here is the summary with links:
-  - [PATCHv6,net-next,1/3] octeontx2-af: Add devlink suppoort to af driver
-    https://git.kernel.org/netdev/net-next/c/fae06da4f261
-  - [2/3] octeontx2-af: Add devlink health reporters for NPA
-    https://git.kernel.org/netdev/net-next/c/f1168d1e207c
-  - [3/3] docs: octeontx2: Add Documentation for NPA health reporters
-    https://git.kernel.org/netdev/net-next/c/80b9414832a1
+In particular, look at commit a07d244f00de ("genirq: Move
+irq_set_lockdep_class() to core"). Look at the EXPORT_SYMBOL_GPL().
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+How did this happen? Usually the -tip pull requests don't have glaring
+problems like this.
 
-
+               Linus
