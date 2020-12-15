@@ -2,61 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8551A2DB373
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDFD2DB37C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731446AbgLOSQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:16:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35144 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731353AbgLOSPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:15:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C03FEAE5C;
-        Tue, 15 Dec 2020 18:15:11 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8551DDA7C3; Tue, 15 Dec 2020 19:13:32 +0100 (CET)
-Date:   Tue, 15 Dec 2020 19:13:32 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, kbuild-all@lists.01.org,
-        David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Chris Mason <chris.mason@fusionio.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix boolreturn.cocci warnings
-Message-ID: <20201215181332.GC6430@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, kernel test robot <lkp@intel.com>,
-        Josef Bacik <josef@toxicpanda.com>, kbuild-all@lists.01.org,
-        David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Chris Mason <chris.mason@fusionio.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <202011011347.QVW3uluR-lkp@intel.com>
- <20201101052051.GA16691@39d425248bd2>
+        id S1731083AbgLOSPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 13:15:23 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:19366 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730659AbgLOSPC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 13:15:02 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 0BFHt8Dl009581
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 10:14:18 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=S0PI3j4AZMPMwGW9tNaPl457lO2SW6+d523O2mGRGjU=;
+ b=D4DQS596VDM04kKu7CZfdM5UPi342QWikYt0G1pesMqG7LxHw8M93/yrSmviAStTZojR
+ MPtnA67sQe76RCO+tZOkhw751Sv8OhDgJDz6CE/D94so4oe23HqEqHd8BfvftMfS4alg
+ JkE/3RJqNA/tD/ZWsu7mwBMlRhSJSvUraAM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 35ct85frt5-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 10:14:18 -0800
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 15 Dec 2020 10:14:16 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 6D2E062E330B; Tue, 15 Dec 2020 10:14:15 -0800 (PST)
+From:   Song Liu <songliubraving@fb.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <acme@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
+        <mark.rutland@arm.com>, <jolsa@redhat.com>, <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH v5 0/4] Introduce perf-stat -b for BPF programs
+Date:   Tue, 15 Dec 2020 10:14:08 -0800
+Message-ID: <20201215181412.1730974-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201101052051.GA16691@39d425248bd2>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-15_12:2020-12-15,2020-12-15 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 adultscore=0 impostorscore=0
+ clxscore=1015 spamscore=0 phishscore=0 malwarescore=0 mlxscore=0
+ mlxlogscore=996 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012150120
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 01:20:51PM +0800, kernel test robot wrote:
-> From: kernel test robot <lkp@intel.com>
-> 
-> fs/btrfs/space-info.c:810:9-10: WARNING: return of 0/1 in function 'need_preemptive_reclaim' with return type bool
-> 
->  Return statements in functions returning bool should use
->  true/false instead of 1/0.
-> Generated by: scripts/coccinelle/misc/boolreturn.cocci
-> 
-> Fixes: fc96d3794eb2 ("btrfs: rename need_do_async_reclaim")
-> CC: Josef Bacik <josef@toxicpanda.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
+This set introduces perf-stat -b option to count events for BPF programs.
+This is similar to bpftool-prog-profile. But perf-stat makes it much more
+flexible.
 
-The patchset is still in a topic branch so I folded the change. There
-were more int/bool mismatches in other patches, that got fixed too.
+Changes v4 =3D> v5:
+  1. Add documentation. (Jiri)
+  2. Silent make output for removing .bpf.o file. (Jiri)
+
+Changes v3 =3D> v4:
+  1. Split changes in bpftool/Makefile to a separate patch
+  2. Various small fixes. (Jiri)
+
+Changes v2 =3D> v3:
+  1. Small fixes in Makefile.perf and bpf_counter.c (Jiri)
+  2. Rebased on top of bpf-next. This is because 1/2 conflicts with some
+     patches in bpftool/Makefile.
+
+Changes PATCH v1 =3D> PATCH v2:
+  1. Various fixes in Makefiles. (Jiri)
+  2. Fix an build warning/error with gcc-10. (Jiri)
+
+Changes RFC v2 =3D> PATCH v1:
+  1. Support counting on multiple BPF programs.
+  2. Add BPF handling to target__validate().
+  3. Improve Makefile. (Jiri)
+
+Changes RFC v1 =3D> RFC v2:
+  1. Use bootstrap version of bpftool. (Jiri)
+  2. Set default to not building bpf skeletons. (Jiri)
+  3. Remove util/bpf_skel/Makefile, keep all the logic in Makefile.perf.
+     (Jiri)
+  4. Remove dependency to vmlinux.h in the two skeletons. The goal here i=
+s
+     to enable building perf without building kernel (vmlinux) first.
+     Note: I also removed the logic that build vmlinux.h. We can add that
+     back when we have to use it (to access big kernel structures).
+
+Song Liu (4):
+  bpftool: add Makefile target bootstrap
+  perf: support build BPF skeletons with perf
+  perf-stat: enable counting events for BPF programs
+  perf-stat: add documentation for -b option
+
+ tools/bpf/bpftool/Makefile                    |   2 +
+ tools/build/Makefile.feature                  |   4 +-
+ tools/perf/Documentation/perf-stat.txt        |  14 +
+ tools/perf/Makefile.config                    |   9 +
+ tools/perf/Makefile.perf                      |  45 ++-
+ tools/perf/builtin-stat.c                     |  77 ++++-
+ tools/perf/util/Build                         |   1 +
+ tools/perf/util/bpf_counter.c                 | 296 ++++++++++++++++++
+ tools/perf/util/bpf_counter.h                 |  72 +++++
+ tools/perf/util/bpf_skel/.gitignore           |   3 +
+ .../util/bpf_skel/bpf_prog_profiler.bpf.c     |  93 ++++++
+ tools/perf/util/evsel.c                       |   9 +
+ tools/perf/util/evsel.h                       |   6 +
+ tools/perf/util/stat-display.c                |   4 +-
+ tools/perf/util/stat.c                        |   2 +-
+ tools/perf/util/target.c                      |  34 +-
+ tools/perf/util/target.h                      |  10 +
+ tools/scripts/Makefile.include                |   1 +
+ 18 files changed, 662 insertions(+), 20 deletions(-)
+ create mode 100644 tools/perf/util/bpf_counter.c
+ create mode 100644 tools/perf/util/bpf_counter.h
+ create mode 100644 tools/perf/util/bpf_skel/.gitignore
+ create mode 100644 tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
+
+--
+2.24.1
