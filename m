@@ -2,99 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95072DA5F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 349D02DA5FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgLOCHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:07:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726062AbgLOCHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:07:11 -0500
-Date:   Mon, 14 Dec 2020 18:06:29 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607997991;
-        bh=7Z0uvfzuE2/75u7jMIVulYDfojBWvFah+Kwo9MiCBgI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Sgkf+cL0VMvYkPn3LaoaMfrwrAEC6+VxCdjuT//Nld0mB9477d30usxtQBFIdtox8
-         1ZMa+QnWHD0AW0RZ5GOegKlT9iGQXypjFOOaEXXfrcsbXGzIF4O+ft+hoychs8HuHM
-         51LbMxvywkxvV3OqrOb+nCLUEJpKz+oO57t96NQlTinKRjV/Nj433Z5xEJKB61GoKX
-         QSqsfHKtvIiS2ODC3/YuhPpcu9Vd+pIzDy0o1GT9qKaHPL1aNqJwsku5MjSoJvocaw
-         EpFSgsMbBTJrabiWUwxeGqbiuGGsXWmUnRHlKtGYW5SYfbubrScSWyMSKlnbc/lcGJ
-         FQyzRgx7b2Okg==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Miller <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Shakeel Butt <shakeelb@google.com>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- bpf-next tree
-Message-ID: <20201214180629.4fee48ae@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201214174021.2dfc2fbd99ca3e72b3e4eb02@linux-foundation.org>
-References: <20201204202005.3fb1304f@canb.auug.org.au>
-        <20201215072156.1988fabe@canb.auug.org.au>
-        <20201215012943.GA3079589@carbon.DHCP.thefacebook.com>
-        <20201214174021.2dfc2fbd99ca3e72b3e4eb02@linux-foundation.org>
+        id S1726174AbgLOCK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:10:57 -0500
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:60464 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726046AbgLOCKq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:10:46 -0500
+Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
+        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 1595010FB9C;
+        Tue, 15 Dec 2020 13:09:58 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kozmn-0044DU-HT; Tue, 15 Dec 2020 13:09:57 +1100
+Date:   Tue, 15 Dec 2020 13:09:57 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     guro@fb.com, ktkhai@virtuozzo.com, shakeelb@google.com,
+        hannes@cmpxchg.org, mhocko@suse.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [v2 PATCH 2/9] mm: memcontrol: use shrinker_rwsem to protect
+ shrinker_maps allocation
+Message-ID: <20201215020957.GK3913616@dread.disaster.area>
+References: <20201214223722.232537-1-shy828301@gmail.com>
+ <20201214223722.232537-3-shy828301@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201214223722.232537-3-shy828301@gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
+        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
+        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=7-415B0cAAAA:8
+        a=gf8vwYzWqZnQ8oCTc0cA:9 a=CjuIK1q_8ugA:10 a=-RoEEKskQ1sA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 17:40:21 -0800 Andrew Morton wrote:
-> On Mon, 14 Dec 2020 17:29:43 -0800 Roman Gushchin <guro@fb.com> wrote:
-> > On Tue, Dec 15, 2020 at 07:21:56AM +1100, Stephen Rothwell wrote:  
-> > > On Fri, 4 Dec 2020 20:20:05 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:  
-> > > > Today's linux-next merge of the akpm-current tree got conflicts in:
-> > > > 
-> > > >   include/linux/memcontrol.h
-> > > >   mm/memcontrol.c
-> > > > 
-> > > > between commit:
-> > > > 
-> > > >   bcfe06bf2622 ("mm: memcontrol: Use helpers to read page's memcg data")
-> > > > 
-> > > > from the bpf-next tree and commits:
-> > > > 
-> > > >   6771a349b8c3 ("mm/memcg: remove incorrect comment")
-> > > >   c3970fcb1f21 ("mm: move lruvec stats update functions to vmstat.h")
-> > > > 
-> > > > from the akpm-current tree.
-> > > >   
-> > ...  
-> > > 
-> > > Just a reminder that this conflict still exists.  Commit bcfe06bf2622
-> > > is now in the net-next tree.  
-> > 
-> > Thanks, Stephen!
-> > 
-> > I wonder if it's better to update these 2 commits in the mm tree to avoid
-> > conflicts?
-> > 
-> > Basically split your fix into two and merge it into mm commits.
-> > The last chunk in the patch should be merged into "mm/memcg: remove incorrect comment".
-> > And the rest into "mm: move lruvec stats update functions to vmstat.h".
-> > 
-> > Andrew, what do you think?  
-> 
-> I have "mm/memcg: remove incorrect comment" and "mm: move lruvec stats
-> update functions to vmstat.h" staged against Linus's tree and plan to
-> send them to him later today.  So I trust the BPF tree maintainers will
-> be able to resolve these minor things when those patches turn up in
-> mainline.
+On Mon, Dec 14, 2020 at 02:37:15PM -0800, Yang Shi wrote:
+> Since memcg_shrinker_map_size just can be changd under holding shrinker_rwsem
+> exclusively, the read side can be protected by holding read lock, so it sounds
+> superfluous to have a dedicated mutex.
 
-Hm. The code is in net-next by now. I was thinking of sending the
-Networking PR later today (tonight?) as well. I'm happy to hold off 
-or do whatever you require, but I'd appreciate more explicit / noob
-friendly instructions.
+I'm not sure this is a good idea. This couples the shrinker
+infrastructure to internal details of how cgroups are initialised
+and managed. Sure, certain operations might be done in certain
+shrinker lock contexts, but that doesn't mean we should share global
+locks across otherwise independent subsystems....
 
-AFAIU all we can do is tell Linus about the merge issue, and point 
-at Stephen's resolution.
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
