@@ -2,94 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4483E2DA5B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 02:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E1B2DA5BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 02:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730533AbgLOBlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 20:41:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727840AbgLOBlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 20:41:03 -0500
-Date:   Mon, 14 Dec 2020 17:40:21 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1607996422;
-        bh=wb4IiQqgJ45a0jmUH8Z42M5Hp7DjtmWOILI4NxglpTQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pphH+YNYXahEjjCsCNrIXSmorPlWjuMMRtCJ9uqsBdFgZ107Lh8nEbt9iEdYaEdhK
-         XJT5nfjx1etunSATcIxdmFJzPeaZr9qTokhWfnO/IClDXBoX7MTD+GUhz3jvWGb0JP
-         V30FZOZrpEjJ709THYu1xI44buHQExH1VgBLmIT0=
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Shakeel Butt <shakeelb@google.com>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- bpf-next tree
-Message-Id: <20201214174021.2dfc2fbd99ca3e72b3e4eb02@linux-foundation.org>
-In-Reply-To: <20201215012943.GA3079589@carbon.DHCP.thefacebook.com>
-References: <20201204202005.3fb1304f@canb.auug.org.au>
-        <20201215072156.1988fabe@canb.auug.org.au>
-        <20201215012943.GA3079589@carbon.DHCP.thefacebook.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730819AbgLOBng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 20:43:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60587 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730363AbgLOBnH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 20:43:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607996498;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PChAzdtbpi+PB7J87DcIhi+vl5NjETLfLM7SecPuwcY=;
+        b=HIYY4G0QfQNK2paU2qjqY7ECA3c+OG0FwPcb7+gR9iOTYwWp9hbi6xqW5jGswBD9QL3u5y
+        PVa5LiWBHyF5rpV7X3zbz03LwgYiJImBPnu389TFOGFD5WwYDxyLoKfUvAMewbT39i7N+j
+        gOVEZbSGCGex9hyZTatNPzWzFdgSWL0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-335-VMEMQTasPqiCfO3btqz3Kw-1; Mon, 14 Dec 2020 20:41:34 -0500
+X-MC-Unique: VMEMQTasPqiCfO3btqz3Kw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3829180A086;
+        Tue, 15 Dec 2020 01:41:31 +0000 (UTC)
+Received: from T590 (ovpn-13-7.pek2.redhat.com [10.72.13.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 29ED213470;
+        Tue, 15 Dec 2020 01:41:18 +0000 (UTC)
+Date:   Tue, 15 Dec 2020 09:41:14 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v1 0/6] no-copy bvec
+Message-ID: <20201215014114.GA1777020@T590>
+References: <cover.1607976425.git.asml.silence@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1607976425.git.asml.silence@gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 17:29:43 -0800 Roman Gushchin <guro@fb.com> wrote:
+On Tue, Dec 15, 2020 at 12:20:19AM +0000, Pavel Begunkov wrote:
+> Instead of creating a full copy of iter->bvec into bio in direct I/O,
+> the patchset makes use of the one provided. It changes semantics and
+> obliges users of asynchronous kiocb to track bvec lifetime, and [1/6]
+> converts the only place that doesn't.
 
-> On Tue, Dec 15, 2020 at 07:21:56AM +1100, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > On Fri, 4 Dec 2020 20:20:05 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > Today's linux-next merge of the akpm-current tree got conflicts in:
-> > > 
-> > >   include/linux/memcontrol.h
-> > >   mm/memcontrol.c
-> > > 
-> > > between commit:
-> > > 
-> > >   bcfe06bf2622 ("mm: memcontrol: Use helpers to read page's memcg data")
-> > > 
-> > > from the bpf-next tree and commits:
-> > > 
-> > >   6771a349b8c3 ("mm/memcg: remove incorrect comment")
-> > >   c3970fcb1f21 ("mm: move lruvec stats update functions to vmstat.h")
-> > > 
-> > > from the akpm-current tree.
-> > > 
-> ...
-> > 
-> > Just a reminder that this conflict still exists.  Commit bcfe06bf2622
-> > is now in the net-next tree.
-> 
-> Thanks, Stephen!
-> 
-> I wonder if it's better to update these 2 commits in the mm tree to avoid
-> conflicts?
-> 
-> Basically split your fix into two and merge it into mm commits.
-> The last chunk in the patch should be merged into "mm/memcg: remove incorrect comment".
-> And the rest into "mm: move lruvec stats update functions to vmstat.h".
-> 
-> Andrew, what do you think?
+Just think of one corner case: iov_iter(BVEC) may pass bvec table with zero
+length bvec, which may not be supported by block layer or driver, so
+this patchset has to address this case first.
 
-I have "mm/memcg: remove incorrect comment" and "mm: move lruvec stats
-update functions to vmstat.h" staged against Linus's tree and plan to
-send them to him later today.  So I trust the BPF tree maintainers will
-be able to resolve these minor things when those patches turn up in
-mainline.
+Please see 7e24969022cb ("block: allow for_each_bvec to support zero len bvec").
 
 
+thanks,
+Ming
 
