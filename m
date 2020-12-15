@@ -2,115 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C99E2DB032
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D5A2DB036
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730135AbgLOPhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:37:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729170AbgLOPhU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:37:20 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDBEC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 07:36:40 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id r17so19554314ilo.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 07:36:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Nwvzqg4DNCFbaTGtqZJz4eUDvbUI7tnGnDw1Mt8n1Hc=;
-        b=SwKqC2JQIuA/AVz28p+N4Sa7h7QAnyjqh6FhXfhggD6F8yHWFs9M4tapegFiI+fK0a
-         kXHgkIbbYan5zGhszMu8+lXo9NsDApQNWv7DNyTDIYrBJ+VmICdWYH8Gw4IOTf0LqjmO
-         VDRTypyIfyMkua1h8lWC7ZpAjFxFVTw89c6Hk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Nwvzqg4DNCFbaTGtqZJz4eUDvbUI7tnGnDw1Mt8n1Hc=;
-        b=me2cHM5pnd6Ev6M4AYuiuz4isN7yTZUk/zSE5tfARLU43tSzaxxko6qI1f/L+V0A1I
-         h0Qy4LqKDdIMs8//QHJ4Xn69VArByd/oCLBduiv2K3tVeYPH3Vy4UFty7FVpENrE4kES
-         PTejj/x/oZQ0/edns708FzzuFNaE3biXMx4cookHSUCTJjpwpve9qihP7q7bX9Dlo/VB
-         x+2mOOds/v9ZCFqq8IlnanIaa4mEc0BS7ptDn4eqbtb7Eydga/1rbVUAZ3/AsYOxPr40
-         dsz8rc7MKdoFv3YhPdpCg+XGOGo1xzdCgyXhI+ynvhhK/6v/LwalfdsZlj5qvvwA8kR3
-         onZA==
-X-Gm-Message-State: AOAM531eWCdiLQHjLcVyivnMPgF/UqBit20L7l78relGy8zciJwBnSZ0
-        wDzP87s4UjE2oO1FKnJtUkW47SiE2xcqyg==
-X-Google-Smtp-Source: ABdhPJxf7307E7HadOZKYWoHMgHe3c7S7rXCUHjQ3tl1bQ8c0DQ5141glwS9FJRPfqg4/5TxiOagBA==
-X-Received: by 2002:a05:6e02:1148:: with SMTP id o8mr42290880ill.174.1608046599165;
-        Tue, 15 Dec 2020 07:36:39 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id t21sm14175564ild.86.2020.12.15.07.36.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 07:36:38 -0800 (PST)
-Subject: Re: [PATCH] greybus: remove h from printk format specifier
-To:     trix@redhat.com, johan@kernel.org, elder@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org
-References: <20201215145306.1901598-1-trix@redhat.com>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <430f0e9b-f85d-f85d-d8ea-418794d82917@ieee.org>
-Date:   Tue, 15 Dec 2020 09:36:37 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1730001AbgLOPh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:37:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726844AbgLOPhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:37:36 -0500
+Date:   Tue, 15 Dec 2020 12:37:09 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608046616;
+        bh=7jnet3HiVLkL1dD6qE8KR9Mnt/sCfMpAcCbfi62dzZc=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mg2Ww3A2733ahgNw7xonKUbod9rq/rQTfNxEQxEmqZU1zVPxcl2rCR8oyZNm7/ZZQ
+         8mmEimdmwSCXfwBpAAqYoJAWamNMpTT5WM18Flmjq2AoJEKbWIAQbZQ+yYmaIJsZ9C
+         uThNklNXUm3VwfGIpjs4W6uKXvK8QhsyisosBX/TuV+C/y57/nCY9rkkDOGWeehCUF
+         R3mkQJF3j7mdC87nO0xFiBM5YMlnY48fBd1iA3Nt8eZrqMI7OIyZCeij23MXqkFNFb
+         xdL8R0bUv0q3LL0Ye9jiC0j9o6wGCi0H19n1hOcanri0qDiTp0FKLsqN8FuPKdtwsx
+         UTzksTxdhGTAw==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCH 1/8] perf tools: Add debug_set_file function
+Message-ID: <20201215153709.GB258566@kernel.org>
+References: <20201212104358.412065-1-jolsa@kernel.org>
+ <20201212104358.412065-2-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201215145306.1901598-1-trix@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201212104358.412065-2-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/15/20 8:53 AM, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+Em Sat, Dec 12, 2020 at 11:43:51AM +0100, Jiri Olsa escreveu:
+> Allow to set debug output file via new debug_set_file function.
 > 
-> See Documentation/core-api/printk-formats.rst.
-> h should no longer be used in the format specifier for printk.
+> It's called during perf startup in perf_debug_setup to set stderr
+> file as default and any perf command can set it later to different
+> file.
 > 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+> It will be used in perf daemon command to get verbose output into
+> log file.
 
-Looks good.
+Thanks, applied.
 
-Reviewed-by: Alex Elder <elder@linaro.org>
+- Arnaldo
 
+ 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->   drivers/greybus/greybus_trace.h | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
+>  tools/perf/util/debug.c | 9 ++++++++-
+>  tools/perf/util/debug.h | 2 ++
+>  2 files changed, 10 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/greybus/greybus_trace.h b/drivers/greybus/greybus_trace.h
-> index 1bc9f1275c65..616a3bd61aa6 100644
-> --- a/drivers/greybus/greybus_trace.h
-> +++ b/drivers/greybus/greybus_trace.h
-> @@ -40,7 +40,7 @@ DECLARE_EVENT_CLASS(gb_message,
->   		__entry->result = message->header->result;
->   	),
->   
-> -	TP_printk("size=%hu operation_id=0x%04x type=0x%02x result=0x%02x",
-> +	TP_printk("size=%u operation_id=0x%04x type=0x%02x result=0x%02x",
->   		  __entry->size, __entry->operation_id,
->   		  __entry->type, __entry->result)
->   );
-> @@ -317,7 +317,7 @@ DECLARE_EVENT_CLASS(gb_interface,
->   		__entry->mode_switch = intf->mode_switch;
->   	),
->   
-> -	TP_printk("intf_id=%hhu device_id=%hhu module_id=%hhu D=%d J=%d A=%d E=%d M=%d",
-> +	TP_printk("intf_id=%u device_id=%u module_id=%u D=%d J=%d A=%d E=%d M=%d",
->   		__entry->id, __entry->device_id, __entry->module_id,
->   		__entry->disconnected, __entry->ejected, __entry->active,
->   		__entry->enabled, __entry->mode_switch)
-> @@ -391,7 +391,7 @@ DECLARE_EVENT_CLASS(gb_module,
->   		__entry->disconnected = module->disconnected;
->   	),
->   
-> -	TP_printk("hd_bus_id=%d module_id=%hhu num_interfaces=%zu disconnected=%d",
-> +	TP_printk("hd_bus_id=%d module_id=%u num_interfaces=%zu disconnected=%d",
->   		__entry->hd_bus_id, __entry->module_id,
->   		__entry->num_interfaces, __entry->disconnected)
->   );
+> diff --git a/tools/perf/util/debug.c b/tools/perf/util/debug.c
+> index 5cda5565777a..50fd6a4be4e0 100644
+> --- a/tools/perf/util/debug.c
+> +++ b/tools/perf/util/debug.c
+> @@ -30,6 +30,12 @@ bool dump_trace = false, quiet = false;
+>  int debug_ordered_events;
+>  static int redirect_to_stderr;
+>  int debug_data_convert;
+> +static FILE *debug_file;
+> +
+> +void debug_set_file(FILE *file)
+> +{
+> +	debug_file = file;
+> +}
+>  
+>  int veprintf(int level, int var, const char *fmt, va_list args)
+>  {
+> @@ -39,7 +45,7 @@ int veprintf(int level, int var, const char *fmt, va_list args)
+>  		if (use_browser >= 1 && !redirect_to_stderr)
+>  			ui_helpline__vshow(fmt, args);
+>  		else
+> -			ret = vfprintf(stderr, fmt, args);
+> +			ret = vfprintf(debug_file, fmt, args);
+>  	}
+>  
+>  	return ret;
+> @@ -227,6 +233,7 @@ DEBUG_WRAPPER(debug, 1);
+>  
+>  void perf_debug_setup(void)
+>  {
+> +	debug_set_file(stderr);
+>  	libapi_set_print(pr_warning_wrapper, pr_warning_wrapper, pr_debug_wrapper);
+>  }
+>  
+> diff --git a/tools/perf/util/debug.h b/tools/perf/util/debug.h
+> index f1734abd98dd..43f712295645 100644
+> --- a/tools/perf/util/debug.h
+> +++ b/tools/perf/util/debug.h
+> @@ -5,6 +5,7 @@
+>  
+>  #include <stdarg.h>
+>  #include <stdbool.h>
+> +#include <stdio.h>
+>  #include <linux/compiler.h>
+>  
+>  extern int verbose;
+> @@ -62,6 +63,7 @@ int eprintf_time(int level, int var, u64 t, const char *fmt, ...) __printf(4, 5)
+>  int veprintf(int level, int var, const char *fmt, va_list args);
+>  
+>  int perf_debug_option(const char *str);
+> +void debug_set_file(FILE *file);
+>  void perf_debug_setup(void);
+>  int perf_quiet_option(void);
+>  
+> -- 
+> 2.26.2
 > 
 
+-- 
+
+- Arnaldo
