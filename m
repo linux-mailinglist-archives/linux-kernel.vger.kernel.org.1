@@ -2,193 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B092DB098
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5B42DB09B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730614AbgLOPym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:54:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41534 "EHLO mail.kernel.org"
+        id S1730633AbgLOPyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:54:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730389AbgLOPyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:54:17 -0500
-Date:   Tue, 15 Dec 2020 12:53:50 -0300
+        id S1730421AbgLOPyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:54:46 -0500
+X-Gm-Message-State: AOAM530VDE8fRUZKEr/iI6zaiFEJ4Iuhj47PfIqxgiVojRnq+nO36KXR
+        7WPvZsmauqe9lCHTCISvGT8q7htrHFirMv8FDQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608047616;
-        bh=IfkzvFyQ6gi7gVjWCwwrP2gFrlMuEuJNzOElKsi6Tew=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JeyeXs1z2qtaYj29yEeUamuGa0f1cAQxn5YVJfelluV+TB8Jd23Wif63H80lGjVMQ
-         eyrSvm58p9K7/iRVCnjv7856/KVeWqrI7WAv2xAzn6v+tD+HsZG+/rWhRnfewpaSiw
-         M02+1zxpYEwrrZsXfu0YVIdBbcgmQVFgjaKb9/7lGipMraixooB7oh9bY9/immENVV
-         aeN7GPCVaasHTSZvX7R/bonnryZtmTf/oWfy4to+w00e2u5lYsXHWPfny4XLZMzPKg
-         BZcJQywvf41bGjyevp5HO9OXJTSnH7auQvcCHi2QMHkFx/3DZNS+o2fhcKpx4jFqwS
-         VwMGa5lCWeaRg==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 13/15] perf buildid-cache: Add --debuginfod option
-Message-ID: <20201215155350.GL258566@kernel.org>
-References: <20201214105457.543111-1-jolsa@kernel.org>
- <20201214105457.543111-14-jolsa@kernel.org>
+        s=k20201202; t=1608047645;
+        bh=gghWFkwWx1IarlLAdXd+Eia1PG+BltXx90Un2XVWq4s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TIcbmFpMD+xR7If58M2C/fNWfW0LX1a3C/BUA5MmVPjuw58mZilPwXfPoL7oGSW85
+         ndN0478TxxXvIT3Ld+wMnD1iJgLrsvLL636FbV+EZ863xUPsbW8jWYCiAOINCkZCPR
+         PRwy2XfhsOIQkGL0xStKcO3Znqo4Re/wVALSdPnDZOx9bLQ/wCY6m0XhCuXEskpYbi
+         YFn2xBvsgzS3sAMI7/Bi0gqyhSzcTJ7yOC4WJJFiQSSVm0VphTgESUDbhs0SJmGYun
+         HgR1Bztq8AzQetcweYE/rXCPhjnCNIIn3cqjYDS6uH54luLJHGtII/xEjlQ5jx/a6p
+         QWkZ3n+BOnFKw==
+X-Google-Smtp-Source: ABdhPJzX6gCl3nrP2sdQmU523LZPHAXcWD3mEcWuFkDvD1i73xrUbyefadNidrNVOhxsFsXvANhmSOfiOKFXG/PUUeE=
+X-Received: by 2002:a05:6402:1841:: with SMTP id v1mr30838131edy.194.1608047643433;
+ Tue, 15 Dec 2020 07:54:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201214105457.543111-14-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20201215070009.27937-1-kishon@ti.com>
+In-Reply-To: <20201215070009.27937-1-kishon@ti.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 15 Dec 2020 09:53:52 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJzi7JkMcd4NZewA=w8q6BsCkrhW3JcED63R=EyE3v29Q@mail.gmail.com>
+Message-ID: <CAL_JsqJzi7JkMcd4NZewA=w8q6BsCkrhW3JcED63R=EyE3v29Q@mail.gmail.com>
+Subject: Re: [PATCH v5] PCI: cadence: Retrain Link to work around Gen2
+ training defect.
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Tom Joseph <tjoseph@cadence.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nadeem Athani <nadeem@cadence.com>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Milind Parab <mparab@cadence.com>,
+        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        Parshuram Raju Thombare <pthombar@cadence.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Dec 14, 2020 at 11:54:55AM +0100, Jiri Olsa escreveu:
-> Adding --debuginfod option to specify debuginfod url and
-> support to do that through config file as well.
-> 
-> Use following in ~/.perfconfig file:
-> 
->   [buildid-cache]
->   debuginfod=http://192.168.122.174:8002
-
-I was going to try and cherry-pick this one, but it is after other
-changes that are dependent on other bits to be merged :-\
-
-- Arnaldo
- 
-> Acked-by: Ian Rogers <irogers@google.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+On Tue, Dec 15, 2020 at 1:00 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>
+> From: Nadeem Athani <nadeem@cadence.com>
+>
+> Cadence controller will not initiate autonomous speed change if strapped as
+> Gen2. The Retrain Link bit is set as quirk to enable this speed change.
+>
+> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
+> [kishon@ti.com: Enable the workaround for TI's J721E SoC]
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 > ---
->  .../perf/Documentation/perf-buildid-cache.txt |  6 ++++
->  tools/perf/Documentation/perf-config.txt      |  7 +++++
->  tools/perf/builtin-buildid-cache.c            | 28 +++++++++++++++++--
->  3 files changed, 38 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/Documentation/perf-buildid-cache.txt b/tools/perf/Documentation/perf-buildid-cache.txt
-> index b77da5138bca..b9987d1399ca 100644
-> --- a/tools/perf/Documentation/perf-buildid-cache.txt
-> +++ b/tools/perf/Documentation/perf-buildid-cache.txt
-> @@ -84,6 +84,12 @@ OPTIONS
->  	used when creating a uprobe for a process that resides in a
->  	different mount namespace from the perf(1) utility.
->  
-> +--debuginfod=URLs::
-> +	Specify debuginfod URL to be used when retrieving perf.data binaries,
-> +	it follows the same syntax as the DEBUGINFOD_URLS variable, like:
-> +
-> +	  buildid-cache.debuginfod=http://192.168.122.174:8002
-> +
->  SEE ALSO
->  --------
->  linkperf:perf-record[1], linkperf:perf-report[1], linkperf:perf-buildid-list[1]
-> diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
-> index 31069d8a5304..e3672c5d801b 100644
-> --- a/tools/perf/Documentation/perf-config.txt
-> +++ b/tools/perf/Documentation/perf-config.txt
-> @@ -238,6 +238,13 @@ buildid.*::
->  		cache location, or to disable it altogether. If you want to disable it,
->  		set buildid.dir to /dev/null. The default is $HOME/.debug
->  
-> +buildid-cache.*::
-> +	buildid-cache.debuginfod=URLs
-> +		Specify debuginfod URLs to be used when retrieving perf.data binaries,
-> +		it follows the same syntax as the DEBUGINFOD_URLS variable, like:
-> +
-> +		  buildid-cache.debuginfod=http://192.168.122.174:8002
-> +
->  annotate.*::
->  	These are in control of addresses, jump function, source code
->  	in lines of assembly code from a specific program.
-> diff --git a/tools/perf/builtin-buildid-cache.c b/tools/perf/builtin-buildid-cache.c
-> index f0afb2c89e03..864597fd9cf6 100644
-> --- a/tools/perf/builtin-buildid-cache.c
-> +++ b/tools/perf/builtin-buildid-cache.c
-> @@ -27,6 +27,7 @@
->  #include "util/time-utils.h"
->  #include "util/util.h"
->  #include "util/probe-file.h"
-> +#include "util/config.h"
->  #include <linux/string.h>
->  #include <linux/err.h>
->  #include <linux/zalloc.h>
-> @@ -550,12 +551,21 @@ build_id_cache__add_perf_data(const char *path, bool all)
->  	return err;
->  }
->  
-> +static int perf_buildid_cache_config(const char *var, const char *value, void *cb)
+> Hi Lorenzo,
+> The previous version of the patch can be found at [1].
+> I slightly re-worked the patch from Nadeem
+> *) Removed additional Link Up Check
+> *) Removed quirk from pcie-cadence-plat.c
+> *) Also removed additional compatible
+>    "cdns,cdns-pcie-host-quirk-retrain" added in that series
+> *) Enabled the quirk for J721E
+> [1] -> http://lore.kernel.org/r/20201211144236.3825-1-nadeem@cadence.com
+>
+>  drivers/pci/controller/cadence/pci-j721e.c    |  3 +
+>  .../controller/cadence/pcie-cadence-host.c    | 67 ++++++++++++++-----
+>  drivers/pci/controller/cadence/pcie-cadence.h | 11 ++-
+>  3 files changed, 62 insertions(+), 19 deletions(-)
+>
+> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+> index dac1ac8a7615..baf729850cb1 100644
+> --- a/drivers/pci/controller/cadence/pci-j721e.c
+> +++ b/drivers/pci/controller/cadence/pci-j721e.c
+> @@ -64,6 +64,7 @@ enum j721e_pcie_mode {
+>
+>  struct j721e_pcie_data {
+>         enum j721e_pcie_mode    mode;
+> +       bool                    quirk_retrain_flag;
+>  };
+>
+>  static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
+> @@ -280,6 +281,7 @@ static struct pci_ops cdns_ti_pcie_host_ops = {
+>
+>  static const struct j721e_pcie_data j721e_pcie_rc_data = {
+>         .mode = PCI_MODE_RC,
+> +       .quirk_retrain_flag = true,
+>  };
+>
+>  static const struct j721e_pcie_data j721e_pcie_ep_data = {
+> @@ -388,6 +390,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+>
+>                 bridge->ops = &cdns_ti_pcie_host_ops;
+>                 rc = pci_host_bridge_priv(bridge);
+> +               rc->quirk_retrain_flag = data->quirk_retrain_flag;
+>
+>                 cdns_pcie = &rc->pcie;
+>                 cdns_pcie->dev = dev;
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> index 811c1cb2e8de..773c0d1137ed 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
+> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> @@ -77,6 +77,50 @@ static struct pci_ops cdns_pcie_host_ops = {
+>         .write          = pci_generic_config_write,
+>  };
+>
+> +static int cdns_pcie_host_wait_for_link(struct cdns_pcie *pcie)
 > +{
-> +	const char **debuginfod = cb;
+> +       struct device *dev = pcie->dev;
+> +       int retries;
 > +
-> +	if (!strcmp(var, "buildid-cache.debuginfod"))
-> +		*debuginfod = strdup(value);
+> +       /* Check if the link is up or not */
+> +       for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
+> +               if (cdns_pcie_link_up(pcie)) {
+> +                       dev_info(dev, "Link up\n");
+> +                       return 0;
+> +               }
+> +               usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
+> +       }
 > +
-> +	return 0;
+> +       return -ETIMEDOUT;
 > +}
 > +
->  int cmd_buildid_cache(int argc, const char **argv)
+> +static void cdns_pcie_retrain(struct cdns_pcie *pcie)
+> +{
+> +       u32 lnk_cap_sls, pcie_cap_off = CDNS_PCIE_RP_CAP_OFFSET;
+> +       u16 lnk_stat, lnk_ctl;
+> +
+> +       /*
+> +        * Set retrain bit if current speed is 2.5 GB/s,
+> +        * but the PCIe root port support is > 2.5 GB/s.
+
+If you don't have the retrain quirk, wouldn't this condition never
+happen and then the function is just a nop? So this could just be
+called unconditionally.
+
+> +        */
+> +
+> +       lnk_cap_sls = cdns_pcie_readl(pcie, (CDNS_PCIE_RP_BASE + pcie_cap_off +
+> +                                            PCI_EXP_LNKCAP));
+> +       if ((lnk_cap_sls & PCI_EXP_LNKCAP_SLS) <= PCI_EXP_LNKCAP_SLS_2_5GB)
+> +               return;
+> +
+> +       lnk_stat = cdns_pcie_rp_readw(pcie, pcie_cap_off + PCI_EXP_LNKSTA);
+> +       if ((lnk_stat & PCI_EXP_LNKSTA_CLS) == PCI_EXP_LNKSTA_CLS_2_5GB) {
+> +               lnk_ctl = cdns_pcie_rp_readw(pcie,
+> +                                            pcie_cap_off + PCI_EXP_LNKCTL);
+> +               lnk_ctl |= PCI_EXP_LNKCTL_RL;
+> +               cdns_pcie_rp_writew(pcie, pcie_cap_off + PCI_EXP_LNKCTL,
+> +                                   lnk_ctl);
+> +
+> +               if (cdns_pcie_host_wait_for_link(pcie))
+> +                       return;
+> +       }
+> +}
+>
+>  static int cdns_pcie_host_init_root_port(struct cdns_pcie_rc *rc)
 >  {
->  	struct strlist *list;
->  	struct str_node *pos;
-> -	int ret = 0;
-> -	int ns_id = -1;
-> +	int ret, ns_id = -1;
->  	bool force = false;
->  	bool list_files = false;
->  	bool opts_flag = false;
-> @@ -565,7 +575,8 @@ int cmd_buildid_cache(int argc, const char **argv)
->  		   *purge_name_list_str = NULL,
->  		   *missing_filename = NULL,
->  		   *update_name_list_str = NULL,
-> -		   *kcore_filename = NULL;
-> +		   *kcore_filename = NULL,
-> +		   *debuginfod = NULL;
->  	char sbuf[STRERR_BUFSIZE];
->  
->  	struct perf_data data = {
-> @@ -590,6 +601,8 @@ int cmd_buildid_cache(int argc, const char **argv)
->  	OPT_BOOLEAN('f', "force", &force, "don't complain, do it"),
->  	OPT_STRING('u', "update", &update_name_list_str, "file list",
->  		    "file(s) to update"),
-> +	OPT_STRING(0, "debuginfod", &debuginfod, "debuginfod url",
-> +		    "set debuginfod url"),
->  	OPT_INCR('v', "verbose", &verbose, "be more verbose"),
->  	OPT_INTEGER(0, "target-ns", &ns_id, "target pid for namespace context"),
->  	OPT_END()
-> @@ -599,6 +612,10 @@ int cmd_buildid_cache(int argc, const char **argv)
->  		NULL
->  	};
->  
-> +	ret = perf_config(perf_buildid_cache_config, &debuginfod);
-> +	if (ret)
-> +		return ret;
+> @@ -398,23 +442,6 @@ static int cdns_pcie_host_init(struct device *dev,
+>         return cdns_pcie_host_init_address_translation(rc);
+>  }
+>
+> -static int cdns_pcie_host_wait_for_link(struct cdns_pcie *pcie)
+> -{
+> -       struct device *dev = pcie->dev;
+> -       int retries;
+> -
+> -       /* Check if the link is up or not */
+> -       for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
+> -               if (cdns_pcie_link_up(pcie)) {
+> -                       dev_info(dev, "Link up\n");
+> -                       return 0;
+> -               }
+> -               usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
+> -       }
+> -
+> -       return -ETIMEDOUT;
+> -}
+> -
+>  int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+>  {
+>         struct device *dev = rc->pcie.dev;
+> @@ -458,8 +485,12 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+>         }
+>
+>         ret = cdns_pcie_host_wait_for_link(pcie);
+> -       if (ret)
+> +       if (ret) {
+>                 dev_dbg(dev, "PCIe link never came up\n");
+> +       } else {
+> +               if (rc->quirk_retrain_flag)
+> +                       cdns_pcie_retrain(pcie);
+> +       }
+>
+>         for (bar = RP_BAR0; bar <= RP_NO_BAR; bar++)
+>                 rc->avail_ib_bar[bar] = true;
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
+> index 30eba6cafe2c..0f29128a5d0a 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence.h
+> +++ b/drivers/pci/controller/cadence/pcie-cadence.h
+> @@ -119,7 +119,7 @@
+>   * Root Port Registers (PCI configuration space for the root port function)
+>   */
+>  #define CDNS_PCIE_RP_BASE      0x00200000
+> -
+> +#define CDNS_PCIE_RP_CAP_OFFSET 0xc0
+>
+>  /*
+>   * Address Translation Registers
+> @@ -291,6 +291,7 @@ struct cdns_pcie {
+>   * @device_id: PCI device ID
+>   * @avail_ib_bar: Satus of RP_BAR0, RP_BAR1 and        RP_NO_BAR if it's free or
+>   *                available
+> + * @quirk_retrain_flag: Retrain link as quirk for PCIe Gen2
+>   */
+>  struct cdns_pcie_rc {
+>         struct cdns_pcie        pcie;
+> @@ -299,6 +300,7 @@ struct cdns_pcie_rc {
+>         u32                     vendor_id;
+>         u32                     device_id;
+>         bool                    avail_ib_bar[CDNS_PCIE_RP_MAX_IB];
+> +       bool                    quirk_retrain_flag;
+>  };
+>
+>  /**
+> @@ -414,6 +416,13 @@ static inline void cdns_pcie_rp_writew(struct cdns_pcie *pcie,
+>         cdns_pcie_write_sz(addr, 0x2, value);
+>  }
+>
+> +static inline u16 cdns_pcie_rp_readw(struct cdns_pcie *pcie, u32 reg)
+> +{
+> +       void __iomem *addr = pcie->reg_base + CDNS_PCIE_RP_BASE + reg;
 > +
->  	argc = parse_options(argc, argv, buildid_cache_options,
->  			     buildid_cache_usage, 0);
->  
-> @@ -610,6 +627,11 @@ int cmd_buildid_cache(int argc, const char **argv)
->  	if (argc || !(list_files || opts_flag))
->  		usage_with_options(buildid_cache_usage, buildid_cache_options);
->  
-> +	if (debuginfod) {
-> +		pr_debug("DEBUGINFOD_URLS=%s\n", debuginfod);
-> +		setenv("DEBUGINFOD_URLS", debuginfod, 1);
-> +	}
+> +       return cdns_pcie_read_sz(addr, 0x2);
+> +}
 > +
->  	/* -l is exclusive. It can not be used with other options. */
->  	if (list_files && opts_flag) {
->  		usage_with_options_msg(buildid_cache_usage,
-> -- 
-> 2.26.2
-> 
-
--- 
-
-- Arnaldo
+>  /* Endpoint Function register access */
+>  static inline void cdns_pcie_ep_fn_writeb(struct cdns_pcie *pcie, u8 fn,
+>                                           u32 reg, u8 value)
+> --
+> 2.17.1
+>
