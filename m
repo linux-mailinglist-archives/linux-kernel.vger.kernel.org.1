@@ -2,83 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CFC2DA5C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 02:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A69C02DA5C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 02:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730789AbgLOBo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 20:44:58 -0500
-Received: from mga14.intel.com ([192.55.52.115]:28304 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730518AbgLOBoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 20:44:38 -0500
-IronPort-SDR: YzIKhzhrT1rPkx3Pg2t9eE1240/Rl4K6ErVpxDb6XbqyLaDKqHiFaRsOrvMcnaVPxrEjvolrno
- 7w+8yi4G9koQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="174040107"
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="174040107"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2020 17:43:54 -0800
-IronPort-SDR: r43YeJ0x+cZDU79EEEMoj44I5pRG8gy/eKeMKfrsmVRxRhHiDm+GJsNF2Jcx3/Kxq0kaqg407+
- r8pNKscCUbtg==
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="367838620"
-Received: from zhangj4-mobl.ccr.corp.intel.com (HELO [10.238.130.84]) ([10.238.130.84])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2020 17:43:50 -0800
-Subject: Re: [PATCH 0/2] Enumerate and expose AVX512_FP16 feature
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        sean.j.christopherson@intel.com,
-        Kyung Min Park <kyung.min.park@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        jmattson@google.com, joro@8bytes.org, vkuznets@redhat.com,
-        wanpengli@tencent.com
-References: <20201208033441.28207-1-kyung.min.park@intel.com>
- <a10c6b11-9e70-23ac-cdb2-141bb913de3d@redhat.com>
-From:   "Zhang, Cathy" <cathy.zhang@intel.com>
-Message-ID: <6b9fd7d6-cbba-864f-57bd-93e7297532e2@intel.com>
-Date:   Tue, 15 Dec 2020 09:43:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1731021AbgLOBqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 20:46:14 -0500
+Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:59370 "EHLO
+        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1730418AbgLOBpQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 20:45:16 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id 1734820139DE;
+        Tue, 15 Dec 2020 09:44:14 +0800 (HKT)
+X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
+Received: from mail.gtsys.com.hk ([127.0.0.1])
+        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id BFKITq9W7vnj; Tue, 15 Dec 2020 09:44:13 +0800 (HKT)
+Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id E9DF020139A0;
+        Tue, 15 Dec 2020 09:44:13 +0800 (HKT)
+Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
+        by s01.gtsys.com.hk (Postfix) with ESMTP id E5C98C01FAD;
+        Tue, 15 Dec 2020 09:44:13 +0800 (HKT)
+Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
+        id ADFFB2000CF; Tue, 15 Dec 2020 09:44:13 +0800 (HKT)
+From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
+To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH v2 0/2] rockchip: emmc: rk3399 add vendor prefix 
+Date:   Tue, 15 Dec 2020 09:44:06 +0800
+Message-Id: <20201215014409.905-1-chris.ruehl@gtsys.com.hk>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <a10c6b11-9e70-23ac-cdb2-141bb913de3d@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Paolo and Sean! Sorry for the delay response, I'm back from 
-vacation and just see Sean's comment, and I see Paolo has made changes, 
-thanks a bunch!
+Following the reference in vendor-prefixes.yaml, update implementation
+and documentation for the phy-rockchip-emmc.
+This patchset follow up with 
+commit 8b5c2b45b8f0a ("phy: rockchip: set pulldown for strobe line in dts")
+commit a8cef928276bb ("phy: rockchip-emmc: output tap delay dt property")
 
-On 12/12/2020 7:42 AM, Paolo Bonzini wrote:
-> On 08/12/20 04:34, Kyung Min Park wrote:
->> Introduce AVX512_FP16 feature and expose it to KVM CPUID for processors
->> that support it. KVM reports this information and guests can make use
->> of it.
->>
->> Detailed information on the instruction and CPUID feature flag can be 
->> found
->> in the latest "extensions" manual [1].
->>
->> Reference:
->> [1]. 
->> https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
->>
->> Cathy Zhang (1):
->>    x86: Expose AVX512_FP16 for supported CPUID
->>
->> Kyung Min Park (1):
->>    Enumerate AVX512 FP16 CPUID feature flag
->>
->>   arch/x86/include/asm/cpufeatures.h | 1 +
->>   arch/x86/kernel/cpu/cpuid-deps.c   | 1 +
->>   arch/x86/kvm/cpuid.c               | 2 +-
->>   3 files changed, 3 insertions(+), 1 deletion(-)
->>
->
-> Queued, with adjusted commit message according to Sean's review.
->
-> Paolo
->
+Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+---
+v2 drop changes for ABI property driver-impedence-ohm
+   no modification needed for dtsi files
+   add commits follow up in commit messages
+
+Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt | 10 +++++-----
+drivers/phy/rockchip/phy-rockchip-emmc.c                    |  4 ++--
+2 files changed, 7 insertions(+), 7 deletions(-)
+
