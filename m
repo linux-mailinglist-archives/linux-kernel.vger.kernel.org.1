@@ -2,260 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 169AA2DAE1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0A52DAE22
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728591AbgLONiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:38:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
+        id S1726431AbgLONj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:39:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727685AbgLONip (ORCPT
+        with ESMTP id S1728616AbgLONir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:38:45 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B435C0617A7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 05:38:05 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id iq13so1224742pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 05:38:05 -0800 (PST)
+        Tue, 15 Dec 2020 08:38:47 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A26DC06138C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 05:38:07 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id q10so10951275vsr.13
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 05:38:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rqQtUUF8v33Jmoi4KsNYNxm+V8KvPZvIUDhNuJPsSpk=;
-        b=crmpJe2KDqllH6uD1Kf3tFpZBzvrdCqywLDVfk6jq1MIyUxTgBToe8PSKD/zUM8Yxo
-         2JqYZNUD+jLPbE4ao4VrJz4y/ArbTu392ix5ZnlIAe79vAQQi44gQ7jcRUDpcgmQq9kP
-         TJjRgVcCNYTR1vOT/+yNzTKT3GhfqgvVvOpqkJEEv5zsPSvYIj9C8z+gaMjF3oA5I731
-         /0kT/AfluTp1BcpFzLnqXBFB7o/gugtmC5Sm45E5s3lh6aR4SdjNC9gjb14Vg6npumlX
-         o9dfKccg5LVbKoCakLRm3pYENc/7Z4spBCYUCP2gnLIWrxhZZcU2/gdC/cr2NjnCoi3z
-         URTA==
+        bh=9FgvEA6LpRqaZRiWRCs1HzkpZ2wxH4J/Kj/S8yl9EX8=;
+        b=aMDDKyWXNebTeXg5FMLCK9txB+AXo41QnAw7eILkX0NTeyAdt7jEx4r62/kGLfIHLY
+         NTdTfInWItH7WmdFOmFWrs0hZxC8xA4+JavAwYl1jp8pksKKMo4VeyPHa4XewnixNL71
+         5zM6Wgsl4rhnbDaXq2EpMe4o9FfwGh7clMUv4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rqQtUUF8v33Jmoi4KsNYNxm+V8KvPZvIUDhNuJPsSpk=;
-        b=Zifg37wgqkzk+mF7ITybbzUqKAOfncoCNS58alwDWUyJZzfyRnpo12GDWYZRFfRk6j
-         sUmjNqYekZ4f0ZgftS7xWu6HWTQd+ouGc39Ng0qNJykvsqYOEb+8WGdHRwzUfQpvoJQA
-         uuOMr9IKz0FEMRPWasel9KrNLl4LVMhbW2pumm7Ej656LgbCZPSJXhUgLZkA9SZNIKNz
-         SuL/xzU18k/n+MdU6uysiVCwUw/XBdrYSiBaZN9AK0QbtMn7sURHtF4iT1YxvCTNYrky
-         lGIeDw4yx7VnY368BQzVX3ELwYQvlYTgBcl7x0WE02ZJ+bY6Mg2Ntb+Uq8kun4xCVL6d
-         UugQ==
-X-Gm-Message-State: AOAM533UmLUUkRXCAAIuEYF+a0a83IOtxqLJlCHWwLFAzv6O8pfEc1d/
-        BThcSXaZtPyT7DYFCyWywZo4S+1ae1qIW4NseT7STw==
-X-Google-Smtp-Source: ABdhPJwGufK6wRVZz2t/Y5+TwVRmoNZ2XG3IEg5U0NDltpU68/Msw+lp7VJjfFCucHPVxZA9yJQjEQls+4uwTSmqXig=
-X-Received: by 2002:a17:902:ed0d:b029:da:c83b:5f40 with SMTP id
- b13-20020a170902ed0db02900dac83b5f40mr1162761pld.20.1608039484985; Tue, 15
- Dec 2020 05:38:04 -0800 (PST)
+        bh=9FgvEA6LpRqaZRiWRCs1HzkpZ2wxH4J/Kj/S8yl9EX8=;
+        b=V/4PaRL180pRZtPPRwS+Z4wwJJ5BblC/kLX60N8bKa7xtou+ZmnkwWVCpjO1jDtRpy
+         cfwy6A9TzU7+mUoNY+KWi3WVLR+SRyD3G6eo1VGYoVsNSw2OWZFXQzLV4Rm/OhjPwPbk
+         YfbqYGTz1p/pX0aObyZN+/L6bJEaRM0hhIwwQxJM4B8PMdeIaDV3TyyP+v7UkxsGuelm
+         Jly0UPW0UdobJc+xvZCTL3k1QybPXg+EMwx1A4QGali5qNvNES6LjSPoPqeOEve0vdAn
+         MJwpRgehbhPiHGbSbKnGXcYalY1YeTjGtsbpqfd2fVqJqP8wkMomv6FogPfB6QS5irnr
+         4n9A==
+X-Gm-Message-State: AOAM530gARKR8+FXIpddmMwI1hK8bwRnzPyMeq5FjF3SZoutcQPfXKDp
+        8Xx2MVPbss81S15YL5Iga2ihJVHvlJievrQQUdgPUw==
+X-Google-Smtp-Source: ABdhPJw2pSaiM6ovuzcTeKxy3DP6Ku+SVy15pyfTwAwM3z1ikPI1R8D7O7JPHcMCx/NBwXhCbuTiLeGCivpmnPRuZRE=
+X-Received: by 2002:a67:5c03:: with SMTP id q3mr26997421vsb.47.1608039486303;
+ Tue, 15 Dec 2020 05:38:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20201208041847.72122-1-songmuchun@bytedance.com>
- <20201208041847.72122-3-songmuchun@bytedance.com> <20201215133038.GO32193@dhcp22.suse.cz>
-In-Reply-To: <20201215133038.GO32193@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 15 Dec 2020 21:37:28 +0800
-Message-ID: <CAMZfGtWF9Lft=j-KKW9VYHLH0LL45TZ+pU9q6JHz7RByNWnpQg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3 2/7] mm: memcontrol: convert
- NR_ANON_THPS account to pages
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Feng Tang <feng.tang@intel.com>, Neil Brown <neilb@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>
+References: <1607746317-4696-1-git-send-email-yongqiang.niu@mediatek.com> <1607746317-4696-8-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1607746317-4696-8-git-send-email-yongqiang.niu@mediatek.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Tue, 15 Dec 2020 21:37:55 +0800
+Message-ID: <CANMq1KCbmW4kbY5rbuogr9JJD5c5=-qatFs-EaWbuAxSzWmnLQ@mail.gmail.com>
+Subject: Re: [PATCH v2, 07/17] drm/mediatek: add disp config and mm 26mhz
+ clock into mutex device
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        lkml <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 9:30 PM Michal Hocko <mhocko@suse.com> wrote:
+On Sat, Dec 12, 2020 at 12:12 PM Yongqiang Niu
+<yongqiang.niu@mediatek.com> wrote:
 >
-> On Tue 08-12-20 12:18:42, Muchun Song wrote:
-> > The unit of NR_ANON_THPS is HPAGE_PMD_NR. Convert the NR_ANON_THPS
-> > account to pages.
+> there are 2 more clock need enable for display.
+> parser these clock when mutex device probe,
+> enable and disable when mutex on/off
 >
-> This changelog could benefit from some improvements. First of all you
-> should be clear about the motivation. I believe the previous feedback
-> was also to explicitly mention what effect this has on the pcp
-> accounting flushing.
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp.c | 49 ++++++++++++++++++++++++++++------
+>  1 file changed, 41 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
+> index 60788c1..de618a1 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
+> @@ -118,7 +118,7 @@ struct mtk_ddp_data {
+>
+>  struct mtk_ddp {
+>         struct device                   *dev;
+> -       struct clk                      *clk;
+> +       struct clk                      *clk[3];
+>         void __iomem                    *regs;
+>         struct mtk_disp_mutex           mutex[10];
+>         const struct mtk_ddp_data       *data;
+> @@ -257,14 +257,39 @@ int mtk_disp_mutex_prepare(struct mtk_disp_mutex *mutex)
+>  {
+>         struct mtk_ddp *ddp = container_of(mutex, struct mtk_ddp,
+>                                            mutex[mutex->id]);
+> -       return clk_prepare_enable(ddp->clk);
+> +       int ret;
+> +       int i;
+> +
+> +       for (i = 0; i < ARRAY_SIZE(ddp->clk); i++) {
+> +               if (IS_ERR(ddp->clk[i]))
+> +                       continue;
+> +               ret = clk_prepare_enable(ddp->clk[i]);
+> +               if (ret) {
+> +                       pr_err("failed to enable clock, err %d. i:%d\n",
+> +                               ret, i);
+> +                       goto err;
+> +               }
+> +       }
+> +
+> +       return 0;
+> +
+> +err:
+> +       while (--i >= 0)
+> +               clk_disable_unprepare(ddp->clk[i]);
+> +       return ret;
+>  }
+>
+>  void mtk_disp_mutex_unprepare(struct mtk_disp_mutex *mutex)
+>  {
+>         struct mtk_ddp *ddp = container_of(mutex, struct mtk_ddp,
+>                                            mutex[mutex->id]);
+> -       clk_disable_unprepare(ddp->clk);
+> +       int i;
+> +
+> +        for (i = 0; i < ARRAY_SIZE(ddp->clk); i++) {
+> +               if (IS_ERR(ddp->clk[i]))
+> +                       continue;
+> +               clk_disable_unprepare(ddp->clk[i]);
+> +       }
+>  }
+>
+>  void mtk_disp_mutex_add_comp(struct mtk_disp_mutex *mutex,
+> @@ -415,11 +440,19 @@ static int mtk_ddp_probe(struct platform_device *pdev)
+>         ddp->data = of_device_get_match_data(dev);
+>
+>         if (!ddp->data->no_clk) {
+> -               ddp->clk = devm_clk_get(dev, NULL);
+> -               if (IS_ERR(ddp->clk)) {
+> -                       if (PTR_ERR(ddp->clk) != -EPROBE_DEFER)
+> -                               dev_err(dev, "Failed to get clock\n");
+> -                       return PTR_ERR(ddp->clk);
+> +               int ret;
+> +
+> +               for (i = 0; i < ARRAY_SIZE(ddp->clk); i++) {
+> +                       ddp->clk[i] = of_clk_get(dev->of_node, i);
+> +
+> +                       if (IS_ERR(ddp->clk[i])) {
+> +                               ret = PTR_ERR(ddp->clk[i]);
+> +                               if (ret != EPROBE_DEFER)
+> +                                       dev_err(dev, "Failed to get clock %d\n",
+> +                                               ret);
+> +
+> +                               return ret;
+> +                       }
 
-Thank you. Will update.
+Use of_clk_bulk_get_all instead?
 
->
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  drivers/base/node.c |  3 +--
-> >  fs/proc/meminfo.c   |  2 +-
-> >  mm/huge_memory.c    |  3 ++-
-> >  mm/memcontrol.c     | 20 ++++++--------------
-> >  mm/page_alloc.c     |  2 +-
-> >  mm/rmap.c           |  7 ++++---
-> >  6 files changed, 15 insertions(+), 22 deletions(-)
-> >
-> > diff --git a/drivers/base/node.c b/drivers/base/node.c
-> > index 04f71c7bc3f8..ec35cb567940 100644
-> > --- a/drivers/base/node.c
-> > +++ b/drivers/base/node.c
-> > @@ -461,8 +461,7 @@ static ssize_t node_read_meminfo(struct device *dev,
-> >                            nid, K(sunreclaimable)
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >                            ,
-> > -                          nid, K(node_page_state(pgdat, NR_ANON_THPS) *
-> > -                                 HPAGE_PMD_NR),
-> > +                          nid, K(node_page_state(pgdat, NR_ANON_THPS)),
-> >                            nid, K(node_page_state(pgdat, NR_SHMEM_THPS) *
-> >                                   HPAGE_PMD_NR),
-> >                            nid, K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED) *
-> > diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-> > index d6fc74619625..a635c8a84ddf 100644
-> > --- a/fs/proc/meminfo.c
-> > +++ b/fs/proc/meminfo.c
-> > @@ -129,7 +129,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
-> >
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >       show_val_kb(m, "AnonHugePages:  ",
-> > -                 global_node_page_state(NR_ANON_THPS) * HPAGE_PMD_NR);
-> > +                 global_node_page_state(NR_ANON_THPS));
-> >       show_val_kb(m, "ShmemHugePages: ",
-> >                   global_node_page_state(NR_SHMEM_THPS) * HPAGE_PMD_NR);
-> >       show_val_kb(m, "ShmemPmdMapped: ",
-> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > index 10dd3cae5f53..66ec454120de 100644
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -2178,7 +2178,8 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
-> >               lock_page_memcg(page);
-> >               if (atomic_add_negative(-1, compound_mapcount_ptr(page))) {
-> >                       /* Last compound_mapcount is gone. */
-> > -                     __dec_lruvec_page_state(page, NR_ANON_THPS);
-> > +                     __mod_lruvec_page_state(page, NR_ANON_THPS,
-> > +                                             -HPAGE_PMD_NR);
-> >                       if (TestClearPageDoubleMap(page)) {
-> >                               /* No need in mapcount reference anymore */
-> >                               for (i = 0; i < HPAGE_PMD_NR; i++)
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 8818bf64d6fe..b18e25a5cdf3 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -1532,7 +1532,7 @@ static struct memory_stat memory_stats[] = {
-> >        * on some architectures, the macro of HPAGE_PMD_SIZE is not
-> >        * constant(e.g. powerpc).
-> >        */
-> > -     { "anon_thp", 0, NR_ANON_THPS },
-> > +     { "anon_thp", PAGE_SIZE, NR_ANON_THPS },
-> >       { "file_thp", 0, NR_FILE_THPS },
-> >       { "shmem_thp", 0, NR_SHMEM_THPS },
-> >  #endif
-> > @@ -1565,8 +1565,7 @@ static int __init memory_stats_init(void)
-> >
-> >       for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > -             if (memory_stats[i].idx == NR_ANON_THPS ||
-> > -                 memory_stats[i].idx == NR_FILE_THPS ||
-> > +             if (memory_stats[i].idx == NR_FILE_THPS ||
-> >                   memory_stats[i].idx == NR_SHMEM_THPS)
-> >                       memory_stats[i].ratio = HPAGE_PMD_SIZE;
-> >  #endif
-> > @@ -4088,10 +4087,6 @@ static int memcg_stat_show(struct seq_file *m, void *v)
-> >               if (memcg1_stats[i] == MEMCG_SWAP && !do_memsw_account())
-> >                       continue;
-> >               nr = memcg_page_state_local(memcg, memcg1_stats[i]);
-> > -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > -             if (memcg1_stats[i] == NR_ANON_THPS)
-> > -                     nr *= HPAGE_PMD_NR;
-> > -#endif
-> >               seq_printf(m, "%s %lu\n", memcg1_stat_names[i], nr * PAGE_SIZE);
-> >       }
-> >
-> > @@ -4122,10 +4117,6 @@ static int memcg_stat_show(struct seq_file *m, void *v)
-> >               if (memcg1_stats[i] == MEMCG_SWAP && !do_memsw_account())
-> >                       continue;
-> >               nr = memcg_page_state(memcg, memcg1_stats[i]);
-> > -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > -             if (memcg1_stats[i] == NR_ANON_THPS)
-> > -                     nr *= HPAGE_PMD_NR;
-> > -#endif
-> >               seq_printf(m, "total_%s %llu\n", memcg1_stat_names[i],
-> >                                               (u64)nr * PAGE_SIZE);
-> >       }
-> > @@ -5653,10 +5644,11 @@ static int mem_cgroup_move_account(struct page *page,
-> >                       __mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
-> >                       __mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
-> >                       if (PageTransHuge(page)) {
-> > -                             __dec_lruvec_state(from_vec, NR_ANON_THPS);
-> > -                             __inc_lruvec_state(to_vec, NR_ANON_THPS);
-> > +                             __mod_lruvec_state(from_vec, NR_ANON_THPS,
-> > +                                                -nr_pages);
-> > +                             __mod_lruvec_state(to_vec, NR_ANON_THPS,
-> > +                                                nr_pages);
-> >                       }
-> > -
-> >               }
-> >       } else {
-> >               __mod_lruvec_state(from_vec, NR_FILE_PAGES, -nr_pages);
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index 469e28f95ce7..1700f52b7869 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -5580,7 +5580,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
-> >                       K(node_page_state(pgdat, NR_SHMEM_THPS) * HPAGE_PMD_NR),
-> >                       K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED)
-> >                                       * HPAGE_PMD_NR),
-> > -                     K(node_page_state(pgdat, NR_ANON_THPS) * HPAGE_PMD_NR),
-> > +                     K(node_page_state(pgdat, NR_ANON_THPS)),
-> >  #endif
-> >                       K(node_page_state(pgdat, NR_WRITEBACK_TEMP)),
-> >                       node_page_state(pgdat, NR_KERNEL_STACK_KB),
-> > diff --git a/mm/rmap.c b/mm/rmap.c
-> > index 08c56aaf72eb..f59e92e26b61 100644
-> > --- a/mm/rmap.c
-> > +++ b/mm/rmap.c
-> > @@ -1144,7 +1144,8 @@ void do_page_add_anon_rmap(struct page *page,
-> >                * disabled.
-> >                */
-> >               if (compound)
-> > -                     __inc_lruvec_page_state(page, NR_ANON_THPS);
-> > +                     __mod_lruvec_page_state(page, NR_ANON_THPS,
-> > +                                             HPAGE_PMD_NR);
-> >               __mod_lruvec_page_state(page, NR_ANON_MAPPED, nr);
-> >       }
-> >
-> > @@ -1186,7 +1187,7 @@ void page_add_new_anon_rmap(struct page *page,
-> >               if (hpage_pincount_available(page))
-> >                       atomic_set(compound_pincount_ptr(page), 0);
-> >
-> > -             __inc_lruvec_page_state(page, NR_ANON_THPS);
-> > +             __mod_lruvec_page_state(page, NR_ANON_THPS, HPAGE_PMD_NR);
-> >       } else {
-> >               /* Anon THP always mapped first with PMD */
-> >               VM_BUG_ON_PAGE(PageTransCompound(page), page);
-> > @@ -1292,7 +1293,7 @@ static void page_remove_anon_compound_rmap(struct page *page)
-> >       if (!IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE))
-> >               return;
-> >
-> > -     __dec_lruvec_page_state(page, NR_ANON_THPS);
-> > +     __mod_lruvec_page_state(page, NR_ANON_THPS, -HPAGE_PMD_NR);
-> >
-> >       if (TestClearPageDoubleMap(page)) {
-> >               /*
-> > --
-> > 2.11.0
+ddp->num_clks = of_clk_bulk_get_all(dev->of_node, &ddp->clks);
+...
+
+Then the calls above can be clk_bulk_enable/clk_bulk_disable using
+num_clks and clks.
+
+
+>                 }
+>         }
 >
 > --
-> Michal Hocko
-> SUSE Labs
-
-
-
---
-Yours,
-Muchun
+> 1.8.1.1.dirty
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
