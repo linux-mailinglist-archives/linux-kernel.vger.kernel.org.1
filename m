@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B532DAEFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9E52DAF08
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgLOO3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 09:29:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729584AbgLOO3I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:29:08 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1BCC0617A7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:28:27 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id x20so20294478lfe.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:28:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HdkxURvE+//a6vEq3auCmQiU3zCSIzJRBoLgXA2faA8=;
-        b=FWWM+el3iG4jml/a/S8+cAleWrZFjQaUo9/89/8OOHAILBQChQhhLwO0CB4f//95L2
-         J3sLnuHmmIy1Q0FjAPxlGaYjU7I/W5TktEpWaXkv9Tg8dvT6pUSajPhrAHwhvpwLISJN
-         iPeBFgNSEBr1wZdVxEY6UdGkE5otR9R46ktQYGWGzCtNERafVoatwM7kQdTMHvB/ITVW
-         AMKqr0OZNWjr4fgAzSxFdGYKzBD0xSeDkhTJNf/Reirluu9IOcljmt7I/edEoqcCd1r7
-         XbnyutRlov1Q43UeUF0KUoR1FiCXpxWjJGUkGqCbViKkPAXQjaP/2mRFmAq2mcYiKXH4
-         3VCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HdkxURvE+//a6vEq3auCmQiU3zCSIzJRBoLgXA2faA8=;
-        b=FxtiCAYFGrN+O+4e++4LMbUgovVgfrd5CwowHPLHbGJzC3QTBSryoxHivtcBP4WC+K
-         SfmM847UQryrzN/bj8otp4YECYNPiHN2HXBPGwPT7pcxJ2pRffCD21gE2CqXNeeO/th4
-         H7KPNvLPbRUAUSw1x+IVXokWE786qE1555NTkWtVab3xkOEwzzbLxxudV61DEAPWkNwg
-         vhRcnIFpD4C6WuczD5dUiLKeAgPWTkMIWBkaQ4y3j8/1hw0ysSbQdxnRzYNm7JypNewZ
-         ZWCKNED8X+IqJ/fFRCm/sUMR3DaA6a8nSa8ppOwHX3KkK4QucPqYAK/E3QAEEkGWgzO+
-         2Tbg==
-X-Gm-Message-State: AOAM530u2mxUVl5VYOK9xICLQMaCPYlPAcLEsO5xSiKuLKNMMbSNhIxq
-        F+3CN1+u4SDIvJVKwOcOk+D7zZr7vUPHYs57Z05NUw==
-X-Google-Smtp-Source: ABdhPJyQeMgSaqYkewzCqMDu+KKRFvrpl5evPi12xUyQ3QG5+JJM4xJ/Zlq77mWSMw52kggUexMfs6//mDGt2F4cBgI=
-X-Received: by 2002:a19:495d:: with SMTP id l29mr6969679lfj.465.1608042505945;
- Tue, 15 Dec 2020 06:28:25 -0800 (PST)
+        id S1728109AbgLOOfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 09:35:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727879AbgLOOfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 09:35:03 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBE95207AD;
+        Tue, 15 Dec 2020 14:34:16 +0000 (UTC)
+Date:   Tue, 15 Dec 2020 09:34:15 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] sched: Prevent raising SCHED_SOFTIRQ when CPU is
+ !active
+Message-ID: <20201215093415.5b2898ef@gandalf.local.home>
+In-Reply-To: <alpine.DEB.2.21.2012151449260.1448@somnus>
+References: <20201215104400.9435-1-anna-maria@linutronix.de>
+        <20201215111806.GF3040@hirez.programming.kicks-ass.net>
+        <alpine.DEB.2.21.2012151449260.1448@somnus>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201215135222.6899-1-digetx@gmail.com>
-In-Reply-To: <20201215135222.6899-1-digetx@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 15 Dec 2020 15:28:15 +0100
-Message-ID: <CACRpkdaUW5E-vqiy6Qghmjx_u7Sde4G18b=AsWBLmn+ARZiD2Q@mail.gmail.com>
-Subject: Re: [PATCH v1] ARM: tegra: Fix misplaced tegra_uart_config in decompressor
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 2:53 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+On Tue, 15 Dec 2020 15:23:39 +0100 (CET)
+Anna-Maria Behnsen <anna-maria@linutronix.de> wrote:
 
-> The tegra_uart_config of the DEBUG_LL code is now placed right at the
-> start of the .text section after commit which enabled debug output in the
-> decompressor. Tegra devices are not booting anymore if DEBUG_LL is enabled
-> since tegra_uart_config data is executes as a code. Fix the misplaced
-> tegra_uart_config storage by embedding it into the code.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 2596a72d3384 ("ARM: 9009/1: uncompress: Enable debug in head.S")
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > > +	/*
+> > > +	 * Remove CPU from nohz.idle_cpus_mask to prevent participating in
+> > > +	 * load balancing when not active
+> > > +	 */
+> > > +	nohz_balance_exit_idle(rq);
+> > > +
+> > >  	set_cpu_active(cpu, false);
+> > >  	/*
+> > >  	 * We've cleared cpu_active_mask, wait for all preempt-disabled and RCU  
+> > 
+> > OK, so we must clear the state before !active, because getting an
+> > interrupt/softirq after would trigger the badness. And we're guaranteed
+> > nothing blocks between them to re-set it.  
+> 
+> As far as I understood, it is not a problem whether the delete is before or
+> after !active. When it is deleted after, the remote CPU will return in
+> kick_ilb() because cpu is not idle, because it is running the hotplug
+> thread.
 
-Aha I see the problem.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+I was thinking that disabling it after may also cause some badness. Even if
+it does not, I think there's no harm in clearing it just before setting cpu
+active to false. And I find that the safer option.
 
-Please put this into Russell's patch tracker as a fix!
-
-Yours,
-Linus Walleij
+-- Steve
