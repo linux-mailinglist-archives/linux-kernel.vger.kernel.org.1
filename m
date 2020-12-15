@@ -2,229 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CDD52DB133
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAB42DB139
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731004AbgLOQU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:20:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730667AbgLOQUj (ORCPT
+        id S1731037AbgLOQVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:21:52 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:39101 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729543AbgLOQVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:20:39 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A7CC06179C;
-        Tue, 15 Dec 2020 08:19:59 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id 22so9427877qkf.9;
-        Tue, 15 Dec 2020 08:19:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Jh/FYZqSiUedTCmKPnwcuAjv/q6UQYy+G14dvQgnqak=;
-        b=aVWeZsVdgs0IAMR+VHk12hrwLF663aMcOA31rjUI06XX+nAUH/8sNwB8OS+5pUyElm
-         Pqc50Wd4eMyf7HyZbUszwddUwHTRyiw7G8kliAx27r1Ti3Ir6fB6PYOPmHiN/8D4e9cn
-         DtW8p5edA2JV4mj0Rp8dFb0b+sM4io53ZI269oBuvLAOCzRIw9bGv8J5SWYXGNb+SAkC
-         is+NsaN8JKxhhhMuDM8fZxra5xdT0tvFlQctOME1cVrTwBgPyNTrN9AZxSSkX1Z53kpJ
-         35/Bh+0KJyEXjs1qbTZ8CIs+4uJ7txTcPGvZiPAA6dHxcwdzlFXMXCSy1czqx0QNiAYa
-         pZsw==
+        Tue, 15 Dec 2020 11:21:37 -0500
+Received: by mail-ot1-f66.google.com with SMTP id d8so19912844otq.6;
+        Tue, 15 Dec 2020 08:21:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Jh/FYZqSiUedTCmKPnwcuAjv/q6UQYy+G14dvQgnqak=;
-        b=NGGSp7ea2XSYAemu4Z0t1SvlnJXHTVyPtBC8F3v0kQ7yfMAQBPOYWyRNT9RFxskNBo
-         OskU2095zcuSsfsQCcDU7URxnK9DKCqMmNonS9NRUMqKcK9wl4BKEC3bTar6QtwKahPQ
-         sKQKYED9gafWvfVuiwOGs8S1n9gR1aqXVI2yGkENVeqJ7GB81JF9p7CYDzYXRbDI5hIB
-         wN7zAkGgVAxiQiWQuQJbuhjfGcXWRJ6z7D8YDzJC+MDvvlIpSS0by9f6b5ERf8nsvrE/
-         nxEqNFDar1/TZ7s+Zr7E9NcwlfjXpV2JjS41B++/ZXDtNrls/O2mJCOOJwgMoYSkVcsQ
-         GdmQ==
-X-Gm-Message-State: AOAM530OplH/fACmKZsLg8WOCl/ZEhew4TLj/0BLb/qrnivy/TVJg1Iv
-        tbxXZ7v8LGc0hxkPe6jppvw=
-X-Google-Smtp-Source: ABdhPJzFE4Ap82FL6ueWPlkkqksffHkesI+j6iDih9T/zdMs6Pllu0NLUjTK7+Z5p4VFXuC0aXOEBg==
-X-Received: by 2002:a37:b342:: with SMTP id c63mr38923602qkf.146.1608049197870;
-        Tue, 15 Dec 2020 08:19:57 -0800 (PST)
-Received: from localhost.localdomain ([198.52.185.246])
-        by smtp.gmail.com with ESMTPSA id d72sm445213qkg.34.2020.12.15.08.19.56
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=34KtQrwQPQdUruOS7IGSVnCyYoZ5bhkan6tsIdf2DjA=;
+        b=tKDCLNU6h4qvCun8w3j8aW5/52BqCN39WT6GBeKVPeNLqj//Gt0cAPNYFRw998Yd44
+         ySINbP3VCMJdzHrch3pJhHnnFQX/eicnu/nCCZ2bQIWiQ1Xd0p0Uax4iNECIAURbkbiO
+         iTIRT3SpRNox7Hyof98Rd51VgM35YC8+IC+oQALdz7dxsrJmI9sPXLnWgnlaDI/WLwTK
+         Gv+OxlWNEB59Q6uK0WS+chpJ8xY144TVubtd+ANM3GhhYXdsqtKO7sz01A9JZMxQ3bi+
+         e4hhiaICR0pOLlBN5zVdfywVFLcZk0aZ+M+L05bO/5ICIOchqcD96Kt3y2dHx9pG9pcY
+         rscQ==
+X-Gm-Message-State: AOAM5309xr8WdT+tMyfjscJ613k6moKCyZeoXwESsZwWKQg3VDKwQM0M
+        suXAIhJ/Y9f9S9tnwn7nUg==
+X-Google-Smtp-Source: ABdhPJyfBYjhmmyDBWsWA9jqIzDpzF3wFmtV6wV/5vM6bJ5lRmDO0ZaiwF6fL3eFbbxqacgg+LoBPw==
+X-Received: by 2002:a9d:2941:: with SMTP id d59mr16101017otb.232.1608049256919;
+        Tue, 15 Dec 2020 08:20:56 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i24sm4783779oot.42.2020.12.15.08.20.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 08:19:57 -0800 (PST)
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
-To:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net v4] lan743x: fix rx_napi_poll/interrupt ping-pong
-Date:   Tue, 15 Dec 2020 11:19:54 -0500
-Message-Id: <20201215161954.5950-1-TheSven73@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 15 Dec 2020 08:20:56 -0800 (PST)
+Received: (nullmailer pid 3962283 invoked by uid 1000);
+        Tue, 15 Dec 2020 16:20:55 -0000
+Date:   Tue, 15 Dec 2020 10:20:55 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2, 01/17] dt-bindings: mediatek: add description for
+ postmask
+Message-ID: <20201215162055.GA3958446@robh.at.kernel.org>
+References: <1607746317-4696-1-git-send-email-yongqiang.niu@mediatek.com>
+ <1607746317-4696-2-git-send-email-yongqiang.niu@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1607746317-4696-2-git-send-email-yongqiang.niu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Van Asbroeck <thesven73@gmail.com>
+On Sat, Dec 12, 2020 at 12:11:41PM +0800, Yongqiang Niu wrote:
+> add description for postmask
+> 
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+> index 5ca693a..1972fa7 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+> @@ -37,6 +37,7 @@ Required properties (all function blocks):
+>  	"mediatek,<chip>-disp-aal"   		- adaptive ambient light controller
+>  	"mediatek,<chip>-disp-gamma" 		- gamma correction
+>  	"mediatek,<chip>-disp-merge" 		- merge streams from two RDMA sources
+> +	"mediatek,<chip>-disp-postmask" 	- post mask
 
-Even if there is more rx data waiting on the chip, the rx napi poll fn
-will never run more than once - it will always read a few buffers, then
-bail out and re-arm interrupts. Which results in ping-pong between napi
-and interrupt.
+Needs a better explanation. What's the type? Constraints on the values?
 
-This defeats the purpose of napi, and is bad for performance.
-
-Fix by making the rx napi poll behave identically to other ethernet
-drivers:
-1. initialize rx napi polling with an arbitrary budget (64).
-2. in the polling fn, return full weight if rx queue is not depleted,
-   this tells the napi core to "keep polling".
-3. update the rx tail ("ring the doorbell") once for every 8 processed
-   rx ring buffers.
-
-Thanks to Jakub Kicinski, Eric Dumazet and Andrew Lunn for their expert
-opinions and suggestions.
-
-Tested with 20 seconds of full bandwidth receive (iperf3):
-        rx irqs      softirqs(NET_RX)
-        -----------------------------
-before  23827        33620
-after   129          4081
-
-Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # lan7430
-Fixes: 23f0703c125be ("lan743x: Add main source files for new lan743x driver")
-Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
----
-
-v3 -> v4:
-	- eliminate potential undefined behaviour in corner case
-	  (if weight == 0)
-
-v2 -> v3:
-	- use NAPI_POLL_WEIGHT
-	  (Heiner Kallweit)
-
-v1 -> v2:
-	- make napi rx polling behave identically to existing ethernet drivers
-	  (Jacub Kicinski, Eric Dumazet, Andrew Lunn)
-
-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git # 7f376f1917d7
-
-To: Bryan Whitehead <bryan.whitehead@microchip.com>
-To: Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-To: "David S. Miller" <davem@davemloft.net>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Andrew Lunn <andrew@lunn.ch>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-
- drivers/net/ethernet/microchip/lan743x_main.c | 43 ++++++++++---------
- 1 file changed, 23 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-index b319c22c211c..8947c3a62810 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -1962,6 +1962,14 @@ static struct sk_buff *lan743x_rx_allocate_skb(struct lan743x_rx *rx)
- 				  length, GFP_ATOMIC | GFP_DMA);
- }
- 
-+static void lan743x_rx_update_tail(struct lan743x_rx *rx, int index)
-+{
-+	/* update the tail once per 8 descriptors */
-+	if ((index & 7) == 7)
-+		lan743x_csr_write(rx->adapter, RX_TAIL(rx->channel_number),
-+				  index);
-+}
-+
- static int lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index,
- 					struct sk_buff *skb)
- {
-@@ -1992,6 +2000,7 @@ static int lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index,
- 	descriptor->data0 = (RX_DESC_DATA0_OWN_ |
- 			    (length & RX_DESC_DATA0_BUF_LENGTH_MASK_));
- 	skb_reserve(buffer_info->skb, RX_HEAD_PADDING);
-+	lan743x_rx_update_tail(rx, index);
- 
- 	return 0;
- }
-@@ -2010,6 +2019,7 @@ static void lan743x_rx_reuse_ring_element(struct lan743x_rx *rx, int index)
- 	descriptor->data0 = (RX_DESC_DATA0_OWN_ |
- 			    ((buffer_info->buffer_length) &
- 			    RX_DESC_DATA0_BUF_LENGTH_MASK_));
-+	lan743x_rx_update_tail(rx, index);
- }
- 
- static void lan743x_rx_release_ring_element(struct lan743x_rx *rx, int index)
-@@ -2220,6 +2230,7 @@ static int lan743x_rx_napi_poll(struct napi_struct *napi, int weight)
- {
- 	struct lan743x_rx *rx = container_of(napi, struct lan743x_rx, napi);
- 	struct lan743x_adapter *adapter = rx->adapter;
-+	int result = RX_PROCESS_RESULT_NOTHING_TO_DO;
- 	u32 rx_tail_flags = 0;
- 	int count;
- 
-@@ -2228,27 +2239,19 @@ static int lan743x_rx_napi_poll(struct napi_struct *napi, int weight)
- 		lan743x_csr_write(adapter, DMAC_INT_STS,
- 				  DMAC_INT_BIT_RXFRM_(rx->channel_number));
- 	}
--	count = 0;
--	while (count < weight) {
--		int rx_process_result = lan743x_rx_process_packet(rx);
--
--		if (rx_process_result == RX_PROCESS_RESULT_PACKET_RECEIVED) {
--			count++;
--		} else if (rx_process_result ==
--			RX_PROCESS_RESULT_NOTHING_TO_DO) {
-+	for (count = 0; count < weight; count++) {
-+		result = lan743x_rx_process_packet(rx);
-+		if (result == RX_PROCESS_RESULT_NOTHING_TO_DO)
- 			break;
--		} else if (rx_process_result ==
--			RX_PROCESS_RESULT_PACKET_DROPPED) {
--			continue;
--		}
- 	}
- 	rx->frame_count += count;
--	if (count == weight)
--		goto done;
-+	if (count == weight || result == RX_PROCESS_RESULT_PACKET_RECEIVED)
-+		return weight;
- 
- 	if (!napi_complete_done(napi, count))
--		goto done;
-+		return count;
- 
-+	/* re-arm interrupts, must write to rx tail on some chip variants */
- 	if (rx->vector_flags & LAN743X_VECTOR_FLAG_VECTOR_ENABLE_AUTO_SET)
- 		rx_tail_flags |= RX_TAIL_SET_TOP_INT_VEC_EN_;
- 	if (rx->vector_flags & LAN743X_VECTOR_FLAG_SOURCE_ENABLE_AUTO_SET) {
-@@ -2258,10 +2261,10 @@ static int lan743x_rx_napi_poll(struct napi_struct *napi, int weight)
- 				  INT_BIT_DMA_RX_(rx->channel_number));
- 	}
- 
--	/* update RX_TAIL */
--	lan743x_csr_write(adapter, RX_TAIL(rx->channel_number),
--			  rx_tail_flags | rx->last_tail);
--done:
-+	if (rx_tail_flags)
-+		lan743x_csr_write(adapter, RX_TAIL(rx->channel_number),
-+				  rx_tail_flags | rx->last_tail);
-+
- 	return count;
- }
- 
-@@ -2405,7 +2408,7 @@ static int lan743x_rx_open(struct lan743x_rx *rx)
- 
- 	netif_napi_add(adapter->netdev,
- 		       &rx->napi, lan743x_rx_napi_poll,
--		       rx->ring_size - 1);
-+		       NAPI_POLL_WEIGHT);
- 
- 	lan743x_csr_write(adapter, DMAC_CMD,
- 			  DMAC_CMD_RX_SWR_(rx->channel_number));
--- 
-2.17.1
-
+>  	"mediatek,<chip>-disp-split" 		- split stream to two encoders
+>  	"mediatek,<chip>-disp-ufoe"  		- data compression engine
+>  	"mediatek,<chip>-dsi"        		- DSI controller, see mediatek,dsi.txt
+> -- 
+> 1.8.1.1.dirty
+> 
