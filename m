@@ -2,121 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26DD2DA65D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:42:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC722DA63D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727187AbgLOCXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:23:48 -0500
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:51269 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727082AbgLOCXS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:23:18 -0500
-Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
-        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 6C7BB111056;
-        Tue, 15 Dec 2020 13:22:34 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kozyz-0044LU-Uq; Tue, 15 Dec 2020 13:22:33 +1100
-Date:   Tue, 15 Dec 2020 13:22:33 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     guro@fb.com, ktkhai@virtuozzo.com, shakeelb@google.com,
-        hannes@cmpxchg.org, mhocko@suse.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [v2 PATCH 5/9] mm: memcontrol: add per memcg shrinker nr_deferred
-Message-ID: <20201215022233.GL3913616@dread.disaster.area>
-References: <20201214223722.232537-1-shy828301@gmail.com>
- <20201214223722.232537-6-shy828301@gmail.com>
+        id S1727362AbgLOCYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:24:24 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:59811 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727175AbgLOCXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:23:49 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cw29Q0XTWz9s1l;
+        Tue, 15 Dec 2020 13:23:06 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1607998987;
+        bh=eId5oZC52tK4KiejMx9Sb2FQbEe9Ct3l7rQSdlOZqZI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=B+GwPaLP+AS428yj6TRvCsk23N31ZI061I9CDIiRXm2p9xXO//VB5W6EL5EYWEzKl
+         WlA71rSp7RINIqr5rMSf5VbjcOgwTvhmxGzUtSD/6Pb/gTVLwgTcuQzR5shjuXwHJS
+         dsMJNBoGdu29sGGeEAFQenMykY3cHb1tDSGoSniDOE5PMhVjnWkxTwOjQYTyfAGsfm
+         kwx13YQkyuQmJTIkS5DZ5bp2GOyLOri4fkNuHIEHsnEXwQ1SQmEtB84yJh5bb0DzFR
+         GaeCnqCO/IyyNcsvW9uL/RL/nmuNwH4zii0DWypiK9KEqcN8PHxJby60wcqwO4xH+U
+         BkQePURGuMMjQ==
+Date:   Tue, 15 Dec 2020 13:23:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the
+ bpf-next tree
+Message-ID: <20201215132305.5f5a1c2b@canb.auug.org.au>
+In-Reply-To: <20201214180629.4fee48ae@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20201204202005.3fb1304f@canb.auug.org.au>
+        <20201215072156.1988fabe@canb.auug.org.au>
+        <20201215012943.GA3079589@carbon.DHCP.thefacebook.com>
+        <20201214174021.2dfc2fbd99ca3e72b3e4eb02@linux-foundation.org>
+        <20201214180629.4fee48ae@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201214223722.232537-6-shy828301@gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
-        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
-        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=pGLkceISAAAA:8 a=7-415B0cAAAA:8
-        a=H_gIHsiua904sXZxqn0A:9 a=CjuIK1q_8ugA:10 a=-RoEEKskQ1sA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Type: multipart/signed; boundary="Sig_/Y._2ICox=dBWFXc9VQNNpAE";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 02:37:18PM -0800, Yang Shi wrote:
-> Currently the number of deferred objects are per shrinker, but some slabs, for example,
-> vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
-> 
-> The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
-> excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
-> may suffer from over shrink, excessive reclaim latency, etc.
-> 
-> For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
-> heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
-> might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
-> 
-> We observed this hit in our production environment which was running vfs heavy workload
-> shown as the below tracing log:
-> 
-> <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
-> cache items 246404277 delta 31345 total_scan 123202138
-> <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
-> last shrinker return val 123186855
-> 
-> The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
-> This also resulted in significant amount of page caches were dropped due to inodes eviction.
-> 
-> Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
-> better isolation.
-> 
-> When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
-> would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
-> 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> ---
->  include/linux/memcontrol.h |   9 +++
->  mm/memcontrol.c            | 110 ++++++++++++++++++++++++++++++++++++-
->  mm/vmscan.c                |   4 ++
->  3 files changed, 120 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 922a7f600465..1b343b268359 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -92,6 +92,13 @@ struct lruvec_stat {
->  	long count[NR_VM_NODE_STAT_ITEMS];
->  };
->  
-> +
-> +/* Shrinker::id indexed nr_deferred of memcg-aware shrinkers. */
-> +struct memcg_shrinker_deferred {
-> +	struct rcu_head rcu;
-> +	atomic_long_t nr_deferred[];
-> +};
+--Sig_/Y._2ICox=dBWFXc9VQNNpAE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-So you're effectively copy and pasting the memcg_shrinker_map
-infrastructure and doubling the number of allocations/frees required
-to set up/tear down a memcg? Why not add it to the struct
-memcg_shrinker_map like this:
+Hi Jakub,
 
-struct memcg_shrinker_map {
-        struct rcu_head	rcu;
-	unsigned long	*map;
-	atomic_long_t	*nr_deferred;
-};
+On Mon, 14 Dec 2020 18:06:29 -0800 Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> AFAIU all we can do is tell Linus about the merge issue, and point=20
+> at Stephen's resolution.
 
-And when you dynamically allocate the structure, set the map and
-nr_deferred pointers to the correct offset in the allocated range.
+This is the correct response.
 
-Then this patch is really only changes to the size of the chunk
-being allocated, setting up the pointers and copying the relevant
-data from the old to new.
-
+--=20
 Cheers,
+Stephen Rothwell
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+--Sig_/Y._2ICox=dBWFXc9VQNNpAE
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/YHgkACgkQAVBC80lX
+0Gw4pAgAi4awFlvffFlzIO8jDZlNVtxte5b/dM4GOGRk0QS/qSUswgO4sWKgY53a
+6gWS8iQ2QmS9kiwUTU2jcojiq23YzWPQuaiw1C/DiZTg5ALZFFTrgy3ne3svvTh6
+MGkwPOo5HxL5eDeCDA+IU2jVMaqOCfKEVQdMnOY1i5m5OVcVYVzd2Bp/HxCHr07H
+q9+S052sbcdgBQcm/yUJqwZFn4pxCk8Xs61YqX5oq/9hGJbzB5I4SMdSwuUbo6GO
+f6UIobubXpEHbRhAc2omI7gD+3Vf8XxdVitRllZKIXaYXSO4sEAvxXcCMCcKZtZQ
+TNipvxwef437z5RCnfAxyBkRGBmy/A==
+=AN7C
+-----END PGP SIGNATURE-----
+
+--Sig_/Y._2ICox=dBWFXc9VQNNpAE--
