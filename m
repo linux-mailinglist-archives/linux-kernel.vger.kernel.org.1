@@ -2,156 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD9A2DB58C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:02:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 601A82DB598
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:07:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729441AbgLOVB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 16:01:26 -0500
-Received: from esa1.hc3370-68.iphmx.com ([216.71.145.142]:6994 "EHLO
-        esa1.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729415AbgLOVAs (ORCPT
+        id S1727804AbgLOVHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 16:07:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727687AbgLOVHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 16:00:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1608066047;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=twnfeOO/nJh+7Yqrwe0fs8m/4jH5/Yo3yi9Jp0z/Lss=;
-  b=Zd/IUA9qamgKmkl7LhkCE9bPZ3NP5Pa6bM0cHo4nY7caTQk+6Crz3DmC
-   6Yea7DTYF/brq0PMoa9czbiJ+usBRQHs9fHhlv4T5i9ISxx32IsMbOWKc
-   t8B1UgUuTG5CuXwayMDn4snL8Z5aw+9U5lumOEWJuKSjg6HLb35sEuVNF
-   w=;
-Authentication-Results: esa1.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: uuatwPkBk2JlFNvnKxCJz1fCleazbEJAfO+UCKhDHk/N1fJ6YIIb3Me8H7vmAP/wC4OOPR92M3
- Ljp+e5tikssU7acjBxZrayROOdojYqfTc57bvGwSBQkDNkPh2Zg1dnVi0S0P36ChXKPTthy94K
- uBJCWhda77S2AUZc0x84cppZ/tF2VKl+CZC+FstSAd6IlZsThgc6a+3O/5t3OHTOOkB7Xxg01C
- VnRQHy+6IEWa7QpkIJfZ5+92YLk5y8JNhfhxnw6IxvaR30I8wctCDDtdNIljbssIT9vzqVm5o+
- gbQ=
-X-SBRS: 5.2
-X-MesageID: 33639630
-X-Ironport-Server: esa1.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.78,422,1599537600"; 
-   d="scan'208";a="33639630"
-Subject: Re: [PATCH v2] xen/xenbus: make xs_talkv() interruptible
-To:     Juergen Gross <jgross@suse.com>, <xen-devel@lists.xenproject.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-References: <20201215111055.3810-1-jgross@suse.com>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Message-ID: <2deac9ce-0c27-a472-7d51-b91a640d92ed@citrix.com>
-Date:   Tue, 15 Dec 2020 20:59:32 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 15 Dec 2020 16:07:48 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0955EC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 13:07:08 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id qw4so29674168ejb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 13:07:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5oyP6mvBrvE3aEYFhLfs2RYWHj0K8mQLLM6Luko/efo=;
+        b=del9jE5SOnMZt6v3+c7d+G/TxIN3JzQQaLdEu/P/mWpV1LqwThTlFgRGPPh7HyeAVH
+         JDrbSeo5jQNYKIxUcBS4lME2fzO1FieKxP/gopAy3MPqExnhHza1QJHU/LbujshLUV03
+         tLIUVYkyVUb2qUN09S38om1HeQMcNu+KdL8Io=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5oyP6mvBrvE3aEYFhLfs2RYWHj0K8mQLLM6Luko/efo=;
+        b=KtggqaEWky2owG/0ko890SCAMVMq1gLq5c5Lbrc4byduyn2HcR8mxOJw9fijS90eQW
+         DTQl5gy5YFPQlTm/cL7Wzp22jskLU9UsQ+9hpFuMsM4/66QWz8YGxyH5DNNZsZO6LudJ
+         03RCnBpKobe1+E80h+rvUOlQ+Tzm0pAXsmVjhTcB+tJvMX8uCU/7Unrp1m2sqRYY6r5B
+         aL9q1SddHQK8G4Sm2U8eM93qsMQIQ2AxpOMK1OdbZORe6YFdaoIIVYFHB1Sf/Cm5dgFN
+         HAdG1XrBkNs724inmgM0NhCV4m3RCRsr37E6hrr1KKzt3j1QgNi3uTJHKVSsxC7BXTWv
+         G9EA==
+X-Gm-Message-State: AOAM533d3cJmf/zxWSXEFjXqMk2KgqmrjkqploguEe9GSh35WDmFsahZ
+        g4dplMvQol8jCIOpWt7+1XDK5/MthlbPfjhPZiPjoA==
+X-Google-Smtp-Source: ABdhPJzWwlcPoqKhjHTrI6zoBOxh/CVBgBRXg6QTI1801GgWXVReiXUxUyJ9HY6W6Y/LCE22kPBK9M045rauq7GzpII=
+X-Received: by 2002:a17:906:4ec7:: with SMTP id i7mr6677702ejv.252.1608066426798;
+ Tue, 15 Dec 2020 13:07:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201215111055.3810-1-jgross@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
- FTLPEX02CL03.citrite.net (10.13.108.165)
+References: <20201215204858.8186-1-adrien.grassein@gmail.com> <20201215204858.8186-4-adrien.grassein@gmail.com>
+In-Reply-To: <20201215204858.8186-4-adrien.grassein@gmail.com>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Wed, 16 Dec 2020 02:36:54 +0530
+Message-ID: <CAMty3ZD2WsFeuCnt4DEL87Ou-sxHPYiBVu1n-LoK2gEzgO3XwQ@mail.gmail.com>
+Subject: Re: [PATCH 3/6] regulator: dt-bindings: pf8x00: fix nxp,phase-shift doc
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Troy Kisky <troy.kisky@boundarydevices.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/12/2020 11:10, Juergen Gross wrote:
-> In case a process waits for any Xenstore action in the xenbus driver
-> it should be interruptible by signals.
+On Wed, Dec 16, 2020 at 2:19 AM Adrien Grassein
+<adrien.grassein@gmail.com> wrote:
 >
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> ---
-> V2:
-> - don't special case SIGKILL as libxenstore is handling -EINTR fine
-> ---
->  drivers/xen/xenbus/xenbus_xs.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+> nxp,phase-shift is an enum so use enum format to describe it.
+> Minimum and maximum values are also wrong.
 >
-> diff --git a/drivers/xen/xenbus/xenbus_xs.c b/drivers/xen/xenbus/xenbus_xs.c
-> index 3a06eb699f33..17c8f8a155fd 100644
-> --- a/drivers/xen/xenbus/xenbus_xs.c
-> +++ b/drivers/xen/xenbus/xenbus_xs.c
-> @@ -205,8 +205,15 @@ static bool test_reply(struct xb_req_data *req)
->  
->  static void *read_reply(struct xb_req_data *req)
->  {
-> +	int ret;
-> +
->  	do {
-> -		wait_event(req->wq, test_reply(req));
-> +		ret = wait_event_interruptible(req->wq, test_reply(req));
-> +
-> +		if (ret == -ERESTARTSYS && signal_pending(current)) {
-> +			req->msg.type = XS_ERROR;
-> +			return ERR_PTR(-EINTR);
-> +		}
+> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+> ---
+>  .../bindings/regulator/nxp,pf8x00-regulator.yaml | 16 ++++------------
+>  1 file changed, 4 insertions(+), 12 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+> index 913532d0532e..1da724c6e2ba 100644
+> --- a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+> +++ b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
+> @@ -60,21 +60,13 @@ properties:
+>
+>            nxp,phase-shift:
+>              $ref: "/schemas/types.yaml#/definitions/uint32"
+> -            minimum: 45
+> -            maximum: 0
+> +            minimum: 0
+> +            maximum: 315
+> +            default: 0
+> +            enum: [ 0, 45, 90, 135, 180, 225, 270, 315 ]
 
-So now I can talk fully about the situations which lead to this, I think
-there is a bit more complexity.
+Do you mean 0 is the minimum or starting value? I can see Table 48.
+SWx phase configuration with minimum and maximum values are starting
+from 45, 90, 135, 180, 225, 270, 315, 0 with phase bits as 0x0 to 0x7
 
-It turns out there are a number of issues related to running a Xen
-system with no xenstored.
-
-1) If a xenstore-write occurs during startup before init-xenstore-domain
-runs, the former blocks on /dev/xen/xenbus waiting for xenstored to
-reply, while the latter blocks on /dev/xen/xenbus_backend when trying to
-tell the dom0 kernel that xenstored is in dom1.  This effectively
-deadlocks the system.
-
-2) If xenstore-watch is running when xenstored dies, it spins at 100%
-cpu usage making no system calls at all.  This is caused by bad error
-handling from xs_watch(), and attempting to debug found:
-
-3) (this issue).  If anyone starts xenstore-watch with no xenstored
-running at all, it blocks in D in the kernel.
-
-The cause is the special handling for watch/unwatch commands which,
-instead of just queuing up the data for xenstore, explicitly waits for
-an OK for registering the watch.  This causes a write() system call to
-block waiting for a non-existent entity to reply.
-
-So while this patch does resolve the major usability issue I found (I
-can't even SIGINT and get my terminal back), I think there are issues.
-
-The reason why XS_WATCH/XS_UNWATCH are special cased is because they do
-require special handling.  The main kernel thread for processing
-incoming data from xenstored does need to know how to associate each
-async XS_WATCH_EVENT to the caller who watched the path.
-
-Therefore, depending on when this cancellation hits, we might be in any
-of the following states:
-
-1) the watch is queued in the kernel, but not even sent to xenstored yet
-2) the watch is queued in the xenstored ring, but not acted upon
-3) the watch is queued in the xenstored ring, and the xenstored has seen
-it but not replied yet
-4) the watch has been processed, but the XS_WATCH reply hasn't been
-received yet
-5) the watch has been processed, and the XS_WATCH reply received
-
-State 5 (and a little bit) is the normal success path when xenstored has
-acted upon the request, and the internal kernel infrastructure is set up
-appropriately to handle XS_WATCH_EVENTs.
-
-States 1 and 2 can be very common if there is no xenstored (or at least,
-it hasn't started up yet).  In reality, there is either no xenstored, or
-it is up and running (and for a period of time during system startup,
-these cases occur in sequence).
-
-As soon as the XS_WATCH event has been written into the xenstored ring,
-it is not safe to cancel.  You've committed to xenstored processing the
-request (if it is up).
-
-If xenstored is actually up and running, its fine and necessary to
-block.  The request will be processed in due course (timing subject to
-the client and server load).  If xenstored isn't up, blocking isn't ok.
-
-Therefore, I think we need to distinguish "not yet on the ring" from "on
-the ring", as our distinction as to whether cancelling is safe, and
-ensure we don't queue anything on the ring before we're sure xenstored
-has started up.
-
-Does this make sense?
-
-~Andrew
+Jagan.
