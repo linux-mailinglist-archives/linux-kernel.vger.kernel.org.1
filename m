@@ -2,141 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E97E2DAE4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:53:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D832DAE56
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:54:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728496AbgLONvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:51:18 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:35184 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726819AbgLONux (ORCPT
+        id S1728634AbgLONyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:54:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727348AbgLONyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:50:53 -0500
-Received: by mail-lf1-f68.google.com with SMTP id a9so39495248lfh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 05:50:36 -0800 (PST)
+        Tue, 15 Dec 2020 08:54:19 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B032C06179C;
+        Tue, 15 Dec 2020 05:53:38 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id a12so39530542lfl.6;
+        Tue, 15 Dec 2020 05:53:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gDzaS/pPeZh5EiQsya+W0nBISDtLWznXodq8DvMAkkc=;
+        b=JQJYWAVAr9iF6vLnV7Wck1vs/TRGHWt5u2TbU/e6BR6bgmNodpmNt4jlM9WG1krWPW
+         KVDiUAY7zRS0McEaur8CLPcLsH2SokbFWqpFrF+ZewYhUXL3q6BeRgb9Ns5CysAHCh1h
+         +ik4nHs0o6P2Znww+lg1qdl48fYwQPEv05ZOZHg0cfhw6d3XNCb+NNs+TtB3QJmBMsu3
+         vHk6jZJlfTfnWl44J3sbwNHvTMEHQfsqtuSwNMmSH7I4Azj4qMkMUXvw+luTJLkO8fjs
+         Q+abUGxFXxD/HB9EvH4qMzxTj0nPopLWA7h+3Kg9d+TT9PDbmvgi7r8+B8I4XhGkhqJO
+         Z/6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cCVaoJFKEtI7Btpypz1Lyb8fOWukXtArgLnLgeKjRr0=;
-        b=Uk3NSzsXKnursyDjV7JY81ItOuHjMH0LHFcX8psXcegaYlTBNJnzoDQMafBAvHmO8+
-         59IycVJgNdH+KUPWW98ss9JeSbffRjK392vzLT7Xxfigb6fO2gBFQsOgKixNyyp+ZAoz
-         Wponr9UKun2cqLRP/So/umQhYleFWy/eiTfkKeVcf7/YqYz69DPVJms7B24D2a/LGu5M
-         zakkCEEIwWeekRfV8amhHHNnSwCgz9Nnw0q5tmH72FmgwnYxagHL9ogChNOGunUS+WN0
-         VcCaultugf1S0WnDIfegGUj28zG6Cs2b2UglGUnZyU6k+WawSNy8Kh3/zLk/Fgya+WjU
-         S3Mw==
-X-Gm-Message-State: AOAM531MS8iddsmgLY519rmcgXcPv9nAIPi9etglsHZ20QPfYGgM3koU
-        oydmQ/54QmYpq0tc2vR36WIAwMAYme+pJ3uMQuh5PifN
-X-Google-Smtp-Source: ABdhPJyIkEcLpcR50ld+Qzx6yGLoJGSl76WmdOZRMpcoMAilWdvJLDFwidd0ZGeMKqgHHtgeJmevUeMXDdpsr3XRXSk=
-X-Received: by 2002:a19:cc10:: with SMTP id c16mr11048202lfg.112.1608040210893;
- Tue, 15 Dec 2020 05:50:10 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gDzaS/pPeZh5EiQsya+W0nBISDtLWznXodq8DvMAkkc=;
+        b=H7gvTjt0CCF6vtgfzFcuk8+2iNM3TsRo6axlW6vdYuEX1nUN+XEpC3iicxODF49vre
+         hjlBuHpMEy+XCNttnkU1XxHgoL9FCiAdHyCM9e1XKDntUn4SXM5QD3U428YLG/wcRDId
+         7C2tpEk+o/ahp4TGUjOk0xBVvUXllYnkKztEh69yday0ODy5BbFy4MgQ19nWRstTtSAe
+         SkBbhLxmvBVLrGRrCq0vQfIzzjahLBGvAK2gxfPDX4oRkzT5jWrFAr3zT6eRN5urEM2S
+         q5AQI6g/7S6HACGyEO4Po1u9Tnr+RWKGMjXSo4edxXQ2GHXwISzYOoOXFYZHjmIaxHD/
+         WJag==
+X-Gm-Message-State: AOAM532oa3LX416NUCER+jqh9bYUiGR7ORuaqCtoWLiXCPkbs8zEjr6I
+        LuWXttxhz1JSbpQc7lygcZTMWEvfEas=
+X-Google-Smtp-Source: ABdhPJyoiFDi6yirdb/3UJoHXAC3ipvpCvxxsUUnB7EAzueDX1L1rTCpMDe2+omlMJYQvtJi4D6OBw==
+X-Received: by 2002:a2e:a584:: with SMTP id m4mr3656220ljp.247.1608040417011;
+        Tue, 15 Dec 2020 05:53:37 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id v7sm214842lfg.9.2020.12.15.05.53.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 05:53:36 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] ARM: tegra: Fix misplaced tegra_uart_config in decompressor
+Date:   Tue, 15 Dec 2020 16:52:22 +0300
+Message-Id: <20201215135222.6899-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <1607996131-9340-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1607996131-9340-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 15 Dec 2020 22:49:59 +0900
-Message-ID: <CAM9d7chMkKBschy=abDqyOBg8_jxXBXhSN30k2m+MhPca_g2ig@mail.gmail.com>
-Subject: Re: [PATCH v2] perf callchain: Return directly when use '--call-graph
- dwarf' under !HAVE_DWARF_SUPPORT
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The tegra_uart_config of the DEBUG_LL code is now placed right at the
+start of the .text section after commit which enabled debug output in the
+decompressor. Tegra devices are not booting anymore if DEBUG_LL is enabled
+since tegra_uart_config data is executes as a code. Fix the misplaced
+tegra_uart_config storage by embedding it into the code.
 
-On Tue, Dec 15, 2020 at 10:35 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
-> DWARF register mappings have not been defined for some architectures,
-> at least for mips, so we can print an error message and then return
-> directly when use '--call-graph dwarf'.
->
-> E.g. without this patch:
->
-> [root@linux perf]# ./perf record --call-graph dwarf cd
-> Error:
-> The sys_perf_event_open() syscall returned with 89 (Function not implemented) for event (cycles).
-> /bin/dmesg | grep -i perf may provide additional information.
->
-> With this patch:
->
-> [root@linux perf]# ./perf record --call-graph dwarf cd
-> DWARF is not supported for architecture mips64
->
->  Usage: perf record [<options>] [<command>]
->     or: perf record [<options>] -- <command> [<options>]
->
->         --call-graph <record_mode[,record_size]>
->                           setup and enables call-graph (stack chain/backtrace):
->
->                                 record_mode:    call graph recording mode (fp|dwarf|lbr)
->                                 record_size:    if record_mode is 'dwarf', max size of stack recording (<bytes>)
->                                                 default: 8192 (bytes)
->
->                                 Default: fp
->
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->
-> v2: Use HAVE_DWARF_SUPPORT to check
+Cc: stable@vger.kernel.org
+Fixes: 2596a72d3384 ("ARM: 9009/1: uncompress: Enable debug in head.S")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ arch/arm/include/debug/tegra.S | 54 +++++++++++++++++-----------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
 
-I'm not sure whether this is because of lack of dwarf library or kernel support.
-Based on the error message, I guess it's from the kernel.  Then I think this
-patch won't be sufficient..
+diff --git a/arch/arm/include/debug/tegra.S b/arch/arm/include/debug/tegra.S
+index 98daa7f48314..7267516db0ba 100644
+--- a/arch/arm/include/debug/tegra.S
++++ b/arch/arm/include/debug/tegra.S
+@@ -149,7 +149,34 @@
+ 
+ 		.align
+ 99:		.word	.
++#if defined(ZIMAGE)
++		.word	. + 4
++/*
++ * Storage for the state maintained by the macro.
++ *
++ * In the kernel proper, this data is located in arch/arm/mach-tegra/tegra.c.
++ * That's because this header is included from multiple files, and we only
++ * want a single copy of the data. In particular, the UART probing code above
++ * assumes it's running using physical addresses. This is true when this file
++ * is included from head.o, but not when included from debug.o. So we need
++ * to share the probe results between the two copies, rather than having
++ * to re-run the probing again later.
++ *
++ * In the decompressor, we put the storage right here, since common.c
++ * isn't included in the decompressor build. This storage data gets put in
++ * .text even though it's really data, since .data is discarded from the
++ * decompressor. Luckily, .text is writeable in the decompressor, unless
++ * CONFIG_ZBOOT_ROM. That dependency is handled in arch/arm/Kconfig.debug.
++ */
++		/* Debug UART initialization required */
++		.word 1
++		/* Debug UART physical address */
++		.word 0
++		/* Debug UART virtual address */
++		.word 0
++#else
+ 		.word	tegra_uart_config
++#endif
+ 		.ltorg
+ 
+ 		/* Load previously selected UART address */
+@@ -189,30 +216,3 @@
+ 
+ 		.macro	waituarttxrdy,rd,rx
+ 		.endm
+-
+-/*
+- * Storage for the state maintained by the macros above.
+- *
+- * In the kernel proper, this data is located in arch/arm/mach-tegra/tegra.c.
+- * That's because this header is included from multiple files, and we only
+- * want a single copy of the data. In particular, the UART probing code above
+- * assumes it's running using physical addresses. This is true when this file
+- * is included from head.o, but not when included from debug.o. So we need
+- * to share the probe results between the two copies, rather than having
+- * to re-run the probing again later.
+- *
+- * In the decompressor, we put the symbol/storage right here, since common.c
+- * isn't included in the decompressor build. This symbol gets put in .text
+- * even though it's really data, since .data is discarded from the
+- * decompressor. Luckily, .text is writeable in the decompressor, unless
+- * CONFIG_ZBOOT_ROM. That dependency is handled in arch/arm/Kconfig.debug.
+- */
+-#if defined(ZIMAGE)
+-tegra_uart_config:
+-	/* Debug UART initialization required */
+-	.word 1
+-	/* Debug UART physical address */
+-	.word 0
+-	/* Debug UART virtual address */
+-	.word 0
+-#endif
+-- 
+2.29.2
 
-Thanks,
-Namhyung
-
-
->
->  tools/perf/util/callchain.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
-> index 1b60985..ad08554 100644
-> --- a/tools/perf/util/callchain.c
-> +++ b/tools/perf/util/callchain.c
-> @@ -18,6 +18,7 @@
->  #include <math.h>
->  #include <linux/string.h>
->  #include <linux/zalloc.h>
-> +#include <sys/utsname.h>
->
->  #include "asm/bug.h"
->
-> @@ -276,6 +277,7 @@ int parse_callchain_record(const char *arg, struct callchain_param *param)
->
->                 /* Dwarf style */
->                 } else if (!strncmp(name, "dwarf", sizeof("dwarf"))) {
-> +#ifdef HAVE_DWARF_SUPPORT
->                         const unsigned long default_stack_dump_size = 8192;
->
->                         ret = 0;
-> @@ -290,6 +292,15 @@ int parse_callchain_record(const char *arg, struct callchain_param *param)
->                                 ret = get_stack_size(tok, &size);
->                                 param->dump_size = size;
->                         }
-> +#else
-> +                       struct utsname uts;
-> +
-> +                       ret = uname(&uts);
-> +                       pr_err("DWARF is not supported for architecture %s\n",
-> +                               ret ? "unknown" : uts.machine);
-> +
-> +                       return -ENOTSUP;
-> +#endif
->                 } else if (!strncmp(name, "lbr", sizeof("lbr"))) {
->                         if (!strtok_r(NULL, ",", &saveptr)) {
->                                 param->record_mode = CALLCHAIN_LBR;
-> --
-> 2.1.0
->
