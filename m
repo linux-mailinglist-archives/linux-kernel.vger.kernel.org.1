@@ -2,192 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D5A2DA83A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 07:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7721F2DA83F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 07:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgLOGwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 01:52:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726537AbgLOGwD (ORCPT
+        id S1726590AbgLOGxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 01:53:03 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:53402 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726537AbgLOGwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 01:52:03 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58006C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 22:51:17 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id 6so11450974ejz.5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 22:51:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/2v55j6kPVQqG/6UhmUqPYd8SOtE4gPGKwChg0G6kpU=;
-        b=jLQI7kqQm5oqDw44AuRFF6U7J7a9PQH/7MGmueuIkfA2A46XUR9451HVvu94E+Ayqo
-         fPHOlrd3UBoq5SsfSuedaS4NM7uRPLK0MI13LeMxduG7xd03jF3RzShF2OLCaveM1ufK
-         06FcnmbzVzJvn6bDsnlNMa0tajrfr9+u/VuchYn4qoqSapMXnp5WlIKpvKwHFzQp82tX
-         aRvBAXGX/4m5s+MS6jKoJisjEJ3Zs0cRpkltsR23+LIMs2VAFTf5eRgXmIAHhCS5fpK0
-         YUW4Gzi0naTLNpR4/1qTz0UKFHFr+V1ehhiiPU9U5YrCTjw4GZv/tgkJEcZI0d0ud0qu
-         xTOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/2v55j6kPVQqG/6UhmUqPYd8SOtE4gPGKwChg0G6kpU=;
-        b=uSWzIO1fBzFU9X7uD6vaIzyv7TN38YCzXdCkX++fSt9qpEwq4GdKu1WrID4/FNUW/n
-         5I7Ju1ERjcQPW8Qi6Ccs3lye+bvLhS/CWVtJ5fcDvAwO8I6RjpzRXvaUp/LFiazjuxya
-         5LlAA3992Bg9DyqnSAQuwbpSlOZorBwjL2C1GVIn/n+pYZ8AXuJUJLaoFX3t5zY50qoQ
-         5jQcIerv9irY6NPC/zGuw3U1M3euVlqRmcdZj4Cd11uVTBCRU0BD7PdqdTIZIqA3DH3J
-         z6+d8rIblj8mqlCVqtr2cDSRLwOOzhcetdUlC95ErsRf/SG6mTRef08x3/wsoAgFpeCe
-         iULg==
-X-Gm-Message-State: AOAM533Qv9HohCDoRBhvULEKY0l1uvK1GSYFtqwhHS1EXOBql/F+SoTP
-        BL3zDULL9ItD7RAjh8pD81XGmcF0Jn1NbQJAU2sO1BmW5Gz2BSOq
-X-Google-Smtp-Source: ABdhPJwHlo1p1GxgJRCYAA100TLFoBub7yTU5JimOH0tld87eTPvkiDScX3TRmSz5ejXsS5p5aatIb44MuCht3Xqk3U=
-X-Received: by 2002:a17:906:2ec3:: with SMTP id s3mr24787693eji.133.1608015075837;
- Mon, 14 Dec 2020 22:51:15 -0800 (PST)
+        Tue, 15 Dec 2020 01:52:41 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BF6is6M148114;
+        Tue, 15 Dec 2020 06:51:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=hWNv+8anIIHJLipXorRUdbi/P7w01QGEiTaQOHF82Ao=;
+ b=Y2r4yTbFIa+AB/85r4gwMctBmSkhL+nhCv+hzacMi32tDWsfpGG7sdADNUKwHfF2J/Zx
+ N+Wac28vf3iQDVNfaTcm4cp9kNIWcyuKF9z71Q3MbFc0/WeHqC4jjrSw2b1QQ20R4Ozu
+ iL9vday0zAf2n7dmlu664svMuR2+fMJhycXqFlOY023ZN6ZmNWiW/euPUF0cOptJ0haP
+ q92v3Lglj7rvgCLoJ+hQd930XLaboJtXD0fC+5DwYoK4Zr3Z72MWoq8tenFwkzov3znK
+ 9gT8mSeDpW0hQSTUBw83FIwLZ5EFuG+N+DvJW5QW0BOpKdUfGGjCqECmJGeif9csSDVZ rg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 35cn9r8xk9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Dec 2020 06:51:31 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BF6e6Iq070502;
+        Tue, 15 Dec 2020 06:51:31 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 35d7svqjj4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Dec 2020 06:51:30 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BF6pROv024807;
+        Tue, 15 Dec 2020 06:51:28 GMT
+Received: from [192.168.1.10] (/180.164.31.21)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 14 Dec 2020 22:51:27 -0800
+Subject: Re: [PATCH 0/3] block: blk_interposer - Block Layer Interposer
+To:     Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Sergei Shtepa <sergei.shtepa@veeam.com>, hch@lst.de
+Cc:     "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
+        "koct9i@gmail.com" <koct9i@gmail.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "steve@sk2.org" <steve@sk2.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Pavel Tide <Pavel.TIde@veeam.com>, dm-devel@redhat.com
+References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
+ <20201209135148.GA32720@redhat.com> <20201210145814.GA31521@veeam.com>
+ <20201210163222.GB10239@redhat.com> <20201211163049.GC16168@redhat.com>
+ <1ee7652e-b77f-6fa4-634c-ff6639037321@kernel.dk>
+ <208edf35-ecdc-2d73-4c48-0424943a78c0@suse.de>
+From:   Bob Liu <bob.liu@oracle.com>
+Message-ID: <cdc3c792-17ac-de61-12ae-74691769fc3c@oracle.com>
+Date:   Tue, 15 Dec 2020 14:51:18 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201214172543.302523401@linuxfoundation.org>
-In-Reply-To: <20201214172543.302523401@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 15 Dec 2020 12:21:03 +0530
-Message-ID: <CA+G9fYu3GfiCL3VxJ3f0qfgoEAFnRdwxs2eKpb1uGx-D4Kr3MQ@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/36] 5.4.84-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <208edf35-ecdc-2d73-4c48-0424943a78c0@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9835 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012150045
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9835 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 lowpriorityscore=0 clxscore=1011 spamscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012150045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 at 22:57, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.84 release.
-> There are 36 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 16 Dec 2020 17:25:32 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.84-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi Folks,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+On 12/12/20 12:56 AM, Hannes Reinecke wrote:
+> On 12/11/20 5:33 PM, Jens Axboe wrote:
+>> On 12/11/20 9:30 AM, Mike Snitzer wrote:
+>>> While I still think there needs to be a proper _upstream_ consumer of
+>>> blk_interposer as a condition of it going in.. I'll let others make the
+>>> call.
+>>
+>> That's an unequivocal rule.
+>>
+>>> As such, I'll defer to Jens, Christoph and others on whether your
+>>> minimalist blk_interposer hook is acceptable in the near-term.
+>>
+>> I don't think so, we don't do short term bandaids just to plan on
+>> ripping that out when the real functionality is there. IMHO, the dm
+>> approach is the way to go - it provides exactly the functionality that
+>> is needed in an appropriate way, instead of hacking some "interposer"
+>> into the core block layer.
+>>
+> Which is my plan, too.
+> 
+> I'll be working with the Veeam folks to present a joint patchset (including the DM bits) for the next round.
+> 
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Besides the dm approach, do you think Veeam's original requirement is a good
+use case of "block/bpf: add eBPF based block layer IO filtering"?
+https://lwn.net/ml/bpf/20200812163305.545447-1-leah.rumancik@gmail.com/
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.84-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: fbaf54ae613a47a62193642683ab9f23997aaa50
-git describe: v5.4.83-37-gfbaf54ae613a
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.83-37-gfbaf54ae613a
-
-No regressions (compared to build v5.4.83)
-
-No fixes (compared to build v5.4.83)
-
-Ran 53822 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* v4l2-compliance
-* libhugetlbfs
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-io-tests
-* network-basic-tests
-* ltp-containers-tests
-* ltp-fs-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-* rcutorture
-* fwts
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+Thanks,
+Bob
