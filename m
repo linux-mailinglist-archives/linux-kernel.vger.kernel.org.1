@@ -2,86 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA7A2DB4B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:55:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7AE2DB4B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728448AbgLOTz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 14:55:29 -0500
-Received: from elvis.franken.de ([193.175.24.41]:42806 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727833AbgLOTzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 14:55:15 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kpGP4-0005zz-00; Tue, 15 Dec 2020 20:54:34 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 1A13EC03B6; Tue, 15 Dec 2020 20:54:14 +0100 (CET)
-Date:   Tue, 15 Dec 2020 20:54:14 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCHSET] saner elf compat
-Message-ID: <20201215195414.GA15551@alpha.franken.de>
-References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
- <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
- <20201203230336.GC3579531@ZenIV.linux.org.uk>
+        id S1728653AbgLOT4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 14:56:51 -0500
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:7268 "EHLO
+        mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725850AbgLOT4j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 14:56:39 -0500
+X-IronPort-AV: E=Sophos;i="5.78,422,1599516000"; 
+   d="scan'208";a="367761533"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 20:55:46 +0100
+Date:   Tue, 15 Dec 2020 20:55:46 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Maxime Ripard <maxime@cerno.tech>
+cc:     Julia.Lawall@lip6.fr, Gilles.Muller@lip6.fr, nicolas.palix@imag.fr,
+        michal.lkml@markovi.net, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org, Jani Nikula <jani.nikula@intel.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] coccinnelle: Remove ptr_ret script
+In-Reply-To: <20201215122459.283702-1-maxime@cerno.tech>
+Message-ID: <alpine.DEB.2.22.394.2012152055380.2879@hadrien>
+References: <20201215122459.283702-1-maxime@cerno.tech>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203230336.GC3579531@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 11:03:36PM +0000, Al Viro wrote:
-> On Thu, Dec 03, 2020 at 02:09:04PM -0800, Linus Torvalds wrote:
-> > On Thu, Dec 3, 2020 at 1:46 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> > >
-> > >  The answer (for mainline) is that mips compat does *NOT* want
-> > > COMPAT_BINFMT_ELF.  Not a problem with that series, though, so I'd
-> > > retested it (seems to work, both for x86_64 and mips64, execs and
-> > > coredumps for all ABIs alike), with centralization of Kconfig logics
-> > > thrown in.
-> > 
-> > Well, the diffstat looks nice:
-> > 
-> > >  26 files changed, 127 insertions(+), 317 deletions(-)
-> > 
-> > and the patches didn't trigger anything for me, but how much did this
-> > get tested? Do you actually have both kinds of 32-bit elf mips
-> > binaries around and a machine to test on?
-> 
-> Yes (aptitude install gcc-multilib on debian mips64el/stretch sets the toolchain
-> and libraries just fine, and then it's just a matter of -mabi=n32 passed
-> to gcc).  "Machine" is qemu-system-mips64el -machine malta -m 1024 -cpu 5KEc
-> and the things appear to work; I hadn't tried that on the actual hardware.
-> I do have a Loongson-2 box, but it would take a while to dig it out and
-> get it up-to-date.
-> 
-> > Linux-mips was cc'd, but I'm adding Thomas B to the cc here explicitly
-> > just so that he has a heads-up on this thing and can go and look at
-> > the mailing list in case it goes to a separate mailbox for him..
-> 
-> I would certainly appreciate review and testing - this branch sat
-> around in the "should post it someday" state since June (it was
-> one of the followups grown from regset work back then), and I'm
-> _not_ going to ask pulling it without an explicit OK from mips
-> folks.
 
-I've tested it on real hardware and so far everything looks good.
 
-You can add my
+On Tue, 15 Dec 2020, Maxime Ripard wrote:
 
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> The ptr_ret script script addresses a number of situations where we end up
+> testing an error pointer, and if it's an error returning it, or return 0
+> otherwise to transform it into a PTR_ERR_OR_ZERO call.
+>
+> So it will convert a block like this:
+>
+> if (IS_ERR(err))
+>     return PTR_ERR(err);
+>
+> return 0;
+>
+> into
+>
+> return PTR_ERR_OR_ZERO(err);
+>
+> While this is technically correct, it has a number of drawbacks. First, it
+> merges the error and success path, which will make it harder for a reviewer
+> or reader to grasp.
+>
+> It's also more difficult to extend if we were to add some code between the
+> error check and the function return, making the author essentially revert
+> that patch before adding new lines, while it would have been a trivial
+> addition otherwise for the rewiever.
+>
+> Therefore, since that script is only about cosmetic in the first place,
+> let's remove it since it's not worth it.
+>
+> Acked-by: Jani Nikula <jani.nikula@intel.com>
+> Acked-by: Thierry Reding <treding@nvidia.com>
+> Acked-by: Julia Lawall <julia.lawall@inria.fr>
+> Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-for the MIPS part.
+Applied
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> ---
+>
+> Changes from v1:
+>   - Collected the tags
+>
+>  scripts/coccinelle/api/ptr_ret.cocci | 97 ----------------------------
+>  1 file changed, 97 deletions(-)
+>  delete mode 100644 scripts/coccinelle/api/ptr_ret.cocci
+>
+> diff --git a/scripts/coccinelle/api/ptr_ret.cocci b/scripts/coccinelle/api/ptr_ret.cocci
+> deleted file mode 100644
+> index e76cd5d90a8a..000000000000
+> --- a/scripts/coccinelle/api/ptr_ret.cocci
+> +++ /dev/null
+> @@ -1,97 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0-only
+> -///
+> -/// Use PTR_ERR_OR_ZERO rather than if(IS_ERR(...)) + PTR_ERR
+> -///
+> -// Confidence: High
+> -// Copyright: (C) 2012 Julia Lawall, INRIA/LIP6.
+> -// Copyright: (C) 2012 Gilles Muller, INRIA/LiP6.
+> -// URL: http://coccinelle.lip6.fr/
+> -// Options: --no-includes --include-headers
+> -//
+> -// Keywords: ERR_PTR, PTR_ERR, PTR_ERR_OR_ZERO
+> -// Version min: 2.6.39
+> -//
+> -
+> -virtual context
+> -virtual patch
+> -virtual org
+> -virtual report
+> -
+> -@depends on patch@
+> -expression ptr;
+> -@@
+> -
+> -- if (IS_ERR(ptr)) return PTR_ERR(ptr); else return 0;
+> -+ return PTR_ERR_OR_ZERO(ptr);
+> -
+> -@depends on patch@
+> -expression ptr;
+> -@@
+> -
+> -- if (IS_ERR(ptr)) return PTR_ERR(ptr); return 0;
+> -+ return PTR_ERR_OR_ZERO(ptr);
+> -
+> -@depends on patch@
+> -expression ptr;
+> -@@
+> -
+> -- (IS_ERR(ptr) ? PTR_ERR(ptr) : 0)
+> -+ PTR_ERR_OR_ZERO(ptr)
+> -
+> -@r1 depends on !patch@
+> -expression ptr;
+> -position p1;
+> -@@
+> -
+> -* if@p1 (IS_ERR(ptr)) return PTR_ERR(ptr); else return 0;
+> -
+> -@r2 depends on !patch@
+> -expression ptr;
+> -position p2;
+> -@@
+> -
+> -* if@p2 (IS_ERR(ptr)) return PTR_ERR(ptr); return 0;
+> -
+> -@r3 depends on !patch@
+> -expression ptr;
+> -position p3;
+> -@@
+> -
+> -* IS_ERR@p3(ptr) ? PTR_ERR(ptr) : 0
+> -
+> -@script:python depends on org@
+> -p << r1.p1;
+> -@@
+> -
+> -coccilib.org.print_todo(p[0], "WARNING: PTR_ERR_OR_ZERO can be used")
+> -
+> -
+> -@script:python depends on org@
+> -p << r2.p2;
+> -@@
+> -
+> -coccilib.org.print_todo(p[0], "WARNING: PTR_ERR_OR_ZERO can be used")
+> -
+> -@script:python depends on org@
+> -p << r3.p3;
+> -@@
+> -
+> -coccilib.org.print_todo(p[0], "WARNING: PTR_ERR_OR_ZERO can be used")
+> -
+> -@script:python depends on report@
+> -p << r1.p1;
+> -@@
+> -
+> -coccilib.report.print_report(p[0], "WARNING: PTR_ERR_OR_ZERO can be used")
+> -
+> -@script:python depends on report@
+> -p << r2.p2;
+> -@@
+> -
+> -coccilib.report.print_report(p[0], "WARNING: PTR_ERR_OR_ZERO can be used")
+> -
+> -@script:python depends on report@
+> -p << r3.p3;
+> -@@
+> -
+> -coccilib.report.print_report(p[0], "WARNING: PTR_ERR_OR_ZERO can be used")
+> --
+> 2.28.0
+>
+>
