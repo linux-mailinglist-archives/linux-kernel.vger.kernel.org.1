@@ -2,70 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0D02DAFA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 876D32DAFDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729897AbgLOPBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:01:50 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:42860 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727833AbgLOPB3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:01:29 -0500
-Received: by mail-oi1-f194.google.com with SMTP id l200so23566695oig.9;
-        Tue, 15 Dec 2020 07:01:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q/D2pluZ7I/am9iy0DWbgJXEYcE9L4zDkl0i5rNHerY=;
-        b=TYsshxVc088PBwqgItxWIzCPyDwLQvsPgis61FRfrDxJpdBE8J32TSK2UxJlQPLI4e
-         Dha0xcBDlYwLm9WXVgiVQw8QvPnKy+8WGcJZLX06+cbAvbggVMjQL3Pnikt12jaMJyCU
-         ivA1poHMcW3ZyI1dexEmu3VBC/a63OBE3BgDlW5xJzwxC6Okndv27RMXJHORqd+cZKIP
-         p+0NZaDQKwzhxviedb/ZV6bYIudnbtNIazr0WC+SS/YTGjZ+aZcKKbpk9NPZQPHrl6yH
-         zHkN1V2N/Pz7E6s/Dc1NQwF5cky9AiM8TWzz58ZZb9pUCNVKhBKFIlBKz/iVHKfD0msc
-         YMyw==
-X-Gm-Message-State: AOAM531T8A9ozl3U76mbh5h5GO8h3zSX5QGLokbsAtGxOk1VmZxBM/XG
-        yWPM++dggAoRloSAcuIamg==
-X-Google-Smtp-Source: ABdhPJx4lE7nEbnpKw5PeMU2z4n9r0AN+HlhQq5LR/rdIfF2+GwQ64GuPvmQ2p9iR8pYHXsY620XkQ==
-X-Received: by 2002:a05:6808:a90:: with SMTP id q16mr332468oij.107.1608044448318;
-        Tue, 15 Dec 2020 07:00:48 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m18sm4717473ooa.24.2020.12.15.07.00.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 07:00:47 -0800 (PST)
-Received: (nullmailer pid 3830204 invoked by uid 1000);
-        Tue, 15 Dec 2020 15:00:46 -0000
-Date:   Tue, 15 Dec 2020 09:00:46 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, broonie@kernel.org,
-        gary.bisson@boundarydevices.com, lgirdwood@gmail.com,
-        troy.kisky@boundarydevices.com
-Subject: Re: [PATCH v3 1/2] dt-bindings: regulator: add pf8x00 PMIC
-Message-ID: <20201215150046.GA3829745@robh.at.kernel.org>
-References: <20201214225851.23342-1-adrien.grassein@gmail.com>
- <20201214225851.23342-2-adrien.grassein@gmail.com>
+        id S1729768AbgLOPNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:13:45 -0500
+Received: from smtp.h3c.com ([60.191.123.56]:22665 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729160AbgLOPNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:13:42 -0500
+Received: from DAG2EX08-IDC.srv.huawei-3com.com ([10.8.0.71])
+        by h3cspam01-ex.h3c.com with ESMTP id 0BFFBUSo058450;
+        Tue, 15 Dec 2020 23:11:30 +0800 (GMT-8)
+        (envelope-from gao.yanB@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 15 Dec 2020 23:11:34 +0800
+From:   Gao Yan <gao.yanB@h3c.com>
+To:     <paulus@samba.org>, <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Gao Yan <gao.yanB@h3c.com>
+Subject: [PATCH] net: remove disc_data_lock in ppp line discipline
+Date:   Tue, 15 Dec 2020 23:00:54 +0800
+Message-ID: <20201215150054.570-1-gao.yanB@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201214225851.23342-2-adrien.grassein@gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
+ DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71)
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 0BFFBUSo058450
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 23:58:50 +0100, Adrien Grassein wrote:
-> Add a devicetree binding documentation for the pf8x00 regulator driver.
-> 
-> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> ---
->  .../regulator/nxp,pf8x00-regulator.yaml       | 220 ++++++++++++++++++
->  MAINTAINERS                                   |   6 +
->  2 files changed, 226 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
-> 
+tty layer provide tty->ldisc_sem lock to protect tty->disc_data;
+For examlpe, when cpu A is running ppp_synctty_ioctl that
+hold the tty->ldisc_sem, so if cpu B calls ppp_synctty_close,
+it will wait until cpu A release tty->ldisc_sem. So I think it is
+unnecessary to have the disc_data_lock;
 
-With the whitespace fixed,
+cpu A                           cpu B
+tty_ioctl                       tty_reopen
+ ->hold tty->ldisc_sem            ->hold tty->ldisc_sem(write), failed
+ ->ld->ops->ioctl                 ->wait...
+ ->release tty->ldisc_sem         ->wait...OK,hold tty->ldisc_sem
+                                    ->tty_ldisc_reinit
+                                      ->tty_ldisc_close
+                                        ->ld->ops->close
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Gao Yan <gao.yanB@h3c.com>
+---
+ drivers/net/ppp/ppp_async.c   | 5 -----
+ drivers/net/ppp/ppp_synctty.c | 5 -----
+ 2 files changed, 10 deletions(-)
+
+diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
+index 29a0917a8..f8cb591d6 100644
+--- a/drivers/net/ppp/ppp_async.c
++++ b/drivers/net/ppp/ppp_async.c
+@@ -127,17 +127,14 @@ static const struct ppp_channel_ops async_ops = {
+  * FIXME: this is no longer true. The _close path for the ldisc is
+  * now guaranteed to be sane.
+  */
+-static DEFINE_RWLOCK(disc_data_lock);
+ 
+ static struct asyncppp *ap_get(struct tty_struct *tty)
+ {
+ 	struct asyncppp *ap;
+ 
+-	read_lock(&disc_data_lock);
+ 	ap = tty->disc_data;
+ 	if (ap != NULL)
+ 		refcount_inc(&ap->refcnt);
+-	read_unlock(&disc_data_lock);
+ 	return ap;
+ }
+ 
+@@ -216,10 +213,8 @@ ppp_asynctty_close(struct tty_struct *tty)
+ {
+ 	struct asyncppp *ap;
+ 
+-	write_lock_irq(&disc_data_lock);
+ 	ap = tty->disc_data;
+ 	tty->disc_data = NULL;
+-	write_unlock_irq(&disc_data_lock);
+ 	if (!ap)
+ 		return;
+ 
+diff --git a/drivers/net/ppp/ppp_synctty.c b/drivers/net/ppp/ppp_synctty.c
+index 0f338752c..8cdf7268c 100644
+--- a/drivers/net/ppp/ppp_synctty.c
++++ b/drivers/net/ppp/ppp_synctty.c
+@@ -129,17 +129,14 @@ ppp_print_buffer (const char *name, const __u8 *buf, int count)
+  *
+  * FIXME: Fixed in tty_io nowadays.
+  */
+-static DEFINE_RWLOCK(disc_data_lock);
+ 
+ static struct syncppp *sp_get(struct tty_struct *tty)
+ {
+ 	struct syncppp *ap;
+ 
+-	read_lock(&disc_data_lock);
+ 	ap = tty->disc_data;
+ 	if (ap != NULL)
+ 		refcount_inc(&ap->refcnt);
+-	read_unlock(&disc_data_lock);
+ 	return ap;
+ }
+ 
+@@ -215,10 +212,8 @@ ppp_sync_close(struct tty_struct *tty)
+ {
+ 	struct syncppp *ap;
+ 
+-	write_lock_irq(&disc_data_lock);
+ 	ap = tty->disc_data;
+ 	tty->disc_data = NULL;
+-	write_unlock_irq(&disc_data_lock);
+ 	if (!ap)
+ 		return;
+ 
+-- 
+2.17.1
+
