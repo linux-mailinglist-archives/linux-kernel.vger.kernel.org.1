@@ -2,218 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728F32DAE06
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5E72DAE1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727536AbgLONbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:31:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42888 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726819AbgLONb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:31:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608039039; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3XPa6B5Agc5X6gtCtpcj1Z+hTlPDBybjc3CU9O9vvm8=;
-        b=lwTzTrU4ZpC9WAg1Lcxkfq6ExedXTJyBvr3P+BNvrZTJMYbNYj15XQHLVfMroQosvrZ4mr
-        fvFXk7otxv0Q/1eEnx3sQmIHMMBgLHwpNq0mUHe5mQfYL7zi6AqG9keKKuL5R9rcMaOTam
-        T+c6FIrXI3rjbfewiF6OnCYKHHoY8vo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 52CBBAD64;
-        Tue, 15 Dec 2020 13:30:39 +0000 (UTC)
-Date:   Tue, 15 Dec 2020 14:30:38 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
-        akpm@linux-foundation.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, hughd@google.com, shakeelb@google.com,
-        guro@fb.com, samitolvanen@google.com, feng.tang@intel.com,
-        neilb@suse.de, iamjoonsoo.kim@lge.com, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 2/7] mm: memcontrol: convert NR_ANON_THPS account to
- pages
-Message-ID: <20201215133038.GO32193@dhcp22.suse.cz>
-References: <20201208041847.72122-1-songmuchun@bytedance.com>
- <20201208041847.72122-3-songmuchun@bytedance.com>
+        id S1727671AbgLONgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:36:05 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:34446 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726861AbgLONff (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 08:35:35 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BFDPRp3015367;
+        Tue, 15 Dec 2020 05:32:37 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=UGrK9KJhiM7lla/xKzbKBhqnuACtBgaBJNe+tMSZKn8=;
+ b=Q9upaBSGrec7sZZzKQznsJhmpUFKz64N9x+KRP7Fj7FraRvYqjVxU9veO1d4+MUyKh9p
+ QsdH2skrtyCw4eineWHXlpPiZUxRCJUeLhZcNCMpQA7NjGauGk7/FIixFlWJumMRK/sc
+ CdS+zhCCSZpQKy8byGzHo2Jn9hCcH77imDzn16vz/mjmJYlM/3JHRiEXILynd+ZLkJ8I
+ BLIJVtVy4fMyTfh8ZWREHNStQqZeuOtuBRnlP7fZQazLHiWni7ojYLXz2qQqjzYP8g5+
+ nZmTW1nBZ6Np3KkBZi2FnYfFDGKP9/YcDoa5JnR6CJfmtz4FoW7zl+19Ypw44+Q/uQEI oA== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 35cv3syyxu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 15 Dec 2020 05:32:37 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 15 Dec
+ 2020 05:32:36 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 15 Dec
+ 2020 05:32:35 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 15 Dec 2020 05:32:35 -0800
+Received: from stefan-pc.marvell.com (unknown [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 484A63F703F;
+        Tue, 15 Dec 2020 05:32:32 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH net 1/2] net: mvpp2: Fix GoP port 3 Networking Complex Control configurations
+Date:   Tue, 15 Dec 2020 15:32:12 +0200
+Message-ID: <1608039133-16345-1-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208041847.72122-3-songmuchun@bytedance.com>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-15_10:2020-12-15,2020-12-15 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 08-12-20 12:18:42, Muchun Song wrote:
-> The unit of NR_ANON_THPS is HPAGE_PMD_NR. Convert the NR_ANON_THPS
-> account to pages.
+From: Stefan Chulski <stefanc@marvell.com>
 
-This changelog could benefit from some improvements. First of all you
-should be clear about the motivation. I believe the previous feedback
-was also to explicitly mention what effect this has on the pcp
-accounting flushing.
+During GoP port 2 Networking Complex Control mode of operation configurations,
+also GoP port 3 mode of operation was wrongly set mode.
+Patch removes these configurations.
+GENCONF_CTRL0_PORTX naming also fixed.
 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  drivers/base/node.c |  3 +--
->  fs/proc/meminfo.c   |  2 +-
->  mm/huge_memory.c    |  3 ++-
->  mm/memcontrol.c     | 20 ++++++--------------
->  mm/page_alloc.c     |  2 +-
->  mm/rmap.c           |  7 ++++---
->  6 files changed, 15 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/base/node.c b/drivers/base/node.c
-> index 04f71c7bc3f8..ec35cb567940 100644
-> --- a/drivers/base/node.c
-> +++ b/drivers/base/node.c
-> @@ -461,8 +461,7 @@ static ssize_t node_read_meminfo(struct device *dev,
->  			     nid, K(sunreclaimable)
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  			     ,
-> -			     nid, K(node_page_state(pgdat, NR_ANON_THPS) *
-> -				    HPAGE_PMD_NR),
-> +			     nid, K(node_page_state(pgdat, NR_ANON_THPS)),
->  			     nid, K(node_page_state(pgdat, NR_SHMEM_THPS) *
->  				    HPAGE_PMD_NR),
->  			     nid, K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED) *
-> diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-> index d6fc74619625..a635c8a84ddf 100644
-> --- a/fs/proc/meminfo.c
-> +++ b/fs/proc/meminfo.c
-> @@ -129,7 +129,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
->  
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  	show_val_kb(m, "AnonHugePages:  ",
-> -		    global_node_page_state(NR_ANON_THPS) * HPAGE_PMD_NR);
-> +		    global_node_page_state(NR_ANON_THPS));
->  	show_val_kb(m, "ShmemHugePages: ",
->  		    global_node_page_state(NR_SHMEM_THPS) * HPAGE_PMD_NR);
->  	show_val_kb(m, "ShmemPmdMapped: ",
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 10dd3cae5f53..66ec454120de 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2178,7 +2178,8 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
->  		lock_page_memcg(page);
->  		if (atomic_add_negative(-1, compound_mapcount_ptr(page))) {
->  			/* Last compound_mapcount is gone. */
-> -			__dec_lruvec_page_state(page, NR_ANON_THPS);
-> +			__mod_lruvec_page_state(page, NR_ANON_THPS,
-> +						-HPAGE_PMD_NR);
->  			if (TestClearPageDoubleMap(page)) {
->  				/* No need in mapcount reference anymore */
->  				for (i = 0; i < HPAGE_PMD_NR; i++)
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 8818bf64d6fe..b18e25a5cdf3 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1532,7 +1532,7 @@ static struct memory_stat memory_stats[] = {
->  	 * on some architectures, the macro of HPAGE_PMD_SIZE is not
->  	 * constant(e.g. powerpc).
->  	 */
-> -	{ "anon_thp", 0, NR_ANON_THPS },
-> +	{ "anon_thp", PAGE_SIZE, NR_ANON_THPS },
->  	{ "file_thp", 0, NR_FILE_THPS },
->  	{ "shmem_thp", 0, NR_SHMEM_THPS },
->  #endif
-> @@ -1565,8 +1565,7 @@ static int __init memory_stats_init(void)
->  
->  	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -		if (memory_stats[i].idx == NR_ANON_THPS ||
-> -		    memory_stats[i].idx == NR_FILE_THPS ||
-> +		if (memory_stats[i].idx == NR_FILE_THPS ||
->  		    memory_stats[i].idx == NR_SHMEM_THPS)
->  			memory_stats[i].ratio = HPAGE_PMD_SIZE;
->  #endif
-> @@ -4088,10 +4087,6 @@ static int memcg_stat_show(struct seq_file *m, void *v)
->  		if (memcg1_stats[i] == MEMCG_SWAP && !do_memsw_account())
->  			continue;
->  		nr = memcg_page_state_local(memcg, memcg1_stats[i]);
-> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -		if (memcg1_stats[i] == NR_ANON_THPS)
-> -			nr *= HPAGE_PMD_NR;
-> -#endif
->  		seq_printf(m, "%s %lu\n", memcg1_stat_names[i], nr * PAGE_SIZE);
->  	}
->  
-> @@ -4122,10 +4117,6 @@ static int memcg_stat_show(struct seq_file *m, void *v)
->  		if (memcg1_stats[i] == MEMCG_SWAP && !do_memsw_account())
->  			continue;
->  		nr = memcg_page_state(memcg, memcg1_stats[i]);
-> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -		if (memcg1_stats[i] == NR_ANON_THPS)
-> -			nr *= HPAGE_PMD_NR;
-> -#endif
->  		seq_printf(m, "total_%s %llu\n", memcg1_stat_names[i],
->  						(u64)nr * PAGE_SIZE);
->  	}
-> @@ -5653,10 +5644,11 @@ static int mem_cgroup_move_account(struct page *page,
->  			__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
->  			__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
->  			if (PageTransHuge(page)) {
-> -				__dec_lruvec_state(from_vec, NR_ANON_THPS);
-> -				__inc_lruvec_state(to_vec, NR_ANON_THPS);
-> +				__mod_lruvec_state(from_vec, NR_ANON_THPS,
-> +						   -nr_pages);
-> +				__mod_lruvec_state(to_vec, NR_ANON_THPS,
-> +						   nr_pages);
->  			}
-> -
->  		}
->  	} else {
->  		__mod_lruvec_state(from_vec, NR_FILE_PAGES, -nr_pages);
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 469e28f95ce7..1700f52b7869 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5580,7 +5580,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
->  			K(node_page_state(pgdat, NR_SHMEM_THPS) * HPAGE_PMD_NR),
->  			K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED)
->  					* HPAGE_PMD_NR),
-> -			K(node_page_state(pgdat, NR_ANON_THPS) * HPAGE_PMD_NR),
-> +			K(node_page_state(pgdat, NR_ANON_THPS)),
->  #endif
->  			K(node_page_state(pgdat, NR_WRITEBACK_TEMP)),
->  			node_page_state(pgdat, NR_KERNEL_STACK_KB),
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 08c56aaf72eb..f59e92e26b61 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1144,7 +1144,8 @@ void do_page_add_anon_rmap(struct page *page,
->  		 * disabled.
->  		 */
->  		if (compound)
-> -			__inc_lruvec_page_state(page, NR_ANON_THPS);
-> +			__mod_lruvec_page_state(page, NR_ANON_THPS,
-> +						HPAGE_PMD_NR);
->  		__mod_lruvec_page_state(page, NR_ANON_MAPPED, nr);
->  	}
->  
-> @@ -1186,7 +1187,7 @@ void page_add_new_anon_rmap(struct page *page,
->  		if (hpage_pincount_available(page))
->  			atomic_set(compound_pincount_ptr(page), 0);
->  
-> -		__inc_lruvec_page_state(page, NR_ANON_THPS);
-> +		__mod_lruvec_page_state(page, NR_ANON_THPS, HPAGE_PMD_NR);
->  	} else {
->  		/* Anon THP always mapped first with PMD */
->  		VM_BUG_ON_PAGE(PageTransCompound(page), page);
-> @@ -1292,7 +1293,7 @@ static void page_remove_anon_compound_rmap(struct page *page)
->  	if (!IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE))
->  		return;
->  
-> -	__dec_lruvec_page_state(page, NR_ANON_THPS);
-> +	__mod_lruvec_page_state(page, NR_ANON_THPS, -HPAGE_PMD_NR);
->  
->  	if (TestClearPageDoubleMap(page)) {
->  		/*
-> -- 
-> 2.11.0
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+---
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h      | 6 +++---
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 8 ++++----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+index 6bd7e40..39c4e5c 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+@@ -651,9 +651,9 @@
+ #define     GENCONF_PORT_CTRL1_EN(p)			BIT(p)
+ #define     GENCONF_PORT_CTRL1_RESET(p)			(BIT(p) << 28)
+ #define GENCONF_CTRL0					0x1120
+-#define     GENCONF_CTRL0_PORT0_RGMII			BIT(0)
+-#define     GENCONF_CTRL0_PORT1_RGMII_MII		BIT(1)
+-#define     GENCONF_CTRL0_PORT1_RGMII			BIT(2)
++#define     GENCONF_CTRL0_PORT2_RGMII			BIT(0)
++#define     GENCONF_CTRL0_PORT3_RGMII_MII		BIT(1)
++#define     GENCONF_CTRL0_PORT3_RGMII			BIT(2)
+ 
+ /* Various constants */
+ 
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index d64dc12..d2b0506 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -1231,9 +1231,9 @@ static void mvpp22_gop_init_rgmii(struct mvpp2_port *port)
+ 
+ 	regmap_read(priv->sysctrl_base, GENCONF_CTRL0, &val);
+ 	if (port->gop_id == 2)
+-		val |= GENCONF_CTRL0_PORT0_RGMII | GENCONF_CTRL0_PORT1_RGMII;
++		val |= GENCONF_CTRL0_PORT2_RGMII;
+ 	else if (port->gop_id == 3)
+-		val |= GENCONF_CTRL0_PORT1_RGMII_MII;
++		val |= GENCONF_CTRL0_PORT3_RGMII_MII;
+ 	regmap_write(priv->sysctrl_base, GENCONF_CTRL0, val);
+ }
+ 
+@@ -1250,9 +1250,9 @@ static void mvpp22_gop_init_sgmii(struct mvpp2_port *port)
+ 	if (port->gop_id > 1) {
+ 		regmap_read(priv->sysctrl_base, GENCONF_CTRL0, &val);
+ 		if (port->gop_id == 2)
+-			val &= ~GENCONF_CTRL0_PORT0_RGMII;
++			val &= ~GENCONF_CTRL0_PORT2_RGMII;
+ 		else if (port->gop_id == 3)
+-			val &= ~GENCONF_CTRL0_PORT1_RGMII_MII;
++			val &= ~GENCONF_CTRL0_PORT3_RGMII_MII;
+ 		regmap_write(priv->sysctrl_base, GENCONF_CTRL0, val);
+ 	}
+ }
 -- 
-Michal Hocko
-SUSE Labs
+1.9.1
+
