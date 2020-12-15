@@ -2,149 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5571C2DA958
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B441C2DA95C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727128AbgLOIkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:40:43 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9205 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727030AbgLOIkZ (ORCPT
+        id S1727339AbgLOIlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:41:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726287AbgLOIlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:40:25 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CwBVz4RWmzkr5C;
-        Tue, 15 Dec 2020 16:38:51 +0800 (CST)
-Received: from [10.174.178.52] (10.174.178.52) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 15 Dec 2020 16:39:30 +0800
-Subject: Re: [PATCH] kretprobe: avoid re-registration of the same kretprobe
- earlier
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-CC:     Steven Rostedt <rostedt@goodmis.org>, <naveen.n.rao@linux.ibm.com>,
-        <anil.s.keshavamurthy@intel.com>, <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <huawei.libin@huawei.com>,
-        <cj.chengjian@huawei.com>
-References: <20201124115719.11799-1-bobo.shaobowang@huawei.com>
- <20201130161850.34bcfc8a@gandalf.local.home>
- <20201202083253.9dbc76704149261e131345bf@kernel.org>
- <9dff21f8-4ab9-f9b2-64fd-cc8c5f731932@huawei.com>
- <20201215123119.35258dd5006942be247600db@kernel.org>
-From:   "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
-Message-ID: <4b1db6c0-2ff3-f163-7d03-ebc594971005@huawei.com>
-Date:   Tue, 15 Dec 2020 16:39:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        Tue, 15 Dec 2020 03:41:10 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956C3C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 00:40:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pKkxRKPZ5Ym65N46yhOHcdU5XJ7ab7RK4Bg2dcVYPcQ=; b=cvMeJioe0kMSv0rP3cTukFisdW
+        SfTkpQ0/r0H+Dps1RyeLPosrgDFr3Iy7OU1SBU9jN+hRjrpd6LYDAvk9FoeEOpLctDQrTF5ta0B+p
+        prINoCDf/aXuz8c98ST3nC731ByAu2h82VgyWRnO02OmgzQK9zG3obXOffRaEK+tmzIlR0TYTQGa8
+        2KR4iPYpmnhA8Txsf3TMLrd/oj0xmY9WA7hfapgscBA/nusggbiC7CTG+n0ZDAMDbj8bRiCDKsELH
+        Ag91Rfu8s5zHg6B6jn1sNh17+k6/RMC5BQ1JyUbwt8ZPnl0f4ga6J9jxwl4305bLVz845QIaQO8DD
+        EuMXuyNQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kp5sc-0003tw-45; Tue, 15 Dec 2020 08:40:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 924C7304D28;
+        Tue, 15 Dec 2020 09:40:21 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 559FC2CB641BA; Tue, 15 Dec 2020 09:40:21 +0100 (CET)
+Date:   Tue, 15 Dec 2020 09:40:21 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH 02/10] workqueue: use cpu_possible_mask instead of
+ cpu_active_mask to break affinity
+Message-ID: <20201215084021.GQ3092@hirez.programming.kicks-ass.net>
+References: <20201214155457.3430-1-jiangshanlai@gmail.com>
+ <20201214155457.3430-3-jiangshanlai@gmail.com>
+ <X9egDheiQPLdR0IS@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20201215123119.35258dd5006942be247600db@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.52]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X9egDheiQPLdR0IS@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masami,
+On Mon, Dec 14, 2020 at 06:25:34PM +0100, Peter Zijlstra wrote:
+> On Mon, Dec 14, 2020 at 11:54:49PM +0800, Lai Jiangshan wrote:
+> > From: Lai Jiangshan <laijs@linux.alibaba.com>
+> > 
+> > There might be other CPU online. The workers losing binding on its CPU
+> > should have chance to work on those later onlined CPUs.
+> > 
+> > Fixes: 06249738a41a ("workqueue: Manually break affinity on hotplug")
+> > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> > ---
+> >  kernel/workqueue.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> > index aba71ab359dd..1f5b8385c0cf 100644
+> > --- a/kernel/workqueue.c
+> > +++ b/kernel/workqueue.c
+> > @@ -4909,8 +4909,9 @@ static void unbind_workers(int cpu)
+> >  
+> >  		raw_spin_unlock_irq(&pool->lock);
+> >  
+> > +		/* don't rely on the scheduler to force break affinity for us. */
+> >  		for_each_pool_worker(worker, pool)
+> > -			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_active_mask) < 0);
+> > +			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
+> 
+> Please explain this one.. it's not making sense. Also the Changelog
+> doesn't seem remotely related to the actual change.
+> 
+> Afaict this is actively wrong.
 
-I will update and resend it soon
-
-Thank you
-
--- ShaoBo
-
-在 2020/12/15 11:31, Masami Hiramatsu 写道:
-> Hi ShaoBo,
->
-> On Wed, 2 Dec 2020 09:23:35 +0800
-> "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com> wrote:
->
->> Hi steve, Masami,
->>
->> Thanks for your works, i will check code again and modify properly
->> according to steve's suggestion.
->>
-> Can you update your patch and resend it?
->
-> Thank you,
->
->> -- ShaoBo
->>
->> 在 2020/12/2 7:32, Masami Hiramatsu 写道:
->>> On Mon, 30 Nov 2020 16:18:50 -0500
->>> Steven Rostedt <rostedt@goodmis.org> wrote:
->>>
->>>> Masami,
->>>>
->>>> Can you review this patch, and also, should this go to -rc and stable?
->>>>
->>>> -- Steve
->>> Thanks for ping me!
->>>
->>>> On Tue, 24 Nov 2020 19:57:19 +0800
->>>> Wang ShaoBo <bobo.shaobowang@huawei.com> wrote:
->>>>
->>>>> Our system encountered a re-init error when re-registering same kretprobe,
->>>>> where the kretprobe_instance in rp->free_instances is illegally accessed
->>>>> after re-init.
->>> Ah, OK. Anyway if re-register happens on kretprobe, it must lose instances
->>> on the list before checking re-register in register_kprobe().
->>> So the idea looks good to me.
->>>
->>>
->>>>> Implementation to avoid re-registration has been introduced for kprobe
->>>>> before, but lags for register_kretprobe(). We must check if kprobe has
->>>>> been re-registered before re-initializing kretprobe, otherwise it will
->>>>> destroy the data struct of kretprobe registered, which can lead to memory
->>>>> leak, system crash, also some unexpected behaviors.
->>>>>
->>>>> we use check_kprobe_rereg() to check if kprobe has been re-registered
->>>>> before calling register_kretprobe(), for giving a warning message and
->>>>> terminate registration process.
->>>>>
->>>>> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
->>>>> Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
->>>>> ---
->>>>>    kernel/kprobes.c | 8 ++++++++
->>>>>    1 file changed, 8 insertions(+)
->>>>>
->>>>> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
->>>>> index 41fdbb7953c6..7f54a70136f3 100644
->>>>> --- a/kernel/kprobes.c
->>>>> +++ b/kernel/kprobes.c
->>>>> @@ -2117,6 +2117,14 @@ int register_kretprobe(struct kretprobe *rp)
->>>>>    		}
->>>>>    	}
->>>>>    
->>>>> +	/*
->>>>> +	 * Return error if it's being re-registered,
->>>>> +	 * also give a warning message to the developer.
->>>>> +	 */
->>>>> +	ret = check_kprobe_rereg(&rp->kp);
->>>>> +	if (WARN_ON(ret))
->>>>> +		return ret;
->>> If you call this here, you must make sure kprobe_addr() is called on rp->kp.
->>> But if kretprobe_blacklist_size == 0, kprobe_addr() is not called before
->>> this check. So it should be in between kprobe_on_func_entry() and
->>> kretprobe_blacklist_size check, like this
->>>
->>> 	if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
->>> 		return -EINVAL;
->>>
->>> 	addr = kprobe_addr(&rp->kp);
->>> 	if (IS_ERR(addr))
->>> 		return PTR_ERR(addr);
->>> 	rp->kp.addr = addr;
->>>
->>> 	ret = check_kprobe_rereg(&rp->kp);
->>> 	if (WARN_ON(ret))
->>> 		return ret;
->>>
->>>           if (kretprobe_blacklist_size) {
->>> 		for (i = 0; > > +	ret = check_kprobe_rereg(&rp->kp);
->>>
->>>
->>> Thank you,
->>>
->>>
->
+I think I was too tired, I see what you're doing now and it should work
+fine, I still think the changelog could use help though.
