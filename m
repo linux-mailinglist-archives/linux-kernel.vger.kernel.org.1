@@ -2,106 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F492DA94D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4402DA957
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727285AbgLOIi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:38:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727116AbgLOIi2 (ORCPT
+        id S1727231AbgLOIkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:40:14 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9608 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727135AbgLOIkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:38:28 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28559C06179C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 00:37:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TC51uqq1p8Gvk7HbcRNA0jHcvsxuvd5APsCIWt526AE=; b=aGm10r7IVXL1/fXK43FKlaSU8H
-        LQzPhd/c+VtzszxRf2uOnIMeeDdTscI1bwkI7d1pmEPQD52JJdZQk2SByV2TC4MVkUX1O05sX8MlK
-        3lHHC9XdVDepTIdiFaWw/Tpnwkm7P7gtck9JuFmA8mfpTzJtHrlli9iqwDeXfaICmCrM3mCXojeyw
-        z6P2IE04PiIKeTOgfSnBX4X/tdCitARCeAuAsexgm+bVDfPhlMsdYO96ukXx/eitdxig1HxQ3It9Q
-        8pshYx6zbzVTW6RK+OwWBiMOp8ePpaaiy/lG0qKkvmhD7vd08sHtsoPFtTNqAJuVtaVO7cVEDnQUV
-        vfbkn5tg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kp5pu-0003h8-GT; Tue, 15 Dec 2020 08:37:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E1F75302753;
-        Tue, 15 Dec 2020 09:37:32 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D007120218DB9; Tue, 15 Dec 2020 09:37:32 +0100 (CET)
-Date:   Tue, 15 Dec 2020 09:37:32 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        lkp@lists.01.org, lkp@intel.com, zhengjun.xing@intel.com,
-        aubrey.li@linux.intel.com, yu.c.chen@intel.com
-Subject: Re: [LKP] Re: [sched/hotplug] 2558aacff8:
- will-it-scale.per_thread_ops -1.6% regression
-Message-ID: <20201215083732.GC3040@hirez.programming.kicks-ass.net>
-References: <20201210081859.GA19784@xsang-OptiPlex-9020>
- <20201210161408.GX3021@hirez.programming.kicks-ass.net>
- <33c543f8-97c9-cb18-a2f8-a90b8a5769cc@linux.intel.com>
+        Tue, 15 Dec 2020 03:40:02 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CwBVY2fqmzM5T4;
+        Tue, 15 Dec 2020 16:38:29 +0800 (CST)
+Received: from [10.174.179.9] (10.174.179.9) by smtp.huawei.com (10.3.19.204)
+ with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 15 Dec 2020 16:39:08
+ +0800
+Subject: Re: [PATCH] cgroup: Fix memory leak when parsing multiple source
+ parameters
+To:     Qinglang Miao <miaoqinglang@huawei.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>
+CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20201209121322.77665-1-miaoqinglang@huawei.com>
+From:   Zefan Li <lizefan@huawei.com>
+Message-ID: <a2a23bfb-65a9-96ad-ff54-0248432d166b@huawei.com>
+Date:   Tue, 15 Dec 2020 16:39:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <33c543f8-97c9-cb18-a2f8-a90b8a5769cc@linux.intel.com>
+In-Reply-To: <20201209121322.77665-1-miaoqinglang@huawei.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 01:35:46PM +0800, Xing Zhengjun wrote:
-> On 12/11/2020 12:14 AM, Peter Zijlstra wrote:
-> > On Thu, Dec 10, 2020 at 04:18:59PM +0800, kernel test robot wrote:
-> > > FYI, we noticed a -1.6% regression of will-it-scale.per_thread_ops due to commit:
-> > > commit: 2558aacff8586699bcd248b406febb28b0a25de2 ("sched/hotplug: Ensure only per-cpu kthreads run during hotplug")
-> > 
-> > Mooo, weird but whatever. Does the below help at all?
+On 2020/12/9 20:13, Qinglang Miao wrote:
+> A memory leak is found in cgroup1_parse_param() when multiple source
+> parameters overwrite fc->source in the fs_context struct without free.
 > 
-> I test the patch
-
-Thanks!
-
-> , the regression reduced to -0.6%.
+> unreferenced object 0xffff888100d930e0 (size 16):
+>   comm "mount", pid 520, jiffies 4303326831 (age 152.783s)
+>   hex dump (first 16 bytes):
+>     74 65 73 74 6c 65 61 6b 00 00 00 00 00 00 00 00  testleak........
+>   backtrace:
+>     [<000000003e5023ec>] kmemdup_nul+0x2d/0xa0
+>     [<00000000377dbdaa>] vfs_parse_fs_string+0xc0/0x150
+>     [<00000000cb2b4882>] generic_parse_monolithic+0x15a/0x1d0
+>     [<000000000f750198>] path_mount+0xee1/0x1820
+>     [<0000000004756de2>] do_mount+0xea/0x100
+>     [<0000000094cafb0a>] __x64_sys_mount+0x14b/0x1f0
 > 
-> =========================================================================================
-> tbox_group/testcase/rootfs/kconfig/compiler/nr_task/mode/test/cpufreq_governor/ucode:
+> Fix this bug by permitting a single source parameter and rejecting with
+> an error all subsequent ones.
 > 
-> lkp-cpl-4sp1/will-it-scale/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/100%/thread/sched_yield/performance/0x700001e
+> Fixes: 8d2451f4994f ("cgroup1: switch to option-by-option parsing")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>  kernel/cgroup/cgroup-v1.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> commit:
->   565790d28b1e33ee2f77bad5348b99f6dfc366fd
->   2558aacff8586699bcd248b406febb28b0a25de2
->   4b26139b8db627a55043183614a32b0aba799d27 (this test patch)
-> 
-> 565790d28b1e33ee 2558aacff8586699bcd248b406f 4b26139b8db627a55043183614a
-> ---------------- --------------------------- ---------------------------
->          %stddev     %change         %stddev     %change         %stddev
->              \          |                \          |                \
->  4.011e+08            -1.6%  3.945e+08            -0.6%  3.989e+08 will-it-scale.144.threads
->    2785455            -1.6%    2739520            -0.6%    2769967 will-it-scale.per_thread_ops
->  4.011e+08            -1.6%  3.945e+08            -0.6%  3.989e+08 will-it-scale.workload
+> diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+> index 191c329e4..1fd7d3d18 100644
+> --- a/kernel/cgroup/cgroup-v1.c
+> +++ b/kernel/cgroup/cgroup-v1.c
+> @@ -908,6 +908,9 @@ int cgroup1_parse_param(struct fs_context *fc, struct fs_parameter *param)
+>  	opt = fs_parse(fc, cgroup1_fs_parameters, param, &result);
+>  	if (opt == -ENOPARAM) {
+>  		if (strcmp(param->key, "source") == 0) {
+> +			if (fc->source)
+> +				return invalf(fc, "Multiple sources not
+> +						  supported");
 
-Well, that's better. But I'm rather confused now, because with this new
-patch, the actual hot paths are identical, so I've no idea what is
-actually causing the regression :/
+"never break user-visible strings such as printk messages because
+that breaks the ability to grep for them.", quoted from CodingStyle.
 
-The above numbers don't seem to have variance, how sure are we the
-results are stable? The thing is, when I tried reproducing this locally,
-I was mostly looking at noise.
+Please fix this and you can add
 
-> > ---
-> >   kernel/sched/core.c  | 40 +++++++++++++++-------------------------
-> >   kernel/sched/sched.h | 13 +++++--------
-> >   2 files changed, 20 insertions(+), 33 deletions(-)
-
-Anyway, let me queue this in sched/urgent, it's simpler code and has
-less regression.
+	Reviewed-by: Zefan Li <lizefan@huawei.com>
