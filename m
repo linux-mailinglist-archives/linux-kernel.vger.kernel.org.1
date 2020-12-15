@@ -2,88 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A70C2DB396
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBF22DB399
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731363AbgLOSTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:19:37 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:37118 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728004AbgLOSTZ (ORCPT
+        id S1731124AbgLOSU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 13:20:59 -0500
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:44205 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727655AbgLOSUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:19:25 -0500
-Received: by mail-ot1-f65.google.com with SMTP id o11so20312081ote.4;
-        Tue, 15 Dec 2020 10:19:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9Za31ObBsxdpTjFd/k1MSNzpI1hhAUb59NU7Vy2qyuM=;
-        b=a5vQQGLXbCnytr5LxR9v3+ttlYM0jmUmZpKzqbjBhWa2Z4LOFxJS1+38/1BBCWveE7
-         mEtMIEMHGe4ttyn2f5cQgOqs5kZ8Vy83n6iS4Xb8goAbRtCwIQfZjEbhxnpsBSqsxOZt
-         uMcWX/HikzxBL0fS6kb42MXKWHCCmqZS/Hr/kGAa4lrPCgXbygidzkY1tDlepODfQIhJ
-         ub2nvmqNTmIIARWC+5emwNPy7opTMSON19zoRtgZD5gcx+GzVj4B8tDJ/sNaAH/AHZAn
-         YJiXeTX7d3fUrJeN99NEarcjMGUevLSzuqK1bSf4MMFJJEjmV7fpHbIecMp/MDKgbMGZ
-         tlMw==
-X-Gm-Message-State: AOAM532e0FLtCWcV4bRoAKozUVXBJSnnQB8utNno6vEcQbFL5Cehn+m1
-        dk0Of8NIUYO2gi6qDtNIGg==
-X-Google-Smtp-Source: ABdhPJyLnlu8EMNR937aY6Yy1rLtfQbCSpj6kIaoagnNiNo1wWWkxaDaJLNyRG2qdJYuwXvPzf4ZRQ==
-X-Received: by 2002:a05:6830:12cf:: with SMTP id a15mr24521499otq.217.1608056324303;
-        Tue, 15 Dec 2020 10:18:44 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n13sm587583otk.58.2020.12.15.10.18.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 10:18:43 -0800 (PST)
-Received: (nullmailer pid 4147585 invoked by uid 1000);
-        Tue, 15 Dec 2020 18:18:42 -0000
-Date:   Tue, 15 Dec 2020 12:18:42 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Roger Quadros <rogerq@ti.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v6] dt-bindings: usb: Add new compatible string for AM64
- SoC
-Message-ID: <20201215181842.GA4147555@robh.at.kernel.org>
-References: <20201215042549.7956-1-a-govindraju@ti.com>
+        Tue, 15 Dec 2020 13:20:44 -0500
+Received: from [192.168.42.210] ([93.22.37.143])
+        by mwinf5d64 with ME
+        id 4iJo2400435JPTR03iJo1g; Tue, 15 Dec 2020 19:18:56 +0100
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 15 Dec 2020 19:18:56 +0100
+X-ME-IP: 93.22.37.143
+Subject: Re: [PATCH] net: allwinner: Fix some resources leak in the error
+ handling path of the probe and in the remove function
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, wens@csie.org,
+        jernej.skrabec@siol.net, timur@kernel.org,
+        song.bao.hua@hisilicon.com, f.fainelli@gmail.com, leon@kernel.org,
+        hkallweit1@gmail.com, wangyunjian@huawei.com, sr@denx.de,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <20201214202117.146293-1-christophe.jaillet@wanadoo.fr>
+ <20201215085655.ddacjfvogc3e33vz@gilmour> <20201215091153.GH2809@kadam>
+ <20201215113710.wh4ezrvmqbpxd5yi@gilmour>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <54194e3e-5eb1-d10c-4294-bac8f3933f47@wanadoo.fr>
+Date:   Tue, 15 Dec 2020 19:18:48 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201215042549.7956-1-a-govindraju@ti.com>
+In-Reply-To: <20201215113710.wh4ezrvmqbpxd5yi@gilmour>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 09:55:49 +0530, Aswath Govindraju wrote:
-> Add compatible string in j721e-usb binding file as the same USB subsystem
-> is present in AM64.
+Le 15/12/2020 à 12:37, Maxime Ripard a écrit :
+> On Tue, Dec 15, 2020 at 12:11:53PM +0300, Dan Carpenter wrote:
+>> On Tue, Dec 15, 2020 at 09:56:55AM +0100, Maxime Ripard wrote:
+>>> Hi,
+>>>
+>>> On Mon, Dec 14, 2020 at 09:21:17PM +0100, Christophe JAILLET wrote:
+>>>> 'irq_of_parse_and_map()' should be balanced by a corresponding
+>>>> 'irq_dispose_mapping()' call. Otherwise, there is some resources leaks.
+>>>
+>>> Do you have a source to back that? It's not clear at all from the
+>>> documentation for those functions, and couldn't find any user calling it
+>>> from the ten-or-so random picks I took.
+>>
+>> It looks like irq_create_of_mapping() needs to be freed with
+>> irq_dispose_mapping() so this is correct.
 > 
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> ---
+> The doc should be updated first to make that clear then, otherwise we're
+> going to fix one user while multiples will have poped up
 > 
-> Changes since v5:
->  - Added const as the type for objects in items.
-> 
-> Changes since v4:
->  - used oneOf instead of enum, as the schema has to convey that the strings
->    ti,j721e-usb and ti,am64-usb can be used combined or seperately in the
->    DT nodes.
-> 
-> Changes since v3:
->  - used enum instead of anyOf.
-> 
-> Changes since v2:
->  - added changes done over the versions.
-> 
-> Changes since v1:
->  - replaced the '\t' at the beginning of the lines with spaces as it was
->   causing the dt_binding_check to fail.
-> 
->  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> Maxime
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Hi,
+
+as Dan explained, I think that 'irq_dispose_mapping()' is needed because 
+of the 'irq_create_of_mapping()" within 'irq_of_parse_and_map()'.
+
+As you suggest, I'll propose a doc update to make it clear and more 
+future proof.
+
+CJ
