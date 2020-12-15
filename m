@@ -2,151 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154552DB31F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:58:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F6D2DB321
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731373AbgLOR5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 12:57:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731088AbgLOR5H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 12:57:07 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35213C06179C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 09:56:27 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id n142so19993725qkn.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 09:56:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m5cvA/6InFp5aAA23Q5ITLBKdhHOwJrGQylrn66gwqQ=;
-        b=SLI3UgiCpV3KdNFEC6KqQ8xrFFDbbxRu3Hz6X5XkxwJ0NuuRulGSiGBbeUdCyhVwq1
-         KmPDAAciX8EEp73Z6jvrcSYSbUdimDMRzQfP+nguVbhRlYuo68UJa9MGw+/L3leIh5Ib
-         204hoxLIuGX/VkHFStwlqoHYKztKyKpn7/vs+1ibQlpLx63ZwvXX6udNfIiWiM16mjTb
-         KpPaP0qDJ2AJudFt6PoxAC3uur0Zq60S688F89lSR5JBtwK3prXK7Cafoynp/A+TyIEF
-         X0kbbm14dQT+5o2Xq8pbERVW7QY7rTRZuwrNWjDCtn5Z07KMAOlfSH9QHXHLxKsblPvK
-         J+oA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m5cvA/6InFp5aAA23Q5ITLBKdhHOwJrGQylrn66gwqQ=;
-        b=Lu44/IxXh63BrdSPbUVEI0rvx9sc8FkUHgW4dzWn4wEL7nTsjEGHeFKEPv2Rv1eeLl
-         i8vQOeCjOI20sR7qNSTuznyoa8901UsDM9HTu+nB+vb8fCBqg1GSyG2ZzKtr2a8KfO23
-         QmR73UzYNROFsBvqyuG2ih3VChEMZ8PXWSLVMmeDPElbPuHLMEqQQ5uDsAfSBw7GB4k0
-         CoO+7gmspXBxYfLjQZOjeUibvkUf/8sCu2Oe0PW6Mnxpwtj3PvF1IEug7sH+9etCdBwc
-         jLSeRV+Hxr6i1pInRRymejjSrRuAIF3legh79PnkmfR4A40KZK6ePqS5k0BSP8a/D1E/
-         4Xvw==
-X-Gm-Message-State: AOAM532U44QsRPWdu15XxGKHCmNJejawQ2qh7Kk/Cm5v833acplEVns6
-        /ZhFuTRkIjnOLpbs+bIknzF0Lg==
-X-Google-Smtp-Source: ABdhPJz1O3y+aqloEGrkdeSRfpXq4APJu5IurHGwqsdVLTIHUZWl7wZztRHcUqAJvRqbGBnr7KlaKg==
-X-Received: by 2002:a05:620a:2148:: with SMTP id m8mr37680243qkm.213.1608054986450;
-        Tue, 15 Dec 2020 09:56:26 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id p23sm16490530qtu.53.2020.12.15.09.56.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 09:56:25 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kpEYi-00Azxw-SR; Tue, 15 Dec 2020 13:56:24 -0400
-Date:   Tue, 15 Dec 2020 13:56:24 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Sergey Temerkhanov <s.temerkhanov@gmail.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] tpm: Rework open/close/shutdown to avoid races
-Message-ID: <20201215175624.GG5487@ziepe.ca>
-References: <20201215133801.546207-1-s.temerkhanov@gmail.com>
+        id S1730478AbgLOR5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 12:57:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731417AbgLOR52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 12:57:28 -0500
+Date:   Tue, 15 Dec 2020 09:56:45 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608055007;
+        bh=OHlhOyOXULguAwQuzCFCaHRF+5UzuR2DOvXoghvhOiY=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RX4u6mQadPglJZLzhC1HeYEkdReYfMl14JOnEbwIx26l6/9Ffch9NPPVRxVaWXycP
+         TGZHCHhvTxD4lFWNOcw6uRSYZvxro4g5uMIMbAx6QINqLiKkcVnQeda7LQOce+VgQK
+         pA6jzWodB8zP3qtiKgiIeQJXu4EIgKV7WjC5FOzlmj/vtxaP+0wPg435KGswnVsSjt
+         fCop8IhwXmaFOSiubl+p6RuUaVZQ/YNGWoyhEEWP1xCJG4Zp/7c9TQPswB0ogaP0NX
+         ft//ZpyvnYuBF8LGVqIg2ocy/CybM7TfhidiOzw6+KztMH+IEYyEnrOCjZJvcGzLba
+         8kenoAh7L87/w==
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, TimGuo-oc@zhaoxin.com,
+        CooperYan@zhaoxin.com, QiyuanWang@zhaoxin.com,
+        HerryYang@zhaoxin.com, CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
+Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
+Message-ID: <X9j43b+JPbUUvCrH@sol.localdomain>
+References: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+ <X9Ov3RWDpUik7gXo@sol.localdomain>
+ <1f8d17bf-c1d9-6496-d2f8-5773633011fb@zhaoxin.com>
+ <X9fN7mOMdn1Dxn63@sol.localdomain>
+ <a95984ea-7451-78fe-88c5-b81f633fecdf@zhaoxin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201215133801.546207-1-s.temerkhanov@gmail.com>
+In-Reply-To: <a95984ea-7451-78fe-88c5-b81f633fecdf@zhaoxin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 04:38:01PM +0300, Sergey Temerkhanov wrote:
-> Avoid race condition at shutdown by shutting downn the TPM 2.0
-> devices synchronously. This eliminates the condition when the
-> shutdown sequence sets chip->ops to NULL leading to the following:
+On Tue, Dec 15, 2020 at 10:15:29AM +0800, Tony W Wang-oc wrote:
 > 
-> [ 1586.593561][ T8669] tpm2_del_space+0x28/0x73
-> [ 1586.598718][ T8669] tpmrm_release+0x27/0x33wq
-> [ 1586.603774][ T8669] __fput+0x109/0x1d
-> [ 1586.608380][ T8669] task_work_run+0x7c/0x90
-> [ 1586.613414][ T8669] prepare_exit_to_usermode+0xb8/0x128
-> [ 1586.619522][ T8669] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [ 1586.626068][ T8669] RIP: 0033:0x4cb4bb
+> On 15/12/2020 04:41, Eric Biggers wrote:
+> > On Mon, Dec 14, 2020 at 10:28:19AM +0800, Tony W Wang-oc wrote:
+> >> On 12/12/2020 01:43, Eric Biggers wrote:
+> >>> On Fri, Dec 11, 2020 at 07:29:04PM +0800, Tony W Wang-oc wrote:
+> >>>> The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
+> >>>> On platforms with Zhaoxin CPUs supporting this X86 feature, When
+> >>>> crc32c-intel and crc32c-generic are both registered, system will
+> >>>> use crc32c-intel because its .cra_priority is greater than
+> >>>> crc32c-generic. This case expect to use crc32c-generic driver for
+> >>>> some Zhaoxin CPUs to get performance gain, So remove these Zhaoxin
+> >>>> CPUs support from crc32c-intel.
+> >>>>
+> >>>> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+> >>>
+> >>> Does this mean that the performance of the crc32c instruction on those CPUs is
+> >>> actually slower than a regular C implementation?  That's very weird.
+> >>>
+> >>
+> >> From the lmbench3 Create and Delete file test on those chips, I think yes.
+> >>
+> > 
+> > Did you try measuring the performance of the hashing itself, and not some
+> > higher-level filesystem operations?
+> > 
 > 
-> Signed-off-by: Sergey Temerkhanov <s.temerkhanov@gmail.com>
->  drivers/char/tpm/tpm-chip.c  |  2 ++
->  drivers/char/tpm/tpm-dev.c   | 20 +++++++++++++-------
->  drivers/char/tpm/tpmrm-dev.c |  3 +++
->  include/linux/tpm.h          |  6 ++++--
->  4 files changed, 22 insertions(+), 9 deletions(-)
+> Yes. Was testing on these Zhaoxin CPUs, the result is that with the same
+> input value the generic C implementation takes fewer time than the
+> crc32c instruction implementation.
 > 
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index ddaeceb7e109..e94148b8e180 100644
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -295,6 +295,7 @@ static int tpm_class_shutdown(struct device *dev)
->  {
->  	struct tpm_chip *chip = container_of(dev, struct tpm_chip, dev);
->  
-> +	wait_event_idle(chip->waitq, !atomic_read(&chip->refcount));
->  	down_write(&chip->ops_sem);
->  	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
->  		if (!tpm_chip_start(chip)) {
-> @@ -330,6 +331,7 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
->  
->  	mutex_init(&chip->tpm_mutex);
->  	init_rwsem(&chip->ops_sem);
-> +	init_waitqueue_head(&chip->waitq);
->  
->  	chip->ops = ops;
->  
-> diff --git a/drivers/char/tpm/tpm-dev.c b/drivers/char/tpm/tpm-dev.c
-> index e2c0baa69fef..8558f0f7382c 100644
-> +++ b/drivers/char/tpm/tpm-dev.c
-> @@ -19,27 +19,32 @@ static int tpm_open(struct inode *inode, struct file *file)
->  {
->  	struct tpm_chip *chip;
->  	struct file_priv *priv;
-> +	int ret = 0;
->  
->  	chip = container_of(inode->i_cdev, struct tpm_chip, cdev);
->  
->  	/* It's assured that the chip will be opened just once,
-> -	 * by the check of is_open variable, which is protected
-> -	 * by driver_lock. */
-> -	if (test_and_set_bit(0, &chip->is_open)) {
-> +	 * by the check of the chip reference count.
-> +	 */
-> +	if (atomic_fetch_inc(&chip->refcount)) {
 
-Use a refcount_t for all this
+And that is really "working as intended"?  Why do these CPUs even declare that
+they support the crc32c instruction, when it is so slow?
 
-> @@ -39,6 +40,8 @@ static int tpmrm_release(struct inode *inode, struct file *file)
->
->  	tpm_common_release(file, fpriv);
->  	tpm2_del_space(fpriv->chip, &priv->space);
-> +	atomic_dec(&fpriv->chip->refcount);
-> +	wake_up_all(&fpriv->chip->waitq);
+Are there any other instruction sets (AES-NI, PCLMUL, SSE, SSE2, AVX, etc.) that
+these CPUs similarly declare support for but they are uselessly slow?
 
-The usual pattern is
-
-        if (refcount_dec_and_test(&fpriv->chip->refcount))
-	   wake_up_all(&fpriv->chip->waitq);
-
-But this seems like madness, this blocks tpm_class_shutdown until
-userspace closes a file descriptor, can't do it.
-
-You need to have tpm_class_shutdown() remove the ops from the still
-open FD and have that FD start returning -EIO when the ops are gone,
-which is what the ops lock is already for.
-
-Jason
+- Eric
