@@ -2,147 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CFC52DAE6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBAD2DAE7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:03:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728910AbgLON7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:59:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727724AbgLON7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:59:18 -0500
-Date:   Tue, 15 Dec 2020 10:58:49 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608040717;
-        bh=PYuk8SeZSF/X++CdNREjUE0YAdh9XJJ0ALKF88UwywQ=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sfrm+RxGvqIWV2URnlvNwfqIPi4OuXEgBkEp7tMQFti9+IAsLNuo0inWmd8mIyBvk
-         y+9zCxWc3HVNLjOYba3spZbqjkAsxbFdxp0T7Ekjyb4QjE9t88yMeyXJCIkuurTkpv
-         KlBgZUFEln1xoVLv1b4nALWQxpZsAnslxcpM4IWjePrGMS/aMgaaPq3GDY+Is9yXto
-         2Z1nimL+kaYFI2e9PxfhYZpMFeMA01HaqDY9C/gls+wpneyQUnDLq1EaI5QBXjiJdn
-         FB7ifOblDblwXX3ALLhk15HoKgCwUb1ibY9my4arBBbCbIE0Le4oCfieAN5R9ja1lt
-         Kg7fWi3a7Anqw==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Alexander Antonov <alexander.antonov@linux.intel.com>,
-        linux-kernel@vger.kernel.org, jolsa@redhat.com,
-        alexander.shishkin@linux.intel.com, mark.rutland@arm.com,
-        namhyung@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH 0/5] perf stat: Introduce --iiostat mode to provide I/O
- performance metrics
-Message-ID: <20201215135849.GD252952@kernel.org>
-References: <20201210090340.14358-1-alexander.antonov@linux.intel.com>
- <20201214132828.GD238399@kernel.org>
- <20201215030430.GA1538637@tassilo.jf.intel.com>
+        id S1729368AbgLOOCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 09:02:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729250AbgLOOBo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 09:01:44 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA882C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:01:03 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id w16so15270362pga.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:01:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A+G1WfxuzopjSGXsyyh6fV+cm5tzdzFwJFw7K7WHVUE=;
+        b=sASorQfNuaBWVsxWUIUgLm7Qp2mxT+WTVUU7goR/Wivp2sk6xds760igjubEb7CoeF
+         hIqVYyTgT8yRQK3bHnIVcJeuxSnlJ0VKMnNw+3evRRtPbbeukNE+VUAQp6AVGnlaM34p
+         AgEdx2v7zUT83kp8zyj1HUdzy64yL2JDzMiaTsLI9l2YhhlHjV8+2LuiYVtpoGTBY8pG
+         lqypksdABpZlAkrgveMN2rs6i5sT9HKrCVONAMu57N4+p76FCGZxTaxPf1Xm/FUBKDd9
+         LCuuKYE6M8XZOzE2QKA8iIn2TPeHbdry7p6/pgpK5C0Kt9iNzGzLk9bBFldawchUOtWI
+         W+Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A+G1WfxuzopjSGXsyyh6fV+cm5tzdzFwJFw7K7WHVUE=;
+        b=LIzyhv9TnI+g1RbtKrl0Qu9QhFkTPoWe5G7FvSaKtIiJNGvM4Ggwm8NJVqonQkuoq2
+         rSj73Vyqg6n5wBXEI/xPqM445bAENp4V00jRa9YkHziVjmFNMgai73HBY92KeV98/H5+
+         aTIHZ745tnPqoZndvT7RGrmIg39r2ThBaQRVolCMMsGZffbVa0MiEUUv9GmPXJpQzpWG
+         hRriJBNfg8HW3wVEQerc8ofKjL8P5urFDHwV6xQDH23YGKX6D/OALVm7i/6hMZhkHS3P
+         yERjONxt9K/0qY33Jc0YV22/IrzGphN0lh9Whr+4QEUhtFlHNbO3Jlr4m3fabudnhnve
+         IErw==
+X-Gm-Message-State: AOAM531VBnk/Etc4AyWBhwsEhgXTb1/HphG7LOJqNWT22/Xc0EornKdM
+        95dCJ7QlTftVpgO4M/Fa+WuAzBj4nWRcFaV7ILuSgg==
+X-Google-Smtp-Source: ABdhPJyMgW0OYCfeZFQyxyHm1d3EzMswdKYQjqqrPwUwc+sHW04nsTP2ZMXEKhTlhUJCCf0ucrZC/P6el8NYTUn0mqg=
+X-Received: by 2002:a63:5d3:: with SMTP id 202mr23746844pgf.286.1608040863307;
+ Tue, 15 Dec 2020 06:01:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201215030430.GA1538637@tassilo.jf.intel.com>
-X-Url:  http://acmel.wordpress.com
+References: <20201214191413.3164796-1-elver@google.com>
+In-Reply-To: <20201214191413.3164796-1-elver@google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 15 Dec 2020 15:00:52 +0100
+Message-ID: <CAAeHK+x3w=rw3Jk3Zg-Q2H6iboWH3dqGvgm9ZXxsCaBGGzR9JA@mail.gmail.com>
+Subject: Re: [PATCH] lkdtm: disable KASAN for rodata.o
+To:     Marco Elver <elver@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Dec 14, 2020 at 07:04:30PM -0800, Andi Kleen escreveu:
-> > My first thought was: Why not have a 'perf iiostat' subcommand?
- 
-> Same would apply to a lot of options in perf stat.
- 
-> I guess you could add some aliases to "perf" that give shortcuts
-> for common perf stat command lines.
+On Mon, Dec 14, 2020 at 8:15 PM Marco Elver <elver@google.com> wrote:
+>
+> Building lkdtm with KASAN and Clang 11 or later results in the following
+> error when attempting to load the module:
+>
+>   kernel tried to execute NX-protected page - exploit attempt? (uid: 0)
+>   BUG: unable to handle page fault for address: ffffffffc019cd70
+>   #PF: supervisor instruction fetch in kernel mode
+>   #PF: error_code(0x0011) - permissions violation
+>   ...
+>   RIP: 0010:asan.module_ctor+0x0/0xffffffffffffa290 [lkdtm]
+>   ...
+>   Call Trace:
+>    do_init_module+0x17c/0x570
+>    load_module+0xadee/0xd0b0
+>    __x64_sys_finit_module+0x16c/0x1a0
+>    do_syscall_64+0x34/0x50
+>    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> The reason is that rodata.o generates a dummy function that lives in
+> .rodata to validate that .rodata can't be executed; however, Clang 11
+> adds KASAN globals support by generating module constructors to
+> initialize globals redzones. When Clang 11 adds a module constructor to
+> rodata.o, it is also added to .rodata: any attempt to call it on
+> initialization results in the above error.
+>
+> Therefore, disable KASAN instrumentation for rodata.o.
+>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+>  drivers/misc/lkdtm/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/misc/lkdtm/Makefile b/drivers/misc/lkdtm/Makefile
+> index c70b3822013f..1c4c7aca0026 100644
+> --- a/drivers/misc/lkdtm/Makefile
+> +++ b/drivers/misc/lkdtm/Makefile
+> @@ -11,6 +11,7 @@ lkdtm-$(CONFIG_LKDTM)         += usercopy.o
+>  lkdtm-$(CONFIG_LKDTM)          += stackleak.o
+>  lkdtm-$(CONFIG_LKDTM)          += cfi.o
+>
+> +KASAN_SANITIZE_rodata.o                := n
+>  KASAN_SANITIZE_stackleak.o     := n
+>  KCOV_INSTRUMENT_rodata.o       := n
+>
+>
+> base-commit: 2c85ebc57b3e1817b6ce1a6b703928e113a90442
+> --
+> 2.29.2.684.gfbc64c5ab5-goog
+>
 
-Yeah, and we have a mechanism for that, that was exercised only in the
-'perf archive' case:
+Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
 
-~/libexec/perf-core/perf-archive
-
-I tried this and it works:
-
-[root@five ~]# ls -la ~/bin/perf
-lrwxrwxrwx. 1 root root 19 Feb 18  2020 /root/bin/perf -> /home/acme/bin/perf
-[root@five ~]# vim ~acme/libexec/perf-core/perf-cgtop
-[root@five ~]# chmod +x ~acme/libexec/perf-core/perf-cgtop
-[root@five ~]# cat ~acme/libexec/perf-core/perf-cgtop
-perf top --hierarchy --all-cgroups -s cgroup,dso,sym $*
-[root@five ~]# perf cgtop
-[root@five ~]#
-
-use 'e' to expand collapse the current level (+ -> -), 'E'/'C' to
-expand/collapse all levels.
-
-'perf help' doesn't show it, which is a shame, I'll add support for it
-to traverse ~/libexec/perf-core/perf-* and get the first non interpreter
-comment line as a description for the command, so to add a new one is
-just a matter of dropping a shell + man page, no need to change the perf
-binary.
-
-
-To test that '$*' at the end:
-
-[root@five ~]# perf cgtop -U
-
-I.e.:
-
-[acme@five perf]$ perf top -h -U
-
- Usage: perf top [<options>]
-
-    -U, --hide_user_symbols
-                          hide user symbols
-
-[acme@five perf]$
-
-And it works, just kernel level samples grouped in an hierarchy, first
-cgroup, then dso, then the symbol.
-
-Also, using this with the 'P' hotkey:
-
-[root@five ~]# perf cgtop --percent-limit 1
-
-Shows how it looks like:
-
-[root@five ~]# cat perf.hist.0 
--  86.77%        /user.slice/user-1000.slice/session-2.scope
-   -  36.18%        [kernel]
-          2.24%        [k] unmap_page_range
-          1.15%        [k] clear_page_rep
-          1.10%        [k] add_mm_counter_fast
-          1.03%        [k] alloc_set_pte
-          1.03%        [k] handle_mm_fault
-   -  17.65%        libc-2.32.so
-          2.04%        [.] _int_malloc
-          1.82%        [.] __memmove_avx_unaligned_erms
-          1.48%        [.] __strlen_avx2
-          1.13%        [.] _int_free
-          1.12%        [.] malloc
-   -   8.09%        make
-          1.65%        [.] jhash_string
-          1.05%        [.] hash_find_slot
-   -   6.90%        ld-2.32.so
-          2.03%        [.] do_lookup_x
-          1.49%        [.] _dl_lookup_symbol_x
-   -   4.78%        cc1
-   -   4.60%        libperl.so.5.32.0
-   -   2.86%        bash
-   -   1.98%        libselinux.so.1
-   -   1.61%        libpython2.7.so.1.0
-   -   1.06%        libpcre2-8.so.0.10.0
--   9.17%        /user.slice/user-1000.slice/session-4.scope
-   -   4.66%        perf
-   -   2.40%        libc-2.32.so
-   -   1.82%        [kernel]
--   4.04%        /
-   -   4.02%        [kernel]
-[root@five ~]#
-
-So 'perf iiostat' would become:
-
-[root@five ~]# cat ~acme/libexec/perf-core/perf-iiostat
-perf stat --iiostat $*
-[root@five ~]#
-
-There are parameters to that '--iiostat' in the current patchset that
-may complicates this tho, with some changes I guess we get what we want.
-
-- Arnaldo
+Thanks for taking care of this!
