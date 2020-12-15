@@ -2,109 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AD82DAEEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEFA2DAEE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729527AbgLOO0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 09:26:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20832 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728910AbgLOOZr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:25:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608042260;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Lh128b+GziqgEpkmwjasFVDKfPVvlVtz7J92RBggGoE=;
-        b=WzOutTaqCKQFN9jeuhGu9S9p+Xd4kybUneez8I38F1YPIBid7m+mxJadre04CvEhd//HPE
-        VnG4RxplGF+A23c46uboGt+pzrSGsZ/erIbvS7DsaubAdTpj3wgzuSDOIO4n0qU9uMRue9
-        loAT84aNefOLBgKgg5DmmD/TtF6a5OM=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-148-_va5Q0zhMGuC9sEx0FL_BA-1; Tue, 15 Dec 2020 09:24:19 -0500
-X-MC-Unique: _va5Q0zhMGuC9sEx0FL_BA-1
-Received: by mail-qk1-f198.google.com with SMTP id g26so7632380qkk.13
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:24:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Lh128b+GziqgEpkmwjasFVDKfPVvlVtz7J92RBggGoE=;
-        b=qjfSsgx5II+kkObIrzWRxhPwQIP+z8gg5N/TtjSqVi/5+Wbcdyvk2k0Z804v81D5BN
-         38u513Y4y/37xWuq+clJb4VZwdjHj8pgpqlbf2LZTxajNp9OBulF0hFnchF69S6Xp8bm
-         i72uxPK3mlR4yykQwo2t0VuV6j2dhL8ZOi47ODuaTVerR3GjAkoHA8X9nARnr5e6Nsyp
-         NiR7iglbbApcKLzwWvOpoQXipfQVHxctMr0u0mReSVXEdLKu6Aj1Xz8mIGOHWUFp6TJF
-         /oliV36jMFqSs8pRqSPJJkCo41p2+/iTSrdXqpbwj758knIFR/b1/I+Q7hccTUior2fI
-         vi/A==
-X-Gm-Message-State: AOAM533QddrqISW681LEFaXjnQYSEDVAthJJi3YOb0cxweJ65yiBvOQ1
-        I8dU6lE5lWdAnKtRFc0DU7TUa+6Kji9uAfEOMH5q+bcJ5/lMiZmOXaJjMCIBVQfiP+MjEID9oKM
-        MZjGaViuy4AItmOGJ6UlKr9Dr
-X-Received: by 2002:a05:620a:6a1:: with SMTP id i1mr39446583qkh.136.1608042258786;
-        Tue, 15 Dec 2020 06:24:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzWmKJHnnQzZgr/qkxUxr+klrMzu+hmua4q2p786ygMY1gwah6mebFalpf0oQfexXhmxd5Zdw==
-X-Received: by 2002:a05:620a:6a1:: with SMTP id i1mr39446569qkh.136.1608042258627;
-        Tue, 15 Dec 2020 06:24:18 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id i4sm15342556qti.78.2020.12.15.06.24.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 06:24:18 -0800 (PST)
-From:   trix@redhat.com
-To:     3chas3@gmail.com
-Cc:     linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] atm: horizon: remove h from printk format specifier
-Date:   Tue, 15 Dec 2020 06:24:13 -0800
-Message-Id: <20201215142413.1850207-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+        id S1729489AbgLOO0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 09:26:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42236 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728981AbgLOOZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 09:25:08 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0200B2250F;
+        Tue, 15 Dec 2020 14:24:26 +0000 (UTC)
+Date:   Tue, 15 Dec 2020 09:24:25 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] sched: Prevent raising SCHED_SOFTIRQ when CPU is
+ !active
+Message-ID: <20201215092425.56d815f4@gandalf.local.home>
+In-Reply-To: <20201215104400.9435-1-anna-maria@linutronix.de>
+References: <20201215104400.9435-1-anna-maria@linutronix.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Tue, 15 Dec 2020 11:44:00 +0100
+Anna-Maria Behnsen <anna-maria@linutronix.de> wrote:
 
-See Documentation/core-api/printk-formats.rst.
-h should no longer be used in the format specifier for printk.
+> SCHED_SOFTIRQ is raised to trigger periodic load balancing. When CPU is not
+> active, CPU should not participate in load balancing.
+> 
+> The scheduler uses nohz.idle_cpus_mask to keep track of the CPUs which can
+> do idle load balancing. When bringing a CPU up the CPU is added to the mask
+> when it reaches the active state, but on teardown the CPU stays in the mask
+> until it goes offline and invokes sched_cpu_dying().
+> 
+> When SCHED_SOFTIRQ is raised on a !active CPU, there might be a pending
+> softirq when stopping the tick which triggers a warning in NOHZ code. The
+> SCHED_SOFTIRQ can also be raised by the scheduler tick which has the same
+> issue.
+> 
+> Therefore remove the CPU from nohz.idle_cpus_mask when it is marked
+> inactive and also prevent the scheduler_tick() from raising SCHED_SOFTIRQ
+> after this point.
+> 
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/atm/horizon.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Makes sense.
 
-diff --git a/drivers/atm/horizon.c b/drivers/atm/horizon.c
-index 4f2951cbe69c..e110c305fc9c 100644
---- a/drivers/atm/horizon.c
-+++ b/drivers/atm/horizon.c
-@@ -1609,7 +1609,7 @@ static int hrz_send (struct atm_vcc * atm_vcc, struct sk_buff * skb) {
-     if (*s++ == 'D') {
- 	for (i = 0; i < 4; ++i)
- 		d = (d << 4) | hex_to_bin(*s++);
--      PRINTK (KERN_INFO, "debug bitmap is now %hx", debug = d);
-+      PRINTK (KERN_INFO, "debug bitmap is now %x", debug = d);
-     }
-   }
- #endif
-@@ -2675,7 +2675,7 @@ static int hrz_probe(struct pci_dev *pci_dev,
- 		       "changing", lat, pci_lat);
- 		pci_write_config_byte(pci_dev, PCI_LATENCY_TIMER, pci_lat);
- 	} else if (lat < MIN_PCI_LATENCY) {
--		PRINTK(KERN_INFO, "%s PCI latency timer from %hu to %hu",
-+		PRINTK(KERN_INFO, "%s PCI latency timer from %u to %u",
- 		       "increasing", lat, MIN_PCI_LATENCY);
- 		pci_write_config_byte(pci_dev, PCI_LATENCY_TIMER, MIN_PCI_LATENCY);
- 	}
-@@ -2777,7 +2777,7 @@ static void hrz_remove_one(struct pci_dev *pci_dev)
- 
- static void __init hrz_check_args (void) {
- #ifdef DEBUG_HORIZON
--  PRINTK (KERN_NOTICE, "debug bitmap is %hx", debug &= DBG_MASK);
-+  PRINTK (KERN_NOTICE, "debug bitmap is %x", debug &= DBG_MASK);
- #else
-   if (debug)
-     PRINTK (KERN_NOTICE, "no debug support in this image");
--- 
-2.27.0
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+-- Steve
+
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> ---
+>  kernel/sched/core.c | 7 ++++++-
+>  kernel/sched/fair.c | 7 +++++--
+>  2 files changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 21b548b69455..69284dc121d3 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -7492,6 +7492,12 @@ int sched_cpu_deactivate(unsigned int cpu)
+>  	struct rq_flags rf;
+>  	int ret;
+>  
+> +	/*
+> +	 * Remove CPU from nohz.idle_cpus_mask to prevent participating in
+> +	 * load balancing when not active
+> +	 */
+> +	nohz_balance_exit_idle(rq);
+> +
+>  	set_cpu_active(cpu, false);
+>  	/*
+>  	 * We've cleared cpu_active_mask, wait for all preempt-disabled and RCU
+> @@ -7598,7 +7604,6 @@ int sched_cpu_dying(unsigned int cpu)
+>  
+>  	calc_load_migrate(rq);
+>  	update_max_interval();
+> -	nohz_balance_exit_idle(rq);
+>  	hrtick_clear(rq);
+>  	return 0;
+>  }
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 04a3ce20da67..fd422b8eb859 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10700,8 +10700,11 @@ static __latent_entropy void run_rebalance_domains(struct softirq_action *h)
+>   */
+>  void trigger_load_balance(struct rq *rq)
+>  {
+> -	/* Don't need to rebalance while attached to NULL domain */
+> -	if (unlikely(on_null_domain(rq)))
+> +	/*
+> +	 * Don't need to rebalance while attached to NULL domain or
+> +	 * runqueue CPU is not active
+> +	 */
+> +	if (unlikely(on_null_domain(rq) || !cpu_active(cpu_of(rq))))
+>  		return;
+>  
+>  	if (time_after_eq(jiffies, rq->next_balance))
 
