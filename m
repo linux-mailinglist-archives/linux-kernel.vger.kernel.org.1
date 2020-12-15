@@ -2,120 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39912DB456
+	by mail.lfdr.de (Postfix) with ESMTP id 374842DB455
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:13:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731990AbgLOTMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 14:12:35 -0500
-Received: from mout.kundenserver.de ([212.227.126.131]:39875 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731827AbgLOTMf (ORCPT
+        id S1731978AbgLOTMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 14:12:20 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:51355 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731862AbgLOTL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 14:12:35 -0500
-Received: from orion.localdomain ([95.118.67.37]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MCsLo-1ky5OG0Si8-008sH3; Tue, 15 Dec 2020 20:09:40 +0100
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com
-Subject: [PATCH v2] arch: x86: make video init optional (expert)
-Date:   Tue, 15 Dec 2020 20:09:38 +0100
-Message-Id: <20201215190938.15731-1-info@metux.net>
-X-Mailer: git-send-email 2.11.0
-X-Provags-ID: V03:K1:aKY4zWW2HOkv9jw/1k+Mn2qVyLSvD2hDJW1Niz5XUqoILWdHhrr
- UJbX0IQIKP6f2KdL+P5ymIFAii4RKbFnyOm5CXKjYuPCDl0C/4Yh+LaQ22Xey3XHaIWs/tS
- AURx/FgAQWoQLmkUfx/DVvOcM3otBL6LXrJI1fjo6BvLJK7E9WS+qt+Y9C01WvrgRU5Se8N
- 6E16w/apmPnAxMQ+wWexA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:fwNgAtP2KIY=:8OtkQsk64sXDXEKwpWn2jV
- aiwne3e9TX77yTStkvUGCBmfcFTaitllhl0jL24+K9L2+8wRvYCGjD7EJxkngHYXl1LJPUMJ2
- ov2+RWDDxd3Nc59kXnLm2J/nC7w8l01EzIlBq9MO9zyh0tgcj/eRsweoRn3VTAjlal7/Jghzb
- UhfIcalE/g73zVgfPaGtxaiMEFfPaAhNrG+1zrGuPQXEcLHPy51toWA2GqJUUg+vM9Ok8cxO/
- XMj/Nn4qubU8i1GhnpaWWWgTi/ATum/hViJ1ya+zFB36ApYx+oWZUGC/mvPjxUmbOEktaZfWE
- dgmeB0N7IwKe2WanqVqS5VFuQpLf2ATW+uBCGVHFECJfQVxm9rGGlrdjfFsvK5Y/P+zZdNtdF
- XPnb67wyMoAFX+ajM8MG9GPewxwiDOuEDA56cOT1RNpfI+mYhiwT9MJZUdk6s
+        Tue, 15 Dec 2020 14:11:59 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 0B1145C006C;
+        Tue, 15 Dec 2020 14:11:09 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 15 Dec 2020 14:11:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        date:from:to:subject:message-id:mime-version:content-type; s=
+        fm3; bh=EK1QHIxkYbOgCW7uVGbCDZ1p8urBhqb2EMvSkYyJh1I=; b=VTd9Ql3r
+        7Hs5X4kzL3m4qvz+JA+Lp5ERIv65XIt7VKF9rRSiFKv90r+HqV1KGYvlgltIU9zN
+        1yOmGHIFXg099MLL7W0pQH0Z9NfL2fDiuBY5wTWltS8Fcp9o0S1fy1Kf+EYU4vK0
+        8k5oLzC2gUSXlNUZ9Fsfw6+U71iGEeKbAfhrrxa5KSBKsPIhU4yRmXO10/XOP2wY
+        8U20H1laILDRo7aS6i57Z7aZPIKcdhALKf5Pitx3Hx7MlsoXo6HG4ISq09sFas98
+        k2ZboyN2E3QYYgdHJuy8yTkRD7gelGiCFeJW/XlNCQDUxB5dYwHpp1+6IAwLHdFI
+        tdFN14DcehMIZQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:message-id
+        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm1; bh=EK1QHIxkYbOgCW7uVGbCDZ1p8urBh
+        qb2EMvSkYyJh1I=; b=n6hbQ1YlpZ4mN+Gu7XUcDJmdf3K50wWTGVDNGV/DhNnzl
+        ksjD61E8+UVt4LmfV4BNEXXgmQ3hWxEL0fl5uQ6AF0z6NoOPWCtRLU6aJJbeBcsx
+        Xj0iEZBlrj+6qjXoY5c1nnTDd+qgs61aroSuxVoyF599+x9DdDWcfri0L/akDep5
+        JOjPwiOI3kCGrGcQT8mxR3KY7chI3WgwOVwf9yS/gINnHK6KMgv6Yc05n9g7CtPh
+        LKhZaMuDD29JXeCvFWISxyI0yN3BejfNoovoqd4WmyXsE/JhdgX/vXTebEKEcy9x
+        J1VH+zK6QchXtxRK+s+zt8xKI5+n34b17k2N4+mOA==
+X-ME-Sender: <xms:TArZX5BwyYEx-b2yFMUK77BK3SqR0kMvB_KmlHru6KN6v99rm6b35Q>
+    <xme:TArZX1VbxrtUt5uSv0PY2tCGMUIddeAZE8Vi-O9X5kN4n92WtytowuEpmygOktXz6
+    32YzPa-1-FN5HXUdg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeltddguddvgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkgggtugesthdtredttddtvdenucfhrhhomheptehnughrvghs
+    ucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrfgrth
+    htvghrnhepiedvieelgeeuuedtfeduhfefteehhfevvdeljeetgfeugfdtledtudetvdeh
+    keffnecukfhppeeijedrudeitddrvddujedrvdehtdenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvshesrghnrghrrgiivghlrdgu
+    vg
+X-ME-Proxy: <xmx:TArZX_B2IL9n5RHgmlzHTQlRZWnyJQrBmkoDNoZYa-p3coXLeS1CHw>
+    <xmx:TArZXw-ShJ9YkntHHDfPgFJiVAnBk053Bi4qTy5MkFkEtkWlLIaUtw>
+    <xmx:TArZX-G9ajaaDJ3eY276Xv54S0sztIJM4P_oisQ6-W5v2OFUvk6SMw>
+    <xmx:TQrZXzPUcWwQxRIv0afCncI2EBJgumAwQFcZXfhjAxKfKJfdBb0xOg>
+Received: from intern.anarazel.de (c-67-160-217-250.hsd1.ca.comcast.net [67.160.217.250])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 518D424005A;
+        Tue, 15 Dec 2020 14:11:08 -0500 (EST)
+Date:   Tue, 15 Dec 2020 11:11:06 -0800
+From:   Andres Freund <andres@anarazel.de>
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Allow use of fua to be disabled on per-device basis?
+Message-ID: <20201215191106.egw3nitgmbhvgqxs@alap3.anarazel.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As x86 is becoming more widespread in embedded devices, that don't have
-any video adapter at all, make it possible to opt out from video init on
-bootup (expert option). Also useful for minimized paravirtualized kernels.
+Hi,
 
-Most users want to leave this enabled and shouldn't touch it, thus defaulting
-to y and hiding behind CONFIG_EXPERT.
+I have a few Samsung NVMe SSDs where FUA (i.e. REQ_FUA) is a slower than
+full device cache flushes (i.e. REQ_PREFLUSH). I would like to be able
+to disable use of FUA for those.
 
-Signed-off-by: Enrico Weigelt <info@metux.net>
+As a first step, would it make sense to add write support to
+/sys/block/*/queue/fua?
 
----
+The biggest issue with that is that it seems like it'd be preferrable to
+only allow enabling fua if the underlying device supports that, and that
+that information isn't currently stored anywhere but QUEUE_FLAG_FUA.
 
-changes v2: fixed spelling in commit message and kconfig help text
----
- arch/x86/Kconfig       |  7 +++++++
- arch/x86/boot/Makefile | 10 +++++-----
- arch/x86/boot/main.c   |  2 ++
- 3 files changed, 14 insertions(+), 5 deletions(-)
+The easiest way to deal with that would be to split QUEUE_FLAG_FUA into
+QUEUE_FLAG_FUA_HW and QUEUE_FLAG_FUA_ENABLED, and have
+blk_queue_write_cache() set QUEUE_FLAG_FUA_ENABLED to
+QUEUE_FLAG_FUA_HW. Then the new blk-sysfs.c queue_fua_set() would only
+allow setting QUEUE_FLAG_FUA_ENABLED if QUEUE_FLAG_FUA_HW is availabl.e
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index eeb87fce9c6f..8eba95a6bc24 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -916,6 +916,13 @@ config DMI
- 	  affected by entries in the DMI blacklist. Required by PNP
- 	  BIOS code.
- 
-+config X86_BOOT_VIDEO
-+	default y
-+	bool "Setup video on boot" if EXPERT
-+	help
-+	  Enable setting video mode on boot. Say Y here unless your machine
-+	  doesn't have any video adapter. (e.g., embedded systems or VMs)
-+
- config GART_IOMMU
- 	bool "Old AMD GART IOMMU support"
- 	select DMA_OPS
-diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
-index fe605205b4ce..7f67e1118a99 100644
---- a/arch/x86/boot/Makefile
-+++ b/arch/x86/boot/Makefile
-@@ -34,17 +34,17 @@ subdir-		:= compressed
- 
- setup-y		+= a20.o bioscall.o cmdline.o copy.o cpu.o cpuflags.o cpucheck.o
- setup-y		+= early_serial_console.o edd.o header.o main.o memory.o
--setup-y		+= pm.o pmjump.o printf.o regs.o string.o tty.o video.o
--setup-y		+= video-mode.o version.o
-+setup-y		+= pm.o pmjump.o printf.o regs.o string.o tty.o version.o
- setup-$(CONFIG_X86_APM_BOOT) += apm.o
-+setup-$(CONFIG_X86_BOOT_VIDEO) += video.o video-mode.o
- 
- # The link order of the video-*.o modules can matter.  In particular,
- # video-vga.o *must* be listed first, followed by video-vesa.o.
- # Hardware-specific drivers should follow in the order they should be
- # probed, and video-bios.o should typically be last.
--setup-y		+= video-vga.o
--setup-y		+= video-vesa.o
--setup-y		+= video-bios.o
-+setup-$(CONFIG_X86_BOOT_VIDEO)	+= video-vga.o
-+setup-$(CONFIG_X86_BOOT_VIDEO)	+= video-vesa.o
-+setup-$(CONFIG_X86_BOOT_VIDEO)	+= video-bios.o
- 
- targets		+= $(setup-y)
- hostprogs	:= tools/build
-diff --git a/arch/x86/boot/main.c b/arch/x86/boot/main.c
-index e3add857c2c9..61cab92f9a8e 100644
---- a/arch/x86/boot/main.c
-+++ b/arch/x86/boot/main.c
-@@ -174,7 +174,9 @@ void main(void)
- #endif
- 
- 	/* Set the video mode */
-+#if defined(CONFIG_X86_BOOT_VIDEO)
- 	set_video();
-+#endif
- 
- 	/* Do the last things and invoke protected mode */
- 	go_to_protected_mode();
--- 
-2.11.0
+Does that roughly make sense?
 
+
+In a second step it could be reasonable to add an nvme quirks indicating
+slow FUA for those devices? But I'll leave that for later...
+
+Greetings,
+
+Andres Freund
