@@ -2,150 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46EA82DAF5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C9C2DAF91
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:00:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729543AbgLOOtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 09:49:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729937AbgLOOsG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:48:06 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A0BC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:47:26 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id jx16so28027277ejb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:47:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uXsidnHN6xvD4rkSp2MPrzKExLvD2s/CBWkJh4xL/c8=;
-        b=hmgJIO6hC+zCQO5jBDz/KqQyAqz5+66A1CXpR5ppJ3Q/jcTKWX8eO+xYDY4zLAjzNr
-         kFDPci2DvyPzOKMfd/qC9QytiEQvX19bwaw/0YJpzMd/+c8ZyP7aFmwrx99A1Cr24HFb
-         ihbxVMLUFLBpNilkbDc1PmzUWzAF4mzFrnMfiKzPXAmRoCJ/uwMgWCry/RDwkCBK2pUu
-         kXrPH0Ict45lQScdNP4sQaALfJEwZ32bed71d9OnWnpJt2kxo6DQlxwxmRpBNQtkxrgQ
-         B6dGvIZyc21A8sViRde/+qJLxJP1qAR+ozUGcdG901Um+YPCtXBIpzZKFDgSh2I1xg3P
-         PIVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uXsidnHN6xvD4rkSp2MPrzKExLvD2s/CBWkJh4xL/c8=;
-        b=hG++rZJ0c0MWvVxzgkDYQwP5AWU9f6oi7/WMME4DYq7xFKOvJh3ZmDPPflq+oV/8HC
-         YzyiuxLp0uS5zgYnumHaizqJDxngviD6Ih3xwDOI4szElVAVcCe+7eYbBOlQPIH4N4go
-         Y7F+eX3xAh5db272JN2kYDPEAEHDgPXxFVT/sNKjp5iKmhuaXpXW7KVnef4LTjSUtSVd
-         2DQiZ3+9ROWt5RejPW+JDJqI2kF/TpOKataP+B7DT5vhCO+fco9ySGFSc10UkrdfiioE
-         XajQA8Q9oUCtolK70jc74jDvUcRuS9yCT/QTkeedA8UPkx6CtUCHJm/izvWRZt9xWPNZ
-         4G6w==
-X-Gm-Message-State: AOAM531WY9t5R/Ble92pE2UASdIbNol7gfzbDZgA/6/CgG3sqwB5lBbb
-        2DIu1SFhz1dtRkX/rkB8MDcygQ==
-X-Google-Smtp-Source: ABdhPJz4zOZt3U3vN8cP9uNm7Tb9AU0tWJaQj6vSyL8M0CvnB/RMpBpdngGOwVVF+cPNFCPh9DwyHg==
-X-Received: by 2002:a17:906:134f:: with SMTP id x15mr27667216ejb.278.1608043644908;
-        Tue, 15 Dec 2020 06:47:24 -0800 (PST)
-Received: from localhost ([2620:10d:c093:400::5:d6dd])
-        by smtp.gmail.com with ESMTPSA id h15sm1759058ejq.29.2020.12.15.06.47.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 06:47:23 -0800 (PST)
-Date:   Tue, 15 Dec 2020 15:45:16 +0100
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Yang Shi <shy828301@gmail.com>, guro@fb.com, ktkhai@virtuozzo.com,
-        shakeelb@google.com, mhocko@suse.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [v2 PATCH 5/9] mm: memcontrol: add per memcg shrinker nr_deferred
-Message-ID: <20201215144516.GE379720@cmpxchg.org>
-References: <20201214223722.232537-1-shy828301@gmail.com>
- <20201214223722.232537-6-shy828301@gmail.com>
- <20201215022233.GL3913616@dread.disaster.area>
+        id S1729843AbgLOOrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 09:47:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729673AbgLOOqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 09:46:13 -0500
+Date:   Tue, 15 Dec 2020 06:45:31 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608043531;
+        bh=hkpf31UFUYyRxiF6BbOpG60WCQtb0yuT2eROaMYIk5Q=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=oSv5SBsQhJpCuad94J3BmrL3IXIFGnarQv6YUL5zDK9G1ii8n+GoaxnxhE6WEd4Fb
+         uIYUQ+SUesWdCzXggoVvDKQvwu/3hS1bxkUw/sxrNI+lTjgmUuLX4PLF+cY+rnekqt
+         vQmw6aQTgkxEYO71TEhAseKXPKFcSWccZN0DLY/RR2vS3PBlnXRFjNvTjIeZZ8hg78
+         Xusvdxgjxtu98dpohJHGTb8JoRNd9haXugQue6Ru7avlCXinrrRQwFlIScdRB/qtlf
+         mF46nqMGbjV5ymrEYza61FS+JTjpoWKh4PMUGM5akdN5FZmTW7dCBdssOKJQNVSlxS
+         sysaA7xn5dqYA==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>, rcu@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lkft-triage@lists.linaro.org, Netdev <netdev@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [stabe-rc 5.9 ] sched: core.c:7270 Illegal context switch in
+ RCU-bh read-side critical section!
+Message-ID: <20201215144531.GZ2657@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <CA+G9fYtu1zOz8ErUzftNG4Dc9=cv1grsagBojJraGhm4arqXyw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201215022233.GL3913616@dread.disaster.area>
+In-Reply-To: <CA+G9fYtu1zOz8ErUzftNG4Dc9=cv1grsagBojJraGhm4arqXyw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 01:22:33PM +1100, Dave Chinner wrote:
-> On Mon, Dec 14, 2020 at 02:37:18PM -0800, Yang Shi wrote:
-> > Currently the number of deferred objects are per shrinker, but some slabs, for example,
-> > vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
-> > 
-> > The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
-> > excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
-> > may suffer from over shrink, excessive reclaim latency, etc.
-> > 
-> > For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
-> > heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
-> > might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
-> > 
-> > We observed this hit in our production environment which was running vfs heavy workload
-> > shown as the below tracing log:
-> > 
-> > <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> > nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
-> > cache items 246404277 delta 31345 total_scan 123202138
-> > <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> > nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
-> > last shrinker return val 123186855
-> > 
-> > The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
-> > This also resulted in significant amount of page caches were dropped due to inodes eviction.
-> > 
-> > Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
-> > better isolation.
-> > 
-> > When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
-> > would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
-> > 
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > ---
-> >  include/linux/memcontrol.h |   9 +++
-> >  mm/memcontrol.c            | 110 ++++++++++++++++++++++++++++++++++++-
-> >  mm/vmscan.c                |   4 ++
-> >  3 files changed, 120 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 922a7f600465..1b343b268359 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -92,6 +92,13 @@ struct lruvec_stat {
-> >  	long count[NR_VM_NODE_STAT_ITEMS];
-> >  };
-> >  
-> > +
-> > +/* Shrinker::id indexed nr_deferred of memcg-aware shrinkers. */
-> > +struct memcg_shrinker_deferred {
-> > +	struct rcu_head rcu;
-> > +	atomic_long_t nr_deferred[];
-> > +};
+On Tue, Dec 15, 2020 at 07:50:31AM +0530, Naresh Kamboju wrote:
+> There are two warnings "WARNING: suspicious RCU usage" noticed on arm64 juno-r2
+> device while running selftest bpf test_tc_edt.sh and net: udpgro_bench.sh.
+> These warnings are occurring intermittently.
 > 
-> So you're effectively copy and pasting the memcg_shrinker_map
-> infrastructure and doubling the number of allocations/frees required
-> to set up/tear down a memcg? Why not add it to the struct
-> memcg_shrinker_map like this:
+> metadata:
+>   git branch: linux-5.9.y
+>   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+>   git describe: v5.9.14-106-g609d95a95925
+>   make_kernelversion: 5.9.15-rc1
+>   kernel-config:
+> http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/juno/lkft/linux-stable-rc-5.9/58/config
 > 
-> struct memcg_shrinker_map {
->         struct rcu_head	rcu;
-> 	unsigned long	*map;
-> 	atomic_long_t	*nr_deferred;
-> };
 > 
-> And when you dynamically allocate the structure, set the map and
-> nr_deferred pointers to the correct offset in the allocated range.
+> Steps to reproduce:
+> ------------------
+> Not easy to reproduce.
 > 
-> Then this patch is really only changes to the size of the chunk
-> being allocated, setting up the pointers and copying the relevant
-> data from the old to new.
+> Crash log:
+> --------------
+> # selftests: bpf: test_tc_edt.sh
+> [  503.796362]
+> [  503.797960] =============================
+> [  503.802131] WARNING: suspicious RCU usage
+> [  503.806232] 5.9.15-rc1 #1 Tainted: G        W
+> [  503.811358] -----------------------------
+> [  503.815444] /usr/src/kernel/kernel/sched/core.c:7270 Illegal
+> context switch in RCU-bh read-side critical section!
+> [  503.825858]
+> [  503.825858] other info that might help us debug this:
+> [  503.825858]
+> [  503.833998]
+> [  503.833998] rcu_scheduler_active = 2, debug_locks = 1
+> [  503.840981] 3 locks held by kworker/u12:1/157:
+> [  503.845514]  #0: ffff0009754ed538
+> ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x208/0x768
+> [  503.855048]  #1: ffff800013e63df0 (net_cleanup_work){+.+.}-{0:0},
+> at: process_one_work+0x208/0x768
+> [  503.864201]  #2: ffff8000129fe3f0 (pernet_ops_rwsem){++++}-{3:3},
+> at: cleanup_net+0x64/0x3b8
+> [  503.872786]
+> [  503.872786] stack backtrace:
+> [  503.877229] CPU: 1 PID: 157 Comm: kworker/u12:1 Tainted: G        W
+>         5.9.15-rc1 #1
+> [  503.885433] Hardware name: ARM Juno development board (r2) (DT)
+> [  503.891382] Workqueue: netns cleanup_net
+> [  503.895324] Call trace:
+> [  503.897786]  dump_backtrace+0x0/0x1f8
+> [  503.901464]  show_stack+0x2c/0x38
+> [  503.904796]  dump_stack+0xec/0x158
+> [  503.908215]  lockdep_rcu_suspicious+0xd4/0xf8
+> [  503.912591]  ___might_sleep+0x1e4/0x208
 
-Fully agreed.
+You really are forbidden to invoke ___might_sleep() while in a BH-disable
+region of code, whether due to rcu_read_lock_bh(), local_bh_disable(),
+or whatever else.
 
-In the longer-term, it may be nice to further expand this and make
-this the generalized intersection between cgroup, node and shrinkers.
+I do see the cond_resched() in inet_twsk_purge(), but I don't immediately
+see a BH-disable region of code.  Maybe someone more familiar with this
+code would have some ideas.
 
-There is large overlap with list_lru e.g. - with data of identical
-scope and lifetime, but duplicative callbacks and management. If we
-folded list_lru_memcg into the above data structure, we could also
-generalize and reuse the existing callbacks.
+Or you could place checks for being in a BH-disable further up in
+the code.  Or build with CONFIG_DEBUG_INFO=y to allow more precise
+interpretation of this stack trace.
+
+							Thanx, Paul
+
+> [  503.916444]  inet_twsk_purge+0x144/0x378
+> [  503.920384]  tcpv6_net_exit_batch+0x20/0x28
+> [  503.924585]  ops_exit_list.isra.10+0x78/0x88
+> [  503.928872]  cleanup_net+0x248/0x3b8
+> [  503.932462]  process_one_work+0x2b0/0x768
+> [  503.936487]  worker_thread+0x48/0x498
+> [  503.940166]  kthread+0x158/0x168
+> [  503.943409]  ret_from_fork+0x10/0x1c
+> [  504.165891] IPv6: ADDRCONF(NETDEV_CHANGE): veth_src: link becomes ready
+> [  504.459624] audit: type=1334 audit(1607978673.070:40866):
+> prog-id=20436 op=LOAD
+> <>
+> [  879.304684]
+> [  879.306200] =============================
+> [  879.310314] WARNING: suspicious RCU usage
+> [  879.314420] 5.9.15-rc1 #1 Tainted: G        W
+> [  879.319554] -----------------------------
+> [  879.323644] /usr/src/kernel/kernel/sched/core.c:7270 Illegal
+> context switch in RCU-sched read-side critical section!
+> [  879.334259]
+> [  879.334259] other info that might help us debug this:
+> [  879.334259]
+> [  879.342345]
+> [  879.342345] rcu_scheduler_active = 2, debug_locks = 1
+> [  879.348958] 3 locks held by kworker/u12:8/248:
+> [  879.353483]  #0: ffff0009754ed538
+> ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x208/0x768
+> [  879.362910]  #1: ffff800013bc3df0 (net_cleanup_work){+.+.}-{0:0},
+> at: process_one_work+0x208/0x768
+> [  879.371984]  #2: ffff8000129fe3f0 (pernet_ops_rwsem){++++}-{3:3},
+> at: cleanup_net+0x64/0x3b8
+> [  879.380540]
+> [  879.380540] stack backtrace:
+> [  879.384998] CPU: 1 PID: 248 Comm: kworker/u12:8 Tainted: G        W
+>         5.9.15-rc1 #1
+> [  879.393201] Hardware name: ARM Juno development board (r2) (DT)
+> [  879.399147] Workqueue: netns cleanup_net
+> [  879.403089] Call trace:
+> [  879.405550]  dump_backtrace+0x0/0x1f8
+> [  879.409228]  show_stack+0x2c/0x38
+> [  879.412561]  dump_stack+0xec/0x158
+> # ud[  879.415980]  lockdep_rcu_suspicious+0xd4/0xf8
+> [  879.420691]  ___might_sleep+0x1ac/0x208
+> p tx:     32 MB/s      546 calls/[  879.424570]
+> nf_ct_iterate_cleanup+0x1b8/0x2d8 [nf_conntrack]
+> s    546 msg/s[  879.433190]  nf_conntrack_cleanup_net_list+0x58/0x100
+> [nf_conntrack]
+> 
+> [  879.440765]  nf_conntrack_pernet_exit+0xa8/0xb8 [nf_conntrack]
+> [  879.446755]  ops_exit_list.isra.10+0x78/0x88
+> [  879.451043]  cleanup_net+0x248/0x3b8
+> [  879.454635]  process_one_work+0x2b0/0x768
+> [  879.458661]  worker_thread+0x48/0x498
+> [  879.462340]  kthread+0x158/0x168
+> [  879.465584]  ret_from_fork+0x10/0x1c
+> 
+> 
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> 
+> Full test log link,
+> https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.y/build/v5.9.14-106-g609d95a95925/testrun/3586574/suite/linux-log-parser/test/check-kernel-warning-2049484/log
+> 
+> 
+> -- 
+> Linaro LKFT
+> https://lkft.linaro.org
