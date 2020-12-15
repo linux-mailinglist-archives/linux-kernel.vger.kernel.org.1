@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5653D2DB0F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3BE2DB0F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:10:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730971AbgLOQJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:09:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730871AbgLOQIc (ORCPT
+        id S1730742AbgLOQJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:09:31 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:33032 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730304AbgLOQJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:08:32 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E501C06179C;
-        Tue, 15 Dec 2020 08:07:52 -0800 (PST)
-Date:   Tue, 15 Dec 2020 17:07:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608048469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H9rdCROzryuIuLwWp3pwCnwm0SYlQB5Wa5LJ3x4hebk=;
-        b=zO76aQVIUJs0qnQx+RDHproxUCqJeLbPPm+h49ETNfFooNpkUX+h2WIhcpeeG7Ab2bgjuy
-        nZxHJ7buDzEeGoHPGZt3i7/5pxt7RC8+92Lg0zKk4JwkJ+tYX+rVIyL3pW+dkUJypdsR4p
-        TE177b6upy078ffU7wivXogJ4uQcnC6F5YINauOLHzNLZuqVr29gP9HgTc6MLbVfGddw2a
-        BCFhyAU4fdkT1j39itHVKmyoqR+IjJ8lzV2SjsbGICRjp7im10XglEVhw3SfLTKN13dr2r
-        E+0d3sITKDrr/Q2TYfJS5DFJemz+TIo+7tR7WOwbX+Z0+YBbEkRt8ll39czXYw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608048469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H9rdCROzryuIuLwWp3pwCnwm0SYlQB5Wa5LJ3x4hebk=;
-        b=3IcFz4hwL7hk6yBI9VbfTsbA0RQuk5QGQasTzOpMAaJA7XLlFcCeS1EMc47FRpcSrs+ZxV
-        /to2x1Lnn5ZvfyCg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-Subject: Re: [PATCH] blktrace: fix 'BUG: sleeping function called from
- invalid context' in case of PREEMPT_RT
-Message-ID: <20201215160747.zzi3jxfy6kv25c2n@linutronix.de>
-References: <20201214022217.1754273-1-ming.lei@redhat.com>
- <20201214102422.2d84035d@gandalf.local.home>
- <20201215120604.GB1798021@T590>
+        Tue, 15 Dec 2020 11:09:10 -0500
+Received: by mail-ot1-f65.google.com with SMTP id b24so2359277otj.0;
+        Tue, 15 Dec 2020 08:08:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4bIGwa8qIdG11yi4lkC6PUFj7lWs1ZZRJPr8AkJQsF0=;
+        b=c64mU1SNh7Gip3oqLJ/0e3be9knq5qpOtk1hfmMByWFocgmR0ws20zumPkW5xr9HA+
+         jONtxfmD/s5KnB3Cprhtc1tPTjO4vbVMHv0wKayjVU9MnxG/7vOZ79VE1y0B0xKHk0tE
+         bJ5nP4eVHVJVr8KpEXHShyWd0CLM8258tIrp0zz2fEvl13uubH2KHdZS3HR0DReu38fT
+         nn8moUm3VEM4maRND0D3fR7r0+Hyu9O36Qd0tvryBL3x9xQCAhLXkQvdB09GO0v+XMuC
+         w++AJM4grM1DLhm6Zvjw108IoZ7SxxVYZcBJ3eZOgbpdlb1utc/J3iIs8EA1bl2RMsD8
+         rD+w==
+X-Gm-Message-State: AOAM530uS1BUtKPOz/gyzsCQdU96KIRl8Z9JjEUO+zmw1UwrknICGiqc
+        ICV7+4Z16T7OkdkabAbnuYCimgkZExYDUWGDqk8=
+X-Google-Smtp-Source: ABdhPJxuMxvjFoL22r/bQ0iRWcPfiqor04Cbpcnmb44WPWu2t5yvUOoEfePVpPPocYav/JfrThx/muHKsg8dhZnHwjM=
+X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr23700116oth.250.1608048509343;
+ Tue, 15 Dec 2020 08:08:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201215120604.GB1798021@T590>
+References: <1607686060-17448-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1607686060-17448-6-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+In-Reply-To: <1607686060-17448-6-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 15 Dec 2020 17:08:18 +0100
+Message-ID: <CAMuHMdUPAih4ymcYisFeQYVBz+L2WRAbt_hnYnw3rH0Pnkkh-Q@mail.gmail.com>
+Subject: Re: [PATCH v2 05/10] gpio: bd9571mwv: Use the SPDX license identifier
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Khiem Nguyen <khiem.nguyen.xt@renesas.com>,
+        linux-power@fi.rohmeurope.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-15 20:06:04 [+0800], Ming Lei wrote:
-> 
-> [  284.527619] BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:968
-> [  284.527626] in_atomic(): 1, irqs_disabled(): 0, pid: 6705, name: mandb
-> [  284.527631] 4 locks held by mandb/6705:
-> [  284.527634]  #0: ffff88853f4f2eb0 (&f->f_pos_lock){+.+.}-{0:0}, at: __fdget_pos+0xaf/0xe0
-> [  284.527662]  #1: ffff8885eb814048 (&sb->s_type->i_mutex_key#13){++++}-{0:0}, at: xfs_ilock+0x17d/0x590 [xfs]
-> [  284.527838]  #2: ffffffffa24d22c0 (rcu_read_lock){....}-{1:2}, at: blk_add_trace_bio+0x0/0x2f0
-> [  284.527859]  #3: ffffffffa22177a0 (running_trace_lock){+.+.}-{2:2}, at: __blk_add_trace+0x9ea/0xdf0
-> [  284.527877] Preemption disabled at:
-> [  284.527886] [<ffffffff9f936743>] get_lock_stats+0x13/0x120
-> [  284.527897] CPU: 53 PID: 6705 Comm: mandb Kdump: loaded Not tainted 4.18.0-259.rt7.24.el8.x86_64+debug #1
+On Fri, Dec 11, 2020 at 2:47 PM Yoshihiro Shimoda
+<yoshihiro.shimoda.uh@renesas.com> wrote:
+> Use the SPDX license identifier instead of a local description.
+>
+> Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-4.18?
-I just gave it a try with 5.10-RT and I don't see a splat. Please retest
-with v5.10-RT.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> 
-> Thanks,
-> Ming
+Gr{oetje,eeting}s,
 
-Sebastian
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
