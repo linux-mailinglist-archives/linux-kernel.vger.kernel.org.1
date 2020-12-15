@@ -2,100 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E312DB0D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6DA72DB0D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730804AbgLOQDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:03:46 -0500
-Received: from mout.kundenserver.de ([212.227.17.10]:41631 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730564AbgLOQDd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:03:33 -0500
-Received: from [192.168.1.155] ([95.118.67.37]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MVNJ3-1kiIDQ2Tvr-00SNys; Tue, 15 Dec 2020 17:00:15 +0100
-Subject: Re: [RFC PATCH] RFC: drivers: gpio: helper for generic pin IRQ
- handling
-To:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        joyce.ooi@intel.com, Andrew Jeffery <andrew@aj.id.au>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>, orsonzhai@gmail.com,
-        baolin.wang7@gmail.com, zhang.lyra@gmail.com,
-        Andy Shevchenko <andy@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>
-References: <20201208141429.8836-1-info@metux.net>
- <CAHp75VfMKmJ074R2-04be0Ag6OuKcY=_xhhbRKsL2D0H8hZZLg@mail.gmail.com>
- <CAHp75VfOjb4Rfo9yPmwEYUDbaPXNjfGs6goM27ZnLdAMtiU+jA@mail.gmail.com>
- <0c16ab33-f87f-b32d-53d0-a44a5fecd6dc@ti.com>
- <710efa0f-063e-8a9e-1c3f-49337506b044@metux.net>
- <ff1dcd9a-eb83-2cb5-30d3-b25976a227ab@ti.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <333a4bab-682c-6f5d-f24e-3f9ebe77f536@metux.net>
-Date:   Tue, 15 Dec 2020 17:00:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1730713AbgLOQC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:02:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730535AbgLOQCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 11:02:20 -0500
+X-Gm-Message-State: AOAM530+4WJ1aG2hHbP2t37mSuwJ4oT6bskNspQcGZOlpNFJlddUhzfI
+        9Td3TZ/mr6qAb8wbPiSdwGyEC/ufBzVhzkEabQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608048098;
+        bh=qkXORLSczMYIGgm4TRmpzxFMYrqSUAG1qScBIBBvO2w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TSkGPz9HS3BEF456KrpHsjgNO20bDWQLM4lQEIoSbIHtACo/crOcu+YrpYKLoWdZe
+         b89EgoXiEDy1bMkwyRq14RINWg2h+0hafcJrfrLT7Gw5t+dFVSh+v+KnLH5RGhrQ20
+         PJx/P4/SmbRZUMKcVDHscxd7a/bL/sMXPFCqA+E37fmZjZH0fxdl8rLBRSYPKSbrwF
+         31vIOkLk8OCPu2ezZAQBpRq1m+E1v6Cb8LUeeg5/U+0k2+seZ31InssUubTg8quqts
+         7GEbHO97MnCR2jxeGCW1tH8xSiDAKz50rO9rcMkaADP4wUfq2bi5cQkTduqMkFrrpS
+         95O/zhdwXrxPg==
+X-Google-Smtp-Source: ABdhPJwdWryKXagk9cpZnUkyQ2HJtEyx7PK81m9x3dkM+ArsS56YV4eOyna5XThKS7LWtESiqA706YAJEkxFslJwtzc=
+X-Received: by 2002:a17:906:d784:: with SMTP id pj4mr26750000ejb.360.1608048097128;
+ Tue, 15 Dec 2020 08:01:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <ff1dcd9a-eb83-2cb5-30d3-b25976a227ab@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:KaHnossIs7UrduZo3pjYr+NreicbYF1LWGdn05LD3iLKIC8rpr9
- +SdNCw4pc1hbvsh6MzkKKovEoq5d6zPPHmSC4kMUfQE/Ope6s9pDhsoAZJTSlDZZ2UTIOzQ
- JWmtqwyUGa2Wn0vi/8g40YdLuzqCnknada7G071RteFF9cBizKocLk/0udQ2CZl1BqoDcp3
- ZMh+9d2pJSDDrSTFDmS7A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZyuPSvaqdx4=:Nliv3YBphcN+6f7I458/jJ
- 2UXxp2WstEI39g22OXPrmkiT1tkd2DUgyCuzJXS/ljoFsSNYHPxrUCa0Ykv05itbb0o6vrPNq
- w8xju8TQzH5YnnPPpIXaHkZU+yOd0QWdSVemXhAodYLFBqv6xiaeR4Ri3U8ZBiHYQzstAbm5U
- m/d/JewQJiJZGg7onSjmZWRPUsS2bMDtqiOfIw8R+RF37E7smKg3JCt0mPvPNZcc1ne8F9xLs
- 272mc135uLUHcr63EVa1+7J5/P2YQ/ErzZj+STUtYBzRgTUbfdlr5+WFw3kYwsSB35xidPCnw
- xzhLJ//lxJC5I6r1qA0DZ44RgpPZNXl0OKhtNhAH5LGJ5BvGHWmXZRFI+NUnwqMtW4g9u5MR9
- X74WJL9U8TPj/yt/Rmd48SVeNLmAWQxCcsscZlzEyQ7huf+/7POner1UJ4q6H
+References: <20201111153559.19050-1-kishon@ti.com> <20201111153559.19050-12-kishon@ti.com>
+In-Reply-To: <20201111153559.19050-12-kishon@ti.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 15 Dec 2020 10:01:25 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+iUU0aR950fvQ7+uenBT5MVbCEU9cDg+vfyO=VugpTZA@mail.gmail.com>
+Message-ID: <CAL_Jsq+iUU0aR950fvQ7+uenBT5MVbCEU9cDg+vfyO=VugpTZA@mail.gmail.com>
+Subject: Re: [PATCH v8 11/18] PCI: cadence: Implement ->msi_map_irq() ops
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-ntb@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.12.20 16:40, Grygorii Strashko wrote:
+On Wed, Nov 11, 2020 at 9:37 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>
+> Implement ->msi_map_irq() ops in order to map physical address to
+> MSI address and return MSI data.
+>
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  .../pci/controller/cadence/pcie-cadence-ep.c  | 53 +++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> index 84cc58dc8512..1fe6b8baca97 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> @@ -382,6 +382,57 @@ static int cdns_pcie_ep_send_msi_irq(struct cdns_pcie_ep *ep, u8 fn,
+>         return 0;
+>  }
+>
+> +static int cdns_pcie_ep_map_msi_irq(struct pci_epc *epc, u8 fn,
+> +                                   phys_addr_t addr, u8 interrupt_num,
+> +                                   u32 entry_size, u32 *msi_data,
+> +                                   u32 *msi_addr_offset)
+> +{
+> +       struct cdns_pcie_ep *ep = epc_get_drvdata(epc);
+> +       u32 cap = CDNS_PCIE_EP_FUNC_MSI_CAP_OFFSET;
+> +       struct cdns_pcie *pcie = &ep->pcie;
+> +       u64 pci_addr, pci_addr_mask = 0xff;
+> +       u16 flags, mme, data, data_mask;
+> +       u8 msi_count;
+> +       int ret;
+> +       int i;
+> +
 
->> a) consolidating repeated patterns (eg. calling the actual irq handling)
->>     into gpiolib, (and later possibly use more fields already existing in
->>     struct gpio_chip for irq handling)
-> 
-> Even if there is some pattern It doesn't mean consolidation is always
-> reasonable.
-> one of the things to think about is compiler optimization and will/will
-> not this change
-> add additional
 
-I dont think the compiler could optimize-out much of the replaced code.
-Yes, there's an additional call - but does it really matter so much ?
+> +       /* Check whether the MSI feature has been enabled by the PCI host. */
+> +       flags = cdns_pcie_ep_fn_readw(pcie, fn, cap + PCI_MSI_FLAGS);
+> +       if (!(flags & PCI_MSI_FLAGS_ENABLE))
+> +               return -EINVAL;
+> +
+> +       /* Get the number of enabled MSIs */
+> +       mme = (flags & PCI_MSI_FLAGS_QSIZE) >> 4;
+> +       msi_count = 1 << mme;
+> +       if (!interrupt_num || interrupt_num > msi_count)
+> +               return -EINVAL;
+> +
+> +       /* Compute the data value to be written. */
+> +       data_mask = msi_count - 1;
+> +       data = cdns_pcie_ep_fn_readw(pcie, fn, cap + PCI_MSI_DATA_64);
+> +       data = data & ~data_mask;
+> +
+> +       /* Get the PCI address where to write the data into. */
+> +       pci_addr = cdns_pcie_ep_fn_readl(pcie, fn, cap + PCI_MSI_ADDRESS_HI);
+> +       pci_addr <<= 32;
+> +       pci_addr |= cdns_pcie_ep_fn_readl(pcie, fn, cap + PCI_MSI_ADDRESS_LO);
+> +       pci_addr &= GENMASK_ULL(63, 2);
 
-If we drop the dev_warn() call, the gpiochip_handle_irq() function can
-be made inline, so quite no extra costs.
+Wouldn't all of the above be the same code for any endpoint driver? We
+just need endpoint config space accessors for the same 32-bit only
+access issues. Not asking for that in this series, but if that's the
+direction we should go.
 
-
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+> +
+> +       for (i = 0; i < interrupt_num; i++) {
+> +               ret = cdns_pcie_ep_map_addr(epc, fn, addr,
+> +                                           pci_addr & ~pci_addr_mask,
+> +                                           entry_size);
+> +               if (ret)
+> +                       return ret;
+> +               addr = addr + entry_size;
+> +       }
+> +
+> +       *msi_data = data;
+> +       *msi_addr_offset = pci_addr & pci_addr_mask;
+> +
+> +       return 0;
+> +}
+> +
+>  static int cdns_pcie_ep_send_msix_irq(struct cdns_pcie_ep *ep, u8 fn,
+>                                       u16 interrupt_num)
+>  {
+> @@ -481,6 +532,7 @@ static const struct pci_epc_features cdns_pcie_epc_features = {
+>         .linkup_notifier = false,
+>         .msi_capable = true,
+>         .msix_capable = true,
+> +       .align = 256,
+>  };
+>
+>  static const struct pci_epc_features*
+> @@ -500,6 +552,7 @@ static const struct pci_epc_ops cdns_pcie_epc_ops = {
+>         .set_msix       = cdns_pcie_ep_set_msix,
+>         .get_msix       = cdns_pcie_ep_get_msix,
+>         .raise_irq      = cdns_pcie_ep_raise_irq,
+> +       .map_msi_irq    = cdns_pcie_ep_map_msi_irq,
+>         .start          = cdns_pcie_ep_start,
+>         .get_features   = cdns_pcie_ep_get_features,
+>  };
+> --
+> 2.17.1
+>
