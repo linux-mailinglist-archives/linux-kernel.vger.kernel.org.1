@@ -2,127 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE272DA8C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 08:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8FA2DA8CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 08:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbgLOHxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 02:53:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgLOHxw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 02:53:52 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32EE1C06179C
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 23:53:12 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id c133so3955472wme.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 23:53:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=foy6ZLeBeEx74vDjfYB0oMy91t0/O4Z6V1trwOXNuTc=;
-        b=WbqD6VbDgOEvTKUmuccmA6XZFaIcHkma0n4y+kz3ztDHSRjkHJ38azkM8vkiVRz34Y
-         gb3Qra4uFQw8QOeOsJ5Vc+GbmgZ4p2uLJE+iBp0nv9d9V+sWIq3LEp4RFW8JtG2vNLr/
-         rLw1+c8Y8z5+phhrlixg2CxlYcd8bFIhnWPkhmxqcHtqBJJYN6U2adl/A2ApTatREWKe
-         CRfuOHitaoMLmNGsOJDxZG5W7mO+KgLLpplB8J1n4lmVKETwFx8z9TCEc05NKkyUyNkK
-         tEWxtbS1Ru+nwgTnqGaR4zbSuVzXCnQga4Q3uvs/iq9n0xwWlyhTjhVTcVc7GPJ7BT3z
-         4bNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=foy6ZLeBeEx74vDjfYB0oMy91t0/O4Z6V1trwOXNuTc=;
-        b=EKkmBTZum2asRN+GguqEhrD3StiSC4kjrgNA74VJs0NalAKriBUZaR0xKijmIljA4U
-         90KUZMuWR9KvGP++VKxoHBL39PO5YGV5hm7P9Gpbudcdles6icOR3GPYJ1EId9JwDsPb
-         Qsve491qVGOXt5jFw2R7yPIW5rJTvebl3Wb9ajUwDAIL5pu6KbV6QB3GW0xt1YG/wEda
-         3p1bipIiPQeaJy4pZnd6VnWteC+O+fPw8gTwsMbdY28K3r4orsm0b85lZ/djkaSEmoBY
-         RxTXdfqZvuIilJPNOoppR4Jqv+SHF6bQkYAgocYge3yUJlVKM0+24ziClkbkhNLWOLPn
-         08Iw==
-X-Gm-Message-State: AOAM5304O5gjLF+QKv/Q42itIw9qwCMGSTUFvc64KeoKGF92n0MoIGTL
-        JLcefYONPGPgusiN/sf7w4d1nwIokvEgucRM
-X-Google-Smtp-Source: ABdhPJwBt3cjKcFE7agtObjKVJDNkyO24lD9AHSAoqOLZnucdqAlcrW4uvDffYO+gqX3t7neEtNe+A==
-X-Received: by 2002:a1c:8f:: with SMTP id 137mr32189390wma.4.1608018790940;
-        Mon, 14 Dec 2020 23:53:10 -0800 (PST)
-Received: from dell ([91.110.221.168])
-        by smtp.gmail.com with ESMTPSA id i7sm23414157wrv.12.2020.12.14.23.53.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 23:53:10 -0800 (PST)
-Date:   Tue, 15 Dec 2020 07:53:08 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     ChiYuan Huang <u0084500@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        cy_huang <cy_huang@richtek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v4 2/3] backlight: rt4831: Adds DT binding document for
- Richtek RT4831 backlight
-Message-ID: <20201215075308.GI5029@dell>
-References: <1607704424-16223-1-git-send-email-u0084500@gmail.com>
- <1607704424-16223-2-git-send-email-u0084500@gmail.com>
- <20201214095916.4g47zlueng4wa3hv@holly.lan>
- <CADiBU38wZ+yrfjbggJyY7BHc5-tdV-KWVgWBmZn-q3EY99=PPg@mail.gmail.com>
- <20201214151409.qdqh2i5hr4g3eboe@holly.lan>
+        id S1725960AbgLOHyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 02:54:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49658 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726734AbgLOHx7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 02:53:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4C87FAC7F;
+        Tue, 15 Dec 2020 07:53:17 +0000 (UTC)
+To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
+        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
+        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
+        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
+References: <1608001299-7237-1-git-send-email-tiantao6@hisilicon.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH] drm/hisilicon: Fix rmmod hibmc_drm failed
+Message-ID: <3f32c165-9a83-6238-46dd-9ace8280b584@suse.de>
+Date:   Tue, 15 Dec 2020 08:53:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201214151409.qdqh2i5hr4g3eboe@holly.lan>
+In-Reply-To: <1608001299-7237-1-git-send-email-tiantao6@hisilicon.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="he7udaqwVmKfbAi2gSudhhEpmiK3iKBar"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020, Daniel Thompson wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--he7udaqwVmKfbAi2gSudhhEpmiK3iKBar
+Content-Type: multipart/mixed; boundary="I64QpraC53kx1xwVu3S1H4bHbvpqJY03U";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
+ kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
+ dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <3f32c165-9a83-6238-46dd-9ace8280b584@suse.de>
+Subject: Re: [PATCH] drm/hisilicon: Fix rmmod hibmc_drm failed
+References: <1608001299-7237-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1608001299-7237-1-git-send-email-tiantao6@hisilicon.com>
 
-> On Mon, Dec 14, 2020 at 10:40:55PM +0800, ChiYuan Huang wrote:
-> > Hi,
-> > 
-> > Daniel Thompson <daniel.thompson@linaro.org> 於 2020年12月14日 週一 下午5:59寫道：
-> > >
-> > > Hi CY
-> > >
-> > > On Sat, Dec 12, 2020 at 12:33:43AM +0800, cy_huang wrote:
-> > > > From: ChiYuan Huang <cy_huang@richtek.com>
-> > > >
-> > > > Adds DT binding document for Richtek RT4831 backlight.
-> > > >
-> > > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > >
-> > > This patch got keyword filtered and brought to my attention
-> > > but the rest of the series did not.
-> > >
-> > > If it was a backlight patch series you need to send it To: the
-> > > all the backlight maintainers.
-> > >
-> > Yes, I'm waiting for mfd reviewing.
-> > Due to mfd patch, I need to add backlight dt-binding patch prior to
-> > backlight source code.
-> > Or autobuild robot will said mfd dt-binding build fail from Rob.
-> > That's why I send the backlight dt-binding prior to the source code.
-> > 
-> > I still have backlight/regulator source code patch after mfd reviewing.
-> > Do you want me to send all the patches without waiting for mfd reviewing?
-> 
-> To some extent it's up to you.
-> 
-> I think I would have shared all the pieces at once (although not it Lee,
-> as mfd maintainer, had suggested otherwise).
+--I64QpraC53kx1xwVu3S1H4bHbvpqJY03U
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-You should not need to concern yourself with patch ordering outside
-of the realms of the set i.e. [PATCH 1/x], [PATCH 2/x], etc.
+Hi Tian
 
-If you just send the whole patch set and you do not specify otherwise,
-it will be applied, in order, as a set.
+Am 15.12.20 um 04:01 schrieb Tian Tao:
+> drm_irq_uninstall should be called before pci_disable_msi, if use
+> devm_drm_irq_install to register the interrupt, the system will
+> call pci_disable_msi first and then call drm_irq_uninstall, which
+>   will result in the following callstack.
+>=20
+> kernel BUG at drivers/pci/msi.c:376!
+> Internal error: Oops - BUG: 0 [#1] SMP
+> CPU: 93 PID: 173814 Comm: rmmod Tainted:
+> pstate: a0400009 (NzCv daif +PAN -UAO -TCO BTYPE=3D--)
+> pc : free_msi_irqs+0x17c/0x1a0
+> lr : free_msi_irqs+0x16c/0x1a0
+> sp : ffff2028157f7bd0
+> x29: ffff2028157f7bd0 x28: ffff202849edab00
+> x27: 0000000000000000 x26: 0000000000000000
+> x25: 0000000000000000 x24: 0000000000000000
+> x23: ffff0020851da000 x22: ffff0020851da2d8
+> x21: ffff0020cc829000 x20: 0000000000000000
+> x19: ffff0020d6714800 x18: 0000000000000010
+> x17: 0000000000000000 x16: 0000000000000000
+> x15: ffffffffffffffff x14: ffff2028957f77df
+> x13: ffff2028157f77ed x12: 0000000000000000
+> x11: 0000000000000040 x10: ffff800011b2f8e0
+> x9 : ffff800011b2f8d8 x8 : ffff2020203fc458
+> x7 : 0000000000000000 x6 : 0000000000000000
+> x5 : ffff2020203fc430 x4 : ffff2020203fc4a0
+> x3 : 0000000000000000 x2 : 0000000000000000
+> x1 : 00000000000002c9 x0 : ffff0020d6719500
+> Call trace:
+>   free_msi_irqs+0x17c/0x1a0
+>   pci_disable_msi+0xe4/0x118
+>   hibmc_unload+0x44/0x80 [hibmc_drm]
+>   hibmc_pci_remove+0x2c/0x38 [hibmc_drm]
+>   pci_device_remove+0x48/0x108
+>   device_release_driver_internal+0x118/0x1f0
+>   driver_detach+0x6c/0xe0
+>   bus_remove_driver+0x74/0x100
+>   driver_unregister+0x34/0x60
+>   pci_unregister_driver+0x24/0xd8
+>   hibmc_pci_driver_exit+0x14/0xe768 [hibmc_drm]
+>   __arm64_sys_delete_module+0x1fc/0x2d0
+>   el0_svc_common.constprop.3+0xa8/0x188
+>   do_el0_svc+0x80/0xa0
+>   el0_sync_handler+0x8c/0xb0
+>   el0_sync+0x15c/0x180
+> Code: f940b400 b4ffff00 a903e7b8 f90013b5 (d4210000)
+> ---[ end trace 310d94ee8abef44f ]---
+> Kernel panic - not syncing: Oops - BUG: Fatal exception
+>=20
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> ---
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/=
+gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> index e3ab765b..02f3bd1 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> @@ -251,6 +251,10 @@ static int hibmc_hw_init(struct hibmc_drm_private =
+*priv)
+>   static int hibmc_unload(struct drm_device *dev)
+>   {
+>   	drm_atomic_helper_shutdown(dev);
+> +
+> +	if (dev->irq_enabled)
+> +		drm_irq_uninstall(dev);
+> +
+>   	pci_disable_msi(dev->pdev);
 
-Sending subsystem patches without the correct maintainers as recipients
-is bad form.  Many of us have filters on, so this tactic will seldom
-work in any case.
+We're trying to move towards managed driver releases; and this feels=20
+like a step backwards.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I looked through the PCI-device release code in pcim_release() and it=20
+already disables MSI automatically. [1] You can enable the PCI device=20
+with pcim_enable_device() instead of pci_enable_device() to use the=20
+automatic release. No more need to disable MSI manually.
+
+If this does not work, could you provide a managed version of=20
+pci_disable_msi() that solves the problem?
+
+Best regards
+Thomas
+
+[1] https://elixir.bootlin.com/linux/latest/source/drivers/pci/pci.c#L197=
+6
+
+
+>  =20
+>   	return 0;
+> @@ -286,7 +290,7 @@ static int hibmc_load(struct drm_device *dev)
+>   	if (ret) {
+>   		drm_warn(dev, "enabling MSI failed: %d\n", ret);
+>   	} else {
+> -		ret =3D devm_drm_irq_install(dev, dev->pdev->irq);
+> +		ret =3D drm_irq_install(dev, dev->pdev->irq);
+>   		if (ret)
+>   			drm_warn(dev, "install irq failed: %d\n", ret);
+>   	}
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--I64QpraC53kx1xwVu3S1H4bHbvpqJY03U--
+
+--he7udaqwVmKfbAi2gSudhhEpmiK3iKBar
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/Ya2wFAwAAAAAACgkQlh/E3EQov+C3
+dA/+JtDb6vW5xsJVh/Ae+lA1fLNoG/ia2MZho2+KVHdziY3SZtlOUAR8kQnDDeaIyxuiAf6X2Rct
+rBh+8lAyDDtIpSM7AsLJvIUXVb/raKNMcLpIx/kFjjLH8X1KHhjRbRh5M7/I3H0oxAXUttMe8HWH
+xqmOKyPwXIRS2KD1jUXqd1XO/enKPfPu3fEnnqxYxnf8N0BhXS+T9uq+eDj3VH6swCzR5HmoyLjx
+OHEfcuLz2Iy4vwz/mwjptGo6O6uD+x3tB01E9GtVM2TNWMMtZBD7GXensrw30xPFzB39F0o1Ews/
+bp6SdEEKpAAbRu5J0GZM3tIamnWaBxuyIMK50paSU/cJpz1dS2W3k+SiZ9Nf0zSc1f3rdyoA6kJy
+k8BM898ZiFSDJCCkygNtQzhFcaD0uDVCYg5A55UCvSiJii9lV2saY8L8Q7p4id3xa5MohOwIXfRK
+kmozgYEA8uEYIDF9YkYQ28YvN4AApw3Kj/aj4ZAeL3ivagGZfl/46RZa0nul5PzBfeiX+uBegzJi
+/iG5P2yPdYRcSjdk5QhhFERfo4lrQ8TwdF2d88sb+5Qnr9tbuxUdexG38icJQL72+XOfWIxrd5+4
+O2X/WS/pG5yAh3c6GC1CMbK5tzRhB5feWXbRyxfWggTwhoIKBAHydYY6GkuzS+PNcHr+sjTUkA+H
+bQg=
+=l6yC
+-----END PGP SIGNATURE-----
+
+--he7udaqwVmKfbAi2gSudhhEpmiK3iKBar--
