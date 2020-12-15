@@ -2,107 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3682DB0AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 564602DB09D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730753AbgLOP6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:58:24 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:57078 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730393AbgLOP5i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:57:38 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFFrfvK097745;
-        Tue, 15 Dec 2020 15:56:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=X8cotNVRvYPO4IUOxh1+ibuoxANk5xMy4g8PWcjkYoE=;
- b=uQkiV4fE+2HBOEJy8GroAMsRbXPEt3PQWq3I+2AMzVlpAgSx4iXcx6agTNNTvqb+Zmaw
- vuMB6MV0DAysMk3FrYS5Feffd5nVdd29LdVmt6sSZ7+G13qTFh4B/akcjbkTyu2hH4ST
- F7X65wMVrer3eACpMcb/bNGkqAN8NB0/lLvgw9qjmykCAhyqLo2Tisnkt5EzeasR77YG
- GXnrqBI6qFMKO9nTK+5cvTDE1tSH2JFU0U31lDSXShordCZF+OrYp5HFDSiLE2115A2H
- QwE4oBsKmMX05MrI3qWH2XKFKm9N53TrNdc+P+8pd/u9UkfeRYlFQXBKSMH2wo7bEVRw Lw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 35cntm38p0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Dec 2020 15:56:48 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFFVEoe135187;
-        Tue, 15 Dec 2020 15:54:48 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 35d7en7ewk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Dec 2020 15:54:48 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BFFsl7A019173;
-        Tue, 15 Dec 2020 15:54:47 GMT
-Received: from revolver.jebus.ca (/23.233.25.87)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Dec 2020 07:54:47 -0800
-From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@google.com>
-Subject: [PATCH v2] mm/mmap: Don't unlock VMAs in remap_file_pages()
-Date:   Tue, 15 Dec 2020 10:54:41 -0500
-Message-Id: <20201215155441.1497432-1-Liam.Howlett@Oracle.com>
-X-Mailer: git-send-email 2.28.0
+        id S1729735AbgLOPzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:55:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730304AbgLOPzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:55:31 -0500
+Date:   Tue, 15 Dec 2020 12:55:03 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608047690;
+        bh=sLW8lkGW0vdMuvlBeUnMF+afEVxJHcmfdiN4oFuShVU=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dWpcVdZCft9LReyaAAncJweB9qsYbYOLamLRgDFlmj3vhXvnh47ijCGuNIsu75K9Q
+         n6NO5mVXYobMqwrUEby1GGL0yIrWPl4bxnAoPSH5lFwKAANGXcImfDoctIBrNZKBq+
+         TiFqJr3bH63rA4b5GcdxNiDuH5kK/1nF5oPap000AOEMMI47xMqsDel8AY8CoKqBU+
+         xSqeIgK+vO/7BzBL3cBLK4LJ5TZ0sv3gvlTo7bxUWb4ujz3IA6SPWz8ckQDSWu3zYj
+         mRHsb7dyKovbCf05vXj1Ls0xaquRWjEFF7TDB3TInTCbxhghZoHF2ErLtAciTpK2P+
+         JjL8VAphtYHig==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 06/15] perf tools: Add support to read build id from
+ compressed elf
+Message-ID: <20201215155503.GM258566@kernel.org>
+References: <20201214105457.543111-1-jolsa@kernel.org>
+ <20201214105457.543111-7-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 bulkscore=0
- suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012150109
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 priorityscore=1501 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012150110
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201214105457.543111-7-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_mmap() will unlock the necessary VMAs.  There is also a bug in the
-loop which will evaluate as false and not unlock any VMAs anyways.
+Em Mon, Dec 14, 2020 at 11:54:48AM +0100, Jiri Olsa escreveu:
+> Adding support to decompress file before reading build id.
+> 
+> Adding filename__read_build_id and change its current
+> versions to read_build_id.
+> 
+> Shutting down stderr output of perf list in the shell test:
+>   82: Check open filename arg using perf trace + vfs_getname          : Ok
 
-Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
----
- mm/mmap.c | 18 +-----------------
- 1 file changed, 1 insertion(+), 17 deletions(-)
+Tentatively cherry picking this one.
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 5c8b4485860de..f7fecb77f84fd 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -3025,25 +3025,9 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
+- Arnaldo
  
- 	flags &= MAP_NONBLOCK;
- 	flags |= MAP_SHARED | MAP_FIXED | MAP_POPULATE;
--	if (vma->vm_flags & VM_LOCKED) {
--		struct vm_area_struct *tmp;
-+	if (vma->vm_flags & VM_LOCKED)
- 		flags |= MAP_LOCKED;
- 
--		/* drop PG_Mlocked flag for over-mapped range */
--		for (tmp = vma; tmp->vm_start >= start + size;
--				tmp = tmp->vm_next) {
--			/*
--			 * Split pmd and munlock page on the border
--			 * of the range.
--			 */
--			vma_adjust_trans_huge(tmp, start, start + size, 0);
--
--			munlock_vma_pages_range(tmp,
--					max(tmp->vm_start, start),
--					min(tmp->vm_end, start + size));
--		}
--	}
--
- 	file = get_file(vma->vm_file);
- 	ret = do_mmap(vma->vm_file, start, size,
- 			prot, flags, pgoff, &populate, NULL);
+> because with decompression code in the place we the
+> filename__read_build_id function is more verbose in case
+> of error and the test did not account for that.
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  .../tests/shell/trace+probe_vfs_getname.sh    |  2 +-
+>  tools/perf/util/symbol-elf.c                  | 37 ++++++++++++++++++-
+>  2 files changed, 36 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/tests/shell/trace+probe_vfs_getname.sh b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
+> index 11cc2af13f2b..3d31c1d560d6 100755
+> --- a/tools/perf/tests/shell/trace+probe_vfs_getname.sh
+> +++ b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
+> @@ -20,7 +20,7 @@ skip_if_no_perf_trace || exit 2
+>  file=$(mktemp /tmp/temporary_file.XXXXX)
+>  
+>  trace_open_vfs_getname() {
+> -	evts=$(echo $(perf list syscalls:sys_enter_open* 2>&1 | egrep 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/') | sed 's/ /,/')
+> +	evts=$(echo $(perf list syscalls:sys_enter_open* 2>/dev/null | egrep 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/') | sed 's/ /,/')
+>  	perf trace -e $evts touch $file 2>&1 | \
+>  	egrep " +[0-9]+\.[0-9]+ +\( +[0-9]+\.[0-9]+ ms\): +touch\/[0-9]+ open(at)?\((dfd: +CWD, +)?filename: +${file}, +flags: CREAT\|NOCTTY\|NONBLOCK\|WRONLY, +mode: +IRUGO\|IWUGO\) += +[0-9]+$"
+>  }
+> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+> index 44dd86a4f25f..f3577f7d72fe 100644
+> --- a/tools/perf/util/symbol-elf.c
+> +++ b/tools/perf/util/symbol-elf.c
+> @@ -534,7 +534,7 @@ static int elf_read_build_id(Elf *elf, void *bf, size_t size)
+>  
+>  #ifdef HAVE_LIBBFD_BUILDID_SUPPORT
+>  
+> -int filename__read_build_id(const char *filename, struct build_id *bid)
+> +static int read_build_id(const char *filename, struct build_id *bid)
+>  {
+>  	size_t size = sizeof(bid->data);
+>  	int err = -1;
+> @@ -563,7 +563,7 @@ int filename__read_build_id(const char *filename, struct build_id *bid)
+>  
+>  #else // HAVE_LIBBFD_BUILDID_SUPPORT
+>  
+> -int filename__read_build_id(const char *filename, struct build_id *bid)
+> +static int read_build_id(const char *filename, struct build_id *bid)
+>  {
+>  	size_t size = sizeof(bid->data);
+>  	int fd, err = -1;
+> @@ -595,6 +595,39 @@ int filename__read_build_id(const char *filename, struct build_id *bid)
+>  
+>  #endif // HAVE_LIBBFD_BUILDID_SUPPORT
+>  
+> +int filename__read_build_id(const char *filename, struct build_id *bid)
+> +{
+> +	struct kmod_path m = { .name = NULL, };
+> +	char path[PATH_MAX];
+> +	int err;
+> +
+> +	if (!filename)
+> +		return -EFAULT;
+> +
+> +	err = kmod_path__parse(&m, filename);
+> +	if (err)
+> +		return -1;
+> +
+> +	if (m.comp) {
+> +		int error = 0, fd;
+> +
+> +		fd = filename__decompress(filename, path, sizeof(path), m.comp, &error);
+> +		if (fd < 0) {
+> +			pr_debug("Failed to decompress (error %d) %s\n",
+> +				 error, filename);
+> +			return -1;
+> +		}
+> +		close(fd);
+> +		filename = path;
+> +	}
+> +
+> +	err = read_build_id(filename, bid);
+> +
+> +	if (m.comp)
+> +		unlink(filename);
+> +	return err;
+> +}
+> +
+>  int sysfs__read_build_id(const char *filename, struct build_id *bid)
+>  {
+>  	size_t size = sizeof(bid->data);
+> -- 
+> 2.26.2
+> 
+
 -- 
-2.28.0
 
+- Arnaldo
