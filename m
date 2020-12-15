@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F350F2DAAB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DAE12DAAB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727188AbgLOKQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:16:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39604 "EHLO mail.kernel.org"
+        id S1727335AbgLOKSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:18:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726852AbgLOKQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:16:39 -0500
-Date:   Tue, 15 Dec 2020 11:17:00 +0100
+        id S1726754AbgLOKRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 05:17:06 -0500
+Date:   Tue, 15 Dec 2020 11:17:28 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1608027357;
-        bh=2miM2pQ31OPfk1UwcZA/rQi1fJ61IA238xULLgQCiPc=;
+        s=korg; t=1608027385;
+        bh=EfMxzYEL0azsDXInSzG0G5MfS+uNuiw4Qon1u4vG234=;
         h=From:To:Cc:Subject:From;
-        b=KVbInHTq8wA5MU+vfU39USbkOcGEbx3ZPK0FQ19OHRhhPj0ydA8DWXQu36ygR4xlX
-         Ryg7YxILcu0dORTjxTdQsKHlksV+tcoFRc4OBFlBQfw02ATY51dD+GBiU+KFLhljGW
-         aM7nfOD2VWYxzvJjlCbvEI3xGANERUqOuX9NUDqo=
+        b=wrqWSYufpU5+sz9Wvz+5iBSWe5DR/btQLMmcFxWMnjd6VLAojgpKU8Pu9v0UPHSWy
+         fBuT/LzAqGq8b0riSPUkvrYF0LAx9WGzzp2zcs7Wh3G00HEo83H0VY5z1RQ+Kok0JG
+         amTBBOjoZjEDV5+0x5sye6wMPbInzbgRmCeCzN4c=
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB / Thunderbolt driver changes for 5.11-rc1
-Message-ID: <X9iNHGpdcl3cAlo4@kroah.com>
+Cc:     Jiri Slaby <jslaby@suse.cz>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: [GIT PULL] TTY / Serial changes for 5.11-rc1
+Message-ID: <X9iNOFPXMb4IrJDX@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -39,475 +41,243 @@ The following changes since commit 0477e92881850d44910a7e94fc2c46f96faa131f:
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.11-rc1
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.11-rc1
 
-for you to fetch changes up to a256e24021bf7ceedd29fe65eb45c7adfffffad2:
+for you to fetch changes up to c3ae3dc896fab5524f9b20f547e72e4b892d8d8e:
 
-  usb: phy: convert comma to semicolon (2020-12-11 16:51:20 +0100)
+  serial: 8250_pci: Drop bogus __refdata annotation (2020-12-11 17:17:50 +0100)
 
 ----------------------------------------------------------------
-USB / Thunderbolt patches for 5.11-rc1
+TTY/Serial patches for 5.11-rc1
 
-Here is the big USB and thunderbolt pull request for 5.11-rc1.
+Here is the "large" set of tty and serial patches for 5.11-rc1.
 
-Nothing major in here, just the grind of constant development to support
-new hardware and fix old issues:
-  - thunderbolt updates for new USB4 hardware
-  - cdns3 major driver updates
-  - lots of typec updates and additions as more hardware is available
-  - usb serial driver updates and fixes
-  - other tiny USB driver updates
+Nothing major at all, some cleanups and some driver removals, always a
+nice sign:
+  - build warning cleanups
+  - vt locking and logic unwinding and cleanups
+  - tiny serial driver fixes and updates
+  - removal of the synclink serial driver as it's no longer needed
+  - removal of dead termiox code
 
-All have been in linux-next with no reported issues.
+All of this has been in linux-next for a while with no reported issues.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Ahmed S. Darwish (7):
-      USB: serial: digi_acceleport: remove in_interrupt() usage
-      usb: hosts: Remove in_interrupt() from comments
-      usb: gadget: udc: Remove in_interrupt()/in_irq() from comments
-      usb: core: Replace in_interrupt() in comments
-      usb: gadget: pxa27x_udc: Replace in_interrupt() usage in comments
-      usbip: Remove in_interrupt() check
-      usb: xhci: Remove in_interrupt() checks
+Alexander Sverdlin (2):
+      tty: serial: uartlite: Support probe deferral
+      serial: 8250_omap: Avoid FIFO corruption caused by MDR1 access
 
-Al Cooper (2):
-      dt-bindings: Add support for Broadcom USB pin map driver
-      usb: Add driver to allow any GPIO to be used for 7211 USB signals
+Alexey Kardashevskiy (1):
+      serial_core: Check for port state when tty is in error state
 
-Alan Stern (1):
-      USB: legotower: fix logical error in recent commit
+Andy Shevchenko (5):
+      serial: max310x: Make use of device properties
+      serial: max310x: Use devm_clk_get_optional() to get the input clock
+      vt: keyboard, use BIT() macro instead of open coded variants
+      vt: keyboard, replace numbers with \r, \n where appropriate
+      vt: keyboard, make use of assign_bit() API
 
-Andrey Konovalov (1):
-      kcov, usb: only collect coverage from __usb_hcd_giveback_urb in softirq
-
-Aswath Govindraju (1):
-      MAINTAINERS: Add myself as a reviewer for CADENCE USB3 DRD IP DRIVER
-
-Badhri Jagan Sridharan (21):
-      dt-bindings: connector: Add property to set initial current cap for FRS
-      usb: typec: tcpm: Refactor logic for new-source-frs-typec-current
-      usb: typec: tcpm: frs sourcing vbus callback
-      usb: typec: tcpci: frs sourcing vbus callback
-      usb: typec: tcpci_maxim: Fix vbus stuck on upon diconnecting sink
-      usb: typec: tcpm: Implement enabling Auto Discharge disconnect support
-      usb: typec: tcpci: Implement Auto discharge disconnect callbacks
-      usb: typec: tcpci_maxim: Enable auto discharge disconnect
-      usb: typec: tcpci_maxim: Fix uninitialized return variable
-      dt-bindings: usb: Maxim type-c controller device tree binding document
-      usb: typec: tcpci_maxim: Fix the compatible string
-      usb: typec: tcpm: Disregard vbus off while in PR_SWAP_SNK_SRC_SOURCE_ON
-      usb: typec: tcpm: Stay in SNK_TRY_WAIT_DEBOUNCE_CHECK_VBUS till Rp is seen
-      usb: typec: tcpm: Pass down negotiated rev to update retry count
-      usb: typec: tcpm: Clear send_discover in tcpm_check_send_discover
-      usb: typec: tcpm: Introduce vsafe0v for vbus
-      usb: typec: tcpci: Add support to report vSafe0V
-      usb: typec: tcpci_maxim: Enable VSAFE0V signalling
-      USB: typec: tcpci: Add Bleed discharge to POWER_CONTROL definition
-      usb: typec: tcpci: Enable bleed discharge when auto discharge is enabled
-      usb: typec: tcpm: Update vbus_vsafe0v on init
-
-Benjamin Berg (2):
-      usb: typec: ucsi: acpi: Always decode connector change information
-      usb: typec: ucsi: Work around PPM losing change information
-
-Bui Quang Minh (1):
-      USB: dummy-hcd: Fix uninitialized array use in init()
-
-Colin Ian King (1):
-      usb: phy: Fix spelling mistake in Kconfig help text
-
-Dan Carpenter (4):
-      usb: misc: brcmstb-usb-pinmap: Fix an IS_ERR() vs NULL check
-      USB: apple-mfi-fastcharge: Fix use after free in probe
-      usb: mtu3: mtu3_debug: remove an unused struct member
-      usb: mtu3: fix memory corruption in mtu3_debugfs_regset()
-
-Davidlohr Bueso (1):
-      USB: serial: mos7720: defer state restore to a workqueue
-
-Enrico Weigelt, metux IT consult (3):
-      drivers: usb: atm: reduce noise
-      drivers: usb: atm: use atm_info() instead of atm_printk(KERN_INFO ...
-      drivers: usb: atm: use pr_err() and pr_warn() instead of raw printk()
+Clement Smith (1):
+      tty : serial: jsm: Fixed file by adding spacing
 
 Fabio Estevam (5):
-      usb: host: imx21-hcd: Remove the driver
-      usb: host: ehci-mxc: Remove the driver
-      usb: chipidea: ci_hdrc_imx: Pass DISABLE_DEVICE_STREAMING flag to imx6ul
-      usb: chipidea: usbmisc_imx: Use of_device_get_match_data()
-      usb: chipidea: ci_hdrc_imx: Use of_device_get_match_data()
+      serial: imx: Remove unused platform data support
+      serial: imx: Remove unused .id_table support
+      serial: mxs-auart: Remove unneeded platform_device_id
+      serial: imx: Remove unneeded of_device_get_match_data() NULL check
+      serial: imx: Move imx_uart_probe_dt() content into probe()
 
-Greg Kroah-Hartman (10):
-      USB: host: isp1362: delete isp1362_show_regs()
-      Merge 5.10-rc2 into usb-next
-      Merge 5.10-rc3 into usb-next
-      Merge 5.10-rc4 into here.
-      Merge 5.10-rc6 into usb-next
-      Merge 5.10-rc7 into usb-next
-      Merge tag 'thunderbolt-for-v5.11-rc1' of git://git.kernel.org/.../westeri/thunderbolt into usb-next
-      Merge tag 'usb-v5.11-rc1' of git://git.kernel.org/.../peter.chen/usb into usb-next
-      USB: gadget: f_fs: remove likely/unlikely
-      Merge tag 'usb-serial-5.11-rc1' of https://git.kernel.org/.../johan/usb-serial into usb-next
+Geert Uytterhoeven (1):
+      serial: 8250_pci: Drop bogus __refdata annotation
 
-Guido G�nther (2):
-      usb: typec: tps6598x: Select USB_ROLE_SWITCH and REGMAP_I2C
-      usb: typec: tps6598x: Export some power supply properties
+Greg Kroah-Hartman (4):
+      Merge 5.10-rc2 into tty-next
+      Merge 5.10-rc3 into tty-next
+      Merge 5.10-rc5 into tty-next
+      Merge 5.10-rc7 into tty-next
 
-Gustavo A. R. Silva (1):
-      usb: Fix fall-through warnings for Clang
+Jann Horn (1):
+      tty: Remove dead termiox code
 
-Hans de Goede (1):
-      xhci-pci: Allow host runtime PM as default for Intel Alpine Ridge LP
+Jiri Slaby (17):
+      vt: keyboard, remove ctrl_alt_del declaration
+      vt: keyboard, include linux/spinlock.h
+      vt: keyboard, sort includes
+      vt: keyboard, sort key types by their number
+      vt: keyboard, clean up max_vals
+      vt: keyboard, extract vt_kdgkbent and vt_kdskbent
+      vt: keyboard, union perm checks in vt_do_kdsk_ioctl
+      vt: keyboard, use DECLARE_BITMAP for key_down
+      vt: keyboard, use bool for rep
+      vt: keyboard, rename i to kb_func in vt_do_kdgkb_ioctl
+      vt: keyboard, reorder user buffer handling in vt_do_kdgkb_ioctl
+      vt: keyboard, extract and simplify vt_kdskbsent
+      vt: keyboard, remove unneeded func_* declarations
+      vt: keyboard, union perm checks in vt_do_kdgkb_ioctl
+      vt: keyboard, make HW_RAW a function
+      vt: keyboard, use find_next_bit in kbd_match
+      vt: keyboard, use tty_insert_flip_string in puts_queue
 
-Heikki Krogerus (2):
-      usb: pd: DFP product types
-      usb: typec: Add type sysfs attribute file for partners
+Johan Hovold (4):
+      earlycon: simplify earlycon-table implementation
+      earlycon: drop semicolon from earlycon macro
+      tty: use assign_bit() in port-flag accessors
+      tty: use const parameters in port-flag accessors
 
-Isaac Hazan (4):
-      thunderbolt: Add link_speed and link_width to XDomain
-      thunderbolt: Add functions for enabling and disabling lane bonding on XDomain
-      thunderbolt: Add DMA traffic test driver
-      MAINTAINERS: Add Isaac as maintainer of Thunderbolt DMA traffic test driver
+Kevin Hilman (1):
+      tty: serial: meson: enable console as module
 
-Jack Pham (1):
-      usb: gadget: f_fs: Re-use SS descriptors for SuperSpeedPlus
+Laurent Vivier (1):
+      tty: goldfish: use __raw_writel()/__raw_readl()
 
-Johan Hovold (27):
-      USB: serial: keyspan_pda: fix dropped unthrottle interrupts
-      USB: serial: keyspan_pda: fix write deadlock
-      USB: serial: keyspan_pda: fix stalled writes
-      USB: serial: keyspan_pda: fix write-wakeup use-after-free
-      USB: serial: keyspan_pda: fix tx-unthrottle use-after-free
-      USB: serial: keyspan_pda: fix write unthrottling
-      USB: serial: keyspan_pda: refactor write-room handling
-      USB: serial: keyspan_pda: fix write implementation
-      USB: serial: keyspan_pda: increase transmitter threshold
-      USB: serial: keyspan_pda: add write-fifo support
-      USB: serial: keyspan_pda: clean up xircom/entrega support
-      USB: serial: keyspan_pda: clean up comments and whitespace
-      USB: serial: keyspan_pda: use BIT() macro
-      USB: serial: keyspan_pda: drop redundant usb-serial pointer
-      USB: serial: digi_acceleport: fix write-wakeup deadlocks
-      USB: serial: remove write wait queue
-      USB: serial: mos7720: fix parallel-port state restore
-      USB: serial: cp210x: return early on unchanged termios
-      USB: serial: cp210x: clean up line-control handling
-      USB: serial: cp210x: set terminal settings on open
-      USB: serial: cp210x: drop flow-control debugging
-      USB: serial: cp210x: refactor flow-control handling
-      USB: serial: cp210x: clean up dtr_rts()
-      USB: core: drop short-transfer check from usb_control_msg_send()
-      USB: core: return -EREMOTEIO on short usb_control_msg_recv()
-      USB: core: drop pipe-type check from new control-message helpers
-      USB: serial: option: add interface-number sanity check to flag handling
+Lee Jones (35):
+      tty: serdev: core: Remove unused variable 'dummy'
+      tty: serdev: core: Provide missing description for 'owner'
+      tty: tty_baudrate: Add missing description for 'tty'
+      tty: tty_io: Move 'tty_sysctl_init's prototype to shared space
+      tty: tty_buffer: Add missing description for 'limit'
+      tty: tty_port: Demote obvious abuse of kernel-doc formatting
+      tty: tty_jobctrl: Add missing function parameter descriptions
+      tty: vt: consolemap: Demote weakly documented function header
+      tty: n_tty: Add 2 missing parameter descriptions
+      tty: serial: jsm: jsm_cls: Remove unused variable 'discard'
+      tty: tty_io: Fix some kernel-doc issues
+      tty: serial: 8250: serial_cs: Remove unused/unchecked variable 'err'
+      tty: tty_audit: Demote non-conformant kernel-doc headers
+      tty: pty: Provide descriptions for the 'file' parameters
+      tty: serial: amba-pl011: Mark 'sbsa_uart_acpi_match' as __maybe_unused
+      tty: n_gsm: Demote obvious abuse of kernel-doc and supply other missing docss
+      tty: serial: lpc32xx_hs: Remove unused variable 'tmp'
+      tty: serial: msm_serial: Remove set but unused variable 'status'
+      tty: serial: ifx6x60: Fix function documentation headers
+      tty: serial: xilinx_uartps: Supply description for missing member 'cts_override'
+      tty: synclink_gt: Demote one kernel-doc header and repair another
+      tty: serial: serial-tegra: Struct headers should start with 'struct <name>'
+      tty: serial: sifive: Struct headers should start with 'struct <name>'
+      tty: synclinkmp: Add missing description for function param 'txqueue'
+      tty: serial: stm32-usart: Remove set but unused 'cookie' variables
+      tty: tty_ldisc: Supply missing description for 'tty_ldisc_get's 'tty' param
+      tty: serial: serial-tegra: Provide some missing struct member descriptions
+      tty: hvc: hvc_vio: Staticify function invoked only by reference
+      tty: hvc: hvc_opal: Staticify function invoked by reference
+      tty: synclink: Provide missing description for 'hdlcdev_tx_timeout's 'txqueue' param
+      tty: Remove redundant synclink driver
+      tty: Remove redundant synclinkmp driver
+      tty: serial: 8250: 8250_port: Move prototypes to shared location
+      tty: serial: pmac_zilog: Remove unused disposable variable 'garbage'
+      tty: tty_ldisc: Fix some kernel-doc related misdemeanours
 
-Kyle Tso (2):
-      USB: typec: tcpm: Fix PR_SWAP error handling
-      USB: typec: tcpm: Add a 30ms room for tPSSourceOn in PR_SWAP
+Liu Xiang (1):
+      tty: serial: linflexuart: Remove unnecessary '|' operation and add error count
 
-Li Jun (1):
-      xhci: Give USB2 ports time to enter U3 in bus suspend
+Mingrui Ren (1):
+      tty/serial/imx: Enable TXEN bit in imx_poll_init().
 
-Linus Walleij (1):
-      usb: isp1301-omap: Convert to use GPIO descriptors
+Rafał Miłecki (1):
+      tty: serial: bcm63xx: lower driver dependencies
 
-Lucas Tanure (1):
-      USB: apple-mfi-fastcharge: Fix kfree after failed kzalloc
+Rikard Falkeborn (1):
+      tty: serial: msm_serial: Constify msm_uart_pops
 
-Lukas Bulwahn (1):
-      USB: storage: avoid use of uninitialized values in error path
+Thomas Bogendoerfer (1):
+      tty: serial: remove pnx8xxx uart driver
 
-Marc Zyngier (3):
-      USB: serial: ftdi_sio: report the valid GPIO lines to gpiolib
-      USB: serial: ftdi_sio: drop GPIO line checking dead code
-      USB: serial: ftdi_sio: log the CBUS GPIO validity
+Tom Rix (1):
+      tty: nozomi: remove unneeded break
 
-Mika Westerberg (19):
-      thunderbolt: Do not clear USB4 router protocol adapter IFC and ISE bits
-      thunderbolt: Find XDomain by route instead of UUID
-      thunderbolt: Create XDomain devices for loops back to the host
-      thunderbolt: Create debugfs directory automatically for services
-      thunderbolt: Make it possible to allocate one directional DMA tunnel
-      thunderbolt: Add support for end-to-end flow control
-      thunderbolt: Move max_boot_acl field to correct place in struct icm
-      thunderbolt: Log which connection manager implementation is used
-      thunderbolt: Log adapter numbers in decimal in path activation/deactivation
-      thunderbolt: Keep the parent runtime resumed for a while on device disconnect
-      thunderbolt: Return -ENOTCONN when ERR_CONN is received
-      thunderbolt: Perform USB4 router NVM upgrade in two phases
-      thunderbolt: Pass metadata directly to usb4_switch_op()
-      thunderbolt: Pass TX and RX data directly to usb4_switch_op()
-      thunderbolt: Add connection manager specific hooks for USB4 router operations
-      thunderbolt: Move constants for USB4 router operations to tb_regs.h
-      thunderbolt: Add USB4 router operation proxy for firmware connection manager
-      thunderbolt: Add support for Intel Maple Ridge
-      xhci-pci: Allow host runtime PM as default for Intel Maple Ridge xHCI
+Vignesh Raghavendra (4):
+      serial: 8250: 8250_omap: Disable RX interrupt after DMA enable
+      dt-bindings: serial: 8250_omap: Add compatible for UART controller on AM64 SoC
+      serial: 8250: 8250_omap: Fix possible array out of bounds access
+      serial: 8250: 8250_omap: Fix unused variable warning
 
-Nick Desaulniers (1):
-      usb: fix a few cases of -Wfallthrough
+Yan.Gao (1):
+      tty: Fix whitespace inconsistencies in vt_io_ioctl
 
-Oliver Neukum (2):
-      USB: add RESET_RESUME quirk for Snapscan 1212
-      USB: UAS: introduce a quirk to set no_write_same
+Yash Shah (1):
+      dt-bindings: serial: Update DT binding docs to support SiFive FU740 SoC
 
-Pawel Laszczak (2):
-      usb: cdns3: Add static to cdns3_gadget_exit function
-      usb: cdns3: Rids of duplicate error message
+Yoshihiro Shimoda (1):
+      dt-bindings: serial: renesas,scif: Document r8a779a0 bindings
 
-Peter Chen (8):
-      usb: cdns3: host: add .suspend_quirk for xhci-plat.c
-      usb: cdns3: host: add xhci_plat_priv quirk XHCI_SKIP_PHY_INIT
-      usb: cdns3: host: disable BEI support
-      usb: cdns3: add quirk for enable runtime pm by default
-      usb: cdns3: imx: enable runtime pm by default
-      doc: dt-binding: cdns,usb3: add wakeup-irq
-      usb: chipidea: add tracepoint support for udc
-      usb: chipidea: trace: fix the endian issue
+YueHaibing (1):
+      serial: mctrl_gpio: Fix passing zero to 'ERR_PTR' warning
 
-Prashant Malani (7):
-      usb: pd: Add captive Type C cable type
-      usb: typec: Add number of altmodes partner attr
-      usb: typec: Add plug num_altmodes sysfs attr
-      usb: typec: Fix num_altmodes kernel-doc error
-      usb: typec: Consolidate sysfs ABI documentation
-      usb: typec: Expose Product Type VDOs via sysfs
-      usb: typec: Add class for plug alt mode device
+Zhang Qilong (1):
+      serial: 8250-mtk: Fix reference leak in mtk8250_probe
 
-Rikard Falkeborn (3):
-      USB: core: Constify static attribute_group structs
-      usb: typec: Constify static attribute_group structs
-      usb: common: ulpi: Constify static attribute_group struct
-
-Roger Quadros (1):
-      usb: cdns3: fix NULL pointer dereference on no platform data
-
-Sebastian Andrzej Siewior (1):
-      usb: hcd.h: Remove RUN_CONTEXT
-
-Sudip Mukherjee (1):
-      usb: host: ehci-sched: add comment about find_tt() not returning error
-
-Tejas Joglekar (2):
-      usb: xhci: Set quirk for XHCI_SG_TRB_CACHE_SIZE_QUIRK
-      usb: xhci: Use temporary buffer to consolidate SG
-
-Thomas Gleixner (3):
-      USB: sisusbvga: Make console support depend on BROKEN
-      usb: atm: Replace in_interrupt() usage in comment
-      USB: host: ehci-pmcmsp: Cleanup usb_hcd_msp_remove()
-
-Tom Rix (5):
-      USB: serial: iuu_phoenix: remove unneeded break
-      usb: misc: iowarrior: remove unneeded break
-      usb: storage: freecom: remove unneeded break
-      usb: host: xhci-mem: remove unneeded break
-      USB: host: u123-hcd: remove trailing semicolon in macro definition
-
-Utkarsh Patel (6):
-      usb: typec: Correct the bit values for the Thunderbolt rounded/non-rounded cable support
-      platform/chrome: cros_ec_typec: Correct the Thunderbolt rounded/non-rounded cable support
-      usb: typec: intel_pmc_mux: Configure Thunderbolt cable generation bits
-      usb: typec: Remove one bit support for the Thunderbolt rounded/non-rounded cable
-      usb: typec: intel_pmc_mux: Use correct response message bits
-      usb: typec: intel_pmc_mux: Configure cable generation value for USB4
-
-Will McVicker (2):
-      USB: gadget: f_rndis: fix bitrate for SuperSpeed and above
-      USB: gadget: f_midi: setup SuperSpeed Plus descriptors
-
-Xu Wang (1):
-      usb: fotg210-hcd: remove casting dma_alloc_coherent
-
-Yang Yingliang (1):
-      usb/max3421: fix return error code in max3421_probe()
-
-Zhang Qilong (2):
-      usb: ehci-omap: Fix PM disable depth umbalance in ehci_hcd_omap_probe
-      usb: oxu210hp-hcd: Fix memory leak in oxu_create
-
-Zheng Yongjun (3):
-      usb: typec: tcpm: convert comma to semicolon
-      usb: ucsi: convert comma to semicolon
-      usb: phy: convert comma to semicolon
-
-Zou Wei (1):
-      usb: misc: brcmstb-usb-pinmap: Make sync_all_pins static
-
-pumahsu (1):
-      USB: typec: tcpm: Hard Reset after not receiving a Request
-
-taehyun.cho (1):
-      USB: gadget: f_acm: add support for SuperSpeed Plus
-
- Documentation/ABI/testing/sysfs-bus-thunderbolt    |   28 +
- Documentation/ABI/testing/sysfs-class-typec        |  142 +-
- Documentation/admin-guide/kernel-parameters.txt    |    1 +
- .../bindings/connector/usb-connector.yaml          |   19 +
- .../devicetree/bindings/usb/brcm,usb-pinmap.yaml   |   70 +
- .../devicetree/bindings/usb/cdns,usb3.yaml         |    5 +
- .../devicetree/bindings/usb/maxim,max33359.yaml    |   75 +
- MAINTAINERS                                        |   15 +
- arch/arm/configs/badge4_defconfig                  |    1 -
- arch/arm/configs/corgi_defconfig                   |    1 -
- arch/arm/configs/pxa_defconfig                     |    1 -
- arch/arm/configs/spitz_defconfig                   |    1 -
- arch/arm/mach-omap1/board-h2.c                     |   22 +-
- arch/mips/configs/mtx1_defconfig                   |    1 -
- arch/mips/configs/rm200_defconfig                  |    1 -
- arch/powerpc/configs/g5_defconfig                  |    1 -
- arch/powerpc/configs/ppc6xx_defconfig              |    1 -
- drivers/net/thunderbolt.c                          |    2 +-
- drivers/platform/chrome/cros_ec_typec.c            |    3 +-
- drivers/thunderbolt/Kconfig                        |   13 +
- drivers/thunderbolt/Makefile                       |    3 +
- drivers/thunderbolt/ctl.c                          |    7 +-
- drivers/thunderbolt/debugfs.c                      |   24 +
- drivers/thunderbolt/dma_test.c                     |  736 ++++++++
- drivers/thunderbolt/icm.c                          |  240 ++-
- drivers/thunderbolt/nhi.c                          |   36 +-
- drivers/thunderbolt/nhi.h                          |    1 +
- drivers/thunderbolt/path.c                         |   17 +-
- drivers/thunderbolt/switch.c                       |   53 +-
- drivers/thunderbolt/tb.c                           |    2 +
- drivers/thunderbolt/tb.h                           |   22 +
- drivers/thunderbolt/tb_msgs.h                      |   28 +
- drivers/thunderbolt/tb_regs.h                      |   14 +
- drivers/thunderbolt/tunnel.c                       |   50 +-
- drivers/thunderbolt/usb4.c                         |  269 +--
- drivers/thunderbolt/xdomain.c                      |  148 +-
- drivers/usb/Makefile                               |    1 -
- drivers/usb/atm/cxacru.c                           |    9 +-
- drivers/usb/atm/usbatm.c                           |    4 +-
- drivers/usb/atm/xusbatm.c                          |    2 +-
- drivers/usb/cdns3/cdns3-imx.c                      |    2 +-
- drivers/usb/cdns3/core.c                           |   15 +-
- drivers/usb/cdns3/core.h                           |    4 +
- drivers/usb/cdns3/gadget-export.h                  |    3 -
- drivers/usb/cdns3/gadget.c                         |    2 +-
- drivers/usb/cdns3/host-export.h                    |    6 +
- drivers/usb/cdns3/host.c                           |   60 +-
- drivers/usb/chipidea/Makefile                      |    5 +-
- drivers/usb/chipidea/ci_hdrc_imx.c                 |   10 +-
- drivers/usb/chipidea/trace.c                       |   23 +
- drivers/usb/chipidea/trace.h                       |   92 +
- drivers/usb/chipidea/udc.c                         |   10 +-
- drivers/usb/chipidea/usbmisc_imx.c                 |    7 +-
- drivers/usb/common/ulpi.c                          |    2 +-
- drivers/usb/core/buffer.c                          |    6 +-
- drivers/usb/core/config.c                          |    1 +
- drivers/usb/core/endpoint.c                        |    2 +-
- drivers/usb/core/hcd-pci.c                         |    6 +-
- drivers/usb/core/hcd.c                             |   37 +-
- drivers/usb/core/hub.c                             |    3 +-
- drivers/usb/core/message.c                         |   47 +-
- drivers/usb/core/port.c                            |    4 +-
- drivers/usb/core/quirks.c                          |    3 +
- drivers/usb/core/sysfs.c                           |   14 +-
- drivers/usb/core/usb.c                             |    4 +-
- drivers/usb/gadget/function/f_acm.c                |    2 +-
- drivers/usb/gadget/function/f_fs.c                 |  184 +-
- drivers/usb/gadget/function/f_loopback.c           |    2 +-
- drivers/usb/gadget/function/f_midi.c               |    6 +
- drivers/usb/gadget/function/f_rndis.c              |    4 +-
- drivers/usb/gadget/function/f_sourcesink.c         |    1 +
- drivers/usb/gadget/udc/core.c                      |    2 -
- drivers/usb/gadget/udc/dummy_hcd.c                 |   10 +-
- drivers/usb/gadget/udc/pxa27x_udc.c                |   19 +-
- drivers/usb/host/Kconfig                           |   17 -
- drivers/usb/host/Makefile                          |    2 -
- drivers/usb/host/ehci-fsl.c                        |    9 +-
- drivers/usb/host/ehci-hcd.c                        |    2 +-
- drivers/usb/host/ehci-mxc.c                        |  213 ---
- drivers/usb/host/ehci-omap.c                       |    1 +
- drivers/usb/host/ehci-pmcmsp.c                     |   15 +-
- drivers/usb/host/ehci-sched.c                      |   12 +
- drivers/usb/host/fotg210-hcd.c                     |    4 +-
- drivers/usb/host/imx21-dbg.c                       |  439 -----
- drivers/usb/host/imx21-hcd.c                       | 1933 --------------------
- drivers/usb/host/imx21-hcd.h                       |  431 -----
- drivers/usb/host/isp116x-hcd.c                     |    1 +
- drivers/usb/host/isp1362.h                         |   54 -
- drivers/usb/host/max3421-hcd.c                     |    4 +-
- drivers/usb/host/ohci-at91.c                       |   11 +-
- drivers/usb/host/ohci-hcd.c                        |    2 +-
- drivers/usb/host/ohci-hub.c                        |    1 +
- drivers/usb/host/ohci-omap.c                       |    9 +-
- drivers/usb/host/ohci-pxa27x.c                     |   11 +-
- drivers/usb/host/ohci-s3c2410.c                    |   12 +-
- drivers/usb/host/oxu210hp-hcd.c                    |    5 +-
- drivers/usb/host/u132-hcd.c                        |    6 +-
- drivers/usb/host/xhci-hub.c                        |    4 +
- drivers/usb/host/xhci-mem.c                        |    3 +-
- drivers/usb/host/xhci-pci.c                        |    6 +-
- drivers/usb/host/xhci-plat.c                       |    3 +
- drivers/usb/host/xhci-ring.c                       |    4 +-
- drivers/usb/host/xhci.c                            |  135 +-
- drivers/usb/host/xhci.h                            |    5 +
- drivers/usb/misc/Kconfig                           |    9 +
- drivers/usb/misc/Makefile                          |    1 +
- drivers/usb/misc/apple-mfi-fastcharge.c            |   13 +-
- drivers/usb/misc/brcmstb-usb-pinmap.c              |  351 ++++
- drivers/usb/misc/iowarrior.c                       |    3 -
- drivers/usb/misc/legousbtower.c                    |    2 +-
- drivers/usb/misc/sisusbvga/Kconfig                 |    2 +-
- drivers/usb/misc/yurex.c                           |    1 +
- drivers/usb/mtu3/mtu3_debug.h                      |    1 -
- drivers/usb/mtu3/mtu3_debugfs.c                    |    2 +-
- drivers/usb/musb/tusb6010.c                        |    1 +
- drivers/usb/phy/Kconfig                            |    2 +-
- drivers/usb/phy/phy-isp1301-omap.c                 |   31 +-
- drivers/usb/serial/Kconfig                         |   19 +-
- drivers/usb/serial/Makefile                        |    1 -
- drivers/usb/serial/cp210x.c                        |  499 ++---
- drivers/usb/serial/digi_acceleport.c               |   62 +-
- drivers/usb/serial/ftdi_sio.c                      |   23 +-
- drivers/usb/serial/iuu_phoenix.c                   |    2 -
- drivers/usb/serial/keyspan_pda.c                   |  548 +++---
- drivers/usb/serial/mos7720.c                       |  236 +--
- drivers/usb/serial/option.c                        |   23 +-
- drivers/usb/storage/ene_ub6250.c                   |    1 +
- drivers/usb/storage/freecom.c                      |    1 -
- drivers/usb/storage/transport.c                    |    9 +-
- drivers/usb/storage/uas.c                          |    4 +
- drivers/usb/storage/unusual_uas.h                  |    7 +-
- drivers/usb/storage/usb.c                          |    3 +
- drivers/usb/typec/Kconfig                          |    5 +-
- drivers/usb/typec/class.c                          |  298 ++-
- drivers/usb/typec/mux/intel_pmc_mux.c              |   17 +-
- drivers/usb/typec/tcpm/fusb302.c                   |   16 +-
- drivers/usb/typec/tcpm/tcpci.c                     |  123 +-
- drivers/usb/typec/tcpm/tcpci.h                     |   25 +-
- drivers/usb/typec/tcpm/tcpci_maxim.c               |   51 +-
- drivers/usb/typec/tcpm/tcpm.c                      |  227 ++-
- drivers/usb/typec/tcpm/wcove.c                     |    3 +-
- drivers/usb/typec/tps6598x.c                       |  103 ++
- drivers/usb/typec/ucsi/psy.c                       |    6 +-
- drivers/usb/typec/ucsi/ucsi.c                      |  125 +-
- drivers/usb/typec/ucsi/ucsi.h                      |    2 +
- drivers/usb/typec/ucsi/ucsi_acpi.c                 |    5 +-
- drivers/usb/usbip/usbip_common.c                   |    5 -
- include/dt-bindings/usb/pd.h                       |    8 +
- include/linux/platform_data/usb-ehci-mxc.h         |   14 -
- include/linux/thunderbolt.h                        |   18 +-
- include/linux/usb/hcd.h                            |    4 -
- include/linux/usb/pd.h                             |    2 +
- include/linux/usb/pd_vdo.h                         |   19 +-
- include/linux/usb/serial.h                         |    2 -
- include/linux/usb/tcpm.h                           |   28 +-
- include/linux/usb/typec.h                          |    2 +
- include/linux/usb/typec_tbt.h                      |    6 +-
- include/linux/usb_usual.h                          |    2 +
- 158 files changed, 4292 insertions(+), 4702 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/usb/brcm,usb-pinmap.yaml
- create mode 100644 Documentation/devicetree/bindings/usb/maxim,max33359.yaml
- create mode 100644 drivers/thunderbolt/dma_test.c
- create mode 100644 drivers/usb/chipidea/trace.c
- create mode 100644 drivers/usb/chipidea/trace.h
- delete mode 100644 drivers/usb/host/ehci-mxc.c
- delete mode 100644 drivers/usb/host/imx21-dbg.c
- delete mode 100644 drivers/usb/host/imx21-hcd.c
- delete mode 100644 drivers/usb/host/imx21-hcd.h
- create mode 100644 drivers/usb/misc/brcmstb-usb-pinmap.c
- delete mode 100644 include/linux/platform_data/usb-ehci-mxc.h
+ .../devicetree/bindings/serial/omap_serial.txt     |    1 +
+ .../devicetree/bindings/serial/renesas,scif.yaml   |    1 +
+ .../devicetree/bindings/serial/sifive-serial.yaml  |    4 +-
+ arch/powerpc/configs/ppc6xx_defconfig              |    2 -
+ drivers/of/fdt.c                                   |    7 +-
+ drivers/tty/Kconfig                                |   27 -
+ drivers/tty/Makefile                               |    2 -
+ drivers/tty/goldfish.c                             |   18 +-
+ drivers/tty/hvc/hvc_opal.c                         |    2 +-
+ drivers/tty/hvc/hvc_vio.c                          |    2 +-
+ drivers/tty/n_gsm.c                                |    4 +-
+ drivers/tty/n_tty.c                                |    2 +
+ drivers/tty/nozomi.c                               |    5 +-
+ drivers/tty/pty.c                                  |    2 +
+ drivers/tty/serdev/core.c                          |    6 +-
+ drivers/tty/serial/8250/8250_early.c               |    3 -
+ drivers/tty/serial/8250/8250_mtk.c                 |   13 +-
+ drivers/tty/serial/8250/8250_omap.c                |   48 +-
+ drivers/tty/serial/8250/8250_pci.c                 |    2 +-
+ drivers/tty/serial/8250/serial_cs.c                |    9 +-
+ drivers/tty/serial/Kconfig                         |   20 +-
+ drivers/tty/serial/Makefile                        |    1 -
+ drivers/tty/serial/amba-pl011.c                    |    2 +-
+ drivers/tty/serial/earlycon.c                      |    6 +-
+ drivers/tty/serial/fsl_linflexuart.c               |   19 +-
+ drivers/tty/serial/ifx6x60.c                       |    3 +-
+ drivers/tty/serial/imx.c                           |  115 +-
+ drivers/tty/serial/jsm/jsm_cls.c                   |    4 +-
+ drivers/tty/serial/jsm/jsm_tty.c                   |    2 +-
+ drivers/tty/serial/lpc32xx_hs.c                    |    3 +-
+ drivers/tty/serial/max310x.c                       |   57 +-
+ drivers/tty/serial/meson_uart.c                    |    8 +-
+ drivers/tty/serial/msm_serial.c                    |    5 +-
+ drivers/tty/serial/mxs-auart.c                     |   21 +-
+ drivers/tty/serial/pmac_zilog.h                    |    8 +-
+ drivers/tty/serial/pnx8xxx_uart.c                  |  858 ---
+ drivers/tty/serial/serial-tegra.c                  |    7 +-
+ drivers/tty/serial/serial_core.c                   |    4 +
+ drivers/tty/serial/serial_mctrl_gpio.c             |    2 +-
+ drivers/tty/serial/sifive.c                        |    3 +-
+ drivers/tty/serial/stm32-usart.c                   |    6 +-
+ drivers/tty/serial/uartlite.c                      |    4 +-
+ drivers/tty/serial/xilinx_uartps.c                 |    1 +
+ drivers/tty/synclink.c                             | 7898 --------------------
+ drivers/tty/synclink_gt.c                          |    3 +-
+ drivers/tty/synclinkmp.c                           | 5579 --------------
+ drivers/tty/tty_audit.c                            |   12 +-
+ drivers/tty/tty_baudrate.c                         |    1 +
+ drivers/tty/tty_buffer.c                           |    1 +
+ drivers/tty/tty_io.c                               |   12 +-
+ drivers/tty/tty_ioctl.c                            |   61 +-
+ drivers/tty/tty_jobctrl.c                          |    3 +
+ drivers/tty/tty_ldisc.c                            |   11 +-
+ drivers/tty/tty_port.c                             |    4 +-
+ drivers/tty/vt/consolemap.c                        |    3 +-
+ drivers/tty/vt/keyboard.c                          |  464 +-
+ drivers/tty/vt/vt_ioctl.c                          |    4 +-
+ include/linux/goldfish.h                           |    8 +-
+ include/linux/kbd_kern.h                           |    3 -
+ include/linux/platform_data/serial-imx.h           |   15 -
+ include/linux/serial_8250.h                        |    5 +
+ include/linux/serial_core.h                        |   20 +-
+ include/linux/serial_pnx8xxx.h                     |   67 -
+ include/linux/tty.h                                |   44 +-
+ include/linux/tty_driver.h                         |    9 -
+ include/uapi/linux/keyboard.h                      |    2 +-
+ include/uapi/linux/serial_core.h                   |    2 -
+ 67 files changed, 464 insertions(+), 15086 deletions(-)
+ delete mode 100644 drivers/tty/serial/pnx8xxx_uart.c
+ delete mode 100644 drivers/tty/synclink.c
+ delete mode 100644 drivers/tty/synclinkmp.c
+ delete mode 100644 include/linux/platform_data/serial-imx.h
+ delete mode 100644 include/linux/serial_pnx8xxx.h
