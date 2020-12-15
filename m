@@ -2,142 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00182DAAE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7642DAAEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:32:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728252AbgLOKaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:30:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33408 "EHLO
+        id S1728337AbgLOKbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:31:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727618AbgLOK3y (ORCPT
+        with ESMTP id S1728159AbgLOKbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:29:54 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B39C06179C;
-        Tue, 15 Dec 2020 02:29:02 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id c5so15662732wrp.6;
-        Tue, 15 Dec 2020 02:29:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bEPk2uGzECYAQJ4oI/j29UH0rIRPTZKl5uP1+LSK3t0=;
-        b=XwsRumAI61dONDNOV52HiUwTKEmlpOmfropbwQKjP4fTAgS2/tpIpiPaeRQ7J7mBSx
-         uObBrIiZBVdHrzDlAkdubBcDmbYSa7RkYHC2s46lAIquWeF9IKQcZZHUuBmHkoQusOJL
-         iLMMKC23AnY9esp0GRoPCSGODkz1g9MsxTYVe35d5x0WqcBry8xN57fEhecqzfIurVT0
-         43GCCrHxpxaj1rWi0SV+Dvb7B6/pwJsT8ugxpuoXhhu6qxf7pRnPe0EdYv3KkyQOgTLi
-         ewZkCCIzt+uw/0vT8/LHNFABgp6sAwjr8yDrbmDv/L0OyDkhv37T16yzBZ6xC2HS4268
-         m2Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bEPk2uGzECYAQJ4oI/j29UH0rIRPTZKl5uP1+LSK3t0=;
-        b=oxO/gZ9UrHaMNTNQ0i06o1l8AC+TcPzQdu4SKKMNCPwuFLAEm6YpljZeIQVBfWzNos
-         RBhrtw8Ws5W3ptQ4zQXimXmcYy5CoSqstGYsMludn0IBzvrfX+rfL+KQ4pvXnUx0x/oD
-         latTCGL9h1vWQ0LsBklAOZ5pr9Lck8sfNLsEDPx0ivesoPDLu7ZaJeBoFUI2qeSjnG90
-         rHL3VT9Bbq/m+xeZHGUzZKd5DSoLkaebEqmHyLkY/1iWcewA9hPRK8rsBikYx2sqoYdR
-         2KLgn3R4bhpnfDmo0kKfKhfIcsJO0Recuu5JXaq0xan5jEqiYRUa707vE9hxBmg87n3U
-         8uWA==
-X-Gm-Message-State: AOAM531USwUOlK/Gwfwxpt8lvGpe5qVsARxO+u4jwcM2c23Edu+STfn9
-        LLiU2jEl/qV3Y/xfiMdddIQ=
-X-Google-Smtp-Source: ABdhPJxqL2E61WJUkFapZMQ/brMjvDKVvba9iJH8655/cxH4Jg3M4Y54HtGk5DAJ3wrzoPm5ZzAIvg==
-X-Received: by 2002:a5d:4d50:: with SMTP id a16mr25426154wru.43.1608028141652;
-        Tue, 15 Dec 2020 02:29:01 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.56])
-        by smtp.gmail.com with ESMTPSA id q15sm36200111wrw.75.2020.12.15.02.28.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 02:29:00 -0800 (PST)
-Subject: Re: [PATCH 13/18] ipu3-cio2: Add functionality allowing software_node
- connections to sensors on platforms designed for Windows
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-14-djrscally@gmail.com>
- <20201130203551.GP4351@valkosipuli.retiisi.org.uk>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <5238fc28-350b-a785-0a33-edeba9dfb096@gmail.com>
-Date:   Tue, 15 Dec 2020 10:28:59 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 15 Dec 2020 05:31:13 -0500
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C66EC06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:30:33 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by michel.telenet-ops.be with bizsmtp
+        id 4aWU240034C55Sk06aWUo3; Tue, 15 Dec 2020 11:30:28 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kp7b9-00AmiM-Q9; Tue, 15 Dec 2020 11:30:27 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kp7b9-00C3OY-5G; Tue, 15 Dec 2020 11:30:27 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Gavin Shan <gshan@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] arm64/smp: Remove unused irq variable in arch_show_interrupts()
+Date:   Tue, 15 Dec 2020 11:30:26 +0100
+Message-Id: <20201215103026.2872532-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201130203551.GP4351@valkosipuli.retiisi.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Morning Sakari
+    arch/arm64/kernel/smp.c: In function ‘arch_show_interrupts’:
+    arch/arm64/kernel/smp.c:808:16: warning: unused variable ‘irq’ [-Wunused-variable]
+      808 |   unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
+	  |                ^~~
 
-On 30/11/2020 20:35, Sakari Ailus wrote:
->> +/*
->> + * Extend this array with ACPI Hardware ID's of devices known to be working.
->> + * Do not add a HID for a sensor that is not actually supported.
->> + */
->> +static const char * const cio2_supported_devices[] = {
->> +	"INT33BE",
->> +	"OVTI2680",
-> 
-> I guess we don't have the known-good frequencies for the CSI-2 bus in
-> firmware?
-> 
-> One option would be to put there what the drivers currently use. This
-> assumes the support for these devices is, well, somewhat opportunistic but
-> I guess there's no way around that right now at least.
-> 
-> As the systems are laptops, they're likely somewhat less prone to EMI
-> issues to begin with than mobile phones anyway.
+The removal of the last user forgot to remove the variable.
 
-Just looking at this; we're currently using this with the ov2680 driver
-that's in mainline currently (with very minor tweaks) plus a
-hacked-into-roughly-working version of the atomisp-ov5693 driver (ACPI
-ID INT33BE = ov5693 physical device). Neither of those drivers lists any
-link frequencies, nor provides a link frequency control for v4l2 to work
-with.
+Fixes: 2f516e34383d0e97 ("arm64/smp: Use irq_desc_kstat_cpu() in arch_show_interrupts()")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+One more issue in irq-core-2020-12-14.
 
-On the other hand, the ov5648 [1] and ov8865 [2] drivers which Paul has
-submitted recently, which we also want to be able to support, _do_
-include that. I can register the frequencies Paul's defined there as a
-link-frequencies property but this gives rise to two questions:
+ arch/arm64/kernel/smp.c | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index 3aef3bc22d3250b5..10b39328268687e3 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -805,7 +805,6 @@ int arch_show_interrupts(struct seq_file *p, int prec)
+ 	unsigned int cpu, i;
+ 
+ 	for (i = 0; i < NR_IPI; i++) {
+-		unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
+ 		seq_printf(p, "%*s%u:%s", prec - 1, "IPI", i,
+ 			   prec >= 4 ? " " : "");
+ 		for_each_online_cpu(cpu)
+-- 
+2.25.1
 
-1. Is this _mandatory_? Do I need to be finding the link-frequencies for
-the OV2680 and OV5693 drivers too? Or can I skip that property where the
-driver doesn't handle it anyway. Seems to be working fine without
-controlling it in driver.
-2. Can I trust all the values in the drivers to be available on each
-platform? For example for the ov5648 Paul lists these as available:
-
- 938static const s64 ov5648_link_freq_menu[] = {
-
-
- 939        210000000,
-
-
- 940        168000000,
-
-
- 941};
-
-But can I safely register a link-frequencies property for both of those
-and trust that that'll work on all IPU3 platforms with an ov5648 in them?
-
-Thanks
-Dan
