@@ -2,88 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA45B2DB29F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2862DB2C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730557AbgLORbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 12:31:10 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:12901 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgLORbJ (ORCPT
+        id S1730864AbgLORgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 12:36:46 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:54442 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731289AbgLORbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 12:31:09 -0500
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 15 Dec 2020 09:30:29 -0800
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 15 Dec 2020 09:30:27 -0800
-X-QCInternal: smtphost
-Received: from youghand-linux.qualcomm.com ([10.206.66.115])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 15 Dec 2020 23:00:24 +0530
-Received: by youghand-linux.qualcomm.com (Postfix, from userid 2370257)
-        id C911E20F17; Tue, 15 Dec 2020 23:00:23 +0530 (IST)
-From:   Youghandhar Chintala <youghand@codeaurora.org>
-To:     johannes@sipsolutions.net
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kuabhs@chromium.org,
-        dianders@chromium.org, briannorris@chromium.org,
-        pillair@codeaurora.org,
-        Youghandhar Chintala <youghand@codeaurora.org>
-Subject: [PATCH 1/3] cfg80211: Add wiphy flag to trigger STA disconnect after hardware restart
-Date:   Tue, 15 Dec 2020 23:00:21 +0530
-Message-Id: <20201215173021.5884-1-youghand@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 15 Dec 2020 12:31:46 -0500
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 742E240476;
+        Tue, 15 Dec 2020 17:30:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1608053446; bh=71t8kLn/h4uRT+rZrsVOIM9WjcoyjC97XsyNd4xo0/8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
+         References:From;
+        b=HuUgsMsuLEO9vN/oLpFFd64Zo/Lspv/eMNDAnfOaiTxniSA8gQET3IunQiD4MI47z
+         imXKsIWSBvrbZ4Vt1wpy79u9po+5cOCXW1rLSU2qAZycUTpifBGBKFoxei498HQ1MH
+         ycCoMaDCwjOPo+KLoH78MOxhv8zvW8tAUFVnvdV8lqYE6VAOlU2poqbEOVSkEWNuDF
+         mIVEGkGnO4JrvH1OIRvTFZ9EQOMBfhgsVOmYiA9e9SMoFvBbugdVwuy30ZStXVnHF9
+         h4vxbO0HxxCep37eabbglneohB+2GovV76N/p547o6431q5bEhGVpt+PZLzd44viFW
+         cTqIAY4ejaj7g==
+Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 51D56A024A;
+        Tue, 15 Dec 2020 17:30:45 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 12/15] dmaengine: dw-edma: Fix crash on loading/unloading driver
+Date:   Tue, 15 Dec 2020 18:30:21 +0100
+Message-Id: <615cabee7443a8f6fd054e6bf18c75985e81131c.1608053262.git.gustavo.pimentel@synopsys.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <cover.1608053262.git.gustavo.pimentel@synopsys.com>
+References: <cover.1608053262.git.gustavo.pimentel@synopsys.com>
+In-Reply-To: <cover.1608053262.git.gustavo.pimentel@synopsys.com>
+References: <cover.1608053262.git.gustavo.pimentel@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many wifi drivers (e.g. ath10k using qualcomm wifi chipsets)
-support silent target hardware restart/recovery. Out of these
-drivers which support target hw restart, certain chipsets
-have the wifi mac sequence number addition for transmitted
-frames done by the firmware. For such chipsets, a silent
-target hardware restart breaks the continuity of the wifi
-mac sequence number, since the wifi mac sequence number
-restarts from 0 after the restart, which in-turn leads
-to the peer access point dropping all the frames from device
-until it receives the frame with the mac sequence which was
-expected by the AP.
+When the driver is compiled as a module and loaded if we try to unload
+it, the Kernel shows a crash log. This Kernel crash is due to the
+dma_async_device_unregister() call done after deleting the channels,
+this patch fixes this issue.
 
-Add a wiphy flag for the driver to indicate that it needs a
-trigger for STA disconnect after hardware restart.
-
-Tested on ath10k using WCN3990, QCA6174.
-
-Signed-off-by: Youghandhar Chintala <youghand@codeaurora.org>
+Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
 ---
- include/net/cfg80211.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/dma/dw-edma/dw-edma-core.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index ab249ca..7fba6f6 100644
---- a/include/net/cfg80211.h
-+++ b/include/net/cfg80211.h
-@@ -4311,6 +4311,9 @@ struct cfg80211_ops {
-  * @WIPHY_FLAG_HAS_STATIC_WEP: The device supports static WEP key installation
-  *	before connection.
-  * @WIPHY_FLAG_SUPPORTS_EXT_KEK_KCK: The device supports bigger kek and kck keys
-+ * @WIPHY_FLAG_STA_DISCONNECT_ON_HW_RESTART: The device needs a trigger to
-+ *	disconnect STA after target hardware restart. This flag should be
-+ *	exposed by drivers which support target recovery.
-  */
- enum wiphy_flags {
- 	WIPHY_FLAG_SUPPORTS_EXT_KEK_KCK		= BIT(0),
-@@ -4337,6 +4340,7 @@ enum wiphy_flags {
- 	WIPHY_FLAG_SUPPORTS_5_10_MHZ		= BIT(22),
- 	WIPHY_FLAG_HAS_CHANNEL_SWITCH		= BIT(23),
- 	WIPHY_FLAG_HAS_STATIC_WEP		= BIT(24),
-+	WIPHY_FLAG_STA_DISCONNECT_ON_HW_RESTART	= BIT(25),
- };
+diff --git a/drivers/dma/dw-edma/dw-edma-core.c b/drivers/dma/dw-edma/dw-edma-core.c
+index 8d8292e..f7a1930 100644
+--- a/drivers/dma/dw-edma/dw-edma-core.c
++++ b/drivers/dma/dw-edma/dw-edma-core.c
+@@ -986,22 +986,21 @@ int dw_edma_remove(struct dw_edma_chip *chip)
+ 	/* Power management */
+ 	pm_runtime_disable(dev);
  
- /**
++	/* Deregister eDMA device */
++	dma_async_device_unregister(&dw->wr_edma);
+ 	list_for_each_entry_safe(chan, _chan, &dw->wr_edma.channels,
+ 				 vc.chan.device_node) {
+-		list_del(&chan->vc.chan.device_node);
+ 		tasklet_kill(&chan->vc.task);
++		list_del(&chan->vc.chan.device_node);
+ 	}
+ 
++	dma_async_device_unregister(&dw->rd_edma);
+ 	list_for_each_entry_safe(chan, _chan, &dw->rd_edma.channels,
+ 				 vc.chan.device_node) {
+-		list_del(&chan->vc.chan.device_node);
+ 		tasklet_kill(&chan->vc.task);
++		list_del(&chan->vc.chan.device_node);
+ 	}
+ 
+-	/* Deregister eDMA device */
+-	dma_async_device_unregister(&dw->wr_edma);
+-	dma_async_device_unregister(&dw->rd_edma);
+-
+ 	/* Turn debugfs off */
+ 	dw_edma_v0_core_debugfs_off(chip);
+ 
 -- 
 2.7.4
 
