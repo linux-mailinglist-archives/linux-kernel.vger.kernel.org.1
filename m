@@ -2,92 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6D82DB77D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:09:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F5A2DB736
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbgLPAAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:00:41 -0500
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:42299 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725769AbgLOX3W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 18:29:22 -0500
-Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
-        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 2618411A239;
-        Wed, 16 Dec 2020 10:28:37 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kpJk9-004NPu-GG; Wed, 16 Dec 2020 10:28:33 +1100
-Date:   Wed, 16 Dec 2020 10:28:33 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
-        dan.j.williams@intel.com, hch@lst.de, song@kernel.org,
-        rgoldwyn@suse.de, qi.fuli@fujitsu.com, y-goto@fujitsu.com,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [RFC PATCH v3 8/9] md: Implement ->corrupted_range()
-Message-ID: <20201215232833.GM632069@dread.disaster.area>
-References: <20201215121414.253660-1-ruansy.fnst@cn.fujitsu.com>
- <20201215121414.253660-9-ruansy.fnst@cn.fujitsu.com>
- <20201215205102.GB6918@magnolia>
+        id S1727368AbgLPAAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:00:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725850AbgLOXbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 18:31:11 -0500
+Date:   Tue, 15 Dec 2020 17:30:28 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608075030;
+        bh=G4W+JOW70+nhdR5jB10BduQ3Oi8mabagk8z9ckwebGU=;
+        h=From:To:Cc:Subject:In-Reply-To:From;
+        b=mtKceyn6b2eHbktRbWzKjS/6cyF9pUzW7ZlfheuX4mKS/3K0iVp4Fo5GXObuIqNk7
+         znMb2I7vpO9r9wyvisEF/6kt7FazkDUsKQI73UWeLdAQJYcioiGChQViMD991ie5pY
+         0rphB9CT8NrO05jvpD7V1uISvt9/Vu9rr7VZ77tn3NS8vLg0eSbjTc3rCG5Zb192Lz
+         ZJrZg1oJzU16+mwuCDq1BNPKAQKt9PsIcvE8KFYnA88Imi8Kep1kFE68w/BTVD4Cfz
+         eL4bD5DNu76ltavi4L91n3AYoUwHBgNPJjAwrs5c2LDj51t/N4DGyWZzuOxZGtUcNL
+         W331xVqJkdmug==
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nadeem Athani <nadeem@cadence.com>, linux-omap@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, mparab@cadence.com,
+        sjakhade@cadence.com, pthombar@cadence.com
+Subject: Re: [PATCH v5] PCI: cadence: Retrain Link to work around Gen2
+ training defect.
+Message-ID: <20201215233028.GA336802@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201215205102.GB6918@magnolia>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
-        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
-        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=7-415B0cAAAA:8
-        a=c9VSvi9VynfUMAegli0A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20201215070009.27937-1-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 12:51:02PM -0800, Darrick J. Wong wrote:
-> On Tue, Dec 15, 2020 at 08:14:13PM +0800, Shiyang Ruan wrote:
-> > diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-> > index 4688bff19c20..e8cfaf860149 100644
-> > --- a/drivers/nvdimm/pmem.c
-> > +++ b/drivers/nvdimm/pmem.c
-> > @@ -267,11 +267,14 @@ static int pmem_corrupted_range(struct gendisk *disk, struct block_device *bdev,
-> >  
-> >  	bdev_offset = (disk_sector - get_start_sect(bdev)) << SECTOR_SHIFT;
-> >  	sb = get_super(bdev);
-> > -	if (sb && sb->s_op->corrupted_range) {
-> > +	if (!sb) {
-> > +		rc = bd_disk_holder_corrupted_range(bdev, bdev_offset, len, data);
-> > +		goto out;
-> > +	} else if (sb->s_op->corrupted_range)
-> >  		rc = sb->s_op->corrupted_range(sb, bdev, bdev_offset, len, data);
-> > -		drop_super(sb);
+On Tue, Dec 15, 2020 at 12:30:09PM +0530, Kishon Vijay Abraham I wrote:
+> From: Nadeem Athani <nadeem@cadence.com>
 > 
-> This is out of scope for this patch(set) but do you think that the scsi
-> disk driver should intercept media errors from sense data and call
-> ->corrupted_range too?  ISTR Ted muttering that one of his employers had
-> a patchset to do more with sense data than the upstream kernel currently
-> does...
+> Cadence controller will not initiate autonomous speed change if strapped as
+> Gen2. The Retrain Link bit is set as quirk to enable this speed change.
+> 
+> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
+> [kishon@ti.com: Enable the workaround for TI's J721E SoC]
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+> Hi Lorenzo,
+> The previous version of the patch can be found at [1].
+> I slightly re-worked the patch from Nadeem
+> *) Removed additional Link Up Check
+> *) Removed quirk from pcie-cadence-plat.c
+> *) Also removed additional compatible
+>    "cdns,cdns-pcie-host-quirk-retrain" added in that series
+> *) Enabled the quirk for J721E
+> [1] -> http://lore.kernel.org/r/20201211144236.3825-1-nadeem@cadence.com
+> 
+>  drivers/pci/controller/cadence/pci-j721e.c    |  3 +
+>  .../controller/cadence/pcie-cadence-host.c    | 67 ++++++++++++++-----
+>  drivers/pci/controller/cadence/pcie-cadence.h | 11 ++-
+>  3 files changed, 62 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+> index dac1ac8a7615..baf729850cb1 100644
+> --- a/drivers/pci/controller/cadence/pci-j721e.c
+> +++ b/drivers/pci/controller/cadence/pci-j721e.c
+> @@ -64,6 +64,7 @@ enum j721e_pcie_mode {
+>  
+>  struct j721e_pcie_data {
+>  	enum j721e_pcie_mode	mode;
+> +	bool			quirk_retrain_flag;
+>  };
+>  
+>  static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
+> @@ -280,6 +281,7 @@ static struct pci_ops cdns_ti_pcie_host_ops = {
+>  
+>  static const struct j721e_pcie_data j721e_pcie_rc_data = {
+>  	.mode = PCI_MODE_RC,
+> +	.quirk_retrain_flag = true,
+>  };
+>  
+>  static const struct j721e_pcie_data j721e_pcie_ep_data = {
+> @@ -388,6 +390,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+>  
+>  		bridge->ops = &cdns_ti_pcie_host_ops;
+>  		rc = pci_host_bridge_priv(bridge);
+> +		rc->quirk_retrain_flag = data->quirk_retrain_flag;
+>  
+>  		cdns_pcie = &rc->pcie;
+>  		cdns_pcie->dev = dev;
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> index 811c1cb2e8de..773c0d1137ed 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
+> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> @@ -77,6 +77,50 @@ static struct pci_ops cdns_pcie_host_ops = {
+>  	.write		= pci_generic_config_write,
+>  };
+>  
+> +static int cdns_pcie_host_wait_for_link(struct cdns_pcie *pcie)
+> +{
+> +	struct device *dev = pcie->dev;
+> +	int retries;
+> +
+> +	/* Check if the link is up or not */
+> +	for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
+> +		if (cdns_pcie_link_up(pcie)) {
 
-Most definitely!
+- cdns_pcie_link_up() always returns "true" except for j721e_pcie_ops.
+  Is it really true that we can assume the link is up otherwise?
 
-That's the whole point of layering corrupt range reporting through
-the device layers like this - the corrupted range reporting is not
-limited specifically to pmem devices and so generic storage failures
-(e.g.  RAID failures, hardware media failures, etc) can be reported
-back up to the filesystem and we can take immediate, appropriate
-action, including reporting to userspace that they just lost data in
-file X at offset Y...
+- Where did the LINK_WAIT_* values come from?  Are they derived from
+  something in the PCIe spec?
 
-Combine that with the proposed "watch_sb()" syscall for reporting
-such errors in a generic manner to interested listeners, and we've
-got a fairly solid generic path for reporting data loss events to
-userspace for an appropriate user-defined action to be taken...
+- Is the LINK_WAIT timeout related to LINK_RETRAIN_TIMEOUT?
 
-Cheers,
+- If the PCI core does a link retrain, e.g., in pcie_retrain_link(),
+  does that work correctly on this device?
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+[I see now that this patch only *moves* this code without changing it.
+But I'm still curious.]
+
+> +			dev_info(dev, "Link up\n");
+> +			return 0;
+> +		}
+> +		usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
+> +	}
+> +
+> +	return -ETIMEDOUT;
+> +}
+> +
+> +static void cdns_pcie_retrain(struct cdns_pcie *pcie)
+> +{
+> +	u32 lnk_cap_sls, pcie_cap_off = CDNS_PCIE_RP_CAP_OFFSET;
+> +	u16 lnk_stat, lnk_ctl;
+> +
+> +	/*
+> +	 * Set retrain bit if current speed is 2.5 GB/s,
+> +	 * but the PCIe root port support is > 2.5 GB/s.
+> +	 */
+> +
+> +	lnk_cap_sls = cdns_pcie_readl(pcie, (CDNS_PCIE_RP_BASE + pcie_cap_off +
+> +					     PCI_EXP_LNKCAP));
+> +	if ((lnk_cap_sls & PCI_EXP_LNKCAP_SLS) <= PCI_EXP_LNKCAP_SLS_2_5GB)
+> +		return;
+> +
+> +	lnk_stat = cdns_pcie_rp_readw(pcie, pcie_cap_off + PCI_EXP_LNKSTA);
+> +	if ((lnk_stat & PCI_EXP_LNKSTA_CLS) == PCI_EXP_LNKSTA_CLS_2_5GB) {
+> +		lnk_ctl = cdns_pcie_rp_readw(pcie,
+> +					     pcie_cap_off + PCI_EXP_LNKCTL);
+> +		lnk_ctl |= PCI_EXP_LNKCTL_RL;
+> +		cdns_pcie_rp_writew(pcie, pcie_cap_off + PCI_EXP_LNKCTL,
+> +				    lnk_ctl);
+> +
+> +		if (cdns_pcie_host_wait_for_link(pcie))
+> +			return;
+> +	}
+> +}
+>  
+>  static int cdns_pcie_host_init_root_port(struct cdns_pcie_rc *rc)
+>  {
+> @@ -398,23 +442,6 @@ static int cdns_pcie_host_init(struct device *dev,
+>  	return cdns_pcie_host_init_address_translation(rc);
+>  }
+>  
+> -static int cdns_pcie_host_wait_for_link(struct cdns_pcie *pcie)
+> -{
+> -	struct device *dev = pcie->dev;
+> -	int retries;
+> -
+> -	/* Check if the link is up or not */
+> -	for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
+> -		if (cdns_pcie_link_up(pcie)) {
+> -			dev_info(dev, "Link up\n");
+> -			return 0;
+> -		}
+> -		usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
+> -	}
+> -
+> -	return -ETIMEDOUT;
+> -}
+
+This piece looks like a pure move of cdns_pcie_host_wait_for_link()
+with no other changes.  It would be nicer to split that to a separate
+patch so it doesn't obscure what's really happening in this patch.
+
+>  int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+>  {
+>  	struct device *dev = rc->pcie.dev;
+> @@ -458,8 +485,12 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+>  	}
+>  
+>  	ret = cdns_pcie_host_wait_for_link(pcie);
+> -	if (ret)
+> +	if (ret) {
+>  		dev_dbg(dev, "PCIe link never came up\n");
+> +	} else {
+> +		if (rc->quirk_retrain_flag)
+> +			cdns_pcie_retrain(pcie);
+> +	}
+>  
+>  	for (bar = RP_BAR0; bar <= RP_NO_BAR; bar++)
+>  		rc->avail_ib_bar[bar] = true;
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
+> index 30eba6cafe2c..0f29128a5d0a 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence.h
+> +++ b/drivers/pci/controller/cadence/pcie-cadence.h
+> @@ -119,7 +119,7 @@
+>   * Root Port Registers (PCI configuration space for the root port function)
+>   */
+>  #define CDNS_PCIE_RP_BASE	0x00200000
+> -
+> +#define CDNS_PCIE_RP_CAP_OFFSET 0xc0
+>  
+>  /*
+>   * Address Translation Registers
+> @@ -291,6 +291,7 @@ struct cdns_pcie {
+>   * @device_id: PCI device ID
+>   * @avail_ib_bar: Satus of RP_BAR0, RP_BAR1 and	RP_NO_BAR if it's free or
+>   *                available
+> + * @quirk_retrain_flag: Retrain link as quirk for PCIe Gen2
+>   */
+>  struct cdns_pcie_rc {
+>  	struct cdns_pcie	pcie;
+> @@ -299,6 +300,7 @@ struct cdns_pcie_rc {
+>  	u32			vendor_id;
+>  	u32			device_id;
+>  	bool			avail_ib_bar[CDNS_PCIE_RP_MAX_IB];
+> +	bool			quirk_retrain_flag;
+>  };
+>  
+>  /**
+> @@ -414,6 +416,13 @@ static inline void cdns_pcie_rp_writew(struct cdns_pcie *pcie,
+>  	cdns_pcie_write_sz(addr, 0x2, value);
+>  }
+>  
+> +static inline u16 cdns_pcie_rp_readw(struct cdns_pcie *pcie, u32 reg)
+> +{
+> +	void __iomem *addr = pcie->reg_base + CDNS_PCIE_RP_BASE + reg;
+> +
+> +	return cdns_pcie_read_sz(addr, 0x2);
+> +}
+> +
+>  /* Endpoint Function register access */
+>  static inline void cdns_pcie_ep_fn_writeb(struct cdns_pcie *pcie, u8 fn,
+>  					  u32 reg, u8 value)
+> -- 
+> 2.17.1
+> 
