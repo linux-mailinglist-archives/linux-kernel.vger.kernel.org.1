@@ -2,253 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F5A2DB736
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:03:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F302D2DB77E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727368AbgLPAAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:00:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35166 "EHLO mail.kernel.org"
+        id S1726793AbgLPAAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:00:45 -0500
+Received: from foss.arm.com ([217.140.110.172]:42396 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725850AbgLOXbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 18:31:11 -0500
-Date:   Tue, 15 Dec 2020 17:30:28 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608075030;
-        bh=G4W+JOW70+nhdR5jB10BduQ3Oi8mabagk8z9ckwebGU=;
-        h=From:To:Cc:Subject:In-Reply-To:From;
-        b=mtKceyn6b2eHbktRbWzKjS/6cyF9pUzW7ZlfheuX4mKS/3K0iVp4Fo5GXObuIqNk7
-         znMb2I7vpO9r9wyvisEF/6kt7FazkDUsKQI73UWeLdAQJYcioiGChQViMD991ie5pY
-         0rphB9CT8NrO05jvpD7V1uISvt9/Vu9rr7VZ77tn3NS8vLg0eSbjTc3rCG5Zb192Lz
-         ZJrZg1oJzU16+mwuCDq1BNPKAQKt9PsIcvE8KFYnA88Imi8Kep1kFE68w/BTVD4Cfz
-         eL4bD5DNu76ltavi4L91n3AYoUwHBgNPJjAwrs5c2LDj51t/N4DGyWZzuOxZGtUcNL
-         W331xVqJkdmug==
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Nadeem Athani <nadeem@cadence.com>, linux-omap@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, mparab@cadence.com,
-        sjakhade@cadence.com, pthombar@cadence.com
-Subject: Re: [PATCH v5] PCI: cadence: Retrain Link to work around Gen2
- training defect.
-Message-ID: <20201215233028.GA336802@bjorn-Precision-5520>
+        id S1725550AbgLOXby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 18:31:54 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 895581FB;
+        Tue, 15 Dec 2020 15:31:07 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1CB213F718;
+        Tue, 15 Dec 2020 15:31:06 -0800 (PST)
+Date:   Tue, 15 Dec 2020 23:31:05 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Mian Yousaf Kaukab <ykaukab@suse.de>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Len Brown <lenb@kernel.org>,
+        Mian Yousaf Kaukab <yousaf.kaukab@suse.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/4] cppc_cpufreq: fix, clarify and improve support
+Message-ID: <20201215233105.GA31906@arm.com>
+References: <20201214123823.3949-1-ionela.voinescu@arm.com>
+ <20201214161158.GA11066@suse.de>
+ <CAJZ5v0hn=Xcdyi=E_km-ZJNqY-fbP3w3kCcVWVKigHQh5NsZhA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201215070009.27937-1-kishon@ti.com>
+In-Reply-To: <CAJZ5v0hn=Xcdyi=E_km-ZJNqY-fbP3w3kCcVWVKigHQh5NsZhA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 12:30:09PM +0530, Kishon Vijay Abraham I wrote:
-> From: Nadeem Athani <nadeem@cadence.com>
+On Tuesday 15 Dec 2020 at 19:21:01 (+0100), Rafael J. Wysocki wrote:
+> On Mon, Dec 14, 2020 at 5:14 PM Mian Yousaf Kaukab <ykaukab@suse.de> wrote:
+> >
+> > On Mon, Dec 14, 2020 at 12:38:19PM +0000, Ionela Voinescu wrote:
+> > > Hi guys,
+> > >
+> > > I'm sending v2 of some of the patches at [1] in light of the discussions
+> > > at [2].
+> > >
+> > > v2:
+> > >  - Patches 1-3 are trivial rebase on linux next 20201211, with conflicts
+> > >    fixed after eliminating what previously was "[PATCH 4/8] cppc_cpufreq:
+> > >    replace per-cpu structures with lists." Therefore, I have kept
+> > >    Viresh's acks.
+> > >
+> > >  - Patch 4 is a merge between:
+> > >      - [PATCH 4/8] cppc_cpufreq: replace per-cpu structures with lists
+> > >      - [PATCH] cppc_cpufreq: optimise memory allocation for HW and NONE
+> > >        coordination
+> > >    both found at [1].
+> > >
+> > >    This functionality was introducing the problem at [2] and it's fixed
+> > >    in this version by bailing out of driver registration if a _CPC entry
+> > >    is not found for a CPU.
+> > >
+> > >    Yousaf, it would be great if you can test this and make sure it
+> > >    matches your expectations.
+> > >
+> > >    Rafael, Viresh if you think this last patch introduces too many
+> > >    changes, you can skip it for 5.11 which is around the corner and
+> > >    have more time for review for 5.12. I've added more eyes in the review
+> > >    list.
+> > >
+> > >
+> > > All patches are based on linux next 20201211 after patch at [3] is
+> > > applied.
+> > >
+> > > [1] https://lore.kernel.org/linux-pm/20201105125524.4409-1-ionela.voinescu@arm.com/#t
+> > > [2] https://lore.kernel.org/linux-pm/20201210142139.20490-1-yousaf.kaukab@suse.com/
+> > > [3] https://lore.kernel.org/linux-pm/20201214120740.10948-1-ionela.voinescu@arm.com/
+> > >
+> > > Ionela Voinescu (4):
+> > >   cppc_cpufreq: use policy->cpu as driver of frequency setting
+> > >   cppc_cpufreq: clarify support for coordination types
+> > >   cppc_cpufreq: expose information on frequency domains
+> > >   cppc_cpufreq: replace per-cpu data array with a list
+> > >
+> > >  .../ABI/testing/sysfs-devices-system-cpu      |   3 +-
+> > >  drivers/acpi/cppc_acpi.c                      | 141 ++++++------
+> > >  drivers/cpufreq/cppc_cpufreq.c                | 204 ++++++++++--------
+> > >  include/acpi/cppc_acpi.h                      |   6 +-
+> > >  4 files changed, 181 insertions(+), 173 deletions(-)
+> >
+> > For the whole series:
+> > Tested-by: Mian Yousaf Kaukab <ykaukab@suse.de>
 > 
-> Cadence controller will not initiate autonomous speed change if strapped as
-> Gen2. The Retrain Link bit is set as quirk to enable this speed change.
-> 
-> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
-> [kishon@ti.com: Enable the workaround for TI's J721E SoC]
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
-> Hi Lorenzo,
-> The previous version of the patch can be found at [1].
-> I slightly re-worked the patch from Nadeem
-> *) Removed additional Link Up Check
-> *) Removed quirk from pcie-cadence-plat.c
-> *) Also removed additional compatible
->    "cdns,cdns-pcie-host-quirk-retrain" added in that series
-> *) Enabled the quirk for J721E
-> [1] -> http://lore.kernel.org/r/20201211144236.3825-1-nadeem@cadence.com
-> 
->  drivers/pci/controller/cadence/pci-j721e.c    |  3 +
->  .../controller/cadence/pcie-cadence-host.c    | 67 ++++++++++++++-----
->  drivers/pci/controller/cadence/pcie-cadence.h | 11 ++-
->  3 files changed, 62 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-> index dac1ac8a7615..baf729850cb1 100644
-> --- a/drivers/pci/controller/cadence/pci-j721e.c
-> +++ b/drivers/pci/controller/cadence/pci-j721e.c
-> @@ -64,6 +64,7 @@ enum j721e_pcie_mode {
->  
->  struct j721e_pcie_data {
->  	enum j721e_pcie_mode	mode;
-> +	bool			quirk_retrain_flag;
->  };
->  
->  static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
-> @@ -280,6 +281,7 @@ static struct pci_ops cdns_ti_pcie_host_ops = {
->  
->  static const struct j721e_pcie_data j721e_pcie_rc_data = {
->  	.mode = PCI_MODE_RC,
-> +	.quirk_retrain_flag = true,
->  };
->  
->  static const struct j721e_pcie_data j721e_pcie_ep_data = {
-> @@ -388,6 +390,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
->  
->  		bridge->ops = &cdns_ti_pcie_host_ops;
->  		rc = pci_host_bridge_priv(bridge);
-> +		rc->quirk_retrain_flag = data->quirk_retrain_flag;
->  
->  		cdns_pcie = &rc->pcie;
->  		cdns_pcie->dev = dev;
-> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
-> index 811c1cb2e8de..773c0d1137ed 100644
-> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
-> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
-> @@ -77,6 +77,50 @@ static struct pci_ops cdns_pcie_host_ops = {
->  	.write		= pci_generic_config_write,
->  };
->  
-> +static int cdns_pcie_host_wait_for_link(struct cdns_pcie *pcie)
-> +{
-> +	struct device *dev = pcie->dev;
-> +	int retries;
-> +
-> +	/* Check if the link is up or not */
-> +	for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
-> +		if (cdns_pcie_link_up(pcie)) {
+> All patches applied as 5.11-rc material, thanks!
 
-- cdns_pcie_link_up() always returns "true" except for j721e_pcie_ops.
-  Is it really true that we can assume the link is up otherwise?
+Many thanks, guys!
 
-- Where did the LINK_WAIT_* values come from?  Are they derived from
-  something in the PCIe spec?
-
-- Is the LINK_WAIT timeout related to LINK_RETRAIN_TIMEOUT?
-
-- If the PCI core does a link retrain, e.g., in pcie_retrain_link(),
-  does that work correctly on this device?
-
-[I see now that this patch only *moves* this code without changing it.
-But I'm still curious.]
-
-> +			dev_info(dev, "Link up\n");
-> +			return 0;
-> +		}
-> +		usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
-> +	}
-> +
-> +	return -ETIMEDOUT;
-> +}
-> +
-> +static void cdns_pcie_retrain(struct cdns_pcie *pcie)
-> +{
-> +	u32 lnk_cap_sls, pcie_cap_off = CDNS_PCIE_RP_CAP_OFFSET;
-> +	u16 lnk_stat, lnk_ctl;
-> +
-> +	/*
-> +	 * Set retrain bit if current speed is 2.5 GB/s,
-> +	 * but the PCIe root port support is > 2.5 GB/s.
-> +	 */
-> +
-> +	lnk_cap_sls = cdns_pcie_readl(pcie, (CDNS_PCIE_RP_BASE + pcie_cap_off +
-> +					     PCI_EXP_LNKCAP));
-> +	if ((lnk_cap_sls & PCI_EXP_LNKCAP_SLS) <= PCI_EXP_LNKCAP_SLS_2_5GB)
-> +		return;
-> +
-> +	lnk_stat = cdns_pcie_rp_readw(pcie, pcie_cap_off + PCI_EXP_LNKSTA);
-> +	if ((lnk_stat & PCI_EXP_LNKSTA_CLS) == PCI_EXP_LNKSTA_CLS_2_5GB) {
-> +		lnk_ctl = cdns_pcie_rp_readw(pcie,
-> +					     pcie_cap_off + PCI_EXP_LNKCTL);
-> +		lnk_ctl |= PCI_EXP_LNKCTL_RL;
-> +		cdns_pcie_rp_writew(pcie, pcie_cap_off + PCI_EXP_LNKCTL,
-> +				    lnk_ctl);
-> +
-> +		if (cdns_pcie_host_wait_for_link(pcie))
-> +			return;
-> +	}
-> +}
->  
->  static int cdns_pcie_host_init_root_port(struct cdns_pcie_rc *rc)
->  {
-> @@ -398,23 +442,6 @@ static int cdns_pcie_host_init(struct device *dev,
->  	return cdns_pcie_host_init_address_translation(rc);
->  }
->  
-> -static int cdns_pcie_host_wait_for_link(struct cdns_pcie *pcie)
-> -{
-> -	struct device *dev = pcie->dev;
-> -	int retries;
-> -
-> -	/* Check if the link is up or not */
-> -	for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
-> -		if (cdns_pcie_link_up(pcie)) {
-> -			dev_info(dev, "Link up\n");
-> -			return 0;
-> -		}
-> -		usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
-> -	}
-> -
-> -	return -ETIMEDOUT;
-> -}
-
-This piece looks like a pure move of cdns_pcie_host_wait_for_link()
-with no other changes.  It would be nicer to split that to a separate
-patch so it doesn't obscure what's really happening in this patch.
-
->  int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
->  {
->  	struct device *dev = rc->pcie.dev;
-> @@ -458,8 +485,12 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
->  	}
->  
->  	ret = cdns_pcie_host_wait_for_link(pcie);
-> -	if (ret)
-> +	if (ret) {
->  		dev_dbg(dev, "PCIe link never came up\n");
-> +	} else {
-> +		if (rc->quirk_retrain_flag)
-> +			cdns_pcie_retrain(pcie);
-> +	}
->  
->  	for (bar = RP_BAR0; bar <= RP_NO_BAR; bar++)
->  		rc->avail_ib_bar[bar] = true;
-> diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
-> index 30eba6cafe2c..0f29128a5d0a 100644
-> --- a/drivers/pci/controller/cadence/pcie-cadence.h
-> +++ b/drivers/pci/controller/cadence/pcie-cadence.h
-> @@ -119,7 +119,7 @@
->   * Root Port Registers (PCI configuration space for the root port function)
->   */
->  #define CDNS_PCIE_RP_BASE	0x00200000
-> -
-> +#define CDNS_PCIE_RP_CAP_OFFSET 0xc0
->  
->  /*
->   * Address Translation Registers
-> @@ -291,6 +291,7 @@ struct cdns_pcie {
->   * @device_id: PCI device ID
->   * @avail_ib_bar: Satus of RP_BAR0, RP_BAR1 and	RP_NO_BAR if it's free or
->   *                available
-> + * @quirk_retrain_flag: Retrain link as quirk for PCIe Gen2
->   */
->  struct cdns_pcie_rc {
->  	struct cdns_pcie	pcie;
-> @@ -299,6 +300,7 @@ struct cdns_pcie_rc {
->  	u32			vendor_id;
->  	u32			device_id;
->  	bool			avail_ib_bar[CDNS_PCIE_RP_MAX_IB];
-> +	bool			quirk_retrain_flag;
->  };
->  
->  /**
-> @@ -414,6 +416,13 @@ static inline void cdns_pcie_rp_writew(struct cdns_pcie *pcie,
->  	cdns_pcie_write_sz(addr, 0x2, value);
->  }
->  
-> +static inline u16 cdns_pcie_rp_readw(struct cdns_pcie *pcie, u32 reg)
-> +{
-> +	void __iomem *addr = pcie->reg_base + CDNS_PCIE_RP_BASE + reg;
-> +
-> +	return cdns_pcie_read_sz(addr, 0x2);
-> +}
-> +
->  /* Endpoint Function register access */
->  static inline void cdns_pcie_ep_fn_writeb(struct cdns_pcie *pcie, u8 fn,
->  					  u32 reg, u8 value)
-> -- 
-> 2.17.1
-> 
+Ionela.
