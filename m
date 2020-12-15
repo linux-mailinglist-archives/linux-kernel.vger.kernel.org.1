@@ -2,169 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D477C2DAAF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE502DAAFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727807AbgLOKeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:34:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28338 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728201AbgLOKdz (ORCPT
+        id S1728418AbgLOKe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:34:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728182AbgLOKeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:33:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608028348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ckovXueqNToJoyauJ6BBxrCZAffZux6jQj9uhlKTS6U=;
-        b=aPturgJJF0qWXFDKuctSLE12AyqDzSDhEajmfCt5FStCz8eL+sY47GUmBVmUZMg37DUK5i
-        LuTuzuf2dlkYJLgOIrkL4OodZamRmz6Of7R9SS5v5s6jv389h1DwMJGDTKDIhneAdCeS55
-        EHhEBY7Gxi00wndtPBMecpBWTLAhoVM=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-565-4hBT4DIRMdC3oGXdOPKEvg-1; Tue, 15 Dec 2020 05:32:26 -0500
-X-MC-Unique: 4hBT4DIRMdC3oGXdOPKEvg-1
-Received: by mail-ej1-f71.google.com with SMTP id y14so5832718ejf.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:32:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ckovXueqNToJoyauJ6BBxrCZAffZux6jQj9uhlKTS6U=;
-        b=BdygzbRb9521xV5DjbI3wMOpNX1XnAGM3Bk9UrGHpKIZgD7cBaBuV4hP2fe+Hva3xn
-         xIKo1J4WOogJhhvNpi+MdjVVhsFNrI+gzQwBHiEHrRgd9l+MaNMeSieWPj1YFNrEpU/U
-         voYlQuYZQST7eLgc7w9WfuhnPOZzjdhotJskrjHHtftj52mrD8Ua4iw4RdhE27gbEnSU
-         lda01EmKmANPOcxvUsjStTSKzc8aAW32ndxLQT5Hl76C6RO9GBrcGGHrOrC6kjI0hd5/
-         r5xmSjfhXLr6fp+ivW02gp+IwaT3uA+yO43cXF2EXihejaG4e1TSBJGNPbk+rF2BTepk
-         IQcQ==
-X-Gm-Message-State: AOAM532nnVFkW9rdtCo/RPHXb6uuIJ3nVKKqa6cMXLP3fC98BwAwp0Se
-        3A7bewoKXeGbuSWLLLJH+bZRLH4SELu7Mkkjmz0WaIlivNt5UptvGuiUIocLlCBzWupr+HwNO8p
-        LCK6BMBBAif7HB1QAVTGs1bbk
-X-Received: by 2002:a17:907:20f1:: with SMTP id rh17mr25919260ejb.147.1608028344788;
-        Tue, 15 Dec 2020 02:32:24 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyln15V4fjgJWljXqjU9fYmJSjQNmNN8qCXounds/yTQF5md7b/wLva1eXixiztbKeWanW0Bg==
-X-Received: by 2002:a17:907:20f1:: with SMTP id rh17mr25919249ejb.147.1608028344617;
-        Tue, 15 Dec 2020 02:32:24 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id g18sm17603258edt.2.2020.12.15.02.32.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 02:32:23 -0800 (PST)
-Subject: Re: [PATCH] kvm: don't lose the higher 32 bits of tlbs_dirty
-To:     Sean Christopherson <seanjc@google.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>
-References: <20201213044913.15137-1-jiangshanlai@gmail.com>
- <X9ee7RzW+Dhv1aoW@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <ea0938d2-f766-99de-2019-9daf5798ccac@redhat.com>
-Date:   Tue, 15 Dec 2020 11:32:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 15 Dec 2020 05:34:01 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B16F3C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:33:20 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CwF2z5VRBz9s1l;
+        Tue, 15 Dec 2020 21:33:15 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1608028397;
+        bh=zMpdbTxIQR/bmtXKG54pVnC9KS5pqvpRuMJ/yyVLuug=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=XW66GSBfMlawbQ3SV26jfdKDUXUwCeos7whJAq2/MRxPH7+MmPNmUFRzM5p6ArrcQ
+         Z5fHqVdChMVYv26v6B3lK/7yNHPHUyDuVPzq/h4c9+Nhm2wz8YK0lsZL+YiO2suWVi
+         HwrJcroUFSCVTeceZdwbZv9hisLXqFdRIE9M8BV3MQ2+d1G7nVonFriOLtVnmhn289
+         mvQvSjlM+73XOM9Je3AOmylZnBkgiuUmLfkP0nS8w7rLiUtZBEaigIWBw++jRyHh84
+         PRveX7gUqiXOoNiVHJUAp/rKSQn1bbgN7QntdgHcqOy30OFqxmvsL8Bc9ICxGXxs3g
+         /LHydTNn3GWKQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Anton Vorontsov <anton.vorontsov@linaro.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 2/2] powerpc/64s: Trim offlined CPUs from mm_cpumasks
+In-Reply-To: <1607943765.29hccd2b8p.astroid@bobo.none>
+References: <20201120025757.325930-1-npiggin@gmail.com> <20201120025757.325930-3-npiggin@gmail.com> <CAMuHMdUdorW03=mipgm92SXNPBZO5owW1Wp6_SacRDZ7fOe9gw@mail.gmail.com> <1607919238.kj439g85v5.astroid@bobo.none> <87h7oozn06.fsf@mpe.ellerman.id.au> <1607943765.29hccd2b8p.astroid@bobo.none>
+Date:   Tue, 15 Dec 2020 21:33:15 +1100
+Message-ID: <875z53z7dg.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <X9ee7RzW+Dhv1aoW@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/12/20 18:20, Sean Christopherson wrote:
-> On Sun, Dec 13, 2020, Lai Jiangshan wrote:
->> From: Lai Jiangshan <laijs@linux.alibaba.com>
->>
->> In kvm_mmu_notifier_invalidate_range_start(), tlbs_dirty is used as:
->> 	need_tlb_flush |= kvm->tlbs_dirty;
->> with need_tlb_flush's type being int and tlbs_dirty's type being long.
->>
->> It means that tlbs_dirty is always used as int and the higher 32 bits
->> is useless.
-> 
-> It's probably worth noting in the changelog that it's _extremely_ unlikely this
-> bug can cause problems in practice.  It would require encountering tlbs_dirty
-> on a 4 billion count boundary, and KVM would need to be using shadow paging or
-> be running a nested guest.
-> 
->> We can just change need_tlb_flush's type to long to
->> make full use of tlbs_dirty.
-> 
-> Hrm, this does solve the problem, but I'm not a fan of continuing to use an
-> integer variable as a boolean.  Rather than propagate tlbs_dirty to
-> need_tlb_flush, what if this bug fix patch checks tlbs_dirty directly, and then
-> a follow up patch converts need_tlb_flush to a bool and removes the unnecessary
-> initialization (see below).
+Nicholas Piggin <npiggin@gmail.com> writes:
+> Excerpts from Michael Ellerman's message of December 14, 2020 8:43 pm:
+>> Nicholas Piggin <npiggin@gmail.com> writes:
+>>> Excerpts from Geert Uytterhoeven's message of December 10, 2020 7:06 pm:
+>>>> Hi Nicholas,
+>>>> 
+>>>> On Fri, Nov 20, 2020 at 4:01 AM Nicholas Piggin <npiggin@gmail.com> wrote:
+>>>>>
+>>>>> When offlining a CPU, powerpc/64s does not flush TLBs, rather it just
+>>>>> leaves the CPU set in mm_cpumasks, so it continues to receive TLBIEs
+>>>>> to manage its TLBs.
+>>>>>
+>>>>> However the exit_flush_lazy_tlbs() function expects that after
+>>>>> returning, all CPUs (except self) have flushed TLBs for that mm, in
+>>>>> which case TLBIEL can be used for this flush. This breaks for offline
+>>>>> CPUs because they don't get the IPI to flush their TLB. This can lead
+>>>>> to stale translations.
+>>>>>
+>>>>> Fix this by clearing the CPU from mm_cpumasks, then flushing all TLBs
+>>>>> before going offline.
+>>>>>
+>>>>> These offlined CPU bits stuck in the cpumask also prevents the cpumask
+>>>>> from being trimmed back to local mode, which means continual broadcast
+>>>>> IPIs or TLBIEs are needed for TLB flushing. This patch prevents that
+>>>>> situation too.
+>>>>>
+>>>>> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+>>>> 
+>>>> Thanks for your patch!
+>>>> 
+>>>>> --- a/arch/powerpc/platforms/powermac/smp.c
+>>>>> +++ b/arch/powerpc/platforms/powermac/smp.c
+>>>>> @@ -911,6 +911,8 @@ static int smp_core99_cpu_disable(void)
+>>>>>
+>>>>>         mpic_cpu_set_priority(0xf);
+>>>>>
+>>>>> +       cleanup_cpu_mmu_context();
+>>>>> +
+>>>> 
+>>>> I guess this change broke pmac32_defconfig+SMP in v5.10-rc7?
+>>>> 
+>>>> arch/powerpc/platforms/powermac/smp.c: error: implicit
+>>>> declaration of function 'cleanup_cpu_mmu_context'
+>>>> [-Werror=implicit-function-declaration]:  => 914:2
+>>>> 
+>>>> http://kisskb.ellerman.id.au/kisskb/buildresult/14423174/
+>>>
+>>> Hey, yeah it does thanks for catching it. This patch fixes it for me
+>>>
+>>> ---
+>>> From a9b5ec92ffac975e81c6d7db6ff2b1486b2723f7 Mon Sep 17 00:00:00 2001
+>>> From: Nicholas Piggin <npiggin@gmail.com>
+>>> Date: Mon, 14 Dec 2020 13:52:39 +1000
+>>> Subject: [PATCH] powerpc/32s: Fix cleanup_cpu_mmu_context() compile bug
+>>>
+>>> 32s has no tlbiel_all() defined, so just disable the cleanup with a
+>>> comment.
+>> 
+>> Or what about just:
+>
+> That works, I kind of wanted it in there explicit that we don't
+> clean up on 32s. I don't mind if you prefer this though.
 
-Indeed, the compiler should be able to convert || to | if useful and 
-valid (it may or may not do it depending on the sizes of types involved, 
-but that's Someone Else's Problem and this is not really a path where 
-every instruction matter).
+OK. I'll merge my version because I can do that without needing to merge
+master in order to get the broken commit into my tree.
 
-Paolo
-
-> E.g. the net result of both patches would be:
-> 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 3abcb2ce5b7d..93b6986d3dfc 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -473,7 +473,8 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
->                                          const struct mmu_notifier_range *range)
->   {
->          struct kvm *kvm = mmu_notifier_to_kvm(mn);
-> -       int need_tlb_flush = 0, idx;
-> +       bool need_tlb_flush;
-> +       int idx;
-> 
->          idx = srcu_read_lock(&kvm->srcu);
->          spin_lock(&kvm->mmu_lock);
-> @@ -483,11 +484,10 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
->           * count is also read inside the mmu_lock critical section.
->           */
->          kvm->mmu_notifier_count++;
-> -       need_tlb_flush = kvm_unmap_hva_range(kvm, range->start, range->end,
-> -                                            range->flags);
-> -       need_tlb_flush |= kvm->tlbs_dirty;
-> +       need_tlb_flush = !!kvm_unmap_hva_range(kvm, range->start, range->end,
-> +                                              range->flags);
->          /* we've to flush the tlb before the pages can be freed */
-> -       if (need_tlb_flush)
-> +       if (need_tlb_flush || kvm->tlbs_dirty)
->                  kvm_flush_remote_tlbs(kvm);
-> 
->          spin_unlock(&kvm->mmu_lock);
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: a4ee1ca4a36e ("KVM: MMU: delay flush all tlbs on sync_page path")
-> 
->> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
->> ---
->>   virt/kvm/kvm_main.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
->> index 2541a17ff1c4..4e519a517e9f 100644
->> --- a/virt/kvm/kvm_main.c
->> +++ b/virt/kvm/kvm_main.c
->> @@ -470,7 +470,8 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
->>   					const struct mmu_notifier_range *range)
->>   {
->>   	struct kvm *kvm = mmu_notifier_to_kvm(mn);
->> -	int need_tlb_flush = 0, idx;
->> +	long need_tlb_flush = 0;
-> 
-> need_tlb_flush doesn't need to be initialized here, it's explicitly set via the
-> call to kvm_unmap_hva_range().
-> 
->> +	int idx;
->>   
->>   	idx = srcu_read_lock(&kvm->srcu);
->>   	spin_lock(&kvm->mmu_lock);
->> -- 
->> 2.19.1.6.gb485710b
->>
-> 
-
+cheers
