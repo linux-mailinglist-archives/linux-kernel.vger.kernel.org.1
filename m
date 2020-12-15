@@ -2,91 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDE32DAA8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 187092DAA90
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727874AbgLOKBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:01:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726995AbgLOKAf (ORCPT
+        id S1728291AbgLOKCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:02:12 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2480 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725890AbgLOKBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:00:35 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3BFC06179C;
-        Tue, 15 Dec 2020 01:59:49 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id b9so1847109ejy.0;
-        Tue, 15 Dec 2020 01:59:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9VWi9lvVrtm8vqGMgMBrAESVz3nZujJvYtHJX+Z95Jw=;
-        b=BU3TGKZo/XOQEoIXFdM1P4n5pKuFdlZOTA9L9qx7LtQH7SwLjsIr91Lh2D62rpj55c
-         EWPTM+17jHVlpH03T1FiYVU3aoB0qGWcmgcMddTsRXfGOCiAqmHatqHekDpHGRZNuhZ9
-         ZIdWBfa0eyefu6LwH14DJ32NYmYNTP5d5mCH6/Q6iV6FV2CBMiQ6+Ane2hUIkbfiFMuZ
-         rChIQhdBPXgco3juca1zpha87LxNHpOxgRP5j/Pg/zZ6Wp+Cx9aSZOxaDrMA5SLfDXej
-         1VW3cEqVlPzc8GlE77ozLxNuwDZkpquc2fsN/5b7jxvHsUjtLJldTeHNwPpNjH9gSwVP
-         tf8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9VWi9lvVrtm8vqGMgMBrAESVz3nZujJvYtHJX+Z95Jw=;
-        b=fee8ny3n+TUXSvDILpT+cD8JdU3sPdEoNCrg1HHhIuOmO/k5GVMsM0hZi/GoTdCAdV
-         Hz8ck95AdCO5ZEdGY8sgXtlIgIWt/R03vMdnuC41QfbZvumZg+s9q+AFXuFcdOyQrY+8
-         E2L5BksHIot0sSjNPCwhpQZ4KuNpd4fiVC+A//dGOo3IUfNRYOzsy4ET2TtIcHaTLmRU
-         1IvROr7fK82Wi0N12EIbpS7dl9wNqe7BZI8+pomVG36YtFV+v3wJMbLiGkp1CsKx84wv
-         TY7hW09jOyQ8zRnx7owiwKSeTXsuynC29GOXkA35my3d6g2PO1ELHmMNhGl841ttN1BE
-         rmWw==
-X-Gm-Message-State: AOAM532UiTLXFHVSNsn3S/SiS6szrcEWPHG7/sk/ZsNKwWjh580AMxop
-        ieH7iCRRYnv3d933YeQCV8Q=
-X-Google-Smtp-Source: ABdhPJwCxl4PpHeih2wMXniKYALjSkU03AHuXby+xZvV9XFwppfN4g9J2/HbB6WB4YNYszHZSJp3zw==
-X-Received: by 2002:a17:906:8587:: with SMTP id v7mr25524315ejx.381.1608026388125;
-        Tue, 15 Dec 2020 01:59:48 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.googlemail.com with ESMTPSA id r24sm17708914edo.4.2020.12.15.01.59.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 15 Dec 2020 01:59:47 -0800 (PST)
-Message-ID: <277a6fd2dd3b3e70a0caeda6283214ed5152aa65.camel@gmail.com>
-Subject: Re: [PATCH v4 4/6] scsi: ufs: Remove d_wb_alloc_units from struct
- ufs_dev_info
-From:   Bean Huo <huobean@gmail.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
-        tomas.winkler@intel.com, cang@codeaurora.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 15 Dec 2020 10:59:46 +0100
-In-Reply-To: <1608022638.10163.14.camel@mtkswgap22>
-References: <20201211140035.20016-1-huobean@gmail.com>
-         <20201211140035.20016-5-huobean@gmail.com>
-         <1608022638.10163.14.camel@mtkswgap22>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 15 Dec 2020 05:01:43 -0500
+Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CwDJz25x2z52vS;
+        Tue, 15 Dec 2020 18:00:19 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Tue, 15 Dec 2020 18:00:55 +0800
+Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
+ lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
+ 15.01.2106.002; Tue, 15 Dec 2020 10:00:53 +0000
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     wanghuiqiang <wanghuiqiang@huawei.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+CC:     Marc Zyngier <maz@kernel.org>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Linuxarm <linuxarm@huawei.com>, "xuwei (O)" <xuwei5@huawei.com>
+Subject: RE: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy support
+Thread-Topic: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy support
+Thread-Index: AQHWxwOHViTg3pRnhkK4BwcYBC9AoqngmnQAgAABpXCAACfogIAABzIwgAA00gCAAnf7sIAUZ4qAgAAjnaA=
+Date:   Tue, 15 Dec 2020 10:00:53 +0000
+Message-ID: <dbbeca0088fc49ad9554408465b6cb89@huawei.com>
+References: <20201130102639.7504-1-shameerali.kolothum.thodi@huawei.com>
+ <f8a97f360073fa495cae75acc11ecf4f@kernel.org>
+ <85bb389a75f347d29ab3f75e4cfae060@huawei.com>
+ <846387e4168f1a22638ad07ae670c531@kernel.org>
+ <e93770e46c73413882584ebc3fe732e3@huawei.com>
+ <CAMj1kXGdEbDzFN2cCNpCx_QJk3++v3zrWZ7Yw08Exrzyy_Q97w@mail.gmail.com>
+ <931f76fa185e488fb9e942b2026ae7be@huawei.com>
+ <07084A11A8AB5A40A40B0218FE6F1CCA0F59630F@dggeml510-mbx.china.huawei.com>
+In-Reply-To: <07084A11A8AB5A40A40B0218FE6F1CCA0F59630F@dggeml510-mbx.china.huawei.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.200.65.40]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-15 at 16:57 +0800, Stanley Chu wrote:
-> >        u8      b_wb_buffer_type;
-> > -     u32     d_wb_alloc_units;
-> 
-> Perhaps below two fields could be also removed from struct
-> ufs_dev_info
-> for the same reason?
-> 
-> u32 d_ext_ufs_feature_sup;
-I thought twice before this patch. maybe will be used in near future,
-so I keep d_ext_ufs_feature_sup. Now that you suggest, we can remove it
-as well. 
-
-> u32 d_wb_alloc_units;
-This patch is to remove it.
-
-Thanks,
-Bean
-
+SGkgV2FuZ2h1aXFpYW5nLA0KDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJv
+bTogd2FuZ2h1aXFpYW5nDQo+IFNlbnQ6IDE1IERlY2VtYmVyIDIwMjAgMDc6NDkNCj4gVG86IFNo
+YW1lZXJhbGkgS29sb3RodW0gVGhvZGkgPHNoYW1lZXJhbGkua29sb3RodW0udGhvZGlAaHVhd2Vp
+LmNvbT47DQo+IEFyZCBCaWVzaGV1dmVsIDxhcmRiQGtlcm5lbC5vcmc+DQo+IENjOiBNYXJjIFp5
+bmdpZXIgPG1hekBrZXJuZWwub3JnPjsgZXJpYy5hdWdlckByZWRoYXQuY29tOw0KPiBsaW51eC1r
+ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5v
+cmc7IExpbnV4YXJtDQo+IDxsaW51eGFybUBodWF3ZWkuY29tPjsgeHV3ZWkgKE8pIDx4dXdlaTVA
+aHVhd2VpLmNvbT4NCj4gU3ViamVjdDog562U5aSNOiBbUEFUQ0hdIGlycWNoaXAvZ2ljLXYzOiBD
+aGVjayBTUkUgYml0IGZvciBHSUN2MiBsZWdhY3kgc3VwcG9ydA0KPiANCj4gU29ycnkgcmVzcG9u
+c2UgbGF0ZS4NCj4gSGkgU2hhbWVlciAmIEFyZCwNCj4gDQo+IENvdWxkIHlvdSBsZXQgbWUga25v
+dyB3aGljaCBmaXJtd2FyZSB5b3UgYXJlIHVzaW5nPyBJZiB0aGUgZGlmZmVyZW5jZSBpcyBNYWR0
+DQo+IHRhYmxlIHZHSUMgeW91ciBwb2ludGVkICwgdGhleSBhcmUgdGhlIHNhbWUuIFdlIGNoYW5n
+ZWQgdGhlIHZHSUMgbWVtb3J5DQo+IGJhc2UgYWRkcmVzcyBhdCB2ZXJ5IGVhcmx5IGRlc2lnbiBz
+dGFnZS4NCg0KSSBjaGVja2VkIHRoZSBiZWxvdyBvbmVzIGFuZCBhbGwgdGhlc2UgYm9hcmRzIGhh
+cyB0aGUgaXNzdWUsDQoNCk9wZW5sYWItQm9hcmQgLSA2OTAwOSwNCg0KRE1JOiBIdWF3ZWkgVGFp
+U2hhbiAyMjgwIFYyL0JDODJBTURDLCBCSU9TIDIyODAtVjIgQ1MgVjMuQjI3MC4wMSAwNS8wOC8y
+MDIwDQoNCk9wZW5sYWItQm9hcmQtNjkwMDgsDQoNCkRNSTogSHVhd2VpIFRhaVNoYW4gMjI4MCBW
+Mi9CQzgyQU1EQywgQklPUyAyMjgwLVYyIENTIFY1LkIwMzAuMDEgMDcvMDMvMjAyMA0KDQpVSy1E
+MDZDUy1ib2FyZCwNCg0KQm9vdCBmaXJtd2FyZSAodmVyc2lvbiAyMjgwLVYyIENTIFYzLkIyMjAu
+MDEgYnVpbHQgYXQgMDMvMTkvMjAyMCAgMTY6NTIpDQoNClRoYW5rcywNClNoYW1lZXINCg0KPiBU
+aGFua3PvvIENCj4gDQo+IC0tLS0t6YKu5Lu25Y6f5Lu2LS0tLS0NCj4g5Y+R5Lu25Lq6OiBTaGFt
+ZWVyYWxpIEtvbG90aHVtIFRob2RpDQo+IOWPkemAgeaXtumXtDogMjAyMOW5tDEy5pyIMuaXpSAx
+NjoyMw0KPiDmlLbku7bkuro6IEFyZCBCaWVzaGV1dmVsIDxhcmRiQGtlcm5lbC5vcmc+DQo+IOaK
+hOmAgTogTWFyYyBaeW5naWVyIDxtYXpAa2VybmVsLm9yZz47IGVyaWMuYXVnZXJAcmVkaGF0LmNv
+bTsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtYXJtLWtlcm5lbEBsaXN0
+cy5pbmZyYWRlYWQub3JnOyBMaW51eGFybQ0KPiA8bGludXhhcm1AaHVhd2VpLmNvbT47IHdhbmdo
+dWlxaWFuZyA8d2FuZ2h1aXFpYW5nQGh1YXdlaS5jb20+OyB4dXdlaQ0KPiAoTykgPHh1d2VpNUBo
+dWF3ZWkuY29tPg0KPiDkuLvpopg6IFJFOiBbUEFUQ0hdIGlycWNoaXAvZ2ljLXYzOiBDaGVjayBT
+UkUgYml0IGZvciBHSUN2MiBsZWdhY3kgc3VwcG9ydA0KPiANCj4gWytdDQo+IA0KPiA+IC0tLS0t
+T3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gRnJvbTogQXJkIEJpZXNoZXV2ZWwgW21haWx0bzph
+cmRiQGtlcm5lbC5vcmddDQo+ID4gU2VudDogMzAgTm92ZW1iZXIgMjAyMCAxODozMg0KPiA+IFRv
+OiBTaGFtZWVyYWxpIEtvbG90aHVtIFRob2RpIDxzaGFtZWVyYWxpLmtvbG90aHVtLnRob2RpQGh1
+YXdlaS5jb20+DQo+ID4gQ2M6IE1hcmMgWnluZ2llciA8bWF6QGtlcm5lbC5vcmc+OyBlcmljLmF1
+Z2VyQHJlZGhhdC5jb207DQo+ID4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgt
+YXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOw0KPiA+IExpbnV4YXJtIDxsaW51eGFybUBo
+dWF3ZWkuY29tPg0KPiA+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIGlycWNoaXAvZ2ljLXYzOiBDaGVj
+ayBTUkUgYml0IGZvciBHSUN2MiBsZWdhY3kNCj4gPiBzdXBwb3J0DQo+ID4NCj4gLi4uDQo+IA0K
+PiA+DQo+ID4gQW55IGNsdWUgd2h5IHByb2R1Y3Rpb24gRDA2IGZpcm13YXJlIGRldmlhdGVzIGZy
+b20gdGhlIEQwNiBwb3J0IHRoYXQNCj4gPiBleGlzdHMgaW4gVGlhbm9jb3JlJ3MgZWRrMi1wbGF0
+Zm9ybXMgcmVwb3NpdG9yeT8gQmVjYXVzZSB0aGF0IHZlcnNpb24NCj4gPiBkb2VzIG5vdCBoYXZl
+IHRoaXMgYnVnLCBhbmQgSSB3b25kZXIgd2h5IHRoYXQgY29kZSB3YXMgdXBzdHJlYW1lZCBhdA0K
+PiA+IGFsbCBpZiBhIHN1YnN0YW50aWFsbHkgZGlmZmVyZW50IHZlcnNpb24gZ2V0cyBzaGlwcGVk
+IHdpdGggcHJvZHVjdGlvbg0KPiA+IGhhcmR3YXJlLg0KPiANCj4gT2suIFRoYW5rcyBmb3IgcG9p
+bnRpbmcgdGhpcyBvdXQuIEkgaGF2ZSBpbmZvcm1lZCBvdXIgVUVGSSB0ZWFtIGFib3V0IHRoaXMu
+DQo+IFRoZXkgd2lsbCBjaGVjayBJbnRlcm5hbGx5IGFuZCBjbGFyaWZ5Lg0KPiANCj4gUmVnYXJk
+cywNCj4gU2hhbWVlcg0K
