@@ -2,119 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1CD2DB5B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6AA62DB5C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:18:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729453AbgLOVOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 16:14:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728022AbgLOVMl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 16:12:41 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE45C0617B0;
-        Tue, 15 Dec 2020 13:12:01 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id o13so19870102lfr.3;
-        Tue, 15 Dec 2020 13:12:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yPM+mKrzqzT6nC3Wy0WdIdZUS1fp/5EYjuK6AyVpd2s=;
-        b=Sy63e+KLreIH/yZ6zLpSniO0StkKcPrn/hJlrTCn+e+galfNlR3MD9xbn5mEhsURly
-         wH2bgWg17bk9quqC/0cC+kiifi+rSpixl4wt5S4HGCvbsYhPuovgFuRgm6+NZxxC1dg8
-         b25gP3BDgMELgfhw1iJJgOzmt3fiiif3d2ubKeaL5Z1CtfUDqS2fmO4ZbKVjrBNH2zBL
-         uJEgFOKcfWhzFxMvVySnfXMnez9sGsOnb9Ke+h94cr1LLS+4r6vtEISq7ZTNn4MrZuNO
-         XUxvdWAQ1RY7WLLRQI/mlYhA55CIwTPlZ5YLZ85OV2JVjkhhjv3fTzWZhsHY4du2F2p0
-         3Kdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yPM+mKrzqzT6nC3Wy0WdIdZUS1fp/5EYjuK6AyVpd2s=;
-        b=FH/37Qtyp6CDhu3d66sz5SXgooYnhSNCsjMT8BY7NR9N2RJDbdz+ZyKnMGf3rKjYz/
-         QJzenmvJqlvLwKEoTQbQ6MMzz1lSnkjbz7cQEMc+xW3ng3MLteEOUQy92+E6gbf8OM3N
-         9JesVwsxh8tT1CQekhbJw2Wldn3BV8YxuU1+RlK40zQW3Jsyvjun2WZ8P6fNfqAm6cP/
-         wLtWOisfXVmmj8a4oTvpCdRcSkp5zN+huAfZzyC4XdEw4gnA3dNIM4ClrdgPOXNWhwqI
-         kU8i04ekzpRbrhzcRc1iM7dLfTKjQBcwbWdqvejp8htQb/HvCpSnDPKJGD4shKmS4Ilj
-         4G1A==
-X-Gm-Message-State: AOAM531kAtCMabDPBjcIXqJeZ0cqU2t+820PZ3DDQRcAasdUYAt51HOW
-        zWl+UwHJPSXMfr2ORlRkUoM=
-X-Google-Smtp-Source: ABdhPJwk7gzNyJuUn7p3gIvhAs9JddAGDvrG15CVouaEZnB3cn+rQjsBIMpZjfUlLjEA5Bxeg01CQA==
-X-Received: by 2002:ac2:4d44:: with SMTP id 4mr12296918lfp.627.1608066719730;
-        Tue, 15 Dec 2020 13:11:59 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id k11sm2572079lji.95.2020.12.15.13.11.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 13:11:59 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 3/3] clk: tegra: Ensure that PLLU configuration is applied properly
-Date:   Wed, 16 Dec 2020 00:11:50 +0300
-Message-Id: <20201215211150.21214-4-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201215211150.21214-1-digetx@gmail.com>
-References: <20201215211150.21214-1-digetx@gmail.com>
+        id S1728317AbgLOVR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 16:17:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55352 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727013AbgLOVRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 16:17:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 73D62AC93;
+        Tue, 15 Dec 2020 21:16:56 +0000 (UTC)
+Message-ID: <6773252eb539f09383f2b31118467b0be23e592a.camel@suse.de>
+Subject: Re: [PATCH 1/6] dt-bindings: nvmem: Add bindings for rmem driver
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        devicetree@vger.kernel.org,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Date:   Tue, 15 Dec 2020 22:16:54 +0100
+In-Reply-To: <CAL_JsqK7zZdWi0orXoqPWqvvxP3H6n7=JRqhdeAiAYAHRS3WHQ@mail.gmail.com>
+References: <20201215155627.2513-1-nsaenzjulienne@suse.de>
+         <20201215155627.2513-2-nsaenzjulienne@suse.de>
+         <CAL_JsqK7zZdWi0orXoqPWqvvxP3H6n7=JRqhdeAiAYAHRS3WHQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-HRNIWeNhFPTeTIs+fz/7"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PLLU (USB) consists of the PLL configuration itself and configuration
-of the PLLU outputs. The PLLU programming is inconsistent on T30 vs T114,
-where T114 immediately bails out if PLLU is enabled and T30 re-enables
-a potentially already enabled PLL (left after bootloader) and then fully
-reprograms it, which could be unsafe to do. The correct way should be to
-skip enabling of the PLL if it's already enabled and then apply
-configuration to the outputs. This patch doesn't fix any known problems,
-it's a minor improvement.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/clk/tegra/clk-pll.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+--=-HRNIWeNhFPTeTIs+fz/7
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/clk/tegra/clk-pll.c b/drivers/clk/tegra/clk-pll.c
-index c5cc0a2dac6f..d709ecb7d8d7 100644
---- a/drivers/clk/tegra/clk-pll.c
-+++ b/drivers/clk/tegra/clk-pll.c
-@@ -1131,7 +1131,8 @@ static int clk_pllu_enable(struct clk_hw *hw)
- 	if (pll->lock)
- 		spin_lock_irqsave(pll->lock, flags);
- 
--	_clk_pll_enable(hw);
-+	if (!clk_pll_is_enabled(hw))
-+		_clk_pll_enable(hw);
- 
- 	ret = clk_pll_wait_for_lock(pll);
- 	if (ret < 0)
-@@ -1748,15 +1749,13 @@ static int clk_pllu_tegra114_enable(struct clk_hw *hw)
- 		return -EINVAL;
- 	}
- 
--	if (clk_pll_is_enabled(hw))
--		return 0;
--
- 	input_rate = clk_hw_get_rate(__clk_get_hw(osc));
- 
- 	if (pll->lock)
- 		spin_lock_irqsave(pll->lock, flags);
- 
--	_clk_pll_enable(hw);
-+	if (!clk_pll_is_enabled(hw))
-+		_clk_pll_enable(hw);
- 
- 	ret = clk_pll_wait_for_lock(pll);
- 	if (ret < 0)
--- 
-2.29.2
+On Tue, 2020-12-15 at 14:25 -0600, Rob Herring wrote:
+> On Tue, Dec 15, 2020 at 9:56 AM Nicolas Saenz Julienne
+> <nsaenzjulienne@suse.de> wrote:
+> >=20
+> > Firmware/co-processors might use reserved memory areas in order to pass
+> > data stemming from an nvmem device otherwise non accessible to Linux.
+> > For example an EEPROM memory only physically accessible to firmware, or
+> > data only accessible early at boot time.
+> >=20
+> > Introduce the dt-bindings to nvmem's rmem.
+> >=20
+> > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > ---
+> > =C2=A0.../devicetree/bindings/nvmem/rmem.yaml       | 35 ++++++++++++++=
++++++
+> > =C2=A01 file changed, 35 insertions(+)
+> > =C2=A0create mode 100644 Documentation/devicetree/bindings/nvmem/rmem.y=
+aml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/nvmem/rmem.yaml b/Docume=
+ntation/devicetree/bindings/nvmem/rmem.yaml
+> > new file mode 100644
+> > index 000000000000..3037ebc4634d
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/nvmem/rmem.yaml
+> > @@ -0,0 +1,35 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/nvmem/rmem.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Reserved Memory Based nvmem Device
+> > +
+> > +maintainers:
+> > +  - Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - nvmem-rmem
+> > +
+> > +  memory-region:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description:
+> > +      phandle to the reserved memory region
+>=20
+> There's no need for this indirection. Just add a compatible to the
+> reserved-memory node. See ramoops for example.
+>=20
+> Please make the compatible specific enough to define what the memory
+> contains. If you want 'nvmem-rmem' as a fallback that's fine.
+
+Ok, I'll look into it.
+
+Regards,
+Nicolas
+
+
+--=-HRNIWeNhFPTeTIs+fz/7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl/ZJ8YACgkQlfZmHno8
+x/6DEgf+Ir9Z/EAoImzzkz0WNDBqJRFShxXJ3Z6YrpJ/j5p/I4owZX9Xtpwjh+k3
+Sk5ZQcjw9MFcs6X9Kka2oLL5O6TspqD3YDHF/Afm0Uo5TXLU69hfcVh5Jx0NIyaG
+2Cll+fLE0ozkyfViIXKwCvL5P7BIB6VWZVXpZSfOr3sxhvgXOGw4O2ivWD3s3LsL
+BsWllvWIXSLZfDAcZr3MVBBOuR2fByCLtyWWMfB+T9SIQodxFVVMYpUuRiHKTn8B
+zCfhsl+Wxsp/WADK+EoIl1euIbBgkzI+9Ws7xq8O3NBTLFanJHxJt/b+IXS7cZw+
+Dub6IRL35RjvAN6O/Ras4aJF9jzvgA==
+=OefD
+-----END PGP SIGNATURE-----
+
+--=-HRNIWeNhFPTeTIs+fz/7--
 
