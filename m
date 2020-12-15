@@ -2,106 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4A42DA71A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 05:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC90F2DA723
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 05:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725843AbgLOE1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 23:27:34 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:44656 "EHLO
+        id S1725917AbgLOEb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 23:31:57 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46048 "EHLO
         fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgLOE1d (ORCPT
+        with ESMTP id S1725763AbgLOEb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 23:27:33 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BF4Ptxr121071;
-        Mon, 14 Dec 2020 22:25:55 -0600
+        Mon, 14 Dec 2020 23:31:56 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BF4UJ7C122788;
+        Mon, 14 Dec 2020 22:30:19 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608006356;
-        bh=1NgGCRIjgY2IImg8iKnY9M0JdvpwcoHnFNpVJzDs6tk=;
-        h=From:To:CC:Subject:Date;
-        b=lXOcGtWzsS8JRgtIDnr+tBdU32dr12t8SteDRGi8Vubgv4tce7Lgz9DL//sDukVmi
-         GllrL+E+w3BBD18BA8UFWBSFQBpuHPZ5t76Erp0FwGez6pNVXKm6RR4UfgZREslyyL
-         c3Py1EPDOwozIVIZdnyPemOeA/NdsFZF1Xn8SVrs=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BF4Pt6b064604
+        s=ti-com-17Q1; t=1608006619;
+        bh=9bWv+Y231QyoS6iQbUcEuTzrVE1s5tFBEjEhlWzzl+4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=PfeC5uzS5FhP3KPRfch9uDKe+CvN0j/Hx0/PGcwD+w+xOyhk9DRBZm12Xb5YRLj9/
+         6YnpM+mU9rQL/tH68YHmIcA7xYvPOJ04JPvQyLWT8z//0NPCEoNleBz2CJEjDOdCXd
+         znWdJE70Ee3qxlOZT3OShHskRK1l0SEmBteA0lN4=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BF4UJNk079712
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Dec 2020 22:25:55 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 14 Dec 2020 22:30:19 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 14
- Dec 2020 22:25:55 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ Dec 2020 22:30:19 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 14 Dec 2020 22:25:55 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BF4PpnH066580;
-        Mon, 14 Dec 2020 22:25:52 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
+ Frontend Transport; Mon, 14 Dec 2020 22:30:19 -0600
+Received: from [10.250.232.169] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BF4UFK1033533;
+        Mon, 14 Dec 2020 22:30:16 -0600
+Subject: Re: [PATCH v5] dt-bindings: usb: Add new compatible string for AM64
+ SoC
+To:     Rob Herring <robh@kernel.org>
 CC:     Vignesh Raghavendra <vigneshr@ti.com>,
         Sekhar Nori <nsekhar@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
         Roger Quadros <rogerq@ti.com>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6] dt-bindings: usb: Add new compatible string for AM64 SoC
-Date:   Tue, 15 Dec 2020 09:55:49 +0530
-Message-ID: <20201215042549.7956-1-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
+References: <20201214140109.21955-1-a-govindraju@ti.com>
+ <20201214204722.GA2365525@robh.at.kernel.org>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <c31059ae-0923-ee03-a3ed-954a58a12c1a@ti.com>
+Date:   Tue, 15 Dec 2020 10:00:14 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201214204722.GA2365525@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible string in j721e-usb binding file as the same USB subsystem
-is present in AM64.
+Hi Rob,
+On 15/12/20 2:18 am, Rob Herring wrote:
+> On Mon, Dec 14, 2020 at 07:31:09PM +0530, Aswath Govindraju wrote:
+>> Add compatible string in j721e-usb binding file as the same USB subsystem
+>> is present in AM64.
+>>
+>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+>> ---
+>>
+>> Changes since v4:
+>>  - used oneOf instead of enum, as the schema has to convey that the strings
+>>    ti,j721e-usb and ti,am64-usb can be used combined or seperately in the
+>>    DT nodes.
+>>
+>> Changes since v3:
+>>  - used enum instead of anyOf.
+>>
+>> Changes since v2:
+>>  - added changes done over the versions.
+>>
+>> Changes since v1:
+>>  - replaced the '\t' at the beginning of the lines with spaces as it was
+>>   causing the dt_binding_check to fail.
+>>
+>>  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 6 +++++-
+>>  1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+>> index 388245b91a55..21e51ceca293 100644
+>> --- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+>> +++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+>> @@ -11,8 +11,12 @@ maintainers:
+>>  
+>>  properties:
+>>    compatible:
+>> -    items:
+>> +    oneOf:
+>>        - const: ti,j721e-usb
+>> +      - const: ti,am64-usb
+>> +      - items:
+>> +          - ti,j721e-usb
+>> +          - ti,am64-usb
+> 
+>                ^
+> 
+> const needed before the strings
+> 
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
+Thank you for the comments. I am very sorry for this error, I forgot to
+add my changes to  the commit before creating the patch. I have sent a
+respin (v6).
 
-Changes since v5:
- - Added const as the type for objects in items.
+Thanks,
+Aswath
 
-Changes since v4:
- - used oneOf instead of enum, as the schema has to convey that the strings
-   ti,j721e-usb and ti,am64-usb can be used combined or seperately in the
-   DT nodes.
-
-Changes since v3:
- - used enum instead of anyOf.
-
-Changes since v2:
- - added changes done over the versions.
-
-Changes since v1:
- - replaced the '\t' at the beginning of the lines with spaces as it was
-  causing the dt_binding_check to fail.
-
- Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-index 388245b91a55..148b3fb4ceaf 100644
---- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-+++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-@@ -11,8 +11,12 @@ maintainers:
- 
- properties:
-   compatible:
--    items:
-+    oneOf:
-       - const: ti,j721e-usb
-+      - const: ti,am64-usb
-+      - items:
-+          - const: ti,j721e-usb
-+          - const: ti,am64-usb
- 
-   reg:
-     description: module registers
--- 
-2.17.1
+>>  
+>>    reg:
+>>      description: module registers
+>> -- 
+>> 2.17.1
+>>
 
