@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DAB12DB259
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3D32DB25E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730097AbgLORPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 12:15:22 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:34574 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbgLORO6 (ORCPT
+        id S1730209AbgLORR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 12:17:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729028AbgLORR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 12:14:58 -0500
-Received: by mail-oi1-f195.google.com with SMTP id s75so24135240oih.1;
-        Tue, 15 Dec 2020 09:14:42 -0800 (PST)
+        Tue, 15 Dec 2020 12:17:29 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A07C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 09:16:48 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id g20so28830198ejb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 09:16:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yKB5P3mmMeccCVq/i2dQ6a1JB3M5e9Un7Ow5i/UnWnM=;
+        b=zA5A/pRfIGe07vij4DySDUNXt3hgH73LPDdRgKaBBAACVFoNgxY22zOM7GP3MmMhYB
+         2FQnEUV0TsjZkJ3s4aWTOvRVinmxuDRMe7n7ShuAoxTviyZUA6qf218W7cq3WzXeQIfF
+         TDbPmUP7swZqJXRGQ+LJX3ygthciPd9sbzqcF+q6PgW5PhMAo+36mjNAb+EO1t0jhUdy
+         eMqS18FNCvjazQYxVQ0DEtmAqRe/6zoEUN22fLXP1oWbxT4kzEUnaJKzePjcYmgoDHyu
+         PA9wSgVvbHJi720EjncVezvahEqjjBnRT6GCDHFkG9uMWoIu8KzrwLdbhqBx4iFYv+/s
+         pD4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=+Qu4+kvBzm3PqXb1At7zY+1pW2euTQkxhk/cm9SbdHY=;
-        b=porVhyXOQV+Xm8GqXoFBYH15ecd4J/j2QeUz2aUojP16pvhTQqpk0WAcUGSSA6JlUa
-         G9zgqkCvbNX0UttGVKg+tg1jpuVvw+pvCkc1mkdAgsKvgXiHpJ0BsY99Un4KLUOYsiOS
-         Z2MLnVmWKoegle8t8ANRahw+D2AzgDal/QRXiiB/Gn/+NcdZ4mlI1id3Mqed0Ox4u1jz
-         0UR1IAqvPleJqLX0uqC3YHgQa/hi6aXMeFXa1OHoagAz9Mb15ASrj23ZAoxwHrFwab2p
-         dFHvVmZljCfX12RMjtMp7s2Fto2mYH19X/fvgPjp3rTaBkmvlVzN9SB6tHp/I8mEpQXn
-         JO5g==
-X-Gm-Message-State: AOAM533rNtWJqH6qMOUtJ+cUZpbZ6XgKhZNrdtNRIST1qbsGL1W1cPGN
-        tfdPrqSDAC2CL8LeMaxtFSdYJIRqyg==
-X-Google-Smtp-Source: ABdhPJzVpgelZd7N6boJkoJWy3kD5FQdlN3JtoRPvXPhm8+og2A32ilo2++TNDM964Exsl6NSovr0A==
-X-Received: by 2002:aca:bc84:: with SMTP id m126mr22208391oif.169.1608052457156;
-        Tue, 15 Dec 2020 09:14:17 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l6sm548795otf.34.2020.12.15.09.14.15
+        bh=yKB5P3mmMeccCVq/i2dQ6a1JB3M5e9Un7Ow5i/UnWnM=;
+        b=Ulr+CAkHp+bVFth1n397gp+XaUOmNPfSj4rsnq0b2awGOIMp3XcKUbUccwQlOCMaSx
+         zse+I+RdtycuQ0rqR4YyRcwN5jPXC974C0qoxqO2GeCGFQLtiUlZjTx0HqUB4YS8EzT+
+         jbbLgAv2NVl15gB+ORVgYfX+LQ4XnBXtwWGdXEYP+CqiwEbDCXDUxRtcCRZwRSP3w1RT
+         cXWwXfgXcXZqr75G1aa+OM7whfyE6+8q1Lj4M/yE76bim0A2jW6XLLwuxjnNttXCkn5J
+         3Y9sjkfPQGIfQvQalOOKtjJbAhMHOxURrtZ5OSlQV0E690LfPKcWLgA9roLDOOqrNuEZ
+         S9YA==
+X-Gm-Message-State: AOAM533VJ9bXbhNKbEZhGPBmV7zFei24NFagbsdMUOn5zgGk9LqxBsTo
+        if1iyogZi9x4RDA23iujtPoU3g==
+X-Google-Smtp-Source: ABdhPJx9oFI8c9NRCINhaYG2c8gjCFS/T3A9/B5lRKTP1ltaeZSxYbQLlICQTj8j2vsLhSYLIbYb1A==
+X-Received: by 2002:a17:906:a181:: with SMTP id s1mr14149482ejy.60.1608052607054;
+        Tue, 15 Dec 2020 09:16:47 -0800 (PST)
+Received: from localhost ([2620:10d:c093:400::5:d6dd])
+        by smtp.gmail.com with ESMTPSA id z24sm18899199edr.9.2020.12.15.09.16.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 09:14:16 -0800 (PST)
-Received: (nullmailer pid 4046464 invoked by uid 1000);
-        Tue, 15 Dec 2020 17:14:15 -0000
-Date:   Tue, 15 Dec 2020 11:14:15 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        netdev@vger.kernel.org, Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Vyacheslav Mitrofanov 
-        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
-        devicetree@vger.kernel.org,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Lars Persson <larper@axis.com>,
-        Joao Pinto <jpinto@synopsys.com>
-Subject: Re: [PATCH 01/25] dt-bindings: net: dwmac: Validate PBL for all
- IP-cores
-Message-ID: <20201215171415.GA4046412@robh.at.kernel.org>
-References: <20201214091616.13545-1-Sergey.Semin@baikalelectronics.ru>
- <20201214091616.13545-2-Sergey.Semin@baikalelectronics.ru>
+        Tue, 15 Dec 2020 09:16:46 -0800 (PST)
+Date:   Tue, 15 Dec 2020 18:14:39 +0100
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     guro@fb.com, ktkhai@virtuozzo.com, shakeelb@google.com,
+        david@fromorbit.com, mhocko@suse.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [v2 PATCH 3/9] mm: vmscan: guarantee shrinker_slab_memcg() sees
+ valid shrinker_maps for online memcg
+Message-ID: <20201215171439.GC385334@cmpxchg.org>
+References: <20201214223722.232537-1-shy828301@gmail.com>
+ <20201214223722.232537-4-shy828301@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201214091616.13545-2-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20201214223722.232537-4-shy828301@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 12:15:51 +0300, Serge Semin wrote:
-> Indeed the maximum DMA burst length can be programmed not only for DW
-> xGMACs, Allwinner EMACs and Spear SoC GMAC, but in accordance with [1]
-> for Generic DW *MAC IP-cores. Moreover the STMMAC set of drivers parse
-> the property and then apply the configuration for all supported DW MAC
-> devices. All of that makes the property being available for all IP-cores
-> the bindings supports. Let's make sure the PBL-related properties are
-> validated for all of them by the common DW MAC DT schema.
+On Mon, Dec 14, 2020 at 02:37:16PM -0800, Yang Shi wrote:
+> The shrink_slab_memcg() races with mem_cgroup_css_online(). A visibility of CSS_ONLINE flag
+> in shrink_slab_memcg()->mem_cgroup_online() does not guarantee that we will see
+> memcg->nodeinfo[nid]->shrinker_maps != NULL.  This may occur because of processor reordering
+> on !x86.
 > 
-> [1] DesignWare Cores Ethernet MAC Universal Databook, Revision 3.73a,
->     October 2013, p. 380.
+> This seems like the below case:
 > 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> ---
->  .../devicetree/bindings/net/snps,dwmac.yaml   | 69 +++++++------------
->  1 file changed, 26 insertions(+), 43 deletions(-)
-> 
+>            CPU A          CPU B
+> store shrinker_map      load CSS_ONLINE
+> store CSS_ONLINE        load shrinker_map
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+But we have a separate check on shrinker_maps, so it doesn't matter
+that it isn't guaranteed, no?
+
+The only downside I can see is when CSS_ONLINE isn't visible yet and
+we bail even though we'd be ready to shrink. Although it's probably
+unlikely that there would be any objects allocated already...
+
+Can somebody remind me why we check mem_cgroup_online() at all?
+
+If shrinker_map is set, we can shrink: .css_alloc is guaranteed to be
+complete, and by using RCU for the shrinker_map pointer, the map is
+also guaranteed to be initialized. There is nothing else happening
+during onlining that you may depend on.
+
+If shrinker_map isn't set, we cannot iterate the bitmap. It does not
+really matter whether CSS_ONLINE is reordered and visible already.
+
+Agreed with Dave: if we need that synchronization around onlining, it
+needs to happen inside the cgroup core. But I wouldn't add that until
+somebody actually required it.
