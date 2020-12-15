@@ -2,72 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B03F2DAA12
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A032DAA18
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728236AbgLOJ14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 04:27:56 -0500
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:46519 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgLOJ1z (ORCPT
+        id S1726356AbgLOJ3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 04:29:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726945AbgLOJ2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 04:27:55 -0500
-Received: by mail-ed1-f66.google.com with SMTP id b73so20198488edf.13;
-        Tue, 15 Dec 2020 01:27:39 -0800 (PST)
+        Tue, 15 Dec 2020 04:28:45 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE54C06179C;
+        Tue, 15 Dec 2020 01:28:05 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id jx16so26625853ejb.10;
+        Tue, 15 Dec 2020 01:28:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=iYBE2cZXqVlKV0i+AsU6Eo5VZfZrVHQ68uczVmC/4KA=;
+        b=BD3UYVIFn+8VSuYngyVAd9DP8rpa7tMaMWToHZ5GGYXEeNGTYs6/3YSOJ0/BUR9KFs
+         OgjbtnfABGdR9TKMPEiKzDJrzMZi1hRV5a6rij83rAU50zU5HfhUyIpeTH1uRsL/xhjS
+         j372eGkNkWH9Z3ynBdzV8+V/6XjMt/prUBn1VXFcLJ6tkfdQxTfXNu5dLDJ5+Tnumqqb
+         mfAUJEG2aN6uBPjVWn/T2nUxq71A0lUnQLHgpKaPQW72uRj9uXHWi/EOvC03Gw0jDTPa
+         SiHqs1QodTSpSFZ8TzHaALPEOjC1pjkxWUcyEFshlik0l9TMP6faGqrKV1RHvcsB+RmI
+         9/hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cNCppxnxSVZJ5/Rvd2n/uLCSYvnwm3DgbdivThOUs1U=;
-        b=rekkZYn6GQD83z9zcpa0J55lRuEoOQyXHpUFg5P3GBP0RcOdGzgCKaKEog6zFjwnj4
-         Dsoc8XMCg+FtMGBeSPnzP+3koVDyQLVMr3OFkvnONgd5NQS/n/Qn9pDRu3kZrkQ4pXfI
-         3sskYvBbKsKkfxyfAh1gO1U7ivZKZo6UNx8MgNr+KMDwMCF018hkP1vdBGtPhplhX5fe
-         TP5XG1DYNVXgVSSIB9RxFy9kbP2xqY1ctTCMpmaF0BbGlOkZrkI+6WJZWyHgiHhBBpEG
-         cxqC1P+nNMAmcFNoxumDJpddy31F9ahQOTNAmXQ5gZPLJulM0b9hxur1Z6g5KL4tWDg5
-         n3YA==
-X-Gm-Message-State: AOAM530GWUWr+PLSEXTuLEd3wTGe1zWif8eqWUAKaQMI8Kf0NHiFRE+r
-        6jhXRAaGF9Fm9ET0RpZQcJrvVpdDhKVzwA==
-X-Google-Smtp-Source: ABdhPJyv4Jp21FdhiZ4PFj7Kmmp9BgurjdgTSjYkQpi5pgzBgcce2qHp0wCJydbLoAn32X6B/i1oEA==
-X-Received: by 2002:a50:bacb:: with SMTP id x69mr13198442ede.39.1608024433550;
-        Tue, 15 Dec 2020 01:27:13 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id t8sm886403eju.69.2020.12.15.01.27.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 01:27:12 -0800 (PST)
-Date:   Tue, 15 Dec 2020 10:27:11 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     b.zolnierkie@samsung.com, mturquette@baylibre.com,
-        sboyd@kernel.org, yadi.brar@samsung.com, mturquette@linaro.org,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] clk: s2mps11: Fix a resource leak in error handling
- paths in the probe function
-Message-ID: <20201215092711.GA29712@kozik-lap>
-References: <20201212122818.86195-1-christophe.jaillet@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201212122818.86195-1-christophe.jaillet@wanadoo.fr>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=iYBE2cZXqVlKV0i+AsU6Eo5VZfZrVHQ68uczVmC/4KA=;
+        b=Tsp1FIiEFApxc86oYAbCHkuSb33BoTo2jnyNgzWFbUmwqrzPsE6v7rhX51VtsytzV7
+         h+4jWJQg2nLp6zNm4ntKSlbKeAhPQ2jdDy+Ap/nmdcpGiEcAOdSKbwyQzdGYw8J0TxPQ
+         2OcS2c9S1XP+al45Oa6wGwMNRELWCHYpttdIXUqVVz54F1Itf80lR7thSqHs+G+NGAcR
+         /COhki8tquehKXvsUknOkLa6iubXSHhn2/o/2fDgLB4ZX9A9d0Es9Fe/1zmcIu9/XKEx
+         2Hsesg6iGIGQvSk4GGwry62GLLkZZECYiIcWQPfZrqYDSmbRq0hZf7NeDK1mbp8alvSw
+         JlGw==
+X-Gm-Message-State: AOAM530mO88n3KnLrW/PaOTyBLZrir14Em15T66tccfbGQH/USbLBQCi
+        5v8DLxC/+HWbc5Zq67pLijs=
+X-Google-Smtp-Source: ABdhPJzRShezHeWBdVSKEXASOHVJUSGh2GD3hSlsswKkuPss0Um9LKy3Fskmbzk1turFYU5FLGacfQ==
+X-Received: by 2002:a17:907:2131:: with SMTP id qo17mr25708954ejb.546.1608024484248;
+        Tue, 15 Dec 2020 01:28:04 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id f18sm17821450edt.60.2020.12.15.01.28.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 15 Dec 2020 01:28:03 -0800 (PST)
+Message-ID: <410bf2a27978abb74ba41bc9f9198dcf85636b3c.camel@gmail.com>
+Subject: Re: [PATCH v4 5/6] scsi: ufs: Cleanup WB buffer flush toggle
+ implementation
+From:   Bean Huo <huobean@gmail.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
+        tomas.winkler@intel.com, cang@codeaurora.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 15 Dec 2020 10:28:02 +0100
+In-Reply-To: <1608023234.10163.19.camel@mtkswgap22>
+References: <20201211140035.20016-1-huobean@gmail.com>
+         <20201211140035.20016-6-huobean@gmail.com>
+         <1608023234.10163.19.camel@mtkswgap22>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 01:28:18PM +0100, Christophe JAILLET wrote:
-> Some resource should be released in the error handling path of the probe
-> function, as already done in the remove function.
+On Tue, 2020-12-15 at 17:07 +0800, Stanley Chu wrote:
+> >        if (ret) {
+> > -             dev_warn(hba->dev, "%s: WB - buf flush disable failed
+> > %d\n",
+> > -                      __func__, ret);
+> > -     } else {
+> > -             hba->dev_info.wb_buf_flush_enabled = false;
+> > -             dev_dbg(hba->dev, "WB - Flush disabled: %d\n", ret);
+> > +             dev_err(hba->dev, "%s WB-Buf Flush %s failed %d\n",
+> > __func__,
+> > +                     enable ? "enable" : "disable", ret);
+> > +             goto out;
+> >        }
+> >   
+> > +     if (enable)
+> > +             hba->dev_info.wb_buf_flush_enabled = true;
+> > +     else
+> > +             hba->dev_info.wb_buf_flush_enabled = false;
 > 
-> The remove function was fixed in commit bf416bd45738 ("clk: s2mps11: Add
-> missing of_node_put and of_clk_del_provider")
+> Perhaps this could be simpler as below?
 > 
-> Fixes: 7cc560dea415 ("clk: s2mps11: Add support for s2mps11")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/clk/clk-s2mps11.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
+> hba->dev_info.wb_buf_flush_enabled = enable;
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Thanks, will be changed in next version.
 
-Best regards,
-Krzysztof
+Bean
+
