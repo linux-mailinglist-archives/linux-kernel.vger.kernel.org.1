@@ -2,163 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2CF2DA95D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 638312DA95F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:43:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727377AbgLOIll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:41:41 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:44691 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727280AbgLOIlS (ORCPT
+        id S1727553AbgLOImV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:42:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726883AbgLOImC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:41:18 -0500
-Received: by mail-ot1-f65.google.com with SMTP id f16so18574318otl.11;
-        Tue, 15 Dec 2020 00:41:03 -0800 (PST)
+        Tue, 15 Dec 2020 03:42:02 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26F4C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 00:41:21 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id w5so15238464wrm.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 00:41:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GbEzlI33OGU2m93piMSf4kBL+lR5zxOJKf2VeMLoEIE=;
+        b=yCuexCqgQRrHyuPvGukIq9TNU/xW0HW9gQQ3S8iCnSnrXJYAl925lc9udtiq/mYlf9
+         AQzIl6bb1OCTt/r39DssvnP/xtSQLc9HhcU3kVE6fiqHFemMiM5/jvIdK+vAXZOZttUh
+         9AEdnJ2P0COYe/9b6MYcwZEWVDKwJF1EL76vqi/5IBaSkNK9QwbFDqzn9ToR1OX3J3+O
+         efJ6mcmgAi2+Cjk12dwpgZz03VHQiN+QXfIyQxT4Tz+FBrx8kVfsLkIVEG+flcSYH92e
+         R5ZGI95tV1tCw/hz9kSRxAnBrJ5tquJn1EUdGE9ANCC+dcdz6NTn9xt1CkdPqb3OB1WD
+         JOmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ba7mc/BCMYdw7FaeaEdwydqlVnKjTzjlShw/SDUcZp0=;
-        b=iomaYM7D8ZoEhPrre+p+cApdvqpyI0TWJBcAIK33R5b9bl2BfcwUdy5atCI5GsxKjs
-         1wA7fXpUnMNBJki7qeNDgbNkBLiPyEa/2/KD5RhFY30kB9YQFkREKnF4OELBrEIahMue
-         XwD85CZXD1bLv+xRRuaa3ZvBFhzyvXH+jqsj4Uvy7O1ixqMQe6BWhV+NuucDyNNomZHB
-         s1U7EOKTVYI8t9LXcTaUQVufMECdFBXhzyccYBzc35hrq+W4eyzCoIokMVPjPER63l6k
-         MqYj5SjGuuI0qrBOB5+nnHy7NLQQjJq7L0cEHDuRpxqmrxOoZYJZCpKsJ6UMD66zAr9K
-         izhg==
-X-Gm-Message-State: AOAM5328Rg/fZlWoCS621t4Kuip0KjIAAFN9R9ry7q+Cep/sxbZBQi07
-        7pLOaCYBz5s720qZLZH1uf0MjTPTyT8nk5J3CKs=
-X-Google-Smtp-Source: ABdhPJyziYSsvqwOWh908ds9wuseIW4WlDDaCvlJB9DaOfZyJAkb5XL0UpuFaCTo13cbBHs4YTr4QhfF+hJ/B4H/oDY=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr22477520otc.145.1608021637754;
- Tue, 15 Dec 2020 00:40:37 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GbEzlI33OGU2m93piMSf4kBL+lR5zxOJKf2VeMLoEIE=;
+        b=ETOZB9Bium20qYptThIutF9AqE1Iuhk+b2iJUFuEJXliN2s4Xg6En+I2yVJK6ECUOw
+         wOHcnK6qJ1IvYVoicKc/JpP1tGZ5P6I2XGSbE/BrhzmSkmP0rwVqK92uCMpsDgcG77h/
+         5bZn7bZo1eZ8J6zl0w4pBwHFCXuo9KT4lh4o5daNopMdvmF8s666uoW/71wHGD2V+INu
+         N2nnq08KtlDRPfPDgiWT6ExuViJPyV2W/t7xv052UdFaoXjnuOtTr57N22MAVGYoS8jA
+         CNtLoxXlxBYrIOWtn6H9cZnSrRJDVeXETxkx1jpjzWmO/olLTr2vUKNB0dlA4PBnmGr2
+         BTTg==
+X-Gm-Message-State: AOAM530qjEByxRfOAuPvBi6xiMkI/HTgNdVWX3Zcu4adHdpH7mkWJaP/
+        bUgJUQPy6XBiE9y+5g0vKigWYw==
+X-Google-Smtp-Source: ABdhPJzBNEtjk59mcpfwSNW8Qzw6ooxHFo5FWxuFpo6rL/Za+fg5OV/zUyaEaZ0WNX4Z4qYdYvXKGw==
+X-Received: by 2002:a5d:4bc2:: with SMTP id l2mr17095662wrt.204.1608021680445;
+        Tue, 15 Dec 2020 00:41:20 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:e842:4086:6f24:55a6? ([2a01:e34:ed2f:f020:e842:4086:6f24:55a6])
+        by smtp.googlemail.com with ESMTPSA id l16sm37134641wrx.5.2020.12.15.00.41.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 00:41:19 -0800 (PST)
+Subject: Re: [PATCH] thermal/drivers/devfreq: Fix missing dependency with the
+ energy model
+To:     rui.zhang@intel.com, lukasz.luba@arm.com
+Cc:     sfr@canb.auug.org.au, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org,
+        Arnd Bergmann <arnd.bergmann@linaro.org>
+References: <20201215125806.31495950@canb.auug.org.au>
+ <20201215083520.601988-1-daniel.lezcano@linaro.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <657f28a7-fc75-06ae-a96c-d2ef0485e4bc@linaro.org>
+Date:   Tue, 15 Dec 2020 09:41:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201105233900.GA20676@paulmck-ThinkPad-P72> <20201105233933.20748-3-paulmck@kernel.org>
-In-Reply-To: <20201105233933.20748-3-paulmck@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 15 Dec 2020 09:40:26 +0100
-Message-ID: <CAMuHMdXjUxfp0h=TiwNoZJUHrSD4sDwYEbuqNR4rcWSRFCjUtw@mail.gmail.com>
-Subject: Re: [PATCH tip/core/rcu 3/4] rcutorture: Make grace-period kthread
- report match RCU flavor being tested
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201215083520.601988-1-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
 
-On Fri, Nov 6, 2020 at 12:40 AM <paulmck@kernel.org> wrote:
->
-> From: "Paul E. McKenney" <paulmck@kernel.org>
->
-> At the end of the test and after rcu_torture_writer() stalls, rcutorture
-> invokes show_rcu_gp_kthreads() in order to dump out information on the
-> RCU grace-period kthread.  This makes a lot of sense when testing vanilla
-> RCU, but not so much for the other flavors.  This commit therefore allows
-> per-flavor kthread-dump functions to be specified.
->
-> [ paulmck: Apply feedback from kernel test robot <lkp@intel.com>. ]
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+A separate patch should add the select ENERGY_MODEL in the
+multi_v7_defconfig so the devfreq cooling device continues to build by
+default as before.
 
-Thanks for your patch, which is now commit 27c0f1448389baf7
-("rcutorture: Make grace-period kthread report match RCU flavor being
-tested").
+Arnd?
 
-> --- a/kernel/rcu/rcu.h
-> +++ b/kernel/rcu/rcu.h
-> @@ -533,4 +533,20 @@ static inline bool rcu_is_nocb_cpu(int cpu) { return false; }
->  static inline void rcu_bind_current_to_nocb(void) { }
->  #endif
->
-> +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RCU)
-> +void show_rcu_tasks_classic_gp_kthread(void);
-> +#else
-> +static inline void show_rcu_tasks_classic_gp_kthread(void) {}
-> +#endif
-> +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
-> +void show_rcu_tasks_rude_gp_kthread(void);
-> +#else
-> +static inline void show_rcu_tasks_rude_gp_kthread(void) {}
-> +#endif
-
-The #ifdef expression does not match the one for the implementation
-below.
-
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-
-> @@ -762,6 +765,7 @@ static struct rcu_torture_ops tasks_rude_ops = {
->         .exp_sync       = synchronize_rcu_tasks_rude,
->         .call           = call_rcu_tasks_rude,
->         .cb_barrier     = rcu_barrier_tasks_rude,
-> +       .gp_kthread_dbg = show_rcu_tasks_rude_gp_kthread,
-
-Perhaps you just want to have a NULL pointer for the dummy case, instead
-of instantiating a dummy static inline function and taking its address?
-
->         .fqs            = NULL,
->         .stats          = NULL,
->         .irq_capable    = 1,
+On 15/12/2020 09:35, Daniel Lezcano wrote:
+> The devfreq cooling device has been converted to use the energy model.
+> 
+> Add the dependency on the ENERGY_MODEL option to reflect this change
+> and prevent build failure if the option is not set.
+> 
+> Fixes: 615510fe13bd2 ("thermal: devfreq_cooling: remove old power model and use EM")
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
+>  drivers/thermal/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
+> index 7edc8dc6bbab..ee62d51ef351 100644
+> --- a/drivers/thermal/Kconfig
+> +++ b/drivers/thermal/Kconfig
+> @@ -193,6 +193,7 @@ config DEVFREQ_THERMAL
+>  	bool "Generic device cooling support"
+>  	depends on PM_DEVFREQ
+>  	depends on PM_OPP
+> +	depends on ENERGY_MODEL
+>  	help
+>  	  This implements the generic devfreq cooling mechanism through
+>  	  frequency reduction for devices using devfreq.
+> 
 
 
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-> @@ -696,16 +696,14 @@ static int __init rcu_spawn_tasks_rude_kthread(void)
->  }
->  core_initcall(rcu_spawn_tasks_rude_kthread);
->
-> -#ifndef CONFIG_TINY_RCU
-> -static void show_rcu_tasks_rude_gp_kthread(void)
-> +#if !defined(CONFIG_TINY_RCU)
-
-Different #ifdef expression.
-
-> +void show_rcu_tasks_rude_gp_kthread(void)
-
-Do you really want to define a non-static function...
-
->  {
->         show_rcu_tasks_generic_gp_kthread(&rcu_tasks_rude, "");
->  }
-> -#endif /* #ifndef CONFIG_TINY_RCU */
-> -
-> -#else /* #ifdef CONFIG_TASKS_RUDE_RCU */
-> -static void show_rcu_tasks_rude_gp_kthread(void) {}
-> -#endif /* #else #ifdef CONFIG_TASKS_RUDE_RCU */
-> +EXPORT_SYMBOL_GPL(show_rcu_tasks_rude_gp_kthread);
-
-... and export its symbol, from a header file?
-I know the file is included only once.
-
-> +#endif // !defined(CONFIG_TINY_RCU)
-> +#endif /* #ifdef CONFIG_TASKS_RUDE_RCU */
->
->  ////////////////////////////////////////////////////////////////////////
->  //
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
