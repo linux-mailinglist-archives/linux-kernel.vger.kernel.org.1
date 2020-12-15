@@ -2,98 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BCD2DA72A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 05:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62CA32DA72C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 05:40:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725948AbgLOEiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 23:38:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35992 "EHLO
+        id S1726027AbgLOEjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 23:39:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgLOEij (ORCPT
+        with ESMTP id S1726009AbgLOEjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 23:38:39 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8AEC061793
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 20:37:56 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Cw58w4zYmz9sPB;
-        Tue, 15 Dec 2020 15:37:52 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1608007073;
-        bh=92QTNlRWTEpEVsaMoOeKhN/bpOIRb+FzQZilGRSEkIE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Tf3+HzXyuY2V+8Y7rQzd3JF52NpAUfZ4v30SM7wQKAl3ZfyqhXj1fkrSdx5A8/Sjs
-         SlPSEgIpJt+yyUU/9XwX0vvWle6+G7Ud6vZtiNg8vnZ/UcJzafNW8+wxMfjRWOuGd2
-         GQufPJg8I4zSbov/b6N97fbKnZDrhaagkOXymlTjMnMeIGSTh7HKyz2axcaO48X/Cu
-         b6bsAB4rp8xPImWcr5jvS8qDvEn4snwlFsKScxAYOAkd1vSQM3eTHNXvSINsaHyv9J
-         wgsUazDIEqHAlANQqzsRMWl7AxI3Sksqt4LtN0YV/kSoa7lidkOyaC17ML0rQGjy6n
-         bMUKoP59IHfDA==
-Date:   Tue, 15 Dec 2020 15:37:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] Some fixes for v5.11
-Message-ID: <20201215153751.5150e00a@canb.auug.org.au>
-In-Reply-To: <CAHk-=wic8QjSuwjwpk8oLvtgWWCGfAC72ojuAU3PwYr7CWHqHg@mail.gmail.com>
-References: <20201214132745.3323776-1-christian.brauner@ubuntu.com>
-        <CAHk-=wic8QjSuwjwpk8oLvtgWWCGfAC72ojuAU3PwYr7CWHqHg@mail.gmail.com>
+        Mon, 14 Dec 2020 23:39:13 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1074C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 20:38:32 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id ga15so25733448ejb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 20:38:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bjas04zq4quJPDf/2Zl8W/3PIeOhXPZgNazOTkbLsjU=;
+        b=GDNB/aCqhln43599Pj7A2uVQlX4OYo4k0I9Dp6EdhU8h/suX8Kcgr94s0vG5G4AsnS
+         GyqJ6Jxg0aq0K3BNSs6krIkxfxVrixOORoACeUCI0EeUYuHdU/0KkaODusnGRhJaz6uM
+         20EelORVe4K3b2B4XpT9vDqWkOylgP3IDNynB6isAOyS/BabSgEvuguS2d/zehk4KuDB
+         pn6kpGKURU0c2xhX5BvLAc5xBp763QXa/l92BxeuvqdssCpgI6CwVq/H1yl18AdhYgsN
+         OVkoWDZlyGX6whsYCfE8VOjfBcmyW2wRLZmsFb85XgqutAuXwV/jSLrIE65UNJ2g0UOE
+         Gtig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bjas04zq4quJPDf/2Zl8W/3PIeOhXPZgNazOTkbLsjU=;
+        b=HCPJWiXIKUKjOl/nxqnUuTSU53Oy5QiF8Bly6PmqyIF6EzwLeX+K2i6HaHCt/ecReR
+         HSuKz6VXo5tcl9KWVhP4rXhmlZ30WIHHnvb9FfL9wPZk3f1lhCE9HxXFiFQN7qG8gF9J
+         cNAmIS7gBde2DEnQQZNAm85AnIfPgO0aO3nXRTKb1WQCd12a+rHfDC78/EO8gmsZem1l
+         ZuprNFH7DCH15/qA4EHLI+wu6wp2Lg9AdOVv0QJef732tA175Eha7iCFXx1q+7LGj3RG
+         eMqEeUHWY7k5acwKMDyyayc1xdliBwOxES5ciCzRHMiyPGWjnvTAV/ZvRoVf7MecmKtS
+         ryTw==
+X-Gm-Message-State: AOAM530AKdCxTq/ZG7yyd5YSagDwuVzfRi6iRv0Th7PKlsT0bQO9UCL0
+        fb9vq42vT38MyRD/P4QO1bWhHE8F+CDGBhP4iwsAKA==
+X-Google-Smtp-Source: ABdhPJxmmg2xBh9Z1x6jNfKkt61RWp5JGX1NTncLKP19jmRPohZ5nawq5vIMNeMZ2XyD8PMP5v+IraZ8V0c8PmC1A+A=
+X-Received: by 2002:a17:906:fb9b:: with SMTP id lr27mr25823947ejb.175.1608007111384;
+ Mon, 14 Dec 2020 20:38:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/X_BiPKbisepOxcNGs09Wqle";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201211202140.396852-1-pasha.tatashin@soleen.com>
+ <20201211202140.396852-3-pasha.tatashin@soleen.com> <20201214140337.GD32193@dhcp22.suse.cz>
+In-Reply-To: <20201214140337.GD32193@dhcp22.suse.cz>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Mon, 14 Dec 2020 23:37:55 -0500
+Message-ID: <CA+CK2bBM1s=MxOcNR3pmO1rwKfrbA4=ObLYszUuU8Cz3N30OJA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/6] mm cma: rename PF_MEMALLOC_NOCMA to PF_MEMALLOC_PIN
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/X_BiPKbisepOxcNGs09Wqle
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Linus,
-
-On Mon, 14 Dec 2020 16:45:50 -0800 Linus Torvalds <torvalds@linux-foundatio=
-n.org> wrote:
+On Mon, Dec 14, 2020 at 9:03 AM Michal Hocko <mhocko@suse.com> wrote:
 >
-> On Mon, Dec 14, 2020 at 5:27 AM Christian Brauner
-> <christian.brauner@ubuntu.com> wrote:
+> On Fri 11-12-20 15:21:36, Pavel Tatashin wrote:
+> > PF_MEMALLOC_NOCMA is used ot guarantee that the allocator will not return
+> > pages that might belong to CMA region. This is currently used for long
+> > term gup to make sure that such pins are not going to be done on any CMA
+> > pages.
 > >
-> > /* Conflicts */
-> > At the time of creating this PR no merge conflicts were reported from
-> > linux-next and no merge conflict with 2c85ebc57b3e ("Linux 5.10") when
-> > pulling the tag. =20
->=20
-> Really? It conflicted with your own time namespace fixes.. Was one or
-> the other not in linux-next?
->=20
-> Not that the conflicts were big or bad (free_time_ns() prototype
-> changed right next to timens_on_fork() prototype), I'm just surprised
-> you saw no conflicts..
+> > When PF_MEMALLOC_NOCMA has been introduced we haven't realized that it is
+> > focusing on CMA pages too much and that there is larger class of pages that
+> > need the same treatment. MOVABLE zone cannot contain any long term pins as
+> > well so it makes sense to reuse and redefine this flag for that usecase as
+> > well. Rename the flag to PF_MEMALLOC_PIN which defines an allocation
+> > context which can only get pages suitable for long-term pins.
+> >
+> > Also re-name:
+> > memalloc_nocma_save()/memalloc_nocma_restore
+> > to
+> > memalloc_pin_save()/memalloc_pin_restore()
+> > and make the new functions common.
+> >
+> > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> > Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+>
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-The time namespace changes appear in linux-next for the first time
-today - where I reported that 3 of them have no Signed-off-by from their
-committer :-(.
+Thank you.
 
---=20
-Cheers,
-Stephen Rothwell
+>
+> with one comment below
+> [...]
+> > --- a/include/linux/sched.h
+> > +++ b/include/linux/sched.h
+> > @@ -1576,7 +1576,7 @@ extern struct pid *cad_pid;
+> >  #define PF_SWAPWRITE         0x00800000      /* Allowed to write to swap */
+> >  #define PF_NO_SETAFFINITY    0x04000000      /* Userland is not allowed to meddle with cpus_mask */
+> >  #define PF_MCE_EARLY         0x08000000      /* Early kill for mce process policy */
+> > -#define PF_MEMALLOC_NOCMA    0x10000000      /* All allocation request will have _GFP_MOVABLE cleared */
+> > +#define PF_MEMALLOC_PIN              0x10000000      /* All allocation request will have _GFP_MOVABLE cleared */
+>
+> This comment is not really helpeful. I would go with
+> /* Allocation context constrained to zones which allow long term
+>  * pinning.
+>  */
+>
+> Something similar would be useful for memalloc_pin* functions as well.
 
---Sig_/X_BiPKbisepOxcNGs09Wqle
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+I will add it.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/YPZ8ACgkQAVBC80lX
-0GzP4Qf7BNyr72l8kaX+mhdEBNJm8O8ru+xuM1MHZLI0DS1rLaTE3m7yC+7i80Kn
-0VgRLu/+rr8IqEqs6D3C4sd8NQqOLsa8JL/BvM7a5WKit/Ld2ajGDTrpdiYvXlYL
-Bdk5gvSeg2r3E7/tD3Jtl+3V/ZC2kQoF4A7+czfcp7NqoodX+HTrYiQrHtl/1ZIq
-AUYQR+FrMo+2G40SQA2OPQZ7G8osIj0xJIa27qMj8WQ0wNDDyyA32Z3c4IdzJLO4
-6fixKn/sjEInVk1IeMkS7s38YBnbtvcLxYxbjxAgQn+GNlF9dXepCBHoGbid0KHF
-iLIh+jTMgfT7djBKmxRlaFNtUQkHRw==
-=vpHS
------END PGP SIGNATURE-----
-
---Sig_/X_BiPKbisepOxcNGs09Wqle--
+> --
+> Michal Hocko
+> SUSE Labs
