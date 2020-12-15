@@ -2,158 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE8A2DB6DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 00:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D517E2DB7B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730604AbgLOXDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 18:03:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
+        id S1727047AbgLPAAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:00:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730524AbgLOXDc (ORCPT
+        with ESMTP id S1730231AbgLOXGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 18:03:32 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E4DC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 15:02:52 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id w16so16230091pga.9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 15:02:52 -0800 (PST)
+        Tue, 15 Dec 2020 18:06:12 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F22C061793;
+        Tue, 15 Dec 2020 15:05:32 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id u19so22858617edx.2;
+        Tue, 15 Dec 2020 15:05:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Bk5fGUf8OoBWTVA3v0ryGGi+6Q5v4pjP4r2z0t/1CSc=;
-        b=FZitHSTscvf0XOWi95QhoS1q7wcndpNbD5L5DVunu+JeJcXf9Kf64yPrgAYZfhRsB4
-         n3SY3LWyqSc3GtG8XkptkfRg46fzP8NZ6c7Deoh1bGs7wRPDDmc0d9XGzvK4FAT1sQbi
-         BahsT6Vaju1NQmbgGEiVn5r2sHYdg389YUWC7mr5Ex0FHepQ8fyBsSUAQrAlDYyPxahV
-         X+u+5tMtDqc0Xqq4tNRd1FGrB+9aohXMzASfI0WjrcmosLDdFjXVp78oWFMEv5nA2La1
-         tSyWI8j5b6ammTgeJ9KRh/FWChoQ4u8SCv1Hjigj7jMIDPh9LczIXH1KyJCVAPYU0tLD
-         5mLQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f7i9PtN45U0UcFrfF4C9zZcvaiZJrrBU8O2nLkXVNNY=;
+        b=vaEJrBaeXVXGjz/7marcrAvcGt+pNp8wFg3xnAEXbXFvrltLW4kVon8tyspPKjRg6B
+         HAq1OkTZKKL0W6D+iU3cOkjuk5waXM6DwT2Cd2C1k5EFYnWjuvnMUJbmtXYjWhHjJiHh
+         qAm3jojaIhzV2R5NPXfaizMMYu6NoRlUbF+0olmuX4f9aaXYf3tTHt2iESYs1xkHacLr
+         t1tXs4lTmOvxZ5KrhhDTuDOAGjRfdXk4gsN/rbnlFSVlE00pRoVgHm8yIGoMzPw9hAXx
+         t44klwYbhsNzDpWsFG2ZrKbkFOOJpEV728dt3rUzQ6ZU/9x8Xn58MAncBm3mfuC9Nt9/
+         VP7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Bk5fGUf8OoBWTVA3v0ryGGi+6Q5v4pjP4r2z0t/1CSc=;
-        b=kX80n0IvUCBNLWOmxHt4cnzhYj8uoHBzJSFJZRTvTsO9LMK+7ZPTzK/WFRSPdGe4H/
-         +3vQ+j03hazh89QWIVimilhVUFO/gBA1ZCVhtQDeyVEzxmgGa0vPZbFMUp+sldr1qo0e
-         c2N35yYCazlHFQpcdaNpAIjyCcv+p4N9HynWBpaZHJLHyPN+hC5dUdj4BzHwdu1lObTe
-         tm3wAZ70dYVn+m9G1rbAo/JJDvLoHYIehmRr2aL/uCtvLW0SPrDURe7CiCH8XWLN5DZS
-         sCF7WhVe92LKp0RLT/thQQdDkj/yUukBIj2SJMCw9XhJD2rps508ePq/aRDy/JuHrvTM
-         CPvg==
-X-Gm-Message-State: AOAM532KZqboaEqY3VjqTOzTSShWp5yECF69tZthFwzmrmbesK90GQWh
-        EMqVZhZMxzX3Xu22fu80TxUBRQ==
-X-Google-Smtp-Source: ABdhPJx2JozHFm59QOFfO3MK+J+lixOcghnUrRXNfRUUUf+1bpmh4FRuJMBHSR8p4wguFEatBYgMkQ==
-X-Received: by 2002:a62:c504:0:b029:1a5:b198:18dc with SMTP id j4-20020a62c5040000b02901a5b19818dcmr1155779pfg.79.1608073372173;
-        Tue, 15 Dec 2020 15:02:52 -0800 (PST)
-Received: from [192.168.1.9] ([122.174.165.16])
-        by smtp.gmail.com with ESMTPSA id x6sm32077pfq.57.2020.12.15.15.02.49
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f7i9PtN45U0UcFrfF4C9zZcvaiZJrrBU8O2nLkXVNNY=;
+        b=mMYa2wssNq66V6ol1nzismmX3YBuyGaTWpYAtW+sVjVYbNVrzhIdqbKCAAIfYg5FZi
+         gadC/FSP++8JsSWYpFQcO1chHAmOQhxy6VMbR1c7qvNlon+t0wyH3XAZepPePhIWNNNE
+         A3hhZZdY5BRfXbiQVbOmY8SU2gjdw8ep++S/YPtj5uChf0T5zh6c4lGCL5nLz5Vh85mL
+         OSeaAWW97+DnZI8CV0adzqnz+LE4LjWuorKhQuGet0rzxZKEPKx8rAGKSJCtR7oFAXRt
+         SaWl2zsEoomiHXHSHI3qGcum89jgWSt9j8UCBUYsCwFQ/1HwEvcx7JcmG84XCJv2vQf1
+         tEAg==
+X-Gm-Message-State: AOAM530ntMjzTEh7QZRD2JIEcXUDfSzA18BzwLUF3d5bv9HS/3NGmwUP
+        cUQgwb+jl0fdsvIthDLKMXc=
+X-Google-Smtp-Source: ABdhPJxG/rjDJGeTZhHgpKRGCnYq5XHIiU2WyYVt4L1YCHsj5g6UZUC3FFE4zo1nE2O7N+3BVFa4nw==
+X-Received: by 2002:a50:ec18:: with SMTP id g24mr4299005edr.6.1608073530937;
+        Tue, 15 Dec 2020 15:05:30 -0800 (PST)
+Received: from localhost.localdomain (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.gmail.com with ESMTPSA id e11sm19280455edj.44.2020.12.15.15.05.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 15:02:51 -0800 (PST)
-Message-ID: <0dda43447eaa332396f3442dfc439d5a3adc8d34.camel@rajagiritech.edu.in>
-Subject: Re: related to fixing depreciated api
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Date:   Wed, 16 Dec 2020 04:32:48 +0530
-In-Reply-To: <86388240-57df-977f-d0ac-47c2ed7df7a5@linuxfoundation.org>
-References: <e479c654b6ca08057bf18a4e1c1d1ed3cdf8fdc8.camel@rajagiritech.edu.in>
-         <291555f8-ed17-5ed6-8ca4-42c8d5e13be9@linuxfoundation.org>
-         <86388240-57df-977f-d0ac-47c2ed7df7a5@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-2 
+        Tue, 15 Dec 2020 15:05:30 -0800 (PST)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/7] Several changes for UFS WriteBooster
+Date:   Wed, 16 Dec 2020 00:05:12 +0100
+Message-Id: <20201215230519.15158-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-12-15 at 12:52 -0700, Shuah Khan wrote:
-> On 12/15/20 9:12 AM, Shuah Khan wrote:
-> > On 12/14/20 9:42 AM, Jeffrin Jose T wrote:
-> > > hello,
-> > > 
-> > > i have worked on to  fix  depreciated api issue from
-> > > tools/testing/selftests/intel_pstate/aerf.c
-> > > 
-> > > i met with the following error related...
-> > > 
-> > > --------------x------------------x----------------->
-> > > $pwd
-> > > /home/jeffrin/UP/linux-
-> > > kselftest/tools/testing/selftests/intel_pstate
-> > > $make
-> > > gcc  -Wall -D_GNU_SOURCE    aperf.c /home/jeffrin/UP/linux-
-> > > kselftest/tools/testing/selftests/kselftest_harness.h
-> > > /home/jeffrin/UP/linux-
-> > > kselftest/tools/testing/selftests/kselftest.h -
-> > > lm -o /home/jeffrin/UP/linux-
-> > > kselftest/tools/testing/selftests/intel_pstate/aperf
-> > > aperf.c: In function ‘main’:
-> > > aperf.c:58:2: warning: ‘ftime’ is deprecated [-Wdeprecated-
-> > > declarations]
-> > >     58 |  ftime(&before);
-> > >        |  ^~~~~
-> > > In file included from aperf.c:9:
-> > > /usr/include/x86_64-linux-gnu/sys/timeb.h:39:12: note: declared
-> > > here
-> > >     39 | extern int ftime (struct timeb *__timebuf)
-> > >        |            ^~~~~
-> > > aperf.c:67:2: warning: ‘ftime’ is deprecated [-Wdeprecated-
-> > > declarations]
-> > >     67 |  ftime(&after);
-> > >        |  ^~~~~
-> > > In file included from aperf.c:9:
-> > > /usr/include/x86_64-linux-gnu/sys/timeb.h:39:12: note: declared
-> > > here
-> > >     39 | extern int ftime (struct timeb *__timebuf)
-> > >        |            ^~~~~
-> > > $
-> > > ----------------x---------------x---------------------->
-> > > 
-> > > 
-> > > from ftime manual  i found that it is depreciated...
-> > > 
-> > > This  function is deprecated, and will be removed in a future
-> > > version
-> > > of the GNU C library.  Use clock_gettime(2) instead.
-> > > 
-> > > 
-> > > now clock_gettime  gives  new data structure.
-> > > 
-> > >   struct timespec {
-> > >                 time_t   tv_sec;        /* seconds */
-> > >                 long     tv_nsec;       /* nanoseconds */
-> > >             };
-> > > 
-> > > 
-> > > i worked on with the new data structure and some errors that came
-> > > along.
-> > > typical final output looks good but  values of runtime and
-> > > typical
-> > > frequency
-> > > does not look normal during "sudo bash run.sh".
-> > > 
-> > > output of "git diff" and  a  portion of output of   "sudo bash
-> > > run.sh".
-> > > is attached.
-> > > 
-> > 
-> > Please send a proper patch to fix intel_pstate to use
-> > clock_gettime.
-> > 
-> 
-> The fix for this is already in next - no need to send patch.
-> 
-> thanks,
-> -- Shuah
-> 
-anyway thanks .
+From: Bean Huo <beanhuo@micron.com>
 
+Changelog:
+V--V5:
+  1. Add patch "docs: ABI: Add wb_on documentation for UFS sysfs"
+  2. Unify WB related flags with wb_* prefix (Stanley Chu)
+  3. Delete d_ext_ufs_feature_sup (Stanley Chu)
+  4. Incorporate Stanley's suggestion to patch 6/7
+  5. Replace scnprintf() with sysfs_emit() in 1/7 (Greg KH)
+
+v3--v4:
+  1. Rebase patch on 5.11/scsi-staging
+  2. Add WB cleanup patches 3/6, 4/6 adn 5/6
+
+v2--v3:
+  1. Change multi-line comments style in patch 1/3 (Can Guo)
+
+v1--v2:
+  1. Take is_hibern8_wb_flush checkup out from function
+     ufshcd_wb_need_flush() in patch 2/3
+  2. Add UFSHCD_CAP_CLK_SCALING checkup in patch 1/3. that means
+     only for the platform, which doesn't support UFSHCD_CAP_CLK_SCALING,
+     can control WB through "wb_on".
+
+Bean Huo (7):
+  scsi: ufs: Add "wb_on" sysfs node to control WB on/off
+  docs: ABI: Add wb_on documentation for UFS sysfs
+  scsi: ufs: Changes comment in the function ufshcd_wb_probe()
+  scsi: ufs: Remove two WB related fields from struct ufs_dev_info
+  scsi: ufs: Group UFS WB related flags to struct ufs_dev_info
+  scsi: ufs: Cleanup WB buffer flush toggle implementation
+  scsi: ufs: Keep device active mode only
+    fWriteBoosterBufferFlushDuringHibernate == 1
+
+ Documentation/ABI/testing/sysfs-driver-ufs |   8 ++
+ drivers/scsi/ufs/ufs-sysfs.c               |  41 +++++++
+ drivers/scsi/ufs/ufs.h                     |  30 ++---
+ drivers/scsi/ufs/ufshcd.c                  | 124 +++++++++------------
+ drivers/scsi/ufs/ufshcd.h                  |   6 +-
+ 5 files changed, 122 insertions(+), 87 deletions(-)
 
 -- 
-software engineer
-rajagiri school of engineering and technology - autonomous
-
+2.17.1
 
