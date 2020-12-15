@@ -2,187 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE04C2DB467
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6D32DB46D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731987AbgLOTVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 14:21:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
+        id S1731933AbgLOTWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 14:22:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731920AbgLOTVF (ORCPT
+        with ESMTP id S1731814AbgLOTWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 14:21:05 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B5CC06179C;
-        Tue, 15 Dec 2020 11:20:24 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id t37so15903008pga.7;
-        Tue, 15 Dec 2020 11:20:24 -0800 (PST)
+        Tue, 15 Dec 2020 14:22:32 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A463C0617B0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 11:21:52 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id h4so15414752qkk.4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 11:21:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wlyAISKwMaVzTDTMA02yu+JX1LjU5q5OXATqkfGlDXI=;
-        b=iCiFQ1x67UBfSsNM9SGIFXUtRGK8W/qM4Zjt16TwboXWXtq6R8/mvYMhzMFqQ7BZq1
-         YU7WB0CR6VB1RTBrVaS6wmLwK928Cn0c0DofhqCV3iQbaJW2KFpgSBmx+MvJjRQKq+Xm
-         rejolee8EVkw2IeKFj9jX2maN79ZAPM09BFffhGZ8crVz7bI0pWGu+k7wBoza7BXCMYI
-         xC3rzlCBW8CxuOVcbCRfEfaGhHgyO34c9ycHjzlxTiDTyAzpi5pkGhV1iNwnu+df6qv/
-         BI2vohO/npBrq1uON1cyk5Elno7dMe+d5Q/lMcaYL+ikFskO9QpEavPmM/glibSVHXDA
-         wEbg==
+        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=jVFwMMQ6DKs7XfDfHBL54ryc0drSH1XuLSwFgllEzFk=;
+        b=gwGflH/bRbNg9bfRJPwgIerK4m2SnJXQN6M9Rt9hgfg5E2Tc5Sl3tb/jAHmLeO6Vws
+         md2nJXWa8HjTp88IvMCY+CDp1frGOB15dwZjGkiLeAqkCnT5/2LgtdV+ktApgHfQp4jX
+         LoplF7W9Sp9ZDAc4oR64TZ7ApRAYGmbK5tmHdEu2sX+c9806EfFpIS6Q5rgMhp3BtyQq
+         X6eXZjKf5z9HOraU43WXGNkTC08I7228YqmofgOMcxLT+qAUAr6majb4bg/8t98lMvhs
+         8eMz5zC64SMrIWbFa+tSqAmysMprOeot8Tovbxx0eOCLVnXvBBWUh6olVLDB91f7PsSg
+         xFYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wlyAISKwMaVzTDTMA02yu+JX1LjU5q5OXATqkfGlDXI=;
-        b=IUMwGjCW6XuzY+Qjw+QvXJUxCSALojlikUkrsNE/frqdCBrPfEGy7y83zdBIKODwZx
-         lKOTux+bfVArTkj0dlb3fsN7bUZ9sziVGBOd6QPchoKjEqfbMLDlcyVg5ztVKltHGBA2
-         1cI+y2SeUrbOjSQgK5z+IYZW49j2Ork+ovtMYUs+bjhZPqU8+y9AedzPfw7ai6h+Tp9b
-         CrmO+yza/1B98SLqw7wVpqe0WKDeI1rkYDAifcesZ9t8OZ/TvNOKY6ABJI6QxI4/Xspl
-         gU9ToG2Jbi85UROH3GC3BZohfujHMDwL8z4p5Jy5jVr3f2XVNLHhMzSNuGhPFgSVtQeV
-         NjrQ==
-X-Gm-Message-State: AOAM530usMah9/WTUzZv+IsNLJf4wmFA/NIIkm7J/716MFvxCNKZavVx
-        1qXM4O8+Q6YDqLN9CRFLT+FCEprplOI=
-X-Google-Smtp-Source: ABdhPJwFzUSovKBvhOeE2iN8BQJ5tzEE67gxMUn05WZa3FuOneSI6TYvHgTiUZF2WCcnH/KZKBLGtQ==
-X-Received: by 2002:a63:1246:: with SMTP id 6mr2659921pgs.63.1608060023481;
-        Tue, 15 Dec 2020 11:20:23 -0800 (PST)
-Received: from [10.230.29.166] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id v26sm8153629pfm.203.2020.12.15.11.20.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 11:20:22 -0800 (PST)
-Subject: Re: [PATCH v1] ARM: tegra: Fix misplaced tegra_uart_config in
- decompressor
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20201215135222.6899-1-digetx@gmail.com>
- <980f70c6-8967-c110-1699-cb0da2f46cc0@gmail.com>
- <5b01ce96-5f8b-dfcb-accd-2ba29f34947f@gmail.com>
- <5853b349-562c-3b6a-33d6-49516553dad8@gmail.com>
- <b115f985-b27b-bbcd-fc42-d9e357ecf46a@gmail.com>
- <b8de29b7-b0f6-5b2b-6ab2-f4399bc241fc@gmail.com>
- <604dd2ea-d813-fa3f-3e2f-4d66175162b3@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <8ddd0072-e5bd-a035-b782-bf1ca88eebc2@gmail.com>
-Date:   Tue, 15 Dec 2020 11:20:20 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.5.1
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=jVFwMMQ6DKs7XfDfHBL54ryc0drSH1XuLSwFgllEzFk=;
+        b=kFaPLuWRRYrxKsSQVsP1fE9FoV9dIzABR5QpnmKMgdlBH1cVG354KTP/xX9z0vXgzA
+         eU2ftbLrBQCywu/gTbsSQ1s6xnn38pdQp1ENqSF++MRf2ewwCuTbns+QDw7dsBhuL3xI
+         prHg1My7VyNPo53lngWnhek9Yuccdpp0xFEefM24X9PSbyflncJpvYeosprlg4W0Pbq3
+         1IMp3s0qB+fZyPaxyBziI2qxEEJHO+JQ4nPAmVEuk5pnhN7KE7DRBFjKfdz9aOruYK0W
+         HntYBbHcMQD1imOm0uL9sYrO9wpe+aMNmSlFttmFAACO81Ukhwzj0N3H6eW1iifFKP93
+         58nw==
+X-Gm-Message-State: AOAM531h5SSgsYrN+V79+Fwv3Yv08L1NbrEz+HGmftKD8I3/X7rp2XjH
+        Uz87YcbT9Uoc2DZbumm7knWzhw==
+X-Google-Smtp-Source: ABdhPJzuaQviOWifzB4vFVrYl1zvqzYv7mEFODLs+IvzB209ZG3dmolQvghfExxbffgQCGTPFDQUxA==
+X-Received: by 2002:a05:620a:69c:: with SMTP id f28mr10622571qkh.127.1608060111025;
+        Tue, 15 Dec 2020 11:21:51 -0800 (PST)
+Received: from nicolas-tpx395.lan (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
+        by smtp.gmail.com with ESMTPSA id l20sm19454994qtu.25.2020.12.15.11.21.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 11:21:50 -0800 (PST)
+Message-ID: <bc42c936d7a67609b9dc4212b5a34b0d761676ed.camel@ndufresne.ca>
+Subject: Re: [PATCH] media: venus: use contig vb2 ops
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Tomasz Figa <tfiga@chromium.org>
+Cc:     Alexandre Courbot <acourbot@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Date:   Tue, 15 Dec 2020 14:21:48 -0500
+In-Reply-To: <b5d35bbd-ae50-7a09-9edf-ca23d1a4b168@linaro.org>
+References: <20201214125703.866998-1-acourbot@chromium.org>
+         <5319c101-f4a4-9c99-b15d-4999366f7a63@linaro.org>
+         <CAAFQd5AQ8VHiRYkzkd5ZJBPT5_5WO0tyQrwqBEfnMVKYiTugTA@mail.gmail.com>
+         <b5d35bbd-ae50-7a09-9edf-ca23d1a4b168@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <604dd2ea-d813-fa3f-3e2f-4d66175162b3@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Le mardi 15 décembre 2020 à 15:54 +0200, Stanimir Varbanov a écrit :
+> Hi Tomasz,
+> 
+> On 12/15/20 1:47 PM, Tomasz Figa wrote:
+> > On Tue, Dec 15, 2020 at 8:16 PM Stanimir Varbanov
+> > <stanimir.varbanov@linaro.org> wrote:
+> > > 
+> > > Hi,
+> > > 
+> > > Cc: Robin
+> > > 
+> > > On 12/14/20 2:57 PM, Alexandre Courbot wrote:
+> > > > This driver uses the SG vb2 ops, but effectively only ever accesses the
+> > > > first entry of the SG table, indicating that it expects a flat layout.
+> > > > Switch it to use the contiguous ops to make sure this expected invariant
+> > > 
+> > > Under what circumstances the sg table will has nents > 1? I came down to
+> > > [1] but not sure I got it right.
+> > > 
+> > > I'm afraid that for systems with low amount of system memory and when
+> > > the memory become fragmented, the driver will not work. That's why I
+> > > started with sg allocator.
+> > 
+> > It is exactly the opposite. The vb2-dma-contig allocator is "contig"
+> > in terms of the DMA (aka IOVA) address space. In other words, it
+> > guarantees that having one DMA address and length fully describes the
+> 
+> Ahh, I missed that part. Looks like I misunderstood videobu2 contig
+> allocator.
+
+I'm learning everyday too, but I'm surprised I don't see a call to
+vb2_dma_contig_set_max_seg_size() in this driver (I could also just have missed
+a patch when overlooking this thread) ?
+
+The reason I'm asking, doc says it should be called by driver supporting IOMMU,
+which seems to be the case for such drivers (MFC, exynos4-is, exynos-gsc, mtk-
+mdp, s5p-g2d, hantro, rkvdec, zoran, ti-vpe, ..). I posting it, worst case it's
+all covered and we are good, otherwise perhaps a downstream patch didn't make it
+?
+
+/**
+ * vb2_dma_contig_set_max_seg_size() - configure DMA max segment size
+ * @dev:        device for configuring DMA parameters
+ * @size:       size of DMA max segment size to set
+ *
+ * To allow mapping the scatter-list into a single chunk in the DMA
+ * address space, the device is required to have the DMA max segment
+ * size parameter set to a value larger than the buffer size. Otherwise,
+ * the DMA-mapping subsystem will split the mapping into max segment
+ * size chunks. This function sets the DMA max segment size
+ * parameter to let DMA-mapping map a buffer as a single chunk in DMA
+ * address space.
+ * This code assumes that the DMA-mapping subsystem will merge all
+ * scatterlist segments if this is really possible (for example when
+ * an IOMMU is available and enabled).
+ * Ideally, this parameter should be set by the generic bus code, but it
+ * is left with the default 64KiB value due to historical litmiations in
+ * other subsystems (like limited USB host drivers) and there no good
+ * place to set it to the proper value.
+ * This function should be called from the drivers, which are known to
+ * operate on platforms with IOMMU and provide access to shared buffers
+ * (either USERPTR or DMABUF). This should be done before initializing
+ * videobuf2 queue.
+ */
+
+regards,
+Nicolas
+
+> 
+> > buffer. This seems to be the requirement of the hardware/firmware
+> > handled by the venus driver. If the device is behind an IOMMU, which
+> > is the case for the SoCs in question, the underlying DMA ops will
+> > actually allocate a discontiguous set of pages, so it has nothing to
+> > do to system memory amount or fragmentation. If for some reason the
+> > IOMMU can't be used, there is no way around, the memory needs to be
+> > contiguous because of the hardware/firmware/driver expectation.
+> > 
+> > On the other hand, the vb2-dma-sg allocator doesn't have any
+> > continuity guarantees for the DMA, or any other, address space. The
+> > current code works fine, because it calls dma_map_sg() on the whole
+> > set of pages and that ends up mapping it contiguously in the IOVA
+> > space, but that's just an implementation detail, not an API guarantee.
+> 
+> It was good to know. Thanks for the explanation.
+> 
+> > 
+> > Best regards,
+> > Tomasz
+> > 
+> > > 
+> > > [1]
+> > > https://elixir.bootlin.com/linux/v5.10.1/source/drivers/iommu/dma-iommu.c#L782
+> > > 
+> > > > is always enforced. Since the device is supposed to be behind an IOMMU
+> > > > this should have little to none practical consequences beyond making the
+> > > > driver not rely on a particular behavior of the SG implementation.
+> > > > 
+> > > > Reported-by: Tomasz Figa <tfiga@chromium.org>
+> > > > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> > > > ---
+> > > > Hi everyone,
+> > > > 
+> > > > It probably doesn't hurt to fix this issue before some actual issue
+> > > > happens.
+> > > > I have tested this patch on Chrome OS and playback was just as fine as
+> > > > with
+> > > > the SG ops.
+> > > > 
+> > > >  drivers/media/platform/Kconfig              | 2 +-
+> > > >  drivers/media/platform/qcom/venus/helpers.c | 9 ++-------
+> > > >  drivers/media/platform/qcom/venus/vdec.c    | 6 +++---
+> > > >  drivers/media/platform/qcom/venus/venc.c    | 6 +++---
+> > > >  4 files changed, 9 insertions(+), 14 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/media/platform/Kconfig
+> > > > b/drivers/media/platform/Kconfig
+> > > > index 35a18d388f3f..d9d7954111f2 100644
+> > > > --- a/drivers/media/platform/Kconfig
+> > > > +++ b/drivers/media/platform/Kconfig
+> > > > @@ -533,7 +533,7 @@ config VIDEO_QCOM_VENUS
+> > > >       depends on INTERCONNECT || !INTERCONNECT
+> > > >       select QCOM_MDT_LOADER if ARCH_QCOM
+> > > >       select QCOM_SCM if ARCH_QCOM
+> > > > -     select VIDEOBUF2_DMA_SG
+> > > > +     select VIDEOBUF2_DMA_CONTIG
+> > > >       select V4L2_MEM2MEM_DEV
+> > > >       help
+> > > >         This is a V4L2 driver for Qualcomm Venus video accelerator
+> > > > diff --git a/drivers/media/platform/qcom/venus/helpers.c
+> > > > b/drivers/media/platform/qcom/venus/helpers.c
+> > > > index 50439eb1ffea..859d260f002b 100644
+> > > > --- a/drivers/media/platform/qcom/venus/helpers.c
+> > > > +++ b/drivers/media/platform/qcom/venus/helpers.c
+> > > > @@ -7,7 +7,7 @@
+> > > >  #include <linux/mutex.h>
+> > > >  #include <linux/slab.h>
+> > > >  #include <linux/kernel.h>
+> > > > -#include <media/videobuf2-dma-sg.h>
+> > > > +#include <media/videobuf2-dma-contig.h>
+> > > >  #include <media/v4l2-mem2mem.h>
+> > > >  #include <asm/div64.h>
+> > > > 
+> > > > @@ -1284,14 +1284,9 @@ int venus_helper_vb2_buf_init(struct vb2_buffer
+> > > > *vb)
+> > > >       struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+> > > >       struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+> > > >       struct venus_buffer *buf = to_venus_buffer(vbuf);
+> > > > -     struct sg_table *sgt;
+> > > > -
+> > > > -     sgt = vb2_dma_sg_plane_desc(vb, 0);
+> > > > -     if (!sgt)
+> > > > -             return -EFAULT;
+> > > > 
+> > > >       buf->size = vb2_plane_size(vb, 0);
+> > > > -     buf->dma_addr = sg_dma_address(sgt->sgl);
+> > > 
+> > > Can we do it:
+> > > 
+> > >         if (WARN_ON(sgt->nents > 1))
+> > >                 return -EFAULT;
+> > > 
+> > > I understand that logically using dma-sg when the flat layout is
+> > > expected by the hardware is wrong, but I haven't seen issues until now.
+> > > 
+> > > > +     buf->dma_addr = vb2_dma_contig_plane_dma_addr(vb, 0);
+> > > > 
+> > > >       if (vb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
+> > > >               list_add_tail(&buf->reg_list, &inst->registeredbufs);
+> > > > diff --git a/drivers/media/platform/qcom/venus/vdec.c
+> > > > b/drivers/media/platform/qcom/venus/vdec.c
+> > > > index 8488411204c3..3fb277c81aca 100644
+> > > > --- a/drivers/media/platform/qcom/venus/vdec.c
+> > > > +++ b/drivers/media/platform/qcom/venus/vdec.c
+> > > > @@ -13,7 +13,7 @@
+> > > >  #include <media/v4l2-event.h>
+> > > >  #include <media/v4l2-ctrls.h>
+> > > >  #include <media/v4l2-mem2mem.h>
+> > > > -#include <media/videobuf2-dma-sg.h>
+> > > > +#include <media/videobuf2-dma-contig.h>
+> > > > 
+> > > >  #include "hfi_venus_io.h"
+> > > >  #include "hfi_parser.h"
+> > > > @@ -1461,7 +1461,7 @@ static int m2m_queue_init(void *priv, struct
+> > > > vb2_queue *src_vq,
+> > > >       src_vq->io_modes = VB2_MMAP | VB2_DMABUF;
+> > > >       src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+> > > >       src_vq->ops = &vdec_vb2_ops;
+> > > > -     src_vq->mem_ops = &vb2_dma_sg_memops;
+> > > > +     src_vq->mem_ops = &vb2_dma_contig_memops;
+> > > >       src_vq->drv_priv = inst;
+> > > >       src_vq->buf_struct_size = sizeof(struct venus_buffer);
+> > > >       src_vq->allow_zero_bytesused = 1;
+> > > > @@ -1475,7 +1475,7 @@ static int m2m_queue_init(void *priv, struct
+> > > > vb2_queue *src_vq,
+> > > >       dst_vq->io_modes = VB2_MMAP | VB2_DMABUF;
+> > > >       dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+> > > >       dst_vq->ops = &vdec_vb2_ops;
+> > > > -     dst_vq->mem_ops = &vb2_dma_sg_memops;
+> > > > +     dst_vq->mem_ops = &vb2_dma_contig_memops;
+> > > >       dst_vq->drv_priv = inst;
+> > > >       dst_vq->buf_struct_size = sizeof(struct venus_buffer);
+> > > >       dst_vq->allow_zero_bytesused = 1;
+> > > > diff --git a/drivers/media/platform/qcom/venus/venc.c
+> > > > b/drivers/media/platform/qcom/venus/venc.c
+> > > > index 1c61602c5de1..a09550cd1dba 100644
+> > > > --- a/drivers/media/platform/qcom/venus/venc.c
+> > > > +++ b/drivers/media/platform/qcom/venus/venc.c
+> > > > @@ -10,7 +10,7 @@
+> > > >  #include <linux/pm_runtime.h>
+> > > >  #include <linux/slab.h>
+> > > >  #include <media/v4l2-mem2mem.h>
+> > > > -#include <media/videobuf2-dma-sg.h>
+> > > > +#include <media/videobuf2-dma-contig.h>
+> > > >  #include <media/v4l2-ioctl.h>
+> > > >  #include <media/v4l2-event.h>
+> > > >  #include <media/v4l2-ctrls.h>
+> > > > @@ -1001,7 +1001,7 @@ static int m2m_queue_init(void *priv, struct
+> > > > vb2_queue *src_vq,
+> > > >       src_vq->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
+> > > >       src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+> > > >       src_vq->ops = &venc_vb2_ops;
+> > > > -     src_vq->mem_ops = &vb2_dma_sg_memops;
+> > > > +     src_vq->mem_ops = &vb2_dma_contig_memops;
+> > > >       src_vq->drv_priv = inst;
+> > > >       src_vq->buf_struct_size = sizeof(struct venus_buffer);
+> > > >       src_vq->allow_zero_bytesused = 1;
+> > > > @@ -1017,7 +1017,7 @@ static int m2m_queue_init(void *priv, struct
+> > > > vb2_queue *src_vq,
+> > > >       dst_vq->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
+> > > >       dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+> > > >       dst_vq->ops = &venc_vb2_ops;
+> > > > -     dst_vq->mem_ops = &vb2_dma_sg_memops;
+> > > > +     dst_vq->mem_ops = &vb2_dma_contig_memops;
+> > > >       dst_vq->drv_priv = inst;
+> > > >       dst_vq->buf_struct_size = sizeof(struct venus_buffer);
+> > > >       dst_vq->allow_zero_bytesused = 1;
+> > > > 
+> > > 
+> > > --
+> > > regards,
+> > > Stan
+> 
 
 
-On 12/15/2020 10:56 AM, Dmitry Osipenko wrote:
-> 15.12.2020 21:22, Florian Fainelli пишет:
->>
->>
->> On 12/15/2020 8:53 AM, Dmitry Osipenko wrote:
->>> 15.12.2020 19:40, Florian Fainelli пишет:
->>>>
->>>>
->>>> On 12/15/2020 8:17 AM, Dmitry Osipenko wrote:
->>>>> 15.12.2020 19:04, Florian Fainelli пишет:
->>>>>>
->>>>>>
->>>>>> On 12/15/2020 5:52 AM, Dmitry Osipenko wrote:
->>>>>>> The tegra_uart_config of the DEBUG_LL code is now placed right at the
->>>>>>> start of the .text section after commit which enabled debug output in the
->>>>>>> decompressor. Tegra devices are not booting anymore if DEBUG_LL is enabled
->>>>>>> since tegra_uart_config data is executes as a code. Fix the misplaced
->>>>>>> tegra_uart_config storage by embedding it into the code.
->>>>>>>
->>>>>>> Cc: stable@vger.kernel.org
->>>>>>> Fixes: 2596a72d3384 ("ARM: 9009/1: uncompress: Enable debug in head.S")
->>>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>>>>> ---
->>>>>>>  arch/arm/include/debug/tegra.S | 54 +++++++++++++++++-----------------
->>>>>>>  1 file changed, 27 insertions(+), 27 deletions(-)
->>>>>>
->>>>>> Looks like arch/arm/include/debug/brcmstb.S would need the same
->>>>>> treatment since the implementation was copied from tegra.S.
->>>>>>
->>>>>
->>>>> Good catch, will you be able to test the brcm and make a patch?
->>>>
->>>> Yes, absolutely, building a kernel to test right now.
->>>>
->>>
->>> Thank you.
->>>
->>> BTW, I noticed that the problem is more visible on a thumb2 kernel
->>> build, i.e. you should get a more reliable hang on boot. On a non-thumb2
->>> kernel the hanging behaviour seems depends on a device / bootloader. I
->>> haven't tried to figure out what exactly makes the difference, perhaps
->>> it should be a memory layout / state.
->>
->> To build with a CONFIG_THUMB2_KERNEL I had to fetch:
->>
->> https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9018/2
->>
->> to avoid a build error, too bad this missed v5.10 final but hopefully it
->> can make it soon.
-> 
-> The VFP fix was applied to the -next very recently, it should propagate
-> to v5.10 eventually.
-> 
->> With CONFIG_THUMB2_KERNEL=y, I am not getting the head.S output where it
->> prints the start/end of the compressed kernel:
->>
->> C:0x420800C0-0x4321B0E0->0x4212AB00-0x432C5B20
->> Uncompressing Linux... done, booting the kernel.
->> [    0.000000] Booting Linux on physical CPU 0x0
->> [    0.000000] Linux version 5.10.0-g148842c98a24
->> (fainelli@fainelli-desktop) (arm-linux-gcc (GCC) 8.3.0, GNU ld (GNU
->> Binutils) 2.32) #71 SMP Tue Dec 15 09:53:09 PST 2020
->>
->> I am only getting:
->>
->> Uncompressing Linux... done, booting the kernel.
->>
->> Is that the same for you?
-> 
-> No, start/end are printed for both THUMB2 and ARM kernels here.
-> 
->> Looking at the disassembly of head.o it definitively has
->> brcmstb_uart_config in the .text section as the beginning just like you
->> mentioned in your commit message.
->>
->> Disassembly of section .text:
->>
->> 00000000 <brcmstb_uart_config>:
->>    0:   00000001        andeq   r0, r0, r1
->>         ...
->>    c:   467c            mov     r4, pc
->>    e:   f004 4478       and.w   r4, r4, #4160749568     ; 0xf8000000
->>   12:   f504 4400       add.w   r4, r4, #32768  ; 0x8000
->>   16:   4678            mov     r0, pc
->>   18:   42a0            cmp     r0, r4
->>   1a:   bf3f            itttt   cc
->>   1c:   48d4            ldrcc   r0, [pc, #848]  ; (370 <LC1+0x8>)
->>   1e:   4478            addcc   r0, pc
->>   20:   4284            cmpcc   r4, r0
->>   22:   f044 0401       orrcc.w r4, r4, #1
->>   26:   bf28            it      cs
->>   28:   f000 f9aa       blcs    380 <cache_on>
->>
->> however after applying a fix similar to yours, we do end-up with the
->> expected data embedded within the code and given brcmstb.S would be
->> subject to the same issue as tegra.S, it would not hurt.
->>
-> 
-> Have you checked whether start/end printed after applying the fix?
-
-Yes I did, it is not printed when CONFIG_THUMB2_KERNEL=y, but it is when
-CONFIG_THUMB2_KERNEL=n. I don't have a JTAG adapter on this board right
-now to single step.
--- 
-Florian
