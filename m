@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075152DA50B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 01:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 672B62DA50F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 01:52:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727484AbgLOAsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 19:48:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36020 "EHLO mail.kernel.org"
+        id S1727120AbgLOAuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 19:50:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727312AbgLOAsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 19:48:00 -0500
-Date:   Mon, 14 Dec 2020 16:47:12 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1607993233;
-        bh=1xpGGC/vHo/hofOltzktcDRnhP/LevhVE6j84KnfYPM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DNUlGdZNnHzOpluseVDsnuw0tRA/LEeJATl1J6XW/1EzTby2u4OOLs7ZskJbjv/i4
-         5T3yERpzdqYlhctXUexMnhewwLhtswd3gY/k09z+D/4DibLsGxp/B3vVD6yj5EA8BU
-         HUR/REfwotA7rhuleb+nw7YNFMM+pSM2k8vB7cAg=
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com
-Subject: Re: [PATCH v21 00/19] per memcg lru lock
-Message-Id: <20201214164712.39da20f908c6199eb4cde961@linux-foundation.org>
-In-Reply-To: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1725956AbgLOAuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 19:50:18 -0500
+Subject: Re: [GIT PULL] arm64 updates for 5.11
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607993378;
+        bh=CbrF9a5nfuYDl4lK8KT8FIAsGocEdDRGgRuz4L/TlWY=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=k124Uy5hhTV3CWqdbZQQujK3yjdeFWIbY9UMJr25DBphPIqDLlD5b1gIhLCMpDGVP
+         VOWGvsCzUnruzDGH/91Vb5XMZ/OttGZqfPuYY1NUQKidbSfiPyF8/690LXGl7Q1RoY
+         rwLaeM9mnzfvQaIfX8xagHozRqC282ORsRPalcIwiYWEDY7ItI0vvTh9s/k5L5dHEj
+         iac7gXgJGyR0JXu57g83RwF/kraqu6xEiCixsDi0ezzugCgGd/KQc+Ft+nvlBjRvTd
+         hPWY6EIqFHqzvcZPlPyXv0y19hRtl81uBPfiyQX3gMdpAoNs0KlJpaRPELTXKOpk8x
+         AWq4LiD0gtDXQ==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201214182854.14862-1-catalin.marinas@arm.com>
+References: <20201214182854.14862-1-catalin.marinas@arm.com>
+X-PR-Tracked-List-Id: <linux-arm-kernel.lists.infradead.org>
+X-PR-Tracked-Message-Id: <20201214182854.14862-1-catalin.marinas@arm.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-upstream
+X-PR-Tracked-Commit-Id: d889797530c66f699170233474eab3361471e808
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 0ca2ce81eb8ee30f3ba8ac7967fef9cfbb44dbdb
+Message-Id: <160799337782.8612.11468203804945480355.pr-tracker-bot@kernel.org>
+Date:   Tue, 15 Dec 2020 00:49:37 +0000
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  5 Nov 2020 16:55:30 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
+The pull request you sent on Mon, 14 Dec 2020 18:28:54 +0000:
 
-> This version rebase on next/master 20201104, with much of Johannes's
-> Acks and some changes according to Johannes comments. And add a new patch
-> v21-0006-mm-rmap-stop-store-reordering-issue-on-page-mapp.patch to support
-> v21-0007.
+> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-upstream
 
-I assume the consensus on this series is 'not yet"?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/0ca2ce81eb8ee30f3ba8ac7967fef9cfbb44dbdb
 
-Also, did
-https://lkml.kernel.org/r/0000000000000340a105b49441d3@google.com get
-resolved?
+Thank you!
 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
