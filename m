@@ -2,85 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BDD2DB29D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5332DB2A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:32:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730679AbgLOR3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 12:29:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730557AbgLOR3p (ORCPT
+        id S1731146AbgLORbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 12:31:42 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:54406 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729683AbgLORbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 12:29:45 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62239C0617A7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 09:29:05 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id q16so21874029edv.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 09:29:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VeOwIZnD1d1CtAtOQLOWOLhM2A2wCecJ+qK1dyLboTU=;
-        b=I96T4pSs/iDVCNO7aKjW2AuZwWdxEU4n91uXkED0FYIBHx0CVqEOOvQXv4kyHisS+A
-         gnUtMYosW3bZnF2XVpR+v4DZTcvdLJC3svqRUoIJYTCHB5iE37EAGzkWAWhYaQpy3/Sv
-         m96dzGoXG6KSM79QFPjc6zvwIu6CJA7IXqKG0ZnS0D/3pUm8IbEWu46Zs+kc1ktqd4Bw
-         gbaxJoc/+fwc7jzPPY1ZRrYpVboVgiSrJ2HG0KqeEI6jSQhXxYxow+OQSOeJVd3wBwza
-         h1uBgBabe/R5P5ARfZ9aOAcrr7JWNJOcSYdiOSlzuB7XwH7wZjoKzJKfbwV7tYH66HKG
-         uVcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VeOwIZnD1d1CtAtOQLOWOLhM2A2wCecJ+qK1dyLboTU=;
-        b=BOgkRwnBnPFGLQuxt3sz2z68s4l9hoqWaQYS7fxmuhXx/YDPg1VB4jpIfIItYBa/3f
-         EwohoVleIQvuUrH4BsiEgauZyfXgeLBpXd0XTn7fmZSAFmBYBZlWcnB18pu3OqL4Gy6K
-         kR9UAdY0x6r+2zrUSwOL5ufLLzJWLzVoJOCZW8sqWZMNkNMeyg14Nqfzg90ACxxeSTBM
-         XjL2FLhEHtwwHMwM50DmJDL6i0BSxdGi6u1BvC+3IJNnPlutKSxzqkwCvFK+PgLnrkqV
-         XzpsUCXlfbwJd3mx26JWXVLOJw5t9bgeKRFtnJFrIp9Lb5913l4/Ml9xLNfCk11rN7O4
-         NpLw==
-X-Gm-Message-State: AOAM530CrKbGv2STHz5kwJO21jWAT4V1GrY7YjcVesruB3Bf7kwosM9R
-        7RddZm13mXwO0qMyDLIYvZiwzxdQ4uDFcJjji6wfuA==
-X-Google-Smtp-Source: ABdhPJwO7x4LC0rkTRzmFQ3G3z7COZCV+iAl/I4ipG0U3kkQDJA750UT3AF9UiLPI5TShsk8sR9viFmJkSFFwZNTOsM=
-X-Received: by 2002:a50:f404:: with SMTP id r4mr3451244edm.62.1608053343982;
- Tue, 15 Dec 2020 09:29:03 -0800 (PST)
-MIME-Version: 1.0
-References: <20201211202140.396852-1-pasha.tatashin@soleen.com>
- <20201211202140.396852-5-pasha.tatashin@soleen.com> <20201214141715.GF32193@dhcp22.suse.cz>
- <CA+CK2bCWkPDw-Aif6iXHq15Dpa+50hmrcAk_LpMCMk30zY5aFw@mail.gmail.com> <20201215082748.GL32193@dhcp22.suse.cz>
-In-Reply-To: <20201215082748.GL32193@dhcp22.suse.cz>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Tue, 15 Dec 2020 12:28:28 -0500
-Message-ID: <CA+CK2bA3B=Awh2BK=jwZX39PTeQ9=O5tD0ohNCyL_Lf3LQwfog@mail.gmail.com>
-Subject: Re: [PATCH v3 4/6] mm: honor PF_MEMALLOC_PIN for all movable pages
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
+        Tue, 15 Dec 2020 12:31:34 -0500
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id B126F4013F;
+        Tue, 15 Dec 2020 17:30:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1608053433; bh=Rp8f7F2uSWSg/KTfT5SE2X1d3fnriVqX5tGhIffKmcQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GjhXQoyIF/y9+gGU/sZNtHmlndMcQ/lGXwh3VcL7bOhRlqhO9moIUNvXDLDSHS/I8
+         mUNCEyeeLyA/L2hmJLqBKFhygi8RoQ7nN2FFLD9yEaRHCJZmBqMfhfcVAp6I27kbFF
+         TXN4nI57f5a1vPzNMSXPC/bWrcGjS4XAC5E7kH2v35Ja8o/RotFMMOfCDH5OEOHWAB
+         DgfLhua+k9DE2Sbft+1GMYvbwmKtHdRcEFsOT6jAMy/ptiSHMsCRu3WP/UWFdz3DUD
+         x8M6GDLgFX5aLpa5uCiRLRcT4/frTVD/efG042YH44UrBSstbmF71ofMcY6KS6FjXi
+         A4FoNoTbfCMNA==
+Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 6C272A024A;
+        Tue, 15 Dec 2020 17:30:30 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        Vinod Koul <vkoul@kernel.org>,
         Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Bjorn Helgaas <bhelgaas@google.com>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: [PATCH 00/15] dmaengine: dw-edma: HDMA support
+Date:   Tue, 15 Dec 2020 18:30:09 +0100
+Message-Id: <cover.1608053262.git.gustavo.pimentel@synopsys.com>
+X-Mailer: git-send-email 2.7.4
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Fair enough. I still dislike cma being called out explicitly because
-> that is slightly misleading as well. gpf_to_alloc_flags would be more
-> explicit I believe. But I do not want to bikeshed this to death.
+This patch series adds the HDMA support, as long the IP design has set
+the compatible register map parameter, which allows compatibility at
+some degree for the existing Synopsys DesignWare eDMA driver that is
+already available on the Kernel.
 
-Sounds good, I renamed it to gpf_to_alloc_flags.
+The HDMA "Hyper-DMA" IP is an enhancement of the eDMA "embedded-DMA" IP.
 
-Thank you,
-Pasha
+This new improvement comes with a PCI DVSEC that allows to the driver
+recognize and switch behavior if it's an eDMA or an HDMA, becoming
+retrocompatible, in the absence of this DVSEC, the driver will assume
+that is an eDMA IP.
+
+It also adds the interleaved support, since it will be similar to the
+current scatter-gather implementation.
+
+As well fixes/improves some abnormal behaviors not detected before, such as:
+ - crash on loading/unloading driver
+ - memory space definition for the data area and for the linked list space
+ - scatter-gather address calculation on 32 bits platforms
+ - minor comment and variable reordering
+
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: dmaengine@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-pci@vger.kernel.org
+
+Gustavo Pimentel (15):
+  dmaengine: dw-edma: Add writeq() and readq() for 64 bits architectures
+  dmaengine: dw-edma: Fix comments offset characters' alignment
+  dmaengine: dw-edma: Add support for the HDMA feature
+  PCI: Add pci_find_vsec_capability() to find a specific VSEC
+  dmaengine: dw-edma: Add PCIe VSEC data retrieval support
+  dmaengine: dw-edma: Add device_prep_interleave_dma() support
+  dmaengine: dw-edma: Improve number of channels check
+  dmaengine: dw-edma: Reorder variables to keep consistency
+  dmaengine: dw-edma: Improve the linked list and data blocks definition
+  dmaengine: dw-edma: Change linked list and data blocks offset and
+    sizes
+  dmaengine: dw-edma: Move struct dentry variable from static definition
+    into dw_edma struct
+  dmaengine: dw-edma: Fix crash on loading/unloading driver
+  dmaengine: dw-edma: Change DMA abreviation from lower into upper case
+  dmaengine: dw-edma: Revert fix scatter-gather address calculation
+  dmaengine: dw-edma: Add pcim_iomap_table return checker
+
+ drivers/dma/dw-edma/dw-edma-core.c       | 178 +++++++++++-------
+ drivers/dma/dw-edma/dw-edma-core.h       |  37 ++--
+ drivers/dma/dw-edma/dw-edma-pcie.c       | 275 +++++++++++++++++++++-------
+ drivers/dma/dw-edma/dw-edma-v0-core.c    | 300 ++++++++++++++++++++++++-------
+ drivers/dma/dw-edma/dw-edma-v0-core.h    |   2 +-
+ drivers/dma/dw-edma/dw-edma-v0-debugfs.c |  77 ++++----
+ drivers/dma/dw-edma/dw-edma-v0-debugfs.h |   4 +-
+ drivers/dma/dw-edma/dw-edma-v0-regs.h    | 291 +++++++++++++++++++-----------
+ drivers/pci/pci.c                        |  29 +++
+ include/linux/pci.h                      |   1 +
+ include/uapi/linux/pci_regs.h            |   5 +
+ 11 files changed, 844 insertions(+), 355 deletions(-)
+
+-- 
+2.7.4
+
