@@ -2,89 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9194A2DB1FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:58:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD7F2DB216
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730449AbgLOQ4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:56:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725878AbgLOQ4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:56:36 -0500
-X-Gm-Message-State: AOAM531i1/LeiuoBth6koZs1SH+rGoPeVe0BNip3I2wFgD1SXznAL7J8
-        ODfx/T+3xWjiRjgM2r6tUvUcorDrHmYNu/dIhNkPTA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608051356;
-        bh=4uuMed2I/qLEnHbSv6wWUwOGnvHF0OxMKguizkS23yI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bVoqSrDelDWBPDHOv9+fs6gCoEYXVVbFGBH2eskeTEJmi1q7p0dqcZdgheLK6ptXR
-         eEKa9wambtfj5vhwTrBzGPojwCQVAA1vHiucFfkK5PI71UNodJ2flVteeMIAy3R+YP
-         znIitRM4bRbMieYFJK6RPgUD0axy5GxENfdBIqegjqPbaeB5gA13J9QQQhJEuku933
-         C0kwh0FhRWjN06IMNedXXssRn1ddYIDpt74aGAw648DpmYOTVFMPA0n/uBebcjr/QJ
-         +uD1/XH/CtEYs4d+UpM26lVunJ9uaH5BwTRHnAw+utufKbuzvbKqBdpAn/mAxkQUh+
-         c5uDhSOaZSx7g==
-X-Google-Smtp-Source: ABdhPJy3uLVnrgt5O145ZtQDwnWF8UfntgkXUoP2och4htd4pb1jC4baZYahNKi6pDB0ebzd8HyoXw3tnxyh3qN8LcA=
-X-Received: by 2002:a1c:7e87:: with SMTP id z129mr2512517wmc.176.1608051354310;
- Tue, 15 Dec 2020 08:55:54 -0800 (PST)
+        id S1730182AbgLORBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 12:01:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729643AbgLORBU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 12:01:20 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA11C0617B0;
+        Tue, 15 Dec 2020 09:00:38 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C3062593;
+        Tue, 15 Dec 2020 18:00:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1608051634;
+        bh=TnWF5kCi0eF700zzTEiikZPbUPvjXEDFeGtQD8p6IkQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OMSTgwM/XbekXmteZnkB9KD/8B7dnlyMuXKwrNL+xLTQLLaAk3HrAV1NQuvr8W3yB
+         Jo5tVEVP/SuyeAJLcvhMPpbfsuEtWtAatOk+o73d9ZFEyE5iEzqL9tYtLONci9Jzrr
+         eW2cmnQHN0tJ3SG1XbEQXProGOmNulSWzvxyQnFM=
+Date:   Tue, 15 Dec 2020 19:00:28 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, linux.cj@gmail.com,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [net-next PATCH v2 10/14] device property: Introduce
+ fwnode_get_id()
+Message-ID: <X9jrrMJIj2EQBykI@pendragon.ideasonboard.com>
+References: <20201215164315.3666-1-calvin.johnson@oss.nxp.com>
+ <20201215164315.3666-11-calvin.johnson@oss.nxp.com>
 MIME-Version: 1.0
-References: <20201215160314.18773-1-info@metux.net> <41ef1cd1-017d-a0d4-91d3-a1183bd2ab01@infradead.org>
- <CALCETrXhZxyPUcrBaO=mzvANC72uXNBrivo7hGmdkV2bgdFxjw@mail.gmail.com> <1297989c-6a9e-0804-82a5-d55cc7502b77@infradead.org>
-In-Reply-To: <1297989c-6a9e-0804-82a5-d55cc7502b77@infradead.org>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 15 Dec 2020 08:55:42 -0800
-X-Gmail-Original-Message-ID: <CALCETrUgbz8LWraKyVFcVJik=d5zOJTeXHvm6oM9T4ym=66LcA@mail.gmail.com>
-Message-ID: <CALCETrUgbz8LWraKyVFcVJik=d5zOJTeXHvm6oM9T4ym=66LcA@mail.gmail.com>
-Subject: Re: [PATCH] arch: x86: entry: vdso: fix type conversion on printf() call
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201215164315.3666-11-calvin.johnson@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 8:42 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 12/15/20 8:39 AM, Andy Lutomirski wrote:
-> > On Tue, Dec 15, 2020 at 8:32 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> >>
-> >> On 12/15/20 8:03 AM, Enrico Weigelt, metux IT consult wrote:
-> >>> Fixing the following compiler warning by explicit conversion to long:
-> >>>
-> >>> In file included from /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.c:162:0:
-> >>> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h: In function 'extract64':
-> >>> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t {aka unsigned int}' [-Wformat=]
-> >>>   fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
-> >>>                                                     ^
-> >>>   CC      mm/filemap.o
-> >>> In file included from /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.c:166:0:
-> >>> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h: In function 'extract32':
-> >>> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t {aka unsigned int}' [-Wformat=]
-> >>>   fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
-> >>>
-> >>> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
-> >>> ---
-> >>>  arch/x86/entry/vdso/vdso2c.h | 3 ++-
-> >>>  1 file changed, 2 insertions(+), 1 deletion(-)
-> >>
-> >> Hi,
-> >>
-> >> size_t is normally printed with %zu.
-> >> Is there some reason that isn't being used here?
-> >
-> > No.  Want to send a patch?
-> >
->
-> I was hoping that Enrico would fix this and maybe address your other comment,
-> although I'm not so sure that I agree with it.
+Hi Calvin,
 
-Using %zu would get rid of the line break entirely.  Enrico?
+Thank you for the patch.
 
->
-> --
-> ~Randy
->
+On Tue, Dec 15, 2020 at 10:13:11PM +0530, Calvin Johnson wrote:
+> Using fwnode_get_id(), get the reg property value for DT node
+> and get the _ADR object value for ACPI node.
+> 
+> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+> ---
+> 
+> Changes in v2: None
+> 
+>  drivers/base/property.c  | 26 ++++++++++++++++++++++++++
+>  include/linux/property.h |  1 +
+>  2 files changed, 27 insertions(+)
+> 
+> diff --git a/drivers/base/property.c b/drivers/base/property.c
+> index 4c43d30145c6..1c50e17ae879 100644
+> --- a/drivers/base/property.c
+> +++ b/drivers/base/property.c
+> @@ -580,6 +580,32 @@ const char *fwnode_get_name_prefix(const struct fwnode_handle *fwnode)
+>  	return fwnode_call_ptr_op(fwnode, get_name_prefix);
+>  }
+>  
+> +/**
+> + * fwnode_get_id - Get the id of a fwnode.
+> + * @fwnode: firmware node
+> + * @id: id of the fwnode
+> + *
+
+Is the concept of fwnode ID documented clearly somewhere ? I think this
+function should otherwise have more documentation, at least to explain
+what the ID is.
+
+> + * Returns 0 on success or a negative errno.
+> + */
+> +int fwnode_get_id(struct fwnode_handle *fwnode, u32 *id)
+> +{
+> +	unsigned long long adr;
+> +	acpi_status status;
+> +
+> +	if (is_of_node(fwnode)) {
+> +		return of_property_read_u32(to_of_node(fwnode), "reg", id);
+> +	} else if (is_acpi_node(fwnode)) {
+> +		status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwnode),
+> +					       METHOD_NAME__ADR, NULL, &adr);
+> +		if (ACPI_FAILURE(status))
+> +			return -ENODATA;
+
+Would it make sense to standardize error codes ? of_property_read_u32()
+can return -EINVAL, -ENODATA or -EOVERFLOW. I don't think the caller of
+this function would be very interested to tell those three cases apart.
+Maybe we should return -EINVAL in all error cases ? Or maybe different
+error codes to mean "the backend doesn't support the concept of IDs",
+and "the device doesn't have an ID" ?
+
+> +		*id = (u32)adr;
+> +		return 0;
+> +	}
+> +	return -EINVAL;
+> +}
+> +EXPORT_SYMBOL_GPL(fwnode_get_id);
+> +
+>  /**
+>   * fwnode_get_parent - Return parent firwmare node
+>   * @fwnode: Firmware whose parent is retrieved
+> diff --git a/include/linux/property.h b/include/linux/property.h
+> index 2d4542629d80..92d405cf2b07 100644
+> --- a/include/linux/property.h
+> +++ b/include/linux/property.h
+> @@ -82,6 +82,7 @@ struct fwnode_handle *fwnode_find_reference(const struct fwnode_handle *fwnode,
+>  
+>  const char *fwnode_get_name(const struct fwnode_handle *fwnode);
+>  const char *fwnode_get_name_prefix(const struct fwnode_handle *fwnode);
+> +int fwnode_get_id(struct fwnode_handle *fwnode, u32 *id);
+>  struct fwnode_handle *fwnode_get_parent(const struct fwnode_handle *fwnode);
+>  struct fwnode_handle *fwnode_get_next_parent(
+>  	struct fwnode_handle *fwnode);
+
+-- 
+Regards,
+
+Laurent Pinchart
