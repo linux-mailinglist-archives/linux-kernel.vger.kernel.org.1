@@ -2,49 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA50B2DAB72
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5772B2DAB79
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgLOKvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:51:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgLOKuY (ORCPT
+        id S1728488AbgLOKyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:54:12 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:58500 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727761AbgLOKyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:50:24 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58EB8C061248
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:49:10 -0800 (PST)
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4CwFPJ1Fbhz9sTL; Tue, 15 Dec 2020 21:49:08 +1100 (AEDT)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>, mpe@ellerman.id.au
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <20201208195434.8289-1-tyreld@linux.ibm.com>
-References: <20201208195434.8289-1-tyreld@linux.ibm.com>
-Subject: Re: [PATCH] powerpc/rtas: fix typo of ibm,open-errinjct in rtas filter
-Message-Id: <160802920722.504444.16567596066211679066.b4-ty@ellerman.id.au>
-Date:   Tue, 15 Dec 2020 21:49:08 +1100 (AEDT)
+        Tue, 15 Dec 2020 05:54:12 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kp7xR-0006d9-MH; Tue, 15 Dec 2020 10:53:29 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] gpio: fix spelling mistake in Kconfig "supprot" -> "support"
+Date:   Tue, 15 Dec 2020 10:53:29 +0000
+Message-Id: <20201215105329.138193-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 13:54:34 -0600, Tyrel Datwyler wrote:
-> Commit bd59380c5ba4 ("powerpc/rtas: Restrict RTAS requests from userspace")
-> introduced the following error when invoking the errinjct userspace
-> tool.
-> 
-> [root@ltcalpine2-lp5 librtas]# errinjct open
-> [327884.071171] sys_rtas: RTAS call blocked - exploit attempt?
-> [327884.071186] sys_rtas: token=0x26, nargs=0 (called by errinjct)
-> errinjct: Could not open RTAS error injection facility
-> errinjct: librtas: open: Unexpected I/O error
-> 
-> [...]
+From: Colin Ian King <colin.king@canonical.com>
 
-Applied to powerpc/next.
+There is a spelling mistake in the Kconfig help text. Fix it.
 
-[1/1] powerpc/rtas: Fix typo of ibm,open-errinjct in RTAS filter
-      https://git.kernel.org/powerpc/c/f10881a46f8914428110d110140a455c66bdf27b
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpio/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-cheers
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index c70f46e80a3b..f58e46ec1c96 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -666,7 +666,7 @@ config GPIO_WCD934X
+ 	tristate "Qualcomm Technologies Inc WCD9340/WCD9341 gpio controller driver"
+ 	depends on MFD_WCD934X && OF_GPIO
+ 	help
+-         This driver is to supprot GPIO block found on the Qualcomm Technologies
++         This driver is to support GPIO block found on the Qualcomm Technologies
+ 	 Inc WCD9340/WCD9341 Audio Codec.
+ 
+ config GPIO_XGENE
+-- 
+2.29.2
+
