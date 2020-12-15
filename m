@@ -2,115 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5620C2DADB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C21E52DADB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729420AbgLONHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:07:25 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:36170 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729409AbgLONGu (ORCPT
+        id S1729413AbgLONGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:06:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729312AbgLONGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:06:50 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BFD4JVD035358;
-        Tue, 15 Dec 2020 07:04:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608037459;
-        bh=kh1JyF3myH9RigEpk6YlMVXN1XqHXg4sQ+Mvc4uclGU=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=cgn3PlV1xMKPyBJekMu8/0uS5SpY7Eo4U7o68m/SaHRoxSlFs/nY5cMlryyl2JpsW
-         HkLUPRDqUM4eA0lw+FG80s174wKvXI9yLe8MI+oBXGMqbZ9J81vQl+au3KDxkbQ4Hd
-         L6XYd1UttQ5C+EWR8MSDb6nbR1pfskYUbvRbwhlU=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BFD4JwR087832
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Dec 2020 07:04:19 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
- Dec 2020 07:04:18 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 15 Dec 2020 07:04:18 -0600
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BFD49vM024224;
-        Tue, 15 Dec 2020 07:04:16 -0600
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <broonie@kernel.org>, <lgirdwood@gmail.com>,
-        <jarkko.nikula@bitmer.com>, <robh+dt@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <perex@perex.cz>, <tiwai@suse.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <jsarha@ti.com>
-Subject: [PATCH 2/2] ASoC: dt-bindings: ti,j721e: Update maintainer and author information
-Date:   Tue, 15 Dec 2020 15:05:12 +0200
-Message-ID: <20201215130512.8753-3-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201215130512.8753-1-peter.ujfalusi@ti.com>
-References: <20201215130512.8753-1-peter.ujfalusi@ti.com>
+        Tue, 15 Dec 2020 08:06:41 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED61C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 05:06:01 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id e15so9408754vsa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 05:06:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M6JcWbpI6jGa01OPHXVMD2J1Jt7vqUJ1vGYJXmb3BYg=;
+        b=GySPu3JPn5oY5z7HEHsmBkWTtINCkr42KRf5OqSuvPZXiIDp/6j7IIku1ErEVbzbla
+         TO5zYrJ5XkzpcCLkXeCcTcbXnTxbbUur4fxOhLOIvmsA0qPIy3/RrNvvHREkfCMaRgtI
+         XCgva/BiX2NszgfeuU/PudEkoE5XxRM2hnmkdGwsWBaFDPKuNnjCggRyl3WPnjL7MSCY
+         +3x/R1vUsVoavfWw8teVdheWGKGsNZcw0FO0fxpNKKi8TCaGePbm/Wtc7FrrcXk9HYFN
+         R+SmturpAPzB8742ZBC8IbFa4yieJ94bSrF59pQ9Uh94V0k5behe+HT2G0XgFdo7suIh
+         qSXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M6JcWbpI6jGa01OPHXVMD2J1Jt7vqUJ1vGYJXmb3BYg=;
+        b=esyOBl2jcDft0Bw6sdSMVrAplXMxv4/DzAFbzOrXYtDa2acsHtFljNiJFkzoVk70XP
+         xTY4kf16xS86WBEyUP9O4dXWHixHLZrugcfx3XlHH67lffXlTY0KteBfyC5Fl/1ac8T9
+         9NztooS/96RIRw8mB49yCzH5NPv+2fCGPboKR05kRpphtnu/aODjNDtAb6OcJ7kTdgjF
+         he1pt4H/SCKRSdCg0WNQnBzJoEynPI0B0Bsn1ujx810IpWwjMoyGC/Y2tkzcZPulczBP
+         P2d6erR9eUEdwsMgU9F82fXyFJjf/yAsIpEoiVpgM7mpJ02e7B2iLzLCk5XmOu9OJOw3
+         Qfzw==
+X-Gm-Message-State: AOAM5317CD6oBf7JPJk6doZCL0L2mjONGzcG8L96+/FDt7Mm90ej0jxr
+        XasdJHx6FN/lISq+07n06dkVxemSqDlGcvzZ56MwkA==
+X-Google-Smtp-Source: ABdhPJzd2zd1mfj+2JOvG7Kb2IKM7m6kQfLvrUUQH1zRlLxKdNB34zX+2yZ2pPZSMkGbOyZpb8F0jrq3/7pDR8A/s0U=
+X-Received: by 2002:a05:6102:18c:: with SMTP id r12mr28967382vsq.34.1608037560466;
+ Tue, 15 Dec 2020 05:06:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <e479c654b6ca08057bf18a4e1c1d1ed3cdf8fdc8.camel@rajagiritech.edu.in>
+In-Reply-To: <e479c654b6ca08057bf18a4e1c1d1ed3cdf8fdc8.camel@rajagiritech.edu.in>
+From:   Jeffrin Thalakkottoor <jeffrin@rajagiritech.edu.in>
+Date:   Tue, 15 Dec 2020 18:35:24 +0530
+Message-ID: <CAG=yYwmN9vw4RqQ1pmF9oFx9BtS=npOBakMr1GO2WaHF7t1wrg@mail.gmail.com>
+Subject: [WARNING ]Re: related to fixing depreciated api
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="000000000000942ce605b6806b4a"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My employment with TI is coming to an end, add the copyright and author comments
-as they due and change the maintainer mail address.
+--000000000000942ce605b6806b4a
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
----
- .../devicetree/bindings/sound/ti,j721e-cpb-audio.yaml         | 4 +++-
- .../devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml     | 4 +++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+On Mon, Dec 14, 2020 at 10:12 PM Jeffrin Jose T
+<jeffrin@rajagiritech.edu.in> wrote:
+>
+> hello,
+>
+> i have worked on to  fix  depreciated api issue from
+> tools/testing/selftests/intel_pstate/aerf.c
+>
+> i met with the following error related...
+>
+> --------------x------------------x----------------->
+> $pwd
+> /home/jeffrin/UP/linux-kselftest/tools/testing/selftests/intel_pstate
+> $make
+> gcc  -Wall -D_GNU_SOURCE    aperf.c /home/jeffrin/UP/linux-
+> kselftest/tools/testing/selftests/kselftest_harness.h
+> /home/jeffrin/UP/linux-kselftest/tools/testing/selftests/kselftest.h -
+> lm -o /home/jeffrin/UP/linux-
+> kselftest/tools/testing/selftests/intel_pstate/aperf
+> aperf.c: In function =E2=80=98main=E2=80=99:
+> aperf.c:58:2: warning: =E2=80=98ftime=E2=80=99 is deprecated [-Wdeprecate=
+d-
+> declarations]
+>    58 |  ftime(&before);
+>       |  ^~~~~
+> In file included from aperf.c:9:
+> /usr/include/x86_64-linux-gnu/sys/timeb.h:39:12: note: declared here
+>    39 | extern int ftime (struct timeb *__timebuf)
+>       |            ^~~~~
+> aperf.c:67:2: warning: =E2=80=98ftime=E2=80=99 is deprecated [-Wdeprecate=
+d-
+> declarations]
+>    67 |  ftime(&after);
+>       |  ^~~~~
+> In file included from aperf.c:9:
+> /usr/include/x86_64-linux-gnu/sys/timeb.h:39:12: note: declared here
+>    39 | extern int ftime (struct timeb *__timebuf)
+>       |            ^~~~~
+> $
+> ----------------x---------------x---------------------->
+>
+>
+> from ftime manual  i found that it is depreciated...
+>
+> This  function is deprecated, and will be removed in a future version
+> of the GNU C library.  Use clock_gettime(2) instead.
+>
+>
+> now clock_gettime  gives  new data structure.
+>
+>  struct timespec {
+>                time_t   tv_sec;        /* seconds */
+>                long     tv_nsec;       /* nanoseconds */
+>            };
+>
+>
+> i worked on with the new data structure and some errors that came
+> along.
+> typical final output looks good but  values of runtime and typical
+> frequency
+> does not look normal during "sudo bash run.sh".
+>
+> output of "git diff" and  a  portion of output of   "sudo bash run.sh".
+> is attached.
+>
+>
+>
+> --
+> software engineer
+> rajagiri school of engineering and technology - autonomous
+>
+>
 
-diff --git a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
-index 805da4d6a88e..ec06789b21df 100644
---- a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
-+++ b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-audio.yaml
-@@ -1,4 +1,6 @@
- # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright (C) 2020 Texas Instruments Incorporated
-+# Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
- %YAML 1.2
- ---
- $id: http://devicetree.org/schemas/sound/ti,j721e-cpb-audio.yaml#
-@@ -7,7 +9,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Texas Instruments J721e Common Processor Board Audio Support
- 
- maintainers:
--  - Peter Ujfalusi <peter.ujfalusi@ti.com>
-+  - Peter Ujfalusi <peter.ujfalusi@gmail.com>
- 
- description: |
-   The audio support on the board is using pcm3168a codec connected to McASP10
-diff --git a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-index bb780f621628..ee9f960de36b 100644
---- a/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-+++ b/Documentation/devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml
-@@ -1,4 +1,6 @@
- # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright (C) 2020 Texas Instruments Incorporated
-+# Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
- %YAML 1.2
- ---
- $id: http://devicetree.org/schemas/sound/ti,j721e-cpb-ivi-audio.yaml#
-@@ -7,7 +9,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Texas Instruments J721e Common Processor Board Audio Support
- 
- maintainers:
--  - Peter Ujfalusi <peter.ujfalusi@ti.com>
-+  - Peter Ujfalusi <peter.ujfalusi@gmail.com>
- 
- description: |
-   The Infotainment board plugs into the Common Processor Board, the support of the
--- 
-Peter
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+--=20
+software engineer
+rajagiri school of engineering and technology
 
+--000000000000942ce605b6806b4a
+Content-Type: text/plain; charset="US-ASCII"; name="diff-or.txt"
+Content-Disposition: attachment; filename="diff-or.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kipzzvmd0>
+X-Attachment-Id: f_kipzzvmd0
+
+ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2ludGVsX3BzdGF0ZS9hcGVyZi5j
+IGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvaW50ZWxfcHN0YXRlL2FwZXJmLmMKaW5kZXggZjZj
+ZDAzYTg3NDkzLi43ZTM1ZTc4NzJmMTYgMTAwNjQ0Ci0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRl
+c3RzL2ludGVsX3BzdGF0ZS9hcGVyZi5jCisrKyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2lu
+dGVsX3BzdGF0ZS9hcGVyZi5jCkBAIC02LDcgKzYsNyBAQAogI2luY2x1ZGUgPHN5cy90eXBlcy5o
+PgogI2luY2x1ZGUgPHN5cy9zdGF0Lmg+CiAjaW5jbHVkZSA8ZmNudGwuaD4KLSNpbmNsdWRlIDxz
+eXMvdGltZWIuaD4KKyNpbmNsdWRlIDx0aW1lLmg+CiAjaW5jbHVkZSA8c2NoZWQuaD4KICNpbmNs
+dWRlIDxlcnJuby5oPgogI2luY2x1ZGUgPHN0cmluZy5oPgpAQCAtMjIsMTAgKzIyLDEyIEBAIGlu
+dCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJndikgewogCWxvbmcgbG9uZyB0c2MsIG9sZF90c2Ms
+IG5ld190c2M7CiAJbG9uZyBsb25nIGFwZXJmLCBvbGRfYXBlcmYsIG5ld19hcGVyZjsKIAlsb25n
+IGxvbmcgbXBlcmYsIG9sZF9tcGVyZiwgbmV3X21wZXJmOwotCXN0cnVjdCB0aW1lYiBiZWZvcmUs
+IGFmdGVyOworCXN0cnVjdCB0aW1lc3BlYyBiZWZvcmUsIGFmdGVyOworICAgICAgICBjbG9ja2lk
+X3QgY2xraWQ7CiAJbG9uZyBsb25nIGludCBzdGFydCwgZmluaXNoLCB0b3RhbDsKIAljcHVfc2V0
+X3QgY3B1c2V0OwogCisKIAlpZiAoYXJnYyAhPSAyKSB7CiAJCXVzYWdlKGFyZ3ZbMF0pOwogCQly
+ZXR1cm4gMTsKQEAgLTQxLDYgKzQzLDEwIEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJn
+dikgewogCiAJc3ByaW50Zihtc3JfZmlsZV9uYW1lLCAiL2Rldi9jcHUvJWQvbXNyIiwgY3B1KTsK
+IAlmZCA9IG9wZW4obXNyX2ZpbGVfbmFtZSwgT19SRE9OTFkpOworICAgICAgICAjZGVmaW5lIENM
+T0NLRkQgMworICAgICAgICAjZGVmaW5lIEZEX1RPX0NMT0NLSUQoZmQpICAgKCh+KGNsb2NraWRf
+dCkgKGZkKSA8PCAzKSB8IENMT0NLRkQpCisgICAgICAgIGNsa2lkID0gRkRfVE9fQ0xPQ0tJRChm
+ZCk7CisKIAogCWlmIChmZCA9PSAtMSkgewogCQlwcmludGYoIi9kZXYvY3B1LyVkL21zcjogJXNc
+biIsIGNwdSwgc3RyZXJyb3IoZXJybm8pKTsKQEAgLTU1LDcgKzYxLDcgQEAgaW50IG1haW4oaW50
+IGFyZ2MsIGNoYXIgKiphcmd2KSB7CiAJCXJldHVybiAxOwogCX0KIAotCWZ0aW1lKCZiZWZvcmUp
+OworCWNsb2NrX2dldHRpbWUoY2xraWQsJmJlZm9yZSk7CiAJcHJlYWQoZmQsICZvbGRfdHNjLCAg
+c2l6ZW9mKG9sZF90c2MpLCAweDEwKTsKIAlwcmVhZChmZCwgJm9sZF9hcGVyZiwgIHNpemVvZihv
+bGRfbXBlcmYpLCAweGU3KTsKIAlwcmVhZChmZCwgJm9sZF9tcGVyZiwgIHNpemVvZihvbGRfYXBl
+cmYpLCAweGU4KTsKQEAgLTY0LDcgKzcwLDcgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKiph
+cmd2KSB7CiAJCXNxcnQoaSk7CiAJfQogCi0JZnRpbWUoJmFmdGVyKTsKKwljbG9ja19nZXR0aW1l
+KGNsa2lkLCZhZnRlcik7CiAJcHJlYWQoZmQsICZuZXdfdHNjLCAgc2l6ZW9mKG5ld190c2MpLCAw
+eDEwKTsKIAlwcmVhZChmZCwgJm5ld19hcGVyZiwgIHNpemVvZihuZXdfbXBlcmYpLCAweGU3KTsK
+IAlwcmVhZChmZCwgJm5ld19tcGVyZiwgIHNpemVvZihuZXdfYXBlcmYpLCAweGU4KTsKQEAgLTcz
+LDExICs3OSwxMCBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3YpIHsKIAlhcGVyZiA9
+IG5ld19hcGVyZi1vbGRfYXBlcmY7CiAJbXBlcmYgPSBuZXdfbXBlcmYtb2xkX21wZXJmOwogCi0J
+c3RhcnQgPSBiZWZvcmUudGltZSoxMDAwICsgYmVmb3JlLm1pbGxpdG07Ci0JZmluaXNoID0gYWZ0
+ZXIudGltZSoxMDAwICsgYWZ0ZXIubWlsbGl0bTsKLQl0b3RhbCA9IGZpbmlzaCAtIHN0YXJ0Owot
+Ci0JcHJpbnRmKCJydW5UaW1lOiAlNC4yZlxuIiwgMS4wKnRvdGFsLzEwMDApOwotCXByaW50Zigi
+ZnJlcTogJTcuMGZcbiIsIHRzYyAvICgxLjAqYXBlcmYgLyAoMS4wICogbXBlcmYpKSAvIHRvdGFs
+KTsKKwlzdGFydCA9IGJlZm9yZS50dl9zZWMqMTAwMDAwMCArIGJlZm9yZS50dl9uc2VjOworCWZp
+bmlzaCA9IGFmdGVyLnR2X3NlYyoxMDAwMDAwICsgYWZ0ZXIudHZfbnNlYzsKKwl0b3RhbCA9IGZp
+bmlzaCAtIHN0YXJ0OyAKKwlwcmludGYoInJ1blRpbWU6ICU0LjJmXG4iLCAxLjAqdG90YWwvMTAw
+MDAwMCk7IAorCXByaW50ZigiZnJlcTogJTcuMGZcbiIsIHRzYyAvICgxLjAgKiBhcGVyZiAvMS4w
+ICogKG1wZXJmKSkgLyB0b3RhbCk7CiAJcmV0dXJuIDA7CiB9Cg==
+--000000000000942ce605b6806b4a
+Content-Type: text/plain; charset="US-ASCII"; name="shot.txt"
+Content-Disposition: attachment; filename="shot.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kiq00i4n1>
+X-Attachment-Id: f_kiq00i4n1
+
+U2V0dGluZyBtYXhpbXVtIGZyZXF1ZW5jeSB0byA1MDAKbGF1bmNoaW5nIGFwZXJmIGxvYWQgb24g
+MApsYXVuY2hpbmcgYXBlcmYgbG9hZCBvbiAxCmxhdW5jaGluZyBhcGVyZiBsb2FkIG9uIDIKbGF1
+bmNoaW5nIGFwZXJmIGxvYWQgb24gMwpzbGVlcGluZyBmb3IgNSBzZWNvbmRzCndhaXRpbmcgZm9y
+IGpvYiBpZCA3NTIxCnJ1blRpbWU6IDAuMDAKZnJlcTogICAgIGluZgpydW5UaW1lOiAwLjAwCmZy
+ZXE6ICAgICBpbmYKcnVuVGltZTogMC4wMApmcmVxOiAgICAgaW5mCnJ1blRpbWU6IDAuMDAKZnJl
+cTogICAgIGluZgp3YWl0aW5nIGZvciBqb2IgaWQgNzUyMgp3YWl0aW5nIGZvciBqb2IgaWQgNzUy
+Mwp3YWl0aW5nIGZvciBqb2IgaWQgNzUyNApTZXR0aW5nIG1heGltdW0gZnJlcXVlbmN5IHRvIDQw
+MApsYXVuY2hpbmcgYXBlcmYgbG9hZCBvbiAwCmxhdW5jaGluZyBhcGVyZiBsb2FkIG9uIDEKbGF1
+bmNoaW5nIGFwZXJmIGxvYWQgb24gMgpsYXVuY2hpbmcgYXBlcmYgbG9hZCBvbiAzCnNsZWVwaW5n
+IGZvciA1IHNlY29uZHMKd2FpdGluZyBmb3Igam9iIGlkIDc1NDAKcnVuVGltZTogMC4wMApmcmVx
+OiAgICAgaW5mCnJ1blRpbWU6IDAuMDAKZnJlcTogICAgIGluZgpydW5UaW1lOiAwLjAwCmZyZXE6
+ICAgICBpbmYKd2FpdGluZyBmb3Igam9iIGlkIDc1NDEKcnVuVGltZTogMC4wMApmcmVxOiAgICAg
+aW5mCndhaXRpbmcgZm9yIGpvYiBpZCA3NTQyCndhaXRpbmcgZm9yIGpvYiBpZCA3NTQzCj09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PQpUaGUgbWFya2V0aW5nIGZyZXF1ZW5jeSBvZiB0aGUgY3B1IGlzIDIzMDAgTUh6
+ClRoZSBtYXhpbXVtIGZyZXF1ZW5jeSBvZiB0aGUgY3B1IGlzIDIzMDAgTUh6ClRoZSBtaW5pbXVt
+IGZyZXF1ZW5jeSBvZiB0aGUgY3B1IGlzIDQwMCBNSHoKVGFyZ2V0CSAgICAgIEFjdHVhbAkgICAg
+RGlmZmVyZW5jZQkgIE1TUigweDE5OSkJbWF4X3BlcmZfcGN0CjIzMDAJICAgICAgMjMwMAkgICAg
+MAkJICAweDQwMAkJMjMwMDAwCjIyMDAJICAgICAgMjIwMAkgICAgMAkJICAweDQwMAkJMjMwMDAw
+CjIxMDAJICAgICAgMjEwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjIwMDAJICAgICAgMjAwMAkg
+ICAgMAkJICAweDQwMAkJMjMwMDAwCjE5MDAJICAgICAgMTkwMAkgICAgMAkJICAweDQwMAkJMjMw
+MDAwCjE4MDAJICAgICAgMTgwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjE3MDAJICAgICAgMTcw
+MAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjE2MDAJICAgICAgMTYwMAkgICAgMAkJICAweDQwMAkJ
+MjMwMDAwCjE1MDAJICAgICAgMTUwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjE0MDAJICAgICAg
+MTQwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjEzMDAJICAgICAgMTMwMAkgICAgMAkJICAweDQw
+MAkJMjMwMDAwCjEyMDAJICAgICAgMTIwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjExMDAJICAg
+ICAgMTEwMAkgICAgMAkJICAweDQwMAkJMjMwMDAwCjEwMDAJICAgICAgOTk5CSAgICAtMQkJICAw
+eDQwMAkJMjMwMDAwCjkwMAkgICAgICA5MDAJICAgIDAJCSAgMHg0MDAJCTIzMDAwMAo4MDAJICAg
+ICAgODAwCSAgICAwCQkgIDB4NDAwCQkyMzAwMDAKNzAwCSAgICAgIDcwMAkgICAgMAkJICAweDQw
+MAkJMjMwMDAwCjYwMAkgICAgICA2MDAJICAgIDAJCSAgMHg0MDAJCTIzMDAwMAo1MDAJICAgICAg
+NTAwCSAgICAwCQkgIDB4NDAwCQkyMzAwMDAKNDAwCSAgICAgIDQwMAkgICAgMAkJICAw
+--000000000000942ce605b6806b4a--
