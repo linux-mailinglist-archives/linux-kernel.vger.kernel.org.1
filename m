@@ -2,92 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985F62DA8AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 08:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA04E2DA8BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 08:45:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgLOHmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 02:42:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43798 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726266AbgLOHlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 02:41:50 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BA42AAD0E;
-        Tue, 15 Dec 2020 07:41:08 +0000 (UTC)
-Subject: Re: [PATCH 0/3] block: blk_interposer - Block Layer Interposer
-To:     Bob Liu <bob.liu@oracle.com>, Jens Axboe <axboe@kernel.dk>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Sergei Shtepa <sergei.shtepa@veeam.com>, hch@lst.de
-Cc:     "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
-        "koct9i@gmail.com" <koct9i@gmail.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "steve@sk2.org" <steve@sk2.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Pavel Tide <Pavel.TIde@veeam.com>, dm-devel@redhat.com
-References: <1607518911-30692-1-git-send-email-sergei.shtepa@veeam.com>
- <20201209135148.GA32720@redhat.com> <20201210145814.GA31521@veeam.com>
- <20201210163222.GB10239@redhat.com> <20201211163049.GC16168@redhat.com>
- <1ee7652e-b77f-6fa4-634c-ff6639037321@kernel.dk>
- <208edf35-ecdc-2d73-4c48-0424943a78c0@suse.de>
- <cdc3c792-17ac-de61-12ae-74691769fc3c@oracle.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <299962c3-c52b-a580-5b1f-a21b9021f9e6@suse.de>
-Date:   Tue, 15 Dec 2020 08:41:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726959AbgLOHow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 02:44:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726882AbgLOHoZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 02:44:25 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05DCC06179C;
+        Mon, 14 Dec 2020 23:43:44 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id q16so19899550edv.10;
+        Mon, 14 Dec 2020 23:43:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=g3JmsH/2qcpjo+dzXWng/ltGOYbO/xhpCV/mKd1Yxf0=;
+        b=a2quU6gT64yfFa9CqXZdksQXMRT3X/QnPpR69onuCAqxBwpGCtd4GRzigoi875ZUd3
+         4qanV6sEqQAXIjwkS4vwNj2tSnu5oHWmvqxRBvF42QRTDTd/PC1yhTcxveOSh+52LCg9
+         jV2EKeoCq43AO0xHoa47G0nHzEIqITvj9LzeQm40a3Fys4JV6NRSvBkDbK0+n2liYo7G
+         Uq9VHw+VhUNqVmNG62cKCQa5ogOe3DqADC6PmfsrizKkmvgSaqs8xFOVc4Uqa1cpsw8V
+         XFAo+9Gwt3uaErk51uVNOnPbO0Ilfptxv491fuNRS5dgEv3/IsjW+gDgDCzzSavVYITw
+         GnmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g3JmsH/2qcpjo+dzXWng/ltGOYbO/xhpCV/mKd1Yxf0=;
+        b=Dktb2iMWqcVKCTbO8GEdb4zMN/Lgh36QpwzXoVr4Oa83nSxGrTeSAx6awPoxP0J28Q
+         WyZNVQG8QDSnRqvQSDHSubQyhCLNxeKjAunjCJYZTnabXfP0paHsP4vrgrPNlanoM4/Z
+         Wb8+KH2jgz6utwDqx2WHc5S9rJco+jQbKyy9DOhBPykOk7m3Ixj86uxKnjin9xRomX07
+         42oodC0Ww/Iw1fmQeFXbJD6p/0EBk6D9LyE+FWoR/yyPqXAdL7nF4erxBJQXaS6AjmvC
+         1fOKKlMzFyXAOJ7gG1yoRI3kmbGVJE4Mw6SfQS12qsjdo2ZAMDSxcPNP1pIv59d93l2L
+         AcpA==
+X-Gm-Message-State: AOAM533JkBmfAi+37qtKx+SXz3GhchAo5g2bp6cH7mV6b/BYH6syhH+C
+        MITgL0apE9LnCGU0mORLuCA=
+X-Google-Smtp-Source: ABdhPJy/tA+9R9VDicIsZcx83X7KG9maJCZUYQN6UlUqUVVFixqf1ckLPCvNIyjweWM7lsuhXYy7tg==
+X-Received: by 2002:a50:d604:: with SMTP id x4mr1216081edi.64.1608018223475;
+        Mon, 14 Dec 2020 23:43:43 -0800 (PST)
+Received: from skbuf ([188.25.2.120])
+        by smtp.gmail.com with ESMTPSA id de12sm17587998edb.82.2020.12.14.23.43.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 23:43:42 -0800 (PST)
+From:   Ioana Ciornei <ciorneiioana@gmail.com>
+X-Google-Original-From: Ioana Ciornei <ciornei.ioana@gmail.com>
+Date:   Tue, 15 Dec 2020 09:43:41 +0200
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the net-next tree
+Message-ID: <20201215074341.czqxowvs4ztjo4k6@skbuf>
+References: <20201126174057.0ac8d95b@canb.auug.org.au>
+ <20201215070125.5f982171@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <cdc3c792-17ac-de61-12ae-74691769fc3c@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215070125.5f982171@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/15/20 7:51 AM, Bob Liu wrote:
-> Hi Folks,
+On Tue, Dec 15, 2020 at 07:01:25AM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> On 12/12/20 12:56 AM, Hannes Reinecke wrote:
->> On 12/11/20 5:33 PM, Jens Axboe wrote:
->>> On 12/11/20 9:30 AM, Mike Snitzer wrote:
->>>> While I still think there needs to be a proper _upstream_ consumer of
->>>> blk_interposer as a condition of it going in.. I'll let others make the
->>>> call.
->>>
->>> That's an unequivocal rule.
->>>
->>>> As such, I'll defer to Jens, Christoph and others on whether your
->>>> minimalist blk_interposer hook is acceptable in the near-term.
->>>
->>> I don't think so, we don't do short term bandaids just to plan on
->>> ripping that out when the real functionality is there. IMHO, the dm
->>> approach is the way to go - it provides exactly the functionality that
->>> is needed in an appropriate way, instead of hacking some "interposer"
->>> into the core block layer.
->>>
->> Which is my plan, too.
->>
->> I'll be working with the Veeam folks to present a joint patchset (including the DM bits) for the next round.
->>
+> On Thu, 26 Nov 2020 17:40:57 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > After merging the net-next tree, today's linux-next build (htmldocs)
+> > produced this warning:
+> > 
+> > include/linux/phy.h:869: warning: Function parameter or member 'config_intr' not described in 'phy_driver'
+> > 
+> > Introduced by commit
+> > 
+> >   6527b938426f ("net: phy: remove the .did_interrupt() and .ack_interrupt() callback")
 > 
-> Besides the dm approach, do you think Veeam's original requirement is a good
-> use case of "block/bpf: add eBPF based block layer IO filtering"?
-> https://lwn.net/ml/bpf/20200812163305.545447-1-leah.rumancik@gmail.com/
-> 
-That would actually a really cool use-case.
-You could also consider a XDP-like functionality for eBPF, to move 
-individual requests from one queue to the other; DM on steroids :-)
+> I am still getting this warning.
 
-Should I try to include that patchset?
+Hi,
 
-Cheers,
+Sorry for not responding in time, I know I verified this the first time
+but somehow did not answer the email.
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+The .config_intr() is documented but it seems that it's not parsed
+properly since the comment starts on the same line as the /**. A diff
+like below seems to do the trick. I will send it out.
+
+--- a/include/linux/phy.h
++++ b/include/linux/phy.h
+@@ -743,7 +743,8 @@ struct phy_driver {
+ 	/** @read_status: Determines the negotiated speed and duplex */
+ 	int (*read_status)(struct phy_device *phydev);
+ 
+-	/** @config_intr: Enables or disables interrupts.
++	/**
++	 * @config_intr: Enables or disables interrupts.
+ 	 * It should also clear any pending interrupts prior to enabling the
+ 	 * IRQs and after disabling them.
+ 	 */
+
+Ioana
+
