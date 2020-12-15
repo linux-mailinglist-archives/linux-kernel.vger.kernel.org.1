@@ -2,83 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3092DAAA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD9B2DAAB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727210AbgLOKMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:12:35 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:55844 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727179AbgLOKMW (ORCPT
+        id S1727234AbgLOKRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:17:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39136 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727283AbgLOKQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:12:22 -0500
-X-UUID: 369100d131854b159522192eb9eee32a-20201215
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=2fiUU97l07l7hwAOWALWOPw/Crbf57n2X2dDFxkm7Qk=;
-        b=F0a8IW/y2qV4207ksDFiHjqrau41ITylbRfEJobqe1xKREcy4Ude/WPZrRcrCQT2dd4UZJZRpHZOQNVa7E8eSnfcY50EQLbh+Qiwd5DB1k3m2fNBb1vuSMxLEArUGnRieiOW9/xO306gxqv+GMWV0FRxXmnt3UbB2D2wQf6NagE=;
-X-UUID: 369100d131854b159522192eb9eee32a-20201215
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 315111447; Tue, 15 Dec 2020 18:11:37 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 15 Dec 2020 18:11:35 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 15 Dec 2020 18:11:36 +0800
-Message-ID: <1608027095.10163.27.camel@mtkswgap22>
-Subject: Re: [PATCH v4 3/6] scsi: ufs: Group UFS WB related flags to struct
- ufs_dev_info
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Bean Huo <huobean@gmail.com>
-CC:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <asutoshd@codeaurora.org>, <jejb@linux.ibm.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Date:   Tue, 15 Dec 2020 18:11:35 +0800
-In-Reply-To: <615bb13dc394dac2b56fa60787e1841d2db12462.camel@gmail.com>
-References: <20201211140035.20016-1-huobean@gmail.com>
-         <20201211140035.20016-4-huobean@gmail.com>
-         <1608022873.10163.17.camel@mtkswgap22>
-         <615bb13dc394dac2b56fa60787e1841d2db12462.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 15 Dec 2020 05:16:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608027325;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l5LzMxbr9TROdZC3Z8tydOWFz7HFkR2idNrdymTBhAA=;
+        b=KHZS7RtBjStjQHa5VqyKZQ8WqObvPUFRVBX24Lz62mIEzBwCQr6yZ8qds+D8JG7P90OdZ9
+        xKkh58fQ463cTfC55Nn6U5JN06q1E7rAWoauseovIILYi65NJyTB9efdWIP2v9V9Tm4Huz
+        N3GoZJ/XRbE48ilobNPR1seoBK3/ZmU=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-537-xuH0Bb0wMjmi1vRA5lXE1A-1; Tue, 15 Dec 2020 05:15:23 -0500
+X-MC-Unique: xuH0Bb0wMjmi1vRA5lXE1A-1
+Received: by mail-ed1-f71.google.com with SMTP id dh21so9724370edb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:15:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=l5LzMxbr9TROdZC3Z8tydOWFz7HFkR2idNrdymTBhAA=;
+        b=DULjTzZ/gdKzhdMGj4xAjQBm9F8UpdF9AZEdeJ5q2nIUNOTNO5qP2nFMbefHXjD+1r
+         59NQqNdesEWT1uk2fAIWEarNRTp1lWZulj8tjPodZlFKuaqkxvHWYcdH/yxBU5gr40Br
+         UWtfpZ8x+JlTA1Ttf8LkQHAAKct2tx2EJa8e2J7G1JkWY5EoG90FGT5RDxjuxLXPzgXd
+         IG7FUiSz77wDf4yqGst/HjUVlsSaRSF7pHO4FVPsybYIuQ3hdxrAF/0LnlAF5IrYyFqy
+         wn2qBPsZtVA5y9ywIx3RnzgdTNZB07VauFwzC6/1xAcrzcwyIqB5UOH83HbdSZCzScS8
+         6qaA==
+X-Gm-Message-State: AOAM5314DeF1xvUwOBLUf8gKGWjgOI0XJ0DAayZMIIjPpxfF5l11oQ2h
+        5f63D3WhOoiTJFkmFV4CEtv0FVPQMsZd8so1ig8ng0VviT62ytJPSzyMErXwKIs2xnkUympoitn
+        zxoCLLgzTLidgL1Nq/V00wvsr
+X-Received: by 2002:aa7:cac2:: with SMTP id l2mr28919450edt.141.1608027322515;
+        Tue, 15 Dec 2020 02:15:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzoKdlLvHAx7ZwpLRJe1jwkE7z+XVgot0SmkIrPwVB+yP2e6E83E5hMB2Pv29BS3+h/dE7xKA==
+X-Received: by 2002:aa7:cac2:: with SMTP id l2mr28919416edt.141.1608027322322;
+        Tue, 15 Dec 2020 02:15:22 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id bo20sm17938647edb.1.2020.12.15.02.15.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 02:15:21 -0800 (PST)
+Subject: Re: [PATCH v2] KVM: SVM: use vmsave/vmload for saving/restoring
+ additional host state
+To:     Andy Lutomirski <luto@amacapital.net>,
+        Michael Roth <michael.roth@amd.com>
+Cc:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Andy Lutomirski <luto@kernel.org>
+References: <20201214220213.np7ytcxmm6xcyllm@amd.com>
+ <98F09A9A-A768-4B01-A1FA-5EE681146BC5@amacapital.net>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <482e5526-2ee1-9ed3-19ad-3a24d56a4fc4@redhat.com>
+Date:   Tue, 15 Dec 2020 11:15:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 268C207E3F509A246380A2347A81F4907B06979C1EDC8E94A5B68B2F0A4741382000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <98F09A9A-A768-4B01-A1FA-5EE681146BC5@amacapital.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTEyLTE1IGF0IDEwOjQyICswMTAwLCBCZWFuIEh1byB3cm90ZToNCj4gT24g
-VHVlLCAyMDIwLTEyLTE1IGF0IDE3OjAxICswODAwLCBTdGFubGV5IENodSB3cm90ZToNCj4gPiA+
-ICsgICAgIGJvb2wgICAgd2JfYnVmX2ZsdXNoX2VuYWJsZWQ7DQo+ID4gPiArICAgICB1OCAgICAg
-IHdiX2RlZGljYXRlZF9sdTsNCj4gPiA+ICsgICAgIHU4ICAgICAgYl93Yl9idWZmZXJfdHlwZTsN
-Cj4gPiA+ICsgICAgIHUzMiAgICAgZF93Yl9hbGxvY191bml0czsNCj4gPiA+ICsNCj4gPiA+ICsg
-ICAgIGJvb2wgICAgYl9ycG1fZGV2X2ZsdXNoX2NhcGFibGU7DQo+ID4gPiArICAgICB1OCAgICAg
-IGJfcHJlc3J2X3VzcGNfZW47DQo+ID4gDQo+ID4gUGVyaGFwcyB3ZSBjb3VsZCB1bmlmeSB0aGUg
-c3R5bGUgb2YgdGhlc2UgV0IgcmVsYXRlZCBzdHVmZiB0byB3Yl8qID8NCj4gDQo+IHllcywgYWdy
-ZWUuIEkgd2lsbCBjaGFuZ2UgdGhlbS4NCj4gDQo+ID4gDQo+ID4gQmVzaWRlcywgSSBhbSBub3Qg
-c3VyZSBpZiB1c2luZyB0YWIgaW5zdGVhZCBzcGFjZSBiZXR3ZWVuIHRoZSB0eXBlDQo+ID4gYW5k
-DQo+ID4gbmFtZSBpbiB0aGlzIHN0cnVjdCBpcyBhIGdvb2QgaWRlYS4NCj4gPiANCj4gdXNpbmcg
-c3BhY2UsIGluIGFkZGl0aW9uIHNpbmdsZSBzcGFjZSwgdHlwZSBhbmQgcGFyYW1ldGVyIG5hbWVz
-IGFyZQ0KPiBtaXhlZC4gDQo+IA0KPiANCj4gdXNlIHNwYWNlOg0KPiANCj4gIC8qIFVGUyBXQiBy
-ZWxhdGVkIGZsYWdzICovDQo+IGJvb2wgd2JfZW5hYmxlZDsNCj4gYm9vbCB3Yl9idWZfZmx1c2hf
-ZW5hYmxlZDsNCj4gdTgNCj4gd2JfZGVkaWNhdGVkX2x1Ow0KPiB1OCBiX3diX2J1ZmZlcl90eXBl
-Ow0KPiB1MzIgZF93Yl9hbGxvY191bml0czsNCj4gDQo+IHVzZSB0YWJsZToNCj4gDQo+ICAvKiBV
-RlMgV0IgcmVsYXRlZCBmbGFncyAqLw0KPiBib29sICAgIHdiX2VuYWJsZWQ7DQo+IGJvb2wgICAg
-d2JfYnVmX2ZsdXNoX2VuYWJsZWQ7DQo+IHU4ICAgICAgd2JfZGVkaWNhdGVkX2x1Ow0KPiB1OCAg
-ICAgIGJfd2JfYnVmZmVyX3R5cGU7DQo+IHUzMiAgICAgZF93Yl9hbGxvY191bml0czsNCj4gDQo+
-IEkgdGhpbmssIHRoZSByZXN1bHQgaXMgdmVyeSBjbGVhciBjb21wYXJpbmcgYWJvdmUgdHdvIGV4
-YW1wbGVzLiB5ZXMsDQo+IHRoZXJlIGlzIG5vIGV4cGxpY2l0IHN0aXB1bGF0aW9uIHRoYXQgd2Ug
-bXVzdCB1c2Ugc3BhY2Ugb3IgdGFiLiBCb3RoDQo+IHN0eWxlcyBleGlzdCBpbiBMaW51eC4gTWF5
-YmUgdGhpcyBpcyBqdXN0IG1hdHRlciBvZiBwZXJzb25hbCBpbnRlcmVzdC4NCg0KSGkgQmVhbiwN
-Cg0KWWVzLCBJIGdvdCB5b3VyIHBvaW50LiBJIGFtIGZpbmUgd2l0aCB0aGlzIHN0eWxlIGNoYW5n
-ZSwgYnV0IGp1c3Qgd29uZGVyDQppZiBpdCB3b3VsZCBiZSBiZXR0ZXIgdG8gY2hhbmdlIGFsbCBz
-dHJ1Y3R1cmVzIGluIGFsbCB1ZnMgaGVhZGVycyAob3IgYXQNCmxlYXN0IGFsbCBzdHJ1Y3R1cmVz
-IGluIHVmcy5oKSBpbiB0aGUgc2FtZSB0aW1lIHRvIG1ha2UgdGhlIHN0eWxlDQp1bmlmaWVkIGlu
-IHRoZSBzYW1lIGZpbGU/DQoNCkJlc2lkZXMsIHdlIG1heSBuZWVkIG90aGVyIHJldmlld2VyJ3Mg
-Y29tbWVudHMgZm9yIHRoZSBuZXcgc3R5bGUuDQoNClRoYW5rcywNClN0YW5sZXkgQ2h1DQoNCj4g
-DQo+IA0KPiBCZWFuDQo+IA0KPiA+IFRoYW5rcywNCj4gPiBTdGFubGV5IENodQ0KPiANCg0K
+On 14/12/20 23:29, Andy Lutomirski wrote:
+>> One downside to that is that we'd need to do the VMSAVE on every 
+>> iteration of vcpu_run(), as opposed to just once when we enter
+>> from userspace via KVM_RUN. It ends up being a similar situation to
+>> Andy's earlier suggestion of moving VMLOAD just after vmexit, but
+>> in that case we were able to remove an MSR write to MSR_GS_BASE,
+>> which cancelled out the overhead, but in this case I think it could
+>> only cost us extra.
+>
+> If you want to micro-optimize, there is a trick you could play: use
+> WRGSBASE if available.  If X86_FEATURE_GSBASE is available, you could
+> use WRGSBASE to restore GSBASE and defer VMLOAD to vcpu_put().  This
+> would need benchmarking on Zen 3 to see if it’s worthwhile.
+
+If the improvement is big (100 cycles or so) it would be worthwhile. 
+Otherwise, for the sake of code clarity doing VMLOAD in the assembly 
+code is the simplest.
+
+Paolo
 
