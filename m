@@ -2,249 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092022DB684
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607462DB68E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:35:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731469AbgLOW2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 17:28:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731468AbgLOW2L (ORCPT
+        id S1730231AbgLOWew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 17:34:52 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:44531 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729892AbgLOWev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 17:28:11 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E775CC061793;
-        Tue, 15 Dec 2020 14:27:30 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id qw4so29915940ejb.12;
-        Tue, 15 Dec 2020 14:27:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e7aPdqvRqJdLQv00aCJ+/E9W+p1nZGyEz+7ylHTtPMo=;
-        b=XaL9nsunMMT+noKx6MZUlQafJRFGsAEjL1q+/hjxZrM7wm5qXyh/fUp+9fWtNuD1W6
-         9YWjDRhXlGP7KJMzqecTvcaVFz/unew/U7nbviK2jCg6J2X6wqfyJB+yvJxnckSpecYg
-         131LAre0Rmliapwfv1dL+x7+4E2Y2tW6Mz2xGcol8d+6OnDjTFLxQPtngCymAvtvyHQ/
-         KsIQV3TNq7eH1M3cx1a9gEBHBJB64lpAOwlpAN+RIODdcgF8TvGimeMGlp46THjiX4Ix
-         FyZ3WuA/x1x5FaNmcpEVG1DNNUXsh+q8rp1ePrnkpQL1v+xsDP+x1LxOER6nC9KmGz4l
-         iRww==
+        Tue, 15 Dec 2020 17:34:51 -0500
+Received: by mail-io1-f69.google.com with SMTP id a1so14879603ioa.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 14:34:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e7aPdqvRqJdLQv00aCJ+/E9W+p1nZGyEz+7ylHTtPMo=;
-        b=Q9OL09hWsS+rbODjf4jfP63qapEbPPA+AhcqSmkqCKWlypVeiiyEK/HakGD+nSVsUl
-         VlN5d7zAMw2LtU8C2OgWiAhZUbfE9AY0g1RF0eNaft2N8p7T7jBUNiGrWKjeJGBaAOaB
-         V+OzCZ+X5DzYT0XPZ2TSkAGyVi/U3kPPhBcusWy5r58JSav2gRIfaYDsZWJvZhWQpBMQ
-         gFAcwaPDo6kqFONOAcqV7LzG4Pmbfpx+2Jk6DJijs8g2kH2pqEIqgjQjnYrYLx2uThxC
-         uscdGdjADv8SDFf2cf5/cX4+H3Wtg28h/tFAV9p3PNmq14pa9j6ludIeVDZeQBga0IJe
-         9f8w==
-X-Gm-Message-State: AOAM533dSHqqHiiKDNLZGC7D5eqPgRCHt4QQheYGrgDlNblJLr8bkp+U
-        vviTlKB+2P2T5UBvB0BxPczyr5ekt9uKocBN6bE=
-X-Google-Smtp-Source: ABdhPJzO6Ko/h2biCIhij7Dwhzxk/22hDs6IxS5BZKD+/z3szPShMe/VADlbWcGIqGlXzslJwNmjSl75z66ph7+3GAU=
-X-Received: by 2002:a17:907:20a4:: with SMTP id pw4mr28006844ejb.499.1608071249662;
- Tue, 15 Dec 2020 14:27:29 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=qJfOOi/jCLah0HLkC8kP6zj2p36F/BFmhOKk9WK7kP4=;
+        b=e8dMx2G491wQJxH9IF2jbvEHcsgAM8nrcTeYqFwkvS39fOrPpX8z1H4guD8Y0R+ql6
+         Xg8c0KTnVb+cgM0CXpOSk6RaU74kz37Svsdzhi9BcMD5rRhszFazYBMjADL6S418szhd
+         IBaJ+U24wmLSIX57CpGvy2kcGMznyur1PygUUQIdX9339ajY7r97onZAU1YQMQgsH7bV
+         uPBlSEwOMBsluUeAvNiIa9GE2OuPM6NFOZQjn4vIGuUgN9rLH9fd+VTS2z7u2glNEvrI
+         DpCudgp+LgeczVNo1jTVl2sTSPOzhfWUUTm/l6lH/r7eyKOL0llQIbrYhL51gof0T5bH
+         q1Sg==
+X-Gm-Message-State: AOAM533TtmseUFaegFSlo49xOACGKloSmOVb1U4iz2zkB/TbhpWrV/Mv
+        lsfj1KX0nufQa4G0WVSSMuuomwgCnxRj4OzUYUflmEMyUdgQ
+X-Google-Smtp-Source: ABdhPJzbkZhzOYYDOkE+/F5indI6uJhmMqcscBShZQtOO/mhLxMb2tSuzs8M2VrVedkiD6NKdF7cmrfqsFZDgdbEPERNd/newhxA
 MIME-Version: 1.0
-References: <20201214223722.232537-1-shy828301@gmail.com> <20201214223722.232537-7-shy828301@gmail.com>
- <20201215024637.GM3913616@dread.disaster.area>
-In-Reply-To: <20201215024637.GM3913616@dread.disaster.area>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 15 Dec 2020 14:27:18 -0800
-Message-ID: <CAHbLzkpgFO_WmxRwmSa_eb4KrQ3WXmHT0kOfn85HJAsfqvyC1Q@mail.gmail.com>
-Subject: Re: [v2 PATCH 6/9] mm: vmscan: use per memcg nr_deferred of shrinker
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a02:ab95:: with SMTP id t21mr41065966jan.51.1608071650238;
+ Tue, 15 Dec 2020 14:34:10 -0800 (PST)
+Date:   Tue, 15 Dec 2020 14:34:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007c672a05b6885bb9@google.com>
+Subject: BUG: corrupted list in klist_release
+From:   syzbot <syzbot+676530ea9d4736aad21c@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        rafael@kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 6:46 PM Dave Chinner <david@fromorbit.com> wrote:
->
-> On Mon, Dec 14, 2020 at 02:37:19PM -0800, Yang Shi wrote:
-> > Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
-> > will be used in the following cases:
-> >     1. Non memcg aware shrinkers
-> >     2. !CONFIG_MEMCG
-> >     3. memcg is disabled by boot parameter
-> >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
->
-> Lots of lines way over 80 columns.
+Hello,
 
-I thought that has been lifted to 100 columns.
+syzbot found the following issue on:
 
->
-> > ---
-> >  mm/vmscan.c | 94 ++++++++++++++++++++++++++++++++++++++++++++++-------
-> >  1 file changed, 83 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index bf34167dd67e..bce8cf44eca2 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -203,6 +203,12 @@ DECLARE_RWSEM(shrinker_rwsem);
-> >  static DEFINE_IDR(shrinker_idr);
-> >  static int shrinker_nr_max;
-> >
-> > +static inline bool is_deferred_memcg_aware(struct shrinker *shrinker)
-> > +{
-> > +     return (shrinker->flags & SHRINKER_MEMCG_AWARE) &&
-> > +             !mem_cgroup_disabled();
-> > +}
->
-> Why do we care if mem_cgroup_disabled() is disabled here? The return
-> of this function is then && sc->memcg, so if memcgs are disabled,
-> sc->memcg will never be set and this mem_cgroup_disabled() check is
-> completely redundant, right?
+HEAD commit:    33dc9614 Merge tag 'ktest-v5.10-rc6' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10f2f703500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3416bb960d5c705d
+dashboard link: https://syzkaller.appspot.com/bug?extid=676530ea9d4736aad21c
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c17c5b500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14b5b923500000
 
-Yes, correct. I missed this point.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+676530ea9d4736aad21c@syzkaller.appspotmail.com
 
->
-> > +
-> >  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
-> >  {
-> >       int id, ret = -ENOMEM;
-> > @@ -271,7 +277,58 @@ static bool writeback_throttling_sane(struct scan_control *sc)
-> >  #endif
-> >       return false;
-> >  }
-> > +
-> > +static inline long count_nr_deferred(struct shrinker *shrinker,
-> > +                                  struct shrink_control *sc)
-> > +{
-> > +     bool per_memcg_deferred = is_deferred_memcg_aware(shrinker) && sc->memcg;
-> > +     struct memcg_shrinker_deferred *deferred;
-> > +     struct mem_cgroup *memcg = sc->memcg;
-> > +     int nid = sc->nid;
-> > +     int id = shrinker->id;
-> > +     long nr;
-> > +
-> > +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
-> > +             nid = 0;
-> > +
-> > +     if (per_memcg_deferred) {
-> > +             deferred = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_deferred,
-> > +                                                  true);
-> > +             nr = atomic_long_xchg(&deferred->nr_deferred[id], 0);
-> > +     } else
-> > +             nr = atomic_long_xchg(&shrinker->nr_deferred[nid], 0);
-> > +
-> > +     return nr;
-> > +}
-> > +
-> > +static inline long set_nr_deferred(long nr, struct shrinker *shrinker,
-> > +                                struct shrink_control *sc)
-> > +{
-> > +     bool per_memcg_deferred = is_deferred_memcg_aware(shrinker) && sc->memcg;
-> > +     struct memcg_shrinker_deferred *deferred;
-> > +     struct mem_cgroup *memcg = sc->memcg;
-> > +     int nid = sc->nid;
-> > +     int id = shrinker->id;
->
-> Oh, that's a nasty trap. Nobody knows if you mean "id" or "nid" in
-> any of the code and a single letter type results in a bug.
+IPVS: ftp: loaded support on port[0] = 21
+list_del corruption. prev->next should be ffff88801b11ec68, but was ffff88801b644040
+------------[ cut here ]------------
+kernel BUG at lib/list_debug.c:51!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 8512 Comm: syz-executor819 Not tainted 5.10.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__list_del_entry_valid.cold+0xf/0x4a lib/list_debug.c:51
+Code: e8 fb 12 f7 ff 0f 0b 48 89 f1 48 c7 c7 40 94 9d 89 4c 89 e6 e8 e7 12 f7 ff 0f 0b 48 89 ee 48 c7 c7 e0 95 9d 89 e8 d6 12 f7 ff <0f> 0b 4c 89 ea 48 89 ee 48 c7 c7 20 95 9d 89 e8 c2 12 f7 ff 0f 0b
+RSP: 0018:ffffc9000177f998 EFLAGS: 00010286
+RAX: 0000000000000054 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff8880189b8000 RSI: ffffffff8158c835 RDI: fffff520002eff25
+RBP: ffff88801b11ec68 R08: 0000000000000054 R09: ffff8880b9f30627
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff888011063068
+R13: ffff888011063068 R14: ffff88801b11ec60 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000200 CR3: 000000000b08e000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __list_del_entry include/linux/list.h:132 [inline]
+ list_del include/linux/list.h:146 [inline]
+ klist_release+0x66/0x480 lib/klist.c:189
+ kref_put include/linux/kref.h:65 [inline]
+ klist_dec_and_del lib/klist.c:206 [inline]
+ klist_put+0xf7/0x1d0 lib/klist.c:217
+ device_del+0x245/0xec0 drivers/base/core.c:3094
+ hci_conn_del_sysfs+0xdc/0x180 net/bluetooth/hci_sysfs.c:78
+ hci_conn_cleanup+0x2e7/0x6c0 net/bluetooth/hci_conn.c:138
+ hci_conn_del+0x2a0/0x790 net/bluetooth/hci_conn.c:645
+ hci_conn_hash_flush+0x19c/0x260 net/bluetooth/hci_conn.c:1558
+ hci_dev_do_close+0x569/0x1110 net/bluetooth/hci_core.c:1770
+ hci_unregister_dev+0x223/0xfe0 net/bluetooth/hci_core.c:3827
+ vhci_release+0x70/0xe0 drivers/bluetooth/hci_vhci.c:340
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:151
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xb64/0x29b0 kernel/exit.c:809
+ do_group_exit+0x125/0x310 kernel/exit.c:906
+ __do_sys_exit_group kernel/exit.c:917 [inline]
+ __se_sys_exit_group kernel/exit.c:915 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:915
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x445098
+Code: Unable to access opcode bytes at RIP 0x44506e.
+RSP: 002b:00007ffeec93f2f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 0000000000445098
+RDX: 0000000000000001 RSI: 000000000000003c RDI: 0000000000000001
+RBP: 00000000004ccdf0 R08: 00000000000000e7 R09: ffffffffffffffd0
+R10: 0000000000000015 R11: 0000000000000246 R12: 0000000000000001
+R13: 00000000006e0200 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace e0d5d8f0eda11654 ]---
+RIP: 0010:__list_del_entry_valid.cold+0xf/0x4a lib/list_debug.c:51
+Code: e8 fb 12 f7 ff 0f 0b 48 89 f1 48 c7 c7 40 94 9d 89 4c 89 e6 e8 e7 12 f7 ff 0f 0b 48 89 ee 48 c7 c7 e0 95 9d 89 e8 d6 12 f7 ff <0f> 0b 4c 89 ea 48 89 ee 48 c7 c7 20 95 9d 89 e8 c2 12 f7 ff 0f 0b
+RSP: 0018:ffffc9000177f998 EFLAGS: 00010286
+RAX: 0000000000000054 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff8880189b8000 RSI: ffffffff8158c835 RDI: fffff520002eff25
+RBP: ffff88801b11ec68 R08: 0000000000000054 R09: ffff8880b9f30627
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff888011063068
+R13: ffff888011063068 R14: ffff88801b11ec60 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000200 CR3: 000000000b08e000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-Sure, will come up with more descriptive names. Maybe "nid" and "shrinker_id"?
 
->
-> > +     long new_nr;
-> > +
-> > +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
-> > +             nid = 0;
-> > +
-> > +     if (per_memcg_deferred) {
-> > +             deferred = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_deferred,
-> > +                                                  true);
-> > +             new_nr = atomic_long_add_return(nr, &deferred->nr_deferred[id]);
-> > +     } else
-> > +             new_nr = atomic_long_add_return(nr, &shrinker->nr_deferred[nid]);
-> > +
-> > +     return new_nr;
-> > +}
-> >  #else
-> > +static inline bool is_deferred_memcg_aware(struct shrinker *shrinker)
-> > +{
-> > +     return false;
-> > +}
-> > +
-> >  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
-> >  {
-> >       return 0;
-> > @@ -290,6 +347,29 @@ static bool writeback_throttling_sane(struct scan_control *sc)
-> >  {
-> >       return true;
-> >  }
-> > +
-> > +static inline long count_nr_deferred(struct shrinker *shrinker,
-> > +                                  struct shrink_control *sc)
-> > +{
-> > +     int nid = sc->nid;
-> > +
-> > +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
-> > +             nid = 0;
-> > +
-> > +     return atomic_long_xchg(&shrinker->nr_deferred[nid], 0);
-> > +}
-> > +
-> > +static inline long set_nr_deferred(long nr, struct shrinker *shrinker,
-> > +                                struct shrink_control *sc)
-> > +{
-> > +     int nid = sc->nid;
-> > +
-> > +     if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
-> > +             nid = 0;
-> > +
-> > +     return atomic_long_add_return(nr,
-> > +                                   &shrinker->nr_deferred[nid]);
-> > +}
-> >  #endif
->
-> This is pretty ... verbose. It doesn't need to be this complex at
-> all, and you shouldn't be duplicating code in multiple places. THere
-> is also no need for any of these to be "inline" functions. The
-> compiler will do that for static functions automatically if it makes
-> sense.
->
-> Ok, so you only do the memcg nr_deferred thing if NUMA_AWARE &&
-> sc->memcg is true. so....
->
-> static long shrink_slab_set_nr_deferred_memcg(...)
-> {
->         int nid = sc->nid;
->
->         deferred = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_deferred,
->                                              true);
->         return atomic_long_add_return(nr, &deferred->nr_deferred[id]);
-> }
->
-> static long shrink_slab_set_nr_deferred(...)
-> {
->         int nid = sc->nid;
->
->         if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
->                 nid = 0;
->         else if (sc->memcg)
->                 return shrink_slab_set_nr_deferred_memcg(...., nid);
->
->         return atomic_long_add_return(nr, &shrinker->nr_deferred[nid]);
-> }
->
-> And now there's no duplicated code.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Thanks for the suggestion. Will incorporate in v3.
-
->
-> Cheers,
->
-> Dave.
-> --
-> Dave Chinner
-> david@fromorbit.com
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
