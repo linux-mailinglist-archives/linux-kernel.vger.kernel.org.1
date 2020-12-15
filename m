@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621BF2DA89D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 08:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E09842DA8A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 08:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726217AbgLOHh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 02:37:28 -0500
-Received: from mail-mw2nam10on2064.outbound.protection.outlook.com ([40.107.94.64]:8419
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        id S1726758AbgLOHgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 02:36:14 -0500
+Received: from mail-bn7nam10on2074.outbound.protection.outlook.com ([40.107.92.74]:52750
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726808AbgLOHgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 02:36:40 -0500
+        id S1726533AbgLOHfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 02:35:41 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SOlGArJz4MMn1wTDA2St+pYpCAOpuuubtpi8ySNTxPgtOV3StINz4Di0wyhBkisvUVRf0ugtep3umOmaYrhOAgMMOIFDMerxRIYlv0XPprVR7odUkqHei92jtfNjElL2GSwJPbmSqvfckW6yvQgt5ITT9PZdvNv9QtxMVyqh1gzPUwN8sb9WkikmGNiay86i4QDO9Y9ztQlAVmiZc64Lto0VqcoXWOBHoroPyThfewCf3KZ1vdXlpwu00kQD5uWDcJvm7up5RW5y+E6EC2tMruQXp8cnchBKyw3orojiMAkTEbImcxTiuyGm1JbSHSKx5WQRlk4uEBgTchIAjabkjA==
+ b=U3ResMgmpyFw4AIhQHLCIZw0yQXGWnF4Qo8isGoySCCWt3xYxmjfqwqvBtDj5M/jd80lVliwB7wARxQGzKYK2nq9VgA/RfF3cOB8nqwFstesTc2avqHmGfRhOIxlLiiCfvwx9vIC7+GF9KxAXrbAqaRtuUGbElnbblPje0in6RPJKrsYUMp+VpfJpe7h02Vdmavps9v+QqNe8S3lziegtmc/fnMXi8tcGZHAPa+ILfQNC0fusO2jZhsAoSfu7/Qs6tGs247EeSmDeqFZW1jPqEZqlyuVidBUfXFalWxF2HltCQqKEM88jj0oJKTWAm/1AKuG8r8GiM2PnN1i/rA2Qg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1giUsa8uusMFoA9pKyG9rlFqSt1rBPhbqKritxCmkMQ=;
- b=Y6Qh+fVMtasVa8hlIEaiN08ZQAq8gLkijZFUNwDaNi90ZFh+zVjqsAkfViPzs0XIZnWd/OnkdEEy44zvfWm+BTvyv2+ixCjrlztt2Ug19kMWtJXTVnlcVkdl6GV8PR+z6WcezD9VtHayaGudGkf4IcRWBtLhjl0i5wvgwTH39YmuAaZ+Rny3ewJEMoRA6i0uu+WRjmtMDI/2RJQi3OmTQpO8maqMvUf+FkmaGyQYPQJDgz1Lum9/J4gmk3tu0iV9JlC9qCjRuPB6XiAEEa3bM1P4VwwV4utZREAs4Ty+kE9LmsGURud0JWQ2jdlikzsETqsNwFxiw8/mUv+ZPQdxIg==
+ bh=eeXyi1ciE14UVkTcq4FyRAfePPN5CB8fblkfoZf1/Zw=;
+ b=hdDvUQXLZB+KFNJf4pQPf16bubdvWcmIDcIe/kUTUWlV5dM4VYdDjuGlylkNw3Gu52GT6zJppsExxltkS+0IxRvyJ6IHVRJY58q4y8Q5gaGOp65p3YEIyZCzBYZMO8DiWAPKXwnbuhyvcxWsfcYihBlhjkz9f8t2jiZozEsWyrxE/YZCa03cGCV2+edYYQNBxV06gy7hLLXToObUD72FgGKk5mOHI4x359fJ/dQL6r0QiTX76c6fV9/ryJAT4F5HiugRfKjGGhF1q7Ihhu4n+N+fkQzVZIyvPRF46GZYO+esgQE5InsDL3SEq83xj3abM6pXpzmn+ydzrPLuXCcJ2w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1giUsa8uusMFoA9pKyG9rlFqSt1rBPhbqKritxCmkMQ=;
- b=tVWQTzbPwnB3kgZxsiBbxCSt7sZ8/IsMFH8PVtW83YhyhGAuH9IGkM8hfFB+mTM2CBr+lpaS5p9SY/S6ljue9NgT2efP8GsK2ATifccUJ4kp9mCKwl1e3RXiTBv6fkpo7AyR2ht6d/GoTRvcwIuTWqBfeJmosVWb7gdENCXLPWE=
+ bh=eeXyi1ciE14UVkTcq4FyRAfePPN5CB8fblkfoZf1/Zw=;
+ b=CnrK4dO5VO3sITmXgEwnnC7ErtvqUdYNZBRNjmbD6xrhO22aDu982pgg+I5sGSU9d2SxrLJm6BCHd8mx4gFlz/OjuPREQ544ftoEFeCtLI61dvas7ffPP6EldJxRxO3wil2MeCI0XipEWAB66wYaoDo+PT94wQK3/hsmCdy2y6Y=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
 Received: from BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
- by BY5PR12MB3794.namprd12.prod.outlook.com (2603:10b6:a03:1aa::28) with
+ by BYAPR12MB3127.namprd12.prod.outlook.com (2603:10b6:a03:d8::33) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Tue, 15 Dec
- 2020 07:34:46 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.15; Tue, 15 Dec
+ 2020 07:34:48 +0000
 Received: from BYAPR12MB4597.namprd12.prod.outlook.com
  ([fe80::dd10:efd2:e325:53c7]) by BYAPR12MB4597.namprd12.prod.outlook.com
  ([fe80::dd10:efd2:e325:53c7%3]) with mapi id 15.20.3654.021; Tue, 15 Dec 2020
- 07:34:46 +0000
+ 07:34:48 +0000
 From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
 Cc:     joro@8bytes.org, will@kernel.org,
         Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Subject: [PATCH v4 07/13] iommu/amd: Restructure code for freeing page table
-Date:   Tue, 15 Dec 2020 01:36:59 -0600
-Message-Id: <20201215073705.123786-8-suravee.suthikulpanit@amd.com>
+Subject: [PATCH v4 08/13] iommu/amd: Remove amd_iommu_domain_get_pgtable
+Date:   Tue, 15 Dec 2020 01:37:00 -0600
+Message-Id: <20201215073705.123786-9-suravee.suthikulpanit@amd.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201215073705.123786-1-suravee.suthikulpanit@amd.com>
 References: <20201215073705.123786-1-suravee.suthikulpanit@amd.com>
@@ -54,181 +54,318 @@ X-ClientProxiedBy: SN2PR01CA0060.prod.exchangelabs.com (2603:10b6:800::28) To
  BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ethanolx5673host.amd.com (165.204.78.2) by SN2PR01CA0060.prod.exchangelabs.com (2603:10b6:800::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Tue, 15 Dec 2020 07:34:45 +0000
+Received: from ethanolx5673host.amd.com (165.204.78.2) by SN2PR01CA0060.prod.exchangelabs.com (2603:10b6:800::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Tue, 15 Dec 2020 07:34:46 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c6e00ddd-d9c1-4f03-f30e-08d8a0cbe5eb
-X-MS-TrafficTypeDiagnostic: BY5PR12MB3794:
+X-MS-Office365-Filtering-Correlation-Id: ecff399b-8064-4474-b754-08d8a0cbe69a
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3127:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR12MB3794B964A31A8C5FDFB979FCF3C60@BY5PR12MB3794.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
+X-Microsoft-Antispam-PRVS: <BYAPR12MB3127334345936DB06B51CC32F3C60@BYAPR12MB3127.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ekj93gikyAxPKFBaDVR7arowasnT1tRVnS7Pfzrc8FHs0RhCZudU0mv/nPZJLeBTg5wvgRAvrSpi5joDrSn//9C34t2FFjQk3t628vkur1t6EAW14S7CALH+PHc3SpKSfc3SfgR/tVetK4ttgkeNFMRbEMbFVSbWRfDpctPFbZFMlNng6vp1IbS+mc3uVfpe0TsBbmTjaxl1J+av8piG/O1+T2Fwa0CXviBcQr0CDWuFwJoiZ0ZL3f91/RnBFB7VTnXDEYZBJo51WZ6MRLoE54VB5dZffV0biUL4eX4Ez9Dy/BvwHj2/BZUhjnrPHfGc3DKg/S7SEKiKbnMQtqxqG7oVWvomTZi8S+iEaBmjv0e8oD65b9IVXDjUOq3Qh0EH
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4597.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(6666004)(2616005)(66556008)(16526019)(86362001)(956004)(66946007)(6486002)(34490700003)(26005)(52116002)(186003)(66476007)(1076003)(7696005)(36756003)(83380400001)(5660300002)(44832011)(2906002)(8676002)(508600001)(8936002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?TH/l+qTO3wB825zrxF8xDmGj8XBBp5GshyMo+8HybqHoXU0NcNInQzW1F1f9?=
- =?us-ascii?Q?6ExlDOcnqmcTpeaKW2KbbXkQuHI1DJ02/iK5PHQ9IB9AjZtB4ZDWBx14trXw?=
- =?us-ascii?Q?hQKGt1ontonOd0d5ghe5AsJ8QlLxTECRNUAA4CY0CtbfKQd8QhbzXPxiaQSd?=
- =?us-ascii?Q?siEb+3gQ0ZG0q3QrKxDdTzrmhwkrNpTINTBjA2bsUmft8Bv/NGEEdMwCEFJb?=
- =?us-ascii?Q?RzCKj/rMnnuCXTlaMpGNex7YwT9wrs1WtBW2rzug8tZgiBO2QV2xk7z8AtB0?=
- =?us-ascii?Q?FgDkb6rq7qscno3mZXVJLLeu1zW6FtLYLkVf3mvyxMcsD+F+Ji9ITKQ53Km/?=
- =?us-ascii?Q?LjBw27SxDdCRV3jem/yoaHU4rOq4IQDjrwmtaSCMNl/1HhpjFri8UbKpkzUp?=
- =?us-ascii?Q?Ovnc6LPRyUxgsi3if7F0n5qAkDVpd3eSeKqFNbFMyowzEH5jlS7IsaiiFYQ1?=
- =?us-ascii?Q?S6AFTQAjj+c4jFa5gNwRCACrJ9r0DqJv86+ioPm4IcY4ziB78xtR54Mv4pRr?=
- =?us-ascii?Q?rWau0UmnzjUtOqMpIoj3soLosRw7xrmVoRI8Xc5AbDjn+GKVJ7yLVh3O3jSQ?=
- =?us-ascii?Q?T3dUpFI0FvdhpHx0XnQAgJbuecSJnY3FPposlRlcYfAmjOb/lAXGGhpqDT8N?=
- =?us-ascii?Q?qDsp6osxOt+skkUpQHeHJQLK7smMnD3FPr/m5yS/fhrZTXpExSExVPvFNbVz?=
- =?us-ascii?Q?Gy/jPUopD/1icUogY+tzP9/XokdyZEafITOI4WqUTGzF7aF103MaATCzu+lG?=
- =?us-ascii?Q?RwI3Ntr8a8fBXZVWFG8UjhEewKLGoJWg1AUbM4AXa9huN1wMtS1cvjmTsAzF?=
- =?us-ascii?Q?bi206jWcZcnhgSdlAu+HhyUZJas3wjlP8mwEDI7ANGzg6T5Dc5Da4dEvnsY5?=
- =?us-ascii?Q?hZbySzm9+/GER/q9Wk63fjxuWiz+N5O+kF14bzN+AadnttWkc25Z0IO0lRHo?=
- =?us-ascii?Q?YMtQuOIpGjDj9lHxXogX05Mdc/oGAuk9P1lwLzb8jHPAVQ4PT8LRb4DpeggM?=
- =?us-ascii?Q?ef8x?=
+X-Microsoft-Antispam-Message-Info: NM4sTHH2NJV7AJwV/e+0/2H9OPHCoQpb2PJX8ZHYU0nlpdtdReUkaoeEW0QfBxV7EbUtNb8cMAcicaqUZ0p0CDVik9St0998TntqaEH6V/UpCgpheEGLEwXniAIjMc13fCS9ZvrteNF4eIz9EhSqW7NaVChV71w6UuAIrMVRXljTULImFRGGGnidmQoLkahOcDhJfx8hwO+Cycx1jYwXSYXafuWcgyUEAi0QFqvsldagMC26fLjOOogUP9d+h6kYeci2ve1aR0rZ/TFFNcb8dnfBYO3bzKbYM6bUZvxq4s59NFbbKDrmEQTrcwLbLHlfvpS5KToEqaJ1Q21c3yq773GW5st94jyIMiXvHyT6s4G8Fj/6EBJY07GPqxdqCdNm
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4597.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(66556008)(66476007)(66946007)(6486002)(34490700003)(2906002)(186003)(4326008)(508600001)(8676002)(956004)(6666004)(86362001)(2616005)(52116002)(7696005)(44832011)(36756003)(1076003)(5660300002)(16526019)(26005)(8936002)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?b6KyffLcoV/dAzvu0A7SvLZDvET4IAJpS96KPS1UW7Oi3PR2UZZQsDqisdck?=
+ =?us-ascii?Q?Vk12Kt/VTT/Q03iUCGpVzgzAUvcB4jn19lRhOMva7ogYnpoHHAGVWqwlvSP4?=
+ =?us-ascii?Q?0H0Ocpd/q1EWvPt6Et7LGqwi8WfNRRfrHZD6na10I3aLpydqNZMlZtl38uZG?=
+ =?us-ascii?Q?bWLEOLVEOX4CGVXW6WyoEUV3MLK4hYygRnW8kMPTjbKTSIo4UEdkNx35z9AG?=
+ =?us-ascii?Q?kErai4sbRRRh9DDs9gX4VqnPb7RyDq8JxEK7l+bf6cIW/KwGZixHwYe+i8mu?=
+ =?us-ascii?Q?ooBXnWZn7PAXxViGnthFc6ODa4UdPj6b9bZa7XFKLdANnfBlOdLseCUURpUV?=
+ =?us-ascii?Q?NMONBfdknxaHWNBsVuUqJgdPloLRc4Y29z9//GHbZPYsb4nSYO0Q6eFkwgLX?=
+ =?us-ascii?Q?NtLc1ED31Zh7tUtPLs0KGpdsIZaUpt3dGM2p/9gc+j1ZdfwJy+pVhJVAXbor?=
+ =?us-ascii?Q?Vvl+xa3az/baM50NgojQQWIiqDJhBLAnZw0BJvHPgaekws+ASryuuDHiIrjl?=
+ =?us-ascii?Q?jjcopKuDHx2OvdalDvCIM9aGn/fjv+PmHe/N8J5LZxeDPN4o3Lx60EvyAozH?=
+ =?us-ascii?Q?y08yeb7sfuFht+du6T++WQS/8m/noc4ITHbzF6xI8s6ebXURP6v5yl2yR7XV?=
+ =?us-ascii?Q?jNxaBP8ISQtxQXqgvfqlEi+/5N9tzmTz0MSdgjKnxuKnjW7njf5yJ6GD/Uv3?=
+ =?us-ascii?Q?OGjTs/j0nVtIDJJbakWVbZbInLWm8brEkXleUVVAoITZx2oMqHE+WRTXJPrV?=
+ =?us-ascii?Q?Gnyhu2sTzP/OlHBvTWkosJhd2NUHqqeU71APU0OlsBMuvQgSh1kryNVqhsZT?=
+ =?us-ascii?Q?MBK0Yjuw308ggbEEiZLzkRJKv/PLnP8uyZoNqbcyfDT6TF7Uvltfehc3Fbak?=
+ =?us-ascii?Q?4fA20N3lz89NJB8nJB2q8gJcismD/Seb4C/s6E7+EI1yu4AjN2sHWx/dRDlj?=
+ =?us-ascii?Q?q6xpBoQpDXLz5fGcCqCgqqS2tiHMjvqeAiXIRsZ/90s=3D?=
 X-OriginatorOrg: amd.com
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4597.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2020 07:34:46.7407
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2020 07:34:47.6621
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: c6e00ddd-d9c1-4f03-f30e-08d8a0cbe5eb
+X-MS-Exchange-CrossTenant-Network-Message-Id: ecff399b-8064-4474-b754-08d8a0cbe69a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ewa+jg9Ih7DL950pUSo3618D4V5BmH/UT5Bgh6TIY197V/KtV9uWiFdnqdlb1uUd2fkZL9gckubBjgtzCPv2GQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3794
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2GZfacovfiRDodl0xnzLo/9mJrdqbiQuaHSVuhxDYADiCGHHRsO6XmiWYm4JiGJR+l6BKhgH5NAq29RDm09ZCg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3127
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By consolidate logic into v1_free_pgtable helper function,
-which is called from IO page table framework.
+Since the IO page table root and mode parameters have been moved into
+the struct amd_io_pg, the function is no longer needed. Therefore,
+remove it along with the struct domain_pgtable.
 
 Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 ---
- drivers/iommu/amd/amd_iommu.h  |  1 -
- drivers/iommu/amd/io_pgtable.c | 41 ++++++++++++++++++++--------------
- drivers/iommu/amd/iommu.c      | 21 ++++-------------
- 3 files changed, 28 insertions(+), 35 deletions(-)
+ drivers/iommu/amd/amd_iommu.h       |  4 ++--
+ drivers/iommu/amd/amd_iommu_types.h |  6 -----
+ drivers/iommu/amd/io_pgtable.c      | 36 ++++++++++-------------------
+ drivers/iommu/amd/iommu.c           | 34 ++++-----------------------
+ 4 files changed, 19 insertions(+), 61 deletions(-)
 
 diff --git a/drivers/iommu/amd/amd_iommu.h b/drivers/iommu/amd/amd_iommu.h
-index 1bad42a3c73c..91d098003f12 100644
+index 91d098003f12..76276d9e463c 100644
 --- a/drivers/iommu/amd/amd_iommu.h
 +++ b/drivers/iommu/amd/amd_iommu.h
-@@ -132,7 +132,6 @@ static inline void amd_iommu_apply_ivrs_quirks(void) { }
- #endif
+@@ -110,6 +110,8 @@ static inline
+ void amd_iommu_domain_set_pt_root(struct protection_domain *domain, u64 root)
+ {
+ 	atomic64_set(&domain->iop.pt_root, root);
++	domain->iop.root = (u64 *)(root & PAGE_MASK);
++	domain->iop.mode = root & 7; /* lowest 3 bits encode pgtable mode */
+ }
  
- /* TODO: These are temporary and will be removed once fully transition */
--extern void free_pagetable(struct domain_pgtable *pgtable);
- extern int iommu_map_page(struct protection_domain *dom,
- 			  unsigned long bus_addr,
- 			  unsigned long phys_addr,
+ static inline
+@@ -144,8 +146,6 @@ extern unsigned long iommu_unmap_page(struct protection_domain *dom,
+ extern u64 *fetch_pte(struct protection_domain *domain,
+ 		      unsigned long address,
+ 		      unsigned long *page_size);
+-extern void amd_iommu_domain_get_pgtable(struct protection_domain *domain,
+-					 struct domain_pgtable *pgtable);
+ extern void amd_iommu_domain_set_pgtable(struct protection_domain *domain,
+ 					 u64 *root, int mode);
+ #endif
+diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
+index 7c971c76d685..6897567d307e 100644
+--- a/drivers/iommu/amd/amd_iommu_types.h
++++ b/drivers/iommu/amd/amd_iommu_types.h
+@@ -518,12 +518,6 @@ struct protection_domain {
+ 	unsigned dev_iommu[MAX_IOMMUS]; /* per-IOMMU reference count */
+ };
+ 
+-/* For decocded pt_root */
+-struct domain_pgtable {
+-	int mode;
+-	u64 *root;
+-};
+-
+ /*
+  * Structure where we save information about one hardware AMD IOMMU in the
+  * system.
 diff --git a/drivers/iommu/amd/io_pgtable.c b/drivers/iommu/amd/io_pgtable.c
-index 345e9bc81fde..dc674e79ddf0 100644
+index dc674e79ddf0..d4d131e43dcd 100644
 --- a/drivers/iommu/amd/io_pgtable.c
 +++ b/drivers/iommu/amd/io_pgtable.c
-@@ -163,23 +163,6 @@ static struct page *free_sub_pt(unsigned long root, int mode,
- 	return freelist;
- }
- 
--void free_pagetable(struct domain_pgtable *pgtable)
--{
--	struct page *freelist = NULL;
--	unsigned long root;
--
--	if (pgtable->mode == PAGE_MODE_NONE)
--		return;
--
--	BUG_ON(pgtable->mode < PAGE_MODE_NONE ||
--	       pgtable->mode > PAGE_MODE_6_LEVEL);
--
--	root = (unsigned long)pgtable->root;
--	freelist = free_sub_pt(root, pgtable->mode, freelist);
--
--	free_page_list(freelist);
--}
--
- void amd_iommu_domain_set_pgtable(struct protection_domain *domain,
- 				  u64 *root, int mode)
+@@ -184,30 +184,27 @@ static bool increase_address_space(struct protection_domain *domain,
+ 				   unsigned long address,
+ 				   gfp_t gfp)
  {
-@@ -528,6 +511,30 @@ unsigned long iommu_unmap_page(struct protection_domain *dom,
-  */
- static void v1_free_pgtable(struct io_pgtable *iop)
- {
-+	struct amd_io_pgtable *pgtable = container_of(iop, struct amd_io_pgtable, iop);
-+	struct protection_domain *dom;
-+	struct page *freelist = NULL;
-+	unsigned long root;
-+
-+	if (pgtable->mode == PAGE_MODE_NONE)
-+		return;
-+
-+	dom = container_of(pgtable, struct protection_domain, iop);
-+
-+	/* Update data structure */
-+	amd_iommu_domain_clr_pt_root(dom);
-+
-+	/* Make changes visible to IOMMUs */
-+	amd_iommu_domain_update(dom);
-+
-+	/* Page-table is not visible to IOMMU anymore, so free it */
-+	BUG_ON(pgtable->mode < PAGE_MODE_NONE ||
-+	       pgtable->mode > PAGE_MODE_6_LEVEL);
-+
-+	root = (unsigned long)pgtable->root;
-+	freelist = free_sub_pt(root, pgtable->mode, freelist);
-+
-+	free_page_list(freelist);
- }
- 
- static struct io_pgtable *v1_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index e823acccc457..37ecedce2c14 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -1903,17 +1903,14 @@ static void cleanup_domain(struct protection_domain *domain)
- 
- static void protection_domain_free(struct protection_domain *domain)
- {
--	struct domain_pgtable pgtable;
--
- 	if (!domain)
- 		return;
- 
- 	if (domain->id)
- 		domain_id_free(domain->id);
- 
--	amd_iommu_domain_get_pgtable(domain, &pgtable);
--	amd_iommu_domain_clr_pt_root(domain);
--	free_pagetable(&pgtable);
-+	if (domain->iop.pgtbl_cfg.tlb)
-+		free_io_pgtable_ops(&domain->iop.iop.ops);
- 
- 	kfree(domain);
- }
-@@ -2302,22 +2299,12 @@ EXPORT_SYMBOL(amd_iommu_unregister_ppr_notifier);
- void amd_iommu_domain_direct_map(struct iommu_domain *dom)
- {
- 	struct protection_domain *domain = to_pdomain(dom);
 -	struct domain_pgtable pgtable;
  	unsigned long flags;
+ 	bool ret = true;
+ 	u64 *pte;
  
  	spin_lock_irqsave(&domain->lock, flags);
  
--	/* First save pgtable configuration*/
 -	amd_iommu_domain_get_pgtable(domain, &pgtable);
 -
--	/* Remove page-table from domain */
--	amd_iommu_domain_clr_pt_root(domain);
--
--	/* Make changes visible to IOMMUs */
--	amd_iommu_domain_update(domain);
--
--	/* Page-table is not visible to IOMMU anymore, so free it */
--	free_pagetable(&pgtable);
-+	if (domain->iop.pgtbl_cfg.tlb)
-+		free_io_pgtable_ops(&domain->iop.iop.ops);
+-	if (address <= PM_LEVEL_SIZE(pgtable.mode))
++	if (address <= PM_LEVEL_SIZE(domain->iop.mode))
+ 		goto out;
  
- 	spin_unlock_irqrestore(&domain->lock, flags);
+ 	ret = false;
+-	if (WARN_ON_ONCE(pgtable.mode == PAGE_MODE_6_LEVEL))
++	if (WARN_ON_ONCE(domain->iop.mode == PAGE_MODE_6_LEVEL))
+ 		goto out;
+ 
+ 	pte = (void *)get_zeroed_page(gfp);
+ 	if (!pte)
+ 		goto out;
+ 
+-	*pte = PM_LEVEL_PDE(pgtable.mode, iommu_virt_to_phys(pgtable.root));
++	*pte = PM_LEVEL_PDE(domain->iop.mode, iommu_virt_to_phys(domain->iop.root));
+ 
+-	pgtable.root  = pte;
+-	pgtable.mode += 1;
++	domain->iop.root  = pte;
++	domain->iop.mode += 1;
+ 	amd_iommu_update_and_flush_device_table(domain);
+ 	amd_iommu_domain_flush_complete(domain);
+ 
+@@ -215,7 +212,7 @@ static bool increase_address_space(struct protection_domain *domain,
+ 	 * Device Table needs to be updated and flushed before the new root can
+ 	 * be published.
+ 	 */
+-	amd_iommu_domain_set_pgtable(domain, pte, pgtable.mode);
++	amd_iommu_domain_set_pgtable(domain, pte, domain->iop.mode);
+ 
+ 	ret = true;
+ 
+@@ -232,29 +229,23 @@ static u64 *alloc_pte(struct protection_domain *domain,
+ 		      gfp_t gfp,
+ 		      bool *updated)
+ {
+-	struct domain_pgtable pgtable;
+ 	int level, end_lvl;
+ 	u64 *pte, *page;
+ 
+ 	BUG_ON(!is_power_of_2(page_size));
+ 
+-	amd_iommu_domain_get_pgtable(domain, &pgtable);
+-
+-	while (address > PM_LEVEL_SIZE(pgtable.mode)) {
++	while (address > PM_LEVEL_SIZE(domain->iop.mode)) {
+ 		/*
+ 		 * Return an error if there is no memory to update the
+ 		 * page-table.
+ 		 */
+ 		if (!increase_address_space(domain, address, gfp))
+ 			return NULL;
+-
+-		/* Read new values to check if update was successful */
+-		amd_iommu_domain_get_pgtable(domain, &pgtable);
+ 	}
+ 
+ 
+-	level   = pgtable.mode - 1;
+-	pte     = &pgtable.root[PM_LEVEL_INDEX(level, address)];
++	level   = domain->iop.mode - 1;
++	pte     = &domain->iop.root[PM_LEVEL_INDEX(level, address)];
+ 	address = PAGE_SIZE_ALIGN(address, page_size);
+ 	end_lvl = PAGE_SIZE_LEVEL(page_size);
+ 
+@@ -330,19 +321,16 @@ u64 *fetch_pte(struct protection_domain *domain,
+ 	       unsigned long address,
+ 	       unsigned long *page_size)
+ {
+-	struct domain_pgtable pgtable;
+ 	int level;
+ 	u64 *pte;
+ 
+ 	*page_size = 0;
+ 
+-	amd_iommu_domain_get_pgtable(domain, &pgtable);
+-
+-	if (address > PM_LEVEL_SIZE(pgtable.mode))
++	if (address > PM_LEVEL_SIZE(domain->iop.mode))
+ 		return NULL;
+ 
+-	level	   =  pgtable.mode - 1;
+-	pte	   = &pgtable.root[PM_LEVEL_INDEX(level, address)];
++	level	   =  domain->iop.mode - 1;
++	pte	   = &domain->iop.root[PM_LEVEL_INDEX(level, address)];
+ 	*page_size =  PTE_LEVEL_PAGE_SIZE(level);
+ 
+ 	while (level > 0) {
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index 37ecedce2c14..2963a37b7c16 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -139,15 +139,6 @@ static struct protection_domain *to_pdomain(struct iommu_domain *dom)
+ 	return container_of(dom, struct protection_domain, domain);
  }
+ 
+-void amd_iommu_domain_get_pgtable(struct protection_domain *domain,
+-				  struct domain_pgtable *pgtable)
+-{
+-	u64 pt_root = atomic64_read(&domain->iop.pt_root);
+-
+-	pgtable->root = (u64 *)(pt_root & PAGE_MASK);
+-	pgtable->mode = pt_root & 7; /* lowest 3 bits encode pgtable mode */
+-}
+-
+ static struct iommu_dev_data *alloc_dev_data(u16 devid)
+ {
+ 	struct iommu_dev_data *dev_data;
+@@ -1484,7 +1475,6 @@ static void clear_dte_entry(u16 devid)
+ static void do_attach(struct iommu_dev_data *dev_data,
+ 		      struct protection_domain *domain)
+ {
+-	struct domain_pgtable pgtable;
+ 	struct amd_iommu *iommu;
+ 	bool ats;
+ 
+@@ -1500,7 +1490,6 @@ static void do_attach(struct iommu_dev_data *dev_data,
+ 	domain->dev_cnt                 += 1;
+ 
+ 	/* Update device table */
+-	amd_iommu_domain_get_pgtable(domain, &pgtable);
+ 	set_dte_entry(dev_data->devid, domain,
+ 		      ats, dev_data->iommu_v2);
+ 	clone_aliases(dev_data->pdev);
+@@ -1827,10 +1816,7 @@ void amd_iommu_update_and_flush_device_table(struct protection_domain *domain)
+ 
+ void amd_iommu_domain_update(struct protection_domain *domain)
+ {
+-	struct domain_pgtable pgtable;
+-
+ 	/* Update device table */
+-	amd_iommu_domain_get_pgtable(domain, &pgtable);
+ 	amd_iommu_update_and_flush_device_table(domain);
+ 
+ 	/* Flush domain TLB(s) and wait for completion */
+@@ -2080,12 +2066,10 @@ static int amd_iommu_map(struct iommu_domain *dom, unsigned long iova,
+ 			 gfp_t gfp)
+ {
+ 	struct protection_domain *domain = to_pdomain(dom);
+-	struct domain_pgtable pgtable;
+ 	int prot = 0;
+ 	int ret;
+ 
+-	amd_iommu_domain_get_pgtable(domain, &pgtable);
+-	if (pgtable.mode == PAGE_MODE_NONE)
++	if (domain->iop.mode == PAGE_MODE_NONE)
+ 		return -EINVAL;
+ 
+ 	if (iommu_prot & IOMMU_READ)
+@@ -2105,10 +2089,8 @@ static size_t amd_iommu_unmap(struct iommu_domain *dom, unsigned long iova,
+ 			      struct iommu_iotlb_gather *gather)
+ {
+ 	struct protection_domain *domain = to_pdomain(dom);
+-	struct domain_pgtable pgtable;
+ 
+-	amd_iommu_domain_get_pgtable(domain, &pgtable);
+-	if (pgtable.mode == PAGE_MODE_NONE)
++	if (domain->iop.mode == PAGE_MODE_NONE)
+ 		return 0;
+ 
+ 	return iommu_unmap_page(domain, iova, page_size);
+@@ -2119,11 +2101,9 @@ static phys_addr_t amd_iommu_iova_to_phys(struct iommu_domain *dom,
+ {
+ 	struct protection_domain *domain = to_pdomain(dom);
+ 	unsigned long offset_mask, pte_pgsize;
+-	struct domain_pgtable pgtable;
+ 	u64 *pte, __pte;
+ 
+-	amd_iommu_domain_get_pgtable(domain, &pgtable);
+-	if (pgtable.mode == PAGE_MODE_NONE)
++	if (domain->iop.mode == PAGE_MODE_NONE)
+ 		return iova;
+ 
+ 	pte = fetch_pte(domain, iova, &pte_pgsize);
+@@ -2493,11 +2473,9 @@ static u64 *__get_gcr3_pte(u64 *root, int level, u32 pasid, bool alloc)
+ static int __set_gcr3(struct protection_domain *domain, u32 pasid,
+ 		      unsigned long cr3)
+ {
+-	struct domain_pgtable pgtable;
+ 	u64 *pte;
+ 
+-	amd_iommu_domain_get_pgtable(domain, &pgtable);
+-	if (pgtable.mode != PAGE_MODE_NONE)
++	if (domain->iop.mode != PAGE_MODE_NONE)
+ 		return -EINVAL;
+ 
+ 	pte = __get_gcr3_pte(domain->gcr3_tbl, domain->glx, pasid, true);
+@@ -2511,11 +2489,9 @@ static int __set_gcr3(struct protection_domain *domain, u32 pasid,
+ 
+ static int __clear_gcr3(struct protection_domain *domain, u32 pasid)
+ {
+-	struct domain_pgtable pgtable;
+ 	u64 *pte;
+ 
+-	amd_iommu_domain_get_pgtable(domain, &pgtable);
+-	if (pgtable.mode != PAGE_MODE_NONE)
++	if (domain->iop.mode != PAGE_MODE_NONE)
+ 		return -EINVAL;
+ 
+ 	pte = __get_gcr3_pte(domain->gcr3_tbl, domain->glx, pasid, false);
 -- 
 2.17.1
 
