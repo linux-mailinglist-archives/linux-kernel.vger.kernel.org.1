@@ -2,187 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0A62DA73B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 05:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B5B2DA738
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 05:47:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726111AbgLOErr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 23:47:47 -0500
-Received: from mout.gmx.net ([212.227.17.21]:38531 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725843AbgLOEr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 23:47:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608007551;
-        bh=ELn4lLfyUmkaZ+5v9UHSLTUcJ3ROklkjV70xqh4zJTQ=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=MNo0csiCC9mKB3a3ORA8aIORvfqplS6TQu9WClN2qiYQscyxrCXxQ9/xm6BZW84+T
-         e3y6Qr0nb4+8oCxof6kr8yoMG/iRIlX0+9kEeS3yLYu8ThhxcA6848JXXZXoknMwFQ
-         nTUGdFrNO5BdZE0xUnKre5TMGn4etxip2TxsjaQw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.190.227]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MKKYx-1kXDHc0mAZ-00Lnlf; Tue, 15
- Dec 2020 05:45:51 +0100
-Subject: Re: linux-next: manual merge of the parisc-hd tree with the
- asm-generic tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20201102123841.39eb4216@canb.auug.org.au>
- <20201215064847.3676d9bf@canb.auug.org.au>
-From:   Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
- c2TFWAS8k6RLkk41ZUU8ENX8+qZx/Q==
-Message-ID: <0f001a81-b1d3-4df4-28db-b193812a1a42@gmx.de>
-Date:   Tue, 15 Dec 2020 05:45:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726060AbgLOEqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 23:46:48 -0500
+Received: from mail-mw2nam12on2116.outbound.protection.outlook.com ([40.107.244.116]:49888
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725843AbgLOEqs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 23:46:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jNKFMXxMdCx0Au0tTJeCMpzWoyHbhPgV26QyO4Z3Jxewfyyumuvq+VxER8++ksyTE5TSB+FvzmTP3vLUnnSkQXODsAOvOB8ruli7VkjZdsLsIg2W2xFclFAZnst4/yqRkmccrd/z2Y+fonpzPU9PPZOHFwp1WBbhdtzUGwEeVEl+7yGO3IPRPTn9wE76qAM6ixruj0Q8cFxKP/LL1h2Q+OE6mxvV42otWD7GTBxbSiB0YNYu2bqZQSVOQuyKiYIk57egg2cm6xHCfbJ80larCc1i0WpAR6wvDYYdbBL8nsnzPs+95SnwXoMeztVriV9iszgRkiX6J2yn6vsc1DhG2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4AjniCROTH8tcJQrBO1B9hed+1lEWbI2rZ/cqQXAFoc=;
+ b=E+Oa2VQ8Tr0xEvMPUhdum7ASJd2Q1ccBzdXTfj6CssJLgHHjJru1Kqss8+rimLafjSiXlyVSCi3+CuX0ou95QgZZiQmi2TdzqnZnypHeTQvlRIP3PW9Y7G5EvtyvHiJEiw//FYbsTa/csSMFuVgK8/cXcovDJlIYG1XG0TbI0cCztFaqKxy0npy1W7hwKC8klPiB/00qZgvRVyxEb1hggj0jjYFx4cYyWaza104i8lFJ58fciLUrBxfZd2qKWLsshaeSgsv1aCvKhI0wMwjOFd5CCHSlu+yDQYpuU+ebm/tYoEqCJJpcRY7eYZ/DZzVAygZqBDWiPVGnCr7XkW0x5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4AjniCROTH8tcJQrBO1B9hed+1lEWbI2rZ/cqQXAFoc=;
+ b=DSEpj1LObJgVAuzAkXJT+tvTBxHDIAK5JhfyAuj2qpqh3dt1Mvm2e4FZZ2e0a3lIuUyCDyyaEnkvDx9mMCbxYexGzzjyabc4LnpS9kypc9jhBcMrXduj7lzRBuxXEGtzM/6Mrh7Ie5L5cy13+IlS6WME13VjcVQweMIkZGuTeeQ=
+Received: from (2603:10b6:302:a::16) by
+ MW2PR2101MB1113.namprd21.prod.outlook.com (2603:10b6:302:a::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.4; Tue, 15 Dec
+ 2020 04:45:58 +0000
+Received: from MW2PR2101MB1052.namprd21.prod.outlook.com
+ ([fe80::b8f6:e748:cdf2:1922]) by MW2PR2101MB1052.namprd21.prod.outlook.com
+ ([fe80::b8f6:e748:cdf2:1922%8]) with mapi id 15.20.3700.004; Tue, 15 Dec 2020
+ 04:45:58 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>
+Subject: RE: [PATCH v3 5/6] Drivers: hv: vmbus: Resolve race condition in
+ vmbus_onoffer_rescind()
+Thread-Topic: [PATCH v3 5/6] Drivers: hv: vmbus: Resolve race condition in
+ vmbus_onoffer_rescind()
+Thread-Index: AQHWzfo9o1wAeDg4WEGnJ6tzz+rx+an3nj9w
+Date:   Tue, 15 Dec 2020 04:45:58 +0000
+Message-ID: <MW2PR2101MB1052562612C8F85935B4A62FD7C69@MW2PR2101MB1052.namprd21.prod.outlook.com>
+References: <20201209070827.29335-1-parri.andrea@gmail.com>
+ <20201209070827.29335-6-parri.andrea@gmail.com>
+In-Reply-To: <20201209070827.29335-6-parri.andrea@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-15T04:45:56Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=da02857b-7287-41c6-952c-209e7ec84f53;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8cfed01c-f8d8-4432-5ae3-08d8a0b4510c
+x-ms-traffictypediagnostic: MW2PR2101MB1113:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW2PR2101MB1113AED8AD59CB268FBDF599D7C69@MW2PR2101MB1113.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3968;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: CUcbgGIJTJS9GKvVtoJgBKE4FJVkcZ72IIkFLNIJHoyKeJHavggMGlPICvK5mCjBxs1BgQHLjMFWaK/Sk2HYuzHQdAyjwTBSIK1DB2lTOabDPyMu+qQjq8GolSu5BkUyXFcvUN6qE9Ih2xot6b4GTOyAa+9ke0kchQh+7vM9GUzQ4gvrbT3Ug1s31ac4YiQoNCLXXX72VRN3Lr8Mr+5wXIp/nj3R1JSu5AUhdWu1aJn2JdHMN/rfwEs2+GBGYl3Qkry/fKh1610I3tgaqdo3iyetctpZClHbjH+mXIakvCM3W80ELXsbm3y8VnKwNu9SYXh2c/CsfCjGKSYCL4mhCOI0boQ0YF0r1bfTYk5iJqNXWJswgeU3nNUrDlf27IRFMcEERj6LYDkXqxjK3XS/nQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1052.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(346002)(7696005)(71200400001)(66946007)(66556008)(86362001)(10290500003)(6506007)(8676002)(110136005)(8990500004)(33656002)(52536014)(83380400001)(508600001)(2906002)(82960400001)(4326008)(82950400001)(8936002)(26005)(5660300002)(76116006)(66446008)(55016002)(54906003)(186003)(64756008)(66476007)(107886003)(9686003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?XmeMNoPTbigUF5RSwpiVbQ6ZuySIElASbtT+NUbiksqQWuLsq7tTfK60XX65?=
+ =?us-ascii?Q?L+rnqW1/Q5BI83K8phV+h91EKPUgUH8UucqRLS/v39AnXfy6gbjDHJVc0rwK?=
+ =?us-ascii?Q?bQabk6MVIbTyLhrsYxosy/OdPWIGWj+ifOp0+RIwMiyAuA4oKwfEJGfuCBIj?=
+ =?us-ascii?Q?KIsH8xEPIvEmKJfFUjkcQe6wNfQkxXi2O0mBt/x/YoTic9tgr9S35VbAwKUh?=
+ =?us-ascii?Q?fZy5J/ZmDLGtLiL2ZD8z6+4freoLZQxzIKnj+dH/bG8alhu/57Xo2Zk4W4od?=
+ =?us-ascii?Q?ZgeI2Z0VaRQe8GH62Rwdt1wv4SMUEJinIGBkCPLEWIwume2ADGd0hbS7e6Js?=
+ =?us-ascii?Q?eX1qUpVtSct8Wh7rpehcLQi8ioIDm303jPtzJ1fJ5wwlGWKce5sP4HxRUsQ3?=
+ =?us-ascii?Q?lpAv0ftCEh2eFLjTINAefUXq6g64Ylh12P6XNqSPRLY8nQQEXbyfusgSnoVt?=
+ =?us-ascii?Q?zhYNloIBNGuLQdN1aJeRERRrDJRbr530u7MDlzTvJsu95MLqhBes+d68p0Uh?=
+ =?us-ascii?Q?YOVEBH1JHM6nkBbMGpP6FxP0g88O2Kx4pazBl4FcN8L/ClteN84whZ9zefGs?=
+ =?us-ascii?Q?CX5xIsptB32a7EzqE9n2JdN80gAyY24Abm1jGxjW4CTue1mjxZ7zq1vs4Y/w?=
+ =?us-ascii?Q?7muKWNhzZZEoWaD+15l8qSoBBeabaz+sGwdOC4ACMl5i/2xagKz8tBlBemSR?=
+ =?us-ascii?Q?xlJ+EYR6lo/y/8oltykl+VhsfsthYvuuTYdda82TUMIyP4SHc+5mq1EzGQMG?=
+ =?us-ascii?Q?c8DQvZ2CW9ecf5fzZzLNLOU4T2iEqy7n+kT/Zh7vt0ZNExDsytJ3HaVVYK09?=
+ =?us-ascii?Q?eeYJZSTrqcLX2UtCpgm4vVeVWuil0qHSLaryLMCB85IQnpWfkKr3fKSiuIxe?=
+ =?us-ascii?Q?DKyiCt3Gckc8mfQPOnsKisYlbR8VQHJX+epIJyvFqgpZkoQtwzkOXj9eumm1?=
+ =?us-ascii?Q?Q0WijfU2vl/que2i+3PnPw9oz0KUIPdFDmlIvW7KW1M=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20201215064847.3676d9bf@canb.auug.org.au>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="RbgN7DPhguJdooLdNIODKKIV9piDWUDAK"
-X-Provags-ID: V03:K1:H8Y6z8eWI557zzuIhlsNwO0KcR3mTqWujbrPda8KTp4N2x/rY6V
- TkDvgmtov67kYSrRGU7KDFYdLFzMXxSq9jvG9787RCmS/2QwCrTvD0ibnI8eASVKSmT5sWf
- a2BXaGiSMR7L+qKgD2fTWED9nxUL6628C4T3Eztqyd/6UiNgwDe079tE/7a0ZCeuxLNNjsJ
- ZRpFD2O0/cW1AHXYuoGyw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZwXoBQgJfgE=:hqsXlVaCUEU4lJl4Fn8ZN2
- elWXKn8QjiL1/AVz0E2qu2qAZo4wz/3EGsi1Krpn8xInGxYzCnFa/87fZC9o44/GNjtpSXYTE
- JIxSrKReo7filEINn4k4OfrIJIbDvMaAziva2VSMAUR3szSPU93TYETRbC9+p8iIJhQb0ZN+y
- W2hu1H5QhqJ/UrHimjm1qpMy1Ln6rdN5DdzU9LJgULlMf1aA8huL31xJLWfgyh5JIyoXKVy3w
- 0lE5FzHFXhaXrg4F/SPBEkCE7h4dcsDmrYJRdXPXwOZLSylnuEZHbiMfqhEND0C0irgIgzn4Q
- j6BVlyFSoDxLscufqi/4GTPZG9fQS4hUQlO8SxO6e7oiDpxleK7QmANYcTnPG2DAJ2Bas76Jc
- DKPqj2XMPRKFUFMjTAOGb/M9Zf5d554lkVIf71dtDdSsORiouwt/SSMKdPEtFXVyr0VQ5IzNa
- 6AvE4MOZVHl9H2T/d2+p3bZ3oW7lJ0axihZ7MweWbq/G5Yo5dQ0hm0TrFSKcExmtY70vy5/BY
- lmOYCCBGkLAa+uQ6FcTUFCuMCXANe5uRdArdbolhkv3jkxX3ZUylbEAWG3elBoliOOiWkr2SV
- F7Dz/adNOI3jSXOFf42w0GXVFO8PZyx+nGsseu9HBABfdN5xYBfA4hLmvBldY3FtGlvkyLcgI
- jmhOj9wIxyvNGhqGWeukDnnFJr8BgJXVqHQHfD9RuI9EovPmbSJVG5YWpmVgeuuiTUmfoCFL/
- c4CXGMJebHcNuklfBhMLI6hbd/BXaOhFj5gb+T1nck+r0imWJMNXM9EMnjnIK/HZSHgzUfARB
- /YJjNHZVGRcQuj2Y9Wpxjp/wn52ch5FScxgvbu1XJTSQ0i0klg9ptsYx7lDE3/ygXO6SaQMpY
- fxGG1H9dKYmaM/gat5/g==
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1052.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8cfed01c-f8d8-4432-5ae3-08d8a0b4510c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Dec 2020 04:45:58.5307
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lC1BDI+YMBZRCZQQ87Ga12kNzboITzvpSKcdAjBdgzkKvmvnr0+Kafs32NdjVUf3SAX/WlLYgcoCsVPiRl3SYnQ+q/vZecHjCJ5OnOPNHAg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB1113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---RbgN7DPhguJdooLdNIODKKIV9piDWUDAK
-Content-Type: multipart/mixed; boundary="rFcqKhEA5dbXqP4ufICt8hW5ZwQDbItAX"
-
---rFcqKhEA5dbXqP4ufICt8hW5ZwQDbItAX
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-On 12/14/20 8:48 PM, Stephen Rothwell wrote:
-> Hi all,
+From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Tuesday, Dece=
+mber 8, 2020 11:08 PM
 >=20
-> On Mon, 2 Nov 2020 12:38:41 +1100 Stephen Rothwell <sfr@canb.auug.org.a=
-u> wrote:
->>
->> Today's linux-next merge of the parisc-hd tree got a conflict in:
->>
->>   arch/parisc/kernel/time.c
->>
->> between commit:
->>
->>   686092e7daaa ("parisc: use legacy_timer_tick")
->>
->> from the asm-generic tree and commit:
->>
->>   3b7ab4a74a2d ("parisc: Switch to clockevent based timers")
->>
->> from the parisc-hd tree.
->>
->> I fixed it up (I effectively reverted the former commit) and can carry=
- the
->> fix as necessary. This is now fixed as far as linux-next is concerned,=
-
->> but any non trivial conflicts should be mentioned to your upstream
->> maintainer when your tree is submitted for merging.  You may also want=
-
->> to consider cooperating with the maintainer of the conflicting tree to=
-
->> minimise any particularly complex conflicts.
+> An erroneous or malicious host could send multiple rescind messages for
+> a same channel.  In vmbus_onoffer_rescind(), the guest maps the channel
+> ID to obtain a pointer to the channel object and it eventually releases
+> such object and associated data.  The host could time rescind messages
+> and lead to an use-after-free.  Add a new flag to the channel structure
+> to make sure that only one instance of vmbus_onoffer_rescind() can get
+> the reference to the channel object.
 >=20
-> This is just a reminder that this conflict still exists.
+> Reported-by: Juan Vazquez <juvazq@microsoft.com>
+> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> ---
+>  drivers/hv/channel_mgmt.c | 12 ++++++++++++
+>  include/linux/hyperv.h    |  1 +
+>  2 files changed, 13 insertions(+)
+>=20
+> diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
+> index 4072fd1f22146..68950a1e4b638 100644
+> --- a/drivers/hv/channel_mgmt.c
+> +++ b/drivers/hv/channel_mgmt.c
+> @@ -1063,6 +1063,18 @@ static void vmbus_onoffer_rescind(struct
+> vmbus_channel_message_header *hdr)
+>=20
+>  	mutex_lock(&vmbus_connection.channel_mutex);
+>  	channel =3D relid2channel(rescind->child_relid);
+> +	if (channel !=3D NULL) {
+> +		/*
+> +		 * Guarantee that no other instance of vmbus_onoffer_rescind()
+> +		 * has got a reference to the channel object.  Synchronize on
+> +		 * &vmbus_connection.channel_mutex.
+> +		 */
+> +		if (channel->rescind_ref) {
+> +			mutex_unlock(&vmbus_connection.channel_mutex);
+> +			return;
+> +		}
+> +		channel->rescind_ref =3D true;
+> +	}
+>  	mutex_unlock(&vmbus_connection.channel_mutex);
+>=20
+>  	if (channel =3D=3D NULL) {
+> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+> index 2ea967bc17adf..f0d48a368f131 100644
+> --- a/include/linux/hyperv.h
+> +++ b/include/linux/hyperv.h
+> @@ -809,6 +809,7 @@ struct vmbus_channel {
+>  	u8 monitor_bit;
+>=20
+>  	bool rescind; /* got rescind msg */
+> +	bool rescind_ref; /* got rescind msg, got channel reference */
+>  	struct completion rescind_event;
+>=20
+>  	u32 ringbuffer_gpadlhandle;
+> --
+> 2.25.1
 
-I dropped the patch from the parisc-hd tree for now -=20
-it needs more work and will not be part of the next merge window.
-
-Thanks,
-Helge
-
-
---rFcqKhEA5dbXqP4ufICt8hW5ZwQDbItAX--
-
---RbgN7DPhguJdooLdNIODKKIV9piDWUDAK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQS86RI+GtKfB8BJu973ErUQojoPXwUCX9g/fQAKCRD3ErUQojoP
-X1GoAQDBvPNT92MOD0emIuQzyZSIr09tC/0DDzg6KjIoMGM96AEA/OQGItSnhbB0
-FVMWIzuEp6p3FNoB/qqWu4YOEr3wyAg=
-=S4SK
------END PGP SIGNATURE-----
-
---RbgN7DPhguJdooLdNIODKKIV9piDWUDAK--
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
