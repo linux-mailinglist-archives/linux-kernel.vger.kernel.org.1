@@ -2,127 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539502DAD6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC8F2DAD75
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:51:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728972AbgLOMqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 07:46:15 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41248 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728841AbgLOMqP (ORCPT
+        id S1728740AbgLOMuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 07:50:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20362 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726156AbgLOMuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 07:46:15 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BFCWWVi180926;
-        Tue, 15 Dec 2020 07:45:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : content-type : mime-version :
- content-transfer-encoding; s=pp1;
- bh=n7uDpeokGZ+dAfGQJNp3tTusSHjI7NCE3+fLK4oiBq8=;
- b=GpAkp1ri2CgVP0eNuX5OcZ4pcv8UOLlYkjYHfjzvssjhbNBqUwY16QwQ0JEfQ6+4YV+W
- 2EfQSW3H19HZ39hWUUxCAg5envrepdzC8CO0RtR9KPLfboGDbZeEHppxS9vLxheVtGeQ
- HsSMXP6ve+jjwowcJT3b3ZGCmwnFg1cReTSENENDA7CdjO2fFVWu60RU70dQaGWdFK9F
- YHLN7IGXJ2zqhE2/74x0MWT5+T3s4guocCdxXKi6SyA3VOV9MGs481uhUhSclFl5Q6le
- MHkW3USwQPt9lm+9JWcqreXTX7x1Cj6UaJoMVvelokbm2mblPvCs+sBQugtj4rEe4a9B WQ== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35eumx39w4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Dec 2020 07:45:33 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BFCY3YY029296;
-        Tue, 15 Dec 2020 12:45:31 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06fra.de.ibm.com with ESMTP id 35d3109d95-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Dec 2020 12:45:31 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BFCjTAr34079006
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Dec 2020 12:45:29 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 347C6AE053;
-        Tue, 15 Dec 2020 12:45:29 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2E252AE045;
-        Tue, 15 Dec 2020 12:45:28 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.21.236])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 15 Dec 2020 12:45:27 +0000 (GMT)
-Message-ID: <1d4caa0d060caa9249d97acf5d8a9a0fe944076b.camel@linux.ibm.com>
-Subject: [GIT PULL] integrity subsystem updates for v5.11
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Tue, 15 Dec 2020 07:45:27 -0500
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
+        Tue, 15 Dec 2020 07:50:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608036522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=71TJz4jJBxi3FNWgBuXMogBmrKtRgJQf0Py8VByy0QY=;
+        b=b3BcZayerw/msP7wtSFaPWjoH0zFd6o2orNe78KKzqY0/lq+ddUSGMH7Un4Eqv06xFJztM
+        HZmdfvKlKBYARGayOuhAhGgo5h2A6Bx6+3kBoZ3h5eeaMxXAVPKVPL1EJgN0VdPKR/JNRE
+        wusKA13m0F8HdbjGyMCZAwoeVQR0EOo=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-32-R_UuDorSPnWdlo8FeiNZAA-1; Tue, 15 Dec 2020 07:48:40 -0500
+X-MC-Unique: R_UuDorSPnWdlo8FeiNZAA-1
+Received: by mail-ej1-f69.google.com with SMTP id y14so5964521ejf.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 04:48:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=71TJz4jJBxi3FNWgBuXMogBmrKtRgJQf0Py8VByy0QY=;
+        b=Rj74nP1OajM0L/oy8W6MdbiakFIt7aNDuL3LHeFuMTXImHwjws8x3NrLCJ9+q59hgq
+         /aAyw300r43f4TKKnnzGnYMnFwI8HQelTDyvQ/zt1+p9W+7g6DfOOk2FZ3tzbDLgZfNT
+         8nls30vz9pVdztGRZRMh1TofIgLQutBBelzbiQJHXf3IP3FDTM4F93Llrlcnm7zCQztY
+         hBC0otKW0/AjgHCFQE0HcJ3ahIdn7nYJI2gLJE3cMC4+Q6qjyVm1zAoCsfDOX4GWOziS
+         y9u+moRUJ+BHpr6bflpYdjEv4Rh+KdmN64LBFSQ19PB5ImFfuT7/NIZAyTKo8+ZFH5k2
+         o8NA==
+X-Gm-Message-State: AOAM532eNWsVuSkngnR3f3YkhCyzAr9fo8sDTspqmndaXHNLp6P2m20G
+        0SD7ZiakzsBeMxbWcIZcRilNZIPoV+gToMHF0QtY4ylu8dFd4NEZl3udjsA8PvKvCgDq5yiHrhy
+        sG3F/ZJVUlC/fylW3A6KCwaY3
+X-Received: by 2002:aa7:dd17:: with SMTP id i23mr2260449edv.14.1608036519049;
+        Tue, 15 Dec 2020 04:48:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyW4i0eBs12UuBv1hAbzp9cwH5eerH26Zv/FHBRnZAh2dyaOq2xvRcezNZM9oglVXwzs9HqyQ==
+X-Received: by 2002:aa7:dd17:: with SMTP id i23mr2260432edv.14.1608036518858;
+        Tue, 15 Dec 2020 04:48:38 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id cb14sm1346737ejb.105.2020.12.15.04.48.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 04:48:38 -0800 (PST)
+Subject: Re: [PATCH v5 0/4] Improve s0ix flows for systems i219LM
+To:     Mario Limonciello <mario.limonciello@dell.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        intel-wired-lan@lists.osuosl.org
+Cc:     linux-kernel@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Netfin <sasha.neftin@intel.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Stefan Assmann <sassmann@redhat.com>,
+        David Miller <davem@davemloft.net>, darcari@redhat.com,
+        Yijun.Shen@dell.com, Perry.Yuan@dell.com,
+        anthony.wong@canonical.com
+References: <20201214192935.895174-1-mario.limonciello@dell.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <44b33670-7692-d6c1-3a65-61544ae4276c@redhat.com>
+Date:   Tue, 15 Dec 2020 13:48:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20201214192935.895174-1-mario.limonciello@dell.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-15_10:2020-12-14,2020-12-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- bulkscore=0 phishscore=0 malwarescore=0 priorityscore=1501 suspectscore=0
- mlxscore=0 spamscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012150085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi,
 
-Included in this pull request are just 3 patches.  Other integrity
-changes are being upstreamed via EFI (defines a common EFI secure and
-trusted boot IMA policy) and BPF LSM (exporting the IMA file cache hash
-info based on inode).
+On 12/14/20 8:29 PM, Mario Limonciello wrote:
+> commit e086ba2fccda ("e1000e: disable s0ix entry and exit flows for ME systems")
+> disabled s0ix flows for systems that have various incarnations of the
+> i219-LM ethernet controller.  This was done because of some regressions
+> caused by an earlier
+> commit 632fbd5eb5b0e ("e1000e: fix S0ix flows for cable connected case")
+> with i219-LM controller.
+> 
+> Per discussion with Intel architecture team this direction should be changed and
+> allow S0ix flows to be used by default.  This patch series includes directional
+> changes for their conclusions in https://lkml.org/lkml/2020/12/13/15.
+> 
+> Changes from v4 to v5:
+>  - If setting S0ix to enabled in ethtool examine the hardware generation.
+>    If running on hardware older than Cannon Point return an error.
+>  - Increase ULP timeout to 2.5 seconds, but show a warning after 1 second.
 
-The 3 patches included in this pull request:
-- bug fix: fail calculating the file hash, when a file not opened for
-read and the attempt to re-open it for read fails.
-- defer processing the "ima_appraise" boot command line option to avoid
-enabling different modes (e.g. fix, log) to when the secure boot flag
-is available on arm.
-- defines "ima-buf" as the default IMA buffer measurement template in
-preparation for the builtin integrity "critical data" policy.
+Thank you. I've given v5 a test on a Lenovo X1 Carbon 8th gen (AMT capable)
+and things work fine there with v5:
 
-thanks,
+Tested-by: Hans de Goede <hdegoede@redhat.com>
 
-Mimi
+Regards,
+
+Hans
 
 
-The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
 
-  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.11
-
-for you to fetch changes up to 207cdd565dfc95a0a5185263a567817b7ebf5467:
-
-  ima: Don't modify file descriptor mode on the fly (2020-11-29 07:02:53 -0500)
-
-----------------------------------------------------------------
-integrity-v5.11
-
-----------------------------------------------------------------
-Ard Biesheuvel (1):
-      ima: defer arch_ima_get_secureboot() call to IMA init time
-
-Lakshmi Ramasubramanian (1):
-      ima: select ima-buf template for buffer measurement
-
-Roberto Sassu (1):
-      ima: Don't modify file descriptor mode on the fly
-
- include/linux/ima.h                   |  6 ++++++
- security/integrity/ima/ima.h          |  1 +
- security/integrity/ima/ima_appraise.c | 17 +++++++++++------
- security/integrity/ima/ima_crypto.c   | 20 +++++---------------
- security/integrity/ima/ima_main.c     | 25 ++++++++++---------------
- security/integrity/ima/ima_policy.c   |  2 +-
- security/integrity/ima/ima_template.c | 26 ++++++++++++++++++++++++++
- 7 files changed, 60 insertions(+), 37 deletions(-)
+> Changes from v3 to v4:
+>  - Drop patch 1 for proper s0i3.2 entry, it was separated and is now merged in kernel
+>  - Add patch to only run S0ix flows if shutdown succeeded which was suggested in
+>    thread
+>  - Adjust series for guidance from https://lkml.org/lkml/2020/12/13/15
+>    * Revert i219-LM disallow-list.
+>    * Drop all patches for systems tested by Dell in an allow list
+>    * Increase ULP timeout to 1000ms
+> Changes from v2 to v3:
+>  - Correct some grammar and spelling issues caught by Bjorn H.
+>    * s/s0ix/S0ix/ in all commit messages
+>    * Fix a typo in commit message
+>    * Fix capitalization of proper nouns
+>  - Add more pre-release systems that pass
+>  - Re-order the series to add systems only at the end of the series
+>  - Add Fixes tag to a patch in series.
+> 
+> Changes from v1 to v2:
+>  - Directly incorporate Vitaly's dependency patch in the series
+>  - Split out s0ix code into it's own file
+>  - Adjust from DMI matching to PCI subsystem vendor ID/device matching
+>  - Remove module parameter and sysfs, use ethtool flag instead.
+>  - Export s0ix flag to ethtool private flags
+>  - Include more people and lists directly in this submission chain.
+> 
+> 
+> Mario Limonciello (4):
+>   e1000e: Only run S0ix flows if shutdown succeeded
+>   e1000e: bump up timeout to wait when ME un-configures ULP mode
+>   Revert "e1000e: disable s0ix entry and exit flows for ME systems"
+>   e1000e: Export S0ix flags to ethtool
+> 
+>  drivers/net/ethernet/intel/e1000e/e1000.h   |  1 +
+>  drivers/net/ethernet/intel/e1000e/ethtool.c | 46 ++++++++++++++++
+>  drivers/net/ethernet/intel/e1000e/ich8lan.c | 16 ++++--
+>  drivers/net/ethernet/intel/e1000e/netdev.c  | 59 ++++-----------------
+>  4 files changed, 70 insertions(+), 52 deletions(-)
+> 
+> --
+> 2.25.1
+> 
 
