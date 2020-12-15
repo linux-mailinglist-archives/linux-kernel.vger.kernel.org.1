@@ -2,86 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5641E2DB0A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DA32DB0FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730291AbgLOPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:45:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39284 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729759AbgLOPpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:45:23 -0500
-X-Gm-Message-State: AOAM533SU483h9j5FaDvqFYdQU5R5wOqbWJ+ECkPcjoQb2AcdUp9ohjU
-        W54xKigyA4IwZsFTuYJJYRZdlPnKFE3zYfwdubI=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608047082;
-        bh=Gq8LMLR91rFo8W9pr+dCd67kvCo8QVQOHrCljMBlRss=;
-        h=From:Date:Subject:To:Cc:From;
-        b=D2tUTNSLTCHoC4U1RqWO+LCwpiNvGRzfQrUwvB70hKU/yasG31tohQEworrGDKuhw
-         YGjg0HtnEUiOWsFOC1c4poM5TXkZjzgldRr7LXF4mggA4FtZ0pcHuNx52TgZFqnaI2
-         QjhSeAOEiDVSi13gxcMkr7YXFumaKJ99d6gocvqVmKxlwmqGspYIe8+K6Z3ehFvP8D
-         kgWtpJYmrAVRx5bjsbtVj3jVYz0Df8iXOG5weDV6Oqs22JB8p5ulT9ZzvbwO33v9NF
-         eP5dRaXjyeftMA+tF6E2I7WRPZnNgn4QDN96pp3JhxxxSHJF75tLeFaPOnIm+tztfn
-         sAKtIkJokKKqw==
-X-Google-Smtp-Source: ABdhPJysRJdqfZ+W7CVjHEypyQfXGhfHSev6k/D0M34euGUf3Yqmab+IYVu8E9QSMkGWOEyXnqYunuqSQ5Kp99wYiFM=
-X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr14952742ots.251.1608047081666;
- Tue, 15 Dec 2020 07:44:41 -0800 (PST)
+        id S1730864AbgLOQKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:10:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730212AbgLOPpf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:45:35 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FE0C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 07:44:51 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id y23so18967713wmi.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 07:44:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HR5GScKaiUW2x/d4MD32i6GDQyLCkJOmbObRCwkENAo=;
+        b=CaKFmsj5/lz9xGMXw8/PJvHrbzL1UY5UtZaLLSbXB33haTJZ4AnQa8JEmZ2LK+b9K3
+         JjUHcoAbPcNtN5ivG6IFnEazOlh40IS1/Puq40blWChh2S2A96k51YjvP6V+m5KuQjqb
+         Sp9KmePJ7OMXMwErm2zhXKMuRmL2X9vvPcDAU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HR5GScKaiUW2x/d4MD32i6GDQyLCkJOmbObRCwkENAo=;
+        b=eLjMxeZLwregDy2iBgkIbyS/82VDkHcsz6q+lXikN1Y6eS0HFPL9faddsrtAWKAcVM
+         uyCgldpDlBp5l9/8dsZB/s89/Xtcn0nYlbjInU78wIv5+LC8zjK4OibyhYZOkjlSuFeh
+         swOPZ3AkPn12NDmGfoEQVE3Z4vwU70bc4/IslJnkQDt1yaytOub1C/L5t/YPalD8XPpG
+         Rb8JZDjECQx3nFvpxmmAYBQBVXzyvhiRMJ5MXksYUJqO6L+HcPrrwfgj7Abo9wttSnZ/
+         OoyQ+yPrdg/xkxq3QaUJUuivdXKHMRlzgygWjQI724losrXMfooDCLtVNSBx5mbomBA8
+         mlWw==
+X-Gm-Message-State: AOAM533e8v/eQLUmrnUO0bVF7fh9JJrp5qdgduZbEwg/lIq87c1d8o54
+        Z80fT5UdzT/Gjcmt00ueXTWQWQ==
+X-Google-Smtp-Source: ABdhPJyK6/64D2Y1cYIWy8fyfkT9RQD9Z/5hK0muDrkBcRYcnAroDcmqwxEqmf2Hkl4ozs+L8TiXuQ==
+X-Received: by 2002:a05:600c:224b:: with SMTP id a11mr33331066wmm.97.1608047089901;
+        Tue, 15 Dec 2020 07:44:49 -0800 (PST)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id 125sm38204141wmc.27.2020.12.15.07.44.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 07:44:49 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH v4 0/9] Show privacy_gpio as a v4l2_ctrl
+Date:   Tue, 15 Dec 2020 16:44:30 +0100
+Message-Id: <20201215154439.69062-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
 MIME-Version: 1.0
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 15 Dec 2020 16:44:25 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0b0u9NQ1unjQfwBJovahQYNgNj1ROLGR+TzZWKnzQgzQ@mail.gmail.com>
-Message-ID: <CAK8P3a0b0u9NQ1unjQfwBJovahQYNgNj1ROLGR+TzZWKnzQgzQ@mail.gmail.com>
-Subject: [GIT PULL 1/3] cleanups for v5.11
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+Some devices can implement a physical switch to disable the input of the
+camera on demand. Think of it like an elegant privacy sticker.
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+The system can read the status of the privacy switch via a GPIO.
 
-are available in the Git repository at:
+The ACPI table maps this GPIO to the USB device via _CRS and _DSD
+descriptors, so the kernel can find it.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git
-tags/asm-generic-cleanup-5.11
+The userspace applications need to know if the privacy pin is enabled
+or not.
 
-for you to fetch changes up to 8d0dd23c6c78d140ed2132f523592ddb4cea839f:
+The obvious way to show it to userspace is via the V4L2_CID_PRIVACY control.
 
-  syscalls: Fix file comments for syscalls implemented in kernel/sys.c
-(2020-11-13 14:53:57 +0100)
+This patchset implement this functionality.
 
-----------------------------------------------------------------
-asm-generic cleanups for v5.11
+v4: Implement UVC_QUIRK_PRIVACY_DURING_STREAM
 
-These are a couple of compiler warning fixes to make 'make W=2'
-less noisy, as well as some fixes to code comments in asm-generic.
+v3: Thanks to all the comments from Joe Perches
+- Rework of printk macros
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+v2: Thanks to all the comments from Laurent!
 
-----------------------------------------------------------------
-Arnd Bergmann (4):
-      asm-generic: percpu: avoid Wshadow warning
-      asm-generic: fix ffs -Wshadow warning
-      qspinlock: use signed temporaries for cmpxchg
-      ctype.h: remove duplicate isdigit() helper
+- move guid to unit
+- support entities with no pads
+- CodeStyle
+- Irq handling
+- pr_cont
+- new ids
 
-Tal Zussman (1):
-      syscalls: Fix file comments for syscalls implemented in kernel/sys.c
+Ricardo Ribalda (9):
+  media: uvcvideo: Move guid to entity
+  media: uvcvideo: Allow external entities
+  media: uvcvideo: Allow entities with no pads
+  media: uvcvideo: Entity defined get_info and get_cur
+  media: uvcvideo: Implement UVC_EXT_GPIO_UNIT
+  media: uvcvideo: Add Privacy control based on EXT_GPIO
+  media: uvcvideo: Use dev_ printk aliases
+  media: uvcvideo: New macro uvc_trace_cont
+  media: uvcvideo: Implement UVC_QUIRK_PRIVACY_DURING_STREAM
 
-Viresh Kumar (1):
-      asm-generic/sembuf: Update architecture related information in comment
+ drivers/media/usb/uvc/uvc_ctrl.c   |  80 ++++---
+ drivers/media/usb/uvc/uvc_driver.c | 322 +++++++++++++++++++++++------
+ drivers/media/usb/uvc/uvc_entity.c |  10 +-
+ drivers/media/usb/uvc/uvc_queue.c  |   3 +
+ drivers/media/usb/uvc/uvc_status.c |  13 +-
+ drivers/media/usb/uvc/uvc_video.c  |  51 ++---
+ drivers/media/usb/uvc/uvcvideo.h   |  54 +++--
+ 7 files changed, 389 insertions(+), 144 deletions(-)
 
- include/asm-generic/bitops/builtin-ffs.h |  5 +----
- include/asm-generic/percpu.h             | 18 +++++++++---------
- include/asm-generic/qrwlock.h            |  8 ++++----
- include/asm-generic/qspinlock.h          |  4 ++--
- include/linux/compiler_types.h           | 11 +++++++++++
- include/linux/ctype.h                    | 15 +++++++++++----
- include/linux/syscalls.h                 |  2 +-
- include/uapi/asm-generic/sembuf.h        |  6 +++---
- include/uapi/asm-generic/unistd.h        |  2 +-
- 9 files changed, 43 insertions(+), 28 deletions(-)
+-- 
+2.29.2.684.gfbc64c5ab5-goog
+
