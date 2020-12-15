@@ -2,70 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CCC2DB2CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CC92DB2E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 18:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731350AbgLORjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 12:39:02 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:53280 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729671AbgLORin (ORCPT
+        id S1731400AbgLORlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 12:41:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730153AbgLORlg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 12:38:43 -0500
-Received: by mail-il1-f197.google.com with SMTP id q2so17065988ilt.20
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 09:38:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=0OLNIQyK8a72e/CXENRYrk13L6iFjI2wtKw1eTofk+Q=;
-        b=qD6qE5N/OsBb8HAEvDDBsSueoCAsddF8O/2AEpTqP9XEx9yUzDuyyhNjaoD/5p/5IQ
-         HFqPjbH+aPvrjCWhVKKG3dd47204rt3pg8ibkzvDg7EhsP49AFNVuZtpN2z3cIXO4zkE
-         5h5/5iXwRBp0CFIgXc/e9sNYILoryybB5TsuWdeH/M0a8t63ZZF7RuaaiQFw8o1azHZ2
-         pYhu4hh5EFalF/RtroBRs8FHmIIFBI6knDxpZXSdkLJSOj45EfA5VeKcrqvdstFzLa6o
-         Xho/oEHIAmOer8puQGrgRTnSjYOnJJY0tF/lbMIT4NtR0anm7yBodKXGdv5ZGXdz0q14
-         hYig==
-X-Gm-Message-State: AOAM531TUEIHY55YIS/Fwb9N5b6AG80gcQCbR++TBCZPhM+0V4ZFBHqz
-        dESSC3UCTDsna3d1voR6l/PZuP3zb5ivk6tHrUvq0porfTzD
-X-Google-Smtp-Source: ABdhPJz79w/Ax+6EdXIoCXGIwQP1O5JGuVGnUMkE31v73NzNq2fiI6IerHlZnSlI9W+AYO0hQI+5T3uSDxZ6mhsb4jAfKLHLZIPS
+        Tue, 15 Dec 2020 12:41:36 -0500
+Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFD8C06179C;
+        Tue, 15 Dec 2020 09:40:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
+         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=oIC0MdRQMt1oa/a8mDmQrf1Hq+zlAnsG9Tdqvyanr4k=; b=l2rI2/aBl2diPgAOke4UXX/XnZ
+        54O/Vi01oGUaO7a5DLndyx7qnBunKZrSfGjQ1pnbGz+VDeIHErCd4MJlfAfIBvYv7eQ8YSqNAjJXT
+        hXp5xwSODWfS/mi1nulLWX4UarKTDxjmxpbchhYUxvp/1TQ0+eq9i6uXtyIn7XErs0z8=;
+Received: from p4ff13815.dip0.t-ipconnect.de ([79.241.56.21] helo=nf.local)
+        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <nbd@nbd.name>)
+        id 1kpEJL-0006uH-JY; Tue, 15 Dec 2020 18:40:31 +0100
+To:     Youghandhar Chintala <youghand@codeaurora.org>,
+        johannes@sipsolutions.net
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kuabhs@chromium.org,
+        dianders@chromium.org, briannorris@chromium.org,
+        pillair@codeaurora.org
+References: <20201215172352.5311-1-youghand@codeaurora.org>
+From:   Felix Fietkau <nbd@nbd.name>
+Subject: Re: [PATCH 2/3] mac80211: Add support to trigger sta disconnect on
+ hardware restart
+Message-ID: <f2089f3c-db96-87bc-d678-199b440c05be@nbd.name>
+Date:   Tue, 15 Dec 2020 18:40:30 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:3b92:: with SMTP id i140mr38166000ioa.49.1608053882696;
- Tue, 15 Dec 2020 09:38:02 -0800 (PST)
-Date:   Tue, 15 Dec 2020 09:38:02 -0800
-In-Reply-To: <000000000000bd226505b67d9989@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000753add05b6843897@google.com>
-Subject: Re: general protection fault in taprio_dequeue_soft
-From:   syzbot <syzbot+8971da381fb5a31f542d@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        vinicius.gomes@intel.com, xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201215172352.5311-1-youghand@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
 
-commit b5b73b26b3ca34574124ed7ae9c5ba8391a7f176
-Author: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Date:   Thu Sep 10 00:03:11 2020 +0000
+On 2020-12-15 18:23, Youghandhar Chintala wrote:
+> Currently in case of target hardware restart, we just reconfig and
+> re-enable the security keys and enable the network queues to start
+> data traffic back from where it was interrupted.
+> 
+> Many ath10k wifi chipsets have sequence numbers for the data
+> packets assigned by firmware and the mac sequence number will
+> restart from zero after target hardware restart leading to mismatch
+> in the sequence number expected by the remote peer vs the sequence
+> number of the frame sent by the target firmware.
+> 
+> This mismatch in sequence number will cause out-of-order packets
+> on the remote peer and all the frames sent by the device are dropped
+> until we reach the sequence number which was sent before we restarted
+> the target hardware
+> 
+> In order to fix this, we trigger a sta disconnect, for the targets
+> which expose this corresponding wiphy flag, in case of target hw
+> restart. After this there will be a fresh connection and thereby
+> avoiding the dropping of frames by remote peer.
+> 
+> The right fix would be to pull the entire data path into the host
+> which is not feasible or would need lots of complex changes and
+> will still be inefficient.
+How about simply tracking which tids have aggregation enabled and send
+DELBA frames for those after the restart?
+It would mean less disruption for affected stations and less ugly hacks
+in the stack for unreliable hardware.
 
-    taprio: Fix allowing too small intervals
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13c8eadf500000
-start commit:   7f376f19 Merge tag 'mtd/fixes-for-5.10-rc8' of git://git.k..
-git tree:       net
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1028eadf500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17c8eadf500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3416bb960d5c705d
-dashboard link: https://syzkaller.appspot.com/bug?extid=8971da381fb5a31f542d
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=128c5745500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17a1f123500000
-
-Reported-by: syzbot+8971da381fb5a31f542d@syzkaller.appspotmail.com
-Fixes: b5b73b26b3ca ("taprio: Fix allowing too small intervals")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+- Felix
