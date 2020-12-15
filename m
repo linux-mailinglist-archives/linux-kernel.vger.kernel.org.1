@@ -2,117 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6222DA967
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC5E2DA96A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:46:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727167AbgLOIpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:45:21 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25872 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726176AbgLOIpJ (ORCPT
+        id S1727292AbgLOIpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:45:49 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:32192 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbgLOIpi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:45:09 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BF8VrOI074862;
-        Tue, 15 Dec 2020 03:44:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=mUv3bSvDf8As47IwRkFi9URtIX6TbD2NXNi3OAjNOT4=;
- b=rUKTsqIua8e0HvzJjoCoBpJ38lwdKIlz9qPVJMxtbN0IT1L8yYL4SpzWV9Y6KtaTt+VN
- Y0XWGbA2Pa5L/WjMPFV5y70SH0sDdIXyknSKrUl4lysFV/ntX1MeQFxqrMbWEOq3VJ/R
- qBStw7CmbEBmXYtxASXfnFPCKfK7sr0BdaXYM0KLMCKsm28iX8TLiTxfTlvxJicA4kW6
- 6ReDeYBb/Q0Ta3vPOnbdBE3Zq8Z/H6PCekNIZTfE3Q8+IZGTaw3ZlE4YjDZQZYItt/js
- jOO8eCzAo8v46uKv/33pJOvxxlQdST7FxYhrgWXf92h+YAIJjgklDUbhh7Gk8X7X0Uzf Tg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35esje8j98-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Dec 2020 03:44:18 -0500
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BF8WfLj081453;
-        Tue, 15 Dec 2020 03:44:17 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35esje8j8e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Dec 2020 03:44:17 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BF8gWqa006284;
-        Tue, 15 Dec 2020 08:44:15 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 35cng8b0yq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Dec 2020 08:44:14 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BF8iCni43319724
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Dec 2020 08:44:12 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CF2C6AE056;
-        Tue, 15 Dec 2020 08:44:12 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C41CBAE045;
-        Tue, 15 Dec 2020 08:44:10 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue, 15 Dec 2020 08:44:10 +0000 (GMT)
-Date:   Tue, 15 Dec 2020 14:14:10 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-Cc:     Anton Blanchard <anton@ozlabs.org>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] powerpc/cacheinfo: Print correct cache-sibling
- map/list for L2 cache
-Message-ID: <20201215084410.GE1239129@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <1607596739-32439-1-git-send-email-ego@linux.vnet.ibm.com>
- <1607596739-32439-6-git-send-email-ego@linux.vnet.ibm.com>
+        Tue, 15 Dec 2020 03:45:38 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608021920; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=i2jmGc0B2v0Eml1asqQ1vn5E/wwWvXhDr3Rak4MLjh8=; b=eU1rFcwP7QAAho3Df1W5fsGHyX3u2963GlN/ifOdRHFH29BA2TtPY5Ftmc2A5rD+OiloP0C7
+ zsZJmKjX56pp01QQ4a/GhLSg8iMF6RrZ9UZCl9FFZJF03WT/LYf+3QH61KaKBpw0RFw7CVno
+ ixPpO7JKtOBuwV1EK489DZOXeOs=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fd87781cb227bb0c5ab0a4c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Dec 2020 08:44:49
+ GMT
+Sender: vbadigan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 84365C43461; Tue, 15 Dec 2020 08:44:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.105] (unknown [49.205.247.211])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vbadigan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E9F0C433C6;
+        Tue, 15 Dec 2020 08:44:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6E9F0C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vbadigan@codeaurora.org
+Subject: Re: [PATCH v5 2/2] mmc: sdhci-msm: Actually set the actual clock
+To:     Douglas Anderson <dianders@chromium.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Taniya Das <tdas@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+References: <20201214092048.v5.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
+ <20201214092048.v5.2.I7564620993acd4baa63fa0e3925ca879a86d3ee3@changeid>
+From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Message-ID: <bbe73a29-74ec-fc73-5771-96e9d7156f7c@codeaurora.org>
+Date:   Tue, 15 Dec 2020 14:14:41 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <1607596739-32439-6-git-send-email-ego@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-15_04:2020-12-11,2020-12-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
- suspectscore=0 malwarescore=0 phishscore=0 clxscore=1015 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012150055
+In-Reply-To: <20201214092048.v5.2.I7564620993acd4baa63fa0e3925ca879a86d3ee3@changeid>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Gautham R. Shenoy <ego@linux.vnet.ibm.com> [2020-12-10 16:08:59]:
 
-> From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-> 
-> On POWER platforms where only some groups of threads within a core
-> share the L2-cache (indicated by the ibm,thread-groups device-tree
-> property), we currently print the incorrect shared_cpu_map/list for
-> L2-cache in the sysfs.
-> 
-> This patch reports the correct shared_cpu_map/list on such platforms.
-> 
-> Example:
-> On a platform with "ibm,thread-groups" set to
->                  00000001 00000002 00000004 00000000
->                  00000002 00000004 00000006 00000001
->                  00000003 00000005 00000007 00000002
->                  00000002 00000004 00000000 00000002
->                  00000004 00000006 00000001 00000003
->                  00000005 00000007
-> 
+On 12/14/2020 10:51 PM, Douglas Anderson wrote:
+> The MSM SDHCI driver always set the "actual_clock" field to 0.  It had
+> a comment about it not being needed because we weren't using the
+> standard SDHCI divider mechanism and we'd just fallback to
+> "host->clock".  However, it's still better to provide the actual
+> clock.  Why?
+>
+> 1. It will make timeout calculations slightly better.  On one system I
+>     have, the eMMC requets 200 MHz (for HS400-ES) but actually gets 192
+>     MHz.  These are close, but why not get the more accurate one.
+>
+> 2. If things are seriously off in the clock driver and it's missing
+>     rates or picking the wrong rate (maybe it's rounding up instead of
+>     down), this will make it much more obvious what's going on.
+>
+> NOTE: we have to be a little careful here because the "actual_clock"
+> field shouldn't include the multiplier that sdhci-msm needs
+> internally.
+>
+> Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Looks good to me.
+Reviewed-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
 
-Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-
--- 
-Thanks and Regards
-Srikar Dronamraju
+> ---
+>
+> Changes in v5:
+> - Remove unused clock parameter.
+> - Add a comment that we're stashing the requested rate.
+>
+> Changes in v4:
+> - ("mmc: sdhci-msm: Actually set the actual clock") new for v4.
+>
+>   drivers/mmc/host/sdhci-msm.c | 35 ++++++++++++++++-------------------
+>   1 file changed, 16 insertions(+), 19 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+> index 50beb407dbe9..f5669dc858d0 100644
+> --- a/drivers/mmc/host/sdhci-msm.c
+> +++ b/drivers/mmc/host/sdhci-msm.c
+> @@ -328,8 +328,7 @@ static void sdhci_msm_v5_variant_writel_relaxed(u32 val,
+>   	writel_relaxed(val, host->ioaddr + offset);
+>   }
+>   
+> -static unsigned int msm_get_clock_rate_for_bus_mode(struct sdhci_host *host,
+> -						    unsigned int clock)
+> +static unsigned int msm_get_clock_mult_for_bus_mode(struct sdhci_host *host)
+>   {
+>   	struct mmc_ios ios = host->mmc->ios;
+>   	/*
+> @@ -342,8 +341,8 @@ static unsigned int msm_get_clock_rate_for_bus_mode(struct sdhci_host *host,
+>   	    ios.timing == MMC_TIMING_MMC_DDR52 ||
+>   	    ios.timing == MMC_TIMING_MMC_HS400 ||
+>   	    host->flags & SDHCI_HS400_TUNING)
+> -		clock *= 2;
+> -	return clock;
+> +		return 2;
+> +	return 1;
+>   }
+>   
+>   static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
+> @@ -354,14 +353,16 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
+>   	struct mmc_ios curr_ios = host->mmc->ios;
+>   	struct clk *core_clk = msm_host->bulk_clks[0].clk;
+>   	unsigned long achieved_rate;
+> +	unsigned int desired_rate;
+> +	unsigned int mult;
+>   	int rc;
+>   
+> -	clock = msm_get_clock_rate_for_bus_mode(host, clock);
+> -	rc = dev_pm_opp_set_rate(mmc_dev(host->mmc), clock);
+> +	mult = msm_get_clock_mult_for_bus_mode(host);
+> +	desired_rate = clock * mult;
+> +	rc = dev_pm_opp_set_rate(mmc_dev(host->mmc), desired_rate);
+>   	if (rc) {
+>   		pr_err("%s: Failed to set clock at rate %u at timing %d\n",
+> -		       mmc_hostname(host->mmc), clock,
+> -		       curr_ios.timing);
+> +		       mmc_hostname(host->mmc), desired_rate, curr_ios.timing);
+>   		return;
+>   	}
+>   
+> @@ -371,11 +372,14 @@ static void msm_set_clock_rate_for_bus_mode(struct sdhci_host *host,
+>   	 * encounter it.
+>   	 */
+>   	achieved_rate = clk_get_rate(core_clk);
+> -	if (achieved_rate > clock)
+> +	if (achieved_rate > desired_rate)
+>   		pr_warn("%s: Card appears overclocked; req %u Hz, actual %lu Hz\n",
+> -			mmc_hostname(host->mmc), clock, achieved_rate);
+> +			mmc_hostname(host->mmc), desired_rate, achieved_rate);
+> +	host->mmc->actual_clock = achieved_rate / mult;
+> +
+> +	/* Stash the rate we requested to use in sdhci_msm_runtime_resume() */
+> +	msm_host->clk_rate = desired_rate;
+>   
+> -	msm_host->clk_rate = clock;
+>   	pr_debug("%s: Setting clock at rate %lu at timing %d\n",
+>   		 mmc_hostname(host->mmc), achieved_rate, curr_ios.timing);
+>   }
+> @@ -1756,13 +1760,6 @@ static unsigned int sdhci_msm_get_min_clock(struct sdhci_host *host)
+>   static void __sdhci_msm_set_clock(struct sdhci_host *host, unsigned int clock)
+>   {
+>   	u16 clk;
+> -	/*
+> -	 * Keep actual_clock as zero -
+> -	 * - since there is no divider used so no need of having actual_clock.
+> -	 * - MSM controller uses SDCLK for data timeout calculation. If
+> -	 *   actual_clock is zero, host->clock is taken for calculation.
+> -	 */
+> -	host->mmc->actual_clock = 0;
+>   
+>   	sdhci_writew(host, 0, SDHCI_CLOCK_CONTROL);
+>   
+> @@ -1785,7 +1782,7 @@ static void sdhci_msm_set_clock(struct sdhci_host *host, unsigned int clock)
+>   	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
+>   
+>   	if (!clock) {
+> -		msm_host->clk_rate = clock;
+> +		host->mmc->actual_clock = msm_host->clk_rate = 0;
+>   		goto out;
+>   	}
+>   
