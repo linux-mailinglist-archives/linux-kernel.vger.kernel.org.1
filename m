@@ -2,84 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1E12DA645
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E44E42DA64F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727970AbgLOCdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:33:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727903AbgLOCd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:33:28 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607999565;
-        bh=WYSwvgrlDpQVIIDoaLii3hzyMGUXaw29yrS/HV62spw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=UZnv4UZ2yINMawrYcI650sixxc7fh+r4xlhZ7p5Xuuz7u8ZXTlKowaes8XCCHAeSp
-         0wdof3vABQeaoW42Cb3oaWAUUpmERYYcXzChOfHymbYDL/ho4IdX1wCdgR/SUFP2+5
-         YXMfDl+O4q6dhzGzJ0JmHBgAIJG5o1zY41ASWvG2CGolJ65ikDWMf5sIK2bvh6hG97
-         I6GTV1ECISIKctHWpnRBtEtCQZjcQJSkUi+zpOqfKa0rF0B4n7ygGSqzFMFY0tLMyh
-         xV/J5i5T+X5YVMPIc9rUCCqPSrBdvfLvjON7rjtnlc9dkUIVMQohdHs96BgisGhiGD
-         RUpbrSCBtceXQ==
+        id S1728113AbgLOCf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:35:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727535AbgLOCfM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:35:12 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BA3C061793
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:34:32 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id r5so19346901eda.12
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:34:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SDS1IoTT9e9jG5qNkQs06xUgvZJCIKhgAel2bPuApCE=;
+        b=YVwepcNaKWGBwLyybWAs/z4598H4hyPpUJJz2SiNQXol5N1OYOpE7/Pt+SvK/DdeBa
+         /S3pfhRqEySC+QQPncFSEzKbDGVtC8qJPw5kRntKdmOI/4y32a7vE+CfKIqk6vWaJNq9
+         krUDUbllzMiLAf97Fhs9TsLAgwCzbq4a24WY1VPLJtz7eFC5BGkBX9RYjITlIpHBy3kn
+         y50RbWt0ES+Lo47mewF0R5hk+JZnq6DiPqZ6POCMI9zPkSGul/djbLWaKijdILR0u4A3
+         iETMSY4KdSupIz7MUuI+6WbynJhi6Wi3gR0CIgDISvQOKzqD3VMy91QWH8jeY4a6jqCE
+         0v4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SDS1IoTT9e9jG5qNkQs06xUgvZJCIKhgAel2bPuApCE=;
+        b=Qmc6PZwqfvoSK7s1v7+mADHVzklBhaiUuGH3XxKIgK0yN+bTfqYUl1bP+MM47R9VLq
+         Qvf075z8jJEvxymNcJ+X/GluXSJUL/xfe0i8OHrGY3UkGih3jnDbFjsurSNR3h3gcU/1
+         5vjHwtf/AMHQuYEj/KnJJoY5r0arhIGafpvaY6K/dPvZUGQOl7HfMd5j3BICmtSnxF4p
+         dTbSHfEAmQu9k/bzUejsrl6GzYHYYzb+0GnuopOCx+uVzdHXrAZu6pjTl3Yta6INFW6Z
+         Tuk5vsQLzACYlRs7mUQ76qiljeuUpPhAkDoyvJ/LzjT9IROsG00LJl7zRFG37/1wdhYz
+         emRw==
+X-Gm-Message-State: AOAM530IElE4MdFs4W2qFkiYxb3wCkiwaCla5SAcpCctwbIfDqn67MN2
+        4RoTUZ3wjikNaRHCMp9Dyp4Xjc21Uo26eKXMXgkU
+X-Google-Smtp-Source: ABdhPJxB5mO16JID/xZpY5y+REkiQAGxjKT/tvKMyXIFEReGjo7zDWN9vB7Psgey9fhfS5qYIxFBVAwBderGUJp/KuI=
+X-Received: by 2002:a05:6402:44b:: with SMTP id p11mr27550671edw.164.1607999670809;
+ Mon, 14 Dec 2020 18:34:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] net: bridge: Fix a warning when del bridge sysfs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160799956512.31445.17200550488514446402.git-patchwork-notify@kernel.org>
-Date:   Tue, 15 Dec 2020 02:32:45 +0000
-References: <20201211122921.40386-1-wanghai38@huawei.com>
-In-Reply-To: <20201211122921.40386-1-wanghai38@huawei.com>
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     kuba@kernel.org, nikolay@nvidia.com, davem@davemloft.net,
-        roopa@nvidia.com, bridge@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201211084254.2038-1-zhengyongjun3@huawei.com> <20201211153321.GF2015948@madcap2.tricolour.ca>
+In-Reply-To: <20201211153321.GF2015948@madcap2.tricolour.ca>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 14 Dec 2020 21:34:19 -0500
+Message-ID: <CAHC9VhS9zCzWLhwE=6AOr7sO-LUdLDS6sb4tC2tDuT=LRYdzHw@mail.gmail.com>
+Subject: Re: [PATCH -next] kernel/audit: convert comma to semicolon
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Richard Guy Briggs <rgb@redhat.com>
+Cc:     linux-audit@redhat.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Fri, Dec 11, 2020 at 10:33 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+> On 2020-12-11 16:42, Zheng Yongjun wrote:
+> > Replace a comma between expression statements by a semicolon.
+> >
+> > Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> > ---
+> >  kernel/audit.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/audit.c b/kernel/audit.c
+> > index 68cee3bc8cfe..c8497115be35 100644
+> > --- a/kernel/audit.c
+> > +++ b/kernel/audit.c
+> > @@ -2282,7 +2282,7 @@ static void audit_log_set_loginuid(kuid_t koldloginuid, kuid_t kloginuid,
+> >
+> >       uid = from_kuid(&init_user_ns, task_uid(current));
+> >       oldloginuid = from_kuid(&init_user_ns, koldloginuid);
+> > -     loginuid = from_kuid(&init_user_ns, kloginuid),
+> > +     loginuid = from_kuid(&init_user_ns, kloginuid);
+>
+> Nice catch.  That went unnoticed through 3 patches, the last two mine...
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Yes, thanks for catching this and submitting a patch.  However, as it
+came very late in the v5.10-rcX release cycle I'm going to wait until
+after this merge window to merge it into audit/next.
 
-On Fri, 11 Dec 2020 20:29:21 +0800 you wrote:
-> I got a warining report:
-> 
-> br_sysfs_addbr: can't create group bridge4/bridge
-> ------------[ cut here ]------------
-> sysfs group 'bridge' not found for kobject 'bridge4'
-> WARNING: CPU: 2 PID: 9004 at fs/sysfs/group.c:279 sysfs_remove_group fs/sysfs/group.c:279 [inline]
-> WARNING: CPU: 2 PID: 9004 at fs/sysfs/group.c:279 sysfs_remove_group+0x153/0x1b0 fs/sysfs/group.c:270
-> Modules linked in: iptable_nat
-> ...
-> Call Trace:
->   br_dev_delete+0x112/0x190 net/bridge/br_if.c:384
->   br_dev_newlink net/bridge/br_netlink.c:1381 [inline]
->   br_dev_newlink+0xdb/0x100 net/bridge/br_netlink.c:1362
->   __rtnl_newlink+0xe11/0x13f0 net/core/rtnetlink.c:3441
->   rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3500
->   rtnetlink_rcv_msg+0x385/0x980 net/core/rtnetlink.c:5562
->   netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2494
->   netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
->   netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1330
->   netlink_sendmsg+0x793/0xc80 net/netlink/af_netlink.c:1919
->   sock_sendmsg_nosec net/socket.c:651 [inline]
->   sock_sendmsg+0x139/0x170 net/socket.c:671
->   ____sys_sendmsg+0x658/0x7d0 net/socket.c:2353
->   ___sys_sendmsg+0xf8/0x170 net/socket.c:2407
->   __sys_sendmsg+0xd3/0x190 net/socket.c:2440
->   do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> [...]
+> Not quite sure why no compiler complained about it...
 
-Here is the summary with links:
-  - [v2] net: bridge: Fix a warning when del bridge sysfs
-    https://git.kernel.org/netdev/net-next/c/989a1db06eb1
+Because it is legal; odd, but legal. :)
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+The comma operator allows multiple expressions to be executed with
+only the last expression returned.  Take the example below:
 
+% cat test.c
+#include <stdlib.h>
+#include <stdio.h>
 
+int main(int argc, char *argv[])
+{
+       int a, b, c;
+
+       a = (b = 1, c = 2);
+       printf("a = %d, b = %d, c = %d\n", a, b, c);
+
+       return 0;
+}
+% gcc -o test test.c
+% ./test
+a = 2, b = 1, c = 2
+
+... we see both "b=1" and "c=2" are executed, and the last statement
+in the comma separated list of expressions is used as the right-hand
+value in the "a" assignment.
+
+In the case of this patch, the existing code is actually okay: both
+expressions are executed and we don't assign either expression's value
+to a variable so it doesn't matter.  However, it definitely looks odd
+and is something we should fix.
+
+-- 
+paul moore
+www.paul-moore.com
