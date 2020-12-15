@@ -2,71 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162752DA609
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFEA2DA61B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbgLOCOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:14:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726412AbgLOCOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:14:21 -0500
-Date:   Mon, 14 Dec 2020 18:13:39 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607998421;
-        bh=j+mo+RL8S/hnsnS3PJ9sF0CcyLg7yIw0RyPIdNZ6Ttg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PX51nWb470XdHiAuALDAHwzGHnJX6Nm4ykO4U0DkESK/AapXTTeODMVBzdQphv41W
-         QcYRRAzaM9ohGjxjW/Xegc+XiUVGVMjCswiiFaDUVJhdfiiBKmSoFvPH/uwKZZ0FKa
-         B3eAheBUcYhtrsdiWcAcYfvERWHuo53emenIsIZPcKEVEj/TwuMJdYk1tSs/6gKhn+
-         ErTG7DWosWJ2PW/B6zZN3+r3VUEB1+QF5aedyXjJ4utxu9qZXvAGz5lWAa10zTryRN
-         roJ+0/NHIsTRZfd0gQQN1UwSUDoLxLQpaNV7w41KuYQfFvCUKCx6/XIwqPM2GWNX8B
-         ZMgFOyZQsRNFA==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Miller <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Shakeel Butt <shakeelb@google.com>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- bpf-next tree
-Message-ID: <20201214181339.621c4dcd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201214181121.afe9628c62c4b5de1f5fee94@linux-foundation.org>
-References: <20201204202005.3fb1304f@canb.auug.org.au>
-        <20201215072156.1988fabe@canb.auug.org.au>
-        <20201215012943.GA3079589@carbon.DHCP.thefacebook.com>
-        <20201214174021.2dfc2fbd99ca3e72b3e4eb02@linux-foundation.org>
-        <20201214180629.4fee48ae@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201214181121.afe9628c62c4b5de1f5fee94@linux-foundation.org>
+        id S1726852AbgLOCRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:17:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726505AbgLOCQb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:16:31 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C191C0617A6;
+        Mon, 14 Dec 2020 18:15:47 -0800 (PST)
+Received: by ozlabs.org (Postfix, from userid 1003)
+        id 4Cw20x4l5jz9sS8; Tue, 15 Dec 2020 13:15:45 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ozlabs.org; s=201707;
+        t=1607998545; bh=ugDMLz0cIJY/0yg0ituBv2aXJJ7eai8cH4y0v0j0eN0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iGCM4a+7RiM9qj+CscAoWeiRykkq9SUrNAcnOlDbvTJpijcsRiBiClMIIvZ4Z0gpW
+         rLlyGbj8APkhDBWSEqX0AxaF8aH4xRvPKJ7SvpbE1tVUNPo51senBpgwLW9yYRtR+E
+         sWbJbhgUlDcn+fhe++QeMiFMQ9yxuCBOQGcHw9UtQw4x5lmLffGHGO6z2O2Wi5ZQ+4
+         KGd/ilXRVxMACnZPa6txDg4rLcdP62pH0RYpd+8FdYXzZlItXAHy4A1KUUXVUcfcEg
+         cQx/vmAx0vA6nREW5kfghPM63uxF8aAGOgZPQaJhKUDNxfEMCSfNlBzS6p7P3jyKgq
+         2fpczAAPHPGBA==
+Date:   Tue, 15 Dec 2020 13:14:57 +1100
+From:   Paul Mackerras <paulus@ozlabs.org>
+To:     xiakaixu1987@gmail.com
+Cc:     kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
+Subject: Re: [PATCH] KVM: PPC: Book3S: Assign boolean values to a bool
+ variable
+Message-ID: <20201215021457.GB2441086@thinks.paulus.ozlabs.org>
+References: <1604730382-5810-1-git-send-email-kaixuxia@tencent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604730382-5810-1-git-send-email-kaixuxia@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 18:11:21 -0800 Andrew Morton wrote:
-> On Mon, 14 Dec 2020 18:06:29 -0800 Jakub Kicinski <kuba@kernel.org> wrote:
-> > Hm. The code is in net-next by now. I was thinking of sending the
-> > Networking PR later today (tonight?) as well. I'm happy to hold off 
-> > or do whatever you require, but I'd appreciate more explicit / noob
-> > friendly instructions.  
+On Sat, Nov 07, 2020 at 02:26:22PM +0800, xiakaixu1987@gmail.com wrote:
+> From: Kaixu Xia <kaixuxia@tencent.com>
 > 
-> Linus tends not to like it when tree maintainers do last-minute
-> conflict fixes.
-
-Good to know.
-
-> > AFAIU all we can do is tell Linus about the merge issue, and point 
-> > at Stephen's resolution.  
+> Fix the following coccinelle warnings:
 > 
-> That's the way to do it - including a (tested?) copy in the email would
-> be nice.
+> ./arch/powerpc/kvm/book3s_xics.c:476:3-15: WARNING: Assignment of 0/1 to bool variable
+> ./arch/powerpc/kvm/book3s_xics.c:504:3-15: WARNING: Assignment of 0/1 to bool variable
+> 
+> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
 
-Okay, great. Will try this, thanks!
+Acked-by: Paul Mackerras <paulus@ozlabs.org>
