@@ -2,738 +2,1385 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E152DB14A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFA42DB159
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730990AbgLOQYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:24:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728235AbgLOQYH (ORCPT
+        id S1730981AbgLOQ0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:26:36 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:51286 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729805AbgLOQ0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:24:07 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4509BC06179C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 08:23:27 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id s2so23936809oij.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 08:23:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language;
-        bh=lBRKho488k0Vw0jXR4H6SDuNNZy9VxPKfhxcbA46UPQ=;
-        b=CYkXO9dFVWm/8w4s3XUuzlpC3sw5psC0dNZ4PdRYtNhxQRv0lrBSXMkLTGTzOk4WGu
-         ETBSiqb8TfY2Dpo1ul6EaN7Zemu7MXusr94txP0fXLMOrbWAItTe7uTn2RMCh1vCW1Nr
-         1JiuZ/ywgJyvq/4eXEcTRPWET1EAuFEJWhQ5iL97bzUvYvj5UNISIoqie9XjL7qhVWof
-         r8tlK3WYmAm/M5pFAV6GPyD3GC7Z0z9tiPnKhWHOVQs9bkPlUX4elaaznGL5yjaUrEvT
-         EaqPyJXOMmzCh8RzFsMOG24DZIlOg9hVsRvs/sS2Rz/5gZM5g/RG0Hf/9W/FhSMJ56CG
-         vSlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language;
-        bh=lBRKho488k0Vw0jXR4H6SDuNNZy9VxPKfhxcbA46UPQ=;
-        b=aXwmIC9Qe4YR54wO1jkQLbD56HEXOVDSCg99WLZ1TSbCyKlHZPs/YrzuJszlibT8EU
-         hkWJhplu0d0TIaWI8iLJIZvIGw92XankU4T+6RhTL0USTFkqiXPtsslIl2zbrhXxFX0/
-         xCD21n10lX0c4cMjIjmsnzur2tE35yNmcb+pgfxB6s7vBX4bBhjfdv8OAUfBpEvgS0VJ
-         tvoPVnW1w2U4xJTvxbadk0LIWw1I28e2ZhW+zOqiee6u2BrugV9TXBhD7W/p2+jiuanU
-         1qs61zIp+B+3kAfcvPAcqpPgbSyiWdnmfAFniUAgQ36d249qvn6RG9XFe57ZQl1aB05u
-         Xtcg==
-X-Gm-Message-State: AOAM531xqpF2Aw+f/nA10p9eetaJtzk+dk/c7ShULvoR+3Ol1I1/jGwQ
-        kKViG3/EXNGnwY8ytnu/BXE=
-X-Google-Smtp-Source: ABdhPJzacNIznMqQYQJh+hQj2Q/9Hbaja//fdiX/irbfcqTnzS548BhMXUolAgoPrLkUhyW1pF7ntA==
-X-Received: by 2002:aca:c592:: with SMTP id v140mr21620438oif.10.1608049406658;
-        Tue, 15 Dec 2020 08:23:26 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n31sm510870otn.33.2020.12.15.08.23.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 08:23:25 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 3/5] irqchip/bcm2836: Make IPIs use
- handle_percpu_devid_irq()
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Scott Branden <sbranden@broadcom.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-References: <20201109094121.29975-1-valentin.schneider@arm.com>
- <20201109094121.29975-4-valentin.schneider@arm.com>
- <20201215002134.GA182208@roeck-us.net>
- <38f8fbe9ceb7a0adb47e62d62260b297@kernel.org>
- <1795afb5-a4fd-3a90-99c4-71373476ad65@roeck-us.net>
- <9007dd8a0d5334141d083b14121ba11c@kernel.org>
- <c9fb4ab3-a5cb-648c-6de3-c6a871e60870@roeck-us.net>
- <dff83a32c64bad6e3880dba8804cea6c@kernel.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <26426427-3459-6eb9-42fe-d7406bcf2b14@roeck-us.net>
-Date:   Tue, 15 Dec 2020 08:23:23 -0800
+        Tue, 15 Dec 2020 11:26:35 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFGJfuL039003;
+        Tue, 15 Dec 2020 16:23:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=RFgz5gdsfGSGfkvvXHo0wyCBpvOexkJuekCEDYd7CuA=;
+ b=cTtm0CwCv69rInKfvJRijAqxICZWGSEFBL/dEaqFQoFZbMrKMeF+1fafdfvjZPi2hcwu
+ g966y9HBpPH9t+oYfzdGDIhbP8DbgnAByMa4a+5jcR//yvI5GKQpw+7wRzPYeoeEAywC
+ S5HuIMmkdaeDdMXyNh7lo6MbpKWJnlg1hP5o1kfuuhsEemkzVT3lhi4tdPT1Z/wa4IV0
+ TPRn6ImFJSi9nfpBxNrWnHPyLZpt5UGOQvzK/kMtipnlc0m2iM54NVMc5+ttrrKZuBcM
+ +Mt8k1toKg6TuzSUHhngQas6llUC0Zo7ekxSIzrOsY2DDd4nJZ8VSyR5EvLx8WOfF2ym Kg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 35ckcbbn36-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Dec 2020 16:23:45 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BFGK9uu191760;
+        Tue, 15 Dec 2020 16:23:44 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 35d7swf7r0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Dec 2020 16:23:43 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BFGNZGt004047;
+        Tue, 15 Dec 2020 16:23:38 GMT
+Received: from [192.168.0.193] (/69.207.174.138)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 15 Dec 2020 08:23:34 -0800
+Subject: Re: [PATCH -tip 23/32] sched: Add a per-thread core scheduling
+ interface
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Tim Chen <tim.c.chen@intel.com>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-24-joel@joelfernandes.org>
+ <20201202214717.GA27531@chyser-vm-1.appad1iad.osdevelopmeniad.oraclevcn.com>
+ <20201206173418.GC201514@google.com>
+ <20201209185203.GC6876@chyser-vm-1.appad1iad.osdevelopmeniad.oraclevcn.com>
+ <X9e9dcLMrMJThZs+@google.com>
+ <16a390e4-b44d-b0eb-1df6-6e56d78d009f@oracle.com>
+ <20201214232541.GF201514@google.com>
+From:   chris hyser <chris.hyser@oracle.com>
+Message-ID: <388901d9-d464-fe66-5880-5af0a0ad2001@oracle.com>
+Date:   Tue, 15 Dec 2020 11:23:25 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <dff83a32c64bad6e3880dba8804cea6c@kernel.org>
-Content-Type: multipart/mixed;
- boundary="------------3A814DB4F7F30BA88DDAE11B"
+In-Reply-To: <20201214232541.GF201514@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012150111
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ priorityscore=1501 mlxscore=0 suspectscore=0 adultscore=0 phishscore=0
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012150111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------3A814DB4F7F30BA88DDAE11B
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-
-On 12/15/20 7:46 AM, Marc Zyngier wrote:
-> On 2020-12-15 15:39, Guenter Roeck wrote:
->> On 12/15/20 7:26 AM, Marc Zyngier wrote:
->>> On 2020-12-15 15:21, Guenter Roeck wrote:
->>>> Hi Marc,
->>>>
->>>> On 12/15/20 2:19 AM, Marc Zyngier wrote:
->>>>> Hi Gunter,
->>>>>
->>>>> On 2020-12-15 00:21, Guenter Roeck wrote:
->>>>>> On Mon, Nov 09, 2020 at 09:41:19AM +0000, Valentin Schneider wrote:
->>>>>>> As done for the Arm GIC irqchips, move IPIs to handle_percpu_devid_irq() as
->>>>>>> handle_percpu_devid_fasteoi_ipi() isn't actually required.
->>>>>>>
->>>>>>> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
->>>>>>
->>>>>> This patch results in boot failures (silent stall) for the qemu
->>>>>> raspi2 emulation. Unfortunately it can not be reverted because
->>>>>> handle_percpu_devid_fasteoi_ipi no longer exists in next-20201214,
->>>>>> so I don't know if it is the only problem.
->>>>>
->>>>> This is odd. This works just fine for me on both the RPi2 and 3
->>>>> emulation, running a full Debian userspace. Could this be caused
->>>>> by the version of QEMU you are using? Here's what I have:
->>>>>
->>>>> $ qemu-system-arm --version
->>>>> QEMU emulator version 5.1.0 (Debian 1:5.1+dfsg-4+b1)
->>>>>
->>>>
->>>> I used qemu 5.0 which - up to now - worked fine. Let me try with
->>>> 5.1 and 5.2. Sorry, I should have tried first before bothering you.
+On 12/14/20 6:25 PM, Joel Fernandes wrote:
+> On Mon, Dec 14, 2020 at 02:44:09PM -0500, chris hyser wrote:
+>> On 12/14/20 2:31 PM, Joel Fernandes wrote:
+>>>> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+>>>> index cffdfab..50c31f3 100644
+>>>> --- a/kernel/sched/debug.c
+>>>> +++ b/kernel/sched/debug.c
+>>>> @@ -1030,6 +1030,7 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
+>>>>    #ifdef CONFIG_SCHED_CORE
+>>>>    	__PS("core_cookie", p->core_cookie);
+>>>> +	__PS("core_task_cookie", p->core_task_cookie);
+>>>>    #endif
 >>>
->>> No bother at all. If this works for you on more recent versions of
->>> QEMU, that'd be an interesting data point. I'm also interested in
->>> the result of the patch either way.
+>>> Hmm, so the final cookie of the task is always p->core_cookie. This is what
+>>> the scheduler uses. All other fields are ingredients to derive the final
+>>> cookie value.
 >>>
+>>> I will drop this hunk from your overall diff, but let me know if you
+>>> disagree!
 >>
->> It doesn't work for me with qemu 5.1, nor with qemu 5.2. My userspace
->> is generated with buildroot, busybox-based, and very basic.
+>>
+>> No problem. That was there primarily for debugging.
 > 
-> OK, so something is definitely different between our setups.
-> Mind pointing me to your config and your QEMU invocation?
+> Ok. I squashed Josh's changes into this patch and several of my fixups. So
+> there'll be 3 patches:
+> 1. CGroup + prctl  (single patch as it is hell to split it)
+> 2. Documentation
+> 3. ksefltests
 > 
+> Below is the diff of #1. I still have to squash in the stop_machine removal
+> and some more review changes. But other than that, please take a look and let
+> me know anything that's odd.  I will test further as well.
+> 
+> Also next series will only be interface as I want to see if I can get lucky
+> enough to have Peter look at it before he leaves for PTO next week.
+> For the other features, I will post different series as I prepare them. One
+> series for interface, and another for kernel protection / migration changes.
+> 
+> ---8<-----------------------
+> 
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index a60868165590..73baca11d743 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -688,6 +688,8 @@ struct task_struct {
+>   #ifdef CONFIG_SCHED_CORE
+>   	struct rb_node			core_node;
+>   	unsigned long			core_cookie;
+> +	unsigned long			core_task_cookie;
+> +	unsigned long			core_group_cookie;
+>   	unsigned int			core_occupation;
+>   #endif
+>   
+> @@ -2081,11 +2083,15 @@ void sched_core_unsafe_enter(void);
+>   void sched_core_unsafe_exit(void);
+>   bool sched_core_wait_till_safe(unsigned long ti_check);
+>   bool sched_core_kernel_protected(void);
+> +int sched_core_share_pid(unsigned long flags, pid_t pid);
+> +void sched_tsk_free(struct task_struct *tsk);
+>   #else
+>   #define sched_core_unsafe_enter(ignore) do { } while (0)
+>   #define sched_core_unsafe_exit(ignore) do { } while (0)
+>   #define sched_core_wait_till_safe(ignore) do { } while (0)
+>   #define sched_core_kernel_protected(ignore) do { } while (0)
+> +#define sched_core_share_pid(flags, pid) do { } while (0)
+> +#define sched_tsk_free(tsk) do { } while (0)
+>   #endif
+>   
+>   #endif
+> diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+> index c334e6a02e5f..3752006842e1 100644
+> --- a/include/uapi/linux/prctl.h
+> +++ b/include/uapi/linux/prctl.h
+> @@ -248,4 +248,10 @@ struct prctl_mm_map {
+>   #define PR_SET_IO_FLUSHER		57
+>   #define PR_GET_IO_FLUSHER		58
+>   
+> +/* Request the scheduler to share a core */
+> +#define PR_SCHED_CORE_SHARE		59
+> +#define PR_SCHED_CORE_CLEAR		0  /* clear core_sched cookie of pid */
+> +#define PR_SCHED_CORE_SHARE_FROM	1  /* get core_sched cookie from pid */
+> +#define PR_SCHED_CORE_SHARE_TO		2  /* push core_sched cookie to pid */
+> +
+>   #endif /* _LINUX_PRCTL_H */
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 7199d359690c..5468c93829c5 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -736,6 +736,7 @@ void __put_task_struct(struct task_struct *tsk)
+>   	exit_creds(tsk);
+>   	delayacct_tsk_free(tsk);
+>   	put_signal_struct(tsk->signal);
+> +	sched_tsk_free(tsk);
+>   
+>   	if (!profile_handoff_task(tsk))
+>   		free_task(tsk);
+> diff --git a/kernel/sched/Makefile b/kernel/sched/Makefile
+> index 5fc9c9b70862..c526c20adf9d 100644
+> --- a/kernel/sched/Makefile
+> +++ b/kernel/sched/Makefile
+> @@ -36,3 +36,4 @@ obj-$(CONFIG_CPU_FREQ_GOV_SCHEDUTIL) += cpufreq_schedutil.o
+>   obj-$(CONFIG_MEMBARRIER) += membarrier.o
+>   obj-$(CONFIG_CPU_ISOLATION) += isolation.o
+>   obj-$(CONFIG_PSI) += psi.o
+> +obj-$(CONFIG_SCHED_CORE) += coretag.o
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 7f807a84cc30..80daca9c5930 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -157,7 +157,33 @@ static inline bool __sched_core_less(struct task_struct *a, struct task_struct *
+>   	return false;
+>   }
+>   
+> -static void sched_core_enqueue(struct rq *rq, struct task_struct *p)
+> +static bool sched_core_empty(struct rq *rq)
+> +{
+> +	return RB_EMPTY_ROOT(&rq->core_tree);
+> +}
+> +
+> +static struct task_struct *sched_core_first(struct rq *rq)
+> +{
+> +	struct task_struct *task;
+> +
+> +	task = container_of(rb_first(&rq->core_tree), struct task_struct, core_node);
+> +	return task;
+> +}
+> +
+> +static void sched_core_flush(int cpu)
+> +{
+> +	struct rq *rq = cpu_rq(cpu);
+> +	struct task_struct *task;
+> +
+> +	while (!sched_core_empty(rq)) {
+> +		task = sched_core_first(rq);
+> +		rb_erase(&task->core_node, &rq->core_tree);
+> +		RB_CLEAR_NODE(&task->core_node);
+> +	}
+> +	rq->core->core_task_seq++;
+> +}
+> +
+> +void sched_core_enqueue(struct rq *rq, struct task_struct *p)
+>   {
+>   	struct rb_node *parent, **node;
+>   	struct task_struct *node_task;
+> @@ -184,14 +210,15 @@ static void sched_core_enqueue(struct rq *rq, struct task_struct *p)
+>   	rb_insert_color(&p->core_node, &rq->core_tree);
+>   }
+>   
+> -static void sched_core_dequeue(struct rq *rq, struct task_struct *p)
+> +void sched_core_dequeue(struct rq *rq, struct task_struct *p)
+>   {
+>   	rq->core->core_task_seq++;
+>   
+> -	if (!p->core_cookie)
+> +	if (!sched_core_enqueued(p))
+>   		return;
+>   
+>   	rb_erase(&p->core_node, &rq->core_tree);
+> +	RB_CLEAR_NODE(&p->core_node);
+>   }
+>   
+>   /*
+> @@ -255,8 +282,24 @@ static int __sched_core_stopper(void *data)
+>   	bool enabled = !!(unsigned long)data;
+>   	int cpu;
+>   
+> -	for_each_possible_cpu(cpu)
+> -		cpu_rq(cpu)->core_enabled = enabled;
+> +	for_each_possible_cpu(cpu) {
+> +		struct rq *rq = cpu_rq(cpu);
+> +
+> +		WARN_ON_ONCE(enabled == rq->core_enabled);
+> +
+> +		if (!enabled || (enabled && cpumask_weight(cpu_smt_mask(cpu)) >= 2)) {
+> +			/*
+> +			 * All active and migrating tasks will have already
+> +			 * been removed from core queue when we clear the
+> +			 * cgroup tags. However, dying tasks could still be
+> +			 * left in core queue. Flush them here.
+> +			 */
+> +			if (!enabled)
+> +				sched_core_flush(cpu);
+> +
+> +			rq->core_enabled = enabled;
+> +		}
+> +	}
+>   
+>   	return 0;
+>   }
+> @@ -266,7 +309,11 @@ static int sched_core_count;
+>   
+>   static void __sched_core_enable(void)
+>   {
+> -	// XXX verify there are no cookie tasks (yet)
+> +	int cpu;
+> +
+> +	/* verify there are no cookie tasks (yet) */
+> +	for_each_online_cpu(cpu)
+> +		BUG_ON(!sched_core_empty(cpu_rq(cpu)));
+>   
+>   	static_branch_enable(&__sched_core_enabled);
+>   	stop_machine(__sched_core_stopper, (void *)true, NULL);
+> @@ -274,8 +321,6 @@ static void __sched_core_enable(void)
+>   
+>   static void __sched_core_disable(void)
+>   {
+> -	// XXX verify there are no cookie tasks (left)
+> -
+>   	stop_machine(__sched_core_stopper, (void *)false, NULL);
+>   	static_branch_disable(&__sched_core_enabled);
+>   }
+> @@ -295,12 +340,6 @@ void sched_core_put(void)
+>   		__sched_core_disable();
+>   	mutex_unlock(&sched_core_mutex);
+>   }
+> -
+> -#else /* !CONFIG_SCHED_CORE */
+> -
+> -static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
+> -static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
+> -
+>   #endif /* CONFIG_SCHED_CORE */
+>   
+>   /*
+> @@ -3779,6 +3818,9 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
+>   	p->capture_control = NULL;
+>   #endif
+>   	init_numa_balancing(clone_flags, p);
+> +#ifdef CONFIG_SCHED_CORE
+> +	p->core_task_cookie = 0;
+> +#endif
+>   #ifdef CONFIG_SMP
+>   	p->wake_entry.u_flags = CSD_TYPE_TTWU;
+>   	p->migration_pending = NULL;
+> @@ -3903,6 +3945,7 @@ static inline void init_schedstats(void) {}
+>   int sched_fork(unsigned long clone_flags, struct task_struct *p)
+>   {
+>   	unsigned long flags;
+> +	int __maybe_unused ret;
+>   
+>   	__sched_fork(clone_flags, p);
+>   	/*
+> @@ -3978,6 +4021,13 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+>   #ifdef CONFIG_SMP
+>   	plist_node_init(&p->pushable_tasks, MAX_PRIO);
+>   	RB_CLEAR_NODE(&p->pushable_dl_tasks);
+> +#endif
+> +#ifdef CONFIG_SCHED_CORE
+> +	RB_CLEAR_NODE(&p->core_node);
+> +
+> +	ret = sched_core_fork(p, clone_flags);
+> +	if (ret)
+> +		return ret;
+>   #endif
+>   	return 0;
+>   }
+> @@ -7979,6 +8029,9 @@ void init_idle(struct task_struct *idle, int cpu)
+>   #ifdef CONFIG_SMP
+>   	sprintf(idle->comm, "%s/%d", INIT_TASK_COMM, cpu);
+>   #endif
+> +#ifdef CONFIG_SCHED_CORE
+> +	RB_CLEAR_NODE(&idle->core_node);
+> +#endif
+>   }
+>   
+>   #ifdef CONFIG_SMP
+> @@ -8983,6 +9036,9 @@ void sched_offline_group(struct task_group *tg)
+>   	spin_unlock_irqrestore(&task_group_lock, flags);
+>   }
+>   
+> +void cpu_core_get_group_cookie(struct task_group *tg,
+> +			       unsigned long *group_cookie_ptr);
+> +
+>   static void sched_change_group(struct task_struct *tsk, int type)
+>   {
+>   	struct task_group *tg;
+> @@ -8995,6 +9051,11 @@ static void sched_change_group(struct task_struct *tsk, int type)
+>   	tg = container_of(task_css_check(tsk, cpu_cgrp_id, true),
+>   			  struct task_group, css);
+>   	tg = autogroup_task_group(tsk, tg);
+> +
+> +#ifdef CONFIG_SCHED_CORE
+> +	sched_core_change_group(tsk, tg);
+> +#endif
+> +
+>   	tsk->sched_task_group = tg;
+>   
+>   #ifdef CONFIG_FAIR_GROUP_SCHED
+> @@ -9047,11 +9108,6 @@ void sched_move_task(struct task_struct *tsk)
+>   	task_rq_unlock(rq, tsk, &rf);
+>   }
+>   
+> -static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
+> -{
+> -	return css ? container_of(css, struct task_group, css) : NULL;
+> -}
+> -
+>   static struct cgroup_subsys_state *
+>   cpu_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+>   {
+> @@ -9087,6 +9143,18 @@ static int cpu_cgroup_css_online(struct cgroup_subsys_state *css)
+>   	return 0;
+>   }
+>   
+> +static void cpu_cgroup_css_offline(struct cgroup_subsys_state *css)
+> +{
+> +#ifdef CONFIG_SCHED_CORE
+> +	struct task_group *tg = css_tg(css);
+> +
+> +	if (tg->core_tagged) {
+> +		sched_core_put();
+> +		tg->core_tagged = 0;
+> +	}
+> +#endif
+> +}
+> +
+>   static void cpu_cgroup_css_released(struct cgroup_subsys_state *css)
+>   {
+>   	struct task_group *tg = css_tg(css);
+> @@ -9688,6 +9756,22 @@ static struct cftype cpu_legacy_files[] = {
+>   		.write_u64 = cpu_rt_period_write_uint,
+>   	},
+>   #endif
+> +#ifdef CONFIG_SCHED_CORE
+> +	{
+> +		.name = "core_tag",
+> +		.flags = CFTYPE_NOT_ON_ROOT,
+> +		.read_u64 = cpu_core_tag_read_u64,
+> +		.write_u64 = cpu_core_tag_write_u64,
+> +	},
+> +#ifdef CONFIG_SCHED_DEBUG
+> +	/* Read the group cookie. */
+> +	{
+> +		.name = "core_group_cookie",
+> +		.flags = CFTYPE_NOT_ON_ROOT,
+> +		.read_u64 = cpu_core_group_cookie_read_u64,
+> +	},
+> +#endif
+> +#endif
+>   #ifdef CONFIG_UCLAMP_TASK_GROUP
+>   	{
+>   		.name = "uclamp.min",
+> @@ -9861,6 +9945,22 @@ static struct cftype cpu_files[] = {
+>   		.write_s64 = cpu_weight_nice_write_s64,
+>   	},
+>   #endif
+> +#ifdef CONFIG_SCHED_CORE
+> +	{
+> +		.name = "core_tag",
+> +		.flags = CFTYPE_NOT_ON_ROOT,
+> +		.read_u64 = cpu_core_tag_read_u64,
+> +		.write_u64 = cpu_core_tag_write_u64,
+> +	},
+> +#ifdef CONFIG_SCHED_DEBUG
+> +	/* Read the group cookie. */
+> +	{
+> +		.name = "core_group_cookie",
+> +		.flags = CFTYPE_NOT_ON_ROOT,
+> +		.read_u64 = cpu_core_group_cookie_read_u64,
+> +	},
+> +#endif
+> +#endif
+>   #ifdef CONFIG_CFS_BANDWIDTH
+>   	{
+>   		.name = "max",
+> @@ -9889,6 +9989,7 @@ static struct cftype cpu_files[] = {
+>   struct cgroup_subsys cpu_cgrp_subsys = {
+>   	.css_alloc	= cpu_cgroup_css_alloc,
+>   	.css_online	= cpu_cgroup_css_online,
+> +	.css_offline	= cpu_cgroup_css_offline,
+>   	.css_released	= cpu_cgroup_css_released,
+>   	.css_free	= cpu_cgroup_css_free,
+>   	.css_extra_stat_show = cpu_extra_stat_show,
+> diff --git a/kernel/sched/coretag.c b/kernel/sched/coretag.c
+> new file mode 100644
+> index 000000000000..4eeb956382ee
+> --- /dev/null
+> +++ b/kernel/sched/coretag.c
+> @@ -0,0 +1,734 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * kernel/sched/core-tag.c
+> + *
+> + * Core-scheduling tagging interface support.
+> + *
+> + * Copyright(C) 2020, Joel Fernandes.
+> + * Initial interfacing code  by Peter Ziljstra.
+> + */
+> +
+> +#include <linux/prctl.h>
+> +#include "sched.h"
+> +
+> +/*
+> + * Wrapper representing a complete cookie. The address of the cookie is used as
+> + * a unique identifier. Each cookie has a unique permutation of the internal
+> + * cookie fields.
+> + */
+> +struct sched_core_cookie {
+> +	unsigned long task_cookie;
+> +	unsigned long group_cookie;
+> +
+> +	struct rb_node node;
+> +	refcount_t refcnt;
+> +};
+> +
+> +/*
+> + * A simple wrapper around refcount. An allocated sched_core_task_cookie's
+> + * address is used to compute the cookie of the task.
+> + */
+> +struct sched_core_task_cookie {
+> +	refcount_t refcnt;
+> +	struct work_struct work; /* to free in WQ context. */;
+> +};
+> +
+> +static DEFINE_MUTEX(sched_core_tasks_mutex);
+> +
+> +/* All active sched_core_cookies */
+> +static struct rb_root sched_core_cookies = RB_ROOT;
+> +static DEFINE_RAW_SPINLOCK(sched_core_cookies_lock);
+> +
+> +/*
+> + * Returns the following:
+> + * a < b  => -1
+> + * a == b => 0
+> + * a > b  => 1
+> + */
+> +static int sched_core_cookie_cmp(const struct sched_core_cookie *a,
+> +				 const struct sched_core_cookie *b)
+> +{
+> +#define COOKIE_CMP_RETURN(field) do {		\
+> +	if (a->field < b->field)		\
+> +		return -1;			\
+> +	else if (a->field > b->field)		\
+> +		return 1;			\
+> +} while (0)					\
+> +
+> +	COOKIE_CMP_RETURN(task_cookie);
+> +	COOKIE_CMP_RETURN(group_cookie);
+> +
+> +	/* all cookie fields match */
+> +	return 0;
+> +
+> +#undef COOKIE_CMP_RETURN
+> +}
+> +
+> +static inline void __sched_core_erase_cookie(struct sched_core_cookie *cookie)
+> +{
+> +	lockdep_assert_held(&sched_core_cookies_lock);
+> +
+> +	/* Already removed */
+> +	if (RB_EMPTY_NODE(&cookie->node))
+> +		return;
+> +
+> +	rb_erase(&cookie->node, &sched_core_cookies);
+> +	RB_CLEAR_NODE(&cookie->node);
+> +}
+> +
+> +/* Called when a task no longer points to the cookie in question */
+> +static void sched_core_put_cookie(struct sched_core_cookie *cookie)
+> +{
+> +	unsigned long flags;
+> +
+> +	if (!cookie)
+> +		return;
+> +
+> +	if (refcount_dec_and_test(&cookie->refcnt)) {
+> +		raw_spin_lock_irqsave(&sched_core_cookies_lock, flags);
+> +		__sched_core_erase_cookie(cookie);
+> +		raw_spin_unlock_irqrestore(&sched_core_cookies_lock, flags);
+> +		kfree(cookie);
+> +	}
+> +}
+> +
+> +/*
+> + * A task's core cookie is a compound structure composed of various cookie
+> + * fields (task_cookie, group_cookie). The overall core_cookie is
+> + * a pointer to a struct containing those values. This function either finds
+> + * an existing core_cookie or creates a new one, and then updates the task's
+> + * core_cookie to point to it. Additionally, it handles the necessary reference
+> + * counting.
+> + *
+> + * REQUIRES: task_rq(p) lock or called from cpu_stopper.
+> + * Doing so ensures that we do not cause races/corruption by modifying/reading
+> + * task cookie fields.
+> + */
+> +static void __sched_core_update_cookie(struct task_struct *p)
+> +{
+> +	struct rb_node *parent, **node;
+> +	struct sched_core_cookie *node_core_cookie, *match;
+> +	static const struct sched_core_cookie zero_cookie;
+> +	struct sched_core_cookie temp = {
+> +		.task_cookie	= p->core_task_cookie,
+> +		.group_cookie	= p->core_group_cookie,
+> +	};
+> +	const bool is_zero_cookie =
+> +		(sched_core_cookie_cmp(&temp, &zero_cookie) == 0);
+> +	struct sched_core_cookie *const curr_cookie =
+> +		(struct sched_core_cookie *)p->core_cookie;
+> +	unsigned long flags;
+> +
+> +	/*
+> +	 * Already have a cookie matching the requested settings? Nothing to
+> +	 * do.
+> +	 */
+> +	if ((curr_cookie && sched_core_cookie_cmp(curr_cookie, &temp) == 0) ||
+> +	    (!curr_cookie && is_zero_cookie))
+> +		return;
+> +
+> +	raw_spin_lock_irqsave(&sched_core_cookies_lock, flags);
+> +
+> +	if (is_zero_cookie) {
+> +		match = NULL;
+> +		goto finish;
+> +	}
+> +
+> +retry:
+> +	match = NULL;
+> +
+> +	node = &sched_core_cookies.rb_node;
+> +	parent = *node;
+> +	while (*node) {
+> +		int cmp;
+> +
+> +		node_core_cookie =
+> +			container_of(*node, struct sched_core_cookie, node);
+> +		parent = *node;
+> +
+> +		cmp = sched_core_cookie_cmp(&temp, node_core_cookie);
+> +		if (cmp < 0) {
+> +			node = &parent->rb_left;
+> +		} else if (cmp > 0) {
+> +			node = &parent->rb_right;
+> +		} else {
+> +			match = node_core_cookie;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (!match) {
+> +		/* No existing cookie; create and insert one */
+> +		match = kmalloc(sizeof(struct sched_core_cookie), GFP_ATOMIC);
+> +
+> +		/* Fall back to zero cookie */
+> +		if (WARN_ON_ONCE(!match))
+> +			goto finish;
+> +
+> +		match->task_cookie = temp.task_cookie;
+> +		match->group_cookie = temp.group_cookie;
+> +		refcount_set(&match->refcnt, 1);
+> +
+> +		rb_link_node(&match->node, parent, node);
+> +		rb_insert_color(&match->node, &sched_core_cookies);
+> +	} else {
+> +		/*
+> +		 * Cookie exists, increment refcnt. If refcnt is currently 0,
+> +		 * we're racing with a put() (refcnt decremented but cookie not
+> +		 * yet removed from the tree). In this case, we can simply
+> +		 * perform the removal ourselves and retry.
+> +		 * sched_core_put_cookie() will still function correctly.
+> +		 */
+> +		if (unlikely(!refcount_inc_not_zero(&match->refcnt))) {
+> +			__sched_core_erase_cookie(match);
+> +			goto retry;
+> +		}
+> +	}
+> +
+> +finish:
+> +	/*
+> +	 * Set the core_cookie under the cookies lock. This guarantees that
+> +	 * p->core_cookie cannot be freed while the cookies lock is held in
+> +	 * sched_core_fork().
+> +	 */
+> +	p->core_cookie = (unsigned long)match;
+> +
+> +	raw_spin_unlock_irqrestore(&sched_core_cookies_lock, flags);
+> +
+> +	sched_core_put_cookie(curr_cookie);
+> +}
+> +
+> +/*
+> + * sched_core_update_cookie - Common helper to update a task's core cookie. This
+> + * updates the selected cookie field and then updates the overall cookie.
+> + * @p: The task whose cookie should be updated.
+> + * @cookie: The new cookie.
+> + * @cookie_type: The cookie field to which the cookie corresponds.
+> + *
+> + * REQUIRES: either task_rq(p)->lock held or called from a stop-machine handler.
+> + * Doing so ensures that we do not cause races/corruption by modifying/reading
+> + * task cookie fields.
+> + */
+> +static void sched_core_update_cookie(struct task_struct *p, unsigned long cookie,
+> +				     enum sched_core_cookie_type cookie_type)
+> +{
+> +	if (!p)
+> +		return;
+> +
+> +	switch (cookie_type) {
+> +	case sched_core_no_update:
+> +		break;
+> +	case sched_core_task_cookie_type:
+> +		p->core_task_cookie = cookie;
+> +		break;
+> +	case sched_core_group_cookie_type:
+> +		p->core_group_cookie = cookie;
+> +		break;
+> +	default:
+> +		WARN_ON_ONCE(1);
+> +	}
+> +
+> +	/* Set p->core_cookie, which is the overall cookie */
+> +	__sched_core_update_cookie(p);
+> +
+> +	if (sched_core_enqueued(p)) {
+> +		sched_core_dequeue(task_rq(p), p);
+> +		if (!p->core_cookie)
+> +			return;
+> +	}
+> +
+> +	if (sched_core_enabled(task_rq(p)) &&
+> +	    p->core_cookie && task_on_rq_queued(p))
+> +		sched_core_enqueue(task_rq(p), p);
+> +}
+> +
+> +#ifdef CONFIG_CGROUP_SCHED
+> +void cpu_core_get_group_cookie(struct task_group *tg,
+> +			       unsigned long *group_cookie_ptr);
+> +
+> +void sched_core_change_group(struct task_struct *p, struct task_group *new_tg)
+> +{
+> +	unsigned long new_group_cookie;
+> +
+> +	cpu_core_get_group_cookie(new_tg, &new_group_cookie);
+> +
+> +	if (p->core_group_cookie == new_group_cookie)
+> +		return;
+> +
+> +	p->core_group_cookie = new_group_cookie;
+> +
+> +	__sched_core_update_cookie(p);
+> +}
+> +#endif
+> +
+> +/* Per-task interface: Used by fork(2) and prctl(2). */
+> +static void sched_core_put_cookie_work(struct work_struct *ws);
+> +
+> +/* Caller has to call sched_core_get() if non-zero value is returned. */
+> +static unsigned long sched_core_alloc_task_cookie(void)
+> +{
+> +	struct sched_core_task_cookie *ck =
+> +		kmalloc(sizeof(struct sched_core_task_cookie), GFP_KERNEL);
+> +
+> +	if (!ck)
+> +		return 0;
+> +	refcount_set(&ck->refcnt, 1);
+> +	INIT_WORK(&ck->work, sched_core_put_cookie_work);
+> +
+> +	return (unsigned long)ck;
+> +}
+> +
+> +static void sched_core_get_task_cookie(unsigned long cookie)
+> +{
+> +	struct sched_core_task_cookie *ptr =
+> +		(struct sched_core_task_cookie *)cookie;
+> +
+> +	refcount_inc(&ptr->refcnt);
+> +}
+> +
+> +static void sched_core_put_task_cookie(unsigned long cookie)
+> +{
+> +	struct sched_core_task_cookie *ptr =
+> +		(struct sched_core_task_cookie *)cookie;
+> +
+> +	if (refcount_dec_and_test(&ptr->refcnt))
+> +		kfree(ptr);
+> +}
+> +
+> +static void sched_core_put_cookie_work(struct work_struct *ws)
+> +{
+> +	struct sched_core_task_cookie *ck =
+> +		container_of(ws, struct sched_core_task_cookie, work);
+> +
+> +	sched_core_put_task_cookie((unsigned long)ck);
+> +	sched_core_put();
+> +}
+> +
+> +struct sched_core_task_write_tag {
+> +	struct task_struct *tasks[2];
+> +	unsigned long cookies[2];
+> +};
+> +
+> +/*
+> + * Ensure that the task has been requeued. The stopper ensures that the task cannot
+> + * be migrated to a different CPU while its core scheduler queue state is being updated.
+> + * It also makes sure to requeue a task if it was running actively on another CPU.
+> + */
+> +static int sched_core_task_join_stopper(void *data)
+> +{
+> +	struct sched_core_task_write_tag *tag = (struct sched_core_task_write_tag *)data;
+> +	int i;
+> +
+> +	for (i = 0; i < 2; i++)
+> +		sched_core_update_cookie(tag->tasks[i], tag->cookies[i],
+> +					 sched_core_task_cookie_type);
+> +
+> +	return 0;
+> +}
+> +
+> +int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
+> +{
+> +	struct sched_core_task_write_tag wr = {}; /* for stop machine. */
+> +	bool sched_core_put_after_stopper = false;
+> +	unsigned long cookie;
+> +	int ret = -ENOMEM;
+> +
+> +	mutex_lock(&sched_core_tasks_mutex);
+> +
+> +	if (!t2) {
+> +		if (t1->core_task_cookie) {
+> +			sched_core_put_task_cookie(t1->core_task_cookie);
+> +			sched_core_put_after_stopper = true;
+> +			wr.tasks[0] = t1; /* Keep wr.cookies[0] reset for t1. */
+> +		}
+> +	} else if (t1 == t2) {
+> +		/* Assign a unique per-task cookie solely for t1. */
+> +
+> +		cookie = sched_core_alloc_task_cookie();
+> +		if (!cookie)
+> +			goto out_unlock;
+> +		sched_core_get();
+> +
+> +		if (t1->core_task_cookie) {
+> +			sched_core_put_task_cookie(t1->core_task_cookie);
+> +			sched_core_put_after_stopper = true;
+> +		}
+> +		wr.tasks[0] = t1;
+> +		wr.cookies[0] = cookie;
+> +	} else if (!t1->core_task_cookie && !t2->core_task_cookie) {
+> +		/*
+> +		 * 		t1		joining		t2
+> +		 * CASE 1:
+> +		 * before	0				0
+> +		 * after	new cookie			new cookie
+> +		 *
+> +		 * CASE 2:
+> +		 * before	X (non-zero)			0
+> +		 * after	0				0
+> +		 *
+> +		 * CASE 3:
+> +		 * before	0				X (non-zero)
+> +		 * after	X				X
+> +		 *
+> +		 * CASE 4:
+> +		 * before	Y (non-zero)			X (non-zero)
+> +		 * after	X				X
+> +		 */
+> +
+> +		/* CASE 1. */
+> +		cookie = sched_core_alloc_task_cookie();
+> +		if (!cookie)
+> +			goto out_unlock;
+> +		sched_core_get(); /* For the alloc. */
+> +
+> +		/* Add another reference for the other task. */
+> +		sched_core_get_task_cookie(cookie);
+> +		sched_core_get(); /* For the other task. */
+> +
+> +		wr.tasks[0] = t1;
+> +		wr.tasks[1] = t2;
+> +		wr.cookies[0] = wr.cookies[1] = cookie;
+> +
+> +	} else if (t1->core_task_cookie && !t2->core_task_cookie) {
+> +		/* CASE 2. */
+> +		sched_core_put_task_cookie(t1->core_task_cookie);
+> +		sched_core_put_after_stopper = true;
+> +
+> +		wr.tasks[0] = t1; /* Reset cookie for t1. */
+> +
+> +	} else if (!t1->core_task_cookie && t2->core_task_cookie) {
+> +		/* CASE 3. */
+> +		sched_core_get_task_cookie(t2->core_task_cookie);
+> +		sched_core_get();
+> +
+> +		wr.tasks[0] = t1;
+> +		wr.cookies[0] = t2->core_task_cookie;
+> +
+> +	} else {
+> +		/* CASE 4. */
+> +		sched_core_get_task_cookie(t2->core_task_cookie);
+> +		sched_core_get();
+> +
+> +		sched_core_put_task_cookie(t1->core_task_cookie);
+> +		sched_core_put_after_stopper = true;
+> +
+> +		wr.tasks[0] = t1;
+> +		wr.cookies[0] = t2->core_task_cookie;
+> +	}
+> +
+> +	stop_machine(sched_core_task_join_stopper, (void *)&wr, NULL);
+> +
+> +	if (sched_core_put_after_stopper)
+> +		sched_core_put();
+> +
+> +	ret = 0;
+> +out_unlock:
+> +	mutex_unlock(&sched_core_tasks_mutex);
+> +	return ret;
+> +}
+> +
+> +/* Called from prctl interface: PR_SCHED_CORE_SHARE */
+> +int sched_core_share_pid(unsigned long flags, pid_t pid)
+> +{
+> +	struct task_struct *to;
+> +	struct task_struct *from;
+> +	struct task_struct *task;
+> +	int err;
+> +
+> +	rcu_read_lock();
+> +	task = find_task_by_vpid(pid);
+> +	if (!task) {
+> +		rcu_read_unlock();
+> +		return -ESRCH;
+> +	}
+> +
+> +	get_task_struct(task);
+> +
+> +	/*
+> +	 * Check if this process has the right to modify the specified
+> +	 * process. Use the regular "ptrace_may_access()" checks.
+> +	 */
+> +	if (!ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS)) {
+> +		rcu_read_unlock();
+> +		err = -EPERM;
+> +		goto out;
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	if (flags == PR_SCHED_CORE_CLEAR) {
+> +		to = task;
+> +		from = NULL;
+> +	} else if (flags == PR_SCHED_CORE_SHARE_TO) {
+> +		to = task;
+> +		from = current;
+> +	} else if (flags == PR_SCHED_CORE_SHARE_FROM) {
+> +		to = current;
+> +		from = task;
+> +	} else {
+> +		err = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	err = sched_core_share_tasks(to, from);
+> +out:
+> +	if (task)
+> +		put_task_struct(task);
+> +	return err;
+> +}
+> +
+> +/* CGroup core-scheduling interface support. */
+> +#ifdef CONFIG_CGROUP_SCHED
+> +/*
+> + * Helper to get the group cookie in a hierarchy. Any ancestor can have a
+> + * cookie.
+> + *
+> + * Sets *group_cookie_ptr to the hierarchical group cookie.
+> + */
+> +void cpu_core_get_group_cookie(struct task_group *tg,
+> +			       unsigned long *group_cookie_ptr)
+> +{
+> +	unsigned long group_cookie = 0UL;
+> +
+> +	if (!tg)
+> +		goto out;
+> +
+> +	for (; tg; tg = tg->parent) {
+> +
+> +		if (tg->core_tagged) {
+> +			group_cookie = (unsigned long)tg;
+> +			break;
+> +		}
+> +	}
+> +
+> +out:
+> +	*group_cookie_ptr = group_cookie;
+> +}
+> +
+> +/* Determine if any group in @tg's children are tagged. */
+> +static bool cpu_core_check_descendants(struct task_group *tg, bool check_tag)
+> +{
+> +	struct task_group *child;
+> +
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(child, &tg->children, siblings) {
+> +		if ((child->core_tagged && check_tag)) {
+> +			rcu_read_unlock();
+> +			return true;
+> +		}
+> +
+> +		rcu_read_unlock();
+> +		return cpu_core_check_descendants(child, check_tag);
+> +	}
+> +
+> +	rcu_read_unlock();
+> +	return false;
+> +}
+> +
+> +u64 cpu_core_tag_read_u64(struct cgroup_subsys_state *css,
+> +			  struct cftype *cft)
+> +{
+> +	struct task_group *tg = css_tg(css);
+> +
+> +	return !!tg->core_tagged;
+> +}
+> +
+> +#ifdef CONFIG_SCHED_DEBUG
+> +u64 cpu_core_group_cookie_read_u64(struct cgroup_subsys_state *css,
+> +				   struct cftype *cft)
+> +{
+> +	unsigned long group_cookie;
+> +
+> +	cpu_core_get_group_cookie(css_tg(css), &group_cookie);
+> +
+> +	return group_cookie;
+> +}
+> +#endif
+> +
+> +struct write_core_tag {
+> +	struct cgroup_subsys_state *css;
+> +	unsigned long cookie;
+> +	enum sched_core_cookie_type cookie_type;
+> +};
+> +
+> +static int __sched_write_tag(void *data)
+> +{
+> +	struct write_core_tag *tag = (struct write_core_tag *)data;
+> +	struct task_struct *p;
+> +	struct cgroup_subsys_state *css;
+> +
+> +	rcu_read_lock();
+> +	css_for_each_descendant_pre(css, tag->css) {
+> +		struct css_task_iter it;
+> +
+> +		css_task_iter_start(css, 0, &it);
+> +		/*
+> +		 * Note: css_task_iter_next will skip dying tasks.
+> +		 * There could still be dying tasks left in the core queue
+> +		 * when we set cgroup tag to 0 when the loop is done below.
+> +		 */
+> +		while ((p = css_task_iter_next(&it)))
+> +			sched_core_update_cookie(p, tag->cookie,
+> +						 tag->cookie_type);
+> +
+> +		css_task_iter_end(&it);
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	return 0;
+> +}
+> +
+> +int cpu_core_tag_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+> +			   u64 val)
+> +{
+> +	struct task_group *tg = css_tg(css);
+> +	struct write_core_tag wtag;
+> +	unsigned long group_cookie;
+> +
+> +	if (val > 1)
+> +		return -ERANGE;
+> +
+> +	if (!static_branch_likely(&sched_smt_present))
+> +		return -EINVAL;
+> +
+> +	if (!tg->core_tagged && val) {
+> +		/* Tag is being set. Check ancestors and descendants. */
+> +		cpu_core_get_group_cookie(tg, &group_cookie);
+> +		if (group_cookie ||
+> +		    cpu_core_check_descendants(tg, true /* tag */))
+> +			return -EBUSY;
+> +	} else if (tg->core_tagged && !val) {
+> +		/* Tag is being reset. Check descendants. */
+> +		if (cpu_core_check_descendants(tg, true /* tag */))
+> +			return -EBUSY;
+> +	} else {
+> +		return 0;
+> +	}
+> +
+> +	if (!!val)
+> +		sched_core_get();
+> +
+> +	wtag.css = css;
+> +	wtag.cookie = (unsigned long)tg;
+> +	wtag.cookie_type = sched_core_group_cookie_type;
+> +
+> +	tg->core_tagged = val;
+> +
+> +	stop_machine(__sched_write_tag, (void *)&wtag, NULL);
+> +	if (!val)
+> +		sched_core_put();
+> +
+> +	return 0;
+> +}
+> +#endif
+> +
+> +/*
+> + * Tagging support when fork(2) is called:
+> + * If it is a CLONE_THREAD fork, share parent's tag. Otherwise assign a unique per-task tag.
+> + */
+> +static int sched_update_core_tag_stopper(void *data)
+> +{
+> +	struct task_struct *p = (struct task_struct *)data;
+> +
+> +	/* Recalculate core cookie */
+> +	sched_core_update_cookie(p, 0, sched_core_no_update);
+> +
+> +	return 0;
+> +}
+> +
+> +/* Called from sched_fork() */
+> +int sched_core_fork(struct task_struct *p, unsigned long clone_flags)
+> +{
+> +	struct sched_core_cookie *parent_cookie =
+> +		(struct sched_core_cookie *)current->core_cookie;
+> +
+> +	/*
+> +	 * core_cookie is ref counted; avoid an uncounted reference.
+> +	 * If p should have a cookie, it will be set below.
+> +	 */
+> +	p->core_cookie = 0UL;
+> +
+> +	/*
+> +	 * If parent is tagged via per-task cookie, tag the child (either with
+> +	 * the parent's cookie, or a new one).
+> +	 *
+> +	 * We can return directly in this case, because sched_core_share_tasks()
+> +	 * will set the core_cookie (so there is no need to try to inherit from
+> +	 * the parent). The cookie will have the proper sub-fields (ie. group
+> +	 * cookie, etc.), because these come from p's task_struct, which is
+> +	 * dup'd from the parent.
+> +	 */
+> +	if (current->core_task_cookie) {
+> +		int ret;
+> +
+> +		/* If it is not CLONE_THREAD fork, assign a unique per-task tag. */
+> +		if (!(clone_flags & CLONE_THREAD)) {
+> +			ret = sched_core_share_tasks(p, p);
+> +		} else {
+> +			/* Otherwise share the parent's per-task tag. */
+> +			ret = sched_core_share_tasks(p, current);
+> +		}
+> +
+> +		if (ret)
+> +			return ret;
+> +
+> +		/*
+> +		 * We expect sched_core_share_tasks() to always update p's
+> +		 * core_cookie.
+> +		 */
+> +		WARN_ON_ONCE(!p->core_cookie);
+> +
+> +		return 0;
+> +	}
+> +
+> +	/*
+> +	 * If parent is tagged, inherit the cookie and ensure that the reference
+> +	 * count is updated.
+> +	 *
+> +	 * Technically, we could instead zero-out the task's group_cookie and
+> +	 * allow sched_core_change_group() to handle this post-fork, but
+> +	 * inheriting here has a performance advantage, since we don't
+> +	 * need to traverse the core_cookies RB tree and can instead grab the
+> +	 * parent's cookie directly.
+> +	 */
+> +	if (parent_cookie) {
+> +		bool need_stopper = false;
+> +		unsigned long flags;
+> +
+> +		/*
+> +		 * cookies lock prevents task->core_cookie from changing or
+> +		 * being freed
+> +		 */
+> +		raw_spin_lock_irqsave(&sched_core_cookies_lock, flags);
+> +
+> +		if (likely(refcount_inc_not_zero(&parent_cookie->refcnt))) {
+> +			p->core_cookie = (unsigned long)parent_cookie;
+> +		} else {
+> +			/*
+> +			 * Raced with put(). We'll use stop_machine to get
+> +			 * a core_cookie
+> +			 */
+> +			need_stopper = true;
+> +		}
+> +
+> +		raw_spin_unlock_irqrestore(&sched_core_cookies_lock, flags);
+> +
+> +		if (need_stopper)
+> +			stop_machine(sched_update_core_tag_stopper,
+> +				     (void *)p, NULL);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +void sched_tsk_free(struct task_struct *tsk)
+> +{
+> +	struct sched_core_task_cookie *ck;
+> +
+> +	sched_core_put_cookie((struct sched_core_cookie *)tsk->core_cookie);
+> +
+> +	if (!tsk->core_task_cookie)
+> +		return;
+> +
+> +	ck = (struct sched_core_task_cookie *)tsk->core_task_cookie;
+> +	queue_work(system_wq, &ck->work);
+> +}
+> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+> index 60a922d3f46f..8c452b8010ad 100644
+> --- a/kernel/sched/debug.c
+> +++ b/kernel/sched/debug.c
+> @@ -1024,6 +1024,10 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
+>   		__PS("clock-delta", t1-t0);
+>   	}
+>   
+> +#ifdef CONFIG_SCHED_CORE
+> +	__PS("core_cookie", p->core_cookie);
+> +#endif
+> +
+>   	sched_show_numa(p, m);
+>   }
+>   
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index b03f261b95b3..94e07c271528 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -377,6 +377,10 @@ struct cfs_bandwidth {
+>   struct task_group {
+>   	struct cgroup_subsys_state css;
+>   
+> +#ifdef CONFIG_SCHED_CORE
+> +	int			core_tagged;
+> +#endif
+> +
+>   #ifdef CONFIG_FAIR_GROUP_SCHED
+>   	/* schedulable entities of this group on each CPU */
+>   	struct sched_entity	**se;
+> @@ -425,6 +429,11 @@ struct task_group {
+>   
+>   };
+>   
+> +static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
+> +{
+> +	return css ? container_of(css, struct task_group, css) : NULL;
+> +}
+> +
+>   #ifdef CONFIG_FAIR_GROUP_SCHED
+>   #define ROOT_TASK_GROUP_LOAD	NICE_0_LOAD
+>   
+> @@ -1127,6 +1136,12 @@ static inline bool is_migration_disabled(struct task_struct *p)
+>   DECLARE_STATIC_KEY_FALSE(__sched_core_enabled);
+>   static inline struct cpumask *sched_group_span(struct sched_group *sg);
+>   
+> +enum sched_core_cookie_type {
+> +	sched_core_no_update = 0,
+> +	sched_core_task_cookie_type,
+> +	sched_core_group_cookie_type,
+> +};
+> +
+>   static inline bool sched_core_enabled(struct rq *rq)
+>   {
+>   	return static_branch_unlikely(&__sched_core_enabled) && rq->core_enabled;
+> @@ -1197,12 +1212,53 @@ static inline bool sched_group_cookie_match(struct rq *rq,
+>   	return false;
+>   }
+>   
+> -extern void queue_core_balance(struct rq *rq);
+> +void sched_core_change_group(struct task_struct *p, struct task_group *new_tg);
+> +int sched_core_fork(struct task_struct *p, unsigned long clone_flags);
+> +
+> +static inline bool sched_core_enqueued(struct task_struct *task)
+> +{
+> +	return !RB_EMPTY_NODE(&task->core_node);
+> +}
+> +
+> +void queue_core_balance(struct rq *rq);
+> +
+> +void sched_core_enqueue(struct rq *rq, struct task_struct *p);
+> +void sched_core_dequeue(struct rq *rq, struct task_struct *p);
+> +void sched_core_get(void);
+> +void sched_core_put(void);
+> +
+> +int sched_core_share_pid(unsigned long flags, pid_t pid);
+> +int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2);
+> +
+> +#ifdef CONFIG_CGROUP_SCHED
+> +u64 cpu_core_tag_read_u64(struct cgroup_subsys_state *css,
+> +			  struct cftype *cft);
+> +
+> +#ifdef CONFIG_SCHED_DEBUG
+> +u64 cpu_core_group_cookie_read_u64(struct cgroup_subsys_state *css,
+> +				   struct cftype *cft);
+> +#endif
+> +
+> +int cpu_core_tag_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+> +			   u64 val);
+> +#endif
+> +
+> +#ifndef TIF_UNSAFE_RET
+> +#define TIF_UNSAFE_RET (0)
+> +#endif
+>   
+>   bool cfs_prio_less(struct task_struct *a, struct task_struct *b, bool fi);
+>   
+>   #else /* !CONFIG_SCHED_CORE */
+>   
+> +static inline bool sched_core_enqueued(struct task_struct *task) { return false; }
+> +static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
+> +static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
+> +static inline int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2)
+> +{
+> +	return -ENOTSUPP;
+> +}
+> +
+>   static inline bool sched_core_enabled(struct rq *rq)
+>   {
+>   	return false;
+> @@ -2899,7 +2955,4 @@ void swake_up_all_locked(struct swait_queue_head *q);
+>   void __prepare_to_swait(struct swait_queue_head *q, struct swait_queue *wait);
+>   
+>   #ifdef CONFIG_SCHED_CORE
+> -#ifndef TIF_UNSAFE_RET
+> -#define TIF_UNSAFE_RET (0)
+> -#endif
+>   #endif
+> diff --git a/kernel/sys.c b/kernel/sys.c
+> index a730c03ee607..da52a0da24ef 100644
+> --- a/kernel/sys.c
+> +++ b/kernel/sys.c
+> @@ -2530,6 +2530,13 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+>   
+>   		error = (current->flags & PR_IO_FLUSHER) == PR_IO_FLUSHER;
+>   		break;
+> +#ifdef CONFIG_SCHED_CORE
+> +	case PR_SCHED_CORE_SHARE:
+> +		if (arg4 || arg5)
+> +			return -EINVAL;
+> +		error = sched_core_share_pid(arg2, arg3);
+> +		break;
+> +#endif
+>   	default:
+>   		error = -EINVAL;
+>   		break;
+> diff --git a/tools/include/uapi/linux/prctl.h b/tools/include/uapi/linux/prctl.h
+> index 7f0827705c9a..8fbf9d164ec4 100644
+> --- a/tools/include/uapi/linux/prctl.h
+> +++ b/tools/include/uapi/linux/prctl.h
+> @@ -247,4 +247,10 @@ struct prctl_mm_map {
+>   #define PR_SET_IO_FLUSHER		57
+>   #define PR_GET_IO_FLUSHER		58
+>   
+> +/* Request the scheduler to share a core */
+> +#define PR_SCHED_CORE_SHARE		59
+> +#define PR_SCHED_CORE_CLEAR		0  /* clear core_sched cookie of pid */
+> +#define PR_SCHED_CORE_SHARE_FROM	1  /* get core_sched cookie from pid */
+> +#define PR_SCHED_CORE_SHARE_TO		2  /* push core_sched cookie to pid */
 
-Configuration is multi_v7_defconfig with various additional options enabled.
-You'll find it attached.
+My original patch had this:
 
-qemu invocation:
+# define PR_SCHED_CORE_CLEAR            0  /* clear core_sched cookie of pid */
+# define PR_SCHED_CORE_SHARE_FROM       1  /* get core_sched cookie from pid */
+# define PR_SCHED_CORE_SHARE_TO         2  /* push core_sched cookie to pid */
 
-qemu-system-arm -M raspi2 -kernel arch/arm/boot/zImage -no-reboot
-    -initrd  /var/cache/buildbot/arm/rootfs-armv7a.cpio
-    --append "panic=-1 slub_debug=FZPUA rdinit=/sbin/init earlycon=pl011,0x3f201000 console=ttyAMA0"
-    -dtb arch/arm/boot/dts/bcm2836-rpi-2-b.dtb -nographic -monitor null -serial stdio
+The space between the '#' and 'define' is the trick apparently used to prevent a script run during 'perf' build that 
+pulls options out of this file to generate a 'beauty' array. Without the space, you can't build perf.
 
-initrd is from:
-    https://github.com/groeck/linux-build-test/blob/master/rootfs/arm/rootfs-armv7a.cpio.gz
+-chrish
 
-Without your patch, boot always stalls at:
-
-[   10.197299] PCI: CLS 0 bytes, default 64
-[   10.210594] Trying to unpack rootfs image as initramfs...
-[   10.573055] Freeing initrd memory: 3256K
-[   10.581294] hw perfevents: enabled with armv7_cortex_a7 PMU driver, 5 counters available
-
-With your patch applied, it proceeds:
-
-[    9.594508] PCI: CLS 0 bytes, default 64
-[    9.603180] Trying to unpack rootfs image as initramfs...
-[    9.987446] Freeing initrd memory: 3256K
-[   10.000387] hw perfevents: enabled with armv7_cortex_a7 PMU driver, 5 counters available
-[   17.180317] Initialise system trusted keyrings
-[   17.184302] workingset: timestamp_bits=30 max_order=18 bucket_order=0
-[   17.428873] squashfs: version 4.0 (2009/01/31) Phillip Lougher
-...
-
-Guenter
-
---------------3A814DB4F7F30BA88DDAE11B
-Content-Type: text/plain; charset=UTF-8;
- name="defconfig"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="defconfig"
-
-Q09ORklHX1NZU1ZJUEM9eQpDT05GSUdfTk9fSFo9eQpDT05GSUdfSElHSF9SRVNfVElNRVJT
-PXkKQ09ORklHX0NHUk9VUFM9eQpDT05GSUdfQkxLX0RFVl9JTklUUkQ9eQpDT05GSUdfRU1C
-RURERUQ9eQpDT05GSUdfUEVSRl9FVkVOVFM9eQpDT05GSUdfQVJDSF9WSVJUPXkKQ09ORklH
-X0FSQ0hfQUxQSU5FPXkKQ09ORklHX0FSQ0hfQVJUUEVDPXkKQ09ORklHX01BQ0hfQVJUUEVD
-Nj15CkNPTkZJR19BUkNIX0FTUEVFRD15CkNPTkZJR19NQUNIX0FTUEVFRF9HNj15CkNPTkZJ
-R19BUkNIX0FUOTE9eQpDT05GSUdfU09DX1NBTUE1RDI9eQpDT05GSUdfU09DX1NBTUE1RDM9
-eQpDT05GSUdfU09DX1NBTUE1RDQ9eQpDT05GSUdfQVJDSF9CQ009eQpDT05GSUdfQVJDSF9C
-Q01fQ1lHTlVTPXkKQ09ORklHX0FSQ0hfQkNNX0hSMj15CkNPTkZJR19BUkNIX0JDTV9OU1A9
-eQpDT05GSUdfQVJDSF9CQ01fNTMwMVg9eQpDT05GSUdfQVJDSF9CQ01fMjgxWFg9eQpDT05G
-SUdfQVJDSF9CQ01fMjE2NjQ9eQpDT05GSUdfQVJDSF9CQ00yODM1PXkKQ09ORklHX0FSQ0hf
-QkNNXzYzWFg9eQpDT05GSUdfQVJDSF9CUkNNU1RCPXkKQ09ORklHX0FSQ0hfQkVSTElOPXkK
-Q09ORklHX01BQ0hfQkVSTElOX0JHMj15CkNPTkZJR19NQUNIX0JFUkxJTl9CRzJDRD15CkNP
-TkZJR19NQUNIX0JFUkxJTl9CRzJRPXkKQ09ORklHX0FSQ0hfRElHSUNPTE9SPXkKQ09ORklH
-X0FSQ0hfRVhZTk9TPXkKQ09ORklHX0FSQ0hfSElHSEJBTks9eQpDT05GSUdfQVJDSF9ISVNJ
-PXkKQ09ORklHX0FSQ0hfSEkzeHh4PXkKQ09ORklHX0FSQ0hfSElQMDE9eQpDT05GSUdfQVJD
-SF9ISVAwND15CkNPTkZJR19BUkNIX0hJWDVIRDI9eQpDT05GSUdfQVJDSF9NWEM9eQpDT05G
-SUdfU09DX0lNWDUwPXkKQ09ORklHX1NPQ19JTVg1MT15CkNPTkZJR19TT0NfSU1YNTM9eQpD
-T05GSUdfU09DX0lNWDZRPXkKQ09ORklHX1NPQ19JTVg2U0w9eQpDT05GSUdfU09DX0lNWDZT
-TEw9eQpDT05GSUdfU09DX0lNWDZTWD15CkNPTkZJR19TT0NfSU1YNlVMPXkKQ09ORklHX1NP
-Q19MUzEwMjFBPXkKQ09ORklHX1NPQ19JTVg3RD15CkNPTkZJR19TT0NfSU1YN1VMUD15CkNP
-TkZJR19TT0NfVkY2MTA9eQpDT05GSUdfQVJDSF9LRVlTVE9ORT15CkNPTkZJR19BUkNIX01F
-RElBVEVLPXkKQ09ORklHX0FSQ0hfTUVTT049eQpDT05GSUdfQVJDSF9NSUxCRUFVVD15CkNP
-TkZJR19BUkNIX01JTEJFQVVUX00xMFY9eQpDT05GSUdfQVJDSF9NTVA9eQpDT05GSUdfTUFD
-SF9NTVAyX0RUPXkKQ09ORklHX01BQ0hfTU1QM19EVD15CkNPTkZJR19BUkNIX01WRUJVPXkK
-Q09ORklHX01BQ0hfQVJNQURBXzM3MD15CkNPTkZJR19NQUNIX0FSTUFEQV8zNzU9eQpDT05G
-SUdfTUFDSF9BUk1BREFfMzhYPXkKQ09ORklHX01BQ0hfQVJNQURBXzM5WD15CkNPTkZJR19N
-QUNIX0FSTUFEQV9YUD15CkNPTkZJR19NQUNIX0RPVkU9eQpDT05GSUdfQVJDSF9PTUFQMz15
-CkNPTkZJR19BUkNIX09NQVA0PXkKQ09ORklHX1NPQ19PTUFQNT15CkNPTkZJR19TT0NfQU0z
-M1hYPXkKQ09ORklHX1NPQ19BTTQzWFg9eQpDT05GSUdfU09DX0RSQTdYWD15CkNPTkZJR19B
-UkNIX1NJUkY9eQpDT05GSUdfQVJDSF9RQ09NPXkKQ09ORklHX0FSQ0hfTVNNOFg2MD15CkNP
-TkZJR19BUkNIX01TTTg5NjA9eQpDT05GSUdfQVJDSF9NU004OTc0PXkKQ09ORklHX0FSQ0hf
-Uk9DS0NISVA9eQpDT05GSUdfQVJDSF9SRU5FU0FTPXkKQ09ORklHX0FSQ0hfU09DRlBHQT15
-CkNPTkZJR19QTEFUX1NQRUFSPXkKQ09ORklHX0FSQ0hfU1BFQVIxM1hYPXkKQ09ORklHX01B
-Q0hfU1BFQVIxMzEwPXkKQ09ORklHX01BQ0hfU1BFQVIxMzQwPXkKQ09ORklHX0FSQ0hfU1RJ
-PXkKQ09ORklHX0FSQ0hfU1RNMzI9eQpDT05GSUdfQVJDSF9TVU5YST15CkNPTkZJR19BUkNI
-X1RFR1JBPXkKQ09ORklHX0FSQ0hfVU5JUEhJRVI9eQpDT05GSUdfQVJDSF9VODUwMD15CkNP
-TkZJR19BUkNIX1ZFWFBSRVNTPXkKQ09ORklHX0FSQ0hfVkVYUFJFU1NfVEMyX1BNPXkKQ09O
-RklHX0FSQ0hfV004ODUwPXkKQ09ORklHX0FSQ0hfWllOUT15CkNPTkZJR19TTVA9eQpDT05G
-SUdfTlJfQ1BVUz0xNgpDT05GSUdfQVJNX0FQUEVOREVEX0RUQj15CkNPTkZJR19BUk1fQVRB
-R19EVEJfQ09NUEFUPXkKQ09ORklHX0tFWEVDPXkKQ09ORklHX0VGST15CkNPTkZJR19DUFVf
-RlJFUT15CkNPTkZJR19DUFVfRlJFUV9TVEFUPXkKQ09ORklHX0NQVV9GUkVRX0RFRkFVTFRf
-R09WX09OREVNQU5EPXkKQ09ORklHX0NQVV9GUkVRX0dPVl9QT1dFUlNBVkU9bQpDT05GSUdf
-Q1BVX0ZSRVFfR09WX1VTRVJTUEFDRT1tCkNPTkZJR19DUFVfRlJFUV9HT1ZfQ09OU0VSVkFU
-SVZFPW0KQ09ORklHX0NQVV9GUkVRX0dPVl9TQ0hFRFVUSUw9eQpDT05GSUdfQ1BVRlJFUV9E
-VD15CkNPTkZJR19BUk1fSU1YNlFfQ1BVRlJFUT15CkNPTkZJR19BUk1fUkFTUEJFUlJZUElf
-Q1BVRlJFUT15CkNPTkZJR19BUk1fU0NNSV9DUFVGUkVRPXkKQ09ORklHX1FPUklRX0NQVUZS
-RVE9eQpDT05GSUdfQ1BVX0lETEU9eQpDT05GSUdfQVJNX0NQVUlETEU9eQpDT05GSUdfQVJN
-X1pZTlFfQ1BVSURMRT15CkNPTkZJR19BUk1fRVhZTk9TX0NQVUlETEU9eQpDT05GSUdfQVJN
-X1RFR1JBX0NQVUlETEU9eQpDT05GSUdfS0VSTkVMX01PREVfTkVPTj15CkNPTkZJR19BUk1f
-U0NNSV9QUk9UT0NPTD15CkNPTkZJR19SQVNQQkVSUllQSV9GSVJNV0FSRT15CkNPTkZJR19U
-UlVTVEVEX0ZPVU5EQVRJT05TPXkKQ09ORklHX0JDTTQ3WFhfTlZSQU09eQpDT05GSUdfQkNN
-NDdYWF9TUFJPTT15CkNPTkZJR19FRklfQ0FQU1VMRV9MT0FERVI9bQpDT05GSUdfQVJNX0NS
-WVBUTz15CkNPTkZJR19DUllQVE9fU0hBMV9BUk1fTkVPTj1tCkNPTkZJR19DUllQVE9fU0hB
-MV9BUk1fQ0U9bQpDT05GSUdfQ1JZUFRPX1NIQTJfQVJNX0NFPW0KQ09ORklHX0NSWVBUT19T
-SEE1MTJfQVJNPW0KQ09ORklHX0NSWVBUT19BRVNfQVJNPW0KQ09ORklHX0NSWVBUT19BRVNf
-QVJNX0JTPW0KQ09ORklHX0NSWVBUT19BRVNfQVJNX0NFPW0KQ09ORklHX0NSWVBUT19HSEFT
-SF9BUk1fQ0U9bQpDT05GSUdfQ1JZUFRPX0NSQzMyX0FSTV9DRT1tCkNPTkZJR19DUllQVE9f
-Q0hBQ0hBMjBfTkVPTj1tCkNPTkZJR19NT0RVTEVTPXkKQ09ORklHX01PRFVMRV9VTkxPQUQ9
-eQpDT05GSUdfUEFSVElUSU9OX0FEVkFOQ0VEPXkKQ09ORklHX0NNRExJTkVfUEFSVElUSU9O
-PXkKQ09ORklHX05FVD15CkNPTkZJR19QQUNLRVQ9eQpDT05GSUdfVU5JWD15CkNPTkZJR19J
-TkVUPXkKQ09ORklHX0lQX1BOUD15CkNPTkZJR19JUF9QTlBfREhDUD15CkNPTkZJR19JUF9Q
-TlBfQk9PVFA9eQpDT05GSUdfSVBfUE5QX1JBUlA9eQpDT05GSUdfSVBWNl9ST1VURVJfUFJF
-Rj15CkNPTkZJR19JUFY2X09QVElNSVNUSUNfREFEPXkKQ09ORklHX0lORVQ2X0FIPW0KQ09O
-RklHX0lORVQ2X0VTUD1tCkNPTkZJR19JTkVUNl9JUENPTVA9bQpDT05GSUdfSVBWNl9NSVA2
-PW0KQ09ORklHX0lQVjZfVFVOTkVMPW0KQ09ORklHX0lQVjZfTVVMVElQTEVfVEFCTEVTPXkK
-Q09ORklHX05FVF9EU0E9bQpDT05GSUdfQ0FOPXkKQ09ORklHX0NBTl9BVDkxPW0KQ09ORklH
-X0NBTl9GTEVYQ0FOPW0KQ09ORklHX0NBTl9TVU40ST15CkNPTkZJR19DQU5fWElMSU5YQ0FO
-PXkKQ09ORklHX0NBTl9SQ0FSPW0KQ09ORklHX0NBTl9NQ1AyNTFYPXkKIyBDT05GSUdfV0lS
-RUxFU1MgaXMgbm90IHNldApDT05GSUdfUkZLSUxMPXkKQ09ORklHX1JGS0lMTF9JTlBVVD15
-CkNPTkZJR19SRktJTExfR1BJTz15CkNPTkZJR19ORkM9bQpDT05GSUdfTkZDX0RJR0lUQUw9
-bQpDT05GSUdfTkZDX05DST1tCkNPTkZJR19ORkNfTkNJX1NQST1tCkNPTkZJR19ORkNfTkNJ
-X1VBUlQ9bQpDT05GSUdfTkZDX0hDST1tCkNPTkZJR19ORkNfU0hETEM9eQpDT05GSUdfTkZD
-X1MzRldSTjVfSTJDPW0KQ09ORklHX1BDSUVQT1JUQlVTPXkKQ09ORklHX1BDSV9NVkVCVT15
-CkNPTkZJR19QQ0lfVEVHUkE9eQpDT05GSUdfUENJX1JDQVJfR0VOMj15CkNPTkZJR19QQ0lF
-X1JDQVJfSE9TVD15CkNPTkZJR19QQ0lfRFJBN1hYX0VQPXkKQ09ORklHX1BDSV9FTkRQT0lO
-VD15CkNPTkZJR19QQ0lfRU5EUE9JTlRfQ09ORklHRlM9eQpDT05GSUdfUENJX0VQRl9URVNU
-PXkKQ09ORklHX0RFVlRNUEZTPXkKQ09ORklHX0RFVlRNUEZTX01PVU5UPXkKQ09ORklHX1BN
-X1FPU19LVU5JVF9URVNUPXkKQ09ORklHX09NQVBfT0NQMlNDUD15CkNPTkZJR19TSU1QTEVf
-UE1fQlVTPXkKQ09ORklHX01URD15CkNPTkZJR19NVERfQ01ETElORV9QQVJUUz15CkNPTkZJ
-R19NVERfQkxPQ0s9eQpDT05GSUdfTVREX0NGST15CkNPTkZJR19NVERfQ0ZJX0lOVEVMRVhU
-PXkKQ09ORklHX01URF9QSFlTTUFQPXkKQ09ORklHX01URF9QSFlTTUFQX09GPXkKQ09ORklH
-X01URF9SQVdfTkFORD15CkNPTkZJR19NVERfTkFORF9ERU5BTElfRFQ9eQpDT05GSUdfTVRE
-X05BTkRfT01BUDI9eQpDT05GSUdfTVREX05BTkRfT01BUF9CQ0g9eQpDT05GSUdfTVREX05B
-TkRfQVRNRUw9eQpDT05GSUdfTVREX05BTkRfTUFSVkVMTD15CkNPTkZJR19NVERfTkFORF9C
-UkNNTkFORD15CkNPTkZJR19NVERfTkFORF9HUE1JX05BTkQ9eQpDT05GSUdfTVREX05BTkRf
-VkY2MTBfTkZDPXkKQ09ORklHX01URF9OQU5EX0RBVklOQ0k9eQpDT05GSUdfTVREX05BTkRf
-U1RNMzJfRk1DMj15CkNPTkZJR19NVERfU1BJX05PUj15CkNPTkZJR19TUElfQVNQRUVEX1NN
-Qz1tCkNPTkZJR19NVERfVUJJPXkKQ09ORklHX09GX1VOSVRURVNUPXkKQ09ORklHX0JMS19E
-RVZfTE9PUD15CkNPTkZJR19CTEtfREVWX1JBTT15CkNPTkZJR19CTEtfREVWX1JBTV9TSVpF
-PTY1NTM2CkNPTkZJR19WSVJUSU9fQkxLPXkKQ09ORklHX0JMS19ERVZfTlZNRT15CkNPTkZJ
-R19BRDUyNVhfRFBPVD15CkNPTkZJR19BRDUyNVhfRFBPVF9JMkM9eQpDT05GSUdfQVRNRUxf
-VENMSUI9eQpDT05GSUdfSUNTOTMyUzQwMT15CkNPTkZJR19BVE1FTF9TU0M9bQpDT05GSUdf
-UUNPTV9DT0lOQ0VMTD1tCkNPTkZJR19BUERTOTgwMkFMUz15CkNPTkZJR19JU0wyOTAwMz15
-CkNPTkZJR19QQ0lfRU5EUE9JTlRfVEVTVD15CkNPTkZJR19FRVBST01fQVQyND15CkNPTkZJ
-R19CTEtfREVWX1NEPXkKQ09ORklHX0JMS19ERVZfU1I9eQpDT05GSUdfTUVHQVJBSURfU0FT
-PXkKQ09ORklHX1NDU0lfU1lNNTNDOFhYXzI9eQpDT05GSUdfU0NTSV9EQzM5NXg9eQpDT05G
-SUdfU0NTSV9BTTUzQzk3ND15CkNPTkZJR19TQ1NJX1ZJUlRJTz15CkNPTkZJR19BVEE9eQpD
-T05GSUdfU0FUQV9BSENJPXkKQ09ORklHX1NBVEFfQUhDSV9QTEFURk9STT15CkNPTkZJR19B
-SENJX0JSQ009eQpDT05GSUdfQUhDSV9ETTgxNj15CkNPTkZJR19BSENJX1NUPXkKQ09ORklH
-X0FIQ0lfSU1YPXkKQ09ORklHX0FIQ0lfU1VOWEk9eQpDT05GSUdfQUhDSV9URUdSQT15CkNP
-TkZJR19TQVRBX0hJR0hCQU5LPXkKQ09ORklHX1NBVEFfTVY9eQpDT05GSUdfU0FUQV9SQ0FS
-PXkKQ09ORklHX0ZVU0lPTj15CkNPTkZJR19GVVNJT05fU0FTPXkKQ09ORklHX05FVERFVklD
-RVM9eQpDT05GSUdfVklSVElPX05FVD15CkNPTkZJR19CNTNfU1BJX0RSSVZFUj1tCkNPTkZJ
-R19CNTNfTURJT19EUklWRVI9bQpDT05GSUdfQjUzX01NQVBfRFJJVkVSPW0KQ09ORklHX05F
-VF9EU0FfQkNNX1NGMj1tCkNPTkZJR19TVU40SV9FTUFDPXkKQ09ORklHX0JDTUdFTkVUPW0K
-Q09ORklHX0JHTUFDX0JDTUE9eQpDT05GSUdfU1lTVEVNUE9SVD1tCkNPTkZJR19NQUNCPXkK
-Q09ORklHX05FVF9DQUxYRURBX1hHTUFDPXkKQ09ORklHX0ZUR01BQzEwMD1tCkNPTkZJR19H
-SUFORkFSPXkKQ09ORklHX0hJWDVIRDJfR01BQz15CkNPTkZJR19FMTAwMEU9eQpDT05GSUdf
-SUdCPXkKQ09ORklHX01WNjQzWFhfRVRIPXkKQ09ORklHX01WTkVUQT15CkNPTkZJR19QWEEx
-NjhfRVRIPW0KQ09ORklHX0tTODg1MT15CkNPTkZJR19SODE2OT15CkNPTkZJR19TSF9FVEg9
-eQpDT05GSUdfU01TQzkxMVg9eQpDT05GSUdfU05JX0FWRT15CkNPTkZJR19TVE1NQUNfRVRI
-PXkKQ09ORklHX0RXTUFDX0RXQ19RT1NfRVRIPXkKQ09ORklHX1RJX0NQU1c9eQpDT05GSUdf
-VElfQ1BTV19TV0lUQ0hERVY9eQpDT05GSUdfVElfQ1BUUz15CkNPTkZJR19YSUxJTlhfRU1B
-Q0xJVEU9eQpDT05GSUdfQlJPQURDT01fUEhZPXkKQ09ORklHX0lDUExVU19QSFk9eQpDT05G
-SUdfTUFSVkVMTF9QSFk9eQpDT05GSUdfTUlDUkVMX1BIWT15CkNPTkZJR19BVDgwM1hfUEhZ
-PXkKQ09ORklHX1JPQ0tDSElQX1BIWT15CkNPTkZJR19EUDgzODY3X1BIWT15CkNPTkZJR19V
-U0JfUEVHQVNVUz15CkNPTkZJR19VU0JfUlRMODE1Mj1tCkNPTkZJR19VU0JfTEFONzhYWD1t
-CkNPTkZJR19VU0JfVVNCTkVUPXkKQ09ORklHX1VTQl9ORVRfU01TQzc1WFg9eQpDT05GSUdf
-VVNCX05FVF9TTVNDOTVYWD15CiMgQ09ORklHX1dMQU4gaXMgbm90IHNldApDT05GSUdfSU5Q
-VVRfSk9ZREVWPXkKQ09ORklHX0lOUFVUX0VWREVWPXkKQ09ORklHX0tFWUJPQVJEX1FUMTA3
-MD1tCkNPTkZJR19LRVlCT0FSRF9HUElPPXkKQ09ORklHX0tFWUJPQVJEX1RFR1JBPXkKQ09O
-RklHX0tFWUJPQVJEX1BYQTI3eD1tCkNPTkZJR19LRVlCT0FSRF9TQU1TVU5HPW0KQ09ORklH
-X0tFWUJPQVJEX1NUX0tFWVNDQU49eQpDT05GSUdfS0VZQk9BUkRfU1BFQVI9eQpDT05GSUdf
-S0VZQk9BUkRfQ1JPU19FQz1tCkNPTkZJR19NT1VTRV9QUzJfRUxBTlRFQ0g9eQpDT05GSUdf
-TU9VU0VfQ1lBUEE9bQpDT05GSUdfTU9VU0VfRUxBTl9JMkM9eQpDT05GSUdfSU5QVVRfVE9V
-Q0hTQ1JFRU49eQpDT05GSUdfVE9VQ0hTQ1JFRU5fQURDPW0KQ09ORklHX1RPVUNIU0NSRUVO
-X0FUTUVMX01YVD1tCkNPTkZJR19UT1VDSFNDUkVFTl9FTEFOPW0KQ09ORklHX1RPVUNIU0NS
-RUVOX01NUzExND1tCkNPTkZJR19UT1VDSFNDUkVFTl9XTTk3WFg9bQpDT05GSUdfVE9VQ0hT
-Q1JFRU5fU1QxMjMyPW0KQ09ORklHX1RPVUNIU0NSRUVOX1NUTVBFPXkKQ09ORklHX1RPVUNI
-U0NSRUVOX1NVTjRJPXkKQ09ORklHX0lOUFVUX01JU0M9eQpDT05GSUdfSU5QVVRfTUFYNzc2
-OTNfSEFQVElDPW0KQ09ORklHX0lOUFVUX01BWDg5OTdfSEFQVElDPW0KQ09ORklHX0lOUFVU
-X0NQQ0FQX1BXUkJVVFRPTj1tCkNPTkZJR19JTlBVVF9BWFAyMFhfUEVLPW0KQ09ORklHX0lO
-UFVUX0RBOTA2M19PTktFWT1tCkNPTkZJR19JTlBVVF9BRFhMMzRYPW0KQ09ORklHX0lOUFVU
-X1NUUE1JQzFfT05LRVk9eQpDT05GSUdfU0VSSU9fQU1CQUtNST15CkNPTkZJR19TRVJJQUxf
-ODI1MD15CkNPTkZJR19TRVJJQUxfODI1MF9DT05TT0xFPXkKQ09ORklHX1NFUklBTF84MjUw
-X05SX1VBUlRTPTUKQ09ORklHX1NFUklBTF84MjUwX1JVTlRJTUVfVUFSVFM9NQpDT05GSUdf
-U0VSSUFMXzgyNTBfRVhURU5ERUQ9eQpDT05GSUdfU0VSSUFMXzgyNTBfTUFOWV9QT1JUUz15
-CkNPTkZJR19TRVJJQUxfODI1MF9BU1BFRURfVlVBUlQ9bQpDT05GSUdfU0VSSUFMXzgyNTBf
-U0hBUkVfSVJRPXkKQ09ORklHX1NFUklBTF84MjUwX0JDTTI4MzVBVVg9eQpDT05GSUdfU0VS
-SUFMXzgyNTBfRFc9eQpDT05GSUdfU0VSSUFMXzgyNTBfRU09eQpDT05GSUdfU0VSSUFMXzgy
-NTBfT01BUD15CkNPTkZJR19TRVJJQUxfODI1MF9NVDY1Nzc9eQpDT05GSUdfU0VSSUFMXzgy
-NTBfVU5JUEhJRVI9eQpDT05GSUdfU0VSSUFMX09GX1BMQVRGT1JNPXkKQ09ORklHX1NFUklB
-TF9BTUJBX1BMMDExPXkKQ09ORklHX1NFUklBTF9BTUJBX1BMMDExX0NPTlNPTEU9eQpDT05G
-SUdfU0VSSUFMX0FUTUVMPXkKQ09ORklHX1NFUklBTF9BVE1FTF9DT05TT0xFPXkKQ09ORklH
-X1NFUklBTF9BVE1FTF9UVFlBVD15CkNPTkZJR19TRVJJQUxfTUVTT049eQpDT05GSUdfU0VS
-SUFMX01FU09OX0NPTlNPTEU9eQpDT05GSUdfU0VSSUFMX1NBTVNVTkc9eQpDT05GSUdfU0VS
-SUFMX1NBTVNVTkdfQ09OU09MRT15CkNPTkZJR19TRVJJQUxfU0lSRlNPQz15CkNPTkZJR19T
-RVJJQUxfU0lSRlNPQ19DT05TT0xFPXkKQ09ORklHX1NFUklBTF9URUdSQT15CkNPTkZJR19T
-RVJJQUxfSU1YPXkKQ09ORklHX1NFUklBTF9JTVhfQ09OU09MRT15CkNPTkZJR19TRVJJQUxf
-U0hfU0NJPXkKQ09ORklHX1NFUklBTF9TSF9TQ0lfTlJfVUFSVFM9MjAKQ09ORklHX1NFUklB
-TF9NU009eQpDT05GSUdfU0VSSUFMX01TTV9DT05TT0xFPXkKQ09ORklHX1NFUklBTF9WVDg1
-MDA9eQpDT05GSUdfU0VSSUFMX1ZUODUwMF9DT05TT0xFPXkKQ09ORklHX1NFUklBTF9PTUFQ
-PXkKQ09ORklHX1NFUklBTF9PTUFQX0NPTlNPTEU9eQpDT05GSUdfU0VSSUFMX0JDTTYzWFg9
-eQpDT05GSUdfU0VSSUFMX0JDTTYzWFhfQ09OU09MRT15CkNPTkZJR19TRVJJQUxfWElMSU5Y
-X1BTX1VBUlQ9eQpDT05GSUdfU0VSSUFMX1hJTElOWF9QU19VQVJUX0NPTlNPTEU9eQpDT05G
-SUdfU0VSSUFMX0ZTTF9MUFVBUlQ9eQpDT05GSUdfU0VSSUFMX0ZTTF9MUFVBUlRfQ09OU09M
-RT15CkNPTkZJR19TRVJJQUxfQ09ORVhBTlRfRElHSUNPTE9SPXkKQ09ORklHX1NFUklBTF9D
-T05FWEFOVF9ESUdJQ09MT1JfQ09OU09MRT15CkNPTkZJR19TRVJJQUxfU1RfQVNDPXkKQ09O
-RklHX1NFUklBTF9TVF9BU0NfQ09OU09MRT15CkNPTkZJR19TRVJJQUxfU1RNMzI9eQpDT05G
-SUdfU0VSSUFMX1NUTTMyX0NPTlNPTEU9eQpDT05GSUdfU0VSSUFMX0RFVl9CVVM9eQpDT05G
-SUdfVklSVElPX0NPTlNPTEU9eQpDT05GSUdfQVNQRUVEX0tDU19JUE1JX0JNQz1tCkNPTkZJ
-R19BU1BFRURfQlRfSVBNSV9CTUM9bQpDT05GSUdfSFdfUkFORE9NPXkKQ09ORklHX0hXX1JB
-TkRPTV9TVD15CkNPTkZJR19UQ0dfVFBNPW0KQ09ORklHX1RDR19USVNfSTJDX0lORklORU9O
-PW0KQ09ORklHX0kyQ19DSEFSREVWPXkKQ09ORklHX0kyQ19BUkJfR1BJT19DSEFMTEVOR0U9
-bQpDT05GSUdfSTJDX01VWF9QQ0E5NTR4PXkKQ09ORklHX0kyQ19NVVhfUElOQ1RSTD15CkNP
-TkZJR19JMkNfREVNVVhfUElOQ1RSTD15CkNPTkZJR19JMkNfQVNQRUVEPW0KQ09ORklHX0ky
-Q19BVDkxPW0KQ09ORklHX0kyQ19CQ00yODM1PXkKQ09ORklHX0kyQ19DQURFTkNFPXkKQ09O
-RklHX0kyQ19EQVZJTkNJPXkKQ09ORklHX0kyQ19ERVNJR05XQVJFX1BMQVRGT1JNPXkKQ09O
-RklHX0kyQ19ESUdJQ09MT1I9bQpDT05GSUdfSTJDX0VNRVYyPW0KQ09ORklHX0kyQ19JTVg9
-eQpDT05GSUdfSTJDX01FU09OPXkKQ09ORklHX0kyQ19NVjY0WFhYPXkKQ09ORklHX0kyQ19S
-SUlDPXkKQ09ORklHX0kyQ19SSzNYPXkKQ09ORklHX0kyQ19TM0MyNDEwPXkKQ09ORklHX0ky
-Q19TSF9NT0JJTEU9eQpDT05GSUdfSTJDX1NJUkY9eQpDT05GSUdfSTJDX1NUPXkKQ09ORklH
-X0kyQ19TVE0zMkY3PXkKQ09ORklHX0kyQ19TVU42SV9QMldJPXkKQ09ORklHX0kyQ19URUdS
-QT15CkNPTkZJR19JMkNfVU5JUEhJRVI9eQpDT05GSUdfSTJDX1VOSVBISUVSX0Y9eQpDT05G
-SUdfSTJDX1hJTElOWD15CkNPTkZJR19JMkNfUkNBUj15CkNPTkZJR19JMkNfQ1JPU19FQ19U
-VU5ORUw9bQpDT05GSUdfSTJDX1NMQVZFX0VFUFJPTT15CkNPTkZJR19TUEk9eQpDT05GSUdf
-U1BJX0FUTUVMPW0KQ09ORklHX1NQSV9CQ00yODM1PXkKQ09ORklHX1NQSV9CQ00yODM1QVVY
-PXkKQ09ORklHX1NQSV9DQURFTkNFPXkKQ09ORklHX1NQSV9EQVZJTkNJPXkKQ09ORklHX1NQ
-SV9GU0xfUVVBRFNQST1tCkNPTkZJR19TUElfR1BJTz1tCkNPTkZJR19TUElfRlNMX0RTUEk9
-bQpDT05GSUdfU1BJX09NQVAyNFhYPXkKQ09ORklHX1NQSV9PUklPTj15CkNPTkZJR19TUElf
-UEwwMjI9eQpDT05GSUdfU1BJX1JPQ0tDSElQPW0KQ09ORklHX1NQSV9SU1BJPXkKQ09ORklH
-X1NQSV9TM0M2NFhYPW0KQ09ORklHX1NQSV9TSF9NU0lPRj1tCkNPTkZJR19TUElfU0hfSFNQ
-ST15CkNPTkZJR19TUElfU0lSRj15CkNPTkZJR19TUElfU1RNMzI9bQpDT05GSUdfU1BJX1NU
-TTMyX1FTUEk9eQpDT05GSUdfU1BJX1NVTjRJPXkKQ09ORklHX1NQSV9TVU42ST15CkNPTkZJ
-R19TUElfVEVHUkExMTQ9eQpDT05GSUdfU1BJX1RFR1JBMjBfU0ZMQVNIPXkKQ09ORklHX1NQ
-SV9URUdSQTIwX1NMSU5LPXkKQ09ORklHX1NQSV9YSUxJTlg9eQpDT05GSUdfU1BJX1NQSURF
-Vj15CkNPTkZJR19TUE1JPXkKQ09ORklHX1BJTkNUUkxfQVMzNzIyPXkKQ09ORklHX1BJTkNU
-UkxfU1RNRlg9eQpDT05GSUdfUElOQ1RSTF9QQUxNQVM9eQpDT05GSUdfUElOQ1RSTF9RQ09N
-X1NQTUlfUE1JQz15CkNPTkZJR19QSU5DVFJMX1FDT01fU1NCSV9QTUlDPXkKQ09ORklHX1BJ
-TkNUUkxfUlpBMj15CkNPTkZJR19HUElPX0FTUEVFRF9TR1BJTz15CkNPTkZJR19HUElPX0RB
-VklOQ0k9eQpDT05GSUdfR1BJT19EV0FQQj15CkNPTkZJR19HUElPX0VNPXkKQ09ORklHX0dQ
-SU9fTVhDPXkKQ09ORklHX0dQSU9fUkNBUj15CkNPTkZJR19HUElPX1NZU0NPTj15CkNPTkZJ
-R19HUElPX1VOSVBISUVSPXkKQ09ORklHX0dQSU9fWElMSU5YPXkKQ09ORklHX0dQSU9fWllO
-UT15CkNPTkZJR19HUElPX1BDQTk1M1g9eQpDT05GSUdfR1BJT19QQ0E5NTNYX0lSUT15CkNP
-TkZJR19HUElPX1BDRjg1N1g9eQpDT05GSUdfR1BJT19QQUxNQVM9eQpDT05GSUdfR1BJT19U
-UFM2NTg2WD15CkNPTkZJR19HUElPX1RQUzY1OTEwPXkKQ09ORklHX0dQSU9fVFdMNDAzMD15
-CkNPTkZJR19QT1dFUl9SRVNFVF9BUzM3MjI9eQpDT05GSUdfUE9XRVJfUkVTRVRfR1BJTz15
-CkNPTkZJR19QT1dFUl9SRVNFVF9HUElPX1JFU1RBUlQ9eQpDT05GSUdfUE9XRVJfUkVTRVRf
-U1Q9eQpDT05GSUdfUE9XRVJfUkVTRVRfS0VZU1RPTkU9eQpDT05GSUdfUE9XRVJfUkVTRVRf
-Uk1PQklMRT15CkNPTkZJR19CQVRURVJZX0FDVDg5NDVBPXkKQ09ORklHX0JBVFRFUllfQ1BD
-QVA9bQpDT05GSUdfQkFUVEVSWV9TQlM9eQpDT05GSUdfQkFUVEVSWV9CUTI3WFhYPW0KQ09O
-RklHX0FYUDIwWF9QT1dFUj1tCkNPTkZJR19CQVRURVJZX01BWDE3MDQwPW0KQ09ORklHX0JB
-VFRFUllfTUFYMTcwNDI9bQpDT05GSUdfQ0hBUkdFUl9DUENBUD1tCkNPTkZJR19DSEFSR0VS
-X0dQSU89bQpDT05GSUdfQ0hBUkdFUl9NQVgxNDU3Nz1tCkNPTkZJR19DSEFSR0VSX01BWDc3
-NjkzPW0KQ09ORklHX0NIQVJHRVJfTUFYODk5Nz1tCkNPTkZJR19DSEFSR0VSX01BWDg5OTg9
-bQpDT05GSUdfQ0hBUkdFUl9UUFM2NTA5MD15CkNPTkZJR19TRU5TT1JTX0FSTV9TQ01JPXkK
-Q09ORklHX1NFTlNPUlNfQVNQRUVEPW0KQ09ORklHX1NFTlNPUlNfSUlPX0hXTU9OPXkKQ09O
-RklHX1NFTlNPUlNfTE05MD15CkNPTkZJR19TRU5TT1JTX0xNOTUyNDU9eQpDT05GSUdfU0VO
-U09SU19OVENfVEhFUk1JU1RPUj1tCkNPTkZJR19TRU5TT1JTX1BXTV9GQU49bQpDT05GSUdf
-U0VOU09SU19SQVNQQkVSUllQSV9IV01PTj1tCkNPTkZJR19TRU5TT1JTX0lOQTJYWD1tCkNP
-TkZJR19DUFVfVEhFUk1BTD15CkNPTkZJR19ERVZGUkVRX1RIRVJNQUw9eQpDT05GSUdfSU1Y
-X1RIRVJNQUw9eQpDT05GSUdfUk9DS0NISVBfVEhFUk1BTD15CkNPTkZJR19SQ0FSX1RIRVJN
-QUw9eQpDT05GSUdfQVJNQURBX1RIRVJNQUw9eQpDT05GSUdfQkNNMjcxMV9USEVSTUFMPW0K
-Q09ORklHX0JDTTI4MzVfVEhFUk1BTD1tCkNPTkZJR19CUkNNU1RCX1RIRVJNQUw9bQpDT05G
-SUdfU1RfVEhFUk1BTF9NRU1NQVA9eQpDT05GSUdfVU5JUEhJRVJfVEhFUk1BTD15CkNPTkZJ
-R19EQTkwNjNfV0FUQ0hET0c9bQpDT05GSUdfWElMSU5YX1dBVENIRE9HPXkKQ09ORklHX0FS
-TV9TUDgwNV9XQVRDSERPRz15CkNPTkZJR19BVDkxU0FNOVhfV0FUQ0hET0c9eQpDT05GSUdf
-U0FNQTVENF9XQVRDSERPRz15CkNPTkZJR19TM0MyNDEwX1dBVENIRE9HPW0KQ09ORklHX0RX
-X1dBVENIRE9HPXkKQ09ORklHX0RBVklOQ0lfV0FUQ0hET0c9bQpDT05GSUdfT1JJT05fV0FU
-Q0hET0c9eQpDT05GSUdfUk41VDYxOF9XQVRDSERPRz15CkNPTkZJR19TVU5YSV9XQVRDSERP
-Rz15CkNPTkZJR19JTVgyX1dEVD15CkNPTkZJR19TVF9MUENfV0FUQ0hET0c9eQpDT05GSUdf
-VEVHUkFfV0FUQ0hET0c9bQpDT05GSUdfTUVTT05fV0FUQ0hET0c9eQpDT05GSUdfRElHSUNP
-TE9SX1dBVENIRE9HPXkKQ09ORklHX1JFTkVTQVNfV0RUPW0KQ09ORklHX1JFTkVTQVNfUlpB
-V0RUPW0KQ09ORklHX1NUUE1JQzFfV0FUQ0hET0c9eQpDT05GSUdfQkNNNDdYWF9XRFQ9eQpD
-T05GSUdfQkNNMjgzNV9XRFQ9eQpDT05GSUdfQkNNX0tPTkFfV0RUPXkKQ09ORklHX0JDTTcw
-MzhfV0RUPW0KQ09ORklHX0JDTUFfSE9TVF9TT0M9eQpDT05GSUdfQkNNQV9EUklWRVJfR01B
-Q19DTU49eQpDT05GSUdfQkNNQV9EUklWRVJfR1BJTz15CkNPTkZJR19NRkRfQUNUODk0NUE9
-eQpDT05GSUdfTUZEX0FTMzcxMT15CkNPTkZJR19NRkRfQVMzNzIyPXkKQ09ORklHX01GRF9B
-VE1FTF9GTEVYQ09NPXkKQ09ORklHX01GRF9BVE1FTF9ITENEQz1tCkNPTkZJR19NRkRfQkNN
-NTkwWFg9eQpDT05GSUdfTUZEX0FDMTAwPXkKQ09ORklHX01GRF9BWFAyMFhfSTJDPXkKQ09O
-RklHX01GRF9BWFAyMFhfUlNCPXkKQ09ORklHX01GRF9EQTkwNjM9bQpDT05GSUdfTUZEX01B
-WDE0NTc3PXkKQ09ORklHX01GRF9NQVg3NzY4Nj15CkNPTkZJR19NRkRfTUFYNzc2OTM9bQpD
-T05GSUdfTUZEX01BWDg5MDc9eQpDT05GSUdfTUZEX01BWDg5OTc9eQpDT05GSUdfTUZEX01B
-WDg5OTg9eQpDT05GSUdfTUZEX0NQQ0FQPXkKQ09ORklHX01GRF9QTThYWFg9eQpDT05GSUdf
-TUZEX1FDT01fUlBNPXkKQ09ORklHX01GRF9TUE1JX1BNSUM9eQpDT05GSUdfTUZEX1JLODA4
-PXkKQ09ORklHX01GRF9STjVUNjE4PXkKQ09ORklHX01GRF9TRUNfQ09SRT15CkNPTkZJR19N
-RkRfU1RNUEU9eQpDT05GSUdfTUZEX1BBTE1BUz15CkNPTkZJR19NRkRfVFBTNjUwOTA9eQpD
-T05GSUdfTUZEX1RQUzY1MjE3PXkKQ09ORklHX01GRF9UUFM2NTIxOD15CkNPTkZJR19NRkRf
-VFBTNjU4Nlg9eQpDT05GSUdfTUZEX1RQUzY1OTEwPXkKQ09ORklHX01GRF9TVE0zMl9MUFRJ
-TUVSPW0KQ09ORklHX01GRF9TVFBNSUMxPXkKQ09ORklHX1JFR1VMQVRPUl9BQ1Q4ODY1PXkK
-Q09ORklHX1JFR1VMQVRPUl9BQ1Q4OTQ1QT15CkNPTkZJR19SRUdVTEFUT1JfQU5BVE9QPXkK
-Q09ORklHX1JFR1VMQVRPUl9BQjg1MDA9eQpDT05GSUdfUkVHVUxBVE9SX0FTMzcxMT15CkNP
-TkZJR19SRUdVTEFUT1JfQVMzNzIyPXkKQ09ORklHX1JFR1VMQVRPUl9BWFAyMFg9eQpDT05G
-SUdfUkVHVUxBVE9SX0JDTTU5MFhYPXkKQ09ORklHX1JFR1VMQVRPUl9DUENBUD15CkNPTkZJ
-R19SRUdVTEFUT1JfREE5MjEwPXkKQ09ORklHX1JFR1VMQVRPUl9GQU41MzU1NT15CkNPTkZJ
-R19SRUdVTEFUT1JfR1BJTz15CkNPTkZJR19SRUdVTEFUT1JfTFA4NzJYPXkKQ09ORklHX1JF
-R1VMQVRPUl9NQVgxNDU3Nz1tCkNPTkZJR19SRUdVTEFUT1JfTUFYODkwNz15CkNPTkZJR19S
-RUdVTEFUT1JfTUFYODk1Mj1tCkNPTkZJR19SRUdVTEFUT1JfTUFYODk3Mz15CkNPTkZJR19S
-RUdVTEFUT1JfTUFYODk5Nz1tCkNPTkZJR19SRUdVTEFUT1JfTUFYODk5OD1tCkNPTkZJR19S
-RUdVTEFUT1JfTUFYNzc2ODY9eQpDT05GSUdfUkVHVUxBVE9SX01BWDc3NjkzPW0KQ09ORklH
-X1JFR1VMQVRPUl9NQVg3NzgwMj15CkNPTkZJR19SRUdVTEFUT1JfUEFMTUFTPXkKQ09ORklH
-X1JFR1VMQVRPUl9QQklBUz15CkNPTkZJR19SRUdVTEFUT1JfUFdNPXkKQ09ORklHX1JFR1VM
-QVRPUl9RQ09NX1JQTT15CkNPTkZJR19SRUdVTEFUT1JfUUNPTV9TTURfUlBNPW0KQ09ORklH
-X1JFR1VMQVRPUl9SSzgwOD15CkNPTkZJR19SRUdVTEFUT1JfUk41VDYxOD15CkNPTkZJR19S
-RUdVTEFUT1JfUzJNUEEwMT1tCkNPTkZJR19SRUdVTEFUT1JfUzJNUFMxMT15CkNPTkZJR19S
-RUdVTEFUT1JfUzVNODc2Nz15CkNPTkZJR19SRUdVTEFUT1JfU1RNMzJfQk9PU1RFUj1tCkNP
-TkZJR19SRUdVTEFUT1JfU1RNMzJfVlJFRkJVRj1tCkNPTkZJR19SRUdVTEFUT1JfU1RNMzJf
-UFdSPXkKQ09ORklHX1JFR1VMQVRPUl9TVFBNSUMxPXkKQ09ORklHX1JFR1VMQVRPUl9USV9B
-QkI9eQpDT05GSUdfUkVHVUxBVE9SX1RQUzUxNjMyPXkKQ09ORklHX1JFR1VMQVRPUl9UUFM2
-MjM2MD15CkNPTkZJR19SRUdVTEFUT1JfVFBTNjUwOTA9eQpDT05GSUdfUkVHVUxBVE9SX1RQ
-UzY1MjE3PXkKQ09ORklHX1JFR1VMQVRPUl9UUFM2NTIxOD15CkNPTkZJR19SRUdVTEFUT1Jf
-VFBTNjU4Nlg9eQpDT05GSUdfUkVHVUxBVE9SX1RQUzY1OTEwPXkKQ09ORklHX1JFR1VMQVRP
-Ul9UV0w0MDMwPXkKQ09ORklHX1JFR1VMQVRPUl9WRVhQUkVTUz15CkNPTkZJR19SRUdVTEFU
-T1JfV004OTk0PW0KQ09ORklHX0NFQ19TQU1TVU5HX1M1UD1tCkNPTkZJR19NRURJQV9TVVBQ
-T1JUPW0KQ09ORklHX01FRElBX1VTQl9TVVBQT1JUPXkKQ09ORklHX1VTQl9WSURFT19DTEFT
-Uz1tCkNPTkZJR19WNExfUExBVEZPUk1fRFJJVkVSUz15CkNPTkZJR19WSURFT19NTVBfQ0FN
-RVJBPW0KQ09ORklHX1ZJREVPX0FTUEVFRD1tCkNPTkZJR19WSURFT19TVE0zMl9EQ01JPW0K
-Q09ORklHX1ZJREVPX1JFTkVTQVNfQ0VVPW0KQ09ORklHX1ZJREVPX1NBTVNVTkdfRVhZTk9T
-NF9JUz1tCkNPTkZJR19WSURFT19TNVBfRklNQz1tCkNPTkZJR19WSURFT19TNVBfTUlQSV9D
-U0lTPW0KQ09ORklHX1ZJREVPX0VYWU5PU19GSU1DX0xJVEU9bQpDT05GSUdfVklERU9fRVhZ
-Tk9TNF9GSU1DX0lTPW0KQ09ORklHX1ZJREVPX1JDQVJfVklOPW0KQ09ORklHX1ZJREVPX0FU
-TUVMX0lTST1tCkNPTkZJR19WNExfTUVNMk1FTV9EUklWRVJTPXkKQ09ORklHX1ZJREVPX1NB
-TVNVTkdfUzVQX0pQRUc9bQpDT05GSUdfVklERU9fU0FNU1VOR19TNVBfTUZDPW0KQ09ORklH
-X1ZJREVPX1NBTVNVTkdfRVhZTk9TX0dTQz1tCkNPTkZJR19WSURFT19TVElfQkRJU1A9bQpD
-T05GSUdfVklERU9fU1RJX0hWQT1tCkNPTkZJR19WSURFT19TVElfREVMVEE9bQpDT05GSUdf
-VklERU9fUkVORVNBU19GRFAxPW0KQ09ORklHX1ZJREVPX1JFTkVTQVNfSlBVPW0KQ09ORklH
-X1ZJREVPX1JFTkVTQVNfVlNQMT1tCkNPTkZJR19WNExfVEVTVF9EUklWRVJTPXkKQ09ORklH
-X1ZJREVPX1ZJVklEPW0KQ09ORklHX1ZJREVPX0FEVjcxODA9bQpDT05GSUdfVklERU9fQURW
-NzYwND1tCkNPTkZJR19WSURFT19BRFY3NjA0X0NFQz15CkNPTkZJR19WSURFT19NTDg2Vjc2
-Njc9bQpDT05GSUdfSU1YX0lQVVYzX0NPUkU9bQpDT05GSUdfRFJNPXkKIyBDT05GSUdfRFJN
-X0kyQ19DSDcwMDYgaXMgbm90IHNldAojIENPTkZJR19EUk1fSTJDX1NJTDE2NCBpcyBub3Qg
-c2V0CkNPTkZJR19EUk1fTk9VVkVBVT1tCkNPTkZJR19EUk1fRVhZTk9TPW0KQ09ORklHX0RS
-TV9FWFlOT1NfRklNRD15CkNPTkZJR19EUk1fRVhZTk9TX01JWEVSPXkKQ09ORklHX0RSTV9F
-WFlOT1NfRFBJPXkKQ09ORklHX0RSTV9FWFlOT1NfRFNJPXkKQ09ORklHX0RSTV9FWFlOT1Nf
-SERNST15CkNPTkZJR19EUk1fUk9DS0NISVA9bQpDT05GSUdfUk9DS0NISVBfQU5BTE9HSVhf
-RFA9eQpDT05GSUdfUk9DS0NISVBfRFdfSERNST15CkNPTkZJR19ST0NLQ0hJUF9EV19NSVBJ
-X0RTST15CkNPTkZJR19ST0NLQ0hJUF9JTk5PX0hETUk9eQpDT05GSUdfRFJNX0FUTUVMX0hM
-Q0RDPW0KQ09ORklHX0RSTV9SQ0FSX0RVPW0KQ09ORklHX0RSTV9SQ0FSX0xWRFM9eQpDT05G
-SUdfRFJNX1NVTjRJPW0KQ09ORklHX0RSTV9NU009bQpDT05GSUdfRFJNX0ZTTF9EQ1U9bQpD
-T05GSUdfRFJNX1RFR1JBPXkKQ09ORklHX0RSTV9TVE09bQpDT05GSUdfRFJNX1NUTV9EU0k9
-bQpDT05GSUdfRFJNX1BBTkVMX1NJTVBMRT15CkNPTkZJR19EUk1fUEFORUxfU0FNU1VOR19M
-RDkwNDA9bQpDT05GSUdfRFJNX1BBTkVMX09SSVNFVEVDSF9PVE04MDA5QT1tCkNPTkZJR19E
-Uk1fUEFORUxfUkFZRElVTV9STTY4MjAwPW0KQ09ORklHX0RSTV9QQU5FTF9TQU1TVU5HX1M2
-RTYzSjBYMDM9bQpDT05GSUdfRFJNX1BBTkVMX1NBTVNVTkdfUzZFOEFBMD1tCkNPTkZJR19E
-Uk1fTlhQX1BUTjM0NjA9bQpDT05GSUdfRFJNX1BBUkFERV9QUzg2MjI9bQpDT05GSUdfRFJN
-X1NJSTkwMlg9bQpDT05GSUdfRFJNX1NJSTkyMzQ9bQpDT05GSUdfRFJNX1NJTVBMRV9CUklE
-R0U9bQpDT05GSUdfRFJNX1RPU0hJQkFfVEMzNTg3NjQ9bQpDT05GSUdfRFJNX0kyQ19BRFY3
-NTExPW0KQ09ORklHX0RSTV9JMkNfQURWNzUxMV9BVURJTz15CkNPTkZJR19EUk1fU1RJPW0K
-Q09ORklHX0RSTV9JTVg9bQpDT05GSUdfRFJNX0lNWF9QQVJBTExFTF9ESVNQTEFZPW0KQ09O
-RklHX0RSTV9JTVhfVFZFPW0KQ09ORklHX0RSTV9JTVhfTERCPW0KQ09ORklHX0RSTV9JTVhf
-SERNST1tCkNPTkZJR19EUk1fVkM0PW0KQ09ORklHX0RSTV9FVE5BVklWPW0KQ09ORklHX0RS
-TV9NWFNGQj1tCkNPTkZJR19EUk1fUEwxMTE9bQpDT05GSUdfRFJNX0xJTUE9bQpDT05GSUdf
-RFJNX1BBTkZST1NUPW0KQ09ORklHX0RSTV9BU1BFRURfR0ZYPW0KQ09ORklHX0ZCX0VGST15
-CkNPTkZJR19GQl9XTTg1MDU9eQpDT05GSUdfRkJfU0hfTU9CSUxFX0xDREM9eQpDT05GSUdf
-RkJfU0lNUExFPXkKQ09ORklHX0JBQ0tMSUdIVF9QV009eQpDT05GSUdfQkFDS0xJR0hUX0FT
-MzcxMT15CkNPTkZJR19CQUNLTElHSFRfR1BJTz15CkNPTkZJR19GUkFNRUJVRkZFUl9DT05T
-T0xFPXkKQ09ORklHX0ZSQU1FQlVGRkVSX0NPTlNPTEVfUk9UQVRJT049eQpDT05GSUdfU09V
-TkQ9bQpDT05GSUdfU05EPW0KQ09ORklHX1NORF9IREFfVEVHUkE9bQpDT05GSUdfU05EX0hE
-QV9JTlBVVF9CRUVQPXkKQ09ORklHX1NORF9IREFfUEFUQ0hfTE9BREVSPXkKQ09ORklHX1NO
-RF9IREFfQ09ERUNfUkVBTFRFSz1tCkNPTkZJR19TTkRfSERBX0NPREVDX0hETUk9bQpDT05G
-SUdfU05EX1VTQl9BVURJTz1tCkNPTkZJR19TTkRfU09DPW0KQ09ORklHX1NORF9BVE1FTF9T
-T0M9bQpDT05GSUdfU05EX0FUTUVMX1NPQ19XTTg5MDQ9bQpDT05GSUdfU05EX0FUTUVMX1NP
-Q19QRE1JQz1tCkNPTkZJR19TTkRfQVRNRUxfU09DX0kyUz1tCkNPTkZJR19TTkRfQkNNMjgz
-NV9TT0NfSTJTPW0KQ09ORklHX1NORF9TT0NfRlNMX1NBST1tCkNPTkZJR19TTkRfUFhBX1NP
-Q19TU1A9bQpDT05GSUdfU05EX1BYQTkxMF9TT0M9bQpDT05GSUdfU05EX1NPQ19ST0NLQ0hJ
-UD1tCkNPTkZJR19TTkRfU09DX1JPQ0tDSElQX1NQRElGPW0KQ09ORklHX1NORF9TT0NfUk9D
-S0NISVBfTUFYOTgwOTA9bQpDT05GSUdfU05EX1NPQ19ST0NLQ0hJUF9SVDU2NDU9bQpDT05G
-SUdfU05EX1NPQ19TQU1TVU5HPW0KQ09ORklHX1NORF9TT0NfU0FNU1VOR19TTURLX1dNODk5
-ND1tCkNPTkZJR19TTkRfU09DX1NNREtfV004OTk0X1BDTT1tCkNPTkZJR19TTkRfU09DX1NO
-T1c9bQpDT05GSUdfU05EX1NPQ19PRFJPSUQ9bQpDT05GSUdfU05EX1NPQ19BUk5EQUxFPW0K
-Q09ORklHX1NORF9TT0NfU0FNU1VOR19NSURBU19XTTE4MTE9bQpDT05GSUdfU05EX1NPQ19T
-SDRfRlNJPW0KQ09ORklHX1NORF9TT0NfUkNBUj1tCkNPTkZJR19TTkRfU09DX1NUST1tCkNP
-TkZJR19TTkRfU09DX1NUTTMyX1NBST1tCkNPTkZJR19TTkRfU09DX1NUTTMyX0kyUz1tCkNP
-TkZJR19TTkRfU09DX1NUTTMyX1NQRElGUlg9bQpDT05GSUdfU05EX1NPQ19TVE0zMl9ERlNE
-TT1tCkNPTkZJR19TTkRfU1VONElfQ09ERUM9bQpDT05GSUdfU05EX1NPQ19URUdSQT1tCkNP
-TkZJR19TTkRfU09DX1RFR1JBMjBfSTJTPW0KQ09ORklHX1NORF9TT0NfVEVHUkEzMF9JMlM9
-bQpDT05GSUdfU05EX1NPQ19URUdSQV9SVDU2NDA9bQpDT05GSUdfU05EX1NPQ19URUdSQV9X
-TTg3NTM9bQpDT05GSUdfU05EX1NPQ19URUdSQV9XTTg5MDM9bQpDT05GSUdfU05EX1NPQ19U
-RUdSQV9XTTk3MTI9bQpDT05GSUdfU05EX1NPQ19URUdSQV9UUklNU0xJQ0U9bQpDT05GSUdf
-U05EX1NPQ19URUdSQV9BTEM1NjMyPW0KQ09ORklHX1NORF9TT0NfVEVHUkFfTUFYOTgwOTA9
-bQpDT05GSUdfU05EX1NPQ19BSzQ2NDI9bQpDT05GSUdfU05EX1NPQ19DUENBUD1tCkNPTkZJ
-R19TTkRfU09DX0NTNDJMNTFfSTJDPW0KQ09ORklHX1NORF9TT0NfU0dUTDUwMDA9bQpDT05G
-SUdfU05EX1NPQ19TVElfU0FTPW0KQ09ORklHX1NORF9TT0NfV004OTc4PW0KQ09ORklHX1NO
-RF9BVURJT19HUkFQSF9DQVJEPW0KQ09ORklHX1VTQj15CkNPTkZJR19VU0JfT1RHPXkKQ09O
-RklHX1VTQl9YSENJX0hDRD15CkNPTkZJR19VU0JfWEhDSV9NVkVCVT15CkNPTkZJR19VU0Jf
-WEhDSV9URUdSQT1tCkNPTkZJR19VU0JfRUhDSV9IQ0Q9eQpDT05GSUdfVVNCX0VIQ0lfSENE
-X09NQVA9bQpDT05GSUdfVVNCX0VIQ0lfSENEX1NUST15CkNPTkZJR19VU0JfRUhDSV9URUdS
-QT15CkNPTkZJR19VU0JfRUhDSV9FWFlOT1M9bQpDT05GSUdfVVNCX0VIQ0lfTVY9bQpDT05G
-SUdfVVNCX09IQ0lfSENEPXkKQ09ORklHX1VTQl9PSENJX0hDRF9TVEk9eQpDT05GSUdfVVNC
-X09IQ0lfRVhZTk9TPW0KQ09ORklHX1VTQl9SOEE2NjU5N19IQ0Q9bQpDT05GSUdfVVNCX1JF
-TkVTQVNfVVNCSFM9bQpDT05GSUdfVVNCX1NUT1JBR0U9eQpDT05GSUdfVVNCX1VBUz15CkNP
-TkZJR19VU0JfTVVTQl9IRFJDPW0KQ09ORklHX1VTQl9NVVNCX1NVTlhJPW0KQ09ORklHX1VT
-Ql9NVVNCX09NQVAyUExVUz1tCkNPTkZJR19VU0JfTVVTQl9BTTM1WD1tCkNPTkZJR19VU0Jf
-TVVTQl9EU1BTPW0KQ09ORklHX1VTQl9NVVNCX1VYNTAwPW0KQ09ORklHX1VTQl9VWDUwMF9E
-TUE9eQpDT05GSUdfVVNCX0lOVkVOVFJBX0RNQT15CkNPTkZJR19VU0JfVElfQ1BQSTQxX0RN
-QT15CkNPTkZJR19VU0JfRFdDMz15CkNPTkZJR19VU0JfRFdDMj15CkNPTkZJR19VU0JfQ0hJ
-UElERUE9eQpDT05GSUdfVVNCX0NISVBJREVBX1VEQz15CkNPTkZJR19VU0JfQ0hJUElERUFf
-SE9TVD15CkNPTkZJR19VU0JfQ0hJUElERUFfUENJPW0KQ09ORklHX1VTQl9JU1AxNzYwPXkK
-Q09ORklHX1VTQl9URVNUPXkKQ09ORklHX1VTQl9FSFNFVF9URVNUX0ZJWFRVUkU9eQpDT05G
-SUdfVVNCX0hTSUNfVVNCMzUwMz15CkNPTkZJR19VU0JfTElOS19MQVlFUl9URVNUPXkKQ09O
-RklHX0FCODUwMF9VU0I9eQpDT05GSUdfS0VZU1RPTkVfVVNCX1BIWT1tCkNPTkZJR19OT1Bf
-VVNCX1hDRUlWPXkKQ09ORklHX0FNMzM1WF9QSFlfVVNCPW0KQ09ORklHX1RXTDYwMzBfVVNC
-PW0KQ09ORklHX1VTQl9HUElPX1ZCVVM9eQpDT05GSUdfVVNCX0lTUDEzMDE9eQpDT05GSUdf
-VVNCX01YU19QSFk9eQpDT05GSUdfVVNCX0dBREdFVD15CkNPTkZJR19VU0JfRlNMX1VTQjI9
-eQpDT05GSUdfVVNCX1JFTkVTQVNfVVNCSFNfVURDPW0KQ09ORklHX1VTQl9BU1BFRURfVkhV
-Qj1tCkNPTkZJR19VU0JfQ09ORklHRlM9bQpDT05GSUdfVVNCX0NPTkZJR0ZTX1NFUklBTD15
-CkNPTkZJR19VU0JfQ09ORklHRlNfQUNNPXkKQ09ORklHX1VTQl9DT05GSUdGU19PQkVYPXkK
-Q09ORklHX1VTQl9DT05GSUdGU19OQ009eQpDT05GSUdfVVNCX0NPTkZJR0ZTX0VDTT15CkNP
-TkZJR19VU0JfQ09ORklHRlNfRUNNX1NVQlNFVD15CkNPTkZJR19VU0JfQ09ORklHRlNfUk5E
-SVM9eQpDT05GSUdfVVNCX0NPTkZJR0ZTX0VFTT15CkNPTkZJR19VU0JfQ09ORklHRlNfTUFT
-U19TVE9SQUdFPXkKQ09ORklHX1VTQl9DT05GSUdGU19GX0xCX1NTPXkKQ09ORklHX1VTQl9D
-T05GSUdGU19GX0ZTPXkKQ09ORklHX1VTQl9DT05GSUdGU19GX1VBQzE9eQpDT05GSUdfVVNC
-X0NPTkZJR0ZTX0ZfVUFDMV9MRUdBQ1k9eQpDT05GSUdfVVNCX0NPTkZJR0ZTX0ZfVUFDMj15
-CkNPTkZJR19VU0JfQ09ORklHRlNfRl9NSURJPXkKQ09ORklHX1VTQl9DT05GSUdGU19GX0hJ
-RD15CkNPTkZJR19VU0JfQ09ORklHRlNfRl9VVkM9eQpDT05GSUdfVVNCX0NPTkZJR0ZTX0Zf
-UFJJTlRFUj15CkNPTkZJR19VU0JfRVRIPW0KQ09ORklHX1RZUEVDPW0KQ09ORklHX1RZUEVD
-X1NUVVNCMTYwWD1tCkNPTkZJR19NTUM9eQpDT05GSUdfTU1DX0JMT0NLX01JTk9SUz0xNgpD
-T05GSUdfTU1DX0FSTU1NQ0k9eQpDT05GSUdfTU1DX1NESENJPXkKQ09ORklHX01NQ19TREhD
-SV9QQ0k9eQpDT05GSUdfTU1DX1NESENJX1BMVEZNPXkKQ09ORklHX01NQ19TREhDSV9PRl9B
-UkFTQU49eQpDT05GSUdfTU1DX1NESENJX09GX0FUOTE9eQpDT05GSUdfTU1DX1NESENJX09G
-X0VTREhDPXkKQ09ORklHX01NQ19TREhDSV9FU0RIQ19JTVg9eQpDT05GSUdfTU1DX1NESENJ
-X0RPVkU9eQpDT05GSUdfTU1DX1NESENJX1RFR1JBPXkKQ09ORklHX01NQ19TREhDSV9TM0M9
-eQpDT05GSUdfTU1DX1NESENJX1BYQVYzPXkKQ09ORklHX01NQ19TREhDSV9QWEFWMj1tCkNP
-TkZJR19NTUNfU0RIQ0lfU1BFQVI9eQpDT05GSUdfTU1DX1NESENJX1MzQ19ETUE9eQpDT05G
-SUdfTU1DX1NESENJX0JDTV9LT05BPXkKQ09ORklHX01NQ19NRVNPTl9NWF9TRElPPXkKQ09O
-RklHX01NQ19TREhDSV9TVD15CkNPTkZJR19NTUNfT01BUD15CkNPTkZJR19NTUNfT01BUF9I
-Uz15CkNPTkZJR19NTUNfQVRNRUxNQ0k9eQpDT05GSUdfTU1DX1NESENJX01TTT15CkNPTkZJ
-R19NTUNfTVZTRElPPXkKQ09ORklHX01NQ19TREhJPXkKQ09ORklHX01NQ19VTklQSElFUj15
-CkNPTkZJR19NTUNfRFc9eQpDT05GSUdfTU1DX0RXX0VYWU5PUz15CkNPTkZJR19NTUNfRFdf
-Uk9DS0NISVA9eQpDT05GSUdfTU1DX1NIX01NQ0lGPXkKQ09ORklHX01NQ19TVU5YST15CkNP
-TkZJR19NTUNfQkNNMjgzNT15CkNPTkZJR19NTUNfU0RIQ0lfT01BUD15CkNPTkZJR19MRURT
-X0NMQVNTPXkKQ09ORklHX0xFRFNfQ0xBU1NfRkxBU0g9bQpDT05GSUdfTEVEU19DUENBUD1t
-CkNPTkZJR19MRURTX0dQSU89eQpDT05GSUdfTEVEU19QV009eQpDT05GSUdfTEVEU19NQVg3
-NzY5Mz1tCkNPTkZJR19MRURTX01BWDg5OTc9bQpDT05GSUdfTEVEU19UUklHR0VSX1RJTUVS
-PXkKQ09ORklHX0xFRFNfVFJJR0dFUl9PTkVTSE9UPXkKQ09ORklHX0xFRFNfVFJJR0dFUl9I
-RUFSVEJFQVQ9eQpDT05GSUdfTEVEU19UUklHR0VSX0JBQ0tMSUdIVD15CkNPTkZJR19MRURT
-X1RSSUdHRVJfQ1BVPXkKQ09ORklHX0xFRFNfVFJJR0dFUl9HUElPPXkKQ09ORklHX0xFRFNf
-VFJJR0dFUl9ERUZBVUxUX09OPXkKQ09ORklHX0xFRFNfVFJJR0dFUl9UUkFOU0lFTlQ9eQpD
-T05GSUdfTEVEU19UUklHR0VSX0NBTUVSQT15CkNPTkZJR19SVENfQ0xBU1M9eQpDT05GSUdf
-UlRDX0RSVl9BQzEwMD15CkNPTkZJR19SVENfRFJWX0FTMzcyMj15CkNPTkZJR19SVENfRFJW
-X0RTMTMwNz15CkNPTkZJR19SVENfRFJWX0hZTTg1NjM9bQpDT05GSUdfUlRDX0RSVl9NQVg4
-OTA3PXkKQ09ORklHX1JUQ19EUlZfTUFYODk5OD1tCkNPTkZJR19SVENfRFJWX01BWDg5OTc9
-bQpDT05GSUdfUlRDX0RSVl9NQVg3NzY4Nj15CkNPTkZJR19SVENfRFJWX1JLODA4PW0KQ09O
-RklHX1JUQ19EUlZfUlM1QzM3Mj1tCkNPTkZJR19SVENfRFJWX1BDRjg1MzYzPW0KQ09ORklH
-X1JUQ19EUlZfQlEzMks9bQpDT05GSUdfUlRDX0RSVl9UV0w0MDMwPXkKQ09ORklHX1JUQ19E
-UlZfUEFMTUFTPXkKQ09ORklHX1JUQ19EUlZfVFBTNjU4Nlg9eQpDT05GSUdfUlRDX0RSVl9U
-UFM2NTkxMD15CkNPTkZJR19SVENfRFJWX1MzNTM5MEE9bQpDT05GSUdfUlRDX0RSVl9SWDg1
-ODE9bQpDT05GSUdfUlRDX0RSVl9FTTMwMjc9eQpDT05GSUdfUlRDX0RSVl9TNU09bQpDT05G
-SUdfUlRDX0RSVl9EQTkwNjM9bQpDT05GSUdfUlRDX0RSVl9FRkk9bQpDT05GSUdfUlRDX0RS
-Vl9ESUdJQ09MT1I9bQpDT05GSUdfUlRDX0RSVl9TM0M9bQpDT05GSUdfUlRDX0RSVl9TQTEx
-MDA9bQpDT05GSUdfUlRDX0RSVl9TSD1tCkNPTkZJR19SVENfRFJWX1BMMDMxPXkKQ09ORklH
-X1JUQ19EUlZfQVQ5MVJNOTIwMD1tCkNPTkZJR19SVENfRFJWX0FUOTFTQU05PW0KQ09ORklH
-X1JUQ19EUlZfVlQ4NTAwPXkKQ09ORklHX1JUQ19EUlZfU1VOWEk9eQpDT05GSUdfUlRDX0RS
-Vl9NVj15CkNPTkZJR19SVENfRFJWX1RFR1JBPXkKQ09ORklHX1JUQ19EUlZfU1RfTFBDPXkK
-Q09ORklHX1JUQ19EUlZfU1RNMzI9eQpDT05GSUdfUlRDX0RSVl9DUENBUD1tCkNPTkZJR19S
-VENfRFJWX0FTUEVFRD1tCkNPTkZJR19ETUFERVZJQ0VTPXkKQ09ORklHX0FUX0hETUFDPXkK
-Q09ORklHX0FUX1hETUFDPXkKQ09ORklHX0RNQV9CQ00yODM1PXkKQ09ORklHX0RNQV9TVU42
-ST15CkNPTkZJR19GU0xfRURNQT15CkNPTkZJR19JTVhfRE1BPXkKQ09ORklHX0lNWF9TRE1B
-PXkKQ09ORklHX01WX1hPUj15CkNPTkZJR19NWFNfRE1BPXkKQ09ORklHX1BMMzMwX0RNQT15
-CkNPTkZJR19TSVJGX0RNQT15CkNPTkZJR19TVEVfRE1BNDA9eQpDT05GSUdfU1RfRkRNQT1t
-CkNPTkZJR19TVE0zMl9ETUE9eQpDT05GSUdfU1RNMzJfRE1BTVVYPXkKQ09ORklHX1NUTTMy
-X01ETUE9eQpDT05GSUdfVU5JUEhJRVJfTURNQUM9eQpDT05GSUdfWElMSU5YX0RNQT15CkNP
-TkZJR19RQ09NX0JBTV9ETUE9eQpDT05GSUdfRFdfRE1BQz15CkNPTkZJR19SQ0FSX0RNQUM9
-eQpDT05GSUdfUkVORVNBU19VU0JfRE1BQz1tCkNPTkZJR19ETUFURVNUPXkKQ09ORklHX1ZJ
-UlRJT19QQ0k9eQpDT05GSUdfVklSVElPX0JBTExPT049eQpDT05GSUdfVklSVElPX01NSU89
-eQpDT05GSUdfU1RBR0lORz15CkNPTkZJR19NRkRfTlZFQz15CkNPTkZJR19LRVlCT0FSRF9O
-VkVDPXkKQ09ORklHX1NFUklPX05WRUNfUFMyPXkKQ09ORklHX05WRUNfUE9XRVI9eQpDT05G
-SUdfTlZFQ19QQVowMD15CkNPTkZJR19TVEFHSU5HX0JPQVJEPXkKQ09ORklHX0NIUk9NRV9Q
-TEFURk9STVM9eQpDT05GSUdfQ1JPU19FQz1tCkNPTkZJR19DUk9TX0VDX0kyQz1tCkNPTkZJ
-R19DUk9TX0VDX1NQST1tCkNPTkZJR19DT01NT05fQ0xLX01BWDc3Njg2PXkKQ09ORklHX0NP
-TU1PTl9DTEtfUks4MDg9bQpDT05GSUdfQ09NTU9OX0NMS19TQ01JPXkKQ09ORklHX0NPTU1P
-Tl9DTEtfUzJNUFMxMT1tCkNPTkZJR19DTEtfUkFTUEJFUlJZUEk9eQpDT05GSUdfQ09NTU9O
-X0NMS19RQ09NPXkKQ09ORklHX1FDT01fQ0xLX1JQTT15CkNPTkZJR19BUFFfTU1DQ184MDg0
-PXkKQ09ORklHX01TTV9HQ0NfODY2MD15CkNPTkZJR19NU01fTU1DQ184OTYwPXkKQ09ORklH
-X01TTV9NTUNDXzg5NzQ9eQpDT05GSUdfQkNNMjgzNV9NQk9YPXkKQ09ORklHX1JPQ0tDSElQ
-X0lPTU1VPXkKQ09ORklHX1RFR1JBX0lPTU1VX0dBUlQ9eQpDT05GSUdfVEVHUkFfSU9NTVVf
-U01NVT15CkNPTkZJR19FWFlOT1NfSU9NTVU9eQpDT05GSUdfUkVNT1RFUFJPQz15CkNPTkZJ
-R19TVF9SRU1PVEVQUk9DPW0KQ09ORklHX1JQTVNHX1ZJUlRJTz1tCkNPTkZJR19BU1BFRURf
-TFBDX0NUUkw9bQpDT05GSUdfQVNQRUVEX0xQQ19TTk9PUD1tCkNPTkZJR19BU1BFRURfUDJB
-X0NUUkw9bQpDT05GSUdfUkFTUEJFUlJZUElfUE9XRVI9eQpDT05GSUdfUUNPTV9HU0JJPXkK
-Q09ORklHX1FDT01fU01EX1JQTT1tCkNPTkZJR19RQ09NX1dDTlNTX0NUUkw9bQpDT05GSUdf
-QVJDSF9FTUVWMj15CkNPTkZJR19BUkNIX1I4QTc3OTQ9eQpDT05GSUdfQVJDSF9SOEE3Nzc5
-PXkKQ09ORklHX0FSQ0hfUjhBNzc5MD15CkNPTkZJR19BUkNIX1I4QTc3Nzg9eQpDT05GSUdf
-QVJDSF9SOEE3NzkzPXkKQ09ORklHX0FSQ0hfUjhBNzc5MT15CkNPTkZJR19BUkNIX1I4QTc3
-OTI9eQpDT05GSUdfQVJDSF9SOEE3NzQwPXkKQ09ORklHX0FSQ0hfUjhBNzNBND15CkNPTkZJ
-R19BUkNIX1I3UzcyMTAwPXkKQ09ORklHX0FSQ0hfUjdTOTIxMD15CkNPTkZJR19BUkNIX1I4
-QTc3NDcwPXkKQ09ORklHX0FSQ0hfUjhBNzc0NT15CkNPTkZJR19BUkNIX1I4QTc3NDI9eQpD
-T05GSUdfQVJDSF9SOEE3NzQzPXkKQ09ORklHX0FSQ0hfUjhBNzc0ND15CkNPTkZJR19BUkNI
-X1I5QTA2RzAzMj15CkNPTkZJR19BUkNIX1NINzNBMD15CkNPTkZJR19ST0NLQ0hJUF9JT0RP
-TUFJTj15CkNPTkZJR19ST0NLQ0hJUF9QTV9ET01BSU5TPXkKQ09ORklHX0FSQ0hfVEVHUkFf
-MnhfU09DPXkKQ09ORklHX0FSQ0hfVEVHUkFfM3hfU09DPXkKQ09ORklHX0FSQ0hfVEVHUkFf
-MTE0X1NPQz15CkNPTkZJR19BUkNIX1RFR1JBXzEyNF9TT0M9eQpDT05GSUdfQVJNX0VYWU5P
-U19CVVNfREVWRlJFUT1tCkNPTkZJR19BUk1fVEVHUkFfREVWRlJFUT1tCkNPTkZJR19ERVZG
-UkVRX0VWRU5UX0VYWU5PU19OT0NQPW0KQ09ORklHX0VYVENPTl9NQVgxNDU3Nz1tCkNPTkZJ
-R19FWFRDT05fTUFYNzc2OTM9bQpDT05GSUdfRVhUQ09OX01BWDg5OTc9bQpDT05GSUdfVElf
-QUVNSUY9eQpDT05GSUdfU1RNMzJfRk1DMl9FQkk9eQpDT05GSUdfRVhZTk9TNTQyMl9ETUM9
-bQpDT05GSUdfSUlPPXkKQ09ORklHX0lJT19TV19UUklHR0VSPXkKQ09ORklHX0FTUEVFRF9B
-REM9bQpDT05GSUdfQVQ5MV9BREM9bQpDT05GSUdfQVQ5MV9TQU1BNUQyX0FEQz1tCkNPTkZJ
-R19CRVJMSU4yX0FEQz1tCkNPTkZJR19DUENBUF9BREM9bQpDT05GSUdfRVhZTk9TX0FEQz1t
-CkNPTkZJR19NRVNPTl9TQVJBREM9bQpDT05GSUdfUk9DS0NISVBfU0FSQURDPW0KQ09ORklH
-X1NUTTMyX0FEQ19DT1JFPW0KQ09ORklHX1NUTTMyX0FEQz1tCkNPTkZJR19TVE0zMl9ERlNE
-TV9BREM9bQpDT05GSUdfU1RNUEVfQURDPW0KQ09ORklHX1ZGNjEwX0FEQz1tCkNPTkZJR19Y
-SUxJTlhfWEFEQz15CkNPTkZJR19JSU9fQ1JPU19FQ19TRU5TT1JTX0NPUkU9bQpDT05GSUdf
-SUlPX0NST1NfRUNfU0VOU09SUz1tCkNPTkZJR19TVE0zMl9EQUM9bQpDT05GSUdfTVBVMzA1
-MF9JMkM9eQpDT05GSUdfQ00zNjY1MT1tCkNPTkZJR19JSU9fQ1JPU19FQ19MSUdIVF9QUk9Y
-PW0KQ09ORklHX1NFTlNPUlNfSVNMMjkwMTg9eQpDT05GSUdfU0VOU09SU19JU0wyOTAyOD15
-CkNPTkZJR19BSzg5NzU9eQpDT05GSUdfSUlPX0hSVElNRVJfVFJJR0dFUj15CkNPTkZJR19J
-SU9fU1RNMzJfTFBUSU1FUl9UUklHR0VSPW0KQ09ORklHX1BXTT15CkNPTkZJR19QV01fQVRN
-RUw9bQpDT05GSUdfUFdNX0FUTUVMX0hMQ0RDX1BXTT1tCkNPTkZJR19QV01fQVRNRUxfVENC
-PW0KQ09ORklHX1BXTV9CQ00yODM1PXkKQ09ORklHX1BXTV9CUkNNU1RCPW0KQ09ORklHX1BX
-TV9GU0xfRlRNPW0KQ09ORklHX1BXTV9NRVNPTj1tCkNPTkZJR19QV01fUkNBUj1tCkNPTkZJ
-R19QV01fUkVORVNBU19UUFU9eQpDT05GSUdfUFdNX1JPQ0tDSElQPW0KQ09ORklHX1BXTV9T
-QU1TVU5HPW0KQ09ORklHX1BXTV9TVEk9eQpDT05GSUdfUFdNX1NUTTMyPW0KQ09ORklHX1BX
-TV9TVE0zMl9MUD1tCkNPTkZJR19QV01fU1VONEk9eQpDT05GSUdfUFdNX1RFR1JBPXkKQ09O
-RklHX1BXTV9WVDg1MDA9eQpDT05GSUdfS0VZU1RPTkVfSVJRPXkKQ09ORklHX1BIWV9TVU40
-SV9VU0I9eQpDT05GSUdfUEhZX1NVTjlJX1VTQj15CkNPTkZJR19QSFlfSElYNUhEMl9TQVRB
-PXkKQ09ORklHX1BIWV9CRVJMSU5fU0FUQT15CkNPTkZJR19QSFlfQkVSTElOX1VTQj15CkNP
-TkZJR19QSFlfTU1QM19VU0I9bQpDT05GSUdfUEhZX0NQQ0FQX1VTQj1tCkNPTkZJR19QSFlf
-UUNPTV9BUFE4MDY0X1NBVEE9bQpDT05GSUdfUEhZX1JDQVJfR0VOMj1tCkNPTkZJR19QSFlf
-Uk9DS0NISVBfRFA9bQpDT05GSUdfUEhZX1JPQ0tDSElQX1VTQj15CkNPTkZJR19QSFlfU0FN
-U1VOR19VU0IyPW0KQ09ORklHX1BIWV9FWFlOT1M1MjUwX1NBVEE9bQpDT05GSUdfUEhZX1VO
-SVBISUVSX1VTQjI9eQpDT05GSUdfUEhZX1VOSVBISUVSX1VTQjM9eQpDT05GSUdfUEhZX01J
-UEhZMjhMUD15CkNPTkZJR19QSFlfU1RJSDQwN19VU0I9eQpDT05GSUdfUEhZX1NUTTMyX1VT
-QlBIWUM9eQpDT05GSUdfUEhZX1RFR1JBX1hVU0I9eQpDT05GSUdfUEhZX0RNODE2WF9VU0I9
-bQpDT05GSUdfT01BUF9VU0IyPXkKQ09ORklHX1RJX1BJUEUzPXkKQ09ORklHX1RXTDQwMzBf
-VVNCPW0KQ09ORklHX05WTUVNX0lNWF9PQ09UUD15CkNPTkZJR19ST0NLQ0hJUF9FRlVTRT1t
-CkNPTkZJR19OVk1FTV9TVU5YSV9TSUQ9eQpDT05GSUdfTlZNRU1fVkY2MTBfT0NPVFA9eQpD
-T05GSUdfTUVTT05fTVhfRUZVU0U9bQpDT05GSUdfRlNJPW0KQ09ORklHX0ZTSV9NQVNURVJf
-R1BJTz1tCkNPTkZJR19GU0lfTUFTVEVSX0hVQj1tCkNPTkZJR19GU0lfTUFTVEVSX0FTUEVF
-RD1tCkNPTkZJR19GU0lfU0NPTT1tCkNPTkZJR19GU0lfU0JFRklGTz1tCkNPTkZJR19GU0lf
-T0NDPW0KQ09ORklHX0NPVU5URVI9bQpDT05GSUdfU1RNMzJfVElNRVJfQ05UPW0KQ09ORklH
-X1NUTTMyX0xQVElNRVJfQ05UPW0KQ09ORklHX0VYVDNfRlM9eQpDT05GSUdfRVhUNF9LVU5J
-VF9URVNUUz15CkNPTkZJR19CVFJGU19GUz15CkNPTkZJR19BVVRPRlM0X0ZTPXkKQ09ORklH
-X0lTTzk2NjBfRlM9eQpDT05GSUdfTVNET1NfRlM9eQpDT05GSUdfVkZBVF9GUz15CkNPTkZJ
-R19OVEZTX0ZTPXkKQ09ORklHX1RNUEZTX1BPU0lYX0FDTD15CkNPTkZJR19VQklGU19GUz15
-CkNPTkZJR19TUVVBU0hGUz15CkNPTkZJR19TUVVBU0hGU19YQVRUUj15CkNPTkZJR19TUVVB
-U0hGU19MWk89eQpDT05GSUdfU1FVQVNIRlNfWFo9eQpDT05GSUdfU1FVQVNIRlNfNEtfREVW
-QkxLX1NJWkU9eQpDT05GSUdfUFNUT1JFPXkKQ09ORklHX1BTVE9SRV9DT05TT0xFPXkKQ09O
-RklHX1BTVE9SRV9QTVNHPXkKQ09ORklHX1BTVE9SRV9SQU09eQpDT05GSUdfTkZTX0ZTPXkK
-Q09ORklHX05GU19WM19BQ0w9eQpDT05GSUdfTkZTX1Y0PXkKQ09ORklHX05GU19WNF8xPXkK
-Q09ORklHX05GU19WNF8yPXkKQ09ORklHX1JPT1RfTkZTPXkKQ09ORklHX05MU19DT0RFUEFH
-RV80Mzc9eQpDT05GSUdfTkxTX0lTTzg4NTlfMT15CkNPTkZJR19OTFNfVVRGOD15CkNPTkZJ
-R19DUllQVE9fVVNFUj1tCiMgQ09ORklHX0NSWVBUT19NQU5BR0VSX0RJU0FCTEVfVEVTVFMg
-aXMgbm90IHNldApDT05GSUdfQ1JZUFRPX1JTQT15CkNPTkZJR19DUllQVE9fRUNESD1tCkNP
-TkZJR19DUllQVE9fQ0NNPW0KQ09ORklHX0NSWVBUT19DTUFDPW0KQ09ORklHX0NSWVBUT19V
-U0VSX0FQSV9IQVNIPW0KQ09ORklHX0NSWVBUT19VU0VSX0FQSV9TS0NJUEhFUj1tCkNPTkZJ
-R19DUllQVE9fVVNFUl9BUElfUk5HPW0KQ09ORklHX0NSWVBUT19VU0VSX0FQSV9BRUFEPW0K
-Q09ORklHX0NSWVBUT19ERVZfU1VONElfU1M9bQpDT05GSUdfQ1JZUFRPX0RFVl9GU0xfQ0FB
-TT1tCkNPTkZJR19DUllQVE9fREVWX0VYWU5PU19STkc9bQpDT05GSUdfQ1JZUFRPX0RFVl9T
-NVA9bQpDT05GSUdfQ1JZUFRPX0RFVl9BVE1FTF9BRVM9bQpDT05GSUdfQ1JZUFRPX0RFVl9B
-VE1FTF9UREVTPW0KQ09ORklHX0NSWVBUT19ERVZfQVRNRUxfU0hBPW0KQ09ORklHX0NSWVBU
-T19ERVZfTUFSVkVMTF9DRVNBPW0KQ09ORklHX0NSWVBUT19ERVZfUk9DS0NISVA9bQpDT05G
-SUdfQ1JZUFRPX0RFVl9TVE0zMl9DUkM9bQpDT05GSUdfQ1JZUFRPX0RFVl9TVE0zMl9IQVNI
-PW0KQ09ORklHX0NSWVBUT19ERVZfU1RNMzJfQ1JZUD1tCkNPTkZJR19BU1lNTUVUUklDX0tF
-WV9UWVBFPXkKQ09ORklHX0FTWU1NRVRSSUNfUFVCTElDX0tFWV9TVUJUWVBFPXkKQ09ORklH
-X1g1MDlfQ0VSVElGSUNBVEVfUEFSU0VSPXkKQ09ORklHX1BLQ1M3X01FU1NBR0VfUEFSU0VS
-PXkKQ09ORklHX1NZU1RFTV9UUlVTVEVEX0tFWVJJTkc9eQpDT05GSUdfQ1JDMzJfU0VMRlRF
-U1Q9eQpDT05GSUdfQ01BX1NJWkVfTUJZVEVTPTY0CkNPTkZJR19HTE9CX1NFTEZURVNUPXkK
-Q09ORklHX1NUUklOR19TRUxGVEVTVD15CkNPTkZJR19QUklOVEtfVElNRT15CkNPTkZJR19N
-QUdJQ19TWVNSUT15CkNPTkZJR19ERUJVR19GUz15CkNPTkZJR19ERUJVR19ST0RBVEFfVEVT
-VD15CkNPTkZJR19QUk9WRV9MT0NLSU5HPXkKQ09ORklHX0RFQlVHX0xPQ0tERVA9eQpDT05G
-SUdfREVCVUdfQVRPTUlDX1NMRUVQPXkKQ09ORklHX0RFQlVHX0xPQ0tJTkdfQVBJX1NFTEZU
-RVNUUz15CkNPTkZJR19XV19NVVRFWF9TRUxGVEVTVD15CkNPTkZJR19ERUJVR19MSVNUPXkK
-Q09ORklHX1JDVV9FUVNfREVCVUc9eQpDT05GSUdfS1VOSVQ9eQpDT05GSUdfS1VOSVRfVEVT
-VD15CkNPTkZJR19URVNUX1NPUlQ9eQpDT05GSUdfUkJUUkVFX1RFU1Q9eQpDT05GSUdfSU5U
-RVJWQUxfVFJFRV9URVNUPXkKQ09ORklHX1RFU1RfQklUTUFQPXkKQ09ORklHX1RFU1RfVVVJ
-RD15CkNPTkZJR19URVNUX0ZJUk1XQVJFPXkKQ09ORklHX1RFU1RfU1lTQ1RMPXkKQ09ORklH
-X1NZU0NUTF9LVU5JVF9URVNUPXkKQ09ORklHX0xJU1RfS1VOSVRfVEVTVD15Cg==
---------------3A814DB4F7F30BA88DDAE11B--
+> +
+>   #endif /* _LINUX_PRCTL_H */
+> 
