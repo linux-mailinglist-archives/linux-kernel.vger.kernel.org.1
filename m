@@ -2,84 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FF52DA9D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:12:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2172DA9C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:09:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728181AbgLOJMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 04:12:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbgLOJEZ (ORCPT
+        id S1728115AbgLOJIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 04:08:22 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:39400 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728025AbgLOJIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 04:04:25 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E532EC0617A7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 01:04:04 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id f16so18623157otl.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 01:04:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8Os33hzl1I4JrVcBc2NboLIV9AXajTqEGTG/MO5gIIA=;
-        b=JSyKIzas5kymBH6tBxEg4KYgJIS7B1ABlQS0ZgbHcDVUhMtOJOIBkUG8oVUf2xyE38
-         Yi/DwKl/rcy7yjH3AulYbMJTt0+ojd4c4GkFRfUDBUXDhhdGL1N0TDOAvVIxD+4+acjU
-         mONy013pwy8tLKUjRRdsuZz+CRSx1++cmK49I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8Os33hzl1I4JrVcBc2NboLIV9AXajTqEGTG/MO5gIIA=;
-        b=gVyILgdXHQ92NR0OD9NqZl6Y2XAOEH1G59rrisVDd2FgrJsXYSm140FBg+sZvCXDIS
-         xrP8iXWx+ZowJRAI0WUx9Vg8rP2kH8eaiPh3/JqopIkvQXGRuml8GkYbagCeY8qiW5Ch
-         QIx0wsxVy0+4NX8uDDMrDOd+2ALTmqjpmtSyIZsLbanet7UnVjO51/jxKqGcrEWGASDC
-         RaG9j/PTndwU3u9KxAZ+wE9qBv+Xzurw5k95rRhlXDgQISvFMYnDjOzzOBsQI0uqqg4i
-         vknEc7vqy8Jel86yUxUmV2891As4RuUzc0DHViMYd5fScsECOii6NA+Z2F5sW188ip8c
-         t6rw==
-X-Gm-Message-State: AOAM530jJXD3IsZ7b5paOB+RaQQ/DhRdEx+Z9RnhEkmIeSZCHrBPLMf/
-        bny3ibIrypdiINMC1DpcsUXEUg/PINm0mc09++NTog==
-X-Google-Smtp-Source: ABdhPJyFYzqWRHlZ726aYfoNePEegTQzd/kmmERgpbYpHGtgjMjXkYZ33v0YYXoHy1iJRlrBAen1+2smr+YM4qBD52o=
-X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr22482636otm.305.1608023044378;
- Tue, 15 Dec 2020 01:04:04 -0800 (PST)
-MIME-Version: 1.0
-References: <20201214213044.27252-1-linux@roeck-us.net> <CAM9ZRVs3gBoYYQ+M1qUiLpuFTD0c_vxdNgDTXoXisne-Y8ZwQg@mail.gmail.com>
- <20201215005406.GA232073@roeck-us.net>
-In-Reply-To: <20201215005406.GA232073@roeck-us.net>
-From:   Paul Barker <pbarker@konsulko.com>
-Date:   Tue, 15 Dec 2020 09:03:55 +0000
-Message-ID: <CAM9ZRVvdPTK79m-fRJ=++3=hUy2onApMVP8EQ2PaYcdVuq_irw@mail.gmail.com>
-Subject: Re: [GIT PULL] hwmon updates for v5.11
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-hwmon@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Tue, 15 Dec 2020 04:08:00 -0500
+X-UUID: 3aab9b74a18b41ca9c509e553360c48a-20201215
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=6+6qWJDCVaZdwd7LAQOA4ZmsvGIVsQDay04mR778FEQ=;
+        b=KjkxxdVjwhYTX1g+1KYyZlJq6dSHYg0wT851Ln9QMZqUcj+CbZSA6jEuU60AsM8UHWqwcCNgvbORQtjMFR619wuFp5rduGbKwE9RahuIsg7AIgoGZWBOONxUVsN7fHB5qGFBpJMuzKcEnqiDTsFhn4uiv4g5w3WdVRQUz4hDCWk=;
+X-UUID: 3aab9b74a18b41ca9c509e553360c48a-20201215
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1538017907; Tue, 15 Dec 2020 17:07:16 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 15 Dec 2020 17:07:15 +0800
+Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 15 Dec 2020 17:07:15 +0800
+Message-ID: <1608023234.10163.19.camel@mtkswgap22>
+Subject: Re: [PATCH v4 5/6] scsi: ufs: Cleanup WB buffer flush toggle
+ implementation
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Bean Huo <huobean@gmail.com>
+CC:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <asutoshd@codeaurora.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <beanhuo@micron.com>,
+        <bvanassche@acm.org>, <tomas.winkler@intel.com>,
+        <cang@codeaurora.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Date:   Tue, 15 Dec 2020 17:07:14 +0800
+In-Reply-To: <20201211140035.20016-6-huobean@gmail.com>
+References: <20201211140035.20016-1-huobean@gmail.com>
+         <20201211140035.20016-6-huobean@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 at 00:54, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Mon, Dec 14, 2020 at 10:06:23PM +0000, Paul Barker wrote:
-> > On Mon, 14 Dec 2020 at 21:32, Guenter Roeck <linux@roeck-us.net> wrote:
-> > >
-> > > Paul Barker (3):
-> > >       dt-bindings: hwmon: pwm-fan: Support multiple fan tachometer inputs
-> >
-> > Should this one go in at this stage? The patches to implement support
-> > for multiple fan tachometer inputs are still outstanding. So the
-> > dt-binding will be left documenting a feature which isn't yet
-> > supported.
-> >
-> I don't see a problem with that, the patch has been in -next for weeks,
-> and I announced that I applied it.
->
-> Is that a formal objection ?
+SGkgQmVhbiwNCg0KT24gRnJpLCAyMDIwLTEyLTExIGF0IDE1OjAwICswMTAwLCBCZWFuIEh1byB3
+cm90ZToNCj4gRnJvbTogQmVhbiBIdW8gPGJlYW5odW9AbWljcm9uLmNvbT4NCj4gDQo+IERlbGV0
+ZSB1ZnNoY2Rfd2JfYnVmX2ZsdXNoX2VuYWJsZSgpIGFuZCB1ZnNoY2Rfd2JfYnVmX2ZsdXNoX2Rp
+c2FibGUoKSwNCj4gbW92ZSB0aGUgaW1wbGVtZW50YXRpb24gaW50byB1ZnNoY2Rfd2JfdG9nZ2xl
+X2ZsdXNoKCkuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBCZWFuIEh1byA8YmVhbmh1b0BtaWNyb24u
+Y29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMgfCA2OSArKysrKysrKysr
+KysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAyNCBpbnNl
+cnRpb25zKCspLCA0NSBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Nj
+c2kvdWZzL3Vmc2hjZC5jIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KPiBpbmRleCAwOTk4
+ZTYxMDNjZDcuLmZiM2M5ODcyNDAwNSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9zY3NpL3Vmcy91
+ZnNoY2QuYw0KPiArKysgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+IEBAIC0yNDQsMTAg
+KzI0NCw4IEBAIHN0YXRpYyBpbnQgdWZzaGNkX3NldHVwX3ZyZWcoc3RydWN0IHVmc19oYmEgKmhi
+YSwgYm9vbCBvbik7DQo+ICBzdGF0aWMgaW5saW5lIGludCB1ZnNoY2RfY29uZmlnX3ZyZWdfaHBt
+KHN0cnVjdCB1ZnNfaGJhICpoYmEsDQo+ICAJCQkJCSBzdHJ1Y3QgdWZzX3ZyZWcgKnZyZWcpOw0K
+PiAgc3RhdGljIGludCB1ZnNoY2RfdHJ5X3RvX2Fib3J0X3Rhc2soc3RydWN0IHVmc19oYmEgKmhi
+YSwgaW50IHRhZyk7DQo+IC1zdGF0aWMgaW50IHVmc2hjZF93Yl9idWZfZmx1c2hfZW5hYmxlKHN0
+cnVjdCB1ZnNfaGJhICpoYmEpOw0KPiAtc3RhdGljIGludCB1ZnNoY2Rfd2JfYnVmX2ZsdXNoX2Rp
+c2FibGUoc3RydWN0IHVmc19oYmEgKmhiYSk7DQo+ICBzdGF0aWMgaW50IHVmc2hjZF93Yl90b2dn
+bGVfZmx1c2hfZHVyaW5nX2g4KHN0cnVjdCB1ZnNfaGJhICpoYmEsIGJvb2wgc2V0KTsNCj4gLXN0
+YXRpYyBpbmxpbmUgdm9pZCB1ZnNoY2Rfd2JfdG9nZ2xlX2ZsdXNoKHN0cnVjdCB1ZnNfaGJhICpo
+YmEsIGJvb2wgZW5hYmxlKTsNCj4gK3N0YXRpYyBpbmxpbmUgaW50IHVmc2hjZF93Yl90b2dnbGVf
+Zmx1c2goc3RydWN0IHVmc19oYmEgKmhiYSwgYm9vbCBlbmFibGUpOw0KPiAgc3RhdGljIHZvaWQg
+dWZzaGNkX2hiYV92cmVnX3NldF9scG0oc3RydWN0IHVmc19oYmEgKmhiYSk7DQo+ICBzdGF0aWMg
+dm9pZCB1ZnNoY2RfaGJhX3ZyZWdfc2V0X2hwbShzdHJ1Y3QgdWZzX2hiYSAqaGJhKTsNCj4gIA0K
+PiBAQCAtNTM5OCw2MCArNTM5Niw0MSBAQCBzdGF0aWMgaW50IHVmc2hjZF93Yl90b2dnbGVfZmx1
+c2hfZHVyaW5nX2g4KHN0cnVjdCB1ZnNfaGJhICpoYmEsIGJvb2wgc2V0KQ0KPiAgCQkJCWluZGV4
+LCBOVUxMKTsNCj4gIH0NCj4gIA0KPiAtc3RhdGljIGlubGluZSB2b2lkIHVmc2hjZF93Yl90b2dn
+bGVfZmx1c2goc3RydWN0IHVmc19oYmEgKmhiYSwgYm9vbCBlbmFibGUpDQo+IC17DQo+IC0JaWYg
+KGhiYS0+cXVpcmtzICYgVUZTSENJX1FVSVJLX1NLSVBfTUFOVUFMX1dCX0ZMVVNIX0NUUkwpDQo+
+IC0JCXJldHVybjsNCj4gLQ0KPiAtCWlmIChlbmFibGUpDQo+IC0JCXVmc2hjZF93Yl9idWZfZmx1
+c2hfZW5hYmxlKGhiYSk7DQo+IC0JZWxzZQ0KPiAtCQl1ZnNoY2Rfd2JfYnVmX2ZsdXNoX2Rpc2Fi
+bGUoaGJhKTsNCj4gLQ0KPiAtfQ0KPiAtDQo+IC1zdGF0aWMgaW50IHVmc2hjZF93Yl9idWZfZmx1
+c2hfZW5hYmxlKHN0cnVjdCB1ZnNfaGJhICpoYmEpDQo+ICtzdGF0aWMgaW5saW5lIGludCB1ZnNo
+Y2Rfd2JfdG9nZ2xlX2ZsdXNoKHN0cnVjdCB1ZnNfaGJhICpoYmEsIGJvb2wgZW5hYmxlKQ0KPiAg
+ew0KPiAgCWludCByZXQ7DQo+ICAJdTggaW5kZXg7DQo+ICsJZW51bSBxdWVyeV9vcGNvZGUgb3Bj
+b2RlOw0KPiAgDQo+IC0JaWYgKCF1ZnNoY2RfaXNfd2JfYWxsb3dlZChoYmEpIHx8IGhiYS0+ZGV2
+X2luZm8ud2JfYnVmX2ZsdXNoX2VuYWJsZWQpDQo+ICsJaWYgKGhiYS0+cXVpcmtzICYgVUZTSENJ
+X1FVSVJLX1NLSVBfTUFOVUFMX1dCX0ZMVVNIX0NUUkwpDQo+ICAJCXJldHVybiAwOw0KPiAgDQo+
+IC0JaW5kZXggPSB1ZnNoY2Rfd2JfZ2V0X3F1ZXJ5X2luZGV4KGhiYSk7DQo+IC0JcmV0ID0gdWZz
+aGNkX3F1ZXJ5X2ZsYWdfcmV0cnkoaGJhLCBVUElVX1FVRVJZX09QQ09ERV9TRVRfRkxBRywNCj4g
+LQkJCQkgICAgICBRVUVSWV9GTEFHX0lETl9XQl9CVUZGX0ZMVVNIX0VOLA0KPiAtCQkJCSAgICAg
+IGluZGV4LCBOVUxMKTsNCj4gLQlpZiAocmV0KQ0KPiAtCQlkZXZfZXJyKGhiYS0+ZGV2LCAiJXMg
+V0IgLSBidWYgZmx1c2ggZW5hYmxlIGZhaWxlZCAlZFxuIiwNCj4gLQkJCV9fZnVuY19fLCByZXQp
+Ow0KPiAtCWVsc2UNCj4gLQkJaGJhLT5kZXZfaW5mby53Yl9idWZfZmx1c2hfZW5hYmxlZCA9IHRy
+dWU7DQo+IC0NCj4gLQlkZXZfZGJnKGhiYS0+ZGV2LCAiV0IgLSBGbHVzaCBlbmFibGVkOiAlZFxu
+IiwgcmV0KTsNCj4gLQlyZXR1cm4gcmV0Ow0KPiAtfQ0KPiAtDQo+IC1zdGF0aWMgaW50IHVmc2hj
+ZF93Yl9idWZfZmx1c2hfZGlzYWJsZShzdHJ1Y3QgdWZzX2hiYSAqaGJhKQ0KPiAtew0KPiAtCWlu
+dCByZXQ7DQo+IC0JdTggaW5kZXg7DQo+IC0NCj4gLQlpZiAoIXVmc2hjZF9pc193Yl9hbGxvd2Vk
+KGhiYSkgfHwgIWhiYS0+ZGV2X2luZm8ud2JfYnVmX2ZsdXNoX2VuYWJsZWQpDQo+ICsJaWYgKCF1
+ZnNoY2RfaXNfd2JfYWxsb3dlZChoYmEpIHx8DQo+ICsJICAgIGhiYS0+ZGV2X2luZm8ud2JfYnVm
+X2ZsdXNoX2VuYWJsZWQgPT0gZW5hYmxlKQ0KPiAgCQlyZXR1cm4gMDsNCj4gIA0KPiArCWlmIChl
+bmFibGUpDQo+ICsJCW9wY29kZSA9IFVQSVVfUVVFUllfT1BDT0RFX1NFVF9GTEFHOw0KPiArCWVs
+c2UNCj4gKwkJb3Bjb2RlID0gVVBJVV9RVUVSWV9PUENPREVfQ0xFQVJfRkxBRzsNCj4gKw0KPiAg
+CWluZGV4ID0gdWZzaGNkX3diX2dldF9xdWVyeV9pbmRleChoYmEpOw0KPiAtCXJldCA9IHVmc2hj
+ZF9xdWVyeV9mbGFnX3JldHJ5KGhiYSwgVVBJVV9RVUVSWV9PUENPREVfQ0xFQVJfRkxBRywNCj4g
+LQkJCQkgICAgICBRVUVSWV9GTEFHX0lETl9XQl9CVUZGX0ZMVVNIX0VOLA0KPiAtCQkJCSAgICAg
+IGluZGV4LCBOVUxMKTsNCj4gKwlyZXQgPSB1ZnNoY2RfcXVlcnlfZmxhZ19yZXRyeShoYmEsIG9w
+Y29kZSwNCj4gKwkJCQkgICAgICBRVUVSWV9GTEFHX0lETl9XQl9CVUZGX0ZMVVNIX0VOLCBpbmRl
+eCwNCj4gKwkJCQkgICAgICBOVUxMKTsNCj4gIAlpZiAocmV0KSB7DQo+IC0JCWRldl93YXJuKGhi
+YS0+ZGV2LCAiJXM6IFdCIC0gYnVmIGZsdXNoIGRpc2FibGUgZmFpbGVkICVkXG4iLA0KPiAtCQkJ
+IF9fZnVuY19fLCByZXQpOw0KPiAtCX0gZWxzZSB7DQo+IC0JCWhiYS0+ZGV2X2luZm8ud2JfYnVm
+X2ZsdXNoX2VuYWJsZWQgPSBmYWxzZTsNCj4gLQkJZGV2X2RiZyhoYmEtPmRldiwgIldCIC0gRmx1
+c2ggZGlzYWJsZWQ6ICVkXG4iLCByZXQpOw0KPiArCQlkZXZfZXJyKGhiYS0+ZGV2LCAiJXMgV0It
+QnVmIEZsdXNoICVzIGZhaWxlZCAlZFxuIiwgX19mdW5jX18sDQo+ICsJCQllbmFibGUgPyAiZW5h
+YmxlIiA6ICJkaXNhYmxlIiwgcmV0KTsNCj4gKwkJZ290byBvdXQ7DQo+ICAJfQ0KPiAgDQo+ICsJ
+aWYgKGVuYWJsZSkNCj4gKwkJaGJhLT5kZXZfaW5mby53Yl9idWZfZmx1c2hfZW5hYmxlZCA9IHRy
+dWU7DQo+ICsJZWxzZQ0KPiArCQloYmEtPmRldl9pbmZvLndiX2J1Zl9mbHVzaF9lbmFibGVkID0g
+ZmFsc2U7DQoNClBlcmhhcHMgdGhpcyBjb3VsZCBiZSBzaW1wbGVyIGFzIGJlbG93Pw0KDQpoYmEt
+PmRldl9pbmZvLndiX2J1Zl9mbHVzaF9lbmFibGVkID0gZW5hYmxlOw0KDQpUaGFua3MsDQpTdGFu
+bGV5IENodQ0KDQo+ICsNCj4gKwlkZXZfZGJnKGhiYS0+ZGV2LCAiV0ItQnVmIEZsdXNoICVzXG4i
+LCBlbmFibGUgPyAiZW5hYmxlZCIgOiAiZGlzYWJsZWQiKTsNCj4gK291dDoNCj4gIAlyZXR1cm4g
+cmV0Ow0KPiAgfQ0KPiAgDQoNCg==
 
-No, you know the process better than me, I just wanted to ensure the
-status was clear. If the patch is ok to be included in this state then
-I'm happy.
-
--- 
-Paul Barker
-Konsulko Group
