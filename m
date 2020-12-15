@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7642DAAEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF5E2DAAED
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728337AbgLOKbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728411AbgLOKbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:31:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728296AbgLOKbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Dec 2020 05:31:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728159AbgLOKbN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:31:13 -0500
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C66EC06179C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:30:33 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by michel.telenet-ops.be with bizsmtp
-        id 4aWU240034C55Sk06aWUo3; Tue, 15 Dec 2020 11:30:28 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kp7b9-00AmiM-Q9; Tue, 15 Dec 2020 11:30:27 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kp7b9-00C3OY-5G; Tue, 15 Dec 2020 11:30:27 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Gavin Shan <gshan@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] arm64/smp: Remove unused irq variable in arch_show_interrupts()
-Date:   Tue, 15 Dec 2020 11:30:26 +0100
-Message-Id: <20201215103026.2872532-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+Date:   Tue, 15 Dec 2020 11:32:00 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1608028256;
+        bh=xjHykK8XN96dFaYhZnIiizf13PE8cJP1VJ6OL+POwMs=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rx5+KdVqHDFmwGePFBKeeEtCEGFlUSzx8w67xkKNWoRu8bslOe3BzN7jDUvcUOCcC
+         bdnyDG8zkd0IqTOqJc7pww5pFPlbEC1BnAtOXK5nnqFYmkR6wP5R6eNxtax7ak4r9V
+         NV0Acgqi8VazkHA8mrRnxvJTuxkQLCeFFs67co80=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/6] scsi: ufs: Add "wb_on" sysfs node to control WB
+ on/off
+Message-ID: <X9iQoIpL48yQyr7D@kroah.com>
+References: <20201211140035.20016-1-huobean@gmail.com>
+ <20201211140035.20016-2-huobean@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211140035.20016-2-huobean@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-    arch/arm64/kernel/smp.c: In function ‘arch_show_interrupts’:
-    arch/arm64/kernel/smp.c:808:16: warning: unused variable ‘irq’ [-Wunused-variable]
-      808 |   unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
-	  |                ^~~
+On Fri, Dec 11, 2020 at 03:00:30PM +0100, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> Currently UFS WriteBooster driver uses clock scaling up/down to set
+> WB on/off, for the platform which doesn't support UFSHCD_CAP_CLK_SCALING,
+> WB will be always on. Provide a sysfs attribute to enable/disable WB
+> during runtime. Write 1/0 to "wb_on" sysfs node to enable/disable UFS WB.
+> 
+> Reviewed-by: Avri Altman <avri.altman@wdc.com>
+> Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> ---
+>  drivers/scsi/ufs/ufs-sysfs.c | 41 ++++++++++++++++++++++++++++++++++++
+>  drivers/scsi/ufs/ufshcd.c    |  3 +--
+>  drivers/scsi/ufs/ufshcd.h    |  2 ++
+>  3 files changed, 44 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
+> index 08e72b7eef6a..2b4e9fe935cc 100644
+> --- a/drivers/scsi/ufs/ufs-sysfs.c
+> +++ b/drivers/scsi/ufs/ufs-sysfs.c
+> @@ -189,6 +189,45 @@ static ssize_t auto_hibern8_store(struct device *dev,
+>  	return count;
+>  }
+>  
+> +static ssize_t wb_on_show(struct device *dev, struct device_attribute *attr,
+> +			  char *buf)
+> +{
+> +	struct ufs_hba *hba = dev_get_drvdata(dev);
+> +
+> +	return scnprintf(buf, PAGE_SIZE, "%d\n", hba->wb_enabled);
 
-The removal of the last user forgot to remove the variable.
+Please just use sysfs_emit().
 
-Fixes: 2f516e34383d0e97 ("arm64/smp: Use irq_desc_kstat_cpu() in arch_show_interrupts()")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-One more issue in irq-core-2020-12-14.
+> +}
+> +
+> +static ssize_t wb_on_store(struct device *dev, struct device_attribute *attr,
+> +			   const char *buf, size_t count)
+> +{
+> +	struct ufs_hba *hba = dev_get_drvdata(dev);
+> +	unsigned int wb_enable;
+> +	ssize_t res;
+> +
+> +	if (ufshcd_is_clkscaling_supported(hba)) {
+> +		/*
+> +		 * If the platform supports UFSHCD_CAP_AUTO_BKOPS_SUSPEND,
+> +		 * turn WB on/off will be done while clock scaling up/down.
+> +		 */
+> +		dev_warn(dev, "To control WB through wb_on is not allowed!\n");
+> +		return -EOPNOTSUPP;
+> +	}
+> +	if (!ufshcd_is_wb_allowed(hba))
+> +		return -EOPNOTSUPP;
+> +
+> +	if (kstrtouint(buf, 0, &wb_enable))
+> +		return -EINVAL;
+> +
+> +	if (wb_enable != 0 && wb_enable != 1)
+> +		return -EINVAL;
+> +
+> +	pm_runtime_get_sync(hba->dev);
+> +	res = ufshcd_wb_ctrl(hba, wb_enable);
+> +	pm_runtime_put_sync(hba->dev);
+> +
+> +	return res < 0 ? res : count;
+> +}
 
- arch/arm64/kernel/smp.c | 1 -
- 1 file changed, 1 deletion(-)
+Where is the new Documentation/ABI/ update for this new sysfs file you
+are adding?
 
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 3aef3bc22d3250b5..10b39328268687e3 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -805,7 +805,6 @@ int arch_show_interrupts(struct seq_file *p, int prec)
- 	unsigned int cpu, i;
- 
- 	for (i = 0; i < NR_IPI; i++) {
--		unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
- 		seq_printf(p, "%*s%u:%s", prec - 1, "IPI", i,
- 			   prec >= 4 ? " " : "");
- 		for_each_online_cpu(cpu)
--- 
-2.25.1
+thanks,
 
+greg k-h
