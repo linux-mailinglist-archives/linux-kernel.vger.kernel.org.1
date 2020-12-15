@@ -2,106 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8192DA92F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACCFC2DA931
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbgLOIbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:31:34 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:57538 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726356AbgLOIbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:31:12 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id D41F5FB03;
-        Tue, 15 Dec 2020 09:30:21 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id N7tRuB2LkNIs; Tue, 15 Dec 2020 09:30:19 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 5ECA443FDC; Tue, 15 Dec 2020 09:30:19 +0100 (CET)
-Date:   Tue, 15 Dec 2020 09:30:19 +0100
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <guido.gunther@puri.sm>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, kishon@ti.com,
-        vkoul@kernel.org, robh+dt@kernel.org, a.hajda@samsung.com,
-        narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@siol.net, airlied@linux.ie,
-        daniel@ffwll.ch, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        robert.chiras@nxp.com, martin.kepplinger@puri.sm
-Subject: Re: [PATCH 1/4] drm/bridge: nwl-dsi: Set PHY mode in nwl_dsi_enable()
-Message-ID: <20201215083019.GA11854@bogon.m.sigxcpu.org>
-References: <1607067224-15616-1-git-send-email-victor.liu@nxp.com>
- <1607067224-15616-2-git-send-email-victor.liu@nxp.com>
- <20201208090457.GB20575@bogon.m.sigxcpu.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201208090457.GB20575@bogon.m.sigxcpu.org>
+        id S1727063AbgLOIcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:32:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727032AbgLOIcv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 03:32:51 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 390EFC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 00:32:11 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id w135so12873386pff.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 00:32:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=fe1km3yfxmczncgouQwLa2uCpf9EDAfkHINKI/Vhceg=;
+        b=pg0LTRa3ZvcyZMwu51VdorUHI4theOfbNwh9Hw7ALeyxmHoQyminTLmEnX0FrDAbRZ
+         WlV+gujM42wj7dIzbmuwatahwhDQW2nLEo8a2+NhZCGM7Z0lBUgqUDoOcZ5lgx20eHz5
+         W4dNpeuRH2/EoL6JfOM+MJwwGGIa5kLXAmXV42U8f/Kzhr0yM5C/5mwaKe7nJ6yrbLtl
+         NbkiKkX+HFVJvjGyQmRG4ZgYirB/wBiU2pkk2tNP7q+fJrVnZu1IL2mmM0hDAWF+VN7+
+         wp+4a30W12k4OqvqtYyytodm33EGLTV1vYN2GdBT+Uedne9B3BG25K+gErJ9LD9G8F3N
+         ZkxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=fe1km3yfxmczncgouQwLa2uCpf9EDAfkHINKI/Vhceg=;
+        b=d37KrEULPclbNSonBukRKAHFUjjY2c+ckDcvc97X8PQ25SwBcBiR7Mg6k7zdkPZNJC
+         UEtdLLVu2P3JQSOn6qv5rVoLQ+tq2xfBSYBoF01498KbJJqGxEm+8qmUz7oWm6MUeb2i
+         FCGCb36P9euo2APbuXK6bJh0DlXAJduWTGjlhfAzhc1r7tjglTnEDvFXo43NU8+G0H06
+         lE4ttLKGhvPetJATwSaSoJAKlmLjb8Gt+DgdMyKjPl/BYkIbiyFFSK3F49wpsq+ygBbs
+         GPc/C25hVoIaH82kv6ce+HfiAGYfn5ijZ0QZOqe+tGAooxORM0qetZH3KAe367Gzwgar
+         ixjQ==
+X-Gm-Message-State: AOAM533MIDXN3k3v0nFPqQd3OgW2F/aQCNVDYlkE+rWQ88uzs0AOl7wy
+        OidfHpL0x8FZMO3uXFzDERZWYuuKvWNv
+X-Google-Smtp-Source: ABdhPJyHFmFx1T+NbiSbfwLZtAeXJfRairfMEb0kbPranBvrnu+mqbSUtYTxVlceam5btLIAyr9WjgGQ0hgN
+Sender: "apusaka via sendgmr" <apusaka@apusaka-p920.tpe.corp.google.com>
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:f693:9fff:fef4:2347])
+ (user=apusaka job=sendgmr) by 2002:a17:90a:cb8d:: with SMTP id
+ a13mr28800707pju.155.1608021129175; Tue, 15 Dec 2020 00:32:09 -0800 (PST)
+Date:   Tue, 15 Dec 2020 16:31:56 +0800
+Message-Id: <20201215083201.1343692-1-apusaka@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
+Subject: [PATCH v2 0/5] MSFT offloading support for advertisement monitor
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Tue, Dec 08, 2020 at 10:04:57AM +0100, Guido Günther wrote:
-> Hi,
-> On Fri, Dec 04, 2020 at 03:33:41PM +0800, Liu Ying wrote:
-> > The Northwest Logic MIPI DSI host controller embedded in i.MX8qxp
-> > works with a Mixel MIPI DPHY + LVDS PHY combo to support either
-> > a MIPI DSI display or a LVDS display.  So, this patch calls
-> > phy_set_mode() from nwl_dsi_enable() to set PHY mode to MIPI DPHY
-> > explicitly.
-
-Should i pull this patch in via drm-misc-next or is the whole series
-supposed to go via the phy tree?
-Cheers,
- -- Guido
+From: Archie Pusaka <apusaka@chromium.org>
 
 
-> > 
-> > Cc: Guido Günther <agx@sigxcpu.org>
-> > Cc: Robert Chiras <robert.chiras@nxp.com>
-> > Cc: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > Cc: Andrzej Hajda <a.hajda@samsung.com>
-> > Cc: Neil Armstrong <narmstrong@baylibre.com>
-> > Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-> > Cc: Jonas Karlman <jonas@kwiboo.se>
-> > Cc: Jernej Skrabec <jernej.skrabec@siol.net>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: NXP Linux Team <linux-imx@nxp.com>
-> > Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> > ---
-> >  drivers/gpu/drm/bridge/nwl-dsi.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nwl-dsi.c
-> > index 66b6740..be6bfc5 100644
-> > --- a/drivers/gpu/drm/bridge/nwl-dsi.c
-> > +++ b/drivers/gpu/drm/bridge/nwl-dsi.c
-> > @@ -678,6 +678,12 @@ static int nwl_dsi_enable(struct nwl_dsi *dsi)
-> >  		return ret;
-> >  	}
-> >  
-> > +	ret = phy_set_mode(dsi->phy, PHY_MODE_MIPI_DPHY);
-> > +	if (ret < 0) {
-> > +		DRM_DEV_ERROR(dev, "Failed to set DSI phy mode: %d\n", ret);
-> > +		goto uninit_phy;
-> > +	}
-> > +
-> >  	ret = phy_configure(dsi->phy, phy_cfg);
-> >  	if (ret < 0) {
-> >  		DRM_DEV_ERROR(dev, "Failed to configure DSI phy: %d\n", ret);
-> 
-> Reviewed-by: Guido Günther <agx@sigxcpu.org> 
->  -- Guido
-> 
-> > -- 
-> > 2.7.4
-> > 
-> 
-> 
+Hi linux-bluetooth,
+
+This series of patches manages the hardware offloading part of MSFT
+extension API. The full documentation can be accessed by this link:
+https://docs.microsoft.com/en-us/windows-hardware/drivers/bluetooth/microsoft-defined-bluetooth-hci-commands-and-events
+
+Only four of the HCI commands are planned to be implemented:
+HCI_VS_MSFT_Read_Supported_Features (implemented in previous patch),
+HCI_VS_MSFT_LE_Monitor_Advertisement,
+HCI_VS_MSFT_LE_Cancel_Monitor_Advertisement, and
+HCI_VS_MSFT_LE_Set_Advertisement_Filter_Enable.
+These are the commands which would be used for advertisement monitor
+feature. Only if the controller supports the MSFT extension would
+these commands be sent. Otherwise, software-based monitoring would be
+performed in the user space instead.
+
+Thanks in advance for your feedback!
+
+Archie
+
+Changes in v2:
+* Add a new opcode instead of modifying an existing one
+* Also implement the new MGMT opcode and merge the functionality with
+  the old one.
+
+Archie Pusaka (5):
+  Bluetooth: advmon offload MSFT add rssi support
+  Bluetooth: advmon offload MSFT add monitor
+  Bluetooth: advmon offload MSFT remove monitor
+  Bluetooth: advmon offload MSFT handle controller reset
+  Bluetooth: advmon offload MSFT handle filter enablement
+
+ include/net/bluetooth/hci_core.h |  34 ++-
+ include/net/bluetooth/mgmt.h     |  16 ++
+ net/bluetooth/hci_core.c         | 173 +++++++++---
+ net/bluetooth/mgmt.c             | 333 ++++++++++++++++------
+ net/bluetooth/msft.c             | 456 ++++++++++++++++++++++++++++++-
+ net/bluetooth/msft.h             |  27 ++
+ 6 files changed, 919 insertions(+), 120 deletions(-)
+
+-- 
+2.29.2.684.gfbc64c5ab5-goog
+
