@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B322DB678
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 061E72DB683
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 23:29:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730147AbgLOWWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 17:22:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46282 "EHLO mail.kernel.org"
+        id S1730597AbgLOWYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 17:24:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729912AbgLOWWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 17:22:34 -0500
-Subject: Re: [GIT PULL] Driver core changes for 5.11-rc1
+        id S1730231AbgLOWW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 17:22:59 -0500
+Subject: Re: [GIT PULL] Char/Misc driver changes for 5.11-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1608070939;
-        bh=oraKA7VC7PH0JAbWvVoMqoKIRBGsXW7CJQtpcF6oHbs=;
+        bh=YvZ7zr8KAXSqXJCThOs7n8XO/7Rk9hd1X7PyYHYFpMw=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=DT9g7v0Rjz5+hqRl/rGdQxPHzmZ3RuUeyypnuHFtsSqrqaXnqyf+pC3x5tcfz/f/g
-         rtcI5ZV+AatG6xllVEvr2/jzNRfs3fQ2zouWlOV225G7Kprj3tXxuULAndjOkTTvrg
-         sjUYelIbOGDN/f0zX3xSJvMNxhEeEvq5D4sawSKAGkfYAs8hQtawAW1vL8FAV7LmR1
-         rwbgCVdKVboIK5/4BEqBgyoMOhrG3b2Q1d+BBubePncecnogXoq1bZX75dbjakN4Lk
-         bq6twvBfoterBh633wES93sM2NgIcfFgRQo3PLXQSjYZQ4qKheCEykteFJvemvfD77
-         DZXO1MO0KUPTw==
+        b=q1ZMZXgALX8tU7hFdSrBbxd+vRlz/T0EOf4+oC5yhhw1RQSuvPGcQZHq1TbRDfmqP
+         hyQ3Z8LjX9Vc4HGyRirRx2ABkzheNnpU0yqyGwtIRPylPM0FBI0TTvtk4B5hnDFNp3
+         APIssS0BYPFkIncNuC5fO1WnXu5I0nOaRnKVWF45w6PPkpi1n2rtugB4mUGqwDFN9M
+         hBT0pDGfo8kalR60WBNQU8dDr/FNyL0UQ3qqJOfuRnaD7BfjG90Bl9m2UXrTcFG19N
+         b/PpT6epAGHwaFe/Jx9ayKSH5Rm79QkL9U163vSwUVpAH0HrLGe+5C3tAVYqzD66YB
+         lsmglJEEzfePg==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <X9iN6g0YmMt5pQ+F@kroah.com>
-References: <X9iN6g0YmMt5pQ+F@kroah.com>
+In-Reply-To: <X9iN/jha9nVkuvEH@kroah.com>
+References: <X9iN/jha9nVkuvEH@kroah.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <X9iN6g0YmMt5pQ+F@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-5.11-rc1
-X-PR-Tracked-Commit-Id: 46e85af0cc53f35584e00bb5db7db6893d0e16e5
+X-PR-Tracked-Message-Id: <X9iN/jha9nVkuvEH@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.11-rc1
+X-PR-Tracked-Commit-Id: 93f998879cd95b3e4f2836e7b17d6d5ae035cf90
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7240153a9bdb77217b99b76fd73105bce12770be
-Message-Id: <160807093904.3012.6492164764372032834.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 2911ed9f47b47cb5ab87d03314b3b9fe008e607f
+Message-Id: <160807093930.3012.8620945917698676683.pr-tracker-bot@kernel.org>
 Date:   Tue, 15 Dec 2020 22:22:19 +0000
 To:     Greg KH <gregkh@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 15 Dec 2020 11:20:26 +0100:
+The pull request you sent on Tue, 15 Dec 2020 11:20:46 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-5.11-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.11-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7240153a9bdb77217b99b76fd73105bce12770be
+https://git.kernel.org/torvalds/c/2911ed9f47b47cb5ab87d03314b3b9fe008e607f
 
 Thank you!
 
