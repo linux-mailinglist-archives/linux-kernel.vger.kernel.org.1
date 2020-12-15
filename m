@@ -2,126 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE042DAAF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D477C2DAAF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728151AbgLOKd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:33:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726709AbgLOKdF (ORCPT
+        id S1727807AbgLOKeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:34:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28338 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728201AbgLOKdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:33:05 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCA5C06179C;
-        Tue, 15 Dec 2020 02:32:19 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id c133so4387370wme.4;
-        Tue, 15 Dec 2020 02:32:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=zM12Vu2WHRPOJz6hUWWLoP76rHHBWWIXvKZ62qMZpOo=;
-        b=Ql5S7sxstdmE3XGP6QmWP0l1O9dxtvqCl/284IlCrUCXxpNOrcC0QhvH5hsY2qDorn
-         2unlqivrj9Afdl+JM6qHZ9zR8tWIxZDexIyb/QwtWi1Vhs76RX0HqtUNd+SZubvAvtUC
-         i8vtQkdk+d2BrVi+FE5xFNRT9/GPcjTe3fxyKUswyttdj1dBwf/2r4wUqxM0dG6px1AX
-         jGa004iWa7wV8WsFMQqu1MF2OVKdic3gNA5ZnJ2qtGkKSMHcAj8p8HEamYhVz9wPHzzk
-         u4PaqR71RCuR48pyK7kIsqWttGnHo0wqzi17IilT1MpnknokiKL59i2MzhJEc4VF+LPv
-         Xkfg==
+        Tue, 15 Dec 2020 05:33:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608028348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ckovXueqNToJoyauJ6BBxrCZAffZux6jQj9uhlKTS6U=;
+        b=aPturgJJF0qWXFDKuctSLE12AyqDzSDhEajmfCt5FStCz8eL+sY47GUmBVmUZMg37DUK5i
+        LuTuzuf2dlkYJLgOIrkL4OodZamRmz6Of7R9SS5v5s6jv389h1DwMJGDTKDIhneAdCeS55
+        EHhEBY7Gxi00wndtPBMecpBWTLAhoVM=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-4hBT4DIRMdC3oGXdOPKEvg-1; Tue, 15 Dec 2020 05:32:26 -0500
+X-MC-Unique: 4hBT4DIRMdC3oGXdOPKEvg-1
+Received: by mail-ej1-f71.google.com with SMTP id y14so5832718ejf.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:32:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=zM12Vu2WHRPOJz6hUWWLoP76rHHBWWIXvKZ62qMZpOo=;
-        b=MA9SdzFd3d5K4PTRtWKwpSFiwLEpm7ma37CrX9HqNlLl6taFwK3A4/Q/wJdr52S2No
-         dsx/recqfgqq4EjWlb6imF9DqLYfozolIXZx+aZczpiye77yc1wSn+KDS/3i9vzVJcQl
-         59MQvAEuUsW0XMmkiVBhapB6DjfIuD3sWyb8qXE3RSkD2QUMLtufZGJ3jU1ys0gDJhvj
-         rnzMQXG60ntYhFSeUMrxkpqHW3CAmd2C6s4n31m2Bk5k9E8C/5pOtWy91ms7g1Nd6vq1
-         vyphKO0NyK0v8TZ7TamCN2v6baKnbgcVU4y5dYpOudUmnp35mI8ADNjyTL3hgTGwVi+W
-         MhQA==
-X-Gm-Message-State: AOAM531mmFkCh9V1adiwJUDoEJaZfYc4u2B8zEOy50DspSKDdLnDEBcN
-        NZhPHvfzE4Upkyvc8Rojyuo=
-X-Google-Smtp-Source: ABdhPJwZ82yXRV2xba7TcgkEC4E5GvoMBYDenAO+wt6vgbm4LkRqezVikCXN+mePBO1G2X+9RsAANQ==
-X-Received: by 2002:a1c:a9c8:: with SMTP id s191mr3348516wme.89.1608028338138;
-        Tue, 15 Dec 2020 02:32:18 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.56])
-        by smtp.gmail.com with ESMTPSA id e17sm35548101wrw.84.2020.12.15.02.32.16
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ckovXueqNToJoyauJ6BBxrCZAffZux6jQj9uhlKTS6U=;
+        b=BdygzbRb9521xV5DjbI3wMOpNX1XnAGM3Bk9UrGHpKIZgD7cBaBuV4hP2fe+Hva3xn
+         xIKo1J4WOogJhhvNpi+MdjVVhsFNrI+gzQwBHiEHrRgd9l+MaNMeSieWPj1YFNrEpU/U
+         voYlQuYZQST7eLgc7w9WfuhnPOZzjdhotJskrjHHtftj52mrD8Ua4iw4RdhE27gbEnSU
+         lda01EmKmANPOcxvUsjStTSKzc8aAW32ndxLQT5Hl76C6RO9GBrcGGHrOrC6kjI0hd5/
+         r5xmSjfhXLr6fp+ivW02gp+IwaT3uA+yO43cXF2EXihejaG4e1TSBJGNPbk+rF2BTepk
+         IQcQ==
+X-Gm-Message-State: AOAM532nnVFkW9rdtCo/RPHXb6uuIJ3nVKKqa6cMXLP3fC98BwAwp0Se
+        3A7bewoKXeGbuSWLLLJH+bZRLH4SELu7Mkkjmz0WaIlivNt5UptvGuiUIocLlCBzWupr+HwNO8p
+        LCK6BMBBAif7HB1QAVTGs1bbk
+X-Received: by 2002:a17:907:20f1:: with SMTP id rh17mr25919260ejb.147.1608028344788;
+        Tue, 15 Dec 2020 02:32:24 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyln15V4fjgJWljXqjU9fYmJSjQNmNN8qCXounds/yTQF5md7b/wLva1eXixiztbKeWanW0Bg==
+X-Received: by 2002:a17:907:20f1:: with SMTP id rh17mr25919249ejb.147.1608028344617;
+        Tue, 15 Dec 2020 02:32:24 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id g18sm17603258edt.2.2020.12.15.02.32.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 02:32:17 -0800 (PST)
-Subject: Re: [PATCH 13/18] ipu3-cio2: Add functionality allowing software_node
- connections to sensors on platforms designed for Windows
-From:   Daniel Scally <djrscally@gmail.com>
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        wsa@kernel.org, yong.zhi@intel.com, sakari.ailus@linux.intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, kieran.bingham+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-14-djrscally@gmail.com>
- <20201130203551.GP4351@valkosipuli.retiisi.org.uk>
- <5238fc28-350b-a785-0a33-edeba9dfb096@gmail.com>
-Message-ID: <aff13cfd-5664-8b49-d188-ac1e2adec0b9@gmail.com>
-Date:   Tue, 15 Dec 2020 10:32:16 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 15 Dec 2020 02:32:23 -0800 (PST)
+Subject: Re: [PATCH] kvm: don't lose the higher 32 bits of tlbs_dirty
+To:     Sean Christopherson <seanjc@google.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>
+References: <20201213044913.15137-1-jiangshanlai@gmail.com>
+ <X9ee7RzW+Dhv1aoW@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <ea0938d2-f766-99de-2019-9daf5798ccac@redhat.com>
+Date:   Tue, 15 Dec 2020 11:32:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <5238fc28-350b-a785-0a33-edeba9dfb096@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <X9ee7RzW+Dhv1aoW@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/12/2020 10:28, Daniel Scally wrote:
-> Morning Sakari
->
-> On 30/11/2020 20:35, Sakari Ailus wrote:
->>> +/*
->>> + * Extend this array with ACPI Hardware ID's of devices known to be working.
->>> + * Do not add a HID for a sensor that is not actually supported.
->>> + */
->>> +static const char * const cio2_supported_devices[] = {
->>> +	"INT33BE",
->>> +	"OVTI2680",
->> I guess we don't have the known-good frequencies for the CSI-2 bus in
->> firmware?
+On 14/12/20 18:20, Sean Christopherson wrote:
+> On Sun, Dec 13, 2020, Lai Jiangshan wrote:
+>> From: Lai Jiangshan <laijs@linux.alibaba.com>
 >>
->> One option would be to put there what the drivers currently use. This
->> assumes the support for these devices is, well, somewhat opportunistic but
->> I guess there's no way around that right now at least.
+>> In kvm_mmu_notifier_invalidate_range_start(), tlbs_dirty is used as:
+>> 	need_tlb_flush |= kvm->tlbs_dirty;
+>> with need_tlb_flush's type being int and tlbs_dirty's type being long.
 >>
->> As the systems are laptops, they're likely somewhat less prone to EMI
->> issues to begin with than mobile phones anyway.
-> Just looking at this; we're currently using this with the ov2680 driver
-> that's in mainline currently (with very minor tweaks) plus a
-> hacked-into-roughly-working version of the atomisp-ov5693 driver (ACPI
-> ID INT33BE = ov5693 physical device). Neither of those drivers lists any
-> link frequencies, nor provides a link frequency control for v4l2 to work
-> with.
->
-> On the other hand, the ov5648 [1] and ov8865 [2] drivers which Paul has
-> submitted recently
+>> It means that tlbs_dirty is always used as int and the higher 32 bits
+>> is useless.
+> 
+> It's probably worth noting in the changelog that it's _extremely_ unlikely this
+> bug can cause problems in practice.  It would require encountering tlbs_dirty
+> on a 4 billion count boundary, and KVM would need to be using shadow paging or
+> be running a nested guest.
+> 
+>> We can just change need_tlb_flush's type to long to
+>> make full use of tlbs_dirty.
+> 
+> Hrm, this does solve the problem, but I'm not a fan of continuing to use an
+> integer variable as a boolean.  Rather than propagate tlbs_dirty to
+> need_tlb_flush, what if this bug fix patch checks tlbs_dirty directly, and then
+> a follow up patch converts need_tlb_flush to a bool and removes the unnecessary
+> initialization (see below).
 
+Indeed, the compiler should be able to convert || to | if useful and 
+valid (it may or may not do it depending on the sizes of types involved, 
+but that's Someone Else's Problem and this is not really a path where 
+every instruction matter).
 
-Forgot to actually link these:
+Paolo
 
-
-[1]
-https://lore.kernel.org/linux-media/20201211154027.153535-1-paul.kocialkowski@bootlin.com/T/#m5eb18611b7df1538ed4924422583b62cc61dbfae
-
-[2]
-https://lore.kernel.org/linux-media/20201211154428.153762-1-paul.kocialkowski@bootlin.com/T/#m6d4fd5e590b1c4583d4a74f5ae938ea011408640
+> E.g. the net result of both patches would be:
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 3abcb2ce5b7d..93b6986d3dfc 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -473,7 +473,8 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+>                                          const struct mmu_notifier_range *range)
+>   {
+>          struct kvm *kvm = mmu_notifier_to_kvm(mn);
+> -       int need_tlb_flush = 0, idx;
+> +       bool need_tlb_flush;
+> +       int idx;
+> 
+>          idx = srcu_read_lock(&kvm->srcu);
+>          spin_lock(&kvm->mmu_lock);
+> @@ -483,11 +484,10 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+>           * count is also read inside the mmu_lock critical section.
+>           */
+>          kvm->mmu_notifier_count++;
+> -       need_tlb_flush = kvm_unmap_hva_range(kvm, range->start, range->end,
+> -                                            range->flags);
+> -       need_tlb_flush |= kvm->tlbs_dirty;
+> +       need_tlb_flush = !!kvm_unmap_hva_range(kvm, range->start, range->end,
+> +                                              range->flags);
+>          /* we've to flush the tlb before the pages can be freed */
+> -       if (need_tlb_flush)
+> +       if (need_tlb_flush || kvm->tlbs_dirty)
+>                  kvm_flush_remote_tlbs(kvm);
+> 
+>          spin_unlock(&kvm->mmu_lock);
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: a4ee1ca4a36e ("KVM: MMU: delay flush all tlbs on sync_page path")
+> 
+>> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+>> ---
+>>   virt/kvm/kvm_main.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+>> index 2541a17ff1c4..4e519a517e9f 100644
+>> --- a/virt/kvm/kvm_main.c
+>> +++ b/virt/kvm/kvm_main.c
+>> @@ -470,7 +470,8 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+>>   					const struct mmu_notifier_range *range)
+>>   {
+>>   	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+>> -	int need_tlb_flush = 0, idx;
+>> +	long need_tlb_flush = 0;
+> 
+> need_tlb_flush doesn't need to be initialized here, it's explicitly set via the
+> call to kvm_unmap_hva_range().
+> 
+>> +	int idx;
+>>   
+>>   	idx = srcu_read_lock(&kvm->srcu);
+>>   	spin_lock(&kvm->mmu_lock);
+>> -- 
+>> 2.19.1.6.gb485710b
+>>
+> 
 
