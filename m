@@ -2,127 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D6E2DAD16
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E868B2DAD2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:29:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729182AbgLOMYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 07:24:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50546 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729435AbgLOMX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 07:23:57 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608034987; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LVHe81L5kggyWP1RUBaaKdbh2RBhNq1dLDe245ww7OI=;
-        b=JnwID1lkt4ZofyQde3z42HCbAMxFv4+ftC7ZsaAR9kh9uWdn0kL9KUZmF3ybn/gbDjmuVb
-        BGdmWTrChwZTZkkeS1yBHee+xr55Aw19wjFkTSFIn6q7daOAQyN5VX1YFuumMJvvHGFKXx
-        YOA7nV54vj1v7JMRy8JKB/G5LGqGFGc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C856EAE66;
-        Tue, 15 Dec 2020 12:23:07 +0000 (UTC)
-Date:   Tue, 15 Dec 2020 13:23:07 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
-Subject: Re: [LSFMMBPF 2021] A status update
-Message-ID: <20201215122307.GN32193@dhcp22.suse.cz>
-References: <fd5264ac-c84d-e1d4-01e2-62b9c05af892@toxicpanda.com>
- <20201212172957.GE2443@casper.infradead.org>
+        id S1729358AbgLOM0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 07:26:25 -0500
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:39375 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729222AbgLOMZ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 07:25:59 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id B558A3CC;
+        Tue, 15 Dec 2020 07:25:10 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 15 Dec 2020 07:25:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=0IHKA3G+trfDmCkSG+yf7UomNc
+        7kttQP2WEV3qoL1cs=; b=iowRTIEJ900+1Pqb/dWa9MmZ0D/hdKL0wTU7haR2Ba
+        BEI0jG6YUZ82N06FGBgynd8LxiYpkn6DodeJe+kVYDxb71Xm4Vr4zyYGFeDgHZ06
+        Ec35KPnkga825wBFGaEy+7oxvTPD3yfauOE3x3ech0moTrjwx4o+bp8FdLdydWPs
+        zRgCdm7R2M107lba03uocop7RilDgFyIwZuz1g5O5xLQUnDu0kIpyjklSMTbUI8k
+        iJ/UzC8PQPiyFzBorfx3sC86pe3iqNkE4lO2UlV1mN+WFCM1r2MDIV7HkGGxvnwG
+        jpcH3tC7l6y7GuHkKGp9Db+o0tQ6ICQuHgdgvmSnqGmg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=0IHKA3G+trfDmCkSG
+        +yf7UomNc7kttQP2WEV3qoL1cs=; b=mYMzOt0DHISJXKO/A5QHVLtAVZT0xuurp
+        HRvo8DdBkw89tv3N+lTwfF8Uu/dFC4AnHz0mKYfqWxl2IKZZKJ6kYvki0QTcXeGs
+        YRIaGWavxe8APGOLhGlso7KZwlN78X3U6gzdJ110nflq62QfkW/UUpsCgADhebMD
+        /p4Gu1HpQpxQhZQoiCdrZn7dFC9rLMBXFGu1m75cyB8b9OltB/s6c7iMsEaepgvO
+        Mtq7XwFI4yJeOIDfP02B+UXG+u6S+IMvGgDUcRg9FVkynC0QdY6Rg+PxRP4B+9Cx
+        JzjmtLvdZNZjy9OBzcV9KXGRkRVH+5r5LTrLthfx3QVPFn18H1kVg==
+X-ME-Sender: <xms:JKvYX33yX23sP6R8LmC2CeIrE3hK8lwcKGv49RWdJWP2tPdBju2lKQ>
+    <xme:JKvYX2Gp6P4WRgkpCPzq3nwr_DCACwv7TL-iFaQIKexDaatEQdbdZH_txseCRPpAT
+    lFEsC4hIhaEeZlAco0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeltddggedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhmvgcu
+    tfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvg
+    hrnhepgffhieeuffegiefgtddtkeffieeuhffhkeeggfeigeefgfefuedugfeugeefvdfh
+    necuffhomhgrihhnpehlihhpiedrfhhrnecukfhppeeltddrkeelrdeikedrjeeinecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgv
+    segtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:JKvYX36cCcyFmY9PmL4UKFaf_H5jPbp34-YLdFr4FDOKi_q1Rcgjnw>
+    <xmx:JKvYX81BvE_jE-3kVfHmAexq-Nu-QFemk4zPs3NaimCUsj25LnCa5A>
+    <xmx:JKvYX6H2hcGO3APcQyiY3Yl_gtlQYEyufTGNat6Hr0l_xcN-8qpOxg>
+    <xmx:JqvYX9BvSYVUitbvBQcI9CTSNub5gQ9eC_GwzuRquG_7Ga-gk3DnYXyD9OM>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 81DAB108005F;
+        Tue, 15 Dec 2020 07:25:08 -0500 (EST)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Julia.Lawall@lip6.fr, Gilles.Muller@lip6.fr, nicolas.palix@imag.fr,
+        michal.lkml@markovi.net
+Cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org,
+        Maxime Ripard <maxime@cerno.tech>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH v2] coccinnelle: Remove ptr_ret script
+Date:   Tue, 15 Dec 2020 13:24:59 +0100
+Message-Id: <20201215122459.283702-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201212172957.GE2443@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 12-12-20 17:29:57, Matthew Wilcox wrote:
-> On Fri, Dec 04, 2020 at 10:48:53AM -0500, Josef Bacik wrote:
-> > We on the program committee hope everybody has been able to stay safe and
-> > healthy during this challenging time, and look forward to being able to see
-> > all of you in person again when it is safe.
-> > 
-> > The current plans for LSFMMBPF 2021 are to schedule an in person conference
-> > in H2 (after June) of 2021.  The tentative plan is to use the same hotel
-> > that we had planned to use for 2020, as we still have contracts with them.
-> > However clearly that is not set in stone.  The Linux Foundation has done a
-> > wonderful job of working with us to formulate a plan and figure out the
-> > logistics that will work the best for everybody, I really can't thank them
-> > enough for their help.
-> 
-> Thank you all for doing your best in the face of this disruption.  I
-> really appreciate all the work you're putting in, and I can't wait to
-> see you all again in person.
-> 
-> I hosted a Zoom call yesterday on the topic of Page Folios, and uploaded
-> the video.
+The ptr_ret script script addresses a number of situations where we end up
+testing an error pointer, and if it's an error returning it, or return 0
+otherwise to transform it into a PTR_ERR_OR_ZERO call.
 
-Thanks for organizing this. I couldn't attent directly but I have
-watched the video. I think this was a useful meeting.
+So it will convert a block like this:
 
-> There was interest expressed in the call on doing a follow-up
-> call on the topic of GUP (get_user_pages and friends).  It would probably
-> also be good to have meetings on other topics.
+if (IS_ERR(err))
+    return PTR_ERR(err);
 
-I hope I will have time to join this one.
+return 0;
 
-> I don't want this to be seen in any way as taking away from LSFMMBPF.
-> I see Zoom calls as an interim solution to not having face-to-face
-> meetings.
+into
 
-Agreed!
+return PTR_ERR_OR_ZERO(err);
 
-> I'd like to solicit feedback from this group on:
-> 
->  - Time of day.  There is no good time that suits everyone around
->    the world.  With developers in basically every inhabited time zone, the
->    call will definitely take place in the middle of somebody's night, and
->    during somebody else's normal family time.  Publishing the recordings
->    helps ameliorate some of this, but I feel we should shift the time
->    around.  Having it at the same time of day helps people fit it into
->    their schedule of other meetings (and meals), but I think the benefits
->    of allowing more people to participate live outweighs the costs.
+While this is technically correct, it has a number of drawbacks. First, it
+merges the error and success path, which will make it harder for a reviewer
+or reader to grasp.
 
-Hard question without any good answer. You can rotate preferred timezone
-which should spread the suffering.
+It's also more difficult to extend if we were to add some code between the
+error check and the function return, making the author essentially revert
+that patch before adding new lines, while it would have been a trivial
+addition otherwise for the rewiever.
 
->  - Schedule.  Friday's probably a bad day to have it, as it ends up
->    being Saturday for some people.  It can move around the week too.
->    Also, probably wise to not have it over Christmas as most developers
->    have that period as family time.
+Therefore, since that script is only about cosmetic in the first place,
+let's remove it since it's not worth it.
 
-Yes, Friday tends to be not great. I think mid week should work better
-as the overalap 
+Acked-by: Jani Nikula <jani.nikula@intel.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
+Acked-by: Julia Lawall <julia.lawall@inria.fr>
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
 
->  - Topics.  I'm sure there's no shortage of things to discuss!  I'm
->    happy to organise meetings for people even on topics I have no direct
->    interest in.
+Changes from v1:
+  - Collected the tags
 
-Thanks for organizing this. I am pretty sure poeple will land on topics
-either in the call or over email.
+ scripts/coccinelle/api/ptr_ret.cocci | 97 ----------------------------
+ 1 file changed, 97 deletions(-)
+ delete mode 100644 scripts/coccinelle/api/ptr_ret.cocci
 
-> And most urgently, when should we have the GUP meeting? On the call,
-> I suggested Friday the 8th of January, but I'm happy to set something
-> up for next week if we'd like to talk more urgently.
-
-I am unlikely to be able to join before the end of year so if you ask
-me.
-
-Thanks again and fingers crossed we can actually have a face to face
-meeting sometimes during next year.
+diff --git a/scripts/coccinelle/api/ptr_ret.cocci b/scripts/coccinelle/api/ptr_ret.cocci
+deleted file mode 100644
+index e76cd5d90a8a..000000000000
+--- a/scripts/coccinelle/api/ptr_ret.cocci
++++ /dev/null
+@@ -1,97 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-///
+-/// Use PTR_ERR_OR_ZERO rather than if(IS_ERR(...)) + PTR_ERR
+-///
+-// Confidence: High
+-// Copyright: (C) 2012 Julia Lawall, INRIA/LIP6.
+-// Copyright: (C) 2012 Gilles Muller, INRIA/LiP6.
+-// URL: http://coccinelle.lip6.fr/
+-// Options: --no-includes --include-headers
+-//
+-// Keywords: ERR_PTR, PTR_ERR, PTR_ERR_OR_ZERO
+-// Version min: 2.6.39
+-//
+-
+-virtual context
+-virtual patch
+-virtual org
+-virtual report
+-
+-@depends on patch@
+-expression ptr;
+-@@
+-
+-- if (IS_ERR(ptr)) return PTR_ERR(ptr); else return 0;
+-+ return PTR_ERR_OR_ZERO(ptr);
+-
+-@depends on patch@
+-expression ptr;
+-@@
+-
+-- if (IS_ERR(ptr)) return PTR_ERR(ptr); return 0;
+-+ return PTR_ERR_OR_ZERO(ptr);
+-
+-@depends on patch@
+-expression ptr;
+-@@
+-
+-- (IS_ERR(ptr) ? PTR_ERR(ptr) : 0)
+-+ PTR_ERR_OR_ZERO(ptr)
+-
+-@r1 depends on !patch@
+-expression ptr;
+-position p1;
+-@@
+-
+-* if@p1 (IS_ERR(ptr)) return PTR_ERR(ptr); else return 0;
+-
+-@r2 depends on !patch@
+-expression ptr;
+-position p2;
+-@@
+-
+-* if@p2 (IS_ERR(ptr)) return PTR_ERR(ptr); return 0;
+-
+-@r3 depends on !patch@
+-expression ptr;
+-position p3;
+-@@
+-
+-* IS_ERR@p3(ptr) ? PTR_ERR(ptr) : 0
+-
+-@script:python depends on org@
+-p << r1.p1;
+-@@
+-
+-coccilib.org.print_todo(p[0], "WARNING: PTR_ERR_OR_ZERO can be used")
+-
+-
+-@script:python depends on org@
+-p << r2.p2;
+-@@
+-
+-coccilib.org.print_todo(p[0], "WARNING: PTR_ERR_OR_ZERO can be used")
+-
+-@script:python depends on org@
+-p << r3.p3;
+-@@
+-
+-coccilib.org.print_todo(p[0], "WARNING: PTR_ERR_OR_ZERO can be used")
+-
+-@script:python depends on report@
+-p << r1.p1;
+-@@
+-
+-coccilib.report.print_report(p[0], "WARNING: PTR_ERR_OR_ZERO can be used")
+-
+-@script:python depends on report@
+-p << r2.p2;
+-@@
+-
+-coccilib.report.print_report(p[0], "WARNING: PTR_ERR_OR_ZERO can be used")
+-
+-@script:python depends on report@
+-p << r3.p3;
+-@@
+-
+-coccilib.report.print_report(p[0], "WARNING: PTR_ERR_OR_ZERO can be used")
 -- 
-Michal Hocko
-SUSE Labs
+2.28.0
+
