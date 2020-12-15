@@ -2,122 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8BE2DAB06
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 444FE2DAB0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgLOKoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:44:55 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:58128 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgLOKoz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:44:55 -0500
-From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608029053;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=pgoOW6vetLZTlQDRtLWHF2JninZ1NXno1JI9btjlhfs=;
-        b=tkq3Tq4zZK3q13EpVQws4yMDmMn3HQPQtb4kgDSGNtV0e39g782Qo5aDikc3UL9K0O25l+
-        sHnVxmtMIxIA/M/liLIYQv/uQMO/jgBmCyhoh35O/SAqjYXqBYepZTOjgYmzBDrS7orb6n
-        VIb0P4Wi8Jbqi4Dr7BLNa6VGEW6v4jQgO/Eb2eScHFkFvtg+/Qh49+kftUs1zW5CZJrX/j
-        7u7MSVPnblVWskmlWAQRbRIRVy0cBBouw65Dtou1UDmQeKUr8JDoU0w/BIEWPaCv2PDZSA
-        DPQX/nB4ULY5E/GRY3FdyWWxgnZzi7vlF7e3L0MfgSjyuXnrJA3hqRygWcLd6w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608029053;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=pgoOW6vetLZTlQDRtLWHF2JninZ1NXno1JI9btjlhfs=;
-        b=kuReXaRjrbu/VfJzFaa5+LMMiqYlANRlDUZiPB9AkbAwPObtzP2X6C1KxIvRCZzbipgE8R
-        fvKzkscPrQGGfhCw==
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH] sched: Prevent raising SCHED_SOFTIRQ when CPU is !active
-Date:   Tue, 15 Dec 2020 11:44:00 +0100
-Message-Id: <20201215104400.9435-1-anna-maria@linutronix.de>
+        id S1727234AbgLOKqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:46:09 -0500
+Received: from foss.arm.com ([217.140.110.172]:32798 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726512AbgLOKpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 05:45:49 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 681B91FB;
+        Tue, 15 Dec 2020 02:44:55 -0800 (PST)
+Received: from [10.57.22.20] (unknown [10.57.22.20])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 383143F66E;
+        Tue, 15 Dec 2020 02:44:54 -0800 (PST)
+Subject: Re: [PATCH] thermal/drivers/devfreq: Fix missing dependency with the
+ energy model
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rui.zhang@intel.com, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org
+References: <20201215125806.31495950@canb.auug.org.au>
+ <20201215083520.601988-1-daniel.lezcano@linaro.org>
+ <20201215194811.0505c1c5@canb.auug.org.au>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <2110a2c5-50ac-7cc9-57e8-eb22dde5bb32@arm.com>
+Date:   Tue, 15 Dec 2020 10:44:52 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201215194811.0505c1c5@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SCHED_SOFTIRQ is raised to trigger periodic load balancing. When CPU is not
-active, CPU should not participate in load balancing.
 
-The scheduler uses nohz.idle_cpus_mask to keep track of the CPUs which can
-do idle load balancing. When bringing a CPU up the CPU is added to the mask
-when it reaches the active state, but on teardown the CPU stays in the mask
-until it goes offline and invokes sched_cpu_dying().
 
-When SCHED_SOFTIRQ is raised on a !active CPU, there might be a pending
-softirq when stopping the tick which triggers a warning in NOHZ code. The
-SCHED_SOFTIRQ can also be raised by the scheduler tick which has the same
-issue.
+On 12/15/20 8:48 AM, Stephen Rothwell wrote:
+> Hi Daniel,
+> 
+> On Tue, 15 Dec 2020 09:35:20 +0100 Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+>>
+>> The devfreq cooling device has been converted to use the energy model.
+>>
+>> Add the dependency on the ENERGY_MODEL option to reflect this change
+>> and prevent build failure if the option is not set.
+>>
+>> Fixes: 615510fe13bd2 ("thermal: devfreq_cooling: remove old power model and use EM")
+> 
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> 
+>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>> ---
+>>   drivers/thermal/Kconfig | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
+>> index 7edc8dc6bbab..ee62d51ef351 100644
+>> --- a/drivers/thermal/Kconfig
+>> +++ b/drivers/thermal/Kconfig
+>> @@ -193,6 +193,7 @@ config DEVFREQ_THERMAL
+>>   	bool "Generic device cooling support"
+>>   	depends on PM_DEVFREQ
+>>   	depends on PM_OPP
+>> +	depends on ENERGY_MODEL
+>>   	help
+>>   	  This implements the generic devfreq cooling mechanism through
+>>   	  frequency reduction for devices using devfreq.
+> 
+> Looks good to me.
+> 
 
-Therefore remove the CPU from nohz.idle_cpus_mask when it is marked
-inactive and also prevent the scheduler_tick() from raising SCHED_SOFTIRQ
-after this point.
+My apologies. I've tested it on odroidxu3 with
+exynos_defconfig which has the energy model set.
 
-Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
----
- kernel/sched/core.c | 7 ++++++-
- kernel/sched/fair.c | 7 +++++--
- 2 files changed, 11 insertions(+), 3 deletions(-)
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 21b548b69455..69284dc121d3 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7492,6 +7492,12 @@ int sched_cpu_deactivate(unsigned int cpu)
- 	struct rq_flags rf;
- 	int ret;
- 
-+	/*
-+	 * Remove CPU from nohz.idle_cpus_mask to prevent participating in
-+	 * load balancing when not active
-+	 */
-+	nohz_balance_exit_idle(rq);
-+
- 	set_cpu_active(cpu, false);
- 	/*
- 	 * We've cleared cpu_active_mask, wait for all preempt-disabled and RCU
-@@ -7598,7 +7604,6 @@ int sched_cpu_dying(unsigned int cpu)
- 
- 	calc_load_migrate(rq);
- 	update_max_interval();
--	nohz_balance_exit_idle(rq);
- 	hrtick_clear(rq);
- 	return 0;
- }
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 04a3ce20da67..fd422b8eb859 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10700,8 +10700,11 @@ static __latent_entropy void run_rebalance_domains(struct softirq_action *h)
-  */
- void trigger_load_balance(struct rq *rq)
- {
--	/* Don't need to rebalance while attached to NULL domain */
--	if (unlikely(on_null_domain(rq)))
-+	/*
-+	 * Don't need to rebalance while attached to NULL domain or
-+	 * runqueue CPU is not active
-+	 */
-+	if (unlikely(on_null_domain(rq) || !cpu_active(cpu_of(rq))))
- 		return;
- 
- 	if (time_after_eq(jiffies, rq->next_balance))
--- 
-2.20.1
-
+Regards,
+Lukasz
