@@ -2,176 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0A52DAE22
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DAFB2DAE27
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbgLONj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:39:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
+        id S1727407AbgLONjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:39:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728616AbgLONir (ORCPT
+        with ESMTP id S1727925AbgLONjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:38:47 -0500
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A26DC06138C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 05:38:07 -0800 (PST)
-Received: by mail-vs1-xe44.google.com with SMTP id q10so10951275vsr.13
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 05:38:07 -0800 (PST)
+        Tue, 15 Dec 2020 08:39:25 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E74DC061282;
+        Tue, 15 Dec 2020 05:38:10 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id y19so39335428lfa.13;
+        Tue, 15 Dec 2020 05:38:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9FgvEA6LpRqaZRiWRCs1HzkpZ2wxH4J/Kj/S8yl9EX8=;
-        b=aMDDKyWXNebTeXg5FMLCK9txB+AXo41QnAw7eILkX0NTeyAdt7jEx4r62/kGLfIHLY
-         NTdTfInWItH7WmdFOmFWrs0hZxC8xA4+JavAwYl1jp8pksKKMo4VeyPHa4XewnixNL71
-         5zM6Wgsl4rhnbDaXq2EpMe4o9FfwGh7clMUv4=
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l3rwgtx+k7bK/9dBR4Eu+0zKh7+91fkk0ZrYSZag/yU=;
+        b=kHt3u4Revzv7Xvn5lOD0zme4cBX7WpulkbNUUAvgG7ZOraIqKvo+V4O/MDw4G/KyDl
+         m5mpUVimtoVSADL47QyNxxisySs4XZ7ANW62q1uEvUcWLng4p3zR1BSFJVM3YgvKT5hu
+         QhHlpUfz5O4JhUC3Q6IeqyYq2iIYhr/bLnJavmcPNCcbfjptfo8bNZYvKi97UjBccM3t
+         Gi+zaRKiD8S8gDBimZArddRTp25yLcdVQwOP9Fd/FqML7iofdioEcsid19FG3wVeigEU
+         KLj5GH+d1bUWRRaFzT9yeX5zPYLcRmsgGd/vlwSy2A45pogztbjcCRmICDebuuZuA8cw
+         uRvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9FgvEA6LpRqaZRiWRCs1HzkpZ2wxH4J/Kj/S8yl9EX8=;
-        b=V/4PaRL180pRZtPPRwS+Z4wwJJ5BblC/kLX60N8bKa7xtou+ZmnkwWVCpjO1jDtRpy
-         cfwy6A9TzU7+mUoNY+KWi3WVLR+SRyD3G6eo1VGYoVsNSw2OWZFXQzLV4Rm/OhjPwPbk
-         YfbqYGTz1p/pX0aObyZN+/L6bJEaRM0hhIwwQxJM4B8PMdeIaDV3TyyP+v7UkxsGuelm
-         Jly0UPW0UdobJc+xvZCTL3k1QybPXg+EMwx1A4QGali5qNvNES6LjSPoPqeOEve0vdAn
-         MJwpRgehbhPiHGbSbKnGXcYalY1YeTjGtsbpqfd2fVqJqP8wkMomv6FogPfB6QS5irnr
-         4n9A==
-X-Gm-Message-State: AOAM530gARKR8+FXIpddmMwI1hK8bwRnzPyMeq5FjF3SZoutcQPfXKDp
-        8Xx2MVPbss81S15YL5Iga2ihJVHvlJievrQQUdgPUw==
-X-Google-Smtp-Source: ABdhPJw2pSaiM6ovuzcTeKxy3DP6Ku+SVy15pyfTwAwM3z1ikPI1R8D7O7JPHcMCx/NBwXhCbuTiLeGCivpmnPRuZRE=
-X-Received: by 2002:a67:5c03:: with SMTP id q3mr26997421vsb.47.1608039486303;
- Tue, 15 Dec 2020 05:38:06 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l3rwgtx+k7bK/9dBR4Eu+0zKh7+91fkk0ZrYSZag/yU=;
+        b=LiEpRNmGcnIKo4mDw7HFV8o11BNCULw0EITEJYhbJEhgqbNZ2uPhuOTl6JtZ7cabDG
+         dApr6AWvpmSpFK7u0obupqUBt67Vqf3OUdLngsXSJuOGUCFdcSAnWOLdUB3BC/2Tdl5j
+         Z26Y8nciwIIts6HSXYcDojPkElKpykipXptoQNHBD+R9Xcv4urBkLGPwR0w/dwTbjViq
+         3CJ2w7BAUJZYzoy6oVZPEbulAxD5xc61o8IvZuqDlSYSHfecOfb9L1lm38ezTvfKWps6
+         P0tSzD8ab+rqNuNKtJFJhkhfb/G8maYi4pe3XY+XTFaWtzr13bwuc4DZzvD3Q6JIlHg9
+         /eeg==
+X-Gm-Message-State: AOAM5300gd0hyFGleF8EZTMoCcHfdec3E8jadQ7zSrEty4R46DQUgUXP
+        dduLWaP/413MN/jL3DQRIUI=
+X-Google-Smtp-Source: ABdhPJyymFFz0RNoj3qwTVZD409RgrSTmwHzKoF2z7yvGDRCs/p53YRu6FpcVwZzie9VJ0I9ikuIxw==
+X-Received: by 2002:ac2:454e:: with SMTP id j14mr11302225lfm.123.1608039488812;
+        Tue, 15 Dec 2020 05:38:08 -0800 (PST)
+Received: from localhost.localdomain (109-252-202-142.dynamic.spd-mgts.ru. [109.252.202.142])
+        by smtp.gmail.com with ESMTPSA id u30sm209019lfc.238.2020.12.15.05.38.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 05:38:07 -0800 (PST)
+From:   Sergey Temerkhanov <s.temerkhanov@gmail.com>
+To:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Sergey Temerkhanov <s.temerkhanov@gmail.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] tpm: Rework open/close/shutdown to avoid races
+Date:   Tue, 15 Dec 2020 16:38:01 +0300
+Message-Id: <20201215133801.546207-1-s.temerkhanov@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1607746317-4696-1-git-send-email-yongqiang.niu@mediatek.com> <1607746317-4696-8-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1607746317-4696-8-git-send-email-yongqiang.niu@mediatek.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Tue, 15 Dec 2020 21:37:55 +0800
-Message-ID: <CANMq1KCbmW4kbY5rbuogr9JJD5c5=-qatFs-EaWbuAxSzWmnLQ@mail.gmail.com>
-Subject: Re: [PATCH v2, 07/17] drm/mediatek: add disp config and mm 26mhz
- clock into mutex device
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        lkml <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 12:12 PM Yongqiang Niu
-<yongqiang.niu@mediatek.com> wrote:
->
-> there are 2 more clock need enable for display.
-> parser these clock when mutex device probe,
-> enable and disable when mutex on/off
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_ddp.c | 49 ++++++++++++++++++++++++++++------
->  1 file changed, 41 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
-> index 60788c1..de618a1 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
-> @@ -118,7 +118,7 @@ struct mtk_ddp_data {
->
->  struct mtk_ddp {
->         struct device                   *dev;
-> -       struct clk                      *clk;
-> +       struct clk                      *clk[3];
->         void __iomem                    *regs;
->         struct mtk_disp_mutex           mutex[10];
->         const struct mtk_ddp_data       *data;
-> @@ -257,14 +257,39 @@ int mtk_disp_mutex_prepare(struct mtk_disp_mutex *mutex)
->  {
->         struct mtk_ddp *ddp = container_of(mutex, struct mtk_ddp,
->                                            mutex[mutex->id]);
-> -       return clk_prepare_enable(ddp->clk);
-> +       int ret;
-> +       int i;
-> +
-> +       for (i = 0; i < ARRAY_SIZE(ddp->clk); i++) {
-> +               if (IS_ERR(ddp->clk[i]))
-> +                       continue;
-> +               ret = clk_prepare_enable(ddp->clk[i]);
-> +               if (ret) {
-> +                       pr_err("failed to enable clock, err %d. i:%d\n",
-> +                               ret, i);
-> +                       goto err;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +
-> +err:
-> +       while (--i >= 0)
-> +               clk_disable_unprepare(ddp->clk[i]);
-> +       return ret;
->  }
->
->  void mtk_disp_mutex_unprepare(struct mtk_disp_mutex *mutex)
->  {
->         struct mtk_ddp *ddp = container_of(mutex, struct mtk_ddp,
->                                            mutex[mutex->id]);
-> -       clk_disable_unprepare(ddp->clk);
-> +       int i;
-> +
-> +        for (i = 0; i < ARRAY_SIZE(ddp->clk); i++) {
-> +               if (IS_ERR(ddp->clk[i]))
-> +                       continue;
-> +               clk_disable_unprepare(ddp->clk[i]);
-> +       }
->  }
->
->  void mtk_disp_mutex_add_comp(struct mtk_disp_mutex *mutex,
-> @@ -415,11 +440,19 @@ static int mtk_ddp_probe(struct platform_device *pdev)
->         ddp->data = of_device_get_match_data(dev);
->
->         if (!ddp->data->no_clk) {
-> -               ddp->clk = devm_clk_get(dev, NULL);
-> -               if (IS_ERR(ddp->clk)) {
-> -                       if (PTR_ERR(ddp->clk) != -EPROBE_DEFER)
-> -                               dev_err(dev, "Failed to get clock\n");
-> -                       return PTR_ERR(ddp->clk);
-> +               int ret;
-> +
-> +               for (i = 0; i < ARRAY_SIZE(ddp->clk); i++) {
-> +                       ddp->clk[i] = of_clk_get(dev->of_node, i);
-> +
-> +                       if (IS_ERR(ddp->clk[i])) {
-> +                               ret = PTR_ERR(ddp->clk[i]);
-> +                               if (ret != EPROBE_DEFER)
-> +                                       dev_err(dev, "Failed to get clock %d\n",
-> +                                               ret);
-> +
-> +                               return ret;
-> +                       }
+Avoid race condition at shutdown by shutting downn the TPM 2.0
+devices synchronously. This eliminates the condition when the
+shutdown sequence sets chip->ops to NULL leading to the following:
 
-Use of_clk_bulk_get_all instead?
+[ 1586.593561][ T8669] tpm2_del_space+0x28/0x73
+[ 1586.598718][ T8669] tpmrm_release+0x27/0x33wq
+[ 1586.603774][ T8669] __fput+0x109/0x1d
+[ 1586.608380][ T8669] task_work_run+0x7c/0x90
+[ 1586.613414][ T8669] prepare_exit_to_usermode+0xb8/0x128
+[ 1586.619522][ T8669] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[ 1586.626068][ T8669] RIP: 0033:0x4cb4bb
 
-ddp->num_clks = of_clk_bulk_get_all(dev->of_node, &ddp->clks);
-...
+Signed-off-by: Sergey Temerkhanov <s.temerkhanov@gmail.com>
+---
+ drivers/char/tpm/tpm-chip.c  |  2 ++
+ drivers/char/tpm/tpm-dev.c   | 20 +++++++++++++-------
+ drivers/char/tpm/tpmrm-dev.c |  3 +++
+ include/linux/tpm.h          |  6 ++++--
+ 4 files changed, 22 insertions(+), 9 deletions(-)
 
-Then the calls above can be clk_bulk_enable/clk_bulk_disable using
-num_clks and clks.
+diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+index ddaeceb7e109..e94148b8e180 100644
+--- a/drivers/char/tpm/tpm-chip.c
++++ b/drivers/char/tpm/tpm-chip.c
+@@ -295,6 +295,7 @@ static int tpm_class_shutdown(struct device *dev)
+ {
+ 	struct tpm_chip *chip = container_of(dev, struct tpm_chip, dev);
+ 
++	wait_event_idle(chip->waitq, !atomic_read(&chip->refcount));
+ 	down_write(&chip->ops_sem);
+ 	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
+ 		if (!tpm_chip_start(chip)) {
+@@ -330,6 +331,7 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
+ 
+ 	mutex_init(&chip->tpm_mutex);
+ 	init_rwsem(&chip->ops_sem);
++	init_waitqueue_head(&chip->waitq);
+ 
+ 	chip->ops = ops;
+ 
+diff --git a/drivers/char/tpm/tpm-dev.c b/drivers/char/tpm/tpm-dev.c
+index e2c0baa69fef..8558f0f7382c 100644
+--- a/drivers/char/tpm/tpm-dev.c
++++ b/drivers/char/tpm/tpm-dev.c
+@@ -19,27 +19,32 @@ static int tpm_open(struct inode *inode, struct file *file)
+ {
+ 	struct tpm_chip *chip;
+ 	struct file_priv *priv;
++	int ret = 0;
+ 
+ 	chip = container_of(inode->i_cdev, struct tpm_chip, cdev);
+ 
+ 	/* It's assured that the chip will be opened just once,
+-	 * by the check of is_open variable, which is protected
+-	 * by driver_lock. */
+-	if (test_and_set_bit(0, &chip->is_open)) {
++	 * by the check of the chip reference count.
++	 */
++	if (atomic_fetch_inc(&chip->refcount)) {
+ 		dev_dbg(&chip->dev, "Another process owns this TPM\n");
+-		return -EBUSY;
++		ret = -EBUSY;
++		goto out;
+ 	}
+ 
+ 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+-	if (priv == NULL)
++	if (priv == NULL) {
++		ret = -ENOMEM;
+ 		goto out;
++	}
+ 
+ 	tpm_common_open(file, chip, priv, NULL);
+ 
+ 	return 0;
+ 
+  out:
+-	clear_bit(0, &chip->is_open);
++	atomic_dec(&chip->refcount);
++	wake_up_all(&chip->waitq);
+ 	return -ENOMEM;
+ }
+ 
+@@ -51,7 +56,8 @@ static int tpm_release(struct inode *inode, struct file *file)
+ 	struct file_priv *priv = file->private_data;
+ 
+ 	tpm_common_release(file, priv);
+-	clear_bit(0, &priv->chip->is_open);
++	atomic_dec(&priv->chip->refcount);
++	wake_up_all(&priv->chip->waitq);
+ 	kfree(priv);
+ 
+ 	return 0;
+diff --git a/drivers/char/tpm/tpmrm-dev.c b/drivers/char/tpm/tpmrm-dev.c
+index eef0fb06ea83..fb3cb7b03814 100644
+--- a/drivers/char/tpm/tpmrm-dev.c
++++ b/drivers/char/tpm/tpmrm-dev.c
+@@ -28,6 +28,7 @@ static int tpmrm_open(struct inode *inode, struct file *file)
+ 	}
+ 
+ 	tpm_common_open(file, chip, &priv->priv, &priv->space);
++	atomic_inc(&chip->refcount);
+ 
+ 	return 0;
+ }
+@@ -39,6 +40,8 @@ static int tpmrm_release(struct inode *inode, struct file *file)
+ 
+ 	tpm_common_release(file, fpriv);
+ 	tpm2_del_space(fpriv->chip, &priv->space);
++	atomic_dec(&fpriv->chip->refcount);
++	wake_up_all(&fpriv->chip->waitq);
+ 	kfree(priv);
+ 
+ 	return 0;
+diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+index 8f4ff39f51e7..0c8842783823 100644
+--- a/include/linux/tpm.h
++++ b/include/linux/tpm.h
+@@ -22,6 +22,7 @@
+ #include <linux/cdev.h>
+ #include <linux/fs.h>
+ #include <linux/highmem.h>
++#include <linux/atomic.h>
+ #include <crypto/hash_info.h>
+ 
+ #define TPM_DIGEST_SIZE 20	/* Max TPM v1.2 PCR size */
+@@ -128,8 +129,9 @@ struct tpm_chip {
+ 
+ 	unsigned int flags;
+ 
+-	int dev_num;		/* /dev/tpm# */
+-	unsigned long is_open;	/* only one allowed */
++	int dev_num;		 /* /dev/tpm# */
++	atomic_t refcount;	 /* /dev/tmp# can only be opened once */
++	wait_queue_head_t waitq; /* Wait queue for synchronous ops */
+ 
+ 	char hwrng_name[64];
+ 	struct hwrng hwrng;
+-- 
+2.25.1
 
-
->                 }
->         }
->
-> --
-> 1.8.1.1.dirty
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
