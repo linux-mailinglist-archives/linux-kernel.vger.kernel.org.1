@@ -2,143 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6012DAA63
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096EB2DAA66
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:49:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728476AbgLOJrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 04:47:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55094 "EHLO
+        id S1728485AbgLOJsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 04:48:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727658AbgLOJrP (ORCPT
+        with ESMTP id S1725535AbgLOJsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 04:47:15 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78814C06179C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 01:46:35 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id z5so19839696iob.11
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 01:46:35 -0800 (PST)
+        Tue, 15 Dec 2020 04:48:21 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7346C06179C;
+        Tue, 15 Dec 2020 01:47:41 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id 11so14168627pfu.4;
+        Tue, 15 Dec 2020 01:47:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AXkaXJnHrSo+VKnjcIheG2eitXkcM8HATunVim2yGd0=;
-        b=uWr4S4rsbCVhDXYRu3mUPNvTrGFfGpohph3ugXEc45Fn8kD3waYe6/cIDgpJ4VTTAv
-         Aa0JzAsDRpyFCx4uacIMXdd2e1ad4kbhjzw/PfqPquStA0DqVbzEN13Cv4TWUthkensN
-         ahS8+2l7poxYwdEV5bxvn8YnhS+g5m7qenrR9EqaBlKjCrkVyOjOS140Y5s510G6UGUa
-         AYVj0XU6aykonMTS5XZqa/FkQeDpJY2/l5DVy2tfWNA4eArEG/YboqeZYXxq+XGWzBWJ
-         7ocGuTRULa3wfh08WgRgHC0rrx+DY3fdaU00l784DNDUp2UczFXEQoyb4GwIh1HWWC5w
-         Dgsw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2ca+mZ398Rl+dDaOGaQV9OoXFwqIu+yToEg8Czl1cro=;
+        b=iwidnU7y/iLKg4Vsr5e5wDkO7iDTG2mRpWpz7f2Dh4+uzMUBRhNQp8+xRYijyxnUAe
+         jaf3DhNBSlKCh6eP/n05sEPxCKEurE8SAo7Ltfz1+eW5jryOL/B709y6r3pQ0YTmlHFY
+         Pu2QsEnx2U42/qukF/1HsIPkmBSmr1kz+iJrleumAiwDzzcjc0Uktu+pH4/cL0PwAASV
+         isa3cW9pHQfeBE/tHCJCF2BabYmfslUgx2Enm6qdfiREpHe67QvpyQGDs4kFi3UjrJcK
+         /Vw5i0GEHkC4fI+/0J6xCE0inVNbVG/8JA20x5+iI1ZiCqhuV+EFWkegRzhHO1L5INeP
+         I2fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AXkaXJnHrSo+VKnjcIheG2eitXkcM8HATunVim2yGd0=;
-        b=Ad/UlaPzDNCuYxq9dx9AW0bzZPZro9vbD5/yNqqCCxj7XId86iuF6EeVbN+Qjl2I5D
-         vjFM2/gQRCkhrrRMOupDqpN3JV79AAmc4UC4+Ih2mtsu+MJZzC9Khnp7O/DTyNrTK5ZO
-         +ai7WanTGBa9cCjz4+kOZTnKrCOFdzCotfsD7A9O2qEwDiVvR/8bjcfnq+BK0jyTcTrm
-         AiLLMDgV9EpRgJ92ZuxchcFo8eUscmQ0xqLF9cld3ZWvjH+UvH2eD6gYNvXVra3O6/pQ
-         8zn9AgQEH3nzEVwKAtLFVxuDev0LCeirDr4Ejh5iFxqJFU3ceuELF0MwexIbzk+P/3W6
-         nOaQ==
-X-Gm-Message-State: AOAM5302e4saiVEZbjXbsYr6t5n3pqs1L2sbMlIVII4m2J+1CTRaa2kj
-        mGtSJJ9WTLE7Ma+s5dpaO9M0hXUEPEk8IeMTF5gXdRt75Njb2Q==
-X-Google-Smtp-Source: ABdhPJxsVPfKLfRP1C780tVweIHK1LdJ0iprRv6/NSBVCRDaSu4Zn8gwWmTSTml+CkJON/1Q8HPryVW8E5pstEATVfE=
-X-Received: by 2002:a6b:441a:: with SMTP id r26mr36593344ioa.105.1608025594915;
- Tue, 15 Dec 2020 01:46:34 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2ca+mZ398Rl+dDaOGaQV9OoXFwqIu+yToEg8Czl1cro=;
+        b=PJD6w594qcJI2wYKUN3cX8vfXGa5869rwMOeZjZmUTmbe5GkQ6g3nqItNz5fB7gaZd
+         m0T+936bQAkdfH3cT0214OfwwDDje7xbRc0AK6n/KAPdz2VtRV+vPIuUXsy3uO75vFXb
+         6mgRUOzRlIes5ip8LUD20uti41vKir4cSnt5WuzWj0wCtsaopK676hOLQzZleAQqL1FF
+         zoU/kMhIAcseWB8OOGVdfnpVpJj8XePAMfYfrUnp1sp7ki/wA4VZuYk30W37h37xHSKf
+         cib90hCh13cyj3EoIG9ov97bgPsmHVCjMeCGoBBASNk11ZaPycF/rIopdEWmH9vsdsUk
+         OM7Q==
+X-Gm-Message-State: AOAM532NKGdoMwc4dzw7ZYO2QEoXRlAjXOdgZ8kUhSi+n24RpUNsiegr
+        ZVbL5bmhm2lTfXV45ewJJbY=
+X-Google-Smtp-Source: ABdhPJw6V1GV3O509T2cIjHrgflK7BIaf9NGoTzII5FKkl4k9LMou2Nqj2TH8SqfmWG/DEYI36AuGA==
+X-Received: by 2002:a63:2d43:: with SMTP id t64mr6708995pgt.202.1608025661232;
+        Tue, 15 Dec 2020 01:47:41 -0800 (PST)
+Received: from ubuntu.localdomain ([49.206.55.110])
+        by smtp.googlemail.com with ESMTPSA id w22sm22373976pfu.33.2020.12.15.01.47.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 01:47:40 -0800 (PST)
+From:   Jagdish Tirumala <t.jag587@gmail.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        matthias.bgg@gmail.com
+Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jagdish Tirumala <t.jag587@gmail.com>
+Subject: [PATCH] Bluetooth:btmtksdio Fixed switch and case should be at the same indent
+Date:   Tue, 15 Dec 2020 15:17:30 +0530
+Message-Id: <20201215094730.361510-1-t.jag587@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201214155457.3430-1-jiangshanlai@gmail.com> <X9eirnnrD/+VqqEo@hirez.programming.kicks-ass.net>
- <CAJhGHyDYbU2=dQyiyx-AC+wu9=B7mTvsbU=QYPyV4xTE8PFPog@mail.gmail.com>
- <20201215075044.GZ3040@hirez.programming.kicks-ass.net> <CAJhGHyA=8vbamdFKwPGFHtL4iObJ929DR+iasVhmODV-u5UNfw@mail.gmail.com>
- <20201215084914.GD3040@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201215084914.GD3040@hirez.programming.kicks-ass.net>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Tue, 15 Dec 2020 17:46:23 +0800
-Message-ID: <CAJhGHyBhtTDWw_xZ28_+CguhVx=x7pds0dZVkUT7YqjkjUdbNQ@mail.gmail.com>
-Subject: Re: [PATCH 00/10] workqueue: break affinity initiatively
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 4:49 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Dec 15, 2020 at 04:14:26PM +0800, Lai Jiangshan wrote:
-> > On Tue, Dec 15, 2020 at 3:50 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Tue, Dec 15, 2020 at 01:44:53PM +0800, Lai Jiangshan wrote:
-> > > > I don't know how the scheduler distinguishes all these
-> > > > different cases under the "new assumption".
-> > >
-> > > The special case is:
-> > >
-> > >   (p->flags & PF_KTHREAD) && p->nr_cpus_allowed == 1
-> > >
-> > >
-> >
-> > So unbound per-node workers can possibly match this test. So there is code
-> > needed to handle for unbound workers/pools which is done by this patchset.
->
-> Curious; how could a per-node worker match this? Only if the node is a
-> single CPU, or otherwise too?
+Switch and case where not properly aligned
 
-We have /sys/devices/virtual/workqueue/cpumask which can be read/written
-to access to wq_unbound_cpumask.
+Signed-off-by: Jagdish Tirumala <t.jag587@gmail.com>
+---
+ drivers/bluetooth/btmtksdio.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-A per-node worker's cpumask is wq_unbound_cpumask&possible_cpumask_of_the_node.
-Since wq_unbound_cpumask can be changed by system adim, so a per-node
-worker's cpumask is possible to be single CPU.
+diff --git a/drivers/bluetooth/btmtksdio.c b/drivers/bluetooth/btmtksdio.c
+index ba45c59bd9f3..605b0cc84697 100644
+--- a/drivers/bluetooth/btmtksdio.c
++++ b/drivers/bluetooth/btmtksdio.c
+@@ -442,15 +442,15 @@ static int btmtksdio_rx_packet(struct btmtksdio_dev *bdev, u16 rx_size)
+ 	}
+ 
+ 	switch ((&pkts[i])->lsize) {
+-		case 1:
+-			dlen = skb->data[(&pkts[i])->loff];
+-			break;
+-		case 2:
+-			dlen = get_unaligned_le16(skb->data +
++	case 1:
++		dlen = skb->data[(&pkts[i])->loff];
++		break;
++	case 2:
++		dlen = get_unaligned_le16(skb->data +
+ 						  (&pkts[i])->loff);
+-			break;
+-		default:
+-			goto err_kfree_skb;
++		break;
++	default:
++		goto err_kfree_skb;
+ 	}
+ 
+ 	pad_size = skb->len - (&pkts[i])->hlen -  dlen;
+-- 
+2.25.1
 
-wq_unbound_cpumask is used when a system adim wants to isolate some
-CPUs from unbound workqueques.  But I think it is rare case when the
-admin causes a per-node worker's cpumask to be single CPU.
-
-Even it is a rare case, we have to handle it.
-
->
-> > Is this the code of is_per_cpu_kthread()? I think I should have also
-> > used this function in workqueue and don't break affinity for unbound
-> > workers have more than 1 cpu.
->
-> Yes, that function captures it. If you want to use it, feel free to move
-> it to include/linux/sched.h.
-
-I will.  "single CPU" for unbound workers/pools is the rare case
-and enough to bring the code to break affinity for unbound workers.
-If we optimize for the common cases (multiple CPUs for unbound workers),
-the optimization seems like additional code works only in the slow
-path (hotunplug).
-
-I will try it and see if it is worth.
-
->
-> This class of threads is 'special', since it needs to violate the
-> regular hotplug rules, and migrate_disable() made it just this little
-> bit more special. It basically comes down to how we need certain per-cpu
-> kthreads to run on a CPU while it's brought up, before userspace is
-> allowed on, and similarly they need to run on the CPU after userspace is
-> no longer allowed on in order to bring it down.
->
-> (IOW, they must be allowed to violate the active mask)
->
-> Due to migrate_disable() we had to move the migration code from the very
-> last cpu-down stage, to earlier. This in turn brought the expectation
-> (which is normally met) that per-cpu kthreads will stop/park or
-> otherwise make themselves scarce when the CPU goes down. We can no
-> longer force migrate them.
-
-Thanks for explaining the rationale.
-
->
-> Workqueues are the sole exception to that, they've got some really
-> 'dodgy' hotplug behaviour.
->
-
-Indeed.  No one want to wait for workqueue when hotunplug, so we have
-to do something after the fact.
