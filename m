@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CB92DA8DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 496CD2DA8E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbgLOIFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:05:15 -0500
-Received: from mga17.intel.com ([192.55.52.151]:59479 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726249AbgLOIEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:04:47 -0500
-IronPort-SDR: iMSO8qop0vBUw73olcszh6hOc18CAY01VComXn0smvo87d8Ug3m1OvhAKLIXDByslBpwcQYLJz
- a7hLZRnZ8gEA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="154649322"
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="154649322"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 00:04:05 -0800
-IronPort-SDR: X7w60umHBYVcg81LO00WjKgRfF1of3r81LUUCqpVwXv7b2knWPLG8UHmjWQoo5S6v5+8SEv6ng
- j9cPVQfU3mQQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="558613651"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
-  by fmsmga005.fm.intel.com with ESMTP; 15 Dec 2020 00:04:02 -0800
-Subject: Re: [PATCH] mmc: sdhci-xenon: fix 1.8v regulator stabilization
-To:     Marcin Wojtas <mw@semihalf.com>, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-Cc:     ulf.hansson@linaro.org, huziji@marvell.com, jaz@semihalf.com,
-        tn@semihalf.com, kostap@marvell.com,
-        Alex Leibovich <alexl@marvell.com>, stable@vger.kernel.org
-References: <20201211141656.24915-1-mw@semihalf.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <f6d0f22c-2a19-d1dc-b370-4238a7d2d9b3@intel.com>
-Date:   Tue, 15 Dec 2020 10:03:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726771AbgLOIGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:06:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726636AbgLOIFh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 03:05:37 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF36C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 00:04:48 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id m5so18850375wrx.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 00:04:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=MbW/aNPnMI3Tt8o0eStb7kmZYcIkeHTT/zhJDBmp9Po=;
+        b=ERAzFdv3OQLUww5ou7XtAG/8q6kqp/p8+AfwT2MaTB2yzEEM0sYuWSkXTVOI6wIxla
+         Z1Yjv2l6iA3MYW0nu0cUyrHGFWKb99pxy9srXvvZ1M3iX2xkYT7r3sNnHhxiC1weYjA9
+         wvYgYaIqA7mu88/BRCrDTSyeJKNL466afdLNdIx6FR4CN6bQfTer0bIJXg9T8+y52EbB
+         DSRqiVD0IzrCDqB7hzHC/THJaYeVIDSdjXuwXskAdvI3eXrBjrOaZ6Yl+Lur19glBDkl
+         GACBOOLJ/OX4ZJ3NUBwYU90XTveFA8aiPEvlfURB3O83mTnSqhsRlUK7C+8LJOwyrlPc
+         G0eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=MbW/aNPnMI3Tt8o0eStb7kmZYcIkeHTT/zhJDBmp9Po=;
+        b=WNDKCcPJNEjnGsfTIGmClam97cNFNavfG21krlu6fnmRu1vhFjBYHtnuEFz7YvPQkF
+         q6J1b/pkzSnd3opGc+JclOA3a3wV2XGQ1MZqyqs7rDVSyrzkDP7Jbg/m/Wa4abWR+vfo
+         g0UuMTCc19V2bAtxWQCVt9CPB5FGK2fYMXHQJ0SaHmtBAJa7eAJ9NhkGCshCtT2D2sCC
+         dnejCzsyl4iqESq1rR/C1gMzlb69XpEh52H83oKT2EG9lgVc+3tLdkoZnv1MBXG3/Jk4
+         NUvz46VprYzk6qvkZa2wG1VjfXmzY3qJlBEYxoVM8IQayShpZc2omon4AHsCTfjf26U2
+         ksvQ==
+X-Gm-Message-State: AOAM5305KWZN8G58l3ilREmfPDKk19xdtRmyQTqbPB7KczDQdaCGmwUO
+        BtyUy2dVOeovcffk69l3QwT9Uw==
+X-Google-Smtp-Source: ABdhPJyBaJVZxusL4+NkX5M1cL9XgJuSWZPi9uRydM6u2Zpl6/+bh4iwRS1pELsgP/ST1fktxMTHnw==
+X-Received: by 2002:adf:fd41:: with SMTP id h1mr32200972wrs.284.1608019487058;
+        Tue, 15 Dec 2020 00:04:47 -0800 (PST)
+Received: from dell ([91.110.221.168])
+        by smtp.gmail.com with ESMTPSA id n12sm38986631wrg.76.2020.12.15.00.04.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 00:04:46 -0800 (PST)
+Date:   Tue, 15 Dec 2020 08:04:44 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Zheng Yongjun <zhengyongjun3@huawei.com>, jingoohan1@gmail.com,
+        b.zolnierkie@samsung.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] backlight: sky81452-backlight: convert comma to
+ semicolon
+Message-ID: <20201215080444.GK5029@dell>
+References: <20201214133458.3729-1-zhengyongjun3@huawei.com>
+ <20201214143632.oiqmvpkai7kurc2d@holly.lan>
 MIME-Version: 1.0
-In-Reply-To: <20201211141656.24915-1-mw@semihalf.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201214143632.oiqmvpkai7kurc2d@holly.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/20 4:16 pm, Marcin Wojtas wrote:
-> From: Alex Leibovich <alexl@marvell.com>
+On Mon, 14 Dec 2020, Daniel Thompson wrote:
+
+> On Mon, Dec 14, 2020 at 09:34:58PM +0800, Zheng Yongjun wrote:
+> > Replace a comma between expression statements by a semicolon.
+> > 
+> > Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 > 
-> Automatic Clock Gating is a feature used for the power
-> consumption optimisation. It turned out that
-> during early init phase it may prevent the stable voltage
-> switch to 1.8V - due to that on some platfroms an endless
+> Weird! I guess it was harmless but still seriously weird ;-)
 
-platfroms -> platforms
+One of these was found in MFD a couple of weeks ago.
 
-> printout in dmesg can be observed:
-> "mmc1: 1.8V regulator output did not became stable"
-> Fix the problem by disabling the ACG at very beginning
-> of the sdhci_init and let that be enabled later.
+Yours was exactly my train of thought!
+
+One suggestion was to convert all semi-colons to commas and do away
+with all the curly braces encapsulating if()s, for()s and while()s.
+
+Who knew that was even possible?
+
+> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 > 
-> Fixes: 3a3748dba881 ("mmc: sdhci-xenon: Add Marvell Xenon SDHC core functionality")
-> Signed-off-by: Alex Leibovich <alexl@marvell.com>
-> Signed-off-by: Marcin Wojtas <mw@semihalf.com>
-> Cc: stable@vger.kernel.org
-
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-
-> ---
->  drivers/mmc/host/sdhci-xenon.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+> Thanks!
 > 
-> diff --git a/drivers/mmc/host/sdhci-xenon.c b/drivers/mmc/host/sdhci-xenon.c
-> index c67611fdaa8a..4b05f6fdefb4 100644
-> --- a/drivers/mmc/host/sdhci-xenon.c
-> +++ b/drivers/mmc/host/sdhci-xenon.c
-> @@ -168,7 +168,12 @@ static void xenon_reset_exit(struct sdhci_host *host,
->  	/* Disable tuning request and auto-retuning again */
->  	xenon_retune_setup(host);
->  
-> -	xenon_set_acg(host, true);
-> +	/*
-> +	 * The ACG should be turned off at the early init time, in order
-> +	 * to solve a possile issues with the 1.8V regulator stabilization.
-
-a possile -> possible
-
-> +	 * The feature is enabled in later stage.
-> +	 */
-> +	xenon_set_acg(host, false);
->  
->  	xenon_set_sdclk_off_idle(host, sdhc_id, false);
->  
 > 
+> > ---
+> >  drivers/video/backlight/sky81452-backlight.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/video/backlight/sky81452-backlight.c b/drivers/video/backlight/sky81452-backlight.c
+> > index 8268ac43d54f..c95e0de7f4e7 100644
+> > --- a/drivers/video/backlight/sky81452-backlight.c
+> > +++ b/drivers/video/backlight/sky81452-backlight.c
+> > @@ -291,7 +291,7 @@ static int sky81452_bl_probe(struct platform_device *pdev)
+> >  	}
+> >  
+> >  	memset(&props, 0, sizeof(props));
+> > -	props.max_brightness = SKY81452_MAX_BRIGHTNESS,
+> > +	props.max_brightness = SKY81452_MAX_BRIGHTNESS;
+> >  	name = pdata->name ? pdata->name : SKY81452_DEFAULT_NAME;
+> >  	bd = devm_backlight_device_register(dev, name, dev, regmap,
+> >  						&sky81452_bl_ops, &props);
 
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
