@@ -2,335 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233F32DABFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC112DABBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728938AbgLOL03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 06:26:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
+        id S1728567AbgLOLRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 06:17:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728596AbgLOLSP (ORCPT
+        with ESMTP id S1727167AbgLOLRj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 06:18:15 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B0BC06179C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:17:33 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id f14so1019660pju.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:17:33 -0800 (PST)
+        Tue, 15 Dec 2020 06:17:39 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A347C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:16:51 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id q16so20552739edv.10
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:16:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6++dMGM1FCC5pOaCFzsM+Us3BSilGScrEfoUSQ6anmM=;
-        b=vMn03ETfI15mhXTc/u6kRPMA7u+C9RVBlTviPSBGG78sPfY/32VWaY8PoT8hn718hR
-         5bfFCcFvM/b3aImkJ/gYzidODEHpiQcfW61I77yZBG5xjOTC82Wa6kjpHkejtt1mqOR5
-         Aa1abKCgqrGK9fymjybug0aw/ZNLNXkr6QsAx6iz+t4yM/Yq8rRKxSY5T5iCvfNoM2bQ
-         KYbE5l7n/Aju8gsYGYIDeOOepdyBWFXT+VTb6Fk0lrPaRGSpLwxms+2OlzrWXgizEoYh
-         xrJNS4Nc2Io0LasuDjqIzfRRIzDmZ9YSXGfe6jT6G11kBbe8cYZggSe8y44kzv1xrk8k
-         BWww==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9bNzWa77clAXXw3WuHzQU/iKItvBAyb0MCpe4O/Qk0w=;
+        b=wYmNDrjnN8OS/Im9x5G/shkodwQ55HU+2LzJjuAayUdo89qcLVBlgvxbLzLTdGrspq
+         /Rl13LsRzs3HbOBoRgbB4du25rf02G5QDuzwDu6awR9rNGgV6iX2KAiYiHF65ayEXvXz
+         ZL8WGqKs6hUt5xmpO7j5RUFDl3OQJ9qvVRt0EDZu65k87erReZ8oBgoP1FFrjgwnylB/
+         6gQdJvdCCWH2KsCGYtqAvh8prid2PmiEGe7EC4RJIvFBiRW1TVb+8qJj4t8XS2TnjDnh
+         tV0zD4+9OcBIhO5p7+aqn2lnfu+LBS6ebJpjb5rJnArhu3ulLRXiK3i+aIiDr9Pbvypb
+         n94g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6++dMGM1FCC5pOaCFzsM+Us3BSilGScrEfoUSQ6anmM=;
-        b=jyfF2ZNRfHCdCV96inVgmGBw0firIaCiwe/OPy1BBqmMOrRfE5/WOaQ2mEfKY8TkjX
-         556CLWzxyCMOZNr1luS8nWVzp7ztVtM0iQ9fNxxy1vJ1jsGU8akehCjtd3ugV+078YMa
-         qz14vbbowWZDpGs+f3MWbOa8TF1z/P7IetSVlF2cV5vykKqD3Yj6PUpo/xjxd9A2dr9p
-         LrRe65PHyh+e+KxTNyWZyHdxDF7wTo1vQ911Au4QtPID5AP+zUEkZRReDeFA1W3HU9PD
-         AuGex0sFVNpr7Vhk+6EXSw8f+6+9h27NfGdcNX8oTXeDFkPkkMAnz8bHfx3UDuO3geVM
-         +EgQ==
-X-Gm-Message-State: AOAM530EQHA5XQ69BgTUkAIZBjrFwTX5zxGsCUjywDx+xEqyIS0F0rQK
-        FinClID3+vKOooBz69j+YIV9Vg==
-X-Google-Smtp-Source: ABdhPJxekiCucfTOMCe9TtyUvabyXTd1Y7OA4VDtveI+/WBlY9GEOHLKr+dPSXZco+Q2ITWzqDzKEw==
-X-Received: by 2002:a17:90a:6604:: with SMTP id l4mr12001617pjj.119.1608031053176;
-        Tue, 15 Dec 2020 03:17:33 -0800 (PST)
-Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id n68sm24405883pfn.161.2020.12.15.03.17.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Dec 2020 03:17:32 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Puhov <peter.puhov@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC V2 2/2] cpufreq: cppc: Add support for frequency invariance
-Date:   Tue, 15 Dec 2020 16:46:36 +0530
-Message-Id: <069c40c173fc391116d13d60f4c1382c47e1a05a.1608030508.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1608030508.git.viresh.kumar@linaro.org>
-References: <cover.1608030508.git.viresh.kumar@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9bNzWa77clAXXw3WuHzQU/iKItvBAyb0MCpe4O/Qk0w=;
+        b=VPjKUkGGv5Wykh5Vxrm/F8AdZmHGsoxlQDMWgddYMajDay0NQpMFoyqlDrV/CsLyl+
+         KOLFzeemOZP6+B4IwuRjqAlHQkUv7MSKby8ewhqald8JBr/zIyCdMo+TGycGFYA1eLxv
+         dQkYG4eZJgCJSYtp1x3fpBW+UC9nZk+Ilz/EIPtRJiIJcrpN3B1zdoLkX2rAeRVjsIB4
+         3GXgIk54F+SBPp0s6xaZbBVXTfqkkRFwyURoufDxlFPpyzIf3aUGrdudNT7SG3t4dFLX
+         fl2qi/ficjLwY+/iW5YO+y8KAl3pppnO/4WTf3OIx14QbOufyDDgsuvHbWi5V6tdvmLQ
+         aQnw==
+X-Gm-Message-State: AOAM531pLMp8pEgTcf5TjNBXfLHzNg4Js/ajKzjzoah+b7XvpkrxDydo
+        T0Q1wzatAjaZz+8My0XEfQlyFg==
+X-Google-Smtp-Source: ABdhPJxVDdyAXqKbiJLC27uMRO9Y5S+YBQQgqGrjIcYHWvctTA3M47GV9OLU0mdpmVKsk0oCHG2PGA==
+X-Received: by 2002:aa7:dc5a:: with SMTP id g26mr29132901edu.35.1608031010204;
+        Tue, 15 Dec 2020 03:16:50 -0800 (PST)
+Received: from [192.168.0.3] (hst-221-86.medicom.bg. [84.238.221.86])
+        by smtp.googlemail.com with ESMTPSA id pv24sm1110392ejb.101.2020.12.15.03.16.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 03:16:49 -0800 (PST)
+Subject: Re: [PATCH] media: venus: use contig vb2 ops
+To:     Alexandre Courbot <acourbot@chromium.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>
+References: <20201214125703.866998-1-acourbot@chromium.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <5319c101-f4a4-9c99-b15d-4999366f7a63@linaro.org>
+Date:   Tue, 15 Dec 2020 13:16:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201214125703.866998-1-acourbot@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Frequency Invariance Engine (FIE) is providing a frequency scaling
-correction factor that helps achieve more accurate load-tracking.
+Hi,
 
-Normally, this scaling factor can be obtained directly with the help of
-the cpufreq drivers as they know the exact frequency the hardware is
-running at. But that isn't the case for CPPC cpufreq driver.
+Cc: Robin
 
-Another way of obtaining that is using the AMU counter support, which is
-already present in kernel, but that hardware is optional for platforms.
+On 12/14/20 2:57 PM, Alexandre Courbot wrote:
+> This driver uses the SG vb2 ops, but effectively only ever accesses the
+> first entry of the SG table, indicating that it expects a flat layout.
+> Switch it to use the contiguous ops to make sure this expected invariant
 
-This patch thus obtains this scaling factor using the existing logic
-present in the cppc driver. Note that the AMUs have higher priority than
-CPPC counters if available, though the CPPC driver doesn't need to have
-any special handling for that.
+Under what circumstances the sg table will has nents > 1? I came down to
+[1] but not sure I got it right.
 
-This also exports sched_setattr_nocheck() as the CPPC driver can be
-built as a module.
+I'm afraid that for systems with low amount of system memory and when
+the memory become fragmented, the driver will not work. That's why I
+started with sg allocator.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/cpufreq/cppc_cpufreq.c | 140 ++++++++++++++++++++++++++++++++-
- include/linux/arch_topology.h  |   1 +
- kernel/sched/core.c            |   1 +
- 3 files changed, 140 insertions(+), 2 deletions(-)
+[1]
+https://elixir.bootlin.com/linux/v5.10.1/source/drivers/iommu/dma-iommu.c#L782
 
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index 7cc9bd8568de..a739e20aefd6 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -10,14 +10,18 @@
- 
- #define pr_fmt(fmt)	"CPPC Cpufreq:"	fmt
- 
-+#include <linux/arch_topology.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/cpu.h>
- #include <linux/cpufreq.h>
- #include <linux/dmi.h>
-+#include <linux/irq_work.h>
-+#include <linux/kthread.h>
- #include <linux/time.h>
- #include <linux/vmalloc.h>
-+#include <uapi/linux/sched/types.h>
- 
- #include <asm/unaligned.h>
- 
-@@ -39,6 +43,15 @@
- static struct cppc_cpudata **all_cpu_data;
- static bool boost_supported;
- 
-+struct cppc_freq_invariance {
-+	struct kthread_worker *worker;
-+	struct irq_work irq_work;
-+	struct kthread_work work;
-+	struct cppc_perf_fb_ctrs prev_perf_fb_ctrs;
-+	unsigned int max_freq;
-+};
-+static DEFINE_PER_CPU(struct cppc_freq_invariance, cppc_f_i);
-+
- struct cppc_workaround_oem_info {
- 	char oem_id[ACPI_OEM_ID_SIZE + 1];
- 	char oem_table_id[ACPI_OEM_TABLE_ID_SIZE + 1];
-@@ -243,7 +256,7 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	struct cppc_cpudata *cpu_data = all_cpu_data[policy->cpu];
- 	struct cppc_perf_caps *caps = &cpu_data->perf_caps;
- 	unsigned int cpu = policy->cpu;
--	int ret = 0;
-+	int ret = 0, i;
- 
- 	cpu_data->cpu = cpu;
- 	ret = cppc_get_perf_caps(cpu, caps);
-@@ -300,6 +313,9 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 
- 	cpu_data->cur_policy = policy;
- 
-+	for_each_cpu(i, policy->cpus)
-+		per_cpu(cppc_f_i, i).max_freq = policy->cpuinfo.max_freq;
-+
- 	/*
- 	 * If 'highest_perf' is greater than 'nominal_perf', we assume CPU Boost
- 	 * is supported.
-@@ -374,7 +390,7 @@ static int cppc_cpufreq_set_boost(struct cpufreq_policy *policy, int state)
- {
- 	struct cppc_cpudata *cpu_data = all_cpu_data[policy->cpu];
- 	struct cppc_perf_caps *caps = &cpu_data->perf_caps;
--	int ret;
-+	int ret, i;
- 
- 	if (!boost_supported) {
- 		pr_err("BOOST not supported by CPU or firmware\n");
-@@ -389,6 +405,9 @@ static int cppc_cpufreq_set_boost(struct cpufreq_policy *policy, int state)
- 						       caps->nominal_perf);
- 	policy->cpuinfo.max_freq = policy->max;
- 
-+	for_each_cpu(i, policy->related_cpus)
-+		per_cpu(cppc_f_i, i).max_freq = policy->cpuinfo.max_freq;
-+
- 	ret = freq_qos_update_request(policy->max_freq_req, policy->max);
- 	if (ret < 0)
- 		return ret;
-@@ -449,6 +468,120 @@ static void cppc_check_hisi_workaround(void)
- 	acpi_put_table(tbl);
- }
- 
-+static void cppc_scale_freq_tick_workfn(struct kthread_work *work)
-+{
-+	struct cppc_freq_invariance *cppc_fi;
-+	struct cppc_perf_fb_ctrs fb_ctrs = {0};
-+	int cpu = raw_smp_processor_id();
-+	struct cppc_cpudata *cpudata = all_cpu_data[cpu];
-+	u64 rate;
-+
-+	cppc_fi = container_of(work, struct cppc_freq_invariance, work);
-+
-+	if (cppc_get_perf_ctrs(cpu, &fb_ctrs)) {
-+		pr_info("%s: cppc_get_perf_ctrs() failed\n", __func__);
-+		return;
-+	}
-+
-+	rate = cppc_get_rate_from_fbctrs(cpudata, cppc_fi->prev_perf_fb_ctrs, fb_ctrs);
-+	cppc_fi->prev_perf_fb_ctrs = fb_ctrs;
-+
-+	rate <<= SCHED_CAPACITY_SHIFT;
-+	per_cpu(freq_scale, cpu) = div64_u64(rate, cppc_fi->max_freq);
-+}
-+
-+static void cppc_irq_work(struct irq_work *irq_work)
-+{
-+	struct cppc_freq_invariance *cppc_fi;
-+
-+	cppc_fi = container_of(irq_work, struct cppc_freq_invariance, irq_work);
-+	kthread_queue_work(cppc_fi->worker, &cppc_fi->work);
-+}
-+
-+static void cppc_scale_freq_tick(void)
-+{
-+	struct cppc_freq_invariance *cppc_fi = &per_cpu(cppc_f_i, raw_smp_processor_id());
-+
-+	/*
-+	 * cppc_get_perf_ctrs() can potentially sleep, call that from the right
-+	 * context.
-+	 */
-+	irq_work_queue(&cppc_fi->irq_work);
-+}
-+
-+static struct scale_freq_tick_data cppc_sftd = {
-+	.source = SCALE_FREQ_SOURCE_CPPC,
-+	.scale_freq = cppc_scale_freq_tick,
-+};
-+
-+static void cppc_freq_invariance_exit(void)
-+{
-+	struct cppc_freq_invariance *cppc_fi;
-+	int i;
-+
-+	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-+		return;
-+
-+	topology_clear_scale_freq_tick(SCALE_FREQ_SOURCE_CPPC, cpu_present_mask);
-+
-+	for_each_possible_cpu(i) {
-+		cppc_fi = &per_cpu(cppc_f_i, i);
-+		if (cppc_fi->worker) {
-+			irq_work_sync(&cppc_fi->irq_work);
-+			kthread_destroy_worker(cppc_fi->worker);
-+			cppc_fi->worker = NULL;
-+		}
-+	}
-+}
-+
-+static void __init cppc_freq_invariance_init(void)
-+{
-+	struct cppc_perf_fb_ctrs fb_ctrs = {0};
-+	struct cppc_freq_invariance *cppc_fi;
-+	struct sched_attr attr = {
-+		.size		= sizeof(struct sched_attr),
-+		.sched_policy	= SCHED_DEADLINE,
-+		.sched_nice	= 0,
-+		.sched_priority	= 0,
-+		/*
-+		 * Fake (unused) bandwidth; workaround to "fix"
-+		 * priority inheritance.
-+		 */
-+		.sched_runtime	= 1000000,
-+		.sched_deadline = 10000000,
-+		.sched_period	= 10000000,
-+	};
-+	struct kthread_worker *worker;
-+	int i, ret;
-+
-+	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-+		return;
-+
-+	for_each_possible_cpu(i) {
-+		cppc_fi = &per_cpu(cppc_f_i, i);
-+
-+		kthread_init_work(&cppc_fi->work, cppc_scale_freq_tick_workfn);
-+		init_irq_work(&cppc_fi->irq_work, cppc_irq_work);
-+		worker = kthread_create_worker_on_cpu(i, 0, "cppc:%d", i);
-+		if (IS_ERR(worker))
-+			return cppc_freq_invariance_exit();
-+
-+		cppc_fi->worker = worker;
-+		ret = sched_setattr_nocheck(worker->task, &attr);
-+		if (ret) {
-+			pr_warn("%s: failed to set SCHED_DEADLINE\n", __func__);
-+			return cppc_freq_invariance_exit();
-+		}
-+
-+		ret = cppc_get_perf_ctrs(i, &fb_ctrs);
-+		if (!ret)
-+			per_cpu(cppc_fi->prev_perf_fb_ctrs, i) = fb_ctrs;
-+	}
-+
-+	/* Register for freq-invariance */
-+	topology_set_scale_freq_tick(&cppc_sftd, cpu_present_mask);
-+}
-+
- static int __init cppc_cpufreq_init(void)
- {
- 	struct cppc_cpudata *cpu_data;
-@@ -484,6 +617,8 @@ static int __init cppc_cpufreq_init(void)
- 	if (ret)
- 		goto out;
- 
-+	cppc_freq_invariance_init();
-+
- 	return ret;
- 
- out:
-@@ -504,6 +639,7 @@ static void __exit cppc_cpufreq_exit(void)
- 	struct cppc_cpudata *cpu_data;
- 	int i;
- 
-+	cppc_freq_invariance_exit();
- 	cpufreq_unregister_driver(&cppc_cpufreq_driver);
- 
- 	for_each_possible_cpu(i) {
-diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-index b2422ebef2dd..09205b584ca5 100644
---- a/include/linux/arch_topology.h
-+++ b/include/linux/arch_topology.h
-@@ -36,6 +36,7 @@ bool topology_scale_freq_invariant(void);
- 
- enum scale_freq_tick_source {
- 	SCALE_FREQ_SOURCE_AMU,
-+	SCALE_FREQ_SOURCE_CPPC,
- };
- 
- struct scale_freq_tick_data {
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 51514eef0a9d..76b2fa1a7aaa 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6075,6 +6075,7 @@ int sched_setattr_nocheck(struct task_struct *p, const struct sched_attr *attr)
- {
- 	return __sched_setscheduler(p, attr, false, true);
- }
-+EXPORT_SYMBOL_GPL(sched_setattr_nocheck);
- 
- /**
-  * sched_setscheduler_nocheck - change the scheduling policy and/or RT priority of a thread from kernelspace.
+> is always enforced. Since the device is supposed to be behind an IOMMU
+> this should have little to none practical consequences beyond making the
+> driver not rely on a particular behavior of the SG implementation.
+> 
+> Reported-by: Tomasz Figa <tfiga@chromium.org>
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> ---
+> Hi everyone,
+> 
+> It probably doesn't hurt to fix this issue before some actual issue happens.
+> I have tested this patch on Chrome OS and playback was just as fine as with
+> the SG ops.
+> 
+>  drivers/media/platform/Kconfig              | 2 +-
+>  drivers/media/platform/qcom/venus/helpers.c | 9 ++-------
+>  drivers/media/platform/qcom/venus/vdec.c    | 6 +++---
+>  drivers/media/platform/qcom/venus/venc.c    | 6 +++---
+>  4 files changed, 9 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+> index 35a18d388f3f..d9d7954111f2 100644
+> --- a/drivers/media/platform/Kconfig
+> +++ b/drivers/media/platform/Kconfig
+> @@ -533,7 +533,7 @@ config VIDEO_QCOM_VENUS
+>  	depends on INTERCONNECT || !INTERCONNECT
+>  	select QCOM_MDT_LOADER if ARCH_QCOM
+>  	select QCOM_SCM if ARCH_QCOM
+> -	select VIDEOBUF2_DMA_SG
+> +	select VIDEOBUF2_DMA_CONTIG
+>  	select V4L2_MEM2MEM_DEV
+>  	help
+>  	  This is a V4L2 driver for Qualcomm Venus video accelerator
+> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+> index 50439eb1ffea..859d260f002b 100644
+> --- a/drivers/media/platform/qcom/venus/helpers.c
+> +++ b/drivers/media/platform/qcom/venus/helpers.c
+> @@ -7,7 +7,7 @@
+>  #include <linux/mutex.h>
+>  #include <linux/slab.h>
+>  #include <linux/kernel.h>
+> -#include <media/videobuf2-dma-sg.h>
+> +#include <media/videobuf2-dma-contig.h>
+>  #include <media/v4l2-mem2mem.h>
+>  #include <asm/div64.h>
+>  
+> @@ -1284,14 +1284,9 @@ int venus_helper_vb2_buf_init(struct vb2_buffer *vb)
+>  	struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+>  	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+>  	struct venus_buffer *buf = to_venus_buffer(vbuf);
+> -	struct sg_table *sgt;
+> -
+> -	sgt = vb2_dma_sg_plane_desc(vb, 0);
+> -	if (!sgt)
+> -		return -EFAULT;
+>  
+>  	buf->size = vb2_plane_size(vb, 0);
+> -	buf->dma_addr = sg_dma_address(sgt->sgl);
+
+Can we do it:
+
+	if (WARN_ON(sgt->nents > 1))
+		return -EFAULT;
+
+I understand that logically using dma-sg when the flat layout is
+expected by the hardware is wrong, but I haven't seen issues until now.
+
+> +	buf->dma_addr = vb2_dma_contig_plane_dma_addr(vb, 0);
+>  
+>  	if (vb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
+>  		list_add_tail(&buf->reg_list, &inst->registeredbufs);
+> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+> index 8488411204c3..3fb277c81aca 100644
+> --- a/drivers/media/platform/qcom/venus/vdec.c
+> +++ b/drivers/media/platform/qcom/venus/vdec.c
+> @@ -13,7 +13,7 @@
+>  #include <media/v4l2-event.h>
+>  #include <media/v4l2-ctrls.h>
+>  #include <media/v4l2-mem2mem.h>
+> -#include <media/videobuf2-dma-sg.h>
+> +#include <media/videobuf2-dma-contig.h>
+>  
+>  #include "hfi_venus_io.h"
+>  #include "hfi_parser.h"
+> @@ -1461,7 +1461,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
+>  	src_vq->io_modes = VB2_MMAP | VB2_DMABUF;
+>  	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+>  	src_vq->ops = &vdec_vb2_ops;
+> -	src_vq->mem_ops = &vb2_dma_sg_memops;
+> +	src_vq->mem_ops = &vb2_dma_contig_memops;
+>  	src_vq->drv_priv = inst;
+>  	src_vq->buf_struct_size = sizeof(struct venus_buffer);
+>  	src_vq->allow_zero_bytesused = 1;
+> @@ -1475,7 +1475,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
+>  	dst_vq->io_modes = VB2_MMAP | VB2_DMABUF;
+>  	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+>  	dst_vq->ops = &vdec_vb2_ops;
+> -	dst_vq->mem_ops = &vb2_dma_sg_memops;
+> +	dst_vq->mem_ops = &vb2_dma_contig_memops;
+>  	dst_vq->drv_priv = inst;
+>  	dst_vq->buf_struct_size = sizeof(struct venus_buffer);
+>  	dst_vq->allow_zero_bytesused = 1;
+> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+> index 1c61602c5de1..a09550cd1dba 100644
+> --- a/drivers/media/platform/qcom/venus/venc.c
+> +++ b/drivers/media/platform/qcom/venus/venc.c
+> @@ -10,7 +10,7 @@
+>  #include <linux/pm_runtime.h>
+>  #include <linux/slab.h>
+>  #include <media/v4l2-mem2mem.h>
+> -#include <media/videobuf2-dma-sg.h>
+> +#include <media/videobuf2-dma-contig.h>
+>  #include <media/v4l2-ioctl.h>
+>  #include <media/v4l2-event.h>
+>  #include <media/v4l2-ctrls.h>
+> @@ -1001,7 +1001,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
+>  	src_vq->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
+>  	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+>  	src_vq->ops = &venc_vb2_ops;
+> -	src_vq->mem_ops = &vb2_dma_sg_memops;
+> +	src_vq->mem_ops = &vb2_dma_contig_memops;
+>  	src_vq->drv_priv = inst;
+>  	src_vq->buf_struct_size = sizeof(struct venus_buffer);
+>  	src_vq->allow_zero_bytesused = 1;
+> @@ -1017,7 +1017,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
+>  	dst_vq->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
+>  	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+>  	dst_vq->ops = &venc_vb2_ops;
+> -	dst_vq->mem_ops = &vb2_dma_sg_memops;
+> +	dst_vq->mem_ops = &vb2_dma_contig_memops;
+>  	dst_vq->drv_priv = inst;
+>  	dst_vq->buf_struct_size = sizeof(struct venus_buffer);
+>  	dst_vq->allow_zero_bytesused = 1;
+> 
+
 -- 
-2.25.0.rc1.19.g042ed3e048af
-
+regards,
+Stan
