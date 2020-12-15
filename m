@@ -2,129 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF892DAF1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 112232DAF1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729457AbgLOOiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 09:38:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728806AbgLOOhn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:37:43 -0500
-Date:   Tue, 15 Dec 2020 15:38:05 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1608043022;
-        bh=0MW59xayUlnEgpJX7Fys1hfJvfvJiLiI8yadDLYEJFw=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GSIasKJYp7aY/7dGwXmUl0xC2QAkxRTv+lIYu3dGenJnsQV4GDCDYTC1lf6ufFS9H
-         gBKZ2b/n2WagO9MfWT2V5yWEMruEO8Hwz+MEcRSDAn8L94Qr73KBcdtsVytJYmO7L8
-         rSlv9f3oHBh9ekK+ZPGYjUEcrDDcIunvJzgF0yfE=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Ji-Ze Hong <hpeter@gmail.com>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: R: R: [PATCH v1] serial: 8250_fintek: Print Fintek chip name
-Message-ID: <X9jKTZoX9Se+Ghn/@kroah.com>
-References: <20201214131445.954822-1-f.suligoi@asem.it>
- <X9dr2IvOgPyhsalE@kroah.com>
- <ff8f6af85d27448d93d1220545f163be@asem.it>
- <X9i9RKAbpoR0F7Y+@kroah.com>
- <178bf34c76184d39b6b17d5e54133821@asem.it>
+        id S1729331AbgLOOjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 09:39:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728830AbgLOOit (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 09:38:49 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD394C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:38:08 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id 2so4792499qtt.10
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:38:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w7jpjH1Jbgu804AfDst7MSgkMyAd/mh6khKgn3kKLTc=;
+        b=V7w0ZMkw6xKCNSAW0VAuR5Un2XMk0yafWlbkOSxQg9JutJyIkRrSdKarM3+gXZDsLL
+         Q4DeWWqB9ClfoNf5b/4ZNZjc9AXNbIP6pbD/QtKLLYo0IVdQTcPod/SZ9uuiW56WV+6V
+         sMu/V8FKT3H2mCxUui5QXGzTGG+rm1XGBfAeKjGCxSaUOmFlbpVkxrEIRNVlEpSQn2n3
+         YVZolF7bq5CzyfqlOXce/eIMcQeyejqThqZj1KH4tB9zPFYiPfKRVcl7O12/jHa4Kt4/
+         k0CjorpVWkFzFHeerJgdIAAa9H2zM/nqDjLaB2cHtQyzGnoKTD5iWw+C6C1RplvYSZye
+         Wu1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w7jpjH1Jbgu804AfDst7MSgkMyAd/mh6khKgn3kKLTc=;
+        b=eCjPMnTTfSdHLBxGK/NammvRLcYkRgQPSilwNtI519TXRB8KLoKQj9l68fc42OtaUR
+         9pBx6xQafnKQt0T9ayKOHkpILagAC49LwXOA+47HHjDgZ5whNOyzIWMPrQybXsOEcnxa
+         b90IzmJAycZHfyOkpCMf4WZZ7BQcPfP3tVUpwIkWykRswYUtE5Md7Nz6udTEjg7FUmSK
+         rg3lRyspOKnsQbUY2vFfE3ibhdiEdpokF/2nC1AOMhWkADyPjI81hKk+CxygAecLZaDG
+         bhTZFnYa3tWyalxZWepBoDRcTXcxTqRKSq+I7JfJ8loYsqSBiorS6I0B5sh1MS+V3wwC
+         xfWA==
+X-Gm-Message-State: AOAM532dIUMQO13BRaXvPRRE8pQq7V2ge6avKPFdkBrm+wGgSS6ll7gF
+        ZMOfT3cHdhfwPGvLJi64zGuu7w==
+X-Google-Smtp-Source: ABdhPJxOaC0n7+XXIS6ZI6MMKP5M3A+89QYy4enzXD/zj/tBM8VS5Ef0yLT4wL0rsaH7vRoK7kZbuA==
+X-Received: by 2002:ac8:5a95:: with SMTP id c21mr37113165qtc.115.1608043087777;
+        Tue, 15 Dec 2020 06:38:07 -0800 (PST)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id r128sm17235414qke.94.2020.12.15.06.38.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 06:38:07 -0800 (PST)
+Subject: Re: [PATCH 2/4] thermal/core: Precompute the jiffies
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rui.zhang@intel.com
+Cc:     amitk@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20201202120657.1969-1-daniel.lezcano@linaro.org>
+ <20201202120657.1969-2-daniel.lezcano@linaro.org>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <1c909a38-1777-556d-fe87-29394a1b1d56@linaro.org>
+Date:   Tue, 15 Dec 2020 09:38:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <178bf34c76184d39b6b17d5e54133821@asem.it>
+In-Reply-To: <20201202120657.1969-2-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 02:06:09PM +0000, Flavio Suligoi wrote:
-> Hi Greg,
-> 
-> 
-> > > > > +		chip_name = "F81216H";
-> > > > > +		break;
-> > > > >  	case CHIP_ID_F81216:
-> > > > > +		chip_name = "F81216";
-> > > > >  		break;
-> > > > >  	default:
-> > > > >  		return -ENODEV;
-> > > > >  	}
-> > > > >
-> > > > >  	pdata->pid = chip;
-> > > > > +
-> > > > > +	pr_info("%s%s%s Fintek %s\n",
-> > > > > +		uart->port.dev ? dev_name(uart->port.dev) : "",
-> > > > > +		uart->port.dev ? ": " : "",
-> > > > > +		uart->port.name,
-> > > > > +		chip_name);
-> > > >
-> > > > Drivers, if all goes well, should not print anything to the kernel
-> > log.
-> > > > This isn't ok.
-> > > >
-> > > > And even if it was, dev_info() would be the correct thing to do...
-> > >
-> > > Ok, too many information in the driver.
-> > >
-> > > But what do you think about the possibility to introduce
-> > > a new additional field, in "serial8250_config" structure,
-> > > such as "extra_name" or something like this:
-> > >
-> > > struct serial8250_config {
-> > > 	const char		*name;
-> > > 	const char		*extra_name;
-> > > 	unsigned short	fifo_size;
-> > > 	unsigned short	tx_loadsz;
-> > > 	unsigned char	fcr;
-> > > 	unsigned char	rxtrig_bytes[UART_FCR_R_TRIG_MAX_STATE];
-> > > 	unsigned int	flags;
-> > > };
-> > >
-> > > In this way, if required, each driver can fill this
-> > > additional field, for example adding the name of
-> > > the particular uart chip or other useful info.
-> > >
-> > > As result, for example, the "uart_report_port" function output
-> > > could be something like this:
-> > >
-> > > 00:01: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A -
-> > Fintek F81216AD
-> > > 00:02: ttyS3 at I/O 0x2e8 (irq = 11, base_baud = 115200) is a 16550A -
-> > Fintek F81216AD
-> > >
-> > > where the "extra_name", if not empty, is printed
-> > > at the end of the line.
-> > > For practical space reasons, the "extra_name" length
-> > > can be limited to 16 chars.
-> > 
-> > Why?  What tool will use this, and why would userspace care about it?
-> > 
-> > What problem are you trying to solve here?
-> 
-> I try to explain my requirement:
-> 
-> we produce some x86 boards with multistandard RS232/422/485 ports
-> and, to have this feature, in some of these boards, we use a
-> Fintek uart or superIO.
-> So this additional info "extra_name" can be useful for
-> a quick check if the serial ports are multistandard or not,
-> without any other investigations, but using only a simple command
-> like:
-> 
-> dmesg| grep ttyS
+Hi Daniel,
 
-But as they work the same, why does it matter?
+On 12/2/20 7:06 AM, Daniel Lezcano wrote:
+> The delays are stored in ms units and when the polling function is
+> called this delay is converted into jiffies at each call.
+> 
+> Instead of doing the conversion again and again, compute the jiffies
+> at init time and use the value directly when setting the polling.
 
-Userspace should not care here.  Isn't there some other id you can
-read/query for a hardware database tool to determine this?
+A generic comment. You can avoid patch 1 of this series and directly
+have patch 2 , right? There is no need to rename 
+polling_delay/passive_delay to *_delay_ms and then remove it again?
 
-Printing a random string to the kernel log is not a good way to do
-hardware descriptions in a format that everyone can easily parse them :)
+> 
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
+>   drivers/thermal/thermal_core.c  |  5 +++--
+>   drivers/thermal/thermal_core.h  | 18 ++++++++++++++++++
+>   drivers/thermal/thermal_sysfs.c |  4 ++--
+>   include/linux/thermal.h         |  7 +++++++
+>   4 files changed, 30 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> index 53f55ceca220..3111ca2c87a1 100644
+> --- a/drivers/thermal/thermal_core.c
+> +++ b/drivers/thermal/thermal_core.c
+> @@ -1340,8 +1340,9 @@ thermal_zone_device_register(const char *type, int trips, int mask,
+>   	tz->device.class = &thermal_class;
+>   	tz->devdata = devdata;
+>   	tz->trips = trips;
+> -	tz->passive_delay_ms = passive_delay;
+> -	tz->polling_delay_ms = polling_delay;
+> +
+> +	thermal_zone_set_passive_delay(tz, passive_delay);
+> +	thermal_zone_set_polling_delay(tz, polling_delay);
+>   
+>   	/* sys I/F */
+>   	/* Add nodes that are always present via .groups */
+> diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
+> index 8df600fa7b79..2c9551ed5ef8 100644
+> --- a/drivers/thermal/thermal_core.h
+> +++ b/drivers/thermal/thermal_core.h
+> @@ -128,6 +128,24 @@ int thermal_build_list_of_policies(char *buf);
+>   /* Helpers */
+>   void thermal_zone_set_trips(struct thermal_zone_device *tz);
+>   
+> +static inline void thermal_zone_set_passive_delay(
+> +	struct thermal_zone_device *tz, int delay_ms)
+> +{
+> +	tz->passive_delay_ms = delay_ms;
+> +	tz->passive_delay_jiffies = msecs_to_jiffies(delay_ms);
+> +	if (delay_ms > 1000)
+> +		tz->passive_delay_jiffies = round_jiffies(tz->passive_delay_jiffies);
+> +}
+> +
+> +static inline void thermal_zone_set_polling_delay(
+> +	struct thermal_zone_device *tz, int delay_ms)
+> +{
+> +	tz->polling_delay_ms = delay_ms;
+> +	tz->polling_delay_jiffies = msecs_to_jiffies(delay_ms);
+> +	if (delay_ms > 1000)
+> +		tz->polling_delay_jiffies = round_jiffies(tz->polling_delay_jiffies);
+> +}
 
-thanks,
+How about one function instead?
+static inline void thermal_zone_set_delay_jiffies(int *delay_jiffes, int 
+delay_ms)
+{
+	*delay_jiffies = msecs_to_jiffies(delay_ms);
+	if (delay_ms > 1000)
+		*delay_jiffies = round_jiffies(*delay_jiffies);
+}
 
-greg k-h
+And then calling 
+thermal_zone_set_delay_jiffies(&tz->passive_delay_jiffies, passive_delay)..
+
+Regards
+Thara
+> +
+>   /* sysfs I/F */
+>   int thermal_zone_create_device_groups(struct thermal_zone_device *, int);
+>   void thermal_zone_destroy_device_groups(struct thermal_zone_device *);
+> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
+> index f465462d8aa1..9598b288a0a1 100644
+> --- a/drivers/thermal/thermal_sysfs.c
+> +++ b/drivers/thermal/thermal_sysfs.c
+> @@ -234,11 +234,11 @@ passive_store(struct device *dev, struct device_attribute *attr,
+>   
+>   	if (state && !tz->forced_passive) {
+>   		if (!tz->passive_delay_ms)
+> -			tz->passive_delay_ms = 1000;
+> +			thermal_zone_set_passive_delay(tz, 1000);
+>   		thermal_zone_device_rebind_exception(tz, "Processor",
+>   						     sizeof("Processor"));
+>   	} else if (!state && tz->forced_passive) {
+> -		tz->passive_delay_ms = 0;
+> +		thermal_zone_set_passive_delay(tz, 0);
+>   		thermal_zone_device_unbind_exception(tz, "Processor",
+>   						     sizeof("Processor"));
+>   	}
+> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+> index 230d451bf335..5dd9bdb6c6ad 100644
+> --- a/include/linux/thermal.h
+> +++ b/include/linux/thermal.h
+> @@ -118,9 +118,14 @@ struct thermal_cooling_device {
+>    * @trips_disabled;	bitmap for disabled trips
+>    * @passive_delay_ms:	number of milliseconds to wait between polls when
+>    *			performing passive cooling.
+> + * @passive_delay_jiffies: number of jiffies to wait between polls when
+> + *			performing passive cooling.
+>    * @polling_delay_ms:	number of milliseconds to wait between polls when
+>    *			checking whether trip points have been crossed (0 for
+>    *			interrupt driven systems)
+> + * @polling_delay_jiffies: number of jiffies to wait between polls when
+> + *			checking whether trip points have been crossed (0 for
+> + *			interrupt driven systems)
+>    * @temperature:	current temperature.  This is only for core code,
+>    *			drivers should use thermal_zone_get_temp() to get the
+>    *			current temperature
+> @@ -161,6 +166,8 @@ struct thermal_zone_device {
+>   	unsigned long trips_disabled;	/* bitmap for disabled trips */
+>   	int passive_delay_ms;
+>   	int polling_delay_ms;
+> +	int passive_delay_jiffies;
+> +	int polling_delay_jiffies;
+>   	int temperature;
+>   	int last_temperature;
+>   	int emul_temperature;
+> 
+
+-- 
+Warm Regards
+Thara
