@@ -2,31 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF602DB096
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B092DB098
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:56:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730612AbgLOPxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:53:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41266 "EHLO mail.kernel.org"
+        id S1730614AbgLOPym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:54:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730524AbgLOPw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:52:56 -0500
-Date:   Tue, 15 Dec 2020 12:52:26 -0300
+        id S1730389AbgLOPyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:54:17 -0500
+Date:   Tue, 15 Dec 2020 12:53:50 -0300
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608047535;
-        bh=H97xx6SMQMd2hqyfmUto9HQyY5XM0MtVFL7nQCZK+Zs=;
+        s=k20201202; t=1608047616;
+        bh=IfkzvFyQ6gi7gVjWCwwrP2gFrlMuEuJNzOElKsi6Tew=;
         h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ArcVFn2nU/IZvk5sybVyucC6Yi0o0TFve8HItIIGsqPkyeil+RP6dPZNv5+FHYBuX
-         Vs1STupkBGEhw/ntrFHQ8BLJaanYDehrLi5zeB/bsJio4u0DdT7Ds4bFchnLfPnxnW
-         OIPFCilXh1PAaEVsOHoYWTOb8mjp8x09tDJhYDeM4gJ7tRFMo1+DawciW7Y4PhCHqL
-         0ze8EEv+kT1aK5W4GMfFd7USynVYsu+T2VKRkJsoZ8BIVPfm/MudOGVdyhXPEccDOM
-         6hcqQM3eIt8nlcgL9zm12DribIfPc7+/tEl0DUQjRZJs2oq5jRlOH5vPIXjepPMcSc
-         zhi4FbTaWv2JQ==
+        b=JeyeXs1z2qtaYj29yEeUamuGa0f1cAQxn5YVJfelluV+TB8Jd23Wif63H80lGjVMQ
+         eyrSvm58p9K7/iRVCnjv7856/KVeWqrI7WAv2xAzn6v+tD+HsZG+/rWhRnfewpaSiw
+         M02+1zxpYEwrrZsXfu0YVIdBbcgmQVFgjaKb9/7lGipMraixooB7oh9bY9/immENVV
+         aeN7GPCVaasHTSZvX7R/bonnryZtmTf/oWfy4to+w00e2u5lYsXHWPfny4XLZMzPKg
+         BZcJQywvf41bGjyevp5HO9OXJTSnH7auQvcCHi2QMHkFx/3DZNS+o2fhcKpx4jFqwS
+         VwMGa5lCWeaRg==
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
         lkml <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Ingo Molnar <mingo@kernel.org>,
@@ -35,250 +33,158 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Michael Petlan <mpetlan@redhat.com>,
         Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Alexei Budankov <abudankov@huawei.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 03/15] perf: Add build id data in mmap2 event
-Message-ID: <20201215155226.GK258566@kernel.org>
+Subject: Re: [PATCH 13/15] perf buildid-cache: Add --debuginfod option
+Message-ID: <20201215155350.GL258566@kernel.org>
 References: <20201214105457.543111-1-jolsa@kernel.org>
- <20201214105457.543111-4-jolsa@kernel.org>
+ <20201214105457.543111-14-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201214105457.543111-4-jolsa@kernel.org>
+In-Reply-To: <20201214105457.543111-14-jolsa@kernel.org>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Dec 14, 2020 at 11:54:45AM +0100, Jiri Olsa escreveu:
-> Adding support to carry build id data in mmap2 event.
+Em Mon, Dec 14, 2020 at 11:54:55AM +0100, Jiri Olsa escreveu:
+> Adding --debuginfod option to specify debuginfod url and
+> support to do that through config file as well.
 > 
-> The build id data replaces maj/min/ino/ino_generation
-> fields, which are also used to identify map's binary,
-> so it's ok to replace them with build id data:
+> Use following in ~/.perfconfig file:
 > 
->   union {
->           struct {
->                   u32       maj;
->                   u32       min;
->                   u64       ino;
->                   u64       ino_generation;
->           };
->           struct {
->                   u8        build_id_size;
->                   u8        __reserved_1;
->                   u16       __reserved_2;
->                   u8        build_id[20];
->           };
->   };
+>   [buildid-cache]
+>   debuginfod=http://192.168.122.174:8002
 
-Alexei/Daniel, this one depends on BPFs build id routines to be exported
-for use by the perf kernel subsys, PeterZ already acked this, so can you
-guys consider getting the first three patches in this series via the bpf
-tree?
-
-The BPF bits were acked by Song.
+I was going to try and cherry-pick this one, but it is after other
+changes that are dependent on other bits to be merged :-\
 
 - Arnaldo
  
-> Replaced maj/min/ino/ino_generation fields give us size
-> of 24 bytes. We use 20 bytes for build id data, 1 byte
-> for size and rest is unused.
-> 
-> There's new misc bit for mmap2 to signal there's build
-> id data in it:
-> 
->   #define PERF_RECORD_MISC_MMAP_BUILD_ID   (1 << 14)
-> 
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Acked-by: Ian Rogers <irogers@google.com>
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  include/uapi/linux/perf_event.h | 42 +++++++++++++++++++++++++++++----
->  kernel/events/core.c            | 32 +++++++++++++++++++++----
->  2 files changed, 65 insertions(+), 9 deletions(-)
+>  .../perf/Documentation/perf-buildid-cache.txt |  6 ++++
+>  tools/perf/Documentation/perf-config.txt      |  7 +++++
+>  tools/perf/builtin-buildid-cache.c            | 28 +++++++++++++++++--
+>  3 files changed, 38 insertions(+), 3 deletions(-)
 > 
-> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> index b95d3c485d27..45a216bea048 100644
-> --- a/include/uapi/linux/perf_event.h
-> +++ b/include/uapi/linux/perf_event.h
-> @@ -384,7 +384,8 @@ struct perf_event_attr {
->  				aux_output     :  1, /* generate AUX records instead of events */
->  				cgroup         :  1, /* include cgroup events */
->  				text_poke      :  1, /* include text poke events */
-> -				__reserved_1   : 30;
-> +				build_id       :  1, /* use build id in mmap2 events */
-> +				__reserved_1   : 29;
+> diff --git a/tools/perf/Documentation/perf-buildid-cache.txt b/tools/perf/Documentation/perf-buildid-cache.txt
+> index b77da5138bca..b9987d1399ca 100644
+> --- a/tools/perf/Documentation/perf-buildid-cache.txt
+> +++ b/tools/perf/Documentation/perf-buildid-cache.txt
+> @@ -84,6 +84,12 @@ OPTIONS
+>  	used when creating a uprobe for a process that resides in a
+>  	different mount namespace from the perf(1) utility.
 >  
->  	union {
->  		__u32		wakeup_events;	  /* wakeup every n events */
-> @@ -657,6 +658,22 @@ struct perf_event_mmap_page {
->  	__u64	aux_size;
->  };
->  
-> +/*
-> + * The current state of perf_event_header::misc bits usage:
-> + * ('|' used bit, '-' unused bit)
-> + *
-> + *  012         CDEF
-> + *  |||---------||||
-> + *
-> + *  Where:
-> + *    0-2     CPUMODE_MASK
-> + *
-> + *    C       PROC_MAP_PARSE_TIMEOUT
-> + *    D       MMAP_DATA / COMM_EXEC / FORK_EXEC / SWITCH_OUT
-> + *    E       MMAP_BUILD_ID / EXACT_IP / SCHED_OUT_PREEMPT
-> + *    F       (reserved)
-> + */
+> +--debuginfod=URLs::
+> +	Specify debuginfod URL to be used when retrieving perf.data binaries,
+> +	it follows the same syntax as the DEBUGINFOD_URLS variable, like:
 > +
->  #define PERF_RECORD_MISC_CPUMODE_MASK		(7 << 0)
->  #define PERF_RECORD_MISC_CPUMODE_UNKNOWN	(0 << 0)
->  #define PERF_RECORD_MISC_KERNEL			(1 << 0)
-> @@ -688,6 +705,7 @@ struct perf_event_mmap_page {
->   *
->   *   PERF_RECORD_MISC_EXACT_IP           - PERF_RECORD_SAMPLE of precise events
->   *   PERF_RECORD_MISC_SWITCH_OUT_PREEMPT - PERF_RECORD_SWITCH* events
-> + *   PERF_RECORD_MISC_MMAP_BUILD_ID      - PERF_RECORD_MMAP2 event
->   *
->   *
->   * PERF_RECORD_MISC_EXACT_IP:
-> @@ -697,9 +715,13 @@ struct perf_event_mmap_page {
->   *
->   * PERF_RECORD_MISC_SWITCH_OUT_PREEMPT:
->   *   Indicates that thread was preempted in TASK_RUNNING state.
-> + *
-> + * PERF_RECORD_MISC_MMAP_BUILD_ID:
-> + *   Indicates that mmap2 event carries build id data.
->   */
->  #define PERF_RECORD_MISC_EXACT_IP		(1 << 14)
->  #define PERF_RECORD_MISC_SWITCH_OUT_PREEMPT	(1 << 14)
-> +#define PERF_RECORD_MISC_MMAP_BUILD_ID		(1 << 14)
->  /*
->   * Reserve the last bit to indicate some extended misc field
->   */
-> @@ -911,10 +933,20 @@ enum perf_event_type {
->  	 *	u64				addr;
->  	 *	u64				len;
->  	 *	u64				pgoff;
-> -	 *	u32				maj;
-> -	 *	u32				min;
-> -	 *	u64				ino;
-> -	 *	u64				ino_generation;
-> +	 *	union {
-> +	 *		struct {
-> +	 *			u32		maj;
-> +	 *			u32		min;
-> +	 *			u64		ino;
-> +	 *			u64		ino_generation;
-> +	 *		};
-> +	 *		struct {
-> +	 *			u8		build_id_size;
-> +	 *			u8		__reserved_1;
-> +	 *			u16		__reserved_2;
-> +	 *			u8		build_id[20];
-> +	 *		};
-> +	 *	};
->  	 *	u32				prot, flags;
->  	 *	char				filename[];
->  	 * 	struct sample_id		sample_id;
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index dc568ca295bd..6cbd04a24d3a 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -51,6 +51,7 @@
->  #include <linux/proc_ns.h>
->  #include <linux/mount.h>
->  #include <linux/min_heap.h>
-> +#include <linux/buildid.h>
->  
->  #include "internal.h"
->  
-> @@ -395,6 +396,7 @@ static atomic_t nr_ksymbol_events __read_mostly;
->  static atomic_t nr_bpf_events __read_mostly;
->  static atomic_t nr_cgroup_events __read_mostly;
->  static atomic_t nr_text_poke_events __read_mostly;
-> +static atomic_t nr_build_id_events __read_mostly;
->  
->  static LIST_HEAD(pmus);
->  static DEFINE_MUTEX(pmus_lock);
-> @@ -4665,6 +4667,8 @@ static void unaccount_event(struct perf_event *event)
->  		dec = true;
->  	if (event->attr.mmap || event->attr.mmap_data)
->  		atomic_dec(&nr_mmap_events);
-> +	if (event->attr.build_id)
-> +		atomic_dec(&nr_build_id_events);
->  	if (event->attr.comm)
->  		atomic_dec(&nr_comm_events);
->  	if (event->attr.namespaces)
-> @@ -7934,6 +7938,8 @@ struct perf_mmap_event {
->  	u64			ino;
->  	u64			ino_generation;
->  	u32			prot, flags;
-> +	u8			build_id[BUILD_ID_SIZE_MAX];
-> +	u32			build_id_size;
->  
->  	struct {
->  		struct perf_event_header	header;
-> @@ -7965,6 +7971,7 @@ static void perf_event_mmap_output(struct perf_event *event,
->  	struct perf_sample_data sample;
->  	int size = mmap_event->event_id.header.size;
->  	u32 type = mmap_event->event_id.header.type;
-> +	bool use_build_id;
->  	int ret;
->  
->  	if (!perf_event_mmap_match(event, data))
-> @@ -7989,13 +7996,25 @@ static void perf_event_mmap_output(struct perf_event *event,
->  	mmap_event->event_id.pid = perf_event_pid(event, current);
->  	mmap_event->event_id.tid = perf_event_tid(event, current);
->  
-> +	use_build_id = event->attr.build_id && mmap_event->build_id_size;
+> +	  buildid-cache.debuginfod=http://192.168.122.174:8002
 > +
-> +	if (event->attr.mmap2 && use_build_id)
-> +		mmap_event->event_id.header.misc |= PERF_RECORD_MISC_MMAP_BUILD_ID;
-> +
->  	perf_output_put(&handle, mmap_event->event_id);
+>  SEE ALSO
+>  --------
+>  linkperf:perf-record[1], linkperf:perf-report[1], linkperf:perf-buildid-list[1]
+> diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
+> index 31069d8a5304..e3672c5d801b 100644
+> --- a/tools/perf/Documentation/perf-config.txt
+> +++ b/tools/perf/Documentation/perf-config.txt
+> @@ -238,6 +238,13 @@ buildid.*::
+>  		cache location, or to disable it altogether. If you want to disable it,
+>  		set buildid.dir to /dev/null. The default is $HOME/.debug
 >  
->  	if (event->attr.mmap2) {
-> -		perf_output_put(&handle, mmap_event->maj);
-> -		perf_output_put(&handle, mmap_event->min);
-> -		perf_output_put(&handle, mmap_event->ino);
-> -		perf_output_put(&handle, mmap_event->ino_generation);
-> +		if (use_build_id) {
-> +			u8 size[4] = { (u8) mmap_event->build_id_size, 0, 0, 0 };
+> +buildid-cache.*::
+> +	buildid-cache.debuginfod=URLs
+> +		Specify debuginfod URLs to be used when retrieving perf.data binaries,
+> +		it follows the same syntax as the DEBUGINFOD_URLS variable, like:
 > +
-> +			__output_copy(&handle, size, 4);
-> +			__output_copy(&handle, mmap_event->build_id, BUILD_ID_SIZE_MAX);
-> +		} else {
-> +			perf_output_put(&handle, mmap_event->maj);
-> +			perf_output_put(&handle, mmap_event->min);
-> +			perf_output_put(&handle, mmap_event->ino);
-> +			perf_output_put(&handle, mmap_event->ino_generation);
-> +		}
->  		perf_output_put(&handle, mmap_event->prot);
->  		perf_output_put(&handle, mmap_event->flags);
->  	}
-> @@ -8124,6 +8143,9 @@ static void perf_event_mmap_event(struct perf_mmap_event *mmap_event)
->  
->  	mmap_event->event_id.header.size = sizeof(mmap_event->event_id) + size;
->  
-> +	if (atomic_read(&nr_build_id_events))
-> +		build_id_parse(vma, mmap_event->build_id, &mmap_event->build_id_size);
+> +		  buildid-cache.debuginfod=http://192.168.122.174:8002
 > +
->  	perf_iterate_sb(perf_event_mmap_output,
->  		       mmap_event,
->  		       NULL);
-> @@ -11060,6 +11082,8 @@ static void account_event(struct perf_event *event)
->  		inc = true;
->  	if (event->attr.mmap || event->attr.mmap_data)
->  		atomic_inc(&nr_mmap_events);
-> +	if (event->attr.build_id)
-> +		atomic_inc(&nr_build_id_events);
->  	if (event->attr.comm)
->  		atomic_inc(&nr_comm_events);
->  	if (event->attr.namespaces)
+>  annotate.*::
+>  	These are in control of addresses, jump function, source code
+>  	in lines of assembly code from a specific program.
+> diff --git a/tools/perf/builtin-buildid-cache.c b/tools/perf/builtin-buildid-cache.c
+> index f0afb2c89e03..864597fd9cf6 100644
+> --- a/tools/perf/builtin-buildid-cache.c
+> +++ b/tools/perf/builtin-buildid-cache.c
+> @@ -27,6 +27,7 @@
+>  #include "util/time-utils.h"
+>  #include "util/util.h"
+>  #include "util/probe-file.h"
+> +#include "util/config.h"
+>  #include <linux/string.h>
+>  #include <linux/err.h>
+>  #include <linux/zalloc.h>
+> @@ -550,12 +551,21 @@ build_id_cache__add_perf_data(const char *path, bool all)
+>  	return err;
+>  }
+>  
+> +static int perf_buildid_cache_config(const char *var, const char *value, void *cb)
+> +{
+> +	const char **debuginfod = cb;
+> +
+> +	if (!strcmp(var, "buildid-cache.debuginfod"))
+> +		*debuginfod = strdup(value);
+> +
+> +	return 0;
+> +}
+> +
+>  int cmd_buildid_cache(int argc, const char **argv)
+>  {
+>  	struct strlist *list;
+>  	struct str_node *pos;
+> -	int ret = 0;
+> -	int ns_id = -1;
+> +	int ret, ns_id = -1;
+>  	bool force = false;
+>  	bool list_files = false;
+>  	bool opts_flag = false;
+> @@ -565,7 +575,8 @@ int cmd_buildid_cache(int argc, const char **argv)
+>  		   *purge_name_list_str = NULL,
+>  		   *missing_filename = NULL,
+>  		   *update_name_list_str = NULL,
+> -		   *kcore_filename = NULL;
+> +		   *kcore_filename = NULL,
+> +		   *debuginfod = NULL;
+>  	char sbuf[STRERR_BUFSIZE];
+>  
+>  	struct perf_data data = {
+> @@ -590,6 +601,8 @@ int cmd_buildid_cache(int argc, const char **argv)
+>  	OPT_BOOLEAN('f', "force", &force, "don't complain, do it"),
+>  	OPT_STRING('u', "update", &update_name_list_str, "file list",
+>  		    "file(s) to update"),
+> +	OPT_STRING(0, "debuginfod", &debuginfod, "debuginfod url",
+> +		    "set debuginfod url"),
+>  	OPT_INCR('v', "verbose", &verbose, "be more verbose"),
+>  	OPT_INTEGER(0, "target-ns", &ns_id, "target pid for namespace context"),
+>  	OPT_END()
+> @@ -599,6 +612,10 @@ int cmd_buildid_cache(int argc, const char **argv)
+>  		NULL
+>  	};
+>  
+> +	ret = perf_config(perf_buildid_cache_config, &debuginfod);
+> +	if (ret)
+> +		return ret;
+> +
+>  	argc = parse_options(argc, argv, buildid_cache_options,
+>  			     buildid_cache_usage, 0);
+>  
+> @@ -610,6 +627,11 @@ int cmd_buildid_cache(int argc, const char **argv)
+>  	if (argc || !(list_files || opts_flag))
+>  		usage_with_options(buildid_cache_usage, buildid_cache_options);
+>  
+> +	if (debuginfod) {
+> +		pr_debug("DEBUGINFOD_URLS=%s\n", debuginfod);
+> +		setenv("DEBUGINFOD_URLS", debuginfod, 1);
+> +	}
+> +
+>  	/* -l is exclusive. It can not be used with other options. */
+>  	if (list_files && opts_flag) {
+>  		usage_with_options_msg(buildid_cache_usage,
 > -- 
 > 2.26.2
 > 
