@@ -2,112 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F602DB5A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E58292DB5AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729584AbgLOVKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 16:10:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48256 "EHLO
+        id S1728489AbgLOVMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 16:12:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727074AbgLOVKu (ORCPT
+        with ESMTP id S1727453AbgLOVMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 16:10:50 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29739C06179C;
-        Tue, 15 Dec 2020 13:10:10 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id qw4so29684380ejb.12;
-        Tue, 15 Dec 2020 13:10:10 -0800 (PST)
+        Tue, 15 Dec 2020 16:12:39 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70309C06179C;
+        Tue, 15 Dec 2020 13:11:58 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id w13so43047655lfd.5;
+        Tue, 15 Dec 2020 13:11:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pH0pNV8GuApEAomsf4+0GR1tuhfmS3JbNx8+GNRBn+4=;
-        b=ClogU90tZpak3lLuYzPamIpF+50NGe9OhuauW6YZ8MCjq/58QqyDQ0jRZtOHlaMbhS
-         mm65ErXJrG1q/qL2JKocQZqrE7jPHDheTFfNYvKgXJa6N2ykZ0YJIy4TWoN/k9DueN6X
-         3hxyZFE4yRkF7ceIZd/BwTaOilyqRqU1WIwykoA2Z9U5/aies9HSIUBt4D+v8p5eEVTO
-         crxvu7zlA6Ywu5TFioDVQYE5XLpdwS/N/nNaH2CE9L/WMPnW74hAObndmccB6dD63iaQ
-         5Etnem9pBGN0sZGoa/mNic7v+w7VOiwk/ZfunKsXYsqPIxoThq8aBCif+12xcIm4bO60
-         9+2A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3X74Gn92CmzSE0xtNR4fTjTY8tQLz8gMoh5Chc512BI=;
+        b=dds+v7hZ7Djneam6IRNyv3CLv58my/l1WQ3CllrmCsg7ndvIN9n1AtZSqGhXkTcdRr
+         ToZBuh2CuTAwkcOxUc6oRVQYO3f+++YINUT/fxnotxKIsB/j5ddOuWTux8QuFN1SplAn
+         m+tsqxwN9nBOZLYV4VoAPUQ4JfUNTOc9GGd0aV7IvC+TsEjSyxRDjFpnowceGhkunLkM
+         oxQq19J5rmFjUvq2bpoOziot3CKccb/kA2/MCnFmKSeaCMXfD63OQIqL8slsuoYCE7ZH
+         eTamlKk/0DsRMRsf5j9guzYx59BmFqG4Rkg9tmTzIfQ1FcgDri5jjJYzH3V4YhLVVnrn
+         lB3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pH0pNV8GuApEAomsf4+0GR1tuhfmS3JbNx8+GNRBn+4=;
-        b=eZG6jDbeOh0QtfwQMfzP0k2iCpOtN4uPidFbD0YeDC0nWLJhlPV6HGjv/C1lt/HwAd
-         sFuQUhy4/QXktWjdjDl8I67lFsPPjc4akiVdc+JD0+doP/W6y63EkmvP+g8fIpsoFlIB
-         wgFpf+YHPhZf88jAKwfkdW+3vn7kBjaVbcXTWX9inqTzNohEMmfQaiDL/3Y9DaensA4i
-         7I8h5dVY0iykAivclTF04xD+2FzWXJ/Pv3jEr9h0OO7TnJ14Sw25BNGzLgG2lqbOSkTd
-         pvCkBnCaJvsUpYwl7Zj+qAzRv6SgIVu2Kxt8++TYgpSNTrnBG2sqrpVWNS8qhd6HNji4
-         OaEg==
-X-Gm-Message-State: AOAM531Rv8iwN+Pra16OwHkstTy1j3IRA8IxzFJtGxj3S7AFnxEG8lMx
-        1q7vMjbdWNzFF2wE0jCItkRWQz0wBxrPfXkonhY=
-X-Google-Smtp-Source: ABdhPJyVN0bPfFXqXGLxCllZvJFtctFVqi2n6o4bY33Job+8guTHKYOSB77Gt4z/8lAEmQIWB37LLvGyShBgdCCZae4=
-X-Received: by 2002:a17:906:5e0d:: with SMTP id n13mr20303475eju.500.1608066608874;
- Tue, 15 Dec 2020 13:10:08 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3X74Gn92CmzSE0xtNR4fTjTY8tQLz8gMoh5Chc512BI=;
+        b=kfNrwNFYTC7KJE/jXI8GzOGtuYSlz13fY0pWedDq5Lsp+f6hHaJ3G1Cq0gTi/Mkqt3
+         CiOE7oX58k6mzN+SmKr06gRIlXTI6iYxHz4Nb5xchjYzioaQCTQmxgq++ScUOZyld8ZT
+         7ejpPeeCCpfrSHKOQggD1MAI1sigDrUMutoEYLx8I/6qN/CDKNDWCLEP2XMS6T1DcGyg
+         KU8Hh1NP7GXMEnntIKN2i1eKYXRA85UfcWX5HPCKaC9h/BlFbGen4eYEgL7KNKRaNZhR
+         VrXYrdDHuZWqDTFQBxjGO80uMPICpLjwg7VsbgO4dcq92YNDftNK5W6kqA3/C/XOLbYp
+         n4Ig==
+X-Gm-Message-State: AOAM533BgtMeD+CGY3de4FWNsufFae6/BwSIpyhywmWIA4V8nLtqy/Zt
+        Rxgem56xtdLrh8YNMAsHcog=
+X-Google-Smtp-Source: ABdhPJwqXcOjBiNZg04/EhQpWThWi0CPuB4RAqPLg9ArnmDMEXIbI9DANKqzmUAKfkWXBrDdMWGsvQ==
+X-Received: by 2002:a2e:9654:: with SMTP id z20mr6739941ljh.54.1608066717031;
+        Tue, 15 Dec 2020 13:11:57 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id k11sm2572079lji.95.2020.12.15.13.11.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 13:11:56 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/3] Couple improvements for Tegra clk driver
+Date:   Wed, 16 Dec 2020 00:11:47 +0300
+Message-Id: <20201215211150.21214-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201215204858.8186-1-adrien.grassein@gmail.com>
- <20201215204858.8186-4-adrien.grassein@gmail.com> <CAMty3ZD2WsFeuCnt4DEL87Ou-sxHPYiBVu1n-LoK2gEzgO3XwQ@mail.gmail.com>
-In-Reply-To: <CAMty3ZD2WsFeuCnt4DEL87Ou-sxHPYiBVu1n-LoK2gEzgO3XwQ@mail.gmail.com>
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Date:   Tue, 15 Dec 2020 22:09:58 +0100
-Message-ID: <CABkfQAHBSxUzG6+xMk=k+OR09zVDDex1NgSQK4P-sENv2tbaqw@mail.gmail.com>
-Subject: Re: [PATCH 3/6] regulator: dt-bindings: pf8x00: fix nxp,phase-shift doc
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Troy Kisky <troy.kisky@boundarydevices.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This series fixes couple minor problems of the Tegra clk driver.
+Please review and apply, thanks in advance.
 
-I agree with you, but in the DTS file you put the angle, not the
-converted value. So 0 is the minimum, 315 the max even if it's not
-reflected in the configuration register.
+Dmitry Osipenko (3):
+  clk: tegra30: Use 300MHz for video decoder by default
+  clk: tegra: Fix refcounting of gate clocks
+  clk: tegra: Ensure that PLLU configuration is applied properly
 
-Thanks,
+ drivers/clk/tegra/clk-periph-gate.c | 72 +++++++++++++++++++----------
+ drivers/clk/tegra/clk-periph.c      | 11 +++++
+ drivers/clk/tegra/clk-pll.c         |  9 ++--
+ drivers/clk/tegra/clk-tegra30.c     |  2 +-
+ 4 files changed, 63 insertions(+), 31 deletions(-)
 
-Le mar. 15 d=C3=A9c. 2020 =C3=A0 22:07, Jagan Teki <jagan@amarulasolutions.=
-com> a =C3=A9crit :
->
-> On Wed, Dec 16, 2020 at 2:19 AM Adrien Grassein
-> <adrien.grassein@gmail.com> wrote:
-> >
-> > nxp,phase-shift is an enum so use enum format to describe it.
-> > Minimum and maximum values are also wrong.
-> >
-> > Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> > ---
-> >  .../bindings/regulator/nxp,pf8x00-regulator.yaml | 16 ++++------------
-> >  1 file changed, 4 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-reg=
-ulator.yaml b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regula=
-tor.yaml
-> > index 913532d0532e..1da724c6e2ba 100644
-> > --- a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.=
-yaml
-> > +++ b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.=
-yaml
-> > @@ -60,21 +60,13 @@ properties:
-> >
-> >            nxp,phase-shift:
-> >              $ref: "/schemas/types.yaml#/definitions/uint32"
-> > -            minimum: 45
-> > -            maximum: 0
-> > +            minimum: 0
-> > +            maximum: 315
-> > +            default: 0
-> > +            enum: [ 0, 45, 90, 135, 180, 225, 270, 315 ]
->
-> Do you mean 0 is the minimum or starting value? I can see Table 48.
-> SWx phase configuration with minimum and maximum values are starting
-> from 45, 90, 135, 180, 225, 270, 315, 0 with phase bits as 0x0 to 0x7
->
-> Jagan.
+-- 
+2.29.2
+
