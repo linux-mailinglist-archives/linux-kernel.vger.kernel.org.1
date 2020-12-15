@@ -2,220 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D40442DAE92
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C23F2DAEAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgLOOJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 09:09:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727536AbgLOOJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:09:29 -0500
-X-Gm-Message-State: AOAM533QteUGsFWDPp6SLgcdtqSUrJzkPfvGsQ2jCOXg+wPR6Wtog1Hv
-        Mnq2I6ac8RmhnQQtRQ3ZkfYBSI3wVGuSxVBoUQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608041328;
-        bh=Zf3tL62s5Ng7ztuADtMxuOA4XO+KXQ6VxNTy7MYn2DI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=j67M3zhlr1wwJOrhXDDqO1jf6rRuB1uMlLd7/KYWkbb665Gn9mWmBCRMr/6v39dQz
-         RNX7aueh/cyU17W8s5SOC27DLyokcdy+0zDF81Fyt8b77lUQEgmjf8Vp78Dc0lg2AU
-         AmBJ4xwpKh5FPwsUccKa632CNIcvYp6XAf8qo+TeLoWO1rJiaK1yB1+I9iCUiEbZc3
-         Upre3y2cXF2UJSZwmNznWSh2OY40G/oju6DBYRSzF7kBhv2nbJEnevmeubCYmUnq+I
-         myju+ZW9JVGtrG0nBTwPV+yQA7KW/73M+bAVc4Is29oceSsmLo+jsLsUTx8uwKUn9u
-         D/EnlxtHVpAmg==
-X-Google-Smtp-Source: ABdhPJwP0OXxx3j1EYuOO4Gi8io0Etr4WyovrGUbyJedIT4Q3b+Beb8n6WrVkvExqtX++EeHDHh2nVTO7EhKiZtGFh0=
-X-Received: by 2002:a05:6402:352:: with SMTP id r18mr28806413edw.373.1608041326738;
- Tue, 15 Dec 2020 06:08:46 -0800 (PST)
+        id S1729375AbgLOOOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 09:14:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728893AbgLOOOK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 09:14:10 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE65BC0617A7;
+        Tue, 15 Dec 2020 06:13:29 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id r5so21134665eda.12;
+        Tue, 15 Dec 2020 06:13:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IJYSjx8moRh9VFGJMpbfz9SoxxxRTBulQgPkLgClyoQ=;
+        b=gKkDnioL4mB09Jcb2ubVk7FW0XEFNq0bRPUHe0X020/PSIVQs/kXcbe5sC2CAqctcQ
+         JNV2u31v75fMYDVcPsICIzBOXGMSTnKtjXLKyOGivvwlpGKXLogS79gi+StO866amoID
+         u3pn4ayXHSe92UCI0zfcrg95p7wS5D/aXinVn3F+3vQWJg/Q1Qsi1cpN7+KcV/cdlV1q
+         8IWqUPMzhiHEqUAxG7A71BbtBYe+EFATmqalbTKqZ4Mme4j/Ks17amilCzxZAkYh9bkG
+         rcmv74l8hvhGFjfs50JHjHE5oFO3+N5OAJc2XPrgCQMt9dpZd1XyxMLgjmjtA35MG9Gc
+         XorQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IJYSjx8moRh9VFGJMpbfz9SoxxxRTBulQgPkLgClyoQ=;
+        b=P5iDzGuf48hrIQ+YA92/ilWYqzWjBFkqY9DvKp4ewi2OJgN31cluH3Lceu9Qx7svmf
+         /GDLyJoBatShm5/sHWzhmtLp5cZvloOv3zjeoO+7B6bMK/KRWzJgN1mrE0SP4dw0vrCn
+         uO1iqUyETmOdUQ2EJmO31SMWwQNoSOD1Y+c6d7hNy1PL0cU+mAenx3w7Kn2FyJX77Pm9
+         Wj8tthgPoWyOV2ztSK1/uRxq4t+M4Urm4V/3t3ALK13q8Opy/KW1cIpchV5z0opmyg08
+         WZCTyAUTCrbh06MBypGRGazf9exbWcHfr7wsKO5klCZIdE3ZQWhS19VDWjbpuI6+5/OT
+         UDMA==
+X-Gm-Message-State: AOAM532EoHqAx3FHGfDcD1pID5CU67Nv9FKivGFYOD8Qyn7UYxQrYO2A
+        jiWbfTInzCbTMK0NBUJcAVUF0OGTkRpgXV+SgER+cdBuLthegg==
+X-Google-Smtp-Source: ABdhPJzM115PkKKUs4/mpIyUWyvmmILF+Y6Y7uxFpH7K51vgdsYhdly3ZL/p7FmwavBknIcM/id0h1DX2NYkBYC8bg0=
+X-Received: by 2002:aa7:cf8f:: with SMTP id z15mr29724056edx.17.1608041608598;
+ Tue, 15 Dec 2020 06:13:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20201214091616.13545-1-Sergey.Semin@baikalelectronics.ru>
- <20201214091616.13545-5-Sergey.Semin@baikalelectronics.ru>
- <20201214143006.GA1864564@robh.at.kernel.org> <20201215085421.v5aepprkk2iyimaw@mobilestation>
-In-Reply-To: <20201215085421.v5aepprkk2iyimaw@mobilestation>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 15 Dec 2020 08:08:35 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqK2LLGMmVMrmgK-SidhVQ0y=d-6VvrXcuK_FHmQ2ijmjg@mail.gmail.com>
-Message-ID: <CAL_JsqK2LLGMmVMrmgK-SidhVQ0y=d-6VvrXcuK_FHmQ2ijmjg@mail.gmail.com>
-Subject: Re: [PATCH 04/25] dt-bindings: net: dwmac: Refactor snps,*-config properties
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Joao Pinto <jpinto@synopsys.com>,
-        Lars Persson <larper@axis.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Vyacheslav Mitrofanov 
-        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
+References: <1595180527-11320-8-git-send-email-amittomer25@gmail.com> <1599802143-6218-1-git-send-email-amittomer25@gmail.com>
+In-Reply-To: <1599802143-6218-1-git-send-email-amittomer25@gmail.com>
+From:   Amit Tomer <amittomer25@gmail.com>
+Date:   Tue, 15 Dec 2020 19:42:52 +0530
+Message-ID: <CABHD4K_3huTchnJC9ZHK==25ePh6TOb8FgYGvWpievcwTaaWYQ@mail.gmail.com>
+Subject: Re: [PATCH v7 07/10] dt-bindings: reset: s700: Add binding constants
+ for mmc
+To:     Andre Przywara <andre.przywara@arm.com>,
+        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, sboyd@kernel.org
+Cc:     cristian.ciocaltea@gmail.com, linux-kernel@vger.kernel.org,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 2:54 AM Serge Semin
-<Sergey.Semin@baikalelectronics.ru> wrote:
->
-> Hello Rob,
->
-> On Mon, Dec 14, 2020 at 08:30:06AM -0600, Rob Herring wrote:
-> > On Mon, Dec 14, 2020 at 12:15:54PM +0300, Serge Semin wrote:
-> > > Currently the "snps,axi-config", "snps,mtl-rx-config" and
-> > > "snps,mtl-tx-config" properties are declared as a single phandle reference
-> > > to a node with corresponding parameters defined. That's not good for
-> > > several reasons. First of all scattering around a device tree some
-> > > particular device-specific configs with no visual relation to that device
-> > > isn't suitable from maintainability point of view. That leads to a
-> > > disturbed representation of the actual device tree mixing actual device
-> > > nodes and some vendor-specific configs. Secondly using the same configs
-> > > set for several device nodes doesn't represent well the devices structure,
-> > > since the interfaces these configs describe in hardware belong to
-> > > different devices and may actually differ. In the later case having the
-> > > configs node separated from the corresponding device nodes gets to be
-> > > even unjustified.
-> > >
-> > > So instead of having a separate DW *MAC configs nodes we suggest to
-> > > define them as sub-nodes of the device nodes, which interfaces they
-> > > actually describe. By doing so we'll make the DW *MAC nodes visually
-> > > correct describing all the aspects of the IP-core configuration. Thus
-> > > we'll be able to describe the configs sub-nodes bindings right in the
-> > > snps,dwmac.yaml file.
-> > >
-> > > Note the former "snps,axi-config", "snps,mtl-rx-config" and
-> > > "snps,mtl-tx-config" bindings have been marked as deprecated.
-> > >
-> > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > >
-> > > ---
-> > >
-> > > Note the current DT schema tool requires the vendor-specific properties to be
-> > > defined in accordance with the schema: dtschema/meta-schemas/vendor-props.yaml
-> > > It means the property can be;
-> > > - boolean,
-> > > - string,
-> > > - defined with $ref and additional constraints,
-> > > - defined with allOf: [ $ref ] and additional constraints.
-> > >
-> > > The modification provided by this commit needs to extend that definition to
-> > > make the DT schema tool correctly parse this schema. That is we need to let
-> > > the vendors-specific properties to also accept the oneOf-based combined
-> > > sub-schema. Like this:
-> > >
-> > > --- a/dtschema/meta-schemas/vendor-props.yaml
-> > > +++ b/dtschema/meta-schemas/vendor-props.yaml
-> > > @@ -48,15 +48,24 @@
-> > >        - properties:   # A property with a type and additional constraints
-> > >            $ref:
-> > >              pattern: "types.yaml#[\/]{0,1}definitions\/.*"
-> > > -          allOf:
-> > > -            items:
-> > > -              - properties:
-> > > +
-> > > +        if:
-> > > +          not:
-> > > +            required:
-> > > +              - $ref
-> > > +        then:
-> > > +          patternProperties:
-> > > +            "^(all|one)Of$":
-> > > +              contains:
-> > > +                properties:
-> > >                    $ref:
-> > >                      pattern: "types.yaml#[\/]{0,1}definitions\/.*"
-> > >                  required:
-> > >                    - $ref
-> > > -        oneOf:
-> > > +
-> > > +        anyOf:
-> > >            - required: [ $ref ]
-> > >            - required: [ allOf ]
-> > > +          - required: [ oneOf ]
-> > >
-> > >  ...
-> > > ---
-> > >  .../devicetree/bindings/net/snps,dwmac.yaml   | 380 +++++++++++++-----
-> > >  1 file changed, 288 insertions(+), 92 deletions(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > > index 0dd543c6c08e..44aa88151cba 100644
-> > > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > > @@ -150,69 +150,251 @@ properties:
-> > >        in a different mode than the PHY in order to function.
-> > >
-> > >    snps,axi-config:
-> > > -    $ref: /schemas/types.yaml#definitions/phandle
-> > > -    description:
-> > > -      AXI BUS Mode parameters. Phandle to a node that can contain the
-> > > -      following properties
-> > > -        * snps,lpi_en, enable Low Power Interface
-> > > -        * snps,xit_frm, unlock on WoL
-> > > -        * snps,wr_osr_lmt, max write outstanding req. limit
-> > > -        * snps,rd_osr_lmt, max read outstanding req. limit
-> > > -        * snps,kbbe, do not cross 1KiB boundary.
-> > > -        * snps,blen, this is a vector of supported burst length.
-> > > -        * snps,fb, fixed-burst
-> > > -        * snps,mb, mixed-burst
-> > > -        * snps,rb, rebuild INCRx Burst
-> > > +    description: AXI BUS Mode parameters
-> > > +    oneOf:
-> > > +      - deprecated: true
-> > > +        $ref: /schemas/types.yaml#definitions/phandle
-> > > +      - type: object
-> > > +        properties:
-> >
->
-> > Anywhere have have the same node/property string meaning 2 different
-> > things is a pain, let's not create another one.
->
-> IIUC you meant that having a node and property with the same name
-> isn't ok. Right? If so could you explain why not? especially seeing
-> the property is expected to be set with phandle reference to that
-> node. That seemed like a perfect solution to me. We wouldn't need to
-> introduce a new property/node name, but just deprecate the
-> corresponding name to be a property.
+Hi Stephen ,
 
-Right. It's also a property or node name having 2 different meanings.
-I think your schema above demonstrates the problem in that it
-unnecessarily complicates the schema. It's not such a problem here as
-it is self contained. The worst example is 'ports'. That's a container
-of graph port nodes, ethernet switch nodes or a property pointing to
-DRM graphics pipelines. If there's multiple meanings, then we can't
-apply a schema unconditionally. Or we can only check it matches one of
-the 3 definitions.
+Could you please help get this merged ?
 
-> > Just define a new node
-> > 'axi-config'. Or just put all the properties into the node directly.
-> > Grouping them has little purpose.
+Thanks
+-Amit
+
+On Fri, Sep 11, 2020 at 10:59 AM Amit Singh Tomar <amittomer25@gmail.com> wrote:
 >
-> Hm, you suggest to remove the vendor prefix, right?
-
-Yes, we don't do vendor prefixes on node names either.
-
-> If so what about
-> the rest of the changes introduced here in this patch? They concern
-> "snps,mtl-tx-config" and "snps,mtl-rx-config" properties (please note
-> these changes are a bit more complicated than once connected with
-> "snps,axi-config"). Should I remove the vendor-prefix from them too?
-
-Yes.
-
-> Anyway that seems a bit questionable, because all the "snps,*-config"
-> properties/nodes seems more vendor-specific than generic. Am I wrong
-> in that matter?
+> This commit adds device tree binding reset constants for mmc controller
+> present on Actions S700 Soc.
 >
-> If you think they are generic, then the "{axi,mtl-rx,mtl-tx}-config"
-> nodes most likely should be described in the dedicated DT schema...
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
+> ---
+> Changes since v6:
+>         * No change.
+> Changes since v5:
+>         * Added Mani's Reviewed-by: tag.
+> Changes since v4:
+>         * No change.
+> Changes since v3:
+>         * No change.
+> Changes since v2:
+>         * No change.
+> Changes since v1:
+>         * No change.
+> Changes since RFC:
+>         * added Rob's acked-by tag
+> ---
+>  include/dt-bindings/reset/actions,s700-reset.h | 3 +++
+>  1 file changed, 3 insertions(+)
 >
-> -Sergey
+> diff --git a/include/dt-bindings/reset/actions,s700-reset.h b/include/dt-bindings/reset/actions,s700-reset.h
+> index 5e3b16b8ef53..a3118de6d7aa 100644
+> --- a/include/dt-bindings/reset/actions,s700-reset.h
+> +++ b/include/dt-bindings/reset/actions,s700-reset.h
+> @@ -30,5 +30,8 @@
+>  #define RESET_UART4                            20
+>  #define RESET_UART5                            21
+>  #define RESET_UART6                            22
+> +#define RESET_SD0                              23
+> +#define RESET_SD1                              24
+> +#define RESET_SD2                              25
+>
+>  #endif /* __DT_BINDINGS_ACTIONS_S700_RESET_H */
+> --
+> 2.7.4
 >
