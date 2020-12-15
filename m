@@ -2,186 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E6C2DAEF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B532DAEFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729437AbgLOO2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 09:28:38 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:11302 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729471AbgLOO2R (ORCPT
+        id S1727879AbgLOO3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 09:29:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729584AbgLOO3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:28:17 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BFENqAT028531;
-        Tue, 15 Dec 2020 08:26:55 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=n346iSyEamQWA/gBzJXauy4oQqN9IxZ/zPmo49LvrpM=;
- b=bDnjEP+CTe7XIbUOOnAlXe82KY/+zUkVGcH+lD1sQsLhqHIo1IERgfZ6nUwztpTDf+V1
- 5low3CG/f5de+zJldwwZrZoIcCMVUD9lyRCO4vjwGB8Gwi2XX95+EkdwVwsbI4NP012/
- NWVkC7yn7M5IoJFKg/QISwItuXduXP3bm7u2l0Q4PAfgnal0wbfjHuQk0faCTdYi0cEI
- kJNy9VfpnvzOJsgb8S2FpK+Wdb8Ruuy1lcxx4nrYs+RkSqwUWaBWCK/nGSQdbYzTipLp
- 7Grb40ZiS33xGBKLFNcBCQG41V76NOtDCqmu3DtqDv8ozcum3f7y6Ed44jLPfpg0ur+G +g== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 35cu5rusw6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 15 Dec 2020 08:26:55 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 15 Dec
- 2020 14:26:54 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 15 Dec 2020 14:26:54 +0000
-Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.236])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id EF3352AB;
-        Tue, 15 Dec 2020 14:26:53 +0000 (UTC)
-Subject: Re: [PATCH v2 2/4] lib: test_scanf: Add tests for sscanf number
- conversion
-To:     Petr Mladek <pmladek@suse.com>
-CC:     <rostedt@goodmis.org>, <sergey.senozhatsky@gmail.com>,
-        <shuah@kernel.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
-References: <20201130145800.19960-1-rf@opensource.cirrus.com>
- <20201130145800.19960-2-rf@opensource.cirrus.com> <X9DcEL54k0qRayr+@alley>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <f3e97a68-71fe-c077-5add-a6c0fb397032@opensource.cirrus.com>
-Date:   Tue, 15 Dec 2020 14:26:53 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Tue, 15 Dec 2020 09:29:08 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1BCC0617A7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:28:27 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id x20so20294478lfe.12
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:28:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HdkxURvE+//a6vEq3auCmQiU3zCSIzJRBoLgXA2faA8=;
+        b=FWWM+el3iG4jml/a/S8+cAleWrZFjQaUo9/89/8OOHAILBQChQhhLwO0CB4f//95L2
+         J3sLnuHmmIy1Q0FjAPxlGaYjU7I/W5TktEpWaXkv9Tg8dvT6pUSajPhrAHwhvpwLISJN
+         iPeBFgNSEBr1wZdVxEY6UdGkE5otR9R46ktQYGWGzCtNERafVoatwM7kQdTMHvB/ITVW
+         AMKqr0OZNWjr4fgAzSxFdGYKzBD0xSeDkhTJNf/Reirluu9IOcljmt7I/edEoqcCd1r7
+         XbnyutRlov1Q43UeUF0KUoR1FiCXpxWjJGUkGqCbViKkPAXQjaP/2mRFmAq2mcYiKXH4
+         3VCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HdkxURvE+//a6vEq3auCmQiU3zCSIzJRBoLgXA2faA8=;
+        b=FxtiCAYFGrN+O+4e++4LMbUgovVgfrd5CwowHPLHbGJzC3QTBSryoxHivtcBP4WC+K
+         SfmM847UQryrzN/bj8otp4YECYNPiHN2HXBPGwPT7pcxJ2pRffCD21gE2CqXNeeO/th4
+         H7KPNvLPbRUAUSw1x+IVXokWE786qE1555NTkWtVab3xkOEwzzbLxxudV61DEAPWkNwg
+         vhRcnIFpD4C6WuczD5dUiLKeAgPWTkMIWBkaQ4y3j8/1hw0ysSbQdxnRzYNm7JypNewZ
+         ZWCKNED8X+IqJ/fFRCm/sUMR3DaA6a8nSa8ppOwHX3KkK4QucPqYAK/E3QAEEkGWgzO+
+         2Tbg==
+X-Gm-Message-State: AOAM530u2mxUVl5VYOK9xICLQMaCPYlPAcLEsO5xSiKuLKNMMbSNhIxq
+        F+3CN1+u4SDIvJVKwOcOk+D7zZr7vUPHYs57Z05NUw==
+X-Google-Smtp-Source: ABdhPJyQeMgSaqYkewzCqMDu+KKRFvrpl5evPi12xUyQ3QG5+JJM4xJ/Zlq77mWSMw52kggUexMfs6//mDGt2F4cBgI=
+X-Received: by 2002:a19:495d:: with SMTP id l29mr6969679lfj.465.1608042505945;
+ Tue, 15 Dec 2020 06:28:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <X9DcEL54k0qRayr+@alley>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 mlxscore=0
- mlxlogscore=921 suspectscore=0 spamscore=0 clxscore=1015 malwarescore=0
- impostorscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012150103
+References: <20201215135222.6899-1-digetx@gmail.com>
+In-Reply-To: <20201215135222.6899-1-digetx@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 15 Dec 2020 15:28:15 +0100
+Message-ID: <CACRpkdaUW5E-vqiy6Qghmjx_u7Sde4G18b=AsWBLmn+ARZiD2Q@mail.gmail.com>
+Subject: Re: [PATCH v1] ARM: tegra: Fix misplaced tegra_uart_config in decompressor
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 15, 2020 at 2:53 PM Dmitry Osipenko <digetx@gmail.com> wrote:
 
+> The tegra_uart_config of the DEBUG_LL code is now placed right at the
+> start of the .text section after commit which enabled debug output in the
+> decompressor. Tegra devices are not booting anymore if DEBUG_LL is enabled
+> since tegra_uart_config data is executes as a code. Fix the misplaced
+> tegra_uart_config storage by embedding it into the code.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 2596a72d3384 ("ARM: 9009/1: uncompress: Enable debug in head.S")
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-On 09/12/2020 14:15, Petr Mladek wrote:
-> On Mon 2020-11-30 14:57:58, Richard Fitzgerald wrote:
->> Adds test_sscanf to test various number conversion cases, as
->> number conversion was previously broken.
->>
->> This also tests the simple_strtoxxx() functions exported from
->> vsprintf.c.
-> 
-> It is impressive.
-> 
-> Honestly, I do not feel to be expert on testing and mathematics.
-> I am not sure how comprehensive the test is. Also I am not
-> sure what experts would say about the tricks with random
-> numbers.
-> 
-> Anyway, this is much more than what I have expected. And it checks
-> great number of variants and corner cases.
-> 
-> I suggest only one small change, see below.
-> 
->> --- /dev/null
->> +++ b/lib/test_scanf.c
->> @@ -0,0 +1,747 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Test cases for sscanf facility.
->> + */
->> +
->> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
->> +
->> +#include <linux/bitops.h>
->> +#include <linux/init.h>
->> +#include <linux/kernel.h>
->> +#include <linux/module.h>
->> +#include <linux/overflow.h>
->> +#include <linux/printk.h>
->> +#include <linux/random.h>
->> +#include <linux/slab.h>
->> +#include <linux/string.h>
->> +
->> +#include "../tools/testing/selftests/kselftest_module.h"
->> +
->> +#define BUF_SIZE 1024
->> +
->> +static unsigned total_tests __initdata;
->> +static unsigned failed_tests __initdata;
->> +static char *test_buffer __initdata;
->> +static char *fmt_buffer __initdata;
->> +static struct rnd_state rnd_state __initdata;
->> +
->> +typedef int (*check_fn)(const void *check_data, const char *string,
->> +			const char *fmt, int n_args, va_list ap);
->> +
->> +static void __scanf(4, 6) __init
->> +_test(check_fn fn, const void *check_data, const char *string, const char *fmt,
->> +	int n_args, ...)
->> +{
->> +	va_list ap, ap_copy;
->> +	int ret;
->> +
->> +	total_tests++;
->> +
->> +	va_start(ap, n_args);
->> +	va_copy(ap_copy, ap);
->> +	ret = vsscanf(string, fmt, ap_copy);
->> +	va_end(ap_copy);
->> +
->> +	if (ret != n_args) {
->> +		pr_warn("vsscanf(\"%s\", \"%s\", ...) returned %d expected %d\n",
->> +			string, fmt, ret, n_args);
->> +		goto fail;
->> +	}
->> +
->> +	ret = (*fn)(check_data, string, fmt, n_args, ap);
->> +	if (ret)
->> +		goto fail;
->> +
->> +	va_end(ap);
->> +
->> +	return;
->> +
->> +fail:
->> +	failed_tests++;
->> +	va_end(ap);
->> +}
->> +
->> +#define test_one_number(T, gen_fmt, scan_fmt, val, fn)			\
->> +do {									\
->> +	const T expect_val = (T)(val);					\
->> +	T result = ~expect_val; /* should be overwritten */		\
-> 
-> If I get it correctly, this is supposed to initialize the temporary
-> variable with a value that is different from the expected value.
-> It will cause test failure when it is not updated by vsscanf().
-> 
-> It does not work for zero value. A better solution might be to add
+Aha I see the problem.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-That's a ~, not a -
-~0 = 0xFFFFFFFF
-~-1 = 0
+Please put this into Russell's patch tracker as a fix!
 
-> a constant, for example:
-> 
-> 	T result = expect_val + 3; /* do not match when not overwritten */ \
-> 
-> I did not use "+ 1" intentionally because it might hide some overflow
-> issues.
-> 
->> +									\
->> +	snprintf(test_buffer, BUF_SIZE, gen_fmt, expect_val);		\
->> +	_test(fn, &expect_val, test_buffer, "%" scan_fmt, 1, &result);	\
->> +} while (0)
-> 
-> Otherwise, it looks good to me.
-> 
-> Best Regards,
-> Petr
-> 
+Yours,
+Linus Walleij
