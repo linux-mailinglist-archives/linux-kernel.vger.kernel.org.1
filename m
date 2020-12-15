@@ -2,131 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437232DA922
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BCF2DA927
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbgLOI0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:26:10 -0500
-Received: from ns2.baikalelectronics.com ([94.125.187.42]:50062 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726217AbgLOI0K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:26:10 -0500
-Date:   Tue, 15 Dec 2020 11:25:27 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Vyacheslav Mitrofanov 
-        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC] net: stmmac: Problem with adding the native GPIOs support
-Message-ID: <20201215082527.lqipjzastdlhzkqv@mobilestation>
-References: <20201214092516.lmbezb6hrbda6hzo@mobilestation>
- <20201214153143.GB2841266@lunn.ch>
+        id S1727065AbgLOI2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:28:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43338 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726771AbgLOI2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 03:28:35 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1608020869; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BcRdGe+BwGu/P3zGHntuQl4s/cuwIdbN+JJKDivcwsQ=;
+        b=ohfCrHHgr2quArA8JO/yaH5tWvtHs2Q3srZkxnSQgMo48bWJHDBsV4sl+7x0dsQVvSJncz
+        NcfvPc7q0OMQKQOqgg8+bHPdyfXQgmhA5NpGAJ+TYiEV+xceNyQrEJI7eJv5nKmyokN2PH
+        0y+JLdG0ud3+p17jlhJ9WWGTPpdTag0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CA69AAC7F;
+        Tue, 15 Dec 2020 08:27:48 +0000 (UTC)
+Date:   Tue, 15 Dec 2020 09:27:48 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v3 4/6] mm: honor PF_MEMALLOC_PIN for all movable pages
+Message-ID: <20201215082748.GL32193@dhcp22.suse.cz>
+References: <20201211202140.396852-1-pasha.tatashin@soleen.com>
+ <20201211202140.396852-5-pasha.tatashin@soleen.com>
+ <20201214141715.GF32193@dhcp22.suse.cz>
+ <CA+CK2bCWkPDw-Aif6iXHq15Dpa+50hmrcAk_LpMCMk30zY5aFw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201214153143.GB2841266@lunn.ch>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <CA+CK2bCWkPDw-Aif6iXHq15Dpa+50hmrcAk_LpMCMk30zY5aFw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andrew,
-
-On Mon, Dec 14, 2020 at 04:31:43PM +0100, Andrew Lunn wrote:
-> On Mon, Dec 14, 2020 at 12:25:16PM +0300, Serge Semin wrote:
-> > Hello folks,
-> > 
-> > I've got a problem, which has been blowing by head up for more than three
-> > weeks now, and I'm desperately need your help in that matter. See our
-> > Baikal-T1 SoC is created with two DW GMAC v3.73a IP-cores. Each core
-> > has been synthesized with two GPIOs: one as GPI and another as GPO. There
-> > are multiple Baikal-T1-based devices have been created so far with active
-> > GMAC interface usage and each of them has been designed like this:
-> > 
-> >  +------------------------+
-> >  | Baikal-T1 +------------+       +------------+
-> >  |   SoC     | DW GMAC    |       |   Some PHY |
-> >  |           |      Rx-clk+<------+Rx-clk      |
-> >  |           |            |       |            |
-> >  |           |         GPI+<------+#IRQ        |
-> >  |           |            |       |            |
-> >  |           |       RGMII+<----->+RGMII       |
-> >  |           |        MDIO+<----->+MDIO        |
-> >  |           |            |       |            |
-> >  |           |         GPO+------>+#RST        |
-> >  |           |            |       |            |
-> >  |           |      Tx-clk+------>+Tx-clk      |
-> >  |           |            |       |            |
-> >  |           +------------+       +------------+
-> >  +------------------------+
-> > 
-> > Each of such devices has got en external RGMII-PHY attached configured via the
-> > MDIO bus with Rx-clock supplied by the PHY and Tx-clock consumed by it. The
-> > main peculiarity of such configuration is that the DW GMAC GPIOs have been used
-> > to catch the PHY IRQs and to reset the PHY. Seeing the GPIOs support hasn't
-> > been added to the STMMAC driver it's the very first setup for now, which has
-> > been using them.
+On Tue 15-12-20 00:24:30, Pavel Tatashin wrote:
+> On Mon, Dec 14, 2020 at 9:17 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Fri 11-12-20 15:21:38, Pavel Tatashin wrote:
+> > [...]
+> > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > > index c2dea9ad0e98..4d8e7f801c66 100644
+> > > --- a/mm/page_alloc.c
+> > > +++ b/mm/page_alloc.c
+> > > @@ -3802,16 +3802,12 @@ alloc_flags_nofragment(struct zone *zone, gfp_t gfp_mask)
+> > >       return alloc_flags;
+> > >  }
+> > >
+> > > -static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
+> > > -                                     unsigned int alloc_flags)
+> > > +static inline unsigned int cma_alloc_flags(gfp_t gfp_mask,
+> > > +                                        unsigned int alloc_flags)
+> >
+> > Do you have any strong reason to rename? Even though the current
 > 
-
-> It sounds like you need to cleanly implement a GPIO controller within
-> the stmmac driver. But you probably want to make it conditional on a
-> DT property. For example, look to see if there is the
-> 'gpio-controller;'
-
-Yeap, that's what I have already done. The problem is that the
-GPOs state is getting reset together with the MAC reset. So we don't
-have a full control over the GPOs state when the MAC gets reset.
-
+> Yes :)
 > 
-> > Anyway the hardware setup depicted above doesn't seem
-> > problematic at the first glance, but in fact it is. See, the DW *MAC driver
-> > (STMMAC ethernet driver) is doing the MAC reset each time it performs the
-> > device open or resume by means of the call-chain:
-> > 
-> >   stmmac_open()---+
-> >                   +->stmmac_hw_setup()->stmmac_init_dma_engine()->stmmac_reset().
-> >   stmmac_resume()-+
-> > 
-> > Such reset causes the whole interface reset: MAC, DMA and, what is more
-> > important, GPIOs as being exposed as part of the MAC registers. That
-> > in our case automatically causes the external PHY reset, what neither
-> > the STTMAC driver nor the PHY subsystem expect at all.
+> > implementation only does something for cma I do not think this is all
+> > that important. The naming nicely fits with current_gfp_context so I
+> > would stick with it.
 > 
+> I am renaming because current->flags is removed from this function,
+> therefore keeping the name
+> becomes misleading. This function only addresses cma flag check
+> without looking at the thread local state now.
 
-> Is the reset of the GPIO sub block under software control? When you
-> have a GPIO controller implemented, you would want to disable this.
+Fair enough. I still dislike cma being called out explicitly because
+that is slightly misleading as well. gpf_to_alloc_flags would be more
+explicit I believe. But I do not want to bikeshed this to death.
 
-Not sure I've fully understood your question. The GPIO sub-block of
-the MAC is getting reset together with the MAC. So when we reset the
-MAC, the GPOs state will get reset too. Seeing the STMMAC driver
-performs the reset on open() and resume() callbacks the GPIOs gets to
-reset synchronously there too. That's the main problem. We can't
-somehow change the MAC reset behavior. So it's either to get rid of
-the reset or somehow take the results of the reset into account in
-software (like reinitialize the PHY too after it).
-
-> 
-> Once you have a GPIO controller, you can make use of the standard PHY
-> DT properties to allow the PHY driver to make use of the interrupt,
-> and to control the reset of the PHY.
-
-Yeah, that's what I initially intended to implement. If only the
-GPIO-control register wasn't reset on the MAC reset, I wouldn't even
-asked the question.
-
--Sergey
-
-> 
->      Andrew
+-- 
+Michal Hocko
+SUSE Labs
