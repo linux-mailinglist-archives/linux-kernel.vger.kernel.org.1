@@ -2,122 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FC72DAFAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E48A2DAFAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729824AbgLOPEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:04:09 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:47216 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729739AbgLOPD6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:03:58 -0500
-Received: by mail-il1-f199.google.com with SMTP id s23so16650568ilk.14
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 07:03:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=K64y2CqQPgwbni6Mi9ojRmOoEZFFw3QJ3x9ANAUnctk=;
-        b=UqpmzQeNsCXPxeK4cFn2kszYxje55knhl5J6qmgQ3gi1l+oAw90fnILaa7ItE9DcXB
-         hvfB8qjNQmAe3A/QJHfZwru8uGDFxGd9naEcnyHM4GfHY/ANCXe/1VNOl/nlofVe7k4K
-         GbBbVBuGYZuQq0hQaV6xVIv+BUlhCrpsP3HoXaB3Js3j24PO2hi5XSDqnYqY5FDBvTlt
-         iqdd4UzVdYI7VpRdyJJwzAAl4+YZ85fTpydDhLaefTdrF3bBNROx0NFGETu5aBnpq2ST
-         VmVLzC6Gfzwh7Foszz1/AI+cdbVNkYdAShaSnqB5XGYq/knPWKbB1zZXC9X9AJ8uA0rI
-         P0VQ==
-X-Gm-Message-State: AOAM532Jl4H9uDBo3rm3ek1k8HTVHGE2HbwMEsZgWXBJpzXeLVgxLaNF
-        /V6m2CbJQKb+NUPz3+OYgrIqvfeYdGo+wGbqxzs/+dP5ksRN
-X-Google-Smtp-Source: ABdhPJx0QLLOEDpvyqnnw63MJKEU6BpyO1KRdgi1yBWy4boc8sWV0fAW2I03bP9SPq0laheJ2iijH0ADbWkAd1fqs/rpRTtMuK3r
+        id S1729872AbgLOPEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:04:45 -0500
+Received: from foss.arm.com ([217.140.110.172]:45676 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729739AbgLOPEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:04:15 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BDA8E1FB;
+        Tue, 15 Dec 2020 07:03:26 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9FBCB3F66B;
+        Tue, 15 Dec 2020 07:03:25 -0800 (PST)
+References: <20201214155457.3430-1-jiangshanlai@gmail.com> <20201214155457.3430-11-jiangshanlai@gmail.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Qian Cai <cai@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 10/10] workqueue: Fix affinity of kworkers when attaching into pool
+In-reply-to: <20201214155457.3430-11-jiangshanlai@gmail.com>
+Date:   Tue, 15 Dec 2020 15:03:20 +0000
+Message-ID: <jhjczzbt8lj.mognet@arm.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:c850:: with SMTP id r16mr39004056jao.18.1608044597854;
- Tue, 15 Dec 2020 07:03:17 -0800 (PST)
-Date:   Tue, 15 Dec 2020 07:03:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000009ca4c05b6820f9a@google.com>
-Subject: UBSAN: shift-out-of-bounds in xprt_calc_majortimeo
-From:   syzbot <syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com>
-To:     anna.schumaker@netapp.com, bfields@fieldses.org,
-        chuck.lever@oracle.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        trond.myklebust@hammerspace.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+On 14/12/20 15:54, Lai Jiangshan wrote:
+> @@ -1848,11 +1848,11 @@ static void worker_attach_to_pool(struct worker *worker,
+>  {
+>       mutex_lock(&wq_pool_attach_mutex);
+>
+> -	/*
+> -	 * set_cpus_allowed_ptr() will fail if the cpumask doesn't have any
+> -	 * online CPUs.  It'll be re-applied when any of the CPUs come up.
+> -	 */
+> -	set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
+> +	/* Is there any cpu in pool->attrs->cpumask online? */
+> +	if (cpumask_any_and(pool->attrs->cpumask, wq_online_cpumask) < nr_cpu_ids)
 
-HEAD commit:    14240d4c Add linux-next specific files for 20201210
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1321cf17500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6dbe20fdaa5aaebe
-dashboard link: https://syzkaller.appspot.com/bug?extid=ba2e91df8f74809417fa
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=174ecb9b500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ff9413500000
+  if (cpumask_intersects(pool->attrs->cpumask, wq_online_cpumask))
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com
+> +		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask) < 0);
+> +	else
+> +		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
 
-================================================================================
-UBSAN: shift-out-of-bounds in net/sunrpc/xprt.c:658:14
-shift exponent 536871232 is too large for 64-bit type 'long unsigned int'
-CPU: 1 PID: 8494 Comm: syz-executor211 Not tainted 5.10.0-rc7-next-20201210-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- xprt_calc_majortimeo.isra.0.cold+0x17/0x46 net/sunrpc/xprt.c:658
- xprt_init_majortimeo net/sunrpc/xprt.c:686 [inline]
- xprt_request_init+0x486/0x9e0 net/sunrpc/xprt.c:1805
- xprt_do_reserve net/sunrpc/xprt.c:1815 [inline]
- xprt_reserve+0x18f/0x280 net/sunrpc/xprt.c:1836
- __rpc_execute+0x21d/0x1360 net/sunrpc/sched.c:891
- rpc_execute+0x230/0x350 net/sunrpc/sched.c:967
- rpc_run_task+0x5d0/0x8f0 net/sunrpc/clnt.c:1140
- rpc_call_sync+0xc6/0x1a0 net/sunrpc/clnt.c:1169
- rpc_ping net/sunrpc/clnt.c:2682 [inline]
- rpc_create_xprt+0x3f1/0x4a0 net/sunrpc/clnt.c:477
- rpc_create+0x354/0x670 net/sunrpc/clnt.c:593
- nfs_create_rpc_client+0x4eb/0x680 fs/nfs/client.c:536
- nfs_init_client fs/nfs/client.c:653 [inline]
- nfs_init_client+0x6d/0x100 fs/nfs/client.c:640
- nfs_get_client+0xcd7/0x1020 fs/nfs/client.c:430
- nfs_init_server.isra.0+0x2c0/0xed0 fs/nfs/client.c:692
- nfs_create_server+0x18f/0x650 fs/nfs/client.c:996
- nfs_try_get_tree+0x181/0x9f0 fs/nfs/super.c:939
- nfs_get_tree+0xaa1/0x1520 fs/nfs/fs_context.c:1350
- vfs_get_tree+0x89/0x2f0 fs/super.c:1496
- do_new_mount fs/namespace.c:2896 [inline]
- path_mount+0x12ae/0x1e70 fs/namespace.c:3227
- do_mount fs/namespace.c:3240 [inline]
- __do_sys_mount fs/namespace.c:3448 [inline]
- __se_sys_mount fs/namespace.c:3425 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3425
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440419
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe282dde28 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 0000000000440419
-RDX: 0000000020fb5ffc RSI: 0000000020343ff8 RDI: 0000000020000100
-RBP: 00000000006ca018 R08: 000000002000a000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401c20
-R13: 0000000000401cb0 R14: 0000000000000000 R15: 0000000000000000
-================================================================================
+So for that late-spawned per-CPU kworker case: the outgoing CPU should have
+already been cleared from wq_online_cpumask, so it gets its affinity reset
+to the possible mask and the subsequent wakeup will ensure it's put on an
+active CPU.
 
+Seems alright to me.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+>
+>       /*
+>        * The wq_pool_attach_mutex ensures %POOL_DISASSOCIATED remains
