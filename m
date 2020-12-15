@@ -2,122 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BC52DACF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:21:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6B22DAD0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729287AbgLOMUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 07:20:20 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9610 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729126AbgLOMTe (ORCPT
+        id S1729398AbgLOMVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 07:21:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729358AbgLOMV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 07:19:34 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CwHMv5QLVzM5hT;
-        Tue, 15 Dec 2020 20:18:03 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 15 Dec 2020 20:18:49 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] drm/hisilicon: Fix rmmod hibmc_drm failed
-Date:   Tue, 15 Dec 2020 20:18:59 +0800
-Message-ID: <1608034739-699-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 15 Dec 2020 07:21:27 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93DF7C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 04:20:46 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id y19so38727993lfa.13
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 04:20:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=muII2+EhsrlQ7LSgybh/KUQuhoxu6TW7ebZEi8ZaXUs=;
+        b=Mc5KAKIPsGWsYtuYm15hGWgRznq0FUtGXVP30J7vozIqRfsegWcpjr3xuO8BGX07Jz
+         JkDP+DG0mymmnbM6C8xNMeNeFa4P0r2c8gk9K0jdBai3USeKpbxRj/nvbnclj3O+Ulny
+         LfJARz9rL+VDPB2jgLLOGXgd7FhgXkDrKy8spD4h7z9fY9PmPwvCNVsnv6W98peohNYI
+         +575nEJrfHKiui8ZYD4qhr5VGWg/7MfP5okqTRv+Y//I6AF9rClLTbEOLiWjR2OQTj0E
+         edmjAI/09JWOik8cWNSnbe2RHnjZUU/QdCHDnLkj46l3X3238HHWTFU00PZ7D+Y/JMv9
+         RlpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=muII2+EhsrlQ7LSgybh/KUQuhoxu6TW7ebZEi8ZaXUs=;
+        b=fdV69Hmel7FT8QeE94KalsrSjwKAdZEoQo0E3Ya36Bnw3hLCdioWaRCOiR51zMHIsB
+         0dMPWxXwipLfKCSbpOo10NKhsHqFaqNqhwb4aM2uOztP44n1ZAd1s89Pmwk/VAPAp9S2
+         +Tec6w4D7/x4vzO3BDJul0DL6JAeihXu3Mbe8zESB51JmdP30okcAp5G9F0yzG/QGEQt
+         atxPWSQCNLJJtJXZbzi452mYJ6gPwy/a7ifVssuc7reyKgHnKJLf5XY/rAX5MrhBv9wu
+         uPAnxZaacMmC5rWBYg6tGTQXtwHwdVFwVm1FkPx/gIC/P3u931XtGRhAmIWwXbQPWiFp
+         +tHQ==
+X-Gm-Message-State: AOAM5321rXE02CxLBJqyB99U+JfnMxdgTfjbrz3qRZvB/rKwveiFHu4X
+        GTlYkjEFBvXxt0X1K+6lO5HrauufTAeoSd1A2PZbcQ==
+X-Google-Smtp-Source: ABdhPJxub0zGFqVvyvkyWV6EKot8wVecIzimdfMqyEVJRdaceaG3Jlkl7yjhIHyQBDQDuZnp+DULP9lqWDJOF+0ahlk=
+X-Received: by 2002:a19:8384:: with SMTP id f126mr10543104lfd.649.1608034845054;
+ Tue, 15 Dec 2020 04:20:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+References: <5fd76cf2.1c69fb81.6f19b.b16a@mx.google.com> <483b08f2-09c3-e753-d2ce-4e34fee627f3@collabora.com>
+In-Reply-To: <483b08f2-09c3-e753-d2ce-4e34fee627f3@collabora.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 15 Dec 2020 13:20:34 +0100
+Message-ID: <CACRpkdbozXM3FHQB9+GcPJZdNT+Vi1223m2uEqqJ21ukY1A4Gw@mail.gmail.com>
+Subject: Re: linusw/devel bisection: baseline.bootrr.mediatek-mt8173-pinctrl-probed
+ on mt8173-elm-hana
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Johan Hovold <johan@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drm_irq_uninstall should be called before pci_disable_msi, if use
-devm_drm_irq_install to register the interrupt, the system will
-call pci_disable_msi first and then call drm_irq_uninstall, which
-will result in the following callstack.
+On Mon, Dec 14, 2020 at 11:28 PM Guillaume Tucker
+<guillaume.tucker@collabora.com> wrote:
 
-This reverts commit e4401247070a37c2fce62b2773a4eb7757983938.
+> Please see the bisection report below about the pinctrl driver
+> failing to probe on the arm64 mt8173-elm-hana platform.
 
-kernel BUG at drivers/pci/msi.c:376!
-Internal error: Oops - BUG: 0 [#1] SMP
-CPU: 93 PID: 173814 Comm: rmmod Tainted:
-pstate: a0400009 (NzCv daif +PAN -UAO -TCO BTYPE=--)
-pc : free_msi_irqs+0x17c/0x1a0
-lr : free_msi_irqs+0x16c/0x1a0
-sp : ffff2028157f7bd0
-x29: ffff2028157f7bd0 x28: ffff202849edab00
-x27: 0000000000000000 x26: 0000000000000000
-x25: 0000000000000000 x24: 0000000000000000
-x23: ffff0020851da000 x22: ffff0020851da2d8
-x21: ffff0020cc829000 x20: 0000000000000000
-x19: ffff0020d6714800 x18: 0000000000000010
-x17: 0000000000000000 x16: 0000000000000000
-x15: ffffffffffffffff x14: ffff2028957f77df
-x13: ffff2028157f77ed x12: 0000000000000000
-x11: 0000000000000040 x10: ffff800011b2f8e0
-x9 : ffff800011b2f8d8 x8 : ffff2020203fc458
-x7 : 0000000000000000 x6 : 0000000000000000
-x5 : ffff2020203fc430 x4 : ffff2020203fc4a0
-x3 : 0000000000000000 x2 : 0000000000000000
-x1 : 00000000000002c9 x0 : ffff0020d6719500
-Call trace:
- free_msi_irqs+0x17c/0x1a0
- pci_disable_msi+0xe4/0x118
- hibmc_unload+0x44/0x80 [hibmc_drm]
- hibmc_pci_remove+0x2c/0x38 [hibmc_drm]
- pci_device_remove+0x48/0x108
- device_release_driver_internal+0x118/0x1f0
- driver_detach+0x6c/0xe0
- bus_remove_driver+0x74/0x100
- driver_unregister+0x34/0x60
- pci_unregister_driver+0x24/0xd8
- hibmc_pci_driver_exit+0x14/0xe768 [hibmc_drm]
- __arm64_sys_delete_module+0x1fc/0x2d0
- el0_svc_common.constprop.3+0xa8/0x188
- do_el0_svc+0x80/0xa0
- el0_sync_handler+0x8c/0xb0
- el0_sync+0x15c/0x180
-Code: f940b400 b4ffff00 a903e7b8 f90013b5 (d4210000)
----[ end trace 310d94ee8abef44f ]---
-Kernel panic - not syncing: Oops - BUG: Fatal exception
+That's an excellent, helpful report which helps a lot!
+Thank you for doing this!
 
-v2:
-update the commit log to indicate the patch that needs to be revert.
+> This is the error message:
+>
+> [    0.051788] gpio gpiochip0: Detected name collision for GPIO name ''
+> [    0.051813] gpio gpiochip0: GPIO name collision on the same chip, this is not allowed, fix all lines on the chip to have unique names
+> [    0.051832] gpiochip_add_data_with_key: GPIOs 377..511 (1000b000.pinctrl) failed to register, -17
+> [    0.051946] mediatek-mt8173-pinctrl: probe of 1000b000.pinctrl failed with error -22
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
----
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+It seems we need to teach the core to ignore the name (empty string).
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-index 7e91ef1..9b5f15c 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-@@ -251,6 +251,10 @@ static int hibmc_hw_init(struct hibmc_drm_private *priv)
- static int hibmc_unload(struct drm_device *dev)
- {
- 	drm_atomic_helper_shutdown(dev);
-+
-+	if (dev->irq_enabled)
-+		drm_irq_uninstall(dev);
-+
- 	pci_disable_msi(dev->pdev);
- 
- 	return 0;
-@@ -286,7 +290,7 @@ static int hibmc_load(struct drm_device *dev)
- 	if (ret) {
- 		drm_warn(dev, "enabling MSI failed: %d\n", ret);
- 	} else {
--		ret = devm_drm_irq_install(dev, dev->pdev->irq);
-+		ret = drm_irq_install(dev, dev->pdev->irq);
- 		if (ret)
- 			drm_warn(dev, "install irq failed: %d\n", ret);
- 	}
--- 
-2.7.4
-
+Yours,
+Linus Walleij
