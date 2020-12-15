@@ -2,118 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEFA2DAEE9
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC2A2DAEEA
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 15:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729489AbgLOO0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 09:26:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728981AbgLOOZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:25:08 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0200B2250F;
-        Tue, 15 Dec 2020 14:24:26 +0000 (UTC)
-Date:   Tue, 15 Dec 2020 09:24:25 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] sched: Prevent raising SCHED_SOFTIRQ when CPU is
- !active
-Message-ID: <20201215092425.56d815f4@gandalf.local.home>
-In-Reply-To: <20201215104400.9435-1-anna-maria@linutronix.de>
-References: <20201215104400.9435-1-anna-maria@linutronix.de>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729497AbgLOO0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 09:26:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729462AbgLOOZ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 09:25:28 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71E9C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:24:47 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id r5so21176435eda.12
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 06:24:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fLpk+0c6FuyfGY/ZPM8JLqZ7uOu3TenhRTPoyAvYEGM=;
+        b=bABxRUzF+8ZxeFd1UT+nifMCe3/bsD9P1eGnnGbiecDth0Z+o1KFOGVsOSoJ/piXIE
+         XuPG61GuEQqe6Aj6eaw2SVpZksUBg/Lwlnn6cj3T3k4/vYkSc4lQ9aS0MaleRSWwJxzZ
+         YN1WSdUWqWQ9ZF1GQZr3iWhRwlLS8GC/VMBnStAjmbf6tVtHOVzlEXIG5fbMs3KNOeWx
+         Bhe27fsPeeGf3azCz14n3Ffgo6h9BzitvM30sWW/KDyLWI25oguqYTE/tAmntQSV8I9H
+         c86KYGKniC3UIEXndhgW+GbHFhdYDLiWcrNDYijoLsQnGwSDgskTvdztQpUm7lF4HjJu
+         unZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fLpk+0c6FuyfGY/ZPM8JLqZ7uOu3TenhRTPoyAvYEGM=;
+        b=tdFIaapms6LwUJGg5auXbbkhlwptypk1Bq1W4Ewlssi1ZfGyw2HrO7jRyYukAjNAl+
+         tMb2EOLnFwZ8H/MhXKmviy9QxFWN4iV43YZ3c5cqsUV9tEc2l/Cj/4lyrIQkNeH4WhK/
+         WN1Gp8Tq15tnq5eEdHvlDMVtnE84T9sQ6Mow7YjAU80Z98l3NsKirt8hY39z3DhkgzQB
+         Deo+bvw2VL797LNqItCwTqj8mOC8nLX1ob6ctrN6UL0miZMYQFNe+55vdI9+KhZ4N1dS
+         suDktyL1E24oSZ2gV65SQBhFXINzQYw+e2ZinKk9InurJ/8mn7BwqkRAPYdwA7+nSAho
+         D0Mg==
+X-Gm-Message-State: AOAM530Y5M+w5Y++yoUg4m3nQhiklLLLbXj9F55x8G8kbY3U6SsPwhBJ
+        jcBm/0So9QU1VxXBGx+qcpgQl/r+5uG9h9ZkpM4n3pu+aW9ipot9
+X-Google-Smtp-Source: ABdhPJzHxKob1ssLVm6vrZLfegboHmbPniBwBbz7OSz4o9b90xXM3Bo0HfSHJ1jAtKSRAuumlFWY6EGplsEYfGteu/g=
+X-Received: by 2002:a05:6402:229b:: with SMTP id cw27mr29522993edb.23.1608042286116;
+ Tue, 15 Dec 2020 06:24:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201126130606.2290438-1-anders.roxell@linaro.org>
+ <8affd609-f037-8b21-853a-8b87299db044@gmx.de> <CADYN=9+pSK2SHY4ncFaseT9qz6BoTCUxi0e3poTDao4v=S_84g@mail.gmail.com>
+ <CA+G9fYtNgeOgymsVwj423eXOFP1B=mS4KKvy+1Bu3tUapXyxDA@mail.gmail.com>
+In-Reply-To: <CA+G9fYtNgeOgymsVwj423eXOFP1B=mS4KKvy+1Bu3tUapXyxDA@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 15 Dec 2020 19:54:32 +0530
+Message-ID: <CA+G9fYtgKFUsiY2x8Ue-cnO2Jr1+teQZ_3TbKC+eD9c6OpkPGg@mail.gmail.com>
+Subject: Re: [PATCH] parisc: signal: remove _SA_SIGGFAULT
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     Helge Deller <deller@gmx.de>,
+        James.Bottomley@hansenpartnership.com,
+        linux-parisc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 11:44:00 +0100
-Anna-Maria Behnsen <anna-maria@linutronix.de> wrote:
+Anders,
 
-> SCHED_SOFTIRQ is raised to trigger periodic load balancing. When CPU is not
-> active, CPU should not participate in load balancing.
-> 
-> The scheduler uses nohz.idle_cpus_mask to keep track of the CPUs which can
-> do idle load balancing. When bringing a CPU up the CPU is added to the mask
-> when it reaches the active state, but on teardown the CPU stays in the mask
-> until it goes offline and invokes sched_cpu_dying().
-> 
-> When SCHED_SOFTIRQ is raised on a !active CPU, there might be a pending
-> softirq when stopping the tick which triggers a warning in NOHZ code. The
-> SCHED_SOFTIRQ can also be raised by the scheduler tick which has the same
-> issue.
-> 
-> Therefore remove the CPU from nohz.idle_cpus_mask when it is marked
-> inactive and also prevent the scheduler_tick() from raising SCHED_SOFTIRQ
-> after this point.
-> 
+On Wed, 2 Dec 2020 at 13:31, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> Anders,
+>
+> On Fri, 27 Nov 2020 at 04:10, Anders Roxell <anders.roxell@linaro.org> wrote:
+> >
+> > On Thu, 26 Nov 2020 at 15:46, Helge Deller <deller@gmx.de> wrote:
+> > >
+> > > On 11/26/20 2:06 PM, Anders Roxell wrote:
+> > > > When building tinyconfig on parisc the following error shows up:
+> > > >
+> > > > /tmp/kernel/signal.c: In function 'do_sigaction':
+> > > > /tmp/arch/parisc/include/asm/signal.h:24:30: error: '_SA_SIGGFAULT' undeclared (first use in this function); did you mean 'SIL_FAULT'?
+> > > >  #define __ARCH_UAPI_SA_FLAGS _SA_SIGGFAULT
+> > > >                               ^~~~~~~~~~~~~
 
-Makes sense.
+I see these build failures on Linux mainline.
 
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+ref:
+https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline/-/jobs/911416687
 
--- Steve
+Steps to reproduce:
+-----------------------------
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
 
-> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> ---
->  kernel/sched/core.c | 7 ++++++-
->  kernel/sched/fair.c | 7 +++++--
->  2 files changed, 11 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 21b548b69455..69284dc121d3 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -7492,6 +7492,12 @@ int sched_cpu_deactivate(unsigned int cpu)
->  	struct rq_flags rf;
->  	int ret;
->  
-> +	/*
-> +	 * Remove CPU from nohz.idle_cpus_mask to prevent participating in
-> +	 * load balancing when not active
-> +	 */
-> +	nohz_balance_exit_idle(rq);
-> +
->  	set_cpu_active(cpu, false);
->  	/*
->  	 * We've cleared cpu_active_mask, wait for all preempt-disabled and RCU
-> @@ -7598,7 +7604,6 @@ int sched_cpu_dying(unsigned int cpu)
->  
->  	calc_load_migrate(rq);
->  	update_max_interval();
-> -	nohz_balance_exit_idle(rq);
->  	hrtick_clear(rq);
->  	return 0;
->  }
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 04a3ce20da67..fd422b8eb859 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10700,8 +10700,11 @@ static __latent_entropy void run_rebalance_domains(struct softirq_action *h)
->   */
->  void trigger_load_balance(struct rq *rq)
->  {
-> -	/* Don't need to rebalance while attached to NULL domain */
-> -	if (unlikely(on_null_domain(rq)))
-> +	/*
-> +	 * Don't need to rebalance while attached to NULL domain or
-> +	 * runqueue CPU is not active
-> +	 */
-> +	if (unlikely(on_null_domain(rq) || !cpu_active(cpu_of(rq))))
->  		return;
->  
->  	if (time_after_eq(jiffies, rq->next_balance))
 
+tuxmake --runtime docker --target-arch parisc --toolchain gcc-9
+--kconfig defconfig
+
+
+- Naresh
