@@ -2,136 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13EA92DB108
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D32B2DB110
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729634AbgLOQNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:13:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730596AbgLOQMx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:12:53 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7899C06179C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 08:12:12 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id i18so21018971ioa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 08:12:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QhmvISH3RhqLy0sRhM87D2JxNop7NLF9/+aZn3veZTQ=;
-        b=AC+Zkdpv84wFo84wfo3TYDHsaO0C7PpqnsxAuvX9wBkVqKrg0I7h1Sj8u//yVOWbwa
-         huj5P1rtFjETXTh9bEFqO0Gdq1V22rAnHDv1GjZA1RA0rpgulPb3s4YLN0oDCuw/9bYQ
-         qrV8MD44N96xYUGsokv0kPIHfo8GilMG0zQS4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QhmvISH3RhqLy0sRhM87D2JxNop7NLF9/+aZn3veZTQ=;
-        b=QP8/L4RFKjTEvngVQm/FSjb5+DiLM7EpnZWvcT00o4bFPnMADGybDrOl10oY5ig86+
-         KndDZ3Pk3grVHj9Okny8e4cety6uBfC4yl0Mzmg1AGGu2QumnrRPxm6tgTTvIA0Tw8st
-         tcwiB3tX0q3Xh5UOueKHrO3wOeZ6eXdHwSBwg/RkF8dU6U9OEtlTeS3Jo2MC0SFimm2T
-         rQutvxy7vboZ0SXod6THf6nLMbQc7prUYQsgDh1cc2BtZ2WKniDgq5Ras9cak/A+B5MX
-         HQQN8cQ97C+g5Z2YomBpNGrq/FFaFMKhtdgRswsrgRHvvTX5bjAexo77lRzRbnbpMQXg
-         FJdw==
-X-Gm-Message-State: AOAM533RAMIQYY1IaycqfiodQ4tj3xPvb0rS4NJEOwG1LDHE3ivp8w46
-        MqgOsHRujr9VRvEIsao7qVulaA==
-X-Google-Smtp-Source: ABdhPJy0fBUADBT+e4wnn9htUjE1wXC64//qtCKtv6YNcCeFtmx4rLl55N/aBacc0D3mdMl2w6gM/w==
-X-Received: by 2002:a6b:b205:: with SMTP id b5mr37081694iof.190.1608048732136;
-        Tue, 15 Dec 2020 08:12:12 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id v23sm11092816iol.21.2020.12.15.08.12.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 08:12:11 -0800 (PST)
-Subject: Re: related to fixing depreciated api
-To:     Jeffrin Jose T <jeffrin@rajagiritech.edu.in>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <e479c654b6ca08057bf18a4e1c1d1ed3cdf8fdc8.camel@rajagiritech.edu.in>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <291555f8-ed17-5ed6-8ca4-42c8d5e13be9@linuxfoundation.org>
-Date:   Tue, 15 Dec 2020 09:12:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1730399AbgLOQOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:14:02 -0500
+Received: from 95-31-39-132.broadband.corbina.ru ([95.31.39.132]:52684 "EHLO
+        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729766AbgLOQNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 11:13:47 -0500
+Received: from metamini.metanet (metamini.metanet [192.168.2.5])
+        by blackbox.su (Postfix) with ESMTP id EFE7F80496;
+        Tue, 15 Dec 2020 19:12:57 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blackbox.su; s=mail;
+        t=1608048778; bh=5K8IvY3lKlWHV9M2KlZ4zCcf8qQd74FViqIFuXxtE2g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=RXyvlQFa5jJ0nR7HBWPd3x1zTFF06vBkAme89/jH0lgToGjFFo0b5JRz6OdukBrnD
+         7ECInII0HEoR8JlcJDpuacwG3Vrh3G1S9BIElJm7uMONzo3BGjLZyT3JtlQynMt2sF
+         EsmDuMiVocxKJdCzdEGX6M86eVmTVf+0VANmuRfPa7w9mJWRQYQbb7pIcs+RfQEB8c
+         jlzAZQNpWv3CMKEdimqPjrIJAyNIHWb+fDshlJ+Atmlai8hipbVyCRpawtv3uEqPLV
+         r/LaztjQ9DlmAvuCIyW7ZieTE1VbO3/yO+pUgjvS6l0R/csPldDhKOclVN5Rg768/7
+         gPAOvHW1/jtBA==
+From:   Sergej Bauer <sbauer@blackbox.su>
+Cc:     andrew@lunn.ch, Markus.Elfring@web.de, thesven73@gmail.com,
+        sbauer@blackbox.su, Jakub Kicinski <kuba@kernel.org>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] lan743x: fix for potential NULL pointer dereference with bare card
+Date:   Tue, 15 Dec 2020 19:12:45 +0300
+Message-Id: <20201215161252.8448-1-sbauer@blackbox.su>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201127083925.4813c57a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20201127083925.4813c57a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <e479c654b6ca08057bf18a4e1c1d1ed3cdf8fdc8.camel@rajagiritech.edu.in>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/14/20 9:42 AM, Jeffrin Jose T wrote:
-> hello,
-> 
-> i have worked on to  fix  depreciated api issue from
-> tools/testing/selftests/intel_pstate/aerf.c
-> 
-> i met with the following error related...
-> 
-> --------------x------------------x----------------->
-> $pwd
-> /home/jeffrin/UP/linux-kselftest/tools/testing/selftests/intel_pstate
-> $make
-> gcc  -Wall -D_GNU_SOURCE    aperf.c /home/jeffrin/UP/linux-
-> kselftest/tools/testing/selftests/kselftest_harness.h
-> /home/jeffrin/UP/linux-kselftest/tools/testing/selftests/kselftest.h -
-> lm -o /home/jeffrin/UP/linux-
-> kselftest/tools/testing/selftests/intel_pstate/aperf
-> aperf.c: In function ‘main’:
-> aperf.c:58:2: warning: ‘ftime’ is deprecated [-Wdeprecated-
-> declarations]
->     58 |  ftime(&before);
->        |  ^~~~~
-> In file included from aperf.c:9:
-> /usr/include/x86_64-linux-gnu/sys/timeb.h:39:12: note: declared here
->     39 | extern int ftime (struct timeb *__timebuf)
->        |            ^~~~~
-> aperf.c:67:2: warning: ‘ftime’ is deprecated [-Wdeprecated-
-> declarations]
->     67 |  ftime(&after);
->        |  ^~~~~
-> In file included from aperf.c:9:
-> /usr/include/x86_64-linux-gnu/sys/timeb.h:39:12: note: declared here
->     39 | extern int ftime (struct timeb *__timebuf)
->        |            ^~~~~
-> $
-> ----------------x---------------x---------------------->
-> 
-> 
-> from ftime manual  i found that it is depreciated...
-> 
-> This  function is deprecated, and will be removed in a future version
-> of the GNU C library.  Use clock_gettime(2) instead.
-> 
-> 
-> now clock_gettime  gives  new data structure.
-> 
->   struct timespec {
->                 time_t   tv_sec;        /* seconds */
->                 long     tv_nsec;       /* nanoseconds */
->             };
-> 
-> 
-> i worked on with the new data structure and some errors that came
-> along.
-> typical final output looks good but  values of runtime and typical
-> frequency
-> does not look normal during "sudo bash run.sh".
-> 
-> output of "git diff" and  a  portion of output of   "sudo bash run.sh".
-> is attached.
-> 
+This is the 4th revision of the patch fix for potential null pointer dereference
+with lan743x card.
 
-Please send a proper patch to fix intel_pstate to use clock_gettime.
+The simpliest way to reproduce: boot with bare lan743x and issue "ethtool ethN"
+command where ethN is the interface with lan743x card. Example:
 
-thanks,
--- Shuah
+$ sudo ethtool eth7
+dmesg:
+[  103.510336] BUG: kernel NULL pointer dereference, address: 0000000000000340
+...
+[  103.510836] RIP: 0010:phy_ethtool_get_wol+0x5/0x30 [libphy]
+...
+[  103.511629] Call Trace:
+[  103.511666]  lan743x_ethtool_get_wol+0x21/0x40 [lan743x]
+[  103.511724]  dev_ethtool+0x1507/0x29d0
+[  103.511769]  ? avc_has_extended_perms+0x17f/0x440
+[  103.511820]  ? tomoyo_init_request_info+0x84/0x90
+[  103.511870]  ? tomoyo_path_number_perm+0x68/0x1e0
+[  103.511919]  ? tty_insert_flip_string_fixed_flag+0x82/0xe0
+[  103.511973]  ? inet_ioctl+0x187/0x1d0
+[  103.512016]  dev_ioctl+0xb5/0x560
+[  103.512055]  sock_do_ioctl+0xa0/0x140
+[  103.512098]  sock_ioctl+0x2cb/0x3c0
+[  103.512139]  __x64_sys_ioctl+0x84/0xc0
+[  103.512183]  do_syscall_64+0x33/0x80
+[  103.512224]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  103.512274] RIP: 0033:0x7f54a9cba427
+...
 
+Previous versions can be found at:
+v1:
+initial version
+    https://lkml.org/lkml/2020/10/28/921
+
+v2:
+do not return from lan743x_ethtool_set_wol if netdev->phydev == NULL, just skip
+the call of phy_ethtool_set_wol() instead.
+    https://lkml.org/lkml/2020/10/31/380
+
+v3:
+in function lan743x_ethtool_set_wol:
+use ternary operator instead of if-else sentence (review by Markus Elfring)
+return -ENETDOWN instead of -EIO (review by Andrew Lunn)
+
+v4:
+Sven Van Asbruck noticed that the patch was being applied cleanly to the 5.9
+branch, so the tag “Fixes” was added as Jakub suggested.
+
+Signed-off-by: Sergej Bauer <sbauer@blackbox.su>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 4d94282afd95 ("lan743x: Add power management support")
+---
+diff --git a/drivers/net/ethernet/microchip/lan743x_ethtool.c b/drivers/net/ethernet/microchip/lan743x_ethtool.c
+index dcde496da7fb..c5de8f46cdd3 100644
+--- a/drivers/net/ethernet/microchip/lan743x_ethtool.c
++++ b/drivers/net/ethernet/microchip/lan743x_ethtool.c
+@@ -780,7 +780,9 @@ static void lan743x_ethtool_get_wol(struct net_device *netdev,
+ 
+ 	wol->supported = 0;
+ 	wol->wolopts = 0;
+-	phy_ethtool_get_wol(netdev->phydev, wol);
++
++	if (netdev->phydev)
++		phy_ethtool_get_wol(netdev->phydev, wol);
+ 
+ 	wol->supported |= WAKE_BCAST | WAKE_UCAST | WAKE_MCAST |
+ 		WAKE_MAGIC | WAKE_PHY | WAKE_ARP;
+@@ -809,9 +811,8 @@ static int lan743x_ethtool_set_wol(struct net_device *netdev,
+ 
+ 	device_set_wakeup_enable(&adapter->pdev->dev, (bool)wol->wolopts);
+ 
+-	phy_ethtool_set_wol(netdev->phydev, wol);
+-
+-	return 0;
++	return netdev->phydev ? phy_ethtool_set_wol(netdev->phydev, wol)
++			: -ENETDOWN;
+ }
+ #endif /* CONFIG_PM */
+ 
