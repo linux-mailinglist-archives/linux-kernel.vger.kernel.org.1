@@ -2,152 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6DA72DB0D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6182DB0D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbgLOQC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:02:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730535AbgLOQCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:02:20 -0500
-X-Gm-Message-State: AOAM530+4WJ1aG2hHbP2t37mSuwJ4oT6bskNspQcGZOlpNFJlddUhzfI
-        9Td3TZ/mr6qAb8wbPiSdwGyEC/ufBzVhzkEabQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608048098;
-        bh=qkXORLSczMYIGgm4TRmpzxFMYrqSUAG1qScBIBBvO2w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TSkGPz9HS3BEF456KrpHsjgNO20bDWQLM4lQEIoSbIHtACo/crOcu+YrpYKLoWdZe
-         b89EgoXiEDy1bMkwyRq14RINWg2h+0hafcJrfrLT7Gw5t+dFVSh+v+KnLH5RGhrQ20
-         PJx/P4/SmbRZUMKcVDHscxd7a/bL/sMXPFCqA+E37fmZjZH0fxdl8rLBRSYPKSbrwF
-         31vIOkLk8OCPu2ezZAQBpRq1m+E1v6Cb8LUeeg5/U+0k2+seZ31InssUubTg8quqts
-         7GEbHO97MnCR2jxeGCW1tH8xSiDAKz50rO9rcMkaADP4wUfq2bi5cQkTduqMkFrrpS
-         95O/zhdwXrxPg==
-X-Google-Smtp-Source: ABdhPJwdWryKXagk9cpZnUkyQ2HJtEyx7PK81m9x3dkM+ArsS56YV4eOyna5XThKS7LWtESiqA706YAJEkxFslJwtzc=
-X-Received: by 2002:a17:906:d784:: with SMTP id pj4mr26750000ejb.360.1608048097128;
- Tue, 15 Dec 2020 08:01:37 -0800 (PST)
+        id S1730558AbgLOQDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:03:17 -0500
+Received: from mail-dm6nam08on2048.outbound.protection.outlook.com ([40.107.102.48]:35424
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730744AbgLOQCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 11:02:31 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lfVEeemUdjWYV4UHCdpvVbkOijncNUuxiRm2kyICrotImMa+biX/KQCZXoqLjO/GAidlFEMegJVY9mGJKlmbNMKcDM2sano7l35F+zS3aPuU2zBccI7Y6PJTFdV43UGDJff9LQbJa0QJC72ix6YWnKFw20FDhiquz0VddVgPfORb4ECq02L1arm4KjeRETH5DVjOTuYVQe884K0iWTWO2GimGd+R9oJF3hfioxQMckWIEvmpGXy+GS2wqgG8sx0JK41/2zAsMADrMHVaPm6NjaZuBaA156+gfyFJcIz1dTByCgmPAo/QS+NwuJV9O29Yy1YqjohWzsVrP1X1zEkkwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W4xyKNs0GxePMtB/HNGfCBKO36IWyo4y/7nsJYGSTdQ=;
+ b=neMQXTQ1Qb2CPMwP0dbULq9FQxBOYchWWs437URCa0uCGzw3N4zAYNP2cEtTcENiP59G86jCqnYhiGVnuEPOouUPANQYJpnNvkCx+MhDYbqFdPqkyi44+Bhi42AdHZW03f/ljYyxLJRvs4BIxrrFQLx4qXwaY/JdWk2Qb3miA2kcaj4j44TWks6CmqiRobpvqVzlUrL53tJ+zrSozINpaRt3fuSWlzjjiup/YShofTIWKjABxnv8nVKufErLVfxdud0z3qEGFzQybaStpgEV8TMJQkxFZeFqP5Zofeuq6pyW38LgSzDEJ8uXhmCgpHjHK8Mmu8fjdq9Pt0I0S9NLAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W4xyKNs0GxePMtB/HNGfCBKO36IWyo4y/7nsJYGSTdQ=;
+ b=dn1XM/MZQR6Z+OXtdY5eoSpqYmmNRB9Pf78+iXk8celvsucFxGfPA57DQljyMmFSP7JjDd3HWD5nxCuLu0K8nHU61HP282MGKlN8GijI2K7qCgeqvsWiYcjBwstTtbzQj4mRtA7PjyVoiI0DqivnatFAYtNUYLHd6tOtc0aI3bQ=
+Authentication-Results: alien8.de; dkim=none (message not signed)
+ header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BN7PR12MB2595.namprd12.prod.outlook.com (2603:10b6:408:30::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.17; Tue, 15 Dec
+ 2020 16:01:38 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::9df4:880c:f3f2:679d]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::9df4:880c:f3f2:679d%5]) with mapi id 15.20.3654.025; Tue, 15 Dec 2020
+ 16:01:37 +0000
+Date:   Tue, 15 Dec 2020 10:01:30 -0600
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-edac <linux-edac@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] EDAC/amd64: Merge sysfs debugging attributes setup
+ code
+Message-ID: <20201215160130.GA2122783@yaz-nikka.amd.com>
+References: <20201215110517.5215-1-bp@alien8.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215110517.5215-1-bp@alien8.de>
+X-Originating-IP: [165.204.78.2]
+X-ClientProxiedBy: DM5PR19CA0033.namprd19.prod.outlook.com
+ (2603:10b6:3:9a::19) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 MIME-Version: 1.0
-References: <20201111153559.19050-1-kishon@ti.com> <20201111153559.19050-12-kishon@ti.com>
-In-Reply-To: <20201111153559.19050-12-kishon@ti.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 15 Dec 2020 10:01:25 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+iUU0aR950fvQ7+uenBT5MVbCEU9cDg+vfyO=VugpTZA@mail.gmail.com>
-Message-ID: <CAL_Jsq+iUU0aR950fvQ7+uenBT5MVbCEU9cDg+vfyO=VugpTZA@mail.gmail.com>
-Subject: Re: [PATCH v8 11/18] PCI: cadence: Implement ->msi_map_irq() ops
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-ntb@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from yaz-nikka.amd.com (165.204.78.2) by DM5PR19CA0033.namprd19.prod.outlook.com (2603:10b6:3:9a::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Tue, 15 Dec 2020 16:01:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 0b54de71-ab70-4569-344d-08d8a112b456
+X-MS-TrafficTypeDiagnostic: BN7PR12MB2595:
+X-Microsoft-Antispam-PRVS: <BN7PR12MB2595E4361D738F31F6730EACF8C60@BN7PR12MB2595.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QRhKsrF+IS3Af5/M7i9Hx5t4o/oez72OuIuRFdXvyxgLZ+iPxBf5asIC/3viDA1Wih1yHcnAHWisOojHyNoDW4nhyU21HBno8Bw4NmBfs4O2RfXCYmj/3escmKpllY1R7ex/v7OLN3c6nY2sL0qa8hehD4PtGzV7Tg1wGMKVs/kpV9tyx47vitG9wEImxGHGEdzey0EWSlAZNsW9+0emlO8Abo/y3O1Qyla7vlbhP2pO/sgaqX5wXbro+6kmd5v+RniNbYTO+Ic0SnFlMjQHDBOtCl5dWYG77gsTabAmWEw+SrmlSBoyjKqs3kIiFYMFbqnwZcjzId3S0oxTQAV0pkkWwK2juUkzOCcQlBMhl7JvlblNAaG1Vbh27o7PyOYx
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(376002)(26005)(5660300002)(508600001)(66946007)(1076003)(33656002)(16526019)(6916009)(4744005)(55016002)(54906003)(8936002)(2906002)(52116002)(86362001)(186003)(44832011)(34490700003)(956004)(7696005)(4326008)(66556008)(8676002)(6666004)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?/pl/Rtr2NtonOMb9tIgQTd4GTthIjrhiA9CFERb72rT6I2trejpZG9Ty+eVL?=
+ =?us-ascii?Q?9I4JWk3UwHj71Y/94U/TQQfSSNbarIgPmxOo1gZnj9HOn5lWmQw2ya3yg3QO?=
+ =?us-ascii?Q?2lUSn97ySGwMPF3t1FRa2lm+NSK5zy1+digq7LJxx+G3eHTSdxTXZ54bzNYE?=
+ =?us-ascii?Q?p5wz9YOjT6VwJThyErR0lsrKFJw1FTgoxK+hYpsvnv3kT5NHm/aYLZv/OTsz?=
+ =?us-ascii?Q?OAelZdZym2XosOBSdhCjI0OOGsG6V3IVUKawOKTdNYwoQhmBKpGEZWAlOsDo?=
+ =?us-ascii?Q?EWR9zWNKl2v/5wY7dcQ6oDX/lWR+nafYZTIkBVP8suv1cyubbqDpU5QVqMd4?=
+ =?us-ascii?Q?EbOCkBT1Bvqy6/R4d7eLfQRlvGPu21ohsb2BA9YNpxQjgUg7XbvM6el/Xzun?=
+ =?us-ascii?Q?9NP+E/yY0hNK2D4k5qwtjtc6PgXUUgOxszk7L7s82shgmxEP3IQE0HfpL+Ld?=
+ =?us-ascii?Q?r6GK6JLdhzJP5Pd+fFSU93v5VxWK1rfQgn+bhkV0I6dODetfcGyiUOTGSTa3?=
+ =?us-ascii?Q?zaBBpRhwYePzXI92FPD0uvRuH6/LSErQ3n0hhMR0tm+EzUDQzbQEckAvTlga?=
+ =?us-ascii?Q?Ka9LGPpKbOpjmxcwdTpN8TRosVaPB8zoT63qtXSk2YKjjMZgiOncXmErhsAl?=
+ =?us-ascii?Q?NYJ6gMh2VSYoFwgJyvqnQ06KjTpBANvFCg2kkw4dGmmuH7nIpn5cxO4tKXA/?=
+ =?us-ascii?Q?+fon+FDG34WL1kDBKMIyhsiK/POZe8mrsDomZwGnPebAhsKOZfrTQeaQitb7?=
+ =?us-ascii?Q?OGbbnH/GzbScGaCo+znlR57qIoz9YBNae0Q1v1VglcQDb6DBiDxX/cOfNoq1?=
+ =?us-ascii?Q?wFf/OvIn/i4clfgOxAuqfKbfpvX3K5PI8F7hmhrWawLbmzCqtMvEnjPDNJhz?=
+ =?us-ascii?Q?C4ZF3G/5em0VMkILb2QdRKVX5XNTbjougkahfIeEQF16zK8Ph+hRJjb67mK+?=
+ =?us-ascii?Q?FoEFdCyV0FpkL1ISuZNOExJvpOXzEUTRjepYsqm7XEyY/yEnAseLq9EC5LYk?=
+ =?us-ascii?Q?Wj3s?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2020 16:01:37.9117
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b54de71-ab70-4569-344d-08d8a112b456
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uqnW7vz0Q/vOSXlRwgZRmbyiQxAyIJFmVu179fn4fDDae02mugEXf4ftBf9Q6E7Y4j5gAdf2VsOyCC9wIQl0RQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR12MB2595
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 9:37 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
->
-> Implement ->msi_map_irq() ops in order to map physical address to
-> MSI address and return MSI data.
->
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  .../pci/controller/cadence/pcie-cadence-ep.c  | 53 +++++++++++++++++++
->  1 file changed, 53 insertions(+)
->
-> diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> index 84cc58dc8512..1fe6b8baca97 100644
-> --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> @@ -382,6 +382,57 @@ static int cdns_pcie_ep_send_msi_irq(struct cdns_pcie_ep *ep, u8 fn,
->         return 0;
->  }
->
-> +static int cdns_pcie_ep_map_msi_irq(struct pci_epc *epc, u8 fn,
-> +                                   phys_addr_t addr, u8 interrupt_num,
-> +                                   u32 entry_size, u32 *msi_data,
-> +                                   u32 *msi_addr_offset)
-> +{
-> +       struct cdns_pcie_ep *ep = epc_get_drvdata(epc);
-> +       u32 cap = CDNS_PCIE_EP_FUNC_MSI_CAP_OFFSET;
-> +       struct cdns_pcie *pcie = &ep->pcie;
-> +       u64 pci_addr, pci_addr_mask = 0xff;
-> +       u16 flags, mme, data, data_mask;
-> +       u8 msi_count;
-> +       int ret;
-> +       int i;
-> +
+On Tue, Dec 15, 2020 at 12:05:16PM +0100, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
+> 
+> There's no need for them to be in a separate file so merge them into the
+> main driver compilation unit like the other EDAC drivers do.
+> 
+> Drop now-unneeded function export, make the function static and shorten
+> static function names.
+> 
+> No functional changes.
+> 
+> Signed-off-by: Borislav Petkov <bp@suse.de>
 
+Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
 
-> +       /* Check whether the MSI feature has been enabled by the PCI host. */
-> +       flags = cdns_pcie_ep_fn_readw(pcie, fn, cap + PCI_MSI_FLAGS);
-> +       if (!(flags & PCI_MSI_FLAGS_ENABLE))
-> +               return -EINVAL;
-> +
-> +       /* Get the number of enabled MSIs */
-> +       mme = (flags & PCI_MSI_FLAGS_QSIZE) >> 4;
-> +       msi_count = 1 << mme;
-> +       if (!interrupt_num || interrupt_num > msi_count)
-> +               return -EINVAL;
-> +
-> +       /* Compute the data value to be written. */
-> +       data_mask = msi_count - 1;
-> +       data = cdns_pcie_ep_fn_readw(pcie, fn, cap + PCI_MSI_DATA_64);
-> +       data = data & ~data_mask;
-> +
-> +       /* Get the PCI address where to write the data into. */
-> +       pci_addr = cdns_pcie_ep_fn_readl(pcie, fn, cap + PCI_MSI_ADDRESS_HI);
-> +       pci_addr <<= 32;
-> +       pci_addr |= cdns_pcie_ep_fn_readl(pcie, fn, cap + PCI_MSI_ADDRESS_LO);
-> +       pci_addr &= GENMASK_ULL(63, 2);
-
-Wouldn't all of the above be the same code for any endpoint driver? We
-just need endpoint config space accessors for the same 32-bit only
-access issues. Not asking for that in this series, but if that's the
-direction we should go.
-
-> +
-> +       for (i = 0; i < interrupt_num; i++) {
-> +               ret = cdns_pcie_ep_map_addr(epc, fn, addr,
-> +                                           pci_addr & ~pci_addr_mask,
-> +                                           entry_size);
-> +               if (ret)
-> +                       return ret;
-> +               addr = addr + entry_size;
-> +       }
-> +
-> +       *msi_data = data;
-> +       *msi_addr_offset = pci_addr & pci_addr_mask;
-> +
-> +       return 0;
-> +}
-> +
->  static int cdns_pcie_ep_send_msix_irq(struct cdns_pcie_ep *ep, u8 fn,
->                                       u16 interrupt_num)
->  {
-> @@ -481,6 +532,7 @@ static const struct pci_epc_features cdns_pcie_epc_features = {
->         .linkup_notifier = false,
->         .msi_capable = true,
->         .msix_capable = true,
-> +       .align = 256,
->  };
->
->  static const struct pci_epc_features*
-> @@ -500,6 +552,7 @@ static const struct pci_epc_ops cdns_pcie_epc_ops = {
->         .set_msix       = cdns_pcie_ep_set_msix,
->         .get_msix       = cdns_pcie_ep_get_msix,
->         .raise_irq      = cdns_pcie_ep_raise_irq,
-> +       .map_msi_irq    = cdns_pcie_ep_map_msi_irq,
->         .start          = cdns_pcie_ep_start,
->         .get_features   = cdns_pcie_ep_get_features,
->  };
-> --
-> 2.17.1
->
+Thanks,
+Yazen
