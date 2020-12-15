@@ -2,59 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F189C2DA6E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 426542DA6ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgLODlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 22:41:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47060 "EHLO mail.kernel.org"
+        id S1726163AbgLODmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 22:42:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726359AbgLODk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 22:40:56 -0500
-Content-Type: text/plain; charset="utf-8"
+        id S1726302AbgLODln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 22:41:43 -0500
+Date:   Mon, 14 Dec 2020 19:41:01 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608003608;
-        bh=IWujZ07ARRteAp9EqpsD2l7fc4a25cVrqo0WJwO8PrY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=YPzOr1BEla6VOcH8iQ0kZKm4S0nH1NRSzPkr9HlJz78xqJGsq3deYYZud/bq85g/h
-         cAmMWdQJKjmUtLyXvXNF3bQ1xS6kCBFawTdIZAW+kk1kGNBQ1Ta5mIqm7jG29781W5
-         sCUXjzRS/kFmYoeuVPaNLXaEhfCSuX0GRsi2NoGqhY5dzSDQxApz5xUVGFKfrA2MH4
-         XKOJu1e2J7LixdIJqrcUzpHkTWMOhUeoN0MbBf9tpuyc0Q4TSMPfD16c/AgF3LNiC+
-         6lcv1Y67SSIWkaNgjtJ8ioFLU25uUuMB//VnFpwZPtrHTwqFi4WXCRsQmOcYy1aPqF
-         oA3OwqDmmadYw==
+        s=k20201202; t=1608003662;
+        bh=BZ6+L14BALEBlEZN5aclup/NhEsGHeAS59yIV8zfbe8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hC7chYTiroyWToVwiWV7C4BQjbJztHO5cQY94LcrJoWL0TaN3KVLvd9TjC2qWgAbi
+         6jX7Vq52uQlhiFIxI+NEOrEoATNzN5iVweALtJQrttTxtTN6ez1QA4QuMIYWKD0BIk
+         RR8UJteZrX8IG5k4tMAhp1PSmDFS4reT4zBOTASqwFy23g90rudHIRYiJ5iBpcOz+0
+         L8IGomzskBKf+gxgBs92Kqf+UpavZFhPPqe3uvLTO2yrD46AUDpITCKCOazvI/n63x
+         lEKN/qmXc3Cjh+TKd4VW3LAyIWX8Midmwxb9nypKv9KHMp39Z32B4xYMIgl2rDJRtp
+         r09mJ2TSHcEuQ==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yonatan Linik <yonatanlinik@gmail.com>
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org, willemb@google.com,
+        john.ogness@linutronix.de, arnd@arndb.de, maowenan@huawei.com,
+        colin.king@canonical.com, orcohen@paloaltonetworks.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] net: Fix use of proc_fs
+Message-ID: <20201214194101.789109bd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201214202550.3693-2-yonatanlinik@gmail.com>
+References: <20201214202550.3693-1-yonatanlinik@gmail.com>
+        <20201214202550.3693-2-yonatanlinik@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH -next] nfc/pn533/usb: convert comma to semicolon
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160800360879.3580.5811260204240217306.git-patchwork-notify@kernel.org>
-Date:   Tue, 15 Dec 2020 03:40:08 +0000
-References: <20201214134314.4618-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20201214134314.4618-1-zhengyongjun3@huawei.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Mon, 14 Dec 2020 21:43:14 +0800 you wrote:
-> Replace a comma between expression statements by a semicolon.
+On Mon, 14 Dec 2020 22:25:50 +0200 Yonatan Linik wrote:
+> proc_fs was used, in af_packet, without a surrounding #ifdef,
+> although there is no hard dependency on proc_fs.
+> That caused the initialization of the af_packet module to fail
+> when CONFIG_PROC_FS=n.
 > 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  drivers/nfc/pn533/usb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Specifically, proc_create_net() was used in af_packet.c,
+> and when it fails, packet_net_init() returns -ENOMEM.
+> It will always fail when the kernel is compiled without proc_fs,
+> because, proc_create_net() for example always returns NULL.
+> 
+> The calling order that starts in af_packet.c is as follows:
+> packet_init()
+> register_pernet_subsys()
+> register_pernet_operations()
+> __register_pernet_operations()
+> ops_init()
+> ops->init() (packet_net_ops.init=packet_net_init())
+> proc_create_net()
+> 
+> It worked in the past because register_pernet_subsys()'s return value
+> wasn't checked before this Commit 36096f2f4fa0 ("packet: Fix error path in
+> packet_init.").
+> It always returned an error, but was not checked before, so everything
+> was working even when CONFIG_PROC_FS=n.
+> 
+> The fix here is simply to add the necessary #ifdef.
+> 
+> This also fixes a similar error in tls_proc.c, that was found by Jakub
+> Kicinski.
+> 
+> Signed-off-by: Yonatan Linik <yonatanlinik@gmail.com>
 
-Here is the summary with links:
-  - [-next] nfc/pn533/usb: convert comma to semicolon
-    https://git.kernel.org/netdev/net-next/c/102f19d611ac
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Applied, and queued for stable, thanks!
