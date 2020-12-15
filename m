@@ -2,169 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17612DA589
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 02:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A87D2DA58A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 02:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728580AbgLOB0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 20:26:52 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:36310 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725786AbgLOB0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 20:26:41 -0500
-Received: from [10.130.0.80] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxecmWENhfTmwAAA--.1002S3;
-        Tue, 15 Dec 2020 09:25:43 +0800 (CST)
-Subject: Re: [PATCH] perf callchain: Return directly when use '--call-graph
- dwarf' under !CONFIG_DWARF
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-References: <1607950615-11825-1-git-send-email-yangtiezhu@loongson.cn>
- <20201214133950.GE238399@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <4f2b3923-576b-c72d-2caa-2bdc6141f825@loongson.cn>
-Date:   Tue, 15 Dec 2020 09:25:42 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1729509AbgLOB04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 20:26:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726580AbgLOB0p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 20:26:45 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E0FC061793
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 17:26:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=hmZnhIYLcuy3j4UsuWnrlAWdET4FNutJx46YotKNVgY=; b=MK5eUcYknU902DpB/sOFcYXmeJ
+        jT2xvynlVUi0Vtn1B6Em/hny725pQcsEyh4JEz/NxEJ+tiiucH2GSSc79d0nqhOydrsD9O3xWssX4
+        44UGDw8DkVLGZwEjxdb+tdL+lpswEZnrNAQ2ofHa8CwLUama3trmuvVUWvV6a0yOiqJTy2+OyTV6L
+        bHOe6JZnHe6iAQRA6+1QbbBmtrCCKnRPyDaQBP+7v3YGybdV/eYblTTyuteEn9tlfe2RxZ3bJhiig
+        Vny1OW+4isTih+gkN3wf0chduU309HeCtirsqlgHFHM+cuQiS7iK8t5/BNiOIQ7eB38dTL0uegeTW
+        Q12sY1GQ==;
+Received: from [2601:1c0:6280:3f0::1494] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1koz6H-0004aM-2u; Tue, 15 Dec 2020 01:26:01 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH] arm: OABI compat: fix build when EPOLL is not enabled
+Date:   Mon, 14 Dec 2020 17:25:56 -0800
+Message-Id: <20201215012556.27476-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201214133950.GE238399@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxecmWENhfTmwAAA--.1002S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxCF1rXr1UAFWUZF13Gr4rXwb_yoW5KFWUpF
-        4DCF4ftwsIqr1Y9wnFvFWFgFZ5urykJr1Y9ryjyw15urs2grn7JFWxt3Wag345Xwn8Kw40
-        vrn0gF1rCwn5AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-        Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
-        WUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07Al
-        zVAYIcxG8wCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
-        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa
-        73UjIFyTuYvjfUOMKZDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/14/2020 09:39 PM, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Dec 14, 2020 at 08:56:55PM +0800, Tiezhu Yang escreveu:
->> DWARF register mappings have not been defined for some architectures,
->> at least for mips, so we can print an error message and then return
->> directly when use '--call-graph dwarf'.
->>
->> E.g. without this patch:
->>
->> [root@linux perf]# ./perf record --call-graph dwarf cd
->> Error:
->> The sys_perf_event_open() syscall returned with 89 (Function not implemented) for event (cycles).
->> /bin/dmesg | grep -i perf may provide additional information.
->>
->> With this patch:
->>
->> [root@linux perf]# ./perf record --call-graph dwarf cd
->> DWARF is not supported for architecture mips64
-> Good improvement on the message! But that .config-detected file isn't
-> available at run time, take a look if this isn't a better alternative:
+When CONFIG_EPOLL is not set/enabled, sys_oabi-compat.c has build
+errors. Fix these by surrounding them with ifdef CONFIG_EPOLL/endif
+and providing stubs for the "EPOLL is not set" case.
 
-Hi Arnaldo,
+../arch/arm/kernel/sys_oabi-compat.c: In function 'sys_oabi_epoll_ctl':
+../arch/arm/kernel/sys_oabi-compat.c:257:6: error: implicit declaration of function 'ep_op_has_event' [-Werror=implicit-function-declaration]
+  257 |  if (ep_op_has_event(op) &&
+      |      ^~~~~~~~~~~~~~~
+../arch/arm/kernel/sys_oabi-compat.c:264:9: error: implicit declaration of function 'do_epoll_ctl'; did you mean 'sys_epoll_ctl'? [-Werror=implicit-function-declaration]
+  264 |  return do_epoll_ctl(epfd, op, fd, &kernel, false);
+      |         ^~~~~~~~~~~~
 
-Thank you very much, the following code with #ifdef HAVE_DWARF_SUPPORT
-looks good and it works well on the x86 and mips arch.
+Fixes: 687ad0191488 ("[ARM] 3109/1: old ABI compat: syscall wrappers for ABI impedance matching")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com> # from an lkp .config file
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: Nicolas Pitre <nico@fluxnic.net>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+---
+or does OABI require epoll? how is that enforced?
 
-So I will send a v2 patch as soon as possible.
+ arch/arm/kernel/sys_oabi-compat.c |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-Thanks,
-Tiezhu
-
->
-> diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
-> index 1b60985690bba313..125178fd17482513 100644
-> --- a/tools/perf/util/callchain.c
-> +++ b/tools/perf/util/callchain.c
-> @@ -276,6 +276,7 @@ int parse_callchain_record(const char *arg, struct callchain_param *param)
->   
->   		/* Dwarf style */
->   		} else if (!strncmp(name, "dwarf", sizeof("dwarf"))) {
-> +#ifdef HAVE_DWARF_SUPPORT
->   			const unsigned long default_stack_dump_size = 8192;
->   
->   			ret = 0;
-> @@ -290,6 +291,15 @@ int parse_callchain_record(const char *arg, struct callchain_param *param)
->   				ret = get_stack_size(tok, &size);
->   				param->dump_size = size;
->   			}
-> +#else
-> +			struct utsname uts;
-> +
-> +			ret = uname(&uts);
-> +			pr_err("DWARF is not supported for architecture %s\n",
-> +				ret ? "unknown" : uts.machine);
-> +
-> +			return -ENOTSUP;
-> +#endif
->   		} else if (!strncmp(name, "lbr", sizeof("lbr"))) {
->   			if (!strtok_r(NULL, ",", &saveptr)) {
->   				param->record_mode = CALLCHAIN_LBR;
->
->   
->>   Usage: perf record [<options>] [<command>]
->>      or: perf record [<options>] -- <command> [<options>]
->>
->>          --call-graph <record_mode[,record_size]>
->>                            setup and enables call-graph (stack chain/backtrace):
->>
->> 				record_mode:	call graph recording mode (fp|dwarf|lbr)
->> 				record_size:	if record_mode is 'dwarf', max size of stack recording (<bytes>)
->> 						default: 8192 (bytes)
->>
->> 				Default: fp
->>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>   tools/perf/util/callchain.c | 11 +++++++++++
->>   1 file changed, 11 insertions(+)
->>
->> diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
->> index 1b60985..a8cf456 100644
->> --- a/tools/perf/util/callchain.c
->> +++ b/tools/perf/util/callchain.c
->> @@ -18,6 +18,7 @@
->>   #include <math.h>
->>   #include <linux/string.h>
->>   #include <linux/zalloc.h>
->> +#include <sys/utsname.h>
->>   
->>   #include "asm/bug.h"
->>   
->> @@ -278,6 +279,16 @@ int parse_callchain_record(const char *arg, struct callchain_param *param)
->>   		} else if (!strncmp(name, "dwarf", sizeof("dwarf"))) {
->>   			const unsigned long default_stack_dump_size = 8192;
->>   
->> +			if (system("grep -q 'CONFIG_DWARF=y' .config-detected") != 0) {
->> +				struct utsname uts;
->> +
->> +				ret = uname(&uts);
->> +				pr_err("DWARF is not supported for architecture %s\n",
->> +					ret ? "unknown" : uts.machine);
->> +
->> +				return -ENOTSUP;
->> +			}
->> +
->>   			ret = 0;
->>   			param->record_mode = CALLCHAIN_DWARF;
->>   			param->dump_size = default_stack_dump_size;
->> -- 
->> 2.1.0
->>
-
+--- linux-next-20201214.orig/arch/arm/kernel/sys_oabi-compat.c
++++ linux-next-20201214/arch/arm/kernel/sys_oabi-compat.c
+@@ -248,6 +248,7 @@ struct oabi_epoll_event {
+ 	__u64 data;
+ } __attribute__ ((packed,aligned(4)));
+ 
++#ifdef CONFIG_EPOLL
+ asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
+ 				   struct oabi_epoll_event __user *event)
+ {
+@@ -298,6 +299,20 @@ asmlinkage long sys_oabi_epoll_wait(int
+ 	kfree(kbuf);
+ 	return err ? -EFAULT : ret;
+ }
++#else
++asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
++				   struct oabi_epoll_event __user *event)
++{
++	return -EINVAL;
++}
++
++asmlinkage long sys_oabi_epoll_wait(int epfd,
++				    struct oabi_epoll_event __user *events,
++				    int maxevents, int timeout)
++{
++	return -EINVAL;
++}
++#endif
+ 
+ struct oabi_sembuf {
+ 	unsigned short	sem_num;
