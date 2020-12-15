@@ -2,49 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4ACC2DAB67
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D22C2DAB71
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727637AbgLOKtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:49:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36484 "EHLO
+        id S1728424AbgLOKvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:51:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727370AbgLOKtm (ORCPT
+        with ESMTP id S1727782AbgLOKuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:49:42 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF62C06138C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:49:01 -0800 (PST)
+        Tue, 15 Dec 2020 05:50:17 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E953C061282;
+        Tue, 15 Dec 2020 02:49:03 -0800 (PST)
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4CwFP73mT6z9sS8; Tue, 15 Dec 2020 21:48:59 +1100 (AEDT)
+        id 4CwFP90V7mz9sVM; Tue, 15 Dec 2020 21:49:00 +1100 (AEDT)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Paul Mackerras <paulus@samba.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
+To:     Colin King <colin.king@canonical.com>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        giuseppe@sguazz.it, Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <e3e0d8042a3ba75cb4a9546c19c408b5b5b28994.1607404931.git.christophe.leroy@csgroup.eu>
-References: <e3e0d8042a3ba75cb4a9546c19c408b5b5b28994.1607404931.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH v2] powerpc/powermac: Fix low_sleep_handler with CONFIG_VMAP_STACK
-Message-Id: <160802920697.504444.16573519537431837820.b4-ty@ellerman.id.au>
-Date:   Tue, 15 Dec 2020 21:48:59 +1100 (AEDT)
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20201207155420.172370-1-colin.king@canonical.com>
+References: <20201207155420.172370-1-colin.king@canonical.com>
+Subject: Re: [PATCH] powerpc: fix spelling mistake in Kconfig "seleted" -> "selected"
+Message-Id: <160802920673.504444.13601215684567124032.b4-ty@ellerman.id.au>
+Date:   Tue, 15 Dec 2020 21:49:00 +1100 (AEDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 05:24:19 +0000 (UTC), Christophe Leroy wrote:
-> low_sleep_handler() can't restore the context from standard
-> stack because the stack can hardly be accessed with MMU OFF.
-> 
-> Store everything in a global storage area instead of storing
-> a pointer to the stack in that global storage area.
-> 
-> To avoid a complete churn of the function, still use r1 as
-> the pointer to the storage area during restore.
+On Mon, 7 Dec 2020 15:54:20 +0000, Colin King wrote:
+> There is a spelling mistake in the help text of the Kconfig. Fix it.
 
 Applied to powerpc/next.
 
-[1/1] powerpc/powermac: Fix low_sleep_handler with CONFIG_VMAP_STACK
-      https://git.kernel.org/powerpc/c/db972a3787d12b1ce9ba7a31ec376d8a79e04c47
+[1/1] powerpc: fix spelling mistake in Kconfig "seleted" -> "selected"
+      https://git.kernel.org/powerpc/c/f8a4b277c3cf39ec8efe50114924a7743cc84800
 
 cheers
