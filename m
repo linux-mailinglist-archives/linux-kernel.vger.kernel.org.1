@@ -2,85 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 444FE2DAB0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 788FC2DAB66
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 11:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727234AbgLOKqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 05:46:09 -0500
-Received: from foss.arm.com ([217.140.110.172]:32798 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726512AbgLOKpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 05:45:49 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 681B91FB;
-        Tue, 15 Dec 2020 02:44:55 -0800 (PST)
-Received: from [10.57.22.20] (unknown [10.57.22.20])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 383143F66E;
-        Tue, 15 Dec 2020 02:44:54 -0800 (PST)
-Subject: Re: [PATCH] thermal/drivers/devfreq: Fix missing dependency with the
- energy model
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rui.zhang@intel.com, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org
-References: <20201215125806.31495950@canb.auug.org.au>
- <20201215083520.601988-1-daniel.lezcano@linaro.org>
- <20201215194811.0505c1c5@canb.auug.org.au>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <2110a2c5-50ac-7cc9-57e8-eb22dde5bb32@arm.com>
-Date:   Tue, 15 Dec 2020 10:44:52 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <20201215194811.0505c1c5@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1727283AbgLOKth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 05:49:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727065AbgLOKth (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 05:49:37 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E871BC06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 02:48:56 -0800 (PST)
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4CwFP306HYz9sSn; Tue, 15 Dec 2020 21:48:54 +1100 (AEDT)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <8a4ffe4798e9ea32aaaccdf85e411bb1beed3500.1605542955.git.christophe.leroy@csgroup.eu>
+References: <8a4ffe4798e9ea32aaaccdf85e411bb1beed3500.1605542955.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/32s: Handle PROTFAULT in hash_page() also for CONFIG_PPC_KUAP
+Message-Id: <160802920749.504444.12908339583780328287.b4-ty@ellerman.id.au>
+Date:   Tue, 15 Dec 2020 21:48:54 +1100 (AEDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/15/20 8:48 AM, Stephen Rothwell wrote:
-> Hi Daniel,
+On Mon, 16 Nov 2020 16:09:31 +0000 (UTC), Christophe Leroy wrote:
+> On hash 32 bits, handling minor protection faults like unsetting
+> dirty flag is heavy if done from the normal page_fault processing,
+> because it implies hash table software lookup for flushing the entry
+> and then a DSI is taken anyway to add the entry back.
 > 
-> On Tue, 15 Dec 2020 09:35:20 +0100 Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->>
->> The devfreq cooling device has been converted to use the energy model.
->>
->> Add the dependency on the ENERGY_MODEL option to reflect this change
->> and prevent build failure if the option is not set.
->>
->> Fixes: 615510fe13bd2 ("thermal: devfreq_cooling: remove old power model and use EM")
+> When KUAP was implemented, as explained in commit a68c31fc01ef
+> ("powerpc/32s: Implement Kernel Userspace Access Protection"),
+> protection faults has been diverted from hash_page() because
+> hash_page() was not able to identify a KUAP fault.
 > 
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> 
->> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->> ---
->>   drivers/thermal/Kconfig | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
->> index 7edc8dc6bbab..ee62d51ef351 100644
->> --- a/drivers/thermal/Kconfig
->> +++ b/drivers/thermal/Kconfig
->> @@ -193,6 +193,7 @@ config DEVFREQ_THERMAL
->>   	bool "Generic device cooling support"
->>   	depends on PM_DEVFREQ
->>   	depends on PM_OPP
->> +	depends on ENERGY_MODEL
->>   	help
->>   	  This implements the generic devfreq cooling mechanism through
->>   	  frequency reduction for devices using devfreq.
-> 
-> Looks good to me.
-> 
+> [...]
 
-My apologies. I've tested it on odroidxu3 with
-exynos_defconfig which has the energy model set.
+Applied to powerpc/next.
 
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+[1/1] powerpc/32s: Handle PROTFAULT in hash_page() also for CONFIG_PPC_KUAP
+      https://git.kernel.org/powerpc/c/1b03e71ff6f2bd10b45a0128ce76e0e42014a44c
 
-Regards,
-Lukasz
+cheers
