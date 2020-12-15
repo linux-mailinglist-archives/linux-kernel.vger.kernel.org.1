@@ -2,77 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09222DAD30
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:29:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B84082DAD32
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:29:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729170AbgLOM1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 07:27:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53330 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729215AbgLOM0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 07:26:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608035167; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=W/+NQPp9SmxciIO27W4TJTaEMziV4Us8QYmGpci5wz8=;
-        b=I7pIBULyYlgvQCQb2uACyroNg/x7g7yRZRQ8osRIwFf+LwlSltp1xO9j3rtNnH/XkB83xy
-        8NEbXjaNtGe6WDyPSkUp5gsdOWp0UYxvpyALuB2SJRvz1Y+GSL/Lp6p2CPub0Ivl3QzdQu
-        00/E6V/N+BxbQZyoP4wEJ2Cn5mgYG/g=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0DD0DADB3;
-        Tue, 15 Dec 2020 12:26:07 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        boris.ostrovsky@oracle.com
-Subject: [GIT PULL] xen: branch for v5.11-rc1
-Date:   Tue, 15 Dec 2020 13:26:06 +0100
-Message-Id: <20201215122606.6874-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        id S1729426AbgLOM23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 07:28:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42895 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729442AbgLOM2E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 07:28:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608035194;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p2PFWOUp6BsVeZRIR5zjR2a20420Yo7fOz47E9bHmR0=;
+        b=aphvdI4FBnvqL1y8VjiR4/27OBm3ZC5mjwI9+yeLt9sqWCBaEkP/XxtFcYg0dVRqXjFDVw
+        T4Kn2nRNngJ9UfO417SCPcB7QWpzMn/E1wXPtj4DMtwA/FS9n6mp1KaCucbX6ClgEa11vV
+        8LDcE+1EkBTi/qZ2FN0Ejgkg34APZOo=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-385-M_UxdbtmNp-NBRjk8cI0aA-1; Tue, 15 Dec 2020 07:26:30 -0500
+X-MC-Unique: M_UxdbtmNp-NBRjk8cI0aA-1
+Received: by mail-ed1-f69.google.com with SMTP id u18so9893340edy.5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 04:26:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p2PFWOUp6BsVeZRIR5zjR2a20420Yo7fOz47E9bHmR0=;
+        b=MtFw7uk0Qf+MUe6bMc+/MraMLUOJiX1tHjT+Z0yBibhXXo7gPY7F17IzqxY82vM7Zh
+         imHkEDxImEhd3GPiB2eW0YnL46zal2vNN43Bbq8hqwVLsvxtEkhj6ibVgXcOH1oWgjrq
+         9kZuHXyN9UM+Bnr6OZfJy8mxr7qEmPubupS5u9eevHThpMMn2o13xyQzh5DJt70/+xmc
+         MKV7WddeEJtn0TPhJuSABjnl1bnv90qh45k5KXW0ENNDj+ZiKB1OYx2oOXtOUjr7/YLR
+         Y0FOA2k72a63GqyjJorXQ/9m/wPiQ41nUSOX7RA6+kgtOgCBz554mBpPKdc9Wq6Yc9C6
+         C0Mg==
+X-Gm-Message-State: AOAM530PhJQe+EnzXRYZvf3Q5EtZfH9xRWPOr9Ff/FYGxSptd0RdnLs8
+        eynw/GmEu1Y8HJ+19URgJFeISIMuLtYnl2lVqhsvX6Zs4DRpwOFU4BhVN+O+bf3Up/2GbRNukkZ
+        lxmnPNkNMwTI+JEMezhhTBG3l
+X-Received: by 2002:a05:6402:2292:: with SMTP id cw18mr29573391edb.336.1608035189392;
+        Tue, 15 Dec 2020 04:26:29 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzBYKFs3TYtfdNXbnJTsoorusE8rhPx4MUeNvFWOrHdRsAheOVW0szXft9iKrTV55Mu97NNwA==
+X-Received: by 2002:a05:6402:2292:: with SMTP id cw18mr29573371edb.336.1608035189103;
+        Tue, 15 Dec 2020 04:26:29 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id s26sm17870347edc.33.2020.12.15.04.26.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 04:26:28 -0800 (PST)
+Subject: Re: [PATCH v4 0/4] Improve s0ix flows for systems i219LM
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        David Miller <davem@davemloft.net>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        Mark Pearson <mpearson@lenovo.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Netfin <sasha.neftin@intel.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Stefan Assmann <sassmann@redhat.com>,
+        "darcari@redhat.com" <darcari@redhat.com>,
+        "Shen, Yijun" <Yijun.Shen@dell.com>,
+        "Yuan, Perry" <Perry.Yuan@dell.com>,
+        "anthony.wong@canonical.com" <anthony.wong@canonical.com>
+References: <20201214153450.874339-1-mario.limonciello@dell.com>
+ <80862f70-18a4-4f96-1b96-e2fad7cc2b35@redhat.com>
+ <MN2PR19MB26376EA92CE14DC3ADD328BEFAC70@MN2PR19MB2637.namprd19.prod.outlook.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <1f68c6a4-3dcf-47fa-d3c2-679d1f7c4823@redhat.com>
+Date:   Tue, 15 Dec 2020 13:26:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <MN2PR19MB26376EA92CE14DC3ADD328BEFAC70@MN2PR19MB2637.namprd19.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hi,
 
-Please git pull the following tag:
+On 12/14/20 8:36 PM, Limonciello, Mario wrote:
+>> Hi All,
+>>
+>> Sasha (and the other intel-wired-lan folks), thank you for investigating this
+>> further and for coming up with a better solution.
+>>
+>> Mario, thank you for implementing the new scheme.
+>>
+> 
+> Sure.
+> 
+>> I've tested this patch set on a Lenovo X1C8 with vPRO and AMT enabled in the
+>> BIOS
+>> (the previous issues were soon on a X1C7).
+>>
+>> I have good and bad news:
+>>
+>> The good news is that after reverting the
+>> "e1000e: disable s0ix entry and exit flows for ME systems"
+>> I can reproduce the original issue on the X1C8 (I no longer have
+>> a X1C7 to test on).
+>>
+>> The bad news is that increasing the timeout to 1 second does
+>> not fix the issue. Suspend/resume is still broken after one
+>> suspend/resume cycle, as described in the original bug-report:
+>> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1865570
+>>
+>> More good news though, bumping the timeout to 250 poll iterations
+>> (approx 2.5 seconds) as done in Aaron Ma's original patch for
+>> this fixes this on the X1C8 just as it did on the X1C7
+>> (it takes 2 seconds for ULP_CONFIG_DONE to clear).
+>>
+>> I've ran some extra tests and the poll loop succeeds on its
+>> first iteration when an ethernet-cable is connected. It seems
+>> that Lenovo's variant of the ME firmware waits up to 2 seconds
+>> for a link, causing the long wait for ULP_CONFIG_DONE to clear.
+>>
+>> I think that for now the best fix would be to increase the timeout
+>> to 2.5 seconds as done in  Aaron Ma's original patch. Combined
+>> with a broken-firmware warning when we waited longer then 1 second,
+>> to make it clear that there is a firmware issue here and that
+>> the long wait / slow resume is not the fault of the driver.
+>>
+> 
+> OK.  I've submitted v5 with this suggestion.
+> 
+>> ###
+>>
+>> I've added Mark Pearson from Lenovo to the Cc so that Lenovo
+>> can investigate this issue further.
+>>
+>> Mark, this thread is about an issue with enabling S0ix support for
+>> e1000e (i219lm) controllers. This was enabled in the kernel a
+>> while ago, but then got disabled again on vPro / AMT enabled
+>> systems because on some systems (Lenovo X1C7 and now also X1C8)
+>> this lead to suspend/resume issues.
+>>
+>> When AMT is active then there is a handover handshake for the
+>> OS to get access to the ethernet controller from the ME. The
+>> Intel folks have checked and the Windows driver is using a timeout
+>> of 1 second for this handshake, yet on Lenovo systems this is
+>> taking 2 seconds. This likely has something to do with the
+>> ME firmware on these Lenovo models, can you get the firmware
+>> team at Lenovo to investigate this further ?
+>>
+> 
+> Please be very careful with nomenclature.  AMT active, or AMT capable?
+> The goal for this series is to support AMT capable systems with an i219LM
+> where AMT has not been provisioned by the end user or organization.
+> OEMs do not ship systems with AMD provisioned.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.11-rc1-tag
+Ah, sorry about that. What I meant with "active" is set to "Enabled"
+in the BIOS.
 
-xen: branch for v5.11-rc1
+Also FWIW I just tried disabling AMT in the BIOS (using the "Disabled"
+option, not the "Permanently Disabled" option) on the Lenovo X1 Carbon
+8th gen, but that does not make a difference.
 
-It contains fixes for security issues just having been disclosed:
+It still takes 2 seconds for ULP_CONFIG_DONE to clear even with AMT
+set to "Disabled" in the BIOS :|
 
-- a 5 patch series for fixing of XSA-349 (DoS via resource depletion in
-  Xen dom0)
+Regards,
 
-- a patch fixing XSA-350 (access of stale pointer in a Xen dom0)
+Hans
 
 
-Thanks.
-
-Juergen
-
- drivers/block/xen-blkback/xenbus.c        |  4 +++-
- drivers/net/xen-netback/xenbus.c          |  6 +++++-
- drivers/xen/xen-pciback/xenbus.c          |  2 +-
- drivers/xen/xenbus/xenbus.h               |  2 ++
- drivers/xen/xenbus/xenbus_client.c        |  8 +++++++-
- drivers/xen/xenbus/xenbus_probe.c         |  1 +
- drivers/xen/xenbus/xenbus_probe_backend.c |  7 +++++++
- drivers/xen/xenbus/xenbus_xs.c            | 34 ++++++++++++++++++++-----------
- include/xen/xenbus.h                      | 15 +++++++++++++-
- 9 files changed, 62 insertions(+), 17 deletions(-)
-
-Pawel Wieczorkiewicz (1):
-      xen-blkback: set ring->xenblkd to NULL after kthread_stop()
-
-SeongJae Park (5):
-      xen/xenbus: Allow watches discard events before queueing
-      xen/xenbus: Add 'will_handle' callback support in xenbus_watch_path()
-      xen/xenbus/xen_bus_type: Support will_handle watch callback
-      xen/xenbus: Count pending messages for each watch
-      xenbus/xenbus_backend: Disallow pending watch messages
