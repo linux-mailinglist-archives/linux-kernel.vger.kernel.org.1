@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7AEC2DACAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 13:06:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF782DAC78
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:58:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729138AbgLOMDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 07:03:44 -0500
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:6622 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729110AbgLOMDm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 07:03:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1608033822; x=1639569822;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=ZcmRdL/x2C6IXdMdzrWoHX+6NFPKIIL3q0NR1NXFeQ4=;
-  b=Y+puxdfbWDOrHGxGcYg9ObvdiwYwuR7reEs3i15jx1oY2CjlD2DgCjJQ
-   VhWV991Bt6mu40KUlX/7r/AyhaQJrAUakhNvmYb3FkcXGucTi47NvOz2n
-   96QWVVo3XVcs+YywAcCCM++1NcDcrAnkWabZlCqco/4ahmmvGVPGgAYNJ
-   8=;
-X-IronPort-AV: E=Sophos;i="5.78,420,1599523200"; 
-   d="scan'208";a="69200030"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-821c648d.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 15 Dec 2020 12:02:55 +0000
-Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-821c648d.us-east-1.amazon.com (Postfix) with ESMTPS id 353FAA07DB;
-        Tue, 15 Dec 2020 12:02:42 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.252) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 15 Dec 2020 12:02:26 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
-        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
-        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
-        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
-        <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
-        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v23 15/15] MAINTAINERS: Update for DAMON
-Date:   Tue, 15 Dec 2020 12:54:48 +0100
-Message-ID: <20201215115448.25633-16-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201215115448.25633-1-sjpark@amazon.com>
-References: <20201215115448.25633-1-sjpark@amazon.com>
+        id S1728716AbgLOL5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 06:57:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728615AbgLOL4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 06:56:54 -0500
+Date:   Tue, 15 Dec 2020 11:56:02 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608033374;
+        bh=/M1gPHhbjgtFjXVpzyyIzQbBvEuAExjx+HsjBRMWbRY=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c7rf8bArDp8KcpkW78LRNYjcres70AOcyfyBiAt1LyTHsMcbbEq3G6F9xjmvhtHGS
+         MEz0xhYqxJ18LRM8eMTKA89SCqie8tLcUQOJowOcyPzWcx+/w54LjsuPQwda4XLnz+
+         kgnQ2ExXZj/MyxQzVZJuwIJwbCrskmtubzDQ7jGDLvN8dycKW1AvoPXKcqYvvxgmlk
+         vgUaz+/8jt3IB4GxW+a/U8H2fkUutXyKWooHFHHwMeIOiRsc0fC6EfIFKy7ORq1eDc
+         1ab818dHRmdXgxHO1NsVp+spshTDJ0udtXJAqpW91YQ8lgu4hIZL6GStoGSBqvUTZl
+         oCc+fgF5cNY3Q==
+From:   Mark Brown <broonie@kernel.org>
+To:     Hsin-hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        srv_heupstream@mediatek.com, Wen Su <wen.su@mediatek.com>
+Subject: Re: [PATCH v3 5/8] regulator: mt6359: Add support for MT6359
+ regulator
+Message-ID: <20201215115602.GA4738@sirena.org.uk>
+References: <1606103290-15034-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <1606103290-15034-6-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <20201124170732.GI4933@sirena.org.uk>
+ <1608024188.29527.2.camel@mtksdaap41>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.252]
-X-ClientProxiedBy: EX13D33UWC002.ant.amazon.com (10.43.162.11) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
+Content-Disposition: inline
+In-Reply-To: <1608024188.29527.2.camel@mtksdaap41>
+X-Cookie: In specially marked packages only.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
 
-This commit updates MAINTAINERS file for DAMON related files.
+--HcAYCG3uE/tztfnV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- MAINTAINERS | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+On Tue, Dec 15, 2020 at 05:23:08PM +0800, Hsin-hsiung Wang wrote:
+> On Tue, 2020-11-24 at 17:07 +0000, Mark Brown wrote:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 281de213ef47..88b2125b0f07 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4872,6 +4872,18 @@ F:	net/ax25/ax25_out.c
- F:	net/ax25/ax25_timer.c
- F:	net/ax25/sysctl_net_ax25.c
- 
-+DATA ACCESS MONITOR
-+M:	SeongJae Park <sjpark@amazon.de>
-+L:	linux-mm@kvack.org
-+S:	Maintained
-+F:	Documentation/admin-guide/mm/damon/*
-+F:	Documentation/vm/damon/*
-+F:	include/linux/damon.h
-+F:	include/trace/events/damon.h
-+F:	mm/damon/*
-+F:	tools/damon/*
-+F:	tools/testing/selftests/damon/*
-+
- DAVICOM FAST ETHERNET (DMFE) NETWORK DRIVER
- L:	netdev@vger.kernel.org
- S:	Orphan
--- 
-2.17.1
+> > This looks like it could just be regmap_get_voltage_sel_regmap()?
+> > Otherwise the driver looks good.
 
+> Thanks for the review.
+> MT6359 regulator has sel_reg and status_reg, so we use
+> mt6359_get_linear_voltage_sel for status_reg instead of
+> regmap_get_voltage_sel_regmap() which uses sel_reg.
+
+Is the selector register not readable?  In general the rule is that the
+get should be reporting what was configured, the actual status should be
+reported separately if it can be read separately.  We don't currently
+have a mechanism for doing that with voltage but one could be added.
+
+--HcAYCG3uE/tztfnV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/YpFIACgkQJNaLcl1U
+h9CjjAf+IDONK3A5Udjly1RqCkRY5souPMpCZoh65EQM8+rD21ybKziHZCzWl7fh
+c0Ix4/TdsLHsnruxfg0nBaLrN1xuN+lP0NEHUORKwhrBynNKzWxWBH7wbCsuhE9T
+f18VvOA21BLCiEo/KbvcV7PXRo5XqTOMoNKt2cfdLAgVPViPSx5obkgQicMwXBH2
+Ye5Rg1C1B13EVTnHmIWaALLEIjxtHkTeYGsBK76H09Rj0xGJqPZ7KJZeHst05eaC
+2W4fobgNw046d+jG9SFYahZt8YQDeoa9ADGucwW/C4naZfvIdnwZidEJ4u5VaP+7
+IRWhOc4UbbZxwOXJX4OGoAtVpe1NnA==
+=HdPK
+-----END PGP SIGNATURE-----
+
+--HcAYCG3uE/tztfnV--
