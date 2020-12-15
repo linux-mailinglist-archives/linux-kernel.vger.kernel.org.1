@@ -2,158 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F2C2DA627
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2740A2DA62D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:23:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgLOCUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:20:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42828 "EHLO
+        id S1726698AbgLOCVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:21:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726700AbgLOCTN (ORCPT
+        with ESMTP id S1726820AbgLOCVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:19:13 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A9CC0617A7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:18:32 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id x16so25423648ejj.7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:18:32 -0800 (PST)
+        Mon, 14 Dec 2020 21:21:25 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1663C0617A7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:20:44 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id ga15so25429095ejb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:20:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=mime-version:from:date:message-id:subject:to:cc;
-        bh=epG8wiJEk1ZMX2bNaXtx4G2PAZzvvEvXiU4VYVabbH0=;
-        b=UDsWdaFAysTob03FiK+EApVxXkCX+rRhlkA9bnaihv6Y03By2IpV1OjJpvTBg6Yquf
-         0CIIvtiajxrLuO776i3rhBnZfS/Pyl0TUIyNBb6hnRhaay4QoUAVhcRv5oQNVAqdZbwu
-         w5eKz9fqgLvOlvBuj9r6z1lrk3m3tVC3VnpTzcIvbY8IvQzZr/S0dekG/C0TAoqpbGN3
-         mV3YZBgtx54LyqOEDnO6qveWVlI8Hs40RppalkzHd17Dy2tC/EpTihEOL1efih+CirxR
-         erZ09FaAxP5FhymaqG7wTZBWDzhuMmnFBjC+CpItQsieELQjFcHIfPoR9N2BFZIKuNn+
-         EXfg==
+        bh=oMx/l1TWqLqZ87BIv8Db4rdtLPwWK2RH0Vdx3gdzwC4=;
+        b=gsEdjSs8ZdW0UOmW7MRRgqq5TZ7+FCQ+umrKB5cfQEr9l2RLAV8jozVgPHmqi0cbHE
+         MZ3gRaxd5Iqycq1rdyIhUXT5/xiK2M7zpC3R+yH8Z2VI4xQ0cOfKNnEnfaC9O4KfM8yV
+         9+QHff8lRJVZNm51Avdwol9WNcYE0yZGIwcyaPxMJbOym2GKTTAGI3hYMslQ8SthoFnK
+         azXT1P8cH1uOJ6zOXD3M/LEbFAX8VFbFYNpgj23Gn0aFnp3NrtcZRNckED1Yta9+8/eo
+         QI05nPGdsxppf38OYg1d3icqfN4QLnA4XPC0Op0jAq8OeEn/VVg/epq3xEEfy68bwEja
+         2WjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=epG8wiJEk1ZMX2bNaXtx4G2PAZzvvEvXiU4VYVabbH0=;
-        b=uNC/In/pd6xaTNkmTWweAAyuBCQ1Nblu75V/rlymmtU9xsK6ely2AzFvQQRwIMHGST
-         9o2jW41k/Clwzca1nriPdZBk7pvWIKhn7vjSSh2BcG7MmXaPh31EHue2Cd9Mxfmv5MMo
-         JgO71UhsRcuwYQYY6713SvJ+FlY4GiUsYePFyO3xaofcaqSSRWZ+S4pEiNXs8U9a4DoB
-         P59uieaP+0a6tprXzu5uqU3pcFm9g1r684XtSTNAPYDhD7a9NJq+E1lVFJ9nf3pnFjwY
-         vPd2AYe0J8a3hslXSaNjIzneh+gOtV2mCz6yHYj5b25Vs4JFhQFeUdCD90S83jmQj4Q/
-         UTGg==
-X-Gm-Message-State: AOAM533EYVfAC2cXJ8xyVio1hF7zOzlBgjOApZ8xop/JjOrmXtx1Rzij
-        MMyKPTopPmu+ukVGvXGEmP8OZo0Jq3oBRXInfn8T
-X-Google-Smtp-Source: ABdhPJx4iUs+6Y7IRmemoXw4+mMYFmBN/WiDklGS3zYLAkW2tX/fmAKWtv6YilHMABA3Ss08dKEAollknAt58WSzqpQ=
-X-Received: by 2002:a17:906:aec6:: with SMTP id me6mr6267598ejb.542.1607998711594;
- Mon, 14 Dec 2020 18:18:31 -0800 (PST)
+        bh=oMx/l1TWqLqZ87BIv8Db4rdtLPwWK2RH0Vdx3gdzwC4=;
+        b=GKQe/oUEA7VF2/T/dC6ZpnRZ4kep48n1RvCZ5tjsCaQPWXO1jFmkODVdUCoriUJ7ym
+         q8DJnLqw0CLIYmpeYBGQntdoPsT3ggBZ4vK/MHtMcdwccaTRzCkrnY+3vEfcwxSxffWc
+         CcrDEu24I9bYM9PmYz5YgM3mXFVLNRQ/fG9wrJXyCZZ5437ITm/cuY2Oxd+YsVmuSoc7
+         Hs9HynvrWqCOnjxGf5XHfurYjPx1OjAXQvLXCqWgP+kHQIgxa6bFSIYcNxGUiS8HK7uY
+         8Y4iG2Px9KJwcU6b0zyz+pDD6aUJWLeuSQfHO3LwPn2MQ3MAgzDe2rZjley6CizDc7ye
+         mpZQ==
+X-Gm-Message-State: AOAM531nkYiSvDhCKK6LKS6fZifCS+vy2ZTsMTEvamO8/a660YnZ2G5P
+        t6OeL+ld8S845CXkxyjQ6y3UaRe0EqViYl9buI6Ka1mNlgzNIO9j
+X-Google-Smtp-Source: ABdhPJz9NO/Whj0QD2Y/oUA31StdDEGmpCwP6JNJ5pbO7Ty43A3K8NF3WHn28WsS20EZKQFQBeO2yZEgCXoRx7mftcI=
+X-Received: by 2002:a17:906:2ec3:: with SMTP id s3mr24180480eji.133.1607998842290;
+ Mon, 14 Dec 2020 18:20:42 -0800 (PST)
 MIME-Version: 1.0
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 14 Dec 2020 21:18:20 -0500
-Message-ID: <CAHC9VhT85MwDwrB_pAvU+g12SnGZ1g9Tvqr4nJqBpZfEw1GAdg@mail.gmail.com>
-Subject: [GIT PULL] SELinux patches for v5.11
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 15 Dec 2020 07:50:31 +0530
+Message-ID: <CA+G9fYtu1zOz8ErUzftNG4Dc9=cv1grsagBojJraGhm4arqXyw@mail.gmail.com>
+Subject: [stabe-rc 5.9 ] sched: core.c:7270 Illegal context switch in RCU-bh
+ read-side critical section!
+To:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>, rcu@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lkft-triage@lists.linaro.org, Netdev <netdev@vger.kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Matthew Wilcox <willy@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+There are two warnings "WARNING: suspicious RCU usage" noticed on arm64 juno-r2
+device while running selftest bpf test_tc_edt.sh and net: udpgro_bench.sh.
+These warnings are occurring intermittently.
 
-While we have a small number of SELinux patches for v5.11, there are a
-few changes worth highlighting:
+metadata:
+  git branch: linux-5.9.y
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+  git describe: v5.9.14-106-g609d95a95925
+  make_kernelversion: 5.9.15-rc1
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/juno/lkft/linux-stable-rc-5.9/58/config
 
-- Change the LSM network hooks to pass flowi_common structs instead of
-the parent flowi struct as the LSMs do not currently need the full
-flowi struct and they do not have enough information to use it safely
-(missing information on the address family).  This patch was discussed
-both with Herbert Xu (representing team netdev) and James Morris
-(representing team LSMs-other-than-SELinux).
 
-- Fix how we handle errors in inode_doinit_with_dentry() so that we
-attempt to properly label the inode on following lookups instead of
-continuing to treat it as unlabeled.
+Steps to reproduce:
+------------------
+Not easy to reproduce.
 
-- Tweak the kernel logic around allowx, auditallowx, and dontauditx
-SELinux policy statements such that the auditx/dontauditx are
-effective even without the allowx statement.
+Crash log:
+--------------
+# selftests: bpf: test_tc_edt.sh
+[  503.796362]
+[  503.797960] =============================
+[  503.802131] WARNING: suspicious RCU usage
+[  503.806232] 5.9.15-rc1 #1 Tainted: G        W
+[  503.811358] -----------------------------
+[  503.815444] /usr/src/kernel/kernel/sched/core.c:7270 Illegal
+context switch in RCU-bh read-side critical section!
+[  503.825858]
+[  503.825858] other info that might help us debug this:
+[  503.825858]
+[  503.833998]
+[  503.833998] rcu_scheduler_active = 2, debug_locks = 1
+[  503.840981] 3 locks held by kworker/u12:1/157:
+[  503.845514]  #0: ffff0009754ed538
+((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x208/0x768
+[  503.855048]  #1: ffff800013e63df0 (net_cleanup_work){+.+.}-{0:0},
+at: process_one_work+0x208/0x768
+[  503.864201]  #2: ffff8000129fe3f0 (pernet_ops_rwsem){++++}-{3:3},
+at: cleanup_net+0x64/0x3b8
+[  503.872786]
+[  503.872786] stack backtrace:
+[  503.877229] CPU: 1 PID: 157 Comm: kworker/u12:1 Tainted: G        W
+        5.9.15-rc1 #1
+[  503.885433] Hardware name: ARM Juno development board (r2) (DT)
+[  503.891382] Workqueue: netns cleanup_net
+[  503.895324] Call trace:
+[  503.897786]  dump_backtrace+0x0/0x1f8
+[  503.901464]  show_stack+0x2c/0x38
+[  503.904796]  dump_stack+0xec/0x158
+[  503.908215]  lockdep_rcu_suspicious+0xd4/0xf8
+[  503.912591]  ___might_sleep+0x1e4/0x208
+[  503.916444]  inet_twsk_purge+0x144/0x378
+[  503.920384]  tcpv6_net_exit_batch+0x20/0x28
+[  503.924585]  ops_exit_list.isra.10+0x78/0x88
+[  503.928872]  cleanup_net+0x248/0x3b8
+[  503.932462]  process_one_work+0x2b0/0x768
+[  503.936487]  worker_thread+0x48/0x498
+[  503.940166]  kthread+0x158/0x168
+[  503.943409]  ret_from_fork+0x10/0x1c
+[  504.165891] IPv6: ADDRCONF(NETDEV_CHANGE): veth_src: link becomes ready
+[  504.459624] audit: type=1334 audit(1607978673.070:40866):
+prog-id=20436 op=LOAD
+<>
+[  879.304684]
+[  879.306200] =============================
+[  879.310314] WARNING: suspicious RCU usage
+[  879.314420] 5.9.15-rc1 #1 Tainted: G        W
+[  879.319554] -----------------------------
+[  879.323644] /usr/src/kernel/kernel/sched/core.c:7270 Illegal
+context switch in RCU-sched read-side critical section!
+[  879.334259]
+[  879.334259] other info that might help us debug this:
+[  879.334259]
+[  879.342345]
+[  879.342345] rcu_scheduler_active = 2, debug_locks = 1
+[  879.348958] 3 locks held by kworker/u12:8/248:
+[  879.353483]  #0: ffff0009754ed538
+((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x208/0x768
+[  879.362910]  #1: ffff800013bc3df0 (net_cleanup_work){+.+.}-{0:0},
+at: process_one_work+0x208/0x768
+[  879.371984]  #2: ffff8000129fe3f0 (pernet_ops_rwsem){++++}-{3:3},
+at: cleanup_net+0x64/0x3b8
+[  879.380540]
+[  879.380540] stack backtrace:
+[  879.384998] CPU: 1 PID: 248 Comm: kworker/u12:8 Tainted: G        W
+        5.9.15-rc1 #1
+[  879.393201] Hardware name: ARM Juno development board (r2) (DT)
+[  879.399147] Workqueue: netns cleanup_net
+[  879.403089] Call trace:
+[  879.405550]  dump_backtrace+0x0/0x1f8
+[  879.409228]  show_stack+0x2c/0x38
+[  879.412561]  dump_stack+0xec/0x158
+# ud[  879.415980]  lockdep_rcu_suspicious+0xd4/0xf8
+[  879.420691]  ___might_sleep+0x1ac/0x208
+p tx:     32 MB/s      546 calls/[  879.424570]
+nf_ct_iterate_cleanup+0x1b8/0x2d8 [nf_conntrack]
+s    546 msg/s[  879.433190]  nf_conntrack_cleanup_net_list+0x58/0x100
+[nf_conntrack]
 
-Everything passes our test suite and as of an hour or two ago it
-applies cleanly to your tree; please merge for v5.11.
+[  879.440765]  nf_conntrack_pernet_exit+0xa8/0xb8 [nf_conntrack]
+[  879.446755]  ops_exit_list.isra.10+0x78/0x88
+[  879.451043]  cleanup_net+0x248/0x3b8
+[  879.454635]  process_one_work+0x2b0/0x768
+[  879.458661]  worker_thread+0x48/0x498
+[  879.462340]  kthread+0x158/0x168
+[  879.465584]  ret_from_fork+0x10/0x1c
 
-Thanks,
--Paul
 
---
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
- Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+Full test log link,
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.y/build/v5.9.14-106-g609d95a95925/testrun/3586574/suite/linux-log-parser/test/check-kernel-warning-2049484/log
 
-are available in the Git repository at:
-
- git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
-   tags/selinux-pr-20201214
-
-for you to fetch changes up to 3df98d79215ace13d1e91ddfc5a67a0f5acbd83f:
-
- lsm,selinux: pass flowi_common instead of flowi to the LSM hooks
-   (2020-11-23 18:36:21 -0500)
-
-----------------------------------------------------------------
-selinux/stable-5.11 PR 20201214
-
-----------------------------------------------------------------
-Gustavo A. R. Silva (1):
-     selinux: Fix fall-through warnings for Clang
-
-Ondrej Mosnacek (1):
-     selinux: drop super_block backpointer from superblock_security_struct
-
-Paul Moore (2):
-     selinux: fix inode_doinit_with_dentry() LABEL_INVALID error handling
-     lsm,selinux: pass flowi_common instead of flowi to the LSM hooks
-
-Tianyue Ren (1):
-     selinux: fix error initialization in inode_doinit_with_dentry()
-
-bauen1 (1):
-     selinux: allow dontauditx and auditallowx rules to take effect without
-       allowx
-
-.../chelsio/inline_crypto/chtls/chtls_cm.c         |  2 +-
-drivers/net/wireguard/socket.c                     |  4 ++--
-include/linux/lsm_hook_defs.h                      |  4 ++--
-include/linux/lsm_hooks.h                          |  2 +-
-include/linux/security.h                           | 23 +++++++++-------
-include/net/flow.h                                 | 10 +++++++++
-include/net/route.h                                |  6 ++---
-net/dccp/ipv4.c                                    |  2 +-
-net/dccp/ipv6.c                                    |  6 ++---
-net/ipv4/icmp.c                                    |  4 ++--
-net/ipv4/inet_connection_sock.c                    |  4 ++--
-net/ipv4/ip_output.c                               |  2 +-
-net/ipv4/ping.c                                    |  2 +-
-net/ipv4/raw.c                                     |  2 +-
-net/ipv4/syncookies.c                              |  2 +-
-net/ipv4/udp.c                                     |  2 +-
-net/ipv6/af_inet6.c                                |  2 +-
-net/ipv6/datagram.c                                |  2 +-
-net/ipv6/icmp.c                                    |  6 ++---
-net/ipv6/inet6_connection_sock.c                   |  4 ++--
-net/ipv6/netfilter/nf_reject_ipv6.c                |  2 +-
-net/ipv6/ping.c                                    |  2 +-
-net/ipv6/raw.c                                     |  2 +-
-net/ipv6/syncookies.c                              |  2 +-
-net/ipv6/tcp_ipv6.c                                |  4 ++--
-net/ipv6/udp.c                                     |  2 +-
-net/l2tp/l2tp_ip6.c                                |  2 +-
-net/netfilter/nf_synproxy_core.c                   |  2 +-
-net/xfrm/xfrm_state.c                              |  6 +++--
-security/security.c                                | 17 +++++++-------
-security/selinux/hooks.c                           | 26 ++++++++++++------
-security/selinux/include/objsec.h                  |  1 -
-security/selinux/include/xfrm.h                    |  2 +-
-security/selinux/ss/services.c                     |  4 +---
-security/selinux/xfrm.c                            | 13 ++++++-----
-35 files changed, 101 insertions(+), 77 deletions(-)
 
 -- 
-paul moore
-www.paul-moore.com
+Linaro LKFT
+https://lkft.linaro.org
