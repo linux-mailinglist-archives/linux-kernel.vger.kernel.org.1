@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6735A2DB11B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:17:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B262DB11E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 17:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730849AbgLOQQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 11:16:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730517AbgLOQQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:16:03 -0500
-X-Gm-Message-State: AOAM530J6vbuNBZbZuD7UCGHv3AJSSDSYuihK3P4V4WX9E4pjTRcYrhw
-        58s9XWp0ouHAKRcQlx0SpNwDWHJM6ZXBnrRwNgyPvQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608048922;
-        bh=NSmRzlg/JQLFlqEfSVhG0M93gbE91QssCPAEe8Ycpjk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lYDhqIbLEu3n2CkajFDk2CI/IYkWFxMVFbmfTyb4FgMGhkkt15705cBxpvU7m8oKp
-         J+St9zJxLc9kW+vywdYdrVVqVJU2RY/p6DxE11DuIfcApW21Bbk9JoPKacyaHDJMc7
-         2Bp5f94AIYtKEANjqxkJMO7cgGLiT2HETDL6KR4gYmyIixg9g0hLeeliCxrjko5KTe
-         T2ldKdWhK13SIcjR4Y+ghanB7SAckTRU3MCHW00548Au/ASkraxRrgdeZ8RjsJLSpS
-         IqF5/2aLj/3Lc+sTy2zWv8wbaRMAN4afMPvfYM/bxxAhxHS/dDWEDV535aX9e9O+si
-         oEkxWTvYC/Bpg==
-X-Google-Smtp-Source: ABdhPJxDl85bST73mTnx1jeOrEu2XGSd20J2aEeSCjyo8qMWFulGV5ssjOPBTDcdE+AqtYtZJJV89DR0vsrPjwYVJbU=
-X-Received: by 2002:a5d:4905:: with SMTP id x5mr19245025wrq.75.1608048920820;
- Tue, 15 Dec 2020 08:15:20 -0800 (PST)
+        id S1730984AbgLOQRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 11:17:34 -0500
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:46026 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730839AbgLOQRT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 11:17:19 -0500
+Received: by mail-oo1-f67.google.com with SMTP id o5so1139505oop.12;
+        Tue, 15 Dec 2020 08:17:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JCp0YIgPUuzIMIdJ9vQl9c0q2/kiCX2Sl1pTBGFGABg=;
+        b=sYHyrSQRgyWzSN8whiiQgyrLv98Fx6ooT3ONeQ+85cZvW7vNJeR4EJxHLh9SYzhuGI
+         beiQreiANAxOurXJkQ3fh5nl3Iv8BmHFyJyASpTGyjOEXmYFsnBk2wd/u/dJBaF1YGw0
+         awXdVm82+/J23cZrQ7D5rUazKagoEmczgy7sxt2y9hRi24o0arkxmUW2h+OJ3cs/8py9
+         HVJZxg0Z8lBZWdirhii9ZzWNGpYhN++XCh5xEyCoUyG/SC8Wic2+m+nNXrffouwtV6u7
+         bYGTXHr/z2SySdUy+iJa2w2ZlBvO2uq+LYexWxltOvz9Hk2Cdl8vAzdX4lmkZkYMg9us
+         Um9w==
+X-Gm-Message-State: AOAM530L8LQACbAZRZ6PRD5bNvhEsYs/RxNwrm5qKLDeqIMPo2q4w5rK
+        fuj7/bqnw4qOO4T67Stkww==
+X-Google-Smtp-Source: ABdhPJxCHnIh4PidpUMSVjSkEq+/wiiHBcx7VoFDsQFXpS7PW6w+e0euJuxIjTLgLSazMzFYrDwwCA==
+X-Received: by 2002:a4a:e1b5:: with SMTP id 21mr23174996ooy.64.1608048998308;
+        Tue, 15 Dec 2020 08:16:38 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s139sm5122420oih.10.2020.12.15.08.16.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 08:16:37 -0800 (PST)
+Received: (nullmailer pid 3955309 invoked by uid 1000);
+        Tue, 15 Dec 2020 16:16:36 -0000
+Date:   Tue, 15 Dec 2020 10:16:36 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     devicetree@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [RFC PATCH 01/12] dt-bindings: clock: sunxi-ng: add compatible
+ for V831/V833 CCU
+Message-ID: <20201215161636.GA3955251@robh.at.kernel.org>
+References: <20201212040157.3639864-1-icenowy@aosc.io>
+ <20201212040157.3639864-2-icenowy@aosc.io>
 MIME-Version: 1.0
-References: <20201215160314.18773-1-info@metux.net>
-In-Reply-To: <20201215160314.18773-1-info@metux.net>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 15 Dec 2020 08:15:09 -0800
-X-Gmail-Original-Message-ID: <CALCETrWukL-wMnq==-V4dvh_Q+h_sRvJBuTF3jQtHPo4MZ3AQA@mail.gmail.com>
-Message-ID: <CALCETrWukL-wMnq==-V4dvh_Q+h_sRvJBuTF3jQtHPo4MZ3AQA@mail.gmail.com>
-Subject: Re: [PATCH] arch: x86: entry: vdso: fix type conversion on printf() call
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201212040157.3639864-2-icenowy@aosc.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 8:03 AM Enrico Weigelt, metux IT consult
-<info@metux.net> wrote:
->
-> Fixing the following compiler warning by explicit conversion to long:
->
-> In file included from /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.c:162:0:
-> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h: In function 'extract64':
-> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t {aka unsigned int}' [-Wformat=]
->   fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
->                                                     ^
->   CC      mm/filemap.o
-> In file included from /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.c:166:0:
-> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h: In function 'extract32':
-> /home/nekrad/src/apu2-dev/pkg/kernel.apu2.git/arch/x86/entry/vdso/vdso2c.h:38:52: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t {aka unsigned int}' [-Wformat=]
->   fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
->
-> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+On Sat, 12 Dec 2020 12:01:57 +0800, Icenowy Zheng wrote:
+> V831/V833 has a CCU similar to the ones on H6/A100.
+> 
+> Add a compatible string for it.
+> 
+> As the user manual do not mention the difference between V831 and V833
+> in the CCU chapter, only a single compatible string for V833
+> (full-functional chip) is made.
+> 
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
 > ---
->  arch/x86/entry/vdso/vdso2c.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/entry/vdso/vdso2c.h b/arch/x86/entry/vdso/vdso2c.h
-> index 1c7cfac7e64a..5c6a4bbc63f9 100644
-> --- a/arch/x86/entry/vdso/vdso2c.h
-> +++ b/arch/x86/entry/vdso/vdso2c.h
-> @@ -35,7 +35,8 @@ static void BITSFUNC(extract)(const unsigned char *data, size_t data_len,
->         if (offset + len > data_len)
->                 fail("section to extract overruns input data");
->
-> -       fprintf(outfile, "static const unsigned char %s[%lu] = {", name, len);
-> +       fprintf(outfile, "static const unsigned char %s[%lu] = {", name,
-> +               (unsigned long)len);
+>  .../devicetree/bindings/clock/allwinner,sun4i-a10-ccu.yaml      | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-This would be nicer if you put the line break after the equal sign and
-before the {.
-
---Andy
+Acked-by: Rob Herring <robh@kernel.org>
