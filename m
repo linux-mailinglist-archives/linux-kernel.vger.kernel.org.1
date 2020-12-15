@@ -2,56 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357A12DA615
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF51A2DA617
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgLOCRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:17:09 -0500
-Received: from ozlabs.org ([203.11.71.1]:49669 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726266AbgLOCQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:16:32 -0500
-Received: by ozlabs.org (Postfix, from userid 1003)
-        id 4Cw20x5ZWFz9sRR; Tue, 15 Dec 2020 13:15:45 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ozlabs.org; s=201707;
-        t=1607998545; bh=HIoL3hYia/VL0H8kxL6qHX8RQtpD9XmN0+Gy2vsT9c0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a1eIbgUR8izZ8apPi6OAsVBqalg61msyq1wD1KLkArhkC7vAdmdAS17cb/B+XGiWp
-         jnZ6skMXJvFPwVxQq2KWtYBYNCjp+ZdBVksqX/q+xu/6IcPTL+DGNa0lQK9QX9KpMd
-         eHLkop+Fe+3aemWoK7rxsXDWTBAMk70i53x0QzNnkfPsj7+iE+QRjKRDLMk/zVLlWR
-         dPrVU8f7K6tz7iljIYbmoKtqSGc8DVZPqx+kryU/lV8eI1m1OL9oAyasRL9N6ibJF3
-         NjtCVm4ByCnE/nASHWNADKGa3k/ogFFdYirxOzRfsPCop290p0shx2iF0WTPCqkfn8
-         FJNGj5C+s9XOw==
-Date:   Tue, 15 Dec 2020 13:15:23 +1100
-From:   Paul Mackerras <paulus@ozlabs.org>
-To:     Leonardo Bras <leobras.c@gmail.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] powerpc/kvm: Fix mask size for emulated msgsndp
-Message-ID: <20201215021523.GC2441086@thinks.paulus.ozlabs.org>
-References: <20201208215707.31149-1-leobras.c@gmail.com>
+        id S1726637AbgLOCQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:16:47 -0500
+Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:46345 "EHLO
+        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726050AbgLOCQb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:16:31 -0500
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS1.zhaoxin.com
+ (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 15 Dec
+ 2020 10:15:42 +0800
+Received: from [10.32.56.37] (10.32.56.37) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 15 Dec
+ 2020 10:15:39 +0800
+Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <x86@kernel.org>, <hpa@zytor.com>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <TimGuo-oc@zhaoxin.com>,
+        <CooperYan@zhaoxin.com>, <QiyuanWang@zhaoxin.com>,
+        <HerryYang@zhaoxin.com>, <CobeChen@zhaoxin.com>,
+        <SilviaZhao@zhaoxin.com>
+References: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+ <X9Ov3RWDpUik7gXo@sol.localdomain>
+ <1f8d17bf-c1d9-6496-d2f8-5773633011fb@zhaoxin.com>
+ <X9fN7mOMdn1Dxn63@sol.localdomain>
+From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Message-ID: <a95984ea-7451-78fe-88c5-b81f633fecdf@zhaoxin.com>
+Date:   Tue, 15 Dec 2020 10:15:29 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201208215707.31149-1-leobras.c@gmail.com>
+In-Reply-To: <X9fN7mOMdn1Dxn63@sol.localdomain>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.32.56.37]
+X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 06:57:08PM -0300, Leonardo Bras wrote:
-> According to ISAv3.1 and ISAv3.0b, the msgsndp is described to split RB in:
-> msgtype <- (RB) 32:36
-> payload <- (RB) 37:63
-> t       <- (RB) 57:63
-> 
-> The current way of getting 'msgtype', and 't' is missing their MSB:
-> msgtype: ((arg >> 27) & 0xf) : Gets (RB) 33:36, missing bit 32
-> t:       (arg &= 0x3f)       : Gets (RB) 58:63, missing bit 57
-> 
-> Fixes this by applying the correct mask.
-> 
-> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
 
-Acked-by: Paul Mackerras <paulus@ozlabs.org>
+On 15/12/2020 04:41, Eric Biggers wrote:
+> On Mon, Dec 14, 2020 at 10:28:19AM +0800, Tony W Wang-oc wrote:
+>> On 12/12/2020 01:43, Eric Biggers wrote:
+>>> On Fri, Dec 11, 2020 at 07:29:04PM +0800, Tony W Wang-oc wrote:
+>>>> The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
+>>>> On platforms with Zhaoxin CPUs supporting this X86 feature, When
+>>>> crc32c-intel and crc32c-generic are both registered, system will
+>>>> use crc32c-intel because its .cra_priority is greater than
+>>>> crc32c-generic. This case expect to use crc32c-generic driver for
+>>>> some Zhaoxin CPUs to get performance gain, So remove these Zhaoxin
+>>>> CPUs support from crc32c-intel.
+>>>>
+>>>> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+>>>
+>>> Does this mean that the performance of the crc32c instruction on those CPUs is
+>>> actually slower than a regular C implementation?  That's very weird.
+>>>
+>>
+>> From the lmbench3 Create and Delete file test on those chips, I think yes.
+>>
+> 
+> Did you try measuring the performance of the hashing itself, and not some
+> higher-level filesystem operations?
+> 
+
+Yes. Was testing on these Zhaoxin CPUs, the result is that with the same
+input value the generic C implementation takes fewer time than the
+crc32c instruction implementation.
+
+Sincerely
+Tony
