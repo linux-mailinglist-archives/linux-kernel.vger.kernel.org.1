@@ -2,143 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9572A2DA817
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 07:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 195552DA824
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 07:34:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725975AbgLOG2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 01:28:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbgLOG2n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 01:28:43 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C64C06179C;
-        Mon, 14 Dec 2020 22:28:03 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id s2so10434609plr.9;
-        Mon, 14 Dec 2020 22:28:03 -0800 (PST)
+        id S1726442AbgLOGbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 01:31:44 -0500
+Received: from mail-bn7nam10on2041.outbound.protection.outlook.com ([40.107.92.41]:55564
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725865AbgLOGb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 01:31:27 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tk15uduuC35kn2GeV1SFwu2JMLO5TiUnGxNzvcTsl1Cp1Jvd78Rn/9CZ2qn3k5Rln30SDu9dMB/1SLLd9eSZ2kdANCoos+nOqUFP1xhTWlNJJ/ENVnQMOBJfBcQUq7FLcZcDNfd803in0NVLNX6Un6dJDPPMQsARh00qw7alAZSjAwy1UG3tINXFLH/03pMGdB85XIuNpNX2yfjB+ykXeEomfP298+ao5psg/AtCX7oXpatQNi62eiAUjDEtFTc9UwcTP5s2vBMyBKCJEmKydwhDpcYyd04Bd/m9hrGUEqxgXzqI3jqEgF6GMMavRoz6Nq1KqfSS8Ire5KutQ3/FQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VReHqTbmu11ldRC7J0cleeD3SNqlSuwvqh1RcpX4UBY=;
+ b=EU9amwoPHeHH4+G26wal7Rhhnj/+0Qwd1z+ofDsqWvtS2nnH8RDwcdaoMEcWDI2yFAv+unJO4TkAH+PAZNbg1Zu7SikcXY00dUY7cqFshyBypiJAd6+kMU2ZKRmGuQkhF1lDh0M0pFxD0Mh29SFrABrn3fSTJPyMMOx7yoIoT5QU5Y6ZxzXkaCXQs0M5TobHGybt7UslA+ZSj3UvE/nhtovncg9A7Uru0Tm8ZHMNWWSRUWguTCJ4N/cfplOeOCZd22IV3jfID0u52jV0SW5orWTrMPoPrWPRYgl6MRn8/8LTYqSBRCYJY76DyH/icMygxxeWCk9OBkVDT/Vyrm1fkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=KaZLnF6Ca13HKnEPZPec+JevKgSP4YCN0sRWZ+m6pyY=;
-        b=k1oUbHHjew5YsIhi5W5+V9KHG5O+tngKHAsKxRHHdx4QMY9f4Svy0C8iwFsCbaxnbM
-         hp7OZvVDN91hakcKi+PoooMSEAdkqRRP5riZsDu+/hUNo1avmK/dHR6cgqKsg3utzv1z
-         kG2Vc4QWbXUW+J7gIU0Y8/Tzk/syMo5hw5kqes4q14yJ/bQXUxFj9+WZiQPhbemXfwaC
-         eOxDsRuLeKfsqiV3Em5mSPxPSaGqkNeNTJrD71uELQ+TJXby7FtR7FkBtdXi42e29RDS
-         lW33BDZsDuWvKrSPPeP/J1VUieOcKH94evl4KoMmt65BVFvnoFixMTUDZxLk/EJ8Bi+z
-         i5Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KaZLnF6Ca13HKnEPZPec+JevKgSP4YCN0sRWZ+m6pyY=;
-        b=ib/udhZ2eHEZx5Bb8rGyBy6U2Mm/k/++17kjPd5w95DOyb2YHGJGNKaszWhsqNdlEO
-         GTazXBxTuF7QRjN8g+rUVDxSYoJs1Dlu5jZUSmmIeEcgs9rn4RcD4aMvFlmGRdqfWpit
-         CHpyqSpOhceNlg1/qjvOoklrrpYSXoZp5RIFLrcAMoz8oMBRI6RUbAM4byNrqWeAiqmb
-         dOltisWRR6JgPYHM6/G6JsILzTBG/KTpznv7cj4l9JmtodDPEwbjDXKa/0rAc29ixBL5
-         QU8hqOdfIIR3P9B0e+xqEY8dIpmsp1I9XIyHMsQTqkUBj2RNjQrhVgwxKOi5cNu81Rtn
-         v11Q==
-X-Gm-Message-State: AOAM533hsstC+5xsKHSoxzcY2yngmnKSbNhJwtA4RlKvFdcTWqtIHJxg
-        WWgeXz8SMvO6817Rfp8djCVeZSdhD3M=
-X-Google-Smtp-Source: ABdhPJwxN+mLOpBW9HpQKvvgkQYZhYouc0fz5VrQcHXq8Qe2ejq+m05TUiJahpjGBQcwZZRRg2h64g==
-X-Received: by 2002:a17:902:8f94:b029:da:d168:4443 with SMTP id z20-20020a1709028f94b02900dad1684443mr25559985plo.57.1608013683019;
-        Mon, 14 Dec 2020 22:28:03 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id f15sm20395528pju.49.2020.12.14.22.28.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Dec 2020 22:28:02 -0800 (PST)
-Date:   Mon, 14 Dec 2020 22:27:58 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Jeffrey Lin <jeffrey.lin@raydium.corp-partner.google.com>
-Cc:     Furquan Shaikh <furquan@google.com>,
-        Sean Paul <seanpaul@chromium.org>, rrangel@chromium.org,
-        dan.carpenter@oracle.com, jeffrey.lin@rad-ic.com, KP.li@rad-ic.com,
-        calvin.tseng@rad-ic.com, simba.hsu@rad-ic.com,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: Re: [PATCH] Input: raydium_ts_i2c: Do not send zero length
-Message-ID: <X9hXbmn1gxxPEKVS@google.com>
-References: <1608002466-9263-1-git-send-email-jeffrey.lin@raydium.corp-partner.google.com>
- <X9hONuOdn3cTZ6vH@google.com>
- <CAGdSJX2esa41ypqhGGVSJn+Yqxz8gTyz4HYmfB4WfVDEJLgVYw@mail.gmail.com>
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VReHqTbmu11ldRC7J0cleeD3SNqlSuwvqh1RcpX4UBY=;
+ b=Q6hNXdIssRYhgMG7NVavyfOQVVjwxykhNPwEWXUuSmoKkmnXNnISLIFo1QdTrNXOudRAZID/oF5G0PJgIJNgGwXHfeapwHqLG0xWO1uK7O+4itHMn2FP3GHeOrXke/03DdJL2mE1WTHdENyGLTSXCyQp7qRvT2OYyDA0ypYTT34=
+Authentication-Results: samsung.com; dkim=none (message not signed)
+ header.d=none;samsung.com; dmarc=none action=none header.from=windriver.com;
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by SJ0PR11MB4877.namprd11.prod.outlook.com (2603:10b6:a03:2d9::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Tue, 15 Dec
+ 2020 06:30:38 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::94a4:4e15:ab64:5006]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::94a4:4e15:ab64:5006%5]) with mapi id 15.20.3654.020; Tue, 15 Dec 2020
+ 06:30:37 +0000
+From:   qiang.zhang@windriver.com
+To:     b.zolnierkie@samsung.com
+Cc:     mpatocka@redhat.com, bernie@plugable.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] udlfb: Fix memory leak in dlfb_usb_probe
+Date:   Tue, 15 Dec 2020 14:30:22 +0800
+Message-Id: <20201215063022.16746-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: YT1PR01CA0059.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2e::28) To BYAPR11MB2632.namprd11.prod.outlook.com
+ (2603:10b6:a02:c4::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGdSJX2esa41ypqhGGVSJn+Yqxz8gTyz4HYmfB4WfVDEJLgVYw@mail.gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-qzhang2-d1.wrs.com (60.247.85.82) by YT1PR01CA0059.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2e::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Tue, 15 Dec 2020 06:30:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a7322126-73a4-49d7-6c85-08d8a0c2efb5
+X-MS-TrafficTypeDiagnostic: SJ0PR11MB4877:
+X-Microsoft-Antispam-PRVS: <SJ0PR11MB487736055E6C84E89BD3D1FAFFC60@SJ0PR11MB4877.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fsw4ddmWOGeLnVoE44YOnvpUQZwNKI8q/eRM7crf9aG0EbgRuhb5YUapqMoejnVfDfKq42xt2u/pGNNgvW+Kg3XY+qTwfXun7j+EKn+FNWv9lPmMhV0nJ3MzZmFRABm4FZf8otUcvzedgym7nP9x3reNmVdInW+HGR2wzuZjjjSYYQ5THsdeg4mHsHC6tAJ9tUH9ZP5FOBkVQJDTPfVPPL6S2LMCGuykvTiIuFJnN78p20lQiuqfN4FYh+YesE1C6SWufdd71GN5Q7hHnfrM1BZ4MaqJQBg00koFwH7gArqg2TLubYlBEKR06t+3JwD8zN88/N/cHqEz38vkX5EBQgWH45/nlW0jG/wcaYYVEgywMy+Ly6k6sj/e4POFrlyl
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(136003)(86362001)(508600001)(66556008)(66946007)(8676002)(66476007)(83380400001)(6916009)(5660300002)(52116002)(8936002)(4326008)(956004)(6512007)(2906002)(26005)(6666004)(6506007)(2616005)(186003)(6486002)(1076003)(36756003)(16526019)(9686003)(34490700003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?i0J0QdyCQWNxQVMo/qkQ7dTyZgHhVh4LhYq5vViVL1SNya27TkU2aCB0COI1?=
+ =?us-ascii?Q?6CMUTFGMMRDk6oQOHKmh3e74gvDx6whxDLIhkOm03tM7eFmxf2LkqW/9IUXT?=
+ =?us-ascii?Q?KY6zaKkDJHhznhqChIIsI3bxU0eg90YnKTAgx+e4IDyVh2t2EZmGJGGtnxMu?=
+ =?us-ascii?Q?m6zMy8EhyLkU7JGtp7sQPoIjXNYlGn4fu3IMwNbqHSFBsduwWgnSrNF1G3gS?=
+ =?us-ascii?Q?7unUtjp+PTdGcWGPQ3GzROViqNuHkFQbDFdIwvtRBdjr6kr/OkcgzewcTHz7?=
+ =?us-ascii?Q?i0GJsd6EUOoUTQwWLc0BOVaEWwIGFv3i4k7z2bYcY0WUfJFqTxss0OXL6MoQ?=
+ =?us-ascii?Q?1sxkj/OL+xHp15iT+vvmkrTjk4t3M/he7e0RSt7Aqdsngmli49KKY+ku1YFy?=
+ =?us-ascii?Q?6n/AATezIMBob4xvyaEwP9KDtsRNxsTSU4v/BlZapYQCN+FPcjpnfQ4y0bMB?=
+ =?us-ascii?Q?4UaU4jmqoBdSTAmpSXW54QwFYJfDd53qPZPPw9iUeBxxjb63xyOQtA80mX+e?=
+ =?us-ascii?Q?cnQ9qC9M/roeoxLHH4DA/58//T4lxPJt4P+Ye4mgiYq/eD+t8VnCjDZsgMi0?=
+ =?us-ascii?Q?ULgtddkSq1EU8fn20luedPgS5/t4UPK/Z+IsaME0V7ucfazNCpx90Vvuu+Hi?=
+ =?us-ascii?Q?PHp1KwxdDTWPUTZ8zWfdp7ODlARHtcvwNJYoy9MZlaFGxx/0fvNxZOZmiqti?=
+ =?us-ascii?Q?zhESsQbyrTpS40aU/3bBhthy1ukCx5bT6/bIXdinDuHF7BN+AmQ8IXUgyXPs?=
+ =?us-ascii?Q?fzL5y7cjOdRn1Rg5BkzwLLfPA1z2V8VqIDYlRsIlK2SJXkVlENonzR07qhGY?=
+ =?us-ascii?Q?BYOPpARXgiv0m7uvUGt+K9yE2miZUwFjdBKxkgycA0o/6QFvD+8LBYNVo+pA?=
+ =?us-ascii?Q?JjRiZXWgUkgr7uWZaHYjyQdtPhOT9DCJ0ukvTL3tgvxoljEb+I/d1QOJdVzZ?=
+ =?us-ascii?Q?Prc071dIJ28jgszYOdcuW20CH2oI2r6sFzeQDnmrn6s=3D?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2020 06:30:37.6410
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7322126-73a4-49d7-6c85-08d8a0c2efb5
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a6vSLZGU7PGYZkaUR/CbkBghohhI687RmiFhnmi0Glz1EIt2VclpzMx9ji342Sf62mUN2h0fMOEUW0PzmpACK27hqgNn0mTy4yWf0HqP8O8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4877
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 02:07:00PM +0800, Jeffrey Lin wrote:
-> Yes, it is.
+From: Zqiang <qiang.zhang@windriver.com>
 
-Great!
+The dlfb_alloc_urb_list function is called in dlfb_usb_probe function,
+after that if an error occurs, the dlfb_free_urb_list function need to
+be called.
 
-> 
-> Dmitry Torokhov <dmitry.torokhov@gmail.com> 於 2020年12月15日 週二 下午1:48寫道：
-> 
-> > Hi Jeffrey,
-> >
-> > On Tue, Dec 15, 2020 at 11:21:06AM +0800, jeffrey.lin wrote:
-> > > Add default write command package to prevent i2c quirk error of zero
-> > > data length as Raydium touch firmware update is executed.
-> > >
-> > > Signed-off-by: jeffrey.lin <jeffrey.lin@rad-ic.com>
-> > > BUG=b:174207906
-> > > TEST=Successfully tested update Raydium touch firmware over 100 times
-> > > Change-Id: I311b0d26d7642bb800547cd0e87013be17cb7e1b
+BUG: memory leak
+unreferenced object 0xffff88810adde100 (size 32):
+  comm "kworker/1:0", pid 17, jiffies 4294947788 (age 19.520s)
+  hex dump (first 32 bytes):
+    10 30 c3 0d 81 88 ff ff c0 fa 63 12 81 88 ff ff  .0........c.....
+    00 30 c3 0d 81 88 ff ff 80 d1 3a 08 81 88 ff ff  .0........:.....
+  backtrace:
+    [<0000000019512953>] kmalloc include/linux/slab.h:552 [inline]
+    [<0000000019512953>] kzalloc include/linux/slab.h:664 [inline]
+    [<0000000019512953>] dlfb_alloc_urb_list drivers/video/fbdev/udlfb.c:1892 [inline]
+    [<0000000019512953>] dlfb_usb_probe.cold+0x289/0x988 drivers/video/fbdev/udlfb.c:1704
+    [<0000000072160152>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<00000000a8d6726f>] really_probe+0x159/0x480 drivers/base/dd.c:554
+    [<00000000c3ce4b0e>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
+    [<00000000e942e01c>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
+    [<00000000de0a5a5c>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<00000000463fbcb4>] __device_attach+0x122/0x250 drivers/base/dd.c:912
+    [<00000000b881a711>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<00000000364bbda5>] device_add+0x5ac/0xc30 drivers/base/core.c:2936
+    [<00000000eecca418>] usb_set_configuration+0x9de/0xb90 drivers/usb/core/message.c:2159
+    [<00000000edfeca2d>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<000000001830872b>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+    [<00000000a8d6726f>] really_probe+0x159/0x480 drivers/base/dd.c:554
+    [<00000000c3ce4b0e>] driver_probe_device+0x84/0x100 drivers/base/dd.c:738
+    [<00000000e942e01c>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:844
+    [<00000000de0a5a5c>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
 
-Could you please drop these BUG/TEST/Change-Id and re-send from your
-main account (jeffrey.lin@rad-ic.com)? Or simply add "From:" tag:
+Reported-by: syzbot+c9e365d7f450e8aa615d@syzkaller.appspotmail.com
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+---
+ drivers/video/fbdev/udlfb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-From: Jeffrey Lin <jeffrey.lin@rad-ic.com>
-
-> > > ---
-> > >  drivers/input/touchscreen/raydium_i2c_ts.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/input/touchscreen/raydium_i2c_ts.c
-> > b/drivers/input/touchscreen/raydium_i2c_ts.c
-> > > index 603a948460d64..4d2d22a869773 100644
-> > > --- a/drivers/input/touchscreen/raydium_i2c_ts.c
-> > > +++ b/drivers/input/touchscreen/raydium_i2c_ts.c
-> > > @@ -445,6 +445,7 @@ static int raydium_i2c_write_object(struct
-> > i2c_client *client,
-> > >                                   enum raydium_bl_ack state)
-> > >  {
-> > >       int error;
-> > > +     static const u8 cmd[] = { 0xFF, 0x39 };
-> > >
-> > >       error = raydium_i2c_send(client, RM_CMD_BOOT_WRT, data, len);
-> > >       if (error) {
-> > > @@ -453,7 +454,7 @@ static int raydium_i2c_write_object(struct
-> > i2c_client *client,
-> > >               return error;
-> > >       }
-> > >
-> > > -     error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, NULL, 0);
-> > > +     error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, cmd,
-> > sizeof(cmd));
-> >
-> > Is this supported by all firmwares?
-> >
-> > >       if (error) {
-> > >               dev_err(&client->dev, "Ack obj command failed: %d\n",
-> > error);
-> > >               return error;
-> > > --
-> > > 2.26.2
-> > >
-> >
-> > Thanks.
-> >
-> > --
-> > Dmitry
-> >
-
-Thanks!
-
+diff --git a/drivers/video/fbdev/udlfb.c b/drivers/video/fbdev/udlfb.c
+index f9b3c1cb9530..b9cdd02c1000 100644
+--- a/drivers/video/fbdev/udlfb.c
++++ b/drivers/video/fbdev/udlfb.c
+@@ -1017,6 +1017,7 @@ static void dlfb_ops_destroy(struct fb_info *info)
+ 	}
+ 	vfree(dlfb->backing_buffer);
+ 	kfree(dlfb->edid);
++	dlfb_free_urb_list(dlfb);
+ 	usb_put_dev(dlfb->udev);
+ 	kfree(dlfb);
+ 
 -- 
-Dmitry
+2.17.1
+
