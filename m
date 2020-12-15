@@ -2,109 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330D92DAFE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:16:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2B42DAFDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 16:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729982AbgLOPPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 10:15:17 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:49939 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729796AbgLOPOw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:14:52 -0500
-Received: by mail-il1-f199.google.com with SMTP id m14so16630742ila.16
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 07:14:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=AnGmRmfihjvN7Tg8VK6Jl1pVPSZu1VQEIxNiW/n3Hr8=;
-        b=SrHGsD88iF3lLLDN1+qcQKkaC9C0d/W5vW+tW+5bGkAE5wD3ppZ011AkicK//6Ok79
-         8E5aw323U2qR4z4RWfDB4Au9k/hZINNkQQE6q6NL/qUd6G1BsMMLn90cPikZkObLYyT0
-         5vfb/uu6/OWjtIeKNQTnWqDLlIOjgQjhtes75+OG9GWIC5+odn4A3UYmnUbtC/hp1Gvh
-         UKYbNpyfncZziV+hG9GETBdsbEzp3xWkwFFdajtRQP/LFQ82eyX2zlGLyw75SKkNoaj5
-         4VDaJQIXraX2q1IcV8gKMG1fGlH8JfP4VIJN57RqPkNFugCGa63cA2Z6gtHX3asZwtX8
-         /vPA==
-X-Gm-Message-State: AOAM530ry79MF8+Zt67qinkrIrFy5gK4kUStcwnWbvoi1DC3Q9tSKcks
-        Zz4lYHVcoA+LXIPcXkzr8w74yK95B2xnVRbN+QC5gnYQybl+
-X-Google-Smtp-Source: ABdhPJzOlmobw/zDV5uvUSvjrXtXYrEsNL1/D1pYRSxsKz8AI6A8VTtAHNPJav364KU3p2XRADWNrsC7XrR2jbvsOMpfkHFuv3I1
+        id S1729924AbgLOPPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 10:15:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727833AbgLOPOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 10:14:42 -0500
+Date:   Tue, 15 Dec 2020 12:14:13 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608045241;
+        bh=iMFOdnRzrnuIAvjgZ5mCkX2hD/Jc1MpHI3wlawSYZac=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eqQwKUKVBZiH//UFkaKnWoLTeV/YIrb12zg4BsWaRf31Im6BFMIP2k4P1BjfsMT2+
+         GvWTlxjCzD6PJAp3ao5BxecQpzFUQoWmCjm4w6eMO5lLLCZ+rjJ1JdysGpvS4YMqDZ
+         PEGbaw+LiTkvjLP/Uj/tExAdmIGtEKECkE6HYWA7qIuK+M8WTYR0FEMF7kIzGOg5YA
+         fN/3c/9YQ+mfuYd46yTQaVnuQRfAPlhCHxkabrRnmZR0j/tku1hpEA26jHwjU/zMMR
+         xPcAoNtFf51dPQ3kctKZLSGkJjfcE1syPFS3lzgIZRn67E31nAs6fTkUbwGnCZqvFx
+         IuwZKXy4VJXrQ==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCH 2/3] perf tools: Allow to enable/disable events via
+ control file
+Message-ID: <20201215151413.GE252952@kernel.org>
+References: <20201210204330.233864-1-jolsa@kernel.org>
+ <20201210204330.233864-3-jolsa@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a02:7650:: with SMTP id z77mr39145481jab.134.1608045250882;
- Tue, 15 Dec 2020 07:14:10 -0800 (PST)
-Date:   Tue, 15 Dec 2020 07:14:10 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f63a4705b6823516@google.com>
-Subject: UBSAN: shift-out-of-bounds in hash_ipmark_create
-From:   syzbot <syzbot+d81819ac03d8c36e3974@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@blackhole.kfki.hu, kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com, vvs@virtuozzo.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210204330.233864-3-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Em Thu, Dec 10, 2020 at 09:43:29PM +0100, Jiri Olsa escreveu:
+> Adding new control events to enable/disable specific event.
+> The interface string for control file are:
+> 
+>   'enable-<EVENT NAME>'
+>   'disable-<EVENT NAME>'
 
-syzbot found the following issue on:
+Wwy do we have "enable-" as the "tag" for this?
 
-HEAD commit:    15ac8fdb Add linux-next specific files for 20201207
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=156c845b500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3696b8138207d24d
-dashboard link: https://syzkaller.appspot.com/bug?extid=d81819ac03d8c36e3974
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14960f9b500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12be080f500000
+Also is it possible to use "enable sched:*" and have that match what is
+in the evlist and enable (or disable, if using "disable sched:*") what
+matches?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d81819ac03d8c36e3974@syzkaller.appspotmail.com
+This second suggestion can be done on top of this, i.e. as an
+enhancement, but mixing up the command (enable, disable) with its
+arguments looks strange.
 
-================================================================================
-UBSAN: shift-out-of-bounds in net/netfilter/ipset/ip_set_hash_gen.h:151:6
-shift exponent 32 is too large for 32-bit type 'unsigned int'
-CPU: 0 PID: 8473 Comm: syz-executor542 Not tainted 5.10.0-rc6-next-20201207-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- htable_bits net/netfilter/ipset/ip_set_hash_gen.h:151 [inline]
- hash_ipmark_create.cold+0x96/0x9b net/netfilter/ipset/ip_set_hash_gen.h:1524
- ip_set_create+0x610/0x1380 net/netfilter/ipset/ip_set_core.c:1115
- nfnetlink_rcv_msg+0xecc/0x1180 net/netfilter/nfnetlink.c:252
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- nfnetlink_rcv+0x1ac/0x420 net/netfilter/nfnetlink.c:600
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x907/0xe40 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440419
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffdadcbeb88 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440419
-RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000003
-RBP: 00000000006ca018 R08: 0000000000000005 R09: 00000000004002c8
-R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000401c20
-R13: 0000000000401cb0 R14: 0000000000000000 R15: 0000000000000000
-================================================================================
+- Arnaldo
+ 
+> when received the command, perf will scan the current evlist
+> for <EVENT NAME> and if found it's enabled/disabled.
+> 
+> Example session:
+> 
+>   terminal 1:
+>     # mkfifo control ack perf.pipe
+>     # perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:*' -o - > perf.pipe
+>     Events disabled
+> 
+>   terminal 2:
+>     # cat perf.pipe | ./perf --no-pager script -i -
+> 
+>   terminal 3:
+>     # echo enable-sched:sched_process_fork > control
+> 
+>   terminal 1:
+>     # mkfifo control ack perf.pipe
+>     # perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:*' -o - > perf.pipe
+>     ...
+>     event sched:sched_process_fork enabled
+> 
+>   terminal 2:
+>     # cat perf.pipe | ./perf --no-pager script -i -
+>     bash 33349 [034] 149587.674295: sched:sched_process_fork: comm=bash pid=33349 child_comm=bash child_pid=34056
+>     bash 33349 [034] 149588.239521: sched:sched_process_fork: comm=bash pid=33349 child_comm=bash child_pid=34057
+> 
+>   terminal 3:
+>     # echo enable-sched:sched_wakeup_new > control
+> 
+>   terminal 1:
+>     # mkfifo control ack perf.pipe
+>     # perf record --control=fifo:control,ack -D -1 --no-buffering -e 'sched:*' -o - > perf.pipe
+>     ...
+>     event sched:sched_wakeup_new enabled
+> 
+>   terminal 2:
+>     # cat perf.pipe | ./perf --no-pager script -i -
+>     ...
+>     bash 33349 [034] 149632.228023: sched:sched_process_fork: comm=bash pid=33349 child_comm=bash child_pid=34059
+>     bash 33349 [034] 149632.228050:   sched:sched_wakeup_new: bash:34059 [120] success=1 CPU:036
+>     bash 33349 [034] 149633.950005: sched:sched_process_fork: comm=bash pid=33349 child_comm=bash child_pid=34060
+>     bash 33349 [034] 149633.950030:   sched:sched_wakeup_new: bash:34060 [120] success=1 CPU:036
+> 
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/builtin-record.c |  2 ++
+>  tools/perf/builtin-stat.c   |  2 ++
+>  tools/perf/util/evlist.c    | 30 +++++++++++++++++++++++++++++-
+>  tools/perf/util/evlist.h    |  4 ++++
+>  4 files changed, 37 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index d832c108a1ca..582b8fba012c 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -1949,6 +1949,8 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>  				break;
+>  			case EVLIST_CTL_CMD_ACK:
+>  			case EVLIST_CTL_CMD_UNSUPPORTED:
+> +			case EVLIST_CTL_CMD_ENABLE_EVSEL:
+> +			case EVLIST_CTL_CMD_DISABLE_EVSEL:
+>  			default:
+>  				break;
+>  			}
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index 89c32692f40c..6a21fb665008 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -590,6 +590,8 @@ static void process_evlist(struct evlist *evlist, unsigned int interval)
+>  		case EVLIST_CTL_CMD_SNAPSHOT:
+>  		case EVLIST_CTL_CMD_ACK:
+>  		case EVLIST_CTL_CMD_UNSUPPORTED:
+> +		case EVLIST_CTL_CMD_ENABLE_EVSEL:
+> +		case EVLIST_CTL_CMD_DISABLE_EVSEL:
+>  		default:
+>  			break;
+>  		}
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index 70aff26612a9..729c98d10628 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -1915,7 +1915,13 @@ static int evlist__ctlfd_recv(struct evlist *evlist, enum evlist_ctl_cmd *cmd,
+>  		 bytes_read == data_size ? "" : c == '\n' ? "\\n" : "\\0");
+>  
+>  	if (bytes_read > 0) {
+> -		if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_TAG,
+> +		if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_EVSEL_TAG,
+> +			     (sizeof(EVLIST_CTL_CMD_ENABLE_EVSEL_TAG)-1))) {
+> +			*cmd = EVLIST_CTL_CMD_ENABLE_EVSEL;
+> +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_EVSEL_TAG,
+> +				    (sizeof(EVLIST_CTL_CMD_DISABLE_EVSEL_TAG)-1))) {
+> +			*cmd = EVLIST_CTL_CMD_DISABLE_EVSEL;
+> +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_TAG,
+>  			     (sizeof(EVLIST_CTL_CMD_ENABLE_TAG)-1))) {
+>  			*cmd = EVLIST_CTL_CMD_ENABLE;
+>  		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_TAG,
+> @@ -1952,6 +1958,8 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+>  	char cmd_data[EVLIST_CTL_CMD_MAX_LEN];
+>  	int ctlfd_pos = evlist->ctl_fd.pos;
+>  	struct pollfd *entries = evlist->core.pollfd.entries;
+> +	struct evsel *evsel;
+> +	char *evsel_name;
+>  
+>  	if (!evlist__ctlfd_initialized(evlist) || !entries[ctlfd_pos].revents)
+>  		return 0;
+> @@ -1967,6 +1975,26 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+>  			case EVLIST_CTL_CMD_DISABLE:
+>  				evlist__disable(evlist);
+>  				break;
+> +			case EVLIST_CTL_CMD_ENABLE_EVSEL:
+> +				evsel_name = cmd_data + sizeof(EVLIST_CTL_CMD_ENABLE_EVSEL_TAG) - 1;
+> +				evsel = evlist__find_evsel_by_str(evlist, evsel_name);
+> +				if (evsel) {
+> +					evlist__enable_evsel(evlist, evsel_name);
+> +					pr_info("event %s enabled\n", evsel->name);
+> +				} else {
+> +					pr_info("failed: can't find '%s' event\n", evsel_name);
+> +				}
+> +				break;
+> +			case EVLIST_CTL_CMD_DISABLE_EVSEL:
+> +				evsel_name = cmd_data + sizeof(EVLIST_CTL_CMD_DISABLE_EVSEL_TAG) - 1;
+> +				evsel = evlist__find_evsel_by_str(evlist, evsel_name);
+> +				if (evsel) {
+> +					evlist__disable_evsel(evlist, evsel_name);
+> +					pr_info("event %s disabled\n", evsel->name);
+> +				} else {
+> +					pr_info("failed: can't find '%s' event\n", evsel_name);
+> +				}
+> +				break;
+>  			case EVLIST_CTL_CMD_SNAPSHOT:
+>  				break;
+>  			case EVLIST_CTL_CMD_ACK:
+> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+> index 1aae75895dea..e4e8ff8831a3 100644
+> --- a/tools/perf/util/evlist.h
+> +++ b/tools/perf/util/evlist.h
+> @@ -330,6 +330,8 @@ struct evsel *evlist__reset_weak_group(struct evlist *evlist, struct evsel *evse
+>  #define EVLIST_CTL_CMD_DISABLE_TAG "disable"
+>  #define EVLIST_CTL_CMD_ACK_TAG     "ack\n"
+>  #define EVLIST_CTL_CMD_SNAPSHOT_TAG "snapshot"
+> +#define EVLIST_CTL_CMD_ENABLE_EVSEL_TAG "enable-"
+> +#define EVLIST_CTL_CMD_DISABLE_EVSEL_TAG "disable-"
+>  
+>  #define EVLIST_CTL_CMD_MAX_LEN 64
+>  
+> @@ -337,6 +339,8 @@ enum evlist_ctl_cmd {
+>  	EVLIST_CTL_CMD_UNSUPPORTED = 0,
+>  	EVLIST_CTL_CMD_ENABLE,
+>  	EVLIST_CTL_CMD_DISABLE,
+> +	EVLIST_CTL_CMD_ENABLE_EVSEL,
+> +	EVLIST_CTL_CMD_DISABLE_EVSEL,
+>  	EVLIST_CTL_CMD_ACK,
+>  	EVLIST_CTL_CMD_SNAPSHOT,
+>  };
+> -- 
+> 2.26.2
+> 
 
+-- 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+- Arnaldo
