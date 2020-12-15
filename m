@@ -2,141 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8C92DB4AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E523A2DB4B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbgLOTx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 14:53:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725850AbgLOTx2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 14:53:28 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB7EC0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 11:52:48 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id y5so21698698iow.5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 11:52:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YfQsmfSayLw6R8VzNs6qO72MJ4kq6ZC9UvyADxPXlEw=;
-        b=MMEaV+dA7AusmEfJAHKgL5le68VNqcPr2F6wGpaYcelxqSeYWg9HsmcOdAQ8wATR3F
-         rSLkW9yVw1SQiF3A/ayl/4OAwfPZHwB0iLSJQPvAdNrTJVkHKpRzEDm0M1YzSDpQsKtF
-         7ixBG+KWK+tERgiMKe9nygNLK8uwcpFTCzDnY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YfQsmfSayLw6R8VzNs6qO72MJ4kq6ZC9UvyADxPXlEw=;
-        b=J2K+yBiLXz40b76Egq1ZEfzIj1MugNwaO9skPTG/tEwngP4fbF1sHMfQ/m+U8m9KmA
-         2wQMSnPpuzVJwGW8LCOjEtr3kQcgT1j2oTXXYCb5WpUHIgiJlzak628w2jCKn00ATtpk
-         aWHSYajz4f8mnTmoWXWxQU4EH6n+7Lu+QNbRO3YVHbIi3x5/vcwKghQKSVCor6Qpj2HX
-         3dxq0Aktx87lStwI1CYxp0Lum7Ac2t8iY91uOQC3cwhyE+U58NVEoQPyt/Bqj0DlY4qV
-         RzfvufKmJbULi1WyXeB94LOsP6UlgNMGn444u6XOVd3rOo+ooz8CBOKN3CklXa8Y5paG
-         KfHQ==
-X-Gm-Message-State: AOAM5318L+TvK87NrzGeyBKCaY+y5pOg5+RBd9OCjvrIie2PnOPAMxbh
-        p5u6j7n+RMjyDH1G2r6dFO+5Ug==
-X-Google-Smtp-Source: ABdhPJwvNpZZ7hhLeNjk5odYSJEoN52laDWgLTfGfVHlXVrPvfPT/THfdCPlkMIi7tQhD+zQFm3EZA==
-X-Received: by 2002:a6b:6f07:: with SMTP id k7mr4435645ioc.48.1608061967694;
-        Tue, 15 Dec 2020 11:52:47 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id z10sm11216140ioi.47.2020.12.15.11.52.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 11:52:46 -0800 (PST)
-Subject: Re: related to fixing depreciated api
-To:     Jeffrin Jose T <jeffrin@rajagiritech.edu.in>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <e479c654b6ca08057bf18a4e1c1d1ed3cdf8fdc8.camel@rajagiritech.edu.in>
- <291555f8-ed17-5ed6-8ca4-42c8d5e13be9@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <86388240-57df-977f-d0ac-47c2ed7df7a5@linuxfoundation.org>
-Date:   Tue, 15 Dec 2020 12:52:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1727685AbgLOTzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 14:55:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727649AbgLOTzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 14:55:05 -0500
+X-Gm-Message-State: AOAM533pqk+EZNgornYxD5KyFdcLeRzJZxCMoaOFzpQJtxMaefHGWUYh
+        J1Fvo51Sok9kLvkRRwcLmbcbS9jh6lObk53pWg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608062065;
+        bh=18sB+I2TiNDy9kX1hjtB0rhjFr3VDTG6jAxyNvY39wA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=f+iCtE+TdnFo6Sfq2hOcFR6WJuCtZffDIeT/aHJS015z4K9qcZ5SpL0g1426j/RoB
+         aHrthS2fPlhdv1y6GhmoH3zOIeVYB/2Ak95ZAYO/NFjzIzAKd+wzD5Qm/9ZUzssv5n
+         r2njr1HQUPrJFrVSRK54DjrA/57Ls6NWpaPcj6FppGSeGdpXH2bwNLCsyvoJ/n+yUD
+         c23XdESprqdroaF8EStpY/PraY5GMJbaSIE7XeEQatlJMdB+8NxSiW3KF6aoXPnGQe
+         0+I7MIqMU49xRj41oR0soA8gCmg0X3o8N66VFV+6zq8C5PTEiPrqfTn3eWhLEwQblY
+         K+k07TcBesjSQ==
+X-Google-Smtp-Source: ABdhPJxDw7Ew29rP1Ct1BjvsIzMnGFJf5ITeYRP8RHWmBzY/KLqQ/8v1gnS5rktFU/5uW88LnC4Hm0oAsnqOEGqnnSk=
+X-Received: by 2002:a17:906:d784:: with SMTP id pj4mr27585021ejb.360.1608062063367;
+ Tue, 15 Dec 2020 11:54:23 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <291555f8-ed17-5ed6-8ca4-42c8d5e13be9@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201215155627.2513-1-nsaenzjulienne@suse.de> <20201215184407.GA44849@C02TF0J2HF1T.local>
+ <1e0ad098ca7b1c13dbc6602285b77790b9cd54a1.camel@suse.de>
+In-Reply-To: <1e0ad098ca7b1c13dbc6602285b77790b9cd54a1.camel@suse.de>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 15 Dec 2020 13:54:11 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJwUzBL+9E0jsTzAr4hTnGbGFUkD=xdTMJiFgYfpo4aFA@mail.gmail.com>
+Message-ID: <CAL_JsqJwUzBL+9E0jsTzAr4hTnGbGFUkD=xdTMJiFgYfpo4aFA@mail.gmail.com>
+Subject: Re: [PATCH 0/6] Expose RPi4'd bootloader configuration
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        devicetree@vger.kernel.org,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/15/20 9:12 AM, Shuah Khan wrote:
-> On 12/14/20 9:42 AM, Jeffrin Jose T wrote:
->> hello,
->>
->> i have worked on to  fix  depreciated api issue from
->> tools/testing/selftests/intel_pstate/aerf.c
->>
->> i met with the following error related...
->>
->> --------------x------------------x----------------->
->> $pwd
->> /home/jeffrin/UP/linux-kselftest/tools/testing/selftests/intel_pstate
->> $make
->> gcc  -Wall -D_GNU_SOURCE    aperf.c /home/jeffrin/UP/linux-
->> kselftest/tools/testing/selftests/kselftest_harness.h
->> /home/jeffrin/UP/linux-kselftest/tools/testing/selftests/kselftest.h -
->> lm -o /home/jeffrin/UP/linux-
->> kselftest/tools/testing/selftests/intel_pstate/aperf
->> aperf.c: In function ‘main’:
->> aperf.c:58:2: warning: ‘ftime’ is deprecated [-Wdeprecated-
->> declarations]
->>     58 |  ftime(&before);
->>        |  ^~~~~
->> In file included from aperf.c:9:
->> /usr/include/x86_64-linux-gnu/sys/timeb.h:39:12: note: declared here
->>     39 | extern int ftime (struct timeb *__timebuf)
->>        |            ^~~~~
->> aperf.c:67:2: warning: ‘ftime’ is deprecated [-Wdeprecated-
->> declarations]
->>     67 |  ftime(&after);
->>        |  ^~~~~
->> In file included from aperf.c:9:
->> /usr/include/x86_64-linux-gnu/sys/timeb.h:39:12: note: declared here
->>     39 | extern int ftime (struct timeb *__timebuf)
->>        |            ^~~~~
->> $
->> ----------------x---------------x---------------------->
->>
->>
->> from ftime manual  i found that it is depreciated...
->>
->> This  function is deprecated, and will be removed in a future version
->> of the GNU C library.  Use clock_gettime(2) instead.
->>
->>
->> now clock_gettime  gives  new data structure.
->>
->>   struct timespec {
->>                 time_t   tv_sec;        /* seconds */
->>                 long     tv_nsec;       /* nanoseconds */
->>             };
->>
->>
->> i worked on with the new data structure and some errors that came
->> along.
->> typical final output looks good but  values of runtime and typical
->> frequency
->> does not look normal during "sudo bash run.sh".
->>
->> output of "git diff" and  a  portion of output of   "sudo bash run.sh".
->> is attached.
->>
-> 
-> Please send a proper patch to fix intel_pstate to use clock_gettime.
-> 
+On Tue, Dec 15, 2020 at 1:01 PM Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> Hi Catalin,
+>
+> On Tue, 2020-12-15 at 18:44 +0000, Catalin Marinas wrote:
+> > On Tue, Dec 15, 2020 at 04:56:20PM +0100, Nicolas Saenz Julienne wrote:
+> > > Soon to be released versions of RPi4's firmware will take of care
+> > > passing their bootloader's configuration to the OS by copying it into
+> > > memory and creating a reserved memory node in the board's DT. In order
+> > > to make use of this information, this series introduces a new generic
+> > > nvmem driver that maps reserved-memory nodes into nvmem devices.
+> > >
+> > > An alternative approach, less nice IMO, would be to create a
+> > > platform-specific 'soc' driver.
+> >
+> > What kind of information is this and how would the kernel use it?
+>
+> Sorry, I wasn't clear enough, the ultimate goal is to use this information from
+> user-space, through nvmem's sysfs interface. The kernel itself has no use for
+> it.
 
-The fix for this is already in next - no need to send patch.
+That still leaves the first question.
 
-thanks,
--- Shuah
-
+Rob
