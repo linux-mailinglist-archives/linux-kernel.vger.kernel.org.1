@@ -2,87 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099082DA991
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA662DA994
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727335AbgLOI6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:58:23 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:56765 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727134AbgLOI6I (ORCPT
+        id S1727468AbgLOI7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:59:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726777AbgLOI7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:58:08 -0500
-X-UUID: 632aff21dcee45538c8a8f7a8b798dbc-20201215
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=jYm47xmaT1D4jDw4e/jJo8U9Z8nJxan2eS2DDh4rxwY=;
-        b=YVpoi/mnN6FMZnMQUIVNFvt5H/nikMzO4YX7i/RM9Bsv967BOSLISN3e7c2HN9ClmXMo5TN3Y52oy/iGJBujjRB81/UqbDtGQuqxhMjiN+9wAto8Dyjph+HPaJev9ZU4uT6Jrvb6zjX0JrHfry7x/WYNljfReddHprWSiAxG2Jc=;
-X-UUID: 632aff21dcee45538c8a8f7a8b798dbc-20201215
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 124555772; Tue, 15 Dec 2020 16:57:19 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 15 Dec 2020 16:57:18 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 15 Dec 2020 16:57:19 +0800
-Message-ID: <1608022638.10163.14.camel@mtkswgap22>
-Subject: Re: [PATCH v4 4/6] scsi: ufs: Remove d_wb_alloc_units from struct
- ufs_dev_info
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Bean Huo <huobean@gmail.com>
-CC:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <asutoshd@codeaurora.org>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <beanhuo@micron.com>,
-        <bvanassche@acm.org>, <tomas.winkler@intel.com>,
-        <cang@codeaurora.org>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Date:   Tue, 15 Dec 2020 16:57:18 +0800
-In-Reply-To: <20201211140035.20016-5-huobean@gmail.com>
-References: <20201211140035.20016-1-huobean@gmail.com>
-         <20201211140035.20016-5-huobean@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 15 Dec 2020 03:59:19 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7726C0617A6;
+        Tue, 15 Dec 2020 00:58:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AKm4eJHa0x7jzyMwctEebqE5zykXwFHnRzlnlcFMVho=; b=NgHRH8X+2NtNssI6RUv7NlxmWx
+        xce2nCced5yWEbsjfNHzsgUH2BPLDgAuslXtubwogm+lWxJCBVsh6EWvlqRESsWSV56mSTwelxAQd
+        hjSLxc2rpQqwvANXLLP0EQsiW3lf4D9mdSrNFriG3vgE3VOxZ9sWnOqMUKZlk7I745kusquQMx+AX
+        1SWL+BfGyZ1mNPu/JqmwaSyZbhHNkC7uYVPOAIVZK6h/aI3FVQLaPmqOyjgSpuefT+ldunvusWmUC
+        PzAcuMmkv//VTgx9IFhWD5+HfXoxiN0uyxwIEyDbDPhbgp79C2i6OQtgnxXXkVlwIsl1xvg7dSVx1
+        nb5uMg/g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kp6A1-00051s-ID; Tue, 15 Dec 2020 08:58:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3429D300446;
+        Tue, 15 Dec 2020 09:58:19 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 142CE2C787A47; Tue, 15 Dec 2020 09:58:19 +0100 (CET)
+Date:   Tue, 15 Dec 2020 09:58:19 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, TimGuo-oc@zhaoxin.com,
+        CooperYan@zhaoxin.com, QiyuanWang@zhaoxin.com,
+        HerryYang@zhaoxin.com, CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
+Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
+Message-ID: <20201215085819.GE3040@hirez.programming.kicks-ass.net>
+References: <1607918392-19171-1-git-send-email-TonyWWang-oc@zhaoxin.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1607918392-19171-1-git-send-email-TonyWWang-oc@zhaoxin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQmVhbiwNCg0KT24gRnJpLCAyMDIwLTEyLTExIGF0IDE1OjAwICswMTAwLCBCZWFuIEh1byB3
-cm90ZToNCj4gRnJvbTogQmVhbiBIdW8gPGJlYW5odW9AbWljcm9uLmNvbT4NCj4gDQo+IGRfd2Jf
-YWxsb2NfdW5pdHMgb25seSBiZSB1c2VkIHdoaWxlIFdCIHByb2JlLCBqdXN0IHVzZWQgdG8gY29u
-ZmlybSB0aGUNCj4gY29uZGl0aW9uIHRoYXQgImlmIGJXcml0ZUJvb3N0ZXJCdWZmZXJUeXBlIGlz
-IHNldCB0byAwMWggYnV0DQo+IGROdW1TaGFyZWRXcml0ZUJvb3N0ZXJCdWZmZXJBbGxvY1VuaXRz
-IGlzIHNldCB0byB6ZXJvLCB0aGUgV3JpdGVCb29zdGVyDQo+IGZlYXR1cmUgaXMgZGlzYWJsZWQi
-LiBTbywgZG9uJ3QgbmVlZCB0byBrZWVwIGl0IGluIHJ1bnRpbWUuDQo+IA0KPiBTaWduZWQtb2Zm
-LWJ5OiBCZWFuIEh1byA8YmVhbmh1b0BtaWNyb24uY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvc2Nz
-aS91ZnMvdWZzLmggICAgfCAxIC0NCj4gIGRyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMgfCA2ICsr
-LS0tLQ0KPiAgMiBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0p
-DQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnMuaCBiL2RyaXZlcnMvc2Nz
-aS91ZnMvdWZzLmgNCj4gaW5kZXggNDViZWJjYTI5ZmRkLi44ZWQzNDJlNDM4ODMgMTAwNjQ0DQo+
-IC0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzLmgNCj4gKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91
-ZnMuaA0KPiBAQCAtNTQ0LDcgKzU0NCw2IEBAIHN0cnVjdCB1ZnNfZGV2X2luZm8gew0KPiAgCWJv
-b2wJd2JfYnVmX2ZsdXNoX2VuYWJsZWQ7DQo+ICAJdTgJd2JfZGVkaWNhdGVkX2x1Ow0KPiAgCXU4
-CWJfd2JfYnVmZmVyX3R5cGU7DQo+IC0JdTMyCWRfd2JfYWxsb2NfdW5pdHM7DQoNClBlcmhhcHMg
-YmVsb3cgdHdvIGZpZWxkcyBjb3VsZCBiZSBhbHNvIHJlbW92ZWQgZnJvbSBzdHJ1Y3QgdWZzX2Rl
-dl9pbmZvDQpmb3IgdGhlIHNhbWUgcmVhc29uPw0KDQp1MzIgZF9leHRfdWZzX2ZlYXR1cmVfc3Vw
-Ow0KdTMyIGRfd2JfYWxsb2NfdW5pdHM7DQoNClRoYW5rcywNClN0YW5sZXkgQ2h1DQoNCj4gIA0K
-PiAgCWJvb2wJYl9ycG1fZGV2X2ZsdXNoX2NhcGFibGU7DQo+ICAJdTgJYl9wcmVzcnZfdXNwY19l
-bjsNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMgYi9kcml2ZXJzL3Nj
-c2kvdWZzL3Vmc2hjZC5jDQo+IGluZGV4IDUyOGMyNTdkZjQ4Yy4uMDk5OGU2MTAzY2Q3IDEwMDY0
-NA0KPiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+ICsrKyBiL2RyaXZlcnMvc2Nz
-aS91ZnMvdWZzaGNkLmMNCj4gQEAgLTcyNDMsMTAgKzcyNDMsOCBAQCBzdGF0aWMgdm9pZCB1ZnNo
-Y2Rfd2JfcHJvYmUoc3RydWN0IHVmc19oYmEgKmhiYSwgdTggKmRlc2NfYnVmKQ0KPiAgCQlkZXNj
-X2J1ZltERVZJQ0VfREVTQ19QQVJBTV9XQl9QUkVTUlZfVVNSU1BDX0VOXTsNCj4gIA0KPiAgCWlm
-IChkZXZfaW5mby0+Yl93Yl9idWZmZXJfdHlwZSA9PSBXQl9CVUZfTU9ERV9TSEFSRUQpIHsNCj4g
-LQkJZGV2X2luZm8tPmRfd2JfYWxsb2NfdW5pdHMgPQ0KPiAtCQlnZXRfdW5hbGlnbmVkX2JlMzIo
-ZGVzY19idWYgKw0KPiAtCQkJCSAgIERFVklDRV9ERVNDX1BBUkFNX1dCX1NIQVJFRF9BTExPQ19V
-TklUUyk7DQo+IC0JCWlmICghZGV2X2luZm8tPmRfd2JfYWxsb2NfdW5pdHMpDQo+ICsJCWlmICgh
-Z2V0X3VuYWxpZ25lZF9iZTMyKGRlc2NfYnVmICsNCj4gKwkJCQkgICBERVZJQ0VfREVTQ19QQVJB
-TV9XQl9TSEFSRURfQUxMT0NfVU5JVFMpKQ0KPiAgCQkJZ290byB3Yl9kaXNhYmxlZDsNCj4gIAl9
-IGVsc2Ugew0KPiAgCQlmb3IgKGx1biA9IDA7IGx1biA8IFVGU19VUElVX01BWF9XQl9MVU5fSUQ7
-IGx1bisrKSB7DQoNCg==
+On Mon, Dec 14, 2020 at 11:59:52AM +0800, Tony W Wang-oc wrote:
 
+Didn't I mention something about a comment?
+
+>  static const struct x86_cpu_id crc32c_cpu_id[] = {
+> +	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 0x6, X86_FEATURE_XMM4_2, 1),
+> +	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x1b, X86_FEATURE_XMM4_2, 1),
+> +	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x3b, X86_FEATURE_XMM4_2, 1),
+> +	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 0x6, X86_FEATURE_XMM4_2, 1),
+> +	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x1b, X86_FEATURE_XMM4_2, 1),
+> +	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x3b, X86_FEATURE_XMM4_2, 1),
+>  	X86_MATCH_FEATURE(X86_FEATURE_XMM4_2, NULL),
+>  	{}
+
+Also, the above is weird in that is has the negative entries marked
+positive, and 1/NULL are inconsistent.
+
+Something like so then?
+
+---
+
+diff --git a/arch/x86/crypto/crc32c-intel_glue.c b/arch/x86/crypto/crc32c-intel_glue.c
+index feccb5254c7e..f6e6669a5102 100644
+--- a/arch/x86/crypto/crc32c-intel_glue.c
++++ b/arch/x86/crypto/crc32c-intel_glue.c
+@@ -215,14 +215,31 @@ static struct shash_alg alg = {
+ };
+ 
+ static const struct x86_cpu_id crc32c_cpu_id[] = {
+-	X86_MATCH_FEATURE(X86_FEATURE_XMM4_2, NULL),
++	/*
++	 * Negative entries; exclude these chips from using this driver.
++	 * They match the positive rule below, but their CRC32 instruction
++	 * implementation is so slow, it doesn't merrit use.
++	 */
++	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 0x6, X86_FEATURE_XMM4_2, false),
++	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x1b, X86_FEATURE_XMM4_2, false),
++	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(ZHAOXIN, 0x7, 0x3b, X86_FEATURE_XMM4_2, false),
++	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 0x6, X86_FEATURE_XMM4_2, false),
++	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x1b, X86_FEATURE_XMM4_2, false),
++	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(CENTAUR, 0x7, 0x3b, X86_FEATURE_XMM4_2, false),
++	/*
++	 * Positive entry; SSE-4.2 instructions include special purpose CRC32
++	 * instructions.
++	 */
++	X86_MATCH_FEATURE(X86_FEATURE_XMM4_2, true),
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(x86cpu, crc32c_cpu_id);
+ 
+ static int __init crc32c_intel_mod_init(void)
+ {
+-	if (!x86_match_cpu(crc32c_cpu_id))
++	const struct x86_cpu_id *m = x86_match_cpu(crc32c_cpu_id);
++
++	if (!m || !m->driver_data)
+ 		return -ENODEV;
+ #ifdef CONFIG_X86_64
+ 	if (boot_cpu_has(X86_FEATURE_PCLMULQDQ)) {
