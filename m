@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24BC52DA98F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 099082DA991
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 10:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727254AbgLOI6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:58:22 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:49203 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727106AbgLOI6F (ORCPT
+        id S1727335AbgLOI6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:58:23 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:56765 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727134AbgLOI6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:58:05 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 286FA580301;
-        Tue, 15 Dec 2020 03:56:59 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 15 Dec 2020 03:56:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=4IEW1Wm+UUJ4RUAHXZ0yABLHMwu
-        w1h/1bT4PPJUy10Q=; b=J5byJ/N8ttMdHuZIzWOG6M3lRBMBsp4N0DmBw06Ogsu
-        ua27VBNqoRWXszW2hx3mVNL2fVlaq18p7f51JsxnqdtLFtvjMXnVUYB9oWpH7Hhl
-        pP+6DZEOHddMkFW2tTdwI/obvn2+bqmRcAh23zR4sP4jvZZ4c8LEaWbJr55qdaNb
-        anmHWFLLQmC1T+QaRuMUniwOKIKvS2owtEsQgbLt0xE9KR5uqdxai2xVIXYwAN3G
-        2fmA02rrNZEpEpVDnKtO3Z+L/93yli24G3di9RHRKx1aoHwtSzgN+YCTP9UmQpXK
-        dA06qan/rzSfEUkysJCZVIatd9xa8Ki4ML2m8FSO55w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=4IEW1W
-        m+UUJ4RUAHXZ0yABLHMwuw1h/1bT4PPJUy10Q=; b=kEmCNgqRJeQfQRu7qHLgam
-        LnSXxa40avoemlhtCxqiyRMQ3BJcESuc33igVakzk73FyYh1OyUzkg8goYxkoQ4m
-        hpUE7tq0rP/elIk0eB3GObLzfDezBa4dmnvqEij4W2LrD5kbwntP/lzAoCHeJ/A8
-        K099Vtj/gvlaxamZKZFeZ4K23GPSYtkw8a2O4td2zrJoKwclGlpqPX2QrFkfvaaw
-        /oMN2ZUxHKJGAH2+BruCWZBt/5KCbXUTztbtpDJPZqLAjTN7oM5AmMjCRYhYykp6
-        S0oK1kkXOXZkBebV7pj1mUITUenJSYjPvPUUx5xnsFqNF3kriOXWXIsma7TvBssw
-        ==
-X-ME-Sender: <xms:WXrYX8fd21Vzrk6dN1zg4K3gVTSDIJKTkeeq8fQDdD9ymNg-jGQxgg>
-    <xme:WXrYX-NTSGXzH_gubB3bfANxZ6qDP74kj66zMRfsFUKcAAGqgil1R8yRaphlIFC35
-    veqv9qLrVDCnXqWPd4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekledguddvkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:WXrYX9gBzkGd1bGA8cnscy0dg8qAKQmock80FRvLY8t3eCXaL3s1MQ>
-    <xmx:WXrYXx9FYmJ1XRLgYDgLYRQdrqOPEsHPGCsn_-NSV7FpVaXeVxqUDQ>
-    <xmx:WXrYX4sMyQR2vWcBMnZEncWCJ1Ep4KuSNPKxNFUn5XJaDL44rF5mUQ>
-    <xmx:W3rYX1N5rF7I4eLriJsA9qNz1DjViX4zxDBUpkPA4yN7h6a7AzAFCw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D976824005A;
-        Tue, 15 Dec 2020 03:56:56 -0500 (EST)
-Date:   Tue, 15 Dec 2020 09:56:55 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     davem@davemloft.net, kuba@kernel.org, wens@csie.org,
-        jernej.skrabec@siol.net, timur@kernel.org,
-        song.bao.hua@hisilicon.com, f.fainelli@gmail.com, leon@kernel.org,
-        hkallweit1@gmail.com, wangyunjian@huawei.com, sr@denx.de,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] net: allwinner: Fix some resources leak in the error
- handling path of the probe and in the remove function
-Message-ID: <20201215085655.ddacjfvogc3e33vz@gilmour>
-References: <20201214202117.146293-1-christophe.jaillet@wanadoo.fr>
+        Tue, 15 Dec 2020 03:58:08 -0500
+X-UUID: 632aff21dcee45538c8a8f7a8b798dbc-20201215
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=jYm47xmaT1D4jDw4e/jJo8U9Z8nJxan2eS2DDh4rxwY=;
+        b=YVpoi/mnN6FMZnMQUIVNFvt5H/nikMzO4YX7i/RM9Bsv967BOSLISN3e7c2HN9ClmXMo5TN3Y52oy/iGJBujjRB81/UqbDtGQuqxhMjiN+9wAto8Dyjph+HPaJev9ZU4uT6Jrvb6zjX0JrHfry7x/WYNljfReddHprWSiAxG2Jc=;
+X-UUID: 632aff21dcee45538c8a8f7a8b798dbc-20201215
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 124555772; Tue, 15 Dec 2020 16:57:19 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 15 Dec 2020 16:57:18 +0800
+Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 15 Dec 2020 16:57:19 +0800
+Message-ID: <1608022638.10163.14.camel@mtkswgap22>
+Subject: Re: [PATCH v4 4/6] scsi: ufs: Remove d_wb_alloc_units from struct
+ ufs_dev_info
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Bean Huo <huobean@gmail.com>
+CC:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <asutoshd@codeaurora.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <beanhuo@micron.com>,
+        <bvanassche@acm.org>, <tomas.winkler@intel.com>,
+        <cang@codeaurora.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Date:   Tue, 15 Dec 2020 16:57:18 +0800
+In-Reply-To: <20201211140035.20016-5-huobean@gmail.com>
+References: <20201211140035.20016-1-huobean@gmail.com>
+         <20201211140035.20016-5-huobean@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="tgnffsnu3i7wc524"
-Content-Disposition: inline
-In-Reply-To: <20201214202117.146293-1-christophe.jaillet@wanadoo.fr>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+SGkgQmVhbiwNCg0KT24gRnJpLCAyMDIwLTEyLTExIGF0IDE1OjAwICswMTAwLCBCZWFuIEh1byB3
+cm90ZToNCj4gRnJvbTogQmVhbiBIdW8gPGJlYW5odW9AbWljcm9uLmNvbT4NCj4gDQo+IGRfd2Jf
+YWxsb2NfdW5pdHMgb25seSBiZSB1c2VkIHdoaWxlIFdCIHByb2JlLCBqdXN0IHVzZWQgdG8gY29u
+ZmlybSB0aGUNCj4gY29uZGl0aW9uIHRoYXQgImlmIGJXcml0ZUJvb3N0ZXJCdWZmZXJUeXBlIGlz
+IHNldCB0byAwMWggYnV0DQo+IGROdW1TaGFyZWRXcml0ZUJvb3N0ZXJCdWZmZXJBbGxvY1VuaXRz
+IGlzIHNldCB0byB6ZXJvLCB0aGUgV3JpdGVCb29zdGVyDQo+IGZlYXR1cmUgaXMgZGlzYWJsZWQi
+LiBTbywgZG9uJ3QgbmVlZCB0byBrZWVwIGl0IGluIHJ1bnRpbWUuDQo+IA0KPiBTaWduZWQtb2Zm
+LWJ5OiBCZWFuIEh1byA8YmVhbmh1b0BtaWNyb24uY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvc2Nz
+aS91ZnMvdWZzLmggICAgfCAxIC0NCj4gIGRyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMgfCA2ICsr
+LS0tLQ0KPiAgMiBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0p
+DQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnMuaCBiL2RyaXZlcnMvc2Nz
+aS91ZnMvdWZzLmgNCj4gaW5kZXggNDViZWJjYTI5ZmRkLi44ZWQzNDJlNDM4ODMgMTAwNjQ0DQo+
+IC0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzLmgNCj4gKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91
+ZnMuaA0KPiBAQCAtNTQ0LDcgKzU0NCw2IEBAIHN0cnVjdCB1ZnNfZGV2X2luZm8gew0KPiAgCWJv
+b2wJd2JfYnVmX2ZsdXNoX2VuYWJsZWQ7DQo+ICAJdTgJd2JfZGVkaWNhdGVkX2x1Ow0KPiAgCXU4
+CWJfd2JfYnVmZmVyX3R5cGU7DQo+IC0JdTMyCWRfd2JfYWxsb2NfdW5pdHM7DQoNClBlcmhhcHMg
+YmVsb3cgdHdvIGZpZWxkcyBjb3VsZCBiZSBhbHNvIHJlbW92ZWQgZnJvbSBzdHJ1Y3QgdWZzX2Rl
+dl9pbmZvDQpmb3IgdGhlIHNhbWUgcmVhc29uPw0KDQp1MzIgZF9leHRfdWZzX2ZlYXR1cmVfc3Vw
+Ow0KdTMyIGRfd2JfYWxsb2NfdW5pdHM7DQoNClRoYW5rcywNClN0YW5sZXkgQ2h1DQoNCj4gIA0K
+PiAgCWJvb2wJYl9ycG1fZGV2X2ZsdXNoX2NhcGFibGU7DQo+ICAJdTgJYl9wcmVzcnZfdXNwY19l
+bjsNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMgYi9kcml2ZXJzL3Nj
+c2kvdWZzL3Vmc2hjZC5jDQo+IGluZGV4IDUyOGMyNTdkZjQ4Yy4uMDk5OGU2MTAzY2Q3IDEwMDY0
+NA0KPiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+ICsrKyBiL2RyaXZlcnMvc2Nz
+aS91ZnMvdWZzaGNkLmMNCj4gQEAgLTcyNDMsMTAgKzcyNDMsOCBAQCBzdGF0aWMgdm9pZCB1ZnNo
+Y2Rfd2JfcHJvYmUoc3RydWN0IHVmc19oYmEgKmhiYSwgdTggKmRlc2NfYnVmKQ0KPiAgCQlkZXNj
+X2J1ZltERVZJQ0VfREVTQ19QQVJBTV9XQl9QUkVTUlZfVVNSU1BDX0VOXTsNCj4gIA0KPiAgCWlm
+IChkZXZfaW5mby0+Yl93Yl9idWZmZXJfdHlwZSA9PSBXQl9CVUZfTU9ERV9TSEFSRUQpIHsNCj4g
+LQkJZGV2X2luZm8tPmRfd2JfYWxsb2NfdW5pdHMgPQ0KPiAtCQlnZXRfdW5hbGlnbmVkX2JlMzIo
+ZGVzY19idWYgKw0KPiAtCQkJCSAgIERFVklDRV9ERVNDX1BBUkFNX1dCX1NIQVJFRF9BTExPQ19V
+TklUUyk7DQo+IC0JCWlmICghZGV2X2luZm8tPmRfd2JfYWxsb2NfdW5pdHMpDQo+ICsJCWlmICgh
+Z2V0X3VuYWxpZ25lZF9iZTMyKGRlc2NfYnVmICsNCj4gKwkJCQkgICBERVZJQ0VfREVTQ19QQVJB
+TV9XQl9TSEFSRURfQUxMT0NfVU5JVFMpKQ0KPiAgCQkJZ290byB3Yl9kaXNhYmxlZDsNCj4gIAl9
+IGVsc2Ugew0KPiAgCQlmb3IgKGx1biA9IDA7IGx1biA8IFVGU19VUElVX01BWF9XQl9MVU5fSUQ7
+IGx1bisrKSB7DQoNCg==
 
---tgnffsnu3i7wc524
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Mon, Dec 14, 2020 at 09:21:17PM +0100, Christophe JAILLET wrote:
-> 'irq_of_parse_and_map()' should be balanced by a corresponding
-> 'irq_dispose_mapping()' call. Otherwise, there is some resources leaks.
-
-Do you have a source to back that? It's not clear at all from the
-documentation for those functions, and couldn't find any user calling it
-=66rom the ten-or-so random picks I took.
-
-Maxime
-
---tgnffsnu3i7wc524
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9h6VwAKCRDj7w1vZxhR
-xQ9UAQC+Z7aCLxnq7/YwPgDoj5mZh+XwHfGuD6zuXikKqa8zEQEAyScyReA2IHvf
-/sJz8uc1BMRoj6wBip9nfzA/vv1QFA4=
-=+jO3
------END PGP SIGNATURE-----
-
---tgnffsnu3i7wc524--
