@@ -2,142 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912612DB62B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B322DB62C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730510AbgLOV5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 16:57:50 -0500
-Received: from mail-02.mail-europe.com ([51.89.119.103]:46874 "EHLO
-        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729719AbgLOV4a (ORCPT
+        id S1730952AbgLOV6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 16:58:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731021AbgLOV6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 16:56:30 -0500
-Date:   Tue, 15 Dec 2020 21:54:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1608069298;
-        bh=P09pz3DapQY7UGh6lp2+oBfUikb6wNcNgqvn7FpsiBA=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=cotduSHcGDd1aNLx+2m+SbFxISIpk52VdgAbdEwkf9cHvKHcC9m4h6f72FCZ5jbuw
-         j33e4PxDhF1fjPvUVdberftbVN9P63MnlUbv+mBscdzWWK0Qiyt4qcRRzCEGi36fiQ
-         +y3HlhjSi/6DJEi5Jcj0in2Ne8iRm+bDGIDc3V6k=
-To:     Jay Vosburgh <jay.vosburgh@canonical.com>
-From:   Lars Everbrand <lars.everbrand@protonmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-Reply-To: Lars Everbrand <lars.everbrand@protonmail.com>
-Subject: Re: [PATCH net-next] bonding: correct rr balancing during link failure
-Message-ID: <X9kwqvgoAmrjAaXY@black-debian>
-In-Reply-To: <15308.1607463969@famine>
-References: <X8f/WKR6/j9k+vMz@black-debian> <20201205114513.4886d15e@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com> <15308.1607463969@famine>
+        Tue, 15 Dec 2020 16:58:41 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D6AC0613D3;
+        Tue, 15 Dec 2020 13:58:00 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id r5so22663566eda.12;
+        Tue, 15 Dec 2020 13:58:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N1a8xrDPCZ026HQdK8Vq1OhFGNFowbJMgK6N8VyjyPY=;
+        b=jtrl3dfR/1vQ5dt76KTjESXT1RBhUqhuN0XasnNWtE4bFMBb+uXjOcAaFG4Tw5eosA
+         NQNGDova2B2qfvEMPrC0OhMSY00X9O3Pt0ktdk8KVoPawxC4WBo2VfrX4Eyj3lzqYsH7
+         tRkBecZ1rn3rbM5+Xv7pysLnpNckkwfTs01NvA/RERFPbjESx4D04DIjfBcYlz236UmL
+         VP6nQbNfmifDYWUYwr2KOwth3UpQCbZ2pX1jDtN1cTy02602tdB5fbFCMzPXgGg5CSzD
+         1UEaohj0mCAhTxfdF2wRkgT3ZvWg9JzIWDzKtM5lLuHYtjUoqd/KZ0Yr8cbkxT+f2DUt
+         Y9vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N1a8xrDPCZ026HQdK8Vq1OhFGNFowbJMgK6N8VyjyPY=;
+        b=Lo0N8QFgJdHnDLKjaJRlU7n4iAX8oCram0Qh33ESuqRyDRF+WBCgZINPUymSyJDAm5
+         WCzBsz0C+ISgMnNgBq5odANbcxcMZAslmcbf4jOuIfSL1hHV+94unl7CyYHb7eFeg9hW
+         7VrW7xthAJKtBp7NQeNrQmRX3USd11bcwtfAgcs0f26sOKgGdZ9y+E1F52f4bi5BJnS5
+         0thg6IEcoL1mmeWAM1+XsHOBBAooo1TKvc3RkRA45aD3NagM8ojFWLz9mDd/I20dLZHN
+         o4irZJjQfVrZYtER4peMhws9AekI/d+fqfTLw0dXC9czhZJG73d/CgZThbRM4hToUU1X
+         aGLg==
+X-Gm-Message-State: AOAM533BISvJvPKBatMOiFI4b3CZRTOgxGkO/t7BKRUdXzPnroF192RR
+        DnWztYwW0Rdj1CeQ8w/Mnuq8T0dAnXwYq0WUp0Y=
+X-Google-Smtp-Source: ABdhPJz2iMox1eHPojxlVeQmLPOYNsyRWakO6o+Lc8pqKLjCy/wbT6pwNGUBgys4AUvniZ8JaLwxZ/Hz8TIby4klQ7A=
+X-Received: by 2002:a05:6402:ca2:: with SMTP id cn2mr31266268edb.137.1608069479463;
+ Tue, 15 Dec 2020 13:57:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20201214223722.232537-1-shy828301@gmail.com> <20201214223722.232537-6-shy828301@gmail.com>
+ <20201215022233.GL3913616@dread.disaster.area> <20201215144516.GE379720@cmpxchg.org>
+In-Reply-To: <20201215144516.GE379720@cmpxchg.org>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 15 Dec 2020 13:57:47 -0800
+Message-ID: <CAHbLzkr0=f4xNiPA-OuF6sdzV5-RVkx9y_1rUmn2yWU2Kd8uhQ@mail.gmail.com>
+Subject: Re: [v2 PATCH 5/9] mm: memcontrol: add per memcg shrinker nr_deferred
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Dave Chinner <david@fromorbit.com>, Roman Gushchin <guro@fb.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 01:46:09PM -0800, Jay Vosburgh wrote:
->=20
-> Jakub Kicinski <kuba@kernel.org> wrote:
->=20
-> >On Wed, 02 Dec 2020 20:55:57 +0000 Lars Everbrand wrote:
-> =09Are these bandwidth numbers from observation of the actual
-> behavior?  I'm not sure the real system would behave this way; my
-> suspicion is that it would increase the likelihood of drops on the
-> overused slave, not that the overall capacity would be limited.
-I tested this with with 2 VMs and 5 bridges with bandwidth limitiation
-via 'virsh domiftune' to bring the speed down to something similar to=20
-100Mbit/s.
-
-iperf results:
-
-with patch:
----
-working       iperf
-interfaces    speed [mbit/s]
-5             442
-4             363
-3             278
-2             199
-1             107
-
-without patch:
----
-working       iperf
-interfaces    speed [mbit/s]
-5             444
-4             226
-3             155
-2             129
-1             107
-
-The speed at 5x100 is not going as high as I expected but the
-sub-optimal speed is still visible.
-
-Note that the degradation tested is with downing interfaces sequentially
-which is the worst-case for this problem.
-
-> >Looking at the code in question it feels a little like we're breaking
-> >abstractions if we bump the counter directly in get_slave_by_id.
->=20
-> =09Agreed; I think a better way to fix this is to enable the slave
-> array for balance-rr mode, and then use the array to find the right
-> slave.  This way, we then avoid the problematic "skip unable to tx"
-> logic for free.
->=20
-> >For one thing when the function is called for IGMP packets the counter
-> >should not be incremented at all. But also if packets_per_slave is not
-> >1 we'd still be hitting the same leg multiple times (packets_per_slave
-> >/ 2). So it seems like we should round the counter up somehow?
+On Tue, Dec 15, 2020 at 6:47 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Tue, Dec 15, 2020 at 01:22:33PM +1100, Dave Chinner wrote:
+> > On Mon, Dec 14, 2020 at 02:37:18PM -0800, Yang Shi wrote:
+> > > Currently the number of deferred objects are per shrinker, but some slabs, for example,
+> > > vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
+> > >
+> > > The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
+> > > excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
+> > > may suffer from over shrink, excessive reclaim latency, etc.
+> > >
+> > > For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
+> > > heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
+> > > might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
+> > >
+> > > We observed this hit in our production environment which was running vfs heavy workload
+> > > shown as the below tracing log:
+> > >
+> > > <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> > > nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
+> > > cache items 246404277 delta 31345 total_scan 123202138
+> > > <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> > > nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
+> > > last shrinker return val 123186855
+> > >
+> > > The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
+> > > This also resulted in significant amount of page caches were dropped due to inodes eviction.
+> > >
+> > > Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
+> > > better isolation.
+> > >
+> > > When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
+> > > would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
+> > >
+> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > > ---
+> > >  include/linux/memcontrol.h |   9 +++
+> > >  mm/memcontrol.c            | 110 ++++++++++++++++++++++++++++++++++++-
+> > >  mm/vmscan.c                |   4 ++
+> > >  3 files changed, 120 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > > index 922a7f600465..1b343b268359 100644
+> > > --- a/include/linux/memcontrol.h
+> > > +++ b/include/linux/memcontrol.h
+> > > @@ -92,6 +92,13 @@ struct lruvec_stat {
+> > >     long count[NR_VM_NODE_STAT_ITEMS];
+> > >  };
+> > >
+> > > +
+> > > +/* Shrinker::id indexed nr_deferred of memcg-aware shrinkers. */
+> > > +struct memcg_shrinker_deferred {
+> > > +   struct rcu_head rcu;
+> > > +   atomic_long_t nr_deferred[];
+> > > +};
 > >
-> >For IGMP maybe we don't have to call bond_get_slave_by_id() at all,
-> >IMHO, just find first leg that can TX. Then we can restructure
-> >bond_get_slave_by_id() appropriately for the non-IGMP case.
->=20
-> =09For IGMP, the theory is to confine that traffic to a single
-> device.  Normally, this will be curr_active_slave, which is updated even
-> in balance-rr mode as interfaces are added to or removed from the bond.
-> The call to bond_get_slave_by_id should be a fallback in case
-> curr_active_slave is empty, and should be the exception, and may not be
-> possible at all.
->=20
-> =09But either way, the IGMP path shouldn't mess with rr_tx_counter,
-> it should be out of band of the normal TX packet counting, so to speak.
->=20
-> =09-J
->=20
-> >> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bon=
-d_main.c
-> >> index e0880a3840d7..e02d9c6d40ee 100644
-> >> --- a/drivers/net/bonding/bond_main.c
-> >> +++ b/drivers/net/bonding/bond_main.c
-> >> @@ -4107,6 +4107,7 @@ static struct slave *bond_get_slave_by_id(struct=
- bonding *bond,
-> >>  =09=09if (--i < 0) {
-> >>  =09=09=09if (bond_slave_can_tx(slave))
-> >>  =09=09=09=09return slave;
-> >> +=09=09=09bond->rr_tx_counter++;
-> >>  =09=09}
-> >>  =09}
-> >>
-> >> @@ -4117,6 +4118,7 @@ static struct slave *bond_get_slave_by_id(struct=
- bonding *bond,
-> >>  =09=09=09break;
-> >>  =09=09if (bond_slave_can_tx(slave))
-> >>  =09=09=09return slave;
-> >> +=09=09bond->rr_tx_counter++;
-> >>  =09}
-> >>  =09/* no slave that can tx has been found */
-> >>  =09return NULL;
+> > So you're effectively copy and pasting the memcg_shrinker_map
+> > infrastructure and doubling the number of allocations/frees required
+> > to set up/tear down a memcg? Why not add it to the struct
+> > memcg_shrinker_map like this:
 > >
->=20
-> ---
-> =09-Jay Vosburgh, jay.vosburgh@canonical.com
+> > struct memcg_shrinker_map {
+> >         struct rcu_head       rcu;
+> >       unsigned long   *map;
+> >       atomic_long_t   *nr_deferred;
+> > };
+> >
+> > And when you dynamically allocate the structure, set the map and
+> > nr_deferred pointers to the correct offset in the allocated range.
+> >
+> > Then this patch is really only changes to the size of the chunk
+> > being allocated, setting up the pointers and copying the relevant
+> > data from the old to new.
+>
+> Fully agreed.
 
+Thanks folks. Such idea has been discussed with Roman in the earlier
+emails. I agree this would make the code neater. Will do it in v3.
+
+>
+> In the longer-term, it may be nice to further expand this and make
+> this the generalized intersection between cgroup, node and shrinkers.
+>
+> There is large overlap with list_lru e.g. - with data of identical
+> scope and lifetime, but duplicative callbacks and management. If we
+> folded list_lru_memcg into the above data structure, we could also
+> generalize and reuse the existing callbacks.
+
+Yes, agree we should look further to combine and deduplicate all the
+pieces for the long run.
