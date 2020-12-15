@@ -2,84 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E28C2DADEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE60B2DADF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:24:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727321AbgLONVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:21:07 -0500
-Received: from mga03.intel.com ([134.134.136.65]:21857 "EHLO mga03.intel.com"
+        id S1727925AbgLONYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:24:22 -0500
+Received: from mga11.intel.com ([192.55.52.93]:26023 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726431AbgLONVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:21:03 -0500
-IronPort-SDR: PQrBzB5z7mlpB+e/YBxznJFyZ3krR+/9Aj01hmEXoJTOUXX4bHpx6Hf76/gPNi6XEmi9Zj63BJ
- MIjDFg3glqHA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="174983530"
+        id S1727053AbgLONX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 08:23:58 -0500
+IronPort-SDR: D1TB2IlYX2ukQomyo9Fp+4yToc+A++0HKSVI3mTguG234eCaSgXyr8OfGdT35qpJVIwcZ9NOdX
+ G3qe+hMHpy3g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9835"; a="171364553"
 X-IronPort-AV: E=Sophos;i="5.78,421,1599548400"; 
-   d="scan'208";a="174983530"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 05:20:20 -0800
-IronPort-SDR: dBtNgZkVJFbGNgvyaqbW9BHLS7xzgSLyrRvZT9PTD25l132ycU4QQLAFqmxkhgOSPtEFYRedUr
- qGHUfjMKw0GA==
+   d="scan'208";a="171364553"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 05:23:10 -0800
+IronPort-SDR: jYmIOmy2/eGcHbaXjy4lRHBnOB0tckkaipLHd0Uhi2AxjwWMckjQHd0e2mkTAObhyfwBpOvCJb
+ mIkGOifN5KUg==
 X-IronPort-AV: E=Sophos;i="5.78,421,1599548400"; 
-   d="scan'208";a="368214715"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 05:20:16 -0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Mathias Nyman <mathias.nyman@intel.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Muchowski, MaciejX" <maciejx.muchowski@intel.com>,
-        "Paczynski, Lukasz" <lukasz.paczynski@intel.com>,
-        Chen Yu <yu.c.chen@intel.com>
-Subject: [PATCH] xhci: Introduce max wait timeout in xhci_handshake()
-Date:   Tue, 15 Dec 2020 21:22:40 +0800
-Message-Id: <20201215132240.4094-1-yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.17.1
+   d="scan'208";a="411927717"
+Received: from sneftin-mobl.ger.corp.intel.com (HELO [10.214.238.87]) ([10.214.238.87])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 05:23:04 -0800
+Subject: Re: Fw: [External] Re: [PATCH v4 0/4] Improve s0ix flows for systems
+ i219LM
+To:     Mark Pearson <markpearson@lenovo.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        David Miller <davem@davemloft.net>,
+        Aaron Ma <aaron.ma@canonical.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Stefan Assmann <sassmann@redhat.com>,
+        "darcari@redhat.com" <darcari@redhat.com>,
+        "Yijun.Shen@dell.com" <Yijun.Shen@dell.com>,
+        "Perry.Yuan@dell.com" <Perry.Yuan@dell.com>,
+        "anthony.wong@canonical.com" <anthony.wong@canonical.com>,
+        "Ruinskiy, Dima" <dima.ruinskiy@intel.com>,
+        "Efrati, Nir" <nir.efrati@intel.com>,
+        "Lifshits, Vitaly" <vitaly.lifshits@intel.com>,
+        "Neftin, Sasha" <sasha.neftin@intel.com>
+References: <20201214153450.874339-1-mario.limonciello@dell.com>
+ <80862f70-18a4-4f96-1b96-e2fad7cc2b35@redhat.com>
+ <PS2PR03MB37505A15D3C9B7505D679D7BBDC70@PS2PR03MB3750.apcprd03.prod.outlook.com>
+ <ae436f90-45b8-ba70-be57-d17641c4f79d@lenovo.com>
+From:   "Neftin, Sasha" <sasha.neftin@intel.com>
+Message-ID: <18c1c152-9298-a4c5-c4ed-92c9fd91ea8a@intel.com>
+Date:   Tue, 15 Dec 2020 15:23:01 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <ae436f90-45b8-ba70-be57-d17641c4f79d@lenovo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The time to finish a xhci_handshake() is platform specific
-and sometimes during suspend resume test the followng
-errors were encountered:
-[53455.418330] ACPI: Waking up from system sleep state S4
-[66838.490856] xhci_hcd 0000:00:14.0: xHCI dying, ignoring interrupt.
-               Shouldn't IRQs be disabled?
-After changing the poll time granularity from 1 usec to 20 usec in
-xhci_handshake() this issue was not reproduced. While tuning on the
-poll time granularity might be painful on different platforms, it is
-applicable to introduce a module parameter to allow the xhci driver to wait
-for at max 16 ms.
-
-Reported-by: "Muchowski, MaciejX" <maciejx.muchowski@intel.com>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- drivers/usb/host/xhci.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index d4a8d0efbbc4..b8be9f3cc987 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -38,6 +38,10 @@ static unsigned long long quirks;
- module_param(quirks, ullong, S_IRUGO);
- MODULE_PARM_DESC(quirks, "Bit flags for quirks to be enabled as default");
- 
-+static int wait_handshake;
-+module_param(wait_handshake, int, 0644);
-+MODULE_PARM_DESC(wait_handshake, "Force wait for completion of handshake");
-+
- static bool td_on_ring(struct xhci_td *td, struct xhci_ring *ring)
- {
- 	struct xhci_segment *seg = ring->first_seg;
-@@ -74,7 +78,7 @@ int xhci_handshake(void __iomem *ptr, u32 mask, u32 done, int usec)
- 	ret = readl_poll_timeout_atomic(ptr, result,
- 					(result & mask) == done ||
- 					result == U32_MAX,
--					1, usec);
-+					1, wait_handshake ? XHCI_MAX_HALT_USEC : usec);
- 	if (result == U32_MAX)		/* card removed */
- 		return -ENODEV;
- 
--- 
-2.17.1
-
+On 12/14/2020 20:40, Mark Pearson wrote:
+> Thanks Hans
+> 
+> On 14/12/2020 13:31, Mark Pearson wrote:
+>>
+>>
+>> ------------------------------------------------------------------------
+>> *From:* Hans de Goede <hdegoede@redhat.com>
+>> *Sent:* December 14, 2020 13:24
+>> *To:* Mario Limonciello <mario.limonciello@dell.com>; Jeff Kirsher
+>> <jeffrey.t.kirsher@intel.com>; Tony Nguyen <anthony.l.nguyen@intel.com>;
+>> intel-wired-lan@lists.osuosl.org <intel-wired-lan@lists.osuosl.org>;
+>> David Miller <davem@davemloft.net>; Aaron Ma <aaron.ma@canonical.com>;
+>> Mark Pearson <mpearson@lenovo.com>
+>> *Cc:* linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>;
+>> Netdev <netdev@vger.kernel.org>; Alexander Duyck
+>> <alexander.duyck@gmail.com>; Jakub Kicinski <kuba@kernel.org>; Sasha
+>> Netfin <sasha.neftin@intel.com>; Aaron Brown <aaron.f.brown@intel.com>;
+>> Stefan Assmann <sassmann@redhat.com>; darcari@redhat.com
+>> <darcari@redhat.com>; Yijun.Shen@dell.com <Yijun.Shen@dell.com>;
+>> Perry.Yuan@dell.com <Perry.Yuan@dell.com>; anthony.wong@canonical.com
+>> <anthony.wong@canonical.com>
+>> *Subject:* [External] Re: [PATCH v4 0/4] Improve s0ix flows for systems
+>> i219LM
+>>   
+>> Hi All,
+>>
+> <snip>
+>>
+>> ###
+>>
+>> I've added Mark Pearson from Lenovo to the Cc so that Lenovo
+>> can investigate this issue further.
+>>
+>> Mark, this thread is about an issue with enabling S0ix support for
+>> e1000e (i219lm) controllers. This was enabled in the kernel a
+>> while ago, but then got disabled again on vPro / AMT enabled
+>> systems because on some systems (Lenovo X1C7 and now also X1C8)
+>> this lead to suspend/resume issues.
+>>
+>> When AMT is active then there is a handover handshake for the
+>> OS to get access to the ethernet controller from the ME. The
+>> Intel folks have checked and the Windows driver is using a timeout
+>> of 1 second for this handshake, yet on Lenovo systems this is
+>> taking 2 seconds. This likely has something to do with the
+>> ME firmware on these Lenovo models, can you get the firmware
+>> team at Lenovo to investigate this further ?
+> Absolutely - I'll ask them to look into this again.
+> 
+we need to explain why on Windows systems required 1s and on Linux 
+systems up to 2.5s - otherwise it is not reliable approach - you will 
+encounter others buggy system.
+(ME not POR on the Linux systems - is only one possible answer)
+> We did try to make progress with this previously - but it got a bit
+> stuck and hence the need for these patches....but I believe things may
+> have changed a bit so it's worth trying again
+> 
+> Mark
+> 
+Sasha
