@@ -2,118 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0976B2DB614
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCB42DB5F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:36:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729805AbgLOVuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 16:50:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56208 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727847AbgLOVfL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 16:35:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608068024;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1sn/69GdVFi4Vp51nylA/c2c2ip9Xwheky54XVDZfBE=;
-        b=JCm2gG3Fp2xY4anMbRx7adEQaG3E3wMpDJAT7Ic5BrXdJwL1yoT7r+kYLQXIJ80ctdEWIE
-        KrGEdE/KKYDtBu8dv09/8imkFi2KFkFklqRCwOMCFb7SdmIJSpM+oYRZ/sCyVyfZe6jXuK
-        C3RBnMVHIGwy2S6mj+jfYIvwigA901Q=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-283-zYG4V5VrNi6hALjlzHTCvQ-1; Tue, 15 Dec 2020 16:33:43 -0500
-X-MC-Unique: zYG4V5VrNi6hALjlzHTCvQ-1
-Received: by mail-oo1-f70.google.com with SMTP id a29so9916497ook.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 13:33:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1sn/69GdVFi4Vp51nylA/c2c2ip9Xwheky54XVDZfBE=;
-        b=Qztb1HD4ocjkKnZJJGoMwQNPtbbV3qET5PmosMgfnm6JUcbreWctY0x97nbJ8/o8p6
-         gurchtjM/VFq3M906aTgINXXfXkt0zamcdAFoA9XoTPWo4qBVZ1XIgN6HJDfwzs8XkfE
-         L54kZuQiwmIqJ1ZYdQSI0chjJ3IZL9KPFMFSaohXW5egFeRmh3CogeYtMbCgcIoCVVa2
-         DTTTdoHrY5hCHx5QgcXai5741xJGHJN73kfVELzChxuUmqDhNxf3pY0DhS49WcB+hF8r
-         gsnWANu9cOm7ll40OArXAUUSuwkFNNB52Yi3VP3/uPqHMoOYa/WyzvYDUEhVBwej92MR
-         xDMw==
-X-Gm-Message-State: AOAM530wxnUQQwBHkF1ftDH0dfdeVOQP+lJszr8HWzOuPk9YBF6zri0l
-        cJUQa+omoMSU/5TUdGBzDkkvkJLeDKqZYsWaM5M+FK4ehNhbMk7MNDXYtv6mwOckymdX2a+Dgoj
-        vpYA4BQjOLCW6hkYNWPhUeCpO
-X-Received: by 2002:a05:6830:1d7b:: with SMTP id l27mr25009116oti.197.1608068022478;
-        Tue, 15 Dec 2020 13:33:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwXqMsWpREP9r/6aUlDixJjR5YIfnNpsgHUU3u/W+1tz6pwqdADkILb55beNmqkYrkJR/HPfA==
-X-Received: by 2002:a05:6830:1d7b:: with SMTP id l27mr25009107oti.197.1608068022197;
-        Tue, 15 Dec 2020 13:33:42 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id x12sm5441153oic.51.2020.12.15.13.33.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 13:33:41 -0800 (PST)
-From:   trix@redhat.com
-To:     hverkuil@xs4all.nl, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] [media] radio-si470x: remove h from printk format specifier
-Date:   Tue, 15 Dec 2020 13:33:27 -0800
-Message-Id: <20201215213327.2091597-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1730297AbgLOVfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 16:35:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728110AbgLOVfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 16:35:00 -0500
+Subject: Re: [GIT PULL] Networking updates for 5.11
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608068038;
+        bh=IxUCHXJUoQYOCUo0zxeOPK+c67O0er8jrceei/ZWrFU=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=rJrey77D/AFwmSvTg1q4vGgqIwx/XHeRfYJ8FE5K+vGK9uxHWDjJyArr2hfy467rl
+         Uart9vv2PI4o3xLfu+objtLKUbAOL0/d9AsnUA/WMdtQzQOlSXkW0pMsoiwQVPCQPP
+         mx0Qc5Gg2RigR//grAEEpZ2oNzL/RlY/VCFzJpPx7A0ej+i7h767+Q9N5NVbidCwYC
+         yGXYqE0TaP2y3PrAiKJAlar5/MJQ3OAt3yraaYB4rs2mp/fQX+LN7AVM2shsgfVGSw
+         nUD+4RJCfNoTesi2jodzCQLGkOjBlpp+DbHjVbWsFcjwTu9nZrgAjfqBGr7+7/6tMo
+         Kq/+jImHAPmMA==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201215072850.3171650-1-kuba@kernel.org>
+References: <20201215072850.3171650-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201215072850.3171650-1-kuba@kernel.org>
+X-PR-Tracked-Remote: https://lore.kernel.org/linux-next/20201126162248.7e7963fe@canb.auug.org.au/ mm
+X-PR-Tracked-Commit-Id: efd5a1584537698220578227e6467638307c2a0b
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d635a69dd4981cc51f90293f5f64268620ed1565
+Message-Id: <160806803833.7181.2292709187456512920.pr-tracker-bot@kernel.org>
+Date:   Tue, 15 Dec 2020 21:33:58 +0000
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, axboe@kernel.dk, sfrench@samba.org,
+        ebiederm@xmission.com, akpm@linux-foundation.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+The pull request you sent on Mon, 14 Dec 2020 23:28:50 -0800:
 
-See Documentation/core-api/printk-formats.rst.
+> https://lore.kernel.org/linux-next/20201126162248.7e7963fe@canb.auug.org.au/ mm
 
-commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of unnecessary %h[xudi] and %hh[xudi]")
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d635a69dd4981cc51f90293f5f64268620ed1565
 
-Standard integer promotion is already done and %hx and %hhx is useless
-so do not encourage the use of %hh[xudi] or %h[xudi].
+Thank you!
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/media/radio/si470x/radio-si470x-i2c.c | 2 +-
- drivers/media/radio/si470x/radio-si470x-usb.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/media/radio/si470x/radio-si470x-i2c.c b/drivers/media/radio/si470x/radio-si470x-i2c.c
-index f491420d7b53..6a25c29d5d4d 100644
---- a/drivers/media/radio/si470x/radio-si470x-i2c.c
-+++ b/drivers/media/radio/si470x/radio-si470x-i2c.c
-@@ -410,7 +410,7 @@ static int si470x_i2c_probe(struct i2c_client *client)
- 			radio->registers[DEVICEID], radio->registers[SI_CHIPID]);
- 	if ((radio->registers[SI_CHIPID] & SI_CHIPID_FIRMWARE) < RADIO_FW_VERSION) {
- 		dev_warn(&client->dev,
--			"This driver is known to work with firmware version %hu,\n",
-+			"This driver is known to work with firmware version %u,\n",
- 			RADIO_FW_VERSION);
- 		dev_warn(&client->dev,
- 			"but the device has firmware version %hu.\n",
-diff --git a/drivers/media/radio/si470x/radio-si470x-usb.c b/drivers/media/radio/si470x/radio-si470x-usb.c
-index fedff68d8c49..ce0709aae4a0 100644
---- a/drivers/media/radio/si470x/radio-si470x-usb.c
-+++ b/drivers/media/radio/si470x/radio-si470x-usb.c
-@@ -681,7 +681,7 @@ static int si470x_usb_driver_probe(struct usb_interface *intf,
- 			radio->registers[DEVICEID], radio->registers[SI_CHIPID]);
- 	if ((radio->registers[SI_CHIPID] & SI_CHIPID_FIRMWARE) < RADIO_FW_VERSION) {
- 		dev_warn(&intf->dev,
--			"This driver is known to work with firmware version %hu,\n",
-+			"This driver is known to work with firmware version %u,\n",
- 			RADIO_FW_VERSION);
- 		dev_warn(&intf->dev,
- 			"but the device has firmware version %hu.\n",
-@@ -698,7 +698,7 @@ static int si470x_usb_driver_probe(struct usb_interface *intf,
- 			radio->software_version, radio->hardware_version);
- 	if (radio->hardware_version < RADIO_HW_VERSION) {
- 		dev_warn(&intf->dev,
--			"This driver is known to work with hardware version %hu,\n",
-+			"This driver is known to work with hardware version %u,\n",
- 			RADIO_HW_VERSION);
- 		dev_warn(&intf->dev,
- 			"but the device has hardware version %hu.\n",
 -- 
-2.27.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
