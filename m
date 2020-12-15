@@ -2,514 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCEB2DA855
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 07:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7362DA853
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 07:58:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgLOG6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 01:58:07 -0500
-Received: from mail-mw2nam12on2046.outbound.protection.outlook.com ([40.107.244.46]:55210
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        id S1726820AbgLOG5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 01:57:08 -0500
+Received: from mail-eopbgr50085.outbound.protection.outlook.com ([40.107.5.85]:62277
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725816AbgLOG4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 01:56:33 -0500
+        id S1726147AbgLOG4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 01:56:48 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nwm4yNbDhSnKCjYgEK73o+9UsWefhoPlYd4FuZCai0648lJxLLOFHo9ZIumCOld8anusj6oV0we8b4+FVFZBWWs9Nx7BggKe8G359T1pO3iyBrxXFyFKXSwiY/6dlGHGKOgERqfFeJgISNascy+WA/hMBv75AAAASzrhdMWk64IQW5eREL6yRbFZW/9oas2pGvBEbu46ExTrgT09qElLZ1TBjxM42UqdP0Tg/A/nRqGBHdshxnLZQiNWMyDZKcAC4qjDCc3MdTTK6WSrtscELUF9CYbgo8KyIewwY2IYFyU5/kvJuKx6d6WGBepJe+9/AfghqX/UaZnFml7Thy/A1w==
+ b=OhmLCXzz+xlBDAKSYfd9P7dwQ81id3SRpiQ12P2WWgX7hbbsPP+PZISrMFrYIhpVQ71KODK7qidU+IYKSCNuvgvK5roPw4tyDGdLWU/ld2aZlXtnFJHBQrjYXH+kEuJ/Bxd9q/sG+tK2+vs9pWGhhgqQz4OII5/OzZC8dL2R1w2taKXJIz5qgISOqkm2qWS+uY8HCvh0sM6ecEQl7elCeokYq6sHO12yFB7b7m36wncUQeEsXVDeyR+Y9I1sGlGZ1+SNkHPKxyI4Q1FlN86de+P4hXbVMUoLcsq6Lwmx4uy+uXeKFpjooEqyAXISyJUL3ViDMPgtwT39YudIv+mlTw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3Pa9OkRjqkYr9t0+3B8TynpOYrDRdr0YOTzoudfWp1E=;
- b=SvnB4LY66OK+E5QWNTjhllidagzJmWqzDv52MaF0B+h/WQ2S4mK/Npb30fbgHkyYYGtph7sQFBqzXe3B5RM2n+UIJDsJgmmHG21rb51rJZwGbgqBDFPYj/JPEcIvdO+v7H75DK0ldqWu5zr1RZDKO7BYcx2O04y+O/D2kbunuBFtmG18C1cww7Hi0Z/neygmrx00duKm3TTTQQ89YYuEpw2R3WhL9rJBabqBffRXiUb2/sIyIyHjormgsni7lxnLnNuyf+GTSxUTm76wxZ2ZX0/4f3ErNrRtY3LZTBh1zud32H++a07r2ssl3PmyBrwksZR/4eDV+2n2sQPKklgeTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ bh=3oAIdKj7QxAjfb9wbpYnMr4GRG2PhWSC/0yFGdwb6kA=;
+ b=ksuA6HSC1lnj5NMdpmWFshKO5UInQYV1aWiJN1lAvZCZvBtLuyFdW/Alx8gSe/9miPZJrLC2luQQEQMSCT82uepbveHQukJxbSwvYSq87tYC0xLsZBq9qVaSADVsLszebq5lLsPVEuWw1RBphKQ/ieqo60fT+vGIO4oGdCMvRhTGeaxSvXoHPM/tupywD1VjnDrU659ZtIC5yCknLxsHmZlPzcdBrXG4rbenlsbNmCsdVWEkSTdYyZsDvoDOuVKX2Qm6u5asf5rH4UX7s0oQAKG106qXu0OTs/r6OWjPcTMhZs9l7Gy1Ak2IWsIKFv9mu5OTvp8S3eU7qwYXBFyc2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3Pa9OkRjqkYr9t0+3B8TynpOYrDRdr0YOTzoudfWp1E=;
- b=qL19+Pvqkxr2iRNZ5Sc3R1AyT8ian9ZFtLtBP4MWGNoAaI5MjMylv93rchhFGoguYsufbQ7nY4Pjq3mFbFCP185EvoLMcR/TgaexZkc7Gffpc5hsh7L2BtibvPReeSzS53Zru7Nakfn0+ZSlwEIyeGeq9ICsx8t9epQB2yy/68c=
-Received: from CY1PR03CA0039.namprd03.prod.outlook.com (2603:10b6:600::49) by
- BYAPR02MB4662.namprd02.prod.outlook.com (2603:10b6:a03:44::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.12; Tue, 15 Dec 2020 06:55:40 +0000
-Received: from CY1NAM02FT009.eop-nam02.prod.protection.outlook.com
- (2603:10b6:600:0:cafe::c1) by CY1PR03CA0039.outlook.office365.com
- (2603:10b6:600::49) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend
- Transport; Tue, 15 Dec 2020 06:55:40 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- CY1NAM02FT009.mail.protection.outlook.com (10.152.75.12) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3654.12 via Frontend Transport; Tue, 15 Dec 2020 06:55:40 +0000
-Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Mon, 14 Dec 2020 22:55:21 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Mon, 14 Dec 2020 22:55:21 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- balbi@kernel.org,
- robh+dt@kernel.org,
- gregkh@linuxfoundation.org,
- linux-arm-kernel@lists.infradead.org,
- p.zabel@pengutronix.de,
- devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- linux-usb@vger.kernel.org
-Received: from [172.23.64.106] (port=59607 helo=xhdvnc125.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <manish.narani@xilinx.com>)
-        id 1kp4Ey-0006Id-Dv; Mon, 14 Dec 2020 22:55:21 -0800
-Received: by xhdvnc125.xilinx.com (Postfix, from userid 16987)
-        id 4A03C1222C5; Tue, 15 Dec 2020 12:24:53 +0530 (IST)
-From:   Manish Narani <manish.narani@xilinx.com>
-To:     <gregkh@linuxfoundation.org>, <robh+dt@kernel.org>,
-        <michal.simek@xilinx.com>, <balbi@kernel.org>,
-        <p.zabel@pengutronix.de>
-CC:     <git@xilinx.com>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Manish Narani <manish.narani@xilinx.com>
-Subject: [RESEND PATCH v3 2/2] usb: dwc3: Add driver for Xilinx platforms
-Date:   Tue, 15 Dec 2020 12:24:51 +0530
-Message-ID: <1608015291-52007-3-git-send-email-manish.narani@xilinx.com>
-X-Mailer: git-send-email 2.1.1
-In-Reply-To: <1608015291-52007-1-git-send-email-manish.narani@xilinx.com>
-References: <1608015291-52007-1-git-send-email-manish.narani@xilinx.com>
+ bh=3oAIdKj7QxAjfb9wbpYnMr4GRG2PhWSC/0yFGdwb6kA=;
+ b=IiM8ns/CDWE3Wt+hLIJd9aykn7tYb0Rp290o3zngf2aEXYM01oBd7DGvOVH8010nZVu2TgOLrmHAyp3DHUfiLPyZ3bmPn9LHTwWmR7/JVuxn1Vo3rxdZA4bqd1AFIS9SLpX/hhNScBj6ZSfm87kv9ug1rAlHI+rVozTl8KM8YRU=
+Received: from DBBPR04MB7979.eurprd04.prod.outlook.com (2603:10a6:10:1ec::9)
+ by DBBPR04MB7787.eurprd04.prod.outlook.com (2603:10a6:10:1e3::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.24; Tue, 15 Dec
+ 2020 06:55:59 +0000
+Received: from DBBPR04MB7979.eurprd04.prod.outlook.com
+ ([fe80::c8c:888f:3e0c:8d5c]) by DBBPR04MB7979.eurprd04.prod.outlook.com
+ ([fe80::c8c:888f:3e0c:8d5c%5]) with mapi id 15.20.3654.026; Tue, 15 Dec 2020
+ 06:55:59 +0000
+From:   Peter Chen <peter.chen@nxp.com>
+To:     Pawel Laszczak <pawell@cadence.com>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rahul Kumar <kurahul@cadence.com>
+Subject: Re: [PATCH 1/2] usb: cdnsp: Fixes for sparse warnings
+Thread-Topic: [PATCH 1/2] usb: cdnsp: Fixes for sparse warnings
+Thread-Index: AQHW0hE5ErykXup8f0OHrdJAnR2K6an3m6wAgAAGMgCAAAmhAIAAA1uAgAALkAA=
+Date:   Tue, 15 Dec 2020 06:55:59 +0000
+Message-ID: <20201215065530.GC18223@b29397-desktop>
+References: <20201214120344.26344-1-pawell@cadence.com>
+ <20201215050528.GB2142@b29397-desktop>
+ <BYAPR07MB5381FB3C8AF9039D8C30E8AFDDC60@BYAPR07MB5381.namprd07.prod.outlook.com>
+ <20201215060206.GB18223@b29397-desktop>
+ <BYAPR07MB5381C42748CC8276E9D21F15DDC60@BYAPR07MB5381.namprd07.prod.outlook.com>
+In-Reply-To: <BYAPR07MB5381C42748CC8276E9D21F15DDC60@BYAPR07MB5381.namprd07.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mutt/1.9.4 (2018-02-28)
+authentication-results: cadence.com; dkim=none (message not signed)
+ header.d=none;cadence.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.67]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 37ab193b-83b1-402f-1cec-08d8a0c67a9f
+x-ms-traffictypediagnostic: DBBPR04MB7787:
+x-microsoft-antispam-prvs: <DBBPR04MB778703D14CFA0464F3863DD98BC60@DBBPR04MB7787.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:374;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: le4xcOVLa+Jw+HHK0NHd2I/55AHNDbSEWnnC420QH4ew5F9qTKfjPnr0h8Z8aveu0mOQzl5NxOWeNpxSQlUiWLruq/siro2Qnava9owe+aTj6LNLDyZ5v8FtQF0DvlTq8lAGy/11NZXstXmraKDZ09rB2OzbRy+Sa1EJvDhtpiqCH3vITvPFf5q4Z8nnUDny+nVO18RZINj3mTBj6CprFQYV4VkX7xvsXaGXNOqSxaX0X2kmyyZ7OWAqyFkKrHPPwVJrKceRR+EJzHsACOubTl4qaZ+uT4YbFOdKY4y6lMyxVcE1LQgcEyCKNT7cF+9P1ZTJ17gRCQHiUDsPVweGwRhqs5KAlrBBlB5k7t2cvoT4c184kQK2VUXQHlqAwavR5KWfa+uwsD5OaqFWLDxUeQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7979.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(376002)(136003)(346002)(396003)(366004)(39860400002)(9686003)(66556008)(66446008)(66476007)(8936002)(5660300002)(64756008)(54906003)(316002)(66946007)(71200400001)(44832011)(83380400001)(26005)(53546011)(91956017)(6916009)(76116006)(2906002)(4326008)(186003)(1076003)(33716001)(478600001)(6506007)(6486002)(8676002)(86362001)(33656002)(45080400002)(6512007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?huXeRCqIJgSh/tmH22kU0WhPxjJaTf2MVlER4kcEFSmMc3uNnEXEpwAPonEG?=
+ =?us-ascii?Q?+N1ExxD87nyg9sq4c7o5tEVjIN3eLbS/vueKUX8O0s1Cx8/ETudEsXDrfq+b?=
+ =?us-ascii?Q?5dOFoIPE/nQ/BjbHBSiupyMz6OzDtYqXou5/+1VCdvw/QRTuu+DSxu27Jw0g?=
+ =?us-ascii?Q?gl5sQgVS51kEyzwvlTSKEnTO/rvTz1BRwmfRxAYA+2zjXsiwvxphLwtUKOof?=
+ =?us-ascii?Q?ESS2mwlV+KmjPu8TAgmrdPATiy6lr2sdf5h02ACwCgF6asJTicYBVQRbgg+1?=
+ =?us-ascii?Q?ecJJQngcrU6exuBIZA28eA9MqvLA7JKpzNdpt3Wr6lvjzAOQahRfGa6w1BBv?=
+ =?us-ascii?Q?NSA+jM1A53zBo7bURKnToNTcC+Dx/wbw2lU6WRAaAb+f3+qpJ60HMyU9vYsu?=
+ =?us-ascii?Q?XW2IItp8e7W7WtbKbKMrrW7z4lWRUHCIBHbSesuRsvKeXM7CdmOrnJxdsrEc?=
+ =?us-ascii?Q?wTlDuJOCdVzMz0WdZGEue+H0dfnaLTEyJ2Wo540YBKPJJA8da5XXmOpAvFIv?=
+ =?us-ascii?Q?jLrEO+qYwkJQMdXPQNNWKfC7wob/IfawXL3e1i+lPjvk8HuW9TMF0bgGTEjK?=
+ =?us-ascii?Q?mDx8BAVSyOgQJMjLW0WHZxJvVWIoR0x8aXc1agBM17q5umwXeaXf6wBHBb5g?=
+ =?us-ascii?Q?XvyFgduj4qX6+5B8pdS9w1smJR/EY1HqNwy1JVMobIV2MhcI2KPFaJppnbAW?=
+ =?us-ascii?Q?X062AENbSszcoUzeJrhX/nFy2aRm2pTDJPPPkvNNrtNw1y6l53UoJbKBbuzA?=
+ =?us-ascii?Q?JYG9Rai84ItWCmxhsLZP6VOV9kdBB8Yf3KY7TZKXAuaDaxp/f556Ar1TbpR7?=
+ =?us-ascii?Q?uCp6Rk6xXdjgX3K+vdP5J6VZoOfw/QajQpI7AEkaK1wh8imlTN1R0Qagt7vc?=
+ =?us-ascii?Q?rr9NjTPvlXb9tSnNsz5QPRtXs3DzwAdqQmeKVvm9fHgJqXo1qv1ictSg5p5q?=
+ =?us-ascii?Q?yW+SPcJZzw9lhsUe3qexntWK86n9PZ6969Nluob2YGRlNpebwY72RwyMdKCq?=
+ =?us-ascii?Q?LNGi?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <30A7C3A0F7ED8244A65862E9026232C2@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cc3dfc09-c6b1-47e0-a3a3-08d8a0c66f21
-X-MS-TrafficTypeDiagnostic: BYAPR02MB4662:
-X-Microsoft-Antispam-PRVS: <BYAPR02MB4662E50EC69A45631E60E62EC1C60@BYAPR02MB4662.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QxoRTm3gtiVsQf5u1Ffbq6CEAFccdEt3de5T14gGP0eJHTJx66LDMnk38exRHUdzykQlyfBe8IQC18cnBqT6Z9cJs9fDn4UR1rukYXNQx1fZWFy4a3HtGhJsM/MfBoHy92HFK6sx5VlRFfwX5f3b586W+1uG+UAbRzPB+8YOlHt1iw/ei/n4YvPy7cuY5WXlGfnXuBN7O3s8QG6V301i99HPUTvKdi/iCOTelrYJivvSfS/WDaP5OORgl414JMKFTp4/fF/HtkOd1r80ybWtfnHDj/VFH0S3+CHlVGLgIU3N5ptw3kSDp7G7TuAyuNfaCULN8sTuZz3bu94Y28GAkJiSnvirJ2I3lga3kOkGiUCXdtimHl1vCGgu+w3VfRyoOurYBmKdkfhEk3ijCKcZ9rdNRN8vQvqjZHtxkNQoTQo=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(46966005)(6266002)(426003)(36756003)(8936002)(186003)(30864003)(70586007)(336012)(8676002)(70206006)(4326008)(2616005)(47076004)(36906005)(508600001)(7636003)(44832011)(2906002)(5660300002)(356005)(110136005)(26005)(42186006)(54906003)(107886003)(82310400003)(83380400001)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2020 06:55:40.0749
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7979.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37ab193b-83b1-402f-1cec-08d8a0c67a9f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Dec 2020 06:55:59.3006
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc3dfc09-c6b1-47e0-a3a3-08d8a0c66f21
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT009.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB4662
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: w3iHhBwyI2mPPcjUStsuLQ8L0wD6xTsAuVrLskTkTEUVpu4N6EPIyB5/gPU4RuL9b0A9p2oqOheAGLM97P/DUw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7787
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new driver for supporting Xilinx platforms. This driver is used
-for some sequence of operations required for Xilinx USB controllers.
-This driver is also used to choose between PIPE clock coming from SerDes
-and the Suspend Clock. Before the controller is out of reset, the clock
-selection should be changed to PIPE clock in order to make the USB
-controller work. There is a register added in Xilinx USB controller
-register space for the same.
+On 20-12-15 06:14:07, Pawel Laszczak wrote:
+> >On 20-12-15 05:27:38, Pawel Laszczak wrote:
+> >> >
+> >> >
+> >> >On 20-12-14 13:03:44, Pawel Laszczak wrote:
+> >> >> Patch fixes all sparse warnings in cdsnp driver.
+> >> >>
+> >> >> It fixes the following warnings:
+> >> >> cdnsp-ring.c:1441: warning: incorrect type in assignment
+> >> >> cdnsp-ring.c:1444: warning: restricted __le32 degrades to integer
+> >> >> cdnsp-ring.c:2200: warning: dubious: x | !y
+> >> >> cdnsp-gadget.c:501: warning: incorrect type in assignment
+> >> >> cdnsp-gadget.c:504: warning: restricted __le32 degrades to integer
+> >> >> cdnsp-gadget.c:507: warning: restricted __le32 degrades to integer
+> >> >> cdnsp-gadget.c:508: warning: restricted __le32 degrades to integer
+> >> >> cdnsp-gadget.c:509: warning: invalid assignment: |=3D
+> >> >> cdnsp-gadget.c:510: warning: cast from restricted __le32
+> >> >> cdnsp-gadget.c:558: warning: incorrect type in assignment
+> >> >> cdnsp-gadget.c:561: warning: restricted __le32 degrades to integer
+> >> >> cdnsp-gadget.c:570: warning: restricted __le32 degrades to integer
+> >> >> cdnsp-gadget.c:1571: warning: incorrect type in argument 1
+> >> >> cdnsp-gadget.c:1602: warning: restricted __le32 degrades to integer
+> >> >> cdnsp-gadget.c:1760: warning: incorrect type in assignment
+> >> >> cdnsp-gadget.c:1762: warning: incorrect type in assignment
+> >> >> cdnsp-gadget.c:1763: warning: incorrect type in assignment
+> >> >> cdnsp-gadget.c:1764: warning: incorrect type in assignment
+> >> >> cdnsp-gadget.c:1765: warning: incorrect type in assignment
+> >> >> cdnsp-gadget.c:1766: warning: incorrect type in assignment
+> >> >> cdnsp-gadget.c:1767: warning: incorrect type in assignment
+> >> >> cdnsp-gadget.c:458: warning: cast truncates bits from constant valu=
+e
+> >> >>                     (ffffffff07ffffff becomes 7ffffff)
+> >> >> cdnsp-gadget.c:666: warning: cast truncates bits from constant valu=
+e
+> >> >>                     (ffffffff07ffffff becomes 7ffffff)
+> >> >> cdnsp-mem.c:762: warning: incorrect type in assignment
+> >> >> cdnsp-mem.c:763: warning: incorrect type in assignment
+> >> >> cdnsp-mem.c:928: warning: cast from restricted __le16
+> >> >> cdnsp-mem.c:1187: warning: incorrect type in assignment
+> >> >> cdnsp-mem.c:1191: warning: incorrect type in assignment
+> >> >> cdnsp-ep0.c:142: warning: incorrect type in assignment
+> >> >> cdnsp-ep0.c:144: warning: restricted __le32 degrades to integer
+> >> >> cdnsp-ep0.c:147: warning: restricted __le32 degrades to integer
+> >> >> cdnsp-ep0.c:148: warning: restricted __le32 degrades to integer
+> >> >> cdnsp-ep0.c:179: warning: incorrect type in argument 1
+> >> >> cdnsp-ep0.c:311: warning: incorrect type in argument 1
+> >> >> cdnsp-ep0.c:469: warning: incorrect type in assignment
+> >> >> cdnsp-trace.h:611:1: warning: cast from restricted __le32
+> >> >>
+> >> >> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+> >> >> Reported-by: kernel test robot <lkp@intel.com>
+> >> >
+> >> >Hi Pawel,
+> >> >
+> >> >The Reported-by tag should be above your Sob tag, I will change it.
+> >> >Except the patch reported build error by kernel test robot, I will ap=
+ply
+> >> >your other four patches after finishing the compile test.
+> >> >
+> >> >Peter
+> >>
+> >> Hi Peter,
+> >>
+> >> I'm going to fix the "usb: cdns3: Adds missing __iomem markers"  today=
+.
+> >> I haven't  seen any issue on ARCH=3Dparisc. Maybe it's some specific r=
+iscv arch issue.
+> >>
+> >> I believe that:
+> >> [auto build test WARNING on next-20201211]
+> >> [cannot apply to peter.chen-usb/ci-for-usb-next v5.10 v5.10-rc7 v5.10-=
+rc6 v5.10]
+> >>
+> >> is not the problem. I based on  peter.chen-usb/for-usb-next.
+> >>
+> >> Also I can't open the url from kernel test robot report.
+> >> Maybe there is some temporary issue with server.
+> >>
+> >
+> >Thanks for checking it, I have already pushed your other four patches.
+> >Besides, there is still a build error issue for new cdns3 driver.
+> >
+> >https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Furld=
+efense.com%2Fv3%2F__https%3A%2F%2Fwww.spinics.net%2Flists%2Flinux-&amp;data=
+=3D04%7C01%7Cpeter.chen%40nxp.com%7Cf036cd7630664c9e0c5c08d8a0c0a637%7C686e=
+a1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637436096594708469%7CUnknown%7CTWFpb=
+GZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7=
+C1000&amp;sdata=3DDLBFVB2px5GgA6Y%2FTU4DrfVru6z3P4RXz2x7BSpdE4o%3D&amp;rese=
+rved=3D0
+> >usb/msg206073.html__;!!EHscmS1ygiU1lA!X6rYk64ILtzjyHW903LAhBRjMKi9C2eyJW=
+EXVlEZm0ly2BiNzY2wK46Ulq7q5w$
+> >
+>=20
+> Did you applied: [PATCH] usb: cdnsp: Fix for undefined reference to `usb_=
+hcd_is_primary_hcd' ?
+>=20
 
-Signed-off-by: Manish Narani <manish.narani@xilinx.com>
----
- drivers/usb/dwc3/Kconfig          |   9 +
- drivers/usb/dwc3/Makefile         |   1 +
- drivers/usb/dwc3/dwc3-of-simple.c |   1 -
- drivers/usb/dwc3/dwc3-xilinx.c    | 334 ++++++++++++++++++++++++++++++
- 4 files changed, 344 insertions(+), 1 deletion(-)
- create mode 100644 drivers/usb/dwc3/dwc3-xilinx.c
+Applied now.
 
-diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
-index 7a2304565a73..0e00e6dfccd8 100644
---- a/drivers/usb/dwc3/Kconfig
-+++ b/drivers/usb/dwc3/Kconfig
-@@ -139,4 +139,13 @@ config USB_DWC3_QCOM
- 	  for peripheral mode support.
- 	  Say 'Y' or 'M' if you have one such device.
- 
-+config USB_DWC3_XILINX
-+	tristate "Xilinx Platforms"
-+	depends on (ARCH_ZYNQMP || ARCH_VERSAL) && OF
-+	default USB_DWC3
-+	help
-+	  Support Xilinx SoCs with DesignWare Core USB3 IP.
-+	  This driver handles both ZynqMP and Versal SoC operations.
-+	  Say 'Y' or 'M' if you have one such device.
-+
- endif
-diff --git a/drivers/usb/dwc3/Makefile b/drivers/usb/dwc3/Makefile
-index ae86da0dc5bd..add567578b1f 100644
---- a/drivers/usb/dwc3/Makefile
-+++ b/drivers/usb/dwc3/Makefile
-@@ -51,3 +51,4 @@ obj-$(CONFIG_USB_DWC3_MESON_G12A)	+= dwc3-meson-g12a.o
- obj-$(CONFIG_USB_DWC3_OF_SIMPLE)	+= dwc3-of-simple.o
- obj-$(CONFIG_USB_DWC3_ST)		+= dwc3-st.o
- obj-$(CONFIG_USB_DWC3_QCOM)		+= dwc3-qcom.o
-+obj-$(CONFIG_USB_DWC3_XILINX)		+= dwc3-xilinx.o
-diff --git a/drivers/usb/dwc3/dwc3-of-simple.c b/drivers/usb/dwc3/dwc3-of-simple.c
-index e62ecd22b3ed..71fd620c5161 100644
---- a/drivers/usb/dwc3/dwc3-of-simple.c
-+++ b/drivers/usb/dwc3/dwc3-of-simple.c
-@@ -172,7 +172,6 @@ static const struct dev_pm_ops dwc3_of_simple_dev_pm_ops = {
- 
- static const struct of_device_id of_dwc3_simple_match[] = {
- 	{ .compatible = "rockchip,rk3399-dwc3" },
--	{ .compatible = "xlnx,zynqmp-dwc3" },
- 	{ .compatible = "cavium,octeon-7130-usb-uctl" },
- 	{ .compatible = "sprd,sc9860-dwc3" },
- 	{ .compatible = "allwinner,sun50i-h6-dwc3" },
-diff --git a/drivers/usb/dwc3/dwc3-xilinx.c b/drivers/usb/dwc3/dwc3-xilinx.c
-new file mode 100644
-index 000000000000..7e485951d2f7
---- /dev/null
-+++ b/drivers/usb/dwc3/dwc3-xilinx.c
-@@ -0,0 +1,334 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/**
-+ * dwc3-xilinx.c - Xilinx DWC3 controller specific glue driver
-+ *
-+ * Authors: Manish Narani <manish.narani@xilinx.com>
-+ *          Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <linux/slab.h>
-+#include <linux/clk.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/of_platform.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/reset.h>
-+#include <linux/of_address.h>
-+#include <linux/delay.h>
-+#include <linux/firmware/xlnx-zynqmp.h>
-+#include <linux/io.h>
-+
-+#include <linux/phy/phy.h>
-+
-+/* USB phy reset mask register */
-+#define XLNX_USB_PHY_RST_EN			0x001C
-+#define XLNX_PHY_RST_MASK			0x1
-+
-+/* Xilinx USB 3.0 IP Register */
-+#define XLNX_USB_TRAFFIC_ROUTE_CONFIG		0x005C
-+#define XLNX_USB_TRAFFIC_ROUTE_FPD		0x1
-+
-+/* Versal USB Reset ID */
-+#define VERSAL_USB_RESET_ID			0xC104036
-+
-+#define XLNX_USB_FPD_PIPE_CLK			0x7c
-+#define PIPE_CLK_DESELECT			1
-+#define PIPE_CLK_SELECT				0
-+#define XLNX_USB_FPD_POWER_PRSNT		0x80
-+#define PIPE_POWER_ON				1
-+#define PIPE_POWER_OFF				0
-+
-+struct dwc3_xlnx {
-+	int				num_clocks;
-+	struct clk_bulk_data		*clks;
-+	struct device			*dev;
-+	void __iomem			*regs;
-+	int				(*pltfm_init)(struct dwc3_xlnx *data);
-+};
-+
-+static void dwc3_xlnx_mask_phy_rst(struct dwc3_xlnx *priv_data, bool mask)
-+{
-+	u32 reg;
-+
-+	/*
-+	 * Enable or disable ULPI PHY reset from USB Controller.
-+	 * This does not actually reset the phy, but just controls
-+	 * whether USB controller can or cannot reset ULPI PHY.
-+	 */
-+	reg = readl(priv_data->regs + XLNX_USB_PHY_RST_EN);
-+
-+	if (mask)
-+		reg &= ~XLNX_PHY_RST_MASK;
-+	else
-+		reg |= XLNX_PHY_RST_MASK;
-+
-+	writel(reg, priv_data->regs + XLNX_USB_PHY_RST_EN);
-+}
-+
-+static int dwc3_xlnx_init_versal(struct dwc3_xlnx *priv_data)
-+{
-+	struct device		*dev = priv_data->dev;
-+	int			ret;
-+
-+	dwc3_xlnx_mask_phy_rst(priv_data, false);
-+
-+	/* Assert and De-assert reset */
-+	ret = zynqmp_pm_reset_assert(VERSAL_USB_RESET_ID,
-+				     PM_RESET_ACTION_ASSERT);
-+	if (ret < 0) {
-+		dev_err_probe(dev, ret, "failed to assert Reset\n");
-+		return ret;
-+	}
-+
-+	ret = zynqmp_pm_reset_assert(VERSAL_USB_RESET_ID,
-+				     PM_RESET_ACTION_RELEASE);
-+	if (ret < 0) {
-+		dev_err_probe(dev, ret, "failed to De-assert Reset\n");
-+		return ret;
-+	}
-+
-+	dwc3_xlnx_mask_phy_rst(priv_data, true);
-+
-+	return 0;
-+}
-+
-+static int dwc3_xlnx_init_zynqmp(struct dwc3_xlnx *priv_data)
-+{
-+	struct device		*dev = priv_data->dev;
-+	struct reset_control	*crst, *hibrst, *apbrst;
-+	struct phy		*usb3_phy;
-+	int			ret;
-+	u32			reg;
-+
-+	crst = devm_reset_control_get_exclusive(dev, "usb_crst");
-+	if (IS_ERR(crst)) {
-+		ret = PTR_ERR(crst);
-+		dev_err_probe(dev, ret,
-+			      "failed to get core reset signal\n");
-+		goto err;
-+	}
-+
-+	hibrst = devm_reset_control_get_exclusive(dev, "usb_hibrst");
-+	if (IS_ERR(hibrst)) {
-+		ret = PTR_ERR(hibrst);
-+		dev_err_probe(dev, ret,
-+			      "failed to get hibernation reset signal\n");
-+		goto err;
-+	}
-+
-+	apbrst = devm_reset_control_get_exclusive(dev, "usb_apbrst");
-+	if (IS_ERR(apbrst)) {
-+		ret = PTR_ERR(apbrst);
-+		dev_err_probe(dev, ret,
-+			      "failed to get APB reset signal\n");
-+		goto err;
-+	}
-+
-+	ret = reset_control_assert(crst);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to assert core reset\n");
-+		goto err;
-+	}
-+
-+	ret = reset_control_assert(hibrst);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to assert hibernation reset\n");
-+		goto err;
-+	}
-+
-+	ret = reset_control_assert(apbrst);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to assert APB reset\n");
-+		goto err;
-+	}
-+
-+	usb3_phy = devm_phy_get(dev, "usb3-phy");
-+
-+	ret = phy_init(usb3_phy);
-+	if (ret < 0) {
-+		phy_exit(usb3_phy);
-+		goto err;
-+	}
-+
-+	ret = reset_control_deassert(apbrst);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to release APB reset\n");
-+		goto err;
-+	}
-+
-+	/* Set PIPE Power Present signal in FPD Power Present Register*/
-+	writel(PIPE_POWER_ON, priv_data->regs + XLNX_USB_FPD_POWER_PRSNT);
-+
-+	/* Set the PIPE Clock Select bit in FPD PIPE Clock register */
-+	writel(PIPE_CLK_SELECT, priv_data->regs + XLNX_USB_FPD_PIPE_CLK);
-+
-+	ret = reset_control_deassert(crst);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to release core reset\n");
-+		goto err;
-+	}
-+
-+	ret = reset_control_deassert(hibrst);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to release hibernation reset\n");
-+		goto err;
-+	}
-+
-+	ret = phy_power_on(usb3_phy);
-+	if (ret < 0) {
-+		phy_exit(usb3_phy);
-+		goto err;
-+	}
-+
-+	/*
-+	 * This routes the USB DMA traffic to go through FPD path instead
-+	 * of reaching DDR directly. This traffic routing is needed to
-+	 * make SMMU and CCI work with USB DMA.
-+	 */
-+	if (of_dma_is_coherent(dev->of_node) || device_iommu_mapped(dev)) {
-+		reg = readl(priv_data->regs + XLNX_USB_TRAFFIC_ROUTE_CONFIG);
-+		reg |= XLNX_USB_TRAFFIC_ROUTE_FPD;
-+		writel(reg, priv_data->regs + XLNX_USB_TRAFFIC_ROUTE_CONFIG);
-+	}
-+
-+err:
-+	return ret;
-+}
-+
-+static const struct of_device_id dwc3_xlnx_of_match[] = {
-+	{
-+		.compatible = "xlnx,zynqmp-dwc3",
-+		.data = &dwc3_xlnx_init_zynqmp,
-+	},
-+	{
-+		.compatible = "xlnx,versal-dwc3",
-+		.data = &dwc3_xlnx_init_versal,
-+	},
-+	{ /* Sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, dwc3_xlnx_of_match);
-+
-+static int dwc3_xlnx_probe(struct platform_device *pdev)
-+{
-+	struct dwc3_xlnx		*priv_data;
-+	struct device			*dev = &pdev->dev;
-+	struct device_node		*np = dev->of_node;
-+	const struct of_device_id	*match;
-+	void __iomem			*regs;
-+	int				ret;
-+
-+	priv_data = devm_kzalloc(dev, sizeof(*priv_data), GFP_KERNEL);
-+	if (!priv_data)
-+		return -ENOMEM;
-+
-+	regs = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(regs)) {
-+		ret = PTR_ERR(regs);
-+		dev_err_probe(dev, ret, "failed to map registers\n");
-+		return ret;
-+	}
-+
-+	match = of_match_node(dwc3_xlnx_of_match, pdev->dev.of_node);
-+
-+	priv_data->pltfm_init = match->data;
-+	priv_data->regs = regs;
-+	priv_data->dev = dev;
-+
-+	platform_set_drvdata(pdev, priv_data);
-+
-+	ret = devm_clk_bulk_get_all(priv_data->dev, &priv_data->clks);
-+	if (ret < 0)
-+		return ret;
-+
-+	priv_data->num_clocks = ret;
-+
-+	ret = clk_bulk_prepare_enable(priv_data->num_clocks, priv_data->clks);
-+	if (ret)
-+		return ret;
-+
-+	ret = priv_data->pltfm_init(priv_data);
-+	if (ret)
-+		goto err_clk_put;
-+
-+	ret = of_platform_populate(np, NULL, NULL, dev);
-+	if (ret)
-+		goto err_clk_put;
-+
-+	pm_runtime_set_active(dev);
-+	pm_runtime_enable(dev);
-+	pm_suspend_ignore_children(dev, false);
-+	pm_runtime_get_sync(dev);
-+
-+	return 0;
-+
-+err_clk_put:
-+	clk_bulk_disable_unprepare(priv_data->num_clocks, priv_data->clks);
-+	clk_bulk_put_all(priv_data->num_clocks, priv_data->clks);
-+
-+	return ret;
-+}
-+
-+static int dwc3_xlnx_remove(struct platform_device *pdev)
-+{
-+	struct dwc3_xlnx	*priv_data = platform_get_drvdata(pdev);
-+	struct device		*dev = &pdev->dev;
-+
-+	of_platform_depopulate(dev);
-+
-+	clk_bulk_disable_unprepare(priv_data->num_clocks, priv_data->clks);
-+	clk_bulk_put_all(priv_data->num_clocks, priv_data->clks);
-+	priv_data->num_clocks = 0;
-+
-+	pm_runtime_disable(dev);
-+	pm_runtime_put_noidle(dev);
-+	pm_runtime_set_suspended(dev);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused dwc3_xlnx_suspend_common(struct device *dev)
-+{
-+	struct dwc3_xlnx *priv_data = dev_get_drvdata(dev);
-+
-+	clk_bulk_disable(priv_data->num_clocks, priv_data->clks);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused dwc3_xlnx_resume_common(struct device *dev)
-+{
-+	struct dwc3_xlnx *priv_data = dev_get_drvdata(dev);
-+
-+	return clk_bulk_enable(priv_data->num_clocks, priv_data->clks);
-+}
-+
-+static int __maybe_unused dwc3_xlnx_runtime_idle(struct device *dev)
-+{
-+	pm_runtime_mark_last_busy(dev);
-+	pm_runtime_autosuspend(dev);
-+
-+	return 0;
-+}
-+
-+static UNIVERSAL_DEV_PM_OPS(dwc3_xlnx_dev_pm_ops, dwc3_xlnx_suspend_common,
-+			    dwc3_xlnx_resume_common, dwc3_xlnx_runtime_idle);
-+
-+static struct platform_driver dwc3_xlnx_driver = {
-+	.probe		= dwc3_xlnx_probe,
-+	.remove		= dwc3_xlnx_remove,
-+	.driver		= {
-+		.name		= "dwc3-xilinx",
-+		.of_match_table	= dwc3_xlnx_of_match,
-+		.pm		= &dwc3_xlnx_dev_pm_ops,
-+	},
-+};
-+
-+module_platform_driver(dwc3_xlnx_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Xilinx DWC3 controller specific glue driver");
-+MODULE_AUTHOR("Manish Narani <manish.narani@xilinx.com>");
-+MODULE_AUTHOR("Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>");
--- 
-2.17.1
+--=20
 
+Thanks,
+Peter Chen=
