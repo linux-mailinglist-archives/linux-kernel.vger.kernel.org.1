@@ -2,83 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CCC2DB792
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D712DB795
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:09:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727705AbgLPABG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:01:06 -0500
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:57275 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725962AbgLOXsw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 18:48:52 -0500
-Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 6D656766CFF;
-        Wed, 16 Dec 2020 10:48:02 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kpK2z-004Ncx-TW; Wed, 16 Dec 2020 10:48:01 +1100
-Date:   Wed, 16 Dec 2020 10:48:01 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [v2 PATCH 6/9] mm: vmscan: use per memcg nr_deferred of shrinker
-Message-ID: <20201215234801.GT3913616@dread.disaster.area>
-References: <20201214223722.232537-1-shy828301@gmail.com>
- <20201214223722.232537-7-shy828301@gmail.com>
- <20201215024637.GM3913616@dread.disaster.area>
- <CAHbLzkpgFO_WmxRwmSa_eb4KrQ3WXmHT0kOfn85HJAsfqvyC1Q@mail.gmail.com>
+        id S1727726AbgLPABK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:01:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726261AbgLOXuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 18:50:12 -0500
+Date:   Wed, 16 Dec 2020 00:49:27 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608076171;
+        bh=wvzAVXUEKU1RaXHyuE2ZtZzPjw0j5EezKmXnsJl3dA4=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tr4NM4qdwgO+KZNHGpkavVp2Z3yvNO8IS0aivpIB9yjjizavOJ7DUTCOOsq6+d1Ia
+         gxIKs0sgyg4U1NdVLMsRw8upVlXJMjHukndrgFkK3NdSNUEtjrX5PJr0B0hN5jVPWd
+         +fSFGnb+7Nkj6NE9G+E6/V5zEOTtnm1uEC33fY+rs84uFHBiEbbPoEvckqo51+TcwS
+         EYVfhx3VRp/K/AGmIw0HCZ/7WpOLf0JWnavc05oCPA110lhWNtLlo+Z9N+n+QkHru/
+         Ol3a6cYgZJXTvSSodls200f4qYHyjC7MhpxgNK4DZZI7SXarXHdcfJfmDieGB472z6
+         8j2rJ2t08fYgA==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 17/19] cpu/hotplug: Add lockdep_is_cpus_held()
+Message-ID: <20201215234927.GA98790@lothringen>
+References: <20201113121334.166723-1-frederic@kernel.org>
+ <20201113121334.166723-18-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHbLzkpgFO_WmxRwmSa_eb4KrQ3WXmHT0kOfn85HJAsfqvyC1Q@mail.gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
-        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
-        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=7-415B0cAAAA:8 a=pGLkceISAAAA:8
-        a=5GS3g15B5MoVROEbUKkA:9 a=CjuIK1q_8ugA:10 a=-RoEEKskQ1sA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20201113121334.166723-18-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 02:27:18PM -0800, Yang Shi wrote:
-> On Mon, Dec 14, 2020 at 6:46 PM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Mon, Dec 14, 2020 at 02:37:19PM -0800, Yang Shi wrote:
-> > > Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
-> > > will be used in the following cases:
-> > >     1. Non memcg aware shrinkers
-> > >     2. !CONFIG_MEMCG
-> > >     3. memcg is disabled by boot parameter
-> > >
-> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> >
-> > Lots of lines way over 80 columns.
+On Fri, Nov 13, 2020 at 01:13:32PM +0100, Frederic Weisbecker wrote:
+> RCU needs to check if the cpu hotplug lock is held, in the middle of
+> other conditions to check the sanity of RCU-nocb. Provide a helper for
+> that.
 > 
-> I thought that has been lifted to 100 columns.
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>  include/linux/cpu.h | 1 +
+>  kernel/cpu.c        | 7 +++++++
+>  2 files changed, 8 insertions(+)
+> 
+> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+> index d6428aaf67e7..27eb3875e45a 100644
+> --- a/include/linux/cpu.h
+> +++ b/include/linux/cpu.h
+> @@ -118,6 +118,7 @@ extern void cpus_read_lock(void);
+>  extern void cpus_read_unlock(void);
+>  extern int  cpus_read_trylock(void);
+>  extern void lockdep_assert_cpus_held(void);
+> +extern int lockdep_is_cpus_held(void);
+>  extern void cpu_hotplug_disable(void);
+>  extern void cpu_hotplug_enable(void);
+>  void clear_tasks_mm_cpumask(int cpu);
+> diff --git a/kernel/cpu.c b/kernel/cpu.c
+> index 6ff2578ecf17..3cca5b27de25 100644
+> --- a/kernel/cpu.c
+> +++ b/kernel/cpu.c
+> @@ -330,6 +330,13 @@ void lockdep_assert_cpus_held(void)
+>  	percpu_rwsem_assert_held(&cpu_hotplug_lock);
+>  }
+>  
+> +#ifdef CONFIG_LOCKDEP
+> +int lockdep_is_cpus_held(void)
+> +{
+> +	return percpu_rwsem_is_held(&cpu_hotplug_lock);
+> +}
+> +#endif
+> +
+>  static void lockdep_acquire_cpus_lock(void)
+>  {
+>  	rwsem_acquire(&cpu_hotplug_lock.dep_map, 0, 0, _THIS_IP_);
 
-Documentation/process/coding-style.rst still says:
+This patch may trigger a build error with !CONFIG_HOTPLUG.
 
-"The preferred limit on the length of a single line is 80 columns."
+Here is a fixed version:
 
-checkpatch might not warn about > 80 columns anymore, but if the
-file you are modifying is almost entirely 80 columns in width, then
-by default changes to that file should also stay within 80 columns.
+---
+From 80609608b29758e43e8d8d6beaca486b8c42bb43 Mon Sep 17 00:00:00 2001
+From: Frederic Weisbecker <frederic@kernel.org>
+Date: Wed, 11 Nov 2020 23:53:13 +0100
+Subject: [PATCH] cpu/hotplug: Add lockdep_is_cpus_held()
 
-I mostly consider using checkpatch to enforce coding styles to be
-harmful....
+RCU needs to check if the cpu hotplug lock is held, in the middle of
+other conditions to check the sanity of RCU-nocb. Provide a helper for
+that.
 
-Cheers,
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+---
+ include/linux/cpu.h | 2 ++
+ kernel/cpu.c        | 7 +++++++
+ 2 files changed, 9 insertions(+)
 
-Dave.
+diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+index d6428aaf67e7..3aaa0687e8df 100644
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -111,6 +111,8 @@ static inline void cpu_maps_update_done(void)
+ #endif /* CONFIG_SMP */
+ extern struct bus_type cpu_subsys;
+ 
++extern int lockdep_is_cpus_held(void);
++
+ #ifdef CONFIG_HOTPLUG_CPU
+ extern void cpus_write_lock(void);
+ extern void cpus_write_unlock(void);
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 6ff2578ecf17..3cca5b27de25 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -330,6 +330,13 @@ void lockdep_assert_cpus_held(void)
+ 	percpu_rwsem_assert_held(&cpu_hotplug_lock);
+ }
+ 
++#ifdef CONFIG_LOCKDEP
++int lockdep_is_cpus_held(void)
++{
++	return percpu_rwsem_is_held(&cpu_hotplug_lock);
++}
++#endif
++
+ static void lockdep_acquire_cpus_lock(void)
+ {
+ 	rwsem_acquire(&cpu_hotplug_lock.dep_map, 0, 0, _THIS_IP_);
 -- 
-Dave Chinner
-david@fromorbit.com
+2.25.1
+
