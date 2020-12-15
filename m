@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CA02DA5F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3DC2DA5F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726124AbgLOCFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:05:06 -0500
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:52181 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726075AbgLOCFG (ORCPT
+        id S1726189AbgLOCFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:05:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726075AbgLOCFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:05:06 -0500
-Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
-        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id E4D9D10843D;
-        Tue, 15 Dec 2020 13:04:21 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kozhM-0044AH-VK; Tue, 15 Dec 2020 13:04:20 +1100
-Date:   Tue, 15 Dec 2020 13:04:20 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     guro@fb.com, ktkhai@virtuozzo.com, shakeelb@google.com,
-        hannes@cmpxchg.org, mhocko@suse.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [v2 PATCH 3/9] mm: vmscan: guarantee shrinker_slab_memcg() sees
- valid shrinker_maps for online memcg
-Message-ID: <20201215020420.GJ3913616@dread.disaster.area>
-References: <20201214223722.232537-1-shy828301@gmail.com>
- <20201214223722.232537-4-shy828301@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201214223722.232537-4-shy828301@gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
-        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
-        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=7-415B0cAAAA:8
-        a=wdWbNfnXb-wgsad9dhsA:9 a=CjuIK1q_8ugA:10 a=-RoEEKskQ1sA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+        Mon, 14 Dec 2020 21:05:16 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CC5C061793;
+        Mon, 14 Dec 2020 18:04:35 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id e2so2946595plt.12;
+        Mon, 14 Dec 2020 18:04:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Eh2C6JhMn6ot8VqihWEIpVJROCk+GI8Jpaj5L4a5XnI=;
+        b=YRz/4Q/Dqe0PTPPyib99YyLo46g5hr1sxInIM40YKTgguntMCIiIlyotvxInQR3tdq
+         TgLbwcWF8t3o/JBL4fOE5w70S5CPhLwgbNBFLMnE+89AeYKy/jUc2rPkDvXV6uksKEwJ
+         N9TsMljCaEDLbhlhGI1ugsaOoOz6IvijKSMFpOLkR1ldv8XoJAiPUhnvkEeWv7zMX8kQ
+         nk6oZKtdBGpqDXalWaLT/AfQH0FDk/vK3CR/JkRVDR+O7k5l+sFxExOSzd9pejNmjED6
+         2CGtQsbfPBfY8nKI4IiE3gQo+0MEOdryDEQVJsw+huNJZ02AYgaDfp9BNacX7AY832od
+         MO8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Eh2C6JhMn6ot8VqihWEIpVJROCk+GI8Jpaj5L4a5XnI=;
+        b=SDmzieF56TNZLZcIqWya5NsJdk9DTp30MQrk6haM+CkDOAbFIcOowWA4eFjlKFpXYn
+         513LwmzIv/f7L9KTZ7GdmoZzD3BVnQDWX8oiiH1fJodsH0s8Py6pOAXTZ6SDyG+SqRpz
+         E7Ddy6ZYI9NTnNOZ9Xhw09N3s/4Ph2qzhHVckRb30vj3k8rYxajAq8AGkrmAXp5RIpqn
+         O8/OymCyibD6bIB7XeAGrDAHWqIAUUiaXTES0oijnMtoFQEqNukgzo6dO1+C3p7/FbrP
+         qEql4TRDhhTbGtmilHnL7lYFKaqCkVVvnM+hUp6hBKQoXFA+LgnoP70mfwVKhGpS+wQt
+         ePTQ==
+X-Gm-Message-State: AOAM531J3hTyALj47/hWiY4msmqso+i9J9CJksl9DEWo1iVyNfaCmFII
+        eEhhfWy8pptIz9j+F7LBOPY=
+X-Google-Smtp-Source: ABdhPJyf+V+BLO/6fgkbqziDEhx9el4b2aFE5jP2q6F/nbIljpi7O4xo/UF+nwUUHViOw+ul5s2xzw==
+X-Received: by 2002:a17:902:c244:b029:da:e63c:cede with SMTP id 4-20020a170902c244b02900dae63ccedemr479597plg.0.1607997875535;
+        Mon, 14 Dec 2020 18:04:35 -0800 (PST)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id y15sm19347840pju.13.2020.12.14.18.04.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 14 Dec 2020 18:04:34 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        andriin@fb.com, jiri@mellanox.com, edumazet@google.com,
+        ap420073@gmail.com, bjorn.topel@intel.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yejune.deng@gmail.com
+Subject: [PATCH] net: core: fix msleep() is not accurate
+Date:   Tue, 15 Dec 2020 10:04:25 +0800
+Message-Id: <1607997865-3437-1-git-send-email-yejune.deng@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 02:37:16PM -0800, Yang Shi wrote:
-> The shrink_slab_memcg() races with mem_cgroup_css_online(). A visibility of CSS_ONLINE flag
-> in shrink_slab_memcg()->mem_cgroup_online() does not guarantee that we will see
-> memcg->nodeinfo[nid]->shrinker_maps != NULL.  This may occur because of processor reordering
-> on !x86.
-> 
-> This seems like the below case:
-> 
->            CPU A          CPU B
-> store shrinker_map      load CSS_ONLINE
-> store CSS_ONLINE        load shrinker_map
-> 
-> So the memory ordering could be guaranteed by smp_wmb()/smp_rmb() pair.
-> 
-> The memory barriers pair will guarantee the ordering between shrinker_deferred and CSS_ONLINE
-> for the following patches as well.
+See Documentation/timers/timers-howto.rst, msleep() is not
+for (1ms - 20ms), use usleep_range() instead.
 
-This should not require memory barriers in the shrinker code.
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ net/core/dev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The code that sets and checks the CSS_ONLINE flag should have the
-memory barriers to ensure that anything that sees an online CSS will
-see it completely set up.
-
-That is, the functions online_css() that set the CSS_ONLINE needs
-a memory barrier to ensure all previous writes are completed before
-the CSS_ONLINE flag is set, and the function mem_cgroup_online()
-needs a barrier to pair with that.
-
-This is the same existence issue that the superblock shrinkers have
-with the shrinkers being registered before the superblock is fully
-set up. The SB_BORN flag on the sueprblock indicates the superblock
-is now fully set up ("online" in CSS speak) and the registered
-shrinker can run. Please see the smp_wmb() before we set SB_BORN in
-vfs_get_tree(), and the big comment about the smp_rmb() -after- we
-check SB_BORN in super_cache_count() to understand the details of
-the data dependency between the flag and the structures being set up
-that the barriers enforce.
-
-IOWs, these memory barriers belong inside the cgroup code to
-guarantee anything that sees an online cgroup will always see the
-fully initialised cgroup structures. They do not belong in the
-shrinker infrastructure...
-
-Cheers,
-
-Dave.
+diff --git a/net/core/dev.c b/net/core/dev.c
+index d33099f..c0aa52f 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -6726,9 +6726,9 @@ void napi_disable(struct napi_struct *n)
+ 	set_bit(NAPI_STATE_DISABLE, &n->state);
+ 
+ 	while (test_and_set_bit(NAPI_STATE_SCHED, &n->state))
+-		msleep(1);
++		usleep_range(10, 200);
+ 	while (test_and_set_bit(NAPI_STATE_NPSVC, &n->state))
+-		msleep(1);
++		usleep_range(10, 200);
+ 
+ 	hrtimer_cancel(&n->timer);
+ 
 -- 
-Dave Chinner
-david@fromorbit.com
+1.9.1
+
