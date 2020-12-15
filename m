@@ -2,96 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764C82DAE0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:34:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 819F12DAE16
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727933AbgLONe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:34:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726861AbgLONeD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:34:03 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69742C06179C;
-        Tue, 15 Dec 2020 05:33:23 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id v22so20995556edt.9;
-        Tue, 15 Dec 2020 05:33:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DwitwfTtwjBMbHFgPhiZUy9rSg/91bxVwR6kPXtgAFc=;
-        b=nm1UWzFOC+Yxsb//GqZrsXLF7Z/WAafLbOMVXUuVQGYnkUICQge0B3jVp150UwU8qA
-         8GqegEIXeWUKk2UO7MxXVJnkgt1egzAGWRyatQFRv4R0eugRMOs/1ylk8SzQAJaLNgkZ
-         sysl3I6zMD7M34AnPbgOLWbqsaSCXfBgxfiyYOENyKZ9gHCiKOTTKPqNWYtpS8IQ4DfS
-         1TfeH5qJNwIas5/xMuAx6JILrXnJBNWsv1HJc/xBDQTI1xTzw2+O6sFwwnG75UmauoNL
-         CUp3MnMakKAskxg2AtgAMbMCN/CLA/0Y84GlCqM1FhaXNARyEAyZrc/qUVWmNCUhb4Wi
-         kPhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DwitwfTtwjBMbHFgPhiZUy9rSg/91bxVwR6kPXtgAFc=;
-        b=mW1I9KLzWlbZMk226kIK+iT8OP0FQiIqrCN4mC+WK2r6XpUrauoMNGswX1FVvd5cxY
-         Foy3P/1mjqIsLRzjILO8nYPpijNizg/FcZ5ulJkBhJSeION5OfHs4OqvJCiK1tLRKLFU
-         pKg3+tXsvfEU1cmnATQpkoQ0lGazOtrnwugQwBtGSIJUejYCt2u2dCu6JFTTOz+7jJ9y
-         t8SHPsd3QGi4ZQNUeChOJwp3ERQM1zn0icjIozmWvtl4D3tN3HAH5AS3wIOrqY6eOm8j
-         n6g4fJTITlkYrAWPZgxbzRjv3yXXI8I++yk8QfM7Db70tXsV7H1S00pypn4CreiLVJln
-         bdZg==
-X-Gm-Message-State: AOAM530LQ6gTju5auLRXAeOFA0uT86R+t4uovVsSUOGt/kopyAFCzsea
-        dfnTsMgTdw0Tt9PKycocy3B66ZFNtaa+4B5tUjU=
-X-Google-Smtp-Source: ABdhPJxUqoXfAC8kw7FI3HL0zpok8Mtz3fMXJr2XZrZcCgq5QJAeD7Yk+h9KidqBFixlZ0Knxjnfrfy1nRHOvKtoqUk=
-X-Received: by 2002:a05:6402:1a2f:: with SMTP id be15mr29728784edb.209.1608039202182;
- Tue, 15 Dec 2020 05:33:22 -0800 (PST)
+        id S1728482AbgLONgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:36:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45814 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728283AbgLONgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 08:36:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1608039314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E0ZZlFIFNjZLjI1zJKZsoEml0sOwnDtgK026kYKenBI=;
+        b=Z6ZxxODUV2XHWmRmYCV1o9D/nJq+SiPOW/aVOWIkMz7l8JSXApKVfT7woLR4dunzRE3lHN
+        bXNP2YJ/wA77wTuYlDWHXlsn7YrOnOYBxfsmB3r0/ill/VsLwPkkVG+GZK8GpOcIsm4WT6
+        EsTvSABPjTzw/lP1Dj2nyEqnl2U4TGA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 632F9AF45;
+        Tue, 15 Dec 2020 13:35:14 +0000 (UTC)
+Date:   Tue, 15 Dec 2020 14:35:14 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
+        akpm@linux-foundation.org, hannes@cmpxchg.org,
+        vdavydov.dev@gmail.com, hughd@google.com, shakeelb@google.com,
+        guro@fb.com, samitolvanen@google.com, feng.tang@intel.com,
+        neilb@suse.de, iamjoonsoo.kim@lge.com, rdunlap@infradead.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 7/7] mm: memcontrol: make the slab calculation
+ consistent
+Message-ID: <20201215133514.GP32193@dhcp22.suse.cz>
+References: <20201208041847.72122-1-songmuchun@bytedance.com>
+ <20201208041847.72122-8-songmuchun@bytedance.com>
 MIME-Version: 1.0
-References: <20201214225851.23342-1-adrien.grassein@gmail.com>
- <20201215130622.GD4738@sirena.org.uk> <CABkfQAEAe0XGj16CkmH7xMNxgdQ+SRq0BYzvP+V5PdDqVbyAAw@mail.gmail.com>
- <CAOMZO5A_Gtwn=AFwJXf_wpC4k902Hg=tCMWpcFUGNWOg9me6_w@mail.gmail.com> <20201215132400.GE4738@sirena.org.uk>
-In-Reply-To: <20201215132400.GE4738@sirena.org.uk>
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Date:   Tue, 15 Dec 2020 14:33:11 +0100
-Message-ID: <CABkfQAFNQv3nfoyC2=Un1VWdWh7bbC4RukT0DYLChk0=K2_K8w@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] Add support of nxp pf8x00 regulator
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Troy Kisky <troy.kisky@boundarydevices.com>,
-        Gary Bisson <gary.bisson@boundarydevices.com>,
-        Jagan Teki <jagan@amarulasolutions.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208041847.72122-8-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I just cloned the linux-next repo.
-
-I will try to fix things Mark tells me to fix on my own driver.
-
-Thanks again,
-
-
-Adrien
-
-
-
-Le mar. 15 d=C3=A9c. 2020 =C3=A0 14:24, Mark Brown <broonie@kernel.org> a =
-=C3=A9crit :
+On Tue 08-12-20 12:18:47, Muchun Song wrote:
+> Although the ratio of the slab is one, we also should read the ratio
+> from the related memory_stats instead of hard-coding. And the local
+> variable of size is already the value of slab_unreclaimable. So we
+> do not need to read again.
 >
-> On Tue, Dec 15, 2020 at 10:20:02AM -0300, Fabio Estevam wrote:
-> > On Tue, Dec 15, 2020 at 10:16 AM Adrien Grassein
-> > <adrien.grassein@gmail.com> wrote:
->
-> > > Could you please tell me where this driver was merged?
-> > > I checked the main kernel Linux and I can find out this one.
->
-> > It is in the linux-next tree:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/com=
-mit/drivers?h=3Dnext-20201215&id=3Dd3795d6321ecaa55d94dc24c3b1e3cce608aabd6
->
-> Coming to there from my for-next branch - it's also already been sent in
-> a pull request to Linus so will hopefully be hitting his tree soonish.
+> We can drop the ratio in struct memory_stat. This can make the code
+> clean and simple. And get rid of the awkward mix of static and runtime
+> initialization of the memory_stats table.
+
+This changelog doesn't explain, what is the problem, why do we care and
+why the additional code is worthwile.
+
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  mm/memcontrol.c | 112 ++++++++++++++++++++++++++++++++++++--------------------
+>  1 file changed, 73 insertions(+), 39 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index a40797a27f87..841ea37cc123 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1511,49 +1511,78 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
+>  
+>  struct memory_stat {
+>  	const char *name;
+> -	unsigned int ratio;
+>  	unsigned int idx;
+>  };
+>  
+>  static const struct memory_stat memory_stats[] = {
+> -	{ "anon", PAGE_SIZE, NR_ANON_MAPPED },
+> -	{ "file", PAGE_SIZE, NR_FILE_PAGES },
+> -	{ "kernel_stack", 1024, NR_KERNEL_STACK_KB },
+> -	{ "pagetables", PAGE_SIZE, NR_PAGETABLE },
+> -	{ "percpu", 1, MEMCG_PERCPU_B },
+> -	{ "sock", PAGE_SIZE, MEMCG_SOCK },
+> -	{ "shmem", PAGE_SIZE, NR_SHMEM },
+> -	{ "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
+> -	{ "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
+> -	{ "file_writeback", PAGE_SIZE, NR_WRITEBACK },
+> +	{ "anon",			NR_ANON_MAPPED			},
+> +	{ "file",			NR_FILE_PAGES			},
+> +	{ "kernel_stack",		NR_KERNEL_STACK_KB		},
+> +	{ "pagetables",			NR_PAGETABLE			},
+> +	{ "percpu",			MEMCG_PERCPU_B			},
+> +	{ "sock",			MEMCG_SOCK			},
+> +	{ "shmem",			NR_SHMEM			},
+> +	{ "file_mapped",		NR_FILE_MAPPED			},
+> +	{ "file_dirty",			NR_FILE_DIRTY			},
+> +	{ "file_writeback",		NR_WRITEBACK			},
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -	{ "anon_thp", PAGE_SIZE, NR_ANON_THPS },
+> -	{ "file_thp", PAGE_SIZE, NR_FILE_THPS },
+> -	{ "shmem_thp", PAGE_SIZE, NR_SHMEM_THPS },
+> +	{ "anon_thp",			NR_ANON_THPS			},
+> +	{ "file_thp",			NR_FILE_THPS			},
+> +	{ "shmem_thp",			NR_SHMEM_THPS			},
+>  #endif
+> -	{ "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
+> -	{ "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
+> -	{ "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
+> -	{ "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
+> -	{ "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
+> -
+> -	/*
+> -	 * Note: The slab_reclaimable and slab_unreclaimable must be
+> -	 * together and slab_reclaimable must be in front.
+> -	 */
+> -	{ "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
+> -	{ "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
+> +	{ "inactive_anon",		NR_INACTIVE_ANON		},
+> +	{ "active_anon",		NR_ACTIVE_ANON			},
+> +	{ "inactive_file",		NR_INACTIVE_FILE		},
+> +	{ "active_file",		NR_ACTIVE_FILE			},
+> +	{ "unevictable",		NR_UNEVICTABLE			},
+> +	{ "slab_reclaimable",		NR_SLAB_RECLAIMABLE_B		},
+> +	{ "slab_unreclaimable",		NR_SLAB_UNRECLAIMABLE_B		},
+>  
+>  	/* The memory events */
+> -	{ "workingset_refault_anon", 1, WORKINGSET_REFAULT_ANON },
+> -	{ "workingset_refault_file", 1, WORKINGSET_REFAULT_FILE },
+> -	{ "workingset_activate_anon", 1, WORKINGSET_ACTIVATE_ANON },
+> -	{ "workingset_activate_file", 1, WORKINGSET_ACTIVATE_FILE },
+> -	{ "workingset_restore_anon", 1, WORKINGSET_RESTORE_ANON },
+> -	{ "workingset_restore_file", 1, WORKINGSET_RESTORE_FILE },
+> -	{ "workingset_nodereclaim", 1, WORKINGSET_NODERECLAIM },
+> +	{ "workingset_refault_anon",	WORKINGSET_REFAULT_ANON		},
+> +	{ "workingset_refault_file",	WORKINGSET_REFAULT_FILE		},
+> +	{ "workingset_activate_anon",	WORKINGSET_ACTIVATE_ANON	},
+> +	{ "workingset_activate_file",	WORKINGSET_ACTIVATE_FILE	},
+> +	{ "workingset_restore_anon",	WORKINGSET_RESTORE_ANON		},
+> +	{ "workingset_restore_file",	WORKINGSET_RESTORE_FILE		},
+> +	{ "workingset_nodereclaim",	WORKINGSET_NODERECLAIM		},
+>  };
+>  
+> +/* Translate stat items to the correct unit for memory.stat output */
+> +static int memcg_page_state_unit(int item)
+> +{
+> +	int unit;
+> +
+> +	switch (item) {
+> +	case MEMCG_PERCPU_B:
+> +	case NR_SLAB_RECLAIMABLE_B:
+> +	case NR_SLAB_UNRECLAIMABLE_B:
+> +	case WORKINGSET_REFAULT_ANON:
+> +	case WORKINGSET_REFAULT_FILE:
+> +	case WORKINGSET_ACTIVATE_ANON:
+> +	case WORKINGSET_ACTIVATE_FILE:
+> +	case WORKINGSET_RESTORE_ANON:
+> +	case WORKINGSET_RESTORE_FILE:
+> +	case WORKINGSET_NODERECLAIM:
+> +		unit = 1;
+> +		break;
+> +	case NR_KERNEL_STACK_KB:
+> +		unit = SZ_1K;
+> +		break;
+> +	default:
+> +		unit = PAGE_SIZE;
+> +		break;
+> +	}
+> +
+> +	return unit;
+> +}
+> +
+> +static inline unsigned long memcg_page_state_output(struct mem_cgroup *memcg,
+> +						    int item)
+> +{
+> +	return memcg_page_state(memcg, item) * memcg_page_state_unit(item);
+> +}
+> +
+>  static char *memory_stat_format(struct mem_cgroup *memcg)
+>  {
+>  	struct seq_buf s;
+> @@ -1577,13 +1606,12 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+>  	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+>  		u64 size;
+>  
+> -		size = memcg_page_state(memcg, memory_stats[i].idx);
+> -		size *= memory_stats[i].ratio;
+> +		size = memcg_page_state_output(memcg, memory_stats[i].idx);
+>  		seq_buf_printf(&s, "%s %llu\n", memory_stats[i].name, size);
+>  
+>  		if (unlikely(memory_stats[i].idx == NR_SLAB_UNRECLAIMABLE_B)) {
+> -			size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
+> -			       memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
+> +			size += memcg_page_state_output(memcg,
+> +							NR_SLAB_RECLAIMABLE_B);
+>  			seq_buf_printf(&s, "slab %llu\n", size);
+>  		}
+>  	}
+> @@ -6377,6 +6405,12 @@ static int memory_stat_show(struct seq_file *m, void *v)
+>  }
+>  
+>  #ifdef CONFIG_NUMA
+> +static inline unsigned long lruvec_page_state_output(struct lruvec *lruvec,
+> +						     int item)
+> +{
+> +	return lruvec_page_state(lruvec, item) * memcg_page_state_unit(item);
+> +}
+> +
+>  static int memory_numa_stat_show(struct seq_file *m, void *v)
+>  {
+>  	int i;
+> @@ -6394,8 +6428,8 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
+>  			struct lruvec *lruvec;
+>  
+>  			lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
+> -			size = lruvec_page_state(lruvec, memory_stats[i].idx);
+> -			size *= memory_stats[i].ratio;
+> +			size = lruvec_page_state_output(lruvec,
+> +							memory_stats[i].idx);
+>  			seq_printf(m, " N%d=%llu", nid, size);
+>  		}
+>  		seq_putc(m, '\n');
+> -- 
+> 2.11.0
+
+-- 
+Michal Hocko
+SUSE Labs
