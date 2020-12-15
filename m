@@ -2,292 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2022DAE3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:46:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC04D2DAE34
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgLONoX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Dec 2020 08:44:23 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:41863 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727907AbgLONoB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:44:01 -0500
-Received: by mail-lf1-f68.google.com with SMTP id s26so4760979lfc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 05:43:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dfuHyBcLUhZWK5XF1Usyk52lYgn4b/9OJ2Y1bNxBzKo=;
-        b=EADAd2+r70Uj5JDOkdJJ3SER+U2osBc2KGtZVUjPIYaGZM8Usa/hTpiRT6HkXj7wC7
-         E1qFFm11vaqpxmEcn9tjqN8ortzeyPL1JA8Sw1a60auFKFvEY/WEaFLzpO1arH2Iu0Uq
-         DUu8sdiWTF8tYENmbSXE2y9TnmhBx0WXGOZYry9/4ATyC7Lh67xC4+wZ0Tp1u8n6WaVI
-         8PWuMNVD/d1D5w2X0vzReW7E9P31PqzcvBujZ3/4VUxNzpkn6JfjMgI2Yt9nl1nm5w5J
-         rux19EDvo+mPKiy5bfk/j1vrrakAseodfPHn9gPfdnyMT8wdC7J1DAWc1impfEjfBdyk
-         PfVw==
-X-Gm-Message-State: AOAM530IGx4Rcjs1wxQ+NNDJkgcBLsrSOLGb85d7fizX/uzX3B36uiU5
-        woFsuwnswUBf1t/gY4cGcx+tpx3cNrW97V8vAr/qxgbQ
-X-Google-Smtp-Source: ABdhPJzXpuU/WX6TvfkxuxUnxyyRDcK35iNa4WGJbhyqPBGeJvqP8Ba9kxJtVru270g09OYKt/MfUbV5gpA0s/ydoOU=
-X-Received: by 2002:a19:6e0e:: with SMTP id j14mr12437551lfc.374.1608039798310;
- Tue, 15 Dec 2020 05:43:18 -0800 (PST)
+        id S1728878AbgLONn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:43:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49184 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727907AbgLONn5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 08:43:57 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ACC30AC7F;
+        Tue, 15 Dec 2020 13:43:14 +0000 (UTC)
+Subject: Re: [LSFMMBPF 2021] A status update
+To:     Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
+References: <fd5264ac-c84d-e1d4-01e2-62b9c05af892@toxicpanda.com>
+ <20201212172957.GE2443@casper.infradead.org>
+ <20201215122307.GN32193@dhcp22.suse.cz>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <af2d36e8-7265-578c-0b7b-dd61cd851410@suse.de>
+Date:   Tue, 15 Dec 2020 14:43:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201214105457.543111-1-jolsa@kernel.org>
-In-Reply-To: <20201214105457.543111-1-jolsa@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 15 Dec 2020 22:43:07 +0900
-Message-ID: <CAM9d7cgN9TYSM-PQrehN8BPmR7s52WoRCqat4SbPbrhQBp+Tog@mail.gmail.com>
-Subject: Re: [PATCHv5 00/15] perf: Add mmap2 build id support
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        "Frank Ch . Eigler" <fche@redhat.com>,
-        Mark Wielaard <mjw@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201215122307.GN32193@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+On 12/15/20 1:23 PM, Michal Hocko wrote:
+> On Sat 12-12-20 17:29:57, Matthew Wilcox wrote:
+>> On Fri, Dec 04, 2020 at 10:48:53AM -0500, Josef Bacik wrote:
+>>> We on the program committee hope everybody has been able to stay safe and
+>>> healthy during this challenging time, and look forward to being able to see
+>>> all of you in person again when it is safe.
+>>>
+>>> The current plans for LSFMMBPF 2021 are to schedule an in person conference
+>>> in H2 (after June) of 2021.  The tentative plan is to use the same hotel
+>>> that we had planned to use for 2020, as we still have contracts with them.
+>>> However clearly that is not set in stone.  The Linux Foundation has done a
+>>> wonderful job of working with us to formulate a plan and figure out the
+>>> logistics that will work the best for everybody, I really can't thank them
+>>> enough for their help.
+>>
+>> Thank you all for doing your best in the face of this disruption.  I
+>> really appreciate all the work you're putting in, and I can't wait to
+>> see you all again in person.
+>>
+>> I hosted a Zoom call yesterday on the topic of Page Folios, and uploaded
+>> the video.
+> 
+> Thanks for organizing this. I couldn't attent directly but I have
+> watched the video. I think this was a useful meeting.
+> 
+>> There was interest expressed in the call on doing a follow-up
+>> call on the topic of GUP (get_user_pages and friends).  It would probably
+>> also be good to have meetings on other topics.
+> 
+> I hope I will have time to join this one.
+> 
+>> I don't want this to be seen in any way as taking away from LSFMMBPF.
+>> I see Zoom calls as an interim solution to not having face-to-face
+>> meetings.
+> 
+> Agreed!
+> 
+>> I'd like to solicit feedback from this group on:
+>>
+>>   - Time of day.  There is no good time that suits everyone around
+>>     the world.  With developers in basically every inhabited time zone, the
+>>     call will definitely take place in the middle of somebody's night, and
+>>     during somebody else's normal family time.  Publishing the recordings
+>>     helps ameliorate some of this, but I feel we should shift the time
+>>     around.  Having it at the same time of day helps people fit it into
+>>     their schedule of other meetings (and meals), but I think the benefits
+>>     of allowing more people to participate live outweighs the costs.
+> 
+> Hard question without any good answer. You can rotate preferred timezone
+> which should spread the suffering.
+> 
+What I found useful is to have a fixed schedule for the actual talk, but 
+keep the recording online for an extended time (say 24h). And require 
+the presenters to be available in a break-out room for any questions for 
+an extended time, too.
+That way any participant can choose which time would suit him best to 
+watch the presentation, _and_ being reasonably sure that he can fire up 
+questions later on.
 
-On Mon, Dec 14, 2020 at 7:55 PM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> hi,
-> adding the support to have buildid stored in mmap2 event,
-> so we can bypass the final perf record hunt on build ids.
->
-> This patchset allows perf to record build ID in mmap2 event,
-> and adds perf tooling to store/download binaries to .debug
-> cache based on these build IDs.
->
-> Note that the build id retrieval code is stolen from bpf
-> code, where it's been used (together with file offsets)
-> to replace IPs in user space stack traces. It's now added
-> under lib directory.
+>>   - Schedule.  Friday's probably a bad day to have it, as it ends up
+>>     being Saturday for some people.  It can move around the week too.
+>>     Also, probably wise to not have it over Christmas as most developers
+>>     have that period as family time.
+> 
+> Yes, Friday tends to be not great. I think mid week should work better
+> as the overalap
+> 
+>>   - Topics.  I'm sure there's no shortage of things to discuss!  I'm
+>>     happy to organise meetings for people even on topics I have no direct
+>>     interest in.
+> 
+> Thanks for organizing this. I am pretty sure poeple will land on topics
+> either in the call or over email.
+> 
+>> And most urgently, when should we have the GUP meeting? On the call,
+>> I suggested Friday the 8th of January, but I'm happy to set something
+>> up for next week if we'd like to talk more urgently.
+> 
+> I am unlikely to be able to join before the end of year so if you ask
+> me.
+> 
+> Thanks again and fingers crossed we can actually have a face to face
+> meeting sometimes during next year.
+> 
+I'd side with Michal here; having something this year will be 
+challenging, as quite some ppl (myself included) will be on holiday.
+Rather move it to start of next year; mid-February would be a good time, 
+giving enough room to organize etc.
 
-Thanks for doing this!
+Cheers,
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-
-Thanks,
-Namhyung
-
-
->
-> v5 changes:
->   - rebased on latest perf/core
->   - several patches already pulled in
->   - fixed trace+probe_vfs_getname.sh output redirection
->   - fixed changelogs [Arnaldo]
->   - renamed BUILD_ID_SIZE to BUILD_ID_SIZE_MAX [Song]
->
-> v4 changes:
->   - fixed typo in changelog [Namhyung]
->   - removed force_download bool from struct dso_store_data,
->     because it's not used  [Namhyung]
->
-> v3 changes:
->   - added acks
->   - removed forgotten debug code [Arnaldo]
->   - fixed readlink termination [Ian]
->   - fixed doc for --debuginfod=URLs [Ian]
->   - adopted kernel's memchr_inv function and used
->     it in build_id__is_defined function [Arnaldo]
->
-> On recording server:
->
->   - on the recording server we can run record with --buildid-mmap
->     option to store build ids in mmap2 events:
->
->     # perf record --buildid-mmap
->     ^C[ perf record: Woken up 2 times to write data ]
->     [ perf record: Captured and wrote 0.836 MB perf.data ]
->
->   - it stores nothing to ~/.debug cache:
->
->     # find ~/.debug
->     find: ‘/root/.debug’: No such file or directory
->
->   - and still reports properly:
->
->     # perf report --stdio
->     ...
->     99.82%  swapper          [kernel.kallsyms]  [k] native_safe_halt
->      0.03%  swapper          [kernel.kallsyms]  [k] finish_task_switch
->      0.02%  swapper          [kernel.kallsyms]  [k] __softirqentry_text_start
->      0.01%  kcompactd0       [kernel.kallsyms]  [k] _raw_spin_unlock_irqrestore
->      0.01%  ksoftirqd/6      [kernel.kallsyms]  [k] slab_free_freelist_hook
->      0.01%  kworker/17:1H-x  [kernel.kallsyms]  [k] slab_free_freelist_hook
->
->   - display used/hit build ids:
->
->     # perf buildid-list | head -5
->     5dcec522abf136fcfd3128f47e131f2365834dd7 /proc/kcore
->     589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
->     94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
->     559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
->     40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
->
->   - store build id binaries into build id cache:
->
->     # perf buildid-cache -a perf.data
->     OK   5dcec522abf136fcfd3128f47e131f2365834dd7 /proc/kcore
->     OK   589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
->     OK   94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
->     OK   559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
->     OK   40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
->     OK   a674f7a47c78e35a088104647b9640710277b489 /usr/sbin/sshd
->     OK   e5cb4ca25f46485bdbc691c3a92e7e111dac3ef2 /usr/bin/bash
->     OK   9bc8589108223c944b452f0819298a0c3cba6215 /usr/bin/find
->
->     # find ~/.debug | head -5
->     /root/.debug
->     /root/.debug/proc
->     /root/.debug/proc/kcore
->     /root/.debug/proc/kcore/5dcec522abf136fcfd3128f47e131f2365834dd7
->     /root/.debug/proc/kcore/5dcec522abf136fcfd3128f47e131f2365834dd7/kallsyms
->
->   - run debuginfod daemon to provide binaries to another server (below)
->     (the initialization could take some time)
->
->     # debuginfod -F /
->
->
-> On another server:
->
->   - copy perf.data from 'record' server and run:
->
->     $ find ~/.debug/
->     find: ‘/home/jolsa/.debug/’: No such file or directory
->
->     $ perf buildid-list | head -5
->     No kallsyms or vmlinux with build-id 5dcec522abf136fcfd3128f47e131f2365834dd7 was found
->     5dcec522abf136fcfd3128f47e131f2365834dd7 [kernel.kallsyms]
->     5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
->     589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
->     94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
->     559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
->
->   - report does not show anything (kernel build id does not match):
->
->    $ perf report --stdio
->    ...
->     76.73%  swapper          [kernel.kallsyms]    [k] 0xffffffff81aa8ebe
->      1.89%  find             [kernel.kallsyms]    [k] 0xffffffff810f2167
->      0.93%  sshd             [kernel.kallsyms]    [k] 0xffffffff8153380c
->      0.83%  swapper          [kernel.kallsyms]    [k] 0xffffffff81104b0b
->      0.71%  kworker/u40:2-e  [kernel.kallsyms]    [k] 0xffffffff810f3850
->      0.70%  kworker/u40:0-e  [kernel.kallsyms]    [k] 0xffffffff810f3850
->      0.64%  find             [kernel.kallsyms]    [k] 0xffffffff81a9ba0a
->      0.63%  find             [kernel.kallsyms]    [k] 0xffffffff81aa93b0
->
->   - add build ids does not work, because existing binaries (on another server)
->     have different build ids:
->
->     $ perf buildid-cache -a perf.data
->     No kallsyms or vmlinux with build-id 5dcec522abf136fcfd3128f47e131f2365834dd7 was found
->     FAIL 5dcec522abf136fcfd3128f47e131f2365834dd7 [kernel.kallsyms]
->     FAIL 5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
->     FAIL 589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
->     FAIL 94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
->     FAIL 559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
->     FAIL 40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
->     FAIL a674f7a47c78e35a088104647b9640710277b489 /usr/sbin/sshd
->     FAIL e5cb4ca25f46485bdbc691c3a92e7e111dac3ef2 /usr/bin/bash
->     FAIL 9bc8589108223c944b452f0819298a0c3cba6215 /usr/bin/find
->
->   - add build ids with debuginfod setup pointing to record server:
->
->     $ perf buildid-cache -a perf.data --debuginfod http://192.168.122.174:8002
->     No kallsyms or vmlinux with build-id 5dcec522abf136fcfd3128f47e131f2365834dd7 was found
->     OK   5dcec522abf136fcfd3128f47e131f2365834dd7 [kernel.kallsyms]
->     OK   5784f813b727a50cfd3363234aef9fcbab685cc4 /lib/modules/5.10.0-rc2speed+/kernel/fs/xfs/xfs.ko
->     OK   589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
->     OK   94569566d4eac7e9c87ba029d43d4e2158f9527e /usr/lib64/libpthread-2.30.so
->     OK   559b9702bebe31c6d132c8dc5cc887673d65d5b5 /usr/lib64/libc-2.30.so
->     OK   40da7abe89f631f60538a17686a7d65c6a02ed31 /usr/lib64/ld-2.30.so
->     OK   a674f7a47c78e35a088104647b9640710277b489 /usr/sbin/sshd
->     OK   e5cb4ca25f46485bdbc691c3a92e7e111dac3ef2 /usr/bin/bash
->     OK   9bc8589108223c944b452f0819298a0c3cba6215 /usr/bin/find
->
->   - and report works:
->
->     $ perf report --stdio
->     ...
->     76.73%  swapper          [kernel.kallsyms]    [k] native_safe_halt
->      1.91%  find             [kernel.kallsyms]    [k] queue_work_on
->      0.93%  sshd             [kernel.kallsyms]    [k] iowrite16
->      0.83%  swapper          [kernel.kallsyms]    [k] finish_task_switch
->      0.72%  kworker/u40:2-e  [kernel.kallsyms]    [k] process_one_work
->      0.70%  kworker/u40:0-e  [kernel.kallsyms]    [k] process_one_work
->      0.64%  find             [kernel.kallsyms]    [k] syscall_enter_from_user_mode
->      0.63%  find             [kernel.kallsyms]    [k] _raw_spin_unlock_irqrestore
->
->   - because we have the data in build id cache:
->
->     $ find ~/.debug | head -10
->     .../.debug
->     .../.debug/home
->     .../.debug/home/jolsa
->     .../.debug/home/jolsa/.cache
->     .../.debug/home/jolsa/.cache/debuginfod_client
->     .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7
->     .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable
->     .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable/5dcec522abf136fcfd3128f47e131f2365834dd7
->     .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable/5dcec522abf136fcfd3128f47e131f2365834dd7/elf
->     .../.debug/home/jolsa/.cache/debuginfod_client/5dcec522abf136fcfd3128f47e131f2365834dd7/executable/5dcec522abf136fcfd3128f47e131f2365834dd7/debug
->
->
-> Available also in:
->   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
->   perf/build_id
->
-> thanks,
-> jirka
->
->
-> Cc: Frank Ch. Eigler <fche@redhat.com>
-> Cc: Mark Wielaard <mjw@redhat.com>
-> ---
->  include/linux/buildid.h                           |  12 +++++
->  include/uapi/linux/perf_event.h                   |  42 +++++++++++++++---
->  kernel/bpf/stackmap.c                             | 143 ++----------------------------------------------------------
->  kernel/events/core.c                              |  32 ++++++++++++--
->  lib/Makefile                                      |   3 +-
->  lib/buildid.c                                     | 149 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/perf_event.h             |  42 +++++++++++++++---
->  tools/lib/perf/include/perf/event.h               |  18 ++++++--
->  tools/perf/Documentation/perf-buildid-cache.txt   |  18 +++++++-
->  tools/perf/Documentation/perf-config.txt          |  10 ++++-
->  tools/perf/Documentation/perf-record.txt          |   3 ++
->  tools/perf/builtin-buildid-cache.c                | 241 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
->  tools/perf/builtin-buildid-list.c                 |   3 ++
->  tools/perf/builtin-record.c                       |  20 +++++++++
->  tools/perf/tests/shell/trace+probe_vfs_getname.sh |   2 +-
->  tools/perf/util/event.c                           |  41 +++++++++++++-----
->  tools/perf/util/evsel.c                           |  10 +++--
->  tools/perf/util/machine.c                         |  24 +++++++---
->  tools/perf/util/map.c                             |   8 +++-
->  tools/perf/util/map.h                             |   3 +-
->  tools/perf/util/perf_api_probe.c                  |  10 +++++
->  tools/perf/util/perf_api_probe.h                  |   1 +
->  tools/perf/util/perf_event_attr_fprintf.c         |   2 +
->  tools/perf/util/probe-event.c                     |   6 +--
->  tools/perf/util/record.h                          |   1 +
->  tools/perf/util/session.c                         |  11 +++--
->  tools/perf/util/symbol-elf.c                      |  37 +++++++++++++++-
->  tools/perf/util/symbol_conf.h                     |   3 +-
->  tools/perf/util/synthetic-events.c                | 121 ++++++++++++++++++++++++++++++++++++++-------------
->  29 files changed, 787 insertions(+), 229 deletions(-)
->
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
