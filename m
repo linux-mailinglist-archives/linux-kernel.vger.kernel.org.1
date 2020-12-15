@@ -2,56 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCB42DB5F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5901C2DB5F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730297AbgLOVfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 16:35:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53146 "EHLO mail.kernel.org"
+        id S1730672AbgLOViD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 16:38:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728110AbgLOVfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 16:35:00 -0500
-Subject: Re: [GIT PULL] Networking updates for 5.11
+        id S1730925AbgLOVht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 16:37:49 -0500
+Date:   Tue, 15 Dec 2020 23:35:17 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608068038;
-        bh=IxUCHXJUoQYOCUo0zxeOPK+c67O0er8jrceei/ZWrFU=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=rJrey77D/AFwmSvTg1q4vGgqIwx/XHeRfYJ8FE5K+vGK9uxHWDjJyArr2hfy467rl
-         Uart9vv2PI4o3xLfu+objtLKUbAOL0/d9AsnUA/WMdtQzQOlSXkW0pMsoiwQVPCQPP
-         mx0Qc5Gg2RigR//grAEEpZ2oNzL/RlY/VCFzJpPx7A0ej+i7h767+Q9N5NVbidCwYC
-         yGXYqE0TaP2y3PrAiKJAlar5/MJQ3OAt3yraaYB4rs2mp/fQX+LN7AVM2shsgfVGSw
-         nUD+4RJCfNoTesi2jodzCQLGkOjBlpp+DbHjVbWsFcjwTu9nZrgAjfqBGr7+7/6tMo
-         Kq/+jImHAPmMA==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201215072850.3171650-1-kuba@kernel.org>
-References: <20201215072850.3171650-1-kuba@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201215072850.3171650-1-kuba@kernel.org>
-X-PR-Tracked-Remote: https://lore.kernel.org/linux-next/20201126162248.7e7963fe@canb.auug.org.au/ mm
-X-PR-Tracked-Commit-Id: efd5a1584537698220578227e6467638307c2a0b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d635a69dd4981cc51f90293f5f64268620ed1565
-Message-Id: <160806803833.7181.2292709187456512920.pr-tracker-bot@kernel.org>
-Date:   Tue, 15 Dec 2020 21:33:58 +0000
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, axboe@kernel.dk, sfrench@samba.org,
-        ebiederm@xmission.com, akpm@linux-foundation.org
+        s=k20201202; t=1608068122;
+        bh=daQ7JY6RGAinkPHSEdtUu/joFw7XtCW9w4kbcG7I978=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KuRH7cU+01g2lLwopcJkGnjGD2697P2LEYQ8b19K4VIsz976zjHLqwh6YGVnM6/RJ
+         tCN2UkH1sSOqIM+vudhyF5kI0GSjqRbcIey22k63GKu/KzWKyEsFELCKieulPvts8P
+         dZXqqbHXO0Z1w5dT0CFbsgS69pB/fRMf54SpA2M+x/L9MFXogQLeeSdGo6ZClXpgz4
+         YNLSEfp79j+5qbUGfFMX2Pp7BBje09ML9+DRM5kmQnRREiBi0V6sThk1r3RIqF4kZz
+         yPvJ4/8P4jcaNF3u3kzaoKjcFTDcTUlukjvf3su4bP2IWWOZvns0N/TTS0TdwRZh1b
+         UHatDNUqtQIRA==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
+Message-ID: <20201215213517.GA34761@kernel.org>
+References: <20201211113230.28909-1-jarkko@kernel.org>
+ <X9e2jOWz1hfXVpQ5@google.com>
+ <20201215055556.GA28278@kernel.org>
+ <20201215055955.GA28511@kernel.org>
+ <op.0vogfzwvwjvjmi@fgctuval.land.test>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <op.0vogfzwvwjvjmi@fgctuval.land.test>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 14 Dec 2020 23:28:50 -0800:
+On Tue, Dec 15, 2020 at 11:34:37AM -0600, Haitao Huang wrote:
+> On Mon, 14 Dec 2020 23:59:55 -0600, Jarkko Sakkinen <jarkko@kernel.org>
+> wrote:
+> 
+> > On Tue, Dec 15, 2020 at 07:56:01AM +0200, Jarkko Sakkinen wrote:
+> > > On Mon, Dec 14, 2020 at 11:01:32AM -0800, Sean Christopherson wrote:
+> > > > On Fri, Dec 11, 2020, Jarkko Sakkinen wrote:
+> > > > > Each sgx_mmun_notifier_release() starts a grace period, which
+> > > means that
+> > > >
+> > > > Should be sgx_mmu_notifier_release(), here and in the comment.
+> > > 
+> > > Thanks.
+> > > 
+> > > > > one extra synchronize_rcu() in sgx_encl_release(). Add it there.
+> > > > >
+> > > > > sgx_release() has the loop that drains the list but with bad
+> > > luck the
+> > > > > entry is already gone from the list before that loop processes it.
+> > > >
+> > > > Why not include the actual analysis that "proves" the bug?  The
+> > > splat that
+> > > > Haitao reported would also be useful info.
+> > > 
+> > > True. I can include a snippet of dmesg to the commit message.
+> > > 
+> > > > > Fixes: 1728ab54b4be ("x86/sgx: Add a page reclaimer")
+> > > > > Cc: Borislav Petkov <bp@alien8.de>
+> > > > > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > > > > Reported-by: Sean Christopherson <seanjc@google.com>
+> > > >
+> > > > Haitao reported the bug, and for all intents and purposes provided
+> > > the fix.  I
+> > > > just did the analysis to verify that there was a legitimate bug
+> > > and that the
+> > > > synchronization in sgx_encl_release() was indeed necessary.
+> > > 
+> > > Good and valid point. The way I see it, the tags should be:
+> > > 
+> > > Reported-by: Haitao Huang <haitao.huang@linux.intel.com>
+> > > Suggested-by: Sean Christopherson <seanjc@google.com>
+> > > 
+> > > Haitao pointed out the bug but from your analysis I could resolve that
+> > > this is the fix to implement, and was able to write the long
+> > > description for the commit.
+> > > 
+> > > Does this make sense to you?
+> > 
+> > I'm sending v2 next week (this week on vacation).
+> > 
+> > /Jarkko
+> 
+> I don't mind either how tags are assigned. But our testing reveals
+> significant latency introduced in scenarios of heavy loading/unloading
+> enclaves. synchronize_srcu_expedited fixed the issue. Please analyze and
+> confirm if that's more appropriate than synchronize_srcu here.
 
-> https://lore.kernel.org/linux-next/20201126162248.7e7963fe@canb.auug.org.au/ mm
+I don't see any obvious reason why *_expedited could not be used here,
+as most of the time sync's are taken care of sgx_release() loop, and the
+final sync is with sgx_mmu_notifier_release(). More aggressive spinning
+should not do any harm here.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d635a69dd4981cc51f90293f5f64268620ed1565
+About the tags. I just try to get them right, and it is sometimes not
+straight-forward. So I guess, with all things considered, I'll put
+suggested-by from you. Once I get a refined patch out, try it out with
+your workloads and provide me tested-by, if it is working for you.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+/Jarkko
