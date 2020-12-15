@@ -2,217 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E887F2DB603
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7102DB600
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 22:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728211AbgLOVrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 16:47:03 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:25442 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730811AbgLOVol (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730875AbgLOVol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 15 Dec 2020 16:44:41 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BFLQN73005773;
-        Tue, 15 Dec 2020 13:43:50 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=QGG1dKo+2XhlfsTOzMKyVVMp/TpUn8VyYE7g5vF+UFs=;
- b=M2N+6FLaUG86kCfQ8W/wSCUR8zkFf4bEOpFam0xARRik1ba7hfGnFVBjsrPtClSKVvYV
- kPE8EDlAZCei8WH1kVo7IgGxlKw9j3ZmnQbz6yROFQa2AQLa6APWW9eYKHr7XIoWZyK9
- WrWJe5FCdRq9hmy0lu0K7V9mn0NqiJnzycU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35eywbt8sy-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 15 Dec 2020 13:43:50 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 15 Dec 2020 13:43:49 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Oqa61O6WOw7j2086l6Of4ehbG2jeZLw5U2eKrAnSafsgHvht2AnrOD6ESRtz4HiAOytWr/Qs1LLNIGksj5sE+YdWTv/UuE5g7vbOXHnhExB+cfrgeo0YhX3fp35NezpJ643H2PJIiq1RbBE8nVVzldx8y+r1T+f1vyOauk1uSTv/Kd1zDG3C5hi8RK7/fZpH9owE6ZrlgXtyGOx7gj2A79t01fgn+BakX5s6fTKbWoz40y5XQeK9jXbXQevm0lmHUNCdY5xJSuHXiODgfbC2sCGTyuerWwacep8DjH+TArJYu32ui9r+JkH1+hc/qj4bpYEY2iSI1CE1vN+mPkp6Aw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QGG1dKo+2XhlfsTOzMKyVVMp/TpUn8VyYE7g5vF+UFs=;
- b=bqQaKpPHdnNGVkVksZOP7snVXvrMAeCA631JkImt0rLCiJGtYV82Ns/aLPM6TiOC3wgmC96F36hzILH/Inork/cIFp9ZRUeGeriO+KLpDxn0O9sQYB4etZ6OM/zwwPkVNwLD/MZ5EZVL07SgdWJvesAyK6Rpl99Xz9STJvbc8VtB45A80JXHxOSLllUMGrB1JaX0w9CsiA1Y7/GgZBppy1Glv+//cs7OpReKLk4nj2TszpW2G8Lnw6yd+HHxxfdLd79t/7SxMjx29JDfnhPd/trVRsU0Sdbp1NjUYg4BUFfJUWgUTgvBpWywEF9hc+Dwh4jCr4gcl4RsNnt1BnWC4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QGG1dKo+2XhlfsTOzMKyVVMp/TpUn8VyYE7g5vF+UFs=;
- b=ML3FYJ1ii5yrsIodqX6IV8iXpgEcQe6Eu6l6VC+EYJETCnDOxNkwruiyUU9wI00vXpKeWIxLRqXrcdvoffQQ8PoyjPvaPCCjOH1xMKiPxbtB0HcywJ6wrWZ2IsR495G0dXqZbNsOPOY0ea0pX3/+jPptoNyNH4xB6Jj9r9yRY7k=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2710.namprd15.prod.outlook.com (2603:10b6:a03:153::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.18; Tue, 15 Dec
- 2020 21:43:44 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::3925:e1f9:4c6a:9396]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::3925:e1f9:4c6a:9396%6]) with mapi id 15.20.3654.025; Tue, 15 Dec 2020
- 21:43:44 +0000
-Date:   Tue, 15 Dec 2020 13:43:41 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Mike Rapoport <rppt@kernel.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Rik van Riel <riel@surriel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>
-Subject: Re: [PATCH] mm: cma: allocate cma areas bottom-up
-Message-ID: <20201215214341.GA3178998@carbon.DHCP.thefacebook.com>
-References: <20201215193615.1867115-1-guro@fb.com>
- <20201215213623.GB247200@kernel.org>
+Received: from mga18.intel.com ([134.134.136.126]:54420 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730697AbgLOVoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 16:44:39 -0500
+IronPort-SDR: 8dOTJLqIEhBMknhjgetZofRw2vGvZHSBGXcbYda8QN96gg07aRKRn4C6Qv2vnABl5n3raQM+sy
+ yb8Ve2cvlQ+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="162705739"
+X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; 
+   d="scan'208";a="162705739"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 13:43:55 -0800
+IronPort-SDR: +dHo1p8cGs3foy6qhFX18IavdPjZX86wskb5CCVOrLg4aWXxXoZOEvaFzONsb3faXlpIUF9vv0
+ +bUk+a9co1uw==
+X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; 
+   d="scan'208";a="337765343"
+Received: from sagarbas-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.135.43])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 13:43:53 -0800
+Date:   Tue, 15 Dec 2020 13:43:51 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 10/14] cxl/mem: Add send command
+Message-ID: <20201215214351.jvxk32gfa44buvcy@intel.com>
+References: <20201209002418.1976362-1-ben.widawsky@intel.com>
+ <20201209002418.1976362-11-ben.widawsky@intel.com>
+ <CAPcyv4j+ixVgEo5q2OhV4kdkBZbnohZj3KDovReQJjPBsREugw@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201215213623.GB247200@kernel.org>
-X-Originating-IP: [2620:10d:c090:400::5:7945]
-X-ClientProxiedBy: BYAPR07CA0061.namprd07.prod.outlook.com
- (2603:10b6:a03:60::38) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:7945) by BYAPR07CA0061.namprd07.prod.outlook.com (2603:10b6:a03:60::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Tue, 15 Dec 2020 21:43:43 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 41484f7b-cd4c-4e35-f885-08d8a1427eed
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2710:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2710CBFF83A8D0017BCE6C79BEC60@BYAPR15MB2710.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V24uwI5RVVKitzbGxuQeqeotMIeBhZu+BVcy7SMtkF18aPrnDoT2mIwDXn4sCIyjHhwIbiiYbfWDRm3ULLEDiig0My9RwPnHYj6rD8DOLAFy3XlKOP6JJiL/w3W3rqHwGkEh0bDMnkIyoXFfPsDmhRFLGNwJjhBs57RviF3Y/ckty1kA5c2zeBnF6n7uljIBzNTQBdvT2cLClQNvrMi4Qq88cOwGJ2Tkx4UDpvtJlMI8wqTprltc5yxwmRMolZ6ETF4xlw9RhvveDKi8Nnrgzdkn30af3u/Tdp6oEudomYZ9Zy6EjC3YGm2JQnJ/8M4zlZRYqC7LfUX7PZWDM1MvWUDCt4S3LUAAq1txD77Kl26xfW4vCcUozAfW/5hd6thD
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(39860400002)(366004)(396003)(1076003)(5660300002)(66946007)(86362001)(316002)(7696005)(33656002)(66476007)(8676002)(66556008)(4326008)(83380400001)(8936002)(9686003)(54906003)(478600001)(52116002)(6506007)(6916009)(16526019)(55016002)(2906002)(186003)(134885004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?B/Jvqr5x3Sm8Wpj5fI6kmXEZp1f5K1094YaFVLx/Z6v8Ohs8MVTSLkiq15NH?=
- =?us-ascii?Q?ezL+VVG08wbeNqAxIxorHiuF65ZvqUTOPkqVMArqau7RExVabsI/ySJ2jP4e?=
- =?us-ascii?Q?+aiQ9xjsoFKxCFyBZGVDUxBrI+4e5GV5nS92k3prSpD4Dg4LATpuQT0wfxAF?=
- =?us-ascii?Q?q8kcwF9MxT0cP8pPMlFK2RIDnSyZclfubsxmGoEeM3g5ikInN3uVeVFolk1w?=
- =?us-ascii?Q?oATa4cQUGZFNkCuev0mqZs2TxrMHm4YyPrsyZs7F6L950NRVBpPJikl4rADN?=
- =?us-ascii?Q?mDkZiFR3wanmBp9h0XtwmDupm4AG8aujyIPNE9mxCXarZhAJ6a/6Kdt+bU1v?=
- =?us-ascii?Q?aQ55YSY72FmTTcV3LAcdr1OLJ/9NgjztaLXjHyr3JHM7soQtqMAPF85w0LGb?=
- =?us-ascii?Q?JmA+dgLKIrd+XfLMEv8hpsMwgx5XDge5EKBF8tcziEzX5/Qi7NhMQmUlv6qR?=
- =?us-ascii?Q?ZKYdbztBXkQ03sIg+sWcuJGIrdpa4PeQhL2HjsBwrx8UbgdudO/mWgxMigh7?=
- =?us-ascii?Q?MXwtiWajndcxkTu+PRiSJKO0F442u/uV6sbs5+gSTJIRWVXto42J68BuNB6J?=
- =?us-ascii?Q?uZOBTA2nnrb/p3mL54LZ+HxrpUi9QFKPqACEStW4twsa1lQzp/ciezSc3WU2?=
- =?us-ascii?Q?JDKadM9szSHpQBvRnMyv4iHs8FjTaVc58y4tp11B9jXSpq7S2XfLdd4/D60b?=
- =?us-ascii?Q?Bua1l0SP9Od6g14BrJvXlcYMfX9SpeMDZIWPSxoFQ3MuLHHJE6qM3PYYSAmD?=
- =?us-ascii?Q?YrGocLNgnra0mwEaQL2eemcwvVAuWJ4lOoYt1Iu6cjyZRbPEcntlTOKpnD4d?=
- =?us-ascii?Q?AxVxJMLZ4UqkrvQ/HUYz3EEJ/dKiZwLr4gTifkKQOX9el6lLnWUBNaaYZO85?=
- =?us-ascii?Q?oFACYR9mNFy6qLj9iLAe9UCGqwmO2t4dUEb0ao3XYgI02cLcpsb5DjWSujdT?=
- =?us-ascii?Q?J6OHsnBdYwfkOKhHvLfNiT3F7vQburO6wyajKB7JzT7yXrsL7IXHE7z3nmub?=
- =?us-ascii?Q?cgZe5y8Hd0Ya21SzhTW8Y3dQgw=3D=3D?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2020 21:43:44.1050
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 41484f7b-cd4c-4e35-f885-08d8a1427eed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IHGanm9ww0Np2D5egogitTxC+YAAf21pNGzFjXylzXQhKXSUNp8TfbxRt8nfMkvJ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2710
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-15_12:2020-12-15,2020-12-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- adultscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0
- spamscore=0 suspectscore=0 phishscore=0 priorityscore=1501 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012150145
-X-FB-Internal: deliver
+In-Reply-To: <CAPcyv4j+ixVgEo5q2OhV4kdkBZbnohZj3KDovReQJjPBsREugw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 11:36:23PM +0200, Mike Rapoport wrote:
-> Hi Roman,
+On 20-12-09 14:06:22, Dan Williams wrote:
+> On Tue, Dec 8, 2020 at 4:24 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+> >
+> > The send command allows userspace to issue mailbox commands directly to
+> > the hardware. The driver will verify basic properties of the command but
+> > otherwise pass any input payload untouched to the hardware, and return
+> > the output payload to userspace.
+> >
+> > The caller of this IOCTL is required to allocate enough space for
+> > max(size_in, size_out) of the payload. The payload input data will be
+> > wiped out if any output payload exists.
 > 
-> On Tue, Dec 15, 2020 at 11:36:15AM -0800, Roman Gushchin wrote:
-> > Currently cma areas without a fixed base address are allocated
-> > close to the end of the node. This placement is sub-optimal because
-> > of how the compaction works: it effectively moves pages into
-> > the cma area. In particular, it often brings in hot executable pages,
-> > even if there is a plenty of free memory on the machine.
-> > This results in more cma allocation failures.
-> > 
-> > Instead let's place cma areas close to the beginning of a node.
-> > Cma first tries to start with highmem_start, so we shouldn't mess
-> > up with DMA32. In this case the compaction will help to free cma
-> > areas, resulting in better cma allocation success rates.
-> > 
-> > Signed-off-by: Roman Gushchin <guro@fb.com>
+> Seems awkward for the kernel to overwrite input payloads. I can see
+> that potentially complicating userspace if it has the same payload to
+> send to multiple devices. What's the rationale for overwriting input?
+> 
+
+I couldn't think of a case where preserving the input payload would be beneficial
+and I actually think it's a bit simpler with just one payload for both sides -
+however, since you came up with a good usage, I will modify this.
+
+> >
+> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
 > > ---
-> >  include/linux/memblock.h |  5 +++--
-> >  mm/cma.c                 |  4 ++--
-> >  mm/memblock.c            | 26 +++++++++++++++-----------
-> >  3 files changed, 20 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> > index 9c5cc95c7cee..698188066450 100644
-> > --- a/include/linux/memblock.h
-> > +++ b/include/linux/memblock.h
-> > @@ -384,8 +384,9 @@ static inline int memblock_get_region_node(const struct memblock_region *r)
-> >  phys_addr_t memblock_phys_alloc_range(phys_addr_t size, phys_addr_t align,
-> >  				      phys_addr_t start, phys_addr_t end);
-> >  phys_addr_t memblock_alloc_range_nid(phys_addr_t size,
-> > -				      phys_addr_t align, phys_addr_t start,
-> > -				      phys_addr_t end, int nid, bool exact_nid);
-> > +				     phys_addr_t align, phys_addr_t start,
-> > +				     phys_addr_t end, int nid, bool exact_nid,
-> > +				     bool bottom_up);
-> >  phys_addr_t memblock_phys_alloc_try_nid(phys_addr_t size, phys_addr_t align, int nid);
-> >  
-> >  static inline phys_addr_t memblock_phys_alloc(phys_addr_t size,
-> > diff --git a/mm/cma.c b/mm/cma.c
-> > index 20c4f6f40037..1b42be6d059b 100644
-> > --- a/mm/cma.c
-> > +++ b/mm/cma.c
-> > @@ -332,13 +332,13 @@ int __init cma_declare_contiguous_nid(phys_addr_t base,
-> >  		 */
-> >  		if (base < highmem_start && limit > highmem_start) {
-> >  			addr = memblock_alloc_range_nid(size, alignment,
-> > -					highmem_start, limit, nid, true);
-> > +					highmem_start, limit, nid, true, true);
-> >  			limit = highmem_start;
-> >  		}
-> >  
-> >  		if (!addr) {
-> >  			addr = memblock_alloc_range_nid(size, alignment, base,
-> > -					limit, nid, true);
-> > +					limit, nid, true, true);
-> >  			if (!addr) {
-> >  				ret = -ENOMEM;
-> >  				goto err;
-> > diff --git a/mm/memblock.c b/mm/memblock.c
-> > index b8b7be0561c4..c334b401fe16 100644
-> > --- a/mm/memblock.c
-> > +++ b/mm/memblock.c
-> > @@ -272,6 +272,7 @@ __memblock_find_range_top_down(phys_addr_t start, phys_addr_t end,
-> >   *       %MEMBLOCK_ALLOC_ACCESSIBLE
-> >   * @nid: nid of the free area to find, %NUMA_NO_NODE for any node
-> >   * @flags: pick from blocks based on memory attributes
-> > + * @bottom_up: force bottom-up allocation
+> >  drivers/cxl/mem.c            | 127 +++++++++++++++++++++++++++++++++++
+> >  include/uapi/linux/cxl_mem.h |  35 ++++++++++
+> >  2 files changed, 162 insertions(+)
+> >
+> > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > index 2c4aadcea0e4..0bf03afc0c80 100644
+> > --- a/drivers/cxl/mem.c
+> > +++ b/drivers/cxl/mem.c
+> > @@ -324,6 +324,120 @@ static int cxl_mem_count_commands(void)
+> >         }
+> >
+> >         return n;
+> > +};
+> > +
+> > +/**
+> > + * handle_mailbox_cmd_from_user() - Dispatch a mailbox command.
+> > + * @cxlmd: The CXL memory device to communicate with.
+> > + * @cmd: The validated command
+> > + * @u: The command submitted by userspace. Only useful for RAW commands.
+> > + *
+> > + * Return: 0 on success.
+> > + *
+> > + * This function packages up a &struct mbox_cmd on behalf of userspace,
+> > + * dispatches the command, and returns the results.
+> > + */
+> > +static int handle_mailbox_cmd_from_user(struct cxl_memdev *cxlmd,
+> > +                                       const struct cxl_mem_command *cmd,
+> > +                                       struct cxl_send_command __user *u)
+> > +{
+> > +       struct mbox_cmd mbox_cmd;
+> > +       ssize_t payload_size;
+> > +       void *payload;
+> > +       u32 size_out;
+> > +       int rc;
+> > +
+> > +       if (get_user(size_out, &u->size_out))
+> > +               return -EFAULT;
+> > +
+> > +       payload_size = max_t(ssize_t, cmd->info.size_in, size_out);
+> > +       if (payload_size) {
+> > +               payload =
+> > +                       memdup_user(u64_to_user_ptr(u->payload), payload_size);
 > 
-> Why wouldn't you use memblock_set_bottom_up() around the allocations in
-> CMA, e.g.
+> Me thinks this should be vmemdup_user() for payloads that exceed the
+> kmalloc() max, and I think it would be worthwhile to clamp @size_out
+> to some maximum and not let userspace ask for gigantic payloads.
+> Return EINVAL for payloads greater than... 4MB? At least 4MB is the
+> arbitrary max that libnvdimm picked.
 > 
-> 	bool bottom_up = memblock_bottom_up();
-> 
-> 	if (!bottom_up)
-> 		memblock_set_bottom_up(true);
-> 
-> 	/* allocate memory */
-> 
-> 	memblock_set_bottom_up(bottom_up);
 
-Hi Mike!
+This is handled in cxl_validate_cmd_from_user() currently. The current API
+allows the user to specify as large as they like with @size_out but the kernel
+only writes out as much as the hardware returns.... More on this below [1].
 
-Wouldn't it open a possibility for a race? If somebody else is doing an allocation
-in parallel, their allocation could become affected.
+> > +               if (IS_ERR(payload))
+> > +                       return PTR_ERR(payload);
+> > +       }
+> > +
+> > +       rc = cxl_mem_mbox_get(cxlmd->cxlm);
+> > +       if (rc)
+> > +               return rc;
+> > +
+> > +       mbox_cmd = (struct mbox_cmd){
+> 
+> I'd expect a space between: ){ ...looks like clang-format does not
+> have that rule.
+> 
+> > +               .opcode = cmd->opcode,
+> > +               .payload = payload,
+> > +               .size_in = cmd->info.size_in,
+> > +               .size_out = size_out,
+> > +       };
+> > +       rc = cxl_mem_mbox_send_cmd(cxlmd->cxlm, &mbox_cmd);
+> > +       cxl_mem_mbox_put(cxlmd->cxlm);
+> > +       if (rc)
+> > +               goto out;
+> > +
+> > +       rc = put_user(mbox_cmd.return_code, &u->retval);
+> > +       if (rc)
+> > +               goto out;
+> > +
+> > +       rc = put_user(mbox_cmd.size_out, &u->size_out);
+> > +       if (rc)
+> > +               goto out;
+> > +
+> > +       if (mbox_cmd.size_out)
+> > +               if (copy_to_user(u64_to_user_ptr(u->payload), payload,
+> > +                                mbox_cmd.size_out))
+> > +                       rc = -EFAULT;
+> > +
+> > +out:
+> > +       if (payload_size)
+> > +               kfree(payload);
+> > +       return rc;
+> > +}
+> > +
+> > +/**
+> > + * cxl_validate_cmd_from_user() - Check fields for CXL_MEM_SEND_COMMAND.
+> > + * @user_cmd: &struct cxl_send_command from userspace.
+> 
+> Ah cool, I did not realize kernel doc recognized type specifiers like
+> that, nice.
+> 
+> > + * @out_cmd: Sanitized and populared &struct cxl_mem_command.
+> 
+> s/populared/populated/
+> 
+> > + *
+> > + * Return:
+> > + *  * %0       - Command dispatched successfully.
+> > + *  * %-EFAULT - Something happened with copy_to/from_user.
+> > + *  * %-EINVAL - Rerserved fields were used.
+> 
+> s/Rerserved/Reserved/
+> 
+> > + *  * %-EPERM  - Protected command used by the RAW interface.
+> > + *  * %-ENOMEM - Input or output buffer wasn't large enough.
+> > + *
+> > + */
+> > +static int cxl_validate_cmd_from_user(struct cxl_send_command __user *user_cmd,
+> > +                                     struct cxl_mem_command *out_cmd)
+> > +{
+> > +       const struct cxl_command_info *info;
+> > +       struct cxl_send_command cmd;
+> > +       struct cxl_mem_command *c;
+> > +
+> > +       if (copy_from_user(&cmd, user_cmd, sizeof(cmd)))
+> > +               return -EFAULT;
+> > +
+> > +       if (cmd.id == 0 || cmd.id >= CXL_MEM_COMMAND_ID_MAX)
+> > +               return -EINVAL;
+> 
+> I wonder if the "cmd.id >= CXL_MEM_COMMAND_ID_MAX" case should return
+> -ENOTTY. The command might be perfectly valid, just the kernel does
+> not have that command specified which would be the case with older
+> kernel with newer userspace.
+> 
 
-Thanks!
+I think ENOTTY could be a bit confusing here as it could be confused for the
+SEND ioctl not being present.
+
+What about ENOENT, or something else?
+
+> > +
+> > +       c = &mem_commands[cmd.id];
+> > +       info = &c->info;
+> > +
+> > +       if (cmd.flags & CXL_MEM_COMMAND_FLAG_MASK)
+> > +               return -EINVAL;
+> > +
+> > +       if (cmd.rsvd)
+> > +               return -EINVAL;
+> > +
+> > +       /* Check the input buffer is the expected size */
+> > +       if (info->size_in >= 0 && info->size_in != cmd.size_in)
+> > +               return -ENOMEM;
+> > +
+> > +       /* Check the output buffer is at least large enough */
+> > +       if (info->size_out >= 0 && cmd.size_out < info->size_out)
+> > +               return -ENOMEM;
+> > +
+> > +       memcpy(out_cmd, c, sizeof(*c));
+> 
+> Why not do the copy_from_user() directly into out_cmd to save a copy operation?
+> 
+
+[1]
+cxl_validate_cmd_from_user() essentially translates a user's command into the
+internal kernel representation of the command via the lookup into the array.
+This will do things like adjust the output size or flags, to prevent userspace
+from doing nefarious things. An actual command, especially now that you had me
+remove the name[32] will be relatively small and I see the extra copy as being
+well worth being able to isolate this command sanitization.
+
+> > +
+> > +       return 0;
+> >  }
+> >
+> >  static long cxl_mem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> > @@ -357,6 +471,19 @@ static long cxl_mem_ioctl(struct file *file, unsigned int cmd, unsigned long arg
+> >
+> >                         j++;
+> >                 }
+> > +
+> > +               return 0;
+> > +       } else if (cmd == CXL_MEM_SEND_COMMAND) {
+> > +               struct cxl_send_command __user *u = (void __user *)arg;
+> > +               struct cxl_memdev *cxlmd = file->private_data;
+> > +               struct cxl_mem_command c;
+> > +               int rc;
+> > +
+> > +               rc = cxl_validate_cmd_from_user(u, &c);
+> > +               if (rc)
+> > +                       return rc;
+> > +
+> > +               return handle_mailbox_cmd_from_user(cxlmd, &c, u);
+> >         }
+> >
+> >         return -ENOTTY;
+> > diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
+> > index 1d1e143f98ec..189d86a13637 100644
+> > --- a/include/uapi/linux/cxl_mem.h
+> > +++ b/include/uapi/linux/cxl_mem.h
+> > @@ -19,6 +19,7 @@ extern "C" {
+> >   */
+> >
+> >  #define CXL_MEM_QUERY_COMMANDS _IOR('C', 1, struct cxl_mem_query_commands)
+> > +#define CXL_MEM_SEND_COMMAND _IOWR('C', 2, struct cxl_send_command)
+> >
+> >  #define CXL_MEM_COMMAND_NAME_LENGTH 32
+> >
+> > @@ -48,10 +49,12 @@ extern "C" {
+> >  struct cxl_command_info {
+> >         __u32 id;
+> >  #define CXL_MEM_COMMAND_ID_INVALID 0
+> > +#define CXL_MEM_COMMAND_ID_MAX (CXL_MEM_COMMAND_ID_INVALID + 1)
+> >
+> >         __u32 flags;
+> >  #define CXL_MEM_COMMAND_FLAG_NONE 0
+> >  #define CXL_MEM_COMMAND_FLAG_TAINT BIT(0)
+> 
+> I guess I missed this in the last patch, why would userspace specify a
+> taint flag? @flags is an output parameter?
+> 
+
+The flag is from the kernel to userspace to let them know that using the command
+would taint the kernel.
+
+> > +#define CXL_MEM_COMMAND_FLAG_MASK ~BIT(0)
+> >
+> >         __s32 size_in;
+> >         __s32 size_out;
+> > @@ -95,6 +98,38 @@ struct cxl_mem_query_commands {
+> >         struct cxl_command_info __user commands[]; /* out: supported commands */
+> >  };
+> >
+> > +/**
+> > + * struct cxl_send_command - Send a command to a memory device.
+> > + * @id: The command to send to the memory device. This must be one of the
+> > + *     commands returned by the query command.
+> > + * @flags: Flags for the command
+> 
+> in / out field?
+> 
+> > + * @rsvd: Reserved for future use.
+> 
+> Document 'must be zero' to match the code?
+> 
+> > + * @retval: Return value from the memory device (output).
+> 
+> Is this a translated error code or the raw
+> > + * @size_in: Size of the payload to provide to the device (input).
+> > + * @size_out: Size of the payload received from the device (input/output). This
+> > + *           field is filled in my userspace to let the driver know how much
+> 
+> s/my/by/
+> 
+> > + *           space was allocated for output. It is populated by the driver to
+> > + *           let userspace know how large the output payload actually was.
+> > + * @payload: Pointer to memory available for payload input/output.
+> > + *
+> > + * Mechanism for userspace to send a command to the hardware for processing. The
+> > + * driver will do basic validation on the command sizes, but the payload input
+> > + * and output are not introspected. Userspace is required to allocate large
+> 
+> They might be introspected, at least there were some NVDIMM ioctls
+> like "clear error" where the driver in addition to telling the device
+> to clear the error also cleaned up the kernel's error tracking list.
+> I'd say one of the benefits of Linux-commands that get translated to
+> CXL-specific payloads is that they allow for kernel translation /
+> interpretation / quirking vs 'raw' where the kernel does not care.
+> 
+> > + * enough buffers for max(size_in, size_out).
+> > + */
+> > +struct cxl_send_command {
+> > +       __u32 id;
+> > +       __u32 flags;
+> > +       __u32 rsvd;
+> > +       __u32 retval;
+> > +
+> > +       struct {
+> > +               __s32 size_in;
+> > +               __s32 size_out;
+> > +               __u64 payload;
+> 
+> per the initial comment above a separate @payload_in and a
+> @payload_out pointer would seem to be more flexible and get out of the
+> situation where the kernel needs to clobber inputs.
+
+Anything I didn't specifically respond to, I'm working on fixing.
