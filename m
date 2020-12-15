@@ -2,192 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B87F2DA63B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE50D2DA650
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 03:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727670AbgLOCZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 21:25:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
+        id S1727886AbgLOCfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 21:35:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727677AbgLOCZb (ORCPT
+        with ESMTP id S1727535AbgLOCeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:25:31 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474B8C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:24:51 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id v14so15482175wml.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:24:51 -0800 (PST)
+        Mon, 14 Dec 2020 21:34:23 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3D2C06179C
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:27:21 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id d17so25466317ejy.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Dec 2020 18:27:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OE9Bb/mebGq5IQ0pCbTX8QkKgB3rp/03lLTqI0xRKXs=;
-        b=aRJ8lCanJ+XgPi264EPRH8ikBySk1KRXkEP+4pqT257TrDqvg0P0BLjyx8UI1KOa6H
-         arfSX+iKDTpsyBHWViuh9chb79KswbRPtTNr2Cf7qtDkPnEXp9wZow00eemuTIGZbRvm
-         ss5IHW0OQEO5ZJhRjVamy0bgWebWVzkM1KJrrKiF7hfFaKvrpDgHKkQmt9SBd5/GkV08
-         0lPO6DNlOPMQlI1z1OBN9MtXumSiFLYeTPdf2wN/otpQk5OT2EJjq/BOFBHWiVUEGbzW
-         vJKYfRvq3LMoR6oG2sm480rHk6aYiXZPoKs/eqz/kQNy8vBYpAuSDhiiOry87KQT0TEq
-         BZ7A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=I4O3WHYBU27kv8r3Q3lI0IyLOdhvpxutXMzDol4vSCg=;
+        b=KhWzVlWSyOs88yQhMHCDLSIVQ3xif/YPV7Jd7LbuTTykuExZgCpEqqVg8LfpoVDEsb
+         ARoxpeUC78vu6dzhdCzbi7RFzieuM+Jxf3YuBSccQ+MMwKqhR2b3lN+0ZbcHmfq+aLZn
+         eog0RaYKhhT74/Wy5RTeipeHaD66TfMyGk9n1rukP6Jk9Lna1zo5ter3zk0502G0d+OQ
+         ITtl2CEdLO1FGl9wNT8c3TGwcruUG6USEk1xgw6RzZx4oiisvM8zWULc233pcG/w+ejk
+         vQXVOsxoLxq+Kk8oe4ViqLENkvin7Y0x54o1IL21q0l94YAaD/lKLV2jvwNhZaT7RWfO
+         0GbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OE9Bb/mebGq5IQ0pCbTX8QkKgB3rp/03lLTqI0xRKXs=;
-        b=noyWWvaim6CNfpZgYvOfNLNcpr5eK6f+lWZUWWOot9U9DIAg4TE6bprR69r61m275K
-         U/voYrsySaFwfn9E9pJSAeDeUN/DamNE9dbkx/x8DUiHvonjg7t5Kij/JbrVUgUVxsim
-         OeSlb0IjmV0A+bijjfofCiBwiq76ueaoJfj5SRIKT/+ID2sEKq+Eq1E5Kv78cHLxNqay
-         +HU/NXHYBPgWDrvDyQXlwef9Fq1QlxmMTlH99txNRH4pS/AEsj9An4e1leNxmQ1M/0E0
-         pbdaMLJjJRk454Ke+HCidCEFVNko9X9CjLRVrpw/SrOJ3289O13IbiVj1/w9R5yk+Jiw
-         Yv8w==
-X-Gm-Message-State: AOAM531pYtJFSyM3oWG0DEyTMmRP2yKVCysNK9+HXlx1i4kEVVyuDCzE
-        nEcR1z5OmXmZL+rr7REhdnFfdg==
-X-Google-Smtp-Source: ABdhPJzxESi1Dzn7QiARQDqrwlrdGaBjrqFs3Y+/9wqhxrhVtvYm/i7hQVccloHVnB4CnbG3xA9FvQ==
-X-Received: by 2002:a05:600c:274d:: with SMTP id 13mr30751217wmw.77.1607999089909;
-        Mon, 14 Dec 2020 18:24:49 -0800 (PST)
-Received: from [192.168.0.3] (hst-208-199.medicom.bg. [84.238.208.199])
-        by smtp.googlemail.com with ESMTPSA id 89sm36734823wre.51.2020.12.14.18.24.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Dec 2020 18:24:49 -0800 (PST)
-Subject: Re: [PATCH v4] venus: core: add support to dump FW region
-To:     Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org
-References: <1607951031-12980-1-git-send-email-dikshita@codeaurora.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <3afbf03a-50ec-9b00-d11b-574ce9c05bb3@linaro.org>
-Date:   Tue, 15 Dec 2020 04:24:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=I4O3WHYBU27kv8r3Q3lI0IyLOdhvpxutXMzDol4vSCg=;
+        b=BYWDhiduAEYXcjotGetXR7rXvubwE13XlFZ10HTBohz0XD7J+WOWK2GAX+CPdl3lrB
+         MHNYLIKZBL3urfATfpOa7kXXb2DwOGQjn2QOO/zxfe40LyT7a1r0z4JGEQPIEIzIR4cR
+         zvaWR5T8zypdpp7J+6jX4du+9sOns63waDeFNCK71utviCIyxLF7difvqidB7egwDqap
+         vBu+ZthVy4iOoX1K9J5zn0odo33U1Pi8TB5QQyHnvGF9ziwsfHWK8+z7GjiZqF7lvaoh
+         kCKfSknjettqn7l6o8k7Drk+XDxO0EgUB0HaOdjIKKaFe9bqNL3oCZm1I7P2SuQE+xeg
+         Rl2g==
+X-Gm-Message-State: AOAM533Zg1b3kqIZQ+00D9gniR9QGZ54Slu2TRGVjxP4VTqDKc5vRb8a
+        VzEg2JHenJgZeOFpnWMFF+Zc2bOA4bW93WfJ6XOf9w==
+X-Google-Smtp-Source: ABdhPJywOHSnUwWyG0v3cm6dkD0vz5G9XokMtjdBAUSQE+WYpEihqM+GVjVgVJ5EYhAcDwjEmN5zU6NB9/XwzM+4UeQ=
+X-Received: by 2002:a17:906:3499:: with SMTP id g25mr1216306ejb.18.1607999240315;
+ Mon, 14 Dec 2020 18:27:20 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1607951031-12980-1-git-send-email-dikshita@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201214172555.280929671@linuxfoundation.org>
+In-Reply-To: <20201214172555.280929671@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 15 Dec 2020 07:57:08 +0530
+Message-ID: <CA+G9fYvMqG_ai-_sfPGuxxjyZ=3QiabPZhFFY=m_=Qa1aKAL+Q@mail.gmail.com>
+Subject: Re: [PATCH 5.9 000/105] 5.9.15-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 14 Dec 2020 at 23:06, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.9.15 release.
+> There are 105 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 16 Dec 2020 17:25:32 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.9.15-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-On 12/14/20 3:03 PM, Dikshita Agarwal wrote:
-> Add support to dump video FW region during FW crash
-> using devcoredump helpers.
-> 
-> Major changes since v1:
-> - update the name of function (Stephen)
-> - store start address and size in resource structure during
->   probe and reuse while dumping (Stephen, Stanimir)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-The changes should go to ...
+NOTE:
+Following warning(s) reported on arm64 Juno-r2 device.
+sched: core.c:7270 Illegal context switch in RCU-bh read-side critical sect=
+ion!
+https://lore.kernel.org/stable/CA+G9fYtu1zOz8ErUzftNG4Dc9=3Dcv1grsagBojJraG=
+hm4arqXyw@mail.gmail.com/T/#u
 
-> 
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> ---
+Summary
+------------------------------------------------------------------------
 
-... here
+kernel: 5.9.15-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.9.y
+git commit: 609d95a959259ea4ab7ecdc39c3151321a6a7032
+git describe: v5.9.14-106-g609d95a95925
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.9.=
+y/build/v5.9.14-106-g609d95a95925
 
->  drivers/media/platform/qcom/venus/core.c     | 31 ++++++++++++++++++++++++++++
->  drivers/media/platform/qcom/venus/core.h     |  2 ++
->  drivers/media/platform/qcom/venus/firmware.c |  3 +++
->  3 files changed, 36 insertions(+)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-> index bdd293f..2ddbd36 100644
-> --- a/drivers/media/platform/qcom/venus/core.c
-> +++ b/drivers/media/platform/qcom/venus/core.c
-> @@ -7,8 +7,10 @@
->  #include <linux/interconnect.h>
->  #include <linux/ioctl.h>
->  #include <linux/delay.h>
-> +#include <linux/devcoredump.h>
->  #include <linux/list.h>
->  #include <linux/module.h>
-> +#include <linux/of_address.h>
+No regressions (compared to build v5.9.14)
 
-drop this leftover.
+No fixes (compared to build v5.9.14)
 
->  #include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
-> @@ -22,6 +24,33 @@
->  #include "firmware.h"
->  #include "pm_helpers.h"
->  
-> +static void venus_coredump(struct venus_core *core)
-> +{
-> +	struct device *dev;
-> +	phys_addr_t mem_phys;
-> +	size_t mem_size;
-> +	void *mem_va;
-> +	void *data;
-> +
-> +	dev = core->dev;
-> +	mem_phys = core->fw.mem_phys;
-> +	mem_size = core->fw.mem_size;
-> +
-> +	mem_va = memremap(mem_phys, mem_size, MEMREMAP_WC);
-> +	if (!mem_va)
-> +		return;
-> +
-> +	data = vmalloc(mem_size);
-> +	if (!data) {
-> +		memunmap(mem_va);
-> +		return;
-> +	}
-> +
-> +	memcpy(data, mem_va, mem_size);
-> +	memunmap(mem_va);
-> +	dev_coredumpv(dev, data, mem_size, GFP_KERNEL);
-> +}
-> +
->  static void venus_event_notify(struct venus_core *core, u32 event)
->  {
->  	struct venus_inst *inst;
-> @@ -67,6 +96,8 @@ static void venus_sys_error_handler(struct work_struct *work)
->  
->  	venus_shutdown(core);
->  
-> +	venus_coredump(core);
-> +
->  	pm_runtime_put_sync(core->dev);
->  
->  	while (core->pmdomains[0] && pm_runtime_active(core->pmdomains[0]))
-> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-> index 3a477fc..b37de95 100644
-> --- a/drivers/media/platform/qcom/venus/core.h
-> +++ b/drivers/media/platform/qcom/venus/core.h
-> @@ -178,6 +178,8 @@ struct venus_core {
->  		struct device *dev;
->  		struct iommu_domain *iommu_domain;
->  		size_t mapped_mem_size;
-> +		phys_addr_t mem_phys;
-> +		size_t mem_size;
->  	} fw;
->  	struct mutex lock;
->  	struct list_head instances;
-> diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
-> index d03e2dd..89defc2 100644
-> --- a/drivers/media/platform/qcom/venus/firmware.c
-> +++ b/drivers/media/platform/qcom/venus/firmware.c
-> @@ -201,6 +201,9 @@ int venus_boot(struct venus_core *core)
->  		return -EINVAL;
->  	}
->  
-> +	core->fw.mem_size = mem_size;
-> +	core->fw.mem_phys = mem_phys;
-> +
->  	if (core->use_tz)
->  		ret = qcom_scm_pas_auth_and_reset(VENUS_PAS_ID);
->  	else
-> 
+Ran 53718 total tests in the following environments and test suites.
 
-With those fixes:
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-i386-clang
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
 
-Reviewed-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest
+* libhugetlbfs
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-sched-tests
+* v4l2-compliance
+* kvm-unit-tests
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* perf
+* ltp-controllers-tests
+* ltp-ipc-tests
+* ltp-open-posix-tests
+* ltp-tracing-tests
+* fwts
+* kunit
+* rcutorture
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
 
--- 
-regards,
-Stan
+--=20
+Linaro LKFT
+https://lkft.linaro.org
