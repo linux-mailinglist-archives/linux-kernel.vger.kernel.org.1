@@ -2,155 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C33F2DA6D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DD62DA6D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727280AbgLODGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 22:06:25 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:41330 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727090AbgLODGP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 22:06:15 -0500
-Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 60AA458C677;
-        Tue, 15 Dec 2020 14:05:29 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kp0eW-00454U-Mx; Tue, 15 Dec 2020 14:05:28 +1100
-Date:   Tue, 15 Dec 2020 14:05:28 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     guro@fb.com, ktkhai@virtuozzo.com, shakeelb@google.com,
-        hannes@cmpxchg.org, mhocko@suse.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [v2 PATCH 7/9] mm: vmscan: don't need allocate
- shrinker->nr_deferred for memcg aware shrinkers
-Message-ID: <20201215030528.GN3913616@dread.disaster.area>
-References: <20201214223722.232537-1-shy828301@gmail.com>
- <20201214223722.232537-8-shy828301@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201214223722.232537-8-shy828301@gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
-        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
-        a=kj9zAlcOel0A:10 a=zTNgK-yGK50A:10 a=pGLkceISAAAA:8 a=7-415B0cAAAA:8
-        a=HoWvQtbgcFNr9bk3r4sA:9 a=CjuIK1q_8ugA:10 a=-RoEEKskQ1sA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+        id S1727008AbgLOD33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 22:29:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726437AbgLODIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Dec 2020 22:08:37 -0500
+Subject: Re: [GIT pull] x86/apic for v5.11-rc1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608001676;
+        bh=4V04ritHb8/74dt4KGOVorlwzHfnt05iar2WKYAB/CY=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=chdmvfe/5WJufn2NpE8GwOGLWrUX3ywi2s5qcPw19TmOiAMfr9sca5zRTRswkKRA2
+         0GoUlnU+noF2aVVyWBZKjudTsPLrXBxHrC4Bd1PFjiIHttCm+gc0yV0H7G8ldBT13A
+         gHAP5tn2CZfPuilsEPxsLhLP7Rr6sQOiL5yXZp77Ao4x+M6538qKC5WO/Kw1UGwI39
+         PSAU7h46lSlyES/MFJeVwYQ7dXsEdRM0Wn4BhwazPHzr74NrIWfpB7dW8KzrHdYkhX
+         T+5Wqtki6pjnRtUdNiZb2zg78xqOfXiriDoz6c6u5QJdAZ5ldyHqCjqQ9kwDX67n4B
+         VSUDHf6HHnzrA==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <160797734033.10793.4023884058552218676.tglx@nanos>
+References: <160797732939.10793.9152151866806316627.tglx@nanos> <160797734033.10793.4023884058552218676.tglx@nanos>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <160797734033.10793.4023884058552218676.tglx@nanos>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-apic-2020-12-14
+X-PR-Tracked-Commit-Id: 058df195c23403f91acc028e39ca2ad599d0af52
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 148842c98a24e508aecb929718818fbf4c2a6ff3
+Message-Id: <160800167649.18953.8151788647197811582.pr-tracker-bot@kernel.org>
+Date:   Tue, 15 Dec 2020 03:07:56 +0000
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 02:37:20PM -0800, Yang Shi wrote:
-> Now nr_deferred is available on per memcg level for memcg aware shrinkers, so don't need
-> allocate shrinker->nr_deferred for such shrinkers anymore.
-> 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> ---
->  mm/vmscan.c | 28 ++++++++++++++--------------
->  1 file changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index bce8cf44eca2..8d5bfd818acd 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -420,7 +420,15 @@ unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone
->   */
->  int prealloc_shrinker(struct shrinker *shrinker)
->  {
-> -	unsigned int size = sizeof(*shrinker->nr_deferred);
-> +	unsigned int size;
-> +
-> +	if (is_deferred_memcg_aware(shrinker)) {
-> +		if (prealloc_memcg_shrinker(shrinker))
-> +			return -ENOMEM;
-> +		return 0;
-> +	}
-> +
-> +	size = sizeof(*shrinker->nr_deferred);
->  
->  	if (shrinker->flags & SHRINKER_NUMA_AWARE)
->  		size *= nr_node_ids;
-> @@ -429,26 +437,18 @@ int prealloc_shrinker(struct shrinker *shrinker)
->  	if (!shrinker->nr_deferred)
->  		return -ENOMEM;
->  
-> -	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
-> -		if (prealloc_memcg_shrinker(shrinker))
-> -			goto free_deferred;
-> -	}
-> -
->  	return 0;
-> -
-> -free_deferred:
-> -	kfree(shrinker->nr_deferred);
-> -	shrinker->nr_deferred = NULL;
-> -	return -ENOMEM;
->  }
+The pull request you sent on Mon, 14 Dec 2020 20:22:20 -0000:
 
-I'm trying to put my finger on it, but this seems wrong to me. If
-memcgs are disabled, then prealloc_memcg_shrinker() needs to fail.
-The preallocation code should not care about internal memcg details
-like this.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-apic-2020-12-14
 
-	/*
-	 * If the shrinker is memcg aware and memcgs are not
-	 * enabled, clear the MEMCG flag and fall back to non-memcg
-	 * behaviour for the shrinker.
-	 */
-	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
-		error = prealloc_memcg_shrinker(shrinker);
-		if (!error)
-			return 0;
-		if (error != -ENOSYS)
-			return error;
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/148842c98a24e508aecb929718818fbf4c2a6ff3
 
-		/* memcgs not enabled! */
-		shrinker->flags &= ~SHRINKER_MEMCG_AWARE;
-	}
+Thank you!
 
-	size = sizeof(*shrinker->nr_deferred);
-	....
-	return 0;
-}
-
-This guarantees that only the shrinker instances taht have a
-correctly set up memcg attached to them will have the
-SHRINKER_MEMCG_AWARE flag set. Hence in all the rest of the shrinker
-code, we only ever need to check for SHRINKER_MEMCG_AWARE to
-determine what we should do....
-
->  void free_prealloced_shrinker(struct shrinker *shrinker)
->  {
-> -	if (!shrinker->nr_deferred)
-> +	if (is_deferred_memcg_aware(shrinker)) {
-> +		unregister_memcg_shrinker(shrinker);
->  		return;
-> +	}
->  
-> -	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
-> -		unregister_memcg_shrinker(shrinker);
-> +	if (!shrinker->nr_deferred)
-> +		return;
->  
->  	kfree(shrinker->nr_deferred);
->  	shrinker->nr_deferred = NULL;
-
-e.g. then this function can simply do:
-
-{
-	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
-		return unregister_memcg_shrinker(shrinker);
-	kfree(shrinker->nr_deferred);
-	shrinker->nr_deferred = NULL;
-}
-
-Cheers,
-
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
