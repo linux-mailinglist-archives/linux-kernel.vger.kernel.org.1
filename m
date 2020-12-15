@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923632DB3E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1223A2DB471
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731510AbgLOSlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:41:39 -0500
-Received: from mga17.intel.com ([192.55.52.151]:52574 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730517AbgLOSlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:41:39 -0500
-IronPort-SDR: eCf5TbFDh4pOE8ld4EVKW8hfWStMXbniN/noN/Qe8L/ACoxBEChmKicZf8kYDVI0vaMKNeITbn
- 71bes5xRqNqQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="154739041"
-X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; 
-   d="scan'208";a="154739041"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 10:39:52 -0800
-IronPort-SDR: WZcHuhWOoUxXCDbN+e8Bj2ffHJhRAf1F6LGhGhN1dUdzaKFB0VpJ41e9Q2eiuyhO7mZoGQIXzi
- pevHk8hEmZOQ==
-X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; 
-   d="scan'208";a="352032975"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 10:39:52 -0800
-Date:   Tue, 15 Dec 2020 10:39:51 -0800
-From:   Andi Kleen <ak@linux.intel.com>
-To:     "Paul A. Clarke" <pc@us.ibm.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [RFC PATCH 0/7] Share events between metrics
-Message-ID: <20201215183951.GB1538637@tassilo.jf.intel.com>
-References: <20200507081436.49071-1-irogers@google.com>
- <20200507174835.GB3538@tassilo.jf.intel.com>
- <CAP-5=fUdoGJs+yViq3BOcJa7YyF53AD9RGQm8aRW72nMH0sKDA@mail.gmail.com>
- <20200507214652.GC3538@tassilo.jf.intel.com>
- <CAP-5=fV2eNAt0LLHYXeLMR6GZi_oGZyzz8psErNkbahLQs-VLQ@mail.gmail.com>
- <20201215150812.GA38786@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+        id S1732010AbgLOTY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 14:24:28 -0500
+Received: from 49-237-179-185.static.tentacle.fi ([185.179.237.49]:54506 "EHLO
+        bitmer.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731962AbgLOTYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 14:24:20 -0500
+X-Greylist: delayed 2514 seconds by postgrey-1.27 at vger.kernel.org; Tue, 15 Dec 2020 14:24:14 EST
+Received: from 88-114-184-87.elisa-laajakaista.fi ([88.114.184.87] helo=[192.168.1.48])
+        by bitmer.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <jarkko.nikula@bitmer.com>)
+        id 1kpFGK-00044Z-4g; Tue, 15 Dec 2020 20:41:28 +0200
+Subject: Re: [PATCH 1/2] MAINTAINERS: Update email address for TI ASoC and
+ twl4030 codec drivers
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>, broonie@kernel.org,
+        lgirdwood@gmail.com, robh+dt@kernel.org
+Cc:     alsa-devel@alsa-project.org, perex@perex.cz, tiwai@suse.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        jsarha@ti.com
+References: <20201215130512.8753-1-peter.ujfalusi@ti.com>
+ <20201215130512.8753-2-peter.ujfalusi@ti.com>
+From:   Jarkko Nikula <jarkko.nikula@bitmer.com>
+Message-ID: <563f5961-40e3-3333-b734-75893806cd04@bitmer.com>
+Date:   Tue, 15 Dec 2020 20:41:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201215150812.GA38786@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+In-Reply-To: <20201215130512.8753-2-peter.ujfalusi@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Or, is the concern more about trying to time-slice the results in a 
-> fairly granular way and expecting accurate results then?
+On 15.12.2020 15.05, Peter Ujfalusi wrote:
+> My employment with TI is coming to an end, it is my intention to look after
+> the drivers I have worked with over the years.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+> ---
+>  MAINTAINERS | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f6e7162241eb..a091f183b27f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -12862,7 +12862,7 @@ F:	include/misc/ocxl*
+>  F:	include/uapi/misc/ocxl.h
+>  
+>  OMAP AUDIO SUPPORT
+> -M:	Peter Ujfalusi <peter.ujfalusi@ti.com>
+> +M:	Peter Ujfalusi <peter.ujfalusi@gmail.com>
+>  M:	Jarkko Nikula <jarkko.nikula@bitmer.com>
+>  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+>  L:	linux-omap@vger.kernel.org
+> @@ -17537,7 +17537,7 @@ F:	arch/xtensa/
+>  F:	drivers/irqchip/irq-xtensa-*
+>  
 
-Usually the later. It's especially important for divisions. You want
-both divisor and dividend to be in the same time slice, otherwise
-the result usually doesn't make a lot of sense.
-
--Andi
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
