@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1782DA97D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E773E2DA981
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 09:54:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727618AbgLOIvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 03:51:39 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:33941 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727531AbgLOIvN (ORCPT
+        id S1727448AbgLOIxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 03:53:19 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:55109 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726982AbgLOIxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 03:51:13 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2EA145C01CC;
-        Tue, 15 Dec 2020 03:50:23 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Tue, 15 Dec 2020 03:50:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=IXKNr+xuSGlIaAvPVvexwRMd7oj
-        vcI9cuuFmG+xxnUg=; b=oWfGyvxJmAQv6ks5EDqLui6fhnmt1Sam9aeGLK9I/vg
-        yy8K+rHhiO/R/THqphqPbE8MIkDBO6O+6q8/yy4KvyNw+urI7jMDiXF6sH5ZoTN5
-        +4zjY2JKGRMippb5AUKUAJSAEr12mIHsFeeLdbYHhqoJZcz36KhzRC3EdemnIhEy
-        VBGGmVBiWt6CpqkPPqzVzKrYDEXRA9deMvkq1FYNrZx3uGvGcLea+8HgkCvU3LIL
-        msULsOmmTCWRy9oIUf7z3wC4HKX8Ydm5ae4wo36TtBDQXfniUfOTeGB0Gh/CBWSt
-        AGr2WRiUM4Gm+fG2ia+fDzpsVD9c4Q6SFxysyEs2zAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=IXKNr+
-        xuSGlIaAvPVvexwRMd7ojvcI9cuuFmG+xxnUg=; b=R7DImCA32dvcTNcP9M676F
-        PLK187xfBfdD+0z/mqNft2lSmy+ZHInoYqX7lSIzMubuEhv7nDtsqo3E9hK1FpRh
-        I6TGN98tcXHx2ICRHh9nHmPivGXrPbP0iw5991eFDkFRm6s+houDRXnsNCaHijWw
-        CyFXlHlWzcLWjiq8j1h4jtqbDFk59dwjYP6SOoUMZThmVEQH98qh28JR9sje0Xco
-        7tblmWub+n8BCm8+LMchbomrAtXXI/Xg8QlFDkEf92NIZMPjf01xyygIzwS8fgF1
-        oRNQbpjOsNDVzvZwdkmOinf0lWqIOJcUnVdJoW3ai7VOp9R7IJay5rLzAl0R6Rcg
-        ==
-X-ME-Sender: <xms:zXjYXzdqWDa-wjFo2KsoLpKB6RmxqbOqbaHz-wRcqUmUOlQR4CFJOA>
-    <xme:zXjYX5O_vHfl1WKS-FzPEGgoarelMNCwD5h0DHb44QpY_elJD13mrBkKacMZWptTq
-    hRmiBz9sgF99YUWau8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekledguddviecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeevveefffduveeitdegtefhhfetueffteefffdvheevvdehteethedvleff
-    gfejvdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeeltddrkeelrdeike
-    drjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
-    mhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:zXjYX8j7X5zJjvrA6IwJ5RiD_bTtNux1D7gLphSin7DZe5OLzO8j4w>
-    <xmx:zXjYX09QV6Ja0Vg6zZgLTGrrIcxvzspvNaHEL08QyOzv8ZeGLkCyeg>
-    <xmx:zXjYX_vva1gwLeSnhqZQ7MWWxLg8_0gTUdMMf-_502vqXi85VQkUaQ>
-    <xmx:z3jYX1UA1tbzHi8sfTCooHQm2XJe3nWdsamJMu9sOYBmxFHlhkP-Jg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B00BA108005C;
-        Tue, 15 Dec 2020 03:50:21 -0500 (EST)
-Date:   Tue, 15 Dec 2020 09:50:20 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     wens@csie.org, airlied@linux.ie, daniel@ffwll.ch,
-        jernej.skrabec@siol.net, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/sun4i: hdmi: Use PTR_ERR_OR_ZERO() to simplify code
-Message-ID: <20201215085020.ty5ztxaf6v3o5b6o@gilmour>
-References: <1607998571-59729-1-git-send-email-tiantao6@hisilicon.com>
+        Tue, 15 Dec 2020 03:53:18 -0500
+X-IronPort-AV: E=Sophos;i="5.78,420,1599516000"; 
+   d="scan'208";a="483005226"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 09:52:36 +0100
+Date:   Tue, 15 Dec 2020 09:52:36 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Maxime Ripard <maxime@cerno.tech>
+cc:     Wolfram Sang <wsa@the-dreams.de>, michal.lkml@markovi.net,
+        Gilles.Muller@lip6.fr, Mark Brown <broonie@kernel.org>,
+        nicolas.palix@imag.fr, linux-kernel@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Julia Lawall <Julia.Lawall@lip6.fr>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        cocci@systeme.lip6.fr
+Subject: Re: [Cocci] [PATCH] coccinnelle: Remove ptr_ret script
+In-Reply-To: <20201215084823.towbaqay5tgdh7dw@gilmour>
+Message-ID: <alpine.DEB.2.22.394.2012150950440.2879@hadrien>
+References: <20200107073629.325249-1-maxime@cerno.tech> <alpine.DEB.2.21.2001071106420.3004@hadrien> <20200107102954.GB1135@ninjato> <20201215084823.towbaqay5tgdh7dw@gilmour>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cg5aywfc4cw4qsir"
-Content-Disposition: inline
-In-Reply-To: <1607998571-59729-1-git-send-email-tiantao6@hisilicon.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---cg5aywfc4cw4qsir
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Tue, 15 Dec 2020, Maxime Ripard wrote:
 
-On Tue, Dec 15, 2020 at 10:16:11AM +0800, Tian Tao wrote:
-> Fixes coccicheck warning:
-> drivers/gpu/drm/sun4i/sun4i_hdmi_i2c.c:281:1-3: WARNING: PTR_ERR_OR_ZERO
-> can be used
->=20
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> Hi,
+>
+> On Tue, Jan 07, 2020 at 11:29:54AM +0100, Wolfram Sang wrote:
+> > On Tue, Jan 07, 2020 at 11:06:56AM +0100, Julia Lawall wrote:
+> > >
+> > >
+> > > On Tue, 7 Jan 2020, Maxime Ripard wrote:
+> > >
+> > > > The ptr_ret script script addresses a number of situations where we end up
+> > > > testing an error pointer, and if it's an error returning it, or return 0
+> > > > otherwise to transform it into a PTR_ERR_OR_ZERO call.
+> > > >
+> > > > So it will convert a block like this:
+> > > >
+> > > > if (IS_ERR(err))
+> > > >     return PTR_ERR(err);
+> > > >
+> > > > return 0;
+> > > >
+> > > > into
+> > > >
+> > > > return PTR_ERR_OR_ZERO(err);
+> > > >
+> > > > While this is technically correct, it has a number of drawbacks. First, it
+> > > > merges the error and success path, which will make it harder for a reviewer
+> > > > or reader to grasp.
+> > > >
+> > > > It's also more difficult to extend if we were to add some code between the
+> > > > error check and the function return, making the author essentially revert
+> > > > that patch before adding new lines, while it would have been a trivial
+> > > > addition otherwise for the rewiever.
+> > > >
+> > > > Therefore, since that script is only about cosmetic in the first place,
+> > > > let's remove it since it's not worth it.
+> > > >
+> > > > Cc: Jani Nikula <jani.nikula@linux.intel.com>
+> > > > Cc: Thierry Reding <thierry.reding@gmail.com>
+> > > > Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> > > > Cc: Mark Brown <broonie@kernel.org>
+> > > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > >
+> > > Acked-by: Julia Lawall <julia.lawall@inria.fr>
+> >
+> > Convincing patch description, good catch!
+> >
+> > Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+>
+> It looks like this patch was never applied, whose tree should it go
+> through?
 
-That script shouldn't be there anymore, see:
-https://lore.kernel.org/cocci/alpine.DEB.2.21.2001071106420.3004@hadrien/#t
+Sorry.  I can take it.  I'm not sure that I still have the original
+message, though.  If you have it handy, that would be helpful.
 
-Maxime
-
---cg5aywfc4cw4qsir
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX9h4zAAKCRDj7w1vZxhR
-xWGDAP9kXXZO1A/r0uzBeLeKaoVWi4D0OBQ2xe8hdEdNYpOPCwEAjSGzbCP30JLm
-DTeWfJ3oDTQaCkHwNTTTdXHDJr1t4w4=
-=drVT
------END PGP SIGNATURE-----
-
---cg5aywfc4cw4qsir--
+julia
