@@ -2,164 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FAD2DB485
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7052DB496
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 20:40:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727172AbgLOTg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 14:36:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbgLOTg0 (ORCPT
+        id S1728470AbgLOTjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 14:39:24 -0500
+Received: from asavdk4.altibox.net ([109.247.116.15]:41086 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728369AbgLOTjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 14:36:26 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEB6C0617A6;
-        Tue, 15 Dec 2020 11:35:45 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id c79so15109654pfc.2;
-        Tue, 15 Dec 2020 11:35:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rIUIK9INOglYEzmX/Zz+55Q7G2LAk+CSP61LkLziHqA=;
-        b=VQY9TAJ7DAX0eQxmJacQ6m9PqU1dnF85l77LpcIGDBdqYVZOhFPLRa4CyFlTEo++aI
-         wQ1X00XUWSaQRn6apwW9MnX1XCaT01LkBQa1n0gEfaIRCFMZBTjVY5FryyNLakbBO49/
-         J1JJgN87a9rmjlBM48reuRwsLNqj0gLT9Te7sfqEwaCjkccklD1CWp5NytMcnV1gzJk8
-         dYdCkRSXbDi4tBjVOwiJfNDBmnOrLzz08dEwx/W1zNs6kFyObkoTh7IcybfXT/tpwFfY
-         Wmu2S84Z3UFjZp/tE/zIzQ1K4ZVx+fV6S/LZRA2UNGAtJmhNP7+PN/T3aEvAgP/bdVVI
-         vacQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rIUIK9INOglYEzmX/Zz+55Q7G2LAk+CSP61LkLziHqA=;
-        b=JV1X7pk2leo3uS6wbYhXllum7Ou+YJaqpuUPamZZgWg73F8y/12Ci0ieYkCrYR++Xu
-         zmc5qwFLMIDETa6Shz6qp29eeWQhNo63GmTgcwKgoQH7U4O1Ugs7fa3ZEI0hzqseKxTl
-         HikJL2RwVPdFkaqRpKzNTleRxocHj7PwFooTUHtOPNhrpMwhQuz4IWXXcPY54cSZQjNm
-         vUQ+EKd2zcAZJQlZKD1Fy2T3cHW3N6khDVf1c2Z39mzdpa71QI1YefuwNzyeaCV9UHnd
-         VpWFjRzEY3NNvGihdhLY3SPrfj9ffgpho4dnIyM64/+C5G8fIyK/qTLtdutM6f29fHaN
-         P17A==
-X-Gm-Message-State: AOAM532dLmEIXrimohrvlthWw6kACTVwM+0r/NMiylhoFoZEiwG7qv9Y
-        ZaL5kIkZACn5PMGdHu1Chnemp5GkitkAkr8hk8U=
-X-Google-Smtp-Source: ABdhPJy3DfdAQETUz7knHlF2dUZ3lq9KcFbWDfLpycxarRn0iyyFGP+IPIFOPaoix8NbP5ynq/i5TI76NzWyzOzaj1Q=
-X-Received: by 2002:a62:19cc:0:b029:19e:321b:a22e with SMTP id
- 195-20020a6219cc0000b029019e321ba22emr22730420pfz.73.1608060945226; Tue, 15
- Dec 2020 11:35:45 -0800 (PST)
+        Tue, 15 Dec 2020 14:39:02 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 5F4B18065E;
+        Tue, 15 Dec 2020 20:38:02 +0100 (CET)
+Date:   Tue, 15 Dec 2020 20:38:00 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Guo Ren <guoren@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 1/2] futex: mark futex_detect_cmpxchg() as 'noinline'
+Message-ID: <20201215193800.GA1098247@ravnborg.org>
+References: <20190307091514.2489338-1-arnd@arndb.de>
+ <X9S28TcEXd2zghzp@elver.google.com>
+ <87czzeg5ep.fsf@nanos.tec.linutronix.de>
+ <CAK8P3a0LWjNgwm605TM4dKCsn078X7NC3sEfdBSgcMNEocQ5iA@mail.gmail.com>
+ <CAJF2gTRLEbBfZJ7Y6UNOMq-cwG5OYRW=+8Pfauz6v6R8ntBjYA@mail.gmail.com>
+ <CAK8P3a3+WaQNyJ6Za2qfu6=0mBgU1hApnRXrdp1b1=P7wwyRUg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201211042625.129255-1-drew@beagleboard.org> <CAHp75VcAbdrSnb_ag9Rc0tny3Vtqjs1if+ahk7U36V2eaKMpSw@mail.gmail.com>
- <20201211234304.GA189853@x1> <CAHp75Vf-=nM-M2K-v_8iyME4t6ZF-gvSZ5ePsxQFhObJ_0YHsw@mail.gmail.com>
- <20201214214419.GA1196223@x1>
-In-Reply-To: <20201214214419.GA1196223@x1>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 15 Dec 2020 21:36:33 +0200
-Message-ID: <CAHp75VeN9xLUKFBXZfo=XzNkdv=BSRJW59=cUjyY0TekF1JONA@mail.gmail.com>
-Subject: Re: [RFC PATCH] pinctrl: add helper to expose pinctrl state in debugfs
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3+WaQNyJ6Za2qfu6=0mBgU1hApnRXrdp1b1=P7wwyRUg@mail.gmail.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=Itgwjo3g c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=VwQbUJbxAAAA:8 a=KZstDQ4antaxc6hZ8AEA:9
+        a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 11:44 PM Drew Fustini <drew@beagleboard.org> wrote:
-> On Mon, Dec 14, 2020 at 07:55:12PM +0200, Andy Shevchenko wrote:
-> > On Sat, Dec 12, 2020 at 1:43 AM Drew Fustini <drew@beagleboard.org> wrote:
-> > > On Fri, Dec 11, 2020 at 11:15:21PM +0200, Andy Shevchenko wrote:
-> > > > On Fri, Dec 11, 2020 at 1:54 PM Drew Fustini <drew@beagleboard.org> wrote:
+Hi Arnd,
 
-...
-
-> > > > But I'm wondering, why it requires this kind of thing and can't be
-> > > > simply always part of the kernel based on configuration option?
+On Tue, Dec 15, 2020 at 12:26:10PM +0100, Arnd Bergmann wrote:
+> On Tue, Dec 15, 2020 at 7:09 AM Guo Ren <guoren@kernel.org> wrote:
+> > On Mon, Dec 14, 2020 at 9:15 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> > > I had a look at what other architectures always implement
+> > > futex_atomic_cmpxchg_inatomic() or can use the asm-generic non-SMP version,
+> > > and I found that it's pretty much all of them, the odd ones being just sparc32
+> > > and csky, which use asm-generic/futex.h but do have an SMP option,
+> > > as well as xtensa
 > > >
-> > > Do you mean not having a new CONFIG option for this driver and just have
-> > > it be enabled by CONFIG_PINCTRL?
+> > > I would guess that for csky, this is a mistake, as the architecture is fairly
+> > > new and should be able to implement it. Not sure about sparc32.
 > >
-> > No, configuration option stays, but no compatible strings no nothing
-> > like that. Just probed always when loaded.
->
-> I first started down the route of implementing this inside of
-> pinctrl-single.  I found it didn't work because devm_pinctrl_get() would
-> fail.  I think was because it was happening too early for pinctrl to be
-> ready.
->
-> I do think it seems awkward to have to add this to dts and have the
-> driver get probed for each entry:
->
->         P1_04_pinmux {
->                 compatible = "pinctrl,state-helper";
->                 status = "okay";
->                 pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "gpio_input", "pruout", "pruin";
->                 pinctrl-0 = <&P1_04_default_pin>;
->                 pinctrl-1 = <&P1_04_gpio_pin>;
->                 pinctrl-2 = <&P1_04_gpio_pu_pin>;
->                 pinctrl-3 = <&P1_04_gpio_pd_pin>;
->                 pinctrl-4 = <&P1_04_gpio_input_pin>;
->                 pinctrl-5 = <&P1_04_pruout_pin>;
->                 pinctrl-6 = <&P1_04_pruin_pin>;
->         };
->
-> But I am having a hard time figuring out another way of doing it.
-
-I'm not a DT expert and I have no clue why you need all this. To me it
-looks over engineered to engage DT for debugging things. OTOH, you may
-add a property to allow debug mux (but it prevent ACPI enabled
-platforms to utilize this).
-
-...
-
-> Any ideas as to what would trigger the probe() if there was not a match
-> on a compatible like "pinctrl,state-helper"?
->
-> > Actually not even sure we want to have it as a module.
->
-> And have just be a part of one of the existing pinctrl files like core.c?
-
-Separate file, but in conjunction with core.c and pinmux and so on.
-
-...
-
-> > > > Shouldn't it be rather a part of a certain pin control folder:
-> > > > debug/pinctrl/.../mux/...
-> > > > ?
-> > >
-> > > Yes, I think that would make sense, but I was struggling to figure out
-> > > how to do that. pinctrl_init_debugfs() in pinctrl/core.c does create the
-> > > "pinctrl" directory, but I could not figure out how to use this as the
-> > > parent dir when calling debugfs_create_dir() in this driver's probe().
-> > >
-> > > I thought there might be a way in debugfs API to use existing directory
-> > > path as a parent but I couldn't figure anything like that. I would
-> > > appreciate any advice.
+> > The c610, c807, c810 don't support SMP, so futex_cmpxchg_enabled = 1
+> > with asm-generic's implementation.
+> > For c860, there is no HAVE_FUTEX_CMPXCHG and cmpxchg_inatomic/inuser
+> > implementation, so futex_cmpxchg_enabled = 0.
 > >
-> > If the option is boolean from the beginning then you just call it from
-> > the corresponding pin control instantiation chain.
->
-> Sorry, I am not sure I understand what you mean here.  What does
-> "option" mean in this context?  I don't think there is any value that is
-> boolean invovled.  The pinctrl states are strings.
+> > Thx for point it out, we'll implement cmpxchg_inatomic/inuser for C860
+> > and still use asm-generic for non-smp CPUs.
+> 
+> Sounds good to me.
+> 
+> With that, I would suggest we actually remove the -ENOSYS fallback
+> for arch_futex_atomic_op_inuser() and futex_atomic_cmpxchg_inatomic()
+> in asm-generic/futex.h as well as the HAVE_FUTEX_CMPXCHG Kconfig
+> symbol, plus these additional fixups:
+> 
+> - for xtensa and mips configurations without ll/sc, fall back to the
+>   asm-generic version. These are all uniprocessor, while the
+>   corresponding SMP machines have a working
+>   arch_futex_atomic_op_inuser().
+> 
+> - Disable SMP support for sun4m/sun4d. From the historic git
+>   tree, it's unclear how well this ever worked, and very few machines
+>   of this class ever existed
+Yeah, I have collection of sparc32 machines that I played around with
+once. Including one sun4d that I brought from a friendly Linux fellow in
+the UK. But somehow I lost interest as this is all very nice machines
+but not useful for anything real work.
 
-config PINMUX_DEBUG
- bool "..."
- depends on PINMUX
+I think we would be better served dropping support for sun4m and sun4d
+from the kernel.
 
+Last I suggested deleting sun4m/sun4d the argument to keep sun4m was that
+QEMU supports sun4m - which is a good argument for sun4m. I dunno what
+would be needed to migrate QEMU to LEON, see below.
 
+> 
+> - Mark SMP for LEON as temporarily broken. As I see in the LEON
+>   patch set, they have changes to enable compare-and-swap-atomic
+>   instructions unconditionally, as all SMP Leons have those and
+>   seem to require this support already for other things.
+LEON on the other hand could have some nice future. They are right now
+stuck on an older kernel and someone that was motivated should be able
+to get LEON4 running on latest upstream.
+We had it working in the past - but is was around the time I lost my
+sparc interest and no-one jumped in to move it much more forward.
 
->
-> With regards to parent directory, I did discover there is
-> debugfs_lookup(), so I can get the dentry for "pinctrl" and create new
-> subdirectory inside of it.  This is the structure now:
->
-> /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_35_pinmux/state
-> /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_34_pinmux/state
-> /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_33_pinmux/state
-> /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P2_32_pinmux/state
-> etc..
+So in other words - no complains for the plan you outline.
 
-
---
-With Best Regards,
-Andy Shevchenko
+	Sam
