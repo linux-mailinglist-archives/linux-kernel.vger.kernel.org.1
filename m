@@ -2,190 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4F32DA6C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:28:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4902DA6C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 04:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727287AbgLOD1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Dec 2020 22:27:01 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:40889 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726763AbgLOD0e (ORCPT
+        id S1726458AbgLOD2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Dec 2020 22:28:21 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9177 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726780AbgLOD1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Dec 2020 22:26:34 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id A2A2B5802DF;
-        Mon, 14 Dec 2020 22:25:44 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 14 Dec 2020 22:25:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        to:cc:references:from:subject:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=O
-        poyrMA4zzWiGVw4tBShJdXeoCCLGa06Rcef+QPxYI0=; b=VguYu0HA6agSgVHrD
-        kjbr/VlUuHVAtMvscYSs/eUs1vWzmG8p3MyLT5B8QbaPojVPy7HzLkW6xECKiHUw
-        v/V7UcxhvNgVUh+Azn7Ei7VwnBVrNalixDWOxcRQGJadjBMEgH2Lzx1lKNQzWAhO
-        aV04LQZ7rfVkbsZNOmBYJw7+jOGkG/0TSZbD/wzDSNJvjsLluN/hUNf22L5qnVqW
-        o5L/NVLbmmQS+gClya5Fw8w5x77hEM9bYxoYaZAhTKT0Ous9JYWGHHt5o6ocvSYu
-        dls0ptU+TpDqiqLzknwLqaZ4oTuPEwtBYdvdGIebGhWr9mc9okNZSjUpslIhxFL2
-        VFc1g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=OpoyrMA4zzWiGVw4tBShJdXeoCCLGa06Rcef+QPxY
-        I0=; b=Qr8PzC8J4l2KkMYmwJSjP0L/4KSSl2QY/ClAYD1LBAoMcaYJcZx0ZGml9
-        hBnapeNDpXrwCqDhv3GZvA7Y7u7O5QV6jpoqekWA8/Qoa15vLPG1vcYmJAdB0KYC
-        IOWoH672Ch05pFWUJHBBPPseGBnb+HiqotXlVNJW1P95W66YvT5B90Y4vo2FC2EU
-        9RkWZ+ZrBywGK1G2G3KzgWam2mBytGUir4uVIaRVCpS3xIfqJ7Xb+hP53kDGMRTJ
-        +1Eh0l/r2yh1grEUc/7g9HRWdU++GLPBG+FdE+Wheu/jVRxU4s/AzHNQstHtxYCQ
-        kwoaLCQJ1ri+DvvBVNmbwZU3LHeqA==
-X-ME-Sender: <xms:tizYX6wBs1N4Odm9rjkPQOHvxXAtUEFA-nqTZC1tkvrtXm647qFkOg>
-    <xme:tizYX2RaPnHRsxL-gvJkf0kKOk6V1rD66qK02pnGflPVETyKNnh0lbYX_g3tekaVe
-    dWdZXoKOhNE_8n2fg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudekledgiedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefheenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepheejgefhudeffeetleeigefgheetveeiteeuffehhfffkeeuvdff
-    veffveetudefnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
-    nhgurdhorhhg
-X-ME-Proxy: <xmx:tizYX8WsUkAX7TdatK5IZqvJMytwpttdrQkEE_HpXMWgXgCpKD4wBQ>
-    <xmx:tizYXwj66wp8-NQAv9E6vxnRxP-ibn5pata7rIqBYtMHjrvFH8Odww>
-    <xmx:tizYX8BpwFSIf7UZNiIClho1beloNiofPNvv8alk4oFGd-Rvql35eQ>
-    <xmx:uCzYX44Y1BqTOe3gh43joKQomdlGQ6sFr07GY_S3xc1ONQST69VXBA>
-Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E205324005A;
-        Mon, 14 Dec 2020 22:25:41 -0500 (EST)
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andre Przywara <andre.przywara@arm.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-References: <20201213235506.25201-1-samuel@sholland.org>
- <20201213235506.25201-2-samuel@sholland.org>
- <20201214145730.iz3tc4nasqwq6tym@gilmour>
-From:   Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH 1/4] clk: sunxi-ng: h6-r: Add R_APB2_RSB clock and reset
-Message-ID: <8de2e0dc-465f-b4a8-bec9-763f1dee06f1@sholland.org>
-Date:   Mon, 14 Dec 2020 21:25:40 -0600
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 14 Dec 2020 22:27:51 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Cw3ZW6Y26z15dbZ;
+        Tue, 15 Dec 2020 11:26:27 +0800 (CST)
+Received: from [10.174.178.63] (10.174.178.63) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 15 Dec 2020 11:27:01 +0800
+Subject: Re: [PATCH] MIPS: No need to check CPU 0 in
+ {loongson3,bmips,octeon}_cpu_disable()
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+CC:     <linux-mips@vger.kernel.org>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-kernel@vger.kernel.org>, Xuefeng Li <lixuefeng@loongson.cn>
+References: <1606299090-14013-1-git-send-email-yangtiezhu@loongson.cn>
+From:   "liwei (GF)" <liwei391@huawei.com>
+Message-ID: <0aafd8a7-a9ec-524e-7279-d40dbf246375@huawei.com>
+Date:   Tue, 15 Dec 2020 11:26:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0
 MIME-Version: 1.0
-In-Reply-To: <20201214145730.iz3tc4nasqwq6tym@gilmour>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1606299090-14013-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.63]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/14/20 8:57 AM, Maxime Ripard wrote:
-> Hi Samuel,
-> 
-> On Sun, Dec 13, 2020 at 05:55:03PM -0600, Samuel Holland wrote:
->> While no information about the H6 RSB controller is included in the
->> datasheet or manual, the vendor BSP and power management blob both
->> reference the RSB clock parent and register address. These values were
->> verified by experimentation.
->>
->> Since this clock/reset are added late, the specifier is added at the end
->> to maintain the existing DT binding. The code is kept in register order.
->>
->> Signed-off-by: Samuel Holland <samuel@sholland.org>
->> ---
->>  drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c      | 5 +++++
->>  drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h      | 2 +-
->>  include/dt-bindings/clock/sun50i-h6-r-ccu.h | 1 +
->>  include/dt-bindings/reset/sun50i-h6-r-ccu.h | 1 +
->>  4 files changed, 8 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c b/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c
->> index 50f8d1bc7046..56e351b513f3 100644
->> --- a/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c
->> +++ b/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c
->> @@ -91,6 +91,8 @@ static SUNXI_CCU_GATE(r_apb2_uart_clk,	"r-apb2-uart",	"r-apb2",
->>  		      0x18c, BIT(0), 0);
->>  static SUNXI_CCU_GATE(r_apb2_i2c_clk,	"r-apb2-i2c",	"r-apb2",
->>  		      0x19c, BIT(0), 0);
->> +static SUNXI_CCU_GATE(r_apb2_rsb_clk,	"r-apb2-rsb",	"r-apb2",
->> +		      0x1bc, BIT(0), 0);
->>  static SUNXI_CCU_GATE(r_apb1_ir_clk,	"r-apb1-ir",	"r-apb1",
->>  		      0x1cc, BIT(0), 0);
->>  static SUNXI_CCU_GATE(r_apb1_w1_clk,	"r-apb1-w1",	"r-apb1",
->> @@ -130,6 +132,7 @@ static struct ccu_common *sun50i_h6_r_ccu_clks[] = {
->>  	&r_apb1_pwm_clk.common,
->>  	&r_apb2_uart_clk.common,
->>  	&r_apb2_i2c_clk.common,
->> +	&r_apb2_rsb_clk.common,
->>  	&r_apb1_ir_clk.common,
->>  	&r_apb1_w1_clk.common,
->>  	&ir_clk.common,
->> @@ -147,6 +150,7 @@ static struct clk_hw_onecell_data sun50i_h6_r_hw_clks = {
->>  		[CLK_R_APB1_PWM]	= &r_apb1_pwm_clk.common.hw,
->>  		[CLK_R_APB2_UART]	= &r_apb2_uart_clk.common.hw,
->>  		[CLK_R_APB2_I2C]	= &r_apb2_i2c_clk.common.hw,
->> +		[CLK_R_APB2_RSB]	= &r_apb2_rsb_clk.common.hw,
->>  		[CLK_R_APB1_IR]		= &r_apb1_ir_clk.common.hw,
->>  		[CLK_R_APB1_W1]		= &r_apb1_w1_clk.common.hw,
->>  		[CLK_IR]		= &ir_clk.common.hw,
->> @@ -161,6 +165,7 @@ static struct ccu_reset_map sun50i_h6_r_ccu_resets[] = {
->>  	[RST_R_APB1_PWM]	=  { 0x13c, BIT(16) },
->>  	[RST_R_APB2_UART]	=  { 0x18c, BIT(16) },
->>  	[RST_R_APB2_I2C]	=  { 0x19c, BIT(16) },
->> +	[RST_R_APB2_RSB]	=  { 0x1bc, BIT(16) },
->>  	[RST_R_APB1_IR]		=  { 0x1cc, BIT(16) },
->>  	[RST_R_APB1_W1]		=  { 0x1ec, BIT(16) },
->>  };
->> diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h b/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h
->> index 782117dc0b28..7e290b840803 100644
->> --- a/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h
->> +++ b/drivers/clk/sunxi-ng/ccu-sun50i-h6-r.h
->> @@ -14,6 +14,6 @@
->>  
->>  #define CLK_R_APB2	3
->>  
->> -#define CLK_NUMBER	(CLK_W1 + 1)
->> +#define CLK_NUMBER	(CLK_R_APB2_RSB + 1)
->>  
->>  #endif /* _CCU_SUN50I_H6_R_H */
->> diff --git a/include/dt-bindings/clock/sun50i-h6-r-ccu.h b/include/dt-bindings/clock/sun50i-h6-r-ccu.h
->> index 76136132a13e..f46ec03848ca 100644
->> --- a/include/dt-bindings/clock/sun50i-h6-r-ccu.h
->> +++ b/include/dt-bindings/clock/sun50i-h6-r-ccu.h
->> @@ -15,6 +15,7 @@
->>  #define CLK_R_APB1_PWM		6
->>  #define CLK_R_APB2_UART		7
->>  #define CLK_R_APB2_I2C		8
->> +#define CLK_R_APB2_RSB		13
->>  #define CLK_R_APB1_IR		9
->>  #define CLK_R_APB1_W1		10
->>  
->> diff --git a/include/dt-bindings/reset/sun50i-h6-r-ccu.h b/include/dt-bindings/reset/sun50i-h6-r-ccu.h
->> index 01c84dba49a4..6fe199a7969d 100644
->> --- a/include/dt-bindings/reset/sun50i-h6-r-ccu.h
->> +++ b/include/dt-bindings/reset/sun50i-h6-r-ccu.h
->> @@ -11,6 +11,7 @@
->>  #define RST_R_APB1_PWM		2
->>  #define RST_R_APB2_UART		3
->>  #define RST_R_APB2_I2C		4
->> +#define RST_R_APB2_RSB		7
->>  #define RST_R_APB1_IR		5
->>  #define RST_R_APB1_W1		6
-> 
-> I think for the clock and reset binding, we'll want to sort by number.
-> It's fairly easy to miss otherwise and if we end up adding another one
-> it wouldn't be far fetched to assume the same indices would be used
+Hi,
 
-I think GCC would complain about the duplicate array initialization in
-the driver, but I can move them for v2.
+On 2020/11/25 18:11, Tiezhu Yang wrote:
+> After commit 9cce844abf07 ("MIPS: CPU#0 is not hotpluggable"),
 
-Cheers,
-Samuel
+Why CPU#0 is not hotpluggable on MIPS? Does that unrealizable?
+
+> c->hotpluggable is 0 for CPU 0 and it will not generate a control
+> file in sysfs for this CPU:
+> 
+> [root@linux loongson]# cat /sys/devices/system/cpu/cpu0/online
+> cat: /sys/devices/system/cpu/cpu0/online: No such file or directory
+> [root@linux loongson]# echo 0 > /sys/devices/system/cpu/cpu0/online
+> bash: /sys/devices/system/cpu/cpu0/online: Permission denied
+> 
+> So no need to check CPU 0 in {loongson3,bmips,octeon}_cpu_disable(),
+
+missing cps_cpu_disable()?
+
+Thanks,
+Wei
+
+> just remove them.
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/mips/cavium-octeon/smp.c | 3 ---
+>  arch/mips/kernel/smp-bmips.c  | 3 ---
+>  arch/mips/loongson64/smp.c    | 3 ---
+>  3 files changed, 9 deletions(-)
+> 
+> diff --git a/arch/mips/cavium-octeon/smp.c b/arch/mips/cavium-octeon/smp.c
+> index 076db9a..66ce552 100644
+> --- a/arch/mips/cavium-octeon/smp.c
+> +++ b/arch/mips/cavium-octeon/smp.c
+> @@ -290,9 +290,6 @@ static int octeon_cpu_disable(void)
+>  {
+>  	unsigned int cpu = smp_processor_id();
+>  
+> -	if (cpu == 0)
+> -		return -EBUSY;
+> -
+>  	if (!octeon_bootloader_entry_addr)
+>  		return -ENOTSUPP;
+>  
+> diff --git a/arch/mips/kernel/smp-bmips.c b/arch/mips/kernel/smp-bmips.c
+> index 1dbfb5a..359b176 100644
+> --- a/arch/mips/kernel/smp-bmips.c
+> +++ b/arch/mips/kernel/smp-bmips.c
+> @@ -362,9 +362,6 @@ static int bmips_cpu_disable(void)
+>  {
+>  	unsigned int cpu = smp_processor_id();
+>  
+> -	if (cpu == 0)
+> -		return -EBUSY;
+> -
+>  	pr_info("SMP: CPU%d is offline\n", cpu);
+>  
+>  	set_cpu_online(cpu, false);
+> diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
+> index aa0cd72..b8c1fc3 100644
+> --- a/arch/mips/loongson64/smp.c
+> +++ b/arch/mips/loongson64/smp.c
+> @@ -544,9 +544,6 @@ static int loongson3_cpu_disable(void)
+>  	unsigned long flags;
+>  	unsigned int cpu = smp_processor_id();
+>  
+> -	if (cpu == 0)
+> -		return -EBUSY;
+> -
+>  	set_cpu_online(cpu, false);
+>  	calculate_cpu_foreign_map();
+>  	local_irq_save(flags);
+> 
