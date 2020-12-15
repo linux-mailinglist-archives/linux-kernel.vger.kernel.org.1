@@ -2,621 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC84D2DABA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 915122DABA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 12:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727807AbgLOLGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 06:06:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
+        id S1728467AbgLOLHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 06:07:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgLOLGF (ORCPT
+        with ESMTP id S1727637AbgLOLHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 06:06:05 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8243FC0617A7;
-        Tue, 15 Dec 2020 03:05:25 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0f9e0004c09a106cc893ab.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:9e00:4c0:9a10:6cc8:93ab])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D783E1EC04EF;
-        Tue, 15 Dec 2020 12:05:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1608030324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ar+S7KklmEqRohSxM8GvqPlOqKI8x3eVADd4paee/cM=;
-        b=EoHFpb/BYOIvqyKvubo+YwNtXP3jO8vm5AhhnBzkor+dEmNR0Keg28OxwMJ98HKhVTK2NB
-        MsnSZbJyEQ/ehpR/X3funLAnMsYGiQeKXa8+8Js3ghXTjLDkT0cMqNsInKE1tMzxuH1xXK
-        dD5AGOKLG4jN3ElvvnURbJ6NHH95G2I=
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <Yazen.Ghannam@amd.com>
-Cc:     linux-edac <linux-edac@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] EDAC/amd64: Merge error injection sysfs facilities
-Date:   Tue, 15 Dec 2020 12:05:17 +0100
-Message-Id: <20201215110517.5215-2-bp@alien8.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201215110517.5215-1-bp@alien8.de>
-References: <20201215110517.5215-1-bp@alien8.de>
+        Tue, 15 Dec 2020 06:07:47 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1033C06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:07:00 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id q16so20521756edv.10
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 03:07:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=E/kGG23CuugXLZck5NSeBoHhv9wXgJjs6PBWPuEf4ek=;
+        b=tjS84lj7A5dCdMOd8b8N0ew0ViF4pB9i7y1hJAIdGKDSDwcEOLN9Rx/EoNyCvU0VjS
+         g1be2Ok5bTpnYvoKoQRGE7lqJHZ82XfjxQWCWGG0b1x8XpmrIEuTWOCclbrwM6SZwl11
+         lFectPeRZ6/WENXtmTzG8eCEVmQv4s9JkIbg35sB1OkUbq2E+Waf4fjElvQL8bmwH8hu
+         qcE/Mx1sVq1eki1/3NHb8ZjczkXl8rjaFfzxFTHcvQuj/uTPBtpzUo6vMi7WlaEf/0eE
+         eEPeEKx4tKO4XbZbE+sA0OXxpzNdrUwNGRhQv2YnEms+5TTPXPxBC/0Hn+Yucujt6cyF
+         7rZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=E/kGG23CuugXLZck5NSeBoHhv9wXgJjs6PBWPuEf4ek=;
+        b=U1g8ZqGTAcKCPIfq3zWZVt84DJQF6jaoHryVK3zt8SFyjyVkdGlmuzFRu0Hke2SZBZ
+         J1BuH0m3Gc1yOgetItO9o3CHCZU6yqGv9q4+m+QaN1toBTAFFGJju/8SzXKmSZaEgxJY
+         TDwP8Yq5M6hVCfj9G24Ka/qFh+8YZK5E8c5ap9QfbOvFDS/BE+jP7sB0rq2f6lZg9guw
+         oXxIj81q/Jb/LTOGKIAOgaHTBjwnu9otGdwpKwHdcfAhOgzEp1A5rIanEBVlb94jDZ0Y
+         /NATDn9Q7PflfDuL6vii0UbCvkfh/AF9M2vgYZUd4aBVCod/EEW7Oq/8XmJaGOjTxCfo
+         XnXA==
+X-Gm-Message-State: AOAM530FE0hneGyok5gYUv6bOeVVbsYEvNtDNpZ5q9ScHnMcRLLPC/Qe
+        jJxWNdBG6vJmroX6ywddul0v1w==
+X-Google-Smtp-Source: ABdhPJxodm7zMu059raAbyVPwN1yyu3J57f2oGupv5Nhnn7WQ0KXyvDt6Oa5wkgRHMZmWbh0hhjMHw==
+X-Received: by 2002:a50:9dc9:: with SMTP id l9mr28854817edk.377.1608030419495;
+        Tue, 15 Dec 2020 03:06:59 -0800 (PST)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id h16sm1096134eji.110.2020.12.15.03.06.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 03:06:58 -0800 (PST)
+References: <20201207095346.26297-1-jbrunet@baylibre.com>
+ <20201207095346.26297-3-jbrunet@baylibre.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Kevin Hilman <khilman@baylibre.com>
+Cc:     linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] arm64: dts: meson: vim3: enable hdmi audio loopback
+In-reply-to: <20201207095346.26297-3-jbrunet@baylibre.com>
+Message-ID: <1jr1nr1g6m.fsf@starbuckisacylon.baylibre.com>
+Date:   Tue, 15 Dec 2020 12:06:57 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
 
-Merge them into the main driver and put them inside an EDAC_DEBUG
-ifdeffery to simplify the driver and have all debugging/injection stuff
-behind a debug build-time switch.
+On Mon 07 Dec 2020 at 10:53, Jerome Brunet <jbrunet@baylibre.com> wrote:
 
-No functional changes.
+> Enable audio capture frontends and a tdm decoder.
+> This makes it possible to loopback the audio played on the hdmi codec,
+> which is the only output interface at the moment.
+>
+> Of course, one TODDR device would be enough to do that but since
+> the 3 FRDDRs are enabled on the playback side, let's do the same on the
+> capture side.
+>
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> ---
+>  .../boot/dts/amlogic/meson-khadas-vim3.dtsi   | 41 +++++++++++++++++--
+>  1 file changed, 37 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> index 12465c4becc7..4cf2c193d168 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> @@ -166,11 +166,16 @@ hdmi_connector_in: endpoint {
+>  	sound {
+>  		compatible = "amlogic,axg-sound-card";
+>  		model = "G12B-KHADAS-VIM3";
+> -		audio-aux-devs = <&tdmout_a>;
+> +		audio-aux-devs = <&tdmin_a>, <&tdmout_a>;
+>  		audio-routing = "TDMOUT_A IN 0", "FRDDR_A OUT 0",
+>  				"TDMOUT_A IN 1", "FRDDR_B OUT 0",
+>  				"TDMOUT_A IN 2", "FRDDR_C OUT 0",
+> -				"TDM_A Playback", "TDMOUT_A OUT";
+> +				"TDM_A Playback", "TDMOUT_A OUT",
+> +				"TDMIN_A IN 1", "TDM_A Capture",
 
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- drivers/edac/Kconfig          |   7 +-
- drivers/edac/Makefile         |   6 +-
- drivers/edac/amd64_edac.c     | 237 +++++++++++++++++++++++++++++++++-
- drivers/edac/amd64_edac.h     |   8 --
- drivers/edac/amd64_edac_inj.c | 235 ---------------------------------
- 5 files changed, 236 insertions(+), 257 deletions(-)
- delete mode 100644 drivers/edac/amd64_edac_inj.c
+Oops this is wrong
 
-diff --git a/drivers/edac/Kconfig b/drivers/edac/Kconfig
-index 7a47680d6f07..9c2e719cb86a 100644
---- a/drivers/edac/Kconfig
-+++ b/drivers/edac/Kconfig
-@@ -81,10 +81,9 @@ config EDAC_AMD64
- 	  Support for error detection and correction of DRAM ECC errors on
- 	  the AMD64 families (>= K8) of memory controllers.
- 
--config EDAC_AMD64_ERROR_INJECTION
--	bool "Sysfs HW Error injection facilities"
--	depends on EDAC_AMD64
--	help
-+	  When EDAC_DEBUG is enabled, hardware error injection facilities
-+	  through sysfs are available:
-+
- 	  Recent Opterons (Family 10h and later) provide for Memory Error
- 	  Injection into the ECC detection circuits. The amd64_edac module
- 	  allows the operator/user to inject Uncorrectable and Correctable
-diff --git a/drivers/edac/Makefile b/drivers/edac/Makefile
-index 195e851652b6..b8133cd32059 100644
---- a/drivers/edac/Makefile
-+++ b/drivers/edac/Makefile
-@@ -43,11 +43,7 @@ obj-$(CONFIG_EDAC_IE31200)		+= ie31200_edac.o
- obj-$(CONFIG_EDAC_X38)			+= x38_edac.o
- obj-$(CONFIG_EDAC_I82860)		+= i82860_edac.o
- obj-$(CONFIG_EDAC_R82600)		+= r82600_edac.o
--
--amd64_edac_mod-y := amd64_edac.o
--amd64_edac_mod-$(CONFIG_EDAC_AMD64_ERROR_INJECTION) += amd64_edac_inj.o
--
--obj-$(CONFIG_EDAC_AMD64)		+= amd64_edac_mod.o
-+obj-$(CONFIG_EDAC_AMD64)		+= amd64_edac.o
- 
- obj-$(CONFIG_EDAC_PASEMI)		+= pasemi_edac.o
- 
-diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
-index b793ccd6c6bd..f5de5857a84e 100644
---- a/drivers/edac/amd64_edac.c
-+++ b/drivers/edac/amd64_edac.c
-@@ -601,11 +601,240 @@ static struct attribute *dbg_attrs[] = {
- 	NULL
- };
- 
--const struct attribute_group dbg_group = {
-+static const struct attribute_group dbg_group = {
- 	.attrs = dbg_attrs,
- };
--#endif /* CONFIG_EDAC_DEBUG */
- 
-+static ssize_t inject_section_show(struct device *dev,
-+				   struct device_attribute *mattr, char *buf)
-+{
-+	struct mem_ctl_info *mci = to_mci(dev);
-+	struct amd64_pvt *pvt = mci->pvt_info;
-+	return sprintf(buf, "0x%x\n", pvt->injection.section);
-+}
-+
-+/*
-+ * store error injection section value which refers to one of 4 16-byte sections
-+ * within a 64-byte cacheline
-+ *
-+ * range: 0..3
-+ */
-+static ssize_t inject_section_store(struct device *dev,
-+				    struct device_attribute *mattr,
-+				    const char *data, size_t count)
-+{
-+	struct mem_ctl_info *mci = to_mci(dev);
-+	struct amd64_pvt *pvt = mci->pvt_info;
-+	unsigned long value;
-+	int ret;
-+
-+	ret = kstrtoul(data, 10, &value);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (value > 3) {
-+		amd64_warn("%s: invalid section 0x%lx\n", __func__, value);
-+		return -EINVAL;
-+	}
-+
-+	pvt->injection.section = (u32) value;
-+	return count;
-+}
-+
-+static ssize_t inject_word_show(struct device *dev,
-+				struct device_attribute *mattr, char *buf)
-+{
-+	struct mem_ctl_info *mci = to_mci(dev);
-+	struct amd64_pvt *pvt = mci->pvt_info;
-+	return sprintf(buf, "0x%x\n", pvt->injection.word);
-+}
-+
-+/*
-+ * store error injection word value which refers to one of 9 16-bit word of the
-+ * 16-byte (128-bit + ECC bits) section
-+ *
-+ * range: 0..8
-+ */
-+static ssize_t inject_word_store(struct device *dev,
-+				 struct device_attribute *mattr,
-+				 const char *data, size_t count)
-+{
-+	struct mem_ctl_info *mci = to_mci(dev);
-+	struct amd64_pvt *pvt = mci->pvt_info;
-+	unsigned long value;
-+	int ret;
-+
-+	ret = kstrtoul(data, 10, &value);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (value > 8) {
-+		amd64_warn("%s: invalid word 0x%lx\n", __func__, value);
-+		return -EINVAL;
-+	}
-+
-+	pvt->injection.word = (u32) value;
-+	return count;
-+}
-+
-+static ssize_t inject_ecc_vector_show(struct device *dev,
-+				      struct device_attribute *mattr,
-+				      char *buf)
-+{
-+	struct mem_ctl_info *mci = to_mci(dev);
-+	struct amd64_pvt *pvt = mci->pvt_info;
-+	return sprintf(buf, "0x%x\n", pvt->injection.bit_map);
-+}
-+
-+/*
-+ * store 16 bit error injection vector which enables injecting errors to the
-+ * corresponding bit within the error injection word above. When used during a
-+ * DRAM ECC read, it holds the contents of the of the DRAM ECC bits.
-+ */
-+static ssize_t inject_ecc_vector_store(struct device *dev,
-+				       struct device_attribute *mattr,
-+				       const char *data, size_t count)
-+{
-+	struct mem_ctl_info *mci = to_mci(dev);
-+	struct amd64_pvt *pvt = mci->pvt_info;
-+	unsigned long value;
-+	int ret;
-+
-+	ret = kstrtoul(data, 16, &value);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (value & 0xFFFF0000) {
-+		amd64_warn("%s: invalid EccVector: 0x%lx\n", __func__, value);
-+		return -EINVAL;
-+	}
-+
-+	pvt->injection.bit_map = (u32) value;
-+	return count;
-+}
-+
-+/*
-+ * Do a DRAM ECC read. Assemble staged values in the pvt area, format into
-+ * fields needed by the injection registers and read the NB Array Data Port.
-+ */
-+static ssize_t inject_read_store(struct device *dev,
-+				 struct device_attribute *mattr,
-+				 const char *data, size_t count)
-+{
-+	struct mem_ctl_info *mci = to_mci(dev);
-+	struct amd64_pvt *pvt = mci->pvt_info;
-+	unsigned long value;
-+	u32 section, word_bits;
-+	int ret;
-+
-+	ret = kstrtoul(data, 10, &value);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Form value to choose 16-byte section of cacheline */
-+	section = F10_NB_ARRAY_DRAM | SET_NB_ARRAY_ADDR(pvt->injection.section);
-+
-+	amd64_write_pci_cfg(pvt->F3, F10_NB_ARRAY_ADDR, section);
-+
-+	word_bits = SET_NB_DRAM_INJECTION_READ(pvt->injection);
-+
-+	/* Issue 'word' and 'bit' along with the READ request */
-+	amd64_write_pci_cfg(pvt->F3, F10_NB_ARRAY_DATA, word_bits);
-+
-+	edac_dbg(0, "section=0x%x word_bits=0x%x\n", section, word_bits);
-+
-+	return count;
-+}
-+
-+/*
-+ * Do a DRAM ECC write. Assemble staged values in the pvt area and format into
-+ * fields needed by the injection registers.
-+ */
-+static ssize_t inject_write_store(struct device *dev,
-+				  struct device_attribute *mattr,
-+				  const char *data, size_t count)
-+{
-+	struct mem_ctl_info *mci = to_mci(dev);
-+	struct amd64_pvt *pvt = mci->pvt_info;
-+	u32 section, word_bits, tmp;
-+	unsigned long value;
-+	int ret;
-+
-+	ret = kstrtoul(data, 10, &value);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Form value to choose 16-byte section of cacheline */
-+	section = F10_NB_ARRAY_DRAM | SET_NB_ARRAY_ADDR(pvt->injection.section);
-+
-+	amd64_write_pci_cfg(pvt->F3, F10_NB_ARRAY_ADDR, section);
-+
-+	word_bits = SET_NB_DRAM_INJECTION_WRITE(pvt->injection);
-+
-+	pr_notice_once("Don't forget to decrease MCE polling interval in\n"
-+			"/sys/bus/machinecheck/devices/machinecheck<CPUNUM>/check_interval\n"
-+			"so that you can get the error report faster.\n");
-+
-+	on_each_cpu(disable_caches, NULL, 1);
-+
-+	/* Issue 'word' and 'bit' along with the READ request */
-+	amd64_write_pci_cfg(pvt->F3, F10_NB_ARRAY_DATA, word_bits);
-+
-+ retry:
-+	/* wait until injection happens */
-+	amd64_read_pci_cfg(pvt->F3, F10_NB_ARRAY_DATA, &tmp);
-+	if (tmp & F10_NB_ARR_ECC_WR_REQ) {
-+		cpu_relax();
-+		goto retry;
-+	}
-+
-+	on_each_cpu(enable_caches, NULL, 1);
-+
-+	edac_dbg(0, "section=0x%x word_bits=0x%x\n", section, word_bits);
-+
-+	return count;
-+}
-+
-+/*
-+ * update NUM_INJ_ATTRS in case you add new members
-+ */
-+
-+static DEVICE_ATTR(inject_section, S_IRUGO | S_IWUSR,
-+		   inject_section_show, inject_section_store);
-+static DEVICE_ATTR(inject_word, S_IRUGO | S_IWUSR,
-+		   inject_word_show, inject_word_store);
-+static DEVICE_ATTR(inject_ecc_vector, S_IRUGO | S_IWUSR,
-+		   inject_ecc_vector_show, inject_ecc_vector_store);
-+static DEVICE_ATTR(inject_write, S_IWUSR,
-+		   NULL, inject_write_store);
-+static DEVICE_ATTR(inject_read,  S_IWUSR,
-+		   NULL, inject_read_store);
-+
-+static struct attribute *inj_attrs[] = {
-+	&dev_attr_inject_section.attr,
-+	&dev_attr_inject_word.attr,
-+	&dev_attr_inject_ecc_vector.attr,
-+	&dev_attr_inject_write.attr,
-+	&dev_attr_inject_read.attr,
-+	NULL
-+};
-+
-+static umode_t inj_is_visible(struct kobject *kobj, struct attribute *attr, int idx)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct mem_ctl_info *mci = container_of(dev, struct mem_ctl_info, dev);
-+	struct amd64_pvt *pvt = mci->pvt_info;
-+
-+	if (pvt->fam < 0x10)
-+		return 0;
-+	return attr->mode;
-+}
-+
-+static const struct attribute_group inj_group = {
-+	.attrs = inj_attrs,
-+	.is_visible = inj_is_visible,
-+};
-+#endif /* CONFIG_EDAC_DEBUG */
- 
- /*
-  * Return the DramAddr that the SysAddr given by @sys_addr maps to.  It is
-@@ -3465,9 +3694,7 @@ static struct amd64_family_type *per_family_init(struct amd64_pvt *pvt)
- static const struct attribute_group *amd64_edac_attr_groups[] = {
- #ifdef CONFIG_EDAC_DEBUG
- 	&dbg_group,
--#endif
--#ifdef CONFIG_EDAC_AMD64_ERROR_INJECTION
--	&amd64_edac_inj_group,
-+	&inj_group,
- #endif
- 	NULL
- };
-diff --git a/drivers/edac/amd64_edac.h b/drivers/edac/amd64_edac.h
-index 7c9f8c0b46d7..85aa820bc165 100644
---- a/drivers/edac/amd64_edac.h
-+++ b/drivers/edac/amd64_edac.h
-@@ -462,14 +462,6 @@ struct ecc_settings {
- 	} flags;
- };
- 
--#ifdef CONFIG_EDAC_DEBUG
--extern const struct attribute_group amd64_edac_dbg_group;
--#endif
--
--#ifdef CONFIG_EDAC_AMD64_ERROR_INJECTION
--extern const struct attribute_group amd64_edac_inj_group;
--#endif
--
- /*
-  * Each of the PCI Device IDs types have their own set of hardware accessor
-  * functions and per device encoding/decoding logic.
-diff --git a/drivers/edac/amd64_edac_inj.c b/drivers/edac/amd64_edac_inj.c
-deleted file mode 100644
-index d96d6116f0fb..000000000000
---- a/drivers/edac/amd64_edac_inj.c
-+++ /dev/null
-@@ -1,235 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include "amd64_edac.h"
--
--static ssize_t amd64_inject_section_show(struct device *dev,
--					 struct device_attribute *mattr,
--					 char *buf)
--{
--	struct mem_ctl_info *mci = to_mci(dev);
--	struct amd64_pvt *pvt = mci->pvt_info;
--	return sprintf(buf, "0x%x\n", pvt->injection.section);
--}
--
--/*
-- * store error injection section value which refers to one of 4 16-byte sections
-- * within a 64-byte cacheline
-- *
-- * range: 0..3
-- */
--static ssize_t amd64_inject_section_store(struct device *dev,
--					  struct device_attribute *mattr,
--					  const char *data, size_t count)
--{
--	struct mem_ctl_info *mci = to_mci(dev);
--	struct amd64_pvt *pvt = mci->pvt_info;
--	unsigned long value;
--	int ret;
--
--	ret = kstrtoul(data, 10, &value);
--	if (ret < 0)
--		return ret;
--
--	if (value > 3) {
--		amd64_warn("%s: invalid section 0x%lx\n", __func__, value);
--		return -EINVAL;
--	}
--
--	pvt->injection.section = (u32) value;
--	return count;
--}
--
--static ssize_t amd64_inject_word_show(struct device *dev,
--					struct device_attribute *mattr,
--					char *buf)
--{
--	struct mem_ctl_info *mci = to_mci(dev);
--	struct amd64_pvt *pvt = mci->pvt_info;
--	return sprintf(buf, "0x%x\n", pvt->injection.word);
--}
--
--/*
-- * store error injection word value which refers to one of 9 16-bit word of the
-- * 16-byte (128-bit + ECC bits) section
-- *
-- * range: 0..8
-- */
--static ssize_t amd64_inject_word_store(struct device *dev,
--				       struct device_attribute *mattr,
--				       const char *data, size_t count)
--{
--	struct mem_ctl_info *mci = to_mci(dev);
--	struct amd64_pvt *pvt = mci->pvt_info;
--	unsigned long value;
--	int ret;
--
--	ret = kstrtoul(data, 10, &value);
--	if (ret < 0)
--		return ret;
--
--	if (value > 8) {
--		amd64_warn("%s: invalid word 0x%lx\n", __func__, value);
--		return -EINVAL;
--	}
--
--	pvt->injection.word = (u32) value;
--	return count;
--}
--
--static ssize_t amd64_inject_ecc_vector_show(struct device *dev,
--					    struct device_attribute *mattr,
--					    char *buf)
--{
--	struct mem_ctl_info *mci = to_mci(dev);
--	struct amd64_pvt *pvt = mci->pvt_info;
--	return sprintf(buf, "0x%x\n", pvt->injection.bit_map);
--}
--
--/*
-- * store 16 bit error injection vector which enables injecting errors to the
-- * corresponding bit within the error injection word above. When used during a
-- * DRAM ECC read, it holds the contents of the of the DRAM ECC bits.
-- */
--static ssize_t amd64_inject_ecc_vector_store(struct device *dev,
--				       struct device_attribute *mattr,
--				       const char *data, size_t count)
--{
--	struct mem_ctl_info *mci = to_mci(dev);
--	struct amd64_pvt *pvt = mci->pvt_info;
--	unsigned long value;
--	int ret;
--
--	ret = kstrtoul(data, 16, &value);
--	if (ret < 0)
--		return ret;
--
--	if (value & 0xFFFF0000) {
--		amd64_warn("%s: invalid EccVector: 0x%lx\n", __func__, value);
--		return -EINVAL;
--	}
--
--	pvt->injection.bit_map = (u32) value;
--	return count;
--}
--
--/*
-- * Do a DRAM ECC read. Assemble staged values in the pvt area, format into
-- * fields needed by the injection registers and read the NB Array Data Port.
-- */
--static ssize_t amd64_inject_read_store(struct device *dev,
--				       struct device_attribute *mattr,
--				       const char *data, size_t count)
--{
--	struct mem_ctl_info *mci = to_mci(dev);
--	struct amd64_pvt *pvt = mci->pvt_info;
--	unsigned long value;
--	u32 section, word_bits;
--	int ret;
--
--	ret = kstrtoul(data, 10, &value);
--	if (ret < 0)
--		return ret;
--
--	/* Form value to choose 16-byte section of cacheline */
--	section = F10_NB_ARRAY_DRAM | SET_NB_ARRAY_ADDR(pvt->injection.section);
--
--	amd64_write_pci_cfg(pvt->F3, F10_NB_ARRAY_ADDR, section);
--
--	word_bits = SET_NB_DRAM_INJECTION_READ(pvt->injection);
--
--	/* Issue 'word' and 'bit' along with the READ request */
--	amd64_write_pci_cfg(pvt->F3, F10_NB_ARRAY_DATA, word_bits);
--
--	edac_dbg(0, "section=0x%x word_bits=0x%x\n", section, word_bits);
--
--	return count;
--}
--
--/*
-- * Do a DRAM ECC write. Assemble staged values in the pvt area and format into
-- * fields needed by the injection registers.
-- */
--static ssize_t amd64_inject_write_store(struct device *dev,
--					struct device_attribute *mattr,
--					const char *data, size_t count)
--{
--	struct mem_ctl_info *mci = to_mci(dev);
--	struct amd64_pvt *pvt = mci->pvt_info;
--	u32 section, word_bits, tmp;
--	unsigned long value;
--	int ret;
--
--	ret = kstrtoul(data, 10, &value);
--	if (ret < 0)
--		return ret;
--
--	/* Form value to choose 16-byte section of cacheline */
--	section = F10_NB_ARRAY_DRAM | SET_NB_ARRAY_ADDR(pvt->injection.section);
--
--	amd64_write_pci_cfg(pvt->F3, F10_NB_ARRAY_ADDR, section);
--
--	word_bits = SET_NB_DRAM_INJECTION_WRITE(pvt->injection);
--
--	pr_notice_once("Don't forget to decrease MCE polling interval in\n"
--			"/sys/bus/machinecheck/devices/machinecheck<CPUNUM>/check_interval\n"
--			"so that you can get the error report faster.\n");
--
--	on_each_cpu(disable_caches, NULL, 1);
--
--	/* Issue 'word' and 'bit' along with the READ request */
--	amd64_write_pci_cfg(pvt->F3, F10_NB_ARRAY_DATA, word_bits);
--
-- retry:
--	/* wait until injection happens */
--	amd64_read_pci_cfg(pvt->F3, F10_NB_ARRAY_DATA, &tmp);
--	if (tmp & F10_NB_ARR_ECC_WR_REQ) {
--		cpu_relax();
--		goto retry;
--	}
--
--	on_each_cpu(enable_caches, NULL, 1);
--
--	edac_dbg(0, "section=0x%x word_bits=0x%x\n", section, word_bits);
--
--	return count;
--}
--
--/*
-- * update NUM_INJ_ATTRS in case you add new members
-- */
--
--static DEVICE_ATTR(inject_section, S_IRUGO | S_IWUSR,
--		   amd64_inject_section_show, amd64_inject_section_store);
--static DEVICE_ATTR(inject_word, S_IRUGO | S_IWUSR,
--		   amd64_inject_word_show, amd64_inject_word_store);
--static DEVICE_ATTR(inject_ecc_vector, S_IRUGO | S_IWUSR,
--		   amd64_inject_ecc_vector_show, amd64_inject_ecc_vector_store);
--static DEVICE_ATTR(inject_write, S_IWUSR,
--		   NULL, amd64_inject_write_store);
--static DEVICE_ATTR(inject_read,  S_IWUSR,
--		   NULL, amd64_inject_read_store);
--
--static struct attribute *amd64_edac_inj_attrs[] = {
--	&dev_attr_inject_section.attr,
--	&dev_attr_inject_word.attr,
--	&dev_attr_inject_ecc_vector.attr,
--	&dev_attr_inject_write.attr,
--	&dev_attr_inject_read.attr,
--	NULL
--};
--
--static umode_t amd64_edac_inj_is_visible(struct kobject *kobj,
--					 struct attribute *attr, int idx)
--{
--	struct device *dev = kobj_to_dev(kobj);
--	struct mem_ctl_info *mci = container_of(dev, struct mem_ctl_info, dev);
--	struct amd64_pvt *pvt = mci->pvt_info;
--
--	if (pvt->fam < 0x10)
--		return 0;
--	return attr->mode;
--}
--
--const struct attribute_group amd64_edac_inj_group = {
--	.attrs = amd64_edac_inj_attrs,
--	.is_visible = amd64_edac_inj_is_visible,
--};
--- 
-2.29.2
+> +				"TDMIN_A IN 3", "TDM_A Loopback",
+
+And this correct for the vim3 but not the vim3l ...
+Please don't take this patch. Patch 1 can still be applied though.
+
+> +				"TODDR_A IN 0", "TDMIN_A OUT",
+> +				"TODDR_B IN 0", "TDMIN_A OUT",
+> +				"TODDR_C IN 0", "TDMIN_A OUT";
+>  
+>  		assigned-clocks = <&clkc CLKID_MPLL2>,
+>  				  <&clkc CLKID_MPLL0>,
+> @@ -193,8 +198,20 @@ dai-link-2 {
+>  			sound-dai = <&frddr_c>;
+>  		};
+>  
+> -		/* 8ch hdmi interface */
+>  		dai-link-3 {
+> +			sound-dai = <&toddr_a>;
+> +		};
+> +
+> +		dai-link-4 {
+> +			sound-dai = <&toddr_b>;
+> +		};
+> +
+> +		dai-link-5 {
+> +			sound-dai = <&toddr_c>;
+> +		};
+> +
+> +		/* 8ch hdmi interface */
+> +		dai-link-6 {
+>  			sound-dai = <&tdmif_a>;
+>  			dai-format = "i2s";
+>  			dai-tdm-slot-tx-mask-0 = <1 1>;
+> @@ -209,7 +226,7 @@ codec {
+>  		};
+>  
+>  		/* hdmi glue */
+> -		dai-link-4 {
+> +		dai-link-7 {
+>  			sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
+>  
+>  			codec {
+> @@ -449,10 +466,26 @@ &tdmif_a {
+>  	status = "okay";
+>  };
+>  
+> +&tdmin_a {
+> +	status = "okay";
+> +};
+> +
+>  &tdmout_a {
+>  	status = "okay";
+>  };
+>  
+> +&toddr_a {
+> +	status = "okay";
+> +};
+> +
+> +&toddr_b {
+> +	status = "okay";
+> +};
+> +
+> +&toddr_c {
+> +	status = "okay";
+> +};
+> +
+>  &tohdmitx {
+>  	status = "okay";
+>  };
 
