@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC46B2DADEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:23:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8492DADEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 14:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727685AbgLONVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 08:21:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51018 "EHLO mail.kernel.org"
+        id S1727200AbgLONW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 08:22:57 -0500
+Received: from elvis.franken.de ([193.175.24.41]:42248 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726861AbgLONVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 08:21:30 -0500
-From:   Mark Brown <broonie@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     Adrien Grassein <adrien.grassein@gmail.com>,
-        Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH] regulator: pf8x00: Use specific compatible strings for devices
-Date:   Tue, 15 Dec 2020 13:20:24 +0000
-Message-Id: <20201215132024.13356-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S1726580AbgLONW5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 08:22:57 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kpAHO-0001tH-00; Tue, 15 Dec 2020 14:22:14 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id DA36FC0386; Tue, 15 Dec 2020 14:21:23 +0100 (CET)
+Date:   Tue, 15 Dec 2020 14:21:23 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Youling Tang <tangyouling@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>
+Subject: Re: [PATCH] MIPS: Loongson64: Give chance to build under
+ !CONFIG_NUMA and !CONFIG_SMP
+Message-ID: <20201215132123.GA9201@alpha.franken.de>
+References: <1606998772-5904-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; i=iFPmsa3+jnoQAinLCLIyJYrJYVQ0K71zonFwtGd5EuE=; m=wb+pZI7xM+FR+JNfGwZpv0zbVDoPhtbL9e93YelLGuA=; p=HciRgTybYC14UMhoVbWDEyRjUGLc8P1po22O0WJcF7s=; g=2d9d2c6a6c375e43d76a5a3ddf0571f7565bdeba
-X-Patch-Sig: m=pgp; i=broonie@kernel.org; s=0xC3F436CA30F5D8EB; b=iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/YtwwACgkQJNaLcl1Uh9BuBQgAgEu 02tONuxW1LaE6GX9LyGK1zX/sFsJQFtoUvFyeppPnwEs/Ie/wcowd1XD8bJ/GtdeWY40TrLyA6b6w 7XvwEFkNheIXFWykhTjkfyOiL/XaQgmHh+I9CxmkV0RFCfLcAf28RIELTmWyxAjQMxIcSrzgA4zx3 UnUlXHB78i0a2XTAxs0zeXVGeNsUtbzrQxsQ+HBRXSv1NGpT16fM22MsPWlJQeR/yKNd/t5+XFKmp 6+fT4QKNMJyQ2f5udfQjLR7D+NMjuxHZQQQzL8Mvlzqh+AKFXu13x9+KftI6pqA8DC1l7tkTgeBWR fXISfx62GumcMBTLWRVUT6f91vAFVFw==
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1606998772-5904-1-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pf8x00 driver supports three devices, the DT compatible strings
-and I2C IDs should enumerate these specifically rather than using a
-wildcard so that we don't collide with anything incompatible in the
-same ID range in the future and so that we can handle any software
-visible differences between the variants we find.
+On Thu, Dec 03, 2020 at 08:32:52PM +0800, Tiezhu Yang wrote:
+> In the current code, we can not build under !CONFIG_NUMA and !CONFIG_SMP
+> on the Loongson64 platform, it seems bad for the users who just want to
+> use pure single core (not nosmp) to debug, so do the following things to
+> give them a chance:
+> 
+> (1) Do not select NUMA and SMP for MACH_LOONGSON64 in Kconfig, make NUMA
+> depends on SMP, and then just set them in the loongson3_defconfig.
+> (2) Move szmem() from numa.c to init.c and add prom_init_memory() under
+> !CONFIG_NUMA.
+> (3) Clean up szmem() due to the statements of case SYSTEM_RAM_LOW and
+> SYSTEM_RAM_HIGH are the same.
+> (4) Remove the useless declaration of prom_init_memory() and add the
+> declaration of szmem() in loongson.h to avoid build error.
+> 
+> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/mips/Kconfig                                |  3 +-
+>  arch/mips/configs/loongson3_defconfig            |  2 +
+>  arch/mips/include/asm/mach-loongson64/loongson.h |  2 +-
+>  arch/mips/loongson64/init.c                      | 49 ++++++++++++++++++++++
+>  arch/mips/loongson64/numa.c                      | 52 +-----------------------
+>  5 files changed, 54 insertions(+), 54 deletions(-)
+> 
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 44a47ad..2034c66 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -490,8 +490,6 @@ config MACH_LOONGSON64
+>  	select SYS_SUPPORTS_ZBOOT
+>  	select SYS_SUPPORTS_RELOCATABLE
+>  	select ZONE_DMA32
+> -	select NUMA
+> -	select SMP
+>  	select COMMON_CLK
+>  	select USE_OF
+>  	select BUILTIN_DTB
+> @@ -2755,6 +2753,7 @@ config ARCH_SPARSEMEM_ENABLE
+>  config NUMA
+>  	bool "NUMA Support"
+>  	depends on SYS_SUPPORTS_NUMA
+> +	depends on SMP
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../bindings/regulator/nxp,pf8x00-regulator.yaml          | 6 ++++--
- drivers/regulator/pf8x00-regulator.c                      | 8 ++++++--
- 2 files changed, 10 insertions(+), 4 deletions(-)
+can you solve your problem without this hunk ? I don't want to make NUMA
+depeding on SMP. NUMA just selects memory archtitecture.
 
-diff --git a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
-index a6c259ce9785..956156fe52a3 100644
---- a/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
-+++ b/Documentation/devicetree/bindings/regulator/nxp,pf8x00-regulator.yaml
-@@ -19,7 +19,9 @@ description: |
- properties:
-   compatible:
-     enum:
--      - nxp,pf8x00
-+      - nxp,pf8100
-+      - nxp,pf8121a
-+      - nxp,pf8200
- 
-   reg:
-     maxItems: 1
-@@ -118,7 +120,7 @@ examples:
-         #size-cells = <0>;
- 
-         pmic@8 {
--            compatible = "nxp,pf8x00";
-+            compatible = "nxp,pf8100";
-             reg = <0x08>;
- 
-             regulators {
-diff --git a/drivers/regulator/pf8x00-regulator.c b/drivers/regulator/pf8x00-regulator.c
-index 308c27fa6ea8..af9918cd27aa 100644
---- a/drivers/regulator/pf8x00-regulator.c
-+++ b/drivers/regulator/pf8x00-regulator.c
-@@ -469,13 +469,17 @@ static int pf8x00_i2c_probe(struct i2c_client *client)
- }
- 
- static const struct of_device_id pf8x00_dt_ids[] = {
--	{ .compatible = "nxp,pf8x00",},
-+	{ .compatible = "nxp,pf8100",},
-+	{ .compatible = "nxp,pf8121a",},
-+	{ .compatible = "nxp,pf8200",},
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, pf8x00_dt_ids);
- 
- static const struct i2c_device_id pf8x00_i2c_id[] = {
--	{ "pf8x00", 0 },
-+	{ "pf8100", 0 },
-+	{ "pf8121a", 0 },
-+	{ "pf8200", 0 },
- 	{},
- };
- MODULE_DEVICE_TABLE(i2c, pf8x00_i2c_id);
+Thomas.
+
 -- 
-2.20.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
