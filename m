@@ -2,100 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7782DB3AE
+	by mail.lfdr.de (Postfix) with ESMTP id CC3AD2DB3AF
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731567AbgLOSYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:24:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731534AbgLOSX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:23:29 -0500
-Date:   Tue, 15 Dec 2020 10:22:46 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608056568;
-        bh=QPrErB5DMDQIIkF9V+Ie0fJXxDat+232EdenUKSeBSs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KWuMsYDIjqWHsxQvud7m9sdHgw7mSYKUSIbCUKHAlV19RXkHQcf4T7UbUy0HQYAll
-         sBwOzEGkQcL8NDxf4qhZSUDzjmbpilZbZKOKTjSYifH7Z67MiN522UA3h0c8sUKJLr
-         CP9NP4X8FQHU36xrIufIUx1pZaP/f/5lw7IsuzxCYGaldU57gdoKaq9b9MA/2iK0dx
-         VrDsJz+nBpR5GGNS8n0gCfwOCqd+DcmynZEnF/0nGMtDMJQJRComYTZdwqhi9mMIk7
-         V0xo/LGcsBYLAaqPl/Nbg5vjaMFaxbWdIZE/abIoworzR88qT2XpI/sXmfOLGDfgkl
-         zm5GECZO0ya6Q==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>, rcu@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        lkft-triage@lists.linaro.org, Netdev <netdev@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [stabe-rc 5.9 ] sched: core.c:7270 Illegal context switch in
- RCU-bh read-side critical section!
-Message-ID: <20201215102246.4bdca3d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201215144531.GZ2657@paulmck-ThinkPad-P72>
-References: <CA+G9fYtu1zOz8ErUzftNG4Dc9=cv1grsagBojJraGhm4arqXyw@mail.gmail.com>
-        <20201215144531.GZ2657@paulmck-ThinkPad-P72>
+        id S1731275AbgLOSYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 13:24:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729389AbgLOSXm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 13:23:42 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A188C0617A6;
+        Tue, 15 Dec 2020 10:22:59 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id c12so15316672pgm.4;
+        Tue, 15 Dec 2020 10:22:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=H+MPl6V5JmDOoXGskKZtv6rWjxRnogZLJ4kW84SY9ds=;
+        b=Ebq9jvq8lsnSaUmi4uDwBNEzptpKOUGzLuy1ucPrNHux/8Y6bKrlb4Y3OTCeoXaqOz
+         Th8DD3ssxdLs00KurYGlFmZdUazjSVoRdRDWI20jCVUgjbEB8e+5yiTbRMxSTQNjwUdL
+         PGm13hLW/tTRDvQp/L/SnBZngEZbCsvOaDeudsv7RSRu5i38JgyfPNVujdm/uWXQkrc+
+         8hxKrrsOxNgyTYdzgGFSrj4u9eJtivO5+sOhY78Bw2YKbYspakOOnL/DbtUwaqYrNx2d
+         QkUwrlJ9q56ISbwYEC0RiEgctz94p6h0WO8mQ6acSFProI5zlAfhyOpCkM2ggt0Tgq4w
+         zdfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=H+MPl6V5JmDOoXGskKZtv6rWjxRnogZLJ4kW84SY9ds=;
+        b=t3ZyNU6w62211u8heSo0ubGUghuapqSxCLhg5YI+UGQfNZSFTmDwuDrtevkE41wRgy
+         BhvUCPBeqokceZgYumDoDU1pxn8jbvEaPq8Wb5OZ7o/5q1w+EsTpu/X5gyi+8AKgeYrG
+         NLLcd2zPYz5cNqtybY/qxRJOTfqyAW2MjTgzsw4xCEUsyku2rOXEt9MYjIs1sjPDo8Fa
+         rGdnU+6k6l6Qif3r+FFBu2BIN9QGQvfgceLDBO+Hp+ef5IGfdAJVFyM+N9S1b2rZkXwx
+         t24Z5TiJ/q/f/GQenu3aJgjuhxNqjGQ991jrvw2zXgX7jYb5VdyaIUZAUnrmmi3451YP
+         3+lg==
+X-Gm-Message-State: AOAM5307ZZHhRcBIaQJJerUCYIDOKNgf/w49UcuzVA7Sx3OVDkH/VYrR
+        /4QXUDXevGOvb0Wpy+HbLfik+aldiSY=
+X-Google-Smtp-Source: ABdhPJz1X6MFvy6BAR9qAePvaIKqYUS4US4TnynOlAcH4zfO1oowWMECqvCCcOynwU9C4TBuFZpmuQ==
+X-Received: by 2002:a63:df01:: with SMTP id u1mr19774627pgg.427.1608056579002;
+        Tue, 15 Dec 2020 10:22:59 -0800 (PST)
+Received: from [10.230.29.166] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id a26sm25249447pgd.64.2020.12.15.10.22.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 10:22:58 -0800 (PST)
+Subject: Re: [PATCH V2 1/2] dt-bindings: power: document Broadcom's PMB
+ binding
+To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+References: <20201214180743.14584-1-zajec5@gmail.com>
+ <20201214180743.14584-2-zajec5@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <5ddb9273-a27b-78f8-71ec-e82b5150fc18@gmail.com>
+Date:   Tue, 15 Dec 2020 10:22:55 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201214180743.14584-2-zajec5@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 06:45:31 -0800 Paul E. McKenney wrote:
-> > Crash log:
-> > --------------
-> > # selftests: bpf: test_tc_edt.sh
-> > [  503.796362]
-> > [  503.797960] =============================
-> > [  503.802131] WARNING: suspicious RCU usage
-> > [  503.806232] 5.9.15-rc1 #1 Tainted: G        W
-> > [  503.811358] -----------------------------
-> > [  503.815444] /usr/src/kernel/kernel/sched/core.c:7270 Illegal
-> > context switch in RCU-bh read-side critical section!
-> > [  503.825858]
-> > [  503.825858] other info that might help us debug this:
-> > [  503.825858]
-> > [  503.833998]
-> > [  503.833998] rcu_scheduler_active = 2, debug_locks = 1
-> > [  503.840981] 3 locks held by kworker/u12:1/157:
-> > [  503.845514]  #0: ffff0009754ed538
-> > ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x208/0x768
-> > [  503.855048]  #1: ffff800013e63df0 (net_cleanup_work){+.+.}-{0:0},
-> > at: process_one_work+0x208/0x768
-> > [  503.864201]  #2: ffff8000129fe3f0 (pernet_ops_rwsem){++++}-{3:3},
-> > at: cleanup_net+0x64/0x3b8
-> > [  503.872786]
-> > [  503.872786] stack backtrace:
-> > [  503.877229] CPU: 1 PID: 157 Comm: kworker/u12:1 Tainted: G        W
-> >         5.9.15-rc1 #1
-> > [  503.885433] Hardware name: ARM Juno development board (r2) (DT)
-> > [  503.891382] Workqueue: netns cleanup_net
-> > [  503.895324] Call trace:
-> > [  503.897786]  dump_backtrace+0x0/0x1f8
-> > [  503.901464]  show_stack+0x2c/0x38
-> > [  503.904796]  dump_stack+0xec/0x158
-> > [  503.908215]  lockdep_rcu_suspicious+0xd4/0xf8
-> > [  503.912591]  ___might_sleep+0x1e4/0x208  
-> 
-> You really are forbidden to invoke ___might_sleep() while in a BH-disable
-> region of code, whether due to rcu_read_lock_bh(), local_bh_disable(),
-> or whatever else.
-> 
-> I do see the cond_resched() in inet_twsk_purge(), but I don't immediately
-> see a BH-disable region of code.  Maybe someone more familiar with this
-> code would have some ideas.
-> 
-> Or you could place checks for being in a BH-disable further up in
-> the code.  Or build with CONFIG_DEBUG_INFO=y to allow more precise
-> interpretation of this stack trace.
 
-My money would be on the option that whatever run on this workqueue
-before forgot to re-enable BH, but we already have a check for that...
-Naresh, do you have the full log? Is there nothing like "BUG: workqueue
-leaked lock" above the splat?
+
+On 12/14/2020 10:07 AM, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> Broadcom's PMB is power controller used for disabling and enabling SoC
+> devices.
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
