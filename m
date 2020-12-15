@@ -2,155 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBEEF2DB32E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE23D2DB33A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Dec 2020 19:05:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730696AbgLOSAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 13:00:51 -0500
-Received: from foss.arm.com ([217.140.110.172]:55142 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725973AbgLOSAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:00:37 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F0BE830E;
-        Tue, 15 Dec 2020 09:59:45 -0800 (PST)
-Received: from [192.168.178.2] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F1CE3F66E;
-        Tue, 15 Dec 2020 09:59:43 -0800 (PST)
-Subject: Re: [PATCH] fair/util_est: Separate util_est_dequeue() for
- cfs_rq_util_change
-To:     Xuewen Yan <xuewen.yan94@gmail.com>, patrick.bellasi@arm.com,
-        vincent.guittot@linaro.org, peterz@infradead.org
-Cc:     mingo@redhat.com, juri.lelli@redhat.com, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        linux-kernel@vger.kernel.org, Xuewen.Yan@unisoc.com,
-        xuewyan@foxmail.com
-References: <1607510656-22990-1-git-send-email-xuewen.yan@unisoc.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <d79da8c3-4904-c21f-9c7a-190ab6d12948@arm.com>
-Date:   Tue, 15 Dec 2020 18:59:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728747AbgLOSFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 13:05:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727063AbgLOSFS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 13:05:18 -0500
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1802AC06179C;
+        Tue, 15 Dec 2020 10:04:38 -0800 (PST)
+Received: by mail-ot1-x341.google.com with SMTP id 11so20265910oty.9;
+        Tue, 15 Dec 2020 10:04:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XMRFeUIbcjTyjikgNOJ857uPGqmpi9xkUBCoUW6Tg7E=;
+        b=JCaF3dq3ncBNYuGW+mfBJKfgJ16XCKItKvHZ3l8mqXfRdbvVgDBfhiWwpT2ds8FbB5
+         Eqdi2EJMzF0viRGJoCh6sTxkYS3wYSLimwTAKa63Ydhi6EMgarmKNGK9M7B7WAcbptsf
+         oGIUuQv2EyYo7TDw97+WugGkZqpQKqJDIbPIdNp8S0JMX160XCCLvFihomoJ2zvV1r0Z
+         SeyPHiw4ZFlxYsCE4+nJfF/812ZGePAAYnZYtwfiBz+7rVoKLCthQem3dPxmGQOuIUh5
+         glSEAmxxx66hTXq3BMknnXv934jxyasEzhvz3jHwY5UmW0q57keNj4i2MWLw6OTrFRpN
+         P5Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XMRFeUIbcjTyjikgNOJ857uPGqmpi9xkUBCoUW6Tg7E=;
+        b=P47F/mROKQTZdbnJi+ZfdpnjPeTDytbzB6Z7/yEPr5xfDfTrrj3NsAjaKGPbvs2Jlh
+         2rR5ciDdTtMvEyfsppr7e6zh/grJNLehLH/PlVay8LWmoHR6GkKATCjuqhAh/58UNf8S
+         fkK617wg58vo/u7fDUJXOGvcdTvMLt80Rn9f/Y9swDLtFFDa6NTuz8znSkOxiTwi4Jh8
+         f4+LR9lXpaU3cyVruD6lUTNbu2l9l5vOpsTEsNmA2+RfAHKaw3+lKdm83bIvft2PttE9
+         ojLchBukj4d5CWVg5WEEuIiAa7WYRPxTH71nLKr+J/+YvzikmJt5AxtQJjm63Y5DR0Hv
+         w9sA==
+X-Gm-Message-State: AOAM532gn2M6otyjwEmU6BqyvkrjPmbN8SPHB1NTla2Oooyv8OknJBfi
+        hoKOAxUzIsTY9K3NV1MO+aKUBB6QqotD0JB0VzKbJt4lfC0=
+X-Google-Smtp-Source: ABdhPJxJXnuqu8PiqtT7zyU8g3KH2Tog5Nt0w85q57IXPSU6+g2cVROLFa2BzBbo8tQhx5p9OGy8MRqt4hWIWHlUZ2g=
+X-Received: by 2002:a05:6830:1d66:: with SMTP id l6mr7450265oti.23.1608055477225;
+ Tue, 15 Dec 2020 10:04:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1607510656-22990-1-git-send-email-xuewen.yan@unisoc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <bebf5028-9a3e-59fe-ea70-c5e5e61fcb72@linux.intel.com> <20201215172552.GA310296@bjorn-Precision-5520>
+In-Reply-To: <20201215172552.GA310296@bjorn-Precision-5520>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 15 Dec 2020 13:04:25 -0500
+Message-ID: <CADnq5_Pp08peDVs6U6V4PqBYVdUgLp-pvrFzFOf8OjbGHO6Z4g@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the amdgpu tree with the pci tree
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Jay Vosburgh <jay.vosburgh@canonical.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sean V Kelley <sean.v.kelley@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/12/2020 11:44, Xuewen Yan wrote:
-> when a task dequeued, it will update it's util, and cfs_rq_util_change
-> would check rq's util, if the cfs_rq->avg.util_est.enqueued is bigger
-> than  cfs_rq->avg.util_avg, but because the cfs_rq->avg.util_est.enqueued
-> didn't be decreased, this would cause bigger cfs_rq_util by mistake,
-> as a result, cfs_rq_util_change may change freq unreasonablely.
-> 
-> separate the util_est_dequeue() into util_est_dequeue() and
-> util_est_update(), and dequeue the _task_util_est(p) before update util.
+On Tue, Dec 15, 2020 at 12:25 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Mon, Dec 14, 2020 at 10:52:26PM -0800, Kuppuswamy, Sathyanarayanan wrote:
+> > On 12/14/20 3:37 PM, Bjorn Helgaas wrote:
+> > > On Mon, Dec 14, 2020 at 06:18:54PM -0500, Alex Deucher wrote:
+> > > > On Mon, Dec 14, 2020 at 6:16 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > > > On Tue, Dec 15, 2020 at 07:34:31AM +1100, Stephen Rothwell wrote:
+> > > > > > Hi all,
+> > > > > >
+> > > > > > On Tue, 8 Dec 2020 13:56:20 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > > > > > >
+> >
+> > > >
+> > > > I don't plan to merge this upstream via my tree.  I was just carrying
+> > > > it in my drm-next branch because we have a number of users that depend
+> > > > on it for working DPC and a number of people use this branch for
+> > > > testing.
+> > >
+> > > OK, thanks.  FWIW, it's currently marked "Changes Requested" in
+> > > patchwork, so it isn't really going anywhere right now:
+> > >
+> > > https://patchwork.kernel.org/project/linux-pci/patch/cbba08a5e9ca62778c8937f44eda2192a2045da7.1595617529.git.sathyanarayanan.kuppuswamy@linux.intel.com/
+> >
+> > There is a newer version of this patch set. Please use it when
+> > merging this patch.
+> > https://patchwork.kernel.org/project/linux-pci/list/?series=370855
+>
+> That one is still pending.  I haven't had a chance to look at it yet,
+> but seems like there's no point in carrying the superseded version in
+> drm-next.
 
-I assume this patch header needs a little more substance so that less
-involved folks understand the issue as well. Describing the testcase
-which reveals the problem would help here too. 
+I'll go ahead and drop it.
 
-> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> ---
->  kernel/sched/fair.c | 24 +++++++++++++++++++-----
->  1 file changed, 19 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index ae7ceba..20ecfd5 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3946,11 +3946,9 @@ static inline bool within_margin(int value, int margin)
->  }
->  
->  static void
-> -util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
-> +util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p)
-
-Not sure why util_est_enqueue is inline and util_est_dequeue() and
-util_est_update() aren't?
-
->  {
-> -	long last_ewma_diff;
->  	struct util_est ue;
-
-You would just need a 'unsigned int enqueued' here, like in util_est_enqueue().
-
-> -	int cpu;
->  
->  	if (!sched_feat(UTIL_EST))
->  		return;
-> @@ -3961,6 +3959,17 @@ static inline bool within_margin(int value, int margin)
->  	WRITE_ONCE(cfs_rq->avg.util_est.enqueued, ue.enqueued);
->  
->  	trace_sched_util_est_cfs_tp(cfs_rq);
-> +}
-> +
-> +static void
-> +util_est_update(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
-> +{
-> +	long last_ewma_diff;
-> +	struct util_est ue;
-> +	int cpu;
-
-Nitpick: 'int cpu' not needed
-
----8<---
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index c3685a743a76..53dfb20d101e 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3956,28 +3956,28 @@ static inline bool within_margin(int value, int margin)
- 	return ((unsigned int)(value + margin - 1) < (2 * margin - 1));
- }
- 
--static void
--util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p)
-+static inline void util_est_dequeue(struct cfs_rq *cfs_rq,
-+				    struct task_struct *p)
- {
--	struct util_est ue;
-+	unsigned int enqueued;
- 
- 	if (!sched_feat(UTIL_EST))
- 		return;
- 
- 	/* Update root cfs_rq's estimated utilization */
--	ue.enqueued  = cfs_rq->avg.util_est.enqueued;
--	ue.enqueued -= min_t(unsigned int, ue.enqueued, _task_util_est(p));
--	WRITE_ONCE(cfs_rq->avg.util_est.enqueued, ue.enqueued);
-+	enqueued  = cfs_rq->avg.util_est.enqueued;
-+	enqueued -= min_t(unsigned int, enqueued, _task_util_est(p));
-+	WRITE_ONCE(cfs_rq->avg.util_est.enqueued, enqueued);
- 
- 	trace_sched_util_est_cfs_tp(cfs_rq);
- }
- 
--static void
--util_est_update(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
-+static inline void util_est_update(struct cfs_rq *cfs_rq,
-+				   struct task_struct *p,
-+				   bool task_sleep)
- {
- 	long last_ewma_diff;
- 	struct util_est ue;
--	int cpu;
- 
- 	if (!sched_feat(UTIL_EST))
- 		return;
-@@ -4021,8 +4021,7 @@ util_est_update(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
- 	 * To avoid overestimation of actual task utilization, skip updates if
- 	 * we cannot grant there is idle time in this CPU.
- 	 */
--	cpu = cpu_of(rq_of(cfs_rq));
--	if (task_util(p) > capacity_orig_of(cpu))
-+	if (task_util(p) > capacity_orig_of(cpu_of(rq_of(cfs_rq))))
- 		return;
- 
- 	/*
--- 
-2.17.1
+Alex
