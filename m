@@ -2,216 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A27B2DC198
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B943E2DC193
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:50:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726439AbgLPNuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:50:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34108 "EHLO
+        id S1726426AbgLPNth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:49:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726333AbgLPNuX (ORCPT
+        with ESMTP id S1726422AbgLPNth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:50:23 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D8BC061794;
-        Wed, 16 Dec 2020 05:49:43 -0800 (PST)
-Date:   Wed, 16 Dec 2020 13:49:40 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608126581;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EW0YRaMbLs8Jge3dol1Eki0ZqMZijwlm5g5V8zo3UPU=;
-        b=iRqTK7Y+zWJAXPYW4gTR30W06l7m2e4QteDEvG9PudH6VIBLsUi14GDBfoIrBsFFPXWcsI
-        tgsu62Ngqeo1XD68NulF98SJ8Ub2GvVU/F/qLjuAL8pc0oymueJ612hnLRf1PhaK70bewJ
-        Z8kbuDDMUHO0scrGKePS3hrr5lzBXIzjFjQpyIIy2VgEuQ6JfISbdj1yeWZyvTzqHrB1fS
-        7YpaSm70/QwA27fbVuSUnhuHVOzq4KFjIA/SZfakv/82OTgJImHHTbS/Y2F/CvtFlRM9Sk
-        3JJ5pQ2uIxbp9o59OF6EIipKOsY1qhR7XP3NB7u52evP13HKBZnFcMbCTdoDKA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608126581;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EW0YRaMbLs8Jge3dol1Eki0ZqMZijwlm5g5V8zo3UPU=;
-        b=xLMmGCp+auBQ2a1HheEqKpYmylMipVVzfUOrmXfXF//aLAZlPZ/ZQPs0wNgKz/EpifSAxJ
-        6083k9khecY/sUBA==
-From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/urgent] objtool: Fix seg fault with Clang non-section symbols
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miroslav Benes <mbenes@suse.cz>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <ba6b6c0f0dd5acbba66e403955a967d9fdd1726a.1607983452.git.jpoimboe@redhat.com>
-References: <ba6b6c0f0dd5acbba66e403955a967d9fdd1726a.1607983452.git.jpoimboe@redhat.com>
+        Wed, 16 Dec 2020 08:49:37 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683EBC061794;
+        Wed, 16 Dec 2020 05:48:57 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id hk16so1634736pjb.4;
+        Wed, 16 Dec 2020 05:48:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jVpMaa65XdUi0ZF2chjG5GMbEJ9ODIn4ft7XMeRkbY0=;
+        b=unncvyMdNNks6o+nJ8eLUqBGOOiVyMLMlDWHVN9FF/wwwdj6WLzh+ax0l35ig/b7YC
+         JRd0QjdO5cB+K31pRBA23nUxIaFUJAhmlgLmy1YevjsN7DJ1RiLy5lyOaexZNZ7ZxdSD
+         DbrIUbFfoAjgBP/f8jJKcoycJ/rTDOaLWYdqHRFiXXGDa9vXDPIwDsEPp6w6Wrvj8cSr
+         /IvvR+uvMXUC/hHK6WmUidtx+ZPfqUQm6YXVw04R1TXY/NrLNqzgXrV3Cu2c8bmubZYc
+         Zge4KpHA7uKc1QVtM/PDTLvGuB4wKMP/ry/1Di304RaPC6gx5UP8MOrMqfWjdo6b7yXN
+         0BYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jVpMaa65XdUi0ZF2chjG5GMbEJ9ODIn4ft7XMeRkbY0=;
+        b=CzRxnYt8ZEQNQ6+rZrK8N/EiHuBYW0l0+xZUAMA7eny4yAJFLf1k5dDHu+r1oY3yTk
+         2wWaM1mKgvWcrSFv6ldRFcpmWGJAhux85RhdQtlhSZs5wRseQigkVP3UkJZTLopHzMHq
+         7m5xouxfIwbZiQ06lhMpqHNTK7m6qq/KRHmhbEF1RVdo2T4odfEm8nGRSipap1WrXywI
+         XORn3cVV4L6Fh/dYtcUSIVrzBcFDlo5uTmyDHScJ+YvopoM+Ee8Qu3a0rgb6dTPF6QuQ
+         Vm7Pmsgi9Ja5ufq9c6l3YqGjou4AJQ9P9j0BURFOtzkokysvwZKuLqifCHK6WwYZ0udS
+         f3BA==
+X-Gm-Message-State: AOAM532+gAFqzIBMdfgavHDl7d5VvjRkF30OxeCGVJA2YX+qBmsjeSo1
+        dySm7i6wU2+tmEyBmvzqC917HHvf/Ez56n6LKQw=
+X-Google-Smtp-Source: ABdhPJyAABLpvk+ZRkJGYvaZMZCswconILHy3E5pbCnpNvDl+ZAEXJJMK5TjY/ccnYShkp+jTG7/BKQwg4KGvCfQvy0=
+X-Received: by 2002:a17:902:e98c:b029:da:cb88:f11d with SMTP id
+ f12-20020a170902e98cb02900dacb88f11dmr31419433plb.17.1608126536383; Wed, 16
+ Dec 2020 05:48:56 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <160812658044.3364.4188208281079332844.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20201216131107.14339-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20201216131107.14339-1-zhengyongjun3@huawei.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 16 Dec 2020 15:49:44 +0200
+Message-ID: <CAHp75VdzQJrzgUOpxseNvv9ZhSrh1Gnu7W-5CQM-kXh4o5fsGg@mail.gmail.com>
+Subject: Re: [PATCH -next] platform: intel-mid: device_libs: convert comma to semicolon
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/urgent branch of tip:
+On Wed, Dec 16, 2020 at 3:11 PM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
+>
+> Replace a comma between expression statements by a semicolon.
 
-Commit-ID:     44f6a7c0755d8dd453c70557e11687bb080a6f21
-Gitweb:        https://git.kernel.org/tip/44f6a7c0755d8dd453c70557e11687bb080a6f21
-Author:        Josh Poimboeuf <jpoimboe@redhat.com>
-AuthorDate:    Mon, 14 Dec 2020 16:04:20 -06:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 16 Dec 2020 14:35:46 +01:00
+Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-objtool: Fix seg fault with Clang non-section symbols
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  arch/x86/platform/intel-mid/device_libs/platform_bt.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/platform/intel-mid/device_libs/platform_bt.c b/arch/x86/platform/intel-mid/device_libs/platform_bt.c
+> index 31dda18bb370..2930b6e9473e 100644
+> --- a/arch/x86/platform/intel-mid/device_libs/platform_bt.c
+> +++ b/arch/x86/platform/intel-mid/device_libs/platform_bt.c
+> @@ -88,8 +88,8 @@ static int __init bt_sfi_init(void)
+>         memset(&info, 0, sizeof(info));
+>         info.fwnode     = ddata->dev->fwnode;
+>         info.parent     = ddata->dev;
+> -       info.name       = ddata->name,
+> -       info.id         = PLATFORM_DEVID_NONE,
+> +       info.name       = ddata->name;
+> +       info.id         = PLATFORM_DEVID_NONE;
+>
+>         pdev = platform_device_register_full(&info);
+>         if (IS_ERR(pdev))
+> --
+> 2.22.0
+>
 
-The Clang assembler likes to strip section symbols, which means objtool
-can't reference some text code by its section.  This confuses objtool
-greatly, causing it to seg fault.
 
-The fix is similar to what was done before, for ORC reloc generation:
-
-  e81e07244325 ("objtool: Support Clang non-section symbols in ORC generation")
-
-Factor out that code into a common helper and use it for static call
-reloc generation as well.
-
-Reported-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1207
-Link: https://lkml.kernel.org/r/ba6b6c0f0dd5acbba66e403955a967d9fdd1726a.1607983452.git.jpoimboe@redhat.com
----
- tools/objtool/check.c   | 11 +++++++++--
- tools/objtool/elf.c     | 26 ++++++++++++++++++++++++++
- tools/objtool/elf.h     |  2 ++
- tools/objtool/orc_gen.c | 29 +++++------------------------
- 4 files changed, 42 insertions(+), 26 deletions(-)
-
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index c6ab445..5f8d3ee 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -467,13 +467,20 @@ static int create_static_call_sections(struct objtool_file *file)
- 
- 		/* populate reloc for 'addr' */
- 		reloc = malloc(sizeof(*reloc));
-+
- 		if (!reloc) {
- 			perror("malloc");
- 			return -1;
- 		}
- 		memset(reloc, 0, sizeof(*reloc));
--		reloc->sym = insn->sec->sym;
--		reloc->addend = insn->offset;
-+
-+		insn_to_reloc_sym_addend(insn->sec, insn->offset, reloc);
-+		if (!reloc->sym) {
-+			WARN_FUNC("static call tramp: missing containing symbol",
-+				  insn->sec, insn->offset);
-+			return -1;
-+		}
-+
- 		reloc->type = R_X86_64_PC32;
- 		reloc->offset = idx * sizeof(struct static_call_site);
- 		reloc->sec = reloc_sec;
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index 4e1d746..be89c74 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -262,6 +262,32 @@ struct reloc *find_reloc_by_dest(const struct elf *elf, struct section *sec, uns
- 	return find_reloc_by_dest_range(elf, sec, offset, 1);
- }
- 
-+void insn_to_reloc_sym_addend(struct section *sec, unsigned long offset,
-+			      struct reloc *reloc)
-+{
-+	if (sec->sym) {
-+		reloc->sym = sec->sym;
-+		reloc->addend = offset;
-+		return;
-+	}
-+
-+	/*
-+	 * The Clang assembler strips section symbols, so we have to reference
-+	 * the function symbol instead:
-+	 */
-+	reloc->sym = find_symbol_containing(sec, offset);
-+	if (!reloc->sym) {
-+		/*
-+		 * Hack alert.  This happens when we need to reference the NOP
-+		 * pad insn immediately after the function.
-+		 */
-+		reloc->sym = find_symbol_containing(sec, offset - 1);
-+	}
-+
-+	if (reloc->sym)
-+		reloc->addend = offset - reloc->sym->offset;
-+}
-+
- static int read_sections(struct elf *elf)
- {
- 	Elf_Scn *s = NULL;
-diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
-index 807f8c6..e6890cc 100644
---- a/tools/objtool/elf.h
-+++ b/tools/objtool/elf.h
-@@ -140,6 +140,8 @@ struct reloc *find_reloc_by_dest(const struct elf *elf, struct section *sec, uns
- struct reloc *find_reloc_by_dest_range(const struct elf *elf, struct section *sec,
- 				     unsigned long offset, unsigned int len);
- struct symbol *find_func_containing(struct section *sec, unsigned long offset);
-+void insn_to_reloc_sym_addend(struct section *sec, unsigned long offset,
-+			      struct reloc *reloc);
- int elf_rebuild_reloc_section(struct elf *elf, struct section *sec);
- 
- #define for_each_sec(file, sec)						\
-diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
-index 235663b..9ce68b3 100644
---- a/tools/objtool/orc_gen.c
-+++ b/tools/objtool/orc_gen.c
-@@ -105,30 +105,11 @@ static int create_orc_entry(struct elf *elf, struct section *u_sec, struct secti
- 	}
- 	memset(reloc, 0, sizeof(*reloc));
- 
--	if (insn_sec->sym) {
--		reloc->sym = insn_sec->sym;
--		reloc->addend = insn_off;
--	} else {
--		/*
--		 * The Clang assembler doesn't produce section symbols, so we
--		 * have to reference the function symbol instead:
--		 */
--		reloc->sym = find_symbol_containing(insn_sec, insn_off);
--		if (!reloc->sym) {
--			/*
--			 * Hack alert.  This happens when we need to reference
--			 * the NOP pad insn immediately after the function.
--			 */
--			reloc->sym = find_symbol_containing(insn_sec,
--							   insn_off - 1);
--		}
--		if (!reloc->sym) {
--			WARN("missing symbol for insn at offset 0x%lx\n",
--			     insn_off);
--			return -1;
--		}
--
--		reloc->addend = insn_off - reloc->sym->offset;
-+	insn_to_reloc_sym_addend(insn_sec, insn_off, reloc);
-+	if (!reloc->sym) {
-+		WARN("missing symbol for insn at offset 0x%lx",
-+		     insn_off);
-+		return -1;
- 	}
- 
- 	reloc->type = R_X86_64_PC32;
+-- 
+With Best Regards,
+Andy Shevchenko
