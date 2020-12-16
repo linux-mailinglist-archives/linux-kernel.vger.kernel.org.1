@@ -2,221 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFCA32DC7D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:38:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A0D2DC7DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:39:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729004AbgLPUgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 15:36:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40530 "EHLO
+        id S1729031AbgLPUiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 15:38:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729008AbgLPUgn (ORCPT
+        with ESMTP id S1727034AbgLPUiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 15:36:43 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7AAC061285
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:35:32 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id s2so13600377plr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:35:32 -0800 (PST)
+        Wed, 16 Dec 2020 15:38:52 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E108BC06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:38:11 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id p126so29225958oif.7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:38:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p8XQW4cjugdKIwxwILtgQ7d/G6qN5cGSPlZP2CvVqWE=;
-        b=Ae5GMZR0GgdREbYr5rQL+Y6zzEpSs9tfB6yohEkPmZ5E1lcGrwEUU+HoYpy8Fa8RgS
-         VAC13qOduFHPKeiR1uI3szWbNbAMgObaU2YT4T5QDUIVeeNt/aWuFqWwmNoFQU+dbuKc
-         Z4kviXMMEEyOlqoT1cOyXnBeLIM94mPlS7K4BqE88Z1EPMuSbXOerl74LIqQcUk3lq1x
-         IuZLG+a2gM8sI3Kubb4gc8EsYnlFD7BfAuCcDovqJRqZIt64oGZvU2nE05Gw8ENVYU+7
-         2iJ9ZB22yeKFfkxjzay9AvrLAPhog7Axgffdf7X2RUP/HL3sTl2xBH7DvYyONUShZ1Bv
-         Lbeg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=e9F9FSqRal1064S7DsdWKAejb4WgRY4sV3OrKHeP5Ew=;
+        b=FpnhJHv4ewbWFa0dCLb8e9rXYoudkDFQBzZM0LLc17EpEbRz118NzUKON/J20BIhqk
+         cuTF8PBVMQIirF19hrGoEy5BubBHTLlGIINlynPrxy7BGN4XQrSS06gqSzKsyTkcUgcG
+         7sm3XHFr38YRZqZvHUb8NhhtrH6zewaP/8QUbCPu02JZfjIdetFnQv3n1QhEqbwSPcWf
+         slfpbx6de+/QhZETO/MQVanqAd3xpxvKgYkZ6hnBFAp/kiyzk5vAmhAVdl0wLqJLiIc9
+         yqtNSgjzRntfk86Jq6Vl795Vx+yrYFepErgRUU3tnSbI4564i8cImKM5WmzORyiDX4fO
+         4ubw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=p8XQW4cjugdKIwxwILtgQ7d/G6qN5cGSPlZP2CvVqWE=;
-        b=pXLad7Fo2jPbLkvF55Fgxn4oys668GCOyfhc0EURrkhxkxx4XxKD5NAPOZofcvpTgj
-         Meqd8QejovGUJEed0clhz4IvD4hXsg7aWS8effQgWIZfvKNaPllmF7R2zgrRPGOkYjns
-         xJ4Ky6esOHgGBATGZ6bOeW1Et9ox/UrHHv7EtCWG9KwcnUqe2VAjzpXCwAHCkT1yWIAQ
-         cFNO3hpPsPJs8t+AelFUdMfRMmgSy8oygXghHL+iS90CpbtXvrdvajt0GEcu/dXscR5e
-         GehAAJqnqO4CxmkE60UMkLj0FTFnk/PFKpCP7PGYd16w8KLSQIIXmFYN9JIpB0msiz5W
-         3ntw==
-X-Gm-Message-State: AOAM530AYb55ekgcn3DiFOdWb5BGueLIgnD+J+2R4WtiK2ekbqzA80h8
-        U85Shy6uIm9rjj7BBVp8jQrfhg==
-X-Google-Smtp-Source: ABdhPJzSD8U4wMSXgHoibwCGxFPKpPyA9oDYq8beROKHNnGC6MmYee5AX3iL50+jC56MZu8jjmPTdw==
-X-Received: by 2002:a17:90a:df13:: with SMTP id gp19mr4545800pjb.235.1608150930853;
-        Wed, 16 Dec 2020 12:35:30 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id u25sm3329042pfn.170.2020.12.16.12.35.29
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e9F9FSqRal1064S7DsdWKAejb4WgRY4sV3OrKHeP5Ew=;
+        b=R8+gVUF43ypPAcrDLS75JE6Bre8NpHK/IDOcS+zzaspdwr0q4H+B+8lsTWpJXWO1nn
+         o91CLJ6LOHdTplhAP25VgjdF3V6+QqVIw7XjQRE+ANbJ8B5K+OnCRpNGo1yPL0VwcT1S
+         dzSBKZpx2xHg9WsWnaTWOfxLoWYD2eNkCZJCRKNdcTtJPa1ICWGgOMSH8CU7PMG2xXJN
+         8G+uc86dCwekqTNO3Aeht3rTRZHPxLmLngYTHZN/Vxg3kBAWvzwF1Y6a42OvugzB9p/Z
+         Funjy2RZ3qgvfxengpKUgOowemnCm44/zOY4ocP4VRHHSnHwY/t7W3nJfpH6Bp43fTIq
+         Dsmw==
+X-Gm-Message-State: AOAM533xpTFg3c1ix8PA5JOgnh+lJMUYWJ5Q9a4/mGPyq9eKGi5M6tVv
+        CpWjgc0CzRJ5CGKQ4VQSPQfSNQ==
+X-Google-Smtp-Source: ABdhPJzynSniLEnrOcFLQn86HQovMSl1jGqO5zPeUiVaskhMbJZKeNARwURdmgb1JW1xuSlLNcLUWA==
+X-Received: by 2002:aca:f15:: with SMTP id 21mr3106629oip.109.1608151091110;
+        Wed, 16 Dec 2020 12:38:11 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 186sm214338ood.6.2020.12.16.12.38.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 12:35:29 -0800 (PST)
-Date:   Wed, 16 Dec 2020 12:35:29 -0800 (PST)
-X-Google-Original-Date: Wed, 16 Dec 2020 10:42:26 PST (-0800)
-Subject:     Re: [dm-devel] [PATCH v1 0/5] dm: dm-user: New target that proxies BIOs to userspace
-In-Reply-To: <CABmKtjfdDS-iO+jLkwt7x-oDHt9V1p-cpYHjL5EV2NKwHxqN1Q@mail.gmail.com>
-CC:     josef@toxicpanda.com, linux-raid@vger.kernel.org,
-        bvanassche@acm.org, snitzer@redhat.com, linux-doc@vger.kernel.org,
-        shuah@kernel.org, corbet@lwn.net, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>, song@kernel.org,
-        dm-devel@redhat.com, michael.christie@oracle.com,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com,
-        agk@redhat.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     ruby.wktk@gmail.com
-Message-ID: <mhng-cc7f1629-3ff7-4efe-8dc6-806b4d8e28c5@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Wed, 16 Dec 2020 12:38:10 -0800 (PST)
+Date:   Wed, 16 Dec 2020 14:38:08 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] gpiolib: Allow name duplicates of "" and "NC"
+Message-ID: <X9pwML9OLalPI0O4@builder.lan>
+References: <20201215170308.2037624-1-bjorn.andersson@linaro.org>
+ <20201216195357.GA2583366@x1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201216195357.GA2583366@x1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 22:17:06 PST (-0800), ruby.wktk@gmail.com wrote:
-> Hi my name is Akira Hayakawa. I am maintaining an out-of-tree DM target
-> named dm-writeboost.
->
-> Sorry to step in. But this is a very interesting topic at least to me.
->
-> I have been looking for something like dm-user because I believe we should
-> be able to implement virtual block devices in Rust language.
->
-> I know proxying IO requests to userland always causes some overhead but for
-> some type of device that performance doesn't matter or some research
-> prototyping or pseudo device for testing, this way should be developed. Of
-> course, implementation in Rust will give us opportunities to develop more
-> complicated software in high quality.
->
-> I noticed this thread few days ago then I started to prototype this library
-> https://github.com/akiradeveloper/userland-io
->
-> It is what I want but the transport is still NBD which I don't like so
-> much. If dm-user is available, I will implement a transport using dm-user.
+On Wed 16 Dec 13:53 CST 2020, Drew Fustini wrote:
 
-Great, I'm glad to hear that.  Obviously this is still in the early days and
-we're talking about high-level ABI design here, so things are almost certainly
-going to change, but it's always good to have people pushing on stuff.
+> On Tue, Dec 15, 2020 at 09:03:08AM -0800, Bjorn Andersson wrote:
+> > Not all GPIO pins are exposed to the world and this is typically
+> > described by not giving these lines particular names, commonly "" or
+> > "NC".
+> > 
+> > With the recent introduction of '2cd64ae98f35 ("gpiolib: Disallow
+> > identical line names in the same chip")' any gpiochip with multiple such
+> > pins will refuse to probe.
+> > 
+> > Fix this by treating "" and "NC" as "no name specified" in
+> > gpio_name_to_desc()
+> > 
+> > Fixes: 2cd64ae98f35 ("gpiolib: Disallow identical line names in the same chip")
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > ---
+> > 
+> > The introduction of 2cd64ae98f35 breaks pretty much all Qualcomm boards and
+> > grepping the DT tree indicates that other vendors will have the same problem.
+> > 
+> > In addition to this the am335x-* boards will also needs "[NC]", "[ethernet]",
+> > "[emmc"], "[i2c0]", "[SYSBOOT]" and "[JTAG]" added to this list to allow
+> > booting v5.11 with the past and present dtb/dts files.
+> 
+> I am the one who added the gpio line names to the am335x dts board
+> files, and I am happy to change them if it will make unique line name
+> logic simpler.
+> 
+> I used the notation of "[<non-gpio-functionality>]" to make it easy for
+> the user to realize that the corresponding gpiolines could not be used
+> on these boards (BeagleBone and PocketBeagle) for actual GPIO.  I used
+> generic names like "[ethernet]" because I didn't think it made sense
+> to confuse the user by using the precise name of the non-gpio function
+> (such as "[gmii1_rxd0]").  I could post a patch for the dts files that
+> restores unique names for "[ethernet]", "[emmc"], "[i2c0]",
+> "[SYSBOOT]" and "[JTAG]".
+> 
+> As for "[NC]", the BGA balls corresponding to these gpio lines are
+> simply not connected to any circuits on the board.  I happy to change
+> that to whatever name people prefer for a non-connected pin ("", "NC",
+> etc).
+> 
 
-Just be warned: we've only had two people write userspaces for this (one of
-which was me, and all that is test code) so I'd be shocked if you manage to
-avoid running into bugs.
+I think this is the right thing to do, but we can't have gpiolib refuse
+to probe existing DTBs - at least not until some grace period has
+expired.
 
->
-> - Akira
->
-> On Tue, Dec 15, 2020 at 7:00 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->
->> On Thu, 10 Dec 2020 09:03:21 PST (-0800), josef@toxicpanda.com wrote:
->> > On 12/9/20 10:38 PM, Bart Van Assche wrote:
->> >> On 12/7/20 10:55 AM, Palmer Dabbelt wrote:
->> >>> All in all, I've found it a bit hard to figure out what sort of
->> interest
->> >>> people
->> >>> have in dm-user: when I bring this up I seem to run into people who've
->> done
->> >>> similar things before and are vaguely interested, but certainly nobody
->> is
->> >>> chomping at the bit.  I'm sending it out in this early state to try and
->> >>> figure
->> >>> out if it's interesting enough to keep going.
->> >>
->> >> Cc-ing Josef and Mike since their nbd contributions make me wonder
->> >> whether this new driver could be useful to their use cases?
->> >>
->> >
->> > Sorry gmail+imap sucks and I can't get my email client to get at the
->> original
->> > thread.  However here is my take.
->>
->> and I guess I then have to apoligize for missing your email ;).  Hopefully
->> that
->> was the problem, but who knows.
->>
->> > 1) The advantages of using dm-user of NBD that you listed aren't actually
->> > problems for NBD.  We have NBD working in production where you can hand
->> off the
->> > sockets for the server without ending in timeouts, it was actually the
->> main
->> > reason we wrote our own server so we could use the FD transfer stuff to
->> restart
->> > the server without impacting any clients that had the device in use.
->>
->> OK.  So you just send the FD around using one of the standard mechanisms to
->> orchestrate the handoff?  I guess that might work for our use case,
->> assuming
->> whatever the security side of things was doing was OK with the old FD.
->> TBH I'm
->> not sure how all that works and while we thought about doing that sort of
->> transfer scheme we decided to just open it again -- not sure how far we
->> were
->> down the dm-user rabbit hole at that point, though, as this sort of arose
->> out
->> of some other ideas.
->>
->> > 2) The extra copy is a big deal, in fact we already have too many copies
->> in our
->> > existing NBD setup and are actively looking for ways to avoid those.
->> >
->> > Don't take this as I don't think dm-user is a good idea, but I think at
->> the very
->> > least it should start with the very best we have to offer, starting with
->> as few
->> > copies as possible.
->>
->> I was really experting someone to say that.  It does seem kind of silly to
->> build
->> out the new interface, but not go all the way to a ring buffer.  We just
->> didn't
->> really have any way to justify the extra complexity as our use cases aren't
->> that high performance.   I kind of like to have benchmarks for this sort of
->> thing, though, and I didn't have anyone who had bothered avoiding the last
->> copy
->> to compare against.
->>
->> > If you are using it currently in production then cool, there's clearly a
->> usecase
->> > for it.  Personally as I get older and grouchier I want less things in
->> the
->> > kernel, so if this enables us to eventually do everything NBD related in
->> > userspace with no performance drop then I'd be down.  I don't think you
->> need to
->> > make that your primary goal, but at least polishing this up so it could
->> > potentially be abused in the future would make it more compelling for
->> merging.
->> > Thanks,
->>
->> Ya, it's in Android already and we'll be shipping it as part of the new OTA
->> flow for the next release.  The rules on deprecation are a bit different
->> over
->> there, though, so it's not like we're wed to it.  The whole point of
->> bringing
->> this up here was to try and get something usable by everyone, and while I'd
->> eventually like to get whatever's in Android into the kernel proper we'd
->> really
->> planned on supporting an extra Android-only ABI for a cycle at least.
->>
->> I'm kind of inclined to take a crack at the extra copy, to at least see if
->> building something that eliminates it is viable.  I'm not really sure if
->> it is
->> (or at least, if it'll net us a meaningful amount of performance), but
->> it'd at
->> least be interesting to try.
->>
->> It'd be nice to have some benchmark target, though, as otherwise this stuff
->> hangs on forever.  My workloads are in selftests later on in the patch
->> set, but
->> I'm essentially using tmpfs as a baseline to compare against ext4+dm-user
->> with
->> some FIO examples as workloads.  Our early benchmark numbers indicated
->> this was
->> way faster than we needed, so I didn't even bother putting together a
->> proper
->> system to run on so I don't really have any meaningful numbers there.  Is
->> there
->> an NBD server that's fast that I should be comparing against?
->>
->> I haven't gotten a whole lot of feedback, so I'm inclined to at least have
->> some
->> reasonable performance numbers before bothering with a v2.
->>
->> --
->> dm-devel mailing list
->> dm-devel@redhat.com
->> https://www.redhat.com/mailman/listinfo/dm-devel
+Regards,
+Bjorn
