@@ -2,64 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B9D2DBF2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 674992DBF2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:05:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbgLPLDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 06:03:40 -0500
-Received: from mout.gmx.net ([212.227.15.15]:37061 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725283AbgLPLDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 06:03:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608116527;
-        bh=O/LvRBAa7QWGElvpU5tXUaVKIHRXyE5A2MjBT+9nh5k=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date;
-        b=JJGo0kvDMSNybEzuxXvjTsO2If/m4pb10EFQfQ7lWWPGIkorbS13ZAgbQGdqoKmja
-         N5PHHZXZKvHNt/Z80L8HRgaWN3dKAlJNwE4HjhSMI4l8LALWIV4EmGB+xhXd/4ffJC
-         lmjpk/P+bA3sKC+30TLrCA9Z2eNIw/wtLQA1TvgU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.217.61]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mqb1W-1kKXWx2ZHM-00mX8Y; Wed, 16
- Dec 2020 12:02:07 +0100
-Message-ID: <7b13506084a015d0256222cdd278fe461cdd4a74.camel@gmx.de>
-Subject: regression: 9a56493f6942 "uts: Use generic ns_common::count" broke
- makedumpfile 1.6.7
-From:   Mike Galbraith <efault@gmx.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Date:   Wed, 16 Dec 2020 12:02:06 +0100
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S1725857AbgLPLFZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Dec 2020 06:05:25 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:35988 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725768AbgLPLFZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 06:05:25 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-94--UvXZFBAOeinyWm-PmDBBw-1; Wed, 16 Dec 2020 11:03:46 +0000
+X-MC-Unique: -UvXZFBAOeinyWm-PmDBBw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 16 Dec 2020 11:03:46 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 16 Dec 2020 11:03:46 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Yong Wu' <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
+        "Will Deacon" <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tomasz Figa <tfiga@google.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "srv_heupstream@mediatek.com" <srv_heupstream@mediatek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "youlin.pei@mediatek.com" <youlin.pei@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        "anan.sun@mediatek.com" <anan.sun@mediatek.com>,
+        "chao.hao@mediatek.com" <chao.hao@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@google.com>,
+        "kernel-team@android.com" <kernel-team@android.com>
+Subject: RE: [PATCH v3 4/7] iommu: Switch gather->end to unsigned long long
+Thread-Topic: [PATCH v3 4/7] iommu: Switch gather->end to unsigned long long
+Thread-Index: AQHW05fCvUUyI8/vv0eBmqh9Irindan5jgVQ
+Date:   Wed, 16 Dec 2020 11:03:46 +0000
+Message-ID: <6b4a1d37a90f4663adf6b4adb9f80e2b@AcuMS.aculab.com>
+References: <20201216103607.23050-1-yong.wu@mediatek.com>
+ <20201216103607.23050-5-yong.wu@mediatek.com>
+In-Reply-To: <20201216103607.23050-5-yong.wu@mediatek.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:NCKxONUyBbguT6F//ZxpKZx+MdXWrMlqiGcfcXy6RIC0heRiESD
- 5zj40QLZYXwfKmzHQRlBhOw+7CVh345Anf2Q4ysp6EVzuuAAjVYIqGXZlRa4+53jTTxPNik
- BbmKnnPvOxYxvMXEU0Wr/9vP5lZhrO+/c7a+VzDxWU5VCT/jWScd8UDHfKBMPVp9uHDwS8F
- Cf2iuTmuTa3GAk3mgp6rA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:CEnK2dW8Mk0=:qLp52nCQAR1sXpcyr/J0YJ
- /+TMCnvsE4dvPgbrBBxg7+fogV+vUx+fwPnTlI5WyTSGgyf325G9fhcH6mszSPm2klvSXzyO+
- JwPwAgseldx4vIokCHLb4Rn3rp77yw0yE5Ybi24acdofqgn5h4GLTFK6CaYThpVSfVXHF3G5J
- sL1Cd2DPdv2jKmqLqEpSg0x8SQ4VcTwP5fAxLSR6D5W5Blt5fZjhiJ0KhWf6PzhwCrhgUSk2U
- 11G/pSuQVy3fYZHCR6PreSy7xxC5bRFnXCf/rpabY6q+uklranpxMFNEBPVJi1qgVNWkwiQNi
- 3lMvKkt1t9Mf0soucOvqM+XvmJMtqlkIvcrsTNDuYrgNb2234zTwyBZPjpIkgSkiCdpk3Ng11
- gOzWcqLrm66Z8T5tBXL7Q/cUbw70pAM5x2GJs6zlxjRzQQYx2ptGQjmRd+HHn6lH7LtjUszF4
- I5jiwIbgUGCWr81wQiRgnwhExBox6fmAnb/Ph8uwEAAMb/eakb2HwZ2neHfQCFBXtQ6h3VBJO
- LprP34gFgfe7NyMBrJ0Mcu35uRvUsL5WiEpQvxk8yYWQ2Z8Sfxc+htBbc0RnD57Qg0laoirIK
- 0ndZI6RaLzoRB51KQFFX1zwIq8kyLhWsuLPWiT1sgITb7qfNYEcR04rQUOAqqbXWZP2aeENoC
- 4cjYzo8gRaZVsDAcjBRKY7r/sw59a4AyLrN3Y1RfG6+OjBcuUr9lWeKPCJRh1XA+G/qawUWa/
- k9g1rBN7e2vF1k5ZS5DE8C9nsIgMlWdV3jSf2A6BFgd2Bq8+Osv/6kLyZixuKypTjDRyL58c4
- d8SUFMAn5Rf2TIf6M9FHXfcB/wG/p2W+sTsOMHSUWFSXKHotLoS0Uvfg6gldX3uD05Ff16K7A
- hWDCnf1VzQEwssEFKIZw==
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+From: Yong Wu
+> Sent: 16 December 2020 10:36
+> 
+> Currently gather->end is "unsigned long" which may be overflow in
+> arch32 in the corner case: 0xfff00000 + 0x100000(iova + size).
+> Although it doesn't affect the size(end - start), it affects the checking
+> "gather->end < end"
+> 
+> Fixes: a7d20dc19d9e ("iommu: Introduce struct iommu_iotlb_gather for batching TLB flushes")
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>  include/linux/iommu.h | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index 794d4085edd3..6e907a95d981 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -178,7 +178,7 @@ enum iommu_dev_features {
+>   */
+>  struct iommu_iotlb_gather {
+>  	unsigned long		start;
+> -	unsigned long		end;
+> +	unsigned long long	end;
+>  	size_t			pgsize;
+>  };
 
-With this commit, bisected and confirmed, kdump stops working here,
-makedumpfile saying "check_release: Can't get the kernel version".
+Doesn't that add two pad words on many 32bit systems?
+You probably ought to re-order the structure to keep the fields
+on their natural boundaries.
 
-	-Mike
+I'm not sure what is being mapped here, but could it make sense
+to just avoid using the highest addresses?
+Then you never hit the problem.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
