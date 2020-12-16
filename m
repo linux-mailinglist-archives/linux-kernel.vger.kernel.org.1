@@ -2,102 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6372DC72C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:33:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C19E12DC6E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388756AbgLPTdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 14:33:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388771AbgLPTdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 14:33:05 -0500
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     cang@codeaurora.org, alim.akhtar@samsung.com, avri.altman@wdc.com,
-        bvanassche@acm.org, martin.petersen@oracle.com,
-        stanley.chu@mediatek.com, Jaegeuk Kim <jaegeuk@google.com>
-Subject: [PATCH] scsi: ufs: fix livelock on ufshcd_clear_ua_wlun
-Date:   Wed, 16 Dec 2020 11:02:25 -0800
-Message-Id: <20201216190225.2769012-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+        id S1731827AbgLPTJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 14:09:17 -0500
+Received: from cheetah.elm.relay.mailchannels.net ([23.83.212.34]:53406 "EHLO
+        cheetah.elm.relay.mailchannels.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726665AbgLPTJR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 14:09:17 -0500
+X-Greylist: delayed 128273 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Dec 2020 14:09:16 EST
+X-Sender-Id: dreamhost|x-authsender|siddhesh@gotplt.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 895D91818E3;
+        Wed, 16 Dec 2020 19:08:29 +0000 (UTC)
+Received: from pdx1-sub0-mail-a17.g.dreamhost.com (100-105-161-17.trex.outbound.svc.cluster.local [100.105.161.17])
+        (Authenticated sender: dreamhost)
+        by relay.mailchannels.net (Postfix) with ESMTPA id D3CEA181F3D;
+        Wed, 16 Dec 2020 19:08:28 +0000 (UTC)
+X-Sender-Id: dreamhost|x-authsender|siddhesh@gotplt.org
+Received: from pdx1-sub0-mail-a17.g.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384)
+        by 0.0.0.0:2500 (trex/5.18.11);
+        Wed, 16 Dec 2020 19:08:29 +0000
+X-MC-Relay: Good
+X-MailChannels-SenderId: dreamhost|x-authsender|siddhesh@gotplt.org
+X-MailChannels-Auth-Id: dreamhost
+X-Turn-Eight: 3863ca7e600b5ebe_1608145709194_2758044234
+X-MC-Loop-Signature: 1608145709194:2935019634
+X-MC-Ingress-Time: 1608145709193
+Received: from pdx1-sub0-mail-a17.g.dreamhost.com (localhost [127.0.0.1])
+        by pdx1-sub0-mail-a17.g.dreamhost.com (Postfix) with ESMTP id 8EDEB7F0EF;
+        Wed, 16 Dec 2020 11:08:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=gotplt.org; h=from:to:cc
+        :subject:date:message-id:mime-version:content-transfer-encoding;
+         s=gotplt.org; bh=gT0qKu6lYfWDkNttl7vX1GdFo4g=; b=F1am7u6cT3FQ9U
+        SGmo9YirhAhoArLjGd9rLd7KZen8ZEXJaCHuV4ZdIODQ/h1oFNpxkmRj8SDK71l4
+        JqP7LfQS1Ei9w0SwxGeshuRxfRano3auEhclRqWaQaqzCdjoZRevB9pmXqTq/tdI
+        ndng160CJcCRiXwIRSv/j8DZ9k4UA=
+Received: from rhbox.redhat.com (unknown [1.186.101.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: siddhesh@gotplt.org)
+        by pdx1-sub0-mail-a17.g.dreamhost.com (Postfix) with ESMTPSA id 8E69A7F0F7;
+        Wed, 16 Dec 2020 11:08:25 -0800 (PST)
+X-DH-BACKEND: pdx1-sub0-mail-a17
+From:   Siddhesh Poyarekar <siddhesh@gotplt.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Florian Weimer <fweimer@redhat.com>
+Subject: [PATCH v3] proc: Escape more characters in /proc/mounts output
+Date:   Thu, 17 Dec 2020 00:38:18 +0530
+Message-Id: <20201216190818.342878-1-siddhesh@gotplt.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaegeuk Kim <jaegeuk@google.com>
+When a filesystem is mounted with a blank name like so:
 
-This fixes the below livelock which is caused by calling a scsi command before
-ufshcd_scsi_unblock_requests() in ufshcd_ungate_work().
+ # mount '' bad -t tmpfs
 
-Workqueue: ufs_clk_gating_0 ufshcd_ungate_work
-Call trace:
- __switch_to+0x298/0x2bc
- __schedule+0x59c/0x760
- schedule+0xac/0xf0
- schedule_timeout+0x44/0x1b4
- io_schedule_timeout+0x44/0x68
- wait_for_common_io+0x7c/0x100
- wait_for_completion_io+0x14/0x20
- blk_execute_rq+0x94/0xd0
- __scsi_execute+0x100/0x1c0
- ufshcd_clear_ua_wlun+0x124/0x1c8
- ufshcd_host_reset_and_restore+0x1d0/0x2cc
- ufshcd_link_recovery+0xac/0x134
- ufshcd_uic_hibern8_exit+0x1e8/0x1f0
- ufshcd_ungate_work+0xac/0x130
- process_one_work+0x270/0x47c
- worker_thread+0x27c/0x4d8
- kthread+0x13c/0x320
- ret_from_fork+0x10/0x18
+its name entry in /proc/mounts is blank causing the line to start
+with a space.
 
-Fixes: 1918651f2d7e ("scsi: ufs: Clear UAC for RPMB after ufshcd resets")
-Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+ /mnt/bad tmpfs rw,seclabel,relatime,inode64 0 0
+
+Further, the name could start with a hash, causing the entry to look
+like this (leading space added so that git does not strip it out):
+
+ # /mnt/bad tmpfs rw,seclabel,relatime,inode64 0 0
+
+This breaks getmntent and any code that aims to parse fstab as well as
+/proc/mounts with the same logic since they need to strip leading
+spaces or skip over comments, due to which they report incorrect
+output or skip over the line respectively.
+
+This fix resolves both issues by (1) treating blank names the same way
+as not having a name and (2) by escaping the hash character into its
+octal encoding, which getmntent can then decode and print correctly.
+As far as file parsing is concerned, these are the only additional
+cases to cater for since they cover all characters that have a special
+meaning in that context.
+
+Signed-off-by: Siddhesh Poyarekar <siddhesh@gotplt.org>
+Cc: Florian Weimer <fweimer@redhat.com>
 ---
- drivers/scsi/ufs/ufshcd.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index e221add25a7e..b0998db1b781 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -1603,6 +1603,7 @@ static void ufshcd_ungate_work(struct work_struct *work)
- 	}
- unblock_reqs:
- 	ufshcd_scsi_unblock_requests(hba);
-+	ufshcd_clear_ua_wluns(hba);
- }
- 
- /**
-@@ -6913,7 +6914,7 @@ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba)
- 
- 	/* Establish the link again and restore the device */
- 	err = ufshcd_probe_hba(hba, false);
--	if (!err)
-+	if (!err && !hba->clk_gating.is_suspended)
- 		ufshcd_clear_ua_wluns(hba);
- out:
- 	if (err)
-@@ -8745,6 +8746,7 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 		ufshcd_resume_clkscaling(hba);
- 	hba->clk_gating.is_suspended = false;
- 	hba->dev_info.b_rpm_dev_flush_capable = false;
-+	ufshcd_clear_ua_wluns(hba);
- 	ufshcd_release(hba);
- out:
- 	if (hba->dev_info.b_rpm_dev_flush_capable) {
-@@ -8855,6 +8857,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
- 	}
- 
-+	ufshcd_clear_ua_wluns(hba);
+Changes from v2:
+- Check for blank name after the string has been duplicated into
+  kernelspace.
+
+ fs/namespace.c      | 5 +++++
+ fs/proc_namespace.c | 2 +-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/fs/namespace.c b/fs/namespace.c
+index cebaa3e81794..1c19bf930807 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -3418,6 +3418,11 @@ SYSCALL_DEFINE5(mount, char __user *, dev_name, ch=
+ar __user *, dir_name,
+ 	if (IS_ERR(kernel_dev))
+ 		goto out_dev;
+=20
++	if (kernel_dev && !kernel_dev[0]) {
++		kfree(kernel_dev);
++		kernel_dev =3D NULL;
++	}
 +
- 	/* Schedule clock gating in case of no access to UFS device yet */
- 	ufshcd_release(hba);
- 
--- 
-2.29.2.729.g45daf8777d-goog
+ 	options =3D copy_mount_options(data);
+ 	ret =3D PTR_ERR(options);
+ 	if (IS_ERR(options))
+diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
+index e59d4bb3a89e..090b53120b7a 100644
+--- a/fs/proc_namespace.c
++++ b/fs/proc_namespace.c
+@@ -83,7 +83,7 @@ static void show_mnt_opts(struct seq_file *m, struct vf=
+smount *mnt)
+=20
+ static inline void mangle(struct seq_file *m, const char *s)
+ {
+-	seq_escape(m, s, " \t\n\\");
++	seq_escape(m, s, " \t\n\\#");
+ }
+=20
+ static void show_type(struct seq_file *m, struct super_block *sb)
+--=20
+2.29.2
 
