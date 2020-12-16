@@ -2,66 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6021C2DC0F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4232DC0F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbgLPNQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:16:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgLPNQ1 (ORCPT
+        id S1726287AbgLPNQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:16:03 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9457 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726137AbgLPNQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:16:27 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE9DC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:15:46 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by xavier.telenet-ops.be with bizsmtp
-        id 51Fk240074C55Sk011Fk5z; Wed, 16 Dec 2020 14:15:44 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kpWee-00BAb1-40; Wed, 16 Dec 2020 14:15:44 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kpWed-005XXy-F0; Wed, 16 Dec 2020 14:15:43 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Jiri Kosina <trivial@kernel.org>
-Cc:     dm-devel@redhat.com, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH trivial] dm crypt: Spelling s/cihper/cipher/
-Date:   Wed, 16 Dec 2020 14:15:42 +0100
-Message-Id: <20201216131542.1320550-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Wed, 16 Dec 2020 08:16:03 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Cwwb028zLzhrP2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 21:14:52 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 16 Dec 2020 21:15:15 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] samples: v4l: convert comma to semicolon
+Date:   Wed, 16 Dec 2020 21:15:47 +0800
+Message-ID: <20201216131547.14718-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a misspelling of "cipher".
+Replace a comma between expression statements by a semicolon.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/md/dm-crypt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ samples/v4l/v4l2-pci-skeleton.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 392337f16ecfd87f..3e6a06c93865e311 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -133,7 +133,7 @@ enum flags { DM_CRYPT_SUSPENDED, DM_CRYPT_KEY_VALID,
- 	     DM_CRYPT_WRITE_INLINE };
- 
- enum cipher_flags {
--	CRYPT_MODE_INTEGRITY_AEAD,	/* Use authenticated mode for cihper */
-+	CRYPT_MODE_INTEGRITY_AEAD,	/* Use authenticated mode for cipher */
- 	CRYPT_IV_LARGE_SECTORS,		/* Calculate IV from sector_size, not 512B sectors */
- 	CRYPT_ENCRYPT_PREPROCESS,	/* Must preprocess data for encryption (elephant) */
- };
+diff --git a/samples/v4l/v4l2-pci-skeleton.c b/samples/v4l/v4l2-pci-skeleton.c
+index 3fa6582b4a68..dcc2f62265b6 100644
+--- a/samples/v4l/v4l2-pci-skeleton.c
++++ b/samples/v4l/v4l2-pci-skeleton.c
+@@ -863,8 +863,8 @@ static int skeleton_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	 * function. The release callback must be non-NULL.
+ 	 */
+ 	vdev->release = video_device_release_empty;
+-	vdev->fops = &skel_fops,
+-	vdev->ioctl_ops = &skel_ioctl_ops,
++	vdev->fops = &skel_fops;
++	vdev->ioctl_ops = &skel_ioctl_ops;
+ 	vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_READWRITE |
+ 			    V4L2_CAP_STREAMING;
+ 	/*
 -- 
-2.25.1
+2.22.0
 
