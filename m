@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF3A2DBF3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE7B2DBF40
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:17:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725862AbgLPLP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 06:15:58 -0500
-Received: from relay2.mymailcheap.com ([217.182.66.162]:41523 "EHLO
-        relay2.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgLPLP5 (ORCPT
+        id S1726020AbgLPLQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 06:16:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgLPLQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 06:15:57 -0500
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay2.mymailcheap.com (Postfix) with ESMTPS id 3CFEA3EDEC;
-        Wed, 16 Dec 2020 12:14:24 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id 7D8412A0C9;
-        Wed, 16 Dec 2020 06:14:23 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1608117263;
-        bh=XrfmpW4smFnOvefjNb/Q7XUqfv9lAI9XIsZQfajzkdY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=X9mF4E/O1AwOjT5Jf2ugEWE5ACLHQAJ4g7+0B6bi+Wl7iGeS06AFzQ3Tj/bxv5ED6
-         Zkk20nXbaLZK0bxPWpxG32PsEaBhQUmqVT0Mn2i1zru89AEdjM9oO48xkGiAANbrV8
-         pSUHm1p8QbNVsmz9M1Hd6zxUelvNmbBAbvIiT+78=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id tbQg6KSRVCNo; Wed, 16 Dec 2020 06:14:22 -0500 (EST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Wed, 16 Dec 2020 06:14:21 -0500 (EST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id E91B742F19;
-        Wed, 16 Dec 2020 11:14:18 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="NT4PB130";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [0.0.0.0] (li1000-254.members.linode.com [45.33.50.254])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id E198F42F19;
-        Wed, 16 Dec 2020 11:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1608117250;
-        bh=XrfmpW4smFnOvefjNb/Q7XUqfv9lAI9XIsZQfajzkdY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=NT4PB130t28KZN9+LMTmAw7I7VnqFVj8UoNvVWGqqp/tAoXYzQo/GpvJdzuriuBao
-         AbDZbXtgX9lbVrcfRXM6PuAzRfc1rpOpXARacbTu9Iq/zJ2FPqdN9aRzccayUOgO3v
-         GDMC4FPNzHh1Er4QPBYVL6OPC82lsxiOKzTLP6Dg=
-Subject: Re: [QUESTION] support perf record --call-graph dwarf for mips
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Juxin Gao <gaojuxin@loongson.cn>,
-        Archer Yan <ayan@wavecomp.com>,
-        David Daney <david.daney@cavium.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-References: <97fb66bf-51f8-a491-9eb4-10b2314cf82f@loongson.cn>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <90c7db1a-8e1a-e253-79ca-f93dbac014c2@flygoat.com>
-Date:   Wed, 16 Dec 2020 19:14:02 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Wed, 16 Dec 2020 06:16:40 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD61BC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 03:15:59 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id t8so23563548iov.8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 03:15:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SjqtyaEXagR0cdMaIV8xobKWELgO4kFZkl7p1Qxs5wY=;
+        b=mfwVEMGBbhA7vaP/3oy4bPd91C/hzsUoCAhd62/nf8VXNk4EFoVn1cdWAuE1WY1891
+         +CtL3xRHQr0/VciLA56p7MGGRkI8UhFq4QdrMfrC/hQlTi7eQZVVLt+zxEEHmaxnUVxy
+         Fskvuydy/PvcLY8rQfoU18zJtpZDJzqx1P+Eg5VzMHuxJH21rOITNaWxWyNjt0iqWOvY
+         Sqpj9VhyrH+26DaelVNjgb2jvUTwCHR94/5ucc6MNC1m07/L5asRf8G85j6djKTjG1FD
+         gWFsCB1jlP7170lpiEvsVyRXNkwtetRET0jMXPSjReQcKIn7pYJ6n/MTPfy/RqE6C20F
+         qW3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SjqtyaEXagR0cdMaIV8xobKWELgO4kFZkl7p1Qxs5wY=;
+        b=eZsFdjRSC7aayWgzmlx79iT9Elt6RjRBgh07PWXz/oa89eUjPIcGHivsB3ToM9QTZL
+         55Kzld1vY3JCzz962br2vEo/pN/ImBFNtfyTz6hcXSVUw7nhoayTBMYO6qQYkb29guw/
+         +07GKJ+xfQDnTmLH6G5U9CA2QyCNmnsRGxcT7vKQhrdSgtdIzAOC3vuHaFbVu+T8ocPk
+         +I5PwT1jUGNuXMJhSNx2ud6dWiG9jqveb3II/iXSEDGcWowkAT/whbQjlxp+zdqYg9TZ
+         xiaSMCPb1tSjM87KBa5M5aLNOo/JKAr+3udcwy5gMCIpPzVJjhyrKYNKS6WATNx/5loH
+         7QNg==
+X-Gm-Message-State: AOAM531S6pKAJbsuFKG5A3AmP3wPcEM6QbzyIfmU/402hNk0Xblu9yZR
+        PzI13OAxHGZrWwx+qMtkRFs9to1xR/A70V9vw6U=
+X-Google-Smtp-Source: ABdhPJzjwmBi8CGqCr2fDXk/QakcooFgPtXbkRTLXddqhtiu+AYtAAPMcpbRAJO9akMK1mG8pb7Bk89gz/CCFvmdVGY=
+X-Received: by 2002:a02:90ca:: with SMTP id c10mr42866369jag.115.1608117358941;
+ Wed, 16 Dec 2020 03:15:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <97fb66bf-51f8-a491-9eb4-10b2314cf82f@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Rspamd-Server: mail20.mymailcheap.com
-X-Spamd-Result: default: False [-0.10 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Queue-Id: E91B742F19
+References: <20201215214656.649896-1-bert@biot.com> <410ca5c2-96a0-ffd0-e1c0-316fe37ff4d5@microchip.com>
+In-Reply-To: <410ca5c2-96a0-ffd0-e1c0-316fe37ff4d5@microchip.com>
+From:   Chuanhong Guo <gch981213@gmail.com>
+Date:   Wed, 16 Dec 2020 19:15:47 +0800
+Message-ID: <CAJsYDVKysjbMYrpv52WcY4Vz=Zdrp69gUwHP=VQcUq_3KpzMhQ@mail.gmail.com>
+Subject: Re: [PATCH] Add spi-nor driver for Realtek RTL838x/RTL839x switch SoCs
+To:     Tudor Ambarus <Tudor.Ambarus@microchip.com>
+Cc:     bert@biot.com, Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>, john.garry@huawei.com,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        vadivel.muruganx.ramuthevar@linux.intel.com,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi!
 
-
-在 2020/12/16 下午6:05, Tiezhu Yang 写道:
-> Hi,
+On Wed, Dec 16, 2020 at 4:30 PM <Tudor.Ambarus@microchip.com> wrote:
 >
-> In the current upstream mainline kernel, perf record --call-graph dwarf
-> is not supported for architecture mips64. I find the following related
-> patches about this feature by David Daney <david.daney@cavium.com> and
-> Archer Yan <ayan@wavecomp.com> in Sep 2019.
-
-AFAIK ddaney left Cavium at 2018 and Wave Computing Shanghai is defuncted...
-
-Feel free to take over if you like, there is no licenses issue, just 
-remember to credit
-others properly.
-
-- Jiaxun
-
-
+> On 12/15/20 11:46 PM, Bert Vermeulen wrote:
+> > This driver supports the spiflash core in all RTL838x/RTL839x SoCs,
+> > and likely some older models as well (RTL8196C).
+> >
+> Can we use SPIMEM and move this under drivers/spi/ instead?
 >
-> [1/2] Support mips unwinding and dwarf-regs
-> https://lore.kernel.org/patchwork/patch/1126521/
->
-> [2/2] Support extracting off-line stack traces from user-space with perf
-> https://lore.kernel.org/patchwork/patch/1126520/
->
-> Is this a work in progress?
-> Could you please give me some feedback?
-> Thank you for your help.
->
-> Thanks,
-> Tiezhu
+> Cheers,
+> ta
+
+Just took a brief look at the code, and here's my current understanding
+of this controller:
+1. CS is controlled separately with SFCSR_CSB* bits
+2. To write 1-4 bytes, set SFCSR_LEN* and write to SFDR
+2. To read 1-4 bytes, set SFCSR_LEN* and read SFDR
+
+If that's true, this is a generic half-duplex spi controller, and the driver
+should register a spi_controller with set_cs and transfer_one
+implemented.
+
+-- 
+Regards,
+Chuanhong Guo
