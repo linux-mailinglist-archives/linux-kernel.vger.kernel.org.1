@@ -2,141 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293DC2DBAF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 07:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D924A2DBB06
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 07:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725892AbgLPGDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 01:03:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
+        id S1725914AbgLPGG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 01:06:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725813AbgLPGDg (ORCPT
+        with ESMTP id S1725769AbgLPGG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 01:03:36 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39121C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 22:02:56 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id v1so908120pjr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 22:02:56 -0800 (PST)
+        Wed, 16 Dec 2020 01:06:59 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB722C061793;
+        Tue, 15 Dec 2020 22:06:18 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id j17so21325399ybt.9;
+        Tue, 15 Dec 2020 22:06:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dEIBkjaz1JW9MJFloIUwr6rBoz6T3L6jcYcfmy6MbLM=;
-        b=oVQ1b2fn/FCW5ZZKajet+Qvo0XQF1rCG/NqwLfjNEnb85YRdmWcKxi8ic9qVEPXJ5A
-         TMz5sBBjUT/a81k3ilJG4mKQo6mehjER6tNTzKDWc2Y9pRUMNtEbSvhGZCOUCZZBCHMH
-         uZ2Fh3kSClNlRZOXKMXrwX9ehbTaQrJzoEiQpmwg1/v9QH6ZdFo3ePdSFD/43gBAj6Yp
-         utS3xpoV4Oer5Jt5eWnc8+ByVPEt1PjSZlzvtaTwGzpFz8nAp2lgZtXSHwgz0U2IPmjd
-         6MxTkJXuv0AHXcZw3mGf3sfDQxkltgG5aj4936GM3TFU4rCJKlu2iaLvuB3iUys54pFC
-         X6Bw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bQSBU3DldQmZhqs8BiiflDFptJcD7jZrmoWAbiLUJhU=;
+        b=bLF8Zg/bSTck1Rd+5n691xW28veCVszy71v2IOmm9GH5VNg1dfDTm9OCbBpZFVHA4W
+         69Yqq12T3JRZbfDz6OpYxXIwYkC4NmkDtSvqAN7Hjkv64SOp8L46V2/pir+zj82iLPZT
+         qAcwwtT33M9OFI0pZzSA2mVoLf0TaxeXvtXrZUYKRvtL9l6PUAdm29bR8DpWocBY0dGQ
+         YgSPzYkqZA75IkfE+uxo82DKz+ULOGI6vWifIJjknmxH7tQJS2WbWJLWXOfdP68BL4Rd
+         jTvROBL5CiepbUY8CFor8xkEOfX8Z5FONKNHnOxw0FEWx6VTDFTVfLXc94mpt5cJViQX
+         62Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=dEIBkjaz1JW9MJFloIUwr6rBoz6T3L6jcYcfmy6MbLM=;
-        b=rXTTDndFSTqJv5oZGvj1zwHBj/h9gvpQXEXxvQuSe49SbFa5sNAuOG8ssQHdoW47Dn
-         f7GDbps4xcy1eNhCUtmoEU8T6wwLlb00mpZYNiZS4S0hE1/FKqlVWn5ZTq18jhYW2PUy
-         LzbfxgUKmqFb9obnjPcyk4gHgszW00ZKgn7tI3ZXK70+F0Mezt+aYat2zqkY8g04l1BS
-         VbUzJoStFx60VajK3VeaZSu6gqyPh7lvzserL+DyvhDeEjnM99VJdkfPMCxcPrtzx2Dv
-         +iP6JA4IWy/twgBXUzDJCs3AXAzq1z2RU79cQ61aY7R4XirNmeYCtAewjoBIweYHmOZx
-         wD+A==
-X-Gm-Message-State: AOAM531kiMhzDY9zPR04uBrkbox3cT3RMrzguYu2Njsp+8FShT50k3wM
-        N80kgR6yRwxRE84oeQz/CTd0dUIIqqK59kb5
-X-Google-Smtp-Source: ABdhPJxKdwdNAxQUtCLfd/IMbi11HU9qicNckr4xevWaGtrPv5uwG19ZxWQCWZxhfsGVowD8JgfQkQ==
-X-Received: by 2002:a17:90a:e60d:: with SMTP id j13mr1870046pjy.52.1608098575211;
-        Tue, 15 Dec 2020 22:02:55 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id v6sm953257pfi.31.2020.12.15.22.02.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 22:02:54 -0800 (PST)
-Date:   Tue, 15 Dec 2020 22:02:54 -0800 (PST)
-X-Google-Original-Date: Tue, 15 Dec 2020 22:02:50 PST (-0800)
-Subject:     Re: [PATCH v3 3/5] RISC-V: Align the .init.text section
-In-Reply-To: <20201105000439.1491243-4-atish.patra@wdc.com>
-CC:     linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
-        Jim Wilson <jimw@sifive.com>, aou@eecs.berkeley.edu,
-        akpm@linux-foundation.org, anup@brainfault.org, ardb@kernel.org,
-        greentime.hu@sifive.com, ren_guo@c-sky.com,
-        linux-riscv@lists.infradead.org, walken@google.com,
-        ojeda@kernel.org, rppt@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>, zong.li@sifive.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Atish Patra <Atish.Patra@wdc.com>
-Message-ID: <mhng-5b9a6df7-f6a2-4db8-aaf9-b4e89115522d@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bQSBU3DldQmZhqs8BiiflDFptJcD7jZrmoWAbiLUJhU=;
+        b=p8n+4nLSohveKtIaU22FrVrhhOt1+UNXOHsf6maWw2hjZ/txTRXk5Irhlzl1obmzer
+         kVjdmLO2i8TR2xGUrQ8sanjMrexPwBF3ISIusLpocURwxP9J+yYvCxY9FJxfVNxoass1
+         1bC0puB35G95adkJyL8zP6hMuT8ZcIbFjrsY1IprPJSmp7LvkxzawoWztWrhfC2Tykq8
+         HNFekp5ljhPTwyZ0IrU6Dndi9451Gr+dsRwdsRg3EBsqBkDTzsdNnZ0toc5FeXouV9NF
+         7dB/2JSwxnc2I1RTsw4+mjC1R2eOPT+5FZ+DaNHFJjpFQJ2F4xg4WSsEXI+eX/4gqPd8
+         xt1w==
+X-Gm-Message-State: AOAM531/uS+Is9tdAYy4yHtCir8zikpNuRoBwg12E+uPXUQ3Q3S2TeYb
+        3Eb/S5wxH1fknnVH+af0sTdETVXzbBfFHzYhTtE=
+X-Google-Smtp-Source: ABdhPJwP+8IZQgQaJ80ndOw3XeyHnKwU0qnA27GXZdW4AXYA2almMdZEH9ilfdSzFgKArCUYPf2VEQkSv3iuCI6MrtI=
+X-Received: by 2002:a25:be87:: with SMTP id i7mr46897305ybk.332.1608098778261;
+ Tue, 15 Dec 2020 22:06:18 -0800 (PST)
+MIME-Version: 1.0
+References: <1607403341-57214-1-git-send-email-yash.shah@sifive.com>
+ <1607403341-57214-8-git-send-email-yash.shah@sifive.com> <CAEUhbmURfwMYo6FTuL7TP7daSuhBOOpcZX-mfCxCTVS+QiaHqA@mail.gmail.com>
+ <BY5PR13MB44539E6CDB009EFA6AB7CAFA82C50@BY5PR13MB4453.namprd13.prod.outlook.com>
+In-Reply-To: <BY5PR13MB44539E6CDB009EFA6AB7CAFA82C50@BY5PR13MB4453.namprd13.prod.outlook.com>
+From:   Bin Meng <bmeng.cn@gmail.com>
+Date:   Wed, 16 Dec 2020 14:06:07 +0800
+Message-ID: <CAEUhbmWrCpKraUpijggkiNXa40OAnN9YJF1iFWnrnrhJZN1joA@mail.gmail.com>
+Subject: Re: [PATCH v2 7/9] riscv: dts: add initial support for the SiFive
+ FU740-C000 SoC
+To:     Yash Shah <yash.shah@openfive.com>
+Cc:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        Peter Korsgaard <peter@korsgaard.com>,
+        "Paul Walmsley ( Sifive)" <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Nov 2020 16:04:37 PST (-0800), Atish Patra wrote:
-> In order to improve kernel text protection, we need separate .init.text/
-> .init.data/.text in separate sections. However, RISC-V linker relaxation
-> code is not aware of any alignment between sections. As a result, it may
-> relax any RISCV_CALL relocations between sections to JAL without realizing
-> that an inter section alignment may move the address farther. That may
-> lead to a relocation truncated fit error. However, linker relaxation code
-> is aware of the individual section alignments.
->
-> The detailed discussion on this issue can be found here.
-> https://github.com/riscv/riscv-gnu-toolchain/issues/738
->
-> Keep the .init.text section aligned so that linker relaxation will take
-> that as a hint while relaxing inter section calls.
-> Here are the code size changes for each section because of this change.
->
-> section         change in size (in bytes)
->   .head.text      +4
->   .text           +40
->   .init.text      +6530
->   .exit.text      +84
->
-> The only significant increase in size happened for .init.text because
-> all intra relocations also use 2MB alignment.
->
-> Suggested-by: Jim Wilson <jimw@sifive.com>
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> ---
->  arch/riscv/kernel/vmlinux.lds.S | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
-> index 3ffbd6cbdb86..cacd7898ba7f 100644
-> --- a/arch/riscv/kernel/vmlinux.lds.S
-> +++ b/arch/riscv/kernel/vmlinux.lds.S
-> @@ -30,7 +30,13 @@ SECTIONS
->  	. = ALIGN(PAGE_SIZE);
->
->  	__init_begin = .;
-> -	INIT_TEXT_SECTION(PAGE_SIZE)
-> +	__init_text_begin = .;
-> +	.init.text : AT(ADDR(.init.text) - LOAD_OFFSET) ALIGN(SECTION_ALIGN) { \
-> +		_sinittext = .;						\
-> +		INIT_TEXT						\
-> +		_einittext = .;						\
-> +	}
-> +
->  	. = ALIGN(8);
->  	__soc_early_init_table : {
->  		__soc_early_init_table_start = .;
+Hi Yash,
 
-Not sure what's going on here (or why I wasn't catching it earlier), but this
-is breaking boot on one of my test configs.  I'm not getting any Linux boot
-spew, so it's something fairly early.  I'm running defconfig with
+On Wed, Dec 16, 2020 at 1:24 PM Yash Shah <yash.shah@openfive.com> wrote:
+>
+> > -----Original Message-----
+> > From: Bin Meng <bmeng.cn@gmail.com>
+> > Sent: 10 December 2020 19:05
+> > To: Yash Shah <yash.shah@openfive.com>
+> > Cc: linux-spi@vger.kernel.org; linux-serial@vger.kernel.org; linux-
+> > pwm@vger.kernel.org; linux-i2c@vger.kernel.org; linux-kernel <linux-
+> > kernel@vger.kernel.org>; linux-riscv <linux-riscv@lists.infradead.org>;
+> > devicetree <devicetree@vger.kernel.org>; open list:GPIO SUBSYSTEM <linux-
+> > gpio@vger.kernel.org>; broonie@kernel.org; Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org>; Albert Ou <aou@eecs.berkeley.edu>;
+> > lee.jones@linaro.org; u.kleine-koenig@pengutronix.de; Thierry Reding
+> > <thierry.reding@gmail.com>; andrew@lunn.ch; Peter Korsgaard
+> > <peter@korsgaard.com>; Paul Walmsley ( Sifive)
+> > <paul.walmsley@sifive.com>; Palmer Dabbelt <palmer@dabbelt.com>; Rob
+> > Herring <robh+dt@kernel.org>; Bartosz Golaszewski
+> > <bgolaszewski@baylibre.com>; Linus Walleij <linus.walleij@linaro.org>
+> > Subject: Re: [PATCH v2 7/9] riscv: dts: add initial support for the SiFive FU740-
+> > C000 SoC
+> >
+> > [External Email] Do not click links or attachments unless you recognize the
+> > sender and know the content is safe
+> >
+> > On Tue, Dec 8, 2020 at 3:06 PM Yash Shah <yash.shah@sifive.com> wrote:
+> > >
+> > > Add initial support for the SiFive FU540-C000 SoC. FU740-C000 is built
+> >
+> > FU740-C000 Soc
+> >
+> > > around the SiFIve U7 Core Complex and a TileLink interconnect.
+> > >
+> > > This file is expected to grow as more device drivers are added to the
+> > > kernel.
+> > >
+> > > Signed-off-by: Yash Shah <yash.shah@sifive.com>
+> > > ---
+> > >  arch/riscv/boot/dts/sifive/fu740-c000.dtsi | 293
+> > > +++++++++++++++++++++++++++++
+> > >  1 file changed, 293 insertions(+)
+> > >  create mode 100644 arch/riscv/boot/dts/sifive/fu740-c000.dtsi
+> > >
+> > > diff --git a/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
+> > > b/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
+> > > new file mode 100644
+> > > index 0000000..eeb4f8c3
+> > > --- /dev/null
+> > > +++ b/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
+> > > @@ -0,0 +1,293 @@
+>
+> ...
+>
+> > > +               plic0: interrupt-controller@c000000 {
+> > > +                       #interrupt-cells = <1>;
+> > > +                       #address-cells = <0>;
+> > > +                       compatible = "sifive,fu540-c000-plic",
+> > > + "sifive,plic-1.0.0";
+> >
+> > I don't see bindings updated for FU740 PLIC, like "sifive,fu740-c000-plic"?
+>
+> That's because it is not required. There won't be any difference in driver code for FU740 plic.
 
-    CONFIG_PREEMPT=y
-    CONFIG_DEBUG_PREEMPT=y
-    CONFIG_PROVE_LOCKING=y
+Are there any driver changes for the drivers that have an updated
+fu640-c000-* bindings? I don't see them in the linux-riscv list.
 
-It looks like that's been throwing a bunch of warnings for a while, but it did
-at least used to boot.  No idea what PREEMPT would have to do with this, and
-the other two don't generally trigger issues that early in boot (or at least,
-trigger halts that early in boot).
+>
+> ...
+>
+> > > +               eth0: ethernet@10090000 {
+> > > +                       compatible = "sifive,fu540-c000-gem";
+> >
+> > "sifive,fu740-c000-gem"?
+> >
+>
+> Same reason as above.
+>
+> Thanks for your review.
 
-There's a bunch of other stuff that depends on this that's on for-next so I
-don't want to just drop it, but I also don't want to break something.  I'm just
-running QEMU's virt board.
-
-I'll take a look again tomorrow night, but if anyone has some time to look
-that'd be great!
-
+Regards,
+Bin
