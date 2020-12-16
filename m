@@ -2,151 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569572DB9DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 04:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C02D62DB9E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 05:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725837AbgLPDzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 22:55:12 -0500
-Received: from mail-eopbgr760115.outbound.protection.outlook.com ([40.107.76.115]:1443
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725550AbgLPDzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 22:55:12 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DQN9zJwPHeHEccWqLfe176WtQkttJAMn6Wqp9bZzZholuP0PTp4nAWZWiu251iaHHjbgWiRtB9l4FecBgVBgMp9QlofU5k/afBgbrVw8Kd4TxgBpcien++8Y7vnx+ef5ndmiKQhHTZSHtLRBVFc2tSZBdg3bQRAZB+oDSJdhalf3CYQACtxAq3gAo4tU8rc9smLY5gnMgsI9gWBFh0uuVM8m8Xog3Szb8NL8P4aF0THD8k1UIpuXoORNHIVPg0qjnT4ulA4dwNubrLYp27XMmB6YIetxFNTqpD5trMwPQY+ROjGlELIK+xj2hlPDHPsjdNtDkn1xOsNRqzSXFbjQ2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bgUyZvlB+b1KHI0Lo6uDSrawrtZQUb2GXWRAKAkqxf4=;
- b=aM8zXmUVXgAfNfAvfX2ReOwTLWRPmnPRhg1zo+mzUCLqjuVLaV2ahBuGOI45ggqZcyzl6FMsm4Hn35YGWZJ9FqeM0LUmUQcxRpsrfPMozR2KlU6yp6YAbPGyo5VGS/xY+fCpD2VONE7DInhtJocQnMQvcxQ6bM2s60C9ya4Q400CXlz5QCBPxWBtbEAXST5kVLmdbFL3WXikO693n1xSMclq43O/34WWF69qRArNNrWaJPgn2LMwruPoLRMUadtFLB57JZnn1BxdLWOq1gx1NEh6rdM4hHPyTwsFjE4zFELRv/zoDSZtzQz4g/DTD+P/Mw9uMJWve1nrX2MBs+egYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bgUyZvlB+b1KHI0Lo6uDSrawrtZQUb2GXWRAKAkqxf4=;
- b=FJYvSyNq2xK6yUPxMa2Z62TlrTBJabmzZAkRPNhiU0c/BEWSCdTFjkiQASBV5F73lvA7kkx0WwYYiLsHZgiCbB1SJpaMjAczzXM9YUkCM/tWYfQADlRUyAMZMhlfC8KAbeGhQSqmp7uXC1d+ZMTzxV0RmKySci6LhsbUgK+mnLI=
-Received: from (2603:10b6:303:74::12) by
- MWHPR21MB0639.namprd21.prod.outlook.com (2603:10b6:300:127::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.8; Wed, 16 Dec
- 2020 03:54:29 +0000
-Received: from MW4PR21MB1857.namprd21.prod.outlook.com
- ([fe80::f133:55b5:4633:c485]) by MW4PR21MB1857.namprd21.prod.outlook.com
- ([fe80::f133:55b5:4633:c485%5]) with mapi id 15.20.3700.012; Wed, 16 Dec 2020
- 03:54:29 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: static_branch_enable() does not work from a __init function?
-Thread-Topic: static_branch_enable() does not work from a __init function?
-Thread-Index: AdbTW3KiWdYv++9aQjWyNkn3nWo7IA==
-Date:   Wed, 16 Dec 2020 03:54:29 +0000
-Message-ID: <MW4PR21MB1857CC85A6844C89183C93E9BFC59@MW4PR21MB1857.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=cad3edbe-6569-47e6-bb9d-60ae53f80dbc;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-16T03:24:57Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2601:600:a280:7f70:4162:5057:b066:2876]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3348ac3c-2b72-40ad-c6eb-08d8a1764a48
-x-ms-traffictypediagnostic: MWHPR21MB0639:
-x-microsoft-antispam-prvs: <MWHPR21MB06395EC916A8D3B5C2C9ACFDBFC59@MWHPR21MB0639.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3EjMyWU2L1RJW96YgT8YjYOBipnvsIi77Rz1zM98skxPX2xRaOf2rgV7nS2w+C+IUhV4BWwaBVWQcQI3/sMfFtA4/ulNdcmGaaENNgixAoPeF5wXx5eIqWFaw7oAeHMC/A26Wl1QjW3AHBB7zY2TfUEGnCmDPLhF6Khf8lvC7gsqhuMN37q95rqwJdsjJbM9g+aJJVr7gUWKRpNKvIw616nCjV1WO1bmUYSYq9qsMWogGa1KkwhWMSgNArreKYl3CSHox2/o7EVseE5qEuaNReiNot2vTThbzsBQ4Rz081pT+6an7Z7aQ6G6KO/89GsgVt03cJLX2C2R+h9zVJ+b6c5rIltN8KttlgpMpGld7gBvijVQWLHbHzqwWIOrmAJ4mNu8sgKgnlKH3H/R3phA+Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR21MB1857.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(396003)(39860400002)(366004)(8676002)(2906002)(8990500004)(82950400001)(5660300002)(82960400001)(4326008)(7696005)(8936002)(186003)(6506007)(10290500003)(66556008)(76116006)(66946007)(66476007)(64756008)(86362001)(33656002)(478600001)(9686003)(52536014)(71200400001)(55016002)(110136005)(316002)(66446008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?p7BQdwWZgLtd8IBsqmqyS7uJZe3VOLQ2tvEqPTPcC9JAhzaGQhMjdc8AlAv8?=
- =?us-ascii?Q?AMJMjVMLAzv/hgddM6cJzoOtFiC89p+pk6cl6OLtX9U5ktYwHq8z5a/zyuMV?=
- =?us-ascii?Q?u0BZhJWbqu/1MHFx3t5HynRAFGVjQdKjgpQ+TaJq02MHVLITdLdEzfakRkhp?=
- =?us-ascii?Q?WrR6vyM8+I3SdFdfdbACwK8L8IuB+4oGyB9Egs1XIx4khHzFFM7h/kFjga69?=
- =?us-ascii?Q?dzCSc4onIViYsbOiG5unrYMkYswvb8gADsImtL5PbVuWoT2fyxiG0bYJD95M?=
- =?us-ascii?Q?0+CLFT/uK+2HaMT3/FaiKUpheBX14vIUX+QmTuaVgXgl85QB3W0rTsXzmTsk?=
- =?us-ascii?Q?x6ImelwwDnbDv73FXbyom8f++1zFWcIulymMsv8JYKJjhLGxVad/BJp7lSj5?=
- =?us-ascii?Q?y9WyFlKvZWS1fYSf5AHuFSjUqLiR4QaZWdxb2TDHzyUtPzWQbewRdrpkHGYb?=
- =?us-ascii?Q?iNr7DySy2RnLv2BAdbY4LNRTOG2aZ9VYy/M1CJDoa8vxHZRku0g3AoVbyxXU?=
- =?us-ascii?Q?YUCroya9eqeQQG8UOB8SNrsaE616cqZWni0508O9VEnKFtaeSzaIFCzeh32J?=
- =?us-ascii?Q?m0oMCEJqj6Tw9CAMImO6GAJMtKHd4gjxJxlhQkg4AJhH9XpZolWdrOR/HzyZ?=
- =?us-ascii?Q?xiFI83XBXpa5NH445XhPMjsYWXU/tKpjZCXs4Lgo40RiJPh9UxNEe02Sn/sG?=
- =?us-ascii?Q?M+4qoxRbrLjlRFpEno7lar6QV/QIL/0voVa3d4i5R+HGqpPmqKlesrIgphac?=
- =?us-ascii?Q?bHhHnwVg1pg1N0BOiKvTBToM3usG5n+fOlmvlRnu8xvuZV3sWkLFoeN2RL+H?=
- =?us-ascii?Q?ni7gHIoQg/SCVc1q8BGd4FmVfJrdyZ9B2wJ7CVeEGiem0XgrxWEebamkR1UC?=
- =?us-ascii?Q?9FEyn25WrlOBYCLrn7oyNx/GanHS+/IH4zRBJPQzVA49JMsXhPDJAhaqVjpf?=
- =?us-ascii?Q?zaS/4spa4g6pkcOLyZhL+nemTcuzLU/92pVOfsaZQcxf6UjmWP68n1ZO8IDc?=
- =?us-ascii?Q?OXRgD7j93GUCJOJ0HkqfdWUmPY3RoZsVJdUM2DmghxWq+Ac=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR21MB1857.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3348ac3c-2b72-40ad-c6eb-08d8a1764a48
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 03:54:29.6157
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mlutSdxVVDh7kyesKZDsh2rc7LB2FVoQ+wtM1DOOuVi5LKNKW9sFUvaYo/EpKbmjKIT64eKvYzEMsW3hR413Ug==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0639
+        id S1725789AbgLPEKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 23:10:30 -0500
+Received: from mga14.intel.com ([192.55.52.115]:35424 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725274AbgLPEKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 23:10:30 -0500
+IronPort-SDR: OHNbDl7sRfgs44z3s8nzRd1pEpzYvSDBYuDCnBb4SxM5vFnlZIObVyliGnVmvuvUJsoGBwEINR
+ 8KwRH11rAvaw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="174227979"
+X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
+   d="scan'208";a="174227979"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 20:08:44 -0800
+IronPort-SDR: jk3Nl9CetlgKdEPSGcVk9zQdB7R7Ii+0F6Wisu9OTK+7GhvqeDvHdCnhoh9hgRmGot95OqW3/M
+ 7sxDzWwVCdaw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
+   d="scan'208";a="368661602"
+Received: from sgsxdev004.isng.phoenix.local (HELO localhost) ([10.226.81.179])
+  by orsmga008.jf.intel.com with ESMTP; 15 Dec 2020 20:08:40 -0800
+From:   Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+To:     dmaengine@vger.kernel.org, vkoul@kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
+        chuanhua.lei@linux.intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, mallikarjunax.reddy@linux.intel.com,
+        malliamireddy009@gmail.com, peter.ujfalusi@ti.com
+Subject: [RESEND PATCH v10 0/2] Add Intel LGM SoC DMA support
+Date:   Wed, 16 Dec 2020 12:08:34 +0800
+Message-Id: <cover.1608090736.git.mallikarjunax.reddy@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-The below init_module() prints "foo: false". This is strange since
-static_branch_enable() is called before the static_branch_unlikely().
-This strange behavior happens to v5.10 and an old v5.4 kernel.
+Add DMA controller driver for Lightning Mountain (LGM) family of SoCs.
 
-If I remove the "__init" marker from the init_module() function, then
-I get the expected output of "foo: true"! I guess here I'm missing
-something with Static Keys?
+The main function of the DMA controller is the transfer of data from/to any
+peripheral to/from the memory. A memory to memory copy capability can also
+be configured. This ldma driver is used for configure the device and channnels
+for data and control paths.
 
-#include <linux/module.h>
-#include <linux/kernel.h>
-#include <linux/jump_label.h>
+These controllers provide DMA capabilities for a variety of on-chip
+devices such as SSC, HSNAND and GSWIP (Gigabit Switch IP).
 
-static DEFINE_STATIC_KEY_FALSE(enable_foo);
+-------------
+Future Plans:
+-------------
+LGM SOC also supports Hardware Memory Copy engine.
+The role of the HW Memory copy engine is to offload memory copy operations
+from the CPU.
 
-int __init init_module(void)
-{
-        static_branch_enable(&enable_foo);
+Amireddy Mallikarjuna reddy (2):
+  dt-bindings: dma: Add bindings for Intel LGM SoC
+  Add Intel LGM SoC DMA support.
 
-        if (static_branch_unlikely(&enable_foo))
-                printk("foo: true\n");
-        else
-                printk("foo: false\n");
+ .../devicetree/bindings/dma/intel,ldma.yaml   |  116 ++
+ drivers/dma/Kconfig                           |    2 +
+ drivers/dma/Makefile                          |    1 +
+ drivers/dma/lgm/Kconfig                       |    9 +
+ drivers/dma/lgm/Makefile                      |    2 +
+ drivers/dma/lgm/lgm-dma.c                     | 1739 +++++++++++++++++
+ 6 files changed, 1869 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/intel,ldma.yaml
+ create mode 100644 drivers/dma/lgm/Kconfig
+ create mode 100644 drivers/dma/lgm/Makefile
+ create mode 100644 drivers/dma/lgm/lgm-dma.c
+---
+v1:
+- Initial version.
 
-        return 0;
-}
+v2:
+- Fix device tree bot issues, correspondign driver changes done.
+- Fix kerntel test robot warnings.
+  --------------------------------------------------------
+  >> drivers/dma/lgm/lgm-dma.c:729:5: warning: no previous prototype for function 'intel_dma_chan_desc_cfg' [-Wmissing-prototypes]
+  int intel_dma_chan_desc_cfg(struct dma_chan *chan, dma_addr_t desc_base,
+  ^
+  drivers/dma/lgm/lgm-dma.c:729:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+  int intel_dma_chan_desc_cfg(struct dma_chan *chan, dma_addr_t desc_base,
+  ^
+  static
+  1 warning generated.
 
-void cleanup_module(void)
-{
-        static_branch_disable(&enable_foo);
-}
+  vim +/intel_dma_chan_desc_cfg +729 drivers/dma/lgm/lgm-dma.c
 
-MODULE_LICENSE("GPL");
+    728
+  > 729 int intel_dma_chan_desc_cfg(struct dma_chan *chan, dma_addr_t desc_base,
+    730                             int desc_num)
+    731 {
+    732         return ldma_chan_desc_cfg(to_ldma_chan(chan), desc_base, desc_num);
+    733 }
+    734 EXPORT_SYMBOL_GPL(intel_dma_chan_desc_cfg);
+    735
 
+   Reported-by: kernel test robot <lkp@intel.com>
+   ---------------------------------------------------------------
 
-PS, I originally found: in arch/x86/kvm/vmx/vmx.c: vmx_init(), it looks
-like the line "static_branch_enable(&enable_evmcs);" does not take effect
-in a v5.4-based kernel, but does take effect in the v5.10 kernel in the
-same x86-64 virtual machine on Hyper-V, so I made the above test module
-to test static_branch_enable(), and found that static_branch_enable() in
-the test module does not work with both v5.10 and my v5.4 kernel, if the
-__init marker is used.
+v3:
+- Fix smatch warning.
+  ----------------------------------------------------------------
+  smatch warnings:
+  drivers/dma/lgm/lgm-dma.c:1306 ldma_cfg_init() error: uninitialized symbol 'ret'.
 
-Thanks,
--- Dexuan
+  Reported-by: kernel test robot <lkp@intel.com>
+  Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+  ----------------------------------------------------------------
 
+v4:
+- Address Thomas Langer comments in dtbinding and corresponding driver side changes.
+- Driver side changes to corresponding device tree changes.
+
+v5:
+- Add changes to read 'dmas' properties and update the config properties driver side.
+- Add virt_dma_desc utilizes virt-dma API.
+
+v6:
+- Driver changes corresponding to the device tree changes.
+- Restructure things to have less activity with the spinlock.
+- Save the slave config in dma_slave_config() and used in prepare time.
+- Addressed & fixed issues related to desc_free callback _free_ up the memory.
+- Addressed peter review comments.
+
+v7:
+- Change bool to tristate in Kconfig
+- Explained the _initcall()
+- change of_property*() to device_property_*()
+- split the code to functions at version checks
+- Remove the dma caller capability restrictions
+- used for_each_set_bit()
+- Addressed minor comments and fine tune the code.
+
+v7-resend:
+- rebase to 5.10-rc1
+- No change.
+
+v8:
+- rebase to 5.10-rc3
+- Addressed structural things and fine tune the code.
+
+v9:
+- No change.
+
+v10:
+- rebase to 5.10-rc6
+- Used helpers in bitfield.h (FIELD_PREP ()) instead of bit fields to set the descriptor fields.
+- Removed local copy of dmaengine ops.
+- Removed custom API and used dmaengine callback & remove include/linux/dma/lgm_dma.h file
+- Moved dt properties to driver data.
+- Fine tune the code.
+
+v10-resend:
+- rebased to 5.10
+- No change.
+-- 
+2.17.1
 
