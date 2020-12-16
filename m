@@ -2,91 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4DC62DC2FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:22:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93EC42DC307
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgLPPVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:21:55 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:40192 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgLPPVz (ORCPT
+        id S1726371AbgLPPYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:24:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35503 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726167AbgLPPYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:21:55 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608132072;
+        Wed, 16 Dec 2020 10:24:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608132208;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GTATY7NfTNnLB+jCOVoePIyG5NvZnyMl6xNti/B0Az0=;
-        b=KNDFLwwJL+L9blG/tETlfh3SEsC1Wa17vtApRdv5y17dyQEYnHYUpRVNIGO+UWlJKBA8mL
-        XaROVdQvQB7YBnwNJMsK++1ZDL7zxWpxz2dmlz5u5hE6+Ext4332WJMp80DKdid47YmnIU
-        mpFB2P92Q0cUbFEYOr+zrVbnQpCxeTdekbHK3dVYERcQUMydFSRyUiCegGKK8J+wyn5yC8
-        HpeybTFqXGRRHfoKazEbj2oa8craYy0s5Oy60aTTs1hDqSKHnuIl+zk8F1s2biz/wn1+47
-        IUmJcMIX5LQ5cTuagidAYxyx98kvNwY5D+YDz1WRLS5E5WOtGWHA5KzCQHiXfg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608132072;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GTATY7NfTNnLB+jCOVoePIyG5NvZnyMl6xNti/B0Az0=;
-        b=hYwWTetIOgAECtmXuQ4ewDg/0LQvyFbAVK1+XGpmJ0rBa5F9ZupK59lsFFqebmUfsntzrB
-        mRh/YPNSMxEjCFAg==
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>, rcu@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        lkft-triage@lists.linaro.org, Netdev <netdev@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [stabe-rc 5.9 ] sched: core.c:7270 Illegal context switch in RCU-bh read-side critical section!
-In-Reply-To: <CA+G9fYt_zxDSN5Qkx=rBE_ZkjirOBQ3QpFRy-gkqbjbJ=n1Z4Q@mail.gmail.com>
-References: <CA+G9fYtu1zOz8ErUzftNG4Dc9=cv1grsagBojJraGhm4arqXyw@mail.gmail.com> <20201215144531.GZ2657@paulmck-ThinkPad-P72> <20201215102246.4bdca3d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <CA+G9fYt_zxDSN5Qkx=rBE_ZkjirOBQ3QpFRy-gkqbjbJ=n1Z4Q@mail.gmail.com>
-Date:   Wed, 16 Dec 2020 16:21:12 +0100
-Message-ID: <87lfdxsro7.fsf@nanos.tec.linutronix.de>
+        bh=Y8bGZBwnTpNbARrYz124sdWvgtnobEQBNsq3VmZPC0s=;
+        b=djjdhExT6UPd2CrmYaJabCq35p3f38R7cjvsO4+lFj0u4ecOtHIfERmUX2s7uqNtML03n+
+        GwmSsVkXVKd9/3yHwbGBmkmme/CFXk7j3qTYeCgj2abRFwSgLASNbQNt2U37eBfkgz1644
+        t/Maryxh1MJ2gqkEayyGl0OhxgdCHfc=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-375-dlaED02ePjq3JzjP-otBeg-1; Wed, 16 Dec 2020 10:23:26 -0500
+X-MC-Unique: dlaED02ePjq3JzjP-otBeg-1
+Received: by mail-ej1-f69.google.com with SMTP id q11so7491944ejd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 07:23:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y8bGZBwnTpNbARrYz124sdWvgtnobEQBNsq3VmZPC0s=;
+        b=T2Rg0oD9EyxheHWmOwU0Dsq69df7CqNZ3eEYMTYIViKNP2mDaHhO1VdNbq+BFkINTk
+         NPAkvaf6/oMReOOaQiaSDK8deXDzn4Aw5gpHL0KMVcJ9el5Qll7jzcgkxKiTFgYkpuhz
+         UZpTrSMYyL+UUVbnMT+DnViWoQzdpFWdgV8jRzb6YnzwDOVPA0M4O/Xc3J39AAxfR7wy
+         i7Je9vluCT+GgoaFTWFqiXxVg5V3HVnOpTgjKXiLYeNPAaOkc+qmqViBjriRPJjIVnep
+         i9EmkRiBbFxlRKXlUbMOVRxOylS7TvtjTOpr7DzBA3xmdGGyOFhbSEoFWFfYOMb8MMlz
+         yBZA==
+X-Gm-Message-State: AOAM530NCuSmNJ2VEPJFZLcEa1tLPcS2N/XHH3pvBTrbdqJlok5a4zD/
+        +KF9eItduv41t65joSZktOCz2wLgxow2lhMatbNhH3tIt/ftJy2KIQwppRKwvMctdvnLvVa13sq
+        fL46KwI67MJm1tIBEOLGKwjTG
+X-Received: by 2002:a17:906:7f11:: with SMTP id d17mr31213662ejr.534.1608132205034;
+        Wed, 16 Dec 2020 07:23:25 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyq9p3k0wcFSTVZbYtjn8uIyhUmE2cpCRqBSIw40bvFGpNXL3zgfsmLt+0rXpaWivsMCtZ8RA==
+X-Received: by 2002:a17:906:7f11:: with SMTP id d17mr31213642ejr.534.1608132204821;
+        Wed, 16 Dec 2020 07:23:24 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id zn5sm1641200ejb.111.2020.12.16.07.23.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 07:23:23 -0800 (PST)
+Subject: Re: [PATCH v2] KVM: SVM: use vmsave/vmload for saving/restoring
+ additional host state
+To:     Michael Roth <michael.roth@amd.com>,
+        Andy Lutomirski <luto@amacapital.net>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        Andy Lutomirski <luto@kernel.org>
+References: <20201214220213.np7ytcxmm6xcyllm@amd.com>
+ <98F09A9A-A768-4B01-A1FA-5EE681146BC5@amacapital.net>
+ <20201215181747.jhozec5gpa4ud5qt@amd.com>
+ <20201216151203.utpaitooaer7mdfa@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f22e2410-d4e3-f5fd-8e40-4225a83851c0@redhat.com>
+Date:   Wed, 16 Dec 2020 16:23:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201216151203.utpaitooaer7mdfa@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16 2020 at 15:55, Naresh Kamboju wrote:
-> On Tue, 15 Dec 2020 at 23:52, Jakub Kicinski <kuba@kernel.org> wrote:
->> > Or you could place checks for being in a BH-disable further up in
->> > the code.  Or build with CONFIG_DEBUG_INFO=y to allow more precise
->> > interpretation of this stack trace.
->
-> I will try to reproduce this warning with DEBUG_INFO=y enabled kernel and
-> get back to you with a better crash log.
->
->>
->> My money would be on the option that whatever run on this workqueue
->> before forgot to re-enable BH, but we already have a check for that...
->> Naresh, do you have the full log? Is there nothing like "BUG: workqueue
->> leaked lock" above the splat?
+On 16/12/20 16:12, Michael Roth wrote:
+> It looks like it does save us ~20-30 cycles vs. vmload, but maybe not
+> enough to justify the added complexity. Additionally, since we still
+> need to call vmload when we exit to userspace, it ends up being a bit
+> slower for this particular workload at least. So for now I'll plan on
+> sticking to vmload'ing after vmexit and moving that to the asm code
+> if there are no objections.
 
-No, because it's in the middle of the work. The workqueue bug triggers
-when the work has finished.
+Yeah, agreed.  BTW you can use "./x86/run x86/vmexit.flat" from 
+kvm-unit-tests to check the numbers for a wide range of vmexit paths.
 
-So cleanup_up() net does
+Paolo
 
-   ....
-   synchronize_rcu();   <- might sleep. So up to here it should be fine.
+> current v2 patch, sample 1
+>    ioctl entry: 1204722748832
+>    pre-run:     1204722749408 ( +576)
+>    post-run:    1204722750784 (+1376)
+>    ioctl exit:  1204722751360 ( +576)
+>    total cycles:         2528
+> 
+> current v2 patch, sample 2
+>    ioctl entry: 1204722754784
+>    pre-vmrun:   1204722755360 ( +576)
+>    post-vmrun:  1204722756720 (+1360)
+>    ioctl exit:  1204722757312 ( +592)
+>    total cycles          2528
+> 
+> wrgsbase, sample 1
+>    ioctl entry: 1346624880336
+>    pre-vmrun:   1346624880912 ( +576)
+>    post-vmrun:  1346624882256 (+1344)
+>    ioctl exit:  1346624882912 ( +656)
+>    total cycles          2576
+> 
+> wrgsbase, sample 2
+>    ioctl entry: 1346624886272
+>    pre-vmrun:   1346624886832 ( +560)
+>    post-vmrun:  1346624888176 (+1344)
+>    ioctl exit:  1346624888816 ( +640)
+>    total cycles:         2544
+> 
 
-   list_for_each_entry_continue_reverse(ops, &pernet_list, list)
-   	ops_exit_list(ops, &net_exit_list);
-
-ops_exit_list() is called for each ops which then either invokes
-ops->exit() or ops->exit_batch().
-
-So one of those callbacks fails to reenable BH, so adding a check after
-each invocation of ops->exit() and ops->exit_batch() for
-!local_bh_disabled() should be able to identify the buggy callback.
-
-Thanks,
-
-        tglx
