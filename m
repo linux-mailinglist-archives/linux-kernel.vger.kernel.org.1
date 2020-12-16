@@ -2,107 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6752DC692
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:34:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1477E2DC6A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730439AbgLPSd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 13:33:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730359AbgLPSd6 (ORCPT
+        id S1731418AbgLPSiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 13:38:17 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:65094 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727992AbgLPSiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 13:33:58 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0894CC0617B0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:33:18 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id s75so28627031oih.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:33:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+cTCsx1PRpNw0/y5L+7memM86sfqPOprZgZnF6YfJtQ=;
-        b=UWBpb3riqV+q72tyfHr+ASdJQJL7f3veiDnR+vg6OCnHigq3SNSwbJSG2B0I+z+qRV
-         DexmZ5JwOzCqz8RVjLaSUOfI4uag7FfOBMLwObWS5kRBvORUPjqmjiSf3YSaRVL7TnIp
-         FUGD6mc4oif2+ZxZnhr5RU+YuEoJdmWYU85pJCunRSuB/1EZ44cNZcw0+CYczBFN6rS5
-         yuphpGHAmOUiUGh8wVNKYlyAYN9H7WsGEn+TNISCgB5s+/1RP0YfZrRes7VhBZHzzmkH
-         fklgEUAGiqUNIGl+YWEtL0wO1WZK0zZ5RD0cT3qfC/7B6k9KzR8zt00MJqOJLuRPHa/J
-         tPVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+cTCsx1PRpNw0/y5L+7memM86sfqPOprZgZnF6YfJtQ=;
-        b=Z9f6iWm6aEvSVWzUQWFdyQcG23uMHc0cjhceGTsDo8750Z/W0cH5EMGhPhpVzx8SEJ
-         gFEi06MiT4TWHvOCLlliNbkUiRdHQZ/Gon+WzPoyLtGjQ4zbJLBHP/va5kyNrAMsXgru
-         PvxEwB7pUu5kY04/ZUK7MV9bkSr9gaU2KdeTvFgDaC65u7xqMvdhjzBvuUq4O/gZs3Is
-         ahe4RVU7m9n/SB7YC8CrhTCUfbwxPOMsCKv8axK7hrMuPiu947+87c2Z40wJPEnWPIP3
-         /H9wgpOLHXJZYkKKw4yuUN01NXUARtp0PENOJXG0RFJVvV2jJuo9kM4f16RZZorGqsbi
-         iX7Q==
-X-Gm-Message-State: AOAM532L8NPWA3XrKCzNRqhn7feyXNaLz6bqXy3PnkpVhaely6jjSyUK
-        kZBRF0LKDn+fWh/ojL9CcznBpw==
-X-Google-Smtp-Source: ABdhPJyxRrQh9eyAVb6narksTmtqA3k1ONdweCWNi6MZOkBslhdu3MC0n4a4YCOdUOlpeJ4Hi1IaKg==
-X-Received: by 2002:aca:568f:: with SMTP id k137mr2732141oib.138.1608143597429;
-        Wed, 16 Dec 2020 10:33:17 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g200sm571303oib.19.2020.12.16.10.33.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 10:33:16 -0800 (PST)
-Date:   Wed, 16 Dec 2020 12:33:14 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     agross@kernel.org, srinivas.kandagatla@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] nvmem: convert comma to semicolon
-Message-ID: <X9pS6kzKSWA5VxOK@builder.lan>
-References: <20201216132810.15688-1-zhengyongjun3@huawei.com>
+        Wed, 16 Dec 2020 13:38:17 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BGIWwYh033401;
+        Wed, 16 Dec 2020 13:36:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=z/EvkYWrRq94vvURrlO5qTnLAmj3+tT1mz2pOM4Sso0=;
+ b=H1KXYhuyHUZiU2DzzCf45ZB3ixJLhLll9ymuecuvHzO6BOBMS1VirE4vGbjWfoEf5RHN
+ FTOYMMC8JnfzNODYyqIlGUMpUQ5FwIbxvLsIiUPcIyCDxC3/Qngq4aT0LB6owye8/Xsl
+ 2vNi/hfJoph8Z7s28JG+ziZuZVl+DNpM2l25PrEIsEuDI7i6dP71B3OJWPcaMSrUQRlE
+ DbcR1TYUh9LTArBiBMKcmH1+c/9vY5u25WS5OK/5j7kWcihzzJa4K7teIgvdA+fLvauw
+ EPOa4mYEMs+/qhofIh3FtoLGEkV9uXHoINi9BJMw+T+XyoAK38cW8TDZ9PYrPb4/zwdM 8Q== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35fpv51hgh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 13:36:54 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BGIX3Ww031231;
+        Wed, 16 Dec 2020 18:36:51 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 35cng8esde-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 18:36:51 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BGIZY6R33947924
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Dec 2020 18:35:34 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6917EAE055;
+        Wed, 16 Dec 2020 18:35:34 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 21A6DAE057;
+        Wed, 16 Dec 2020 18:35:34 +0000 (GMT)
+Received: from osiris (unknown [9.171.70.243])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 16 Dec 2020 18:35:34 +0000 (GMT)
+Date:   Wed, 16 Dec 2020 19:35:32 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
+Subject: Re: __local_bh_enable_ip() vs lockdep
+Message-ID: <20201216183532.GA7724@osiris>
+References: <20201215190152.GA22285@osiris>
+ <20201215144724.40ab7612@gandalf.local.home>
+ <20201216175259.GP3040@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201216132810.15688-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20201216175259.GP3040@hirez.programming.kicks-ass.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-16_07:2020-12-15,2020-12-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
+ bulkscore=0 adultscore=0 impostorscore=0 phishscore=0 malwarescore=0
+ lowpriorityscore=0 mlxlogscore=747 suspectscore=0 priorityscore=1501
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 16 Dec 07:28 CST 2020, Zheng Yongjun wrote:
-
-> Replace a comma between expression statements by a semicolon.
+On Wed, Dec 16, 2020 at 06:52:59PM +0100, Peter Zijlstra wrote:
+> On Tue, Dec 15, 2020 at 02:47:24PM -0500, Steven Rostedt wrote:
+> > On Tue, 15 Dec 2020 20:01:52 +0100
+> > Heiko Carstens <hca@linux.ibm.com> wrote:
+> > 
+> > > Hello,
+> > > 
+> > > the ftrace stack tracer kernel selftest is able to trigger the warning
+> > > below from time to time. This looks like there is an ordering problem
+> > > in __local_bh_enable_ip():
+> > > first there is a call to lockdep_softirqs_on() and afterwards
+> > > preempt_count_sub() is ftraced before it was able to modify
+> > > preempt_count:
+> > 
+> > Don't run ftrace stack tracer when debugging lockdep. ;-)
+> > 
+> >   /me runs!
 > 
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  drivers/nvmem/qcom-spmi-sdam.c | 2 +-
->  drivers/nvmem/snvs_lpgpr.c     | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> Ha!, seriously though; that seems like something we've encountered
+> before, but my google-fu is failing me.
 > 
-> diff --git a/drivers/nvmem/qcom-spmi-sdam.c b/drivers/nvmem/qcom-spmi-sdam.c
-> index a72704cd0468..b73783a04e22 100644
-> --- a/drivers/nvmem/qcom-spmi-sdam.c
-> +++ b/drivers/nvmem/qcom-spmi-sdam.c
-> @@ -142,7 +142,7 @@ static int sdam_probe(struct platform_device *pdev)
->  	sdam->sdam_config.dev = &pdev->dev;
->  	sdam->sdam_config.name = "spmi_sdam";
->  	sdam->sdam_config.id = NVMEM_DEVID_AUTO;
-> -	sdam->sdam_config.owner = THIS_MODULE,
-> +	sdam->sdam_config.owner = THIS_MODULE;
->  	sdam->sdam_config.stride = 1;
->  	sdam->sdam_config.word_size = 1;
->  	sdam->sdam_config.reg_read = sdam_read;
-> diff --git a/drivers/nvmem/snvs_lpgpr.c b/drivers/nvmem/snvs_lpgpr.c
-> index c527d26ca6ac..4692aa985bd6 100644
-> --- a/drivers/nvmem/snvs_lpgpr.c
-> +++ b/drivers/nvmem/snvs_lpgpr.c
-> @@ -123,7 +123,7 @@ static int snvs_lpgpr_probe(struct platform_device *pdev)
->  	cfg->dev = dev;
->  	cfg->stride = 4;
->  	cfg->word_size = 4;
-> -	cfg->size = dcfg->size,
-> +	cfg->size = dcfg->size;
->  	cfg->owner = THIS_MODULE;
->  	cfg->reg_read  = snvs_lpgpr_read;
->  	cfg->reg_write = snvs_lpgpr_write;
-> -- 
-> 2.22.0
+> Do you remember what, if anything, was the problem with this?
+
+Actually this looks like:
+1a63dcd8765b ("softirq: Reorder trace_softirqs_on to prevent lockdep splat")
+
+I can give it a test, but it looks quite obvious that your patch will
+make the problem go away.
+
+> diff --git a/kernel/softirq.c b/kernel/softirq.c
+> index d5bfd5e661fc..9d71046ea247 100644
+> --- a/kernel/softirq.c
+> +++ b/kernel/softirq.c
+> @@ -186,7 +186,7 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+>  	 * Keep preemption disabled until we are done with
+>  	 * softirq processing:
+>  	 */
+> -	preempt_count_sub(cnt - 1);
+> +	__preempt_count_sub(cnt - 1);
+>  
+>  	if (unlikely(!in_interrupt() && local_softirq_pending())) {
+>  		/*
 > 
