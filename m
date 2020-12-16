@@ -2,222 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0A52DC5C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 946B12DC608
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728410AbgLPRyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 12:54:51 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:40467 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728403AbgLPRyv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 12:54:51 -0500
-Received: by mail-il1-f199.google.com with SMTP id g1so23186789ilq.7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 09:54:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=pBUMr9OFDi1jM0nZvmkLKWVe13QDgjJH7i6r+z2p8rM=;
-        b=pJBGwvJ0FQNgn1wy70gUHdoVPcS4APKG6Og20tXltNEFoHDMgcdjdnZDEcUHujRwz5
-         fjBLLtEZax+RB0VTqXzMm6oHfoy/EbDo+tud9ca49qIPtwNCaciEuhbF6joDRVxN+Zh3
-         Qh4gg6X5kCcEhzSwhFz1mN7mF2S8Fp+T4hxdF21ke0kjSXh4HGfpCEIw8hMbYRA2hPUR
-         tE+gakfqIb9fjFfpGNoIhcwz+hGeawZbm375V2D4JuHssHLOzjifusytxpjXNXfTP2mZ
-         vXuB6Szyf5/wHW9PHlhsyR+ZeXsmagwxDGqfs6qlGpNsM0yAISoXW8a/njoETvYYCvUf
-         fVLA==
-X-Gm-Message-State: AOAM5329U5O8EqXhPtUXF257LbBwrHNZt7Jat4IiDIlI9cKqF2NVv1Pf
-        XsTHIpM68oJRbgVDKdvV4UT+Aw3/uehjjA5/FFpxOUQnfOGW
-X-Google-Smtp-Source: ABdhPJwsBuLPpr+cYZzEdg8DPsj7/0nxG+fce8hKVGYB/IDDYpZ7Q5Qz7yt846BWWD5f/dO4a1GME49VoDOHTEJWGW8XyLfi+gO4
+        id S1729134AbgLPSSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 13:18:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729148AbgLPSSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 13:18:13 -0500
+Date:   Wed, 16 Dec 2020 09:54:42 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608141282;
+        bh=lqu24/Iif2fz1yKLQNXbGnTnjsy377jQdnMvLFGyt0U=;
+        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=LXjiWYDrQduZxaEdBn2nJtVjFp/GoiC/2MHVkl8lUOeByfrP4CjoPLTV30jhQQctG
+         FHiZlFdUWtbFXkHWJeGHTvJ4Q6bHF8FlHzaIMBNBxBKr20HjMBpxrDKOLkvd5clUbO
+         UQdnQpzF74dmer6Eg9L6d3GF0FKfAus1bEdFKSBkRYnPclM2KxJ7siCrRbL7i2WsI9
+         rQ12K/T46YgbWHit9n0GogrDmneKJH0zlf+zKedPdr7Sg9gTF/lD1irLep19Qoh5Ck
+         g6RDXFo9eSqEV8EAwIvBEtdVDjnZlUyLITtmcKh7i0L0f0NGuSn6oEdxLy8nzNTfTW
+         ykNdbqckARlQQ==
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: RCU stall leading to deadlock warning
+Message-ID: <20201216175442.GK2657@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201216172939.ts72yy3ekalavlpm@e107158-lin.cambridge.arm.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:8ec9:: with SMTP id q192mr8458854iod.28.1608141249857;
- Wed, 16 Dec 2020 09:54:09 -0800 (PST)
-Date:   Wed, 16 Dec 2020 09:54:09 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f24f4705b6988f3e@google.com>
-Subject: INFO: task hung in remove_proc_subtree
-From:   syzbot <syzbot+7b8f7100327c574c016f@syzkaller.appspotmail.com>
-To:     adobriyan@gmail.com, akpm@linux-foundation.org,
-        ebiederm@xmission.com, gladkov.alexey@gmail.com,
-        keescook@chromium.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201216172939.ts72yy3ekalavlpm@e107158-lin.cambridge.arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Dec 16, 2020 at 05:29:39PM +0000, Qais Yousef wrote:
+> Hi Paul
+> 
+> We hit the below splat a couple of days ago in our testing. Sadly I can't
+> reproduce it. And it was on android-mainline branch..
+> 
+> It's the deadlock message that bothers me. I can't see how we could have ended
+> there. We detect a stall and when trying to dump the stack LOCKDEP spits the
+> warning.
+> 
+> Maybe should take this report with a pinch of salt since it wasn't on mainline.
+> I just thought it might be something worth sharing in case you can actually
+> spot something obvious that I can't see. If I got more info or a reproducer
+> I will share them.
+> 
+> The failure was triggered twice on that day running 2 different tests.
 
-syzbot found the following issue on:
+This looks like the same problem that Mark Rutland's recent patch series
+was fixing.  Do you have this series applied?
 
-HEAD commit:    7f376f19 Merge tag 'mtd/fixes-for-5.10-rc8' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=102ac937500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3416bb960d5c705d
-dashboard link: https://syzkaller.appspot.com/bug?extid=7b8f7100327c574c016f
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=166e240f500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=147eddef500000
+lore.kernel.org/lkml/20201126123602.23454-1-mark.rutland@arm.com
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7b8f7100327c574c016f@syzkaller.appspotmail.com
+							Thanx, Paul
 
-INFO: task kworker/1:2:8489 blocked for more than 143 seconds.
-      Not tainted 5.10.0-rc7-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/1:2     state:D stack:24264 pid: 8489 ppid:     2 flags:0x00004000
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- context_switch kernel/sched/core.c:3779 [inline]
- __schedule+0x893/0x2130 kernel/sched/core.c:4528
- schedule+0xcf/0x270 kernel/sched/core.c:4606
- schedule_timeout+0x1d8/0x250 kernel/time/timer.c:1847
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
- proc_entry_rundown+0x1a1/0x1d0 fs/proc/inode.c:262
- remove_proc_subtree+0x26f/0x520 fs/proc/generic.c:752
- proc_remove fs/proc/generic.c:775 [inline]
- proc_remove+0x66/0x90 fs/proc/generic.c:772
- snd_info_disconnect+0x946/0xc20 sound/core/info.c:757
- snd_info_disconnect sound/core/info.c:756 [inline]
- snd_info_card_disconnect+0x134/0x230 sound/core/info.c:577
- snd_card_disconnect+0x2be/0x510 sound/core/init.c:421
- usb_audio_disconnect+0x2c4/0x7f0 sound/usb/card.c:877
- usb_unbind_interface+0x1d8/0x8d0 drivers/usb/core/driver.c:458
- __device_release_driver+0x3bd/0x6f0 drivers/base/dd.c:1154
- device_release_driver_internal drivers/base/dd.c:1185 [inline]
- device_release_driver+0x26/0x40 drivers/base/dd.c:1208
- bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:533
- device_del+0x502/0xec0 drivers/base/core.c:3115
- usb_disable_device+0x35b/0x7b0 drivers/usb/core/message.c:1410
- usb_disconnect.cold+0x27d/0x780 drivers/usb/core/hub.c:2217
- hub_port_connect drivers/usb/core/hub.c:5073 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5362 [inline]
- port_event drivers/usb/core/hub.c:5508 [inline]
- hub_event+0x1c8a/0x42d0 drivers/usb/core/hub.c:5590
- process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-INFO: task syz-executor488:14592 blocked for more than 143 seconds.
-      Not tainted 5.10.0-rc7-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor488 state:D stack:28144 pid:14592 ppid:  8497 flags:0x00000004
-Call Trace:
- context_switch kernel/sched/core.c:3779 [inline]
- __schedule+0x893/0x2130 kernel/sched/core.c:4528
- schedule+0xcf/0x270 kernel/sched/core.c:4606
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4665
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10e0 kernel/locking/mutex.c:1103
- snd_info_text_entry_open+0x80/0x2e0 sound/core/info.c:373
- proc_reg_open+0x25d/0x620 fs/proc/inode.c:538
- do_dentry_open+0x4b9/0x11b0 fs/open.c:817
- do_open fs/namei.c:3252 [inline]
- path_openat+0x1b9a/0x2730 fs/namei.c:3369
- do_filp_open+0x17e/0x3c0 fs/namei.c:3396
- do_sys_openat2+0x16d/0x420 fs/open.c:1168
- do_sys_open fs/open.c:1184 [inline]
- __do_sys_openat fs/open.c:1200 [inline]
- __se_sys_openat fs/open.c:1195 [inline]
- __x64_sys_openat+0x13f/0x1f0 fs/open.c:1195
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x450739
-RSP: 002b:00007f4a57aefce8 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 0000000000700028 RCX: 0000000000450739
-RDX: 0000000000000001 RSI: 00000000200001c0 RDI: ffffffffffffff9c
-RBP: 0000000000700020 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000070002c
-R13: 000000000080fbcf R14: 00007f4a57af09c0 R15: 0000000000000000
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/1654:
- #0: ffffffff8b3378e0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6254
-1 lock held by in:imklog/8177:
- #0: ffff888012ef1270 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:932
-7 locks held by kworker/1:2/8489:
- #0: ffff888014c3fd38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888014c3fd38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888014c3fd38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888014c3fd38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888014c3fd38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888014c3fd38 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
- #1: ffffc90000e9fda8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
- #2: ffff88801c28a218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:731 [inline]
- #2: ffff88801c28a218 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c5/0x42d0 drivers/usb/core/hub.c:5536
- #3: ffff888022bc8218 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:731 [inline]
- #3: ffff888022bc8218 (&dev->mutex){....}-{3:3}, at: usb_disconnect.cold+0x43/0x780 drivers/usb/core/hub.c:2208
- #4: ffff888018ea21a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:731 [inline]
- #4: ffff888018ea21a8 (&dev->mutex){....}-{3:3}, at: __device_driver_lock drivers/base/dd.c:975 [inline]
- #4: ffff888018ea21a8 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal drivers/base/dd.c:1182 [inline]
- #4: ffff888018ea21a8 (&dev->mutex){....}-{3:3}, at: device_release_driver+0x1c/0x40 drivers/base/dd.c:1208
- #5: ffffffff8c8ae5e8 (register_mutex#6){+.+.}-{3:3}, at: usb_audio_disconnect+0xe4/0x7f0 sound/usb/card.c:866
- #6: ffffffff8c838028 (info_mutex){+.+.}-{3:3}, at: snd_info_card_disconnect+0x33/0x230 sound/core/info.c:573
-1 lock held by syz-executor488/14592:
- #0: ffffffff8c838028 (info_mutex){+.+.}-{3:3}, at: snd_info_text_entry_open+0x80/0x2e0 sound/core/info.c:373
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 PID: 1654 Comm: khungtaskd Not tainted 5.10.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
- watchdog+0xd43/0xfa0 kernel/hung_task.c:294
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 27 Comm: kworker/u4:2 Not tainted 5.10.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: phy3 ieee80211_iface_work
-RIP: 0010:__lock_acquire+0x372/0x5500 kernel/locking/lockdep.c:4770
-Code: ed 44 09 e8 41 81 e7 00 00 03 00 41 c1 e1 13 41 09 c7 89 d8 48 c1 ea 03 c1 e0 12 25 00 00 04 00 41 09 c7 8b 84 24 38 01 00 00 <45> 09 f9 c1 e0 14 41 09 c1 41 8b 44 24 20 25 ff 1f 00 00 41 09 c1
-RSP: 0018:ffffc90000e1f890 EFLAGS: 00000006
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 1ffff110021e47c6 RSI: 0000000000000004 RDI: ffff888010f23e34
-RBP: ffff888010f23480 R08: 0000000000000001 R09: 0000000000080000
-R10: 0000000000000078 R11: 0000000000000000 R12: ffff888010f23e10
-R13: 0000000000000000 R14: ffffffff8b3378e0 R15: 0000000000020000
-FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa2708ab000 CR3: 0000000025718000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- lock_acquire kernel/locking/lockdep.c:5437 [inline]
- lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
- rcu_lock_acquire include/linux/rcupdate.h:248 [inline]
- rcu_read_lock include/linux/rcupdate.h:641 [inline]
- cgroup_account_cputime include/linux/cgroup.h:781 [inline]
- update_curr+0x311/0x840 kernel/sched/fair.c:870
- enqueue_entity+0x435/0x2080 kernel/sched/fair.c:4206
- enqueue_task_fair+0x1d8/0x1a70 kernel/sched/fair.c:5502
- enqueue_task kernel/sched/core.c:1572 [inline]
- activate_task kernel/sched/core.c:1591 [inline]
- ttwu_do_activate+0x17f/0x660 kernel/sched/core.c:2511
- ttwu_queue kernel/sched/core.c:2701 [inline]
- try_to_wake_up+0x54c/0x1330 kernel/sched/core.c:2979
- wake_up_worker kernel/workqueue.c:837 [inline]
- process_one_work+0x75a/0x15a0 kernel/workqueue.c:2235
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> [  310.073379] LTP: starting leapsec01
+> [  345.070123] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+> [  345.076717] rcu:     0-...!: (1 ticks this GP) idle=798/0/0x0 softirq=19187/19187 fqs=0  (false positive?)
+> [  345.087533]    (detected by 2, t=6502 jiffies, g=57249, q=184)
+> [  345.093284]
+> [  345.094797] ============================================
+> [  345.100139] WARNING: possible recursive locking detected
+> [  345.105485] 5.10.0-rc7-02296-g3f43bd6f2c3b-ab89 #1 Not tainted
+> [  345.111349] --------------------------------------------
+> [  345.116693] swapper/2/0 is trying to acquire lock:
+> [  345.121515] ffffa00013b50c58 (rcu_node_0){-.-.}-{2:2}, at: rcu_dump_cpu_stacks+0x7c/0x14c
+> [  345.129813]
+> [  345.129813] but task is already holding lock:
+> [  345.135678] ffffa00013b50c58 (rcu_node_0){-.-.}-{2:2}, at: rcu_sched_clock_irq+0x68c/0x11c0
+> [  345.144143]
+> [  345.144143] other info that might help us debug this:
+> [  345.150702]  Possible unsafe locking scenario:
+> [  345.150702]
+> [  345.156651]        CPU0
+> [  345.159119]        ----
+> [  345.161585]   lock(rcu_node_0);
+> [  345.164779]   lock(rcu_node_0);
+> [  345.167973]
+> [  345.167973]  *** DEADLOCK ***
+> [  345.167973]
+> [  345.173923]  May be due to missing lock nesting notation
+> [  345.173923]
+> [  345.180746] 1 lock held by swapper/2/0:
+> [  345.184607]  #0: ffffa00013b50c58 (rcu_node_0){-.-.}-{2:2}, at: rcu_sched_clock_irq+0x68c/0x11c0
+> [  345.193517]
+> [  345.193517] stack backtrace:
+> [  345.197910] CPU: 2 PID: 0 Comm: swapper/2 Not tainted 5.10.0-rc7-02296-g3f43bd6f2c3b-ab89 #1
+> [  345.206389] Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development Platform, BIOS EDK II Oct 19 2019
+> [  345.217215] Call trace:
+> [  345.219691]  dump_backtrace+0x0/0x2b8
+> [  345.223383]  show_stack+0x18/0x68
+> [  345.226731]  dump_stack+0x110/0x188
+> [  345.230255]  __lock_acquire+0x23f0/0x2410
+> [  345.234300]  lock_acquire+0x3b8/0x730
+> [  345.237997]  _raw_spin_lock_irqsave+0x80/0x168
+> [  345.242476]  rcu_dump_cpu_stacks+0x7c/0x14c
+> [  345.246693]  rcu_sched_clock_irq+0xfd4/0x11c0
+> [  345.251087]  update_process_times+0x84/0xe0
+> [  345.255306]  tick_sched_handle.isra.0+0x68/0x98
+> [  345.259871]  tick_sched_timer+0x60/0xd8
+> [  345.263742]  __hrtimer_run_queues+0x534/0x9e0
+> [  345.268134]  hrtimer_interrupt+0x1a8/0x398
+> [  345.272264]  tick_receive_broadcast+0x60/0x88
+> [  345.276657]  ipi_handler+0x250/0x4b8
+> [  345.280270]  handle_percpu_devid_fasteoi_ipi+0x138/0x4f0
+> [  345.285619]  generic_handle_irq+0x4c/0x68
+> [  345.289661]  __handle_domain_irq+0x9c/0x118
+> [  345.293880]  gic_handle_irq+0xdc/0x118
+> [  345.297661]  el1_irq+0xc8/0x180
+> [  345.300835]  cpuidle_enter_state+0x16c/0x810
+> [  345.305139]  cpuidle_enter+0x4c/0x78
+> [  345.308749]  call_cpuidle+0x44/0x88
+> [  345.312271]  do_idle+0x2d4/0x338
+> [  345.315532]  cpu_startup_entry+0x24/0x68
+> [  345.319491]  secondary_start_kernel+0x1d4/0x2d8
+> 
+> Thanks
+> 
+> --
+> Qais Yousef
