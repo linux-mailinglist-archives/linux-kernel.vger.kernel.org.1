@@ -2,211 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B05D2DC496
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 17:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 838EC2DC499
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 17:50:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgLPQtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 11:49:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54838 "EHLO mail.kernel.org"
+        id S1726843AbgLPQtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 11:49:36 -0500
+Received: from foss.arm.com ([217.140.110.172]:34908 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726812AbgLPQtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 11:49:11 -0500
-Date:   Wed, 16 Dec 2020 08:48:29 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608137309;
-        bh=XgE87/zh6WtILu03bQa/pP2CO/qLhs6CRGX2o37IZmI=;
-        h=From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=BzYPpJhQeBYyoNCNpnQ4TYXeU03zGd6bIbFE7XuTE0xuhQevtqQ5XZ0buRM80hg7Q
-         8x7RFLc1VsBMigQQHu9qzElyroLPtNO4nOzU0OZCx+Pun0oKqTjuGUZ0Lrn5o6hlA9
-         7m9jreqfze+djRDbGu3rDEEkyuyBbH8fYcTqnkyyeib3RamWEks/kIlMhqUx4szGF6
-         j7o7KdUj6mePfkvLIT1J8lPJw7CLGEdLPxd7uBS1+CvGSoQyA1l1RrgngsSgf8nYj5
-         NwL2G7Yz0mPw7lKp10LsMyBjjpsQAKD/X5neiyyUxQndS9i6landkvI8V3sgPe/yoA
-         uV2eGyg2NhKpA==
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S1726839AbgLPQtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 11:49:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3DB01FB;
+        Wed, 16 Dec 2020 08:48:50 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 318893F66E;
+        Wed, 16 Dec 2020 08:48:48 -0800 (PST)
+Date:   Wed, 16 Dec 2020 16:48:45 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     surenb@google.com, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH tip/core/rcu 3/4] rcutorture: Make grace-period kthread
- report match RCU flavor being tested
-Message-ID: <20201216164829.GI2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201105233900.GA20676@paulmck-ThinkPad-P72>
- <20201105233933.20748-3-paulmck@kernel.org>
- <CAMuHMdXjUxfp0h=TiwNoZJUHrSD4sDwYEbuqNR4rcWSRFCjUtw@mail.gmail.com>
- <20201215182419.GD2657@paulmck-ThinkPad-P72>
- <CAMuHMdWdBVOZobfXD9i==yxB1QEEMAJa7BoTNem9FQmYFq_=dA@mail.gmail.com>
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v5 00/15] An alternative series for asymmetric AArch32
+ systems
+Message-ID: <20201216164845.qakwbuhety73lmvr@e107158-lin.cambridge.arm.com>
+References: <20201208132835.6151-1-will@kernel.org>
+ <20201216111646.omrxyhbobejzqprh@e107158-lin.cambridge.arm.com>
+ <20201216141450.GA16421@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdWdBVOZobfXD9i==yxB1QEEMAJa7BoTNem9FQmYFq_=dA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201216141450.GA16421@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 10:31:16AM +0100, Geert Uytterhoeven wrote:
-> Hi Paul,
+On 12/16/20 14:14, Will Deacon wrote:
+> Hi Qais,
 > 
-> On Tue, Dec 15, 2020 at 7:24 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > On Tue, Dec 15, 2020 at 09:40:26AM +0100, Geert Uytterhoeven wrote:
-> > > On Fri, Nov 6, 2020 at 12:40 AM <paulmck@kernel.org> wrote:
-> > > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > > >
-> > > > At the end of the test and after rcu_torture_writer() stalls, rcutorture
-> > > > invokes show_rcu_gp_kthreads() in order to dump out information on the
-> > > > RCU grace-period kthread.  This makes a lot of sense when testing vanilla
-> > > > RCU, but not so much for the other flavors.  This commit therefore allows
-> > > > per-flavor kthread-dump functions to be specified.
-> > > >
-> > > > [ paulmck: Apply feedback from kernel test robot <lkp@intel.com>. ]
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > >
-> > > Thanks for your patch, which is now commit 27c0f1448389baf7
-> > > ("rcutorture: Make grace-period kthread report match RCU flavor being
-> > > tested").
-> > >
-> > > > --- a/kernel/rcu/rcu.h
-> > > > +++ b/kernel/rcu/rcu.h
-> > > > @@ -533,4 +533,20 @@ static inline bool rcu_is_nocb_cpu(int cpu) { return false; }
-> > > >  static inline void rcu_bind_current_to_nocb(void) { }
-> > > >  #endif
-> > > >
-> > > > +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RCU)
-> > > > +void show_rcu_tasks_classic_gp_kthread(void);
-> > > > +#else
-> > > > +static inline void show_rcu_tasks_classic_gp_kthread(void) {}
-> > > > +#endif
-> > > > +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
-> > > > +void show_rcu_tasks_rude_gp_kthread(void);
-> > > > +#else
-> > > > +static inline void show_rcu_tasks_rude_gp_kthread(void) {}
-> > > > +#endif
-> > >
-> > > The #ifdef expression does not match the one for the implementation
-> > > below.
-> >
-> > That does sound like something I would do...
-> >
-> > The definition of show_rcu_tasks_rude_gp_kthread() must be provided
-> > elsewhere if !TINY_RCU && TASKS_RUDE_RCU, correct?
-> >
-> > > > --- a/kernel/rcu/rcutorture.c
-> > > > +++ b/kernel/rcu/rcutorture.c
-> > >
-> > > > @@ -762,6 +765,7 @@ static struct rcu_torture_ops tasks_rude_ops = {
-> > > >         .exp_sync       = synchronize_rcu_tasks_rude,
-> > > >         .call           = call_rcu_tasks_rude,
-> > > >         .cb_barrier     = rcu_barrier_tasks_rude,
-> > > > +       .gp_kthread_dbg = show_rcu_tasks_rude_gp_kthread,
-> > >
-> > > Perhaps you just want to have a NULL pointer for the dummy case, instead
-> > > of instantiating a dummy static inline function and taking its address?
-> >
-> > You mean something like this in kernel/rcu/rcu.h?
-> >
-> > #if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
-> > void show_rcu_tasks_rude_gp_kthread(void);
-> > #else
-> > #define show_rcu_tasks_rude_gp_kthread NULL
-> > #endif
-> >
-> > This does looks better to me, and at first glance would work.
+> On Wed, Dec 16, 2020 at 11:16:46AM +0000, Qais Yousef wrote:
+> > On 12/08/20 13:28, Will Deacon wrote:
+> > > Changes in v5 include:
+> > > 
+> > >   * Teach cpuset_cpus_allowed() about task_cpu_possible_mask() so that
+> > >     we can avoid returning incompatible CPUs for a given task. This
+> > >     means that sched_setaffinity() can be used with larger masks (like
+> > >     the online mask) from userspace and also allows us to take into
+> > >     account the cpuset hierarchy when forcefully overriding the affinity
+> > >     for a task on execve().
+> > > 
+> > >   * Honour task_cpu_possible_mask() when attaching a task to a cpuset,
+> > >     so that the resulting affinity mask does not contain any incompatible
+> > >     CPUs (since it would be rejected by set_cpus_allowed_ptr() otherwise).
+> > > 
+> > >   * Moved overriding of the affinity mask into the scheduler core rather
+> > >     than munge affinity masks directly in the architecture backend.
+> > > 
+> > >   * Extended comments and documentation.
+> > > 
+> > >   * Some renaming and cosmetic changes.
+> > > 
+> > > I'm pretty happy with this now, although it still needs review and will
+> > > require rebasing to play nicely with the SCA changes in -next.
+> > 
+> > I still have concerns about the cpuset v1 handling. Specifically:
+> > 
+> > 	1. Attaching a 32bit task to 64bit only cpuset is allowed.
+> > 
+> > 	   I think the right behavior here is to prevent that as the
+> > 	   intersection will appear as offline cpus for the 32bit tasks. So it
+> > 	   shouldn't be allowed to move there.
 > 
-> Exactly. This is similar to how unimplemented PM callbacks are handled
-> (git grep "#define\s*pm_.*NULL").
+> Suren or Quantin can correct me if I'm wrong I'm here, but I think Android
+> relies on this working so it's not an option for us to prevent the attach.
 
-OK, as shown in the (untested) patch below?
+I don't think so. It's just a matter who handles the error. ie: kernel fix it
+up silently and effectively make the cpuset a NOP since we don't respect the
+affinity of the cpuset, or user space pick the next best thing. Since this
+could return an error anyway, likely user space already handles this.
 
-> > > >         .fqs            = NULL,
-> > > >         .stats          = NULL,
-> > > >         .irq_capable    = 1,
-> > >
-> > >
-> > > > --- a/kernel/rcu/tasks.h
-> > > > +++ b/kernel/rcu/tasks.h
-> > >
-> > > > @@ -696,16 +696,14 @@ static int __init rcu_spawn_tasks_rude_kthread(void)
-> > > >  }
-> > > >  core_initcall(rcu_spawn_tasks_rude_kthread);
-> > > >
-> > > > -#ifndef CONFIG_TINY_RCU
-> > > > -static void show_rcu_tasks_rude_gp_kthread(void)
-> > > > +#if !defined(CONFIG_TINY_RCU)
-> > >
-> > > Different #ifdef expression.
-> >
-> > I don't believe that it is.  The above supplies the !TINY_RCU, and a
-> > prior #ifdef supplies the TASKS_RUDE_RCU.  So what am I missing here?
+> I also don't think it really achieves much, since as you point out, the same
+> problem exists in other cases such as execve() of a 32-bit binary, or
+> hotplugging off all 32-bit CPUs within a mixed cpuset. Allowing the attach
+> and immediately reparenting would probably be better, but see below.
+
+I am just wary that we're introducing a generic asymmetric ISA support, so my
+concerns have been related to making sure the behavior is sane generally. When
+this gets merged, I can bet more 'fun' hardware will appear all over the place.
+We're opening the flood gates I'm afraid :p
+
+> > 	2. Modifying cpuset.cpus could result with empty set for 32bit tasks.
+> > 
+> > 	   It is a variation of the above, it's just the cpuset transforms into
+> > 	   64bit only after we attach.
+> > 
+> > 	   I think the right behavior here is to move the 32bit tasks to the
+> > 	   nearest ancestor like we do when all cpuset.cpus are hotplugged out.
+> > 
+> > 	   We could too return an error if the new set will result an empty set
+> > 	   for the 32bit tasks. In a similar manner to how it fails if you
+> > 	   write a cpu that is offline.
+> > 
+> > 	3. If a 64bit task belongs to 64bit-only-cpuset execs a 32bit binary,
+> > 	   the 32 tasks will inherit the cgroup setting.
+> > 
+> > 	   Like above, we should move this to the nearest ancestor.
 > 
-> Sorry, you're right. I missed the outer #ifdef.
-> 
-> > > > +void show_rcu_tasks_rude_gp_kthread(void)
-> > >
-> > > Do you really want to define a non-static function...
-> >
-> > Yes, because its user is in kernel/rcu/rcutorture.c, which is in
-> > a separate translation unit, so it must be non-static.  The earlier
-> > version instead only called it from this file, but that turned out to
-> > produce confusing output containing information for flavors of RCU that
-> > were not under test.  So this commit exported it to allow rcutorture to
-> > complain about only that RCU flavor being tested.
-> >
-> > > >  {
-> > > >         show_rcu_tasks_generic_gp_kthread(&rcu_tasks_rude, "");
-> > > >  }
-> > > > -#endif /* #ifndef CONFIG_TINY_RCU */
-> > > > -
-> > > > -#else /* #ifdef CONFIG_TASKS_RUDE_RCU */
-> > > > -static void show_rcu_tasks_rude_gp_kthread(void) {}
-> > > > -#endif /* #else #ifdef CONFIG_TASKS_RUDE_RCU */
-> > > > +EXPORT_SYMBOL_GPL(show_rcu_tasks_rude_gp_kthread);
-> > >
-> > > ... and export its symbol, from a header file?
-> > > I know the file is included only once.
-> >
-> > Because kernel/rcu/rcutorture.c can be built as a module, it must be
-> > exported.  I agree that it is unusual to export from a .h file, but the
-> > single inclusion is intentional.  There are several other .h files in
-> > kernel/rcu that are also split out to group similar functionality while
-> > still allowing the compiler to inline to its heart's content.
-> 
-> My main gripe is having non-static functions in a header file, which
-> causes havoc if someone ever start including it from a second source
-> file.
-> 
-> Why not move the contents of the header to the (single) source file that
-> includes the header _unconditionally_, to make it nicely self-contained?
-> For conditional includes, things are obviously different.
+> I considered this when I was writing the patches, but the reality is that
+> by allowing 32-bit tasks to attach to a 64-bit only cpuset (which is required
+> by Android), we have no choice but to expose a new ABI to userspace. This is
+> all gated behind a command-line option, so I think that's fine, but then why
+> not just have the same behaviour as cgroup v2? I don't see the point in
+> creating two new ABIs (for cgroup v1 and v2 respectively) if we don't need
 
-Because I used to do it that way and continually got tripped up by
-the outer #if ranges that caused you trouble above.  Only with more
-#if ranges spread through a larger file, it was even more painful.
-With each .h file confined to a particular topic, its #if structure is
-relatively simple, though perhaps not all that helpful to people such
-as yourself who are new to the file.
+Ultimately it's up to Tejun and Peter I guess. I thought we need to preserve
+the v1 behavior for the new class of tasks. I won't object to the new ABI
+myself. Maybe we just need to make the commit messages and cgroup-v1
+documentation reflect that explicitly.
 
-But still way easier to pick up than having all of the #if ranges
-contained within a single file.
+> to. If it was _identical_ to the hotplug case, then we would surely just
+> follow the existing behaviour, but it's really quite different in this
+> situation because the cpuset is not empty.
 
-> > Yes, this is a bit unconventional, but it has been this way for more
-> > than a decade, at least for tree_plugin.h.
-> 
-> Oh right, there are even more of these ;-)
+It is actually effectively empty for those tasks. But I see that one could look
+at it from two different angles.
 
-Indeed there are.
+> One thing we should definitely do though is add this to the documentation
+> for the command-line option.
 
-							Thanx, Paul
++1
+
+By the way, should the command-line option be renamed to something more
+generic? This has already grown beyond just enabling the support for one
+isolated case. No strong opinion, just a suggestion.
+
+Thanks
+
+--
+Qais Yousef
