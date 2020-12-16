@@ -2,111 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA72F2DBD3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FBD2DBD3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726095AbgLPJBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:01:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726172AbgLPJB3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:01:29 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B068C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:00:49 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id m5so22362733wrx.9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:00:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=WLnMTl1G6UwEqHqPjfyqMKiBfvdc90ZzGoJC/xgl6I0=;
-        b=Y3o8yyHxKNnQruLSD0iOGnwzUKH1Xan//YDBmDEqTy8bIHhqvPhBbbGRQi/otav6lv
-         l1+xAgdlvxpIuJDn3ZxrxmeKpiCy69VHQDttA3ADb3kK/U7Rj8wcwywb04CVzdzT6apH
-         8S8F36/LZxmDlcm8cr39DPhxidmTBKm2ppJV23mMGoeLg4Xh/4C8NgNjaeD2T3YS+0lr
-         5KgTHrjgttcFC7dwS0POXXrP4ieh1hd8g6f1Y5y0mUdHOEvtA6Lw3qK+HInIYQ22PzZF
-         oyNivuYTN+Ocl499/Xu46X4kSKQoou6uJXNt23eWj9s81ITwdJgefmMG2Yue916jBRro
-         GPAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=WLnMTl1G6UwEqHqPjfyqMKiBfvdc90ZzGoJC/xgl6I0=;
-        b=SOTZX4uUOMv+5YNHQ4kMwyfHa22eBRu2gS2kk39Dxp3PJxe+Qe8b7Aco6Zy0YUC4Xl
-         FM5+9yrZ50mDzVS8BfXj/Ljv7Zj0mFXPaogP6eiuHbwvvRFDUNe3hzBZR047N5S8Yc2k
-         DSDz8UvzmL2pIRLNwGaFbdbA6Zp9/K+eBe0fWdgLVoa4DjC4WVUxd9vRs2UUYyQ6whby
-         dJuwR6XWSaMHNQNc7ONwI+fEu4uTipJbJw74FQs788k+2B+LGepVpNOjl1zROmQC65eF
-         uesln1a9iReYFvlqGyga/3zyLw7vO7X9H1GwW3WT9CBX0zntKcbXnoKQz+8+ODxFArZz
-         pZOQ==
-X-Gm-Message-State: AOAM530a7/bQkMunLD1WTvbyRy9wV5laDkbgzobCk8LCWpwAG8B57sZV
-        E7jdRr4IQr01xAMQ+dq9kFWxCw==
-X-Google-Smtp-Source: ABdhPJz+r6Xme90cLiDirEBfpRG5183hD9lrcdfx1lAqVbFG32jIzRm6jwG8cTWkOv8NKONNT3pAqA==
-X-Received: by 2002:a5d:6a88:: with SMTP id s8mr38005448wru.118.1608109247855;
-        Wed, 16 Dec 2020 01:00:47 -0800 (PST)
-Received: from dell ([91.110.221.200])
-        by smtp.gmail.com with ESMTPSA id v125sm1804504wme.42.2020.12.16.01.00.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 01:00:47 -0800 (PST)
-Date:   Wed, 16 Dec 2020 09:00:45 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "marek.vasut+renesas@gmail.com" <marek.vasut+renesas@gmail.com>,
-        "yoshihiro.shimoda.uh@renesas.com" <yoshihiro.shimoda.uh@renesas.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "khiem.nguyen.xt@renesas.com" <khiem.nguyen.xt@renesas.com>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 11/12] mfd: bd9571mwv: Make the driver more generic
-Message-ID: <20201216090045.GA207743@dell>
-References: <1608104275-13174-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <1608104275-13174-12-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <4021c3f04bf8c4dcbcb015056455c4acf9e71b6b.camel@fi.rohmeurope.com>
+        id S1725858AbgLPJCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:02:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725819AbgLPJCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 04:02:10 -0500
+Date:   Wed, 16 Dec 2020 10:01:25 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1608109289;
+        bh=z/eh3EUywzyjkSVYz4rpt0WtGd9ivWrDnhRe9zirCh4=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R3y4xGaf9B8BBqMmoHqAUB2OyAAS7vT0nO33cCn88LcDiDECpFbs/U17HZMkkjzwo
+         dZVGIaSgUvNvdo47UE8Lx/iBmcvQ6FTk39Xtky2HUC47FBijvVfEXCsr9EFCyPrVdQ
+         A3N/q/sgJppm9htVv4bXpYbi4O8wxgOh9O7cPOFA=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Daejun Park <daejun7.park@samsung.com>
+Cc:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+Subject: Re: Subject: [PATCH v14 1/3] scsi: ufs: Introduce HPB feature
+Message-ID: <X9nM5b4xK+QSFLpq@kroah.com>
+References: <20201216024444epcms2p5e69281911dd675306c473df3d2cef8b2@epcms2p5>
+ <CGME20201215082235epcms2p88c9d8fd4dc773f6a4901dab241063306@epcms2p2>
+ <20201216024532epcms2p22b8aadbce9f0d2aae7915bdf22e2fe8f@epcms2p2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4021c3f04bf8c4dcbcb015056455c4acf9e71b6b.camel@fi.rohmeurope.com>
+In-Reply-To: <20201216024532epcms2p22b8aadbce9f0d2aae7915bdf22e2fe8f@epcms2p2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020, Vaittinen, Matti wrote:
+On Wed, Dec 16, 2020 at 11:45:32AM +0900, Daejun Park wrote:
+> This is a patch for the HPB initialization and adds HPB function calls to
+> UFS core driver.
 
-> 
-> On Wed, 2020-12-16 at 16:37 +0900, Yoshihiro Shimoda wrote:
-> > From: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
-> > 
-> > Since the driver supports BD9571MWV PMIC only,
-> > this patch makes the functions and data structure become more generic
-> > so that it can support other PMIC variants as well.
-> > 
-> > Signed-off-by: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
-> > [shimoda: rebase and refactor]
-> > Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> 
-> Reviewed-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+<snip>
 
-Please place any *-by tags *after* the other comments.
+Your "subject" is odd, it has "Subject:" in it twice, did git
+format-patch create that?
 
-Fortunately, the first one below was still on my screen, else I would
-have stopped reading here.
+thanks,
 
-> > ---
-> >  drivers/mfd/bd9571mwv.c       | 95 +++++++++++++++++++++++++++----
-> > ------------
-> >  include/linux/mfd/bd9571mwv.h | 18 ++------
-> >  2 files changed, 63 insertions(+), 50 deletions(-)
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+greg k-h
