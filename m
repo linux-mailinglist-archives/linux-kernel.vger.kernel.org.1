@@ -2,146 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDB52DB82E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0E52DB835
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 02:06:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727377AbgLPBDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 20:03:06 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:45599 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727334AbgLPBDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 20:03:05 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CwcKp4L3Yz9sSn;
-        Wed, 16 Dec 2020 12:02:21 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1608080542;
-        bh=GRJrQmpTMXq9rGDkMakHSa6LsiyRsrp0g4xaRIol/dI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nTfDdmXx+ytOVcXTR1pcDO4afblmdIhRCa/I3SZFBIpUa8wkz7EfcZMMGdhY4d/X1
-         csqXWEH6WfrcJck2GaU9MZXd93hJuOmFpHX4B50uCzhdqDTcxSKUrPfnGC4xR8XoCJ
-         uIg5xxbbMKB7BRmWe6sw7lts5YkH9Sf9wT9zMUM113pixx9qNCufhzYzh+ciS79vZg
-         mnof6wPhPCBDqv0HWSrM6h1nfZRtnOek4dmr2Wfn+kvCH3vAVI2W2yoCs5z+N2CDc8
-         2mw0hAO7jwdWUFK1wYvZ1dOhzQkx7mHvuZXLeMsdfjJLS8g8OLuHvqfn6r6OXsP+bP
-         35X7Jhrp04sGA==
-Date:   Wed, 16 Dec 2020 12:02:21 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the userns tree with the tip tree
-Message-ID: <20201216120221.3cd7bfce@canb.auug.org.au>
-In-Reply-To: <20201211182453.2522566c@canb.auug.org.au>
-References: <20201211182453.2522566c@canb.auug.org.au>
+        id S1727802AbgLPBFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 20:05:21 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:60698 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727311AbgLPBFU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 20:05:20 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BG11Buc071723;
+        Wed, 16 Dec 2020 01:03:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=vCsOIns9Vm+ZWMPHM06Fv0bekoUZLP1odtheFhtyDdU=;
+ b=Glgs9eTk05dIRYGx5O5GG5CThH94Df+WuCRH6BJTawNchhe4LetJXrqfoAPvBGbBZgy+
+ 1mm1F+B9NNlTCeKq8ax9tFy4RnAnSKv1JgvOHJ0VJthFe0r2HrRNyGiVoOh4H42TGqgD
+ jQUHWCqBDi0nh9JZv65Lk6e3exeOjoL9XJhq7nadiXs/iAUGv/N23WOYC6IfG3meR+Mt
+ qxqkdABYj186nUgNKVDEGtVOYbDHvMuO2a95j1XJCbA9N8l9wG1va7xwFEJFRmf8KlFU
+ XqAtDQHab2HbMn0hc3hxxZRP8Hh/GuJwB8oN/MUe2TPGtqv0rNL0HXPZgL6sMC6MVOCC fg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 35cn9rdjf7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Dec 2020 01:03:47 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BG11S6F043831;
+        Wed, 16 Dec 2020 01:03:46 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 35d7ent36a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Dec 2020 01:03:46 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BG13b9S007993;
+        Wed, 16 Dec 2020 01:03:38 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 15 Dec 2020 17:03:36 -0800
+Subject: Re: [PATCH v9 02/11] mm/hugetlb: Introduce a new config
+ HUGETLB_PAGE_FREE_VMEMMAP
+To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        willy@infradead.org, osalvador@suse.de, mhocko@suse.com,
+        song.bao.hua@hisilicon.com, david@redhat.com
+Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+References: <20201213154534.54826-1-songmuchun@bytedance.com>
+ <20201213154534.54826-3-songmuchun@bytedance.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <7cfe44aa-3753-82d9-6630-194f1532e186@oracle.com>
+Date:   Tue, 15 Dec 2020 17:03:34 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oUyf/sp7r7eLkMog8MUQLJf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201213154534.54826-3-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012160002
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160002
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/oUyf/sp7r7eLkMog8MUQLJf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 12/13/20 7:45 AM, Muchun Song wrote:
+> The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
+> whether to enable the feature of freeing unused vmemmap associated with
+> HugeTLB pages. And this is just for dependency check. Now only support
+> x86-64.
+> 
+> Because this config depends on HAVE_BOOTMEM_INFO_NODE. And the function
+> of the register_page_bootmem_info() is aimed to register bootmem info.
+> So we should register bootmem info when this config is enabled.
 
-Hi all,
+Suggested commit message rewording?
 
-On Fri, 11 Dec 2020 18:24:53 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the userns tree got a conflict in:
->=20
->   kernel/events/core.c
->=20
-> between commit:
->=20
->   78af4dc949da ("perf: Break deadlock involving exec_update_mutex")
->=20
-> from the tip tree and commit:
->=20
->   f7cfd871ae0c ("exec: Transform exec_update_mutex into a rw_semaphore")
->=20
-> from the userns tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc kernel/events/core.c
-> index 19ae6c931c52,55b2330b556c..000000000000
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@@ -11958,24 -11864,6 +11958,24 @@@ SYSCALL_DEFINE5(perf_event_open
->   		goto err_context;
->   	}
->  =20
->  +	if (task) {
-> - 		err =3D mutex_lock_interruptible(&task->signal->exec_update_mutex);
-> ++		err =3D down_read_interruptible(&task->signal->exec_update_lock);
->  +		if (err)
->  +			goto err_file;
->  +
->  +		/*
->  +		 * Preserve ptrace permission check for backwards compatibility.
->  +		 *
-> - 		 * We must hold exec_update_mutex across this and any potential
-> ++		 * We must hold exec_update_lock across this and any potential
->  +		 * perf_install_in_context() call for this new event to
->  +		 * serialize against exec() altering our credentials (and the
->  +		 * perf_event_exit_task() that could imply).
->  +		 */
->  +		err =3D -EACCES;
->  +		if (!perfmon_capable() && !ptrace_may_access(task, PTRACE_MODE_READ_R=
-EALCREDS))
->  +			goto err_cred;
->  +	}
->  +
->   	if (move_group) {
->   		gctx =3D __perf_event_ctx_lock_double(group_leader, ctx);
->  =20
-> @@@ -12151,10 -12039,7 +12151,10 @@@ err_locked
->   	if (move_group)
->   		perf_event_ctx_unlock(group_leader, gctx);
->   	mutex_unlock(&ctx->mutex);
->  -/* err_file: */
->  +err_cred:
->  +	if (task)
-> - 		mutex_unlock(&task->signal->exec_update_mutex);
-> ++		up_read(&task->signal->exec_update_lock);
->  +err_file:
->   	fput(event_file);
->   err_context:
->   	perf_unpin_context(ctx);
+The HUGETLB_PAGE_FREE_VMEMMAP option is used to enable the freeing of
+unnecessary vmemmap associated with HugeTLB pages.  The config option is
+introduced early so that supporting code can be written to depend on the
+option.  The initial version of the code only provides support for x86-64.
 
-This is now a conflict between the userns tree and Linus's tree.
+Like other code which frees vmemmap, this config option depends on
+HAVE_BOOTMEM_INFO_NODE.  The routine register_page_bootmem_info() is used
+to register bootmem info.  Therefore, make sure register_page_bootmem_info
+is enabled if HUGETLB_PAGE_FREE_VMEMMAP is defined.
 
---=20
-Cheers,
-Stephen Rothwell
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  arch/x86/mm/init_64.c |  2 +-
+>  fs/Kconfig            | 15 +++++++++++++++
+>  2 files changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+> index 0a45f062826e..0435bee2e172 100644
+> --- a/arch/x86/mm/init_64.c
+> +++ b/arch/x86/mm/init_64.c
+> @@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
+>  
+>  static void __init register_page_bootmem_info(void)
+>  {
+> -#ifdef CONFIG_NUMA
+> +#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
+>  	int i;
+>  
+>  	for_each_online_node(i)
+> diff --git a/fs/Kconfig b/fs/Kconfig
+> index 976e8b9033c4..4c3a9c614983 100644
+> --- a/fs/Kconfig
+> +++ b/fs/Kconfig
+> @@ -245,6 +245,21 @@ config HUGETLBFS
+>  config HUGETLB_PAGE
+>  	def_bool HUGETLBFS
+>  
+> +config HUGETLB_PAGE_FREE_VMEMMAP
+> +	def_bool HUGETLB_PAGE
+> +	depends on X86_64
+> +	depends on SPARSEMEM_VMEMMAP
+> +	depends on HAVE_BOOTMEM_INFO_NODE
+> +	help
+> +	  When using HUGETLB_PAGE_FREE_VMEMMAP, the system can save up some
+> +	  memory from pre-allocated HugeTLB pages when they are not used.
+> +	  6 pages per HugeTLB page of the pmd level mapping and (PAGE_SIZE - 2)
+> +	  pages per HugeTLB page of the pud level mapping.
+> +
+> +	  When the pages are going to be used or freed up, the vmemmap array
+> +	  representing that range needs to be remapped again and the pages
+> +	  we discarded earlier need to be rellocated again.
 
---Sig_/oUyf/sp7r7eLkMog8MUQLJf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+I see the previous discussion with David about wording here.  How about
+leaving the functionality description general, and provide a specific
+example for x86_64?  As mentioned we can always update when new arch support
+is added.  Suggested text?
 
------BEGIN PGP SIGNATURE-----
+	The option HUGETLB_PAGE_FREE_VMEMMAP allows for the freeing of
+	some vmemmap pages associated with pre-allocated HugeTLB pages.
+	For example, on X86_64 6 vmemmap pages of size 4KB each can be
+	saved for each 2MB HugeTLB page.  4094 vmemmap pages of size 4KB
+	each can be saved for each 1GB HugeTLB page.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/ZXJ0ACgkQAVBC80lX
-0GwkOAf/bL9OWPSNIHmEvInDuyJOtDuNkqkmQVi3s4gv7ArjarRgzh6vrgOwA2rb
-2yu8Cg40mG+OONcNJfJDn8/aDSXC7n8A29WgGuye4ZV3wSWpXqQll1ypPO3Id4jM
-ska5Krip9tbQ1pmaUkrgYCycoULsF74qeeFPHAs4CAbietjt2FDDTHRsSFKA/Jh/
-1Etpvgibi22fI9zfA+P7TRzlflHJpw+fRwMOhEfs9HNxNrmKAYSkdrj1VXi/h/AQ
-061Jm3W35NAi57Zz9E6Kn9qUqaxZjGEIQ4qUS1ic38kBQPQmQmEkKgL1rI6tk2M+
-piaaTemonOShK86XkpJ2DiSz/oFWfg==
-=Tz70
------END PGP SIGNATURE-----
+	When a HugeTLB page is allocated or freed, the vmemmap array
+	representing the range associated with the page will need to be
+	remapped.  When a page is allocated, vmemmap pages are freed
+	after remapping.  When a page is freed, previously discarded
+	vmemmap pages must be allocated before before remapping.
 
---Sig_/oUyf/sp7r7eLkMog8MUQLJf--
+-- 
+Mike Kravetz
+	
+> +
+>  config MEMFD_CREATE
+>  	def_bool TMPFS || HUGETLBFS
+>  
+> 
