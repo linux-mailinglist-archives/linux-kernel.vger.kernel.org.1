@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD6A2DC21A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0922DC218
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726459AbgLPOYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 09:24:32 -0500
-Received: from relay.sw.ru ([185.231.240.75]:42752 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725550AbgLPOYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 09:24:32 -0500
-Received: from [192.168.15.178]
-        by relay3.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1kpXi4-00DHGG-90; Wed, 16 Dec 2020 17:23:20 +0300
-Subject: Re: regression: 9a56493f6942 "uts: Use generic ns_common::count"
- broke makedumpfile 1.6.7
-To:     Mike Galbraith <efault@gmx.de>,
-        LKML <linux-kernel@vger.kernel.org>, egorenar@linux.ibm.com,
-        Christian Brauner <christian.brauner@ubuntu.com>
-References: <7b13506084a015d0256222cdd278fe461cdd4a74.camel@gmx.de>
- <6933cde2-7d43-7d7e-066c-1c4a13c752dd@virtuozzo.com>
- <ad3bfa510282d3122069dafe98666aa2d6b5b0ff.camel@gmx.de>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <60200005-a9a2-4994-b730-e22fd8f01ae4@virtuozzo.com>
-Date:   Wed, 16 Dec 2020 17:23:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1726441AbgLPOYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 09:24:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725550AbgLPOYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 09:24:23 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EDE4233CE;
+        Wed, 16 Dec 2020 14:23:41 +0000 (UTC)
+Date:   Wed, 16 Dec 2020 09:23:39 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Dexuan Cui <decui@microsoft.com>, Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        jeyu@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        ardb@kernel.org, Jason Baron <jbaron@akamai.com>
+Subject: Re: [RFC][PATCH] jump_label/static_call: Add MAINTAINERS
+Message-ID: <20201216092339.74835205@gandalf.local.home>
+In-Reply-To: <20201216134249.GU3092@hirez.programming.kicks-ass.net>
+References: <MW4PR21MB1857CC85A6844C89183C93E9BFC59@MW4PR21MB1857.namprd21.prod.outlook.com>
+        <20201216092649.GM3040@hirez.programming.kicks-ass.net>
+        <20201216105926.GS3092@hirez.programming.kicks-ass.net>
+        <20201216133014.GT3092@hirez.programming.kicks-ass.net>
+        <20201216134249.GU3092@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <ad3bfa510282d3122069dafe98666aa2d6b5b0ff.camel@gmx.de>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.12.2020 16:32, Mike Galbraith wrote:
-> On Wed, 2020-12-16 at 15:35 +0300, Kirill Tkhai wrote:
->> Hi, Alexander,
->>
->> On 16.12.2020 14:02, Mike Galbraith wrote:
->>> Greetings,
->>>
->>> With this commit, bisected and confirmed, kdump stops working here,
->>> makedumpfile saying "check_release: Can't get the kernel version".
->>
->> hasn't your commit 55d9e11398a4 "kdump: append uts_namespace.name offset to VMCOREINFO"
->> fixed this issue?
+On Wed, 16 Dec 2020 14:42:49 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
+
+> On Wed, Dec 16, 2020 at 02:30:14PM +0100, Peter Zijlstra wrote:
+> > 
+> > FWIW, I recently noticed we're not being Cc'ed on patches for this
+> > stuff, so how about we do something like the below?
+> > 
+> > Anybody holler if they don't agree with the letter assigned, or if they
+> > feel they've been left out entirely and want in on the 'fun' :-)
+> > 
+> > ---
+> > Subject: jump_label/static_call: Add MAINTAINERS
+> > From: Peter Zijlstra <peterz@infradead.org>
+> > 
+> > These files don't appear to have a MAINTAINERS entry and as such
+> > patches miss being seen by people who know this code.
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> >  MAINTAINERS |   12 ++++++++++++
+> >  1 file changed, 12 insertions(+)
+> > 
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -16766,6 +16766,18 @@ M:	Ion Badulescu <ionut@badula.org>
+> >  S:	Odd Fixes
+> >  F:	drivers/net/ethernet/adaptec/starfire*
+> >  
+> > +STATIC BRANCH/CALL
+> > +M:	Peter Zijlstra <peterz@infradead.org>
+> > +M:	Josh Poimboeuf <jpoimboe@redhat.com>
+> > +M:	Jason Baron <jbaron@akamai.com>
+> > +R:	Steven Rostedt <rostedt@goodmis.org>
+> > +R:	Ard Biesheuvel <ardb@kernel.org>
+> > +S:	Supported  
 > 
-> FWIW, I applied the below, but it didn't help.
+> F:	arch/*/include/asm/jump_label*.h
+> F:	arch/*/include/asm/static_call*.h
+> F:	arch/*/kernel/jump_label.c
+> F:	arch/*/kernel/static_call.c
 > 
-> ---
->  kernel/crash_core.c |    1 +
->  1 file changed, 1 insertion(+)
+> These too?
+
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+-- Steve
+
 > 
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -447,6 +447,7 @@ static int __init crash_save_vmcoreinfo_
->  	VMCOREINFO_PAGESIZE(PAGE_SIZE);
-> 
->  	VMCOREINFO_SYMBOL(init_uts_ns);
-> +	VMCOREINFO_OFFSET(uts_namespace, name);
->  	VMCOREINFO_SYMBOL(node_online_map);
->  #ifdef CONFIG_MMU
->  	VMCOREINFO_SYMBOL_ARRAY(swapper_pg_dir);
+> > +F:	include/linux/jump_label*.h
+> > +F:	include/linux/static_call*.h
+> > +F:	kernel/jump_label.c
+> > +F:	kernel/static_call.c
+> > +
+> >  STEC S1220 SKD DRIVER
+> >  M:	Damien Le Moal <Damien.LeMoal@wdc.com>
+> >  L:	linux-block@vger.kernel.org  
 
-As I see, makedumpfile hardcodes recent supported kernel version.
-(I downloaded makedumpfile from here: https://github.com/makedumpfile/makedumpfile)
-
-#define LATEST_VERSION          KERNEL_VERSION(5, 9, 4) /* linux-5.9.4 */
-int32_t         
-get_kernel_version(char *release)
-{
-	...
-        if ((version < OLDEST_VERSION) || (LATEST_VERSION < version)) {
-                MSG("The kernel version is not supported.\n");
-                MSG("The makedumpfile operation may be incomplete.\n");
-        }
-	...
-}
-
-So, in case of you revert the patch, makedumpfile also should fail:
-
-root@qemu:~# ./makedumpfile/makedumpfile -g VMCOREINFO -x ./vmlinux 
-The kernel version is not supported.
-The makedumpfile operation may be incomplete.
-
-The vmcoreinfo is saved to VMCOREINFO.
-
-makedumpfile Completed.
-
-Does this regression only cause that one error message "check_release: Can't get the kernel version"
-is printed instead of another: "The kernel version is not supported."?
-
-Kirill
