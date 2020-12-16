@@ -2,59 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8F92DC11E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E312DC120
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726323AbgLPNVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:21:41 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9622 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725550AbgLPNVl (ORCPT
+        id S1726330AbgLPNWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:22:18 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:63733 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgLPNWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:21:41 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CwwjK6sdjz15cRM;
-        Wed, 16 Dec 2020 21:20:21 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 16 Dec 2020 21:20:51 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <p.zabel@pengutronix.de>, <mchehab@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] media/platform/coda: convert comma to semicolon
-Date:   Wed, 16 Dec 2020 21:21:23 +0800
-Message-ID: <20201216132123.15099-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Wed, 16 Dec 2020 08:22:18 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608124917; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=dlbrynf84dvX8jOV45UJ087GRtlBhIoPyp1S27UWkAI=; b=hFVctFmdnudZyQNrZs8S+G7mNR34jdHVJgYAriUi+RvGtNuc+CTKmup/1Zu70OnHF9Itj4uB
+ CyItK7eOnncGAsBC85enBGRX87KjFz9PPDOMWeA/yowMBDl2/b6CSAmMzm774UpIoTymR80D
+ jdzhsLnErdINp7qOYKiyKY0xt10=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5fda09d80564dfefcdabbbdc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Dec 2020 13:21:28
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4A2AFC433ED; Wed, 16 Dec 2020 13:21:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3C2A7C433CA;
+        Wed, 16 Dec 2020 13:21:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3C2A7C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     <arend.vanspriel@broadcom.com>, <franky.lin@broadcom.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        <SHA-cyfmac-dev-list@infineon.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH wireless -next] brcmfmac: Delete useless kfree code
+References: <20201216130350.13815-1-zhengyongjun3@huawei.com>
+Date:   Wed, 16 Dec 2020 15:21:23 +0200
+In-Reply-To: <20201216130350.13815-1-zhengyongjun3@huawei.com> (Zheng
+        Yongjun's message of "Wed, 16 Dec 2020 21:03:50 +0800")
+Message-ID: <871rfpyjho.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace a comma between expression statements by a semicolon.
+Zheng Yongjun <zhengyongjun3@huawei.com> writes:
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- drivers/media/platform/coda/coda-common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> The parameter of kfree function is NULL, so kfree code is useless, delete it.
+> Therefore, goto expression is no longer needed, so simplify it.
+>
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  .../net/wireless/broadcom/brcm80211/brcmfmac/firmware.c  | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/platform/coda/coda-common.c b/drivers/media/platform/coda/coda-common.c
-index 87a2c706f747..547ad34b1424 100644
---- a/drivers/media/platform/coda/coda-common.c
-+++ b/drivers/media/platform/coda/coda-common.c
-@@ -2861,7 +2861,7 @@ static int coda_register_device(struct coda_dev *dev, int i)
- 	strscpy(vfd->name, dev->devtype->vdevs[i]->name, sizeof(vfd->name));
- 	vfd->fops	= &coda_fops;
- 	vfd->ioctl_ops	= &coda_ioctl_ops;
--	vfd->release	= video_device_release_empty,
-+	vfd->release	= video_device_release_empty;
- 	vfd->lock	= &dev->dev_mutex;
- 	vfd->v4l2_dev	= &dev->v4l2_dev;
- 	vfd->vfl_dir	= VFL_DIR_M2M;
+You forgot to CC linux-wireless, please resend as v2
+
 -- 
-2.22.0
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
