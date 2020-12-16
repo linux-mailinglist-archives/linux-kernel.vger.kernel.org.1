@@ -2,130 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F4A2DC6AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F3C2DC6BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:48:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731671AbgLPSmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 13:42:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731667AbgLPSmj (ORCPT
+        id S1732007AbgLPSry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 13:47:54 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:40286 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728126AbgLPSrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 13:42:39 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA6FC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:41:58 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id o19so25288256lfo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:41:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YCn/jCPPDZXlf9ePKIfj8E1795/GsgQ/JdHgm4LtjQA=;
-        b=HIyDgDllo8p73lQ4EedSHwaWwaKKnRLXD1OwFgDxoxIQ/SZX+nE8RY1+JFfOMMNOfE
-         pT2IwSFXNJFAjZI13/AKsRY8MFWCn7BCOxnwBrXezhQDGQjEmdbhveZeljr1A0JfDmgQ
-         CZuKFp6T5JFWi+Qfv7n8eEGxFkOSFelNXYySU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YCn/jCPPDZXlf9ePKIfj8E1795/GsgQ/JdHgm4LtjQA=;
-        b=NBwMsdWQmCF/fPjOU/SBUXuDUFGMh+KiRZZ6DmIDumXHAq68+XMrBTI3YdEpWxdHd2
-         YmPNPVVtMhDO/YNRcJw1ACMfSVH1Y6qFac2f3JvHmP3yhA6cxp2RBK/S0TleocEoa2fN
-         dN7Q5eFSCrAvQVZf8k7imACmF1UjfFa2SFvSk2sy5PcpcDoGCqNJC44L/odJX8mklrYF
-         fcqAsiQuaaNRHs9huvE+DOcEw7ZhJiIXr/7KWXGuUCxq8kf28zA2i4eRKStclN7adum9
-         3nGxAwNitoPDMxYLzTos0UObxjSkgTJ0VpBg/xwwptby8Yx3YNun7JbrjcJAFCLt1IeV
-         30qg==
-X-Gm-Message-State: AOAM532mRf4ZBlUZT7p9cSLNLR+2dO7VLCMH48/8nnKSvBseB8WVTRoK
-        vCrEJIcRTIYoTOdwNoP7/cRreeeVZ08vKQ==
-X-Google-Smtp-Source: ABdhPJweoWqERL1JY7tb4otcWZIwxznefBFSYu0c24qqTiJamC9kM+/RB1KBHIpqeIJqUggfr/LSHg==
-X-Received: by 2002:a2e:7d18:: with SMTP id y24mr8322203ljc.384.1608144115569;
-        Wed, 16 Dec 2020 10:41:55 -0800 (PST)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id x26sm312500lfe.173.2020.12.16.10.41.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Dec 2020 10:41:54 -0800 (PST)
-Received: by mail-lf1-f50.google.com with SMTP id a9so50911594lfh.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:41:53 -0800 (PST)
-X-Received: by 2002:a05:6512:789:: with SMTP id x9mr8684864lfr.487.1608144113096;
- Wed, 16 Dec 2020 10:41:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20201209163950.8494-1-will@kernel.org> <20201209163950.8494-2-will@kernel.org>
- <CAHk-=wgos=vgteG52=J=rVSeq6-Y2g2+Kn1=xV=wYjVzM6O9UQ@mail.gmail.com>
- <20201209184049.GA8778@willie-the-truck> <CAHk-=wgVqGh402dxfhR=bx2QSH=+4kq9doarNmD77baqDKdiUg@mail.gmail.com>
- <20201210150828.4b7pg5lx666r7l2u@black.fi.intel.com> <CAHk-=wiU8ktvak2hCj2TWJ6wMSwVsUSvi5Bjf4i1JGvpGmyUZw@mail.gmail.com>
- <20201214160724.ewhjqoi32chheone@box> <CAHk-=wi80Qp6nZC0yyewhnqvrmPx2h_yWvfq4A25ONb7z9BywQ@mail.gmail.com>
- <20201216170703.o5lpsnjfmoj7f3ml@box>
-In-Reply-To: <20201216170703.o5lpsnjfmoj7f3ml@box>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 16 Dec 2020 10:41:36 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiVRMADHC0qjTFAVx2Pp0DN-fT-VPC10boDdX0O4=h01w@mail.gmail.com>
-Message-ID: <CAHk-=wiVRMADHC0qjTFAVx2Pp0DN-fT-VPC10boDdX0O4=h01w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries when prefaulting
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
+        Wed, 16 Dec 2020 13:47:53 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BGIduP7097052;
+        Wed, 16 Dec 2020 18:47:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Xr8yAw8/V8mkqXz0+iWuL/b/ysvEUbubY0zlp+7SudM=;
+ b=FTpbDV5tlDmycn3h+k5CoK4fcGRpwnQnNeP7DsFp6KIARJDiuZXyYeoFmTh7XXe5AiJf
+ TGgMHzw2g7ZMbMKhnTSS1vChoVjBO4P//dp4BwCMOL0auiRIzE1TpDs6gDE1QxFbrSVr
+ US6sj9d96e4hZg/FCRnqdssHFXjNq27K0jpAL+v/CaDq1KeFBAZY5oanMKSwY33b4SGE
+ vXPfJftZW/D65+kN6bj7k+KLl+CHGYogQYVogq1lFQWd1U3ucAvkEh/4419UD+o8qqIQ
+ bQn+VIuDXKJqya8ED1X6lf0gVno38QdCXJdFWYmzLLJO5Ur7KZQSSWZDeLsswLIlxYN8 pQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 35ckcbj2nr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Dec 2020 18:47:08 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BGIfVGv192259;
+        Wed, 16 Dec 2020 18:47:08 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 35d7epw130-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Dec 2020 18:47:08 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BGIl7gU000469;
+        Wed, 16 Dec 2020 18:47:07 GMT
+Received: from dhcp-10-159-155-197.vpn.oracle.com (/10.159.155.197)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 16 Dec 2020 10:47:06 -0800
+Subject: Re: [PATCH RFC 0/8] dcache: increase poison resistance
+From:   Junxiao Bi <junxiao.bi@oracle.com>
+To:     Konstantin Khlebnikov <koct9i@gmail.com>
+Cc:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Waiman Long <longman@redhat.com>,
+        Gautham Ananthakrishna <gautham.ananthakrishna@oracle.com>,
+        matthew.wilcox@oracle.com
+References: <158893941613.200862.4094521350329937435.stgit@buzz>
+ <97ece625-2799-7ae6-28b5-73c52c7c497b@oracle.com>
+ <CALYGNiN2F8gcKX+2nKOi1tapquJWfyzUkajWxTqgd9xvd7u1AA@mail.gmail.com>
+ <d116ead4-f603-7e0c-e6ab-e721332c9832@oracle.com>
+ <CALYGNiM8Fp=ZV8S6c2L50ne1cGhE30PrT-C=4nfershvfAgP+Q@mail.gmail.com>
+ <04b4d5cf-780d-83a9-2b2b-80ae6029ae2c@oracle.com>
+Message-ID: <4bcbd2e7-b5e3-6f45-51cf-8658f9c9009d@oracle.com>
+Date:   Wed, 16 Dec 2020 10:46:46 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <04b4d5cf-780d-83a9-2b2b-80ae6029ae2c@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9837 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012160117
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9837 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ priorityscore=1501 mlxscore=0 suspectscore=0 adultscore=0 phishscore=0
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 9:07 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
+Hi Konstantin,
+
+How would you like to proceed with this patch set?
+
+This patchset as it is already fixed the customer issue we faced, it 
+will stop memory fragmentation causing by negative dentry and no 
+performance regression through our test. In production workload, it is 
+common that some app kept creating and removing tmp files, this will 
+leave a lot of negative dentry over time, some time later, it will cause 
+memory fragmentation and system run into memory compaction and not 
+responsible. It will be good to push it to upstream merge. If you are 
+busy, we can try push it again.
+
+Thanks,
+
+Junxiao.
+
+On 12/14/20 3:10 PM, Junxiao Bi wrote:
+> On 12/13/20 11:43 PM, Konstantin Khlebnikov wrote:
 >
-> If this looks fine, I'll submit a proper patch.
-
-That patch looks good to me.
-
-It would be good if somebody else looked it through - maybe I like it
-just because I got to pee in the snow and make my mark. But i think
-that filemap_map_pages() now looks a lot more understandable, and
-having that pte_offset_map_lock() outside the loop should be good.
-
-In particular, it will make it much easier to then make arguments
-about things like
-
- - increase the page mapping count
-
- - check that the page is not locked
-
- - check that the page still has a mapping
-
-we can say "we know we hold the page table lock, and we increased the
-page mapping count, and we saw that the page still had a mapping and
-was not locked after that".
-
-And that means that with some trivial memory ordering rules, we can
-know that any concurrent "truncate()" that got the page lock after we
-checked it, will get held up at
-
-        if (page_mapped(page)) {
-                unsigned int nr = thp_nr_pages(page);
-                unmap_mapping_pages(mapping, page->index, nr, false);
-        }
-
-in truncate_cleanup_page(), and that means that we can safely map the
-page _without_ ever actually even doing a "trylock_page()" at all.
-
-Before this patch of yours, that logic would have been broken, because
-the page table lock wasn't actually held for the whole first iteration
-of that loop in filemap_map_pages().
-
-And getting rid of the trylock_page() in that path gets rid of _the_
-major page lock  case for at least one class of loads.
-
-So I like the patch. But I would _really_ like for somebody else to
-look at it, and look at my thinking above.
-
-Because maybe I'm missing something.
-
-                Linus
+>>
+>>
+>> On Sun, Dec 13, 2020 at 9:52 PM Junxiao Bi <junxiao.bi@oracle.com 
+>> <mailto:junxiao.bi@oracle.com>> wrote:
+>>
+>>     On 12/11/20 11:32 PM, Konstantin Khlebnikov wrote:
+>>
+>>     > On Thu, Dec 10, 2020 at 2:01 AM Junxiao Bi
+>>     <junxiao.bi@oracle.com <mailto:junxiao.bi@oracle.com>
+>>     > <mailto:junxiao.bi@oracle.com <mailto:junxiao.bi@oracle.com>>>
+>>     wrote:
+>>     >
+>>     >     Hi Konstantin,
+>>     >
+>>     >     We tested this patch set recently and found it limiting 
+>> negative
+>>     >     dentry
+>>     >     to a small part of total memory. And also we don't see any
+>>     >     performance
+>>     >     regression on it. Do you have any plan to integrate it into
+>>     >     mainline? It
+>>     >     will help a lot on memory fragmentation issue causing by
+>>     dentry slab,
+>>     >     there were a lot of customer cases where sys% was very high
+>>     since
+>>     >     most
+>>     >     cpu were doing memory compaction, dentry slab was taking too
+>>     much
+>>     >     memory
+>>     >     and nearly all dentry there were negative.
+>>     >
+>>     >
+>>     > Right now I don't have any plans for this. I suspect such
+>>     problems will
+>>     > appear much more often since machines are getting bigger.
+>>     > So, somebody will take care of it.
+>>     We already had a lot of customer cases. It made no sense to leave so
+>>     many negative dentry in the system, it caused memory fragmentation
+>>     and
+>>     not much benefit.
+>>
+>>
+>> Dcache could grow so big only if the system lacks of memory pressure.
+>>
+>> Simplest solution is a cronjob which provinces such pressure by
+>> creating sparse file on disk-based fs and then reading it.
+>> This should wash away all inactive caches with no IO and zero chance 
+>> of oom.
+> Sound good, will try.
+>>
+>>     >
+>>     > First part which collects negative dentries at the end list of
+>>     > siblings could be
+>>     > done in a more obvious way by splitting the list in two.
+>>     > But this touches much more code.
+>>     That would add new field to dentry?
+>>
+>>
+>> Yep. Decision is up to maintainers.
+>>
+>>     >
+>>     > Last patch isn't very rigid but does non-trivial changes.
+>>     > Probably it's better to call some garbage collector thingy
+>>     periodically.
+>>     > Lru list needs pressure to age and reorder entries properly.
+>>
+>>     Swap the negative dentry to the head of hash list when it get
+>>     accessed?
+>>     Extra ones can be easily trimmed when swapping, using GC is to 
+>> reduce
+>>     perf impact?
+>>
+>>
+>> Reclaimer/shrinker scans denties in LRU lists, it's an another list.
+>
+> Ah, you mean GC to reclaim from LRU list. I am not sure it could catch 
+> up the speed of negative dentry generating.
+>
+> Thanks,
+>
+> Junxiao.
+>
+>> My patch used order in hash lists is a very unusual way. Don't be 
+>> confused.
+>>
+>> There are four lists
+>> parent - siblings
+>> hashtable - hashchain
+>> LRU
+>> inode - alias
+>>
+>>
+>>     Thanks,
+>>
+>>     Junxioao.
+>>
+>>     >
+>>     > Gc could be off by default or thresholds set very high (50% of
+>>     ram for
+>>     > example).
+>>     > Final setup could be left up to owners of large systems, which
+>>     needs
+>>     > fine tuning.
+>>
