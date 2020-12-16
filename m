@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA012DC6FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 355F22DC705
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387995AbgLPTVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 14:21:07 -0500
-Received: from mail-eopbgr150071.outbound.protection.outlook.com ([40.107.15.71]:56121
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387989AbgLPTVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 14:21:06 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Eyol7zuSdboDBQmiO3U1QBUGCZ7ECbmYf7cnBvN1WzeC7hOApIIrPWAwePhX3LlnaIlIkRLWCfMevbKwA/iAW5wc/GKWOIR1Q+DsixmkBZrN0fV29b3ferNaj9miJojVPSSnzQP7yDVTBnhS2nXh7fncnFbPxu7txP2ZaQcRv26wC3AfmoSAzEvHl91UB3/N26G7c6+4m0XFCZwr1Xvf8tbZ8SfWWycsI9l01STxAoq/Wzttld6z+snyTt6gPXDE91q3hKzgX+fbVmCmWDoIRpMPkYjfg2vMq8/2S5iOMi7cByLpO4UfFEiCNaZme43oIlrecPEsiGVmXYuFbxkKjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DrtBevypp0O/FIZ91hbukzfAICeTVxrrPrkZE9TTDrk=;
- b=jMiKj8HSjdYPSKRlKP8H9r3884iU/4siBlzYtT7p8pGaR7aYZ6gxkd3axkECKZOL7q19RfHawuXfFQdpQleSepDfHX0xgZiN+4CARSceZQR8ZBJ1M3lj0urHFrm6s+1DxYkrnXz12/a9ARjMh84YR+QzIg4oWES1hWDCasfYsxh/Eier1Glcf0SHWfbpP8989SeBzvngezXy4kQhsceWod/ZH7ptYEFjluiKXtvZss6sHBpI9NI0MMG+lHpm7obBUaHV5rSa4oR8zIZNFjaZz27tzzdZpHdptsPQEBDaqe6+Ed7LdJeEtaiDCwMb2EMCsnjjNhkwtaEKzXnEvJYc5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DrtBevypp0O/FIZ91hbukzfAICeTVxrrPrkZE9TTDrk=;
- b=kE450d/xB+Vi0gWXWrOERrnfkVZP6pJv8rl2Y98N1cW5pAL90JyRIAMoJCguxSVCxlhccIxJCgJzuyB9EB80LSOKjHGkRMJFbqwzSNbcdmF1nR3vURehNFS5ofcKhpIY+lQnxN4+JDmUI8zHilkXS2qxrw+ScPNN6eb3Oi0C30A=
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
- by VE1PR04MB6637.eurprd04.prod.outlook.com (2603:10a6:803:126::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Wed, 16 Dec
- 2020 19:20:17 +0000
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::2dd6:8dc:2da7:ad84]) by VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::2dd6:8dc:2da7:ad84%5]) with mapi id 15.20.3654.025; Wed, 16 Dec 2020
- 19:20:17 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexandru Marginean <alexandru.marginean@nxp.com>
-Subject: Re: [PATCH net-next 1/4] enetc: drop unneeded indirection
-Thread-Topic: [PATCH net-next 1/4] enetc: drop unneeded indirection
-Thread-Index: AQHW0yhcRARJ23eLyEi0KH6fwGgCfqn6GqcA
-Date:   Wed, 16 Dec 2020 19:20:17 +0000
-Message-ID: <20201216192016.q5klhv2mdv6yg73a@skbuf>
-References: <20201215212200.30915-1-michael@walle.cc>
- <20201215212200.30915-2-michael@walle.cc>
-In-Reply-To: <20201215212200.30915-2-michael@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.25.2.120]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8da74d04-c2f9-4017-8ed5-08d8a1f79f6a
-x-ms-traffictypediagnostic: VE1PR04MB6637:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VE1PR04MB663771C25BA0D85E686E4F20E0C50@VE1PR04MB6637.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:229;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TBzEH6dW3ktlZ6WPzr+yD3drAk85S4NrqTW4ibKLfQi2PbuyqbPZbmaRl5K8g0RyCU2kjL5ygRW40OH/JbFU/qFZfjhTGWjE1kATPmGpnJ0Ca566KXApmwzm6hSriUGMU0/aRK3gTH8s5Ei2+XEhDn/cphvcN3mvFiFAQEAEb1hPXRsAu/unpMOKxZmD2r2sz6qTnLFwjABrMAhQhw5k02zadvVolrJWzdlSE0XFvwuHoC58gj/iwto7pHuL/4Cwf/46TLWxu8j3R/pPtWeROG8S/mXABIVvSP2VRk25OuBnFWzFPhZhskT/uI3aiG0N
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(396003)(376002)(346002)(39860400002)(136003)(366004)(91956017)(86362001)(1076003)(76116006)(4744005)(478600001)(54906003)(2906002)(186003)(71200400001)(26005)(4326008)(5660300002)(6506007)(6486002)(33716001)(6916009)(316002)(83380400001)(44832011)(6512007)(8936002)(9686003)(66476007)(64756008)(66446008)(66946007)(66556008)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?oNLWa3oYXXRslMq/rFoqHm6GIHpg+sa3+BfLPEWkSJhnhD17C+CBIGixqM/X?=
- =?us-ascii?Q?9i5NvlJhYGZTaV6t862v3KuiH/Sgaw154hDf1EqWmYC8Yp5/621yLJw1t6Qm?=
- =?us-ascii?Q?emFuRYsSQCSBv7WvoBym9TN78evToE8UmUq7yMwc8rEF/nIJ8eMeiEhTJBha?=
- =?us-ascii?Q?xApLxtWo07+rSit+ar3hAcYxkwpR60X0YD7Cny7HPTr/tUyRnRBTDAMK5RnS?=
- =?us-ascii?Q?CwaoBaPHL0cMpiyaCgqpTOMng/T5rWl61rmY1TIyJXTbYlnQkCUpl+PkOt8a?=
- =?us-ascii?Q?zTpLIyL3mDchHMVIFEMff1LYZ+Dkm3idTiQI7j7nKDCTLrJUflnj0vfmKfQy?=
- =?us-ascii?Q?jI+LfotnRDraVG3bo4F6WwgSRF9nsxjUwIA/XfbJyOW9dYp0lcViKj0kjWx4?=
- =?us-ascii?Q?1/iofafPOF2kEsPUIfrF11Aj6u0D6Cje4deB+rZUDxdsH1McTMFUK7JQPMoV?=
- =?us-ascii?Q?OLWuF6AmL39cr0pcZ+IwHxwYn/+WhHTR+jM8rnYrIKTRU6VyXoITp4mEvJKv?=
- =?us-ascii?Q?6Kn2e2YwEvB48VXbRjANea4Rrj/v9SEV+p9GzY5PqGDALlnwL32Y0jy2xKnH?=
- =?us-ascii?Q?+TQuDCelNcCluTRzFfwgp4UucQnibifE5UnN0tR3NRQo6KjzolfJR8mpsL1K?=
- =?us-ascii?Q?eCzEY6P/lpenUxH9Xb0mrlhfHOS74gWHqsGgz5VIQVFhobR6jrrIRz1MG3Nz?=
- =?us-ascii?Q?cGVdJY6NyKswDd3I+qODbX1HAe/HZn/EKoR1aqKp6H03k04mDTLr0LxtwbaG?=
- =?us-ascii?Q?scyUd16U7wYdvl9tS3vYSYVh9ITG5SefDsdXzEMjOZlB4KmU6dRz9to0Zt6S?=
- =?us-ascii?Q?kn5utwVqBptd/TSnyvkldGQ4lR530UyvnfOFHcn82KCuxYjVrWfW9LuNe3/w?=
- =?us-ascii?Q?EJhTIOiWYjuSjGrUAc9hsAoytbY2foouf0jKzUKAxm6TfprocbOaOTLlpT0J?=
- =?us-ascii?Q?8VCAEP2zYmKnvg7GNEAJyrVA1SeFvTLg2xw2HNzIObS6Oj5Wv5IomGbUZ4ok?=
- =?us-ascii?Q?mwwE?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <AE8169166DEF0C4C8ED8562D99B7A387@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S2388212AbgLPTYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 14:24:18 -0500
+Received: from mout.gmx.net ([212.227.15.19]:39993 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726807AbgLPTYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 14:24:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1608146560;
+        bh=KECqyXX4KBM3ulRcxRMiqAHgnq2/rmUWEOb7bcxwksk=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=P+/bvfvHNXsmZJHMHauRCkD5i033AzeQge2DyrJq+EqzAw5i3Y8embRtQb9tE7U/p
+         feuk49R0XPmMB+cLFYqb9+tUJDdwwfYVG7LD6Z2KuxU/hoy8SFeZfUPulOlyUHoigb
+         aWMHCj8zlQOdn5ZcYgZ29O6zKa0XKnNsAoBTvxV4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.188.26]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Ma20k-1kdSjj3whw-00W1CJ; Wed, 16
+ Dec 2020 20:22:40 +0100
+Date:   Wed, 16 Dec 2020 20:22:35 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture updates for kernel v5.11-rc1
+Message-ID: <20201216192235.GA27343@ls3530.fritz.box>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8da74d04-c2f9-4017-8ed5-08d8a1f79f6a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 19:20:17.5560
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SxxCVJoCcI0NHDtFO7hh2wTYPvO9Eg3VH+N8fTev/r4w0wIrRmrO57PxtbK9M+S2HEtNV+4G2Qu5j5egfies9w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6637
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:EaXLt0pAz4OTpPxhUCs2zX69fAoKSXwU46CIP6tow5KgNMxuClw
+ dFe6U237d+JPiEmTYocurJo2aEK4i2I1Bc3L8ZFhhuWkaSDDqbXQcbKejLiP8ahHEQiTgaZ
+ 9Xl/1xL9oOkJV4igdL5bRCJY01fvukkxT/z9q1TqSXASDOZll2Vdv7c70mq7aNYQePLALMl
+ 66xxqjE8qQDyYffSxURpg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:PaK9AW1lOYs=:Nt4rMdSDRVEawq8q3k+JI8
+ JRjNRpkzUYK2gse3ZUlQZc1amzPLAylBNdX0Gxb3vkpHczXyZ1TLbvA1KlPK16Qo8CQ3aVlMH
+ 6wHB/ZX20s55p3jA8SYjIwB8xkS10bRe/M7qmVLGbZQ9e6suTcDTrqChVbkf1zqsQWw6F6KAz
+ kyoE7jcwfjpLxJdOos3Lv4l2YpNG+bb2irwD4wY9G9BsbjCZcz/Ds9igwn4x/JqnEef/O9lVs
+ wZrepy9grYN9oC2Avk38GTFVBV4PtxROBp82PA+S9M9F2fZZSqfAT1sGT17cW8BG7ZiEdhLvQ
+ ov17EJfGgnO3qWB+OFh7UCLNqlNqswO2Z+js/ZmTJRhoT0n/955d4JFM6L08UlaIAQVeeJb/b
+ 4if+YQ/u1lNhQyT4GFg7qBqInD0atH4qBNISQVSC4WeTJGiwEhYOq8YxdVqveIzIbxVByAqlI
+ RJxMiy3U/zMUkc6zBI2Mf029F7VWbh3FZmk7TSHtdDgNE5aTT9hO2fgVc7slSMY3KJO3p6FV7
+ +pcRiwdW9yIpAXfYqcTg3y1U8wOz8ZdbOlnVDxlgu3AgoP8hoXi+UqMuV7ZzvBHr8smRYRn7k
+ 62Bt51qXHW3G+/97TXsWT2mDOE80vSOH+jQOxmsizMyg56vnUrmrU5hayrmlM4T8DMdB6cn92
+ 8L+zQPr/dyimJA6Vyq16SVC/ctu23/1Iz/eVwb6x/zWADwTENovb0PNRMWzYGiwFoqSmcK/0C
+ BRbDNSnE+I38ADSf/l5/hkBhCXZc+6nq/i6rFR4yh0WPttUF18O+Ikv4losVZVb1WU9XpWGDL
+ 1tQiJ90NQL7g/49BUu0O5xUjk0ckUwoMFMx29jNi/tcM+l/P5EAcKZGklIa//NBzJTdFHG9qT
+ xmfwu2AoVHmp8UbZg3aQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 10:21:57PM +0100, Michael Walle wrote:
-> Before commit 6517798dd343 ("enetc: Make MDIO accessors more generic and
-> export to include/linux/fsl") these macros actually had some benefits.
-> But after the commit it just makes the code hard to read. Drop the macro
-> indirections.
->=20
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
+Hello Linus,
 
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>=
+please pull the updates for the parisc architecture for kernel 5.11-rc1 from:
+
+  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.11-1
+
+This patchset includes:
+
+A change to increase the default maximum stack size on parisc to 100 MB
+and the ability to further increase the stack hard limit size at runtime
+with ulimit for newly started processes.
+
+The other patches fix compile warnings, utilizes the Kbuild logic and
+cleanups the parisc arch code.
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+The following changes since commit f8394f232b1eab649ce2df5c5f15b0e528c92091:
+
+  Linux 5.10-rc3 (2020-11-08 16:10:16 -0800)
+
+are available in the Git repository at:
+
+  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.11-1
+
+for you to fetch changes up to 39b1e779b6e2d4ca7967b49b26f1e4358f20c90c:
+
+  parisc: pci-dma: fix warning unused-function (2020-12-15 05:41:11 +0100)
+
+----------------------------------------------------------------
+Anders Roxell (1):
+      parisc: pci-dma: fix warning unused-function
+
+Geert Uytterhoeven (1):
+      parisc/uapi: Use Kbuild logic to provide <asm/types.h>
+
+Helge Deller (3):
+      parisc: Drop loops_per_jiffy from per_cpu struct
+      parisc: Use _TIF_USER_WORK_MASK in entry.S
+      parisc: Make user stack size configurable
+
+ arch/parisc/include/asm/processor.h  |  8 ++------
+ arch/parisc/include/uapi/asm/types.h |  7 -------
+ arch/parisc/kernel/entry.S           |  4 ++--
+ arch/parisc/kernel/pci-dma.c         |  2 +-
+ arch/parisc/kernel/processor.c       |  5 ++---
+ arch/parisc/kernel/sys_parisc.c      | 23 +++++++++++++++++++++--
+ fs/exec.c                            |  4 ++--
+ mm/Kconfig                           | 12 +++++-------
+ 8 files changed, 35 insertions(+), 30 deletions(-)
+ delete mode 100644 arch/parisc/include/uapi/asm/types.h
