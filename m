@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD37A2DB92B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 03:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FB32DB92D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 03:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725829AbgLPCdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 21:33:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbgLPCdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725776AbgLPCdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 15 Dec 2020 21:33:05 -0500
-Subject: Re: [GIT PULL] rpmsg updates for v5.11
+Received: from mail.kernel.org ([198.145.29.99]:47524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725274AbgLPCdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 21:33:05 -0500
+Subject: Re: [GIT PULL] hwspinlock updates for v5.11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1608085945;
-        bh=jhV8HVkYzxYmgcoLQnlaZ/+SMZ0wnb7kAN6oaVO61A8=;
+        bh=0jc66jFzW8IwJy88Jqa5L+zXZrM/HD+s5h8qkcliUdk=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=tNy4NZFhfekzgGYBGPwJr6XLxIfJD9rPdWHdM1sNGb+xiwTngbPQPlteNIAD5tU27
-         WGj6vBg+Bv5At5GsPwhWG77DRgwveJijhAGQJhejn8ULnnkGtvw/diPWx49VoZl37x
-         OVzTVjD/T4MT2gceCZQrU5Q3fw9rz1y48qwEErwQCKtW3wCqtUmGb+C6C2QOj138OH
-         NpuacU4zf1eUTdGifh5O7Ei0gk/9ggZ0BqtAE8Dz8A7Jj4FwcCTIhWV99FZA6FHubd
-         dX5tzVoQZaNP8i29OLNrnHeXICDIBfVVf+xX5ZZed9Q7TPRUu/HF6Gmp7hWR1SUSeJ
-         8Bf+mI1PtJwVw==
+        b=JTHicyGlmDuPFbGBi2O0jmLD9eqf4j/MC6i7jkgmIE0f8/6I61ioI0SFXfMg/irBD
+         Fn8FZ2CeVYcwRscBYVI6lzm9d/E8UiKxKhgAllM+N1CIVXh5aN9+WthteftXZCrAxR
+         HKEpl7fMegaHkaamnQJnntDec5RP5pX3k0AQmRwgyzq/WBcj37+z9TJ+772tjz/A1S
+         mzUUwcT2dwXOR+qXy799+ajFREBH26IpHf6b3RGSplx6kSwhD83tjp1yTCEoJjPPBP
+         H4FmrH4+FFHbNrcOCzYWlCdyHmA5CZdeTAAP0eWtszrcGH1Fr7suGy2Y0w14NRp/mG
+         GECCk9cQYZ3BA==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201215180749.1528593-1-bjorn.andersson@linaro.org>
-References: <20201215180749.1528593-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20201215180735.1528535-1-bjorn.andersson@linaro.org>
+References: <20201215180735.1528535-1-bjorn.andersson@linaro.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201215180749.1528593-1-bjorn.andersson@linaro.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rpmsg-v5.11
-X-PR-Tracked-Commit-Id: 950a7388f02bf775515d13dc508cb9d749bd6d91
+X-PR-Tracked-Message-Id: <20201215180735.1528535-1-bjorn.andersson@linaro.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/hwlock-v5.11
+X-PR-Tracked-Commit-Id: c3e9b463b41b45c4556a13043265097e2184226e
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e87b070839418ce8fec5aa9d5324d90f47e69f77
-Message-Id: <160808594542.10422.5768089241338426809.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 0e10f9c89332def4288b33866a1b793ffc94107b
+Message-Id: <160808594508.10422.4308407825889022330.pr-tracker-bot@kernel.org>
 Date:   Wed, 16 Dec 2020 02:32:25 +0000
 To:     Bjorn Andersson <bjorn.andersson@linaro.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Ohad Ben-Cohen <ohad@wizery.com>,
         linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 15 Dec 2020 12:07:49 -0600:
+The pull request you sent on Tue, 15 Dec 2020 12:07:35 -0600:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rpmsg-v5.11
+> https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/hwlock-v5.11
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e87b070839418ce8fec5aa9d5324d90f47e69f77
+https://git.kernel.org/torvalds/c/0e10f9c89332def4288b33866a1b793ffc94107b
 
 Thank you!
 
