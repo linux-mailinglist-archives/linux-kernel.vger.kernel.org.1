@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0412DC18F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3296A2DC195
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgLPNss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:48:48 -0500
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:38977 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726246AbgLPNsr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:48:47 -0500
-Received: by mail-oi1-f171.google.com with SMTP id w124so24392832oia.6;
-        Wed, 16 Dec 2020 05:48:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1aJt+uK8IXa2MEy4a+4D7ocSuQCiL0op/j6Lfuqhewk=;
-        b=NytQClV7hktI0RARjJBwkXe00FZAq74jVSXEgZZiRmlpxCRuOTxxrUzokTd6g6g5AU
-         KKB0ThMICUVTWHsZOPhkI34vDOvsTXIAekarp9HKXUI/32dTqrBtW9vcvj6XZFlmyS7c
-         8d+nnOAzMTvwq7+Gw2JJnvr/Tst0dxtjS7HJhkfAXEJ5qSY44+kNHMmPd68BFhdW4xq5
-         AvJiQgJ0ieY1s+e64MNbNV1xw17WQ0vLEG9m2dmobj72RfJxvM2YlpoisfKmJjZNj9qe
-         6c+nZM3OFbAg93vfh/f/BXNltRKXdocLmwcuv8H7vvKLmwIbJFo/Lgn6ks6FdbrU6oEo
-         55vg==
-X-Gm-Message-State: AOAM531gPfrTz9RBz6Zz5MA9L55qYv+mWo+XiqUxNnzjcJohGLpZfODy
-        3DK1/UofIGVmjD4k3aEzOwEJanTBjQ61vX93FYU=
-X-Google-Smtp-Source: ABdhPJw/4S1xC9TWpBiJmWLzeo4io/CgmzlZZ9pFLpIoKY81x2UCCDYGc+cabQ0ItvM8vFMkf2hIFmtXkzDVSc2RNgA=
-X-Received: by 2002:aca:ec09:: with SMTP id k9mr1960776oih.153.1608126487037;
- Wed, 16 Dec 2020 05:48:07 -0800 (PST)
+        id S1726431AbgLPNuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:50:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726429AbgLPNuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 08:50:07 -0500
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>
+Subject: [PATCH v3] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
+Date:   Wed, 16 Dec 2020 15:49:20 +0200
+Message-Id: <20201216134920.21161-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201216134626.1323224-1-geert@linux-m68k.org>
-In-Reply-To: <20201216134626.1323224-1-geert@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 16 Dec 2020 14:47:55 +0100
-Message-ID: <CAMuHMdUR7d9-CqnPCm77UAeKVQOoR4RbOed1BZJqScPF4NMU+Q@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ARM: uncompress: Fix dbgadtb size parameter name
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, Kun Yi <kunyi@google.com>
-Cc:     linux-hwmon@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 2:46 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> From: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> The dbgadtb macro is passed the size of the appended DTB, not the end
-> address.
->
-> Fixes: c03e41470e901123 ("ARM: 9010/1: uncompress: Print the location of appended DTB")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Add synchronize_srcu_expedited() to sgx_encl_release() to catch a grace
+period initiated by sgx_mmu_notifier_release().
 
-Please ignore. I screwed up some scripting. Sorry for the mess.
+A trivial example of a failing sequence with tasks A and B:
 
-Gr{oetje,eeting}s,
+1. A: -> sgx_release()
+2. B: -> sgx_mmu_notifier_release()
+3. B: -> list_del_rcu()
+3. A: -> sgx_encl_release()
+4. A: -> cleanup_srcu_struct()
 
-                        Geert
+The loop in sgx_release() observes an empty list because B has removed its
+entry in the middle, and calls cleanup_srcu_struct() before B has a chance
+to calls synchronize_srcu().
 
+Fixes: 1728ab54b4be ("x86/sgx: Add a page reclaimer")
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Suggested-by: Haitao Huang <haitao.huang@linux.intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+v3: Fine-tuned tags, and added missing change log for v2.
+v2: Switch to synchronize_srcu_expedited().
+ arch/x86/kernel/cpu/sgx/encl.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+index ee50a5010277..fe7256db6e73 100644
+--- a/arch/x86/kernel/cpu/sgx/encl.c
++++ b/arch/x86/kernel/cpu/sgx/encl.c
+@@ -438,6 +438,12 @@ void sgx_encl_release(struct kref *ref)
+ 	if (encl->backing)
+ 		fput(encl->backing);
+ 
++	/*
++	 * Each sgx_mmu_notifier_release() starts a grace period. Therefore, an
++	 * additional sync is required here.
++	 */
++	synchronize_srcu_expedited(&encl->srcu);
++
+ 	cleanup_srcu_struct(&encl->srcu);
+ 
+ 	WARN_ON_ONCE(!list_empty(&encl->mm_list));
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.27.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
