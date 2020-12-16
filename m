@@ -2,223 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA312DC2B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE432DC2C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgLPPHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:07:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60968 "EHLO mail.kernel.org"
+        id S1726246AbgLPPJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:09:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42654 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725878AbgLPPHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:07:54 -0500
-Date:   Wed, 16 Dec 2020 17:07:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608131233;
-        bh=xliTWa2J49wFjY49UWNrhjPXBrUiiEG9NfEz4AwIe5A=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dY695OXjtQakH1R2AadJyZb0whKFmoUWanuiJkxK0TsX/EpQwPVd4bf0FJTVO5puY
-         6FpnRT38beeqQ6w5QMBNsAGQ0BLyPnX4+o3iHOL8jnNmZHlae8O3YaiXwVZ9t/g28P
-         Jn0Q2bADh4sNt+0W6RKIV/e7T2z6Mxi/xBAYKN68pLg2Maf/Pr7dQQIYlmYDwlD4UZ
-         kPHSgqr3qQK2vMvH04gQkQGXyjy/1l5+uUg45LPYkBR/8YGdybUj+arVK866yAjTy1
-         J1rGyCYm4gwuP9wuw8TUkcyC24qVTjBcBgbNui7jfXHx1D1BNhs4PkfC2kCmFlFaX8
-         VzKQ14rq0v/yA==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Rik van Riel <riel@surriel.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: cma: allocate cma areas bottom-up
-Message-ID: <20201216150704.GC247200@kernel.org>
-References: <20201215193615.1867115-1-guro@fb.com>
+        id S1725905AbgLPPJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 10:09:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1608131293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=w/LCdZXIaYEqdPWTafIHwV5LuovOn8Myg6gt0HNuGek=;
+        b=RAvuIbRikVWYshQsmVw+fzBP2clgf1+1xfnUEYHdqONk093Uh4btLyY3TcLDAb4ynAxa72
+        y8RCT1Bc6LZA5OkWYLeGYsXNvWUwpnaKDMKKVmdG1gQouDnkVEdiciF4egZFokTHUL4A+I
+        H1c+RVl3AZDqPM7m9OPOEbyfxFUEYLo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9647BAC7B;
+        Wed, 16 Dec 2020 15:08:13 +0000 (UTC)
+Subject: Re: [PATCH] xen: Kconfig: remove X86_64 depends from XEN_512GB
+To:     Jason Andryuk <jandryuk@gmail.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <20201216140838.16085-1-jandryuk@gmail.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <19c5737a-8cb8-2cbb-a836-2e09cd6ff79f@suse.com>
+Date:   Wed, 16 Dec 2020 16:08:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201215193615.1867115-1-guro@fb.com>
+In-Reply-To: <20201216140838.16085-1-jandryuk@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Qep4h0WpqmdaARs5zQrlcUILe1KLr2JQI"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roman,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Qep4h0WpqmdaARs5zQrlcUILe1KLr2JQI
+Content-Type: multipart/mixed; boundary="5brQ8hbWiGtQoYq2N0FdQc4MtWIWA1haU";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Jason Andryuk <jandryuk@gmail.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <19c5737a-8cb8-2cbb-a836-2e09cd6ff79f@suse.com>
+Subject: Re: [PATCH] xen: Kconfig: remove X86_64 depends from XEN_512GB
+References: <20201216140838.16085-1-jandryuk@gmail.com>
+In-Reply-To: <20201216140838.16085-1-jandryuk@gmail.com>
 
-On Tue, Dec 15, 2020 at 11:36:15AM -0800, Roman Gushchin wrote:
-> Currently cma areas without a fixed base address are allocated
-> close to the end of the node. This placement is sub-optimal because
-> of how the compaction works: it effectively moves pages into
-> the cma area. In particular, it often brings in hot executable pages,
-> even if there is a plenty of free memory on the machine.
-> This results in more cma allocation failures.
-> 
-> Instead let's place cma areas close to the beginning of a node.
-> Cma first tries to start with highmem_start, so we shouldn't mess
-> up with DMA32.
+--5brQ8hbWiGtQoYq2N0FdQc4MtWIWA1haU
+Content-Type: multipart/mixed;
+ boundary="------------5C8EAC7837D2E9928E630D93"
+Content-Language: en-US
 
-Sorry, I've missed this previously, but cma actually requires that
-allocation will be below high_memory, so simply forcing memblock to
-bottom_up mode will mess with DMA32. 
+This is a multi-part message in MIME format.
+--------------5C8EAC7837D2E9928E630D93
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-> In this case the compaction will help to free cma
-> areas, resulting in better cma allocation success rates.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> ---
->  include/linux/memblock.h |  5 +++--
->  mm/cma.c                 |  4 ++--
->  mm/memblock.c            | 26 +++++++++++++++-----------
->  3 files changed, 20 insertions(+), 15 deletions(-)
-> 
-> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> index 9c5cc95c7cee..698188066450 100644
-> --- a/include/linux/memblock.h
-> +++ b/include/linux/memblock.h
-> @@ -384,8 +384,9 @@ static inline int memblock_get_region_node(const struct memblock_region *r)
->  phys_addr_t memblock_phys_alloc_range(phys_addr_t size, phys_addr_t align,
->  				      phys_addr_t start, phys_addr_t end);
->  phys_addr_t memblock_alloc_range_nid(phys_addr_t size,
-> -				      phys_addr_t align, phys_addr_t start,
-> -				      phys_addr_t end, int nid, bool exact_nid);
-> +				     phys_addr_t align, phys_addr_t start,
-> +				     phys_addr_t end, int nid, bool exact_nid,
-> +				     bool bottom_up);
->  phys_addr_t memblock_phys_alloc_try_nid(phys_addr_t size, phys_addr_t align, int nid);
->  
->  static inline phys_addr_t memblock_phys_alloc(phys_addr_t size,
-> diff --git a/mm/cma.c b/mm/cma.c
-> index 20c4f6f40037..1b42be6d059b 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -332,13 +332,13 @@ int __init cma_declare_contiguous_nid(phys_addr_t base,
->  		 */
->  		if (base < highmem_start && limit > highmem_start) {
->  			addr = memblock_alloc_range_nid(size, alignment,
-> -					highmem_start, limit, nid, true);
-> +					highmem_start, limit, nid, true, true);
->  			limit = highmem_start;
->  		}
->  
->  		if (!addr) {
->  			addr = memblock_alloc_range_nid(size, alignment, base,
-> -					limit, nid, true);
-> +					limit, nid, true, true);
->  			if (!addr) {
->  				ret = -ENOMEM;
->  				goto err;
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index b8b7be0561c4..c334b401fe16 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -272,6 +272,7 @@ __memblock_find_range_top_down(phys_addr_t start, phys_addr_t end,
->   *       %MEMBLOCK_ALLOC_ACCESSIBLE
->   * @nid: nid of the free area to find, %NUMA_NO_NODE for any node
->   * @flags: pick from blocks based on memory attributes
-> + * @bottom_up: force bottom-up allocation
->   *
->   * Find @size free area aligned to @align in the specified range and node.
->   *
-> @@ -289,7 +290,8 @@ __memblock_find_range_top_down(phys_addr_t start, phys_addr_t end,
->  static phys_addr_t __init_memblock memblock_find_in_range_node(phys_addr_t size,
->  					phys_addr_t align, phys_addr_t start,
->  					phys_addr_t end, int nid,
-> -					enum memblock_flags flags)
-> +					enum memblock_flags flags,
-> +					bool bottom_up)
->  {
->  	phys_addr_t kernel_end, ret;
->  
-> @@ -305,9 +307,10 @@ static phys_addr_t __init_memblock memblock_find_in_range_node(phys_addr_t size,
->  
->  	/*
->  	 * try bottom-up allocation only when bottom-up mode
-> -	 * is set and @end is above the kernel image.
-> +	 * is set and @end is above the kernel image or
-> +	 * the bottom-up mode is enforced.
->  	 */
-> -	if (memblock_bottom_up() && end > kernel_end) {
-> +	if ((memblock_bottom_up() && end > kernel_end) || bottom_up) {
->  		phys_addr_t bottom_up_start;
->  
->  		/* make sure we will allocate above the kernel */
-> @@ -359,7 +362,7 @@ phys_addr_t __init_memblock memblock_find_in_range(phys_addr_t start,
->  
->  again:
->  	ret = memblock_find_in_range_node(size, align, start, end,
-> -					    NUMA_NO_NODE, flags);
-> +					  NUMA_NO_NODE, flags, false);
->  
->  	if (!ret && (flags & MEMBLOCK_MIRROR)) {
->  		pr_warn("Could not allocate %pap bytes of mirrored memory\n",
-> @@ -1331,6 +1334,7 @@ __next_mem_pfn_range_in_zone(u64 *idx, struct zone *zone,
->   * @end: the upper bound of the memory region to allocate (phys address)
->   * @nid: nid of the free area to find, %NUMA_NO_NODE for any node
->   * @exact_nid: control the allocation fall back to other nodes
-> + * @bottom_up: force bottom-up allocation
->   *
->   * The allocation is performed from memory region limited by
->   * memblock.current_limit if @end == %MEMBLOCK_ALLOC_ACCESSIBLE.
-> @@ -1351,7 +1355,7 @@ __next_mem_pfn_range_in_zone(u64 *idx, struct zone *zone,
->  phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
->  					phys_addr_t align, phys_addr_t start,
->  					phys_addr_t end, int nid,
-> -					bool exact_nid)
-> +					bool exact_nid, bool bottom_up)
->  {
->  	enum memblock_flags flags = choose_memblock_flags();
->  	phys_addr_t found;
-> @@ -1367,14 +1371,14 @@ phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
->  
->  again:
->  	found = memblock_find_in_range_node(size, align, start, end, nid,
-> -					    flags);
-> +					    flags, bottom_up);
->  	if (found && !memblock_reserve(found, size))
->  		goto done;
->  
->  	if (nid != NUMA_NO_NODE && !exact_nid) {
->  		found = memblock_find_in_range_node(size, align, start,
->  						    end, NUMA_NO_NODE,
-> -						    flags);
-> +						    flags, bottom_up);
->  		if (found && !memblock_reserve(found, size))
->  			goto done;
->  	}
-> @@ -1423,7 +1427,7 @@ phys_addr_t __init memblock_phys_alloc_range(phys_addr_t size,
->  		     __func__, (u64)size, (u64)align, &start, &end,
->  		     (void *)_RET_IP_);
->  	return memblock_alloc_range_nid(size, align, start, end, NUMA_NO_NODE,
-> -					false);
-> +					false, false);
->  }
->  
->  /**
-> @@ -1442,7 +1446,7 @@ phys_addr_t __init memblock_phys_alloc_range(phys_addr_t size,
->  phys_addr_t __init memblock_phys_alloc_try_nid(phys_addr_t size, phys_addr_t align, int nid)
->  {
->  	return memblock_alloc_range_nid(size, align, 0,
-> -					MEMBLOCK_ALLOC_ACCESSIBLE, nid, false);
-> +					MEMBLOCK_ALLOC_ACCESSIBLE, nid, false, false);
->  }
->  
->  /**
-> @@ -1484,12 +1488,12 @@ static void * __init memblock_alloc_internal(
->  		max_addr = memblock.current_limit;
->  
->  	alloc = memblock_alloc_range_nid(size, align, min_addr, max_addr, nid,
-> -					exact_nid);
-> +					exact_nid, false);
->  
->  	/* retry allocation without lower limit */
->  	if (!alloc && min_addr)
->  		alloc = memblock_alloc_range_nid(size, align, 0, max_addr, nid,
-> -						exact_nid);
-> +						exact_nid, false);
->  
->  	if (!alloc)
->  		return NULL;
-> -- 
-> 2.26.2
-> 
+On 16.12.20 15:08, Jason Andryuk wrote:
+> commit bfda93aee0ec ("xen: Kconfig: nest Xen guest options")
+> accidentally re-added X86_64 as a dependency to XEN_512GB.  It was
+> originally removed in commit a13f2ef168cb ("x86/xen: remove 32-bit Xen
+> PV guest support").  Remove it again.
+>=20
+> Fixes: bfda93aee0ec ("xen: Kconfig: nest Xen guest options")
+> Reported-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
 
--- 
-Sincerely yours,
-Mike.
+Reviewed-by: Juergen Gross <jgross@suse.com>
+
+
+Juergen
+
+--------------5C8EAC7837D2E9928E630D93
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------5C8EAC7837D2E9928E630D93--
+
+--5brQ8hbWiGtQoYq2N0FdQc4MtWIWA1haU--
+
+--Qep4h0WpqmdaARs5zQrlcUILe1KLr2JQI
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/aItwFAwAAAAAACgkQsN6d1ii/Ey9f
+EQf/ciD4Sdt+gLFHjNayQ4U8Cm0YjGZd4z5hW4kR5U6OAkMFC+n2wlmhL+M4YnE1a0r7ngl0QTV7
+gpMAdB8wz8xiQGD5oAaFGYhOmEnL17L9evOPYwS4nvXsPmsGrIRy2xCURw9Bx2ldDYmR1e3jx4MA
+sDMEUDlLC1ps29qQCFhBpdazLFlX3xDEnBeomfL6oCvyjBskAzc2iNrrd9JPnpyI7LIGMe6+0dE6
+aS5v4uaZVwjShm/MKOCOT0JZnF2mZFPUiduasCnLeo1KFakL0G481sjXGWPaId7fBUx604PcnSv8
+FL6QmN6COGPt6YVOI9uuq9E3wPF/DcCzLNmgHIMfwQ==
+=E9pp
+-----END PGP SIGNATURE-----
+
+--Qep4h0WpqmdaARs5zQrlcUILe1KLr2JQI--
