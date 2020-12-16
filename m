@@ -2,69 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332922DC766
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 351C42DC76C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:55:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728678AbgLPTv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 14:51:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727852AbgLPTv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 14:51:28 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608148247;
-        bh=xwp1vMWzBkKnuO+OphQCQ/8A6FTErJ0wiTEqtpUJUH0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=c7BhqCzEzzyU4P0q+Fvkrm8uGlaJQyDlN7+kL3dc0I2pL6EoScekqBuRVBdl/qaPV
-         il0mPMg51t8z5OOXXmY3A0swW/o2RPzwwYsUlOXS9Yqgm7fiLAlJ7dSzWkTXJBHyIn
-         WDQiPFWkCf4bs5SWfSz5l3cQojgORVPmOkAWLzMXvwrjyklSqEg9hLqMBwMSJQR0qO
-         YNonf7fqUGAbQ0eafco+IeDtqGN52cPhIsLAonvCto4+1U6jv7rmlRXk3B8WaS1+Sm
-         HmjO4Gt1W7NlxaH2ySW02k64rfYJJhzlacJnhu7OL1RfUu7SQRxcE+IS80Rec8hiTn
-         2nHoE6cTVtTfA==
+        id S1727919AbgLPTyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 14:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727903AbgLPTyp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 14:54:45 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B65FC0617A6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 11:54:05 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id p22so26105949edu.11
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 11:54:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lEgdzUb4kSlkgADpRNG+q/tRgzSb8ZpRL/wEUP9L+VQ=;
+        b=imoloHBvtPrZY/JA9bQuXNXMr+rCClt7TQksZkIAcpdWZ512pJr4lDEzxizPLOZ3aQ
+         CltfgbXr67ahIti0psXtTQpHcbMsweSRbJM6kspQvENjs3dvVChWEZeBKMnkj4JYkhqa
+         zSoot57YFMCUHol/AjHgRqtX5mLVtT2vKmhbquwj18jJlKHt6HXSksiNWKikFe/QV+gG
+         Hqt5gZ2lMVl4P3ovyeIQ4T68sPESOXzMnaMODWbmrAb49cTz/veijtuqin0ZGC850IlR
+         MFBeCJX7Twevq5AqPYpegNWKpu1w1Y9vGoRiDa6+xR+O21g3z31x4NtoxYQ553X+pYca
+         n4Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lEgdzUb4kSlkgADpRNG+q/tRgzSb8ZpRL/wEUP9L+VQ=;
+        b=Ax1SaA9mYAcllu9tBIgTGC4NpojYNd2PgivY9cZB0mXkAN+ASUJyEhIp1TJRQ6yzeC
+         vWp9SNvYNif1kQooIhkD8RW6HCb0jwAhpDbrFGA8H0V7RylmSImcXTiaMXLP1K4uPiEM
+         QYhF1/ScyDzA/N+CBHHiBVU+wVT78Zsx9zjipX3EQCA8n4fV8hMCF1n+wefqVojhxnEY
+         ZsQRjmlxI4LJpkOgYB+YMX9R1NChknAZNFH3YUc3M2rze47vpj15YWTcGvaPYGPwrqPb
+         JMkTIOnL3EZokmfBQ31F8RMlrCcJxVDyOune02Kd0TD3g2X5lyf8yyyx3daSZQyR67af
+         7a1Q==
+X-Gm-Message-State: AOAM531MtIEPmXqCa/NbASHZIoJhRDtYfUA4WAP8Xq6nNJyUjptVMK+i
+        9wbwfk3SDYRCcehCsOIoV4gyLQ==
+X-Google-Smtp-Source: ABdhPJy6++UOacI85zTLwVjF/BdSq4wtOQ3wRw/BTSIuIuRY1RtTMMJJCFnNYFM4dAiuMJ+BdN4Uqg==
+X-Received: by 2002:a05:6402:139a:: with SMTP id b26mr35568051edv.47.1608148443877;
+        Wed, 16 Dec 2020 11:54:03 -0800 (PST)
+Received: from x1 ([143.244.37.47])
+        by smtp.gmail.com with ESMTPSA id i13sm2067327ejc.57.2020.12.16.11.54.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 11:54:03 -0800 (PST)
+Date:   Wed, 16 Dec 2020 11:53:57 -0800
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] gpiolib: Allow name duplicates of "" and "NC"
+Message-ID: <20201216195357.GA2583366@x1>
+References: <20201215170308.2037624-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: allwinner: Fix some resources leak in the error handling
- path of the probe and in the remove function
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160814824770.18857.16417410441229264372.git-patchwork-notify@kernel.org>
-Date:   Wed, 16 Dec 2020 19:50:47 +0000
-References: <20201214202117.146293-1-christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20201214202117.146293-1-christophe.jaillet@wanadoo.fr>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     davem@davemloft.net, kuba@kernel.org, mripard@kernel.org,
-        wens@csie.org, jernej.skrabec@siol.net, timur@kernel.org,
-        song.bao.hua@hisilicon.com, f.fainelli@gmail.com, leon@kernel.org,
-        hkallweit1@gmail.com, wangyunjian@huawei.com, sr@denx.de,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215170308.2037624-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Mon, 14 Dec 2020 21:21:17 +0100 you wrote:
-> 'irq_of_parse_and_map()' should be balanced by a corresponding
-> 'irq_dispose_mapping()' call. Otherwise, there is some resources leaks.
+On Tue, Dec 15, 2020 at 09:03:08AM -0800, Bjorn Andersson wrote:
+> Not all GPIO pins are exposed to the world and this is typically
+> described by not giving these lines particular names, commonly "" or
+> "NC".
 > 
-> Add such a call in the error handling path of the probe function and in the
-> remove function.
+> With the recent introduction of '2cd64ae98f35 ("gpiolib: Disallow
+> identical line names in the same chip")' any gpiochip with multiple such
+> pins will refuse to probe.
 > 
-> Fixes: 492205050d77 ("net: Add EMAC ethernet driver found on Allwinner A10 SoC's")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Fix this by treating "" and "NC" as "no name specified" in
+> gpio_name_to_desc()
 > 
-> [...]
+> Fixes: 2cd64ae98f35 ("gpiolib: Disallow identical line names in the same chip")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+> 
+> The introduction of 2cd64ae98f35 breaks pretty much all Qualcomm boards and
+> grepping the DT tree indicates that other vendors will have the same problem.
+> 
+> In addition to this the am335x-* boards will also needs "[NC]", "[ethernet]",
+> "[emmc"], "[i2c0]", "[SYSBOOT]" and "[JTAG]" added to this list to allow
+> booting v5.11 with the past and present dtb/dts files.
 
-Here is the summary with links:
-  - net: allwinner: Fix some resources leak in the error handling path of the probe and in the remove function
-    https://git.kernel.org/netdev/net/c/322e53d1e252
+I am the one who added the gpio line names to the am335x dts board
+files, and I am happy to change them if it will make unique line name
+logic simpler.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I used the notation of "[<non-gpio-functionality>]" to make it easy for
+the user to realize that the corresponding gpiolines could not be used
+on these boards (BeagleBone and PocketBeagle) for actual GPIO.  I used
+generic names like "[ethernet]" because I didn't think it made sense
+to confuse the user by using the precise name of the non-gpio function
+(such as "[gmii1_rxd0]").  I could post a patch for the dts files that
+restores unique names for "[ethernet]", "[emmc"], "[i2c0]",
+"[SYSBOOT]" and "[JTAG]".
+
+As for "[NC]", the BGA balls corresponding to these gpio lines are
+simply not connected to any circuits on the board.  I happy to change
+that to whatever name people prefer for a non-connected pin ("", "NC",
+etc).
+
+Thanks,
+Drew
 
 
