@@ -2,146 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5E12DBDEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B53F52DBDCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726214AbgLPJqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:46:51 -0500
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:29251 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726146AbgLPJqu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:46:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1608112010; x=1639648010;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=kg6Pid/S3uyECtsR9/ZQNoRBSFk6tXHhc71xqlOp1H8=;
-  b=kS9th3P7ImUHvUuqq8xssvdUPYc4hCv00xtY9kaSZbI8ah8C05P287E7
-   HNNJxWfmdchnlpaoJMFR8J96vDoTpSLQwWzUpwtxWvvl4sxIJ/IWdiMkR
-   1Mni1fT+Zygpf+eROmv3sxs5tOqybHqMAviRCTHVrfFlfIgDoLEieuYSb
-   U=;
-X-IronPort-AV: E=Sophos;i="5.78,424,1599523200"; 
-   d="scan'208";a="103495486"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-22cc717f.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 16 Dec 2020 09:46:09 +0000
-Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2a-22cc717f.us-west-2.amazon.com (Postfix) with ESMTPS id 62653A1BCB;
-        Wed, 16 Dec 2020 09:46:05 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.31) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 16 Dec 2020 09:45:48 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
-        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
-        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
-        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
-        <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
-        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [RFC v10 09/13] tools/damon/record: Support physical memory monitoring
+        id S1725944AbgLPJl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:41:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51938 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725889AbgLPJl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 04:41:57 -0500
 Date:   Wed, 16 Dec 2020 10:42:17 +0100
-Message-ID: <20201216094221.11898-10-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201216094221.11898-1-sjpark@amazon.com>
-References: <20201216094221.11898-1-sjpark@amazon.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1608111676;
+        bh=wwOdbgunRq2eKqn6jEC3Bs80LYViiIT+qaz21Cqol+s=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U8xz+2kdTBlKXeI7J5SDrWW1/jaWVXq5kmxd/L7Hil33cr+Dn6ZWIs9+dXhF63c9j
+         jXxlCaGd+cMoN5x6Gi6iY49Bsopmneyw7GqLTpn9Or28wGhUx1PVzIWzrs4d1icDR1
+         +Y9MD0ribWJJi2xNTn8xF88+79NAblfBZ8MLeHs0=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Loic Poulain <loic.poulain@linaro.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [PATCH v18 0/3] userspace MHI client interface driver
+Message-ID: <X9nWeXZz7lh4JdCb@kroah.com>
+References: <1607715903-16442-1-git-send-email-hemantk@codeaurora.org>
+ <CAMZdPi8=9OsoCH_eV_JZohmFbuXcLv2kWNPLFzQUAKUCUHYs5A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.31]
-X-ClientProxiedBy: EX13D16UWB001.ant.amazon.com (10.43.161.17) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZdPi8=9OsoCH_eV_JZohmFbuXcLv2kWNPLFzQUAKUCUHYs5A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Wed, Dec 16, 2020 at 10:17:30AM +0100, Loic Poulain wrote:
+> Hi Folks,
+> 
+> On Fri, 11 Dec 2020 at 20:45, Hemant Kumar <hemantk@codeaurora.org> wrote:
+> >
+> > This patch series adds support for UCI driver. UCI driver enables userspace
+> > clients to communicate to external MHI devices like modem. UCI driver probe
+> > creates standard character device file nodes for userspace clients to
+> > perform open, read, write, poll and release file operations. These file
+> > operations call MHI core layer APIs to perform data transfer using MHI bus
+> > to communicate with MHI device.
+> >
+> > This interface allows exposing modem control channel(s) such as QMI, MBIM,
+> > or AT commands to userspace which can be used to configure the modem using
+> > tools such as libqmi, ModemManager, minicom (for AT), etc over MHI. This is
+> > required as there are no kernel APIs to access modem control path for device
+> > configuration. Data path transporting the network payload (IP), however, is
+> > routed to the Linux network via the mhi-net driver. Currently driver supports
+> > QMI channel. libqmi is userspace MHI client which communicates to a QMI
+> > service using QMI channel. Please refer to
+> > https://www.freedesktop.org/wiki/Software/libqmi/ for additional information
+> > on libqmi.
+> >
+> > Patch is tested using arm64 and x86 based platform.
+> 
+> Are there any blockers or unadressed comments remaining on this
+> series? As far as I understand, the original blocker was the net/WiFi
+> mention in the commit message, that caused a legitimate concern from
+> network maintainer. It has been clarified now that this driver is not
+> for exposing any channel that could be otherwise handled properly by
+> an existing Linux subsystem/interface. It will be especially used as a
+> pipe for modem QMI channel (or AT commands) in the same way as the USB
+> CDC-WDM driver is doing (keeping userspace compatibility). Other MHI
+> channels, such as network data, QRTR, etc are not exposed and
+> correctly bound to the corresponding Linux subsystems.
+> 
+> The correlated worry was that it could be a userspace channel facility
+> for 'everything qualcomm', but we could say the same for other
+> existing busses with userspace shunt (/dev/bus/usb, /dev/i2c,
+> /dev/spidev, PCI UIO, UART...). Moreover, it is mitigated by the fact
+> that not all MHI channels are exposed by default, but only the allowed
+> ones (QMI in the initial version). For sure, special care must be
+> given to any further channel addition.
 
-This commit allows users to record the data accesses on physical memory
-address space by passing 'paddr' as target to 'damo-record'.  If the
-init regions are given, the regions will be monitored.  Else, it will
-monitor biggest conitguous 'System RAM' region in '/proc/iomem' and
-monitor the region.
+It's the middle of the merge window, we can't do anything with new
+patches at all until 5.11-rc1 is out, so please be patient.
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- tools/damon/_damon.py |  2 ++
- tools/damon/record.py | 29 ++++++++++++++++++++++++++++-
- 2 files changed, 30 insertions(+), 1 deletion(-)
+thanks,
 
-diff --git a/tools/damon/_damon.py b/tools/damon/_damon.py
-index a22ec3777c16..6ff278117e84 100644
---- a/tools/damon/_damon.py
-+++ b/tools/damon/_damon.py
-@@ -27,6 +27,8 @@ def set_target(tid, init_regions=[]):
-     if not os.path.exists(debugfs_init_regions):
-         return 0
- 
-+    if tid == 'paddr':
-+        tid = 42
-     string = ' '.join(['%s %d %d' % (tid, r[0], r[1]) for r in init_regions])
-     return subprocess.call('echo "%s" > %s' % (string, debugfs_init_regions),
-             shell=True, executable='/bin/bash')
-diff --git a/tools/damon/record.py b/tools/damon/record.py
-index 11fd54001472..6fd0b59c73e0 100644
---- a/tools/damon/record.py
-+++ b/tools/damon/record.py
-@@ -101,6 +101,29 @@ def set_argparser(parser):
-     parser.add_argument('-o', '--out', metavar='<file path>', type=str,
-             default='damon.data', help='output file path')
- 
-+def default_paddr_region():
-+    "Largest System RAM region becomes the default"
-+    ret = []
-+    with open('/proc/iomem', 'r') as f:
-+        # example of the line: '100000000-42b201fff : System RAM'
-+        for line in f:
-+            fields = line.split(':')
-+            if len(fields) != 2:
-+                continue
-+            name = fields[1].strip()
-+            if name != 'System RAM':
-+                continue
-+            addrs = fields[0].split('-')
-+            if len(addrs) != 2:
-+                continue
-+            start = int(addrs[0], 16)
-+            end = int(addrs[1], 16)
-+
-+            sz_region = end - start
-+            if not ret or sz_region > (ret[1] - ret[0]):
-+                ret = [start, end]
-+    return ret
-+
- def main(args=None):
-     global orig_attrs
-     if not args:
-@@ -122,7 +145,11 @@ def main(args=None):
-     target = args.target
- 
-     target_fields = target.split()
--    if not subprocess.call('which %s &> /dev/null' % target_fields[0],
-+    if target == 'paddr':   # physical memory address space
-+        if not init_regions:
-+            init_regions = [default_paddr_region()]
-+        do_record(target, False, init_regions, new_attrs, orig_attrs, pidfd)
-+    elif not subprocess.call('which %s &> /dev/null' % target_fields[0],
-             shell=True, executable='/bin/bash'):
-         do_record(target, True, init_regions, new_attrs, orig_attrs, pidfd)
-     else:
--- 
-2.17.1
-
+greg k-h
