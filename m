@@ -2,102 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0B32DC326
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:32:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5DC2DC328
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgLPPcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:32:36 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:40254 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725274AbgLPPcg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:32:36 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608132714;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ChNTurnnTAzgM4+R7TN7VwtIAo0L2Mr35zSMQtctJ4Q=;
-        b=NJxqKF1E/6M32C42A4nshPJPwPbj2RpFrDfTQt4gtHVwsSFL1yucZUylXQixljel67H9RO
-        woTXjww4Wl6ZfZ5oI4kzt6llMsiKIvxC4+qDi/l2gkxsiuRIGQalAPGKy9sifCjNEnx1Sc
-        vzGQXYekG2psqL3aQLb+P7KaaVDbFNBiALase+7hXJvmu99iF1d59A694mzgsv5U38DNLX
-        cnATLn+DrdGTVIh9KLktUhCOSGWquOkCtdWTGM6velpaCTJ4tMbwBAcyBS8iiar4mKW3Yv
-        I5r3jghjm5+hFpoeDOC6Nwnr5g1XkuK+3Q+9Z7N/KfjUSJtUwLZ+b+ahr39KZA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608132714;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ChNTurnnTAzgM4+R7TN7VwtIAo0L2Mr35zSMQtctJ4Q=;
-        b=WUCJfLCa3Uj4NHg6Y1K4bCOtZDkxJcRKqIpca2qapyutIiwhEFCqZxYeSmQcWINHLQm/Ol
-        A8dMVdi//SfYa+Cw==
-To:     "shenkai \(D\)" <shenkai8@huawei.com>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        hewenliang4@huawei.com, hushiyuan@huawei.com,
-        luolongjun@huawei.com, hejingxian@huawei.com
-Subject: Re: [PATCH] use x86 cpu park to speedup smp_init in kexec situation
-In-Reply-To: <06977da1-d148-0079-0e85-32d657d1a1de@huawei.com>
-References: <87eejqu5q5.fsf@nanos.tec.linutronix.de> <f2a4d172-fa17-9f98-ad8f-d69f84ad0df5@huawei.com> <87v9d2rrdq.fsf@nanos.tec.linutronix.de> <06977da1-d148-0079-0e85-32d657d1a1de@huawei.com>
-Date:   Wed, 16 Dec 2020 16:31:53 +0100
-Message-ID: <87im91sr6e.fsf@nanos.tec.linutronix.de>
+        id S1726494AbgLPPdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:33:35 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:57492 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726489AbgLPPdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 10:33:35 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kpYnI-00CJAy-GG; Wed, 16 Dec 2020 16:32:48 +0100
+Date:   Wed, 16 Dec 2020 16:32:48 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        Marek Behun <marek.behun@nic.cz>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH v3 net-next 2/7] net: dsa: be louder when a non-legacy
+ FDB operation fails
+Message-ID: <20201216153248.GB2901580@lunn.ch>
+References: <20201213140710.1198050-1-vladimir.oltean@nxp.com>
+ <20201213140710.1198050-3-vladimir.oltean@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201213140710.1198050-3-vladimir.oltean@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kai,
+On Sun, Dec 13, 2020 at 04:07:05PM +0200, Vladimir Oltean wrote:
+> The dev_close() call was added in commit c9eb3e0f8701 ("net: dsa: Add
+> support for learning FDB through notification") "to indicate inconsistent
+> situation" when we could not delete an FDB entry from the port.
+> 
+> bridge fdb del d8:58:d7:00:ca:6d dev swp0 self master
+> 
+> It is a bit drastic and at the same time not helpful if the above fails
+> to only print with netdev_dbg log level, but on the other hand to bring
+> the interface down.
+> 
+> So increase the verbosity of the error message, and drop dev_close().
+> 
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-On Wed, Dec 16 2020 at 22:18, shenkai wrote:
-> After some tests, the conclusion that time cost is from deep C-state=20
-> turns out to be wrong
->
-> Sorry for that.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-No problem.
-
-> In kexec case, first let APs spinwait like what I did=C2=A0 in that patch,
-> but wake APs up by sending apic INIT and SIPI=C2=A0 interrupts as normal
-> procedure instead of writing to some address and there is no
-> acceleration (time cost is still 210ms).
-
-Ok.
-
-> So can we say that the main time cost is from apic INIT and SIPI
-> interrupts and the handling of them instead of deep C-state?
-
-That's a fair conclusion.
-
-> I didn't test with play_dead() because in kexec case, one new kernel
-> will be started and APs can't be waken up by normal interrupts like in
-> hibernate case for the irq vectors are gone with the old kernel.
->
-> Or maybe I didn't get the point correctly?
-
-Not exactly, but your experiment answered the question already.
-
-My point was that the regular kexec unplugs the APs which then end up in
-play_dead() and trying to use the deepest C-state via mwait(). So if the
-overhead would be related to getting them out of a deep C-state then
-forcing that play_dead() to use the HLT instruction or the most shallow
-C-state with mwait() would have brought an improvement, right?
-
-But obviously the C-state in which the APs are waiting is not really
-relevant, as you demonstrated that the cost is due to INIT/SIPI even
-with spinwait, which is what I suspected.
-
-OTOH, the advantage of INIT/SIPI is that the AP comes up in a well known
-state.
-
-Thanks,
-
-        tglx
-
-
+    Andrew
