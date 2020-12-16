@@ -2,143 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687932DC946
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 23:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0952F2DC93D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 23:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730294AbgLPWxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 17:53:09 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:37704 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728672AbgLPWxH (ORCPT
+        id S1727853AbgLPWvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 17:51:47 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16616 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727823AbgLPWvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 17:53:07 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BGMnwJl082082;
-        Wed, 16 Dec 2020 22:51:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=GWzfUJIU936fkGAX1MiiiDp/YR1yirB8QOBvoZtTBBk=;
- b=dSY3YZuNxSjZi3z5/7a8Jh1pLGdp8Chp+wAXG5EJLzjWD3Ptn8q96F2v50DN8jNyWFrw
- 2KRG5b21NK4g6KXCs/mpjGUriJt1z46DuXFoozsyqJEE9lv4cesPuNIOTLa8Grwp4vJi
- tbx3N8vYeBsj86AUsq+IN7fy40Eo7ruGsWYhdK+FR5UZ5+KtIcNmjVOfE5uJGKzS/1jR
- VrkEuV3vp92CtJns7Lo0cnscysFXPPqQL2oNQvi2FiReuskxmBmioOW9mFWipJYB9KJ4
- OIcO1hf7RhFUn3/AW4KbQzcTbcBOZfdjcx34MopbTKo9M2XIMfBwEd252XgGxrz2DKB+ qA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 35cntmas5d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Dec 2020 22:51:53 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BGMjHZW062482;
-        Wed, 16 Dec 2020 22:49:53 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 35d7eq52x2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Dec 2020 22:49:53 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BGMndJP001074;
-        Wed, 16 Dec 2020 22:49:39 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 16 Dec 2020 14:49:38 -0800
-Subject: Re: [PATCH v9 03/11] mm/hugetlb: Free the vmemmap pages associated
- with each HugeTLB page
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
-        willy@infradead.org, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-References: <20201213154534.54826-1-songmuchun@bytedance.com>
- <20201213154534.54826-4-songmuchun@bytedance.com>
- <5936a766-505a-eab0-42a6-59aab2585880@oracle.com>
- <20201216222549.GC3207@localhost.localdomain>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <49f6a0f1-c6fa-4642-2db0-69f090e8a392@oracle.com>
-Date:   Wed, 16 Dec 2020 14:49:36 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Wed, 16 Dec 2020 17:51:46 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BGMY7JS005096;
+        Wed, 16 Dec 2020 17:51:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=YGsmZvHBeeJBs2Dxbze8UDgDl3r3Trz1b7AFnaesP3U=;
+ b=AWWjgHFNEOz1mMfwmoJ1nlslVqWNXo3mKBlSBjOCDmxYuNXeWpeY2bL2n93tEWDtNIuz
+ R/i/1ktkyfxpMAKlkivUYW3vG5MRRiz22e2hs+/KZ4d4G6m6So4fxE0NV8ohLfn94X4/
+ qSadu4XH9AaWWghIbvmSUNKSursUEYAdZo8eUiFQKF0PjDEuUDRv1xj4H/4uIi99CKxI
+ EQU0T3AFCORojkvSuySYTt8pglV0rjsESXtIi6baVnn8KyYEbsrirqmwT01UN+wq2iwR
+ XLkr1OpdG3QhH2Tpk/WjWUrrOQyvROMXeTMrlKmaZYfFLgmzT3uOiNlirPyx5nfh7ubz 4w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35fshhtk9y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 17:51:02 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BGMYbEu007156;
+        Wed, 16 Dec 2020 17:51:01 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35fshhtk9f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 17:51:01 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BGMhDDt005222;
+        Wed, 16 Dec 2020 22:50:59 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 35cng8f174-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 22:50:59 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BGMnfnR23921086
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Dec 2020 22:49:41 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3D172AE04D;
+        Wed, 16 Dec 2020 22:49:41 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 499A3AE045;
+        Wed, 16 Dec 2020 22:49:40 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.26.143])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 16 Dec 2020 22:49:40 +0000 (GMT)
+Date:   Wed, 16 Dec 2020 23:49:38 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        stable@vger.kernel.org, gregkh@linuxfoundation.org,
+        sashal@kernel.org, cohuck@redhat.com, kwankhede@nvidia.com,
+        pbonzini@redhat.com, alex.williamson@redhat.com,
+        pasic@linux.vnet.ibm.com
+Subject: Re: [PATCH v3] s390/vfio-ap: clean up vfio_ap resources when KVM
+ pointer invalidated
+Message-ID: <20201216234938.6656399c.pasic@linux.ibm.com>
+In-Reply-To: <ae6e5c7a-0159-035e-2bd3-0a749f81a7c0@de.ibm.com>
+References: <20201214165617.28685-1-akrowiak@linux.ibm.com>
+        <20201215115746.3552e873.pasic@linux.ibm.com>
+        <44ffb312-964a-95c3-d691-38221cee2c0a@de.ibm.com>
+        <20201216022140.02741788.pasic@linux.ibm.com>
+        <ae6e5c7a-0159-035e-2bd3-0a749f81a7c0@de.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201216222549.GC3207@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9837 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 bulkscore=0
- suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012160141
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9837 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 priorityscore=1501 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012160142
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-16_10:2020-12-15,2020-12-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ priorityscore=1501 clxscore=1015 mlxscore=0 lowpriorityscore=0
+ phishscore=0 impostorscore=0 malwarescore=0 suspectscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/16/20 2:25 PM, Oscar Salvador wrote:
-> On Wed, Dec 16, 2020 at 02:08:30PM -0800, Mike Kravetz wrote:
->>> + * vmemmap_rmap_walk - walk vmemmap page table
->>> +
->>> +static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
->>> +			      unsigned long end, struct vmemmap_rmap_walk *walk)
->>> +{
->>> +	pte_t *pte;
->>> +
->>> +	pte = pte_offset_kernel(pmd, addr);
->>> +	do {
->>> +		BUG_ON(pte_none(*pte));
->>> +
->>> +		if (!walk->reuse)
->>> +			walk->reuse = pte_page(pte[VMEMMAP_TAIL_PAGE_REUSE]);
->>
->> It may be just me, but I don't like the pte[-1] here.  It certainly does work
->> as designed because we want to remap all pages in the range to the page before
->> the range (at offset -1).  But, we do not really validate this 'reuse' page.
->> There is the BUG_ON(pte_none(*pte)) as a sanity check, but we do nothing similar
->> for pte[-1].  Based on the usage for HugeTLB pages, we can be confident that
->> pte[-1] is actually a pte.  In discussions with Oscar, you mentioned another
->> possible use for these routines.
-> 
-> Without giving it much of a thought, I guess we could duplicate the
-> BUG_ON for the pte outside the loop, and add a new one for pte[-1].
-> Also, since walk->reuse seems to not change once it is set, we can take
-> it outside the loop? e.g:
-> 
-> 	pte *pte;
-> 
-> 	pte = pte_offset_kernel(pmd, addr);
-> 	BUG_ON(pte_none(*pte));
-> 	BUG_ON(pte_none(pte[VMEMMAP_TAIL_PAGE_REUSE]));
-> 	walk->reuse = pte_page(pte[VMEMMAP_TAIL_PAGE_REUSE]);
-> 	do {
-> 		....
-> 	} while...
-> 
-> Or I am not sure whether we want to keep it inside the loop in case
-> future cases change walk->reuse during the operation.
-> But to be honest, I do not think it is realistic of all future possible
-> uses of this, so I would rather keep it simple for now.
+On Wed, 16 Dec 2020 10:58:48 +0100
+Christian Borntraeger <borntraeger@de.ibm.com> wrote:
 
-I was thinking about possibly passing the 'reuse' address as another parameter
-to vmemmap_remap_reuse().  We could add this addr to the vmemmap_rmap_walk
-struct and set walk->reuse when we get to the pte for that address.  Of
-course this would imply that the addr would need to be part of the range.
+> On 16.12.20 02:21, Halil Pasic wrote:
+> > On Tue, 15 Dec 2020 19:10:20 +0100
+> > Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+> > 
+> >>
+> >>
+> >> On 15.12.20 11:57, Halil Pasic wrote:
+> >>> On Mon, 14 Dec 2020 11:56:17 -0500
+> >>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >>>
+> >>>> The vfio_ap device driver registers a group notifier with VFIO when the
+> >>>> file descriptor for a VFIO mediated device for a KVM guest is opened to
+> >>>> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
+> >>>> event). When the KVM pointer is set, the vfio_ap driver takes the
+> >>>> following actions:
+> >>>> 1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
+> >>>>    of the mediated device.
+> >>>> 2. Calls the kvm_get_kvm() function to increment its reference counter.
+> >>>> 3. Sets the function pointer to the function that handles interception of
+> >>>>    the instruction that enables/disables interrupt processing.
+> >>>> 4. Sets the masks in the KVM guest's CRYCB to pass AP resources through to
+> >>>>    the guest.
+> >>>>
+> >>>> In order to avoid memory leaks, when the notifier is called to receive
+> >>>> notification that the KVM pointer has been set to NULL, the vfio_ap device
+> >>>> driver should reverse the actions taken when the KVM pointer was set.
+> >>>>
+> >>>> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+> >>>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> >>>> ---
+> >>>>  drivers/s390/crypto/vfio_ap_ops.c | 29 ++++++++++++++++++++---------
+> >>>>  1 file changed, 20 insertions(+), 9 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> >>>> index e0bde8518745..cd22e85588e1 100644
+> >>>> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> >>>> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> >>>> @@ -1037,8 +1037,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
+> >>>>  {
+> >>>>  	struct ap_matrix_mdev *m;
+> >>>>
+> >>>> -	mutex_lock(&matrix_dev->lock);
+> >>>> -
+> >>>>  	list_for_each_entry(m, &matrix_dev->mdev_list, node) {
+> >>>>  		if ((m != matrix_mdev) && (m->kvm == kvm)) {
+> >>>>  			mutex_unlock(&matrix_dev->lock);
+> >>>> @@ -1049,7 +1047,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
+> >>>>  	matrix_mdev->kvm = kvm;
+> >>>>  	kvm_get_kvm(kvm);
+> >>>>  	kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
+> >>>> -	mutex_unlock(&matrix_dev->lock);
+> >>>>
+> >>>>  	return 0;
+> >>>>  }
+> >>>> @@ -1083,35 +1080,49 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
+> >>>>  	return NOTIFY_DONE;
+> >>>>  }
+> >>>>
+> >>>> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
+> >>>> +{
+> >>>> +	kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
+> >>>> +	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+> >>>
+> >>>
+> >>> This patch LGTM. The only concern I have with it is whether a
+> >>> different cpu is guaranteed to observe the above assignment as
+> >>> an atomic operation. I think we didn't finish this discussion
+> >>> at v1, or did we?
+> >>
+> >> You mean just this assigment:
+> >>>> +	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+> >> should either have the old or the new value, but not halve zero halve old?
+> >>
+> > 
+> > Yes that is the assignment I was referring to. Old value will work as well because
+> > kvm holds a reference to this module while in the pqap_hook.
+> >  
+> >> Normally this should be ok (and I would consider this a compiler bug if
+> >> this is split into 2 32 bit zeroes) But if you really want to be sure then we
+> >> can use WRITE_ONCE.
+> > 
+> > Just my curiosity: what would make this a bug? Is it the s390 elf ABI,
+> > or some gcc feature, or even the C standard? Also how exactly would
+> > WRITE_ONCE, also access via volatile help in this particular situation?
+> 
+> I think its a tricky things and not strictly guaranteed, but there is a lot
+> of code that relies on the atomicity of word sizes. see for example the discussion
+> here
+> https://lore.kernel.org/lkml/CAHk-=wgC4+kV9AiLokw7cPP429rKCU+vjA8cWAfyOjC3MtqC4A@mail.gmail.com/
+> 
+> WRITE_ONCE will not change the guarantees a lot, but it is mostly a documentation
+> that we assume atomic access here.
 
-Ideally, we would walk the page table to get to the reuse page.  My concern
-was not explicitly about adding the BUG_ON.  In more general use, *pte could
-be the first entry on a pte page.  And, then pte[-1] may not even be a pte.
+Thanks a lot! I've read it, and IMHO it seems to contradict the section
+https://lwn.net/Articles/793253/#Store%20Tearing a little. From there, I also learned
+that WRITE_ONCE (i.e. volatile access) can help, although I don't really
+understand why. Of course, we don't need to be portable here, as this
+is s390 only code. So we might be safe without anything -- I don't know.
+I believe, if volatile were enough (under any circumstances), the C
+standard wouldn't have introduced atomic types.
 
-Again, I don't think this matters for the current HugeTLB use case.  Just a
-little concerned if code is put to use for other purposes.
--- 
-Mike Kravetz
+Regards,
+Halil
