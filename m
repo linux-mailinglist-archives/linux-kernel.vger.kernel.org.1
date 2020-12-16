@@ -2,69 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E452DBDF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:47:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAD12DBDE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgLPJrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:47:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725890AbgLPJrP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:47:15 -0500
-Received: from orcam.me.uk (unknown [IPv6:2001:4190:8020::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 70A4FC0613D6;
-        Wed, 16 Dec 2020 01:46:35 -0800 (PST)
-Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
-        by orcam.me.uk (Postfix) with ESMTPS id 8A9112BE0EC;
-        Wed, 16 Dec 2020 09:46:33 +0000 (GMT)
-Date:   Wed, 16 Dec 2020 09:44:53 +0000 (GMT)
-From:   "Maciej W. Rozycki" <macro@linux-mips.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCHSET] saner elf compat
-In-Reply-To: <20201216030154.GL3579531@ZenIV.linux.org.uk>
-Message-ID: <alpine.LFD.2.21.2012160924010.2104409@eddie.linux-mips.org>
-References: <20201203214529.GB3579531@ZenIV.linux.org.uk> <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com> <20201203230336.GC3579531@ZenIV.linux.org.uk> <alpine.LFD.2.21.2012071741280.2104409@eddie.linux-mips.org>
- <20201216030154.GL3579531@ZenIV.linux.org.uk>
+        id S1726187AbgLPJpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:45:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726155AbgLPJpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 04:45:47 -0500
+Date:   Wed, 16 Dec 2020 10:46:07 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1608111906;
+        bh=seQggb4utKwClqFIasDCuqvix7gXeYYsNkHFzZNp+qM=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qb732cSp4pe5jCq2Hn4t3oPjzycBN8Crjyd2kc4ptYDsrOuLcHNqmN+vHz1fqQPmH
+         TdnkrJSh/33c0VR3EzP/yblY8/wh9aWtNxhVNfTwqnlwuklQAZHF72xkttT/3+Pxzr
+         KukF6KzI7YdlaLMzvjpinGJKB0JU5kcFipjuKDmY=
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>, stable@vger.kernel.org
+Subject: Re: [PATCH V2] kvm: check tlbs_dirty directly
+Message-ID: <X9nXX4h1mkcu0mw4@kroah.com>
+References: <ea0938d2-f766-99de-2019-9daf5798ccac@redhat.com>
+ <20201215145259.18684-1-jiangshanlai@gmail.com>
+ <X9kEAh7z1rmlmyhZ@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X9kEAh7z1rmlmyhZ@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020, Al Viro wrote:
-
-> >  It may be worth pushing through GDB's gdb.threads/tls-core.exp test case, 
-> > making sure no UNSUPPORTED results have been produced due to resource 
-> > limits preventing a core from being dumped (and no FAILs, of course), with 
-> > o32/n32 native GDB.  This should guarantee our output is still as expected 
-> > by an interpreter.  Sadly I'm currently not set up for such testing though 
-> > eventually I mean to.
+On Tue, Dec 15, 2020 at 10:44:18AM -0800, Sean Christopherson wrote:
+> Note, you don't actually need to Cc stable@vger.kernel.org when sending the
+> patch.  If/when the patch is merged to Linus' tree, the stable tree maintainers,
+> or more accurately their scripts, will automatically pick up the patch and apply
+> it to the relevant stable trees.
 > 
-> Umm...  What triple does one use for n32 gdb?
+> You'll probably be getting the following letter from Greg KH any time now :-)
 
- I don't think there's a standardised one, just configure with CC/CXX set 
-for n32 compilation, e.g.:
+Nope, this was fine, I don't mind seeing the patch before it hits
+Linus's tree (or any tree) at all.  It lets me know what to look out
+for, nothing was done incorrectly here at all from what I can tell.
 
-$ /path/to/configure CC="gcc -mabi=n32" CXX="g++ -mabi=n32"
+thanks,
 
-(and any other options set as usually).  This has to be with CC/CXX rather 
-than CFLAGS/CXXFLAGS so that it is guaranteed to be never overridden with 
-any logic that might do any fiddling with compilation options.  This will 
-set up the test suite accordingly.
-
- NB this may already be the compiler's default, depending on how it was 
-configured, i.e. if `--with-abi=n32' was used, in which case no extra 
-options will be required.  I don't know if any standard MIPS distribution 
-does it though; 64-bit MIPS/Debian might.  This will be reported with `gcc 
---help -v', somewhere along the way.
-
- Let me know if there are issues with this approach.
-
-  Maciej
-
+greg k-h
