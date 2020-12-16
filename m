@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D1D2DC54E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F47E2DC550
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:28:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbgLPR1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 12:27:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39496 "EHLO
+        id S1727096AbgLPR11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 12:27:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726837AbgLPR1L (ORCPT
+        with ESMTP id S1726837AbgLPR11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 12:27:11 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F777C0617A6;
-        Wed, 16 Dec 2020 09:26:31 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id c12so17002550pfo.10;
-        Wed, 16 Dec 2020 09:26:31 -0800 (PST)
+        Wed, 16 Dec 2020 12:27:27 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4324C061794;
+        Wed, 16 Dec 2020 09:26:46 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id e2so18094134pgi.5;
+        Wed, 16 Dec 2020 09:26:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mlKPhWZ3s5+RVAHyC44dZAy1Ftsjx87zQFXnEBf66F0=;
-        b=RnsDllEQIfwGIHs9NlNMK4I1FUTN+mTxmSU6JRt9U9uj9+JBb2fBijI7emqnjt9MTt
-         Phqq/DJwsIakQGryE+VW5bS78buH0VUKOodtJBxGqgNU2/fv7mTWlrWgWM3bxfdYh6X4
-         4FWcni82zuuII3lfRMqCpNpxPgUg1NIv4JlLq6iIXSEXKhLmv/DpRrcXscCwaBnW7raO
-         t9NZkKjRBWgmntMisgF6jFYM3r/O1CsY9gPCNFeOO5g6EIJJ+V+QgHKFQQ0pFH34Xk8t
-         5s8Vc+jWoSBUJfiMFKUv/IJqIJRwsYBjk43anvaGzpEr3gWgeXeZI9oSsASbr3VNBDbr
-         UPSw==
+        bh=EzAS7ldgmcbvMm+9cjHoPH6O8f3axqJD3epKVX+x/EQ=;
+        b=r5eMpvp3tcNskfXh6GF8zvcPqELYreeU6y6Dy/Kx69RR7tiTvVFrTdfuM16TNhMalc
+         sZN7MLBpfnnNE1onoyyPxTwkrZMiELwKt/f0qDhWzxRjf5IhMln2QhnzCqNxKuS0MoK4
+         1Vwyr/w8Q8nDTY0UeSpBTF/GBcGErBp68dGr9XENo9rtm8lTTwvcH7bTUoM4HSmZ2/0d
+         XlHx5eBIaiCS9VpFla8IZHXnJVDBkzPk6s9BNJ35eZQQO5tUSFojepcmOZeusCw3PEH6
+         drVCntWYlWPH09TNMBPsnhU0XXpqD5tyo21dSMvll8/KeL+aqow8XZp5VIQwgyCXd3zh
+         PXgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=mlKPhWZ3s5+RVAHyC44dZAy1Ftsjx87zQFXnEBf66F0=;
-        b=HyIPuituWa/sGP5PIOsNvSAs+Ib7VxJ+h9nTxkDTWaBKHAerT59iKmZPdk8y2nBfJ0
-         bgSyf9axyxNwUCkC73hwa0MlPjFaam7xG1XhGL3x70Npezlj2APz30bYJTiYocLZcTIg
-         jE3VnL0cn2+Xq8MVDgR8VyOoPHA3fw+1uzfMqmHv7TBFdHE2HeNKD8PZUdY2XdBKG/V8
-         bED6Zo0ORGaKERzU+qB66yWHIpPfeKPYNgp7ESYBy/NQUkuI8/XNG+BGKT2248p9rvmj
-         9oPBaI7OkpIactL8GjVEI15rV2Oarauc6yylt/dZEJBC8I1F7+SEoHdvwrbTiPZjx6By
-         X5Qw==
-X-Gm-Message-State: AOAM5325/8uepk83sccIngHbar98KPOoh6PXBNjkE97xAou4ISOd83Xl
-        0WTM19kKNwCcn047hZZxBaQGXJE0FSo=
-X-Google-Smtp-Source: ABdhPJwmNd/P/V4mF99C82yImERNJUVAa1Jht2k6fZgoAvw3bkYNd5AtWABLlpimOtyXpHHhbW3noA==
-X-Received: by 2002:a63:d650:: with SMTP id d16mr33602987pgj.277.1608139590703;
-        Wed, 16 Dec 2020 09:26:30 -0800 (PST)
+        bh=EzAS7ldgmcbvMm+9cjHoPH6O8f3axqJD3epKVX+x/EQ=;
+        b=PbGM8z4duBcUVnMotx+Hdcsy87ORrwKEE1FLvRnbpcHOSlhLnRruEDD3mKZcGs9hNM
+         crTb5GCR75EgfWolp6yX7p3QC9zM3tkhjSDQ7BrKF3mk4vCOWISLxXumUqbB7Q76uSKj
+         M55P3Ojzu4MyIV4nndGRFHgkepFWSCUGJJozpNXBA/dVy5alydHrdQIwHMHZoaBclwEP
+         qtyQJvFmeg2e5ZuvwHDuvXBi6UghPyKtLJttWggW4Z39hpf/KFifQB+Tjr3PPsTnzeeF
+         s89gpP32t2FF6v0VxbNePvnSBmrWm3VUUs51son63qtwjkGs4Y4xDmAboFcCSpnch/9K
+         v6ig==
+X-Gm-Message-State: AOAM532Bhmf2td2RuHoDDmHTPrS5dNfYVC9iu4t6RduxrfCx5ZnQ/VWC
+        goLZ4vE3F0x73jMS0G34jpw=
+X-Google-Smtp-Source: ABdhPJzIvARaxeB2g4Gl+EcE8TZ9VgTtUP6X+R0yjWppSdR+crc2j0KGYzoZqhRPHWm0k6UBZnMd/A==
+X-Received: by 2002:a63:d846:: with SMTP id k6mr30504685pgj.167.1608139606370;
+        Wed, 16 Dec 2020 09:26:46 -0800 (PST)
 Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id s13sm3272347pfd.99.2020.12.16.09.26.28
+        by smtp.googlemail.com with ESMTPSA id p1sm3454892pfb.208.2020.12.16.09.26.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Dec 2020 09:26:29 -0800 (PST)
-Subject: Re: [PATCH 3/3] phy: phy-brcm-usb: support BCM4908 binding
+        Wed, 16 Dec 2020 09:26:45 -0800 (PST)
+Subject: Re: [PATCH 2/3] dt-bindings: phy: brcm,brcmstb-usb-phy: add BCM4908
+ binding
 To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
         Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
@@ -59,7 +60,7 @@ Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
 References: <20201216131451.16900-1-zajec5@gmail.com>
- <20201216131451.16900-3-zajec5@gmail.com>
+ <20201216131451.16900-2-zajec5@gmail.com>
 From:   Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  mQGiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -115,12 +116,12 @@ Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  caxTGgc5zzQHeX67eMzrGomG3ZnIxmd1sAbgvJUDaD2GrYlulfwGWwWyTNbWRvMighVdPkSF
  6XFgQaosWxkV0OELLy2N485YrTr2Uq64VKyxpncLh50e2RnyAJ9Za0Dx0yyp44iD1OvHtkEI
  M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <48497032-51ee-d68b-db4d-add064330dba@gmail.com>
-Date:   Wed, 16 Dec 2020 09:26:27 -0800
+Message-ID: <091063a9-c5c5-37a4-bced-50bfa8dc930d@gmail.com>
+Date:   Wed, 16 Dec 2020 09:26:43 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201216131451.16900-3-zajec5@gmail.com>
+In-Reply-To: <20201216131451.16900-2-zajec5@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -131,8 +132,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 12/16/20 5:14 AM, Rafał Miłecki wrote:
 > From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> BCM4908 seems to have slightly different registers but work when
-> programmed just like the STB one.
+> BCM4908 uses the same PHY and may require just slightly different
+> programming.
 > 
 > Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 
