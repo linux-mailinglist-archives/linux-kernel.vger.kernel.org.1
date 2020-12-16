@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FA42DC758
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5002D2DC75B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728569AbgLPTpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 14:45:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59160 "EHLO mail.kernel.org"
+        id S1727427AbgLPTps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 14:45:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727067AbgLPTpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 14:45:35 -0500
-Subject: Re: [GIT PULL] Smack patches for v5.11
+        id S1727067AbgLPTpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 14:45:47 -0500
+Subject: Re: [GIT PULL] pstore updates for v5.11-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1608147895;
-        bh=mVyWZxsjm+HNnAuVLATXz+GwSsxZ3qZHdKXgvD1ygjA=;
+        bh=iD3G2Fav2x5blpCBQfqST4Sn7DtJBd6pUdLjj1/Amd0=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=rwC+SdofeTt/6FyhPM+1Pr+FUcO+6/5RLyc8iYZCLhaws2C8jE9h3HymD/mmNgD9Y
-         olTgjJ36fAfIoG88atjDXt5HPlC3Od5l1O7GKGfJ+9VDnSYoztDVUw3JpCjKpuGkXS
-         6oYFnT0vauRb2GLYus0PJIqBn8Yzk/+RCrFomRjFOAT+lMPMItkY8Y/MfKxGrZnr1t
-         Aue/YdCAOifwUOyiwaX/T5N6OGLk5YHYcSMrjZHiSeaee/5RXDMXVxYwMYLXG6wylR
-         p64aFZe/bKIHQVxa9jRKUQxkLbNTleTyESNVTMD0I2A2HlQfjWGKLddK2EzHVNg6Uv
-         uCtAA1s1yiGqg==
+        b=hzRxQLbKONIMkqlXoo6XDjc2eticrpa8uG9+I4T9mKc2ZBaEK/hruxIvMOXWzTjtp
+         BSbNtPiudHXxn6sxw+sEKbViMtLTdcHWeVh13v78bxPvmJVt5NPWKnmmaZwzR41JdT
+         guOrZzVezAmdtag2Dpc0n6jmxqS/eS9x+VIV0fS2fsQb+0AY8Om9bfVTxH9Wy4Mogl
+         YOfD0hN8gOZeUzCEp0PFSrGL1DcWPoDxIeg6kaX+EWOxGgQ1Qt46I+3CqBDviU+TGh
+         ZY7zZyGF6tHvas7Ps9aXjxY1xMrl1lHTzGvfUI/r9bL1Emr9rZVKqUcsuxeKBVVQvK
+         2ZqO1rXwE6gNQ==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <7bb1c722-0a4f-2799-6421-5c3741e7c106@schaufler-ca.com>
-References: <7bb1c722-0a4f-2799-6421-5c3741e7c106.ref@schaufler-ca.com> <7bb1c722-0a4f-2799-6421-5c3741e7c106@schaufler-ca.com>
+In-Reply-To: <202012151219.126DB90@keescook>
+References: <202012151219.126DB90@keescook>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <7bb1c722-0a4f-2799-6421-5c3741e7c106@schaufler-ca.com>
-X-PR-Tracked-Remote: https://github.com/cschaufler/smack-next tags/Smack-for-5.11
-X-PR-Tracked-Commit-Id: 9b0072e2b2b588ad75c94f2c6e6c52c8f4bd2657
+X-PR-Tracked-Message-Id: <202012151219.126DB90@keescook>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/pstore-v5.11-rc1
+X-PR-Tracked-Commit-Id: 26fecbf7602dd69b649914e61526bd67c557fece
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8bda68d68b21cb9881dcc7159fd9db1b6f95ac15
-Message-Id: <160814789495.14944.8509071490382248333.pr-tracker-bot@kernel.org>
-Date:   Wed, 16 Dec 2020 19:44:54 +0000
-To:     Casey Schaufler <casey@schaufler-ca.com>
+X-PR-Merge-Commit-Id: ba1d41a55e4d07c7b27ee2f6e7cf5b5348849261
+Message-Id: <160814789530.14944.8758552216435069142.pr-tracker-bot@kernel.org>
+Date:   Wed, 16 Dec 2020 19:44:55 +0000
+To:     Kees Cook <keescook@chromium.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        lkML <linux-kernel@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Kees Cook <keescook@chromium.org>,
+        Vasile-Laurentiu Stanimir 
+        <vasile-laurentiu.stanimir@windriver.com>,
+        WeiXiong Liao <gmpy.liaowx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 15 Dec 2020 11:02:53 -0800:
+The pull request you sent on Tue, 15 Dec 2020 12:19:50 -0800:
 
-> https://github.com/cschaufler/smack-next tags/Smack-for-5.11
+> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/pstore-v5.11-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8bda68d68b21cb9881dcc7159fd9db1b6f95ac15
+https://git.kernel.org/torvalds/c/ba1d41a55e4d07c7b27ee2f6e7cf5b5348849261
 
 Thank you!
 
