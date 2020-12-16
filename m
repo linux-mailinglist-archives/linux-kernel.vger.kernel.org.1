@@ -2,56 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0972DC7A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 364472DC7AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:18:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728807AbgLPURT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 15:17:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727431AbgLPURR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 15:17:17 -0500
-Subject: Re: [GIT PULL] parisc architecture updates for kernel v5.11-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608149797;
-        bh=trVwk2vMQwm4VXGLnsXuN4anCVVvLstBtKZMcPE5fLY=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=YXsJeCnXTx0tZT1IFyEDqk9YgomVdJIwm4j7/qfZ/K2L5x+jv1RwYUB9ogE1nceWo
-         zZb+CYnTP+xxRy0a3f24sGVCE5LDC5Om2HOJ0HIoSmLoe66cHFvXSvERIYYAdLnoHZ
-         4ORZstUZjAFFHxAjVq0MqzpSMXp4BVONCp7B53wY224mmXdbq8wD2ZOWi6YDTVrlS8
-         Z1jSFUGqEc+sNwNCHVKnGVfWBwJlwCCFUNmj0ctC0Z/xLvwjyUr98NHLzZqAZAcx9F
-         EzrY8IJ0KuCj3077UuyRYv5f04fcrJjjbTcPeyOMYu+0ckkO3yDtxAIUABGSxKSUOy
-         h3gaW7WlIcopg==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201216192235.GA27343@ls3530.fritz.box>
-References: <20201216192235.GA27343@ls3530.fritz.box>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201216192235.GA27343@ls3530.fritz.box>
-X-PR-Tracked-Remote: http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.11-1
-X-PR-Tracked-Commit-Id: 39b1e779b6e2d4ca7967b49b26f1e4358f20c90c
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5ee863bec794f30bdf7fdf57ce0d9f579b0d1aa3
-Message-Id: <160814979733.31129.5599484646624875831.pr-tracker-bot@kernel.org>
-Date:   Wed, 16 Dec 2020 20:16:37 +0000
-To:     Helge Deller <deller@gmx.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+        id S1728734AbgLPURx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 15:17:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727443AbgLPURx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 15:17:53 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDE0C061794;
+        Wed, 16 Dec 2020 12:17:12 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id u19so26267424edx.2;
+        Wed, 16 Dec 2020 12:17:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=OGqml7cNQ934/fU3LVSDbnKf/tJQTzGUkVuBuZynyhE=;
+        b=mKUkfR4uBmBnEqP2XCFlpvlCXa6gm0fy5gKERHYvVjYgihb5oN5cTbty4GyKD321kN
+         n+tpsv71iUDSLA9X6WscaFfIqwiwjWaWxH4CE1avcr/8u9gBm524rW86Ui9r3ZGckpXM
+         ACP5DZo5TPRmhsbILEB4/kVLO9ilkVqOhUQBywmvYTslYiaOx7hicfQbDO8afQuJA+Hr
+         AC82tz3Ahhfy+Rn0UHRCBFTa2RE/Wz859WUqB1Qlqlw3L4tR9N1vdFYOg1KdeL1VZoYa
+         VStkESeduTxVJ4MCHW5BVaHCXa9p/h7ybDnFSRp7Lr6reAJI/iJFEcifaUfZGQFmO6RM
+         wyZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OGqml7cNQ934/fU3LVSDbnKf/tJQTzGUkVuBuZynyhE=;
+        b=pUTP54FtAnnSrWQ8ErIhLL97uPP0ajWwyLyAr4TDqtB33L9DwXlv0hqtn6KsZmJpik
+         ygqYGOlTGTD9XK0yJ0PUQ9eSpY52mzb16eLscdrJVwZ7s1OKqmdqkUwuiaAb1qzhI3r4
+         MlQc+jEMcfVDRMegkGZk11DyU/lleoxsJlKHf1BMx2ZW1UW2p0jIzNRtloikdXFjrRNT
+         a+trxLiw/6JtChK7rzpnauEQPS+YXh1HklQrt1H4mfvv6O6nRAhJuRkpyKpr+q3EBfqV
+         LUCJtMxHUw8eO5cxkmSCdc4EpY4I0AnJJCi+z2/myqsOtXimbhomQclmaJXgsPK8BmL4
+         PJ2Q==
+X-Gm-Message-State: AOAM532Cce3p4yb5pcMQ1DhHyGfV+/CSSDfv1aF/2S9Jlcei7HwdvSKw
+        pCFHC7qPmWMskXnb8X1wkWwkPlZXrEagmA==
+X-Google-Smtp-Source: ABdhPJwceJnmY9nzHb+/pFABD6tj/TRJvnilchVnGqDms5ei/9QR50gzeuqqmglo1c+bWLSUmIWZzA==
+X-Received: by 2002:a05:6402:22e1:: with SMTP id dn1mr36238078edb.347.1608149831669;
+        Wed, 16 Dec 2020 12:17:11 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id b7sm2140609ejp.5.2020.12.16.12.17.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Dec 2020 12:17:10 -0800 (PST)
+Message-ID: <920b01c29525ff1cf894a2cf9c809750533ddc13.camel@gmail.com>
+Subject: Re: [PATCH V2] scsi: ufs-debugfs: Add error counters
+From:   Bean Huo <huobean@gmail.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Date:   Wed, 16 Dec 2020 21:16:54 +0100
+In-Reply-To: <20201216185145.25800-1-adrian.hunter@intel.com>
+References: <20201216185145.25800-1-adrian.hunter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 16 Dec 2020 20:22:35 +0100:
+On Wed, 2020-12-16 at 20:51 +0200, Adrian Hunter wrote:
+>                 ufshcd_variant_hba_exit(hba);
+>                 ufshcd_setup_vreg(hba, false);
+>                 ufshcd_suspend_clkscaling(hba);
+> @@ -9436,6 +9441,20 @@ int ufshcd_init(struct ufs_hba *hba, void
+> __iomem *mmio_base, unsigned int irq)
+>  }
+>  EXPORT_SYMBOL_GPL(ufshcd_init);
+>  
+> +static int __init ufshcd_core_init(void)
+> +{
+> +       ufs_debugfs_init();
+> +       return 0;
+> +}
+> +
+> +static void __exit ufshcd_core_exit(void)
+> +{
+> +       ufs_debugfs_exit();
+> +}
 
-> http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.11-1
+Hi, Adrian
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5ee863bec794f30bdf7fdf57ce0d9f579b0d1aa3
+The purpose of patch is acceptable, but I don't know why you choose
+using ufshcd_core_* here. 
+Also. I don't know if module_init()  is a proper way here.
 
-Thank you!
+thanks,
+Bean
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> 
+> n
+> +
+> +module_init(ufshcd_core_init);
+> +module_exit(ufshcd_core_exit)
+
