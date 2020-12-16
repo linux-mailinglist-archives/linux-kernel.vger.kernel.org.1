@@ -2,76 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002E62DBE33
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E55862DBE35
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726119AbgLPKEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:04:02 -0500
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:33886 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725889AbgLPKEC (ORCPT
+        id S1726205AbgLPKFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 05:05:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725835AbgLPKFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:04:02 -0500
-Received: by mail-wr1-f52.google.com with SMTP id q18so15053994wrn.1;
-        Wed, 16 Dec 2020 02:03:46 -0800 (PST)
+        Wed, 16 Dec 2020 05:05:11 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2E9C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:04:29 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id 6so17209567ejz.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:04:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8lX54bFY3GA8vFrzRbSw5g4u4NUJ5PS2ieZ5MmN9qcE=;
+        b=Z7EfUjngukapy6e6qjTuPsXAkXQprUbsTNkpwZ5CuRYRw/qnyL15yOyYI1vSyDoLU2
+         8z5t9xh4V5O2eyWCLyNjHBFrszDZG+sV4BoGcfqCbwxIihrzBAMj/J0eawb7ZgsuoOPs
+         Vm20zEHQs1M8ELn4sLP2xC6ZQgioA3dPpXDD+5EJlTVs3SvActi6D7kAU2ifqa1bwJ/V
+         93QDMQsJBCUn1R/PVOAunlMOnOvnXfNhIhpXCTwT3jYRrXu2t6WtLHLmvBbLiYOGav8g
+         wgDPoI8/BlIQOMviiKiWJUkTUCuNr1tGRP3rLxvaiCFIDZB/OVpmWKViE5UMCxS3eUXa
+         2reg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=g/Wzze2NIBSL2f+axZbs4XLUQ1J8xddIwrjpMIqAZg4=;
-        b=cIRHMR4dUG/P9eO9xLSPSVyn8HTLp+ZI3PNSp6iLmjMppC3QhhzrCZWmiWL8rDqbXj
-         xEvZIG0KIuTM0IzLPel7d+DAmMxojl4cFhtVhQ+zF0PGDq1lNiCDYRlsFrczY+eQSwWl
-         smBwgiQur6rf3lPjTOaVBOPaw0RIwZEg+3j+MLw1E6zfVBwpGRYgMsSTJDUkufOg5Lrs
-         /0rnepa8qMdP+yC2fUbHQLWoOIMbHYK9Z15g4kLXHcgeMR3c2HJBge9NxpNME/viBsPv
-         YUk+o2EEzlTgc74UFA7aT+qdqr/vCbAgKzrKqCt1tRTZU8vbPV6V4j8Rg5PGWOq20HGf
-         qF/w==
-X-Gm-Message-State: AOAM531OmE3nosSnBWy8v9gdKL5dcYlvIW5K7/GALkoYVE1+H+YxXeD5
-        6QK1w8Guo5R1kJ8Cvuk3v5yPBRHz5uWxcQ==
-X-Google-Smtp-Source: ABdhPJxD1ueQpGR9/wck7OlgddXafTJE+ngtoIBX1JQ9dKcH54wv9WbaRfgT0MlTBjsXepkMheXDQQ==
-X-Received: by 2002:adf:eb07:: with SMTP id s7mr37381501wrn.414.1608113000866;
-        Wed, 16 Dec 2020 02:03:20 -0800 (PST)
-Received: from rhea.home.vuxu.org ([2a01:4f8:c010:17cd:6824:5476:f6ff:db68])
-        by smtp.gmail.com with ESMTPSA id l7sm2106047wme.4.2020.12.16.02.03.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 02:03:19 -0800 (PST)
-Received: from localhost (rhea.home.vuxu.org [local])
-        by rhea.home.vuxu.org (OpenSMTPD) with ESMTPA id 876ad974;
-        Wed, 16 Dec 2020 10:03:17 +0000 (UTC)
-From:   Leah Neukirchen <leah@vuxu.org>
-To:     bpf@vger.kernel.org
-Cc:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, leah@vuxu.org
-Subject: [PATCH] bpf: Remove unnecessary <argp.h> include from preload/iterators
-Date:   Wed, 16 Dec 2020 11:03:06 +0100
-Message-Id: <20201216100306.30942-1-leah@vuxu.org>
-X-Mailer: git-send-email 2.29.2
+        bh=8lX54bFY3GA8vFrzRbSw5g4u4NUJ5PS2ieZ5MmN9qcE=;
+        b=DqrJZMz52TojUt/0nL2gentGLnuOxAgSCkRvLyo/IDdqsoBeWQ0EqN8fVTf5my7PmV
+         zjCwXAxjsQUMZQhPMoxrtdoxDMCTUs3XXpb4FxWJmIXzcOh6mUZeHGWUkjOFnDnbPms2
+         7mUn9tAGGkjBPbTAysCUedTiPQE4dMwondMsH5M0SsYYwKvlrjWnuO+krxEQJEIQHjZE
+         2eUtF092bH8pSEAAZghP3MlCgG8iBF/+6xs7haf15n75wUDInE6E7YFaOWMxMJlyIwrc
+         xGik8i2xPue2tJWHbokdJ7Ar6ggs0FuklnMOrwRvCEdBDDbtSdujmAuo3+QL2d5x4jFm
+         O+CQ==
+X-Gm-Message-State: AOAM532eApt/H1broJT0uMv+woKb4CX3UrwjhjFMzczy7K1OHP2JBAQy
+        dIi+TakQI1bx4W/2Us3Up3hqqQ==
+X-Google-Smtp-Source: ABdhPJy55jVixIg4KAi4YQ9Ae6Y+p1mTgxDQzXLw1aj2vnZ/jGfzZrtLKnO8x/H37XwYD9qSzJWHCA==
+X-Received: by 2002:a17:906:17d0:: with SMTP id u16mr29804757eje.452.1608113067864;
+        Wed, 16 Dec 2020 02:04:27 -0800 (PST)
+Received: from [192.168.0.105] (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id qn4sm1012892ejb.50.2020.12.16.02.04.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 02:04:26 -0800 (PST)
+Subject: Re: linux-next: manual merge of the tip tree with the microblaze tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20201210155808.717a7257@canb.auug.org.au>
+ <1848f245-2a64-0aec-58db-b575de29debc@monstr.eu>
+ <20201216120025.3901896a@canb.auug.org.au>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <8a63492b-b1f1-1781-c584-d8f0e78500e6@monstr.eu>
+Date:   Wed, 16 Dec 2020 11:04:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201216120025.3901896a@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This program does not use argp (which is a glibcism).
-Instead include <errno.h> directly, which was pulled in by <argp.h>.
+Hi Stephen,
 
-Signed-off-by: Leah Neukirchen <leah@vuxu.org>
----
- kernel/bpf/preload/iterators/iterators.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 16. 12. 20 2:00, Stephen Rothwell wrote:
+> Hi all,
+> 
+> On Thu, 10 Dec 2020 15:03:23 +0100 Michal Simek <monstr@monstr.eu> wrote:
+>>
+>> On 10. 12. 20 5:58, Stephen Rothwell wrote:
+>>>
+>>> Today's linux-next merge of the tip tree got conflicts in:
+>>>
+>>>   arch/microblaze/Kconfig
+>>>   arch/microblaze/mm/Makefile
+>>>
+>>> between commit:
+>>>
+>>>   05cdf457477d ("microblaze: Remove noMMU code")
+>>>
+>>> from the microblaze tree and commit:
+>>>
+>>>   7ac1b26b0a72 ("microblaze/mm/highmem: Switch to generic kmap atomic")
+>>>
+>>> from the tip tree.
+>>>
+>>> I fixed it up (see below) and can carry the fix as necessary. This
+>>> is now fixed as far as linux-next is concerned, but any non trivial
+>>> conflicts should be mentioned to your upstream maintainer when your tree
+>>> is submitted for merging.  You may also want to consider cooperating
+>>> with the maintainer of the conflicting tree to minimise any particularly
+>>> complex conflicts.
+>>>   
+>>
+>> Thanks for letting me know. I will mentioned it to Linus.
+>> Your resolution is correct.
+> 
+> These are now conflicts between the microblaze tree and Linus' tree.
+> 
 
-diff --git a/kernel/bpf/preload/iterators/iterators.c b/kernel/bpf/preload/iterators/iterators.c
-index b7ff8793917..5d872a70547 100644
---- a/kernel/bpf/preload/iterators/iterators.c
-+++ b/kernel/bpf/preload/iterators/iterators.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2020 Facebook */
--#include <argp.h>
-+#include <errno.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
+Yes. I am just preparing pull request to Linus with mentioning
+resolution as you sent last time.
+
+Thanks,
+Michal
+
 -- 
-2.29.2
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
 
