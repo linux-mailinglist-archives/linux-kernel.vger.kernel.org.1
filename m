@@ -2,185 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C523D2DB7B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:15:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5612DB7BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725854AbgLPANo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:13:44 -0500
-Received: from mga12.intel.com ([192.55.52.136]:35187 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725275AbgLPANi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 19:13:38 -0500
-IronPort-SDR: MvmjlY9+BvDVu/0FYaRZoatX/E59In5bWO2QGXs0lggBR3cxV8CDwqn08JxX8fn8W6eVvXBwPc
- REUOTbXSBtzA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="154206513"
-X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
-   d="scan'208";a="154206513"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 16:11:52 -0800
-IronPort-SDR: 71QUg58GsyVwRTYWnZqNNLSzKEGSGg37rstN1sHzUV7cRG6UcYnL6uiXf95QyFtmcDN8BiJDYF
- uQn8VBclFyrg==
-X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
-   d="scan'208";a="368553698"
-Received: from csando3-mobl.amr.corp.intel.com ([10.251.12.232])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 16:11:52 -0800
-Date:   Tue, 15 Dec 2020 16:11:52 -0800 (PST)
-From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
-To:     Geliang Tang <geliangtang@gmail.com>
-cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        mptcp@lists.01.org, linux-kernel@vger.kernel.org,
-        Christoph Paasch <cpaasch@apple.com>
-Subject: Re: [MPTCP][PATCH net-next] mptcp: clear use_ack and use_map when
- dropping other suboptions
-In-Reply-To: <ccca4e8f01457a1b495c5d612ed16c5f7a585706.1608010058.git.geliangtang@gmail.com>
-Message-ID: <fd9ba263-de65-75e4-d62e-8bdf9236bf5@linux.intel.com>
-References: <ccca4e8f01457a1b495c5d612ed16c5f7a585706.1608010058.git.geliangtang@gmail.com>
+        id S1725550AbgLPAQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:16:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26656 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725827AbgLPAQK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 19:16:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608077683;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xRFUtbRbVHAPYmIqUZy/cSKapSSOng2O0tF1oLpP9Zk=;
+        b=OBC7dao8Q68UT7PxemqVDxKmnraUQY420z/Jo1ElWy4Ej3gGtcePDW5+KPsLLr25scSN+h
+        Go7Is0LkHfGQJeIfRBRSbygmPiZrVvuyDdEpDBYvaGIo61NjZn4ry78+vDj9t2ZP7Hih7A
+        yMTYRlgzO5dtC7vW2GsQ3/DpuszjeP8=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-164-iVRAAdrcNm2nCTF7p63qgw-1; Tue, 15 Dec 2020 19:14:42 -0500
+X-MC-Unique: iVRAAdrcNm2nCTF7p63qgw-1
+Received: by mail-oi1-f200.google.com with SMTP id h4so11617313oie.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:14:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=xRFUtbRbVHAPYmIqUZy/cSKapSSOng2O0tF1oLpP9Zk=;
+        b=pfq85CiZeJhyjdps/6kKHxNp+KfuxTk0tGaDCZMXNr3XLwbHvvVxHUYMAAqBC3l7+v
+         ZZVuxEo1bfua09s5uoL70klKK6BRxKI+e343Yn4gcT/WY1YwYvZj+zcSLFsqODWaIXfj
+         TcTR3kgzULNVWmvUzOy0MsydGy3li6SUbaIcd2cPzz1UqiLJvt4y9poIbOo47GObvbso
+         jvmCJYdEKJbuLT3CQxXQDYcPgUqJ493sRh8xiEYvtm6S9gUwfLnL5R2B/gGaECaO6xQj
+         9Pi3ZBkCVCxuNh+0rGhfifo8BOKA2F1W8sws8fftCk9Ar41rSTjEak3uf4d0VURIH4es
+         p4cQ==
+X-Gm-Message-State: AOAM533OyYONMNqaFUUKamshzBzkvOZm9NbbzGLfH/ExHn8voC4A5Ej+
+        MoGL95tAzuC+9O8hRWpFhOsLth7PhRCaKKN2Hl3q4dJunVNs4XMQXW/jUV7C1/9nUBudpw6io6z
+        ZANxtJWNnWFljXf0X4x7lu2ulvL6yUrF11KMDPBgxB+IIANRYVGjl5B5Lh1Y6gtxngeeUMp8=
+X-Received: by 2002:aca:b707:: with SMTP id h7mr742928oif.46.1608077681756;
+        Tue, 15 Dec 2020 16:14:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyDeSqadY1k98PdlhcV2LTuTatlgnzMFiInq9cb7PnkSNMUJD3RfxUutcmT/C+V7IenHOiMoA==
+X-Received: by 2002:aca:b707:: with SMTP id h7mr742917oif.46.1608077681492;
+        Tue, 15 Dec 2020 16:14:41 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id j126sm33761oib.13.2020.12.15.16.14.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Dec 2020 16:14:40 -0800 (PST)
+Subject: Re: [PATCH] [media] radio-si470x: remove h from printk format
+ specifier
+To:     Joe Perches <joe@perches.com>, hverkuil@xs4all.nl,
+        mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201215213327.2091597-1-trix@redhat.com>
+ <75eb199376d65f2c2b4c746ca9be8cfc9f774453.camel@perches.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <1fc711e8-93e8-0d30-9198-2b73eccbee4f@redhat.com>
+Date:   Tue, 15 Dec 2020 16:14:39 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+In-Reply-To: <75eb199376d65f2c2b4c746ca9be8cfc9f774453.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Tue, 15 Dec 2020, Geliang Tang wrote:
+On 12/15/20 2:07 PM, Joe Perches wrote:
+> On Tue, 2020-12-15 at 13:33 -0800, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> See Documentation/core-api/printk-formats.rst.
+>>
+>> commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of unnecessary %h[xudi] and %hh[xudi]")
+>>
+>> Standard integer promotion is already done and %hx and %hhx is useless
+>> so do not encourage the use of %hh[xudi] or %h[xudi].
+> []
+>> diff --git a/drivers/media/radio/si470x/radio-si470x-i2c.c b/drivers/media/radio/si470x/radio-si470x-i2c.c
+> []
+>> @@ -410,7 +410,7 @@ static int si470x_i2c_probe(struct i2c_client *client)
+>>  			radio->registers[DEVICEID], radio->registers[SI_CHIPID]);
+>>  	if ((radio->registers[SI_CHIPID] & SI_CHIPID_FIRMWARE) < RADIO_FW_VERSION) {
+>>  		dev_warn(&client->dev,
+>> -			"This driver is known to work with firmware version %hu,\n",
+>> +			"This driver is known to work with firmware version %u,\n",
+>>  			RADIO_FW_VERSION);
+>>  		dev_warn(&client->dev,
+>>  			"but the device has firmware version %hu.\n",
+> Tom?  Do you know why your script missed this %hu?
 
-> This patch cleared use_ack and use_map when dropping other suboptions to
-> fix the following syzkaller BUG:
+Boooo..
+
+I am making an assumption that there is only string.
+
+Let me fix that and resend.
+
+Thanks for catching the problem,
+
+Tom
+
 >
-> [   15.223006] BUG: unable to handle page fault for address: 0000000000223b10
-> [   15.223700] #PF: supervisor read access in kernel mode
-> [   15.224209] #PF: error_code(0x0000) - not-present page
-> [   15.224724] PGD b8d5067 P4D b8d5067 PUD c0a5067 PMD 0
-> [   15.225237] Oops: 0000 [#1] SMP
-> [   15.225556] CPU: 0 PID: 7747 Comm: syz-executor Not tainted 5.10.0-rc6+ #24
-> [   15.226281] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
-> [   15.227292] RIP: 0010:skb_release_data+0x89/0x1e0
-> [   15.227816] Code: 5b 5d 41 5c 41 5d 41 5e 41 5f e9 02 06 8a ff e8 fd 05 8a ff 45 31 ed 80 7d 02 00 4c 8d 65 30 74 55 e8 eb 05 8a ff 49 8b 1c 24 <4c> 8b 7b 08 41 f6 c7 01 0f 85 18 01 00 00 e8 d4 05 8a ff 8b 43 34
-> [   15.229669] RSP: 0018:ffffc900019c7c08 EFLAGS: 00010293
-> [   15.230188] RAX: ffff88800daad900 RBX: 0000000000223b08 RCX: 0000000000000006
-> [   15.230895] RDX: 0000000000000000 RSI: ffffffff818e06c5 RDI: ffff88807f6dc700
-> [   15.231593] RBP: ffff88807f71a4c0 R08: 0000000000000001 R09: 0000000000000001
-> [   15.232299] R10: ffffc900019c7c18 R11: 0000000000000000 R12: ffff88807f71a4f0
-> [   15.233007] R13: 0000000000000000 R14: ffff88807f6dc700 R15: 0000000000000002
-> [   15.233714] FS:  00007f65d9b5f700(0000) GS:ffff88807c400000(0000) knlGS:0000000000000000
-> [   15.234509] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   15.235081] CR2: 0000000000223b10 CR3: 000000000b883000 CR4: 00000000000006f0
-> [   15.235788] Call Trace:
-> [   15.236042]  skb_release_all+0x28/0x30
-> [   15.236419]  __kfree_skb+0x11/0x20
-> [   15.236768]  tcp_data_queue+0x270/0x1240
-> [   15.237161]  ? tcp_urg+0x50/0x2a0
-> [   15.237496]  tcp_rcv_established+0x39a/0x890
-> [   15.237997]  ? mark_held_locks+0x49/0x70
-> [   15.238467]  tcp_v4_do_rcv+0xb9/0x270
-> [   15.238915]  __release_sock+0x8a/0x160
-> [   15.239365]  release_sock+0x32/0xd0
-> [   15.239793]  __inet_stream_connect+0x1d2/0x400
-> [   15.240313]  ? do_wait_intr_irq+0x80/0x80
-> [   15.240791]  inet_stream_connect+0x36/0x50
-> [   15.241275]  mptcp_stream_connect+0x69/0x1b0
-> [   15.241787]  __sys_connect+0x122/0x140
-> [   15.242236]  ? syscall_enter_from_user_mode+0x17/0x50
-> [   15.242836]  ? lockdep_hardirqs_on_prepare+0xd4/0x170
-> [   15.243436]  __x64_sys_connect+0x1a/0x20
-> [   15.243924]  do_syscall_64+0x33/0x40
-> [   15.244313]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [   15.244821] RIP: 0033:0x7f65d946e469
-> [   15.245183] Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ff 49 2b 00 f7 d8 64 89 01 48
-> [   15.247019] RSP: 002b:00007f65d9b5eda8 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
-> [   15.247770] RAX: ffffffffffffffda RBX: 000000000049bf00 RCX: 00007f65d946e469
-> [   15.248471] RDX: 0000000000000010 RSI: 00000000200000c0 RDI: 0000000000000005
-> [   15.249205] RBP: 000000000049bf00 R08: 0000000000000000 R09: 0000000000000000
-> [   15.249908] R10: 0000000000000000 R11: 0000000000000246 R12: 000000000049bf0c
-> [   15.250603] R13: 00007fffe8a25cef R14: 00007f65d9b3f000 R15: 0000000000000003
-> [   15.251312] Modules linked in:
-> [   15.251626] CR2: 0000000000223b10
-> [   15.251965] BUG: kernel NULL pointer dereference, address: 0000000000000048
-> [   15.252005] ---[ end trace f5c51fe19123c773 ]---
-> [   15.252822] #PF: supervisor read access in kernel mode
-> [   15.252823] #PF: error_code(0x0000) - not-present page
-> [   15.252825] PGD c6c6067 P4D c6c6067 PUD c0d8067
-> [   15.253294] RIP: 0010:skb_release_data+0x89/0x1e0
-> [   15.253910] PMD 0
-> [   15.253914] Oops: 0000 [#2] SMP
-> [   15.253917] CPU: 1 PID: 7746 Comm: syz-executor Tainted: G      D           5.10.0-rc6+ #24
-> [   15.253920] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
-> [   15.254435] Code: 5b 5d 41 5c 41 5d 41 5e 41 5f e9 02 06 8a ff e8 fd 05 8a ff 45 31 ed 80 7d 02 00 4c 8d 65 30 74 55 e8 eb 05 8a ff 49 8b 1c 24 <4c> 8b 7b 08 41 f6 c7 01 0f 85 18 01 00 00 e8 d4 05 8a ff 8b 43 34
-> [   15.254899] RIP: 0010:skb_release_data+0x89/0x1e0
-> [   15.254902] Code: 5b 5d 41 5c 41 5d 41 5e 41 5f e9 02 06 8a ff e8 fd 05 8a ff 45 31 ed 80 7d 02 00 4c 8d 65 30 74 55 e8 eb 05 8a ff 49 8b 1c 24 <4c> 8b 7b 08 41 f6 c7 01 0f 85 18 01 00 00 e8 d4 05 8a ff 8b 43 34
-> [   15.254905] RSP: 0018:ffffc900019bfc08 EFLAGS: 00010293
-> [   15.255376] RSP: 0018:ffffc900019c7c08 EFLAGS: 00010293
-> [   15.255580]
-> [   15.255583] RAX: ffff888004a7ac80 RBX: 0000000000000040 RCX: 0000000000000000
-> [   15.255912]
-> [   15.256724] RDX: 0000000000000000 RSI: ffffffff818e06c5 RDI: ffff88807f6ddd00
-> [   15.257620] RAX: ffff88800daad900 RBX: 0000000000223b08 RCX: 0000000000000006
-> [   15.259817] RBP: ffff88800e9006c0 R08: 0000000000000000 R09: 0000000000000000
-> [   15.259818] R10: 0000000000000000 R11: 0000000000000000 R12: ffff88800e9006f0
-> [   15.259820] R13: 0000000000000000 R14: ffff88807f6ddd00 R15: 0000000000000002
-> [   15.259822] FS:  00007fae4a60a700(0000) GS:ffff88807c500000(0000) knlGS:0000000000000000
-> [   15.259826] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   15.260296] RDX: 0000000000000000 RSI: ffffffff818e06c5 RDI: ffff88807f6dc700
-> [   15.262514] CR2: 0000000000000048 CR3: 000000000b89c000 CR4: 00000000000006e0
-> [   15.262515] Call Trace:
-> [   15.262519]  skb_release_all+0x28/0x30
-> [   15.262523]  __kfree_skb+0x11/0x20
-> [   15.263054] RBP: ffff88807f71a4c0 R08: 0000000000000001 R09: 0000000000000001
-> [   15.263680]  tcp_data_queue+0x270/0x1240
-> [   15.263843] R10: ffffc900019c7c18 R11: 0000000000000000 R12: ffff88807f71a4f0
-> [   15.264693]  ? tcp_urg+0x50/0x2a0
-> [   15.264856] R13: 0000000000000000 R14: ffff88807f6dc700 R15: 0000000000000002
-> [   15.265720]  tcp_rcv_established+0x39a/0x890
-> [   15.266438] FS:  00007f65d9b5f700(0000) GS:ffff88807c400000(0000) knlGS:0000000000000000
-> [   15.267283]  ? __schedule+0x3fa/0x880
-> [   15.267287]  tcp_v4_do_rcv+0xb9/0x270
-> [   15.267290]  __release_sock+0x8a/0x160
-> [   15.268049] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   15.268788]  release_sock+0x32/0xd0
-> [   15.268791]  __inet_stream_connect+0x1d2/0x400
-> [   15.268795]  ? do_wait_intr_irq+0x80/0x80
-> [   15.269593] CR2: 0000000000223b10 CR3: 000000000b883000 CR4: 00000000000006f0
-> [   15.270246]  inet_stream_connect+0x36/0x50
-> [   15.270250]  mptcp_stream_connect+0x69/0x1b0
-> [   15.270253]  __sys_connect+0x122/0x140
-> [   15.271097] Kernel panic - not syncing: Fatal exception
-> [   15.271820]  ? syscall_enter_from_user_mode+0x17/0x50
-> [   15.283542]  ? lockdep_hardirqs_on_prepare+0xd4/0x170
-> [   15.284275]  __x64_sys_connect+0x1a/0x20
-> [   15.284853]  do_syscall_64+0x33/0x40
-> [   15.285369]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [   15.286105] RIP: 0033:0x7fae49f19469
-> [   15.286638] Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ff 49 2b 00 f7 d8 64 89 01 48
-> [   15.289295] RSP: 002b:00007fae4a609da8 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
-> [   15.290375] RAX: ffffffffffffffda RBX: 000000000049bf00 RCX: 00007fae49f19469
-> [   15.291403] RDX: 0000000000000010 RSI: 00000000200000c0 RDI: 0000000000000005
-> [   15.292437] RBP: 000000000049bf00 R08: 0000000000000000 R09: 0000000000000000
-> [   15.293456] R10: 0000000000000000 R11: 0000000000000246 R12: 000000000049bf0c
-> [   15.294473] R13: 00007fff0004b6bf R14: 00007fae4a5ea000 R15: 0000000000000003
-> [   15.295492] Modules linked in:
-> [   15.295944] CR2: 0000000000000048
-> [   15.296567] Kernel Offset: disabled
-> [   15.296941] ---[ end Kernel panic - not syncing: Fatal exception ]---
+> btw: this would probably better as a single line something like:
 >
-> Reported-by: Christoph Paasch <cpaasch@apple.com>
-> Fixes: 84dfe3677a6f (mptcp: send out dedicated ADD_ADDR packet)
-> Signed-off-by: Geliang Tang <geliangtang@gmail.com>
-> ---
-> net/mptcp/options.c | 2 ++
-> 1 file changed, 2 insertions(+)
+> 		dev_warn(&client->dev,
+> 			 "Firmware version: %u is older than known working version %u\n",
+> 			 radio->registers[SI_CHIPID] & SI_CHIPID_FIRMWARE
+> 			 RADIO_FW_VERSION);
+>
+> Also a few lines above is:
+>
+> 	dev_info(&client->dev, "DeviceID=0x%4.4hx ChipID=0x%4.4hx\n",
+> 			radio->registers[DEVICEID], radio->registers[SI_CHIPID])
+>
+> and these %4.4hx uses are also not changed by this patch.
+>
 >
 
-David or Jakub, this patch is intended for the -net tree (not net-next as 
-labeled in the subject line). If you can apply it to -net, that's great, 
-otherwise it can be resubmitted as [PATCH net].
-
-In any case, the content is good:
-
-Reviewed-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-
---
-Mat Martineau
-Intel
