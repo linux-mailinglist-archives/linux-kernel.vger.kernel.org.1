@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21C32DBBC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 08:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE4E2DBBCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 08:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725846AbgLPHBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 02:01:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36432 "EHLO mx2.suse.de"
+        id S1725901AbgLPHCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 02:02:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36638 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725769AbgLPHBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 02:01:50 -0500
+        id S1725769AbgLPHCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 02:02:19 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608102063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1608102092; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=RNPw9wGxeqKZXJZNzwqN89RLD5ziumjabqjjdT3MtS8=;
-        b=Wnx9I1wvLZEBxXQCIoToaKF0qU3BHZhloZI0qQakbYXOfSD/R+ZTJWCIIIIbPuUbTWonI7
-        nS9SE8VsuSNf6Z5RylD3e/tjs0AbrvjarIZCNfT6G3HkfD6G3uHqLcoFUADcHaxSEEBqrD
-        jcXDoNKUKq+eUESeoeYv3dlqp4YJn0A=
+        bh=7hLPFvKf0KQ27daJnHMmIn6IkafDM/HKPtdm/WK3604=;
+        b=DgJMjfvVtLQrPPlGp7CIbNRypFymSBqQzHQ6whX/d5Ra5ZVv7ui2d8Jll/j54vb3lSx6LQ
+        PhlUhpLghfaejmbh9K30IdcMMKoYg0ZydYNxGc+kZqljep9GQaJ5htAX3awTbCo1FOK62+
+        ru1FMTj1DRPHMa3g1dwuo7L7nGMDlMo=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BC97BAD2B;
-        Wed, 16 Dec 2020 07:01:03 +0000 (UTC)
-Subject: Re: [PATCH -next v2] x86/xen: Convert to DEFINE_SHOW_ATTRIBUTE
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
+        by mx2.suse.de (Postfix) with ESMTP id 325C3AD18;
+        Wed, 16 Dec 2020 07:01:32 +0000 (UTC)
+Subject: Re: [PATCH 0/2] Remove Xen PVH dependency on PCI
+To:     Jason Andryuk <jandryuk@gmail.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <20200917125547.104472-1-miaoqinglang@huawei.com>
+        xen-devel@lists.xenproject.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+References: <20201014175342.152712-1-jandryuk@gmail.com>
 From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <08e16e36-b086-814c-20a9-9d0748c4d497@suse.com>
-Date:   Wed, 16 Dec 2020 08:01:01 +0100
+Message-ID: <5aa9a54c-207e-6cf6-7fbb-37782c016161@suse.com>
+Date:   Wed, 16 Dec 2020 08:01:31 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200917125547.104472-1-miaoqinglang@huawei.com>
+In-Reply-To: <20201014175342.152712-1-jandryuk@gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="u0MRvIWpSOyDyK7F8P5WPQ7Bno9KY37UB"
+ boundary="BsaiQXjF7kB1T2vSWMShDAGTM0x5njbvC"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---u0MRvIWpSOyDyK7F8P5WPQ7Bno9KY37UB
-Content-Type: multipart/mixed; boundary="qFCxlpEBAVtXCyXhiMKSMwIXwzRcosJx8";
+--BsaiQXjF7kB1T2vSWMShDAGTM0x5njbvC
+Content-Type: multipart/mixed; boundary="u1wK4B18JdUdPmsfAj57AHy2IhYDrXhYt";
  protected-headers="v1"
 From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Qinglang Miao <miaoqinglang@huawei.com>,
+To: Jason Andryuk <jandryuk@gmail.com>,
  Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>
-Cc: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Message-ID: <08e16e36-b086-814c-20a9-9d0748c4d497@suse.com>
-Subject: Re: [PATCH -next v2] x86/xen: Convert to DEFINE_SHOW_ATTRIBUTE
-References: <20200917125547.104472-1-miaoqinglang@huawei.com>
-In-Reply-To: <20200917125547.104472-1-miaoqinglang@huawei.com>
+ Stefano Stabellini <sstabellini@kernel.org>, xen-devel@lists.xenproject.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Message-ID: <5aa9a54c-207e-6cf6-7fbb-37782c016161@suse.com>
+Subject: Re: [PATCH 0/2] Remove Xen PVH dependency on PCI
+References: <20201014175342.152712-1-jandryuk@gmail.com>
+In-Reply-To: <20201014175342.152712-1-jandryuk@gmail.com>
 
---qFCxlpEBAVtXCyXhiMKSMwIXwzRcosJx8
+--u1wK4B18JdUdPmsfAj57AHy2IhYDrXhYt
 Content-Type: multipart/mixed;
- boundary="------------C6B20E965551A682523F7056"
+ boundary="------------C4653AF006164DD645B3036F"
 Content-Language: en-US
 
 This is a multi-part message in MIME format.
---------------C6B20E965551A682523F7056
+--------------C4653AF006164DD645B3036F
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
-On 17.09.20 14:55, Qinglang Miao wrote:
-> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+On 14.10.20 19:53, Jason Andryuk wrote:
+> A Xen PVH domain doesn't have a PCI bus or devices, so it doesn't need
+> PCI support built in.  Currently, XEN_PVH depends on XEN_PVHVM which
+> depends on PCI.
 >=20
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> The first patch introduces XEN_PVHVM_GUEST as a toplevel item and
+> changes XEN_PVHVM to a hidden variable.  This allows XEN_PVH to depend
+> on XEN_PVHVM without PCI while XEN_PVHVM_GUEST depends on PCI.
+>=20
+> The second patch moves XEN_512GB to clean up the option nesting.
+>=20
+> Jason Andryuk (2):
+>    xen: Remove Xen PVH/PVHVM dependency on PCI
+>    xen: Kconfig: nest Xen guest options
+>=20
+>   arch/x86/xen/Kconfig | 38 ++++++++++++++++++++++----------------
+>   drivers/xen/Makefile |  2 +-
+>   2 files changed, 23 insertions(+), 17 deletions(-)
+>=20
 
-Applied to: xen/tip.git for-linus-5.11
+Series applied to: xen/tip.git for-linus-5.11
 
 
 Juergen
 
---------------C6B20E965551A682523F7056
+--------------C4653AF006164DD645B3036F
 Content-Type: application/pgp-keys;
  name="OpenPGP_0xB0DE9DD628BF132F.asc"
 Content-Transfer-Encoding: quoted-printable
@@ -174,24 +184,24 @@ ZDn8R38=3D
 =3D2wuH
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------C6B20E965551A682523F7056--
+--------------C4653AF006164DD645B3036F--
 
---qFCxlpEBAVtXCyXhiMKSMwIXwzRcosJx8--
+--u1wK4B18JdUdPmsfAj57AHy2IhYDrXhYt--
 
---u0MRvIWpSOyDyK7F8P5WPQ7Bno9KY37UB
+--BsaiQXjF7kB1T2vSWMShDAGTM0x5njbvC
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/ZsK0FAwAAAAAACgkQsN6d1ii/Ey/E
-nwf8D3sy39qtCyZ/WHaKKMaCCo0pT8KZ5m8n4Z0x4sSMEfUWP8iqezOesALJhOsk8FlczmQOMGW+
-cWF+QvB1QD5n24RqqKz3Zfhlf5xrp0NXN9f67n3wE8z+PFsnamWi79kBH3VkgPLfzNqVqTvsguoO
-nt33hGvnWEjInfWALRMmX/FNoWWeFOhfNJRh7Oaa4snc1kO06ydl2QrwtmeUAdd4uxpNdTkuFCuZ
-vHQaAm7Hm5xLXvcbZT9J5s3Wk2nV+ySA3Cyz3uw2qtDuzgQWYzdJYts7RFKRKRMaM1kGomAQEWPX
-fQU0LpIDY0GnM8jcqFQdC/z/corvq5fiAjaBsmyjLQ==
-=jvQV
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/ZsMsFAwAAAAAACgkQsN6d1ii/Ey/A
+4gf9ESVC95o0zgF1KYkEqsfbAijfO6wWfJ+jEUzU+qL0rSkdsxXW3J9tfeRQTAdZAhaEro4hg3B2
+QMHD5XpFjgwc+NLftcpf3S3a3hR4giHmttHDF8rnc7PaaMZLuDJyJ2ZbRp4jGROg+iOKYfghyzS3
+MIzbQUp3tH/cWhCY5kctQkpb3r1rEr6axWtThSXxAdysRLG08f9Mw7ShO0Y1NQ537VRIWjSSRMXE
+soYapjCPRZ/nRQWpvpe0bSFRTHOQszD6EBh4f6RZEgSZRb7LCEwuJKTeXrO5ESrnowNJNox2Gyus
+bNeru9g3AjpYJa2tltvb0SrIjQuotZlbBOoFriCplA==
+=Z21z
 -----END PGP SIGNATURE-----
 
---u0MRvIWpSOyDyK7F8P5WPQ7Bno9KY37UB--
+--BsaiQXjF7kB1T2vSWMShDAGTM0x5njbvC--
