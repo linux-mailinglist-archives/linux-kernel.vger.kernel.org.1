@@ -2,136 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A942DC9B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 00:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F23932DC9B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 00:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730847AbgLPXsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 18:48:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730518AbgLPXsv (ORCPT
+        id S1730906AbgLPXuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 18:50:04 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:43588 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbgLPXuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 18:48:51 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF387C06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 15:48:10 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id g20so13106118plo.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 15:48:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ie2jga1d2WifsBMDsqcpsBRer3g1HXUTEqYE5HM0ymI=;
-        b=AOrjyK1VQwjuLIoBmSEl+wJZllyB710gOnQnEN72XiVQo6WwCy69SKgFR23a8rlAE3
-         1Ldie1AUwO5nHm0dqrfy2OaRAwoeuKU0VehUSC1OCZ3Ptur5sIULTJMKukrODDMefQyZ
-         czULcIBMjOrf0ElVPSTEZWHbf6DgUq+68qr+n6I8uW7/e2WDI1KUJedZS6m9p4SqGOVP
-         DVAbsVCUWZFMRQPC250qREJSZN9M+O7NUzfDpvSItI7d4jVzo02bRmztig0e9Q09JcwO
-         tk3xgomEvUdU6JtyPsHuf/V/mmVKiAo+OwAEiX6YiINz65Lbt69hzwaI6Us4kAHVCdan
-         jY7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ie2jga1d2WifsBMDsqcpsBRer3g1HXUTEqYE5HM0ymI=;
-        b=WG7Zf5teMedq8bgHd9XlxDtQW6yJOUT+gQsrvQFGMyW0sHFutl7+Lw1y3XoxVT6yqT
-         nRCNp8LSGnk7LvfwdwXkD7I9Cohnnkz17Oo+iTJOxSPNdaeY3gaQDlfMDoG02BY3ZckG
-         ES59Rda/DOhfs+VNRIIuunAf/4Xmb0HFxx4vzFe5eDP/Ul+ArIpWoQfBIErNXOt9yk/7
-         EokxcK+Ek51yRWCP5LVbge8jmtOSYAccpMr0rrPcjEg7RFtllRQa9DIZcTH2i2NmynmF
-         mBng4M7KjsJ/lv9HvIidmNdobMHhd0xiDZwYSAL5vuhRveaLvKvx4Q9qBDsgIFzMPSQM
-         Idqw==
-X-Gm-Message-State: AOAM530j3lpbJbkk2xmHyETdeWHOE2Lv5Yn6NPPozuVpyB+BP9XTKS/O
-        2EilrnwGpFASmuh2dpNLiMLePQ==
-X-Google-Smtp-Source: ABdhPJyRFaucONdzqNJfhoqgh9ywV2juaj2rFORsh1WdiTZW7k+th9MDLmSs/14ThUjBilfkR5jqQw==
-X-Received: by 2002:a17:90a:d58c:: with SMTP id v12mr5250946pju.37.1608162490296;
-        Wed, 16 Dec 2020 15:48:10 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id c14sm3545263pfd.37.2020.12.16.15.48.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 15:48:09 -0800 (PST)
-Date:   Wed, 16 Dec 2020 15:48:02 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH v2] KVM: SVM: use vmsave/vmload for saving/restoring
- additional host state
-Message-ID: <X9qcsq2kW1kkoVWI@google.com>
-References: <20201214174127.1398114-1-michael.roth@amd.com>
- <X9e/L3YTAT/N+ljh@google.com>
- <20201215185541.nxm2upy76u7z2ko6@amd.com>
+        Wed, 16 Dec 2020 18:50:03 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BGNiO32178003;
+        Wed, 16 Dec 2020 23:48:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=t+xg/WoW+Lcz45M9BqHGxWCcZtlzUk4JFO7sfQxB45g=;
+ b=i3Cha5kpL4DqsDgi2QwPQYuwKIUzWCWeiMwhDMJ+XTV+OrC+uBBS6ahx/biDz5Cbpd8X
+ VtgH2Fr97/lB0K/nSa0Zz8tLY8+OzFTOttvGOGYxPbOtePerjU8JcnedG+i3laEIDvkv
+ AAwAqfksaCVOPjupTAHsa1tDfPwUccni/5APjrtEA/HTyzNz3tj7dDg/qeLweLkLB0fv
+ CowUg8d0QqhLaAj9DR9kDaCyaaOJYaItGAv+N7GvP6cxu/fMcVjS4+dplCiuld9h07Zh
+ Gx0mZMjB6kk+30GqyziKhr73J3eA7CgWH9NIhMSJ6vAdgED0cHQbmHLa1+QDyxPVcHH0 wA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 35cn9rjyrs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Dec 2020 23:48:32 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BGNjMNf192968;
+        Wed, 16 Dec 2020 23:48:31 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 35d7eq67qx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Dec 2020 23:48:31 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BGNmNnp013213;
+        Wed, 16 Dec 2020 23:48:24 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 16 Dec 2020 15:48:23 -0800
+Subject: Re: [PATCH v9 04/11] mm/hugetlb: Defer freeing of HugeTLB pages
+To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        willy@infradead.org, osalvador@suse.de, mhocko@suse.com,
+        song.bao.hua@hisilicon.com, david@redhat.com
+Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+References: <20201213154534.54826-1-songmuchun@bytedance.com>
+ <20201213154534.54826-5-songmuchun@bytedance.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <6b555fb8-6fd5-049a-49c1-4dc8a3f66766@oracle.com>
+Date:   Wed, 16 Dec 2020 15:48:20 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201215185541.nxm2upy76u7z2ko6@amd.com>
+In-Reply-To: <20201213154534.54826-5-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9837 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012160147
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9837 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160147
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020, Michael Roth wrote:
-> Hi Sean,
+On 12/13/20 7:45 AM, Muchun Song wrote:
+> In the subsequent patch, we will allocate the vmemmap pages when free
+> HugeTLB pages. But update_and_free_page() is called from a non-task
+> context(and hold hugetlb_lock), so we can defer the actual freeing in
+> a workqueue to prevent use GFP_ATOMIC to allocate the vmemmap pages.
 > 
-> Sorry to reply out-of-thread, our mail server is having issues with
-> certain email addresses at the moment so I only see your message via
-> the archives atm. But regarding:
-> 
-> >>> I think we can defer this until we're actually planning on running
-> >>> the guest,
-> >>> i.e. put this in svm_prepare_guest_switch().
-> >>
-> >> It looks like the SEV-ES patches might land before this one, and those
-> >> introduce similar handling of VMSAVE in svm_vcpu_load(), so I think it
-> >> might also create some churn there if we take this approach and want
-> >> to keep the SEV-ES and non-SEV-ES handling similar.
-> >
-> >Hmm, I'll make sure to pay attention to that when I review the SEV-ES
-> >patches,
-> >which I was hoping to get to today, but that's looking unlikely at this
-> >point.
-> 
-> It looks like SEV-ES patches are queued now. Those patches have
-> undergone a lot of internal testing so I'm really hesitant to introduce
-> any significant change to those at this stage as a prereq for my little
-> patch. So for v3 I'm a little unsure how best to approach this.
-> 
-> The main options are:
-> 
-> a) go ahead and move the vmsave handling for non-sev-es case into
->    prepare_guest_switch() as you suggested, but leave the sev-es where
->    they are. then we can refactor those as a follow-up patch that can be
->    tested/reviewed as a separate series after we've had some time to
->    re-test, though that would probably just complicate the code in the
->    meantime...
-> 
-> b) stick with the current approach for now, and consider a follow-up series
->    to refactor both sev-es and non-sev-es as a whole that we can test
->    separately.
-> 
-> c) refactor SEV-ES handling as part of this series. it's only a small change
->    to the SEV-ES code but it re-orders enough things around that I'm
->    concerned it might invalidate some of the internal testing we've done.
->    whereas a follow-up refactoring such as the above options can be rolled
->    into our internal testing so we can let our test teams re-verify
-> 
-> Obviously I prefer b) but I'm biased on the matter and fine with whatever
-> you and others think is best. I just wanted to point out my concerns with
-> the various options.
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Definitely (c).  This has already missed 5.11 (unless Paolo plans on shooting
-from the hip), which means SEV-ES will get to enjoy a full (LTS) kernel release
-before these optimizations take effect.
+It is unfortunate we need to add this complexitty, but I can not think
+of another way.  One small comment (no required change) below.
 
-And, the series can be structured so that the optimization (VMSAVE during
-.prepare_guest_switch()) is done in a separate patch.  That way, if it does
-break SEV-ES (or legacy VMs), the optimized variant can be easily bisected and
-fixed or reverted as needed.  E.g. first convert legacy VMs to use VMSAVE+VMLOAD,
-possibly consolidating code along the way, then convert all VM types to do
-VMSAVE during .prepare_guest_switch().
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+
+> ---
+>  mm/hugetlb.c         | 77 ++++++++++++++++++++++++++++++++++++++++++++++++----
+>  mm/hugetlb_vmemmap.c | 12 --------
+>  mm/hugetlb_vmemmap.h | 17 ++++++++++++
+>  3 files changed, 88 insertions(+), 18 deletions(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 140135fc8113..0ff9b90e524f 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1292,15 +1292,76 @@ static inline void destroy_compound_gigantic_page(struct page *page,
+>  						unsigned int order) { }
+>  #endif
+>  
+> -static void update_and_free_page(struct hstate *h, struct page *page)
+> +static void __free_hugepage(struct hstate *h, struct page *page);
+> +
+> +/*
+> + * As update_and_free_page() is be called from a non-task context(and hold
+> + * hugetlb_lock), we can defer the actual freeing in a workqueue to prevent
+> + * use GFP_ATOMIC to allocate a lot of vmemmap pages.
+> + *
+> + * update_hpage_vmemmap_workfn() locklessly retrieves the linked list of
+> + * pages to be freed and frees them one-by-one. As the page->mapping pointer
+> + * is going to be cleared in update_hpage_vmemmap_workfn() anyway, it is
+> + * reused as the llist_node structure of a lockless linked list of huge
+> + * pages to be freed.
+> + */
+> +static LLIST_HEAD(hpage_update_freelist);
+> +
+> +static void update_hpage_vmemmap_workfn(struct work_struct *work)
+>  {
+> -	int i;
+> +	struct llist_node *node;
+> +	struct page *page;
+> +
+> +	node = llist_del_all(&hpage_update_freelist);
+>  
+> +	while (node) {
+> +		page = container_of((struct address_space **)node,
+> +				     struct page, mapping);
+> +		node = node->next;
+> +		page->mapping = NULL;
+> +		__free_hugepage(page_hstate(page), page);
+> +
+> +		cond_resched();
+> +	}
+> +}
+> +static DECLARE_WORK(hpage_update_work, update_hpage_vmemmap_workfn);
+> +
+> +static inline void __update_and_free_page(struct hstate *h, struct page *page)
+> +{
+> +	/* No need to allocate vmemmap pages */
+> +	if (!free_vmemmap_pages_per_hpage(h)) {
+> +		__free_hugepage(h, page);
+> +		return;
+> +	}
+> +
+> +	/*
+> +	 * Defer freeing to avoid using GFP_ATOMIC to allocate vmemmap
+> +	 * pages.
+> +	 *
+> +	 * Only call schedule_work() if hpage_update_freelist is previously
+> +	 * empty. Otherwise, schedule_work() had been called but the workfn
+> +	 * hasn't retrieved the list yet.
+> +	 */
+> +	if (llist_add((struct llist_node *)&page->mapping,
+> +		      &hpage_update_freelist))
+> +		schedule_work(&hpage_update_work);
+> +}
+> +
+> +static void update_and_free_page(struct hstate *h, struct page *page)
+> +{
+>  	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
+>  		return;
+>  
+>  	h->nr_huge_pages--;
+>  	h->nr_huge_pages_node[page_to_nid(page)]--;
+> +
+> +	__update_and_free_page(h, page);
+> +}
+> +
+> +static void __free_hugepage(struct hstate *h, struct page *page)
+> +{
+> +	int i;
+> +
+
+Can we add a comment here saying that this is where the call to allocate
+vmemmmap pages will be inserted in a later patch.  Such a comment would
+help a bit to understand the restructuring of the code.
+
+-- 
+Mike Kravetz
+
+>  	for (i = 0; i < pages_per_huge_page(h); i++) {
+>  		page[i].flags &= ~(1 << PG_locked | 1 << PG_error |
+>  				1 << PG_referenced | 1 << PG_dirty |
+> @@ -1313,13 +1374,17 @@ static void update_and_free_page(struct hstate *h, struct page *page)
+>  	set_page_refcounted(page);
+>  	if (hstate_is_gigantic(h)) {
+>  		/*
+> -		 * Temporarily drop the hugetlb_lock, because
+> -		 * we might block in free_gigantic_page().
+> +		 * Temporarily drop the hugetlb_lock only when this type of
+> +		 * HugeTLB page does not support vmemmap optimization (which
+> +		 * contex do not hold the hugetlb_lock), because we might block
+> +		 * in free_gigantic_page().
+>  		 */
+> -		spin_unlock(&hugetlb_lock);
+> +		if (!free_vmemmap_pages_per_hpage(h))
+> +			spin_unlock(&hugetlb_lock);
+>  		destroy_compound_gigantic_page(page, huge_page_order(h));
+>  		free_gigantic_page(page, huge_page_order(h));
+> -		spin_lock(&hugetlb_lock);
+> +		if (!free_vmemmap_pages_per_hpage(h))
+> +			spin_lock(&hugetlb_lock);
+>  	} else {
+>  		__free_pages(page, huge_page_order(h));
+>  	}
