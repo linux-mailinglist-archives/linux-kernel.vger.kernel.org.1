@@ -2,81 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53D62DC175
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0472DC177
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbgLPNlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:41:44 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:60603 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgLPNlo (ORCPT
+        id S1726252AbgLPNnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:43:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726028AbgLPNnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:41:44 -0500
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id B6850100006;
-        Wed, 16 Dec 2020 13:41:00 +0000 (UTC)
-Date:   Wed, 16 Dec 2020 14:41:00 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     robh+dt@kernel.org, mark.rutland@arm.com,
-        nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
-        sre@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: atmel-sysreg: add
- microchip,sama7g5-shdwc
-Message-ID: <20201216134100.GG2814589@piout.net>
-References: <1608123453-1423-1-git-send-email-claudiu.beznea@microchip.com>
- <1608123453-1423-3-git-send-email-claudiu.beznea@microchip.com>
+        Wed, 16 Dec 2020 08:43:40 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E30C061794;
+        Wed, 16 Dec 2020 05:43:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+4vd395O47PjmfEXnoEeM5KbxqcEezbK6dCpcez8b8Y=; b=kvqVcM0zuM16sdJUCBTqJSGO6R
+        Y+aqPtDVkY7tqxQTdHL4dbepBoBgbaXVjFDWtZJtyhCYTjxoLpkVvvdP4l06WR7gVCdMFNrehWK4u
+        YSz5iLyTTHZRpUkyXHGUPFwy+6KRySnwgofJeOF7Q++fRcd57ZtMH2dyPRRH0i/NawqHER3tlm2sa
+        dCI+AfwDY4TwSeEIOukNQr0yFixQEHIloKJ5BYY7Nq9TXt8bE3QFDWIBbypkh8B5RrlomLgDa2ZqZ
+        brCUCjhWTIjebHxhK2bjmxxd+vSy/PGP51MyhvhrY7j/S4pNbBxz1Oz6s2tDcgqMCzqxab/ZGCrXc
+        2yacQkLA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kpX4t-0003ew-B9; Wed, 16 Dec 2020 13:42:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 21993304D58;
+        Wed, 16 Dec 2020 14:42:50 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 064CE202C01EB; Wed, 16 Dec 2020 14:42:49 +0100 (CET)
+Date:   Wed, 16 Dec 2020 14:42:49 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        jeyu@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        ardb@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Jason Baron <jbaron@akamai.com>
+Subject: Re: [RFC][PATCH] jump_label/static_call: Add MAINTAINERS
+Message-ID: <20201216134249.GU3092@hirez.programming.kicks-ass.net>
+References: <MW4PR21MB1857CC85A6844C89183C93E9BFC59@MW4PR21MB1857.namprd21.prod.outlook.com>
+ <20201216092649.GM3040@hirez.programming.kicks-ass.net>
+ <20201216105926.GS3092@hirez.programming.kicks-ass.net>
+ <20201216133014.GT3092@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1608123453-1423-3-git-send-email-claudiu.beznea@microchip.com>
+In-Reply-To: <20201216133014.GT3092@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/12/2020 14:57:32+0200, Claudiu Beznea wrote:
-> Add compatible for Microchip SAMA7G5's shutdown controller.
+On Wed, Dec 16, 2020 at 02:30:14PM +0100, Peter Zijlstra wrote:
 > 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> FWIW, I recently noticed we're not being Cc'ed on patches for this
+> stuff, so how about we do something like the below?
+> 
+> Anybody holler if they don't agree with the letter assigned, or if they
+> feel they've been left out entirely and want in on the 'fun' :-)
+> 
 > ---
->  Documentation/devicetree/bindings/arm/atmel-sysregs.txt | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-
-I'm pretty sure the first comment you'll get is to convert this file to
-yaml ;)
-
+> Subject: jump_label/static_call: Add MAINTAINERS
+> From: Peter Zijlstra <peterz@infradead.org>
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/atmel-sysregs.txt b/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
-> index 62cd4e89817c..7990358ac06e 100644
-> --- a/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
-> +++ b/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
-> @@ -91,7 +91,8 @@ SHDWC SAMA5D2-Compatible Shutdown Controller
->  1) shdwc node
->  
->  required properties:
-> -- compatible: should be "atmel,sama5d2-shdwc" or "microchip,sam9x60-shdwc".
-> +- compatible: should be "atmel,sama5d2-shdwc", "microchip,sam9x60-shdwc" or
-> +  "microchip,sama7g5-shdwc"
->  - reg: should contain registers location and length
->  - clocks: phandle to input clock.
->  - #address-cells: should be one. The cell is the wake-up input index.
-> @@ -103,7 +104,7 @@ optional properties:
->    microseconds. It's usually a board-related property.
->  - atmel,wakeup-rtc-timer: boolean to enable Real-Time Clock wake-up.
->  
-> -optional microchip,sam9x60-shdwc properties:
-> +optional microchip,sam9x60-shdwc or microchip,sama7g5-shdwc properties:
->  - atmel,wakeup-rtt-timer: boolean to enable Real-time Timer Wake-up.
->  
->  The node contains child nodes for each wake-up input that the platform uses.
-> -- 
-> 2.7.4
+> These files don't appear to have a MAINTAINERS entry and as such
+> patches miss being seen by people who know this code.
 > 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  MAINTAINERS |   12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -16766,6 +16766,18 @@ M:	Ion Badulescu <ionut@badula.org>
+>  S:	Odd Fixes
+>  F:	drivers/net/ethernet/adaptec/starfire*
+>  
+> +STATIC BRANCH/CALL
+> +M:	Peter Zijlstra <peterz@infradead.org>
+> +M:	Josh Poimboeuf <jpoimboe@redhat.com>
+> +M:	Jason Baron <jbaron@akamai.com>
+> +R:	Steven Rostedt <rostedt@goodmis.org>
+> +R:	Ard Biesheuvel <ardb@kernel.org>
+> +S:	Supported
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+F:	arch/*/include/asm/jump_label*.h
+F:	arch/*/include/asm/static_call*.h
+F:	arch/*/kernel/jump_label.c
+F:	arch/*/kernel/static_call.c
+
+These too?
+
+> +F:	include/linux/jump_label*.h
+> +F:	include/linux/static_call*.h
+> +F:	kernel/jump_label.c
+> +F:	kernel/static_call.c
+> +
+>  STEC S1220 SKD DRIVER
+>  M:	Damien Le Moal <Damien.LeMoal@wdc.com>
+>  L:	linux-block@vger.kernel.org
