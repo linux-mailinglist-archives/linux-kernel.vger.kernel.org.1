@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C5F2DBED6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:39:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A3A2DBEE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbgLPKhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:37:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726314AbgLPKhy (ORCPT
+        id S1726334AbgLPKoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 05:44:32 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55098 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726288AbgLPKob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:37:54 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8CAC06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:37:14 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id c7so24262621edv.6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:37:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bsYmkfEVvQqgzD1O+aSIpPO4CsKO+u0Ea3O6N1E481c=;
-        b=E1gRWKOIK1EEv0yOYoQV3P1kGDMjSZejlfc9pBHAb3Ok+GL+cHeIuNDOxsqtxGH7Ef
-         TItAt0jy8MO6I7jrtnl/EtsFj0NIH1iYsicmOwSPqBC1WpEozE46gxcOkApFuK3yM67H
-         3kAry0qXXNXvRk60jFkvTEZAae8Qsj65vAyBAUKRnpHNAwnLStkzn9Vg5UxXlJKu3xpl
-         subhgINJugcYcDXVXRZF/R2lvLpHgjtSBDprPGBKaHegBUYMCngYjKnV0iQpkn1k/D1c
-         YT3MZIqrg5HTPLQjTDj2jiSiTcHfX6l7pl6tyiuZGhOajtlGx2wi/GcI+CwN3awjt/km
-         I9BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bsYmkfEVvQqgzD1O+aSIpPO4CsKO+u0Ea3O6N1E481c=;
-        b=M7W1P8WtbKzp6DHsUxXmO57b1qP6/oxlITOS4eNy0G3I7xD19o0ELak7aw81wh++Jd
-         Wd0W/18Iz0V/IlMZVYQdhceoJ/C+9g8xsC42hU0xlqPFb3GCIetd2Yk3kNPaJgcsIAXP
-         FBeywZIoAAiDdt98YMFHe/Z9y1Cz/am5UqlabHNBLUKPGFSLzOK/adhrk3u0wPT9vmTD
-         r0N/CCNP08qh3B0xvmE5LY4ivaLTQuQ14onCFigYid7ncNwrmgs04m34Y2OjVAS0MeOr
-         e/wc/RLT/LBMSYd1gpfWMnqquc/DsguyRhq6MXP0OjjZLHpOHoyZ7P/9wM0JvW6vYh+6
-         f7/Q==
-X-Gm-Message-State: AOAM530qGCylKA4r1/zTwTim6jYTxgYm1tBCkvAkXw/MjUfoS0Dm4vCc
-        twHUJbpIa+Kn7kk9Ms2zpULz9AqZyANrqOyG4aBILw==
-X-Google-Smtp-Source: ABdhPJwS+suNBsnmqdweQsc8crfYev1Kw3Evg9H2jPGzz2d+ZRjYUcCPzp4JsF4gaLfvS+QySSxQ51abC3XScJaIYz4=
-X-Received: by 2002:a50:b742:: with SMTP id g60mr32617780ede.113.1608115033228;
- Wed, 16 Dec 2020 02:37:13 -0800 (PST)
+        Wed, 16 Dec 2020 05:44:31 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BGAVUGp074045;
+        Wed, 16 Dec 2020 05:43:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=sTi5ENDvNYn/Nu6cWCNyjnsbtTWHyVrZRsMwWRoJwmY=;
+ b=fWdZdtSr52y3gdyvh7hsCHrC5li8W4aI7388ehhNFlT4btNADdIxDgn9AigPkrJHYV/r
+ 3HS01300rQjpv3DlzEdTiCBOZ+ugLOsl5LQAKG3UCAUBNPVG3WuFTBKP4RrivtamUp68
+ inPZgmNdOtaS8pVhiZBZNjWt5Cax78gR3sNlS7HsivDGbkwiyYPH1YB7Xs8V7/62AjPy
+ IksFq4HHWB4k0a4aw1FpOGAJVo1TTpxnsh44cPSSrsNRH4jo79Hwq2J5k3ZwoiavqTpu
+ ThmSUNkYMhN3LHvx5bQv8E9eHs0Omazti0j2VCKJ1zKVAY9IFieyU0XKizK1VINLEQPc lA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35ff7k2p3u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 05:43:16 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BGAVZHu074484;
+        Wed, 16 Dec 2020 05:43:15 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35ff7k2p36-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 05:43:15 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BGAhE7P011329;
+        Wed, 16 Dec 2020 10:43:14 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04fra.de.ibm.com with ESMTP id 35cng8a66n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 10:43:13 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BGAhBKf29557034
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Dec 2020 10:43:11 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8DF7E11C052;
+        Wed, 16 Dec 2020 10:43:11 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 62C7D11C05C;
+        Wed, 16 Dec 2020 10:43:08 +0000 (GMT)
+Received: from bangoria.ibmuc.com (unknown [9.199.41.249])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 16 Dec 2020 10:43:08 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+To:     mpe@ellerman.id.au, paulus@samba.org
+Cc:     ravi.bangoria@linux.ibm.com, mikey@neuling.org, npiggin@gmail.com,
+        leobras.c@gmail.com, pbonzini@redhat.com, christophe.leroy@c-s.fr,
+        jniethe5@gmail.com, kvm@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v3 0/4] KVM: PPC: Power10 2nd DAWR enablement
+Date:   Wed, 16 Dec 2020 16:12:15 +0530
+Message-Id: <20201216104219.458713-1-ravi.bangoria@linux.ibm.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201211164801.7838-1-nsaenzjulienne@suse.de> <20201211164801.7838-2-nsaenzjulienne@suse.de>
-In-Reply-To: <20201211164801.7838-2-nsaenzjulienne@suse.de>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 16 Dec 2020 11:37:02 +0100
-Message-ID: <CAMpxmJUoTHq+ZMm6UOH3tmhGMuDEG5sPn4hiXiZdwSP3FV-hjg@mail.gmail.com>
-Subject: Re: [PATCH v6 01/11] firmware: raspberrypi: Keep count of all consumers
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        linux-devicetree <devicetree@vger.kernel.org>, wahrenst@gmx.net,
-        Linux Input <linux-input@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-16_04:2020-12-15,2020-12-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 mlxlogscore=966 adultscore=0 spamscore=0 mlxscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 bulkscore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 5:48 PM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> When unbinding the firmware device we need to make sure it has no
-> consumers left. Otherwise we'd leave them with a firmware handle
-> pointing at freed memory.
->
-> Keep a reference count of all consumers and introduce rpi_firmware_put()
-> which will permit automatically decrease the reference count upon
-> unbinding consumer drivers.
->
-> Suggested-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
->
-> ---
+Enable p10 2nd DAWR feature for Book3S kvm guest. DAWR is a hypervisor
+resource and thus H_SET_MODE hcall is used to set/unset it. A new case
+H_SET_MODE_RESOURCE_SET_DAWR1 is introduced in H_SET_MODE hcall for
+setting/unsetting 2nd DAWR. Also, new capability KVM_CAP_PPC_DAWR1 has
+been added to query 2nd DAWR support via kvm ioctl.
 
-Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+This feature also needs to be enabled in Qemu to really use it. I'll
+post Qemu patches once kvm patches get accepted.
+
+v2: https://lore.kernel.org/kvm/20201124105953.39325-1-ravi.bangoria@linux.ibm.com
+
+v2->v3:
+ - Patch #1. If L0 version > L1, L0 hv_guest_state will contain some
+   additional fields which won't be filled while reading from L1
+   memory and thus they can contain garbage. Initialize l2_hv with 0s
+   to avoid such situations.
+ - Patch #3. Introduce per vm flag dawr1_enabled.
+ - Patch #4. Instead of auto enabling KVM_CAP_PPC_DAWR1, let user check
+   and enable it manually. Also move KVM_CAP_PPC_DAWR1 check / enable
+   logic inside #if defined(CONFIG_KVM_BOOK3S_HV_POSSIBLE).
+ - Explain KVM_CAP_PPC_DAWR1 in Documentation/virt/kvm/api.rst 
+ - Rebased on top of 5.10-rc3.
+
+v1->v2:
+ - patch #1: New patch
+ - patch #2: Don't rename KVM_REG_PPC_DAWR, it's an uapi macro
+ - patch #3: Increment HV_GUEST_STATE_VERSION
+ - Split kvm and selftests patches into different series
+ - Patches rebased to paulus/kvm-ppc-next (cf59eb13e151) + few
+   other watchpoint patches which are yet to be merged in
+   paulus/kvm-ppc-next.
+
+Ravi Bangoria (4):
+  KVM: PPC: Allow nested guest creation when L0 hv_guest_state > L1
+  KVM: PPC: Rename current DAWR macros and variables
+  KVM: PPC: Add infrastructure to support 2nd DAWR
+  KVM: PPC: Introduce new capability for 2nd DAWR
+
+ Documentation/virt/kvm/api.rst            | 12 ++++
+ arch/powerpc/include/asm/hvcall.h         | 25 ++++++-
+ arch/powerpc/include/asm/kvm_host.h       |  7 +-
+ arch/powerpc/include/asm/kvm_ppc.h        |  1 +
+ arch/powerpc/include/uapi/asm/kvm.h       |  2 +
+ arch/powerpc/kernel/asm-offsets.c         |  6 +-
+ arch/powerpc/kvm/book3s_hv.c              | 79 +++++++++++++++++++----
+ arch/powerpc/kvm/book3s_hv_nested.c       | 70 ++++++++++++++++----
+ arch/powerpc/kvm/book3s_hv_rmhandlers.S   | 43 +++++++++---
+ arch/powerpc/kvm/powerpc.c                | 10 +++
+ include/uapi/linux/kvm.h                  |  1 +
+ tools/arch/powerpc/include/uapi/asm/kvm.h |  2 +
+ tools/include/uapi/linux/kvm.h            |  1 +
+ 13 files changed, 216 insertions(+), 43 deletions(-)
+
+-- 
+2.26.2
+
