@@ -2,233 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585562DBC8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4812DBC8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:22:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbgLPIUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 03:20:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725274AbgLPIUt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:20:49 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2DFC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 00:20:09 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kpS2P-0004jY-8C; Wed, 16 Dec 2020 09:19:57 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kpS2M-00030k-BQ; Wed, 16 Dec 2020 09:19:54 +0100
-Date:   Wed, 16 Dec 2020 09:19:54 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>, linux-mips@vger.kernel.org,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net: dsa: qca: ar9331: fix sleeping function called
- from invalid context bug
-Message-ID: <20201216081954.xnukvpnustf6mycx@pengutronix.de>
-References: <20201211110317.17061-1-o.rempel@pengutronix.de>
- <20201212132558.heoykjrnam4bazp6@skbuf>
+        id S1725855AbgLPIWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 03:22:25 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56238 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725879AbgLPIWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 03:22:25 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1608106897; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W1oenR6GpZ5zDvXXt7ITUbn+6gm5vPT2aasqCb5slls=;
+        b=b07+yc3wArjNoG1RGjFAJzVPxrzvX6dR3Ucs1JYfW5Z/jlUkdRzRkeJcV9XHcAXtrRAiGO
+        gqczg6z/dn1uFQqXhmxL6yZ0g5iN10QCwdUiA99onofVXQ4MIOCBzYfOLG2zHOz4y6DieK
+        Dhz0zYWkDL+uSvjQVodAx1WI39NxzMg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CB288AD6A;
+        Wed, 16 Dec 2020 08:21:37 +0000 (UTC)
+To:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+References: <20201215111055.3810-1-jgross@suse.com>
+ <2deac9ce-0c27-a472-7d51-b91a640d92ed@citrix.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Subject: Re: [PATCH v2] xen/xenbus: make xs_talkv() interruptible
+Message-ID: <8d26b752-b7ba-159f-5bed-bb015a06d819@suse.com>
+Date:   Wed, 16 Dec 2020 09:21:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201212132558.heoykjrnam4bazp6@skbuf>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:18:16 up 13 days, 22:24, 21 users,  load average: 0.00, 0.03,
- 0.03
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <2deac9ce-0c27-a472-7d51-b91a640d92ed@citrix.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="VEsOmEl5Q0L2GQ2SPMrdoseYU2Ng77RxF"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 03:25:58PM +0200, Vladimir Oltean wrote:
-> On Fri, Dec 11, 2020 at 12:03:17PM +0100, Oleksij Rempel wrote:
-> > With lockdep enabled, we will get following warning:
-> > 
-> >  ar9331_switch ethernet.1:10 lan0 (uninitialized): PHY [!ahb!ethernet@1a000000!mdio!switch@10:00] driver [Qualcomm Atheros AR9331 built-in PHY] (irq=13)
-> >  BUG: sleeping function called from invalid context at kernel/locking/mutex.c:935
-> >  in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 18, name: kworker/0:1
-> >  INFO: lockdep is turned off.
-> >  irq event stamp: 602
-> >  hardirqs last  enabled at (601): [<8073fde0>] _raw_spin_unlock_irq+0x3c/0x80
-> >  hardirqs last disabled at (602): [<8073a4f4>] __schedule+0x184/0x800
-> >  softirqs last  enabled at (0): [<80080f60>] copy_process+0x578/0x14c8
-> >  softirqs last disabled at (0): [<00000000>] 0x0
-> >  CPU: 0 PID: 18 Comm: kworker/0:1 Not tainted 5.10.0-rc3-ar9331-00734-g7d644991df0c #31
-> >  Workqueue: events deferred_probe_work_func
-> >  Stack : 80980000 80980000 8089ef70 80890000 804b5414 80980000 00000002 80b53728
-> >          00000000 800d1268 804b5414 ffffffde 00000017 800afe08 81943860 0f5bfc32
-> >          00000000 00000000 8089ef70 819436c0 ffffffea 00000000 00000000 00000000
-> >          8194390c 808e353c 0000000f 66657272 80980000 00000000 00000000 80890000
-> >          804b5414 80980000 00000002 80b53728 00000000 00000000 00000000 80d40000
-> >          ...
-> >  Call Trace:
-> >  [<80069ce0>] show_stack+0x9c/0x140
-> >  [<800afe08>] ___might_sleep+0x220/0x244
-> >  [<8073bfb0>] __mutex_lock+0x70/0x374
-> >  [<8073c2e0>] mutex_lock_nested+0x2c/0x38
-> >  [<804b5414>] regmap_update_bits_base+0x38/0x8c
-> >  [<804ee584>] regmap_update_bits+0x1c/0x28
-> >  [<804ee714>] ar9331_sw_unmask_irq+0x34/0x60
-> >  [<800d91f0>] unmask_irq+0x48/0x70
-> >  [<800d93d4>] irq_startup+0x114/0x11c
-> >  [<800d65b4>] __setup_irq+0x4f4/0x6d0
-> >  [<800d68a0>] request_threaded_irq+0x110/0x190
-> >  [<804e3ef0>] phy_request_interrupt+0x4c/0xe4
-> >  [<804df508>] phylink_bringup_phy+0x2c0/0x37c
-> >  [<804df7bc>] phylink_of_phy_connect+0x118/0x130
-> >  [<806c1a64>] dsa_slave_create+0x3d0/0x578
-> >  [<806bc4ec>] dsa_register_switch+0x934/0xa20
-> >  [<804eef98>] ar9331_sw_probe+0x34c/0x364
-> >  [<804eb48c>] mdio_probe+0x44/0x70
-> >  [<8049e3b4>] really_probe+0x30c/0x4f4
-> >  [<8049ea10>] driver_probe_device+0x264/0x26c
-> >  [<8049bc10>] bus_for_each_drv+0xb4/0xd8
-> >  [<8049e684>] __device_attach+0xe8/0x18c
-> >  [<8049ce58>] bus_probe_device+0x48/0xc4
-> >  [<8049db70>] deferred_probe_work_func+0xdc/0xf8
-> >  [<8009ff64>] process_one_work+0x2e4/0x4a0
-> >  [<800a0770>] worker_thread+0x2a8/0x354
-> >  [<800a774c>] kthread+0x16c/0x174
-> >  [<8006306c>] ret_from_kernel_thread+0x14/0x1c
-> > 
-> >  ar9331_switch ethernet.1:10 lan1 (uninitialized): PHY [!ahb!ethernet@1a000000!mdio!switch@10:02] driver [Qualcomm Atheros AR9331 built-in PHY] (irq=13)
-> >  DSA: tree 0 setup
-> > 
-> > To fix it, it is better to move access to MDIO register to the .irq_bus_sync_unlock
-> > call back.
-> > 
-> > Fixes: ec6698c272de ("net: dsa: add support for Atheros AR9331 built-in switch")
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > ---
-> 
-> Just from looking at other irqchip drivers, it seems probably ok to do
-> your I/O from .irq_bus_sync_unlock.
-> 
-> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--VEsOmEl5Q0L2GQ2SPMrdoseYU2Ng77RxF
+Content-Type: multipart/mixed; boundary="Bqj9vE9hjQIUGpl7s3f4xXuzpSl9QgIui";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Andrew Cooper <andrew.cooper3@citrix.com>,
+ xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>
+Message-ID: <8d26b752-b7ba-159f-5bed-bb015a06d819@suse.com>
+Subject: Re: [PATCH v2] xen/xenbus: make xs_talkv() interruptible
+References: <20201215111055.3810-1-jgross@suse.com>
+ <2deac9ce-0c27-a472-7d51-b91a640d92ed@citrix.com>
+In-Reply-To: <2deac9ce-0c27-a472-7d51-b91a640d92ed@citrix.com>
 
-OK, thx!
+--Bqj9vE9hjQIUGpl7s3f4xXuzpSl9QgIui
+Content-Type: multipart/mixed;
+ boundary="------------10DC628869F4F77CEAD28FF5"
+Content-Language: en-US
 
-> But I'm a bit concerned about your ar9331_sw_remove method. Is it safe
-> to call these in the following order?
-> 
-> 	irq_domain_remove(priv->irqdomain);
-> 	mdiobus_unregister(priv->mbus);
-> 	dsa_unregister_switch(&priv->ds);
-> 
-> What if a PHY interrupt occurs after the irqdomain was removed and/or
-> the master MDIO bus was removed, but before dsa_unregister_switch
-> happened, which performed all the phylink teardown?
+This is a multi-part message in MIME format.
+--------------10DC628869F4F77CEAD28FF5
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Good point. It is different bug, i'll send a separate patch for this.
+On 15.12.20 21:59, Andrew Cooper wrote:
+> On 15/12/2020 11:10, Juergen Gross wrote:
+>> In case a process waits for any Xenstore action in the xenbus driver
+>> it should be interruptible by signals.
+>>
+>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>> ---
+>> V2:
+>> - don't special case SIGKILL as libxenstore is handling -EINTR fine
+>> ---
+>>   drivers/xen/xenbus/xenbus_xs.c | 9 ++++++++-
+>>   1 file changed, 8 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/xen/xenbus/xenbus_xs.c b/drivers/xen/xenbus/xenbu=
+s_xs.c
+>> index 3a06eb699f33..17c8f8a155fd 100644
+>> --- a/drivers/xen/xenbus/xenbus_xs.c
+>> +++ b/drivers/xen/xenbus/xenbus_xs.c
+>> @@ -205,8 +205,15 @@ static bool test_reply(struct xb_req_data *req)
+>>  =20
+>>   static void *read_reply(struct xb_req_data *req)
+>>   {
+>> +	int ret;
+>> +
+>>   	do {
+>> -		wait_event(req->wq, test_reply(req));
+>> +		ret =3D wait_event_interruptible(req->wq, test_reply(req));
+>> +
+>> +		if (ret =3D=3D -ERESTARTSYS && signal_pending(current)) {
+>> +			req->msg.type =3D XS_ERROR;
+>> +			return ERR_PTR(-EINTR);
+>> +		}
+>=20
+> So now I can talk fully about the situations which lead to this, I thin=
+k
+> there is a bit more complexity.
+>=20
+> It turns out there are a number of issues related to running a Xen
+> system with no xenstored.
+>=20
+> 1) If a xenstore-write occurs during startup before init-xenstore-domai=
+n
+> runs, the former blocks on /dev/xen/xenbus waiting for xenstored to
+> reply, while the latter blocks on /dev/xen/xenbus_backend when trying t=
+o
+> tell the dom0 kernel that xenstored is in dom1.=C2=A0 This effectively
+> deadlocks the system.
 
-> > changes v2:
-> > - fix comment on error
-> > 
-> >  drivers/net/dsa/qca/ar9331.c | 33 ++++++++++++++++++++++++---------
-> >  1 file changed, 24 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
-> > index e24a99031b80..4d49c5f2b790 100644
-> > --- a/drivers/net/dsa/qca/ar9331.c
-> > +++ b/drivers/net/dsa/qca/ar9331.c
-> > @@ -159,6 +159,8 @@ struct ar9331_sw_priv {
-> >  	struct dsa_switch ds;
-> >  	struct dsa_switch_ops ops;
-> >  	struct irq_domain *irqdomain;
-> > +	u32 irq_mask;
-> > +	struct mutex lock_irq;
-> >  	struct mii_bus *mbus; /* mdio master */
-> >  	struct mii_bus *sbus; /* mdio slave */
-> >  	struct regmap *regmap;
-> > @@ -520,32 +522,44 @@ static irqreturn_t ar9331_sw_irq(int irq, void *data)
-> >  static void ar9331_sw_mask_irq(struct irq_data *d)
-> >  {
-> >  	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
-> > -	struct regmap *regmap = priv->regmap;
-> > -	int ret;
-> >  
-> > -	ret = regmap_update_bits(regmap, AR9331_SW_REG_GINT_MASK,
-> > -				 AR9331_SW_GINT_PHY_INT, 0);
-> > -	if (ret)
-> > -		dev_err(priv->dev, "could not mask IRQ\n");
-> > +	priv->irq_mask = 0;
-> >  }
-> >  
-> >  static void ar9331_sw_unmask_irq(struct irq_data *d)
-> > +{
-> > +	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
-> > +
-> > +	priv->irq_mask = AR9331_SW_GINT_PHY_INT;
-> > +}
-> > +
-> > +static void ar9331_sw_irq_bus_lock(struct irq_data *d)
-> > +{
-> > +	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
-> > +
-> > +	mutex_lock(&priv->lock_irq);
-> > +}
-> > +
-> > +static void ar9331_sw_irq_bus_sync_unlock(struct irq_data *d)
-> >  {
-> >  	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
-> >  	struct regmap *regmap = priv->regmap;
-> >  	int ret;
-> >  
-> >  	ret = regmap_update_bits(regmap, AR9331_SW_REG_GINT_MASK,
-> > -				 AR9331_SW_GINT_PHY_INT,
-> > -				 AR9331_SW_GINT_PHY_INT);
-> > +				 AR9331_SW_GINT_PHY_INT, priv->irq_mask);
-> >  	if (ret)
-> > -		dev_err(priv->dev, "could not unmask IRQ\n");
-> > +		dev_err(priv->dev, "failed to change IRQ mask\n");
-> > +
-> > +	mutex_unlock(&priv->lock_irq);
-> >  }
-> >  
-> >  static struct irq_chip ar9331_sw_irq_chip = {
-> >  	.name = AR9331_SW_NAME,
-> >  	.irq_mask = ar9331_sw_mask_irq,
-> >  	.irq_unmask = ar9331_sw_unmask_irq,
-> > +	.irq_bus_lock = ar9331_sw_irq_bus_lock,
-> > +	.irq_bus_sync_unlock = ar9331_sw_irq_bus_sync_unlock,
-> >  };
-> >  
-> >  static int ar9331_sw_irq_map(struct irq_domain *domain, unsigned int irq,
-> > @@ -584,6 +598,7 @@ static int ar9331_sw_irq_init(struct ar9331_sw_priv *priv)
-> >  		return irq ? irq : -EINVAL;
-> >  	}
-> >  
-> > +	mutex_init(&priv->lock_irq);
-> >  	ret = devm_request_threaded_irq(dev, irq, NULL, ar9331_sw_irq,
-> >  					IRQF_ONESHOT, AR9331_SW_NAME, priv);
-> >  	if (ret) {
-> > -- 
-> > 2.29.2
-> > 
-> 
-> 
+This should be easy to solve: any request to /dev/xen/xenbus should
+block upfront in case xenstored isn't up yet (could e.g. wait
+interruptible until xenstored_ready is non-zero).
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> 2) If xenstore-watch is running when xenstored dies, it spins at 100%
+> cpu usage making no system calls at all.=C2=A0 This is caused by bad er=
+ror
+> handling from xs_watch(), and attempting to debug found:
+
+Can you expand on "bad error handling from xs_watch()", please?
+
+>=20
+> 3) (this issue).=C2=A0 If anyone starts xenstore-watch with no xenstore=
+d
+> running at all, it blocks in D in the kernel.
+
+Should be handled with solution for 1).
+
+>=20
+> The cause is the special handling for watch/unwatch commands which,
+> instead of just queuing up the data for xenstore, explicitly waits for
+> an OK for registering the watch.=C2=A0 This causes a write() system cal=
+l to
+> block waiting for a non-existent entity to reply.
+>=20
+> So while this patch does resolve the major usability issue I found (I
+> can't even SIGINT and get my terminal back), I think there are issues.
+>=20
+> The reason why XS_WATCH/XS_UNWATCH are special cased is because they do=
+
+> require special handling.=C2=A0 The main kernel thread for processing
+> incoming data from xenstored does need to know how to associate each
+> async XS_WATCH_EVENT to the caller who watched the path.
+>=20
+> Therefore, depending on when this cancellation hits, we might be in any=
+
+> of the following states:
+>=20
+> 1) the watch is queued in the kernel, but not even sent to xenstored ye=
+t
+> 2) the watch is queued in the xenstored ring, but not acted upon
+> 3) the watch is queued in the xenstored ring, and the xenstored has see=
+n
+> it but not replied yet
+> 4) the watch has been processed, but the XS_WATCH reply hasn't been
+> received yet
+> 5) the watch has been processed, and the XS_WATCH reply received
+>=20
+> State 5 (and a little bit) is the normal success path when xenstored ha=
+s
+> acted upon the request, and the internal kernel infrastructure is set u=
+p
+> appropriately to handle XS_WATCH_EVENTs.
+>=20
+> States 1 and 2 can be very common if there is no xenstored (or at least=
+,
+> it hasn't started up yet).=C2=A0 In reality, there is either no xenstor=
+ed, or
+> it is up and running (and for a period of time during system startup,
+> these cases occur in sequence).
+
+Yes. this is the reason we can't just reject a user request if xenstored
+hasn't been detected yet: it could be just starting.
+
+>=20
+> As soon as the XS_WATCH event has been written into the xenstored ring,=
+
+> it is not safe to cancel.=C2=A0 You've committed to xenstored processin=
+g the
+> request (if it is up).
+
+I'm not sure this is true. Cancelling it might result in a stale watch
+in xenstored, but there shouldn't be a problem related to that. In case
+that watch fires the event will normally be discarded by the kernel as
+no matching watch is found in the kernel's data. In case a new watch
+has been setup with the same struct xenbus_watch address (which is used
+as the token), then this new watch might fire without the node of the
+new watch having changed, but spurious watch events are defined to be
+okay (OTOH the path in the event might look strange to the handler).
+
+>=20
+> If xenstored is actually up and running, its fine and necessary to
+> block.=C2=A0 The request will be processed in due course (timing subjec=
+t to
+> the client and server load).=C2=A0 If xenstored isn't up, blocking isn'=
+t ok.
+>=20
+> Therefore, I think we need to distinguish "not yet on the ring" from "o=
+n
+> the ring", as our distinction as to whether cancelling is safe, and
+> ensure we don't queue anything on the ring before we're sure xenstored
+> has started up.
+>=20
+> Does this make sense?
+
+Basically, yes.
+
+
+Juergen
+
+--------------10DC628869F4F77CEAD28FF5
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------10DC628869F4F77CEAD28FF5--
+
+--Bqj9vE9hjQIUGpl7s3f4xXuzpSl9QgIui--
+
+--VEsOmEl5Q0L2GQ2SPMrdoseYU2Ng77RxF
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/Zw5EFAwAAAAAACgkQsN6d1ii/Ey9G
+iAgAlIlcZMgB8Dan2KsF5BlNOq2VL4q6YOgTK9xF9n8ihKQAvAv47VXBa4Pev6H1k4/Yj+SVxwKO
+hjP4WTIPGawAZAeXCzR8kDcZnr+aPPXb1ISMT6VHPID6D6nHCiqLLoH7aGNjeL9y2c7gClHMuezi
+ZWpsP+t2PR3EbwNBnLV+fuAkJcgaq7K5tvFwpCwOq94Dj+jz6GZCYwZPe5COtpE03hRzSBG0KOPj
+EakRCC0u8ACQVlvHQ9P/uIDOzbtySGPVRMQwly9ZaBDTdeob/ZnkJtLx+Ln2OTWuPrXksnz9MUDz
+WNVUwnKREUX9Yyr4Q/yZCrz1uLR9J6eStJn6T3YD4g==
+=abTa
+-----END PGP SIGNATURE-----
+
+--VEsOmEl5Q0L2GQ2SPMrdoseYU2Ng77RxF--
