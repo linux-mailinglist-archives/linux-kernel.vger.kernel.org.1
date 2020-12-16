@@ -2,175 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E4F2DBE06
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6862DBE0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726206AbgLPJw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:52:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53822 "EHLO
+        id S1726264AbgLPJyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:54:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgLPJw6 (ORCPT
+        with ESMTP id S1725862AbgLPJyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:52:58 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A899C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:52:18 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id d203so5656176oia.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:52:18 -0800 (PST)
+        Wed, 16 Dec 2020 04:54:22 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5851AC0613D6;
+        Wed, 16 Dec 2020 01:53:41 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id x20so27250555lfe.12;
+        Wed, 16 Dec 2020 01:53:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZogEmcLc5rbdYqJrg42XXZZlCeoansu9PVzcpVj+8x0=;
-        b=LbxiJVg9iuMrC04J5FR6G0SeDS1ekceFKjpSysGzpEGfeLx7OhNXUbsX0Chl2bRgav
-         vRXI9vDQAgyo3OLjYP52p21xAlavAS2De2+I8hztjG4zXhCmhLscT3nEKm8DCgk5vWMM
-         zC74C3pQnryZlVvlZjrJ9fn3zPC+ZW2lrMJc0=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7K3VpldibCJw6SR86Fx4bZqIehnXTqNoL7QsytzTCAc=;
+        b=MCsSEYUFTM5ED71OJrR4OvHrul5rKb2rZfsb9lpjqhVue+kFhn/63N+a1R6iu9nOd3
+         7mXbTNwTMd2DEdcawUDoyBx7WEdXMCneOi85Cbcb9voGoUO0N8jy1mGHG83W7AGJV8Hu
+         dnhLxUxrxv7KTnhY771KDlhHhRHG7rJ2zXIkmJiqEeN1KRN1H9naF19XTfYB0wbSfdsp
+         P7Z+Qsi1guvpcOHUstliWTG9lyqCYNc9TdGOYH130yEZP7AdEdpxeg+bdFFgfY9kEs7q
+         6eTIf/nNbdwtEkXAiSihsYhWfZdq+eUyFmFeQqv9h7EdZ36KYTp84Y7/9+woigzZDIY+
+         c6jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZogEmcLc5rbdYqJrg42XXZZlCeoansu9PVzcpVj+8x0=;
-        b=ATvnV9EtDNNlMzrlhngeIljR4JLYdz6G2j/+zb3ZDEXnS9AXGPOQT2tGiMc/oMRV/u
-         p43sZI0M91EdnUopi5huXSrFPdJQJTL5IqiDJfb822T7jidEC5oVvjuLp2/BO75i3oAE
-         QXGa4cmlg1lBPcu7emQ9RtQ+EJFx3SfbmmgaXGpd5QUYpCZNNAgoAbQe+1lis4MRd++2
-         m/zZ+I1jQWYYqNvKfdHOZkixoxLfFDn/UaEEuA89HZJa3y3nWEPYgZf0Gz/Ws6Hy1kSn
-         PYwRWShzNnTaq7agW1WQ2xM3e7Tv8kOr7ud2Ds8TgE4A60qlXXZ2JIGkY3MNmwXnQKxn
-         XD7A==
-X-Gm-Message-State: AOAM532ShDbRb/8yJRYq+zGA5m2Hi7kgM/9y1X7XWcg9/smGW2k+1KXG
-        1c4i9V0azirdh+ma2i1R1QqbqKMp6wrpBZz5EtCb2w==
-X-Google-Smtp-Source: ABdhPJxHxIMxN8kPWGkF6jhHKzTSWlN3X3jTWHffC5+00rr3o9QVMO/WAiT3F7UFc4CLj+SLlSPm9UpA89hcvmmx2wk=
-X-Received: by 2002:aca:54d8:: with SMTP id i207mr1560989oib.101.1608112337753;
- Wed, 16 Dec 2020 01:52:17 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7K3VpldibCJw6SR86Fx4bZqIehnXTqNoL7QsytzTCAc=;
+        b=eP+JraMe3VUZ9V1+zEMJYjFpAnYo9rurF8rs5J9t3VeNwZOs36UQbsAv9PXIRYncup
+         mHMXsYPiM57hV8ViQwujr+UPUbRUvfvlhd/FoBEqMApDF4TJ0UUB87GJph7Q90c3AwH3
+         fNW3B/7cKr7JaMtJrvzGIUKgN7sJOHj2aVI3+tz0J0V13aEjgRkMgdQPakmjcrnUsR9k
+         H/TtSck/cUp1jPLKl0TUXgzgVyQSlBhH4izmHb1J+/oXBwRbWGmresws9qYrV4Kb/Byc
+         xjhUtGLqmQhQRLGlsJcDbjhKRdepUmPV1ZWoV2E0u+iODSC85SM4qYWi7+GMneOXa1C6
+         KsnA==
+X-Gm-Message-State: AOAM532xu+SK/n4rhSupRR4GDqK4fluVbRub1d9ZJH/VAF2MYIovJl1q
+        CvBeWanavoIY3jBMws7U7qLdRPkoJjs=
+X-Google-Smtp-Source: ABdhPJyamCAlvp8liqxG/4XrSDjc3YQnFT3rNYbzlQrL2kZ4cunu94BG58qoGFfLCcNFWM8z8Dj1jw==
+X-Received: by 2002:a05:6512:3e6:: with SMTP id n6mr4456172lfq.262.1608112419754;
+        Wed, 16 Dec 2020 01:53:39 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id y3sm209998ljc.131.2020.12.16.01.53.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 01:53:39 -0800 (PST)
+Subject: Re: [PATCH v1 5/8] usb: chipidea: tegra: Support host mode
+To:     Peter Chen <peter.chen@nxp.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201215202113.30394-1-digetx@gmail.com>
+ <20201215202113.30394-6-digetx@gmail.com>
+ <20201216060732.GB5595@b29397-desktop>
+ <bb617167-e6a4-221e-5e3b-c9d7a1b50c87@gmail.com>
+ <DBBPR04MB79794F5CC440279AF94A48448BC50@DBBPR04MB7979.eurprd04.prod.outlook.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <78b8b868-fa72-cffa-b3c2-5a73a02d02b0@gmail.com>
+Date:   Wed, 16 Dec 2020 12:53:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-References: <000000000000cb6db205b68a971c@google.com>
-In-Reply-To: <000000000000cb6db205b68a971c@google.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Wed, 16 Dec 2020 10:52:06 +0100
-Message-ID: <CAKMK7uEiS5SrBYv-2w2wWL=9G4ByoHvtiWVsPqekswZzOGmzjg@mail.gmail.com>
-Subject: Re: WARNING: suspicious RCU usage in modeset_lock
-To:     syzbot <syzbot+972b924c988834e868b2@syzkaller.appspotmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Peter Rosin <peda@axentia.se>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <DBBPR04MB79794F5CC440279AF94A48448BC50@DBBPR04MB7979.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 2:14 AM syzbot
-<syzbot+972b924c988834e868b2@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    94801e5c Merge tag 'pinctrl-v5.10-3' of git://git.kernel.o..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=130558c5500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=ee8a1012a5314210
-> dashboard link: https://syzkaller.appspot.com/bug?extid=972b924c988834e868b2
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> userspace arch: i386
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+972b924c988834e868b2@syzkaller.appspotmail.com
->
-> =============================
-> WARNING: suspicious RCU usage
-> 5.10.0-rc7-syzkaller #0 Not tainted
-> -----------------------------
-> kernel/sched/core.c:7270 Illegal context switch in RCU-sched read-side critical section!
->
-> other info that might help us debug this:
->
->
-> rcu_scheduler_active = 2, debug_locks = 0
-> 7 locks held by syz-executor.1/9232:
->  #0: ffffffff8b328c60 (console_lock){+.+.}-{0:0}, at: do_fb_ioctl+0x2e4/0x690 drivers/video/fbdev/core/fbmem.c:1106
->  #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: lock_fb_info include/linux/fb.h:636 [inline]
->  #1: ffff888041bd4078 (&fb_info->lock){+.+.}-{3:3}, at: do_fb_ioctl+0x2ee/0x690 drivers/video/fbdev/core/fbmem.c:1107
->  #2: ffff888041adca78 (&helper->lock){+.+.}-{3:3}, at: drm_fb_helper_pan_display+0xce/0x970 drivers/gpu/drm/drm_fb_helper.c:1448
->  #3: ffff8880159f01b8 (&dev->master_mutex){+.+.}-{3:3}, at: drm_master_internal_acquire+0x1d/0x70 drivers/gpu/drm/drm_auth.c:407
->  #4: ffff888041adc898 (&client->modeset_mutex){+.+.}-{3:3}, at: drm_client_modeset_commit_locked+0x44/0x580 drivers/gpu/drm/drm_client_modeset.c:1143
->  #5: ffffc90001c07730 (crtc_ww_class_acquire){+.+.}-{0:0}, at: drm_client_modeset_commit_atomic+0xb7/0x7c0 drivers/gpu/drm/drm_client_modeset.c:981
->  #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: ww_mutex_lock_slow include/linux/ww_mutex.h:287 [inline]
->  #6: ffff888015986108 (crtc_ww_class_mutex){+.+.}-{3:3}, at: modeset_lock+0x31c/0x650 drivers/gpu/drm/drm_modeset_lock.c:260
+16.12.2020 12:32, Peter Chen пишет:
+>  
+>>>>
+>>>>  struct tegra_usb_soc_info {
+>>>>  	unsigned long flags;
+>>>> +	unsigned int txfifothresh;
+>>>> +	enum usb_dr_mode dr_mode;
+>>>> +};
+>>>> +
+>>>> +static const struct tegra_usb_soc_info tegra20_ehci_soc_info = {
+>>>> +	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
+>>>> +		 CI_HDRC_OVERRIDE_PHY_CONTROL,
+>>>> +	.dr_mode = USB_DR_MODE_HOST,
+>>>> +	.txfifothresh = 10,
+>>>> +};
+>>>> +
+>>>> +static const struct tegra_usb_soc_info tegra30_ehci_soc_info = {
+>>>> +	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
+>>>> +		 CI_HDRC_OVERRIDE_PHY_CONTROL
+>>>> +	.dr_mode = USB_DR_MODE_HOST,
+>>>> +	.txfifothresh = 16,
+>>>>  };
+>>>>
+>>>>  static const struct tegra_usb_soc_info tegra_udc_soc_info = {
+>>>> -	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA,
+>>>> +	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
+>>>> +		 CI_HDRC_OVERRIDE_PHY_CONTROL,
+>>>> +	.dr_mode = USB_DR_MODE_UNKNOWN,
+>>>>  };
+>>>
+>>> What's the usage for this dr_mode? Does these three SoCs only supports
+>>> single mode, it usually sets dr_mode at board dts file to indicate USB
+>>> role for this board.
+>>
+>> All Tegra SoCs have three USB controllers.  Only one of these three controllers
+>> supports peripheral / OTG modes, the other two controllers are fixed to the
+>> host mode and device trees do not specify the dr_mode for the host
+>> controllers.
+>>
+>> Hence we need to enforce the dr_mode=host for the host-mode controllers.
+>>
+>> For UDC the default mode is "unknown" because actual mode comes from a
+>> board's device tree.
+>>
+> 
+> You could add dr_mode property at usb node of soc.dtsi to fulfill that.
 
-Given that we managed to take all these locks without upsetting anyone
-the rcu section is very deep down. And looking at the backtrace below
-I just couldn't find anything.
+This will break older DTBs, we can't do this.
 
-Best I can think of is that an interrupt of some sort leaked an rcu
-section, and we got shot here. But I'd assume the rcu debugging would
-catch this? Backtrace of the start of that rcu read side section would
-be really useful here, but I'm not seeing that in the logs. There's
-more stuff there, but it's just the usual "everything falls apart"
-stuff of little value to understanding how we got there.
+...
+>>>>  static int ehci_ci_portpower(struct usb_hcd *hcd, int portnum, bool
+>>>> enable)  {
+>>>>  	struct ehci_hcd *ehci = hcd_to_ehci(hcd); @@ -160,14 +166,14 @@
+>>>> static int host_start(struct ci_hdrc *ci)
+>>>>  		pinctrl_select_state(ci->platdata->pctl,
+>>>>  				     ci->platdata->pins_host);
+>>>>
+>>>> +	ci->hcd = hcd;
+>>>> +
+>>>>  	ret = usb_add_hcd(hcd, 0, 0);
+>>>>  	if (ret) {
+>>>>  		goto disable_reg;
+>>>>  	} else {
+>>>>  		struct usb_otg *otg = &ci->otg;
+>>>>
+>>>> -		ci->hcd = hcd;
+>>>> -
+>>>
+>>> Why this changed?
+>>
+>> The ci->hcd is used by tegra_usb_notify_event() to handle reset event and the
+>> reset happens once usb_add_hcd() is invoked.  Hence we need to pre-assign
+>> the hcd pointer, otherwise there will be a NULL dereference.
+> 
+> Get it, please set ci->hcd as NULL at error path.
 
-Adding some rcu people for more insights on what could have gone wrong here.
--Daniel
+Ok, thanks.
 
-> stack backtrace:
-> CPU: 1 PID: 9232 Comm: syz-executor.1 Not tainted 5.10.0-rc7-syzkaller #0
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x107/0x163 lib/dump_stack.c:118
->  ___might_sleep+0x25d/0x2b0 kernel/sched/core.c:7270
->  __mutex_lock_common kernel/locking/mutex.c:935 [inline]
->  __ww_mutex_lock.constprop.0+0xa9/0x2cc0 kernel/locking/mutex.c:1111
->  ww_mutex_lock+0x3d/0x170 kernel/locking/mutex.c:1190
->  modeset_lock+0x392/0x650 drivers/gpu/drm/drm_modeset_lock.c:263
->  drm_modeset_lock drivers/gpu/drm/drm_modeset_lock.c:342 [inline]
->  drm_modeset_lock+0x50/0x90 drivers/gpu/drm/drm_modeset_lock.c:338
->  drm_atomic_get_plane_state+0x19d/0x510 drivers/gpu/drm/drm_atomic.c:481
->  drm_client_modeset_commit_atomic+0x225/0x7c0 drivers/gpu/drm/drm_client_modeset.c:994
->  drm_client_modeset_commit_locked+0x145/0x580 drivers/gpu/drm/drm_client_modeset.c:1145
->  pan_display_atomic drivers/gpu/drm/drm_fb_helper.c:1395 [inline]
->  drm_fb_helper_pan_display+0x28b/0x970 drivers/gpu/drm/drm_fb_helper.c:1455
->  fb_pan_display+0x2f7/0x6c0 drivers/video/fbdev/core/fbmem.c:925
->  fb_set_var+0x57f/0xda0 drivers/video/fbdev/core/fbmem.c:1043
->  do_fb_ioctl+0x2f9/0x690 drivers/video/fbdev/core/fbmem.c:1108
->  fb_compat_ioctl+0x17c/0xaf0 drivers/video/fbdev/core/fbmem.c:1315
->  __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:842
->  do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
->  __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:137
->  do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
->  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> RIP: 0023:0xf7fd8549
-> Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-> RSP: 002b:00000000f55d20bc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
-> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000004601
-> RDX: 0000000020000240 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> detected fb_set_par error, error code: -16
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
