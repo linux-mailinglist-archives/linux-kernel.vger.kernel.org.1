@@ -2,222 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689612DC599
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:47:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 649D42DC58E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727938AbgLPRq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 12:46:56 -0500
-Received: from mga14.intel.com ([192.55.52.115]:47854 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727910AbgLPRqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 12:46:55 -0500
-IronPort-SDR: LY3Z26DK1FEwhmp7xe5AgpmZ7IxPalVshEHuLct1huOWi/OA39vsKt7bFxTJ+/hEjmGoqnB7Ao
- akO6lDjzZuXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="174334339"
-X-IronPort-AV: E=Sophos;i="5.78,424,1599548400"; 
-   d="scan'208";a="174334339"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 09:46:15 -0800
-IronPort-SDR: 1Dtyu2ObXKQBTf8yYOrEa7eV6kN2H6QsYiIwMmQ3HxM5mLcAEkcXVp4P+UIVEKVrXVBV0OOifT
- BJ9ZIa7bAARw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,424,1599548400"; 
-   d="scan'208";a="391854238"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by FMSMGA003.fm.intel.com with ESMTP; 16 Dec 2020 09:46:14 -0800
-From:   "Chang S. Bae" <chang.seok.bae@intel.com>
-To:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
-        x86@kernel.org, herbert@gondor.apana.org.au
-Cc:     dan.j.williams@intel.com, dave.hansen@intel.com,
-        ravi.v.shankar@intel.com, ning.sun@intel.com,
-        kumar.n.dwarakanath@intel.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chang.seok.bae@intel.com,
-        Mark Brown <broonie@kernel.org>, linux-doc@vger.kernel.org
-Subject: [RFC PATCH 8/8] x86/cpu: Support the hardware randomization option for Key Locker internal key
-Date:   Wed, 16 Dec 2020 09:41:46 -0800
-Message-Id: <20201216174146.10446-9-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201216174146.10446-1-chang.seok.bae@intel.com>
-References: <20201216174146.10446-1-chang.seok.bae@intel.com>
+        id S1727728AbgLPRof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 12:44:35 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:43064 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727712AbgLPRof (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 12:44:35 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A87522CF;
+        Wed, 16 Dec 2020 18:43:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1608140631;
+        bh=7GsKa7EzD8G8LYfUVM1oW3MsoWwv0UlaBI+xm28Ebf0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fbp7gj2s1QaUkk+D2INC9T1Or2BkC7rvHpg1XMasnpCnqQNlxFTbTFwLdQ3+zR7XX
+         gUu156OzrTrue8hBv50aEHgsZR8BvayxCJAtSaCJlTYP1lRN16HhEScLh4/tqOszqb
+         xVsgrdMmV6hs7+ufApi+DPvh5DQnjmjeJxSILnmc=
+Date:   Wed, 16 Dec 2020 19:43:45 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] dt-bindings: media: Use graph and
+ video-interfaces schemas
+Message-ID: <X9pHURqzl8gjQ4qn@pendragon.ideasonboard.com>
+References: <20201210211625.3070388-1-robh@kernel.org>
+ <20201210211625.3070388-6-robh@kernel.org>
+ <X9olm4dVwY8HRC3j@pendragon.ideasonboard.com>
+ <20201216173841.GC651087@robh.at.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201216173841.GC651087@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hardware can load the internal key with randomization. random.trust_cpu
-determines the use of the CPU's random number generator. Take the parameter
-to use the CPU's internal key randomization.
+Hi Rob,
 
-The backup mechanism is required to distribute the key. It is the only
-way to copy the (unknown) key value to other CPUs.
+On Wed, Dec 16, 2020 at 11:38:41AM -0600, Rob Herring wrote:
+> On Wed, Dec 16, 2020 at 05:19:55PM +0200, Laurent Pinchart wrote:
+> > On Thu, Dec 10, 2020 at 03:16:25PM -0600, Rob Herring wrote:
+> > > Now that we have graph and video-interfaces schemas, rework the media
+> > > related schemas to use them.
+> > > 
+> > > Cc: Maxime Ripard <mripard@kernel.org>
+> > > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > > Cc: Jacopo Mondi <jacopo@jmondi.org>
+> > > Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> > > Cc: linux-media@vger.kernel.org
+> > > Signed-off-by: Rob Herring <robh@kernel.org>
+> > > ---
+> 
+> 
+> > > diff --git a/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml b/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml
+> > > index d94bd67ccea1..3657f2f41098 100644
+> > > --- a/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml
+> > > +++ b/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml
+> > > @@ -73,19 +73,16 @@ properties:
+> > >      enum: [ 0, 180 ]
+> > > 
+> > >    port:
+> > > -    type: object
+> > > +    $ref: /schemas/graph.yaml#/$defs/port-base
+> > > +    additionalProperties: false
+> > > +
+> > >      properties:
+> > >        endpoint:
+> > > -        type: object
+> > > +        $ref: /schemas/media/video-interfaces.yaml#
+> > > +        unevaluatedProperties: false
+> > > +
+> > >          properties:
+> > > -          link-frequencies:
+> > > -            $ref: /schemas/types.yaml#/definitions/uint64-array
+> > > -            description: List of allowed data link frequencies.
+> > > -          data-lanes:
+> > > -            minItems: 1
+> > > -            maxItems: 8
+> > 
+> > Don't we need
+> > 
+> >           link-frequencies: true
+> >           data-lanes: true
+> > 
+> > to convey the fact that those properties are applicable for this device
+> > ? This applies to a few locations below too.
+> 
+> Adding them would convey that to the reader, but wouldn't change the 
+> schema validation. We'd have to use 'additionalProperties' instead and 
+> also add 'remote-endpoint' everywhere (and 'reg' sometimes). I prefer 
+> not doing all that, but if we want it just for purposes of documenting 
+> the usage, that's fine.
 
-This randomization option is disabled when hardware does not support the
-key backup.
+I'd prefer keeping it to document what properties are applicable. If we
+can later find a better way to express it in a way that will be taken
+into account during validation, that will be best, but not required now.
 
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: x86@kernel.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- arch/x86/include/asm/keylocker.h |  2 +-
- arch/x86/kernel/cpu/common.c     |  3 ++-
- arch/x86/kernel/keylocker.c      | 31 ++++++++++++++++++++++++++++---
- drivers/char/random.c            |  6 ++++++
- include/linux/random.h           |  2 ++
- 5 files changed, 39 insertions(+), 5 deletions(-)
+> > >            bus-type:
+> > > -            description: The type of the data bus.
+> > >              oneOf:
+> > >                - const: 1 # CSI-2 C-PHY
+> > >                - const: 3 # CCP2
+> > > diff --git a/Documentation/devicetree/bindings/media/i2c/ov5647.yaml b/Documentation/devicetree/bindings/media/i2c/ov5647.yaml
+> > > index 280c62afae13..3b1ea9da437a 100644
+> > > --- a/Documentation/devicetree/bindings/media/i2c/ov5647.yaml
+> > > +++ b/Documentation/devicetree/bindings/media/i2c/ov5647.yaml
+> > > @@ -31,27 +31,15 @@ properties:
+> > >      maxItems: 1
+> > > 
+> > >    port:
+> > > -    type: object
+> > > -    description: |-
+> > > -      Should contain one endpoint sub-node used to model connection to the
+> > > -      video receiver according to the specification defined in
+> > > -      Documentation/devicetree/bindings/media/video-interfaces.txt.
+> > > +    $ref: /schemas/graph.yaml#/$defs/port-base
+> > > 
+> > >      properties:
+> > >        endpoint:
+> > > -        type: object
+> > > +        $ref: /schemas/media/video-interfaces.yaml#
+> > > +        unevaluatedProperties: false
+> > > 
+> > >          properties:
+> > > -          remote-endpoint:
+> > > -            description: |-
+> > > -              phandle to the video receiver input port.
+> > > -
+> > > -          clock-noncontinuous:
+> > > -            type: boolean
+> > > -            description: |-
+> > > -              Set to true to allow MIPI CSI-2 non-continuous clock operations.
+> > > -
+> > > -        additionalProperties: false
+> > > +          clock-noncontinuous: true
+> > > 
+> > >      additionalProperties: false
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
+> > > index cde85553fd01..c29b057ae922 100644
+> > > --- a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
+> > > +++ b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
+> > > @@ -57,16 +57,13 @@ properties:
+> > >        active low.
+> > > 
+> > >    port:
+> > > -    type: object
+> > > +    $ref: /schemas/graph.yaml#/$defs/port-base
+> > >      additionalProperties: false
+> > > -    description:
+> > > -      A node containing an output port node with an endpoint definition
+> > > -      as documented in
+> > > -      Documentation/devicetree/bindings/media/video-interfaces.txt
+> > > 
+> > >      properties:
+> > >        endpoint:
+> > > -        type: object
+> > > +        $ref: /schemas/media/video-interfaces.yaml#
+> > > +        unevaluatedProperties: false
+> > > 
+> > >          properties:
+> > >            data-lanes:
+> > > @@ -79,18 +76,13 @@ properties:
+> > >                - const: 4
+> > > 
+> > >            link-frequencies:
+> > > -            $ref: /schemas/types.yaml#/definitions/uint64-array
+> > > -            description:
+> > > -              Allowed data bus frequencies. 360000000, 180000000 Hz or both
+> > > -              are supported by the driver.
+> > > -
+> > > +            maxItems: 2
+> > > +            items:
+> > > +              enum: [ 360000000, 180000000 ]
+> > 
+> > This is a limitation of the driver, not the device. Should we keep this
+> > information in a comment, to eventually get it fixed and drop the
+> > limitation from the bindings ?
+> 
+> If your dts has anything else, then it won't work. Warning on that seems 
+> valuable to me, so I think we should keep it. If someone with a better 
+> driver complains, we can drop it.
+> 
+> I can keep the description with 'Frequencies listed are driver, not h/w 
+> limitations'.
 
-diff --git a/arch/x86/include/asm/keylocker.h b/arch/x86/include/asm/keylocker.h
-index 722574c305c2..a6774ced916a 100644
---- a/arch/x86/include/asm/keylocker.h
-+++ b/arch/x86/include/asm/keylocker.h
-@@ -19,7 +19,7 @@ bool check_keylocker_readiness(void);
- 
- bool load_keylocker(void);
- 
--void make_keylocker_data(void);
-+void make_keylocker_data(bool use_hwrand);
- #ifdef CONFIG_X86_KEYLOCKER
- void invalidate_keylocker_data(void);
- #else
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index ba5bd79fbac2..48881d8ea559 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -485,12 +485,13 @@ static __always_inline void setup_keylocker(struct cpuinfo_x86 *c)
- 	cr4_set_bits(X86_CR4_KEYLOCKER);
- 
- 	if (c == &boot_cpu_data) {
-+		bool use_hwrand = check_random_trust_cpu();
- 		bool keyloaded;
- 
- 		if (!check_keylocker_readiness())
- 			goto disable_keylocker;
- 
--		make_keylocker_data();
-+		make_keylocker_data(use_hwrand);
- 
- 		keyloaded = load_keylocker();
- 		if (!keyloaded) {
-diff --git a/arch/x86/kernel/keylocker.c b/arch/x86/kernel/keylocker.c
-index 229875ac80d5..e77e4c3d785e 100644
---- a/arch/x86/kernel/keylocker.c
-+++ b/arch/x86/kernel/keylocker.c
-@@ -13,6 +13,7 @@
- #include <asm/fpu/api.h>
- 
- static bool keybackup_available;
-+static bool keyhwrand_available;
- 
- bool check_keylocker_readiness(void)
- {
-@@ -33,25 +34,33 @@ bool check_keylocker_readiness(void)
- 		pr_debug("x86/keylocker: no key backup support with possible S3/4\n");
- 		return false;
- 	}
-+
-+	keyhwrand_available = (ecx & KEYLOCKER_CPUID_ECX_RAND);
- 	return true;
- }
- 
- /* Load Internal (Wrapping) Key */
- #define LOADIWKEY		".byte 0xf3,0x0f,0x38,0xdc,0xd1"
- #define LOADIWKEY_NUM_OPERANDS	3
-+#define LOADIWKEY_HWRAND_RETRY	10
- 
- static struct key {
- 	bool valid;
-+	bool hwrand;
- 	struct reg_128_bit value[LOADIWKEY_NUM_OPERANDS];
- } keydata;
- 
--void make_keylocker_data(void)
-+void make_keylocker_data(bool use_hwrand)
- {
- 	int i;
- 
- 	for (i = 0; i < LOADIWKEY_NUM_OPERANDS; i++)
- 		get_random_bytes(&keydata.value[i], sizeof(struct reg_128_bit));
- 
-+	keydata.hwrand = (use_hwrand && keyhwrand_available && keybackup_available);
-+	if (use_hwrand && !keydata.hwrand)
-+		pr_warn("x86/keylocker: hardware random key not fully supported\n");
-+
- 	keydata.valid = true;
- }
- 
-@@ -63,12 +72,22 @@ void invalidate_keylocker_data(void)
- }
- 
- #define USE_SWKEY	0
-+#define USE_HWRANDKEY	BIT(1)
- 
- bool load_keylocker(void)
- {
- 	struct reg_128_bit zeros = { 0 };
--	u32 keysrc = USE_SWKEY;
- 	bool err = true;
-+	u32 keysrc;
-+	int retry;
-+
-+	if (keydata.hwrand) {
-+		keysrc = USE_HWRANDKEY;
-+		retry = LOADIWKEY_HWRAND_RETRY;
-+	} else {
-+		keysrc = USE_SWKEY;
-+		retry = 0;
-+	}
- 
- 	kernel_fpu_begin();
- 
-@@ -77,13 +96,19 @@ bool load_keylocker(void)
- 			 "m"(keydata.value[1]),
- 			 "m"(keydata.value[2]));
- 
--	asm volatile (LOADIWKEY CC_SET(z) : CC_OUT(z) (err) : "a"(keysrc));
-+	do {
-+		asm volatile (LOADIWKEY CC_SET(z) : CC_OUT(z) (err) : "a"(keysrc));
-+		retry--;
-+	} while (err && retry >= 0);
- 
- 	asm volatile ("movdqu %0, %%xmm0; movdqu %0, %%xmm1; movdqu %0, %%xmm2;"
- 		      :: "m"(zeros));
- 
- 	kernel_fpu_end();
- 
-+	if (keydata.hwrand)
-+		invalidate_keylocker_data();
-+
- 	return err ? false : true;
- }
- 
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 2a41b21623ae..3ee0d659ab2a 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -781,6 +781,12 @@ static int __init parse_trust_cpu(char *arg)
- }
- early_param("random.trust_cpu", parse_trust_cpu);
- 
-+bool check_random_trust_cpu(void)
-+{
-+	return trust_cpu;
-+}
-+EXPORT_SYMBOL(check_random_trust_cpu);
-+
- static bool crng_init_try_arch(struct crng_state *crng)
- {
- 	int		i;
-diff --git a/include/linux/random.h b/include/linux/random.h
-index f45b8be3e3c4..f08f44988b13 100644
---- a/include/linux/random.h
-+++ b/include/linux/random.h
-@@ -158,4 +158,6 @@ static inline bool __init arch_get_random_long_early(unsigned long *v)
- }
- #endif
- 
-+extern bool check_random_trust_cpu(void);
-+
- #endif /* _LINUX_RANDOM_H */
+I'm fine with the constraint itself, my comment was referring to the
+fact that we're dropping the description. Your description proposal
+works for me, thanks.
+
 -- 
-2.17.1
+Regards,
 
+Laurent Pinchart
