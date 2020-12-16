@@ -2,101 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EE72DB7D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BC32DB7D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbgLPAes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:34:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52700 "EHLO
+        id S1725960AbgLPAf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:35:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgLPAel (ORCPT
+        with ESMTP id S1725829AbgLPAfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 19:34:41 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854D2C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:34:00 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id o19so18429711lfo.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:34:00 -0800 (PST)
+        Tue, 15 Dec 2020 19:35:52 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 572D6C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:35:12 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id w18so8472317iot.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:35:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zj2YPVQKRFQs32LNLuK0mWD4evn16vjxArTvNU8xCYE=;
-        b=zmi7gRMEKq3pV/lgDugpVABkbjYGunfv3IE8jzEnAbsXbf+Ejg0wFe38PkWiNxIzat
-         UcNrSUrSe1p2sIBdGyWDONBu3AH8Kbk0NiodFDicgrBdvK70sr0gakQF29ML95jAragV
-         8N13doCOA/pfONzJVu9hq8B426nbEKWVwEaZb7OphLLkthsF5Ta4dsKZ5Ek4hjMnrraY
-         DGHF1s2bdcFGIUxhc8PsQ4bFHAmzraOeLADbxbYfaGcYzobyIX+X8coA5ijWWy005Ds+
-         wAdnfLQ7eT6rJMO+AIq+vVrl6HWY5W3uz0vRd5Gt6zRcBSNLXP04+FjmrPL01+CWxnu5
-         qKVw==
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
+        bh=yU9Nd85ZijlLkYOsc1l3qZ7RJHr92aND+i+7Yi2A0nU=;
+        b=nk2iSdN+Z0GEkCUAECJpzd/3yG54Q61/+lnFNDEexZGnSWrthOzGGV6L6qQcVMlWcm
+         3a1o4/H6ipESZ3+LnEbTe8xqqyVh7mlZ1z2P2oZ3zGGqpXqUM8KuwyeI3ZmGAwlwKJXx
+         u4vcjpm4gY7UpAgDkqPfEFA4k33FPwNvrqQMk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zj2YPVQKRFQs32LNLuK0mWD4evn16vjxArTvNU8xCYE=;
-        b=hMetijCaK4MR4Ssc3wlpQyxx8t6apMwDwbkb7op2MWd2LtnDK8Q/BtMDxftx9PVmBa
-         GQj3rMrEfH7SmHJVR1a9mL2LN/TBbPvA1tqQ1WTP1U/lJgfM9pzWgps0iY4RleCTysN0
-         7Kzc8WjhgZFQJIEOC4C9bMDvZ7FEqXsiKyheaIVht4aQq6qKoNZjj+N5K7mYxtmZpnNf
-         W7G/N6Xndzy1/pZMX2/51LPaArQGbtF0qOf47EV8h47LAnVbKeSBjd4qh67xjsDE89Mv
-         Pzll5TUOAGazGBjrr7UAUFEc9KQioxwBktNgLcAzrOMYzAq5yIGMVZvV5ZOR3mLbp3OC
-         Mdsw==
-X-Gm-Message-State: AOAM531q5ejI/L4L5BqtUE1te3x/wCFsvxgbj3jVgQXzvMqCrnqvmV2g
-        ESFQAnjxi1dscKliwjdiDAl9eI7l3RSuRlEbrCoCfQ==
-X-Google-Smtp-Source: ABdhPJyOHjNYEs+MlipEezrk74D7gW0AbcHrqq8ll/2YJyrpydKCzWHi1oI7l8bwkRbDoPAAlJpvejRCo7btrJ0F78U=
-X-Received: by 2002:a2e:8e38:: with SMTP id r24mr7092267ljk.333.1608078838907;
- Tue, 15 Dec 2020 16:33:58 -0800 (PST)
+         :message-id:subject:cc;
+        bh=yU9Nd85ZijlLkYOsc1l3qZ7RJHr92aND+i+7Yi2A0nU=;
+        b=QBmEyssCBjAhUYwr7sO9uls1P+YvWkt0HtF3Jdz/bs9I7RgyTbqyANpwWF85v+5wVA
+         jqeErMxQtliJkHPyk7G8I3mBhc7LFFL5xZYqwYo8qba7hexzpjC1lGZ4hPMAz4CBvTJS
+         Yu8tSuKNe796pDqOypjd+g7blB2a+vQ210/L5kmaqUfpNX7Di2y1ShmNBe+lJaAcWjZU
+         Bi6LCNSrJJEzTl0NTuMTmHr0QUsTTK/vTkwK6EmUrrAjZgsJh0hiI5b6Escq66Urj39E
+         iEVjRrOh+PH3untHArP+lHvUflz9ZQkyZY2CgJmN4EziZ+jX2+zMJcr1OgkAtZI2xZ+i
+         1dRg==
+X-Gm-Message-State: AOAM531LJboB+Q3Tt5arxfsD7GVL/30pUUjGtQB2gmBo7x3d5BT3qIao
+        zg5NkSQP1HChHXAEUngMkcRxxZMA112myXX7gh+G0A==
+X-Received: by 2002:a02:c4d5:: with SMTP id h21mt42666900jaj.23.1608078911663;
+ Tue, 15 Dec 2020 16:35:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20201121235002.69945-1-john.stultz@linaro.org>
- <20201121235002.69945-3-john.stultz@linaro.org> <20201215235334.GA227480@roeck-us.net>
-In-Reply-To: <20201215235334.GA227480@roeck-us.net>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Tue, 15 Dec 2020 16:33:45 -0800
-Message-ID: <CALAqxLXOnJPU5O5nZRnww6qNeA465syOmCPr9FY5cD_aijjzQA@mail.gmail.com>
-Subject: Re: [PATCH v7 2/5] dma-buf: heaps: Move heap-helper logic into the
- cma_heap implementation
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+References: <20201117232003.3580179-1-joel@joelfernandes.org>
+ <20201117232003.3580179-24-joel@joelfernandes.org> <20201202214717.GA27531@chyser-vm-1.appad1iad.osdevelopmeniad.oraclevcn.com>
+ <20201206173418.GC201514@google.com> <20201209185203.GC6876@chyser-vm-1.appad1iad.osdevelopmeniad.oraclevcn.com>
+ <X9e9dcLMrMJThZs+@google.com> <16a390e4-b44d-b0eb-1df6-6e56d78d009f@oracle.com>
+ <20201214232541.GF201514@google.com> <796ec1e5-15ef-34da-5716-0ec19432deba@oracle.com>
+In-Reply-To: <796ec1e5-15ef-34da-5716-0ec19432deba@oracle.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 15 Dec 2020 19:35:00 -0500
+Message-ID: <CAEXW_YSSWFvre17RMb0twtAygFnYiOtW7EeYxMKBDTSQ+UZhrQ@mail.gmail.com>
+Subject: Re: [PATCH -tip 23/32] sched: Add a per-thread core scheduling interface
+Cc:     chris hyser <chris.hyser@oracle.com>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Thomas Glexiner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        Alexander Graf <graf@amazon.com>, konrad.wilk@oracle.com,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <derkling@google.com>,
+        =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        OWeisse@umich.edu, Junaid Shahid <junaids@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Tim Chen <tim.c.chen@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 3:53 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Sat, Nov 21, 2020 at 11:49:59PM +0000, John Stultz wrote:
-> > Since the heap-helpers logic ended up not being as generic as
-> > hoped, move the heap-helpers dma_buf_ops implementations into
-> > the cma_heap directly.
-> >
-> > This will allow us to remove the heap_helpers code in a following
-> > patch.
-> >
->
-> mips:allmodconfig:
->
-> drivers/dma-buf/heaps/cma_heap.c: In function 'cma_heap_do_vmap':
-> drivers/dma-buf/heaps/cma_heap.c:195:10: error: implicit declaration of function 'vmap'
->
+Hello Dhaval,
 
-Ah. Looks like we need to explicitly include linux/vmalloc.h.
+On Tue, Dec 15, 2020 at 1:14 PM Dhaval Giani <dhaval.giani@oracle.com> wrote:
+>
+> On 12/14/20 3:25 PM, Joel Fernandes wrote:
+>
+> >> No problem. That was there primarily for debugging.
+> > Ok. I squashed Josh's changes into this patch and several of my fixups. So
+> > there'll be 3 patches:
+> > 1. CGroup + prctl  (single patch as it is hell to split it)
+>
+> Please don't do that.
+> I am not sure we have thought the cgroup interface through
+> (looking at all the discussions).
 
-Thanks for the report! I'll spin up a patch, validate it and send it
-out here shortly.
+Unfortunately, this comment does not provides any information on the
+issues you are concerned about.  If there are specific issues you are
+concerned about, please don't keep it a secret! What requirement of
+yours is not being met with the CGroup interface the way it is in v8
+series?
 
-thanks
--john
+thanks,
+
+ - Joel
