@@ -2,105 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021472DBF11
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1562DBF1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725778AbgLPK5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:57:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35524 "EHLO
+        id S1726015AbgLPLAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 06:00:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgLPK5E (ORCPT
+        with ESMTP id S1725775AbgLPLAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:57:04 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54707C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:56:23 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id 23so47200975lfg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:56:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8Ee6BEPzW0avC5vdfdajiCFDdnJS72+HuNB+ehIuHbk=;
-        b=hFL8jZdRErw+2q0idCTbKwvhfx1cxsgiZna0h3pK9Iqi/2E6wv+Hp9XLgECsN0cdVq
-         CTrl4XrF4+1l3LXlIc5YVVX3ycdD0E4bYGTgXA/ofj7HLD80VxwL7UipS2uHkOy8nKG6
-         3d34JFGFEm4o4yIRjEcYtxiYTAyE1dq5Yy4zD2mJxTUyBj80indDaHOpSymMmYUwkvfP
-         jXJNAjngb1zAGUzXfwjYkM76vaLVewW/rSyPc1LHYV/X4YSF40GWng8Ihweixkg2F9d2
-         3fhZgwiYGKffpQHKzLGbiW1IGHQvx9zOxCzH13ALA7vxmuiBLHu+Rywe9GIf+Ya3+ZAj
-         g7tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8Ee6BEPzW0avC5vdfdajiCFDdnJS72+HuNB+ehIuHbk=;
-        b=VxFGOSwekkKz6fr4ZBoUNtyno71Sgka/N7GddrCswI3cn5UyAwYQyTiM95G8KxPl5+
-         I3VHBkxjWP/RQxCVTv0vO1Zw0usF6k7RccYotY09F/TElDmIggmdrE+OqqcfSgzC2tkn
-         NimmtFYBnokfyETXB6bzBfpCLIWcDfR3sfzTdn8WMlac25GR+sZBPcjhJGjYQp9bbejR
-         lonxiomXUZlg0D9P+sFUVpE1GRV7QR5uVz8obXJDui+0FPIw86VrcbTuIVoGIlI/ox8Y
-         tGh47u/GiuC87ERdAanrLvtvRgbbotZIRv9THvPor9mbfE9XgvvDF2iVSggx5fQ0jRS4
-         AeAg==
-X-Gm-Message-State: AOAM531sSrQ1V4u5Eb1nvFGKvNmHfRHp87UsRKWt0EOcfv1NsRWD868n
-        eXPZwIPN07zHbcPVUu450JqSsw==
-X-Google-Smtp-Source: ABdhPJwjBm4DQ8Kg+Djp6Z8MIUqAiwyOQ9W99Mg2Nb+MDWSBFOIbtMD8LyGy1mcdwghm3XdFhqmN0A==
-X-Received: by 2002:a2e:7813:: with SMTP id t19mr14943140ljc.87.1608116181872;
-        Wed, 16 Dec 2020 02:56:21 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id d24sm185353lfl.30.2020.12.16.02.56.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 02:56:21 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 92CA41033F0; Wed, 16 Dec 2020 13:56:23 +0300 (+03)
-Date:   Wed, 16 Dec 2020 13:56:23 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/mm: increase pgt_buf size for 5-level page tables
-Message-ID: <20201216105623.e65a43mhegoqgldt@box>
-References: <20201215205641.34096-1-lstoakes@gmail.com>
+        Wed, 16 Dec 2020 06:00:18 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82810C06179C;
+        Wed, 16 Dec 2020 02:59:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MlEsyRKN7UIGIMoR4X8FZQCL6Z0fZRj8y0TPOgyM8fE=; b=MuYTmE3PRiNU3kJIDxUcUWSI7j
+        wiVEQNcyZOVn5ovAyM8fJ4LaO60RpOx3QMjolGuhr5KvP9G7jdVoxFTOtsY92XrJWV+MKg7k8Ibir
+        Qc7Y7DxmpHFudzmOo/FCeAROPA3jeR1uHHKJH5LeAqOdz4m0XoDZPU5MrSmTUHD2wHRv3cf54g57c
+        Mpt7Gi/d2rN70k4lvPJkJyc5Nlq3lavP096XSRf+UVjufte+js7p0mXlZvsi7fVh7yg8pACUONkqy
+        /f2HjE3Eg1qPpEzwO/c6TzVXsFrkSJWZVdMFH+tZYONxx1pHSfeQFNSlaMiBfUSiqyhs6tYOnJUn9
+        w0rqZg1g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kpUWp-0003s1-0P; Wed, 16 Dec 2020 10:59:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9886E300DAE;
+        Wed, 16 Dec 2020 11:59:26 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 81E4423669EF4; Wed, 16 Dec 2020 11:59:26 +0100 (CET)
+Date:   Wed, 16 Dec 2020 11:59:26 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        jeyu@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        ardb@kernel.org
+Subject: Re: static_branch_enable() does not work from a __init function?
+Message-ID: <20201216105926.GS3092@hirez.programming.kicks-ass.net>
+References: <MW4PR21MB1857CC85A6844C89183C93E9BFC59@MW4PR21MB1857.namprd21.prod.outlook.com>
+ <20201216092649.GM3040@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201215205641.34096-1-lstoakes@gmail.com>
+In-Reply-To: <20201216092649.GM3040@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 08:56:41PM +0000, Lorenzo Stoakes wrote:
-> pgt_buf is used to allocate page tables on initial direct page mapping
-> bootstrapping us into being able to allocate these before the direct
-> mapping makes further pages available.
+On Wed, Dec 16, 2020 at 10:26:49AM +0100, Peter Zijlstra wrote:
+> On Wed, Dec 16, 2020 at 03:54:29AM +0000, Dexuan Cui wrote:
+> > Hi,
+> > The below init_module() prints "foo: false". This is strange since
+> > static_branch_enable() is called before the static_branch_unlikely().
+> > This strange behavior happens to v5.10 and an old v5.4 kernel.
+> > 
+> > If I remove the "__init" marker from the init_module() function, then
+> > I get the expected output of "foo: true"! I guess here I'm missing
+> > something with Static Keys?
 > 
-> INIT_PGD_PAGE_COUNT is set to 6 pages (doubled for KASLR) - 3 (PUD, PMD,
-> PTE) for the 1 MiB ISA mapping and 3 more for the first direct mapping
-> assignment in each case providing 2 MiB of address space.
+> *groan*... I think this is because __init is ran with
+> MODULE_STATE_COMING, we only switch to MODULE_STATE_LIVE later.
 > 
-> This has not been updated for 5-level page tables which additionally has a
-> P4D page table level above PUD.
+> Let me see if there's a sane way to untangle that.
 > 
-> In most instances this will not have a material impact as the first 4 page
-> levels allocated for the ISA mapping will provide sufficient address space
-> to encompass all further address mappings. If the first direct mapping is
-> within 512 GiB of the ISA mapping we need only add a PMD and PTE in the
-> instance where we are using 4 KiB page tables (e.g. CONFIG_DEBUG_PAGEALLOC
-> is enabled) and only a PMD if we can use 2 MiB pages (the first allocation
-> is limited to PMD_SIZE so we can't use a GiB page there).
-> 
-> However if we have more than 512 GiB of RAM and are allocating 4 KiB page
-> size we require 3 further page tables and if we have more than 256 TiB of
-> RAM at 4 KiB or 2 MiB page size we require a further 3 or 4 page tables
-> respectively.
-> 
-> This patch updates INIT_PGD_PAGE_COUNT to reflect this.
-> 
-> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> > #include <linux/module.h>
+> > #include <linux/kernel.h>
+> > #include <linux/jump_label.h>
+> > 
+> > static DEFINE_STATIC_KEY_FALSE(enable_foo);
+> > 
+> > int __init init_module(void)
+> > {
+> >         static_branch_enable(&enable_foo);
+> > 
+> >         if (static_branch_unlikely(&enable_foo))
+> >                 printk("foo: true\n");
+> >         else
+> >                 printk("foo: false\n");
+> > 
+> >         return 0;
+> > }
+> > 
+> > void cleanup_module(void)
+> > {
+> >         static_branch_disable(&enable_foo);
+> > }
+> > 
+> > MODULE_LICENSE("GPL");
+> > 
+> > 
+> > PS, I originally found: in arch/x86/kvm/vmx/vmx.c: vmx_init(), it looks
+> > like the line "static_branch_enable(&enable_evmcs);" does not take effect
+> > in a v5.4-based kernel, but does take effect in the v5.10 kernel in the
+> > same x86-64 virtual machine on Hyper-V, so I made the above test module
+> > to test static_branch_enable(), and found that static_branch_enable() in
+> > the test module does not work with both v5.10 and my v5.4 kernel, if the
+> > __init marker is used.
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+So I think the reason your above module doesn't work, while the one in
+vmx_init() does work (for 5.10) should be fixed by the completely
+untested below.
 
--- 
- Kirill A. Shutemov
+I've no clue about 5.4 and no desire to investigate. That's what distro
+people are for.
+
+Can you verify?
+
+---
+diff --git a/kernel/jump_label.c b/kernel/jump_label.c
+index 015ef903ce8c..c6a39d662935 100644
+--- a/kernel/jump_label.c
++++ b/kernel/jump_label.c
+@@ -793,6 +793,7 @@ int jump_label_text_reserved(void *start, void *end)
+ static void jump_label_update(struct static_key *key)
+ {
+ 	struct jump_entry *stop = __stop___jump_table;
++	bool init = system_state < SYSTEM_RUNNING;
+ 	struct jump_entry *entry;
+ #ifdef CONFIG_MODULES
+ 	struct module *mod;
+@@ -804,15 +805,16 @@ static void jump_label_update(struct static_key *key)
+ 
+ 	preempt_disable();
+ 	mod = __module_address((unsigned long)key);
+-	if (mod)
++	if (mod) {
+ 		stop = mod->jump_entries + mod->num_jump_entries;
++		init = mod->state == MODULE_STATE_COMING;
++	}
+ 	preempt_enable();
+ #endif
+ 	entry = static_key_entries(key);
+ 	/* if there are no users, entry can be NULL */
+ 	if (entry)
+-		__jump_label_update(key, entry, stop,
+-				    system_state < SYSTEM_RUNNING);
++		__jump_label_update(key, entry, stop, init);
+ }
+ 
+ #ifdef CONFIG_STATIC_KEYS_SELFTEST
