@@ -2,150 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA132DBECC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3E62DBEC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgLPKhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:37:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28890 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726278AbgLPKhh (ORCPT
+        id S1726146AbgLPKhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 05:37:00 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:33909 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726143AbgLPKg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:37:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608114971;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t9CKeWnWAx3u5eiNFnwtMWhwXN3PXTOPoJxw+acCycA=;
-        b=D7vAADOETkmzX7MpmZt4RyiXhLVq49rfKFzzElh5ICu4C2qf/jNWwROPhR/Yai/A/6Spru
-        /hLARqnbA7DEbokqBBUUDKNLg5fETqMqHvzZzKzrMIZNM24l7wC+LK/9wDboowln9ATZ7s
-        VVDmEiCY2z/zcehJeeqFL0n4N1kI6Dw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-508-njN3WV6WMg-q2N8opfkSmQ-1; Wed, 16 Dec 2020 05:36:06 -0500
-X-MC-Unique: njN3WV6WMg-q2N8opfkSmQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 83CB58030AC;
-        Wed, 16 Dec 2020 10:36:03 +0000 (UTC)
-Received: from [10.36.112.243] (ovpn-112-243.ams2.redhat.com [10.36.112.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7449860C43;
-        Wed, 16 Dec 2020 10:35:55 +0000 (UTC)
-Subject: Re: [RFC PATCH v1 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending
- state to physical side
-To:     Shenming Lu <lushenming@huawei.com>, Marc Zyngier <maz@kernel.org>
-Cc:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>, Neo Jia <cjia@nvidia.com>,
-        wanghaibin.wang@huawei.com, yuzenghui@huawei.com
-References: <20201123065410.1915-1-lushenming@huawei.com>
- <20201123065410.1915-4-lushenming@huawei.com>
- <5c724bb83730cdd5dcf7add9a812fa92@kernel.org>
- <b03edcf2-2950-572f-fd31-601d8d766c80@huawei.com>
- <2d2bcae4f871d239a1af50362f5c11a4@kernel.org>
- <49610291-cf57-ff78-d0ac-063af24efbb4@huawei.com>
- <48c10467-30f3-9b5c-bbcb-533a51516dc5@huawei.com>
- <2ad38077300bdcaedd2e3b073cd36743@kernel.org>
- <9b80d460-e149-20c8-e9b3-e695310b4ed1@huawei.com>
- <274dafb2e21f49326a64bb575e668793@kernel.org>
- <59ec07e5-c017-8644-b96f-e87fe600c490@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <f8b398df-9945-9ce6-18e6-970637a1bb51@redhat.com>
-Date:   Wed, 16 Dec 2020 11:35:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Wed, 16 Dec 2020 05:36:59 -0500
+X-UUID: cc3bd593fb8b4318ba4878f0f99a0b23-20201216
+X-UUID: cc3bd593fb8b4318ba4878f0f99a0b23-20201216
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 436696254; Wed, 16 Dec 2020 18:36:16 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 16 Dec 2020 18:36:13 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 16 Dec 2020 18:36:11 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tomasz Figa <tfiga@google.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
+        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
+        <anan.sun@mediatek.com>, <chao.hao@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@google.com>,
+        <kernel-team@android.com>
+Subject: [PATCH v3 0/7] MediaTek IOMMU improve tlb flush performance in map/unmap
+Date:   Wed, 16 Dec 2020 18:36:00 +0800
+Message-ID: <20201216103607.23050-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <59ec07e5-c017-8644-b96f-e87fe600c490@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shenming,
+This patchset is to improve tlb flushing performance in iommu_map/unmap
+for MediaTek IOMMU.
 
-On 12/1/20 1:15 PM, Shenming Lu wrote:
-> On 2020/12/1 19:50, Marc Zyngier wrote:
->> On 2020-12-01 11:40, Shenming Lu wrote:
->>> On 2020/12/1 18:55, Marc Zyngier wrote:
->>>> On 2020-11-30 07:23, Shenming Lu wrote:
->>>>
->>>> Hi Shenming,
->>>>
->>>>> We are pondering over this problem these days, but still don't get a
->>>>> good solution...
->>>>> Could you give us some advice on this?
->>>>>
->>>>> Or could we move the restoring of the pending states (include the sync
->>>>> from guest RAM and the transfer to HW) to the GIC VM state change handler,
->>>>> which is completely corresponding to save_pending_tables (more symmetric?)
->>>>> and don't expose GICv4...
->>>>
->>>> What is "the GIC VM state change handler"? Is that a QEMU thing?
->>>
->>> Yeah, it is a a QEMU thing...
->>>
->>>> We don't really have that concept in KVM, so I'd appreciate if you could
->>>> be a bit more explicit on this.
->>>
->>> My thought is to add a new interface (to QEMU) for the restoring of
->>> the pending states, which is completely corresponding to
->>> KVM_DEV_ARM_VGIC_SAVE_PENDING_TABLES...
->>> And it is called from the GIC VM state change handler in QEMU, which
->>> is happening after the restoring (call kvm_vgic_v4_set_forwarding())
->>> but before the starting (running) of the VFIO device.
->>
->> Right, that makes sense. I still wonder how much the GIC save/restore
->> stuff differs from other architectures that implement similar features,
->> such as x86 with VT-D.
-> 
-> I am not familiar with it...
-> 
->>
->> It is obviously too late to change the userspace interface, but I wonder
->> whether we missed something at the time.
-> 
-> The interface seems to be really asymmetrical?...
+For iommu_map, currently MediaTek IOMMU use IO_PGTABLE_QUIRK_TLBI_ON_MAP
+to do tlb_flush for each a memory chunk. this is so unnecessary. we could
+improve it by tlb flushing one time at the end of iommu_map.
 
-in qemu d5aa0c229a ("hw/intc/arm_gicv3_kvm: Implement pending table
-save") commit message, it is traced:
+For iommu_unmap, currently we have already improve this performance by
+gather. But the current gather should take care its granule size. if the
+granule size is different, it will do tlb flush and gather again. Our HW
+don't care about granule size. thus I gather the range in our file.
 
-"There is no explicit restore as the tables are implicitly sync'ed
-on ITS table restore and on LPI enable at redistributor level."
+After this patchset, we could achieve only tlb flushing once in iommu_map
+and iommu_unmap.
 
-At that time there was no real justification behind adding the RESTORE
-fellow attr.
+Regardless of sg, for each a segment, I did a simple test:
+  
+  size = 20 * SZ_1M;
+  /* the worst case, all are 4k mapping. */
+  ret = iommu_map(domain, 0x5bb02000, 0x123f1000, size, IOMMU_READ);
+  iommu_unmap(domain, 0x5bb02000, size);
 
-Maybe a stupid question but isn't it possible to unset the forwarding
-when saving and rely on VFIO to automatically restore it when resuming
-on destination?
+This is the comparing time(unit is us):
+              original-time  after-improve
+   map-20M    59943           2347
+   unmap-20M  264             36
 
-Thanks
+This patchset also flush tlb once in the iommu_map_sg case.
 
-Eric
+patch [1/7][2/7][3/7] are for map while the others are for unmap.
 
+This patchset base on:
+  a) mt8192 iommu v5
+https://lore.kernel.org/linux-iommu/20201209080102.26626-1-yong.wu@mediatek.com/T/#t
+  b) iommu/io-pgtable: Remove tlb_flush_leaf
+https://lore.kernel.org/linux-iommu/160744101816.3622130.16266834943434854326.b4-ty@kernel.org/T/#mc8fbc98bee8bca865d73c873275ab34fed1c25c7
 
-> 
-> Or is there a possibility that we could know which irq is hw before the VFIO
-> device calls kvm_vgic_v4_set_forwarding()?
-> 
-> Thanks,
-> Shenming
-> 
->>
->> Thanks,
->>
->>         M.
-> 
+change note:
+v3: Refactor the unmap flow suggested by Robin.
+     
+v2: https://lore.kernel.org/linux-iommu/20201119061836.15238-1-yong.wu@mediatek.com/
+    Refactor all the code.
+    base on v5.10-rc1.
+
+Yong Wu (7):
+  iommu: Move iotlb_sync_map out from __iommu_map
+  iommu: Add iova and size as parameters in iotlb_sync_map
+  iommu/mediatek: Add iotlb_sync_map to sync whole the iova range
+  iommu: Switch gather->end to unsigned long long
+  iommu: Allow io_pgtable_tlb ops optional
+  iommu/mediatek: Gather iova in iommu_unmap to achieve tlb sync once
+  iommu/mediatek: Remove the tlb-ops for v7s
+
+ drivers/iommu/iommu.c      | 24 +++++++++++++++-----
+ drivers/iommu/mtk_iommu.c  | 45 +++++++++++++++-----------------------
+ drivers/iommu/tegra-gart.c |  3 ++-
+ include/linux/io-pgtable.h |  8 ++++---
+ include/linux/iommu.h      |  8 ++++---
+ 5 files changed, 49 insertions(+), 39 deletions(-)
+
+-- 
+2.18.0
+
 
