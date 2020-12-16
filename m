@@ -2,57 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7CD2DBC9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F2A2DBC86
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726080AbgLPIXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 03:23:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725845AbgLPIXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:23:23 -0500
-Subject: Re: [GIT PULL] KUnit update for Linux 5.11-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608106948;
-        bh=MAxkcc2T4pvNHNFzM9yul6oUiKb4Mks1V0T+fqMaXmc=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=kDdQ3bzSuJE/ZHLq4PtBMhvyGYkMGsgajLYflaE/Jc0Ujgi9jvUca52VTjbqNV24a
-         tWY/S1+f7EOhUHtxZICpHoWNlugZDNGuHT2mfT2NTA3Jt2P9y1mBlBlLDaTSDmhQ8w
-         mbet+FMU6TkFsrCWFjELzT+1f65kezJMEFeY1JPIrU4cb0tcDSP9JXq4FcxlGCDJBE
-         fZhgyLaur+C2MFdV9eaWV8KaFukk3nAI/tSJ+zflfKwWN6QUpFhneM+bChPoHHxnj0
-         OR8Po+qmnQlZaC+Jk73e88diPsCKuxMFraSziJtmasom1ouQr/uEWq4lHWVxk1e9jE
-         d5RAhijTfyCqA==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <e68b976c-0966-b26e-bb53-d80111eab8bd@linuxfoundation.org>
-References: <e68b976c-0966-b26e-bb53-d80111eab8bd@linuxfoundation.org>
-X-PR-Tracked-List-Id: <linux-kselftest.vger.kernel.org>
-X-PR-Tracked-Message-Id: <e68b976c-0966-b26e-bb53-d80111eab8bd@linuxfoundation.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-kunit-5.11-rc1
-X-PR-Tracked-Commit-Id: 5f6b99d0287de2c2d0b5e7abcb0092d553ad804a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 706451d47b3716c24e0553dfdefba11d202effc1
-Message-Id: <160810694864.6147.6246308365891660205.pr-tracker-bot@kernel.org>
-Date:   Wed, 16 Dec 2020 08:22:28 +0000
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Theodore Ts'o <tytso@mit.edu>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
+        id S1725905AbgLPITo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 03:19:44 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:25668 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725710AbgLPITn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 03:19:43 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BG8AgKC027015;
+        Wed, 16 Dec 2020 03:18:49 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 35cun8wcw7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 03:18:49 -0500
+Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0BG8Il8e002117
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Dec 2020 03:18:48 -0500
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
+ Wed, 16 Dec 2020 00:18:46 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 16 Dec 2020 00:18:46 -0800
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0BG8IhwL020191;
+        Wed, 16 Dec 2020 03:18:43 -0500
+From:   Mircea Caprioru <mircea.caprioru@analog.com>
+To:     <jic23@kernel.org>
+CC:     <Michael.Hennerich@analog.com>, <alexandru.ardelean@analog.com>,
+        <lars@metafoo.de>, <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        Dragos Bogdan <dragos.bogdan@analog.com>,
+        Mircea Caprioru <mircea.caprioru@analog.com>
+Subject: [PATCH V2] iio: adc: ad7476: Add LTC2314-14 support
+Date:   Wed, 16 Dec 2020 10:23:04 +0200
+Message-ID: <20201216082304.89187-1-mircea.caprioru@analog.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-16_02:2020-12-15,2020-12-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 malwarescore=0 phishscore=0 spamscore=0 clxscore=1015
+ bulkscore=0 adultscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 15 Dec 2020 14:52:11 -0700:
+From: Dragos Bogdan <dragos.bogdan@analog.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-kunit-5.11-rc1
+The LTC2314-14 is a 14-bit, 4.5Msps, serial sampling A/D converter that draws only
+6.2mA from a wide range analog supply adjustable from 2.7V to 5.25V.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/706451d47b3716c24e0553dfdefba11d202effc1
+Signed-off-by: Dragos Bogdan <dragos.bogdan@analog.com>
+Signed-off-by: Mircea Caprioru <mircea.caprioru@analog.com>
+---
+Changelog v2
+- fix conflict with ADS7868 device in chip_info_tbl
 
-Thank you!
+ drivers/iio/adc/ad7476.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
+diff --git a/drivers/iio/adc/ad7476.c b/drivers/iio/adc/ad7476.c
+index 66c55ae67791..6bb4711b0f61 100644
+--- a/drivers/iio/adc/ad7476.c
++++ b/drivers/iio/adc/ad7476.c
+@@ -67,6 +67,7 @@ enum ad7476_supported_device_ids {
+ 	ID_ADS7866,
+ 	ID_ADS7867,
+ 	ID_ADS7868,
++	ID_LTC2314_14,
+ };
+ 
+ static void ad7091_convst(struct ad7476_state *st)
+@@ -249,6 +250,9 @@ static const struct ad7476_chip_info ad7476_chip_info_tbl[] = {
+ 	[ID_ADS7868] = {
+ 		.channel[0] = ADS786X_CHAN(8),
+ 		.channel[1] = IIO_CHAN_SOFT_TIMESTAMP(1),
++	[ID_LTC2314_14] = {
++		.channel[0] = AD7940_CHAN(14),
++		.channel[1] = IIO_CHAN_SOFT_TIMESTAMP(1),
+ 	},
+ };
+ 
+@@ -365,6 +369,7 @@ static const struct spi_device_id ad7476_id[] = {
+ 	{"ads7866", ID_ADS7866},
+ 	{"ads7867", ID_ADS7867},
+ 	{"ads7868", ID_ADS7868},
++	{"ltc2314-14", ID_LTC2314_14},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(spi, ad7476_id);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.17.1
+
