@@ -2,80 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1334E2DC0EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:16:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 567BC2DC0E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgLPNPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:15:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726137AbgLPNPv (ORCPT
+        id S1726255AbgLPNPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:15:43 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9456 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726137AbgLPNPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:15:51 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21098C0617A7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:15:10 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by baptiste.telenet-ops.be with bizsmtp
-        id 51F22400B4C55Sk011F2XH; Wed, 16 Dec 2020 14:15:07 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kpWdx-00BAa1-VX; Wed, 16 Dec 2020 14:15:01 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kpWdw-005XVU-SW; Wed, 16 Dec 2020 14:15:00 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mike Healy <mikex.healy@intel.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] crypto: CRYPTO_DEV_KEEMBAY_OCS_AES_SM4 should depend on ARCH_KEEMBAY
-Date:   Wed, 16 Dec 2020 14:14:59 +0100
-Message-Id: <20201216131459.1320396-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Wed, 16 Dec 2020 08:15:43 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CwwZZ3LRWzhr76;
+        Wed, 16 Dec 2020 21:14:30 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 16 Dec 2020 21:14:54 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] tools: perf: convert comma to semicolon
+Date:   Wed, 16 Dec 2020 21:15:26 +0800
+Message-ID: <20201216131526.14665-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Intel Keem Bay Offload and Crypto Subsystem (OCS) is only present on
-Intel Keem Bay SoCs.  Hence add a dependency on ARCH_KEEMBAY, to prevent
-asking the user about this driver when configuring a kernel without
-Intel Keem Bay platform support.
+Replace a comma between expression statements by a semicolon.
 
-While at it, fix a misspelling of "cipher".
-
-Fixes: 88574332451380f4 ("crypto: keembay - Add support for Keem Bay OCS AES/SM4")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/crypto/keembay/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/perf/builtin-diff.c         | 4 ++--
+ tools/perf/builtin-inject.c       | 2 +-
+ tools/perf/ui/browsers/annotate.c | 2 +-
+ tools/perf/util/annotate.c        | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/crypto/keembay/Kconfig b/drivers/crypto/keembay/Kconfig
-index 3c16797b25b9497d..6f62c838a3fa0b2e 100644
---- a/drivers/crypto/keembay/Kconfig
-+++ b/drivers/crypto/keembay/Kconfig
-@@ -1,12 +1,12 @@
- config CRYPTO_DEV_KEEMBAY_OCS_AES_SM4
- 	tristate "Support for Intel Keem Bay OCS AES/SM4 HW acceleration"
--	depends on OF || COMPILE_TEST
-+	depends on ARCH_KEEMBAY || COMPILE_TEST
- 	select CRYPTO_SKCIPHER
- 	select CRYPTO_AEAD
- 	select CRYPTO_ENGINE
- 	help
- 	  Support for Intel Keem Bay Offload and Crypto Subsystem (OCS) AES and
--	  SM4 cihper hardware acceleration for use with Crypto API.
-+	  SM4 cipher hardware acceleration for use with Crypto API.
+diff --git a/tools/perf/builtin-diff.c b/tools/perf/builtin-diff.c
+index cefc71506409..9064419b108f 100644
+--- a/tools/perf/builtin-diff.c
++++ b/tools/perf/builtin-diff.c
+@@ -1912,8 +1912,8 @@ static int data_init(int argc, const char **argv)
+ 		struct perf_data *data = &d->data;
  
- 	  Provides HW acceleration for the following transformations:
- 	  cbc(aes), ctr(aes), ccm(aes), gcm(aes), cbc(sm4), ctr(sm4), ccm(sm4)
+ 		data->path  = use_default ? defaults[i] : argv[i];
+-		data->mode  = PERF_DATA_MODE_READ,
+-		data->force = force,
++		data->mode  = PERF_DATA_MODE_READ;
++		data->force = force;
+ 
+ 		d->idx  = i;
+ 	}
+diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+index 0462dc8db2e3..235a91a907fd 100644
+--- a/tools/perf/builtin-inject.c
++++ b/tools/perf/builtin-inject.c
+@@ -747,7 +747,7 @@ static int __cmd_inject(struct perf_inject *inject)
+ 		inject->tool.auxtrace_info  = perf_event__process_auxtrace_info;
+ 		inject->tool.auxtrace	    = perf_event__process_auxtrace;
+ 		inject->tool.aux	    = perf_event__drop_aux;
+-		inject->tool.itrace_start   = perf_event__drop_aux,
++		inject->tool.itrace_start   = perf_event__drop_aux;
+ 		inject->tool.ordered_events = true;
+ 		inject->tool.ordering_requires_timestamps = true;
+ 		/* Allow space in the header for new attributes */
+diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+index bd77825fd5a1..3d857b1e0e62 100644
+--- a/tools/perf/ui/browsers/annotate.c
++++ b/tools/perf/ui/browsers/annotate.c
+@@ -928,7 +928,7 @@ int symbol__tui_annotate(struct map_symbol *ms, struct evsel *evsel,
+ 
+ 	browser.b.width = notes->max_line_len;
+ 	browser.b.nr_entries = notes->nr_entries;
+-	browser.b.entries = &notes->src->source,
++	browser.b.entries = &notes->src->source;
+ 	browser.b.width += 18; /* Percentage */
+ 
+ 	if (notes->options->hide_src_code)
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index 6c8575e182ed..3b4663f8229e 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -367,7 +367,7 @@ static int jump__parse(struct arch *arch, struct ins_operands *ops, struct map_s
+ 	}
+ 
+ 	target.addr = map__objdump_2mem(map, ops->target.addr);
+-	start = map->unmap_ip(map, sym->start),
++	start = map->unmap_ip(map, sym->start);
+ 	end = map->unmap_ip(map, sym->end);
+ 
+ 	ops->target.outside = target.addr < start || target.addr > end;
 -- 
-2.25.1
+2.22.0
 
