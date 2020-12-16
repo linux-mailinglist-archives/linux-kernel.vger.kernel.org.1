@@ -2,25 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D479E2DC386
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:55:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E289C2DC37E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgLPPya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:54:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46302 "EHLO mail.kernel.org"
+        id S1726621AbgLPPyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:54:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725812AbgLPPya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:54:30 -0500
+        id S1726616AbgLPPyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 10:54:01 -0500
 From:   Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, timur@kernel.org,
-        tiwai@suse.com, Shengjiu Wang <shengjiu.wang@nxp.com>,
-        perex@perex.cz, festevam@gmail.com, alsa-devel@alsa-project.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <1608115464-18710-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1608115464-18710-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: imx-hdmi: Fix warning of the uninitialized variable ret
-Message-Id: <160813397775.31838.8934909997692637790.b4-ty@kernel.org>
+To:     robh+dt@kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        lgirdwood@gmail.com, jarkko.nikula@bitmer.com
+Cc:     devicetree@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        jsarha@ti.com
+In-Reply-To: <20201215130512.8753-1-peter.ujfalusi@ti.com>
+References: <20201215130512.8753-1-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 0/2] ASoC: ti: Maintainer mail address change
+Message-Id: <160813397774.31838.10952894427041068328.b4-ty@kernel.org>
 Date:   Wed, 16 Dec 2020 15:52:57 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -29,10 +31,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020 18:44:24 +0800, Shengjiu Wang wrote:
-> When condition ((hdmi_out && hdmi_in) || (!hdmi_out && !hdmi_in))
-> is true, then goto fail, the uninitialized variable ret will be
-> returned.
+On Tue, 15 Dec 2020 15:05:10 +0200, Peter Ujfalusi wrote:
+> My TI address is going to bounce after Friday (18.12.2020), switch my email
+> address to my private one for now.
+> 
+> Regards,
+> Peter
 
 Applied to
 
@@ -40,8 +44,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: imx-hdmi: Fix warning of the uninitialized variable ret
-      commit: acd894aee3149c15847bc4f0690fccba59ced5e7
+[1/2] MAINTAINERS: Update email address for TI ASoC and twl4030 codec drivers
+      commit: fe6ce6c394fb1ef1d8a6384c5180e70893157f22
+[2/2] ASoC: dt-bindings: ti, j721e: Update maintainer and author information
+      commit: 61fc03b6512b18f27a25002426d595f5a36645ed
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
