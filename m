@@ -2,205 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E522DBD5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B00D2DBD67
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:17:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgLPJOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:14:19 -0500
-Received: from mo-csw1516.securemx.jp ([210.130.202.155]:51676 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725829AbgLPJOT (ORCPT
+        id S1726259AbgLPJQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:16:24 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9450 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbgLPJQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:14:19 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1516) id 0BG9BpDw006013; Wed, 16 Dec 2020 18:11:51 +0900
-X-Iguazu-Qid: 34tKHiA2wsjNFghN46
-X-Iguazu-QSIG: v=2; s=0; t=1608109911; q=34tKHiA2wsjNFghN46; m=MgklT305Ge9UZBU3EMVQtZH0PwxZoJlej00Mkpkh988=
-Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
-        by relay.securemx.jp (mx-mr1510) id 0BG9Bos2002451;
-        Wed, 16 Dec 2020 18:11:50 +0900
-Received: from enc02.toshiba.co.jp ([61.202.160.51])
-        by imx12.toshiba.co.jp  with ESMTP id 0BG9BodP016995;
-        Wed, 16 Dec 2020 18:11:50 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 0BG9Bo9n002730;
-        Wed, 16 Dec 2020 18:11:50 +0900
-Date:   Wed, 16 Dec 2020 18:11:48 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
-        yuji2.ishikawa@toshiba.co.jp,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/4] gpio: visconti: Add Toshiba Visconti GPIO support
-X-TSB-HOP: ON
-Message-ID: <20201216091148.vmriqt3vsg34pqhj@toshiba.co.jp>
-References: <20201211094138.2863677-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20201211094138.2863677-3-nobuhiro1.iwamatsu@toshiba.co.jp>
- <CACRpkdZ-umK4troerSA6S2rvyU5XV+KsFdxuWE5Sy0PCgdfT6A@mail.gmail.com>
+        Wed, 16 Dec 2020 04:16:23 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CwqGQ5RJ2zhrS2;
+        Wed, 16 Dec 2020 17:15:10 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 16 Dec 2020 17:15:33 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>, <stable@vger.kernel.org>
+Subject: [PATCH] f2fs: fix out-of-repair __setattr_copy()
+Date:   Wed, 16 Dec 2020 17:15:23 +0800
+Message-ID: <20201216091523.21411-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdZ-umK4troerSA6S2rvyU5XV+KsFdxuWE5Sy0PCgdfT6A@mail.gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+__setattr_copy() was copied from setattr_copy() in fs/attr.c, there is
+two missing patches doesn't cover this inner function, fix it.
 
-Thanks for your review.
+Commit 7fa294c8991c ("userns: Allow chown and setgid preservation")
+Commit 23adbe12ef7d ("fs,userns: Change inode_capable to capable_wrt_inode_uidgid")
 
-On Sat, Dec 12, 2020 at 12:20:47AM +0100, Linus Walleij wrote:
-> On Fri, Dec 11, 2020 at 1:43 AM Nobuhiro Iwamatsu
-> <nobuhiro1.iwamatsu@toshiba.co.jp> wrote:
-> 
-> This iteration is looking really good, but we are not quite there yet,
-> because now that the driver looks so much better I can see that it
-> is a hierarchical interrupt controller.
+Cc: stable@vger.kernel.org
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ fs/f2fs/file.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-As you pointed out, this GPIO interrupt is directly linked to the GIC
-interrupt.
-As a function of the GPIO driver, there is a function (IRQ_DOMAIN_HIERARCHY)
-that can handle these as one-to-one, so it is pointed out that it is better
-to use this. Is this correct?
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 16ea10f2bcf5..5bcaa68f74ad 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -848,7 +848,8 @@ static void __setattr_copy(struct inode *inode, const struct iattr *attr)
+ 	if (ia_valid & ATTR_MODE) {
+ 		umode_t mode = attr->ia_mode;
+ 
+-		if (!in_group_p(inode->i_gid) && !capable(CAP_FSETID))
++		if (!in_group_p(inode->i_gid) &&
++			!capable_wrt_inode_uidgid(inode, CAP_FSETID))
+ 			mode &= ~S_ISGID;
+ 		set_acl_inode(inode, mode);
+ 	}
+-- 
+2.29.2
 
-> 
-> > Add the GPIO driver for Toshiba Visconti ARM SoCs.
-> >
-> > Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> > Reviewed-by: Punit Agrawal <punit1.agrawal@toshiba.co.jp>
-> (...)
-> 
-> > +config GPIO_VISCONTI
-> > +       tristate "Toshiba Visconti GPIO support"
-> > +       depends on ARCH_VISCONTI || COMPILE_TEST
-> > +       depends on OF_GPIO
-> > +       select GPIOLIB_IRQCHIP
-> > +       select GPIO_GENERIC
-> > +       help
-> > +         Say yes here to support GPIO on Tohisba Visconti.
-> 
-> Add
-> select IRQ_DOMAIN_HIERARCHY
-
-OK, I will add this.
-
-> 
-> > +struct visconti_gpio {
-> > +       void __iomem *base;
-> > +       int *irq;
-> 
-> Don't keep these irqs around.
->
-
-OK, I will remove this
-.
-> > +       ret = platform_irq_count(pdev);
-> > +       if (ret < 0)
-> > +               return ret;
-> > +
-> > +       num_irq = ret;
-> > +
-> > +       priv->irq = devm_kcalloc(dev, num_irq, sizeof(priv->irq), GFP_KERNEL);
-> > +       if (!priv->irq)
-> > +               return -ENOMEM;
-> > +
-> > +       for (i = 0; i < num_irq; i++) {
-> > +               priv->irq[i] = platform_get_irq(pdev, i);
-> > +               if (priv->irq[i] < 0) {
-> > +                       dev_err(dev, "invalid IRQ[%d]\n", i);
-> > +                       return priv->irq[i];
-> > +               }
-> > +       }
-> 
-> Instead of doing this, look in for example
-> drivers/gpio/gpio-ixp4xx.c
-> 
-> You need:
-> 
-> > +       girq = &priv->gpio_chip.irq;
-> > +       girq->chip = irq_chip;
-> 
-> girq->fwnode = fwnode;
-> girq->parent_domain = parent;
-> girq->child_to_parent_hwirq = visconti_gpio_child_to_parent_hwirq;
-> 
-
-
-I understood that the irq_domain specified by girq->parent_domain will be the
-GIC. Is this correct?
-
-
-> The mapping function will be something like this:
-> 
-> static int visconti_gpio_child_to_parent_hwirq(struct gpio_chip *gc,
->                                              unsigned int child,
->                                              unsigned int child_type,
->                                              unsigned int *parent,
->                                              unsigned int *parent_type)
-> {
->         /* Interrupts 0..15 mapped to interrupts 24..39 on the GIC */
->         if (child < 16) {
->             /* All these interrupts are level high in the CPU */
->             *parent_type = IRQ_TYPE_LEVEL_HIGH;
->             *parent = child + 24;
->             return 0;
->         }
->         return -EINVAL;
-> }
->
-
-I see, I will add this function.
-
-> > +       priv->gpio_chip.irq.init_valid_mask = visconti_init_irq_valid_mask;
-> 
-> This will be set up by gpiolib when using hierarchical irqs.
-> 
-
-OK.
-
-> > +       /* This will let us handle the parent IRQ in the driver */
-> > +       girq->parent_handler = NULL;
-> > +       girq->num_parents = 0;
-> > +       girq->parents = NULL;
-> 
-> You don't need this.
-> 
-> > +       girq->default_type = IRQ_TYPE_NONE;
-> > +       girq->handler = handle_level_irq;
-> 
-> But this stays.
-> 
-
-OK, I will update to these.
-
-> > +       for (i = 0; i < num_irq; i++) {
-> > +               desc = irq_to_desc(priv->irq[i]);
-> > +               desc->status_use_accessors |= IRQ_NOAUTOEN;
-> > +               if (devm_request_irq(dev, priv->irq[i],
-> > +                                    visconti_gpio_irq_handler, 0, name, priv)) {
-> > +                       dev_err(dev, "failed to request IRQ[%d]\n", i);
-> > +                       return -ENOENT;
-> > +               }
-> > +       }
-> 
-> This should not be needed either when using hiearchical IRQs,
-> also the irqchip maintainers will beat us up for poking around in the
-> descs like this.
-
-I understand that the processing equivalent to request_irq() is processed
-by the irqchip frame work (or GIC driver). Is this correct?
-
-
-> 
-> The rest looks solid!
-> 
-
-Thank you.
-I will apply your point into the driver.
-
-Best regards,
-  Nobuhiro
