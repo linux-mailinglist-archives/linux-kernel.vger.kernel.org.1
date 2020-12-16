@@ -2,100 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233A42DBD2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C849F2DBD37
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726123AbgLPI6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 03:58:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726142AbgLPI6v (ORCPT
+        id S1726187AbgLPJAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:00:20 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:38120 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbgLPJAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:58:51 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D5DC06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 00:58:10 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id y23so1636624wmi.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 00:58:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=CnyyKZ0Zx1BxINWxPqOgHgBA1hAyUh9nq8RAHfNkCus=;
-        b=fZHU34jQlz1e2bWiS5yLio80iUB2pJw8FaGi9nwz3hsQAEpTTVFuu9ePjFreyn4sO7
-         PU2DQMlqac65tisGoObkSRhMZ4Cv4e9ByEitpNNAKP/hiQWG7RDD0dj2+UFfc/CAQnxv
-         SSQJOp35A9eG6Wlqwk8K+Kr0V7t/Y0MgdwLiSOG16X5h+WgldPpM43if+YUzeQST2qgf
-         E7pW6z1bseE5Rrii/nSvWF/MAtRDgpnZbEzCSkjg2ZNyPJt0kzaOQoYV2gfSXTT09QZK
-         GSAwtVf5/4BSe9+g1NS6PCDRqUxjeHG1JyCwIpryX0ejWqaq2+4gkfPXu+JE5erN0il6
-         Yvmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=CnyyKZ0Zx1BxINWxPqOgHgBA1hAyUh9nq8RAHfNkCus=;
-        b=Gsf73BCJYwHe/AsLGzrHTgla+TtytwvBeD3QylpmjoXuF8YCCep+ERWoK3APvCdrGb
-         MICygCAZFUBkZMvJYS3Y6GT0k50oisBLbxh5aWjY1nmw0ECu7mwaLBbDBBPFYoomq/f4
-         wkXCwuBL9h9e38DJ/M6ULPDD/HFY3c7SJ5odyCuBgLSNGmlq+PBkXPUzqVq/D4/P7B7d
-         fuwQVa7DU4rLw86XouscEXpFIRWx1G3sztE0X4S3zwYzMG6WxiA7ruCGoepTTKQSGFRi
-         eLJZLf4Oh32wNz0EKAamzhDhvBGZ+uWYx+vIQBtjQqmVwD3n3/SDlb4Wdqs2dcF16Fim
-         JWWA==
-X-Gm-Message-State: AOAM531S8+ajLz9GwvK4Hw6oR5vhiqV4SWeTjYh4wzhNPTrVRGvJltmF
-        Hf8wyLYEhpgtxycXflvoJ6AsyQ==
-X-Google-Smtp-Source: ABdhPJxyD6igsMnOelb9CqTbNakrbhwN83NwuKQeIw5SBvQ4jSlkvgYwYSwyhS6HWPk299U6SE0Fsg==
-X-Received: by 2002:a05:600c:2903:: with SMTP id i3mr2200622wmd.41.1608109089069;
-        Wed, 16 Dec 2020 00:58:09 -0800 (PST)
-Received: from dell ([91.110.221.200])
-        by smtp.gmail.com with ESMTPSA id w13sm2126803wrt.52.2020.12.16.00.58.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 00:58:08 -0800 (PST)
-Date:   Wed, 16 Dec 2020 08:58:06 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek <linux-mediatek@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/5] dt-bindings: mfd: correct the node name of the panel
- led
-Message-ID: <20201216085806.GJ4776@dell>
-References: <20201204093813.1275-1-thunder.leizhen@huawei.com>
- <20201204093813.1275-6-thunder.leizhen@huawei.com>
+        Wed, 16 Dec 2020 04:00:20 -0500
+Date:   Wed, 16 Dec 2020 11:59:34 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Rob Herring <robh@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Joao Pinto <jpinto@synopsys.com>,
+        Lars Persson <larper@axis.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 03/25] dt-bindings: net: dwmac: Fix the TSO property
+ declaration
+Message-ID: <20201216085934.tlp5axhauyshb2st@mobilestation>
+References: <20201214091616.13545-1-Sergey.Semin@baikalelectronics.ru>
+ <20201214091616.13545-4-Sergey.Semin@baikalelectronics.ru>
+ <20201215172240.GA4047815@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201204093813.1275-6-thunder.leizhen@huawei.com>
+In-Reply-To: <20201215172240.GA4047815@robh.at.kernel.org>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 04 Dec 2020, Zhen Lei wrote:
-
-> According to the definition in leds-pwm.yaml, the node name of each led
-> must match the regular expression "^led(-[0-9a-f]+)?$". "led" or "led-"
-> followed by a decimal or hexadecimal ID number.
+On Tue, Dec 15, 2020 at 11:22:40AM -0600, Rob Herring wrote:
+> On Mon, Dec 14, 2020 at 12:15:53PM +0300, Serge Semin wrote:
+> > Indeed the STMMAC driver doesn't take the vendor-specific compatible
+> > string into account to parse the "snps,tso" boolean property. It just
+> > makes sure the node is compatible with DW MAC 4.x, 5.x and DW xGMAC
+> > IP-cores. Fix the conditional statement so the TSO-property would be
+> > evaluated for the compatibles having the corresponding IP-core version.
+> > 
+> > While at it move the whole allOf-block from the tail of the binding file
+> > to the head of it, as it's normally done in the most of the DT schemas.
+> > 
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > 
+> > ---
+> > 
+> > Note this won't break the bindings description, since the "snps,tso"
+> > property isn't parsed by the Allwinner SunX GMAC glue driver, but only
+> > by the generic platform DT-parser.
 > 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  Documentation/devicetree/bindings/mfd/iqs62x.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied, thanks.
+> But still should be valid for Allwinner?
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I don't know. It seems to me that even the original driver developer
+didn't know what DW MAC IP has been used to create the Allwinner
+EMAC, since in the cover letter to the original patch he said:
+"During the development, it appeared that in fact the hardware was
+a modified version of some dwmac." (See https://lwn.net/Articles/721459/)
+Most likely Maxime Ripard also didn't know that when he was converting
+the legacy bindings to the DT schema.
+
+What I do know the TSO is supported by the driver only for IP-cores with
+version higher than 4.00. (See the stmmac_probe_config_dt() method
+implementation). Version is determined by checking whether the DT
+device node compatible property having the "snps,dwmac-*" or
+"snps,dwxgmac" strings. Allwinner EMAC nodes aren't defined with
+those strings, so they won't have the TSO property parsed and set.
+
+> 
+> > ---
+> >  .../devicetree/bindings/net/snps,dwmac.yaml   | 52 +++++++++----------
+> >  1 file changed, 24 insertions(+), 28 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > index e084fbbf976e..0dd543c6c08e 100644
+> > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > @@ -37,6 +37,30 @@ select:
+> >    required:
+> >      - compatible
+> >  
+> > +allOf:
+> > +  - $ref: "ethernet-controller.yaml#"
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            enum:
+> > +              - snps,dwmac-4.00
+> > +              - snps,dwmac-4.10a
+> > +              - snps,dwmac-4.20a
+> > +              - snps,dwmac-5.10a
+> > +              - snps,dwxgmac
+> > +              - snps,dwxgmac-2.10
+> > +
+> > +      required:
+> > +        - compatible
+> > +    then:
+> > +      properties:
+> > +        snps,tso:
+> > +          $ref: /schemas/types.yaml#definitions/flag
+> > +          description:
+> > +            Enables the TSO feature otherwise it will be managed by
+> > +            MAC HW capability register.
+> 
+
+> BTW, I prefer that properties are defined unconditionally, and then 
+> restricted in conditional schemas (or ones that include this schema).
+
+Are you saying that it's ok to have all the properties unconditionally
+defined in some generic schema and then being un-defined (like redefined
+to a false-schema) in a schema including (allOf-ing) it?
+
+> 
+> > +
+> >  properties:
+> >  
+> >    # We need to include all the compatibles from schemas that will
+> > @@ -314,34 +338,6 @@ dependencies:
+> >    snps,reset-active-low: ["snps,reset-gpio"]
+> >    snps,reset-delay-us: ["snps,reset-gpio"]
+> >  
+> > -allOf:
+> > -  - $ref: "ethernet-controller.yaml#"
+> > -  - if:
+> > -      properties:
+> > -        compatible:
+> > -          contains:
+> > -            enum:
+> > -              - allwinner,sun7i-a20-gmac
+> 
+
+> This does not have a fallback, so snps,tso is no longer validated. I 
+> didn't check the rest.
+
+Until the DT node is having a compatible string with the DW MAC
+IP-core version the property won't be checked by the driver anyway.
+AFAICS noone really knows what IP was that. So most likely the
+allwinner emacs have been added to this conditional schema by
+mistake...
+
+-Sergey
+
+> 
+> > -              - allwinner,sun8i-a83t-emac
+> > -              - allwinner,sun8i-h3-emac
+> > -              - allwinner,sun8i-r40-emac
+> > -              - allwinner,sun8i-v3s-emac
+> > -              - allwinner,sun50i-a64-emac
+> > -              - snps,dwmac-4.00
+> > -              - snps,dwmac-4.10a
+> > -              - snps,dwmac-4.20a
+> > -              - snps,dwxgmac
+> > -              - snps,dwxgmac-2.10
+> > -              - st,spear600-gmac
+> > -
+> > -    then:
+> > -      properties:
+> > -        snps,tso:
+> > -          $ref: /schemas/types.yaml#definitions/flag
+> > -          description:
+> > -            Enables the TSO feature otherwise it will be managed by
+> > -            MAC HW capability register.
+> > -
+> >  additionalProperties: true
+> >  
+> >  examples:
+> > -- 
+> > 2.29.2
+> > 
