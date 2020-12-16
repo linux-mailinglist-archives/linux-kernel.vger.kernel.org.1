@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E5F2DC33D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:38:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B60152DC31C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:29:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgLPPiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:38:10 -0500
-Received: from infomag.iguana.be ([185.87.124.46]:46728 "EHLO
-        infomag.iguana.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbgLPPiK (ORCPT
+        id S1726337AbgLPP2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:28:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbgLPP2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:38:10 -0500
-X-Greylist: delayed 615 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Dec 2020 10:38:09 EST
-Received: by infomag.iguana.be (Postfix, from userid 1001)
-        id 1C12E603CACE; Wed, 16 Dec 2020 16:27:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 infomag.iguana.be 1C12E603CACE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=iguana.be;
-        s=infomag-20180602; t=1608132433;
-        bh=crXq0eOTk+/NC8kObHABh/A3umyH9RXhcey96vhyFi8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O4kOtd4Mfuqs5s8vyspqkXbo6gW2m06JU/LGuM4HmM1DBqFJsJN1rbHVKlshDMFzp
-         RglvqYjGMoMRp04ndeSUPHRWSawyBsRTuGF/RI+9SiFKIUWcYYy1jvbiqizFepSTTV
-         yG69cf9Ne5AQ95a3mZ+ff4UUQliXFZY+AMoiASvM=
-Date:   Wed, 16 Dec 2020 16:27:13 +0100
-From:   Wim Van Sebroeck <wim@iguana.be>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the watchdog tree
-Message-ID: <20201216152713.GA13666@infomag.iguana.be>
-References: <20201214162129.79efb225@canb.auug.org.au>
- <81ec0eee-0f22-b8ad-5a71-1690d4c4ec27@roeck-us.net>
- <20201216135608.4e7a72e5@canb.auug.org.au>
+        Wed, 16 Dec 2020 10:28:30 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EC2C06179C;
+        Wed, 16 Dec 2020 07:27:50 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id b9so17435029qtr.2;
+        Wed, 16 Dec 2020 07:27:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=prX3rWtyfPweOuw4gkFpK72BDK4qvRlCVupw3Ndw2Ac=;
+        b=rezOy+6QPMcMTmHZilEXd5MahyR0XoYOFbeKSduB26x0hjzRboxW8uHxlpwAPUptzE
+         zByvM8BVF7DqzhPTm1pLiRwkFncJRgXgk14fZ3Td5hXZ3ppHAYRVr4K2fmISA/yC3Tg0
+         u9fOdp8eaoAayhcY31tEC3A76cRVIkZghlj1ifANhhBGZHwsbykoABxX4WbT8YwSrL4N
+         0RMXDdI4XzOF/bcjpfJfe/QUTNbZNe1itunCwu7tIeOmzGjdiHCozLO5a2A3J41IRn5s
+         DyyOmQz+GHzQRLN8jYIK0m3LPrDULTB5zJq6uaYm2JB/h+d76aj+Ew/g7hHFE1x/uYkT
+         szFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=prX3rWtyfPweOuw4gkFpK72BDK4qvRlCVupw3Ndw2Ac=;
+        b=aCWEeXVpk1n8cNvU/mwDh5xuX4bY0u7BUoue3/sqd8gOTm2wuyxP7NCEbLiphBZGhH
+         LPqj0/S/yM9+EcBA2rBD13XhmPKyOBm38D+QKzg9j4yAJVGmuhzZiLxXDd24r+59UArc
+         VwXJhuTcxuNmqu2JmPfBi7zSdI4Ktz8ezYHMTGf3Usz6YmasMqwGnU3HT30uawP33one
+         v5ieRWQzGzMM3lID5+xvu5Jt2BBCRQ9ZrJpvNwVfwQK7fWKb3LukNcnIRoSxMzhtoToM
+         5Ki0Y0MvDKfAfs7uypgmE2r7JLEWlECKd/pkhgCF80fnYirH86zCVS9TRkhoTwnau9ne
+         HFOA==
+X-Gm-Message-State: AOAM531QJcLqXVvFfqvlmVQ9tSb3Vw/4wL5fMMzxd8Lps2qajUAxFWQn
+        rsn52d91yQNlKjdykQh7lbY=
+X-Google-Smtp-Source: ABdhPJx7xYoKRj1ObnlCPOdJs3LfrmdGBNyMnAOZNNo2pNXrhYjus3PJOgxipTiPrGzDD2WVLDcsXQ==
+X-Received: by 2002:ac8:3656:: with SMTP id n22mr43721803qtb.242.1608132469499;
+        Wed, 16 Dec 2020 07:27:49 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:cbde])
+        by smtp.gmail.com with ESMTPSA id c65sm1324569qkf.47.2020.12.16.07.27.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 07:27:48 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 16 Dec 2020 10:27:15 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     David Rientjes <rientjes@google.com>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Vipin Sharma <vipinsh@google.com>, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        pbonzini@redhat.com, seanjc@google.com, lizefan@huawei.com,
+        hannes@cmpxchg.org, frankja@linux.ibm.com, corbet@lwn.net,
+        joro@8bytes.org, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        dionnaglaze@google.com, kvm@vger.kernel.org, x86@kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Patch v3 0/2] cgroup: KVM: New Encryption IDs cgroup controller
+Message-ID: <X9onUwvKovJeHpKR@mtj.duckdns.org>
+References: <20201209205413.3391139-1-vipinsh@google.com>
+ <X9E6eZaIFDhzrqWO@mtj.duckdns.org>
+ <4f7b9c3f-200e-6127-1d94-91dd9c917921@de.ibm.com>
+ <5f8d4cba-d3f-61c2-f97-fdb338fec9b8@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201216135608.4e7a72e5@canb.auug.org.au>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <5f8d4cba-d3f-61c2-f97-fdb338fec9b8@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Hello,
 
-It's on my todo list for today.
+On Thu, Dec 10, 2020 at 03:44:35PM -0800, David Rientjes wrote:
+> Concern with a single misc controller would be that any subsystem that 
+> wants to use it has to exactly fit this support: current, max, stat, 
+> nothing more.  The moment a controller needs some additional support, and 
+> its controller is already implemented in previous kernel versionv as a 
+> part of "misc," we face a problem.
 
-Kind ergards,
-Wim.
+Yeah, that's a valid concern, but given the history, there doesn't seem to
+be much need beyond that for these use cases and the limited need seems
+inherent to the way the resources are defined and consumed. So yeah, it can
+either way.
 
-> Hi all,
-> 
-> On Sun, 13 Dec 2020 22:09:55 -0800 Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-> > On 12/13/20 9:23 PM, Stephen Rothwell wrote:
-> > > Hi all,
-> > > 
-> > > After merging the watchdog tree, today's linux-next build (x86_64
-> > > allmodconfig) failed like this:
-> > > 
-> > > In file included from include/linux/device.h:15,
-> > >                  from include/linux/acpi.h:15,
-> > >                  from drivers/watchdog/iTCO_wdt.c:48:
-> > > drivers/watchdog/iTCO_wdt.c: In function 'iTCO_wdt_start':
-> > > drivers/watchdog/iTCO_wdt.c:280:17: error: 'struct watchdog_device' has no member named 'dev'
-> > >   280 |   dev_err(wd_dev->dev, "failed to reset NO_REBOOT flag, reboot disabled by hardware/BIOS\n");
-> > >       |                 ^~  
-> > 
-> > Yes, that should have been wd_dev->parent. Sorry I didn't notice that earlier.
-> > 
-> > Guenter
-> > 
-> > > include/linux/dev_printk.h:112:11: note: in definition of macro 'dev_err'
-> > >   112 |  _dev_err(dev, dev_fmt(fmt), ##__VA_ARGS__)
-> > >       |           ^~~
-> > > 
-> > > Caused by commit
-> > > 
-> > >   9c612b338fdf ("watchdog: iTCO_wdt: use dev_*() instead of pr_*() for logging")
-> > 
-> > > I have used the wtchdog tree from next-20201211 for today.
-> 
-> I am still getting this build failure.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
+Thanks.
 
-
+-- 
+tejun
