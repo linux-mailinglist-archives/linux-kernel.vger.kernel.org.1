@@ -2,99 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55AB02DC14D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3F52DC151
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbgLPNbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:31:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726160AbgLPNbH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:31:07 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B86DC0617A6;
-        Wed, 16 Dec 2020 05:30:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PccmPCCzsl5AXd2yr/SDspnaIQTIwIgNAjEsRYyVJ6Q=; b=Fanh4/Ub9cv2qTRs549wIA/XFm
-        nsFkkxhxJF9oOyXkZ6Y5Nw6lmYjcYsGH+6UQWQGXjq0If4X3+asMbh6CyjAoW+0L/+rEt89U4s84l
-        hJ/E3BpZ0ess6UXAxvif2OTr2cUHHuQe3E79lqU1hApR0Hlq1rUuuffCwtma5QjE/nLnm8QikTm2d
-        UpYluT770mBUaoqvr5gTbLR/QlTyg7suE6dGhQlp25NkvQzfSswipXoFm90n0ZHgF+vUd4XcFgQy6
-        79nmDNTuCAXfS75zU9OaOJF/DQT+g9wP26sQurerPypVq1cynGofXrSwGRtbIqP6ON+eWEiq9M9S8
-        zl0sP8aA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kpWsh-000281-Tu; Wed, 16 Dec 2020 13:30:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 51D58304D58;
-        Wed, 16 Dec 2020 14:30:14 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2B8B121ADB49F; Wed, 16 Dec 2020 14:30:14 +0100 (CET)
-Date:   Wed, 16 Dec 2020 14:30:14 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        jeyu@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        ardb@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Jason Baron <jbaron@akamai.com>
-Subject: [RFC][PATCH] jump_label/static_call: Add MAINTAINERS
-Message-ID: <20201216133014.GT3092@hirez.programming.kicks-ass.net>
-References: <MW4PR21MB1857CC85A6844C89183C93E9BFC59@MW4PR21MB1857.namprd21.prod.outlook.com>
- <20201216092649.GM3040@hirez.programming.kicks-ass.net>
- <20201216105926.GS3092@hirez.programming.kicks-ass.net>
+        id S1726133AbgLPNbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:31:46 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44052 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726028AbgLPNbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 08:31:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0B194AC7B;
+        Wed, 16 Dec 2020 13:31:04 +0000 (UTC)
+Date:   Wed, 16 Dec 2020 14:30:59 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, naoya.horiguchi@nec.com
+Subject: Re: [PATCH v9 06/11] mm/hugetlb: Set the PageHWPoison to the raw
+ error page
+Message-ID: <20201216133059.GC29394@linux>
+References: <20201213154534.54826-1-songmuchun@bytedance.com>
+ <20201213154534.54826-7-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201216105926.GS3092@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201213154534.54826-7-songmuchun@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Dec 13, 2020 at 11:45:29PM +0800, Muchun Song wrote:
+> Because we reuse the first tail vmemmap page frame and remap it
+> with read-only, we cannot set the PageHWPosion on a tail page.
+> So we can use the head[4].private to record the real error page
+> index and set the raw error page PageHWPoison later.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-FWIW, I recently noticed we're not being Cc'ed on patches for this
-stuff, so how about we do something like the below?
++CC Naoya
 
-Anybody holler if they don't agree with the letter assigned, or if they
-feel they've been left out entirely and want in on the 'fun' :-)
+> ---
+>  mm/hugetlb.c | 48 ++++++++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 40 insertions(+), 8 deletions(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 542e6cb81321..29de425f879a 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1347,6 +1347,43 @@ static inline void __update_and_free_page(struct hstate *h, struct page *page)
+>  		schedule_work(&hpage_update_work);
+>  }
+>  
+> +static inline void hwpoison_subpage_deliver(struct hstate *h, struct page *head)
+> +{
+> +	struct page *page;
+> +
+> +	if (!PageHWPoison(head) || !free_vmemmap_pages_per_hpage(h))
+> +		return;
+> +
+> +	page = head + page_private(head + 4);
+> +
+> +	/*
+> +	 * Move PageHWPoison flag from head page to the raw error page,
+> +	 * which makes any subpages rather than the error page reusable.
+> +	 */
+> +	if (page != head) {
+> +		SetPageHWPoison(page);
+> +		ClearPageHWPoison(head);
+> +	}
+> +}
+> +
+> +static inline void hwpoison_subpage_set(struct hstate *h, struct page *head,
+> +					struct page *page)
+> +{
+> +	if (!PageHWPoison(head))
+> +		return;
+> +
+> +	if (free_vmemmap_pages_per_hpage(h)) {
+> +		set_page_private(head + 4, page - head);
+> +	} else if (page != head) {
+> +		/*
+> +		 * Move PageHWPoison flag from head page to the raw error page,
+> +		 * which makes any subpages rather than the error page reusable.
+> +		 */
+> +		SetPageHWPoison(page);
+> +		ClearPageHWPoison(head);
+> +	}
+> +}
+> +
+>  static void update_and_free_page(struct hstate *h, struct page *page)
+>  {
+>  	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
+> @@ -1363,6 +1400,7 @@ static void __free_hugepage(struct hstate *h, struct page *page)
+>  	int i;
+>  
+>  	alloc_huge_page_vmemmap(h, page);
+> +	hwpoison_subpage_deliver(h, page);
+>  
+>  	for (i = 0; i < pages_per_huge_page(h); i++) {
+>  		page[i].flags &= ~(1 << PG_locked | 1 << PG_error |
+> @@ -1840,14 +1878,8 @@ int dissolve_free_huge_page(struct page *page)
+>  		int nid = page_to_nid(head);
+>  		if (h->free_huge_pages - h->resv_huge_pages == 0)
+>  			goto out;
+> -		/*
+> -		 * Move PageHWPoison flag from head page to the raw error page,
+> -		 * which makes any subpages rather than the error page reusable.
+> -		 */
+> -		if (PageHWPoison(head) && page != head) {
+> -			SetPageHWPoison(page);
+> -			ClearPageHWPoison(head);
+> -		}
+> +
+> +		hwpoison_subpage_set(h, head, page);
+>  		list_del(&head->lru);
+>  		h->free_huge_pages--;
+>  		h->free_huge_pages_node[nid]--;
+> -- 
+> 2.11.0
+> 
 
----
-Subject: jump_label/static_call: Add MAINTAINERS
-From: Peter Zijlstra <peterz@infradead.org>
-
-These files don't appear to have a MAINTAINERS entry and as such
-patches miss being seen by people who know this code.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- MAINTAINERS |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16766,6 +16766,18 @@ M:	Ion Badulescu <ionut@badula.org>
- S:	Odd Fixes
- F:	drivers/net/ethernet/adaptec/starfire*
- 
-+STATIC BRANCH/CALL
-+M:	Peter Zijlstra <peterz@infradead.org>
-+M:	Josh Poimboeuf <jpoimboe@redhat.com>
-+M:	Jason Baron <jbaron@akamai.com>
-+R:	Steven Rostedt <rostedt@goodmis.org>
-+R:	Ard Biesheuvel <ardb@kernel.org>
-+S:	Supported
-+F:	include/linux/jump_label*.h
-+F:	include/linux/static_call*.h
-+F:	kernel/jump_label.c
-+F:	kernel/static_call.c
-+
- STEC S1220 SKD DRIVER
- M:	Damien Le Moal <Damien.LeMoal@wdc.com>
- L:	linux-block@vger.kernel.org
+-- 
+Oscar Salvador
+SUSE L3
