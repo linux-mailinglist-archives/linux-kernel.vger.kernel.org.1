@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0030E2DBDE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0BF22DBDE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgLPJpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:45:23 -0500
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:25103 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbgLPJpW (ORCPT
+        id S1726105AbgLPJpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:45:54 -0500
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:59058 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726155AbgLPJpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:45:22 -0500
+        Wed, 16 Dec 2020 04:45:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1608111922; x=1639647922;
+  t=1608111952; x=1639647952;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=TaBhL5HojO46LzRrtNTJtjXeDGLmPmatGGRehayYLuY=;
-  b=etbK5muf90XPHT+BvxfindpSx713LcR0bB0A/SEwqsNr2msx+ZDG22V/
-   x0NCj5srf3f8rIdWVWtymvGEm+GX+nN+Hx3ylp8FAuIZxGFMZP7y4L0TQ
-   UhUUnlGXp9CRTYX4XdhGoo38NP1G7zNto9dbaK56ealhaI7ai5OdeXPJH
-   c=;
+  bh=Lj6+I9XWmZiqjVkd1Bor2fLoWLXqVAIP/n4Y2agFqYw=;
+  b=atRK9mOnWORakP4Go+AYUzvczOZW1Pb5cTR//Wb858Tcet/YyKuMHTfQ
+   D2Y1V9hvoYXaZ2k97fGQAoarzXfMSkfWvYw7z+cMSsAQaQkKXNlrC+0Bq
+   oB45eCOOtl8/8ULiGUrN8wKL+V5/9NRGo33U0apJUOJIhRKMQ1O65g0a6
+   8=;
 X-IronPort-AV: E=Sophos;i="5.78,424,1599523200"; 
-   d="scan'208";a="69703881"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-c5104f52.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 16 Dec 2020 09:44:44 +0000
-Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2a-c5104f52.us-west-2.amazon.com (Postfix) with ESMTPS id 26284A1DA0;
-        Wed, 16 Dec 2020 09:44:31 +0000 (UTC)
+   d="scan'208";a="69443702"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-87a10be6.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 16 Dec 2020 09:45:07 +0000
+Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2c-87a10be6.us-west-2.amazon.com (Postfix) with ESMTPS id DF141A1EBF;
+        Wed, 16 Dec 2020 09:44:55 +0000 (UTC)
 Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.31) by
  EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 16 Dec 2020 09:44:14 +0000
+ id 15.0.1497.2; Wed, 16 Dec 2020 09:44:36 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -53,9 +53,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
         <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [RFC v10 05/13] Docs/admin-guide/mm/damon: Document 'init_regions' feature
-Date:   Wed, 16 Dec 2020 10:42:13 +0100
-Message-ID: <20201216094221.11898-6-sjpark@amazon.com>
+Subject: [RFC v10 06/13] mm/damon/vaddr: Separate commonly usable functions
+Date:   Wed, 16 Dec 2020 10:42:14 +0100
+Message-ID: <20201216094221.11898-7-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201216094221.11898-1-sjpark@amazon.com>
 References: <20201216094221.11898-1-sjpark@amazon.com>
@@ -70,73 +70,309 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit adds description of the 'init_regions' feature in the DAMON
-usage document.
+This commit moves functions in the default virtual address spaces
+monitoring primitives that commonly usable from other address spaces
+like physical address space into a header file.  Those will be reused by
+the physical address space monitoring primitives in the following
+commit.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- Documentation/admin-guide/mm/damon/usage.rst | 41 +++++++++++++++++++-
- 1 file changed, 39 insertions(+), 2 deletions(-)
+ mm/damon/Makefile       |   2 +-
+ mm/damon/prmtv-common.c | 104 ++++++++++++++++++++++++++++++++++++++
+ mm/damon/prmtv-common.h |  21 ++++++++
+ mm/damon/vaddr.c        | 108 +---------------------------------------
+ 4 files changed, 128 insertions(+), 107 deletions(-)
+ create mode 100644 mm/damon/prmtv-common.c
+ create mode 100644 mm/damon/prmtv-common.h
 
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index 96278227f925..cf0d44ce0ac9 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -281,8 +281,9 @@ for at least 100 milliseconds using below commands::
- debugfs Interface
- =================
+diff --git a/mm/damon/Makefile b/mm/damon/Makefile
+index fed4be3bace3..99b1bfe01ff5 100644
+--- a/mm/damon/Makefile
++++ b/mm/damon/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
  
--DAMON exports five files, ``attrs``, ``target_ids``, ``record``, ``schemes``
--and ``monitor_on`` under its debugfs directory, ``<debugfs>/damon/``.
-+DAMON exports six files, ``attrs``, ``target_ids``, ``init_regions``,
-+``record``, ``schemes`` and ``monitor_on`` under its debugfs directory,
-+``<debugfs>/damon/``.
+ obj-$(CONFIG_DAMON)		:= core.o
+-obj-$(CONFIG_DAMON_VADDR)	+= vaddr.o
++obj-$(CONFIG_DAMON_VADDR)	+= prmtv-common.o vaddr.o
+ obj-$(CONFIG_DAMON_DBGFS)	+= dbgfs.o
+diff --git a/mm/damon/prmtv-common.c b/mm/damon/prmtv-common.c
+new file mode 100644
+index 000000000000..6cdb96cbc9ef
+--- /dev/null
++++ b/mm/damon/prmtv-common.c
+@@ -0,0 +1,104 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Common Primitives for Data Access Monitoring
++ *
++ * Author: SeongJae Park <sjpark@amazon.de>
++ */
++
++#include "prmtv-common.h"
++
++static void damon_ptep_mkold(pte_t *pte, struct mm_struct *mm,
++			     unsigned long addr)
++{
++	bool referenced = false;
++	struct page *page = pte_page(*pte);
++
++	if (pte_young(*pte)) {
++		referenced = true;
++		*pte = pte_mkold(*pte);
++	}
++
++#ifdef CONFIG_MMU_NOTIFIER
++	if (mmu_notifier_clear_young(mm, addr, addr + PAGE_SIZE))
++		referenced = true;
++#endif /* CONFIG_MMU_NOTIFIER */
++
++	if (referenced)
++		set_page_young(page);
++
++	set_page_idle(page);
++}
++
++static void damon_pmdp_mkold(pmd_t *pmd, struct mm_struct *mm,
++			     unsigned long addr)
++{
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	bool referenced = false;
++	struct page *page = pmd_page(*pmd);
++
++	if (pmd_young(*pmd)) {
++		referenced = true;
++		*pmd = pmd_mkold(*pmd);
++	}
++
++#ifdef CONFIG_MMU_NOTIFIER
++	if (mmu_notifier_clear_young(mm, addr,
++				addr + ((1UL) << HPAGE_PMD_SHIFT)))
++		referenced = true;
++#endif /* CONFIG_MMU_NOTIFIER */
++
++	if (referenced)
++		set_page_young(page);
++
++	set_page_idle(page);
++#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
++}
++
++void damon_va_mkold(struct mm_struct *mm, unsigned long addr)
++{
++	pte_t *pte = NULL;
++	pmd_t *pmd = NULL;
++	spinlock_t *ptl;
++
++	if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
++		return;
++
++	if (pte) {
++		damon_ptep_mkold(pte, mm, addr);
++		pte_unmap_unlock(pte, ptl);
++	} else {
++		damon_pmdp_mkold(pmd, mm, addr);
++		spin_unlock(ptl);
++	}
++}
++
++bool damon_va_young(struct mm_struct *mm, unsigned long addr,
++			unsigned long *page_sz)
++{
++	pte_t *pte = NULL;
++	pmd_t *pmd = NULL;
++	spinlock_t *ptl;
++	bool young = false;
++
++	if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
++		return false;
++
++	*page_sz = PAGE_SIZE;
++	if (pte) {
++		young = pte_young(*pte);
++		if (!young)
++			young = !page_is_idle(pte_page(*pte));
++		pte_unmap_unlock(pte, ptl);
++		return young;
++	}
++
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	young = pmd_young(*pmd);
++	if (!young)
++		young = !page_is_idle(pmd_page(*pmd));
++	spin_unlock(ptl);
++	*page_sz = ((1UL) << HPAGE_PMD_SHIFT);
++#endif	/* CONFIG_TRANSPARENT_HUGEPAGE */
++
++	return young;
++}
+diff --git a/mm/damon/prmtv-common.h b/mm/damon/prmtv-common.h
+new file mode 100644
+index 000000000000..a66a6139b4fc
+--- /dev/null
++++ b/mm/damon/prmtv-common.h
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Common Primitives for Data Access Monitoring
++ *
++ * Author: SeongJae Park <sjpark@amazon.de>
++ */
++
++#include <linux/damon.h>
++#include <linux/mm.h>
++#include <linux/mmu_notifier.h>
++#include <linux/page_idle.h>
++#include <linux/random.h>
++#include <linux/sched/mm.h>
++#include <linux/slab.h>
++
++/* Get a random number in [l, r) */
++#define damon_rand(l, r) (l + prandom_u32_max(r - l))
++
++void damon_va_mkold(struct mm_struct *mm, unsigned long addr);
++bool damon_va_young(struct mm_struct *mm, unsigned long addr,
++			unsigned long *page_sz);
+diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
+index 2075f07f728b..915b12329c6e 100644
+--- a/mm/damon/vaddr.c
++++ b/mm/damon/vaddr.c
+@@ -8,22 +8,14 @@
+ #define pr_fmt(fmt) "damon-va: " fmt
  
+ #include <asm-generic/mman-common.h>
+-#include <linux/damon.h>
+-#include <linux/mm.h>
+-#include <linux/mmu_notifier.h>
+-#include <linux/page_idle.h>
+-#include <linux/random.h>
+-#include <linux/sched/mm.h>
+-#include <linux/slab.h>
++
++#include "prmtv-common.h"
  
- Attributes
-@@ -321,6 +322,42 @@ check it again::
- Note that setting the target ids doesn't start the monitoring.
+ #ifdef CONFIG_DAMON_VADDR_KUNIT_TEST
+ #undef DAMON_MIN_REGION
+ #define DAMON_MIN_REGION 1
+ #endif
  
+-/* Get a random number in [l, r) */
+-#define damon_rand(l, r) (l + prandom_u32_max(r - l))
+-
+ /*
+  * 't->id' should be the pointer to the relevant 'struct pid' having reference
+  * count.  Caller must put the returned task, unless it is NULL.
+@@ -370,71 +362,6 @@ void damon_va_update_regions(struct damon_ctx *ctx)
+ 	}
+ }
  
-+Initial Monitoring Target Regions
-+---------------------------------
-+
-+In case of the debugfs based monitoring, DAMON automatically sets and updates
-+the monitoring target regions so that entire memory mappings of target
-+processes can be covered. However, users might want to limit the monitoring
-+region to specific address ranges, such as the heap, the stack, or specific
-+file-mapped area.  Or, some users might know the initial access pattern of
-+their workloads and therefore want to set optimal initial regions for the
-+'adaptive regions adjustment'.
-+
-+In such cases, users can explicitly set the initial monitoring target regions
-+as they want, by writing proper values to the ``init_regions`` file.  Each line
-+of the input should represent one region in below form.::
-+
-+    <target id> <start address> <end address>
-+
-+The ``target id`` should already in ``target_ids`` file, and the regions should
-+be passed in address order.  For example, below commands will set a couple of
-+address ranges, ``1-100`` and ``100-200`` as the initial monitoring target
-+region of process 42, and another couple of address ranges, ``20-40`` and
-+``50-100`` as that of process 4242.::
-+
-+    # cd <debugfs>/damon
-+    # echo "42   1       100
-+            42   100     200
-+            4242 20      40
-+            4242 50      100" > init_regions
-+
-+Note that this sets the initial monitoring target regions only.  In case of
-+virtual memory monitoring, DAMON will automatically updates the boundary of the
-+regions after one ``regions update interval``.  Therefore, users should set the
-+``regions update interval`` large enough in this case, if they don't want the
-+update.
-+
-+
- Record
- ------
+-static void damon_ptep_mkold(pte_t *pte, struct mm_struct *mm,
+-			     unsigned long addr)
+-{
+-	bool referenced = false;
+-	struct page *page = pte_page(*pte);
+-
+-	if (pte_young(*pte)) {
+-		referenced = true;
+-		*pte = pte_mkold(*pte);
+-	}
+-
+-#ifdef CONFIG_MMU_NOTIFIER
+-	if (mmu_notifier_clear_young(mm, addr, addr + PAGE_SIZE))
+-		referenced = true;
+-#endif /* CONFIG_MMU_NOTIFIER */
+-
+-	if (referenced)
+-		set_page_young(page);
+-
+-	set_page_idle(page);
+-}
+-
+-static void damon_pmdp_mkold(pmd_t *pmd, struct mm_struct *mm,
+-			     unsigned long addr)
+-{
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	bool referenced = false;
+-	struct page *page = pmd_page(*pmd);
+-
+-	if (pmd_young(*pmd)) {
+-		referenced = true;
+-		*pmd = pmd_mkold(*pmd);
+-	}
+-
+-#ifdef CONFIG_MMU_NOTIFIER
+-	if (mmu_notifier_clear_young(mm, addr,
+-				addr + ((1UL) << HPAGE_PMD_SHIFT)))
+-		referenced = true;
+-#endif /* CONFIG_MMU_NOTIFIER */
+-
+-	if (referenced)
+-		set_page_young(page);
+-
+-	set_page_idle(page);
+-#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+-}
+-
+-static void damon_va_mkold(struct mm_struct *mm, unsigned long addr)
+-{
+-	pte_t *pte = NULL;
+-	pmd_t *pmd = NULL;
+-	spinlock_t *ptl;
+-
+-	if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
+-		return;
+-
+-	if (pte) {
+-		damon_ptep_mkold(pte, mm, addr);
+-		pte_unmap_unlock(pte, ptl);
+-	} else {
+-		damon_pmdp_mkold(pmd, mm, addr);
+-		spin_unlock(ptl);
+-	}
+-}
+-
+ /*
+  * Functions for the access checking of the regions
+  */
+@@ -463,37 +390,6 @@ void damon_va_prepare_access_checks(struct damon_ctx *ctx)
+ 	}
+ }
  
+-static bool damon_va_young(struct mm_struct *mm, unsigned long addr,
+-			unsigned long *page_sz)
+-{
+-	pte_t *pte = NULL;
+-	pmd_t *pmd = NULL;
+-	spinlock_t *ptl;
+-	bool young = false;
+-
+-	if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
+-		return false;
+-
+-	*page_sz = PAGE_SIZE;
+-	if (pte) {
+-		young = pte_young(*pte);
+-		if (!young)
+-			young = !page_is_idle(pte_page(*pte));
+-		pte_unmap_unlock(pte, ptl);
+-		return young;
+-	}
+-
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	young = pmd_young(*pmd);
+-	if (!young)
+-		young = !page_is_idle(pmd_page(*pmd));
+-	spin_unlock(ptl);
+-	*page_sz = ((1UL) << HPAGE_PMD_SHIFT);
+-#endif	/* CONFIG_TRANSPARENT_HUGEPAGE */
+-
+-	return young;
+-}
+-
+ /*
+  * Check whether the region was accessed after the last preparation
+  *
 -- 
 2.17.1
 
