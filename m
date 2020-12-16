@@ -2,84 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09D82DC7BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F25212DC7C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:29:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728673AbgLPUXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 15:23:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
+        id S1728879AbgLPU3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 15:29:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727439AbgLPUXs (ORCPT
+        with ESMTP id S1727472AbgLPU3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 15:23:48 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF195C06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:23:07 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id n10so10411474pgl.10
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:23:07 -0800 (PST)
+        Wed, 16 Dec 2020 15:29:14 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8C2C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:28:33 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id o13so28501387lfr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:28:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/u0Ml7z8U6hoRgIhUcWTGpqRq8tZ6gW1mUfFKW/Eh3E=;
-        b=YxNWi7p0t1283L9u/yRAz+3PEm5W18srxEKo+tvG7XZ3z6a/WW1fJcQQ8VNbobGf60
-         8dMcg4TTJxdA0mO805jU8wXdFLImf4lhNSDVXv0ukok2XXtw75UNzJLDiCeko82+VRrG
-         tJDBPP0eEQhocXu8e9o4wRJRU2ijAGHTw0M/M=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6sdiSM66MjBACu0zHAXSwkL8qLMh6dKH3+Vq3Xu+DKc=;
+        b=JQZT0N+OQJzK7lZMDRdcTRxW/Iw2hvDnlhE6ggGkTDfFCxoYg3KcFQtpkMz1eEEEtG
+         z4GKZCx3VuCvcthE/0YBpG4DCDzahOJkNosc0TdHm4/ZeQPRru9dQza0+sHPp2txbGIt
+         cugVnLazCPAchdSY9p/FCnb8ToawMJzpbT0+o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/u0Ml7z8U6hoRgIhUcWTGpqRq8tZ6gW1mUfFKW/Eh3E=;
-        b=g1AarisjBFlCe5BeFVlAr5iyLXlUexKNj4W8Q6RFysEov6Jn2nYx1HwpjmTwVpDSIV
-         VcQh6G0gTV7QMnMO3XpnTMu90yDa8ZpKxoO+gFbCPcSlsd9u9dm3PItZa59EgkudamhP
-         vFFEV6Pj/E8Z+df+4MnjUK5feugPNrfdoUPDKXyrxiBDjLfktTTXGqB6OEF2S2ww0coI
-         /QAk3HyqTHxCcV1HFgEN3YI0rWvdworxdBZHFNz+HPY7asyon3pJNQdOPruR5oJCwvlP
-         0/+jlEbZelBEX3JQgNKvrR58jVc+3PsSgv//QbBs/53eQrOWOkx6RBNGidlugSmS2nex
-         eFaw==
-X-Gm-Message-State: AOAM5308KA054Z4TCeaWD1pOyPuilmsYBHtTKvDbIU15SeqxPzPcAilk
-        hkckDzBAHPy0ZQ9r66vQ5eTHpg==
-X-Google-Smtp-Source: ABdhPJyFpM/otugbcdzZt/TsMDbqfxyVFXKIvI3gJb/onxct24dwWbur/ChxoAitPRminzqAis0+zA==
-X-Received: by 2002:a63:7d47:: with SMTP id m7mr34095599pgn.405.1608150187361;
-        Wed, 16 Dec 2020 12:23:07 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c199sm3815754pfb.108.2020.12.16.12.23.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 12:23:06 -0800 (PST)
-Date:   Wed, 16 Dec 2020 12:23:05 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6sdiSM66MjBACu0zHAXSwkL8qLMh6dKH3+Vq3Xu+DKc=;
+        b=V+bRYGp18lpIdqA81jtGRpPZ1VS/HdPamspzcnL2N8yfjmGhyskYWaC0NW4c9ElP0W
+         p4INahj9VsmYogkpNbeE/EaU6jHrlXIu9akdNQzh1LlRvks5gMYDRyMrsnh8RQqpoqyl
+         Gdpgks7eIaKVyEHcPsIQZ5YT8nDxl0JBEYVXR/kjKIO88F7AzJMMdOXx8cOLywmp1/9Z
+         dLY8zpF65070B5xQUCccg5NWA0emssu1B5/exOLgUBW3Eff33Zbmta1WOwh5nK/0Pq1z
+         +AzzPRRTH8fWu90g8jQJhWminukqdZPWknbuiPDdh2yKM2UfBiQJ+TcOh9ft9LBL1/LU
+         N2Rg==
+X-Gm-Message-State: AOAM533HPDbTd1C7Y/ZgOwHVGSn+EDbdrg2jKSKxnOaX9F3e7+IoeZQz
+        o3zQCMEj6bmggjLzatqQGPFFXmzuXElH1A==
+X-Google-Smtp-Source: ABdhPJzf5lt8qh8VfWXtiG9L/H+CJiC/zQwhftT5i2/HnFoQQOpeY2rWd9nDbN1QPP/0XOixas/isA==
+X-Received: by 2002:a2e:b70f:: with SMTP id j15mr16110993ljo.60.1608150511325;
+        Wed, 16 Dec 2020 12:28:31 -0800 (PST)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id t28sm411970ljo.45.2020.12.16.12.28.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 12:28:30 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id s26so17010666lfc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:28:30 -0800 (PST)
+X-Received: by 2002:a19:7d85:: with SMTP id y127mr14046133lfc.253.1608150510023;
+ Wed, 16 Dec 2020 12:28:30 -0800 (PST)
+MIME-Version: 1.0
+References: <202012151215.E7AA7D6@keescook> <CAHk-=wgg1-Cp=WmE2nGXfDuE8TLKDCQibRdhxbu9MnooLGDHWg@mail.gmail.com>
+ <202012161221.18C0E3B5CC@keescook>
+In-Reply-To: <202012161221.18C0E3B5CC@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 16 Dec 2020 12:28:14 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wg=2M=4iV5vQMMMGzYiP6Fnx8CpYXomGqKwV1u3-uOq5w@mail.gmail.com>
+Message-ID: <CAHk-=wg=2M=4iV5vQMMMGzYiP6Fnx8CpYXomGqKwV1u3-uOq5w@mail.gmail.com>
+Subject: Re: [GIT PULL] gcc-plugins updates for v5.11-rc1
+To:     Kees Cook <keescook@chromium.org>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [GIT PULL] gcc-plugins updates for v5.11-rc1
-Message-ID: <202012161221.18C0E3B5CC@keescook>
-References: <202012151215.E7AA7D6@keescook>
- <CAHk-=wgg1-Cp=WmE2nGXfDuE8TLKDCQibRdhxbu9MnooLGDHWg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgg1-Cp=WmE2nGXfDuE8TLKDCQibRdhxbu9MnooLGDHWg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 11:24:04AM -0800, Linus Torvalds wrote:
-> On Tue, Dec 15, 2020 at 12:15 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > Please pull these gcc-plugins updates for v5.11-rc1.
-> 
-> Hmm, I pulled this and then did an allmodconfig build.
-> 
-> I expected that to be a full rebuild, since the plugins got
-> recompiled, but it turned out to just take 16 seconds because it only
-> compiled the plugins, not any of the object files.
+On Wed, Dec 16, 2020 at 12:23 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> Hmm. Yeah, that's a bug. I think that's an existing bug, though. I feel
+> like I scratched my head on that too. I will see if there is a sensible
+> way to have Kbuild "notice" that -- I hope there's an easier way to
+> invalidate all object files instead of adding all the plugins as a dep
+> to all .o builds. O_o
 
-Hmm. Yeah, that's a bug. I think that's an existing bug, though. I feel
-like I scratched my head on that too. I will see if there is a sensible
-way to have Kbuild "notice" that -- I hope there's an easier way to
-invalidate all object files instead of adding all the plugins as a dep
-to all .o builds. O_o
+We already have some support for checking the compiler version. I
+wonder if the plugins could add themselves to the version name in
+there somehow..
 
-Thanks for the heads-up!
+But I don't think it's a big deal, and I won't worry about it. I do
+hope we can deprecate the plugins some day, it has always made me very
+nervous to have random code at that level.
 
--- 
-Kees Cook
+             Linus
