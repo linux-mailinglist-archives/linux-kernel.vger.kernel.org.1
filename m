@@ -2,156 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA462DC4BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 17:55:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F192DC4C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 17:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgLPQyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 11:54:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34436 "EHLO
+        id S1726893AbgLPQzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 11:55:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726858AbgLPQyb (ORCPT
+        with ESMTP id S1726758AbgLPQzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 11:54:31 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235CAC0619D4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 08:53:02 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id l11so50085076lfg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 08:53:01 -0800 (PST)
+        Wed, 16 Dec 2020 11:55:53 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9B2C06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 08:55:13 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id x22so3016258wmc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 08:55:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QN2ZDNaFP2aT/ClXBsxAgxKdaK3vIBmK5H4WTk/CkiE=;
-        b=F7PRpDU16rzweD3c39edlX+7YkESCotZA/8lVuw7u0iyFp6lxPyNoIfl0Gmn0GfPRu
-         OCGSXbVPuEVr40Ead0jo3k1yeY70xXijLUCaTjfVxqHvWPzP3fy4QAOjarCRXxazAJe8
-         cBhtLSxLpWkBBdgh1jN4e/08b0qSU+soXhcAIuMBp4olkK69NiLajmjSn24lGN9bQOw9
-         srP1jHf1P3c1pu0FMOabufaANlqPNlridBo3+jdRcJ2s1XvU+OyO+3h0y87Dy//Igqhv
-         ZtRI+fAbOWMuf2iRmbKTalhDEDfkjZwfKtLksMmH330rgoqwGh6ySl5KYrSbBLFiRBDZ
-         8E4w==
+        d=android.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nYWHrbVbxSSL2gimdMuStJvoiPGVcobkaLSqY1apiew=;
+        b=GwZllGkI6HrzePUJDJoMJ5E1CVxjLK6R2rRucQJtAPMWHPuWAtFjooNIk/FDZ3R0P/
+         qe+ZHKPCGQP/FZ1zHBP3kusq3Cv23IqmZ3l4jD97AGoQye9QwrGSycW7GdzeaKp2YUQD
+         lHCRsjpDZvWWmn10SROnQOF6eu/kdzKmCJCc0BsFNffLELNlBvFLRfKKtxucyr47EwC2
+         eXGyB5NgoiotvBmuAsHRl4bjl/XSXyCYU+mdnmyNFvhmQDjmSgShonDXUg4vEVSii8ST
+         I4Hm3UNTWZMHZ6pkQ5MojdLKYW++ywIcmQP5tPy3JoR9hBQs6fc+FeInjsSIZMuwC5ve
+         AEyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QN2ZDNaFP2aT/ClXBsxAgxKdaK3vIBmK5H4WTk/CkiE=;
-        b=O2KRAniGy1mAogGAbk37/WYUCiFjVfi2y7W4NZgK3lryROxMdizbExAMfyvsDGBVin
-         yocgvJjkhlIjSvHDRLyUCJLohUDa7mRndYbWc5alJ/2SXJTA77F0YFzQ5Brz6hQFciDz
-         hLiRhZSEOHp4QmHKgumheQ/U7KZwORvEgOjpNb/dExGd3CkceyrEOxZpG8TYyYby8QEX
-         IvtjhGX2PQ0l9k9pgXl2bH8bFZ51/+yp8nlJmCa2a/gMVub9t8Z7ZcDqhLkhvJtb/GYP
-         1PKHGf1sjV1iZ8gDReCoUx5ztPiODzYMvGIaCrRaC6OfxAaS3ewD6ga8Tph35v+qLwPX
-         1owQ==
-X-Gm-Message-State: AOAM532W6oHwwRVOIMFTCQu1x5pOC3TjjEMgP3wUAd2LTPse7Av9zLLF
-        QiMGJ0H578yuSthG9+pzAGkC8A==
-X-Google-Smtp-Source: ABdhPJxXwjufBrBS5p5gGK+QRTNfqS9gpkIv6Yx7cXPGiFdZEIUdxaMtfzMcrRCrrXmj0W3+90mb4A==
-X-Received: by 2002:a2e:9f14:: with SMTP id u20mr5744528ljk.244.1608137579582;
-        Wed, 16 Dec 2020 08:52:59 -0800 (PST)
-Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
-        by smtp.gmail.com with ESMTPSA id t3sm281645lfe.263.2020.12.16.08.52.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 16 Dec 2020 08:52:58 -0800 (PST)
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, robh+dt@kernel.org, s-anna@ti.com,
-        ssantosh@kernel.org
-Cc:     grzegorz.jaszczyk@linaro.org, linux-remoteproc@vger.kernel.org,
-        lee.jones@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, praneeth@ti.com,
-        rogerq@ti.com, t-kristo@ti.com
-Subject: [PATCH v2 5/5] remoteproc: pru: Configure firmware based on client setup
-Date:   Wed, 16 Dec 2020 17:52:39 +0100
-Message-Id: <20201216165239.2744-6-grzegorz.jaszczyk@linaro.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201216165239.2744-1-grzegorz.jaszczyk@linaro.org>
-References: <20201216165239.2744-1-grzegorz.jaszczyk@linaro.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nYWHrbVbxSSL2gimdMuStJvoiPGVcobkaLSqY1apiew=;
+        b=M2DOW9wYiiGbiCocYSoTYRpNn8bfm6hfHD+S6MFRZLnU1yHRp4b7fVdBditbnerzZM
+         7jPo0fxzzdbfF0TYvHpEBhn3xnt9HYCXmm7/R4amDVEvcOR45VmBZy2N8m6YXCB+BWCH
+         ESr9uhAgUQoGkSkYm/NK4ThwYwNTsapNpMa7qVrqQuKncEQmIjJhdqxCRjiNkMoxFuOp
+         JYT0q44hybzZf57bdp0okGFI92AT39LNb2T9fZL2pTHpLp6abwBdD+cLjSnro4UQe3gD
+         vgQ0Vwq7Oub9Gakwf2DyMcB0y5R+Sf+aAatjEIixXoT5lngFHvlW8YDvpwnXyF+egfRm
+         L/Wg==
+X-Gm-Message-State: AOAM530ZHbNI2RSCbilHnqWI3VNz2vhh0bXgPWoMQ3NWpItOGx1j26RR
+        oYyUQ1s1fNIpfIDg5kyqUkfQmw==
+X-Google-Smtp-Source: ABdhPJzjFllBtwtnU06LpZi8JepRVnRWoVkcD3APzeffiW53enUJeEPKnt6/1RNgwqAmgGUAOYTUZA==
+X-Received: by 2002:a7b:ce14:: with SMTP id m20mr4252720wmc.149.1608137712145;
+        Wed, 16 Dec 2020 08:55:12 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:7220:84ff:fe09:7d5c])
+        by smtp.gmail.com with ESMTPSA id j9sm4605998wrc.63.2020.12.16.08.55.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 08:55:11 -0800 (PST)
+Date:   Wed, 16 Dec 2020 16:55:10 +0000
+From:   Alessio Balsini <balsini@android.com>
+To:     "wu-yan@tcl.com" <wu-yan@tcl.com>
+Cc:     balsini@android.com, akailash@google.com, amir73il@gmail.com,
+        axboe@kernel.dk, duostefano93@gmail.com, dvander@google.com,
+        fuse-devel@lists.sourceforge.net, gscrivan@redhat.com,
+        jannh@google.com, kernel-team@android.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        maco@android.com, miklos@szeredi.hu, palmer@dabbelt.com,
+        paullawrence@google.com, trapexit@spawn.link, zezeozue@google.com
+Subject: Re: [PATCH V10 2/5] fuse: Passthrough initialization and release
+Message-ID: <X9o77i1T4PDgm4q4@google.com>
+References: <20201026125016.1905945-3-balsini@android.com>
+ <3bf58b6f-c7eb-7baa-384d-ae0830d8bceb@tcl.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3bf58b6f-c7eb-7baa-384d-ae0830d8bceb@tcl.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tero Kristo <t-kristo@ti.com>
+On Wed, Dec 16, 2020 at 09:32:51PM +0800, wu-yan@tcl.com wrote:
+> Hi Alessio,
+> 
+> It may cause file reference counter leak in fuse_passthrough_open. If the
+> passthrough_filp
+> 
+> not implement read_iter/write_iter or passthrough struct allocated failed,
+> the reference counter get in fget(pro->fd) not released and cause leak.
+> 
+> Cheers,
+> 
+> yanwu
+> 
 
-Client device node property firmware-name is now used to configure
-firmware for the PRU instances. The default firmware is also
-restored once releasing the PRU resource.
 
-Co-developed-by: Suman Anna <s-anna@ti.com>
-Signed-off-by: Suman Anna <s-anna@ti.com>
-Signed-off-by: Tero Kristo <t-kristo@ti.com>
-Co-developed-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
----
- drivers/remoteproc/pru_rproc.c | 35 ++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+Hi yanwu,
 
-diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
-index a37c3f5838ea..4a9c7973bf3a 100644
---- a/drivers/remoteproc/pru_rproc.c
-+++ b/drivers/remoteproc/pru_rproc.c
-@@ -170,6 +170,23 @@ void pru_control_set_reg(struct pru_rproc *pru, unsigned int reg,
- 	spin_unlock_irqrestore(&pru->rmw_lock, flags);
- }
- 
-+/**
-+ * pru_rproc_set_firmware() - set firmware for a pru core
-+ * @rproc: the rproc instance of the PRU
-+ * @fw_name: the new firmware name, or NULL if default is desired
-+ *
-+ * Return: 0 on success, or errno in error case.
-+ */
-+static int pru_rproc_set_firmware(struct rproc *rproc, const char *fw_name)
-+{
-+	struct pru_rproc *pru = rproc->priv;
-+
-+	if (!fw_name)
-+		fw_name = pru->fw_name;
-+
-+	return rproc_set_firmware(rproc, fw_name);
-+}
-+
- static struct rproc *__pru_rproc_get(struct device_node *np, int index)
- {
- 	struct device_node *rproc_np = NULL;
-@@ -230,6 +247,8 @@ struct rproc *pru_rproc_get(struct device_node *np, int index,
- 	struct rproc *rproc;
- 	struct pru_rproc *pru;
- 	struct device *dev;
-+	const char *fw_name;
-+	int ret;
- 
- 	rproc = __pru_rproc_get(np, index);
- 	if (IS_ERR(rproc))
-@@ -254,7 +273,21 @@ struct rproc *pru_rproc_get(struct device_node *np, int index,
- 	if (pru_id)
- 		*pru_id = pru->id;
- 
-+	ret = of_property_read_string_index(np, "firmware-name", index,
-+					    &fw_name);
-+	if (!ret) {
-+		ret = pru_rproc_set_firmware(rproc, fw_name);
-+		if (ret) {
-+			dev_err(dev, "failed to set firmware: %d\n", ret);
-+			goto err;
-+		}
-+	}
-+
- 	return rproc;
-+
-+err:
-+	pru_rproc_put(rproc);
-+	return ERR_PTR(ret);
- }
- EXPORT_SYMBOL_GPL(pru_rproc_get);
- 
-@@ -276,6 +309,8 @@ void pru_rproc_put(struct rproc *rproc)
- 	if (!pru->client_np)
- 		return;
- 
-+	pru_rproc_set_firmware(rproc, NULL);
-+
- 	mutex_lock(&pru->lock);
- 	pru->client_np = NULL;
- 	rproc->deny_sysfs_ops = false;
--- 
-2.29.0
+Nice catch, this bug was introduced in v10 and will be fixed in the next
+patch set.
 
+Cheers,
+Alessio
