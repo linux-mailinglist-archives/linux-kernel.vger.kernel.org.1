@@ -2,76 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9882DBC9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68EE22DBC9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726052AbgLPIXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 03:23:15 -0500
-Received: from www381.your-server.de ([78.46.137.84]:44998 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgLPIXP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:23:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=icK32a3qnSPQjO/4JYLfi0Vv/PxB4NJrdnrp7/a86go=; b=Wy/fUlkT5uzAK6KhNzHil4vei/
-        V2m2GIzvXh6Go2ZQfyXO/+eeRXR5opU+6OsXs/GotUaSpEYfZh6nLfuFfNUqpwB/swqB1mO5+qRL8
-        GiHEt2wzjADScyqMtVaBeN1c5iGStLYcUePsd2w3YKV3YPgHZ3vA6B/4V1LTGHjmk6v27fJIhgL8w
-        s5EUshGpjNhJ2YSyGBmErzcFlWjsTiBxSVBZgN6BjxTCfvjjO/6gEIJKXkG555winODT5XNoK4Sz7
-        fpMpw+G0AlwT+XlffdUDkFfTu4zQ0Tt7eonmvWfrHuqhliA31Y/jMxskI33Lgm3MS21Pp3HkT/+CZ
-        wuq71ekQ==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1kpS4r-0002DI-0H; Wed, 16 Dec 2020 09:22:29 +0100
-Received: from [62.216.202.54] (helo=[192.168.178.20])
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1kpS4q-000ME0-RD; Wed, 16 Dec 2020 09:22:28 +0100
-Subject: Re: [PATCH V2] iio: adc: ad7476: Add LTC2314-14 support
-To:     Mircea Caprioru <mircea.caprioru@analog.com>, jic23@kernel.org
-Cc:     Michael.Hennerich@analog.com, alexandru.ardelean@analog.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, Dragos Bogdan <dragos.bogdan@analog.com>
-References: <20201216082304.89187-1-mircea.caprioru@analog.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <40b2ec69-c376-c0a2-5940-585c742822e3@metafoo.de>
-Date:   Wed, 16 Dec 2020 09:22:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
-MIME-Version: 1.0
-In-Reply-To: <20201216082304.89187-1-mircea.caprioru@analog.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26018/Tue Dec 15 15:37:09 2020)
+        id S1725951AbgLPIXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 03:23:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725845AbgLPIXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 03:23:08 -0500
+Subject: Re: [GIT PULL] Kselftest fixes update for Linux 5.11-rc1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608106948;
+        bh=ud87NcTtL2ZtYGVa9CgBAwaeW4b8Rfgv2MrZObh+9bk=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=sqQezJFETYElHGh0VcBkvEVkAE/CdKahQ+kpXvn1jgZVprQeZlguwYC7GIHQr7CbC
+         uZHBReSpMeuuWiGdimtxEbLbGD5wVtEt4Mr5f+0DouzMqBLbBjvFiyD6uYit4Nezp3
+         wwIwBcdEgKb259We6V2wmrQeDp481sRCcmRphx2A+p4eXX1EL693iSA0LBo40LkwZO
+         /P2rTSU0MCY1rtYI8sNSilwGu0CRiw/+GfC8WKuuh814VIpVrBYK8+x6YFJcB7rYha
+         guaDEmLLR7+A+4dH3anUnAB/WC3FM5WSa9B9n8tzcuIR7r9HXdx4tEMrn983gW+L5/
+         veB6bQcKMi2ew==
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <bd9a480f-80f9-5beb-2f1f-dbc28a7af80c@linuxfoundation.org>
+References: <bd9a480f-80f9-5beb-2f1f-dbc28a7af80c@linuxfoundation.org>
+X-PR-Tracked-List-Id: <linux-kselftest.vger.kernel.org>
+X-PR-Tracked-Message-Id: <bd9a480f-80f9-5beb-2f1f-dbc28a7af80c@linuxfoundation.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.11-rc1
+X-PR-Tracked-Commit-Id: 88f4ede44c585b24674dd99841040b2a1a856a76
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b80affe33fdd56c8e9f1f0f33ad99f9016a59195
+Message-Id: <160810694801.6147.17868708282743846908.pr-tracker-bot@kernel.org>
+Date:   Wed, 16 Dec 2020 08:22:28 +0000
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/16/20 9:23 AM, Mircea Caprioru wrote:
-> [...]
-> Changelog v2
-> - fix conflict with ADS7868 device in chip_info_tbl
-> [...]
->   	[ID_ADS7868] = {
->   		.channel[0] = ADS786X_CHAN(8),
->   		.channel[1] = IIO_CHAN_SOFT_TIMESTAMP(1),
+The pull request you sent on Tue, 15 Dec 2020 11:59:10 -0700:
 
-Hi Mircea,
+> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.11-rc1
 
-I think this is still missing a } here
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b80affe33fdd56c8e9f1f0f33ad99f9016a59195
 
+Thank you!
 
-> +	[ID_LTC2314_14] = {
-> +		.channel[0] = AD7940_CHAN(14),
-> +		.channel[1] = IIO_CHAN_SOFT_TIMESTAMP(1),
->   	},
->   };
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
