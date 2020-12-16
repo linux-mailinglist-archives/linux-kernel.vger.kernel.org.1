@@ -2,152 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C8F2DC896
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 23:02:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB072DC8A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 23:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729989AbgLPWAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 17:00:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729966AbgLPWAm (ORCPT
+        id S1730022AbgLPWDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 17:03:52 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22508 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727769AbgLPWDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 17:00:42 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA53C061794;
-        Wed, 16 Dec 2020 14:00:02 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id w6so17507310pfu.1;
-        Wed, 16 Dec 2020 14:00:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=j8Pu2Oqu5EHmPqIJ1xMc5uKcUxW49zrtaWLuS/rHl7M=;
-        b=URldUB7N0wIYcgzbpC7JGjO29MCuLq98C1oRUZDR1OFZrxAv0c9ag1rWTvHUUlUbEW
-         GyCvLj++fVBTfvcRs+EYJ4Ib70Zx++x7mNRYRP7Nnd4zqbNnLRlJnFWdeg1Z5GyjOIYj
-         UBQMMFhcMCtMuDpq3k6rMXs6yabg9Wr2C9Sev1uylP5cdz82cFJVg3vqCNyfHs58Kv97
-         DUTqZ4bBd8O3wtKlDnNj4+6U+zjHfSqMCya2aY9bY8fPmds+ksKQBySdTmyWJCgdbwC5
-         UT1A/mUwE79jCzVgQrqz6wS3tGyTsOfstUj8tYRzsvdev614M0Nt9jZjpk2XH5vkW5q/
-         nuFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=j8Pu2Oqu5EHmPqIJ1xMc5uKcUxW49zrtaWLuS/rHl7M=;
-        b=ZKmYiwRfchUXAd6l+YWmQ6GJ98RlpO7kfzmUvIB1x7WfSZS7bSLNjAzTB7zfzqXg8O
-         SX0gpN7A4ijVHnjFn0tnXNv1FKdyW4DpVeP+cDFzUj88/e3/emWEwAATiErxai8duQtB
-         gZyXCLpnP44phjUgfw5zhray9aFBArWJ5h15Xycoz5630uhL0cAQP9SS4syskS0GCwUp
-         MhoNLPVxrwVCCrxSP/mnYHQHFgiw0z77YQV47TAGb8hYvahsTQ6S3PD78f+K+UVN6qWG
-         iWppzHhZAGUQXX9zQ2XPSxWaBTrL9g2MErv4csvQQiOqjddp6fI559wzUXUP/se2N8iu
-         zPKQ==
-X-Gm-Message-State: AOAM5303YIDMhK2+A947g4BzgNdjWcDTv1O8VYNrQ2mF/SLSuubtHZE0
-        BHFr+Di1OcMsDRsPF6lbJOUMsHDBvrs=
-X-Google-Smtp-Source: ABdhPJxtY6vEu2HdOZYBSfGCRjm1cVKk26Zy9bnwyFjhVWrWjv4QqGojX+K9mApzrO2Lzxi9Bk1iqw==
-X-Received: by 2002:a63:c407:: with SMTP id h7mr35246497pgd.150.1608156001784;
-        Wed, 16 Dec 2020 14:00:01 -0800 (PST)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id h17sm3301789pfo.220.2020.12.16.13.59.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Dec 2020 13:59:58 -0800 (PST)
-Subject: Re: [RESEND PATCH v3 1/2] ata: ahci_brcm: Fix use of BCM7216 reset
- controller
-To:     Jim Quinlan <jim2101024@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Jim Quinlan <jquinlan@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201216214106.32851-1-james.quinlan@broadcom.com>
- <20201216214106.32851-2-james.quinlan@broadcom.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <1b66cceb-577f-658f-9a97-ec987c87367a@gmail.com>
-Date:   Wed, 16 Dec 2020 13:59:56 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 16 Dec 2020 17:03:51 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BGM25QK007436;
+        Wed, 16 Dec 2020 17:03:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=j6MpTrYMCqVWxvuFe1dNO0OACsrVDUmpjt+aK5cD2+w=;
+ b=M17tcVpXn7o3A/aPi+hyWhGfVJcWHLfYbrd8DVaIN3o+3R6fyLXQDRJm4FNGNZ9Ra+Fz
+ 5OQHnk9sKR4JuXQzqQqzvl/8p74hliyGUpFoXn99wPRYdHC911IXjQfmyMbLSAZzk9U1
+ xa6gPd8fhUYA4ayVqIJP3di0WEjv2pK1aq+H1StOo1T7l35D1pSkCSvbvdtpScJyjJ0W
+ IgVOXZ1r6Q+dT9ilWtTVsw3DVq0wJS9BdsdbNjypTnrrX3A9N1s5jeBQFQOlSOPjxwKC
+ im2uzds0YTbx0L9w/UwpMddUu7BTOELy7OySqt5N4kTp+FE7zzHFxyB+HTVcCIoiqXvq eA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35ftmb84bx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 17:03:08 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BGM33Nf010772;
+        Wed, 16 Dec 2020 17:03:08 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35ftmb84aw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 17:03:08 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BGLxvex002092;
+        Wed, 16 Dec 2020 22:03:06 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 35cng8eyvr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Dec 2020 22:03:06 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BGM0X0p24510946
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Dec 2020 22:00:33 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 888BFA4051;
+        Wed, 16 Dec 2020 22:00:33 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B25CAA405D;
+        Wed, 16 Dec 2020 22:00:32 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.171.26.143])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 16 Dec 2020 22:00:32 +0000 (GMT)
+Date:   Wed, 16 Dec 2020 23:00:31 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        cohuck@redhat.com, kwankhede@nvidia.com, pbonzini@redhat.com,
+        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com
+Subject: Re: [PATCH v3] s390/vfio-ap: clean up vfio_ap resources when KVM
+ pointer invalidated
+Message-ID: <20201216230031.53f635ab.pasic@linux.ibm.com>
+In-Reply-To: <1039a56a-f8d7-15f7-d6a6-cb126468bdff@de.ibm.com>
+References: <20201214165617.28685-1-akrowiak@linux.ibm.com>
+        <20201215115746.3552e873.pasic@linux.ibm.com>
+        <44ffb312-964a-95c3-d691-38221cee2c0a@de.ibm.com>
+        <20201216022140.02741788.pasic@linux.ibm.com>
+        <ae6e5c7a-0159-035e-2bd3-0a749f81a7c0@de.ibm.com>
+        <1039a56a-f8d7-15f7-d6a6-cb126468bdff@de.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201216214106.32851-2-james.quinlan@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-16_09:2020-12-15,2020-12-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ suspectscore=0 mlxscore=0 clxscore=1015 bulkscore=0 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012160134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/16/20 1:41 PM, Jim Quinlan wrote:
-> From: Jim Quinlan <jquinlan@broadcom.com>
-> 
-> This driver may use one of two resets controllers.  Keep them in separate
-> variables to keep things simple.  The reset controller "rescal" is shared
-> between the AHCI driver and the PCIe driver for the BrcmSTB 7216 chip.  Use
-> devm_reset_control_get_optional_shared() to handle this sharing.
-> 
-> Fixes: 272ecd60a636 ("ata: ahci_brcm: BCM7216 reset is self de-asserting")
-> Fixes: c345ec6a50e9 ("ata: ahci_brcm: Support BCM7216 reset controller name")
-> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+On Wed, 16 Dec 2020 17:05:24 +0100
+Christian Borntraeger <borntraeger@de.ibm.com> wrote:
 
-Thanks a lot for fixing this Jim, given the reset lines are still
-mutually exclusive the single variable along with the 7216 versus
-another chip differentiation would still work, but I have no objection
-to the approach you have taken:
+> 
+> 
+> On 16.12.20 10:58, Christian Borntraeger wrote:
+> > On 16.12.20 02:21, Halil Pasic wrote:
+> >> On Tue, 15 Dec 2020 19:10:20 +0100
+> >> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+> >>
+> >>>
+> >>>
+> >>> On 15.12.20 11:57, Halil Pasic wrote:
+> >>>> On Mon, 14 Dec 2020 11:56:17 -0500
+> >>>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >>>>
+> >>>>> The vfio_ap device driver registers a group notifier with VFIO when the
+> >>>>> file descriptor for a VFIO mediated device for a KVM guest is opened to
+> >>>>> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
+> >>>>> event). When the KVM pointer is set, the vfio_ap driver takes the
+> >>>>> following actions:
+> >>>>> 1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
+> >>>>>    of the mediated device.
+> >>>>> 2. Calls the kvm_get_kvm() function to increment its reference counter.
+> >>>>> 3. Sets the function pointer to the function that handles interception of
+> >>>>>    the instruction that enables/disables interrupt processing.
+> >>>>> 4. Sets the masks in the KVM guest's CRYCB to pass AP resources through to
+> >>>>>    the guest.
+> >>>>>
+> >>>>> In order to avoid memory leaks, when the notifier is called to receive
+> >>>>> notification that the KVM pointer has been set to NULL, the vfio_ap device
+> >>>>> driver should reverse the actions taken when the KVM pointer was set.
+> >>>>>
+> >>>>> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+> >>>>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> >>>>> ---
+> >>>>>  drivers/s390/crypto/vfio_ap_ops.c | 29 ++++++++++++++++++++---------
+> >>>>>  1 file changed, 20 insertions(+), 9 deletions(-)
+> >>>>>
+> >>>>> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> >>>>> index e0bde8518745..cd22e85588e1 100644
+> >>>>> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> >>>>> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> >>>>> @@ -1037,8 +1037,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
+> >>>>>  {
+> >>>>>  	struct ap_matrix_mdev *m;
+> >>>>>
+> >>>>> -	mutex_lock(&matrix_dev->lock);
+> >>>>> -
+> >>>>>  	list_for_each_entry(m, &matrix_dev->mdev_list, node) {
+> >>>>>  		if ((m != matrix_mdev) && (m->kvm == kvm)) {
+> >>>>>  			mutex_unlock(&matrix_dev->lock);
+> >>>>> @@ -1049,7 +1047,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
+> >>>>>  	matrix_mdev->kvm = kvm;
+> >>>>>  	kvm_get_kvm(kvm);
+> >>>>>  	kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
+> >>>>> -	mutex_unlock(&matrix_dev->lock);
+> >>>>>
+> >>>>>  	return 0;
+> >>>>>  }
+> >>>>> @@ -1083,35 +1080,49 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
+> >>>>>  	return NOTIFY_DONE;
+> >>>>>  }
+> >>>>>
+> >>>>> +static void "(struct ap_matrix_mdev *matrix_mdev)
+> >>>>> +{
+> >>>>> +	kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
+> >>>>> +	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+> >>>>
+> >>>>
+> >>>> This patch LGTM. The only concern I have with it is whether a
+> >>>> different cpu is guaranteed to observe the above assignment as
+> >>>> an atomic operation. I think we didn't finish this discussion
+> >>>> at v1, or did we?
+> >>>
+> >>> You mean just this assigment:
+> >>>>> +	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+> >>> should either have the old or the new value, but not halve zero halve old?
+> >>>
+> >>
+> >> Yes that is the assignment I was referring to. Old value will work as well because
+> >> kvm holds a reference to this module while in the pqap_hook.
+> >>  
+> >>> Normally this should be ok (and I would consider this a compiler bug if
+> >>> this is split into 2 32 bit zeroes) But if you really want to be sure then we
+> >>> can use WRITE_ONCE.
+> >>
+> >> Just my curiosity: what would make this a bug? Is it the s390 elf ABI,
+> >> or some gcc feature, or even the C standard? Also how exactly would
+> >> WRITE_ONCE, also access via volatile help in this particular situation?
+> > 
+> > I think its a tricky things and not strictly guaranteed, but there is a lot
+> > of code that relies on the atomicity of word sizes. see for example the discussion
+> > here
+> > https://lore.kernel.org/lkml/CAHk-=wgC4+kV9AiLokw7cPP429rKCU+vjA8cWAfyOjC3MtqC4A@mail.gmail.com/
+> > 
+> > WRITE_ONCE will not change the guarantees a lot, but it is mostly a documentation
+> > that we assume atomic access here.
+> 
+> After looking again at the code, I think I have to correct myself.
+> WRITE_ONCE does not look necessary.
+> 
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Yes, volatile access is not about atomic access. Whether a volatile
+access here is a good idea or not, is a different question.
+
+> 
+> Another thing, though:
+> Shouldnt we also replace this code
+> 
+> [...]
+> static void vfio_ap_mdev_release(struct mdev_device *mdev)
+> {
+>         struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
+> 
+>         mutex_lock(&matrix_dev->lock);
+>         if (matrix_mdev->kvm) {
+> --->          kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
+> --->          matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+> --->          vfio_ap_mdev_reset_queues(mdev);
+> --->          kvm_put_kvm(matrix_mdev->kvm);
+> --->          matrix_mdev->kvm = NULL;
+> [...]
+> 
+> with vfio_ap_mdev_unset_kvm ?
+
+Yes, we had something like this in v2 already. Would be good style to
+do so.
+
+Regards,
+Halil
