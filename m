@@ -2,92 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE7B2DBF40
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:17:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B0E2DBF42
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:17:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726020AbgLPLQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 06:16:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgLPLQk (ORCPT
+        id S1726159AbgLPLQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 06:16:48 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:42628 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgLPLQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 06:16:40 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD61BC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 03:15:59 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id t8so23563548iov.8
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 03:15:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SjqtyaEXagR0cdMaIV8xobKWELgO4kFZkl7p1Qxs5wY=;
-        b=mfwVEMGBbhA7vaP/3oy4bPd91C/hzsUoCAhd62/nf8VXNk4EFoVn1cdWAuE1WY1891
-         +CtL3xRHQr0/VciLA56p7MGGRkI8UhFq4QdrMfrC/hQlTi7eQZVVLt+zxEEHmaxnUVxy
-         Fskvuydy/PvcLY8rQfoU18zJtpZDJzqx1P+Eg5VzMHuxJH21rOITNaWxWyNjt0iqWOvY
-         Sqpj9VhyrH+26DaelVNjgb2jvUTwCHR94/5ucc6MNC1m07/L5asRf8G85j6djKTjG1FD
-         gWFsCB1jlP7170lpiEvsVyRXNkwtetRET0jMXPSjReQcKIn7pYJ6n/MTPfy/RqE6C20F
-         qW3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SjqtyaEXagR0cdMaIV8xobKWELgO4kFZkl7p1Qxs5wY=;
-        b=eZsFdjRSC7aayWgzmlx79iT9Elt6RjRBgh07PWXz/oa89eUjPIcGHivsB3ToM9QTZL
-         55Kzld1vY3JCzz962br2vEo/pN/ImBFNtfyTz6hcXSVUw7nhoayTBMYO6qQYkb29guw/
-         +07GKJ+xfQDnTmLH6G5U9CA2QyCNmnsRGxcT7vKQhrdSgtdIzAOC3vuHaFbVu+T8ocPk
-         +I5PwT1jUGNuXMJhSNx2ud6dWiG9jqveb3II/iXSEDGcWowkAT/whbQjlxp+zdqYg9TZ
-         xiaSMCPb1tSjM87KBa5M5aLNOo/JKAr+3udcwy5gMCIpPzVJjhyrKYNKS6WATNx/5loH
-         7QNg==
-X-Gm-Message-State: AOAM531S6pKAJbsuFKG5A3AmP3wPcEM6QbzyIfmU/402hNk0Xblu9yZR
-        PzI13OAxHGZrWwx+qMtkRFs9to1xR/A70V9vw6U=
-X-Google-Smtp-Source: ABdhPJzjwmBi8CGqCr2fDXk/QakcooFgPtXbkRTLXddqhtiu+AYtAAPMcpbRAJO9akMK1mG8pb7Bk89gz/CCFvmdVGY=
-X-Received: by 2002:a02:90ca:: with SMTP id c10mr42866369jag.115.1608117358941;
- Wed, 16 Dec 2020 03:15:58 -0800 (PST)
+        Wed, 16 Dec 2020 06:16:48 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kpUms-0002ac-3g; Wed, 16 Dec 2020 11:16:06 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] freevxfs: fix spelling mistake in Kconfig "endianess" -> "endianness"
+Date:   Wed, 16 Dec 2020 11:16:05 +0000
+Message-Id: <20201216111605.10787-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201215214656.649896-1-bert@biot.com> <410ca5c2-96a0-ffd0-e1c0-316fe37ff4d5@microchip.com>
-In-Reply-To: <410ca5c2-96a0-ffd0-e1c0-316fe37ff4d5@microchip.com>
-From:   Chuanhong Guo <gch981213@gmail.com>
-Date:   Wed, 16 Dec 2020 19:15:47 +0800
-Message-ID: <CAJsYDVKysjbMYrpv52WcY4Vz=Zdrp69gUwHP=VQcUq_3KpzMhQ@mail.gmail.com>
-Subject: Re: [PATCH] Add spi-nor driver for Realtek RTL838x/RTL839x switch SoCs
-To:     Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Cc:     bert@biot.com, Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>, john.garry@huawei.com,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        vadivel.muruganx.ramuthevar@linux.intel.com,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+From: Colin Ian King <colin.king@canonical.com>
 
-On Wed, Dec 16, 2020 at 4:30 PM <Tudor.Ambarus@microchip.com> wrote:
->
-> On 12/15/20 11:46 PM, Bert Vermeulen wrote:
-> > This driver supports the spiflash core in all RTL838x/RTL839x SoCs,
-> > and likely some older models as well (RTL8196C).
-> >
-> Can we use SPIMEM and move this under drivers/spi/ instead?
->
-> Cheers,
-> ta
+There is a spelling mistake in the Kconfig help text. Fix it.
 
-Just took a brief look at the code, and here's my current understanding
-of this controller:
-1. CS is controlled separately with SFCSR_CSB* bits
-2. To write 1-4 bytes, set SFCSR_LEN* and write to SFDR
-2. To read 1-4 bytes, set SFCSR_LEN* and read SFDR
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ fs/freevxfs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If that's true, this is a generic half-duplex spi controller, and the driver
-should register a spi_controller with set_cs and transfer_one
-implemented.
-
+diff --git a/fs/freevxfs/Kconfig b/fs/freevxfs/Kconfig
+index c05c71d57291..0e2fc08f7de4 100644
+--- a/fs/freevxfs/Kconfig
++++ b/fs/freevxfs/Kconfig
+@@ -8,7 +8,7 @@ config VXFS_FS
+ 	  of SCO UnixWare (and possibly others) and optionally available
+ 	  for Sunsoft Solaris, HP-UX and many other operating systems. However
+ 	  these particular OS implementations of vxfs may differ in on-disk
+-	  data endianess and/or superblock offset. The vxfs module has been
++	  data endianness and/or superblock offset. The vxfs module has been
+ 	  tested with SCO UnixWare and HP-UX B.10.20 (pa-risc 1.1 arch.)
+ 	  Currently only readonly access is supported and VxFX versions
+ 	  2, 3 and 4. Tests were performed with HP-UX VxFS version 3.
 -- 
-Regards,
-Chuanhong Guo
+2.29.2
+
