@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7410E2DBAE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 06:56:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D33B52DBADF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 06:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725855AbgLPFy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1725852AbgLPFy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 16 Dec 2020 00:54:59 -0500
-Received: from mga18.intel.com ([134.134.136.126]:29525 "EHLO mga18.intel.com"
+Received: from mga12.intel.com ([192.55.52.136]:62838 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725274AbgLPFy7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 00:54:59 -0500
-IronPort-SDR: rgE91HC20ZY2paODOHxMtEuxck8DizA0UcSK7GRLOyKVLSopXtSMwbII+0KHpL8L+HR4yTmAsJ
- Z9m9wKmrUUKA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="162756295"
+        id S1725845AbgLPFy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 00:54:58 -0500
+IronPort-SDR: ESQeZPrFVpie/rIaDnmExpogKfaspFQv+KWVq0mUnDtm5py9Nb+eUW5h1xbqqm5V6ZkFF8q7yc
+ iixyIWLkwwSw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="154241432"
 X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
-   d="scan'208";a="162756295"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 21:54:17 -0800
-IronPort-SDR: cuPKbCiHyfNmoyUKXqVQJcH80Lf/zOB0NsJR/rpDIdREJJ2H+H7G0Oe7CmQJg0uJrfsM/DhEER
- XN1r8ryfwVug==
+   d="scan'208";a="154241432"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 21:54:18 -0800
+IronPort-SDR: 0ihh0r/1qblyGpol1zFmOhmFJRizIwnLeMmlmrp30OMdPwuEgna2t87SwLsQ9vabwdnhMWhZYi
+ H0FeyxeSElfA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
-   d="scan'208";a="384170710"
+   d="scan'208";a="379029597"
 Received: from lkp-server02.sh.intel.com (HELO a947d92d0467) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Dec 2020 21:54:16 -0800
+  by orsmga007.jf.intel.com with ESMTP; 15 Dec 2020 21:54:16 -0800
 Received: from kbuild by a947d92d0467 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kpPlP-0001Aq-Qn; Wed, 16 Dec 2020 05:54:15 +0000
-Date:   Wed, 16 Dec 2020 13:54:06 +0800
+        id 1kpPlQ-0001At-5M; Wed, 16 Dec 2020 05:54:16 +0000
+Date:   Wed, 16 Dec 2020 13:54:10 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/urgent] BUILD SUCCESS
- 1b04fa9900263b4e217ca2509fd778b32c2b4eb2
-Message-ID: <5fd9a0fe.sYRiw6QQOO/dWUK0%lkp@intel.com>
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ ae5633d5117d6ddae554584ec47dd008e9b68667
+Message-ID: <5fd9a102.mNDHv529y3AOqbgP%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/urgent
-branch HEAD: 1b04fa9900263b4e217ca2509fd778b32c2b4eb2  rcu-tasks: Move RCU-tasks initialization to before early_initcall()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+branch HEAD: ae5633d5117d6ddae554584ec47dd008e9b68667  Merge branch 'rcu/urgent' into HEAD
 
-elapsed time: 723m
+elapsed time: 724m
 
-configs tested: 151
+configs tested: 137
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -78,12 +78,6 @@ powerpc                        warp_defconfig
 powerpc                     sbc8548_defconfig
 powerpc                       holly_defconfig
 powerpc                     skiroot_defconfig
-alpha                            alldefconfig
-mips                           mtx1_defconfig
-powerpc                     taishan_defconfig
-mips                          rb532_defconfig
-mips                      loongson3_defconfig
-powerpc                     mpc512x_defconfig
 powerpc                       eiger_defconfig
 arm                            u300_defconfig
 arm                        neponset_defconfig
@@ -117,17 +111,11 @@ h8300                     edosk2674_defconfig
 arm                          moxart_defconfig
 arc                                 defconfig
 powerpc                 mpc8315_rdb_defconfig
-powerpc                      mgcoge_defconfig
-sh                         apsh4a3a_defconfig
-mips                malta_qemu_32r6_defconfig
-m68k                       bvme6000_defconfig
-arm                        cerfcube_defconfig
-h8300                    h8300h-sim_defconfig
-arm                     davinci_all_defconfig
-x86_64                           allyesconfig
-powerpc                      ppc64e_defconfig
-arm                  colibri_pxa270_defconfig
-arm                            mps2_defconfig
+mips                           gcw0_defconfig
+m68k                             alldefconfig
+mips                      malta_kvm_defconfig
+arm                              zx_defconfig
+mips                         cobalt_defconfig
 parisc                              defconfig
 s390                             allyesconfig
 sh                        dreamcast_defconfig
@@ -140,9 +128,6 @@ sh                               j2_defconfig
 parisc                generic-32bit_defconfig
 alpha                            allyesconfig
 mips                         tb0226_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                           u8500_defconfig
-powerpc                     tqm8560_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -196,6 +181,7 @@ riscv                             allnoconfig
 riscv                               defconfig
 riscv                          rv32_defconfig
 x86_64                                   rhel
+x86_64                           allyesconfig
 x86_64                    rhel-7.6-kselftests
 x86_64                              defconfig
 x86_64                               rhel-8.3
