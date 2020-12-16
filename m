@@ -2,115 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B192DBFA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EC42DBFA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725932AbgLPLm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 06:42:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42632 "EHLO
+        id S1725914AbgLPLpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 06:45:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725891AbgLPLm7 (ORCPT
+        with ESMTP id S1725885AbgLPLph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 06:42:59 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A5DC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 03:42:18 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id q22so14500938eja.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 03:42:18 -0800 (PST)
+        Wed, 16 Dec 2020 06:45:37 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65591C06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 03:44:57 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id 2so22264693ilg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 03:44:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vpFk2jW++o/c5mecPREIAGYZAOvlUctt44C0JGqrkMg=;
-        b=X9qwLlVj2vFqyrsO4c4Ef4BcFxY4hXr24RrggjGJfJEACj7B7Q+qFOD5yW+t/h87uq
-         6pqc6JCK6ZNBHxTyoRFlhWVdX7wzR0Q/HQzp9u/q486tt73fIFfFMhnUBFn6RI/DsMN2
-         MLmWemRc0DE3pO8qVk8LMSLHgx5mcRqtkLWaRBeceIhjtSCf0+ycCgjznPHm+5QQyUvN
-         c70Hz945tKQLQ8ql1JVrqyo6leSmw7pw+G06uJCsMVCoC19qtAr48TzN6f1KxJeYTTHG
-         Bv8dyjADbkEn5kYa3QfRvS4dbk5ytfsokbGYz8pej6ENBwEOEu8PL/d3GA2qBxqg/at+
-         wV1g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7/ZlIpaN8xcDIn8bKlAdp8paf+KXXpCzF6s0NyTWF14=;
+        b=Q5nIWr6CT1PZPxyJY/xL1sS1xFuq6P0IzKI6Z9O7GmIiB8h1m50Uu+t+wXFBSLDo0u
+         s9xyHUenf6wNTYgM8d1q1RMdhUpskmaHxhw+W9HgrUoyOBlMYzRXlYlhWOPUVOkWOo54
+         gLBg57k2BPlObdfH2ltq08SZ6e8NpAS/CCoC4wJ7GUWeYAcP8RGjutaTvLUnXOMV5x13
+         1gEdOfqMwp5GCLTynmkplYKdsUHwtWQ+Za8oHWl/zts0CV2HdZo94WKXUNk9oZIU5Osx
+         I/1jhuYrkUd4Vn83v5tYUHqun4rA9JQIdU6o+dFtCxuGHbcqNAGzuz+0BNzrnV3l5Zmq
+         BqSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vpFk2jW++o/c5mecPREIAGYZAOvlUctt44C0JGqrkMg=;
-        b=b8CyK2iZ2AczTQVsiIcYE6/DhWbDwJsqk4Kn8edunzDy7JwCGTpCkNckDEXluXfaTl
-         El+XyonQ/s22SlFOcGrsw7EaXjd0aPXLR8cynUH+O0h71Nif+SuU4wZR0YNtVZx9YDt6
-         yVZK82cN9MrvKOUlsjczwKEA59SpEfOKaCn06R/TvukU1eT/YxSortbAjvESbBUIPZi3
-         b4N7H6MZYnTiduObk6owBQretaUjYY73bn2/O/MDyTMhSKNdDJIKUJTovfvCzRAJp4pi
-         u2CqdXTfigLHYkEamWquCi+3TeRuBwqFwpg04AGGoqoDkbz3hil/hWquoLLFjFsc20Dl
-         BLYw==
-X-Gm-Message-State: AOAM531tK4B48huOPI2xNCTBjFbDCmmY1lft+Y+PHliNtwkdqcCs8Lze
-        uY38Jbvn19MW38XLHBLMVbaT9BRStTRXLg==
-X-Google-Smtp-Source: ABdhPJxamD2xp7vuL0j9UPK+vAORDA1al7JS8aMaG+jUl6Rk+0gBnwf83HKvOY+En7OXRX1uF5k6Mg==
-X-Received: by 2002:a17:906:1916:: with SMTP id a22mr30353517eje.536.1608118937452;
-        Wed, 16 Dec 2020 03:42:17 -0800 (PST)
-Received: from localhost.localdomain.info (62-178-82-229.cable.dynamic.surfer.at. [62.178.82.229])
-        by smtp.gmail.com with ESMTPSA id y17sm1223472ejj.84.2020.12.16.03.42.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 03:42:16 -0800 (PST)
-From:   Christian Gmeiner <christian.gmeiner@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, etnaviv@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH] drm/etnaviv: provide more ID values via GET_PARAM ioctl.
-Date:   Wed, 16 Dec 2020 12:42:01 +0100
-Message-Id: <20201216114209.276630-1-christian.gmeiner@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7/ZlIpaN8xcDIn8bKlAdp8paf+KXXpCzF6s0NyTWF14=;
+        b=QHlxR/+dMiEGHIE/YrVTXobDDUiSCiH4tdTCy/nLnZFhn3eKC8fjKPaERYrz2N88G6
+         kiUl8wmOzf4jngG7p3rKZGw/tq34rvAvjD3V8zgK0S95duvT4tPQbcC2Np3ZYOCK5QSi
+         HiFeF+mmbTnp1EpNCeS5rTElsz+RMzS/8WW8nedTxG+IdMcLq3SW9gHIGgCEk7A3wAvu
+         X8oyJzFJoAoxJKVE8TlKkfMW/kDbem//lP59hqmt528C5czV2pPB588FsfHRKx2orq7C
+         3LGwku8Bk10BjGT27OhI11PEZ5wndKx4nnGqvH8oDh+J7nDxRQQNiIQxv9Vfzya2qhVX
+         Gulw==
+X-Gm-Message-State: AOAM532wFr/ACX8jBj81brqD1XMFJzMO5qGObd0RiYw1NoEAxmqW75Zm
+        Kcsrjhyaszk3gvBQ2FfgI7cubF47cwjLXW698TKnlg==
+X-Google-Smtp-Source: ABdhPJzSCCI6malJksUrOeoVx3K8oV4+R7HDqCAN1A4vRRuK3ZhyjuVf8l2fvI0ancEoOyCP7rpuj78xsGiQRcfJ4S8=
+X-Received: by 2002:a92:c26c:: with SMTP id h12mr39048784ild.165.1608119096598;
+ Wed, 16 Dec 2020 03:44:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201215121816.1048557-1-jackmanb@google.com> <20201215121816.1048557-13-jackmanb@google.com>
+ <fcb9335c-000c-0097-7a70-983de271a3b7@fb.com>
+In-Reply-To: <fcb9335c-000c-0097-7a70-983de271a3b7@fb.com>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Wed, 16 Dec 2020 12:44:45 +0100
+Message-ID: <CA+i-1C2ddNES0DXoO1L_nrqpK5EtA9xKE1yRGrqSVv0dECZozQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 11/11] bpf: Document new atomic instructions
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make it possible for the user space to access these ID values.
+On Wed, 16 Dec 2020 at 08:08, Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 12/15/20 4:18 AM, Brendan Jackman wrote:
+> > Document new atomic instructions.
+> >
+> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+>
+> Ack with minor comments below.
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
+>
+> > ---
+> >   Documentation/networking/filter.rst | 26 ++++++++++++++++++++++++++
+> >   1 file changed, 26 insertions(+)
+> >
+> > diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
+> > index 1583d59d806d..26d508a5e038 100644
+> > --- a/Documentation/networking/filter.rst
+> > +++ b/Documentation/networking/filter.rst
+> > @@ -1053,6 +1053,32 @@ encoding.
+> >      .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_W  | BPF_STX: lock xadd *(u32 *)(dst_reg + off16) += src_reg
+> >      .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_DW | BPF_STX: lock xadd *(u64 *)(dst_reg + off16) += src_reg
+> >
+> > +The basic atomic operations supported (from architecture v4 onwards) are:
+>
+> Remove "(from architecture v4 onwards)".
 
-Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
----
- drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 12 ++++++++++++
- include/uapi/drm/etnaviv_drm.h        |  3 +++
- 2 files changed, 15 insertions(+)
+Oops, thanks.
 
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-index c6404b8d067f..ec16991ba8b6 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-@@ -156,6 +156,18 @@ int etnaviv_gpu_get_param(struct etnaviv_gpu *gpu, u32 param, u64 *value)
- 			*value = ~0ULL;
- 		break;
- 
-+	case ETNAVIV_PARAM_GPU_PRODUCT_ID:
-+		*value = gpu->identity.product_id;
-+		break;
-+
-+	case ETNAVIV_PARAM_GPU_CUSTOMER_ID:
-+		*value = gpu->identity.customer_id;
-+		break;
-+
-+	case ETNAVIV_PARAM_GPU_ECO_ID:
-+		*value = gpu->identity.eco_id;
-+		break;
-+
- 	default:
- 		DBG("%s: invalid param: %u", dev_name(gpu->dev), param);
- 		return -EINVAL;
-diff --git a/include/uapi/drm/etnaviv_drm.h b/include/uapi/drm/etnaviv_drm.h
-index 09d0df8b71c5..af024d90453d 100644
---- a/include/uapi/drm/etnaviv_drm.h
-+++ b/include/uapi/drm/etnaviv_drm.h
-@@ -74,6 +74,9 @@ struct drm_etnaviv_timespec {
- #define ETNAVIV_PARAM_GPU_NUM_CONSTANTS             0x19
- #define ETNAVIV_PARAM_GPU_NUM_VARYINGS              0x1a
- #define ETNAVIV_PARAM_SOFTPIN_START_ADDR            0x1b
-+#define ETNAVIV_PARAM_GPU_PRODUCT_ID                0x1c
-+#define ETNAVIV_PARAM_GPU_CUSTOMER_ID               0x1d
-+#define ETNAVIV_PARAM_GPU_ECO_ID                    0x1e
- 
- #define ETNA_MAX_PIPES 4
- 
--- 
-2.29.2
+> > +
+> > +    BPF_ADD
+> > +    BPF_AND
+> > +    BPF_OR
+> > +    BPF_XOR
+> > +
+> > +Each having equivalent semantics with the ``BPF_ADD`` example, that is: the
+> > +memory location addresed by ``dst_reg + off`` is atomically modified, with
+> > +``src_reg`` as the other operand. If the ``BPF_FETCH`` flag is set in the
+> > +immediate, then these operations also overwrite ``src_reg`` with the
+> > +value that was in memory before it was modified.
+> > +
+> > +The more special operations are:
+> > +
+> > +    BPF_XCHG
+> > +
+> > +This atomically exchanges ``src_reg`` with the value addressed by ``dst_reg +
+> > +off``.
+> > +
+> > +    BPF_CMPXCHG
+> > +
+> > +This atomically compares the value addressed by ``dst_reg + off`` with
+> > +``R0``. If they match it is replaced with ``src_reg``, The value that was there
+> > +before is loaded back to ``R0``.
+> > +
+> >   Note that 1 and 2 byte atomic operations are not supported.
+>
+> Adding something like below.
+>
+> Except xadd for legacy reason, all other 4 byte atomic operations
+> require alu32 mode.
+> The alu32 mode can be enabled with clang flags "-Xclang -target-feature
+> -Xclang +alu32" or "-mcpu=v3". The cpu version 3 has alu32 mode on by
+> default.
 
+Thanks, I've written it as:
+
+Except ``BPF_ADD`` _without_ ``BPF_FETCH`` (for legacy reasons), all 4
+byte atomic operations require alu32 mode. Clang enables this mode by
+default in architecture v3 (``-mcpu=v3``). For older versions it can
+be enabled with ``-Xclang -target-feature -Xclang +alu32``.
+
+> >
+> >   You may encounter BPF_XADD - this is a legacy name for BPF_ATOMIC, referring to
+> >
