@@ -2,111 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE0B2DBD56
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EEF2DBD74
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726244AbgLPJLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:11:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgLPJLg (ORCPT
+        id S1726227AbgLPJWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:22:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28679 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725889AbgLPJWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:11:36 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE8FC061793
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:10:55 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id b73so23979769edf.13
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:10:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cv2afJbDeZJNb1odPyKMoHfXMkCAGkNQaGWk4xDkS1Y=;
-        b=aYow9Orkt22cpARMEbzczCYJF7d3nB8JC0mzA4kCpjQMSF8i1k5v9BLeSnmwvBWFzp
-         cRzilpZhe2Hvvlfaw9vhCLO/h5Ig5nAIyBRN2k10KMKF6LH2KYgJP0gST9xCeaWoO8qO
-         jFg4uFhuesKnSuW1FKLeV5P52pyg9I8v0wgtuGvR5aLOwZ0CrIyrJQPypZPwlUWTNSvB
-         D6ZVFLOEUuktmmqWiBK7pBR2zeYAiP8Qe3EajqtTIlSoO1bGjIrJDRU8b9itrKo7Ne36
-         zsIe4WxfKf3M4jhs7ywJOHVKFXBYcXhnbxtVfeVuVC9PoMBquvarhPtisLTQ6xSD3qlm
-         pWmg==
+        Wed, 16 Dec 2020 04:22:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608110485;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=95kYYHdF7tbuazCEyR7ifHABrdX2cTEKUmvLOcIl4M4=;
+        b=DnfYUSuMYq/5ZCZmZAQdM+qWccq/SL09ool0UieH2xfVRv7/XH+JTW100n/Nu8zGpFeIxc
+        cW5ONrsGqUPr8CaJtSYmy7yjjG0M2TCc0l4TC3oFagmhkmiXh/7q+eUqoB4FhJK2BXJncj
+        B6RHw31S/ee+eOmbEYytW0igm2UQyIE=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-249-8BU2xI_JNP2Un4FclR4qnA-1; Wed, 16 Dec 2020 04:21:23 -0500
+X-MC-Unique: 8BU2xI_JNP2Un4FclR4qnA-1
+Received: by mail-ed1-f70.google.com with SMTP id g25so11430289edu.4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 01:21:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cv2afJbDeZJNb1odPyKMoHfXMkCAGkNQaGWk4xDkS1Y=;
-        b=RG+nXhS7exOYL77GIJ6RWSsPqtUHO1lt1j7QfBLI3PYoeEMgqt61MWAJQ6KQAPZNgS
-         uj3pXCeLPhMcldDQcLF8d6LW4ZqJpDUtsqgQabmTCMU2XhXpzcb4bRwX0uB0fOrKblos
-         plr9+UkvIaiHW0BywaCFDjS8wH2M1MVonkFQxhG8TjNT1sgiqtBzmTfmc7F7WIVtjmTA
-         r7gL6kinnmUVgpaSHociPzObk/6UoicHuNrDYpTuZyqisezhW7dYn034SLJqYVaML5Zs
-         +qbBUO81s2m1uyefj4HTkdkkIp+yAIQBDX/D+vGarseVmjcNOPvAI9ryFbJujTnH/HRS
-         zokg==
-X-Gm-Message-State: AOAM5335UPiy9apPV4mu3hdsoq8sxkOLGn5nbzmNSMQdoBuqjFBpqwhB
-        Jlkmcn1ev/voVwhgtMIpoRgeEw5EWPvoTa0WvowpkA==
-X-Google-Smtp-Source: ABdhPJxFZuRzgHup4J3bDTq8jdykkcC7HXin6/9clUn2PkjgwGRqVFRdsuFAyz33PC9ado3AZRofaKMAw0/+VM13K+M=
-X-Received: by 2002:aa7:dacf:: with SMTP id x15mr32490284eds.134.1608109853815;
- Wed, 16 Dec 2020 01:10:53 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=95kYYHdF7tbuazCEyR7ifHABrdX2cTEKUmvLOcIl4M4=;
+        b=TBH35NnzoLBn5QBiwDXriM5skfx2yWwehTtvvPsiC7zG/cCfKm8FOQV8td9EuMVyT6
+         VC0m3Cdg7iBHOz5nsiyU36ReCDQUSBJtaAaiMc7UwQ+UNTBBbqspc6Xk6zjZ9TwqwSLi
+         93TBrnVmk2DD2BELRJXsWsjG2QRhRNTkZL+ff+e3cuXA6ptSAwWQvwWfs0vDZeSBxRhA
+         Z9ul5VeP1e+nuS8XlSjhGXkDDz3agHfoteP8rN24XZ44T7l7GvLiV3ZwPQQZMyQuK75F
+         J+PtRuqsf54RGkjTg60NpIYVOigiFYCC2Ds6ho02V4LQzekzo7Wrzy3no+bMILCsfV+d
+         Hm8g==
+X-Gm-Message-State: AOAM532oLSE7VrxzQ2XjhMW6MaCuo63TY0CuwB9EzDpIua8zsafr5sV5
+        Dpdf6JcSrSdcvqh1IGw5yLKeupPJEx9553TUMjU4cn4NeKZixRaQnxJSFTZyyLVIu2WkDsj/lA4
+        mPf0ZkmlsQwJxg5LAwqLubyJ40r4rfPekPE+8Z9Q7Utv2h81DnlOrm2b1naQ6dviRk7N41T2D09
+        TW
+X-Received: by 2002:a17:906:edd1:: with SMTP id sb17mr29625970ejb.118.1608110482382;
+        Wed, 16 Dec 2020 01:21:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwPl9vRNS46IusutfIHF0aRM43sgaWmPQp10m5prjhTFktaVV3lrQt8mLX56NUjFj3QL3KjEw==
+X-Received: by 2002:a17:906:edd1:: with SMTP id sb17mr29625948ejb.118.1608110482139;
+        Wed, 16 Dec 2020 01:21:22 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id ot18sm932007ejb.54.2020.12.16.01.21.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 01:21:21 -0800 (PST)
+Subject: Re: [GIT PULL] platform-drivers-x86 for 5.11-1
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        "David E. Box" <david.e.box@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     Andy Shevchenko <andy@infradead.org>,
+        Mark Gross <mark.gross@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <f70a7a27-de9d-35aa-53d4-91da3677af6d@redhat.com>
+ <CAHk-=wiMs5Q9VwEP_gfGmUR3R+_xDRA5pprbgznaFuq48pY+wQ@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <c24d791c-1f2f-7f94-84cd-450cbdba6ce3@redhat.com>
+Date:   Wed, 16 Dec 2020 10:21:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <1607715903-16442-1-git-send-email-hemantk@codeaurora.org>
-In-Reply-To: <1607715903-16442-1-git-send-email-hemantk@codeaurora.org>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Wed, 16 Dec 2020 10:17:30 +0100
-Message-ID: <CAMZdPi8=9OsoCH_eV_JZohmFbuXcLv2kWNPLFzQUAKUCUHYs5A@mail.gmail.com>
-Subject: Re: [PATCH v18 0/3] userspace MHI client interface driver
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHk-=wiMs5Q9VwEP_gfGmUR3R+_xDRA5pprbgznaFuq48pY+wQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Folks,
+Hi,
 
-On Fri, 11 Dec 2020 at 20:45, Hemant Kumar <hemantk@codeaurora.org> wrote:
->
-> This patch series adds support for UCI driver. UCI driver enables userspace
-> clients to communicate to external MHI devices like modem. UCI driver probe
-> creates standard character device file nodes for userspace clients to
-> perform open, read, write, poll and release file operations. These file
-> operations call MHI core layer APIs to perform data transfer using MHI bus
-> to communicate with MHI device.
->
-> This interface allows exposing modem control channel(s) such as QMI, MBIM,
-> or AT commands to userspace which can be used to configure the modem using
-> tools such as libqmi, ModemManager, minicom (for AT), etc over MHI. This is
-> required as there are no kernel APIs to access modem control path for device
-> configuration. Data path transporting the network payload (IP), however, is
-> routed to the Linux network via the mhi-net driver. Currently driver supports
-> QMI channel. libqmi is userspace MHI client which communicates to a QMI
-> service using QMI channel. Please refer to
-> https://www.freedesktop.org/wiki/Software/libqmi/ for additional information
-> on libqmi.
->
-> Patch is tested using arm64 and x86 based platform.
+On 12/16/20 1:17 AM, Linus Torvalds wrote:
+> On Mon, Dec 14, 2020 at 4:43 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> - New Intel PMT telemetry and crashlog drivers
+> 
+> These have _very_ annoying Kconfig setups.
+> 
+> First it asks about INTEL_PMT support.
+> 
+> If you say no, it then asks about INTEL_PMT_CLASS, INTEL_PMT_TELEMETRY
+> and INTEL_PMT_CRASHLOG support.
 
-Are there any blockers or unadressed comments remaining on this
-series? As far as I understand, the original blocker was the net/WiFi
-mention in the commit message, that caused a legitimate concern from
-network maintainer. It has been clarified now that this driver is not
-for exposing any channel that could be otherwise handled properly by
-an existing Linux subsystem/interface. It will be especially used as a
-pipe for modem QMI channel (or AT commands) in the same way as the USB
-CDC-WDM driver is doing (keeping userspace compatibility). Other MHI
-channels, such as network data, QRTR, etc are not exposed and
-correctly bound to the corresponding Linux subsystems.
+Yeah that is bad, sorry for not spotting that (I answer M/Y everywhere
+so that I at least compile test everything).
 
-The correlated worry was that it could be a userspace channel facility
-for 'everything qualcomm', but we could say the same for other
-existing busses with userspace shunt (/dev/bus/usb, /dev/i2c,
-/dev/spidev, PCI UIO, UART...). Moreover, it is mitigated by the fact
-that not all MHI channels are exposed by default, but only the allowed
-ones (QMI in the initial version). For sure, special care must be
-given to any further channel addition.
+> I've pulled this,
+
+Thanks.
+
+> but I really wish the PMT support understood that
+> whole "No means no" thing.
+
+Agreed. I will make sure to get a fix to you for this sometime
+during the 5.11 cycle.
+
+Alexander and/or David I believe that the best solution for this
+would be to replace the:
+
+        select INTEL_PMT_CLASS
+
+In the INTEL_PMT_TELEMETRY and INTEL_PMT_CRASHLOG Kconfig entries
+with "depends on". Also as a general comment for the future, select
+should typically be used with non-user-selectable options. E.g.
+you could also have made INTEL_PMT_CLASS non-user-selectable by
+changing:
+
+config INTEL_PMT_CLASS
+        tristate "Intel Platform Monitoring Technology (PMT) Class driver"
+
+To:
+
+config INTEL_PMT_CLASS
+        tristate
+
+Having both INTEL_PMT_CLASS user-selectable and using select on
+it is bad. I believe that in this case changing the 2 "select"-s
+to "depend on"-s is best.
 
 Regards,
-Loic
+
+Hans
+
