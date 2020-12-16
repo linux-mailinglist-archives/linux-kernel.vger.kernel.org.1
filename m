@@ -2,282 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312B42DC2EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:17:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D146A2DC2F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbgLPPQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:16:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35454 "EHLO mail.kernel.org"
+        id S1726339AbgLPPSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:18:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725812AbgLPPQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:16:35 -0500
-Date:   Wed, 16 Dec 2020 12:16:05 -0300
+        id S1726310AbgLPPSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 10:18:11 -0500
+X-Gm-Message-State: AOAM5311izRs3g4Zqaf9eHp8oQQBP6UO4GHpE4UFGy26QK9Q/ODabb4s
+        PhrNsTX3Qhk0hayxJmULQjwlZ8O69UtlHdNu6w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608131753;
-        bh=WHJXa4tUefpynUWX4FwjUN1RDWe/oDz+W61Wx+LLppg=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dJwjwKdROKDc3o7AdFbOw2a/Cu9qkviIeZf5QBtY39QmMDqjXgm7RcZ/ZiDlhTHv7
-         BPbjaTPXC/kP4aqU5TOW+9SFuZAy+9NIysnCcIb0MP53L5YQVDS4zCGdFaw9eE7q9/
-         1NuRmD9akUDd4eRfoLIyGtvhh1PV+BpiSBy5bkm0OFeg/Nze0oQBujolHXv9JtU+cm
-         u81VsqAfM2MY4K1px14NiE7nmL9G5epxhtnZDZkerO7OTxMqpL9b8kJjkdzrRv+k2l
-         iuaEWCVzW1NGZnCG9D283pOCWXwLF5y9W6bIE+w+rBXa0d1S3x4GZBv4E7UYr9lhKJ
-         KqZEmIlyvCzOg==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Ralf Baechle <ralf@linux-mips.org>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Juxin Gao <gaojuxin@loongson.cn>,
-        Archer Yan <ayan@wavecomp.com>,
-        David Daney <david.daney@cavium.com>
-Subject: Re: [QUESTION] support perf record --call-graph dwarf for mips
-Message-ID: <20201216151605.GA297512@kernel.org>
-References: <97fb66bf-51f8-a491-9eb4-10b2314cf82f@loongson.cn>
- <90c7db1a-8e1a-e253-79ca-f93dbac014c2@flygoat.com>
- <20201216143047.GC294100@kernel.org>
+        s=k20201202; t=1608131850;
+        bh=YOC88DJH1Ldr/FjwTLsg5NLtJ+aB+EfBl/k2z67zy1U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=d3zPyyMVKaYdL5mltO4VQCc6Hwjmj9nRQPDH6TpXWUQOQ8tS2RTsGSUMuyMGmxQuG
+         vt1J6iptJANrfVh0GdiXg2hqdmT38JHCJdvDA5WNs6nb4RPpeBslQuiAyi5EiM0WUl
+         Ry6gG/cr5UJiSxuA3OUgt/+Oo51YGH/WCvv02r468d3Wn93Sca7Mmi+OyfY0t9GK3D
+         7UZukCc5eNzrKPfF3jt74uit73q6Gge2zvm58xHWt3vjz+fFi34JTndsNRFj/Rj/gn
+         JbuZ+Xwo5xOYaOWE7qnWYYto/8aBCdstxFLBE72PdvH4XHQ+VXHHfp+ppkAjvtAHpc
+         HT76siTDS9xwg==
+X-Google-Smtp-Source: ABdhPJxAAxsNxeLlUnTnLtNubQg6skrY+y2JxetX9D6LYAb9dpqNodHx3+yLdJbf7zIjVVvZiAZDbQ98NMhP+W08ATE=
+X-Received: by 2002:a05:600c:25c2:: with SMTP id 2mr3941456wml.170.1608131848789;
+ Wed, 16 Dec 2020 07:17:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201216143047.GC294100@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <1607746317-4696-1-git-send-email-yongqiang.niu@mediatek.com> <1607746317-4696-3-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1607746317-4696-3-git-send-email-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 16 Dec 2020 23:17:14 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-YjP50QrBKfoCqVnMWp41efbs9wdon4gts5QhUfZO8OA@mail.gmail.com>
+Message-ID: <CAAOTY_-YjP50QrBKfoCqVnMWp41efbs9wdon4gts5QhUfZO8OA@mail.gmail.com>
+Subject: Re: [PATCH v2, 02/17] dt-bindings: mediatek: add CLK_MM_DISP_CONFIG
+ control description for mt8192 display
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        DTML <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Dec 16, 2020 at 11:30:47AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Dec 16, 2020 at 07:14:02PM +0800, Jiaxun Yang escreveu:
-> > 
-> > 
-> > 在 2020/12/16 下午6:05, Tiezhu Yang 写道:
-> > > Hi,
-> > > 
-> > > In the current upstream mainline kernel, perf record --call-graph dwarf
-> > > is not supported for architecture mips64. I find the following related
-> > > patches about this feature by David Daney <david.daney@cavium.com> and
-> > > Archer Yan <ayan@wavecomp.com> in Sep 2019.
->  
-> > AFAIK ddaney left Cavium at 2018 and Wave Computing Shanghai is defuncted...
->  
-> > Feel free to take over if you like, there is no licenses issue, just
-> > remember to credit
-> > others properly.
-> 
-> Ralf, can you take a look at the kernel part? The user space part seems
-> ok.
+Hi, Yongqiang:
 
-I take that back, but made some progress in getting that old patch
-closer to what we have now in tools/perf/, see below.
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B412=E6=9C=
+=8812=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8B=E5=8D=8812:12=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> add CLK_MM_DISP_CONFIG control description for mt8192 displa
 
-Someone with a mips system should try to refresh the kernel bits and
-then see if the patch below works.
+display
 
-- Arnaldo
+>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt | 3=
+ +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp=
+.txt
+> index 1972fa7..dfbec76 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
+t
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
+t
+> @@ -54,6 +54,9 @@ Required properties (all function blocks):
+>    DPI controller nodes have multiple clock inputs. These are documented =
+in
+>    mediatek,dsi.txt and mediatek,dpi.txt, respectively.
+>    An exception is that the mt8183 mutex is always free running with no c=
+locks property.
+> +  An exception is that the mt8192 display add 2 more clocks(CLK_MM_DISP_=
+CONFIG, CLK_MM_26MHZ),
+> +  and these 2 clocks need enabled before display module work like mutex =
+clock, so we add these
+> +  2 clocks controled same with mutex clock.
 
+If every display module needs these two clock, add these two clock to
+all the display module which need them.
 
-commit e59de40addb092d7167fa1dd7c6640d0fab41ede
-Author: David Daney <david.daney@cavium.com>
-Date:   Wed Sep 11 08:26:37 2019 +0000
+Regards,
+Chun-Kuang.
 
-    perf mips: Support mips unwinding and dwarf-regs.
-    
-    Map perf APIs(perf_reg_name/get_arch_regstr/unwind__arch_reg_id)
-    with MIPS specific registers.
-    
-    [ayan@wavecomp.com: repick this patch for unwinding userstack
-    backtrace by perf and libunwind on MIPS based CPU.]
-    
-    Committer notes:
-    
-    Some header fixups, replace CONFIG_LIBUNWIND with CONFIG_LOCAL_LIBUNWIND
-    to cope with:
-    
-      9d8e14d306ef2f5d ("perf unwind: Separate local/remote libunwind config")
-    
-    Signed-off-by: David Daney <david.daney@cavium.com>
-    Cc: Jiri Olsa <jolsa@redhat.com>
-    Cc: linux-kernel@vger.kernel.org
-    Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>
-    Cc: Paul Mackerras <paulus@samba.org>
-    Cc: Ingo Molnar <mingo@redhat.com>
-    Link: https://lore.kernel.org/r/20190911082548.31546-1-ayan@wavecomp.com
-    Signed-off-by: Archer Yan <ayan@wavecomp.com>
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-diff --git a/tools/perf/arch/mips/Makefile b/tools/perf/arch/mips/Makefile
-new file mode 100644
-index 0000000000000000..6e1106fab26e4015
---- /dev/null
-+++ b/tools/perf/arch/mips/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
-+ifndef NO_DWARF
-+PERF_HAVE_DWARF_REGS := 1
-+endif
-diff --git a/tools/perf/arch/mips/include/perf_regs.h b/tools/perf/arch/mips/include/perf_regs.h
-new file mode 100644
-index 0000000000000000..36a28bc1734787ce
---- /dev/null
-+++ b/tools/perf/arch/mips/include/perf_regs.h
-@@ -0,0 +1,83 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef ARCH_PERF_REGS_H
-+#define ARCH_PERF_REGS_H
-+
-+#include <stdlib.h>
-+#include <linux/types.h>
-+#include <asm/perf_regs.h>
-+
-+#define PERF_REG_IP PERF_REG_MIPS_PC
-+#define PERF_REG_SP PERF_REG_MIPS_R29
-+
-+#define PERF_REGS_MASK ((1ULL << PERF_REG_MIPS_MAX) - 1)
-+
-+static inline const char *perf_reg_name(int id)
-+{
-+	switch (id) {
-+	case PERF_REG_MIPS_PC:
-+		return "PC";
-+	case PERF_REG_MIPS_R1:
-+		return "$1";
-+	case PERF_REG_MIPS_R2:
-+		return "$2";
-+	case PERF_REG_MIPS_R3:
-+		return "$3";
-+	case PERF_REG_MIPS_R4:
-+		return "$4";
-+	case PERF_REG_MIPS_R5:
-+		return "$5";
-+	case PERF_REG_MIPS_R6:
-+		return "$6";
-+	case PERF_REG_MIPS_R7:
-+		return "$7";
-+	case PERF_REG_MIPS_R8:
-+		return "$8";
-+	case PERF_REG_MIPS_R9:
-+		return "$9";
-+	case PERF_REG_MIPS_R10:
-+		return "$10";
-+	case PERF_REG_MIPS_R11:
-+		return "$11";
-+	case PERF_REG_MIPS_R12:
-+		return "$12";
-+	case PERF_REG_MIPS_R13:
-+		return "$13";
-+	case PERF_REG_MIPS_R14:
-+		return "$14";
-+	case PERF_REG_MIPS_R15:
-+		return "$15";
-+	case PERF_REG_MIPS_R16:
-+		return "$16";
-+	case PERF_REG_MIPS_R17:
-+		return "$17";
-+	case PERF_REG_MIPS_R18:
-+		return "$18";
-+	case PERF_REG_MIPS_R19:
-+		return "$19";
-+	case PERF_REG_MIPS_R20:
-+		return "$20";
-+	case PERF_REG_MIPS_R21:
-+		return "$21";
-+	case PERF_REG_MIPS_R22:
-+		return "$22";
-+	case PERF_REG_MIPS_R23:
-+		return "$23";
-+	case PERF_REG_MIPS_R24:
-+		return "$24";
-+	case PERF_REG_MIPS_R25:
-+		return "$25";
-+	case PERF_REG_MIPS_R28:
-+		return "$28";
-+	case PERF_REG_MIPS_R29:
-+		return "$29";
-+	case PERF_REG_MIPS_R30:
-+		return "$30";
-+	case PERF_REG_MIPS_R31:
-+		return "$31";
-+	default:
-+		break;
-+	}
-+	return NULL;
-+}
-+
-+#endif /* ARCH_PERF_REGS_H */
-diff --git a/tools/perf/arch/mips/util/Build b/tools/perf/arch/mips/util/Build
-new file mode 100644
-index 0000000000000000..7b0c0457154a22c5
---- /dev/null
-+++ b/tools/perf/arch/mips/util/Build
-@@ -0,0 +1,2 @@
-+perf-$(CONFIG_DWARF) += dwarf-regs.o
-+perf-$(CONFIG_LOCAL_LIBUNWIND) += unwind-libunwind.o
-diff --git a/tools/perf/arch/mips/util/dwarf-regs.c b/tools/perf/arch/mips/util/dwarf-regs.c
-new file mode 100644
-index 0000000000000000..165e0179ea11d9b2
---- /dev/null
-+++ b/tools/perf/arch/mips/util/dwarf-regs.c
-@@ -0,0 +1,37 @@
-+/*
-+ * dwarf-regs.c : Mapping of DWARF debug register numbers into register names.
-+ *
-+ * Copyright (C) 2013 Cavium, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ */
-+
-+#include <libio.h>
-+#include <dwarf-regs.h>
-+
-+static const char *mips_gpr_names[32] = {
-+	"$0", "$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8", "$9",
-+	"$10", "$11", "$12", "$13", "$14", "$15", "$16", "$17", "$18", "$19",
-+	"$20", "$21", "$22", "$23", "$24", "$25", "$26", "$27", "$28", "$29",
-+	"$30", "$31"
-+};
-+
-+const char *get_arch_regstr(unsigned int n)
-+{
-+	if (n < 32)
-+		return mips_gpr_names[n];
-+	if (n == 64)
-+		return "hi";
-+	if (n == 65)
-+		return "lo";
-+	return NULL;
-+}
-diff --git a/tools/perf/arch/mips/util/unwind-libunwind.c b/tools/perf/arch/mips/util/unwind-libunwind.c
-new file mode 100644
-index 0000000000000000..7af25427943f451a
---- /dev/null
-+++ b/tools/perf/arch/mips/util/unwind-libunwind.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <errno.h>
-+#include <libunwind.h>
-+#include "perf_regs.h"
-+#include "../../util/unwind.h"
-+
-+int unwind__arch_reg_id(int regnum)
-+{
-+	switch (regnum) {
-+	case UNW_MIPS_R1 ... UNW_MIPS_R25:
-+		return regnum - UNW_MIPS_R1 + PERF_REG_MIPS_R1;
-+	case UNW_MIPS_R28 ... UNW_MIPS_R31:
-+		return regnum - UNW_MIPS_R28 + PERF_REG_MIPS_R28;
-+	case UNW_MIPS_PC:
-+		return PERF_REG_MIPS_PC;
-+	default:
-+		pr_err("unwind: invalid reg id %d\n", regnum);
-+		return -EINVAL;
-+	}
-+}
+>
+>  Required properties (DMA function blocks):
+>  - compatible: Should be one of
+> --
+> 1.8.1.1.dirty
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
