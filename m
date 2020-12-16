@@ -2,100 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0922DC218
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:25:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC522DC21E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbgLPOYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 09:24:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725550AbgLPOYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 09:24:23 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6EDE4233CE;
-        Wed, 16 Dec 2020 14:23:41 +0000 (UTC)
-Date:   Wed, 16 Dec 2020 09:23:39 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Dexuan Cui <decui@microsoft.com>, Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        jeyu@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        ardb@kernel.org, Jason Baron <jbaron@akamai.com>
-Subject: Re: [RFC][PATCH] jump_label/static_call: Add MAINTAINERS
-Message-ID: <20201216092339.74835205@gandalf.local.home>
-In-Reply-To: <20201216134249.GU3092@hirez.programming.kicks-ass.net>
-References: <MW4PR21MB1857CC85A6844C89183C93E9BFC59@MW4PR21MB1857.namprd21.prod.outlook.com>
-        <20201216092649.GM3040@hirez.programming.kicks-ass.net>
-        <20201216105926.GS3092@hirez.programming.kicks-ass.net>
-        <20201216133014.GT3092@hirez.programming.kicks-ass.net>
-        <20201216134249.GU3092@hirez.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726499AbgLPOZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 09:25:41 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:41542 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgLPOZk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 09:25:40 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4D07245E;
+        Wed, 16 Dec 2020 15:24:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1608128698;
+        bh=wvcHjQoGe/khtxCSJuApgP2sP/PWMbdlprUUmhRo/xA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Sr9KxOZiWkDDUzpY+vaKXFoJLTHAnycQ3qz+HJ0PGYiwvR6f+zBZp6KPmhOY4xPXL
+         KjKW/tpxhzOqtOMz+1hrulPLVWnXe4fI8CCyl++UZuUOeCkF3zcM5RXbU1iahc1xRe
+         IbfGuroGNQqrg+RVXjFnhj8vte3ijApLiB/Y2zmo=
+Date:   Wed, 16 Dec 2020 16:24:51 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] media: dt-bindings: Convert video-interfaces.txt
+ properties to schemas
+Message-ID: <X9oYs43PzXbIXXs8@pendragon.ideasonboard.com>
+References: <20201210211625.3070388-1-robh@kernel.org>
+ <20201210211625.3070388-2-robh@kernel.org>
+ <alpine.DEB.2.20.2012161113060.15676@axis700.grange>
+ <20201216141210.GB651087@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201216141210.GB651087@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020 14:42:49 +0100
-Peter Zijlstra <peterz@infradead.org> wrote:
+Hi Rob,
 
-> On Wed, Dec 16, 2020 at 02:30:14PM +0100, Peter Zijlstra wrote:
+On Wed, Dec 16, 2020 at 08:12:10AM -0600, Rob Herring wrote:
+> On Wed, Dec 16, 2020 at 11:18:03AM +0100, Guennadi Liakhovetski wrote:
+> > Hi Rob,
 > > 
-> > FWIW, I recently noticed we're not being Cc'ed on patches for this
-> > stuff, so how about we do something like the below?
-> > 
-> > Anybody holler if they don't agree with the letter assigned, or if they
-> > feel they've been left out entirely and want in on the 'fun' :-)
-> > 
-> > ---
-> > Subject: jump_label/static_call: Add MAINTAINERS
-> > From: Peter Zijlstra <peterz@infradead.org>
-> > 
-> > These files don't appear to have a MAINTAINERS entry and as such
-> > patches miss being seen by people who know this code.
-> > 
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > ---
-> >  MAINTAINERS |   12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> > 
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -16766,6 +16766,18 @@ M:	Ion Badulescu <ionut@badula.org>
-> >  S:	Odd Fixes
-> >  F:	drivers/net/ethernet/adaptec/starfire*
-> >  
-> > +STATIC BRANCH/CALL
-> > +M:	Peter Zijlstra <peterz@infradead.org>
-> > +M:	Josh Poimboeuf <jpoimboe@redhat.com>
-> > +M:	Jason Baron <jbaron@akamai.com>
-> > +R:	Steven Rostedt <rostedt@goodmis.org>
-> > +R:	Ard Biesheuvel <ardb@kernel.org>
-> > +S:	Supported  
+> > Sorry for the delay! I didn't realise my ack was required for this patch.
+> > I won't object against the licence change, but please don't add me as a
+> > maintainer of
 > 
-> F:	arch/*/include/asm/jump_label*.h
-> F:	arch/*/include/asm/static_call*.h
-> F:	arch/*/kernel/jump_label.c
-> F:	arch/*/kernel/static_call.c
+> Okay, so that's an Ack?
 > 
-> These too?
-
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
--- Steve
-
+> > 
+> > On Thu, 10 Dec 2020, Rob Herring wrote:
+> > 
+> > [snip]
+> > 
+> > > diff --git a/Documentation/devicetree/bindings/media/video-interfaces.yaml b/Documentation/devicetree/bindings/media/video-interfaces.yaml
+> > > new file mode 100644
+> > > index 000000000000..7415a4df1576
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/media/video-interfaces.yaml
+> > > @@ -0,0 +1,344 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/media/video-interfaces.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Common bindings for video receiver and transmitter interface endpoints
+> > > +
+> > > +maintainers:
+> > > +  - Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+> > 
+> > I did commit the original version of
+> > Documentation/devicetree/bindings/media/video-interfaces.txt but that was
+> > more than 8 years ago, I haven't worked in media / V4L for several years
+> > now, so, I don't think I can meaningfully maintain that file now.
 > 
-> > +F:	include/linux/jump_label*.h
-> > +F:	include/linux/static_call*.h
-> > +F:	kernel/jump_label.c
-> > +F:	kernel/static_call.c
-> > +
-> >  STEC S1220 SKD DRIVER
-> >  M:	Damien Le Moal <Damien.LeMoal@wdc.com>
-> >  L:	linux-block@vger.kernel.org  
+> Okay, I'll drop you.
+> 
+> Anyone else want to sign up? Laurent?
 
+I'll likely regret this, but yes, you can sign me up :-)
+
+-- 
+Regards,
+
+Laurent Pinchart
