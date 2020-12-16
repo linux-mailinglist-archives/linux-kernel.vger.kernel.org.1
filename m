@@ -2,165 +2,394 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9312DC7E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:47:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB4D2DC7ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 21:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727524AbgLPUqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 15:46:15 -0500
-Received: from mail-dm6nam10on2109.outbound.protection.outlook.com ([40.107.93.109]:45805
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727034AbgLPUqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 15:46:14 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HkZPNZbOUqd8SaHb8dzgcHDGO4IFDcnRaEl77LtdeAV9QIWDea9lweVoV7E8mEd8eNPqBRRy8ONGg6bL2hupE0jMZccPh/Yo4qvWsZwvtvf78gsrv52fRU//2vP8SxBFmxsfzhSUcBYFuGoFe1fp5yqJailHDCEEsX4ZU7nj0+8IgM9GPylCNoD2/xCxeqH4y91onzKlznAuOrN4jBv8lnUARdxu9FSaEFoww/IxkcJ01L9JFwmsiSta1uCY9owi8mmYzfmR+PM553yWnshq1/czysy4/vnts2ZOQ+hMoUdLdYRptZecO59j/cZFG5xTR/2bmFJoGp8fa1j3WMrhZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8cJka2673DUYuWUruf4PzWONyyyxqAMR+oLhGB6ZwDk=;
- b=Z8rACnHr4KKe6NbiBtBBG0dXKV18dYog5JsS2Sez5NhJnNNaN32XSOTtQD/PFzfa0oFHujPvbxBEJypfdTMbMJ6rf01BiWwOn7/56pGffzHMcCyi4FOqZQ/B9eJlJYyBfPLxINAhyMr/bqU8NC1w5srrGBxTau+JXdHUf57qXaf04S8NVrUqGdrku+rTG2ecE/mLRIcv83bPuymhqOX9EbjULHX4l2wzZpQ0ASTxW+7uLbLbwi5gENfWsVW6vjP2/tHUkgN+ez9hklk76JdEyl6S3DjyVGTqCmncVVtAMDQhTwfJ4znceNAofBYm0BfAId7jgR0eJ7PAY8Y3scYqHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8cJka2673DUYuWUruf4PzWONyyyxqAMR+oLhGB6ZwDk=;
- b=fCsNE7r+o2IwLunDI+1WukgWKx/NOEUHqLziCjV6XjYpazhNy+WXtwjA7Fr5Tfyf2D8NEAUcYf8BCp3M+xPUgWmiDa4BvYqXfxTGqJUdgKIetH6Cm3xHeQMqH/vlla48VRUezb3Na7IA9KBvfcl2QJ63QVk0vjfCq8rqWhWEyEY=
-Received: from (2603:10b6:303:74::12) by
- MW2PR2101MB0889.namprd21.prod.outlook.com (2603:10b6:302:10::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.6; Wed, 16 Dec
- 2020 20:45:26 +0000
-Received: from MW4PR21MB1857.namprd21.prod.outlook.com
- ([fe80::f133:55b5:4633:c485]) by MW4PR21MB1857.namprd21.prod.outlook.com
- ([fe80::f133:55b5:4633:c485%5]) with mapi id 15.20.3700.014; Wed, 16 Dec 2020
- 20:45:26 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jeyu@kernel.org" <jeyu@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "ardb@kernel.org" <ardb@kernel.org>
-Subject: RE: static_branch_enable() does not work from a __init function?
-Thread-Topic: static_branch_enable() does not work from a __init function?
-Thread-Index: AdbTW3KiWdYv++9aQjWyNkn3nWo7IAAPxcwkABN9BQA=
-Date:   Wed, 16 Dec 2020 20:45:26 +0000
-Message-ID: <MW4PR21MB18570800B5A2E4C6B578D69EBFC59@MW4PR21MB1857.namprd21.prod.outlook.com>
-References: <MW4PR21MB1857CC85A6844C89183C93E9BFC59@MW4PR21MB1857.namprd21.prod.outlook.com>
- <20201216092649.GM3040@hirez.programming.kicks-ass.net>
- <20201216105926.GS3092@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201216105926.GS3092@hirez.programming.kicks-ass.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=81af6dc7-27f4-43af-ade5-8bc1e894ae3e;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-16T20:17:35Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2601:600:a280:7f70:240f:4d5f:961f:391f]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8e065f5f-0424-46ec-ff38-08d8a2038465
-x-ms-traffictypediagnostic: MW2PR2101MB0889:
-x-microsoft-antispam-prvs: <MW2PR2101MB08897094345978648E938CD1BFC59@MW2PR2101MB0889.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cXCHegfRnnt8U+D8zI0lKQiA3GXAWcGM8VY/tqwuwm8FGPkah2e6hgKtZpJomATVgDCwi+b5PppQoIU5aky+ZwOxEyBcfb+/t3veIo6BcYBpZiiFeO41rJ9ravhBDG3tQFIj9j5MIQjpVjtukvgHdLocXKQpst0BTJ8pYJIkOVxF3PRN+paYnvnXYNmmsuZ46XAq+p2rGdcxgCtpIVbmyVaWqGzhEbJxE7XHdjqTk/NrFpc4XlPtu3UbIQGju/eA3EFqRxIFP3PDnS5eBqMH29jjB1Eg9eaN3SXIaBHbUHadh6be7H7xFnxY77JKzWCkPT8J6kXmORBoyhlZBXKW+6S6QhHcOPprskRpOfq3CziOGrRl7G45nA/8RUBANSLYmA6cDaTGCUsoslQtRLAB2w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR21MB1857.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(39860400002)(346002)(366004)(8936002)(2906002)(86362001)(9686003)(71200400001)(478600001)(66446008)(66476007)(66556008)(64756008)(66946007)(52536014)(5660300002)(316002)(54906003)(76116006)(33656002)(8676002)(8990500004)(6506007)(7696005)(6916009)(4326008)(55016002)(82960400001)(83380400001)(10290500003)(186003)(82950400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?+2HYgZxhRYO4/SbSHGOBs8pQvijuxXJevk6Xr3+tliT9lKs8foNVRsGKbwYi?=
- =?us-ascii?Q?GVj8i2BTnshxVbYBoI4GdDP05a0HOUsWmgxZF70Ue+qJMexvPI9aPEcYlMCk?=
- =?us-ascii?Q?wW5N7ZfSwauRvMoMC85LTUyOxkx9TsR61pICGiM9uSLQx+2FmGjewzLXsdlA?=
- =?us-ascii?Q?zhwjBbQKo/8GrqUGXkS8ht9X78PoSkEAyMf2TibE7lAnWXnVzLn4YFTWRY+u?=
- =?us-ascii?Q?rVuMCimanid+R+HQUIm2URpa7Lhedurof/d1QZMmYuhRPzbduGbkw1IBBPI3?=
- =?us-ascii?Q?//Qnk40m8WWha+7IsJGV9HKoJvXn+BQv1LeP6N/XlXUcthCsakjfRWzlJVH7?=
- =?us-ascii?Q?eA2FOfPky6DMzFh4yvEpowc6Pa8wqB8xiJ/3zxOgzE25/569cRgojiv8Bygh?=
- =?us-ascii?Q?ktAYMANcDrgtHR3oCK4BCBu0T2oS3l0LtJnXFw1DobhOgtRwmrlUvupwM14T?=
- =?us-ascii?Q?YM2ynea0Y7bWvphTicqnLf/Jt/7B6YHMSYrlMzuPWdcR9GJ1BT8Bq6VEkiiB?=
- =?us-ascii?Q?YTtfXV8q/DbZaaCMFsJlQnE+/4PE0aQj6dOyOxXPOTxeq/io0zzcr67DLJcI?=
- =?us-ascii?Q?kY8VxnzWt2vcMdHAQ1QtS7gRl4sv/B6RJYn5KA+YvZzF9ljA6GsCABbjp4Is?=
- =?us-ascii?Q?gNOJgIM4FWJrODOMBS76NfRlZp+yArn6EbWnZnpCMoLTRWbnPk3ILp+qAYP1?=
- =?us-ascii?Q?uvVOiSoowwYv4VdybLeZkflxQEeSOzWMFk1EZNLu9Kq7ym1pPZO6HJCocPm3?=
- =?us-ascii?Q?r3ShHFNTXtm/DRT233aVN+i1rO8IUDdDAcNGH7RGMmRElvXHxz6P5VmCN0D2?=
- =?us-ascii?Q?eY5nTP1R1BVUwmj7WFMgMkHdLOmN7UgM9Un3GeMCNokHEz12W4UJXICzPjzU?=
- =?us-ascii?Q?I6jY1Koa5w32KMRAcauGboll5WU5786LZXnx3hv3kRQ67eYTV9+oerMRRfQI?=
- =?us-ascii?Q?2uKfDEdtnfAV1hgSC+I0S4rn7WOWGIWF5LeRUAr3D/aQTTpyUr4rN/gOL2WP?=
- =?us-ascii?Q?Fji1tqA18smUyD+vWkTzflZjSSK7gooE6kUsESysFKiLBhA=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728988AbgLPUs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 15:48:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726979AbgLPUs1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 15:48:27 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D74CC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:47:46 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id 23so51801858lfg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 12:47:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=jBy6SVLYLmkisIAP+C6ugNwJyFajASGfEZYFMLxYX0s=;
+        b=yOOcdxXzYy6Vb2zJiOrNvg00v40DDppAeJ0mfVbsxsmH/3NgZpLF54sRm9Tj/WBoVM
+         zeJCXy8vCJUllBopwdvSiYL2yTJh5GQjZ6PiDtP6kbWq90MtR+t+bjtVjPqgqJPxgMWB
+         JAUneN5IpQzoTyBtJLPe7GvLO2DYqenLQ7QY62o6/Osroz9aeL/BT+QjdjMoDOxnQJfA
+         GVIFTiULdul0A8gPBhBSEbLtvqa4fnliQvTCCbitBWuyrE2jtjftq7s/lluswSp+4F8V
+         HPRLbmxYEKsUb10dhW2vbySmcu6i4WKUMTufSdQ7CQuN1UziMkuX9VVPb5SBgQGCe7OD
+         nGDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=jBy6SVLYLmkisIAP+C6ugNwJyFajASGfEZYFMLxYX0s=;
+        b=DO53XSjYy9gZYVEuZ4dZHMFHv6JjPVTRQMUGGI+hQNZhMyi35/wdT8nVhhJnvNzRXX
+         ZOCsj5P6tQF0uhNwB5jsu13K/9qnaehKA9WqB8uMVn/eyUeQA9gC/j4Y3jSS1hmZiwEn
+         7QYQtUVBq38kecBMUCp1jPfvPCTU7MHu8C0NyzVk7EeGEUOKvCltlvXw4X9s8GX1y0UR
+         1bVRiozFX8ZWWfyEdAidZOZC07/sJr3UXUED54O+dVrEeFrVCFm6kRHlAakdrlAEm6fA
+         8n6RwUlZgS5EITtiJpUTbe2Lch0xRHO25Aivl82Y/88hUIBECAyk2kEkhLUYkVImnMHd
+         Y69A==
+X-Gm-Message-State: AOAM530qFaiQmn4SfImKQBDB1vOWHcdcC/bxTZ/wYimEhTqcArl8q+EK
+        b4QbfXnry8L8SG1A7BySCyGcyCOOzJqKmCvSqwmCiR5bangJmQ==
+X-Google-Smtp-Source: ABdhPJwAdEsAh7drNBXFnJZYBe22qG8k7fboqOwOJ3WyNds/dp1cqoJrd7VFQhvkMNGQU+P2YuhrUYPwBb/QEXBKKAU=
+X-Received: by 2002:a05:651c:1312:: with SMTP id u18mr14252102lja.200.1608151664870;
+ Wed, 16 Dec 2020 12:47:44 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR21MB1857.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e065f5f-0424-46ec-ff38-08d8a2038465
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 20:45:26.1658
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VQ76KwZ/pFtqvHOVhNiDZ3mXeu5rLkXICmEdqImp5jrkr/PG3iv1BbVs6+GIrdmWXByqXu0CLSklpUK/VASorw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB0889
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 16 Dec 2020 21:47:34 +0100
+Message-ID: <CACRpkdZt184k8wpPZZEKwXDUbeO311KB0JOcawZPdhJJuiuYow@mail.gmail.com>
+Subject: [GIT PULL] pin control changes for the v5.11 kernel cycle
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Peter Zijlstra <peterz@infradead.org>
-> Sent: Wednesday, December 16, 2020 2:59 AM
-> ...
-> So I think the reason your above module doesn't work, while the one in
-> vmx_init() does work (for 5.10) should be fixed by the completely
-> untested below.
->=20
-> I've no clue about 5.4 and no desire to investigate. That's what distro
-> people are for.
->=20
-> Can you verify?
->=20
-> ---
-> diff --git a/kernel/jump_label.c b/kernel/jump_label.c
-> index 015ef903ce8c..c6a39d662935 100644
-> --- a/kernel/jump_label.c
-> +++ b/kernel/jump_label.c
-> @@ -793,6 +793,7 @@ int jump_label_text_reserved(void *start, void *end)
->  static void jump_label_update(struct static_key *key)
->  {
->  	struct jump_entry *stop =3D __stop___jump_table;
-> +	bool init =3D system_state < SYSTEM_RUNNING;
->  	struct jump_entry *entry;
->  #ifdef CONFIG_MODULES
->  	struct module *mod;
-> @@ -804,15 +805,16 @@ static void jump_label_update(struct static_key
-> *key)
->=20
->  	preempt_disable();
->  	mod =3D __module_address((unsigned long)key);
-> -	if (mod)
-> +	if (mod) {
->  		stop =3D mod->jump_entries + mod->num_jump_entries;
-> +		init =3D mod->state =3D=3D MODULE_STATE_COMING;
-> +	}
->  	preempt_enable();
->  #endif
->  	entry =3D static_key_entries(key);
->  	/* if there are no users, entry can be NULL */
->  	if (entry)
-> -		__jump_label_update(key, entry, stop,
-> -				    system_state < SYSTEM_RUNNING);
-> +		__jump_label_update(key, entry, stop, init);
->  }
->=20
->  #ifdef CONFIG_STATIC_KEYS_SELFTEST
+Hi Linus,
 
-Yes, this patch fixes the issue found by the test module for both
-v5.10 and v5.4.=20
+here is the bulk of pin control changes for the v5.11 kernel cycle.
 
-Thank you, Peter!
+Drivers, drivers and drivers. Not a single core change.
 
-Dexuan
+Some new stuff, especially a bunch of new Intel, Qualcomm and
+Ocelot SoCs.
 
+As part of the modularization attempt, I applied one patch affecting
+the firmware subsystem as a functional (not syntactic/semantic)
+dependency and then it blew up in our face, so I had to revert it,
+bummer. It will come in later, through that subsystem, I guess.
+
+Please pull it in!
+
+Yours,
+Linus Walleij
+
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
+tags/pinctrl-v5.11-1
+
+for you to fetch changes up to 3df09cb8c92e2bdfb78c81f678f6990bd780f09a:
+
+  pinctrl/spear: simplify the return expression of
+spear300_pinctrl_probe() (2020-12-12 01:42:06 +0100)
+
+----------------------------------------------------------------
+This is the bulk of pin control changes for the v5.11 kernel:
+
+New drivers:
+
+- New driver for the Microchip Serial GPIO "SGPIO".
+
+- Qualcomm SM8250 LPASS (Low Power Audio Subsystem) GPIO driver.
+
+New subdrivers:
+
+- Intel Lakefield subdriver.
+
+- Intel Elkhart Lake subdriver.
+
+- Intel Alder Lake-S subdriver.
+
+- Qualcomm MSM8953 subdriver.
+
+- Qualcomm SDX55 subdriver.
+
+- Qualcomm SDX55 PMIC subdriver.
+
+- Ocelot Luton SoC subdriver.
+
+- Ocelot Serval SoC subdriver.
+
+Modularization:
+
+- The Meson driver can now be built as modules.
+
+- The Qualcomm driver(s) can now be built as modules.
+
+Incremental improvements:
+
+- The Intel driver now supports pin configuration for GPIO-related
+  configurations.
+
+- A bunch of Renesas PFC drivers have been augmented with support
+  for QSPI pins, groups and functions.
+
+- Non-critical fixes to the irq handling in the Allwinner Sunxi
+  driver.
+
+----------------------------------------------------------------
+Andy Shevchenko (12):
+      pinctrl: intel: Fix 2 kOhm bias which is 833 Ohm
+      pinctrl: intel: Set default bias in case no particular value given
+      pinctrl: intel: Add Intel Lakefield pin controller support
+      pinctrl: intel: Add blank line before endif in Kconfig
+      pinctrl: intel: Add Intel Elkhart Lake pin controller support
+      pinctrl: intel: Add Intel Alder Lake-S pin controller support
+      pinctrl: lynxpoint: Unify initcall location in the code
+      pinctrl: lynxpoint: Use defined constant for disabled bias explicitly
+      pinctrl: lynxpoint: Enable pin configuration setting for GPIO chip
+      pinctrl: jasperlake: Unhide SPI group of pins
+      pinctrl: merrifield: Set default bias in case no particular value given
+      pinctrl: baytrail: Avoid clearing debounce value when turning it off
+
+Biju Das (6):
+      pinctrl: renesas: r8a77951: Optimize pinctrl image size for R8A774E1
+      pinctrl: renesas: r8a7796: Optimize pinctrl image size for R8A774A1
+      pinctrl: renesas: r8a77965: Optimize pinctrl image size for R8A774B1
+      pinctrl: renesas: r8a77990: Optimize pinctrl image size for R8A774C0
+      pinctrl: renesas: r8a7790: Optimize pinctrl image size for R8A7742
+      pinctrl: renesas: r8a7791: Optimize pinctrl image size for R8A774[34]
+
+Coiby Xu (1):
+      pinctrl: amd: print debounce filter info in debugfs
+
+Cristian Ciocaltea (1):
+      pinctrl: actions: pinctrl-s500: Constify s500_padinfo[]
+
+Eugen Hristev (1):
+      pinctrl: at91-pio4: add support for fewer lines on last PIO bank
+
+Evan Green (1):
+      pinctrl: jasperlake: Fix HOSTSW_OWN offset
+
+Fabio Estevam (1):
+      pinctrl: imx21: Remove the driver
+
+Frank Wunderlich (1):
+      pinctrl: mt7622: drop pwm ch7 as mt7622 only has 6 channels
+
+Geert Uytterhoeven (9):
+      pinctrl: Remove hole in pinctrl_gpio_range
+      pinctrl: renesas: Remove superfluous goto in sh_pfc_gpio_set_direction()
+      pinctrl: renesas: Singular/plural grammar fixes
+      pinctrl: renesas: Reorder struct sh_pfc_pin to remove hole
+      pinctrl: renesas: Optimize sh_pfc_pin_config
+      pinctrl: renesas: Factor out common R-Car Gen3 bias handling
+      pinctrl: renesas: r8a7778: Use physical addresses for PUPR regs
+      pinctrl: renesas: r8a7778: Use common R-Car bias handling
+      pinctrl: renesas: Protect GPIO leftovers by CONFIG_PINCTRL_SH_FUNC_GPIO
+
+Gregory CLEMENT (2):
+      dt-bindings: pinctrl: ocelot: Add Luton SoC support
+      dt-bindings: pinctrl: ocelot: Add Serval SoC support
+
+Gustavo A. R. Silva (1):
+      pinctrl: renesas: Fix fall-through warnings for Clang
+
+He Zhe (1):
+      pinctrl: core: Add missing #ifdef CONFIG_GPIOLIB
+
+Jeevan Shriram (1):
+      pinctrl: qcom: Add SDX55 pincontrol driver
+
+John Stultz (4):
+      pinctrl: qcom: Kconfig: Rework PINCTRL_MSM to be a depenency
+rather then a selected config
+      pinctrl: qcom: Allow pinctrl-msm code to be loadable as a module
+      firmware: QCOM_SCM: Allow qcom_scm driver to be loadable as a
+permenent module
+      pinctrl: qcom: Fix msm8953 Kconfig entry to depend on, not
+select PINCTRL_MSM
+
+Kaixu Xia (1):
+      pinctrl: ocelot: Remove unnecessary conversion to bool
+
+Kevin Hilman (1):
+      pinctrl/meson: enable building as modules
+
+Lad Prabhakar (5):
+      pinctrl: renesas: r8a7790: Add VIN1-B and VIN2-G pins, groups
+and functions
+      pinctrl: renesas: r8a77990: Add QSPI[01] pins, groups and functions
+      pinctrl: renesas: r8a77951: Add QSPI[01] pins, groups and functions
+      pinctrl: renesas: r8a7796: Add QSPI[01] pins, groups and functions
+      pinctrl: renesas: r8a77965: Add QSPI[01] pins, groups and functions
+
+Lars Povlsen (7):
+      pinctrl: ocelot: Add support for Luton platforms
+      pinctrl: ocelot: Add support for Serval platforms
+      dt-bindings: pinctrl: Add bindings for pinctrl-microchip-sgpio driver
+      pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for
+Microsemi Serial GPIO
+      pinctrl: pinctrl-microchip-sgpio: Add OF config dependency
+      pinctrl: pinctrl-microchip-sgpio: Add irq support (for sparx5)
+      dt-bindings: pinctrl: pinctrl-microchip-sgpio: Add irq support
+
+Linus Walleij (6):
+      pinctrl: nomadik: db8500: Add more detailed LCD groups
+      Merge tag 'renesas-pinctrl-for-v5.11-tag1' of
+git://git.kernel.org/.../geert/renesas-drivers into devel
+      Revert "firmware: QCOM_SCM: Allow qcom_scm driver to be loadable
+as a permenent module"
+      Merge tag 'intel-pinctrl-v5.11-1' of
+gitolite.kernel.org:pub/scm/linux/kernel/git/pinctrl/intel into devel
+      Merge tag 'renesas-pinctrl-for-v5.11-tag2' of
+git://git.kernel.org/.../geert/renesas-drivers into devel
+      Merge tag 'samsung-pinctrl-5.11' of
+https://git.kernel.org/.../pinctrl/samsung into devel
+
+Martin Kaiser (1):
+      pinctrl: pinctrl-at91-pio4: Set irq handler and data in one go
+
+Paul Cercueil (2):
+      pinctrl: ingenic: Get rid of repetitive data
+      pinctrl: ingenic: Add lcd-8bit group for JZ4770
+
+Rajendra Nayak (2):
+      dt-bindings: pinctrl: qcom: Add sc7280 pinctrl bindings
+      pinctrl: qcom: Add sc7280 pinctrl driver
+
+Rikard Falkeborn (1):
+      pinctrl: renesas: Constify sh73a0_vccq_mc0_ops
+
+Srinivas Kandagatla (2):
+      dt-bindings: pinctrl: qcom: Add sm8250 lpass lpi pinctrl bindings
+      pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver
+
+Tiezhu Yang (1):
+      pinctrl: at91-pio4: Make PINCTRL_AT91PIO4 depend on HAS_IOMEM to
+fix build error
+
+Tom Rix (1):
+      pinctrl: samsung: s3c24xx: remove unneeded break
+
+Vinod Koul (4):
+      dt-bindings: pinctrl: qcom: Add SDX55 pinctrl bindings
+      pinctrl: qcom: sdx55: update kconfig dependency
+      dt-bindings: pinctrl: qcom-pmic-gpio: Add pmx55 support
+      pinctrl: qcom-pmic-gpio: Add support for pmx55
+
+Vladimir Lypak (2):
+      pinctrl: qcom: add pinctrl driver for msm8953
+      dt-bindings: pinctrl: qcom: add msm8953 pinctrl bindings
+
+Yangtao Li (3):
+      pinctrl: sunxi: fix irq bank map for the Allwinner A100 pin controller
+      pinctrl: sunxi: Mark the irq bank not found in
+sunxi_pinctrl_irq_handler() with WARN_ON
+      pinctrl: sunxi: Always call chained_irq_{enter, exit} in
+sunxi_pinctrl_irq_handler
+
+Yu Kuai (1):
+      pinctrl: falcon: add missing put_device() call in pinctrl_falcon_probe()
+
+Zheng Yongjun (2):
+      pinctrl: mediatek: simplify the return expression of
+mtk_pinconf_bias_disable_set_rev1()
+      pinctrl/spear: simplify the return expression of spear300_pinctrl_probe()
+
+Zhiyong Tao (1):
+      pinctrl: mtk: Fix low level output voltage issue
+
+Zou Wei (1):
+      pinctrl: pinctrl-microchip-sgpio: Mark some symbols with static keyword
+
+ .../bindings/pinctrl/microchip,sparx5-sgpio.yaml   |  161 ++
+ .../bindings/pinctrl/mscc,ocelot-pinctrl.txt       |    3 +-
+ .../bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml   |  130 ++
+ .../bindings/pinctrl/qcom,msm8953-pinctrl.yaml     |  167 ++
+ .../devicetree/bindings/pinctrl/qcom,pmic-gpio.txt |    3 +
+ .../bindings/pinctrl/qcom,sc7280-pinctrl.yaml      |  158 ++
+ .../bindings/pinctrl/qcom,sdx55-pinctrl.yaml       |  154 ++
+ MAINTAINERS                                        |    1 +
+ arch/arm64/configs/defconfig                       |    1 +
+ drivers/pinctrl/Kconfig                            |   20 +
+ drivers/pinctrl/Makefile                           |    1 +
+ drivers/pinctrl/actions/pinctrl-s500.c             |    2 +-
+ drivers/pinctrl/core.c                             |    2 +
+ drivers/pinctrl/freescale/Kconfig                  |    7 -
+ drivers/pinctrl/freescale/Makefile                 |    1 -
+ drivers/pinctrl/freescale/pinctrl-imx21.c          |  330 ----
+ drivers/pinctrl/intel/Kconfig                      |   25 +
+ drivers/pinctrl/intel/Makefile                     |    3 +
+ drivers/pinctrl/intel/pinctrl-alderlake.c          |  437 +++++
+ drivers/pinctrl/intel/pinctrl-baytrail.c           |    8 +-
+ drivers/pinctrl/intel/pinctrl-elkhartlake.c        |  513 ++++++
+ drivers/pinctrl/intel/pinctrl-intel.c              |   40 +-
+ drivers/pinctrl/intel/pinctrl-jasperlake.c         |  452 ++---
+ drivers/pinctrl/intel/pinctrl-lakefield.c          |  375 ++++
+ drivers/pinctrl/intel/pinctrl-lynxpoint.c          |   10 +-
+ drivers/pinctrl/intel/pinctrl-merrifield.c         |    8 +
+ drivers/pinctrl/mediatek/pinctrl-mt7622.c          |   13 +-
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c   |   10 +-
+ drivers/pinctrl/mediatek/pinctrl-paris.c           |    8 +-
+ drivers/pinctrl/meson/Kconfig                      |   17 +-
+ drivers/pinctrl/meson/pinctrl-meson-a1.c           |    4 +-
+ drivers/pinctrl/meson/pinctrl-meson-axg-pmx.c      |    3 +
+ drivers/pinctrl/meson/pinctrl-meson-axg.c          |    4 +-
+ drivers/pinctrl/meson/pinctrl-meson-g12a.c         |    4 +-
+ drivers/pinctrl/meson/pinctrl-meson-gxbb.c         |    4 +-
+ drivers/pinctrl/meson/pinctrl-meson-gxl.c          |    4 +-
+ drivers/pinctrl/meson/pinctrl-meson.c              |    8 +
+ drivers/pinctrl/meson/pinctrl-meson.h              |    1 +
+ drivers/pinctrl/meson/pinctrl-meson8-pmx.c         |    2 +
+ drivers/pinctrl/nomadik/pinctrl-nomadik-db8500.c   |   10 +-
+ drivers/pinctrl/pinctrl-amd.c                      |   43 +-
+ drivers/pinctrl/pinctrl-at91-pio4.c                |   22 +-
+ drivers/pinctrl/pinctrl-falcon.c                   |   14 +-
+ drivers/pinctrl/pinctrl-ingenic.c                  | 1267 +++++---------
+ drivers/pinctrl/pinctrl-microchip-sgpio.c          |  892 ++++++++++
+ drivers/pinctrl/pinctrl-ocelot.c                   |  186 +-
+ drivers/pinctrl/qcom/Kconfig                       |   88 +-
+ drivers/pinctrl/qcom/Makefile                      |    4 +
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.c           |  695 ++++++++
+ drivers/pinctrl/qcom/pinctrl-msm.c                 |    2 +
+ drivers/pinctrl/qcom/pinctrl-msm8953.c             | 1844 ++++++++++++++++++++
+ drivers/pinctrl/qcom/pinctrl-sc7280.c              | 1495 ++++++++++++++++
+ drivers/pinctrl/qcom/pinctrl-sdx55.c               | 1018 +++++++++++
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c           |    2 +
+ drivers/pinctrl/renesas/core.c                     |    2 +
+ drivers/pinctrl/renesas/core.h                     |    4 +
+ drivers/pinctrl/renesas/gpio.c                     |    2 +-
+ drivers/pinctrl/renesas/pfc-r8a7778.c              |   55 +-
+ drivers/pinctrl/renesas/pfc-r8a7790.c              |  146 +-
+ drivers/pinctrl/renesas/pfc-r8a7791.c              |   18 +
+ drivers/pinctrl/renesas/pfc-r8a77950.c             |   45 +-
+ drivers/pinctrl/renesas/pfc-r8a77951.c             |  134 +-
+ drivers/pinctrl/renesas/pfc-r8a7796.c              |  132 +-
+ drivers/pinctrl/renesas/pfc-r8a77965.c             |  132 +-
+ drivers/pinctrl/renesas/pfc-r8a77990.c             |  132 +-
+ drivers/pinctrl/renesas/pfc-sh73a0.c               |    2 +-
+ drivers/pinctrl/renesas/pinctrl-rza1.c             |    1 +
+ drivers/pinctrl/renesas/pinctrl.c                  |   68 +-
+ drivers/pinctrl/renesas/sh_pfc.h                   |   12 +-
+ drivers/pinctrl/samsung/pinctrl-s3c24xx.c          |    5 -
+ drivers/pinctrl/spear/pinctrl-spear300.c           |    8 +-
+ drivers/pinctrl/sunxi/pinctrl-sun50i-a100.c        |    2 +-
+ drivers/pinctrl/sunxi/pinctrl-sunxi.c              |    9 +-
+ include/linux/pinctrl/pinctrl.h                    |    4 +-
+ 74 files changed, 9814 insertions(+), 1775 deletions(-)
+ create mode 100644
+Documentation/devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml
+ create mode 100644
+Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
+ create mode 100644
+Documentation/devicetree/bindings/pinctrl/qcom,msm8953-pinctrl.yaml
+ create mode 100644
+Documentation/devicetree/bindings/pinctrl/qcom,sc7280-pinctrl.yaml
+ create mode 100644
+Documentation/devicetree/bindings/pinctrl/qcom,sdx55-pinctrl.yaml
+ delete mode 100644 drivers/pinctrl/freescale/pinctrl-imx21.c
+ create mode 100644 drivers/pinctrl/intel/pinctrl-alderlake.c
+ create mode 100644 drivers/pinctrl/intel/pinctrl-elkhartlake.c
+ create mode 100644 drivers/pinctrl/intel/pinctrl-lakefield.c
+ create mode 100644 drivers/pinctrl/pinctrl-microchip-sgpio.c
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-msm8953.c
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-sc7280.c
+ create mode 100644 drivers/pinctrl/qcom/pinctrl-sdx55.c
