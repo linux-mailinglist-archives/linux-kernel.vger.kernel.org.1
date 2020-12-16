@@ -2,140 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463A42DC5FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4E92DC62C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729633AbgLPSMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 13:12:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46548 "EHLO
+        id S1730229AbgLPSWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 13:22:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729627AbgLPSMi (ORCPT
+        with ESMTP id S1730220AbgLPSWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 13:12:38 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24033C061794;
-        Wed, 16 Dec 2020 10:11:58 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id m5so2091454pjv.5;
-        Wed, 16 Dec 2020 10:11:58 -0800 (PST)
+        Wed, 16 Dec 2020 13:22:12 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6FBC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:21:31 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id r7so24125188wrc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:21:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MoM0QOrttNDmqB2jq4Q8+3+4bGHdnVDY4snfv2F9MW8=;
-        b=GOqcFVXBXD3kZ3E2Fj+lUGpeNWjU+dVes9tjvPFA7CjH16JZ8NDQ4tpc7+JrHwCw4c
-         PdsfEj6XV4cy19YvrEpf3SLMCf1TjDmw7wfE4w2Gpb+soC+ikPgsBXkb8f/mRUTzJwCq
-         Jmk/Z+N0QNTB8SYtS17c11G4VeMcAGSlKaJMle+IkV0cfmq+uyFl2G8YInY258jzLNhJ
-         1zoezZ1OXTE1gyQyVbsx9krTbshJch5eEAnr/vOQ1NDlddv/rl0JEs9mvRHoesL4Jcse
-         VYaaLxsYoYLPU3iKqvhNl+gyWhY56pMcfCwAWHym0rR6hxYv2dlhazwB6A+Cf05I3ZjF
-         wIQw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2XVp1+1L8yfFD+Z9hI15tYMAq5imsksGhA8xqZCoyVo=;
+        b=rF+mVlYbp6k/Zgfx+czzVyTTFQqGWbvyHC9QuUYoM3k6a2L+gAnkj7VpIRylQTg/XY
+         WgFNgkJ1mPYUd+pNGmwWvveKwM/K6zIKPrmhLbVe9qPDSogxY0LWKWJ/L7qskmRCfKna
+         37AvcIpfwS7a4XHJEnujDgJq2NUHvf6pemhbo8ErjUutldlMJbSHM8AFGPD/ykkqTMRi
+         6tV7MYd2TxGsOvTLIGMSczohkXUffWNDxUvatPz5Bmo+oHrjv4sLd12dvYAPo92HraP5
+         GVRpqTv+/jDtCfC7sQBs+LJ6Q6sile1LU+aipR2DPcgTAU0vRkctA6DQVTQRfd/IKJzK
+         AIpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MoM0QOrttNDmqB2jq4Q8+3+4bGHdnVDY4snfv2F9MW8=;
-        b=mQ3i58/wAQJ7beU1hEFsp5OPeaRRplBoVVP9o5Gu1Ih9clHWy7IYg43SCZ2pNG6YV4
-         vCl+nXV0pVhbI14NWhnoFcw+2Z0xebgaCZkrRdOGEdoJ5YZCA9oHqY1EkjY7W6HRV8tH
-         RtvzqeTJ8YEM3mVxfaOqhnQXhZweDcBGCpBaNasdNdqtVCtTexQAniCTveeooOI6PUCc
-         it/HxiAL4/wQTSPRRkfqqrTfOXcuZ+2lCLe9JmAUoHeI+tYDX3Bn+v4nZdl0enmzqiQw
-         JS1VFrsj/b5O5CrJiRTci/1OW1DT4Jk081UviLejyBDdIp3Yg0NSpO8Sy/y52kgZ8lZ/
-         vCeg==
-X-Gm-Message-State: AOAM531+tfEyR4RNkdfKf8+iPey5mgkZ8zhzdOuk8GMXJpz58abEU5Pn
-        RYUWgF6AzK3vbNe89USZK8HaRUnMqdnZ/X8=
-X-Google-Smtp-Source: ABdhPJx0TPjLXdmPHeYFKEuRG7aVcagguJHauwL7gnfBW9YwYiJELj+uMIYgG3ooUtvZaZFoslVQnQ==
-X-Received: by 2002:a17:90a:f683:: with SMTP id cl3mr4120692pjb.136.1608142317653;
-        Wed, 16 Dec 2020 10:11:57 -0800 (PST)
-Received: from PWN (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
-        by smtp.gmail.com with ESMTPSA id j16sm3530775pgl.50.2020.12.16.10.11.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 10:11:51 -0800 (PST)
-Date:   Wed, 16 Dec 2020 13:11:35 -0500
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     syzbot <syzbot+cfa88ddd0655afa88763@syzkaller.appspotmail.com>
-Cc:     ast@kernel.org, bjorn.topel@intel.com, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, jonathan.lemon@gmail.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        magnus.karlsson@intel.com, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: memory leak in xskq_create
-Message-ID: <20201216181135.GA94576@PWN>
-References: <0000000000002aca2e05b659af04@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2XVp1+1L8yfFD+Z9hI15tYMAq5imsksGhA8xqZCoyVo=;
+        b=HMxGD0+OECoWwDotDH4EHzj1cPiqszJth/xdEYD9UCV4JbXBbtMpDKP/WrXGkC2Uwo
+         rVRcETeV5FQE4tj5eWwFzUG8L7nxCmbUP45tkMG1jMnKgUtII8MMYyYworwR6bfnvDyf
+         Df2LBF1hbELDnpc8+G7+RQj+G8jEhNKu5QZicezxtC1UEu5xS9M466HKcg26Svpeso5a
+         DaoldiDMJiEoEeYrWQT8kzVdT8jsavBMlnFb5458YFKPxTXSJD5VZyR/s2dkOC3BrXMs
+         m3wLpglH7urIa8FvMbadUFFW6n4EhB/MRuXQvPjqIx/UEGTsWpKTiQl0flejyulOyXmQ
+         UVMw==
+X-Gm-Message-State: AOAM533o9WlxDcq4MvjxEqIwp0v2SW0xb/T4usZ9gvDWQeehATTCNomM
+        JviBwwgZCkM4f/gj0kx/7sS+Nvidv/L5bzcNoZ2NZw==
+X-Google-Smtp-Source: ABdhPJxQqlhnS8VRUS0S1dzwDSY46eD57TT6CmoISR6Wqk/zwqYZ8sob3y3+CAb8TTpOFcKedX9HaL3mJ6n9AK3PAnk=
+X-Received: by 2002:a5d:4704:: with SMTP id y4mr33314624wrq.358.1608142889933;
+ Wed, 16 Dec 2020 10:21:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000002aca2e05b659af04@google.com>
+References: <20201208132835.6151-1-will@kernel.org> <20201216111646.omrxyhbobejzqprh@e107158-lin.cambridge.arm.com>
+ <20201216141450.GA16421@willie-the-truck> <20201216164845.qakwbuhety73lmvr@e107158-lin.cambridge.arm.com>
+In-Reply-To: <20201216164845.qakwbuhety73lmvr@e107158-lin.cambridge.arm.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 16 Dec 2020 10:21:18 -0800
+Message-ID: <CAJuCfpGFCgN+q42-HeMNkdhMC9+3h2M0rzqAV-W8UwtRYX-6Vg@mail.gmail.com>
+Subject: Re: [PATCH v5 00/15] An alternative series for asymmetric AArch32 systems
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Wed, Dec 16, 2020 at 8:48 AM Qais Yousef <qais.yousef@arm.com> wrote:
+>
+> On 12/16/20 14:14, Will Deacon wrote:
+> > Hi Qais,
+> >
+> > On Wed, Dec 16, 2020 at 11:16:46AM +0000, Qais Yousef wrote:
+> > > On 12/08/20 13:28, Will Deacon wrote:
+> > > > Changes in v5 include:
+> > > >
+> > > >   * Teach cpuset_cpus_allowed() about task_cpu_possible_mask() so that
+> > > >     we can avoid returning incompatible CPUs for a given task. This
+> > > >     means that sched_setaffinity() can be used with larger masks (like
+> > > >     the online mask) from userspace and also allows us to take into
+> > > >     account the cpuset hierarchy when forcefully overriding the affinity
+> > > >     for a task on execve().
+> > > >
+> > > >   * Honour task_cpu_possible_mask() when attaching a task to a cpuset,
+> > > >     so that the resulting affinity mask does not contain any incompatible
+> > > >     CPUs (since it would be rejected by set_cpus_allowed_ptr() otherwise).
+> > > >
+> > > >   * Moved overriding of the affinity mask into the scheduler core rather
+> > > >     than munge affinity masks directly in the architecture backend.
+> > > >
+> > > >   * Extended comments and documentation.
+> > > >
+> > > >   * Some renaming and cosmetic changes.
+> > > >
+> > > > I'm pretty happy with this now, although it still needs review and will
+> > > > require rebasing to play nicely with the SCA changes in -next.
+> > >
+> > > I still have concerns about the cpuset v1 handling. Specifically:
+> > >
+> > >     1. Attaching a 32bit task to 64bit only cpuset is allowed.
+> > >
+> > >        I think the right behavior here is to prevent that as the
+> > >        intersection will appear as offline cpus for the 32bit tasks. So it
+> > >        shouldn't be allowed to move there.
+> >
+> > Suren or Quantin can correct me if I'm wrong I'm here, but I think Android
+> > relies on this working so it's not an option for us to prevent the attach.
+>
+> I don't think so. It's just a matter who handles the error. ie: kernel fix it
+> up silently and effectively make the cpuset a NOP since we don't respect the
+> affinity of the cpuset, or user space pick the next best thing. Since this
+> could return an error anyway, likely user space already handles this.
 
-On Sun, Dec 13, 2020 at 06:53:10AM -0800, syzbot wrote:
-> BUG: memory leak
-> unreferenced object 0xffff88810f897940 (size 64):
->   comm "syz-executor991", pid 8502, jiffies 4294942194 (age 14.080s)
->   hex dump (first 32 bytes):
->     7f 00 00 00 80 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 a0 37 0c 81 88 ff ff 00 00 00 00 00 00 00 00  ..7.............
->   backtrace:
->     [<00000000639d0dd1>] xskq_create+0x23/0xd0 include/linux/slab.h:552
->     [<00000000b680b035>] xsk_init_queue net/xdp/xsk.c:508 [inline]
->     [<00000000b680b035>] xsk_setsockopt+0x1c4/0x590 net/xdp/xsk.c:875
->     [<000000002b302260>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2132
->     [<00000000ae03723e>] __do_sys_setsockopt net/socket.c:2143 [inline]
->     [<00000000ae03723e>] __se_sys_setsockopt net/socket.c:2140 [inline]
->     [<00000000ae03723e>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2140
->     [<0000000005c2b4a0>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->     [<0000000003db140f>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Moving a 32bit task around the hierarchy when it lost the last 32bit
+capable CPU in its affinity mask would not work for Android. We move
+the tasks in the hierarchy only when they change their role
+(background/foreground/etc) and does not expect the tasks to migrate
+by themselves. I think the current approach of adjusting affinity
+without migration while not ideal is much better. Consistency with
+cgroup v2 is a big plus as well.
+We do plan on moving cpuset controller to cgroup v2 but the transition
+is slow, so my guess is that we will stick to it for another Android
+release.
 
-I have tested the following diff locally against syzbot's reproducer,
-and sent a patch to it [1] for testing.  I will send a real patch here
-tomorrow if syzbot is happy about it.  Please see explanation below.
-
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -37,6 +37,9 @@ void xp_destroy(struct xsk_buff_pool *pool)
-        if (!pool)
-                return;
-
-+       xskq_destroy(pool->fq);
-+       xskq_destroy(pool->cq);
-+
-        kvfree(pool->heads);
-        kvfree(pool);
- }
-@@ -234,16 +237,6 @@ static void xp_release_deferred(struct work_struct *work)
-        xp_clear_dev(pool);
-        rtnl_unlock();
-
--       if (pool->fq) {
--               xskq_destroy(pool->fq);
--               pool->fq = NULL;
--       }
--
--       if (pool->cq) {
--               xskq_destroy(pool->cq);
--               pool->cq = NULL;
--       }
--
-        xdp_put_umem(pool->umem, false);
-        xp_destroy(pool);
- }
-
-When xsk_bind() allocates `xs->pool` but something else goes wrong:
-
-		xs->pool = xp_create_and_assign_umem(xs, xs->umem);
-		[...]
-		if (err) {
-			xp_destroy(xs->pool);
-
-xp_destroy() doesn't free `pool->{f,c}q`, causing a memory leak.  Move
-`xskq_destroy(pool->{f,c}q)` from xp_release_deferred() to xp_destroy().
-
-Also, since xskq_destroy() already does null check, I think it's
-unnecessary to do it again here?
-
-Thanks,
-Peilin Ye
-
-[1] https://syzkaller.appspot.com/bug?id=fea808dfe3c6dfdd6ba9778becbffe0b14e91294
+> > I also don't think it really achieves much, since as you point out, the same
+> > problem exists in other cases such as execve() of a 32-bit binary, or
+> > hotplugging off all 32-bit CPUs within a mixed cpuset. Allowing the attach
+> > and immediately reparenting would probably be better, but see below.
+>
+> I am just wary that we're introducing a generic asymmetric ISA support, so my
+> concerns have been related to making sure the behavior is sane generally. When
+> this gets merged, I can bet more 'fun' hardware will appear all over the place.
+> We're opening the flood gates I'm afraid :p
+>
+> > >     2. Modifying cpuset.cpus could result with empty set for 32bit tasks.
+> > >
+> > >        It is a variation of the above, it's just the cpuset transforms into
+> > >        64bit only after we attach.
+> > >
+> > >        I think the right behavior here is to move the 32bit tasks to the
+> > >        nearest ancestor like we do when all cpuset.cpus are hotplugged out.
+> > >
+> > >        We could too return an error if the new set will result an empty set
+> > >        for the 32bit tasks. In a similar manner to how it fails if you
+> > >        write a cpu that is offline.
+> > >
+> > >     3. If a 64bit task belongs to 64bit-only-cpuset execs a 32bit binary,
+> > >        the 32 tasks will inherit the cgroup setting.
+> > >
+> > >        Like above, we should move this to the nearest ancestor.
+> >
+> > I considered this when I was writing the patches, but the reality is that
+> > by allowing 32-bit tasks to attach to a 64-bit only cpuset (which is required
+> > by Android), we have no choice but to expose a new ABI to userspace. This is
+> > all gated behind a command-line option, so I think that's fine, but then why
+> > not just have the same behaviour as cgroup v2? I don't see the point in
+> > creating two new ABIs (for cgroup v1 and v2 respectively) if we don't need
+>
+> Ultimately it's up to Tejun and Peter I guess. I thought we need to preserve
+> the v1 behavior for the new class of tasks. I won't object to the new ABI
+> myself. Maybe we just need to make the commit messages and cgroup-v1
+> documentation reflect that explicitly.
+>
+> > to. If it was _identical_ to the hotplug case, then we would surely just
+> > follow the existing behaviour, but it's really quite different in this
+> > situation because the cpuset is not empty.
+>
+> It is actually effectively empty for those tasks. But I see that one could look
+> at it from two different angles.
+>
+> > One thing we should definitely do though is add this to the documentation
+> > for the command-line option.
+>
+> +1
+>
+> By the way, should the command-line option be renamed to something more
+> generic? This has already grown beyond just enabling the support for one
+> isolated case. No strong opinion, just a suggestion.
+>
+> Thanks
+>
+> --
+> Qais Yousef
