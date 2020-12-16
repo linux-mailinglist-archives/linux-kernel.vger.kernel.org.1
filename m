@@ -2,55 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9138E2DC884
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 22:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 568C22DC887
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 22:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgLPVvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 16:51:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725788AbgLPVvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 16:51:43 -0500
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608155462;
-        bh=loQCEnZ8v9NT161uivZHxUVWprNJAYNjXldo11xbSzQ=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=rIWLyHganCG+XxduIBwZgxlztry/NBX9yjn3AzKN1GzffwcJ0RJ5xs7sqtxPCwA1T
-         DCU82DjZ7tERNy2I3bav6TxjTJ9rKslfFlbQtYJpZI3bNeIaRGN3/AUih7ElfuhHHZ
-         +FcDiaIeqy86itsjAPHc401LXZzUtWTGyTnTSfXgixyBZbd9ZQ80t0aSVuHFnU17AJ
-         /dTzSqncSL1RBd3mGv2/NkvozxiNJZ4HijUUgvL9i3v1/IKSVKLbbwtTxWP0dXoTnQ
-         fZufZmsjvv/kJN4LJhCmlSZnY9LVZehwg5uq99rvP7aWpldaXBHQpqQnT1YS2oypxL
-         d3lE3Jwu2YvDw==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201216175730.GA2787107@nvidia.com>
-References: <20201216175730.GA2787107@nvidia.com>
-X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201216175730.GA2787107@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: e246b7c035d74abfb3507fa10082d0c42cc016c3
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 009bd55dfcc857d8b00a5bbb17a8db060317af6f
-Message-Id: <160815546244.13626.3866461600054878990.pr-tracker-bot@kernel.org>
-Date:   Wed, 16 Dec 2020 21:51:02 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S1729522AbgLPVyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 16:54:52 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:55561 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729512AbgLPVyw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 16:54:52 -0500
+Received: by mail-il1-f200.google.com with SMTP id c13so14319694ilg.22
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 13:54:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=K+UTL1SNKrXO6bwT07zAze2PZObFLqUgFnQL3D5qBw0=;
+        b=RenQ5TKOxOQNKGF+TvU10CwfBBlFojQgKkEp9x7Tmj/u4PZTjDOAEvbmgBMdA1y2TW
+         eOMiqbsmcPj9oqqa8OsmrM4RKj3iimkI8afvBxIii1+ZyQH10aelzZEhMiuSvte/l5DM
+         Lj+VjMovYJccseSrX2pG1hVBW0LzePHcAgCrGAUjQIAncRuoAgyk+QjFwX7kAYEkhxe2
+         j+UmnNusS37yYroF4bMvp4pGrq4MztAlbBj8ktXM0gh8k9d4oDmPaTW3y45D56F/Phht
+         TgDrRa525ZXve766h8x+7ia4vJ1Q8h3hjJlEu+LaNbCOL9+f6gzIbM9QOe/QSfBcMAyb
+         l6Ig==
+X-Gm-Message-State: AOAM531QlwtoFKss27vAxCWxUOk47ZTqr6wBUSEW2kO4bHO9lDKJHqw4
+        Bt3i/CzxW9uu6rxBZaoA4zqAXBexKqoVW3UwJv9fao5wqUTz
+X-Google-Smtp-Source: ABdhPJyzuySwJbNYQVybaVuxgnqeE+ysBPwQ0+faA6UKXkeKJfkpUbYic3H8+ZLjUCVgcZCtJseFtWDdArKpMhoqrlha/ChTiSFw
+MIME-Version: 1.0
+X-Received: by 2002:a5d:8704:: with SMTP id u4mr43417613iom.3.1608155650983;
+ Wed, 16 Dec 2020 13:54:10 -0800 (PST)
+Date:   Wed, 16 Dec 2020 13:54:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005210be05b69bea58@google.com>
+Subject: WARNING: suspicious RCU usage in get_wiphy_regdom
+From:   syzbot <syzbot+db4035751c56c0079282@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, ilan.peer@intel.com, johannes.berg@intel.com,
+        johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        luciano.coelho@intel.com, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 16 Dec 2020 13:57:30 -0400:
+Hello,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+syzbot found the following issue on:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/009bd55dfcc857d8b00a5bbb17a8db060317af6f
+HEAD commit:    00f7763a Merge tag 'mac80211-next-for-net-next-2020-12-11'..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=160acef3500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1d8e2f94cac4630
+dashboard link: https://syzkaller.appspot.com/bug?extid=db4035751c56c0079282
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133bc287500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ef080f500000
 
-Thank you!
+The issue was bisected to:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+commit beee246951571cc5452176f3dbfe9aa5a10ba2b9
+Author: Ilan Peer <ilan.peer@intel.com>
+Date:   Sun Nov 29 15:30:51 2020 +0000
+
+    cfg80211: Save the regulatory domain when setting custom regulatory
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11492ecb500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13492ecb500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15492ecb500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+db4035751c56c0079282@syzkaller.appspotmail.com
+Fixes: beee24695157 ("cfg80211: Save the regulatory domain when setting custom regulatory")
+
+=============================
+WARNING: suspicious RCU usage
+5.10.0-rc7-syzkaller #0 Not tainted
+-----------------------------
+net/wireless/reg.c:144 suspicious rcu_dereference_check() usage!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 1
+2 locks held by syz-executor217/8471:
+ #0: ffffffff8c9b5230 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:810
+ #1: ffffffff8c9b52e8 (genl_mutex){+.+.}-{3:3}, at: genl_lock net/netlink/genetlink.c:33 [inline]
+ #1: ffffffff8c9b52e8 (genl_mutex){+.+.}-{3:3}, at: genl_rcv_msg+0x3e0/0x580 net/netlink/genetlink.c:798
+
+stack backtrace:
+CPU: 0 PID: 8471 Comm: syz-executor217 Not tainted 5.10.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ get_wiphy_regdom net/wireless/reg.c:144 [inline]
+ get_wiphy_regdom+0xc3/0xd0 net/wireless/reg.c:142
+ wiphy_apply_custom_regulatory+0x234/0x360 net/wireless/reg.c:2574
+ mac80211_hwsim_new_radio+0x1f45/0x4830 drivers/net/wireless/mac80211_hwsim.c:3247
+ hwsim_new_radio_nl+0x9a6/0x10b0 drivers/net/wireless/mac80211_hwsim.c:3822
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2331
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2385
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2418
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440309
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff9be21ed8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440309
+RDX: 0000000004000010 RSI: 00000000200001c0 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000401ba0 R11: 0000000000000246 R12: 0000000000401b10
+R13: 0000000000401ba0 R14: 0000000000000000 R15: 0000000000000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
