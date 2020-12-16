@@ -2,230 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F09212DBB2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 07:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F082DBB32
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 07:29:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725917AbgLPGZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 01:25:46 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:37694 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgLPGZq (ORCPT
+        id S1725890AbgLPG3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 01:29:07 -0500
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:39937 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725812AbgLPG3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 01:25:46 -0500
-Date:   Wed, 16 Dec 2020 09:24:58 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Rob Herring <robh@kernel.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Joao Pinto <jpinto@synopsys.com>,
-        Lars Persson <larper@axis.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Vyacheslav Mitrofanov 
-        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 04/25] dt-bindings: net: dwmac: Refactor snps,*-config
- properties
-Message-ID: <20201216062458.7oiccf6fc5lvabdc@mobilestation>
-References: <20201214091616.13545-1-Sergey.Semin@baikalelectronics.ru>
- <20201214091616.13545-5-Sergey.Semin@baikalelectronics.ru>
- <20201214143006.GA1864564@robh.at.kernel.org>
- <20201215085421.v5aepprkk2iyimaw@mobilestation>
- <CAL_JsqK2LLGMmVMrmgK-SidhVQ0y=d-6VvrXcuK_FHmQ2ijmjg@mail.gmail.com>
+        Wed, 16 Dec 2020 01:29:07 -0500
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 0BG6Rpx8005555;
+        Wed, 16 Dec 2020 15:27:51 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 0BG6Rpx8005555
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1608100071;
+        bh=gpPjJysJvaYX+2trqIsbs8noZs8c0RM6aINeItaGmPw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=0c+nKeAQjjbSB++0kQUYMHQpU9UW2GCAGu7KnG9yXVMEE6ezXEq3ujrRSicv4tuqL
+         HZi8cKRd6RKRTKeZj9pAmKQJbvuWU9Ul6RzEvhONegK3zJARWxard8pLxUun/cvEWr
+         2YOQsTea3NmpjNryFqPEoBhxVai/1jaHnTcKXh/tAnBIrPPznwuDxG7L4vhKcy+P4h
+         VvFwU3vTZsKNk1mVP20lX21kvwXaaF7VUuMG6N4a5Rlw3c4WVpOTY6NZURgB49/HPX
+         H8dGCCOxIPYpO6tz1DEwY2N2DQMyBGZKyF81Op5vAaA2jE7BuXvjV+aVKaIX+dmRfl
+         f7RypZy50cWjQ==
+X-Nifty-SrcIP: [209.85.210.181]
+Received: by mail-pf1-f181.google.com with SMTP id h186so5492939pfe.0;
+        Tue, 15 Dec 2020 22:27:51 -0800 (PST)
+X-Gm-Message-State: AOAM530aGKc8C9xIBB3IEIEK0uZsD1VQnoY6pxk735ykaj+Jq/ns9Ihq
+        NXZPKsP+1ogii0ZQ/FZRDP+ud6J6REHvY6zGgmI=
+X-Google-Smtp-Source: ABdhPJwth77/SETECJKEfVmNAa0dfNH92VGQl4pH/8wML5QfD2H392sTXSa/KkknYFgE4i1vMyDcAxRaS93kJVAUNxE=
+X-Received: by 2002:a62:e519:0:b029:197:bcec:7c0c with SMTP id
+ n25-20020a62e5190000b0290197bcec7c0cmr31336197pff.63.1608100070724; Tue, 15
+ Dec 2020 22:27:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqK2LLGMmVMrmgK-SidhVQ0y=d-6VvrXcuK_FHmQ2ijmjg@mail.gmail.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <20201201103418.675850-1-masahiroy@kernel.org>
+In-Reply-To: <20201201103418.675850-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 16 Dec 2020 15:27:13 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQQwFY75fqfzU4EFJLbTP1KUmAAnL8iJfSMwV7pjhvF+A@mail.gmail.com>
+Message-ID: <CAK7LNAQQwFY75fqfzU4EFJLbTP1KUmAAnL8iJfSMwV7pjhvF+A@mail.gmail.com>
+Subject: Re: [PATCH 1/5] modpost: rename merror() to error()
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Quentin Perret <qperret@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 08:08:35AM -0600, Rob Herring wrote:
-> On Tue, Dec 15, 2020 at 2:54 AM Serge Semin
-> <Sergey.Semin@baikalelectronics.ru> wrote:
-> >
-> > Hello Rob,
-> >
-> > On Mon, Dec 14, 2020 at 08:30:06AM -0600, Rob Herring wrote:
-> > > On Mon, Dec 14, 2020 at 12:15:54PM +0300, Serge Semin wrote:
-> > > > Currently the "snps,axi-config", "snps,mtl-rx-config" and
-> > > > "snps,mtl-tx-config" properties are declared as a single phandle reference
-> > > > to a node with corresponding parameters defined. That's not good for
-> > > > several reasons. First of all scattering around a device tree some
-> > > > particular device-specific configs with no visual relation to that device
-> > > > isn't suitable from maintainability point of view. That leads to a
-> > > > disturbed representation of the actual device tree mixing actual device
-> > > > nodes and some vendor-specific configs. Secondly using the same configs
-> > > > set for several device nodes doesn't represent well the devices structure,
-> > > > since the interfaces these configs describe in hardware belong to
-> > > > different devices and may actually differ. In the later case having the
-> > > > configs node separated from the corresponding device nodes gets to be
-> > > > even unjustified.
-> > > >
-> > > > So instead of having a separate DW *MAC configs nodes we suggest to
-> > > > define them as sub-nodes of the device nodes, which interfaces they
-> > > > actually describe. By doing so we'll make the DW *MAC nodes visually
-> > > > correct describing all the aspects of the IP-core configuration. Thus
-> > > > we'll be able to describe the configs sub-nodes bindings right in the
-> > > > snps,dwmac.yaml file.
-> > > >
-> > > > Note the former "snps,axi-config", "snps,mtl-rx-config" and
-> > > > "snps,mtl-tx-config" bindings have been marked as deprecated.
-> > > >
-> > > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > > >
-> > > > ---
-> > > >
-> > > > Note the current DT schema tool requires the vendor-specific properties to be
-> > > > defined in accordance with the schema: dtschema/meta-schemas/vendor-props.yaml
-> > > > It means the property can be;
-> > > > - boolean,
-> > > > - string,
-> > > > - defined with $ref and additional constraints,
-> > > > - defined with allOf: [ $ref ] and additional constraints.
-> > > >
-> > > > The modification provided by this commit needs to extend that definition to
-> > > > make the DT schema tool correctly parse this schema. That is we need to let
-> > > > the vendors-specific properties to also accept the oneOf-based combined
-> > > > sub-schema. Like this:
-> > > >
-> > > > --- a/dtschema/meta-schemas/vendor-props.yaml
-> > > > +++ b/dtschema/meta-schemas/vendor-props.yaml
-> > > > @@ -48,15 +48,24 @@
-> > > >        - properties:   # A property with a type and additional constraints
-> > > >            $ref:
-> > > >              pattern: "types.yaml#[\/]{0,1}definitions\/.*"
-> > > > -          allOf:
-> > > > -            items:
-> > > > -              - properties:
-> > > > +
-> > > > +        if:
-> > > > +          not:
-> > > > +            required:
-> > > > +              - $ref
-> > > > +        then:
-> > > > +          patternProperties:
-> > > > +            "^(all|one)Of$":
-> > > > +              contains:
-> > > > +                properties:
-> > > >                    $ref:
-> > > >                      pattern: "types.yaml#[\/]{0,1}definitions\/.*"
-> > > >                  required:
-> > > >                    - $ref
-> > > > -        oneOf:
-> > > > +
-> > > > +        anyOf:
-> > > >            - required: [ $ref ]
-> > > >            - required: [ allOf ]
-> > > > +          - required: [ oneOf ]
-> > > >
-> > > >  ...
-> > > > ---
-> > > >  .../devicetree/bindings/net/snps,dwmac.yaml   | 380 +++++++++++++-----
-> > > >  1 file changed, 288 insertions(+), 92 deletions(-)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > > > index 0dd543c6c08e..44aa88151cba 100644
-> > > > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > > > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > > > @@ -150,69 +150,251 @@ properties:
-> > > >        in a different mode than the PHY in order to function.
-> > > >
-> > > >    snps,axi-config:
-> > > > -    $ref: /schemas/types.yaml#definitions/phandle
-> > > > -    description:
-> > > > -      AXI BUS Mode parameters. Phandle to a node that can contain the
-> > > > -      following properties
-> > > > -        * snps,lpi_en, enable Low Power Interface
-> > > > -        * snps,xit_frm, unlock on WoL
-> > > > -        * snps,wr_osr_lmt, max write outstanding req. limit
-> > > > -        * snps,rd_osr_lmt, max read outstanding req. limit
-> > > > -        * snps,kbbe, do not cross 1KiB boundary.
-> > > > -        * snps,blen, this is a vector of supported burst length.
-> > > > -        * snps,fb, fixed-burst
-> > > > -        * snps,mb, mixed-burst
-> > > > -        * snps,rb, rebuild INCRx Burst
-> > > > +    description: AXI BUS Mode parameters
-> > > > +    oneOf:
-> > > > +      - deprecated: true
-> > > > +        $ref: /schemas/types.yaml#definitions/phandle
-> > > > +      - type: object
-> > > > +        properties:
-> > >
-> >
-> > > Anywhere have have the same node/property string meaning 2 different
-> > > things is a pain, let's not create another one.
-> >
-> > IIUC you meant that having a node and property with the same name
-> > isn't ok. Right? If so could you explain why not? especially seeing
-> > the property is expected to be set with phandle reference to that
-> > node. That seemed like a perfect solution to me. We wouldn't need to
-> > introduce a new property/node name, but just deprecate the
-> > corresponding name to be a property.
-> 
+On Tue, Dec 1, 2020 at 7:34 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> The log function names, warn(), merror(), fatal() are inconsistent.
+>
+> Commit 2a11665945d5 ("kbuild: distinguish between errors and warnings
+> in modpost") intentionally chose merror() to avoid the conflict with
+> the library function error(). See man page of error(3).
+>
+> But, we are already causing the conflict with warn() because it is also
+> a library function. See man page of warn(3). err() would be a problem
+> for the same reason.
+>
+> The common technique to work around name conflicts is to use macros.
+>
+>     #define error __error
+>     void __error(const char *fmt, ...)
+>     {
+>             <our own implementation>
+>     }
+>
+>     #define warn __warn
+>     void __warn(const char *fmt, ...)
+>     {
+>             <our own implementation>
+>     }
+>
+> In this way, we can implement our own warn() and error(), still we can
+> include <error.h> and <err.h> with no problem.
+>
+> And, commit 93c95e526a4e ("modpost: rework and consolidate logging
+> interface") already did that.
+>
+> Since the log functions are all macros, we can use error() without
+> causing "conflicting types" errors.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-> Right. It's also a property or node name having 2 different meanings.
-> I think your schema above demonstrates the problem in that it
-> unnecessarily complicates the schema. It's not such a problem here as
-> it is self contained. The worst example is 'ports'. That's a container
-> of graph port nodes, ethernet switch nodes or a property pointing to
-> DRM graphics pipelines. If there's multiple meanings, then we can't
-> apply a schema unconditionally. Or we can only check it matches one of
-> the 3 definitions.
+This series, applied to linux-kbuild.
 
-It turned out in case of this change having different meaning also luckily
-fit with having different types (property vs node). Right, as you called
-it's self contained. But in general, of course, having different meaning
-of the same node indeed may cause problems with different schema validation.
-So ok. Thanks for clarification. I'll just introduce a new sub-node with
-the same name but no vendor-prefix.
 
-> 
-> > > Just define a new node
-> > > 'axi-config'. Or just put all the properties into the node directly.
-> > > Grouping them has little purpose.
-> >
-> > Hm, you suggest to remove the vendor prefix, right?
-> 
+> ---
+>
+>  scripts/mod/modpost.c | 10 +++++-----
+>  scripts/mod/modpost.h |  2 +-
+>  2 files changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> index f882ce0d9327..337f6ca4bda3 100644
+> --- a/scripts/mod/modpost.c
+> +++ b/scripts/mod/modpost.c
+> @@ -403,8 +403,8 @@ static void sym_update_namespace(const char *symname, const char *namespace)
+>          * actually an assertion.
+>          */
+>         if (!s) {
+> -               merror("Could not update namespace(%s) for symbol %s\n",
+> -                      namespace, symname);
+> +               error("Could not update namespace(%s) for symbol %s\n",
+> +                     namespace, symname);
+>                 return;
+>         }
+>
+> @@ -2226,7 +2226,7 @@ static int check_modname_len(struct module *mod)
+>         else
+>                 mod_name++;
+>         if (strlen(mod_name) >= MODULE_NAME_LEN) {
+> -               merror("module name is too long [%s.ko]\n", mod->name);
+> +               error("module name is too long [%s.ko]\n", mod->name);
+>                 return 1;
+>         }
+>
+> @@ -2319,8 +2319,8 @@ static int add_versions(struct buffer *b, struct module *mod)
+>                         continue;
+>                 }
+>                 if (strlen(s->name) >= MODULE_NAME_LEN) {
+> -                       merror("too long symbol \"%s\" [%s.ko]\n",
+> -                              s->name, mod->name);
+> +                       error("too long symbol \"%s\" [%s.ko]\n",
+> +                             s->name, mod->name);
+>                         err = 1;
+>                         break;
+>                 }
+> diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
+> index 3aa052722233..f453504ad4df 100644
+> --- a/scripts/mod/modpost.h
+> +++ b/scripts/mod/modpost.h
+> @@ -202,5 +202,5 @@ enum loglevel {
+>  void modpost_log(enum loglevel loglevel, const char *fmt, ...);
+>
+>  #define warn(fmt, args...)     modpost_log(LOG_WARN, fmt, ##args)
+> -#define merror(fmt, args...)   modpost_log(LOG_ERROR, fmt, ##args)
+> +#define error(fmt, args...)    modpost_log(LOG_ERROR, fmt, ##args)
+>  #define fatal(fmt, args...)    modpost_log(LOG_FATAL, fmt, ##args)
+> --
+> 2.27.0
+>
 
-> Yes, we don't do vendor prefixes on node names either.
 
-Ok.
-
-> 
-> > If so what about
-> > the rest of the changes introduced here in this patch? They concern
-> > "snps,mtl-tx-config" and "snps,mtl-rx-config" properties (please note
-> > these changes are a bit more complicated than once connected with
-> > "snps,axi-config"). Should I remove the vendor-prefix from them too?
-> 
-
-> Yes.
-
-Ok.
-
--Sergey
-
-> 
-> > Anyway that seems a bit questionable, because all the "snps,*-config"
-> > properties/nodes seems more vendor-specific than generic. Am I wrong
-> > in that matter?
-> >
-> > If you think they are generic, then the "{axi,mtl-rx,mtl-tx}-config"
-> > nodes most likely should be described in the dedicated DT schema...
-> >
-> > -Sergey
-> >
+-- 
+Best Regards
+Masahiro Yamada
