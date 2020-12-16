@@ -2,92 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F6D2DBF87
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CA02DBF8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725919AbgLPLgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 06:36:23 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:32194 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725778AbgLPLgX (ORCPT
+        id S1725796AbgLPLg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 06:36:58 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:43077 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725385AbgLPLg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 06:36:23 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608118573; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Sender; bh=hHQtI9K32e1pR5DjxtBhpvWTX4yp5Gz5VV4ep6xNEao=; b=CRJjuQE2t+yXHK+AmmdKfzmAJK+mxJYuH8qTuVq3mQ1fCSxdXELuc9mIKj3gyFIf/kOiSKbo
- /Vv8OZlDen3l/vlijZoRRHlvivnTJ+9xfZCmbbKCDaQ2y7bkLLCnmwstZaB9bFdVH7mjpGGX
- KbCR8djajYyTWmKV4rrho8MmCZo=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5fd9f105f5e9af65f8c71eea (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 16 Dec 2020 11:35:33
- GMT
-Sender: pillair=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8D096C433CA; Wed, 16 Dec 2020 11:35:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from Pillair (unknown [137.97.117.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pillair)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CA757C433CA;
-        Wed, 16 Dec 2020 11:35:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CA757C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pillair@codeaurora.org
-From:   "Rakesh Pillai" <pillair@codeaurora.org>
-To:     "'Ben Greear'" <greearb@candelatech.com>,
-        "'Youghandhar Chintala'" <youghand@codeaurora.org>,
-        <johannes@sipsolutions.net>, <ath10k@lists.infradead.org>
-Cc:     <kvalo@codeaurora.org>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kuabhs@chromium.org>,
-        <dianders@chromium.org>, <briannorris@chromium.org>
-References: <20201215172113.5038-1-youghand@codeaurora.org> <18dfa52b-5edd-f737-49c9-f532c1c10ba2@candelatech.com>
-In-Reply-To: <18dfa52b-5edd-f737-49c9-f532c1c10ba2@candelatech.com>
-Subject: RE: [PATCH 0/3] mac80211: Trigger disconnect for STA during recovery
-Date:   Wed, 16 Dec 2020 17:05:22 +0530
-Message-ID: <001901d6d39f$8eecc230$acc64690$@codeaurora.org>
+        Wed, 16 Dec 2020 06:36:58 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kpV6G-0003rY-IQ; Wed, 16 Dec 2020 11:36:08 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] powerpc/44x: fix spelling mistake in Kconfig "varients" -> "variants"
+Date:   Wed, 16 Dec 2020 11:36:08 +0000
+Message-Id: <20201216113608.11812-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQLNiuGMY1lcuX+3xoocSa3lALz5vQHQNXuRp/2kY0A=
-Content-Language: en-us
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
-> From: Ben Greear <greearb@candelatech.com>
->=20
-> On 12/15/20 9:21 AM, Youghandhar Chintala wrote:
-> > From: Rakesh Pillai <pillair@codeaurora.org>
-> >
-> > Currently in case of target hardware restart ,we just reconfig and
-> > re-enable the security keys and enable the network queues to start
-> > data traffic back from where it was interrupted.
->=20
-> Are there any known mac80211 radios/drivers that *can* support =
-seamless
-> restarts?
->=20
-> If not, then just could always enable this feature in mac80211?
+There is a spelling mistake in the Kconfig help text. Fix it.
 
-I am not aware of any mac80211 target which can restart in a seamless =
-manner.
-Hence I chose to keep this optional and driver can expose this flag (if =
-needed) based on the hardware capability.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ arch/powerpc/platforms/44x/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Rakesh Pillai.
+diff --git a/arch/powerpc/platforms/44x/Kconfig b/arch/powerpc/platforms/44x/Kconfig
+index 78ac6d67a935..71068d89fcaa 100644
+--- a/arch/powerpc/platforms/44x/Kconfig
++++ b/arch/powerpc/platforms/44x/Kconfig
+@@ -5,7 +5,7 @@ config PPC_47x
+ 	select MPIC
+ 	help
+ 	  This option enables support for the 47x family of processors and is
+-	  not currently compatible with other 44x or 46x varients
++	  not currently compatible with other 44x or 46x variants
+ 
+ config BAMBOO
+ 	bool "Bamboo"
+-- 
+2.29.2
 
