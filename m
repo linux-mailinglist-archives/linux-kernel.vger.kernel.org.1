@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0472DC177
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A92E2DC17A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbgLPNnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:43:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726028AbgLPNnk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:43:40 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E30C061794;
-        Wed, 16 Dec 2020 05:43:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+4vd395O47PjmfEXnoEeM5KbxqcEezbK6dCpcez8b8Y=; b=kvqVcM0zuM16sdJUCBTqJSGO6R
-        Y+aqPtDVkY7tqxQTdHL4dbepBoBgbaXVjFDWtZJtyhCYTjxoLpkVvvdP4l06WR7gVCdMFNrehWK4u
-        YSz5iLyTTHZRpUkyXHGUPFwy+6KRySnwgofJeOF7Q++fRcd57ZtMH2dyPRRH0i/NawqHER3tlm2sa
-        dCI+AfwDY4TwSeEIOukNQr0yFixQEHIloKJ5BYY7Nq9TXt8bE3QFDWIBbypkh8B5RrlomLgDa2ZqZ
-        brCUCjhWTIjebHxhK2bjmxxd+vSy/PGP51MyhvhrY7j/S4pNbBxz1Oz6s2tDcgqMCzqxab/ZGCrXc
-        2yacQkLA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kpX4t-0003ew-B9; Wed, 16 Dec 2020 13:42:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 21993304D58;
-        Wed, 16 Dec 2020 14:42:50 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 064CE202C01EB; Wed, 16 Dec 2020 14:42:49 +0100 (CET)
-Date:   Wed, 16 Dec 2020 14:42:49 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        jeyu@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        ardb@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Jason Baron <jbaron@akamai.com>
-Subject: Re: [RFC][PATCH] jump_label/static_call: Add MAINTAINERS
-Message-ID: <20201216134249.GU3092@hirez.programming.kicks-ass.net>
-References: <MW4PR21MB1857CC85A6844C89183C93E9BFC59@MW4PR21MB1857.namprd21.prod.outlook.com>
- <20201216092649.GM3040@hirez.programming.kicks-ass.net>
- <20201216105926.GS3092@hirez.programming.kicks-ass.net>
- <20201216133014.GT3092@hirez.programming.kicks-ass.net>
+        id S1726387AbgLPNol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:44:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53314 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726354AbgLPNol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 08:44:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 621CCAC7F;
+        Wed, 16 Dec 2020 13:43:59 +0000 (UTC)
+Date:   Wed, 16 Dec 2020 14:43:54 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v9 09/11] mm/hugetlb: Introduce nr_free_vmemmap_pages in
+ the struct hstate
+Message-ID: <20201216134354.GD29394@linux>
+References: <20201213154534.54826-1-songmuchun@bytedance.com>
+ <20201213154534.54826-10-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201216133014.GT3092@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201213154534.54826-10-songmuchun@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 02:30:14PM +0100, Peter Zijlstra wrote:
-> 
-> FWIW, I recently noticed we're not being Cc'ed on patches for this
-> stuff, so how about we do something like the below?
-> 
-> Anybody holler if they don't agree with the letter assigned, or if they
-> feel they've been left out entirely and want in on the 'fun' :-)
-> 
-> ---
-> Subject: jump_label/static_call: Add MAINTAINERS
-> From: Peter Zijlstra <peterz@infradead.org>
-> 
-> These files don't appear to have a MAINTAINERS entry and as such
-> patches miss being seen by people who know this code.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  MAINTAINERS |   12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -16766,6 +16766,18 @@ M:	Ion Badulescu <ionut@badula.org>
->  S:	Odd Fixes
->  F:	drivers/net/ethernet/adaptec/starfire*
->  
-> +STATIC BRANCH/CALL
-> +M:	Peter Zijlstra <peterz@infradead.org>
-> +M:	Josh Poimboeuf <jpoimboe@redhat.com>
-> +M:	Jason Baron <jbaron@akamai.com>
-> +R:	Steven Rostedt <rostedt@goodmis.org>
-> +R:	Ard Biesheuvel <ardb@kernel.org>
-> +S:	Supported
+On Sun, Dec 13, 2020 at 11:45:32PM +0800, Muchun Song wrote:
+> All the infrastructure is ready, so we introduce nr_free_vmemmap_pages
+> field in the hstate to indicate how many vmemmap pages associated with
+> a HugeTLB page that we can free to buddy allocator. And initialize it
+"can be freed to buddy allocator"
 
-F:	arch/*/include/asm/jump_label*.h
-F:	arch/*/include/asm/static_call*.h
-F:	arch/*/kernel/jump_label.c
-F:	arch/*/kernel/static_call.c
+> in the hugetlb_vmemmap_init(). This patch is actual enablement of the
+> feature.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-These too?
+With below nits addressed you can add:
 
-> +F:	include/linux/jump_label*.h
-> +F:	include/linux/static_call*.h
-> +F:	kernel/jump_label.c
-> +F:	kernel/static_call.c
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+
+>  static int __init early_hugetlb_free_vmemmap_param(char *buf)
+>  {
+> +	/* We cannot optimize if a "struct page" crosses page boundaries. */
+> +	if (!is_power_of_2(sizeof(struct page)))
+> +		return 0;
 > +
->  STEC S1220 SKD DRIVER
->  M:	Damien Le Moal <Damien.LeMoal@wdc.com>
->  L:	linux-block@vger.kernel.org
+
+I wonder if we should report a warning in case someone wants to enable this
+feature and stuct page size it not power of 2.
+In case someone wonders why it does not work for him/her.
+
+> +void __init hugetlb_vmemmap_init(struct hstate *h)
+> +{
+> +	unsigned int nr_pages = pages_per_huge_page(h);
+> +	unsigned int vmemmap_pages;
+> +
+> +	if (!hugetlb_free_vmemmap_enabled)
+> +		return;
+> +
+> +	vmemmap_pages = (nr_pages * sizeof(struct page)) >> PAGE_SHIFT;
+> +	/*
+> +	 * The head page and the first tail page are not to be freed to buddy
+> +	 * system, the others page will map to the first tail page. So there
+> +	 * are the remaining pages that can be freed.
+"the other pages will map to the first tail page, so they can be freed."
+> +	 *
+> +	 * Could RESERVE_VMEMMAP_NR be greater than @vmemmap_pages? It is true
+> +	 * on some architectures (e.g. aarch64). See Documentation/arm64/
+> +	 * hugetlbpage.rst for more details.
+> +	 */
+> +	if (likely(vmemmap_pages > RESERVE_VMEMMAP_NR))
+> +		h->nr_free_vmemmap_pages = vmemmap_pages - RESERVE_VMEMMAP_NR;
+> +
+> +	pr_info("can free %d vmemmap pages for %s\n", h->nr_free_vmemmap_pages,
+> +		h->name);
+
+Maybe specify this is hugetlb code:
+
+pr_info("%s: blabla", __func__, ...)
+or
+pr_info("hugetlb: blalala", ...);
+
+although I am not sure whether we need that at all, or maybe just use
+pr_debug().
+
+-- 
+Oscar Salvador
+SUSE L3
