@@ -2,63 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC3E2DC167
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:38:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C592DC169
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:38:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726302AbgLPNhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:37:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60366 "EHLO
+        id S1726200AbgLPNig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726200AbgLPNhh (ORCPT
+        with ESMTP id S1726028AbgLPNig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:37:37 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332C5C06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:36:57 -0800 (PST)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1kpWz7-00A4jc-5T; Wed, 16 Dec 2020 14:36:53 +0100
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH] gdb: correct sys.path insertion
-Date:   Wed, 16 Dec 2020 14:36:46 +0100
-Message-Id: <20201216143646.82aa53af4af8.I04934c69a9f3abac5ba6d542f823898357fd0e11@changeid>
-X-Mailer: git-send-email 2.26.2
+        Wed, 16 Dec 2020 08:38:36 -0500
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B8EC06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:37:56 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by xavier.telenet-ops.be with bizsmtp
+        id 51du2400L4C55Sk011du1E; Wed, 16 Dec 2020 14:37:54 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kpX06-00BB0f-Aw; Wed, 16 Dec 2020 14:37:54 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kpX05-005Xv1-R3; Wed, 16 Dec 2020 14:37:53 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] platform/surface: SURFACE_PLATFORMS should depend on ACPI
+Date:   Wed, 16 Dec 2020 14:37:52 +0100
+Message-Id: <20201216133752.1321978-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+All Microsoft Surface platform-specific device drivers depend on ACPI,
+but the gatekeeper symbol SURFACE_PLATFORMS does not.  Hence when the
+user is configuring a kernel without ACPI support, he is still asked
+about Microsoft Surface drivers, even though this question is
+irrelevant.
 
-Perhaps something got moved around at some point, but the
-current path that gets inserted has "/scripts/gdb" twice,
-since the script is located in scripts/gdb/ already. Fix
-the path.
+Fix this by moving the dependency on ACPI from the individual driver
+symbols to SURFACE_PLATFORMS.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- scripts/gdb/vmlinux-gdb.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/platform/surface/Kconfig | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/scripts/gdb/vmlinux-gdb.py b/scripts/gdb/vmlinux-gdb.py
-index 4136dc2c59df..476da5b6a7ca 100644
---- a/scripts/gdb/vmlinux-gdb.py
-+++ b/scripts/gdb/vmlinux-gdb.py
-@@ -13,7 +13,7 @@
+diff --git a/drivers/platform/surface/Kconfig b/drivers/platform/surface/Kconfig
+index 33040b0b3b799c2d..2c941cdac9eedc6f 100644
+--- a/drivers/platform/surface/Kconfig
++++ b/drivers/platform/surface/Kconfig
+@@ -5,6 +5,7 @@
  
- import os
+ menuconfig SURFACE_PLATFORMS
+ 	bool "Microsoft Surface Platform-Specific Device Drivers"
++	depends on ACPI
+ 	default y
+ 	help
+ 	  Say Y here to get to see options for platform-specific device drivers
+@@ -29,20 +30,19 @@ config SURFACE3_WMI
  
--sys.path.insert(0, os.path.dirname(__file__) + "/scripts/gdb")
-+sys.path.insert(0, os.path.dirname(__file__))
+ config SURFACE_3_BUTTON
+ 	tristate "Power/home/volume buttons driver for Microsoft Surface 3 tablet"
+-	depends on ACPI && KEYBOARD_GPIO && I2C
++	depends on KEYBOARD_GPIO && I2C
+ 	help
+ 	  This driver handles the power/home/volume buttons on the Microsoft Surface 3 tablet.
  
- try:
-     gdb.parse_and_eval("0")
+ config SURFACE_3_POWER_OPREGION
+ 	tristate "Surface 3 battery platform operation region support"
+-	depends on ACPI && I2C
++	depends on I2C
+ 	help
+ 	  This driver provides support for ACPI operation
+ 	  region of the Surface 3 battery platform driver.
+ 
+ config SURFACE_GPE
+ 	tristate "Surface GPE/Lid Support Driver"
+-	depends on ACPI
+ 	depends on DMI
+ 	help
+ 	  This driver marks the GPEs related to the ACPI lid device found on
+@@ -52,7 +52,7 @@ config SURFACE_GPE
+ 
+ config SURFACE_PRO3_BUTTON
+ 	tristate "Power/home/volume buttons driver for Microsoft Surface Pro 3/4 tablet"
+-	depends on ACPI && INPUT
++	depends on INPUT
+ 	help
+ 	  This driver handles the power/home/volume buttons on the Microsoft Surface Pro 3/4 tablet.
+ 
 -- 
-2.26.2
+2.25.1
 
