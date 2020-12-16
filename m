@@ -2,68 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E09512DC1CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DD02DC1D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgLPOE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 09:04:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41898 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726137AbgLPOE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 09:04:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AC352AC7F;
-        Wed, 16 Dec 2020 14:03:44 +0000 (UTC)
-Date:   Wed, 16 Dec 2020 15:03:40 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
-        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v9 10/11] mm/hugetlb: Gather discrete indexes of tail page
-Message-ID: <20201216140340.GE29394@linux>
-References: <20201213154534.54826-1-songmuchun@bytedance.com>
- <20201213154534.54826-11-songmuchun@bytedance.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201213154534.54826-11-songmuchun@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726417AbgLPOEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 09:04:30 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:44039 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726137AbgLPOE3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 09:04:29 -0500
+Received: by mail-ot1-f51.google.com with SMTP id f16so22954121otl.11;
+        Wed, 16 Dec 2020 06:04:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=TfpHVaBEEhYcbR1qu9fWE/7+sLFaSTXgax6byjyN7e0=;
+        b=m42lOzRmjRs1k8lUIONxq/MTDWMmn35t2798U0OSt5u/UIKqPmaiBrGaVaxKF9ig5m
+         XP+nYyarfrgcvTqjkDm33yaXG0FUAu2yZFGi7lgNlSP3KIJBmkGFTcGzoEUzhZE3YUAf
+         I79pHlBuGP02r76HVzlCcY1cRSuP+Uo0aoId57qt5OSOz2PbkKJlrrGK6qgVmnuf4g1N
+         B65lQn3Ytrh/+gKuLrcJWHUB3I+3VqgWwDD3EWF4VM93kF/mJcJL6jphS3k84+4SzYDu
+         X5q8qh5PVUxmgSiwQWflp0C0LWY3yxyc59B+uGzsvAhJ58tfDHBmmsVb21bWpUgx0PVh
+         tEwA==
+X-Gm-Message-State: AOAM531GWmUPHPZczpOi3LB+44nqLV8vg20cR16X+JcbcwxwO46Qy/EN
+        OCNXWY5GVqOEzPtYlMd06g==
+X-Google-Smtp-Source: ABdhPJywCgAqv1oEd87elIYqW5iKCekTwX0/J4yFNgA4SNmfklSlJdtTRtYsMZ6wKRPTE5A55vhstQ==
+X-Received: by 2002:a9d:650a:: with SMTP id i10mr14599407otl.341.1608127428406;
+        Wed, 16 Dec 2020 06:03:48 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t18sm438770otc.64.2020.12.16.06.03.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 06:03:47 -0800 (PST)
+Received: (nullmailer pid 1817444 invoked by uid 1000);
+        Wed, 16 Dec 2020 14:03:46 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        devicetree@vger.kernel.org,
+        Yuchen Huang <yuchen.huang@mediatek.com>,
+        Fei Shao <fshao@chromium.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Sean Wang <sean.wang@mediatek.com>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>, srv_heupstream@mediatek.com,
+        Ran Bi <ran.bi@mediatek.com>, Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <1608104827-7937-5-git-send-email-hsin-hsiung.wang@mediatek.com>
+References: <1608104827-7937-1-git-send-email-hsin-hsiung.wang@mediatek.com> <1608104827-7937-5-git-send-email-hsin-hsiung.wang@mediatek.com>
+Subject: Re: [PATCH v4 4/9] dt-bindings: regulator: Add document for MT6359 regulator
+Date:   Wed, 16 Dec 2020 08:03:46 -0600
+Message-Id: <1608127426.112276.1817443.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 11:45:33PM +0800, Muchun Song wrote:
-> For HugeTLB page, there are more metadata to save in the struct page.
-> But the head struct page cannot meet our needs, so we have to abuse
-> other tail struct page to store the metadata. In order to avoid
-> conflicts caused by subsequent use of more tail struct pages, we can
-> gather these discrete indexes of tail struct page. In this case, it
-> will be easier to add a new tail page index later.
+On Wed, 16 Dec 2020 15:47:02 +0800, Hsin-Hsiung Wang wrote:
+> add dt-binding document for MediaTek MT6359 PMIC
 > 
-> There are only (RESERVE_VMEMMAP_SIZE / sizeof(struct page)) struct
-> page structs can be used when CONFIG_HUGETLB_PAGE_FREE_VMEMMAP, so
-"that can be..."
-
-> add a BUILD_BUG_ON to catch invalid usage of the tail struct page.
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> ---
+>  .../bindings/regulator/mt6359-regulator.yaml  | 169 ++++++++++++++++++
+>  1 file changed, 169 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-I think this makes the current situation with metadata usage in sub-pages
-easier to track.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+yamllint warnings/errors:
 
--- 
-Oscar Salvador
-SUSE L3
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml: 'additionalProperties' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
+
+See https://patchwork.ozlabs.org/patch/1416913
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
