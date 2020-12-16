@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CC42DC6D4
+	by mail.lfdr.de (Postfix) with ESMTP id CA16C2DC6D5
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732811AbgLPTBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 14:01:24 -0500
-Received: from mga14.intel.com ([192.55.52.115]:53485 "EHLO mga14.intel.com"
+        id S1732824AbgLPTB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 14:01:28 -0500
+Received: from mga14.intel.com ([192.55.52.115]:53487 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731880AbgLPTBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 14:01:24 -0500
-IronPort-SDR: j1C0VmPdmu0tqw0UOz9ViF5nphcFZyYVoFwDSTIO/fg/en98wlsKhUcK2KEzQzB6cdZ7SBwwNd
- T9mXAPXcsnqg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="174349546"
+        id S1732005AbgLPTB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 14:01:28 -0500
+IronPort-SDR: Lue4Eyp57SzaW0o61J/3W239dgig4sOpcmJtjYdWKjAF432Oo2RiOIGJeZc8CcV0m2SlXCJ7ed
+ oFEkqZjkqmcA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="174349549"
 X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
-   d="scan'208";a="174349546"
+   d="scan'208";a="174349549"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 10:59:37 -0800
-IronPort-SDR: n5jGzlDB+BPnYe2TRjPD6hgt+eSW+lbaLezWMzATsZdrQxXBjvCe9zTxeKRH6qY87f2z6y23L2
- 2rfaP9jTduFQ==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 10:59:38 -0800
+IronPort-SDR: x2rMFKsHdCU0KzgUnGVm4Zdq199K0xqNGPqIv3lSasLEK7ZzFw+i0RSN76kW7YbIFRRR+G3bjY
+ G9sRb1MoBDMw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,425,1599548400"; 
-   d="scan'208";a="342165151"
+   d="scan'208";a="342165163"
 Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
-  by orsmga006.jf.intel.com with ESMTP; 16 Dec 2020 10:59:37 -0800
+  by orsmga006.jf.intel.com with ESMTP; 16 Dec 2020 10:59:38 -0800
 From:   kan.liang@linux.intel.com
 To:     acme@kernel.org, mingo@kernel.org, jolsa@redhat.com
 Cc:     linux-kernel@vger.kernel.org, namhyung@kernel.org,
         eranian@google.com, ak@linux.intel.com, mark.rutland@arm.com,
         will@kernel.org, mpe@ellerman.id.au,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V3 1/9] perf script: Support data page size
-Date:   Wed, 16 Dec 2020 10:57:57 -0800
-Message-Id: <20201216185805.9981-2-kan.liang@linux.intel.com>
+Subject: [PATCH V3 2/9] perf sort: Add sort option for data page size
+Date:   Wed, 16 Dec 2020 10:57:58 -0800
+Message-Id: <20201216185805.9981-3-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201216185805.9981-1-kan.liang@linux.intel.com>
 References: <20201216185805.9981-1-kan.liang@linux.intel.com>
@@ -43,180 +43,216 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Display the data page size if it is available.
+Add a new sort option "data_page_size" for --mem-mode sort.  With this
+option applied, perf can sort and report by sample's data page size.
 
-Can be configured by the user, for example:
-  perf script --fields comm,event,phys_addr,data_page_size
-            dtlb mem-loads:uP:        3fec82ea8 4K
-            dtlb mem-loads:uP:        3fec82e90 4K
-            dtlb mem-loads:uP:        3e23700a4 4K
-            dtlb mem-loads:uP:        3fec82f20 4K
-            dtlb mem-loads:uP:        3e23700a4 4K
-            dtlb mem-loads:uP:        3b4211bec 4K
-            dtlb mem-loads:uP:        382205dc0 2M
-            dtlb mem-loads:uP:        36fa082c0 2M
-            dtlb mem-loads:uP:        377607340 2M
-            dtlb mem-loads:uP:        330010180 2M
-            dtlb mem-loads:uP:        33200fd80 2M
-            dtlb mem-loads:uP:        31b012b80 2M
+Here is an example.
+perf report --stdio --mem-mode
+--sort=comm,symbol,phys_daddr,data_page_size
+
+ # To display the perf.data header info, please use
+ # --header/--header-only options.
+ #
+ #
+ # Total Lost Samples: 0
+ #
+ # Samples: 9K of event 'mem-loads:uP'
+ # Total weight : 9028
+ # Sort order   : comm,symbol,phys_daddr,data_page_size
+ #
+ # Overhead  Command  Symbol                        Data Physical
+ # Address
+ # Data Page Size
+ # ........  .......  ............................
+ # ......................  ......................
+ #
+    11.19%  dtlb     [.] touch_buffer              [.]
+0x00000003fec82ea8  4K
+     8.61%  dtlb     [.] GetTickCount              [.]
+0x00000003c4f2c8a8  4K
+     4.52%  dtlb     [.] GetTickCount              [.]
+0x00000003fec82f58  4K
+     4.33%  dtlb     [.] __gettimeofday            [.]
+0x00000003fec82f48  4K
+     4.32%  dtlb     [.] GetTickCount              [.]
+0x00000003fec82f78  4K
+     4.28%  dtlb     [.] GetTickCount              [.]
+0x00000003fec82f50  4K
+     4.23%  dtlb     [.] GetTickCount              [.]
+0x00000003fec82f70  4K
+     4.11%  dtlb     [.] GetTickCount              [.]
+0x00000003fec82f68  4K
+     4.00%  dtlb     [.] Calibrate                 [.]
+0x00000003fec82f98  4K
+     3.91%  dtlb     [.] Calibrate                 [.]
+0x00000003fec82f90  4K
+     3.43%  dtlb     [.] touch_buffer              [.]
+0x00000003fec82e98  4K
+     3.42%  dtlb     [.] touch_buffer              [.]
+0x00000003fec82e90  4K
+     0.09%  dtlb     [.] DoDependentLoads          [.]
+0x000000036ea084c0  2M
+     0.08%  dtlb     [.] DoDependentLoads          [.]
+0x000000032b010b80  2M
 
 Acked-by: Namhyung Kim <namhyung@kernel.org>
 Acked-by: Jiri Olsa <jolsa@redhat.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- tools/perf/Documentation/perf-script.txt |  5 +++--
- tools/perf/builtin-script.c              | 17 +++++++++++++++--
- tools/perf/util/event.h                  |  3 +++
- tools/perf/util/session.c                | 13 +++++++++++++
- 4 files changed, 34 insertions(+), 4 deletions(-)
+ tools/perf/Documentation/perf-report.txt |  1 +
+ tools/perf/util/hist.c                   |  3 +++
+ tools/perf/util/hist.h                   |  1 +
+ tools/perf/util/machine.c                |  7 ++++--
+ tools/perf/util/map_symbol.h             |  1 +
+ tools/perf/util/sort.c                   | 30 ++++++++++++++++++++++++
+ tools/perf/util/sort.h                   |  1 +
+ 7 files changed, 42 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-script.txt b/tools/perf/Documentation/perf-script.txt
-index 4f712fb8f175..ac4755727ca1 100644
---- a/tools/perf/Documentation/perf-script.txt
-+++ b/tools/perf/Documentation/perf-script.txt
-@@ -116,8 +116,9 @@ OPTIONS
- --fields::
-         Comma separated list of fields to print. Options are:
-         comm, tid, pid, time, cpu, event, trace, ip, sym, dso, addr, symoff,
--        srcline, period, iregs, uregs, brstack, brstacksym, flags, bpf-output, brstackinsn,
--        brstackoff, callindent, insn, insnlen, synth, phys_addr, metric, misc, srccode, ipc.
-+	srcline, period, iregs, uregs, brstack, brstacksym, flags, bpf-output,
-+	brstackinsn, brstackoff, callindent, insn, insnlen, synth, phys_addr,
-+	metric, misc, srccode, ipc, data_page_size.
-         Field list can be prepended with the type, trace, sw or hw,
-         to indicate to which event type the field list applies.
-         e.g., -F sw:comm,tid,time,ip,sym  and -F trace:time,cpu,trace
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index 1c322c129185..edacfa98d073 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -30,6 +30,7 @@
- #include "util/thread-stack.h"
- #include "util/time-utils.h"
- #include "util/path.h"
-+#include "util/event.h"
- #include "ui/ui.h"
- #include "print_binary.h"
- #include "archinsn.h"
-@@ -115,6 +116,7 @@ enum perf_output_field {
- 	PERF_OUTPUT_SRCCODE	    = 1ULL << 30,
- 	PERF_OUTPUT_IPC             = 1ULL << 31,
- 	PERF_OUTPUT_TOD             = 1ULL << 32,
-+	PERF_OUTPUT_DATA_PAGE_SIZE  = 1ULL << 33,
- };
+diff --git a/tools/perf/Documentation/perf-report.txt b/tools/perf/Documentation/perf-report.txt
+index d068103690cc..8f7f4e9605d8 100644
+--- a/tools/perf/Documentation/perf-report.txt
++++ b/tools/perf/Documentation/perf-report.txt
+@@ -150,6 +150,7 @@ OPTIONS
+ 	- snoop: type of snoop (if any) for the data at the time of the sample
+ 	- dcacheline: the cacheline the data address is on at the time of the sample
+ 	- phys_daddr: physical address of data being executed on at the time of sample
++	- data_page_size: the data page size of data being executed on at the time of sample
  
- struct perf_script {
-@@ -179,6 +181,7 @@ struct output_option {
- 	{.str = "srccode", .field = PERF_OUTPUT_SRCCODE},
- 	{.str = "ipc", .field = PERF_OUTPUT_IPC},
- 	{.str = "tod", .field = PERF_OUTPUT_TOD},
-+	{.str = "data_page_size", .field = PERF_OUTPUT_DATA_PAGE_SIZE},
- };
+ 	And the default sort keys are changed to local_weight, mem, sym, dso,
+ 	symbol_daddr, dso_daddr, snoop, tlb, locked, see '--mem-mode'.
+diff --git a/tools/perf/util/hist.c b/tools/perf/util/hist.c
+index 7feeaa07c777..a08fb9ea411b 100644
+--- a/tools/perf/util/hist.c
++++ b/tools/perf/util/hist.c
+@@ -188,6 +188,9 @@ void hists__calc_col_len(struct hists *hists, struct hist_entry *h)
+ 		hists__new_col_len(hists, HISTC_MEM_PHYS_DADDR,
+ 				   unresolved_col_width + 4 + 2);
  
- enum {
-@@ -251,7 +254,8 @@ static struct {
- 			      PERF_OUTPUT_SYM | PERF_OUTPUT_SYMOFFSET |
- 			      PERF_OUTPUT_DSO | PERF_OUTPUT_PERIOD |
- 			      PERF_OUTPUT_ADDR | PERF_OUTPUT_DATA_SRC |
--			      PERF_OUTPUT_WEIGHT | PERF_OUTPUT_PHYS_ADDR,
-+			      PERF_OUTPUT_WEIGHT | PERF_OUTPUT_PHYS_ADDR |
-+			      PERF_OUTPUT_DATA_PAGE_SIZE,
- 
- 		.invalid_fields = PERF_OUTPUT_TRACE | PERF_OUTPUT_BPF_OUTPUT,
- 	},
-@@ -499,6 +503,10 @@ static int evsel__check_attr(struct evsel *evsel, struct perf_session *session)
- 	    evsel__check_stype(evsel, PERF_SAMPLE_PHYS_ADDR, "PHYS_ADDR", PERF_OUTPUT_PHYS_ADDR))
- 		return -EINVAL;
- 
-+	if (PRINT_FIELD(DATA_PAGE_SIZE) &&
-+	    evsel__check_stype(evsel, PERF_SAMPLE_DATA_PAGE_SIZE, "DATA_PAGE_SIZE", PERF_OUTPUT_DATA_PAGE_SIZE))
-+		return -EINVAL;
++		hists__new_col_len(hists, HISTC_MEM_DATA_PAGE_SIZE,
++				   unresolved_col_width + 4 + 2);
 +
- 	return 0;
+ 	} else {
+ 		symlen = unresolved_col_width + 4 + 2;
+ 		hists__new_col_len(hists, HISTC_MEM_DADDR_SYMBOL, symlen);
+diff --git a/tools/perf/util/hist.h b/tools/perf/util/hist.h
+index df6c6eea0960..14f66330923d 100644
+--- a/tools/perf/util/hist.h
++++ b/tools/perf/util/hist.h
+@@ -56,6 +56,7 @@ enum hist_column {
+ 	HISTC_MEM_DADDR_SYMBOL,
+ 	HISTC_MEM_DADDR_DSO,
+ 	HISTC_MEM_PHYS_DADDR,
++	HISTC_MEM_DATA_PAGE_SIZE,
+ 	HISTC_MEM_LOCKED,
+ 	HISTC_MEM_TLB,
+ 	HISTC_MEM_LVL,
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index 1ae32a81639c..f841f3503cae 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -2023,11 +2023,12 @@ static void ip__resolve_ams(struct thread *thread,
+ 	ams->ms.sym = al.sym;
+ 	ams->ms.map = al.map;
+ 	ams->phys_addr = 0;
++	ams->data_page_size = 0;
  }
  
-@@ -1920,6 +1928,7 @@ static void process_event(struct perf_script *script,
- 	unsigned int type = output_type(attr->type);
- 	struct evsel_script *es = evsel->priv;
- 	FILE *fp = es->fp;
-+	char str[PAGE_SIZE_NAME_LEN];
+ static void ip__resolve_data(struct thread *thread,
+ 			     u8 m, struct addr_map_symbol *ams,
+-			     u64 addr, u64 phys_addr)
++			     u64 addr, u64 phys_addr, u64 daddr_page_size)
+ {
+ 	struct addr_location al;
  
- 	if (output[type].fields == 0)
- 		return;
-@@ -2008,6 +2017,9 @@ static void process_event(struct perf_script *script,
- 	if (PRINT_FIELD(PHYS_ADDR))
- 		fprintf(fp, "%16" PRIx64, sample->phys_addr);
- 
-+	if (PRINT_FIELD(DATA_PAGE_SIZE))
-+		fprintf(fp, " %s", get_page_size_name(sample->data_page_size, str));
-+
- 	perf_sample__fprintf_ipc(sample, attr, fp);
- 
- 	fprintf(fp, "\n");
-@@ -3506,7 +3518,8 @@ int cmd_script(int argc, const char **argv)
- 		     "Fields: comm,tid,pid,time,cpu,event,trace,ip,sym,dso,"
- 		     "addr,symoff,srcline,period,iregs,uregs,brstack,"
- 		     "brstacksym,flags,bpf-output,brstackinsn,brstackoff,"
--		     "callindent,insn,insnlen,synth,phys_addr,metric,misc,ipc,tod",
-+		     "callindent,insn,insnlen,synth,phys_addr,metric,misc,ipc,tod,"
-+		     "data_page_size",
- 		     parse_output_fields),
- 	OPT_BOOLEAN('a', "all-cpus", &system_wide,
- 		    "system-wide collection from all CPUs"),
-diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
-index 448ac30c2fc4..ff403ea578e1 100644
---- a/tools/perf/util/event.h
-+++ b/tools/perf/util/event.h
-@@ -409,4 +409,7 @@ extern int sysctl_perf_event_max_stack;
- extern int sysctl_perf_event_max_contexts_per_stack;
- extern unsigned int proc_map_timeout;
- 
-+#define PAGE_SIZE_NAME_LEN	32
-+char *get_page_size_name(u64 size, char *str);
-+
- #endif /* __PERF_RECORD_H */
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 3b3c50b12791..50ff9795a4f1 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -32,6 +32,7 @@
- #include "ui/progress.h"
- #include "../perf.h"
- #include "arch/common.h"
-+#include "units.h"
- #include <internal/lib.h>
- 
- #ifdef HAVE_ZSTD_SUPPORT
-@@ -1258,10 +1259,19 @@ static void dump_event(struct evlist *evlist, union perf_event *event,
- 	       event->header.size, perf_event__name(event->header.type));
+@@ -2041,6 +2042,7 @@ static void ip__resolve_data(struct thread *thread,
+ 	ams->ms.sym = al.sym;
+ 	ams->ms.map = al.map;
+ 	ams->phys_addr = phys_addr;
++	ams->data_page_size = daddr_page_size;
  }
  
-+char *get_page_size_name(u64 size, char *str)
+ struct mem_info *sample__resolve_mem(struct perf_sample *sample,
+@@ -2053,7 +2055,8 @@ struct mem_info *sample__resolve_mem(struct perf_sample *sample,
+ 
+ 	ip__resolve_ams(al->thread, &mi->iaddr, sample->ip);
+ 	ip__resolve_data(al->thread, al->cpumode, &mi->daddr,
+-			 sample->addr, sample->phys_addr);
++			 sample->addr, sample->phys_addr,
++			 sample->data_page_size);
+ 	mi->data_src.val = sample->data_src;
+ 
+ 	return mi;
+diff --git a/tools/perf/util/map_symbol.h b/tools/perf/util/map_symbol.h
+index 5b8ca93798e9..7d22ade082c8 100644
+--- a/tools/perf/util/map_symbol.h
++++ b/tools/perf/util/map_symbol.h
+@@ -19,5 +19,6 @@ struct addr_map_symbol {
+ 	u64	      addr;
+ 	u64	      al_addr;
+ 	u64	      phys_addr;
++	u64	      data_page_size;
+ };
+ #endif // __PERF_MAP_SYMBOL
+diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
+index 7d87bfcffb3f..80907bc32683 100644
+--- a/tools/perf/util/sort.c
++++ b/tools/perf/util/sort.c
+@@ -1462,6 +1462,35 @@ struct sort_entry sort_mem_phys_daddr = {
+ 	.se_width_idx	= HISTC_MEM_PHYS_DADDR,
+ };
+ 
++static int64_t
++sort__data_page_size_cmp(struct hist_entry *left, struct hist_entry *right)
 +{
-+	if (!size || !unit_number__scnprintf(str, PAGE_SIZE_NAME_LEN, size))
-+		snprintf(str, PAGE_SIZE_NAME_LEN, "%s", "N/A");
++	uint64_t l = 0, r = 0;
 +
-+	return str;
++	if (left->mem_info)
++		l = left->mem_info->daddr.data_page_size;
++	if (right->mem_info)
++		r = right->mem_info->daddr.data_page_size;
++
++	return (int64_t)(r - l);
 +}
 +
- static void dump_sample(struct evsel *evsel, union perf_event *event,
- 			struct perf_sample *sample)
- {
- 	u64 sample_type;
++static int hist_entry__data_page_size_snprintf(struct hist_entry *he, char *bf,
++					  size_t size, unsigned int width)
++{
 +	char str[PAGE_SIZE_NAME_LEN];
- 
- 	if (!dump_trace)
- 		return;
-@@ -1296,6 +1306,9 @@ static void dump_sample(struct evsel *evsel, union perf_event *event,
- 	if (sample_type & PERF_SAMPLE_PHYS_ADDR)
- 		printf(" .. phys_addr: 0x%"PRIx64"\n", sample->phys_addr);
- 
-+	if (sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)
-+		printf(" .. data page size: %s\n", get_page_size_name(sample->data_page_size, str));
 +
- 	if (sample_type & PERF_SAMPLE_TRANSACTION)
- 		printf("... transaction: %" PRIx64 "\n", sample->transaction);
++	return repsep_snprintf(bf, size, "%-*s", width,
++			       get_page_size_name(he->mem_info->daddr.data_page_size, str));
++}
++
++struct sort_entry sort_mem_data_page_size = {
++	.se_header	= "Data Page Size",
++	.se_cmp		= sort__data_page_size_cmp,
++	.se_snprintf	= hist_entry__data_page_size_snprintf,
++	.se_width_idx	= HISTC_MEM_DATA_PAGE_SIZE,
++};
++
+ static int64_t
+ sort__abort_cmp(struct hist_entry *left, struct hist_entry *right)
+ {
+@@ -1740,6 +1769,7 @@ static struct sort_dimension memory_sort_dimensions[] = {
+ 	DIM(SORT_MEM_SNOOP, "snoop", sort_mem_snoop),
+ 	DIM(SORT_MEM_DCACHELINE, "dcacheline", sort_mem_dcacheline),
+ 	DIM(SORT_MEM_PHYS_DADDR, "phys_daddr", sort_mem_phys_daddr),
++	DIM(SORT_MEM_DATA_PAGE_SIZE, "data_page_size", sort_mem_data_page_size),
+ };
  
+ #undef DIM
+diff --git a/tools/perf/util/sort.h b/tools/perf/util/sort.h
+index 66d39c4cfe2b..e50f2b695bc4 100644
+--- a/tools/perf/util/sort.h
++++ b/tools/perf/util/sort.h
+@@ -255,6 +255,7 @@ enum sort_type {
+ 	SORT_MEM_DCACHELINE,
+ 	SORT_MEM_IADDR_SYMBOL,
+ 	SORT_MEM_PHYS_DADDR,
++	SORT_MEM_DATA_PAGE_SIZE,
+ };
+ 
+ /*
 -- 
 2.17.1
 
