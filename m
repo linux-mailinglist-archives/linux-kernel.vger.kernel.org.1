@@ -2,109 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1513E2DC554
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 734152DC557
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgLPR2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 12:28:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39720 "EHLO
+        id S1727108AbgLPR2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 12:28:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727099AbgLPR2h (ORCPT
+        with ESMTP id S1727099AbgLPR2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 12:28:37 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC986C0617A7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 09:27:56 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id p14so14211057qke.6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 09:27:56 -0800 (PST)
+        Wed, 16 Dec 2020 12:28:48 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818A2C0617B0;
+        Wed, 16 Dec 2020 09:28:07 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id s26so15673967lfc.8;
+        Wed, 16 Dec 2020 09:28:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cbVVb/3tBHQOeW2N0lGixFal7rrlyqRe0NYW7h5mJws=;
-        b=df7mMBu2TQ/GxHbt3CKlE9kBX3thvKUQtLR6UQ0lqs1fISdjOZScd52uzgwcN83k8Q
-         UEO8SFUp7FaxL9CZudC5Ze00tfKvOgeQo+eGDZtPLRAWElRDEEpHeErhKeYd/rXD+RIJ
-         XEyTkZHSU4ZD0JXQhjKUL8VU+XijhQbYqNucF9P+kHeFMcsfzQJ5VmwCYupuEIjWSeV7
-         AzDihoBDFLgx8xeTHPgRf+wBGnwJxT5UK81aol/KFgzR+fa7DWTxkh+FFThIpRLUpecK
-         AI07lPfsqZpdfaBThI6NM6GC3Rcps+K9yBXbq6Y26LveZ2CueiK8aAlBxmbLh3oRIO/D
-         7+DA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HEgHvQvC+fvQSQFOK0fx2c6TuA3OA18Kvj4t0km5zDk=;
+        b=e0dLQ1JlIsy7KcUJConEdf/unbHgp7ofSi882pJVbBxpoNSw9iRklPXeJsFXHReW0m
+         yXApqS1Jpc8YzN8yj1SgeVNvliz9S3ZDig/mFknljef5aqwInOPVCc5hNQJv7uvfbQxs
+         iwlVY7fOMFllgQe+qbjLK5Khs97F741X3ePd2U2c6iL/iclxXyoqqZvYQ3ZWZ3SLzwdl
+         RpMyThlSBel22HCeLZGqbSEXaR0r2Fr5aYHYGgNcf1iOIeuNr7UTlBShdKnZx60xrxiA
+         wU4w2LablM/Kq7ktIUvG9QWhrMrussk5gEtkzzqSjF5CeNmpBJUSPgv6wFsz/OICKich
+         lj7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cbVVb/3tBHQOeW2N0lGixFal7rrlyqRe0NYW7h5mJws=;
-        b=UeFy/54BXJL9kbbaPWpadhFNUZft4tdBnX/rLZt5WrcitnHRWkl3wtMP1qqcKvNis+
-         9vc3H+snWsegDxV/OiqbQnJAKd2p2dmZKbeTLJcoWOPBWR32iSaMTmkwbBcvcY44mxEX
-         cCvXmse7jmkcNTd7AZfaEQe3eQryK3odhbCNXRYn7dRc6TlDHydOPXnvTU5m0jsnC00c
-         vf+GW9cjzqlc1HHZwlBwyzkrhQvs7FH12wwSKkd8mj/fTSgRWaC9KgTra/drh5Z9dfdp
-         7BjWSKgQ/p6488GHlIZrW/MFQYz+PDTmiqBANQ4sXog7MH3fs7AcNMDWzW5OPeAD/PUb
-         gOCQ==
-X-Gm-Message-State: AOAM532313GQ1OlGGPYooNgLip5uNEqCtX2RUrhlCdEX3uUgROWvrLsk
-        Gpjz6P7nouxBRMG0Uq1OkceJtBSPVxX1aTxuNKGNpA==
-X-Google-Smtp-Source: ABdhPJyKQE12XBOKvOQ1FMhyqrjGDCwscGWGuZr8KvzYRLNW9jyIe1uKwdJnLz5j9Wrf4O7RcY8Gm+wmO7GQib9dQpI=
-X-Received: by 2002:a37:b982:: with SMTP id j124mr46935220qkf.1.1608139675605;
- Wed, 16 Dec 2020 09:27:55 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HEgHvQvC+fvQSQFOK0fx2c6TuA3OA18Kvj4t0km5zDk=;
+        b=taaAvlv4zP9KepDV/p4ZurIOkmxOIfZov8kcVl8e1dD8jd1VYK4wmLSd7IKg/+AnIK
+         RFWajUYLAKiUO3RwY+P8jmbc5Ae4OB0cWZ0/ALj6xJY8QbB5CL7LvPw1KdUmwVG1bTiz
+         Ev1zcVUusJvq+KQ4v60AtIFAxXBYNYqVNy6yOaxMeVVcYsQ0fpo0r0qfy4W96nVmWgXj
+         HfniKRaPUF7bReO4guRdl0cyw3PrPzTWKfqTafUoXHaGmCPvkPr4gBuma59tLEiru61Q
+         IEODIiZ/jPp+Ivaqd3ljYUhkNtXdAlhXqgVogx8dIhkaYtKclOzBi8uG6ogj68qeRb2o
+         /H/g==
+X-Gm-Message-State: AOAM5320ND68e/WtAnOu3xAyY/HysDUvTMLl0Z8/a95wEa/aGA177iil
+        skgVemnVz491m5VHNokyz6iKLMqxv4M=
+X-Google-Smtp-Source: ABdhPJz2M9/7yQWq+L2724lT763ScpZBPLboMevj0BFGobg6XMqorsyiGnVL1LxpXtVOh8/kfH1xLA==
+X-Received: by 2002:a2e:90d3:: with SMTP id o19mr15027475ljg.382.1608139684875;
+        Wed, 16 Dec 2020 09:28:04 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id c10sm293393lfh.258.2020.12.16.09.28.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 09:28:04 -0800 (PST)
+Subject: Re: [PATCH v1 7/8] usb: host: ehci-tegra: Remove the driver
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201215202113.30394-1-digetx@gmail.com>
+ <20201215202113.30394-8-digetx@gmail.com>
+ <20201216164511.GB238371@rowland.harvard.edu>
+ <33d576a4-5ace-e1a1-d829-77266025aa9b@gmail.com>
+ <20201216172253.GC238371@rowland.harvard.edu>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <76e776a1-104e-ea5b-46ad-496235c6c5fe@gmail.com>
+Date:   Wed, 16 Dec 2020 20:28:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-References: <20201216163103.GA59351@roeck-us.net>
-In-Reply-To: <20201216163103.GA59351@roeck-us.net>
-From:   Kun Yi <kunyi@google.com>
-Date:   Wed, 16 Dec 2020 09:27:28 -0800
-Message-ID: <CAGMNF6V-w47SDAUgVAtG+Xrp0ECNOvVV1Xy5=FsXTwqc-c3NbQ@mail.gmail.com>
-Subject: Re: [PATCH] hwmon: SENSORS_SBTSI should depend on X86
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201216172253.GC238371@rowland.harvard.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 8:31 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Wed, Dec 16, 2020 at 02:46:41PM +0100, Geert Uytterhoeven wrote:
-> > The AMD SB Temperature Sensor Interface (SB-TSI) is only present on AMD
-> > X86 SoCs.  Hence add a dependency on X86, to prevent asking the user
-> > about this driver when configuring a kernel without AMD X86 platform
-> > support.
+16.12.2020 20:22, Alan Stern пишет:
+> On Wed, Dec 16, 2020 at 08:09:51PM +0300, Dmitry Osipenko wrote:
+>> 16.12.2020 19:45, Alan Stern пишет:
+>>> On Tue, Dec 15, 2020 at 11:21:12PM +0300, Dmitry Osipenko wrote:
+>>>> The ChipIdea driver now provides USB2 host mode support for NVIDIA Tegra
+>>>> SoCs. The ehci-tegra driver is obsolete now, remove it.
+>>>>
+>>>> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+>>>> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+>>>> Tested-by: Peter Geis <pgwipeout@gmail.com>
+>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>> ---
+>>>>  drivers/usb/host/Kconfig      |   9 -
+>>>>  drivers/usb/host/Makefile     |   1 -
+>>>>  drivers/usb/host/ehci-tegra.c | 604 ----------------------------------
+>>>>  3 files changed, 614 deletions(-)
+>>>>  delete mode 100644 drivers/usb/host/ehci-tegra.c
+>>>>
+>>>> diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+>>>> index 31e59309da1f..9c9e6ff9c43a 100644
+>>>> --- a/drivers/usb/host/Kconfig
+>>>> +++ b/drivers/usb/host/Kconfig
+>>>> @@ -266,15 +266,6 @@ config USB_EHCI_HCD_AT91
+>>>>  	  Enables support for the on-chip EHCI controller on
+>>>>  	  Atmel chips.
+>>>>  
+>>>> -config USB_EHCI_TEGRA
+>>>> -	tristate "NVIDIA Tegra HCD support"
+>>>> -	depends on ARCH_TEGRA
+>>>> -	select USB_EHCI_ROOT_HUB_TT
+>>>> -	select USB_TEGRA_PHY
+>>>> -	help
+>>>> -	  This driver enables support for the internal USB Host Controllers
+>>>> -	  found in NVIDIA Tegra SoCs. The controllers are EHCI compliant.
+>>>
+>>> For people upgrading from earlier kernel versions, do you think it
+>>> would help to add a pointer here telling them which Kconfig option
+>>> they need to enable now in order to get this functionality?
+>>
+>> Could you please clarify what do you mean by the "pointer"?
+> 
+> See the entries for USB_CNS3XXX_EHCI, USB_OCTEON_EHCI, 
+> USB_OHCI_HCD_OMAP3, and USB_OHCI_SH in that Kconfig file for examples.
 
-Sorry, I think there is some confusion. AMD SoC is a 'remote sensor',
-or the client, whereas the device using the SB-TSI hwmon driver is the
-master.
-In industry, a typical scenario is ARM-based Board Management
-Controllers (BMCs) using SB-TSI to monitor the host CPU temperature.
-
-> >
-> > Fixes: e7bb1a2ab8c4b156 ("hwmon: (sbtsi) Add basic support for SB-TSI sensors")
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> Makes sense. Applied.
->
-> Thanks,
-> Guenter
->
-> > ---
-> >  drivers/hwmon/Kconfig | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> > index 1ecf697d8d99b70c..63d28f98108d4bb5 100644
-> > --- a/drivers/hwmon/Kconfig
-> > +++ b/drivers/hwmon/Kconfig
-> > @@ -1536,6 +1536,7 @@ config SENSORS_SL28CPLD
-> >  config SENSORS_SBTSI
-> >       tristate "Emulated SB-TSI temperature sensor"
-> >       depends on I2C
-> > +     depends on X86 || COMPILE_TEST
-> >       help
-> >         If you say yes here you get support for emulated temperature
-> >         sensors on AMD SoCs with SB-TSI interface connected to a BMC device.
-> > --
-> > 2.25.1
-> >
-
-
-
--- 
-Regards,
-Kun
+I'll point the deprecated USB_EHCI_TEGRA to the CI driver in a v2, thanks.
