@@ -2,62 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BEB32DBF0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B03192DBEF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgLPKxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:53:38 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:35676 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726015AbgLPKxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:53:37 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 828091A00A5;
-        Wed, 16 Dec 2020 11:52:51 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 705491A0A5F;
-        Wed, 16 Dec 2020 11:52:47 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0E577402F3;
-        Wed, 16 Dec 2020 11:52:40 +0100 (CET)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: imx-hdmi: Fix warning of the uninitialized variable ret
-Date:   Wed, 16 Dec 2020 18:44:24 +0800
-Message-Id: <1608115464-18710-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725838AbgLPKpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 05:45:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgLPKpo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 05:45:44 -0500
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE39C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:45:03 -0800 (PST)
+Received: by mail-vs1-xe31.google.com with SMTP id h6so12664964vsr.6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 02:45:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j4w2SA5vPpjO5u4tlq8Tsp94JRz6/I+Ka0PxbTOuLso=;
+        b=cfvgrCVgPuNBVhsKCsTpEL1k/uCT97mg050CjQLRuVWf7JMltHg8VjQvXSREDLcyZx
+         Ke64bF84W5J7QAGc3WEvd/DBYcNZwvKxxNTt/h5YtwI91om5FI2tsT2bs98TtM+dOe/d
+         lCQMnizyBbthfwLP13QycbJj431UFsb9AN5bfM8rLl3mrgvjKTQfR4yy17v54Rh8rln+
+         ZXJ9eYqzusM2PTkhnJ/jEZCNkRQQA+wVZ2qyjA22eBzAOX4Unrwjp8oR/e+R+3B885su
+         3Q7fhe/SdyIUIGRDDrxv5Yfm+eOiiYDqzqADICX0dh/IIjoo8zBBvgK2hv5jfvLhaAnv
+         gQMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j4w2SA5vPpjO5u4tlq8Tsp94JRz6/I+Ka0PxbTOuLso=;
+        b=KRHjSG85IzWgj4rh+CnmIUGkjHBPycqIoF6JhUmg1Z8jrhxT4E1Jh69nX58ITfNhYy
+         7ZjHJn4xg+QYX7t4Znjp5gNA6yTZavYN9ZzQNPiGs6GtE/mgcXSoM4NBzfeJy4E4Fu56
+         t+uGrNGk0n2zyOddI9Rxvw+KpaHvNTa6id/Da39Rrw7ezIe1MoFdbPVsDs584HPT1UWX
+         R+S+MJS49rySZCovNB6terTpRX6FQLDGKgphnbgAijfPA0oulUeyRofI6W76TfSyhYNc
+         gH3cLHoIzpr0FdcSSdqL7XpMPZAYdtNGPe80fLHiJJEqAkkvwyY+F3N0tUcPUn6DtDxL
+         ibBA==
+X-Gm-Message-State: AOAM531ADC/Y+7Gg8QS/7StBNCdKiRDI7RguPjOSKdYVJKzMSeXNteww
+        M2/rhVw2VHK2rL5bFL+sldvXcRbLRszk088HasK1CA==
+X-Google-Smtp-Source: ABdhPJy3B48WTkBRNGWmS9WFf7NJdY1I0lQO7A89L/9gNufMHNDNc4jsr+zcHAfIGie4X/bZ2j/u5bD165YzLHymoCI=
+X-Received: by 2002:a05:6102:2127:: with SMTP id f7mr32024818vsg.48.1608115502915;
+ Wed, 16 Dec 2020 02:45:02 -0800 (PST)
+MIME-Version: 1.0
+References: <20201207115753.21728-1-bbudiredla@marvell.com>
+ <20201207115753.21728-2-bbudiredla@marvell.com> <CAPDyKFqQwvG6vkwqPZutXjdV0hVrKp3MiqRRMZZ4C8Zr2Of9rg@mail.gmail.com>
+ <CY4PR1801MB2070FD9FB1AB7166651198D1DEC60@CY4PR1801MB2070.namprd18.prod.outlook.com>
+ <CAPDyKFqMsMdqw=Uwzby0tNNvPieRT2i6PAmHu_9XRRVy1MykuQ@mail.gmail.com> <202012151232.843EB2CB49@keescook>
+In-Reply-To: <202012151232.843EB2CB49@keescook>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 16 Dec 2020 11:44:26 +0100
+Message-ID: <CAPDyKFp=T2uqWsSTij_K=yXSffpPOKcWTqNrVxfatkncCZzaMQ@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH 1/2] mmc: Support kmsg dumper based on pstore/blk
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Bhaskara Budiredla <bbudiredla@marvell.com>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: shengjiu wang <shengjiu.wang@nxp.com>
+On Tue, 15 Dec 2020 at 21:37, Kees Cook <keescook@chromium.org> wrote:
+>
+> On Tue, Dec 15, 2020 at 12:42:58PM +0100, Ulf Hansson wrote:
+> > In principle, for non atomic path, I would rather see that the pstore
+> > file system should be able to be mounted on top of any generic block
+> > device partition - without requiring the block device driver to
+> > implement specific pstore ops.
+> > [...]
+> > Exactly. That's why I wonder if it's really worth it to support the
+> > panic writes at all.
+>
+> pstore/blk already provides the generic hooking -- but it can't do
+> the panic write part (which that's very device/driver-specific). The
+> design was for individual backing devices to provide that directly
+> (which would needed read/write support too). And for those that don't
+> have panic/read/write support, they could still use the generic hooks
+> but they wouldn't be able to reliably (or at all?) catch panics (just
+> console writes, ftrace, pmsg, etc).
 
-When condition ((hdmi_out && hdmi_in) || (!hdmi_out && !hdmi_in))
-is true, then goto fail, the uninitialized variable ret will be
-returned.
+I understand the motivation behind pstore's hook for panic-writes.
+It's a special thing and perhaps it's easier to support this via a
+specific hook, rather than adopting the regular block device request
+path to cope with some special I/O request. On the other hand, in the
+discussion I have had with Bhaskara, I have pointed out several severe
+implications for mmc to support these panic writes (and believe me,
+there are even more than those I have brought up). So I am starting to
+think that, perhaps there is a better option.
 
-Signed-off-by: shengjiu wang <shengjiu.wang@nxp.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
- sound/soc/fsl/imx-hdmi.c | 1 +
- 1 file changed, 1 insertion(+)
+In any case, I didn't catch *why* pstore needs to force block device
+drivers to implement specific pstore hooks to support the pstore file
+system. I don't think this is the way it should work, for many
+reasons. The pstore file system should be able to be extended, to
+support the regular block device request path, no?
 
-diff --git a/sound/soc/fsl/imx-hdmi.c b/sound/soc/fsl/imx-hdmi.c
-index 2c2a76a71940..ede4a9ad1054 100644
---- a/sound/soc/fsl/imx-hdmi.c
-+++ b/sound/soc/fsl/imx-hdmi.c
-@@ -164,6 +164,7 @@ static int imx_hdmi_probe(struct platform_device *pdev)
- 
- 	if ((hdmi_out && hdmi_in) || (!hdmi_out && !hdmi_in)) {
- 		dev_err(&pdev->dev, "Invalid HDMI DAI link\n");
-+		ret = -EINVAL;
- 		goto fail;
- 	}
- 
--- 
-2.17.1
-
+Kind regards
+Uffe
