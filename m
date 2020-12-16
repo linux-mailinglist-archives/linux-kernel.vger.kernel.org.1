@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC6C2DBAD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 06:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597862DBF77
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:32:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725824AbgLPFoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 00:44:11 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:42278 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725274AbgLPFoL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 00:44:11 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BG5ecQf172932;
-        Wed, 16 Dec 2020 05:43:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=T8VJpldCNi+sj6YW08esJ7EhQP7RkcOTlE+MlH6mYLs=;
- b=K5A3QJWodrZBH11uy941tRO6n38iCfy9Czcb7m/MrxhOmWZ3LtNOzj5vrynmZILAFi3C
- o/hBnV8lvTjP95xcdUi2MQqBPRED1ZX8HrGP3mgTO0VaKk49d0oxJdEXrzCmn2WpsevR
- +TKf3vheZaSiHrSF24Jt2/I39qoaraAeIkdbVXRS0prYxUdje7qgYmuOn2TTXv4HXzjE
- zeKrcD4mKuaI2/OXeWyhr/soaSXYHVvz+tqfcvXgUaPqICHwWGgcuyiRquHStTwcTb0m
- 7ct+CSzEd6nyCOeJfd9JtpUa/liMsJ9oJqj6TuBsp9LcHVyhraWlR1OYP0ij4CGAf2ZV 7g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 35cn9re4ux-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Dec 2020 05:43:13 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BG5f9TG060072;
-        Wed, 16 Dec 2020 05:43:13 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 35e6js8pa1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Dec 2020 05:43:13 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BG5hAp8001000;
-        Wed, 16 Dec 2020 05:43:10 GMT
-Received: from [10.159.136.92] (/10.159.136.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 15 Dec 2020 21:43:10 -0800
-Subject: Re: [RFC PATCH v3 8/9] md: Implement ->corrupted_range()
-To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
-        darrick.wong@oracle.com, david@fromorbit.com, hch@lst.de,
-        song@kernel.org, rgoldwyn@suse.de, qi.fuli@fujitsu.com,
-        y-goto@fujitsu.com
-References: <20201215121414.253660-1-ruansy.fnst@cn.fujitsu.com>
- <20201215121414.253660-9-ruansy.fnst@cn.fujitsu.com>
-From:   Jane Chu <jane.chu@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <100fcdf4-b2fe-d77d-e95f-52a7323d7ee1@oracle.com>
-Date:   Tue, 15 Dec 2020 21:43:08 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1725535AbgLPLcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 06:32:15 -0500
+Received: from m12-11.163.com ([220.181.12.11]:60839 "EHLO m12-11.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725274AbgLPLcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 06:32:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=BBKRI
+        TNFFT+q7yGvwOTx4/tWHfQzcYeyta5d1Cb3V68=; b=fB/bHrF7W+wEz0U0iVXbW
+        ATCoPSFOK67Iehdh5ukdjw4pGkuhbuE8YfAlOWVvLKt+5hznZ0U6IHJGPO1vabp0
+        WbnGtiCpykUl6cS9IIOgcP7ZD6Qo9+8RUjfi9347z63Wx8y5d/vcgT0OeTN6CIWH
+        xKzmE/1w/+8oGAFZC+kNDM=
+Received: from localhost (unknown [101.86.213.93])
+        by smtp7 (Coremail) with SMTP id C8CowACnLq+NoNlfePyaDw--.2553S2;
+        Wed, 16 Dec 2020 13:52:13 +0800 (CST)
+Date:   Wed, 16 Dec 2020 13:52:13 +0800
+From:   Hui Su <sh_def@163.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     sh_def@163.com
+Subject: [PATCH] mm/memcontrol: remove the unnecessary rcu_read_[un]lock
+Message-ID: <20201216055213.GA63520@rlk>
 MIME-Version: 1.0
-In-Reply-To: <20201215121414.253660-9-ruansy.fnst@cn.fujitsu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 bulkscore=0
- malwarescore=0 adultscore=0 mlxlogscore=999 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012160035
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- impostorscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0
- malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012160035
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: C8CowACnLq+NoNlfePyaDw--.2553S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Kw1xXr4kJw1kKr4UAr1UJrb_yoW8GFW3pF
+        sxKa47A398Xw1Ygr1Uua1Dur1xA3Wag3y7Zr1UJw48ZF13X3sag34UKF1fZr45ZFyIvrs8
+        ZrW5twnrAw42q3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UjPfdUUUUU=
+X-Originating-IP: [101.86.213.93]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiIA38X10TCh3tsAAAsK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/15/2020 4:14 AM, Shiyang Ruan wrote:
->   #ifdef CONFIG_SYSFS
-> +int bd_disk_holder_corrupted_range(struct block_device *bdev, loff_t off,
-> +				   size_t len, void *data);
->   int bd_link_disk_holder(struct block_device *bdev, struct gendisk *disk);
->   void bd_unlink_disk_holder(struct block_device *bdev, struct gendisk *disk);
->   #else
-> +int bd_disk_holder_corrupted_range(struct block_device *bdev, loff_t off,
+the rcu_read_lock and rcu_read_unlock is unnecessary in:
+	lock_page_lruvec()
+	lock_page_lruvec_irq()
+	lock_page_lruvec_irqsave()
 
-Did you mean
-   static inline int bd_disk_holder_corrupted_range(..
-?
+Signed-off-by: Hui Su <sh_def@163.com>
+---
+ mm/memcontrol.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-thanks,
--jane
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e3c7ca7dc174..a19f820e8a3f 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1396,10 +1396,8 @@ struct lruvec *lock_page_lruvec(struct page *page)
+ 	struct lruvec *lruvec;
+ 	struct pglist_data *pgdat = page_pgdat(page);
+ 
+-	rcu_read_lock();
+ 	lruvec = mem_cgroup_page_lruvec(page, pgdat);
+ 	spin_lock(&lruvec->lru_lock);
+-	rcu_read_unlock();
+ 
+ 	lruvec_memcg_debug(lruvec, page);
+ 
+@@ -1411,10 +1409,8 @@ struct lruvec *lock_page_lruvec_irq(struct page *page)
+ 	struct lruvec *lruvec;
+ 	struct pglist_data *pgdat = page_pgdat(page);
+ 
+-	rcu_read_lock();
+ 	lruvec = mem_cgroup_page_lruvec(page, pgdat);
+ 	spin_lock_irq(&lruvec->lru_lock);
+-	rcu_read_unlock();
+ 
+ 	lruvec_memcg_debug(lruvec, page);
+ 
+@@ -1426,10 +1422,8 @@ struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
+ 	struct lruvec *lruvec;
+ 	struct pglist_data *pgdat = page_pgdat(page);
+ 
+-	rcu_read_lock();
+ 	lruvec = mem_cgroup_page_lruvec(page, pgdat);
+ 	spin_lock_irqsave(&lruvec->lru_lock, *flags);
+-	rcu_read_unlock();
+ 
+ 	lruvec_memcg_debug(lruvec, page);
+ 
+-- 
+2.29.2
 
-> +				   size_t len, void *data)
-> +{
-> +	return 0;
-> +}
->   static inline int bd_link_disk_holder(struct block_device *bdev,
->   				      struct gendisk *disk)
