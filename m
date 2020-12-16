@@ -2,72 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA312DBF57
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5A52DBF5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725817AbgLPL1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 06:27:03 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:42866 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725274AbgLPL1C (ORCPT
+        id S1725844AbgLPL1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 06:27:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725824AbgLPL1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 06:27:02 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kpUwb-0003B8-76; Wed, 16 Dec 2020 11:26:09 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
+        Wed, 16 Dec 2020 06:27:24 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9F5C06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 03:26:44 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id x20so27894767lfe.12
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 03:26:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A1HTWkrMiCWdXjch8Wdo2LEnpiN677jiCEapc6u0XM0=;
+        b=VubTArQyVKuBy9L0rcU2Q1ai7i/hMZSI0M3LocyMZkbn40L9Pa4IE3DCjUd3BePaJk
+         HIPrW2ucNhY60O1nQ+wubUIaRpxry4wVQkGLP1LMST3busHi10lTW3pOvVWG13o5r6a6
+         h+tU2Gxt3mbmvTTsnjz6MZkurzo93qEug9iioXyMdQ0jHJGUS/29ssxKUB0mzkx+aGYk
+         QjGN5XJzxIlC5dc/tL/ZoaXGJMHkgpTYh3Gq1TKLPnJhAHoYNAqdWwweISe+/QbkUkZH
+         4Y9H8NOwsLkfLLN7A/TBdlNmKUGweFK+vUwFI4z5ZwWoxObXUjq7aE62sRtn8VEvivD9
+         kHjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A1HTWkrMiCWdXjch8Wdo2LEnpiN677jiCEapc6u0XM0=;
+        b=j8J3bkTMNTwI74b6meBUjlH39eFHqdoeGOgT8bNw0ayFhXA+6HdSwPySO7I06Mg7oP
+         yz/KQ0UtTjxBlz0BOQvwVPP+oqDFTHcS1pkDX9ZWU0Xu7EXtPr4gy8+wZYY0XR263Gv1
+         5t8cvLMPZe92kD4tHUmCSsg8AJc7vp1UYq3J4RHkqk/pA6njCUw5a+iM++B1j0IZbWXK
+         j6cymPcWXi0wro/mLI6B6BHembDMzO0t6H8lnk/3GaSNkbt19G4/SDRk/4JTiOnf6ehJ
+         xsrYa5nEcZXml18ZX/op5HX13EpqAXmMzyjhYPHXav7++oegDZcVtjSq5r6+lJ+lKf2V
+         Yg6Q==
+X-Gm-Message-State: AOAM532uQwaea0el1uSmGashxhPRebY55O32fYFBzB2vDb4s1Zg2Tb01
+        8OWP23UIB1nqvdjNh9psLTHyrvgKe29K5wGIZ0E=
+X-Google-Smtp-Source: ABdhPJzk/F6xIDInXWPZPHeXBh5fRXip+E/mflmi6fxiAaY9HM5oFMwVy4lMd60HPoOAvl0PjA0S0EIA+xOtADyK5iA=
+X-Received: by 2002:a2e:8416:: with SMTP id z22mr14917310ljg.347.1608118002624;
+ Wed, 16 Dec 2020 03:26:42 -0800 (PST)
+MIME-Version: 1.0
+References: <1608115464-18710-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1608115464-18710-1-git-send-email-shengjiu.wang@nxp.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 16 Dec 2020 08:26:31 -0300
+Message-ID: <CAOMZO5AgZhJL-wPXwAt0J=fCt+RA-Toj56X6t9W+HaWuat5VMg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: imx-hdmi: Fix warning of the uninitialized variable ret
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
         Mark Brown <broonie@kernel.org>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: atmel: fix spelling mistake in Kconfig "programable" -> "programmable"
-Date:   Wed, 16 Dec 2020 11:26:08 +0000
-Message-Id: <20201216112608.11385-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi Shengjiu,
 
-There are a couple of spelling mistakes in the Kconfig help text. Fix them.
+On Wed, Dec 16, 2020 at 7:52 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
+>
+> From: shengjiu wang <shengjiu.wang@nxp.com>
+>
+> When condition ((hdmi_out && hdmi_in) || (!hdmi_out && !hdmi_in))
+> is true, then goto fail, the uninitialized variable ret will be
+> returned.
+>
+> Signed-off-by: shengjiu wang <shengjiu.wang@nxp.com>
+> Reported-by: kernel test robot <lkp@intel.com>
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/atmel/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks for the fix.
 
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 142373ec411a..9fe9471f4514 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -143,7 +143,7 @@ config SND_MCHP_SOC_SPDIFTX
- 	  - sama7g5
- 
- 	  This S/PDIF TX driver is compliant with IEC-60958 standard and
--	  includes programable User Data and Channel Status fields.
-+	  includes programmable User Data and Channel Status fields.
- 
- config SND_MCHP_SOC_SPDIFRX
- 	tristate "Microchip ASoC driver for boards using S/PDIF RX"
-@@ -157,5 +157,5 @@ config SND_MCHP_SOC_SPDIFRX
- 	  - sama7g5
- 
- 	  This S/PDIF RX driver is compliant with IEC-60958 standard and
--	  includes programable User Data and Channel Status fields.
-+	  includes programmable User Data and Channel Status fields.
- endif
--- 
-2.29.2
+This should have:
 
+Fixes: 6a5f850aa83a ("ASoC: fsl: Add imx-hdmi machine driver")
+
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
