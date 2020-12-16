@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BEC32DBE70
+	by mail.lfdr.de (Postfix) with ESMTP id EA9A82DBE71
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726115AbgLPKMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:12:53 -0500
-Received: from ozlabs.org ([203.11.71.1]:52325 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725820AbgLPKMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:12:53 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CwrXB5RnSz9sRR;
-        Wed, 16 Dec 2020 21:12:10 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1608113530;
-        bh=yzoNqsbBPqHVMGuc7fEiyKdvBuLaky4c9Qyht2Q5Nyw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=prL2zdS/1kKKPSc8GG4We7PqAMEih71iXNtiFoB/6bdZ3UK2ZUmryYdvwXjmkHMMF
-         3Z0pTj2Ocrv9sRLaKHQpOKAslTOsOBwf2OLVVcR1LkSsJQ0vaHc5ZiXN0cxNtiuE+w
-         ujefYMm2C5D9lTANISt6C2nuLtRtAWxCyTPn5T1mDPNmp7Lcdnp5HPh1HZNng6j5HA
-         MfPeCaPVbM4oqw4yq7rLkUTaI2dwEvOBeZ0PU70MF/I5wGD+sNBEnYGqjECqozAWal
-         PPF4oW44Gl9ATyAIIVQA+kHC5fEAO5L1099fa8yVF4UANUNcLXCA0lIW5B3suscuVI
-         ZSgIsv7mOX7XA==
-Date:   Wed, 16 Dec 2020 21:12:09 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the vhost tree
-Message-ID: <20201216211209.74194c37@canb.auug.org.au>
+        id S1726182AbgLPKNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 05:13:32 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:38790 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgLPKNb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 05:13:31 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1608113570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8l/k1NyC4y+S+vQeMziqtqXyO59IG2+OXfCkYnccytg=;
+        b=KONxMJ/oL1ggPZgiGfFkH4qLif28wMXzurVyV25tCXX2ElE9IkyTt8XzTNDDnR9ZuFpTAQ
+        Vq75GqlsLREuX0FzfvpkXW+4losXBUJWL0PQtBX+E2A5mAGoDB/xJJEiqnLbvpLaFlLb4G
+        z2gv9rMcLOl11BRdE9RG8A3Q9C1gmR1/Mn33bsIJqTaej6nhW+x383I16FYI9p2ynUKMgC
+        CaV8luNEq69NhPjHxApNCwSvPHmhPTmt3aLWch0VY2pESBICldJRBqlroFReTaiWgD/dK6
+        YkpxYQVGrm3A7dRakgQpgkl+AE+I5LO7qATsNRQ6xH0BJj35LDAdEzKGu2nG4g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1608113570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8l/k1NyC4y+S+vQeMziqtqXyO59IG2+OXfCkYnccytg=;
+        b=SntMte3IJ+VAsa+CoVr+t7JbxGXjlO8ZITirmd8xUrEA58CadtTua4bWa6eghoKq4gR0qa
+        asi2FUy9cWHfzOCQ==
+To:     "shenkai \(D\)" <shenkai8@huawei.com>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        hewenliang4@huawei.com, hushiyuan@huawei.com,
+        luolongjun@huawei.com, hejingxian@huawei.com
+Subject: Re: [PATCH] use x86 cpu park to speedup smp_init in kexec situation
+In-Reply-To: <f2a4d172-fa17-9f98-ad8f-d69f84ad0df5@huawei.com>
+References: <87eejqu5q5.fsf@nanos.tec.linutronix.de> <f2a4d172-fa17-9f98-ad8f-d69f84ad0df5@huawei.com>
+Date:   Wed, 16 Dec 2020 11:12:49 +0100
+Message-ID: <87v9d2rrdq.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Zhh=QpUcE5iI94olY/Ceetd";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Zhh=QpUcE5iI94olY/Ceetd
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Kai,
 
-Hi all,
+On Wed, Dec 16 2020 at 16:45, shenkai wrote:
+> =E5=9C=A8 2020/12/16 5:20, Thomas Gleixner =E5=86=99=E9=81=93:
+>>
+>>
+> Thanks for your and Andy's precious comments. I would like to take a try =
+on
+>
+> reconstructing this patch to make it more decent and generic.
 
-Commits
+>> It would be interesting to see the numbers just with play_dead() using
+>> hlt() or mwait(eax=3D0, 0) for the kexec case and no other change at all.
 
-  4db90b5a8281 ("ack! virtio_ring: Fix two use after free bugs")
-  400228b7e0c4 ("ack! virtio_net: Fix error code in probe()")
-  35fc22b6228d ("ack! virtio_ring: Cut and paste bugs in vring_create_virtq=
-ueue_packed()")
+Can you please as a first step look into this and check if the time
+changes?
 
-are missing a Signed-off-by from their author and committer.
+Thanks,
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Zhh=QpUcE5iI94olY/Ceetd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Z3XkACgkQAVBC80lX
-0GyMZwf+MYNCMCK1Sx/Z7k6iMFNgArSJWcjH7WkiaupnhwXjESdwPuzgp0ZeTgim
-gPr4mc0Z65jZxAH9TTI5F/jx3JrvyvX8K5IXIMF6Xn0AQzphi9AgnR1ox2J1j5va
-1ZITfAVxIPcnPRFBhIgzKUYrkJV2X0NUgJP32UTu7SDwjMzBNf+eQ/EynP+fDljg
-da3mICOSU6w0akpYW59qrSUFQHGklqcnbRvehF90iBUesV/O+FVhcV2ROasCqkMf
-1Rssbrg/ICFQTg5Bjaa+zkGjY22Clt+Vc8++EiIJJ+ltdOIjBYizAZcRGdaQgEBb
-jpv6xN2erUhqBvtd9N3I4ix8zHtKbQ==
-=INJ2
------END PGP SIGNATURE-----
-
---Sig_/Zhh=QpUcE5iI94olY/Ceetd--
+        tglx
