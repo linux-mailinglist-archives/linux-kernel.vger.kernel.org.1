@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDBD2DBE39
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC2B2DBE4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbgLPKGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:06:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726016AbgLPKGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:06:51 -0500
-Date:   Wed, 16 Dec 2020 11:07:12 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1608113171;
-        bh=e6bhXWnqJJogoI0fJCOUs72QqeMzbdl+y1fGMDoIG+s=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U1Lg8Xy+6EY/Q10jzZz420/6yyvgMxkp+yn1o4qsFtReokZFzZcAwPdjj7q0ghwsg
-         PeXiV0Od2uhle3mid4hX5z7s4hTsvmZoig7rIMcmGeDm5ZpNuqkfpmWTFK4np734pv
-         5HencNwrqxRi7pVxEWy4uvE/7CbUuMiJD81ln92U=
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Daejun Park <daejun7.park@samsung.com>
-Cc:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        id S1726250AbgLPKI4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Dec 2020 05:08:56 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:32392 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726104AbgLPKI4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 05:08:56 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mtapsc-1-DQ7o0olHPkKE9tyKf8G5Zg-1; Wed, 16 Dec 2020 10:07:17 +0000
+X-MC-Unique: DQ7o0olHPkKE9tyKf8G5Zg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 16 Dec 2020 10:07:17 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 16 Dec 2020 10:07:17 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Sam Ravnborg' <sam@ravnborg.org>, Arnd Bergmann <arnd@kernel.org>
+CC:     Guo Ren <guoren@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        "Marco Elver" <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Elena Reshetova" <elena.reshetova@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-Subject: Re: [PATCH v14 0/3] scsi: ufs: Add Host Performance Booster Support
-Message-ID: <X9ncUJH/vHO7Luqi@kroah.com>
-References: <CGME20201215082235epcms2p88c9d8fd4dc773f6a4901dab241063306@epcms2p5>
- <20201216024444epcms2p5e69281911dd675306c473df3d2cef8b2@epcms2p5>
+        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: RE: [PATCH 1/2] futex: mark futex_detect_cmpxchg() as 'noinline'
+Thread-Topic: [PATCH 1/2] futex: mark futex_detect_cmpxchg() as 'noinline'
+Thread-Index: AQHW0xooHlKGsPugJ0Clc+udYv6uHan5fdZg
+Date:   Wed, 16 Dec 2020 10:07:17 +0000
+Message-ID: <56daed1d2cbd40fea0a7170c45081cf7@AcuMS.aculab.com>
+References: <20190307091514.2489338-1-arnd@arndb.de>
+ <X9S28TcEXd2zghzp@elver.google.com> <87czzeg5ep.fsf@nanos.tec.linutronix.de>
+ <CAK8P3a0LWjNgwm605TM4dKCsn078X7NC3sEfdBSgcMNEocQ5iA@mail.gmail.com>
+ <CAJF2gTRLEbBfZJ7Y6UNOMq-cwG5OYRW=+8Pfauz6v6R8ntBjYA@mail.gmail.com>
+ <CAK8P3a3+WaQNyJ6Za2qfu6=0mBgU1hApnRXrdp1b1=P7wwyRUg@mail.gmail.com>
+ <20201215193800.GA1098247@ravnborg.org>
+In-Reply-To: <20201215193800.GA1098247@ravnborg.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216024444epcms2p5e69281911dd675306c473df3d2cef8b2@epcms2p5>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 11:44:44AM +0900, Daejun Park wrote:
-> NAND flash memory-based storage devices use Flash Translation Layer (FTL)
-> to translate logical addresses of I/O requests to corresponding flash
-> memory addresses. Mobile storage devices typically have RAM with
-> constrained size, thus lack in memory to keep the whole mapping table.
-> Therefore, mapping tables are partially retrieved from NAND flash on
-> demand, causing random-read performance degradation.
+From: Sam Ravnborg
+> Sent: 15 December 2020 19:38
 > 
-> To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
-> (Host Performance Booster) which uses host system memory as a cache for the
-> FTL mapping table. By using HPB, FTL data can be read from host memory
-> faster than from NAND flash memory. 
+> Hi Arnd,
 > 
-> The current version only supports the DCM (device control mode).
-> This patch consists of 3 parts to support HPB feature.
-> 
-> 1) HPB probe and initialization process
-> 2) READ -> HPB READ using cached map information
-> 3) L2P (logical to physical) map management
-> 
-> In the HPB probe and init process, the device information of the UFS is
-> queried. After checking supported features, the data structure for the HPB
-> is initialized according to the device information.
-> 
-> A read I/O in the active sub-region where the map is cached is changed to
-> HPB READ by the HPB.
-> 
-> The HPB manages the L2P map using information received from the
-> device. For active sub-region, the HPB caches through ufshpb_map
-> request. For the in-active region, the HPB discards the L2P map.
-> When a write I/O occurs in an active sub-region area, associated dirty
-> bitmap checked as dirty for preventing stale read.
-> 
-> HPB is shown to have a performance improvement of 58 - 67% for random read
-> workload. [1]
-> 
-> We measured the total start-up time of popular applications and observed
-> the difference by enabling the HPB.
-> Popular applications are 12 game apps and 24 non-game apps. Each target
-> applications were launched in order. The cycle consists of running 36
-> applications in sequence. We repeated the cycle for observing performance
-> improvement by L2P mapping cache hit in HPB.
-> 
-> The Following is experiment environment:
->  - kernel version: 4.4.0 
->  - UFS 2.1 (64GB)
-> 
-> Result:
-> +-------+----------+----------+-------+
-> | cycle | baseline | with HPB | diff  |
-> +-------+----------+----------+-------+
-> | 1     | 272.4    | 264.9    | -7.5  |
-> | 2     | 250.4    | 248.2    | -2.2  |
-> | 3     | 226.2    | 215.6    | -10.6 |
-> | 4     | 230.6    | 214.8    | -15.8 |
-> | 5     | 232.0    | 218.1    | -13.9 |
-> | 6     | 231.9    | 212.6    | -19.3 |
-> +-------+----------+----------+-------+
+> On Tue, Dec 15, 2020 at 12:26:10PM +0100, Arnd Bergmann wrote:
+> > On Tue, Dec 15, 2020 at 7:09 AM Guo Ren <guoren@kernel.org> wrote:
+...
+> > - Disable SMP support for sun4m/sun4d. From the historic git
+> >   tree, it's unclear how well this ever worked, and very few machines
+> >   of this class ever existed
+> Yeah, I have collection of sparc32 machines that I played around with
+> once. Including one sun4d that I brought from a friendly Linux fellow in
+> the UK. But somehow I lost interest as this is all very nice machines
+> but not useful for anything real work.
 
-I feel this was burried in the 00 email, shouldn't it go into the 01
-commit changelog so that you can see this?
+ICL made a few SMP sparc32 systems.
+I think the first ones used the original Cypress cpu running at 25MHz.
+(I'm fairly sure these were SMP-capable, the later 40MHz definitely were.)
+These were full sized VMEbus beasts.
+Somewhere I've got a 32MByte memory board - over a square foot of board.
+The memory is all 64k by 1 with all the pins on one edge and the chips vertical.
+Really looks as though it should glow red and be used for cooking toast.
+Even with 4 of those you're not going to run anything modern!
 
-But why does the "cycle" matter here?
+There were also some later mbus+sbus systems with dual sbus!
+Designed by Fujitsu.
 
-Can you run a normal benchmark, like fio, on here so we can get some
-numbers we know how to compare to other systems with, and possible
-reproduct it ourselves?  I'm sure fio will easily show random read
-performance increases, right?
+None of these ever ran solaris.
 
-thanks,
+	David
 
-greg k-h
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
