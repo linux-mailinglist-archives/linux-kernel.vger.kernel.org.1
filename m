@@ -2,137 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19E12DC6E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C1D2DC730
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731827AbgLPTJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 14:09:17 -0500
-Received: from cheetah.elm.relay.mailchannels.net ([23.83.212.34]:53406 "EHLO
-        cheetah.elm.relay.mailchannels.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726665AbgLPTJR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 14:09:17 -0500
-X-Greylist: delayed 128273 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Dec 2020 14:09:16 EST
-X-Sender-Id: dreamhost|x-authsender|siddhesh@gotplt.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 895D91818E3;
-        Wed, 16 Dec 2020 19:08:29 +0000 (UTC)
-Received: from pdx1-sub0-mail-a17.g.dreamhost.com (100-105-161-17.trex.outbound.svc.cluster.local [100.105.161.17])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id D3CEA181F3D;
-        Wed, 16 Dec 2020 19:08:28 +0000 (UTC)
-X-Sender-Id: dreamhost|x-authsender|siddhesh@gotplt.org
-Received: from pdx1-sub0-mail-a17.g.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384)
-        by 0.0.0.0:2500 (trex/5.18.11);
-        Wed, 16 Dec 2020 19:08:29 +0000
-X-MC-Relay: Good
-X-MailChannels-SenderId: dreamhost|x-authsender|siddhesh@gotplt.org
-X-MailChannels-Auth-Id: dreamhost
-X-Turn-Eight: 3863ca7e600b5ebe_1608145709194_2758044234
-X-MC-Loop-Signature: 1608145709194:2935019634
-X-MC-Ingress-Time: 1608145709193
-Received: from pdx1-sub0-mail-a17.g.dreamhost.com (localhost [127.0.0.1])
-        by pdx1-sub0-mail-a17.g.dreamhost.com (Postfix) with ESMTP id 8EDEB7F0EF;
-        Wed, 16 Dec 2020 11:08:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=gotplt.org; h=from:to:cc
-        :subject:date:message-id:mime-version:content-transfer-encoding;
-         s=gotplt.org; bh=gT0qKu6lYfWDkNttl7vX1GdFo4g=; b=F1am7u6cT3FQ9U
-        SGmo9YirhAhoArLjGd9rLd7KZen8ZEXJaCHuV4ZdIODQ/h1oFNpxkmRj8SDK71l4
-        JqP7LfQS1Ei9w0SwxGeshuRxfRano3auEhclRqWaQaqzCdjoZRevB9pmXqTq/tdI
-        ndng160CJcCRiXwIRSv/j8DZ9k4UA=
-Received: from rhbox.redhat.com (unknown [1.186.101.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: siddhesh@gotplt.org)
-        by pdx1-sub0-mail-a17.g.dreamhost.com (Postfix) with ESMTPSA id 8E69A7F0F7;
-        Wed, 16 Dec 2020 11:08:25 -0800 (PST)
-X-DH-BACKEND: pdx1-sub0-mail-a17
-From:   Siddhesh Poyarekar <siddhesh@gotplt.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Florian Weimer <fweimer@redhat.com>
-Subject: [PATCH v3] proc: Escape more characters in /proc/mounts output
-Date:   Thu, 17 Dec 2020 00:38:18 +0530
-Message-Id: <20201216190818.342878-1-siddhesh@gotplt.org>
-X-Mailer: git-send-email 2.29.2
+        id S2388796AbgLPTdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 14:33:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388789AbgLPTdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 14:33:12 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608145806;
+        bh=8yE9/zFyt8wA6oqcl+WWejRFxyyoiO5aqyymwhooz7Y=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KPoc3czXDyZ9Moa8xD0i1gNEepmI2KjApi/uE0QCwfyxoDlna55X+OxWvJTy7YnrZ
+         lSWJsYbZik1sDfSYrByZwkJN1VE1+/E/zLLy1WYr+1XApINhc2g03wlk81XGxgr9rP
+         RTA3sc0y9jVOJQ4/foY2gMwTy2NeqyjYv45VKQlxWHd9rNaxsBxWN/CiMgC5MOJvlJ
+         wLdt0aFXpjPzKMkdFF9TWLqbp1MKlxRPIUS3Dnas1gzVq8OznceZEB8yXUDwjAfzqD
+         fwERvJuSO1f9eaTjWGC/himhwWbDixSt/0wrCzWb9NsV53l/2t0KAmzDYk8oir0s0e
+         iijsEn8iVsD5g==
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] net: dsa: qca: ar9331: fix sleeping function called from
+ invalid context bug
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160814580686.32605.8279850342805439211.git-patchwork-notify@kernel.org>
+Date:   Wed, 16 Dec 2020 19:10:06 +0000
+References: <20201211110317.17061-1-o.rempel@pengutronix.de>
+In-Reply-To: <20201211110317.17061-1-o.rempel@pengutronix.de>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux@armlinux.org.uk, kernel@pengutronix.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a filesystem is mounted with a blank name like so:
+Hello:
 
- # mount '' bad -t tmpfs
+This patch was applied to netdev/net.git (refs/heads/master):
 
-its name entry in /proc/mounts is blank causing the line to start
-with a space.
+On Fri, 11 Dec 2020 12:03:17 +0100 you wrote:
+> With lockdep enabled, we will get following warning:
+> 
+>  ar9331_switch ethernet.1:10 lan0 (uninitialized): PHY [!ahb!ethernet@1a000000!mdio!switch@10:00] driver [Qualcomm Atheros AR9331 built-in PHY] (irq=13)
+>  BUG: sleeping function called from invalid context at kernel/locking/mutex.c:935
+>  in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 18, name: kworker/0:1
+>  INFO: lockdep is turned off.
+>  irq event stamp: 602
+>  hardirqs last  enabled at (601): [<8073fde0>] _raw_spin_unlock_irq+0x3c/0x80
+>  hardirqs last disabled at (602): [<8073a4f4>] __schedule+0x184/0x800
+>  softirqs last  enabled at (0): [<80080f60>] copy_process+0x578/0x14c8
+>  softirqs last disabled at (0): [<00000000>] 0x0
+>  CPU: 0 PID: 18 Comm: kworker/0:1 Not tainted 5.10.0-rc3-ar9331-00734-g7d644991df0c #31
+>  Workqueue: events deferred_probe_work_func
+>  Stack : 80980000 80980000 8089ef70 80890000 804b5414 80980000 00000002 80b53728
+>          00000000 800d1268 804b5414 ffffffde 00000017 800afe08 81943860 0f5bfc32
+>          00000000 00000000 8089ef70 819436c0 ffffffea 00000000 00000000 00000000
+>          8194390c 808e353c 0000000f 66657272 80980000 00000000 00000000 80890000
+>          804b5414 80980000 00000002 80b53728 00000000 00000000 00000000 80d40000
+>          ...
+>  Call Trace:
+>  [<80069ce0>] show_stack+0x9c/0x140
+>  [<800afe08>] ___might_sleep+0x220/0x244
+>  [<8073bfb0>] __mutex_lock+0x70/0x374
+>  [<8073c2e0>] mutex_lock_nested+0x2c/0x38
+>  [<804b5414>] regmap_update_bits_base+0x38/0x8c
+>  [<804ee584>] regmap_update_bits+0x1c/0x28
+>  [<804ee714>] ar9331_sw_unmask_irq+0x34/0x60
+>  [<800d91f0>] unmask_irq+0x48/0x70
+>  [<800d93d4>] irq_startup+0x114/0x11c
+>  [<800d65b4>] __setup_irq+0x4f4/0x6d0
+>  [<800d68a0>] request_threaded_irq+0x110/0x190
+>  [<804e3ef0>] phy_request_interrupt+0x4c/0xe4
+>  [<804df508>] phylink_bringup_phy+0x2c0/0x37c
+>  [<804df7bc>] phylink_of_phy_connect+0x118/0x130
+>  [<806c1a64>] dsa_slave_create+0x3d0/0x578
+>  [<806bc4ec>] dsa_register_switch+0x934/0xa20
+>  [<804eef98>] ar9331_sw_probe+0x34c/0x364
+>  [<804eb48c>] mdio_probe+0x44/0x70
+>  [<8049e3b4>] really_probe+0x30c/0x4f4
+>  [<8049ea10>] driver_probe_device+0x264/0x26c
+>  [<8049bc10>] bus_for_each_drv+0xb4/0xd8
+>  [<8049e684>] __device_attach+0xe8/0x18c
+>  [<8049ce58>] bus_probe_device+0x48/0xc4
+>  [<8049db70>] deferred_probe_work_func+0xdc/0xf8
+>  [<8009ff64>] process_one_work+0x2e4/0x4a0
+>  [<800a0770>] worker_thread+0x2a8/0x354
+>  [<800a774c>] kthread+0x16c/0x174
+>  [<8006306c>] ret_from_kernel_thread+0x14/0x1c
+> 
+> [...]
 
- /mnt/bad tmpfs rw,seclabel,relatime,inode64 0 0
+Here is the summary with links:
+  - [v2] net: dsa: qca: ar9331: fix sleeping function called from invalid context bug
+    https://git.kernel.org/netdev/net/c/3e47495fc4de
 
-Further, the name could start with a hash, causing the entry to look
-like this (leading space added so that git does not strip it out):
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
- # /mnt/bad tmpfs rw,seclabel,relatime,inode64 0 0
-
-This breaks getmntent and any code that aims to parse fstab as well as
-/proc/mounts with the same logic since they need to strip leading
-spaces or skip over comments, due to which they report incorrect
-output or skip over the line respectively.
-
-This fix resolves both issues by (1) treating blank names the same way
-as not having a name and (2) by escaping the hash character into its
-octal encoding, which getmntent can then decode and print correctly.
-As far as file parsing is concerned, these are the only additional
-cases to cater for since they cover all characters that have a special
-meaning in that context.
-
-Signed-off-by: Siddhesh Poyarekar <siddhesh@gotplt.org>
-Cc: Florian Weimer <fweimer@redhat.com>
----
-
-Changes from v2:
-- Check for blank name after the string has been duplicated into
-  kernelspace.
-
- fs/namespace.c      | 5 +++++
- fs/proc_namespace.c | 2 +-
- 2 files changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/fs/namespace.c b/fs/namespace.c
-index cebaa3e81794..1c19bf930807 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -3418,6 +3418,11 @@ SYSCALL_DEFINE5(mount, char __user *, dev_name, ch=
-ar __user *, dir_name,
- 	if (IS_ERR(kernel_dev))
- 		goto out_dev;
-=20
-+	if (kernel_dev && !kernel_dev[0]) {
-+		kfree(kernel_dev);
-+		kernel_dev =3D NULL;
-+	}
-+
- 	options =3D copy_mount_options(data);
- 	ret =3D PTR_ERR(options);
- 	if (IS_ERR(options))
-diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
-index e59d4bb3a89e..090b53120b7a 100644
---- a/fs/proc_namespace.c
-+++ b/fs/proc_namespace.c
-@@ -83,7 +83,7 @@ static void show_mnt_opts(struct seq_file *m, struct vf=
-smount *mnt)
-=20
- static inline void mangle(struct seq_file *m, const char *s)
- {
--	seq_escape(m, s, " \t\n\\");
-+	seq_escape(m, s, " \t\n\\#");
- }
-=20
- static void show_type(struct seq_file *m, struct super_block *sb)
---=20
-2.29.2
 
