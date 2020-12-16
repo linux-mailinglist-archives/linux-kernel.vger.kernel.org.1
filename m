@@ -2,126 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5612DB7BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BEE2DB7BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725550AbgLPAQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:16:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26656 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725827AbgLPAQK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 19:16:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608077683;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xRFUtbRbVHAPYmIqUZy/cSKapSSOng2O0tF1oLpP9Zk=;
-        b=OBC7dao8Q68UT7PxemqVDxKmnraUQY420z/Jo1ElWy4Ej3gGtcePDW5+KPsLLr25scSN+h
-        Go7Is0LkHfGQJeIfRBRSbygmPiZrVvuyDdEpDBYvaGIo61NjZn4ry78+vDj9t2ZP7Hih7A
-        yMTYRlgzO5dtC7vW2GsQ3/DpuszjeP8=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-164-iVRAAdrcNm2nCTF7p63qgw-1; Tue, 15 Dec 2020 19:14:42 -0500
-X-MC-Unique: iVRAAdrcNm2nCTF7p63qgw-1
-Received: by mail-oi1-f200.google.com with SMTP id h4so11617313oie.9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:14:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=xRFUtbRbVHAPYmIqUZy/cSKapSSOng2O0tF1oLpP9Zk=;
-        b=pfq85CiZeJhyjdps/6kKHxNp+KfuxTk0tGaDCZMXNr3XLwbHvvVxHUYMAAqBC3l7+v
-         ZZVuxEo1bfua09s5uoL70klKK6BRxKI+e343Yn4gcT/WY1YwYvZj+zcSLFsqODWaIXfj
-         TcTR3kgzULNVWmvUzOy0MsydGy3li6SUbaIcd2cPzz1UqiLJvt4y9poIbOo47GObvbso
-         jvmCJYdEKJbuLT3CQxXQDYcPgUqJ493sRh8xiEYvtm6S9gUwfLnL5R2B/gGaECaO6xQj
-         9Pi3ZBkCVCxuNh+0rGhfifo8BOKA2F1W8sws8fftCk9Ar41rSTjEak3uf4d0VURIH4es
-         p4cQ==
-X-Gm-Message-State: AOAM533OyYONMNqaFUUKamshzBzkvOZm9NbbzGLfH/ExHn8voC4A5Ej+
-        MoGL95tAzuC+9O8hRWpFhOsLth7PhRCaKKN2Hl3q4dJunVNs4XMQXW/jUV7C1/9nUBudpw6io6z
-        ZANxtJWNnWFljXf0X4x7lu2ulvL6yUrF11KMDPBgxB+IIANRYVGjl5B5Lh1Y6gtxngeeUMp8=
-X-Received: by 2002:aca:b707:: with SMTP id h7mr742928oif.46.1608077681756;
-        Tue, 15 Dec 2020 16:14:41 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyDeSqadY1k98PdlhcV2LTuTatlgnzMFiInq9cb7PnkSNMUJD3RfxUutcmT/C+V7IenHOiMoA==
-X-Received: by 2002:aca:b707:: with SMTP id h7mr742917oif.46.1608077681492;
-        Tue, 15 Dec 2020 16:14:41 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id j126sm33761oib.13.2020.12.15.16.14.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Dec 2020 16:14:40 -0800 (PST)
-Subject: Re: [PATCH] [media] radio-si470x: remove h from printk format
- specifier
-To:     Joe Perches <joe@perches.com>, hverkuil@xs4all.nl,
-        mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201215213327.2091597-1-trix@redhat.com>
- <75eb199376d65f2c2b4c746ca9be8cfc9f774453.camel@perches.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <1fc711e8-93e8-0d30-9198-2b73eccbee4f@redhat.com>
-Date:   Tue, 15 Dec 2020 16:14:39 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <75eb199376d65f2c2b4c746ca9be8cfc9f774453.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S1726061AbgLPAR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:17:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41562 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725777AbgLPARY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 19:17:24 -0500
+Date:   Wed, 16 Dec 2020 09:16:40 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608077803;
+        bh=9BcpfwUUEyZI0V0MWDNfgQ0ICTZaQgyMU8JVSZMrkxY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=sb3mjZGtkVqfuy5bTwXWQmvWXSmzWJvOWpSGZtNHc+2ZxMXkykhGE/If9pU9f4BYU
+         lc/yVK720ZtQkhy74CCjSiSS+TSxWdO9863oV/sfAIItXGl1lnSfCQaZCPM6fDyaZ8
+         GZikC90vItREcKIcP6LlWalszL4syPbFxOb9lCDWzM9Ix1H1NiU4waGT1q7DL/OcmT
+         Lw6be7lhUPzYcMOYBsXiU7lTAiyg1EgqXxvLIioa/UwfhZIx/ZzIr7lzOfVcfAFV8m
+         NB3I/KzrbB++eoyK/IB0zltUK+kb0z5kSxhR+/KwS6aLIe3X/cAYEpxFq+ob8eL4gu
+         Eaj1akgyzdsuw==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [BUG] perf probe can't remove probes
+Message-Id: <20201216091640.402d51e22dff04fff8ba6d79@kernel.org>
+In-Reply-To: <20201126172603.GD53384@kernel.org>
+References: <20201125172755.GA53351@kernel.org>
+        <20201126092125.402257a8776637d6bd2e090c@kernel.org>
+        <20201126172603.GD53384@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 26 Nov 2020 14:26:03 -0300
+Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 
-On 12/15/20 2:07 PM, Joe Perches wrote:
-> On Tue, 2020-12-15 at 13:33 -0800, trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> See Documentation/core-api/printk-formats.rst.
->>
->> commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of unnecessary %h[xudi] and %hh[xudi]")
->>
->> Standard integer promotion is already done and %hx and %hhx is useless
->> so do not encourage the use of %hh[xudi] or %h[xudi].
-> []
->> diff --git a/drivers/media/radio/si470x/radio-si470x-i2c.c b/drivers/media/radio/si470x/radio-si470x-i2c.c
-> []
->> @@ -410,7 +410,7 @@ static int si470x_i2c_probe(struct i2c_client *client)
->>  			radio->registers[DEVICEID], radio->registers[SI_CHIPID]);
->>  	if ((radio->registers[SI_CHIPID] & SI_CHIPID_FIRMWARE) < RADIO_FW_VERSION) {
->>  		dev_warn(&client->dev,
->> -			"This driver is known to work with firmware version %hu,\n",
->> +			"This driver is known to work with firmware version %u,\n",
->>  			RADIO_FW_VERSION);
->>  		dev_warn(&client->dev,
->>  			"but the device has firmware version %hu.\n",
-> Tom?  Do you know why your script missed this %hu?
+> Em Thu, Nov 26, 2020 at 09:21:25AM +0900, Masami Hiramatsu escreveu:
+> > Hi Arnaldo,
+> > 
+> > On Wed, 25 Nov 2020 14:27:55 -0300
+> > Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > 
+> > > 
+> > > Masami, have you stumbled on this already?
+> > > 
+> > > [root@seventh ~]# perf probe security_locked_down%return 'ret=$retval'
+> > > Added new event:
+> > >   probe:security_locked_down__return (on security_locked_down%return with ret=$retval)
+> > > 
+> > > You can now use it in all perf tools, such as:
+> > > 
+> > > 	perf record -e probe:security_locked_down__return -aR sleep 1
+> > > 
+> > > [root@seventh ~]# perf probe security_locked_down what
+> > > Added new event:
+> > >   probe:security_locked_down (on security_locked_down with what)
+> > > 
+> > > You can now use it in all perf tools, such as:
+> > > 
+> > > 	perf record -e probe:security_locked_down -aR sleep 1
+> > > 
+> > > [root@seventh ~]#
+> > > 
+> > > 
+> > > [root@seventh ~]# uname -r
+> > > 5.10.0-rc3.bpfsign+
+> > > [root@seventh ~]# perf probe -l
+> > >   probe:security_locked_down (on security_locked_down@git/bpf/security/security.c with what)
+> > >   probe:security_locked_down__return (on security_locked_down%return@git/bpf/security/security.c with ret)
+> > > [root@seventh ~]# perf probe -D '*:*'
+> > > Semantic error :There is non-digit char in line number.
+> > > 
+> > >  Usage: perf probe [<options>] 'PROBEDEF' ['PROBEDEF' ...]
+> > >     or: perf probe [<options>] --add 'PROBEDEF' [--add 'PROBEDEF' ...]
+> > >     or: perf probe [<options>] --del '[GROUP:]EVENT' ...
+> > >     or: perf probe --list [GROUP:]EVENT ...
+> > >     or: perf probe [<options>] --line 'LINEDESC'
+> > >     or: perf probe [<options>] --vars 'PROBEPOINT'
+> > >     or: perf probe [<options>] --funcs
+> > > 
+> > >     -D, --definition <[EVENT=]FUNC[@SRC][+OFF|%return|:RL|;PT]|SRC:AL|SRC;PT [[NAME=]ARG ...]>
+> > >                           Show trace event definition of given traceevent for k/uprobe_events.
+> > 
+> > As you can see, "-D" is showing definition. Not delete. (*)
+> > Delete is "-d" or "--del".
+> 
+> Yeah, I was in a hurry and looked at just the first line right after the
+> command, didn't want to forget reporting it so sent the "bug" report,
+> d0h, sorry about the noise, using -d or --del works.
+> 
+> But having both -d and -D, in retrospect, wasn't such a good idea :-\
 
-Boooo..
+Sorry for confusing :(
 
-I am making an assumption that there is only string.
+Hmm, would we better to remove -D and keep only --definition?
+But it is already there, I think we should keep this option
+for backward compatibility.
 
-Let me fix that and resend.
+Thank you,
 
-Thanks for catching the problem,
 
-Tom
 
->
-> btw: this would probably better as a single line something like:
->
-> 		dev_warn(&client->dev,
-> 			 "Firmware version: %u is older than known working version %u\n",
-> 			 radio->registers[SI_CHIPID] & SI_CHIPID_FIRMWARE
-> 			 RADIO_FW_VERSION);
->
-> Also a few lines above is:
->
-> 	dev_info(&client->dev, "DeviceID=0x%4.4hx ChipID=0x%4.4hx\n",
-> 			radio->registers[DEVICEID], radio->registers[SI_CHIPID])
->
-> and these %4.4hx uses are also not changed by this patch.
->
->
-
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
