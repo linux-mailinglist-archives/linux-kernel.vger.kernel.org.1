@@ -2,190 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933692DC38E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:56:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E882A2DC395
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgLPP4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:56:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53618 "EHLO
+        id S1726633AbgLPP5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:57:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbgLPP4T (ORCPT
+        with ESMTP id S1726588AbgLPP5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:56:19 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E4AC0617A7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 07:55:38 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id i67so15383637qkf.11
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 07:55:38 -0800 (PST)
+        Wed, 16 Dec 2020 10:57:18 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D167C061794;
+        Wed, 16 Dec 2020 07:56:37 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id l11so49604188lfg.0;
+        Wed, 16 Dec 2020 07:56:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7Lrr0F4DYTiqu5q7pa2WeMJbEO+sTjt6K5vXhRq26Lw=;
-        b=ssigaWNbMLRE6xPkXPODGln3bD/p0Ti2op/Z+RZ8zwhLxxQcY1yRTnZljKZqHAjEkm
-         QOmCRdEa0jq6enFzV+KSakNFQ+1VnSoPJT77gjhWOJzYRyKpY8yJR0Cepk2awciumUye
-         lLL3NRZPQTTiGJxNaV2dyvgXPStX0xFYvSmrqkbOwRP26cAIhqeG0OQ79ryX//b2F0Ar
-         i4hdIKBoIrXGW6znwbGLMQ2BywBQfsft/uFntTs+i/5/Sm6kF9HibOtzOS13QSShBcIG
-         YuOOUdoBGXK8VP7DhrKJIK6vg9jWDxh5vzzT7VVXxDz6oxF7yQR/9h7BEkVHitJs46dq
-         uuKg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yoktSe981NvO3RbAGrUEN7qVxybkq9Wcngmx06+9aBA=;
+        b=PTgvMn42UTcDBQm7ahYNmVzs9k9QRcghlDcoA5Kk5TYWgOZGutm1d0vtQTzOztAGIs
+         ouOwdIgTq7om+9WJCKLVz4l3rEQk6Ue4agD1nrb+2WiyrQchuvnPcPfzxJ3BLy9sq9tE
+         mglaT9J8+wMZ6FG3aOH2ZmTUYAIvr7jIcB3E8Gtkr1z4AfkmljrlpUpO1/1TQp/Pu2Is
+         FcyN89kXLPSc+bcXECltUrBcZYVette1zM+JqjSSilD9rSOWT/r8KqZDz5IoGOzJdyh+
+         ek1tTgxSsBCMd2gV3h9RnzOtlHAljAW1Xp7J5PvPMESlJ1SyymI5oFq/X9Q7V0f0JggC
+         R2dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7Lrr0F4DYTiqu5q7pa2WeMJbEO+sTjt6K5vXhRq26Lw=;
-        b=a1azHqdi344pQ5UzqS/lRf4iTchMgJUCcboKx4qFHwcMKIyjmJxck4/I85cUWriWYE
-         g3jj3+FLN+R5tdnuWbLUxyP648Hb79mUsy8U83V+z6xJPeGKqZWkGbk2/oiI83sKzE05
-         ZHgGycjmkhX0IB9fOsa++b8bEwzz6BgbIHpWLch606xOYyrbV2tH09Dcz85P4nUp7wTq
-         TWE9MoOgQPZSdE5gcBDUr9zrOL64DRtBEpjSlN211FnVBl1BBKPeGqXMXmBfRfyAQgrT
-         Kr8SSOenM9yyKytUmM4yaPo+7vi9y7GojJoPM63Ba5oCWFE7wFJLEV+vAJuYf+vXkRWx
-         sisQ==
-X-Gm-Message-State: AOAM530LtiuPc9hv/v5emDjnMhQw1BHKQJDeeZsmfjGyg/1ulxC28m0y
-        2pxMKU4jpSjEvaGbDtkaYq1vKJjwxU8ag+aFJOx3+g==
-X-Google-Smtp-Source: ABdhPJz8IdFwoMCUGVhbIBauOoQfDl7hiHRrTFY6xSHTSAEoIDWiwK5tREXU/yHC+b+0r0lBo/fmh4QuarzKRUZLY7A=
-X-Received: by 2002:a37:7487:: with SMTP id p129mr43538264qkc.306.1608134137648;
- Wed, 16 Dec 2020 07:55:37 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yoktSe981NvO3RbAGrUEN7qVxybkq9Wcngmx06+9aBA=;
+        b=kziCKxdnRAF8LCAbSqg0ZbWWB2kcWeHnwDj+7FjRRCBH/gUCkr3DjECeUEiw20Wrwf
+         SotEjRp4twRHXjbgdV5Xo0QOdPf4UR4YmEtoyTm3Yxeh2BUEaEfD0mI5qOPk8W2GWgAr
+         YrkAMhRkWFHqdL3Q9ozxT7cpQDDf1SAxfPfzu8Quzv/uG6kJFs/1wPzPVfS0ani74L0V
+         2pKC55vtX6KhKulflVBdr4DesNk3mFzy8JNMcPTusN71NvcPKbzrqfxfTl1hcSo/4B7t
+         8/pvq5n8ZxLykcguIpe6Zq3GZl0ORgfrVRi4sjAhOxcJKQzSWN41Y4ZKi2zEdgX6KY0f
+         Dp5w==
+X-Gm-Message-State: AOAM531XlEyIS7CYH6AkQu1/tRY/cOVyEq0Q1vGd0/9930mdXQFzY3xG
+        LHVk2uUHyvJYySui7YfuUuRDhQWZPV0=
+X-Google-Smtp-Source: ABdhPJyshd/5Aq/Tgd1HhV7XZ6/MQ76m+g/o0fPfo2xfOG+y/GrCxbzPaLKoqPhdns/ozYgDz7C5cQ==
+X-Received: by 2002:a19:3f57:: with SMTP id m84mr6831013lfa.486.1608134192377;
+        Wed, 16 Dec 2020 07:56:32 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id t15sm267413lfl.33.2020.12.16.07.56.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 07:56:31 -0800 (PST)
+Subject: Re: [PATCH v1 5/8] usb: chipidea: tegra: Support host mode
+To:     Peter Chen <peter.chen@nxp.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201215202113.30394-1-digetx@gmail.com>
+ <20201215202113.30394-6-digetx@gmail.com>
+ <20201216060732.GB5595@b29397-desktop>
+ <bb617167-e6a4-221e-5e3b-c9d7a1b50c87@gmail.com>
+ <DBBPR04MB79794F5CC440279AF94A48448BC50@DBBPR04MB7979.eurprd04.prod.outlook.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <e4a63b73-5fc9-33da-abd5-771b2f3813f6@gmail.com>
+Date:   Wed, 16 Dec 2020 18:56:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-References: <20201211142933.25784-1-grzegorz.jaszczyk@linaro.org>
- <20201211142933.25784-2-grzegorz.jaszczyk@linaro.org> <20201214225842.GA2537432@robh.at.kernel.org>
-In-Reply-To: <20201214225842.GA2537432@robh.at.kernel.org>
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Date:   Wed, 16 Dec 2020 16:55:26 +0100
-Message-ID: <CAMxfBF65ve2Pk5Uz5V1V_LfOLFUFKebVE8bzSjLT0nonuH8TDg@mail.gmail.com>
-Subject: Re: [PATCH 1/5] dt-bindings: remoteproc: Add PRU consumer bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     Ohad Ben Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "Anna, Suman" <s-anna@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        linux-remoteproc@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "Bajjuri, Praneeth" <praneeth@ti.com>,
-        Roger Quadros <rogerq@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <DBBPR04MB79794F5CC440279AF94A48448BC50@DBBPR04MB7979.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+16.12.2020 12:32, Peter Chen пишет:
+>> ...
+>>>> +static int tegra_usb_internal_port_reset(struct ehci_hcd *ehci,
+>>>> +					 u32 __iomem *portsc_reg,
+>>>> +					 unsigned long *flags)
+>>>> +{
+>>>> +	u32 saved_usbintr, temp;
+>>>> +	unsigned int i, tries;
+>>>> +	int retval = 0;
+>>>> +
+>>>> +	saved_usbintr = ehci_readl(ehci, &ehci->regs->intr_enable);
+>>>> +	/* disable USB interrupt */
+>>>> +	ehci_writel(ehci, 0, &ehci->regs->intr_enable);
+>>>> +	spin_unlock_irqrestore(&ehci->lock, *flags);
+>>>> +
+>>>> +	/*
+>>>> +	 * Here we have to do Port Reset at most twice for
+>>>> +	 * Port Enable bit to be set.
+>>>> +	 */
+>>>> +	for (i = 0; i < 2; i++) {
+>>>> +		temp = ehci_readl(ehci, portsc_reg);
+>>>> +		temp |= PORT_RESET;
+>>>> +		ehci_writel(ehci, temp, portsc_reg);
+>>>> +		mdelay(10);
+>>> Needs accurate delay? How about usleep_range?
+>> To be hones I don't know for sure whether hub_control() could be used from
+>> interrupt context.  This mdelay is borrowed from the older ehci-tegra driver.
+>>
+>> Are you suggesting that it should be safe to sleep here?
+>>
+> I see msleep is called at tegra_ehci_hub_control at ehci-tegra.c.
+> .hub_control is not called at interrupt context.
+> 
 
-On Mon, 14 Dec 2020 at 23:58, Rob Herring <robh@kernel.org> wrote:
->
-> On Fri, Dec 11, 2020 at 03:29:29PM +0100, Grzegorz Jaszczyk wrote:
-> > From: Suman Anna <s-anna@ti.com>
-> >
-> > Add a YAML binding document for PRU consumers. The binding includes
-> > all the common properties that can be used by different PRU consumer
-> > or application nodes and supported by the PRU remoteproc driver.
-> > These are used to configure the PRU hardware for specific user
-> > applications.
-> >
-> > The application nodes themselves should define their own bindings.
-> >
-> > Co-developed-by: Tero Kristo <t-kristo@ti.com>
-> > Signed-off-by: Tero Kristo <t-kristo@ti.com>
-> > Signed-off-by: Suman Anna <s-anna@ti.com>
-> > Co-developed-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> > Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> > ---
-> >  .../bindings/remoteproc/ti,pru-consumer.yaml  | 64 +++++++++++++++++++
-> >  1 file changed, 64 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml b/Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
-> > new file mode 100644
-> > index 000000000000..2c5c5e2b6159
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
-> > @@ -0,0 +1,64 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/remoteproc/ti,pru-consumer.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Common TI PRU Consumer Binding
-> > +
-> > +maintainers:
-> > +  - Suman Anna <s-anna@ti.com>
-> > +
-> > +description: |
-> > +  A PRU application/consumer/user node typically uses one or more PRU device
-> > +  nodes to implement a PRU application/functionality. Each application/client
-> > +  node would need a reference to at least a PRU node, and optionally define
-> > +  some properties needed for hardware/firmware configuration. The below
-> > +  properties are a list of common properties supported by the PRU remoteproc
-> > +  infrastructure.
-> > +
-> > +  The application nodes shall define their own bindings like regular platform
-> > +  devices, so below are in addition to each node's bindings.
-> > +
-> > +properties:
-> > +  prus:
->
-> ti,prus
-
-Thank you - I will change and post v2 but with this I will run into
-issues when this binding will be referenced by some consumer YAML
-binding. Running dtbs_check in such case throws:
-... k3-am654-base-board.dt.yaml: serial@28000: 'ti,prus' does not
-match any of the regexes: 'pinctrl-[0-9]+'
-In the same time if I will remove this property from that node I am getting:
-... k3-am654-base-board.dt.yaml: serial@28000: 'ti,prus' is a required property
-as expected.
-
-Getting rid of the comma from this property name workarounds mentioned
-problem (which is not proper but allows me to correctly test this
-binding): e.g. s/ti,prus/ti-pruss/ or using the previous name without
-a comma.
-It seems to be an issue with dtbs_check itself which we will encounter
-in the future.
-
-Best regards,
-Grzegorz
-
->
-> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> > +    description: phandles to the PRU, RTU or Tx_PRU nodes used
-> > +
-> > +  firmware-name:
-> > +    $ref: /schemas/types.yaml#/definitions/string-array
-> > +    description: |
-> > +      firmwares for the PRU cores, the default firmware for the core from
-> > +      the PRU node will be used if not provided. The firmware names should
-> > +      correspond to the PRU cores listed in the 'prus' property
-> > +
-> > +  ti,pruss-gp-mux-sel:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +    enum: [0, 1, 2, 3, 4]
-> > +    description: |
-> > +      array of values for the GP_MUX_SEL under PRUSS_GPCFG register for a PRU.
-> > +      This selects the internal muxing scheme for the PRU instance. Values
-> > +      should correspond to the PRU cores listed in the 'prus' property. The
-> > +      GP_MUX_SEL setting is a per-slice setting (one setting for PRU0, RTU0,
-> > +      and Tx_PRU0 on K3 SoCs). Use the same value for all cores within the
-> > +      same slice in the associative array. If the array size is smaller than
-> > +      the size of 'prus' property, the default out-of-reset value (0) for the
-> > +      PRU core is used.
-> > +
-> > +required:
-> > +  - prus
-> > +
-> > +dependencies:
-> > +  firmware-name: [ prus ]
-> > +  ti,pruss-gp-mux-sel: [ prus ]
-> > +
-> > +additionalProperties: true
-> > +
-> > +examples:
-> > +  - |
-> > +    /* PRU application node example */
-> > +    pru-app {
-> > +        prus = <&pru0>, <&pru1>;
-> > +        firmware-name = "pruss-app-fw0", "pruss-app-fw1";
-> > +        ti,pruss-gp-mux-sel = <2>, <1>;
-> > +    };
-> > --
-> > 2.29.0
-> >
+Alright, I'll change to use msleep() in v2, thanks.
