@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D07282DC066
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8CD2DC069
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725922AbgLPMhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 07:37:14 -0500
-Received: from mail-oo1-f53.google.com ([209.85.161.53]:38386 "EHLO
-        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725274AbgLPMhO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 07:37:14 -0500
-Received: by mail-oo1-f53.google.com with SMTP id i18so5666903ooh.5;
-        Wed, 16 Dec 2020 04:36:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gNmIFhL3IA2YySUy5Ex3F/eKMw1MQCTRrjCKuFE3zsI=;
-        b=PFZqi83Csq72eEcxOurRet2ZmXbAPfxO5NgxRI6RgQmzBiZ3rtPtz8lXTpYnKtt4kM
-         6/E5U8PdAV3SrPoqnk4D2pIcepCrE14flisO/J87fw5yNpeTHGIFZvG38y2u7f1bsZom
-         Ev8mg8x9Apl2NlIxZAvat28Au3Ia0CXSWk7hPPzxiDvUwWRVN3jnNEUVnWSpn7IGU224
-         aWAA8OLfwGxDJgaNCSco/3PlmOPxtnrPCUPYWQY/Uq6a4W3FclpAKwg3qf3ActyOJo0q
-         eo4Z/OQ3krnD6JQhPMG/ccKMeZhiH3wJ+Lzs7w1GpLrVD6KtrsoFe4FLFTfImnoB2bKI
-         jMAQ==
-X-Gm-Message-State: AOAM53002y3xnUlr8qVm8BD1qL1KhC0oqxHF0cdE4WHboN8uLDWcdECj
-        h27LQ25cDdSD82F4CWhzsqlHXV4MUcQT9bBK1Zr7bWG/
-X-Google-Smtp-Source: ABdhPJz5gSJ0pvws1OiEx7u0oWXkdp7ivnWsEjRXTBTRiDHy9EzbZvcQ2YmSi80r4Rn2zzeThNggmQ2EQZVWvScT16w=
-X-Received: by 2002:a4a:ca14:: with SMTP id w20mr25302230ooq.11.1608122193481;
- Wed, 16 Dec 2020 04:36:33 -0800 (PST)
+        id S1726019AbgLPMiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 07:38:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725943AbgLPMiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 07:38:51 -0500
+Date:   Wed, 16 Dec 2020 13:38:05 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608122290;
+        bh=/vWZmZvghpr6F9yCtq98EC441mITAJqIEkMnbirYzEQ=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sPHVFQ2C9AvSHa04+66kxuGPInU0Ju9ieUIux+tb+q0O1H7xwB3wblE8f4ias+HL5
+         eX5tNXBf7vXicl2Dd5YF2rDYUU6X4MxIvzCy0NuxYAkFb3MEn2tXc4E+fJh+nQpLAq
+         jtcoE9uKKS9hNDISUkK+NE81aVKraV4uVT0v49rIDGNyABIW4NyM3q0D+eFnqk9q31
+         ljSkyJyd844RSjxBk+32/dDsmhzdok8hvL3wlV138/EguAuXBwA73YdvK2nLeXp6Vq
+         sxJvBf0YWp+aFVJxkLzGJhfDK7oHE7gKtYA/wkgIQ/zqRrcvLM/bmO3ldSAosUjg5f
+         uDXIzivWfkwpw==
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Dexuan Cui <decui@microsoft.com>, Ingo Molnar <mingo@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: static_branch_enable() does not work from a __init function?
+Message-ID: <20201216123805.GB13751@linux-8ccs>
+References: <MW4PR21MB1857CC85A6844C89183C93E9BFC59@MW4PR21MB1857.namprd21.prod.outlook.com>
+ <20201216092649.GM3040@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20201216092321.413262-1-tudor.ambarus@microchip.com>
-In-Reply-To: <20201216092321.413262-1-tudor.ambarus@microchip.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 16 Dec 2020 13:36:22 +0100
-Message-ID: <CAMuHMdW5pV0P9B8AKSw82DXBL7jBa4mHHJJcwtbSCP26o5dMJw@mail.gmail.com>
-Subject: Re: [PATCH] spi: Fix the clamping of spi->max_speed_hz
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201216092649.GM3040@hirez.programming.kicks-ass.net>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 10:23 AM Tudor Ambarus
-<tudor.ambarus@microchip.com> wrote:
-> If spi->controller->max_speed_hz is zero, a non-zero spi->max_speed_hz
-> will be overwritten by zero. Make sure spi->controller->max_speed_hz
-> is not zero when clamping spi->max_speed_hz.
->
-> Put the spi->controller->max_speed_hz non-zero check higher in the if,
-> so that we avoid a superfluous init to zero when both spi->max_speed_hz
-> and spi->controller->max_speed_hz are zero.
->
-> Fixes: 9326e4f1e5dd ("spi: Limit the spi device max speed to controller's max speed")
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
++++ Peter Zijlstra [16/12/20 10:26 +0100]:
+>On Wed, Dec 16, 2020 at 03:54:29AM +0000, Dexuan Cui wrote:
+>> PS, I originally found: in arch/x86/kvm/vmx/vmx.c: vmx_init(), it looks
+>> like the line "static_branch_enable(&enable_evmcs);" does not take effect
+>> in a v5.4-based kernel, but does take effect in the v5.10 kernel in the
+>> same x86-64 virtual machine on Hyper-V, so I made the above test module
+>> to test static_branch_enable(), and found that static_branch_enable() in
+>> the test module does not work with both v5.10 and my v5.4 kernel, if the
+>> __init marker is used.
 
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+By the way, it probably works now because there was a workaround
+merged in v5.10, that mentions this very issue:
 
-Gr{oetje,eeting}s,
+commit 064eedf2c50f692088e1418c553084bf9c1432f8
+Author: Vitaly Kuznetsov <vkuznets@redhat.com>
+Date:   Wed Oct 14 16:33:46 2020 +0200
 
-                        Geert
+    KVM: VMX: eVMCS: make evmcs_sanitize_exec_ctrls() work again
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+    It was noticed that evmcs_sanitize_exec_ctrls() is not being executed
+    nowadays despite the code checking 'enable_evmcs' static key looking
+    correct. Turns out, static key magic doesn't work in '__init' section
+    (and it is unclear when things changed) but setup_vmcs_config() is called
+    only once per CPU so we don't really need it to. Switch to checking
+    'enlightened_vmcs' instead, it is supposed to be in sync with
+    'enable_evmcs'.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+    Opportunistically make evmcs_sanitize_exec_ctrls '__init' and drop unneeded
+    extra newline from it.
+
+    Reported-by: Yang Weijiang <weijiang.yang@intel.com>
+    Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+    Message-Id: <20201014143346.2430936-1-vkuznets@redhat.com>
+    Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+
