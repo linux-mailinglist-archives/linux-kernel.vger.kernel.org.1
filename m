@@ -2,87 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F9E2DC913
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 23:42:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 853F62DC91D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 23:44:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727830AbgLPWmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 17:42:03 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:52662 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727164AbgLPWmC (ORCPT
+        id S1728671AbgLPWnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 17:43:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727167AbgLPWnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 17:42:02 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 89B401C0BB7; Wed, 16 Dec 2020 23:41:19 +0100 (CET)
-Date:   Wed, 16 Dec 2020 23:41:19 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>, marek.behun@nic.cz,
-        linux-leds@vger.kernel.org
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Add LED mode behavior/select properties and handle
-Message-ID: <20201216224118.GA31740@amd>
-References: <20201209140501.17415-1-i.mikhaylov@yadro.com>
+        Wed, 16 Dec 2020 17:43:10 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541F5C0617B0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 14:42:30 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id c79so17555195pfc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 14:42:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cbZxiG/JD9YQXv2sQzFlyfu39bBLP48QnsSoq2lBxGQ=;
+        b=IB9ftPWqhkJ4XfQ0uT62WOhCnW1scqBjf/Vu/VT1F2BkMYqlYsaNMwYuz85LTtBYHa
+         W//kvue5VoM869pvuCSbkQV6qMW3s2ZT7kRPssW5MJlk1Ih8KMcog/Evox8zJvC4DDus
+         FOMzbBs4C5TZnId1htBYIrrYQ70J2TGXpUPWs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cbZxiG/JD9YQXv2sQzFlyfu39bBLP48QnsSoq2lBxGQ=;
+        b=fk67eKgkv7mF7EPeo9cjWsNJspf8Blt8qUBhQncf1ASt+if4DqPfEq6u4ViwBH3KK7
+         tWFykJnXkgEXYST4PikR9IeB7VKTgItwBLcp8FVT5QM0X5c5ZF5HQJXoguZD54f2EVLV
+         ohJP4iGC+8pKHrT9fEg1vh2KNFZ9xQdIRNLchrM9n8BSdAKF60s+RFLecGs8eZtfln3U
+         bgkAg2pDjEJubVMpi1sl7ti99zIS5YbnnHBP2cjVd7a2itpLzj9l56nP4MGxEbLLIRXq
+         TLiKalpLZ72gPN0m74g77t6uQh5hFZDcIyDmVOVpAgYB7kpfIdPLbuf4xizJbAFhXaXy
+         3nZw==
+X-Gm-Message-State: AOAM533ZA6uEINVg+OY64jXMlI9pWlsYiA7NBwqm2jevR456wVNscVQj
+        yuKFezpsPOHqRwPiZmxN4uhfXw==
+X-Google-Smtp-Source: ABdhPJxxOPgyfgV1lE6ycXNrKq/uEGEznucC4Jaqs5lrvh2F69meDN9DL54tbwtdzGXgbgHJdVc2XQ==
+X-Received: by 2002:a65:5687:: with SMTP id v7mr30380250pgs.249.1608158549883;
+        Wed, 16 Dec 2020 14:42:29 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id q26sm3561703pfl.219.2020.12.16.14.42.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 14:42:29 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     msavaliy@qti.qualcomm.com, akashast@codeaurora.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Alok Chauhan <alokc@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dilip Kota <dkota@codeaurora.org>,
+        Girish Mahadevan <girishm@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Subject: [PATCH v2 1/4] spi: spi-geni-qcom: Fix geni_spi_isr() NULL dereference in timeout case
+Date:   Wed, 16 Dec 2020 14:41:49 -0800
+Message-Id: <20201216144114.v2.1.I99ee04f0cb823415df59bd4f550d6ff5756e43d6@changeid>
+X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="6TrnltStXW4iwmi0"
-Content-Disposition: inline
-In-Reply-To: <20201209140501.17415-1-i.mikhaylov@yadro.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In commit 7ba9bdcb91f6 ("spi: spi-geni-qcom: Don't keep a local state
+variable") we changed handle_fifo_timeout() so that we set
+"mas->cur_xfer" to NULL to make absolutely sure that we don't mess
+with the buffers from the previous transfer in the timeout case.
 
---6TrnltStXW4iwmi0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Unfortunately, this caused the IRQ handler to dereference NULL in some
+cases.  One case:
 
-Hi!
+  CPU0                           CPU1
+  ----                           ----
+                                 setup_fifo_xfer()
+                                  geni_se_setup_m_cmd()
+                                 <hardware starts transfer>
+                                 <transfer completes in hardware>
+                                 <hardware sets M_RX_FIFO_WATERMARK_EN in m_irq>
+                                 ...
+                                 handle_fifo_timeout()
+                                  spin_lock_irq(mas->lock)
+                                  mas->cur_xfer = NULL
+                                  geni_se_cancel_m_cmd()
+                                  spin_unlock_irq(mas->lock)
 
-> In KSZ9131 PHY it is possible to control LEDs blink behavior via
-> LED mode behavior and select registers. Add DTS properties plus handles
-> of them inside micrel PHY driver.
->=20
-> I've some concerns about passing raw register values into LED mode
-> select and behavior. It can be passed via array like in microchip
-> driver(Documentation/devicetree/bindings/net/microchip,lan78xx.txt).
-> There is the problem in this particular driver - there is a lot of other =
-PHYs
-> and led mode behavior/select states may intersect, that's the reason why
-> I did it this way. Is there any good ways to make it look more
-> properly?
+  geni_spi_isr()
+   spin_lock(mas->lock)
+   if (m_irq & M_RX_FIFO_WATERMARK_EN)
+    geni_spi_handle_rx()
+     mas->cur_xfer NULL dereference!
 
-Lets... not do this?
+tl;dr: Seriously delayed interrupts for RX/TX can lead to timeout
+handling setting mas->cur_xfer to NULL.
 
-We have a LED subsystem which should probably control the LEDs... so
-user can specify behaviours at run-time, instead of them being
-hard-coded in the device tree.
+Let's check for the NULL transfer in the TX and RX cases and reset the
+watermark or clear out the fifo respectively to put the hardware back
+into a sane state.
 
-Plus, LED subsystem will use same interface for networks LEDs as for
-=2E.. other LEDs.
+NOTE: things still could get confused if we get timeouts all the way
+through handle_fifo_timeout() and then start a new transfer because
+interrupts from the old transfer / cancel / abort could still be
+pending.  A future patch will help this corner case.
 
-Best regards,
-									Pavel
---=20
-http://www.livejournal.com/~pavelmachek
+Fixes: 561de45f72bd ("spi: spi-geni-qcom: Add SPI driver support for GENI based QUP")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
---6TrnltStXW4iwmi0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Changes in v2:
+- (ptr == NULL) => (!ptr).
+- Addressed loop nits in geni_spi_handle_rx().
+- Commit message rewording from Stephen.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+ drivers/spi/spi-geni-qcom.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-iEYEARECAAYFAl/ajQ4ACgkQMOfwapXb+vJkFgCggsCdZ7gIF83/69L3RoId265i
-3U0AoK8IrS8opXUCI3h/8leg09mxtTTY
-=Yvel
------END PGP SIGNATURE-----
+diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
+index 25810a7eef10..bf55abbd39f1 100644
+--- a/drivers/spi/spi-geni-qcom.c
++++ b/drivers/spi/spi-geni-qcom.c
+@@ -354,6 +354,12 @@ static bool geni_spi_handle_tx(struct spi_geni_master *mas)
+ 	unsigned int bytes_per_fifo_word = geni_byte_per_fifo_word(mas);
+ 	unsigned int i = 0;
+ 
++	/* Stop the watermark IRQ if nothing to send */
++	if (!mas->cur_xfer) {
++		writel(0, se->base + SE_GENI_TX_WATERMARK_REG);
++		return false;
++	}
++
+ 	max_bytes = (mas->tx_fifo_depth - mas->tx_wm) * bytes_per_fifo_word;
+ 	if (mas->tx_rem_bytes < max_bytes)
+ 		max_bytes = mas->tx_rem_bytes;
+@@ -396,6 +402,14 @@ static void geni_spi_handle_rx(struct spi_geni_master *mas)
+ 		if (rx_last_byte_valid && rx_last_byte_valid < 4)
+ 			rx_bytes -= bytes_per_fifo_word - rx_last_byte_valid;
+ 	}
++
++	/* Clear out the FIFO and bail if nowhere to put it */
++	if (mas->cur_xfer == NULL) {
++		while (i++ < DIV_ROUND_UP(rx_bytes, bytes_per_fifo_word))
++			readl(se->base + SE_GENI_RX_FIFOn);
++		return;
++	}
++
+ 	if (mas->rx_rem_bytes < rx_bytes)
+ 		rx_bytes = mas->rx_rem_bytes;
+ 
+-- 
+2.29.2.684.gfbc64c5ab5-goog
 
---6TrnltStXW4iwmi0--
