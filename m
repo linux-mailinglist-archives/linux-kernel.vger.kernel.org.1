@@ -2,76 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7032DC48A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 17:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D5C2DC492
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 17:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgLPQpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 11:45:53 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:43887 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726772AbgLPQpw (ORCPT
+        id S1726794AbgLPQr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 11:47:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726758AbgLPQr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 11:45:52 -0500
-Received: (qmail 241407 invoked by uid 1000); 16 Dec 2020 11:45:11 -0500
-Date:   Wed, 16 Dec 2020 11:45:11 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 7/8] usb: host: ehci-tegra: Remove the driver
-Message-ID: <20201216164511.GB238371@rowland.harvard.edu>
-References: <20201215202113.30394-1-digetx@gmail.com>
- <20201215202113.30394-8-digetx@gmail.com>
+        Wed, 16 Dec 2020 11:47:28 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74C3C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 08:46:47 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id n16so2303668wmc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 08:46:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DE711iUDj9r5LMmWllbuVgtmMj+CPE2L8Ns11eJmqHM=;
+        b=hJrLxEk5zcQ4Dd1ZG5IngV920AOieHzJKv03G1oBPwJtHu/1yKNG0R7lwXlvet9n3A
+         16ZyuE9AMDOxTpoIL+xrUZHpGdl2ofX5l3DNGLWHtT7me3Te9BrbJCZGwi5g5EJJPvv5
+         r4ViaNCL34MTuZWZ4VqAE7/aedSNpR1X4PU4GwkmoCbxzsoxMG4gPDBaH/MLtRA5j+Or
+         oeeU//ShhJkajqHCmo0eHtarMZSXTAysYODkgcO6XZ3ra972OBLRmkQuXo6DQ/UocQq5
+         Z8qQ080+00hxYMddmBS3YYS6+PAHENWdklFwZ9uskkuGzYvrxMSBueSz11yPgGN7tByM
+         3LVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DE711iUDj9r5LMmWllbuVgtmMj+CPE2L8Ns11eJmqHM=;
+        b=BlCPn8bD1R0PWKy8yuw0+N65sb9UurITclwVrgK6w9cb+Vtqp89+xZ6DEI6AOYmghy
+         tkxrIRJYyEDuPYWsERWRtZSu2+bGO2qJxj9u+yPNnbb//qUgRCtRh5PKErLt1FOVyIph
+         no/+KSh3++VCrao27vN2J/hhlIMSD0mNla3SMxFl+JbwL+85TacUO3LabjkAH6FROPe5
+         ITnxE+pRp3TslTSs5WBT5j/SJLVE0D/KxzNIuRPqeGQUcokW+8o4XCGb60/+HQRd8Gqo
+         XiEn93ZHgvX0OpApaKLzpe7J0WreYWGLapKFimBU6HCzX1HmS9swRVR5YPxaNGaiw6hT
+         yaVg==
+X-Gm-Message-State: AOAM530FpXV37Yu3DnFt2N1uLRgYwaDdNpf2JguaI9t4lDif9Uj7Xx++
+        zqie5qOeepwW6srB+CT91sx/bg==
+X-Google-Smtp-Source: ABdhPJzg0UruXSDSKZSq8q0ji5v9rpPrtks4trvwJcLLm1WQ1N11oUSdunIzIr2q+W1rOQuRZFKT5Q==
+X-Received: by 2002:a05:600c:218a:: with SMTP id e10mr4183217wme.27.1608137206467;
+        Wed, 16 Dec 2020 08:46:46 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:7220:84ff:fe09:7d5c])
+        by smtp.gmail.com with ESMTPSA id f7sm6803639wmc.1.2020.12.16.08.46.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 08:46:45 -0800 (PST)
+Date:   Wed, 16 Dec 2020 16:46:44 +0000
+From:   Alessio Balsini <balsini@android.com>
+To:     Peng Tao <bergwolf@gmail.com>
+Cc:     Alessio Balsini <balsini@android.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Akilesh Kailash <akailash@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Antonio SJ Musumeci <trapexit@spawn.link>,
+        David Anderson <dvander@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Stefano Duo <duostefano93@gmail.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>,
+        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V10 2/5] fuse: Passthrough initialization and release
+Message-ID: <X9o59AFDwfBvVK4u@google.com>
+References: <20201026125016.1905945-1-balsini@android.com>
+ <20201026125016.1905945-3-balsini@android.com>
+ <CA+a=Yy4bhC-432h8shxbsrY5vjTcRZopS-Ojo0924L49+Be3Cg@mail.gmail.com>
+ <20201127134123.GA569154@google.com>
+ <CA+a=Yy6S9spMLr9BqyO1qvU52iAAXU3i9eVtb81SnrzjkCwO5Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201215202113.30394-8-digetx@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CA+a=Yy6S9spMLr9BqyO1qvU52iAAXU3i9eVtb81SnrzjkCwO5Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 11:21:12PM +0300, Dmitry Osipenko wrote:
-> The ChipIdea driver now provides USB2 host mode support for NVIDIA Tegra
-> SoCs. The ehci-tegra driver is obsolete now, remove it.
-> 
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/usb/host/Kconfig      |   9 -
->  drivers/usb/host/Makefile     |   1 -
->  drivers/usb/host/ehci-tegra.c | 604 ----------------------------------
->  3 files changed, 614 deletions(-)
->  delete mode 100644 drivers/usb/host/ehci-tegra.c
-> 
-> diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
-> index 31e59309da1f..9c9e6ff9c43a 100644
-> --- a/drivers/usb/host/Kconfig
-> +++ b/drivers/usb/host/Kconfig
-> @@ -266,15 +266,6 @@ config USB_EHCI_HCD_AT91
->  	  Enables support for the on-chip EHCI controller on
->  	  Atmel chips.
->  
-> -config USB_EHCI_TEGRA
-> -	tristate "NVIDIA Tegra HCD support"
-> -	depends on ARCH_TEGRA
-> -	select USB_EHCI_ROOT_HUB_TT
-> -	select USB_TEGRA_PHY
-> -	help
-> -	  This driver enables support for the internal USB Host Controllers
-> -	  found in NVIDIA Tegra SoCs. The controllers are EHCI compliant.
+Hi Tao,
 
-For people upgrading from earlier kernel versions, do you think it
-would help to add a pointer here telling them which Kconfig option
-they need to enable now in order to get this functionality?
+On Sat, Nov 28, 2020 at 09:57:31AM +0800, Peng Tao wrote:
+> On Fri, Nov 27, 2020 at 9:41 PM Alessio Balsini <balsini@android.com> wrote:
+> >
+> > Hi Peng,
+> >
+> > Thanks for the heads up!
+> >
+> > On Thu, Nov 26, 2020 at 09:33:34PM +0800, Peng Tao wrote:
+> > > On Tue, Oct 27, 2020 at 12:19 AM Alessio Balsini <balsini@android.com> wrote:
+> > > > [...]
+> > > >  int fuse_passthrough_setup(struct fuse_conn *fc, struct fuse_file *ff,
+> > > >                            struct fuse_open_out *openarg)
+> > > >  {
+> > > > -       return -EINVAL;
+> > > > +       struct inode *passthrough_inode;
+> > > > +       struct super_block *passthrough_sb;
+> > > > +       struct fuse_passthrough *passthrough;
+> > > > +       int passthrough_fh = openarg->passthrough_fh;
+> > > > +
+> > > > +       if (!fc->passthrough)
+> > > > +               return -EPERM;
+> > > > +
+> > > > +       /* Default case, passthrough is not requested */
+> > > > +       if (passthrough_fh <= 0)
+> > > > +               return -EINVAL;
+> > > > +
+> > > > +       spin_lock(&fc->passthrough_req_lock);
+> > > > +       passthrough = idr_remove(&fc->passthrough_req, passthrough_fh);
+> > > > +       spin_unlock(&fc->passthrough_req_lock);
+> > > > +
+> > > > +       if (!passthrough)
+> > > > +               return -EINVAL;
+> > > > +
+> > > > +       passthrough_inode = file_inode(passthrough->filp);
+> > > > +       passthrough_sb = passthrough_inode->i_sb;
+> > > > +       if (passthrough_sb->s_stack_depth >= FILESYSTEM_MAX_STACK_DEPTH) {
+> > > Hi Alessio,
+> > >
+> > > passthrough_sb is the underlying filesystem superblock, right? It
+> > > seems to prevent fuse passthrough fs from stacking on another fully
+> > > stacked file system, instead of preventing other file systems from
+> > > stacking on this fuse passthrough file system. Am I misunderstanding
+> > > it?
+> >
+> > Correct, this checks the stacking depth on the lower filesystem.
+> > This is an intended behavior to avoid the stacking of multiple FUSE
+> > passthrough filesystems, and works because when a FUSE connection has
+> > the passthrough feature activated, the file system updates its
+> > s_stack_depth to FILESYSTEM_MAX_STACK_DEPTH in process_init_reply()
+> > (PATCH 1/5), avoiding further stacking.
+> >
+> > Do you see issues with that?
+> I'm considering a use case where a fuse passthrough file system is
+> stacked on top of an overlayfs and/or an ecryptfs. The underlying
+> s_stack_depth FILESYSTEM_MAX_STACK_DEPTH is rejected here so it is
+> possible to have an overlayfs or an ecryptfs underneath but not both
+> (with current FILESYSTEM_MAX_STACK_DEPTH being 2). How about changing
+> passthrough fuse sb s_stack_depth to FILESYSTEM_MAX_STACK_DEPTH + 1 in
+> PATCH 1/5, and allow passthrough_sb->s_stack_depth to be
+> FILESYSTEM_MAX_STACK_DEPTH here? So that existing kernel stacking file
+> system setups can all work as the underlying file system, while the
+> stacking of multiple FUSE passthrough filesystems is still blocked.
+> 
 
-Alan Stern
+
+Sounds like a good idea, I'll think about it a bit more and if
+everything's all right I'll post the new patchset.
+
+
+> >
+> > What I'm now thinking is that fuse_passthrough_open would probably be a
+> > better place for this check, so that the ioctl() would fail and the user
+> > space daemon may decide to skip passthrough and use legacy FUSE access
+> > for that file (or, at least, be aware that something went wrong).
+> >
+> +1, fuse_passthrough_open seems to be a better place for the check.
+> 
+> > A more aggressive approach would be instead to move the stacking depth
+> > check to fuse_fill_super_common, where we can update s_stack_depth to
+> > lower-fs depth+1 and fail if passthrough is active and s_stack_depth is
+> > greater than FILESYSTEM_MAX_STACK_DEPTH.
+> >
+> The lower layer files/directories might actually spread on different
+> file systems. I'm not sure if s_stack_depth check is still possible at
+> mount time. Even if we can calculate the substree s_stack_depth, it is
+> still more flexible to determine on a per inode basis, right?
+> 
+> Cheers,
+> Tao
+> --
+> Into Sth. Rich & Strange
+
+
+Fair enough. The per-inode check is definitely the right way to proceed.
+
+Thanks a lot for you feedback!
+Alessio
+
