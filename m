@@ -2,144 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A40B2DC862
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 22:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3522DC866
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 22:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgLPVdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 16:33:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49332 "EHLO
+        id S1726694AbgLPVeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 16:34:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbgLPVdJ (ORCPT
+        with ESMTP id S1726692AbgLPVeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 16:33:09 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E54C06179C;
-        Wed, 16 Dec 2020 13:32:29 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id w16so18543331pga.9;
-        Wed, 16 Dec 2020 13:32:29 -0800 (PST)
+        Wed, 16 Dec 2020 16:34:44 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D010BC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 13:34:03 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id x13so24822500oto.8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 13:34:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2o+pm5EWw1v2COh9VaZcPJTlXQGmxoO7wFl1uV4Ihkc=;
-        b=Md5T+MPcGJH58WIWX+1xXektkaKn/w1tycoPM5xFAZhWmDgb7bgEJ4NE0ciF2Wo5w7
-         0REYSJ8SLCx4zj7op/lCLt6e+msrtyCWaEBrDh0bmYHbs7UgghEha6IOlT5P4xcSj62a
-         Xyfgqpxw45HYqViOe85pHZjtGvh6k7BZw35LodSW06FYBdLf93rlVDZb95sTOFQTZz6/
-         8PdWeV5ZgqSb+KZOgHy/1AySYlJsFpFk1hykvqYglb/D1D0PYl5+NWJYzUExEDjTijkm
-         QWQk2EVwLcelsY0BvrRLHqGU7wIc3GUh1B5aLljpwvgnpwUX7MVr2sQISkULwRbuAYqO
-         lLVw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=o88KyPTynQ/M7gHaSYlWVXP8ys/ZwMsEiw9/lGbHE+w=;
+        b=EzKIjzY5CkBDpqjT3dg+1yeGZCtWF3U8uZkV/FBXjciz426YTa+65rMQmPuhnDauBr
+         SHh6bRRGt76r5pZMw9VIxmPfttMTSKvjBxQwbDpoHNKTV7SWqeTB0t3n7NwYnSqZylnq
+         eyqn7OVFEHUy9e3MOxC4M2fghF1F1bdQMFzk+AHMdtn+lAYUITEKbONrTCjXDLSL+iG3
+         gI7CdmaEx9zSsbw7PnKCLDd0IXHBKUxuLkoJHAtMNe4ZNoSR/cOVNwN7Ig3aKaqfMyrX
+         aVyekVUIhijDrlb+tMtJQZBaN4fz24D+xgZ/8Pz/G7i1j+qkW08LcCAGDMf01eUfyPu2
+         rEnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=2o+pm5EWw1v2COh9VaZcPJTlXQGmxoO7wFl1uV4Ihkc=;
-        b=Q6UHio8e7zMstXCG52lU8Guw7ApI6ChKiO8NYGCT5osr3jdI1IgVj/JtH0xh81HWCJ
-         LgJUNMxATtVrDdKjVsIpjfVI1nlZx44Si3VQxbRn87TrEHrBIrOxA47c/i3KjtR16feh
-         3YvjEsOn95ebkzPY1MOlh/QZQLOWwxrKg+ABkQLkY8vKX81Ij4RKxAp7iEXdrC63ckax
-         grX3KYDm8jqAGiPs/TIDGvzkQ4OurHK3VYUJ0j5qICMFylZUE6MsV4B0OH+m+tA3n4J0
-         5lk07338/q/6A6cdL+c+1syuL6QoZ4DNSVQ/77OqMIx/CAPXL5ONrl2hzmF72FVfRn0F
-         0zVQ==
-X-Gm-Message-State: AOAM532ExsGn9SmJph+YzyKwPbGVXisCtAZZfp4McQw+FuxNfn7NszWv
-        J8uFdU4leE12W6AuVLNCFxRt9w8ZNKs=
-X-Google-Smtp-Source: ABdhPJySQcQHg9OuecK5LQ61HsL/YTKeDiqfu6ODVE7jVpFD9ZCz2QZUAtyZZq0s+oShHv3nNBPK6Q==
-X-Received: by 2002:aa7:9782:0:b029:19e:b084:f0a9 with SMTP id o2-20020aa797820000b029019eb084f0a9mr12154138pfp.28.1608154349089;
-        Wed, 16 Dec 2020 13:32:29 -0800 (PST)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id q4sm4063944pgl.14.2020.12.16.13.32.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Dec 2020 13:32:28 -0800 (PST)
-Subject: Re: [PATCH v2] net: korina: fix return value
-To:     Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?Q?Vincent_Stehl=c3=a9?= <vincent.stehle@laposte.net>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        "David S . Miller" <davem@davemloft.net>
-References: <20201214130832.7bedb230@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201214220952.19935-1-vincent.stehle@laposte.net>
- <20201216124343.2848f0d1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <7e175246-5357-ccf6-6c7e-5f68089f30bf@gmail.com>
-Date:   Wed, 16 Dec 2020 13:32:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=o88KyPTynQ/M7gHaSYlWVXP8ys/ZwMsEiw9/lGbHE+w=;
+        b=lgIb+1spmGhD1hQSbYoTwCTZopzpkUeE0FIyXhA0IENhTZcQtd1lY1jj0B4MTFoWe1
+         vb8Ct9Aiz4yoVsP42U9+onND7TxVcTaLB63einl0yifOIY0RAxywNvxwogp9u/OdwyMs
+         2Z/K/svs71D5vi50VlxRtdVv6BeiCwdfwd/c9S/vCp9TP0hkYDCxjzfn86I6Z7wrQ0h+
+         O9+W2HRL7XPeOcrzpgtTxmbj/yKNyEJ5c/CCaMb7DuS30AWQAu5OOf78vQi0av1e7zTj
+         q5/gWPDJK+mFLxSVnjGdoVG4l6ErQg4icU4g0SYFUxyq6ZjqbcP+AAV9vZVdfBeGRoWh
+         gAZg==
+X-Gm-Message-State: AOAM530OJoDczXrwuk56czJvNJlTbe2ZRJfYbmxr7Wd2mv+ABGrBxnx6
+        zDIMBq7pXKXe09ju8E0SQzUxsA==
+X-Google-Smtp-Source: ABdhPJxG1g59vv1553Sfvemmzx5/y/khG7e8nzE+jqwQv4/iy1uUqR/rX6bTMO2O411XV8TnZx82Hw==
+X-Received: by 2002:a05:6830:2371:: with SMTP id r17mr27682534oth.236.1608154443016;
+        Wed, 16 Dec 2020 13:34:03 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id g200sm685161oib.19.2020.12.16.13.34.01
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 16 Dec 2020 13:34:02 -0800 (PST)
+Date:   Wed, 16 Dec 2020 13:33:49 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>
+cc:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Andrew Morton <akpm@google.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        Salman Qazi <sqazi@google.com>
+Subject: Re: [PATCH v2] mm/mmap: Don't unlock VMAs in remap_file_pages()
+In-Reply-To: <20201216204252.vh3zadk4ghbzufqz@revolver>
+Message-ID: <alpine.LSU.2.11.2012161330470.1455@eggly.anvils>
+References: <20201215155441.1497432-1-Liam.Howlett@Oracle.com> <413ffbe0-959d-c2ad-95d8-80104adac089@redhat.com> <20201216204252.vh3zadk4ghbzufqz@revolver>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-In-Reply-To: <20201216124343.2848f0d1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/16/20 12:43 PM, Jakub Kicinski wrote:
-> On Mon, 14 Dec 2020 23:09:52 +0100 Vincent Stehlé wrote:
->> The ndo_start_xmit() method must not attempt to free the skb to transmit
->> when returning NETDEV_TX_BUSY. Therefore, make sure the
->> korina_send_packet() function returns NETDEV_TX_OK when it frees a packet.
->>
->> Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MAC")
->> Suggested-by: Jakub Kicinski <kuba@kernel.org>
->> Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
->> Cc: David S. Miller <davem@davemloft.net>
->> Cc: Florian Fainelli <florian.fainelli@telecomint.eu>
+On Wed, 16 Dec 2020, Liam R. Howlett wrote:
 > 
-> Let me CC Florian's more recent email just in case he wants to review.
+> Thank you for looking at this.  I appreciate the scrutiny.
+> 
+> * David Hildenbrand <david@redhat.com> [201216 09:58]:
+> > On 15.12.20 16:54, Liam R. Howlett wrote:
+> > > do_mmap() will unlock the necessary VMAs.  There is also a bug in the
+> > > loop which will evaluate as false and not unlock any VMAs anyways.
+> > 
+> > If there is a BUG, do we have a Fixes: tag? Also
+> 
+> The bug would never show up as it is masked by do_mmap() unlocking the
+> necessary range.  Although there is a bug in this code, the code does
+> not cause an issue as it won't execute so should I have a Fixes tag?
+> The code works and what I've done is remove a chunk of code that never
+> runs.
+> 
+> > 
+> > 1. Can we fix the bug separately first?
+> 
+> I think it is safer to remove unexecuted code than enable it and then
+> remove it.
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Agreed.
+
+> 
+> > 2. Can we have a better description on what the bug actually is
+> > "evaluate as false"? What is the result of the bug?
+> 
+> The bug is in the for loop test expression that I removed in the patch.
+> Here is the long explaination of why the loop has never run.
+> 
+> 
+> Line 2982: if (start + size <= start
+> Line 2983: 	goto out;
+> 
+> size is positive.
+> 
+> Line 2992: vma = find_vma(mm, start);
+> Look up the first VMA which satisfies start < vm_end
+> 
+> Line 2997: if (start < vma->vm_start)
+> Line 2998: 	goto out;
+> 
+> So now vma->vm_start >= start.
+> If vma->vm_start > start, then there are no VMAs in that area, otherwise
+> it would have been returned by find_vma().
+> So we can say that vma->vm_start == start.
+> 
+> Line 3033: for (tmp = vma; tmp->vm_start >= start + size;
+> Line 3034:                 tmp = tmp->vm_next) {
+> This is the for loop with the error in the test expression.
+> 
+> tmp->vm_start == start which cannot be >= (start + size).
+> 
+> I believe the intention was to loop through vmas in the range of start
+> to (start + size) and unlock them.
+> 
+> 
+> The result of the bug is no VMA is unlocked in this fuction.  But that
+> doesn't matter as they are unlocked later in the call chain - which is
+> why this code works as intended.
+
+Yes.
+
+> 
+> 
+> > 
+> > CCing some people that might know if this is actually a sane change.
+> > Skimming over do_mmap(), it's not immediately clear to me that
+> > "do_mmap() will unlock the necessary VMAs".
+> 
+> Ah, yes.  That is understandable.
+> 
+> do_mmap() L1583 -> mmap_region() L1752 -> munmap_vma_range() ->
+> do_munmap() -> __do_munmap() loop at 2891 to unlock the range.
+> 
+> Would you like me to add this call chain to the changelog?
+
+I don't think you need to add that: do_mmap(MAP_FIXED) simply has to
+be able to munlock the range, much else would be broken if it did not.
+
+> 
+> > 
+> > > 
+> > > Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+
+Acked-by: Hugh Dickins <hughd@google.com>
+
+This is indeed a sane change.  I stumbled over that mistaken code
+back in the days of PageTeam shmem huge pages, when syzkaller hit
+a VM_BUG_ON_PAGE because of it; deleted the block as you have in v2;
+then it fell off our radar when updating to PageCompound huge pages -
+when Salman noticed as you have that the loop was ineffectual anyway.
+It's just good to delete this dead code and confusion.
+
+Though, in the course of writing that paragraph, I have come to wonder:
+how did syzkaller hit a VM_BUG_ON_PAGE in code that is never executed??
+Was something else different back then, or are we overlooking a case?
+
+But whatever, the block is redundant and your v2 patch is good.
+
+> > > ---
+> > >  mm/mmap.c | 18 +-----------------
+> > >  1 file changed, 1 insertion(+), 17 deletions(-)
+> > > 
+> > > diff --git a/mm/mmap.c b/mm/mmap.c
+> > > index 5c8b4485860de..f7fecb77f84fd 100644
+> > > --- a/mm/mmap.c
+> > > +++ b/mm/mmap.c
+> > > @@ -3025,25 +3025,9 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
+> > >  
+> > >  	flags &= MAP_NONBLOCK;
+> > >  	flags |= MAP_SHARED | MAP_FIXED | MAP_POPULATE;
+> > > -	if (vma->vm_flags & VM_LOCKED) {
+> > > -		struct vm_area_struct *tmp;
+> > > +	if (vma->vm_flags & VM_LOCKED)
+> > >  		flags |= MAP_LOCKED;
+> > >  
+> > > -		/* drop PG_Mlocked flag for over-mapped range */
+> > > -		for (tmp = vma; tmp->vm_start >= start + size;
+>          This should probably be less than ---^
+> 
+> > > -				tmp = tmp->vm_next) {
+> > > -			/*
+> > > -			 * Split pmd and munlock page on the border
+> > > -			 * of the range.
+> > > -			 */
+> > > -			vma_adjust_trans_huge(tmp, start, start + size, 0);
+> > > -
+> > > -			munlock_vma_pages_range(tmp,
+> > > -					max(tmp->vm_start, start),
+> > > -					min(tmp->vm_end, start + size));
+> > > -		}
+> > > -	}
+> > > -
+> > >  	file = get_file(vma->vm_file);
+> > >  	ret = do_mmap(vma->vm_file, start, size,
+> > >  			prot, flags, pgoff, &populate, NULL);
+> > > 
+> > 
+> > 
+> > -- 
+> > Thanks,
+> > 
+> > David / dhildenb
