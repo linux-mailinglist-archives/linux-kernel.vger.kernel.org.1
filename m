@@ -2,123 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2383E2DC1A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B58B2DC1A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbgLPNxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:53:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725550AbgLPNxA (ORCPT
+        id S1726362AbgLPNwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:52:30 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9220 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgLPNwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:53:00 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DC2C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:52:20 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id r4so12962310pls.11
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:52:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MByjt13D8dTyrL9LXVO8Wl4qrEzL2nVUzZj2LIZjinw=;
-        b=xEkeeDNDwEctBCEW9+sGNx6t6X+u7em43nG+lu0z1gifW1MLYSuSRYohoEK1GimBgo
-         5ysElzKFdJdmrlfMoN8ewUO4Mbc2vtErLMpfDT2aRJ5HH4ehchKTb570hxvzmaG2tFbB
-         DywlXF+1AZePbf8VAlGJzwcs8HhJoSiXSJQEbUnZlKp23eQqeDeujY3ojoCn0ybg7s9W
-         fzzYP908pt2emtJw6hmoNyAI6I5AAWl8zqcAXweTum3yZgh5QXY51iqO+k8NTADI2Hc5
-         dJNmh3EeznSKLV1uleZNGocmGHCFSDOofG/skh/EHGrVyRmuqGtje5nrrcR/sZu+CDEl
-         Yj8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MByjt13D8dTyrL9LXVO8Wl4qrEzL2nVUzZj2LIZjinw=;
-        b=faTgfkTvCyEmv6PDvUcFWHFYgN4psbfcM5sSWr3sBu4ZLOvm0Zuyczr6+O3OMTERF4
-         ei8UJMfsln2eoKcKP1Dx7B21jSxfRYNFmgL4pEcYPzGtCO83lsfW7G1iQC+3r2zxWzVB
-         7O0E8S5gAI+3YcREevtbWAAha5gVsreRIu6UnMLjDURKGOu7UMROOdFk3TTtQyidUe3t
-         vkjkN1ik/cvsUxnRLjrYrxZt9F+tPiQWFLvJEtTnLHxaFLtfhcDNrJ+2P+J/GxnGgp/s
-         ndhZLBUroKCWUfwJ5xLHn1rZBIb/PDJ0I6Z8g2dKcEk7LDtSThi40nApJ4yajk3uVY0S
-         7Nug==
-X-Gm-Message-State: AOAM530vws31M/QLySAnlEb+tl1yKUgOuWiXxXBUZSe8LAV9Z1hiPVPr
-        hy+HgLte4wOS+7fz0rU5/RB3eoHXnxp7UPWFMAyARw==
-X-Google-Smtp-Source: ABdhPJxx5e3AsxCiCIXYZp2OHM5MtCHWVOP/WNUpVGJcXgHZNqGgFqJxEOwTYxQekrQT8Wj7ZuvNdf7qNno8pHo21lo=
-X-Received: by 2002:a17:90a:5405:: with SMTP id z5mr3286702pjh.13.1608126739730;
- Wed, 16 Dec 2020 05:52:19 -0800 (PST)
+        Wed, 16 Dec 2020 08:52:30 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CwxNZ6tmBzkpw9;
+        Wed, 16 Dec 2020 21:50:54 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 16 Dec 2020 21:51:37 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <kvalo@codeaurora.org>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-wireless@vger.kernel.org>,
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        <SHA-cyfmac-dev-list@infineon.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH v2 wireless -next] brcmfmac: Delete useless kfree code
+Date:   Wed, 16 Dec 2020 21:52:08 +0800
+Message-ID: <20201216135208.15922-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-References: <20201213154534.54826-1-songmuchun@bytedance.com>
- <20201213154534.54826-7-songmuchun@bytedance.com> <20201216132847.GB29394@linux>
-In-Reply-To: <20201216132847.GB29394@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 16 Dec 2020 21:51:43 +0800
-Message-ID: <CAMZfGtWfXYn5Na=qQJHEZJO3wTOrf1m=-xarxTLp_pYpZoqjWw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v9 06/11] mm/hugetlb: Set the PageHWPoison
- to the raw error page
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 9:28 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Sun, Dec 13, 2020 at 11:45:29PM +0800, Muchun Song wrote:
-> > Because we reuse the first tail vmemmap page frame and remap it
-> > with read-only, we cannot set the PageHWPosion on a tail page.
-> > So we can use the head[4].private to record the real error page
-> > index and set the raw error page PageHWPoison later.
->
-> Maybe the following is better?
->
-> "Since the first page of tail page structs is remapped read-only,
->  we cannot modify any tail struct page, and so we cannot set
->  the HWPoison flag on a tail page.
->  We can make use of head[4].private to record the real hwpoisoned
->  page index.
->  Right before freeing the page the real raw page will be retrieved
->  and marked as HWPoison.
-> "
->
-> I think it is slighly clearer, but whatever.
+The parameter of kfree function is NULL, so kfree code is useless, delete it.
+Therefore, goto expression is no longer needed, so simplify it.
 
-Thank you.
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ .../net/wireless/broadcom/brcm80211/brcmfmac/firmware.c  | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
->
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->
-> I do not quite like the name hwpoison_subpage_deliver, but I cannot
-> come up with a better one myself, so:
->
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-
-Thanks for your review.
-
->
-> --
-> Oscar Salvador
-> SUSE L3
-
-
-
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
+index d821a4758f8c..add416a35a62 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
+@@ -319,8 +319,10 @@ static void brcmf_fw_strip_multi_v2(struct nvram_parser *nvp, u16 domain_nr,
+ 	u8 *nvram;
+ 
+ 	nvram = kzalloc(nvp->nvram_len + 1 + 3 + sizeof(u32), GFP_KERNEL);
+-	if (!nvram)
+-		goto fail;
++	if (!nvram) {
++		nvp->nvram_len = 0;
++		return;
++	}
+ 
+ 	/* Copy all valid entries, release old nvram and assign new one.
+ 	 * Valid entries are of type pcie/X/Y/ where X = domain_nr and
+@@ -351,9 +353,6 @@ static void brcmf_fw_strip_multi_v2(struct nvram_parser *nvp, u16 domain_nr,
+ 	nvp->nvram = nvram;
+ 	nvp->nvram_len = j;
+ 	return;
+-fail:
+-	kfree(nvram);
+-	nvp->nvram_len = 0;
+ }
+ 
+ static void brcmf_fw_add_defaults(struct nvram_parser *nvp)
 -- 
-Yours,
-Muchun
+2.22.0
+
