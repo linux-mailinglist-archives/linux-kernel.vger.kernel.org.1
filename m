@@ -2,58 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E54E2DC745
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:35:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B422DC747
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 20:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388828AbgLPTed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 14:34:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728532AbgLPTed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 14:34:33 -0500
-Date:   Wed, 16 Dec 2020 11:33:50 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608147232;
-        bh=5Lzz8tRYfQwB4rVb32akD3yWxvXIMSF5hiYECebvzzQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Xj3m0EvYHP3WTxGNjE1kcthhiLAqrtDZ8jMrjIkkonRb+22znbn2T0yX4TboReY9W
-         OvgcVUVzU9SafXjA19yszQjqbAj9LI8ntbKjv5Z8GyHPuKu4+4kQ8LR6bWjD7Tnsei
-         f3uNevBcdMZMLsjX/O+vO6AnZ3HKqVVGKb3oufNAgzj/oyQodM3cr6eNwV0pvuLuIL
-         yDpYuSFCHWqDlVsn9KchwBN6Kw1NFoKCKB9wTKldh60Ja2kXRhe+WMhSoLa+OXddxr
-         a6cTv6cDvPfL9isz6iCmjco2K2AaVOI6nW3xHNr7DiSabxyUmE14Lpzhra2g9pm9Zt
-         WNLRdrnFexQKw==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yejune Deng <yejune.deng@gmail.com>
-Cc:     davem@davemloft.net, ast@kernel.org, andriin@fb.com,
-        jiri@mellanox.com, edumazet@google.com, ap420073@gmail.com,
-        bjorn.topel@intel.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: core: fix msleep() is not accurate
-Message-ID: <20201216113350.50c3bb67@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1607997865-3437-1-git-send-email-yejune.deng@gmail.com>
-References: <1607997865-3437-1-git-send-email-yejune.deng@gmail.com>
+        id S2388261AbgLPTev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 14:34:51 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:41384 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728532AbgLPTev (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 14:34:51 -0500
+Received: by mail-il1-f200.google.com with SMTP id f19so29250190ilk.8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 11:34:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ecTUXuxQnoSm8RKPxvl0tmvMSXXjeO+92fr5WrQIzzM=;
+        b=takAK2ph9dCRU/fWhRqW/+V/94KmF825Yq4EkGIKKjMFYK/5cFzgn4M8dvVJk4OrwT
+         JxFJ5JoqnZ1CtVrUi/2Ufy+UlThNVPCn8Fg4q1SH7QUSzPGAOms//8pClfApnIiPauYf
+         bV1x5+XqiwqFI7za/e0AxaNno4Y7JUZpz/hNmw5pXe5Bqo0au9XzGmkj2yD/2JKLRnSv
+         DtnOmNDGGoXJQrQAXe3VoeBFmspClyeFmSTeHw9I6ohb8qL4fUPfnUOpcOCr8xn0sCH+
+         uDsThuJ6/KClT/JFFCVypj784v+mBYRw+aU8y73f1AVRWLImf5JRAF4Pr6kcVR7jm7KX
+         0MsA==
+X-Gm-Message-State: AOAM533Jk5JjlrObPCxBDRIza7/gJ/CBTGH1tiFYZsd9fYQC9ANhxY+w
+        wHB+XFCVexbJUj7mChhNQh36Dtgaz962hF8+U9OPyNdITUCO
+X-Google-Smtp-Source: ABdhPJyigXczjaGdO4uSdKTU+0X5gilBVE4f3h4pJpYB7atKcLS89UMO3NHcL6d7en2a+VTIb+IODPb+UcP0JWKa+oDQcmgwj5sD
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a6b:b8d6:: with SMTP id i205mr42768676iof.135.1608147250209;
+ Wed, 16 Dec 2020 11:34:10 -0800 (PST)
+Date:   Wed, 16 Dec 2020 11:34:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009867cb05b699f5b6@google.com>
+Subject: WARNING: suspicious RCU usage in count
+From:   syzbot <syzbot+51ce7a5794c3b12a70d1@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 10:04:25 +0800 Yejune Deng wrote:
-> See Documentation/timers/timers-howto.rst, msleep() is not
-> for (1ms - 20ms), use usleep_range() instead.
-> 
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+Hello,
 
-# Form letter - net-next is closed
+syzbot found the following issue on:
 
-We have already sent the networking pull request for 5.11 and therefore
-net-next is closed for new drivers, features, code refactoring and
-optimizations. We are currently accepting bug fixes only.
+HEAD commit:    7f376f19 Merge tag 'mtd/fixes-for-5.10-rc8' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1217bb7f500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ee8a1012a5314210
+dashboard link: https://syzkaller.appspot.com/bug?extid=51ce7a5794c3b12a70d1
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
 
-Please repost when net-next reopens after 5.11-rc1 is cut.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Look out for the announcement on the mailing list or check:
-http://vger.kernel.org/~davem/net-next.html
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+51ce7a5794c3b12a70d1@syzkaller.appspotmail.com
 
-RFC patches sent for review only are obviously welcome at any time.
+=============================
+WARNING: suspicious RCU usage
+5.10.0-rc7-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:7270 Illegal context switch in RCU-bh read-side critical section!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+no locks held by udevd/9038.
+
+stack backtrace:
+CPU: 3 PID: 9038 Comm: udevd Not tainted 5.10.0-rc7-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep+0x220/0x2b0 kernel/sched/core.c:7270
+ count.constprop.0+0x164/0x270 fs/exec.c:449
+ do_execveat_common+0x2fd/0x7c0 fs/exec.c:1893
+ do_execve fs/exec.c:1983 [inline]
+ __do_sys_execve fs/exec.c:2059 [inline]
+ __se_sys_execve fs/exec.c:2054 [inline]
+ __x64_sys_execve+0x8f/0xc0 fs/exec.c:2054
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fbc6f64c207
+Code: 77 19 f4 48 89 d7 44 89 c0 0f 05 48 3d 00 f0 ff ff 76 e0 f7 d8 64 41 89 01 eb d8 f7 d8 64 41 89 01 eb df b8 3b 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 02 f3 c3 48 8b 15 00 8c 2d 00 f7 d8 64 89 02
+RSP: 002b:00007ffcfe4966d8 EFLAGS: 00000206
+ ORIG_RAX: 000000000000003b
+RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 00007fbc6f64c207
+RDX: 0000000000f1dfd0 RSI: 00007ffcfe4967d0 RDI: 00007ffcfe4977e0
+RBP: 0000000000625500 R08: 00000000000022fb R09: 00000000000022fb
+R10: 0000000000000000 R11: 0000000000000206 R12: 0000000000f1dfd0
+R13: 0000000000000007 R14: 0000000000f0e250 R15: 0000000000000005
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
