@@ -2,247 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838F92DC16C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 376B22DC16F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726315AbgLPNjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:39:23 -0500
-Received: from mga11.intel.com ([192.55.52.93]:64491 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726125AbgLPNjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:39:23 -0500
-IronPort-SDR: M1HedeNKR70YPFI3PUV3/PSyB9RkHTe4Ww/6TaTVc9Key1DKxtH6wCIv+m41nytkyBbhM6s9n2
- h/zHNcdt/u6g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="171550069"
-X-IronPort-AV: E=Sophos;i="5.78,424,1599548400"; 
-   d="scan'208";a="171550069"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 05:38:31 -0800
-IronPort-SDR: F8EDWRhTrUaOTqRTA/g6WVx5UWybrGd2cqV3eiM+3vP3sy9lYz0AQN+zHil+Zn9LQgRIfMqtSw
- pjA6Zcn2qBnA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,424,1599548400"; 
-   d="scan'208";a="386454151"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.94])
-  by fmsmga002.fm.intel.com with ESMTP; 16 Dec 2020 05:38:26 -0800
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH] scsi: ufs-debugfs: Add error counters
-Date:   Wed, 16 Dec 2020 15:38:18 +0200
-Message-Id: <20201216133818.25935-1-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S1726379AbgLPNko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:40:44 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:44943 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726308AbgLPNko (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 08:40:44 -0500
+Received: by mail-io1-f71.google.com with SMTP id a1so22022738ioa.11
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:40:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=H23gK52sCILiq088lhUQFDzvFZHl87rDPzyeRO8RNd4=;
+        b=GZcbyLSIY34Mq7Nc0U5jhE5ueJ/yrq6jsqgNu2W8xiUuhJLSL035C7ao5N226LWYzt
+         ljzxeVkooqQFbSbjIjXDvvdywA5Trb8swM/n/Zl6+jGMv1gQFyLduZ1jEVEaSZlCDiKs
+         qUf/bsqoYLAVK/m4j7qFqtaDG+ElLI8YxBXPS/SSPMA5nj2R3HjsJiDBI0dCQPdNHIRq
+         xH5a9RvaKwqGG92IQfGGF1mtxXrAKjxo610yoI/AlZ5MXDIYZ74x2cls4WncZUjgA55s
+         QaJ3A9WUc3CEkRP38uwAaEhacQgUzB2Hmb/bnBu4V9y9D0Z5HAiNSFSu3FKE4XiZBsRP
+         vQ+Q==
+X-Gm-Message-State: AOAM5339eKG/MQkCrC3za72zSTPXTPIKUcPBbR19LKD7gOs8wbeXCeTU
+        yr2cz6DPIZ7ymsZdG9gTVoTf7fOW2rpn5W0GwimPZe3Nd/gz
+X-Google-Smtp-Source: ABdhPJycCbsLgF11aJGiLLu+8JEFqwjFZFOTcyTLJfHZRSLSOi8ZBEoTLEWIX6TXadn0g2BSEryafSecxWImCEYJifPSP/NC/og0
+MIME-Version: 1.0
+X-Received: by 2002:a92:bb84:: with SMTP id x4mr3410125ilk.298.1608126003067;
+ Wed, 16 Dec 2020 05:40:03 -0800 (PST)
+Date:   Wed, 16 Dec 2020 05:40:03 -0800
+In-Reply-To: <000000000000f683660598300559@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002aca3d05b69503ac@google.com>
+Subject: Re: INFO: rcu detected stall in sys_open (2)
+From:   syzbot <syzbot+7ee926c5e237e614ccb1@syzkaller.appspotmail.com>
+To:     bp@alien8.de, davem@davemloft.net, dhowells@redhat.com,
+        fweisbec@gmail.com, herbert@gondor.apana.org.au, hpa@zytor.com,
+        linux-afs@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-People testing have a need to know how many errors might be occurring
-over time. Add error counters and expose them via debugfs.
+syzbot suspects this issue was fixed by commit:
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- drivers/scsi/ufs/Makefile      |  1 +
- drivers/scsi/ufs/ufs-debugfs.c | 55 ++++++++++++++++++++++++++++++++++
- drivers/scsi/ufs/ufs-debugfs.h | 22 ++++++++++++++
- drivers/scsi/ufs/ufshcd.c      | 19 ++++++++++++
- drivers/scsi/ufs/ufshcd.h      |  5 ++++
- 5 files changed, 102 insertions(+)
- create mode 100644 drivers/scsi/ufs/ufs-debugfs.c
- create mode 100644 drivers/scsi/ufs/ufs-debugfs.h
+commit 1d0e850a49a5b56f8f3cb51e74a11e2fedb96be6
+Author: David Howells <dhowells@redhat.com>
+Date:   Fri Oct 16 12:21:14 2020 +0000
 
-diff --git a/drivers/scsi/ufs/Makefile b/drivers/scsi/ufs/Makefile
-index 4679af1b564e..9ca32b1143cb 100644
---- a/drivers/scsi/ufs/Makefile
-+++ b/drivers/scsi/ufs/Makefile
-@@ -9,6 +9,7 @@ ufs_qcom-$(CONFIG_SCSI_UFS_CRYPTO) += ufs-qcom-ice.o
- obj-$(CONFIG_SCSI_UFS_EXYNOS) += ufs-exynos.o
- obj-$(CONFIG_SCSI_UFSHCD) += ufshcd-core.o
- ufshcd-core-y				+= ufshcd.o ufs-sysfs.o
-+ufshcd-core-$(CONFIG_DEBUG_FS)		+= ufs-debugfs.o
- ufshcd-core-$(CONFIG_SCSI_UFS_BSG)	+= ufs_bsg.o
- ufshcd-core-$(CONFIG_SCSI_UFS_CRYPTO) += ufshcd-crypto.o
- obj-$(CONFIG_SCSI_UFSHCD_PCI) += ufshcd-pci.o
-diff --git a/drivers/scsi/ufs/ufs-debugfs.c b/drivers/scsi/ufs/ufs-debugfs.c
-new file mode 100644
-index 000000000000..cb765e2d6c21
---- /dev/null
-+++ b/drivers/scsi/ufs/ufs-debugfs.c
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (C) 2020 Intel Corporation
-+
-+#include <linux/debugfs.h>
-+
-+#include "ufshcd.h"
-+
-+static struct dentry *ufs_debugfs_root;
-+
-+void ufs_debugfs_init(void)
-+{
-+	ufs_debugfs_root = debugfs_create_dir("ufshcd", NULL);
-+}
-+
-+void ufs_debugfs_exit(void)
-+{
-+	debugfs_remove_recursive(ufs_debugfs_root);
-+}
-+
-+static int ufs_debugfs_stats_show(struct seq_file *s, void *data)
-+{
-+	struct ufs_hba *hba = s->private;
-+	struct ufs_event_hist *e = hba->ufs_stats.event;
-+
-+#define PRT(fmt, typ) \
-+	seq_printf(s, fmt, e[UFS_EVT_ ## typ].cnt)
-+
-+	PRT("PHY Adapter Layer errors (except LINERESET): %llu\n", PA_ERR);
-+	PRT("Data Link Layer errors: %llu\n", DL_ERR);
-+	PRT("Network Layer errors: %llu\n", NL_ERR);
-+	PRT("Transport Layer errors: %llu\n", TL_ERR);
-+	PRT("Generic DME errors: %llu\n", DME_ERR);
-+	PRT("Auto-hibernate errors: %llu\n", AUTO_HIBERN8_ERR);
-+	PRT("IS Fatal errors (CEFES, SBFES, HCFES, DFES): %llu\n", FATAL_ERR);
-+	PRT("DME Link Startup errors: %llu\n", LINK_STARTUP_FAIL);
-+	PRT("PM Resume errors: %llu\n", RESUME_ERR);
-+	PRT("PM Suspend errors : %llu\n", SUSPEND_ERR);
-+	PRT("Logical Unit Resets: %llu\n", DEV_RESET);
-+	PRT("Host Resets: %llu\n", HOST_RESET);
-+	PRT("SCSI command aborts: %llu\n", ABORT);
-+#undef PRT
-+	return 0;
-+}
-+DEFINE_SHOW_ATTRIBUTE(ufs_debugfs_stats);
-+
-+void ufs_debugfs_hba_init(struct ufs_hba *hba)
-+{
-+	hba->debugfs_root = debugfs_create_dir(dev_name(hba->dev), ufs_debugfs_root);
-+	debugfs_create_file("stats", 0400, hba->debugfs_root, hba, &ufs_debugfs_stats_fops);
-+}
-+
-+void ufs_debugfs_hba_exit(struct ufs_hba *hba)
-+{
-+	debugfs_remove_recursive(hba->debugfs_root);
-+}
-diff --git a/drivers/scsi/ufs/ufs-debugfs.h b/drivers/scsi/ufs/ufs-debugfs.h
-new file mode 100644
-index 000000000000..d5e744c7bd2d
---- /dev/null
-+++ b/drivers/scsi/ufs/ufs-debugfs.h
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (C) 2020 Intel Corporation
-+ */
-+
-+#ifndef __UFS_DEBUGFS_H__
-+#define __UFS_DEBUGFS_H__
-+
-+struct ufs_hba;
-+
-+#ifdef CONFIG_DEBUG_FS
-+void ufs_debugfs_init(void);
-+void ufs_debugfs_exit(void);
-+void ufs_debugfs_hba_init(struct ufs_hba *hba);
-+void ufs_debugfs_hba_exit(struct ufs_hba *hba);
-+#else
-+static inline void ufs_debugfs_init(void) {}
-+static inline void ufs_debugfs_exit(void) {}
-+static inline void ufs_debugfs_hba_init(struct ufs_hba *hba) {}
-+static inline void ufs_debugfs_hba_exit(struct ufs_hba *hba) {}
-+#endif
-+
-+#endif
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 82ad31781bc9..d8a3cf0cd6d5 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -20,6 +20,7 @@
- #include "ufs_quirks.h"
- #include "unipro.h"
- #include "ufs-sysfs.h"
-+#include "ufs-debugfs.h"
- #include "ufs_bsg.h"
- #include "ufshcd-crypto.h"
- #include <asm/unaligned.h>
-@@ -4540,6 +4541,7 @@ void ufshcd_update_evt_hist(struct ufs_hba *hba, u32 id, u32 val)
- 	e = &hba->ufs_stats.event[id];
- 	e->val[e->pos] = val;
- 	e->tstamp[e->pos] = ktime_get();
-+	e->cnt += 1;
- 	e->pos = (e->pos + 1) % UFS_EVENT_HIST_LENGTH;
- 
- 	ufshcd_vops_event_notify(hba, id, &val);
-@@ -8334,6 +8336,8 @@ static int ufshcd_hba_init(struct ufs_hba *hba)
- 	if (err)
- 		goto out_disable_vreg;
- 
-+	ufs_debugfs_hba_init(hba);
-+
- 	hba->is_powered = true;
- 	goto out;
- 
-@@ -8350,6 +8354,7 @@ static int ufshcd_hba_init(struct ufs_hba *hba)
- static void ufshcd_hba_exit(struct ufs_hba *hba)
- {
- 	if (hba->is_powered) {
-+		ufs_debugfs_hba_exit(hba);
- 		ufshcd_variant_hba_exit(hba);
- 		ufshcd_setup_vreg(hba, false);
- 		ufshcd_suspend_clkscaling(hba);
-@@ -9436,6 +9441,20 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
- }
- EXPORT_SYMBOL_GPL(ufshcd_init);
- 
-+static int __init ufshcd_core_init(void)
-+{
-+	ufs_debugfs_init();
-+	return 0;
-+}
-+
-+static void __exit ufshcd_core_exit(void)
-+{
-+	ufs_debugfs_exit();
-+}
-+
-+module_init(ufshcd_core_init);
-+module_exit(ufshcd_core_exit);
-+
- MODULE_AUTHOR("Santosh Yaragnavi <santosh.sy@samsung.com>");
- MODULE_AUTHOR("Vinayak Holikatti <h.vinayak@samsung.com>");
- MODULE_DESCRIPTION("Generic UFS host controller driver Core");
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index aa9ea3552323..8c51ce01517e 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -445,11 +445,13 @@ struct ufs_clk_scaling {
-  * @pos: index to indicate cyclic buffer position
-  * @reg: cyclic buffer for registers value
-  * @tstamp: cyclic buffer for time stamp
-+ * @cnt: error counter
-  */
- struct ufs_event_hist {
- 	int pos;
- 	u32 val[UFS_EVENT_HIST_LENGTH];
- 	ktime_t tstamp[UFS_EVENT_HIST_LENGTH];
-+	unsigned long long cnt;
- };
- 
- /**
-@@ -817,6 +819,9 @@ struct ufs_hba {
- 	u32 crypto_cfg_register;
- 	struct blk_keyslot_manager ksm;
- #endif
-+#ifdef CONFIG_DEBUG_FS
-+	struct dentry *debugfs_root;
-+#endif
- };
- 
- /* Returns true if clocks can be gated. Otherwise false */
--- 
-2.17.1
+    afs: Fix cell removal
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=128ceadf500000
+start commit:   c85fb28b Merge tag 'arm64-fixes' of git://git.kernel.org/p..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
+dashboard link: https://syzkaller.appspot.com/bug?extid=7ee926c5e237e614ccb1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1227c177900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13553f60500000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: afs: Fix cell removal
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
