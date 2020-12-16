@@ -2,103 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567BC2DC0E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 996932DC0F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbgLPNPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:15:43 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9456 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726137AbgLPNPn (ORCPT
+        id S1726303AbgLPNQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:16:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726297AbgLPNQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:15:43 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CwwZZ3LRWzhr76;
-        Wed, 16 Dec 2020 21:14:30 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 16 Dec 2020 21:14:54 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] tools: perf: convert comma to semicolon
-Date:   Wed, 16 Dec 2020 21:15:26 +0800
-Message-ID: <20201216131526.14665-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Wed, 16 Dec 2020 08:16:53 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC58DC0617A6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:16:13 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id s21so16556906pfu.13
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:16:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6L/Wca1HGpPpa8Kh87M7g3rfUrMbWp/MdbGStsV9q74=;
+        b=SWzCDPmcgXHs8joj9qsdVal5fb97rP3JSZA+RfX5NW4sOoD6PDFUWw8HlZbVp35nAM
+         vo7Cw5cdtSKbSszTsDBQCK3DfpTPLolbbpBWIr4goIplFh3u/tnaS+lfNu5Y/o7nl129
+         iSTvpEpq/8cMFGcVMhpb186Hp9u2yWHGGEek7OC9lKjehizFkCdW5c2OKAVkfI3DMlHN
+         4KGax+88yDxGHXEEyGG9qM4l2si2jsBdas3QF1F9YGuScXgmWib7Z07cw+kAmorgOgyB
+         K09haO30kL0q8C10hSx6N8jYvprB1SpNaiZMBI8sSaNXjt5QtekvTZEQIB5zW1OfEBck
+         Gg2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6L/Wca1HGpPpa8Kh87M7g3rfUrMbWp/MdbGStsV9q74=;
+        b=T7e1xuIiTJBZju6zvhYBAlY1CrA8SiEKOombO7EfK06eaSAiQMJTyzh/PG/niZN/Q1
+         gyVEOVxgo0NXRkk8oyHXJXmCQb36FukVB3t9BN1YxJEZZJ9EX7fc37MDgWN/XgYiPugi
+         YZPwYJhBwnfMtdAYACqsfeiy0zGsOsupa/FEGqzeFJMEIKQuZh0kafCJhh/1Dk/jJmGi
+         CuteAIeGJvpafbyRP3RKOcyeyVx79NQf/DkYFmNGmNBLoeuVLUIl3mouJindT9jd938J
+         5Ugf/2TcY7DTT0i4u50b4Y6G4dIfy/Bo8oQRWPiUig36tuAfdq02O+AJIUHKmk8TzMkz
+         uQ6g==
+X-Gm-Message-State: AOAM532lVIoSZVw9ibgAzOqJfQ0+ngucbrHCY8xGXd9DtTplmO4hOceY
+        AJpfNc4elcV0LuZXpqLSEoGLEUmhyYubVstZpjFGhw==
+X-Google-Smtp-Source: ABdhPJylbsG1/G9W61nTZD6h2sPahKPh/KflZZGUdSMN76kQ1vt+Ic9l9fa2bzPc8XCZvW314mfL25BcdqesvEHu4f8=
+X-Received: by 2002:a63:50a:: with SMTP id 10mr4997756pgf.273.1608124573269;
+ Wed, 16 Dec 2020 05:16:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+References: <20201213154534.54826-1-songmuchun@bytedance.com>
+ <20201213154534.54826-4-songmuchun@bytedance.com> <20201216130602.GA29394@linux>
+In-Reply-To: <20201216130602.GA29394@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 16 Dec 2020 21:15:37 +0800
+Message-ID: <CAMZfGtXvvkjChhKL3TtTEW50P3w8ekrnUDbhZM1Z3XWgsf_n_w@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v9 03/11] mm/hugetlb: Free the vmemmap
+ pages associated with each HugeTLB page
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace a comma between expression statements by a semicolon.
+On Wed, Dec 16, 2020 at 9:06 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Sun, Dec 13, 2020 at 11:45:26PM +0800, Muchun Song wrote:
+> > +
+> > +/*
+> > + * vmemmap_rmap_walk - walk vmemmap page table
+> > + *
+> > + * @rmap_pte:                called for each non-empty PTE (lowest-level) entry.
+> > + * @reuse:           the page which is reused for the tail vmemmap pages.
+> > + * @vmemmap_pages:   the list head of the vmemmap pages that can be freed.
+> > + */
+> > +struct vmemmap_rmap_walk {
+> > +     void (*rmap_pte)(pte_t *pte, unsigned long addr,
+> > +                      struct vmemmap_rmap_walk *walk);
+> > +     struct page *reuse;
+> > +     struct list_head *vmemmap_pages;
+> > +};
+>
+> Why did you chose this approach in this version?
+> Earlier versions of this patchset had a single vmemmap_to_pmd() function
+> which returned the PMD, and now we have serveral vmemmap_{levels}_range
+> and a vmemmap_rmap_walk.
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
- tools/perf/builtin-diff.c         | 4 ++--
- tools/perf/builtin-inject.c       | 2 +-
- tools/perf/ui/browsers/annotate.c | 2 +-
- tools/perf/util/annotate.c        | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+This approach will be more universal. :-)
 
-diff --git a/tools/perf/builtin-diff.c b/tools/perf/builtin-diff.c
-index cefc71506409..9064419b108f 100644
---- a/tools/perf/builtin-diff.c
-+++ b/tools/perf/builtin-diff.c
-@@ -1912,8 +1912,8 @@ static int data_init(int argc, const char **argv)
- 		struct perf_data *data = &d->data;
- 
- 		data->path  = use_default ? defaults[i] : argv[i];
--		data->mode  = PERF_DATA_MODE_READ,
--		data->force = force,
-+		data->mode  = PERF_DATA_MODE_READ;
-+		data->force = force;
- 
- 		d->idx  = i;
- 	}
-diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-index 0462dc8db2e3..235a91a907fd 100644
---- a/tools/perf/builtin-inject.c
-+++ b/tools/perf/builtin-inject.c
-@@ -747,7 +747,7 @@ static int __cmd_inject(struct perf_inject *inject)
- 		inject->tool.auxtrace_info  = perf_event__process_auxtrace_info;
- 		inject->tool.auxtrace	    = perf_event__process_auxtrace;
- 		inject->tool.aux	    = perf_event__drop_aux;
--		inject->tool.itrace_start   = perf_event__drop_aux,
-+		inject->tool.itrace_start   = perf_event__drop_aux;
- 		inject->tool.ordered_events = true;
- 		inject->tool.ordering_requires_timestamps = true;
- 		/* Allow space in the header for new attributes */
-diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
-index bd77825fd5a1..3d857b1e0e62 100644
---- a/tools/perf/ui/browsers/annotate.c
-+++ b/tools/perf/ui/browsers/annotate.c
-@@ -928,7 +928,7 @@ int symbol__tui_annotate(struct map_symbol *ms, struct evsel *evsel,
- 
- 	browser.b.width = notes->max_line_len;
- 	browser.b.nr_entries = notes->nr_entries;
--	browser.b.entries = &notes->src->source,
-+	browser.b.entries = &notes->src->source;
- 	browser.b.width += 18; /* Percentage */
- 
- 	if (notes->options->hide_src_code)
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 6c8575e182ed..3b4663f8229e 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -367,7 +367,7 @@ static int jump__parse(struct arch *arch, struct ins_operands *ops, struct map_s
- 	}
- 
- 	target.addr = map__objdump_2mem(map, ops->target.addr);
--	start = map->unmap_ip(map, sym->start),
-+	start = map->unmap_ip(map, sym->start);
- 	end = map->unmap_ip(map, sym->end);
- 
- 	ops->target.outside = target.addr < start || target.addr > end;
+> A brief explanation about why this change was introduced would have been nice.
+>
+> I guess it is because ealier versions were too oriented for the usecase
+> this patchset presents, while the new versions tries to be more broad
+> about future re-uses of the interface?
+
+Yeah, you are right. I plan to reuse those interfaces in the feature.
+
+Thanks.
+
+>
+>
+> --
+> Oscar Salvador
+> SUSE L3
+
+
+
 -- 
-2.22.0
-
+Yours,
+Muchun
