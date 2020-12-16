@@ -2,86 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BEC52DB8B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 03:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5F12DB977
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 03:56:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725320AbgLPCAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 21:00:53 -0500
-Received: from mga06.intel.com ([134.134.136.31]:63970 "EHLO mga06.intel.com"
+        id S1725771AbgLPC4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 21:56:06 -0500
+Received: from mga09.intel.com ([134.134.136.24]:29831 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725275AbgLPCAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 21:00:53 -0500
-IronPort-SDR: 5pgIPjkuAJGtA6Gb4APRdWTHsyfTjNbzJLMeFcOwVH/JFr75IwFGADjS6XEqtneYFxMqZlTuAa
- ZuhZkFqkNIqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="236566446"
+        id S1725710AbgLPC4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 21:56:05 -0500
+IronPort-SDR: +Pz0CGGXVOIVx1aJ+co9iQGTc0iey7hGlXq2A2U9N7gXCSQpe32Zf/mfm/QJ47XaTBsrzeiaDb
+ Sl9pos3io84w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="175135304"
 X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
-   d="scan'208";a="236566446"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 17:59:07 -0800
-IronPort-SDR: MfgFO6vskrlsq0llruAwsIxdFDUI2kw90H+sMbFRiefTX04/rZTPoczbwKalmEUCqzgregLjJz
- wv2jZIeUi+3A==
+   d="scan'208";a="175135304"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 18:55:48 -0800
+IronPort-SDR: 1rQpOIgf5gRmVEWY1QU262a/Z7RX/jkCuKvmRyqgdHHfSfggL83ZnOrb02TqxeI2zqOPhz2eB+
+ UDt9jbasmV7w==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,423,1599548400"; 
-   d="scan'208";a="337918692"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 17:59:07 -0800
-Message-ID: <46cad4d0f14b33e77d2cead3b87177cfaa3e03cc.camel@linux.intel.com>
-Subject: Re: [PATCH] thermal: int340x: Support Alder Lake
-From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 15 Dec 2020 17:59:06 -0800
-In-Reply-To: <20201117194802.503337-1-srinivas.pandruvada@linux.intel.com>
-References: <20201117194802.503337-1-srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+   d="scan'208";a="451538766"
+Received: from icx-2s.bj.intel.com ([10.240.192.119])
+  by fmsmga001.fm.intel.com with ESMTP; 15 Dec 2020 18:55:45 -0800
+From:   Yang Zhong <yang.zhong@intel.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        tony.luck@intel.com, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, kyung.min.park@intel.com, yang.zhong@intel.com
+Subject: [PATCH 0/2] Enumerate and expose AVX_VNNI feature
+Date:   Wed, 16 Dec 2020 10:01:27 +0800
+Message-Id: <20201216020129.19875-1-yang.zhong@intel.com>
+X-Mailer: git-send-email 2.29.2.334.gfaefdd61ec
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-17 at 11:48 -0800, Srinivas Pandruvada wrote:
-> Add ACPI IDs for thermal drivers for Alder Lake support.
-> 
-This patch was not in PULL request.
-It is simple patch, adding ids. Can we send as part of second PULL?
+A processor supports AVX_VNNI instructions if CPUID.(EAX=7,ECX=1):EAX[bit 4]
+is present.
 
-Thanks,
-Srinivas
+This series includes kernel and kvm patches, kernel patch define this
+new cpu feature bit and kvm expose this bit to guest. When this bit is
+enabled on cpu or vcpu, the cpu feature flag is shown as "avx_vnni" in
+/proc/cpuinfo of host and guest.
 
-> Signed-off-by: Srinivas Pandruvada <
-> srinivas.pandruvada@linux.intel.com>
-> ---
->  drivers/thermal/intel/int340x_thermal/int3400_thermal.c | 1 +
->  drivers/thermal/intel/int340x_thermal/int3403_thermal.c | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
-> b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
-> index 0966551cbaaa..823354a1a91a 100644
-> --- a/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
-> +++ b/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
-> @@ -584,6 +584,7 @@ static int int3400_thermal_remove(struct
-> platform_device *pdev)
->  static const struct acpi_device_id int3400_thermal_match[] = {
->  	{"INT3400", 0},
->  	{"INTC1040", 0},
-> +	{"INTC1041", 0},
->  	{}
->  };
->  
-> diff --git a/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
-> b/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
-> index ec1d58c4ceaa..c3c4c4d34542 100644
-> --- a/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
-> +++ b/drivers/thermal/intel/int340x_thermal/int3403_thermal.c
-> @@ -284,6 +284,7 @@ static int int3403_remove(struct platform_device
-> *pdev)
->  static const struct acpi_device_id int3403_device_ids[] = {
->  	{"INT3403", 0},
->  	{"INTC1043", 0},
-> +	{"INTC1046", 0},
->  	{"", 0},
->  };
->  MODULE_DEVICE_TABLE(acpi, int3403_device_ids);
+Detailed information on the instruction and CPUID feature flag can be
+found in the latest "extensions" manual [1].
+
+Reference:
+[1]. https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
+
+
+Kyung Min Park (1):
+  Enumerate AVX Vector Neural Network instructions
+
+Yang Zhong (1):
+  KVM: Expose AVX_VNNI instruction to guset
+
+ arch/x86/include/asm/cpufeatures.h | 1 +
+ arch/x86/kvm/cpuid.c               | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+-- 
+2.29.2.334.gfaefdd61ec
 
