@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DADB02DC682
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7BEF2DC690
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 19:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730813AbgLPS3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 13:29:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
+        id S1731047AbgLPSdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 13:33:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727867AbgLPS3x (ORCPT
+        with ESMTP id S1731041AbgLPSdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 13:29:53 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CA2C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:29:13 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id n26so34142333eju.6
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:29:13 -0800 (PST)
+        Wed, 16 Dec 2020 13:33:36 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D97BC06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:32:56 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id 9so21466482oiq.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:32:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=erIoBEbKbiz5oRvHJ2Hn0NTy908E7i+ePDr/KDJfqn0=;
-        b=RQQ5ktXzQkitjNrDXhSj68Nk76iCrFiuj/7rR8NhYWibX+TJEUAZ1ABRoLCFSvSyhD
-         K+XSzAJ8+JptHtbXZgAMLd0C8CH7rASXoNDM/suXiZSey8fRstAT7j/a3LBA4Z/ItkcW
-         1KLlUTyufegGfHsfw6OASMbx35T/dOUZh2n2DtwPkjnY7UvC1lGopN435jaOCu9sLQRC
-         d+0ogLUP8B1gq+H/wdjWWd1r3jNt330yGJXpKDpBReCXvcZc0s9aGyzV4dq/pX7OCHL8
-         DrffsY8AoJZdbDgf3GUaosn01KgA5PC0mG+pQYhmh8NhXGU0wbK+OS4rc88M46Z8G6Pg
-         yO/g==
+        bh=TOKrfljSwb0iquFcwhx16t0mlmb8z327F7siyfgd+Io=;
+        b=yd2cqrPLfduV1Hea+fTiIe+/9IkIEb6MKlQIilXuDL4916KjY5zK/R3iTzbUDPdN6Y
+         LRpSlA9st56gL6Hpw+u8O3sPlKB3aPyOu+Tghlrzn7j/4DOYqGl04UCbHqdMK2uLSxT4
+         zyEt0D4fi6/beYoXjvEb/zDZxfQhTFOKvIvtowB7eJR5cdFUU58CN7uHi8VhlrTK2IwF
+         da7AZZCsYZajEZ1Q9gV1DS4TMYLt1MwuFWJ6MdTtovrbdDiJON9cJY8fEFdmQISS2mpL
+         2pHMd83p47SRJN0l95Nc3w6SFV76WZR9gnVQCx+IP1Thu++ADUU8fhlRCLtoxYZSa0bK
+         VOfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=erIoBEbKbiz5oRvHJ2Hn0NTy908E7i+ePDr/KDJfqn0=;
-        b=BxC9VpkEw2h1fwPVSgUOqYUTKqr7HNkeGaVG/c38nFowjcD9tvcPl/L5537vOiiBf1
-         6c3cm3vd7cI77N7RMQcjyefMgiOYPA1HlVW8QfTUzYVWroHTRliTRRHXrAI593r2h/6w
-         aZ22gUhPP1Fx+dH/N1OdZ+MpYjlyKs4SNtI9r8KqHLA7ImBzY/NjbAW/PnpiTz5Smjji
-         rkpZo47K8+WHJLpbQjyA0g1gkY7fR4D7a8xCwTOk6H0dfRRZTeOCq2IqvRROcIOgLF9X
-         vezk12lq1MvvJUALjJFX/EXL7i3zGoxWkDAJvVNj9EpdE9FjADrf1pVk1JTaurEc2kQy
-         +8Pw==
-X-Gm-Message-State: AOAM531ny8M6a0cZ3Ac4pgaYBtKFl6Rl9KXzruLS+cNmKDn1YZ7NvjMN
-        4bYmTnxQ19oRzAZgwHsiRUzS9BD1XShH3rvB
-X-Google-Smtp-Source: ABdhPJwYrZeKblL+48+EBX3qrAEooomDWvRk7xg3KKtcF9HUnU1fmEnVGyTYAjoEyim5ZUFQy/DxOg==
-X-Received: by 2002:a17:907:da7:: with SMTP id go39mr33278642ejc.58.1608143352040;
-        Wed, 16 Dec 2020 10:29:12 -0800 (PST)
-Received: from ryzen.localdomain (89-212-27-98.dynamic.t-2.net. [89.212.27.98])
-        by smtp.gmail.com with ESMTPSA id v9sm2032877ejk.48.2020.12.16.10.29.11
+        bh=TOKrfljSwb0iquFcwhx16t0mlmb8z327F7siyfgd+Io=;
+        b=N5UqX6UVHSRw8EjKgdQKyhvzV1Y9qNnPR8wrDuoXRV+MN6+r8imUe0kLrY0YF1hGnj
+         ZI03wS8kkSiOq+xBVBCFINj/UO1h+ALo3F8DzEI6n5XSU2hqLWbvjll4nKhH+9H62qNg
+         Oe8Lllkn0c2m7IF7T90wdod7RpD3+7pVOTcNcpzL6ZWs03Sb2RS+nkGUmpIxYlNn1xOU
+         A3JW9svNP+6VARVonyKRM/GDkOi1lPRR+d59bvbLfYFRoMi4ktQsiLutMMJphfJFcowC
+         k4af+3dRpQz4+O+a+6tolj9Pv9oRRGpqOwrzKoiQtB0ZCk9nCJSXo83JsMxpxDpxzigj
+         V73g==
+X-Gm-Message-State: AOAM5328iKRWE4wqPjh6TnGZSwyYGIwbouNG5r27T0qXpbnZ9c4L0eQO
+        UyqXmvNRke23a7XBDO3Yd7CjTg==
+X-Google-Smtp-Source: ABdhPJwRU+MItydmtpCEjuBcCjGgBaYAvNj1wCz3tWiuHYbakckuOaLYeu9+147ay8nGxmUWevswhQ==
+X-Received: by 2002:aca:c0c6:: with SMTP id q189mr2738473oif.178.1608143575260;
+        Wed, 16 Dec 2020 10:32:55 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id z63sm615486otb.20.2020.12.16.10.32.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 10:29:11 -0800 (PST)
-Date:   Wed, 16 Dec 2020 19:29:09 +0100
-From:   Amadej Kastelic <amadejkastelic7@gmail.com>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
+        Wed, 16 Dec 2020 10:32:54 -0800 (PST)
+Date:   Wed, 16 Dec 2020 12:32:52 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     agross@kernel.org, dan.j.williams@intel.com, vkoul@kernel.org,
+        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/01] Add VID to support native DSD reproduction on FiiO
- devices.
-Message-ID: <X9pR9X/uCqoij1b0@ryzen.localdomain>
-References: <X9j7wdXSr4XyK7Bd@ryzen.localdomain>
- <s5h8s9xoj6o.wl-tiwai@suse.de>
+Subject: Re: [PATCH -next] qcom: bam_dma: Delete useless kfree code
+Message-ID: <X9pS1F91OxYMCMpI@builder.lan>
+References: <20201216130649.13979-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <s5h8s9xoj6o.wl-tiwai@suse.de>
+In-Reply-To: <20201216130649.13979-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 04:38:07PM +0100, Takashi Iwai wrote:
-> On Tue, 15 Dec 2020 19:09:05 +0100,
-> Amadej Kastelic wrote:
-> > 
-> > Message-Id: <c759bc50134ea434bfed0a183e0ce72984f5b609.camel@gmail.com>
-> > 
-> > Add VID to support native DSD reproduction on FiiO devices.
-> > 
-> > Tested-by: Amadej Kastelic <amadejkastelic7@gmail.com>
-> > Signed-off-by: Emilio Moretti <emilio.moretti@gmail.com>
-> 
-> Could you give your own sign-off, too?  Each person who submits the
-> patch needs the sign-off.  This is mandatory for merging to the
-> upstream.
-> 
-> 
-> thanks,
-> 
-> Takashi
+On Wed 16 Dec 07:06 CST 2020, Zheng Yongjun wrote:
 
-Signed-off-by: Amadej Kastelic <amadejkastelic7@gmail.com>
+> The parameter of kfree function is NULL, so kfree code is useless, delete it.
+> Therefore, goto expression is no longer needed, so simplify it.
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+> ---
+>  drivers/dma/qcom/bam_dma.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
+> index 4eeb8bb27279..78df217b3f6c 100644
+> --- a/drivers/dma/qcom/bam_dma.c
+> +++ b/drivers/dma/qcom/bam_dma.c
+> @@ -630,7 +630,7 @@ static struct dma_async_tx_descriptor *bam_prep_slave_sg(struct dma_chan *chan,
+>  			     GFP_NOWAIT);
+>  
+>  	if (!async_desc)
+> -		goto err_out;
+> +		return NULL;
+>  
+>  	if (flags & DMA_PREP_FENCE)
+>  		async_desc->flags |= DESC_FLAG_NWD;
+> @@ -670,10 +670,6 @@ static struct dma_async_tx_descriptor *bam_prep_slave_sg(struct dma_chan *chan,
+>  	}
+>  
+>  	return vchan_tx_prep(&bchan->vc, &async_desc->vd, flags);
+> -
+> -err_out:
+> -	kfree(async_desc);
+> -	return NULL;
+>  }
+>  
+>  /**
+> -- 
+> 2.22.0
+> 
