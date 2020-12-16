@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 740C72DC481
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 17:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 532A82DC45F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 17:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgLPQnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 11:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
+        id S1726661AbgLPQg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 11:36:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgLPQnL (ORCPT
+        with ESMTP id S1725939AbgLPQg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 11:43:11 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CC5C06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 08:42:31 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id 11so16935013pfu.4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 08:42:31 -0800 (PST)
+        Wed, 16 Dec 2020 11:36:28 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3B0C061794;
+        Wed, 16 Dec 2020 08:35:48 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id 11so23519767oty.9;
+        Wed, 16 Dec 2020 08:35:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OxeKk484FE197OUQVwNz0QTVE1MbXs6u0Yr28/1OUpc=;
-        b=UPpL9wT7RdxjpvJ7B9+DNDks+0tCYHBcyEkfUmPSLvog2zikVgpaMjZ+0EB9VFg9Pe
-         huDbOcnsVAOvyMligbJ9K66ultIpHJZJMk8vFicgY9m3W5TgzG6Gw+/b6LnVg6OEgURp
-         h6AFsEZmAxNul7oRmQwSUfcr446uANtMzLUDc=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cYvBBPpoOjACqprIaSxF5NE7DTcYLIMW9b2II2n+bAk=;
+        b=ZzCmS9jg6L7FUJJcTC2ClOEmxbAu1LuetdlQDMnoczcMMk7ssuFQ3tnEuCFOLQG2pN
+         /BWTfstggZArspNsxnxMJ5FcRBDDbpWMHi7vZhxnb+5AGkj9QUITch8FqfGsXp3/aLih
+         Sx+hXmJMc3+0PmGwG0sjnsGyXW793OP2A87HW98pjhdYHhET4z78eiNizSWXyY+SfqRo
+         o9Qh/oR0OXumPnxmasAq8aFgLV1JnJg9nVbthU9XdfixnSUvsN9vsZwm3JBIylMulbbt
+         MPv/GxvCOqPe+2I741rUZgkVJ34le7vWIW3RXZpIfcxN7JTgjM9ejbtkx0F6iVPidrUb
+         hslg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OxeKk484FE197OUQVwNz0QTVE1MbXs6u0Yr28/1OUpc=;
-        b=mIRtOU3NJPTKCJuOFA8U4Zx27J2OZflPXBs9Gny6r8Ruv8kCyEJxC/bREth83kdjee
-         bts6h+xWpsW/wp0SoV5lOFP5GX6xfuGlRjVvTaxPCgAdB7Zp7xbaOXVx5WhJgvYxhS3a
-         q/CNGuiQYO2A/6WVioQKr/j7pvgSb4AHs5iqouAXUn/dr1OUgu6KB5IbOy93Uh6+9nI9
-         j7HVmvEO1PCBo1vPzhqe+nATbD3+WURtvS0rb5uO++4q5uc3QRrW9IZnvJ0CT+noI5aU
-         MMJP9qDJ+dE8h3ONsArJzlvhAqtYqTdQdsnlRouTiXIFG3H84rYqGPLCRTauIkeaDn6+
-         rurA==
-X-Gm-Message-State: AOAM532K73ZRdAjxZ57ZhW3WNrHlHxVN4G3UtgU1of1Nvb6aohUvomuF
-        /jX/QF2RmSMXZCZI5Uvrsbtj6g==
-X-Google-Smtp-Source: ABdhPJx5HUp5Qa6Kmgx4x20aZy6v8WoOvExp9mjEmHH8f4hoi5lY2CDsfBR/p2iAIvAfgSxV3zuMfg==
-X-Received: by 2002:a63:1f54:: with SMTP id q20mr22391110pgm.135.1608136951318;
-        Wed, 16 Dec 2020 08:42:31 -0800 (PST)
-Received: from pc98bx3.roam.corp.google.com (c-73-222-23-249.hsd1.ca.comcast.net. [73.222.23.249])
-        by smtp.gmail.com with ESMTPSA id nk11sm2533723pjb.26.2020.12.16.08.42.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 08:42:30 -0800 (PST)
-From:   Daisuke Nojiri <dnojiri@chromium.org>
-Cc:     vpalatin@chromium.org, Daisuke Nojiri <dnojiri@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Prashant Malani <pmalani@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
-        Vijay Hiremath <vijay.p.hiremath@intel.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH v2 2/2] mfd: cros_ec: Add peripheral device charger
-Date:   Wed, 16 Dec 2020 08:34:17 -0800
-Message-Id: <20201216163416.2969209-2-dnojiri@chromium.org>
-X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
-In-Reply-To: <20201216163416.2969209-1-dnojiri@chromium.org>
-References: <20201216163416.2969209-1-dnojiri@chromium.org>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cYvBBPpoOjACqprIaSxF5NE7DTcYLIMW9b2II2n+bAk=;
+        b=jNDJuAy2vxN9GpS51Eg2EPV6RtBQfSUA0+H65AqbT9Vvx9aAzDQTalcDZA0+0KbWYa
+         2HQIf9FBR7GnyyDqWiZwraCIWN4hRkEasYOAO03Bowv/b/JH70vGju86WhmohoWclrSP
+         ZXVBmwDNAfWaGjOlRrUxKuKcM4tfx2zaeopbzXei2nkmh+beJbNrcMkgrJGIoPudYBFB
+         KthfEMULANKd8LpJuZQFsUCVs12ngjS1Z5E9RjvPLUgkXJr+3Y5YLx7qpsculFYswdIm
+         PFnWp/CsDXOsj90OQq/U0KguLWg90nasQ1u1bHP4YuSXClpxBUKZlnaQKD9wBvveMhGn
+         qCRQ==
+X-Gm-Message-State: AOAM531EQ1IzNApXSxU+2VYoWnULT3n7yW3r7ojSsOnbgm0TkukNCG6L
+        BIyf6Ap5zLzyOY0sxLHI8Zbl/WBdQEo=
+X-Google-Smtp-Source: ABdhPJxYVd1B4dJst6PJ9uExZL2pk6dNG04Arz9Ma4h89+TbArsvy7e9yZRkPTDxeIQXWkfQnGkY0A==
+X-Received: by 2002:a05:6830:16d9:: with SMTP id l25mr23907415otr.314.1608136547630;
+        Wed, 16 Dec 2020 08:35:47 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w131sm499021oif.8.2020.12.16.08.35.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Dec 2020 08:35:47 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 16 Dec 2020 08:35:46 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     trix@redhat.com
+Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: remove h from printk format specifier
+Message-ID: <20201216163546.GA59836@roeck-us.net>
+References: <20201215183237.2071770-1-trix@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215183237.2071770-1-trix@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a cell entry for PCHG (Peripheral CHarGer). PCHG is a
-framework managing power supplies for peripheral devices.
+On Tue, Dec 15, 2020 at 10:32:37AM -0800, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> See Documentation/core-api/printk-formats.rst.
+> h should no longer be used in the format specifier for printk.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-Signed-off-by: Daisuke Nojiri <dnojiri@chromium.org>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/mfd/cros_ec_dev.c | 1 +
- 1 file changed, 1 insertion(+)
+Applied. For subsequent patches, please include the affected driver
+in the patch subject.
 
-diff --git a/drivers/mfd/cros_ec_dev.c b/drivers/mfd/cros_ec_dev.c
-index 6135321592b76c..f3bc1cb6891ba5 100644
---- a/drivers/mfd/cros_ec_dev.c
-+++ b/drivers/mfd/cros_ec_dev.c
-@@ -116,6 +116,7 @@ static const struct mfd_cell cros_ec_platform_cells[] = {
- 	{ .name = "cros-ec-pd-sysfs" },
- 	{ .name = "cros-ec-sysfs", },
- 	{ .name = "cros-ec-pd-update", },
-+	{ .name = "cros-ec-pchg", },
- };
- 
- static const struct mfd_cell cros_ec_vbc_cells[] = {
--- 
-2.29.2.684.gfbc64c5ab5-goog
+Thanks,
+Guenter
 
+> ---
+>  drivers/hwmon/smsc47m1.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwmon/smsc47m1.c b/drivers/hwmon/smsc47m1.c
+> index b637836b58a1..37531b5c8254 100644
+> --- a/drivers/hwmon/smsc47m1.c
+> +++ b/drivers/hwmon/smsc47m1.c
+> @@ -682,7 +682,7 @@ static int __init smsc47m1_handle_resources(unsigned short address,
+>  			/* Request the resources */
+>  			if (!devm_request_region(dev, start, len, DRVNAME)) {
+>  				dev_err(dev,
+> -					"Region 0x%hx-0x%hx already in use!\n",
+> +					"Region 0x%x-0x%x already in use!\n",
+>  					start, start + len);
+>  				return -EBUSY;
+>  			}
