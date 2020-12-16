@@ -2,81 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2902DBA9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 06:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F41572DBAA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 06:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725833AbgLPF0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 00:26:12 -0500
-Received: from grey.apple.relay.mailchannels.net ([23.83.208.78]:3713 "EHLO
-        grey.apple.relay.mailchannels.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725730AbgLPF0M (ORCPT
+        id S1725824AbgLPFcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 00:32:20 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:37520 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725274AbgLPFcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 00:26:12 -0500
-X-Sender-Id: dreamhost|x-authsender|siddhesh@gotplt.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 3140F32069D;
-        Wed, 16 Dec 2020 05:25:26 +0000 (UTC)
-Received: from pdx1-sub0-mail-a54.g.dreamhost.com (100-98-118-97.trex.outbound.svc.cluster.local [100.98.118.97])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id C404C32042B;
-        Wed, 16 Dec 2020 05:25:25 +0000 (UTC)
-X-Sender-Id: dreamhost|x-authsender|siddhesh@gotplt.org
-Received: from pdx1-sub0-mail-a54.g.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384)
-        by 0.0.0.0:2500 (trex/5.18.11);
-        Wed, 16 Dec 2020 05:25:26 +0000
-X-MC-Relay: Good
-X-MailChannels-SenderId: dreamhost|x-authsender|siddhesh@gotplt.org
-X-MailChannels-Auth-Id: dreamhost
-X-Gusty-Name: 403281df64e7ad98_1608096326038_1764683299
-X-MC-Loop-Signature: 1608096326038:524884367
-X-MC-Ingress-Time: 1608096326038
-Received: from pdx1-sub0-mail-a54.g.dreamhost.com (localhost [127.0.0.1])
-        by pdx1-sub0-mail-a54.g.dreamhost.com (Postfix) with ESMTP id 8BCFA7EECD;
-        Tue, 15 Dec 2020 21:25:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=gotplt.org; h=subject:to
-        :cc:references:from:message-id:date:mime-version:in-reply-to
-        :content-type:content-transfer-encoding; s=gotplt.org; bh=0SykCQ
-        KoLwLjRG28zbQq2C0iVc8=; b=e/pzchIHMtoAGCKGupcN8Ja0A2eijaSAayMfho
-        rZBUkflFUyKWevsRZOM1oew5LugLnypCvJJ2D1LtnzLMhRkSSWX0Q7Kh5RWMFDJt
-        YHsFVje+091qi7qpjCR74Zr3O3XbIKCvPKgXAjuywQtyNcvU0lyk2B0Pf/KJjOTz
-        TLXeo=
-Received: from [192.168.1.111] (unknown [1.186.101.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: siddhesh@gotplt.org)
-        by pdx1-sub0-mail-a54.g.dreamhost.com (Postfix) with ESMTPSA id D3EFE7EEDE;
-        Tue, 15 Dec 2020 21:25:21 -0800 (PST)
-Subject: Re: [PATCH v2] proc: Escape more characters in /proc/mounts output
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Florian Weimer <fweimer@redhat.com>
-References: <20201215125318.2681355-1-siddhesh@gotplt.org>
- <20201216043323.GM3579531@ZenIV.linux.org.uk>
-X-DH-BACKEND: pdx1-sub0-mail-a54
-From:   Siddhesh Poyarekar <siddhesh@gotplt.org>
-Message-ID: <b13c0b71-dd3b-4a2b-1fc7-16d6fea36d46@gotplt.org>
-Date:   Wed, 16 Dec 2020 10:55:16 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 16 Dec 2020 00:32:20 -0500
+Date:   Wed, 16 Dec 2020 08:31:34 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        "David S. Miller" <davem@davemloft.net>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC] net: stmmac: Problem with adding the native GPIOs support
+Message-ID: <20201216053134.xlqxr4ncbukecxuu@mobilestation>
+References: <20201214092516.lmbezb6hrbda6hzo@mobilestation>
+ <20201214153143.GB2841266@lunn.ch>
+ <20201215082527.lqipjzastdlhzkqv@mobilestation>
+ <20201215135837.GB2822543@lunn.ch>
+ <20201215145253.sc6cmqetjktxn4xb@mobilestation>
+ <20201216020355.GA2893264@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <20201216043323.GM3579531@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201216020355.GA2893264@lunn.ch>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/16/20 10:03 AM, Al Viro wrote:
-> Once more, with feeling: why bother?  What's wrong
-> with using the damn strndup_user() and then doing
-> whatever checks you want with the data already
-> copied, living in normal kernel memory, with all
-> string functions applicable, etc.?
+On Wed, Dec 16, 2020 at 03:03:55AM +0100, Andrew Lunn wrote:
+> > > From what you are saying, it sounds like from software you cannot
+> > > independently control the GPIO controller reset?
+> > 
+> > No. The hardware implements the default MAC reset behavior. So the
+> > GPIO controller gets reset synchronously with the MAC reset and that
+> > can't be changed.
+> 
 
-I was trying to avoid the allocation, but I reckon it is pointless to 
-micro-optimize the invalid case.  I'll send v3.
+> Is there pinmux support for these pins?  Can you disconnect them from
+> the MAC? Often pins can be connected to different internal IP
+> blocks. Maybe you can flip the pin mux, perform the MAC reset, and
+> then put the pinmux back to connect the pins to the MAC IP again?
 
-Siddhesh
+Alas no. Pins multiplexing isn't implemented in the Baikal-T1 SoC at all.
+Each pin has been assigned with a single function. In this case DW GMAC
+GPO/GPI pins always serve as GPO/GPI and nothing else.
+
+-Sergey
+
+> 
+>      Andrew
