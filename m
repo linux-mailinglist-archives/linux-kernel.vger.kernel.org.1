@@ -2,155 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800A52DB7C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E82042DB7C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727139AbgLPAS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:18:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50290 "EHLO
+        id S1725790AbgLPAYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:24:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725777AbgLPASz (ORCPT
+        with ESMTP id S1725786AbgLPAX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 19:18:55 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A0AC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:18:15 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id q137so22300269iod.9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:18:15 -0800 (PST)
+        Tue, 15 Dec 2020 19:23:59 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A70C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:23:19 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id n8so14294531pfa.8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:23:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=T5QmzgOoeP4SUmIL1zNOjJKDNzzGZxipYccNq8PFO7M=;
-        b=Lus2wCU1FkRr0MgFcxgyLdvioHAqJljlRWXBQ7o74VbCh5I46Bh2UZglCG4azwiBcS
-         dkdDUiJSZw4M0P/yFeWWSCB4StSboVNN6+AHlufUTuoyDT4uhcCegw1yjGkVaybsy8f/
-         +A1z3JDCpw1Aho6CgcmIsR0WK/cBn44BEXlIJ51sUR74pzE4uD+AEl7D/LImkiWX2k1e
-         Fc99Tv5A6w3PSVgLOn3XO81ylQ8STLHq5mADC6wDoPcj2xW5TbFov9Gq6formWjkR7ww
-         Woxdl4oux9S1ppOvf9ZQupMWx16fCMS9RctPX3oHddxe0INtA8+7DtUbu8/uoX/Pwe7N
-         ZXFA==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=NldisNtyKDZkpWuNU4L0OQjMrO2hlrQAL2PRPxrtX6A=;
+        b=J5mnM7lVskfzO/TiL8JO8rOh9edruYozjmmO+VhEnaY/kIBOpmfhI1dkNW4m6V0A4G
+         3g/oxJzm5KfCvfRGhSv95kFGzvsZXKgzbQ1PqAjiYa7RAr7nVDqjrReO8OaD6duCUImv
+         co4QWcXpV9daHa1Kfl32lySTGL+2kg/ToRmn83aBM6l/+D9Yy9yHRklFq+6ca4Kiqcsq
+         hPGDDA5l7TY2JkOSHUHoxiGmfRIiqNW5VLBviv+ScyRVdl6HSmUrfLvXIWadaHJYDxvD
+         JCXl6WIUQCsCCOwoEbSM7swZUosuUNPxXjlnKIHTRIX/+TpA7BNrqIeijf9afdJx+RTD
+         9IUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=T5QmzgOoeP4SUmIL1zNOjJKDNzzGZxipYccNq8PFO7M=;
-        b=i1soK3Hp95OLRnbLBDKkou1AAAqSdcVUzRdJ3zfVVIb11OdM7ZnBRrT3PhkX8S/YQY
-         lj1T53iFNMIH7JYpwqvbN5pJnbqdmZX/9TJ6m8evSVZDGt/ueBfdUFwU2Lhv9Y8uvOZa
-         ePH/uHxvbVM0za+7X9F+7fWuPEBQ0hjOgBtabIRILhQ6sruZnDn27fy8Aah1MFvljeDX
-         R++e27Jzpc1Oi5MLYdJEz3OywxNTsw+OFicLrRL5STbRw/b4mX1JPaFaj5znAyzTpfJZ
-         vanRXMusr4+vsErZJ+UpyUTpQwR9RGY2CsHUNC7Wu7Y9/H29TtwVGT9kWgP9SCIb3vMB
-         yPYg==
-X-Gm-Message-State: AOAM5331Av0X4cKsDh0KdLMbc750SEw4zB8fOZRb00/LGl71z01VT5l/
-        wV3bIFheeb2iGVevsN3ycDhA3A==
-X-Google-Smtp-Source: ABdhPJzLDDvU0tcE98mIDOgQvXKlAJoZx3CXaPsT21ctYvqDkh/iEE3QszoIzvgFbJ/QyJYMP5UFkA==
-X-Received: by 2002:a02:7152:: with SMTP id n18mr35743366jaf.127.1608077894475;
-        Tue, 15 Dec 2020 16:18:14 -0800 (PST)
-Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
-        by smtp.gmail.com with ESMTPSA id m18sm11748979ioy.44.2020.12.15.16.18.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 16:18:13 -0800 (PST)
-Date:   Tue, 15 Dec 2020 17:18:09 -0700
-From:   Yu Zhao <yuzhao@google.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 11/11] mm: enlarge the "int nr_pages" parameter of
- update_lru_size()
-Message-ID: <X9lSQfI5SjRI/sz0@google.com>
-References: <20201207220949.830352-1-yuzhao@google.com>
- <20201207220949.830352-12-yuzhao@google.com>
- <alpine.LSU.2.11.2012141317351.1925@eggly.anvils>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2012141317351.1925@eggly.anvils>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=NldisNtyKDZkpWuNU4L0OQjMrO2hlrQAL2PRPxrtX6A=;
+        b=Yc4gCy7gE7pkBt3JrjKOm5m1plCQQRhSsFv3pAPhwvUQaL3nQwLWel1eBnaxXnwps9
+         KQJyZuL7rhDLL4+l/7B4GDjJaqEF0JNe+VQSUs5wang8sz1592A+sYdOemSfIGDr2qUa
+         gz3zAhlCZnTMjL8FzrvNQp5jRYkiQpkT36y40iD0y1Z8xSlYfLQHEViiIqT0jzY3YyCa
+         JsWfB8X4U96AiyiMwwldACUs9FdjjUUTCosOpiu9gbLxTw9r5PKW/mNHsP8ESDdtfguq
+         m0hkWXNgKGkTSlXW6MB+LluFbmnfkHuM3rzMmPF9llVwH2GWETof5FpgT5rInUni9C3b
+         8cYQ==
+X-Gm-Message-State: AOAM532yuds5H3RqVLrOnE2QxVTdf5H9iCJU87vuoNESyrxVle4hYw6H
+        by4EqxEcxCirYZUJ3kRlmuxSCGLWacA7rg==
+X-Google-Smtp-Source: ABdhPJxXgM45sPXTYHJabH46VueKuzZGwYP1kBcW5DLNGE49xW53pHsLHbDprPXcGIZnh/bOR/mpyY0VCKCL7g==
+Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
+ (user=dlatypov job=sendgmr) by 2002:a62:2cc3:0:b029:197:dda8:476a with SMTP
+ id s186-20020a622cc30000b0290197dda8476amr2336689pfs.37.1608078198857; Tue,
+ 15 Dec 2020 16:23:18 -0800 (PST)
+Date:   Tue, 15 Dec 2020 16:22:46 -0800
+Message-Id: <20201216002246.3580422-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.684.gfbc64c5ab5-goog
+Subject: [PATCH] Documentation: kunit: include example of a parameterized test
+From:   Daniel Latypov <dlatypov@google.com>
+To:     davidgow@google.com, brendanhiggins@google.com
+Cc:     elver@google.com, 98.arpi@gmail.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 01:50:16PM -0800, Hugh Dickins wrote:
-> On Mon, 7 Dec 2020, Yu Zhao wrote:
-> 
-> > update_lru_sizes() defines an unsigned long argument and passes it as
-> > nr_pages to update_lru_size(). Though this isn't causing any overflows
-> > I'm aware of, it's a bad idea to go through the demotion given that we
-> > have recently stumbled on a related type promotion problem fixed by
-> > commit 2da9f6305f30 ("mm/vmscan: fix NR_ISOLATED_FILE corruption on 64-bit")
-> > 
-> > Note that the underlying counters are already in long. This is another
-> > reason we shouldn't have the demotion.
-> > 
-> > This patch enlarges all relevant parameters on the path to the final
-> > underlying counters:
-> > 	update_lru_size(int -> long)
-> > 		if memcg:
-> > 			__mod_lruvec_state(int -> long)
-> > 				if smp:
-> > 					__mod_node_page_state(long)
-> > 				else:
-> > 					__mod_node_page_state(int -> long)
-> > 			__mod_memcg_lruvec_state(int -> long)
-> > 				__mod_memcg_state(int -> long)
-> > 		else:
-> > 			__mod_lruvec_state(int -> long)
-> > 				if smp:
-> > 					__mod_node_page_state(long)
-> > 				else:
-> > 					__mod_node_page_state(int -> long)
-> > 
-> > 		__mod_zone_page_state(long)
-> > 
-> > 		if memcg:
-> > 			mem_cgroup_update_lru_size(int -> long)
-> > 
-> > Note that __mod_node_page_state() for the smp case and
-> > __mod_zone_page_state() already use long. So this change also fixes
-> > the inconsistency.
-> > 
-> > Signed-off-by: Yu Zhao <yuzhao@google.com>
-> 
-> NAK from me to this 11/11: I'm running happily with your 1-10 on top of
-> mmotm (I'll review them n a few days, but currently more concerned with
-> Rik's shmem huge gfp_mask), but had to leave this one out.
-> 
-> You think you are future-proofing with this, but it is present-breaking.
-> 
-> It looks plausible (though seems random: why these particular functions
-> use long but others not? why __mod_memcg_state() long, mod_memcg_state()
-> int?), and I was fooled; but fortunately was still testing with memcg
-> moving, for Alex's patchset.
+Commit fadb08e7c750 ("kunit: Support for Parameterized Testing")
+introduced support but lacks documentation for how to use it.
 
-My apologies. The patch was fully tested on 4.15. Apparently I didn't
-pay enough attention to what's changed in mem_cgroup_move_account() nor
-had any test coverage on it when rebasing this patch.
+This patch builds on commit 1f0e943df68a ("Documentation: kunit: provide
+guidance for testing many inputs") to show a minimal example of the new
+feature.
 
-> Soon got stuck waiting in balance_dirty_pages(), /proc/vmstat showing
-> nr_anon_pages 2263142822377729
-> nr_mapped 125095217474159
-> nr_file_pages 225421358649526
-> nr_dirty 8589934592
-> nr_writeback 1202590842920
-> nr_shmem 40501541678768
-> nr_anon_transparent_hugepages 51539607554
-> 
-> That last (anon THPs) nothing to do with this patch, but illustrates
-> what Muchun is fixing in his 1/7 "mm: memcontrol: fix NR_ANON_THPS
-> accounting in charge moving".
-> 
-> The rest of them could be fixed by changing mem_cgroup_move_account()'s
-> "unsigned int nr_pages" to "long nr_pages" in this patch, but I think
-> it's safer just to drop the patch: the promotion of "unsigned int" to
-> "long" does not work as you would like it to.
-> 
-> I see that mm/vmscan.c contains several "unsigned int" counts of pages,
-> everything works fine at present so far as I know, and those appeared
-> to work even with your patch; but I am not confident in my test coverage,
-> and not confident in us being able to outlaw unsigned int page counts in
-> future.
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ Documentation/dev-tools/kunit/usage.rst | 57 +++++++++++++++++++++++++
+ 1 file changed, 57 insertions(+)
 
-I'll just drop this one. Thanks.
+diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
+index d9fdc14f0677..650f99590df5 100644
+--- a/Documentation/dev-tools/kunit/usage.rst
++++ b/Documentation/dev-tools/kunit/usage.rst
+@@ -522,6 +522,63 @@ There's more boilerplate involved, but it can:
+   * E.g. if we wanted to also test ``sha256sum``, we could add a ``sha256``
+     field and reuse ``cases``.
+ 
++* be converted to a "parameterized test", see below.
++
++Parameterized Testing
++~~~~~~~~~~~~~~~~~~~~~
++
++The table-driven testing pattern is common enough that KUnit has special
++support for it.
++
++Reusing the same ``cases`` array from above, we can write the test as a
++"parameterized test" with the following.
++
++.. code-block:: c
++
++	// This is copy-pasted from above.
++	struct sha1_test_case {
++		const char *str;
++		const char *sha1;
++	};
++	struct sha1_test_case cases[] = {
++		{
++			.str = "hello world",
++			.sha1 = "2aae6c35c94fcfb415dbe95f408b9ce91ee846ed",
++		},
++		{
++			.str = "hello world!",
++			.sha1 = "430ce34d020724ed75a196dfc2ad67c77772d169",
++		},
++	};
++
++	// Need a helper function to generate a name for each test case.
++	static void case_to_desc(const struct sha1_test_case *t, char *desc)
++	{
++		strcpy(desc, t->str);
++	}
++	// Creates `sha1_gen_params()` to iterate over `cases`.
++	KUNIT_ARRAY_PARAM(sha1, cases, case_to_desc);
++
++	// Looks no different from a normal test.
++	static void sha1_test(struct kunit *test)
++	{
++		// This function can just contain the body of the for-loop.
++		// The former `cases[i]` is accessible under test->param_value.
++		char out[40];
++		struct sha1_test_case *test_param = (struct sha1_test_case *)(test->param_value);
++
++		sha1sum(test_param->str, out);
++		KUNIT_EXPECT_STREQ_MSG(test, (char *)out, test_param->sha1,
++				      "sha1sum(%s)", test_param->str);
++	}
++
++	// Instead of KUNIT_CASE, we use KUNIT_CASE_PARAM and pass in the
++	// function declared by KUNIT_ARRAY_PARAM.
++	static struct kunit_case sha1_test_cases[] = {
++		KUNIT_CASE_PARAM(sha1_test, sha1_gen_params),
++		{}
++	};
++
+ .. _kunit-on-non-uml:
+ 
+ KUnit on non-UML architectures
+
+base-commit: 5f6b99d0287de2c2d0b5e7abcb0092d553ad804a
+-- 
+2.29.2.684.gfbc64c5ab5-goog
+
