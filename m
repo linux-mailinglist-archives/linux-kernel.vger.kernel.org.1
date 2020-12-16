@@ -2,79 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8CD2DC069
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:39:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA8B2DC06E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgLPMiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 07:38:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50860 "EHLO mail.kernel.org"
+        id S1725948AbgLPMmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 07:42:18 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:37096 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgLPMiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 07:38:51 -0500
-Date:   Wed, 16 Dec 2020 13:38:05 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608122290;
-        bh=/vWZmZvghpr6F9yCtq98EC441mITAJqIEkMnbirYzEQ=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sPHVFQ2C9AvSHa04+66kxuGPInU0Ju9ieUIux+tb+q0O1H7xwB3wblE8f4ias+HL5
-         eX5tNXBf7vXicl2Dd5YF2rDYUU6X4MxIvzCy0NuxYAkFb3MEn2tXc4E+fJh+nQpLAq
-         jtcoE9uKKS9hNDISUkK+NE81aVKraV4uVT0v49rIDGNyABIW4NyM3q0D+eFnqk9q31
-         ljSkyJyd844RSjxBk+32/dDsmhzdok8hvL3wlV138/EguAuXBwA73YdvK2nLeXp6Vq
-         sxJvBf0YWp+aFVJxkLzGJhfDK7oHE7gKtYA/wkgIQ/zqRrcvLM/bmO3ldSAosUjg5f
-         uDXIzivWfkwpw==
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Dexuan Cui <decui@microsoft.com>, Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        id S1725933AbgLPMmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 07:42:17 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 4FBE6FB03;
+        Wed, 16 Dec 2020 13:41:35 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id XPKuVr8ci4UN; Wed, 16 Dec 2020 13:41:33 +0100 (CET)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 68FEB43FDC; Wed, 16 Dec 2020 13:41:33 +0100 (CET)
+Date:   Wed, 16 Dec 2020 13:41:33 +0100
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <guido.gunther@puri.sm>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: static_branch_enable() does not work from a __init function?
-Message-ID: <20201216123805.GB13751@linux-8ccs>
-References: <MW4PR21MB1857CC85A6844C89183C93E9BFC59@MW4PR21MB1857.namprd21.prod.outlook.com>
- <20201216092649.GM3040@hirez.programming.kicks-ass.net>
+        "angus.ainslie@puri.sm" <angus.ainslie@puri.sm>
+Subject: Re: [PATCH 1/1] regulators: bd718x7: Add enable times
+Message-ID: <20201216124133.GA31109@bogon.m.sigxcpu.org>
+References: <cover.1608116704.git.agx@sigxcpu.org>
+ <d2b3d053d28ea0f35e7526b523287358c8fe20c2.1608116704.git.agx@sigxcpu.org>
+ <7d4903f67ff81a9a749e75f24af0aea903213c43.camel@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201216092649.GM3040@hirez.programming.kicks-ass.net>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7d4903f67ff81a9a749e75f24af0aea903213c43.camel@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Peter Zijlstra [16/12/20 10:26 +0100]:
->On Wed, Dec 16, 2020 at 03:54:29AM +0000, Dexuan Cui wrote:
->> PS, I originally found: in arch/x86/kvm/vmx/vmx.c: vmx_init(), it looks
->> like the line "static_branch_enable(&enable_evmcs);" does not take effect
->> in a v5.4-based kernel, but does take effect in the v5.10 kernel in the
->> same x86-64 virtual machine on Hyper-V, so I made the above test module
->> to test static_branch_enable(), and found that static_branch_enable() in
->> the test module does not work with both v5.10 and my v5.4 kernel, if the
->> __init marker is used.
+Hi Matti,
+On Wed, Dec 16, 2020 at 12:29:20PM +0000, Vaittinen, Matti wrote:
+> Hello Guido,
+> 
+> Thanks for looking at this!
+> 
+> On Wed, 2020-12-16 at 12:05 +0100, Guido Günther wrote:
+> > Use the typical startup times from the data sheet so boards get a
+> > reasonable default. Not setting any enable time can lead to board
+> > hangs
+> > when e.g. clocks are enabled too soon afterwards.
+> > 
+> > This fixes gpu power domain resume on the Librem 5.
+> > 
+> > Signed-off-by: Guido Günther <agx@sigxcpu.org>
+> > ---
+> >  drivers/regulator/bd718x7-regulator.c | 27
+> > +++++++++++++++++++++++++++
+> >  1 file changed, 27 insertions(+)
+> > 
+> > diff --git a/drivers/regulator/bd718x7-regulator.c
+> > b/drivers/regulator/bd718x7-regulator.c
+> > index e6d5d98c3cea..d6d34aa4ee2e 100644
+> > --- a/drivers/regulator/bd718x7-regulator.c
+> > +++ b/drivers/regulator/bd718x7-regulator.c
+> > @@ -613,6 +613,7 @@ static struct bd718xx_regulator_data
+> > bd71847_regulators[] = {
+> >  			.vsel_mask = DVS_BUCK_RUN_MASK,
+> >  			.enable_reg = BD718XX_REG_BUCK1_CTRL,
+> >  			.enable_mask = BD718XX_BUCK_EN,
+> > +			.enable_time = 144,
+> 
+> Where are these values obtained from? I have a feeling they might be
+> board / load specific. If this is the case - can the "regulator-enable-
+> ramp-delay" from device-tree be used instead to avoid hard-coding board
+> specific values in the driver? Although, sane defaults would probably
+> not be a bad idea - if I read code correctly then the constrains from
+> DT can be used to override these values.
 
-By the way, it probably works now because there was a workaround
-merged in v5.10, that mentions this very issue:
+They're the 'typical values' from the data sheet and it's basically all
+about setting a default for "regulator-enable-ramp-delay" to avoid
+having every board do the same. If that's not the right thing todo let
+me know and i add these to each of our boards (which is where i
+basically started from but then figured that this would be busywork
+and every board would hit that problem).
 
-commit 064eedf2c50f692088e1418c553084bf9c1432f8
-Author: Vitaly Kuznetsov <vkuznets@redhat.com>
-Date:   Wed Oct 14 16:33:46 2020 +0200
+> I'd prefer well named defines over raw numeric values though.
 
-    KVM: VMX: eVMCS: make evmcs_sanitize_exec_ctrls() work again
+So s.th. like
 
-    It was noticed that evmcs_sanitize_exec_ctrls() is not being executed
-    nowadays despite the code checking 'enable_evmcs' static key looking
-    correct. Turns out, static key magic doesn't work in '__init' section
-    (and it is unclear when things changed) but setup_vmcs_config() is called
-    only once per CPU so we don't really need it to. Switch to checking
-    'enlightened_vmcs' instead, it is supposed to be in sync with
-    'enable_evmcs'.
+BD71837_BUCK1_STARTUP_TIME 144
 
-    Opportunistically make evmcs_sanitize_exec_ctrls '__init' and drop unneeded
-    extra newline from it.
+(using the terminology from the datasheet)? If that works I'll send a
+v2.
 
-    Reported-by: Yang Weijiang <weijiang.yang@intel.com>
-    Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-    Message-Id: <20201014143346.2430936-1-vkuznets@redhat.com>
-    Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Cheers,
+ --Guido
 
+> 
+> Best Regards
+>     Matti Vaittinen
+> 
+> 
