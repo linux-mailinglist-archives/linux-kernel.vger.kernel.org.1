@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3E62DBEC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E47C2DBEC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726146AbgLPKhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:37:00 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:33909 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726143AbgLPKg7 (ORCPT
+        id S1726202AbgLPKhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 05:37:11 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:36877 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726143AbgLPKhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:36:59 -0500
-X-UUID: cc3bd593fb8b4318ba4878f0f99a0b23-20201216
-X-UUID: cc3bd593fb8b4318ba4878f0f99a0b23-20201216
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        Wed, 16 Dec 2020 05:37:10 -0500
+X-UUID: b25e4e00b67d487d9ca4d45ce3372851-20201216
+X-UUID: b25e4e00b67d487d9ca4d45ce3372851-20201216
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
         (envelope-from <yong.wu@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 436696254; Wed, 16 Dec 2020 18:36:16 +0800
+        with ESMTP id 120131141; Wed, 16 Dec 2020 18:36:26 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 16 Dec 2020 18:36:13 +0800
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 16 Dec 2020 18:36:23 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 16 Dec 2020 18:36:11 +0800
+ Transport; Wed, 16 Dec 2020 18:36:22 +0800
 From:   Yong Wu <yong.wu@mediatek.com>
 To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
         Robin Murphy <robin.murphy@arm.com>
@@ -38,10 +38,12 @@ CC:     Matthias Brugger <matthias.bgg@gmail.com>,
         <anan.sun@mediatek.com>, <chao.hao@mediatek.com>,
         Greg Kroah-Hartman <gregkh@google.com>,
         <kernel-team@android.com>
-Subject: [PATCH v3 0/7] MediaTek IOMMU improve tlb flush performance in map/unmap
-Date:   Wed, 16 Dec 2020 18:36:00 +0800
-Message-ID: <20201216103607.23050-1-yong.wu@mediatek.com>
+Subject: [PATCH v3 1/7] iommu: Move iotlb_sync_map out from __iommu_map
+Date:   Wed, 16 Dec 2020 18:36:01 +0800
+Message-ID: <20201216103607.23050-2-yong.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20201216103607.23050-1-yong.wu@mediatek.com>
+References: <20201216103607.23050-1-yong.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK:  N
@@ -49,67 +51,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset is to improve tlb flushing performance in iommu_map/unmap
-for MediaTek IOMMU.
+In the end of __iommu_map, It alway call iotlb_sync_map.
+This patch moves iotlb_sync_map out from __iommu_map since it is
+unnecessary to call this for each sg segment especially iotlb_sync_map
+is flush tlb all currently.
 
-For iommu_map, currently MediaTek IOMMU use IO_PGTABLE_QUIRK_TLBI_ON_MAP
-to do tlb_flush for each a memory chunk. this is so unnecessary. we could
-improve it by tlb flushing one time at the end of iommu_map.
+Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+---
+ drivers/iommu/iommu.c | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
-For iommu_unmap, currently we have already improve this performance by
-gather. But the current gather should take care its granule size. if the
-granule size is different, it will do tlb flush and gather again. Our HW
-don't care about granule size. thus I gather the range in our file.
-
-After this patchset, we could achieve only tlb flushing once in iommu_map
-and iommu_unmap.
-
-Regardless of sg, for each a segment, I did a simple test:
-  
-  size = 20 * SZ_1M;
-  /* the worst case, all are 4k mapping. */
-  ret = iommu_map(domain, 0x5bb02000, 0x123f1000, size, IOMMU_READ);
-  iommu_unmap(domain, 0x5bb02000, size);
-
-This is the comparing time(unit is us):
-              original-time  after-improve
-   map-20M    59943           2347
-   unmap-20M  264             36
-
-This patchset also flush tlb once in the iommu_map_sg case.
-
-patch [1/7][2/7][3/7] are for map while the others are for unmap.
-
-This patchset base on:
-  a) mt8192 iommu v5
-https://lore.kernel.org/linux-iommu/20201209080102.26626-1-yong.wu@mediatek.com/T/#t
-  b) iommu/io-pgtable: Remove tlb_flush_leaf
-https://lore.kernel.org/linux-iommu/160744101816.3622130.16266834943434854326.b4-ty@kernel.org/T/#mc8fbc98bee8bca865d73c873275ab34fed1c25c7
-
-change note:
-v3: Refactor the unmap flow suggested by Robin.
-     
-v2: https://lore.kernel.org/linux-iommu/20201119061836.15238-1-yong.wu@mediatek.com/
-    Refactor all the code.
-    base on v5.10-rc1.
-
-Yong Wu (7):
-  iommu: Move iotlb_sync_map out from __iommu_map
-  iommu: Add iova and size as parameters in iotlb_sync_map
-  iommu/mediatek: Add iotlb_sync_map to sync whole the iova range
-  iommu: Switch gather->end to unsigned long long
-  iommu: Allow io_pgtable_tlb ops optional
-  iommu/mediatek: Gather iova in iommu_unmap to achieve tlb sync once
-  iommu/mediatek: Remove the tlb-ops for v7s
-
- drivers/iommu/iommu.c      | 24 +++++++++++++++-----
- drivers/iommu/mtk_iommu.c  | 45 +++++++++++++++-----------------------
- drivers/iommu/tegra-gart.c |  3 ++-
- include/linux/io-pgtable.h |  8 ++++---
- include/linux/iommu.h      |  8 ++++---
- 5 files changed, 49 insertions(+), 39 deletions(-)
-
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 8c470f451a32..decef851fa3a 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -2407,9 +2407,6 @@ static int __iommu_map(struct iommu_domain *domain, unsigned long iova,
+ 		size -= pgsize;
+ 	}
+ 
+-	if (ops->iotlb_sync_map)
+-		ops->iotlb_sync_map(domain);
+-
+ 	/* unroll mapping in case something went wrong */
+ 	if (ret)
+ 		iommu_unmap(domain, orig_iova, orig_size - size);
+@@ -2422,15 +2419,29 @@ static int __iommu_map(struct iommu_domain *domain, unsigned long iova,
+ int iommu_map(struct iommu_domain *domain, unsigned long iova,
+ 	      phys_addr_t paddr, size_t size, int prot)
+ {
++	const struct iommu_ops *ops = domain->ops;
++	int ret;
++
+ 	might_sleep();
+-	return __iommu_map(domain, iova, paddr, size, prot, GFP_KERNEL);
++	ret = __iommu_map(domain, iova, paddr, size, prot, GFP_KERNEL);
++	if (ret == 0 && ops->iotlb_sync_map)
++		ops->iotlb_sync_map(domain);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(iommu_map);
+ 
+ int iommu_map_atomic(struct iommu_domain *domain, unsigned long iova,
+ 	      phys_addr_t paddr, size_t size, int prot)
+ {
+-	return __iommu_map(domain, iova, paddr, size, prot, GFP_ATOMIC);
++	const struct iommu_ops *ops = domain->ops;
++	int ret;
++
++	ret = __iommu_map(domain, iova, paddr, size, prot, GFP_ATOMIC);
++	if (ret == 0 && ops->iotlb_sync_map)
++		ops->iotlb_sync_map(domain);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(iommu_map_atomic);
+ 
+@@ -2514,6 +2525,7 @@ static size_t __iommu_map_sg(struct iommu_domain *domain, unsigned long iova,
+ 			     struct scatterlist *sg, unsigned int nents, int prot,
+ 			     gfp_t gfp)
+ {
++	const struct iommu_ops *ops = domain->ops;
+ 	size_t len = 0, mapped = 0;
+ 	phys_addr_t start;
+ 	unsigned int i = 0;
+@@ -2544,6 +2556,8 @@ static size_t __iommu_map_sg(struct iommu_domain *domain, unsigned long iova,
+ 			sg = sg_next(sg);
+ 	}
+ 
++	if (ops->iotlb_sync_map)
++		ops->iotlb_sync_map(domain);
+ 	return mapped;
+ 
+ out_err:
 -- 
 2.18.0
-
 
