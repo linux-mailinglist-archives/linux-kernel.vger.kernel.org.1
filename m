@@ -2,321 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C513C2DB935
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 03:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7F92DB937
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 03:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725878AbgLPCdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 21:33:19 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9448 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725841AbgLPCdT (ORCPT
+        id S1726112AbgLPCew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 21:34:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgLPCew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 21:33:19 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CwfKM1vggzhrLl;
-        Wed, 16 Dec 2020 10:32:07 +0800 (CST)
-Received: from [10.67.103.10] (10.67.103.10) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Wed, 16 Dec 2020
- 10:32:29 +0800
-Subject: Re: Fwd: Re: [PATCH v4 3/5] crypto: expose elliptic curve parameters
- as Crypto APIs
-To:     Vitaly Chikunov <vt@altlinux.org>
-References: <20201211131349.pe6i5wafg2kq2w35@altlinux.org>
- <75a25392-464d-b76e-ba92-4287e24acbf7@huawei.com>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-From:   yumeng <yumeng18@huawei.com>
-Message-ID: <b8746428-dfbd-145d-ed3a-4420c49d14bf@huawei.com>
-Date:   Wed, 16 Dec 2020 10:32:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Tue, 15 Dec 2020 21:34:52 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10908C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 18:34:12 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id u18so44575927lfd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 18:34:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MOHF+gl+OMMG1QgmH1V73+fyHVx0MkwzoVxV0JG8Lv4=;
+        b=UPu4AGLueLqzTSIYqU9zfFBm4GlxC9GiHWclpWDDa/Q4HmYhRH3lve+WEsjYRN32OP
+         JI7O5g8d1gUOxKuDoPdl8KtDvxlQNWLMPpSAYfcCnmC5qRhxmMWajRMZOvQay/7VFytW
+         gcocwfkI8vk9Z1Ete5LvKqVuY4zIVR5OKZs03EIMnxC7jk3/rEiIx7dcKuh5sL8ta2+9
+         BKb9WyPmXwtnKgsClhmqlsfQPT86nVSdBD3sFCa5dA0woCiaULnMe3QIneKWmgdeOUTE
+         Xp1Z7eoWbeiImr3sXalcs2GYF1Yp1fAoyvp4OvSS+MwuOfu86ZiZ3hBqzUpGwhQVM41j
+         YBdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MOHF+gl+OMMG1QgmH1V73+fyHVx0MkwzoVxV0JG8Lv4=;
+        b=N3WBi+05sZulmzoX+IW2XsX2zrV+UQhReQnXha/jbIMSmtUzqDCaW8R29wCh1rcxiA
+         Xw7mhxbxE7Z+ylvSDpSY6RNNIRalhoPiQ9f8bBFx9fzCvfPoL44btfor4lzdHyyOw6YB
+         Wh+eSAE1c+5jdUOp36nDmFk0RCyCVUChsCrRCXm6LbLZrP3eVEbtvSnqEdszN1/GPpvB
+         PtJrpI1ZFbdHys1omz8mk2L/X3rQ4fgIFabi7MYX39Q8gskTCJjXHhUyL2jyJU6Gk8m2
+         NC96IDZTZNleLSZGh8L0l+/wtawYZ5ka+m4H8/PMVG/WRwYUwT2rBidNDk/yFFJ1FGAQ
+         DmNw==
+X-Gm-Message-State: AOAM533mcspoUSGuzUsQQeITS9Mf8vKwrYhhP+29L+i7Izrltsrke9BU
+        64qJ1I7KeLAWpYgyO/TWpSy7LWwpTqvgwbl1GCpaWg==
+X-Google-Smtp-Source: ABdhPJwbunInmrnvmwAUoXogNkc3hzOmkqVwILIDiVk5ZmNQDWo0gIvrLQZ9NbTUm4ZvCdP6dVtg/cInyWGfmv1GnXU=
+X-Received: by 2002:a19:4c84:: with SMTP id z126mr11398098lfa.69.1608086050251;
+ Tue, 15 Dec 2020 18:34:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <75a25392-464d-b76e-ba92-4287e24acbf7@huawei.com>
-Content-Type: text/plain; charset="koi8-r"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.10]
-X-CFilter-Loop: Reflected
+References: <feef4f9a-4ed8-8a2e-d330-88e7f516faae@gmail.com>
+ <X9lBp3BHbwcTmDqb@pc.thejh.net> <0e5189c0-9e9b-ac34-825c-619a9a6ef682@gmail.com>
+ <d38c5e8b-1653-d89a-a0c8-b95cb1844fba@gmail.com> <CAG48ez0y21uWBDuaczLMxLPpFTKABrgm+-aqLb-0a4rHuOCX-g@mail.gmail.com>
+ <5062fe43-ca37-134f-89ad-57fbd8c312ba@softwarecrafters.com>
+In-Reply-To: <5062fe43-ca37-134f-89ad-57fbd8c312ba@softwarecrafters.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 16 Dec 2020 03:33:43 +0100
+Message-ID: <CAG48ez2g=U-H56g6VebQCiSXGg+bVvhBA5yfwymNxVYAGEJJcA@mail.gmail.com>
+Subject: Re: [Bug 210655] ptrace.2: documentation is incorrect about access
+ checking threads in same thread group
+To:     Ted Estes <ted@softwarecrafters.com>
+Cc:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
+        Jann Horn <jann@thejh.net>, Pavel Emelyanov <xemul@openvz.org>,
+        Oleg Nesterov <oleg@tv-sign.ru>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 16, 2020 at 3:21 AM Ted Estes <ted@softwarecrafters.com> wrote:
+> On 12/15/2020 6:01 PM, Jann Horn wrote:
+> > On Wed, Dec 16, 2020 at 12:25 AM Alejandro Colomar (man-pages)
+> > <alx.manpages@gmail.com> wrote:
+> >> On 12/16/20 12:23 AM, Alejandro Colomar (man-pages) wrote:
+> >>> On 12/16/20 12:07 AM, Jann Horn wrote:
+> >>>> As the comment explains, you can't actually *attach*
+> >>>> to another task in the same thread group; but that's
+> >>>> not because of the ptrace-style access check rules,
+> >>>> but because specifically *attaching* to another task
+> >>>> in the same thread group doesn't work.
+> > As I said, attaching indeed doesn't work. But that's not what "Ptrace
+> > access mode checking" means. As the first sentence of that section
+> > says:
+> >
+> > | Various parts of the kernel-user-space API (not just ptrace()
+> > | operations), require so-called "ptrace access mode" checks,
+> > | whose outcome determines whether an operation is
+> > | permitted (or, in a  few cases,  causes  a "read" operation
+> > | to return sanitized data).
+> >
+> > You can find these places by grepping for \bptrace_may_access\b -
+> > operations like e.g. the get_robust_list() syscall will always succeed
+> > when inspecting other tasks in the caller's thread group thanks to
+> > this rule.
+>
+> Ah, yes.  I missed that back reference while trying to digest that
+> rather meaty man page.  A grep on the man page source tree does show a
+> number of references to "ptrace access mode".
+>
+> That said, the ptrace(2) man page also directly references the ptrace
+> access mode check under both PTRACE_ATTACH and PTACE_SEIZE:
+>
+> | Permission to perform a PTRACE_ATTACH is governed by a ptrace | access
+> mode PTRACE_MODE_ATTACH_REALCREDS check; see below. As confirmed, the
+> "same thread group" rule does not apply to either of those operations. A
+> re-wording of rule 1 similar to this might help avoid confusion: 1. If
+> the calling thread and the target thread are in the same thread group:
+> a. For ptrace() called with PTRACE_ATTACH or PTRACE_SEIZE, access is
+> NEVER allowed. b. For all other so-called "ptrace access mode checks",
+> access is ALWAYS allowed. --Ted
 
-> Meng,
-> 
-> It looks like not just definitions but some static data is moved to
-> includes. Why?
-> 
-> Thanks,
-
-Yes, as both 'crypto' and HPRE use elliptic curves parameters, once
-we keep them in 'include/crypto/ecc_curve_defs.h', crypto drivers
-can use curves parameters without redefining them.
-
-Thanks,
-
-
-> On Fri, Dec 11, 2020 at 02:30:32PM +0800, Meng Yu wrote:
->> Move elliptic curves definition to 'include/crypto/ecc_curve_defs.h',
->> so all can use it,
->> 
->> Signed-off-by: Meng Yu <yumeng18@huawei.com>
->> Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
->> ---
->>  crypto/ecc.c                    |  1 -
->>  crypto/ecc.h                    | 37 +----------------
->>  crypto/ecc_curve_defs.h         | 57 -------------------------
->>  crypto/ecrdsa_defs.h            |  2 +-
->>  include/crypto/ecc_curve_defs.h | 92 +++++++++++++++++++++++++++++++++++++++++
->>  5 files changed, 95 insertions(+), 94 deletions(-)
->>  delete mode 100644 crypto/ecc_curve_defs.h
->>  create mode 100644 include/crypto/ecc_curve_defs.h
->> 
->> diff --git a/crypto/ecc.c b/crypto/ecc.c
->> index c80aa25..f23efdd 100644
->> --- a/crypto/ecc.c
->> +++ b/crypto/ecc.c
->> @@ -35,7 +35,6 @@
->>  #include <linux/ratelimit.h>
->>  
->>  #include "ecc.h"
->> -#include "ecc_curve_defs.h"
->>  
->>  typedef struct {
->>  	u64 m_low;
->> diff --git a/crypto/ecc.h b/crypto/ecc.h
->> index d4e546b..e5afaf3 100644
->> --- a/crypto/ecc.h
->> +++ b/crypto/ecc.h
->> @@ -26,6 +26,8 @@
->>  #ifndef _CRYPTO_ECC_H
->>  #define _CRYPTO_ECC_H
->>  
->> +#include <crypto/ecc_curve_defs.h>
->> +
->>  /* One digit is u64 qword. */
->>  #define ECC_CURVE_NIST_P192_DIGITS  3
->>  #define ECC_CURVE_NIST_P256_DIGITS  4
->> @@ -33,44 +35,9 @@
->>  
->>  #define ECC_DIGITS_TO_BYTES_SHIFT 3
->>  
->> -/**
->> - * struct ecc_point - elliptic curve point in affine coordinates
->> - *
->> - * @x:		X coordinate in vli form.
->> - * @y:		Y coordinate in vli form.
->> - * @ndigits:	Length of vlis in u64 qwords.
->> - */
->> -struct ecc_point {
->> -	u64 *x;
->> -	u64 *y;
->> -	u8 ndigits;
->> -};
->> -
->>  #define ECC_POINT_INIT(x, y, ndigits)	(struct ecc_point) { x, y, ndigits }
->>  
->>  /**
->> - * struct ecc_curve - definition of elliptic curve
->> - *
->> - * @name:	Short name of the curve.
->> - * @g:		Generator point of the curve.
->> - * @p:		Prime number, if Barrett's reduction is used for this curve
->> - *		pre-calculated value 'mu' is appended to the @p after ndigits.
->> - *		Use of Barrett's reduction is heuristically determined in
->> - *		vli_mmod_fast().
->> - * @n:		Order of the curve group.
->> - * @a:		Curve parameter a.
->> - * @b:		Curve parameter b.
->> - */
->> -struct ecc_curve {
->> -	char *name;
->> -	struct ecc_point g;
->> -	u64 *p;
->> -	u64 *n;
->> -	u64 *a;
->> -	u64 *b;
->> -};
->> -
->> -/**
->>   * ecc_is_key_valid() - Validate a given ECDH private key
->>   *
->>   * @curve_id:		id representing the curve to use
->> diff --git a/crypto/ecc_curve_defs.h b/crypto/ecc_curve_defs.h
->> deleted file mode 100644
->> index 69be6c7..0000000
->> --- a/crypto/ecc_curve_defs.h
->> +++ /dev/null
->> @@ -1,57 +0,0 @@
->> -/* SPDX-License-Identifier: GPL-2.0 */
->> -#ifndef _CRYTO_ECC_CURVE_DEFS_H
->> -#define _CRYTO_ECC_CURVE_DEFS_H
->> -
->> -/* NIST P-192: a = p - 3 */
->> -static u64 nist_p192_g_x[] = { 0xF4FF0AFD82FF1012ull, 0x7CBF20EB43A18800ull,
->> -				0x188DA80EB03090F6ull };
->> -static u64 nist_p192_g_y[] = { 0x73F977A11E794811ull, 0x631011ED6B24CDD5ull,
->> -				0x07192B95FFC8DA78ull };
->> -static u64 nist_p192_p[] = { 0xFFFFFFFFFFFFFFFFull, 0xFFFFFFFFFFFFFFFEull,
->> -				0xFFFFFFFFFFFFFFFFull };
->> -static u64 nist_p192_n[] = { 0x146BC9B1B4D22831ull, 0xFFFFFFFF99DEF836ull,
->> -				0xFFFFFFFFFFFFFFFFull };
->> -static u64 nist_p192_a[] = { 0xFFFFFFFFFFFFFFFCull, 0xFFFFFFFFFFFFFFFEull,
->> -				0xFFFFFFFFFFFFFFFFull };
->> -static u64 nist_p192_b[] = { 0xFEB8DEECC146B9B1ull, 0x0FA7E9AB72243049ull,
->> -				0x64210519E59C80E7ull };
->> -static struct ecc_curve nist_p192 = {
->> -	.name = "nist_192",
->> -	.g = {
->> -		.x = nist_p192_g_x,
->> -		.y = nist_p192_g_y,
->> -		.ndigits = 3,
->> -	},
->> -	.p = nist_p192_p,
->> -	.n = nist_p192_n,
->> -	.a = nist_p192_a,
->> -	.b = nist_p192_b
->> -};
->> -
->> -/* NIST P-256: a = p - 3 */
->> -static u64 nist_p256_g_x[] = { 0xF4A13945D898C296ull, 0x77037D812DEB33A0ull,
->> -				0xF8BCE6E563A440F2ull, 0x6B17D1F2E12C4247ull };
->> -static u64 nist_p256_g_y[] = { 0xCBB6406837BF51F5ull, 0x2BCE33576B315ECEull,
->> -				0x8EE7EB4A7C0F9E16ull, 0x4FE342E2FE1A7F9Bull };
->> -static u64 nist_p256_p[] = { 0xFFFFFFFFFFFFFFFFull, 0x00000000FFFFFFFFull,
->> -				0x0000000000000000ull, 0xFFFFFFFF00000001ull };
->> -static u64 nist_p256_n[] = { 0xF3B9CAC2FC632551ull, 0xBCE6FAADA7179E84ull,
->> -				0xFFFFFFFFFFFFFFFFull, 0xFFFFFFFF00000000ull };
->> -static u64 nist_p256_a[] = { 0xFFFFFFFFFFFFFFFCull, 0x00000000FFFFFFFFull,
->> -				0x0000000000000000ull, 0xFFFFFFFF00000001ull };
->> -static u64 nist_p256_b[] = { 0x3BCE3C3E27D2604Bull, 0x651D06B0CC53B0F6ull,
->> -				0xB3EBBD55769886BCull, 0x5AC635D8AA3A93E7ull };
->> -static struct ecc_curve nist_p256 = {
->> -	.name = "nist_256",
->> -	.g = {
->> -		.x = nist_p256_g_x,
->> -		.y = nist_p256_g_y,
->> -		.ndigits = 4,
->> -	},
->> -	.p = nist_p256_p,
->> -	.n = nist_p256_n,
->> -	.a = nist_p256_a,
->> -	.b = nist_p256_b
->> -};
->> -
->> -#endif
->> diff --git a/crypto/ecrdsa_defs.h b/crypto/ecrdsa_defs.h
->> index 170baf0..2074099 100644
->> --- a/crypto/ecrdsa_defs.h
->> +++ b/crypto/ecrdsa_defs.h
->> @@ -13,7 +13,7 @@
->>  #ifndef _CRYTO_ECRDSA_DEFS_H
->>  #define _CRYTO_ECRDSA_DEFS_H
->>  
->> -#include "ecc.h"
->> +#include <crypto/ecc_curve_defs.h>
->>  
->>  #define ECRDSA_MAX_SIG_SIZE (2 * 512 / 8)
->>  #define ECRDSA_MAX_DIGITS (512 / 64)
->> diff --git a/include/crypto/ecc_curve_defs.h b/include/crypto/ecc_curve_defs.h
->> new file mode 100644
->> index 0000000..1080766
->> --- /dev/null
->> +++ b/include/crypto/ecc_curve_defs.h
->> @@ -0,0 +1,92 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#ifndef _CRYTO_ECC_CURVE_DEFS_H
->> +#define _CRYTO_ECC_CURVE_DEFS_H
->> +
->> +/**
->> + * struct ecc_point - elliptic curve point in affine coordinates
->> + *
->> + * @x:		X coordinate in vli form.
->> + * @y:		Y coordinate in vli form.
->> + * @ndigits:	Length of vlis in u64 qwords.
->> + */
->> +struct ecc_point {
->> +	u64 *x;
->> +	u64 *y;
->> +	u8 ndigits;
->> +};
->> +
->> +/**
->> + * struct ecc_curve - definition of elliptic curve
->> + *
->> + * @name:	Short name of the curve.
->> + * @g:		Generator point of the curve.
->> + * @p:		Prime number, if Barrett's reduction is used for this curve
->> + *		pre-calculated value 'mu' is appended to the @p after ndigits.
->> + *		Use of Barrett's reduction is heuristically determined in
->> + *		vli_mmod_fast().
->> + * @n:		Order of the curve group.
->> + * @a:		Curve parameter a.
->> + * @b:		Curve parameter b.
->> + */
->> +struct ecc_curve {
->> +	char *name;
->> +	struct ecc_point g;
->> +	u64 *p;
->> +	u64 *n;
->> +	u64 *a;
->> +	u64 *b;
->> +};
->> +
->> +/* NIST P-192: a = p - 3 */
->> +static u64 nist_p192_g_x[] = { 0xF4FF0AFD82FF1012ull, 0x7CBF20EB43A18800ull,
->> +				0x188DA80EB03090F6ull };
->> +static u64 nist_p192_g_y[] = { 0x73F977A11E794811ull, 0x631011ED6B24CDD5ull,
->> +				0x07192B95FFC8DA78ull };
->> +static u64 nist_p192_p[] = { 0xFFFFFFFFFFFFFFFFull, 0xFFFFFFFFFFFFFFFEull,
->> +				0xFFFFFFFFFFFFFFFFull };
->> +static u64 nist_p192_n[] = { 0x146BC9B1B4D22831ull, 0xFFFFFFFF99DEF836ull,
->> +				0xFFFFFFFFFFFFFFFFull };
->> +static u64 nist_p192_a[] = { 0xFFFFFFFFFFFFFFFCull, 0xFFFFFFFFFFFFFFFEull,
->> +				0xFFFFFFFFFFFFFFFFull };
->> +static u64 nist_p192_b[] = { 0xFEB8DEECC146B9B1ull, 0x0FA7E9AB72243049ull,
->> +				0x64210519E59C80E7ull };
->> +static struct ecc_curve nist_p192 = {
->> +	.name = "nist_192",
->> +	.g = {
->> +		.x = nist_p192_g_x,
->> +		.y = nist_p192_g_y,
->> +		.ndigits = 3,
->> +	},
->> +	.p = nist_p192_p,
->> +	.n = nist_p192_n,
->> +	.a = nist_p192_a,
->> +	.b = nist_p192_b
->> +};
->> +
->> +/* NIST P-256: a = p - 3 */
->> +static u64 nist_p256_g_x[] = { 0xF4A13945D898C296ull, 0x77037D812DEB33A0ull,
->> +				0xF8BCE6E563A440F2ull, 0x6B17D1F2E12C4247ull };
->> +static u64 nist_p256_g_y[] = { 0xCBB6406837BF51F5ull, 0x2BCE33576B315ECEull,
->> +				0x8EE7EB4A7C0F9E16ull, 0x4FE342E2FE1A7F9Bull };
->> +static u64 nist_p256_p[] = { 0xFFFFFFFFFFFFFFFFull, 0x00000000FFFFFFFFull,
->> +				0x0000000000000000ull, 0xFFFFFFFF00000001ull };
->> +static u64 nist_p256_n[] = { 0xF3B9CAC2FC632551ull, 0xBCE6FAADA7179E84ull,
->> +				0xFFFFFFFFFFFFFFFFull, 0xFFFFFFFF00000000ull };
->> +static u64 nist_p256_a[] = { 0xFFFFFFFFFFFFFFFCull, 0x00000000FFFFFFFFull,
->> +				0x0000000000000000ull, 0xFFFFFFFF00000001ull };
->> +static u64 nist_p256_b[] = { 0x3BCE3C3E27D2604Bull, 0x651D06B0CC53B0F6ull,
->> +				0xB3EBBD55769886BCull, 0x5AC635D8AA3A93E7ull };
->> +static struct ecc_curve nist_p256 = {
->> +	.name = "nist_256",
->> +	.g = {
->> +		.x = nist_p256_g_x,
->> +		.y = nist_p256_g_y,
->> +		.ndigits = 4,
->> +	},
->> +	.p = nist_p256_p,
->> +	.n = nist_p256_n,
->> +	.a = nist_p256_a,
->> +	.b = nist_p256_b
->> +};
->> +
->> +#endif
->> -- 
->> 2.8.1
-> .
-> 
+Yeah, maybe. OTOH I'm not sure whether it really makes sense to
+explain this as being part of a security check, or whether it should
+be explained separately as a restriction on PTRACE_ATTACH and
+PTRACE_SEIZE (with a note like "(irrelevant for ptrace attachment)" on
+rule 1). But I don't feel strongly about it either way.
