@@ -2,270 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244252DC47E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 17:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9F32DC487
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 17:46:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgLPQmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 11:42:53 -0500
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:47003 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgLPQmx (ORCPT
+        id S1726766AbgLPQpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 11:45:51 -0500
+Received: from mout.kundenserver.de ([212.227.126.135]:41449 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725997AbgLPQpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 11:42:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1608136971; x=1639672971;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=EINpcIYTjwYeOkbDneqm5cXPEFSVJPKdld+/Olx8XLU=;
-  b=GVYOr675W7sshryceeJ+4Xx/iwg0CASCV4byI9TColYLIdCJALAp//3R
-   MZ8vI3U+5U9qOKmd4HN/uyn2bRATZyB1u9Ze4bIGoTfbgX351RE+ldYzJ
-   oZUW5ZyypeDKNLTjD67/aTzFAMUcrTCUKha/rRJrdwvipVkRBoqoWTcJx
-   0=;
-X-IronPort-AV: E=Sophos;i="5.78,424,1599523200"; 
-   d="scan'208";a="96586335"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 16 Dec 2020 16:42:10 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id 5F44BA2054;
-        Wed, 16 Dec 2020 16:42:07 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 16 Dec 2020 16:42:06 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.162.144) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 16 Dec 2020 16:42:02 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH v1 bpf-next 05/11] tcp: Migrate TCP_NEW_SYN_RECV requests.
-Date:   Thu, 17 Dec 2020 01:41:58 +0900
-Message-ID: <20201216164158.65104-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <20201215025837.k2cuhykmz6h46fud@kafai-mbp.dhcp.thefacebook.com>
-References: <20201215025837.k2cuhykmz6h46fud@kafai-mbp.dhcp.thefacebook.com>
+        Wed, 16 Dec 2020 11:45:51 -0500
+Received: from [192.168.1.155] ([95.114.81.192]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MuV3i-1jyRGU2hXe-00rXEZ; Wed, 16 Dec 2020 17:42:32 +0100
+Subject: Re: [PATCH] arch: fix 'unexpected IRQ trap at vector' warnings
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org
+Cc:     James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        benh@kernel.crashing.org, paulus@samba.org, jdike@addtoit.com,
+        richard@nod.at, anton.ivanov@cambridgegreys.com, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-um@lists.infradead.org
+References: <20201207143146.30021-1-info@metux.net>
+ <877dptt5av.fsf@mpe.ellerman.id.au> <87y2i7298s.fsf@nanos.tec.linutronix.de>
+ <33001e60-cbfc-f114-55bf-f347f21fee9b@metux.net>
+ <87a6ueu3af.fsf@nanos.tec.linutronix.de>
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+Message-ID: <7cee04bd-b962-c6cd-19d7-b1f63926f570@metux.net>
+Date:   Wed, 16 Dec 2020 17:42:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.144]
-X-ClientProxiedBy: EX13D47UWA001.ant.amazon.com (10.43.163.6) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+In-Reply-To: <87a6ueu3af.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:9QidD+UOA3aQi22640zZ/omWcJwb9FdXzbOn1+rph3fp70+BAEy
+ xiHMss2Z38gUE+IeS5tIoSSjstWL3MM0hiXjHEXqQiN33u9305dgjBtGQGQ9R0jw9jl3BXw
+ 3haty8Z/ZIT578dbL2gr1uXSSptrO7tgSaDczmwRur8kNQrMTQCDAhfPIvtpvW5xdrNcE6l
+ /3ipd/qGBjEmcqF+JVADw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1c3FXG1AarQ=:uENEIXu+5B78KhBw8odEAh
+ t2n63aeaR6l+oZZpBcUolFIx68WUSwq80Kjla3XzmpU+7LEqKYqk5DJ8Cpuc3xqMuzS+/hKG8
+ ZcUo+KcwsrSBANuPbsel/wjt3MFHRZYJHA4IdMEYalu69edBJuPr7Hje829QYjpHvzdMrxUlH
+ nLoCidRT/7wStm53pXjfxwWqsXzWzidAalC3VjRoEkBvoQXdYws86NMtuPYqfJ9eLMI1PdHKl
+ ym9AZiKnjiwqeojoHz69Z1XJZyDZO7HRLTJuv2eWfJeJwepHjfGNWpKOcPB/9cKUp4F3s3qTx
+ Nc1Boc7wMF6QjHO6bW9fUsIFnMTWT8wm4dEVJURsCTv4kosjTDc9aQ02UfU99Bl51tUn2iHsq
+ lademp5fXFsFmUatD5hx0Klk4xdb6UX8KKn/iNWalz41fKV68HlE5Amwo5NVF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Mon, 14 Dec 2020 18:58:37 -0800
-> On Tue, Dec 15, 2020 at 02:03:13AM +0900, Kuniyuki Iwashima wrote:
-> > From:   Martin KaFai Lau <kafai@fb.com>
-> > Date:   Thu, 10 Dec 2020 10:49:15 -0800
-> > > On Thu, Dec 10, 2020 at 02:15:38PM +0900, Kuniyuki Iwashima wrote:
-> > > > From:   Martin KaFai Lau <kafai@fb.com>
-> > > > Date:   Wed, 9 Dec 2020 16:07:07 -0800
-> > > > > On Tue, Dec 01, 2020 at 11:44:12PM +0900, Kuniyuki Iwashima wrote:
-> > > > > > This patch renames reuseport_select_sock() to __reuseport_select_sock() and
-> > > > > > adds two wrapper function of it to pass the migration type defined in the
-> > > > > > previous commit.
-> > > > > > 
-> > > > > >   reuseport_select_sock          : BPF_SK_REUSEPORT_MIGRATE_NO
-> > > > > >   reuseport_select_migrated_sock : BPF_SK_REUSEPORT_MIGRATE_REQUEST
-> > > > > > 
-> > > > > > As mentioned before, we have to select a new listener for TCP_NEW_SYN_RECV
-> > > > > > requests at receiving the final ACK or sending a SYN+ACK. Therefore, this
-> > > > > > patch also changes the code to call reuseport_select_migrated_sock() even
-> > > > > > if the listening socket is TCP_CLOSE. If we can pick out a listening socket
-> > > > > > from the reuseport group, we rewrite request_sock.rsk_listener and resume
-> > > > > > processing the request.
-> > > > > > 
-> > > > > > Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
-> > > > > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > > > > > ---
-> > > > > >  include/net/inet_connection_sock.h | 12 +++++++++++
-> > > > > >  include/net/request_sock.h         | 13 ++++++++++++
-> > > > > >  include/net/sock_reuseport.h       |  8 +++----
-> > > > > >  net/core/sock_reuseport.c          | 34 ++++++++++++++++++++++++------
-> > > > > >  net/ipv4/inet_connection_sock.c    | 13 ++++++++++--
-> > > > > >  net/ipv4/tcp_ipv4.c                |  9 ++++++--
-> > > > > >  net/ipv6/tcp_ipv6.c                |  9 ++++++--
-> > > > > >  7 files changed, 81 insertions(+), 17 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
-> > > > > > index 2ea2d743f8fc..1e0958f5eb21 100644
-> > > > > > --- a/include/net/inet_connection_sock.h
-> > > > > > +++ b/include/net/inet_connection_sock.h
-> > > > > > @@ -272,6 +272,18 @@ static inline void inet_csk_reqsk_queue_added(struct sock *sk)
-> > > > > >  	reqsk_queue_added(&inet_csk(sk)->icsk_accept_queue);
-> > > > > >  }
-> > > > > >  
-> > > > > > +static inline void inet_csk_reqsk_queue_migrated(struct sock *sk,
-> > > > > > +						 struct sock *nsk,
-> > > > > > +						 struct request_sock *req)
-> > > > > > +{
-> > > > > > +	reqsk_queue_migrated(&inet_csk(sk)->icsk_accept_queue,
-> > > > > > +			     &inet_csk(nsk)->icsk_accept_queue,
-> > > > > > +			     req);
-> > > > > > +	sock_put(sk);
-> > > > > not sure if it is safe to do here.
-> > > > > IIUC, when the req->rsk_refcnt is held, it also holds a refcnt
-> > > > > to req->rsk_listener such that sock_hold(req->rsk_listener) is
-> > > > > safe because its sk_refcnt is not zero.
-> > > > 
-> > > > I think it is safe to call sock_put() for the old listener here.
-> > > > 
-> > > > Without this patchset, at receiving the final ACK or retransmitting
-> > > > SYN+ACK, if sk_state == TCP_CLOSE, sock_put(req->rsk_listener) is done
-> > > > by calling reqsk_put() twice in inet_csk_reqsk_queue_drop_and_put().
-> > > Note that in your example (final ACK), sock_put(req->rsk_listener) is
-> > > _only_ called when reqsk_put() can get refcount_dec_and_test(&req->rsk_refcnt)
-> > > to reach zero.
-> > > 
-> > > Here in this patch, it sock_put(req->rsk_listener) without req->rsk_refcnt
-> > > reaching zero.
-> > > 
-> > > Let says there are two cores holding two refcnt to req (one cnt for each core)
-> > > by looking up the req from ehash.  One of the core do this migrate and
-> > > sock_put(req->rsk_listener).  Another core does sock_hold(req->rsk_listener).
-> > > 
-> > > 	Core1					Core2
-> > > 						sock_put(req->rsk_listener)
-> > > 
-> > > 	sock_hold(req->rsk_listener)
-> > 
-> > I'm sorry for the late reply.
-> > 
-> > I missed this situation that different Cores get into NEW_SYN_RECV path,
-> > but this does exist.
-> > https://lore.kernel.org/netdev/1517977874.3715.153.camel@gmail.com/#t
-> > https://lore.kernel.org/netdev/1518531252.3715.178.camel@gmail.com/
-> > 
-> > 
-> > If close() is called for the listener and the request has the last refcount
-> > for it, sock_put() by Core2 frees it, so Core1 cannot proceed with freed
-> > listener. So, it is good to call refcount_inc_not_zero() instead of
-> > sock_hold(). If refcount_inc_not_zero() fails, it means that the listener
-> _inc_not_zero() usually means it requires rcu_read_lock().
-> That may have rippling effect on other req->rsk_listener readers.
+On 15.12.20 23:12, Thomas Gleixner wrote:
+> On Tue, Dec 15 2020 at 21:12, Enrico Weigelt wrote:
+>> On 09.12.20 00:01, Thomas Gleixner wrote:
+>>>   3) It's invoked from __handle_domain_irq() when the 'hwirq' which is
+>>>      handed in by the caller does not resolve to a mapped Linux
+>>>      interrupt which is pretty much the same as the x86 situation above
+>>>      in #1, but it prints useless data.
+>>>
+>>>      It prints 'irq' which is invalid but it does not print the really
+>>>      interesting 'hwirq' which was handed in by the caller and did
+>>>      not resolve.
+>>
+>> I wouldn't say the irq-nr isn't interesting. In my particular case it
+>> was quite what I've been looking for. But you're right, hwirq should
+>> also be printed.
 > 
-> There may also be places assuming that the req->rsk_listener will never
-> change once it is assigned.  not sure.  have not looked closely yet.
+> The number is _not_ interesting in this case. It's useless because the
+> function does:
 
-I have checked this again. There are no functions that expect explicitly
-req->rsk_listener never change except for BUG_ON in inet_child_forget().
-No BUG_ON/WARN_ON does not mean they does not assume listener never
-change, but such functions still work properly if rsk_listener is changed.
+Oh, I've mixed up the cases - I only had the other one, down below.
 
-
-> It probably needs some more thoughts here to get a simpler solution.
-
-Is it fine to move sock_hold() before assigning rsk_listener and defer
-sock_put() to the end of tcp_v[46]_rcv() ?
-
-Also, we have to rewrite rsk_listener first and then call sock_put() in
-reqsk_timer_handler() so that rsk_listener always has refcount more than 1.
-
----8<---
-	struct sock *nsk, *osk;
-	bool migrated = false;
-	...
-	sock_hold(req->rsk_listener);  // (i)
-	sk = req->rsk_listener;
-	...
-	if (sk->sk_state == TCP_CLOSE) {
-		osk = sk;
-		// do migration without sock_put()
-		sock_hold(nsk);  // (ii) (as with (i))
-		sk = nsk;
-		migrated = true;
-	}
-	...
-	if (migrated) {
-		sock_put(sk);  // pair with (ii)
-		sock_put(osk); // decrement old listener's refcount
-		sk = osk;
-	}
-	sock_put(sk);  // pair with (i)
----8<---
-
-
-> > is closed and the req->rsk_listener is changed in another place. Then, we
-> > can continue processing the request by rewriting sk with rsk_listener and
-> > calling sock_hold() for it.
-> > 
-> > Also, the migration by Core2 can be done after sock_hold() by Core1. Then
-> > if Core1 win the race by removing the request from ehash,
-> > in inet_csk_reqsk_queue_add(), instead of sk, req->rsk_listener should be
-> > used as the proper listener to add the req into its queue. But if the
-> > rsk_listener is also TCP_CLOSE, we have to call inet_child_forget().
-> > 
-> > Moreover, we have to check the listener is freed in the beginning of
-> > reqsk_timer_handler() by refcount_inc_not_zero().
-> > 
-> > 
-> > > > And then, we do `goto lookup;` and overwrite the sk.
-> > > > 
-> > > > In the v2 patchset, refcount_inc_not_zero() is done for the new listener in
-> > > > reuseport_select_migrated_sock(), so we have to call sock_put() for the old
-> > > > listener instead to free it properly.
-> > > > 
-> > > > ---8<---
-> > > > +struct sock *reuseport_select_migrated_sock(struct sock *sk, u32 hash,
-> > > > +					    struct sk_buff *skb)
-> > > > +{
-> > > > +	struct sock *nsk;
-> > > > +
-> > > > +	nsk = __reuseport_select_sock(sk, hash, skb, 0, BPF_SK_REUSEPORT_MIGRATE_REQUEST);
-> > > > +	if (nsk && likely(refcount_inc_not_zero(&nsk->sk_refcnt)))
-> > > There is another potential issue here.  The TCP_LISTEN nsk is protected
-> > > by rcu.  refcount_inc_not_zero(&nsk->sk_refcnt) cannot be done if it
-> > > is not under rcu_read_lock().
-> > > 
-> > > The receive path may be ok as it is in rcu.  You may need to check for
-> > > others.
-> > 
-> > IIUC, is this mean nsk can be NULL after grace period of RCU? If so, I will
-> worse than NULL.  an invalid pointer.
->  
-> > move rcu_read_lock/unlock() from __reuseport_select_sock() to
-> > reuseport_select_sock() and reuseport_select_migrated_sock().
-> ok.
+>     irq = hwirq;
 > 
-> > 
-> > 
-> > > > +		return nsk;
-> > > > +
-> > > > +	return NULL;
-> > > > +}
-> > > > +EXPORT_SYMBOL(reuseport_select_migrated_sock);
-> > > > ---8<---
-> > > > https://lore.kernel.org/netdev/20201207132456.65472-8-kuniyu@amazon.co.jp/
-> > > > 
-> > > > 
-> > > > > > +	sock_hold(nsk);
-> > > > > > +	req->rsk_listener = nsk;
-> > > It looks like there is another race here.  What
-> > > if multiple cores try to update req->rsk_listener?
-> > 
-> > I think we have to add a lock in struct request_sock, acquire it, check
-> > if the rsk_listener is changed or not, and then do migration. Also, if the
-> > listener has been changed, we have to tell the caller to use it as the new
-> > listener.
-> > 
-> > ---8<---
-> >        spin_lock(&lock)
-> >        if (sk != req->rsk_listener) {
-> >                nsk = req->rsk_listener;
-> >                goto out;
-> >        }
-> > 
-> >        // do migration
-> > out:
-> >        spin_unlock(&lock)
-> >        return nsk;
-> > ---8<---
-> cmpxchg may help here.
+>     if (lookup)
+>         irq = find_mapping(hwirq);
+> 
+>     if (!irq || irq >= nr_irqs)
+>        -> BAD
 
-Thank you, I will use cmpxchg() to rewrite rsk_listener atomically and
-check if req->rsk_listener is updated.
+When exactly can that happen ? Only when some hardware sending an IRQ,
+but no driver listening to it, or are there other cases ?
+
+By the way: who's supposed to call that function ? Only irqchip's
+(and the few soc specific 1st-level irq handlers) ? I'm asking, because
+we have lots of gpio drivers, which have their own irq domain, but go
+the generic_handle_irq() route. Same for some SOC-specific irqchips.
+
+Should they also call handle_domain_irq() instead ?
+
+> In both cases the only interesting information is that hwirq does not
+> resolve to a valid Linux interrupt number and which hwirq number caused
+> that.
+
+Don't we also need know which irqchip the hwirq number belongs to ?
+
+> If you look really then you find out that there is exactly _ONE_
+> architecture which does anything else than incrementing a counter and/or
+> printing stuff: X86, which has a big fat comment explaining why. The
+> only way to ack an interrupt on X86 is to issue EOI on the local APIC,
+> i.e. it does _not_ need any further information.
+
+Yeah, found it :)
+
+At this point I wonder whether the ack_APIC_irq() call could be done
+somewhere further up in the call chain, eg. handle_irq() or
+common_interrupt() ?
+
+If that works, we IMHO could drop ack_bad_irq() completely (except for
+the counter and printk, which we could consolidate elsewhere anyways)
+
+>> ... rethinking this further ... shouldn't we also pass in even more data
+>> (eg. irq_desc, irqchip, ...), so this function can check which hw to
+>> actually talk to ?
+> 
+> There are 3 ways to get there:
+> 
+>       1) via dummy chip which obviously has no hardware associated
+
+... which also calls print_irq_desc() ..
+
+>       2) via handle_bad_irq() which prints the info already
+
+print_irq_desc() doesn't seem to print the hwirq ... shall we fix this ?
+
+>       3) __handle_domain_irq() which cannot print anything and obviously
+>          cannot figure out the hw to talk to because there is no irq
+>          descriptor associated.
+
+Okay, what's the conclusion ? Drop printouts in the ack_bad_irq()'s ?
+
+>>>   4) It's invoked from the dummy irq chip which is installed for a
+>>>      couple of truly virtual interrupts where the invocation of
+>>>      dummy_irq_chip::irq_ack() is indicating wreckage.
+>>>
+>>>      In that case the Linux irq number is the thing which is printed.
+>>>
+>>> So no. It's not just inconsistent it's in some places outright
+>>> wrong. What we really want is:
+>>>
+>>> ack_bad_irq(int hwirq, int virq)
+>>
+>> is 'int' correct here ?
+> 
+> This was just for illustration.
+
+Okay, thanks. Just discovered already have an irq_hw_number_t, which
+doesn't seem to be used everywhere ... shall we fix that ?
+
+>> OTOH: since both callers (dummychip.c, handle.c) already dump out before
+>> ack_bad_irq(), do we need to print out anything at all ?
+> 
+> Not all callers print something, but yes this could do with some general
+> cleanup.
+
+I've found three callers, only one (__handle_domain_irq() in irqdesc.c)
+doesn't print out anything. I belive, adding a pr_warn() here and drop
+all the printouts in ack_bad_irq()'s makes sense.
+
+> The error counter is independent of that, but yes there is room for
+> consolidation.
+
+Ok, I've already started hacking a bit here: adding an atomic_t counter
+in kernel/irq/handle.c and inline'd accessor functions in
+include/asm-generic/irq.h (just feeling that accessors are a bit cleaner
+than direct access). Would that be okay ?
+
+By the way: I still wonder whether my case should have ever reached
+ack_bad_irq().
+
+The irqdescs had been allocated via devm_irq_alloc_descs(), and the
+driver just called generic_handle_irq() with base irq + gpio nr.
+So, IMHO it was a valid linux irq number, but no (explicit) handler.
+
+I wonder whether ack'ing those virtual irqs onto hw could be harmful.
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
