@@ -2,98 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489EF2DC220
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4402DC222
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgLPO0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 09:26:34 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:47956 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726137AbgLPO0e (ORCPT
+        id S1726487AbgLPO1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 09:27:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726502AbgLPO1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 09:26:34 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kpXkV-0006dp-LP; Wed, 16 Dec 2020 14:25:51 +0000
-Date:   Wed, 16 Dec 2020 15:25:50 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     Mike Galbraith <efault@gmx.de>,
-        LKML <linux-kernel@vger.kernel.org>, egorenar@linux.ibm.com
-Subject: Re: regression: 9a56493f6942 "uts: Use generic ns_common::count"
- broke makedumpfile 1.6.7
-Message-ID: <20201216142550.lhmksmdoovivylrz@wittgenstein>
-References: <7b13506084a015d0256222cdd278fe461cdd4a74.camel@gmx.de>
- <6933cde2-7d43-7d7e-066c-1c4a13c752dd@virtuozzo.com>
- <ad3bfa510282d3122069dafe98666aa2d6b5b0ff.camel@gmx.de>
- <60200005-a9a2-4994-b730-e22fd8f01ae4@virtuozzo.com>
+        Wed, 16 Dec 2020 09:27:24 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949C6C0617B0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 06:26:43 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id h186so6223811pfe.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 06:26:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8WM83lb97KepD4KmRISVDaNGwvKB/0GjjAaBayPIvpU=;
+        b=S1E/ZV+vN0Og3JgNA5Cn2YIKeoGnmvTCR7g1K0s9BmGYSWT9bm3Lo/7FoFkWMma1K2
+         1Z7WoG9TeNLxGvdJ1Iw+HNp4UlLHALLxVbgxXqTlAOKgFDkSDixhtHp387OBGRFtX2bb
+         qAELSHEsUPqfmYUfnbrFyhBI9eFf0yZnVV5dnhvSiGIdPg14xVilijefMZDs11Mqq22X
+         QGu/9UFgiA1GFT56dAQcleW+3L1Dkpc76FVUYGF/S8DqTYKO0uA3ouwbO/2sOakTjxHe
+         yKX6FwYGPjvf5W+xuYPNCni/vKCLYAuvDTAL16QWeWaHr+aNaAn0JCo8/rtxkasVGt59
+         RsTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8WM83lb97KepD4KmRISVDaNGwvKB/0GjjAaBayPIvpU=;
+        b=gyfEm+ThK4oJEupK7K8a6CPB74jx+N0Y3SC1CIOwkPDuBV2PSZWdgl1grU8YE8pDJ6
+         pfjOYRrJPdqjF5M6Q6YQhv4mEXmINgFpINXZpR4iTXbLUSiAnJIveDLVqX0dQrOkWY+6
+         +dHX/oXQ9Cx4MU4pUW9D+ouF5pksXUlAFyXnd28gzhm1yxqf0I1P2WDbVd/NY3TNAEAl
+         Y4Y5YSKqlubNv+9B22ke++FMXD8UmqrsLEcKG/D5FNchA2H61iCdVpTeIeeX3Khnoy/A
+         oay6beMkBXGrVdLs1S5m6gxWDD0mxD8okVg/GwjUHA0nJWl7jJIsjAuVquvAlh7EZbOj
+         QS2g==
+X-Gm-Message-State: AOAM533eoMB6sqz+rUTrEX83hWyvX2DZ0lhE/s9VgUoEajtwcDuJbrEV
+        AqjMkx1IiMcjRNsN6hm02ay7ghSaN5TA2aGYwRRUow==
+X-Google-Smtp-Source: ABdhPJwce9/AVHptfdglalHmeS/eT0gVNrSN7cUYjB3PIyYd9xeIxzY1Ah23S9+RjgyIKSmckj4+gU1OpZezBIOgxmI=
+X-Received: by 2002:a63:50a:: with SMTP id 10mr5249784pgf.273.1608128802894;
+ Wed, 16 Dec 2020 06:26:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <60200005-a9a2-4994-b730-e22fd8f01ae4@virtuozzo.com>
+References: <20201213154534.54826-1-songmuchun@bytedance.com>
+ <20201213154534.54826-11-songmuchun@bytedance.com> <20201216140340.GE29394@linux>
+In-Reply-To: <20201216140340.GE29394@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 16 Dec 2020 22:26:02 +0800
+Message-ID: <CAMZfGtVq29N1Rysy+BL1N7dYW_3X3uCKG=mAXXZbsJw_nt=aBg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v9 10/11] mm/hugetlb: Gather discrete
+ indexes of tail page
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 05:23:30PM +0300, Kirill Tkhai wrote:
-> On 16.12.2020 16:32, Mike Galbraith wrote:
-> > On Wed, 2020-12-16 at 15:35 +0300, Kirill Tkhai wrote:
-> >> Hi, Alexander,
-> >>
-> >> On 16.12.2020 14:02, Mike Galbraith wrote:
-> >>> Greetings,
-> >>>
-> >>> With this commit, bisected and confirmed, kdump stops working here,
-> >>> makedumpfile saying "check_release: Can't get the kernel version".
-> >>
-> >> hasn't your commit 55d9e11398a4 "kdump: append uts_namespace.name offset to VMCOREINFO"
-> >> fixed this issue?
-> > 
-> > FWIW, I applied the below, but it didn't help.
-> > 
-> > ---
-> >  kernel/crash_core.c |    1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > --- a/kernel/crash_core.c
-> > +++ b/kernel/crash_core.c
-> > @@ -447,6 +447,7 @@ static int __init crash_save_vmcoreinfo_
-> >  	VMCOREINFO_PAGESIZE(PAGE_SIZE);
-> > 
-> >  	VMCOREINFO_SYMBOL(init_uts_ns);
-> > +	VMCOREINFO_OFFSET(uts_namespace, name);
-> >  	VMCOREINFO_SYMBOL(node_online_map);
-> >  #ifdef CONFIG_MMU
-> >  	VMCOREINFO_SYMBOL_ARRAY(swapper_pg_dir);
-> 
-> As I see, makedumpfile hardcodes recent supported kernel version.
-> (I downloaded makedumpfile from here: https://github.com/makedumpfile/makedumpfile)
-> 
-> #define LATEST_VERSION          KERNEL_VERSION(5, 9, 4) /* linux-5.9.4 */
-> int32_t         
-> get_kernel_version(char *release)
-> {
-> 	...
->         if ((version < OLDEST_VERSION) || (LATEST_VERSION < version)) {
->                 MSG("The kernel version is not supported.\n");
->                 MSG("The makedumpfile operation may be incomplete.\n");
->         }
-> 	...
-> }
-> 
-> So, in case of you revert the patch, makedumpfile also should fail:
-> 
-> root@qemu:~# ./makedumpfile/makedumpfile -g VMCOREINFO -x ./vmlinux 
-> The kernel version is not supported.
-> The makedumpfile operation may be incomplete.
-> 
-> The vmcoreinfo is saved to VMCOREINFO.
-> 
-> makedumpfile Completed.
-> 
-> Does this regression only cause that one error message "check_release: Can't get the kernel version"
-> is printed instead of another: "The kernel version is not supported."?
+On Wed, Dec 16, 2020 at 10:03 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Sun, Dec 13, 2020 at 11:45:33PM +0800, Muchun Song wrote:
+> > For HugeTLB page, there are more metadata to save in the struct page.
+> > But the head struct page cannot meet our needs, so we have to abuse
+> > other tail struct page to store the metadata. In order to avoid
+> > conflicts caused by subsequent use of more tail struct pages, we can
+> > gather these discrete indexes of tail struct page. In this case, it
+> > will be easier to add a new tail page index later.
+> >
+> > There are only (RESERVE_VMEMMAP_SIZE / sizeof(struct page)) struct
+> > page structs can be used when CONFIG_HUGETLB_PAGE_FREE_VMEMMAP, so
+> "that can be..."
 
-(I take it you're debugging this now, Kirill. Thank you!)
+Thanks.
+
+>
+> > add a BUILD_BUG_ON to catch invalid usage of the tail struct page.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> I think this makes the current situation with metadata usage in sub-pages
+> easier to track.
+
+Agree.
+
+>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+
+Thank you.
+
+>
+> --
+> Oscar Salvador
+> SUSE L3
+
+
+
+-- 
+Yours,
+Muchun
