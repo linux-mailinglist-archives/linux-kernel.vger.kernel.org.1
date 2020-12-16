@@ -2,118 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BC32DB7D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D09D02DB7DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 01:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725960AbgLPAf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 19:35:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725829AbgLPAfw (ORCPT
+        id S1726133AbgLPAki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 19:40:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22929 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725827AbgLPAkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 19:35:52 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 572D6C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:35:12 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id w18so8472317iot.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 16:35:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
-        bh=yU9Nd85ZijlLkYOsc1l3qZ7RJHr92aND+i+7Yi2A0nU=;
-        b=nk2iSdN+Z0GEkCUAECJpzd/3yG54Q61/+lnFNDEexZGnSWrthOzGGV6L6qQcVMlWcm
-         3a1o4/H6ipESZ3+LnEbTe8xqqyVh7mlZ1z2P2oZ3zGGqpXqUM8KuwyeI3ZmGAwlwKJXx
-         u4vcjpm4gY7UpAgDkqPfEFA4k33FPwNvrqQMk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc;
-        bh=yU9Nd85ZijlLkYOsc1l3qZ7RJHr92aND+i+7Yi2A0nU=;
-        b=QBmEyssCBjAhUYwr7sO9uls1P+YvWkt0HtF3Jdz/bs9I7RgyTbqyANpwWF85v+5wVA
-         jqeErMxQtliJkHPyk7G8I3mBhc7LFFL5xZYqwYo8qba7hexzpjC1lGZ4hPMAz4CBvTJS
-         Yu8tSuKNe796pDqOypjd+g7blB2a+vQ210/L5kmaqUfpNX7Di2y1ShmNBe+lJaAcWjZU
-         Bi6LCNSrJJEzTl0NTuMTmHr0QUsTTK/vTkwK6EmUrrAjZgsJh0hiI5b6Escq66Urj39E
-         iEVjRrOh+PH3untHArP+lHvUflz9ZQkyZY2CgJmN4EziZ+jX2+zMJcr1OgkAtZI2xZ+i
-         1dRg==
-X-Gm-Message-State: AOAM531LJboB+Q3Tt5arxfsD7GVL/30pUUjGtQB2gmBo7x3d5BT3qIao
-        zg5NkSQP1HChHXAEUngMkcRxxZMA112myXX7gh+G0A==
-X-Received: by 2002:a02:c4d5:: with SMTP id h21mt42666900jaj.23.1608078911663;
- Tue, 15 Dec 2020 16:35:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20201117232003.3580179-1-joel@joelfernandes.org>
- <20201117232003.3580179-24-joel@joelfernandes.org> <20201202214717.GA27531@chyser-vm-1.appad1iad.osdevelopmeniad.oraclevcn.com>
- <20201206173418.GC201514@google.com> <20201209185203.GC6876@chyser-vm-1.appad1iad.osdevelopmeniad.oraclevcn.com>
- <X9e9dcLMrMJThZs+@google.com> <16a390e4-b44d-b0eb-1df6-6e56d78d009f@oracle.com>
- <20201214232541.GF201514@google.com> <796ec1e5-15ef-34da-5716-0ec19432deba@oracle.com>
-In-Reply-To: <796ec1e5-15ef-34da-5716-0ec19432deba@oracle.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 15 Dec 2020 19:35:00 -0500
-Message-ID: <CAEXW_YSSWFvre17RMb0twtAygFnYiOtW7EeYxMKBDTSQ+UZhrQ@mail.gmail.com>
-Subject: Re: [PATCH -tip 23/32] sched: Add a per-thread core scheduling interface
-Cc:     chris hyser <chris.hyser@oracle.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Glexiner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        Alexander Graf <graf@amazon.com>, konrad.wilk@oracle.com,
-        Dario Faggioli <dfaggioli@suse.com>,
-        Paul Turner <pjt@google.com>,
+        Tue, 15 Dec 2020 19:40:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608079147;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BCyr+zCzlSHQ1KjMAt3Zb/a+qisNyayFH7/e91jTxqk=;
+        b=Snze6ynPda7VvaiqdJe7E9l3GeM58gKaIloPQs+ANvI1sEK34ZibQBIx+MxhhjuvUcDIDP
+        EeD3idBJARoX/pc3LR7k5Wn75nvXJMwOIqNEM5KXsQ5nSvEudETMIJVoQF+/OSHxgDM98H
+        84Aiayq3rfDJ8KNllsHRt/GplGB9CO8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-wYBKR5ESPACLwIRJr6G_JA-1; Tue, 15 Dec 2020 19:39:03 -0500
+X-MC-Unique: wYBKR5ESPACLwIRJr6G_JA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B14061054F8E;
+        Wed, 16 Dec 2020 00:38:10 +0000 (UTC)
+Received: from treble (ovpn-112-170.rdu2.redhat.com [10.10.112.170])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 44CAF5DD87;
+        Wed, 16 Dec 2020 00:38:04 +0000 (UTC)
+Date:   Tue, 15 Dec 2020 18:38:02 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org, luto@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>,
-        =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        OWeisse@umich.edu, Junaid Shahid <junaids@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Ben Segall <bsegall@google.com>, Josh Don <joshdon@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Tim Chen <tim.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH v2 00/12] x86: major paravirt cleanup
+Message-ID: <20201216003802.5fpklvx37yuiufrt@treble>
+References: <20201120114630.13552-1-jgross@suse.com>
+ <20201120125342.GC3040@hirez.programming.kicks-ass.net>
+ <20201123134317.GE3092@hirez.programming.kicks-ass.net>
+ <6771a12c-051d-1655-fb3a-cc45a3c82e29@suse.com>
+ <20201215141834.GG3040@hirez.programming.kicks-ass.net>
+ <20201215145408.GR3092@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201215145408.GR3092@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dhaval,
+On Tue, Dec 15, 2020 at 03:54:08PM +0100, Peter Zijlstra wrote:
+> The problem is that a single instance of unwind information (ORC) must
+> capture and correctly unwind all alternatives. Since the trivially
+> correct mandate is out, implement the straight forward brute-force
+> approach:
+> 
+>  1) generate CFI information for each alternative
+> 
+>  2) unwind every alternative with the merge-sort of the previously
+>     generated CFI information -- O(n^2)
+> 
+>  3) for any possible conflict: yell.
+> 
+>  4) Generate ORC with merge-sort
+> 
+> Specifically for 3 there are two possible classes of conflicts:
+> 
+>  - the merge-sort itself could find conflicting CFI for the same
+>    offset.
+> 
+>  - the unwind can fail with the merged CFI.
 
-On Tue, Dec 15, 2020 at 1:14 PM Dhaval Giani <dhaval.giani@oracle.com> wrote:
->
-> On 12/14/20 3:25 PM, Joel Fernandes wrote:
->
-> >> No problem. That was there primarily for debugging.
-> > Ok. I squashed Josh's changes into this patch and several of my fixups. So
-> > there'll be 3 patches:
-> > 1. CGroup + prctl  (single patch as it is hell to split it)
->
-> Please don't do that.
-> I am not sure we have thought the cgroup interface through
-> (looking at all the discussions).
+So much algorithm.  Could we make it easier by caching the shared
+per-alt-group CFI state somewhere along the way?
 
-Unfortunately, this comment does not provides any information on the
-issues you are concerned about.  If there are specific issues you are
-concerned about, please don't keep it a secret! What requirement of
-yours is not being met with the CGroup interface the way it is in v8
-series?
+For example:
 
-thanks,
+struct alt_group_info {
 
- - Joel
+	/* first original insn in the group */
+	struct instruction *orig_insn;
+
+	/* max # of bytes in the group (cfi array size) */
+	unsigned long nbytes;
+
+	/* byte-offset-addressed array of CFI pointers */
+	struct cfi_state **cfi;
+};
+
+We could change 'insn->alt_group' to be a pointer to a shared instance
+of the above struct, so that all original and replacement instructions
+in a group have a pointer to it.
+
+Starting out, 'cfi' array is all NULLs.  Then when updating CFI, check
+'insn->alt_group.cfi[offset]'.
+
+[ 'offset' is a byte offset from the beginning of the group.  It could
+  be calculated based on 'orig_insn' or 'orig_insn->alts', depending on
+  whether 'insn' is an original or a replacement. ]
+
+If the array entry is NULL, just update it with a pointer to the CFI.
+If it's not NULL, make sure it matches the existing CFI, and WARN if it
+doesn't.
+
+Also, with this data structure, the ORC generation should also be a lot
+more straightforward, just ignore the NULL entries.
+
+Thoughts?  This is all theoretical of course, I could try to do a patch
+tomorrow.
+
+-- 
+Josh
+
