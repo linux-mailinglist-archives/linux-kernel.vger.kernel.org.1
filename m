@@ -2,297 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451C82DC1EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:15:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA822DC1F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:15:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbgLPONE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 09:13:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbgLPOND (ORCPT
+        id S1726491AbgLPOOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 09:14:15 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:25987 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgLPOOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 09:13:03 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF1DC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 06:12:17 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 190so2491351wmz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 06:12:17 -0800 (PST)
+        Wed, 16 Dec 2020 09:14:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1608128052; x=1639664052;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=LzxMH1ApuvFBfFKn0bKSmf22K3xfjmIsfppMZOJIQC4=;
+  b=Cqi6OiFy2Spyq80E0AyqMl7OCKqlCJyAMWFOjLM4NwSua2F5gmSSMpXb
+   S+CwUK3YFNFPDLUqHgGKKwFkSjW2lG4je4p1dk8ItEJ2vrkgX8Sb+ynbi
+   PBIs4evlDKxPI0rbsiNdrgdufHJZmniLKp5L1DZ2NLlvgHxR0um/eofAI
+   qohVPbCDl3SsP7q6GzEdTQHbbr8rKA+ranluIBjrpsgAQgMz+1UmnLT88
+   YQplAYNkHJbBp8ZLx3xedjHdGdE3GJQggyinmiXBm0b7akYu7Dd1Pj5/V
+   p2jyb+Hvs+Sdc8oOoIGvlt37a/2jYTi5r/X5vXkYJPR/ZKZT5Q+PXxWRW
+   A==;
+IronPort-SDR: WcbwAMd+jOaJg0rIyir8N9kavZYBq2sLK56Ax65jJyuMcx9umup3gbKzCM+7z17u0JAHylP7hR
+ H5kAkmr7d645iPeN8u6xTy1gjPuSJYhvCqaNLbvS3d8IWn19TWLXkiH/kckVVnE8/cw8nJC47Q
+ 90KwR/BeALof3wwwnW7Bfez3gPOon/dK08n/j+olFKF6ndLT3xCgVbunHF84dGdBPj89m8QUJs
+ NFoQLUtioin558bfFN12o7rHWDOuu1YRbC3efaeKpeBQ1JykZHTh3Q9digRb+FcfGadxh44hLG
+ vt0=
+X-IronPort-AV: E=Sophos;i="5.78,424,1599548400"; 
+   d="scan'208";a="37625634"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Dec 2020 07:12:57 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 16 Dec 2020 07:12:57 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Wed, 16 Dec 2020 07:12:56 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LYqt7g1f/fEh+UlIQmxVcQ5tSEI6cf6Wr4/tMBpI7p11bof97oQW8jZr34P87zYQze052jBb7tzW+DmeZeTDE4qLQWlqXSv7NssX5IzIxbD1KoHKre6XHw/qmZOCHksapJE+JpVGGEqAnkDkYZPbLOZLPW8xb975JzTtLVYfcBbxi3p6JXn9iDN8zBK7VNtNNhz/as8jm3GjWT68PhhwqE+qfJPE/izdouakds0Q993ujMrUp406vQNl43L8b6/CJzgpKoBTq35znWKwiLYf14PSboqzgwCCEMPCD4JI962SfqHW1NPDK4+W9xTPfgdiwaUqBin325PWMzEGkIBdUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LzxMH1ApuvFBfFKn0bKSmf22K3xfjmIsfppMZOJIQC4=;
+ b=UA6VLpxfli0bUYzsgjvomFgtswbF1PeZ3TZZwiEFbiXE/o2uzhSJm0ZO9zisRISheNxXEbSWN1PLmr9IBrq0BA6LJyFMk+6FXX5VUFMa61EoMMJ3eHQOjuENYRgUWI246G5vV2ybB4H5ko/HavwbOZ5E/1Ki4Pdaah8Mc1ukP+1OuzNIX8EtJGBS82x6IopqxKLT/Q8jPnjk4hfP7Lu5nydOz3T6kpz/XsWleTLES3zdJXu4UwlZkJCIBGxo+z7ieMpZavq6ca/e4TwTND6fIvYsRNdFANRwlMvuD8mKjI6Km71skf8VKiqO9Xvsjpj+xoGGJ1fwP2Xnmx9MBd7VVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=EbkhV7953m43b4fxi/DIYL/7q/Vv6JLSKCbvVuoSHUs=;
-        b=W3BiChlSF/jv+fIgtl36pw4eIpjgEPhr6kWqVLUwY9ZjLMbdQn0YTfFIZhKzmYoxH/
-         8ec3JjHzV0UpuJznO2hRFEUkQmRnw9B+TT9U+YqP+xF/k3Eqnw5EeBuF+7Cup8++Urps
-         UygzvEadLmh8P8CxSwtvU4IiimMmbQDLGNruzrk4c7X5ZRrocjudX7Q8xpdjZ7KT3SXc
-         65nL1I6goNDrK3iUQOVtqlNIWa+MaVqpKV9c/kouX5UFq60Pv1LbL1952bbXRGCN6JEP
-         BkqlZqDSAiV8SQK6q2YAm/KjKOUma9bytzwL1E+CakdWl2SQ7Bs9jMvzQ6nRxfdvzbxh
-         1XcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=EbkhV7953m43b4fxi/DIYL/7q/Vv6JLSKCbvVuoSHUs=;
-        b=KEIzZrHKbUE0IZf5AcHwlwXhQvfNJNLwJCn/xg0MoqL/CUKhnJmEbLi2WtUCVtCy+/
-         g9xyoeWXfJ2t4rATmTTcRprZUUCozpB5voIw1Nkv0VhynOcD8cG7/c6jlcaG+NvqBsHP
-         0SsV+wq4goQVAu5zHfN+KUR9Bs0XmFHF3odmYL4sa5FFcHyJU+8HIFaDJ+liLI4rofuW
-         rLy0FSIS2vyN4+6zKzeiqW98Mxx0CiK5Q7K9HRMuVwnp7QGMmnEgq4EoQ6ftvVG+ncuS
-         dyg8Bs/uPwUU+VQrT6kdB3gqzff18UP9wL6FYaJcvWwSkjfATZzIfBEAbZp2f+Sf/tgY
-         KqXA==
-X-Gm-Message-State: AOAM531cXmS+rhH5efB/cAHa4kxCSuR8bHOwpUbwRvq308OZ00lC38JL
-        Z56OIWLrZSKg1rOeh5dZe7aWjA==
-X-Google-Smtp-Source: ABdhPJymz7i0u9+Dcjrcxi1+FgcDjJyPk77qvtP4sIxXgmF7ZbWwO2UnRgWHZBIi1Mr62n3tOdjzSQ==
-X-Received: by 2002:a1c:99d7:: with SMTP id b206mr3656673wme.12.1608127935961;
-        Wed, 16 Dec 2020 06:12:15 -0800 (PST)
-Received: from dell ([91.110.221.200])
-        by smtp.gmail.com with ESMTPSA id k1sm3381479wrn.46.2020.12.16.06.12.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 06:12:15 -0800 (PST)
-Date:   Wed, 16 Dec 2020 14:12:13 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     cy_huang <u0084500@gmail.com>
-Cc:     robh+dt@kernel.org, cy_huang@richtek.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] mfd: rt4831: Adds support for Richtek RT4831 MFD
- core
-Message-ID: <20201216141213.GE207743@dell>
-References: <1607704424-16223-1-git-send-email-u0084500@gmail.com>
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LzxMH1ApuvFBfFKn0bKSmf22K3xfjmIsfppMZOJIQC4=;
+ b=f4aU59W013FIchogFHosEZG0Sknkuvt2u7IA75ViAh1YCndyD1DIoqy3vJzie68HhPif8RTzjeLnxhF6RAEUu5SDjGSnep1Zddpc5Zi2i9rEm0ylKIJU1/qYcto5MqnvCCf5wwLAHYPh2KKWz4xqRvBUe6Hn6WzAk2ElhlM3jHU=
+Received: from DM6PR11MB3420.namprd11.prod.outlook.com (2603:10b6:5:69::31) by
+ DM6PR11MB4722.namprd11.prod.outlook.com (2603:10b6:5:2a7::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3654.12; Wed, 16 Dec 2020 14:12:56 +0000
+Received: from DM6PR11MB3420.namprd11.prod.outlook.com
+ ([fe80::eded:bdb6:c6f1:eb3e]) by DM6PR11MB3420.namprd11.prod.outlook.com
+ ([fe80::eded:bdb6:c6f1:eb3e%4]) with mapi id 15.20.3654.025; Wed, 16 Dec 2020
+ 14:12:56 +0000
+From:   <Claudiu.Beznea@microchip.com>
+To:     <alexandre.belloni@bootlin.com>
+CC:     <robh+dt@kernel.org>, <mark.rutland@arm.com>,
+        <Nicolas.Ferre@microchip.com>, <Ludovic.Desroches@microchip.com>,
+        <sre@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH 3/3] power: reset: at91-sama5d2_shdwc: add support for
+ sama7g5
+Thread-Topic: [PATCH 3/3] power: reset: at91-sama5d2_shdwc: add support for
+ sama7g5
+Thread-Index: AQHW07WM8svOvDAvX0CwyDsoq7Wrnw==
+Date:   Wed, 16 Dec 2020 14:12:55 +0000
+Message-ID: <02a1a3f5-1663-105a-2fff-9d5961d70792@microchip.com>
+References: <1608123453-1423-1-git-send-email-claudiu.beznea@microchip.com>
+ <1608123453-1423-4-git-send-email-claudiu.beznea@microchip.com>
+ <20201216134532.GH2814589@piout.net>
+In-Reply-To: <20201216134532.GH2814589@piout.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: bootlin.com; dkim=none (message not signed)
+ header.d=none;bootlin.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [82.76.227.226]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1fb8dc35-15c7-41d9-ad31-08d8a1ccaf5c
+x-ms-traffictypediagnostic: DM6PR11MB4722:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB47229E134B76698C0892B3B087C50@DM6PR11MB4722.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qBkAwYYx/486cHRddjLTXnrNcM8OxVuQy8HAspBxO18NQu8AUEg3FiwaSM8bO34NFiTvlYsPP1emUEtoVVdaq4yP/27JJh04mdk4t+qph7iiTqLfyg6FZgOZSXnE1M8wl8YJDzcM5AhNrqZLf6ojQhGiAkGb2yPOjwfd1qhYb5yYhnQXORoAFl8MODtKKT3X2eppMwVY9JIcURnFYYnzasj4dUIyopMFtBqQOgBhOtlvAgKM69pMjOzKMRdlndcwSpiSJHXMGc1Sy465ztdIU1pGRP7q3Lr+KdLgnVTZTkswAi3mGdz+xP/GLNGfLMuoRVvQS8TbqH/A6isivO2OZVBXhBYvQdjX48IR0eHRomFKRP1A7rAtVTIRFrUlQPWKHsKr4lYlVuoi4uN868xdMMeiC+A6VCB9ivBQ6VGON2q+agKtTTabXQh8tzCT3htBJBtjKi1kmKBcCgMUstzg7bYlDWKbv7CT6d6tA6S51Qf80YamHn9s+sDGmk0yfPxockqZgNLWJoRMvhU7evO3YA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3420.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(396003)(136003)(366004)(346002)(8936002)(66476007)(66446008)(66556008)(4326008)(54906003)(83380400001)(26005)(6486002)(36756003)(316002)(91956017)(31686004)(8676002)(76116006)(966005)(71200400001)(64756008)(86362001)(2616005)(478600001)(31696002)(66946007)(6512007)(186003)(5660300002)(6506007)(2906002)(6916009)(53546011)(138113003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?OVh4VDdFdXhYcmpsZEdPckRRS3JGNHNyNFJuRWRwZ1Vuc21FU1JOWkhodzRi?=
+ =?utf-8?B?eVBHK1dCMXQ0OXJ3NWFKQzFrUmhWMU91eHp0NVI3aDR5TEVQT2RjYVM0Z1ZY?=
+ =?utf-8?B?dHBVd1M0a0JYZHRBVDFXRE0xMy8yRW5yQWIzbURQN2Fwb3dSblgvSHk0ZVVo?=
+ =?utf-8?B?N3RqMGFUQXd2MGY5cXVXTDZScnlIdFMyVHp0b0E5QzJPemdva1FqbTF2c1Bm?=
+ =?utf-8?B?a1VnU0IrVGpqS25IUk5VVThLMHdud09odFpWSWQwSDlJRzBjank5czh6MDZ6?=
+ =?utf-8?B?bnJ2OHVVb1dvZE1XeSticXJhYlRJV1dtbHZEOTRxRW4ycHRNL1lqNHZHbkZE?=
+ =?utf-8?B?YWpaSncyenR0VmpsWVVybHNrV3ZLWTBhQzB2OFhzVXp1WDZ6RmV0eE1PQ3hr?=
+ =?utf-8?B?Q3FrTEpzMktFbHIrRDVUcDF5UGJJK2t2SHkwdVI2YlBOMUpLYUcxQ2I0eE5j?=
+ =?utf-8?B?U09SdkMvQVZlWURsNFpsWGUyRlI2cmU4aWdhQzAwNEF6V3lQNFlIdFZ0eWZt?=
+ =?utf-8?B?VHhOU0RiS2l6eWpyc29nQytrYlVJcXI4elpUS0xyTS9aWCt3UDJmUmNyZElt?=
+ =?utf-8?B?RUFxdWhKanIreVpGMEd5MEdPeW1xQTdSSk1SQlphczd4cldwZnlJMHR0ZU5r?=
+ =?utf-8?B?b3cvZmJ2ZnByRjQ2cmNubU1QNkJORmhMbHdoYUlmZjEzUnpPNTZ6SXpvMFYx?=
+ =?utf-8?B?cWZYbkF5MktSbVBzTW9mTURRWHVXZWljNngxeGpWTWdQckRHeGZTU0hFUEQ2?=
+ =?utf-8?B?OXZnSDdvNFM4VU4yZFJmekJFT214TE4xUGMycTVVSDZ2a0c2d1lwUGhPMG1n?=
+ =?utf-8?B?YUYxK3daZy9KdGcyMzVLNEx4dFRaSjduUzlncm5EaHJDZG51MmxKdlBBYmxl?=
+ =?utf-8?B?OHRjNEVCa0JQd251VTR2YTVRbmQwcFJIcVE3N05YOXl3MWcwYzNVamk5ZzFh?=
+ =?utf-8?B?SVgwallnaHNUSEM2djJlNlBvZERtcTkvQjVhelljdGFwV2Mrb3UxbkN5RWpX?=
+ =?utf-8?B?V3o4Y3JPOGRDZDVhc3p0YXJiOS9tSTUxcmR1eGo0MDNZTlBJTU1iRGFaV2RS?=
+ =?utf-8?B?OE5KN3hOYk1mQmdWNHBtNUcyRlBqcUpPU2RvRi82dzRBbmM4UldZekZSYkxh?=
+ =?utf-8?B?ZWx1dy9tWGNaL2pHNFNlRkZSVjVNSlVZU042VkJvRkp6WENMZ0MrVC9TaDgv?=
+ =?utf-8?B?dTQwYWtxN3NGNWc3Zzh6eTJVZllsQUp1aHgvNDEwTk9zTXREVFB2VFZ0NENa?=
+ =?utf-8?B?eW9NRmJiMzhpYVI0cmphU0ZXQ3UyZ2ZVZ0JmS3dZRnFNYXRMelJpdVo3dXhG?=
+ =?utf-8?Q?QiErvPZVR9I+4Hp+mchrX6JjUixZflK37n?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F5547A76BC28444EA24304E219B26427@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1607704424-16223-1-git-send-email-u0084500@gmail.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3420.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1fb8dc35-15c7-41d9-ad31-08d8a1ccaf5c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 14:12:55.8922
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tA3shO5W5MvgNXMrvv4C8UoNOpmZobd8WRiZMhBP3/XOPmWsmVotmyUWBIiBMgQ0+SgNI3mYKGwYwgzHhjIvwaA5guH/MWNCUNvGgJYP9qU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4722
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Dec 2020, cy_huang wrote:
-
-> From: ChiYuan Huang <cy_huang@richtek.com>
-> 
-> This adds support Richtek RT4831 MFD core. It includes four channel WLED driver
-
-Drop mentions of MFD.  Just core driver will do.
-
-> and Display Bias Voltage outputs.
-> 
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> ---
-> since v2
-> - Refine Kconfig descriptions.
-> - Add copyright.
-> - Refine error logs in probe.
-> - Refine comment lines in remove and shutdown.
-> ---
->  drivers/mfd/Kconfig       |  10 ++++
->  drivers/mfd/Makefile      |   1 +
->  drivers/mfd/rt4831-core.c | 124 ++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 135 insertions(+)
->  create mode 100644 drivers/mfd/rt4831-core.c
-> 
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index 8b99a13..dfb2640 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -1088,6 +1088,16 @@ config MFD_RDC321X
->  	  southbridge which provides access to GPIOs and Watchdog using the
->  	  southbridge PCI device configuration space.
->  
-> +config MFD_RT4831
-> +	tristate "Richtek RT4831 four channel WLED and Display Bias Voltage"
-> +	depends on I2C
-> +	select MFD_CORE
-> +	select REGMAP_I2C
-> +	help
-> +	  This enables support for the Richtek RT4831 that includes 4 channel
-> +	  WLED driving and Display Bias Voltage. It's commonly used to provide
-> +	  power to the LCD display and LCD backlight.
-> +
->  config MFD_RT5033
->  	tristate "Richtek RT5033 Power Management IC"
->  	depends on I2C
-> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> index 1780019..4108141 100644
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-> @@ -235,6 +235,7 @@ obj-$(CONFIG_MFD_MENF21BMC)	+= menf21bmc.o
->  obj-$(CONFIG_MFD_HI6421_PMIC)	+= hi6421-pmic-core.o
->  obj-$(CONFIG_MFD_HI655X_PMIC)   += hi655x-pmic.o
->  obj-$(CONFIG_MFD_DLN2)		+= dln2.o
-> +obj-$(CONFIG_MFD_RT4831)	+= rt4831-core.o
-
-Why is this called -core ...
-
->  obj-$(CONFIG_MFD_RT5033)	+= rt5033.o
-
-... and this isn't?
-
->  obj-$(CONFIG_MFD_SKY81452)	+= sky81452.o
->  
-> diff --git a/drivers/mfd/rt4831-core.c b/drivers/mfd/rt4831-core.c
-> new file mode 100644
-> index 00000000..f837c06
-> --- /dev/null
-> +++ b/drivers/mfd/rt4831-core.c
-> @@ -0,0 +1,124 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Copyright (c) 2020 Richtek Technology Corp.
-> + *
-> + * Author: ChiYuan Huang <cy_huang@richtek.com>
-> + */
-> +
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/i2c.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mfd/core.h>
-> +#include <linux/module.h>
-> +#include <linux/regmap.h>
-> +
-> +#define RT4831_REG_REVISION	0x01
-> +#define RT4831_REG_ENABLE	0x08
-> +#define RT4831_REG_I2CPROT	0x15
-> +
-> +#define RICHTEK_VID		0x03
-> +#define RT4831_VID_MASK		GENMASK(1, 0)
-> +#define RT4831_RESET_MASK	BIT(7)
-> +#define RT4831_I2CSAFETMR_MASK	BIT(0)
-> +
-> +static const struct mfd_cell rt4831_subdevs[] = {
-> +	OF_MFD_CELL("rt4831-backlight", NULL, NULL, 0, 0, "richtek,rt4831-backlight"),
-> +	MFD_CELL_NAME("rt4831-regulator")
-> +};
-
-Just a little note about these helpers.  I'm planning on unifying the
-names pretty soon.  So if you have to rebase, please watch out for the
-rename.
-
-Essentially OF_MFD_CELL() will soon become MFD_CELL_OF().
-
-> +static bool rt4831_is_accessible_reg(struct device *dev, unsigned int reg)
-> +{
-> +	if (reg >= RT4831_REG_REVISION && reg <= RT4831_REG_I2CPROT)
-> +		return true;
-> +	return false;
-> +}
-> +
-> +static const struct regmap_config rt4831_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +	.max_register = RT4831_REG_I2CPROT,
-> +
-> +	.readable_reg = rt4831_is_accessible_reg,
-> +	.writeable_reg = rt4831_is_accessible_reg,
-> +};
-> +
-> +static int rt4831_probe(struct i2c_client *client)
-> +{
-> +	struct gpio_desc *enable;
-
-My preference would be "enable_gpio" to ensure it's easily
-identifiable further on.
-
-> +	struct regmap *regmap;
-> +	unsigned int val;
-
-'val' is not a great name for a variable that is used for a specific
-purpose.  How about 'revision'?
-
-> +	int ret;
-> +
-> +	enable = devm_gpiod_get_optional(&client->dev, "enable", GPIOD_OUT_HIGH);
-> +	if (IS_ERR(enable)) {
-> +		dev_err(&client->dev, "Failed to get 'enable' GPIO\n");
-> +		return PTR_ERR(enable);
-> +	}
-> +
-> +	regmap = devm_regmap_init_i2c(client, &rt4831_regmap_config);
-> +	if (IS_ERR(regmap)) {
-> +		dev_err(&client->dev, "Failed to initialize regmap\n");
-> +		return PTR_ERR(regmap);
-> +	}
-> + 
-> +	ret = regmap_read(regmap, RT4831_REG_REVISION, &val);
-> +	if (ret) {
-> +		dev_err(&client->dev, "Failed to get H/W revision\n");
-> +		return ret;
-> +	}
-> +
-> +	if ((val & RT4831_VID_MASK) != RICHTEK_VID) {
-
-What does VID stand for here?
-
-The fact that I have to ask probably means it should be changed.
-
-Variant ID perhaps?  If so, call the define 'VARIANT_ID'.
-
-> +		dev_err(&client->dev, "VID not matched, val = 0x%02x\n", val);
-
-Using variable names means nothing to the user.
-
-"revision:  0x%02x" ?
-
-> +		return -ENODEV;
-> +	}
-> +
-> +	/*
-> +	 * Used to prevent the abnormal shutdown.
-> +	 * If SCL/SDA both keep low for one second to reset HW.
-> +	 */
-> +	ret = regmap_update_bits(regmap, RT4831_REG_I2CPROT, RT4831_I2CSAFETMR_MASK,
-> +				 RT4831_I2CSAFETMR_MASK);
-> +	if (ret) {
-> +		dev_err(&client->dev, "Failed to enable I2C safety timer\n");
-> +		return ret;
-> +	}
-> +
-> +	return devm_mfd_add_devices(&client->dev, PLATFORM_DEVID_AUTO, rt4831_subdevs,
-> +				    ARRAY_SIZE(rt4831_subdevs), NULL, 0, NULL);
-> +}
-> +
-> +static int rt4831_remove(struct i2c_client *client)
-> +{
-> +	struct regmap *regmap = dev_get_regmap(&client->dev, NULL);
-> +
-> +	/* Disable WLED and DSV outputs */
-> +	return regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_RESET_MASK, RT4831_RESET_MASK);
-> +}
-> +
-> +static void rt4831_shutdown(struct i2c_client *client)
-> +{
-> +	struct regmap *regmap = dev_get_regmap(&client->dev, NULL);
-> +
-> +	/* Disable WLED and DSV outputs */
-> +	regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_RESET_MASK, RT4831_RESET_MASK);
-> +}
-> +
-> +static const struct of_device_id __maybe_unused rt4831_of_match[] = {
-> +	{ .compatible = "richtek,rt4831", },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, rt4831_of_match);
-> +
-> +static struct i2c_driver rt4831_driver = {
-> +	.driver = {
-> +		.name = "rt4831",
-> +		.of_match_table = of_match_ptr(rt4831_of_match),
-
-The trend is to not use of_match_ptr() anymore, as these devices can
-not be instantiated using ACPI.
-
-> +	},
-> +	.probe_new = rt4831_probe,
-> +	.remove = rt4831_remove,
-> +	.shutdown = rt4831_shutdown,
-> +};
-> +module_i2c_driver(rt4831_driver);
-> +
-> +MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
-> +MODULE_LICENSE("GPL v2");
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+DQoNCk9uIDE2LjEyLjIwMjAgMTU6NDUsIEFsZXhhbmRyZSBCZWxsb25pIHdyb3RlOg0KPiBFWFRF
+Uk5BTCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
+IHlvdSBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IE9uIDE2LzEyLzIwMjAgMTQ6NTc6
+MzMrMDIwMCwgQ2xhdWRpdSBCZXpuZWEgd3JvdGU6DQo+PiBBZGQgc3VwcG9ydCBmb3IgU0FNQTdH
+NSBieSBhZGRpbmcgcHJvcGVyIHN0cnVjdCByZWdfY29uZmlnIHN0cnVjdHVyZQ0KPj4gYW5kIHNp
+bmNlIFNBTUE3RzUgaXMgbm90IGN1cnJlbnRseSBvbiBMUEREUiBzZXR1cHMgdGhlIGNvbW1pdCBh
+bHNvDQo+PiBhdm9pZCB0aGUgbWFwcGluZyBvZiBERFIgY29udHJvbGxlci4NCj4+DQo+IA0KPiBI
+b25lc3RseSwgSSB3b3VsZG4ndCBsZWF2ZSB0aGUgTFBERFIgcGFydCBvdXQgYmVjYXVzZSB0aGVy
+ZSBpcyBubw0KPiBndWFyYW50ZWUgYW55b25lIHdpbGwgdGhpbmsgYWJvdXQgaXQgd2hlbiB0aGV5
+IGhhdmUgYSBkZXNpZ24gd2l0aCBMUEREUg0KPiBhbmQgYXMgYSBjb25zZXF1ZW5jZSwgdGhlaXIg
+ZGV2aWNlIHdpbGwgYmVoYXZlIHByb3Blcmx5IGJ1dCB3aWxsIGJlDQo+IHZlcnkgc2hvcnQgbGl2
+ZWQuDQoNClRoZSBpZGVhIHdhc24ndCB0byBsZWF2ZSBpdCBvdXQuIEl0IGhhcyB0byBiZSBoYW5k
+bGVkIGRpZmZlcmVudGx5IG9uDQpTQU1BN0c1IGFzIGl0IGVtYmVkcyBhIGRpZmZlcmVudCBERFIg
+Y29udHJvbGxlciBhbmQgYXQgdGhlIG1vbWVudCB3ZSBoYXZlDQpubyBzZXR1cCB3aXRoIExQRERS
+Lg0KDQpUaGFuayB5b3UsDQpDbGF1ZGl1DQoNCj4gDQo+PiBTaWduZWQtb2ZmLWJ5OiBDbGF1ZGl1
+IEJlem5lYSA8Y2xhdWRpdS5iZXpuZWFAbWljcm9jaGlwLmNvbT4NCj4+IC0tLQ0KPj4gIGRyaXZl
+cnMvcG93ZXIvcmVzZXQvYXQ5MS1zYW1hNWQyX3NoZHdjLmMgfCA3MiArKysrKysrKysrKysrKysr
+KysrKysrKystLS0tLS0tLQ0KPj4gIDEgZmlsZSBjaGFuZ2VkLCA1NCBpbnNlcnRpb25zKCspLCAx
+OCBkZWxldGlvbnMoLSkNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wb3dlci9yZXNldC9h
+dDkxLXNhbWE1ZDJfc2hkd2MuYyBiL2RyaXZlcnMvcG93ZXIvcmVzZXQvYXQ5MS1zYW1hNWQyX3No
+ZHdjLmMNCj4+IGluZGV4IDM5OTYxNjdmNjc2Zi4uYTMzNDJjOGMzNzI4IDEwMDY0NA0KPj4gLS0t
+IGEvZHJpdmVycy9wb3dlci9yZXNldC9hdDkxLXNhbWE1ZDJfc2hkd2MuYw0KPj4gKysrIGIvZHJp
+dmVycy9wb3dlci9yZXNldC9hdDkxLXNhbWE1ZDJfc2hkd2MuYw0KPj4gQEAgLTc4LDkgKzc4LDE1
+IEBAIHN0cnVjdCBwbWNfcmVnX2NvbmZpZyB7DQo+PiAgICAgICB1OCBtY2tyOw0KPj4gIH07DQo+
+Pg0KPj4gK3N0cnVjdCBkZHJjX3JlZ19jb25maWcgew0KPj4gKyAgICAgdTMyIHR5cGVfb2Zmc2V0
+Ow0KPj4gKyAgICAgdTMyIHR5cGVfbWFzazsNCj4+ICt9Ow0KPj4gKw0KPj4gIHN0cnVjdCByZWdf
+Y29uZmlnIHsNCj4+ICAgICAgIHN0cnVjdCBzaGR3Y19yZWdfY29uZmlnIHNoZHdjOw0KPj4gICAg
+ICAgc3RydWN0IHBtY19yZWdfY29uZmlnIHBtYzsNCj4+ICsgICAgIHN0cnVjdCBkZHJjX3JlZ19j
+b25maWcgZGRyYzsNCj4+ICB9Ow0KPj4NCj4+ICBzdHJ1Y3Qgc2hkd2Mgew0KPj4gQEAgLTI2Miw2
+ICsyNjgsMTAgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCByZWdfY29uZmlnIHNhbWE1ZDJfcmVnX2Nv
+bmZpZyA9IHsNCj4+ICAgICAgIC5wbWMgPSB7DQo+PiAgICAgICAgICAgICAgIC5tY2tyICAgICAg
+ICAgICA9IDB4MzAsDQo+PiAgICAgICB9LA0KPj4gKyAgICAgLmRkcmMgPSB7DQo+PiArICAgICAg
+ICAgICAgIC50eXBlX29mZnNldCAgICA9IEFUOTFfRERSU0RSQ19NRFIsDQo+PiArICAgICAgICAg
+ICAgIC50eXBlX21hc2sgICAgICA9IEFUOTFfRERSU0RSQ19NRA0KPj4gKyAgICAgfSwNCj4+ICB9
+Ow0KPj4NCj4+ICBzdGF0aWMgY29uc3Qgc3RydWN0IHJlZ19jb25maWcgc2FtOXg2MF9yZWdfY29u
+ZmlnID0gew0KPj4gQEAgLTI3NSw2ICsyODUsMjMgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCByZWdf
+Y29uZmlnIHNhbTl4NjBfcmVnX2NvbmZpZyA9IHsNCj4+ICAgICAgIC5wbWMgPSB7DQo+PiAgICAg
+ICAgICAgICAgIC5tY2tyICAgICAgICAgICA9IDB4MjgsDQo+PiAgICAgICB9LA0KPj4gKyAgICAg
+LmRkcmMgPSB7DQo+PiArICAgICAgICAgICAgIC50eXBlX29mZnNldCAgICA9IEFUOTFfRERSU0RS
+Q19NRFIsDQo+PiArICAgICAgICAgICAgIC50eXBlX21hc2sgICAgICA9IEFUOTFfRERSU0RSQ19N
+RA0KPj4gKyAgICAgfSwNCj4+ICt9Ow0KPj4gKw0KPj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgcmVn
+X2NvbmZpZyBzYW1hN2c1X3JlZ19jb25maWcgPSB7DQo+PiArICAgICAuc2hkd2MgPSB7DQo+PiAr
+ICAgICAgICAgICAgIC53a3VwX3Bpbl9pbnB1dCA9IDAsDQo+PiArICAgICAgICAgICAgIC5tcl9y
+dGN3a19zaGlmdCA9IDE3LA0KPj4gKyAgICAgICAgICAgICAubXJfcnR0d2tfc2hpZnQgPSAxNiwN
+Cj4+ICsgICAgICAgICAgICAgLnNyX3J0Y3drX3NoaWZ0ID0gNSwNCj4+ICsgICAgICAgICAgICAg
+LnNyX3J0dHdrX3NoaWZ0ID0gNCwNCj4+ICsgICAgIH0sDQo+PiArICAgICAucG1jID0gew0KPj4g
+KyAgICAgICAgICAgICAubWNrciAgICAgICAgICAgPSAweDI4LA0KPj4gKyAgICAgfSwNCj4+ICB9
+Ow0KPj4NCj4+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBhdDkxX3NoZHdjX29m
+X21hdGNoW10gPSB7DQo+PiBAQCAtMjg1LDYgKzMxMiwxMCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0
+IG9mX2RldmljZV9pZCBhdDkxX3NoZHdjX29mX21hdGNoW10gPSB7DQo+PiAgICAgICB7DQo+PiAg
+ICAgICAgICAgICAgIC5jb21wYXRpYmxlID0gIm1pY3JvY2hpcCxzYW05eDYwLXNoZHdjIiwNCj4+
+ICAgICAgICAgICAgICAgLmRhdGEgPSAmc2FtOXg2MF9yZWdfY29uZmlnLA0KPj4gKyAgICAgfSwN
+Cj4+ICsgICAgIHsNCj4+ICsgICAgICAgICAgICAgLmNvbXBhdGlibGUgPSAibWljcm9jaGlwLHNh
+bWE3ZzUtc2hkd2MiLA0KPj4gKyAgICAgICAgICAgICAuZGF0YSA9ICZzYW1hN2c1X3JlZ19jb25m
+aWcsDQo+PiAgICAgICB9LCB7DQo+PiAgICAgICAgICAgICAgIC8qc2VudGluZWwqLw0KPj4gICAg
+ICAgfQ0KPj4gQEAgLTI5NCw2ICszMjUsNyBAQCBNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCBhdDkx
+X3NoZHdjX29mX21hdGNoKTsNCj4+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBh
+dDkxX3BtY19pZHNbXSA9IHsNCj4+ICAgICAgIHsgLmNvbXBhdGlibGUgPSAiYXRtZWwsc2FtYTVk
+Mi1wbWMiIH0sDQo+PiAgICAgICB7IC5jb21wYXRpYmxlID0gIm1pY3JvY2hpcCxzYW05eDYwLXBt
+YyIgfSwNCj4+ICsgICAgIHsgLmNvbXBhdGlibGUgPSAibWljcm9jaGlwLHNhbWE3ZzUtcG1jIiB9
+LA0KPj4gICAgICAgeyAvKiBTZW50aW5lbC4gKi8gfQ0KPj4gIH07DQo+Pg0KPj4gQEAgLTM1NSwz
+MCArMzg3LDM0IEBAIHN0YXRpYyBpbnQgX19pbml0IGF0OTFfc2hkd2NfcHJvYmUoc3RydWN0IHBs
+YXRmb3JtX2RldmljZSAqcGRldikNCj4+ICAgICAgICAgICAgICAgZ290byBjbGtfZGlzYWJsZTsN
+Cj4+ICAgICAgIH0NCj4+DQo+PiAtICAgICBucCA9IG9mX2ZpbmRfY29tcGF0aWJsZV9ub2RlKE5V
+TEwsIE5VTEwsICJhdG1lbCxzYW1hNWQzLWRkcmFtYyIpOw0KPj4gLSAgICAgaWYgKCFucCkgew0K
+Pj4gLSAgICAgICAgICAgICByZXQgPSAtRU5PREVWOw0KPj4gLSAgICAgICAgICAgICBnb3RvIHVu
+bWFwOw0KPj4gLSAgICAgfQ0KPj4gKyAgICAgaWYgKGF0OTFfc2hkd2MtPnJjZmctPmRkcmMudHlw
+ZV9tYXNrKSB7DQo+PiArICAgICAgICAgICAgIG5wID0gb2ZfZmluZF9jb21wYXRpYmxlX25vZGUo
+TlVMTCwgTlVMTCwNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAiYXRtZWwsc2FtYTVkMy1kZHJhbWMiKTsNCj4+ICsgICAgICAgICAgICAgaWYgKCFucCkgew0K
+Pj4gKyAgICAgICAgICAgICAgICAgICAgIHJldCA9IC1FTk9ERVY7DQo+PiArICAgICAgICAgICAg
+ICAgICAgICAgZ290byB1bm1hcDsNCj4+ICsgICAgICAgICAgICAgfQ0KPj4NCj4+IC0gICAgIGF0
+OTFfc2hkd2MtPm1wZGRyY19iYXNlID0gb2ZfaW9tYXAobnAsIDApOw0KPj4gLSAgICAgb2Zfbm9k
+ZV9wdXQobnApOw0KPj4gKyAgICAgICAgICAgICBhdDkxX3NoZHdjLT5tcGRkcmNfYmFzZSA9IG9m
+X2lvbWFwKG5wLCAwKTsNCj4+ICsgICAgICAgICAgICAgb2Zfbm9kZV9wdXQobnApOw0KPj4NCj4+
+IC0gICAgIGlmICghYXQ5MV9zaGR3Yy0+bXBkZHJjX2Jhc2UpIHsNCj4+IC0gICAgICAgICAgICAg
+cmV0ID0gLUVOT01FTTsNCj4+IC0gICAgICAgICAgICAgZ290byB1bm1hcDsNCj4+ICsgICAgICAg
+ICAgICAgaWYgKCFhdDkxX3NoZHdjLT5tcGRkcmNfYmFzZSkgew0KPj4gKyAgICAgICAgICAgICAg
+ICAgICAgIHJldCA9IC1FTk9NRU07DQo+PiArICAgICAgICAgICAgICAgICAgICAgZ290byB1bm1h
+cDsNCj4+ICsgICAgICAgICAgICAgfQ0KPj4gKw0KPj4gKyAgICAgICAgICAgICBkZHJfdHlwZSA9
+IHJlYWRsKGF0OTFfc2hkd2MtPm1wZGRyY19iYXNlICsNCj4+ICsgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBhdDkxX3NoZHdjLT5yY2ZnLT5kZHJjLnR5cGVfb2Zmc2V0KSAmDQo+PiArICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgYXQ5MV9zaGR3Yy0+cmNmZy0+ZGRyYy50eXBlX21h
+c2s7DQo+PiArICAgICAgICAgICAgIGlmIChkZHJfdHlwZSAhPSBBVDkxX0REUlNEUkNfTURfTFBE
+RFIyICYmDQo+PiArICAgICAgICAgICAgICAgICBkZHJfdHlwZSAhPSBBVDkxX0REUlNEUkNfTURf
+TFBERFIzKSB7DQo+PiArICAgICAgICAgICAgICAgICAgICAgaW91bm1hcChhdDkxX3NoZHdjLT5t
+cGRkcmNfYmFzZSk7DQo+PiArICAgICAgICAgICAgICAgICAgICAgYXQ5MV9zaGR3Yy0+bXBkZHJj
+X2Jhc2UgPSBOVUxMOw0KPj4gKyAgICAgICAgICAgICB9DQo+PiAgICAgICB9DQo+Pg0KPj4gICAg
+ICAgcG1fcG93ZXJfb2ZmID0gYXQ5MV9wb3dlcm9mZjsNCj4+DQo+PiAtICAgICBkZHJfdHlwZSA9
+IHJlYWRsKGF0OTFfc2hkd2MtPm1wZGRyY19iYXNlICsgQVQ5MV9ERFJTRFJDX01EUikgJg0KPj4g
+LSAgICAgICAgICAgICAgICAgICAgICBBVDkxX0REUlNEUkNfTUQ7DQo+PiAtICAgICBpZiAoZGRy
+X3R5cGUgIT0gQVQ5MV9ERFJTRFJDX01EX0xQRERSMiAmJg0KPj4gLSAgICAgICAgIGRkcl90eXBl
+ICE9IEFUOTFfRERSU0RSQ19NRF9MUEREUjMpIHsNCj4+IC0gICAgICAgICAgICAgaW91bm1hcChh
+dDkxX3NoZHdjLT5tcGRkcmNfYmFzZSk7DQo+PiAtICAgICAgICAgICAgIGF0OTFfc2hkd2MtPm1w
+ZGRyY19iYXNlID0gTlVMTDsNCj4+IC0gICAgIH0NCj4+IC0NCj4+ICAgICAgIHJldHVybiAwOw0K
+Pj4NCj4+ICB1bm1hcDoNCj4+IC0tDQo+PiAyLjcuNA0KPj4NCj4gDQo+IC0tDQo+IEFsZXhhbmRy
+ZSBCZWxsb25pLCBCb290bGluDQo+IEVtYmVkZGVkIExpbnV4IGFuZCBLZXJuZWwgZW5naW5lZXJp
+bmcNCj4gaHR0cHM6Ly9ib290bGluLmNvbQ0KPiA=
