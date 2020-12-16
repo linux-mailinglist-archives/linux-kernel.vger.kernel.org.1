@@ -2,222 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2222DBD47
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B3F2DBD4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgLPJIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:08:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725858AbgLPJIX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:08:23 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F14C0613D6;
-        Wed, 16 Dec 2020 01:07:43 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id u18so46471856lfd.9;
-        Wed, 16 Dec 2020 01:07:43 -0800 (PST)
+        id S1726221AbgLPJKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:10:07 -0500
+Received: from mail-eopbgr130049.outbound.protection.outlook.com ([40.107.13.49]:22244
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726216AbgLPJKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 04:10:06 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hda/lfRsDg3d1K13uhKAmM3mNbA3PC6OhqJPvP9twxcsn2z5w3Q/4jqBDRxbGOWRg4IyXlcWaae2z02+I4G/sFwYwahAD8ev83Td4UVmG6353ErTMHGdLnf2m8FwEb5mhLs9jU4+AnGbhgPyIQDvtueFrSUEfy8Lf3pGkvTmA27lhVpOgSMOTily38kZ/OnE9EZz4kyXckR1hnjR25vrl1/vTA0ZM3ePvi2fDOEseejtbjlxMBUxPcWlemh0rw0ZO8TjPPqSLfcIs6Lwod6mIApMWLTzRTWK0NoXzyTL8FJEKKGAW5qPbdI6IXn5PCmTVuAPzh0BB0EdrWsK9rHfBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TVcR98yYWk91UrMdQtIyWgpWurmw8cJNaNsgKxBClQk=;
+ b=gjm5d5s7spMIXQwsxVa8sgaGON/mS7jNKyjnMYG3lDbzf/bSL64+P8ibKccXqQ9BhSl3rIaxjHB/t/aPHNsG2nZysj8wkrPROUsrqI/vjprWc4hBTD90Jrnn5bT7MlHMzG4tR5btYeeQp358woQ6v4dGXBQIOcJjSQqtzJ8CcfzpBAi/8Y1nmxX1A0lbdftac8RUq9sbwE+c+v/d4KAFyCo0AHE5p0YOW294w7Cp6ACol91Uq08kHC1j2P8DLay90rEebPrhdgG04zlE9vBzThYtDAIXy9tYtyEo6soXXRHyTYeZBGaXOJIN7MlmBjEiE1lqIC9acvhNbBSOVnyChA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
+ header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NNBEaxSKyg6BSbKPVjzc/TIpBoY4OtnDFb6TyTjRFWo=;
-        b=aZ8zaFrnLaOnI6oU3DAY8sUSN+NpLw0ZzIP7s7DG6mt5uSH9i15EI7DFruntjV511F
-         26x1kBmJfXeaVvDBZMRevup3zDxmxYa3eEhmMO+R7nIkgUy3X6r8HJ6KfVgKpESykA1h
-         lVwTN5fwAXCw1JwQBZq1B7SorU4rjBpwr2wCuGT2DCowUReLIvYq7/fZOkYfTyzGw29f
-         h0xybH50slwEoTfbyKur1be81M0jjVaSPJbr5aWvSO6KssE/bwV59ObUDrjawJQtmPyr
-         UIJlR1Ta91/V4M1ibJWrHriCv8OY+sLFPSuB8VM93BffEVqwL/I4aY1lUUrOs4z7JAqu
-         Ql2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NNBEaxSKyg6BSbKPVjzc/TIpBoY4OtnDFb6TyTjRFWo=;
-        b=hXz5RXLx5aCfbNt2ms9l998Wt9Pun9Q8PMVFCNdzSVXEp7QpB4cD/VktHnA3+nIWZr
-         Q90kgYT5C8iGBbuMWceJ8IW71auxeCUOIC8msJmlSs8SMm2fSlq7T699GeoAn965cHfB
-         s+DqQPhSrhuWleICmVf39TdwfIA+iKEclMRuim9fXD9lFov8D0xgbs/oJDA9M7Cw4RgW
-         ehanIhz6ww+JvqcdeVhmI8p0/MozGG/Y5VPzZdXtfoLU9CO5930iwcoBlaVJEWQP4uVR
-         HKm+uP8fnkeuN5uVMR+kgdSuGGYrT1RaFf9NP7SztMElHSsyM9H2lYvrBtWgoMoDDdsi
-         G0Eg==
-X-Gm-Message-State: AOAM533kX33tHiPZUirLl0fvAeisdqDUpff2bkuZp0yAsHVgmy7COOjF
-        ErePbHRGTyQhL6SYPIjUmgafnX96Wv4=
-X-Google-Smtp-Source: ABdhPJyipB2RS6fU2xboJkuum0669AsrgUEWRwkMmXq+kj4o7jPRQ16tHxUCkadwBTCsUQUIGrYf1g==
-X-Received: by 2002:a2e:a58e:: with SMTP id m14mr14663545ljp.1.1608109661675;
-        Wed, 16 Dec 2020 01:07:41 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id o11sm151686lfi.267.2020.12.16.01.07.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Dec 2020 01:07:41 -0800 (PST)
-Subject: Re: [PATCH v1 5/8] usb: chipidea: tegra: Support host mode
-To:     Peter Chen <peter.chen@nxp.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201215202113.30394-1-digetx@gmail.com>
- <20201215202113.30394-6-digetx@gmail.com>
- <20201216060732.GB5595@b29397-desktop>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <bb617167-e6a4-221e-5e3b-c9d7a1b50c87@gmail.com>
-Date:   Wed, 16 Dec 2020 12:07:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
-MIME-Version: 1.0
-In-Reply-To: <20201216060732.GB5595@b29397-desktop>
-Content-Type: text/plain; charset=utf-8
+ d=rohmsemiconductoreurope.onmicrosoft.com;
+ s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TVcR98yYWk91UrMdQtIyWgpWurmw8cJNaNsgKxBClQk=;
+ b=f5irEMQXaWkCYaC4kUP+eg3odQvsYlsG0B6aOsNENSgElc967CqcNKhOL6mubLf+clqAfuh2Gu5KJr7TPATLOfUAzpOTqIy8aCLmA5wIy6clMcPIzS3NM0IeIwc5fF9KAK2ylWX5wswdYduVmSjIwZdhM9oe4/piVR8lSaD3Clo=
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
+ HE1PR03MB3065.eurprd03.prod.outlook.com (2603:10a6:7:60::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3654.17; Wed, 16 Dec 2020 09:09:15 +0000
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::f1f1:eb1d:2bf5:eb87]) by HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::f1f1:eb1d:2bf5:eb87%7]) with mapi id 15.20.3654.025; Wed, 16 Dec 2020
+ 09:09:15 +0000
+From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+To:     "lee.jones@linaro.org" <lee.jones@linaro.org>
+CC:     "khiem.nguyen.xt@renesas.com" <khiem.nguyen.xt@renesas.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "marek.vasut+renesas@gmail.com" <marek.vasut+renesas@gmail.com>,
+        "yoshihiro.shimoda.uh@renesas.com" <yoshihiro.shimoda.uh@renesas.com>
+Subject: Re: [PATCH v3 11/12] mfd: bd9571mwv: Make the driver more generic
+Thread-Topic: [PATCH v3 11/12] mfd: bd9571mwv: Make the driver more generic
+Thread-Index: AQHW035y6BNLGpWx2EuQSEwrpEd9qan5YvcAgAAJ7ICAAAJfAA==
+Date:   Wed, 16 Dec 2020 09:09:15 +0000
+Message-ID: <858768c6522e9a407617ef21d6c7793fd71964dc.camel@fi.rohmeurope.com>
+References: <1608104275-13174-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+         <1608104275-13174-12-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+         <4021c3f04bf8c4dcbcb015056455c4acf9e71b6b.camel@fi.rohmeurope.com>
+         <20201216090045.GA207743@dell>
+In-Reply-To: <20201216090045.GA207743@dell>
+Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Accept-Language: fi-FI, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none
+ header.from=fi.rohmeurope.com;
+x-originating-ip: [62.78.225.252]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 985e3195-1fb1-4b4e-9bd2-08d8a1a24324
+x-ms-traffictypediagnostic: HE1PR03MB3065:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HE1PR03MB30653ECBC93FAA4F8EA3E6A8ADC50@HE1PR03MB3065.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fQiPVuG9x+mOhMVzV/fTEXNZaXUFxopeq/2luW6S3qz0aQv07bF6cNRCcWGKIeXKGgi0fr2mFluB5urw3rL313l8lZNI5m8bjrifR9hORKPmdleWoMh2XKZIrO7H1xKPmMsGF3PiYj4s3xR+48DS2vquxMBWS5CIGTCX4/UYFft9XPJiSSCfF+fyvZzdPcV1YsiF7qN8LQLPtW/JbO+0Ye7KWUgK5nt3bzMlbry00n8ToOaSdFRpHdlEAi7cm1A1C71olzyYdGu/PjAE5YLKqS0++0YWipo7KYuXZFzr4nBZ99xXgL5HQDLrQErgmufYi3kS4muLOh1WN1FIEfPJo+9KSNTdUGiV0o+OJm+k1ShdCFjuIpKVz136NtZgvA0k
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(39840400004)(376002)(366004)(8936002)(6486002)(66946007)(478600001)(26005)(5660300002)(8676002)(71200400001)(4326008)(83380400001)(6916009)(7416002)(316002)(54906003)(2616005)(64756008)(6512007)(3450700001)(66556008)(66476007)(66446008)(186003)(4001150100001)(76116006)(2906002)(86362001)(6506007)(41533002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?c2lWQThOQ1ZEYWZkQ29Dc3ovMm1LemttUVlhTGRjSlBBbnlWYVpHTFA1K1hr?=
+ =?utf-8?B?MnZHTDFGYWwwM2ExNmFKQWYxM2o0WXFKM3Nyd3IyZUxDeFJoV2s4VDdaRXkx?=
+ =?utf-8?B?ZTdTYURhd0tWQUtZV3ZtQVhSMURjU0JUTWJRVzVCSmdRSUNWc1I2OTltTDcv?=
+ =?utf-8?B?RHZuQlZVVzVuaTVnem51ZU9ENWp0bFlScUdpWCtpSHFxYVViT1l2Y2c0V3NX?=
+ =?utf-8?B?Rnp1NnFzR1JnRDZnK2JNSnJ5NXZKdGNvNVhFNFFMNU1BRlhqSnc1UWFXRzFH?=
+ =?utf-8?B?UHlmck9UWk9Qbm50RWxEWjVBTTZyeTFPMUNsZGJlMThuVDN4NCs3elhHNlhR?=
+ =?utf-8?B?cTREZjBuTy9PUUkvQm9COFJ3SCtYUHJUUUYxdTdLRi9ybkh1cG9ieGF5QWJz?=
+ =?utf-8?B?bUExNmsrUVJHWlRNZWFLSVJZN3ZMNW1TSzBYSW5WRGUza0VEQ3lHZkVGYkVT?=
+ =?utf-8?B?NVp2eElxbm1DeFk0bFFtMThGY0xiM1ZWQkJubjFKV3V2Skl4MVVUNnhiYnlJ?=
+ =?utf-8?B?bjFlVWRqbzY0ZzhVdzFVdkZDSnFMVVRHaTFpUm8yQStFZkREalZ2TVdPYTJm?=
+ =?utf-8?B?UklnVVJhLzJUWWpPYlNPRGxYdWhjRG52YVBIVTZTYmNZalNNS3VUaEYwTmpn?=
+ =?utf-8?B?dmN6M1o5VEFqOS9hL1VYOEZLTVRySjdwQU5aQXh5VEoxWUIrZzlGTW05Vytw?=
+ =?utf-8?B?UVl1dmNOQksyanp2R0pKM3g0VjExMWVQZTBlOU9ubFJ6VUNsUkJ3d3l6TUFr?=
+ =?utf-8?B?TXM5QmdENzZEVFBTZUZ6VlBBdmJVQUF3QjdORFArTDFSOWcvRTdYYmNnYTY3?=
+ =?utf-8?B?ekdCd2pNRFpiV0Y3NzFKSVhRYjYwSXdqVEpVcU9wem1nSWh6MUxsOFo3UkVC?=
+ =?utf-8?B?OW5PRjJadEhXRG85SDA3NFVlYVNFWkk2YVFQVkF2cmpXK01PSkRma1A0MUNo?=
+ =?utf-8?B?Q2RyWWRBNkpiNXU2NFlXdnB0eWlUNy9iR25LTUVGQkxWY1QzbXdEcVkyRVVZ?=
+ =?utf-8?B?UUVlb0dRQ1poUnRtcTNVRXRlVldQS29xMStGZkl1VWFZbHlJUTZqUU9ERmN4?=
+ =?utf-8?B?VG5pSnRxbDVUSWlkYmZPL2M1enJETitSV0grdFYvSTUwcmdhREtKM0NDTXUx?=
+ =?utf-8?B?NDg0ZHo1N2ViMkR0N0ZGaFY3U3RYN1BjU2daRlhzR1I2alR4MmJqRUZmMzJU?=
+ =?utf-8?B?ZnRUanMwS0tUNE9XZVhxcTFYd2FhYTRKNUFmWm5YVXlIVy9aTXZ6b2xTYzVX?=
+ =?utf-8?B?WkMrR0FqQmRjb0Yrb0NDYU4vYnlxV3ZFU1NxVnNUR2JydXQ5NWtKZjVkYWp3?=
+ =?utf-8?Q?d+NWUC/Wxr4aK8f7yYbYM/1NeXL8xz5C+v?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <CCEAE8113C025D459DC0A6E938090FB0@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: fi.rohmeurope.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 985e3195-1fb1-4b4e-9bd2-08d8a1a24324
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 09:09:15.5232
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nTOfCFbpxfX7zcYlox0gAqQqeNvqaouXB48/vOIMrE5HKe9QYTzHwFmRtaeRLGvzl/7oNF7Y9wbt0kxQ3VOujO1CVmeFuOCt1llp+7rQE9JDmoG6rVdtxWjh0KlRvb1u
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR03MB3065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-16.12.2020 09:08, Peter Chen пишет:
-> On 20-12-15 23:21:10, Dmitry Osipenko wrote:
->> From: Peter Geis <pgwipeout@gmail.com>
->>  
->>  struct tegra_usb_soc_info {
->>  	unsigned long flags;
->> +	unsigned int txfifothresh;
->> +	enum usb_dr_mode dr_mode;
->> +};
->> +
->> +static const struct tegra_usb_soc_info tegra20_ehci_soc_info = {
->> +	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
->> +		 CI_HDRC_OVERRIDE_PHY_CONTROL,
->> +	.dr_mode = USB_DR_MODE_HOST,
->> +	.txfifothresh = 10,
->> +};
->> +
->> +static const struct tegra_usb_soc_info tegra30_ehci_soc_info = {
->> +	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
->> +		 CI_HDRC_OVERRIDE_PHY_CONTROL
->> +	.dr_mode = USB_DR_MODE_HOST,
->> +	.txfifothresh = 16,
->>  };
->>  
->>  static const struct tegra_usb_soc_info tegra_udc_soc_info = {
->> -	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA,
->> +	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
->> +		 CI_HDRC_OVERRIDE_PHY_CONTROL,
->> +	.dr_mode = USB_DR_MODE_UNKNOWN,
->>  };
-> 
-> What's the usage for this dr_mode? Does these three SoCs only supports
-> single mode, it usually sets dr_mode at board dts file to indicate
-> USB role for this board.
-
-All Tegra SoCs have three USB controllers.  Only one of these three
-controllers supports peripheral / OTG modes, the other two controllers
-are fixed to the host mode and device trees do not specify the dr_mode
-for the host controllers.
-
-Hence we need to enforce the dr_mode=host for the host-mode controllers.
-
-For UDC the default mode is "unknown" because actual mode comes from a
-board's device tree.
-
->>  static const struct of_device_id tegra_usb_of_match[] = {
->>  	{
->> +		.compatible = "nvidia,tegra20-ehci",
->> +		.data = &tegra20_ehci_soc_info,
->> +	}, {
->> +		.compatible = "nvidia,tegra30-ehci",
->> +		.data = &tegra30_ehci_soc_info,
->> +	}, {
->>  		.compatible = "nvidia,tegra20-udc",
->>  		.data = &tegra_udc_soc_info,
-> 
-> Your compatible indicates this controller is single USB role, is it
-> on purpose?
-
-Yes, the "tegra20/30-ehci" controllers are fixed to the host-mode in
-hardware.
-
-...
->> +static int tegra_usb_internal_port_reset(struct ehci_hcd *ehci,
->> +					 u32 __iomem *portsc_reg,
->> +					 unsigned long *flags)
->> +{
->> +	u32 saved_usbintr, temp;
->> +	unsigned int i, tries;
->> +	int retval = 0;
->> +
->> +	saved_usbintr = ehci_readl(ehci, &ehci->regs->intr_enable);
->> +	/* disable USB interrupt */
->> +	ehci_writel(ehci, 0, &ehci->regs->intr_enable);
->> +	spin_unlock_irqrestore(&ehci->lock, *flags);
->> +
->> +	/*
->> +	 * Here we have to do Port Reset at most twice for
->> +	 * Port Enable bit to be set.
->> +	 */
->> +	for (i = 0; i < 2; i++) {
->> +		temp = ehci_readl(ehci, portsc_reg);
->> +		temp |= PORT_RESET;
->> +		ehci_writel(ehci, temp, portsc_reg);
->> +		mdelay(10);
-> 
-> Needs accurate delay? How about usleep_range?
-
-To be hones I don't know for sure whether hub_control() could be used
-from interrupt context.  This mdelay is borrowed from the older
-ehci-tegra driver.
-
-Are you suggesting that it should be safe to sleep here?
-
-...
->>  static int tegra_usb_probe(struct platform_device *pdev)
->>  {
->>  	const struct tegra_usb_soc_info *soc;
->> @@ -83,24 +292,49 @@ static int tegra_usb_probe(struct platform_device *pdev)
->>  		return err;
->>  	}
->>  
->> +	if (device_property_present(&pdev->dev, "nvidia,needs-double-reset"))
->> +		usb->needs_double_reset = true;
->> +
->> +	err = tegra_usb_reset_controller(&pdev->dev);
->> +	if (err) {
->> +		dev_err(&pdev->dev, "failed to reset controller: %d\n", err);
->> +		goto fail_power_off;
->> +	}
->> +
->> +	/*
->> +	 * USB controller registers shan't be touched before PHY is
-> 
-> %s/shan't/shouldn't
-
-ok
-
-...
->>  static int ehci_ci_portpower(struct usb_hcd *hcd, int portnum, bool enable)
->>  {
->>  	struct ehci_hcd *ehci = hcd_to_ehci(hcd);
->> @@ -160,14 +166,14 @@ static int host_start(struct ci_hdrc *ci)
->>  		pinctrl_select_state(ci->platdata->pctl,
->>  				     ci->platdata->pins_host);
->>  
->> +	ci->hcd = hcd;
->> +
->>  	ret = usb_add_hcd(hcd, 0, 0);
->>  	if (ret) {
->>  		goto disable_reg;
->>  	} else {
->>  		struct usb_otg *otg = &ci->otg;
->>  
->> -		ci->hcd = hcd;
->> -
-> 
-> Why this changed?
-
-The ci->hcd is used by tegra_usb_notify_event() to handle reset event
-and the reset happens once usb_add_hcd() is invoked.  Hence we need to
-pre-assign the hcd pointer, otherwise there will be a NULL dereference.
+DQpPbiBXZWQsIDIwMjAtMTItMTYgYXQgMDk6MDAgKzAwMDAsIExlZSBKb25lcyB3cm90ZToNCj4g
+T24gV2VkLCAxNiBEZWMgMjAyMCwgVmFpdHRpbmVuLCBNYXR0aSB3cm90ZToNCj4gDQo+ID4gT24g
+V2VkLCAyMDIwLTEyLTE2IGF0IDE2OjM3ICswOTAwLCBZb3NoaWhpcm8gU2hpbW9kYSB3cm90ZToN
+Cj4gPiA+IEZyb206IEtoaWVtIE5ndXllbiA8a2hpZW0ubmd1eWVuLnh0QHJlbmVzYXMuY29tPg0K
+PiA+ID4gDQo+ID4gPiBTaW5jZSB0aGUgZHJpdmVyIHN1cHBvcnRzIEJEOTU3MU1XViBQTUlDIG9u
+bHksDQo+ID4gPiB0aGlzIHBhdGNoIG1ha2VzIHRoZSBmdW5jdGlvbnMgYW5kIGRhdGEgc3RydWN0
+dXJlIGJlY29tZSBtb3JlDQo+ID4gPiBnZW5lcmljDQo+ID4gPiBzbyB0aGF0IGl0IGNhbiBzdXBw
+b3J0IG90aGVyIFBNSUMgdmFyaWFudHMgYXMgd2VsbC4NCj4gPiA+IA0KPiA+ID4gU2lnbmVkLW9m
+Zi1ieTogS2hpZW0gTmd1eWVuIDxraGllbS5uZ3V5ZW4ueHRAcmVuZXNhcy5jb20+DQo+ID4gPiBb
+c2hpbW9kYTogcmViYXNlIGFuZCByZWZhY3Rvcl0NCj4gPiA+IFNpZ25lZC1vZmYtYnk6IFlvc2hp
+aGlybyBTaGltb2RhIDwNCj4gPiA+IHlvc2hpaGlyby5zaGltb2RhLnVoQHJlbmVzYXMuY29tPg0K
+PiA+IA0KPiA+IFJldmlld2VkLWJ5OiBNYXR0aSBWYWl0dGluZW4gPG1hdHRpLnZhaXR0aW5lbkBm
+aS5yb2htZXVyb3BlLmNvbT4NCj4gDQo+IFBsZWFzZSBwbGFjZSBhbnkgKi1ieSB0YWdzICphZnRl
+ciogdGhlIG90aGVyIGNvbW1lbnRzLg0KPiANCj4gRm9ydHVuYXRlbHksIHRoZSBmaXJzdCBvbmUg
+YmVsb3cgd2FzIHN0aWxsIG9uIG15IHNjcmVlbiwgZWxzZSBJIHdvdWxkDQo+IGhhdmUgc3RvcHBl
+ZCByZWFkaW5nIGhlcmUuDQo+IA0KDQpHb29kIHBvaW50LiBJJ2QgYmV0dGVyIGtlZXAgdGhhdCBv
+biBtaW5kLiBBbHRob3VnaCBtaXNzaW5nIHN0dWZmIGFmdGVyDQphIFJldmlld2VkLWJ5IGlzIG5v
+dCB0aGF0IGZhdGFsIDspDQoNCg0KPiA+ID4gLS0tDQo+ID4gPiAgZHJpdmVycy9tZmQvYmQ5NTcx
+bXd2LmMgICAgICAgfCA5NSArKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gPiA+IC0tLS0N
+Cj4gPiA+IC0tLS0tLS0tLS0tLQ0KPiA+ID4gIGluY2x1ZGUvbGludXgvbWZkL2JkOTU3MW13di5o
+IHwgMTggKystLS0tLS0NCj4gPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDYzIGluc2VydGlvbnMoKyks
+IDUwIGRlbGV0aW9ucygtKQ0KDQo=
