@@ -2,117 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7F92DB937
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 03:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF662DB93A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 03:36:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgLPCew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Dec 2020 21:34:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgLPCew (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Dec 2020 21:34:52 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10908C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 18:34:12 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id u18so44575927lfd.9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Dec 2020 18:34:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MOHF+gl+OMMG1QgmH1V73+fyHVx0MkwzoVxV0JG8Lv4=;
-        b=UPu4AGLueLqzTSIYqU9zfFBm4GlxC9GiHWclpWDDa/Q4HmYhRH3lve+WEsjYRN32OP
-         JI7O5g8d1gUOxKuDoPdl8KtDvxlQNWLMPpSAYfcCnmC5qRhxmMWajRMZOvQay/7VFytW
-         gcocwfkI8vk9Z1Ete5LvKqVuY4zIVR5OKZs03EIMnxC7jk3/rEiIx7dcKuh5sL8ta2+9
-         BKb9WyPmXwtnKgsClhmqlsfQPT86nVSdBD3sFCa5dA0woCiaULnMe3QIneKWmgdeOUTE
-         Xp1Z7eoWbeiImr3sXalcs2GYF1Yp1fAoyvp4OvSS+MwuOfu86ZiZ3hBqzUpGwhQVM41j
-         YBdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MOHF+gl+OMMG1QgmH1V73+fyHVx0MkwzoVxV0JG8Lv4=;
-        b=N3WBi+05sZulmzoX+IW2XsX2zrV+UQhReQnXha/jbIMSmtUzqDCaW8R29wCh1rcxiA
-         Xw7mhxbxE7Z+ylvSDpSY6RNNIRalhoPiQ9f8bBFx9fzCvfPoL44btfor4lzdHyyOw6YB
-         Wh+eSAE1c+5jdUOp36nDmFk0RCyCVUChsCrRCXm6LbLZrP3eVEbtvSnqEdszN1/GPpvB
-         PtJrpI1ZFbdHys1omz8mk2L/X3rQ4fgIFabi7MYX39Q8gskTCJjXHhUyL2jyJU6Gk8m2
-         NC96IDZTZNleLSZGh8L0l+/wtawYZ5ka+m4H8/PMVG/WRwYUwT2rBidNDk/yFFJ1FGAQ
-         DmNw==
-X-Gm-Message-State: AOAM533mcspoUSGuzUsQQeITS9Mf8vKwrYhhP+29L+i7Izrltsrke9BU
-        64qJ1I7KeLAWpYgyO/TWpSy7LWwpTqvgwbl1GCpaWg==
-X-Google-Smtp-Source: ABdhPJwbunInmrnvmwAUoXogNkc3hzOmkqVwILIDiVk5ZmNQDWo0gIvrLQZ9NbTUm4ZvCdP6dVtg/cInyWGfmv1GnXU=
-X-Received: by 2002:a19:4c84:: with SMTP id z126mr11398098lfa.69.1608086050251;
- Tue, 15 Dec 2020 18:34:10 -0800 (PST)
+        id S1726171AbgLPCfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Dec 2020 21:35:22 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:56648 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726159AbgLPCfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Dec 2020 21:35:21 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kpMeG-00CDNe-BW; Wed, 16 Dec 2020 03:34:40 +0100
+Date:   Wed, 16 Dec 2020 03:34:40 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Michael Walle <michael@walle.cc>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alex Marginean <alexandru.marginean@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH net-next 2/4] enetc: don't use macro magic for the
+ readx_poll_timeout() callback
+Message-ID: <20201216023440.GE2893264@lunn.ch>
+References: <20201215212200.30915-1-michael@walle.cc>
+ <20201215212200.30915-3-michael@walle.cc>
 MIME-Version: 1.0
-References: <feef4f9a-4ed8-8a2e-d330-88e7f516faae@gmail.com>
- <X9lBp3BHbwcTmDqb@pc.thejh.net> <0e5189c0-9e9b-ac34-825c-619a9a6ef682@gmail.com>
- <d38c5e8b-1653-d89a-a0c8-b95cb1844fba@gmail.com> <CAG48ez0y21uWBDuaczLMxLPpFTKABrgm+-aqLb-0a4rHuOCX-g@mail.gmail.com>
- <5062fe43-ca37-134f-89ad-57fbd8c312ba@softwarecrafters.com>
-In-Reply-To: <5062fe43-ca37-134f-89ad-57fbd8c312ba@softwarecrafters.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 16 Dec 2020 03:33:43 +0100
-Message-ID: <CAG48ez2g=U-H56g6VebQCiSXGg+bVvhBA5yfwymNxVYAGEJJcA@mail.gmail.com>
-Subject: Re: [Bug 210655] ptrace.2: documentation is incorrect about access
- checking threads in same thread group
-To:     Ted Estes <ted@softwarecrafters.com>
-Cc:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
-        Jann Horn <jann@thejh.net>, Pavel Emelyanov <xemul@openvz.org>,
-        Oleg Nesterov <oleg@tv-sign.ru>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215212200.30915-3-michael@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 3:21 AM Ted Estes <ted@softwarecrafters.com> wrote:
-> On 12/15/2020 6:01 PM, Jann Horn wrote:
-> > On Wed, Dec 16, 2020 at 12:25 AM Alejandro Colomar (man-pages)
-> > <alx.manpages@gmail.com> wrote:
-> >> On 12/16/20 12:23 AM, Alejandro Colomar (man-pages) wrote:
-> >>> On 12/16/20 12:07 AM, Jann Horn wrote:
-> >>>> As the comment explains, you can't actually *attach*
-> >>>> to another task in the same thread group; but that's
-> >>>> not because of the ptrace-style access check rules,
-> >>>> but because specifically *attaching* to another task
-> >>>> in the same thread group doesn't work.
-> > As I said, attaching indeed doesn't work. But that's not what "Ptrace
-> > access mode checking" means. As the first sentence of that section
-> > says:
-> >
-> > | Various parts of the kernel-user-space API (not just ptrace()
-> > | operations), require so-called "ptrace access mode" checks,
-> > | whose outcome determines whether an operation is
-> > | permitted (or, in a  few cases,  causes  a "read" operation
-> > | to return sanitized data).
-> >
-> > You can find these places by grepping for \bptrace_may_access\b -
-> > operations like e.g. the get_robust_list() syscall will always succeed
-> > when inspecting other tasks in the caller's thread group thanks to
-> > this rule.
->
-> Ah, yes.  I missed that back reference while trying to digest that
-> rather meaty man page.  A grep on the man page source tree does show a
-> number of references to "ptrace access mode".
->
-> That said, the ptrace(2) man page also directly references the ptrace
-> access mode check under both PTRACE_ATTACH and PTACE_SEIZE:
->
-> | Permission to perform a PTRACE_ATTACH is governed by a ptrace | access
-> mode PTRACE_MODE_ATTACH_REALCREDS check; see below. As confirmed, the
-> "same thread group" rule does not apply to either of those operations. A
-> re-wording of rule 1 similar to this might help avoid confusion: 1. If
-> the calling thread and the target thread are in the same thread group:
-> a. For ptrace() called with PTRACE_ATTACH or PTRACE_SEIZE, access is
-> NEVER allowed. b. For all other so-called "ptrace access mode checks",
-> access is ALWAYS allowed. --Ted
+On Tue, Dec 15, 2020 at 10:21:58PM +0100, Michael Walle wrote:
+> The macro enetc_mdio_rd_reg() is just used in that particular case and
+> has a hardcoded parameter name "mdio_priv". Define a specific function
+> to use for readx_poll_timeout() instead. Also drop the TIMEOUT macro
+> since it is used just once.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-Yeah, maybe. OTOH I'm not sure whether it really makes sense to
-explain this as being part of a security check, or whether it should
-be explained separately as a restriction on PTRACE_ATTACH and
-PTRACE_SEIZE (with a note like "(irrelevant for ptrace attachment)" on
-rule 1). But I don't feel strongly about it either way.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
