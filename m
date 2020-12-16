@@ -2,160 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAAD2DC28A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 869052DC296
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725994AbgLPO4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 09:56:13 -0500
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:40311 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725813AbgLPO4N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 09:56:13 -0500
-Received: by mail-oi1-f180.google.com with SMTP id p126so27736046oif.7;
-        Wed, 16 Dec 2020 06:55:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NuuUILIjqf4jXXDvuraBvyzbhvdHEw0NL80ZDXkR7Pw=;
-        b=ninp0vum0kB/q+MJNd++B2uvp/fQYKaIrSuSx+/CrgB9nisWfbGCVtHIASGG+zsqrG
-         +xd0KPbHqCZRtmpQqdaJAC7s7dTNHLa3/8PSQY4HVgORtZ39BbAr1gGavFvpIezCh/KE
-         Qjo8/gkkKfSqqdeEqu+hk0gOxoNQvbtdSk5ad9ulWH8m2GcGgN+lAO8aw5/dJcH25WHe
-         DmOmplPzO4D5NGBs8Zrpekz/PBuetlVpKnphdgXRTy36riJ3rzlfaFNdzUG4ZERMfkBN
-         nNToqbiDD0GmQMNOeJ5XrgM39VuSms7UYHTT6iVCYEvaHbnQ126eHdrQQ4gHN62omA0l
-         AbUw==
-X-Gm-Message-State: AOAM531UacRbonoDeULa7QTqXsL12bAuikuncULhzFyhgzW2rRlJBJyC
-        byJVw0hmskoz16NuUO7QjfMnwm09TDxxk7fE2pwOh0rrGZY=
-X-Google-Smtp-Source: ABdhPJzQxcr5S7g7YISnHBy+Q+paemHV5EnttosXC/8Oi+Zp/Fki3TATE302aVDEznsN1lI64i9rFIwmHNIXNwJ9OIA=
-X-Received: by 2002:aca:ec09:: with SMTP id k9mr2131977oih.153.1608130531691;
- Wed, 16 Dec 2020 06:55:31 -0800 (PST)
+        id S1726119AbgLPO6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 09:58:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725274AbgLPO6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 09:58:33 -0500
+Message-ID: <132c8c1e1ab82f5a640ff1ede6bb844885d46e68.camel@kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608130671;
+        bh=/OzdEeXeJRy4jnSYvNZJxQbC754muYVKP9z9+2YkQZE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=q+sAk0Fv6WsEXIH7XefS5bwS182CqOIjGTNe/FrkpQx7/vM7VlmCCHCtCctLKx9yg
+         7QzAY7jXdNYCJ6kJcq+mpPac87qc4rrPD24qBAVy2yIco1v0RkRMqBFKwSp982HdCM
+         dAR4hQbDWea7Ss+7/McCNWRghO2l7sIBSPr6RcBTxCcX/q72B59nngg5AtmSd7bebd
+         qCMKaSZOzpmWDhXJ9SQr2AuIEDK7kdh9l+PIa5VR/CJQCXHr0X8IIMBRdyaIj9SEWh
+         2L0ricJyJtLbMTYpf1I5MHy1FZ9naoPAlcd0iLnog4JvUMDHq1uSqilFZxn1cxTxD9
+         2K/euMMKzHfKQ==
+Subject: Re: [PATCH] vfs, syncfs: Do not ignore return code from ->sync_fs()
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Vivek Goyal <vgoyal@redhat.com>,
+        Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
+        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     viro@zeniv.linux.org.uk, miklos@szeredi.hu, amir73il@gmail.com,
+        willy@infradead.org, jack@suse.cz, sargun@sargun.me
+Date:   Wed, 16 Dec 2020 09:57:49 -0500
+In-Reply-To: <20201216143802.GA10550@redhat.com>
+References: <20201216143802.GA10550@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
 MIME-Version: 1.0
-References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-2-aford173@gmail.com>
-In-Reply-To: <20201213183759.223246-2-aford173@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 16 Dec 2020 15:55:20 +0100
-Message-ID: <CAMuHMdWRieM1H5WLySVDVQds-xKgsqo-OibegJrXgonfqbAL8g@mail.gmail.com>
-Subject: Re: [PATCH 01/18] arm64: dts: renesas: beacon kit: Configure
- programmable clocks
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luca Ceresoli <luca@lucaceresoli.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
-
-On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
-> When the board was added, clock drivers were being updated done at
-> the same time to allow the versaclock driver to properly configure
-> the modes.  Unforutnately, the updates were not applied to the board
-
-Unfortunately
-
-> files at the time they should have been, so do it now.
->
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-
-Thanks for your patch!
-
-> --- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-> +++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-> @@ -5,6 +5,7 @@
->
->  #include <dt-bindings/gpio/gpio.h>
->  #include <dt-bindings/input/input.h>
-> +#include <dt-bindings/clk/versaclock.h>
->
->  / {
->         backlight_lvds: backlight-lvds {
-> @@ -294,12 +295,12 @@ &du_out_rgb {
->  &ehci0 {
->         dr_mode = "otg";
->         status = "okay";
-> -       clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>;
-> +       clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>, <&versaclock5 3>;
-
-Why this change? You said before you don't need this
-https://lore.kernel.org/linux-renesas-soc/CAHCN7xJWbP16SA-Ok-5syNnqOZAt8OFJo2_rtg5VrNVsN2-eiQ@mail.gmail.com/
-
-BTW, something I missed in the earlier review: is there an override
-needed at all?
-
->  };
->
->  &ehci1 {
->         status = "okay";
-> -       clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>;
-> +       clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>, <&versaclock5 3>;
-
-Same here.
-
-BTW, something I missed in the earlier review: why did you override
-
-    clocks = <&cpg CPG_MOD 702>;
-
-by
-
-    clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>;
-
-?
-
->  };
->
->  &hdmi0 {
-> @@ -373,12 +374,40 @@ versaclock6_bb: clock-controller@6a {
->                 #clock-cells = <1>;
->                 clocks = <&x304_clk>;
->                 clock-names = "xin";
-> -               /* CSI0_MCLK, CSI1_MCLK, AUDIO_CLKIN, USB_HUB_MCLK_BB */
-> +               clock-output-names = "versaclock6_bb.out0_sel_i2cb",
-> +                                     "versaclock6_bb.out1",
-> +                                     "versaclock6_bb.out2",
-> +                                     "versaclock6_bb.out3",
-> +                                     "versaclock6_bb.out4";
-
-Why? IIUIC, the driver doesn't parse clock-output-names
-(and it shouldn't).
-
->                 assigned-clocks = <&versaclock6_bb 1>,
->                                    <&versaclock6_bb 2>,
->                                    <&versaclock6_bb 3>,
->                                    <&versaclock6_bb 4>;
->                 assigned-clock-rates =  <24000000>, <24000000>, <24000000>, <24576000>;
+On Wed, 2020-12-16 at 09:38 -0500, Vivek Goyal wrote:
+> I see that current implementation of __sync_filesystem() ignores the
+> return code from ->sync_fs(). I am not sure why that's the case.
+> 
+> Ignoring ->sync_fs() return code is problematic for overlayfs where
+> it can return error if sync_filesystem() on upper super block failed.
+> That error will simply be lost and sycnfs(overlay_fd), will get
+> success (despite the fact it failed).
+> 
+> I am assuming that we want to continue to call __sync_blockdev()
+> despite the fact that there have been errors reported from
+> ->sync_fs(). So I wrote this simple patch which captures the
+> error from ->sync_fs() but continues to call __sync_blockdev()
+> and returns error from sync_fs() if there is one.
+> 
+> There might be some very good reasons to not capture ->sync_fs()
+> return code, I don't know. Hence thought of proposing this patch.
+> Atleast I will get to know the reason. I still need to figure
+> a way out how to propagate overlay sync_fs() errors to user
+> space.
+> 
+> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> ---
+>  fs/sync.c |    8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> Index: redhat-linux/fs/sync.c
+> ===================================================================
+> --- redhat-linux.orig/fs/sync.c	2020-12-16 09:15:49.831565653 -0500
+> +++ redhat-linux/fs/sync.c	2020-12-16 09:23:42.499853207 -0500
+> @@ -30,14 +30,18 @@
+>   */
+>  static int __sync_filesystem(struct super_block *sb, int wait)
+>  {
+> +	int ret, ret2;
 > +
-> +               OUT1 {
-> +                       idt,mode = <VC5_CMOS>;
-> +                       idt,voltage-microvolts = <1800000>;
+>  	if (wait)
+>  		sync_inodes_sb(sb);
+>  	else
+>  		writeback_inodes_sb(sb, WB_REASON_SYNC);
+>  
+> 
+>  	if (sb->s_op->sync_fs)
+> -		sb->s_op->sync_fs(sb, wait);
+> -	return __sync_blockdev(sb->s_bdev, wait);
+> +		ret = sb->s_op->sync_fs(sb, wait);
+> +	ret2 = __sync_blockdev(sb->s_bdev, wait);
+> +
+> +	return ret ? ret : ret2;
+>  }
+>  
+> 
+>  /*
+> 
 
-Oops. The DT bindings say "idt,voltage-microvolt", the example in the DT
-bindings says "idt,voltage-microvolts", and the driver parses
-"idt,voltage-microvolts".
+I posted a patchset that took a similar approach a couple of years ago,
+and we decided not to go with it [1].
 
-According to Documentation/devicetree/bindings/property-units.txt, the
-property name should end in "microvolt".
+While it's not ideal to ignore the error here, I think this is likely to
+break stuff. What may be better is to just make sync_fs void return, so
+people don't think that returned errors there mean anything.
 
-Patch sent.
-https://lore.kernel.org/linux-clk/20201216145231.1344317-1-geert+renesas@glider.be/
-
-> +                       idt,slew-percent = <100>;
-> +               };
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+[1]: https://lore.kernel.org/linux-fsdevel/20180518123415.28181-1-jlayton@kernel.org/
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Jeff Layton <jlayton@kernel.org>
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
