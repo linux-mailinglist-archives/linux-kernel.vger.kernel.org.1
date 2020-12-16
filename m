@@ -2,160 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6862DBE0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C11F82DBE0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:56:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbgLPJyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:54:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgLPJyW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:54:22 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5851AC0613D6;
-        Wed, 16 Dec 2020 01:53:41 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id x20so27250555lfe.12;
-        Wed, 16 Dec 2020 01:53:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7K3VpldibCJw6SR86Fx4bZqIehnXTqNoL7QsytzTCAc=;
-        b=MCsSEYUFTM5ED71OJrR4OvHrul5rKb2rZfsb9lpjqhVue+kFhn/63N+a1R6iu9nOd3
-         7mXbTNwTMd2DEdcawUDoyBx7WEdXMCneOi85Cbcb9voGoUO0N8jy1mGHG83W7AGJV8Hu
-         dnhLxUxrxv7KTnhY771KDlhHhRHG7rJ2zXIkmJiqEeN1KRN1H9naF19XTfYB0wbSfdsp
-         P7Z+Qsi1guvpcOHUstliWTG9lyqCYNc9TdGOYH130yEZP7AdEdpxeg+bdFFgfY9kEs7q
-         6eTIf/nNbdwtEkXAiSihsYhWfZdq+eUyFmFeQqv9h7EdZ36KYTp84Y7/9+woigzZDIY+
-         c6jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7K3VpldibCJw6SR86Fx4bZqIehnXTqNoL7QsytzTCAc=;
-        b=eP+JraMe3VUZ9V1+zEMJYjFpAnYo9rurF8rs5J9t3VeNwZOs36UQbsAv9PXIRYncup
-         mHMXsYPiM57hV8ViQwujr+UPUbRUvfvlhd/FoBEqMApDF4TJ0UUB87GJph7Q90c3AwH3
-         fNW3B/7cKr7JaMtJrvzGIUKgN7sJOHj2aVI3+tz0J0V13aEjgRkMgdQPakmjcrnUsR9k
-         H/TtSck/cUp1jPLKl0TUXgzgVyQSlBhH4izmHb1J+/oXBwRbWGmresws9qYrV4Kb/Byc
-         xjhUtGLqmQhQRLGlsJcDbjhKRdepUmPV1ZWoV2E0u+iODSC85SM4qYWi7+GMneOXa1C6
-         KsnA==
-X-Gm-Message-State: AOAM532xu+SK/n4rhSupRR4GDqK4fluVbRub1d9ZJH/VAF2MYIovJl1q
-        CvBeWanavoIY3jBMws7U7qLdRPkoJjs=
-X-Google-Smtp-Source: ABdhPJyamCAlvp8liqxG/4XrSDjc3YQnFT3rNYbzlQrL2kZ4cunu94BG58qoGFfLCcNFWM8z8Dj1jw==
-X-Received: by 2002:a05:6512:3e6:: with SMTP id n6mr4456172lfq.262.1608112419754;
-        Wed, 16 Dec 2020 01:53:39 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id y3sm209998ljc.131.2020.12.16.01.53.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Dec 2020 01:53:39 -0800 (PST)
-Subject: Re: [PATCH v1 5/8] usb: chipidea: tegra: Support host mode
-To:     Peter Chen <peter.chen@nxp.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201215202113.30394-1-digetx@gmail.com>
- <20201215202113.30394-6-digetx@gmail.com>
- <20201216060732.GB5595@b29397-desktop>
- <bb617167-e6a4-221e-5e3b-c9d7a1b50c87@gmail.com>
- <DBBPR04MB79794F5CC440279AF94A48448BC50@DBBPR04MB7979.eurprd04.prod.outlook.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <78b8b868-fa72-cffa-b3c2-5a73a02d02b0@gmail.com>
-Date:   Wed, 16 Dec 2020 12:53:38 +0300
+        id S1726010AbgLPJzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:55:39 -0500
+Received: from mout.gmx.net ([212.227.17.21]:38095 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725960AbgLPJzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 04:55:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1608112447;
+        bh=dSISTEnvl+4VkXEs8MsOJ1hG3tOG7dMTh4sw6Foa/Y8=;
+        h=X-UI-Sender-Class:To:Cc:From:Subject:Date;
+        b=SGMmKzUciebMY8qA5O6P6uDUv3ulfJtDILWTWh2uyod5pkib9toHAohVbbGSW1Z9+
+         l4JoW8TOeMdmYLuWbCzGK7T7nWDR2apq1l7aZhS+aeREUJiU5xxfuSfOg1f63hk+Sv
+         M/nO0+vuGTORYb9QapHOHpkWOxXpBAsp1t5OP3rY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.23] ([95.116.36.244]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N0oG5-1jussE1MlZ-00wnTf; Wed, 16
+ Dec 2020 10:54:07 +0100
+To:     jgg@ziepe.ca
+Cc:     Linux Kernel <linux-kernel@vger.kernel.org>
+From:   =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>
+Subject: 5.10.1: UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:1
+Message-ID: <c6e5eb81-680f-dd5c-8a81-62041a5ce50c@gmx.de>
+Date:   Wed, 16 Dec 2020 10:54:06 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-In-Reply-To: <DBBPR04MB79794F5CC440279AF94A48448BC50@DBBPR04MB7979.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:8hsTuzfvfFoxIZYn0UMYki7i6Ad7bUTAJDKjlvoI9PzfhYVBGwV
+ rpk4gsIvRiDpJXDVSplSssxxLqUrzqA0letiPZfkdkFkfTvWqvWjWxi+GWP5PrfvlBYAtJm
+ oJOW8Ml2B2JpdSthYNYM3HikQ1J8wiSnLtaEYY/pYNqHMvlilN09Rp1aRLJ52HYLZE40CcI
+ tWGCHAixW4YNVhKM2rsDw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6xBjxxs1ZBs=:dmzx7DEJr8ettrtkaPqDAo
+ X5GDtOAWMtlRAhttORwRuWe6PUbLsC5dySfZ2huyF3ZIxGjvz5asLJoD6YNZVWIQnltxHeN0Z
+ MAUVX1skraPeUISMopCzoeQl5saAlDRrDo1C2iPIKOKwSlwEmO8fb6HS+IwY8fM2OhBgigVnc
+ 8SohB2RpflCTpb7MmkjqOUnMlDfSmkJtl+bHvwOYfFpLhTXK+uQ90JmoKq8PE8IGa5nGswidh
+ kSdM+KQ5iWFVsMVUuGgYnTKB0Uw/jDpuEFxUlRupUBjnZV7y5N+gXzdlLQKwIml8aikY+F/ip
+ 5nNUAUFTRqPwL0M6vIUYk3CM3WMYZsEIMFz2MQwXUgIKl7cnJWS0OobprmzbiuzKI/JPOA8da
+ hhyKOkGRfeT59l+tjJRgpPP95cu7Y1xKACgVatDeJ/acV9cEt84AK6VsnJUUttf/d1379rrf8
+ jG1B/dEbrsTnCOuqRXGFfpnfAHLBflfzbFedFXldO0IkrIC023Kd9WpXxAgwlf8QZURymq5/Y
+ Y4D2zSeFR28icwcZn+c2H5XnWLM+QbOOkFFtB0ZzhsIXJcVyZbyoAyREO6lvQ7eKEN1aLQ1o9
+ GIhsR/5dU5NhKKl1zKk3RregpudPlOgicnSU8LFkVtaM9BdiOw2J2GVweErWl9HFqVrGy7/Tg
+ x/unZaqrJM3EEK9grL1Nnm5/1eK5GqMk5zZBLThyDpbB66SJefvB/KjvcZtBUk3tTM9Z3tk0K
+ X3YBtrXM68DuiJtuuVJw1pBLhoQ1MMNSOhwvDTVmafjmqBrDRlEsohnKFfvGK/q6FjtdPXSrv
+ XKyorhJdMwaTDJoOEMrYQKWZ2CesdS0LfT/jBfhB+J5pxR+dtvqQPuT3dfR3V+RshKTRvZohx
+ cXfMAuxzk4Q3TKi/UWAw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-16.12.2020 12:32, Peter Chen пишет:
->  
->>>>
->>>>  struct tegra_usb_soc_info {
->>>>  	unsigned long flags;
->>>> +	unsigned int txfifothresh;
->>>> +	enum usb_dr_mode dr_mode;
->>>> +};
->>>> +
->>>> +static const struct tegra_usb_soc_info tegra20_ehci_soc_info = {
->>>> +	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
->>>> +		 CI_HDRC_OVERRIDE_PHY_CONTROL,
->>>> +	.dr_mode = USB_DR_MODE_HOST,
->>>> +	.txfifothresh = 10,
->>>> +};
->>>> +
->>>> +static const struct tegra_usb_soc_info tegra30_ehci_soc_info = {
->>>> +	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
->>>> +		 CI_HDRC_OVERRIDE_PHY_CONTROL
->>>> +	.dr_mode = USB_DR_MODE_HOST,
->>>> +	.txfifothresh = 16,
->>>>  };
->>>>
->>>>  static const struct tegra_usb_soc_info tegra_udc_soc_info = {
->>>> -	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA,
->>>> +	.flags = CI_HDRC_REQUIRES_ALIGNED_DMA |
->>>> +		 CI_HDRC_OVERRIDE_PHY_CONTROL,
->>>> +	.dr_mode = USB_DR_MODE_UNKNOWN,
->>>>  };
->>>
->>> What's the usage for this dr_mode? Does these three SoCs only supports
->>> single mode, it usually sets dr_mode at board dts file to indicate USB
->>> role for this board.
->>
->> All Tegra SoCs have three USB controllers.  Only one of these three controllers
->> supports peripheral / OTG modes, the other two controllers are fixed to the
->> host mode and device trees do not specify the dr_mode for the host
->> controllers.
->>
->> Hence we need to enforce the dr_mode=host for the host-mode controllers.
->>
->> For UDC the default mode is "unknown" because actual mode comes from a
->> board's device tree.
->>
-> 
-> You could add dr_mode property at usb node of soc.dtsi to fulfill that.
+Hi,
 
-This will break older DTBs, we can't do this.
+I got this recently at this hardened Gentoo Linux server:
 
-...
->>>>  static int ehci_ci_portpower(struct usb_hcd *hcd, int portnum, bool
->>>> enable)  {
->>>>  	struct ehci_hcd *ehci = hcd_to_ehci(hcd); @@ -160,14 +166,14 @@
->>>> static int host_start(struct ci_hdrc *ci)
->>>>  		pinctrl_select_state(ci->platdata->pctl,
->>>>  				     ci->platdata->pins_host);
->>>>
->>>> +	ci->hcd = hcd;
->>>> +
->>>>  	ret = usb_add_hcd(hcd, 0, 0);
->>>>  	if (ret) {
->>>>  		goto disable_reg;
->>>>  	} else {
->>>>  		struct usb_otg *otg = &ci->otg;
->>>>
->>>> -		ci->hcd = hcd;
->>>> -
->>>
->>> Why this changed?
->>
->> The ci->hcd is used by tegra_usb_notify_event() to handle reset event and the
->> reset happens once usb_add_hcd() is invoked.  Hence we need to pre-assign
->> the hcd pointer, otherwise there will be a NULL dereference.
-> 
-> Get it, please set ci->hcd as NULL at error path.
+Linux mr-fox 5.10.1 #1 SMP Tue Dec 15 22:09:42 CET 2020 x86_64 Intel(R)
+Xeon(R) CPU E5-1650 v3 @ 3.50GHz GenuineIntel GNU/Linux
 
-Ok, thanks.
 
+Dec 15 23:31:51 mr-fox kernel: [ 1974.206972]
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+Dec 15 23:31:51 mr-fox kernel: [ 1974.206977] UBSAN: shift-out-of-bounds
+in ./include/linux/log2.h:57:13
+Dec 15 23:31:51 mr-fox kernel: [ 1974.206980] shift exponent 64 is too
+large for 64-bit type 'long unsigned int'
+Dec 15 23:31:51 mr-fox kernel: [ 1974.206982] CPU: 11 PID: 21051 Comm:
+cc1 Tainted: G                T 5.10.1 #1
+Dec 15 23:31:51 mr-fox kernel: [ 1974.206984] Hardware name: ASUSTeK
+COMPUTER INC. Z10PA-U8 Series/Z10PA-U8 Series, BIOS 3703 08/02/2018
+Dec 15 23:31:51 mr-fox kernel: [ 1974.206985] Call Trace:
+Dec 15 23:31:51 mr-fox kernel: [ 1974.206993]  dump_stack+0x57/0x6a
+Dec 15 23:31:51 mr-fox kernel: [ 1974.206996]  ubsan_epilogue+0x5/0x40
+Dec 15 23:31:51 mr-fox kernel: [ 1974.206999]
+__ubsan_handle_shift_out_of_bounds.cold+0x61/0x10e
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207002]
+ondemand_readahead.cold+0x16/0x21
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207007]
+generic_file_buffered_read+0x452/0x890
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207011]  new_sync_read+0x156/0x200
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207014]  vfs_read+0xf8/0x190
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207016]  ksys_read+0x65/0xe0
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207018]  do_syscall_64+0x33/0x40
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207021]
+entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207024] RIP: 0033:0x7f01b2df198e
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207026] Code: c0 e9 b6 fe ff ff 50
+48 8d 3d 66 c3 09 00 e8 59 e2 01 00 66 0f 1f 84 00 00 00 00 00 64 8b 04
+25 18 00 00 00 85 c0 75 14 0f 05 <48> 3d 00 f0 ff ff 77 5a c3 66 0f 1f
+84 00 00 00 00 00 48 83 ec 28
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207028] RSP: 002b:00007fff2167e998
+EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207030] RAX: ffffffffffffffda RBX:
+0000000000000000 RCX: 00007f01b2df198e
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207032] RDX: 0000000000000000 RSI:
+00000000054dcc50 RDI: 0000000000000004
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207033] RBP: 00000000054dcc50 R08:
+00000000054dcc50 R09: 0000000000000000
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207034] R10: 0000000000000000 R11:
+0000000000000246 R12: 00000000054dc3b0
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207035] R13: 0000000000008000 R14:
+00000000054c9800 R15: 0000000000000000
+Dec 15 23:31:51 mr-fox kernel: [ 1974.207037]
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+
+
+Known issue ?
+
+=2D-
+Toralf
