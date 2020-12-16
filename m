@@ -2,152 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166ED2DBFA1
+	by mail.lfdr.de (Postfix) with ESMTP id 82B192DBFA2
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 12:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725877AbgLPLmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 06:42:35 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2264 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725550AbgLPLmf (ORCPT
+        id S1725932AbgLPLm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 06:42:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgLPLm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 06:42:35 -0500
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CwtSN4Htjz67QcF;
-        Wed, 16 Dec 2020 19:39:00 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Wed, 16 Dec 2020 12:41:51 +0100
-Received: from [10.210.169.48] (10.210.169.48) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 16 Dec 2020 11:41:51 +0000
-Subject: Re: [BUG] jevents problem when cross building Re: [PATCH 2/3] perf
- tools: Allow to enable/disable events via control file
-From:   John Garry <john.garry@huawei.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     Jiri Olsa <jolsa@redhat.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        "Jiri Olsa" <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>
-References: <20201206170519.4010606-1-jolsa@kernel.org>
- <20201206170519.4010606-3-jolsa@kernel.org>
- <7bcde520-e933-c2d6-c960-3f8acdaf6047@huawei.com>
- <20201210162430.GH69683@krava> <20201210171503.GA195565@kernel.org>
- <20201210171903.GB195565@kernel.org> <20201210172608.GC195565@kernel.org>
- <30e7907d-868a-a673-59a7-3bb4766093b4@huawei.com>
- <20201210181708.GD195565@kernel.org>
- <1a608e92-d0d0-2e5e-ba7e-e9fa2e02b0f9@huawei.com>
- <650baaf2-36b6-a9e2-ff49-963ef864c1f3@huawei.com>
-Message-ID: <3323c9fa-3e71-2426-4f53-f6740fa71112@huawei.com>
-Date:   Wed, 16 Dec 2020 11:41:10 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Wed, 16 Dec 2020 06:42:59 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A5DC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 03:42:18 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id q22so14500938eja.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 03:42:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vpFk2jW++o/c5mecPREIAGYZAOvlUctt44C0JGqrkMg=;
+        b=X9qwLlVj2vFqyrsO4c4Ef4BcFxY4hXr24RrggjGJfJEACj7B7Q+qFOD5yW+t/h87uq
+         6pqc6JCK6ZNBHxTyoRFlhWVdX7wzR0Q/HQzp9u/q486tt73fIFfFMhnUBFn6RI/DsMN2
+         MLmWemRc0DE3pO8qVk8LMSLHgx5mcRqtkLWaRBeceIhjtSCf0+ycCgjznPHm+5QQyUvN
+         c70Hz945tKQLQ8ql1JVrqyo6leSmw7pw+G06uJCsMVCoC19qtAr48TzN6f1KxJeYTTHG
+         Bv8dyjADbkEn5kYa3QfRvS4dbk5ytfsokbGYz8pej6ENBwEOEu8PL/d3GA2qBxqg/at+
+         wV1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vpFk2jW++o/c5mecPREIAGYZAOvlUctt44C0JGqrkMg=;
+        b=b8CyK2iZ2AczTQVsiIcYE6/DhWbDwJsqk4Kn8edunzDy7JwCGTpCkNckDEXluXfaTl
+         El+XyonQ/s22SlFOcGrsw7EaXjd0aPXLR8cynUH+O0h71Nif+SuU4wZR0YNtVZx9YDt6
+         yVZK82cN9MrvKOUlsjczwKEA59SpEfOKaCn06R/TvukU1eT/YxSortbAjvESbBUIPZi3
+         b4N7H6MZYnTiduObk6owBQretaUjYY73bn2/O/MDyTMhSKNdDJIKUJTovfvCzRAJp4pi
+         u2CqdXTfigLHYkEamWquCi+3TeRuBwqFwpg04AGGoqoDkbz3hil/hWquoLLFjFsc20Dl
+         BLYw==
+X-Gm-Message-State: AOAM531tK4B48huOPI2xNCTBjFbDCmmY1lft+Y+PHliNtwkdqcCs8Lze
+        uY38Jbvn19MW38XLHBLMVbaT9BRStTRXLg==
+X-Google-Smtp-Source: ABdhPJxamD2xp7vuL0j9UPK+vAORDA1al7JS8aMaG+jUl6Rk+0gBnwf83HKvOY+En7OXRX1uF5k6Mg==
+X-Received: by 2002:a17:906:1916:: with SMTP id a22mr30353517eje.536.1608118937452;
+        Wed, 16 Dec 2020 03:42:17 -0800 (PST)
+Received: from localhost.localdomain.info (62-178-82-229.cable.dynamic.surfer.at. [62.178.82.229])
+        by smtp.gmail.com with ESMTPSA id y17sm1223472ejj.84.2020.12.16.03.42.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 03:42:16 -0800 (PST)
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm/etnaviv: provide more ID values via GET_PARAM ioctl.
+Date:   Wed, 16 Dec 2020 12:42:01 +0100
+Message-Id: <20201216114209.276630-1-christian.gmeiner@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <650baaf2-36b6-a9e2-ff49-963ef864c1f3@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.210.169.48]
-X-ClientProxiedBy: lhreml740-chm.china.huawei.com (10.201.108.190) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/2020 19:57, John Garry wrote:
-> Hi Arnaldo,
-> 
-> Can you try this on top:
-> 
-> ----8<-----
-> 
->  From 201aa2cb7bc8723765afd84a5d3972248af0f0a1 Mon Sep 17 00:00:00 2001
-> From: John Garry <john.garry@huawei.com>
-> Date: Thu, 10 Dec 2020 19:45:14 +0000
-> Subject: [PATCH] perf jevents: Add system events table for empty mapping
-> 
-> For architectures which have no PMU event lists - like arm32 - an empty
-> mapping table is printed. This is how the "pmu_events_map" symbol -
-> referenced in util/pmu.c::perf_pmu__find_map() - is created for those
-> architectures.
-> 
-> Since pmu-events.c now includes a new table - "pmu_sys_event_tables" -
-> which is also referenced from util/pmu.c, also add this for the empty
-> mappings.
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> 
-> diff --git a/tools/perf/pmu-events/jevents.c 
-> b/tools/perf/pmu-events/jevents.c
-> index e930096ad713..28e20d9ec0f5 100644
-> --- a/tools/perf/pmu-events/jevents.c
-> +++ b/tools/perf/pmu-events/jevents.c
-> @@ -816,19 +816,30 @@ static void print_mapping_test_table(FILE *outfp)
->       fprintf(outfp, "},\n");
->   }
-> 
-> +static void print_system_event_mapping_table_prefix(FILE *outfp)
-> +{
-> +    fprintf(outfp, "\nstruct pmu_sys_events pmu_sys_event_tables[] = {");
-> +}
-> +
-> +static void print_system_event_mapping_table_suffix(FILE *outfp)
-> +{
-> +    fprintf(outfp, "\n\t{\n\t\t.table = 0\n\t},");
-> +
-> +    fprintf(outfp, "\n};\n");
-> +}
-> +
->   static int process_system_event_tables(FILE *outfp)
->   {
->       struct sys_event_table *sys_event_table;
-> 
-> -    fprintf(outfp, "\nstruct pmu_sys_events pmu_sys_event_tables[] = {");
-> +    print_system_event_mapping_table_prefix(outfp);
-> 
->       list_for_each_entry(sys_event_table, &sys_event_tables, list) {
->           fprintf(outfp, "\n\t{\n\t\t.table = %s,\n\t},",
->               sys_event_table->soc_id);
->       }
-> -    fprintf(outfp, "\n\t{\n\t\t.table = 0\n\t},");
-> 
-> -    fprintf(outfp, "\n};\n");
-> +    print_system_event_mapping_table_suffix(outfp);
-> 
->       return 0;
->   }
-> @@ -938,6 +949,9 @@ static void create_empty_mapping(const char 
-> *output_file)
->       fprintf(outfp, "#include \"pmu-events/pmu-events.h\"\n");
->       print_mapping_table_prefix(outfp);
->       print_mapping_table_suffix(outfp);
-> +    print_system_event_mapping_table_prefix(outfp);
-> +    print_system_event_mapping_table_suffix(outfp);
-> +
->       fclose(outfp);
->   }
-> 
-> ---->8----
-> 
-> Obviously I never tested building for one of test architectures which 
-> does not use PMU events - sorry!
-> 
+Make it possible for the user space to access these ID values.
 
-Hi Arnaldo,
+Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+---
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 12 ++++++++++++
+ include/uapi/drm/etnaviv_drm.h        |  3 +++
+ 2 files changed, 15 insertions(+)
 
-Just wondering if you have had any more problems here? Shall I send a 
-formal patch? I tested that change and it looked ok.
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+index c6404b8d067f..ec16991ba8b6 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+@@ -156,6 +156,18 @@ int etnaviv_gpu_get_param(struct etnaviv_gpu *gpu, u32 param, u64 *value)
+ 			*value = ~0ULL;
+ 		break;
+ 
++	case ETNAVIV_PARAM_GPU_PRODUCT_ID:
++		*value = gpu->identity.product_id;
++		break;
++
++	case ETNAVIV_PARAM_GPU_CUSTOMER_ID:
++		*value = gpu->identity.customer_id;
++		break;
++
++	case ETNAVIV_PARAM_GPU_ECO_ID:
++		*value = gpu->identity.eco_id;
++		break;
++
+ 	default:
+ 		DBG("%s: invalid param: %u", dev_name(gpu->dev), param);
+ 		return -EINVAL;
+diff --git a/include/uapi/drm/etnaviv_drm.h b/include/uapi/drm/etnaviv_drm.h
+index 09d0df8b71c5..af024d90453d 100644
+--- a/include/uapi/drm/etnaviv_drm.h
++++ b/include/uapi/drm/etnaviv_drm.h
+@@ -74,6 +74,9 @@ struct drm_etnaviv_timespec {
+ #define ETNAVIV_PARAM_GPU_NUM_CONSTANTS             0x19
+ #define ETNAVIV_PARAM_GPU_NUM_VARYINGS              0x1a
+ #define ETNAVIV_PARAM_SOFTPIN_START_ADDR            0x1b
++#define ETNAVIV_PARAM_GPU_PRODUCT_ID                0x1c
++#define ETNAVIV_PARAM_GPU_CUSTOMER_ID               0x1d
++#define ETNAVIV_PARAM_GPU_ECO_ID                    0x1e
+ 
+ #define ETNA_MAX_PIPES 4
+ 
+-- 
+2.29.2
 
-Thanks,
-John
