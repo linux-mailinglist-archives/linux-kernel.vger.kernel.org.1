@@ -2,68 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2695A2DBE62
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:11:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEC32DBE70
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbgLPKKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:10:55 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:38730 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgLPKKz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:10:55 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1608113413;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/DpnWG2VZiw1n/B+lrW0oIhS8lbEl9jOP8otn08LVYo=;
-        b=jqHXoCbIPJ064ZTStJP8Y63JgOyPyTchpeMy2rILmyzmeFW4Bhaoqw+g1e6+9sRlkTrRWq
-        pl+2uDX3pJfQ7hqFPDeUL7jiUQU6p6hPV0d+3dGkuSGY+y5QUUxxAkJ74hmMUxvqp6YuOv
-        kwDrs6dnRdDVrVnK7LSNUqdTX3GogMndyG+Na9yHXVIAKw2DF6AvSZonOjplqqqNx2TDKw
-        L9Vr0//AoUOJ0BzmjlzUk3VpbivdIs2PRrjWWyFzEkolrGsfIxgueWAdiYZXzgsWVwF+br
-        Lhfu0KBGcK+5c10yvxB0jiVSFcaISMS3u6GYRtTYe7B34HwZbqQ7ZsWla4G2eg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1608113413;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/DpnWG2VZiw1n/B+lrW0oIhS8lbEl9jOP8otn08LVYo=;
-        b=kMvDAoh2HG6BGW/U9DzwYN+N6ux2FUz1x6p/PPMsN0AssxV7JJw6S9RtpWVjcvaWvXPBmN
-        2X4yYbOuoAWmFQAw==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH] sched: Prevent raising SCHED_SOFTIRQ when CPU is !active
-In-Reply-To: <20201216081904.GK3040@hirez.programming.kicks-ass.net>
-References: <20201215104400.9435-1-anna-maria@linutronix.de> <20201215111806.GF3040@hirez.programming.kicks-ass.net> <alpine.DEB.2.21.2012151449260.1448@somnus> <20201215093415.5b2898ef@gandalf.local.home> <20201215150529.GI3040@hirez.programming.kicks-ass.net> <87mtyft0r2.fsf@nanos.tec.linutronix.de> <20201216081904.GK3040@hirez.programming.kicks-ass.net>
-Date:   Wed, 16 Dec 2020 11:10:12 +0100
-Message-ID: <87zh2erri3.fsf@nanos.tec.linutronix.de>
+        id S1726115AbgLPKMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 05:12:53 -0500
+Received: from ozlabs.org ([203.11.71.1]:52325 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725820AbgLPKMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 05:12:53 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CwrXB5RnSz9sRR;
+        Wed, 16 Dec 2020 21:12:10 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1608113530;
+        bh=yzoNqsbBPqHVMGuc7fEiyKdvBuLaky4c9Qyht2Q5Nyw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=prL2zdS/1kKKPSc8GG4We7PqAMEih71iXNtiFoB/6bdZ3UK2ZUmryYdvwXjmkHMMF
+         3Z0pTj2Ocrv9sRLaKHQpOKAslTOsOBwf2OLVVcR1LkSsJQ0vaHc5ZiXN0cxNtiuE+w
+         ujefYMm2C5D9lTANISt6C2nuLtRtAWxCyTPn5T1mDPNmp7Lcdnp5HPh1HZNng6j5HA
+         MfPeCaPVbM4oqw4yq7rLkUTaI2dwEvOBeZ0PU70MF/I5wGD+sNBEnYGqjECqozAWal
+         PPF4oW44Gl9ATyAIIVQA+kHC5fEAO5L1099fa8yVF4UANUNcLXCA0lIW5B3suscuVI
+         ZSgIsv7mOX7XA==
+Date:   Wed, 16 Dec 2020 21:12:09 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the vhost tree
+Message-ID: <20201216211209.74194c37@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/Zhh=QpUcE5iI94olY/Ceetd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16 2020 at 09:19, Peter Zijlstra wrote:
-> On Tue, Dec 15, 2020 at 06:52:49PM +0100, Thomas Gleixner wrote:
->> I might be missing something, but how is the CPU which runs the pinned
->> kernel thread, i.e. the hotplug thread, supposed to go idle between the
->> two calls?
->
-> Take a mutex or something other daft. My disabling preemption around it
-> we basically assert the two functions are non-blocking and none of that
-> cruft matters.
+--Sig_/Zhh=QpUcE5iI94olY/Ceetd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-That'd be really daft, but yes we can do that for paranoia sake.
+Hi all,
 
-Thanks,
+Commits
 
-        tglx
+  4db90b5a8281 ("ack! virtio_ring: Fix two use after free bugs")
+  400228b7e0c4 ("ack! virtio_net: Fix error code in probe()")
+  35fc22b6228d ("ack! virtio_ring: Cut and paste bugs in vring_create_virtq=
+ueue_packed()")
+
+are missing a Signed-off-by from their author and committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Zhh=QpUcE5iI94olY/Ceetd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/Z3XkACgkQAVBC80lX
+0GyMZwf+MYNCMCK1Sx/Z7k6iMFNgArSJWcjH7WkiaupnhwXjESdwPuzgp0ZeTgim
+gPr4mc0Z65jZxAH9TTI5F/jx3JrvyvX8K5IXIMF6Xn0AQzphi9AgnR1ox2J1j5va
+1ZITfAVxIPcnPRFBhIgzKUYrkJV2X0NUgJP32UTu7SDwjMzBNf+eQ/EynP+fDljg
+da3mICOSU6w0akpYW59qrSUFQHGklqcnbRvehF90iBUesV/O+FVhcV2ROasCqkMf
+1Rssbrg/ICFQTg5Bjaa+zkGjY22Clt+Vc8++EiIJJ+ltdOIjBYizAZcRGdaQgEBb
+jpv6xN2erUhqBvtd9N3I4ix8zHtKbQ==
+=INJ2
+-----END PGP SIGNATURE-----
+
+--Sig_/Zhh=QpUcE5iI94olY/Ceetd--
