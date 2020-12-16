@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC5E2DC208
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:19:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D462DC207
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 15:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgLPOTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 09:19:33 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2339 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbgLPOTd (ORCPT
+        id S1726493AbgLPOTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 09:19:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726487AbgLPOTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 09:19:33 -0500
-Received: from dggeme753-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4CwxzR6sjgz13VMK;
-        Wed, 16 Dec 2020 22:17:39 +0800 (CST)
-Received: from [10.174.177.7] (10.174.177.7) by dggeme753-chm.china.huawei.com
- (10.3.19.99) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1913.5; Wed, 16
- Dec 2020 22:18:43 +0800
-Subject: Re: [PATCH] use x86 cpu park to speedup smp_init in kexec situation
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        <hewenliang4@huawei.com>, <hushiyuan@huawei.com>,
-        <luolongjun@huawei.com>, <hejingxian@huawei.com>
-References: <87eejqu5q5.fsf@nanos.tec.linutronix.de>
- <f2a4d172-fa17-9f98-ad8f-d69f84ad0df5@huawei.com>
- <87v9d2rrdq.fsf@nanos.tec.linutronix.de>
-From:   "shenkai (D)" <shenkai8@huawei.com>
-Message-ID: <06977da1-d148-0079-0e85-32d657d1a1de@huawei.com>
-Date:   Wed, 16 Dec 2020 22:18:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <87v9d2rrdq.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.7]
-X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
- dggeme753-chm.china.huawei.com (10.3.19.99)
-X-CFilter-Loop: Reflected
+        Wed, 16 Dec 2020 09:19:35 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C323C061794;
+        Wed, 16 Dec 2020 06:18:55 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id jx16so32919447ejb.10;
+        Wed, 16 Dec 2020 06:18:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1x6UIm6ChoVP2lx7Doa+z702riG0eMq473CvCBJAJkI=;
+        b=IbmLch6kYi0kzaudGF5T1OFEzQhBCwsyw/Y/rSNWB/VrmqAVK/4eq4OoMNERkcr3Cp
+         Cgmxr/ZeLv9NmtjyEDlHbVt82xO7LDjtQ2beeXqIMxUeilTOvFQe39LEz+LAKaE0rEII
+         XG3Vz8aOGqEZXYAuqFG42SJo5ixr7JEps2HFnt0j0DutO4NtKg5dE1kezpTy+vdCxxF8
+         aTAC+g2QWVkXpmu3l1VNVXlhkGGsL3nIbsU2R0dxNoxnijyF5KvQhjOOQftrESfetNY4
+         vLH4cqrb6PAEzXpeL0UyHgqmhup49ewfgPrpHWdpAE6xFqFjneoNi+Uk05135WkpdWMR
+         /VIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1x6UIm6ChoVP2lx7Doa+z702riG0eMq473CvCBJAJkI=;
+        b=UNSXq8A5AaEYAuLjsaH5Bf81y5cG3JEjGc22VweD1mKslbtJmpUa4oYHCgIUT8oSza
+         Rx8/is3mC+YJ+i3ggTynVWX8k5TeJp9BUtyYHwk3CdDHcOM0RyY68lOJwcRsnQ0EZwoU
+         p8VfNZ9faI1w2oBvwxUvy1CuYSVZnH1sOU2gMzjed7a8vAoqjiGDdprJJrxrO/Zbq+mt
+         fnPiVMkxFH1smn6zwqjUxl77wC67lJxXD80uYdqPMQ7bNhgUTzixYf9OmqQ14Wu7YnkS
+         lw+AjB5pUQ8zoxbYxpW6oDAgoXsCuk6XYNibjSDC2JqyXHsGtD8C1jeYKVkJyNexfS5J
+         46Cw==
+X-Gm-Message-State: AOAM531J2DcLj6rfr+kO6aDHut5okHhUtYdPi3dEqTY40SQQ0ZRn7Fv0
+        SNUsP0S1n+0M51LQKHTBR0M=
+X-Google-Smtp-Source: ABdhPJw4GGTL7lCKtM9gU5Z6sfXBvVUt1ZCe9Wwp7yA2j1gGmeMTePfPNP/Xbkni6pAIzcWf6KA/FA==
+X-Received: by 2002:a17:906:39d5:: with SMTP id i21mr29885616eje.339.1608128333540;
+        Wed, 16 Dec 2020 06:18:53 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id z10sm1484419ejl.30.2020.12.16.06.18.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Dec 2020 06:18:52 -0800 (PST)
+Message-ID: <8088bd0a89f18f2812c2503bcc25f2d72aadf82d.camel@gmail.com>
+Subject: Re: [PATCH v4 2/3] scsi: ufs: Clean up
+ ufshcd_exit_clk_scaling/gating()
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 16 Dec 2020 15:18:51 +0100
+In-Reply-To: <1607877104-8916-3-git-send-email-cang@codeaurora.org>
+References: <1607877104-8916-1-git-send-email-cang@codeaurora.org>
+         <1607877104-8916-3-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2020/12/16 18:12, Thomas Gleixner 写道:
-> Kai,
->
-> On Wed, Dec 16 2020 at 16:45, shenkai wrote:
->> 在 2020/12/16 5:20, Thomas Gleixner 写道:
->>>
->> Thanks for your and Andy's precious comments. I would like to take a try on
->>
->> reconstructing this patch to make it more decent and generic.
->>> It would be interesting to see the numbers just with play_dead() using
->>> hlt() or mwait(eax=0, 0) for the kexec case and no other change at all.
-> Can you please as a first step look into this and check if the time
-> changes?
->
-> Thanks,
->
->          tglx
-> .
-
-After some tests, the conclusion that time cost is from deep C-state 
-turns out to be wrong
-
-Sorry for that.
-
-Here is what I do:
-
-In kexec case, first let APs spinwait like what I did  in that patch, 
-but wake APs up by
-
-sending apic INIT and SIPI  interrupts as normal procedure instead of 
-writing to some
-
-address and there is no acceleration (time cost is still 210ms).
-
-So can we say that the main time cost is from apic INIT and SIPI 
-interrupts and the handling
-
-of them instead of deep C-state?
-
-
-I didn't test with play_dead() because in kexec case, one new kernel 
-will be started and APs can't be
-
-waken up by normal interrupts like in hibernate case for the irq vectors 
-are gone with the old kernel.
-
-Or maybe I didn't get the point correctly?
-
-
-Best regards
-
-Kai
-
-
+On Sun, 2020-12-13 at 08:31 -0800, Can Guo wrote:
+> ufshcd_hba_exit() is always called after ufshcd_exit_clk_scaling()
+> and
+> ufshcd_exit_clk_gating(), so move ufshcd_exit_clk_scaling/gating() to
+> ufshcd_hba_exit().
+> 
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+Reviewed-by: Bean Huo <beanhuo@micron.com>
 
