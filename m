@@ -2,165 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979982DC163
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A232DC164
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbgLPNf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:35:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726101AbgLPNf2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:35:28 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D06FC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:34:48 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id y15so17126631qtv.5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 05:34:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XoIaV6odiC5xPrOJdS4RLzvLrpDfW3a+fft5FJro9xg=;
-        b=DxXnFE3iCqSEMh1hNO8NxPPdVmSf5JZ9ON4gvuOFecmy0ISZHcr0TA3hUUhll15+Hr
-         qyjJkFx1tyqYMMSFkdTfxROJoTJbSnatSJokfn8MNCUkW7a0ziKFv7wJLP5oRTKqYiT0
-         B0h6R7aFe6giOsjf8mNj7+MlwUE6ktjDOm+Nym9r9dk+5rZcs1h+oMxMjcXcDNWcgpi/
-         ufMcGc2LT4VZqskmoKwe7Ya35i23DcaiOfnqcF5S2PlJT6+xtHxe8KnjhQcegUIyUt4u
-         I/ed3WhfYAgxCEPmEGanra3A/M/3Ybwv63Gz4oP2Am/Q8u9KQ6uSJaHD2A4lhbajXIuo
-         rpig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XoIaV6odiC5xPrOJdS4RLzvLrpDfW3a+fft5FJro9xg=;
-        b=DyfbLVys5otdjvB+Ei1ur3tuZLUbyTBM14YFVEstN7JyTlV5Q4iben3uTg3wQ/BVeL
-         YZz/bW801YZ/AduOgq3VXOo8aiIRj2mRrhL+qHxAH0pTuQ23gXkD5OVo+cOu20Ypik5w
-         q0j3zHzX5Q+3U7fEKUwy4NaXrKCsv9RgRnP4sGonoB0ldWnk5jZEYUwDvwRV9t7nqfNc
-         9vjOf68Gey/8rEtYqfNa4/ZIOt2DaFGR25sEogmvfg2SlrdqJZs0aEUWiwI56mwkUp35
-         G3BLOVw+12PuojcrbfiOP/5sLJnV11TPd9N6ZB3ze5Zgg0kXJsNpzK81vSVdtcTpg/e7
-         hZZw==
-X-Gm-Message-State: AOAM5338iXszkL9D39aIYhvToSHnIfnWDoajQk0IIua3QIlF8DuOGnI0
-        brNuxF0+Sh49L8sH+YJ8j+512EpHusBBKiRjZl+LkA==
-X-Google-Smtp-Source: ABdhPJxTf1i+g2S7FqBq0SsOXHLphV7fTi+j+xmG4Ms/sRUwdDPhJP83oC3sJlmJoeeqWn2guLVMtQ5j5CeEhfFaLs0=
-X-Received: by 2002:ac8:7111:: with SMTP id z17mr42932391qto.369.1608125687568;
- Wed, 16 Dec 2020 05:34:47 -0800 (PST)
+        id S1726241AbgLPNg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:36:28 -0500
+Received: from mout.gmx.net ([212.227.15.15]:34841 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726200AbgLPNg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 08:36:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1608125692;
+        bh=Y5cSGlcz9H0Epy95u+UpY+ZK0gB2fp8cK0Y49Gykg9s=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=hR50mV33Ky8Mwu09MXOZMga3NSCtp/j6lew5seMAVj9RaHCDwAydOw+3TUAbDWQvm
+         C6Q8sBR4UYJcg8hNGhbI+gmxniZfLUMFAS3V8sUf+1PtfF0Bdt2iCVAdB4sOPTq3Bh
+         m6mA3O+098XYzA3SnQRjdQZrro1bcXe+PyNfGp04=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.217.61]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MXp9i-1kbL2O1mFY-00YBHx; Wed, 16
+ Dec 2020 14:34:52 +0100
+Message-ID: <a1b925758cbc5517d4ff6df3cf2a9b6614fd5535.camel@gmx.de>
+Subject: Re: drm, qxl: post 5.11 merge warning+explosion
+From:   Mike Galbraith <efault@gmx.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Dave Airlie <airlied@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>
+Date:   Wed, 16 Dec 2020 14:34:50 +0100
+In-Reply-To: <5979380e28f4ba8023e88f96d3a9291381a8457e.camel@gmx.de>
+References: <5979380e28f4ba8023e88f96d3a9291381a8457e.camel@gmx.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-References: <1607576401-25609-1-git-send-email-vjitta@codeaurora.org>
- <CAG_fn=VKsrYx+YOGPnZw_Q5t6Fx7B59FSUuphj7Ou+DDFKQ+8Q@mail.gmail.com>
- <77e98f0b-c9c3-9380-9a57-ff1cd4022502@codeaurora.org> <CAG_fn=WbN6unD3ASkLUcEmZvALOj=dvC0yp6CcJFkV+3mmhwxw@mail.gmail.com>
- <6cc89f7b-bf40-2fd3-96ce-2a02d7535c91@codeaurora.org> <CAG_fn=VOHag5AUwFbOj_cV+7RDAk8UnjjqEtv2xmkSDb_iTYcQ@mail.gmail.com>
- <255400db-67d5-7f42-8dcb-9a440e006b9d@codeaurora.org> <f901afa5-7c46-ceba-2ae9-6186afdd99c0@codeaurora.org>
- <CAG_fn=UjJQP_gfDm3eJTPY371QTwyDJKXBCN2gs4DvnLP2pbyQ@mail.gmail.com>
- <7f2e171f-fa44-ef96-6cc6-14e615e3e457@codeaurora.org> <CAG_fn=VihkHLx7nHRrzQRuHeL-UYRezcyGLDQMJY+d1O5AkJfA@mail.gmail.com>
- <601d4b1a-8526-f7ad-d0f3-305894682109@codeaurora.org>
-In-Reply-To: <601d4b1a-8526-f7ad-d0f3-305894682109@codeaurora.org>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 16 Dec 2020 14:34:36 +0100
-Message-ID: <CAG_fn=V8e8y1fbOaYUD5SfDSQ9+Tc3r7w6ZSoJ-ZNFJvvq-Aeg@mail.gmail.com>
-Subject: Re: [PATCH v3] lib: stackdepot: Add support to configure STACK_HASH_SIZE
-To:     Vijayanand Jitta <vjitta@codeaurora.org>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        dan.j.williams@intel.com, broonie@kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@google.com>, qcai@redhat.com,
-        ylal@codeaurora.org, vinmenon@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:jWYZqCW86A4c8LMBbjQgWrWo3x7+tZNWUtYGB+mM8WxPEMeGNXY
+ ndW5QYvnYoeqVhDiH+iOLRE7rwWMvx7bXQJOxLHIKappQ7hsHCgK3p7YlGkSHLlKV33H2Ha
+ 7w+Z2wkOTk/Uc1wAlMxsbgsrd9l0K+2scTDTrrogZhgBMdPn20AABzMnpcfxhxRZRNDwJOY
+ jfirre7eJOcbkxTVutV9Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bwKbGnpCsN8=:646fIADR4KusJvWUo1HfjN
+ zibleDQdkvYHb2aKClbYMgxmz5RFPF/8LqAxuUl0MdUQZ+9kVVZbsbx50EViXvmWXQyebt/Z7
+ S9ilE1HPUG5LlVwaOzbGDO7H+hK34ycfP0JilQxq9h93/RUDA607D/aUXwMY9vI/Bf606cKpZ
+ KMkvd+iE4tfynAZOMdtl532cKR5L7m/LF/cK4zwHRIwvUbTwH1AF9xaiSJ+NrjpZApHeq6CWC
+ SD1wK82j+HuHwj4eZbj6opVhWHYYopwQl2/DLHAWPuZ1ABGryTeVy0n2fFKl5ScSHUiUfLv7f
+ 6A5ceGsHuJIIofiA9AHOu7MYNk++AB1qEw6ZeE11kfaSIAEjNxVhwhMw1tJm66Q4ZcOraIVJi
+ 67rnoVU5Hd4sRjKTh1nfKZFoIuVpo7EBlYV3I0MuBA6EW1wC4eTEu45bG3FWCpLkYf1lE2V22
+ KdrW9zwWaCdn5S6x4/qHYa4hbw/9srpViAVqtckHVL1ZphugeIPEKTTIRr33t3hkVE5tkP8lp
+ ohHihT/4UgbUXjAaFLcry9N7FmZVV4/FsQIkCROXO/8XkG+5Z5zmoNf+TgrtX7pHyzq7FJuOW
+ WdPT1Pa1L7AxwfB4a23Ecw48dhDAzzoxYKibYSeAVP0l4xBiWcWssF+8YBC+/RaUyMtlt6PQw
+ NZQFKAJmtVscilHXLeYLdHS4QdYQ4cwH/ltF8SlnNYDhF77wrbcbPVXmJdXaiKn+gjcVNpxoS
+ C13rh8UfETZfSKwk5ykN+2+Wolfbi2Th0mjktArLVVXMKudU0gTPRU66ypGygDFFgb1sn+QXR
+ JQrjbHkESpmHFsAYXV6cFs0ASJtbYcad8kGeMdV02uBpSFg1ZzSsn7vCr9YwPTghcFdGKOTvI
+ sn2ArxJG+ugLTt21Il3g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > To reiterate, I think you don't need a tunable stack_hash_order
-> > parameter if the only use case is to disable the stack depot.
-> > Maybe it is enough to just add a boolean flag?
+<adds virt list>
+
+On Wed, 2020-12-16 at 03:41 +0100, Mike Galbraith wrote:
+> Little kvm works fine with nomodeset, so will be busy for a while
+> bisecting two other problems that popped up here this cycle. (hohum)
 >
-> There are multiple users of stackdepot they might still want to use
-> stack depot but with a lower memory footprint instead of MAX_SIZE
-> so, a configurable size might help here ?
-
-Can you provide an example of a use case in which the user wants to
-use the stack depot of a smaller size without disabling it completely,
-and that size cannot be configured statically?
-As far as I understand, for the page owner example you gave it's
-sufficient to provide a switch that can disable the stack depot if
-page_owner=3Doff.
-
-> > Or even go further and disable the stack depot in the same place that
-> > disables page owner, as the user probably doesn't want to set two
-> > flags instead of one?
-> >
+> [    1.815561] WARNING: CPU: 7 PID: 355 at drivers/gpu/drm/ttm/ttm_pool.=
+c:365 ttm_pool_alloc+0x41b/0x540 [ttm]
+> [    1.815561] Modules linked in: ext4(E) crc16(E) mbcache(E) jbd2(E) at=
+a_generic(E) ata_piix(E) virtio_console(E) virtio_rng(E) virtio_blk(E) qxl=
+(E) drm_ttm_helper(E) ttm(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(=
+E) sysimgblt(E) ahci(E) fb_sys_fops(E) cec(E) libahci(E) uhci_hcd(E) ehci_=
+pci(E) rc_core(E) ehci_hcd(E) crc32c_intel(E) serio_raw(E) virtio_pci(E) v=
+irtio_ring(E) 8139cp(E) virtio(E) libata(E) drm(E) usbcore(E) mii(E) sg(E)=
+ dm_multipath(E) dm_mod(E) scsi_dh_rdac(E) scsi_dh_emc(E) scsi_dh_alua(E) =
+scsi_mod(E) autofs4(E)
+> [    1.815589] CPU: 7 PID: 355 Comm: kworker/7:2 Tainted: G            E=
+     5.10.0.g489e9fe-master #26
+> [    1.815590] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BI=
+OS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+> [    1.815614] Workqueue: events drm_fb_helper_dirty_work [drm_kms_helpe=
+r]
+> [    1.815621] RIP: 0010:ttm_pool_alloc+0x41b/0x540 [ttm]
+> [    1.815623] Code: fc ff ff 89 ea 48 8d 04 d5 00 00 00 00 48 29 d0 48 =
+8d 3c c5 00 1c 40 a0 e9 d7 fc ff ff 85 c0 0f 89 2f fc ff ff e9 28 fc ff ff=
+ <0f> 0b e9 35 fc ff ff 89 e9 49 8b 7d 00 b8 00 10 00 00 48 d3 e0 45
+> [    1.815623] RSP: 0018:ffff888105d3b818 EFLAGS: 00010246
+> [    1.815625] RAX: 0000000000000000 RBX: ffff888106978800 RCX: 00000000=
+00000000
+> [    1.815626] RDX: ffff888105d3bc68 RSI: 0000000000000001 RDI: ffff8881=
+06238820
+> [    1.815626] RBP: ffff888106238758 R08: ffffc90000296000 R09: 80000000=
+0000016b
+> [    1.815627] R10: 0000000000000001 R11: ffffc90000296000 R12: 00000000=
+00000000
+> [    1.815628] R13: ffff888106238820 R14: 0000000000000000 R15: ffff8881=
+06978800
+> [    1.815628] FS:  0000000000000000(0000) GS:ffff888237dc0000(0000) knl=
+GS:0000000000000000
+> [    1.815632] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    1.815633] CR2: 00007eff52a0d5b8 CR3: 0000000002010003 CR4: 00000000=
+001706e0
+> [    1.815633] Call Trace:
+> [    1.815644]  ttm_tt_populate+0xb1/0xc0 [ttm]
+> [    1.815647]  ttm_bo_move_memcpy+0x4a5/0x500 [ttm]
+> [    1.815652]  qxl_bo_move+0x230/0x2f0 [qxl]
+> [    1.815655]  ttm_bo_handle_move_mem+0x79/0x140 [ttm]
+> [    1.815657]  ttm_bo_evict+0x124/0x250 [ttm]
+> [    1.815693]  ? drm_mm_insert_node_in_range+0x55c/0x580 [drm]
+> [    1.815696]  ttm_mem_evict_first+0x110/0x3d0 [ttm]
+> [    1.815698]  ttm_bo_mem_space+0x261/0x270 [ttm]
+> [    1.815702]  ? qxl_ttm_debugfs_init+0xb0/0xb0 [qxl]
+> [    1.815705]  ttm_bo_validate+0x117/0x150 [ttm]
+> [    1.815756]  ttm_bo_init_reserved+0x2c8/0x3c0 [ttm]
+> [    1.815772]  qxl_bo_create+0x134/0x1d0 [qxl]
+> [    1.815775]  ? qxl_ttm_debugfs_init+0xb0/0xb0 [qxl]
+> [    1.815791]  qxl_alloc_bo_reserved+0x2c/0x90 [qxl]
+> [    1.815794]  qxl_image_alloc_objects+0xa3/0x120 [qxl]
+> [    1.815797]  qxl_draw_dirty_fb+0x155/0x450 [qxl]
+> [    1.815815]  ? _cond_resched+0x15/0x40
+> [    1.815819]  ? ww_mutex_lock_interruptible+0x12/0x60
+> [    1.815822]  qxl_framebuffer_surface_dirty+0x14f/0x1a0 [qxl]
+> [    1.815841]  drm_fb_helper_dirty_work+0x11d/0x180 [drm_kms_helper]
+> [    1.815853]  process_one_work+0x1f5/0x3c0
+> [    1.815866]  ? process_one_work+0x3c0/0x3c0
+> [    1.815867]  worker_thread+0x2d/0x3d0
+> [    1.815868]  ? process_one_work+0x3c0/0x3c0
+> [    1.815872]  kthread+0x117/0x130
+> [    1.815876]  ? kthread_park+0x90/0x90
+> [    1.815880]  ret_from_fork+0x1f/0x30
+> [    1.815886] ---[ end trace 51e464c1e89a1728 ]---
+> [    1.815894] BUG: kernel NULL pointer dereference, address: 0000000000=
+000230
+> [    1.815895] #PF: supervisor read access in kernel mode
+> [    1.815895] #PF: error_code(0x0000) - not-present page
+> [    1.815896] PGD 0 P4D 0
+> [    1.815898] Oops: 0000 [#1] SMP NOPTI
+> [    1.815900] CPU: 7 PID: 355 Comm: kworker/7:2 Tainted: G        W   E=
+     5.10.0.g489e9fe-master #26
+> [    1.815901] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BI=
+OS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+> [    1.815916] Workqueue: events drm_fb_helper_dirty_work [drm_kms_helpe=
+r]
+> [    1.815921] RIP: 0010:dma_map_page_attrs+0xf/0x1c0
+> [    1.815922] Code: 1f 17 5b 01 48 85 c0 75 e3 31 c0 c3 66 66 2e 0f 1f =
+84 00 00 00 00 00 0f 1f 40 00 0f 1f 44 00 00 41 55 41 54 55 53 48 83 ec 08=
+ <48> 8b 87 30 02 00 00 48 85 c0 48 0f 44 05 e7 16 5b 01 41 83 f8 02
+> [    1.815923] RSP: 0018:ffff888105d3b7e8 EFLAGS: 00010296
+> [    1.815924] RAX: 0000000000001000 RBX: 0000000000000001 RCX: 00000000=
+00001000
+> [    1.815924] RDX: 0000000000000000 RSI: ffffea0004171e40 RDI: 00000000=
+00000000
+> [    1.815925] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000=
+00000000
+> [    1.815925] R10: ffffea0004171e40 R11: ffffc90000296000 R12: 00000000=
+00000001
+> [    1.815926] R13: ffff888106238820 R14: ffff888105d07100 R15: ffff8881=
+06978800
+> [    1.815926] FS:  0000000000000000(0000) GS:ffff888237dc0000(0000) knl=
+GS:0000000000000000
+> [    1.815928] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    1.815929] CR2: 0000000000000230 CR3: 0000000002010003 CR4: 00000000=
+001706e0
+> [    1.815929] Call Trace:
+> [    1.815937]  ttm_pool_alloc+0x448/0x540 [ttm]
+> [    1.815940]  ttm_tt_populate+0xb1/0xc0 [ttm]
+> [    1.815942]  ttm_bo_move_memcpy+0x4a5/0x500 [ttm]
+> [    1.815945]  qxl_bo_move+0x230/0x2f0 [qxl]
+> [    1.815947]  ttm_bo_handle_move_mem+0x79/0x140 [ttm]
+> [    1.815949]  ttm_bo_evict+0x124/0x250 [ttm]
+> [    1.815982]  ? drm_mm_insert_node_in_range+0x55c/0x580 [drm]
+> [    1.815984]  ttm_mem_evict_first+0x110/0x3d0 [ttm]
+> [    1.815988]  ttm_bo_mem_space+0x261/0x270 [ttm]
+> [    1.890133]  ? qxl_ttm_debugfs_init+0xb0/0xb0 [qxl]
+> [    1.890138]  ttm_bo_validate+0x117/0x150 [ttm]
+> [    1.891740]  ttm_bo_init_reserved+0x2c8/0x3c0 [ttm]
+> [    1.891744]  qxl_bo_create+0x134/0x1d0 [qxl]
+> [    1.893398]  ? qxl_ttm_debugfs_init+0xb0/0xb0 [qxl]
+> [    1.893400]  qxl_alloc_bo_reserved+0x2c/0x90 [qxl]
+> [    1.893402]  qxl_image_alloc_objects+0xa3/0x120 [qxl]
+> [    1.893405]  qxl_draw_dirty_fb+0x155/0x450 [qxl]
+> [    1.896515]  ? _cond_resched+0x15/0x40
+> [    1.896517]  ? ww_mutex_lock_interruptible+0x12/0x60
+> [    1.896520]  qxl_framebuffer_surface_dirty+0x14f/0x1a0 [qxl]
+> [    1.896533]  drm_fb_helper_dirty_work+0x11d/0x180 [drm_kms_helper]
+> [    1.896537]  process_one_work+0x1f5/0x3c0
+> [    1.900535]  ? process_one_work+0x3c0/0x3c0
+> [    1.900536]  worker_thread+0x2d/0x3d0
+> [    1.900538]  ? process_one_work+0x3c0/0x3c0
+> [    1.902704]  kthread+0x117/0x130
+> [    1.902706]  ? kthread_park+0x90/0x90
+> [    1.902709]  ret_from_fork+0x1f/0x30
+> [    1.902711] Modules linked in: ext4(E) crc16(E) mbcache(E) jbd2(E) at=
+a_generic(E) ata_piix(E) virtio_console(E) virtio_rng(E) virtio_blk(E) qxl=
+(E) drm_ttm_helper(E) ttm(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(=
+E) sysimgblt(E) ahci(E) fb_sys_fops(E) cec(E) libahci(E) uhci_hcd(E) ehci_=
+pci(E) rc_core(E) ehci_hcd(E) crc32c_intel(E) serio_raw(E) virtio_pci(E) v=
+irtio_ring(E) 8139cp(E) virtio(E) libata(E) drm(E) usbcore(E) mii(E) sg(E)=
+ dm_multipath(E) dm_mod(E) scsi_dh_rdac(E) scsi_dh_emc(E) scsi_dh_alua(E) =
+scsi_mod(E) autofs4(E)
+> [    1.904797] Dumping ftrace buffer:
+> [    1.911038]    (ftrace buffer empty)
+> [    1.911041] CR2: 0000000000000230
 >
-> Since, page owner is not the only user of stack depot we can't take that
-> decision of disabling stack depot if page owner is disabled.
 
-Agreed, but if multiple subsystems want to use stackdepot together, it
-is even harder to estimate the total memory consumption.
-How likely is it that none of them will need MAX_SIZE?
-
-> >> Minchan,
-> >> This should be fine right ? Do you see any issue with disabling
-> >> stack depot completely ?
-> >>
-> >> Thanks,
-> >> Vijay
-> >>
-> >>>> Thanks,
-> >>>> Vijay
-> >>>>
-> >>>>>>> Thanks,
-> >>>>>>> Vijay
-> >>>>>>>
-> >>>>>>>>> Thanks,
-> >>>>>>>>> Vijay
-> >>>>>>>>>
-> >>>>>>>>> --
-> >>>>>>>>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. i=
-s a
-> >>>>>>>>> member of Code Aurora Forum, hosted by The Linux Foundation
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>
-> >>>>>>> --
-> >>>>>>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is =
-a
-> >>>>>>> member of Code Aurora Forum, hosted by The Linux Foundation
-> >>>>>>
-> >>>>>>
-> >>>>>>
-> >>>>>
-> >>>>
-> >>>> --
-> >>>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> >>>> member of Code Aurora Forum, hosted by The Linux Foundation
-> >>>
-> >>>
-> >>>
-> >>
-> >> --
-> >> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> >> member of Code Aurora Forum, hosted by The Linux Foundation
-> >
-> >
-> >
->
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> member of Code Aurora Forum, hosted by The Linux Foundation
-
-
-
---=20
-Alexander Potapenko
-Software Engineer
-
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
