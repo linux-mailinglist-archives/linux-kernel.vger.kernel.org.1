@@ -2,180 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33822DC5B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D502DC5BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728206AbgLPRuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 12:50:16 -0500
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:46826 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728199AbgLPRuP (ORCPT
+        id S1728316AbgLPRxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 12:53:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728312AbgLPRxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 12:50:15 -0500
-Received: by mail-oi1-f181.google.com with SMTP id q205so15678521oig.13;
-        Wed, 16 Dec 2020 09:49:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=YHYDH46cBhOW9MdbdKwXMuCn0mvGIk5Dz9fJjNwpw0s=;
-        b=p6T/B3Pd3m5YZbhX/6+xixH1mqatXah6L0qz5xc785+rebInEw1sV7rBxBIhtWOd3g
-         idfgt0N9MDoL22RZPQ2NYrJVQhHxObdtkyjzgHPo3Y/C2VQoNiet0gZKsDsSLtHIewoQ
-         HhwTc//7J4pTu/6TfPyU+6byeDsyPIfeHFrs+fbMC0skCvCahLJfc+lMoY7hrHFsg9Y2
-         dIuJ73SW2hWZ+zywwPHnxxl1Vh824TaPNUC6Y7PaIF64Q0j0d20c86eLIJRwFz44vgN0
-         BwJoKBwhWxBmUj0gCAfvLcLughiF5Yp22cqj1/gmVjmMjey63YbkM+WUv28QuQqGWyYS
-         8g3g==
-X-Gm-Message-State: AOAM532hTGOCkWsWamB9xCWx9B3t8r9WeFXOnoxDjmCD/2KTdDHFm+R9
-        k5xUErqwSxJk5IGXqTMFUJ4lVxu/qw==
-X-Google-Smtp-Source: ABdhPJzgO6SGUIjxTKKcvtXg+Ps/0Ezob5WhK3niJ7yLCYkPF3uPzL8zlOu4cWTWkkW9/8/w3JU1Gg==
-X-Received: by 2002:aca:fc8d:: with SMTP id a135mr2720802oii.87.1608140974381;
-        Wed, 16 Dec 2020 09:49:34 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q184sm541845oic.41.2020.12.16.09.49.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 09:49:33 -0800 (PST)
-Received: (nullmailer pid 2167020 invoked by uid 1000);
-        Wed, 16 Dec 2020 17:49:32 -0000
-Date:   Wed, 16 Dec 2020 11:49:32 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
-Subject: [GIT PULL] Devicetree updates for v5.11
-Message-ID: <20201216174932.GA2165438@robh.at.kernel.org>
+        Wed, 16 Dec 2020 12:53:51 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D4CC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 09:53:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tN0yIKZX5W2VZwRAEvec4t5YNl/Os/C/QJ8fNnYq6OI=; b=fZFcpSXHbrNJqj4iURL7Wq2uWW
+        E/6ZTCwx6tdcRcCHrbFlcaKCQVoiK8Rpxm6pesJucwXF7OsttjFazQZVaqX+/SjPNFXmH1Zr3IGv6
+        W45rVEQbx4o8Sd+5q3oAD2yjIz5STVBr49GQvsRkWRpkKWIJ6GdY5fxCqlF83dJTzgQKppjPIv4Vq
+        pWvGMbASPf9p7oDHu4uBVerHHh5OadWNKJynBOqKuDhiJXCsA89v5GDMliRcMX6qocsgLTKlX6Bjw
+        /PM/XxdOrN6J7NeQsW3+vRY0BUzMFhmnO516LXRMeMCg3dfSU+VgTY4T6YgbDnkFddKWwPg4G7ErM
+        /R+9TOsQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kpaz1-0003cB-Tb; Wed, 16 Dec 2020 17:53:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7594A304D28;
+        Wed, 16 Dec 2020 18:52:59 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2CCCA202A3CFE; Wed, 16 Dec 2020 18:52:59 +0100 (CET)
+Date:   Wed, 16 Dec 2020 18:52:59 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
+Subject: Re: __local_bh_enable_ip() vs lockdep
+Message-ID: <20201216175259.GP3040@hirez.programming.kicks-ass.net>
+References: <20201215190152.GA22285@osiris>
+ <20201215144724.40ab7612@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201215144724.40ab7612@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Tue, Dec 15, 2020 at 02:47:24PM -0500, Steven Rostedt wrote:
+> On Tue, 15 Dec 2020 20:01:52 +0100
+> Heiko Carstens <hca@linux.ibm.com> wrote:
+> 
+> > Hello,
+> > 
+> > the ftrace stack tracer kernel selftest is able to trigger the warning
+> > below from time to time. This looks like there is an ordering problem
+> > in __local_bh_enable_ip():
+> > first there is a call to lockdep_softirqs_on() and afterwards
+> > preempt_count_sub() is ftraced before it was able to modify
+> > preempt_count:
+> 
+> Don't run ftrace stack tracer when debugging lockdep. ;-)
+> 
+>   /me runs!
 
-Please pull DT updates for v5.11.
+Ha!, seriously though; that seems like something we've encountered
+before, but my google-fu is failing me.
 
-Rob
+Do you remember what, if anything, was the problem with this?
 
-The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
+---
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index d5bfd5e661fc..9d71046ea247 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -186,7 +186,7 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+ 	 * Keep preemption disabled until we are done with
+ 	 * softirq processing:
+ 	 */
+-	preempt_count_sub(cnt - 1);
++	__preempt_count_sub(cnt - 1);
+ 
+ 	if (unlikely(!in_interrupt() && local_softirq_pending())) {
+ 		/*
 
-  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-for-5.11
-
-for you to fetch changes up to e33dc2f3636749c2f949a59c2ff8acd4a69c9c78:
-
-  dt-bindings: mali-bifrost: Add dynamic-power-coefficient (2020-12-14 16:07:09 -0600)
-
-----------------------------------------------------------------
-Devicetree updates for v5.11:
-
-- Add vendor prefixes for bm, gpio-key, mentor, FII, and Ampere
-
-- Add ADP5585/ADP5589 and delta,q54sj108a2 to trivial-devices.yaml
-
-- Convert fixed-partitions, i2c-gate and fsl,dpaa2-console bindings to
-  schemas
-
-- Drop PicoXcell bindings
-
-- Drop unused and undocumented 'pnx,timeout' property from LPC32xx
-
-- Add 'dynamic-power-coefficient' to Mali GPU bindings
-
-- Make 'make dt_binding_check' not error out on warnings
-
-- Various minor binding fixes
-
-----------------------------------------------------------------
-Alexandru Ardelean (1):
-      dt-bindings: add ADP5585/ADP5589 entries to trivial-devices
-
-Cengiz Can (1):
-      dt-bindings: fsl-imx-drm: fix example compatible string
-
-Cristian Ciocaltea (1):
-      dt-bindings: Fix error in 'make dtbs_check' when using DT_SCHEMA_FILES
-
-Fabrice Gasnier (1):
-      dt-bindings: mfd: fix stm32 timers example
-
-Geert Uytterhoeven (1):
-      dt-bindings: pci: rcar-pci-ep: Document missing interrupts property
-
-Gustavo Pimentel (1):
-      dt-bindings: Fix typo on the DesignWare IP reset bindings documentation
-
-Ionut-robert Aron (1):
-      dt-bindings: misc: convert fsl,dpaa2-console from txt to YAML
-
-Joel Stanley (1):
-      dt-bindings: vendor-prefixes: Add FII
-
-Jon Hunter (1):
-      dt-bindings: Correct GV11B GPU register sizes
-
-Jonathan Cameron (1):
-      dt-bindings:i2c:i2c-gate: txt to yaml conversion
-
-Krzysztof Kozlowski (1):
-      dt-bindings: arm: vt8500: remove redundant white-spaces
-
-Lukasz Luba (2):
-      dt-bindings: mali-midgard: Add dynamic-power-coefficient
-      dt-bindings: mali-bifrost: Add dynamic-power-coefficient
-
-Max Merchel (1):
-      dt-bindings: vendor-prefixes: correct the spelling of TQ-Systems GmbH
-
-Quan Nguyen (1):
-      dt-bindings: vendor-prefixes: Add an entry for AmpereComputing.com
-
-Rafał Miłecki (1):
-      dt-bindings: mtd: convert "fixed-partitions" to the json-schema
-
-Rob Herring (4):
-      dt-bindings: Don't error out on yamllint and dt-doc-validate errors
-      dt-bindings: vendor-prefixes: Add undocumented bm, gpio-key, and mentor prefixes
-      ARM: dts: lpc32xx: Remove unused and undocumented 'pnx,timeout'
-      dt-bindings: Remove PicoXcell bindings
-
-Zhen Lei (1):
-      dt-bindings: i2c: dw: cancel mandatory requirements for "#address-cells" and "#size-cells"
-
-xiao.ma (1):
-      dt-bindings: trivial-devices: Add delta,q54sj108a2
-
- Documentation/devicetree/bindings/Makefile         |  10 +-
- .../devicetree/bindings/arm/picoxcell.txt          |  24 ----
- Documentation/devicetree/bindings/arm/vt8500.yaml  |   3 +-
- .../devicetree/bindings/crypto/picochip-spacc.txt  |  21 ---
- .../bindings/display/imx/fsl-imx-drm.txt           |   2 +-
- .../devicetree/bindings/gpu/arm,mali-bifrost.yaml  |  17 +++
- .../devicetree/bindings/gpu/arm,mali-midgard.yaml  |  17 +++
- .../devicetree/bindings/gpu/nvidia,gk20a.txt       |   4 +-
- Documentation/devicetree/bindings/i2c/i2c-gate.txt |  41 ------
- .../devicetree/bindings/i2c/i2c-gate.yaml          |  39 ++++++
- .../bindings/i2c/snps,designware-i2c.yaml          |   8 --
- .../devicetree/bindings/mfd/st,stm32-timers.yaml   |   6 +-
- .../devicetree/bindings/misc/fsl,dpaa2-console.txt |  11 --
- .../bindings/misc/fsl,dpaa2-console.yaml           |  25 ++++
- .../devicetree/bindings/mtd/partition.txt          | 131 +-----------------
- .../bindings/mtd/partitions/fixed-partitions.yaml  | 152 +++++++++++++++++++++
- Documentation/devicetree/bindings/net/macb.txt     |   2 -
- .../devicetree/bindings/pci/rcar-pci-ep.yaml       |   9 ++
- .../devicetree/bindings/reset/snps,dw-reset.txt    |   2 +-
- .../bindings/timer/snps,dw-apb-timer.yaml          |   7 -
- .../devicetree/bindings/trivial-devices.yaml       |   8 ++
- .../devicetree/bindings/vendor-prefixes.yaml       |  10 +-
- arch/arm/boot/dts/lpc32xx.dtsi                     |   3 -
- 23 files changed, 290 insertions(+), 262 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/picoxcell.txt
- delete mode 100644 Documentation/devicetree/bindings/crypto/picochip-spacc.txt
- delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-gate.txt
- create mode 100644 Documentation/devicetree/bindings/i2c/i2c-gate.yaml
- delete mode 100644 Documentation/devicetree/bindings/misc/fsl,dpaa2-console.txt
- create mode 100644 Documentation/devicetree/bindings/misc/fsl,dpaa2-console.yaml
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
