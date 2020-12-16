@@ -2,115 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E1E2DC049
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A712DC050
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 13:29:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725991AbgLPM1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 07:27:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49586 "EHLO
+        id S1726051AbgLPM33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 07:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLPM1x (ORCPT
+        with ESMTP id S1726010AbgLPM33 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 07:27:53 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C156C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 04:27:12 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id h205so4335534lfd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 04:27:12 -0800 (PST)
+        Wed, 16 Dec 2020 07:29:29 -0500
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2906BC06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 04:28:49 -0800 (PST)
+Received: by mail-vk1-xa2a.google.com with SMTP id f71so5612073vka.12
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 04:28:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=NlkdKrDzJvW8dj27dCDKyFQHFw0nTmtHbFxqUcIKWA0=;
-        b=pRFwY7myfSQXhI2lzMsKwsRSETQKUEbExLsNegZaFAZ23q02lusDmgpYJmkMmjPWbm
-         qoF39+uaLxIxKr4prrBoZRaYvfjsu8yfso2vpHdm33mO9xl56D1FsDdRfxu9FiQCf8MT
-         OjoAwJL0aXUbqY9GyfJ/Np53uH9791RhA2av9/RnKSMaVpR6ceWbbmNEgxmmyVvOgSby
-         YbKiYDzwZ20eN8Plh51WC9BlivlWmunZs7ILYqUqQ7C0WXD1zsoIzR1v3NB/9L8BCOC8
-         jcPxpbfw1jFsLkvk1kGxUrwGnhkrsssv3hcAiT2gpkUTMx+RtrQYmma4SRIS3+tvLGKK
-         zE6w==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c6pRvGHHMJqQbOIzkgWlEFS44+L0AY9CH1Qe7UGJ3u4=;
+        b=odqmNK1hqN0cRlLeW7sn5pdXMShIK5Q/F49grfeu5fecHGIW3d2eANmZhNWdRfbOaG
+         mF3Q2QJPWg+GEjMfy2yYUX2i3c19AhTygkQ+TyEGVuiGA7tVCzscJPfVfaLX16twNC6n
+         +6u1ZvFmWnXBd4PhPlIy3gmzOoGNoq+s81aIY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=NlkdKrDzJvW8dj27dCDKyFQHFw0nTmtHbFxqUcIKWA0=;
-        b=QER+MdMZaVS6XnS2h1MRfZSIM+baC4S+GHB4TkNRcEElrCDmSO1v+XpoAQvx4v2Kjt
-         DbhyI73GOdIlBuy5IhZSCiI8nUKxocXerQ+yEVufe7lEnsY9qn0kvvFIFCUvtp+24MA/
-         lhfnH1B+ex651iSBzzbZsY2Qbu1GBVWtRIyok6eDLr6ZZiGdIwA1IRdRJC74pmLpvgdF
-         bCjcuVQqXpCpoO4mhItZt8Xxfj4/6CHnJJUMFlEusnUWcn0qGDR8GA1Bo/gZUI6lg8gU
-         EzJ6iU10Xi53qqif20J4AzWXRheCfyJH2r0pCArgRRshEU5OqDGTSNd0N3yskIOyVdZW
-         59AA==
-X-Gm-Message-State: AOAM532LYtR9fDGIT6zIvez/5cGsYWhTlJQMnLy6fCtY+uTbq339UuZ4
-        1wPUncrtyTb1w/sCAbbu3Io=
-X-Google-Smtp-Source: ABdhPJzuHtAuGKFrbqvNY8HG4xWVr5snTjE3uD0EitFoPXhQ+abO1kzcCNozYVgO+Wbh07bZqjV6yg==
-X-Received: by 2002:a2e:a36a:: with SMTP id i10mr6004463ljn.342.1608121630659;
-        Wed, 16 Dec 2020 04:27:10 -0800 (PST)
-Received: from localhost.localdomain (host-81-190-219-224.dynamic.mm.pl. [81.190.219.224])
-        by smtp.googlemail.com with ESMTPSA id w13sm264740ljw.28.2020.12.16.04.27.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 04:27:10 -0800 (PST)
-From:   Vasyl Gomonovych <gomonovych@gmail.com>
-To:     ssantosh@kernel.org
-Cc:     Vasyl Gomonovych <gomonovych@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] soc: ti: knav_qmss: Put refcount for dev node in failure case
-Date:   Wed, 16 Dec 2020 13:26:52 +0100
-Message-Id: <20201216122652.5825-1-gomonovych@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c6pRvGHHMJqQbOIzkgWlEFS44+L0AY9CH1Qe7UGJ3u4=;
+        b=PokajMf4GSKmjxm3xkaqbfSDL6FL6Uh8o5HfjwbNg8USDBD/5LZJanngJJq33d5f4A
+         7+0AsdmcrL0UMdxXeSqXu3wRvy0+BIn7YJr1pgv2kyFNVa08F1cA70pHOdQEn9Y7FVsM
+         P5wm3qRnvM3hQ0Hu4gNy/emWBDYPL3X/eJLc5fYmDx5fvo3pZtW17fMHOQaIX8gbPDY5
+         4mm0egVQMK1mx89G2NSn+4prfH8+K9VeJ+TrK+RgZbxGWOAvUjm2HbTHb/z6Z8UM/xwC
+         PiYBJThnhuU4S5DZTKVrz4JUU+OHq2X1QoR9W+JHsfVjMsnL5jg1MdR/sPkIOXswn/RZ
+         Kzeg==
+X-Gm-Message-State: AOAM530uoKZU0fovSHj2b7nzTZuC5/IqaaNxB+XemhitZTjCSQSPJS8j
+        l0FF+3jWSJCl4tniZ6EsLMTtHm3kO2xfj12MUYGfgg==
+X-Google-Smtp-Source: ABdhPJzlzIMkwB4MfwB+J+NG9epApgDDwgd0osNlLW2n3EV6nng8DOUfvGywX0ToxV0slELC4gu/RwcT3blVqy36deU=
+X-Received: by 2002:a1f:96cd:: with SMTP id y196mr33980353vkd.18.1608121728276;
+ Wed, 16 Dec 2020 04:28:48 -0800 (PST)
+MIME-Version: 1.0
+References: <20201216115125.5886-1-chunfeng.yun@mediatek.com> <20201216115125.5886-2-chunfeng.yun@mediatek.com>
+In-Reply-To: <20201216115125.5886-2-chunfeng.yun@mediatek.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Wed, 16 Dec 2020 20:28:37 +0800
+Message-ID: <CANMq1KDBmuoBNeizm9+f1yJgqF9oMqU5k26KfZrSdjrPQm_LwA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] usb: xhci-mtk: fix UAS issue by XHCI_BROKEN_STREAMS quirk
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Ikjoon Jang <ikjn@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-for_each_child_of_node increases refcount for each device_node and decreases previous one
-in a loop, but in case jump out of a loop current node refcount has no chnase for decreases
-so requires an of_node_put for jupm out cases.
+On Wed, Dec 16, 2020 at 7:53 PM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
+>
+> The 0.96 xHCI controller on some platforms does not support
+> bulk stream even HCCPARAMS says supporting, due to MaxPSASize
+> is set a non-zero default value by mistake, here use
+> XHCI_BROKEN_STREAMS quirk to fix it.
+>
+> Fixes: 94a631d91ad3 ("usb: xhci-mtk: check hcc_params after adding primary hcd")
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>  drivers/usb/host/xhci-mtk.c | 7 ++++++-
+>  drivers/usb/host/xhci-mtk.h | 1 +
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/usb/host/xhci-mtk.c b/drivers/usb/host/xhci-mtk.c
+> index 8f321f39ab96..08dab974d847 100644
+> --- a/drivers/usb/host/xhci-mtk.c
+> +++ b/drivers/usb/host/xhci-mtk.c
+> @@ -395,6 +395,9 @@ static void xhci_mtk_quirks(struct device *dev, struct xhci_hcd *xhci)
+>         xhci->quirks |= XHCI_SPURIOUS_SUCCESS;
+>         if (mtk->lpm_support)
+>                 xhci->quirks |= XHCI_LPM_SUPPORT;
+> +
+> +       if (mtk->broken_streams)
+> +               xhci->quirks |= XHCI_BROKEN_STREAMS;
+>  }
+>
+>  /* called during probe() after chip reset completes */
+> @@ -460,6 +463,8 @@ static int xhci_mtk_probe(struct platform_device *pdev)
+>                 return ret;
+>
+>         mtk->lpm_support = of_property_read_bool(node, "usb3-lpm-capable");
+> +       mtk->broken_streams =
+> +               of_property_read_bool(node, "mediatek,broken_streams_quirk");
 
-Fix based on raport from
-scripts/coccinelle/iterators/for_each_child.cocci
+Would it be better to add a data field to struct of_device_id
+mtk_xhci_of_match, and enable this quirk on mediatek,mt8173-xhci only?
 
-Signed-off-by: Vasyl Gomonovych <gomonovych@gmail.com>
----
- drivers/soc/ti/knav_dma.c        | 1 +
- drivers/soc/ti/knav_qmss_queue.c | 3 +++
- 2 files changed, 4 insertions(+)
+(IMHO usb3-lpm-capable detection should also be done in the same way)
 
-diff --git a/drivers/soc/ti/knav_dma.c b/drivers/soc/ti/knav_dma.c
-index 8c863ecb1c60..9d25546e4d96 100644
---- a/drivers/soc/ti/knav_dma.c
-+++ b/drivers/soc/ti/knav_dma.c
-@@ -757,6 +757,7 @@ static int knav_dma_probe(struct platform_device *pdev)
- 	for_each_child_of_node(node, child) {
- 		ret = dma_init(node, child);
- 		if (ret) {
-+			of_node_put(child);
- 			dev_err(&pdev->dev, "init failed with %d\n", ret);
- 			break;
- 		}
-diff --git a/drivers/soc/ti/knav_qmss_queue.c b/drivers/soc/ti/knav_qmss_queue.c
-index a460f201bf8e..f9fc639abad2 100644
---- a/drivers/soc/ti/knav_qmss_queue.c
-+++ b/drivers/soc/ti/knav_qmss_queue.c
-@@ -1086,6 +1086,7 @@ static int knav_queue_setup_regions(struct knav_device *kdev,
- 	for_each_child_of_node(regions, child) {
- 		region = devm_kzalloc(dev, sizeof(*region), GFP_KERNEL);
- 		if (!region) {
-+			of_node_put(child);
- 			dev_err(dev, "out of memory allocating region\n");
- 			return -ENOMEM;
- 		}
-@@ -1399,6 +1400,7 @@ static int knav_queue_init_qmgrs(struct knav_device *kdev,
- 	for_each_child_of_node(qmgrs, child) {
- 		qmgr = devm_kzalloc(dev, sizeof(*qmgr), GFP_KERNEL);
- 		if (!qmgr) {
-+			of_node_put(child);
- 			dev_err(dev, "out of memory allocating qmgr\n");
- 			return -ENOMEM;
- 		}
-@@ -1498,6 +1500,7 @@ static int knav_queue_init_pdsps(struct knav_device *kdev,
- 	for_each_child_of_node(pdsps, child) {
- 		pdsp = devm_kzalloc(dev, sizeof(*pdsp), GFP_KERNEL);
- 		if (!pdsp) {
-+			of_node_put(child);
- 			dev_err(dev, "out of memory allocating pdsp\n");
- 			return -ENOMEM;
- 		}
--- 
-2.17.1
+Thanks,
 
+>         /* optional property, ignore the error if it does not exist */
+>         of_property_read_u32(node, "mediatek,u3p-dis-msk",
+>                              &mtk->u3p_dis_msk);
+> @@ -546,7 +551,7 @@ static int xhci_mtk_probe(struct platform_device *pdev)
+>         if (ret)
+>                 goto put_usb3_hcd;
+>
+> -       if (HCC_MAX_PSA(xhci->hcc_params) >= 4)
+> +       if (!mtk->broken_streams && HCC_MAX_PSA(xhci->hcc_params) >= 4)
+>                 xhci->shared_hcd->can_do_streams = 1;
+>
+>         ret = usb_add_hcd(xhci->shared_hcd, irq, IRQF_SHARED);
+> diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
+> index a93cfe817904..86aa4978915e 100644
+> --- a/drivers/usb/host/xhci-mtk.h
+> +++ b/drivers/usb/host/xhci-mtk.h
+> @@ -147,6 +147,7 @@ struct xhci_hcd_mtk {
+>         struct phy **phys;
+>         int num_phys;
+>         bool lpm_support;
+> +       bool broken_streams;
+>         /* usb remote wakeup */
+>         bool uwk_en;
+>         struct regmap *uwk;
+> --
+> 2.18.0
