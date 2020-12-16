@@ -2,67 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6142DC95E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 00:03:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D302C2DC962
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Dec 2020 00:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727452AbgLPXC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 18:02:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726736AbgLPXC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 18:02:56 -0500
-Date:   Wed, 16 Dec 2020 15:02:15 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608159736;
-        bh=xWaUaF6H2sV0oa1UYcGurY64BS3za79d+HSSCPPGOaM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Gi8igrCmv6kM/tZ5R8EKsDU8OEmyom536ACqObYJkdrySfCA/Xm/6I8ATuvbWG6be
-         cXHeZqhCWOV4CMeUMUQac5kcwTVxeO+xAgB7l6H/Dx5yg17tFBVKsqiEhtMuKcBYAQ
-         oZgdYeR09q+V4/V4yWXb0TYXsveHTLpwt6KD4cyQaAoM10LKaOwQg8nT6N60hl/6UJ
-         iu3/Jzw05v2st3m7ln5RUQ3zT0YEl0qqRW90DfmwSdfkgkuDIQmyJN8irsoY8eIHh6
-         gyNd9hv5SpRQaUT3sG6BY3KOkdDpOWZ+mG3+3Z2MeudQZXEDlHrcMofkYXz5k+7zZc
-         rt8tS6Et4RwRw==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Vincent =?UTF-8?B?U3RlaGzDqQ==?= <vincent.stehle@laposte.net>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v2] net: korina: fix return value
-Message-ID: <20201216150215.6b7f724d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <7e175246-5357-ccf6-6c7e-5f68089f30bf@gmail.com>
-References: <20201214130832.7bedb230@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201214220952.19935-1-vincent.stehle@laposte.net>
-        <20201216124343.2848f0d1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <7e175246-5357-ccf6-6c7e-5f68089f30bf@gmail.com>
+        id S1727475AbgLPXGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 18:06:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27286 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726736AbgLPXGT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 18:06:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608159892;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M8zxnr7i+jdGAjTWJZWwGdbyVDDkRpBRiYVJz3+O7Nw=;
+        b=YY93ikVvF8qJpHzuq9fLWiuvgkl7b6/OTpM5W7jMG56WGZa8Ha9tyee3D/ehikJZC5ArB9
+        1HavXcUz+MlyQ+VV0N03vJQxkmuhPnGmcQ1acd32uycYT7gjsmMiTbvyCIRwcnaU47Hmyw
+        wbNBOIdambi0HurCxU77kqBg2Pq6spM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-60-oiWHXeL9Mmeeo5neLVXCUw-1; Wed, 16 Dec 2020 18:04:47 -0500
+X-MC-Unique: oiWHXeL9Mmeeo5neLVXCUw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F08D6800D53;
+        Wed, 16 Dec 2020 23:04:45 +0000 (UTC)
+Received: from [10.10.115.31] (ovpn-115-31.rdu2.redhat.com [10.10.115.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D5E7E1971D;
+        Wed, 16 Dec 2020 23:04:44 +0000 (UTC)
+Subject: Re: [PATCH] kbuild: add extra-y to targets-for-modules
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Artem Savkov <artem.savkov@gmail.com>
+Cc:     WANG Chao <chao.wang@ucloud.cn>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+References: <20201103054425.59251-1-chao.wang@ucloud.cn>
+ <CAK7LNARnmJRy1NPBDkgNsoe_TqpD=HJhmri4YHjXjscGZ-neWw@mail.gmail.com>
+ <20201123150452.GA68187@MacBook-Pro-2>
+ <CAK7LNASH7Pj9eUdxF-sp1_Ap+uA9jEtsXa--pUDDw_pNVLtviA@mail.gmail.com>
+ <20201208092035.GA96434@MacBook-Pro-2.local>
+ <20201208143117.GA3333762@wtfbox.lan>
+ <CAK7LNAS=wdCObfX3x8CQmXf8HsrKAjz+v+XVUCxVg63pxy8MXg@mail.gmail.com>
+From:   Joe Lawrence <joe.lawrence@redhat.com>
+Message-ID: <f2d1888b-5b8e-a513-61c7-f41fc3f3f7a3@redhat.com>
+Date:   Wed, 16 Dec 2020 18:04:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAK7LNAS=wdCObfX3x8CQmXf8HsrKAjz+v+XVUCxVg63pxy8MXg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020 13:32:26 -0800 Florian Fainelli wrote:
-> On 12/16/20 12:43 PM, Jakub Kicinski wrote:
-> > On Mon, 14 Dec 2020 23:09:52 +0100 Vincent Stehl=C3=A9 wrote: =20
-> >> The ndo_start_xmit() method must not attempt to free the skb to transm=
-it
-> >> when returning NETDEV_TX_BUSY. Therefore, make sure the
-> >> korina_send_packet() function returns NETDEV_TX_OK when it frees a pac=
-ket.
-> >>
-> >> Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MA=
-C")
-> >> Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> >> Signed-off-by: Vincent Stehl=C3=A9 <vincent.stehle@laposte.net>
-> >> Cc: David S. Miller <davem@davemloft.net>
-> >> Cc: Florian Fainelli <florian.fainelli@telecomint.eu> =20
-> >=20
-> > Let me CC Florian's more recent email just in case he wants to review. =
-=20
->=20
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+On 12/16/20 1:14 AM, Masahiro Yamada wrote:
+> On Tue, Dec 8, 2020 at 11:31 PM Artem Savkov <artem.savkov@gmail.com> wrote:
+>>
+>> On Tue, Dec 08, 2020 at 05:20:35PM +0800, WANG Chao wrote:
+>>> Sorry for the late reply.
+>>>
+>>> On 11/25/20 at 10:42P, Masahiro Yamada wrote:
+>>>> On Tue, Nov 24, 2020 at 12:05 AM WANG Chao <chao.wang@ucloud.cn> wrote:
+>>>>>
+>>>>> On 11/23/20 at 02:23P, Masahiro Yamada wrote:
+>>>>>> On Tue, Nov 3, 2020 at 3:23 PM WANG Chao <chao.wang@ucloud.cn> wrote:
+>>>>>>>
+>>>>>>> extra-y target doesn't build for 'make M=...' since commit 6212804f2d78
+>>>>>>> ("kbuild: do not create built-in objects for external module builds").
+>>>>>>>
+>>>>>>> This especially breaks kpatch, which is using 'extra-y := kpatch.lds'
+>>>>>>> and 'make M=...' to build livepatch patch module.
+>>>>>>>
+>>>>>>> Add extra-y to targets-for-modules so that such kind of build works
+>>>>>>> properly.
+>>>>>>>
+>>>>>>> Signed-off-by: WANG Chao <chao.wang@ucloud.cn>
+>>>>>>> ---
+>>>>>>>   scripts/Makefile.build | 2 +-
+>>>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>
+>>>>>>> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+>>>>>>> index ae647379b579..0113a042d643 100644
+>>>>>>> --- a/scripts/Makefile.build
+>>>>>>> +++ b/scripts/Makefile.build
+>>>>>>> @@ -86,7 +86,7 @@ ifdef need-builtin
+>>>>>>>   targets-for-builtin += $(obj)/built-in.a
+>>>>>>>   endif
+>>>>>>>
+>>>>>>> -targets-for-modules := $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
+>>>>>>> +targets-for-modules := $(extra-y) $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
+>>>>>>>
+>>>>>>>   ifdef need-modorder
+>>>>>>>   targets-for-modules += $(obj)/modules.order
+>>>>>>> --
+>>>>>>> 2.29.1
+>>>>>>>
+>>>>>>
+>>>>>> NACK.
+>>>>>>
+>>>>>> Please fix your Makefile.
+>>>>>>
+>>>>>> Hint:
+>>>>>> https://patchwork.kernel.org/project/linux-kbuild/patch/20201123045403.63402-6-masahiroy@kernel.org/
+>>>>>>
+>>>>>>
+>>>>>> Probably what you should use is 'targets'.
+>>>>>
+>>>>> I tried with 'targets' and 'always-y'. Both doesn't work for me.
+>>>>>
+>>>>> I narraw it down to the following example:
+>>>>>
+>>>>> cat > Makefile << _EOF_
+>>>>> obj-m += foo.o
+>>>>>
+>>>>> ldflags-y += -T $(src)/kpatch.lds
+>>>>> always-y += kpatch.lds
+>>>>>
+>>>>> foo-objs += bar.o
+>>>>>
+>>>>> all:
+>>>>>          make -C /lib/modules/$(shell uname -r)/build M=$(PWD)
+>>>>> clean:
+>>>>>          make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+>>>>> _EOF_
+>>>>>
+>>>>> Take a look into scripts/Makefile.build:488:
+>>>>>
+>>>>> __build: $(if $(KBUILD_BUILTIN), $(targets-for-builtin)) \
+>>>>>           $(if $(KBUILD_MODULES), $(targets-for-modules)) \
+>>>>>           $(subdir-ym) $(always-y)
+>>>>>          @:
+>>>>>
+>>>>> 'always-y' is built after 'targets-for-modules'. This makes
+>>>>> 'targets-for-modules' fails because kpatch.lds isn't there.
+>>>>
+>>>>
+>>>> Heh, you rely on the targets built from left to right,
+>>>> and you have never thought Make supports the parallel option -j.
+>>>
+>>> You're right. I missed that.
+>>>
+>>>>
+>>>>
+>>>> You need to specify the dependency if you expect objects
+>>>> are built in the particular order.
+>>>>
+>>>> However, in this case, using ldflags-y looks wrong
+>>>> in the first place.
+>>>>
+>>>> The linker script is used when combining the object
+>>>> as well as the final link of *.ko
+>>
+>> We want linker script to be used on both those steps, otherwise modpost
+>> fails.
+> 
+> 
+> In that case, does the following work?
+> (untested)
+> 
+> 
+> 
+> diff --git a/kmod/patch/Makefile b/kmod/patch/Makefile
+> index e017b17..02d4c66 100644
+> --- a/kmod/patch/Makefile
+> +++ b/kmod/patch/Makefile
+> @@ -12,7 +12,9 @@ endif
+> 
+>   obj-m += $(KPATCH_NAME).o
+>   ldflags-y += -T $(src)/kpatch.lds
+> -extra-y := kpatch.lds
+> +targets += kpatch.lds
+> +
+> +$(obj)/$(KPATCH_NAME).o: $(obj)/kpatch.lds
+> 
+>   $(KPATCH_NAME)-objs += patch-hook.o output.o
+> 
 
-=F0=9F=98=AC
+Hi Masahiro,
 
-Applied, thanks!
+Yeah this is more or less what Artem came up with:
+https://github.com/dynup/kpatch/pull/1149
+
+though we hadn't added kpatch.lds to targets.  Is there documentation 
+somewhere on what effect "targets" has for out-of-tree builds?
+
+Thanks,
+
+-- Joe
+
