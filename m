@@ -2,160 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCA22DC876
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 22:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CB82DC87C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 22:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgLPVmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 16:42:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50856 "EHLO
+        id S1726866AbgLPVrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 16:47:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726692AbgLPVmi (ORCPT
+        with ESMTP id S1726806AbgLPVrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 16:42:38 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA8BC061282;
-        Wed, 16 Dec 2020 13:41:37 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id x18so7597959pln.6;
-        Wed, 16 Dec 2020 13:41:37 -0800 (PST)
+        Wed, 16 Dec 2020 16:47:23 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67083C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 13:46:43 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id e2so18566047pgi.5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 13:46:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=gebM/NY4tNWgCbFYoE1q1n2pn/ZSQVXoyJa8i4huQEA=;
-        b=ZpFwhAYJnQOhYj1DBW6mjhUKcZBOXlH2zUWH77qTM+k+RpdLu/8zybD83BcsmaLI6r
-         vmxaUel8bKoTlV8FmShRwhdvODKqLA/zW8465LYQf2AoZ8KYOX3j0LIMTWnZbpZv2QPV
-         uQ0MkxZKWiJVwcmzXEu13yC+2tLKXj30Mb3JZZr1bgmoBANgsrm3jT4f3DDfOscUWd83
-         mBMbINTdhwgjEajSUDMKzzJj4m7B0kijTe0cvwCTQu64tVQLWkYpFrsrz3KaC6AXajKn
-         B8+MI3qGApDzo0ATU31U66fQO6u8ddKP0T8h6jrbW1tyWCpXLqiyu+1I/buplOmaG8wm
-         abBQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=poAfl3bDtaKUASJKI462JFGUU+Oc+LFF2NNC85CJWOs=;
+        b=cUrJuCCxp683ndejeLrG8EY4QEXqHn1D7H2UlO8fDFZ9zX1V+2NP+bpkE3eMHPK9Ua
+         vsdNg8TcwoY9Xg2PAt/Agf1nBtcE79ImF54f7AZYGxhqTNiBRQagFkSe9xxNT9insXjW
+         c0+neWxgAIJKsLdLzTgzQq2VZVa+YsNZRts4g3GW0Y7vPDalLqMTZwtfi7DHb3LUpEyd
+         FTLzZ2w4cm+9TrIXQD49Ipw7IgUgEk3QTM7+E2D4OWV42MKOo5qJn/Oq6QIj4ZHeTy7l
+         yYiHjS9synQe+vou1FAfz9iZtQYGaWS92JQvilf2i2NhqitKlvaT906gEE9TmOWn4cOF
+         HAYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=gebM/NY4tNWgCbFYoE1q1n2pn/ZSQVXoyJa8i4huQEA=;
-        b=sGu9rnNWr2h+a64MT66dxEHh9EiH/VreojnfoD/FSXw19EkUJ/8hTcXiadbv0w7hK9
-         eHJDMjxOr96IQeB2jNdFW6rTEnH2c+kccOYZin1fmZ/pqHUuHU9l+R+3dJaa/JRWzfJm
-         X/j5nl9kqS4BJZQ6JHRWDmOc2TY/qKHW3w43yM2beurtcn5FgC135HZoozY4UH5+lXFM
-         4IthIA5MVep3SJeNFwNMxncApT8fn439j5/hNBvcMHsKt8lpD7ECupenCgFZIm39YuQl
-         7yqBP47BQoHq1ltiBbjjFax2AxNBphLj8PJmyWOg1dW8ernjW3TE2V9INsS/MCJTURp+
-         sDTQ==
-X-Gm-Message-State: AOAM532K+yUFdkoDn5KFoiGkrdK8eJclhGF4KpgpCERkKHTmOGSdnYzt
-        ePiIL4yfLadWuOI+Sp7T6hM=
-X-Google-Smtp-Source: ABdhPJxU2B8fjTcmWTWUY6yEypICiX3JcviG8S60c0wlkzRuYMoWGQgdMUmJF+vNJF/AzJBFf+VNxw==
-X-Received: by 2002:a17:902:7c92:b029:dc:1425:e5af with SMTP id y18-20020a1709027c92b02900dc1425e5afmr5621721pll.3.1608154897573;
-        Wed, 16 Dec 2020 13:41:37 -0800 (PST)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id h12sm3612237pgf.49.2020.12.16.13.41.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 13:41:37 -0800 (PST)
-From:   Jim Quinlan <jim2101024@gmail.com>
-X-Google-Original-From: Jim Quinlan <james.quinlan@broadcom.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-pci@vger.kernel.org (open list:PCI NATIVE HOST BRIDGE AND
-        ENDPOINT DRIVERS), linux-kernel@vger.kernel.org (open list)
-Subject: [RESEND PATCH v3 2/2] PCI: brcmstb: use reset/rearm instead of deassert/assert
-Date:   Wed, 16 Dec 2020 16:41:05 -0500
-Message-Id: <20201216214106.32851-3-james.quinlan@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201216214106.32851-1-james.quinlan@broadcom.com>
-References: <20201216214106.32851-1-james.quinlan@broadcom.com>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=poAfl3bDtaKUASJKI462JFGUU+Oc+LFF2NNC85CJWOs=;
+        b=IbWbd1G0a17yEWP5Yei1ckhzKOkYP21y3ZForBrKG9wYZ84a3e9PDcFwLLvAKX6zAo
+         AxBxh7bRWmhBPXgU9hdYX7I6JLiuNMJ8UbWZ922NVdedrwJY1VtqIoZj05+ovz5BSifB
+         Fq/zl/AVxyujQuYaQi+hdQtbT9wgQ7Tj6EVnnBV0vgJQhF+h5UuuHx5CKSJiF5h3bGQB
+         dyBqI24QGDawN/dx7BLHSvAT3py6LbRF+K2MR8TPIk/cRTbkXTK7BEMZFmzROdIaFn0j
+         85wu/G5V4AVcx4fr1zJGVOzn2sTreEeE8DsMS5KjrM74GX0CxPh6h977MX3JmO9X8ikP
+         Dx7A==
+X-Gm-Message-State: AOAM531RO1MsxDZu/SK4NM3lUXQBK1K2Izd1MGX77X0Le+p4nc9G25u9
+        wwfCjMEinIUVGIyj8b9n0dZqFA==
+X-Google-Smtp-Source: ABdhPJyk+DxUhJXC3y13LsRvsNxQHhpA2c6l0EwRpLeGeBGLCQIUF91JfFWlkZVg68d0q7IlikPW7A==
+X-Received: by 2002:a62:1e81:0:b029:19e:2121:2df1 with SMTP id e123-20020a621e810000b029019e21212df1mr34214209pfe.1.1608155202845;
+        Wed, 16 Dec 2020 13:46:42 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id f24sm2969668pjj.5.2020.12.16.13.46.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Dec 2020 13:46:42 -0800 (PST)
+Subject: Re: WARNING in percpu_ref_kill_and_confirm (2)
+To:     syzbot <syzbot+c9937dfb2303a5f18640@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, rostedt@goodmis.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        will@kernel.org, Tejun Heo <tj@kernel.org>
+References: <0000000000004d454d05b69b5bd3@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <8694934b-7ac6-a29f-0126-4a311bea4c35@kernel.dk>
+Date:   Wed, 16 Dec 2020 14:46:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <0000000000004d454d05b69b5bd3@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Brcmstb PCIe RC uses a reset control "rescal" for certain chips.  This
-reset implements a "pulse reset" so it matches more the reset/rearm
-calls instead of the deassert/assert calls.
+On 12/16/20 2:14 PM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    7b1b868e Merge tag 'for-linus' of git://git.kernel.org/pub..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1156046b500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3416bb960d5c705d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c9937dfb2303a5f18640
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1407c287500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10ed5f07500000
+> 
+> The issue was bisected to:
+> 
+> commit 4d004099a668c41522242aa146a38cc4eb59cb1e
+> Author: Peter Zijlstra <peterz@infradead.org>
+> Date:   Fri Oct 2 09:04:21 2020 +0000
+> 
+>     lockdep: Fix lockdep recursion
 
-Also, add reset_control calls in suspend/resume functions.
+Ehhh no... This is timing dependent, so probably why it ends up pinpointing
+something totally unrelated.
 
-Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
----
- drivers/pci/controller/pcie-brcmstb.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14e9d433500000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=16e9d433500000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12e9d433500000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c9937dfb2303a5f18640@syzkaller.appspotmail.com
+> Fixes: 4d004099a668 ("lockdep: Fix lockdep recursion")
+> 
+> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000441309
+> RDX: 0000000000000002 RSI: 00000000200000c0 RDI: 0000000000003ad1
+> RBP: 000000000000f2ae R08: 0000000000000002 R09: 00000000004002c8
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004021d0
+> R13: 0000000000402260 R14: 0000000000000000 R15: 0000000000000000
+> ------------[ cut here ]------------
+> percpu_ref_kill_and_confirm called more than once on io_ring_ctx_ref_free!
+> WARNING: CPU: 0 PID: 8476 at lib/percpu-refcount.c:382 percpu_ref_kill_and_confirm+0x126/0x180 lib/percpu-refcount.c:382
+> Modules linked in:
+> CPU: 0 PID: 8476 Comm: syz-executor389 Not tainted 5.10.0-rc7-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:percpu_ref_kill_and_confirm+0x126/0x180 lib/percpu-refcount.c:382
+> Code: 5d 08 48 8d 7b 08 48 89 fa 48 c1 ea 03 80 3c 02 00 75 5d 48 8b 53 08 48 c7 c6 00 4b 9d 89 48 c7 c7 60 4a 9d 89 e8 c6 97 f6 04 <0f> 0b 48 b8 00 00 00 00 00 fc ff df 48 89 ea 48 c1 ea 03 80 3c 02
+> RSP: 0018:ffffc9000b94fe10 EFLAGS: 00010086
+> RAX: 0000000000000000 RBX: ffff888011da4580 RCX: 0000000000000000
+> RDX: ffff88801fe84ec0 RSI: ffffffff8158c835 RDI: fffff52001729fb4
+> RBP: ffff88801539f000 R08: 0000000000000001 R09: ffff8880b9e2011b
+> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000293
+> R13: 0000000000000000 R14: 0000000000000000 R15: ffff88802de28758
+> FS:  00000000014ab880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f2a7046b000 CR3: 0000000023368000 CR4: 0000000000350ef0
+> Call Trace:
+>  percpu_ref_kill include/linux/percpu-refcount.h:149 [inline]
+>  io_ring_ctx_wait_and_kill+0x2b/0x450 fs/io_uring.c:8382
+>  io_uring_release+0x3e/0x50 fs/io_uring.c:8420
+>  __fput+0x285/0x920 fs/file_table.c:281
+>  task_work_run+0xdd/0x190 kernel/task_work.c:151
+>  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+>  exit_to_user_mode_prepare+0x17e/0x1a0 kernel/entry/common.c:191
+>  syscall_exit_to_user_mode+0x38/0x260 kernel/entry/common.c:266
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x441309
+> Code: e8 5c ae 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 3b 0a fc ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007ffed6545d38 EFLAGS: 00000246 ORIG_RAX: 00000000000001a9
+> RAX: fffffffffffffff4 RBX: 0000000000000000 RCX: 0000000000441309
+> RDX: 0000000000000002 RSI: 00000000200000c0 RDI: 0000000000003ad1
+> RBP: 000000000000f2ae R08: 0000000000000002 R09: 00000000004002c8
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004021d0
+> R13: 0000000000402260 R14: 0000000000000000 R15: 0000000000000000
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index d41257f43a8f..9f190db4cfcf 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -1127,6 +1127,7 @@ static int brcm_pcie_suspend(struct device *dev)
- 
- 	brcm_pcie_turn_off(pcie);
- 	ret = brcm_phy_stop(pcie);
-+	reset_control_rearm(pcie->rescal);
- 	clk_disable_unprepare(pcie->clk);
- 
- 	return ret;
-@@ -1142,9 +1143,13 @@ static int brcm_pcie_resume(struct device *dev)
- 	base = pcie->base;
- 	clk_prepare_enable(pcie->clk);
- 
-+	ret = reset_control_reset(pcie->rescal);
-+	if (ret)
-+		goto err0;
-+
- 	ret = brcm_phy_start(pcie);
- 	if (ret)
--		goto err;
-+		goto err1;
- 
- 	/* Take bridge out of reset so we can access the SERDES reg */
- 	pcie->bridge_sw_init_set(pcie, 0);
-@@ -1159,14 +1164,16 @@ static int brcm_pcie_resume(struct device *dev)
- 
- 	ret = brcm_pcie_setup(pcie);
- 	if (ret)
--		goto err;
-+		goto err1;
- 
- 	if (pcie->msi)
- 		brcm_msi_set_regs(pcie->msi);
- 
- 	return 0;
- 
--err:
-+err1:
-+	reset_control_rearm(pcie->rescal);
-+err0:
- 	clk_disable_unprepare(pcie->clk);
- 	return ret;
- }
-@@ -1176,7 +1183,7 @@ static void __brcm_pcie_remove(struct brcm_pcie *pcie)
- 	brcm_msi_remove(pcie);
- 	brcm_pcie_turn_off(pcie);
- 	brcm_phy_stop(pcie);
--	reset_control_assert(pcie->rescal);
-+	reset_control_rearm(pcie->rescal);
- 	clk_disable_unprepare(pcie->clk);
- }
- 
-@@ -1251,13 +1258,13 @@ static int brcm_pcie_probe(struct platform_device *pdev)
- 		return PTR_ERR(pcie->rescal);
- 	}
- 
--	ret = reset_control_deassert(pcie->rescal);
-+	ret = reset_control_reset(pcie->rescal);
- 	if (ret)
- 		dev_err(&pdev->dev, "failed to deassert 'rescal'\n");
- 
- 	ret = brcm_phy_start(pcie);
- 	if (ret) {
--		reset_control_assert(pcie->rescal);
-+		reset_control_rearm(pcie->rescal);
- 		clk_disable_unprepare(pcie->clk);
- 		return ret;
- 	}
+What I think happens here is that we switch mode, but exit before it's
+done. Wonder if there's a wait to wait for that on exit. Tejun?
+
 -- 
-2.17.1
+Jens Axboe
 
