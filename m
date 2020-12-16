@@ -2,68 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACADA2DBDDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:47:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B05122DBE10
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 10:57:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726104AbgLPJow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 04:44:52 -0500
-Received: from smtp.asem.it ([151.1.184.197]:61271 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725889AbgLPJow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 04:44:52 -0500
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000672439.MSG 
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 10:44:09 +0100S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 16
- Dec 2020 10:44:08 +0100
-Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
- mapi id 15.01.1979.003; Wed, 16 Dec 2020 10:44:08 +0100
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     "Ji-Ze Hong (Peter Hong)" <hpeter@gmail.com>
-CC:     Jiri Slaby <jirislaby@kernel.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: R: R: R: R: [PATCH v1] serial: 8250_fintek: Print Fintek chip name
-Thread-Topic: R: R: R: [PATCH v1] serial: 8250_fintek: Print Fintek chip name
-Thread-Index: AQHW0hsm4LBjpzgBaEuoNhCE3PXG1an2iQoAgAGZwAD///h9AIAAFBzA///7boCAABURgIAAlu+AgACkoLA=
-Date:   Wed, 16 Dec 2020 09:44:08 +0000
-Message-ID: <44e270c8097c4351a92885fc21793f8d@asem.it>
-References: <20201214131445.954822-1-f.suligoi@asem.it>
- <X9dr2IvOgPyhsalE@kroah.com> <ff8f6af85d27448d93d1220545f163be@asem.it>
- <X9i9RKAbpoR0F7Y+@kroah.com> <178bf34c76184d39b6b17d5e54133821@asem.it>
- <X9jKTZoX9Se+Ghn/@kroah.com> <08c7185573314b5ba622e5a872defd33@asem.it>
- <47f3c665-df17-27ca-7835-5917f70a9665@gmail.com>
-In-Reply-To: <47f3c665-df17-27ca-7835-5917f70a9665@gmail.com>
-Accept-Language: it-IT, en-US
-Content-Language: it-IT
+        id S1726046AbgLPJzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 04:55:49 -0500
+Received: from mail4.tencent.com ([183.57.53.109]:47686 "EHLO
+        mail4.tencent.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726033AbgLPJzs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 04:55:48 -0500
+X-Greylist: delayed 629 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Dec 2020 04:55:46 EST
+Received: from EX-SZ019.tencent.com (unknown [10.28.6.74])
+        by mail4.tencent.com (Postfix) with ESMTP id 0C03A72324;
+        Wed, 16 Dec 2020 17:44:33 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tencent.com;
+        s=s202002; t=1608111873;
+        bh=8VCOFwKk8MVuvCcgjXFt5QOF+JdjMyNF+wFpMk5zMX4=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=i7X+Mm40ZyEqupl4VvfpHjtyYwGARQ2xwVQdFTJrJvZtLl8pq9xPAidl2EMl3DZ4N
+         OuXDa8aK6Cz7rGCgGtLU2qvQUzw9TFyTVB/mR2F2r74RrbAeOgnim7gk20+Jf8U+Tv
+         3M1KSOoofPn9HyCH6AoJ1JHGtOqBMpfKYivN2kx8=
+Received: from EX-SZ003.tencent.com (10.28.6.15) by EX-SZ019.tencent.com
+ (10.28.6.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 16 Dec
+ 2020 17:44:32 +0800
+Received: from EX-SZ004.tencent.com (10.28.6.25) by EX-SZ003.tencent.com
+ (10.28.6.15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 16 Dec
+ 2020 17:44:32 +0800
+Received: from EX-SZ004.tencent.com ([fe80::31b3:8aa5:7748:d7c2]) by
+ EX-SZ004.tencent.com ([fe80::31b3:8aa5:7748:d7c2%8]) with mapi id
+ 15.01.2106.002; Wed, 16 Dec 2020 17:44:32 +0800
+From:   =?gb2312?B?eGlhb2dnY2hlbiizwtChueIp?= <xiaoggchen@tencent.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "chenxg1x@gmail.com" <chenxg1x@gmail.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        =?gb2312?B?aGVkZGNoZW4os8K62Ck=?= <heddchen@tencent.com>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIXSBzY2hlZDogZG9uJ3QgY2hlY2sgcnEgYWZ0ZXIgbmV3?=
+ =?gb2312?Q?idle=5Fbalance_return_positive(Internet_mail)?=
+Thread-Topic: [PATCH] sched: don't check rq after newidle_balance return
+ positive(Internet mail)
+Thread-Index: AQHW0q5qXyxy1Zj2BUevAJM9uKMZMan3TjcAgAIqT0A=
+Date:   Wed, 16 Dec 2020 09:44:32 +0000
+Message-ID: <879d8f70061645ffbba73ef6741efc15@tencent.com>
+References: <1608014930-5144-1-git-send-email-xiaoggchen@tencent.com>
+ <20201215083238.GB3040@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201215083238.GB3040@hirez.programming.kicks-ass.net>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.17.208]
-Content-Type: text/plain; charset="utf-8"
+x-originating-ip: [10.99.16.9]
+Content-Type: text/plain; charset="gb2312"
 Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A782F26.5FD9D6E8.0104,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUGV0ZXIsDQoNCj4gPj4+DQo+ID4+PiBkbWVzZ3wgZ3JlcCB0dHlTDQo+ID4+DQo+ID4+IEJ1
-dCBhcyB0aGV5IHdvcmsgdGhlIHNhbWUsIHdoeSBkb2VzIGl0IG1hdHRlcj8NCj4gPg0KPiA+IFll
-cyB5b3UgYXJlIHJpZ2h0LCBieSB0aGUgdXNlciBwb2ludCBvZiB2aWV3LCB0aGV5IGFyZSB0aGUg
-c2FtZS4NCj4gPg0KPiA+Pg0KPiA+PiBVc2Vyc3BhY2Ugc2hvdWxkIG5vdCBjYXJlIGhlcmUuICBJ
-c24ndCB0aGVyZSBzb21lIG90aGVyIGlkIHlvdSBjYW4NCj4gPj4gcmVhZC9xdWVyeSBmb3IgYSBo
-YXJkd2FyZSBkYXRhYmFzZSB0b29sIHRvIGRldGVybWluZSB0aGlzPw0KPiANCj4gDQo+IEFzIEdy
-ZWcgbWVudGlvbnMsIFRoZSB1c2Vyc3BhY2UgZG9uJ3QgY2FyZSB3aGF0IElDIHRoZXkgYXJlIHVz
-aW5nLg0KPiBXZSBjYW4gdXNlIExpbnV4IFJTNDg1IEFQSSB0byBjb250cm9sIG9yIGNoZWNrIHRo
-ZSBzZXJpYWwgcG9ydC4NCj4gDQo+IGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcvZG9jL2h0bWwvbGF0
-ZXN0L2RyaXZlci1hcGkvc2VyaWFsL3NlcmlhbC1yczQ4NS5odG1sDQoNClllcywgcmlnaHQhIA0K
-VGhhbmtzIGZvciB5b3VyIGluZm8hDQoNCj4gDQo+IC0tDQo+IFdpdGggQmVzdCBSZWdhcmRzLA0K
-PiBQZXRlciBIb25nDQoNCkJlc3QgcmVnYXJkcywNCkZsYXZpbw0K
+DQoNCi0tLS0t08q8/tStvP4tLS0tLQ0Kt6K8/sjLOiBQZXRlciBaaWpsc3RyYSA8cGV0ZXJ6QGlu
+ZnJhZGVhZC5vcmc+IA0Kt6LLzcqxvOQ6IDIwMjDE6jEy1MIxNcjVIDE2OjMzDQrK1bz+yMs6IGNo
+ZW54ZzF4QGdtYWlsLmNvbQ0Ks63LzTogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbWlu
+Z29AcmVkaGF0LmNvbTsganVyaS5sZWxsaUByZWRoYXQuY29tOyB2aW5jZW50Lmd1aXR0b3RAbGlu
+YXJvLm9yZzsgZGlldG1hci5lZ2dlbWFubkBhcm0uY29tOyByb3N0ZWR0QGdvb2RtaXMub3JnOyBi
+c2VnYWxsQGdvb2dsZS5jb207IG1nb3JtYW5Ac3VzZS5kZTsgYnJpc3RvdEByZWRoYXQuY29tOyBo
+ZWRkY2hlbiizwrrYKSA8aGVkZGNoZW5AdGVuY2VudC5jb20+OyB4aWFvZ2djaGVuKLPC0KG54ikg
+PHhpYW9nZ2NoZW5AdGVuY2VudC5jb20+DQrW98ziOiBSZTogW1BBVENIXSBzY2hlZDogZG9uJ3Qg
+Y2hlY2sgcnEgYWZ0ZXIgbmV3aWRsZV9iYWxhbmNlIHJldHVybiBwb3NpdGl2ZShJbnRlcm5ldCBt
+YWlsKQ0KDQpPbiBUdWUsIERlYyAxNSwgMjAyMCBhdCAwMjo0ODo1MFBNICswODAwLCBjaGVueGcx
+eEBnbWFpbC5jb20gd3JvdGU6DQo+PiBGcm9tOiBDaGVuIFhpYW9ndWFuZyA8eGlhb2dnY2hlbkB0
+ZW5jZW50LmNvbT4NCj4+IA0KPj4gSW4gcGlja19uZXh0X3Rhc2tfZmFpciwgaWYgQ1BVIGlzIGdv
+aW5nIHRvIGlkbGUgbmV3aWRsZV9iYWxhbmNlIGlzIA0KPj4gY2FsbGVkIGZpcnN0IHRyeWluZyB0
+byBwdWxsIHNvbWUgdGFza3MuDQo+PiBXaGVuIG5ld2lkbGVfYmFsYW5jZSByZXR1cm5zIHBvc2l0
+aXZlIHdoaWNoIG1lYW5zIGl0IGRvZXMgcHVsbHMgdGFza3MgDQo+PiBvciBzb21lIHRhc2tzIGVu
+cXVldWVkIHRoZW4gdGhlcmUgaXMgbm8gbmVlZCB0byBjaGVjayANCj4+IHNjaGVkX2ZhaXJfcnVu
+bmFibGUgYWdhaW4uDQoNCj4gTm8sIEkgdGhpbmsgaXQgYWN0dWFsbHkgZG9lcyBuZWVkIHRvLCBi
+ZWNhdXNlIHdoaWxlIGl0IGNvdW50cyB0aGUgbnVtYmVyIG9mIHRhc2tzIGl0IHB1bGxlZCwgaXQg
+ZG9lc24ndCB2ZXJpZnkgaXQgc3RpbGwgaGFzIHRoZW0gYWZ0ZXIgaXQgcmUtYWNxdWlyZXMgcnEt
+PmxvY2suIFRoYXQgaXMsIHNvbWVvbmUgY291bGQndmUgY29tZSBhbG9uZyBhbmQgc3RvbGVuIHRo
+ZW0gDQo+IHJpZ2h0IGZyb20gdW5kZXIgb3VyIG5vc2VzLg0KQWgsIHllcywgb3VyIGNoYW5nZSBv
+bmx5IG1ha2Ugc2Vuc2Ugd2hlbiBwdWxsaW5nIG5vdGhpbmcgaW4gbG9hZF9iYWxhbmNlIGJ1dCBz
+b21lIHRhc2tzIGVucXVldWVkIHRoaXMgcnEgZHVyaW5nIHRoZSBsb2NrIG9mIHRoaXMgcnEgaXMg
+cmVsZWFzZWQuDQogDQpUaGFua3MuDQoNCj4+IA0KPj4gU2lnbmVkLW9mZi1ieTogSGUgQ2hlbiA8
+aGVkZGNoZW5AdGVuY2VudC5jb20+DQo+PiBTaWduZWQtb2ZmLWJ5OiBYaWFvZ3VhbmcgQ2hlbiA8
+eGlhb2dnY2hlbkB0ZW5jZW50LmNvbT4NCg0KPiBUaGlzIFNvQiBjaGFpbiBpcyBicm9rZW4uIFRo
+ZSBmaXJzdCBTb0Igc2hvdWxkIGJlIHRoZSBhdXRob3IsIGJ1dCBGcm9tIGRvZXMgbm90IG1hdGNo
+Lg0KV2Ugd2lsbCBmaXggdGhpcyBuZXh0IHRpbWUuDQoNCg==
