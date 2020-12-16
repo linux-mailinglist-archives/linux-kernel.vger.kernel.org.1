@@ -2,97 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F243F2DBEF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDAE32DBF03
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 11:52:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725820AbgLPKsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 05:48:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgLPKsy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 05:48:54 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812E4C061794;
-        Wed, 16 Dec 2020 02:48:14 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2so16349673pfq.5;
-        Wed, 16 Dec 2020 02:48:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BdOUjmGuNqAuHRyGZ2If7iqdw2h6h7+gBbAOpSZBT5c=;
-        b=Q1KlwltkkoWkzpfdqwj1Ufyfjap83NEbF6qFXo444jAt3huW+txQ0NYvTXXI2q6BRg
-         AySPp7+D7RkNecbF8XMiLtPgK45HChQBi0+fSat/qGHL7ok8xXJPkRGyDwCSG5ST3rdL
-         lXDDJljntyQaisuElXyJFxA5wH43WOew6ug4S+o0QxPQ83slW7uB+YZLVcikmvNDfiR3
-         gsKvrbfHjp+gl1ixE+6eyFp5VFC2xxdZ7URcDF/GlOQMKjsQA9U32K+AmoNJ6yqtQIDE
-         Fsy691Fb2R0G01WZv/3EvWXWWckrRQMaT4AVW1n8UThqLcmq+ZKT1D2odjJn+ZwU55v4
-         JVEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BdOUjmGuNqAuHRyGZ2If7iqdw2h6h7+gBbAOpSZBT5c=;
-        b=DesjeX3z191keeaKL252olG9wlNczjSbzAeITfL8NRniRhGz/sKdi70wXbhJawmsdw
-         +UGxA8Cff+1Hhx3zBxrFxuRh78oSMqi0mDErQiXRGkORahIJOIlFcEoCggJeq+7CrIWO
-         FLLirPyN8slJjlt8Be8cawdYMX2eX4krweddtecJZelo6nm7eUNHHJD7Ozo48j0koy7Y
-         KneZHWnNa7lwXnDBvp7SLJ8YNhkF1U6MngF7Bdvi3hph2Oa2+mfUqFjIJ2hVxDAAutMz
-         lb/pGNJ81f1XL8Y0jldJwg756vZZrAf+XVJ/8S1O3CmJbxuZFCUlMty9dKmj9Sqw6oxn
-         wz/g==
-X-Gm-Message-State: AOAM533VwFcOdQBOCbbUHRahjc3VzJSy6VIOD4cFr8Ks2+HEVRmTTeW2
-        miIXe9mgK+rGZfmfVlso4eQV6Iu9ztZJFoqGWBF7YTRkCP1sXA==
-X-Google-Smtp-Source: ABdhPJwJM421vZFwcMHVpsFxxo+kzrEL+xYa3720J8GZy0j/vMWuThLpjW0HrhHJHbyVu8iuZcG0JRSxEI216O/V9NI=
-X-Received: by 2002:a63:b1e:: with SMTP id 30mr32624656pgl.203.1608115693947;
- Wed, 16 Dec 2020 02:48:13 -0800 (PST)
+        id S1726194AbgLPKv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 05:51:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725275AbgLPKv1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 05:51:27 -0500
+Date:   Wed, 16 Dec 2020 11:50:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608115846;
+        bh=8H8SDZko4TK/AdCpgSyNIeAAsleLrzpqEcl3JM2PCro=;
+        h=From:To:cc:Subject:From;
+        b=RbYpJseU5rQHCaUuLBYazOi4FiTAI9fWJE1ZVMFQugVKV8IKjv8tfgcVFxR+E2f7i
+         metPFVAonaqcmf+legzoNPo666BqXii03s35p/JlEWHUXpBc/ozyoydGXBHD+CO+FJ
+         hloqrdoEcv4UbvS6ydbFnLqKXIUNLaKa0uCfwAcGk0hie/MWiDS33s2uG4qjpgSPyS
+         dJbegFDSObzqgwugVcED0Shth0JDrFvPV8iDfLXV5FAK6KPiRd0i8V/ea/V0jz9eT8
+         YUk9LosqUnrcA4AqjHN5h8xsEOudCTx1YYXAny1lVFFO6kunrnTi/rRiYUSmCFuCY3
+         dPMGR99yehrgA==
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] HID for 5.11
+Message-ID: <nycvar.YFH.7.76.2012161150240.25826@cbobk.fhfr.pm>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <20201211190335.16501-1-rdunlap@infradead.org> <CAHp75Vcckb5NA=tc5s5p_qzYE2qhJOT0vhCtfKhT_eqZe+PgXw@mail.gmail.com>
- <ec8e703f-e1ea-1253-edc9-311f0ee3e8fd@infradead.org> <CAHp75Vf-QcdL+FOd=8fUUQ0+ORC-RVKG+3Yqrar1J7wZMSDF+A@mail.gmail.com>
- <3d5a5c8f-4bb1-6205-ae76-354473d59a18@infradead.org> <CAHp75Vc3_ye3Ph0uVYdcsKr0QY5RGSaHmCgU1A2q-U2GCAafsQ@mail.gmail.com>
- <0f07d6b8-6a28-ba31-9cfa-53abffb0c0ff@infradead.org>
-In-Reply-To: <0f07d6b8-6a28-ba31-9cfa-53abffb0c0ff@infradead.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 16 Dec 2020 12:49:02 +0200
-Message-ID: <CAHp75Vd8jQrMk28UAGNCOPFq-+TzL68tqOMYhDtRtwDbj-Ts6w@mail.gmail.com>
-Subject: Re: [PATCH -next] platform: surface: fix non-PM_SLEEP build warnings
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Arnd Bergmann <arnd.bergmann@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 1:49 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> On 12/14/20 3:19 AM, Andy Shevchenko wrote:
-> > On Mon, Dec 14, 2020 at 2:53 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> >> On 12/12/20 11:07 AM, Andy Shevchenko wrote:
-> >>> On Sat, Dec 12, 2020 at 7:05 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> >
-> > ...
-> >
-> >>> Here [1] is the rationale behind annotation vs. ifdeffery.
-> >>>
-> >>> [1]: https://lore.kernel.org/patchwork/patch/732981/
-> >>>
-> >> Thanks for the link.  I'll send a v2.
-> >>
-> >> Could we add that to the Linux BKP (Best Known Practices)
-> >> document?
-> >
-> > Perhaps. The author of that is Arnd, maybe he has something to add.
-> >
->
-> Where is it located?  My search foo could not find it.
+Linus,
 
-Closest what I know is [2].
+please pull from
 
-[2]: https://kernelnewbies.org/FAQ/CodingStyle
+  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
 
+to receive 5.11 HID subsystem queue. Highlights:
 
+=====
+- AMD SFH (Sensor Fusion Hub) support, from Sandeep Singh
+- increase of maximum HID report size to 16KB in order to support
+  some of the modern devices, from Dean Camera
+- control interface support for hidraw, from Dean Camera
+- Sony DS4 power and firmware reporting fixes, from Roderick Colenbrander
+- support for ghlive PS3/WII u dongles, from Pascal Giard
+=====
 
---
-With Best Regards,
-Andy Shevchenko
+Thanks.
+
+----------------------------------------------------------------
+Coiby Xu (1):
+      HID: i2c-hid: show the error when failing to fetch the HID descriptor
+
+Colin Ian King (1):
+      SFH: fix error return check for -ERESTARTSYS
+
+Dean Camera (2):
+      HID: Increase HID maximum report size to 16KB
+      HID: hidraw: Add additional hidraw input/output report ioctls.
+
+Ethan Warth (1):
+      HID: mf: add support for 0079:1846 Mayflash/Dragonrise USB Gamecube Adapter
+
+Gustavo A. R. Silva (2):
+      HID: usbhid: Fix fall-through warnings for Clang
+      HID: input: Fix fall-through warnings for Clang
+
+Hans de Goede (2):
+      HID: logitech-hidpp: Add hid_device_id for V470 bluetooth mouse
+      HID: ite: Add support for Acer S1002 keyboard-dock
+
+Jing Xiangfeng (1):
+      HID: intel-ish-hid: Remove unnecessary assignment to variable rv
+
+Jiri Kosina (2):
+      HID: SFH: Add documentation
+      HID: elecom: drop stray comment
+
+Julian Sax (1):
+      HID: i2c-hid: add Vero K147 to descriptor override
+
+Luke D Jones (1):
+      HID: asus: Add support for ASUS N-Key keyboard
+
+Pascal Giard (1):
+      HID: sony: support for ghlive ps3/wii u dongles
+
+Rikard Falkeborn (1):
+      HID: wacom: Constify attribute_groups
+
+Roderick Colenbrander (3):
+      HID: sony: Report more accurate DS4 power status.
+      HID: sony: Don't use fw_version/hw_version for sysfs cleanup.
+      HID: sony: Workaround for DS4 dongle hotplug kernel crash.
+
+Sandeep Singh (5):
+      SFH: Add maintainers and documentation for AMD SFH based on HID framework
+      SFH: PCIe driver to add support of AMD sensor fusion hub
+      SFH:Transport Driver to add support of AMD Sensor Fusion Hub (SFH)
+      SFH: Create HID report to Enable support of AMD sensor fusion Hub (SFH)
+      AMD_SFH: Fix for incorrect Sensor index
+
+YOSHIOKA Takuma (2):
+      HID: elecom: rewrite report based on model specific parameters
+      HID: elecom: add support for EX-G M-XGL20DLBK wireless mouse
+
+dmitry.torokhov@gmail.com (1):
+      HID: hid-input: occasionally report stylus battery even if not changed
+
+ Documentation/hid/amd-sfh-hid.rst                  | 145 +++++
+ Documentation/hid/hidraw.rst                       |  45 +-
+ Documentation/hid/index.rst                        |   1 +
+ MAINTAINERS                                        |   8 +
+ drivers/hid/Kconfig                                |   3 +
+ drivers/hid/Makefile                               |   2 +
+ drivers/hid/amd-sfh-hid/Kconfig                    |  18 +
+ drivers/hid/amd-sfh-hid/Makefile                   |  13 +
+ drivers/hid/amd-sfh-hid/amd_sfh_client.c           | 246 ++++++++
+ drivers/hid/amd-sfh-hid/amd_sfh_hid.c              | 174 ++++++
+ drivers/hid/amd-sfh-hid/amd_sfh_hid.h              |  67 +++
+ drivers/hid/amd-sfh-hid/amd_sfh_pcie.c             | 152 +++++
+ drivers/hid/amd-sfh-hid/amd_sfh_pcie.h             |  79 +++
+ .../amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.c  | 224 +++++++
+ .../amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.h  | 107 ++++
+ .../hid_descriptor/amd_sfh_hid_report_desc.h       | 645 +++++++++++++++++++++
+ drivers/hid/hid-asus.c                             | 123 +++-
+ drivers/hid/hid-elecom.c                           |  51 +-
+ drivers/hid/hid-ids.h                              |   7 +
+ drivers/hid/hid-input.c                            |   6 +-
+ drivers/hid/hid-ite.c                              |  13 +-
+ drivers/hid/hid-logitech-hidpp.c                   |   2 +
+ drivers/hid/hid-mf.c                               |   2 +
+ drivers/hid/hid-quirks.c                           |   3 +
+ drivers/hid/hid-sony.c                             | 247 ++++++--
+ drivers/hid/hidraw.c                               |  24 +-
+ drivers/hid/i2c-hid/i2c-hid-core.c                 |   5 +-
+ drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c           |   8 +
+ drivers/hid/intel-ish-hid/ishtp-hid.c              |   6 +-
+ drivers/hid/usbhid/hid-core.c                      |   2 +
+ drivers/hid/wacom_sys.c                            |  16 +-
+ include/linux/hid.h                                |   3 +-
+ include/uapi/linux/hidraw.h                        |   6 +
+ samples/hidraw/hid-example.c                       |   2 +-
+ 34 files changed, 2360 insertions(+), 95 deletions(-)
+ create mode 100644 Documentation/hid/amd-sfh-hid.rst
+ create mode 100644 drivers/hid/amd-sfh-hid/Kconfig
+ create mode 100644 drivers/hid/amd-sfh-hid/Makefile
+ create mode 100644 drivers/hid/amd-sfh-hid/amd_sfh_client.c
+ create mode 100644 drivers/hid/amd-sfh-hid/amd_sfh_hid.c
+ create mode 100644 drivers/hid/amd-sfh-hid/amd_sfh_hid.h
+ create mode 100644 drivers/hid/amd-sfh-hid/amd_sfh_pcie.c
+ create mode 100644 drivers/hid/amd-sfh-hid/amd_sfh_pcie.h
+ create mode 100644 drivers/hid/amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.c
+ create mode 100644 drivers/hid/amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.h
+ create mode 100644 drivers/hid/amd-sfh-hid/hid_descriptor/amd_sfh_hid_report_desc.h
+
+-- 
+Jiri Kosina
+SUSE Labs
+
