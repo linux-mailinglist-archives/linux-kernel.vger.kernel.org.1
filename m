@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68EE22DBC9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7CD2DBC9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 09:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725951AbgLPIXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 03:23:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40554 "EHLO mail.kernel.org"
+        id S1726080AbgLPIXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 03:23:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725845AbgLPIXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:23:08 -0500
-Subject: Re: [GIT PULL] Kselftest fixes update for Linux 5.11-rc1
+        id S1725845AbgLPIXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 03:23:23 -0500
+Subject: Re: [GIT PULL] KUnit update for Linux 5.11-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1608106948;
-        bh=ud87NcTtL2ZtYGVa9CgBAwaeW4b8Rfgv2MrZObh+9bk=;
+        bh=MAxkcc2T4pvNHNFzM9yul6oUiKb4Mks1V0T+fqMaXmc=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=sqQezJFETYElHGh0VcBkvEVkAE/CdKahQ+kpXvn1jgZVprQeZlguwYC7GIHQr7CbC
-         uZHBReSpMeuuWiGdimtxEbLbGD5wVtEt4Mr5f+0DouzMqBLbBjvFiyD6uYit4Nezp3
-         wwIwBcdEgKb259We6V2wmrQeDp481sRCcmRphx2A+p4eXX1EL693iSA0LBo40LkwZO
-         /P2rTSU0MCY1rtYI8sNSilwGu0CRiw/+GfC8WKuuh814VIpVrBYK8+x6YFJcB7rYha
-         guaDEmLLR7+A+4dH3anUnAB/WC3FM5WSa9B9n8tzcuIR7r9HXdx4tEMrn983gW+L5/
-         veB6bQcKMi2ew==
+        b=kDdQ3bzSuJE/ZHLq4PtBMhvyGYkMGsgajLYflaE/Jc0Ujgi9jvUca52VTjbqNV24a
+         tWY/S1+f7EOhUHtxZICpHoWNlugZDNGuHT2mfT2NTA3Jt2P9y1mBlBlLDaTSDmhQ8w
+         mbet+FMU6TkFsrCWFjELzT+1f65kezJMEFeY1JPIrU4cb0tcDSP9JXq4FcxlGCDJBE
+         fZhgyLaur+C2MFdV9eaWV8KaFukk3nAI/tSJ+zflfKwWN6QUpFhneM+bChPoHHxnj0
+         OR8Po+qmnQlZaC+Jk73e88diPsCKuxMFraSziJtmasom1ouQr/uEWq4lHWVxk1e9jE
+         d5RAhijTfyCqA==
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <bd9a480f-80f9-5beb-2f1f-dbc28a7af80c@linuxfoundation.org>
-References: <bd9a480f-80f9-5beb-2f1f-dbc28a7af80c@linuxfoundation.org>
+In-Reply-To: <e68b976c-0966-b26e-bb53-d80111eab8bd@linuxfoundation.org>
+References: <e68b976c-0966-b26e-bb53-d80111eab8bd@linuxfoundation.org>
 X-PR-Tracked-List-Id: <linux-kselftest.vger.kernel.org>
-X-PR-Tracked-Message-Id: <bd9a480f-80f9-5beb-2f1f-dbc28a7af80c@linuxfoundation.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.11-rc1
-X-PR-Tracked-Commit-Id: 88f4ede44c585b24674dd99841040b2a1a856a76
+X-PR-Tracked-Message-Id: <e68b976c-0966-b26e-bb53-d80111eab8bd@linuxfoundation.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-kunit-5.11-rc1
+X-PR-Tracked-Commit-Id: 5f6b99d0287de2c2d0b5e7abcb0092d553ad804a
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b80affe33fdd56c8e9f1f0f33ad99f9016a59195
-Message-Id: <160810694801.6147.17868708282743846908.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 706451d47b3716c24e0553dfdefba11d202effc1
+Message-Id: <160810694864.6147.6246308365891660205.pr-tracker-bot@kernel.org>
 Date:   Wed, 16 Dec 2020 08:22:28 +0000
 To:     Shuah Khan <skhan@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
+        Brendan Higgins <brendanhiggins@google.com>,
+        Theodore Ts'o <tytso@mit.edu>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 15 Dec 2020 11:59:10 -0700:
+The pull request you sent on Tue, 15 Dec 2020 14:52:11 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.11-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-kunit-5.11-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b80affe33fdd56c8e9f1f0f33ad99f9016a59195
+https://git.kernel.org/torvalds/c/706451d47b3716c24e0553dfdefba11d202effc1
 
 Thank you!
 
