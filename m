@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF57C2DC581
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0026C2DC591
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 18:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727489AbgLPRmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 12:42:20 -0500
-Received: from foss.arm.com ([217.140.110.172]:37776 "EHLO foss.arm.com"
+        id S1727908AbgLPRqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 12:46:48 -0500
+Received: from mga11.intel.com ([192.55.52.93]:21271 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727482AbgLPRmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 12:42:20 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA60BD6E;
-        Wed, 16 Dec 2020 09:41:34 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C327B3F66E;
-        Wed, 16 Dec 2020 09:41:32 -0800 (PST)
-References: <cover.1607036601.git.reinette.chatre@intel.com> <c8eebc438e057e4bc2ce00256664b7bb0561b323.1607036601.git.reinette.chatre@intel.com> <jhjlfe4t6jq.mognet@arm.com> <e250875b-1c86-660c-b9f0-4060842939bf@intel.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     tglx@linutronix.de, fenghua.yu@intel.com, bp@alien8.de,
-        tony.luck@intel.com, kuo-lang.tseng@intel.com, shakeelb@google.com,
-        mingo@redhat.com, babu.moger@amd.com, james.morse@arm.com,
-        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 2/3] x86/resctrl: Update PQR_ASSOC MSR synchronously when moving task to resource group
-In-reply-to: <e250875b-1c86-660c-b9f0-4060842939bf@intel.com>
-Date:   Wed, 16 Dec 2020 17:41:30 +0000
-Message-ID: <jhj1rfptzqt.mognet@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1727899AbgLPRqs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 16 Dec 2020 12:46:48 -0500
+IronPort-SDR: u9zGBRcPOyO++jtyKUv4NUIK5fE6JoGXu52fxrStJAelgak/WZ6xnmM5qnSnU6mvZNQ+dbhQwA
+ Ik6r5GiuCJsg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="171593373"
+X-IronPort-AV: E=Sophos;i="5.78,424,1599548400"; 
+   d="scan'208";a="171593373"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2020 09:46:07 -0800
+IronPort-SDR: R11X8xLiVTp1uBkKEvnu2S1hFcl/sE5CpanM+WOd8DnMNLUsi3k/fEwQR5ioe31KrlOm9HyOj4
+ FTgYHF86dcTQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,424,1599548400"; 
+   d="scan'208";a="391854158"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
+  by FMSMGA003.fm.intel.com with ESMTP; 16 Dec 2020 09:46:07 -0800
+From:   "Chang S. Bae" <chang.seok.bae@intel.com>
+To:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
+        x86@kernel.org, herbert@gondor.apana.org.au
+Cc:     dan.j.williams@intel.com, dave.hansen@intel.com,
+        ravi.v.shankar@intel.com, ning.sun@intel.com,
+        kumar.n.dwarakanath@intel.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chang.seok.bae@intel.com
+Subject: [RFC PATCH 0/8] x86: Support Intel Key Locker
+Date:   Wed, 16 Dec 2020 09:41:38 -0800
+Message-Id: <20201216174146.10446-1-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Key Locker [1][2] is a new security feature available in new Intel CPUs to
+protect data encryption keys for the Advanced Encryption Standard
+algorithm. The protection limits the amount of time an AES key is exposed
+in memory by sealing a key and referencing it with new AES instructions.
 
-On 14/12/20 18:41, Reinette Chatre wrote:
->>> -	return ret;
->>> +
->>> +	/*
->>> +	 * By now, the task's closid and rmid are set. If the task is current
->>> +	 * on a CPU, the PQR_ASSOC MSR needs to be updated to make the resource
->>> +	 * group go into effect. If the task is not current, the MSR will be
->>> +	 * updated when the task is scheduled in.
->>> +	 */
->>> +	update_task_closid_rmid(tsk);
->>
->> We need the above writes to be compile-ordered before the IPI is sent.
->> There *is* a preempt_disable() down in smp_call_function_single() that
->> gives us the required barrier(), can we deem that sufficient or would we
->> want one before update_task_closid_rmid() for the sake of clarity?
->>
->
-> Apologies, it is not clear to me why the preempt_disable() would be
-> insufficient. If it is not then there may be a few other areas (where
-> resctrl calls smp_call_function_xxx()) that needs to be re-evaluated.
+The new AES instruction set is a successor of Intel's AES-NI (AES New
+Instruction). Users may switch to the Key Locker version from crypto
+libraries.  This series includes a new AES implementation for the Crypto
+API, which was validated through the crypto unit tests. The performance in
+the test cases was measured and found comparable to the AES-NI version.
 
-So that's part paranoia and part nonsense from my end - the contents of
-smp_call() shouldn't matter here.
+Key Locker introduces a (CPU-)internal key to encode AES keys. The kernel
+needs to load it and ensure it unchanged as long as CPUs are operational.
 
-If we distill the code to:
+The series has three parts:
+* PATCH1-6: Implement the internal key management
+* PATCH7:   Add AES implementation in Crypto library
+* PATCH8:   Provide the hardware randomization option for the internal key
 
-  tsk->closid = x;
+This RFC series has been reviewed by Dan Williams, with an open question of
+whether to use hardware backup/restore, or to synchronize reinitialize the
+internal key over suspend / resume to avoid the implications of key restore
+failures.
 
-  if (task_curr(tsk))
-      smp_call(...);
+[1] Intel Architecture Instruction Set Extensions Programming Reference:
+    https://software.intel.com/content/dam/develop/external/us/en/documents/architecture-instruction-set-$
+[2] Intel Key Locker Specification:
+    https://software.intel.com/content/dam/develop/external/us/en/documents/343965-intel-key-locker-speci$
 
-It is somewhat far fetched, but AFAICT this can be compiled as:
+Chang S. Bae (8):
+  x86/cpufeature: Enumerate Key Locker feature
+  x86/cpu: Load Key Locker internal key at boot-time
+  x86/msr-index: Add MSRs for Key Locker internal key
+  x86/power: Restore Key Locker internal key from the ACPI S3/4 sleep
+    states
+  x86/cpu: Add a config option and a chicken bit for Key Locker
+  selftests/x86: Test Key Locker internal key maintenance
+  crypto: x86/aes-kl - Support AES algorithm using Key Locker
+    instructions
+  x86/cpu: Support the hardware randomization option for Key Locker
+    internal key
 
-  if (task_curr(tsk))
-      tsk->closid = x;
-      smp_call(...);
-  else
-      tsk->closid = x;
+ .../admin-guide/kernel-parameters.txt         |   2 +
+ arch/x86/Kconfig                              |  14 +
+ arch/x86/crypto/Makefile                      |   3 +
+ arch/x86/crypto/aeskl-intel_asm.S             | 881 ++++++++++++++++++
+ arch/x86/crypto/aeskl-intel_glue.c            | 697 ++++++++++++++
+ arch/x86/include/asm/cpufeatures.h            |   1 +
+ arch/x86/include/asm/disabled-features.h      |   8 +-
+ arch/x86/include/asm/inst.h                   | 201 ++++
+ arch/x86/include/asm/keylocker.h              |  41 +
+ arch/x86/include/asm/msr-index.h              |   6 +
+ arch/x86/include/uapi/asm/processor-flags.h   |   2 +
+ arch/x86/kernel/Makefile                      |   1 +
+ arch/x86/kernel/cpu/common.c                  |  66 +-
+ arch/x86/kernel/cpu/cpuid-deps.c              |   1 +
+ arch/x86/kernel/keylocker.c                   | 147 +++
+ arch/x86/kernel/smpboot.c                     |   2 +
+ arch/x86/lib/x86-opcode-map.txt               |   2 +-
+ arch/x86/power/cpu.c                          |  34 +
+ crypto/Kconfig                                |  28 +
+ drivers/char/random.c                         |   6 +
+ include/linux/random.h                        |   2 +
+ tools/arch/x86/lib/x86-opcode-map.txt         |   2 +-
+ tools/testing/selftests/x86/Makefile          |   2 +-
+ tools/testing/selftests/x86/keylocker.c       | 177 ++++
+ 24 files changed, 2321 insertions(+), 5 deletions(-)
+ create mode 100644 arch/x86/crypto/aeskl-intel_asm.S
+ create mode 100644 arch/x86/crypto/aeskl-intel_glue.c
+ create mode 100644 arch/x86/include/asm/keylocker.h
+ create mode 100644 arch/x86/kernel/keylocker.c
+ create mode 100644 tools/testing/selftests/x86/keylocker.c
 
-IOW, there could be a sequence where the closid write is ordered *after*
-the task_curr() read. With
+-- 
+2.17.1
 
-  tsk->closid = x;
-
-  barrier();
-
-  if (task_curr(tsk))
-      smp_call(...);
-
-that explicitely cannot happen.
-
->
-> Thank you very much
->
-> Reinette
