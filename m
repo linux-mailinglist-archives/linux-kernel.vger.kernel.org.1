@@ -2,271 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1532DC36B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D50562DC36D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 16:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgLPPur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 10:50:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgLPPur (ORCPT
+        id S1726581AbgLPPvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 10:51:17 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:50798 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725812AbgLPPvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 10:50:47 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73801C061794;
-        Wed, 16 Dec 2020 07:50:06 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id x20so29986804lfe.12;
-        Wed, 16 Dec 2020 07:50:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dVC82aZtq7EOX+1Jzw8lfBhIqrAn6nAuPMTE2J6bpU8=;
-        b=LYLsFuSlIsE634FXs60xyDXc0N6Xm3cnUTs5fg8P5Sy/3i/vGJTzPwwuuj9FORTnAc
-         M+LKWYVake6RSVidmylg9l8k1zTSnJUGMMlW62Cv1NKk8Z/bw1h9MLTzMcCx+wkbba4C
-         CqGhBTz9y3l7UVmRkOO9utaNNTUopatcuqk0uNvXQo+kMESAemDkfW8XSCqjJZkDXTcx
-         QbKZSZs1diszerxWrP/aI/Ie1nle8sp5DCtTAu5H61o4g3kLdoZZquwMM3sa1Qe0I+t/
-         pmKiYugQjgsFXkKAh+RnIe5go372EGs9H2SHty6tRRzbKeh+d/rVqVHsxfzP/Iqwpnn5
-         NG0g==
+        Wed, 16 Dec 2020 10:51:16 -0500
+Received: from mail-oi1-f200.google.com ([209.85.167.200])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kpZ4U-0004vA-BJ
+        for linux-kernel@vger.kernel.org; Wed, 16 Dec 2020 15:50:34 +0000
+Received: by mail-oi1-f200.google.com with SMTP id m65so12475662oib.19
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Dec 2020 07:50:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dVC82aZtq7EOX+1Jzw8lfBhIqrAn6nAuPMTE2J6bpU8=;
-        b=EeslHEWLjPGuIGZXcEhh6Fu7Sn+uVCmhe1BVajMC37R44cBpvjXGmpO72RPAabkAyw
-         Ad4/mtPM2AFpvmczCLFvVeGsdDAwOUysKdEyaHu1SGKWB/3zsLq+uU8JsYR7+NDItgnt
-         PZslsdV9Cc4i/ZMVoX/dPTx0kM/RyJEQpJ1b2C6QG/XG2jQ1yIIDhG8nbjvwlZltYlTX
-         BZrc3IRulgxjDF56nNGfh99AedqvGTROwafZCEKCw9zYbcu210LMjv9Cvco8oHGbJcdL
-         XrqqpVmbWxT9yCJtLMcpd2tP67uBFBr6AiLfWmc+S30gNkvtbbMcIrODQrUCeld0gBCt
-         6+sg==
-X-Gm-Message-State: AOAM532GnfCNPvl9wDbTQBppCiln3uHd7eLb1wNU9NNwZrrGPbAzcYw1
-        LrRiqMftsVW6HEyyAPJ213+0ugkSluLBPQ==
-X-Google-Smtp-Source: ABdhPJyQX4vkLOhoEs/vUyIi/NKQ5gO0V+yzhJz25Sf1cK3pmRBXcX1BiDzETZ1UrsWnqYquzBoUJw==
-X-Received: by 2002:a2e:9b8a:: with SMTP id z10mr8409752lji.126.1608133803879;
-        Wed, 16 Dec 2020 07:50:03 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id 10sm266131lfh.208.2020.12.16.07.50.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 07:50:02 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 16 Dec 2020 16:49:59 +0100
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
-Message-ID: <20201216154959.GA2408@pc638.lan>
-References: <20201209202732.5896-1-urezki@gmail.com>
- <20201209202732.5896-2-urezki@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UDu4fCku1n4Yn+GSCPwGXPBk9ghy9F+fH/bPZYikwFM=;
+        b=cbnFf5t4XgMIsb0Y5g0S39XjhNmHJ0RLJpVR+K85fTLsCl62h3venOnrGaqVeanWwG
+         U9Q3payyOdG2VZ0iiL+8YgA6q/EnTQcGaloLsmrl0m6Q8Dqx6RtPPEp+HcTON3w6ujSx
+         Ywvjov9jzHXMXY1yAhAansElTO3yXh/ZKJcgqbmJhcy6werat3mr+sJDy8n+Wk257krS
+         mFV83WhnMo3UGyFThyvTLGC0F2H2T6L/XR74E9B9JViWIOLXktetg43HxEGQ9Yvoamgm
+         YpUL5BMJhBC6PBdbzUa8tdSVKrWNuOCVFj8fH/wXjV9ANv+FUsVmfYfDKjc5lBi7DKAi
+         7YPA==
+X-Gm-Message-State: AOAM531c97HdUZ9OklVs53sHTK3ZvFluI4Y3YWNlaEHRHpP3frEf/f0E
+        Sgktxf7CSyfG3MnFPQSvcNdrvGRs5Efeg/NbZb3i0v+zMc/OE4Z7VS2rzkAHMetlLpRn/1BTjDt
+        dN7GGq8AzPOW16feKeSi8EB7Mgchwf0j3o9eq47a15738A7KxEkaklwsudQ==
+X-Received: by 2002:aca:ccc1:: with SMTP id c184mr2370074oig.121.1608133833280;
+        Wed, 16 Dec 2020 07:50:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx9u6/rdkGACUL71kk8r218k44q33lvl1DdzcqZEhpTlQ6LOkUUe5DktifQtuIFFfmCGbSthMgBQPLRJPHBP3k=
+X-Received: by 2002:aca:ccc1:: with SMTP id c184mr2370051oig.121.1608133832928;
+ Wed, 16 Dec 2020 07:50:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209202732.5896-2-urezki@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
+ <20201216124726.2842197-1-kai.heng.feng@canonical.com> <s5h5z51oj12.wl-tiwai@suse.de>
+In-Reply-To: <s5h5z51oj12.wl-tiwai@suse.de>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Wed, 16 Dec 2020 23:50:20 +0800
+Message-ID: <CAAd53p6kORC1GsW5zt+=0=J5ki43iriO-OqtFvf5W67LWhyyhA@mail.gmail.com>
+Subject: Re: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Add self tests for checking of RCU-tasks API functionality.
-> It covers:
->     - wait API functions;
->     - invoking/completion call_rcu_tasks*().
-> 
-> Self-tests are run when CONFIG_PROVE_RCU kernel parameter is set.
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> ---
->  kernel/rcu/tasks.h | 44 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 44 insertions(+)
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 67a162949763..9407772780c1 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -1225,6 +1225,16 @@ void show_rcu_tasks_gp_kthreads(void)
->  }
->  #endif /* #ifndef CONFIG_TINY_RCU */
->  
-> +static struct rcu_head rhp;
-> +static int rcu_execurted_test_counter;
-> +static int rcu_run_test_counter;
-> +
-> +static void test_rcu_tasks_callback(struct rcu_head *r)
-> +{
-> +	pr_info("RCU-tasks test callback executed %d\n",
-> +		++rcu_execurted_test_counter);
-> +}
-> +
->  void __init rcu_init_tasks_generic(void)
->  {
->  #ifdef CONFIG_TASKS_RCU
-> @@ -1238,7 +1248,41 @@ void __init rcu_init_tasks_generic(void)
->  #ifdef CONFIG_TASKS_TRACE_RCU
->  	rcu_spawn_tasks_trace_kthread();
->  #endif
-> +
-> +	if (IS_ENABLED(CONFIG_PROVE_RCU)) {
-> +		pr_info("Running RCU-tasks wait API self tests\n");
-> +#ifdef CONFIG_TASKS_RCU
-> +		rcu_run_test_counter++;
-> +		call_rcu_tasks(&rhp, test_rcu_tasks_callback);
-> +		synchronize_rcu_tasks();
-> +#endif
-> +
-> +#ifdef CONFIG_TASKS_RUDE_RCU
-> +		rcu_run_test_counter++;
-> +		call_rcu_tasks_trace(&rhp, test_rcu_tasks_callback);
-> +		synchronize_rcu_tasks_rude();
-> +#endif
-> +
-> +#ifdef CONFIG_TASKS_TRACE_RCU
-> +		rcu_run_test_counter++;
-> +		call_rcu_tasks_trace(&rhp, test_rcu_tasks_callback);
-> +		synchronize_rcu_tasks_trace();
-> +#endif
-> +	}
-> +}
-> +
-> +static int rcu_tasks_verify_self_tests(void)
-> +{
-> +	int ret = 0;
-> +
-> +	if (rcu_run_test_counter != rcu_execurted_test_counter) {
-> +		WARN_ON(1);
-> +		ret = -1;
-> +	}
-> +
-> +	return ret;
->  }
-> +late_initcall(rcu_tasks_verify_self_tests);
->  
->  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
->  static inline void rcu_tasks_bootup_oddness(void) {}
-Please find a v2 of the patch that is in question. First version
-uses the same rhp for all RCU flavors what is wrong. Initially
-i had three different one per one flavor. But for some reason
-end up with only one.
+On Wed, Dec 16, 2020 at 11:41 PM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Wed, 16 Dec 2020 13:47:24 +0100,
+> Kai-Heng Feng wrote:
+> >
+> > Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
+> > initialization even if no codecs found"), when codec probe fails, it
+> > doesn't enable runtime suspend, and can prevent graphics card from
+> > getting powered down:
+> > [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
+> >
+> > $ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
+> > active
+> >
+> > So mark there's no codec and continue probing to let runtime PM to work.
+> >
+> > BugLink: https://bugs.launchpad.net/bugs/1907212
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>
+> Hm, but if the probe fails, doesn't it mean something really wrong?
+> IOW, how does this situation happen?
 
+The HDA controller is forcely created by quirk_nvidia_hda(). So
+probably there's really not an HDA controller.
 
-From e7c6096af5a7916f29c0b4b05e1644b3b3a6c589 Mon Sep 17 00:00:00 2001
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Date: Wed, 9 Dec 2020 21:27:32 +0100
-Subject: [PATCH v2 1/1] rcu-tasks: Add RCU-tasks self tests
+>
+> The usual no-codec state is for the devices that have a bogus HD-audio
+> bus remaining while codecs aren't hooked or disabled by BIOS.  For
+> that, it makes to leave the controller driver and let it idle.  But if
+> you get really an error, it's something to fix there, not to just
+> ignore in general.
 
-This commit adds self tests for early-boot use of RCU-tasks grace periods.
-It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
-both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
-call_rcu_tasks()) grace-period APIs.
+The best approach I can think of is to make current two steps probe
+into one. So when probe fails, the driver won't bind to the device.
+What's the reason behind the two steps approach?
 
-Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
+Kai-Heng
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tasks.h | 69 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
-
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 36607551f966..7478d912734a 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1224,6 +1224,35 @@ void show_rcu_tasks_gp_kthreads(void)
- }
- #endif /* #ifndef CONFIG_TINY_RCU */
-
-+struct test_desc {
-+       struct rcu_head rh;
-+       const char *name;
-+       bool run;
-+};
-+
-+static struct test_desc tests[] = {
-+       { .name = "call_rcu_tasks()" },
-+       { .name = "call_rcu_rude()"  },
-+       { .name = "call_rcu_trace()" },
-+};
-+
-+static int rcu_executed_test_counter;
-+
-+static void test_rcu_tasks_callback(struct rcu_head *rhp)
-+{
-+       int i;
-+
-+       pr_info("RCU-tasks test callback executed %d\n",
-+               ++rcu_executed_test_counter);
-+
-+       for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+               if (rhp == &tests[i].rh) {
-+                       tests[i].run = false;
-+                       break;
-+               }
-+       }
-+}
-+
- void __init rcu_init_tasks_generic(void)
- {
- #ifdef CONFIG_TASKS_RCU
-@@ -1237,7 +1266,47 @@ void __init rcu_init_tasks_generic(void)
- #ifdef CONFIG_TASKS_TRACE_RCU
-        rcu_spawn_tasks_trace_kthread();
- #endif
-+
-+       // Run the self-tests.
-+       if (IS_ENABLED(CONFIG_PROVE_RCU)) {
-+               pr_info("Running RCU-tasks wait API self tests\n");
-+#ifdef CONFIG_TASKS_RCU
-+               tests[0].run = true;
-+               call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
-+               synchronize_rcu_tasks();
-+#endif
-+
-+#ifdef CONFIG_TASKS_RUDE_RCU
-+               tests[1].run = true;
-+               call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
-+               synchronize_rcu_tasks_rude();
-+#endif
-+
-+#ifdef CONFIG_TASKS_TRACE_RCU
-+               tests[2].run = true;
-+               call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
-+               synchronize_rcu_tasks_trace();
-+#endif
-+       }
-+}
-+
-+static int rcu_tasks_verify_self_tests(void)
-+{
-+       int ret, i;
-+
-+       for (i = 0, ret = 0; i < ARRAY_SIZE(tests); i++) {
-+               if (tests[i].run) {             // still hanging.
-+                       pr_err("%s has been failed.\n", tests[i].name);
-+                       ret = -1;
-+               }
-+       }
-+
-+       if (ret)
-+               WARN_ON(1);
-+
-+       return ret;
- }
-+late_initcall(rcu_tasks_verify_self_tests);
-
- #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
- static inline void rcu_tasks_bootup_oddness(void) {}
--- 
-2.20.1
-
---
-Vlad Rezki
+>
+>
+> thanks,
+>
+> Takashi
+>
+> > ---
+> >  sound/pci/hda/hda_intel.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> > index 6852668f1bcb..872a703dee43 100644
+> > --- a/sound/pci/hda/hda_intel.c
+> > +++ b/sound/pci/hda/hda_intel.c
+> > @@ -2328,7 +2328,7 @@ static int azx_probe_continue(struct azx *chip)
+> >       if (bus->codec_mask) {
+> >               err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
+> >               if (err < 0)
+> > -                     goto out_free;
+> > +                     bus->codec_mask = 0;
+> >       }
+> >
+> >  #ifdef CONFIG_SND_HDA_PATCH_LOADER
+> > --
+> > 2.29.2
+> >
