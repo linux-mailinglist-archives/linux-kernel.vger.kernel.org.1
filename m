@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE5D2DC0D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4802DC0D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Dec 2020 14:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbgLPNMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Dec 2020 08:12:18 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9533 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgLPNMS (ORCPT
+        id S1726173AbgLPNNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Dec 2020 08:13:02 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9453 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgLPNNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Dec 2020 08:12:18 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CwwVV559vzhrSW;
-        Wed, 16 Dec 2020 21:10:58 +0800 (CST)
+        Wed, 16 Dec 2020 08:13:02 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CwwWV22P9zhrLY;
+        Wed, 16 Dec 2020 21:11:50 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 16 Dec 2020 21:11:27 +0800
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 16 Dec 2020 21:12:13 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <linux-kernel@vger.kernel.org>
+To:     <linux-alpha@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] kernel: cpu: mtrr: convert comma to semicolon
-Date:   Wed, 16 Dec 2020 21:11:59 +0800
-Message-ID: <20201216131159.14393-1-zhengyongjun3@huawei.com>
+Subject: [PATCH -next] alpha: kernel: convert comma to semicolon
+Date:   Wed, 16 Dec 2020 21:12:41 +0800
+Message-ID: <20201216131241.14447-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,25 +38,22 @@ Replace a comma between expression statements by a semicolon.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- arch/x86/kernel/cpu/mtrr/cleanup.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/alpha/kernel/process.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/mtrr/cleanup.c b/arch/x86/kernel/cpu/mtrr/cleanup.c
-index 5bd011737272..9231640782fa 100644
---- a/arch/x86/kernel/cpu/mtrr/cleanup.c
-+++ b/arch/x86/kernel/cpu/mtrr/cleanup.c
-@@ -537,9 +537,9 @@ static void __init print_out_mtrr_range_state(void)
- 		if (!size_base)
- 			continue;
- 
--		size_base = to_size_factor(size_base, &size_factor),
-+		size_base = to_size_factor(size_base, &size_factor);
- 		start_base = range_state[i].base_pfn << (PAGE_SHIFT - 10);
--		start_base = to_size_factor(start_base, &start_factor),
-+		start_base = to_size_factor(start_base, &start_factor);
- 		type = range_state[i].type;
- 
- 		pr_debug("reg %d, base: %ld%cB, range: %ld%cB, type %s\n",
+diff --git a/arch/alpha/kernel/process.c b/arch/alpha/kernel/process.c
+index 4c7b0414a3ff..71041347d189 100644
+--- a/arch/alpha/kernel/process.c
++++ b/arch/alpha/kernel/process.c
+@@ -256,7 +256,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
+ 		childstack->r26 = (unsigned long) ret_from_kernel_thread;
+ 		childstack->r9 = usp;	/* function */
+ 		childstack->r10 = kthread_arg;
+-		childregs->hae = alpha_mv.hae_cache,
++		childregs->hae = alpha_mv.hae_cache;
+ 		childti->pcb.usp = 0;
+ 		return 0;
+ 	}
 -- 
 2.22.0
 
